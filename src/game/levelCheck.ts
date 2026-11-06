@@ -474,6 +474,31 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
   let seen = new Set<string>();
   let firstWalk = true;
 
+  /**
+   * a drop onto a piece lying wholly under the surface he stands on (the lead, 11-05: gen2 1-1 Roll C's two petals on a low log under the
+   * end's continuous road, which Matt could not reach and this check passed: its links measured the gap across, 0 for a piece straight
+   * under, and so linked a straight fall the game has no way to make; there is no dropping through a piece). He leaves a surface only
+   * over an open edge of its run (the pieces joined to it at its height), and comes back under the run in the air: the piece is reached
+   * from the run only if an open edge lies within half the fall's reach of it (out and back). A run's edge is closed where a piece at its
+   * height or higher stands against it (a wall, or the road going on)
+   */
+  const roofedDrop = (a: Platform, b: Platform, bx0: number, bx1: number, dy: number): boolean => {
+    let rx0 = ext(a)[0], rx1 = ext(a)[1];
+    for (let grew = true; grew; ) {
+      grew = false;
+      for (const q of plats) {
+        if (q.broken || q.type === 'bouncy' || Math.abs(q.y - a.y) > 3) continue;
+        const [q0, q1] = ext(q);
+        if (q0 <= rx1 + 4 && q1 >= rx0 - 4 && (q0 < rx0 || q1 > rx1)) { rx0 = Math.min(rx0, q0); rx1 = Math.max(rx1, q1); grew = true; }
+      }
+    }
+    if (bx0 < rx0 || bx1 > rx1) return false;
+    const closed = (x: number) => plats.some((q) => !q.broken && q.type !== 'bouncy' && q.y <= a.y + 3 && q.y + q.height > a.y && ext(q)[0] <= x + 4 && ext(q)[1] >= x - 4 && !(ext(q)[0] >= rx0 && ext(q)[1] <= rx1));
+    const back = (Math.max(reachJump(dy, false), allowDouble ? reachJump(dy, true) : -1) * MARGIN - TAKEOFF_SLACK) / 2;
+    const inL = closed(rx0 - 1) ? Infinity : bx0 - rx0, inR = closed(rx1 + 1) ? Infinity : rx1 - bx1;
+    return !(Math.min(inL, inR) <= back);
+  };
+
   /** build the graph over the ground as `layout` left it, and walk it from the spawn point (false: nothing under the spawn point) */
   const walk = (): boolean => {
     adj.clear();
@@ -536,6 +561,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
         if (r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK) {
           if (pouring.length && waterBetween(ax0, ax1, a.y, bx0, bx1, b.y)) continue;
           if (a.type !== 'bouncy' && blockBetween(a, b, ax0, ax1, bx0, bx1)) continue;
+          if (a.type !== 'bouncy' && dy < -8 && roofedDrop(a, b, bx0, bx1, dy)) continue;
           link(pid(a), pid(b));
           if (a.type !== 'bouncy') maxGapUsed = Math.max(maxGapUsed, gap);
         }
