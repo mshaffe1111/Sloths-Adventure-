@@ -26,6 +26,7 @@ import { BUILD_TIME } from './version.ts';
 import { controlStyle, padSide, subscribeControls } from './controlPrefs.ts';
 import { BlinkWatch, ErrSeen, errLine, errWhere, RateLimiter } from './glitchWatch.ts';
 import { browserShort, envDetail } from './deviceInfo.ts';
+import { sectionLabel } from '../components/ctestStretches.ts';
 
 /** a store build (the Android app) carries no collector at all: the address and key fold away at build time (appShell.ts storeBuild) */
 const STORE = (import.meta as unknown as { env?: { VITE_STORE_BUILD?: string } }).env?.VITE_STORE_BUILD === '1';
@@ -366,13 +367,27 @@ class PlayRecorder {
     if (what === 'finish' || what === 'survey' || what === 'quit') void this.flush(false);
   }
 
+  /** the moves already noted this stage ('move': the first double jump, the first bounce) */
+  private movesSeen = new Set<string>();
+  /** a stage (re)starts: each move is noted again the first time it is used in it */
+  stageStart() {
+    this.movesSeen.clear();
+  }
+  /** the first use of a move in this stage: `move <kind> <x>` (later uses are in the intents and Pokey's lines already) */
+  moveOnce(kind: string, x: number) {
+    if (!this.on || this.movesSeen.has(kind)) return;
+    this.movesSeen.add(kind);
+    this.event('move', `${kind} ${Math.round(x)}`);
+  }
+
   /** Pokey, once a tick: kept ten times a second, and at once whenever what he is doing changes */
   pokey(x: number, y: number, vx: number, vy: number, state: string, section: string) {
     if (!this.on) return;
     this.lastX = Math.round(x);
     if (section && section !== this.section) {
       this.section = section;
-      this.event('section', section);
+      // (a rolled stage's stretch in plain words, the end survey's own, then its id: `The stepping stones | w1-stones:ki`)
+      this.event('section', sectionLabel(section));
     }
     const t = this.now();
     // ten times a second while he moves; once a second while he stands still doing the same thing

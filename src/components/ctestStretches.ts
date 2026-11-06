@@ -137,3 +137,15 @@ export function stretchChoices(labels: readonly string[]): string[] {
   }
   return out.length ? out : STRETCH_FALLBACK.map((w) => w[0].toUpperCase() + w.slice(1));
 }
+
+/**
+ * The recorder's 'section' moment for a stretch: a gen2 label becomes `<plain words> | <label>` (`The stepping stones | w1-stones:ki`, or
+ * `Walking | w1-meadow:rest` for one that only walks), so a "hardest" answer lines up with where he lost lives; any other label (the old
+ * control course's names) is kept as it is.
+ */
+export function sectionLabel(label: string): string {
+  const id = label.split(':')[0];
+  if (!(id in STRETCH_WORDS)) return label;
+  const w = STRETCH_WORDS[id];
+  return `${w ? w[0].toUpperCase() + w.slice(1) : 'Walking'} | ${label}`;
+}

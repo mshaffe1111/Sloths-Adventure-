@@ -94,7 +94,7 @@ blank 80, camjump 40, blink 30, jitter 40, flipflop 40. Any other name: 50.
 | `mix` | the test stage's layout seed (`?mix=<seed>` rebuilds it) |
 | `gen2` | at each start of a rolled (gen2) stage: `<stage> seed <seed> <easy|normal>`, so that run can be built again (from builds after 2026-11-06; the testers' link plays gen2 1-1, a fresh proven seed each run) |
 | `look` | at each stage start: `help teach`, `help reminders` or `help quiet` (Dot's help setting). Before 2026-10-26 it also said `newLook 1` or `newLook 0`; the new HUD and Dot is now the only look. |
-| `section` | the stretch of the test stage Pokey entered (from builds after 2026-10-26: only once he is 40 px into it and has stayed 0.5 s, and not while still swinging, so a swing over the line no longer flips it back and forth; `src/game/sectionTrack.ts`) |
+| `section` | the stretch of the test stage Pokey entered (from builds after 2026-10-26: only once he is 40 px into it and has stayed 0.5 s, and not while still swinging, so a swing over the line no longer flips it back and forth; `src/game/sectionTrack.ts`). From builds after 2026-11-06, a rolled (gen2) stage's stretch reads `<plain words> \| <section id>:<phase>`, e.g. `The stepping stones \| w1-stones:ki` or `Walking \| w1-meadow:rest`: the plain words are the same ones the end survey's "What felt hardest?" offers (`src/components/ctestStretches.ts`), so an answer lines up with where he lost lives |
 | `checkpoint` | checkpoint reached (its x) |
 | `hurt` | hit (hearts left) |
 | `bossHurt` | in a boss fight, just before its `hurt` line: what hit him and what the boss was doing, `<by> <state> <move> <seconds into it>`. `by` is `strike` (an attack's own box), `body` (touching him) or `hazard:<kind>`; `state` is `tell`, `act`, `rec`, `stun`, `idle` or `roar` (e.g. `strike act pounce 0.96`) |
@@ -102,7 +102,13 @@ blank 80, camjump 40, blink 30, jitter 40, flipflop 40. Any other name: 50.
 | `stomp` | stomped a foe (its type, or `boss`) |
 | `stuckHelp` | the game helped him out of a stuck spot (x) |
 | `finish` | reached the end (game time) |
-| `survey` | the tester's answers (JSON). From builds after 2026-11-06 (the level test, `v: 2`): `hand`, `hard` and `note` as before (`held` is no longer asked; old rows keep it), plus `fun` (1 to 5 faces), `long` (`Too short`, `About right`, `Too long`), `knew` (`Always`, `Mostly`, `I got lost`), `tips` (`Yes`, `A bit`, `No`, `Didn't notice them`), `looked` (`No` or `Yes`) with `lookedNote`, `next` (`Yes`, `Maybe`, `No`), `age` (an optional band only: `Under 8`, `8-12`, `13-17`, `Adult`; QA link only, never in the shipped game), and `run` (that run's `gen2` line). Every question is optional; a skipped one is absent. `hard` holds the plain words the tester saw (`src/components/ctestStretches.ts`) |
+| `survey` | the tester's answers (JSON). From builds after 2026-11-06 (the level test, `v: 2`), only what the log cannot tell (Matt: no redundant questions). REQUIRED, Send waits for them: `fun` (1 to 5 faces), `long` (`Too short`, `About right`, `Too long`), `knew` (`Always`, `Mostly`, `I got lost`). Optional, absent when skipped: `hard` (a list, the plain words the tester saw: `src/components/ctestStretches.ts`), `tips` (`Yes`, `A bit`, `No`, `Didn't notice them`), `looked` (`No` or `Yes`) with `lookedNote`, `next` (`Yes`, `Maybe`, `No`), and `note`. `run` is that run's `gen2` line. Not asked any more (older rows have them): `hand`, `held` (read them from the log: below) and the short-lived `age` (never asked in a shipped build) |
+| `pickup` | (from builds after 2026-11-06) something he took: `<kind> <x>`. Kinds: `flower` (a petal), `leaf`, `fruit`, `heart` (only when he could take it: at full hearts a heart stays put and logs nothing), `super_heart`, the powerups, and `seed` (a golden seed). Count them against the stage's own collectibles for the find rate |
+| `softFall` | a put-back with no life lost: `<x>` where he went over. Easy's soft falls, 8-4's lantern falls, and (from builds after 2026-11-06) gen2's level double-gap blocks, which put him back on the take-off. Only `lostLife` costs a life |
+| `dot` | (from builds after 2026-11-06) one of Dot's lines really shown: its review id (`hint.1-1.gaps`, `coach.run`, … from `src/game/dotLinesData.ts`), or the first words in quotes for a line the review does not have. Join with the survey's `tips` answer |
+| `move` | (from builds after 2026-11-06) the FIRST use of a move in this stage (start or restart): `double <x>` (the double jump) or `bounce <x>` (a mushroom). Later uses are in the `i` and `p` lines already |
+| `pause` | (from builds after 2026-11-06) the pause menu opened. Many in one run is a frustration sign |
+| `restart` | (from builds after 2026-11-06) `menu`: the stage restarted from the pause menu (a frustration sign; `resumeRestart` is the game starting it again by itself) |
 | `playAgain` / `quit` | the tester's choice at the end |
 | `capped` | `<name>`: that glitch event reached its cap and logs nothing more this session |
 
@@ -148,3 +154,35 @@ Then `/L` or `/R` when the thumb is steering.
 - **"It was vibrating or shaking."** Look for `jitter` (which axis) and `flipflop` (which states, and where).
 - **"The screen went weird after turning."** Look for `screen` lines (the canvas should be the window times dpr, with dpr capped at 2, 1.5
   or 1 for q0, q1 or q2), and `fullscreen`.
+
+
+## Read from the log, never asked (from builds after 2026-11-06)
+
+The end survey asks only what the recording cannot tell. These come from the lines themselves.
+
+**Which hand (the old `hand` question).** Over the run, take each `d` (finger down) line:
+- **Two thumbs**: fingers down on both halves of the screen (x under 40% and over 60% of the width) within the same second, again and again
+  (in 10 or more seconds of the run), or two fingers down at once (an `m` from one while the other is down) on opposite halves.
+- **One thumb**: nearly every touch (90% or more) on one half, never two fingers down at once, and touch sizes (`size`) in the thumb
+  range, about 40 px and up where the phone reports a size.
+- **One finger (a pointer)**: as one thumb, but smaller touch sizes (under about 30 px), touches spread over more of the screen, and the
+  phone more often flat (`held` below).
+- **A mix**: none of these for most of the run, or a change part way (a `controls` line, or the halves swapping for a long spell).
+Phones that report no size (`size` 0 or missing) are judged by the halves and the overlap alone.
+
+**How the phone was held (the old `held` question).** Upright or sideways is in the device line and every `screen` moment on a turn.
+Two hands are likely with two thumbs, or sideways. A phone flat on a table shows as one finger with no shake in the touches (the `m` lines
+of a held, still finger drift a few px; on a table they hardly move).
+
+**Skill from play (the age band, dropped: Matt, "we can tell a beginner from a game-savvy player by how they play").** Signals, in the
+order they are most telling:
+- how soon the double jump clicks: the time from the first `move double` to the first clean cross of a double gap (a `section` passed
+  with no `lostLife` or `softFall` in it); a savvy player gets it in one or two tries;
+- falls per stretch: `lostLife` and `softFall` counts in each `section`, above all in the first jumps and the double-jump gaps;
+- hesitation: Pokey standing still (`p` lines once a second, the same x) before a gap or a mushroom, and lifted thumbs (`u`) right at
+  an edge;
+- retries and frustration: `restart`, `pause`, `quit` before the end, and `playAgain` after it (a keen player plays again);
+- pace: seconds per stretch against the run's median, and how many `pickup`s off the main path (a savvy player goes for them);
+- touch style: quick flicks (a `d`, a few `m`, a `u` within about 150 ms) against slow drags that the rules do not take as jumps (`i`
+  lines missing where the thumb went up).
+Read it from these signals together, never one alone, and never ask the player.
