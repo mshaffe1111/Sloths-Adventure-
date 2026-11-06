@@ -6,4 +6,4 @@ was left in total on 11-06; every job is logged here; the token never goes in co
 
 | Date (ET) | Job | Lead's OK | Cost | Result |
 |---|---|---|---|---|
-| (none yet) | | | $0 | |
+| 2026-11-06 9:40 AM | sheet-10 keepers 3x Real-ESRGAN (approved, cap $0.50) | lead 9:27 AM | **$0**: run locally on CPU instead (tools/art/edges/defringe.py --esrgan, anime6b weights from the Real-ESRGAN GitHub release, git-ignored) | 6 pieces (not 9: I miscounted; sheet 10 has 6 keepers once the pink rope and the 2 holds are out). Kept 5 as improved, 1 flagged (see reference/art/cut/up3x/README.md) |
