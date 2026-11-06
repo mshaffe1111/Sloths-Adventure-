@@ -584,6 +584,8 @@ export interface FilledSocket {
   what: string | null;
   x: number;
   y: number;
+  /** a tip whose id named no Dot line: nothing was said (the roll fails by name, pipeline buildGen2Stage) */
+  unsaid?: boolean;
 }
 
 /**
