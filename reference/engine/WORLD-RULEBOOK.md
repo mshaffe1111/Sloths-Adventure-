@@ -262,3 +262,8 @@ Evidence:
   - at most 2 of the ≤ 6 kinds in a view are bough or floating kinds;
   - the same stills pass gets an eye check for dressing density, against Matt's "too much junk".
 - **V18, Pc1< named (the planner, 12:28): `w1-knot-bank` ("stepped mound", version "3-step") (12:10 PM).** It's two mounds, up then down, then up then down, so its step down sits BEFORE the summit. That's what a stepped mound is, not a stair. **Ruling: retag `w1-knot-bank`'s content `climb` → `ground`** (mounds are a ground terrain family, NODES §3; TERRAIN already says `mounds`). Its shape stays; its job stays `practise`. The climb × climb cells are covered by #53-#55, #38, #39 and #48 (Rounds 5-6).
+- **(g), the porter's V18 run (1:15 PM; 26 breaches on 16 seeds × 2 at engine-core 04f350bd1):**
+  1. **The level beat inside a climb is a LEVEL GAP JUMP:** a short soft gap (0.4-0.5 of a single's reach), with its far landing at the same height (±10 px, V18's level allowance). There's no landing in the gap and no stump to step down from. This replaces "a ≥ 50 px hop" in #54 and #55, and the `j` in #57's stair is laid the same way.
+  2. **`w1-mound-log` (#25) is retagged content `ground`,** as knot-bank was: a mound with a log over it, up then down, isn't a stair.
+  3. The mirrored breaches go to the planner's no-mirror rule.
+  4. **leap-stones' "rock in the air" (3) is a real defect:** a rock never floats (LABELS rule 1). Each `gStones` stone in it stands on the floor or a bank down to the ground. The porter seats them.
