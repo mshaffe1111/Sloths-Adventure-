@@ -35,11 +35,6 @@
 .wm-prog-w { display: none !important; }
 .wm-card-lock { display: flex; align-items: center; gap: 6px; margin-top: 3px; font: 700 14px var(--font-ui); color: #8a3b10; }
 .wm-play { flex: none; font-size: 21px; padding: 12px 20px; min-width: 0; gap: 8px; }
-/* the test link's 1-1 picker (QA builds only, testlink1_1.ts): a row of four under the card's own line, each 44 px or more to tap */
-.wm-card:has(.wm-pick11) { flex-wrap: wrap; padding-bottom: 4px; }
-.wm-pick11 { flex-basis: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 6px 0 2px; }
-@media (orientation: landscape) { .wm-pick11 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.wm-pick11 .wm-pick11-btn { width: 100%; min-width: 0; max-width: none; min-height: 48px; padding: 8px 6px; font-size: 17px; box-sizing: border-box; }
 .wm-leaves { display: flex; justify-content: center; gap: 10px; }
 .wm-leaves .ttl-leaf { width: 104px; }
 .wm-toast { position: fixed; z-index: 60; left: 50%; top: 42%; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; max-width: calc(100vw - 32px);

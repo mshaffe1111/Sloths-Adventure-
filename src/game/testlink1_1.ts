@@ -1,25 +1,22 @@
 /**
- * How 1-1 is built. The card's own Play button is gen2 1-1 from the proven-seed list (below). The rest is TEST-LINK ONLY, REMOVE BEFORE
- * ANY RELEASE with the restored old 1-1 block in protoStage.ts (new replaces old): Matt's picker (the lead, 11-05: he compares OLD 1-1 with
- * gen2 1-1's Rolls A, B and C on his phone), in a QA build with its flag only (pickerOn); the pick holds until another is made.
- *   - 'play': gen2 1-1, a fresh proven seed each press of Play;
- *   - 'old': main's 1-1 builder as it is (protoStage.ts with 1-1's mixer spec skipped);
- *   - 'A' | 'B' | 'C': gen2 1-1 from World 1's kit (gen2/worlds/w1.ts), the seed from testlink1_1.json, which the lead sets at publish.
+ * How 1-1 is built: gen2 1-1 from the proven-seed list, always (old 1-1's builder and Matt's Old 1-1 / Rolls picker are deleted: new
+ * replaces old, 0.9.5).
+ *   - 'play': the card's own Play button, a fresh proven seed each press (every build);
+ *   - 'A' | 'B' | 'C': QA measuring only (a QA build, set by the tests and stage.ts --roll, never a button): gen2 1-1 on the seed from
+ *     testlink1_1.json, so a check measures a named roll. Not a switch between builders: every pick is gen2.
  */
 import ROLLS from './testlink1_1.json';
 import { qaBuild } from './playRecorder.ts';
 import { provenSeedFor, provenSeeds } from './gen2/seedList.ts';
 
-export type Pick11 = 'play' | 'old' | 'A' | 'B' | 'C';
+export type Pick11 = 'play' | 'A' | 'B' | 'C';
 let pick: Pick11 = 'play';
-/** set the pick ('play': the card's own Play button; the others only from Matt's picker in a QA build) */
+/** set the pick ('play': the card's own Play button; A/B/C only from the tests and tools, in a QA build) */
 export const setPick11 = (p: Pick11): void => { pick = p; };
 /** how 1-1 is built now: gen2 from the proven-seed list ('play') outside a QA build */
 export const pick11 = (): Pick11 => (qaBuild() ? pick : 'play');
 /** the seed of a gen2 roll */
 export const roll11Seed = (p: 'A' | 'B' | 'C'): number => (ROLLS as Record<string, number>)[p];
-/** whether 1-1's mixer spec is skipped (the old builder) */
-export const skip11Spec = (id: string): boolean => id === '1-1' && pick11() === 'old';
 
 /**
  * 1-1's Play (the lead, 11-06, Matt: "1-1's Play = gen2, a fresh proven seed per play"): each press of Play draws a seed from the proven
@@ -89,17 +86,6 @@ export function withPlaySeed<T>(seed: number, fn: () => T): T {
 }
 /** forget the drawn seeds (tests) */
 export const clearPlay11 = (): void => { playSeed = null; nextSeed = null; memOrder = null; try { localStorage.removeItem(ORDER_KEY); } catch { /* blocked */ } };
-
-/** Matt's picker (Old 1-1, Rolls A/B/C) shows only in a QA build with its flag: ?pick11 once (kept on the device), never for testers */
-export function pickerOn(): boolean {
-  if (!qaBuild()) return false;
-  try {
-    if (typeof location !== 'undefined' && new URLSearchParams(location.search).has('pick11')) localStorage.setItem('sloth_qa_pick11', '1');
-    return localStorage.getItem('sloth_qa_pick11') === '1';
-  } catch {
-    return false;
-  }
-}
 
 /**
  * A child process measuring a picked roll (stage.ts --roll, the red team's RT-ENGINE #1: its children graded the mixer's 1-1): set the

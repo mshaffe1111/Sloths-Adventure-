@@ -6,7 +6,7 @@ import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
-import { pick11, play11Seed, roll11Seed, skip11Spec, withPlaySeed } from './testlink1_1.ts';
+import { pick11, play11Seed, roll11Seed, withPlaySeed } from './testlink1_1.ts';
 import { buildPlayStage } from './gen2/seedList.ts';
 import { w1Finish, w1World } from './gen2/worlds/w1.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
@@ -2866,13 +2866,13 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // (no more than 4000 px between flags on a hand-built stage: easyMode.ts capFlagSpans, LV-9)
   // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
   // (the test link's 1-1 picker: a gen2 roll skips the hand-built path, testlink1_1.ts)
-  // (1-1's Play is gen2 from the proven list: only Matt's Old 1-1 pick takes the hand-built path)
-  const gen2Roll11 = config.id === '1-1' && !config.secret && pick11() !== 'old';
+  // (1-1 is gen2 from the proven list, always: old 1-1's builder is deleted, new replaces old, 0.9.5)
+  const gen2Roll11 = config.id === '1-1' && !config.secret;
   // (builtOnGen2 below is this same test, for every reader that asks whether a stage is gen2's: one definition)
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled() && !gen2Roll11) {
     // (a stage the mixer builds from its spec, 1-1 and 1-5, lays Easy itself: mixer/w1mix.ts; the rest are made gentler on the built
     // stage alone, easyMode.ts)
-    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && !skip11Spec(config.id) && config.id !== '1-5' && !!specFor(HAND_STAGES[config.id])));
+    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && config.id !== '1-5' && !!specFor(HAND_STAGES[config.id])));
     addMissingFind(st);
     return difficulty === 'normal' ? w4Normal(st) : st;
   }
@@ -3085,10 +3085,10 @@ export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
 
 /**
  * Whether a stage is built by gen2 (the lead's ruling, 11-06: one definition): a curated gen2 stage (gen2/game.ts isGen2Stage), or 1-1,
- * which rolls on gen2 from the proven list unless Matt's Old 1-1 pick is on (the same test buildStage makes, gen2Roll11). The old
+ * which rolls on gen2 from the proven list, always (the same test buildStage makes, gen2Roll11). The old
  * generator's rulers (levels.test, stageQuality.test, platformPlan.test) judge only the stages this is false for; gen2's own tests judge
  * the rest (1-1: gen2/rolledFlags, forks11, the quiet line, the standing kinds).
  */
 export function builtOnGen2(config: Pick<LevelConfig, 'id' | 'secret'>): boolean {
-  return isGen2Stage(config) || (config.id === '1-1' && !config.secret && pick11() !== 'old');
+  return isGen2Stage(config) || (config.id === '1-1' && !config.secret);
 }

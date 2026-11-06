@@ -55,10 +55,9 @@ import { W4Roll } from './w4Sections.ts';
 import { buildFromSpec } from './mixer/w1mix.ts';
 import { w1DressWidth } from './w1NewArt.ts';
 import { specFor as specForAll } from './mixer/stages.ts';
-import { skip11Spec } from './testlink1_1.ts';
-/** a stage's mixer spec, except 1-1 on the test link's 'Old 1-1' pick (testlink1_1.ts: main's builder as it is) */
+/** a stage's mixer spec (mixer/stages.ts) */
 // (1-5 stays main's in 0.9.5, the lead 11-06: the mixer's 1-5 waits for a later release (R-165.45), so its spec is not used)
-const specFor = (id: string) => (skip11Spec(id) || id === '1-5' ? undefined : specForAll(id as never));
+const specFor = (id: string) => (id === '1-5' ? undefined : specForAll(id as never));
 import { clearDress, ownPetals, placeSeed } from './mixer/post.ts';
 import { dressSize } from './dressArt.ts';
 import { inDoorBox } from './mixer/propSupport.ts';
@@ -1485,51 +1484,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   /** this roll's version of one of the stage's sections (w1Sections.ts) */
   const section = (slot: Slot) => w1Section(w1, w1Stage, slot, seed);
 
-  // TEST-LINK ONLY, REMOVE BEFORE ANY RELEASE (new replaces old; the lead, 11-05). (main's 1-1 builder as it is, kept for the test
-  // link's 'Old 1-1' pick only (testlink1_1.ts: QA builds, never the shipped game,
-  // where 1-1 is the mixer's spec); copied unchanged from main (protoStage.ts on main, its '1-1' plan): the lead's compare, 11-05)
-  if (plan === '1-1') {
-    // 1-1 Into the Canopy: run and jump. Taught over soft moss, tested on stepping stones at three heights, and twisted at the end
-    // into gaps only the second jump crosses. The touch coach teaches the gestures at the start (engine.ts), so the hints come later.
-    // (Rebuilt 2026-10-28: the open ground between the pieces holds hops and dips, the stumps and stones stay one easy jump up, and
-    // the finish keeps the double jump to gaps over level stones: no tall double jumps in World 1's first stages, Matt.)
-    beat('Learn: run and jump', () => {
-      rest(R.r(400, 440));
-      lowStumps();
-      busy(1, ['log'], R.r(240, 290));
-      hint(x + 40, 'Jump the little gaps', 'Jump the little gaps', 'Jump the little gaps');
-      const one = reachJump(0, false);
-      for (const w of [one * 0.35, one * 0.45, one * 0.55]) {
-        const edge = x;
-        close();
-        const far = Math.round(edge + w);
-        softPit(edge, far);
-        open(far);
-        run(R.r(220, 300));
-      }
-      flag();
-    });
-    beat('Test: the stepping stones', () => {
-      hint(x + 60, 'Hop from stone to stone', 'Hop from stone to stone', 'Hop from stone to stone');
-      // (the stones climb 60 at most from one to the next, and the first stands 60 up: the kid bot missed 80 and more, 2026-10-28)
-      section('develop');
-      // (a dip before the twist's tip: the walk past its practice shelf follows)
-      run(R.r(60, 90));
-      dip();
-      run(R.r(120, 160));
-      flag();
-    });
-    beat('Twist: the second jump', () => {
-      hint(x + 60, 'Flick up again in the air to jump twice', 'Press Jump again in the air', 'Press Space again in the air');
-      section('twist');
-      flag();
-    });
-    beat('Finish', () => {
-      // more of the second jump and the stones, in this roll's rhythm, until even a quick player needs two minutes
-      section('finish');
-      homeRun();
-    });
-  }
 
   /**
    * 1-2's way back up (fix-petals, 2026-11-01): a mushroom on the floor at the near end of a high branch, so a hop that falls short of it
