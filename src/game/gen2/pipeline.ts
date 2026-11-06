@@ -1342,7 +1342,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const flip = tpl.mirrorable ? srng() : 1;
       // (a section that swings is never flipped: its perch is sized for a swing toward it, the way the stage runs)
       // (never a section with a block, 11-06: mirrored, a rise block is a drop and a gap block's landing is its take-off)
-      const mirrored = fixed ? fixed.mirrored : flip < 0.5 && !hangsNeed(tpl).includes('swing') && !hasBlock(tpl);
+      // (and, the lead 12:57 PM: never one whose exit is not level (more than 25 px off its entry: mirrored, a rise is a drop, FR9's up
+      // stair laid backwards was a drop run), nor any climb (its vine and bank face the other way); mirror.test.ts)
+      const mirrored = fixed ? fixed.mirrored : flip < 0.5 && hangsNeed(tpl).length === 0 && tpl.content !== 'climb' && !hasBlock(tpl) && Math.abs(exitDyOf(tpl)) <= 25;
       // (the slot's floor depth: a hop roll shallow, a jump roll deep, a mixed roll by the slot's own draw against the family)
       if (FR) depthNow = fam >= FR.hopRoll ? FR.shallow : fam <= FR.jumpRoll ? FR.deep : rngFor(seed, 59, i)() < fam ? FR.shallow : FR.deep;
       const L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: depthNow, ...(tempo ? { tempo } : {}) });
