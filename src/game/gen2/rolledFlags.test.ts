@@ -1,33 +1,42 @@
-// A rolled stage's flags (the lead's rulings, 11-06: no gap over 2300 px, the last within 2000 px of the exit, rolled stages only; the red
-// tests levels.test 'a flag every ~1500px (never more than 2300 apart)' and stageQuality 'checkpoints stand 900 to 1900 px apart (the
-// first at least 700 px from the start)'). Planted on the rolled 1-1 as it laid: gaps of 2400-4200 px (FLAG_SPAN.max 4500) and two flags
-// 366 px apart (seed 2: x 20467 and 20833, the split pass kept 600 px from the flag before it and none from the one after).
+// A rolled stage's flags (the lead's 2:37 PM ruling, 11-06, on Matt's "a checkpoint before the hard part, not everywhere"): a flag before
+// each hard node (teach, test, twist, combine, signature), never more than 4000 px apart where nothing costs a life (2300 where a life can
+// be lost), the first at least 700 px on and none closer than 900, the last within 2000 of the exit; about 9-12 a stage, as old 1-1 had.
+// Planted: the rolled 1-1 laid gaps of 2400-4200 px and two flags 366 px apart (the split pass kept no distance from the flag after it);
+// then, at 2300 everywhere, 18-26 flags a stage. Both ways: a hard node with no flag before it fails, and a 3000 px span with a lethal fall
+// in it fails where the same span with none passes.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../headlessDom.ts';
-import { buildGen2Stage, ROLLED_FLAGS } from './pipeline.ts';
+import { buildGen2Stage, HARD_JOBS, lethalSpans, ROLLED_FLAGS, rolledFlagBreaches } from './pipeline.ts';
+import { JOB_OF } from './nodeCode.ts';
 import { w1World } from './worlds/w1.ts';
 import { generateAllLevels } from '../worldsData.ts';
 
-test('gen2 1-1: the first flag 700 px on, every gap 900-2300 px, the last within 2000 px of the exit (20 seeds, both settings)', () => {
+test('gen2 1-1: a flag before every hard node, 900-4000 px apart (no life to lose), the last within 2000 of the exit, 9-14 a stage (20 seeds, both settings)', () => {
   const c = generateAllLevels().find((l) => l.id === '1-1')!;
   const bad: string[] = [];
+  const counts: number[] = [];
   let judged = 0;
   for (let seed = 1; seed <= 20; seed++) for (const difficulty of ['normal', 'easy'] as const) {
     const st = buildGen2Stage({ config: c, kit: w1World(), seed, difficulty });
     if (st.gen2.errors?.some((e) => e.startsWith('flags:'))) continue; // a roll its flags cannot fit fails by name, never ships
     judged++;
-    const xs = (st.checkpoints ?? []).map((q) => q.x).sort((p, q) => p - q);
-    const at = `seed ${seed} ${difficulty}`;
-    if (!xs.length) { bad.push(`${at}: no flag`); continue; }
-    if (xs[0] - st.spawnX < ROLLED_FLAGS.first) bad.push(`${at}: the first flag ${Math.round(xs[0] - st.spawnX)} px from the start`);
-    for (let k = 1; k < xs.length; k++) {
-      const g = xs[k] - xs[k - 1];
-      if (g < ROLLED_FLAGS.min || g > ROLLED_FLAGS.max) bad.push(`${at}: flags ${Math.round(g)} px apart at x ${Math.round(xs[k - 1])}`);
-    }
-    if (st.exitTotemX - xs[xs.length - 1] > ROLLED_FLAGS.last) bad.push(`${at}: the last flag ${Math.round(st.exitTotemX - xs[xs.length - 1])} px from the exit`);
+    const hard = (st.gen2.nodes ?? []).filter((q) => HARD_JOBS.has(JOB_OF[q.token[0] as keyof typeof JOB_OF] ?? '')).map((q, i) => ({ id: `${q.token} #${i + 1}`, x0: q.x0 }));
+    assert.ok(hard.length >= 4, `seed ${seed}: ${hard.length} hard nodes read`);
+    for (const b of rolledFlagBreaches(st, hard, lethalSpans(st, st.gen2.falls ?? []))) bad.push(`seed ${seed} ${difficulty}: ${b}`);
+    counts.push((st.checkpoints ?? []).length);
   }
   assert.ok(judged >= 32, `only ${judged} of 40 builds laid their flags: the rule is failing rolls, not placing flags`);
   assert.deepEqual(bad.slice(0, 10), []);
-  assert.deepEqual(ROLLED_FLAGS, { first: 700, min: 900, max: 2300, last: 2000 });
+  const sorted = [...counts].sort((a, b) => a - b), med = sorted[Math.floor(sorted.length / 2)];
+  assert.ok(med >= 8 && med <= 13 && sorted[sorted.length - 1] <= 16, `flags a stage: median ${med}, ${sorted[0]}-${sorted[sorted.length - 1]} (target about 9-12)`);
+});
+
+test('the flag verdict both ways (planted): a hard node with no flag before it, and a long span with a lethal fall in it', () => {
+  const st = { spawnX: 140, exitTotemX: 9000, checkpoints: [{ x: 1500 }, { x: 4500 }, { x: 7500 }] };
+  assert.deepEqual(rolledFlagBreaches(st, [{ id: 'X', x0: 4600 }]), [], 'a flag 100 px before the test: kept');
+  assert.match(rolledFlagBreaches(st, [{ id: 'X', x0: 6400 }]).join(';'), /none before the hard node X at x 6400/);
+  assert.deepEqual(rolledFlagBreaches(st, [], []), [], 'spans of 3000 px with no life to lose: kept');
+  assert.match(rolledFlagBreaches(st, [], [[5000, 5200]]).join(';'), /3000 px apart at x 4500 .*a life can be lost/);
+  assert.deepEqual({ max: ROLLED_FLAGS.max, lethal: ROLLED_FLAGS.lethal }, { max: 4000, lethal: 2300 });
 });

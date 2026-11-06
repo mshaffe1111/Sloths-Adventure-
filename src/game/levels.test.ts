@@ -5,6 +5,7 @@ import { buildStage, generateStage, setLayoutVariant } from './stageGenerator.ts
 import { validateStage } from './levelCheck.ts';
 import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { isGen2Stage } from './gen2/game.ts';
+import { builtOnGen2 } from './stageGenerator.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 
 const levels = generateAllLevels();
@@ -57,7 +58,7 @@ test('every level has a flag every ~1500px (never more than 2300 apart) and a li
     let prev = 0;
     // (the old generator's spacing; a gen2 stage lays its flags by the clock, at its rests and every 35 s, as far apart as the
     // hand-built stages have them: gen2/game.test.ts)
-    if (!isGen2Stage(l)) {
+    if (!builtOnGen2(l)) {
       for (const c of cps) { assert.ok(c.x - prev < 2300, `${l.id} flag gap ${c.x - prev}`); prev = c.x; }
       assert.ok(s.exitTotemX - prev < 2000, `${l.id} last flag too far from goal`);
     }
@@ -65,7 +66,7 @@ test('every level has a flag every ~1500px (never more than 2300 apart) and a li
     // mossy pit with a step out, gen2/DESIGN.md B1 and B11; nor does one whose pits are the void, World 8's canopy: a fall from a lit
     // bough is past the stage's foot, a life; World 7's void chasms show the dirty water far below, so they carry the water line)
     const g2 = (s as { gen2?: { budget: { pit: string }; falls?: Array<{ kind: string }> } }).gen2;
-    const soft = isGen2Stage(l) && (g2?.budget.pit === 'soft' || (g2?.budget.pit === 'void' && l.worldIndex === 8)) && !(g2.falls ?? []).some((f) => f.kind === 'water');
+    const soft = builtOnGen2(l) && (g2?.budget.pit === 'soft' || (g2?.budget.pit === 'void' && l.worldIndex === 8)) && !(g2.falls ?? []).some((f) => f.kind === 'water');
     if (soft) assert.equal(s.waterY, undefined, `${l.id}: soft or void pits, no water`);
     else assert.ok(s.waterY !== undefined && s.waterY > s.spawnY, `${l.id} has water below the spawn`);
   }

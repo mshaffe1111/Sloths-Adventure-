@@ -124,7 +124,9 @@ export interface WorldManifest {
   floorRoll?: { hop: Array<{ range: [number, number]; weight: number }>; shallow: number; deep: number; hopRoll: number; jumpRoll: number;
     /** a catch bough under every gap that is not a pit (a jump between ledges, the canopy's: the designer's ac7a233c, 60-120 px), this far
      *  under the gap's lower lip, reaching from 30 px under the near ledge to 50 px under the far one; one jump back up */
-    catchDrop?: number };
+    catchDrop?: number;
+    /** the catches' looks, cycled in the order they are laid (['log', 'branch'] alternates); absent, every catch is a branch */
+    catchStyles?: ReadonlyArray<'branch' | 'log'> };
   /**
    * World 1's per-roll tempo (the mixer's per-roll draw, w1mix.ts:1072 / spec.ts RollRanges; the designer's measured ranges from old 1-1,
    * 53c0b9960): each roll draws its median gap share (triangular min / mode / max) and its rise band (home, or the hilly break on
@@ -324,7 +326,9 @@ export interface Socket {
 /** one sub-block: its versions (each its own pieces and sockets); every version must leave the same piece keys the rest refers to */
 export interface SubBlock {
   id: string;
-  versions: Array<{ id: string; pieces: SectionPiece[]; sockets?: Socket[]; weight?: number }>;
+  /** `easy`: the id of the version Easy lays in this one's place (the designer's §8.7 amendment, 11-06: on Easy every double gap block is
+   *  a rise, its "easy-" twin, same beats); `easyOnly`: never drawn, laid only as another version's twin */
+  versions: Array<{ id: string; pieces: SectionPiece[]; sockets?: Socket[]; weight?: number; easy?: string; easyOnly?: boolean }>;
 }
 
 /** a puzzle room inside a section: the puzzle kit's RoomSpec with its anchors on the section's own pieces (by key) */

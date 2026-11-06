@@ -421,9 +421,16 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
     const open = jobs.map((j, i) => i).filter((i) => (jobs[i] === 'practise' || jobs[i] === 'flow' || jobs[i] === 'climb') && jobs[i - 1] !== 'fork' && jobs[i + 1] !== 'fork');
     if (open.length) jobs[open[Math.floor(r() * open.length)]] = 'fork';
     else {
-      // (no practise left to turn: a fork after the last teach or fork, before the tests)
+      // (no practise left to turn: a fork after the last teach or fork, before the tests; never next to a fork (stageQuality's line,
+      // the lead's red test #9: seeds 4, 10 and 15 laid F F, two forks side by side): with no such place the stage keeps fewer forks,
+      // and V17's one is always laid)
       const after = jobs.reduce((k, j, i) => (j === 'teach' || j === 'fork' || j === 'practise' ? i : k), 0);
-      jobs.splice(after + 1, 0, 'fork');
+      // (the nearest place at or before that, back to the first teach, with no fork either side; none: a flow between the two forks)
+      const first = Math.max(1, jobs.indexOf('teach') + 1);
+      let at = -1;
+      for (let k = after + 1; k >= first; k--) if (jobs[k - 1] !== 'fork' && jobs[k] !== 'fork') { at = k; break; }
+      if (at >= 0) jobs.splice(at, 0, 'fork');
+      else jobs.splice(after + 1, 0, ...(jobs[after] === 'fork' ? (['flow', 'fork'] as NodeJob[]) : (['fork', 'flow'] as NodeJob[])));
     }
   }
   // (a required section is the stage's own find, the key's H (NODES.md §8.0: the seed perch, NOW in 1-1): a reward node each, after the
@@ -715,12 +722,20 @@ export interface LayLocalOptions {
  * weighted by `weight`, without putting back) and the first in it this world has not used yet (WorldOnce: the one used longest ago
  * when all have been). Draws nothing for a section with no sub-blocks, so such sections lay exactly as they did before.
  */
-export function chooseVersions(tpl: SectionTemplate, rng: Rng, once?: WorldOnce<string>, fixed?: Readonly<Record<string, string>>): Record<string, string> {
+/** every combination of a section's drawable sub-block versions (an Easy-only twin is not one), in the sub-blocks' own order */
+export function versionCombos(tpl: SectionTemplate): Array<Record<string, string>> {
+  let out: Array<Record<string, string>> = [{}];
+  for (const sb of tpl.subBlocks ?? []) out = out.flatMap((c) => sb.versions.filter((x) => !x.easyOnly).map((x) => ({ ...c, [sb.id]: x.id })));
+  return out.slice(0, 16);
+}
+export function chooseVersions(tpl: SectionTemplate, rng: Rng, once?: WorldOnce<string>, fixed?: Readonly<Record<string, string>>, easy = false): Record<string, string> {
   const out: Record<string, string> = {};
-  for (const sb of tpl.subBlocks ?? []) {
+  for (const sb0 of tpl.subBlocks ?? []) {
+    // (an Easy-only twin is never drawn: it is laid only in its version's place, on Easy, below)
+    const sb = { ...sb0, versions: sb0.versions.filter((x) => !x.easyOnly) };
     if (!sb.versions.length) throw new Error(`gen2 section ${tpl.id}: sub-block ${sb.id} has no versions`);
     const want = fixed?.[sb.id];
-    let v = want === undefined ? undefined : sb.versions.find((x) => x.id === want);
+    let v = want === undefined ? undefined : sb0.versions.find((x) => x.id === want);
     if (want !== undefined && !v) throw new Error(`gen2 section ${tpl.id}: sub-block ${sb.id} has no version ${want}`);
     if (v) once?.use(versionKey(tpl.id, sb.id, v.id));
     else {
@@ -732,6 +747,12 @@ export function chooseVersions(tpl: SectionTemplate, rng: Rng, once?: WorldOnce<
         left.splice(left.indexOf(p), 1);
       }
       v = once ? once.pick(order, (x) => versionKey(tpl.id, sb.id, x.id))! : order[0];
+    }
+    // (Easy lays a version's named twin in its place: the plan keeps Normal's version, so Easy is still Normal's stage, its gap a rise)
+    if (easy && v.easy) {
+      if (!sb0.versions.some((x) => x.id === v!.easy)) throw new Error(`gen2 section ${tpl.id}: sub-block ${sb.id} version ${v.id}'s Easy twin ${v.easy} is not one of its versions`);
+      out[sb.id] = v.easy;
+      continue;
     }
     out[sb.id] = v.id;
   }
@@ -761,7 +782,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     const v = Math.min(1, s === undefined ? 0.5 + 0.3 * budget.heat + 0.1 * rng() : roll(rng, s));
     return T ? Math.min(T.gapMax, v * T.gap) : v;
   };
-  const versions = chooseVersions(tpl, lo.pickRng ?? rng, lo.once, lo.versions);
+  const versions = chooseVersions(tpl, lo.pickRng ?? rng, lo.once, lo.versions, budget.difficulty === 'easy');
   const chosen = (tpl.subBlocks ?? []).map((sb) => sb.versions.find((v) => v.id === versions[sb.id])!);
   const all: SectionPiece[] = [...tpl.pieces, ...chosen.flatMap((v) => v.pieces)];
   const sockets: Socket[] = [...tpl.sockets, ...chosen.flatMap((v) => v.sockets ?? [])];
@@ -1020,21 +1041,31 @@ const SHRINE_BANK = 560;
  * flag is put in a section that ends within `slack` of that, and needs a plain stretch `pad` px wide on a main piece
  */
 export const FLAG_SPAN = { max: 4500, slack: 300, pad: 160 } as const;
-/** a rolled stage's flags (the lead's rulings, 11-06; levels.test and stageQuality.test's lines): the first at least `first` px from the
- *  start, none closer than `min` to the one before, no span over `max` (from x 0, as levels.test counts it, to the first; between flags),
- *  and the last within `last` of the exit */
-export const ROLLED_FLAGS = { first: 700, min: 900, max: 2300, last: 2000 } as const;
+/** a rolled stage's flags (the lead's 2:37 PM ruling, 11-06, Matt's "a checkpoint before the hard part, not everywhere"): a flag before
+ *  each hard node (its first section's start, within `before` px ahead of it), none closer than `min` to the one before (`first` to the
+ *  start), no span over `max` where nothing costs a life, `lethal` where something can (a water or void fall, a heart fall that is not
+ *  soft), and the last within `last` of the exit. 1-1 costs no life anywhere, so it is about 9-12 a stage, as old 1-1 had */
+export const ROLLED_FLAGS = { first: 700, min: 900, max: 4000, lethal: 2300, last: 2000, before: 1500 } as const;
+/** the jobs a flag stands before (the lead: teach, test, twist, combine, signature; a finale with them) */
+export const HARD_JOBS: ReadonlySet<string> = new Set(['teach', 'test', 'twist', 'combine', 'signature', 'finale']);
+type FlagStage = { spawnX: number; exitTotemX: number; checkpoints?: Array<{ x: number }>; heartFalls?: Array<{ x0: number; x1: number; soft?: boolean }> };
+/** where a fall costs a life on a stage: its water and void falls (gen2.falls) and its heart falls that are not soft */
+export function lethalSpans(st: FlagStage, falls: ReadonlyArray<{ x0: number; x1: number; kind: string }> = []): Array<[number, number]> {
+  return [...falls.filter((f) => f.kind !== 'soft').map((f) => [f.x0, f.x1] as [number, number]), ...(st.heartFalls ?? []).filter((z) => !z.soft).map((z) => [z.x0, z.x1] as [number, number])];
+}
 /** a rolled stage's flags against ROLLED_FLAGS, each miss by name (empty: kept): the verdict, the same the tests read */
-export function rolledFlagBreaches(st: { spawnX: number; exitTotemX: number; checkpoints?: Array<{ x: number }> }): string[] {
+export function rolledFlagBreaches(st: FlagStage, hard: ReadonlyArray<{ id: string; x0: number }> = [], lethal: ReadonlyArray<[number, number]> = []): string[] {
   const xs = (st.checkpoints ?? []).map((c) => c.x).sort((a, b) => a - b);
   if (!xs.length) return ['flags: none'];
   const out: string[] = [];
+  const cap = (a: number, b: number) => (lethal.some(([l0, l1]) => l1 > a && l0 < b) ? ROLLED_FLAGS.lethal : ROLLED_FLAGS.max);
   if (xs[0] - st.spawnX < ROLLED_FLAGS.first) out.push(`flags: the first ${R(xs[0] - st.spawnX)} px from the start (at least ${ROLLED_FLAGS.first})`);
-  if (xs[0] > ROLLED_FLAGS.max) out.push(`flags: the first at x ${R(xs[0])} (no span over ${ROLLED_FLAGS.max})`);
+  if (xs[0] - st.spawnX > cap(st.spawnX, xs[0])) out.push(`flags: the first at x ${R(xs[0])} (no span over ${cap(st.spawnX, xs[0])})`);
   for (let k = 1; k < xs.length; k++) {
-    const g = xs[k] - xs[k - 1];
-    if (g < ROLLED_FLAGS.min || g > ROLLED_FLAGS.max) out.push(`flags: ${R(g)} px apart at x ${R(xs[k - 1])} (${ROLLED_FLAGS.min}-${ROLLED_FLAGS.max})`);
+    const g = xs[k] - xs[k - 1], c = cap(xs[k - 1], xs[k]);
+    if (g < ROLLED_FLAGS.min || g > c) out.push(`flags: ${R(g)} px apart at x ${R(xs[k - 1])} (${ROLLED_FLAGS.min}-${c}${c === ROLLED_FLAGS.lethal ? ', a life can be lost in it' : ''})`);
   }
+  for (const h of hard) if (h.x0 - st.spawnX >= ROLLED_FLAGS.first + ROLLED_FLAGS.min && !xs.some((x) => x <= h.x0 + 150 && x >= h.x0 - ROLLED_FLAGS.before)) out.push(`flags: none before the hard node ${h.id} at x ${R(h.x0)} (within ${ROLLED_FLAGS.before} px)`);
   if (st.exitTotemX - xs[xs.length - 1] > ROLLED_FLAGS.last) out.push(`flags: the last ${R(st.exitTotemX - xs[xs.length - 1])} px from the exit (within ${ROLLED_FLAGS.last})`);
   return out;
 }
@@ -1123,9 +1154,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     tempo = { gap: med / g.centre, gapMax: g.p90, rise: rise / RR.rise.centre };
   }
   // (a catch bough under a ledge gap, World 1's canopy: never in water, never where a pit already lies under it)
+  // (its look cycles through floorRoll.catchStyles in the order laid (World 1: log, branch, the designer's Round 11: the branch share of
+  // thin landings at most 30%); absent, every catch is a branch)
+  let catches = 0;
   const catchUnder = (x0: number, x1: number, lowerLip: number) => {
     if (!FR?.catchDrop || x1 - x0 < 20) return;
-    const c = mk(x0 - 30, lowerLip + FR.catchDrop, x1 - x0 + 80, 'branch', 24, 'branch');
+    const styles = FR.catchStyles?.length ? FR.catchStyles : (['branch'] as const);
+    const c = mk(x0 - 30, lowerLip + FR.catchDrop, x1 - x0 + 80, 'branch', 24, styles[catches++ % styles.length]);
     (c as Platform & { catch?: boolean }).catch = true;
   };
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false) => {
@@ -1783,7 +1818,7 @@ export interface Filled {
  * `normalFoes` (Easy laying Normal's plan: keptFoes of Normal's stage): a creature socket holds only the creature Normal's spacing
  * kept there, so Easy's animals are a subset of Normal's (Easy's own rules, spacing and 60% cut then drop from that list).
  */
-export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed: number, sink: StageSink, normalFoes?: ReadonlyMap<string, string>): Filled {
+export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed: number, sink: StageSink, normalFoes?: ReadonlyMap<string, string>, hard?: ReadonlySet<string>): Filled {
   const M = kit.manifest;
   const rng = rngFor(seed, 17);
   const easy = budget.difficulty === 'easy';
@@ -1861,15 +1896,14 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     checkpoints.push({ x: R(best.x), y: best.y, reached: false });
   }
   if (rolledFlags) {
-    // (a rolled stage, ROLLED_FLAGS: the flags by meaning above (its rests, every 35 s) are kept where they keep the floor; a flag closer
-    // than `min` to the one before, or `first` to the start, goes; then every span past `max` (`last` before the exit) gets a flag at the
-    // furthest flag spot in reach that keeps `min` from both neighbours. Spots: a wide main piece's top, outside a room and a zone. A span
-    // no spot can split is left, and the verdict (rolledFlagBreaches) fails the roll by name)
-    checkpoints.sort((a, b) => a.x - b.x);
-    for (let k = 0; k < checkpoints.length; k++) {
-      const prev = k ? checkpoints[k - 1].x : laid.spawn.x;
-      if (checkpoints[k].x - prev < (k ? ROLLED_FLAGS.min : ROLLED_FLAGS.first)) { checkpoints.splice(k, 1); k--; }
-    }
+    // (a rolled stage, ROLLED_FLAGS: the rests' and the clock's flags give way to the hard nodes': a flag at the end of the section
+    // before each hard node's first section (its flag socket, its exit, or its last wide piece), then a flag closer than `min` to the
+    // one before (or `first` to the start) goes, then every span past its cap (`last` before the exit) gets one at the furthest spot in
+    // reach that keeps `min` from both neighbours. A span no spot splits is left, and the verdict fails the roll by name)
+    checkpoints.length = 0;
+    const lethal = lethalSpans({ spawnX: laid.spawn.x, exitTotemX: laid.exit.x, heartFalls: laid.heartFalls }, laid.gaps.map((g) => ({ x0: g.x0, x1: g.x1, kind: g.water ? 'water' : g.soft ? 'soft' : budget.pit })));
+    const cap = (a: number, b: number) => (lethal.some(([l0, l1]) => l1 > a && l0 < b) ? ROLLED_FLAGS.lethal : ROLLED_FLAGS.max);
+    // (a flag spot: a wide main piece's top, outside a room and a zone)
     const spots: Array<{ x0: number; x1: number; y: number }> = [];
     for (const sec of laid.sections) {
       if (sec.room) continue;
@@ -1878,14 +1912,33 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         if (q.main && pl.width >= FLAG_SPAN.pad) spots.push({ x0: pl.x + FLAG_SPAN.pad / 2, x1: pl.x + pl.width - FLAG_SPAN.pad / 2, y: pl.y });
       }
     }
+    // (before each hard node: the furthest spot within `before` px ahead of its first section, or 150 px into it)
+    const seen = new Set<string>();
+    for (const sec of laid.sections) {
+      if (!hard?.has(sec.node) || seen.has(sec.node)) continue;
+      seen.add(sec.node);
+      if (sec.x0 - laid.spawn.x < ROLLED_FLAGS.first + ROLLED_FLAGS.min) continue;
+      let best: { x: number; y: number } | null = null;
+      for (const sp of spots) {
+        const x = Math.min(sp.x1, sec.x0 + 150);
+        if (x < sp.x0 || x < sec.x0 - ROLLED_FLAGS.before || flagInZone(laid.zones, x, sp.y)) continue;
+        if (!best || x > best.x) best = { x, y: sp.y };
+      }
+      if (best) { checkpoints.push({ x: R(best.x), y: best.y, reached: false }); checkpoints.sort((a, b) => a.x - b.x); }
+    }
+    for (let k = 0; k < checkpoints.length; k++) {
+      const prev = k ? checkpoints[k - 1].x : laid.spawn.x;
+      if (checkpoints[k].x - prev < (k ? ROLLED_FLAGS.min : ROLLED_FLAGS.first)) { checkpoints.splice(k, 1); k--; }
+    }
     for (let guard = 0; guard < 60; guard++) {
-      const xs = [0, ...checkpoints.map((c) => c.x), laid.exit.x];
+      const xs = [laid.spawn.x, ...checkpoints.map((c) => c.x), laid.exit.x];
       let k = -1;
-      for (let i = 1; i < xs.length; i++) if (xs[i] - xs[i - 1] > (i === xs.length - 1 ? ROLLED_FLAGS.last : ROLLED_FLAGS.max)) { k = i; break; }
+      for (let i = 1; i < xs.length; i++) if (xs[i] - xs[i - 1] > (i === xs.length - 1 ? Math.min(ROLLED_FLAGS.last, cap(xs[i - 1], xs[i])) : cap(xs[i - 1], xs[i]))) { k = i; break; }
       if (k < 0) break;
       const from = xs[k - 1], to = xs[k], last = k === xs.length - 1;
-      const lo = k === 1 ? Math.max(laid.spawn.x + ROLLED_FLAGS.first, from) : from + ROLLED_FLAGS.min;
-      const hi = Math.min(from + (k === 1 ? ROLLED_FLAGS.max : ROLLED_FLAGS.max), last ? to : to - ROLLED_FLAGS.min);
+      const lo = k === 1 ? laid.spawn.x + ROLLED_FLAGS.first : from + ROLLED_FLAGS.min;
+      // (laid 20 px inside its cap: a test counting a span of exactly the cap as over it)
+      const hi = Math.min(from + (last ? Math.min(ROLLED_FLAGS.last, cap(from, to)) : cap(from, to)) - 20, last ? to : to - ROLLED_FLAGS.min);
       let best: { x: number; y: number } | null = null;
       for (const sp of spots) {
         const x = Math.min(sp.x1, hi);
@@ -2356,7 +2409,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   // (each liana's own swing, for the engine's self-swinging vines: proto.gen2.lianas, by vine id)
   const lianas = laid.sections.flatMap((s) => s.vines.flatMap((v) => (v.swing ? [{ vine: v.vine.id, amp: v.swing.amp, period: v.swing.period, ...(v.window !== undefined ? { window: Math.round(v.window * 1000) / 1000 } : {}), ...(v.gap ? { x0: v.gap[0], x1: v.gap[1] } : {}) }] : [])));
   if (lianas.length) sink.extras.lianas = lianas;
-  const filled = fillSockets(laid, budget, req.kit, seed, sink, normalFoes);
+  const filled = fillSockets(laid, budget, req.kit, seed, sink, normalFoes, new Set(graph.nodes.filter((n) => n.job && HARD_JOBS.has(n.job)).map((n) => n.id)));
   const looks = dress(laid, budget, req.kit, seed, sink);
   proto.hints = filled.hints;
   const rooms = laid.sections.flatMap((s) => (s.room ? [s.room] : []));
@@ -2590,7 +2643,8 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   }
   // (a rolled stage's flags judged as the tests judge them: ROLLED_FLAGS, each miss by name)
   if (req.kit.manifest.graphs?.briefs?.[req.config.id]) {
-    const f = rolledFlagBreaches(st);
+    const hardAt = (st.gen2.nodes ?? []).filter((q) => HARD_JOBS.has(JOB_OF[q.token[0] as keyof typeof JOB_OF] ?? '')).map((q, i) => ({ id: `${q.token} #${i + 1}`, x0: q.x0 }));
+    const f = rolledFlagBreaches(st, hardAt, lethalSpans(st, st.gen2.falls ?? []));
     if (f.length) st.gen2.flagMiss = f;
   }
   st.gen2.errors = rollErrors(st.gen2);
@@ -2630,6 +2684,7 @@ function buildRolled(req: BuildRequest): Gen2Stage {
   let best: Gen2Stage | null = null;
   const maxRerolls = req.maxRerolls ?? 6;
   const failedAt = new Map<string, number>();
+  const versionTries = new Map<string, Set<string>>();
   if (req.difficulty === 'easy') {
     // Easy is Normal's stage under Easy's rules: Normal is built first (its repairs, swaps and length loop), and Easy lays exactly its
     // plan from its seed. Easy's own repairs are only the local ones (a stone, a stray pickup or animal); its clock is held to the
@@ -2721,6 +2776,24 @@ function buildRolled(req: BuildRequest): Gen2Stage {
         if (v.swap !== undefined && b.laid.plan[v.swap] && required.has(b.laid.plan[v.swap].template)) {
           repairs.push({ kind: 'reroll', note: `${b.laid.plan[v.swap].template} is required here and failed: rolled again` });
           break;
+        }
+        // (a section whose laid exit left the corridor is first re-laid at its slot with its other versions, one by one: the version
+        // took it out, not the section (1-1 seed 5 under Round 10: the level 'short' of quiet-arrival fit where its 'step' did not, and
+        // banning the template threw "no section fits the goal"). Only with every version tried is it swapped out as before)
+        if (v.swap !== undefined && b.laid.plan[v.swap] && /outside the corridor/.test(v.why ?? '')) {
+          const slot = b.laid.plan[v.swap];
+          const t = byId.get(slot.template);
+          const key = `${v.swap}:${slot.template}`;
+          const triedV = versionTries.get(key) ?? new Set([JSON.stringify(slot.versions ?? {})]);
+          const next = t ? versionCombos(t).find((c) => !triedV.has(JSON.stringify(c))) : undefined;
+          if (next) {
+            triedV.add(JSON.stringify(next));
+            versionTries.set(key, triedV);
+            repairs.push({ kind: 'swap', section: `s${v.swap + 1}`, note: `${slot.template} re-laid with versions ${Object.values(next).join(', ')}: ${v.why}` });
+            plan = b.laid.plan.map((p, k) => (k === v.swap ? { ...p, versions: next } : p));
+            open = new Set();
+            continue;
+          }
         }
         if (v.swap !== undefined && b.laid.plan[v.swap]) {
           const tpl = b.laid.plan[v.swap].template;
