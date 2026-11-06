@@ -1776,6 +1776,28 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     checkpoints.push({ x: R(at.x), y: at.piece.y, reached: false });
     lastFlagT = t;
   });
+  // (no span past FLAG_SPAN.max: a section holds one flag, and its flag socket can stand near its start, so a span the rule above left
+  // long, a slow start section and a long teach after it (1-1 seed 1: 5914 px), is split at the furthest wide main piece still in reach)
+  for (let guard = 0; guard < 40; guard++) {
+    const xs = [laid.spawn.x, ...checkpoints.map((c) => c.x).sort((a, b) => a - b), laid.exit.x];
+    const k = xs.findIndex((x, i) => i > 0 && x - xs[i - 1] > FLAG_SPAN.max);
+    if (k < 0) break;
+    const from = xs[k - 1], to = from + FLAG_SPAN.max - FLAG_SPAN.slack;
+    let best: { x: number; y: number } | null = null;
+    for (const sec of laid.sections) {
+      if (sec.room) continue;
+      for (const q of sec.pieces) {
+        const pl = q.platform;
+        if (!q.main || pl.width < FLAG_SPAN.pad) continue;
+        const x = Math.min(pl.x + pl.width - FLAG_SPAN.pad / 2, to);
+        if (x < pl.x + 30 || x < from + 600 || flagInZone(laid.zones, x, pl.y)) continue;
+        if (!best || x > best.x) best = { x, y: pl.y };
+      }
+    }
+    if (!best) break;
+    checkpoints.push({ x: R(best.x), y: best.y, reached: false });
+  }
+  checkpoints.sort((a, b) => a.x - b.x);
   const safe = [{ x: laid.spawn.x, y: laid.spawn.y }, ...checkpoints, { x: laid.exit.x, y: laid.exit.y }];
   // (where an animal may walk on each piece: clear of the jumps on and off it)
   const clear = jumpClearance(laid.platforms);
@@ -2427,22 +2449,32 @@ export function stagePool(M: WorldManifest, stageId: string): SectionTemplate[] 
   return M.sections.filter((t) => (!t.feel || t.feel.includes(stageId)) && !(t.not ?? []).some((x) => owns.has(x)));
 }
 
+/**
+ * A built roll's errors, everything that fails it by name: its own (a check that failed), a tip with no words, a slot filled past its rule
+ * (Law 22), a required section with no node, and every V-rule breach in its realised node code (the red team's RT-ENGINE #6)
+ */
+export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loosened' | 'missing' | 'codeErrors'>): string[] {
+  const st = { gen2: { ...g, errors: [...(g.errors ?? [])] } };
+  // (a tip whose id has no Dot line fails the roll: it was never shown)
+  const unsaid = [...new Set(st.gen2.fills.filter((f) => f.role === 'tip' && f.unsaid).map((f) => f.what))];
+  if (unsaid.length) st.gen2.errors.push(...unsaid.map((m) => `tip "${m}" has no Dot line in the kit's tips`));
+  // (Law 22, R1 §4.1, the lead's 7:00 PM ruling: a slot its rules could not fill FAILS the roll, the missing piece named; never a looser
+  // rule and never a re-roll. The stage is still returned, for the report; its errors say why it fails)
+  if (st.gen2.loosened?.length) st.gen2.errors.push(...st.gen2.loosened.map((l) => `pool short at ${l.replace(/, filled by its (job|phase)\)$/, ')')}`));
+  if (st.gen2.missing?.length) st.gen2.errors.push(...st.gen2.missing);
+  // (the red team, RT-ENGINE #6: a V-rule breach in the realised node code fails the roll too, by name; it was only written to
+  // codeErrors, so a roll breaking V1-V20 with every slot filled would have reached the game as clean)
+  if (st.gen2.codeErrors?.length) st.gen2.errors.push(...st.gen2.codeErrors.map((e) => `node code: ${e}`));
+  return st.gen2.errors;
+}
+
 export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   // (the stage's own pool, cut to its tags before anything is chosen: the red team 11-05, 1-2 would have been dealt 1-1's sections)
   const M0 = req.kit.manifest;
   const pool = stagePool(M0, req.config.id);
   if (pool.length !== M0.sections.length) req = { ...req, kit: { ...req.kit, manifest: { ...M0, sections: pool } } };
   const st = buildRolled(req);
-  // (a tip whose id has no Dot line fails the roll: it was never shown)
-  const unsaid = [...new Set(st.gen2.fills.filter((f) => f.role === 'tip' && f.unsaid).map((f) => f.what))];
-  if (unsaid.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...unsaid.map((m) => `tip "${m}" has no Dot line in the kit's tips`)];
-  // (Law 22, R1 §4.1, the lead's 7:00 PM ruling: a slot its rules could not fill FAILS the roll, the missing piece named; never a looser
-  // rule and never a re-roll. The stage is still returned, for the report; its errors say why it fails)
-  if (st.gen2.loosened?.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...st.gen2.loosened.map((l) => `pool short at ${l.replace(/, filled by its (job|phase)\)$/, ')')}`)];
-  if (st.gen2.missing?.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...st.gen2.missing];
-  // (the red team, RT-ENGINE #6: a V-rule breach in the realised node code fails the roll too, by name; it was only written to
-  // codeErrors, so a roll breaking V1-V20 with every slot filled would have reached the game as clean)
-  if (st.gen2.codeErrors?.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...st.gen2.codeErrors.map((e) => `node code: ${e}`)];
+  st.gen2.errors = rollErrors(st.gen2);
   return st;
 }
 
