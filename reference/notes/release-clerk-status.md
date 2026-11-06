@@ -3,7 +3,22 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 4:47 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+Last update: 4:58 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+
+## 4:58 PM: CoachOverlay.tsx (the lead, 4:53 PM) and the gate moved to ~6:30-7:15
+- **CoachOverlay.tsx can NOT go with the old-1-1 patch: it is still read by the live game.** It no longer draws anything (no component);
+  it holds `COACH_TEXT`, which `components/dot/DotGuide.tsx:46,492-493` reads for Dot's first-stage coach:
+  - the coach runs on any stage with id 1-1 (`touchCoach.ts:66 coachWanted`, `engine.ts:1142`), so it runs on gen2 1-1 too: it is not
+    part of old 1-1's builder;
+  - touch-screen players: Dot says `dotLine('coach.' + step)` (dotLinesData.ts:94-96), not COACH_TEXT; `coach.nice` has no new words
+    (cut), so on the touch screen "nice" says nothing;
+  - **on-screen pad players: Dot says COACH_TEXT.pad's OLD titles, "Push the pad to run" and "Press Jump"** (DotGuide.tsx:493;
+    pad 'nice' is null, so Matt's cut "Nice jump!" is NOT said there either);
+  - controlsB4.test.ts:80 also reads COACH_TEXT.pad.nice.sub.
+  - So the only old words still on screen are the pad's two coach titles. Fix (owner: the planner or engine-core, the lead's call): give
+    the pad its own approved dotLines rows (coach.pad.run / coach.pad.jump) and read those, then delete CoachOverlay.tsx and its test line.
+    Not in my patch: it is player text, which needs approved words.
+- engine-core's final slips to ~6:15-6:30 (the Dot fix ~5:10, then the list rebuild). My gate: ~6:30-7:15.
 
 ## 4:47 PM: the bundle contingency (the lead, 4:31 PM) and Roll B
 - **Ready, NOT applied:** `reference/qa-reports/0.9.5/lazy-seeds-contingency.patch` (on top of old11-delete.patch). gen2/seeds.ts (the
