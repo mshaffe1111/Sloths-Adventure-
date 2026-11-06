@@ -141,7 +141,7 @@ The ledger is world data the generator reads, saved as stages are built (R1 §4.
   families).
 - **Shape** (§2) and **dials** (§3) as above.
 - **Ruled 5:19 PM (the supervisor's §7 review, the lead accepting):** forks are a SHAPE (§2 `two-road`), not a content type, so no fork share throttles the floor road's splits (old 1-1: splits ≥ 34, two-road ≥ 0.61). Creatures are a DIAL (§3 `creatures`), not a content share: Matt's rule is "about a third of each stage enemy-free, 1-3 on screen" (his 12:15 AM rules, ENGINE-PLAN :55), from 1-3 on. A fork node counts as its LOW road's type.
-- **The reward (H) is structural too (added 10:01 AM):** it's a FIND, not content. The deal never types it; it takes its reward section's own type. Seed 102948 dealt its H node `climb` (`Hc1`), so the required seed perch (bounce) fit no node, on both settings.
+- **The reward (H) is structural too (added 10:01 AM):** it's a FIND, not content. The deal never types it; it takes its reward section's own type. (Corrected: I first blamed seed 102948 on the deal typing H. The planner showed H already sits outside the deal; the `Hc1` token was a loosened fill. The real root is the engine's required-section check, which measured the seed perch's end from an unclamped entry under the corridor. That's the planner's fix. This rule stands as a held invariant, with a test.)
 - **Structural nodes sit OUTSIDE the percentages:** `arrive`, `rest`, `story`, `exit` and `finale` / `arrival` (Smith 2009's
   rest areas). Graphs (§4) name content SLOTS, and the world's mix fills them.
 
