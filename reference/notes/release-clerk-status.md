@@ -3,7 +3,22 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 5:02 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+Last update: 5:35 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+
+## 5:35 PM: engine-core moved to 387c5484 (4:35 PM ET); patches turned into scripts
+- engine-core 387c5484 ("0.9.5: the ctest survey's words for the Round 12 sections, and main's 1-5 golden-snake sheet back"). Not in it
+  yet: tester-page (now 03757d4e; 4320a9b25 not in engine-core either) and engine-chunks (now 25d2d115). They come with the final.
+- Trial re-merged (release-0.9.5 + engine-core 387c5484): merges cleanly; tsc PASS.
+- **My .patch files stopped applying** (engine-core changed the same lines: 1-5's keep-out joins `specFor`'s skip, and a new
+  `builtOnGen2()` repeats the `pick11() !== 'old'` test). Both are now **scripts that assert every anchor once and fail loudly**, replacing
+  the patches (deleted):
+  - `reference/qa-reports/0.9.5/old11-delete.py`: 5 files (WorldMap.tsx, worldMap.css, protoStage.ts, stageGenerator.ts incl.
+    builtOnGen2, testlink1_1.ts). On 387c5484: applies, tsc PASS, grep for 'old' picks/picker empty. 16 insertions, 91 deletions.
+  - `reference/qa-reports/0.9.5/lazy-seeds.py`: 2 files. On 387c5484 + the deletion: applies, tsc PASS.
+- **Bundle now (387c5484 + the deletion): main JS 4,155,127 B, 39.2 KB under 4 MiB.** The final adds the Dot fix, the branch line and a
+  ~300-seed list; I measure at the merge and apply lazy-seeds.py only if over 4 MiB (the lead's rule).
+- Running now on 387c5484 + the deletion (the candidate's shape): the lock check (expect only 1-1) and the 3 shards. Results in the next
+  update; they tell engine-core what is still red before the final.
 
 ## 5:02 PM: the lead's 5:01 PM rulings
 - tester-page PASSES (the lead's look at its stills). It arrives inside engine-core's final; I merge tester-page myself only if the final
