@@ -65,6 +65,11 @@ After 1-1 is proven, these run as their own lanes, one engine.ts holder at a tim
 - The lead (me): claimed the node key page showed a change I hadn't made, and misread a backdrop orchid as dressing. Countermeasure:
   look at the thing before saying it's done.
 
+## For the roadmap (owed R-ids, law 21)
+- 1-3 Easy: 14 floor dressing pieces tuck behind Easy's low step branches (engine-core dressThroughPlatform, e7331c41e). A live-game
+  defect: Easy step placement vs dressing spacing. Owner later.
+- 1-1's map card text: "Run the high branches of the kapok trees" (the kapok is 1-4's). Story wording, for the supervisor.
+
 ## My traps (read every time)
 - Read the real thing, not the report: open the commit, the file, the still. A helper's "done" isn't done until I've looked.
 - Helpers' fast work gets the same check as slow work.
