@@ -8,7 +8,7 @@ import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './pro
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { pick11, roll11Seed, skip11Spec } from './testlink1_1.ts';
 import { buildGen2Stage } from './gen2/pipeline.ts';
-import { w1Kit } from './gen2/worlds/w1Kit.ts';
+import { w1World } from './gen2/worlds/w1.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
 import { dipWayOut } from './dipWayOut.ts';
 import type { Difficulty } from './difficulty.ts';
@@ -2856,10 +2856,10 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     return st;
   }
   // the new generator's stages (gen2/game.ts: 5-7 and 5-9): one of the curated rolls, then the shared passes below; and the test link's
-  // 1-1 picker's gen2 rolls (testlink1_1.ts: QA builds only, World 1's kit gen2/worlds/w1Kit.ts, the roll's seed)
+  // 1-1 picker's gen2 rolls (testlink1_1.ts: QA builds only, World 1's kit gen2/worlds/w1.ts w1World, the roll's seed)
   const roll11 = config.id === '1-1' && !config.secret ? pick11() : 'mixer';
   if (isGen2Stage(config) || roll11 === 'A' || roll11 === 'B' || roll11 === 'C') {
-    const stage = roll11 === 'A' || roll11 === 'B' || roll11 === 'C' ? buildGen2Stage({ config, kit: w1Kit(), seed: roll11Seed(roll11), difficulty }) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
+    const stage = roll11 === 'A' || roll11 === 'B' || roll11 === 'C' ? buildGen2Stage({ config, kit: w1World(), seed: roll11Seed(roll11), difficulty }) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
     // (Easy's own goal for the stage, as the first-timer kid bot measured it: easyStage sets it, withGoals leaves it)
     const easyGoal = GEN2_STAGES[config.id]?.easyGoal;
     if (difficulty === 'easy' && easyGoal !== undefined) stage.easyGoal = Math.min(easyGoal, stage.enemies.length);

@@ -12,7 +12,7 @@
  * enter and exit on 'ground' ports on the manifest's ground line; stones, stumps, logs and boughs are ordinary pieces over it. The
  * pipeline does not read this file until the planner's step 1 wires World 1 in.
  */
-import type { Move, NodeJob, Phase, PortKind, SectionPiece, SectionTemplate, Socket } from '../types.ts';
+import type { Move, NodeJob, Phase, PortKind, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { DOUBLE_RISE, reachJump } from '../../physics.ts';
 import { hollowLogSize } from '../../w1NewArt.ts';
 import { SPRINT_GRAPHS } from '../graphs.ts';
@@ -1224,3 +1224,18 @@ export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map(hel
 
 /** the phases a stage's slots fill */
 export const W1_PHASES: readonly Phase[] = ['start', 'ki', 'sho', 'rest', 'ten', 'ketsu', 'goal'];
+
+/**
+ * World 1's gen2 kit (the planner, 11-05: one kit for the game, stage.ts and the CHECK 3b harness): W1_KIT's rows as a WorldManifest with
+ * World 1's pool. 1-1 lays no creatures, props or rooms; its dressing comes after the build (protoStage.ts addDress), as on gen2's other
+ * stages. A fresh one per build.
+ */
+export function w1World(): WorldKit {
+  const manifest: WorldManifest = {
+    world: 1, name: 'The Home Forest', moves: ['double'],
+    ground: W1_KIT.ground, pit: W1_KIT.pit, pitDepth: W1_KIT.pitDepth, floorRoll: W1_KIT.floorRoll, rollRanges: W1_KIT.rollRanges,
+    graphs: W1_KIT.graphs, corridor: W1_KIT.corridor, themeShare: W1_KIT.themeShare, required: W1_KIT.required,
+    creatures: [], props: [], pairs: [], decor: [], flowers: ['orchid', 'hibiscus'], sections: [...W1_SECTIONS], handBuilt: [],
+  };
+  return { manifest };
+}
