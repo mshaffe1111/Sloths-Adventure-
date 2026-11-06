@@ -60,7 +60,9 @@ The test link ships ONLY when ALL pass; then Matt plays it first, then testers:
 3. No code-drawn flat pieces: the art swap done with SEVERAL painted stone/stump/log kinds (Matt's cuts with footing lines; the art director's manifest).
 4. Stage-start build time measured and fixed (red team: 160-1100 ms on the main thread).
 5. Supervisor story check; the lead looks at stills both ways.
-1-2 waits until after this (Matt's priority: the polished real 1-1 for beta testers).
+6. The tester page (EnK5#ctest: name, Easy/Normal, recording, end survey) opens gen2 1-1 instead of the control course, and the survey asks what recordings can't tell (fun, length, lost or not, Dot's tips, anything looking wrong, next level?, optional age band). Owner: tester-page helper session_01FhBbYJYzHh5qAsNs8q9u9d (branch tester-page; it owns ControlTestGate.tsx; the stage route goes via engine-core). THE LINK DOESN'T CHANGE.
+NOTE: EnK5 IS the testers' link (#ctest). The lead published picker builds v238/v239 there on 11-05 night; testers since then got engine-core's build.
+Matt 10:40 AM: 19% of the week left (100% cap); after the link, start 1-2 by a cold helper to measure a stage's real cost, so next week starts with that number.
 
 ## CHANGED 10:28 AM ET (Matt): "I want to use all my time... go beyond 1-1... get that test link updated with the new engine so we get real feedback". So: the test link TODAY with 1-1 Play = gen2 (a fresh proven seed per play; engine-core by 11:30 AM), then 1-2 by a cold helper today; spend up to ~88% (2% buffer under 90) before the reset WED 11-11 2:00 AM ET. The pause below applies only once the meter is spent.
 ## THE PAUSE (Matt 11-06 ~10:25 AM ET): after today's test link, the team goes QUIET until the weekly reset, WED 11-11 2:00 AM ET
