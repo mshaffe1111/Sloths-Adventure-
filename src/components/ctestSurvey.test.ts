@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { STRETCH_FALLBACK, STRETCH_WORDS, stretchChoices } from './ctestStretches.ts';
-import { AGE_BANDS, FACES, surveyQuestions, surveyRow } from './ControlTestGate.tsx';
+import { FACES, REQUIRED, readyToSend, surveyQuestions, surveyRow } from './ControlTestGate.tsx';
 import { w1World } from '../game/gen2/worlds/w1.ts';
 import { generateAllLevels } from '../game/worldsData.ts';
 import { generateStage } from '../game/stageGenerator.ts';
@@ -56,17 +56,27 @@ test("ctest survey: real gen2 1-1 runs (proven seeds, both settings) list at lea
   }
 });
 
-test('ctest survey: the questions Matt asked for, each optional and one tap, the age as a band only', () => {
+test('ctest survey: only what the log cannot tell, the three required first, no hand, held or age', () => {
   const qs = surveyQuestions(['w1-learn:ki']);
-  assert.deepEqual(qs.map((q) => q.id), ['fun', 'long', 'knew', 'hard', 'tips', 'looked', 'next', 'hand', 'age']);
+  assert.deepEqual(qs.map((q) => q.id), ['fun', 'long', 'knew', 'hard', 'tips', 'looked', 'next']);
+  assert.deepEqual(qs.filter((q) => q.required).map((q) => q.id), [...REQUIRED]);
+  assert.deepEqual([...REQUIRED], ['fun', 'long', 'knew']);
   assert.equal(FACES.length, 5);
   assert.deepEqual(qs.find((q) => q.id === 'long')!.a, ['Too short', 'About right', 'Too long']);
   assert.deepEqual(qs.find((q) => q.id === 'knew')!.a, ['Always', 'Mostly', 'I got lost']);
   assert.deepEqual(qs.find((q) => q.id === 'tips')!.a, ['Yes', 'A bit', 'No', "Didn't notice them"]);
   assert.deepEqual(qs.find((q) => q.id === 'looked')!.a, ['No', 'Yes']);
   assert.deepEqual(qs.find((q) => q.id === 'next')!.a, ['Yes', 'Maybe', 'No']);
-  assert.deepEqual([...AGE_BANDS], ['Under 8', '8-12', '13-17', 'Adult']);
   assert.ok(qs.filter((q) => q.many).map((q) => q.id).join() === 'hard', 'only "hardest" takes more than one tap');
+  for (const q of qs) assert.ok(!/age|old are you|thumb|hold the phone/i.test(q.q), q.q);
+});
+
+test('ctest survey: Send waits for the three required answers, and only those', () => {
+  assert.equal(readyToSend({}), false);
+  assert.equal(readyToSend({ fun: ['Fun'], long: ['About right'] }), false);
+  assert.equal(readyToSend({ fun: ['Fun'], long: ['About right'], knew: [] }), false, 'a pick taken back is not an answer');
+  assert.equal(readyToSend({ fun: ['Fun'], long: ['About right'], knew: ['Mostly'] }), true);
+  assert.equal(readyToSend({ hard: ['Running'], tips: ['Yes'], next: ['Yes'] }), false);
 });
 
 test("ctest survey: the front page's tips are only what 1-1 has (no vines, kicks or animals)", async () => {
@@ -77,8 +87,8 @@ test("ctest survey: the front page's tips are only what 1-1 has (no vines, kicks
 });
 
 test('ctest survey: the row keeps the old keys in their old shape, adds the new ones, and leaves a skipped one out', () => {
-  const row = surveyRow({ hand: ['Two thumbs'], hard: ['the rope', 'Running'], fun: ['Fun'], long: ['About right'], looked: ['Yes'], age: ['8-12'], tips: [] }, ' all good ', ' a floating rock ', '1-1 seed 115 easy');
-  assert.deepEqual(row, { v: 2, hand: ['Two thumbs'], hard: ['the rope', 'Running'], long: 'About right', looked: 'Yes', age: '8-12', fun: 4, lookedNote: 'a floating rock', note: 'all good', run: '1-1 seed 115 easy' });
+  const row = surveyRow({ hard: ['the rope', 'Running'], fun: ['Fun'], long: ['About right'], looked: ['Yes'], tips: [] }, ' all good ', ' a floating rock ', '1-1 seed 115 easy');
+  assert.deepEqual(row, { v: 2, hard: ['the rope', 'Running'], long: 'About right', looked: 'Yes', fun: 4, lookedNote: 'a floating rock', note: 'all good', run: '1-1 seed 115 easy' });
   // nothing answered: still a row, just the note (as the old one always had)
   assert.deepEqual(surveyRow({}, '', 'ignored', ''), { v: 2, note: '' });
   // the "what looked wrong" words go only with a Yes

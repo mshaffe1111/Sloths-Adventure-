@@ -1798,3 +1798,88 @@
 .map-lockdisc { display: grid; place-items: center; background: url(./assets/ui/token.webp) center / contain no-repeat; }
 .map-lockdisc .pic { filter: drop-shadow(0 1px 1px rgba(30, 15, 5, .6)); }
 .pic.pic-tick { filter: brightness(1.3) saturate(1.35) drop-shadow(0 0 1.3px rgba(255, 244, 210, 1)) drop-shadow(0 0 1px rgba(255, 244, 210, .9)) drop-shadow(0 1.5px 1px rgba(40, 20, 5, .55)); }
+
+/* ───────── the testers' link (#ctest, ControlTestGate.tsx): the front page, the end questions and the sent screen in the game's menu
+   kit (the lead and Matt, 11-06: "make the page look like the game"). World 1's sunrise behind (w1sun2's far layer, the file 1-1
+   itself draws, so nothing new to download), dimmed for reading; the painted card with Pokey over its top; wooden boards; parchment
+   chips that turn into gold boards when picked. The whole screen scrolls as one page; every tap target is 44 px or more. ───────── */
+.ct-scene { box-sizing: border-box; color: var(--gx-ink); font-family: var(--font-ui); -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(180deg, rgba(8, 22, 14, .28), rgba(8, 22, 14, .62) 70%, rgba(6, 14, 9, .85)), url('./assets/backdrops/w1sun2-far.webp') center 30% / cover no-repeat fixed, #13261a; }
+.ct-wrap { position: relative; width: 100%; max-width: 580px; margin: 58px auto 8px; }
+.ct-peek { left: 26px; top: -60px; animation: kit-peek .7s cubic-bezier(.2, 1.3, .4, 1) .25s backwards; }
+.ct-card { position: relative; z-index: 1; box-sizing: border-box; border: 22px solid transparent; border-image: url(./assets/ui/card.webp) 70 fill / 22px stretch;
+  padding: 4px 2px 4px; box-shadow: 0 18px 44px rgba(0, 0, 0, .5); animation: fx-card-in .42s cubic-bezier(.2, 1.25, .4, 1) both; }
+.ct-kicker { margin: 0 0 6px; font-family: var(--font-ui); font-size: 12px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: #a85a17; }
+.ct-title.kit-plaque { font-size: clamp(20px, 6.4vw, 28px); }
+.ct-p { margin: 10px 0 0; font-size: 15px; line-height: 1.38; font-weight: 600; color: var(--gx-ink); }
+.ct-small { margin: 10px 0 0; font-size: 12.5px; line-height: 1.35; font-weight: 600; color: var(--gx-ink-soft); }
+.ct-center { text-align: center; margin-top: 6px; }
+.ct-h { margin: 18px 0 8px; font-family: var(--font-fun); font-weight: 400; font-size: 19px; line-height: 1.1; color: #4a2a10; text-shadow: 0 1px 0 rgba(255, 255, 255, .55); }
+/* a ruled ledger box on the parchment, as the pause menu's settings */
+.ct-ledger { border-radius: 14px; padding: 10px 12px; background: rgba(150, 100, 40, .1); box-shadow: inset 0 2px 6px rgba(120, 80, 30, .2), inset 0 0 0 1.5px rgba(120, 80, 30, .22); }
+.ct-fresh { margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px; }
+.ct-fresh-new { background: rgba(240, 176, 74, .22); box-shadow: inset 0 0 0 2px rgba(217, 130, 43, .7); }
+.ct-fresh-t { margin: 0; text-align: center; font-size: 14px; font-weight: 800; line-height: 1.25; }
+.ct-ok { color: #2f7a23; }
+.ct-board { width: 100%; min-height: 48px; font-size: 19px; }
+.ct-refresh-ic { font-family: var(--font-ui); font-size: 22px; line-height: 1; }
+/* the carved NEW badge: a gold board leaning a little, its words beside it */
+.ct-new { margin-top: 12px; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; border: 2.5px solid #3a200c; color: #fff4d8;
+  background: var(--gx-wood-grain), linear-gradient(180deg, #8a5628, #66401c); box-shadow: inset 0 2px 0 rgba(255, 232, 190, .3), 0 3px 0 #24130a, 0 6px 12px rgba(0, 0, 0, .28); }
+.ct-new-tag { flex: none; transform: rotate(-6deg); padding: 6px 10px 4px; border-radius: 10px 13px 11px 9px; border: 3px solid #4a2208; font-family: var(--font-fun); font-size: 22px; line-height: 1;
+  color: #fff4d8; text-shadow: 0 2px 0 #4a2208, 1px 0 0 #4a2208, -1px 0 0 #4a2208; background: var(--gx-wood-grain), linear-gradient(180deg, #f0b04a, #d9822b 52%, #a85a17);
+  box-shadow: inset 0 2px 0 rgba(255, 232, 190, .45), 0 3px 0 #2e1404, 0 0 14px rgba(255, 190, 70, .45); }
+.ct-new-t { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ct-new-t b { font-family: var(--font-fun); font-weight: 400; font-size: 19px; line-height: 1.1; color: #ffd56e; text-shadow: 0 -1px 0 rgba(30, 12, 3, .8); }
+.ct-new-t small { font-size: 13.5px; line-height: 1.3; font-weight: 700; color: #f6e6c4; }
+/* the controls: cream tiles on the parchment, the glyph's own dark square in each */
+.ct-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.ct-tile { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 8px 6px; border-radius: 14px; background: #fffaf0;
+  box-shadow: 0 3px 0 rgba(120, 80, 30, .25), 0 0 0 1.5px rgba(120, 80, 30, .2); color: #20321f; }
+.ct-tile b { margin-top: 4px; font-size: 15px; font-weight: 800; line-height: 1.15; }
+.ct-tile small { font-size: 13px; font-weight: 700; line-height: 1.2; color: rgba(32, 50, 31, .72); }
+.ct-tips { margin-top: 12px; }
+.ct-tips-h { margin: 0; font-family: var(--font-fun); font-size: 16px; color: #a85a17; }
+.ct-tips ul { margin: 6px 0 0; padding-left: 20px; list-style: disc; display: flex; flex-direction: column; gap: 5px; font-size: 14px; line-height: 1.35; font-weight: 600; }
+.ct-row { margin-top: 14px; display: flex; align-items: center; gap: 8px; }
+.ct-step { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-fun); font-size: 16px; color: #fff4d8; border: 2.5px solid #4a2208;
+  text-shadow: 0 1.5px 0 #4a2208; background: radial-gradient(circle at 40% 35%, #f0b04a, #d9822b 60%, #a85a17); box-shadow: 0 2px 0 #2e1404; }
+.ct-label { margin: 0; flex: 1; min-width: 0; font-size: 16px; font-weight: 800; line-height: 1.2; }
+.ct-need { flex: none; margin-left: 8px; display: inline-block; vertical-align: middle; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  color: #8a3f00; background: rgba(240, 176, 74, .3); box-shadow: inset 0 0 0 1.5px rgba(168, 90, 23, .45); }
+.ct-need.done { color: #2f7a23; background: rgba(124, 195, 90, .25); box-shadow: inset 0 0 0 1.5px rgba(53, 117, 37, .45); letter-spacing: 0; }
+.ct-input { margin-top: 8px; box-sizing: border-box; width: 100%; min-height: 48px; padding: 10px 12px; border-radius: 12px; font: 600 16px/1.3 var(--font-ui); color: var(--gx-ink);
+  background: #fffaf0; border: 2px solid rgba(120, 80, 30, .45); outline: none; box-shadow: inset 0 2px 4px rgba(120, 80, 30, .15); }
+.ct-input::placeholder { color: rgba(122, 83, 38, .6); }
+.ct-input:focus { border-color: #d9822b; box-shadow: 0 0 0 3px rgba(240, 176, 74, .35); }
+.ct-modes { margin-top: 8px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.ct-mode { min-height: 64px; display: flex; flex-direction: column; justify-content: center; gap: 2px; text-align: left; padding: 8px 12px; border-radius: 14px; cursor: pointer; color: var(--gx-ink);
+  background: rgba(255, 250, 240, .7); border: 2.5px solid rgba(120, 80, 30, .35); -webkit-tap-highlight-color: transparent; }
+.ct-mode b { font-family: var(--font-fun); font-weight: 400; font-size: 18px; line-height: 1.1; }
+.ct-mode small { font-size: 12.5px; line-height: 1.3; font-weight: 600; color: var(--gx-ink-soft); }
+.ct-mode.on { border-color: #a85a17; background: linear-gradient(180deg, #ffe7b0, #f6cf7a); box-shadow: 0 0 0 3px rgba(240, 176, 74, .35); }
+.ct-go.pm-go { margin-top: 10px; width: 100%; min-height: 56px; font-size: 26px; }
+.ct-go.pm-go:disabled { filter: grayscale(.75) brightness(.92); opacity: .6; cursor: default; }
+.ct-close { margin-top: 12px; display: flex; align-items: flex-start; gap: 8px; font-size: 14px; font-weight: 800; line-height: 1.3; }
+/* the end questions */
+.ct-q { margin-top: 16px; }
+.ct-q-t { display: block; margin: 0; font-size: 16px; font-weight: 800; line-height: 1.25; color: var(--gx-ink); }
+.ct-faces { margin-top: 8px; display: flex; gap: 6px; }
+.ct-face { flex: 1; min-width: 44px; height: 54px; display: grid; place-items: center; border-radius: 14px; font-size: 28px; line-height: 1; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  background: rgba(255, 250, 240, .75); border: 2.5px solid rgba(120, 80, 30, .35); transition: transform .09s ease; }
+.ct-face.on { border-color: #4a2208; background: var(--gx-wood-grain), linear-gradient(180deg, #f0b04a, #d9822b 52%, #a85a17); box-shadow: inset 0 2px 0 rgba(255, 232, 190, .45), 0 3px 0 #2e1404; transform: translateY(-2px); }
+.ct-faces-ends { margin-top: 4px; display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--gx-ink-soft); }
+.ct-chips { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+.ct-chip { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 12px; border-radius: 99px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  font: 700 14.5px/1.2 var(--font-ui); color: var(--gx-ink); background: rgba(255, 250, 240, .75); border: 2px solid rgba(120, 80, 30, .38); box-shadow: 0 2px 0 rgba(120, 80, 30, .2); }
+.ct-chip.on { color: #fff4d8; border-color: #4a2208; text-shadow: 0 1.5px 0 #4a2208, 1px 0 0 #4a2208, -1px 0 0 #4a2208;
+  background: var(--gx-wood-grain), linear-gradient(180deg, #f0b04a, #d9822b 52%, #a85a17); box-shadow: inset 0 2px 0 rgba(255, 232, 190, .45), 0 3px 0 #2e1404; }
+.ct-send-hint { margin: 16px 0 0; text-align: center; font-size: 14px; font-weight: 800; color: #a85a17; }
+.ct-send-hint.ready { color: #2f7a23; }
+.ct-scene > .ct-wrap > .ct-card > .ct-board, .ct-card form > .ct-board { margin-top: 10px; }
+.ct-card > .gx-plank.ct-board { margin-top: 12px; }
+@media (orientation: landscape) and (max-height: 560px) {
+  .ct-wrap { max-width: 640px; }
+  .ct-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
