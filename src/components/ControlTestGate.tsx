@@ -1,5 +1,5 @@
 import React from 'react';
-import { recorder, savedTesterName } from '../game/playRecorder.ts';
+import { recorder, savedTesterName, testerId } from '../game/playRecorder.ts';
 import { refinedControls } from '../game/refinedControls.ts';
 import { difficulty, setDifficulty, type Difficulty } from '../game/difficulty.ts';
 import { checkForUpdate, hardRefresh } from '../game/updates.ts';
@@ -120,6 +120,8 @@ const Head: React.FC<{ children: React.ReactNode }> = ({ children }) => <h2 clas
 export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) => {
   const [name, setName] = React.useState(savedTesterName);
   const [level, setLevel] = React.useState<Difficulty>(difficulty);
+  // (the tester code, made once on this device: a tester can read it out to us)
+  const code = React.useMemo(() => testerId(), []);
   const go = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!name.trim()) return;
@@ -211,6 +213,9 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
           <span>When you're done, please close the browser tab. That stops the test.</span>
         </p>
         {/* which test round this is (testRound.ts: bumped by hand), so Matt can tell testers which round they are on */}
+        <p className="ct-small ct-center ct-code">
+          Your tester code: <b>{code}</b>
+        </p>
         <p className="ct-small ct-center ct-round">
           Test round: {TEST_ROUND} · build {GIT_COMMIT}
         </p>

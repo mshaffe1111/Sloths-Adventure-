@@ -1,5 +1,18 @@
 # tester-page status (the lead reads this; no send_message until further notice)
 
+## Tester code (the lead's ~3:10 PM job): DONE
+
+- `testerId()` in `src/game/playRecorder.ts`: 6 letters from `ABCDEFGHJKLMNPQRSTUVWXYZ23456789` (no 0/O, 1/I), made once and kept
+  under `sloth_qa_tester_id`. It's random only: no hardware or advertising id. If storage is blocked (or a store keeps nothing), the
+  code is for this visit only and starts with `~`.
+- Every row's Player cell is `Name · CODE`, and the data has a `tester` moment at Start.
+- The front page shows "Your tester code: KKQUWP" above the round line. Stills: `reference/qa/tester-page-1106/code-{up,side}.png`.
+- Tests (`src/game/testerId.test.ts`, 3 pass): the same code on a reread, the blocked case (`~`, the same all visit), and the code on
+  every sent row.
+- In a real browser, the same code came back after a reload, upright and sideways.
+- clipcheck's testers walk PASSES upright and sideways.
+- LOG_EVENTS.md has the `tester` row.
+
 ## 2026-11-06, the three gen2 1-1 art fixes (deadline 4:30 PM ET)
 
 Status as of the commit that carries this note. The full suite is RUNNING; this is a safe-keeping push, its result is added below.

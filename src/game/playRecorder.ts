@@ -93,6 +93,34 @@ export function ctestEnabled(): boolean {
   }
 }
 
+const ID_KEY = 'sloth_qa_tester_id';
+/** the tester code's letters: no 0/O, no 1/I, so it reads out clearly */
+export const ID_ABC = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+let sessionId = '';
+/**
+ * The tester code (the lead, 11-06: a name alone breaks, Matt tests on 3 phones, two testers share a first name): 6 random letters made
+ * once on this device and kept under 'sloth_qa_tester_id'. Random only: no hardware or advertising id, nothing read from the phone
+ * (PLAY-STORE-RULES §3). Where storage is blocked, one for this visit only, marked with a leading '~' so the data shows it will not last.
+ */
+export function testerId(store: Pick<Storage, 'getItem' | 'setItem'> | null = typeof localStorage !== 'undefined' ? localStorage : null, rand: () => number = Math.random): string {
+  const make = () => Array.from({ length: 6 }, () => ID_ABC[Math.floor(rand() * ID_ABC.length) % ID_ABC.length]).join('');
+  try {
+    if (!store) throw new Error('no storage');
+    const had = store.getItem(ID_KEY);
+    if (had && /^[A-Z2-9]{6}$/.test(had)) return had;
+    const id = make();
+    store.setItem(ID_KEY, id);
+    // (a store that takes the write but keeps nothing, as some private modes do, is a blocked one)
+    if (store.getItem(ID_KEY) !== id) throw new Error('not kept');
+    return id;
+  } catch {
+    if (!sessionId) sessionId = `~${make()}`;
+    return sessionId;
+  }
+}
+/** the sheet's Player cell: the name, then the tester code ("Matt · K7Q2MX"), so the sheet needs no new column */
+export const playerCell = (who: string, id: string): string => `${who} · ${id}`;
+
 export function savedTesterName(): string {
   try {
     return localStorage.getItem(NAME_KEY) ?? '';
@@ -179,6 +207,8 @@ class PlayRecorder {
     this.on = true;
     const controls = () => (controlStyle() === 'pad' ? `pad on the ${padSide()}` : 'screen gestures');
     this.push(['e', 0, 'start', `${window.innerWidth}x${window.innerHeight}; ${controls()}`]);
+    // (the tester code, in the data too: the Player cell carries it as well)
+    this.push(['e', 0, 'tester', testerId()]);
     // (and which build, seed list and test round this run is: testRound.ts)
     this.push(['e', 0, 'env', `${envDetail()} | ${runVersions()}`]);
     // a tester who switches to the thumb pad (or back) part way through
@@ -421,7 +451,7 @@ class PlayRecorder {
       if (packed.length <= CELL || p.length < 2) out.push(packed.slice(0, CELL));
       else pieces.unshift(p.slice(0, p.length >> 1), p.slice(p.length >> 1));
     }
-    for (const d of out) this.send({ k: KEY, who: this.who, session: this.session, part: ++this.part, device: deviceLine(), build: BUILD_TIME || 'dev', secs, d }, leaving);
+    for (const d of out) this.send({ k: KEY, who: playerCell(this.who, testerId()), session: this.session, part: ++this.part, device: deviceLine(), build: BUILD_TIME || 'dev', secs, d }, leaving);
   }
 
   private send(body: object, leaving: boolean) {
