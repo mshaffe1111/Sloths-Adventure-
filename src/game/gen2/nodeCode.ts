@@ -200,8 +200,9 @@ export function checkCode(tokens: readonly CodeToken[], rules: CodeRules = {}): 
   if (rules.teaches !== undefined && ts !== rules.teaches) errs.push(`V2 at token ${tokens.findIndex((t) => t.job === 'T') + 1 || 1}: ${ts} teaches for the brief's ${rules.teaches}`);
   // (V17: a fork in every graph that needs one)
   if (rules.needsFork && forks === 0) errs.push('V17 at token 1: no fork');
-  // (V11, V12, V14: the content mix, on the content tokens: a fork counts as its low road's type, S and the structural ones never)
-  const content = tokens.map((t, i) => ({ i, t, c: t.roads ? t.roads[1].find((r) => r.content)?.content : t.job === 'S' ? undefined : t.content }))
+  // (V11, V12, V14: the content mix, on the content tokens: a fork counts as its low road's type; S, the H find (a reward job, never
+  // content: NODES.md §7.3) and the structural ones never)
+  const content = tokens.map((t, i) => ({ i, t, c: t.roads ? t.roads[1].find((r) => r.content)?.content : t.job === 'S' || t.job === 'H' ? undefined : t.content }))
     .filter((x) => x.c && !STRUCTURAL.has(x.t.job));
   if (content.length) {
     const count = new Map<string, number>();

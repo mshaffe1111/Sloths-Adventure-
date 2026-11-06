@@ -15,6 +15,8 @@ const ROLLS = [
 test('the sprint graphs and the three example 1-1 rolls read and pass V1-V17', () => {
   for (const [id, s] of Object.entries(SPRINT_CODES)) assert.deepEqual(checkCode(parseCode(s), { needsFork: true }), [], `${id}: ${s}`);
   for (const s of ROLLS) assert.deepEqual(checkCode(parseCode(s), ONE_ONE), [], s);
+  // (the H find sits outside the mix: 1-1's seed perch, a bounce, never counts against the deal or the neighbour rule)
+  assert.deepEqual(checkCode(parseCode('A Tg1< Tg2> Tb< Pc1^< F[P^+|Pb]> R Xc2< R Hb2< Sb2> E'), { ...ONE_ONE, deal: { g: 2, b: 1, c: 2, f: 0 } }), []);
 });
 
 test('a string writes back exactly as it was read', () => {
