@@ -10,7 +10,7 @@ import '../../src/game/headlessDom.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
 import { buildGen2Stage, keptFoes } from '../../src/game/gen2/pipeline.ts';
 import { w1World } from '../../src/game/gen2/worlds/w1.ts';
-import { packPlan, provenSeeds, seedListBreaches, SEED_LIST_MIN } from '../../src/game/gen2/seedList.ts';
+import { packPlan, provenSeeds, QUIET_MAX, seedListBreaches, SEED_LIST_MIN } from '../../src/game/gen2/seedList.ts';
 import { PROVEN_SEEDS } from '../../src/game/gen2/provenSeeds.ts';
 import { floorlessGaps, promiseBreaches11 } from '../../src/game/gen2/promises11.ts';
 import { withGoals } from '../../src/game/goals.ts';
@@ -28,6 +28,8 @@ const cfg = generateAllLevels().find((l) => l.id === id)!;
 if (process.argv.includes('--check')) {
   const L = PROVEN_SEEDS[id];
   const b = seedListBreaches(cfg, kit, provenSeeds(id), SEED_LIST_MIN, L ? { dict: L.dict, plans: L.plans } : undefined);
+  // (the quiet line BINDS, the lead 11-06: every listed seed's longest quiet stretch on Normal, the outro excluded, at most QUIET_MAX s)
+  for (const seed of provenSeeds(id)) { const q = quietOf(buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty: 'normal' })).quiet; if (q > QUIET_MAX) b.push(`${id} seed ${seed}: ${q} s quiet, over the line ${QUIET_MAX} s (the outro excluded)`); }
   if (L && L.plans.length !== L.seeds.length) b.push(`${id}: ${L.seeds.length} seeds but ${L.plans.length} plans`);
   console.log(b.length ? `seedlist ${id}: FAIL\n  ${b.slice(0, 20).join('\n  ')}` : `seedlist ${id}: PASS (${provenSeeds(id).length} seeds, each clean on both settings)`);
   process.exit(b.length ? 1 : 0);
@@ -50,10 +52,14 @@ function quietOf(st: ReturnType<typeof buildGen2Stage>): { quiet: number; outro:
 }
 
 const want = Number(arg('--count', String(SEED_LIST_MIN)));
+// (--quiet-max S: the quiet line BINDS, the lead 11-06: a seed is kept only when its longest quiet stretch, the outro excluded, is S s or
+// less; the count of tries it took is printed)
+const quietMax = Number(arg('--quiet-max', String(QUIET_MAX)));
+let quietOut = 0;
 const seeds: number[] = [], quiet: number[] = [], outro: number[] = [], plans: string[] = [], dict: string[] = [];
 let tried = 0;
 const t0 = Date.now();
-for (let seed = 1; seeds.length < want && seed < want * 120; seed++) { // (1-1's promises keep about 1 roll in 80, the lead's 0.9.5 rulings)
+for (let seed = 1; seeds.length < want && seed < want * 200; seed++) { // (1-1's promises and the quiet line keep few rolls, the lead's 0.9.5 rulings)
   tried++;
   const n = buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty: 'normal' });
   if (n.gen2.errors?.length) continue;
@@ -62,6 +68,7 @@ for (let seed = 1; seeds.length < want && seed < want * 120; seed++) { // (1-1's
   // (1-1's player promises, the lead 11-06: no unmarked floorless gap on either setting, the double needed right after its teach on Normal)
   if (id === '1-1' && (promiseBreaches11(n as never).length || floorlessGaps(e as never).length)) continue;
   const q = quietOf(n);
+  if (q.quiet > quietMax) { quietOut++; continue; }
   seeds.push(seed); quiet.push(q.quiet); outro.push(q.outro);
   plans.push(packPlan({ seed: n.gen2.seed, rerolls: n.gen2.rerolls, plan: n.gen2.plan, foes: [...keptFoes(n)] }, dict));
 }
@@ -74,6 +81,6 @@ export const PROVEN_SEEDS: Record<string, { dict: string[]; seeds: number[]; pla
 fs.writeFileSync('src/game/gen2/provenSeeds.ts', text);
 console.log(`  the list file: ${Buffer.byteLength(text)} bytes (${id}: ${JSON.stringify(out[id]).length} bytes)`);
 const sorted = [...quiet].sort((a, b) => a - b), med = sorted[Math.floor(sorted.length / 2)] ?? 0;
-console.log(`seedlist ${id}: ${seeds.length} proven of ${tried} tried (${((seeds.length / tried) * 100).toFixed(0)}%), ${((Date.now() - t0) / 1000).toFixed(0)} s`);
+console.log(`seedlist ${id}: ${seeds.length} proven of ${tried} tried (${((seeds.length / tried) * 100).toFixed(0)}%), ${((Date.now() - t0) / 1000).toFixed(0)} s${Number.isFinite(quietMax) ? `; the quiet line bound at ${quietMax} s: ${quietOut} clean seeds over it left out` : ""}`);
 console.log(`  quiet line (REPORTED, outro excluded; binds at FR9): longest ${sorted[sorted.length - 1]} s, median ${med} s, under 4 s on ${quiet.filter((q) => q <= 4).length} of ${seeds.length}`);
 console.log(`  outro (goal section): ${Math.min(...outro)}-${Math.max(...outro)} px`);

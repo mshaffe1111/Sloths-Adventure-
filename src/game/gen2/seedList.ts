@@ -14,9 +14,13 @@ import type { LevelConfig } from '../types.ts';
 import type { Difficulty } from '../difficulty.ts';
 
 /** how many seeds a stage's list holds at least (the lead: a tester never notices a repeat) */
-// (100 for 0.9.5, the lead 11-06: "at least 100 proven seeds is enough" once a roll must keep 1-1's promises too, promises11.ts; each
-// phone shuffles its order, so none repeats within 100 plays)
+// (the target is 300; 100 is tonight's floor for 0.9.5 only, the lead 11-06, once a roll must also keep 1-1's promises, promises11.ts,
+// and the quiet line: each phone shuffles its order, so none repeats within 100 plays. Back to 300 once the soft floors land: roadmap)
 export const SEED_LIST_MIN = 100;
+export const SEED_LIST_TARGET = 300;
+/** the quiet line a listed seed is held to (the lead 11-06: it binds in the list builder): its longest quiet stretch on Normal, the outro
+ *  excluded, at most this many seconds (STAGE-RULES' dead-time line, RULES.quietMax) */
+export const QUIET_MAX = 4;
 
 /** one stage's list as stored: section ids once (`dict`), then per seed its packed plan (packPlan) */
 export interface PackedList { dict: string[]; seeds: number[]; plans: string[]; quiet?: number[]; outro?: number[] }

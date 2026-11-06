@@ -289,7 +289,7 @@ export function eagleOutrunWith(make: () => RealPlay, portrait = false): EagleVe
 // ---------------------------------------------------------------------------------------------------------------------------------
 // The first-timer bot, with what he met
 
-export interface Met { swung: number; climbed: number; roped: number; bounced: number; brokeUnder: number; hid: number; pushed: number; fought: number; eagleHits: number;
+export interface Met { swung: number; climbed: number; roped: number; bounced: number; /** of `bounced`, off a mushroom (engine.ts bounce kind 'spring'), not a stomp off an animal */ sprung: number; brokeUnder: number; hid: number; pushed: number; fought: number; eagleHits: number;
   /** 1-8's collapse: the closest its front came to him while it ran (px; null: no chase) and how often it caught him */
   chaseMinGap: number | null; chaseCaught: number;
   /** the share of the chase's running frames with its collapse front inside the camera's view, and where it came closest (Pokey's x, the front) */
@@ -320,7 +320,7 @@ export function botRun(id: string, layout: number, setting: Setting, o: BotOpts 
   const takeIn0 = P.takeIn;
   if (o.noHide) P.takeIn = function (this: Eng) { takeIn0.call(this); this.learned.delete('hide'); };
   const frame0 = RealPlay.prototype.frame;
-  const met: Met = { swung: 0, climbed: 0, roped: 0, bounced: 0, brokeUnder: 0, hid: 0, pushed: 0, fought: 0, eagleHits: 0, chaseMinGap: null, chaseCaught: 0, chaseOnScreen: null, chaseClosest: null };
+  const met: Met = { swung: 0, climbed: 0, roped: 0, bounced: 0, sprung: 0, brokeUnder: 0, hid: 0, pushed: 0, fought: 0, eagleHits: 0, chaseMinGap: null, chaseCaught: 0, chaseOnScreen: null, chaseClosest: null };
   const chase = new Map<RealPlay, { min: number; caught: number; was: boolean; frames: number; seen: number; at: { x: number; front: number; t: number } | null }>();
   const cams = new Map<RealPlay, Array<{ t: number; x0: number; x1: number; y0: number; y1: number }>>();
   const state = new Map<RealPlay, Eng>();
@@ -353,7 +353,7 @@ export function botRun(id: string, layout: number, setting: Setting, o: BotOpts 
     if (!was.swing && p.isVineSwinging) met.swung++;
     if (!was.climb && p.climbing) met.climbed++;
     if (!was.hang && p.hanging) met.roped++;
-    if (!was.bounce && p.bounce) met.bounced++;
+    if (!was.bounce && p.bounce) { met.bounced++; if (p.bounce.kind === 'spring') met.sprung++; }
     const cover = !!(this.e as Eng).input?.inCover && !!p.ducking;
     if (!was.cover && cover) met.hid++;
     if (!was.push && p.pushing) met.pushed++;
