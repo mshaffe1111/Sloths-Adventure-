@@ -338,6 +338,8 @@ export interface Platform {
   /** drawn as its own kind, never given another look for variety (platformPlan.ts planThin): a world whose painted kit draws its pieces,
    *  where variety comes from the sections (W1-ART-AUDIT §3.1, Matt's approval 11-05: gen2 World 1) */
   ownLook?: boolean;
+  /** the art director's cut World 1 piece it is drawn as (w1CutArt.ts W1_CUT; gen2 World 1's w1Finish picks it) */
+  cut?: string;
 }
 
 /**

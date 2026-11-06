@@ -16,6 +16,8 @@ import { DOT_LINES } from '../../dotLinesData.ts';
 import type { Move, NodeJob, Phase, PortKind, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { DOUBLE_RISE, reachJump } from '../../physics.ts';
 import { hollowLogSize } from '../../w1NewArt.ts';
+import { pickCut, W1_CUT } from '../../w1CutArt.ts';
+import type { Platform } from '../../types.ts';
 import { SPRINT_GRAPHS } from '../graphs.ts';
 
 /**
@@ -1342,8 +1344,13 @@ export const W1_PHASES: readonly Phase[] = ['start', 'ki', 'sho', 'rest', 'ten',
 /** what World 1 does to a built gen2 stage (GEN2_STAGES `finish`; the test link's picker calls it too): every piece keeps its own kind,
  *  never re-labelled for variety (W1-ART-AUDIT §3.1, Matt's approval 11-05: the leaf ledge, the frond strip and the stone drawn as a log came
  *  from that swap, not from w1.ts). A finished stage is returned for chaining */
-export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean }> }>(st: T): T {
+export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean; cut?: string } & Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' | 'style' | 'type'>> }>(st: T): T {
   for (const p of st.platforms) p.ownLook = true;
+  // (the art swap, W1-ART-AUDIT §3.2-3.5: each stone, stump and thin log drawn as one of the art director's cut pieces, w1CutArt.ts)
+  // (a stone or stump stands on the ground: only where a solid piece meets its foot, so a pit's step drawn as a rock never ends in the air,
+  //  Roll 5's upright still; a plank may float)
+  const onGround = (p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>) => st.platforms.some((q) => q !== p && q.type === 'solid' && Math.abs(q.y - (p.y + p.height)) <= 6 && q.x <= p.x + p.width / 2 && q.x + q.width >= p.x + p.width / 2);
+  for (const p of st.platforms) if (p.type === 'solid') { const c = pickCut(p); if (c && (W1_CUT[c].kind === 'log' || onGround(p))) p.cut = c; }
   return st;
 }
 /** every Dot line by id, its words (the old text, which the new look swaps where it is said; a cut line's new text if it has no old) */
