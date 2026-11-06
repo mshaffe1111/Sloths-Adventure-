@@ -335,3 +335,40 @@ road uses at least two beat kinds, with never three of the same kind in a row, a
   - The log road's logs float, so no post walls the lane (Matt: platforms may float).
   - The first bough on the step-up sits at 180 px, reached by a stump then a double.
 - The towers, stilts and second-jump keep long plain stretches until the planner's back-only pit lands. That's expected.
+
+## Round 6: the 8 rolls of 16 that don't build (designer, 11-05 9:33 PM ET; the planner's dry-cell list, 9:33 PM, engine-core c2710323 + engine-chunks a31e7285)
+
+**Cause 1: the bounce teach never survives.** This empties the seed perch and every bounce fork, test and combine downstream (4 of the 8).
+- **mushroom-lift (#5) and mushroom-bank-teach (#35) are "walked round":** a platform sits 0-45 px under the lip, within 106 px of it. B1 forbids that.
+- **Ruling (B7, new):** within a single jump's reach of a block's lip (175 px across, 185 px down), nothing standable may stand on the approach side. That covers:
+  - the join step the pipeline adds between sections;
+  - the floor road (FR1 ends at the block face);
+  - a stone or stump.
+- The lip's bank face is sheer to the floor, and the mushroom is the only way up.
+- **For the planner:** no join step lays against a block's face. A section with a `block` tells the join "sheer".
+- hop-bounce's unreachable exit is the planner's level-check model to look at, as they said.
+
+**Cause 2: the corridor.** The route climbs early (trend up), so late rising sections have no room and get swapped out.
+- **Ruling:** keep the corridor. Growing it fights the camera-reach gate that already fails. Instead, every late rising section carries a **level or net-zero version** (it climbs, then steps back down in its run-out), and **the roll tries a section's other versions before swapping the section out** (planner).
+- The versions to add:
+  - #10 canopy-rungs, a level version (4 doubles across, not up);
+  - #44 log-chain a (level), which already exists;
+  - #45 mushroom-chain, a version up two boughs then down two;
+  - #40, #41 and #49 (climb tests), each with a run-out stair back down (inside the test, V18 judges only up to the summit);
+  - #61 bounce-stair-combine, a version that ends on its own start height.
+- **The seed perch (low route, past the bottom):** a version that climbs into the perch from the floor (`c c` then the bounce), so it fits a low route.
+- This doesn't break V19 (no late net loss on an up stage). A level version loses nothing, and a net-zero version's run-out drop is only the climb it just made. The node still ends no lower than it began.
+
+**Cause 3: empty cells.**
+
+| Cell | Fix |
+|---|---|
+| climb × climb × sho, outside the window | **retag #53, #54 and #55** (the stair runs, ground pieces, no boughs) with jobs `['flow', 'climb']`. That gives 3 climb-type climbs outside the window |
+| combine × ground | **new #63 "Bounce over the dip"** (a floor mushroom, `b d` across a wide dip onto a bank) and **#64 "Mushroom by the fallen log"** (`b d` over a tall fallen log). Both are ground type, the pair on one beat (LEDGER-11-02:33), and neither is windowed |
+| combine × bounce, outside the window | **new #65 "Mushroom stair"** (`b d b` up two floor mushrooms onto stumps). Bounce type, not windowed |
+| test × bounce | **new #66 "Two lifts"** (two bounce blocks, each lip 200-220 px, B3/B7) and **#67 "The bounce wall"** (a bounce block, then a double block). Both need the planner's bounce-rise place |
+| test × floating (stump-towers #20, stilt-logs #27: exit unreachable) | the porter checks the laid exits: the rises [-140, -136] may sum past the out floor's jump down. These are the porter's numbers |
+| bounce forks, tests and combines before the bounce is taught | **rule V20 (new): a node of a type that needs a move comes only after that move's T** (bounce type after `Tb`). This is an engine rule for the deal: it doesn't deal a type before its move is taught. NODES §8.3 V3 already says moves; V20 extends it to the deal |
+
+**On the planner's question (deal skips job × type cells the kit lacks):** no. A skip hides a hole (Law 22). The deal should fail
+loudly, and the kit fills the cell, as #63-#67 do. The one exception is a cell the brief rules out (a `not` type).
