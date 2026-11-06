@@ -1,5 +1,27 @@
 # tester-page status (the lead reads this; no send_message until further notice)
 
+## 5:35 PM ET: Dot re-check AFTER the planner's fix (engine-chunks 25d2d115): FAIL. The line is SAID, but never SHOWN
+
+Method:
+- The real testers' page (#ctest) built from a worktree of engine-chunks 25d2d115, on a fresh save each run.
+- A real thumb slide, and a real flick up and forward at each step.
+- 6 runs, 3 sideways and 3 upright, seeds 3112, 2640, 866, 1348, 4064 and 1769, plus 1 diagnostic run on seed 1201.
+
+Results:
+- **"Flick up again in the air to jump twice" was on screen in 0 of 6 runs. No Dot bubble showed at all.**
+- **The engine side now works.** I wrapped the engine's guide() in the page on seed 1201. It called "Jump the little gaps" at x 4782,
+  then **"Flick up again in the air to jump twice" at x 5265**, which is the teach's entry (5232) plus 33 px, so after its first step.
+  - Note: that is NOT 450 px before the first double gap. I haven't measured where the first double gap is.
+- **The display drops it.** After the line was called, he stood still for 8 s and no `.dg-bub` existed in the page. Dot herself is on
+  screen, top right, with no bubble. Still: `reference/qa/tester-page-1106/dbl2/after-line-side-seed1201.png`.
+- So the loss is in DotGuide's queue or display (src/components/dot/DotGuide.tsx), not the engine.
+  - Before the fix, no bubble showed either, so this is not new.
+  - Its likely suspects, not yet checked: the queue waits for "calm"; the line is classed as a coach/move tip that the help setting
+    hides; or the first-run coach is still holding the queue.
+- **Stuck 20 s at the first step: Dot said nothing in all 6 runs** (the separate roadmap item).
+- The bot won't catch this. A check that walks the real page and reads the DOM bubble, as `scratchpad/dbl2.cjs` does, would.
+
+
 ## 4:33 PM ET: art round 2
 
 - **Pit-pocket pane: FIXED.**
