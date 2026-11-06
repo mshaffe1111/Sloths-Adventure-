@@ -108,6 +108,7 @@ After 1-1 is proven, these run as their own lanes, one engine.ts holder at a tim
   look at the thing before saying it's done.
 
 ## For the roadmap (owed R-ids, law 21)
+- STAGE START 3-4 s (production, CPU x4, engine-core 11-06): readyToStart's sheet (900 ms) + backdrop (2500 ms cap) waits and readyBuiltStage's decode/bake; game-wide. Fixes: preload sheets/backdrop at idle on the map card; bake clips at idle. Decide from the weekend's 'launch' moment (real phones): >3 s typical = first next week.
 - TESTER DATA PROMISE (Matt OK 12:37 PM): the tester page says recordings are deleted when testing ends. So the sheet is cleared, not archived forever, once the player-data job has its profiles; derived bot numbers (no touches) may be kept.
 - Tester page v3 APPROVED by Matt 12:37 PM ET ('looks a lot better').
 - MATT 12:12 PM: a thumb guide ALREADY EXISTS, turned off because a guide that FOLLOWS the thumb disoriented testers. His idea: LOCK it to one spot, bottom left or right by the player's thumb side (the existing pad-side setting), as a visual guide only (gestures still work anywhere). The lane: find the existing guide code, re-anchor it, keep it light and out of the play band, A/B it in the recordings (thumb travel and misreads with vs without).
