@@ -1,0 +1,22 @@
+# The relative dip finder's hits on main-era stages (plainWalk.test.ts dipsRel, run where G still rules), 11-06: to JUDGE (roadmap), not gated
+# (the relative finder does not skip puzzle rooms the way the G finder does; 2-2/2-3's 200 px ones may be room floors or river beds)
+1-2 seed 1: x 12725..12799, 80 px deep, never out
+1-6 seed 1: x 21024..22146, 45 px deep, 4 flicks
+1-6 seed 3: x 16441..19651, 36 px deep, never out
+1-7 seed 3: x 15479..19003, 42 px deep, never out
+2-2 seed 2: x 3610..4103, 200 px deep, never out
+2-2 seed 2: x 9343..10175, 200 px deep, never out
+2-2 seed 2: x 12284..12791, 200 px deep, never out
+2-2 seed 2: x 13033..13514, 200 px deep, never out
+2-2 seed 2: x 13761..14250, 200 px deep, never out
+2-2 seed 2: x 14479..14975, 200 px deep, never out
+2-2 seed 2: x 18044..18525, 200 px deep, never out
+2-2 seed 2: x 18751..19232, 200 px deep, never out
+2-2 seed 2: x 19474..19960, 200 px deep, never out
+2-3 seed 1: x 6805..7285, 200 px deep, never out
+2-3 seed 1: x 11529..12022, 200 px deep, never out
+2-3 seed 1: x 13845..14342, 200 px deep, never out
+2-3 seed 1: x 14598..15094, 200 px deep, never out
+2-3 seed 1: x 16731..17214, 200 px deep, never out
+2-3 seed 1: x 17446..17941, 200 px deep, never out
+2-3 seed 1: x 19596..20076, 200 px deep, never out
