@@ -73,7 +73,11 @@ Full suite on these changes: 2,440 tests, 12 fail, plus the known TODOs, 16 line
    - Making it deeper (300 px) changed nothing. Narrow-bank `bare` changed nothing. Shade off changed nothing.
    - The pocket goes through drawGroundChunks, then paintTile, then drawGround, then drawBankArt (sides closed, so the soil rect should
      be opaque). Why its soil doesn't show is still open: protoArt.ts belongs to the ground owner, and I ran out of time.
-   - Slips past 4:30.
+   - 4:20 PM: setting the pocket's `soil` or `hollow` flag, or its height to 400, changes nothing on screen, but removing the pocket
+     removes the pane. So the pane is drawn by a path that ignores those fields. The green strip with root lines looks like the moss
+     strip (drawBankArt `moss`) or a terrain.ts ledge, not the painted ground.
+   - That is where the ground owner should look next.
+   - **Slips past 5:00** (the art deadline moved to 5:00); the boulders and the end log are done.
 3. **End log (686 px): DONE.**
    - A plank longer than 360 px is laid as plank-ledge pieces end to end (a, b, c in turn, 4 px overlap, no seams). The flat code log is
      gone.
