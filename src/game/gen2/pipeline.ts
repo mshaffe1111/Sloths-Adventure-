@@ -2480,22 +2480,39 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     // Easy is Normal's stage under Easy's rules: Normal is built first (its repairs, swaps and length loop), and Easy lays exactly its
     // plan from its seed. Easy's own repairs are only the local ones (a stone, a stray pickup or animal); its clock is held to the
     // quick player's floor (fewer animals make the typical player's model shorter, not the stage)
-    const n = buildRolled({ ...req, difficulty: 'normal' });
-    const repairs: Repair[] = [...n.gen2.repairs];
+    // (a replayed proven plan that carries Normal's kept animals lays Easy straight from it, no Normal build: the plan and the animals are
+    // what Easy takes from Normal; the seed list's --check holds it identical to the search's Easy)
+    const R = req.replay?.foes ? req.replay : undefined;
+    const n = R ? undefined : buildRolled({ ...req, difficulty: 'normal' });
+    const repairs: Repair[] = [...(n?.gen2.repairs ?? [])];
     // (and only the animals Normal kept: Easy's are a subset of Normal's)
-    const b = assemble(req, budget, graph, n.gen2.seed, { plan: n.gen2.plan }, keptFoes(n));
+    const b = R
+      ? assemble(req, budget, graph, R.seed, { plan: R.plan }, new Map(R.foes))
+      : assemble(req, budget, graph, n!.gen2.seed, { plan: n!.gen2.plan }, keptFoes(n!));
     const v = checkAndRepair(b, budget, repairs, new Set());
     const st = b.stage;
     const fast = gen2Model(st, MODEL_FAST);
     st.gen2.modelled = { typical: Math.round(gen2Model(st, MODEL_TYPICAL) * 10) / 10, fast: Math.round(fast * 10) / 10 };
-    st.gen2.rerolls = n.gen2.rerolls;
+    st.gen2.rerolls = n ? n.gen2.rerolls : R!.rerolls;
     st.gen2.repairs = repairs;
     // (Easy never plans its own, the red team's #4: Normal's loop took this plan only if Easy laid it cleanly, so a failure here is
     // Normal's own failure or the clock; it fails by name, with Normal's errors)
-    const errs = [...(n.gen2.errors ?? [])];
+    const errs = [...(n?.gen2.errors ?? [])];
     if (!v.ok) errs.push(`Easy could not lay Normal's plan${v.why ? `: ${v.why}` : ''}`, ...checkStage(st, budget).errors);
     if (fast < budget.seconds.fastFloor) errs.push(`Easy's quick player under the floor (${fast.toFixed(1)} s, floor ${budget.seconds.fastFloor.toFixed(1)} s)`);
     st.gen2.errors = [...new Set(errs)];
+    return st;
+  }
+  // (a proven plan replayed, gen2/seedList.ts: the search's own final lay, one lay and its check, as the search's last step ran them)
+  if (req.replay) {
+    const repairs: Repair[] = [];
+    const b = assemble(req, budget, graph, req.replay.seed, { plan: req.replay.plan, recent: req.recent, usedVersions: req.usedVersions });
+    const v = checkAndRepair(b, budget, repairs, new Set());
+    const st = b.stage;
+    st.gen2.rerolls = req.replay.rerolls;
+    st.gen2.repairs = repairs;
+    st.gen2.modelled = { typical: Math.round(gen2Model(st, MODEL_TYPICAL) * 10) / 10, fast: Math.round(gen2Model(st, MODEL_FAST) * 10) / 10 };
+    if (!v.ok) st.gen2.errors = [`a replayed plan failed its check${v.why ? `: ${v.why}` : ''} (the seed list is stale: tools/engine/seedlist.ts)`, ...checkStage(st, budget).errors];
     return st;
   }
   // (the stage is the same on both difficulties, so Normal's build also holds Easy's quick player to the floor: Easy lays its plan)

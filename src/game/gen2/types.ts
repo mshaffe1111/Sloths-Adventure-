@@ -711,6 +711,10 @@ export interface BuildRequest {
   recent?: string[];
   /** the sub-block versions (versionKey) the world's earlier stages shipped: each waits until the others have had their turn (C4) */
   usedVersions?: string[];
+  /** build this stage's proven plan instead of searching for one (gen2/seedList.ts: the seed list holds each seed's final plan and the
+   *  seed it was laid from): one lay and one check, the search's own result; the seed list's --check holds it identical to the search */
+  replay?: { seed: number; plan: PlanSlot[]; rerolls: number; foes?: Array<[string, string]> };
+  // (`foes`: Normal's kept animals, section/socket -> creature (pipeline keptFoes); given, an Easy replay lays from it with no Normal build)
 }
 
 // ───────────────────────────── constants ─────────────────────────────
