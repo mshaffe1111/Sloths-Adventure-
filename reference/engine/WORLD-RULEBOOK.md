@@ -240,3 +240,19 @@ Evidence:
 - **This reverses the 11-05 floor in §2's floors line** ("old 1-1's... splits and two-road"). The reason: 1-1's brief is one rising climb on gentle ground, and roads are 1-2's identity (above).
 - For 1-1, splits and two-road are REPORTED, not pass/fail. They become 1-2's own lines, set from BRIEF-1-2.
 - V17 and FR1-FR8 stay.
+
+## Rulings on the planner's three 1-1 lines (designer, 11-06 12:03 PM ET; Roll A, the lead's classification)
+
+1. **"Standing kinds per phone view ≤ 4" is an OLD-ERA RULER.** Old 1-1 itself measured a median of 4.5 (range 4-5), so the line was
+   below its own source. The art swap (W1-ART-AUDIT) deliberately adds painted kinds: stones, stumps, logs, boughs, banks and the
+   mushroom. And variety comes from more pieces (Matt, 10-30). The clutter risk is real, though: a phone view has to read at a glance.
+   **New line: ≤ 6 standing kinds per view, upright and sideways** (JUDGMENT, checked by eye on the stills; Roll A's 6 passes).
+2. **V18 on climb sections is a real defect, with one correction to the gate.** A climb's stair is judged from its first landing up
+   to its SUMMIT (the highest landing). The run-out after the summit isn't part of the stair: that's my ruling of 11-06 on
+   stair-test-back, and the gate must read it that way. So:
+   - `Xc2_` (a falling climb test) is a stair-test-back version whose run-out was judged. That's a gate fix: stop at the summit;
+   - `Pc1<` (x 10494-13695) still fails if its step down is BEFORE its summit. Then that section gets a version with no step down before the summit, or its climb tag goes. The planner or porter names the section, and I'll rule on which.
+3. **Two-road (0.10 against old 1-1's reachable 0.25):** REPORTED only for 1-1, per the lead's 12:00 PM confirmation. It's not a
+   data item for 1-1. If the reachable 0.25 is the honest old figure, it goes into 1-2's own line, the cold helper's to set.
+
+"Something new every 808 px against ≤ 572" has the same root as the quiet line. FR9, FR9b and FR10 (Rounds 7(d) and 9) fix it once entered.
