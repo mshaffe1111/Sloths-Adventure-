@@ -7,7 +7,7 @@ import { generateAllLevels } from './worldsData.ts';
 import { generateStage, setLayoutVariant } from './stageGenerator.ts';
 import { easyStage } from './easyMode.ts';
 import { withGoals } from './goals.ts';
-import { CLUE_NAME, CLUE_W, cluePlace, drawW1Clue } from './w1NewArt.ts';
+import { CLUE_H, CLUE_NAME, CLUE_W, cluePlace, drawW1Clue } from './w1NewArt.ts';
 
 const build = (id: string, v: number, setting: 'normal' | 'easy') => {
   const c = generateAllLevels().find((l) => l.id === id)!;
@@ -30,7 +30,7 @@ test('the bootprint lies flush on the end log on every 1-1 build: its top on the
   for (const id of ['1-2', '1-5', '2-1']) assert.ok(!(build(id, 1, 'normal').proto?.mixDress ?? []).some((d: any) => d.n === CLUE_NAME), `${id} lays a clue`);
 });
 
-test('drawW1Clue draws the picture once it has loaded (75 x 18 at its place), and nothing before', async () => {
+test('drawW1Clue draws the picture once it has loaded (CLUE_W x CLUE_H at its place), and nothing before', async () => {
   const drawn: number[][] = [];
   const ctx = { drawImage: (_i: unknown, x: number, y: number, w: number, h: number) => drawn.push([x, y, w, h]) } as unknown as CanvasRenderingContext2D;
   const G = globalThis as { Image?: unknown };
@@ -41,6 +41,6 @@ test('drawW1Clue draws the picture once it has loaded (75 x 18 at its place), an
     assert.equal(drawW1Clue(ctx, 1000, 580), false, 'nothing drawn before the picture loads');
     await new Promise((r) => setTimeout(r, 10));
     assert.equal(drawW1Clue(ctx, 1000, 580), true);
-    assert.deepEqual(drawn, [[1000 - CLUE_W / 2, 580, CLUE_W, 18]]);
+    assert.deepEqual(drawn, [[1000 - CLUE_W / 2, 580, CLUE_W, CLUE_H]]);
   } finally { G.Image = had; }
 });

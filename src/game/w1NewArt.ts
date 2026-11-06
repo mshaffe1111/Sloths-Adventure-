@@ -40,13 +40,13 @@ export const hasW1New = (n: string): n is W1NewPiece => n in F;
 
 /**
  * 1-1's clue (R-165.31): the soldier's bootprint, a flush decal toe east (src/assets/props/w1-bootprint.webp, 300x74, painted on
- * Hugging Face from World 1's bank art: art-bootprint f57eac784). It lies in the moss of the end log's top, drawn 75x18 game px with
+ * Hugging Face from World 1's bank art: art-bootprint f57eac784). It lies in the moss of the end log's top, drawn 110x28 game px (the art helper's remake, art-1-1-sunrise-2 fd69a508e, picked by the lead 11-05) with
  * its top edge on the log's top line, behind Pokey and under the HUD (engine.ts draws it with the stage's dressing). Only a stage that
  * reports a clue place lays it (proto.mixDress, the name CLUE_NAME); it loads with the w1-new sheet (stagePreload.ts).
  */
 export const CLUE_NAME = 'bootprint';
 export const W1_CLUE_URL = new URL('../assets/props/w1-bootprint.webp', import.meta.url).href;
-export const CLUE_W = 75, CLUE_H = 18;
+export const CLUE_W = 110, CLUE_H = 28;
 let clueImg: HTMLImageElement | null = null;
 let clueReady = false;
 export function w1ClueReady(): boolean {

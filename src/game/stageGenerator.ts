@@ -6,6 +6,9 @@ import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
+import { pick11, roll11Seed, skip11Spec } from './testlink1_1.ts';
+import { buildGen2Stage } from './gen2/pipeline.ts';
+import { w1Kit } from './gen2/worlds/w1Kit.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
 import { dipWayOut } from './dipWayOut.ts';
 import type { Difficulty } from './difficulty.ts';
@@ -2836,10 +2839,12 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // the stages built the new way (planned and rolled, protoStage.ts), behind the New stages switch
   // (no more than 4000 px between flags on a hand-built stage: easyMode.ts capFlagSpans, LV-9)
   // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
-  if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) {
+  // (the test link's 1-1 picker: a gen2 roll skips the hand-built path, testlink1_1.ts)
+  const gen2Roll11 = config.id === '1-1' && !config.secret && ['A', 'B', 'C'].includes(pick11());
+  if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled() && !gen2Roll11) {
     // (a stage the mixer builds from its spec, 1-1 and 1-5, lays Easy itself: mixer/w1mix.ts; the rest are made gentler on the built
     // stage alone, easyMode.ts)
-    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && !!specFor(HAND_STAGES[config.id])));
+    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && !skip11Spec(config.id) && !!specFor(HAND_STAGES[config.id])));
     addMissingFind(st);
     return difficulty === 'normal' ? w4Normal(st) : st;
   }
@@ -2850,11 +2855,13 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     addDress(st, layoutVariant ?? 1);
     return st;
   }
-  // the new generator's stages (gen2/game.ts: 5-7 and 5-9): one of the curated rolls, then the shared passes below
-  if (isGen2Stage(config)) {
-    const stage = buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
+  // the new generator's stages (gen2/game.ts: 5-7 and 5-9): one of the curated rolls, then the shared passes below; and the test link's
+  // 1-1 picker's gen2 rolls (testlink1_1.ts: QA builds only, World 1's kit gen2/worlds/w1Kit.ts, the roll's seed)
+  const roll11 = config.id === '1-1' && !config.secret ? pick11() : 'mixer';
+  if (isGen2Stage(config) || roll11 === 'A' || roll11 === 'B' || roll11 === 'C') {
+    const stage = roll11 === 'A' || roll11 === 'B' || roll11 === 'C' ? buildGen2Stage({ config, kit: w1Kit(), seed: roll11Seed(roll11), difficulty }) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
     // (Easy's own goal for the stage, as the first-timer kid bot measured it: easyStage sets it, withGoals leaves it)
-    const easyGoal = GEN2_STAGES[config.id].easyGoal;
+    const easyGoal = GEN2_STAGES[config.id]?.easyGoal;
     if (difficulty === 'easy' && easyGoal !== undefined) stage.easyGoal = Math.min(easyGoal, stage.enemies.length);
     // (a heart by every second flag from the second on, as the hand-built stages have (protoStage.ts heartsAtFlags), set where it is
     // clear of the stumps and pickups around the flag (easyMode.ts heartBy): a rolled stage's flag can stand beside anything)
