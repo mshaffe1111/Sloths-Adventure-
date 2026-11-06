@@ -569,3 +569,22 @@ of these is walked through, art and all.
 
 **It applies to every stage's sections**, the 1-3- and 1-5-only ones included (`w1-stone-road`, `w1-low-boughs`, `w1-ledges`,
 `w1-ropes`): it's a world rule, not 1-1's. The porter's lay-test on 16 seeds checks it: no landing under 50 px except the three exceptions.
+
+## Round 10: the goal outro trimmed to the cap (designer, 11-06 10:38 AM ET; the lead's polish-bar item: the outro measures 925-1250 px against the cap, main's 685 px end log plus its walk-on)
+
+**What's long** (w1.ts on engine-core): every goal is a walk-on, then the 685 px end log (`END_LOG`, main's own).
+- #15's 'long' version has a 520-600 px walk-on;
+- #23 has a 260-300 px walk-on plus a 200-240 px step;
+- #30's 'walk-first' version has 240-280 plus 200-240.
+
+**The rule:** the END LOG stays 685 px. It's main's piece, the bootprint's place and the totem's, and it is the breath itself: 2.4 s of
+calm walking (V5's "a real breath"). Only the walk-on shrinks: **each goal's walk-on, before the end log, is 140-200 px in total.**
+
+| Section | Now | Trimmed |
+|---|---|---|
+| #15 `w1-quiet-arrival` | short: a 240-280 bough, then the end log; long: 520-600, then the end log | **one bough of 140-200, then the end log.** The 'long' version goes; the second version becomes the bough 30 px under the log, a single soft step up (`dy` [-30, -24]) |
+| #23 `w1-sunlit-log` | steps1: 260-300, end log (-60); steps2: 260-300 + 200-240 step, end log | **steps1: 140-200, end log (dy -60). steps2: 80-100 + a 80-100 step, end log.** The low log and its petals stay under the first piece |
+| #30 `w1-last-step-up` | hop: 240-280, hop up; walk-first: 240-280 + 200-240, hop up | **hop: 140-200, hop up (-80 to -70). walk-first: 80-100 + 80-100, hop up** |
+
+Outro = walk-on (140-200) + the end log (685) = **825-885 px**. If the planner's exact cap is lower, the walk-on shrinks further, to
+a 100 px floor, and the end log never does. The quiet arrival is kept: no beat on the end log (the FR9/FR10 goal exemption) and nothing hard on the walk-on.
