@@ -469,10 +469,13 @@ const codeRows: string[] = [];
 
 // 6. the stage's own tests
 const [w, m] = id.split('-');
-const testFile = `src/game/stage${w}${m}.test.ts`;
+// (1-1 builds on gen2 since 11-06 (Play): its own tests are gen2/stage11gen2.test.ts, which build Rolls A, B and C through the picker, the
+// roll asked for among them)
+const gen2Tests = id === '1-1';
+const testFile = gen2Tests ? 'src/game/gen2/stage11gen2.test.ts' : `src/game/stage${w}${m}.test.ts`;
 // (under --roll the stage's own tests cannot measure the roll: stage11.test.ts builds the mixer's 1-1 with buildProtoStage, whatever the
 // pick; run, they would pass or fail the mixer for the roll. Fail-closed: a FAIL that says so, never the mixer's result)
-if (ROLL) gate(`tests (${testFile})`, [`${testFile} builds the mixer's ${id} (buildProtoStage), not Roll ${ROLL} (seed ${ROLL_SEED}): not measured on the roll`], false);
+if (ROLL && !gen2Tests) gate(`tests (${testFile})`, [`${testFile} builds the mixer's ${id} (buildProtoStage), not Roll ${ROLL} (seed ${ROLL_SEED}): not measured on the roll`], false);
 else if (fs.existsSync(testFile)) {
   const t = spawnSync('npx', ['tsx', '--test', testFile], { encoding: 'utf8' });
   const fails = (t.stdout ?? '').split('\n').filter((l) => l.startsWith('not ok')).map((l) => l.replace(/^not ok \d+ - /, ''));

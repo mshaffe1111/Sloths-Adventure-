@@ -5,7 +5,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../headlessDom.ts';
-import { buildGen2Stage, provenGen2Stage } from './pipeline.ts';
+import { buildGen2Stage, provenGen2Stage, rollErrors } from './pipeline.ts';
 import { w1World } from './worlds/w1.ts';
 import { generateAllLevels } from '../worldsData.ts';
 
@@ -56,13 +56,11 @@ test("Easy is Normal's stage or fails by name: never a plan of its own (the red 
 
 // (the red team, RT-ENGINE #6: realisedCode writes the V-rule breaches to gen2.codeErrors, but only `loosened` and `missing` were folded
 // into gen2.errors, so a roll breaking V1-V20 with every slot filled would reach the game as clean. Each breach fails the roll, by name)
-test('every V-rule breach is a roll error (1-1 seeds that carry them)', () => {
-  let seen = 0;
-  for (let i = 0; i < 40 && seen < 3; i++) {
-    const st = buildGen2Stage({ config: c, kit: w1World(), seed: 1 + i * 37, difficulty: 'normal' });
-    if (!st.gen2.codeErrors?.length) continue;
-    seen++;
-    for (const e of st.gen2.codeErrors) assert.ok((st.gen2.errors ?? []).some((x) => x.includes(e)), `seed ${1 + i * 37}: the breach "${e}" is not a roll error`);
-  }
-  assert.ok(seen > 0, 'no seed of 40 breaks a V-rule: the test would not see the rule');
+test('every V-rule breach is a roll error (planted: never left to whether the data happens to carry one)', () => {
+  // (the porter, 11-06: on Round 7's data no seed of 40 broke a V-rule, so a search for one proved nothing)
+  const g = { errors: [] as string[], fills: [], codeErrors: ['V2 at token 4: Tg2< teaches a move already taught', 'V17 at token 1: no fork'] };
+  const e = rollErrors(g);
+  for (const v of g.codeErrors) assert.ok(e.some((x) => x.includes(v)), `the breach "${v}" is not a roll error: ${JSON.stringify(e)}`);
+  assert.deepEqual(rollErrors({ errors: [], fills: [] }), [], 'a roll with nothing wrong has no errors');
+  assert.ok(rollErrors({ errors: [], fills: [], loosened: ['slot 4 (n4 teach: no section for the job left, filled by its phase)'] })[0].startsWith('pool short at slot 4'));
 });

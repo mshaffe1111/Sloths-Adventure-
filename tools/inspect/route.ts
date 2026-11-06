@@ -208,6 +208,32 @@ function nearestPlat(plats: Platform[], x: number, y: number): Platform | undefi
   return best;
 }
 
+/**
+ * A walk along `plat` from x0 to x1, as the game plays it: a solid piece 50 px or taller standing on that floor across the way is a wall
+ * (engine.ts's wall check skips pieces under 50 px, so a stump under that he walks through, and so does this), so he hops onto it, walks
+ * across its top and drops off the far side (the lead's 11-05 ruling A: the route sees floor walls). A wall taller than a single jump is
+ * left to the check's own graph (a climb or a jump links it), so the walk is drawn straight there as before.
+ */
+export function walkAlong(stage: Stage, plat: Platform | undefined, x0: number, x1: number, y: number): Seg[] {
+  if (Math.abs(x1 - x0) <= 0.5) return [];
+  const dir = x1 > x0 ? 1 : -1, lo = Math.min(x0, x1), hi = Math.max(x0, x1);
+  const walls = plat ? stage.platforms.filter((q) => q !== plat && q.type === 'solid' && !q.broken && !q.push && q.height >= 50
+    && q.x > lo + 1 && q.x + q.width < hi - 1 && q.y < y - 20 && q.y + q.height >= y - 4 && y - q.y <= JUMP_RISE).sort((a, b) => dir * (a.x - b.x)) : [];
+  const out: Seg[] = [];
+  let x = x0;
+  for (const w of walls) {
+    const near = dir > 0 ? w.x : w.x + w.width, far = dir > 0 ? w.x + w.width : w.x;
+    if (dir * (near - x) < 0) continue;
+    if (Math.abs(near - x) > 0.5) out.push({ kind: 'walk', x0: x, y0: y, x1: near, y1: y, dt: Math.abs(near - x) / RUN, plat });
+    out.push({ kind: 'hop', x0: near, y0: y, x1: near, y1: w.y, dt: TIME.hopSec * K, plat: w, from: plat });
+    out.push({ kind: 'walk', x0: near, y0: w.y, x1: far, y1: w.y, dt: w.width / RUN, plat: w });
+    out.push({ kind: 'drop', x0: far, y0: w.y, x1: far, y1: y, dt: Math.sqrt((2 * (y - w.y)) / 1800), plat, from: w });
+    x = far;
+  }
+  if (Math.abs(x1 - x) > 0.5) out.push({ kind: 'walk', x0: x, y0: y, x1, y1: y, dt: Math.abs(x1 - x) / RUN, plat });
+  return out;
+}
+
 interface At { x: number; y: number }
 interface Step { segs: Seg[]; at: At; cost: number }
 
@@ -215,7 +241,7 @@ interface Step { segs: Seg[]; at: At; cost: number }
 function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step | null {
   const segs: Seg[] = [];
   const walkTo = (x: number, y: number) => {
-    if (Math.abs(x - at.x) > 0.5) segs.push({ kind: 'walk', x0: at.x, y0: at.y, x1: x, y1: y, dt: Math.abs(x - at.x) / RUN, plat: a.plat });
+    segs.push(...walkAlong(stage, a.plat, at.x, x, y));
   };
   let penalty = 0;
   if (a.kind === 'plat' && b.kind === 'plat') {
@@ -403,6 +429,6 @@ function dijkstra(nodes: Map<string, Node>, edges: Map<string, Edge[]>, s: strin
   const end = at.get(e)!;
   const en = nodes.get(e)!;
   const x = en.plat ? clamp(endX, ...ext(en.plat)) : end.x;
-  if (Math.abs(x - end.x) > 0.5) segs.push({ kind: 'walk', x0: end.x, y0: end.y, x1: x, y1: end.y, dt: Math.abs(x - end.x) / RUN, plat: en.plat });
+  segs.push(...walkAlong(stage, en.plat, end.x, x, end.y));
   return { segs, end: { x, y: end.y } };
 }

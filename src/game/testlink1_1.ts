@@ -27,10 +27,27 @@ export const skip11Spec = (id: string): boolean => id === '1-1' && pick11() === 
  * (the tests and the tools) the stage's layout variant picks it, so a run is the same each time
  */
 let playSeed: number | null = null;
-export const newPlay11 = (rand: () => number = Math.random): number => (playSeed = provenSeedFor('1-1', Math.floor(rand() * 1e9)));
+/** the next play's seed, drawn ahead so its stage can be built while the map is up (buildAhead.ts); Play takes it */
+let nextSeed: number | null = null;
+export const peekPlay11 = (rand: () => number = Math.random): number => (nextSeed ??= provenSeedFor('1-1', Math.floor(rand() * 1e9)));
+export const newPlay11 = (rand: () => number = Math.random): number => {
+  playSeed = nextSeed ?? provenSeedFor('1-1', Math.floor(rand() * 1e9));
+  nextSeed = null;
+  return playSeed;
+};
 export const play11Seed = (variant: number): number => playSeed ?? provenSeedFor('1-1', variant - 1);
-/** forget the drawn seed (tests) */
-export const clearPlay11 = (): void => { playSeed = null; };
+/** run `fn` as if `seed` had been drawn for this play (the build-ahead builds the next play's stage with it) */
+export function withPlaySeed<T>(seed: number, fn: () => T): T {
+  const was = playSeed;
+  playSeed = seed;
+  try {
+    return fn();
+  } finally {
+    playSeed = was;
+  }
+}
+/** forget the drawn seeds (tests) */
+export const clearPlay11 = (): void => { playSeed = null; nextSeed = null; };
 
 /** Matt's picker (Old 1-1, Rolls A/B/C) shows only in a QA build with its flag: ?pick11 once (kept on the device), never for testers */
 export function pickerOn(): boolean {
