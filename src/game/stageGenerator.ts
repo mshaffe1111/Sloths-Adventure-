@@ -2868,6 +2868,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // (the test link's 1-1 picker: a gen2 roll skips the hand-built path, testlink1_1.ts)
   // (1-1's Play is gen2 from the proven list: only Matt's Old 1-1 pick takes the hand-built path)
   const gen2Roll11 = config.id === '1-1' && !config.secret && pick11() !== 'old';
+  // (builtOnGen2 below is this same test, for every reader that asks whether a stage is gen2's: one definition)
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled() && !gen2Roll11) {
     // (a stage the mixer builds from its spec, 1-1 and 1-5, lays Easy itself: mixer/w1mix.ts; the rest are made gentler on the built
     // stage alone, easyMode.ts)
@@ -3080,4 +3081,14 @@ export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
     findId: find.id,
     hidden,
   });
+}
+
+/**
+ * Whether a stage is built by gen2 (the lead's ruling, 11-06: one definition): a curated gen2 stage (gen2/game.ts isGen2Stage), or 1-1,
+ * which rolls on gen2 from the proven list unless Matt's Old 1-1 pick is on (the same test buildStage makes, gen2Roll11). The old
+ * generator's rulers (levels.test, stageQuality.test, platformPlan.test) judge only the stages this is false for; gen2's own tests judge
+ * the rest (1-1: gen2/rolledFlags, forks11, the quiet line, the standing kinds).
+ */
+export function builtOnGen2(config: Pick<LevelConfig, 'id' | 'secret'>): boolean {
+  return isGen2Stage(config) || (config.id === '1-1' && !config.secret && pick11() !== 'old');
 }

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { planStage, baseLook, findStairs, groundRegions, lookShares, longestRun, h01, VARIANTS, PILLAR_VARIANTS, SIGNATURE, type ThinLook } from './platformPlan.ts';
-import { generateStage, setLayoutVariant } from './stageGenerator.ts';
+import { builtOnGen2, generateStage, setLayoutVariant } from './stageGenerator.ts';
 import { generateAllLevels } from './worldsData.ts';
 import type { Platform } from './types.ts';
 
@@ -110,6 +110,8 @@ test('on the generated stages of every world the plan meets the variety targets'
   let checked = 0;
   for (const l of levels) {
     if (l.miniIndex > 6) continue; // a sample per world keeps the run short; the script measures the rest
+    // (the old generator's look plan: a stage gen2 builds draws its kinds by the designer's standing-kinds line, the lead 11-06)
+    if (builtOnGen2(l)) continue;
     setLayoutVariant(null);
     const stage = generateStage(l);
     const plan = planStage(stage.platforms as Platform[], l.worldIndex, 12345);

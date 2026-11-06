@@ -5,7 +5,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generateAllLevels } from './worldsData.ts';
-import { buildStage, generateStage, setLayoutVariant } from './stageGenerator.ts';
+import { buildStage, builtOnGen2, generateStage, setLayoutVariant } from './stageGenerator.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import { checkLanes, validateStage } from './levelCheck.ts';
 import { measureStage } from './stageMetrics.ts';
@@ -20,7 +20,8 @@ const ascents = levels.filter((l) => l.objectiveType === 'ascent');
  * the old generator's stages (its forks, corridors, flag spacing and platform styles): the new generator's (gen2/game.ts: 5-7, 5-9, World 6)
  * are built from sections instead, and held to STAGE-RULES by src/game/gen2's tests and the inspector
  */
-const oldGen = horizontal.filter((l) => !isGen2Stage(l));
+// (the old generator's stages: builtOnGen2, the one definition; 1-1 rolls on gen2 and its own tests judge it)
+const oldGen = horizontal.filter((l) => !builtOnGen2(l));
 
 /** a fixed spread of layout variants (null is the designed layout) */
 const VARIANTS = [null, 371001, 664213];
@@ -49,7 +50,7 @@ test('every ordinary stage takes the typical player at least 125 s and the quick
 test('stages grow from about two and a quarter minutes in World 1 to about four in World 10, and none runs past five', () => {
   const med = (w: number) => {
     // (each generator's own time model: a gen2 stage's lianas cost a self-swinging swing's time, gen2Model, as its length loop reads it)
-    const xs = levels.filter((l) => l.worldIndex === w).map((l) => (isGen2Stage(l) ? gen2Model(stage(l, null), MODEL_TYPICAL) : modelStage(stage(l, null), MODEL_TYPICAL).total)).sort((a, b) => a - b);
+    const xs = levels.filter((l) => l.worldIndex === w).map((l) => (builtOnGen2(l) ? gen2Model(stage(l, null), MODEL_TYPICAL) : modelStage(stage(l, null), MODEL_TYPICAL).total)).sort((a, b) => a - b);
     return xs[xs.length >> 1];
   };
   const m1 = med(1);
