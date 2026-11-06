@@ -3,3 +3,4 @@ near11-N 6aede8020e0338d1bb817d84  img2img, starts A/B, s62/s68, seeds 7/23, 8 t
   N finished ~14:50:38Z (last file), ~5.3 min, ~$0.24. Picks: A-s62-23 (first), A-s68-23 (backup). Out: A-s62-7 (iridescent key spots
   on the monstera), B takes (rocks tinted pink by the key), A-s68-7 (not keyed: A-s62-23 / s68-23 cleaner).
 near11-hd 6aede9b60e0338d1bb81815b native pass to 1736 tall on grey, A-s62-23 + A-s68-23 (striphdgpu.py)  started 14:52:38Z
+  hd finished ~14:55:10Z (~2.5 min, ~$0.12). TOTAL ~7.8 GPU min = ~$0.36 of $1.
