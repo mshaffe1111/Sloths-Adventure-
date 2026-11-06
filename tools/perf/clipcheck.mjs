@@ -483,6 +483,11 @@ async function walk(browser, base, save, size) {
         b.forEach((x, i) => found.push({ ...x, n: i + 1, screen: 'testers: done badge', save, size: size.id, shot: file }));
       }
     }
+    // Dot's first tip over the level, a fresh save's (with its Skip tips button): inside her layer only. The walk above opens stages with
+    // lessons off, so this is where her bubble is really up
+    scope = '.dg-root';
+    await judge("testers: Dot's bubble");
+    scope = '';
     await click('button:has-text("I\'m done")');
     await click('button:has-text("Tap again to finish")');
     await page.locator('button:text-is("Send")').waitFor({ timeout: 20000 });
