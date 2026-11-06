@@ -15,6 +15,7 @@
  * animals for Easy's lower bar (budget.quota.check, which caps the goal here). So for them this leaves out the stones, the animal cut
  * and the longer tell (nothing is softened twice), and keeps what gen2 does not do: Easy's goal (`easyGoal`), the 70%-hold check, the flags and a heart at every flag.
  */
+import { GEN2_STAGES } from './gen2/game.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, Platform } from './types.ts';
 import { doubleAllowed, heldMaxGap, jumpOK, PICKUP_APART, SAFE_APPROACH, validateStage, type CheckGraph } from './levelCheck.ts';
@@ -518,8 +519,11 @@ export function easyStage(stage: Stage): Stage {
   // no water, no fall that costs a life (gen2 1-1 had 23 on Easy and no damage); Meeca's stage was the first such case)
   const px = stage as Stage & { proto?: { meeca?: unknown; water?: Array<{ kind?: string }> }; heartFalls?: unknown[] };
   const risky = stage.enemies.length > 0 || stage.waterY !== undefined || !!px.heartFalls?.length || !!px.proto?.water?.some((z) => z.kind === 'deadly') || (stage.rivers ?? []).length > 0 || ((stage as { gen2?: { budget?: { pit?: string } } }).gen2?.budget?.pit ?? 'soft') !== 'soft';
-  // (scoped to gen2 stages for now, whose risks this reads in full: on the live stages it missed thorns and hazards and took 12 stages'
-  // hearts, so the every-stage pass needs a full reading of risk first, the lead's to schedule)
-  if (!px.proto?.meeca && (risky || !gen2)) for (const cp of cps) heartBy(stage, cp, next);
+  // (scoped for now: on the live stages this reading of risk missed thorns and hazards and took 12 stages' hearts, so the every-stage pass
+  // needs a full reading of risk first, the lead's to schedule)
+  // (and, until the lead's ruling on live World 8 (8-1/8-2/8-6's Easy builds with no creature), only on a gen2 stage not yet shipped:
+  // gen2 1-1 as the test link's picker builds it; a shipped gen2 stage (GEN2_STAGES) keeps a heart at every flag, easyMode.test's promise)
+  const unshipped = gen2 && !GEN2_STAGES[stage.config.id];
+  if (!px.proto?.meeca && (risky || !unshipped)) for (const cp of cps) heartBy(stage, cp, next);
   return stage;
 }
