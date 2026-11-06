@@ -54,7 +54,7 @@ Matt backs off. He pops in with ideas, says when something is broken, plays at t
 - TEAM (lead's call, from reference/research/STUDIO-PRACTICE.md): builders pitch blind (one core idea per stage, one page), the lead pools and cuts; builders own a world; everything after the pitch is shared (rules sheet, art style guide, side-by-side play review at check-ins); proof on the real page; grow from 1 builder toward 8 by measured cost; a boss builder and a specials builder when their turn comes; an art director and a player-data role as standing roles.
 
 ## Open with Matt (one question at a time)
-- How far tonight: he decides once he trusts how I run the team. Meter 67% at 4:23 PM ET (1.5%/h since 2:23 PM).
+- METER: 78% at 8:30 AM ET 11-06 (67% 11-05 4:23 PM; ~14% burned on 11-05). Week goal under 90%: about 12% left until the reset. TODAY IS LEAN: 3 helpers only (engine-core, planner, designer) toward the test link; hard stop ~82%; no art director or player-data helper until the meter allows.
 - Hugging Face: $71.83 left (Matt checked the balance, 11-05 ~4:55 PM ET); keep about $15 back. The lead approves engine art and tells Matt the spend.
 - Matt: "the focus of getting the engine done and right over playing around with something we're not even going to keep." No
   throwaway trials: everything built is engine code or kit data that stays.
