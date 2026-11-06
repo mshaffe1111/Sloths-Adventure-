@@ -653,10 +653,11 @@ const floorDash = section({
   feel: ['1-1', '1-2', '1-3', '1-5'], not: NOT_11, rating: 2,
   source: "W1-NEW-SECTIONS #14: old 1-1's floor (its 0.384) as a section: a high road of thin logs on posts over the floor, hop stumps below, either road walks on; the last post a new height",
 });
-/** #15: the exit totem an `objective` socket on the end log; the bootprint the held clue's place (R-165.31), reported */
+/** #15: the exit totem an `objective` socket on the end log; the bootprint the held clue's place (R-165.31), reported. No low log (the
+ *  lead, 11-05: lowLog assumes a floor road under it and the end has none, so it lay unreachable under the end road: Matt's Roll C petals) */
 const quietArrival = section({
   id: 'w1-quiet-arrival', name: 'quiet arrival', phases: ['goal'], difficulty: 1, needs: ['walk'], ports: ['ledge', 'ledge'], window: BOUGH_WINDOW,
-  versions: [[240, 280], [520, 600]].map((w, j) => ({ id: j ? 'long' : 'short', groups: [(k: string) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, w as R2), limb(`${k}L`, { kind: 'walk', after: `${k}a`, dy: [0, 0] }, END_LOG, 'log'), lowLog(`${k}lo`, `${k}a`, [0.2, 0.3])], sockets: [totem(`${k}L`), clue(`${k}L`), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2)], last: `${k}L` })] })),
+  versions: [[240, 280], [520, 600]].map((w, j) => ({ id: j ? 'long' : 'short', groups: [(k: string) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, w as R2), limb(`${k}L`, { kind: 'walk', after: `${k}a`, dy: [0, 0] }, END_LOG, 'log')], sockets: [totem(`${k}L`), clue(`${k}L`)], last: `${k}L` })] })),
   feel: ['1-1'], not: NOT_11, rating: 1,
   source: "W1-NEW-SECTIONS #15: a calm high-branch walk onto the long high log (main's old 1-1 end: 685 px, exit_totem, no shrine); 1-1.md:23; stageClue.ts:16",
 });
