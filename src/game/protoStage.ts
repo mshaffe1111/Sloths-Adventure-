@@ -60,6 +60,7 @@ import { skip11Spec } from './testlink1_1.ts';
 const specFor = (id: string) => (skip11Spec(id) ? undefined : specForAll(id as never));
 import { clearDress, ownPetals, placeSeed } from './mixer/post.ts';
 import { dressSize } from './dressArt.ts';
+import { inDoorBox } from './mixer/propSupport.ts';
 import { buildSinkhole, w3Pick } from './w3Sections.ts';
 import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 
@@ -410,7 +411,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
 /** Pokey's body width (engine.ts: the hero is 44 px wide) */
 const HERO_W = 44;
 /** a dressing piece clear of the spawn (one body width either side of his body) and of the stage's own set dressing */
-export function dressClear(d: { n: string; x: number; b: number }, st: { spawnX: number; spawnY: number; proto?: ProtoExtras }): boolean {
+export function dressClear(d: { n: string; x: number; b: number }, st: { spawnX: number; spawnY: number; exitTotemX?: number; exitTotemY?: number; proto?: ProtoExtras }): boolean {
+  // (nothing in front of the way out: the exit door's box, the door gate's own (the lead, 11-05: gen2 1-1's rolls dressed the door))
+  if (inDoorBox(d, st)) return false;
   let w = 60, h = 60;
   try { ({ w, h } = dressSize(d.n as never)); } catch { /* a piece with no frame: 60 px */ }
   const x0 = d.x - w / 2, x1 = d.x + w / 2;
@@ -431,7 +434,7 @@ const DRESS_MOVE_MAX = 1400;
  * him, to the first spot where it is clear (dressClear) and overlaps no other dressing piece there; its facing and its layer are its own
  * still. Dropped only when no clear spot lies within a screen on that surface: each such piece is returned in `dropped`.
  */
-export function placeDress<T extends { n: string; x: number; b: number }>(ds: T[], st: { spawnX: number; spawnY: number; platforms: readonly Platform[]; proto?: ProtoExtras }): { kept: T[]; dropped: T[] } {
+export function placeDress<T extends { n: string; x: number; b: number }>(ds: T[], st: { spawnX: number; spawnY: number; exitTotemX?: number; exitTotemY?: number; platforms: readonly Platform[]; proto?: ProtoExtras }): { kept: T[]; dropped: T[] } {
   const kept: T[] = [], dropped: T[] = [];
   const width = (d: T) => { try { return dressSize(d.n as never).w; } catch { return 60; } };
   const free = (d: T, x: number, others: T[]) => others.every((o) => o === d || Math.abs(o.b - d.b) >= 80 || Math.abs(o.x - x) >= (width(o) + width(d)) / 2);
@@ -440,7 +443,8 @@ export function placeDress<T extends { n: string; x: number; b: number }>(ds: T[
     const w = width(d);
     const on = st.platforms.find((q) => Math.abs(q.y - d.b) < 4 && d.x >= q.x && d.x <= q.x + q.width);
     const lo = on ? on.x + w / 2 : -Infinity, hi = on ? on.x + on.width - w / 2 : Infinity;
-    const dir = d.x >= st.spawnX + HERO_W / 2 ? 1 : -1;
+    // (away from the door when it stands in the door's box, else away from the spawn, keeping its side of him)
+    const dir = inDoorBox(d, st) ? (d.x >= st.exitTotemX! ? 1 : -1) : d.x >= st.spawnX + HERO_W / 2 ? 1 : -1;
     let at: number | undefined;
     for (let dx = 10; dx <= DRESS_MOVE_MAX && at === undefined; dx += 10) {
       const x = Math.round(d.x + dir * dx);

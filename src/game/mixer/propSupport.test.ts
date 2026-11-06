@@ -56,3 +56,16 @@ test('nothing dressed through a thin platform: a tall mushroom on the floor draw
   assert.equal(b.length, 1, JSON.stringify(b));
   assert.equal(b[0].x, 1100);
 });
+
+test('a dressing piece on the exit door is moved off it along its surface, away from the door (planted); one clear of it stays', async () => {
+  const { placeDress } = await import('../protoStage.ts');
+  const { dressOverDoor } = await import('./propSupport.ts');
+  const st: any = { spawnX: 100, spawnY: 900, exitTotemX: 1500, exitTotemY: 900, platforms: [{ id: 1, x: 0, y: 900, width: 2000, height: 200, type: 'solid', style: 'moss_stone' }], proto: {} };
+  const ds = [{ n: 'w1Fern', x: 1520, b: 900 }, { n: 'w1Fern', x: 800, b: 900 }];
+  assert.equal(dressOverDoor({ ...st, proto: { dress: ds.map((d) => ({ ...d })) } }).length, 1);
+  const { kept, dropped } = placeDress(ds, st);
+  assert.deepEqual(dropped, []);
+  assert.equal(kept.find((d) => d.x === 800)?.x, 800);
+  assert.ok(kept.some((d) => d.x > 1520), 'moved to the right, away from the door');
+  assert.deepEqual(dressOverDoor({ ...st, proto: { dress: kept } }), []);
+});

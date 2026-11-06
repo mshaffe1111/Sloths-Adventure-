@@ -71,16 +71,18 @@ export function propBreaches(s: any, out: { onStructure?: Record<string, number>
  */
 export const DOOR_HALF = 140, DOOR_H = 250;
 export function dressOverDoor(s: any): PropItem[] {
-  const x = s.exitTotemX, g = s.exitTotemY;
-  if (!(x > 0) || !Number.isFinite(g)) return [];
+  return propItems(s).filter((d) => inDoorBox(d, s));
+}
+/** a dressing piece's drawn box inside the exit door's (the door gate's own box: dressOverDoor; protoStage.ts placeDress keeps clear of it) */
+export function inDoorBox(d: { n: string; x: number; b: number; w?: number }, s: { exitTotemX?: number; exitTotemY?: number }): boolean {
+  const x = s.exitTotemX!, g = s.exitTotemY!;
+  if (!(x > 0) || !Number.isFinite(g)) return false;
   const d0 = x - DOOR_HALF, d1 = x + DOOR_HALF, top = g - DOOR_H;
-  return propItems(s).filter((d) => {
-    let sz = { w: d.w ?? 60, h: 60 }; if (d.w === undefined) try { sz = dressSize(d.n as never); } catch { /* no frame: 60 px */ }
-    // (the clue decal lies flat from the piece top down, CLUE_H deep: w1NewArt.ts cluePlace)
-    if (d.n === CLUE_NAME) sz = { w: CLUE_W, h: 0 };
-    const x0 = d.x - sz.w / 2, x1 = d.x + sz.w / 2, y0 = d.b - sz.h, y1 = d.b;
-    return x1 > d0 && x0 < d1 && y1 > top && y0 < g - 2 && sz.h > 0;
-  });
+  let sz = { w: d.w ?? 60, h: 60 }; if (d.w === undefined) try { sz = dressSize(d.n as never); } catch { /* no frame: 60 px */ }
+  // (the clue decal lies flat from the piece top down, CLUE_H deep: w1NewArt.ts cluePlace)
+  if (d.n === CLUE_NAME) sz = { w: CLUE_W, h: 0 };
+  const x0 = d.x - sz.w / 2, x1 = d.x + sz.w / 2, y0 = d.b - sz.h, y1 = d.b;
+  return x1 > d0 && x0 < d1 && y1 > top && y0 < g - 2 && sz.h > 0;
 }
 
 /**

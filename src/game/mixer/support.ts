@@ -53,6 +53,9 @@ export function supportBreaches(st: StageIn, world: number, unjudged: SupportUnj
     const under = [
       ...P.filter((q) => q !== p && q.x < p.x + p.width && q.x + q.width > p.x && q.y >= bottom - SLACK).map((q) => q.y),
       ...water.filter((z) => z.x0 < p.x + p.width && z.x1 > p.x && z.y >= bottom - SLACK).map((z) => z.y),
+      // (a piece it stands on whose body reaches past its drawn bottom: a stone step seated on a deep bank, its drawn earth sunk into the
+      // bank's, gen2 1-1's rolls: the bank holds it; one standing clear of it over air is still judged, support.test.ts plants both)
+      ...P.filter((q) => q !== p && q.x < p.x + p.width && q.x + q.width > p.x && Math.abs(q.y - (p.y + p.height)) <= SLACK && q.y + q.height >= bottom).map(() => bottom),
     ];
     const near = Math.min(...under, st.config.levelHeight);
     if (near - bottom > SLACK) out.push({ id: p.id, x: p.x, y: p.y, w: p.width, kind, drawn: f.drawn, air: under.length ? Math.round(near - bottom) : 'pit', why: 'a piece that never floats with open air under its drawn body' });

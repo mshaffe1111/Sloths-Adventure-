@@ -177,7 +177,9 @@ const gStones = (heights: number[], share: [number, number] = [0.55, 0.68], dbl 
   let prev = after!, prevH = 0;
   heights.forEach((h, j) => {
     const key = `${k}s${j}`;
-    pieces.push({ key, shape: 'block', w: [110, 160], place: { kind: dbl ? 'double' : 'jump', after: prev, dy: [prevH - h, prevH - h], share, soft: true }, style: 'moss_stone', landing: true, main: true });
+    // (a stone, 50 px thick (World 1's painted rock: mixer w1mix plat 'stone'), so the soft pit's banks reach it down to the pit floor (pipeline.ts pitUnder deepen: 40 px or more): a pillar
+    // standing in the pit, as main's 1-1 pillars stood, never a 24 px slab over it (the lead, 11-05: no floating stones))
+    pieces.push({ key, shape: 'block', w: [110, 160], h: 50, place: { kind: dbl ? 'double' : 'jump', after: prev, dy: [prevH - h, prevH - h], share, soft: true }, style: 'moss_stone', landing: true, main: true });
     prev = key; prevH = h;
   });
   const f: W1Piece = { ...floor(`${k}f`, [300, 380]), place: { kind: 'jump', after: prev, dy: [prevH, prevH], share: [0.5, 0.6], soft: true } };
