@@ -242,8 +242,10 @@ export interface LianaSwing {
 export type PlaceRule =
   | { kind: 'start' }
   | { kind: 'walk'; after: string; dy?: Range }
-  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
-  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; water?: boolean; soft?: boolean }
+  /** `gapPx` (the designer's pixel bands, 11-06: a double's TEACH 195-205, its TEST 205-230): the gap laid in this band exactly, in place of
+   *  `share`, never scaled by the roll's tempo or the jump's reach; a band past the reach fails the section by name */
+  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean }
+  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
@@ -677,6 +679,8 @@ export interface Gen2Meta {
   codeErrors?: string[];
   /** V19b as stage.ts judges it (storyChecks endAboveWindow, the one window definition): the miss, by name; a stage with an endHigh brief only */
   windowMiss?: string;
+  /** a rolled stage's flags against ROLLED_FLAGS (pipeline rolledFlagBreaches), each miss by name */
+  flagMiss?: string[];
   /** the brief the rolled graph was rolled under (manifest graphs.briefs) */
   brief?: GraphBrief;
   /** each node as laid, for the gates that read the built stage (V18's nodePieces.ts, the stills spots): its token, the x-range its

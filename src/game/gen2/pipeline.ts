@@ -818,8 +818,10 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const cap = bounceCap(pc);
       dy = cap !== undefined ? Math.max(dy, cap - a.y) : Math.max(-riseLimit(dbl, budget.riseShare) * 0.95, dy);
       const g = glide ? glideGap(-dy, budget) : maxGap(-dy, dbl, budget.margin);
-      const share = shareFor(pl.share);
-      const gap = Math.max(60, R(share * (g > 0 ? g : 60)));
+      // (a pixel band, gapPx: laid in it exactly from the same one draw a share takes, so the stream after it is unchanged; never past the
+      // jump's reach at this rise, which fails the section by name)
+      if (pl.gapPx && pl.gapPx[1] > g) throw new Error(`gen2 section ${tpl.id}: ${pc.key}'s gapPx ${pl.gapPx[0]}-${pl.gapPx[1]} is past the ${glide ? 'glide' : dbl ? 'double' : 'jump'}'s reach ${R(g)} px at a ${R(-dy)} px rise`);
+      const gap = pl.gapPx ? R(roll(rng, pl.gapPx)) : Math.max(60, R(shareFor(pl.share) * (g > 0 ? g : 60)));
       x = a.x + a.w + gap;
       y = a.y + dy;
       // (a glide's soft pit climbs back to its take-off, as a liana's does: with steps out on the far side the leaf would be optional)
@@ -913,6 +915,10 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const a = ref(pl.on);
       x = a.x + roll(rng, pl.at) * a.w;
       y = a.y + roll(rng, pl.dy);
+      // (placed past the end of the piece it is over (at > 1), it leaves a gap at that end: recorded as a ledge gap, so the world's catch
+      // bough or pit goes under it as under a jump's. Unrecorded, W1's mushroom chain b (b2 over b1 at 1.05) left a 20 px slot over
+      // nothing off b1's end, a life lost on Roll A once the chain was no longer laid mirrored: stage11gen2.test 'nothing can cost a life')
+      if (x > a.x + a.w + 1) gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: false });
     }
     // (a crumbling tile is a tile's width whatever the roll or Easy's pad: levelCheck holds every tile to it; never main, never needed)
     const crumble = !!pc.crumble && !hang;
@@ -1014,6 +1020,24 @@ const SHRINE_BANK = 560;
  * flag is put in a section that ends within `slack` of that, and needs a plain stretch `pad` px wide on a main piece
  */
 export const FLAG_SPAN = { max: 4500, slack: 300, pad: 160 } as const;
+/** a rolled stage's flags (the lead's rulings, 11-06; levels.test and stageQuality.test's lines): the first at least `first` px from the
+ *  start, none closer than `min` to the one before, no span over `max` (from x 0, as levels.test counts it, to the first; between flags),
+ *  and the last within `last` of the exit */
+export const ROLLED_FLAGS = { first: 700, min: 900, max: 2300, last: 2000 } as const;
+/** a rolled stage's flags against ROLLED_FLAGS, each miss by name (empty: kept): the verdict, the same the tests read */
+export function rolledFlagBreaches(st: { spawnX: number; exitTotemX: number; checkpoints?: Array<{ x: number }> }): string[] {
+  const xs = (st.checkpoints ?? []).map((c) => c.x).sort((a, b) => a - b);
+  if (!xs.length) return ['flags: none'];
+  const out: string[] = [];
+  if (xs[0] - st.spawnX < ROLLED_FLAGS.first) out.push(`flags: the first ${R(xs[0] - st.spawnX)} px from the start (at least ${ROLLED_FLAGS.first})`);
+  if (xs[0] > ROLLED_FLAGS.max) out.push(`flags: the first at x ${R(xs[0])} (no span over ${ROLLED_FLAGS.max})`);
+  for (let k = 1; k < xs.length; k++) {
+    const g = xs[k] - xs[k - 1];
+    if (g < ROLLED_FLAGS.min || g > ROLLED_FLAGS.max) out.push(`flags: ${R(g)} px apart at x ${R(xs[k - 1])} (${ROLLED_FLAGS.min}-${ROLLED_FLAGS.max})`);
+  }
+  if (st.exitTotemX - xs[xs.length - 1] > ROLLED_FLAGS.last) out.push(`flags: the last ${R(st.exitTotemX - xs[xs.length - 1])} px from the exit (within ${ROLLED_FLAGS.last})`);
+  return out;
+}
 /** the plain-walk seconds at the start before any animal may stand (§2 "Opening seconds": 3-5 s) */
 const OPEN_SECONDS = 5;
 
@@ -1816,7 +1840,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   });
   // (no span past FLAG_SPAN.max: a section holds one flag, and its flag socket can stand near its start, so a span the rule above left
   // long, a slow start section and a long teach after it (1-1 seed 1: 5914 px), is split at the furthest wide main piece still in reach)
-  for (let guard = 0; guard < 40; guard++) {
+  const rolledFlags = !!kit.manifest.graphs?.briefs?.[budget.id];
+  for (let guard = 0; guard < 40 && !rolledFlags; guard++) {
     const xs = [laid.spawn.x, ...checkpoints.map((c) => c.x).sort((a, b) => a - b), laid.exit.x];
     const k = xs.findIndex((x, i) => i > 0 && x - xs[i - 1] > FLAG_SPAN.max);
     if (k < 0) break;
@@ -1834,6 +1859,43 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     }
     if (!best) break;
     checkpoints.push({ x: R(best.x), y: best.y, reached: false });
+  }
+  if (rolledFlags) {
+    // (a rolled stage, ROLLED_FLAGS: the flags by meaning above (its rests, every 35 s) are kept where they keep the floor; a flag closer
+    // than `min` to the one before, or `first` to the start, goes; then every span past `max` (`last` before the exit) gets a flag at the
+    // furthest flag spot in reach that keeps `min` from both neighbours. Spots: a wide main piece's top, outside a room and a zone. A span
+    // no spot can split is left, and the verdict (rolledFlagBreaches) fails the roll by name)
+    checkpoints.sort((a, b) => a.x - b.x);
+    for (let k = 0; k < checkpoints.length; k++) {
+      const prev = k ? checkpoints[k - 1].x : laid.spawn.x;
+      if (checkpoints[k].x - prev < (k ? ROLLED_FLAGS.min : ROLLED_FLAGS.first)) { checkpoints.splice(k, 1); k--; }
+    }
+    const spots: Array<{ x0: number; x1: number; y: number }> = [];
+    for (const sec of laid.sections) {
+      if (sec.room) continue;
+      for (const q of sec.pieces) {
+        const pl = q.platform;
+        if (q.main && pl.width >= FLAG_SPAN.pad) spots.push({ x0: pl.x + FLAG_SPAN.pad / 2, x1: pl.x + pl.width - FLAG_SPAN.pad / 2, y: pl.y });
+      }
+    }
+    for (let guard = 0; guard < 60; guard++) {
+      const xs = [0, ...checkpoints.map((c) => c.x), laid.exit.x];
+      let k = -1;
+      for (let i = 1; i < xs.length; i++) if (xs[i] - xs[i - 1] > (i === xs.length - 1 ? ROLLED_FLAGS.last : ROLLED_FLAGS.max)) { k = i; break; }
+      if (k < 0) break;
+      const from = xs[k - 1], to = xs[k], last = k === xs.length - 1;
+      const lo = k === 1 ? Math.max(laid.spawn.x + ROLLED_FLAGS.first, from) : from + ROLLED_FLAGS.min;
+      const hi = Math.min(from + (k === 1 ? ROLLED_FLAGS.max : ROLLED_FLAGS.max), last ? to : to - ROLLED_FLAGS.min);
+      let best: { x: number; y: number } | null = null;
+      for (const sp of spots) {
+        const x = Math.min(sp.x1, hi);
+        if (x < sp.x0 || x < lo || flagInZone(laid.zones, x, sp.y)) continue;
+        if (!best || x > best.x) best = { x, y: sp.y };
+      }
+      if (!best) break;
+      checkpoints.push({ x: R(best.x), y: best.y, reached: false });
+      checkpoints.sort((a, b) => a.x - b.x);
+    }
   }
   checkpoints.sort((a, b) => a.x - b.x);
   const safe = [{ x: laid.spawn.x, y: laid.spawn.y }, ...checkpoints, { x: laid.exit.x, y: laid.exit.y }];
@@ -2496,7 +2558,7 @@ export function stagePool(M: WorldManifest, stageId: string): SectionTemplate[] 
  * A built roll's errors, everything that fails it by name: its own (a check that failed), a tip with no words, a slot filled past its rule
  * (Law 22), a required section with no node, and every V-rule breach in its realised node code (the red team's RT-ENGINE #6)
  */
-export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loosened' | 'missing' | 'codeErrors' | 'windowMiss'>): string[] {
+export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loosened' | 'missing' | 'codeErrors' | 'windowMiss' | 'flagMiss'>): string[] {
   const st = { gen2: { ...g, errors: [...(g.errors ?? [])] } };
   // (a tip whose id has no Dot line fails the roll: it was never shown)
   const unsaid = [...new Set(st.gen2.fills.filter((f) => f.role === 'tip' && f.unsaid).map((f) => f.what))];
@@ -2509,6 +2571,7 @@ export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loos
   // codeErrors, so a roll breaking V1-V20 with every slot filled would have reached the game as clean)
   if (st.gen2.codeErrors?.length) st.gen2.errors.push(...st.gen2.codeErrors.map((e) => `node code: ${e}`));
   if (st.gen2.windowMiss) st.gen2.errors.push(st.gen2.windowMiss);
+  if (st.gen2.flagMiss?.length) st.gen2.errors.push(...st.gen2.flagMiss);
   return st.gen2.errors;
 }
 
@@ -2524,6 +2587,11 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   if (req.kit.manifest.graphs?.briefs?.[req.config.id]?.endHigh) {
     const w = endAboveWindow(st as never);
     if (!w.pass) st.gen2.windowMiss = `V19b: the end log at y ${w.endY} is not above y ${w.windowY}, where the bough window begins (x ${w.windowX})`;
+  }
+  // (a rolled stage's flags judged as the tests judge them: ROLLED_FLAGS, each miss by name)
+  if (req.kit.manifest.graphs?.briefs?.[req.config.id]) {
+    const f = rolledFlagBreaches(st);
+    if (f.length) st.gen2.flagMiss = f;
   }
   st.gen2.errors = rollErrors(st.gen2);
   return st;
