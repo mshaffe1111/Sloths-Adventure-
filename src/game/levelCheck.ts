@@ -482,6 +482,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
    * from the run only if an open edge lies within half the fall's reach of it (out and back). A run's edge is closed where a piece at its
    * height or higher stands against it (a wall, or the road going on)
    */
+  const gen2Built = !!(stage as { gen2?: unknown }).gen2;
   const roofedDrop = (a: Platform, b: Platform, bx0: number, bx1: number, dy: number): boolean => {
     let rx0 = ext(a)[0], rx1 = ext(a)[1];
     for (let grew = true; grew; ) {
@@ -561,7 +562,9 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
         if (r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK) {
           if (pouring.length && waterBetween(ax0, ax1, a.y, bx0, bx1, b.y)) continue;
           if (a.type !== 'bouncy' && blockBetween(a, b, ax0, ax1, bx0, bx1)) continue;
-          if (a.type !== 'bouncy' && dy < -8 && roofedDrop(a, b, bx0, bx1, dy)) continue;
+          // (gen2 stages only for this release, the lead 11-06: roofedDrop moved 4-9 layout 4's find; only 1-1 may change in 0.9.5, so the
+          // old generator's stages keep main's check: 4-9's dead stair is its own roadmap item)
+          if (gen2Built && a.type !== 'bouncy' && dy < -8 && roofedDrop(a, b, bx0, bx1, dy)) continue;
           link(pid(a), pid(b));
           if (a.type !== 'bouncy') maxGapUsed = Math.max(maxGapUsed, gap);
         }

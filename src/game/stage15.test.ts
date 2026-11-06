@@ -1,10 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildProtoStage, EXPERT_SECONDS } from './protoStage.ts';
-import { specFor } from './mixer/stages.ts';
-import { modelAll } from './stageTime.ts';
+import { buildProtoStage, EXPERT_SECONDS, G, PETAL_GOAL_15 } from './protoStage.ts';
 import { badPickups } from './flowerReach.ts';
-import { reachJump, JUMP_RISE, DOUBLE_RISE } from './physics.ts';
+import { reachJump, JUMP_RISE } from './physics.ts';
 import type { LevelConfig } from './types.ts';
 
 const cfg = {
@@ -13,92 +11,55 @@ const cfg = {
 } as LevelConfig;
 const SEEDS = Array.from({ length: 20 }, (_, i) => 1 + i * 41);
 
-// 1-5 is built by the level engine from its spec (mixer/stages.ts SPEC_15): the old builder's tests are kept promise for promise on the
-// mixed stage (engine-core, 11-05). The old stage asked for petals; the mixed 1-5 is a relic hunt for Meeca's marks (stagePlan.ts), so its
-// goal promises are made of its marks. Where the old test named the old stage's shape (its four beats, the ground line G, the lookout at
-// y 300), the new one names the spec's own (its nodes, its test nodes, the death line, the ledge before the seed).
-const SPEC = specFor('1-5')!;
-const marks = (st: { collectibles: Array<{ type: string; mark?: string }> }) => st.collectibles.filter((c) => c.type === 'relic' && c.mark === 'meeca');
-const deathOf = (st: { waterY?: number; config: LevelConfig }) => st.waterY ?? st.config.levelHeight;
-
-test('1-5: every roll keeps the plan (the spec\'s nodes in order), asks for its goal out of about one and a half times that, and takes two minutes', () => {
-  // (Normal's plan: a node laid on Easy only is not on it)
-  const jobs = [...new Set(SPEC.nodes.filter((n) => !n.lay?.easyOnly).map((n) => n.job))];
+test('1-5: every roll keeps the plan, asks for 77 petals out of about one and a half times that, and takes two minutes', () => {
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-5');
-    assert.deepEqual([...new Set(st.proto.beats.map((b) => b[2].split(':')[0]))], jobs, `seed ${s}`);
-    const goal = st.normalGoal ?? st.config.targetCount;
-    const held = marks(st).length;
-    assert.ok(held >= goal * 1.4 && held <= goal * 1.6, `seed ${s}: ${held} marks for a goal of ${goal}`);
-    const fast = modelAll(st).fast.total;
-    assert.ok(fast >= EXPERT_SECONDS - 15, `seed ${s}: ${fast.toFixed(0)} s`);
-    assert.equal(st.proto.movedPickups ?? 0, 0, `seed ${s}`);
+    assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Start', 'Test', 'Twist', 'Finish'], `seed ${s}`);
+    assert.equal(st.config.targetCount, PETAL_GOAL_15);
+    const petals = st.collectibles.filter((c) => c.type === 'flower').length;
+    assert.ok(petals >= PETAL_GOAL_15 * 1.4 && petals <= PETAL_GOAL_15 * 1.6, `seed ${s}: ${petals} petals`);
+    assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS - 15, `seed ${s}`);
+    assert.equal(st.proto.movedPickups, 0, `seed ${s}`);
     assert.equal(badPickups({ platforms: st.platforms, vines: st.vines, ropes: st.ropes, waterY: st.waterY }, st.collectibles).length, 0, `seed ${s}`);
   }
 });
 
-test('1-5: the test asks for every move so far: a climb, a double jump and a bounce (the rope and the punch: the next test)', () => {
+test('1-5: the test asks for every move so far: a climb, a rope, a double jump, a bounce and a punch', () => {
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-5');
-    const tests = st.proto.beats.filter((b) => b[2].startsWith('test '));
-    assert.ok(tests.length, `seed ${s}: no test node`);
-    const inside = (x: number) => tests.some(([x0, x1]) => x >= x0 && x <= x1);
+    const [x0, x1] = st.proto.beats.find((b) => b[2].startsWith('Test'))!;
+    const inside = (x: number) => x >= x0 && x <= x1;
     assert.ok(st.vines.some((v) => v.vineType === 'tree_climb' && inside(v.x)), `seed ${s}: a climb`);
+    assert.ok(st.ropes!.some((r) => inside(r.x0)), `seed ${s}: a rope`);
     assert.ok(st.platforms.some((p) => p.type === 'bouncy' && inside(p.x)), `seed ${s}: a bounce`);
-    // pickups higher than one jump reaches from the piece under them, with nothing to stand on near them: double-jump pickups
-    const high = st.collectibles.filter((c) => (c.type === 'flower' || c.type === 'relic') && inside(c.x) && (() => {
-      const under = st.platforms.filter((p) => c.x >= p.x && c.x <= p.x + p.width && p.y > c.y).sort((a, b) => a.y - b.y)[0];
-      return !!under && under.y - c.y > JUMP_RISE + 20 + 34 && !st.platforms.some((p) => p !== under && p.y < under.y - 20 && p.y > c.y - 20 && c.x >= p.x - 40 && c.x <= p.x + p.width + 40);
-    })());
-    assert.ok(high.length >= 3, `seed ${s}: double-jump pickups (${high.length})`);
-  }
-});
-
-// (the lead, 11-06 9:21 AM, and the designer: the mixer has no rope idea and no punch idea, and gets no new beat (it is being retired). The
-// promise stays, run and reported as a known failure by name, carried to 1-5's move to gen2 (the designer's rope-gap spec is on file))
-test('1-5: the test asks for a rope and a punch', { todo: "known: the mixer's library has no rope or punch idea; carried to 1-5's gen2 move (lead 11-06 9:21 AM)" }, () => {
-  for (const s of SEEDS) {
-    const st = buildProtoStage(cfg, s, '1-5');
-    const tests = st.proto.beats.filter((b) => b[2].startsWith('test '));
-    const inside = (x: number) => tests.some(([x0, x1]) => x >= x0 && x <= x1);
-    assert.ok((st.ropes ?? []).some((r) => inside(r.x0)), `seed ${s}: a rope`);
     assert.ok(st.enemies.some((e) => inside(e.x)), `seed ${s}: something to punch`);
+    // petals higher than one jump reaches, over gaps only a double jump crosses
+    const high = st.collectibles.filter((c) => c.type === 'flower' && inside(c.x) && G - c.y > JUMP_RISE + 20 + 34 && !st.platforms.some((p) => p.y < G - 20 && c.x >= p.x - 40 && c.x <= p.x + p.width + 40));
+    assert.ok(high.length >= 3, `seed ${s}: double-jump petals (${high.length})`);
   }
 });
 
-// (the old 1-5's keepsake in a Hush Fern up a tree (protoStage.ts lookout): the mixer lays the find at the end and gets no new beat (the
-// lead, 11-06 9:21 AM); run and reported as a known failure by name, carried to 1-5's gen2 move)
-test('1-5: the keepsake hides in a fern up a tree', { todo: "known: the mixer lays the find at the stage's end, no fern-tree beat; carried to 1-5's gen2 move (lead 11-06 9:21 AM)" }, () => {
+test('1-5: creaking branches hold petals over safe ground (never needed to get through), the keepsake hides in a fern up a tree, a seed waits for the glide', () => {
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-5');
-    const fern = st.collectibles.filter((c) => c.type === 'find');
-    assert.equal(fern.length, 1, `seed ${s}`);
-    assert.equal(fern[0].findId, 'w1_keepsake');
-    assert.equal(fern[0].hidden, true);
-    const floor = st.platforms.filter((p) => fern[0].x >= p.x && fern[0].x <= p.x + p.width && p.y > fern[0].y).sort((a, b) => b.y - a.y)[0];
-    assert.ok(floor && floor.y - fern[0].y > 200, `seed ${s}: up a tree`);
-  }
-});
-
-test('1-5: creaking branches over safe ground; no seed, but a glint out of reach where Dot says "Something shiny" (ruling (b)); the keepsake: the test before', () => {
-  for (const s of SEEDS) {
-    const st = buildProtoStage(cfg, s, '1-5');
-    const death = deathOf(st);
     const creaky = st.platforms.filter((p) => p.type === 'fragile');
     assert.ok(creaky.length >= 8, `seed ${s}`);
     for (const p of creaky) {
       const mid = p.x + p.width / 2;
-      assert.ok(st.platforms.some((q) => q !== p && q.type !== 'fragile' && q.y > p.y && q.y < death && q.x <= mid && q.x + q.width >= mid), `seed ${s}: nothing safe under the creaking branch at ${p.x}`);
+      assert.ok(st.platforms.some((q) => q.y === G && q.x <= mid && q.x + q.width >= mid), `seed ${s}: ground under the creaking branch at ${p.x}`);
     }
-    // (the seed waits for the glide, the designer's ruling (b) at CP3, restated 11-06: 1-5 lays no seed, and SHOWS it: a glint at the
-    // puzzle beat, out of every jump's reach, where Dot says "Something shiny, far away...")
-    assert.equal(st.collectibles.filter((c) => c.type === 'seed').length, 0, `seed ${s}: 1-5 lays no seed`);
-    const puzzle = st.proto.beats.filter((b) => b[2].startsWith('puzzle beat'));
-    const inPuzzle = (x: number) => puzzle.some(([x0, x1]) => x >= x0 - 200 && x <= x1 + 200);
-    const glint = (st.proto.glints ?? []).find((g) => inPuzzle(g.x));
-    assert.ok(glint, `seed ${s}: a glint at the puzzle beat`);
-    const near = st.platforms.filter((p) => p.x <= glint!.x + 200 && p.x + p.width >= glint!.x - 200);
-    assert.ok(near.every((p) => p.y - glint!.y > DOUBLE_RISE + 60), `seed ${s}: the glint out of reach (y ${glint!.y})`);
-    assert.ok((st.proto.hints ?? []).some((h) => /Something shiny/.test(h.text) && inPuzzle(h.x)), `seed ${s}: Dot's "Something shiny" at the puzzle beat`);
+    const fern = st.collectibles.filter((c) => c.type === 'find');
+    assert.equal(fern.length, 1);
+    assert.equal(fern[0].findId, 'w1_keepsake');
+    assert.equal(fern[0].hidden, true);
+    assert.ok(G - fern[0].y > 200, `seed ${s}: up a tree`);
+    // the far seed: past a double jump from the lookout, inside a glide
+    const seeds = st.collectibles.filter((c) => c.type === 'seed');
+    const far = seeds.find((c) => !st.platforms.some((p) => p.type === 'bouncy' && Math.abs(p.x - c.x) < 260));
+    assert.ok(far, `seed ${s}: a glide seed`);
+    const lookout = st.platforms.filter((p) => p.y === 300 && p.x < far!.x).sort((a, b) => b.x - a.x)[0];
+    const ledge = st.platforms.find((p) => far!.x >= p.x && far!.x <= p.x + p.width && Math.abs(p.y - (far!.y + 34)) < 2)!;
+    const gap = ledge.x - (lookout.x + lookout.width);
+    assert.ok(gap > reachJump(lookout.y - ledge.y, true) * 1.15, `seed ${s}: a double jump falls short (${gap})`);
   }
 });

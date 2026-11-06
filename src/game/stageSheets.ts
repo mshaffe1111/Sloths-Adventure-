@@ -208,7 +208,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // 1's new pieces, w1NewArt.ts: the sheet is 1996x925, about 7 MB decoded, so only where laid; a spec with water (1-5's creek, profile
   // water) its deadly creek (w1Creek.ts) and the lily pads on it, drawn with World 2's painted pad (engine.ts paintedRivers, 738 KB).
   // No spec lays calm swim water yet: calm-water joins when one does)
-  const spec = built ? specFor(cfg.id) : undefined;
+  // (1-5 stays main's in 0.9.5: protoStage.ts)
+  const spec = built && cfg.id !== '1-5' ? specFor(cfg.id) : undefined;
   if (spec) out.push('pit-art:1');
   if (spec?.dress) out.push('w1-new');
   if (spec?.profile.water) out.push('creek:1', 'w2-props');

@@ -18,7 +18,8 @@ OUT_JSON = GAME / 'src/assets/w1to4art/w1-cut.json'
 KEEP = {
     'stone': ['w1-rock-boulder-moss', 'w1-rock-boulder-moss-big', 'w1-boulder-grey-moss', 'w1-boulder-grey-moss-b', 'w1-rock-block-big',
               'w1-rock-root-block', 'w1-rock-slabs-stacked', 'w1-rock-slabs-stacked-big', 'w1-rock-slabs-low', 'w1-rock-roots'],
-    'stump': ['w1-stump-wide', 'w1-post-tall-vine'],
+    # (w1-post-tall-vine unpacked for 0.9.5: nothing lays it, artUse; the art director's cut stays in reference/art/cut)
+    'stump': ['w1-stump-wide'],
     'perch': ['w1-hide-stump-hollow', 'w1-hide-stump-hollow-tall'],
     'log': ['w1-log-plank-a', 'w1-log-plank-b', 'w1-plank-ledge-a', 'w1-plank-ledge-b', 'w1-plank-ledge-c'],
 }

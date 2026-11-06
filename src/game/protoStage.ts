@@ -57,7 +57,8 @@ import { w1DressWidth } from './w1NewArt.ts';
 import { specFor as specForAll } from './mixer/stages.ts';
 import { skip11Spec } from './testlink1_1.ts';
 /** a stage's mixer spec, except 1-1 on the test link's 'Old 1-1' pick (testlink1_1.ts: main's builder as it is) */
-const specFor = (id: string) => (skip11Spec(id) ? undefined : specForAll(id as never));
+// (1-5 stays main's in 0.9.5, the lead 11-06: the mixer's 1-5 waits for a later release (R-165.45), so its spec is not used)
+const specFor = (id: string) => (skip11Spec(id) || id === '1-5' ? undefined : specForAll(id as never));
 import { clearDress, ownPetals, placeSeed } from './mixer/post.ts';
 import { dressSize } from './dressArt.ts';
 import { inDoorBox } from './mixer/propSupport.ts';
@@ -1969,6 +1970,37 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     run(R.r(190, 230));
     expert += (x - x0) / RUN + 1.6;
     pieces.push({ k: 'snakes', x0, x1: x });
+  }
+
+  // (main's 1-5, restored for 0.9.5: the mixer's 1-5 waits for a later release, R-165.45)
+  if (plan === '1-5') {
+    // 1-5 More Petals: everything so far, mixed. Every group of petals asks for a different move (a climb, a rope, a double jump, a
+    // bounce, a punch), then the petals go onto creaking branches that give way: grab and keep moving. The keepsake hides in a fern
+    // up a tree, and a seed far out from a lookout waits for the Leaf Glide.
+    // (Rebuilt 2026-10-28: a dip or a rock between the groups, and a finish of climbs, ropes, creaking runs and snakes, where 1-2's
+    // trail is bounces and stairs: the two read as different stages now.)
+    beat('Start', () => {
+      rest(R.r(400, 440));
+      busy(1, ['log']);
+      flag();
+    });
+    beat('Test: a move for every group', () => {
+      hint(x + 40, 'Every group of petals needs a different move', 'Every group of petals needs a different move', 'Every group of petals needs a different move');
+      // (every version climbs the tree with the keepsake in its fern: w1Sections.ts)
+      section('develop');
+      flag();
+    });
+    beat('Twist: creaking branches', () => {
+      hint(x + 60, 'Creaky branches! Grab the petals and keep moving', 'Creaky branches! Grab the petals and keep moving', 'Creaky branches! Grab the petals and keep moving');
+      section('twist');
+      flag();
+    });
+    beat('Finish', () => {
+      section('finish');
+      glideLookout();
+      homeRun();
+    });
+    thinFinish(135);
   }
 
   /** the bush sizes (px wide); each painting keeps its own shape */
@@ -5341,7 +5373,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
   cid = heartsAtFlags(C, checkpoints, cid);
   // the puzzle rooms' own platforms (a seesaw's two ends, a gate's door): added once, here, so the game and the check see the same ground
   const kit: KitExtras | undefined = ROOMS.length ? { rooms: ROOMS } : undefined;
