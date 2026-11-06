@@ -69,7 +69,7 @@ for (const o of ORIENTS) {
     }, o.fr);
     for (let i = 0; i < spots.length; i++) {
       await page.evaluate((p) => { window.__pin = p; }, spots[i]);
-      await sleep(2500);
+      await sleep(Number(process.env.SETTLE_MS || 2500));
       const f = path.join(outDir, `${st}-${o.id}-${Math.round(o.fr[i] * 100)}.png`);
       await page.screenshot({ path: f });
       console.log('shot', f);
