@@ -250,7 +250,10 @@ function petalsOver(L: Lay, from: number, to = L.P.length) {
       L.C.push({ id: L.cid++, type: 'flower', botanicalVariant: 'orchid', x: Math.round(lx), y: b.y - 40, collected: false, bobPhase: (lx * 0.031) % 6.28 } as Collectible);
       continue;
     }
-    L.C.push({ id: L.cid++, type: 'flower', botanicalVariant: i % 3 ? 'orchid' : 'hibiscus', x: Math.round(gx), y: Math.min(a.y, b.y) - 80, collected: false, bobPhase: (gx * 0.031) % 6.28 } as Collectible);
+    // (never tucked under a piece over it: the creek's boughs over the lily pads hid two, which the reach pass then moved, 1-5 seed 1)
+    const py = Math.min(a.y, b.y) - 80;
+    if (L.P.some((q) => q.type !== 'bouncy' && q.x < gx + 40 && q.x + q.width > gx - 40 && q.y < py + 10 && py - q.y < 110)) continue;
+    L.C.push({ id: L.cid++, type: 'flower', botanicalVariant: i % 3 ? 'orchid' : 'hibiscus', x: Math.round(gx), y: py, collected: false, bobPhase: (gx * 0.031) % 6.28 } as Collectible);
   }
 }
 
