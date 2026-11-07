@@ -60,3 +60,16 @@ regardless of the phone we test."
 The budget phone falls well short, worst sideways, with freezes of 0.7-1 s. Matt: "if I had that phone ... I'd quit because of the frame
 rate." Mid phones (the Samsung) already drop to the lowest quality to hold 26. This is the GPU move's case, and the baseline it must
 beat: 30 fps held on the OnePlus both ways, no frame over 100 ms.
+
+## Player bots: the testers to model (Matt, 11-06 ~9:15 PM), built AFTER the play window
+Matt is asking each of them to play as many runs as they can between now and Tuesday (his reset). The bots are built from their
+recordings, with a learning curve across runs (reference/notes/IDEAS.md).
+| Bot | Player (sheet name, tester code) | Level |
+|---|---|---|
+| Expert | Matt (Pixel JTTCRV, OnePlus 46KLT7) | high |
+| Steph | Steph Roberts (iPhone, WBAUF3) | her own profile |
+| Middle | Jen (Android, 5TUSYM) | middle |
+| Child | Sasa (R5BXF5) and Sally | the kid profile, from both |
+- Matt sends small updates like this as he looks things over. The lead adds each one to the roadmap as it arrives.
+- Data hygiene: if a phone's settings are changed (for example GPU flags), the player name says so (e.g. "Matt OnePlus flags"), so those
+  runs never mix into the baseline or the bots.
