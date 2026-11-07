@@ -69,7 +69,7 @@ recordings, with a learning curve across runs (reference/notes/IDEAS.md).
 | Expert | Matt (Pixel JTTCRV, OnePlus 46KLT7) | high |
 | Steph | Steph Roberts (iPhone, WBAUF3) | her own profile |
 | Middle | Jen (Android, 5TUSYM) | middle |
-| Child | Sasa (R5BXF5) and Sally | the kid profile, from both |
+| Child | Sally, who plays as "Sasa" (R5BXF5; ONE person, Matt 11-07) | the kid profile |
 - Matt sends small updates like this as he looks things over. The lead adds each one to the roadmap as it arrives.
 - Data hygiene: if a phone's settings are changed (for example GPU flags), the player name says so (e.g. "Matt OnePlus flags"), so those
   runs never mix into the baseline or the bots.
@@ -93,6 +93,15 @@ Until then, the standing rule holds: no floating earth.
   - Raising the cap on Canvas 2D costs fill rate: 3x instead of 2x is 2.25x the pixels, so the frame rate gets worse. Not a free fix.
   - On WebGL the fill is cheap: after the port, raise q0 to native dpr (up to 3) on phones that hold 30. The GPU plan's stage 5 measures
     it. Matt's bar: no compositor stretch on phones that can take it.
+
+## TOP FINDING: Sally (a child, "Sasa") on Easy, layout 12727
+ONE run took **2,231 s (37 minutes)**, with **187 soft falls** (put-backs) and 23 checkpoints. Her survey:
+- hardest: "The tall steps (double jump)" and "Bounce, then double jump";
+- length "About right", knew what to do "Mostly", Dot's tips "No", fun 4;
+- would she play the next level: **No**.
+The put-back kept her going, but a child needed 37 minutes and 187 retries on EASY. That's the real "gentle intro" and difficulty
+answer, and it outranks every other 1-1 item. Easy must not require tall double-jump steps or bounce-into-double combos for a first-timer.
+Measure it with her recording (where the 187 falls happen) and rebuild layout 12727 on Easy. Then the kid bot is built from her data.
 
 ## Tester notes with their layouts (the sheet to 11-07 ~1 AM; each layout can be rebuilt from its seed)
 - Log under a log, petals unreachable without a blind drop: seeds 21537, 15406 (Matt Pixel) and 15458 (Matt Pixel 5VSSHX). This is the
