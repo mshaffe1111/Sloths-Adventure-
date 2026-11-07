@@ -15,3 +15,5 @@ you are scored on reference/GAMEPLAN-2026-11-02.md §2 and retired on §3, the s
 
 - QUALITY-SUPERVISOR.md: judges fun, variety, challenge and use of the toolbox, in sequence like a player (Matt, 2026-11-02). Works beside the process supervisor; both talk to the helpers.
 - Every role keeps reference/notes/<name>.md (reference/notes/README.md), read at start and after every compression.
+
+- `DATA-ANALYST.md`: playthrough analysis after each play window, a ranked fix list (Matt, 11-07).
