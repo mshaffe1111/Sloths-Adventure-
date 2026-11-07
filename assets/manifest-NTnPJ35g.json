@@ -1,0 +1,242 @@
+{
+ "note": "7-4 \"The Way Down\" slide art: Hugging Face img2img (Qwen-Image + the slothadv style model) from paste-ups of World 7's own kit and made props (tools/art/w7slide/envstarts.py, envstarts2.py), cut by tools/art/w7slide/cut.py, 2026-10-29. Not wired in yet.",
+ "takes": {
+  "floor": "floor-s70-5",
+  "wall-roots": "wall-roots-s60-17",
+  "wall-glyph": "wall-glyph-s70-17",
+  "mouth": "mouth-s60-17",
+  "chamber": "chamber-s65-5",
+  "obstacles": "obstacles-s65-17",
+  "obstacle_overrides": {
+   "statue-head": "obstacles-s50-17"
+  },
+  "pokey": {
+   "slide": "pokey-straight-a-s45",
+   "lean-left": "pokey-lean-left-s45",
+   "jump": "pokey-jump-s45"
+  },
+  "seam": {
+   "floor": "seam-floor-s50",
+   "wall-roots": "seam-wall-roots-s65",
+   "wall-glyph": "seam-wall-glyph-s50",
+   "floor2": "seam-floor2-s62",
+   "ceiling": "seam-ceiling-s62"
+  },
+  "floor2": "floor2-s70-5",
+  "ceiling": "ceiling-s70-5",
+  "mouth-bright": "mouth-bright-s72-5",
+  "obstacles2": "obstacles2-s65-17",
+  "crumble": "crumble-s45-5",
+  "chamber2": "chamber2b-s55-17"
+ },
+ "files": {
+  "chute-floor-3lane.webp": {
+   "w": 1024,
+   "h": 1024,
+   "bytes": 49590,
+   "seamless": "top to bottom (along the chute)",
+   "use": "the chute floor, seen straight down, three lanes: grooves at x = 1/3 and 2/3; repeat it down the chute"
+  },
+  "chute-floor-1groove.webp": {
+   "w": 1024,
+   "h": 1024,
+   "bytes": 54138,
+   "seamless": "top to bottom (along the chute)",
+   "use": "a one-groove floor (round 1), spare"
+  },
+  "chute-wall-roots.webp": {
+   "w": 1024,
+   "h": 1024,
+   "bytes": 184930,
+   "seamless": "both ways",
+   "use": "chute wall: carved key-pattern stone with fig roots; repeat it along the chute"
+  },
+  "chute-wall-glyph.webp": {
+   "w": 1024,
+   "h": 1024,
+   "bytes": 101750,
+   "seamless": "both ways",
+   "use": "chute wall variant: glyph tablets and a carved band; mix with wall-roots"
+  },
+  "chute-ceiling.webp": {
+   "w": 1024,
+   "h": 1024,
+   "bytes": 48716,
+   "seamless": "both ways",
+   "use": "the chute ceiling seen from below: dark slabs, fig roots across them"
+  },
+  "chute-end-light.webp": {
+   "w": 1024,
+   "h": 1024,
+   "bytes": 119142,
+   "use": "the way out at the end of the chute: daylight and leaves seen from inside (vanishing point about x 0.5, y 0.42)"
+  },
+  "chute-far-dark.webp": {
+   "w": 1024,
+   "h": 1024,
+   "bytes": 112002,
+   "use": "the chute running on into torch-lit dark (vanishing point about x 0.5, y 0.42), the far view before the light shows"
+  },
+  "chamber.webp": {
+   "w": 2048,
+   "h": 878,
+   "bytes": 234764,
+   "use": "side-on: the chamber he shoots out into; the chute's mouth is high on the left (its spout lip about x 0.02-0.22, y 0.70); stone floor is the bottom ~15%"
+  },
+  "obstacles.webp": {
+   "w": 2048,
+   "h": 902,
+   "bytes": 137262,
+   "frames": {
+    "lintel-a": {
+     "x": 0,
+     "y": 0,
+     "w": 413,
+     "h": 245,
+     "ax": 206.5,
+     "ay": 245
+    },
+    "rubble-wide-a": {
+     "x": 417,
+     "y": 0,
+     "w": 448,
+     "h": 157,
+     "ax": 224.0,
+     "ay": 157
+    },
+    "gap-near-lip": {
+     "x": 869,
+     "y": 0,
+     "w": 454,
+     "h": 163,
+     "ax": 227.0,
+     "ay": 163
+    },
+    "lintel-b": {
+     "x": 1327,
+     "y": 0,
+     "w": 418,
+     "h": 250,
+     "ax": 209.0,
+     "ay": 250
+    },
+    "rubble-wide-b": {
+     "x": 0,
+     "y": 254,
+     "w": 403,
+     "h": 136,
+     "ax": 201.5,
+     "ay": 136
+    },
+    "gap-far-lip": {
+     "x": 407,
+     "y": 254,
+     "w": 463,
+     "h": 204,
+     "ax": 231.5,
+     "ay": 204
+    },
+    "statue-head": {
+     "x": 874,
+     "y": 254,
+     "w": 357,
+     "h": 252,
+     "ax": 178.5,
+     "ay": 252
+    },
+    "rubble-pile": {
+     "x": 1235,
+     "y": 254,
+     "w": 353,
+     "h": 214,
+     "ax": 176.5,
+     "ay": 214
+    },
+    "roots-tangle": {
+     "x": 0,
+     "y": 510,
+     "w": 457,
+     "h": 392,
+     "ax": 228.5,
+     "ay": 392
+    }
+   },
+   "anchor": "ax, ay: middle of the bottom edge (where it stands on the chute floor)",
+   "use": "obstacles seen from the front (from behind Pokey); lintels: duck under the slab, the posts stand at the chute sides; gap-near-lip: the floor ending before a gap; gap-far-lip: the broken front face of the floor after it; rubble-wide: jump; statue-head, rubble-pile, roots-tangle: one-lane blockers"
+  },
+  "crumble.webp": {
+   "w": 2048,
+   "h": 296,
+   "bytes": 67876,
+   "frames": {
+    "crumble-0": {
+     "x": 0,
+     "y": 0,
+     "w": 382,
+     "h": 296,
+     "ax": 191.0,
+     "ay": 296
+    },
+    "crumble-1": {
+     "x": 386,
+     "y": 0,
+     "w": 382,
+     "h": 296,
+     "ax": 191.0,
+     "ay": 296
+    },
+    "crumble-2": {
+     "x": 772,
+     "y": 0,
+     "w": 382,
+     "h": 296,
+     "ax": 191.0,
+     "ay": 296
+    },
+    "crumble-3": {
+     "x": 1158,
+     "y": 0,
+     "w": 382,
+     "h": 296,
+     "ax": 191.0,
+     "ay": 296
+    }
+   },
+   "use": "side-on: the hall floor giving way, frames 0-3 (whole, cracked, breaking, falling); every frame shares one box, so they line up"
+  },
+  "pokey-slide-stills.webp": {
+   "w": 2048,
+   "h": 512,
+   "bytes": 96496,
+   "frames": {
+    "slide": {
+     "x": 0,
+     "y": 0,
+     "w": 525,
+     "h": 512,
+     "ax": 262.5,
+     "ay": 512
+    },
+    "lean-left": {
+     "x": 529,
+     "y": 0,
+     "w": 765,
+     "h": 512,
+     "ax": 382.5,
+     "ay": 512
+    },
+    "jump": {
+     "x": 1298,
+     "y": 0,
+     "w": 536,
+     "h": 512,
+     "ax": 268.0,
+     "ay": 512
+    }
+   },
+   "anchor": "middle of the bottom edge",
+   "satchel": "strap from his left shoulder (screen left) to the bag on his right hip (screen right), checked on every still",
+   "use": "optional: Pokey from behind, repainted on model with his character model from slomatt/02 cells 1 (flipped), 10 and 14; the Hugging Face clips from them were all thrown away (see the report). Do not mirror lean-left for a right lean: a mirror puts the satchel on the wrong side."
+  }
+ }
+}
