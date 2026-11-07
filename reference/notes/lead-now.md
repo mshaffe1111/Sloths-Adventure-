@@ -16,8 +16,10 @@ session_019iachLiuwNTAZUBSJWUmR3: it checks story, taste and past lessons; you d
 3. `git fetch` each branch on the board on its own; `git log -3` each. Compare with the board below: what landed, what's late.
 4. Read reference/LAWS.md and reference/engine/CHUNK-POOL-BRIEF.md (on this branch). Matt's words: reference/engine/MATT-DIRECTION.md
    on origin/ccr-0d59a91c-oy3imz.
-5. Ask the supervisor: "What did I decide or promise in the last 2 hours that isn't on my board?" Fix the board.
-6. Only then act. Never message Matt before steps 1-5.
+5. Read the latest outside review (reference/consultant/, newest file) and reference/notes/next-week-1-1.md: what the outside view and
+   the data say, before your own memory of it.
+6. Ask the supervisor: "What did I decide or promise in the last 2 hours that isn't on my board?" Fix the board.
+7. Only then act. Never message Matt before steps 1-6.
 
 ## Where we're going (Matt's goal)
 The engine does the work: a short brief in; gen2 picks and orders hand-designed World 1 chunks (a big pool, no repeats, rolled
