@@ -86,3 +86,10 @@ Plan (the art director, low effort):
    reference/art/manifest.
 4. Check it on 10 held-back pieces Matt rates afterwards. The rule must predict his answer on at least 9 of 10 before the engine uses it.
 Until then, the standing rule holds: no floating earth.
+- Canvas sizing audit (Matt's question, 11-06 ~10:45 PM; engine.ts renderDpr and resizeCanvas, lines 1024-1067):
+  - The buffer IS sized from the live CSS box times a ratio on every resize, both ways, with no fixed 720/1080 height.
+  - BUT the ratio is capped: q0 2.0, q1 1.5, q2 1.0 (renderDpr). Matt's Pixel (dpr 3.06) draws 878x1825, so the compositor stretches it
+    1.5x. The OnePlus and Steph's iPhone sit at q2 = 1.0x much of the time, so the compositor stretches them about 3x (soft picture).
+  - Raising the cap on Canvas 2D costs fill rate: 3x instead of 2x is 2.25x the pixels, so the frame rate gets worse. Not a free fix.
+  - On WebGL the fill is cheap: after the port, raise q0 to native dpr (up to 3) on phones that hold 30. The GPU plan's stage 5 measures
+    it. Matt's bar: no compositor stretch on phones that can take it.
