@@ -3,7 +3,7 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 6:47 PM ET, 2026-11-06 (times from `TZ=America/New_York date`)
+Last update: 7:12 PM ET, 2026-11-06 (final; times from `TZ=America/New_York date`)
 
 ## 5:45 PM: ready for the final (the lead's 5:31 order) + funcheck on the candidate shape
 - Order at the final: merge engine-core -> `old11-delete.py` -> vite build, `lazy-seeds.py` only if main JS > 4 MiB -> `release-prep.py`
@@ -127,6 +127,54 @@ Last update: 6:47 PM ET, 2026-11-06 (times from `TZ=America/New_York date`)
   Its commit makes `builtOnGen2(cfg)` and has levels.test, stageQuality.test and platformPlan.test judge only the old generator's stages
   (gen2 1-1's flags move to rolledFlags.test, on your 2:37 PM ruling). That narrows three tests' scope: for your Law 5 check when you
   pass engine-chunks (the replacement tests exist and are planted both ways, per its message; I have not verified that yet).
+
+## >>> 7:12 PM ET: FINAL. 0.9.5 IS LIVE; the release clerk stands down <<<
+main a89564f7 (#63 + #64): "Publish game to the gh-pages branch" run 101 and "pages build and deployment" 189 green, APK v0.9.5-33 (the
+lead, 7:10 PM ET). All my check-ins are cancelled.
+
+### What I did (2:44-7:12 PM ET)
+- Cut release-0.9.5 from origin/main 68b31e66 (2:46). Recorded main's lock (`tools/engine/lockall-main-0.9.4.json`, 3264 builds of 102
+  stages) and proved it repeats (102/102 against itself).
+- funcheck's known list re-recorded from main (R-165.44): 144 known, the same twice. roadmapcheck on main was green; engine-core's one real
+  orphan (its NEXT.md) was already cited in the final.
+- A trial merge at 2:57 PM gave engine-core three hours' warning: 14 reds plus 2 new todos with causes, 1-5 and 4-9 changed by the lock
+  (both then kept out), and the bundle 25.7 KB under 4 MiB.
+- Wrote the old-1-1 deletion and the release prep as anchor-checked scripts (the .patch files broke when engine-core moved). Also a tested
+  contingency for the bundle (lazy seed data, 301 KB freed, no slower start). It was not needed: 31 KB headroom.
+- The candidate bf3684ec at 5:56; the full gate on it in a detached worktree. Every gate by name: the one real red was pitPocket.test
+  (caught 6:33, before the merge; CI confirmed it 6:39); funcheck failed and was accepted by Matt; everything else PASS. PR body draft at
+  reference/qa-reports/0.9.5/PR-BODY.md.
+
+### What went wrong (mine)
+1. **Typed times:** my stamps were ahead of `date` four times (3:30 / 3:35 / 6:05 / 6:25), all corrected. Countermeasure: read
+   `TZ=America/New_York date` into a variable and print it from that, never by hand (done from 6:33 on).
+2. **I stopped good test shards** (3:31) by reading a 3-branch `git log -1` as engine-core moving: 5 minutes lost. Countermeasure:
+   `git log -1 <one ref>` per branch, always.
+3. **A red found at 6:33 reached the lead only after Matt merged at 6:34.** The rule "report on the branch, not send_message" was too slow
+   once a PR was open. Countermeasure in the method (below): after the PR opens, a red goes by send_message at once, AND in the note.
+4. My first lock check had no `--intended 1-1`, so it exited 1 on the intended change. Countermeasure: always pass `--intended`.
+
+### What worked (keep)
+- An early trial merge in a scratch worktree, with the lock, gave hours of warning, not minutes.
+- Scripts, not patches, for edits that must land on a moving branch: each anchor asserted once, failing loudly.
+- The gate run in a detached worktree at the candidate SHA, so notes commits can't touch it.
+- A timing test re-run ALONE before calling it red (stageQuality:287: p90 613 ms under full load, PASS alone).
+
+### Proposed edit to reference/methods/release.md (for the lead to apply on ccr-23292c36-550qmt; I have not pushed there)
+Add under "Before the PR":
+> 9. **Record main's lock first** (`npx tsx tools/engine/lockall.ts --layouts 16 --out tools/engine/lockall-main-<version>.json` on main),
+>    and re-check it against itself (must print N/N unchanged) before trusting it. On the candidate, always pass `--intended <stages>`.
+> 10. **A trial merge as soon as the branches exist** (a scratch worktree: tsc, the 3 shards, the lock), so the red list reaches the
+>    owners hours ahead, not at the deadline.
+> 11. **Run the gate in a detached worktree at the candidate SHA**; write the SHA at the top of the status note; later commits are notes.
+> 12. **Timing tests** (stageQuality "generating a stage is quick" and any p90/ms test) are re-run ALONE on an idle machine before a red is
+>    called; never loosened.
+> 13. **Bundle headroom:** report the main JS size against 4,194,304 B every release; under 50 KB headroom, prepare
+>    `reference/qa-reports/0.9.5/lazy-seeds.py` (tested) for the next one.
+> 14. **roadmapcheck needs every origin branch fetched** (`git fetch origin '+refs/heads/*:refs/remotes/origin/*'`): a done item's
+>    commit may live only on a helper branch.
+And under "The PR": "Once the PR is open, a red gate goes to the lead by send_message AT ONCE (and in the note): Matt may merge in
+minutes (0.9.5: the red was found 6:33, the merge was 6:34)."
 
 ## >>> 6:47 PM ET: the fix is PR #64 (fix-0.9.5-pockets 358e9cc6); standing by for the live publish <<<
 - PR #64 vs main e92bdcdb: one file, src/game/pitPocket.test.ts (3 insertions, 2 deletions). Run here: `✔ gen2 1-1 Roll B's dip pockets
