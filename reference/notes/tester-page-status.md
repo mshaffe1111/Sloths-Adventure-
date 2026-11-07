@@ -1,5 +1,54 @@
 # tester-page status (the lead reads this; no send_message until further notice)
 
+## 8:40 PM ET: the survey fix (Matt's two problems, plus the keyboard test): DONE and ALL GREEN, but NOT on a pushed `ctest-notes`
+
+**How to get it:**
+- The work is two commits on a local branch `ctest-notes`, cut from origin/main a89564f7 as you asked: 7800671b, then 9fd814c2.
+- I have NOT pushed a `ctest-notes` branch. My session is only cleared to push `tester-page`, and a request from another session
+  can't widen that.
+- The two commits are here as patches: `reference/notes/ctest-notes/0001-*.patch` and `0002-*.patch`.
+- To land them: `git checkout -b ctest-notes origin/main && git am reference/notes/ctest-notes/*.patch` (from a checkout that has this
+  branch's files). Or clear me to push the branch and I'll push it as is.
+
+**What changed:**
+1. **"What looked wrong?"** is a 3-row box like the note.
+   - Caps: 600 (looked wrong) and 1000 (the note), in both the field and the saved row.
+   - A live count under each box ("212 / 600").
+   - Test: a fullest row is about 2 KB, far under the 47 000 cell.
+2. **The keyboard no longer covers the box.**
+   - `useAboveKeyboard` keeps the field and its count 24 px above the keyboard: on focus, on input, and on every `visualViewport`
+     resize or scroll. It adds room under the page so the last box can rise; `scrollIntoView` is the fallback.
+   - The name box on the front page uses it too.
+3. **Found while testing:** typing in the notes LOST every space, "p" and "r". App.tsx's keyboard handler and inputEngine took those
+   keys ("The log jumped" came out "Thelogjumed"). Both now ignore keys typed into a text box. A test holds it.
+4. **The keyboard test, in the gate:** `tools/perf/kbdcheck.mjs`, added to gates.yml and to gates.md as row 6b.
+   - Keyboards: 30, 40 and 50% upright (412x915), 50 and 60% sideways (915x412).
+   - For each field (name, looked wrong, note), focused and after 3 typed lines: the box with its count is inside the visible part,
+     its top is not off screen, and its bottom is 16 px or more above the keyboard.
+   - **30 of 30 pass.** Planted: with the keep-in-view off, the check goes red.
+   - Stills: `reference/qa/tester-page-1106/keyboard/` (in the patches).
+
+**Gates, on 9fd814c2 exactly:**
+
+| gate | result |
+|---|---|
+| tsc | PASS |
+| FULL suite | 2,468 tests, 2,466 pass, **0 fail** (1 known TODO: 4-3) |
+| clipcheck | PASS, 83 known, unchanged |
+| kbdcheck | PASS, 30 of 30, plant red |
+| vite build | PASS, nothing over 4 MiB |
+| npm run build:store | PASS |
+| artcheck | PASS |
+| knowncheck | PASS |
+| drawcheck | not run (no drawing changed: text boxes and CSS only) |
+| roadmapcheck | not run on this branch |
+
+**Rough spots:**
+- The keyboard is simulated: the visual viewport shrunk, plus a resize event. It needs a real phone check on the live #ctest page
+  after the merge.
+- I didn't check whether phone on-screen keyboards also sent the eaten keys; hardware keyboards did.
+
+
 ## CORRECTION (5:37 PM ET): my "FAIL" below is WRONG. It came from my test method, not the game
 
 - My runs put Pokey 450 px before the teach (a teleport). With that, Dot's bubbles never show; the guide gets the lines and drops them.
