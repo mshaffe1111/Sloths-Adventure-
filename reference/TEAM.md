@@ -1,43 +1,61 @@
-# The team: regulars and one-off helpers (the lead keeps this current; read it at every start)
+# The team: a 6-role hub-and-spoke studio (Matt, 2026-11-07; the lead keeps this current and reads it at every start)
 
-Matt, 2026-11-07: "Make sure you know and have notes for the team and who are regulars and just true helpers."
+Matt, 11-07: "Let's run our team like this." The model: stateless, context-bounded agents; strict artifact handoffs, never chat; each
+role kept separate; context pruned between tasks; every deliverable verified by an adversary before it counts. Sources Matt cited:
+MetaGPT (structured SOPs over dialogue), ChatDev (phases, and only the validated result crosses a phase), GameGPT (dependency-ordered
+tasks plus critics), Du et al. multi-agent debate and AgentVerse (agreeable reviewers rubber-stamp; adversarial ones catch errors),
+MacNet (DAGs pass forward results, not reasoning). The "6 is optimal" figure and the token-saving percentages are heuristics, not
+measured laws; we'll judge them on our own results.
 
-## How effort works (Matt, 11-07)
-- Cloud sessions run at the effort Matt sets in his app; a brief's "Effort:" line does nothing on its own.
-- Jobs the lead starts through the Agent tool set effort for real.
-- Levels: low = following written steps; medium = measuring and small fixes; high = stages, engine work, art, reviews; max = only the
-  consultant and deep reviews.
-- Matt's default for new sessions: medium. The lead tells Matt when a new regular needs a higher setting.
+## The flow
+Matt (Creative Director) → 1 PM → {2 Designer → 3 Architect → 4 Engine, 5 Content} → 6 Critic → PASS or REJECT back to the PM.
+Builders never talk to each other. Everything moves as a dispatch packet (reference/methods/dispatch-packet.md) and comes back as an
+artifact on a branch.
 
-## Regulars (standing roles: they keep their branch and their context, and get work every week)
-| Role | Name in Matt's app | Session | Branch | Effort | Owns | How it reports |
-|---|---|---|---|---|---|---|
-| Lead (Matt's co-creator) | Project lead handoff | session_01FhBbYN2DDsktc7BGtNxPFK | ccr-23292c36-550qmt | (this session) | the team, rulings, releases, the test link | to Matt |
-| Supervisor (the old lead) | (previous lead) | session_019iachLiuwNTAZUBSJWUmR3 | - | - | advice on story, taste and past lessons; the release checklist | send_message |
-| Engine core | Core Engine Developer | session_01FhBbYNa68MoMsiQdv2EJXg | engine-core | HIGH | the gen2 engine on main, the seed list, the lock, merges of the others' engine work, the GPU (WebGL) move | send_message (works) |
-| Planner | engine-planner | session_01FhBbYJaUqNUPxNUvbHdHeN | engine-chunks | HIGH | pipeline verdicts (flags, quiet, forks, branch share), the soft floors, petal arcs per setting, Dot's teach timing | send_message; notes in reference/notes/planner-status.md |
-| Level designer | engine-designer | session_01FhBbYPKnBYCweHg8duJSu2 | engine-spec | high | section data: gap sizes, rounds, versions, Easy twins | send_message |
-| Art director | art-director | session_01FhBbYLmXQhDLjAzTexXzo3 | art-director | HIGH (Matt 11-07) | the art manifest, the kit, cutting Matt's sheets into the game, the "can it float?" rating page | send_message |
-| Testers' page | Tester Data | session_01FhBbYJYzHh5qAsNs8q9u9d | tester-page | medium | the #ctest page, the recorder, the survey, the keyboard check | **Can push only `tester-page`, and its send_message gets stuck on approval.** It reports in reference/notes/tester-page-status.md; the lead re-applies its patches onto other branches. |
-| Release clerk | release-clerk | session_01FhBbYNbiMMD4wtzGED2iUK | release-<version> | medium | release candidates, the full gate, PR bodies (reference/methods/release.md) | status note on the release branch |
+## The six roles
+| # | Role | Who | Owns (write access) | Never |
+|---|---|---|---|---|
+| 1 | Project Manager / Orchestrator | the lead (this session) | the state ledger (reference/STATE.md), the task graph, the packets, merges and releases, Matt's links | writes game code or invents mechanics. Emergency exception: a one-line fix to unblock a live deploy, logged as a defect. |
+| 2 | Systems & Mechanics Designer | fresh agent per task (high) | specs/: the numbers. Jump, double, bounce and glide reach from the 30 fps simulation; gap and rise bands per setting; coyote and buffer windows; the Easy curve; help thresholds; petal arcs; touch thresholds | writes code |
+| 3 | Lead Architect | fresh agent per task (high) | interfaces, types, the section and verdict schemas, perf budgets (8 ms at 60-for-30), ARCHITECTURE notes, the list of files a task may touch | writes method bodies or gameplay |
+| 4 | Engine Engineer | fresh agent per task (high) | src/game engine, physics, input, camera, the renderer (the WebGL move), the gen2 pipeline code | changes interfaces or game rules |
+| 5 | Content & Asset Specialist | fresh agent per task (high) | section data (w1 kit), seed lists, art cutting and the manifest, the backdrop layers, the testers' page copy | touches engine loops or physics |
+| 6 | Adversarial Critic & QA | fresh agent per task (high; max for big gates) | tests, headless checks (traversal with the real 30 fps reach, bots), the gates, defect reports | fixes production code. It only writes failing tests and a PASS/REJECT report |
 
-## Roles run fresh each time (no standing session: their independence or freshness is the point)
-| Role | How it runs | When | Doc |
-|---|---|---|---|
-| Independent consultant | Agent tool at **MAX**, in a folder holding only its pack (never the repo) | after each play window, before a world is called done, or when Matt asks | reference/roles/CONSULTANT.md |
-| Data analyst | Agent tool at medium; tools/playtesters/report.py | after each play window (the first is Tuesday 11-10) | reference/roles/DATA-ANALYST.md |
-| Consultant packer | one cloud session or Agent at medium: facts only, no rationale | before each consultant run | CONSULTANT.md, "What it gets" |
+## Outside the graph (not team members)
+- **Independent consultant** (reference/roles/CONSULTANT.md): Agent at max, sees only its pack, runs after each play window.
+- **Data analyst** (reference/roles/DATA-ANALYST.md): turns play windows into a ranked defect list for the PM.
+- **Supervisor (the old lead):** on call for history and taste questions, not a node in the graph.
 
-## One-off helpers (done or single-job; archive when idle, don't reuse for new work)
-- Running now (11-07): the consultant deep pass (Agent, max) and the art cutter for Matt's 50 sheets (Agent, high).
-- Finished: level-samples / "Matt's Style Sheets Data" (the level picture pack), consultant-packer, the first consultant pass,
-  render-stone, gen2-water, engine-pieces, engine-runs, research-pacing, research-moves, research-water-swim, engine-critic,
-  engine-critic-spec, engine-render, w1-rhythm, w1-rhythm-b, quality-supervisor, roadmap-keeper, bot-fix, fix-petals, icons-painted,
-  dot-box, art-1-1-sunrise.
-- New one-offs: Agent tool by default (effort set for real), on their own branch or scratch folder, with a "done means" line in the
-  brief, archived when done.
+## The rules (the PM enforces them)
+1. **Packets, never chat history.** Each task: the objective; frozen inputs (spec numbers, interface); allowed files (read / write);
+   the definition of done, which the Critic checks; due time. Template: reference/methods/dispatch-packet.md.
+2. **Fresh session per task.** Workers start from the packet plus the written methods. Their reasoning is not kept, only the artifact
+   (the commit) and its report. Knowledge lives in files: STATE.md, ARCHITECTURE notes, methods/, specs/.
+3. **Every artifact goes through the Critic before it counts.** It's prompted adversarially: "assume it is wrong, prove where".
+   PASS means it's merged and STATE.md updated. REJECT means only the failing test and the violated constraint go back to the builder.
+4. **The 3-strike circuit breaker.**
+   - Try 1: the task.
+   - Try 2: a delta packet with the exact failure.
+   - Try 3: a FRESH builder with the task plus "approaches that failed, don't use them".
+   - Then stop: an architecture deadlock goes to the Architect, an unclear requirement goes to Matt as a 3-bullet question.
+5. **Effort is set for real** (the Agent tool): designer, architect, engine, content and critic high; the critic max for releases; the
+   consultant max; low or medium only for following written steps.
+6. **The stage-building order** (from the consultant's root cause):
+   - the Designer fixes the reach numbers from the 30 fps simulation;
+   - the Architect sets the verdict schema;
+   - Content re-lays the sections;
+   - the Engine changes the pipeline;
+   - the Critic proves the traversal with the real reach and the child, middle and expert bots.
 
-## Traps
-- New cloud sessions: permission_mode "auto", never acceptEdits (acceptEdits gets stuck on send_message approvals only Matt can give).
-- A helper that says "pushed": check `git ls-remote` before believing it (tester-page, 11-06).
-- Times come from `date` in the same step (every helper and the lead slipped on 11-06).
+## Transition from the old team (11-07)
+The long-lived helpers below hold history but drift with compression; they're retired from building. Their branches and notes stay as
+references for packets. engine-core / Core Engine Developer, engine-planner, engine-designer, art-director, Tester Data, release-clerk:
+finish anything in flight, write a hand-off note to reference/handoffs/<role>.md (what's open, where things live, traps), then stop.
+New work goes to fresh role agents via packets from Monday.
+
+## Traps (kept)
+- Cloud sessions: permission_mode "auto", never acceptEdits. A helper that says "pushed": check `git ls-remote`.
+- Branch deletes are refused from the lead's machine; Matt deletes on GitHub.
+- Tester data stays out of the repo except as aggregates (the testers' page promises deletion).
+- Times come from `date` in the same step.
