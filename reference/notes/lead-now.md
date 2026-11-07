@@ -12,7 +12,7 @@ session_019iachLiuwNTAZUBSJWUmR3: it checks story, taste and past lessons; you d
 
 ## After a compression, before anything else (10 minutes, in this order)
 1. `TZ=America/New_York date`. Read this whole file with the Read tool (the start-up print may be cut to a preview).
-2. ReadNotifications until 0 remain. list_sessions: who's running? list_triggers: is my check-in armed?
+2. Read reference/TEAM.md (regulars, one-offs, effort). ReadNotifications until 0 remain. list_sessions: who's running? list_triggers: is my check-in armed?
 3. `git fetch` each branch on the board on its own; `git log -3` each. Compare with the board below: what landed, what's late.
 4. Read reference/LAWS.md and reference/engine/CHUNK-POOL-BRIEF.md (on this branch). Matt's words: reference/engine/MATT-DIRECTION.md
    on origin/ccr-0d59a91c-oy3imz.
