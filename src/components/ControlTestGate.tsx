@@ -120,6 +120,9 @@ const Head: React.FC<{ children: React.ReactNode }> = ({ children }) => <h2 clas
 export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) => {
   const [name, setName] = React.useState(savedTesterName);
   const [level, setLevel] = React.useState<Difficulty>(difficulty);
+  // (the name box kept above the phone's keyboard while it is typed in)
+  const nameRef = React.useRef<HTMLInputElement>(null);
+  useAboveKeyboard(nameRef, nameRef);
   // (the tester code, made once on this device: a tester can read it out to us)
   const code = React.useMemo(() => testerId(), []);
   const go = (e?: React.FormEvent) => {
@@ -171,6 +174,8 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
           <span className="ct-need">Required</span>
         </div>
         <input
+          ref={nameRef}
+          data-kbd-box="ctest-name"
           id="ctest-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -272,55 +277,73 @@ export const NOTE_MAX = 1000;
  * covered it, Matt 11-06): on focus, and whenever the visual viewport shrinks or scrolls, the box is scrolled to the middle of what
  * is left of the screen (visualViewport where the browser has it, scrollIntoView alone otherwise)
  */
-const NoteBox: React.FC<{ id: string; value: string; onChange: (v: string) => void; max: number; rows: number; placeholder: string; label?: string }> = ({ id, value, onChange, max, rows, placeholder, label }) => {
-  const ref = React.useRef<HTMLTextAreaElement>(null);
+/** how far the kept box's bottom stays above the keyboard's top (Matt, 11-06: "at least 16 px") */
+export const KEYBOARD_GAP = 24;
+/**
+ * Keep a text field (and its count, `box`) above the phone's keyboard while it is typed in: on focus, a moment later (the keyboard
+ * comes up after the focus), and on every visualViewport resize or scroll. It scrolls the box to the middle of what the keyboard
+ * leaves, adding room under the page as tall as the keyboard so the last box can rise; scrollIntoView alone where the browser has no
+ * visualViewport. `window.__ctNoKeep` turns it off, for the keyboard check's planted failure (tools/perf/kbdcheck.mjs).
+ */
+export function useAboveKeyboard(field: React.RefObject<HTMLElement | null>, box: React.RefObject<HTMLElement | null>) {
   React.useEffect(() => {
     const vv = typeof window !== 'undefined' ? window.visualViewport : null;
     const keep = () => {
-      const el = ref.current;
-      if (!el || document.activeElement !== el) return;
-      el.scrollIntoView({ block: 'center', behavior: 'auto' });
-      // (under a shrunk visual viewport, the layout one is still full height: scroll its own scroller so the box sits in the part left)
-      if (vv) {
-        const r = el.getBoundingClientRect();
-        const top = vv.offsetTop, bottom = vv.offsetTop + vv.height;
-        const sc = el.closest('.ct-scene') as HTMLElement | null;
-        // (room under the page as tall as the keyboard, so the last box can scroll up above it: at the page's end there was none)
-        if (sc) sc.style.paddingBottom = `${Math.max(16, Math.round(window.innerHeight - vv.height))}px`;
-        if (r.bottom > bottom - 8 || r.top < top + 8) {
-          const dy = r.top + r.height / 2 - (top + vv.height / 2);
-          if (sc) sc.scrollTop += dy;
-          else window.scrollBy(0, dy);
-        }
+      const el = field.current;
+      if (!el || document.activeElement !== el || (window as unknown as { __ctNoKeep?: boolean }).__ctNoKeep) return;
+      const sc = el.closest('.ct-scene') as HTMLElement | null;
+      const target = box.current ?? el;
+      if (!vv) {
+        target.scrollIntoView({ block: 'center', behavior: 'auto' });
+        return;
+      }
+      // (room under the page as tall as the keyboard, so the last box can scroll up above it: at the page's end there was none)
+      if (sc) sc.style.paddingBottom = `${Math.max(16, Math.round(window.innerHeight - vv.height + 16))}px`;
+      const r = target.getBoundingClientRect();
+      const top = vv.offsetTop, bottom = vv.offsetTop + vv.height;
+      if (r.bottom > bottom - KEYBOARD_GAP || r.top < top + 8) {
+        // (the middle of what is left, or its top when the box is taller than that)
+        const room = bottom - KEYBOARD_GAP - (top + 8);
+        const dy = r.height <= room ? r.top + r.height / 2 - (top + 8 + room / 2) : r.top - (top + 8);
+        if (sc) sc.scrollTop += dy;
+        else window.scrollBy(0, dy);
       }
     };
     const onBlur = () => {
-      const sc = ref.current?.closest('.ct-scene') as HTMLElement | null;
+      const sc = field.current?.closest('.ct-scene') as HTMLElement | null;
       if (sc) sc.style.paddingBottom = '';
     };
     const onFocus = () => {
       keep();
-      // (the keyboard comes up after the focus: once more when it has)
       window.setTimeout(keep, 350);
     };
-    const el = ref.current;
+    const el = field.current;
     el?.addEventListener('focus', onFocus);
     el?.addEventListener('blur', onBlur);
+    el?.addEventListener('input', keep);
     vv?.addEventListener('resize', keep);
     vv?.addEventListener('scroll', keep);
     return () => {
       el?.removeEventListener('focus', onFocus);
       el?.removeEventListener('blur', onBlur);
+      el?.removeEventListener('input', keep);
       vv?.removeEventListener('resize', keep);
       vv?.removeEventListener('scroll', keep);
     };
-  }, []);
+  }, [field, box]);
+}
+
+/** a note box: a few rows and its count under it ("212 / 600"), kept above the keyboard while typed in (useAboveKeyboard) */
+const NoteBox: React.FC<{ id: string; value: string; onChange: (v: string) => void; max: number; rows: number; placeholder: string; label?: string }> = ({ id, value, onChange, max, rows, placeholder, label }) => {
+  const ref = React.useRef<HTMLTextAreaElement>(null);
+  const box = React.useRef<HTMLDivElement>(null);
+  useAboveKeyboard(ref, box);
   return (
-    <>
+    <div ref={box} className="ct-notebox" data-kbd-box={id}>
       <textarea ref={ref} id={id} value={value} onChange={(e) => onChange(e.target.value)} maxLength={max} rows={rows} aria-label={label}
         placeholder={placeholder} className="ct-input ct-note" />
       <p className="ct-count" aria-live="polite">{value.length} / {max}</p>
-    </>
+    </div>
   );
 };
 
