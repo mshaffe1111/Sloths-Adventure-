@@ -35,9 +35,14 @@ async function server() {
   if (process.env.KBD_URL) return { url: process.env.KBD_URL.replace(/\/$/, ''), stop: () => {} };
   const port = 5300 + Math.floor(Math.random() * 400);
   const p = spawn('npx', ['vite', '--port', String(port), '--strictPort', '--host', '127.0.0.1'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
+  // (the log is read whole, colour codes stripped: in CI vite prints "Local:" with ANSI styling inside it, so a raw match never fired,
+  // the 6aa29496 deploy failed on 'dev server did not start'; the same reading as clipcheck.mjs startServer)
+  let log = '';
   await new Promise((res, rej) => {
-    const t = setTimeout(() => rej(new Error('dev server did not start')), 60000);
-    p.stdout.on('data', (d) => { if (/Local:/.test(String(d))) { clearTimeout(t); res(); } });
+    const t = setTimeout(() => rej(new Error(`dev server did not start:\n${log}`)), 120000);
+    const hear = (d) => { log += d; if (/Local:/.test(log.replace(/\x1b\[[0-9;]*m/g, ''))) { clearTimeout(t); res(); } };
+    p.stdout.on('data', hear);
+    p.stderr.on('data', hear);
   });
   return { url: `http://127.0.0.1:${port}`, stop: () => { try { process.kill(-p.pid); } catch { /* gone */ } } };
 }
