@@ -117,3 +117,17 @@ Measure it with her recording (where the 187 falls happen) and rebuild layout 12
   "felt the best" (25908).
 - Data hygiene: the tester code is per DEVICE. Andrew played on Matt's Pixel under the name "Master Andrew" with the same code (JTTCRV),
   so the bots separate players by name AND code, never by code alone.
+
+## After WebGL and the 1-1 fixes: the lead's recommended order (11-07, for Matt)
+1. Build rules into the generator, correct by construction: petals laid on the setting's arc, headroom on tiers, floors under gaps,
+   Easy's steps within Easy's jump. Tonight 1 roll in about 300 passed, so the engine mostly rolls and throws away. That won't scale to
+   100 stages times 2 settings. Keep the filters as a safety net, not the method. Target: at least 30% of rolls pass.
+2. Make the setting a real input, with Easy's own curve. Sally (a child) needed 37 min on Easy 1-1. The real-player bots (child, middle,
+   expert) become a release gate: a stage ships only if the child bot finishes Easy in a few minutes.
+3. Prove the engine on 1-2, built by a cold helper from a short brief. Measure brief-to-proven time; the target is a day or less. If 1-2
+   needs a week of hand-tuning like 1-1, the engine isn't ready to scale, and we fix the engine, not the stage.
+4. Then 1-3 to 1-10 at that pace, each played by the testers, before any World 2 work.
+5. Help for stuck players (Matt researching). The lead's view, from shipped games: after repeated failures at the same spot, offer the
+   player a choice, never force it. Examples: Mario's Super Guide, Celeste's Assist Mode, Crash's extra mask after deaths. Dot offers
+   help, a vine or a leaf bridge appears, or a skip to the next flag, and the help used is logged.
+6. Watch for: too many overlapping rules (consolidate them as each stage passes), and the art at full size before more stages.
