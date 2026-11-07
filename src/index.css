@@ -1839,6 +1839,8 @@
 .ct-input { margin-top: 8px; box-sizing: border-box; width: 100%; min-height: 48px; padding: 10px 12px; border-radius: 12px; font: 600 16px/1.3 var(--font-ui); color: var(--gx-ink);
   background: #fffaf0; border: 2px solid rgba(120, 80, 30, .45); outline: none; box-shadow: inset 0 2px 4px rgba(120, 80, 30, .15); }
 .ct-input::placeholder { color: rgba(122, 83, 38, .6); }
+.ct-note { resize: vertical; min-height: 88px; }
+.ct-count { margin: 4px 2px 0 0; text-align: right; font-size: 12px; font-weight: 700; color: var(--gx-ink-soft); }
 .ct-input:focus { border-color: #d9822b; box-shadow: 0 0 0 3px rgba(240, 176, 74, .35); }
 .ct-modes { margin-top: 8px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .ct-mode { min-height: 64px; display: flex; flex-direction: column; justify-content: center; gap: 2px; text-align: left; padding: 8px 12px; border-radius: 14px; cursor: pointer; color: var(--gx-ink);

@@ -168,6 +168,9 @@ function askToKeepStorage() {
   }
 }
 
+/** a key pressed in a text box or field (the testers' name and notes) belongs to the text, not the game */
+export const typingIn = (t: EventTarget | null): boolean => !!t && t instanceof HTMLElement && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT' || t.isContentEditable);
+
 export default function App() {
   const [screen, setScreen] = useState<GameScreen>('title');
   // the control test (#ctest in the address): the name screen first, then the test stage, recorded
@@ -609,6 +612,8 @@ export default function App() {
   // Global Key listeners for Pause (Esc / P) and Title start (Space / Enter)
   useEffect(() => {
     const handleGlobalKey = (e: KeyboardEvent) => {
+      // (typing in a text box, the testers' notes: the keys are the words, never the game's: P, R, Space were eaten, Matt 11-06)
+      if (typingIn(e.target)) return;
       // Escape is the keyboard's Back: the newest pop-up or screen Back takes it first (nav/backStack.ts)
       if (e.code === 'Escape' && !e.repeat && handleBack()) {
         e.preventDefault();

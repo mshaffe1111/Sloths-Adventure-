@@ -39,6 +39,9 @@ jobs:
         shell: bash
         env:
           CLIPCHECK_OUT: clipcheck-out
+      # the testers' text boxes stay above a phone keyboard (30-60% of the screen), with a planted failure (kbdcheck.mjs)
+      - run: node tools/perf/kbdcheck.mjs | tee kbdcheck.log
+        shell: bash
       - name: Keep the clip check's contact sheet and breaches
         if: always()
         uses: actions/upload-artifact@v4
@@ -46,6 +49,7 @@ jobs:
           name: clipcheck
           path: |
             clipcheck.log
+            kbdcheck.log
             clipcheck-out/contact.jpg
             clipcheck-out/breaches.json
           if-no-files-found: ignore
