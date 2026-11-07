@@ -27,3 +27,20 @@ so a breaking roll can never reach the proven list.
 ## Tester data so far (11-06 evening, all on the live #ctest)
 - Players: Matt (Pixel), Steph Roberts (iPhone, Safari), Bravo (Samsung Internet), Sasa (Android, Chrome, a 320 px-wide screen).
 - Bravo's FIRST session ran an old cached build (11-01) before the new one loaded. Tell testers to tap Refresh first.
+
+## The GPU move (PixiJS on WebGL 2) and the 60 fps budget (Matt, 11-06 evening)
+Matt: "we should build for 60 frames, even if we're only going to run at 30 frames. That way, we're always going to meet our goals,
+regardless of the phone we test."
+- The lead agrees, with this reasoning: the loop stays locked at 30 fps, but the frame work must fit a 60 fps frame (16.7 ms all in).
+  So a phone half as fast still holds 30. The budget becomes our update plus draw at 8 ms or less on a mid-range phone at q0 (it was
+  12 ms), and 30 fps held on Matt's 2020 OnePlus. That's a rule change in PERFORMANCE-RULES §1 and tools/perf/limits.json, with a
+  planted test.
+- Where it stands: stage 0 (PixiJS v8 plus one WebGL canvas) was finished on warmup-5m (65b6c33a, 11-04) but NEVER reached main (main has
+  no pixi). Stages 1-6 haven't started. So the live game is still 100% Canvas 2D.
+- Plan: next week, its own lane, alongside the 1-1 fixes. The GPU work touches the render layer, the 1-1 work touches the generator,
+  so they don't share files.
+  - First port stage 0 onto main, measured on the three phones.
+  - Then the stages in order: skies, ground, creatures and Pokey, props and particles, measure the rest, then the APK at 60 Hz.
+  - About 3-5 working days (GPU-RENDERER-PLAN.md).
+- Baseline to beat (Matt's Pixel, 11-06): upright 29.9 fps (worst frame 58 ms, 2 dips), sideways 29.8 fps (worst 96 ms, 5 dips).
+  Same pixel count both ways, so sideways hitches come from what's drawn, not from size.
