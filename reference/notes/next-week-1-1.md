@@ -7,6 +7,9 @@ so a breaking roll can never reach the proven list.
 1. **Petals over a gap must be collectable in ONE pass with the moves the stage has.** In a stage with no leaf float (glide), a petal
    line over a gap has to sit on a double-jump arc, so the player takes them all in one jump. Never placed so the player has to jump
    back and forth to collect them.
+   MATT FOUND THE CAUSE (11-06 ~9:10 PM): the petals are spread for EASY's arc, and Easy's jump is more lenient, so on Easy you can take
+   them all; on NORMAL the double-jump arc is different and they don't line up. Pickups must be placed PER SETTING, on that setting's
+   own arc (Normal's double for Normal, Easy's for Easy), never one placement shared by both.
    Rule to build: for every pickup over a gap, at least one of the stage's taught arcs (jump, double jump; glide only where it's taught)
    from the take-off passes through all of them. The verdict fails any roll where it doesn't.
 2. **Branching levels: pieces too close together block the way down.** Example: petals on a log UNDER another log, with no room to drop
@@ -44,3 +47,16 @@ regardless of the phone we test."
   - About 3-5 working days (GPU-RENDERER-PLAN.md).
 - Baseline to beat (Matt's Pixel, 11-06): upright 29.9 fps (worst frame 58 ms, 2 dips), sideways 29.8 fps (worst 96 ms, 5 dips).
   Same pixel count both ways, so sideways hitches come from what's drawn, not from size.
+
+## Frame rate on real phones (the testers' sheet, 11-06 evening), the GPU move's evidence
+| Player / phone | Way up | Avg fps | Lowest window | Windows under 24 | Worst frame | Quality dropped to |
+|---|---|---|---|---|---|---|
+| Matt, 2020 OnePlus | upright | 28.1 | 17.6 | 3 | 700 ms | q2 most of the time |
+| Matt, 2020 OnePlus | sideways | 24.9 | 16.2 | 12 | 970 ms (a near 1 s freeze) | q2 |
+| Bravo, Samsung | upright | 26.3 | 24.2 | 0 | 152 ms | q2 almost always |
+| Sasa, Android (320 px wide) | upright | 30.3 | 27.8 | 0 | 132 ms | q0-q2 |
+| Jen, Android | sideways | 29.9 | 26.5 | 0 | 150 ms | q0 |
+| Matt, Pixel | upright / sideways | 29.9 / 29.8 | 26 | 0 | 58 / 96 ms | q0 |
+The budget phone falls well short, worst sideways, with freezes of 0.7-1 s. Matt: "if I had that phone ... I'd quit because of the frame
+rate." Mid phones (the Samsung) already drop to the lowest quality to hold 26. This is the GPU move's case, and the baseline it must
+beat: 30 fps held on the OnePlus both ways, no frame over 100 ms.
