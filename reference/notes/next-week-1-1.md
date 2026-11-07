@@ -73,3 +73,16 @@ recordings, with a learning curve across runs (reference/notes/IDEAS.md).
 - Matt sends small updates like this as he looks things over. The lead adds each one to the roadmap as it arrives.
 - Data hygiene: if a phone's settings are changed (for example GPU flags), the player name says so (e.g. "Matt OnePlus flags"), so those
   runs never mix into the baseline or the bots.
+
+## "Can it float?": training the art director on Matt's eye (Matt, 11-06 ~9:25 PM)
+Matt: floating earth "depends how it looks. If it looks like the planks and it just makes sense, then yes. But if it looks like blocks of
+earth just floating, then no ... Maybe we go through different art pieces ... and I provide yes or no's ... and it can train itself."
+Plan (the art director, low effort):
+1. A rating page (an artifact with yes/no buttons, answers saved in its database): about 40 pieces from Matt's sheets and the kits.
+   Include earth chunks, ledges, root tangles, slabs, planks, logs and boughs, each shown floating in a 1-1 still, in random order.
+2. Matt taps Float OK / Must touch ground on each, with an optional word on why.
+3. The art director writes the rule as features (a flat walkable top, a plank or log-like silhouette, roots that trail rather than a
+   squared earth base, thin rather than chunky, and so on), with Matt's yes and no pieces as the examples. The rule goes in
+   reference/art/manifest.
+4. Check it on 10 held-back pieces Matt rates afterwards. The rule must predict his answer on at least 9 of 10 before the engine uses it.
+Until then, the standing rule holds: no floating earth.
