@@ -99,7 +99,7 @@ Every ruling below cites the file and section where it's written in full.
 ## 5. Traps (each of these happened)
 
 - **Times:** never type them; insert them from `TZ=America/New_York date`. UTC and ET get mixed in messages (a 7:44 that was 6:34).
-- **Backticks in heredocs:** end every file write with `sed -i 's/\\`/`/g' <file> && grep -c '\\`' <file>`.
+- **Backticks in heredocs:** an unquoted heredoc turns each backtick into backslash-backtick. After every file write, run a sed that replaces backslash-backtick with a plain backtick, then grep the file to confirm there are 0 left.
 - **Pipes inside table code spans** break GFM tables: escape them (`\|`).
 - **Share vs pixels, and margin-limited vs physical reach:**
   - gen2's `share` is a fraction of the margin's maxGap, not of the true reach;
