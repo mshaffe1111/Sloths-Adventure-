@@ -94,6 +94,13 @@ Until then, the standing rule holds: no floating earth.
   - On WebGL the fill is cheap: after the port, raise q0 to native dpr (up to 3) on phones that hold 30. The GPU plan's stage 5 measures
     it. Matt's bar: no compositor stretch on phones that can take it.
 
+## OUTSIDE REVIEW 11-07 (reference/consultant/2026-11-07-REVIEW.md, max effort; answers in responses.md)
+Its root-cause claim goes FIRST next week: the builder's reach model doesn't match the 30 fps game. It rates the jump about 10 px and
+the bounce about 14 px higher than the game, and the single-jump distance 20-50 px too short (Pokey's 44 px width and coyote time are
+ignored). So a running single jump crosses the 195-203 px 'double' teach gaps, and the w1-hop-bounce walls (116 of 138 layouts) sit
+1-16 px beyond a bounce. engine-core verifies it in the real engine against reference/consultant/2026-11-07-scripts/sim.py, then the
+planner re-lays the lessons (double teach: a rise of 136 px or more; bounce teach: 205 px or less) and the list is rebuilt.
+
 ## TOP FINDING: Sally (a child, "Sasa") on Easy, layout 12727
 ONE run took **2,231 s (37 minutes)**, with **187 soft falls** (put-backs) and 23 checkpoints. Her survey:
 - hardest: "The tall steps (double jump)" and "Bounce, then double jump";
