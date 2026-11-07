@@ -42,6 +42,8 @@ Matt, 2026-11-06, after 0.9.5: "Make sure that you note going forward how to do 
 6. **After ANY proven-seed-list rebuild**, run every test that pins a roll or a seed, BEFORE the PR:
    `npx tsx --test $(grep -rln "setPick11\|roll11Seed\|provenSeedFor" src --include=*.test.ts)`. A test may require properties of a pinned
    roll (counts, kinds), never its exact x positions, because the pins move when the list is rebuilt.
+6b. **A NEW gate is run the way CI runs it before the PR** (D31, #65): `CI=1 FORCE_COLOR=1 node tools/perf/<gate>.mjs`. CI turns colour on,
+   so a gate that reads tool output must strip colour codes (kbdcheck matched a raw "Local:" and failed the deploy; #66 fixed it).
 7. **A gate that fails and is accepted** (0.9.5: funcheck) is named in the PR body with its numbers, the reason, and Matt's acceptance.
    Never lower or re-record a known list to pass (Law 5).
 8. **Matt plays the candidate first**: rebuild EnK5 from the candidate (below), put the link in the FIRST line, and call Artifact open.
