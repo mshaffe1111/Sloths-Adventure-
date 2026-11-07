@@ -263,14 +263,75 @@ export const readyToSend = (ans: Readonly<Record<string, readonly string[]>>): b
  * list of picks, note is text (hand and held, in old rows only, were lists too). The new ones are single values: fun 1 to 5, the rest
  * the words picked; a skipped question is left out. `v: 2` marks the level test's rows, `run` is the run's own 'gen2' line.
  */
+/** how much a tester may write (Matt, 11-06: notes were cut off at 120 and 300); a full row stays far under a sheet cell (47 000) */
+export const LOOKED_MAX = 600;
+export const NOTE_MAX = 1000;
+
+/**
+ * A note box: a few rows, its count under it ("212 / 600"), and kept in view over the phone's keyboard while typed in (the keyboard
+ * covered it, Matt 11-06): on focus, and whenever the visual viewport shrinks or scrolls, the box is scrolled to the middle of what
+ * is left of the screen (visualViewport where the browser has it, scrollIntoView alone otherwise)
+ */
+const NoteBox: React.FC<{ id: string; value: string; onChange: (v: string) => void; max: number; rows: number; placeholder: string; label?: string }> = ({ id, value, onChange, max, rows, placeholder, label }) => {
+  const ref = React.useRef<HTMLTextAreaElement>(null);
+  React.useEffect(() => {
+    const vv = typeof window !== 'undefined' ? window.visualViewport : null;
+    const keep = () => {
+      const el = ref.current;
+      if (!el || document.activeElement !== el) return;
+      el.scrollIntoView({ block: 'center', behavior: 'auto' });
+      // (under a shrunk visual viewport, the layout one is still full height: scroll its own scroller so the box sits in the part left)
+      if (vv) {
+        const r = el.getBoundingClientRect();
+        const top = vv.offsetTop, bottom = vv.offsetTop + vv.height;
+        const sc = el.closest('.ct-scene') as HTMLElement | null;
+        // (room under the page as tall as the keyboard, so the last box can scroll up above it: at the page's end there was none)
+        if (sc) sc.style.paddingBottom = `${Math.max(16, Math.round(window.innerHeight - vv.height))}px`;
+        if (r.bottom > bottom - 8 || r.top < top + 8) {
+          const dy = r.top + r.height / 2 - (top + vv.height / 2);
+          if (sc) sc.scrollTop += dy;
+          else window.scrollBy(0, dy);
+        }
+      }
+    };
+    const onBlur = () => {
+      const sc = ref.current?.closest('.ct-scene') as HTMLElement | null;
+      if (sc) sc.style.paddingBottom = '';
+    };
+    const onFocus = () => {
+      keep();
+      // (the keyboard comes up after the focus: once more when it has)
+      window.setTimeout(keep, 350);
+    };
+    const el = ref.current;
+    el?.addEventListener('focus', onFocus);
+    el?.addEventListener('blur', onBlur);
+    vv?.addEventListener('resize', keep);
+    vv?.addEventListener('scroll', keep);
+    return () => {
+      el?.removeEventListener('focus', onFocus);
+      el?.removeEventListener('blur', onBlur);
+      vv?.removeEventListener('resize', keep);
+      vv?.removeEventListener('scroll', keep);
+    };
+  }, []);
+  return (
+    <>
+      <textarea ref={ref} id={id} value={value} onChange={(e) => onChange(e.target.value)} maxLength={max} rows={rows} aria-label={label}
+        placeholder={placeholder} className="ct-input ct-note" />
+      <p className="ct-count" aria-live="polite">{value.length} / {max}</p>
+    </>
+  );
+};
+
 export function surveyRow(ans: Readonly<Record<string, readonly string[]>>, note: string, lookedNote: string, run: string): Record<string, unknown> {
   const row: Record<string, unknown> = { v: 2 };
   if (ans.hard?.length) row.hard = [...ans.hard];
   for (const id of ['long', 'knew', 'tips', 'looked', 'next']) if (ans[id]?.length) row[id] = ans[id][0];
   const fun = FACES.findIndex((f) => f[1] === ans.fun?.[0]);
   if (fun >= 0) row.fun = fun + 1;
-  if (row.looked === 'Yes' && lookedNote.trim()) row.lookedNote = lookedNote.trim().slice(0, 120);
-  row.note = note.trim().slice(0, 300);
+  if (row.looked === 'Yes' && lookedNote.trim()) row.lookedNote = lookedNote.trim().slice(0, LOOKED_MAX);
+  row.note = note.trim().slice(0, NOTE_MAX);
   if (run) row.run = run;
   return row;
 }
@@ -333,8 +394,8 @@ export const ControlTestDone: React.FC<{ onAgain: () => void; stretches?: string
   const ask = (q: SurveyQ) => (
     <Question key={q.id} q={q} picked={ans[q.id] ?? []} onPick={(a) => pick(q.id, a, q.many)}>
       {q.id === 'looked' && ans.looked?.[0] === 'Yes' && (
-        <input id="ctest-looked" value={lookedNote} onChange={(e) => setLookedNote(e.target.value)} maxLength={120} aria-label="What looked wrong? (optional)"
-          placeholder="e.g. the log jumped out of nowhere" className="ct-input" />
+        <NoteBox id="ctest-looked" value={lookedNote} onChange={setLookedNote} max={LOOKED_MAX} rows={3} label="What looked wrong? (optional)"
+          placeholder="e.g. the log jumped out of nowhere" />
       )}
     </Question>
   );
@@ -355,8 +416,7 @@ export const ControlTestDone: React.FC<{ onAgain: () => void; stretches?: string
           {QUESTIONS.filter((q) => !q.required).map(ask)}
           <div className="ct-q">
             <label className="ct-q-t" htmlFor="ctest-note">Anything else?</label>
-            <textarea id="ctest-note" value={note} onChange={(e) => setNote(e.target.value)} maxLength={300} rows={2}
-              placeholder="e.g. I loved the mushroom bounce" className="ct-input" />
+            <NoteBox id="ctest-note" value={note} onChange={setNote} max={NOTE_MAX} rows={3} placeholder="e.g. I loved the mushroom bounce" />
           </div>
           <p className={`ct-send-hint${ready ? ' ready' : ''}`} aria-live="polite">
             {ready ? 'All set. Tap Send!' : left === 3 ? '3 quick taps to send' : `${left} more tap${left === 1 ? '' : 's'} to send`}

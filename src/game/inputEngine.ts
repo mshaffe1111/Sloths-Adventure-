@@ -129,6 +129,9 @@ export class InputEngine {
   };
 
   private handleKeyDown = (e: KeyboardEvent) => {
+    // (a key typed into a text box, the testers' notes, is the text's: Space and the letters were eaten, Matt 11-06)
+    const t = e.target as HTMLElement | null;
+    if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT' || t.isContentEditable)) return;
     const key = e.code;
 
     // Prevent scrolling for game controls

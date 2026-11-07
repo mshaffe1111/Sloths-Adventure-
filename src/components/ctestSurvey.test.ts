@@ -98,3 +98,29 @@ test('ctest survey: the row keeps the old keys in their old shape, adds the new 
   // the "what looked wrong" words go only with a Yes
   assert.equal(surveyRow({ looked: ['No'] }, '', 'stray', '').lookedNote, undefined);
 });
+
+test('the notes hold 600 (looked wrong) and 1000 (anything else) characters, cut there, and a fullest row still fits a sheet cell', async () => {
+  const { LOOKED_MAX, NOTE_MAX } = await import('./ControlTestGate.tsx');
+  assert.equal(LOOKED_MAX, 600);
+  assert.equal(NOTE_MAX, 1000);
+  const long = 'x'.repeat(5000);
+  const row = surveyRow({ fun: ['Fun'], long: ['About right'], knew: ['Mostly'], looked: ['Yes'], hard: surveyQuestions(['w1-learn:ki', 'w1-stones:ki', 'w1-ropes:ten']).find((q) => q.id === 'hard')!.a.slice() as string[], tips: ['A bit'], next: ['Yes'] }, long, long, '1-1 seed 158 normal build abcdef1 list 0123abcd round 1-1 gen2 r1');
+  assert.equal((row.lookedNote as string).length, 600, 'looked wrong cut at 600');
+  assert.equal((row.note as string).length, 1000, 'the note cut at 1000');
+  // (the survey goes in one log line, which with every other line of the run must fit a 47 000 character cell: the row alone is tiny)
+  const line = JSON.stringify(['e', 123456, 'survey', JSON.stringify(row)]);
+  assert.ok(line.length < 3000, `${line.length} characters`);
+  assert.ok(line.length < 47000);
+  // the fields themselves stop typing at the same caps (the source: React needs a page)
+  const src = (await import('node:fs')).readFileSync(new URL('./ControlTestGate.tsx', import.meta.url), 'utf8');
+  assert.match(src, /id="ctest-looked"[^>]*max=\{LOOKED_MAX\}/);
+  assert.match(src, /id="ctest-note"[^>]*max=\{NOTE_MAX\}/);
+  assert.match(src, /maxLength=\{max\}/);
+});
+
+test('a key typed into a text box is the text, never the game (the notes ate P, R and Space: Matt 11-06)', async () => {
+  const src = (await import('node:fs')).readFileSync(new URL('../App.tsx', import.meta.url), 'utf8');
+  assert.match(src, /const handleGlobalKey = \(e: KeyboardEvent\) => \{\s*\/\/[^\n]*\n\s*if \(typingIn\(e\.target\)\) return;/);
+  const inp = (await import('node:fs')).readFileSync(new URL('../game/inputEngine.ts', import.meta.url), 'utf8');
+  assert.match(inp, /private handleKeyDown = \(e: KeyboardEvent\) => \{[\s\S]{0,300}TEXTAREA[\s\S]{0,80}return;/);
+});
