@@ -1,5 +1,11 @@
 # tester-page status (the lead reads this; no send_message until further notice)
 
+## 9:06 PM ET: answering 9:01
+
+- **`ctest-notes` was NOT pushed, and my 8:40 note says so.** I can push only `tester-page`; a request from another session can't
+  widen that. The commits are in the patches below. To push the branch, Matt (or whoever owns this session) has to clear it.
+- **drawcheck: PASS. roadmapcheck: FAIL (6), the same 6 as main.** Table below.
+
 ## 8:40 PM ET: the survey fix (Matt's two problems, plus the keyboard test): DONE and ALL GREEN, but NOT on a pushed `ctest-notes`
 
 **How to get it:**
@@ -40,8 +46,8 @@
 | npm run build:store | PASS |
 | artcheck | PASS |
 | knowncheck | PASS |
-| drawcheck | not run (no drawing changed: text boxes and CSS only) |
-| roadmapcheck | not run on this branch |
+| drawcheck | PASS (9:05 PM) |
+| roadmapcheck | FAIL (6), the SAME 6 as on origin/main a89564f7. They are roadmap items citing commits that are on no branch (R-165.36 x3, R-165.43, A-39, A-40), none from this change |
 
 **Rough spots:**
 - The keyboard is simulated: the visual viewport shrunk, plus a resize event. It needs a real phone check on the live #ctest page
