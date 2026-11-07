@@ -93,3 +93,18 @@ Until then, the standing rule holds: no floating earth.
   - Raising the cap on Canvas 2D costs fill rate: 3x instead of 2x is 2.25x the pixels, so the frame rate gets worse. Not a free fix.
   - On WebGL the fill is cheap: after the port, raise q0 to native dpr (up to 3) on phones that hold 30. The GPU plan's stage 5 measures
     it. Matt's bar: no compositor stretch on phones that can take it.
+
+## Tester notes with their layouts (the sheet to 11-07 ~1 AM; each layout can be rebuilt from its seed)
+- Log under a log, petals unreachable without a blind drop: seeds 21537, 15406 (Matt Pixel) and 15458 (Matt Pixel 5VSSHX). This is the
+  headroom and visible-drop rule above, so build its planted failures from these three seeds.
+- Petals not on a flowing double-jump line (Normal): 15406. With the float, 29944 "feels perfect", but first-timers won't have it.
+- Rocks stretched with jaggy edges: 35936 (Matt). Check the boulder stretch cap (1.5x) and the source size. This needs bigger art.
+- Portrait, the graphics "shifted" going up onto logs: 28212 (Jen). Check the camera's vertical follow on step-ups upright.
+- "The mounds had funky parameters that didn't seem intuitive": 17581 (Andrew, on Matt's Pixel).
+- Landscape felt less responsive jumping and moving: 23436 (Matt Pixel); "didn't feel as fluid": 7878 (Fold 4). Ties to the hitch data.
+- Frame rate bad at times: 26525 and 21533 (the OnePlus).
+- "Visuals a little faded": 18266 (Pixel upright). Ties to the upright magnification finding.
+- Liked: Steph, "the rocks move to cover the holes you would fall into" (29048); Matt, "3 mushroom bounces had a good flow" (3024); Fold 4,
+  "felt the best" (25908).
+- Data hygiene: the tester code is per DEVICE. Andrew played on Matt's Pixel under the name "Master Andrew" with the same code (JTTCRV),
+  so the bots separate players by name AND code, never by code alone.
