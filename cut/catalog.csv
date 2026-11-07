@@ -1,0 +1,92 @@
+id,source_sheet,width_px,height_px,kind,world_fit,walk_top_y_px,walk_top_x_span_px,notes,file
+W1-02-a,W1-02,2345,1276,pit wall or lip,W1,51,1-2342,"Double U-shaped pit wall with a thin log rail across the top; lips left/centre/right; fern-lined pits, pink ferns kept. Bottom edge is the sheet edge (meant to run off-screen). Clean twin of W1-01.",kept/W1-02-a.png
+W1-03-a,W1-03,1904,1078,floating earth island (FLOAT CANDIDATE),W1,46,204-1652,"Mossy mound island, shelf fungi and puffballs on the rim, short root knot underneath. Domed top, not flat.",kept/W1-03-a.png
+W1-04-a,W1-04,1933,1333,floating earth island (FLOAT CANDIDATE),W1,,,"Lumpy moss island with long dangling root, big dead leaves, purple and yellow mushrooms (purple caps intact). Uneven top. Walk top: uneven lumpy top (leaf and mushroom clumps); set by hand.",kept/W1-04-a.png
+W1-05-a,W1-05,2309,713,floating earth island (FLOAT CANDIDATE),W1,137,160-2043,Wide flat disc of moss on a thin soil slab; purple and grey mushrooms on the rim. Best flat top of the islands; also works as a grounded ledge.,kept/W1-05-a.png
+W1-06-a,W1-06,2380,809,floating earth island (FLOAT CANDIDATE),W1,155,142-2233,"Flat moss slab, chanterelles and oak leaves on top, shelf fungi under the lip.",kept/W1-06-a.png
+W1-07-a,W1-07,2192,1162,floating earth island (FLOAT CANDIDATE),W1,,,"Thick moss island with root tangle underneath, big chanterelle cluster in the middle (blocks the centre of the top). Walk top: auto line hit the chanterelle tops; moss surface is lower and domed; set by hand.",kept/W1-07-a.png
+W1-08-a,W1-08,2293,1140,floating earth island (FLOAT CANDIDATE),W1,,,"Moss island with root base, chanterelles and big oak leaves at both ends. Walk top: auto line hit the chanterelle tops; moss surface is lower and domed; set by hand.",kept/W1-08-a.png
+W1-09-e,W1-09,455,655,stump-step,W1,9,39-414,"Tall root-wrapped rock pillar, flat top. Grey-background sheet; cut cleanly.",kept/W1-09-e.png
+W1-09-j,W1-09,243,653,stump-step,W1,5,68-195,"Very tall thin trunk (pole), small flat top; reads as a pillar step.",kept/W1-09-j.png
+W1-09-m,W1-09,1302,352,floating earth island (FLOAT CANDIDATE),W1,18,45-1255,"Wide root-bound earth slab, flat mossy top (also usable as a grounded ledge block).",kept/W1-09-m.png
+W1-09-n,W1-09,1285,494,floating earth island (FLOAT CANDIDATE),W1,14,29-1252,"Deeper root-bound earth slab with rock showing at the bottom, flat top.",kept/W1-09-n.png
+W1-10-a,W1-10,1366,443,stump-step,W1,23,295-1065,"Very wide low stump with root skirt, big flat cut top.",kept/W1-10-a.png
+W1-10-e,W1-10,835,506,stump-step,W1,19,142-656,"Wide mossy stump, flat cut top, medium height.",kept/W1-10-e.png
+W1-10-i,W1-10,1386,388,floating earth island (FLOAT CANDIDATE),W1,9,28-1362,"Wide root-bound earth slab, roots hanging off the underside, flat top.",kept/W1-10-i.png
+W1-10-j,W1-10,1226,275,floating earth island (FLOAT CANDIDATE),W1,7,38-1185,"Thin root-bound earth slab, flat top (thinnest platform of the set).",kept/W1-10-j.png
+W1-12-a,W1-12,1548,1116,stump-step,W1,51,346-1202,"Big mossy stump on a flared root mat, flat cut top. Lighter pink sheet.",kept/W1-12-a.png
+W1-13-a,W1-13,2152,1229,stump-step,W1,32,626-1483,Stump with long spreading root claws; small flat top relative to its width.,kept/W1-13-a.png
+W1-14-b,W1-14,1881,1242,stump-step,W1,105,495-1384,"Moss-capped stump with root claws; top is moss, not a cut face.",kept/W1-14-b.png
+W1-16-a,W1-16,1468,1425,rock (grounded),W1,99,362-1284,Root-bound stone-block ruin built as a staircase (several steps up to a mossy top). Walkable line is the top landing only; the steps need their own colliders.,kept/W1-16-a.png
+W1-17-a,W1-17,1783,564,walkable log,W1,113,3-1697,"Fallen gnarled log, long moss strip on top, red berries along the side. Splintered ends.",kept/W1-17-a.png
+W1-17-b,W1-17,2496,639,walkable log,W1,102,157-2429,"Very long straight log, cut end on the right, puffballs and shelf fungi low on the side; top is clear.",kept/W1-17-b.png
+W1-18-a,W1-18,581,1327,vine,W1,,,"Upright twisted trunk with fungi and berries, branches at the top: a climb trunk.",kept/W1-18-a.png
+W1-18-b,W1-18,449,1271,other,W1,,,"Upright log/pillar with puffballs, cut face at the bottom. Climb pole or background pillar.",kept/W1-18-b.png
+W1-19-a,W1-19,1759,577,walkable log,W1,77,60-1679,"Mushroom log, cut face left; puffballs stick up from the top (obstacles on the walk line).",kept/W1-19-a.png
+W1-19-b,W1-19,2381,807,bough,W1,287,615-1383,"Long twisting branch with root flare at the left; curved, not flat.",kept/W1-19-b.png
+W1-20-a,W1-20,1740,559,walkable log,W1,76,57-1695,Variant of W1-19-a with a broken right end.,kept/W1-20-a.png
+W1-20-b,W1-20,620,200,walkable log,W1,27,19-601,Small copy of W1-20-a (only just over 600 px).,kept/W1-20-b.png
+W1-20-c,W1-20,1687,814,bough,W1,260,658-1361,"Arched twisting bough, root flare left, fungi along the top.",kept/W1-20-c.png
+W1-21-a,W1-21,1749,695,walkable log,W1,82,59-1603,"Hollow log with an open side showing ink-cap mushrooms; red berries, orange shelf fungi. The opening could double as a hide spot.",kept/W1-21-a.png
+W1-21-b,W1-21,678,275,walkable log,W1,32,25-622,Small copy of W1-21-a.,kept/W1-21-b.png
+W1-21-c,W1-21,1690,620,decor,W1,,,Brush/twig pile with lichen and pale pink mushrooms (pink kept). Low and spiky; decor or soft obstacle.,kept/W1-21-c.png
+W1-21-d,W1-21,687,254,decor,W1,,,Small copy of W1-21-c.,kept/W1-21-d.png
+W1-22-a,W1-22,1645,713,walkable log,W1,130,119-1265,"Mossy log with a flat moss top, honey-fungus cluster and red berries on top, cut face right.",kept/W1-22-a.png
+W1-22-b,W1-22,797,352,walkable log,W1,60,59-545,Small copy of W1-22-a.,kept/W1-22-b.png
+W1-22-c,W1-22,1704,581,walkable log,W1,98,45-900,"Bleached driftwood log, flat top, a little mushroom and leaves on top.",kept/W1-22-c.png
+W1-22-d,W1-22,793,272,walkable log,W1,48,20-414,Small copy of W1-22-c.,kept/W1-22-d.png
+W1-23-a,W1-23,939,371,stump-step,W1,5,160-782,"Wide low cartoon stump, flat cut top. Bolder outlines than the painted W1 set; art director check.",kept/W1-23-a.png
+W1-24-a,W1-24,1230,421,plank,both,1,42-1190,"Stack of three planks (a crate side or bridge deck). Flat outlined cartoon style, flatter than the painted set; art director check.",kept/W1-24-a.png
+W1-24-b,W1-24,1088,533,stump-step,both,36,387-744,Pyramid of log rounds: built-in steps at three heights. Flat outlined style; art director check.,kept/W1-24-b.png
+W1-25-a,W1-25,2257,388,plank,both,6,131-2242,"Single long wooden beam, cut end right. Plain; fits a bridge or ledge.",kept/W1-25-a.png
+W1-26-a,W1-26,1427,502,walkable log,W1,14,34-1392,Mossy log wrapped in vines with a bromeliad and fern; flat moss top.,kept/W1-26-a.png
+W1-26-b,W1-26,914,514,walkable log,W1,16,172-911,Short log on two twisted root legs (arch) with orchids (orchids intact). Space under it.,kept/W1-26-b.png
+W1-27-a,W1-27,1211,414,walkable log,W1,29,8-1171,"Mossy vine-wrapped log, bromeliads on the side; flat top.",kept/W1-27-a.png
+W1-27-b,W1-27,1211,397,walkable log,W1,18,30-1184,"Mossy log, moss drape on top; flat top.",kept/W1-27-b.png
+W2-01-h,W2-01,604,276,plank,W2,93,160-511,"Woven wicker bridge between two posts (604 px, just over the line; the rest of W2-01 is too small).",kept/W2-01-h.png
+W2-04-a,W2-04,1269,877,bush,both,,,Leafy shrub with visible branches.,kept/W2-04-a.png
+W2-04-b,W2-04,1203,889,bush,both,,,Dense round leafy bush.,kept/W2-04-b.png
+W2-05-a,W2-05,1266,910,bush,both,,,Monstera clump; back leaves painted as a dark silhouette.,kept/W2-05-a.png
+W2-05-b,W2-05,1186,817,fern,both,,,Wide fern clump.,kept/W2-05-b.png
+W2-06-a,W2-06,1234,559,walkable log,W2,162,322-1173,Smooth orange-wood beam with a branch stub at the left; flat top. Flat outlined style.,kept/W2-06-a.png
+W2-06-b,W2-06,1219,250,walkable log,both,11,77-1125,"Low mossy log, long flat top.",kept/W2-06-b.png
+W2-07-a,W2-07,1231,559,walkable log,W2,155,281-1197,"Orange log with bromeliads and an orchid, cut face right; bromeliads poke up from the top.",kept/W2-07-a.png
+W2-07-b,W2-07,1221,319,walkable log,both,30,76-1132,"Mossy log with shelf fungi, two tiny mushrooms on top; flat top.",kept/W2-07-b.png
+W2-08-a,W2-08,1201,1093,rock (grounded),both,,,"Big jagged brown rock outcrop with bromeliads and an orchid in a crack; peaked top, not walkable as one surface. Walk top: peaked top, no flat surface; set colliders by hand.",kept/W2-08-a.png
+W2-08-b,W2-08,1198,1010,rock (grounded),both,76,395-930,Big moss-covered rock mound with shelf fungi; two tiers.,kept/W2-08-b.png
+W2-09-a,W2-09,1135,987,rock (grounded),both,37,304-961,Brown rock in natural stair steps (three ledges) with bromeliads; steps at set heights.,kept/W2-09-a.png
+W2-09-b,W2-09,1157,906,rock (grounded),both,47,296-954,"Moss-covered stepped rock mound, rounded top.",kept/W2-09-b.png
+W2-10-a,W2-10,1141,1270,vine,W2,,,Diagonal twisted liana (Y-fork) with flowers and leaves.,kept/W2-10-a.png
+W2-10-b,W2-10,1111,1267,vine,W2,,,Diagonal mossy liana (Y-fork) with ferns.,kept/W2-10-b.png
+W2-11-a,W2-11,331,1255,vine,both,,,Straight vertical twisted vine with flowers: a climb vine.,kept/W2-11-a.png
+W2-11-b,W2-11,512,1092,vine,both,,,S-curved vertical mossy vine with ferns.,kept/W2-11-b.png
+W2-12-a,W2-12,1135,545,decor,both,,,Single giant leaf on a stem (canopy leaf / umbrella). Could be a leaf platform if wanted.,kept/W2-12-a.png
+W2-12-b,W2-12,1073,529,hide spot,W2,,,Fern bower over moss with a hollow underneath (a sleeping sloth face is painted inside).,kept/W2-12-b.png
+W2-12-d,W2-12,1335,653,hide spot,W2,,,Tree-root hollow with glowing eyes inside (cave-like hide spot under a trunk).,kept/W2-12-d.png
+W2-12-e,W2-12,984,661,bush,both,,,Young monstera on a ground patch (patch is part of the art).,kept/W2-12-e.png
+W2-13-a,W2-13,1129,622,cave,both,,,Mossy rock cave mouth.,kept/W2-13-a.png
+W2-13-b,W2-13,1301,615,cave,W2,,,Root-tangle cave mouth with bromeliads.,kept/W2-13-b.png
+W2-13-c,W2-13,979,624,cave,both,,,Stacked-stone cave (dolmen) mouth.,kept/W2-13-c.png
+W2-13-d,W2-13,1282,652,cave,W2,,,Hollow under a stump on arching roots.,kept/W2-13-d.png
+W2-14-a,W2-14,1134,611,thorn hazard,both,,,Red thorn-bramble lattice (see-through gaps keyed out).,kept/W2-14-a.png
+W2-14-b,W2-14,1252,580,bush,W2,,,Low leafy plant with a heap of black berries.,kept/W2-14-b.png
+W2-14-c,W2-14,809,705,thorn hazard,both,,,Trunk bristling with long black spikes; spike tips are fine and soft.,kept/W2-14-c.png
+W2-14-d,W2-14,1073,636,thorn hazard,both,,,Prickly-pear cactus clump with spines.,kept/W2-14-d.png
+W2-15-a,W2-15,802,749,thorn hazard,both,,,"Spike trunk, second variant.",kept/W2-15-a.png
+W2-15-b,W2-15,892,715,bush,W2,,,Stinging-nettle clump; could read as a hazard.,kept/W2-15-b.png
+W2-15-c,W2-15,1004,561,bush,W2,,,"Black-berry plant, second variant.",kept/W2-15-c.png
+W2-15-d,W2-15,977,539,thorn hazard,both,,,"Thorn-bramble lattice, second variant.",kept/W2-15-d.png
+W2-16-a,W2-16,2018,488,water band,W2,,,Muddy swirling river band with reeds on top (reads as mud water).,kept/W2-16-a.png
+W2-16-b,W2-16,2018,414,water band,W2,,,"Muddy river band, shorter.",kept/W2-16-b.png
+W2-16-c,W2-16,1003,419,water band,W2,,,"Wave panel, straight cut sides (tile piece).",kept/W2-16-c.png
+W2-16-d,W2-16,1001,420,water band,W2,,,Wave panel with a rock at the right end.,kept/W2-16-d.png
+W2-16-e,W2-16,2017,447,water band,W2,,,Long low wave strip with a rock at the right end.,kept/W2-16-e.png
+W2-17-a,W2-17,2019,495,water band,W2,,,Muddy river band.,kept/W2-17-a.png
+W2-17-b,W2-17,1002,420,water band,W2,,,"Wave panel, straight cut sides.",kept/W2-17-b.png
+W2-17-c,W2-17,1001,470,water band,W2,,,Wave panel with a rock at the right.,kept/W2-17-c.png
+W2-18-a,W2-18,2018,495,water band,W2,,,Muddy river band.,kept/W2-18-a.png
+W2-18-b,W2-18,2020,505,water band,W2,,,Long wave band with a rock at the right.,kept/W2-18-b.png
+W2-19-a,W2-19,1341,854,bough,both,144,529-1119,"Big gnarled branch with a loop hole, bromeliads and orchids; cut by the sheet edge at the left (joins a trunk off-screen).",kept/W2-19-a.png
+W2-19-c,W2-19,2048,483,bough,both,222,0-1053,"Long mossy branch spanning the whole sheet, cut by both side edges; gently wavy.",kept/W2-19-c.png
+W2-20-a,W2-20,1217,1214,decor,W2,,,"Small twisted flowering tree (bromeliads, orchids, monstera); its branches could be boughs.",kept/W2-20-a.png
+W2-20-b,W2-20,1008,1116,walkable log,both,,,"Diagonal mossy log with monstera and fern; a ramp, not flat. Walk top: diagonal ramp; set a sloped collider by hand.",kept/W2-20-b.png
