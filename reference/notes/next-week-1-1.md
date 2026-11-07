@@ -131,3 +131,23 @@ Measure it with her recording (where the 187 falls happen) and rebuild layout 12
    player a choice, never force it. Examples: Mario's Super Guide, Celeste's Assist Mode, Crash's extra mask after deaths. Dot offers
    help, a vine or a leaf bridge appears, or a skip to the next flag, and the help used is logged.
 6. Watch for: too many overlapping rules (consolidate them as each stage passes), and the art at full size before more stages.
+
+## What the recordings show beyond the notes (the lead's analysis, 11-07 ~1:30 AM; 41 runs, 6 players)
+- **One section caused nearly all of Sally's trouble:** 155 of her 187 put-backs were in `w1-log-chain` (double, double, bounce, double),
+  on Easy, and she entered it 9 times. No other player put back there at all. So the log chain on Easy is the fix, not the whole stage.
+  It's also the slowest section for everyone (median 30 s).
+- **Real lives are lost in 1-1 (21 times):** Jen 7, Matt (Pixel) 7, Steph 3, Bravo 3, Fold 1. They're all "pit" deaths, in
+  `w1-mushroom-chain-back` (5), `w1-log-chain-rise` (5), `w1-mushroom-chain` (4), `w1-log-chain` (3) and `w1-canopy-rungs` (3). The rest of
+  the stage puts you back softly. Decide whether a first stage should have lethal pits, and if so they must look different from the
+  soft ones (players can't tell which is which).
+- **Taps read as punches in a stage with no enemies:** Sally 167, Andrew 114, Fold 4 88, Steph 33; adults on their own phones 5-23.
+  Kids and the Fold produce many taps the game reads as punches. Check whether these were meant as jumps (a flick read as a tap).
+  If so, it's an input misread that makes jumps fail. The recording's touch lines can answer it.
+- **Finish times without Sally:** median 3.5 min (212 s), from 152 s to 612 s (Bravo 612 and 444).
+- **Dot's double-jump tip showed in 31 of 41 runs:** the 5:13 PM fix works, mostly. The 10 runs without it need a look (did the run skip
+  the teach section?).
+- **Screen glitches caught by the recorder:** a camera jump of 138 px (OnePlus, layout 12943; matches Jen's "graphics shifted"), Pokey
+  jitter twice (Sally 12727 at x 35918, Jen 30782 at x 3985), a blank backdrop wait (Sally, w1c-mid), and 4 image load failures.
+- **Make this a tool:** a tester-data report run after each play window. Per section: entries, time, put-backs, lives lost. Per player:
+  taps read as punches, help-worthy fall clusters. Per phone: fps, freezes, quality drops. Plus every glitch, with the layout and x to
+  rebuild it. The weekend's data then becomes a ranked fix list automatically.
