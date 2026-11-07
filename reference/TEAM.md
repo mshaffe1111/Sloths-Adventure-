@@ -25,7 +25,9 @@ artifact on a branch.
 ## Outside the graph (not team members)
 - **Independent consultant** (reference/roles/CONSULTANT.md): Agent at max, sees only its pack, runs after each play window.
 - **Data analyst** (reference/roles/DATA-ANALYST.md): turns play windows into a ranked defect list for the PM.
-- **Supervisor (the old lead):** on call for history and taste questions, not a node in the graph.
+- **Story keeper (the old lead, session_019iachLiuwNTAZUBSJWUmR3): the ONLY long-lived session kept** (Matt, 11-07: "Too much story
+  knowledge"). It owns the story, characters, Dot's voice and the lessons of past releases. The PM asks it before any story, dialogue
+  or taste call, and it reviews player text. It's not a builder and not a node in the graph.
 
 ## The rules (the PM enforces them)
 1. **Packets, never chat history.** Each task: the objective; frozen inputs (spec numbers, interface); allowed files (read / write);
@@ -49,7 +51,8 @@ artifact on a branch.
    - the Critic proves the traversal with the real reach and the child, middle and expert bots.
 
 ## Transition from the old team (11-07)
-The long-lived helpers below hold history but drift with compression; they're retired from building. Their branches and notes stay as
+The long-lived helpers below hold history but drift with compression; they're retired from building. The old lead is the exception:
+it stays as the story keeper. Their branches and notes stay as
 references for packets. engine-core / Core Engine Developer, engine-planner, engine-designer, art-director, Tester Data, release-clerk:
 finish anything in flight, write a hand-off note to reference/handoffs/<role>.md (what's open, where things live, traps), then stop.
 New work goes to fresh role agents via packets from Monday.
