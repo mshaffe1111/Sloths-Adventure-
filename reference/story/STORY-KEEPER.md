@@ -161,7 +161,9 @@ Petals are pressed flat at the soldiers' MARCHING height, low; they're the trail
 1. **Meeca's parents:** never mentioned. Leave it unspoken, or give it one line? (VOICE "Still open").
 2. **Two food mentions left for Matt:** "She took a sandwich" (the eagle, W4) and "Bring snacks" (Meeca's last note, a callback to Dot
    going for snacks) (STORY-REWRITE:1910, :1866).
-3. **The Cast Bible** still says Dot is "he", and that Grandpa vanished the same night Grandma died. Both need the VOICE fixes.
+3. **The Cast Bible: FIXED 11-08 (doc rev 43)** to match VOICE: Dot is she everywhere; Grandpa sat by her chair for a year, then one morning
+   was gone, into the war look (not "the same night"); "that winter" became "the year of the storm" (no winter in a rainforest); "post"
+   became "mail" (plain American speech).
 4. **The prologue ships** (main's `storyIntro.ts` carries THE SLOWEST MORNING, "it's still morning", "Follow the petals!"). Left: a line-by-line
    compare against the approved pilot (pilot-prologue-w1-v2.md:43-246). Story keeper's to do; no Matt call.
 5. **1-5's player text** (keepsake hint, journal line, stage clue) still describes old 1-5's petals; the engine's 1-5 is Meeca's marks.
