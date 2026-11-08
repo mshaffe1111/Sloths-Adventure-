@@ -1,0 +1,73 @@
+// CP2: the level designer's 7 laid-out ideas (cp2/make_sheet.py IDEAS, 'laid'), each jump proven in the REAL engine (realPlay.ts, 30 fps).
+// For every pair of neighbouring pieces (a -> b, b's rise over a and the gap between, as the sheet lays them): Pokey runs along a, and the
+// take-off point is swept across a in 5 px steps; a jump held full (30 frames) or flicked short (4 frames: a first-timer's tap) either lands
+// on b or doesn't. Window = the span of take-off times (ms at full run) that land. Two run-ups: from far back (full speed) and from the
+// start of piece a only (the speed a player really has after landing on a short piece).
+import './src/game/headlessDom.ts';
+import { RealPlay } from './src/game/realPlay.ts';
+import { PHYS } from './src/game/physics.ts';
+import type { Platform } from './src/game/types.ts';
+import { setDifficulty } from './src/game/difficulty.ts';
+if (process.env.MODE === 'easy') setDifficulty('easy'); // the engine then plays Easy's forgiveness (engine.ts:842, FORGIVE.easy)
+console.log('setting:', process.env.MODE === 'easy' ? 'EASY' : 'NORMAL');
+type Part = [string, number, number, number];
+const IDEAS: Record<string, Part[]> = process.env.SET === 'yes4' ? {
+  // four YES ideas for 1-5, from shipped pieces: World 7's crumbling tile (110 px, crumbleAfter 0.7 s: the commonest shipped), the bridge
+  // span at the shipped median 182 px, reed isles as small floating pads (120 px; World 2's lily sizes 82-102 px are the floor)
+  'Crumbling ledge': [['bank', 220, 0, 80], ['crumble', 110, 0, 80], ['crumble', 110, 20, 80], ['crumble', 110, -20, 80], ['bank', 220, 0, 0]],
+  'Bridge span': [['bank', 220, 0, 90], ['bridge', 182, 0, 90], ['bridge', 300, 30, 90], ['bridge', 112, -30, 90], ['bank', 220, 0, 0]],
+  'Reed isles': [['bank', 200, 0, 85], ['reed', 120, 20, 90], ['reed', 120, 0, 80], ['reed', 120, -20, 90], ['bank', 200, -20, 0]],
+} : process.env.SET === 'easyfix' ? {
+  // the designer's Easy rule (ENGINE-SPEC, 11-05 ~12:30 AM): no rise over +40 onto a landing under 220 px, and a landing after a +40 rise
+  // at least 110 px. Bough stair: the same 250 px of height in seven smaller steps. Stump hop: step 1 is +40 onto a 110 px stone.
+  'Bough stair (Easy)': [['stone', 120, 0, 90], ['branch', 120, 40, 80], ['branch', 150, 40, 70], ['branch', 130, 35, 90], ['branch', 160, 35, 80], ['branch', 120, 35, 90], ['branch', 140, 35, 80], ['branch', 430, 30, 0]],
+  'Stump hop (Easy)': [['bank', 150, 0, 90], ['stone', 110, 40, 80], ['stone', 120, 40, 90], ['stone', 233, -70, 90], ['bank', 220, -20, 0]],
+} : {
+  'Bough stair': [['stone', 120, 0, 90], ['branch', 110, 70, 80], ['branch', 220, 60, 70], ['branch', 160, 70, 90], ['branch', 430, 50, 0]],
+  'Rotten-branch drop': [['branch', 220, 0, 60], ['creaking limb', 225, -40, 120], ['catch branch', 110, -150, 80], ['bank', 150, -120, 0]],
+  'Stump hop': [['bank', 150, 0, 90], ['stone', 60, 50, 80], ['stone', 120, 40, 90], ['stone', 233, -70, 90], ['bank', 220, -20, 0]],
+  'Lily-pad hop': [['bank', 170, 0, 85], ['lily', 94, 30, 90], ['lily', 88, 0, 80], ['lily', 102, 0, 95], ['lily', 86, 0, 85], ['bank', 200, -30, 0]],
+};
+const plat = (id: number, k: string, x: number, y: number, w: number): Platform => {
+  const p: any = { id, x, y, width: w, height: k === 'bank' ? 120 : 24, type: k === 'creaking limb' ? 'fragile' : 'solid', style: k === 'bank' || k === 'stone' ? 'moss_stone' : k === 'lily' ? undefined : 'branch' };
+  if (k === 'creaking limb') p.creak = 0.88; // as 1-5 ships it; fragileTimer is left unset: the engine starts it on landing (engine.ts:2477)
+  if (k === 'lily') p.lily = true;
+  if (k === 'catch branch') p.catch = true;
+  if (k === 'crumble') { p.type = 'fragile'; p.crumbleAfter = 0.7; p.style = 'ruin'; }
+  if (k === 'bridge') p.style = 'canopy_bridge';
+  if (k === 'reed') p.style = undefined;
+  return p as Platform;
+};
+const r = new RealPlay('3-5', 1);
+function attempt(a: Platform, b: Platform, takeX: number, hold: number, runFrom: number): boolean {
+  const lead: Platform = { id: 90, x: runFrom - 40, y: a.y, width: a.x - runFrom + 41, height: 24, type: 'solid', style: 'branch' } as Platform;
+  r.bare(runFrom < a.x ? [lead, { ...a }, { ...b }] : [{ ...a }, { ...b }]);
+  r.stand(runFrom, a.y);
+  let pressed = -1;
+  for (let i = 0; i < 240; i++) {
+    if (pressed < 0 && r.p.x >= takeX) { pressed = i; r.frame({ right: true, press: true }); continue; }
+    if (pressed < 0 && !r.p.grounded && r.p.y > a.y + 30) return false;
+    r.frame({ right: true, jump: pressed >= 0 && i - pressed < hold });
+    if (pressed >= 0 && i - pressed > 2 && r.p.grounded) return Math.abs(r.p.y - b.y) < 2 && r.p.x >= b.x - 10;
+    if (r.p.y > Math.max(a.y, b.y) + 250) return false;
+  }
+  return false;
+}
+const out: string[] = [];
+for (const [name, parts] of Object.entries(IDEAS)) {
+  let x = 0, y = 900; const P: Platform[] = [];
+  parts.forEach(([k, w, dy, gap], i) => { y -= dy; P.push(plat(i + 1, k, x, y, w)); x += w + gap; });
+  out.push(`== ${name}`);
+  for (let i = 0; i + 1 < P.length; i++) {
+    const a = P[i], b = P[i + 1], k = parts[i + 1][0];
+    const cells: string[] = [];
+    for (const [hn, hold] of [['full', 30], ['flick', 4]] as const) for (const [rn, from] of [['run-up', a.x - 900], ['from its start', a.x + 10]] as const) {
+      let lo = Infinity, hi = -Infinity;
+      for (let tx = a.x + 5; tx <= a.x + a.width + 40; tx += 5) if (attempt(a, b, tx, hold, from)) { lo = Math.min(lo, tx); hi = Math.max(hi, tx); }
+      const ms = hi >= lo ? Math.round((hi - lo + 5) / PHYS.maxRun * 1000) : 0;
+      cells.push(`${hn}/${rn}: ${ms ? ms + ' ms' : 'NEVER'}`);
+    }
+    out.push(`   ${parts[i][0]} -> ${k} (rise ${b.y < a.y ? '+' : ''}${a.y - b.y}, gap ${b.x - (a.x + a.width)} px): ${cells.join(' | ')}`);
+  }
+}
+console.log(out.join('\n'));

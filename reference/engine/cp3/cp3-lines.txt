@@ -1,0 +1,22 @@
+mix 1-5 normal
+  same piece in a row          max        5  line <= 9      PASS
+  kind x size in a row         max        3  line <= 7      PASS
+  new every (mean px)          max      263  line <= 572    PASS
+  longest with nothing new px  max     1329  line <= 1516   PASS
+  flat stretch px              max      476  line <= 1351   PASS
+  up+down share                min    0.964  line >= 0.949  PASS
+  kinds                        min       11  line >= 5      PASS
+  commonest share              max     0.26  line <= 0.468  PASS
+  climb range px               min      693  line >= 415    PASS
+mix 1-5 easy
+  same piece in a row          max        4  line <= 9      PASS
+  kind x size in a row         max        3  line <= 7      PASS
+  new every (mean px)          max      401  line <= 572    PASS
+  longest with nothing new px  max     1414  line <= 1516   PASS
+  flat stretch px              max      905  line <= 1351   PASS
+  up+down share                min    0.961  line >= 0.949  PASS
+  kinds                        min       11  line >= 5      PASS
+  commonest share              max     0.28  line <= 0.468  PASS
+  climb range px               min      736  line >= 415    PASS
+cp1-old.json two-road share of length, Normal: median 0.61 range 0.193 - 0.681
+cp3-mix.json two-road share of length, Normal: median 0.426 range 0.411 - 0.446

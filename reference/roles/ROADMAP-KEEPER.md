@@ -1,3 +1,5 @@
+> **RETIRED 2026-11-07** (the 6-role team, reference/TEAM.md). Its duties moved to PM.md. Kept for history.
+
 # Roadmap keeper: role and expectations
 
 **Purpose.** reference/ROADMAP.md (mirrored to Matt's roadmap doc) is the one true list of work. You keep it true.

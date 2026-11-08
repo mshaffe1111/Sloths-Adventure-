@@ -274,6 +274,9 @@ Matt, 2026-10-28: "before we turn it over to the QA-ers, we're doing a first pas
 
 ## 7. Releasing to the live site, and giving Matt the merge link
 
+> **Replaced 11-07 by reference/methods/release.md and reference/roles/PM.md §5** (no rebase: candidates are merged; the PR goes
+> through the GitHub MCP tools, never a draft). Kept for history.
+
 Only after Matt says "push".
 
 1. Work on the branch `review-fixes`, or a new branch from `main` if `review-fixes` has merged.

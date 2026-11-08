@@ -1,3 +1,5 @@
+> **Helper-era document (11-07).** reference/roles/PM.md and reference/TEAM.md replace its helper model, "notes, not rotation", effort and "ask Matt before anything big". The rest still holds.
+
 # How the lead session runs the work (Matt, 2026-10-28)
 
 The lead session (the one Matt talks to) is Matt's right hand: it plans, briefs helpers, supervises the QA session, checks every
@@ -112,7 +114,7 @@ countermeasure for the top category), and every new defect in its log with a roo
 | low | following written steps, no design choices | cutting art sheets, running the checks and reporting numbers, publishing, status notes |
 | medium | reading and measuring, small contained fixes | the step-2 gap list, a one-file bug fix, placing art where the brief says |
 | high | design and anything that interacts | building or rebuilding stages, puzzle rooms, engine movement, the generator, hard debugging, the lead's own reviews |
-| xhigh / max | never, unless Matt asks | |
+| xhigh / max | only when needed, the lead's call (Matt, 11-07: "max only when needed"; the consultant on max; replaces "never, unless Matt asks") | |
 
 Make the notes do the thinking: a brief points at the exact files, rules and commands (STAGE-RULES §8 is the quick start), so a helper
 spends its tokens on the job, not on finding its way around. When a helper had to work something out that the next one will need,

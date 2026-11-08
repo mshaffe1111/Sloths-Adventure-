@@ -1,0 +1,1190 @@
+{
+ "rule": "Kin, not copies (README 'Using art in other worlds'): a tag like 'W3~darker' means the same shape re-tinted to that world's palette and given its own dressing; a plain tag means the piece fits as painted. Never the same picture in every world.",
+ "sheets": {
+  "07": [
+   {
+    "item": 1,
+    "name": "w1-post-tall-vine",
+    "job": "climb post / one-piece vertical",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 2,
+    "name": "w1-post-tall-rope",
+    "job": "climb post (rope-lashed: made thing)",
+    "worlds": [
+     "W1",
+     "W2"
+    ]
+   }
+  ],
+  "08": [
+   {
+    "item": 1,
+    "name": "hold-w1-totem-carved",
+    "job": "carved monkey totem",
+    "worlds": [
+     "W5",
+     "W7"
+    ],
+    "status": "hold",
+    "note": "story call (README batch 2 HOLD)"
+   }
+  ],
+  "09": [
+   {
+    "item": 2,
+    "name": "w1-post-rope-wrapped",
+    "job": "post / scaffold",
+    "worlds": [
+     "W1",
+     "W2"
+    ]
+   },
+   {
+    "item": 1,
+    "name": "hold-w1-pole-carved",
+    "job": "carved paw pole",
+    "worlds": [
+     "W5",
+     "W7"
+    ],
+    "status": "hold",
+    "note": "story call"
+   }
+  ],
+  "10": [
+   {
+    "item": 1,
+    "name": "w1-vine-column-a",
+    "job": "climb vine (small: re-roll or upscale)",
+    "worlds": [
+     "W1",
+     "W6~grey-wet"
+    ],
+    "note": "sheet 10 is small (~150-200 px a piece): upscale or re-roll before use"
+   },
+   {
+    "item": 2,
+    "name": "w1-vine-column-b",
+    "job": "climb vine (small)",
+    "worlds": [
+     "W1",
+     "W6~grey-wet"
+    ],
+    "note": "sheet 10 is small (~150-200 px a piece): upscale or re-roll before use"
+   },
+   {
+    "item": 3,
+    "name": "w1-rope-plain",
+    "job": "climb rope (small)",
+    "worlds": [
+     "W1",
+     "W2"
+    ],
+    "note": "sheet 10 is small (~150-200 px a piece): upscale or re-roll before use"
+   },
+   {
+    "item": 10,
+    "name": "w1-rope-thin",
+    "job": "climb rope (small)",
+    "worlds": [
+     "W1",
+     "W2"
+    ],
+    "note": "pink cast painted into the strands (not fixable by despill): re-roll"
+   },
+   {
+    "item": 4,
+    "name": "w1-vine-monstera",
+    "job": "dressing (small)",
+    "worlds": [
+     "W1",
+     "W5"
+    ],
+    "note": "sheet 10 is small (~150-200 px a piece): upscale or re-roll before use"
+   },
+   {
+    "item": 5,
+    "name": "w1-vine-flowering",
+    "job": "dressing (small)",
+    "worlds": [
+     "W1",
+     "W5"
+    ],
+    "note": "sheet 10 is small (~150-200 px a piece): upscale or re-roll before use"
+   },
+   {
+    "item": 6,
+    "name": "w1-vine-fungus",
+    "job": "dressing (small)",
+    "worlds": [
+     "W1",
+     "W8~blue-night"
+    ],
+    "note": "sheet 10 is small (~150-200 px a piece): upscale or re-roll before use"
+   },
+   {
+    "item": 8,
+    "name": "hold-w1-rope-swing-log",
+    "job": "rope swing (no swing mechanic)",
+    "worlds": [
+     "W1"
+    ],
+    "status": "hold",
+    "note": "design call"
+   },
+   {
+    "item": 9,
+    "name": "hold-w1-golden-fruit",
+    "job": "pickup idea",
+    "worlds": [
+     "W1"
+    ],
+    "status": "hold",
+    "note": "design call"
+   }
+  ],
+  "11": [
+   {
+    "item": 2,
+    "name": "w1-bush-monstera",
+    "job": "hide-in-bush",
+    "worlds": [
+     "W1",
+     "W5~orchid",
+     "W6~grey-wet"
+    ]
+   },
+   {
+    "item": 1,
+    "name": "w1-bush-hedge-tall",
+    "job": "hide-in-bush (tall)",
+    "worlds": [
+     "W1",
+     "W5~orchid"
+    ]
+   }
+  ],
+  "12": [
+   {
+    "item": 1,
+    "name": "w1-thorn-vine-column",
+    "job": "hazard (vertical)",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   },
+   {
+    "item": 2,
+    "name": "w1-thorn-tangle-big",
+    "job": "hazard",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   },
+   {
+    "item": 3,
+    "name": "w1-thorn-tangle-flat",
+    "job": "hazard (low)",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   },
+   {
+    "item": 4,
+    "name": "w1-thorn-mound",
+    "job": "hazard",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   },
+   {
+    "item": 5,
+    "name": "w1-thorn-bramble-a",
+    "job": "hazard",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   },
+   {
+    "item": 11,
+    "name": "w1-thorn-bramble-b",
+    "job": "hazard (low)",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   },
+   {
+    "item": 12,
+    "name": "w1-thorn-bramble-long",
+    "job": "hazard (long)",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   },
+   {
+    "item": 13,
+    "name": "w1-thorn-ball",
+    "job": "hazard",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   },
+   {
+    "item": 7,
+    "name": "w1-thorn-hang-a",
+    "job": "hanging hazard",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   },
+   {
+    "item": 8,
+    "name": "w1-thorn-hang-b",
+    "job": "hanging hazard",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   },
+   {
+    "item": 9,
+    "name": "w1-thorn-hang-c",
+    "job": "hanging hazard",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   },
+   {
+    "item": 10,
+    "name": "w1-thorn-hang-swag",
+    "job": "hanging hazard",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   }
+  ],
+  "13": [
+   {
+    "item": 1,
+    "name": "w1-stump-wide",
+    "job": "wide standable stump",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 2,
+    "name": "w1-post-short-rope",
+    "job": "short post",
+    "worlds": [
+     "W1",
+     "W2"
+    ]
+   },
+   {
+    "item": 6,
+    "name": "w1-frame-xbundle-a",
+    "job": "scaffold frame",
+    "worlds": [
+     "W1",
+     "W2"
+    ]
+   },
+   {
+    "item": 5,
+    "name": "w1-vine-curtain",
+    "job": "dressing / hide curtain",
+    "worlds": [
+     "W1",
+     "W6~grey-wet"
+    ]
+   },
+   {
+    "item": 7,
+    "name": "w1-thorn-row",
+    "job": "hazard (long, low)",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   }
+  ],
+  "14": [
+   {
+    "item": 1,
+    "name": "w1-post-stubs",
+    "job": "post with stub steps",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 3,
+    "name": "w1-post-vine-wrapped",
+    "job": "post",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 4,
+    "name": "w1-log-lashed-short",
+    "job": "small log platform",
+    "worlds": [
+     "W2"
+    ],
+    "note": "rope-lashed (a made thing): W2 only (lead 11-06 11:12 AM ET)"
+   },
+   {
+    "item": 5,
+    "name": "w1-frame-a",
+    "job": "scaffold A-frame",
+    "worlds": [
+     "W1",
+     "W2"
+    ]
+   },
+   {
+    "item": 6,
+    "name": "w1-frame-xbundle-b",
+    "job": "scaffold frame",
+    "worlds": [
+     "W1",
+     "W2"
+    ]
+   },
+   {
+    "item": 7,
+    "name": "w1-thorn-pile",
+    "job": "hazard",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   },
+   {
+    "item": 8,
+    "name": "w1-leaf-monstera-hang",
+    "job": "dressing",
+    "worlds": [
+     "W1",
+     "W5"
+    ]
+   },
+   {
+    "item": 9,
+    "name": "w1-garland-vine",
+    "job": "canopy dressing",
+    "worlds": [
+     "W1",
+     "W5",
+     "W6~grey-wet"
+    ]
+   }
+  ],
+  "15": [
+   {
+    "item": 1,
+    "name": "w1-rock-block-big",
+    "job": "standable rock block",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 2,
+    "name": "w1-rock-boulder-moss",
+    "job": "standable boulder",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 3,
+    "name": "w1-rock-roots",
+    "job": "rock with roots",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 4,
+    "name": "w1-rock-spire",
+    "job": "rock (dressing / small step)",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 6,
+    "name": "w1-rock-arch",
+    "job": "hide-under arch",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 7,
+    "name": "w1-rock-slabs-stacked",
+    "job": "stacked slabs step",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 8,
+    "name": "w1-pebble-a",
+    "job": "dressing",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 9,
+    "name": "w1-pebble-b",
+    "job": "dressing",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 10,
+    "name": "w1-pebble-c",
+    "job": "dressing",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   }
+  ],
+  "16": [
+   {
+    "item": 1,
+    "name": "w1-branch-long-a",
+    "job": "DRESSING only (drawn diagonal); flat re-roll on the redo list",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 2,
+    "name": "w1-branch-leafy",
+    "job": "DRESSING only (drawn diagonal); flat re-roll on the redo list",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 3,
+    "name": "w1-branch-hanging-vine",
+    "job": "branch with hanging vine",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 4,
+    "name": "w1-branch-knotted",
+    "job": "DRESSING only (drawn diagonal); flat re-roll on the redo list",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 5,
+    "name": "w1-branch-twig",
+    "job": "thin twig (dressing)",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 6,
+    "name": "w1-sticks-bundle",
+    "job": "dressing",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 7,
+    "name": "w1-branch-twisted",
+    "job": "branch (dressing)",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 8,
+    "name": "w1-sticks-thorny",
+    "job": "hazard",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W10~dead-grey"
+    ]
+   }
+  ],
+  "17": [
+   {
+    "item": 1,
+    "name": "w1-hide-boulder-cave",
+    "job": "hide-under cave",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 3,
+    "name": "w1-hide-log-on-stump",
+    "job": "hide-under leaning log",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 4,
+    "name": "w1-hide-rock-arch-low",
+    "job": "hide-under arch",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 5,
+    "name": "w1-hide-slab-overhang",
+    "job": "hide-under overhang",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 6,
+    "name": "w1-rock-slabs-low",
+    "job": "low slab step",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 7,
+    "name": "w1-hide-stump-hollow",
+    "job": "PERCH only (narrow top) + hide spot",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 8,
+    "name": "w1-hide-root-arch",
+    "job": "root arch (1-2 brief)",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W7~temple"
+    ]
+   }
+  ],
+  "18": [
+   {
+    "item": 1,
+    "name": "w1-hide-cave-big",
+    "job": "hide / secret door cave",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   }
+  ],
+  "19": [
+   {
+    "item": 1,
+    "name": "w1-rock-root-block",
+    "job": "standable root block",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 2,
+    "name": "w1-rock-boulder-moss-big",
+    "job": "standable boulder",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 4,
+    "name": "w1-rock-slabs-stacked-big",
+    "job": "stacked slabs step",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   }
+  ],
+  "20": [
+   {
+    "item": 1,
+    "name": "w1-hide-stump-hollow-tall",
+    "job": "PERCH only (narrow top) + hide spot",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 3,
+    "name": "w1-trunk-twisted-rock",
+    "job": "set piece: twisted trunk with rock",
+    "worlds": [
+     "W1",
+     "W6~grey-wet"
+    ]
+   }
+  ],
+  "36": [
+   {
+    "item": 1,
+    "name": "w1-wall-earth-A",
+    "job": "ONE-PIECE WALL (master): measure each ledge top",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ],
+    "note": "set piece: each ledge/shelf top line must be measured and become a platform at that height (integration waits on the lead)"
+   },
+   {
+    "item": 2,
+    "name": "w1-wall-cap-tl",
+    "job": "wall corner cap",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ]
+   },
+   {
+    "item": 3,
+    "name": "w1-wall-cap-tr",
+    "job": "wall corner cap",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ]
+   },
+   {
+    "item": 13,
+    "name": "w1-wall-foot-l",
+    "job": "wall foot corner",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ]
+   },
+   {
+    "item": 14,
+    "name": "w1-wall-foot-r",
+    "job": "wall foot corner",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ]
+   },
+   {
+    "item": 4,
+    "name": "w1-roots-hang-a",
+    "job": "hanging roots",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ]
+   },
+   {
+    "item": 6,
+    "name": "w1-roots-hang-b",
+    "job": "hanging roots",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ]
+   },
+   {
+    "item": 9,
+    "name": "w1-ledge-thin",
+    "job": "floating ledge",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ]
+   },
+   {
+    "item": 10,
+    "name": "w1-ledge-earth-a",
+    "job": "floating earth ledge",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ]
+   },
+   {
+    "item": 11,
+    "name": "w1-ledge-earth-long",
+    "job": "floating earth ledge",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ]
+   },
+   {
+    "item": 12,
+    "name": "w1-ledge-earth-small",
+    "job": "floating earth ledge",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ]
+   },
+   {
+    "item": 17,
+    "name": "w1-ledge-earth-b",
+    "job": "floating earth ledge",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ]
+   },
+   {
+    "item": 16,
+    "name": "w1-ground-chunk",
+    "job": "ground chunk",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ]
+   },
+   {
+    "item": 7,
+    "name": "w1-mossrock-a",
+    "job": "dressing",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 8,
+    "name": "w1-mossrock-b",
+    "job": "dressing",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 15,
+    "name": "w1-grass-tuft-a",
+    "job": "dressing",
+    "worlds": [
+     "W1",
+     "W3",
+     "W6",
+     "W8"
+    ]
+   },
+   {
+    "item": 5,
+    "name": "w2-lantern-hanging",
+    "job": "lantern (made thing)",
+    "worlds": [
+     "W2"
+    ],
+    "note": "village only: not W1"
+   }
+  ],
+  "38": [
+   {
+    "item": 1,
+    "name": "w1-wall-earth-B",
+    "job": "ONE-PIECE WALL (variant, more roots)",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ],
+    "note": "set piece: each ledge/shelf top line must be measured and become a platform at that height (integration waits on the lead)"
+   },
+   {
+    "item": 14,
+    "name": "w1-plank-ledge-a",
+    "job": "plank ledge",
+    "worlds": [
+     "W1",
+     "W2",
+     "W6~grey-wet"
+    ]
+   },
+   {
+    "item": 16,
+    "name": "w1-plank-ledge-b",
+    "job": "plank ledge",
+    "worlds": [
+     "W1",
+     "W2",
+     "W6~grey-wet"
+    ]
+   },
+   {
+    "item": 18,
+    "name": "w1-plank-ledge-c",
+    "job": "plank ledge",
+    "worlds": [
+     "W1",
+     "W2",
+     "W6~grey-wet"
+    ]
+   },
+   {
+    "item": 11,
+    "name": "w1-roots-hang-c",
+    "job": "hanging roots",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ]
+   },
+   {
+    "item": 12,
+    "name": "w1-roots-hang-glow",
+    "job": "hanging roots with glow",
+    "worlds": [
+     "W1",
+     "W3",
+     "W8"
+    ]
+   }
+  ],
+  "39": [
+   {
+    "item": 1,
+    "name": "w1-wall-earth-C",
+    "job": "ONE-PIECE WALL (variant C)",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ],
+    "box": [
+     0,
+     0,
+     726,
+     1024
+    ],
+    "note": "set piece: each ledge/shelf top line must be measured and become a platform at that height (integration waits on the lead)",
+    "erase": [
+     [
+      712,
+      302,
+      1024,
+      470
+     ]
+    ]
+   },
+   {
+    "item": 8,
+    "name": "w1-boulder-grey-moss",
+    "job": "standable boulder",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 1,
+    "name": "w1-ledge-overhang-big",
+    "job": "big overhang ledge (roots under)",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ],
+    "box": [
+     712,
+     270,
+     1024,
+     460
+    ]
+   }
+  ],
+  "41": [
+   {
+    "item": 2,
+    "name": "w1-trunk-fungus-A",
+    "job": "ONE-PIECE CLIMB TRUNK: measure each shelf top",
+    "worlds": [
+     "W1",
+     "W8~blue-night"
+    ],
+    "box": [
+     250,
+     0,
+     1024,
+     1024
+    ],
+    "erase": [
+     [
+      548,
+      70,
+      612,
+      210
+     ]
+    ],
+    "note": "set piece: each ledge/shelf top line must be measured and become a platform at that height (integration waits on the lead)"
+   },
+   {
+    "item": 2,
+    "name": "w1-wall-foot-l-41",
+    "job": "wall foot corner",
+    "worlds": [
+     "W1",
+     "W3~darker"
+    ],
+    "box": [
+     0,
+     750,
+     252,
+     1024
+    ]
+   },
+   {
+    "item": 4,
+    "name": "w1-fungus-shelf-big",
+    "job": "floating fungus shelf",
+    "worlds": [
+     "W1",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 6,
+    "name": "w1-fungus-cluster",
+    "job": "fungus shelf / dressing",
+    "worlds": [
+     "W1",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 11,
+    "name": "w1-stump-forked-a",
+    "job": "forked stump",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 10,
+    "name": "w1-stump-forked-b",
+    "job": "forked stump",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 14,
+    "name": "w1-mossrock-c",
+    "job": "dressing",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 15,
+    "name": "w1-mossrock-d",
+    "job": "dressing",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   }
+  ],
+  "42": [
+   {
+    "item": 1,
+    "name": "w1-trunk-fungus-B",
+    "job": "ONE-PIECE CLIMB TRUNK (spiral steps, best)",
+    "worlds": [
+     "W1",
+     "W8~blue-night"
+    ],
+    "note": "Gemini cropped the crown at the sheet top: needs a canopy above it or a re-roll with headroom set piece: each ledge/shelf top line must be measured and become a platform at that height (integration waits on the lead)"
+   },
+   {
+    "item": 5,
+    "name": "w1-boulder-grey-moss-b",
+    "job": "standable boulder",
+    "worlds": [
+     "W1",
+     "W3~cool-dark",
+     "W4~slate",
+     "W7~sand-stone"
+    ]
+   },
+   {
+    "item": 15,
+    "name": "w1-log-plank-a",
+    "job": "log platform",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 18,
+    "name": "w1-log-plank-b",
+    "job": "log platform",
+    "worlds": [
+     "W1",
+     "W6~grey-wet",
+     "W8~blue-night"
+    ]
+   },
+   {
+    "item": 7,
+    "name": "w1-grass-tuft-b",
+    "job": "dressing",
+    "worlds": [
+     "W1",
+     "W6",
+     "W8"
+    ]
+   },
+   {
+    "item": 12,
+    "name": "w1-grass-tuft-c",
+    "job": "dressing",
+    "worlds": [
+     "W1",
+     "W6",
+     "W8"
+    ]
+   }
+  ]
+ }
+}

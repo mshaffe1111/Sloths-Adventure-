@@ -1,0 +1,21 @@
+// CP2: the two animal ideas, proven where those animals already ship: boa guards (old 1-9 on main) and snapping turtles (2-5, 2-9).
+// The real-engine first-timer bot (tools/inspect/firsttimer.ts), adult on Normal and kid on Easy, layouts 1-2: every harm whose cause is
+// that animal, and how the run ended. Pass line (designer, ENGINE-SPEC CP2): past each animal with no more than one heart lost.
+import { firstTimer, FT_ADULT, FT_KID } from './tools/inspect/firsttimer.ts';
+const cases: Array<[string, string]> = [['1-9', 'boa'], ['2-5', 'turtle'], ['2-9', 'turtle']];
+for (const [id, foe] of cases) for (const who of [FT_ADULT, FT_KID]) for (const seed of [1, 2]) {
+  const r = firstTimer(id, seed, who, { fresh: true });
+  const mine = r.harms.filter((h) => h.cause.includes(foe));
+  const lives = mine.filter((h) => h.kind === 'life').length, hits = mine.filter((h) => h.kind === 'hit').length;
+  const xs = [...new Set(mine.map((h) => Math.round(h.x / 100) * 100))];
+  console.log(`${id} ${foe.padEnd(6)} ${who.name} ${who.setting.padEnd(6)} layout ${seed}: end ${r.end} in ${Math.round(r.time)} s; ${foe} hits ${hits}, lives ${lives}${xs.length ? ' at x ' + xs.join(',') : ''}; all harms ${r.harms.length} (${[...new Set(r.harms.map((h) => h.cause))].join(', ')})`);
+}
+// per animal: the most hearts lost at one animal (harms of that cause within 400 px of each other count as one animal)
+console.log('--- most hits at one animal (harms within 400 px grouped)');
+for (const [id, foe] of cases) for (const who of [FT_ADULT, FT_KID]) for (const seed of [1, 2]) {
+  const r = firstTimer(id, seed, who, { fresh: true });
+  const xs = r.harms.filter((h) => h.cause.includes(foe)).map((h) => h.x).sort((a, b) => a - b);
+  const groups: number[] = []; let last = -1e9;
+  for (const x of xs) { if (x - last > 400) groups.push(0); groups[groups.length - 1]++; last = x; }
+  console.log(`${id} ${who.name} ${who.setting} L${seed}: ${groups.length} animals that hurt him; most at one: ${Math.max(0, ...groups)}; over 1 heart at ${groups.filter((g) => g > 1).length} of them`);
+}

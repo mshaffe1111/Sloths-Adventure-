@@ -1,0 +1,6 @@
+old 1-1 normal top-two share median 0.88 | layout 1 mix: bank 34%, log 31%, branch 26%, mushroom 8%, stone 1%
+new 1-1 normal top-two share median 0.87 | layout 1 mix: branch 80%, log 7%, stone 6%, mushroom 5%, bank 2%
+new 1-2 normal top-two share median 0.53 | layout 1 mix: bridge 24%, branch 22%, log 22%, creaking limb 12%, bank 11%, liana 6%, catch branch 2%, stone 1%
+new 1-3 normal top-two share median 0.69 | layout 1 mix: log 45%, bank 24%, branch 23%, mushroom 5%, stone 3%, rope 1%
+new 1-4 normal top-two share median 0.74 | layout 1 mix: branch 56%, climb vine 19%, creaking limb 10%, stone 6%, rope 4%, liana 2%, solid 2%, log 1%
+new 1-5 normal top-two share median 0.72 | layout 1 mix: creaking limb 40%, stone 33%, branch 9%, catch branch 8%, bank 6%, liana 3%, log 1%

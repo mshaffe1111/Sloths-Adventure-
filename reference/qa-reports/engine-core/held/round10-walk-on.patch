@@ -1,0 +1,39 @@
+diff --git a/src/game/gen2/worlds/w1.ts b/src/game/gen2/worlds/w1.ts
+index 7dd5357eb..69be0d7fc 100644
+--- a/src/game/gen2/worlds/w1.ts
++++ b/src/game/gen2/worlds/w1.ts
+@@ -669,7 +669,9 @@ const floorDash = section({
+  *  lead, 11-05: lowLog assumes a floor road under it and the end has none, so it lay unreachable under the end road: Matt's Roll C petals) */
+ const quietArrival = section({
+   id: 'w1-quiet-arrival', name: 'quiet arrival', phases: ['goal'], difficulty: 1, needs: ['walk'], ports: ['ledge', 'ledge'], window: BOUGH_WINDOW,
+-  versions: [[240, 280], [520, 600]].map((w, j) => ({ id: j ? 'long' : 'short', groups: [(k: string) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, w as R2), limb(`${k}L`, { kind: 'walk', after: `${k}a`, dy: [0, 0] }, END_LOG, 'log')], sockets: [totem(`${k}L`), clue(`${k}L`)], last: `${k}L` })] })),
++  // (Round 10, the designer 11-06: the walk-on 100-130 px in all, main's cap 815 px (686 log + 129): one bough, or the bough and a single
++  //  soft step up onto the log (24-30 px); 'long' is gone)
++  versions: ([[0, 0], [-30, -24]] as R2[]).map((dy, j) => ({ id: j ? 'step' : 'short', groups: [(k: string) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, [100, 130]), limb(`${k}L`, { kind: 'walk', after: `${k}a`, dy }, END_LOG, 'log')], sockets: [totem(`${k}L`), clue(`${k}L`)], last: `${k}L` })] })),
+   feel: ['1-1'], not: NOT_11, rating: 1,
+   source: "W1-NEW-SECTIONS #15: a calm high-branch walk onto the long high log (main's old 1-1 end: 685 px, exit_totem, no shrine); 1-1.md:23; stageClue.ts:16",
+ });
+@@ -757,8 +759,9 @@ const canopyWeave = section({
+ const sunlitLog = section({
+   id: 'w1-sunlit-log', name: 'onto the high log', phases: ['goal'], difficulty: 1, needs: ['walk'], ports: ['ledge', 'ledge'], exitDy: -60, window: BOUGH_WINDOW,
+   versions: [1, 2].map((n) => ({ id: `steps${n}`, groups: [(k: string) => {
+-    const pieces: W1Piece[] = [limb(`${k}a`, { kind: 'start' }, [260, 300])];
+-    if (n === 2) pieces.push(limb(`${k}s`, { kind: 'walk', after: `${k}a`, dy: [-32, -28] }, [200, 240]));
++    // (Round 10: the walk-on 100-130 px in all: one bough of 100-130, or 50-65 and a 50-65 step)
++    const pieces: W1Piece[] = [limb(`${k}a`, { kind: 'start' }, n === 2 ? [50, 65] : [100, 130])];
++    if (n === 2) pieces.push(limb(`${k}s`, { kind: 'walk', after: `${k}a`, dy: [-32, -28] }, [50, 65]));
+     pieces.push(limb(`${k}L`, { kind: 'walk', after: pieces[pieces.length - 1].key, dy: n === 2 ? [-32, -28] : [-62, -58] }, END_LOG, 'log'), lowLog(`${k}lo`, `${k}a`, [0.2, 0.3]));
+     return { pieces, sockets: [totem(`${k}L`), clue(`${k}L`), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2)], last: `${k}L` };
+   }] })),
+@@ -856,8 +859,9 @@ const boughLog = section({
+ const lastStepUp = section({
+   id: 'w1-last-step-up', name: 'the last step up', phases: ['goal'], difficulty: 1, needs: ['jump'], ports: ['ledge', 'ledge'], exitDy: -75, window: BOUGH_WINDOW,
+   versions: [false, true].map((walk) => ({ id: walk ? 'walk-first' : 'hop', groups: [(k: string) => {
+-    const pieces: W1Piece[] = [limb(`${k}a`, { kind: 'start' }, [240, 280])];
+-    if (walk) pieces.push(limb(`${k}w`, { kind: 'walk', after: `${k}a`, dy: [0, 0] }, [200, 240]));
++    // (Round 10: the walk-on 100-130 px in all: a 100-130 take-off, or 50-65 and 50-65)
++    const pieces: W1Piece[] = [limb(`${k}a`, { kind: 'start' }, walk ? [50, 65] : [100, 130])];
++    if (walk) pieces.push(limb(`${k}w`, { kind: 'walk', after: `${k}a`, dy: [0, 0] }, [50, 65]));
+     pieces.push(limb(`${k}L`, { kind: 'jump', after: pieces[pieces.length - 1].key, dy: [-80, -70], share: [0.2, 0.3] }, END_LOG, 'log'), lowLog(`${k}lo`, `${k}a`, [0.2, 0.3]));
+     return { pieces, sockets: [totem(`${k}L`), clue(`${k}L`), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2)], last: `${k}L` };
+   }] })),

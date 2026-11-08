@@ -1,0 +1,886 @@
+LEDGER-2026-11-02-full.md:42	Y	A world's own mechanic returns in later worlds without re-teaching, as the twist for the new world's mechanic	§critic ruling 3 L1794; G L1841; M3 L2045
+LEDGER-2026-11-02-full.md:72	Y	The twist must break the rhythm just learned; the checker compares part 3 with part 2	PARTIAL M1 L2040; M4 L2046: twist is a named step; no checker comparing part 3's rhythm with part 2's
+LEDGER-2026-11-02-full.md:93	Y	Same pieces feel new by feel alone: long momentum leaps versus small precise apex moves; neighbours alternate	PARTIAL L2113: per-roll hop/jump families vary rolls; no leap-versus-precision field or neighbour alternation
+LEDGER-2026-11-02-full.md:100	Y	Two tempos inside one beat (sprint crumbling ledges, stop on a thorn vine); dual clocks (fast floors, slow enemy cycle)	PARTIAL §Design L1121; L1796: wait-and-go named, to be defined or struck; no tempo-switch or dual-clock beats
+LEDGER-2026-11-02-full.md:109	Y	Each world has a named hurry/patience tempo polarity, different from the world before	MISSING
+LEDGER-2026-11-02-full.md:116	Y	Slow-downs come in two kinds (contact, volume); a slow field pushes the player up to a better high route	MISSING
+LEDGER-2026-11-02-full.md:124	Y	Every world's X-8 has a moving pressure (chase, rising water, closing light, squall front)	§critic ruling 4 L1795
+LEDGER-2026-11-02-full.md:136	Y	Each act has its own mechanical job: calibrate then flip speed; outside forces; three- and four-way combinations	PARTIAL G L1829: Worlds 8-10 use three or four mechanics at once; no Act I calibrate/flip or Act II outside-forces job
+LEDGER-2026-11-02-full.md:151	Y	An optional hard branch in the twist with the big find at its top; three risk tiers of finds	PARTIAL G L1849: optional vertical branch for the second collectible tier; no twist-placed hard branch with big find, no three tiers
+LEDGER-2026-11-02-full.md:174	Y	Allow one exact repeat in part 2 to build the feel; the third use must change	§critic deep pass #5 L1883
+LEDGER-2026-11-02-full.md:180	Y	Pickup spacing sets the tempo (closer carvings speed a chase); never counts as variety	MISSING
+LEDGER-2026-11-02-full.md:202	Y	Let the last group (and X-8's) run 15-20 s dense; 'never T-T' comes from other research	PARTIAL §critic ruling 4 L1795: last group dense 15-20 s at exit; X-8's dense group not
+LEDGER-2026-11-02-full.md:205	Y	Part 2 may repeat a pattern once for muscle memory, then change	§critic deep pass #5 L1883
+LEDGER-2026-11-02-full.md:269	Y	Fatigue: stages lack own identity, pacing flattened to even difficulty, same rhythm repeated without new context; more abilities is not the fix	§critic rulings 1,4 L1792,L1795; P2/P3 L1998-1999
+LEDGER-2026-11-02-full.md:270	Y	Layering: combine known pieces into new challenges with no new rules	§More used L1320; §Move ladder M3-M4 L2042,L2046
+LEDGER-2026-11-02-full.md:271	Y	Four modifiers give 15 combinations; with run and jump, 15 pairs of six	§G L1831
+LEDGER-2026-11-02-full.md:272	Y	Each combination is multiplied by direction (across, up, down) and tempo	PARTIAL L1831,L1840: pairs table and world fingerprint of pairs and camera directions; no pair × direction × tempo
+LEDGER-2026-11-02-full.md:273	Y	Tempo inversion: every modifier has a hurry and a patience version, weighted equally	MISSING
+LEDGER-2026-11-02-full.md:274	Y	Hurry examples: breaking branches need buffered jumps; sticky silk punishes lingering	PARTIAL P7 L2003: snap twig ~0.15 s keeps him moving; no silk-lingering beat
+LEDGER-2026-11-02-full.md:275	Y	Patience examples: thorn vines strike when hurried; glowworms light when still; squalls make you stop and grip	PARTIAL §moves L1299; §hazards L1302: hold on flash; no patience beats, no glowworms
+LEDGER-2026-11-02-full.md:276	Y	Worlds swing between urgency and patience, doubling the functional variety	MISSING
+LEDGER-2026-11-02-full.md:282	Y	Same tiles feel distinct if one stage asks for momentum leaps and another for apex micro-positioning	PARTIAL §feel profile L1037-1038: no leap-versus-precision field; hop families L2113 only
+LEDGER-2026-11-02-full.md:286	Y	Snap twig breaks in about 0.15 s: keep sprinting	§P7 L2003; C3 L1750
+LEDGER-2026-11-02-full.md:287	Y	Creaking limb gives about 0.60 s to recover	PARTIAL §Pacing P7 L2003: Normal crumble settles 0.5 s, first-use margin and Easy OPEN; no 0.60 s recover window
+LEDGER-2026-11-02-full.md:288	Y	Cantilever root tips on a pivot by where he stands, doesn't vanish	PARTIAL §unused-art L162,L204: counterweight/seesaw parked
+LEDGER-2026-11-02-full.md:290	Y	Two kinds of slow-down: contact (sticky only while on it) and volume (caps speed on entry)	MISSING
+LEDGER-2026-11-02-full.md:297	Y	Vines as four instruments: ladder, wide catapult, line sinking toward danger, reacting hazard	PARTIAL L1652,L1833: hanging moves core; no catapult or sinking-line vine
+LEDGER-2026-11-02-full.md:306	Y	Run+Jump is always present, so leave it out of the pair count	§More used L1320; §C L1570
+LEDGER-2026-11-02-full.md:307	Y	Run+Branches: stop and you fall; read the path and commit	§1-5 plan L342,L346
+LEDGER-2026-11-02-full.md:308	Y	Run+Vines: a running leap into a vine turns speed into swing size	PARTIAL §CP2 L82: vine relay; no running-entry use
+LEDGER-2026-11-02-full.md:310	Y	Run+Slow: stutter-step out of drag, or stop dead to light glowworms	MISSING
+LEDGER-2026-11-02-full.md:311	Y	Jump+Branches: short jumps up stacked crumbling tiers (a crumbling-tier shaft)	PARTIAL §1-5 plan L344; L737: no vertical crumbling shaft
+LEDGER-2026-11-02-full.md:312	Y	Jump+Vines: let go at the 45-degree top of the swing with carried speed	PARTIAL §CP2 L82; L1830: lift momentum R-152.7; release carry is physics
+LEDGER-2026-11-02-full.md:314	Y	Jump+Slow: buffered hops skim sticky silk (a hop-to-skim silk bridge)	MISSING
+LEDGER-2026-11-02-full.md:315	Y	Branches+Vines: bail out from a breaking branch onto a vine	MISSING
+LEDGER-2026-11-02-full.md:317	Y	Branches+Slow: a surface that slows and crumbles; short hops, no walking	MISSING
+LEDGER-2026-11-02-full.md:319	Y	Vines+Slow: thorn vines strike if climbed fast; slow hand over hand	PARTIAL §B L1499; §C L1556: thorns hazard; no speed-sensitive climb
+LEDGER-2026-11-02-full.md:321	Y	The 15 pairs are interactions inside one beat	§critic ruling 4 L1795; G L1831
+LEDGER-2026-11-02-full.md:327	Y	Merge Smith's rhythm groups with Hayashida's four steps	§move ladder L118-119; §CP3 bursts L390-391; §Design L1121
+LEDGER-2026-11-02-full.md:328	Y	Cells: stretches between checkpoints or branch points, joined by portals	PARTIAL §mix rule L251; L278-283: no cells or portals
+LEDGER-2026-11-02-full.md:329	Y	Rhythm groups of 5/10/15/20 s with a beat pattern and low/medium/high density	PARTIAL G L1835: 5/10/15/20 s groups by time; no per-group beat pattern or density
+LEDGER-2026-11-02-full.md:333	Y	Part 1: one or two short low-density groups over solid ground or harmless water	§1-5 plan L341-342; §1-1 plan L1065-1066; §Difficulty dial L652
+LEDGER-2026-11-02-full.md:336	Y	The first rest is a checkpoint and holds the stage's one wayside line	§1-5 plan L345; §1-1 plan L1070
+LEDGER-2026-11-02-full.md:337	Y	Part 2: the safety floor goes; chained transfers at medium density	§1-5 plan L346; §Difficulty dial L643
+LEDGER-2026-11-02-full.md:338	Y	Part 2 may repeat one pattern before the rest, for muscle memory	§critic deep pass #5 L1883
+LEDGER-2026-11-02-full.md:339	Y	Part 3, the twist: a new context or second mechanic that breaks the learned rhythm	PARTIAL M1 L2040; L1795 twist field: twist named; nothing checks it breaks the rhythm
+LEDGER-2026-11-02-full.md:341	Y	Part 3 holds a portal: an optional hard branch to a collectible	§Placement rule 4 L306-307; §1-5 plan L344,L350; L358-359
+LEDGER-2026-11-02-full.md:351	Y	Each slot X-1..X-10 has its own job; alternate fast runs, climbs, puzzle/stealth breaks, breathers	PARTIAL L1795,L1806: slot roles named and vary; no alternation of runs/climbs/puzzle/breathers
+LEDGER-2026-11-02-full.md:353	Y	X-1 arrival: across left to right, low-medium density, forgiving floors	PARTIAL L1795: X-1 arrival slot named; its direction, density, forgiving floors not stated
+LEDGER-2026-11-02-full.md:354	Y	X-2 teaches the world's mechanic, across with gentle slopes, medium density	PARTIAL §B L1497-1506; L114: slot list elided at X-2 (L1795)
+LEDGER-2026-11-02-full.md:355	Y	X-3 tight terrain: confined or rolling, slow-downs or shape traps, tests small positioning	MISSING
+LEDGER-2026-11-02-full.md:357	Y	X-5 mid-world spike: many tiers, hazard-driven, high density	PARTIAL §dial L628,L655: no X-5 spike/X-6 dip
+LEDGER-2026-11-02-full.md:358	Y	X-6 change of pace: a sense flipped, climb or dark/puzzle room, low tempo	MISSING
+LEDGER-2026-11-02-full.md:359	Y	X-7 exploring with branches: non-linear cells and portals, mixed rhythm	PARTIAL L1795 map hub; §B L1499,L1503
+LEDGER-2026-11-02-full.md:360	Y	X-8 high-speed layering: rising hazard or autoscroll pressure, 15-20 s groups, 3+ mechanics	PARTIAL L1795: X-8 moving pressure named; no 15-20 s groups or 3+ mechanics
+LEDGER-2026-11-02-full.md:363	Y	After X-5, X-6 switches the kind of thinking; alternate dexterity with reasoning and stealth	PARTIAL §1-5 plan L349: no stage-level thinking alternation
+LEDGER-2026-11-02-full.md:369	Y	The whole game is one big four-part arc across three acts	MISSING
+LEDGER-2026-11-02-full.md:371	Y	An early world's main mechanic returns, without re-teaching, as the twist for the new world's mechanic	§critic ruling 3 L1794; G L1841; M3 L2045
+LEDGER-2026-11-02-full.md:372	Y	W1: run, jump, still vines, basic breaking branches; twist branch-to-vine bail-outs	PARTIAL §B L1497: no bail-out twist
+LEDGER-2026-11-02-full.md:387	Y	Act I calibrates the player's sense of the physics, then flips what he assumes about speed	MISSING
+LEDGER-2026-11-02-full.md:413	Y	Act III: earlier mechanics in three- and four-way combinations	§G L1829
+LEDGER-2026-11-02-full.md:429	Y	More layering in Acts II-III needs tighter checkpoint spacing	PARTIAL C10 L1757: a flag before every hard part scales with hard parts; no explicit tightening for Acts II-III; L426, L650-653 unmarked
+LEDGER-2026-11-02-full.md:431	Y	After a death he is back at the hard part within 2 s	§C10 L1757
+LEDGER-2026-11-02-full.md:435	Y	One wayside line at the start, halfway or exit; over 15 words splits, so text never covers jumps	PARTIAL §polish S-8 L781-782: no word cap
+LEDGER-2026-11-02-full.md:436	Y	Three risk tiers of collectibles; never two big ones in one stage	PARTIAL L304-312; L1849: second tier named; no three tiers or 'never two big finds'
+LEDGER-2026-11-02-full.md:437	Y	Tier 1, notes: early, a little off the path behind a gentle clue	PARTIAL §1-1 ruling L1177-1178: find kinds not placed
+LEDGER-2026-11-02-full.md:438	Y	Tier 2 finds behind another way in or an optional climb	§G L1849
+LEDGER-2026-11-04-part1.md:31	Y	A tempo (BPM) per world; action pieces placed on the beat by a ghost Pokey running real physics	PARTIAL L1120,L1883: rhythm is the player's hands; no BPM or beat-traced placement
+LEDGER-2026-11-04-part1.md:43	Y	Put a hazard on the line the player would take if he did not duck or short-hop	PARTIAL C1 L1748 deferred: 'what sits on the avoided lines' is difficulty; numbers OPEN
+LEDGER-2026-11-04-part1.md:52	Y	Puzzle rooms: a separate library of 15-20 blueprints whose layout, order of steps and numbers roll per seed	PARTIAL L1809 deferred: rolled rooms are research; rooms stay as built
+LEDGER-2026-11-04-part1.md:65	Y	One special stage per world where the same buttons do something new	PARTIAL §B L1495-1506; L1793: no special-per-world rule
+LEDGER-2026-11-04-part1.md:90	Y	Each stage's DNA names its primary+secondary mechanic pair and its archetype (ascent, drop, rising hazard, search hub)	§critic ruling 4 L1795; arc L1214
+LEDGER-2026-11-04-part1.md:100	Y	New sloth verbs: camouflage on moss, moth light, look-around while hanging, belly slide, let-go as the skill	PARTIAL L1808 deferred: new verbs go to Matt as one question
+LEDGER-2026-11-04-part1.md:115	Y	Search rooms: real items in a different subset of 12-18 spots over 3 tiers each roll, with in-world tells	MISSING
+LEDGER-2026-11-04-part1.md:125	Y	Dead-walk check over 2.5 s should auto-inject a micro feature, not only flag	PARTIAL L510; L2015: no auto-inject repair
+LEDGER-2026-11-04-part1.md:132	Y	Each collectible gets its own small side-node, placed by the script's words	PARTIAL L304-312: no script-placed side-node
+LEDGER-2026-11-04-part1.md:141	Y	Rests are real places: 400-600 px flat, with the checkpoint flag and the halfway story line	§CP3 node plan L345, §Rests L500-502, L883
+LEDGER-2026-11-04-part1.md:150	Y	Node boxes with flat entry/exit ledges at Low/Mid/High port heights; camera settles on node; sub-1 s respawn	PARTIAL L251; C10 L1757: ~2 s back to hard part; no box sizes, 200 px ledge, camera lock, sub-1 s respawn
+LEDGER-2026-11-04-part1.md:194	Y	Generator checks repair only the failing node (regenerate it), within 12-15 ms	CONTRADICTED L259,L2122: never a reroll; draws that miss are a designer finding
+LEDGER-2026-11-04-part1.md:205	Y	A new seed every time the stage is selected or replayed	PARTIAL ruling 6 L1797: replay-away-from-last-roll measured with a test; new seed per selection not stated
+LEDGER-2026-11-04-part1.md:206	Y	Curated 16 rolls are fine but must cover at least 3 map shapes	PARTIAL L261,L395: map fixed per stage, no shape coverage
+LEDGER-2026-11-04-part1.md:207	Y	Replay must exclude the last run's map shape and be at least 45% different (raise 0.35 to 0.45)	CONTRADICTED L1792,L2121: diversity floor kept at 0.35 (SR §2), not 0.45; no last-shape exclusion
+LEDGER-2026-11-04-part1.md:208	Y	Stage vs stage at least 45% different; bring the rule text to the validator's numbers	PARTIAL §C14 L1761: neighbours judged on validator metrics (era/lookalike); set-of-ideas cap awaits calibration run
+LEDGER-2026-11-04-part1.md:215	Y	Archetype per stage from its DNA; fixed slot roles become a default, not a law	§critic ruling 4 L1795; L1806
+LEDGER-2026-11-04-part1.md:216	Y	Mid-stage rest (flag, story line) is wide 400-600 px; small pads between groups stay short	§CP3 node plan L345; §L883; §C2 L1749
+LEDGER-2026-11-04-part1.md:217	Y	Research claims bot solving means zero human playtesting needed	CONTRADICTED L1031,L1106-1108; L1845: Matt plays; bots calibrated on touch
+LEDGER-2026-11-04-part1.md:275	Y	Every world already has a music BPM band; levels could read it	CONTRADICTED L1120,L1883: player's hands, not the song
+LEDGER-2026-11-04-part1.md:277	Y	Pacing tags, 2.5 s dead walk, 45% difference, clumsy thumb exist as measures, not as a generator gate	PARTIAL L1792,L2015: era gate imported; clumsy thumb unnamed; 0.35 not 45%
+LEDGER-2026-11-04-part1.md:280	Y	Pieces the research proposes already exist: counterweight, seesaw, water level, fork, closing orchids, hide, stand-still, slide	PARTIAL L154-206; M3 L2045: hide, lift as signature; orchids, water level, stand-still, slide unused
+LEDGER-2026-11-04-part1.md:299	Y	Matt's brief: how to introduce the nodes, the tempos, the rhythms; today is okay but boring	§Per-roll ranges L2104-2116; M1 L2040
+LEDGER-2026-11-04-part1.md:301	Y	No pure random (x,y) scattering: different positions, same feel (procedural oatmeal)	§CP3 mix rule L249-250, L263-264, §Placement L272
+LEDGER-2026-11-04-part1.md:302	Y	A 4-layer constrained pipeline driven by stage DNA and a seed	§How a stage is made L1026-1036; §Stage profile L1208; §CP3 mix rule L232-259
+LEDGER-2026-11-04-part1.md:303	Y	90 stages with fixed DNA; a run seed rebuilds graph, beats, geometry and puzzle on every load	PARTIAL L2164; L1809: per-roll draws; graph fixed, puzzles deferred
+LEDGER-2026-11-04-part1.md:305	Y	DNA locks primary and secondary mechanics per stage	§critic ruling 4 L1795
+LEDGER-2026-11-04-part1.md:306	Y	Archetype per stage: hybrid, vertical ascent, vertical drop, rising hazard, search hub	§critic ruling 4 L1795; arc L1214
+LEDGER-2026-11-04-part1.md:307	Y	DNA names the story line's timing and the collectible	§Stage profile L1227-1229
+LEDGER-2026-11-04-part1.md:308	Y	A new seed each time the stage is selected or replayed	PARTIAL ruling 6 L1797: replay-away measured; new seed per selection not stated
+LEDGER-2026-11-04-part1.md:310	Y	Generator 2: a new beat timeline for the action nodes	PARTIAL L1121,L2113-2116: per-roll tempo draws; no timeline; rhythm names may be struck (L1796)
+LEDGER-2026-11-04-part1.md:311	Y	Generator 3: trace Pokey's jump physics to place platforms on the beats; permute puzzles	PARTIAL P4 L1137-1139; L1809: not on beats; puzzle permutation deferred
+LEDGER-2026-11-04-part1.md:312	Y	Generator 4: compare with the previous run and prove 100% reachability	§ruling 6 L1797; P4 L1137-1139
+LEDGER-2026-11-04-part1.md:313	Y	Randomize the level's shape before placing a platform, so a replay is not the same hallway	PARTIAL L1214: shape fixed per stage
+LEDGER-2026-11-04-part1.md:318	Y	Zig-zag chimney: nodes alternate short sprints and tall climbs or drops	PARTIAL L1795: chimney named; no layout definition
+LEDGER-2026-11-04-part1.md:319	Y	Lock-and-key spoke: a root door or counterweight gate, spokes to fetch the key	PARTIAL L157,L204; L1795 hub: no spoke
+LEDGER-2026-11-04-part1.md:320	Y	A Markov pacing filter assigns a tag to each node	PARTIAL L1795 tension: hand-set; no generated tags
+LEDGER-2026-11-04-part1.md:321	Y	[I] Intro: wide platforms, a floor that can't kill	§1-5 node plan L341, §1-1 feel L958, §dial L652
+LEDGER-2026-11-04-part1.md:323	Y	[P] Puzzle nodes: pulleys, light/shadow bridges, water wheels, stealth glowworms	PARTIAL L349; L1830 pulley: no light bridges or wheels
+LEDGER-2026-11-04-part1.md:324	Y	[T] Tight: high-intensity mechanic pairs	§1-5 node plan L346-350, §C L1569-1583
+LEDGER-2026-11-04-part1.md:325	Y	[R] Rest: flat 400-600 px, checkpoint flag, story line	§CP3 node plan L345, L883
+LEDGER-2026-11-04-part1.md:326	Y	Never T then T or P then P; after T comes R, F or P; a sine-wave tension curve	PARTIAL L494-502; L1795 tension: no tag-order rule
+LEDGER-2026-11-04-part1.md:327	Y	Node boxes: 1600x900 horizontal, 900x1600 vertical, 250 px join	MISSING
+LEDGER-2026-11-04-part1.md:328	Y	Every node starts and ends on a flat hazard-free 200 px ledge at the port height (Low/Mid/High)	PARTIAL L251,L278-283: no 200 px ledge
+LEDGER-2026-11-04-part1.md:329	Y	Spaced nodes let the player read one challenge at a time	§Placement rule 5 L313-320; §Rests L500-505
+LEDGER-2026-11-04-part1.md:330	Y	The camera pans or locks to the new node's box before the first jump	MISSING
+LEDGER-2026-11-04-part1.md:331	Y	Sub-1-second respawn onto the node's own safe ledge	PARTIAL C10 L1757: ~2 s back to hard part; no sub-1 s respawn or node ledge
+LEDGER-2026-11-04-part1.md:332	Y	Action and puzzle nodes are made by different methods	PARTIAL L375-377; L1809 deferred
+LEDGER-2026-11-04-part1.md:333	Y	Action/flow nodes generated forward from physics and musical rhythm	PARTIAL L1137,L1121: not from a rhythm timeline
+LEDGER-2026-11-04-part1.md:334	Y	Puzzle nodes: parameterized spatial templates with rolled variables	PARTIAL L1809 deferred: rolled rooms are research
+LEDGER-2026-11-04-part1.md:336	Y	Worked example "Waltz Cadence": timed run, jump, vine grab, swing sequence	PARTIAL L1121: swing named, may be struck (L1796)
+LEDGER-2026-11-04-part1.md:339	Y	Wherever the ghost lands, place a branch, ledge, seesaw root or silk bridge	PARTIAL L369,L640: pieces from decks
+LEDGER-2026-11-04-part1.md:340	Y	Wherever the ghost grabs a vine, put the anchor one vine-length above	PARTIAL L1250; G L1851: vine tops attach to solid; no anchor-length rule
+LEDGER-2026-11-04-part1.md:341	Y	Wherever the ghost ducks or short-hops, put a hazard on the line it avoided	PARTIAL C1 L1748 deferred: avoided lines named in difficulty; numbers OPEN
+LEDGER-2026-11-04-part1.md:342	Y	Claim: every jump possible, spaced for flow, on the beat; a new seed is a new sequence	PARTIAL L1139,L906: nothing on the beat
+LEDGER-2026-11-04-part1.md:343	Y	15-20 puzzle blueprints: logic fixed; layout, step order and numbers roll	PARTIAL L1809 deferred: rolled rooms are research
+LEDGER-2026-11-04-part1.md:344	Y	Pulley blueprint: hang on vine A to lift blocker B to cross to exit C	PARTIAL L1830: pulley named as a moving-platform kind; no hang-A-lift-B blueprint
+LEDGER-2026-11-04-part1.md:345	Y	Per seed, mirror the puzzle room	PARTIAL §Other findings L1809: rolled puzzle rooms are research (R); rooms stay as built until a run passes the validator (deferred); no mirroring
+LEDGER-2026-11-04-part1.md:346	Y	Per seed, roll pulley ratio and decay (fast 2:1 lift vs root-stone hold)	PARTIAL §Other findings L1809: rolled puzzle rooms are research (R); rooms stay as built until a run passes the validator (deferred); no pulley ratio/decay roll
+LEDGER-2026-11-04-part1.md:349	Y	12-18 fern alcoves on 3 tiers, joined by rolled vine and sinkhole paths	PARTIAL §Other findings L1809: rolled puzzle rooms are research (R); rooms stay as built until a run passes the validator (deferred); no alcove tiers or rolled paths
+LEDGER-2026-11-04-part1.md:350	Y	Real items go in a different subset of alcoves each run	PARTIAL §Other findings L1809: rolled puzzle rooms are research (R); rooms stay as built until a run passes the validator (deferred); no alcove reassignment per run
+LEDGER-2026-11-04-part1.md:352	Y	Empty ferns hold small finds or sleeping vines, never nothing	MISSING
+LEDGER-2026-11-04-part1.md:353	Y	Story lines keep their start/halfway/near timing	§Stage profile L1229, §1-1 Dot lines L1009-1013
+LEDGER-2026-11-04-part1.md:354	Y	"start" line attaches to node 1's rest apron	§Stage profile L1229, §1-1 table L1065
+LEDGER-2026-11-04-part1.md:355	Y	"halfway" line attaches to the rest of node floor(N/2), the mid-stage breather	§CP3 node plan L345
+LEDGER-2026-11-04-part1.md:356	Y	"near" line attaches to the entry of node N-1, before the climax	PARTIAL §Stage profile L1229, L349: lines pinned per node; no "near" slot rule before the climax
+LEDGER-2026-11-04-part1.md:357	Y	A collectible gets its own side-node matching the script's description	PARTIAL §Placement rule 4 L304-312, L1177: placed by node job and side pockets; no script-led side-node
+LEDGER-2026-11-04-part1.md:362	Y	Check before load under 12 ms; a failing seed regenerates only the bad node	CONTRADICTED L259: a failing node fails with the missing piece named, never a reroll
+LEDGER-2026-11-04-part1.md:363	Y	Gate 1: a search over every platform, vine and bounce pod with Pokey's physics	§P4 L1137-1139, §CP2 L93, L906
+LEDGER-2026-11-04-part1.md:364	Y	Clumsy thumb: timing off by +-100 ms	PARTIAL §dial L651, L227: per-jump bot floors and first-timer pauses; +-100 ms not stated
+LEDGER-2026-11-04-part1.md:365	Y	Clumsy thumb: 15% less air control	PARTIAL §dial L651: bot floors only; air-control penalty not stated
+LEDGER-2026-11-04-part1.md:366	Y	Every exit and every collectible reachable under the clumsy model; no frame-perfect jump	§Placement rule 4 L310-312, L908
+LEDGER-2026-11-04-part1.md:367	Y	Store the last run's signature locally	PARTIAL §Critic ruling 6 L1797: layoutMemory (replay away from last roll) must measure the seen layout, with a test; signature content unstated
+LEDGER-2026-11-04-part1.md:368	Y	Exclude the previous run's map shape on replay	PARTIAL §Critic ruling 6 L1797, ruling 4 L1795: replay rolls away from last layout; map is fixed per profile, not excluded per run
+LEDGER-2026-11-04-part1.md:369	Y	At least 45% different from the last run across rhythm groups	PARTIAL §Critic ruling 6 L1797: replay rolls away from the last roll; no 45% difference threshold
+LEDGER-2026-11-04-part1.md:370	Y	Over 2.5 s of flat walking with nothing: auto-add a slope, low hop, critter or bounce pod	PARTIAL §Rests L510, §bursts L394: 2.5 s dead time pass line, 4 of 5 landings step; no auto-add
+LEDGER-2026-11-04-part1.md:371	Y	At every take-off the landing is in the camera's view	MISSING
+LEDGER-2026-11-04-part1.md:372	Y	A breadcrumb trail of fireflies or petals during vertical drops	§Placement rule 4 L305
+LEDGER-2026-11-04-part1.md:374	Y	Example tag string: I, F, P, R:Wayside, T, F	§1-5 node plan L339-351
+LEDGER-2026-11-04-part1.md:375	Y	250 px flat aprons between nodes (200 px at line 41)	PARTIAL §Placement rule 1 L278-279: a short kit piece, never a bare gap; no apron width
+LEDGER-2026-11-04-part1.md:381	Y	Store a tiny DNA config per stage, not big tile maps	§Stage profile L1208-1233, §whole-game L1460
+LEDGER-2026-11-04-part1.md:382	Y	Example DNA: world, stage, seed, archetype "Loopback", modifiers, narrative anchor	PARTIAL §Critic ruling 4 L1795, §1-1 data L2164: map (loop-back), pair, twist, slot fields and a per-seed roll; no modifiers field
+LEDGER-2026-11-04-part1.md:383	Y	Seeded PRNG; replay rolls new; story, pages and difficulty kept	§Critic ruling 6 L1797; §1-1 as data L2164
+LEDGER-2026-11-04-part1.md:385	Y	A search-based solver with Pokey's exact physics constants	§P4 L1137-1139
+LEDGER-2026-11-04-part1.md:386	Y	Noisy-bot penalty: thumb drift and 15% less air control	PARTIAL §dial L651: bot floors; drift penalty not stated
+LEDGER-2026-11-04-part1.md:387	Y	Unreachable: seed++ and regenerate; zero human playtesting	CONTRADICTED L259, L1031: never a reroll; Matt plays every stage
+LEDGER-2026-11-04-part1.md:393	Y	Never two [T] in a row without an [R] or [P] between	MISSING
+LEDGER-2026-11-04-part1.md:405	Y	Unfiltered random creates bad sightlines, unavoidable enemies, impossible gaps	§P4 L1137-1139; §animals L212-221; §Placement rule 5 L313-320; P3 L1134
+LEDGER-2026-11-04-part1.md:416	Y	Pathfinder must reach exit and collectibles within a 15% safety margin	PARTIAL §Pacing P8 L2004, C20 run L2224: gaps ≤0.8 of true max, measured 0.35-0.56; rises p90 0.95 of gate's 80 px (L2115), no true-max margin shown
+LEDGER-2026-11-04-part1.md:460	Y	Real sloth biology as moves, plus special stages per world, so it isn't a 10x10 reskinned matrix	PARTIAL §B L1495-1506, §Other findings L1808: specials kept; new sloth verbs go to Matt as one question (deferred)
+LEDGER-2026-11-04-part1.md:463	Y	Letting go at the exact right moment is the skill test	§The difficulty dial L647
+LEDGER-2026-11-04-part1.md:464	Y	Walk upside-down under branches whose tops are thorns	PARTIAL L1652, G L1833: hanging under a bough is core with its own row; as a new verb it goes to Matt (L1808, deferred); no thorn tops
+LEDGER-2026-11-04-part1.md:466	Y	Water stages: fast, no oxygen timer, relief zones	§Water W1,W2,W4,W6 L1891-1896
+LEDGER-2026-11-04-part1.md:468	Y	A burst of sloth moths on the double jump lights dark platforms	MISSING
+LEDGER-2026-11-04-part1.md:471	Y	One special stage per world, same buttons doing new things	PARTIAL §B L1495-1506: specials kept as built; no per-world rule
+LEDGER-2026-11-04-part1.md:472	Y	1-S: rolling seed pod down a hollow trunk	MISSING
+LEDGER-2026-11-04-part1.md:473	Y	2-S: one-log raft down rapids ahead of a flood wave	MISSING
+LEDGER-2026-11-04-part1.md:477	Y	6-S: Venom Fang as a living vine bridge (coil or stretch)	MISSING
+LEDGER-2026-11-04-part1.md:478	Y	7-S bell hall: hit a bell, invisible platforms go solid for 4 s on a beat	MISSING
+LEDGER-2026-11-04-part1.md:479	Y	8-S constellation relay; borrow the 2 s flash stun	MISSING
+LEDGER-2026-11-04-part1.md:481	Y	10-S The Reach: each broken guardian collar gives an assist on your inputs	MISSING
+LEDGER-2026-11-04-part2.md:18	Y	Same slot order in every world (X-9 gauntlet in all 10, finds at same stage numbers); let each world write its own order	PARTIAL §Other findings L1806: slot roles vary inside stages, 2-3 stages a world reshaped (R-153); profile slot keys X-1..X-9 by number (L1795)
+LEDGER-2026-11-04-part2.md:27	Y	One world-wide macro rule per world that changes how progression works, not just obstacles	PARTIAL G L1840, ruling 4 L1795: per-world fingerprint (beat mix, camera, pairs) and a twist; no macro rule changing progression
+LEDGER-2026-11-04-part2.md:34	Y	Lock platform, vine and hazard placement to the stage's musical beat (use our music's BPM)	CONTRADICTED L1120: the player's rhythm, not the song; now sourced to Smith 2009 (L1883)
+LEDGER-2026-11-04-part2.md:43	Y	Fail a stretch that repeats the exact same jump interval four times in a row	§Other findings L1807
+LEDGER-2026-11-04-part2.md:52	Y	Order-aware similarity (edit distance) against N-1..N-7; when too close, change map shape, never reroll same pieces	§Critic ruling 1 L1792; ruling 4 L1795; §Per-roll L2122
+LEDGER-2026-11-04-part2.md:59	Y	Cause and effect: an action in one stage visibly changes a later stage of the same world	MISSING
+LEDGER-2026-11-04-part2.md:63	Y	Enemy formations (solo, stepping-stone chain, triggered swarm), 1-3 on screen, enemies bound to ledge and chasm sizes	PARTIAL §Animals L1307, L1564; §Placement 5 L315; §Dial L645: element binding, kinds per view, count per stage; no formations, on-screen count or platform-size spawns
+LEDGER-2026-11-04-part2.md:70	Y	Silk tripwire set piece: thread shakes, 3 spiders drop as a moving gate, 1 chaser behind; kick or punch counterplay	MISSING
+LEDGER-2026-11-04-part2.md:77	Y	Stage shape with numbers: 0.4/s intro, 0.83/s flow, spike, zero-action rest, new pairing, max density, slide-out; move spike between stages	PARTIAL §Critic ruling 4 L1795: tension moves spike/rest/fork per stage, dense finale at exit; no per-node action rates or slide-out
+LEDGER-2026-11-04-part2.md:87	Y	Collectibles get roles (flow reward, branch-switch, patience reward) rotated per world so hiding spots never repeat	PARTIAL §Placement 4 L304-312; §How a stage L1039: hard ones on high road or test nodes, petal style per profile; no flow or patience roles, no rotation
+LEDGER-2026-11-04-part2.md:92	Y	Secrets behind sloth behaviour (patience, petal chime, lure enemy, hang under exit), one guaranteed reachable per roll	PARTIAL §Unused-art L166, L170; §1-1 L1177: hidden roads, secret tunnel and side pockets as ideas; no behaviour triggers, no guaranteed secret
+LEDGER-2026-11-04-part2.md:99	Y	Stillness for 1.5 s wakes a 400 px radius: glowing platforms solid, hidden enemies shown, thorns retract; brought back in later worlds	MISSING
+LEDGER-2026-11-04-part2.md:108	Y	At least 3 nodes enemy-free, rests 100% sacred, tight stretches checked for animals	PARTIAL §Dial L643: rests and teach steps hold 0 risky pieces; no enemy-free node share, no tight-stretch rule
+LEDGER-2026-11-04-part2.md:122	Y	River snapper snouts rise as a 1-second bouncy platform	MISSING
+LEDGER-2026-11-04-part2.md:124	Y	Three soldier armours: front shield, spiked helmet, spear, each beaten a different way	MISSING
+LEDGER-2026-11-04-part2.md:128	Y	False-vine snake that goes stiff into a swing vine when punched	MISSING
+LEDGER-2026-11-04-part2.md:137	Y	Clumsy bot with steady +100 ms takeoff delay and 15% less air speed proves every ledge and collectible reachable	PARTIAL §CP3 L908, L312, L221: bots reach every mark, limited-agent bot, first-timer runs; no steady-late bot
+LEDGER-2026-11-04-part2.md:142	Y	200 px flat apron at each node's ends; checkpoint at every node start, respawn under 0.8 s	PARTIAL C10 L1757, G L1847: checkpoint right before each hard part, respawn within ~2 s; not every node, not 0.8 s
+LEDGER-2026-11-04-part2.md:149	Y	Jump-toggled platforms: one jump swaps solid and ghost platforms, a double swaps twice (Worlds 5, 7)	MISSING
+LEDGER-2026-11-04-part2.md:157	Y	Story and collectibles anchored to node slots so a reroll never breaks them	§Stage profile L1229; §CP3 node plan L345, L356
+LEDGER-2026-11-04-part2.md:173	Y	C1: research says never same slot order every world; STAGE-RULES §0b.6 and stagePlan keep X-9 gauntlet in all	PARTIAL §Other findings L1806: slot roles vary, 2-3 stages a world reshaped; X-9 boss preview kept (L1795, L1798)
+LEDGER-2026-11-04-part2.md:176	Y	C4: a 3-move run more than twice in one stage flags; ours allows any non-adjacent repeats	PARTIAL §Deep pass #5 L1883, C6 L1753: a rhythm group repeats at most once, before a rest; template ≤2 a stage; no 3-move count
+LEDGER-2026-11-04-part2.md:177	Y	C5: at least 3 nodes enemy-free, rests sacred; validator checks only route length	PARTIAL §Dial L643: rests and teach steps hold 0 risky pieces; no enemy-free node count
+LEDGER-2026-11-04-part2.md:178	Y	C6: no enemy within 150 px of a blind landing; generator keeps only 120 px	PARTIAL G L1855: a gap and an enemy on its landing add up, pair capped; no 150 px blind-landing rule
+LEDGER-2026-11-04-part2.md:179	Y	C7: dead time over 2.5 s fails; our files say 2.5+2.5, 4 s and 2.0/3.0 s	§Rests L510
+LEDGER-2026-11-04-part2.md:180	Y	C8: Node 1 intro 0.4 actions/s; validator allows 0.8/s	PARTIAL §CP3 node plan L341; §Rests L508: warm-up node exists, Easy 0.35-0.55 stage-wide; no intro-node rate
+LEDGER-2026-11-04-part2.md:181	Y	C9: invisible checkpoint at every node entrance, respawn under 0.8 s	PARTIAL C10 L1757, G L1847: checkpoint before each hard part, respawn ~2 s; not every node entrance or 0.8 s
+LEDGER-2026-11-04-part2.md:182	Y	C10: research's "every level same shape" contradicts its own L391; our direction varies the shape	§How a stage L1037-1043; §CP4 L944
+LEDGER-2026-11-04-part2.md:183	Y	C11: research BPMs disagree with our music; if placements lock to a beat it must be the music heard	CONTRADICTED L1120: spec drops music-locked rhythm altogether ("not the song")
+LEDGER-2026-11-04-part2.md:186	Y	C14: adaptive director keeps casual and veteran players engaged; ours says not now	MISSING
+LEDGER-2026-11-04-part2.md:187	Y	C15: cause and effect and slot shuffling are core "structural breakers", not extras	PARTIAL §Other findings L1806: slot roles vary (part); cause and effect still absent
+LEDGER-2026-11-04-part2.md:190	Y	C18: compare token streams of levels 1-7; layoutMemory already rolls away per stage	§Critic ruling 1 L1792; §Other findings L1813
+LEDGER-2026-11-04-part2.md:196	Y	F1: no node graph or StageDNA today; W1 rolls section versions, gen2 picks 16 curated rolls, layout kept until cleared	§CP3 node plan L336-337; §Stage profile L1208-1233
+LEDGER-2026-11-04-part2.md:198	Y	F3: no nodes; a gen2 stage is about 25-28 sections in a row	§CP3 mix rule L235
+LEDGER-2026-11-04-part2.md:231	Y	#2 World-wide mutators: a macro rule per world changing progression	PARTIAL G L1840: world fingerprint beyond pieces (beat mix, camera, pairs); no macro progression rule
+LEDGER-2026-11-04-part2.md:238	Y	#9 Shuffle slot order per act; never puzzle at X-7 and climb at X-6 everywhere	PARTIAL §Other findings L1806: slot roles vary inside kept stages; no shuffle rule
+LEDGER-2026-11-04-part2.md:242	Y	#13 Secrets never behind unmarked walls; tells tied to story and sloth moves	PARTIAL §Unused-art L170: secret tunnel through a cracked floor; no general tell rule
+LEDGER-2026-11-04-part2.md:243	Y	#14 Pink Bell Notes found by Meeca's trail tells (hairpin scratch, petal on thermal, boot-prints)	PARTIAL §CP3 L354-358; §1-1 L1000: Meeca's marks and low petals along her route; no per-world tells for notes
+LEDGER-2026-11-04-part2.md:244	Y	#15 Ledger Pages high above a node start, reached by an unbroken chain of branches or swings	PARTIAL §Placement 4 L306: hard collectibles on a fork's high road; no look-back or no-ground-chain rule
+LEDGER-2026-11-04-part2.md:246	Y	#17 Dot's pocket finds by a rustling bush or caught feather as he walks past	MISSING
+LEDGER-2026-11-04-part2.md:247	Y	#18 Secret stage entrances inside normal stages via sloth behaviour	PARTIAL §Unused-art L170; §B L1503: secret tunnel idea, 7-7 secret gate kept; no behaviour entrances
+LEDGER-2026-11-04-part2.md:248	Y	#19 Patience unlock: still 5 s, a vine lowers or door opens	MISSING
+LEDGER-2026-11-04-part2.md:249	Y	#20 Wrist-petal compass pulses and music box chimes within 300 px of a false wall	MISSING
+LEDGER-2026-11-04-part2.md:250	Y	#21 Lure a charger, falling floor or dive into a wall Pokey can't break	MISSING
+LEDGER-2026-11-04-part2.md:251	Y	#22 Hang under the exit flag's platform to reach a hidden hollow	PARTIAL L1652, G L1833: under-bough hang core; as a new verb to Matt (L1808, deferred); no hollow under the exit
+LEDGER-2026-11-04-part2.md:252	Y	#23 Golden seed: a secret on a fixed node spoke, behind a tell, checked reachable every roll	PARTIAL §CP3 L371-374: 1-5's golden seed is an unreachable glint; no guaranteed secret spoke
+LEDGER-2026-11-04-part2.md:253	Y	#24 Enemies as moving geometry, timing gates and tools, not roadblocks	PARTIAL §CP2 L107; §Animals L174-175: animal idea "jump it, wait for it, or kick-roll it", second behaviours; no enemy-as-tool rule
+LEDGER-2026-11-04-part2.md:255	Y	#26 One or two predictable reactions to a trigger, 0.5 s telegraph	PARTIAL §Animals L219: boa gets "a clear rear-up tell"; no general 0.5 s telegraph rule
+LEDGER-2026-11-04-part2.md:256	Y	#27 Readability contract: in 0.2 s player knows danger zone, which button, how to use it	MISSING
+LEDGER-2026-11-04-part2.md:257	Y	#28 Rock-paper-scissors: stomp, punch, kick each beat different enemies	MISSING
+LEDGER-2026-11-04-part2.md:258	Y	#29 Stomp beats walkers, birds, snappers; high bounce makes enemies stepping stones over pits	MISSING
+LEDGER-2026-11-04-part2.md:259	Y	#30 A punch stuns 1.5 s so you can pass without killing	MISSING
+LEDGER-2026-11-04-part2.md:260	Y	#31 A kicked enemy slides, knocks out the row, triggers far switches	PARTIAL §CP2 L107, L109: boa kick-roll and turtle shell kicked into others; no switches, other species
+LEDGER-2026-11-04-part2.md:261	Y	#32 Each species a signature state machine tied to its world	PARTIAL §Animals L174-175, L1564: second behaviours from unused frames, element binding; no per-world signature
+LEDGER-2026-11-04-part2.md:262	Y	#33 Snake false vine: tongue flick, punch it stiff 3 s as a swing vine	MISSING
+LEDGER-2026-11-04-part2.md:263	Y	#34 Coiled snake hisses 0.4 s then lunges; jump it or kick it off	PARTIAL §Animals L219: boa rear-up tell with a screen-wide run-up; no 0.4 s number, no kick-off
+LEDGER-2026-11-04-part2.md:264	Y	#35 Cave jaguars creep only when back turned or in dark; freeze in light	MISSING
+LEDGER-2026-11-04-part2.md:265	Y	#36 Pounce: eyes flash 0.5 s, fixed arc leap; duck under or uppercut	MISSING
+LEDGER-2026-11-04-part2.md:266	Y	#37 Eagle shadow tracks 1.2 s, screech, dive, talons stick in the dirt	PARTIAL §Unused-art L156, L567: hide from the eagle only; no shadow lock or stuck talons
+LEDGER-2026-11-04-part2.md:268	Y	#39 Spider tripwire in 3 beats: pluck, eyes, 3 drop ahead, 1 chaser behind	MISSING
+LEDGER-2026-11-04-part2.md:269	Y	#40 Counterplay: weave through, kick the anchor, punch one to tangle all three	MISSING
+LEDGER-2026-11-04-part2.md:270	Y	#41 River snappers: snap up when jumped; snout a bouncy platform for 1 s	MISSING
+LEDGER-2026-11-04-part2.md:271	Y	#42 Front shield blocks punch; kick knocks it off or into water	MISSING
+LEDGER-2026-11-04-part2.md:272	Y	#43 Spiked helmet: stomp hurts; hit from the side	MISSING
+LEDGER-2026-11-04-part2.md:273	Y	#44 Spear blocks front; stomp, or lure the thrust into wood	MISSING
+LEDGER-2026-11-04-part2.md:274	Y	#45 Enemy count set by the node's job, never random	PARTIAL §Dial L643, L645: risky pieces per burst and taught animals per stage by d, rests and teach hold 0; no count per other job
+LEDGER-2026-11-04-part2.md:275	Y	#46 35% rule: at least 3 of 8 nodes enemy-free; rests 0 enemies	PARTIAL §Dial L643: rests and teach steps hold 0 risky pieces; no node share
+LEDGER-2026-11-04-part2.md:276	Y	#47 Pure precision nodes enemy-free: let the environment be the enemy	MISSING
+LEDGER-2026-11-04-part2.md:277	Y	#48 1 to 3 enemies on screen; never clusters of one kind on flat ground	PARTIAL §Placement 5 L315: at most 2 kinds of hazard or animal per view; no count cap
+LEDGER-2026-11-04-part2.md:278	Y	#49 Solo Specialist: one high-threat enemy on a bridge or switch as the room's puzzle	MISSING
+LEDGER-2026-11-04-part2.md:280	Y	#51 Triggered swarm only on a mistake, 5 s escape sprint	MISSING
+LEDGER-2026-11-04-part2.md:281	Y	#52 No enemy within 150 px of a blind landing	PARTIAL G L1855: gap-plus-enemy-on-landing pair capped; no 150 px blind-landing rule
+LEDGER-2026-11-04-part2.md:282	Y	#53 Wide flat ledge over 300 px eligible for 1 armoured guard or coiled snake	PARTIAL G L1842: flat runway ≥1.0 s (285 px) before an enemy trigger, boa ledge ≥3.5 body widths; no ledge-size eligibility
+LEDGER-2026-11-04-part2.md:283	Y	#54 Chasm over 250 px eligible for 1 hovering eagle or snapper as a bounce helper	MISSING
+LEDGER-2026-11-04-part2.md:284	Y	#55 Silk node: dormant 3 spiders + 1 chaser wired to a floor tripwire	MISSING
+LEDGER-2026-11-04-part2.md:285	Y	#56 Fingerprint and anti-similarity pipeline on a grammar generator	§Variety gate L30-41; §CP3 mix rule L232-259
+LEDGER-2026-11-04-part2.md:286	Y	#57 Fingerprint each stage as it is generated, by behaviour tokens not tile coordinates	§Critic ruling 1 L1792
+LEDGER-2026-11-04-part2.md:288	Y	#59 Boring example: J V B repeated three times	PARTIAL §Deep pass #5 L1883, C6 L1753, ruling 1 L1792: group repeats once before a rest; template ≤2; 3-gram cosine; no exact-triple check
+LEDGER-2026-11-04-part2.md:290	Y	#61 Levenshtein vs level 7 over 55%: reject, seed++, scramble map shape	PARTIAL §Critic ruling 1 L1792: similarity fails the stage; seed++ contradicted (never a reroll, L2122); map fixed per profile
+LEDGER-2026-11-04-part2.md:291	Y	#62 Flow: alternate intense execution and micro-rests	§C2 L1749; §Per-roll bursts L2116
+LEDGER-2026-11-04-part2.md:294	Y	#65 Lock platforms, vines and hazards to beat, off-beat or half-note	PARTIAL §Design L1121: patterns named; defined-or-struck pending (L1796); no beat grid
+LEDGER-2026-11-04-part2.md:295	Y	#66 Swinging vines at exact 4/4 intervals as the first test piece	PARTIAL §Design L1121: 'regular' named; defined-or-struck pending (L1796)
+LEDGER-2026-11-04-part2.md:296	Y	#67 Action density across nodes as a strict sine wave	PARTIAL §Critic ruling 4 L1795: tension field places spike/rest per stage; no sine-wave density
+LEDGER-2026-11-04-part2.md:297	Y	#68 Node 1: one action every 2.5 s warm-up	PARTIAL §CP3 node plan L341, L1065: warm-up/teach nodes; no rate
+LEDGER-2026-11-04-part2.md:298	Y	#69 Node 2: one action every 1.2 s	MISSING
+LEDGER-2026-11-04-part2.md:299	Y	#70 Node 3: the spike, peak tension (may move)	§Stage profile L1213; §CP3 node plan L346, L350
+LEDGER-2026-11-04-part2.md:300	Y	#71 Node 4: zero action safe ledge where the wayside line plays	§CP3 node plan L345; §Rests L500
+LEDGER-2026-11-04-part2.md:302	Y	#73 Node 7: maximum density, everything together	§CP3 node plan L350
+LEDGER-2026-11-04-part2.md:304	Y	#75 Every level follows this exact shape, only the flavour varies	§How a stage L1037-1043
+LEDGER-2026-11-04-part2.md:305	Y	#76 Random collectibles get missed; always-highest is formulaic	PARTIAL §Placement 4 L304-312: petals on route, hard ones in test nodes or high road; no anti-formula rule
+LEDGER-2026-11-04-part2.md:306	Y	#77 Every collectible seen or heard from the safe rest just before it	PARTIAL §CP3 L373: only the golden-seed glint must be visible from n9's route
+LEDGER-2026-11-04-part2.md:307	Y	#78 Sightline tease: from the rest, see a page glinting across a chasm	PARTIAL §CP3 L371-374: 1-5's seed glint "too far, for now"
+LEDGER-2026-11-04-part2.md:308	Y	#79 Sound tease: music-box chime within 300 px of a hidden note	MISSING
+LEDGER-2026-11-04-part2.md:309	Y	#80 Collectibles given structural roles in the node graph so spots never repeat	PARTIAL §Placement 4 L306; §CP3 L356-358: marks per node, harder ones by job; no rotating roles
+LEDGER-2026-11-04-part2.md:310	Y	#81 Flow Reward at top of a fast swing or slide, only with unbroken speed	MISSING
+LEDGER-2026-11-04-part2.md:311	Y	#82 Branch-Switch page on a high road of breaking branches; a fall lands safely on the low road	§CP3 node plan L344, L350; §CP3 MISS L434-438
+LEDGER-2026-11-04-part2.md:312	Y	#83 Patience Reward in a dead-end alcove a fast player rushes past	PARTIAL §1-1 L1177: side pockets off the line; no stop or hang requirement
+LEDGER-2026-11-04-part2.md:313	Y	#84 Checklist: tokenize, Levenshtein vs previous 7, lock to BPM, sine wave, tease collectibles	PARTIAL §Critic ruling 1 L1792: action 3-grams vs earlier stages; BPM contradicted (L1120); no sine wave or teases
+LEDGER-2026-11-04-part2.md:325	Y	#96 A headless validator before redesigning levels; rejects boring layouts	§Variety gate L30; §CP3 L261; §Planner P4 L1137
+LEDGER-2026-11-04-part2.md:326	Y	#97 Generator outputs the token string for every required action	PARTIAL §Critic ruling 1 L1792: era/lookalike read the stage's actions; generator token output unstated
+LEDGER-2026-11-04-part2.md:327	Y	#98 Within one stage, a 3-run more than twice flags	PARTIAL §Deep pass #5 L1883, C6 L1753: group repeats once before a rest; template ≤2 a stage; no 3-run count
+LEDGER-2026-11-04-part2.md:328	Y	#99 Level N vs N-1..N-7 over 55% similar rejects	§Critic ruling 1 L1792
+LEDGER-2026-11-04-part2.md:329	Y	#100 Dead-time auditor: over 2.5 s with zero inputs fails	§Rests L510
+LEDGER-2026-11-04-part2.md:330	Y	#101 Same jump interval four times in a row fails	§Other findings L1807
+LEDGER-2026-11-04-part2.md:331	Y	#102 Noisy bot: 15% less air speed, 100 ms takeoff delay, every find reachable	PARTIAL §CP3 L908, L312: bots reach all marks, limited-agent bot; no steady-late bot
+LEDGER-2026-11-04-part2.md:332	Y	#103 Test 500 variations a second, keep only passing seeds	CONTRADICTED L259, L2122: never a reroll; narrow ranges are a designer finding
+LEDGER-2026-11-04-part2.md:334	Y	#105 The landing must be in the camera's view at take-off	PARTIAL §CP3 L262: only via the existing fun gate's "no new flags"; spec names no view rule
+LEDGER-2026-11-04-part2.md:335	Y	#106 Nine generated stages per world, nodes in four parts, tenth a handmade guardian	§Move ladder L119; §CP3 node plan L339-351; §B L1462
+LEDGER-2026-11-04-part2.md:336	Y	#107 Roll a map shape first from five, hub for search stages	§Critic ruling 4 L1795
+LEDGER-2026-11-04-part2.md:337	Y	#108 Tag nodes Intro, Flow, Puzzle, Rest, Tight; never two Tight in a row	PARTIAL §CP3 node plan L339-351: job column per node; no ban on adjacent hard nodes (1-5 n6 test then n7 twist)
+LEDGER-2026-11-04-part2.md:339	Y	#110 1-2 puzzle machines per world: pulleys, jump toggles, light bridges, seesaws, water-wheels	PARTIAL §Unused-art L162, L167; §C L1541, L1547: counterweight, push block, push and lift returns; no per-world count, toggles or light bridges
+LEDGER-2026-11-04-part2.md:341	Y	#112 Map shape separate from micro-rhythm	§Critic ruling 4 L1795
+LEDGER-2026-11-04-part2.md:342	Y	#113 Flat hazard-free 200 px apron at every node's entry and exit	PARTIAL §Placement 1 L278-279: joins are short kit pieces sized to the next move; no flat apron rule
+LEDGER-2026-11-04-part2.md:343	Y	#114 Invisible checkpoint at every node entrance, respawn under 0.8 s	PARTIAL C10 L1757, G L1847: checkpoint before each hard part, respawn ~2 s; not every node or 0.8 s
+LEDGER-2026-11-04-part2.md:345	Y	#116 Phase 4 combat triangle	MISSING
+LEDGER-2026-11-04-part2.md:346	Y	#117 Platform-role spawning in 65% of nodes, 35% enemy-free including rests	PARTIAL §Dial L643, L645: rests hold 0, animals per stage; no role spawning
+LEDGER-2026-11-04-part2.md:347	Y	#118 Species reactions: vine snakes, dark jaguars, eagle shadow, spider curtain	MISSING
+LEDGER-2026-11-04-part2.md:350	Y	#121 Landing-zone cheap hits, 150 px	PARTIAL G L1855: enemy on a gap's landing capped as a pair; no 150 px rule
+LEDGER-2026-11-04-part2.md:351	Y	#122 Deterministic AI, 0.5 s telegraph before every strike	PARTIAL §Animals L219: boa rear-up tell; no general telegraph
+LEDGER-2026-11-04-part2.md:353	Y	#124 Wayside and Dot lines at node 1, mid rest, pre-exit; split lines over 15 words	PARTIAL §Stage profile L1229; §CP3 L345: lines pinned to nodes; no 15-word split
+LEDGER-2026-11-04-part2.md:357	Y	#128 Story and collectibles as anchors on node slots	§Stage profile L1229; §CP3 L345, L356
+LEDGER-2026-11-04-part2.md:361	Y	#132 Spec contract before code: a pure function of StageDNA and seed returning 7 nodes, no two Tight adjacent	PARTIAL §Stage profile L1204-1233: stage as data written before its plan; no adjacency rule
+LEDGER-2026-11-04-part2.md:365	Y	#136 Under-branch hanging: hold climb to hang, move, drop, knock hazards below; doubles every branch	PARTIAL L1652, G L1833: under-bough hang core; new verb to Matt (L1808, deferred); no drop or knock-below
+LEDGER-2026-11-04-part2.md:366	Y	#137 Stillness resonance: still 1.5 s wakes a 400 px radius	MISSING
+LEDGER-2026-11-04-part2.md:367	Y	#138 Bending saplings: bridge, or catapult with a jump mid-spring	MISSING
+LEDGER-2026-11-04-part2.md:369	Y	#140 Camouflage: crouch on moss, enemies ignore him; double jump releases moths	PARTIAL §Other findings L1808: camouflage to Matt (deferred); no moths
+LEDGER-2026-11-04-part2.md:370	Y	#141 Counterweight pulleys; bring back in more worlds	§C L1547; §Unused-art L162
+LEDGER-2026-11-04-part2.md:371	Y	#142 Jump-toggled flora: every jump flips solid and ghost platforms	MISSING
+LEDGER-2026-11-04-part2.md:372	Y	#143 Domino branches: each break starts the next after 0.15 s; last hits a switch	MISSING
+LEDGER-2026-11-04-part2.md:374	Y	#145 Silk ricochet: taut line reflects an air kick at 1.2x	MISSING
+LEDGER-2026-11-04-part2.md:376	Y	#147 Sound ripples outline hidden platforms and wake sound-sensitive enemies	MISSING
+LEDGER-2026-11-04-part2.md:378	Y	#149 Water waves: surface springs, logs ride, a ground-pound lifts a far platform	PARTIAL §Library additions L543; §D L1594: timed waves and rising tide; no spring surface
+LEDGER-2026-11-04-part2.md:379	Y	#150 Background-layer jumps via hollow logs or cannon vines	MISSING
+LEDGER-2026-11-04-part2.md:380	Y	#151 Wrist-petal pulse rate rises near an uncollected find	MISSING
+LEDGER-2026-11-04-part2.md:384	Y	#155 Venom Fang as a hidden zip-line vine in Worlds 2, 4, 6, 8	MISSING
+LEDGER-2026-11-04-part2.md:385	Y	#156 Enemy bowling: a kicked enemy rolls 550 px/s, knocks others, breaks walls, presses plates	PARTIAL §CP2 L107, L109: boa kick-roll, turtle shell into others; no walls or plates
+LEDGER-2026-11-04-part2.md:386	Y	#157 Vine snakes: tongue every 2.5 s, stunned 4 s and swingable	MISSING
+LEDGER-2026-11-04-part2.md:388	Y	#159 Look-away sentries in Worlds 3 and 7	MISSING
+LEDGER-2026-11-04-part2.md:392	Y	#163 Director: 3 deaths widens next ledges; clean play opens an elite high road	MISSING
+LEDGER-CRITICAL-AGENTS.md:34	Y	Machines check reach, repeats, density; helpers argue only fun, sameness, cost, risk	§Placement rules L276; §P4 L1137-1139; §CP3 READY L905-908
+LEDGER-CRITICAL-AGENTS.md:53	Y	Kishotenketsu arc made optional; favour multi-purpose pieces doing movement, defense and pacing at once	PARTIAL §move ladder L119; §CP3 node plan L342-350: teach/test/twist/master jobs; no rule asking pieces to do several jobs
+LEDGER-CRITICAL-AGENTS.md:60	Y	Concept graph first: entry/exit, critical-path length, lock-and-key, branching factor, node purposes	PARTIAL §CP3 node plan L339-351; §Stage profile L1213-1230: jobs, entry/exit, branching named; no lock-and-key dependencies or critical-path length
+LEDGER-CRITICAL-AGENTS.md:62	Y	Alternate action sprints with recovery; put landmarks at decision boundaries	PARTIAL §rests L500-506; §A+B L799: rests and breathers; no landmark-at-fork rule
+LEDGER-CRITICAL-AGENTS.md:63	Y	Every node and transition bound to measurable acceptance criteria, not prose	§Placement rules L276, L282-283; §CP3 pass lines L395-400
+LEDGER-CRITICAL-AGENTS.md:64	Y	On solver failure or critic risk: targeted local repair, relaxation or node swap keeping intent	PARTIAL §CP3 L259, L369-370: fails naming the missing piece, planner reports; no automatic local repair
+LEDGER-CRITICAL-AGENTS.md:75	Y	Audit pairwise and multi-node adjacencies: benign pieces side by side become compound bottlenecks	PARTIAL §G rows L1855: gap+enemy pair capped; multi-node adjacencies unchecked
+LEDGER-CRITICAL-AGENTS.md:204	Y	Check pairs: two pieces fine alone but bad side by side, e.g. a gap onto a patrol	§G rows L1855 (#24): gap and enemy on its landing add up; pair capped
+LEDGER-CRITICAL-AGENTS.md:216	Y	Concept graph for a sample stage: entry, exit, critical path, unlocks, branches, node jobs	PARTIAL §CP3 node plan L339-351; §Stage profile L1213-1230: no unlock dependencies, no critical-path length
+LEDGER-CRITICAL-AGENTS.md:217	Y	Beats: each node's duration, entry state, exit state	PARTIAL §G rows L1835, L2175: burst durations 5-20 s; no node durations
+LEDGER-CRITICAL-AGENTS.md:218	Y	Every node and file has a machine-runnable acceptance test, not prose	§Placement rules L276; §Element table rules L1256-1259; §Gates L1612-1620
+LEDGER-CRITICAL-AGENTS.md:264	Y	Single-pass output is locally fine but fails global reachability; check globally by tool	§variety gate L38-39; §CP3 READY L906-908
+LEDGER-CRITICAL-AGENTS.md:294	Y	Tanagra-style reactive planner picks patterns and beats; a solver places geometry, guaranteeing playability	PARTIAL §CP3 L249-251 decks and ideas; L369 gaps sized by the level check; §P4 L1137: no solver
+LEDGER-CRITICAL-AGENTS.md:295	Y	Dead Cells: hand-authored macro frame and concept graph, then compliant rooms	PARTIAL §whole-game plan L1458-1506; §Stage profile L1208-1230: macro frame per world and stage; no lock-and-key graph
+LEDGER-CRITICAL-AGENTS.md:296	Y	Kishotenketsu against filler; micro/meso/macro patterns; multi-purpose mechanics	PARTIAL §CP3 bursts L390-393 (micro), ideas L74-86 (meso), profile L1208 (macro); no multi-purpose rule
+LEDGER-CRITICAL-AGENTS.md:301	Y	Every candidate follows Kishotenketsu; ledger says optional, since a fixed arc is itself a felt pattern	§Move ladder M1 L2040
+LEDGER-CRITICAL-AGENTS.md:302	Y	Favour multi-purpose components (movement, defense, pacing at once)	PARTIAL §unused-art ideas L156: hollow-log crawl only; no rule asking pieces to do two jobs
+LEDGER-CRITICAL-AGENTS.md:305	Y	Concept graph first: entry/exit, critical path, lock-and-key, branching, node purposes	PARTIAL §CP3 node plan L339-351; §Stage profile L1217: no lock-and-key or critical-path length
+LEDGER-CRITICAL-AGENTS.md:307	Y	Alternate sprints and recovery; a landmark at every fork	PARTIAL §rests L500-506; §A+B L799: no landmark rule
+LEDGER-CRITICAL-AGENTS.md:308	Y	Every node and transition has measurable acceptance criteria	§Placement rules L276; §CP3 L395-400
+LEDGER-CRITICAL-AGENTS.md:309	Y	Local repair from the error instead of random retries	PARTIAL §CP3 L259 (never a reroll), L369-370: no automatic repair or node swap
+LEDGER-CRITICAL-AGENTS.md:313	Y	Audit pairs and multi-node adjacencies; add a general pair check to the validator	PARTIAL §G rows L1855: builder caps gap+enemy pair; no general validator pair check
+LEDGER-CRITICAL-AGENTS.md:318	Y	Put a deterministic verifier, not LLM debate, on maths and reachability	§P4 L1137-1139; §Placement rules L276
+LEDGER-CRITICAL-AGENTS.md:319	Y	Solver returns a minimal unsat core or relaxes constraints automatically	PARTIAL §CP3 L259: failure names the missing piece; relaxing is designer-only (L370, L992)
+LEDGER-CRITICAL-AGENTS.md:320	Y	Adaptive pipeline: skill classifier, physics verifier, deterministic local repair, not re-prompting	PARTIAL §CP3 READY L906-908: bots and level check verify; no local repair step
+LEDGER-CRITICAL-AGENTS.md:322	Y	Pre-filter with expressive-range metrics: linearity, leniency, action density, flow	§C14 L1761; §C27 L1774; §C16 L1763; §C24 L1771
+LEDGER-CRITICAL-AGENTS.md:331	Y	All formal checks to zero-token verifiers, expressive-range filters and local repair	PARTIAL §Gates L1612-1620; §variety gate L30-41: verifiers and filters yes; no local repair
+LEDGER-ENGINE-GEMINI.md:112	Y	A stage is a ~20-line data spec compiled by fixed code, not hand-written TypeScript per stage.	§How a stage is made L1026; §1-1 as data L2153
+LEDGER-ENGINE-GEMINI.md:116	Y	Topology pass: node boxes with entry/exit vectors, four map shapes (loop back, split, chimney, hub), split closure.	PARTIAL §Critic ruling 4 L1795: map field names loop-back, chimney, split, hub; no node boxes, entry/exit vectors or split closure
+LEDGER-ENGINE-GEMINI.md:122	Y	Section patterns as data, beat-relative, with bound platform roles, enemy slots, petal arcs, miss floors, no x/y.	PARTIAL §CP2 L62-86, §CP3 L249, L390: node ideas list pieces in order with entry/exit; sized in px from shipped ranges (L333), no enemy-slot, arc or miss-floor fields
+LEDGER-ENGINE-GEMINI.md:127	Y	Hazards timed in counterpoint to the player's moves (thrown fruit lands beat 3 while he jumps beat 2).	MISSING
+LEDGER-ENGINE-GEMINI.md:131	Y	Structured blame log: failing data line, measured value, limit and exact fix, under 15 lines.	PARTIAL §CP3 L259; §Element table L1259: a node fails "with the missing piece named"; no data line, limit or fix format
+LEDGER-ENGINE-GEMINI.md:141	Y	Local auto-healer: split short landings, fill dead walks over 2.5 s with a hop, swap a repeated seam pattern.	PARTIAL §Pacing L510: dead time over 2.5 s is a failing line, not auto-filled; no seam swap; L259 fails instead
+LEDGER-ENGINE-GEMINI.md:147	Y	Each node's tension drives its numbers (density, gap share, width), with a planned-vs-measured check.	PARTIAL §Critic ruling 4 L1795, §1-1 data L2201: tension field; per-roll measured-vs-range check; no per-node tension numbers
+LEDGER-ENGINE-GEMINI.md:152	Y	Animals bound to platform roles in data, with a pairwise threat cap (move × animal × runway).	PARTIAL G L1855, L1842: pairwise gap-enemy cap and enemy runway; no platform roles in data
+LEDGER-ENGINE-GEMINI.md:157	Y	Slow zones (mud, silk, shimmy rope, water) never empty corridors: under a faster road or paired with a dodge.	MISSING
+LEDGER-ENGINE-GEMINI.md:165	Y	Contain cause-and-effect to bonus spots: a flag in stage s changes only a bonus node in stage s+1.	MISSING
+LEDGER-ENGINE-GEMINI.md:171	Y	When the next landing would leave the shared upright/sideways view, fold the path (switchback vine, bounce, lift).	MISSING
+LEDGER-ENGINE-GEMINI.md:174	Y	Normalized bigram entropy of the move string ≥ 0.68 against two-move ping-pong.	PARTIAL §Critic ruling 1 L1792: era diversity and 3-gram cosine; no move-string entropy
+LEDGER-ENGINE-GEMINI.md:176	Y	Gesture cooldown: ≥267 ms after a double jump or drop before a punch or kick is asked.	MISSING
+LEDGER-ENGINE-GEMINI.md:183	Y	Composite flow score: curve fidelity, beat alignment, variety, vertical flow, agency.	MISSING
+LEDGER-ENGINE-GEMINI.md:187	Y	Golden seeds by rule: risky split road, puzzle room, late optional skill branch.	PARTIAL §Placement rule 4 L304-311; §1-5 L371-374: hard collectibles on high road/test nodes; seed only a glint in 1-5, no 3-seed rule
+LEDGER-ENGINE-GEMINI.md:203	Y	Who sets the tempo: Gemini's typed BPM table vs ours, the stage's own music beat.	CONTRADICTED L1120: player's rhythm (Smith L1883); tempo words set no numbers (L2236)
+LEDGER-ENGINE-GEMINI.md:209	Y	No fixed tension curve: each stage places spike, rest and pair differently from the stage before.	§Critic ruling 4 L1795
+LEDGER-ENGINE-GEMINI.md:217	Y	Variety must include what he stands on, faces, uses, direction and art, not move letters only.	§Variety gate L30-41; §Log family L560; §How a stage is made L1042-1043
+LEDGER-ENGINE-GEMINI.md:221	Y	Action density: ours Easy 0.35-0.55, Normal 0.75-1.15; Gemini's Easy top 55% higher.	§Rests and breathers L508; §Pacing L801
+LEDGER-ENGINE-GEMINI.md:233	Y	Slot order: no fixed relief dips at stages 4 and 7 in every world.	§Difficulty dial L628-633
+LEDGER-ENGINE-GEMINI.md:235	Y	Generator and checker must share one measure; a cap on another metric guarantees nothing.	§CP3 L253-259, L513; §Planner amendments P4 L1137-1139
+LEDGER-ENGINE-GEMINI.md:239	Y	Miss cost: Gemini's "safe" drop is our bite tier (>4 s back); checkpoint at each node entrance.	PARTIAL §C10 L1757; G #26 L1847: checkpoint right before each hard part, respawn within ~2 s; no 4 s bite tier or per-node-entrance checkpoint
+LEDGER-ENGINE-GEMINI.md:244	Y	Enemy runway: Gemini 1.0 s (~285 px) flat before a trigger; ours 150 px from a landing.	§G rows L1842 (#16): flat runway ≥1.0 s (~285 px) before any enemy trigger; boa ≥3.5 body widths
+LEDGER-ENGINE-GEMINI.md:247	Y	Petal goal not fixed 75%; keep 70/15/15 and set the goal from the bots.	PARTIAL §G rows L1848: Normal goal 75-87.5% of reachable, Easy goal from the first-timer kid bot; no 70/15/15 split
+LEDGER-ENGINE-GEMINI.md:252	Y	Agreed core: formulas file, world profile, ~20-line spec, template library, traced placement, seeds; Gemini adds topology, lockout, blame, heal.	PARTIAL §Critic 4 L1795 (map field); G L1839 (4-draw lockout): topology and lockout now in; blame logs and auto-heal still absent
+LEDGER-ENGINE-GEMINI.md:266	Y	Skilled clock 120-150 s; first-timer 180-300 s.	PARTIAL §Pacing P1,P4 L1997,L2000: 2:00 floor, 2-5 min outer band; no skilled or first-timer clock
+LEDGER-ENGINE-GEMINI.md:269	Y	Skilled length = sum of puzzle time plus groups and rests per node (a length budget).	PARTIAL §Stage length L666-670: length from node and burst counts; no formula, clock measured after build
+LEDGER-ENGINE-GEMINI.md:270	Y	One 12-18 s puzzle, in node 4 or 6.	PARTIAL §1-5 plan L349, L375-377: a "puzzle beat" node n9, push block deferred to a CP4 room; no length or slot rule
+LEDGER-ENGINE-GEMINI.md:272	Y	First-timer clock = hesitation × skilled + branch time + miss penalties.	PARTIAL §G rows L1852: first-timer 2-5 min a stage, 20-25 min W1, judged by bots; formula unused
+LEDGER-ENGINE-GEMINI.md:273	Y	First-timer constants: hesitation 1.22, branch +25 s, p_miss 0.25, 8 s penalty.	PARTIAL §CP2 L221, L227: bots used instead of constants
+LEDGER-ENGINE-GEMINI.md:274	Y	Sustained density over 1.6 actions/s causes thumb fatigue.	PARTIAL §Pacing L511, L801: Normal judged on longest run, dead time and fun-gate flags vs main; no density ceiling
+LEDGER-ENGINE-GEMINI.md:276	Y	Density per node rises with tension: ρ = ρmin + (ρmax−ρmin)·T^1.15.	MISSING
+LEDGER-ENGINE-GEMINI.md:277	Y	Easy 0.35-0.85, Normal 0.50-1.35 actions/s.	§Rests and breathers L508; §Pacing L801
+LEDGER-ENGINE-GEMINI.md:278	Y	Fixed node tension table with per-node density and rest seconds.	PARTIAL §Critic 4 L1795 (tension field); C2 L1749, G L1835 (rest ≥2× median beat): no per-node density or rest table
+LEDGER-ENGINE-GEMINI.md:280	Y	Landing frame ⌊2v/g⌋; double at the apex.	§Planner amendments P4 L1137-1139
+LEDGER-ENGINE-GEMINI.md:281	Y	Double reach ≈ 1.75 × single (measured 1.79).	§CP3 rulings L369
+LEDGER-ENGINE-GEMINI.md:282	Y	Safe reach = air control × max reach − (early press + double delay) × speed.	PARTIAL §C20 run L2211-2226; P8 L2004: margins now stated against true max reach (jumpOK 0.43-0.57 of it); not thumb-timing derived
+LEDGER-ENGINE-GEMINI.md:283	Y	Easy safe reach ≈ 0.62 R_max (ours ~0.50-0.53); gen2 Easy margin 0.65.	PARTIAL §G rows L1843: Easy single gap 0.25-0.50, never above 0.65; Easy per-roll numbers unset (L2129, L2262)
+LEDGER-ENGINE-GEMINI.md:284	Y	Normal safe reach ≈ 0.78 R_max (ours ~0.72-0.74); gen2 Normal margin 0.82.	§Pacing P8 L2004; G L1843: Normal gaps ≤0.8 of max reach, never above 0.82
+LEDGER-ENGINE-GEMINI.md:285	Y	Gap share as a linear function of node tension.	CONTRADICTED §C1 L1748, L1843: gap share is not the difficulty dial; it shapes stride and is drawn per roll (L2114)
+LEDGER-ENGINE-GEMINI.md:286	Y	Single-jump gap share Easy 0.25-0.55, Normal 0.35-0.75 of R_1.	§G rows L1843 + P8 L2004: single Normal 0.35-0.75 (top now ≤0.8), Easy 0.25-0.50
+LEDGER-ENGINE-GEMINI.md:287	Y	Double-jump gap share Easy 0.40-0.60, Normal 0.50-0.78 of R_2.	§G rows L1843: doubles Normal 0.50-0.78, Easy 0.40-0.60, never above 0.82/0.65
+LEDGER-ENGINE-GEMINI.md:288	Y	Platform width ≥ hitbox + 2·early·speed + buffer·(1−T).	PARTIAL §G rows L1844: pads 3.5-7.0 body widths; no width formula from thumb spread or tension
+LEDGER-ENGINE-GEMINI.md:289	Y	Pads 3.5 × sloth (Normal climax, 154 px) to 7.0 × (Easy intro, 308 px).	§G rows L1844: pads 3.5 body widths (~154 px, Normal climax) to 7.0 (~308 px, Easy intro); Normal 110 px withdrawn
+LEDGER-ENGINE-GEMINI.md:290	Y	Animal footprints: snake deck ≥5 W, boa ≥3.5 W from entry, eagle 4 s open sky, cat ≥8 W.	PARTIAL §G rows L1842: boa ≥3.5 body widths from entry; snake deck, eagle 4 s sky, cat 8 W absent
+LEDGER-ENGINE-GEMINI.md:291	Y	Per-animal hazard weights (snake 1.2, eagle 1.6, cat 1.5…).	MISSING
+LEDGER-ENGINE-GEMINI.md:292	Y	Enemies per minute rise with world: E = E_base(D) + α(D)·(w−1).	§Difficulty dial L645
+LEDGER-ENGINE-GEMINI.md:293	Y	Easy 3.5→6.65/min (~8→15 a stage); Normal 5.5→11.35 (~12→25).	PARTIAL §Difficulty dial L645: 0-1→4-5 Normal, 0-1→3 Easy taught animals per stage
+LEDGER-ENGINE-GEMINI.md:294	Y	Minimum time between enemies by tension; floors 4.5 s Easy, 2.5 s Normal.	MISSING
+LEDGER-ENGINE-GEMINI.md:295	Y	Pairwise threat H_pair = move weight × animal weight × runway ≤ cap.	PARTIAL §G rows L1855 (#24): gap+enemy pair checked in builder and capped; no move/animal weights or cap number
+LEDGER-ENGINE-GEMINI.md:296	Y	≥1.0 s flat runway before an enemy trigger (Easy; Normal low tension).	§G rows L1842: flat runway ≥1.0 s (~285 px) before an enemy trigger
+LEDGER-ENGINE-GEMINI.md:297	Y	Petal goal 75% of total; 70% shared, 15% high, 15% low.	PARTIAL §G rows L1848: Normal goal 75-87.5% of reachable; no 70/15/15
+LEDGER-ENGINE-GEMINI.md:298	Y	Encountered 85% on one pass; margin to the goal ~11.8%.	§CP3 L462, L826-829
+LEDGER-ENGINE-GEMINI.md:301	Y	No adjacent identical substring of length 1-4; no symbol 3 times running.	PARTIAL §Critic §10 #5 L1883; timing gate L1807: a rhythm group may repeat once before a rest; no 4 same-interval take-offs; no substring ban
+LEDGER-ENGINE-GEMINI.md:302	Y	Normalized bigram entropy ≥ 0.68.	PARTIAL §CP3 L240-246: share cap and ≥4 ideas stand in; no entropy
+LEDGER-ENGINE-GEMINI.md:303	Y	Similarity: 0.5 Levenshtein + 0.5 4-gram Jaccard ≤ 0.42.	§Critic 1 L1792; C14 L1761: sequence similarity via era/lookalike (3-gram cosine <0.78, 20 s window 0.30) per ledger E127 'our metric'
+LEDGER-ENGINE-GEMINI.md:306	Y	Tier 2 miss: drop into mud or silk, or brambles: 1 HP or a 10 s slow.	MISSING
+LEDGER-ENGINE-GEMINI.md:307	Y	Tier 3 miss: −1 HP, respawn at the current rhythm group.	§C10 L1757; G L1847: checkpoint right before each hard part, respawn within ~2 s
+LEDGER-ENGINE-GEMINI.md:308	Y	D(w,s) = 0.12 + 0.055(w−1) + 0.032(s−1) − dips at 4, 7 + bump at 10.	PARTIAL §C17 L1765: bands climb, overlap a little, world start slightly below previous end; dial re-run; no dips at 4, 7 or bump at 10
+LEDGER-ENGINE-GEMINI.md:309	Y	A new world drops difficulty by 0.20 at its first stage.	PARTIAL §C17 L1764: first stage sits slightly below previous world's end; no drop number (re-run)
+LEDGER-ENGINE-GEMINI.md:310	Y	Composite flow score F = 100(0.30 curve + 0.25 rhythm + 0.20 variety + 0.15 vertical + 0.10 agency).	MISSING
+LEDGER-ENGINE-GEMINI.md:311	Y	Curve fidelity: measured vs planned tension.	MISSING
+LEDGER-ENGINE-GEMINI.md:312	Y	Beat alignment: share of bot take-offs within ±33 ms of a beat.	PARTIAL deferred §Critic 5 L1796: rhythm pattern names get a definition and a measure, or are struck; no beat-alignment metric
+LEDGER-ENGINE-GEMINI.md:313	Y	Variety term = entropy share × (1 − max similarity).	MISSING
+LEDGER-ENGINE-GEMINI.md:314	Y	Vertical flow: fewer stalled frames, more elevation spread.	§Variety gate L40; §CP3 L398
+LEDGER-ENGINE-GEMINI.md:315	Y	Agency: a split or loop with both roads viable; every hazard costs.	§Variety gate L38-39; §CP3 L434-438
+LEDGER-ENGINE-GEMINI.md:316	Y	Accept at flow ≥80 (L253) or ≥82 (L580).	MISSING
+LEDGER-ENGINE-GEMINI.md:319	Y	Creak delay Easy 1.2 s (36 frames), Normal 0.67 s (20).	CONTRADICTED L2003: P7 sets Normal crumble at 0.5 s, not 0.67 s; Easy OPEN
+LEDGER-ENGINE-GEMINI.md:320	Y	Mud speed ×0.55, silk ×0.45.	MISSING
+LEDGER-ENGINE-GEMINI.md:321	Y	Pattern lockout of 4 draws.	§G rows L1839 (#34): locked out for 4 draws after it is laid
+LEDGER-ENGINE-GEMINI.md:323	Y	Short landing ≤48 px split between ledges; flat runs over 2.5 s split with a hop.	PARTIAL §Pacing L510: dead time >2.5 s fails; not auto-split
+LEDGER-ENGINE-GEMINI.md:325	Y	Lookahead for a run-and-jump: 1.2 s sideways vs 0.45 s upright.	MISSING
+LEDGER-ENGINE-GEMINI.md:326	Y	Safe sightline box 12×12 tiles; camera anchors by direction.	MISSING
+LEDGER-ENGINE-GEMINI.md:327	Y	Gesture collisions above 1.2/s; 267 ms cooldown; thumb hides bottom-right 20%; Pokey at 55% height.	MISSING
+LEDGER-ENGINE-GEMINI.md:332	Y	A 50% slow-down with no extra decisions feels stuck; skilled leap over, clumsy trudge.	PARTIAL §Water W4 L1894, L1952: swim ≥1.25× run with long water; ropes, silk, mud uncovered
+LEDGER-ENGINE-GEMINI.md:333	Y	Cause-and-effect on the main path means 2^k layouts to check.	MISSING
+LEDGER-ENGINE-GEMINI.md:336	Y	85 specs, 200 builds (100 stages × 2 settings) checked in batch.	§E Gates L1612-1620; §F L1626-1629
+LEDGER-ENGINE-GEMINI.md:337	Y	Targets: yield ≥85/98%, similarity ≤42%, entropy, rest ≤2.2 s, 120-150 s, 0 blind leaps, flow ≥82.	PARTIAL §Critic 1 L1792; C2 L1749; G L1852: yield 16/16, similarity via lookalike, rest relative, 2-5 min; no entropy, blind-leap or flow targets
+LEDGER-ENGINE-GEMINI.md:411	Y	Tempo comes from our music, read from the stage's song; keep whole-frames beats inside each world's range.	CONTRADICTED L1120, L1883: 'the player's rhythm, not the song', now sourced to Smith 2009
+LEDGER-ENGINE-GEMINI.md:415	Y	Music changes per session, so no bassline-driven layout; beat-timed hazards still work.	PARTIAL §Design L1120: no song-following (agrees); beat- or rhythm-timed hazards absent
+LEDGER-ENGINE-GEMINI.md:417	Y	Tracer places jumps only; extend to vines, ropes, mushrooms; merge its two copies into one.	PARTIAL §Planner amendments P2 L1131-1133, P4 L1137-1139: vines, ropes, pads proven in the real engine; one jump model; tracer not extended
+LEDGER-ENGINE-GEMINI.md:420	Y	The deck alone did not cure sameness in gen2; topology and the look are the bigger buys.	§Critic 1(b) L1792; Critic 4 L1795: root cause is near-identical decks; map shape field added for topology
+LEDGER-ENGINE-GEMINI.md:422	Y	Our checker compares by cosine of 3-move counts plus a look grid; builder caps must use the checker's measure.	§CP3 L253-259, L513
+LEDGER-ENGINE-GEMINI.md:424	Y	Physics is 1/60 s with two gravities; reach numbers come from the tracer's simulation.	§Planner amendments P4 L1137-1139; §CP3 L369
+LEDGER-ENGINE-GEMINI.md:426	Y	Monkeys don't attack; role table must use our animals (snake, boa, eagle, cats, spider, frog, caiman, turtle).	PARTIAL §C Animals L1563-1567: our animals placed by element; no platform-role table
+LEDGER-ENGINE-GEMINI.md:428	Y	Petal goal varies; keep Matt's 70/15/15 split and set the goal from the bots.	PARTIAL §G rows L1848: Easy goal from first-timer bot, Normal 75-87.5%; no 70/15/15
+LEDGER-ENGINE-GEMINI.md:436	Y	Gemini leaves out the look: add art dressing by node and role, with a look measure in the checker.	§Polish pass L686-745; §S-4 L772-776; §How a stage is made L1042-1043; §Stage profile L1226-1227
+LEDGER-ENGINE-GEMINI.md:442	Y	One fixed tension curve copied into every spec becomes the pattern; neighbours must place parts differently.	§Critic 4 L1795: tension field placed differently from previous stage; checkSpec fails a neighbour-matching node shape
+LEDGER-ENGINE-GEMINI.md:445	Y	Every Gemini number is a guess to calibrate on bots and Matt's play, never a target.	§Difficulty dial L635-636; §Variety gate L30
+LEDGER-ENGINE-GEMINI.md:448	Y	Closing a loop or split is hand-waved; needs real design before it is promised.	PARTIAL §Variety gate L38-39; §CP3 L378, L461: roads walkable, own height bands, crossings; no closure rule; loops absent
+LEDGER-ENGINE-GEMINI.md:452	Y	Reject Gemini's difficulty formula (world overlap); bandFor and STAGE_HEAT already do the job.	PARTIAL §C17 L1765: half-band overlap withdrawn, dial re-run; bandFor/STAGE_HEAT not restored
+LEDGER-ENGINE-GEMINI.md:466	Y	Stop generate-and-test loops; compile stages constructively.	§CP3 L259, L513
+LEDGER-ENGINE-GEMINI.md:467	Y	Split declarative intent (data) from kinematic and topological enforcement (code).	§Stage profile L1204-1206; §Whole-game plan L1460
+LEDGER-ENGINE-GEMINI.md:468	Y	Spelunky: 4×4 room grid with a guaranteed critical path.	MISSING
+LEDGER-ENGINE-GEMINI.md:469	Y	Spelunky failure: hazards from neighbouring rooms combine into unavoidable hits.	PARTIAL §G rows L1855; #29 L2026: gap+enemy pair capped; ≤1 breakable/animal kind a view, ≤2 if the pair
+LEDGER-ENGINE-GEMINI.md:470	Y	Dead Cells: concept graph per biome with branching ratio and entrance-exit distance.	PARTIAL §Stage profile L1217 (branching numbers, fork count); §B L1495: no concept graph or hub search stages
+LEDGER-ENGINE-GEMINI.md:471	Y	Dead Cells failure: 2D branches overlap, fixed with buffer corridors.	MISSING
+LEDGER-ENGINE-GEMINI.md:472	Y	Rayman: beat times map to positions; percussion → attacks, melody → jumps, sustains → ropes.	PARTIAL §Design L1120-1121: node draws a rhythm pattern; no beat-to-move or beat-to-position mapping
+LEDGER-ENGINE-GEMINI.md:473	Y	Rayman failure: auto-run locks speed to music; never lock his speed.	§Design L1120
+LEDGER-ENGINE-GEMINI.md:476	Y	Downwell: one vertical fall-line with rest caverns at fixed depths.	MISSING
+LEDGER-ENGINE-GEMINI.md:477	Y	Rogue Legacy: point-buy hazard budget scaled by distance from the entrance.	§Difficulty dial L643-644
+LEDGER-ENGINE-GEMINI.md:478	Y	Rogue Legacy failure: static geometry memorized when only enemies vary.	§Per-roll ranges L2102-2116; Critic 1 L1792: each roll draws hop, gap and rise; era diversity ≥0.35 between rolls
+LEDGER-ENGINE-GEMINI.md:480	Y	Hades: deck without replacement, recent templates banned, relief after intense rooms.	§CP3 L336, L390-392; §Rests L501
+LEDGER-ENGINE-GEMINI.md:481	Y	Ori: escape sequences became memorization spikes when readability dropped.	§CP2 L213-221; §Difficulty dial L650-653
+LEDGER-ENGINE-GEMINI.md:482	Y	Launchpad: rhythm first, then geometry; one rhythm gives dozens of layouts.	PARTIAL §Design L1120-1121: rhythm pattern drawn per node like pieces; no rule tying many geometries to one rhythm
+LEDGER-ENGINE-GEMINI.md:483	Y	Launchpad weakness: generate-and-cull at the macro level.	§CP3 L259
+LEDGER-ENGINE-GEMINI.md:484	Y	Tanagra: constraint solver; relax or backtrack at the pattern level instead of failing.	MISSING
+LEDGER-ENGINE-GEMINI.md:485	Y	Polymorph: difficulty is super-additive (gap then enemy on the landing); pairwise adjacency.	§G rows L1855 (#24): gap and enemy on its landing add up; pair capped in builder
+LEDGER-ENGINE-GEMINI.md:486	Y	Dahlskog: meso-patterns are the minimum unit; micro slices break.	§CP2 L68-86; §CP3 L249, L390
+LEDGER-ENGINE-GEMINI.md:487	Y	ASP (clingo): global rules, every solution valid.	MISSING
+LEDGER-ENGINE-GEMINI.md:488	Y	WFC fails global reachability without a movement graph.	§Planner amendments P4 L1137-1139
+LEDGER-ENGINE-GEMINI.md:490	Y	Chunk-level modification beats whole-level (83.5% vs 74.1% first-pass playable).	PARTIAL §CP3 L259: failures named per node; no local repair
+LEDGER-ENGINE-GEMINI.md:491	Y	Table: Spelunky 10×8 templates with chunk markers; 4×4 walk.	MISSING
+LEDGER-ENGINE-GEMINI.md:492	Y	Table: Dead Cells concept graphs, rooms, bounding-box solver, enemy budget.	PARTIAL §Stage profile L1217; §Difficulty dial L643-645: branching and risk budget; no concept graph or box solver
+LEDGER-ENGINE-GEMINI.md:493	Y	Table: Rayman stem timelines, x = v·t.	PARTIAL §Design L1120-1121: rhythm patterns, no stems
+LEDGER-ENGINE-GEMINI.md:495	Y	Table: Downwell/Rogue Legacy slices tagged by exits and spawn slots.	§CP2 L72; §CP3 L251
+LEDGER-ENGINE-GEMINI.md:496	Y	Table: Launchpad rhythm-group parameters plus grammar probabilities.	PARTIAL §Design L1120-1121
+LEDGER-ENGINE-GEMINI.md:497	Y	Table: Tanagra fails on solver complexity for 2D branching.	MISSING
+LEDGER-ENGINE-GEMINI.md:498	Y	Table: evolutionary search needs thousands of runs; raw n-grams break topology.	§CP3 L259
+LEDGER-ENGINE-GEMINI.md:499	Y	Table: WFC exemplar adjacency fails reachability.	§Planner amendments P4 L1137-1139
+LEDGER-ENGINE-GEMINI.md:500	Y	Enforce constraints before or during placement, not by rejection.	§CP3 L253-259, L513
+LEDGER-ENGINE-GEMINI.md:501	Y	Pass 1 picks a map shape: loop back, high/low split, chimney, hub-and-spoke.	§Critic 4 L1795: profile 'map' field: linear, loop-back, chimney, high/low split, hub
+LEDGER-ENGINE-GEMINI.md:503	Y	Each node a non-overlapping 2D box with entry and exit vectors.	PARTIAL §CP3 L251; §Placement rule 1 L278-283: entry/exit by height band; no 2D box or direction vector
+LEDGER-ENGINE-GEMINI.md:506	Y	Seed pattern names: Vine_Transfer_Over_Mud, Rotten_Branch_Cascade, Snake_Stomp_Bridge, Eagle_Shadow_Sprint.	PARTIAL §CP2 L76-86: Vine relay, Rotten-branch drop exist; no snake or eagle pattern
+LEDGER-ENGINE-GEMINI.md:507	Y	Pass 3: tracer places platforms, vines, ropes, mushrooms on the beat; add those moves to it.	PARTIAL §P2 L1131-1133: vines and ropes proven in the real engine, not traced
+LEDGER-ENGINE-GEMINI.md:508	Y	Data: WorldProfile, ~20-line StageSpec, ~30 MesoPatterns.	§B L1495-1506; §Stage profile L1208-1233; §CP2 L62-107
+LEDGER-ENGINE-GEMINI.md:509	Y	Code: graph layout engine, deck shuffler, tracer, pickup and enemy role binder.	PARTIAL §CP3 L336; P4 L1137; §Placement L270-320: deck, tracer, placement rules; no layout engine or role binder
+LEDGER-ENGINE-GEMINI.md:511	Y	Variety on three scales: macro topology, meso deck (cross-stage <42%), micro tempo and physics; plus look.	§Critic 4 L1795 (map); Critic 1 L1792 (cross-stage lookalike); per-roll tempo L2111-2116
+LEDGER-ENGINE-GEMINI.md:512	Y	Node tension drives gap-to-reach ratio and enemy adjacency budget.	PARTIAL §G rows L1855; C1 L1748: pair cap in builder; gap no longer a difficulty lever; nothing scaled by node tension
+LEDGER-ENGINE-GEMINI.md:513	Y	Weak point: the "elastic bridge" where a loop or split merges.	PARTIAL §CP3 L344, L461: roads rejoin, crossings; no merge rule
+LEDGER-ENGINE-GEMINI.md:514	Y	Arch 2: CSP over 80-120 beats with AC-3 and backtracking.	MISSING
+LEDGER-ENGINE-GEMINI.md:516	Y	Split closure: both roads' dx and dy sums equal, merging at one pixel.	PARTIAL §CP3 L378, L344, L350: roads keep own bands and rejoin; no closure rule
+LEDGER-ENGINE-GEMINI.md:517	Y	Moves i..i+2 never equal i+3..i+5.	PARTIAL §Critic §10 #5 L1883; timing gate L1807: one exact group repeat allowed before a rest; not move-level
+LEDGER-ENGINE-GEMINI.md:518	Y	Dead walk ≤ 2.5 s.	§Rests and breathers L510
+LEDGER-ENGINE-GEMINI.md:520	Y	Arch 3: inertial flow-ribbon spline as the topology (chimney bends up, loop folds, split forks).	MISSING
+LEDGER-ENGINE-GEMINI.md:521	Y	Markov tiling learned from the strongest W1-4 patterns (not taken: copies sameness).	MISSING
+LEDGER-ENGINE-GEMINI.md:522	Y	Seam welding: adjust only the bridge platform between chunks.	§Placement rule 1 L278-283
+LEDGER-ENGINE-GEMINI.md:524	Y	Orientation paradox: a leap fair sideways is blind upright, and the reverse.	MISSING
+LEDGER-ENGINE-GEMINI.md:525	Y	4-track lead sheet: kick → jump or bounce, snare → double, hi-hat → run, rest → safe platform.	PARTIAL §Design L1120-1121: rhythm patterns per node; no mark-to-move table
+LEDGER-ENGINE-GEMINI.md:526	Y	Bassline sets direction: rising → climb, falling → drop, octave split → high/low split.	MISSING
+LEDGER-ENGINE-GEMINI.md:527	Y	Hazards in call-and-response with his jumps (fruit thrown beat 1 lands beat 3; eagle locks then strikes).	MISSING
+LEDGER-ENGINE-GEMINI.md:529	Y	Inscribed safe sightline box; fold the path when it would leave it.	MISSING
+LEDGER-ENGINE-GEMINI.md:530	Y	Recommendation: Arch 1 + sightline box + counterpoint; puzzle rooms need a "fermata".	PARTIAL §CP3 L231-259, L375-377: nodes, decks, tracer, puzzle as a room; sightline box and counterpoint absent
+LEDGER-ENGINE-GEMINI.md:539	Y	The coefficients are "original architectural derivations".	§Difficulty dial L635-636
+LEDGER-ENGINE-GEMINI.md:541	Y	Skilled 120-150 s; first-timer 180-300 s.	§Stage length L664-667
+LEDGER-ENGINE-GEMINI.md:544	Y	Length budget: skilled time = sum of puzzle and groups.	PARTIAL §Stage length L666-670: units, no formula
+LEDGER-ENGINE-GEMINI.md:545	Y	Puzzle 12-18 s once, node 4 or 6.	PARTIAL §1-5 plan L349, L375-377
+LEDGER-ENGINE-GEMINI.md:547	Y	First-timer predictor; the bot rules.	§CP2 L221, L227; G rows L1852: first-timer bots judge; first-timer 2-5 min a stage line
+LEDGER-ENGINE-GEMINI.md:548	Y	p_miss 0.25, 8 s penalty → 223.9 s first-timer.	PARTIAL §CP2 L221, L227: bots instead
+LEDGER-ENGINE-GEMINI.md:549	Y	Above 1.6 actions/s thumbs tire and misread.	PARTIAL §Pacing L801: Normal density ceiling dropped as uncalibrated
+LEDGER-ENGINE-GEMINI.md:551	Y	Density = ρmin + (ρmax−ρmin)·T^1.15, our bounds.	MISSING
+LEDGER-ENGINE-GEMINI.md:552	Y	Easy 0.35-0.85, Normal 0.50-1.35 (contradicts ours).	§Rests and breathers L508
+LEDGER-ENGINE-GEMINI.md:553	Y	Node 1: safe intro plus a Dot tip, low tension.	§1-5 plan L341; §CP4 1-1 L1065
+LEDGER-ENGINE-GEMINI.md:554	Y	Node 2: repeat with a petal arc.	§1-5 plan L342
+LEDGER-ENGINE-GEMINI.md:555	Y	Node 3: primary mechanic plus an animal trick or branch type.	PARTIAL §1-5 L343; §1-1 L1067: rise or practise; no animal or new branch type
+LEDGER-ENGINE-GEMINI.md:556	Y	Node 4: high/low split or puzzle room as mid-stage relief.	§1-5 plan L344-345
+LEDGER-ENGINE-GEMINI.md:557	Y	Node 5: world mutator or second hazard in counterpoint.	PARTIAL §Critic 4 L1795 (pair, twist); ruling 3 L1794: hazards return as twist; no node slot or timing
+LEDGER-ENGINE-GEMINI.md:558	Y	Node 6: first climax, a multi-move chain (vine → bounce → stomp).	PARTIAL §1-5 L346; §Move ladder L1321: test node; combined beats once a world
+LEDGER-ENGINE-GEMINI.md:559	Y	Node 7: mastery combining all.	§1-5 plan L350
+LEDGER-ENGINE-GEMINI.md:560	Y	Node 8: 8.5 s cooldown sprint to the exit; ours wants a few seconds.	CONTRADICTED §Critic 4 L1795: stage ends in a dense 15-20 s finale, not a cool-down; yet 1-1 data still lays a cool-down (L2186)
+LEDGER-ENGINE-GEMINI.md:561	Y	Per-frame Euler is wrong for our physics.	§P4 L1137-1139
+LEDGER-ENGINE-GEMINI.md:562	Y	Landing frame and double at apex; keep ours.	§P4 L1137-1139
+LEDGER-ENGINE-GEMINI.md:563	Y	Clumsy thumb incl. a mistimed second flick; add an off-apex double to the tracer's tries.	MISSING
+LEDGER-ENGINE-GEMINI.md:564	Y	Safe-reach formula as the explanation of margins.	PARTIAL §C20 run L2211-2226: margins explained by jumpOK ×0.97 and 70 px slack, not Gemini's formula
+LEDGER-ENGINE-GEMINI.md:565	Y	Easy: 5 frames early (167 ms) instead of ±100 ms.	MISSING
+LEDGER-ENGINE-GEMINI.md:566	Y	Gap share linear in tension, inside the level check's cap.	CONTRADICTED §C1 L1748, L1843: gap share shapes stride, not difficulty; drawn per roll
+LEDGER-ENGINE-GEMINI.md:567	Y	Starting gap ranges for single and double, to calibrate.	§G rows L1843: single and double ranges 'calibrated on what shipped'
+LEDGER-ENGINE-GEMINI.md:568	Y	Tension-scaled platform width floor.	PARTIAL §G rows L1844: 3.5 (Normal climax) to 7.0 body widths (Easy intro); not scaled per node
+LEDGER-ENGINE-GEMINI.md:569	Y	Pads 154-308 px against our 90 px floor.	§G rows L1844: pads 154-308 px; Normal's 110 px end withdrawn
+LEDGER-ENGINE-GEMINI.md:570	Y	Every animal bound to a platform role in data.	PARTIAL §CP2 L107; §Move ladder L1307: by element and room only
+LEDGER-ENGINE-GEMINI.md:571	Y	Snake: flat combat deck ≥5 W, 1.5 W runway.	PARTIAL §G rows L1842: ≥1.0 s runway before enemy triggers; no snake deck size
+LEDGER-ENGINE-GEMINI.md:572	Y	Coiled boa as gatekeeper ≥3.5 W from entry, blocking a bridge, rope or seed.	PARTIAL §G rows L1842: boa ledge ≥3.5 body widths from entry; no gatekeeper role
+LEDGER-ENGINE-GEMINI.md:573	Y	Eagle needs 4 s of open sky; never over breaking branches.	PARTIAL §Move ladder L1307; §C L1564: open sky for harpies; no crumble ban
+LEDGER-ENGINE-GEMINI.md:574	Y	Stalking cat: ≥8 W runway with a vine or mushroom escape.	PARTIAL §C Animals L1565: cats on the ground
+LEDGER-ENGINE-GEMINI.md:575	Y	Spider drops on silk above ropes or chimneys.	PARTIAL §C Animals L1566: spiders stay W5's
+LEDGER-ENGINE-GEMINI.md:576	Y	Monkey throws fruit from a perch (wrong: capuchins never hurt).	MISSING
+LEDGER-ENGINE-GEMINI.md:577	Y	Enemy rate rises with world.	§Difficulty dial L645
+LEDGER-ENGINE-GEMINI.md:578	Y	Easy 3.5→6.65/min, Normal 5.5→11.35/min.	PARTIAL §Difficulty dial L645
+LEDGER-ENGINE-GEMINI.md:579	Y	Time spacing between enemies, floors 4.5 s Easy, 2.5 s Normal.	MISSING
+LEDGER-ENGINE-GEMINI.md:580	Y	Pairwise threat cap, numbers to define ourselves.	§G rows L1855 (#24): pair capped in builder
+LEDGER-ENGINE-GEMINI.md:581	Y	1.0 s (~285 px) flat runway before an enemy trigger.	§G rows L1842: ≥1.0 s (~285 px) flat runway before an enemy trigger
+LEDGER-ENGINE-GEMINI.md:582	Y	Petal goal 75%; 3 golden seeds a stage; 1-2 hidden finds; set goals from bots.	PARTIAL §G rows L1848: Normal 75-87.5%, Easy goal from kid bot; no seed or hidden-find counts
+LEDGER-ENGINE-GEMINI.md:583	Y	Petals 70% shared, 15% high road, 15% low road.	PARTIAL §1-5 L344, L350; §CP3 L827-828: a group per road, hardest on the high road; no shares
+LEDGER-ENGINE-GEMINI.md:584	Y	Single-pass yield 0.85 of total.	PARTIAL §G rows L1848: goal 75-87.5% of reachable; no single-pass yield line
+LEDGER-ENGINE-GEMINI.md:585	Y	Forgiveness margin (0.85−0.75)/0.85.	§CP3 L462, L828
+LEDGER-ENGINE-GEMINI.md:588	Y	Seed 1 on the split's risky road, seed 2 in the puzzle room, seed 3 on a late skill branch.	PARTIAL §Placement rule 4 L304-311; §1-5 L371-374
+LEDGER-ENGINE-GEMINI.md:589	Y	No adjacent identical substring length 1-4; no symbol 3 running.	PARTIAL §Critic §10 #5 L1883; L1807: group repeat once before rest; same-interval gate; no substring ban
+LEDGER-ENGINE-GEMINI.md:590	Y	Normalized bigram entropy ≥ 0.68.	PARTIAL §CP3 L240-246
+LEDGER-ENGINE-GEMINI.md:591	Y	Don't take Levenshtein/Jaccard; cap our own metric.	§C14 L1761
+LEDGER-ENGINE-GEMINI.md:592	Y	Builder cap with a buffer under the checker's 45-55% zone.	MISSING
+LEDGER-ENGINE-GEMINI.md:593	Y	Budget table: petals 70/15/15 = 100.	PARTIAL §1-5 L344, L350
+LEDGER-ENGINE-GEMINI.md:594	Y	Budget table: goal 75, margin 10, unvisited 15.	PARTIAL §G rows L1848: goal 75-87.5%; no margin/unvisited split
+LEDGER-ENGINE-GEMINI.md:596	Y	A miss always costs something, without bottomless-pit rage.	§CP3 L434-438; §P3 L1134-1136; §Placement L284-291
+LEDGER-ENGINE-GEMINI.md:598	Y	Tier 2: drop into mud or silk or brambles (1 HP or 10 s slow).	MISSING
+LEDGER-ENGINE-GEMINI.md:599	Y	Tier 3: −1 HP, respawn at the current group on climaxes.	§C10 L1757; G L1847: checkpoint right before each hard part, respawn within ~2 s
+LEDGER-ENGINE-GEMINI.md:600	Y	A linear difficulty ramp fatigues; stages need breathers (STAGE_HEAT sawtooth).	CONTRADICTED L628-635: d rises linearly with s inside every world; STAGE_HEAT's stage dips dropped
+LEDGER-ENGINE-GEMINI.md:601	Y	Gemini's D(w,s) contradicts SR §1b.	§C17 L1765: bands follow SR §1b; half-world overlap withdrawn
+LEDGER-ENGINE-GEMINI.md:602	Y	World stage 9 → next world stage 1 drop of 0.20; its own claim is wrong.	PARTIAL §C17 L1764: first stage slightly below previous world's end; no 0.20 drop or number (re-run)
+LEDGER-ENGINE-GEMINI.md:603	Y	Relief dips at stages 4 and 7 in every world (contradicts ours).	§Difficulty dial L628-633
+LEDGER-ENGINE-GEMINI.md:604	Y	Flow score, after calibrating on Matt's ratings.	MISSING
+LEDGER-ENGINE-GEMINI.md:605	Y	Curve fidelity: 1 − mean gap between measured and planned tension.	MISSING
+LEDGER-ENGINE-GEMINI.md:606	Y	"On the beat" share of the bot's take-offs.	PARTIAL deferred §Critic 5 L1796: rhythm patterns get a measure or are struck
+LEDGER-ENGINE-GEMINI.md:607	Y	Variety term min(1, H2/0.75)·(1 − max Sim).	MISSING
+LEDGER-ENGINE-GEMINI.md:608	Y	Vertical term: fewer stalled frames, more elevation spread.	§Variety gate L40; §CP3 L398
+LEDGER-ENGINE-GEMINI.md:609	Y	Agency: split or loop with both roads viable; adopt the split check.	§Variety gate L38-39
+LEDGER-ENGINE-GEMINI.md:610	Y	Accept at ≥80 with zero hard violations.	MISSING
+LEDGER-ENGINE-GEMINI.md:611	Y	Profile once, spec overrides ~20 lines, patterns beat-relative with no px.	PARTIAL §Other findings L1805; Deep 2 L1880; roll data L2164-2176: lines measured per world/stage kind; no world default; pieces still px
+LEDGER-ENGINE-GEMINI.md:613	Y	WorldProfile example: id, name, tempo, frames per beat, meter.	PARTIAL §B L1495-1506: element, kit, own move, hazards, specials; no tempo/deck/mutator fields
+LEDGER-ENGINE-GEMINI.md:614	Y	Mutator slot: periodic gust with cycle and telegraph.	PARTIAL §Move ladder L1302; §C L1550-1561: world hazards named, no mutator data
+LEDGER-ENGINE-GEMINI.md:615	Y	Kinematic modifiers: creak delay 36/20 frames; mud ×0.55; silk ×0.45.	CONTRADICTED L2003: P7 sets Normal crumble 0.5 s (15 frames), not 20; Easy OPEN; mud/silk absent
+LEDGER-ENGINE-GEMINI.md:616	Y	allowedAnimals roster per world.	§Stage profile L1221; §C Animals L1563-1567
+LEDGER-ENGINE-GEMINI.md:618	Y	lockoutCooldownDraws 4.	§G rows L1839: lockout of 4 draws
+LEDGER-ENGINE-GEMINI.md:619	Y	StageSpec: id, world, seed, mapShape.	PARTIAL §Critic 4 L1795: map and builder fields added; no seed field
+LEDGER-ENGINE-GEMINI.md:620	Y	Primary, secondary and support mechanics: the stage's pair.	§Critic 4 L1795: profile 'pair' field, the stage's mechanic pair
+LEDGER-ENGINE-GEMINI.md:621	Y	rhythmMotifBeats as the stage's beat feel.	PARTIAL §Design L1120; §Stage profile L1218 (pace)
+LEDGER-ENGINE-GEMINI.md:622	Y	puzzleBlueprintId, puzzleNodeIndex, splitNodeIndex.	PARTIAL §Stage profile L1217 (fork count); §1-5 L349
+LEDGER-ENGINE-GEMINI.md:623	Y	causeEffectOut: a flag in this stage changes the next.	MISSING
+LEDGER-ENGINE-GEMINI.md:624	Y	causeEffectIn: a required flag opens a bonus shortcut node.	MISSING
+LEDGER-ENGINE-GEMINI.md:625	Y	Example node 1: KI tension 0.20, 2 groups, EAST, tier-1 miss.	PARTIAL §1-5 L341: job and entry/exit; no tension, group count, vector or miss tier
+LEDGER-ENGINE-GEMINI.md:626	Y	Example node 2: KI 0.35, EAST_UP, tier 1.	PARTIAL §1-5 L342: job only
+LEDGER-ENGINE-GEMINI.md:627	Y	Example node 3: SHO 0.55, SPLIT_E, tier-2 branch drop.	PARTIAL §1-5 L344: fork at n4
+LEDGER-ENGINE-GEMINI.md:628	Y	Example node 4: SHO 0.45, PUZZLE_BOX.	PARTIAL §1-5 L349: puzzle beat at n9
+LEDGER-ENGINE-GEMINI.md:629	Y	Example node 5: TEN 0.75, UP_CHIMNEY.	PARTIAL §Critic 4 L1795: chimney named as a map shape; no chimney node
+LEDGER-ENGINE-GEMINI.md:630	Y	Example node 6: TEN 0.85, EAST_DOWN.	PARTIAL §1-5 L347: rotten-branch drop high → low
+LEDGER-ENGINE-GEMINI.md:631	Y	Example node 7: KETSU 1.00, EAST_FAST, tier-3 group reset.	PARTIAL §C10 L1757: respawn within ~2 s of the hard part; no tension number
+LEDGER-ENGINE-GEMINI.md:632	Y	Example node 8: KETSU 0.25, EAST_EXIT.	CONTRADICTED §Critic 4 L1795: dense 15-20 s finale at the exit, not a low-tension close (1-1 still lays one, L2186)
+LEDGER-ENGINE-GEMINI.md:633	Y	Pattern header: required mechanics, move signature, beats, aspect-safe max slope 28°.	PARTIAL §CP2 L65-67: entry/exit, moves asked, proven range; no slope limit or duration
+LEDGER-ENGINE-GEMINI.md:634	Y	Pattern step: beat, move, platform, role, enemy slot, petal arc.	PARTIAL §CP2 L72, L107: pieces in order, animal ideas; no per-step slots
+LEDGER-ENGINE-GEMINI.md:635	Y	Vine step with a 2-beat swing; clashes with our self-swinging lianas.	§Difficulty dial L647
+LEDGER-ENGINE-GEMINI.md:636	Y	Pattern miss-floor field: drop onto a rotten catch branch, climb back.	PARTIAL §1-5 L342; §1-1 L1073; §P3 L1134: catch boughs; no field
+LEDGER-ENGINE-GEMINI.md:637	Y	Internal clash: a 2-beat rest on a 20-frame creaking branch is a fall.	§Difficulty dial L643; §1-5 L345; §Rests L503
+LEDGER-ENGINE-GEMINI.md:638	Y	Hashed seed sub-streams per node, group and pass.	PARTIAL §CP3 L261; §L1345, L1464: 16 rolls and regression fingerprints; no sub-stream rule
+LEDGER-ENGINE-GEMINI.md:639	Y	Worked topology with splits, chimney switchbacks, view sizes not ours.	PARTIAL §Critic 4 L1795; L313: chimney as map value, our view sizes
+LEDGER-ENGINE-GEMINI.md:640	Y	Example N1 string breaks its own length-2 repeat ban.	PARTIAL §CP3 L393
+LEDGER-ENGINE-GEMINI.md:642	Y	Example N3A reuses a pattern inside its own 4-draw lockout.	§G rows L1839: 4-draw lockout bans this reuse
+LEDGER-ENGINE-GEMINI.md:643	Y	Example N3B reuses a pattern 3 draws later, inside the lockout.	§G rows L1839: 4-draw lockout
+LEDGER-ENGINE-GEMINI.md:646	Y	Example N6 draws the same pattern a third time.	§C6 L1753; G L1839: template ≤ twice a stage, idea ≤40% never twice in a row, 4-draw lockout
+LEDGER-ENGINE-GEMINI.md:647	Y	Example N7: 4 enemies in 16.8 s breaks its own ≥6 s spacing.	MISSING
+LEDGER-ENGINE-GEMINI.md:648	Y	Example N8: 8.5 s victory outro, longer than W1P wants.	PARTIAL §Critic 4 L1795: cool-down replaced by a finale; 1-1 data still lays a cool-down (L2186); no outro length
+LEDGER-ENGINE-GEMINI.md:651	Y	Never have the AI emit raw geometry; cost ∝ repair rounds.	§How a stage is made L1026-1034
+LEDGER-ENGINE-GEMINI.md:653	Y	types.ts: WorldProfile, StageSpec, MesoPattern, BeatTrace, DiagnosticReport.	PARTIAL §Stage profile L1208-1259: profile and element table; no diagnostic format
+LEDGER-ENGINE-GEMINI.md:654	Y	forkSeed per pass so enemy edits never move platforms.	MISSING
+LEDGER-ENGINE-GEMINI.md:655	Y	topology.ts: 4 shapes × 8 nodes → non-overlapping boxes.	PARTIAL §Critic 4 L1795: five map shapes; no box layout
+LEDGER-ENGINE-GEMINI.md:656	Y	deck.ts: lockout, bigram entropy, cross-stage n-gram repulsion.	PARTIAL §G L1839; Critic 1 L1792: 4-draw lockout, cross-stage lookalike vs every stage; no entropy
+LEDGER-ENGINE-GEMINI.md:658	Y	decorator.ts: roles, 70/15/15 arcs, 3 seeds, 3-tier miss floors.	PARTIAL §Placement L270-320: hearts, flags, collectibles, clutter; no roles, seeds or tiers
+LEDGER-ENGINE-GEMINI.md:660	Y	Blame log JSON: module, location, violation, measured, limit, exact fix.	PARTIAL §CP3 L259; §Element table L1259
+LEDGER-ENGINE-GEMINI.md:663	Y	Auto-heal 1: short landing ≤48 px extended both ways.	§P4 L1137-1139
+LEDGER-ENGINE-GEMINI.md:664	Y	Auto-heal 2: run over 2.5 s split with a beat hop or mushroom.	PARTIAL §Rests L510: checked, not filled
+LEDGER-ENGINE-GEMINI.md:665	Y	Auto-heal 3: repeated 3-move run at a seam → swap in the runner-up pattern.	PARTIAL §CP3 L241, L391: no idea twice in a row across seams; no swap
+LEDGER-ENGINE-GEMINI.md:668	Y	Upright view gives 0.45 s lookahead vs 1.2 s sideways; measure ours.	MISSING
+LEDGER-ENGINE-GEMINI.md:669	Y	Name the both-views sightline box as a px constant.	MISSING
+LEDGER-ENGINE-GEMINI.md:673	Y	Gesture cooldown in the tracer once combat is traced.	MISSING
+LEDGER-ENGINE-GEMINI.md:688	Y	Sloth velocity paradox: a slow-down with no extra decisions feels like molasses.	PARTIAL §Water W4 L1894, L1952: swim ≥1.25× run; nothing for ropes, silk, mud
+LEDGER-ENGINE-GEMINI.md:689	Y	Inverse Velocity-Threat Law as builder rule and validator flag.	MISSING
+LEDGER-ENGINE-GEMINI.md:690	Y	Cause-and-effect on the main path explodes the layouts to check.	MISSING
+LEDGER-ENGINE-GEMINI.md:691	Y	Contain it to node-2 or node-4 bonus changes.	MISSING
+LEDGER-ENGINE-GEMINI.md:702	Y	Batch check every stage on both settings.	§E Gates L1612-1620; §F L1626-1629
+LEDGER-ENGINE-GEMINI.md:704	Y	Constructive yield ≥85% raw, ≥98% healed.	§CP3 L261; §P4 L1139
+LEDGER-ENGINE-GEMINI.md:705	Y	Similarity ≤42% max pairwise, <32% world mean.	PARTIAL §Critic 1 L1792: all stages of the world and earlier worlds (cosine <0.78); no world-mean line
+LEDGER-ENGINE-GEMINI.md:707	Y	Max rest ≤2.2 s; 100% of slow-downs active.	PARTIAL §Rests L510: dead time ≤2.5 s; slow-down rule absent
+LEDGER-ENGINE-GEMINI.md:708	Y	120-150 s skilled, 180-300 s first-timer.	§Stage length L664-667
+LEDGER-ENGINE-GEMINI.md:709	Y	0 blind leaps upright or sideways.	MISSING
+LEDGER-ENGINE-GEMINI.md:710	Y	Exactly 85% single-pass petal yield.	PARTIAL §G rows L1848: goal 75-87.5% of reachable; single-pass yield still unset
+LEDGER-ENGINE-GEMINI.md:711	Y	Flow ≥82 on all 100 stages.	MISSING
+LEDGER-ENGINE-PAPERS.md:43	Y	Build by construction under Pokey's simulated feet on the beat; checks confirm rather than select	§CP3 L259, L513; §P4 L1137-1139
+LEDGER-ENGINE-PAPERS.md:45	Y	Library labels entry/exit, difficulty and mechanic; a coverage table of combinations; cap universal connectors	PARTIAL §CP2 L65-67; §W1 labels L1391-1406: entry/exit, moves, teaches labelled; no difficulty tier, no coverage table; connectors not capped (L503)
+LEDGER-ENGINE-PAPERS.md:50	Y	Named multi-beat patterns (staircase, pit, vine chain), each traced, never hand-placed	§CP2 node ideas L74-86, L102-107; §shared library L126-127
+LEDGER-ENGINE-PAPERS.md:53	Y	Mixed-initiative: pin the signature moment by hand; the engine fills the rest on the beat	PARTIAL §Stage profile L1213: each stage names its moment node; the mixer still rolls it from a deck (1-1 n9, L1073); no pinned pieces
+LEDGER-ENGINE-PAPERS.md:56	Y	Difficulty curve as a build input carried by the stage spec, honoured per node	§difficulty dial L626-656
+LEDGER-ENGINE-PAPERS.md:93	Y	Coverage table: every (entry, exit, difficulty) combination must exist, else generation breaks or scrapes by	MISSING
+LEDGER-ENGINE-PAPERS.md:95	Y	Cap universal connectors; nothing measures how alike node seams look	CONTRADICTED L503: Easy breather pad between every node stands; no seam-likeness count
+LEDGER-ENGINE-PAPERS.md:98	Y	Named multi-beat patterns form a layer every world shares	CONTRADICTED L1754: C7 says pieces belong to their world; one shared library withdrawn
+LEDGER-ENGINE-PAPERS.md:100	Y	Pin chosen pieces, regenerate the rest around them	MISSING
+LEDGER-ENGINE-PAPERS.md:102	Y	Re-pace a stage without touching its geometry	PARTIAL §Design L1120-1121: rhythm pattern drawn per node; §profile pace L1218: no per-node bars a designer edits
+LEDGER-ENGINE-PAPERS.md:104	Y	Difficulty curve as a build input, piece by piece	PARTIAL §C1 L1748: dial kept as landing window and risk, numbers OPEN in TRIAGE
+LEDGER-ENGINE-PAPERS.md:106	Y	A search steered by the error instead of random retries	§CP3 rulings L369
+LEDGER-ENGINE-PAPERS.md:109	Y	Piece-use spread over many rolls finds dead and hogging pieces	PARTIAL §variety gate L33-34; §CP2 L190-197: commonest share per stage over 16 rolls and a one-off all-world count; no dead-piece report
+LEDGER-ENGINE-PAPERS.md:112	Y	A checker that can only be wrong in the safe direction, written as a gate rule	MISSING
+LEDGER-ENGINE-PAPERS.md:115	Y	Terrain first, then hazards and enemies by a second pass on the lines Pokey avoids	PARTIAL §C1 L1748: difficulty is what sits on the avoided lines; no terrain-first two-pass rule
+LEDGER-ENGINE-PAPERS.md:117	Y	Adjacency by look, not only by height	§coherence L130-131; §placement rule 1 L280; §S-4 L775-777
+LEDGER-ENGINE-PAPERS.md:118	Y	Seed the library from levels already judged good	§CP2 idea tags L237; §Per-roll ranges L2108
+LEDGER-ENGINE-PAPERS.md:154	Y	The beat sets each pattern's length (NodeSpec bpm, bars)	PARTIAL §G rows L1835; L2188: bursts by time 5-20 s, counts dropped; not beat-derived
+LEDGER-ENGINE-PAPERS.md:155	Y	Tanagra's five single-beat patterns map to ours: platform, gap, enemy, crumble, mushroom spring	§CP1 piece list L53-54; §ground family L614; §unused-art L165
+LEDGER-ENGINE-PAPERS.md:156	Y	Multi-beat patterns with their own rules; a staircase varies one number each step	§CP2 L78 (each bough a different length); §CP3 L240, L393
+LEDGER-ENGINE-PAPERS.md:157	Y	Gap rule: zero width means non-zero height, never a jump over nothing	MISSING
+LEDGER-ENGINE-PAPERS.md:158	Y	Replace fitSteps' 160 random tries with a small error-steered search	§CP3 rulings L369
+LEDGER-ENGINE-PAPERS.md:159	Y	Pinned hand-built nodes; the generator traces the nodes between, matching their exit heights	MISSING
+LEDGER-ENGINE-PAPERS.md:160	Y	Pacing edit without geometry: the spec lists each node's bars, the generator retraces	PARTIAL §Design L1120-1121; §profile pace L1218
+LEDGER-ENGINE-PAPERS.md:161	Y	Edge labels: each pattern declares entry and exit height and surface	§CP2 L65; §CP3 L251; §placement rule 1 L278-283
+LEDGER-ENGINE-PAPERS.md:162	Y	Coverage check: each world profile's (entry, exit, tier, mechanic pair) has at least 3 patterns	MISSING
+LEDGER-ENGINE-PAPERS.md:163	Y	Cap or vary the 200 px apron and count seam repeats	CONTRADICTED L503: Easy's breather pad at every node seam; apron not varied
+LEDGER-ENGINE-PAPERS.md:164	Y	Curve as input: a per-node density target checked against measured density	PARTIAL §difficulty dial L643; §rests L508-510: stage-level density lines only; no per-node target
+LEDGER-ENGINE-PAPERS.md:165	Y	Piece-use spread over 200 rolls per world	PARTIAL §G #86 L1853; §deep pass 1 L1879: 200 rolls and whole-game era/lookalike gates; no per-piece use spread
+LEDGER-ENGINE-PAPERS.md:166	Y	Safe-direction checker written into gates.md for every new gate	MISSING
+LEDGER-ENGINE-PAPERS.md:167	Y	Single-route checker blind spot: a split stage's other road may go unjudged	PARTIAL §variety gate L38-39; §G #89 L1854: both roads walkable and Easy softens the high road; pacing and fun gates not stated per road
+LEDGER-ENGINE-PAPERS.md:168	Y	Terrain then enemies (hazardSpots after the trace)	MISSING
+LEDGER-ENGINE-PAPERS.md:169	Y	Seed the library from the rebuilt 1-1 to 1-5 nodes	PARTIAL §L237; §Per-roll ranges L2108: seeded from main's old 1-1 and 1-3, not rebuilt 11-04 nodes
+LEDGER-ENGINE-PAPERS.md:175	Y	A pattern's difficulty tier comes from the clumsy trace and bots, not an obstacle count	§C16 L1763
+LEDGER-ENGINE-PAPERS.md:180	Y	Batch, seeded, deterministic output; pinning and pacing edits as spec features	PARTIAL §CP1 L44; §CP3 L261: seeded 16 rolls; no pinning; pacing only as L1120
+LEDGER-ENGINE-PAPERS.md:190	Y	Anxiety curves plus rhythm metadata plus WFC give variety and difficulty control	PARTIAL §critic ruling 4 L1795; §Design L1120: profile 'tension' field places spike/rest/fork; no WFC (by choice)
+LEDGER-ENGINE-PAPERS.md:191	Y	Pure randomness is unplayable or boring; aim for playable, challenging, interesting	§CP3 coherence L263-264; §placement L272-274
+LEDGER-ENGINE-PAPERS.md:192	Y	Fun judged by flow or an anxiety curve	§rests L490-511 (fun gate pacing flags, 'tension flat' L497)
+LEDGER-ENGINE-PAPERS.md:200	Y	Anxiety curve as an input: pick a difficulty curve, map it to obstacles	§difficulty dial L626-656
+LEDGER-ENGINE-PAPERS.md:201	Y	Two tests: variety under adjacency rules; playable start to finish	§variety gate L30-41; §CP3 READY L906-908
+LEDGER-ENGINE-PAPERS.md:202	Y	Impossible means a gap too wide or a wall too high	§CP3 rulings L366-369
+LEDGER-ENGINE-PAPERS.md:204	Y	Rhythm groups: a challenge ending in a short rest	§Critic §10 #5 L1883; §C2 L1749
+LEDGER-ENGINE-PAPERS.md:205	Y	Portals switch paths (pipes, moving platforms)	§CP3 crossings L461
+LEDGER-ENGINE-PAPERS.md:207	Y	ORE: chunks placed around the player's possible positions; joining chunks is hard to tune	PARTIAL §placement rule 1 L278-283: kit joins sized to the next move; not placed around simulated positions
+LEDGER-ENGINE-PAPERS.md:208	Y	Adaptive difficulty: help after deaths, slower hazards, continue points	PARTIAL §C10 L1757: a checkpoint right before each hard part, respawn within about 2 s; no adaptive help after deaths
+LEDGER-ENGINE-PAPERS.md:209	Y	Anxiety curve judged on the level without play; curve first	§difficulty dial L626-656
+LEDGER-ENGINE-PAPERS.md:210	Y	Validation: each obstacle passable with timing leniency, plus count of distinct levels	§CP2 L183 (300 ms flick floor); §dial floors L651; §variety gate L30-41
+LEDGER-ENGINE-PAPERS.md:216	Y	Pieces cut from real levels; edge heights drive adjacency; difficulty judged per piece	PARTIAL §CP2 L62-67: kept pieces with entry/exit, moves and gap range; no per-piece difficulty tier
+LEDGER-ENGINE-PAPERS.md:217	Y	Height bands LOW, MID, TOP; only matching labels may touch	§CP3 L251; §placement rule 1 L278
+LEDGER-ENGINE-PAPERS.md:218	Y	Adjacency labels rule out unreachable joins	§placement rule 1 L282-283
+LEDGER-ENGINE-PAPERS.md:220	Y	27 combinations; 12 missing; a missing combination breaks generation; add pieces	MISSING
+LEDGER-ENGINE-PAPERS.md:221	Y	Difficulty v2 counts obstacles; ours should take tier from clumsy trace and bots	PARTIAL §difficulty dial L643-644: risky pieces per burst counted, E[lives] by bots; no per-piece tier
+LEDGER-ENGINE-PAPERS.md:222	Y	Fill missing combinations with new hand-made pieces, never by rerolling	§CP3 L259; §CP2 L88-89, L196-197
+LEDGER-ENGINE-PAPERS.md:224	Y	A pattern may declare several entry heights	§CP2 node ideas L80, L106-107
+LEDGER-ENGINE-PAPERS.md:225	Y	Only 3 all-connector pieces, since more lower variety; cap or vary our apron	CONTRADICTED L503: a 2-3 s Easy breather between every node still stands; L799's fixed Normal pad withdrawn by C2 (L1749)
+LEDGER-ENGINE-PAPERS.md:228	Y	Curve applied after the first piece so the opening position varies	PARTIAL §CP3 node plan L341: n1 draws from a two-idea deck; build order is fixed
+LEDGER-ENGINE-PAPERS.md:230	Y	The curve filters each slot; flat curves keep difficulty while height varies	§difficulty dial L655; §CP3 node jobs L339-351
+LEDGER-ENGINE-PAPERS.md:231	Y	Rising and peak curves; our curve is richer, keep it	§CP3 node plan L339-351; §difficulty dial L655
+LEDGER-ENGINE-PAPERS.md:232	Y	Judge variety and completability, not good or bad; we also judge fun	§variety gate L30-41; §CP3 L263-264
+LEDGER-ENGINE-PAPERS.md:234	Y	Runs stopped short when a combination was missing	PARTIAL §CP3 L259: fails naming the missing piece; no coverage table to prevent it
+LEDGER-ENGINE-PAPERS.md:235	Y	Variety means all pieces used, and how often they repeat	PARTIAL §G #10 L1850; §variety gate L32-35: 'use all the art' is a game-level rule; no all-pieces-used check across rolls
+LEDGER-ENGINE-PAPERS.md:236	Y	Most and least used counts, mean and spread per piece across all rolls	MISSING
+LEDGER-ENGINE-PAPERS.md:237	Y	High spread means hogs and dead pieces; report both	PARTIAL §variety gate L33: hogs via the share cap; dead pieces unreported
+LEDGER-ENGINE-PAPERS.md:238	Y	Check after generating and discard failures; ours builds by construction	§CP3 L259, L513
+LEDGER-ENGINE-PAPERS.md:239	Y	Landing tested against the jump arc	§CP3 rulings L369; §P4 L1137
+LEDGER-ENGINE-PAPERS.md:240	Y	A platform reachable before the arc's peak counts as reachable	PARTIAL §P4 L1137: reach delegated to the shared tracer; the spec is silent on this case
+LEDGER-ENGINE-PAPERS.md:242	Y	Checker tests only the lowest path, so other routes go unjudged	PARTIAL §variety gate L38-39; §G #89 L1854: both roads walkable, Easy high road softened; other gates still judge one route
+LEDGER-ENGINE-PAPERS.md:244	Y	Future: terrain first, then a second pass for enemies	MISSING
+LEDGER-ENGINE-PAPERS.md:245	Y	ORE makes new pieces that WFC combines; patterns generated from bars	PARTIAL §CP3 L390-393: ideas composed of bursts with sizes rolled; no new patterns generated
+LEDGER-ENGINE-PAPERS.md:246	Y	Other games' tile sets; mixing styles	CONTRADICTED L1754: C7 keeps pieces in their world; cross-world sharing only per LABELS.md
+LEDGER-ENGINE-PAPERS.md:247	Y	Adjacency by look for visual cohesion	§coherence L130-131; §placement rule 1 L280
+LEDGER-ENGINE-PAPERS.md:248	Y	Checker gives only false negatives; a gate may only err toward failing	PARTIAL L2093-2095: support.py used as an upper bound (errs toward failing); no general rule that gates may only err toward failing
+LEDGER-ENGINE-PAPERS.md:249	Y	A new game needs its own validity definition and checker	§placement rules L276; §Gates L1612-1620
+LEDGER-ENGINE-PAPERS.md:250	Y	Fun is subjective; only building and playing shows it	§CP3 L263-264; §CP5 L1106-1110
+LEDGER-ENGINE-PAPERS.md:252	Y	Tanagra: reactive planning plus constraint solving, always playable	PARTIAL §CP3 L369; §P4 L1137: shared jump model, no constraint solver
+LEDGER-ENGINE-PAPERS.md:253	Y	Designers replay a level many times before showing anyone	§CP4 pass line L1101
+LEDGER-ENGINE-PAPERS.md:254	Y	A small edit forces wide changes elsewhere; pinned nodes plus local retrace	MISSING
+LEDGER-ENGINE-PAPERS.md:255	Y	Mixed-initiative: alternatives fast, regenerate only chosen parts	MISSING
+LEDGER-ENGINE-PAPERS.md:257	Y	Change a level's pacing without touching geometry	PARTIAL §Design L1120-1121; §profile pace L1218
+LEDGER-ENGINE-PAPERS.md:258	Y	Geometry relations as constraints so no unplayable level is produced	PARTIAL §CP3 L369; §P4 L1137-1139: shared gate functions, no solver
+LEDGER-ENGINE-PAPERS.md:259	Y	Beats are the frequency of player actions and model rhythm and pacing	§Design L1120-1121; §rests L496 (actions a second)
+LEDGER-ENGINE-PAPERS.md:260	Y	Beats are the glue that size and join patterns	PARTIAL §per-roll L2116, L2174; §G #38 L1835: bursts sized by time (5-20 s); joins still by height, not by beat
+LEDGER-ENGINE-PAPERS.md:262	Y	Patterns as behaviours; the simplest span one beat	§CP2 node ideas L74-86
+LEDGER-ENGINE-PAPERS.md:263	Y	Multi-beat patterns with extra rules (equal-height staircase); ours varies by choice	§CP2 L78; §CP3 L240, L393
+LEDGER-ENGINE-PAPERS.md:264	Y	Components carry position and size as constraint variables	PARTIAL §difficulty dial L640-642: gap, rise, landing as shares of gate limits; no solver
+LEDGER-ENGINE-PAPERS.md:265	Y	Pattern length must match its beat's duration under a movement model	§per-roll ranges L2116, L2174; §G #38 L1835
+LEDGER-ENGINE-PAPERS.md:266	Y	Five single-beat and two multi-beat patterns; name our multi-beat patterns	§CP2 L74-86, L102-107, L154-172
+LEDGER-ENGINE-PAPERS.md:268	Y	Gap constraints: zero width means non-zero height and vice versa	MISSING
+LEDGER-ENGINE-PAPERS.md:269	Y	Solver reports back so planning continues; error-steered search	PARTIAL §CP3 L369-370: sized by the gate's functions, planner reports conflicts; no error-steered search named
+LEDGER-ENGINE-PAPERS.md:270	Y	Designer-modified platforms stay while the rest regenerates	MISSING
+R1-shipped-pipelines.md:30	Y	Shipped hybrids use big whole hand-made units; the generator only picks and orders them, never invents geometry.	PARTIAL §CP3 mix rule L232-250: ideas are designed and ordered, but each idea's sizes and heights are rolled (L249-250, L393), not whole hand-made units
+R1-shipped-pipelines.md:39	Y	No unit repeats inside a level, and the save remembers every unit already shown (SMBF, Shovel Knight).	PARTIAL §C6 L1753; ruling 8 L1799: deferred - idea cap 40% kept only if a run beats R1's no-repeat; template ≤2 a stage; no save memory
+R1-shipped-pipelines.md:48	Y	Pool several times bigger than one level's slots, cut per level; count distinct eligible pieces per phase against slots.	PARTIAL §G #7 L1838; §critic ruling 1(b) L1792; C24 L1771: small themed pool per stage, ≥14 section types a world; no distinct-vs-slots count
+R1-shipped-pipelines.md:60	Y	Difficulty is a cadence of rated units that ramps and cools at every scale, inside each node and across the stage.	PARTIAL §critic ruling 4 L1795; §M1 L2040: tension placement and four steps per stage; no per-idea rated difficulty, no in-node cadence
+R1-shipped-pipelines.md:68	Y	Teach in three steps: exposition, a safe blocking validation, then challenge.	PARTIAL §M1 L2040; §G #32 L1834: introduce/develop/twist/master, part 1 safe; validation still not blocking
+R1-shipped-pipelines.md:74	Y	Every stage carries one named surprise, unique across the game, passing Wonder's three tests.	PARTIAL §stage profile L1213, L1222; §M8 L2050: one moment per stage, a trick shown once; no Wonder tests, no game-wide uniqueness gate
+R1-shipped-pipelines.md:80	Y	Grey layout first, judged, then art; keep the edit-to-play loop short.	§CP3 L266-267; §CP5 L1107-1110
+R1-shipped-pipelines.md:86	Y	Finishing is a list of passes, each looking at the whole game for one thing.	§polish pass L689-733; §whole-game plan E L1612-1620
+R1-shipped-pipelines.md:95	Y	Build each world's first stage last, and re-grade early stages after later ones improve.	CONTRADICTED L1090-1091: 1-1 is built second, right after 1-5, and 1-2 to 1-4 wait on it; no re-grade of earlier stages
+R1-shipped-pipelines.md:508	Y	Hard per-stage no-repeat cap by construction; refuse and name missing pieces; length from units, never a clock.	PARTIAL §C6 L1753; ruling 8 L1799; P5 L2001: template ≤2 a stage, length from units; idea 40% cap deferred to a run
+R1-shipped-pipelines.md:514	Y	A save-wide ledger: a unit seen anywhere in the save leaves the bag until the world's pool is spent.	PARTIAL §C14 L1761: no template in more than 3 of a world's stages; no save-wide ledger
+R1-shipped-pipelines.md:517	Y	Rarity and position tags on units (Spelunky 2 !rare 5%, !hard only in later stages).	PARTIAL §World 1 piece labels L1391, L1394-1406: 'allowed in' stage gating via teaching; no rarity tier
+R1-shipped-pipelines.md:519	Y	Ubisoft kit: five-value atomic parameters, safe blocking validation, subtractive variety, random variety matrix.	PARTIAL §difficulty dial L638-648; §1-5 node plan L342: numeric dials and expose/validate; no subtractive variety, no random variety matrix
+R1-shipped-pipelines.md:522	Y	One named surprise per stage with Wonder's three tests, unique across the game, as a 'signature' field.	PARTIAL §stage profile L1213, L1222: 'moment' and 'owns' fields; no three tests, no game-wide uniqueness gate
+R1-shipped-pipelines.md:524	Y	An open grade board per stage, re-graded after later stages improve.	MISSING
+R1-shipped-pipelines.md:527	Y	Shovel Knight stage contract: ~26 rooms + 6 secrets, 5 new enemies + 5 objects, no unitaskers, game-wide cooldown list.	PARTIAL §M2 L2041; §M3 L2045: 2-4 new pieces a stage (Yacht Club), signature pieces return; no cooldown list, no secrets count
+R1-shipped-pipelines.md:531	Y	For a one-thumb game, advanced skill comes from level objects at a place, not input combinations.	PARTIAL §moves L1280-1299: many moves are objects (mushroom, rope, liana, warm air); no rule that advanced moves come from props
+R1-shipped-pipelines.md:533	Y	Rate unit difficulty from bots' measured deaths and time, not the author's guess.	PARTIAL §C1 L1748: deferred - difficulty is landing window plus avoided lines, numbers OPEN; no per-idea rating from play
+R1-shipped-pipelines.md:536	Y	Grey approval stamp before any art is chosen.	PARTIAL §CP5 L1107-1110: grey-box before art; but L1195-1196 holds 1-1 from Matt until its squirrel art draws
+R1-shipped-pipelines.md:543	Y	Avoid shuffling prefab rooms with sockets and no designed path.	§Node plan L342; §How a stage is made L1026
+R1-shipped-pipelines.md:546	Y	Never re-roll the level when the player dies; keep the layout until cleared.	MISSING
+R1-shipped-pipelines.md:548	Y	Neighbouring units with mismatched difficulty make spikes; rate from play and smooth the cadence at joins.	PARTIAL §G #24 L1855: gap plus enemy on its landing capped as a pair; neighbouring bursts' difficulty never compared
+R1-shipped-pipelines.md:550	Y	Same unit many times because length is filled to a clock from too few units; fix unit count, time follows.	PARTIAL §P5 L2001; §G #38 L1835; L2188: units set length, bursts by time, burst counts dropped; ideas may still repeat (40% deferred)
+R1-shipped-pipelines.md:553	Y	A flat difficulty after the opening; every shipped method ramps and cools.	PARTIAL §critic ruling 4 L1795; §M1 L2040: tension and dense finale; no measured per-node difficulty
+R1-shipped-pipelines.md:554	Y	A sequel or world that looks the same in a screenshot; each world needs its own tiles and ingredients.	§C7 L1754; §G #133 L1840
+R1-shipped-pipelines.md:556	Y	Do not generate enemies or locomotion; keep creatures hand-made with readable tells.	§animals L219; §never-packed L541-542
+R1-shipped-pipelines.md:557	Y	Designers beat only their own levels; use kid and first-timer bots and outside play first.	§animals L221; §difficulty dial L651-652; §How a stage is made L1031-1032
+R1-shipped-pipelines.md:561	Y	Tools that make small layout fixes expensive; keep units as data placed relative to anchors.	§Engine first L1204-1206; §F L1626
+R1-shipped-pipelines.md:564	Y	Generating does not save effort unless units are made once and used without repeats.	PARTIAL §CP3 L267; §CP4 L1103: 1-hour-a-stage target; but units repeat inside a stage (L237-242)
+R1-shipped-pipelines.md:567	Y	Running out of ideas with the same pieces; variety needs new pieces (N++ new enemies).	§log family L558-580; §ground family L617-620; §never-packed L530-553
+R1-shipped-pipelines.md:568	Y	A long stage of units loses an earned finish; end on a hand-made set piece or combined test.	§critic ruling 4 L1795
+R1-shipped-pipelines.md:572	Y	Do not make the music's beat the frame of every stage; shipped games used rhythm as one stage's twist.	§Design L1120-1121
+R2-academic-pcg.md:36	Y	Variety is vocabulary, not randomness: draw each beat from a grammar of kinds; gate counts kinds, not pixels.	§C24 L1771
+R2-academic-pcg.md:48	Y	Build by construction and keep checks as the backstop.	§Planner amendments P4 L1137-1139; §CP3 rules L513
+R2-academic-pcg.md:57	Y	Choose the pattern first, solve its numbers second, and let numbers flow (Tanagra).	§CP3 mix rule L232, L249-250; §1-5 node plan L336-337
+R2-academic-pcg.md:64	Y	Local grammars overgenerate; global intent needs critics; tagged per-region intent needs search, not more rolls.	PARTIAL §C25 L1772; §critic ruling 1 L1792: critic pass and era/lookalike gates; no search for per-node intent
+R2-academic-pcg.md:72	Y	A mechanic must be required: the bot without it must fail the teach, the full bot pass.	PARTIAL §placement rule 4 L311-312; §move ladder L1311, L1317: limited agent only for hard collectibles; 'required' via skills.ts; no teach-node must-fail gate
+R2-academic-pcg.md:80	Y	Difficulty and pacing are curves built to a real arc with a late peak, not a constant or sawtooth.	PARTIAL §critic ruling 4 L1795: tension placement, dense finale at the exit (late peak); no target tension curve check
+R2-academic-pcg.md:87	Y	Mixed-initiative beats batch generation; keep values as last time, relax only if impossible.	PARTIAL §How a stage is made L1026-1034: human node plan plus generator loop; no stability under edits
+R2-academic-pcg.md:93	Y	Player studies punished hard levels; beat-locking every take-off feels monotonous.	§difficulty dial L651; §Design L1120-1121; §rests L504-505
+R2-academic-pcg.md:516	Y	One canopy rhythm admits about 3 million valid geometries; the rhythm tier is not short of options.	PARTIAL §per-roll L2102-2130: rolls now vary numbers (hop, gap, rise families); node geometry space still unmeasured
+R2-academic-pcg.md:518	Y	On canopy nodes the tracer rejects nothing; the quality bottleneck is what the palette offers.	§log family L558-580; §ground family L617-620
+R2-academic-pcg.md:522	Y	The space is huge in pixels and tiny in kinds; generator varies numbers, player perceives kinds.	§C24 L1771
+R2-academic-pcg.md:527	Y	fitSteps biases climb; sample uniformly (count-weighted) from the valid space.	PARTIAL §per-roll L2113, L2169: families drawn by measured share; not count-weighted sampling of the valid space
+R2-academic-pcg.md:532	Y	Floor rejections are one predictable rule (MIN_GAP); filter when the candidate is made, not by a full trace.	§CP3 rulings L369; §Planner amendments P4 L1137-1139
+R2-academic-pcg.md:536	Y	Search is not faster today, but becomes the right tool once constraints get tight (pins, rise targets, kind quotas).	MISSING
+R2-academic-pcg.md:654	Y	Kind grammar per beat with a kind-count gate per node and an edit-distance floor between same-tag nodes.	PARTIAL §critic ruling 4 L1795; C24 L1771: plan shape must differ from neighbour, ≥5 themes a stage; no per-node kind count or same-tag distance
+R2-academic-pcg.md:658	Y	A wait verb in the bars (stomper, moving platform): beats that make Pokey stop.	PARTIAL §critic ruling 5 L1796: deferred - rhythm names incl. wait-and-go get a definition and measure, or are struck; tracer still hop/jump/double
+R2-academic-pcg.md:663	Y	Limited-agent gate: bot with the taught move switched off must fail the teach node.	PARTIAL §placement rule 4 L311-312: limited agent used for hard collectibles only; no teach-node gate
+R2-academic-pcg.md:671	Y	Measure each node's space (count, valid share, kinds) before rolling.	MISSING
+R2-academic-pcg.md:680	Y	Stability under edits: other nodes keep solved values unless no solution exists.	MISSING
+R2-academic-pcg.md:684	Y	Rhythm of the rhythm (compound patterns) and designed cadence kinds at each seam, counted by the gate.	PARTIAL §deep pass 5 L1883; L1807: a group may repeat once before a rest; no four equal take-off intervals; seams one join type
+R2-academic-pcg.md:689	Y	Quality-diversity selection: best roll per niche; ask for empty cells; blocklisted cells become piece-list items.	PARTIAL §CP3 L259; §New art L586: gaps become piece or picture lists; no niche grid or QD selection
+R2-academic-pcg.md:694	Y	Compression distance of kind strings across different stages of one world.	§critic ruling 1 L1792; §C14 L1761
+R2-academic-pcg.md:697	Y	Play-test protocol: play several levels from one generator; four-choice answer.	PARTIAL §CP4 L1092-1093; §CP5 L1107-1108: side by side against the old stage; no several-in-order play, no four-choice answer
+R2-academic-pcg.md:704	Y	Seed the search with nodes that already passed QA.	MISSING
+R2-academic-pcg.md:707	Y	Place take-offs on the stage tune's own note onsets, so each stage's rhythm differs with its tune.	CONTRADICTED L1120: "Rhythm: the player's rhythm, not the song (Matt, 11-04)"
+R3-fun-by-math.md:223	Y	Standard jump unit: Pokey rises 103 px (2.15 bodies), carries 185 px at full run	§Variety gate L37
+R3-fun-by-math.md:265	Y	Fixed 1.0 s rest pad splits every phrase; a rest must be relative to local beat (2x median interval)	§C2 L1749; §G #38 L1835
+R3-fun-by-math.md:272	Y	Normal plays at Easy density; Easy same tempo as Normal; density and difficulty are separate dials	§Rests and breathers L505,L496,L508; §Easy rulings L801-803
+R3-fun-by-math.md:285	Y	Tools disagree on what a double jump is; doubles counted as singles in move strings	PARTIAL §How a stage is made L1055, §Planner's amendments L1137: jumps judged single-before/double-after teach and one jump model; no single 'needs a double' rule across tracer, inspector and move counts
+R3-fun-by-math.md:294	Y	Per-jump survival floors do not bound a stage; gate the stage sum E[lives]	§C16 L1763
+R3-fun-by-math.md:300	Y	Easy can be harder than Normal on bots; a 6% kid jump costs only retries, unseen	PARTIAL §C5 L1752; §G #89 L1854: Easy one tier softer, slips cost a fall to a catch; no check Easy never harder than Normal
+R3-fun-by-math.md:305	Y	Adult bot thumb (30 ms) steadier than any measured human (36-61 ms); use about 45 ms	PARTIAL §G #69 L1845; C16 L1763: deferred - bots calibrated on touch recordings first; no 45 ms or human-range number
+R3-fun-by-math.md:311	Y	Gemini notes misstate Smith's leniency and linearity; D_sim<0.35 has no source	CONTRADICTED L1792, L2121: spec now gates on diversity ≥0.35, cited to SR §2; R3 finds the 0.35 unsourced
+R3-fun-by-math.md:325	Y	Three different dead-walk limits: 4 s, 2.0/3.0 s, code 2.5 s	PARTIAL L510; L2015-2016: 2.5 s line stays; 2.0/3.0 s marked Gemini-only estimates for bot calibration; no single number
+R3-fun-by-math.md:329	Y	Move-order cosine sits at floor; Matt's sameness lives in tempo, leniency and look	§Per-roll ranges L2102-2116; §C14 L1761
+R3-fun-by-math.md:337	Y	1-1 and 1-4 barely change between rolls (2 and 7 distinct strings of 16)	§critic ruling 1 L1792; §G #86 L1853; L2121
+R3-fun-by-math.md:342	Y	Jump bots and first-timer bot disagree on hard stages; no check combines them	PARTIAL §The difficulty dial L644, §CP3 READY L906-908: both bots run (floors, shrine 4/4) but no combined difficulty number; 'bots judge it' names no bot
+R3-fun-by-math.md:595	Y	Stage survival budget E[lives]=sum(1-s_i) from bots, ramped world by world	§C16 L1763
+R3-fun-by-math.md:597	Y	Teach, first test and practice at different success targets: 0.97 / 0.85 / 0.95	PARTIAL §The difficulty dial L652: teach at miss <=0.01 (stricter); no first-test 0.85 or practice 0.95 target; per-jump floors 70%/85% instead (L651)
+R3-fun-by-math.md:599	Y	Simulated player population (skill, persistence, boredom, learning): share who quit per stage	MISSING
+R3-fun-by-math.md:601	Y	Rate stages like chess players (Glicko-2, phantom matches) to get world difficulty bands	MISSING
+R3-fun-by-math.md:603	Y	Frustration meter: first-timer stuck share gated per setting (<=0.05 Easy, <=0.10 Normal)	PARTIAL §CP3 rulings L433, §Easy rulings L804-805: bot loops and fork stalls fixed case by case; no stuck-share line per setting
+R3-fun-by-math.md:607	Y	Novelty band [L,U] from Matt's favourites, not just a similarity cap; too new = odd connections	PARTIAL §M2 L2041; §variety gate L35: 2-4 new pieces, ≤1 new concept a stage; band from shipped games, not Matt's favourites
+R3-fun-by-math.md:609	Y	Length-calibrated NCD: self 0.09, shuffle 0.62 at our lengths; judge inside that range	PARTIAL §critic ruling 1 L1792: roll and stage sequence distance via era and 3-gram cosine; not length-calibrated NCD
+R3-fun-by-math.md:610	Y	Rhythm regularity by nPVI (regular <20, swing 45-75) and a relative group boundary	PARTIAL §critic ruling 5 L1796; L1807: deferred - rhythm names get a measure or are struck; no nPVI, no relative boundary
+R3-fun-by-math.md:611	Y	Rank, don't rate: Matt picks A or B; Kendall tau tells which formula predicts him	PARTIAL §CP5 L1107, §CP4 1-1 L1092: side-by-side picks used; no Kendall tau of the gate formulas against Matt's ranking
+R3-fun-by-math.md:613	Y	Cause-chain moves (shell kick) were the strongest fun correlate; boa roll is ours	§CP2 L109
+R3-fun-by-math.md:615	Y	Knob elasticities: measured change in bot success per px or speed unit, hit targets by arithmetic	MISSING
+R3-fun-by-math.md:617	Y	Bot timing error should worsen with hazard speed (Isaksen 35.9 to 61.1 ms)	MISSING
+R4-mobile-and-architecture.md:28	Y	Traced jumps carry ~no risk; difficulty must be placed on purpose; need a risk budget per node	PARTIAL §C1 L1748; C16 L1763: deferred - difficulty is landing window plus avoided lines (cites R4:28), numbers OPEN; no per-node falls
+R4-mobile-and-architecture.md:40	Y	Generator must report why it rejects rolls, by rule; 94% of 1-2's tries one rule	PARTIAL §Planner's amendments L1137-1139, §CP3 mix rule L259: shared predicate, 'can't reach' rejections = 0, failures name the missing piece; no per-rule tally or never-laid-option gate
+R4-mobile-and-architecture.md:51	Y	Variety at scale from many small authored pieces, themed pools, any piece fits any neighbour	PARTIAL §C24 L1771: themed per-world pools with a floor; cross-world sharing withdrawn (C7)
+R4-mobile-and-architecture.md:76	Y	One input, many verbs: the level gives the move; a new mechanic per batch; touch rules belong to the level	PARTIAL §move ladder L112-116, §The whole-game plan B L1495, §Stage profile L1220: verbs come from pieces and one new move per stage; touch rules absent from profile
+R4-mobile-and-architecture.md:87	Y	Test pyramid: many fast tests, few stage tests, quarantine flaky ones; proposer untested	PARTIAL §Planner's amendments L1136-1139: one jump model removes proposer drift; no sub-second per-node test tier or flaky-gate policy
+R4-mobile-and-architecture.md:98	Y	Calibrate bot noise on real recordings (King's regression) before trusting bot numbers	§G #69 L1845; §C16 L1763
+R4-mobile-and-architecture.md:107	Y	Level data small, schema'd, separate from the code that reads it	§Engine first: the stage-profile format L1202-1231; §Element table L1235-1259; §The whole-game plan L1460
+R4-mobile-and-architecture.md:547	Y	Rejection report plus coverage gate: fail if one rule eats >half the tries or an option is laid 0 times	PARTIAL §G #10 L1850; §P4 L1137-1139: use-all-art rule; no gate that rolls lay every option or rule tally
+R4-mobile-and-architecture.md:551	Y	One reach predicate shared by proposer and verifier, with a property test	§Planner's amendments L1136-1139; §CP3 rulings L369
+R4-mobile-and-architecture.md:559	Y	Fit first-timer thumb and hold to testers' recorded touches; report the fit	PARTIAL §G #69 L1845: calibration on touch recordings required; no fit reported
+R4-mobile-and-architecture.md:563	Y	Touch rules (gesture constants, FORGIVE) pinned into each roll's manifest; a control tweak is a level change	MISSING
+R4-mobile-and-architecture.md:567	Y	Plot where the bots end: one strip image per stage of death and stall x	MISSING
+R4-mobile-and-architecture.md:570	Y	Layer-locked rerolls (keep nodes, reroll steps; keep steps, reroll surfaces) via per-node RNG streams	MISSING
+R4-mobile-and-architecture.md:574	Y	Same ground, second goal, said plainly (colour coins, Invasion, three fixed goals)	PARTIAL §The goal L360-361: second road's marks as replay reward; no second-goal pass over a beaten roll
+R4-mobile-and-architecture.md:577	Y	Themed pools per stage (two hazards, one surface family), not one grab bag	§CP3 design L336-337; §Matt's three L1373-1380; §shared library L128-132
+R4-mobile-and-architecture.md:580	Y	Flaky-gate policy: retry once, weekly top-failing list, quarantine with owner and deadline	MISSING
+R4-mobile-and-architecture.md:583	Y	Readable stage catalog per layout checked in and diffed in CI (Brogue seed catalog)	PARTIAL §critic ruling 6 L1797; L1345, L1464: per-world fingerprint locks from main; no readable per-layout catalog diff
+GEMINI-PCG-RESEARCH.md:8	Y	Offline seed curation: generate many layouts per stage, score them, ship the best	PARTIAL §critic ruling 5 L1796: gen2 keeps curated seeds for its 23 stages; mixer has no curation (never a reroll)
+GEMINI-PCG-RESEARCH.md:9	Y	Dead-time limit about 2 s Normal / 3 s Easy; only jumps, timing, puzzles count; petal arc half; short rest after each burst	PARTIAL L510; L2015-2016: 2.5 s stays; 2.0/3.0 s kept as Gemini-only estimates for bot calibration; rest per burst relative (C2)
+GEMINI-PCG-RESEARCH.md:11	Y	Sameness: weighted action strings; compare every 20 s stretch against the world's other stages; reject repeats	§critic ruling 1 L1792
+GEMINI-PCG-RESEARCH.md:12	Y	Noisy-thumb bots (drift, late lift-off, short flicks, thumb switch) find death hotspots; kid latency N(+90,65 ms)	§C16 L1763
+GEMINI-PCG-RESEARCH.md:14	Y	First-lesson rooms: no enemies, no deadly fall, can't be skipped, the room shows the idea by itself first	PARTIAL §G #32 L1834; §M1 L2040: part 1 safe, miss on solid ground; 'can't be skipped' and self-demonstration absent
+GEMINI-PCG-RESEARCH.md:15	Y	Expressive range: roll ~200 per stage, score linearity, leniency, density, path, action mix; check rolls differ (diversity at least 0.35)	§critic ruling 1 L1792; §G #86 L1853; L2121
+GEMINI-PCG-RESEARCH.md:23	Y	Variety cooldown: the same piece not used twice within two stages or twice in a world run	PARTIAL §C14 L1761; §G #34 L1839: template in ≤3 of a world's stages, deck locked 4 draws; no two-stage piece memory
+GEMINI-PCG-RESEARCH.md:33	Y	Kishotenketsu: introduce a mechanic safely, develop it, twist it, end with a mastery climax	§Move ladder M1 L2040
+GEMINI-PCG-RESEARCH.md:39	Y	Platforms rooted in biome logic; each level one focal twist that never overstays; one signature level per world	§element table L1235-1259; §polish P-2 L692; §stage profile L1213,L1222; §B L1497
+GEMINI-PCG-RESEARCH.md:47	Y	Spelunky solution path of templates matching exits with rolled sub-blocks; Dead Cells concept graph before rooms	§CP3 mix rule L235; §L237
+GEMINI-PCG-RESEARCH.md:57	Y	Shuffle bags for chunks/props; Poisson minimum and maximum spacing; parametric sockets	PARTIAL §G #34 L1839; L313-317: deck locked out 4 draws after laid; no same-kind minimum distance
+GEMINI-PCG-RESEARCH.md:64	Y	Guarantee solvability: kinematic reach with a margin, then a path search using only unlocked moves	§P4 L1137-1139; §variety gate L39; L906; §CP4 L1055; §E gates L1614
+GEMINI-PCG-RESEARCH.md:84	Y	Rhythm groups measured in time; sawtooth tension curve over chunks; props spawned as linked pairs	PARTIAL §G #38 L1835; §critic ruling 4 L1795: groups by time, tension placement; no per-node tension target, no linked props
+GEMINI-PCG-RESEARCH.md:97	Y	Difficulty D(W,L) per stage; a world's first level a little below the last world's end; Easy modifier	PARTIAL §C17 L1765: first stage slightly below previous world's end now stated; dial numbers re-run (deferred), C1 OPEN
+GEMINI-PCG-RESEARCH.md:105	Y	Jump distance margin: Easy at most 65%, Normal at most 82% of the physical jump limit	§P8 L2004; §G #65 L1843; L2224
+GEMINI-PCG-RESEARCH.md:106	Y	Easy: landing pads two tiles wider than Normal	§C4 L1751
+GEMINI-PCG-RESEARCH.md:107	Y	Easy: bottomless pits replaced with bounce nets or one-heart water/vine rescue	PARTIAL §C5 L1752: an Easy slip costs a fall to a catch, never a life; Easy E[lives] ≤0.3 (L1763) still allows life loss
+GEMINI-PCG-RESEARCH.md:108	Y	Easy: 60% enemy budget, slower patrols and projectiles	§difficulty dial L645,L647
+GEMINI-PCG-RESEARCH.md:109	Y	Quotas: Easy one-step puzzles and 70% collection; Normal multi-step and 100%	PARTIAL §G #36 L1848: Normal 75-87.5%; Easy goal deferred to the kid bot; no puzzle-step rule
+GEMINI-PCG-RESEARCH.md:111	Y	World Director: 9-card mission deck, each stage a distinct archetype with its own graph and win condition	PARTIAL §critic ruling 4 L1795; L1806: slot, map, tension fields, shape differs from neighbour; no win-condition archetype set
+GEMINI-PCG-RESEARCH.md:115	Y	Level 1 onboarding: linear, safe lower paths; introduces the world's new move and creature safely	PARTIAL §critic ruling 4 L1795; §M1 L2040: X-1 arrival slot; no rule that each world's first stage teaches its move
+GEMINI-PCG-RESEARCH.md:116	Y	Level 2 collection quest: multi-tier layout with N target items across micro-branches	PARTIAL §marks L354-361; §stage profile L1228: 1-5 relic hunt from stagePlan; no collection-stage archetype rule
+GEMINI-PCG-RESEARCH.md:117	Y	Level 3 puzzle: gated rooms with lock-and-key or switch-and-door dependency graphs	PARTIAL §CP3 rulings L375-377: push block deferred to a puzzle room in CP4; no gated-room graph
+GEMINI-PCG-RESEARCH.md:118	Y	Level 4 combat/gauntlet: arena chunks between traversal; gates lock until creatures cleared or bypassed	MISSING
+GEMINI-PCG-RESEARCH.md:119	Y	Level 5 world-unique signature level with its own directional generator rule	§whole-game plan L1462; §B L1497-1506
+GEMINI-PCG-RESEARCH.md:120	Y	Level 6 rescue: side chambers with caged critters guarded by puzzles or elites	PARTIAL §B L1498: cage stages 2-3 and 2-8 kept as built; no rescue archetype for the engine
+GEMINI-PCG-RESEARCH.md:122	Y	Level 8 hybrid puzzle-combat: world props used against creatures	PARTIAL §move ladder L1321; §C L1569-1583: joins two moves per world; no prop-plus-creature beat
+GEMINI-PCG-RESEARCH.md:123	Y	Level 9 mastery gauntlet testing every prop, enemy and move of the world before the finale	MISSING
+GEMINI-PCG-RESEARCH.md:126	Y	Data formats: world manifest (moves, prop pairs, creatures by terrain) and chunk templates (connectors, phase, difficulty, sockets)	§stage profile L1208-1233; §element table L1235-1259; §B L1495; §labels L1391-1406
+GEMINI-PCG-RESEARCH.md:177	Y	Six-pass pipeline: budget, mission graph, chunk stitching with history cooldown, sockets, validate with local repair, dress	PARTIAL §G #34 L1839; §critic ruling 5 L1796: deck cooldown, gen2 kept as builder; mixer has no local repair
+GEMINI-PCG-RESEARCH.md:226	Y	Puzzle validation by causal graphs and pre-validated rooms with symbolic zones; softlock respawn	PARTIAL §critic ruling 6 L1797; L1809: puzzle validator is a lock gate; no softlock rule
+GEMINI-PCG-RESEARCH.md:240	Y	Few templates suffice: 28-35 chunks per world plus sub-blocks, probabilistic props, mirroring, 3 connector heights, cooldown	PARTIAL C24 L1771: ≥14 section types a world (under 28-35); no mirroring
+GEMINI-PCG-RESEARCH.md:257	Y	Expressive range analysis: many headless rolls scored and plotted; reject a level with D_sim under 0.35 to any same-world level	§critic ruling 1 L1792
+GEMINI-PCG-RESEARCH.md:277	Y	Launchpad rhythm groups: timed bursts with rest pads; inject a beat when idle too long; force rest after bursts	§C2 L1749; §Per-roll bursts L2116; §Critic §10 #5 L1883
+GEMINI-PCG-RESEARCH.md:291	Y	Max eventless walk: Easy 3.0 s, Normal 2.0 s, chase 1.2 s	PARTIAL L510; L2015: 2.5 s line; 2.0/3.0 s only as estimates to calibrate; chase 1.2 s absent
+GEMINI-PCG-RESEARCH.md:293	Y	Rest pads between bursts: Easy 2.0-2.5 s, Normal 1.0-1.2 s, chase 0.8 s	PARTIAL §C2 L1749; §G #38 L1835; §G #83 L1836: rest ≥1.0 s Normal / Easy 2.0-2.5 s target; chase absent
+GEMINI-PCG-RESEARCH.md:311	Y	Teaching: first appearance never left to random; slot-1 teach node; zero lethal, unskippable, self-demonstrating, source and receptor co-visible	PARTIAL §M1 L2040; §G #32 L1834; L739: teach-first, safe part 1; mandatory gate, micro-cue, co-visibility absent
+GEMINI-PCG-RESEARCH.md:324	Y	Story in procedural games: anchor rooms at stage start and end, landmark chunks, three visual sub-acts per world	PARTIAL §CP3 mix rule L233; §stage profile L1226-1229; L997: per-stage anchors and light; no world sub-act progression
+GEMINI-PCG-RESEARCH.md:338	Y	Pre-flight difficulty: score each jump by distance, landing tightness, timing overlap; then noisy-bot runs	§difficulty dial L638-656
+GEMINI-PCG-RESEARCH.md:370	Y	Peak consecutive stress per rhythm group: Easy 2.5, Normal 5.5; else insert a rest or checkpoint	PARTIAL §G #24 L1855: gap and enemy risk on one landing summed and capped; no per-group stress sum
+GEMINI-PCG-RESEARCH.md:372	Y	Backtracking ratio: Easy 1.0-1.25, Normal 1.15-1.60	PARTIAL §CP3 ruling (i) L826-827: marks placed so no route doubles back; no ratio measured
+GEMINI-PCG-RESEARCH.md:380	Y	Free-form pixel chunks: entry/exit anchors, joins from the jump envelope, vertical corridor clamp, surface-bound sockets	§CP3 mix rule L251; §placement rule 1 L278-283; L369; L378; §stage profile L1214
+GEMINI-PCG-RESEARCH.md:413	Y	Token weight: flat walk W 0.2	PARTIAL §critic ruling 1 L1792: weights now feed cross-stage 3-gram cosine (lookalike.ts); weight value not stated in spec
+GEMINI-PCG-RESEARCH.md:414	Y	Token weight: small hop h 0.5	PARTIAL §critic ruling 1 L1792: weights now feed cross-stage 3-gram cosine (lookalike.ts); weight value not stated in spec
+GEMINI-PCG-RESEARCH.md:415	Y	Token weight: precision gap jump J 1.0	PARTIAL §critic ruling 1 L1792: weights now feed cross-stage 3-gram cosine (lookalike.ts); weight value not stated in spec
+GEMINI-PCG-RESEARCH.md:417	Y	Token weight: creature dodge, stomp or bait C 2.2	PARTIAL §critic ruling 1 L1792: weights now feed cross-stage 3-gram cosine (lookalike.ts); weight value not stated in spec
+GEMINI-PCG-RESEARCH.md:418	Y	Token weight: carry or throw object P 2.8	PARTIAL §critic ruling 1 L1792: weights now feed cross-stage 3-gram cosine (lookalike.ts); weight value not stated in spec
+GEMINI-PCG-RESEARCH.md:419	Y	Token weight: trigger mechanism (seesaw, winch, shutter) S 3.0	MISSING
+GEMINI-PCG-RESEARCH.md:436	Y	Touch noisy bot: thumb drift, late lift-off overshoot, 8% short hop, thumb-swap gap	§CP2 L215,L227; §P3 L1135; §dial L651
+GEMINI-PCG-RESEARCH.md:458	Y	Dead time: only real input actions count as beats; flat petals 0, petal arc over a gap 0.5	§Rests L498,L510; L752
+GEMINI-PCG-RESEARCH.md:518	Y	Puzzle chunks in a 500 x 750 px diagonal/vertical box that fits both orientations	MISSING
+GEMINI-LEDGER.md:14	Y	A1 Kishotenketsu per stage (Ki/Sho/Ten/Ketsu), checked by the inspector's tension curve	§move ladder L119; §CP3 design L339-351; L262,L494
+GEMINI-LEDGER.md:15	Y	A2 Biome logic: platforms are branches, logs, slabs, never abstract blocks	§polish P-1 L690; P-2 L692; §element table L1235-1259
+GEMINI-LEDGER.md:16	Y	A3 One focal twist per stage; one signature stage per world	§stage profile L1213,L1222; §B L1497
+GEMINI-LEDGER.md:18	Y	A5 Spelunky/Dead Cells templates and rolled sub-blocks; hand stages' rolls 0.87-1.00 alike	§CP3 mix rule L235; §L237
+GEMINI-LEDGER.md:19	Y	A6 Rhythm groups and sawtooth tension curve measured by pacing.ts	§Rests L490-511; §CP3 L262
+GEMINI-LEDGER.md:20	Y	A7 Linked pairs: never spawn a tool without its receptor nearby	PARTIAL §CP3 rulings L375-377: only via a wrapped puzzle room in CP4; the mixer places no props
+GEMINI-LEDGER.md:33	Y	C1 Shuffle bags instead of plain random for pieces and props	§CP3 mix rule L249-250; §CP3 design L336-337
+GEMINI-LEDGER.md:34	Y	C2 Poisson spacing: minimum gap between same-kind pieces, maximum gap with nothing	PARTIAL §G #34 L1839; L397; L313-317: deck locked 4 draws; no same-kind minimum distance
+GEMINI-LEDGER.md:35	Y	C3 Sockets / section versions per stage; 200-roll alike 0.61-0.94 measured	§G #86 L1853; §per-roll L2102-2130, L2121
+GEMINI-LEDGER.md:36	Y	C4 Cooldown: no chunk within 2 levels, no sub-block twice a world; next roll avoids the last one seen	PARTIAL §C14 L1761; §G #34 L1839; §critic ruling 6 L1797: ≤3 stages a template, deck cooldown, replay layout test; no 2-stage chunk cooldown
+GEMINI-LEDGER.md:37	Y	C5 Expressive range analysis: 200-1,000 rolls, heatmaps, diversity D_sim at least 0.35 (era.ts)	§critic ruling 1 L1792; §G #86 L1853
+GEMINI-LEDGER.md:38	Y	C6 Weighted action strings (W 0.2 ... S 3) in beats.ts	§critic ruling 1 L1792
+GEMINI-LEDGER.md:40	Y	C8 Horizontal mirroring of rooms (or flipping piece order)	MISSING
+GEMINI-LEDGER.md:41	Y	C9 Standard connector heights / relative anchor frames with jump-sized joins	§CP3 mix rule L251; §placement rule 1 L278-283
+GEMINI-LEDGER.md:42	Y	C10 Offline seed curation: score thousands of seeds, ship the best	PARTIAL §critic ruling 5 L1796: gen2 keeps curated seeds; mixer requires all rolls to pass
+GEMINI-LEDGER.md:48	Y	D1 Kinematic reachability from the jump physics	§P4 L1137-1139; L369
+GEMINI-LEDGER.md:49	Y	D2 Per-difficulty jump margins (65% Easy, 82% Normal)	PARTIAL §Pacing P8 L2004: Normal gaps ≤0.8 true max; no Easy 65% margin
+GEMINI-LEDGER.md:50	Y	D3 Full path search before play; local self-repair of a failing jump	PARTIAL §P4 L1137; §variety gate L39: reach model and prover; no self-repair, a node fails (L259)
+GEMINI-LEDGER.md:51	Y	D4 Puzzles checked as symbolic zones (puzzleCheck.ts)	PARTIAL §critic ruling 6 L1797; L1809: the puzzle validator named as a lock gate
+GEMINI-LEDGER.md:52	Y	D5 Softlock guarantee: a lost item respawns at its source	MISSING
+GEMINI-LEDGER.md:53	Y	D6 Sockets bound to a platform id plus position along it plus offset	PARTIAL §polish P-5 L703; §element table L1254: markers sit on standable tops; no along-surface binding stated
+GEMINI-LEDGER.md:59	Y	E1 Only real actions count as beats; flat petals 0; petal arc over a gap 0.5	§Rests L498,L510; L752
+GEMINI-LEDGER.md:61	Y	E3 Action density 0.75-1.15 Normal, 0.35-0.55 Easy	PARTIAL §C18 L1779: Easy 0.35-0.55 restored and enforced; Normal not judged on density (L801-803)
+GEMINI-LEDGER.md:68	Y	F1 Same layout, different rules per difficulty: margins, widths, hazards, enemy budget, quotas	PARTIAL §Easy rise cap L179; §dial L638-648: rules per setting; Easy also drops canopies and bursts (L796,L811), so its layout differs
+GEMINI-LEDGER.md:69	Y	F2 Difficulty score D(world, stage) with an in-world ramp; bands.ts 0-100 score and flags	PARTIAL §critic ruling 1 L1792; §C1 L1748: bands.ts imported; difficulty numbers deferred to a bands.ts run
+GEMINI-LEDGER.md:70	Y	F3 Noisy-thumb kid and adult bots; survival 85% Easy / 70% Normal per jump	§dial L651; §CP2 L221; L906
+GEMINI-LEDGER.md:71	Y	F4 Touch failure modes (drift, lift-off, short hop, thumb swap) in the first-timer bot	§CP2 L215,L227; §P3 L1135
+GEMINI-LEDGER.md:74	Y	F7 First lesson rooms: zero lethal, unskippable, self-showing; source and receptor within 8 tiles	PARTIAL §CP2 L218; §CP3 L342; §dial L652: zero-lethal teach; unskippable, self-showing and co-visibility absent
+GEMINI-LEDGER.md:87	Y	G8 No Easy gap may need a full-hold jump (easyHoldCheck)	§CP3 rulings L369
+GEMINI-LEDGER.md:93	Y	H1 Fixed story order with story anchors at a stage's start and end	§CP3 mix rule L233; §stage profile L1227-1229; L997
+GEMINI-LEDGER.md:94	Y	H2 Handcrafted landmark rooms inside generated stages	PARTIAL §whole-game plan L1462; §B L1497; L376: special stages and puzzle room kept; no landmark slot inside an engine stage
+GEMINI-LEDGER.md:96	Y	H4 A breadcrumb trail so players don't get lost	§placement rule 4 L305; L1000
+GEMINI-LEDGER.md:102	Y	I1 9-card mission deck per world; fixed order kept, shuffling dropped	PARTIAL §critic ruling 4 L1795; L1806: slot roles vary, plan shape differs; no distinct-archetype rule
+GEMINI-LEDGER.md:103	Y	I2 gen2 six-pass pipeline working end to end on a test world	PARTIAL §critic ruling 5 L1796, L1818: gen2 stays builder of its 23 stages under one rulebook; W6-10 not rebuilt
+GEMINI-LEDGER.md:104	Y	I3 JSON world manifests and chunk templates as data	§stage profile L1208-1233; §B L1495
+GEMINI-LEDGER.md:112	Y	J3 Puzzle rooms fit a 500 x 750 px box	MISSING
+GEMINI-LEDGER.md:119	Y	Summary gap 1: variety, rolls of a stage barely differ (C1, C3, C4, C8, C10)	PARTIAL §critic ruling 1 L1792; §per-roll L2102-2130: roll diversity gate and per-roll tempo; mirroring, curation, cross-stage cooldown absent
+GEMINI-LEDGER.md:121	Y	Summary gap 3: difficulty-scaled rules so Easy is truly easier	§difficulty dial L638-656; §Easy rise cap L179-184
+GEMINI-LEDGER.md:122	Y	Summary gap 4: pacing numbers in the inspector so fun is measured	§Rests L490-511; §CP3 L262
+GEMINI-VARIETY-2026-11-02.md:14	Y	Pacing tags per beat (Tight/Flowing/Relaxed/Cerebral); never two Tight beats back to back	PARTIAL L1795 tension; L1807: no 'never two tight beats in a row'
+GEMINI-VARIETY-2026-11-02.md:15	Y	About 25-30% of beats are puzzle beats (jump as a tool, not a reflex)	PARTIAL §1-5 plan L349: no puzzle-beat share
+GEMINI-VARIETY-2026-11-02.md:16	Y	Teach a thing alone, then use it against another system (two-step)	§move ladder L114-119; §animals L218; §More used L1321
+GEMINI-VARIETY-2026-11-02.md:17	Y	Moving platform kinds: pendulum, ride-to-start track, pulley, turning log, bobbing float, creature platform, see-saw	§G L1830
+GEMINI-VARIETY-2026-11-02.md:19	Y	Water: no slow drag, in-and-out every 15-20 s, wide clear exits, currents and bubbles, rising/falling water	§D Water and swims L1585-1596
+GEMINI-VARIETY-2026-11-02.md:21	Y	Lock-and-key and branch rules: a key off the main path; a fast risky path and a safe path	PARTIAL L434-436; L1795 map hub: risky/safe forks; lock-and-key parked
+GEMINI-VARIETY-2026-11-02.md:22	Y	Reject Celeste's no-lives; keep checkpoints close	§Placement rule 3 L296-303
+MATT-RESEARCH-2026-11-04.md:6	Y	Stage DNA plus seed; map shapes (loop-back, split, chimney, lock-and-key spoke); physics-traced rhythm; pre-flight checks; never T-T; 200-250 px aprons	PARTIAL L1795 map; L1792: map shapes and era gate added; no T-T rule, 200-250 px aprons, 45% roll difference
+MATT-RESEARCH-2026-11-04.md:17	Y	Sloth biology as mechanics; a special stage per world; world mutators; stage-to-stage cause and effect; shuffle slot order; secrets by tells	PARTIAL L1806,L1808: slot roles vary; new verbs go to Matt (deferred); no mutators or cause-and-effect
+MATT-RESEARCH-2026-11-04.md:21	Y	Enemies: one trick with 0.5 s warning; stomp/punch/kick roles; about 35% nodes enemy-free; none within 150 px of a landing	PARTIAL G L1842,L1855: ≥1.0 s runway before triggers, gap+enemy pair capped; no 35% enemy-free share, 0.5 s tell, 150 px

@@ -1,3 +1,5 @@
+> **RETIRED 2026-11-07** (the 6-role team, reference/TEAM.md). Its duties moved to CRITIC.md (its bar is in the Critic's knowledge pack). Kept for history.
+
 # Quality supervisor: role and expectations (Matt, 2026-11-02)
 
 Matt, after playing Worlds 1-5 in one sitting: "we need a quality supervisor... both supervisors go through and talk to the helpers

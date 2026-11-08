@@ -1,0 +1,28 @@
+// No unmarked floorless span on a rolled World 1 stage (the porter's w1Pits red, 11-06: 11 on 1-1 layout 1, painted as water: the five
+// level double gaps, the slots off mushroom-bank-teach's and hollow-twoway's banks, the meadow's, drop-bounce-twist's and the 1121 px under
+// log-stair-test-back's floating logs). Every span World 1's pit reader calls a fall (w1Pits.ts findW1Pits: what the painter paints) is a
+// soft fall: a soft heart-fall zone over it (put back on the ledge he left, nothing lost) and its banks marked a painted drop, never water.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import '../headlessDom.ts';
+import { buildGen2Stage } from './pipeline.ts';
+import { w1World } from './worlds/w1.ts';
+import { generateAllLevels } from '../worldsData.ts';
+import { findW1Pits } from '../w1Pits.ts';
+
+test('gen2 1-1: every floorless span is a marked drop under a soft put-back zone, never unmarked water (16 seeds, both settings)', () => {
+  const c = generateAllLevels().find((l) => l.id === '1-1')!;
+  const bad: string[] = [];
+  let spans = 0;
+  for (let seed = 1; seed <= 16; seed++) for (const difficulty of ['normal', 'easy'] as const) {
+    const st = buildGen2Stage({ config: c, kit: w1World(), seed, difficulty });
+    for (const g of findW1Pits(st.platforms).filter((q) => q.kind === 'fall')) {
+      spans++;
+      const at = `seed ${seed} ${difficulty} x ${Math.round(g.x0)}-${Math.round(g.x1)}`;
+      if (!g.drop) bad.push(`${at}: unmarked, painted as water`);
+      if (!(st.heartFalls ?? []).some((z) => z.soft && z.x0 <= g.x0 + 4 && z.x1 >= g.x1 - 4)) bad.push(`${at}: no soft put-back over it`);
+    }
+  }
+  assert.ok(spans >= 16, `${spans} floorless spans: the test would not see the rule`);
+  assert.deepEqual(bad.slice(0, 10), []);
+});
