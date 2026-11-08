@@ -185,3 +185,49 @@ Petals are pressed flat at the soldiers' MARCHING height, low; they're the trail
   bounce one)?
 - Is it the one tip for that move, at a rest or before the move, never repeated?
 - Cite the file and line. Matt's words, verbatim, when it's his call.
+
+## 8. Turnover: everything the keeper needs after a memory reset (updated 11-08)
+
+**Who's who.** Matt is the owner and has the final say. The story keeper is this session (session_019iachLiuwNTAZUBSJWUmR3), a permanent
+member and in charge of story direction ("always on the team and can't be replaced", Matt, 11-07). Leads rotate as their memory fills:
+- lead #1, session_01FhBbYN2DDsktc7BGtNxPFK, now a backup for questions only;
+- the current lead, session_01FhBbYMoqqEdVR3qFjTCugy, from 9:43 PM ET 11-07.
+The team is 6 roles (reference/TEAM.md and roles/ on main): Designer, Architect, Content, Engine, Critic, plus the lead/PM; the data
+analyst and the consultant come in as needed. Reply to the current lead with ONE send_message.
+
+**The keeper's duties** (TEAM.md, handoffs/lead.md on main):
+- a new lead's first message comes here: brief it from this file;
+- review every packet that touches story, Dot, player words, a stage's theme or a cutscene; that review comes in BEFORE the Critic's
+  PASS counts;
+- review the player text of every release before its PR;
+- read the release notes and STATE.md's decisions after each release;
+- keep this file current;
+- don't give helpers orders; the lead does. Speak up unasked when something heads toward breaking the game.
+The lead never overrules the keeper on story; Matt does.
+
+**Decisions made (11-06 to 11-08):**
+- 1-1's bounce is taught by the `lesson.bounce` card only, with no Dot row (§6 #8; lead agreed 11-08).
+- R-165.57, the pad's coach lines, are approved (lead, 11-08): jump "Press Jump" / "Tap the Jump button to leap."; nice "Nice jump!" / "In
+  the air, tap Jump again for a double jump." Condition: if a TAPPED double can't clear the 195-205 px double-teach gap (the jump height
+  varies, engine.ts:2210), the line becomes "In the air, press and hold Jump again for a double jump." The keeper reviews the final text
+  before the release PR.
+- 1-2's feel brief is `reference/engine/BRIEF-1-2.md` (on ccr-0d59a91c-oy3imz, c01cfab1), accepted by lead #1. It stays OFF the cold
+  helper's branch.
+- The bootprint's toe points onward (right) = north, as a DEEP impression of the SOLDIERS' boot (lead #1 and keeper, 11-05).
+- Walkable platforms may float (Matt, 11-06); rocks, earth, pads and props never.
+- Matt's queue (the current lead asks him one at a time, after R-165.53): #10 skulls, then #2 the food lines, then #1 Meeca's parents.
+
+**Live state:** 0.9.5 is live (gen2 1-1). Testers play until Tuesday 11-10; the team resumes Wednesday 11-11 after the weekly reset.
+
+**Where my own notes are:** `reference/notes/lead.md` (old lead notes, on ccr-0d59a91c-oy3imz; its top lines are the keeper's role). That
+branch carries the rejected 11-04 World 1 rebuild in src/, so NEVER build or release from it; it's a notes branch.
+
+**Lessons I paid for (don't repeat):**
+- Check "shipped" against origin/main, never a working branch (D43).
+- Art only from the stage's own world (LABELS rule 4).
+- Story briefs give story and look, never layout (PARTNER "design is not the lead's").
+- Look at every still object by object, asking what each thing TELLS the player (D37, D38).
+- Read the clock; never type a time.
+- Never build ahead of proof (D44).
+- The engine does the work; people give a short brief (D45).
+- One okay stage is never the bar ("variety", Matt).
