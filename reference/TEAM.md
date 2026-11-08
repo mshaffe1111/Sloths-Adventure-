@@ -28,6 +28,8 @@ artifact on a branch.
 - **Story keeper (the old lead, session_019iachLiuwNTAZUBSJWUmR3): the ONLY long-lived session kept** (Matt, 11-07: "Too much story
   knowledge"). It owns the story, characters, Dot's voice and the lessons of past releases. The PM asks it before any story, dialogue
   or taste call, and it reviews player text. It's not a builder and not a node in the graph.
+  Its bible: reference/story/STORY-KEEPER.md on branch ccr-0d59a91c-oy3imz (commit e60910f1). READ it there; never build from that
+  branch (it carries the rejected 11-04 src/). It lists 10 open story threads.
 
 ## The rules (the PM enforces them)
 1. **Packets, never chat history.** Each task: the objective; frozen inputs (spec numbers, interface); allowed files (read / write);
