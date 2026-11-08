@@ -10,7 +10,7 @@
 - Story keeper: session_019iachLiuwNTAZUBSJWUmR3, alive (idle), told the new lead's id 11-07. Its context was at about 803K of 1M
   tokens on 11-07 (near compression). Health check 11-07 about 9:50 PM ET: PASS 3 of 3 (Pell and the blanket; 22 ms a letter and
   piece lines under 10 words; the judged line FAILED for the right reasons), one tool call (list_events). Asked to make STORY-KEEPER.md
-  complete before it compresses.
+  complete before it compresses: done (§8 Turnover, ccr-0d59a91c-oy3imz 3894660b and after). Cast Bible fixed (Docs rev 43).
 - No Agent-tool member running; nothing in flight; nothing to re-issue.
 - Old helper sessions, all idle and retired (TEAM.md "Transition"): some still show "needs action" (art-1-1-sunrise wants a "go" for an
   HF job; render-stone wants "send word to resume"; Ex Tester Data 1 asks about ctest-notes). **Nobody answers them**: the work goes
