@@ -1,5 +1,7 @@
 # Lessons we already paid for (printed with the laws at every session start and after every memory compression)
 
+**Lead: start at reference/handoffs/lead.md and reference/roles/PM.md. The live ledger is reference/STATE.md; STATUS.md is the old diary.**
+
 Matt, 2026-11-01: "make sure that our lessons learned, what works and what doesn't work, are all being used by our workers and
 helpers." Each line is a mistake we made once, with its defect number in reference/CONTINUOUS-IMPROVEMENT.md, and what we do now.
 Before you start: open your job's method in reference/methods/ (index: reference/methods/README.md). If your job has none,
@@ -47,3 +49,8 @@ that do the best job get the follow-on work.
 - Judge art against the absolute floor (floor.py in hf-backdrops.md), not against a weak "before". (backdrops, Nov 1)
 - Never Gemini prompts; Hugging Face only.
 - Show first: any big look change goes to Matt as stills or a mock-up before it is built.
+- Know which link is which before telling anyone where to play: the testers play the LIVE site + #ctest; Matt's Claude page (EnK5) is his alone and doesn't record. (D28)
+- No PR until every gate is green on the exact head; after any proven-seed-list rebuild, run every test that pins a roll or a seed. (D29)
+- A time in a file or report is pasted from `date` in the same step, never typed, for helpers as well as the lead. (D30)
+- Run a new gate the way CI runs it (`CI=1 FORCE_COLOR=1`) before the PR; a gate that reads tool output strips colour codes. (D31)
+- A command in a role card, method or brief is proven against the tool's arg parsing or a dry run, and the whole document goes to a fresh Critic cold before anyone uses it. (D32)

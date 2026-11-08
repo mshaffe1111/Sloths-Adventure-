@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat \"$CLAUDE_PROJECT_DIR/reference/LAWS.md\" \"$CLAUDE_PROJECT_DIR/reference/LESSONS.md\"; echo; echo \"NOTES: the lead reads reference/STATUS.md now. Every helper reads its own reference/notes/<your-name>.md now (create it in your first commit if it is missing; rules: reference/notes/README.md) and keeps it current at every report.\""
+            "command": "cat \"$CLAUDE_PROJECT_DIR/reference/LAWS.md\" \"$CLAUDE_PROJECT_DIR/reference/LESSONS.md\"; echo; echo \"START: the lead reads reference/handoffs/lead.md and reference/roles/PM.md now. A team member reads reference/roles/README.md, then its card in reference/roles/, then the turnover note(s) the card names.\""
           }
         ]
       }

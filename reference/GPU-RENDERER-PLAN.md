@@ -47,3 +47,30 @@ Nothing half-done goes to `main` (new replaces old). The game ships only once a 
 ## Before stage 0
 
 The 1 PM fixes are merged and measured, and the automatic performance check is in, so every stage is measured the same way.
+
+
+## Addendum 2026-11-07 (from the lead's notes; Matt's 60-for-30 ruling)
+### The GPU move (PixiJS on WebGL 2) and the 60 fps budget (Matt, 11-06 evening)
+Matt: "we should build for 60 frames, even if we're only going to run at 30 frames. That way, we're always going to meet our goals,
+regardless of the phone we test."
+- The lead agrees, with this reasoning: the loop stays locked at 30 fps, but the frame work must fit a 60 fps frame (16.7 ms all in).
+  So a phone half as fast still holds 30. The budget becomes our update plus draw at 8 ms or less on a mid-range phone at q0 (it was
+  12 ms), and 30 fps held on Matt's 2020 OnePlus. That's a rule change in PERFORMANCE-RULES §1 and tools/perf/limits.json, with a
+  planted test.
+- Where it stands: stage 0 (PixiJS v8 plus one WebGL canvas) was finished on warmup-5m (65b6c33a, 11-04) but NEVER reached main (main has
+  no pixi). Stages 1-6 haven't started. So the live game is still 100% Canvas 2D.
+- Plan: next week, its own lane, alongside the 1-1 fixes. The GPU work touches the render layer, the 1-1 work touches the generator,
+  so they don't share files.
+  - First port stage 0 onto main, measured on the three phones.
+  - Then the stages in order: skies, ground, creatures and Pokey, props and particles, measure the rest, then the APK at 60 Hz.
+  - About 3-5 working days (GPU-RENDERER-PLAN.md).
+- Baseline to beat (Matt's Pixel, 11-06): upright 29.9 fps (worst frame 58 ms, 2 dips), sideways 29.8 fps (worst 96 ms, 5 dips).
+  Same pixel count both ways, so sideways hitches come from what's drawn, not from size.
+
+- Canvas sizing audit (Matt's question, 11-06 ~10:45 PM; engine.ts renderDpr and resizeCanvas, lines 1024-1067):
+  - The buffer IS sized from the live CSS box times a ratio on every resize, both ways, with no fixed 720/1080 height.
+  - BUT the ratio is capped: q0 2.0, q1 1.5, q2 1.0 (renderDpr). Matt's Pixel (dpr 3.06) draws 878x1825, so the compositor stretches it
+    1.5x. The OnePlus and adult tester A's iPhone sit at q2 = 1.0x much of the time, so the compositor stretches them about 3x (soft picture).
+  - Raising the cap on Canvas 2D costs fill rate: 3x instead of 2x is 2.25x the pixels, so the frame rate gets worse. Not a free fix.
+  - On WebGL the fill is cheap: after the port, raise q0 to native dpr (up to 3) on phones that hold 30. The GPU plan's stage 5 measures
+    it. Matt's bar: no compositor stretch on phones that can take it.

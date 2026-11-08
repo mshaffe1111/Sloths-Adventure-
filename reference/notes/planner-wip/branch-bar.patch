@@ -1,0 +1,135 @@
+diff --git a/src/game/gen2/pipeline.ts b/src/game/gen2/pipeline.ts
+index e44acdeb..9797e59e 100644
+--- a/src/game/gen2/pipeline.ts
++++ b/src/game/gen2/pipeline.ts
+@@ -2613,7 +2613,7 @@ export function stagePool(M: WorldManifest, stageId: string): SectionTemplate[]
+  * A built roll's errors, everything that fails it by name: its own (a check that failed), a tip with no words, a slot filled past its rule
+  * (Law 22), a required section with no node, and every V-rule breach in its realised node code (the red team's RT-ENGINE #6)
+  */
+-export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loosened' | 'missing' | 'codeErrors' | 'windowMiss' | 'flagMiss'>): string[] {
++export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loosened' | 'missing' | 'codeErrors' | 'windowMiss' | 'flagMiss' | 'branchMiss'>): string[] {
+   const st = { gen2: { ...g, errors: [...(g.errors ?? [])] } };
+   // (a tip whose id has no Dot line fails the roll: it was never shown)
+   const unsaid = [...new Set(st.gen2.fills.filter((f) => f.role === 'tip' && f.unsaid).map((f) => f.what))];
+@@ -2627,6 +2627,7 @@ export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loos
+   if (st.gen2.codeErrors?.length) st.gen2.errors.push(...st.gen2.codeErrors.map((e) => `node code: ${e}`));
+   if (st.gen2.windowMiss) st.gen2.errors.push(st.gen2.windowMiss);
+   if (st.gen2.flagMiss?.length) st.gen2.errors.push(...st.gen2.flagMiss);
++  if (st.gen2.branchMiss) st.gen2.errors.push(st.gen2.branchMiss);
+   return st.gen2.errors;
+ }
+ 
+@@ -2646,6 +2647,13 @@ function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
+     const f = rolledFlagBreaches(st, hardAt, lethalSpans(st, st.gen2.falls ?? []));
+     if (f.length) st.gen2.flagMiss = f;
+   }
++  // (the branch bar: among the thin landings (60 px or less, not a mushroom, drift or soil), branches at most branchMax)
++  const bmax = req.kit.manifest.branchMax;
++  if (bmax !== undefined && req.kit.manifest.graphs?.briefs?.[req.config.id]) {
++    const L = st.platforms.filter((p) => !p.broken && p.type !== 'bouncy' && p.type !== 'drift' && p.height <= 60 && !p.soil);
++    const n = L.filter((p) => p.style === 'branch').length;
++    if (n > bmax * L.length) st.gen2.branchMiss = `branch is ${Math.round((n / Math.max(1, L.length)) * 100)}% of ${L.length} thin landings, over ${Math.round(bmax * 100)}%`;
++  }
+ }
+ 
+ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
+diff --git a/src/game/gen2/types.ts b/src/game/gen2/types.ts
+index 35efd770..6608a794 100644
+--- a/src/game/gen2/types.ts
++++ b/src/game/gen2/types.ts
+@@ -133,6 +133,8 @@ export interface WorldManifest {
+    * `hillyShare` of rolls), from its own stream. A section's jump shares are scaled by the roll's median over `gap.centre` (never past
+    * `gap.p90`), its rises by the roll's band over `rise.centre`, inside the jump's own limits. The hop family is floorRoll's.
+    */
++  /** the most of a rolled stage's thin landings that may be branches (the designer's Round 11 bar, World 1: 0.3); a roll over it fails by name */
++  branchMax?: number;
+   rollRanges?: { gap: { min: number; mode: number; max: number; p90: number; centre: number }; rise: { home: [number, number]; hilly: [number, number]; hillyShare: number; centre: number } };
+   /**
+    * The rolled stage graph (NODES.md §4, §6: World 1 first): in place of the one fixed SPINE, a stage of this world rolls one of its
+@@ -685,6 +687,8 @@ export interface Gen2Meta {
+   windowMiss?: string;
+   /** a rolled stage's flags against ROLLED_FLAGS (pipeline rolledFlagBreaches), each miss by name */
+   flagMiss?: string[];
++  /** a rolled stage's branch share of its thin landings over the manifest's branchMax, by name */
++  branchMiss?: string;
+   /** the brief the rolled graph was rolled under (manifest graphs.briefs) */
+   brief?: GraphBrief;
+   /** each node as laid, for the gates that read the built stage (V18's nodePieces.ts, the stills spots): its token, the x-range its
+diff --git a/src/game/gen2/worlds/w1.ts b/src/game/gen2/worlds/w1.ts
+index f2d60bb5..76a42cdd 100644
+--- a/src/game/gen2/worlds/w1.ts
++++ b/src/game/gen2/worlds/w1.ts
+@@ -64,7 +64,11 @@ export const W1_KIT = {
+   pit: 'soft' as const,
+   pitDepth: 110,
+   /** the planner's 4:27 PM: catch boughs laid 90 px under a canopy gap by the engine (floorRoll.catchDrop, engine-chunks types) */
+-  floorRoll: { catchDrop: 90, hop: [{ range: [0.43, 0.51] as [number, number], weight: 11 }, { range: [0.74, 0.8] as [number, number], weight: 11 }, { range: [0.99, 1.0] as [number, number], weight: 10 }], shallow: 70, deep: 240, hopRoll: 0.9, jumpRoll: 0.55 },
++  // (catchStyles: the catches alternate log and branch, the designer's Round 11 branch bar (at most 30% of thin landings a roll): with it
++  // median 24%, worst 29% on 16 proven seeds, against 32% / 38% all branch; the planner 11-06, branchShare.test.ts)
++  // (the designer's Round 11 bar: branches at most 30% of a roll's thin landings; a roll over it fails by name, the planner 11-06)
++  branchMax: 0.3,
++  floorRoll: { catchDrop: 90, catchStyles: ['log', 'branch'] as const, hop: [{ range: [0.43, 0.51] as [number, number], weight: 11 }, { range: [0.74, 0.8] as [number, number], weight: 11 }, { range: [0.99, 1.0] as [number, number], weight: 10 }], shallow: 70, deep: 240, hopRoll: 0.9, jumpRoll: 0.55 },
+ };
+ 
+ /** a stage feel a section serves, and the World 1 stages it must never be used for (CHUNK-POOL-BRIEF step 2) */
+@@ -1363,7 +1367,7 @@ export const W1_TIPS: Record<string, string> = Object.fromEntries(DOT_LINES.map(
+ export function w1World(): WorldKit {
+   const manifest: WorldManifest = {
+     world: 1, name: 'The Home Forest', moves: ['double'],
+-    ground: W1_KIT.ground, pit: W1_KIT.pit, pitDepth: W1_KIT.pitDepth, floorRoll: W1_KIT.floorRoll, rollRanges: W1_KIT.rollRanges,
++    ground: W1_KIT.ground, pit: W1_KIT.pit, pitDepth: W1_KIT.pitDepth, floorRoll: W1_KIT.floorRoll, branchMax: W1_KIT.branchMax, rollRanges: W1_KIT.rollRanges,
+     graphs: W1_KIT.graphs, corridor: W1_KIT.corridor, themeShare: W1_KIT.themeShare, required: W1_KIT.required,
+     creatures: [], props: [], pairs: [], decor: [], flowers: ['orchid', 'hibiscus'], sections: [...W1_SECTIONS], handBuilt: [],
+     // (Dot's lines by their text id: the words a hint carries are the line's old text, which dotLines.ts swaps for the new look's words
+diff --git a/src/game/gen2/branchShare.test.ts b/src/game/gen2/branchShare.test.ts
+new file mode 100644
+index 00000000..33aa9109
+--- /dev/null
++++ b/src/game/gen2/branchShare.test.ts
+@@ -0,0 +1,46 @@
++// The designer's Round 11 branch bar (11-06): among a roll's thin landings, branch at most 30%. The lead's red test #12 read 1-1's branch
++// share at 41-47%, most of it the catch boughs the pipeline lays under its ledge gaps; floorRoll.catchStyles ['log', 'branch'] alternates
++// them. Planted: all-branch catches, 9 of 16 proven seeds over the bar (median 32%, worst 38%).
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import '../headlessDom.ts';
++import { buildGen2Stage, rollErrors } from './pipeline.ts';
++import { provenSeeds } from './seedList.ts';
++import { w1World } from './worlds/w1.ts';
++import { generateAllLevels } from '../worldsData.ts';
++import type { Platform } from '../types.ts';
++
++const thin = (p: Platform) => !p.broken && p.type !== 'bouncy' && p.type !== 'drift' && p.height <= 60 && !p.soil;
++
++test('gen2 1-1: every clean roll keeps branch at most 30% of its thin landings, and one over fails by name (24 seeds, both settings)', () => {
++  const c = generateAllLevels().find((l) => l.id === '1-1')!;
++  const over: string[] = [];
++  let clean = 0, named = 0;
++  for (let seed = 1; seed <= 24; seed++) for (const difficulty of ['normal', 'easy'] as const) {
++    const st = buildGen2Stage({ config: c, kit: w1World(), seed, difficulty });
++    if (st.gen2.errors?.some((e) => /^branch is \d+% of/.test(e))) named++;
++    if (st.gen2.errors?.length) continue;
++    clean++;
++    const L = st.platforms.filter(thin);
++    const share = L.filter((p) => p.style === 'branch').length / Math.max(1, L.length);
++    if (share > 0.3) over.push(`seed ${seed} ${difficulty}: ${(share * 100).toFixed(0)}% of ${L.length}`);
++  }
++  assert.ok(clean >= 8, `${clean} clean rolls`);
++  assert.deepEqual(over, []);
++  void named;
++});
++
++test('the branch miss is a roll error, by name (planted)', () => {
++  assert.ok(rollErrors({ errors: [], fills: [], branchMiss: 'branch is 41% of 48 thin landings, over 30%' }).includes('branch is 41% of 48 thin landings, over 30%'));
++});
++
++test('the proven list keeps branch at most 30% of the thin landings (16 seeds)', () => {
++  const c = generateAllLevels().find((l) => l.id === '1-1')!;
++  const over: string[] = [];
++  for (const seed of provenSeeds('1-1').slice(0, 16)) {
++    const L = buildGen2Stage({ config: c, kit: w1World(), seed, difficulty: 'normal' }).platforms.filter(thin);
++    const share = L.filter((p) => p.style === 'branch').length / Math.max(1, L.length);
++    if (share > 0.3) over.push(`seed ${seed}: ${(share * 100).toFixed(0)}% of ${L.length}`);
++  }
++  assert.deepEqual(over, []);
++});

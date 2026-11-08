@@ -1,3 +1,5 @@
+> **RETIRED 2026-11-07** (the 6-role team, reference/TEAM.md). Its duties moved to CRITIC.md (the gate) and PM.md plus methods/release.md (the method). Kept for history.
+
 # Release clerk: role and expectations
 
 **Purpose.** Turn approved, accepted work into a release Matt can trust, by the written steps, every time, with the evidence.

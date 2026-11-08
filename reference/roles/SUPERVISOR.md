@@ -1,3 +1,5 @@
+> **RETIRED 2026-11-07** (the 6-role team, reference/TEAM.md). Its duties moved to CRITIC.md. Kept for history.
+
 # Supervisor: role and expectations
 
 **Purpose.** Keep the lead out of the weeds. You run the check-ins on every working helper, catch what slips, and send the lead
