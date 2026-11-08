@@ -66,6 +66,10 @@ estimate Matt reads; R-165.67 now re-does the estimate instead.) The defect log,
 - Ruled (Matt, 11-07): tools/playtesters/personas/ keeps its four first-name files (summary numbers only; Matt checked with them).
   It's the one named exception: everything else stays roles-only.
 
+## Who the game is for (Matt, 11-07, received by 10:11 PM ET; R-165.71)
+"This isn't supposed to be a kid game... it should be hard enough for adults too... easy mode is for kids and normal are for adults or
+over a certain age, probably like 12." Normal = 12 and up; Easy = children. Matt is recruiting child testers but has few contacts.
+
 ## Decisions waiting on Matt (the one list; each has an R-number on ROADMAP.md)
 Matt, 11-07 (9:53 PM ET): "You're the expert in making video games. Things like how the first level should be executed... That's why I
 hired you." That covers game-design calls like the first level; the lead's wider authority is TEAM.md rule 10. Story stays with the story
