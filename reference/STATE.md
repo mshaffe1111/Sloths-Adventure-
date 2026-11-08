@@ -78,13 +78,14 @@ keeper (Matt has the final say); art he rates.
 - R-165.53: DECIDED by the lead 11-07: no lethal drops in 1-1; a deadly drop gets its own look and is taught where it first appears.
 - R-165.65: DECIDED by the lead 11-07 (TEAM.md rule 10; §1 is unchanged, so not Matt's): §1 stays 12 ms (pass/fail); 8 ms is the WebGL
   design target, not a gate. TEAM.md row 3 and ARCHITECT.md updated the same night.
-- R-165.54: the "can it float?" ratings for earth ledges (Matt rates the pieces).
+- R-165.54: DECIDED by Matt 11-07 (received by 10:21 PM ET): platform-looking pieces may float; skinny ones attach; rocks and decor never
+  float (STAGE-RULES.md 'What may float').
 - R-165.55: the story keeper's open story threads (reference/story/STORY-KEEPER.md).
 - R-165.56: done (PR #67 and #68, merged 11-07).
 Matt's question queue (one at a time, in this order): R-165.69 (rewrite main's history to remove tester names: his call); the story
 keeper's three, in its order
 (11-07): #10 skulls (all out, or only remains in soil?), #2 the two food lines (keep each, yes/no), #1 Meeca's parents (its pick:
-unspoken); then R-165.54.
+unspoken).
 Story keeper's answers, 11-07 evening (STORY-KEEPER.md updated in commit 948f8931 on ccr-0d59a91c-oy3imz; read only, never build from it):
 - #8 decided: `lesson.bounce` teaches the bounce, no hint.1-1.bounce row. Content's 1-1 packet done-item: the card fires at gen2 1-1's
   FIRST mushroom.

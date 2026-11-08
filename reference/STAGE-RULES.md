@@ -561,7 +561,12 @@ plan); never ship the rough version as finished.
   line (holding up runs on past the shelf into the next one). The stage's tests check both, and play every root and hop in the real
   engine. The first-timer bot doesn't climb back out of a catch, so on climbs (4-1 too) it runs out its 6 minutes: read its lives a minute
   and its stuck spots, not whether it finished.
-- **Ledges in the air: nothing floats** (6-8 v4, the lead's review, 2026-10-29). A stump, root arch or den (and any slab on spreading
+- **What may float (Matt, 2026-11-07, received by 10:21 PM ET; R-165.54; this ruling wins over the 10-29 lead rule below where they differ):**
+  "If it looks like it can be a platform, it can float. If it looks like it's a skinny little object, like a branch or a rope or vine, it needs to be attached to something. If it's a rock or something that should be fastened to the ground that you're just jumping on and off of, or is just used as decoration, it doesn't float."
+  By the art catalog's kinds (art-raw-2026-11-07 cut/CATALOG.md), the lead's reading: may float: floating earth islands, earth ledges,
+  walkable logs and planks that read as platforms. Attached (to a trunk, post, root or rope): boughs, branches, vines, ropes. Grounded,
+  never floating: rocks, stump-steps, bushes, ferns, decoration, hide spots, caves.
+- **Ledges in the air: nothing floats** (6-8 v4, the lead's review, 2026-10-29; for platforms, superseded by Matt's 11-07 ruling above). A stump, root arch or den (and any slab on spreading
   roots) grows out of the ground: hung in mid-air it looks wrong, however varied the pieces. It goes only where its own roots stand on
   the ledge under it or it stands on stilt posts (two, never one balanced pole); every stretch of a plank or log is held by a climbing
   root, a post, a brace to a trunk or a rope. Don't run a post from every plank down to the water: about 90 poles a stage read as a
