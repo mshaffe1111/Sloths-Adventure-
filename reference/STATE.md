@@ -20,7 +20,7 @@
   its changes were withdrawn (WebGL stays on the graph; the consultant runs after every window as written). Corrections are in the note.
 
 ## Open graph (from Wednesday 11-11, the fresh lead; the team is quiet until the reset), in order
-0. ANALYST on the play window that ends Tuesday 11-10, told which recorder fields to distrust (consultant finding 3 in
+0. ANALYST on the play window that ends Tuesday 11-10 (runs at the same time as the DESIGNER, item 1: no shared WRITE file), told which recorder fields to distrust (consultant finding 3 in
    responses.md's numbering; R-165.58). Then the PACKER and the CONSULTANT (max), as CONSULTANT.md says. Then R-165.59: ONLY the pre-0.9.5
    recordings deleted (Matt 11-07: newer data stays until testing ends), after the analyst's aggregates exist.
 1. DESIGNER: the reach spec from the 30 fps simulation (reference/consultant/2026-11-07-scripts/sim.py), verified in the engine;
