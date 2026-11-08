@@ -1,11 +1,11 @@
-# Turnover note: the lead (PM). Rewritten, never appended. Last rewrite: 2026-11-07 8:44 PM ET, lead session_01FhBbYN2DDsktc7BGtNxPFK
+# Turnover note: the lead (PM). Rewritten, never appended. CURRENT LEAD: session_01FhBbYMoqqEdVR3qFjTCugy (in place 2026-11-07 9:43 PM ET; route blockers here). Last full rewrite: 2026-11-07 8:44 PM ET by lead num 1, session_01FhBbYN2DDsktc7BGtNxPFK
 
 Matt, 11-07: "Also make sure you keep updated turnover notes. We all need this." This note is for a replacement lead, or for me after
 a memory compression. If it's older than the last decision in STATE.md, rewrite it before anything else.
 
 ## The handover (Matt, 11-07: "we start rolling everything over tonight... come Wednesday morning, it's a startup from fresh")
-- **When:** tonight, Saturday 11-07 (ET), as soon as Matt merges the studio PR (R-165.56). Branch to start on: main once it has merged;
-  if it hasn't, `studio`.
+- **When:** done Saturday 11-07 evening ET. The studio PRs merged (#67, #68): start on main. The new lead's steps 1-6 are done; its cold
+  review is reference/notes/lead-review-2026-11-07.md and its plan changes are in STATE.md.
 - **Tonight is preparation only.** Do the incoming lead's steps (roles/PM.md §8), in this order: your session id on this note's top
   line; read (with STATE.md); **your first message to the story keeper**; the five questions; take stock of the team (PM.md §9);
   your cold review; only then factual questions to the backup lead; a one-off scheduled task, and a note to Matt.
