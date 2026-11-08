@@ -1,0 +1,189 @@
+LEDGER-2026-11-02-full.md:130	Y	X-9 previews the boss's attack patterns in a small form	§critic ruling 4 L1795; ruling 7 L1798
+LEDGER-2026-11-02-full.md:159	Y	World 10: one world-wide storm rhythm; on the flash hold on; sprint in 5-10 s calm gaps	PARTIAL §moves L1299; §C L1555: hold on flash planned; no 5-10 s calm-gap rhythm
+LEDGER-2026-11-02-full.md:167	Y	Build pieces for pairs with none: crumbling patch in a web, hop-to-skim silk bridge, gust lane over lianas	PARTIAL G L1831: pairs table counts pairs; no pieces built for empty pairs
+LEDGER-2026-11-02-full.md:206	Y	Fix mechanic classes: World 7 crumble is breaking, tide and drowsy cloud are slow, geyser lift is wind	MISSING
+LEDGER-2026-11-02-full.md:207	Y	Wind has both tempos: a tailwind needs braking, a headwind needs steady push	MISSING
+LEDGER-2026-11-02-full.md:291	Y	A wading field pushes the player up to a high route (stilt roots, vines)	MISSING
+LEDGER-2026-11-02-full.md:295	Y	Updrafts and leaf glide override top fall speed; some vents required once taught	§moves L1295-1296; §C L1530,L1545; §More used L1311
+LEDGER-2026-11-02-full.md:309	Y	Run+Wind: a tailwind needs braking on narrow ledges, a headwind steady push	PARTIAL L1794: wind now returns in every later world; no tail/head variants
+LEDGER-2026-11-02-full.md:313	Y	Jump+Wind: a headwind shortens the jump; a glide in an updraft turns gusts into height	§unused-art L163; §moves L1296; §C L1545,L1577
+LEDGER-2026-11-02-full.md:316	Y	Branches+Wind: wind pushes him off a crumbling branch before it breaks	PARTIAL L1795,L1794: generic pair field; creaky and wind return, nothing makes them meet
+LEDGER-2026-11-02-full.md:318	Y	Vines+Wind: gusts change a hanging vine's angle and period, making timing gates	MISSING
+LEDGER-2026-11-02-full.md:320	Y	Wind+Slow: gales blow him back unless anchored in mud or roots, or gripping	PARTIAL §moves L1299: no anchor-against-gale beat
+LEDGER-2026-11-02-full.md:340	Y	Twist templates: crosswind blows vines toward thorns; the landing ledge turns into a breaking branch	MISSING
+LEDGER-2026-11-02-full.md:356	Y	X-4 wide gaps, air or a vertical drop; brings in vines or wind; 10-15 s groups	MISSING
+LEDGER-2026-11-02-full.md:361	Y	X-9 pre-boss run shows the boss's attack patterns ahead	§critic ruling 4 L1795; ruling 7 L1798
+LEDGER-2026-11-02-full.md:370	Y	The failure to avoid: a world's gimmick taught, then dropped (wind in W4, gone in W5)	§critic ruling 3 L1794; M3 L2043-2045
+LEDGER-2026-11-02-full.md:373	Y	W2: swing vines, vertical breaking branches; twist rising water and reed drag	PARTIAL §B L1498; G L1829: no reed drag or rising-water twist for W2
+LEDGER-2026-11-02-full.md:374	Y	W3: patience slow-downs, speed-sensitive vines; dark and light, sinkholes; inverted polarity	PARTIAL §B L1499: no patience polarity
+LEDGER-2026-11-02-full.md:375	Y	W4: wind, leaf glide, vertical branches; dives, freefall; headwind and lift polarity	PARTIAL §B L1500: no headwind/lift polarity
+LEDGER-2026-11-02-full.md:376	Y	W5: contact slow-downs, timed closing platforms, trap rests, humming threads; impulse polarity	PARTIAL §B L1501: contact slow-down unspecified
+LEDGER-2026-11-02-full.md:377	Y	W6: wading and swimming slow-downs, tipping roots; firefly steps, water-level puzzle	PARTIAL water W1-W12 L1890-1902: swim ruled; no wading slow-down, tipping roots parked
+LEDGER-2026-11-02-full.md:378	Y	W7: brittle vines, sequential floors; twist fastest floors against slowest sentries	PARTIAL §B L1503: no dual-clock twist
+LEDGER-2026-11-02-full.md:379	Y	W8: momentum vines, wind glides; light radius, firefly trail, net traps	§B L1504; §C L1545,L1554-1555
+LEDGER-2026-11-02-full.md:380	Y	W9: updrafts, ash drag; rising heat, lava steps, ember branches	PARTIAL §B L1505: no ash drag
+LEDGER-2026-11-02-full.md:381	Y	W10: all six together; squalls with grip-and-wait; the General's shifting weak spot	§B L1506; §moves L1299; §C L1555,L1583
+LEDGER-2026-11-02-full.md:389	Y	W2 is the comic, relaxed world that widens the swings	PARTIAL §dial L631: no tone or swing widening
+LEDGER-2026-11-02-full.md:390	Y	2-3: the first slow-down teaches that a vine route above beats wading below	MISSING
+LEDGER-2026-11-02-full.md:391	Y	2-4: vines as catapults over wide river gaps	MISSING
+LEDGER-2026-11-02-full.md:392	Y	2-6 turns the camera vertical: timed jumps up tiered doors and breaking eaves	MISSING
+LEDGER-2026-11-02-full.md:393	Y	2-8: rising floodwater turns slow-downs into moving pressure, practice for the boss	PARTIAL water W9 L1899: rising water pushes pace, built in 2-8; no slow-down link or boss practice
+LEDGER-2026-11-02-full.md:394	Y	W3: the first big reversal; the dark replaces W2's forward hurry	PARTIAL §B L1499: no tempo reversal
+LEDGER-2026-11-02-full.md:395	Y	3-1/3-2: glowworms light safe footing only while he stands still and listens	MISSING
+LEDGER-2026-11-02-full.md:396	Y	3-4: breaking branches return as collapsing cave ledges over vertical pits	§C L1538; §unused-art L165
+LEDGER-2026-11-02-full.md:397	Y	Late W3: sprint over crumbling ledges, then slow right down on catching a thorn vine	MISSING
+LEDGER-2026-11-02-full.md:399	Y	4-2's leaf cuts fall speed; 4-4's wind opposes his run and shortens jumps	§moves L1295; §B L1500
+LEDGER-2026-11-02-full.md:400	Y	4-5: dives from above; alternate crosswind platforming with ducking under rock overhangs	PARTIAL §unused-art L156: no crosswind/cover alternation
+LEDGER-2026-11-02-full.md:401	Y	4-D: Dot's fast flight as counterpoint; 4-7 freefall steering through wind	§B L1500
+LEDGER-2026-11-02-full.md:402	Y	5-2: the rest spots are the traps; the wish to rest is used against him	§B L1501
+LEDGER-2026-11-02-full.md:403	Y	5-3: platforms that fold shut early on a rhythm	PARTIAL §B L1501: folding platforms unnamed
+LEDGER-2026-11-02-full.md:404	Y	5-4, 5-5, 5-7: silk only grabs if you stay down; hop on the first landing frame	MISSING
+LEDGER-2026-11-02-full.md:405	Y	5-6: Meeca's carvings placed closer together push a fast chase rhythm	MISSING
+LEDGER-2026-11-02-full.md:406	Y	6-3: seesaw roots tip under his weight	PARTIAL §unused-art L162,L204: seesaw parked
+LEDGER-2026-11-02-full.md:409	Y	6-6: invisible root steps shown only in Flicker's glow	§whole-game L1462
+LEDGER-2026-11-02-full.md:410	Y	6-7: raise and lower the water with a wheel; root-stone on a plate	§D L1598; §Water W7 L1897; §whole-game L1462
+LEDGER-2026-11-02-full.md:411	Y	W7 dual-clock timing: fast decaying floors while tracking slow enemy cycles	MISSING
+LEDGER-2026-11-02-full.md:412	Y	7-2: withered, shorter vines with stone-crack flowers	MISSING
+LEDGER-2026-11-02-full.md:414	Y	W8 mixes W2's swings, W3 and W6's dark, W4's glides	§B L1504; §C L1554
+LEDGER-2026-11-02-full.md:415	Y	8-4: a moving safe zone; the jar's light marks how far is safe	§whole-game L1462
+LEDGER-2026-11-02-full.md:416	Y	8-8: spring net traps on high branches	MISSING
+LEDGER-2026-11-02-full.md:417	Y	9-3: superheated branches char and collapse (breaking branches brought back)	PARTIAL M3 L2044; L1794: creaky staple returns in every later world, W9 included, in its art; no charring-branch piece
+LEDGER-2026-11-02-full.md:418	Y	9-5: vents turn wind upward; weave between lava plumes	§B L1505; §C L1530,L1545
+LEDGER-2026-11-02-full.md:419	Y	9-6: deep ash slows run and jump; 9-7 short hops over cooling lava steps	PARTIAL §unused-art L169: no ash drag
+LEDGER-2026-11-02-full.md:420	Y	World 10 adds no new mechanic: all six under one world-wide storm rhythm; a flash warns of a blast	PARTIAL L1829: W8-10 combine 3-4; no world-wide storm rhythm
+LEDGER-2026-11-02-full.md:421	Y	When it flashes, reach rock or a sturdy vine and hold; sprint in the 5-10 s calm gaps	PARTIAL §moves L1299: no calm-gap number
+LEDGER-2026-11-04-part1.md:190	Y	Static hand-made levels without replay change get boring past World 3, so Worlds 2-4 must be rebuilt too	PARTIAL L1879,L1796: era/lookalike gates on every builder, misses fixed per world; W2-4 rebuild not committed (order to lead)
+LEDGER-2026-11-04-part1.md:209	Y	Research stage is 6-8 nodes of 10-15 s (60-120 s); ours needs 10-16 nodes for 2-5 min	§Stage length L664-674, §1-5 node plan L339-351, §1-1 table L1063-1075
+LEDGER-2026-11-04-part1.md:214	Y	One bespoke special stage per world; fix the plan and add W2 and W3 specials	PARTIAL §B L1495-1506: no W2/W3 special
+LEDGER-2026-11-04-part1.md:219	Y	Swimming should be fast (at least run speed), not half a run; change SWIM.speed	§water W4 L1894; L1952
+LEDGER-2026-11-04-part1.md:220	Y	Vine let-go help: keep on Easy, narrow on Normal from World 3	§The difficulty dial L647
+LEDGER-2026-11-04-part1.md:227	Y	4-4 Crosswind has no breaking branches, despite the research	§A L1477, §C L1538
+LEDGER-2026-11-04-part1.md:241	Y	We have seven special stages (1-8, 4-7, 4-D, 5-M, 6-8, 7-4, 8-4) plus a secret, not two	PARTIAL ruling 2 L1793: 4-D and 8-4 rows added; no list of all seven plus secret
+LEDGER-2026-11-04-part1.md:264	Y	Swimming is slow today (150 vs 285 px/s); there is no breath meter	§critic ruling 7 L1798; water W1 L1890
+LEDGER-2026-11-04-part1.md:304	Y	Story stages keep their identity (2-4 swings, 3-7 fern search, 6-6 dark room)	§whole-game plan L1461-1463, §Stage profile L1222
+LEDGER-2026-11-04-part1.md:309	Y	Generator 1: a different 6-8 node graph and camera path per seed	PARTIAL L1795: node shape differs from neighbour; graph fixed per stage
+LEDGER-2026-11-04-part1.md:322	Y	[F] Flow nodes: fast vine swings, mud slides, bounce pods, tailwind glides	PARTIAL L82,L105,L163: no flow job
+LEDGER-2026-11-04-part1.md:335	Y	A tempo per stage (90 BPM relaxed W2, 130 urgent W5/W8); rhythm groups 8-14 s	PARTIAL L1835,L1837: 5-20 s groups, neighbour tempo differs; no BPM
+LEDGER-2026-11-04-part1.md:337	Y	Worked example "Stutter-Hop": hop, bounce pod, glide, breaking branch, timed	PARTIAL L1121: broken named, may be struck (L1796)
+LEDGER-2026-11-04-part1.md:338	Y	A ghost Pokey runs the timeline with real gravity, run, jump speed and wind	PARTIAL P4 L1137-1139: no ghost timeline run
+LEDGER-2026-11-04-part1.md:347	Y	Each world layers its hazard on a puzzle (W4 crosswind on return jump, W5 closing orchid)	PARTIAL §Critic ruling 3 L1794, G L1841: hazards return in every later world as a twist with its mechanic; not layered onto puzzles (rooms as built L1809)
+LEDGER-2026-11-04-part1.md:348	Y	Search blueprint: find N hidden items in a multi-tier room (3-7, 7-7)	PARTIAL §B L1499, L1503: 3-6/3-7 and 7-7 searches kept as built; no search blueprint
+LEDGER-2026-11-04-part1.md:351	Y	Tells: one glowworm above the right fern; the Prowler's voice hints	MISSING
+LEDGER-2026-11-04-part1.md:358	Y	2-4 ledger page on the highest vine at 90% of Pokey's best swing-launch jump	MISSING
+LEDGER-2026-11-04-part1.md:359	Y	3-7 ledger page on a dry shelf above the ferns via a climbing spoke	MISSING
+LEDGER-2026-11-04-part1.md:360	Y	4-7 ledger page at the bottom of the longest drop, behind the exit chute	MISSING
+LEDGER-2026-11-04-part1.md:376	Y	Acceptance: play 2-4 or 6-7 ten times, get ten different levels with story lines on cue	PARTIAL §Critic ruling 1 L1792, deep pass #1 L1879: era diversity ≥0.35 gates every builder incl. gen2; no story-on-cue check; misses on known list
+LEDGER-2026-11-04-part1.md:391	Y	Stitch modular nodes of 10-15 s	PARTIAL G L1835, §Per-roll L2116: bursts by time, 5-20 s groups; no 10-15 s node length
+LEDGER-2026-11-04-part1.md:392	Y	A library of 15 node templates (chimney, pulley room, wind gap, rest)	§CP2 node ideas L76-86, L102-107, L154-172, L208
+LEDGER-2026-11-04-part1.md:406	Y	Static hand-made levels with no replay change get boring past World 3	PARTIAL §Deep pass #1 L1879: era/lookalike gates run on every builder's output; hand stages stay hand (L1796)
+LEDGER-2026-11-04-part1.md:465	Y	Sloths swim about three times faster than they walk; make Pokey fast in water	§Water W4 L1894, L1952
+LEDGER-2026-11-04-part1.md:467	Y	Hold still on moss or ferns in W3 and W8 so patrols pass over him	PARTIAL §Other findings L1808: camouflage goes to Matt (deferred); M3 L2045 hide returns as a signature piece; no moss vs patrols
+LEDGER-2026-11-04-part1.md:470	Y	Belly slide on mud banks (W2), mossy chutes (W4), ash slopes (W9), catching zip-vines	PARTIAL §Other findings L1808: belly slide goes to Matt as one question (deferred); no slopes (M6 stepped mounds L2048)
+LEDGER-2026-11-04-part1.md:474	Y	3-S: Prowler's shadow run with panther physics	MISSING
+LEDGER-2026-11-04-part1.md:480	Y	9-S Pell's thread delivery: shield bounces magma, kick ties thread across lava	MISSING
+LEDGER-2026-11-04-part2.md:47	Y	Ban the previous stage's 3-4 move runs in the next stage	PARTIAL §Critic ruling 1 L1792: action 3-gram cosine <0.78 vs every stage of world and earlier worlds; no exact move-run ban
+LEDGER-2026-11-04-part2.md:84	Y	Nodes 5-6 change the kind of play (run/jump to slow puzzle or pulley climb), not just the obstacle	PARTIAL §1-1 L976-984; §Mixing L1320: 1-1 turns ground to tree, 3+ core moves per stage; no rule every stage changes its main verb
+LEDGER-2026-11-04-part2.md:104	Y	Rule 4 bar: World 1 and World 2 pass 100 seeds in a row with zero repetition warnings before World 3	PARTIAL G L1853, §Per-roll L2121: 200 rolls per generator (16 quick); no W1+W2-before-W3 order (L1879 recommends W10, W9 next)
+LEDGER-2026-11-04-part2.md:118	Y	Eagles hovering in wind as stepping stones; stomp chains across a chasm	MISSING
+LEDGER-2026-11-04-part2.md:131	Y	Dot's claw adds 15% hang at a double jump's top; Flicker flies 150 px ahead lighting steps	MISSING
+LEDGER-2026-11-04-part2.md:135	Y	Wind shadows: walls, boulders and shields block the wind, zero force behind them	MISSING
+LEDGER-2026-11-04-part2.md:160	Y	Triggered swarm in World 3: clean play wakes nobody; a mistake wakes 3-4 and starts a 5-second escape sprint	MISSING
+LEDGER-2026-11-04-part2.md:164	Y	Fast swimming: max speed x1.8, light gravity, hydro-dash out at 1.4x jump	PARTIAL §Water W4 L1894, L1952: swim 1.25× run (Matt's pick); buoyancy struck (L1950); flick leap-out (W12) without 1.4× number
+LEDGER-2026-11-04-part2.md:185	Y	C13: no Worlds 2-10 until Worlds 1 and 2 pass 100 seeds with zero repetition warnings	PARTIAL G L1853: 200 rolls per generator; World 2 not required first (L1879 order is a recommendation)
+LEDGER-2026-11-04-part2.md:188	Y	C16: swimming three times faster (x1.8); code is half a run	PARTIAL §Water W4 L1952: 1.25× run, Matt's pick; research's ×1.8 not taken
+LEDGER-2026-11-04-part2.md:189	Y	C17: bending sapling piece already exists; patience is World 4 only	MISSING
+LEDGER-2026-11-04-part2.md:199	Y	F4: gen2 builds only 5-7, 5-9 and Worlds 6-8; the rest hand-built or old generator	§Critic ruling 5 L1796, L1818
+LEDGER-2026-11-04-part2.md:210	Y	F15: Dot's pocket finds sit in stage 6 of Worlds 4-9, the same slot every world	MISSING
+LEDGER-2026-11-04-part2.md:212	Y	F17: seesaw and sluice pieces exist; 6-7 swim is slow	PARTIAL §Unused-art L162; §Water W4 L1952: seesaw noted, swim now 1.25× run with gate; sluice absent
+LEDGER-2026-11-04-part2.md:213	Y	F18: a bending-sapling bridge piece already exists (5-M)	MISSING
+LEDGER-2026-11-04-part2.md:220	Y	F25: four special stage kinds: 4-D, 5-M, 7-4 slide, 8-4 Lantern Run	PARTIAL §Critic ruling 2 L1793: move table gains 4-D and 8-4 rows; §B specials column (L1500, L1504) still omits them
+LEDGER-2026-11-04-part2.md:230	Y	#1 Repetition trap: same 10-stage template in same order every world; formula felt by World 4	PARTIAL §Other findings L1806: stages kept, slot roles vary, 2-3 a world reshaped (R-153)
+LEDGER-2026-11-04-part2.md:232	Y	#3 World 3 noise rule: too much noise opens the Prowler's eyes; last 20 s a stealth-freeze test	MISSING
+LEDGER-2026-11-04-part2.md:233	Y	#4 World 5 fake rest platforms and teacup checkpoints that drop into a web room	MISSING
+LEDGER-2026-11-04-part2.md:234	Y	#5 World 6 companion split: from 6-5 camera tightens around Flicker, play turns to water puzzles	MISSING
+LEDGER-2026-11-04-part2.md:236	Y	#7 Cause and effect: 2-3 log jam breaks, river rises in 2-4 and 2-8	MISSING
+LEDGER-2026-11-04-part2.md:237	Y	#8 7-3 chair set upright opens a secret passage in 7-6	MISSING
+LEDGER-2026-11-04-part2.md:239	Y	#10 World 2: search/puzzle early (2-3), climb at 2-6 (keep)	§Whole-game plan L1462
+LEDGER-2026-11-04-part2.md:240	Y	#11 World 4: vertical freefall late (4-7 The Long Drop)	§B L1500
+LEDGER-2026-11-04-part2.md:241	Y	#12 World 7 opens with a quiet observing puzzle room before fast crumbling floors	MISSING
+LEDGER-2026-11-04-part2.md:267	Y	#38 Eagles hover still in wind as stepping stones (4-4, 4-5)	MISSING
+LEDGER-2026-11-04-part2.md:279	Y	#50 Stepping-stone chain: 2-3 eagles or hanging snakes over a gap, stomp across	MISSING
+LEDGER-2026-11-04-part2.md:287	Y	#58 Behaviour tokens: J jump, V vine, B branch, W wind, S slow, C climb, P puzzle	PARTIAL §Critic ruling 1 L1792: action strings from era/lookalike; token alphabet not listed in spec
+LEDGER-2026-11-04-part2.md:289	Y	#60 Any exact 3-4 token run in level 7 forbidden in level 8	PARTIAL §Critic ruling 1 L1792: 3-gram cosine <0.78 vs earlier stages; no exact run ban
+LEDGER-2026-11-04-part2.md:292	Y	#63 A BPM per stage from its world (W2 85, W5 110, W10 130)	CONTRADICTED L1120: rhythm is the player's, not the song
+LEDGER-2026-11-04-part2.md:293	Y	#64 Cut every 10-15 s node into bars of 4 beats	PARTIAL §Design L1121: rhythm patterns; ruling 5 L1796 defines or strikes them (deferred); no bars
+LEDGER-2026-11-04-part2.md:301	Y	#72 Nodes 5-6: a completely different mechanical pairing	PARTIAL §1-1 L976-984; §Mixing L1320: one stage's ground-to-tree turn; no every-stage rule
+LEDGER-2026-11-04-part2.md:303	Y	#74 Node 8: cool-down, a slide or glide into the exit	CONTRADICTED L1795: stage ends in a dense 15-20 s finale at the exit, not a cool-down
+LEDGER-2026-11-04-part2.md:333	Y	#104 Perfect-bot bias: validate from 6-8 px inside the ledge	§C20/P8 ruling L2213-2227
+LEDGER-2026-11-04-part2.md:338	Y	#109 Beat pattern first (W2 90, W8 125 BPM), trace jump along it, place pieces under his feet	CONTRADICTED L1120: not the song; placement via the shared tracer (L1137) instead
+LEDGER-2026-11-04-part2.md:340	Y	#111 Sloth modifiers: under-branch hang, fast swim, belly slide, stillness camouflage, glowworm light	PARTIAL §Water W4 L1952; L1808: fast swim set; hang, slide, camouflage to Matt (deferred); no glowworm
+LEDGER-2026-11-04-part2.md:363	Y	#134 Rule 4: Worlds 1 and 2 at 60 FPS and 100 seeds clean before Worlds 2-10	PARTIAL G L1853: 200 rolls per generator; no W1+W2-first gate, no 60 FPS line here
+LEDGER-2026-11-04-part2.md:368	Y	#139 Fast swim: x1.8 speed, light gravity, hydro-dash	PARTIAL §Water W4 L1952: 1.25× run (Matt); buoyancy struck L1950; no hydro-dash
+LEDGER-2026-11-04-part2.md:373	Y	#144 Wind shadows behind walls, boulders and shields	MISSING
+LEDGER-2026-11-04-part2.md:375	Y	#146 Light-solid bridges and shadow bark; punch a lantern to swing a bridge	MISSING
+LEDGER-2026-11-04-part2.md:377	Y	#148 Lightning silhouettes in World 10: 0.4 s flash shows thorns and safe steps	PARTIAL §Ladder L1299: hold or freeze on the flash (10-3); no silhouette or fading trail
+LEDGER-2026-11-04-part2.md:381	Y	#152 Dot's claw hang; Flicker lights 150 px ahead when Dot is away	MISSING
+LEDGER-2026-11-04-part2.md:387	Y	#158 Projectile batting: 0.15 s punch deflect window	MISSING
+LEDGER-2026-11-04-part2.md:389	Y	#160 Spider curtain: 3-4 spiders at staggered heights; kick top one, Newton's cradle	MISSING
+LEDGER-CRITICAL-AGENTS.md:61	Y	Beats as bounded windows with explicit duration, entry state and exit state	PARTIAL §G rows L1835, roll.burstSecs L2175: bursts 5-20 s by time; no per-node duration
+LEDGER-CRITICAL-AGENTS.md:306	Y	Beats as bounded windows with duration and entry/exit invariants, for every node type	PARTIAL §G rows L1835, L2175: burst time windows; no node durations
+LEDGER-ENGINE-GEMINI.md:168	Y	Asymmetric late input window (−3/+6 frames) for Bluetooth lag; add a late try to the tracer.	MISSING
+LEDGER-ENGINE-GEMINI.md:213	Y	Pieces per world: ours 12+ templates and 14+ section types per world, not Gemini's 2-3 patterns.	C24 L1771
+LEDGER-ENGINE-GEMINI.md:224	Y	Rhythm groups 5-20 s, rests 1.0-1.2/2.0-2.5 s, dense 15-20 s finale ending at the exit.	PARTIAL G L1835-1836, ruling 4 L1795: groups 5-20 s, rests, finale at exit; but 1-1 data still lays a cool-down (L2186)
+LEDGER-ENGINE-GEMINI.md:228	Y	Difficulty across worlds: reject Gemini's D(w,s) (W2-8 above W4-1); bands overlap neighbours only a little.	C17 L1764
+LEDGER-ENGINE-GEMINI.md:265	Y	6-8 pacing nodes per standard stage.	CONTRADICTED L339-351, L1063-1075: 11 nodes per stage (12 with n7b)
+LEDGER-ENGINE-GEMINI.md:268	Y	Rhythm groups 6-10 s, rests 1.5-2.2 s.	PARTIAL §C2 L1749; §Per-roll bursts L2116: groups by time 5-20 s, rests relative; Gemini numbers not adopted
+LEDGER-ENGINE-GEMINI.md:279	Y	Jump arc by per-frame Euler with one gravity and wind.	§Planner amendments P4 L1137-1139
+LEDGER-ENGINE-GEMINI.md:299	Y	100 petals, 70 shared in 3-5 petal arcs along traced jumps.	§Placement rule 4 L305-310
+LEDGER-ENGINE-GEMINI.md:304	Y	Builder cap sits 3-13% under the checker's rejection line, a safety buffer.	MISSING
+LEDGER-ENGINE-GEMINI.md:305	Y	Tier 1 miss (low tension): drop 3-5 tiles to a safe ledge, lose petals, 5-8 s back, no damage.	PARTIAL §G rows L1834; C5 L1752: early misses land on solid ground, Easy slip costs a fall to a catch; no recovery-time cap or petal cost
+LEDGER-ENGINE-GEMINI.md:318	Y	W4 gust: tailwind 0.18, headwind −0.14 px/frame², 4-bar cycle, 24-frame telegraph.	PARTIAL §Move ladder L1302; §C hazards L1555: wind named as W4's hazard; no cycle or telegraph numbers
+LEDGER-ENGINE-GEMINI.md:331	Y	Bluetooth lag 120-220 ms; window −3/+6 frames.	MISSING
+LEDGER-ENGINE-GEMINI.md:334	Y	A 3-5 min stage is 7,000-10,000 px; mount nodes i−1..i+1.	MISSING
+LEDGER-ENGINE-GEMINI.md:440	Y	Gemini is thin on pieces (2-3 per new world); the engine cuts cost per stage, not pieces per world.	§C24 L1771; §Move ladder M2 L2041
+LEDGER-ENGINE-GEMINI.md:502	Y	Fixed 6-8 node slots Ki/Sho/Ten/Ketsu; ours places parts differently per stage.	§Critic 4 L1795: tension placed differently from the previous stage; plans redrawn to different shapes
+LEDGER-ENGINE-GEMINI.md:504	Y	Each node draws 2-4 patterns from a stateful deck; a pattern locked out for 4 draws.	§G rows L1839, L1835: 4-draw lockout; bursts by time (5-20 s) not count
+LEDGER-ENGINE-GEMINI.md:505	Y	Claim that the deck prevents 3-4 move repeats; keep the validator's run check.	§CP3 L395-397
+LEDGER-ENGINE-GEMINI.md:510	Y	A new world = one profile, ~40-line mutator, 2-3 patterns (contradicts our 12+).	CONTRADICTED L1771: C24 sets at least 14 section types a world, not 2-3 patterns
+LEDGER-ENGINE-GEMINI.md:515	Y	Reachability: (dx, dy) within R(move, tempo, difficulty, wind).	§P4 L1137-1139; §CP3 L369
+LEDGER-ENGINE-GEMINI.md:540	Y	6-8 nodes per stage.	CONTRADICTED L339-351, L1063-1075: 11 nodes
+LEDGER-ENGINE-GEMINI.md:543	Y	Groups 6-10 s, rests 1.5-2.2 s (contradicts ours).	PARTIAL §C2 L1749; §Per-roll bursts L2116: rests relative, groups 5-20 s; 6-10 s/1.5-2.2 s not adopted
+LEDGER-ENGINE-GEMINI.md:586	Y	70 shared petals in 3-5 petal arcs along traced jumps, teaching where to jump.	§Placement rule 4 L305-310
+LEDGER-ENGINE-GEMINI.md:595	Y	Budget table: similarity ≤42%, buffer 3-13%, reject >55%.	PARTIAL §Critic 1 L1792: lookalike cosine <0.78 cap; no buffer or reject zone
+LEDGER-ENGINE-GEMINI.md:597	Y	Tier 1: drop 3-5 tiles to moss or water, lose petals, 5-8 s back (ours bites at 4 s).	PARTIAL §G rows L1834; C5 L1752: miss lands on solid ground / a catch; no recovery-time line
+LEDGER-ENGINE-GEMINI.md:617	Y	A deck of 8 patterns for W4 (under our 12+).	§CP2 L76-107; §CP2 L208
+LEDGER-ENGINE-GEMINI.md:659	Y	bossBuilder: three parallel ways to win.	MISSING
+LEDGER-ENGINE-GEMINI.md:686	Y	Asymmetric window: a +200 ms try on Easy.	MISSING
+LEDGER-ENGINE-GEMINI.md:692	Y	A 3-5 min stage is 7,000-10,000 px across 8 nodes.	MISSING
+LEDGER-ENGINE-GEMINI.md:698	Y	Four puzzle blueprints: counterweight, vine-switch gate, rotten-floor sequence, wind/water redirect.	PARTIAL §Unused-art ideas L157, L162, L204; §CP3 L375-377: counterweight and root gate as small builds
+LEDGER-ENGINE-GEMINI.md:700	Y	World mutators: W4 wind, W5 water, W6 silk, W7 rolling boulders, W8 firefly sight.	PARTIAL §B L1495-1506; §C L1550-1561: world hazards (wind, webs, tide, crumble, dark); not as mutator data
+LEDGER-ENGINE-GEMINI.md:701	Y	Boss victory loops verified by three bot personas.	MISSING
+LEDGER-ENGINE-GEMINI.md:706	Y	0 repeated 3-4 runs; entropy ≥0.68.	PARTIAL §CP3 L395-397
+LEDGER-ENGINE-PAPERS.md:241	Y	8.8-23% unplayable with roll-then-filter: evidence for by-construction	§CP3 L259, L513
+R1-shipped-pipelines.md:90	Y	Fairness comes from the generator and from the hero's forgiving tools (climbing, wider timing windows).	PARTIAL §1-5 node plan L342; §CP3 MISS rulings L434-438; §1-1 plan L1073: generator-side catches and safe slips only; no hero rescue or forgiveness tool
+R2-academic-pcg.md:700	Y	A jump's difficulty is its spatial and temporal window, free from the tracer.	PARTIAL §C1 L1748: deferred - difficulty is the landing window plus avoided lines; numbers OPEN in TRIAGE
+R3-fun-by-math.md:348	Y	'Groups of 5-20 s then a rest' never measured; 8 of 9 stages have 20 s+ phrases	PARTIAL §G #38 L1835; L2116, L2263: groups judged by time 5-20 s; no tool measures bursts yet
+R3-fun-by-math.md:605	Y	Flow share: windows where challenge and success are above the stage's own mean; flat stage scores zero	PARTIAL §The difficulty dial L655, §CP3 design L339-351: node jobs (warm-up, teach, test, twist, master) shape intensity; no measured flow share
+R4-mobile-and-architecture.md:65	Y	Phone games reuse a level 2-3 times with a different goal, said plainly; disguised reuse fails	PARTIAL §The goal L360-361, §CP3 rulings L826-828: the second fork road's marks are the replay reward; no same-ground second-goal mode (carvings set, no-fall run)
+R4-mobile-and-architecture.md:555	Y	Expected falls per node as a design target: intro 0, spike 0.2-0.4, climax 0.3-0.6	PARTIAL §The difficulty dial L643,L652,L655: teach <=0.01 miss, rest/teach 0 risky pieces, test above warm-up; no numeric expected falls per node
+GEMINI-PCG-RESEARCH.md:20	Y	Puzzle rooms: parts relative to platforms; 1-2 steps Easy, 2-3 Normal; stuck detection; short hints; narrow tall rooms; camera lean	MISSING
+GEMINI-PCG-RESEARCH.md:43	Y	Celeste: screen readable within 2 s; every 5-10 s burst bookended by a flat safe rest	PARTIAL §placement rule 5 L313-319; §Rests L503,L799: rests set; 2-second sight-readability not measured
+GEMINI-PCG-RESEARCH.md:121	Y	Level 7 vertical/precision traversal: vertical camera bias; climbing or wind riding masters the world move	PARTIAL §critic ruling 4 L1795: 'chimney' map type; no vertical stage slot or camera bias
+GEMINI-PCG-RESEARCH.md:124	Y	Level 10 hardcoded finale: handcrafted boss battle or set-piece escape	§whole-game plan L1462; §B L1497-1506
+GEMINI-PCG-RESEARCH.md:290	Y	Action density: Easy 0.35-0.55, Normal 0.75-1.15, chase 1.10-1.40 actions a second	PARTIAL §C18 L1779: Easy 0.35-0.55 holds and engine thins Easy; Normal 0.75-1.15 and chase not gated (L801-803)
+GEMINI-PCG-RESEARCH.md:292	Y	Rhythm group length: Easy 6-8 s (3-4 actions), Normal 10-14 s (8-12 actions), chase 15-20 s	PARTIAL §G #83 L1836; §W5 L1895: Easy 3-4 actions in 6-8 s; Normal 10-14 s only for swim legs; chase absent
+GEMINI-PCG-RESEARCH.md:368	Y	Noisy-bot survival per jump edge: Easy at least 85%; Normal at least 70% Worlds 1-5, 50% Worlds 6-10	§difficulty dial L651; L906
+GEMINI-PCG-RESEARCH.md:369	Y	Minimum input window: Easy at least 300 ms, Normal at least 167 ms	PARTIAL §Easy rise cap L183-186: Easy 300 ms used in CP2 traces; Normal 167 ms and a standing gate absent (L650-653)
+GEMINI-PCG-RESEARCH.md:371	Y	Puzzle dependency depth: Easy 1-2 steps, Normal 2-4	MISSING
+GEMINI-PCG-RESEARCH.md:406	Y	Action strings: weighted edit distance, 18-beat sliding windows and n-gram cosine to compare levels of different lengths	§critic ruling 1 L1792
+GEMINI-PCG-RESEARCH.md:416	Y	Token weight: world traversal (vine, glide, bounce) V 2.0	PARTIAL §critic ruling 1 L1792: weights now feed cross-stage 3-gram cosine (lookalike.ts); weight value not stated in spec
+GEMINI-LEDGER.md:17	Y	A4 Sight-reading in about 2 s; rest pads between 5-10 s bursts	PARTIAL §Rests L503,L799; §placement rule 5 L313-319: rests yes; readability not measured
+GEMINI-LEDGER.md:39	Y	C7 3-gram cosine across stages (reject over 0.78 adjacent), 18-beat windows (under 0.28), lookalike.ts at 0.30	§critic ruling 1 L1792; §C14 L1761
+GEMINI-LEDGER.md:60	Y	E2 Max eventless walk 2/3/1.2 s; rest pads 1.0-1.2 s Normal, 2-2.5 s Easy	PARTIAL §C2 L1749; §G #38 L1835; L510: relative rests ≥1.0/2.0 s; 2/3 s walk only as estimates (L2015)
+GEMINI-LEDGER.md:62	Y	E4 Rhythm group length 10-14 s Normal, 6-8 s Easy	PARTIAL §G #83 L1836; §W5 L1895: Easy 6-8 s groups; Normal 10-14 s for swim legs only
+GEMINI-LEDGER.md:72	Y	F5 Gates: input window 300/167 ms, peak stress 2.5/5.5, puzzle depth, backtracking	PARTIAL §G #24 L1855; L183-186: pair risk capped, Easy 300 ms in traces; window, depth, backtracking ungated
+GEMINI-LEDGER.md:95	Y	H3 Each world in three visual sub-acts (morning, deep, lair approach)	PARTIAL §stage profile L1226; L331; L1014: per-stage light; no world sub-act rule
+GEMINI-LEDGER.md:123	Y	Summary gap 5: tiered hints and the six-pass generator for Worlds 6-10	PARTIAL §critic ruling 5 L1796; §F L1629: gen2 pipeline kept as builder; hints not engine work
+GEMINI-VARIETY-2026-11-02.md:20	Y	Stage types per world (normal, short break, search hub, race, mastery); reshape 2-3 stages per world	§other findings L1806
+MATT-RESEARCH-2026-11-04.md:25	Y	Never repeating: stage as a move string, 3-4 move runs checked, similarity to earlier stages, world tempo, tension curve, rewards seen from a rest	PARTIAL L1792,L1795,L1840: action 3-gram similarity, tension, world fingerprint gated; no rewards-seen-from-a-rest
+MATT-RESEARCH-2026-11-04.md:29	Y	Thirty ideas (under-branch hanging, jump-toggled platforms, domino branches, wind shadows, water waves, enemy bowling, a pacing director, more)	PARTIAL L1833,L1830,L1808: hanging core, moving platforms; new verbs deferred to Matt; most ideas absent

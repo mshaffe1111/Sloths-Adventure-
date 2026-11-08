@@ -1,0 +1,31 @@
+// CP2: "Push block" in the real engine, built exactly as the shipped one (protoStage.ts:641-660 logPuzzle): ground at G, a hollow log
+// 220 x 100 with push {min, max}, a wall 230 px high (too high to jump, even twice) at wallX. The player holds right into the log until it
+// stops against the wall's foot, then jumps onto the log and jumps (double) onto the top. Normal and Easy.
+import './src/game/headlessDom.ts';
+import { setDifficulty } from './src/game/difficulty.ts';
+if (process.env.MODE === 'easy') setDifficulty('easy');
+import { RealPlay } from './src/game/realPlay.ts';
+import type { Platform } from './src/game/types.ts';
+const r = new RealPlay('3-5', 1);
+const G = 900, wallX = 1500;
+for (const second of ['double', 'single']) {
+  const ground = { id: 1, x: 0, y: G, width: 3000, height: 120, type: 'solid', style: 'moss_stone' } as Platform;
+  const log: any = { id: 2, x: 700, y: G - 100, width: 220, height: 100, type: 'solid', style: 'log', push: { min: 100, max: wallX - 55 } };
+  const wall = { id: 3, x: wallX, y: G - 230, width: 700, height: 350, type: 'solid', style: 'log' } as Platform;
+  r.bare([ground, log, wall]); r.stand(300, G);
+  let phase = 'push', i = 0, res = 'never on top', t0 = 0, logStop = 0;
+  for (; i < 900; i++) {
+    const p: any = r.p; const L: any = (r.e as any).platforms.find((q: any) => q.id === 2);
+    if (phase === 'push') { r.frame({ right: true }); if (L.x + L.width >= wallX - 56) { phase = 'back'; logStop = Math.round(L.x); t0 = i; } continue; }
+    if (phase === 'back') { r.frame({ left: true }); if (p.x < L.x - 60) phase = 'jump1'; continue; }
+    if (phase === 'jump1') { r.frame({ right: true, press: p.grounded && p.x > L.x - 40, jump: !p.grounded }); if (p.grounded && Math.abs(p.y - (G - 100)) < 2) { phase = 'jump2'; } continue; }
+    if (phase === 'jump2') {
+      const pr = p.grounded && p.x > L.x + L.width - 60;
+      const dbl = second === 'double' && !p.grounded && p.vy > -40 && !p._d; if (dbl) p._d = true;
+      r.frame({ right: true, press: pr || dbl, jump: !p.grounded });
+      if (p.grounded && Math.abs(p.y - (G - 230)) < 2) { res = `on top at ${((i - t0) / 30).toFixed(1)} s after the push`; break; }
+    }
+  }
+  console.log(`phase ${phase} end x ${Math.round((r.p as any).x)} y ${Math.round((r.p as any).y)} grounded ${(r.p as any).grounded}`);
+  console.log(`${process.env.MODE === 'easy' ? 'EASY  ' : 'NORMAL'} second jump ${second}: log pushed to x ${logStop} (wall foot ${wallX - 55 - 220}); ${res}`);
+}

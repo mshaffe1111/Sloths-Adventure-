@@ -1,0 +1,195 @@
+== w5Sections.ts: 31 sections
+   w5-garden: garden walk
+   w5-lawn: guests lawn
+   w5-tea-table: the tea table and its pot
+   w5-stumps: stumps
+   w5-thread-hop: thread and sleepers cover
+   w5-cake-path: cakes on the path
+   w5-chair-walk: soft chairs
+   w5-orchid-hop: closing orchids
+   w5-soft-gap: soft gap
+   w5-rise: a step up
+   w5-drop: a step down
+   w5-tall-stumps: tall stumps
+   w5-high-road: high road cover
+   w5-butler: the Butler
+   w5-sheet-walk: silk sheet
+   w5-thread-gap: thread at the gap
+   w5-sleeper-row: sleepers row cover
+   w5-pot-gap: teapot at the gap
+   w5-pot-pair: two teapots
+   w5-steps: up and over
+   w5-double-gap: wide gap
+   w5-sheets: twilight sheets
+   w5-seamstress: the Seamstress
+   w5-gauntlet: the whole garden cover
+   w5-stump-gap: stump and gap
+   w5-cocoon-row: cocoons by the path
+   w5-pot-stumps: teapot between stumps
+   w5-chair-gap: chair at the lip
+   w5-butler-gap: the Butler past the gap
+   w5-thread-stairs: thread stairs
+   w5-bower: rest bower
+== w6Ground.ts: 41 sections
+   w6-bank: mangrove bank
+   w6-root-steps: root steps
+   w6-lily-rest: lily bank
+   w6-landing: landing bank
+   w6-stump-hop: knee and gap
+   w6-mud-gap: mud gap
+   w6-rise: a step up
+   w6-drop: a step down
+   w6-double-gap: wide mud gap
+   w6-root-road: creek knees
+   w6-watch-pools: watched pools cover
+   w6-pool-chain: pool chain cover
+   w6-pool-long: long pool cover
+   w6-watch-reeds: watched reeds cover
+   w6-reed-run: reed knees cover
+   w6-reed-stairs: reed stairs cover
+   w6-bask-bank: basking caiman cover
+   w6-bask-gap: caiman past the gap cover
+   w6-bask-frogs: frog banks cover
+   w6-bask-pair: two on the bank cover
+   w6-mudflat: mudflat run
+   w6-twin-flats: two mudflats run
+   w6-triple-flats: three mudflats run
+   w6-long-flat: long mudflat run
+   w6-knee-run: knee root run
+   w6-knee-flats: knee roots and flat run
+   w6-knee-high: tall root run
+   w6-channels: channels run
+   w6-channel-flat: channel and flat run
+   w6-channel-row: channel row run
+   w6-hunter-bank: hunters bank arena
+   w6-sunken-yard: sunken yard arena
+   w6-cat-banks: cats bank arena
+   w6-jaguar-roots: jaguar roots arena
+   w6-prowl-knees: ocelot knees arena
+   w6-caiman-flat: caiman flat arena
+   w6-caiman-pair: two caimans arena
+   w6-tide-hunt: tide hunters arena
+   w6-harpy-flat: harpy flat arena
+   w6-tayra-banks: tayra banks arena
+   w6-harpy-channels: harpy channels arena
+== w7Ground.ts: 36 sections
+   w7-colonnade: colonnade
+   w7-temple-steps: temple steps
+   w7-column-rest: fallen column floor
+   w7-plinth-hop: drain and plinth
+   w7-step-up: a step up
+   w7-step-down: a step down
+   w7-rubble-leap: wide rubble pit
+   w7-first-tiles: the first cracked tiles
+   w7-gallery: tile gallery over a hall
+   w7-long-gallery: long tile gallery
+   w7-twin-halls: two tiled halls
+   w7-tile-stair: tile stair over a hall
+   w7-long-stair: long tile stair
+   w7-stair-flat: tile stair and run
+   w7-brown-wall: brown vine up an old wall
+   w7-wall-gap: wall and rubble gap
+   w7-wall-plinths: old wall and plinths
+   w7-wall-cat: guarded wall
+   w7-drain: dirty drain
+   w7-drain-pair: two drains
+   w7-drain-rise: drain and rubble
+   w7-drain-run: three drains
+   w7-courtyard: sunken courtyard search
+   w7-twin-courts: twin courtyards search
+   w7-court-gap: broken courtyard search
+   w7-chair-ring: the ring of chairs search
+   w7-guard-floor: guarded floor arena
+   w7-sunken-hall: sunken hall arena
+   w7-cat-halls: cats plinths arena
+   w7-jaguar-court: jaguar court arena
+   w7-boa-hall: boa hall arena
+   w7-boa-twin: two boa halls arena
+   w7-boa-gallery: boa gallery arena
+   w7-harpy-floor: harpy floor arena
+   w7-harpy-wall: harpy wall arena
+   w7-harpy-plinths: harpy plinths arena
+== w8Sections.ts: 82 sections
+   w8-rest-bough: broad bough
+   w8-rest-fork: branch fork
+   w8-rest-trunk: a low trunk to rest by
+   w8-rest-trunk-knot: a knot and a low trunk
+   w8-rest-glide: a short glide to rest
+   w8-rest-glide-fork: a long run-up, a short glide off it
+   w8-bloom-rest: a glade of night blooms (pickups)
+   w8-knot-hops: knots and gaps
+   w8-bough-gap: wide gap between boughs
+   w8-bat-run-first: under the sleeping bats (time the run)
+   w8-bat-run-pair: two rows of sleeping bats
+   w8-bat-run-gap: under the bats, then over the gap
+   w8-bat-run-dark: past the bats into the dark (run)
+   w8-perch-run: knot perches over the gap
+   w8-perch-climb: up the knot perches
+   w8-perch-hunter: knot perches to the hunter\
+   w8-fungus-blooms: blooms up the fungus steps (pickups)
+   w8-fungus-tall: a tall run of fungus steps (pickups)
+   w8-fungus-hunter: past the hunter and up the fungus steps
+   w8-fungus-glide: up the fungus steps, glide off the top
+   w8-doze-first: the first sleeping boa
+   w8-doze-pair: two sleeping boas on the bough
+   w8-doze-gap: sleeping boas either side of the gap
+   w8-double-gap: second-jump gap
+   w8-trunk-climb: climb the trunk
+   w8-rise: a step up the tree
+   w8-drop: a step down the tree
+   w8-climb-run: two trunks
+   w8-prowl-bough: the prowlers\
+   w8-dark-boughs: the dark boughs (run)
+   w8-dark-gap: the dark gap (run)
+   w8-dark-climb: the dark trunk (run)
+   w8-dark-long: the long dark (run)
+   w8-night-trunks: two trunks in the night (run)
+   w8-bloom-climb: blooms up the trunk (pickups)
+   w8-bloom-high: blooms on the high bough (pickups)
+   w8-bloom-dark: blooms in the dark (pickups, run)
+   w8-bloom-gaps: blooms over the gaps (pickups)
+   w8-bloom-leap: blooms past the long gap (pickups)
+   w8-bloom-rope: blooms past the rope (pickups)
+   w8-bloom-rope-pair: two ropes, blooms between (pickups)
+   w8-bloom-rope-hunter: the long rope, a hunter past it (pickups)
+   w8-roost-hollows: the hollow bough cover
+   w8-roost-hollow-gap: the hollows over the gap cover
+   w8-roost-curtains: the leaf curtains cover
+   w8-roost-curtain-gaps: the curtained gaps cover
+   w8-roost-climb: the roost tree climb cover
+   w8-roost-dark: the dark under the roost cover (run)
+   w8-roost-curtain-leap: the curtained leap cover
+   w8-roost-prowl: the prowled roost cover
+   w8-roost-long: the long roost bough cover
+   w8-glide-first: the first moonlight glide (run)
+   w8-glide-pair: two moonlight glides (run)
+   w8-glide-trunk: climb, then glide from the high bough (run)
+   w8-glide-hunter: glide onto the hunter\
+   w8-glide-dark: glide into the dark (run)
+   w8-glide-leap: second jump, then glide (run)
+   w8-glide-prowl: past the hunter, then glide (run)
+   w8-glide-gust: glide on the night wind (run)
+   w8-glide-gust-pair: two glides on the night wind (run)
+   w8-glide-gust-hunter: on the wind to the hunter\
+   w8-hunt-bat-run: past the sleeping bats to the hunters (arena)
+   w8-hunt-bat-pair: bats, a hunter, bats (arena)
+   w8-monarch-flower: moon flower to the high bough, glide off it (arena)
+   w8-monarch-flower-pair: moon flower, a guard up top, a gap and down (arena)
+   w8-hunter-bough: hunters bough arena
+   w8-sunken-fork: sunken fork arena
+   w8-cat-boughs: cats boughs arena
+   w8-jaguar-high: jaguar high bough arena
+   w8-cat-trunks: cats up the trunks arena
+   w8-harpy-bough: harpy bough arena
+   w8-harpy-leap: harpy leap arena
+   w8-harpy-gaps: harpy gaps arena
+   w8-boa-knots: boa guards arena
+   w8-guard-dark: guards and the dark arena (run)
+   w8-guard-knots: guards on the knots arena
+   w8-monarch-dark: the Monarch\
+   w8-monarch-cats: the Monarch\
+   w8-monarch-harpies: the Monarch\
+   w8-monarch-guard-posts: the Monarch\
+   w8-roost-trunks: the roost tree\
+   w8-guard-night: guards and the night arena (run)
+TOTAL 190

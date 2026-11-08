@@ -1,0 +1,16 @@
+// Interim floors pass (11-06, scratch; NOT the lead's 4:23 ruling): goes in layStage right before `const strays`, with
+// `import { findW1Pits } from '../w1Pits.ts';` in gen2/pipeline.ts. Planted test: w1Floorless.test.ts.txt (red without it, green with it).
+
+  // (World 1's floorless spans, read as World 1 reads and paints its pits (w1Pits.ts findW1Pits): a span the sections left with no floor,
+  // under floating logs, between a bank and a bough or a level double gap, was painted as WATER, 11 on 1-1 layout 1 (the porter's w1Pits
+  // red, 11-06). Each is made a soft fall, as the lead ruled ("a soft zone, a put-back on the take-off, and the painted pit"): a soft
+  // heart-fall zone over it (he is put back on the ledge he left, nothing lost, and the way on is never round a stair) and its banks
+  // marked `pit: 'drop'` (a painted drop, never water). A floor laid there would read as water still: findW1Pits judges a floor from
+  // one ground line, and gen2's ground rises and falls)
+  if (graph.id && budget.world === 1 && budget.pit === 'soft') {
+    for (const g of findW1Pits(platforms)) {
+      if (g.kind !== 'fall' || g.drop) continue;
+      if (!heartFalls.some((z) => z.soft && z.x0 <= g.x0 + 4 && z.x1 >= g.x1 - 4)) heartFalls.push({ x0: R(g.x0), x1: R(g.x1), soft: true });
+      for (const q of platforms) if (!q.broken && (Math.abs(q.x + q.width - g.x0) < 3 || Math.abs(q.x - g.x1) < 3)) q.pit = 'drop';
+    }
+  }

@@ -71,4 +71,10 @@ have.
 
 21. **Every request gets a number the same turn** (Matt, 2026-11-01: "when we bring up stuff, are you going to start logging it better and tracking it?"). Anything Matt raises (a bug, an idea, a decision, a screenshot, "we still have to do X") gets an R-number on the roadmap in the same turn, and the lead tells him the number. The same goes for what helpers name as "not fixed" and for every debrief "next week". If it has no number, it is not tracked. The roadmap (reference/ROADMAP.md, mirrored to the roadmap doc) is the only list of work; STATUS.md is the diary. The roadmap-keeper helper keeps the list true and sweeps it after every release; a repo gate fails when something that should be on it is not.
 
+22. **Never change a rule to get around a defect. Fix the root problem, always** (Matt, 2026-11-05: "We don't change rules to go
+    around defects. We fix the problem. We fix the root problem always."). A stage, piece or number that misses a rule is fixed
+    at its root cause (usually the engine or the builder), never by loosening, re-wording, re-scoping or "known-listing" the rule
+    to make it pass. A rule changes only when Matt changes it for a reason of its own, never to clear a miss. Known lists are
+    only for misses that already exist when a NEW gate starts (law 5), and they only shrink.
+
 Breaking a law is a defect: it goes in the log with its root cause like any other.

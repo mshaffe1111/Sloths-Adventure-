@@ -1,0 +1,18 @@
+PLATFORM PIECES across all 90 live stages (Normal, layouts 1-2): pieces, sizes, worlds that use them
+  log                    9095  sizes long/medium/short  worlds [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  bank (moss stone)      3934  sizes long/medium/short  worlds [1, 2, 3, 4, 5, 6, 7, 9, 10]
+  branch                 2210  sizes long/medium/short  worlds [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  stone step             1567  sizes long/medium/short  worlds [1, 3, 4, 5, 7, 8, 9, 10]
+  ruin block              856  sizes long/medium/short  worlds [5, 7, 8, 9, 10]
+  bridge                  477  sizes long/medium/short  worlds [5, 8, 9, 10]
+  plain/unstyled          458  sizes long/medium/short  worlds [1, 2, 3, 4, 5, 6, 7, 8]
+  mushroom/bounce         330  sizes short  worlds [1, 3, 4, 5, 7, 8, 9, 10]
+  drifting log            302  sizes medium/short  worlds [2]
+  crumble/snap            268  sizes long/medium/short  worlds [1, 5, 7, 8, 9, 10]
+  lily pad                 82  sizes short  worlds [2]
+  fungus shelf             53  sizes short  worlds [8]
+  moving platform          17  sizes short  worlds [2, 9, 10]
+  roost branch              2  sizes medium  worlds [8]
+HANGING: {'tree_climb': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 'swing_liana': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}  ropes in worlds [1, 2, 3, 4, 8, 9, 10]  water in worlds [1, 2, 3, 4, 5, 6, 7, 9, 10]
+ANIMALS: {'boa': [1, 5, 7, 8, 9, 10], 'caiman': [6, 9, 10], 'eagle': [5, 7, 8, 9, 10], 'frog': [6, 7], 'harpy': [7, 8, 9, 10], 'jaguar': [3, 7, 8, 9, 10], 'ocelot': [3, 5, 6, 7, 8, 9, 10], 'snake': [1, 2, 4, 5, 7, 8, 9, 10], 'spider': [5], 'tayra': [5, 6, 7, 8, 9, 10], 'turtle': [2]}
+PICKUPS: {'cage': [2, 4], 'exit_totem': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 'find': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 'flower': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 'heart': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 'powerup_invincible': [9, 10], 'powerup_magnet': [5, 7, 9, 10], 'powerup_speed': [5, 9], 'relic': [3, 5, 7, 9], 'seed': [1, 2, 3, 4], 'super_heart': [5, 9, 10], 'thorn_gate': [7]}
