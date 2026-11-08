@@ -52,6 +52,18 @@
   rule the ratings teach (the plan: the lead branch's next-week notes, "float rating").
 - R-165.55: the story keeper's 10 open story threads (reference/story/STORY-KEEPER.md).
 - R-165.56: done (PR #67 and #68, merged 11-07).
+Matt's question queue (one at a time, in this order): R-165.53 (asked 11-07 about 9:48 PM ET); then the story keeper's three, in its order
+(11-07): #10 skulls (all out, or only remains in soil?), #2 the two food lines (keep each, yes/no), #1 Meeca's parents (its pick:
+unspoken); then R-165.52, R-165.54.
+Story keeper's answers, 11-07 evening (STORY-KEEPER.md updated at 1b on ccr-0d59a91c-oy3imz; read only, never build from it):
+- #8 decided: `lesson.bounce` teaches the bounce, no hint.1-1.bounce row. Content's 1-1 packet done-item: the card fires at gen2 1-1's
+  FIRST mushroom.
+- R-165.57 words (lead approves, conditional): pad jump "Press Jump" / "Tap the Jump button to leap."; pad nice "Nice jump!" / "In the
+  air, tap Jump again for a double jump."; run unchanged. Condition, in the Engine/Critic packet: a pad player TAPPING twice clears the
+  double-teach gap (195-205 px) in the real engine; if not, the nice line says "press and hold Jump again".
+- #3: the story keeper fixes the Cast Bible (Dot is she, Grandpa's timeline) to match the approved VOICE.md: lead OK'd.
+- #4 the prologue ships; #5 (1-5 text) waits with R-165.45; #7 waits for 1-2; #6 one HF list through the lead after the 1-1 art audit;
+  #9 a low-priority UI ticket.
 Not Matt's: the pad's two coach lines (R-165.57) are the lead's call with the story keeper (LEAD-PLAYBOOK: the lead approves in-play
 lines); Matt sees them in the release.
 
