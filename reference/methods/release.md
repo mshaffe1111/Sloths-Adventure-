@@ -7,7 +7,7 @@ Matt, 2026-11-06, after 0.9.5: "Make sure that you note going forward how to do 
 | Link | What it is | When it changes |
 |---|---|---|
 | https://mshaffe1111.github.io/Sloths-Adventure-/ | The LIVE game (gh-pages) | Only when a PR merges into main and the deploy succeeds |
-| https://mshaffe1111.github.io/Sloths-Adventure-/?fresh=1#ctest | **The TESTERS' link** (Sally and the others): the live site plus #ctest, with the recorder and survey | Same as the live site: testers see a new build ONLY after the merge |
+| https://mshaffe1111.github.io/Sloths-Adventure-/?fresh=1#ctest | **The TESTERS' link** (the child tester and the others): the live site plus #ctest, with the recorder and survey | Same as the live site: testers see a new build ONLY after the merge |
 | https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb | **Matt's own test link** (the Claude page), where he plays a candidate BEFORE the merge | When the lead publishes it with the Artifact tool |
 | https://github.com/mshaffe1111/Sloths-Adventure-/releases | The APK, named "Sloths Adventure v<version> (<date>)", tag v<version>-<run> | Built by itself on every push to main |
 

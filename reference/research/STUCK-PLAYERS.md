@@ -1,6 +1,6 @@
 # When a player can't get past a spot: how shipped games handle it (the lead, 11-07, for Matt)
 
-Trigger: Sally (a child) needed 37 min and 187 falls on Easy 1-1. Matt: "what happens if somebody's just not able to do it ... are those
+Trigger: a child tester needed 37 min and 187 falls on Easy 1-1. Matt: "what happens if somebody's just not able to do it ... are those
 people we just say that we lose?" The answer from shipped games is no: the good ones give everyone a way through, in layers.
 
 ## What shipped games do
@@ -28,7 +28,7 @@ people we just say that we lose?" The answer from shipped games is no: the good 
 Finishing is never blocked. Some games mark the record honestly (Super Guide's dimmed stars). None of them blocks the story.
 
 ## The lead's recommendation for Sloths (for Matt to decide with his own research)
-- Layer 2, quietly, on Easy only, after 3 falls at the same spot. Use the data: Sally's fall points show where it would fire.
+- Layer 2, quietly, on Easy only, after 3 falls at the same spot. Use the data: the child tester's fall points show where it would fire.
 - Layer 3 after 5 falls at the same flag, on both settings. Dot offers: "Want a hand? I'll show you a way." Then a vine or leaf bridge
   appears for that one gap, or Dot carries Pokey to the next flag. The player taps yes or no.
 - The petals and stars are kept, with a small honest mark (like Super Guide's). Never a lost life or a lost stage.

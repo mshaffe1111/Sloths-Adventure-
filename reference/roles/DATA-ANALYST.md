@@ -12,13 +12,13 @@ rows to get. The analyst finds problems; the planner, designer and engine-core f
   Decoding and the moment types are in tools/playtesters/LOG_EVENTS.md.
 - Each run starts with a `gen2` moment: `1-1 seed <n> <easy|normal> build <commit> list <hash>`. The seed and build rebuild the exact
   layout.
-- Players are told apart by name AND tester code. The code is per device, so two people can share a phone (Andrew on Matt's Pixel).
-  "Sasa" is Sally.
+- Players are told apart by name AND tester code. The code is per device, so two people can share a phone (a second person on one phone).
+  "the child tester" is the child tester.
 
 ## The report (tools/playtesters/report.py, started by the lead 11-07; grow it, don't restart it)
 For each play window, by stage and setting:
 1. **Sections:** entries, median time, put-backs (softFall) and lives lost per entry, and repeated entries (retries). This ranks where
-   tempo breaks and where people fail. 11-07 found `w1-log-chain` (Sally, 155 of 187 put-backs) and the lethal pits.
+   tempo breaks and where people fail. 11-07 found `w1-log-chain` (the child tester, 155 of 187 put-backs) and the lethal pits.
 2. **Players:** finish time and its trend across runs (the learning curve), falls per minute, and input misreads, such as taps read as
    punches where nothing can be punched, and flicks read as the wrong move (use the touch lines). Survey answers sit beside the numbers.
 3. **Phones:** fps, freezes (`stall`, `long`), quality step-downs and load time (`launch`), by device and by orientation.
@@ -31,7 +31,7 @@ For each play window, by stage and setting:
 
 ## Rules
 - Numbers, not impressions. Every claim names its count, its players and its layouts.
-- Separate one player's outlier from a pattern. Sally's log chain is one child's run but a real pattern for the child bot, so call out
+- Separate one player's outlier from a pattern. the child tester's log chain is one child's run but a real pattern for the child bot, so call out
   which it is.
 - No raw finger logs in the repo, only the report and its numbers (same as profile.py).
 - The report feeds the player bots too (tools/playtesters/profile.py and personas/): add each window's runs to the profiles.
