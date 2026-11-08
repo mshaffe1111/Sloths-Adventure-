@@ -36,8 +36,8 @@ artifact on a branch.
    work without asking. What still goes to Matt: merges and releases (LAWS 13), Hugging Face spending and picture lists, the decisions
    in STATE.md "waiting on Matt", story and taste calls through the story keeper, and anything that changes his rules.
 11. **The lead rotates, and the previous lead stays as the backup** until the next rotation (roles/PM.md §8, "The backup lead").
-   **The lead rotates** (Matt, 11-07: clear the lead "so you don't start making bad decisions and become biased"): after every release
-   or every week, whichever comes first, at a quiet seam. The procedure is reference/roles/PM.md §8; the first handover was 11-07 evening
+   **The lead rotates** (Matt, 11-07: clear the lead "so you don't start making bad decisions and become biased"). Matt decides when (11-07: "I'll tell you when
+   it's time to retire"); the lead flags each trigger to him at once (roles/PM.md §8). The procedure is reference/roles/PM.md §8; the first handover was 11-07 evening
    (Matt moved it up), with the new lead's first work on Wednesday 11-11 after the weekly reset.
 12. **Health check, remake and takeover** (Matt, 11-07: "how to check if somebody needs to be replaced and remade, and how to ensure
    that he's able to take over with potentially a team that's in place"): the roster, the drift signs, the three-fact test, the

@@ -65,6 +65,9 @@ R-165.68/.69; render-stone; art-1-1-sunrise). Write every answer into the docume
   real engine), carried in the Engine/Critic packet.
 - Old helper sessions still showing "needs action" (art-1-1-sunrise's HF "go", render-stone, Ex Tester Data 1): nobody answers them.
 
+## A line for Matt to change in his file (CLAUDE.md is his)
+CLAUDE.md:25 says "HF: $72 left, total"; Matt said $65.55 on 11-07. Offer him the edit when a CLAUDE.md change next goes to him.
+
 ## The links
 - Live: https://mshaffe1111.github.io/Sloths-Adventure-/ . Testers: https://mshaffe1111.github.io/Sloths-Adventure-/?fresh=1#ctest
 - Matt's test link: https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb (his alone; doesn't record).

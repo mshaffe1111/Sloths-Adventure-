@@ -46,20 +46,21 @@
 personas sharpened in DESIGNER, ARCHITECT, ENGINE, CONTENT and DATA-ANALYST; through a cold Critic before Wednesday.
 
 ## Continuous improvement (Matt, 11-07: "you have the right to kill the continuous improvement if you think it'll hurt the project")
-The lead's call: KEEP it. On its first night it caught 15 errors in the lead's own documents before anything ran on them (D34). What
-gets cut is bookkeeping that catches nothing: R-165.67 (the Critic simplifies roadmapcheck's BUILD-PLAN prose check so a new row
-doesn't force a hand-written sum). The defect log, root causes, gates and the cold Critic stay.
+The lead's call: KEEP it, every check included. On its first night it caught errors in the lead's own documents before anything ran
+on them (D34). (A first idea to loosen roadmapcheck's BUILD-PLAN prose check was withdrawn: the Critic showed it catches a stale
+estimate Matt reads; R-165.67 now re-does the estimate instead.) The defect log, root causes, gates and the cold Critic stay.
 
 ## Carried from the old team (handoffs: reference/handoffs/<role>.md, all six in)
 - R-165.47..51 (gentle intro, dead walk, nothing bites, funcheck vs lock, the proven list 138 toward 300).
 - The pad's two old coach lines need new words next release (R-165.57; CoachOverlay.tsx COACH_TEXT.pad).
 - Bundle headroom 31 KB under 4 MiB; lazy-seeds.py is ready (reference/qa-reports/0.9.5/).
 - Dot says nothing while a first-timer stands stuck 20 s at the step (handoffs/tester-page.md §5); goes with escalating help.
-- render-stone (R-165.28): paused work on origin/render-stone 7da53035, not in main and in no handoff; it waits until 1-1 passes. Left
+- render-stone (R-165.28): paused work on origin/render-stone 7da53035, not in main (handoffs/designer.md:97 parks it; no handoff lists
+  what's left); it waits until 1-1 passes. Left
   (its last commit message): the trunk past the slab fault, world kin above 360 px, upright stills, the after count, a lock re-run, the
   full tests and gates, the props/earth islands. Re-issue as a fresh packet then; never resume the old session.
 - art-1-1-sunrise's HF "go": never given, superseded by the near11 repaint (HF-SPEND.md 11-06). Don't run it.
-- Hugging Face: $65.55 balance (Matt, 11-07 evening); keep about $15 reserve; nothing outstanding (backup lead, HF-SPEND.md).
+- Hugging Face: $65.55 balance (Matt, 11-07 evening; CLAUDE.md:25 still says $72: Matt's file, the line to give him is in lead.md); keep about $15 reserve; nothing outstanding (backup lead, HF-SPEND.md).
 - Art: earth ledges "from the floor up only" until Matt rates them; flowering vine petals read grey; Matt's redo list R-01..R-09.
 
 - Ruled (Matt, 11-07): tools/playtesters/personas/ keeps its four first-name files (summary numbers only; Matt checked with them).
