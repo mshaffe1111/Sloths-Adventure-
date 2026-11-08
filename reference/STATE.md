@@ -42,6 +42,14 @@
    handoffs/release-clerk.md §4: fail when the candidate has more `todo:` test markers than main; add funknown.json to knowncheck
    (R-165.63, R-165.64).
 
+## Wednesday's packets (R-165.66): reference/packets/2026-11-11/ (ANALYST, DESIGNER-R-165.60, PACKER, ARCHITECT-R-165.61), the
+personas sharpened in DESIGNER, ARCHITECT, ENGINE, CONTENT and DATA-ANALYST; through a cold Critic before Wednesday.
+
+## Continuous improvement (Matt, 11-07: "you have the right to kill the continuous improvement if you think it'll hurt the project")
+The lead's call: KEEP it. On its first night it caught 15 errors in the lead's own documents before anything ran on them (D34). What
+gets cut is bookkeeping that catches nothing: R-165.67 (the Critic simplifies roadmapcheck's BUILD-PLAN prose check so a new row
+doesn't force a hand-written sum). The defect log, root causes, gates and the cold Critic stay.
+
 ## Carried from the old team (handoffs: reference/handoffs/<role>.md, all six in)
 - R-165.47..51 (gentle intro, dead walk, nothing bites, funcheck vs lock, the proven list 138 toward 300).
 - The pad's two old coach lines need new words next release (R-165.57; CoachOverlay.tsx COACH_TEXT.pad).
