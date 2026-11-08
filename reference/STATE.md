@@ -8,7 +8,9 @@
 ## The team now (taken stock 11-07 evening by the new lead, session_01FhBbYMoqqEdVR3qFjTCugy)
 - Lead: session_01FhBbYMoqqEdVR3qFjTCugy. Backup lead (questions only): session_01FhBbYN2DDsktc7BGtNxPFK.
 - Story keeper: session_019iachLiuwNTAZUBSJWUmR3, alive (idle), told the new lead's id 11-07. Its context was at about 803K of 1M
-  tokens on 11-07 (near compression): health check due as soon as it answers.
+  tokens on 11-07 (near compression). Health check 11-07 about 9:50 PM ET: PASS 3 of 3 (Pell and the blanket; 22 ms a letter and
+  piece lines under 10 words; the judged line FAILED for the right reasons), one tool call (list_events). Asked to make STORY-KEEPER.md
+  complete before it compresses.
 - No Agent-tool member running; nothing in flight; nothing to re-issue.
 - Old helper sessions, all idle and retired (TEAM.md "Transition"): some still show "needs action" (art-1-1-sunrise wants a "go" for an
   HF job; render-stone wants "send word to resume"; Ex Tester Data 1 asks about ctest-notes). **Nobody answers them**: the work goes
@@ -55,7 +57,7 @@
 Matt's question queue (one at a time, in this order): R-165.53 (asked 11-07 about 9:48 PM ET); then the story keeper's three, in its order
 (11-07): #10 skulls (all out, or only remains in soil?), #2 the two food lines (keep each, yes/no), #1 Meeca's parents (its pick:
 unspoken); then R-165.52, R-165.54.
-Story keeper's answers, 11-07 evening (STORY-KEEPER.md updated at 1b on ccr-0d59a91c-oy3imz; read only, never build from it):
+Story keeper's answers, 11-07 evening (STORY-KEEPER.md updated in commit 948f8931 on ccr-0d59a91c-oy3imz; read only, never build from it):
 - #8 decided: `lesson.bounce` teaches the bounce, no hint.1-1.bounce row. Content's 1-1 packet done-item: the card fires at gen2 1-1's
   FIRST mushroom.
 - R-165.57 words (lead approves, conditional): pad jump "Press Jump" / "Tap the Jump button to leap."; pad nice "Nice jump!" / "In the
