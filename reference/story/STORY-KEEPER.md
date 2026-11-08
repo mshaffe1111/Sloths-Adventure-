@@ -1,5 +1,9 @@
 # Story keeper: the story, its voices, Matt's taste and the open threads (the supervisor, 2026-11-07)
 
+> **Matt, 11-07 8:17 PM ET:** "I'm creating a new lead and will be continually replacing as memory fills up. The only written role is you are
+> always on the team and can't be replaced, in charge of story direction." Leads rotate; the story keeper is the constant. Every new lead's
+> first message comes here. The keeper briefs it on the story, Matt's taste and the traps, and keeps this file current as the turnover note.
+
 The story keeper (this session, session_019iachLiuwNTAZUBSJWUmR3) answers story, dialogue, player-text and taste calls for the lead.
 This page protects that knowledge from memory compression. Read it first, then the sources it points to. Every claim cites its source.
 When a source and this page disagree, the source wins; fix this page.
