@@ -14,36 +14,41 @@ Lead: session_01FhBbYMoqqEdVR3qFjTCugy. Sources: STATE.md, handoffs/lead.md and 
 5. **The links:** roles/PM.md §6 (live, testers' #ctest, EnK5 for Matt only, Releases, the handoff doc).
 
 **Where the notes fell short (fixed tonight):** lead.md still said "start on studio if it hasn't merged" (it merged: #67, #68); R-165.56
-was still "open" (now done); the recorder fix (consultant finding 4, "PARTLY" adopted) had no R-number or owner (now R-165.58); the
+was still "open" (now done); the recorder fix (consultant finding 3, "PARTLY" adopted) had no R-number or owner (now R-165.58); the
 promise to delete recordings when testing ends had no R-number (now R-165.59); old helper sessions still showing "needs action" (an
 HF "go" request, a "send word to resume") weren't listed anywhere (now in STATE.md, not to be answered); Matt's own "Morning brief"
 and "Heartbeat" scheduled tasks sit in the same list as team ones and must not be touched (now noted).
 
-## What I'd change (my calls; I tell Matt only what needs him)
-1. **The recorder before the next read (R-165.58).** Finding 4 says several numbers can't be right. The analyst will read this window
-   with the same broken fields. Order: the analyst is told which fields to distrust; the recorder fix goes in the first Engine packet,
-   so the next window is clean. Tuning on wrong numbers is how the 11-07 confusion happened.
-2. **No automatic max-effort consultant on Wednesday.** The 11-07 deep pass is one day old, and the window is mostly the same two
-   practised adults (33 of 42 surveys). A second max run on near-identical data buys little. The consultant runs only if the analyst
-   finds at least 3 new first-time players in the window; otherwise its money waits for the first-timer test (finding 8).
-3. **Escalating help moves up.** A child stuck 37 minutes on Easy is the worst player harm we have, and help doesn't depend on the
-   reach numbers. The Designer's spec carries the help thresholds first; the Engine builds help while the Architect does the verdict
-   schema (no shared WRITE files).
-4. **WebGL stage 0 comes off Wednesday's graph.** It has nothing to do with the 1-1 findings and the frame budget passes today. Finish
-   1-1 before starting the renderer move (finish before starting). It stays on the roadmap.
-5. **Verify every adopted finding, not just #2.** The consultant could not reach the game; its numbers are a simulation of FEEL.md.
-   Eight of ten findings were marked ADOPTED. The Critic's first test flies the real engine at 30 fps over a bare gap and rise
-   (planner handoff §2) before any lay number moves.
-6. **The 8 ms budget lives in a rule, or it isn't a budget.** STATE says 8 ms; the gate enforces 12 ms until PERFORMANCE-RULES §1
-   changes. Tightening is the standard moving up, so the Architect writes the §1 change and the gate change together, Critic-checked.
-7. **R-165.53 (lethal drops in a first stage) is the decision that blocks the most.** All 21 lives lost were in the treetops, painted
-   like safe floor, and the builder reports no fall costs a life. Content can't re-lay 1-1 without it. It goes to Matt first.
-   My recommendation: none in 1-1. Lethal drops are a new mechanic and get taught, with their own look, in a later stage.
+## What I'd change (my calls; revised after the cold Critic's REJECT, 11-07 evening)
+The first version of this section had false facts and two changes that broke written rules. The Critic's 15 items are answered below;
+the withdrawn calls are named so the next lead sees them.
+
+1. **The recorder (R-165.58).** Consultant finding 3 in responses.md's numbering ("PARTLY"; the review's own heading calls it
+   headline 4): several numbers can't be right. The 11-10 window was recorded with the old recorder, so the analyst reads it with
+   the odd fields flagged, and the fix makes the NEXT window clean. The page's length line is Content's, with the story keeper.
+2. **WITHDRAWN: "no automatic consultant".** It contradicted CONSULTANT.md, TEAM.md, PM.md and the persona, and it let a member decide
+   whether the outside view runs. It also rested on two claims I can't stand on: the review would be 4 days old, not 1, and "33 of 42"
+   counts data up to 11-07, not the window to 11-10. The consultant runs after the window, as written.
+3. **Escalating help (R-165.62)** stays in the Engine's queue, on the Architect's file list (TEAM.md rule 6). I withdrew "beside the
+   Architect's task" and "no shared WRITE files": nobody had checked the files.
+4. **WITHDRAWN: "WebGL off the graph".** My reason, "the frame budget passes today", is false: Matt's Pixel's worst frame was 58 ms
+   upright and 96 ms sideways on 11-06 (GPU-RENDERER-PLAN.md:67) against §1's 50 ms, and R-3.1 says the APK runs under 20 fps. The GPU
+   move is Matt's 10-30 direction. It stays.
+5. **Verify every adopted finding**, not just #2: the consultant couldn't reach the game; its numbers simulate FEEL.md. The Designer's
+   first done-item is a planted test that flies the real engine (R-165.60).
+6. **The frame budget (R-165.65).** "The gate enforces 12 ms" was false: no gate measures ms (limits.json caps canvas calls). 12 ms is
+   PERFORMANCE-RULES §1's text. Matt handed technical calls to the lead (11-07): §1 stays 12 ms; 8 ms is the WebGL design target.
+7. **R-165.53 and R-165.52**, which Matt handed to the lead (11-07): no lethal drops in 1-1; the first-ever 1-1 run is one fixed,
+   hand-checked layout, and replays roll.
+8. **Tester data (R-165.59, Matt 11-07):** only the data from before 0.9.5 is deleted now; the newer data stays for fixes and bots
+   until testing is done, then Matt deletes everything. The 11-07 review gets a redacted copy on main before the named history goes.
 
 ## What looks like the last lead's bias
-- **Process over game.** The last two days produced the team's documents and no game change. Good documents, but the plan now front-
-  loads two outside runs and five sequential roles before a player sees anything. I'll run independent packets side by side.
-- **Adopting the outsider wholesale.** "ADOPTED" on findings from a reviewer who never played the build. Treat each as a hypothesis
-  until the engine test or the data confirms it.
-- **Accepted fails piling up.** 0.9.5 shipped with four named funcheck fails (R-165.48 to .51). They're Day 1 items, not background.
-  They go into the 1-1 re-lay's done-items, so the next 1-1 clears them instead of adding to them.
+- **Process over game.** The last two days produced the team's documents and no game change.
+- **Adopting the outsider wholesale.** "ADOPTED" on findings from a reviewer who never played the build. Each is a hypothesis until the
+  engine test or the data confirms it.
+- **Accepted fails piling up.** 0.9.5 shipped with four named funcheck fails (R-165.48 to .51). They go into the 1-1 re-lay's
+  done-items, so the next 1-1 clears them.
+
+## And my own, caught by the Critic
+- I stated facts from memory of what I'd read ("the gate enforces 12 ms", "the budget passes") instead of checking the file. LAWS 3.

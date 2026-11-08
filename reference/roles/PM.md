@@ -184,6 +184,8 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
   5. Takes stock of the team (§9) before starting anything new.
   6. Writes its cold review of STATE.md's plan to reference/notes/lead-review-<date>.md, BEFORE talking to the backup lead: what it
      would change, and what looks like the last lead's bias. It decides those changes itself and tells Matt only what needs him.
+     Every fact in it cites file:line, checked in the same step it's written; before any plan change, grep roles/, TEAM.md, LAWS.md
+     and CLAUDE.md for what governs it and cite that (D34). The review goes to a cold Critic before anything runs on it.
   7. Only then asks the backup lead what the documents don't answer: facts only ("where is", "what was"), never "why" a strategy was
      chosen (that would carry the last lead's bias in). Every answer goes into the documents the same day.
   8. Arms a one-off scheduled task for the work the handover names, and tells Matt in a few lines that it's in place.

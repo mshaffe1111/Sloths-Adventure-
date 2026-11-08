@@ -10,6 +10,6 @@
 | 11-07 | 6. Petal rules and safe bough rests | ADOPTED | Matt found the same (petals per setting on each arc) |
 | 11-07 | 7. No punch with nothing to hit | ADOPTED, measure first | Find out whether those taps were misread jumps |
 | 11-07 | 8. A proper first-timer test (10+ players, 3+ children) | ADOPTED | Matt is recruiting |
-| 11-07 | 9. A curated first 1-1 (Super Mario Run's fixed first course) | LATER, Matt's call | Conflicts with "every run is different"; taste and direction |
+| 11-07 | 9. A curated first 1-1 (Super Mario Run's fixed first course) | ADOPTED (the lead, 11-07, R-165.52; Matt handed design calls to the lead) | First run fixed and hand-checked; replays roll, so "every run is different" still holds after the first |
 | 11-07 | 10. Measure finger hold times before changing touch jump height | ADOPTED | |
 | 11-07 | Process: the consultant used a paid cloud browser (TinyFish, under 1 cent) and a page reader that made a tester code (one tester's code) | NOTED | Next brief: no paid services without asking; reading the live page is fine, starting a session isn't |
