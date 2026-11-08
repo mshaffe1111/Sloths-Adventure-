@@ -21,13 +21,13 @@
 
 ## Open graph (from Wednesday 11-11, the fresh lead; the team is quiet until the reset), in order
 0. ANALYST on the play window that ends Tuesday 11-10, told which recorder fields to distrust (consultant finding 3 in
-   responses.md's numbering; R-165.58). Then the PACKER and the CONSULTANT (max), as CONSULTANT.md says. Then R-165.59: the recordings
-   and the named history deleted, after the analyst's aggregates exist and the 11-07 review has a redacted copy on main.
+   responses.md's numbering; R-165.58). Then the PACKER and the CONSULTANT (max), as CONSULTANT.md says. Then R-165.59: ONLY the pre-0.9.5
+   recordings deleted (Matt 11-07: newer data stays until testing ends), after the analyst's aggregates exist.
 1. DESIGNER: the reach spec from the 30 fps simulation (reference/consultant/2026-11-07-scripts/sim.py), verified in the engine;
    the gap and rise bands per setting; help thresholds (R-165.60).
 2. ARCHITECT: the verdict schema (setting-aware arcs, headroom, floors, lethal vs soft visibility) (R-165.61); the file list for every
-   later packet. The 8 ms at 60-for-30 is the last lead's figure: PERFORMANCE-RULES §1 says 12 ms and no gate measures ms (limits.json
-   caps canvas calls only). Changing §1 is Matt's rule: R-165.65, in his queue.
+   later packet. PERFORMANCE-RULES §1 (12 ms, unchanged) is the pass/fail rule; 8 ms is the WebGL design target, not a gate
+   (R-165.65, decided by the lead; no gate measures ms today: limits.json caps canvas calls only).
 3. CONTENT: re-lay 1-1 with no lethal drops (R-165.53) and pick the fixed first-run layout (R-165.52); the bounce card fires at the
    first mushroom (story keeper #8); re-lay the 1-1 lessons to the Designer's new reach spec (the consultant suggested a double-teach rise of 136 px or more and
    a bounce teach of 205 px or less; the designer's frozen ruling is a bounce lip of 200-220: the Designer settles it in the spec); the
@@ -55,21 +55,29 @@ doesn't force a hand-written sum). The defect log, root causes, gates and the co
 - The pad's two old coach lines need new words next release (R-165.57; CoachOverlay.tsx COACH_TEXT.pad).
 - Bundle headroom 31 KB under 4 MiB; lazy-seeds.py is ready (reference/qa-reports/0.9.5/).
 - Dot says nothing while a first-timer stands stuck 20 s at the step (handoffs/tester-page.md §5); goes with escalating help.
+- render-stone (R-165.28): paused work on origin/render-stone 7da53035, not in main and in no handoff; it waits until 1-1 passes. Left
+  (its last commit message): the trunk past the slab fault, world kin above 360 px, upright stills, the after count, a lock re-run, the
+  full tests and gates, the props/earth islands. Re-issue as a fresh packet then; never resume the old session.
+- art-1-1-sunrise's HF "go": never given, superseded by the near11 repaint (HF-SPEND.md 11-06). Don't run it.
+- Hugging Face: $65.55 balance (Matt, 11-07 evening); keep about $15 reserve; nothing outstanding (backup lead, HF-SPEND.md).
 - Art: earth ledges "from the floor up only" until Matt rates them; flowering vine petals read grey; Matt's redo list R-01..R-09.
 
 - Ruled (Matt, 11-07): tools/playtesters/personas/ keeps its four first-name files (summary numbers only; Matt checked with them).
   It's the one named exception: everything else stays roles-only.
 
 ## Decisions waiting on Matt (the one list; each has an R-number on ROADMAP.md)
-Matt, 11-07 (message received about 9:54 PM ET): "You're the expert in making video games. Things like how the first level should be executed... That's why I
-hired you." Design and technical calls are the lead's; story stays with the story keeper (Matt has the final say); taste of art he rates.
+Matt, 11-07 (9:53 PM ET): "You're the expert in making video games. Things like how the first level should be executed... That's why I
+hired you." That covers game-design calls like the first level; the lead's wider authority is TEAM.md rule 10. Story stays with the story
+keeper (Matt has the final say); art he rates.
 - R-165.52: DECIDED by the lead 11-07: the first-ever run of 1-1 is one fixed, hand-checked layout; replays roll.
 - R-165.53: DECIDED by the lead 11-07: no lethal drops in 1-1; a deadly drop gets its own look and is taught where it first appears.
-- R-165.65: DECIDED by the lead 11-07: PERFORMANCE-RULES §1 stays 12 ms (pass/fail); 8 ms is the WebGL design target, not a gate.
+- R-165.65: DECIDED by the lead 11-07 (TEAM.md rule 10; §1 is unchanged, so not Matt's): §1 stays 12 ms (pass/fail); 8 ms is the WebGL
+  design target, not a gate. TEAM.md row 3 and ARCHITECT.md updated the same night.
 - R-165.54: the "can it float?" ratings for earth ledges (Matt rates the pieces).
 - R-165.55: the story keeper's open story threads (reference/story/STORY-KEEPER.md).
 - R-165.56: done (PR #67 and #68, merged 11-07).
-Matt's question queue (one at a time, in this order): the story keeper's three, in its order
+Matt's question queue (one at a time, in this order): R-165.69 (rewrite main's history to remove tester names: his call); the story
+keeper's three, in its order
 (11-07): #10 skulls (all out, or only remains in soil?), #2 the two food lines (keep each, yes/no), #1 Meeca's parents (its pick:
 unspoken); then R-165.54.
 Story keeper's answers, 11-07 evening (STORY-KEEPER.md updated in commit 948f8931 on ccr-0d59a91c-oy3imz; read only, never build from it):

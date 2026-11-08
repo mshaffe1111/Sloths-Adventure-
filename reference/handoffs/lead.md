@@ -8,8 +8,8 @@ a memory compression. If it's older than the last decision in STATE.md, rewrite 
   roles/PM.md §8 are done (the story keeper first, its health check PASS, the cold review and its Critic REJECT answered).
 - **Matt, 11-07, about 9:54 PM ET (three things):**
   1. Design calls are the lead's: "You're the expert in making video games. Things like how the first level should be executed... That's
-     why I hired you." I decided R-165.52 (first-ever 1-1 run fixed, replays roll), R-165.53 (no lethal drops in 1-1) and R-165.65
-     (PERFORMANCE-RULES §1 stays 12 ms; 8 ms is the WebGL target). Story stays with the story keeper; art taste he rates (R-165.54).
+     why I hired you." I decided R-165.52 (first-ever 1-1 run fixed, replays roll) and R-165.53 (no lethal drops in 1-1); and, under TEAM.md
+     rule 10, R-165.65 (PERFORMANCE-RULES §1 stays 12 ms; 8 ms is the WebGL target). Story stays with the story keeper; art taste he rates (R-165.54).
   2. Tester data: delete only the data from before 0.9.5; the newer data stays for fixes and QA bots until testing is done; then he
      deletes everything (R-165.59).
   3. "Start building your team... bring in experts... so that on Wednesday, when we start and my tokens reset, we don't walk out of the
@@ -17,10 +17,15 @@ a memory compression. If it's older than the last decision in STATE.md, rewrite 
 - **Quiet until the weekly reset, Wednesday 11-11, 2:00 AM ET** for building work. My scheduled task fires at 2:05 AM ET Wednesday
   (trig_018T4m55rQ1cTxAbGtXyKwLX) with the order in STATE.md "Open graph".
 
+## Rotation
+A Critic caught me missing written rules on 11-07 (D34), which is a rotation trigger; I told Matt. Matt, 11-07: "You just started.
+You're just implementing things. So no, you're not drifting yet." And: "I'll tell you when it's time to retire." So the lead flags
+each trigger to Matt (PM.md §8) and Matt decides when the rotation happens.
+
 ## The backup lead
-session_01FhBbYN2DDsktc7BGtNxPFK (the previous lead), questions only, until the next rotation. Asked 3 facts on 11-07 (where the tester
-recordings live; the HF balance and anything outstanding; whether three old sessions' "needs action" asks were answered). Write every
-answer into the documents the same day.
+session_01FhBbYN2DDsktc7BGtNxPFK (the previous lead), questions only, until the next rotation. Asked 3 facts on 11-07; its answers are in STATE.md
+(the sheet "Sloths control tests", tab Sessions, bound collector tools/control-test-collector.gs; names in main's files and history,
+R-165.68/.69; render-stone; art-1-1-sunrise). Write every answer into the documents the same day.
 
 ## Start here (10 minutes, in order)
 1. `TZ=America/New_York date`. Read this note, then reference/roles/PM.md, PARTNER.md, LEADER-STANDARD-WORK.md, LAWS.md, LESSONS.md,
@@ -35,7 +40,7 @@ answer into the documents the same day.
 
 ## Who Matt is to the lead
 - Creative Director and the only person who merges. He talks only to the lead. Standing permission (11-07) to run the team, and (11-07
-  evening) design and technical calls are the lead's. What still needs him: merges and releases, HF spending and picture lists, art he
+  evening) game-design calls like how the first level is executed are the lead's. What still needs him: merges and releases, HF spending and picture lists, art he
   rates, story calls (through the story keeper), changes to his rules and laws.
 - Rule one (11-05): never compromise to please him. Be the expert, push back with evidence, change view only on evidence.
 - Firm (11-06): when a call is yours, decide it in one line; "off the table" holds unless he brings new evidence.
@@ -55,7 +60,7 @@ answer into the documents the same day.
 - R-165.59 (Matt, 11-07): pre-0.9.5 tester data deleted after the analyst's aggregates; newer data kept until testing ends, then Matt
   deletes everything; the named branch history goes after the 11-07 review's redacted copy reaches main.
 - Matt to delete branches consultant-pack-2026-11-07 and consultant-review-2026-11-07 on GitHub (still there 11-07; my machine can't).
-- Matt's queue (one at a time): the story keeper's #10 skulls, #2 the two food lines, #1 Meeca's parents; then R-165.54 the float ratings.
+- Matt's queue (one at a time): R-165.69 (main's history rewrite); the story keeper's #10 skulls, #2 the two food lines, #1 Meeca's parents; then R-165.54 the float ratings.
 - R-165.57 pad coach lines: the story keeper's words approved on a condition (a tapped double clears the 195-205 px teach gap in the
   real engine), carried in the Engine/Critic packet.
 - Old helper sessions still showing "needs action" (art-1-1-sunrise's HF "go", render-stone, Ex Tester Data 1): nobody answers them.

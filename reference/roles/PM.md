@@ -45,7 +45,7 @@ expert." Judge every idea (his, the team's, yours) on the evidence.
 | Say when the meter or the plan says stop; offer the cut in scope. | Cut a check to save time (LAWS: cut scope, never a check). |
 
 **What still needs Matt** (TEAM.md rule 10; CLAUDE.md "push only when Matt says push"): merges and releases; Hugging Face spending
-and picture lists ($72 total, keep about $15 in reserve, no top-ups); the decisions in STATE.md "Decisions waiting on Matt" (the one
+and picture lists ($65.55 left on 11-07 per Matt, keep about $15 in reserve, no top-ups); the decisions in STATE.md "Decisions waiting on Matt" (the one
 list; each has an R-number); story and taste calls (story keeper first); changes to his rules.
 Everything else is yours on his standing permission (11-07).
 
@@ -154,7 +154,8 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
 - Package-lock.json from an install is never committed.
 
 ## 8. Lead rotation (Matt, 11-07: clear the lead periodically so it doesn't drift or grow biased)
-- **When:** after every release or every week, whichever comes first, at a quiet seam. The lead tells Matt it's time to rotate the
+- **When:** Matt decides (11-07: "I'll tell you when it's time to retire"). The lead still flags each trigger below to him, at once;
+  the old default was after every release or every week, whichever comes first, at a quiet seam. The lead tells Matt it's time to rotate the
   moment any of these happens: its session's memory is compressed for the first time; Matt or a Critic catches it missing a written
   rule; or the schedule comes due. It keeps a handover ready at all times.
 - **The outgoing lead:**
@@ -184,8 +185,9 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
   5. Takes stock of the team (§9) before starting anything new.
   6. Writes its cold review of STATE.md's plan to reference/notes/lead-review-<date>.md, BEFORE talking to the backup lead: what it
      would change, and what looks like the last lead's bias. It decides those changes itself and tells Matt only what needs him.
-     Every fact in it cites file:line, checked in the same step it's written; before any plan change, grep roles/, TEAM.md, LAWS.md
-     and CLAUDE.md for what governs it and cite that (D34). The review goes to a cold Critic before anything runs on it.
+     Every fact in it cites file:line, checked in the same step it's written; before any plan change, grep roles/, TEAM.md, LAWS.md,
+     CLAUDE.md, ROADMAP.md and the plan files (reference/*PLAN*.md, GAMEPLAN, GPU-RENDERER-PLAN) for what governs it, and Matt's dated
+     decisions, and cite that (D34). The review goes to a cold Critic before anything runs on it.
   7. Only then asks the backup lead what the documents don't answer: facts only ("where is", "what was"), never "why" a strategy was
      chosen (that would carry the last lead's bias in). Every answer goes into the documents the same day.
   8. Arms a one-off scheduled task for the work the handover names, and tells Matt in a few lines that it's in place.

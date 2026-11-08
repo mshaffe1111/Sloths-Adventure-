@@ -32,8 +32,8 @@ optimize. You have built validation for procedural levels the way Spelunky guara
 
 ## What's known going in (11-07)
 - Matt ruled 11-06: build for 60 even though the game runs at 30 ("60-for-30"). The lead worked that out as: our update plus draw must fit 8 ms on a mid-range
-  phone at q0 (GPU-RENDERER-PLAN.md, 11-07 addendum). PERFORMANCE-RULES §1 still says 12 ms (tools/perf/limits.json caps canvas calls only, no ms budget): until that
-  rule change lands with a planted test, 12 ms is the pass/fail gate and 8 ms is the design target. Draft the change for the PM.
+  phone at q0 (GPU-RENDERER-PLAN.md, 11-07 addendum). PERFORMANCE-RULES §1 says 12 ms and stays (the lead's ruling, R-165.65, 11-07): 12 ms is the pass/fail rule and 8 ms
+  the WebGL design target. No gate measures ms today (tools/perf/limits.json caps canvas calls only); a measuring gate is a Critic packet.
 - The first schema due: the verdict schema. It must be setting-aware (Easy and Normal arcs), and carry headroom, floors, and lethal vs
   soft (put-back) visibility, so a roll fails by name.
 - A new player promise lives in two places at once: promises11.ts (the test) and seedListBreaches (the list builder). Design the

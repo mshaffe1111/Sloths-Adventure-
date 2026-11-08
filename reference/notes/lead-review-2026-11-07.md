@@ -29,7 +29,7 @@ the withdrawn calls are named so the next lead sees them.
 2. **WITHDRAWN: "no automatic consultant".** It contradicted CONSULTANT.md, TEAM.md, PM.md and the persona, and it let a member decide
    whether the outside view runs. It also rested on two claims I can't stand on: the review would be 4 days old, not 1, and "33 of 42"
    counts data up to 11-07, not the window to 11-10. The consultant runs after the window, as written.
-3. **Escalating help (R-165.62)** stays in the Engine's queue, on the Architect's file list (TEAM.md rule 6). I withdrew "beside the
+3. **Escalating help (R-165.62)** stays in the Engine's queue, on the Architect's file list (TEAM.md row 3; PM.md §4 1b). I withdrew "beside the
    Architect's task" and "no shared WRITE files": nobody had checked the files.
 4. **WITHDRAWN: "WebGL off the graph".** My reason, "the frame budget passes today", is false: Matt's Pixel's worst frame was 58 ms
    upright and 96 ms sideways on 11-06 (GPU-RENDERER-PLAN.md:67) against §1's 50 ms, and R-3.1 says the APK runs under 20 fps. The GPU
