@@ -156,14 +156,14 @@ From the story briefs (1-1.md:38-43; 1-2.md:36-43):
 
 Petals are pressed flat at the soldiers' MARCHING height, low; they're the trail, never a prize up high (1-1.md:26-27).
 
-## 6. Open story threads (decide or fix)
+## 6. Open story threads (decide or fix; for Matt as R-165.55)
 
 1. **Meeca's parents:** never mentioned. Leave it unspoken, or give it one line? (VOICE "Still open").
 2. **Two food mentions left for Matt:** "She took a sandwich" (the eagle, W4) and "Bring snacks" (Meeca's last note, a callback to Dot
    going for snacks) (STORY-REWRITE:1910, :1866).
 3. **The Cast Bible** still says Dot is "he", and that Grandpa vanished the same night Grandma died. Both need the VOICE fixes.
-4. **The prologue goes into `storyIntro.ts`** only once the rewrite is approved as a whole (VOICE). Check what ships today against the
-   approved pilot.
+4. **The prologue ships** (main's `storyIntro.ts` carries THE SLOWEST MORNING, "it's still morning", "Follow the petals!"). Left: a line-by-line
+   compare against the approved pilot (pilot-prologue-w1-v2.md:43-246). Story keeper's to do; no Matt call.
 5. **1-5's player text** (keepsake hint, journal line, stage clue) still describes old 1-5's petals; the engine's 1-5 is Meeca's marks.
    Match it before 1-5 ships (R-165.45).
 6. **1-1/1-2 story art held** (R-165.31, R-165.42): the deep bootprint (the soldiers' boot), the pink bell (the painted one is World 5's,
@@ -171,8 +171,8 @@ Petals are pressed flat at the soldiers' MARCHING height, low; they're the trail
    missing; no other world's art stands in.
 7. **1-2's own sections:** after the Round 8 binds, 1-2 needs its own arrive (rain + the snake cameo), set piece (the secret low road,
    the bell, the note), goal (another petal low on the bark, no bootprint) and rain-fit rests (W1-NEW-SECTIONS Round 8; supervisor note).
-8. **`hint.1-1.bounce`:** its words are main's `ctest.bounce` (the testers' course), not old 1-1's. If the `lesson.bounce` card still
-   fires, use one or the other (supervisor, 11-06).
+8. **The bounce teach: DECIDED (story keeper, 11-08): the `lesson.bounce` card teaches it, with no `hint.1-1.bounce` row** (not on main as of
+   0.9.5; its words were `ctest.bounce`'s). One tip, one channel. Open only to confirm the card fires at gen2 1-1's first mushroom.
 9. **Story delivery:** the words box keeps room for six lines, leaving dead space under short lines upright (DIRECTION.md 8, flagged).
 10. **The skull rule:** see §4.
 
