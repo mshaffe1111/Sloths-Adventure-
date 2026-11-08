@@ -55,7 +55,9 @@ Matt, 2026-11-06, after 0.9.5: "Make sure that you note going forward how to do 
 - The body has: what changed in plain words; what's merged in; the gate table (every gate, PASS or FAIL); the PLAY-STORE §6 table (all
   8 items, each with proof or "not checked, and why"); rough spots named; and what to check after the merge.
 - Check the PR page shows `mergeable_state: clean`, then give Matt the link. **Matt merges. The lead never merges.**
-- Once the PR is open, nobody pushes to its branch again. Notes go on a separate `-notes` branch.
+- Once the PR is open, nobody pushes to its branch again. Notes go on a separate `-notes` branch. If a change is truly needed
+  before Matt merges, read the PR's state first (pull_request_read get; he may already have merged), add a new commit, never amend
+  or force-push, and tell him. After a merge, changes go on a new branch from main with their own PR (D33, PR #67).
 
 ## After the merge (check every one; the deploy takes about 7-15 minutes)
 1. Use the GitHub MCP actions_list tool, method list_workflow_runs, on the merge commit. Three runs must pass (the gates are jobs inside the publish run, not a run of their own):

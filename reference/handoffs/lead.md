@@ -7,7 +7,8 @@ a memory compression. If it's older than the last decision in STATE.md, rewrite 
 - **When:** tonight, Saturday 11-07 (ET), as soon as Matt merges the studio PR (R-165.56). Branch to start on: main once it has merged;
   if it hasn't, `studio`.
 - **Tonight is preparation only.** Do the incoming lead's steps (roles/PM.md §8), in this order: your session id on this note's top
-  line; read; **your first message to the story keeper**; the five questions; take stock of the team (PM.md §9); your cold review.
+  line; read (with STATE.md); **your first message to the story keeper**; the five questions; take stock of the team (PM.md §9);
+  your cold review; only then factual questions to the backup lead; a one-off scheduled task, and a note to Matt.
 - **The team:** quiet until the weekly reset, Wednesday 11-11, 2:00 AM ET (Matt's 11-06 pause). No member is running now; no Agent
   task is in flight; nothing is half done (the old helpers all stopped and wrote handoffs, reference/handoffs/).
 - **Wednesday 11-11, in order:** the data analyst's report on the play window (testers play until Tuesday 11-10), the consultant
@@ -15,7 +16,8 @@ a memory compression. If it's older than the last decision in STATE.md, rewrite 
 
 ## The backup lead
 session_01FhBbYN2DDsktc7BGtNxPFK (lead num 1), the backup until the next rotation (roles/PM.md §8 "The backup lead"). Ask it only
-what the documents don't answer, by send_message, and write every answer into the documents the same day. When you hand over, put
+what the documents don't answer, by send_message, and only after your cold review is saved: facts ("where is", "what was"), never
+"why" a strategy was chosen. Write every answer into the documents the same day. When you hand over, put
 your own session id here and say that lead num 1 has retired.
 
 ## Start here (10 minutes, in order)

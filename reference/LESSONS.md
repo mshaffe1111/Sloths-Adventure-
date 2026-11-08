@@ -54,3 +54,4 @@ that do the best job get the follow-on work.
 - A time in a file or report is pasted from `date` in the same step, never typed, for helpers as well as the lead. (D30)
 - Run a new gate the way CI runs it (`CI=1 FORCE_COLOR=1`) before the PR; a gate that reads tool output strips colour codes. (D31)
 - A command in a role card, method or brief is proven against the tool's arg parsing or a dry run, and the whole document goes to a fresh Critic cold before anyone uses it. (D32)
+- Before pushing to a branch with a PR, read the PR's state. Once a PR is open, never amend or force-push its branch; after a merge, changes go on a new branch from main. (D33)
