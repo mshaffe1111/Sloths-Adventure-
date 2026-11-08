@@ -17,6 +17,12 @@ a memory compression. If it's older than the last decision in STATE.md, rewrite 
 - **Quiet until the weekly reset, Wednesday 11-11, 2:00 AM ET** for building work. My scheduled task fires at 2:05 AM ET Wednesday
   (trig_018T4m55rQ1cTxAbGtXyKwLX) with the order in STATE.md "Open graph".
 
+## Effort (Matt, 11-07, received by 10:04 PM ET)
+"Once the new roles are created, you manage if they're running off of normal, high, or max. Max is only when needed, since it's so many
+tokens. But you control what's normal and what's high based upon the knowledge it needs and the room it needs to think. I won't talk
+to them, but I will monitor them and let you know if I see anything weird." The lead sets each member's effort per task (TEAM.md
+rule 5 is the default); a member Matt flags gets inspected at once.
+
 ## Rotation
 A Critic caught me missing written rules on 11-07 (D34), which is a rotation trigger; I told Matt. Matt, 11-07: "You just started.
 You're just implementing things. So no, you're not drifting yet." And: "I'll tell you when it's time to retire." So the lead flags
