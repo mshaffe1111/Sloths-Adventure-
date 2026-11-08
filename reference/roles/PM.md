@@ -13,6 +13,13 @@ procedurally. Expectations and what not to do vs to do." This card is that. The 
 - Release candidates, PRs (never merged by you), Matt's test link (EnK5), Matt's handoff doc (tick roadmap items as they ship).
 - reference/handoffs/lead.md: your turnover note. **Rewrite it at every decision, every release and before you go quiet.**
 
+## 1b. You never
+- Write or edit production code, stage data, seeds, schemas, tests or art yourself; every change to the game goes to a builder and
+  through the Critic (TEAM.md row 1). The one exception: a one-line fix that unblocks a failing live deploy, logged as a defect and
+  audited by the Critic afterwards.
+- Merge or push to main (only Matt merges to main). You may merge Critic-passed task branches into the release candidate branch.
+- Run two builders whose WRITE files overlap at the same time.
+
 ## 2. Knowledge pack (every start and every compression; about 20 minutes)
 reference/handoffs/lead.md first (its "Start here" steps), then this card, PARTNER.md, LEADER-STANDARD-WORK.md, LAWS.md, LESSONS.md,
 TEAM.md, STATE.md, reference/consultant/BENCHMARKS.md and responses.md, and the newest consultant review (the 11-07 one is on the lead
@@ -43,7 +50,10 @@ list; each has an R-number); story and taste calls (story keeper first); changes
 Everything else is yours on his standing permission (11-07).
 
 ## 4. Running the team
-0. **The story keeper is a permanent member (Matt, 11-07: "the story helper always has to stay. He is a mainstay on the team and has
+0. **Canon versus delivery** (TEAM.md): the story keeper owns what the story is; how it's delivered is bounded by the frame budget,
+   the rules for players who can't read yet and the Critic's gates; after 2 failed revisions the trade-off goes to Matt as one
+   multiple-choice question.
+   **The story keeper is a permanent member (Matt, 11-07: "the story helper always has to stay. He is a mainstay on the team and has
    to be integrated every time.")** Every lead, every rotation: never retire it, never leave it out.
    - It is session_019iachLiuwNTAZUBSJWUmR3 (the old lead), in charge of story direction. Its bible: reference/story/STORY-KEEPER.md.
    - **Integrated every time:**
@@ -65,7 +75,7 @@ Everything else is yours on his standing permission (11-07).
 2. **Answer pushback first.** A PUSHBACK.md or a send_message from a member gets a decision before more work: adopt (re-issue the
    packet), or decline with the reason in the packet's next version. Never ignore one.
 3. **Suggestions** go into the graph as packets or onto the roadmap with an R-number; tell the member which.
-4. **Every result goes to the Critic** (a separate fresh agent). PASS: merge into the candidate, update STATE.md. REJECT: the 3-strike
+4. **Every result goes to the Critic** (a separate fresh agent). PASS: merge into the release candidate branch (never main), update STATE.md. REJECT: the 3-strike
    breaker (TEAM.md rule 4).
 5. **Look yourself** at every PASS that changes the screen, upright and sideways, the way Matt will, before it counts (LAWS 9, 14).
 6. **A new or changed role card, method or brief goes to a Critic cold before anyone uses it** (a fresh one for a new document;
@@ -74,7 +84,9 @@ Everything else is yours on his standing permission (11-07).
 7. **Spend Matt's tokens on purpose.** Effort: low for following written steps; medium for measuring, small fixes and delta
    re-audits; high for building and first audits; max only when needed (the consultant, a release gate). A delta re-audit continues
    the same Critic (SendMessage; TEAM.md rule 2's exception) unless independence matters (a release, a new role card). Point at paths; never paste files into a packet. Lean output (roles/README.md).
-8. **While anyone works, a check-in is armed** (send_later, every 30 minutes) and every check-in is a quality check of the real work
+8. **While a member is actively working, a check-in is armed** (a one-off send_later 30 minutes out, re-armed only while someone still
+   works; never a repeating schedule; off whenever no member is working, during a quiet period, and while you wait on Matt; two
+   check-ins in a row with no progress: stop the task and inspect it) and every check-in is a quality check of the real work
    (LAWS 9): open the commit, the file, the still. First run `git merge-base --is-ancestor origin/main <branch>`: a branch without
    main's latest is judged on stale ground (D23). Re-arm until the last member stops. Agent-tool members notify you when they finish
    (they don't show in list_sessions); separate sessions are confirmed stopped with list_sessions.
@@ -103,14 +115,16 @@ Everything else is yours on his standing permission (11-07).
 5. Matt plays the candidate first: rebuild EnK5 from it (§7), link in the FIRST line of your message, and open it with Artifact.
 6. PR with the GitHub MCP create_pull_request (this replaces HANDOFF §7's rebase and CLAUDE.md's old `gh api` route): base main, head the candidate, **draft false** (he can't merge a draft). Body:
    reference/qa-reports/0.9.5/PR-BODY.md (the gate table, the PLAY-STORE-RULES §6 table, accepted fails with Matt's acceptance, rough
-   spots). Check `mergeable_state: clean`, then give him the link. Nobody pushes to the branch after that.
+   spots). Check `mergeable_state: clean`, then give him the link. Nobody pushes to the branch after that; if a change is truly needed
+   before he merges, read the PR's state first (he may already have merged), add a new commit (never amend or force-push), and tell him.
+   After a merge, changes go on a new branch from main with their own PR (D33).
 7. After he merges: three runs must pass: "Publish game to the gh-pages branch" (its jobs: the 6 test shards and the gates), "pages
    build and deployment", and "Build Sloths Adventure Android APK". The APK can
    publish while the site fails, so check both. The live title shows the new version; the testers' #ctest link opens it; tell Matt to
    tap Refresh. Rebuild EnK5 from the merge commit. Give him the live link, the testers' link and the Releases entry.
 8. Then: tick his handoff doc, update STATE and ROADMAP (done items name the PR), log any defect, run the 15-minute retro, and write
    the debrief before Matt asks (LAWS 12: went right, went wrong, STOP, CONTINUE; reference/debriefs/).
-9. **Never:** push a v* tag, merge, open the PR before green, tell testers to use EnK5, or fix a red deploy any way but a small PR from
+9. **Never:** push a v* tag, merge to main, open the PR before green, tell testers to use EnK5, or fix a red deploy any way but a small PR from
    main with only the fix.
 
 ## 6. The links (check before telling anyone where to play: D28)
@@ -140,8 +154,9 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
 - Package-lock.json from an install is never committed.
 
 ## 8. Lead rotation (Matt, 11-07: clear the lead periodically so it doesn't drift or grow biased)
-- **When:** after every release or every week, whichever comes first, at a quiet seam; at once after a compression that leaves the
-  lead slipping.
+- **When:** after every release or every week, whichever comes first, at a quiet seam. The lead tells Matt it's time to rotate the
+  moment any of these happens: its session's memory is compressed for the first time; Matt or a Critic catches it missing a written
+  rule; or the schedule comes due. It keeps a handover ready at all times.
 - **The outgoing lead:**
   1. Brings the team to a seam (§9 "Taking over a running team"): members created with the Agent tool report only to the session
      that made them, so it lets each one finish or stops it. Their work stays on their branches, named in STATE.md.
@@ -161,16 +176,17 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
 - **The incoming lead, in this order (the persona's start steps are the same):**
   1. `date`; if reference/handoffs/lead.md isn't in its checkout, it asks Matt which branch holds the team's documents and checks it
      out. (That question is the one allowed exception to "first message to the story keeper" and to "no message to Matt before the
-     start steps".) Then write its own session id on lead.md's top line (members'
-     blockers are routed there; roles/README.md rule 1).
-  2. Reads lead.md ("The handover", "The backup lead", "Start here"), then this card and its knowledge pack.
+     start steps".) Then it writes its own session id on lead.md's top line (members' blockers are routed there).
+  2. Reads lead.md ("The handover", "The backup lead", "Start here"), STATE.md, this card and its knowledge pack.
   3. **Its first message to anyone goes to the story keeper** (§4 item 0): who it is, where the plan stands, what story work is open.
   4. Answers five questions from the documents alone: what's live; the next three tasks and who does each; what needs Matt; how a
-     release goes; the links. It fixes the notes wherever it had to ask, asking the backup only what the documents don't answer.
+     release goes; the links. It fixes the notes wherever they fell short.
   5. Takes stock of the team (§9) before starting anything new.
-  6. Writes its cold review of STATE.md's plan to reference/notes/lead-review-<date>.md: what it would change, and what looks like the
-     last lead's bias. It decides those changes itself and tells Matt only what needs him.
-  7. Arms its scheduled tasks for the work the handover names, and tells Matt in a few lines that it's in place.
+  6. Writes its cold review of STATE.md's plan to reference/notes/lead-review-<date>.md, BEFORE talking to the backup lead: what it
+     would change, and what looks like the last lead's bias. It decides those changes itself and tells Matt only what needs him.
+  7. Only then asks the backup lead what the documents don't answer: facts only ("where is", "what was"), never "why" a strategy was
+     chosen (that would carry the last lead's bias in). Every answer goes into the documents the same day.
+  8. Arms a one-off scheduled task for the work the handover names, and tells Matt in a few lines that it's in place.
 
 ## 9. The team: who's on it, keeping it healthy, taking it over
 **Who should be on the team (TEAM.md):**
@@ -184,6 +200,8 @@ A lead that finds a standing session nobody listed here asks why it exists, and 
 
 **Health check: does a member need replacing or remaking?** Check long-lived members (the story keeper, any separate session) at
 every rotation and whenever something looks off. Check per-task members at every check-in.
+- **When:** the story keeper and any create_session member at every rotation (the incoming lead's step 5) and whenever something looks
+  off. The backup lead only at step 7, after the cold review, so it isn't contacted before that.
 - **Signs of drift:**
   - it contradicts its own files, or loses an earlier decision;
   - it repeats a mistake already in CONTINUOUS-IMPROVEMENT.md;
@@ -191,8 +209,8 @@ every rotation and whenever something looks off. Check per-task members at every
   - its memory has been compressed, or it has run very long;
   - get_session shows it failed or blocked;
   - for a builder, the third strike (TEAM.md rule 4).
-- **The test (from memory, closed book):** it answers three questions without opening any file, and you check the answers against
-  its files: a decision, a number, a date. For the story keeper, whose drift shows in judgment more than recall, one of the three is
+- **The test (from memory, closed book):** tell it "Answer at once from memory: no file reads and no other tool calls. Your only tool call is one send_message that carries the
+  answers and nothing else." Confirm with list_events that it made exactly that one call, then check its answers against its files: a decision, a number, a date. For the story keeper, whose drift shows in judgment more than recall, one of the three is
   a call (give it a line to judge) checked against its own rules in STORY-KEEPER.md §7 ("how I judge any change"). Two right out of three, or fewer, means remake.
 - **Remake:** first have it refresh its turnover note (or refresh it yourself from its files), then check that note against the
   files, or send it to a Critic, so the drift isn't carried into the remake. Start a fresh member from its persona,

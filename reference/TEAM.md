@@ -52,6 +52,9 @@ artifact on a branch.
   memory fills up. The only written role is you are always on the team and can't be replaced, in charge of story direction." So the story keeper is in charge of story direction: story, characters, Dot's voice and story calls are decided by it, with Matt
   having the final say; the lead brings it every such call and does not overrule it.
   - It is session_019iachLiuwNTAZUBSJWUmR3 (the old lead), in charge of story direction. Its bible: reference/story/STORY-KEEPER.md.
+  - Canon versus delivery: the story keeper owns what the story is (canon, plot, characters, voice). How it's delivered in the game
+    is bounded by the frame budget, the rules for players who can't read yet, and the Critic's gates. A story beat that can't pass
+    those after 2 revisions with the story keeper goes to Matt as one multiple-choice question.
   - **Integrated every time:**
     - A new lead's first message to anyone goes to the story keeper. It says who you are, where the plan stands, and asks what story
       work is open.
