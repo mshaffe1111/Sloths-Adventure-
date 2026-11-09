@@ -22,6 +22,12 @@
 - Lead's cold review: reference/notes/lead-review-2026-11-07.md. A cold Critic REJECTED its first version (15 items, 11-07); two of
   its changes were withdrawn (WebGL stays on the graph; the consultant runs after every window as written). Corrections are in the note.
 
+## In flight (each member is its own session Matt can see in his Code list and retire; tag "sloths-team"; all on claude-fable-5-2)
+- session_01FhBbYNzmgt3tyXdLKeupZG, "Critic: lead documents audit (11-09)": audits e5aafcea..119f1720 (lead documents). Created 11-09 2:11 PM ET. Read-only.
+- session_01FhBbYJiR4o74fu7RgAv6EF, "Critic: packets and role cards audit (11-09)": packets and member cards, Designer packet first. Created 11-09 2:11 PM ET. Read-only.
+- Check-in armed: trig_013wE1r1WfL3Yy69MCQ6Pg8N (2:43 PM ET), re-armed until the last member stops.
+- Next out: the Designer (R-165.60), on "DESIGNER: PASS" from the packets Critic.
+
 ## Open graph (started Monday 11-09: Matt, about 2 PM ET, "I have fable only usage. Lets create our team and start this week. Right
 ## now the team must be fable 5.2"; then "Do not keep under yourself. They should have their own bot": every member is its own session on model "claude-fable-5-2", R-165.74), in order
 0. ANALYST on the play window that ends Tuesday 11-10: dispatched only after the window closes (its packet reads "the window that
