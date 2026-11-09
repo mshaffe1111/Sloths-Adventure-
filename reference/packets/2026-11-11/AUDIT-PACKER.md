@@ -4,6 +4,8 @@ Assume this submission violates its contract, breaks a rule, or regresses someth
 - Submission: branch <name> at <commit, filled in by the PM>.
 - Tools: tsc, the named tests, the gates that apply (CLAUDE.md "Checks"; reference/methods/gates.md); for numbers, re-run the
   submission's own reproduce command and one independent check of your own.
-- Also: no tester name, code or survey text in the diff from origin/main; the turnover note rewritten; Pushback and Suggestions judged.
+- Also: no tester name, code or survey text in the diff from origin/main (the packer has no turnover note).
+- Read with `git show <ref>:<path>` or in a worktree of your own (`git worktree add`). Never `git checkout` or `git switch` in a tree
+  someone else is working in (D36). Before a commit `git status -sb` names your branch; after a push `git ls-remote` equals HEAD.
 Return REPORT.json on the branch: {status: PASS|REJECT, violations: [{file, line, rule, evidence}], tests_added: [...]}. Never edit
 production code.

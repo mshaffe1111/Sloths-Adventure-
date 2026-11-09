@@ -54,7 +54,7 @@ too. But I would prefer Hugging Face first."
   type experience." Every platform family gets kinds and sizes: logs, and ground shapes (hills, mounds, rises, steps, ledges,
   little perches).
 - New pieces can be made on Hugging Face: a picture list with its cost goes to the lead for approval first (PARTNER: the lead
-  approves HF spend; $72 total, about $15 kept in reserve). Gemini only as the fallback for platforms and pieces, run by Matt.
+  approves HF spend; $72 total when this was written, $65.55 since Matt's 11-07 word, about $15 kept in reserve). Gemini only as the fallback for platforms and pieces, run by Matt.
 
 ## 2026-11-05 ~12:23 AM ET (to the planner and the lead)
 - "same thing goes with enemies... once you introduce them, they can be anywhere": an enemy, once taught, may appear in any world

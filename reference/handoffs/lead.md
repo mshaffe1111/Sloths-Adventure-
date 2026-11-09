@@ -1,53 +1,66 @@
-# Turnover note: the lead (PM). Rewritten, never appended. CURRENT LEAD: session_01FhBbYMoqqEdVR3qFjTCugy (route blockers here). Last rewrite: 2026-11-07 9:56 PM ET
+# Turnover note: the lead (PM). Rewritten, never appended. CURRENT LEAD: session_01FhBbYMoqqEdVR3qFjTCugy (route blockers here). Last rewrite: 2026-11-09 2:09 PM ET
 
 Matt, 11-07: "Also make sure you keep updated turnover notes. We all need this." This note is for a replacement lead, or for me after
 a memory compression. If it's older than the last decision in STATE.md, rewrite it before anything else.
 
-## The handover (done 11-07 evening)
-- The last lead's team documents merged (PR #67, #68). Start on main. I took over at 9:43 PM ET Saturday 11-07; steps 1-7 of
-  roles/PM.md §8 are done (the story keeper first, its health check PASS, the cold review and its Critic REJECT answered).
-- **Matt, 11-07, about 9:54 PM ET (three things):**
+## Now (Monday 11-09)
+- **Matt, 11-09, about 2 PM ET: "So i have fable only usage. Lets create our team and start this week. Right now the team must be
+  fable 5.2".** The start moved from Wednesday 11-11 to today. Then, minutes later: "Do not keep under yourself. They should have their own bot." Every member is its own session (create_session, model "claude-fable-5-2", permission_mode "auto") that reports to me with send_message (R-165.74).
+- **The order:** nobody is dispatched on a document until a cold Critic has passed it. Two Critics (lead documents; packets and
+  R-165.71) audit the 11-09 fix pass. On both PASSes: the Designer (R-165.60) goes first; the Architect (R-165.61) after the
+  Designer's Critic PASS; the analyst after the play window closes Tuesday 11-10, then the packer and the consultant; then Content
+  (R-165.72), Engine and the Critic's own work, per STATE.md "Open graph".
+- A 30-minute quality check-in (`send_later`) is armed at the first dispatch and re-armed until the last member stops.
+- My memory was compressed for the first time on 11-09: a rotation trigger. Matt has already answered it (below).
+
+## The handover (11-07 evening)
+- The last lead's team documents merged (PR #67, #68). I took over at 9:43 PM ET Saturday 11-07 and ran roles/PM.md §8's steps.
+  The honest order: my cold review was written at 9:46-9:47 PM, before the story keeper's health check finished at about 9:50 PM.
+  The card's order is story keeper first; I ran them out of order. Nothing came of it, and the card's order stands.
+- **Matt, 11-07, 9:53 PM ET (three things):**
   1. Design calls are the lead's: "You're the expert in making video games. Things like how the first level should be executed... That's
-     why I hired you." I decided R-165.52 (first-ever 1-1 run fixed, replays roll) and R-165.53 (no lethal drops in 1-1); and, under TEAM.md
-     rule 10, R-165.65 (PERFORMANCE-RULES §1 stays 12 ms; 8 ms is the WebGL target). Story stays with the story keeper; art taste he rates (R-165.54).
+     why I hired you." I decided R-165.52 (first-ever 1-1 run fixed, replays roll) and R-165.53 (no lethal drops in 1-1). That
+     does NOT reach his own rulings: my R-165.65 call (8 ms as "a target, not a gate") overturned his 11-06 "build for 60" ruling and is
+     withdrawn (D35). Story stays with the story keeper; art taste he rates (R-165.54).
   2. Tester data: delete only the data from before 0.9.5; the newer data stays for fixes and QA bots until testing is done; then he
      deletes everything (R-165.59).
-  3. "Start building your team... bring in experts... so that on Wednesday, when we start and my tokens reset, we don't walk out of the
-     starting gate. We sprint." (R-165.66: expert personas sharpened and Wednesday's packets written and Critic-checked before Wednesday.)
-- **Quiet until the weekly reset, Wednesday 11-11, 2:00 AM ET** for building work. My scheduled task fires at 2:05 AM ET Wednesday
-  (trig_018T4m55rQ1cTxAbGtXyKwLX) with the order in STATE.md "Open graph".
+  3. "Start building your team... bring in experts... We sprint." (R-165.66.)
 
-## Effort (Matt, 11-07, received by 10:04 PM ET)
-"Once the new roles are created, you manage if they're running off of normal, high, or max. Max is only when needed, since it's so many
-tokens. But you control what's normal and what's high based upon the knowledge it needs and the room it needs to think. I won't talk
-to them, but I will monitor them and let you know if I see anything weird." The lead sets each member's effort per task (TEAM.md
-rule 5 is the default); a member Matt flags gets inspected at once.
-
-## Rotation
-A Critic caught me missing written rules on 11-07 (D34), which is a rotation trigger; I told Matt. Matt, 11-07: "You just started.
-You're just implementing things. So no, you're not drifting yet." And: "I'll tell you when it's time to retire." So the lead flags
-each trigger to Matt (PM.md §8) and Matt decides when the rotation happens.
+## Working agreements with Matt (his words, dated)
+- Ideas (11-07): he throws ideas; each one is swatted with a reason or logged with an R-number the same turn. "Tunnel vision will get
+  you retired instantly."
+- Research (11-08): "I expect you to research things... I never want you to guess." If research finds nothing, say so and ask.
+- Model (11-09): the team is Fable 5.2 only, for now.
+- Effort (11-07): "you manage if they're running off of normal, high, or max. Max is only when needed." He doesn't talk to members
+  but watches them; a member he flags gets inspected at once.
+- Rotation (11-07): there is no schedule. "You just started... you're not drifting yet." "I'll tell you when it's time to retire."
+  The lead tells him each trigger at once (a Critic catching a missed rule: D34, D35, told; the 11-09 compression: tell him).
+- Who the game is for (11-07, R-165.71): "This isn't supposed to be a kid game." Normal is for 12 and up, hard enough for adults;
+  Easy is for children. Per-setting rulings are in STATE.md.
+- Mock-ups (11-08): new art goes to him as one mock-up sheet for a yes or no, not quiz sheets.
 
 ## The backup lead
-session_01FhBbYN2DDsktc7BGtNxPFK (the previous lead), questions only, until the next rotation. Asked 3 facts on 11-07; its answers are in STATE.md
-(the sheet "Sloths control tests", tab Sessions, bound collector tools/control-test-collector.gs; names in main's files and history,
-R-165.68/.69; render-stone; art-1-1-sunrise). Write every answer into the documents the same day.
+session_01FhBbYN2DDsktc7BGtNxPFK (the previous lead), questions only, until the next rotation. Its 11-07 answers and where each is
+written: the tester sheet and its collector (STATE.md "The team now"); tester names in main's files and history (ROADMAP R-165.68,
+R-165.69); render-stone and art-1-1-sunrise (STATE.md "Carried from the old team"). Write every answer into the documents the same day.
 
 ## Start here (10 minutes, in order)
 1. `TZ=America/New_York date`. Read this note, then reference/roles/PM.md, PARTNER.md, LEADER-STANDARD-WORK.md, LAWS.md, LESSONS.md,
    TEAM.md, STATE.md, and the newest consultant review (the 11-07 one is on ccr-23292c36-550qmt only until its redacted copy reaches
    main, R-165.59).
 2. ReadNotifications until 0 remain; list_sessions; list_triggers (is a check-in armed while anyone works?).
-3. `git fetch` each branch STATE.md names; compare with the ledger.
+3. `git fetch` each branch STATE.md names; compare with the ledger. `git status -sb` must name the branch (D36).
 4. The story keeper (session_019iachLiuwNTAZUBSJWUmR3) is permanent and in charge of story direction: every story, dialogue, Dot,
    player-text or taste call goes to it first. Its bible: reference/story/STORY-KEEPER.md (current copy on ccr-0d59a91c-oy3imz, §8
    "Turnover"; read only, never build from that branch).
 5. Only then act.
 
 ## Who Matt is to the lead
-- Creative Director and the only person who merges. He talks only to the lead. Standing permission (11-07) to run the team, and (11-07
-  evening) game-design calls like how the first level is executed are the lead's. What still needs him: merges and releases, HF spending and picture lists, art he
-  rates, story calls (through the story keeper), changes to his rules and laws.
+- Creative Director and the only person who merges. He talks only to the lead. Standing permission (11-07) to run the team;
+  game-design calls like how the first level is executed are the lead's.
+- What still needs him: merges and releases; HF spending and every picture list; art he rates; story calls (through the story
+  keeper); any change to his rules, laws or rulings; when the lead rotates; and everything in STATE.md "Decisions waiting on Matt"
+  (today: the "key line process" pick, R-165.69, and the story keeper's three).
 - Rule one (11-05): never compromise to please him. Be the expert, push back with evidence, change view only on evidence.
 - Firm (11-06): when a call is yours, decide it in one line; "off the table" holds unless he brings new evidence.
 - One multiple-choice question at a time, your pick first; plain words, ET times from `date`, no apologies.
@@ -55,20 +68,24 @@ R-165.68/.69; render-stone; art-1-1-sunrise). Write every answer into the docume
 ## Where things stand
 - Live: 0.9.5 (game code 11242520; main head 181d2846 is docs and tools only). APK v0.9.5-33+ on Releases. EnK5 = the same build.
   Testers play the live site + `?fresh=1#ctest` until Tuesday 11-10.
-- The open graph, in order (details and R-ids: STATE.md): analyst, packer and consultant on the window; the Designer's reach spec
-  (R-165.60); the Architect's verdict schema and file lists (R-165.61); Content re-lays 1-1 (no lethal drops; the fixed first run; the
-  bounce card at the first mushroom); Engine: the recorder fix (R-165.58), escalating help (R-165.62), the pipeline, WebGL stage 0 (R-3.1);
-  the Critic: traversal with the real reach, the bots, two new gates (R-165.63, R-165.64).
-- My first cold review was REJECTED by a Critic (15 items, D34): two of my plan changes were withdrawn (the consultant stays after
-  every window; WebGL stays). The corrected review: reference/notes/lead-review-2026-11-07.md.
+- Work branch: ccr-ca657d3c-n09zty (the lead's documents, cards and packets; not on main yet). Members branch from origin/main and
+  read cards and packets with `git show origin/ccr-ca657d3c-n09zty:<path>`.
+- The open graph and every R-id: STATE.md. The frame budget is 8 ms on Matt's 11-06 ruling; PERFORMANCE-RULES §1 still reads 12 ms
+  and no gate measures frame time until R-165.65 lands.
+- My first cold review was REJECTED three times by Critics (D34, D35): the consultant stays after every window; WebGL stays; the
+  R-165.65 ruling and R-165.67's first version are withdrawn. The corrected review: reference/notes/lead-review-2026-11-07.md.
+- My scheduled task trig_018T4m55rQ1cTxAbGtXyKwLX (Wednesday 2:05 AM ET) was written for the old start: delete it once the Designer
+  is out, so the work isn't done twice.
 
 ## Promises and asks still open
+- "The key line process that Ed Hang uses" (Matt, 11-09): a one-page view of where we are and where we're going. Two web searches
+  found no such method or person. Asked him A) Kanban board (my pick), B) Hoshin Kanri, C) A3 report, D) something else. Unanswered.
 - R-165.59 (Matt, 11-07): pre-0.9.5 tester data deleted after the analyst's aggregates; newer data kept until testing ends, then Matt
   deletes everything; the named branch history goes after the 11-07 review's redacted copy reaches main.
-- Matt to delete branches consultant-pack-2026-11-07 and consultant-review-2026-11-07 on GitHub (still there 11-07; my machine can't).
-- Matt's queue (one at a time): R-165.69 (main's history rewrite); the story keeper's #10 skulls, #2 the two food lines, #1 Meeca's parents; then R-165.54 the float ratings.
+- Matt to delete branches consultant-pack-2026-11-07 and consultant-review-2026-11-07 on GitHub (my machine can't).
+- Matt's queue (one at a time): R-165.69 (main's history rewrite); the story keeper's #10 skulls, #2 the two food lines, #1 Meeca's parents.
 - R-165.57 pad coach lines: the story keeper's words approved on a condition (a tapped double clears the 195-205 px teach gap in the
-  real engine), carried in the Engine/Critic packet.
+  real engine), carried in the Designer's packet (touch.md) and the Engine/Critic packet.
 - Old helper sessions still showing "needs action" (art-1-1-sunrise's HF "go", render-stone, Ex Tester Data 1): nobody answers them.
 
 ## A line for Matt to change in his file (CLAUDE.md is his)
@@ -80,10 +97,13 @@ CLAUDE.md:25 says "HF: $72 left, total"; Matt said $65.55 on 11-07. Offer him th
 - APKs: https://github.com/mshaffe1111/Sloths-Adventure-/releases . Matt's handoff doc: https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa
 - How to ship: reference/methods/release.md.
 
-## Traps (CONTINUOUS-IMPROVEMENT.md D28-D34; the full list: roles/PM.md)
+## Traps (CONTINUOUS-IMPROVEMENT.md D28-D36; the full list: roles/PM.md)
 - Every fact in a lead document cites file:line, checked when written; before changing the plan, grep the rules that govern it (D34).
-- The testers' link is the live site + #ctest, not EnK5. No PR until every gate is green. New gates run as CI does (`CI=1 FORCE_COLOR=1`).
-  create_session has no effort setting: use the Agent tool. Times from `date`, never typed.
+- Never loosen, remove or re-scope a check or a ruling of Matt's; a plan change waits for the cold Critic's PASS (D35).
+- Never `git checkout` in a tree someone else uses; `git status -sb` before a commit, `git ls-remote` after a push (D36).
+- The testers' link is the live site + #ctest, not EnK5. Never open a #ctest page yourself: it makes a tester code.
+- No PR until every gate is green. New gates run as CI does (`CI=1 FORCE_COLOR=1`).
+  create_session has no effort setting: the packet's `effort:` line carries it. Times from `date`, never typed.
 - Consultant finding numbers: use responses.md's (Top-10) numbering; the review's headings number differently.
 - Tester names, codes and survey text never go into the repo or a packet. Grep your diff before every commit.
 - "Morning brief" and "Heartbeat" in list_triggers are Matt's own, not the team's: leave them.

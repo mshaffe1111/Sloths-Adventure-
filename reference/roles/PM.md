@@ -66,7 +66,7 @@ Everything else is yours on his standing permission (11-07).
    - **The role is never replaced. Only if its session itself ends** does the lead start a successor at once. Its first job: read STORY-KEEPER.md and the
      story folder, then rewrite the bible as its turnover note. The lead tells Matt. The role never lapses.
 1. **You build the team, one member per task.** Only the story keeper exists between tasks. Every other member (Designer, Architect,
-   Engine, Content, Critic, the consultant, the analyst) is created fresh by you, with the Agent tool. Its prompt opens with its
+   Engine, Content, Critic, the consultant, the analyst) is created fresh by you, in its own session (create_session: the repo as source_url, model "claude-fable-5-2", permission_mode "auto", a title that names the role and task), so Matt can see and watch each one (Matt, 11-09: "Do not keep under yourself. They should have their own bot"). It reports back with send_message to your session id, which the prompt gives it. Its prompt opens with its
    role card's "Who you are" persona, pasted word for word, then the packet (methods/dispatch-packet.md). A member without its
    persona starts as a generalist: never do that. The consultant is the exception: it gets its persona plus the packer's input package (CONSULTANT.md "What it gets") and nothing
    else: no packet, no objective, no reasons, no team files. A delta re-audit may continue the same Critic (TEAM.md rule 2).
@@ -135,8 +135,10 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
 ## 7. Tools and the session (what works, what bites)
 - **`gh`:** the cloud environment's own rules allow it only for search (`gh api -X GET search/...`); some read calls answer anyway,
   but PRs, runs, logs and releases go through the GitHub MCP tools.
-- **Team members: the Agent tool**, which sets effort for real. create_session has no effort setting; if you must use it, set
-  permission_mode "auto", never acceptEdits (it blocks send_message on an approval only Matt can give).
+- **Team members: create_session** (Matt, 11-09: each member is its own session, never an Agent-tool helper under the lead, and on
+  Fable 5.2 for now). Set permission_mode "auto", never acceptEdits (it blocks send_message on an approval only Matt can give).
+  create_session has no effort setting: the packet's `effort:` line tells the member how much room to take, and the lead says so
+  to Matt plainly. Check the model with get_session after creating. The Agent tool is only for the lead's own quick lookups.
 - **GitHub:** the GitHub MCP tools for PRs, runs (actions_list), logs (get_job_logs) and releases. Branch deletes are refused from the lead's
   machine: ask Matt to delete on GitHub. A member's "pushed" is proven by `git ls-remote`.
 - **EnK5 rebuild:** a worktree of the commit, `npm install --legacy-peer-deps`, `python3 tools/testlink/build.py "<note>"`. The artifact
@@ -154,10 +156,9 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
 - Package-lock.json from an install is never committed.
 
 ## 8. Lead rotation (Matt, 11-07: clear the lead periodically so it doesn't drift or grow biased)
-- **When:** Matt decides (11-07: "I'll tell you when it's time to retire"). The lead still flags each trigger below to him, at once;
-  the old default was after every release or every week, whichever comes first, at a quiet seam. The lead tells Matt it's time to rotate the
-  moment any of these happens: its session's memory is compressed for the first time; Matt or a Critic catches it missing a written
-  rule; or the schedule comes due. It keeps a handover ready at all times.
+- **When:** Matt decides (11-07: "I'll tell you when it's time to retire"). There is no schedule. The lead tells Matt, at once and
+  plainly, each time a trigger happens: its session's memory is compressed, or Matt or a Critic catches it missing a written rule.
+  It keeps a handover ready at all times.
 - **The outgoing lead:**
   1. Brings the team to a seam (§9 "Taking over a running team"): members created with the Agent tool report only to the session
      that made them, so it lets each one finish or stops it. Their work stays on their branches, named in STATE.md.
@@ -187,7 +188,8 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
      would change, and what looks like the last lead's bias. It decides those changes itself and tells Matt only what needs him.
      Every fact in it cites file:line, checked in the same step it's written; before any plan change, grep roles/, TEAM.md, LAWS.md,
      CLAUDE.md, ROADMAP.md and the plan files (reference/*PLAN*.md, GAMEPLAN, GPU-RENDERER-PLAN) for what governs it, and Matt's dated
-     decisions, and cite that (D34). The review goes to a cold Critic before anything runs on it.
+     decisions, and cite that in the roadmap row's Source (D34). A check or a ruling of Matt's is never loosened, removed or
+     re-scoped by the lead (LAWS 22). The review goes to a cold Critic, and no change in it is acted on until the Critic's PASS (D35).
   7. Only then asks the backup lead what the documents don't answer: facts only ("where is", "what was"), never "why" a strategy was
      chosen (that would carry the last lead's bias in). Every answer goes into the documents the same day.
   8. Arms a one-off scheduled task for the work the handover names, and tells Matt in a few lines that it's in place.

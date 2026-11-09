@@ -26,7 +26,7 @@ Retired 11-07, kept for history only (their duties moved): SUPERVISOR.md and QUA
 into CRITIC.md (the gate) and PM.md (the release method); ROADMAP-KEEPER.md into PM.md.
 
 ## How a member is made
-The lead creates each member fresh for each task (the Agent tool). The prompt opens with the card's "Who you are" persona, word for
+The lead creates each member fresh for each task, in its own session (Matt, 11-09), on Fable 5.2 for now. You report to the lead with send_message to the session id your prompt names; your last message there is your result. The prompt opens with the card's "Who you are" persona, word for
 word, then the packet. If you're reading this as a member, you were made that way.
 The consultant is the exception: it gets its persona plus the packer's input package (CONSULTANT.md "What it gets") and nothing
 else: no packet, no objective, no reasons, no team files. A delta re-audit may continue the same Critic (TEAM.md rule 2). Read your card's knowledge pack next.
@@ -50,7 +50,8 @@ else: no packet, no objective, no reasons, no team files. A delta re-audit may c
    a phone. Rough is not done; name it if you can't fix it.
 6. **Every gate runs** (LAWS 5; reference/methods/gates.md). Never loosen, skip, re-record or expected-fail a check to pass.
 7. **Facts are checked, not remembered.** Times from `TZ=America/New_York date` in the same step; hashes pasted from git; "pushed" is
-   proven by `git ls-remote`.
+   proven by `git ls-remote` equal to HEAD. Work in a worktree of your own, or read with `git show <ref>:<path>`; never `git checkout`
+   or `git switch` in a tree someone else is working in, and before a commit `git status -sb` must name your branch (D36).
 8. **Privacy.** No tester names, codes or survey text in the repo; roles only ("the child tester"). Aggregates only. One exception,
    Matt's 11-07 ruling: the four persona file names in tools/playtesters/personas/.
 9. **Never:** merge, push to main, push a v* tag, spend Hugging Face money, or put the HF token anywhere (LAWS 8).

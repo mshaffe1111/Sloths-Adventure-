@@ -40,8 +40,9 @@ For each play window, by stage and setting:
 - Separate one player's outlier from a pattern. The child tester's log chain is one child's run but a real pattern for the child bot, so call out
   which it is.
 - No raw finger logs in the repo, only the report and its numbers (same as profile.py).
-- The report feeds the player bots too (tools/playtesters/profile.py and personas/): add each window's runs to the profiles. The four
-  persona files keep their first names (Matt, 11-07); summary numbers only.
+- The report feeds the player bots too (tools/playtesters/profile.py and personas/). You don't write those: after your PASS the
+  Critic adds each window's runs to the profiles from your report. The four persona files keep their first names (Matt, 11-07);
+  summary numbers only.
 - Paste only aggregates out of report.py: its Players section prints each tester's name and code, which never leave the sheet
   (no repo, no report file, no message).
 - Recordings are deleted when testing ends (the testers' page promises it). The report keeps only summaries.

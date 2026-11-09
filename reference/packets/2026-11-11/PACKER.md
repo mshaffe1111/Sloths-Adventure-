@@ -5,7 +5,8 @@ conclusions or anyone's rulings, and you never start a tester session.
 ## First, before any tool call
 Read reference/roles/CONSULTANT.md "What it gets" and "Why it's built this way" (from origin/ccr-ca657d3c-n09zty). Nothing else from the team.
 ## Objective
-Build the consultant's input package exactly as CONSULTANT.md "What it gets" lists it, items 1-5.
+Build the consultant's input package, items 1-5 of CONSULTANT.md "What it gets", by the steps below. Where an item can't be built as
+listed (step 3), the step says what to write instead.
 ## Why it matters
 The consultant must see only what an outside designer could see, so its review isn't anchored on our reasoning.
 ## Frozen inputs (do not change)
@@ -13,7 +14,9 @@ The consultant must see only what an outside designer could see, so its review i
 - Never open `?fresh=1#ctest` or any `#ctest` page: opening it makes a tester code (ControlTestGate.tsx:127). Never use a paid service.
 ## Steps
 1. Item 1: check whether the live site's ROOT URL (https://mshaffe1111.github.io/Sloths-Adventure-/, no #ctest) loads from your
-   machine. Write "loads" or "doesn't load", nothing else.
+   machine. Write the URL, then "loads" or "doesn't load", then these three lines word for word, and nothing else: "Play only the
+   root URL; never open a #ctest page." "Use no paid service without asking the lead first." "Normal is tuned for players of 12 and
+   up; Easy is for children."
 2. Item 2: the feel sheet: each number read from the code with its file:line (src/game/physics.ts PHYS and the engine), no comment.
 3. Item 3: list the existing pack on branch origin/level-samples (sloths-level-samples.zip, its INDEX.md, and the commit it was built
    from, as INDEX.md states). Write plainly what does not exist: Easy strips and recorded first-timer runs.

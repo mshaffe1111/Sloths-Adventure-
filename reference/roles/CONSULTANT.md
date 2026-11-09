@@ -22,6 +22,9 @@ difference that works, you say so too.
 
 ## How it is created (never any other way)
 The Agent tool at effort max. The prompt is the "Who you are" persona above, word for word, then the packer's input package below.
+The package's item 1 carries three plain lines the packer writes word for word, and nothing else from us: "Play only the root URL;
+never open a #ctest page." "Use no paid service without asking the lead first." "Normal is tuned for players of 12 and up; Easy is
+for children." Those are house rules and a fact about the audience, not our reasons.
 No dispatch packet, no objective or "why it matters", no team files, no lead commentary. The packer is a separate member that
 follows written steps and passes facts only.
 
@@ -36,7 +39,8 @@ follows written steps and passes facts only.
 | **Recency and the famous-game bias.** | Its benchmark library spans tiers: AAA (Mario, Celeste, Rayman, DKC), indie hits (Hollow Knight, Ori, Shovel Knight), and the top mobile platformers people actually play on phones (Leo's Fortune, Alto, Rayman Fiesta Run, Super Mario Run, Oddmar). Touch controls and kids get their own section. |
 
 ## What it gets (its input package, built fresh each run by a separate packer job)
-1. **The live build** (the live site and #ctest), to play with the browser tools: upright and sideways, both settings.
+1. **The live build:** the live site's ROOT URL only, to play with the browser tools: upright and sideways, both settings. Never a
+   `#ctest` page: opening one makes a tester code and puts the run into the testers' data.
 2. **A feel sheet:** the numbers that define how the game plays, extracted from the code by the packer, with NO comments or reasons.
    - Run speed and acceleration.
    - Jump height and length, single and double; variable jump height.

@@ -5,13 +5,16 @@
 - Test link EnK5 = the same build (v242).
 - main head 181d2846 (PR #67 + #68, 11-07): the team's documents and tools only; `git diff 11242520 181d2846 -- src` is empty.
 
-## The team now (taken stock 11-07 evening by the new lead, session_01FhBbYMoqqEdVR3qFjTCugy)
+## The team now (taken stock 11-07 evening by the lead, session_01FhBbYMoqqEdVR3qFjTCugy; the lead's memory was compressed 11-09)
 - Lead: session_01FhBbYMoqqEdVR3qFjTCugy. Backup lead (questions only): session_01FhBbYN2DDsktc7BGtNxPFK.
+- Model: every member on Fable 5.2 until Matt says otherwise (Matt, 11-09). Effort stays the lead's call (Matt, 11-07).
+- Tester data (backup lead's answer, 11-07): the Google sheet "Sloths control tests", tab Sessions, filled by its bound collector
+  tools/control-test-collector.gs. Names never leave the sheet. Tester names in main's files and history: R-165.68 and R-165.69.
 - Story keeper: session_019iachLiuwNTAZUBSJWUmR3, alive (idle), told the new lead's id 11-07. Its context was at about 803K of 1M
   tokens on 11-07 (near compression). Health check 11-07 about 9:50 PM ET: PASS 3 of 3 (Pell and the blanket; 22 ms a letter and
   piece lines under 10 words; the judged line FAILED for the right reasons), its one tool call the send_message (confirmed with list_events). Asked to make STORY-KEEPER.md
   complete before it compresses: done (§8 Turnover, ccr-0d59a91c-oy3imz 3894660b and after). Cast Bible fixed (Docs rev 43).
-- No Agent-tool member running; nothing in flight; nothing to re-issue.
+- Members and their session ids: listed under "In flight" below as each is created.
 - Old helper sessions, all idle and retired (TEAM.md "Transition"): some still show "needs action" (art-1-1-sunrise wants a "go" for an
   HF job; render-stone wants "send word to resume"; Ex Tester Data 1 asks about ctest-notes). **Nobody answers them**: the work goes
   through fresh packets. No HF spend without Matt.
@@ -19,16 +22,19 @@
 - Lead's cold review: reference/notes/lead-review-2026-11-07.md. A cold Critic REJECTED its first version (15 items, 11-07); two of
   its changes were withdrawn (WebGL stays on the graph; the consultant runs after every window as written). Corrections are in the note.
 
-## Open graph (from Wednesday 11-11, the fresh lead; the team is quiet until the reset), in order
-0. ANALYST on the play window that ends Tuesday 11-10 (runs at the same time as the DESIGNER, item 1: no shared WRITE file), told which recorder fields to distrust (consultant finding 3 in
+## Open graph (started Monday 11-09: Matt, about 2 PM ET, "I have fable only usage. Lets create our team and start this week. Right
+## now the team must be fable 5.2"; then "Do not keep under yourself. They should have their own bot": every member is its own session on model "claude-fable-5-2", R-165.74), in order
+0. ANALYST on the play window that ends Tuesday 11-10: dispatched only after the window closes (its packet reads "the window that
+   ended"), told which recorder fields to distrust (consultant finding 3 in
    responses.md's numbering; R-165.58). Then the PACKER and the CONSULTANT (max), as CONSULTANT.md says. Then R-165.59: ONLY the pre-0.9.5
    recordings deleted (Matt 11-07: newer data stays until testing ends), after the analyst's aggregates exist.
-1. DESIGNER: the reach spec from the 30 fps simulation (reference/consultant/2026-11-07-scripts/sim.py), verified in the engine;
-   the gap and rise bands per setting; help thresholds (R-165.60).
-2. ARCHITECT: the verdict schema (setting-aware arcs, headroom, floors, lethal vs soft visibility) (R-165.61); the file list for every
-   later packet. PERFORMANCE-RULES §1 (12 ms, unchanged) is the pass/fail rule; 8 ms is the WebGL design target, not a gate
-   (R-165.65, decided by the lead; no gate measures ms today: limits.json caps canvas calls only).
-3. CONTENT: re-lay 1-1 with no lethal drops (R-165.53) and pick the fixed first-run layout (R-165.52); the bounce card fires at the
+1. DESIGNER, first out, 11-09: the reach spec from the 30 fps simulation (reference/consultant/2026-11-07-scripts/sim.py), verified in the engine;
+   the gap and rise bands per setting; help thresholds per setting (R-165.60).
+2. ARCHITECT, after the Designer's Critic PASS: the verdict schema (setting-aware arcs, headroom, floors, lethal vs soft visibility)
+   (R-165.61); the file list for every later packet; the frame-budget sheet and the frame-time gate's spec as an Engine packet
+   (R-165.65: 8 ms per Matt's 11-06 ruling, GPU-RENDERER-PLAN.md:52-58; PERFORMANCE-RULES §1 still reads 12 ms and no gate measures
+   frame time until that packet lands).
+3. CONTENT (R-165.72): re-lay 1-1 with no lethal drops (R-165.53) and pick the fixed first-run layout (R-165.52); the bounce card fires at the
    first mushroom (story keeper #8); re-lay the 1-1 lessons to the Designer's new reach spec (the consultant suggested a double-teach rise of 136 px or more and
    a bounce teach of 205 px or less; the designer's frozen ruling is a bounce lip of 200-220: the Designer settles it in the spec); the
    log chain on Easy;
@@ -40,15 +46,18 @@
    96 ms sideways on 11-06 against the 50 ms rule, GPU-RENDERER-PLAN.md:67).
 5. CRITIC: traversal with the real reach; the child, middle and expert bots (after Tuesday's data); the gates. Two new gates from
    handoffs/release-clerk.md §4: fail when the candidate has more `todo:` test markers than main; add funknown.json to knowncheck
-   (R-165.63, R-165.64).
+   (R-165.63, R-165.64). The rule finder (R-165.70) and the detached-HEAD guard (R-165.73).
 
-## Wednesday's packets (R-165.66): reference/packets/2026-11-11/ (ANALYST, DESIGNER-R-165.60, PACKER, ARCHITECT-R-165.61), the
-personas sharpened in DESIGNER, ARCHITECT, ENGINE, CONTENT and DATA-ANALYST; through a cold Critic before Wednesday.
+## The packets (R-165.66): reference/packets/2026-11-11/ (ANALYST, DESIGNER-R-165.60, PACKER, ARCHITECT-R-165.61, an AUDIT for each),
+the personas sharpened in DESIGNER, ARCHITECT, ENGINE, CONTENT and DATA-ANALYST. The folder keeps its 11-11 name; the work started 11-09.
+No member is dispatched on a document until a cold Critic has passed it.
 
 ## Continuous improvement (Matt, 11-07: "you have the right to kill the continuous improvement if you think it'll hurt the project")
 The lead's call: KEEP it, every check included. On its first night it caught errors in the lead's own documents before anything ran
-on them (D34). (A first idea to loosen roadmapcheck's BUILD-PLAN prose check was withdrawn: the Critic showed it catches a stale
-estimate Matt reads; R-165.67 now re-does the estimate instead.) The defect log, root causes, gates and the cold Critic stay.
+on them (D34), then the same kind of mistake again two minutes later (D35: R-165.67 would have loosened a check, R-165.65 overturned
+a ruling of Matt's; both reversed). D36: a Critic's `git checkout` in the shared tree detached HEAD and two pushes silently missed
+(9:56-10:09 PM ET 11-07); members now read with `git show` or their own worktree, and R-165.73 builds the guard.
+The defect log, root causes, gates and the cold Critic stay.
 
 ## Carried from the old team (handoffs: reference/handoffs/<role>.md, all six in)
 - R-165.47..51 (gentle intro, dead walk, nothing bites, funcheck vs lock, the proven list 138 toward 300).
@@ -72,12 +81,20 @@ over a certain age, probably like 12." Normal = 12 and up; Easy = children. Matt
 
 ## Decisions waiting on Matt (the one list; each has an R-number on ROADMAP.md)
 Matt, 11-07 (9:53 PM ET): "You're the expert in making video games. Things like how the first level should be executed... That's why I
-hired you." That covers game-design calls like the first level; the lead's wider authority is TEAM.md rule 10. Story stays with the story
-keeper (Matt has the final say); art he rates.
-- R-165.52: DECIDED by the lead 11-07: the first-ever run of 1-1 is one fixed, hand-checked layout; replays roll.
-- R-165.53: DECIDED by the lead 11-07: no lethal drops in 1-1; a deadly drop gets its own look and is taught where it first appears.
-- R-165.65: DECIDED by the lead 11-07 (TEAM.md rule 10; §1 is unchanged, so not Matt's): §1 stays 12 ms (pass/fail); 8 ms is the WebGL
-  design target, not a gate. TEAM.md row 3 and ARCHITECT.md updated the same night.
+hired you." That covers game-design calls like the first level. It does not cover his own rulings: a rule or number he set changes only
+when he changes it (LAWS 22; D35). Story stays with the story keeper (Matt has the final say); art he rates.
+- OPEN, asked 11-09: Matt asked for "the key line process that Ed Hang uses", a one-page view of where we are and where we're going.
+  Two web searches found no method or person by that name. Asked him to pick: A) a Kanban board (the lead's pick, on the sound of it),
+  B) Hoshin Kanri, C) an A3 report, D) something else. No answer yet; build the page when he picks. Never guess it.
+- R-165.52: DECIDED by the lead 11-07: the first-ever run of 1-1 is one fixed, hand-checked layout; replays roll. Built in R-165.72.
+- R-165.53: DECIDED by the lead 11-07, re-judged per setting 11-09: no lethal drops in 1-1 on Easy or Normal, because 1-1 is where the
+  controls are learned (not because of the player's age). Normal's bite comes from its reach bands and from 1-2 on. A deadly drop
+  gets its own look and is taught where it first appears.
+- R-165.62: re-judged per setting 11-09: on Easy the help steps in by itself; on Normal it is offered, the player may ignore it, and
+  the stage never changes by itself.
+- R-165.65: the lead's 11-07 ruling ("8 ms is a design target, not a gate") is WITHDRAWN (D35): it overturned Matt's 11-06 "build for
+  60" ruling (GPU-RENDERER-PLAN.md:52-58). Open work now: the Architect's budget sheet, an Engine gate that measures frame time,
+  §1 and limits.json changed to 8 ms with a planted test. Until it lands every member designs to 8 ms.
 - R-165.54: DECIDED by Matt 11-07 (received by 10:21 PM ET): platform-looking pieces may float; skinny ones attach; rocks and decor never
   float (STAGE-RULES.md 'What may float').
 - R-165.55: the story keeper's open story threads (reference/story/STORY-KEEPER.md).

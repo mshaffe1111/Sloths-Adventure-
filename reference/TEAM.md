@@ -17,7 +17,7 @@ artifact on a branch.
 |---|---|---|---|---|
 | 1 | Project Manager / Orchestrator | the lead (this session) | the state ledger (reference/STATE.md), the task graph, the packets, release candidates and PRs (Matt merges), Matt's links | writes game code or invents mechanics. Emergency exception: a one-line fix to unblock a live deploy, logged as a defect. |
 | 2 | Systems & Mechanics Designer | fresh agent per task (high) | specs/: the numbers. Jump, double, bounce and glide reach from the 30 fps simulation; gap and rise bands per setting; coyote and buffer windows; the Easy curve; help thresholds; petal arcs; touch thresholds | writes code |
-| 3 | Lead Architect | fresh agent per task (high) | interfaces, types, the section and verdict schemas, perf budgets (Matt 11-06 "build for 60", which the lead set as 8 ms at 60-for-30: a design target, not a gate; PERFORMANCE-RULES §1's 12 ms stays the pass/fail rule and no gate measures ms (R-165.65, 11-07); was: the gate says 12 ms until PERFORMANCE-RULES §1 changes, ARCHITECT.md), ARCHITECTURE notes, the list of files a task may touch | writes method bodies or gameplay |
+| 3 | Lead Architect | fresh agent per task (high) | interfaces, types, the section and verdict schemas, perf budgets (Matt 11-06 "build for 60": our update plus draw at 8 ms or less, GPU-RENDERER-PLAN.md:52-58; PERFORMANCE-RULES §1's text still reads 12 ms until R-165.65 changes it and adds a frame-time gate with a planted test; no gate measures frame time today), ARCHITECTURE notes, the list of files a task may touch | writes method bodies or gameplay |
 | 4 | Engine Engineer | fresh agent per task (high) | src/game engine, physics, input, camera, the renderer (the WebGL move), the gen2 pipeline code | changes interfaces or game rules |
 | 5 | Content & Asset Specialist | fresh agent per task (high) | section data (w1 kit), seed lists, art cutting and the manifest, the backdrop layers, the testers' page copy | touches engine loops or physics |
 | 6 | Adversarial Critic & QA | fresh agent per task (high; max for a release gate) | tests, headless checks (traversal with the real 30 fps reach, bots), the gates, defect reports | fixes production code. It only writes failing tests and a PASS/REJECT report |
@@ -67,7 +67,7 @@ artifact on a branch.
 - **Story keeper (the old lead, session_019iachLiuwNTAZUBSJWUmR3): the ONLY long-lived session kept** (Matt, 11-07: "Too much story
   knowledge"). It owns the story, characters, Dot's voice and the lessons of past releases. The PM asks it before any story, dialogue
   or taste call, and it reviews player text. It's not a builder and not a node in the graph.
-  Its bible: reference/story/STORY-KEEPER.md (on branch `studio` since 11-07; on main once studio merges). It lists 10 open story threads.
+  Its bible: reference/story/STORY-KEEPER.md (on branch `studio` since 11-07; on main once studio merges). It listed 10 open story threads on 11-07; where each stands: ROADMAP R-165.55.
   Never build from ccr-0d59a91c-oy3imz (it carries the rejected 11-04 src/).
 
 ## The rules (the PM enforces them)
@@ -83,7 +83,7 @@ artifact on a branch.
    - Try 2: a delta packet with the exact failure.
    - Try 3: a FRESH builder with the task plus "approaches that failed, don't use them".
    - Then stop: an architecture deadlock goes to the Architect, an unclear requirement goes to Matt as a 3-bullet question.
-5. **Effort is set for real** (the Agent tool; Matt, 11-07: "medium for light work, high for more effort, max only when needed... the
+5. **Effort is set per task** (since 11-09 every member is its own session on Fable 5.2, Matt's word; create_session has no effort setting, so the packet's `effort:` line carries it; Matt, 11-07: "medium for light work, high for more effort, max only when needed... the
    consultant on max", and the lead sets the levels; this replaces the 10-28 "never max unless Matt asks"): designer, architect, engine, content and critic high; the critic max for releases; the
    consultant max; low or medium only for following written steps.
 6. **The stage-building order** (from the consultant's root cause):

@@ -16,7 +16,10 @@ minutes with no help stepping in.
 - The readings to fly: gaps.py's take-off model (L, how far the centre passes the near lip; k, airborne ticks before the jump registers,
   within coyote) and its three far-side landing rule sets (generous, medium, strict), as defined in gaps.py:1-16, checked against the
   engine's real landing code. Where the engine settles a rule, say which reading is the real one.
-- The lead's decisions 11-07: no lethal drops in 1-1 (R-165.53); a player's first 1-1 run is one fixed layout, replays roll (R-165.52);
+- Who the game is for (Matt, 11-07; R-165.71): Normal is tuned for players of 12 and up and must be hard enough for adults; Easy is
+  for children. Every band and help number is set per setting. Help (R-165.62): on Easy it steps in by itself; on Normal it is
+  offered, the player may ignore it, and the stage never changes by itself.
+- The lead's decisions 11-07: no lethal drops in 1-1 on either setting (R-165.53; 1-1 is where the controls are learned); a player's first 1-1 run is one fixed layout, replays roll (R-165.52);
   the bounce is taught by the `lesson.bounce` card at the first mushroom (story keeper).
 - The PM's word (DESIGNER.md "You never"): you MAY change the rulings in handoffs/designer.md §3.2 (Normal teach 195-205 px, Easy rise
   twins 110-114 px) and §3.3 (bounce lip 200-220 px) where the flown numbers require it, each change with its evidence. Nothing else
