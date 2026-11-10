@@ -84,8 +84,8 @@
         },
         {
           "id": "R-165.85",
-          "title": "Your additional art (12 sheets tonight): cut, measure and catalogue it, then place the World 1 pieces",
-          "waits": "the files being saved from the Designer's session"
+          "title": "Your additional art (15 sheets tonight, saved): cut, measure and catalogue it, then place the World 1 pieces",
+          "waits": "Content's turn, with the 1-1 re-lay"
         },
         {
           "id": "R-165.72",
