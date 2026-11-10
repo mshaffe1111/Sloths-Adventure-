@@ -62,6 +62,10 @@
   t-engine-putback; WORKING: session_01FhBbYNUwoxpt2ufU9ozYYg, "Engine: no fall in 1-1 costs a life (R-165.86, fix A1)", Fable 5.2, effort medium,
   restarted 9:07 PM ET, due 11:10 PM ET. (An Opus Engine session, session_01FhBbYLPQPNAz6xNudSS5Zd, held the task for two minutes
   between Matt's two messages; interrupted and archived, cost $0.42.)
+- DECIDED by Matt 11-09 9:17 PM ET ("I already picked A", to the cost question): tonight only A1 is finished and passed; everything
+  for A2 (the story keeper's words, the packet, its Critic, the build), the Architect and the promote run after the weekly reset,
+  Wednesday 11-11 2:00 AM ET, on free usage. A reminder is armed for 2:05 AM ET Wednesday (the "start A2 after the weekly reset"
+  scheduled task). Tonight's spend should stop near $62. Matt gets ONE test link with A1 and A2 on Wednesday.
 - DECIDED by the lead 11-09 9:15 PM ET, the help schedule (R-165.62; reference/ONE-ONE-FIX-PLAN.md "The help schedule"): Easy 3 Dot
   says the move / 5 pad tap is a full jump / 8 a step grows by itself; Normal 3 Dot says the move / 12 Dot offers the step. The ghost
   is cut from test link A. Proposals until flown.
