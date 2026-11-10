@@ -42,7 +42,7 @@ are on seed list `e03e9c8c`, round `1-1 gen2 r1`. Rebuild a layout from its seed
 **Sections.** 75 runs finished (all 8 players). The finish time median is 188 s (range 135-612), which meets the 2-minute rule. 6 runs
 did not finish. 4 of those left before the first section line (no play). Only 2 left mid-stage, both P25 (ONE): one in
 `w1-log-chain-rise` after 2 lives at 2.9 min, and one in `w1-double-teach` at 0.5 min.
-**All 36 lives lost on Normal are pits (`lostLife pit`), and all 36 are in raised pieces.** They hit 7 of the 8 players. This confirms
+**All 36 lives lost on Normal are pits (`lostLife pit`), and all 36 are in raised pieces** (report.py's per-player lives sum to 36; the table rows below sum to 10+8+6+4+2+2+2+1+1 = 36). They hit 7 of the 8 players. This confirms
 the 11-07 "treetop" finding on 4x the runs.
 | Piece (stretch) | Runs in | Lives (players) | Put-backs (players) | Time med (range) |
 |---|---|---|---|---|
@@ -51,6 +51,7 @@ the 11-07 "treetop" finding on 4x the runs.
 | w1-log-chain (The logs) | 19 | **6 (3 of 6)** | 0 | 18.5 s (15-40) |
 | w1-mushroom-chain | 8 | 4 (1, ONE) | 0 | 16.8 s |
 | w1-log-stair-test, w1-high-walk-up, w1-canopy-rungs | 44, 13, 5 | 2 (2), 2 (2), 2 (1) FEW | 0 | 13, 6, 17 s |
+| w1-last-step-up (Walking: the raised last step) | 12 | 1 (1, ONE) | 0 | 7.8 s (6-16) |
 | w1-canopy-rungs-level (The high branches) | 27 | 1 (1) | **12 (5 of 5)** | 20.1 s (13-42) |
 | w1-double-teach (The double-jump gaps) | 32 | 0 | 18 (3 of 5; P26 has 12, SKEWED) | 14.3 s (6-150) |
 | w1-dip-double-teach | 42 | 0 | 7 (5 of 8) | 11.5 s (9-33) |
@@ -62,7 +63,7 @@ Stuck (120 s or more in one piece): 2 runs, both P26 (ONE, the slow player): `w1
 P28's are 1,0,4,0,2,1,1,2,2,0. The raised pits keep killing experienced players. Finish times: P24 177 s first, median 166 over 38 runs.
 P26 is slow (612, 444, 559, 386: FEW-run outlier). P32 414 (ONE run).
 **Input misreads.** 1-1 has nothing to punch: 0 stomps and 0 hurts in all 95 runs. Even so, 693 taps were read as punches, and **475
-of them were followed by a jump within 0.6 s**: the player meant to jump. That is all 9 of 9 players, both settings. P24 has 246 (52%), so
+of them were followed by a jump within 0.6 s** (looking at the next 5 intents): the player meant to jump. That is all 9 of 9 players, both settings. P24 has 246 (52%), so
 it is not one player's habit.
 **Survey (v2, 87 surveys, 9 players):** fun 5 in 63/5 players, 4 in 22/7, 3 in 2/2. Length "About right" 87/9. Knew where to go:
 Always 57/6, Mostly 30/6. Tips: "Didn't notice them" 18/4, Yes 3/2.
@@ -70,7 +71,7 @@ Always 57/6, Mostly 30/6. Tips: "Didn't notice them" 18/4, Yes 3/2.
 step-downs (and 34 on Easy) are ONE device (P25). Landscape: 13 runs, 4 players, fps min 23.7.
 **Glitches.** 6 `jitter` lines, all pokey-x, n7, in 6 layouts and from 4 players (`w1-log-chain`, `w1-learn`, `w1-step-stones-teach`, `w1-seed-perch`,
 `w1-two-answers`, `w1-clearing`; seeds 12727, 30782, 3747, 28035, 18992, 28212). 1 `camjump` (dx42 dy138, `w1-seed-perch`, seed 12943, P29).
-0 `err`, 0 `skipOffer`.
+0 `err`. (`skipOffer` is not a glitch: it is the "Skip tips" button on Dot's first tip, DotGuide.tsx:409-424; report.py now counts it under teaching.)
 **Teaching** (each player's first run, because hints show once per device): `hint.1-1.double` came before the first double-jump section
 in 7 of 8 first runs. In 5 of 8, he used the double before that section. The first double came 25 s into the run (median, range 8-82).
 
@@ -78,9 +79,10 @@ in 7 of 8 first runs. In 5 of 8, he used the double before that section. The fir
 All 14 runs finished. Easy has no lives, so its put-backs (`softFall`) stand in for lives (LOG_EVENTS.md).
 **The 37-minute run holds. It is ONE player (P27, 1 run, seed 12727), and it is the real child-bot pattern:** the finish took 2,231 s.
 The time went to `w1-log-chain` (6 entries, 1,353 s, 152 put-backs spread across the whole chain, x 35135-37099),
-`w1-canopy-rungs-level` (115 s, 14 put-backs) and `w1-leap-stones` (117 s, 12 put-backs). Nothing helped him out: 0 `stuckHelp` and 0 `skipOffer` in
-all 95 runs. He also never saw `hint.1-1.double` (his Dot lines: coach.run, coach.jump, hint.1-1.gaps, hint.1-1.noMoss). He tapped
-167 punches (4.4 a minute), and 81 of them were followed by a jump.
+`w1-canopy-rungs-level` (115 s, 14 put-backs) and `w1-leap-stones` (117 s, 12 put-backs). No help-after-put-backs exists; stuckHelp watches walls only (engine.ts:4524), so it could not fire here (0 `stuckHelp` in
+all 95 runs). He also never saw `hint.1-1.double` (his Dot lines: coach.run, coach.jump, hint.1-1.gaps, hint.1-1.noMoss). He tapped
+167 punches in 37.6 minutes of play (report.py's in-section time, time away removed) = 4.4 a minute; 81 were followed by a jump
+within 0.6 s (looking at the next 5 intents).
 The other Easy put-backs: `w1-canopy-rungs-level` 17 (2 of 3 players, P27 has 14), `w1-dip-double-teach` 9 (2 of 2), `w1-double-teach` 6
 (2 of 2). Finish times without P27: median 187.5 s for P25 (10 runs) and 191 s for P29 (3 runs).
 **Phones.** Portrait: 13 runs, fps median 29.9, min 15.2, sd 2.3 ms, 48 step-downs (P25's device 34, P29's 13). Landscape: 1 run (P29, seed 12943),
@@ -92,7 +94,7 @@ fps median 25.2, sd 12.2 ms: ONE.
 | Problem | Fix by layout (Content/Designer) | Needs the engine |
 |---|---|---|
 | Raised-pit deaths in the log and branch chains (Normal) | Yes: a catch road or a low floor under `w1-log-chain-rise`, `w1-mushroom-chain-back` and `w1-log-chain` (the log chain's mid road covers only its approach), or shorter gaps | Or: let the level double-gap put-back rule (it already puts him back in `w1-double-teach` and canopy-rungs-level) cover the raised chains. That is an Engine and Designer call. |
-| The Easy put-back loop with no exit (P27, 152 in one piece) | Partly: an easier Easy version of the chain | Yes: after N put-backs in one piece, offer help or a bridge. Today nothing fires (0 stuckHelp, 0 skipOffer). |
+| The Easy put-back loop with no exit (P27, 152 in one piece) | Partly: an easier Easy version of the chain | Yes: after N put-backs in one piece, offer help or a bridge. No help-after-put-backs exists; stuckHelp watches walls only (engine.ts:4524). |
 | Taps read as punches in a stage with nothing to punch | No | Yes: the touch rules (when nothing is in reach, a tap followed by an upward flick within 0.6 s should be a jump) |
 | Put-backs at the Normal double gaps (canopy-rungs-level, dip-double-teach) | Yes: gap widths, or a practice gap first | No (the put-back already works as designed) |
 | Mushroom-bounce tempo (longest stretch, top "hardest" answer) | Yes: fewer or shorter bounce pieces | No |

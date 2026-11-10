@@ -1,4 +1,4 @@
-# Turnover note: the data analyst (rewritten at the end of every task; first written 11-09 by W11-ANALYST attempt 1)
+# Turnover note: the data analyst (rewritten at the end of every task; last: W11-ANALYST attempt 2, the Critic's V1/V2 fixes)
 
 ## Open
 - The play window ending Tue 11-10 (gen2 1-1, live 0.9.5) was read up to the 11-09 8:39 PM ET pull (last row 7:25 PM ET).
@@ -24,9 +24,14 @@
 - The top horizontal speed is 520 px/s (SWING.leapMax, physics.ts:373), not 430. Any section time under length/520 is a counting bug.
 - `move double` / `move bounce` = first use per stage start (playRecorder.ts:409-416). Count runs, never uses.
 - On Easy, softFall stands in for a life, so it weighs 3. On Normal, softFall is the double-gap put-back and weighs 1.
+- `skipOffer` is the "Skip tips" button on Dot's first tip (DotGuide.tsx:409-424): not a glitch, not help; report.py counts it
+  under teaching. `stuckHelp` watches jumping at a wall only (engine.ts:4524-4548): it cannot fire on a put-back loop, and no
+  help-after-put-backs exists.
+- The tap-read-as-punch rule: a punch intent with a jump/jumpUp intent within 0.6 s among the next 5 intents.
 - 1-1 has nothing to punch (0 stomps and 0 hurts in 95 runs), so every punch intent there is a misread.
 
 ## Traps I hit
+- Every hand-made table must sum to report.py's own total; quote that total beside it (V1, 11-09: a dropped 1-life row).
 - The 11-07 report summed section time per slice, not per run, and never closed the last section. Both are fixed. Don't bring them back.
 - Slices that hold a respawn span x far faster than the top speed. Exclude them from speed checks.
 - Dot's hints show once per device, so judge teaching on each player's FIRST run only.

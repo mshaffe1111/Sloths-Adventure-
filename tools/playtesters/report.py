@@ -217,7 +217,8 @@ def slice_run(r):
                 cur['pause'] += 1
             elif n == 'stuckHelp':
                 cur['stuckHelp'] += 1
-            elif n in ('camjump', 'jitter', 'blank', 'err', 'skipOffer', 'flipflop', 'contextlost'):
+            elif n in ('camjump', 'jitter', 'blank', 'err', 'flipflop', 'contextlost'):
+                # (not skipOffer: that is the "Skip tips" button shown on Dot's first tip, DotGuide.tsx:409-424; teaching counts it)
                 cur['glitch'].append((n, d[:60]))
     if r['finish'] is None:
         close(t_last)
@@ -463,9 +464,9 @@ def players(runs, sessions):
         for i, m in enumerate(il):
             if m[2] == 'punch':
                 total[r['who']] += 1
-                if any(q[2] in ('jump', 'jumpUp') and 0 < q[1] - m[1] <= 600 for q in il[i + 1:i + 6]):
+                if any(q[2] in ('jump', 'jumpUp') and 0 < q[1] - m[1] <= 600 for q in il[i + 1:i + 6]):  # next 5 intents
                     retried[r['who']] += 1
-    print(f'  punch intents followed by a jump intent within 0.6 s: {sum(retried.values())} of {sum(total.values())}, '
+    print(f'  punch intents followed by a jump intent within 0.6 s (looking at the next 5 intents): {sum(retried.values())} of {sum(total.values())}, '
           f'{len([w for w in retried if retried[w]])} of {len(by)} players {dict(sorted(retried.items()))}')
     misread = []
     if foes == 0 and retried:
@@ -566,6 +567,11 @@ def teaching(runs):
             if t_dbl is not None:
                 first_dbl.append((t_dbl - r['m'][0][1]) / 1000)
         n = sum(1 for r in rs if any('double' in s['words'].lower() for s in r['slices']))
+        allr = [r for r in runs if r['mode'] == mode]
+        skip = sum(1 for r in allr for m in r['m'] if m[0] == 'e' and m[2] == 'skipOffer')
+        help_ = sum(1 for r in allr for m in r['m'] if m[0] == 'e' and m[2] == 'stuckHelp')
+        print(f'  {mode:6} "Skip tips" offered (skipOffer) {skip} in {len(allr)} runs; stuckHelp (wall-jump watch only, '
+              f'engine.ts:4524) {help_}')
         print(f'  {mode:6} first runs reaching a double-jump section {n}: line shown before it {shown_before}, never shown {no_line}; '
               f'double used before that section {dbl_before_teach}; first double {med(first_dbl):.0f}s into the run '
               f'(range {rng(first_dbl)})')
