@@ -89,7 +89,10 @@
   ADR-002: a retry before the first finish of 1-1 replays the fixed layout; every run after it rolls. Nit for E0: list real verdict
   names in notJudged, not the arc.* wildcard. Then Matt, 10:52 PM ET, "Can anything be done with 10.00": "A", the
   art cut. WORKING: Content, cutting and cataloguing Matt's 15 sheets (R-165.85), Opus medium, created 10:56 PM ET, due 1:00 AM ET,
-  branch t-c2-art-cut; packet passed by a Critic (session_01FhBbYLu2qvAbccX1MFpoDX) at ff864873. Its result Critic follows. Its Critic follows on its report (about $3). The sprint board is republished
+  branch t-c2-art-cut; packet passed by a Critic (session_01FhBbYLu2qvAbccX1MFpoDX) at ff864873. REPORTED 11:14 PM ET: t-c2-art-cut@fa3e6e77, 48 kept / 10 rejected,
+  30 MB added; flags kept (M-04-b crate words, M-06-e pitcher plants, sheet 02 top view); rough spots named (M-09-a root pockets, M-05-a
+  mauve trunk top). The lead's ruling on its pushback: the 7 clean pieces under 600 px are allowed and move into src/assets/w1-1109/ when
+  C2 places art. Its Critic is out. Its Critic follows on its report (about $3). The sprint board is republished
   at every member start, stop and verdict (Matt, 10:26 PM ET: "make sure to keep sprint board updated").
 - WORKING: session_01FhBbYMHMXc5mHeNEeVEhTR, "Designer: the real reach numbers, flown in the engine (R-165.60)", Fable 5.2 (Matt,
   tonight), created 11-09 8:43 PM ET, due 12:45 AM ET, branch t-designer-reach. Sent alongside the analyst because Matt asked for

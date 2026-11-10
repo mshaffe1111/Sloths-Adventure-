@@ -32,7 +32,12 @@
   "team": [
     {
       "role": "Content",
-      "task": "cutting and cataloguing your 15 art sheets (Opus, medium)",
+      "task": "your art cut: 48 pieces kept, a Critic is checking",
+      "status": "reported"
+    },
+    {
+      "role": "Critic",
+      "task": "checking the art cut",
       "status": "working"
     },
     {
@@ -180,18 +185,17 @@
       "name": "Doing",
       "hint": "being built now; at most 3 at once",
       "limit": 3,
-      "cards": [
-        {
-          "id": "R-165.85",
-          "title": "Your 15 art sheets: cutting and cataloguing now (placing comes with the re-lay)"
-        }
-      ]
+      "cards": []
     },
     {
       "key": "checking",
       "name": "Checking",
       "hint": "built; a Critic is checking it, or it passed and waits for the release",
       "cards": [
+        {
+          "id": "R-165.85",
+          "title": "Your 15 sheets cut: 48 pieces kept and catalogued; a Critic is checking (placing comes with the re-lay)"
+        },
         {
           "id": "R-165.61",
           "title": "Architect: the stage safety report and the builders' file lists: PASSED, waits for the release"
