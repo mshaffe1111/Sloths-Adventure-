@@ -32,7 +32,9 @@
 - THE SPEND LEDGER (get_session usage.cost_usd, an estimate, not the bill; the lead's own turns spend from the same money). Baseline
   11-09 8:36 PM ET: the lead's session reads $36.68 lifetime (count only what it adds from here); the two afternoon Critics $4.55 +
   $3.95 = $8.50 (counted). Spent against the $50: $8.50. Add each member's cost when it stops, and the lead's rise at each check-in.
-  At $35 tell Matt; at $45 stop creating members and get the test link out.
+  Matt, 8:40 PM ET: "Can go to 70 max including promote": the cap is now $70 at most, and that includes promoting the build (the
+  gates, the test link and the release work). Plan to the $50; the extra $20 is headroom for the promote, not for more scope.
+  At $45 tell Matt; at $55 stop creating builders and start the promote.
 - WORKING: session_01FhBbYKQPPcDe1fW9ZijADh, "Critic: delta re-audit, analyst and Designer packets (11-09 evening)", Opus, created
   8:31 PM ET, read-only. It returns ANALYST / DESIGNER / REST verdicts on the fix pass (f4fee368, 431a5070, 867fde68).
 - Check-in armed: trig_012Pcfrpi7GZWBWm8nXareVP (9:02 PM ET).
