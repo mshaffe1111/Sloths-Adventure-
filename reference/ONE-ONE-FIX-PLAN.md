@@ -37,3 +37,12 @@ depends on them). Every fix has a roadmap number. Money: $75 at most before Matt
 ## Order and money
 A1's packet goes to a Critic now, then to the Engine member. A2 and A3 follow the Designer's PASS. The promote (gates, the test link)
 is counted inside the $75. If the money runs short, Test link A ships with A1 alone and says so.
+
+## Calls the lead made, and their known cost
+- Engine first, layout second. The analyst ranks the three chains "layout, else engine". The lead chose the engine fix first
+  because it needs no reach numbers and no art, and the layout fix (B1) follows on the Designer's passed numbers.
+- A1 without A2 has a cost: with no lives to lose, a player who can't clear a chain is set back again and again with no help, the
+  loop one Easy player was in for 22.5 minutes. A1 alone trades lost lives for that loop. A2 is the cure and ships with A1 if the
+  money allows; if not, Matt is told plainly before the test link goes out.
+- After A1 every pit in 1-1 is harmless but looks the same as a deadly one elsewhere. The Architect's "lethal vs soft" visibility
+  work (R-165.61) and the re-lay (B1) must make the two look different.
