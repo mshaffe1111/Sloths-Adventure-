@@ -58,6 +58,8 @@
   t-engine-putback; WORKING: session_01FhBbYNUwoxpt2ufU9ozYYg, "Engine: no fall in 1-1 costs a life (R-165.86, fix A1)", Fable 5.2, effort medium,
   restarted 9:07 PM ET, due 11:10 PM ET. (An Opus Engine session, session_01FhBbYLPQPNAz6xNudSS5Zd, held the task for two minutes
   between Matt's two messages; interrupted and archived, cost $0.42.)
+- DECIDED by Matt 11-09 9:10 PM ET ("A"): test link A ships A1 AND A2 together (no lives lost, with help after put-backs), forecast
+  $70-75, at the cap. A2's packet is written when the Designer's Critic has judged help.md; A3 (the tap rule) waits for the next link.
 - THE 1-1 FIX PLAN: reference/ONE-ONE-FIX-PLAN.md (written 11-09 8:59 PM ET from the analyst's report; the analyst's Critic said
   REJECT on two small report items, attempt 2 is with the analyst, and found all six main claims TRUE). Test link A: A1 no fall in
   1-1 costs a life (R-165.86, packet packets/2026-11-09/ENGINE-R-165.86.md, with the delta Critic for a PASS before dispatch), A2 help
