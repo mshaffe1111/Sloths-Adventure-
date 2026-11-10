@@ -18,8 +18,8 @@ Normal it is offered, may be ignored, and the stage never changes by itself (R-1
 |---|---|---|---|---|
 | 1 Say the move again | 3 failures or 20 s | 3 failures or 30 s | Dot names the move the spot needs, once ("Jump, then jump again in the air"). Exists today for the second jump (`stuckLine`) | Crash 2 / 3: quiet help after repeated deaths at one section (STUCK-PLAYERS.md) |
 | 2 Quiet forgiveness | 5 failures or 45 s | not given | At this spot only, until he passes: a Pad tap counts as a full jump (220 ms hold). Expected effect, inferred and not flown as such: a tap held 220 ms is the flick, and flick,flick climbs the 128-132 px rise on 100% of the grid, where tap,tap manages about half (a fixed grid of 165 tries with a 66 ms press I chose; not a player rate until the hold data is read). Never told | Crash's unannounced help; Kirby-style forgiveness. It keeps a child's pride |
-| 3 Show it | 8 failures or 90 s | 5 failures or 90 s: Dot asks, "Want me to show you?" Yes / No | A ghost Pokey does the move once at the spot, at speed, with the press marks | Odyssey's assist arrows. The 5 is a proposal (STUCK-PLAYERS.md gives 5 deaths for NSMB U's Super Guide; I did not check that source) |
-| 4 Get him past | 12 failures or 150 s: a leaf step grows at the spot for this run | 8 failures or 150 s: Dot offers it; only a Yes grows it | One extra step that turns the block into a single jump: 70 px high on Easy (under a 128-132 px rise it leaves 58-62, inside Easy's 63) and 60 px on Normal (136-140 leaves 76-80, inside 80). Arithmetic on the bands, not flown. The clear keeps its petals and stars with a small honest mark | NSMB Wii's Super Guide at 8 deaths, stars marked (mariowiki.com/Super_Guide; kotaku.com, "Your guide to Nintendo's Super Guide") |
+| 3 Show it | 8 failures or 90 s | 8 failures or 90 s: Dot asks, "Want me to show you?" Yes / No | A ghost Pokey does the move once at the spot, at speed, with the press marks | Odyssey's assist arrows. The 8 is a proposal, set to match §4 |
+| 4 Get him past | 12 failures or 150 s: a leaf step grows at the spot for this run | 12 failures or 150 s: Dot offers it; only a Yes grows it | One extra step that turns the block into a single jump: 70 px high on Easy (under a 128-132 px rise it leaves 58-62, inside Easy's 63) and 60 px on Normal (136-140 leaves 76-80, inside 80). Arithmetic on the bands, not flown. The clear keeps its petals and stars with a small honest mark | NSMB Wii's Super Guide at 8 deaths, stars marked (mariowiki.com/Super_Guide; kotaku.com, "Your guide to Nintendo's Super Guide") |
 
 ## 3. Why these, and which help shames
 - Super Guide plays the level for the child and marks the save: children read the green block as "you failed". Here step 4 changes
@@ -47,7 +47,9 @@ minutes with no help, one put-back every 9 s; on Normal put-backs cluster at the
 - **What resets the count:** standing on the piece beyond (he passed), or the stage ending (cleared, left or restarted). **What
   does not:** a put-back, a pause, time passing, a refused offer, a help step already given.
 - **What stays:** a step that grew stays until the stage ends. The quiet forgiveness ends when he passes the piece.
-- **The seconds in §2 still run beside this count** (the earlier of the two fires a step): they catch the player who stops trying.
+- **ONE count drives the steps: put-backs in the piece, on this table** (Easy 3 / 5 / 8 / 12; Normal 3 / none / 8 / 12). §2's
+  "failures" are this same count and carry the same numbers; §2 adds only the seconds, for the player who stops trying. A step
+  fires at its count or its seconds, whichever comes first, and never twice.
 - **The record:** a clear with a grown step keeps its petals and stars with the small honest mark (§2 step 4).
 
 ## 5. What must be logged (the recorder), so the numbers can be tuned
