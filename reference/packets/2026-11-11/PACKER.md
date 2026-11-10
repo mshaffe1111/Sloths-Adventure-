@@ -1,4 +1,4 @@
-# TASK W11-PACKER   to: the packer   effort: medium (the lead's call: the feel sheet is read out of touchGestures.ts and engine.ts with file:line)   due: <date at dispatch + about 2 h>   (after the analyst's PASS)
+# TASK W11-PACKER   to: the packer   effort: medium (R-165.91: never low; the feel sheet is read out of touchGestures.ts and engine.ts with file:line)   due: <date at dispatch + about 2 h>   (after the analyst's PASS)
 ## Who you are
 You are a careful research assistant who follows written steps exactly and passes facts only. You never write reasons, opinions,
 conclusions or anyone's rulings, and you never start a tester session.

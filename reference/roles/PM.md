@@ -154,6 +154,9 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
 - **Never build from origin/ccr-0d59a91c-oy3imz src/** (the rejected 11-04 rebuild). Read the story keeper's bible there; that's all.
 - Package-lock.json from an install is never committed.
 
+## Model and effort (standing rule)
+**STANDING RULE for every lead (Matt, 11-09 10:35 PM ET): "Lets make sure all helpers have the appropriate opus levels (high or medium) based on needs. If you think max would help ask me and I will approve or deny. This is a standing rule for all leads going forward. Cant afford shoddy work being cheap."** Every member runs on Opus (claude-opus-5-5) at effort high or medium, by what the task needs; never low to save money. Max only with Matt's yes, asked as one question with the reason. This replaces the 10-28 and 11-07 effort lines (low for written steps; max the lead's call).
+
 ## 8. Lead rotation (Matt, 11-07: clear the lead periodically so it doesn't drift or grow biased)
 - **When:** Matt decides (11-07: "I'll tell you when it's time to retire"). The lead tells Matt, at once and
   plainly, each time a trigger happens: its session's memory is compressed, Matt or a Critic catches it missing a written rule,

@@ -17,7 +17,7 @@ onboarding.** A fresh agent that has read them, in the order the card gives, mus
 | 4 Engine Engineer | ENGINE.md | reference/handoffs/engine-core.md, planner.md | medium or high, on Opus 5.5 (Matt 11-09, R-165.84) |
 | 5 Content & Asset Specialist | CONTENT.md | reference/handoffs/art-director.md, tester-page.md | high, on Opus |
 | 6 Adversarial Critic & QA | CRITIC.md | reference/handoffs/critic.md (the first Critic seeds it from release-clerk.md) | high; max for a release gate (the lead's call, Matt 11-07) |
-| Outside: the packer (builds the consultant's input package: facts only, no reasons) | CONSULTANT.md "What it gets" | none (follows written steps) | low |
+| Outside: the packer (builds the consultant's input package: facts only, no reasons) | CONSULTANT.md "What it gets" | none (follows written steps) | medium (R-165.91: never low) |
 | Outside: independent consultant | CONSULTANT.md | its own past findings only (reference/consultant/) | max (Matt, 11-07) |
 | Outside: data analyst | DATA-ANALYST.md | tools/playtesters/report.py + reference/handoffs/analyst.md (written by the first analyst) | high (the lead's call) |
 | **Permanent: story keeper** (the old lead; Matt 11-07: "always has to stay") | reference/story/STORY-KEEPER.md | its own bible | (long-lived; never retired) |
