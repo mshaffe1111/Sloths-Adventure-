@@ -47,7 +47,7 @@
    data and make a plan on starting fixes"; rows to date now, a delta at the close), told which recorder fields to distrust (consultant finding 3 in
    responses.md's numbering; R-165.58). Then the PACKER and the CONSULTANT (max), as CONSULTANT.md says. Then R-165.59: ONLY the pre-0.9.5
    recordings deleted (Matt 11-07: newer data stays until testing ends), after the analyst's aggregates exist.
-1. DESIGNER, first out, 11-09: the reach spec from the 30 fps simulation (reference/consultant/2026-11-07-scripts/sim.py), verified in the engine;
+1. DESIGNER, second out (after the analyst, R-165.84), on its packet's PASS: the reach spec from the 30 fps simulation (reference/consultant/2026-11-07-scripts/sim.py), verified in the engine;
    the gap and rise bands per setting; help thresholds per setting (R-165.60).
 2. ARCHITECT, after the Designer's Critic PASS: the verdict schema (setting-aware arcs, headroom, floors, lethal vs soft visibility)
    (R-165.61); the file list for every later packet; the frame-budget sheet and the frame-time gate's spec as an Engine packet

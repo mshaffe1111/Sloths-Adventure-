@@ -83,7 +83,7 @@ artifact on a branch.
    - Try 2: a delta packet with the exact failure.
    - Try 3: a FRESH builder with the task plus "approaches that failed, don't use them".
    - Then stop: an architecture deadlock goes to the Architect, an unclear requirement goes to Matt as a 3-bullet question.
-5. **Effort is set per task** (since 11-09 every member is its own session on Opus, Matt's word that evening ("Keep others now on opus", R-165.76; the lead stays where Matt runs it); create_session has no effort setting, so the packet's `effort:` line carries it; Matt, 11-07: "medium for light work, high for more effort, max only when needed... the
+5. **Effort is set per task** (since 11-09 every member is its own session on Opus, Matt's word that evening ("Keep others now on opus", R-165.76; the lead stays where Matt runs it; one exception, R-165.84: the Engine member, and any member whose task writes game code under src/, runs on Fable 5.2 at effort medium, Matt 11-09 "Keep coder fable 5.2 medium", "Keep game engine on fable 5.2"); create_session has no effort setting, so the packet's `effort:` line carries it; Matt, 11-07: "medium for light work, high for more effort, max only when needed... the
    consultant on max", and the lead sets the levels; this replaces the 10-28 "never max unless Matt asks"): designer, architect, engine, content and critic high; the critic max for releases; the
    consultant max; low or medium only for following written steps.
 6. **The stage-building order** (from the consultant's root cause):

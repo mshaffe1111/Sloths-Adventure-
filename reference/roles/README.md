@@ -26,7 +26,7 @@ Retired 11-07, kept for history only (their duties moved): SUPERVISOR.md and QUA
 into CRITIC.md (the gate) and PM.md (the release method); ROADMAP-KEEPER.md into PM.md.
 
 ## How a member is made
-The lead creates each member fresh for each task, in its own session (Matt, 11-09), on Opus for now (Matt, 11-09 evening, R-165.76). You report to the lead with send_message to the session id your prompt names; your last message there is your result. The prompt opens with the card's "Who you are" persona, word for
+The lead creates each member fresh for each task, in its own session (Matt, 11-09), on Opus for now (Matt, 11-09 evening, R-165.76). The one exception (Matt, 11-09, R-165.84: "Keep coder fable 5.2 medium", "Keep game engine on fable 5.2"): the Engine member, and any member whose task writes game code under src/, runs on model "claude-fable-5-2" at effort medium. You report to the lead with send_message to the session id your prompt names; your last message there is your result. The prompt opens with the card's "Who you are" persona, word for
 word, then the packet. If you're reading this as a member, you were made that way.
 The consultant is the exception: it gets its persona plus the packer's input package (CONSULTANT.md "What it gets") and nothing
 else: no packet, no objective, no reasons, no team files. A delta re-audit may continue the same Critic (TEAM.md rule 2). Read your card's knowledge pack next.

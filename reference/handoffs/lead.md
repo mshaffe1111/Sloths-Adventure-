@@ -1,4 +1,4 @@
-# Turnover note: the lead (PM). Rewritten, never appended. CURRENT LEAD: session_01FhBbYMoqqEdVR3qFjTCugy (route blockers here). Last rewrite: 2026-11-09 8:31 PM ET
+# Turnover note: the lead (PM). Rewritten, never appended. CURRENT LEAD: session_01FhBbYMoqqEdVR3qFjTCugy (route blockers here). Last rewrite: 2026-11-09 8:36 PM ET
 
 Matt, 11-07: "Also make sure you keep updated turnover notes. We all need this." This note is for a replacement lead, or for me after
 a memory compression. If it's older than the last decision in STATE.md, rewrite it before anything else.
@@ -7,14 +7,13 @@ a memory compression. If it's older than the last decision in STATE.md, rewrite 
 - **Matt, 11-09, about 2 PM ET: "So i have fable only usage. Lets create our team and start this week. Right now the team must be
   fable 5.2".** The start moved from Wednesday 11-11 to today. Then, minutes later: "Do not keep under yourself. They should have their own bot." Every member is its own session (create_session, model "claude-opus-5-5" since that evening, permission_mode "auto") that reports to me with send_message (R-165.74).
 - **The order:** nobody is dispatched on a document until a cold Critic has passed it. Two Critics (lead documents; packets and
-  R-165.71) audit the 11-09 fix pass. On BOTH PASSes (the Designer's onboarding reads documents from both audits): the Designer (R-165.60) goes first, with the analyst (R-165.77: Matt wants the data pulled now); the Architect (R-165.61) after the
+  R-165.71) audit the 11-09 fix pass. The order (Matt, R-165.84: data first; lean, one member at a time): the analyst (R-165.77) first on its packet's PASS, then the Designer (R-165.60) on its packet's PASS; the Architect (R-165.61) after the
   Designer's Critic PASS; a delta read when the play window closes Tuesday 11-10, then the packer and the consultant; then Content
   (R-165.72), Engine and the Critic's own work, per STATE.md "Open graph".
 - **Where it stands, 11-09 8:25 PM ET:** both Critics returned REJECT; every item is answered in f4fee368 (not yet re-audited). Matt
   then said "Keep others now on opus" (R-165.76), sent seven ideas (R-165.78 to .83, with R-165.77 "pull the test data now"), picked
   the Kanban board (R-165.75, https://claude.ai/artifact/8UGhTNnJNZhbpDBV87avR2, reference/methods/board.md) and said "Be lean for
-  now". At 8:29 PM ET he gave the order (R-165.84): pull the tester data, evaluate, plan, then fix 1-1; the coder on Fable 5.2 at medium, not over "50" before a new test (unit asked). One Opus Critic (session_01FhBbYKQPPcDe1fW9ZijADh) is re-auditing the fix pass; STATE.md "In flight" has the rest. Next, on his word: two fresh Opus Critics re-audit, then the Designer and
-  the analyst. The old Wednesday trigger trig_018T4m55rQ1cTxAbGtXyKwLX is still to delete once the Designer is out.
+  now". At 8:29 PM ET he gave the order (R-165.84): pull the tester data, evaluate, plan, then fix 1-1; the coder on Fable 5.2 at medium, not over "50" before a new test (unit asked). One Opus Critic (session_01FhBbYKQPPcDe1fW9ZijADh) is re-auditing the fix pass; STATE.md "In flight" has the rest. It returned REJECT at 8:36 PM ET (10 small items); they are answered and the three that change what a member does (the float ruling in the Designer packet, the one dispatch order, the Fable-for-the-coder exception) go back to the same Critic as a delta. Then the analyst, then the Designer. The cap is $70 at most, promote included (STATE.md spend ledger). The old Wednesday trigger trig_018T4m55rQ1cTxAbGtXyKwLX is still to delete once the Designer is out.
 - A 30-minute quality check-in (`send_later`) is armed at the first dispatch and re-armed until the last member stops.
 - My memory was compressed for the first time on 11-09: a rotation trigger. Told to Matt 11-09 about 2:15 PM ET in the lead's reply; he has not answered it.
 

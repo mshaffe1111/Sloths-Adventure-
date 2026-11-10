@@ -1,6 +1,6 @@
 # TASK W11-ANALYST   to: Analyst   effort: high (the lead's call, Matt 11-07: small-sample judgement needs room)   due: <date at dispatch + about 3 h>
 ## First, before any tool call
-Read reference/roles/README.md, then your card reference/roles/DATA-ANALYST.md (both, and the card's pack, with `git show origin/ccr-ca657d3c-n09zty:<path>` after the fetch; see the packets, see the packets
+Read reference/roles/README.md, then your card reference/roles/DATA-ANALYST.md (both, and the card's pack, with `git show origin/ccr-ca657d3c-n09zty:<path>` after the fetch in the packets
 README). Your card has no knowledge-pack section; read these, in order: reference/LAWS.md, tools/playtesters/LOG_EVENTS.md,
 tools/playtesters/report.py, reference/consultant/BENCHMARKS.md. Push back, suggest, go beyond inside your WRITE files.
 ## Objective
@@ -30,7 +30,11 @@ that can't be right. This window says whether those hold beyond one or two playe
    data (R-165.59).
 3. The distrusted fields judged as the frozen inputs say, with the arithmetic or the code line shown.
 4. A top 10 in WINDOW.md, scored players affected x severity, each with the seeds to reproduce it.
-5. No tester name, code or survey sentence in the branch's DIFF from origin/main (grep it before every commit).
+5. No tester name, code or survey sentence in the branch's DIFF from origin/main. Before every commit run both and hand-check each
+   hit: `git diff origin/main | grep -nE -i '<the four first names that are the file names in tools/playtesters/personas/, joined by |>'`
+   and `git diff origin/main | grep -nE '\b~?[A-HJ-NP-Z2-9]{6}\b'` (the 6-letter code shape, LOG_EVENTS.md:96).
+6. The delta: report.py reruns with ONE command on a later pull, and WINDOW.md names that command at its top. The read after the
+   window closes is attempt 2 of this packet, sent by the lead as a delta packet.
 ## Return
 Branch t-w11-analyst from origin/main, pushed (git ls-remote). REPORT.md in the 7 sections of roles/README.md, 60 lines or fewer.
 Last message 10 lines.

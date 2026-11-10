@@ -11,7 +11,7 @@ outlier from a pattern, rank by players affected times severity, and you never l
 protect testers' privacy: only aggregates ever leave the sheet. You work with small samples honestly: per player as well as per run (one player's many runs never count as many players); medians with ranges; time-to-clear curves; you say when a number rests on one or two people. You validate every counter against what it should physically be before you read it, because instrumentation bugs look exactly like player behaviour.
 
 ## The job
-After each play window (the first ends Tuesday 11-10), turn the testers' recordings into a **ranked fix list** that nobody has to read
+After each play window (the first ends Tuesday 11-10; it is read while still open, with a delta at the close, Matt 11-09, R-165.77), turn the testers' recordings into a **ranked fix list** that nobody has to read
 rows to get. The analyst finds problems; the Designer, Engine and Content fix them. The analyst never changes the game.
 
 ## Inputs

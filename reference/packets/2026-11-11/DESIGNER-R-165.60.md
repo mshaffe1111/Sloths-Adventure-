@@ -24,10 +24,12 @@ minutes with no help stepping in.
 - The PM's word (DESIGNER.md "You never"): you MAY change all of handoffs/designer.md §3.2 (Normal teach 195-205 px, TEST 205-228 px,
   Easy rise twins 110-114 px, and its physics line "a single reaches 175 px (reachJump) plus 21 px") and §3.3 (bounce lip 200-220 px)
   where the flown numbers require it, each change with its evidence. Nothing else in §3 moves.
-- handoffs/designer.md §3.10 (earth "waits on Matt's open A/B question") is superseded: Matt decided it 11-07 (STAGE-RULES.md "What
-  may float", R-165.54). Correct it when you rewrite the note.
-- Prove the harness before you trust it: realPlay's FakeInput holds a press a fixed 0.16 s (realPlay.ts:273) while the game uses
-  pressKeep() per setting (inputEngine.ts:19; Easy 0.233 s), and RealPlay takes no setting argument (difficulty.ts setDifficulty).
+- handoffs/designer.md §3.10 is superseded WHOLE by STAGE-RULES.md "What may float" (Matt 11-07, R-165.54): boughs and branches are
+  attached to something; earth islands and ledges, logs and planks may float; rocks and decor never float. Both its earth clause
+  ("waits on Matt's open A/B question") and its boughs clause ("may float with no support") are wrong. Rewrite §3.10 to the ruling.
+- Prove the harness before you trust it: realPlay's FakeInput sets a 0.16 s jump buffer per press (realPlay.ts:273) while the
+  game keeps a press for pressKeep(): 0.167 s on Normal, 0.233 s on Easy (inputEngine.ts:19, physics.ts:41-42), so FakeInput is short
+  on both settings; and RealPlay takes no setting argument (difficulty.ts setDifficulty).
   Set the setting, and state where FakeInput differs from inputEngine.
 - "FEEL.md" is in no branch of this repo; gaps.py's 15.8 / 26 / 8 px figures come from it. Take those figures from the engine's
   landing code instead.
