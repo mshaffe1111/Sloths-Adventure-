@@ -1,7 +1,7 @@
 # Dispatch packet (every task the PM sends; no chat history, no reasoning from other agents)
 
 How a member is created (the lead does this for every task; the story keeper is the only standing member, and every other member is
-created fresh, per task): the Agent tool, the effort set per TEAM.md rule 5, and a prompt built in this order:
+created fresh, per task): its own session (create_session, per roles/PM.md §1: the repo as source_url, the model Matt last named, permission_mode "auto"; never the Agent tool, R-165.74), the effort stated on the packet's `effort:` line per TEAM.md rule 5, and a prompt built in this order:
 1. The role card's "Who you are" section, pasted word for word: it sets who the member is before anything else.
 2. The packet below.
 Never send a bare packet, and never write the persona from memory.

@@ -5,13 +5,13 @@ a memory compression. If it's older than the last decision in STATE.md, rewrite 
 
 ## Now (Monday 11-09)
 - **Matt, 11-09, about 2 PM ET: "So i have fable only usage. Lets create our team and start this week. Right now the team must be
-  fable 5.2".** The start moved from Wednesday 11-11 to today. Then, minutes later: "Do not keep under yourself. They should have their own bot." Every member is its own session (create_session, model "claude-fable-5-2", permission_mode "auto") that reports to me with send_message (R-165.74).
+  fable 5.2".** The start moved from Wednesday 11-11 to today. Then, minutes later: "Do not keep under yourself. They should have their own bot." Every member is its own session (create_session, model "claude-opus-5-5" since that evening, permission_mode "auto") that reports to me with send_message (R-165.74).
 - **The order:** nobody is dispatched on a document until a cold Critic has passed it. Two Critics (lead documents; packets and
-  R-165.71) audit the 11-09 fix pass. On both PASSes: the Designer (R-165.60) goes first; the Architect (R-165.61) after the
-  Designer's Critic PASS; the analyst after the play window closes Tuesday 11-10, then the packer and the consultant; then Content
+  R-165.71) audit the 11-09 fix pass. On BOTH PASSes (the Designer's onboarding reads documents from both audits): the Designer (R-165.60) goes first, with the analyst (R-165.77: Matt wants the data pulled now); the Architect (R-165.61) after the
+  Designer's Critic PASS; a delta read when the play window closes Tuesday 11-10, then the packer and the consultant; then Content
   (R-165.72), Engine and the Critic's own work, per STATE.md "Open graph".
 - A 30-minute quality check-in (`send_later`) is armed at the first dispatch and re-armed until the last member stops.
-- My memory was compressed for the first time on 11-09: a rotation trigger. Matt has already answered it (below).
+- My memory was compressed for the first time on 11-09: a rotation trigger. Told to Matt 11-09 about 2:15 PM ET in the lead's reply; he has not answered it.
 
 ## The handover (11-07 evening)
 - The last lead's team documents merged (PR #67, #68). I took over at 9:43 PM ET Saturday 11-07 and ran roles/PM.md §8's steps.
@@ -29,15 +29,15 @@ a memory compression. If it's older than the last decision in STATE.md, rewrite 
 ## Working agreements with Matt (his words, dated)
 - Ideas (11-07): he throws ideas; each one is swatted with a reason or logged with an R-number the same turn. "Tunnel vision will get
   you retired instantly."
-- Research (11-08): "I expect you to research things... I never want you to guess." If research finds nothing, say so and ask.
-- Model (11-09): the team is Fable 5.2 only, for now.
+- Research (11-08, said in the lead's chat; this note and STATE.md are the only record): "I expect you to research things... I never want you to guess." If research finds nothing, say so and ask.
+- Model (11-09 evening): "Keep others now on opus". Members are created with model "claude-opus-5-5" (R-165.76); the afternoon's Fable 5.2 word is replaced.
 - Effort (11-07): "you manage if they're running off of normal, high, or max. Max is only when needed." He doesn't talk to members
   but watches them; a member he flags gets inspected at once.
-- Rotation (11-07): there is no schedule. "You just started... you're not drifting yet." "I'll tell you when it's time to retire."
-  The lead tells him each trigger at once (a Critic catching a missed rule: D34, D35, told; the 11-09 compression: tell him).
+- Rotation (11-07): Matt decides when; the lead flags every trigger, a release and a week served included, and he rules. "You just started... you're not drifting yet." "I'll tell you when it's time to retire."
+  The lead tells him each trigger at once (D34 and D35 were told in the lead's chat replies of 11-07 and 11-09, which no file holds; the 11-09 compression: told 11-09 about 2:15 PM ET, no answer yet).
 - Who the game is for (11-07, R-165.71): "This isn't supposed to be a kid game." Normal is for 12 and up, hard enough for adults;
   Easy is for children. Per-setting rulings are in STATE.md.
-- Mock-ups (11-08): new art goes to him as one mock-up sheet for a yes or no, not quiz sheets.
+- Mock-ups (11-08, same source): new art goes to him as one mock-up sheet for a yes or no, not quiz sheets.
 
 ## The backup lead
 session_01FhBbYN2DDsktc7BGtNxPFK (the previous lead), questions only, until the next rotation. Its 11-07 answers and where each is

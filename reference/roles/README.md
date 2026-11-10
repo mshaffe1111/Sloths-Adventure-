@@ -19,27 +19,27 @@ onboarding.** A fresh agent that has read them, in the order the card gives, mus
 | 6 Adversarial Critic & QA | CRITIC.md | reference/handoffs/critic.md (the first Critic seeds it from release-clerk.md) | high; max for a release gate (the lead's call, Matt 11-07) |
 | Outside: the packer (builds the consultant's input package: facts only, no reasons) | CONSULTANT.md "What it gets" | none (follows written steps) | low |
 | Outside: independent consultant | CONSULTANT.md | its own past findings only (reference/consultant/) | max (Matt, 11-07) |
-| Outside: data analyst | DATA-ANALYST.md | tools/playtesters/report.py + reference/handoffs/analyst.md (written by the first analyst) | medium |
+| Outside: data analyst | DATA-ANALYST.md | tools/playtesters/report.py + reference/handoffs/analyst.md (written by the first analyst) | high (the lead's call) |
 | **Permanent: story keeper** (the old lead; Matt 11-07: "always has to stay") | reference/story/STORY-KEEPER.md | its own bible | (long-lived; never retired) |
 
 Retired 11-07, kept for history only (their duties moved): SUPERVISOR.md and QUALITY-SUPERVISOR.md into CRITIC.md; RELEASE-CLERK.md
 into CRITIC.md (the gate) and PM.md (the release method); ROADMAP-KEEPER.md into PM.md.
 
 ## How a member is made
-The lead creates each member fresh for each task, in its own session (Matt, 11-09), on Fable 5.2 for now. You report to the lead with send_message to the session id your prompt names; your last message there is your result. The prompt opens with the card's "Who you are" persona, word for
+The lead creates each member fresh for each task, in its own session (Matt, 11-09), on Opus for now (Matt, 11-09 evening, R-165.76). You report to the lead with send_message to the session id your prompt names; your last message there is your result. The prompt opens with the card's "Who you are" persona, word for
 word, then the packet. If you're reading this as a member, you were made that way.
 The consultant is the exception: it gets its persona plus the packer's input package (CONSULTANT.md "What it gets") and nothing
 else: no packet, no objective, no reasons, no team files. A delta re-audit may continue the same Critic (TEAM.md rule 2). Read your card's knowledge pack next.
 
 ## What every member knows (the rules no card repeats)
 1. **Matt talks only to the PM.** You never message Matt, never ask him anything, never open a PR. Everything goes to the PM in your
-   REPORT.md. When it can't wait (a blocker, a wrong frozen input, a red gate on an open PR): an Agent-tool member stops and returns
-   at once with PUSHBACK.md as its report (the PM answers with a new packet); a separate session sends send_message to the lead's
-   session (its id is on the top line of reference/handoffs/lead.md; the lead rotates) and stops.
+   REPORT.md. When it can't wait (a blocker, a wrong frozen input, a red gate on an open PR): send one send_message to the lead's
+   session (the id your prompt names; if the lead has rotated, the id on the top line of reference/handoffs/lead.md), commit
+   PUSHBACK.md on your branch, and stop. The PM answers with a new packet.
 2. **The packet is the contract** (reference/methods/dispatch-packet.md): objective, frozen inputs, the files you may READ and WRITE,
    the definition of done, the branch. The Critic checks every done-item.
 3. **Push back. It is part of the job, not a breach of it.** If a frozen input contradicts the evidence, a done-item can't be met as
-   written, or the task is the wrong task, say so with the evidence: before you start, in a `PUSHBACK.md` on your branch (and a
+   written, or the task is the wrong task, say so with the evidence: before you start, in a `PUSHBACK.md` on your branch (and
    the route in rule 1), or in the report. Then do what the packet says, or stop if it would break a law. Never quietly do something
    else. Never wait on a reply mid-task. A pushback that holds up is scored as a find, the same as a bug.
 4. **Go above and beyond, inside the walls.** Anything better you can do within your WRITE files, tested and proven, do it and name it
@@ -75,9 +75,8 @@ Lean in words and reading, never in checks (LAWS: cut scope, never a check).
 - New worktree: `npm install --legacy-peer-deps`, or symlink node_modules from the main checkout. The install writes
   package-lock.json: never commit it (delete it or leave it untracked). Times from `TZ=America/New_York date`.
 - The checks are CLAUDE.md "Checks", in order; what each gate catches and how to read a breach: reference/methods/gates.md. The full
-  suite takes about 35 min: run it in 3 shards in the background (`--test-shard=i/3`; handoffs/release-clerk.md §2), but only when
-  your packet says you have a machine of your own. In the lead's container (an Agent-tool member), run one heavy job at a time
-  (roles/PM.md §4 8b) and re-run a timing test alone before calling it red.
+  suite takes about 35 min: run it in 3 shards in the background (`--test-shard=i/3`; handoffs/release-clerk.md §2), on your own
+  machine: every member is its own session. Re-run a timing test alone before calling it red.
 - Stills: tools/art/kitaudit/shoot.mjs; the polish bar is STAGE-RULES §5b.
 
 ## Shared files: who owns what, and who goes first

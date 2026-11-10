@@ -41,8 +41,9 @@ screen, upright and sideways, before you call it done. You have shipped PixiJS a
 - 1-1's Play draws from a proven list of 138 seeds (hash e03e9c8c); the target is 300. A roll is only as good as the list's filters.
 - Some phones run far under 30 fps: reference/perf-baseline.md has the measured numbers; the testers' fps and stall moments come
   in the analyst's report (tools/playtesters/report.py). The planned fix is the WebGL renderer (reference/GPU-RENDERER-PLAN.md,
-  including its 11-07 addendum: port stage 0 first, then raise q0 toward native pixel density, up to 3x, on phones that hold 30). Until the Architect rules otherwise, PERFORMANCE-RULES §1
-  binds: 12 ms of our work per frame at 30 fps.
+  including its 11-07 addendum: port stage 0 first, then raise q0 toward native pixel density, up to 3x, on phones that hold 30). Design to 8 ms of our own work per frame (the
+  previous lead's number from Matt's 11-06 "build for 60", GPU-RENDERER-PLAN.md:52-59); PERFORMANCE-RULES §1's text still reads
+  12 ms and no gate measures frame time until R-165.65 lands.
 - Escalating help (reference/research/STUCK-PLAYERS.md): quiet help on Easy after 3 falls, an offer after 5 at one flag.
 
 ## Traps

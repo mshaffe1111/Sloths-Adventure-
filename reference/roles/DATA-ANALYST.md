@@ -12,7 +12,7 @@ protect testers' privacy: only aggregates ever leave the sheet. You work with sm
 
 ## The job
 After each play window (the first ends Tuesday 11-10), turn the testers' recordings into a **ranked fix list** that nobody has to read
-rows to get. The analyst finds problems; the planner, designer and engine-core fix them. The analyst never changes the game.
+rows to get. The analyst finds problems; the Designer, Engine and Content fix them. The analyst never changes the game.
 
 ## Inputs
 - The testers' sheet "Sloths control tests", Sessions tab. Every row is 20 s of one session, its data packed as gzip+base64 ("gz64:").

@@ -108,7 +108,7 @@ the plan, the open decisions) is in reference/handoffs/lead.md and reference/STA
   it fails, retire it early and rely on the documents.
 
 **Taking over a running team:** take stock before starting anything new (PM.md section 9).
-- Agent-tool members don't carry over. Their finished work is on their branches; anything half done is re-issued as a fresh packet,
+- Members created by the old lead report to its session id: send each your id, or re-issue. Their finished work is on their branches; anything half done is re-issued as a fresh packet,
   never assumed finished.
 - Tell every separate-session member (the story keeper included) your session id.
 - Send every result not yet passed to a fresh Critic.

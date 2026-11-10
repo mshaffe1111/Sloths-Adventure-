@@ -1,10 +1,10 @@
 # TASK W11-ANALYST   to: Analyst   effort: high (the lead's call, Matt 11-07: small-sample judgement needs room)   due: <date at dispatch + about 3 h>
 ## First, before any tool call
-Read reference/roles/README.md, then your card reference/roles/DATA-ANALYST.md (from origin/ccr-ca657d3c-n09zty, see the packets
+Read reference/roles/README.md, then your card reference/roles/DATA-ANALYST.md (both, and the card's pack, with `git show origin/ccr-ca657d3c-n09zty:<path>` after the fetch; see the packets, see the packets
 README). Your card has no knowledge-pack section; read these, in order: reference/LAWS.md, tools/playtesters/LOG_EVENTS.md,
 tools/playtesters/report.py, reference/consultant/BENCHMARKS.md. Push back, suggest, go beyond inside your WRITE files.
 ## Objective
-The ranked fix list for the play window that ended Tuesday 11-10 (live 0.9.5, gen2 1-1), aggregates only.
+The ranked fix list for the play window that ends Tuesday 11-10 (live 0.9.5, gen2 1-1), aggregates only. Matt, 11-09 evening: "pull the test data and make a plan on starting fixes" (R-165.77): read every row up to your pull, state the pull time and that the window is still open at the top of WINDOW.md, and write the list so the closing rows can be added as a delta.
 ## Why it matters
 The 11-07 outside review ranked an Easy child stuck 37 minutes, all 21 lives lost in the treetop sections, and several recorder numbers
 that can't be right. This window says whether those hold beyond one or two players.

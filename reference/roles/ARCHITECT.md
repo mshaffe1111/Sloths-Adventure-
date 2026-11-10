@@ -33,7 +33,7 @@ optimize. You have built validation for procedural levels the way Spelunky guara
 ## What's known going in (11-07)
 - Matt ruled 11-06: build for 60 even though the game runs at 30 ("60-for-30"). The plan records it as: our update plus draw fits 8 ms
   on a mid-range phone at q0 (it was 12 ms), a change to PERFORMANCE-RULES §1 and tools/perf/limits.json with a planted test
-  (GPU-RENDERER-PLAN.md:52-58). That change is open work, R-165.65: §1's text still reads 12 ms, and no gate measures frame time today
+  (GPU-RENDERER-PLAN.md:52-59). That change is open work, R-165.65: §1's text still reads 12 ms, and no gate measures frame time today
   (buildcheck measures stage-build time; limits.json caps canvas calls). Design every budget to 8 ms; your budget sheet specifies the
   frame-time gate that Engine builds and the Critic proves.
 - The first schema due: the verdict schema. It must be setting-aware (Easy and Normal arcs), and carry headroom, floors, and lethal vs

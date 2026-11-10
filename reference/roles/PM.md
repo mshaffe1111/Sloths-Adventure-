@@ -66,7 +66,7 @@ Everything else is yours on his standing permission (11-07).
    - **The role is never replaced. Only if its session itself ends** does the lead start a successor at once. Its first job: read STORY-KEEPER.md and the
      story folder, then rewrite the bible as its turnover note. The lead tells Matt. The role never lapses.
 1. **You build the team, one member per task.** Only the story keeper exists between tasks. Every other member (Designer, Architect,
-   Engine, Content, Critic, the consultant, the analyst) is created fresh by you, in its own session (create_session: the repo as source_url, model "claude-fable-5-2", permission_mode "auto", a title that names the role and task), so Matt can see and watch each one (Matt, 11-09: "Do not keep under yourself. They should have their own bot"). It reports back with send_message to your session id, which the prompt gives it. Its prompt opens with its
+   Engine, Content, Critic, the consultant, the analyst) is created fresh by you, in its own session (create_session: the repo as source_url, model "claude-opus-5-5" (Matt, 11-09 evening: "Keep others now on opus"; it replaced that afternoon's Fable 5.2, R-165.76), permission_mode "auto", a title that names the role and task), so Matt can see and watch each one (Matt, 11-09: "Do not keep under yourself. They should have their own bot"). It reports back with send_message to your session id, which the prompt gives it. Its prompt opens with its
    role card's "Who you are" persona, pasted word for word, then the packet (methods/dispatch-packet.md). A member without its
    persona starts as a generalist: never do that. The consultant is the exception: it gets its persona plus the packer's input package (CONSULTANT.md "What it gets") and nothing
    else: no packet, no objective, no reasons, no team files. A delta re-audit may continue the same Critic (TEAM.md rule 2).
@@ -88,13 +88,12 @@ Everything else is yours on his standing permission (11-07).
    works; never a repeating schedule; off whenever no member is working, during a quiet period, and while you wait on Matt; two
    check-ins in a row with no progress: stop the task and inspect it) and every check-in is a quality check of the real work
    (LAWS 9): open the commit, the file, the still. First run `git merge-base --is-ancestor origin/main <branch>`: a branch without
-   main's latest is judged on stale ground (D23). Re-arm until the last member stops. Agent-tool members notify you when they finish
-   (they don't show in list_sessions); separate sessions are confirmed stopped with list_sessions.
-8b. **Machine load (Matt, 10-29: helpers get their own machine; 6 in one container meant 30+ min tests and a full disk).** Agent-tool
-   members run in your container. Heavy work (the full suite, clipcheck, drawcheck, a seed-list build) runs on its own machine:
-   the Agent tool with isolation "remote" where it's offered (it keeps the effort setting); else the Agent tool in your container with
-   nothing else running (a max-effort release gate goes this way, since create_session can't set effort), or create_session
-   (permission_mode "auto") for work that doesn't need a set effort. At most one heavy job in
+   main's latest is judged on stale ground (D23). Re-arm until the last member stops. Every member is its own session: confirm each has stopped with list_sessions and
+   get_session (status_bucket reads "failed" when a turn died, for example on a usage limit; a clean finish sends no event).
+8b. **Machine load (Matt, 10-29: helpers get their own machine; 6 in one container meant 30+ min tests and a full disk).** Every
+   member is its own session, so it has its own machine: heavy work (the full suite, clipcheck, drawcheck, a seed-list build) runs
+   there, never in yours. A max-effort release gate is a session whose packet says `effort: max` (create_session has no effort
+   setting). The Agent tool is only for the lead's own lookups, never for a member (R-165.74). At most one heavy job in
    your container at a time; a timing test that goes red under load is re-run alone before it counts.
 8c. **Ask well (D27):** batch your asks to a member; ask only for facts you will use; prefer a mechanism (a gate, a script) over a
    reminder; never feed a member a stream of small asks.
@@ -136,7 +135,7 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
 - **`gh`:** the cloud environment's own rules allow it only for search (`gh api -X GET search/...`); some read calls answer anyway,
   but PRs, runs, logs and releases go through the GitHub MCP tools.
 - **Team members: create_session** (Matt, 11-09: each member is its own session, never an Agent-tool helper under the lead, and on
-  Fable 5.2 for now). Set permission_mode "auto", never acceptEdits (it blocks send_message on an approval only Matt can give).
+  Opus for now, R-165.76). Set permission_mode "auto", never acceptEdits (it blocks send_message on an approval only Matt can give).
   create_session has no effort setting: the packet's `effort:` line tells the member how much room to take, and the lead says so
   to Matt plainly. Check the model with get_session after creating. The Agent tool is only for the lead's own quick lookups.
 - **GitHub:** the GitHub MCP tools for PRs, runs (actions_list), logs (get_job_logs) and releases. Branch deletes are refused from the lead's
@@ -156,12 +155,13 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
 - Package-lock.json from an install is never committed.
 
 ## 8. Lead rotation (Matt, 11-07: clear the lead periodically so it doesn't drift or grow biased)
-- **When:** Matt decides (11-07: "I'll tell you when it's time to retire"). There is no schedule. The lead tells Matt, at once and
-  plainly, each time a trigger happens: its session's memory is compressed, or Matt or a Critic catches it missing a written rule.
+- **When:** Matt decides (11-07: "I'll tell you when it's time to retire"). The lead tells Matt, at once and
+  plainly, each time a trigger happens: its session's memory is compressed, Matt or a Critic catches it missing a written rule,
+  a release ships, or a week has been served. Flag it; Matt decides.
   It keeps a handover ready at all times.
 - **The outgoing lead:**
-  1. Brings the team to a seam (§9 "Taking over a running team"): members created with the Agent tool report only to the session
-     that made them, so it lets each one finish or stops it. Their work stays on their branches, named in STATE.md.
+  1. Brings the team to a seam (§9 "Taking over a running team"): each member reports to the session id its prompt names (the
+     outgoing lead's), so it lets each one finish or stops it. Their work stays on their branches, named in STATE.md.
   2. Rewrites lead.md: "The handover" (this rotation's dates, any quiet period, the branch to start on if the team documents
      aren't on main), "The backup lead" (its own session id), and the state of every member and branch.
   3. Improves reference/roles/LEAD-PERSONA.md and this card with anything learned, sends both to a cold Critic, and sends Matt the
@@ -200,7 +200,7 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
 |---|---|---|
 | Permanent | The story keeper (in charge of story direction; can't be replaced) | One long-lived session; its bible: reference/story/STORY-KEEPER.md |
 | Standing | The backup lead (the previous lead) | Until the next rotation; questions only |
-| Per task | Designer, Architect, Engine, Content; the Critic for every result | Fresh Agent-tool members, persona plus packet; gone when the task ends |
+| Per task | Designer, Architect, Engine, Content; the Critic for every result | Fresh members, each its own session (create_session), persona plus packet; retired when the task ends |
 | Per play window | The data analyst; then the consultant, with a packer that builds its input package | Fresh each window; the consultant at max |
 A lead that finds a standing session nobody listed here asks why it exists, and stops it if nothing needs it.
 
@@ -232,7 +232,7 @@ every rotation and whenever something looks off. Check per-task members at every
 **Taking over a running team (the incoming lead, before anything new):**
 1. **Take stock.** list_sessions (separate sessions), STATE.md (open tasks, branches, who has what), list_triggers (scheduled tasks
    still pointing at the old lead), and `git fetch` every branch STATE.md names.
-2. **Agent-tool members don't carry over:** they reported to the old lead. Their finished work is on their branches with REPORT.md.
+2. **Members created by the old lead report to its session id:** send each your id, or let it finish and re-issue. Their finished work is on their branches with REPORT.md.
    Anything a member left half done is re-issued as a fresh packet (attempt 1, with what's already on the branch as a frozen input),
    never assumed finished.
 3. **Separate-session members** (the story keeper; any create_session member): send_message each one your session id, and tell it

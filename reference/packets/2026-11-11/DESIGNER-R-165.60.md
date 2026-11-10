@@ -1,6 +1,6 @@
 # TASK R-165.60   to: Designer   effort: high   due: <date at dispatch + about 4 h>
 ## First, before any tool call
-Read reference/roles/README.md, then reference/roles/DESIGNER.md (from origin/ccr-ca657d3c-n09zty, see the packets README), then its
+Read ALL of these with `git show origin/ccr-ca657d3c-n09zty:<path>` (after the fetch in the packets README): reference/roles/README.md, then reference/roles/DESIGNER.md, then its
 knowledge pack in the card's order (your turnover note, reference/handoffs/designer.md, is in it). Push back, suggest, go beyond inside
 your WRITE files.
 ## Objective
@@ -21,13 +21,21 @@ minutes with no help stepping in.
   offered, the player may ignore it, and the stage never changes by itself.
 - The lead's decisions 11-07: no lethal drops in 1-1 on either setting (R-165.53; 1-1 is where the controls are learned); a player's first 1-1 run is one fixed layout, replays roll (R-165.52);
   the bounce is taught by the `lesson.bounce` card at the first mushroom (story keeper).
-- The PM's word (DESIGNER.md "You never"): you MAY change the rulings in handoffs/designer.md §3.2 (Normal teach 195-205 px, Easy rise
-  twins 110-114 px) and §3.3 (bounce lip 200-220 px) where the flown numbers require it, each change with its evidence. Nothing else
-  in §3 moves.
+- The PM's word (DESIGNER.md "You never"): you MAY change all of handoffs/designer.md §3.2 (Normal teach 195-205 px, TEST 205-228 px,
+  Easy rise twins 110-114 px, and its physics line "a single reaches 175 px (reachJump) plus 21 px") and §3.3 (bounce lip 200-220 px)
+  where the flown numbers require it, each change with its evidence. Nothing else in §3 moves.
+- handoffs/designer.md §3.10 (earth "waits on Matt's open A/B question") is superseded: Matt decided it 11-07 (STAGE-RULES.md "What
+  may float", R-165.54). Correct it when you rewrite the note.
+- Prove the harness before you trust it: realPlay's FakeInput holds a press a fixed 0.16 s (realPlay.ts:273) while the game uses
+  pressKeep() per setting (inputEngine.ts:19; Easy 0.233 s), and RealPlay takes no setting argument (difficulty.ts setDifficulty).
+  Set the setting, and state where FakeInput differs from inputEngine.
+- "FEEL.md" is in no branch of this repo; gaps.py's 15.8 / 26 / 8 px figures come from it. Take those figures from the engine's
+  landing code instead.
 ## Files
 - READ: the card's pack; src/game/realPlay.ts (drives the pad's controls); src/components/CoachOverlay.tsx (COACH_TEXT.pad); the touch
   input code (src/game/touchGestures.ts and what it calls).
-- WRITE: reference/specs/reach.md, bands.md, help.md, touch.md; reference/specs/sims/; reference/handoffs/designer.md.
+- WRITE: reference/specs/reach.md, bands.md, help.md, touch.md; reference/specs/sims/; reference/specs/packets/ENGINE-flight-test.md
+  (and ENGINE-touch-harness.md if item 4 needs it); reference/handoffs/designer.md.
 ## Definition of done (the Critic checks each)
 1. reach.md: single, double, bounce and bounce+double rise and level distance, flown in the real engine (realPlay.ts) at 30 fps, under
    the readings above, each with tolerance and the one command that reproduces it; side by side with JUMP_RISE, DOUBLE_RISE,
@@ -37,8 +45,9 @@ minutes with no help stepping in.
 3. help.md: when help steps in (failures and seconds), what each step does, for Easy and Normal, with benchmark sources.
 4. touch.md: does a pad player TAPPING Jump twice clear the double-teach band, flown in realPlay (decides the coach line, R-165.57)?
    For a touch tap, from the touch input code: is a tapped jump's height the same as the pad's? If proving it needs a touch flight
-   harness, hand that over as a ready Engine packet instead.
-5. The Engine packet for the permanent src/ flight test, ready for the PM.
+   harness, hand that over as a ready Engine packet instead (reference/specs/packets/ENGINE-touch-harness.md).
+5. The Engine packet for the permanent src/ flight test, ready for the PM: reference/specs/packets/ENGINE-flight-test.md, in the
+   shape of reference/methods/dispatch-packet.md.
 ## Return
 Branch t-r165-60-reach from origin/main, pushed (git ls-remote). REPORT.md in the 7 sections, 60 lines or fewer. Last message 10 lines.
 ## Attempt

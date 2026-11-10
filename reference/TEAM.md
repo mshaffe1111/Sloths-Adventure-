@@ -17,7 +17,7 @@ artifact on a branch.
 |---|---|---|---|---|
 | 1 | Project Manager / Orchestrator | the lead (this session) | the state ledger (reference/STATE.md), the task graph, the packets, release candidates and PRs (Matt merges), Matt's links | writes game code or invents mechanics. Emergency exception: a one-line fix to unblock a live deploy, logged as a defect. |
 | 2 | Systems & Mechanics Designer | fresh agent per task (high) | specs/: the numbers. Jump, double, bounce and glide reach from the 30 fps simulation; gap and rise bands per setting; coyote and buffer windows; the Easy curve; help thresholds; petal arcs; touch thresholds | writes code |
-| 3 | Lead Architect | fresh agent per task (high) | interfaces, types, the section and verdict schemas, perf budgets (Matt 11-06 "build for 60": our update plus draw at 8 ms or less, GPU-RENDERER-PLAN.md:52-58; PERFORMANCE-RULES §1's text still reads 12 ms until R-165.65 changes it and adds a frame-time gate with a planted test; no gate measures frame time today), ARCHITECTURE notes, the list of files a task may touch | writes method bodies or gameplay |
+| 3 | Lead Architect | fresh agent per task (high) | interfaces, types, the section and verdict schemas, perf budgets (Matt 11-06 "build for 60": our update plus draw at 8 ms or less, GPU-RENDERER-PLAN.md:52-59; PERFORMANCE-RULES §1's text still reads 12 ms until R-165.65 changes it and adds a frame-time gate with a planted test; no gate measures frame time today), ARCHITECTURE notes, the list of files a task may touch | writes method bodies or gameplay |
 | 4 | Engine Engineer | fresh agent per task (high) | src/game engine, physics, input, camera, the renderer (the WebGL move), the gen2 pipeline code | changes interfaces or game rules |
 | 5 | Content & Asset Specialist | fresh agent per task (high) | section data (w1 kit), seed lists, art cutting and the manifest, the backdrop layers, the testers' page copy | touches engine loops or physics |
 | 6 | Adversarial Critic & QA | fresh agent per task (high; max for a release gate) | tests, headless checks (traversal with the real 30 fps reach, bots), the gates, defect reports | fixes production code. It only writes failing tests and a PASS/REJECT report |
@@ -38,7 +38,7 @@ artifact on a branch.
 11. **The lead rotates, and the previous lead stays as the backup** until the next rotation (roles/PM.md §8, "The backup lead").
    **The lead rotates** (Matt, 11-07: clear the lead "so you don't start making bad decisions and become biased"). Matt decides when (11-07: "I'll tell you when
    it's time to retire"); the lead flags each trigger to him at once (roles/PM.md §8). The procedure is reference/roles/PM.md §8; the first handover was 11-07 evening
-   (Matt moved it up), with the new lead's first work on Wednesday 11-11 after the weekly reset.
+   (Matt moved it up), with the new lead's first team work on Monday 11-09 (Matt moved the start up from Wednesday 11-11).
 12. **Health check, remake and takeover** (Matt, 11-07: "how to check if somebody needs to be replaced and remade, and how to ensure
    that he's able to take over with potentially a team that's in place"): the roster, the drift signs, the three-fact test, the
    remake and taking over a running team are in reference/roles/PM.md §9.
@@ -83,7 +83,7 @@ artifact on a branch.
    - Try 2: a delta packet with the exact failure.
    - Try 3: a FRESH builder with the task plus "approaches that failed, don't use them".
    - Then stop: an architecture deadlock goes to the Architect, an unclear requirement goes to Matt as a 3-bullet question.
-5. **Effort is set per task** (since 11-09 every member is its own session on Fable 5.2, Matt's word; create_session has no effort setting, so the packet's `effort:` line carries it; Matt, 11-07: "medium for light work, high for more effort, max only when needed... the
+5. **Effort is set per task** (since 11-09 every member is its own session on Opus, Matt's word that evening ("Keep others now on opus", R-165.76; the lead stays where Matt runs it); create_session has no effort setting, so the packet's `effort:` line carries it; Matt, 11-07: "medium for light work, high for more effort, max only when needed... the
    consultant on max", and the lead sets the levels; this replaces the 10-28 "never max unless Matt asks"): designer, architect, engine, content and critic high; the critic max for releases; the
    consultant max; low or medium only for following written steps.
 6. **The stage-building order** (from the consultant's root cause):
@@ -98,7 +98,7 @@ The long-lived helpers below hold history but drift with compression; they're re
 it stays as the story keeper. Their branches and notes stay as
 references for packets. engine-core / Core Engine Developer, engine-planner, engine-designer, art-director, Tester Data, release-clerk:
 finish anything in flight, write a hand-off note to reference/handoffs/<role>.md (what's open, where things live, traps), then stop.
-New work goes to fresh role agents via packets from Wednesday 11-11, under the fresh lead.
+New work goes to fresh role members via packets from Monday 11-09 (first planned for Wednesday 11-11), under the fresh lead.
 
 ## Traps (kept)
 - Cloud sessions: permission_mode "auto", never acceptEdits. A helper that says "pushed": check `git ls-remote`.

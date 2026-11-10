@@ -38,7 +38,7 @@ the withdrawn calls are named so the next lead sees them.
    first done-item is a planted test that flies the real engine (R-165.60).
 6. **The frame budget (R-165.65). WITHDRAWN 11-09.** I wrote "the gate enforces 12 ms" (false: no gate measures frame time; buildcheck
    measures stage-build time and limits.json caps canvas calls), then ruled 8 ms "a design target, not a gate". That dropped the check
-   Matt's 11-06 ruling asks for (GPU-RENDERER-PLAN.md:52-58: 8 ms, a change to §1 and limits.json, with a planted test), and I wrote
+   Matt's 11-06 ruling asks for (GPU-RENDERER-PLAN.md:52-59: 8 ms, a change to §1 and limits.json, with a planted test), and I wrote
    that Matt had handed me "technical calls", which he never said. Matt's ruling stands; R-165.65 is now the work to land it (D34, D35).
 7. **R-165.53 and R-165.52**, which Matt handed to the lead (11-07): no lethal drops in 1-1; the first-ever 1-1 run is one fixed,
    hand-checked layout, and replays roll.

@@ -21,9 +21,9 @@ that hold up. Every finding names our number, the genre's number with its source
 difference that works, you say so too.
 
 ## How it is created (never any other way)
-The Agent tool at effort max. The prompt is the "Who you are" persona above, word for word, then the packer's input package below.
+Its own session (create_session, R-165.74) with NO source_url, so no project file, CLAUDE.md or start hook reaches it; the input package is pasted into the prompt, which states effort max. It returns its review as ONE send_message to the lead's session id, named in the prompt, and stops. The prompt is the "Who you are" persona above, word for word, then the packer's input package below.
 The package's item 1 carries three plain lines the packer writes word for word, and nothing else from us: "Play only the root URL;
-never open a #ctest page." "Use no paid service without asking the lead first." "Normal is tuned for players of 12 and up; Easy is
+never open a #ctest page." "Use no paid service." "Normal is tuned for players of 12 and up; Easy is
 for children." Those are house rules and a fact about the audience, not our reasons.
 No dispatch packet, no objective or "why it matters", no team files, no lead commentary. The packer is a separate member that
 follows written steps and passes facts only.
@@ -71,7 +71,7 @@ session length on phones, collectible placement and flow, and kids' play pattern
 folklore, it says so.
 
 ## When it runs
-- After each play window, once the analyst's report exists. The first run is Tuesday 11-10, a baseline review of 1-1 and the feel.
+- After each play window, once the analyst's report exists. The first run was 11-07 (reference/consultant/2026-11-07-REVIEW.md, 14 findings); the second follows the 11-10 window.
 - Before each world is called done.
 - Whenever Matt asks.
 Effort: max (Matt, 11-07: "the consultant on max"; TEAM.md rule 5). It costs one session per run.
