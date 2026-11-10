@@ -62,6 +62,9 @@
   t-engine-putback; WORKING: session_01FhBbYNUwoxpt2ufU9ozYYg, "Engine: no fall in 1-1 costs a life (R-165.86, fix A1)", Fable 5.2, effort medium,
   restarted 9:07 PM ET, due 11:10 PM ET. (An Opus Engine session, session_01FhBbYLPQPNAz6xNudSS5Zd, held the task for two minutes
   between Matt's two messages; interrupted and archived, cost $0.42.)
+- DECIDED by the lead 11-09 9:15 PM ET, the help schedule (R-165.62; reference/ONE-ONE-FIX-PLAN.md "The help schedule"): Easy 3 Dot
+  says the move / 5 pad tap is a full jump / 8 a step grows by itself; Normal 3 Dot says the move / 12 Dot offers the step. The ghost
+  is cut from test link A. Proposals until flown.
 - DECIDED by Matt 11-09 9:10 PM ET ("A"): test link A ships A1 AND A2 together (no lives lost, with help after put-backs), forecast
   $70-75, at the cap. A2's packet is written when the Designer's Critic has judged help.md; A3 (the tap rule) waits for the next link.
 - THE 1-1 FIX PLAN: reference/ONE-ONE-FIX-PLAN.md (written 11-09 8:59 PM ET from the analyst's report; the analyst's Critic said

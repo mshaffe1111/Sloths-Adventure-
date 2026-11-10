@@ -38,6 +38,24 @@ depends on them). Every fix has a roadmap number. Money: $75 at most before Matt
 A1's packet goes to a Critic now, then to the Engine member. A2 and A3 follow the Designer's PASS. The promote (gates, the test link)
 is counted inside the $75. If the money runs short, Test link A ships with A1 alone and says so.
 
+## The help schedule: the lead's ruling, 11-09 9:15 PM ET (Matt asked "Are you going to approve the help schedule?"; design calls are the lead's, Matt 11-07)
+Approved with two changes to the Designer's proposal (t-designer-reach help.md §4: 3 / 5 / 8 / 12 put-backs in one piece).
+| Put-backs in the piece | Easy (steps in by itself) | Normal (offered; the stage never changes by itself) |
+|---|---|---|
+| 3 | Dot says the move | Dot says the move |
+| 5 | quiet: a tap on the pad becomes a full jump at that piece | nothing |
+| 8 | a step grows by itself (the Designer had 12) | nothing in test link A (the ghost offer comes later) |
+| 12 | (already past) | Dot offers the step; only a yes grows it; after a no he asks once more 8 put-backs later, then never at that piece |
+- Change 1, Easy's step at 8, not 12: our own research already said quiet help after 3 falls and an offer after 5 (roles/ENGINE.md,
+  reference/research/STUCK-PLAYERS.md), and R-165.62 says "about 5 tries". At the testers' 9 s a put-back, 8 is about 72 s; 12 is
+  108 s, long for a child who is stuck. Normal keeps 12: a Normal player wants to solve it.
+- Change 2, the ghost that shows the move (the Designer's step at 8) is cut from test link A: it needs animation and must be
+  flown first. It keeps its place in help.md for a later link.
+- Counted per piece; reset by standing on the piece beyond or the stage ending; a grown step stays for the run (as proposed).
+- Every number is a proposal until flown and until a play window judges it. The test: on Easy no player spends more than 2 minutes
+  in one piece; on Normal the offer is taken or refused, never missed.
+- Dot's words go to the story keeper before they are built; the yes and no must work for a player who can't read (pictures).
+
 ## Matt's call, 11-09 9:10 PM ET
 Test link A ships A1 and A2 together ("A"), so the put-back loop never ships without its help. A3 goes to the next link.
 
