@@ -43,6 +43,10 @@
 - WORKING: session_01FhBbYMHMXc5mHeNEeVEhTR, "Designer: the real reach numbers, flown in the engine (R-165.60)", Fable 5.2 (Matt,
   tonight), created 11-09 8:43 PM ET, due 12:45 AM ET, branch t-designer-reach. Sent alongside the analyst because Matt asked for
   the Designer and the Architect tonight; they share no WRITE file. Its result goes to a fresh Critic with AUDIT-DESIGNER.
+- Matt's art (asked 8:47 PM ET: "I create a lot of new art b4 you took over"): 50 weekend sheets cut to 91 kept pieces (68 usable in
+  World 1) on branch art-raw-2026-11-07 cut/CATALOG.md; 107 kept from the 11-05 sheets (reference/art/cut/ on art-director); 1-1's
+  atlas in the game holds 18. None of the 91 is placed. At 8:51 PM ET he sent 12 more sheets into the Designer's session (R-165.85);
+  the Designer was asked to save them to branch art-incoming-2026-11-09 and report the commit. All of it is Content's, in R-165.72.
 - Next: the Architect (R-165.61, Fable 5.2 tonight) after the Designer's Critic PASS. Then the 1-1
   fix plan from the analyst's top 10; the Engine member on Fable 5.2 at medium. Ask Matt, at Content's first packet that writes
   under src/, whether "coder" covers Content.
