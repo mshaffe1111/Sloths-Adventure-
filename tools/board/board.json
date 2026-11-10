@@ -31,6 +31,11 @@
   ],
   "team": [
     {
+      "role": "Content",
+      "task": "cutting and cataloguing your 15 art sheets (Opus, medium)",
+      "status": "working"
+    },
+    {
       "role": "Architect",
       "task": "safety report and file lists: passed",
       "status": "reported"
@@ -86,11 +91,6 @@
           "id": "R-165.87",
           "title": "Fix A3: a tap meant as a jump is a jump (all 9 testers' taps were misread)",
           "waits": "the Designer's touch rule"
-        },
-        {
-          "id": "R-165.85",
-          "title": "Your additional art (15 sheets tonight, saved): cut, measure and catalogue it, then place the World 1 pieces",
-          "waits": "Content's turn, with the 1-1 re-lay"
         },
         {
           "id": "R-165.72",
@@ -180,7 +180,12 @@
       "name": "Doing",
       "hint": "being built now; at most 3 at once",
       "limit": 3,
-      "cards": []
+      "cards": [
+        {
+          "id": "R-165.85",
+          "title": "Your 15 art sheets: cutting and cataloguing now (placing comes with the re-lay)"
+        }
+      ]
     },
     {
       "key": "checking",
