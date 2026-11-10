@@ -7,8 +7,9 @@
 
 ## The team now (taken stock 11-07 evening by the lead, session_01FhBbYMoqqEdVR3qFjTCugy; the lead's memory was compressed 11-09)
 - Lead: session_01FhBbYMoqqEdVR3qFjTCugy. Backup lead (questions only): session_01FhBbYN2DDsktc7BGtNxPFK.
-- MODEL NOW (Matt, 11-09 9:05 PM ET: "Move everything to opium 5.5", read as Opus 5.5): every member on "claude-opus-5-5", no
-  exception; the Fable lines below are history. The lead's own session is switched by Matt, not by the lead (it reads Fable 5.2).
+- MODEL NOW (Matt, 11-09 9:05 PM ET: "Move everything to opium 5.5", read as Opus 5.5): then 9:07 PM ET "Other than engine work.. stays fable for
+  now": every member on "claude-opus-5-5" EXCEPT engine work (the Engine member), on "claude-fable-5-2" at effort medium. The
+  lead read the second message as "engine work stays Fable" (his word twice earlier) and told him so. Other Fable lines below are history. The lead's own session is switched by Matt, not by the lead (it reads Fable 5.2).
 - Model, earlier: every member on Opus ("claude-opus-5-5") until Matt says otherwise (Matt, 11-09 evening: "Keep others now on opus", R-165.76; it replaced that afternoon's "the team must be fable 5.2". The two Fable Critics hit the weekly limit 5 minutes in at 2:16 PM ET and finished at 8:20 PM). Effort stays the lead's call (Matt, 11-07).
 - Tester data (backup lead's answer, 11-07): the Google sheet "Sloths control tests", tab Sessions, filled by its bound collector
   tools/control-test-collector.gs. Names never leave the sheet. Tester names in main's files and history: R-165.68 and R-165.69.
@@ -54,9 +55,9 @@
   It re-flies the numbers with its own script.
 - The Engine packet R-165.86 PASSED as changed (delta Critic, three rounds, its last two lines applied as written, no re-audit
   needed by its word); the fix plan PASSED. The Engine member (Fable 5.2, effort medium) goes out 11-09 9:05 PM ET on branch
-  t-engine-putback; WORKING: session_01FhBbYLPQPNAz6xNudSS5Zd, "Engine: no fall in 1-1 costs a life (R-165.86, fix A1) [Opus]", Opus, effort medium,
-  created 9:04 PM ET, due 11:05 PM ET. (A Fable 5.2 Engine session, session_01FhBbYNUwoxpt2ufU9ozYYg, ran 15 seconds, was interrupted
-  and archived when Matt moved everything to Opus.)
+  t-engine-putback; WORKING: session_01FhBbYNUwoxpt2ufU9ozYYg, "Engine: no fall in 1-1 costs a life (R-165.86, fix A1)", Fable 5.2, effort medium,
+  restarted 9:07 PM ET, due 11:10 PM ET. (An Opus Engine session, session_01FhBbYLPQPNAz6xNudSS5Zd, held the task for two minutes
+  between Matt's two messages; interrupted and archived, cost $0.42.)
 - THE 1-1 FIX PLAN: reference/ONE-ONE-FIX-PLAN.md (written 11-09 8:59 PM ET from the analyst's report; the analyst's Critic said
   REJECT on two small report items, attempt 2 is with the analyst, and found all six main claims TRUE). Test link A: A1 no fall in
   1-1 costs a life (R-165.86, packet packets/2026-11-09/ENGINE-R-165.86.md, with the delta Critic for a PASS before dispatch), A2 help
