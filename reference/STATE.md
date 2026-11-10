@@ -59,9 +59,12 @@
   passed it both carried the error: log it as a defect (D37) with its countermeasure when the build is in.
 - The Engine packet R-165.86 PASSED as changed (delta Critic, three rounds, its last two lines applied as written, no re-audit
   needed by its word); the fix plan PASSED. The Engine member (Fable 5.2, effort medium) goes out 11-09 9:05 PM ET on branch
-  t-engine-putback; DONE, not yet PASSED (reported 9:32 PM ET): session_01FhBbYNUwoxpt2ufU9ozYYg, the Engine (Fable 5.2, medium), t-engine-putback@41c2e248,
+  t-engine-putback; PASSED 11-09 10:05 PM ET (Critic session_01FhBbYMPMRnQdGzTReh4x3v, Opus: 3,812 real-loseLife flights, 0 lives lost, 0 bad set-backs, 36 builds
+  of 1-2/1-4/1-5/2-1/8-3/8-5 byte-identical to main, full suite 2,481 pass / 0 fail, seedlist 138 seeds, knowncheck PASS; no violations).
+  Test link A's first half is done: t-engine-putback@41c2e248, not merged. Defect D37 and R-165.90 logged. Notes: RealPlay.setBacks
+  (R-165.90); the engine member: session_01FhBbYNUwoxpt2ufU9ozYYg (Fable 5.2, medium, $8.32). Reported 9:32 PM ET: session_01FhBbYNUwoxpt2ufU9ozYYg, the Engine (Fable 5.2, medium), t-engine-putback@41c2e248,
   6 of 6 done-items: GraphBrief.softFalls -> Gen2Meta.softFalls -> softFallStage() -> engine softOn; red on main saved; 138 seeds
-  unchanged. Rough spot named: Dot's jump hint shows after a set-back (A2 owns it). With its Critic now. (An Opus Engine session, session_01FhBbYLPQPNAz6xNudSS5Zd, held the task for two minutes
+  unchanged. Rough spot named: Dot's jump hint shows after a set-back (A2 owns it).  (An Opus Engine session, session_01FhBbYLPQPNAz6xNudSS5Zd, held the task for two minutes
   between Matt's two messages; interrupted and archived, cost $0.42.)
 - DECIDED by Matt 11-09 9:17 PM ET ("I already picked A", to the cost question): tonight only A1 is finished and passed; everything
   for A2 (the story keeper's words, the packet, its Critic, the build), the Architect and the promote run after the weekly reset,

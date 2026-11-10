@@ -58,3 +58,4 @@ that do the best job get the follow-on work.
 - Every fact in a plan or review cites file:line, checked when it's written; before changing a plan, grep the rules that govern it and cite them. (D34)
 - A lead's plan change cites the governing file:line in its roadmap row and waits for the cold Critic's PASS before anyone acts on it; a check is never loosened to make a document pass. (D35)
 - Read-only members use `git show` or their own worktree, never `git checkout` in a shared tree; before a commit `git status -sb` names the branch, and after a push `git ls-remote` equals HEAD. (D36)
+- A packet that says how the engine treats a stage is proved with one pasted run of that stage; a "lives unchanged" done-item names the real loseLife (RealPlay stubs it), and an audit runs every behaviour claim. (D37)
