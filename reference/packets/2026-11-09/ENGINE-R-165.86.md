@@ -1,4 +1,4 @@
-# TASK R-165.86   to: Engine   model: claude-fable-5-2   effort: medium (Matt, 11-09, R-165.84)   due: <date at dispatch + about 2 h>
+# TASK R-165.86   to: Engine   model: claude-opus-5-5 (Matt, 11-09 9:05 PM ET)   effort: medium (Matt, 11-09, R-165.84)   due: <date at dispatch + about 2 h>
 ## First, before any tool call
 `git fetch origin main ccr-ca657d3c-n09zty t-w11-analyst`. Read ALL of these with `git show origin/ccr-ca657d3c-n09zty:<path>`:
 reference/roles/README.md, reference/roles/ENGINE.md and its pack, reference/LAWS.md, reference/ONE-ONE-FIX-PLAN.md. Push back,

@@ -34,7 +34,8 @@ a memory compression. If it's older than the last decision in STATE.md, rewrite 
 - Ideas (11-07): he throws ideas; each one is swatted with a reason or logged with an R-number the same turn. "Tunnel vision will get
   you retired instantly."
 - Research (11-08, said in the lead's chat; this note and STATE.md are the only record): "I expect you to research things... I never want you to guess." If research finds nothing, say so and ask.
-- Model (11-09 evening): "Keep others now on opus". Members are created with model "claude-opus-5-5" (R-165.76); the afternoon's Fable 5.2 word is replaced.
+- Model (11-09 9:05 PM ET, the latest word): "Move everything to opium 5.5": every member on "claude-opus-5-5", no exception.
+- Model (11-09 evening, earlier): "Keep others now on opus". Members are created with model "claude-opus-5-5" (R-165.76); the afternoon's Fable 5.2 word is replaced.
 - Effort (11-07): "you manage if they're running off of normal, high, or max. Max is only when needed." He doesn't talk to members
   but watches them; a member he flags gets inspected at once.
 - Rotation (11-07): Matt decides when; the lead flags every trigger, a release and a week served included, and he rules. "You just started... you're not drifting yet." "I'll tell you when it's time to retire."
