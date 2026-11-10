@@ -1,13 +1,29 @@
-# Handoff: engine-core (the porter), 0.9.5
+# Handoff: engine-core (the Engine member's turnover note)
 
-Written by the engine-core porter at the end of its run, for the 6-role team (reference/TEAM.md). Branch `engine-core`, last commit
-94a31ca09. It is merged to main through release-0.9.5 (PR #63), and the follow-up PR #64 fixed 0.9.5's pockets. Nothing on this branch is
-unmerged except the held patch reference/qa-reports/engine-core/held/round10-walk-on.patch (copied to studio 11-07).
+Rewritten at the end of R-165.86 (no fall in 1-1 costs a life), branch `t-engine-putback` from origin/main 181d2846, not merged: it waits
+on the Critic and the promote. Before it: the 0.9.5 porter's run (branch `engine-core`, merged through PR #63 and #64).
+
+## 0. Rulings to keep (R-165.86, the lead, 11-09)
+- **No fall in 1-1 costs a life, on Easy or Normal.** It is stage data: the 1-1 brief's `softFalls` (types.ts `GraphBrief`; w1.ts
+  `briefs['1-1']`) -> `Gen2Meta.softFalls` on the built stage (pipeline.ts, beside `rise`) -> `softFallStage(stage)` (pipeline.ts) ->
+  the engine's `softOn` (engine.ts, where the stage loads). Never a stage name in the engine, never a WorldManifest flag.
+- **The word lays nothing.** No zone, no platform: 1-1's ground, `heartFalls` and `gen2.falls` are the same with and without it
+  (softFalls11.test.ts proves it on listed seeds and raw rolls). So `floorlessGaps` judges 1-1 against the level-block put-back zones
+  only, as before, and "an unmarked floorless gap drops the roll" still bites. Do not teach floorlessGaps or lethalSpans to read it.
+- **`isGen2Stage('1-1')` is FALSE.** 1-1 is not in GEN2_STAGES (gen2/game.ts: 5-7, 5-9, Worlds 6-8); it is built by `gen2Roll11`
+  (stageGenerator.ts ~:2870). So 1-1 on Easy had `softOn` before this task, through the hand-built stages' rule; only Normal lost
+  lives. To ask "is this a gen2 build" read the built stage (`!!stage.gen2`).
+- Water still costs a life (the engine's water checks come before the fall check). 1-1 lays none today.
+- Normal's bite starts at 1-2. After this, a pit in 1-1 looks the same as a deadly one elsewhere: R-165.61 and the re-lay (B1) own that.
 
 ## 1. What's open (each has an R-id on reference/ROADMAP.md or a note)
 
 | What | State | Where |
 |---|---|---|
+| R-165.86 on `t-engine-putback` | Built and tested; waits on the Critic's full suite, drawcheck, clipcheck and the lock (not run here: the lean ruling) | REPORT.md on the branch; reference/qa-reports/R-165.86/ |
+| Help after repeated put-backs in one piece (A2) | OPEN, ships with A1: with no life to lose, a player who can't clear a chain is set back again and again | R-165.62 |
+| The harness's `died` in 1-1 on Normal | OPEN. RealPlay notes a fall through its loseLife stub; in 1-1 a fall is now a set-back on both settings (as it always was on Easy), so `died` stays false there. Tools that read it on 1-1 (realReach, plainWalk, firsttimer, tools/validate/play.ts) see a set-back, not a death. RealPlay should note set-backs too (realPlay.ts was not mine to write) | REPORT.md Suggestions |
+| The set-back under a rise lands on the low catch branch when he touched it on the way down (the last ledge he stood on) | As Easy has always done; from it he steps back up to the take-off log. Watch it in the A2 work | engine.ts softAt |
 | Branch share of thin landings at most 30% a roll (the designer's Round 11) | OPEN. 0.9.5 shipped without it by the lead's ruling (A), because Matt played the same mix on 11-05. The 138 listed rolls read median 48%, worst 65% (branch / solids 30 px tall or less, both settings). `floorRoll.catchStyles ['log','branch']` is NOT in the w1 kit. On seeds 1-40 it alone left 15 of 22 rolls over by that count. The planner counts pieces up to 60 px; agree ONE measure first | R-165.46 |
 | 1-1's proven list: 138 seeds; the target is 300 (`SEED_LIST_TARGET`), tonight's floor was 100 (`SEED_LIST_MIN`) | OPEN. The yield is about 0.36%, so 300 needs about 85,000 tries: about 1.5 h on 4 workers. Or raise the yield. Then put SEED_LIST_MIN back to 300 | R-165.47 |
 | Soft floors under the 6 floorless spots | Not in 0.9.5 (the planner's; the lead's ruling: next week). The list filter (`floorlessGaps`) keeps unmarked floorless rolls out meanwhile, and it stays in permanently | gen2/promises11.ts |
@@ -41,7 +57,8 @@ gapPx/blocks, `stage.ts --roll` fail-closed). Read it for the open findings at i
 - `src/game/buildAhead.ts` with `stageGenerator.buildAhead` / `aheadKeys`: builds the next stage ahead while the map is open. `WorldMap.tsx` schedules it (deps `[pickedOpen, picked?.id]`), and `App.tsx` too.
 - `engine.ts`:
   - the recorder moments 'gen2' (stage, seed, setting) and 'launch' (sheets, timer, build, ready, total);
-  - heartFall's soft branch: a `heartFalls` zone with `soft` calls `softFall`, with no heart lost.
+  - heartFall's soft branch: a `heartFalls` zone with `soft` calls `softFall`, with no heart lost;
+  - `softOn` (set where the stage loads): the whole-stage soft fall. On for a stage whose brief says `softFalls` (1-1, both settings), and on Easy for hand-built and old-generator stages. `softAt` is the last still ground he stood on (solid, 60 px or wider, not a narrow piece he fell onto); `softFall` sets him back 150 px or half the ledge clear of the edge, cuts the camera once behind the iris and records `softFall`.
 
 **World 1's kit and finish (`src/game/gen2/worlds/w1.ts`)**
 - Section data: HARVEST + W1_NEW. Round 12 sections map to their bases through `R6_BASE`, so JOBS/CONTENT/TERRAIN fall back to the base's.
@@ -105,8 +122,12 @@ gapPx/blocks, `stage.ts --roll` fail-closed). Read it for the open findings at i
    - Raising gLogHop made the quiet line worse; the designer's 34-46 stands.
    - Unmirrored stairs made vault pits; mirrored stair tests caused 7-9 s quiet stretches.
    Bisect before blaming a branch.
-9. **The container restarts.** It killed a final suite mid-run once. Push safe-keeping commits as soon as they're worth keeping; a release still waits for the word.
-10. **Shell.** `rm -f $VAR/*` is refused by the safety check: use literal paths or `"${VAR:?}"`. Foreground commands time out at 2 min; long runs go in the background, with an `until grep` wait.
+9. **RealPlay swaps the engine's `loseLife` for a stub** (realPlay.ts ~:141: it only sets `died`). A test that says "no life lost" or "lostLife never written" passes on ANY build unless it deletes the stub first (`delete r.e.loseLife`; softFall11.test.ts `real()`). Its planted run must lose lives.
+10. **A layout number is not a seed for 1-1.** `new RealPlay('1-1', n)` plays the n-th listed seed. To fly a named seed: `withPlaySeed(seed, () => new RealPlay('1-1', 1))`. In the browser: put the seed's list index first in localStorage `sloth_play11_order` and call `__play('1-1', index + 1)` (reference/qa-reports/R-165.86/shoot.mjs).
+11. **A frozen input can be wrong even after three Critic rounds.** R-165.86's said Easy had no soft falls in 1-1. Measure the claim on origin/main in the real engine before building on it (15 minutes; it changed the red run).
+12. **A toy stage hosted in `RealPlay('1-1', ...)` inherits 1-1's rule: every fall is soft.** A toy that needs a deadly pit sets `e.softOn = false` itself (softFall.test.ts) or is hosted elsewhere.
+13. **The container restarts.** It killed a final suite mid-run once. Push safe-keeping commits as soon as they're worth keeping; a release still waits for the word.
+14. **Shell.** `rm -f $VAR/*` is refused by the safety check: use literal paths or `"${VAR:?}"`. Foreground commands time out at 2 min; long runs go in the background, with an `until grep` wait.
 
 ## 4. Day one, for a fresh engine engineer
 

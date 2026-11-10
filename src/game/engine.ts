@@ -23,6 +23,7 @@ import { W5_STEP_HELP, W5_STEP_HELP_KEYS, W5_STEP_HELP_PAD } from './w5Lines.ts'
 import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
+import { softFallStage } from './gen2/pipeline.ts';
 import { difficulty, easeInShare, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
@@ -830,7 +831,9 @@ export class GameEngine {
     // (a gen2 stage, gen2/game.ts, is laid for Easy by its own pipeline: the difficulty goes in with the build)
     this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config, 'easy'))) : withGoals(generateStage(config, 'normal'));
     // (gen2 lays real soft pits on Easy; a boss's arena and 1-8's chase keep their own rules)
-    this.softOn = isEasy() && !isGen2Stage(config) && config.objectiveType !== 'boss_lair' && !this.currentStage.arena;
+    // (a stage whose brief says no fall costs a life has them on both settings, from its own data: 1-1, gen2/pipeline.ts softFallStage.
+    // 1-1 is not in GEN2_STAGES, so isGen2Stage('1-1') is false and Easy had them there before the brief said so)
+    this.softOn = softFallStage(this.currentStage) || (isEasy() && !isGen2Stage(config) && config.objectiveType !== 'boss_lair' && !this.currentStage.arena);
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;

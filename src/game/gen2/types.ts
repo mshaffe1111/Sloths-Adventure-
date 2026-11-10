@@ -542,6 +542,10 @@ export interface GraphBrief {
   /** the end stands higher than the route where the bough window begins (V19b, 1-1's story promise: "up in the high branches"): the
    *  node that climbs late (after a late descent, or with none the signature) ends above the window's start too */
   endHigh?: boolean;
+  /** no fall in this stage costs a life, on Easy or Normal (1-1, where the controls are learned: the lead's ruling R-165.53, R-165.86):
+   *  a fall past the bottom anywhere that is not water sets him back on the ledge he left, nothing lost (Gen2Meta.softFalls; the
+   *  engine's softOn). The stage's gaps and soft zones are laid exactly as without it */
+  softFalls?: boolean;
 }
 /** a content type (NODES.md §7.2): what fills a content node; `structural` sections (arrive, rest, exit) sit outside the mix */
 export type ContentType = 'ground' | 'floating' | 'climb' | 'bounce' | 'rope' | 'crumble' | 'water' | 'hazard' | 'puzzle';
@@ -687,6 +691,8 @@ export interface Gen2Meta {
   flagMiss?: string[];
   /** the brief the rolled graph was rolled under (manifest graphs.briefs) */
   brief?: GraphBrief;
+  /** the stage's brief says no fall costs a life (GraphBrief.softFalls): what the engine reads (pipeline.ts softFallStage) */
+  softFalls?: true;
   /** each node as laid, for the gates that read the built stage (V18's nodePieces.ts, the stills spots): its token, the x-range its
    *  sections cover, its first block's landing x (NODES.md §8.7) when it has one, and a twist's two answers (B5) */
   nodes?: Array<{ token: string; x0: number; x1: number; block?: number; moves?: Array<'double' | 'bounce'> }>;

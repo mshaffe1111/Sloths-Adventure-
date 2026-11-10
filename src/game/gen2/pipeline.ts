@@ -1049,6 +1049,12 @@ export const FLAG_SPAN = { max: 4500, slack: 300, pad: 160 } as const;
 export const ROLLED_FLAGS = { first: 700, min: 900, max: 4000, lethal: 2300, last: 2000, before: 2400, clear: 1500 } as const;
 /** the jobs a flag stands before (the lead: teach, test, twist, combine, signature; a finale with them) */
 export const HARD_JOBS: ReadonlySet<string> = new Set(['teach', 'test', 'twist', 'combine', 'signature', 'finale']);
+/**
+ * does no fall in this built stage cost a life (its brief's `softFalls`, GraphBrief: 1-1 on both settings, R-165.86)? The engine turns
+ * its whole-stage soft fall on from this (engine.ts softOn), and the tests ask the same question the same way
+ */
+export const softFallStage = (st: object): boolean => !!(st as { gen2?: { softFalls?: boolean } }).gen2?.softFalls;
+
 type FlagStage = { spawnX: number; exitTotemX: number; checkpoints?: Array<{ x: number }>; heartFalls?: Array<{ x0: number; x1: number; soft?: boolean }> };
 /** where a fall costs a life on a stage: its water and void falls (gen2.falls) and its heart falls that are not soft */
 export function lethalSpans(st: FlagStage, falls: ReadonlyArray<{ x0: number; x1: number; kind: string }> = []): Array<[number, number]> {
@@ -2437,6 +2443,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     ...(laid.loosened ? { loosened: laid.loosened } : {}),
     ...(laid.missing ? { missing: laid.missing } : {}),
     ...(laid.rise ? { rise: laid.rise } : {}),
+    // (the stage's own brief, never the world's: 1-1 alone, R-165.86)
+    ...(req.kit.manifest.graphs?.briefs?.[budget.id]?.softFalls ? { softFalls: true as const } : {}),
     sections: laid.sections.map(({ uid, template, node, phase, tension, mirrored, x0, x1, seconds }) => ({ uid, template, node, phase, tension, mirrored, x0, x1, seconds })),
     fills: filled.fills,
     ...(laid.theme ? { theme: laid.theme } : {}),
