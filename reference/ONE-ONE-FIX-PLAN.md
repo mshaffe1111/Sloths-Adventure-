@@ -61,6 +61,10 @@ Approved with two changes to the Designer's proposal (t-designer-reach help.md ย
   leaves the stage for the map), and a game over at a piece jumps Normal straight to the offer. The game already offers extra
   lives after repeated game overs (src/game/assist.ts shouldOfferHelp): the Designer makes the two one system, so a player is
   never offered two different helps at once. This is the Designer's next packet (help.md ยง5), before the help is used past 1-1.
+- Matt, 11-09 9:25 PM ET: "It's only the first level that they're getting that many tries, because technically I didn't even think we
+  were going to drop anybody." Confirmed: the long count is for 1-1 only, and his picture of 1-1 is that nobody is dropped. The
+  lead's reading, told to him: A1 makes sure nobody loses a life in 1-1 now; the re-lay (B1) goes further and puts ground or a
+  catch road under the raised chains, so a miss is a short fall and a walk back, not a set-back. Past 1-1 the amended rule applies.
 - Dot's words go to the story keeper before they are built; the yes and no must work for a player who can't read (pictures).
 
 ## Matt's call, 11-09 9:10 PM ET
