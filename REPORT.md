@@ -50,7 +50,7 @@ PUSHBACK.md, accepted: 1-1 is not in GEN2_STAGES, so Easy already had softOn on 
   other gates, and lockall. Expect the lock to show 1-1 changed in its gen2 record only (`softFalls`, and the brief copy).
 - softFall.test.ts was edited though the packet's file list names only "tests beside each file you touch": it is engine.ts's test.
 - Evidence files sit in reference/qa-reports/R-165.86/ (not in the packet's WRITE list; delete at will).
-- Under a rise he can be set back on the low catch branch if he touched it on the way down (seen in the sweep; as Easy does today).
+- Under a rise he can be set back on the low catch branch if he touched it on the way down (read from the layout and softAt's rule, not shot; as Easy does today).
 
 ## 6. Method update
 Propose for methods/stage-fix.md: "A no-life-lost test in RealPlay must delete the harness's loseLife stub and carry a planted run
