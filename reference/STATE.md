@@ -41,8 +41,8 @@
   lives don't fall with practice; taps read as punches (475 of 693 punches followed by a jump within 0.6 s, 9 of 9 players); one
   Easy player's 37-minute run with 152 put-backs and no help ever fired; the 11-07 "impossible" numbers were report maths, not the
   recorder. Pushback: top speed 520 not 430; the sheet's Arrived column is Pacific time. Cost $4.03.
-- Analyst attempt 2 in at 8:58 PM ET: t-w11-analyst@469db5d1 (the missing life was w1-last-step-up). Its Critic
-  (session_01FhBbYNirV1y3h5X1zqZd7m, Opus) has the delta.
+- PASSED 11-09 9:01 PM ET: the analyst's window report, t-w11-analyst@469db5d1 (Critic session_01FhBbYNirV1y3h5X1zqZd7m; the missing
+  life was w1-last-step-up). Not merged: it rides to main with the release PR. The delta read at the window's close is attempt 3.
 - DONE, not yet PASSED: session_01FhBbYMHMXc5mHeNEeVEhTR, the Designer (Fable 5.2), reported 8:59 PM ET: t-designer-reach@918755a6,
   5 of 5 done-items, help.md a proposal only. Flown: single apex 97.8 px, climbs a 123 px block, level gap 244 Normal / 246 Easy;
   double apex 189.0, climbs 214, gap 396 / 400; bounce climbs 223; bounce + air jump climbs 317. The double-teach gaps (195-203)
