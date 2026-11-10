@@ -22,11 +22,13 @@
 - Lead's cold review: reference/notes/lead-review-2026-11-07.md. Cold Critics REJECTED it three times (D34, D35); four of
   its changes were withdrawn (WebGL stays on the graph; the consultant runs after every window as written; the R-165.65 ruling; R-165.67's first version). Corrections are in the note.
 
-## In flight (each member is its own session Matt can see in his Code list and retire; tag "sloths-team"; all on claude-fable-5-2)
-- session_01FhBbYNzmgt3tyXdLKeupZG, "Critic: lead documents audit (11-09)": audits e5aafcea..119f1720 (lead documents). Created 11-09 2:11 PM ET. Read-only.
-- session_01FhBbYJiR4o74fu7RgAv6EF, "Critic: packets and role cards audit (11-09)": packets and member cards, Designer packet first. Created 11-09 2:11 PM ET. Read-only.
-- Check-in armed: trig_013wE1r1WfL3Yy69MCQ6Pg8N (2:43 PM ET), re-armed until the last member stops.
-- Next out, on BOTH audits passing: the Designer (R-165.60) and the analyst (R-165.77).
+## In flight (each member is its own session Matt can see in his Code list and retire; tag "sloths-team")
+- Matt's board: https://claude.ai/artifact/8UGhTNnJNZhbpDBV87avR2 (R-165.75; republish in place, reference/methods/board.md).
+- Nobody is working (11-09 8:25 PM ET). Matt, 8:24 PM ET: "Be lean for now": no member is created until he says how lean.
+- The two 11-09 Critics (session_01FhBbYNzmgt3tyXdLKeupZG lead documents; session_01FhBbYJiR4o74fu7RgAv6EF packets) both returned
+  REJECT at 8:20 PM ET; every item was answered in commit f4fee368. Both documents sets still need a cold re-audit (fresh Critics,
+  on Opus, R-165.76) before the Designer (R-165.60) and the analyst (R-165.77) go out.
+- No check-in is armed (nobody is working). Arm one at the next member's start.
 
 ## Open graph (started Monday 11-09: Matt, about 2 PM ET, "I have fable only usage. Lets create our team and start this week. Right
 ## now the team must be fable 5.2"; then "Do not keep under yourself. They should have their own bot": every member is its own session, R-165.74; on Opus since that evening, R-165.76), in order

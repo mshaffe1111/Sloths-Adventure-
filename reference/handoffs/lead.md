@@ -1,4 +1,4 @@
-# Turnover note: the lead (PM). Rewritten, never appended. CURRENT LEAD: session_01FhBbYMoqqEdVR3qFjTCugy (route blockers here). Last rewrite: 2026-11-09 2:09 PM ET
+# Turnover note: the lead (PM). Rewritten, never appended. CURRENT LEAD: session_01FhBbYMoqqEdVR3qFjTCugy (route blockers here). Last rewrite: 2026-11-09 8:25 PM ET
 
 Matt, 11-07: "Also make sure you keep updated turnover notes. We all need this." This note is for a replacement lead, or for me after
 a memory compression. If it's older than the last decision in STATE.md, rewrite it before anything else.
@@ -10,6 +10,11 @@ a memory compression. If it's older than the last decision in STATE.md, rewrite 
   R-165.71) audit the 11-09 fix pass. On BOTH PASSes (the Designer's onboarding reads documents from both audits): the Designer (R-165.60) goes first, with the analyst (R-165.77: Matt wants the data pulled now); the Architect (R-165.61) after the
   Designer's Critic PASS; a delta read when the play window closes Tuesday 11-10, then the packer and the consultant; then Content
   (R-165.72), Engine and the Critic's own work, per STATE.md "Open graph".
+- **Where it stands, 11-09 8:25 PM ET:** both Critics returned REJECT; every item is answered in f4fee368 (not yet re-audited). Matt
+  then said "Keep others now on opus" (R-165.76), sent seven ideas (R-165.78 to .83, with R-165.77 "pull the test data now"), picked
+  the Kanban board (R-165.75, https://claude.ai/artifact/8UGhTNnJNZhbpDBV87avR2, reference/methods/board.md) and said "Be lean for
+  now". So no member is created until he answers how lean. Next, on his word: two fresh Opus Critics re-audit, then the Designer and
+  the analyst. The old Wednesday trigger trig_018T4m55rQ1cTxAbGtXyKwLX is still to delete once the Designer is out.
 - A 30-minute quality check-in (`send_later`) is armed at the first dispatch and re-armed until the last member stops.
 - My memory was compressed for the first time on 11-09: a rotation trigger. Told to Matt 11-09 about 2:15 PM ET in the lead's reply; he has not answered it.
 
