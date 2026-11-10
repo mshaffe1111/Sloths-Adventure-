@@ -31,28 +31,33 @@
   ],
   "team": [
     {
-      "role": "Analyst",
-      "task": "two small report fixes, then done",
+      "role": "Designer",
+      "task": "jump numbers flown: report in, a Critic is re-flying them",
+      "status": "reported"
+    },
+    {
+      "role": "Critic",
+      "task": "re-flying the Designer's numbers with its own script",
       "status": "working"
     },
     {
       "role": "Critic",
       "task": "checking the first Engine packet before it goes out",
-      "status": "next out"
+      "status": "working"
     },
     {
-      "role": "Designer",
-      "task": "flying the real jump, double and bounce in the engine",
-      "status": "working"
+      "role": "Analyst",
+      "task": "report fixed; its Critic has the last check",
+      "status": "reported"
+    },
+    {
+      "role": "Engine",
+      "task": "fix A1 on Fable 5.2 at medium, once its packet passes",
+      "status": "next out"
     },
     {
       "role": "Architect",
       "task": "the stage safety report, after the Designer passes",
-      "status": "next out"
-    },
-    {
-      "role": "Engine",
-      "task": "the 1-1 changes, on Fable 5.2 at medium",
       "status": "waiting"
     },
     {
@@ -195,18 +200,17 @@
       "name": "Doing",
       "hint": "being built now; at most 3 at once",
       "limit": 3,
-      "cards": [
-        {
-          "id": "R-165.60",
-          "title": "Designer: the real jump, double-jump and bounce reach, flown in the engine"
-        }
-      ]
+      "cards": []
     },
     {
       "key": "checking",
       "name": "Checking",
       "hint": "built; a Critic is trying to prove it wrong",
       "cards": [
+        {
+          "id": "R-165.60",
+          "title": "Designer: the real jump, double-jump and bounce reach, flown in the engine"
+        },
         {
           "id": "R-165.77",
           "title": "Analyst pulls the tester data now; the fix plan, new platform pieces included, comes from it"

@@ -41,8 +41,16 @@
   lives don't fall with practice; taps read as punches (475 of 693 punches followed by a jump within 0.6 s, 9 of 9 players); one
   Easy player's 37-minute run with 152 put-backs and no help ever fired; the 11-07 "impossible" numbers were report maths, not the
   recorder. Pushback: top speed 520 not 430; the sheet's Arrived column is Pacific time. Cost $4.03.
-- WORKING: session_01FhBbYNirV1y3h5X1zqZd7m, "Critic: audit of the analyst's window report (t-w11-analyst)", Opus, created 8:53 PM ET,
-  due 10:30 PM ET. On its PASS the lead writes the 1-1 fix plan from the top 10 (R-165.77), each fix with an R-number.
+- Analyst attempt 2 in at 8:58 PM ET: t-w11-analyst@469db5d1 (the missing life was w1-last-step-up). Its Critic
+  (session_01FhBbYNirV1y3h5X1zqZd7m, Opus) has the delta.
+- DONE, not yet PASSED: session_01FhBbYMHMXc5mHeNEeVEhTR, the Designer (Fable 5.2), reported 8:59 PM ET: t-designer-reach@918755a6,
+  5 of 5 done-items, help.md a proposal only. Flown: single apex 97.8 px, climbs a 123 px block, level gap 244 Normal / 246 Easy;
+  double apex 189.0, climbs 214, gap 396 / 400; bounce climbs 223; bounce + air jump climbs 317. The double-teach gaps (195-203)
+  and test gaps (205-228) are crossed by ONE jump; reachJump is short by 33-69 px; a tapped pad jump is a 61.7 px hop. Its pushback:
+  only 2 px spare for a "bounce clears, double fails" lip; no gap teach survives.
+- WORKING: session_01FhBbYL3Mdff38pvPYDhgkv, "Critic: audit of the Designer's reach spec", Opus, created 9:00 PM ET, due 11:00 PM ET.
+  It re-flies the numbers with its own script.
+- WITH the delta Critic (session_01FhBbYKQPPcDe1fW9ZijADh): the Engine packet R-165.86 and the fix plan, for a PASS before dispatch.
 - THE 1-1 FIX PLAN: reference/ONE-ONE-FIX-PLAN.md (written 11-09 8:59 PM ET from the analyst's report; the analyst's Critic said
   REJECT on two small report items, attempt 2 is with the analyst, and found all six main claims TRUE). Test link A: A1 no fall in
   1-1 costs a life (R-165.86, packet packets/2026-11-09/ENGINE-R-165.86.md, with the delta Critic for a PASS before dispatch), A2 help
