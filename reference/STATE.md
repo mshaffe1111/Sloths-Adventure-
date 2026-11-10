@@ -96,6 +96,9 @@
   to him: he has $82 of extra usage in all and the cap is now $75, promote included; for tonight (11-09) the Designer and the
   Architect are created on "claude-fable-5-2" (with the Engine member, R-165.84); the analyst and the Critics stay on Opus.
   Tripwires: tell Matt at $50; at $60 stop creating builders and start the promote.
+- MODEL NOW (Matt, 11-09 10:25 PM ET: "Use opus 5.5 medium and high going forward based model needs"): EVERY member, the Engine
+  included, on "claude-opus-5-5"; effort medium or high by the task (the packet's effort line); the lead also on Opus 5.5. This
+  replaces the Fable lines above. Money: about $20 left of his $82 (Matt, same message).
 - LEAD MODEL: Matt switched the lead session to Sonnet 5.5 at 9:38 PM ET ("The Fable 5.2 just burns tokens"). The lead had been on Fable 5.2 at
   effort medium, so effort was not the cause; the model tier and a 480k-token context were. Members unchanged (Opus; Engine on Fable).
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime

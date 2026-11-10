@@ -14,7 +14,7 @@ onboarding.** A fresh agent that has read them, in the order the card gives, mus
 | Standing: the backup lead (the previous lead) | PM.md §8 "The backup lead" | reference/handoffs/lead.md | (questions only, until the next rotation) |
 | 2 Systems & Mechanics Designer | DESIGNER.md | reference/handoffs/designer.md | high |
 | 3 Lead Architect | ARCHITECT.md | reference/handoffs/architect.md (written by the first Architect) | high |
-| 4 Engine Engineer | ENGINE.md | reference/handoffs/engine-core.md, planner.md | medium, on Fable 5.2 (Matt 11-09, R-165.84) |
+| 4 Engine Engineer | ENGINE.md | reference/handoffs/engine-core.md, planner.md | medium or high, on Opus 5.5 (Matt 11-09, R-165.84) |
 | 5 Content & Asset Specialist | CONTENT.md | reference/handoffs/art-director.md, tester-page.md | high, on Opus |
 | 6 Adversarial Critic & QA | CRITIC.md | reference/handoffs/critic.md (the first Critic seeds it from release-clerk.md) | high; max for a release gate (the lead's call, Matt 11-07) |
 | Outside: the packer (builds the consultant's input package: facts only, no reasons) | CONSULTANT.md "What it gets" | none (follows written steps) | low |
@@ -26,7 +26,7 @@ Retired 11-07, kept for history only (their duties moved): SUPERVISOR.md and QUA
 into CRITIC.md (the gate) and PM.md (the release method); ROADMAP-KEEPER.md into PM.md.
 
 ## How a member is made
-The lead creates each member fresh for each task, in its own session (Matt, 11-09), on Opus for now (Matt, 11-09 evening, R-165.76). UPDATE (Matt, 11-09 9:05 PM ET: "Move everything to opium 5.5", read as Opus 5.5): then at 9:07 PM ET "Other than engine work.. stays fable for now": every member is on "claude-opus-5-5" EXCEPT engine work (the Engine member), which stays on "claude-fable-5-2" at effort medium; the Fable lines for the Designer, the Architect and other code-writing members are withdrawn. You report to the lead with send_message to the session id your prompt names; your last message there is your result. The prompt opens with the card's "Who you are" persona, word for
+The lead creates each member fresh for each task, in its own session (Matt, 11-09), on Opus for now (Matt, 11-09 evening, R-165.76). UPDATE (Matt, 11-09 9:05 PM ET: "Move everything to opium 5.5", read as Opus 5.5): then at 9:07 PM ET "Other than engine work.. stays fable for now": every member is on "claude-opus-5-5" EXCEPT engine work (the Engine member), which stays on "claude-fable-5-2" at effort medium; the Fable lines for the Designer, the Architect and other code-writing members are withdrawn. LATEST (Matt, 11-09 evening: "Use opus 5.5 medium and high going forward based model needs"): every member, the Engine included, on "claude-opus-5-5", effort medium or high by the task.. You report to the lead with send_message to the session id your prompt names; your last message there is your result. The prompt opens with the card's "Who you are" persona, word for
 word, then the packet. If you're reading this as a member, you were made that way.
 The consultant is the exception: it gets its persona plus the packer's input package (CONSULTANT.md "What it gets") and nothing
 else: no packet, no objective, no reasons, no team files. A delta re-audit may continue the same Critic (TEAM.md rule 2). Read your card's knowledge pack next.
