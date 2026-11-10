@@ -59,8 +59,9 @@
   passed it both carried the error: log it as a defect (D37) with its countermeasure when the build is in.
 - The Engine packet R-165.86 PASSED as changed (delta Critic, three rounds, its last two lines applied as written, no re-audit
   needed by its word); the fix plan PASSED. The Engine member (Fable 5.2, effort medium) goes out 11-09 9:05 PM ET on branch
-  t-engine-putback; WORKING: session_01FhBbYNUwoxpt2ufU9ozYYg, "Engine: no fall in 1-1 costs a life (R-165.86, fix A1)", Fable 5.2, effort medium,
-  restarted 9:07 PM ET, due 11:10 PM ET. (An Opus Engine session, session_01FhBbYLPQPNAz6xNudSS5Zd, held the task for two minutes
+  t-engine-putback; DONE, not yet PASSED (reported 9:32 PM ET): session_01FhBbYNUwoxpt2ufU9ozYYg, the Engine (Fable 5.2, medium), t-engine-putback@41c2e248,
+  6 of 6 done-items: GraphBrief.softFalls -> Gen2Meta.softFalls -> softFallStage() -> engine softOn; red on main saved; 138 seeds
+  unchanged. Rough spot named: Dot's jump hint shows after a set-back (A2 owns it). With its Critic now. (An Opus Engine session, session_01FhBbYLPQPNAz6xNudSS5Zd, held the task for two minutes
   between Matt's two messages; interrupted and archived, cost $0.42.)
 - DECIDED by Matt 11-09 9:17 PM ET ("I already picked A", to the cost question): tonight only A1 is finished and passed; everything
   for A2 (the story keeper's words, the packet, its Critic, the build), the Architect and the promote run after the weekly reset,
@@ -77,7 +78,7 @@
   after put-backs (R-165.62), A3 the tap rule (R-165.87); A2 and A3 wait on the Designer. Test link B: the re-lay with Matt's art.
 - DONE: session_01FhBbYKQPPcDe1fW9ZijADh, the Opus delta Critic: ANALYST PASS, DESIGNER PASS at d4620b3b; its last two REST items
   (roster effort rows, R-165.76's file list) answered in 7f5d0480, which it said needs no re-audit if done as written. Cost $1.50.
-- Check-in armed: trig_01QeQub38MtMyWNxkySCvgAn (9:33 PM ET).
+- No check-in armed tonight (see the spend line).
 - WORKING: session_01FhBbYMHMXc5mHeNEeVEhTR, "Designer: the real reach numbers, flown in the engine (R-165.60)", Fable 5.2 (Matt,
   tonight), created 11-09 8:43 PM ET, due 12:45 AM ET, branch t-designer-reach. Sent alongside the analyst because Matt asked for
   the Designer and the Architect tonight; they share no WRITE file. Its result goes to a fresh Critic with AUDIT-DESIGNER.
@@ -92,12 +93,13 @@
   to him: he has $82 of extra usage in all and the cap is now $75, promote included; for tonight (11-09) the Designer and the
   Architect are created on "claude-fable-5-2" (with the Engine member, R-165.84); the analyst and the Critics stay on Opus.
   Tripwires: tell Matt at $50; at $60 stop creating builders and start the promote.
-- Spent against the $75, read 11-09 9:02 PM ET (get_session cost_usd): afternoon Critics $8.50; delta Critic $1.50 (and running
-  again on the Engine packet); analyst $5.39; analyst's Critic $1.55; Designer $7.41; the lead's own turns since 8:36 PM $10.36
-  ($47.04 lifetime less $36.68). Total $34.71, with two Critics still running. The lead is the biggest spender: its context is
-  about 408k tokens, so every tool call costs about 25 cents. From here: batch commands, no board republish per event, no small
-  commits. Forecast: A1 (Engine about $8, its Critic about $4, the promote and the lead about $12) lands near $60-65; A2 and A3
-  do not fit this cap and go to the next test link unless Matt raises it.
+- SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
+  less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
+  analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,
+  Opus, created 9:33 PM ET, due 11:15 PM ET) still running, perhaps $5 more. The $50 and $60 tripwires were both passed between
+  check-ins without Matt being told at the time: a miss by the lead, told to him at 9:35 PM ET. The lead's context is about 480k
+  tokens; each of its turns costs $0.50 to $1. From here tonight: the lead acts only on the Engine Critic's verdict, then stops.
+  No check-in is armed (the Critic's message wakes the lead). Everything else waits for the Wednesday 2:05 AM ET reminder.
 - The two afternoon Fable Critics (session_01FhBbYNzmgt3tyXdLKeupZG, session_01FhBbYJiR4o74fu7RgAv6EF) are finished: both REJECT, answered.
 
 ## Open graph (started Monday 11-09: Matt, about 2 PM ET, "I have fable only usage. Lets create our team and start this week. Right
