@@ -35,8 +35,14 @@
   Matt, 8:40 PM ET: "Can go to 70 max including promote": the cap is now $70 at most, and that includes promoting the build (the
   gates, the test link and the release work). Plan to the $50; the extra $20 is headroom for the promote, not for more scope.
   At $45 tell Matt; at $55 stop creating builders and start the promote.
-- WORKING: session_01FhBbYMtU8vX2MemCij28Av, "Analyst: tester data for the 11-10 window, pulled now (R-165.77)", Opus, created
-  11-09 8:38 PM ET, due 11:40 PM ET, branch t-w11-analyst. Its result goes to a fresh Critic with AUDIT-ANALYST.md.
+- DONE, not yet PASSED: session_01FhBbYMtU8vX2MemCij28Av, the analyst (Opus), reported 11-09 8:52 PM ET: t-w11-analyst@115e9629,
+  6 of 6 done-items, 4,549 rows read; since 0.9.5: 95 gen2 1-1 runs, 9 players (Normal 81 runs / 8 players, Easy 14 / 3). Its top
+  findings: all 36 Normal lives lost are pits in raised pieces (w1-log-chain-rise 10, w1-mushroom-chain-back 8, w1-log-chain 6);
+  lives don't fall with practice; taps read as punches (475 of 693 punches followed by a jump within 0.6 s, 9 of 9 players); one
+  Easy player's 37-minute run with 152 put-backs and no help ever fired; the 11-07 "impossible" numbers were report maths, not the
+  recorder. Pushback: top speed 520 not 430; the sheet's Arrived column is Pacific time. Cost $4.03.
+- WORKING: session_01FhBbYNirV1y3h5X1zqZd7m, "Critic: audit of the analyst's window report (t-w11-analyst)", Opus, created 8:53 PM ET,
+  due 10:30 PM ET. On its PASS the lead writes the 1-1 fix plan from the top 10 (R-165.77), each fix with an R-number.
 - DONE: session_01FhBbYKQPPcDe1fW9ZijADh, the Opus delta Critic: ANALYST PASS, DESIGNER PASS at d4620b3b; its last two REST items
   (roster effort rows, R-165.76's file list) answered in 7f5d0480, which it said needs no re-audit if done as written. Cost $1.50.
 - Check-in armed: trig_012Pcfrpi7GZWBWm8nXareVP (9:02 PM ET).
@@ -54,7 +60,7 @@
   to him: he has $82 of extra usage in all and the cap is now $75, promote included; for tonight (11-09) the Designer and the
   Architect are created on "claude-fable-5-2" (with the Engine member, R-165.84); the analyst and the Critics stay on Opus.
   Tripwires: tell Matt at $50; at $60 stop creating builders and start the promote.
-- Spent against the $75: $8.50 + $1.50 = $10.00, plus the lead's own turns since 8:36 PM ET (read at the next check-in).
+- Spent against the $75: $8.50 + $1.50 + $4.03 (analyst) = $14.03, plus the lead's own turns since 8:36 PM ET (read at the next check-in).
 - The two afternoon Fable Critics (session_01FhBbYNzmgt3tyXdLKeupZG, session_01FhBbYJiR4o74fu7RgAv6EF) are finished: both REJECT, answered.
 
 ## Open graph (started Monday 11-09: Matt, about 2 PM ET, "I have fable only usage. Lets create our team and start this week. Right

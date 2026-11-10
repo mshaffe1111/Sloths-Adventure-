@@ -32,7 +32,12 @@
   "team": [
     {
       "role": "Analyst",
-      "task": "pulling and reading the tester data",
+      "task": "tester data read: report in, a Critic is checking it",
+      "status": "reported"
+    },
+    {
+      "role": "Critic",
+      "task": "checking the analyst's report against the code",
       "status": "working"
     },
     {
@@ -173,10 +178,6 @@
       "limit": 3,
       "cards": [
         {
-          "id": "R-165.77",
-          "title": "Analyst pulls the tester data now; the fix plan, new platform pieces included, comes from it"
-        },
-        {
           "id": "R-165.60",
           "title": "Designer: the real jump, double-jump and bounce reach, flown in the engine"
         }
@@ -187,6 +188,10 @@
       "name": "Checking",
       "hint": "built; a Critic is trying to prove it wrong",
       "cards": [
+        {
+          "id": "R-165.77",
+          "title": "Analyst pulls the tester data now; the fix plan, new platform pieces included, comes from it"
+        },
         {
           "id": "R-165.66",
           "title": "The team's role cards and first task packets"
