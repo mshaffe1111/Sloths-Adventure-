@@ -46,13 +46,17 @@
   recorder. Pushback: top speed 520 not 430; the sheet's Arrived column is Pacific time. Cost $4.03.
 - PASSED 11-09 9:01 PM ET: the analyst's window report, t-w11-analyst@469db5d1 (Critic session_01FhBbYNirV1y3h5X1zqZd7m; the missing
   life was w1-last-step-up). Not merged: it rides to main with the release PR. The delta read at the window's close is attempt 3.
-- DONE, not yet PASSED: session_01FhBbYMHMXc5mHeNEeVEhTR, the Designer (Fable 5.2), reported 8:59 PM ET: t-designer-reach@918755a6,
-  5 of 5 done-items, help.md a proposal only. Flown: single apex 97.8 px, climbs a 123 px block, level gap 244 Normal / 246 Easy;
-  double apex 189.0, climbs 214, gap 396 / 400; bounce climbs 223; bounce + air jump climbs 317. The double-teach gaps (195-203)
-  and test gaps (205-228) are crossed by ONE jump; reachJump is short by 33-69 px; a tapped pad jump is a 61.7 px hop. Its pushback:
-  only 2 px spare for a "bounce clears, double fails" lip; no gap teach survives.
-- WORKING: session_01FhBbYL3Mdff38pvPYDhgkv, "Critic: audit of the Designer's reach spec", Opus, created 9:00 PM ET, due 11:00 PM ET.
-  It re-flies the numbers with its own script.
+- PASSED 11-09 9:12 PM ET: the Designer's reach spec (R-165.60), t-designer-reach@030a4093, three attempts. The Critic
+  (session_01FhBbYL3Mdff38pvPYDhgkv) re-flew it with its own script: single apex 97.8 px, climbs 123, level gap 246; double apex 189,
+  climbs 214, gap 396-400 flicked and 409-411 held; bounce climbs 223; one jump crosses the 203 and 228 px lesson gaps; reachJump
+  single short 33-69 px, double short 57-98. New bands: Normal test gap 252-262; the double is taught by a rise (Normal 136-140,
+  Easy 128-132). Its last edit (help.md §2 = §4) was checked by the lead against the diff; the Critic had said no re-flight needed.
+  help.md is a proposal, not flown: put-back help at 3 / 5 / 8 / 12 per piece. Not merged: it rides to main with the release PR.
+  The Architect (R-165.61) may now go out; held for money (Matt's A/B/C on the cap is open).
+- ENGINE PUSHBACK, accepted 9:11 PM ET: the packet's frozen input was wrong. 1-1 is built by gen2Roll11 and is not in GEN2_STAGES
+  (gen2/game.ts:86-96), so Easy already has softOn true; lives are lost on Normal only (9 of 148 edge falls on seed 3747 reach
+  loseLife). RealPlay stubs loseLife (realPlay.ts:141), so the sweep must run the real one. The lead's packet and the Critic that
+  passed it both carried the error: log it as a defect (D37) with its countermeasure when the build is in.
 - The Engine packet R-165.86 PASSED as changed (delta Critic, three rounds, its last two lines applied as written, no re-audit
   needed by its word); the fix plan PASSED. The Engine member (Fable 5.2, effort medium) goes out 11-09 9:05 PM ET on branch
   t-engine-putback; WORKING: session_01FhBbYNUwoxpt2ufU9ozYYg, "Engine: no fall in 1-1 costs a life (R-165.86, fix A1)", Fable 5.2, effort medium,
