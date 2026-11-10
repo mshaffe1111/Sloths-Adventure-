@@ -18,6 +18,9 @@
    then 'replay' from the proven list in its shuffled order. An old save that has finished 1-1 reads as finished from its progress;
    it never sees the first run again. A quit or game over before the finish replays the SAME first layout (the lesson is learned on one
    map; the help ladder, R-165.62, handles a player stuck in it).
+   **The lead's ruling, 2026-11-10 (R-165.61 attempt 2): CONFIRMED.** The first-ever run is not complete until the player finishes 1-1,
+   so a quit or a game over before the first finish replays the same fixed layout. R-165.52's "replays roll" means every run AFTER the
+   first finish rolls; a retry before it is still the first run, not a replay.
 4. **The fixed seed is not a replay draw** for the run right after the first (no "new" run that is the same map).
 5. The test link's picker (A/B/C rolls, `?seed`) stays above this: a QA override, never in the shipped path.
 

@@ -1,4 +1,8 @@
-# REPORT: R-165.61 Architect, attempt 1 (2026-11-10)
+# REPORT: R-165.61 Architect, attempt 2 (2026-11-10)
+Attempt 2 delta (the lead's five): BUDGET plants fixed (every-frame p95 plant + one 60 ms max plant, CI needs exit 1 from each);
+`notJudged` on RollVerdict (ADR-001 decision 3 says why, not a PromiseDef scope gate); 8 ms attributed to the previous lead; E0's list
+names provenSeeds.ts and the lock; E2 has Normal's re-ask and everything past 1-1 BLOCKED on help.md §5; ADR-002 carries the lead's
+ruling. tsc clean again.
 
 ## 1. Done-items
 1. PASS. ADR-001 (reference/architecture/ADR-001-verdicts.md) + types (src/game/gen2/verdicts.types.ts): setting-aware FlownArc /

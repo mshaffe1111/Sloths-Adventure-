@@ -104,8 +104,12 @@ export interface Verdict {
 }
 
 type NonEmpty<T> = readonly [T, ...T[]];
-/** a roll's outcome: accepted carries no verdicts; refused carries at least one. There is no third state ("accepted with warnings") */
-export type RollVerdict = { accepted: true; setting: Difficulty } | { accepted: false; setting: Difficulty; failed: NonEmpty<Verdict> };
+/** a roll's outcome: accepted carries no failed verdict; refused carries at least one. There is no third state ("accepted with warnings").
+ *  `notJudged`: the checks that did not run because the stage is outside their scope (Normal past 1-1 has no flown reach: `reach.unflown`
+ *  and the arc and block names), stated so an unjudged roll is never mistaken for a judged one (ADR-001 decision 3). Empty inside scope */
+export type RollVerdict =
+  | { accepted: true; setting: Difficulty; notJudged: readonly VerdictName[] }
+  | { accepted: false; setting: Difficulty; failed: NonEmpty<Verdict>; notJudged: readonly VerdictName[] };
 
 /** what the checks read off a built stage, per setting: the policy from the brief, every drop stated, the sections' asked figures */
 export interface JudgedStage<P extends FallPolicy = FallPolicy> {

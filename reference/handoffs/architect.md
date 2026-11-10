@@ -15,7 +15,10 @@
 - 1-1 is built by stageGenerator.ts gen2Roll11 -> testlink1_1.ts play11Seed -> seedList buildPlayStage; not in GEN2_STAGES.
 
 ## Rulings to keep
-- A verdict is a name in VerdictName; a roll is a tagged RollVerdict; no "accepted with warnings".
+- A verdict is a name in VerdictName; a roll is a tagged RollVerdict; no "accepted with warnings"; out-of-scope checks are listed in
+  `notJudged`, never dropped.
+- A planted failure must be sized against the rule it trips (a p95 plant on every frame, not 1 in 30).
+- ADR-002: a retry before the first finish of 1-1 is still the first run (the lead, 11-10).
 - A drop's outcome and its look are one record; soft and lethal looks never overlap.
 - One PromiseRegistry feeds promises11 and seedListBreaches; the setting filter is `settings`, never a substring.
 

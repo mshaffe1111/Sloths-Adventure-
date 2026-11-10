@@ -17,12 +17,14 @@ t-designer-reach@030a4093; A1 at t-engine-putback@41c2e248 (GraphBrief.softFalls
 ## Decision
 1. **A verdict is a name, not a string.** `VerdictName` is a closed union (16 names). A check that can fail adds its name first. A
    `Verdict` carries the name, the setting, where (x0..x1, section uid) and the `Measure` (measured, limit, spare, the spec row).
-2. **A roll's outcome is a tagged union** `RollVerdict`: accepted with no verdicts, or refused with a non-empty tuple. No "accepted
+2. **A roll's outcome is a tagged union** `RollVerdict`: accepted with no failed verdicts (but a `notJudged` list of the checks out of scope, often empty), or refused with a non-empty tuple. No "accepted
    with warnings". The seed list proves a seed only when BOTH settings are `accepted: true`.
 3. **Setting-aware arcs.** Reach is a `FlownArc` per move and `ReachScope` ('normal-1-1' | 'easy-any'), the flick being the move the
    builder lays to (bands.md §1). Bands are a `BandTable` keyed by `SectionKind` x `Difficulty`; `'none'` is a value (Easy's double
-   gap), so "no such section on this setting" is stated, not missing. A stage with no flown scope (Normal past 1-1: reach.md flew 1-1 on Normal and Easy only) fails
-   `reach.unflown`: the Engine must fly it before rolling against it, never fall back to the old constants.
+   gap), so "no such section on this setting" is stated, not missing. A stage with no flown scope (Normal past 1-1: reach.md flew 1-1 on Normal and Easy only) is
+   not judged by `arc.*` / `block.*` at all: its accepted RollVerdict lists them in `notJudged` (with `reach.unflown`), so a roll that
+   was not judged on reach says so in the result, never silently. Inside a flown scope `reach.unflown` can't occur; the arc checks
+   run and refuse by name. Chosen over a scope gate in PromiseDef.stages because the gap is per setting and place, not per promise.
 4. **Blocks have spare.** A teach or test is judged both ways: `block.lesser-passes` (the lesser move clears it), `block.taught-fails`,
    and `block.spare-thin` (under 5 px, bands.md §1, because 25 fps loses ~3 px of apex).
 5. **Headroom is its own verdict.** Every section that asks for a reach figure records `headroom` (clear height above the take-off
@@ -53,6 +55,7 @@ t-designer-reach@030a4093; A1 at t-engine-putback@41c2e248 (GraphBrief.softFalls
 - **Every 1-1 roll moves** (clamps change) and most proven seeds will fail until the re-lay (R-165.72). E0 lands with Content's re-lay
   in one PR, never alone on main. The Critic runs `tools/engine/lockall.ts --check` against main's recorded lock: only 1-1 may move;
   5-7 and 5-9 must not (or the PR names each that does).
-- Normal past 1-1 has no arc: those stages are not judged by `arc.*` until flown (`reach.unflown` is reported, not enforced,
-  outside 1-1 and Easy, until the Designer flies them; the PM tracks it as an R-id).
+- Normal past 1-1 has no arc: those stages are not judged by `arc.*` until flown (their rolls are
+  accepted with `notJudged: ['reach.unflown', 'arc.*'...]` stated, until the Designer flies them; the PM tracks it as an R-id; a
+  report or gate may count `notJudged` and refuse to call such a stage proven on reach).
 - The bundle cost is a few KB of data (reach.ts) and code; well inside the 31 KB room.
