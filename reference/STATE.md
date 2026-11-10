@@ -40,10 +40,14 @@
 - DONE: session_01FhBbYKQPPcDe1fW9ZijADh, the Opus delta Critic: ANALYST PASS, DESIGNER PASS at d4620b3b; its last two REST items
   (roster effort rows, R-165.76's file list) answered in 7f5d0480, which it said needs no re-audit if done as written. Cost $1.50.
 - Check-in armed: trig_012Pcfrpi7GZWBWm8nXareVP (9:02 PM ET).
-- Next: the Designer (R-165.60, Opus, its packet PASSED) once the analyst has reported (lean: one member at a time). Then the 1-1
+- Next: the Designer (R-165.60, Fable 5.2 tonight per Matt, its packet PASSED) once the analyst has reported (lean: one member at a time). Then the 1-1
   fix plan from the analyst's top 10; the Engine member on Fable 5.2 at medium. Ask Matt, at Content's first packet that writes
   under src/, whether "coder" covers Content.
-- Spent against the $70: $8.50 + $1.50 = $10.00, plus the lead's own turns since 8:36 PM ET (read at the next check-in).
+- Matt, 11-09 8:42 PM ET: "At $82 now total 75.00 new limit. Architect and designer on fable 5.2 for 2nite". The lead's reading, told
+  to him: he has $82 of extra usage in all and the cap is now $75, promote included; for tonight (11-09) the Designer and the
+  Architect are created on "claude-fable-5-2" (with the Engine member, R-165.84); the analyst and the Critics stay on Opus.
+  Tripwires: tell Matt at $50; at $60 stop creating builders and start the promote.
+- Spent against the $75: $8.50 + $1.50 = $10.00, plus the lead's own turns since 8:36 PM ET (read at the next check-in).
 - The two afternoon Fable Critics (session_01FhBbYNzmgt3tyXdLKeupZG, session_01FhBbYJiR4o74fu7RgAv6EF) are finished: both REJECT, answered.
 
 ## Open graph (started Monday 11-09: Matt, about 2 PM ET, "I have fable only usage. Lets create our team and start this week. Right
