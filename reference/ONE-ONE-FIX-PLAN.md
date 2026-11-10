@@ -1,4 +1,4 @@
-# The 1-1 fix plan (the lead, 2026-11-09 9:05 PM ET; Matt: "Start fixing 1-1 after test data is evaluated. Make plan and start making change", R-165.84)
+# The 1-1 fix plan (the lead, 2026-11-09 8:59 PM ET; Matt: "Start fixing 1-1 after test data is evaluated. Make plan and start making change", R-165.84)
 
 Built from the analyst's window report (branch t-w11-analyst, reference/qa-reports/window-2026-11-10/WINDOW.md, pulled 11-09 8:39 PM ET
 with the window still open: 95 gen2 1-1 runs by 9 players since 0.9.5; Normal 81 runs / 8 players, Easy 14 / 3). A Critic checked its
