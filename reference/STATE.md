@@ -43,6 +43,10 @@
   recorder. Pushback: top speed 520 not 430; the sheet's Arrived column is Pacific time. Cost $4.03.
 - WORKING: session_01FhBbYNirV1y3h5X1zqZd7m, "Critic: audit of the analyst's window report (t-w11-analyst)", Opus, created 8:53 PM ET,
   due 10:30 PM ET. On its PASS the lead writes the 1-1 fix plan from the top 10 (R-165.77), each fix with an R-number.
+- THE 1-1 FIX PLAN: reference/ONE-ONE-FIX-PLAN.md (written 11-09 9:05 PM ET from the analyst's report; the analyst's Critic said
+  REJECT on two small report items, attempt 2 is with the analyst, and found all six main claims TRUE). Test link A: A1 no fall in
+  1-1 costs a life (R-165.86, packet packets/2026-11-09/ENGINE-R-165.86.md, with the delta Critic for a PASS before dispatch), A2 help
+  after put-backs (R-165.62), A3 the tap rule (R-165.87); A2 and A3 wait on the Designer. Test link B: the re-lay with Matt's art.
 - DONE: session_01FhBbYKQPPcDe1fW9ZijADh, the Opus delta Critic: ANALYST PASS, DESIGNER PASS at d4620b3b; its last two REST items
   (roster effort rows, R-165.76's file list) answered in 7f5d0480, which it said needs no re-audit if done as written. Cost $1.50.
 - Check-in armed: trig_012Pcfrpi7GZWBWm8nXareVP (9:02 PM ET).
