@@ -19,6 +19,8 @@ it (origin/t-w11-analyst:reference/qa-reports/window-2026-11-10/WINDOW.md §3). 
   a fall off a piece's back edge or into a void that is not in `gaps` would still reach loseLife('pit'). The whole-stage mechanism
   already exists: `softOn` (engine.ts:833), which leaves gen2 out today. Turn it on from the stage's data for gen2 1-1 on both
   settings; you may edit engine.ts:833 for that.
+- The brief field must reach the built stage the engine reads (pipeline.ts about :2466, where `heartFalls` is passed on); the engine
+  never reads w1's brief itself.
 - The rule is for 1-1 only, stated as stage data: a per-stage brief field (src/game/gen2/worlds/w1.ts:47, `briefs['1-1']`; its type
   in src/game/gen2/types.ts), NOT a WorldManifest flag (types.ts:103; `heartFalls` at :181 is per world and would hit all of World 1),
   and never a hard-coded stage name inside the engine loop.
@@ -41,8 +43,8 @@ it (origin/t-w11-analyst:reference/qa-reports/window-2026-11-10/WINDOW.md §3). 
   floorlessGaps as it is, src/game/engine.ts (line 833's softOn and the set-back spot only), tests beside each file you touch, reference/handoffs/engine-core.md (your turnover note).
 ## Definition of done (the Critic checks each)
 1. A test that lays 1-1 on Normal and on Easy over at least these seeds from the window (3747, 15458, 19582, 26871, 35286, 23436, 1769,
-   25908, 29944, 172, 21537, 30782, 1589, 14194, 30947, 12727) and proves every gap that is not water is covered by a soft put-back
-   zone. It fails on origin/main (show the failing run) and passes on your branch. And a realPlay sweep: on 3 of those seeds, on
+   25908, 29944, 172, 21537, 30782, 1589, 14194, 30947, 12727) and proves a fall into every gap that is not water is a soft set-back on that
+   setting (softOn from the 1-1 brief, or a soft zone; no new zone is needed on every gap). It fails on origin/main (show the failing run) and passes on your branch. And a realPlay sweep: on 3 of those seeds, on
    each setting, walk Pokey off the right edge of every solid piece; lives never change and `lostLife` is never written.
 2. A flight in realPlay over w1-log-chain-rise on Normal (seed 3747) that walks Pokey off a rising gap: he is set back on the ledge he
    left, lives unchanged, `softFall` recorded, no `lostLife`.

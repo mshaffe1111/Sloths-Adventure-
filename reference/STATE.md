@@ -50,7 +50,9 @@
   only 2 px spare for a "bounce clears, double fails" lip; no gap teach survives.
 - WORKING: session_01FhBbYL3Mdff38pvPYDhgkv, "Critic: audit of the Designer's reach spec", Opus, created 9:00 PM ET, due 11:00 PM ET.
   It re-flies the numbers with its own script.
-- WITH the delta Critic (session_01FhBbYKQPPcDe1fW9ZijADh): the Engine packet R-165.86 and the fix plan, for a PASS before dispatch.
+- The Engine packet R-165.86 PASSED as changed (delta Critic, three rounds, its last two lines applied as written, no re-audit
+  needed by its word); the fix plan PASSED. The Engine member (Fable 5.2, effort medium) goes out 11-09 9:05 PM ET on branch
+  t-engine-putback; its id is on the next line once created.
 - THE 1-1 FIX PLAN: reference/ONE-ONE-FIX-PLAN.md (written 11-09 8:59 PM ET from the analyst's report; the analyst's Critic said
   REJECT on two small report items, attempt 2 is with the analyst, and found all six main claims TRUE). Test link A: A1 no fall in
   1-1 costs a life (R-165.86, packet packets/2026-11-09/ENGINE-R-165.86.md, with the delta Critic for a PASS before dispatch), A2 help
