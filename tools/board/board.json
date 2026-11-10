@@ -3,49 +3,223 @@
   "goal": "All 10 worlds and their bosses passed by Matt on the phone, the story start to finish, then the Play Store app.",
   "sprint": "This sprint: make stage 1-1 fair and teachable from the real jump numbers, with the new team.",
   "path": [
-    {"name": "Team built", "state": "now", "sub": "roles, packets, audits"},
-    {"name": "1-1 rebuilt", "state": "next", "sub": "real reach, no lethal drops"},
-    {"name": "World 1 passed", "state": "later", "sub": "Matt plays it on the phone"},
-    {"name": "Worlds 2 to 10", "state": "later", "sub": "bosses and story"},
-    {"name": "Play Store", "state": "later", "sub": "the app ships"}
+    {
+      "name": "Team built",
+      "state": "now",
+      "sub": "roles, packets, audits"
+    },
+    {
+      "name": "1-1 rebuilt",
+      "state": "next",
+      "sub": "real reach, no lethal drops"
+    },
+    {
+      "name": "World 1 passed",
+      "state": "later",
+      "sub": "Matt plays it on the phone"
+    },
+    {
+      "name": "Worlds 2 to 10",
+      "state": "later",
+      "sub": "bosses and story"
+    },
+    {
+      "name": "Play Store",
+      "state": "later",
+      "sub": "the app ships"
+    }
   ],
   "team": [
-    {"role": "Critic", "task": "audits the lead's documents", "status": "working"},
-    {"role": "Critic", "task": "audits the packets and role cards", "status": "working"},
-    {"role": "Designer", "task": "reach numbers (R-165.60)", "status": "next out"},
-    {"role": "Story keeper", "task": "story direction, permanent", "status": "on call"}
+    {
+      "role": "Critic",
+      "task": "re-check of the lead's documents after the fixes",
+      "status": "next out"
+    },
+    {
+      "role": "Critic",
+      "task": "re-check of the packets and role cards",
+      "status": "next out"
+    },
+    {
+      "role": "Designer",
+      "task": "the real reach numbers, after both re-checks pass",
+      "status": "waiting"
+    },
+    {
+      "role": "Analyst",
+      "task": "this window's tester data, pulled now",
+      "status": "waiting"
+    },
+    {
+      "role": "Story keeper",
+      "task": "story direction, permanent",
+      "status": "on call"
+    }
   ],
   "columns": [
-    {"key": "matt", "name": "Needs Matt", "hint": "one question at a time, in this order", "cards": [
-      {"id": "R-165.69", "title": "Tester names in main's old history: rewrite the history, or clean the files only?"},
-      {"id": "R-165.55", "title": "Three story questions from the story keeper: the skulls, the two food lines, Meeca's parents"}
-    ]},
-    {"key": "todo", "name": "To do", "hint": "in the order it will be picked up", "cards": [
-      {"id": "R-165.60", "title": "Designer: the real jump, double-jump and bounce reach, flown in the engine", "waits": "the packets Critic's pass"},
-      {"id": "R-165.61", "title": "Architect: one honest safety report per stage, per difficulty setting", "waits": "the Designer's numbers passing"},
-      {"id": "R-165.59", "title": "Analyst reads this play window; then only the pre-0.9.5 recordings are deleted", "waits": "the play window closing"},
-      {"id": "R-165.72", "title": "Content re-lays 1-1: no lethal drops, a fixed first run, lessons that fit the real reach", "waits": "Designer and Architect", "includes": ["R-165.52", "R-165.53", "R-165.54"]},
-      {"id": "R-165.58", "title": "Engine: fix the play recorder so the next window's data is clean"},
-      {"id": "R-165.62", "title": "Engine: help that steps in after about 5 failed tries (by itself on Easy, offered on Normal)"},
-      {"id": "R-165.65", "title": "Frame budget down to 8 ms, with a gate that measures it"},
-      {"id": "R-165.68", "title": "Take tester first names out of the files on main"},
-      {"id": "R-165.57", "title": "New words for the two old coach lines on the pad"},
-      {"id": "R-165.63", "title": "Gate: parked tests can't pile up quietly"},
-      {"id": "R-165.64", "title": "Gate: the fun check's known list can only shrink"},
-      {"id": "R-165.70", "title": "Rule finder: every dated ruling on a topic, before a plan changes"},
-      {"id": "R-165.73", "title": "Guard: a commit can't silently miss the remote"}
-    ]},
-    {"key": "doing", "name": "Doing", "hint": "being built now; at most 3 at once", "limit": 3, "cards": [
-      {"id": "R-165.75", "title": "This board, kept current at every decision and release"}
-    ]},
-    {"key": "checking", "name": "Checking", "hint": "built; a Critic is trying to prove it wrong", "cards": [
-      {"id": "R-165.66", "title": "The team's role cards and first task packets"},
-      {"id": "R-165.71", "title": "Who the game is for, carried into every card: Normal for 12 and up, Easy for kids"},
-      {"id": "R-165.74", "title": "Every member is its own session on Fable 5.2"},
-      {"id": "R-165.67", "title": "The build plan's estimate redone from today's roadmap"}
-    ]},
-    {"key": "done", "name": "Done", "hint": "passed and merged, this sprint", "cards": [
-      {"id": "R-165.56", "title": "The team's documents merged to main (PR #67, #68)"}
-    ]}
+    {
+      "key": "matt",
+      "name": "Needs Matt",
+      "hint": "one question at a time, in this order",
+      "cards": [
+        {
+          "id": "R-165.69",
+          "title": "Tester names in main's old history: rewrite the history, or clean the files only?"
+        },
+        {
+          "id": "R-165.55",
+          "title": "Three story questions from the story keeper: the skulls, the two food lines, Meeca's parents"
+        }
+      ]
+    },
+    {
+      "key": "todo",
+      "name": "To do",
+      "hint": "in the order it will be picked up",
+      "cards": [
+        {
+          "id": "R-165.60",
+          "title": "Designer: the real jump, double-jump and bounce reach, flown in the engine",
+          "waits": "the packets Critic's pass"
+        },
+        {
+          "id": "R-165.61",
+          "title": "Architect: one honest safety report per stage, per difficulty setting",
+          "waits": "the Designer's numbers passing"
+        },
+        {
+          "id": "R-165.77",
+          "title": "Analyst pulls the tester data now; the fix plan, new platform pieces included, comes from it",
+          "waits": "the packets re-check passing"
+        },
+        {
+          "id": "R-165.72",
+          "title": "Content re-lays 1-1: no lethal drops, a fixed first run, lessons that fit the real reach",
+          "waits": "Designer and Architect",
+          "includes": [
+            "R-165.52",
+            "R-165.53",
+            "R-165.54"
+          ]
+        },
+        {
+          "id": "R-165.58",
+          "title": "Engine: fix the play recorder so the next window's data is clean"
+        },
+        {
+          "id": "R-165.62",
+          "title": "Engine: help that steps in after about 5 failed tries (by itself on Easy, offered on Normal)"
+        },
+        {
+          "id": "R-165.65",
+          "title": "Frame budget down to 8 ms, with a gate that measures it"
+        },
+        {
+          "id": "R-165.68",
+          "title": "Take tester first names out of the files on main"
+        },
+        {
+          "id": "R-165.59",
+          "title": "Delete only the pre-0.9.5 recordings, once the analyst's totals exist"
+        },
+        {
+          "id": "R-165.57",
+          "title": "New words for the two old coach lines on the pad"
+        },
+        {
+          "id": "R-165.63",
+          "title": "Gate: parked tests can't pile up quietly"
+        },
+        {
+          "id": "R-165.64",
+          "title": "Gate: the fun check's known list can only shrink"
+        },
+        {
+          "id": "R-165.70",
+          "title": "Rule finder: every dated ruling on a topic, before a plan changes"
+        },
+        {
+          "id": "R-165.73",
+          "title": "Guard: a commit can't silently miss the remote"
+        },
+        {
+          "id": "R-165.81",
+          "title": "Your idea: the mega punch earns its place (puzzle breaks and finds) or the hold goes to another move",
+          "waits": "the Designer, decided with power jumps"
+        },
+        {
+          "id": "R-165.82",
+          "title": "Your idea: power jumps on a fast air swipe, stronger on the double jump",
+          "waits": "proof the swipe isn't misread as a double jump"
+        },
+        {
+          "id": "R-165.83",
+          "title": "Your idea: a streak power-up for beating predators without getting hurt"
+        },
+        {
+          "id": "R-165.78",
+          "title": "Your idea: tall stages that go down and go up in the mountains, patience over speed"
+        },
+        {
+          "id": "R-165.79",
+          "title": "Your idea: stages built only around hanging",
+          "waits": "the hanging move itself (R-160.1)"
+        },
+        {
+          "id": "R-165.80",
+          "title": "Your idea: diving, and swim-and-dive special stages"
+        }
+      ]
+    },
+    {
+      "key": "doing",
+      "name": "Doing",
+      "hint": "being built now; at most 3 at once",
+      "limit": 3,
+      "cards": [
+        {
+          "id": "R-165.75",
+          "title": "This board, kept current at every decision and release"
+        }
+      ]
+    },
+    {
+      "key": "checking",
+      "name": "Checking",
+      "hint": "built; a Critic is trying to prove it wrong",
+      "cards": [
+        {
+          "id": "R-165.66",
+          "title": "The team's role cards and first task packets"
+        },
+        {
+          "id": "R-165.71",
+          "title": "Who the game is for, carried into every card: Normal for 12 and up, Easy for kids"
+        },
+        {
+          "id": "R-165.74",
+          "title": "Every member is its own session on Fable 5.2"
+        },
+        {
+          "id": "R-165.67",
+          "title": "The build plan's estimate redone from today's roadmap"
+        },
+        {
+          "id": "R-165.76",
+          "title": "Team members now run on Opus"
+        }
+      ]
+    },
+    {
+      "key": "done",
+      "name": "Done",
+      "hint": "passed and merged, this sprint",
+      "cards": [
+        {
+          "id": "R-165.56",
+          "title": "The team's documents merged to main (PR #67, #68)"
+        }
+      ]
+    }
   ]
 }
