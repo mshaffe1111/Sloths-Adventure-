@@ -24,11 +24,16 @@
 
 ## In flight (each member is its own session Matt can see in his Code list and retire; tag "sloths-team")
 - Matt's board: https://claude.ai/artifact/8UGhTNnJNZhbpDBV87avR2 (R-165.75; republish in place, reference/methods/board.md).
-- Nobody is working (11-09 8:25 PM ET). Matt, 8:24 PM ET: "Be lean for now": no member is created until he says how lean.
-- The two 11-09 Critics (session_01FhBbYNzmgt3tyXdLKeupZG lead documents; session_01FhBbYJiR4o74fu7RgAv6EF packets) both returned
-  REJECT at 8:20 PM ET; every item was answered in commit f4fee368. Both documents sets still need a cold re-audit (fresh Critics,
-  on Opus, R-165.76) before the Designer (R-165.60) and the analyst (R-165.77) go out.
-- No check-in is armed (nobody is working). Arm one at the next member's start.
+- Matt, 11-09 8:29 PM ET (R-165.84): "Pull in data from testers. Start fixing 1 -1 after test data is evaluated. Make plan and start
+  making change. Keep coder fable 5.2 medium not go over 50 before i get a new test." So: analyst, then the 1-1 fix plan, then the
+  changes; the member that writes game code is on Fable 5.2 at effort medium; everyone else on Opus (R-165.76); lean, one member at
+  a time. What "50" counts (percent of the week, dollars, or hours) is asked of Matt; until he answers, treat it as the tightest
+  reading and report each member's cost from get_session.
+- WORKING: session_01FhBbYKQPPcDe1fW9ZijADh, "Critic: delta re-audit, analyst and Designer packets (11-09 evening)", Opus, created
+  8:31 PM ET, read-only. It returns ANALYST / DESIGNER / REST verdicts on the fix pass (f4fee368, 431a5070, 867fde68).
+- Check-in armed: trig_012Pcfrpi7GZWBWm8nXareVP (9:02 PM ET).
+- Next, on "ANALYST: PASS": the analyst (Opus, R-165.77). The Designer (R-165.60) on "DESIGNER: PASS", after the analyst.
+- The two afternoon Fable Critics (session_01FhBbYNzmgt3tyXdLKeupZG, session_01FhBbYJiR4o74fu7RgAv6EF) are finished: both REJECT, answered.
 
 ## Open graph (started Monday 11-09: Matt, about 2 PM ET, "I have fable only usage. Lets create our team and start this week. Right
 ## now the team must be fable 5.2"; then "Do not keep under yourself. They should have their own bot": every member is its own session, R-165.74; on Opus since that evening, R-165.76), in order

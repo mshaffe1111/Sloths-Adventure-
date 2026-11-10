@@ -32,22 +32,17 @@
   "team": [
     {
       "role": "Critic",
-      "task": "re-check of the lead's documents after the fixes",
-      "status": "next out"
-    },
-    {
-      "role": "Critic",
-      "task": "re-check of the packets and role cards",
-      "status": "next out"
-    },
-    {
-      "role": "Designer",
-      "task": "the real reach numbers, after both re-checks pass",
-      "status": "waiting"
+      "task": "re-check of the fixes: analyst packet first, then the Designer's",
+      "status": "working"
     },
     {
       "role": "Analyst",
       "task": "this window's tester data, pulled now",
+      "status": "next out"
+    },
+    {
+      "role": "Designer",
+      "task": "the real reach numbers",
       "status": "waiting"
     },
     {
@@ -207,6 +202,10 @@
         {
           "id": "R-165.76",
           "title": "Team members now run on Opus"
+        },
+        {
+          "id": "R-165.84",
+          "title": "Your order: data first, then the 1-1 plan, then the changes; the coder on Fable 5.2 at medium"
         }
       ]
     },
