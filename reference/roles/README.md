@@ -14,8 +14,8 @@ onboarding.** A fresh agent that has read them, in the order the card gives, mus
 | Standing: the backup lead (the previous lead) | PM.md §8 "The backup lead" | reference/handoffs/lead.md | (questions only, until the next rotation) |
 | 2 Systems & Mechanics Designer | DESIGNER.md | reference/handoffs/designer.md | high |
 | 3 Lead Architect | ARCHITECT.md | reference/handoffs/architect.md (written by the first Architect) | high |
-| 4 Engine Engineer | ENGINE.md | reference/handoffs/engine-core.md, planner.md | high |
-| 5 Content & Asset Specialist | CONTENT.md | reference/handoffs/art-director.md, tester-page.md | high |
+| 4 Engine Engineer | ENGINE.md | reference/handoffs/engine-core.md, planner.md | medium, on Fable 5.2 (Matt 11-09, R-165.84) |
+| 5 Content & Asset Specialist | CONTENT.md | reference/handoffs/art-director.md, tester-page.md | high on Opus; medium on Fable 5.2 when the task writes game code under src/ (R-165.84; the lead asks Matt at Content's first such packet) |
 | 6 Adversarial Critic & QA | CRITIC.md | reference/handoffs/critic.md (the first Critic seeds it from release-clerk.md) | high; max for a release gate (the lead's call, Matt 11-07) |
 | Outside: the packer (builds the consultant's input package: facts only, no reasons) | CONSULTANT.md "What it gets" | none (follows written steps) | low |
 | Outside: independent consultant | CONSULTANT.md | its own past findings only (reference/consultant/) | max (Matt, 11-07) |
