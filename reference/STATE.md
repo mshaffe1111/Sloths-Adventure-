@@ -82,7 +82,10 @@
 - DONE: session_01FhBbYKQPPcDe1fW9ZijADh, the Opus delta Critic: ANALYST PASS, DESIGNER PASS at d4620b3b; its last two REST items
   (roster effort rows, R-165.76's file list) answered in 7f5d0480, which it said needs no re-audit if done as written. Cost $1.50.
 - WORKING (Matt's "A", 10:26 PM ET): session_01FhBbYMudbQivef7PSaeM4a, "Architect: the verdict schema and file lists (R-165.61)",
-  Opus, high, due 1:30 AM ET, about $6 of the last $20. Its Critic follows on its report (about $3). The sprint board is republished
+  Opus, high, due 1:30 AM ET, about $6 of the last $20. REPORTED 10:34 PM ET: t-r165-61-verdicts@a94ede53, 5 of 5, nothing cut;
+  16 named verdicts (verdicts.types.ts, ADR-001), first run (ADR-002), PACKETS.md (E0 verdicts, E1 recorder, E2 help, E3 WebGL0, E4
+  frame gate, C1 re-lay, C2 art; order on shared files stated), BUDGET.md. The lead ruled its question: gen2 1-1 lays no water; C1 lays
+  none. Its Critic (Opus, medium) is out. Its Critic follows on its report (about $3). The sprint board is republished
   at every member start, stop and verdict (Matt, 10:26 PM ET: "make sure to keep sprint board updated").
 - WORKING: session_01FhBbYMHMXc5mHeNEeVEhTR, "Designer: the real reach numbers, flown in the engine (R-165.60)", Fable 5.2 (Matt,
   tonight), created 11-09 8:43 PM ET, due 12:45 AM ET, branch t-designer-reach. Sent alongside the analyst because Matt asked for

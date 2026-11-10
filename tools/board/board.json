@@ -32,7 +32,12 @@
   "team": [
     {
       "role": "Architect",
-      "task": "the stage safety report and file lists (Opus, high)",
+      "task": "safety report and file lists done; a Critic is checking",
+      "status": "reported"
+    },
+    {
+      "role": "Critic",
+      "task": "checking the Architect's work (Opus, medium)",
       "status": "working"
     },
     {
@@ -180,18 +185,17 @@
       "name": "Doing",
       "hint": "being built now; at most 3 at once",
       "limit": 3,
-      "cards": [
-        {
-          "id": "R-165.61",
-          "title": "Architect: one honest safety report per stage, and the file lists for the next builders"
-        }
-      ]
+      "cards": []
     },
     {
       "key": "checking",
       "name": "Checking",
       "hint": "built; a Critic is checking it, or it passed and waits for the release",
       "cards": [
+        {
+          "id": "R-165.61",
+          "title": "Architect: one honest safety report per stage, and the file lists for the next builders"
+        },
         {
           "id": "R-165.86",
           "title": "Fix A1, no fall in 1-1 costs a life: PASSED (3,812 flights, 0 lives lost), waits for the release"
