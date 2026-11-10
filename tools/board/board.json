@@ -1,7 +1,7 @@
 {
   "note": "The lead's Kanban board (Matt picked it 11-09, R-165.75). Plain titles are the lead's; owner, hours and state are read from reference/ROADMAP.md by build.py. A card sits in one column; move it by moving its line.",
   "goal": "All 10 worlds and their bosses passed by Matt on the phone, the story start to finish, then the Play Store app.",
-  "sprint": "This sprint: make stage 1-1 fair and teachable from the real jump numbers, with the new team.",
+  "sprint": "This sprint: make stage 1-1 fair and teachable from the real jump numbers, with the new team. Money: about $20 left tonight; the rest runs after the Wednesday 2:00 AM ET reset.",
   "path": [
     {
       "name": "Team built",
@@ -31,38 +31,28 @@
   ],
   "team": [
     {
-      "role": "Designer",
-      "task": "jump numbers flown: report in, a Critic is re-flying them",
-      "status": "reported"
-    },
-    {
-      "role": "Critic",
-      "task": "re-flying the Designer's numbers with its own script",
+      "role": "Architect",
+      "task": "the stage safety report and file lists (Opus, high)",
       "status": "working"
-    },
-    {
-      "role": "Critic",
-      "task": "checking the first Engine packet before it goes out",
-      "status": "working"
-    },
-    {
-      "role": "Analyst",
-      "task": "report fixed; its Critic has the last check",
-      "status": "reported"
     },
     {
       "role": "Engine",
-      "task": "fix A1 on Fable 5.2 at medium, once its packet passes",
-      "status": "next out"
+      "task": "fix A1 built and passed; A2 waits for Wednesday",
+      "status": "reported"
     },
     {
-      "role": "Architect",
-      "task": "the stage safety report, after the Designer passes",
-      "status": "waiting"
+      "role": "Designer",
+      "task": "real jump numbers, passed",
+      "status": "reported"
+    },
+    {
+      "role": "Analyst",
+      "task": "tester data report, passed",
+      "status": "reported"
     },
     {
       "role": "Story keeper",
-      "task": "story direction, permanent",
+      "task": "Dot's words for the help, Wednesday",
       "status": "on call"
     }
   ],
@@ -88,24 +78,14 @@
       "hint": "in the order it will be picked up",
       "cards": [
         {
-          "id": "R-165.86",
-          "title": "Fix A1: no fall in 1-1 costs a life; he's set back on the ledge he left",
-          "waits": "a Critic passing its packet"
-        },
-        {
           "id": "R-165.62",
           "title": "Fix A2: help after repeated put-backs (by itself on Easy, offered on Normal)",
-          "waits": "the Designer's numbers"
+          "waits": "Wednesday 2:00 AM ET reset, and Dot's words from the story keeper"
         },
         {
           "id": "R-165.87",
           "title": "Fix A3: a tap meant as a jump is a jump (all 9 testers' taps were misread)",
           "waits": "the Designer's touch rule"
-        },
-        {
-          "id": "R-165.61",
-          "title": "Architect: one honest safety report per stage, per difficulty setting",
-          "waits": "the Designer's numbers passing"
         },
         {
           "id": "R-165.85",
@@ -115,7 +95,7 @@
         {
           "id": "R-165.72",
           "title": "Content re-lays 1-1: no lethal drops, a fixed first run, lessons that fit the real reach",
-          "waits": "Designer and Architect",
+          "waits": "the Architect, then Wednesday",
           "includes": [
             "R-165.52",
             "R-165.53",
@@ -200,20 +180,29 @@
       "name": "Doing",
       "hint": "being built now; at most 3 at once",
       "limit": 3,
-      "cards": []
+      "cards": [
+        {
+          "id": "R-165.61",
+          "title": "Architect: one honest safety report per stage, and the file lists for the next builders"
+        }
+      ]
     },
     {
       "key": "checking",
       "name": "Checking",
-      "hint": "built; a Critic is trying to prove it wrong",
+      "hint": "built; a Critic is checking it, or it passed and waits for the release",
       "cards": [
         {
-          "id": "R-165.60",
-          "title": "Designer: the real jump, double-jump and bounce reach, flown in the engine"
+          "id": "R-165.86",
+          "title": "Fix A1, no fall in 1-1 costs a life: PASSED (3,812 flights, 0 lives lost), waits for the release"
         },
         {
           "id": "R-165.77",
-          "title": "Analyst pulls the tester data now; the fix plan, new platform pieces included, comes from it"
+          "title": "Tester data read and the 1-1 fix plan: PASSED, waits for the release"
+        },
+        {
+          "id": "R-165.60",
+          "title": "Designer's real jump numbers: PASSED, waits for the release"
         },
         {
           "id": "R-165.66",
@@ -248,7 +237,7 @@
     {
       "key": "done",
       "name": "Done",
-      "hint": "passed and merged, this sprint",
+      "hint": "merged to main this sprint",
       "cards": [
         {
           "id": "R-165.56",
