@@ -27,8 +27,12 @@
 - Matt, 11-09 8:29 PM ET (R-165.84): "Pull in data from testers. Start fixing 1 -1 after test data is evaluated. Make plan and start
   making change. Keep coder fable 5.2 medium not go over 50 before i get a new test." So: analyst, then the 1-1 fix plan, then the
   changes; the member that writes game code is on Fable 5.2 at effort medium; everyone else on Opus (R-165.76); lean, one member at
-  a time. What "50" counts (percent of the week, dollars, or hours) is asked of Matt; until he answers, treat it as the tightest
-  reading and report each member's cost from get_session.
+  a time. Matt, 8:36 PM ET: "B. Have 80.00 available. Keep game engine on fable 5.2": the cap is $50 of
+  extra usage, out of $80 he has, before he gets a new test link; the Engine member stays on Fable 5.2.
+- THE SPEND LEDGER (get_session usage.cost_usd, an estimate, not the bill; the lead's own turns spend from the same money). Baseline
+  11-09 8:36 PM ET: the lead's session reads $36.68 lifetime (count only what it adds from here); the two afternoon Critics $4.55 +
+  $3.95 = $8.50 (counted). Spent against the $50: $8.50. Add each member's cost when it stops, and the lead's rise at each check-in.
+  At $35 tell Matt; at $45 stop creating members and get the test link out.
 - WORKING: session_01FhBbYKQPPcDe1fW9ZijADh, "Critic: delta re-audit, analyst and Designer packets (11-09 evening)", Opus, created
   8:31 PM ET, read-only. It returns ANALYST / DESIGNER / REST verdicts on the fix pass (f4fee368, 431a5070, 867fde68).
 - Check-in armed: trig_012Pcfrpi7GZWBWm8nXareVP (9:02 PM ET).
