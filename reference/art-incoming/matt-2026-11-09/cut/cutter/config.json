@@ -1,0 +1,33 @@
+{
+ "M-05": {
+  "glyphchroma": 75,
+  "labelchroma": 65
+ },
+ "M-06": {
+  "speckkill": true
+ },
+ "M-11": {
+  "keyall": true,
+  "pocketc": 0.095,
+  "speckkill": true
+ },
+ "M-12": {
+  "keyall": true,
+  "pocketc": 0.095,
+  "speckkill": true,
+  "mergedist": 140
+ },
+ "M-09": {
+  "labelbox": [
+   [
+    380,
+    1878,
+    1000,
+    1970
+   ]
+  ],
+  "keyall": true,
+  "pocketc": 0.095,
+  "speckkill": true
+ }
+}
