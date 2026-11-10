@@ -23,7 +23,7 @@ A touch flick cannot be shortened: its 220 ms outlasts the cut (after 220 ms he 
 | Double rise 128-132 px (Easy's band) | 53% | 100% | 100% |
 | Double rise 136-140 px (Normal's band) | 45-37% | 100% | 100% |
 | Old double gap 195 / 205 px | 74% / 63% | 99% / 97% | 100% / 99% |
-| Double gap test 250 / 262 px (Normal) | 18% / 9% | 72% / 61% | 81% / 71% |
+| Double gap test (band 252-262; flown at 250 / 262 px, Normal) | 18% / 9% | 72% / 61% | 81% / 71% |
 | Single gap from 70 px before the lip | crosses 77 px | 128 px (N), 132 (E) | 137 (N), 141 (E) |
 
 Shares: rises over 11 take-off spots x 15 second-press moments; gaps over 336 tries (take-off from 70 px before the lip to the last

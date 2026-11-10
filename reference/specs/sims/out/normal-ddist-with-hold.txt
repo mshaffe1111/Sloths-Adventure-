@@ -1,0 +1,27 @@
+
+[ddist] normal: widest gap crossed (px, lip to lip), full run, far top 0 px up; by where the jump registered
+                              block     thin    (coyote: most airborne frames that still jumped)
+  double hold   (coyote frames 7)
+           >=70 before lip    292.0    293.0
+           >=35 before lip    329.0    330.0
+      centre at/before lip    363.0    365.0
+         last ground frame    379.0    381.0
+                coyote 1-2    397.0    399.0
+                 coyote 3+    409.0    407.0
+            ANY (physical)    409.0    407.0
+  double flick   (coyote frames 7)
+           >=70 before lip    283.0    284.0
+           >=35 before lip    320.0    321.0
+      centre at/before lip    354.0    355.0
+         last ground frame    370.0    371.0
+                coyote 1-2    379.0    381.0
+                 coyote 3+    396.0    389.0
+            ANY (physical)    396.0    389.0
+  double tap   (coyote frames 7)
+           >=70 before lip    191.0    192.0
+           >=35 before lip    228.0    228.0
+      centre at/before lip    262.0    263.0
+         last ground frame    278.0    279.0
+                coyote 1-2    292.0    297.0
+                 coyote 3+    299.0    297.0
+            ANY (physical)    299.0    297.0

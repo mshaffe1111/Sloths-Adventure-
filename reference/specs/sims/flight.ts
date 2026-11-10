@@ -444,7 +444,7 @@ if (want('apex')) apexRun(rig);
 if (want('rise')) riseRun(rig);
 if (want('rshare')) rshareRun(rig);
 if (want('dist')) distRun(rig, false, ['hold', 'flick', 'tap']);
-if (want('ddist')) distRun(rig, true, ['flick', 'tap']);
+if (want('ddist')) distRun(rig, true, ['hold', 'flick', 'tap']);
 if (want('bdist')) bounceDist(rig);
 if (want('touch')) touchRun(rig);
 if (want('harness')) harnessRun();

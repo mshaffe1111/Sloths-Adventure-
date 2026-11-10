@@ -46,7 +46,7 @@ Every ruling below cites the file and section where it's written in full.
 2. **The double, in PIXELS (changed 11-09 on the flown reach, reference/specs/bands.md §2-§3; the PM's word in packet R-165.60):**
    - **The double TEACH is a RISE on both settings:** Easy 128-132 px, Normal 136-140 px onto a block face (thin lip: 122-128 / 128-134).
      One jump climbs 123 px (block) and never more; a double flick climbs it on 100% of tries.
-   - **A double GAP is a Normal TEST only: 250-262 px** (far bank ≥ 3.5 body widths, as before). No gap teach. **Easy: no double gaps.**
+   - **A double GAP is a Normal TEST only: 252-262 px** (the widest flown single is 246; blocks keep 5 px over it) (far bank ≥ 3.5 body widths, as before). No gap teach. **Easy: no double gaps.**
    - The physics, flown in the real engine (reach.md): a single's apex is 97.8 px, not 107.8; one jump crosses 244 px at best
      (246 on Easy), 213-223 from the last ground frame. The old "175 px (reachJump) plus 21 px", TEACH 195-205, TEST 205-228 and
      Easy twins 110-114 are all WRONG: one jump clears every one of them. Never set a gap by share, and never from reachJump.
@@ -71,10 +71,10 @@ Every ruling below cites the file and section where it's written in full.
    - the goal is exempt.
    - The `h` rock stays **34-46 px** (solid with the route walls; measured better). ≥ 50 px is for walls only.
 9. **V18 (climb):** judged from the FIRST climb step to the SUMMIT; the approach and the run-out are outside. A hop between climb steps is the level gap jump `a`. Mounds (knot-bank, mound-log) are `ground`, not climb.
-10. **What may float (Matt, 11-07, R-165.54; STAGE-RULES.md "What may float" is the rule, this line only points to it):** boughs
-    and branches are ATTACHED to something (a trunk, a bank), never loose in the air. Earth islands and ledges, logs and planks may
-    float. Rocks, stump-steps and decor never float. (The 11-06 wording here, "boughs may float with no support" and "earth waits on
-    Matt", was wrong on both counts and is gone.)
+10. **What may float (Matt, 11-07, R-165.54; STAGE-RULES.md "What may float" is the rule, copied here):** may float: floating earth
+    islands, earth ledges, walkable logs and planks that read as platforms. Attached (to a trunk, post, root or rope): boughs,
+    branches, vines, ropes. Grounded, never floating: rocks, stump-steps, bushes, ferns, decoration, hide spots, caves. (The 11-06
+    wording here, "boughs may float with no support" and "earth waits on Matt", was wrong on both counts and is gone.)
 11. **Branch share:** among thin landings, ≤ 30% on EVERY roll and no thin look over 38%, plus ground > branch on the whole stage. The levers: rungs alternate bough and log, catches and the perch become logs, and joins take the next section's entry kind (the planner).
 12. **Hearts follow risk (V21).** 1-1 has 0.
 13. **The reward (H) is structural** (outside the deal). The seed perch's failure on seed 102948 was the engine's corridor check, not the deal (my first diagnosis was wrong; NODES §7.1 is corrected).

@@ -2,7 +2,7 @@
 
 **Source of every number here:** `reference/specs/sims/flight.ts`, which flies the real engine (`src/game/engine.ts` through
 `realPlay.ts`, one `update(1/30)` per frame) on stage 1-1, seed 1, in a bare world, with the game's own `InputEngine` on the controls.
-Saved runs: `reference/specs/sims/out/normal.txt`, `easy.txt`, `normal-25fps-apex.txt`.
+Saved runs: `reference/specs/sims/out/normal.txt`, `easy.txt`, `normal-25fps-apex.txt`, and the double with Jump held in `normal-ddist-with-hold.txt`, `easy-ddist-with-hold.txt`.
 
 **One command per setting (about 2 minutes):** `npx tsx reference/specs/sims/flight.ts normal all` (or `easy`). One table:
 replace `all` with `consts`, `apex`, `rise`, `rshare`, `dist`, `ddist`, `bdist`, `touch` or `harness`.
@@ -24,10 +24,10 @@ apart, second press every 1-2 frames). Shares are of the tries listed in each ta
 
 | Move | Apex of his feet over the floor | Highest top he climbs: block / thin | Widest level gap, lip to lip (block far side): from 70 px before the lip / from the last ground frame / any timing |
 |---|---|---|---|
-| Single, hold | 97.8 | 123 / 117 | N 137 / 223 / 244 · E 141 / 227 / 246 |
+| Single, hold | 97.8 | 123 / 117 | N 137 / 223 / 244 · E 141 / 227 / 246 (the Critic's finer flight found 246 on Normal too: design to 246) |
 | Single, flick | 97.2 | 123 / 117 | N 128 / 213 / 239 · E 132 / 217 / 243 |
 | Single, Pad tap | 61.7 | 87 / 81 | N 77 / 163 / 184 |
-| Double, hold | 189.0 (second press 2 frames after the first; 180.8 at worst, 2-12 frames) | 214 / 208 | not flown (flick is the worse case) |
+| Double, hold | 189.0 (second press 2 frames after the first; 180.8 at worst, 2-12 frames) | 214 / 208 | N 292 / 379 / 409 · E 296 / 383 / 411 (the Critic's finer flight: 408 / 412) |
 | Double, flick | 187.0 (172.7 at worst) | 212 / 206 | N 283 / 370 / 396 · E 287 / 374 / 400 |
 | Double, Pad tap,tap | 124.4 (73.5 at worst) | 150 / 144 | N 191 / 278 / 299 · E 195 / 282 / 299 |
 | Bounce (floor mushroom, cap 30 px up) | 197.6 over the floor = 167.6 over the cap (198.1 with Jump held) | 223 / 217 over the floor | N 179 · E 183 (mushroom at the lip; 20 px less per 20 px it stands back) |
@@ -57,7 +57,7 @@ bounce + air jump 285.6.
 | `DOUBLE_RISE` (physics.ts) | 184.5 | apex 189.0 hold, 187.0 flick; climbs 214 / 212 | On 1-1 and Easy: 4.5 too low as an apex (the +12% second jump), 28-30 too low as a climb. Stage 25 Normal: not flown |
 | `BOUNCE_REACH` (pipeline.ts), over the cap | 258.0 | 259.1 with the air jump; the bounce's own part 167.6 against 181.3 | **Bounce alone 13.7 too high**; the sum is right within 1.1 only because the +12% second jump pays it back (1-1 and Easy) |
 | `reachJump(0, single)` | 174.7 | widest gap 244 (N), 246 (E); 223 from the last ground frame; 208 with his centre at the lip | **Short by 33 to 69 px**, by reading |
-| `reachJump(0, double)` | 313.2 | 396 (N), 400 (E); 370 from the last ground frame | **Short by 57 to 83 px** |
+| `reachJump(0, double)` | 313.2 | hold 409 (N), 411 (E); flick 396 / 400; flick from the last ground frame 370 | **Short by 57 to 98 px** (57 to 95 on the Critic's 408) |
 | `maxGap(0, single)` Normal / Easy | 143.3 / 113.6 | a flick from 70 px before the lip crosses 128 / 132 | Easy **confirmed** (18 px spare). Normal: needs the take-off within 55 px of the lip, not 70: **15 px over its own slack claim** |
 | `maxGap(0, double)` Normal / Easy | 229.8 / 203.6 | a double flick from 70 px before the lip crosses 283 / 287 | Safe, but **below the single's 244**: every double gap it can lay is a gap one jump crosses |
 | `riseLimit` single, laid x0.9: Normal / Easy | 79.5 / 63.0 | single climbs 123 block, 117 thin; a Pad tap 87 | **Confirmed** as a safe single rise |
@@ -66,7 +66,7 @@ bounce + air jump 285.6.
 | `TAKEOFF_SLACK` | 70 | see `maxGap` single | Holds on Easy, 15 px short on Normal |
 
 The 11-07 outside review said: single about +10 px, bounce about +14 px too high, distance 20-50 px short. Flown: **+10.0, +13.7, and
-33-69 px short** (57-83 for the double). The review stands; the distance gap is wider than it said.
+33-69 px short** (57-98 for the double). The review stands; the distance gap is wider than it said.
 
 ## 5. The harness, proved first (packet: "prove the harness before you trust it")
 `flight.ts harness` flies realPlay's `FakeInput` beside the game's `InputEngine`:

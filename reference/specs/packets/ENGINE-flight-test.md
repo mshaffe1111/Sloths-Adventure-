@@ -16,24 +16,27 @@ double rise is laid at 113.9 px and one jump climbs 123. A child tester sat 37 m
   (double gaps ±3):
   - apex: single hold 97.8, flick 97.2, Pad tap 61.7; double hold 189.0, flick 187.0; bounce 167.6 over the cap; bounce + air jump 259.1 over the cap.
   - highest top climbed, block / thin: single 123 / 117; double flick 212 / 206; bounce 223 / 217 over the floor; bounce + air jump 317 / 309.
-  - widest level gap, any timing: single hold 244 Normal, 246 Easy; double flick 396 Normal, 400 Easy.
-  - from 70 px before the lip: single flick 128 Normal, 132 Easy; double flick 283 Normal, 287 Easy.
+  - widest level gap, any timing: single hold 244-246 (the widest flown single is 246, both settings); double hold 409 Normal, 411 Easy; double flick 396 Normal, 400 Easy.
+  - from 70 px before the lip: single flick 128 Normal, 132 Easy; double flick 283 Normal, 287 Easy; double hold 292 Normal, 296 Easy.
 - The method to copy: reference/specs/sims/flight.ts (the Rig class, `fly`, `most`). Set the setting with `setDifficulty` before
   `new RealPlay`; put a real `InputEngine` on `r.e.input` (as touchRig.ts does); a flick is `triggerTouchUp(0, 220)` then
   `releaseTouchUp()`; a Pad tap is `triggerTouchUp(0, PAD_HOP_MS)`, released 2 frames later.
 - The bands the ruler must be able to lay (reference/specs/bands.md §2, §5): Easy double rise 128-132 px; Normal double gap test
-  250-262 px; bounce lip 232-246 px over the floor. Single-jump limits (`maxGap` single, `riseLimit` single) stay as they are.
+  252-262 px; bounce lip 232-246 px over the floor. Single-jump limits (`maxGap` single, `riseLimit` single) stay as they are.
 ## Files
-- READ: reference/specs/reach.md, bands.md, sims/flight.ts, sims/out/*.txt; src/game/realPlay.ts, touchRig.ts, inputEngine.ts.
+- READ: reference/specs/reach.md, bands.md, sims/flight.ts, sims/out/*.txt (until that branch merges they exist only on
+  t-designer-reach: read with `git show origin/t-designer-reach:<path>` after `git fetch origin t-designer-reach`);
+  src/game/realPlay.ts, touchRig.ts, inputEngine.ts.
 - WRITE: src/game/reachFlight.test.ts (new); src/game/physics.ts (the reach constants and their comments only);
   src/game/gen2/pipeline.ts (`BOUNCE_REACH`, `maxGap`, `riseLimit` and its two clamps at 832 and 840);
   src/game/realPlay.ts (FakeInput's comment, and an optional `setting` argument); reference/handoffs/engine-core.md, planner.md.
   w1.ts is NOT yours here: Content enters the bands after this lands (roles/README.md "Shared files": Designer spec, Content data, Engine code).
 ## Definition of done (the Critic checks each)
 1. `src/game/reachFlight.test.ts` flies every number in "Frozen inputs" on Normal and on Easy and fails when any is off by more than
-   its tolerance. Planted failure: with `PHYS.jumpV` set to 600 in a scratch copy the test goes red (say which asserts).
+   its tolerance. Time budget: the whole test file runs in 90 s or less on both settings together (the Designer's full sim takes
+   about 2 minutes a setting: fly only the listed numbers, at the take-off spots that give them, not the whole grid). Planted failure: with `PHYS.jumpV` set to 600 in a scratch copy the test goes red (say which asserts).
 2. The ruler agrees with the flight, in the test: for Normal and Easy, the lowest double rise the builder lays is over the flown single climb
-   (123 block) by 5 px or more, and the narrowest double gap it lays is over the flown single reach (244 / 246) by 5 px or more.
+   (123 block) by 5 px or more, and the narrowest double gap it lays is over the widest flown single (246) by 5 or more.
    Today both fail (Easy rise 113.9; `maxGap` double 229.8): show them red first, then green.
 3. `JUMP_RISE`, `DOUBLE_RISE` and `BOUNCE_REACH` either become the flown figures or carry a comment giving the flown figure and the
    test that holds it; no caller's result moves by more than the bands need (list every caller and its before / after value).
