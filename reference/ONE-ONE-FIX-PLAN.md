@@ -54,6 +54,13 @@ Approved with two changes to the Designer's proposal (t-designer-reach help.md ย
 - Counted per piece; reset by standing on the piece beyond or the stage ending; a grown step stays for the run (as proposed).
 - Every number is a proposal until flown and until a play window judges it. The test: on Easy no player spends more than 2 minutes
   in one piece; on Normal the offer is taken or refused, never missed.
+- AMENDED 11-09 9:22 PM ET on Matt's point ("somebody may not have 12 tries because they'll run out before that. They only have X
+  amount of lives"): he is right for every stage where a fall costs a life. In 1-1 after A1 no fall costs a life, so the counts
+  above are reachable there. Everywhere else the count must be of FAILURES at the piece (a put-back or a life lost), it must
+  carry through a lost life and through a game over and retry of the same stage (it resets only when he gets past the piece or
+  leaves the stage for the map), and a game over at a piece jumps Normal straight to the offer. The game already offers extra
+  lives after repeated game overs (src/game/assist.ts shouldOfferHelp): the Designer makes the two one system, so a player is
+  never offered two different helps at once. This is the Designer's next packet (help.md ยง5), before the help is used past 1-1.
 - Dot's words go to the story keeper before they are built; the yes and no must work for a player who can't read (pictures).
 
 ## Matt's call, 11-09 9:10 PM ET
