@@ -1,4 +1,4 @@
-# Turnover note: the lead (PM). Rewritten, never appended. CURRENT LEAD: session_01FhBbYMoqqEdVR3qFjTCugy (route blockers here). Last rewrite: 2026-11-09 8:36 PM ET
+# Turnover note: the lead (PM). Rewritten, never appended. CURRENT LEAD: session_01FhBbYMoqqEdVR3qFjTCugy (route blockers here). Last rewrite: 2026-11-09 10:41 PM ET
 
 Matt, 11-07: "Also make sure you keep updated turnover notes. We all need this." This note is for a replacement lead, or for me after
 a memory compression. If it's older than the last decision in STATE.md, rewrite it before anything else.
@@ -14,6 +14,10 @@ a memory compression. If it's older than the last decision in STATE.md, rewrite 
   then said "Keep others now on opus" (R-165.76), sent seven ideas (R-165.78 to .83, with R-165.77 "pull the test data now"), picked
   the Kanban board (R-165.75, https://claude.ai/artifact/8UGhTNnJNZhbpDBV87avR2, reference/methods/board.md) and said "Be lean for
   now". At 8:29 PM ET he gave the order (R-165.84): pull the tester data, evaluate, plan, then fix 1-1; the coder on Fable 5.2 at medium, not over "50" before a new test (unit asked). One Opus Critic (session_01FhBbYKQPPcDe1fW9ZijADh) is re-auditing the fix pass; STATE.md "In flight" has the rest. It returned REJECT at 8:36 PM ET (10 small items); they are answered and the three that change what a member does (the float ruling in the Designer packet, the one dispatch order, the Fable-for-the-coder exception) go back to the same Critic as a delta. Then the analyst, then the Designer. The cap is $70 at most, promote included (STATE.md spend ledger). The old Wednesday trigger trig_018T4m55rQ1cTxAbGtXyKwLX is still to delete once the Designer is out.
+- **Night of 11-09, at 10:41 PM ET:** passed and waiting for the release: the analyst (469db5d1), the Designer (030a4093), fix A1
+  (41c2e248), the Architect (c4687177). Next, at the Wednesday 2:05 AM ET reminder: Dot's words (story keeper), the A2 packet and its
+  Critic, the A2 build, then Matt's test link with A1 and A2; the Designer's help.md §5; the analyst's delta; C1 and C2 per PACKETS.md.
+  Every member on Opus, high or medium; max only with Matt's yes (R-165.91).
 - A 30-minute quality check-in (`send_later`) is armed at the first dispatch and re-armed until the last member stops.
 - My memory was compressed for the first time on 11-09: a rotation trigger. Told to Matt 11-09 about 2:15 PM ET in the lead's reply; he has not answered it.
 

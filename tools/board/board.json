@@ -32,27 +32,22 @@
   "team": [
     {
       "role": "Architect",
-      "task": "safety report and file lists done; a Critic is checking",
+      "task": "safety report and file lists: passed",
       "status": "reported"
     },
     {
-      "role": "Critic",
-      "task": "checking the Architect's work (Opus, medium)",
-      "status": "working"
-    },
-    {
       "role": "Engine",
-      "task": "fix A1 built and passed; A2 waits for Wednesday",
+      "task": "fix A1 passed; A2 on Wednesday",
       "status": "reported"
     },
     {
       "role": "Designer",
-      "task": "real jump numbers, passed",
+      "task": "real jump numbers: passed; help §5 on Wednesday",
       "status": "reported"
     },
     {
       "role": "Analyst",
-      "task": "tester data report, passed",
+      "task": "tester data: passed; the closing delta on Wednesday",
       "status": "reported"
     },
     {
@@ -194,7 +189,7 @@
       "cards": [
         {
           "id": "R-165.61",
-          "title": "Architect: one honest safety report per stage, and the file lists for the next builders"
+          "title": "Architect: the stage safety report and the builders' file lists: PASSED, waits for the release"
         },
         {
           "id": "R-165.86",
