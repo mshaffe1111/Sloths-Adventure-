@@ -35,10 +35,15 @@
   Matt, 8:40 PM ET: "Can go to 70 max including promote": the cap is now $70 at most, and that includes promoting the build (the
   gates, the test link and the release work). Plan to the $50; the extra $20 is headroom for the promote, not for more scope.
   At $45 tell Matt; at $55 stop creating builders and start the promote.
-- WORKING: session_01FhBbYKQPPcDe1fW9ZijADh, "Critic: delta re-audit, analyst and Designer packets (11-09 evening)", Opus, created
-  8:31 PM ET, read-only. It returns ANALYST / DESIGNER / REST verdicts on the fix pass (f4fee368, 431a5070, 867fde68).
+- WORKING: session_01FhBbYMtU8vX2MemCij28Av, "Analyst: tester data for the 11-10 window, pulled now (R-165.77)", Opus, created
+  11-09 8:38 PM ET, due 11:40 PM ET, branch t-w11-analyst. Its result goes to a fresh Critic with AUDIT-ANALYST.md.
+- DONE: session_01FhBbYKQPPcDe1fW9ZijADh, the Opus delta Critic: ANALYST PASS, DESIGNER PASS at d4620b3b; its last two REST items
+  (roster effort rows, R-165.76's file list) answered in 7f5d0480, which it said needs no re-audit if done as written. Cost $1.50.
 - Check-in armed: trig_012Pcfrpi7GZWBWm8nXareVP (9:02 PM ET).
-- Next, on "ANALYST: PASS": the analyst (Opus, R-165.77). The Designer (R-165.60) on "DESIGNER: PASS", after the analyst.
+- Next: the Designer (R-165.60, Opus, its packet PASSED) once the analyst has reported (lean: one member at a time). Then the 1-1
+  fix plan from the analyst's top 10; the Engine member on Fable 5.2 at medium. Ask Matt, at Content's first packet that writes
+  under src/, whether "coder" covers Content.
+- Spent against the $70: $8.50 + $1.50 = $10.00, plus the lead's own turns since 8:36 PM ET (read at the next check-in).
 - The two afternoon Fable Critics (session_01FhBbYNzmgt3tyXdLKeupZG, session_01FhBbYJiR4o74fu7RgAv6EF) are finished: both REJECT, answered.
 
 ## Open graph (started Monday 11-09: Matt, about 2 PM ET, "I have fable only usage. Lets create our team and start this week. Right

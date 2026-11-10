@@ -31,18 +31,18 @@
   ],
   "team": [
     {
-      "role": "Critic",
-      "task": "re-check of the fixes: analyst packet first, then the Designer's",
+      "role": "Analyst",
+      "task": "pulling and reading the tester data",
       "status": "working"
     },
     {
-      "role": "Analyst",
-      "task": "this window's tester data, pulled now",
+      "role": "Designer",
+      "task": "the real reach numbers (packet passed)",
       "status": "next out"
     },
     {
-      "role": "Designer",
-      "task": "the real reach numbers",
+      "role": "Engine",
+      "task": "the 1-1 changes, on Fable 5.2 at medium",
       "status": "waiting"
     },
     {
@@ -75,17 +75,12 @@
         {
           "id": "R-165.60",
           "title": "Designer: the real jump, double-jump and bounce reach, flown in the engine",
-          "waits": "the packets Critic's pass"
+          "waits": "the analyst reporting (one member at a time)"
         },
         {
           "id": "R-165.61",
           "title": "Architect: one honest safety report per stage, per difficulty setting",
           "waits": "the Designer's numbers passing"
-        },
-        {
-          "id": "R-165.77",
-          "title": "Analyst pulls the tester data now; the fix plan, new platform pieces included, comes from it",
-          "waits": "the packets re-check passing"
         },
         {
           "id": "R-165.72",
@@ -175,6 +170,10 @@
         {
           "id": "R-165.75",
           "title": "This board, kept current at every decision and release"
+        },
+        {
+          "id": "R-165.77",
+          "title": "Analyst pulls the tester data now; the fix plan, new platform pieces included, comes from it"
         }
       ]
     },
