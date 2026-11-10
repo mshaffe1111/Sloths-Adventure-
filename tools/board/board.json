@@ -37,7 +37,12 @@
     },
     {
       "role": "Designer",
-      "task": "the real reach numbers (packet passed)",
+      "task": "flying the real jump, double and bounce in the engine",
+      "status": "working"
+    },
+    {
+      "role": "Architect",
+      "task": "the stage safety report, after the Designer passes",
       "status": "next out"
     },
     {
@@ -72,11 +77,6 @@
       "name": "To do",
       "hint": "in the order it will be picked up",
       "cards": [
-        {
-          "id": "R-165.60",
-          "title": "Designer: the real jump, double-jump and bounce reach, flown in the engine",
-          "waits": "the analyst reporting (one member at a time)"
-        },
         {
           "id": "R-165.61",
           "title": "Architect: one honest safety report per stage, per difficulty setting",
@@ -168,12 +168,12 @@
       "limit": 3,
       "cards": [
         {
-          "id": "R-165.75",
-          "title": "This board, kept current at every decision and release"
-        },
-        {
           "id": "R-165.77",
           "title": "Analyst pulls the tester data now; the fix plan, new platform pieces included, comes from it"
+        },
+        {
+          "id": "R-165.60",
+          "title": "Designer: the real jump, double-jump and bounce reach, flown in the engine"
         }
       ]
     },
@@ -205,6 +205,10 @@
         {
           "id": "R-165.84",
           "title": "Your order: data first, then the 1-1 plan, then the changes; the coder on Fable 5.2 at medium"
+        },
+        {
+          "id": "R-165.75",
+          "title": "This board, kept current at every decision and release"
         }
       ]
     },

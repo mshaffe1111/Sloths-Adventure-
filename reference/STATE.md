@@ -40,7 +40,10 @@
 - DONE: session_01FhBbYKQPPcDe1fW9ZijADh, the Opus delta Critic: ANALYST PASS, DESIGNER PASS at d4620b3b; its last two REST items
   (roster effort rows, R-165.76's file list) answered in 7f5d0480, which it said needs no re-audit if done as written. Cost $1.50.
 - Check-in armed: trig_012Pcfrpi7GZWBWm8nXareVP (9:02 PM ET).
-- Next: the Designer (R-165.60, Fable 5.2 tonight per Matt, its packet PASSED) once the analyst has reported (lean: one member at a time). Then the 1-1
+- WORKING: session_01FhBbYMHMXc5mHeNEeVEhTR, "Designer: the real reach numbers, flown in the engine (R-165.60)", Fable 5.2 (Matt,
+  tonight), created 11-09 8:43 PM ET, due 12:45 AM ET, branch t-designer-reach. Sent alongside the analyst because Matt asked for
+  the Designer and the Architect tonight; they share no WRITE file. Its result goes to a fresh Critic with AUDIT-DESIGNER.
+- Next: the Architect (R-165.61, Fable 5.2 tonight) after the Designer's Critic PASS. Then the 1-1
   fix plan from the analyst's top 10; the Engine member on Fable 5.2 at medium. Ask Matt, at Content's first packet that writes
   under src/, whether "coder" covers Content.
 - Matt, 11-09 8:42 PM ET: "At $82 now total 75.00 new limit. Architect and designer on fable 5.2 for 2nite". The lead's reading, told
