@@ -57,4 +57,4 @@ save at the coach's first gap x6): said at most once, from the touch coach's jum
 ## 6. Method update (methods/stage-fix.md): "A Dot line is done when it is in her bubble (`.dg-bub-body`) in the browser, on Help and Tips."
 
 ## 7. Turnover note: reference/handoffs/engine-core.md rewritten (commit 132134b2).
-## Full suite (3 shards, final code): PENDING
+## Full suite, 3 shards on 5f767a44 (code final): 810 + 849 + 842 = 2501 pass, 0 fail (one standing TODO: 4-3); seedlist 1-1 PASS.
