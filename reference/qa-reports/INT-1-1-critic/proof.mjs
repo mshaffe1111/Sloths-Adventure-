@@ -24,13 +24,13 @@ await page.evaluate(([k, RE]) => {
   for (const h of e.proto?.hints ?? []) h.shown = true;
   const cb = e.callbacks; const f = cb.onGuide; cb.onGuide = (...a) => { if (new RegExp(window.__re).test(a[0]) && !a[2]) window.__sent = e.gameTime; window.__log.push([+e.gameTime.toFixed(1), 'onGuide', String(a[0]).slice(0, 30), a[2] ? 'passed' : '']); return f(...a); };
   let last = '';
-  setInterval(() => { const t = [...document.querySelectorAll('[class*="dg-"]')].filter((n) => n.children.length === 0 && n.textContent.trim()).map((n) => `${n.className}:${n.textContent.trim().slice(0, 40)}`).join(' | '); if (t !== last) { last = t; window.__log.push([+e.gameTime.toFixed(1), 'dom', t]); } }, 80);
+  setInterval(() => { const t = document.querySelector('.dg-bub-body')?.textContent.trim() ?? ''; if (t !== last) { last = t; window.__log.push([+e.gameTime.toFixed(1), 'bubble', t || '(none)']); } }, 80);
   const road = s.platforms.filter((p) => p.type === 'solid' && !p.catch && p.x <= pc.x0 + 60 && p.x + p.width >= pc.x0 + 30).sort((a, b) => a.y - b.y)[0];
   Object.assign(e.player, { x: road.x + road.width - 140, y: road.y, vx: 0, vy: 0, grounded: true });
   e.camera.x = e.camera.targetX = Math.max(0, e.player.x - e.camera.viewportWidth * 0.4);
 }, [k, process.env.LINE ?? 'Run first']);
 await sleep(1500);
-let n = 0; const shots = [1, 2.5, 4, 6]; let si = 0;
+let n = 0; const shots = process.env.LINE ? [1, 3, 6, 10, 14] : [1, 2.5, 4, 6]; let si = 0;
 await page.keyboard.down('ArrowRight');
 for (let i = 0; i < 900 && si < shots.length; i++) {
   await sleep(50);

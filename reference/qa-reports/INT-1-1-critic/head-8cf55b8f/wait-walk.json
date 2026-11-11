@@ -1,0 +1,246 @@
+{
+ "walk-easy-W0": {
+  "cycle": 1.66,
+  "sentAt": [
+   [
+    8,
+    "Run first, t",
+    ""
+   ],
+   [
+    16.3,
+    "Run first, t",
+    "true"
+   ],
+   [
+    16.3,
+    "Ooh, look! A",
+    ""
+   ]
+  ],
+  "moveLine": [
+   8.1,
+   8.8
+  ],
+  "stepLine": [
+   30.3,
+   "still up"
+  ],
+  "all": [
+   "8.1 Run first, then flick up and forward!",
+   "30.3 Ooh, look! A step. Up you go."
+  ],
+  "backs": [
+   4.8,
+   6.4,
+   8.1,
+   9.7,
+   11.4,
+   13.1,
+   14.7,
+   16.4
+  ],
+  "offerUp": false
+ },
+ "walk-easy-W600": {
+  "cycle": 1.94,
+  "sentAt": [
+   [
+    8,
+    "Run first, t",
+    ""
+   ],
+   [
+    16.6,
+    "Run first, t",
+    "true"
+   ],
+   [
+    17.7,
+    "Ooh, look! A",
+    ""
+   ]
+  ],
+  "moveLine": [
+   8,
+   9
+  ],
+  "stepLine": [
+   30.3,
+   "still up"
+  ],
+  "all": [
+   "8 Run first, then flick up and forward!",
+   "30.3 Ooh, look! A step. Up you go."
+  ],
+  "backs": [
+   4.1,
+   6,
+   8,
+   9.9,
+   11.9,
+   13.8,
+   15.8,
+   17.7
+  ],
+  "offerUp": false
+ },
+ "walk-easy-W2000": {
+  "cycle": 3.34,
+  "sentAt": [
+   [
+    10.9,
+    "Run first, t",
+    ""
+   ],
+   [
+    19.5,
+    "Run first, t",
+    "true"
+   ],
+   [
+    27.6,
+    "Ooh, look! A",
+    ""
+   ]
+  ],
+  "moveLine": [
+   11,
+   8.9
+  ],
+  "stepLine": [
+   39,
+   "still up"
+  ],
+  "all": [
+   "11 Run first, then flick up and forward!",
+   "33.2 This way, Pokey! Try over here.",
+   "39 Ooh, look! A step. Up you go."
+  ],
+  "backs": [
+   4.2,
+   7.5,
+   10.9,
+   14.2,
+   17.6,
+   20.9,
+   24.2,
+   27.6
+  ],
+  "offerUp": false
+ },
+ "walk-normal-W0": {
+  "cycle": 1.7,
+  "sentAt": [
+   [
+    7.5,
+    "Run first, t",
+    ""
+   ],
+   [
+    16.2,
+    "Run first, t",
+    "true"
+   ]
+  ],
+  "moveLine": [
+   7.6,
+   9
+  ],
+  "stepLine": null,
+  "all": [
+   "7.6 Run first, then flick up and forward!"
+  ],
+  "backs": [
+   4.1,
+   5.9,
+   7.5,
+   9.3,
+   10.9,
+   12.7,
+   14.3,
+   16,
+   17.8,
+   19.4,
+   21.2,
+   22.8
+  ],
+  "offerUp": true
+ },
+ "walk-normal-W600": {
+  "cycle": 2.14,
+  "sentAt": [
+   [
+    8.4,
+    "Run first, t",
+    ""
+   ],
+   [
+    17.2,
+    "Run first, t",
+    "true"
+   ]
+  ],
+  "moveLine": [
+   8.5,
+   9.1
+  ],
+  "stepLine": null,
+  "all": [
+   "8.5 Run first, then flick up and forward!"
+  ],
+  "backs": [
+   4.1,
+   6.3,
+   8.4,
+   10.7,
+   12.8,
+   14.9,
+   17,
+   19.2,
+   21.3,
+   23.4,
+   25.5,
+   27.6
+  ],
+  "offerUp": true
+ },
+ "walk-normal-W2000": {
+  "cycle": 3.99,
+  "sentAt": [
+   [
+    12.2,
+    "Run first, t",
+    ""
+   ],
+   [
+    21.1,
+    "Run first, t",
+    "true"
+   ]
+  ],
+  "moveLine": [
+   12.3,
+   9.3
+  ],
+  "stepLine": null,
+  "all": [
+   "12.3 Run first, then flick up and forward!"
+  ],
+  "backs": [
+   4.2,
+   8.2,
+   12.3,
+   16.3,
+   20.3,
+   24.3,
+   28.3,
+   32.3,
+   36.2,
+   40.2,
+   44.1,
+   48.1
+  ],
+  "offerUp": true
+ }
+}
