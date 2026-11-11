@@ -1,4 +1,4 @@
-# REPORT: R-165.62 (A2, help after put-backs in 1-1), Engine, attempt 2 (the story keeper's review). Branch t-engine-help from t-engine-putback@41c2e248
+# REPORT: R-165.62 (A2, help after put-backs in 1-1), Engine, attempt 3 (the Critic's step shape). Branch t-engine-help from t-engine-putback@41c2e248
 
 ## Method used
 Test-first: the schedule with a planted off-by-one red; real-engine flights with real put-backs (seed 3747, w1-log-chain-rise); browser
@@ -29,18 +29,19 @@ D37 (every claim run); A1's trap 9 (RealPlay's loseLife stub); frozen inputs mea
    stone), the two 12-offer stills (the line + YES Pokey on the stone that grows / NO jump pose).
 7. reference/handoffs/engine-core.md rewritten (header, §0b rulings, §1 open, §2 where the ladder lives, traps 15-18).
 
-## 2. Polish check (attempt 2: the story keeper's four, each fixed and seen on screen)
-- NO read as a cheer: now the standard hero's `apex`, mid-leap, arms reaching (jump_up only if the standard hero is off).
-- YES showed a stump, but the mossy rock grows: every grown step is now one sprite (`STEP_CUT` w1-boulder-grey-moss) and YES draws
-  that same rock (the picture's cut came from a different platform id before). Test: offer cut === every step's cut.
-- The 3-put-back line sat ~13 s, under the offer and after Back (her clock holds while he blinks after each set-back): the engine now
-  takes a ladder line down 8 s of play after it is said, and the moment the offer opens. Tests: helpLadder11 (down at 8 s; taken down
-  as the offer opens, red without it; nothing said after a no), helpLadderGuide (passed clears it). Browser: bubble "" at the offer
-  and after the no, both orientations (stills.json).
-- easy-*-08-step: Pokey now stands on the grown rock in both orientations. The old `line8 false` was the lessons-on run, where a
-  first-time gap lesson (a teleport artifact) took the bubble; it lived in stills-normal.json beside the lessons-off stills-easy.json.
-  Now one lessons-off run, one stills.json: line3 and line8 true on all four.
-- Earlier, fixed: the offer over the set-back's closed iris (black stage); her bubble dropping the ladder's lines.
+## 2. Attempt 3: the step shape (the Critic's blocker, the lead's ruling) and polish
+- The road is the walking surface (helpLadder.ts `skyline`): catch pieces out (the builder's `catch` mark), a piece wholly under a
+  floating one out, ground with a stump on it kept, mushrooms road. A rise over 60 is a stair: rocks on the ground (a rock may take in a
+  stump that reaches its foot, never a floating log), faces spread evenly, all 60 or less, treads 80 (the top one 160 where it fits: a
+  run-up before the last jump), the top within 60 of the lip. A mushroom whose bounce alone reaches the lip grows nothing. One sprite.
+- helpLadderSweep.test.ts (its own checker): 138 listed seeds + raw 1 and 7, both settings: no rock in the air, no face over 60.
+  Red on 324cd3cc: 4,369 Easy / 4,438 Normal breaches. helpLadderPieces.test.ts: plain jumps pass w1-mushroom-chain-back (raw 7) and
+  w1-hop-bounce (raw 1) after the steps on both settings; on 324cd3cc chain-back stops at the wall on both (hop-bounce passed there).
+- Named: 228 Easy / 253 Normal rises over all those pieces have no room for a whole stair (ground too short); nothing grows there, never
+  a wall, so those pieces stay as hard as laid. 3747's chain: 4 grown, passed on 9 plain jumps.
+- App.tsx:1053: a back swipe asks the back stack first (the offer: no). Touch flight (touchflight.mjs/.json, Normal, CDP touch, fresh
+  save, coach on): "Flick up and forward to jump." said once over 12 put-backs; history.back on the offer: gone, no pause menu.
+- Stills: easy-{port,land}-08-step (Pokey on the rock, nothing in the air), touch-normal-port-12-*. Attempt 2's four kept.
 ## 3. Pushback
 PUSHBACK.md (accepted). Frozen inputs that were wrong: "No soft moss" in gen2 1-1 comes from w1.ts's hint.1-1.noMoss sockets, not
 mixer:76 (the engine marks it heard in 1-1; the mixer line is also gone). The coach has no Pokey pose: NO is the hero's jump_up.
@@ -48,11 +49,9 @@ mixer:76 (the engine marks it heard in 1-1; the mixer line is also gone). The co
 save at the coach's first gap x6): said at most once, from the touch coach's jump step. No file edited for it.
 
 ## 4. Suggestions
-- App.tsx (owner: UI): a web back swipe while the offer is up runs guardBack and opens the pause menu over it. Ask the back stack first
-  in onBackSwipe as androidBack does. Done when a browser history.back() on the offer answers no.
 - roadmapcheck can't run here ("shallow clone, proofs cannot be checked"); CI runs it with fetch-depth 0. knowncheck PASS.
 - dotGuide.ts: a struggle line cut by a first-time lesson is not re-queued. Done when a test shows it comes back.
-## 5. Unresolved: the story keeper's look at attempt 2's stills.
+## 5. Unresolved: the rises left without a stair (above); the lead's call whether to lay planks there.
 - Found and fixed on the way: importing w1.ts's section tables into the engine pushed the main chunk to 4.48 MB (over the 4 MiB rule);
   the move a piece needs is now read from the piece as laid (pieceMoveLaid, tested).
 ## 6. Method update (methods/stage-fix.md): "A Dot line is done when it is in her bubble (`.dg-bub-body`) in the browser, on Help and Tips."
