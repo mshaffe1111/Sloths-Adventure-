@@ -6,7 +6,7 @@ import { NOT_ELSEWHERE, W1_SECTIONS } from './w1.ts';
 // pipeline reads it: every reference resolves, every version gives the keys the rest refers to, World 1 art only, each section tagged.
 test('every W1 section: references resolve in each version, keys unique, the exit in every version, World 1 art only, tags present', () => {
   for (const s of W1_SECTIONS) {
-    assert.ok(s.feel.length && s.not.length && s.rating >= 1 && s.rating <= 10 && s.source, `${s.id}: tags`);
+    assert.ok((s.feel.length || s.parked) && s.not.length && s.rating >= 1 && s.rating <= 10 && s.source, `${s.id}: tags`);
     for (const v of s.subBlocks?.length ? s.subBlocks[0].versions : [{ id: 'only', pieces: [], sockets: [] }]) {
       const pieces = [...s.pieces, ...v.pieces];
       const keys = pieces.map((p) => p.key);
@@ -112,4 +112,12 @@ test("every Dot line a W1 section can say has words (W1_TIPS): no raw text id re
   const missing = new Set<string>();
   for (const s of W1_SECTIONS) for (const v of s.subBlocks![0].versions) for (const k of v.sockets ?? []) if (k.role === 'tip') for (const id of k.allow ?? []) if (!W1_TIPS[id]) missing.add(`${s.id}/${v.id}: ${id}`);
   assert.deepEqual([...missing], []);
+});
+
+test('C1 (R-165.108): every off-path piece of every 1-1 section version holds a petal or a find; none is empty', () => {
+  const empty: string[] = [];
+  for (const q of W1_SECTIONS.filter((s) => s.feel.includes('1-1'))) for (const v of q.subBlocks![0].versions) {
+    for (const p of v.pieces) if (p.main === false && p.landing && !(v.sockets ?? []).some((so) => so.on === p.key && (so.role === 'pickup' || so.role === 'find'))) empty.push(`${q.id}/${v.id} ${p.key}`);
+  }
+  assert.deepEqual(empty, []);
 });

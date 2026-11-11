@@ -1,0 +1,17 @@
+not ok 1 - 1-1 normal: on every window seed a fall into any gap that is not water is a soft set-back
+not ok 2 - 1-1 easy: on every window seed a fall into any gap that is not water is a soft set-back, 
+ok 3 - planted: without the brief's word (origin/main's 1-1) the same check finds gaps that cost a l
+ok 4 - the word lays nothing: 1-1's ground, zones and floorless-gap verdicts are the same with and w
+ok 5 - floorlessGaps does not read the word: an unmarked floorless gap is still a breach on a stage 
+ok 6 - 1-2 Normal lays the same ground, gaps and heartFalls as origin/main, byte for byte (layouts 1
+ok 7 - 8-3 Normal lays the same ground, gaps and heartFalls as origin/main, byte for byte (layouts 1
+not ok 8 - 1-1 normal seed 3747: off the right edge of every solid piece, no life is lost and every 
+not ok 9 - 1-1 normal seed 15458: off the right edge of every solid piece, no life is lost and every
+not ok 10 - 1-1 normal seed 19582: off the right edge of every solid piece, no life is lost and ever
+ok 11 - 1-1 easy seed 3747: off the right edge of every solid piece, no life is lost and every set-b
+ok 12 - 1-1 easy seed 15458: off the right edge of every solid piece, no life is lost and every set-
+ok 13 - 1-1 easy seed 19582: off the right edge of every solid piece, no life is lost and every set-
+ok 14 - planted: without the brief's word (origin/main's 1-1) the same sweep on Normal loses lives i
+not ok 15 - 1-1 Normal seed 3747, w1-log-chain-rise: walked off a rising gap he is set back on the l
+# pass 9
+# fail 6

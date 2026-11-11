@@ -12,6 +12,7 @@ import { countedText, GuideQueue, isUrgent, noteSaid, roomMaySay, readMs, showFo
 import { MoveWatch, StruggleWatch, inDanger, type DeathCause, type StruggleHelp } from '../../game/dotGuideWatch.ts';
 import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markMoveDone, markSkillSeen, markSkipOffered, movesDone, offersSkip, seenSkills, skipTapCounts, skipTips, type DotHelp } from '../../game/dotGuideHelp.ts';
 import { recorder } from '../../game/playRecorder.ts';
+import { HELP_LINES, helpGuideLine, helpLadderOn, helpLineOnScreen, pushHelpLine } from '../../game/helpLadder.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuidePlatform, type GuideView } from '../../game/dotGuideView.ts';
 import {
   aheadRect,
@@ -24,6 +25,7 @@ import {
   hoverOrder,
   hoverSpot,
   landingRects,
+  grownRects,
   lawRects,
   softAhead,
   pickupRects,
@@ -285,6 +287,13 @@ class GuideRun {
    * closes it), and what is said is Matt's approved line for it (dotLines.ts). A cut line is not said.
    */
   engineLine(text: string, ms: number): void {
+    // (1-1's help ladder, helpLadder.ts: its lines go straight in as struggle help, on Help and Tips, never on Quiet. Her tip rules
+    // dropped them as a move already taught, R-165.62)
+    const help = helpGuideLine(text, this.help, ms);
+    if (help !== undefined) {
+      if (help) pushHelpLine(this.queue, help as GuideLine, this.clock);
+      return;
+    }
     const v = this.view;
     const l = engineGuideLine(text, this.stageId, { boss: v.boss, flight: v.flight, dot: this.dot, ms });
     if (!l) return;
@@ -312,6 +321,12 @@ class GuideRun {
 
   /** the engine says he is past the spot an engine line was about (StageHint.passX): that line goes, done or not */
   passedLine(text: string): void {
+    // (1-1's help ladder: its line is keyed by its own words, and goes at once: her clock stands still while he blinks, so a "passed"
+    // that waited for its minimum time held it up, and the step line behind it, for good: INT-1-1 in the browser)
+    if (HELP_LINES.has(text)) {
+      this.queue.clear((q) => q.key === `engine:${text}`, this.clock, true);
+      return;
+    }
     const l = engineGuideLine(text, this.stageId, { dot: this.dot });
     if (l) this.queue.clear((q) => q.key === l.key, this.clock);
   }
@@ -667,6 +682,11 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         const side = tx > v.cssW / 2 ? -1 : 1;
         p.sx = Math.max(safe.rect.x0 + 30, Math.min(safe.rect.x1 - 30, tx + side * 46));
         p.sy = Math.max(safe.rect.y0 + 40, Math.min(safe.rect.y1 - 30, ty - 56));
+      } else if (l.anyway) {
+        // (1-1's help ladder lines point at nothing: she hovers in the band under the top HUD, over the middle, and her bubble finds room
+        // there. Beside him it sat over the step it names, sideways (the Critic, INT-1-1 delta 3); the grown steps are hard keep-outs)
+        p.sx = v.cssW / 2;
+        p.sy = safe.rect.y0 + 40;
       } else {
         const h = hoverSpot(v);
         p.sx = h.x;
@@ -712,6 +732,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       // the way forward (the platform tops ahead and the next landing, QA v189: it sat along a pillar's top in 4-2) and the thing she
       // points at
       landingRects(v, run.hard);
+      // (and 1-1's grown steps: where he must act)
+      grownRects(v, run.hard);
       const t = p?.target;
       if (t) {
         const tx = toScreenX(v, t.x);
@@ -756,6 +778,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       if (p.mode !== 'perch') rects.push(aheadRect(v));
       // the landings ahead of him (the block he must jump to) and the score pop-ups
       landingRects(v, rects);
+      grownRects(v, rects);
       popupRects(v, rects);
       // her middle: a perched Dot stands on her spot, so her middle is a little above it
       const my = p.mode === 'perch' ? spot.y - 22 : spot.y;
@@ -1114,6 +1137,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         const rects = dangerRects(v, run.rects);
         rects.push(pokeyRect(v, 12));
         landingRects(v, rects);
+        grownRects(v, rects);
         popupRects(v, rects);
         hardNow();
         // (on a vine, a liana or a rope what he needs to see is above him: his thought goes under him first, World 7's climbs above all)
@@ -1152,6 +1176,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         bubIn = toggle(bub, 'in', true, bubIn);
         // (its reading time counts from now, not from when it left the queue: DOT-7)
         run.queue.onScreen(run.clock);
+        // (1-1's help ladder: its line's 8 s count from now, helpLadder.ts helpLineOnScreen)
+        helpLineOnScreen(cur.line.text);
         // and Dot chirps as her bubble opens, once per line (SN-7, Polish A2's sound)
         if (cur.line.who === 'Dot' && run.chirpN !== cur.n) {
           run.chirpN = cur.n;
@@ -1258,7 +1284,9 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         }
         // back and forth with no progress (never a clock, DOT-11); not in a puzzle room (the room's own watch helps there)
         if (run.puzzle && Math.abs(v.px - run.puzzle.x) > PUZZLE_NEAR) run.puzzle = null;
-        const s = v.kit.length ? null : run.struggle.step(dt, v.px, v.py);
+        // (not in 1-1 while its help ladder is on: the ladder is the one place that decides help there, helpLadder.ts; "This way,
+        // Pokey!" came 2.5 s after the steps grew, before her step line, the Critic's delta 2)
+        const s = v.kit.length || helpLadderOn() ? null : run.struggle.step(dt, v.px, v.py);
         if (s && !run.puzzleHelp()) {
           // (she flies to the way on: the next trunk, vine or ledge ahead; with none in view she says nothing, no promise of an arrow)
           const tp: TopicId | undefined = findTarget('trunk', v) ? 'trunk' : findTarget('vine', v) ? 'vine' : findTarget('ledge', v) ? 'ledge' : undefined;

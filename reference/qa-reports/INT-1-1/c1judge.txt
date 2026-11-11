@@ -1,0 +1,382 @@
+c1judge: HEAD 967376d5, bots 42c83a77 in it, baseline reference/qa-reports/R-165.59/calibration-a1.jsonl (200 runs), variants 1-40, 1-1 not a climb (120 s floor)
+  expert normal: 40 runs, 0 errors, 26 s
+  middle easy: 40 runs, 0 errors, 31 s
+  middle normal: 40 runs, 0 errors, 31 s
+  child easy: 40 runs, 0 errors, 43 s
+  child normal: 40 runs, 0 errors, 58 s
+
+| tier | setting | runs | finished | rescues (base) | put-backs/run outside the double tests (base); whole run | lives (base), kinds | finish min / p50 (base) | verdict |
+|---|---|---|---|---|---|---|---|---|
+| expert | normal | 40 | 40 | 0 (0) | 0.05 (0.5); 0.68 (0.6) | 0 (0) | 162.6 / 174.6 (152.9 / 172.5) | PASS |
+| middle | easy | 40 | 40 | 0 (0) | 0.05 (0.9); 0.05 (1.48) | 0 (0) | 175.5 / 194.1 (169.4 / 196.2) | PASS |
+| middle | normal | 40 | 40 | 0 (0) | 0.03 (1.08); 0.43 (1.53) | 0 (0) | 183.6 / 204.6 (172 / 204.8) | PASS |
+| child | easy | 40 | 40 | 0 (1) | 0.33 (1.48); 0.33 (3.1) | 0 (0) | 267.7 / 306.6 (280.9 / 301.4) | PASS |
+| child | normal | 40 | 40 | 13 (8) | 0.28 (2.8); 2.05 (3.8) | 0 (0) | 384.6 / 449.2 (365.6 / 427.6) | PASS |
+
+(length on Easy: there is no expert Easy bot, the expert testers played no Easy runs, tierBots.ts BOTS; the Easy minimum is the middle row's, printed above)
+
+checks:
+  PASS expert normal: every run plays: 40 runs
+  PASS expert normal: no rescues (middle, expert): 0 (baseline 0)
+  PASS expert normal: put-backs a run <= baseline: 0.05 vs 0.5 outside the double tests (whole run 0.68 vs 0.6)
+  PASS expert normal: lives 0 on Normal (real loseLife): 0
+  PASS expert normal: expert minimum finish >= 120 s: min 162.6 s over 40 of 40 finished (baseline min 152.9)
+  PASS middle easy: every run plays: 40 runs
+  PASS middle easy: no rescues (middle, expert): 0 (baseline 0)
+  PASS middle easy: put-backs a run <= baseline: 0.05 vs 0.9 outside the double tests (whole run 0.05 vs 1.48)
+  PASS middle normal: every run plays: 40 runs
+  PASS middle normal: no rescues (middle, expert): 0 (baseline 0)
+  PASS middle normal: put-backs a run <= baseline: 0.03 vs 1.08 outside the double tests (whole run 0.43 vs 1.53)
+  PASS middle normal: lives 0 on Normal (real loseLife): 0
+  PASS child easy: every run plays: 40 runs
+  PASS child easy: put-backs a run <= baseline: 0.33 vs 1.48 outside the double tests (whole run 0.33 vs 3.1)
+  PASS child normal: every run plays: 40 runs
+  PASS child normal: put-backs a run <= baseline: 0.28 vs 2.8 outside the double tests (whole run 2.05 vs 3.8)
+  PASS child normal: lives 0 on Normal (real loseLife): 0
+
+per piece, expert normal (sorted by put-backs a run):
+| piece | runs | put-backs/run | lives/run | s p50 | base runs | base put-backs/run | base lives/run | base s p50 |
+|---|---|---|---|---|---|---|---|---|
+| w1-dip-double-teach | 23 | 0.78 | 0 | 15 | 19 | 0.11 | 0 | 12.5 |
+| w1-double-teach | 16 | 0.44 | 0 | 13.5 | 20 | 0.1 | 0 | 13.5 |
+| w1-last-step-up | 4 | 0.25 | 0 | 5.5 | 5 | 0 | 0 | 6 |
+| w1-log-chain | 29 | 0.03 | 0 | 12.5 | 7 | 0 | 0 | 13 |
+| w1-backstep-twist | 2 | 0 | 0 | 17.5 | 1 | 0 | 0 | 16.5 |
+| w1-bank-double-teach | 1 | 0 | 0 | 16 | 1 | 0 | 0 | 15 |
+| w1-bank-run | 9 | 0 | 0 | 13.5 | 10 | 0 | 0 | 13 |
+| w1-bank-stair-fork | 25 | 0 | 0 | 17 | 1 | 0 | 0 | 16 |
+| w1-bank-stair-test | 8 | 0 | 0 | 16 | 1 | 0 | 0 | 11 |
+| w1-bough-bench | 2 | 0 | 0 | 4.5 | 2 | 0 | 0 | 5.5 |
+| w1-bough-bench-up | 2 | 0 | 0 | 5 | 4 | 0 | 0 | 4.5 |
+| w1-bough-descent | 1 | 0 | 0 | 12 | - | - | - | - |
+| w1-bounce-double | - | - | - | - | 8 | 0 | 0 | 17.5 |
+| w1-bounce-over-dip | - | - | - | - | 2 | 0 | 0 | 12 |
+| w1-bounce-wall | 1 | 0 | 0 | 13.5 | 2 | 0 | 0 | 13 |
+| w1-cache-stones | 7 | 0 | 0 | 15.5 | 2 | 0 | 0 | 14.5 |
+| w1-canopy-drop | 5 | 0 | 0 | 12 | 2 | 0 | 0 | 13 |
+| w1-canopy-rungs | 9 | 0 | 0 | 13 | 1 | 0 | 0 | 12 |
+| w1-canopy-rungs-level | 19 | 0 | 0 | 14 | 18 | 0.22 | 0 | 13 |
+| w1-clearing | 11 | 0 | 0 | 6 | 10 | 0 | 0 | 6 |
+| w1-fallen-trunk | 1 | 0 | 0 | 21.5 | 2 | 0 | 0 | 19 |
+| w1-fern-bank | 19 | 0 | 0 | 5.5 | 18 | 0 | 0 | 5.5 |
+| w1-floor-dash | - | - | - | - | 1 | 0 | 0 | 16 |
+| w1-forest-edge | 7 | 0 | 0 | 7.5 | 8 | 0 | 0 | 7 |
+| w1-high-step-twist | 2 | 0 | 0 | 12 | - | - | - | - |
+| w1-high-walk | 1 | 0 | 0 | 5 | 6 | 0 | 0 | 5.5 |
+| w1-high-walk-up | 1 | 0 | 0 | 4.5 | 4 | 0 | 0 | 4.5 |
+| w1-hollow-twoway | 9 | 0 | 0 | 16.5 | 8 | 0 | 0 | 14.5 |
+| w1-home-banks | 8 | 0 | 0 | 6 | 10 | 0 | 0 | 6.5 |
+| w1-hop-bounce | - | - | - | - | 35 | 0 | 0 | 16 |
+| w1-leap-stones | 5 | 0 | 0 | 21.5 | 11 | 0.18 | 0 | 23.5 |
+| w1-learn | 28 | 0 | 0 | 17 | 25 | 0 | 0 | 16.5 |
+| w1-log-chain-rise | 2 | 0 | 0 | 12.5 | 11 | 0.36 | 0 | 13.5 |
+| w1-log-stair-test | - | - | - | - | 16 | 0.38 | 0 | 14.5 |
+| w1-log-steps-descent | 2 | 0 | 0 | 16 | - | - | - | - |
+| w1-log-teach | 11 | 0 | 0 | 13.5 | 9 | 0 | 0 | 14.5 |
+| w1-log-walk | 29 | 0 | 0 | 6.5 | 24 | 0 | 0 | 6.5 |
+| w1-meadow | 30 | 0 | 0 | 13.5 | 24 | 0 | 0 | 14 |
+| w1-morning-path | 10 | 0 | 0 | 6.5 | 10 | 0 | 0 | 5.5 |
+| w1-mound-log | 15 | 0 | 0 | 21.5 | 11 | 0 | 0 | 21.5 |
+| w1-mushroom-bank-teach | 25 | 0 | 0 | 13 | 7 | 0 | 0 | 11.5 |
+| w1-mushroom-chain | - | - | - | - | 4 | 0 | 0 | 14.5 |
+| w1-mushroom-chain-back | - | - | - | - | 12 | 0.17 | 0 | 16 |
+| w1-mushroom-fork | 19 | 0 | 0 | 16 | 2 | 0 | 0 | 16 |
+| w1-mushroom-fork-dip | 13 | 0 | 0 | 15 | 2 | 0 | 0 | 16.5 |
+| w1-mushroom-lift | 15 | 0 | 0 | 15.5 | 1 | 0 | 0 | 13 |
+| w1-mushroom-log | 11 | 0 | 0 | 12.5 | - | - | - | - |
+| w1-quiet-arrival | 31 | 0 | 0 | 6 | 23 | 0 | 0 | 5.5 |
+| w1-root-stair-fork | - | - | - | - | 20 | 0 | 0 | 13.5 |
+| w1-second-jump | - | - | - | - | 2 | 0.5 | 0 | 18 |
+| w1-seed-perch | 40 | 0 | 0 | 16 | 40 | 0 | 0 | 16 |
+| w1-stair-fork | - | - | - | - | 16 | 0 | 0 | 17.5 |
+| w1-stair-gap-twist | 3 | 0 | 0 | 14.5 | - | - | - | - |
+| w1-stair-run | 2 | 0 | 0 | 13 | 2 | 0 | 0 | 13 |
+| w1-stair-test | 14 | 0 | 0 | 14.5 | 1 | 0 | 0 | 12.5 |
+| w1-step-stones-teach | 1 | 0 | 0 | 12 | 6 | 0 | 0 | 11.5 |
+| w1-stone-dips | 1 | 0 | 0 | 18.5 | 1 | 0 | 0 | 18 |
+| w1-stone-zigzag | 3 | 0 | 0 | 15.5 | 3 | 0 | 0 | 22 |
+| w1-stump-descent | 1 | 0 | 0 | 17.5 | 1 | 0 | 0 | 13.5 |
+| w1-stump-stones | 2 | 0 | 0 | 18.5 | - | - | - | - |
+| w1-sunlit-log | 5 | 0 | 0 | 6.5 | 12 | 0.08 | 0 | 6 |
+| w1-twin-bounce | - | - | - | - | 9 | 0 | 0 | 14.5 |
+| w1-twin-mushroom-fork | - | - | - | - | 12 | 0 | 0 | 18 |
+| w1-two-answers | 1 | 0 | 0 | 17 | 1 | 0 | 0 | 13.5 |
+| w1-zigzag-run | - | - | - | - | 1 | 0 | 0 | 13.5 |
+
+per piece, middle easy (sorted by put-backs a run):
+| piece | runs | put-backs/run | lives/run | s p50 | base runs | base put-backs/run | base lives/run | base s p50 |
+|---|---|---|---|---|---|---|---|---|
+| w1-canopy-rungs | 9 | 0.22 | 0 | 15.5 | 1 | 0 | 0 | 15 |
+| w1-backstep-twist | 2 | 0 | 0 | 19.5 | 1 | 0 | 0 | 17 |
+| w1-bank-double-teach | 1 | 0 | 0 | 17 | 1 | 0 | 0 | 16.5 |
+| w1-bank-run | 9 | 0 | 0 | 16.5 | 10 | 0 | 0 | 14.5 |
+| w1-bank-stair-fork | 25 | 0 | 0 | 18.5 | 1 | 0 | 0 | 18.5 |
+| w1-bank-stair-test | 8 | 0 | 0 | 19 | 1 | 0 | 0 | 15 |
+| w1-bough-bench | 2 | 0 | 0 | 4.5 | 2 | 0 | 0 | 5.5 |
+| w1-bough-bench-up | 2 | 0 | 0 | 5.5 | 4 | 0 | 0 | 4.5 |
+| w1-bough-descent | 1 | 0 | 0 | 14 | - | - | - | - |
+| w1-bounce-double | - | - | - | - | 8 | 0 | 0 | 17 |
+| w1-bounce-over-dip | - | - | - | - | 2 | 0 | 0 | 15 |
+| w1-bounce-wall | 1 | 0 | 0 | 15.5 | 2 | 0 | 0 | 14.5 |
+| w1-cache-stones | 7 | 0 | 0 | 19 | 2 | 0 | 0 | 17 |
+| w1-canopy-drop | 5 | 0 | 0 | 14 | 2 | 0 | 0 | 15 |
+| w1-canopy-rungs-level | 19 | 0 | 0 | 15.5 | 18 | 1 | 0 | 18.5 |
+| w1-clearing | 11 | 0 | 0 | 7 | 10 | 0 | 0 | 7 |
+| w1-dip-double-teach | 23 | 0 | 0 | 14 | 19 | 0.42 | 0 | 15.5 |
+| w1-double-teach | 16 | 0 | 0 | 14 | 20 | 0.75 | 0 | 17.5 |
+| w1-fallen-trunk | 1 | 0 | 0 | 23.5 | 2 | 0 | 0 | 18 |
+| w1-fern-bank | 19 | 0 | 0 | 6.5 | 18 | 0 | 0 | 6 |
+| w1-floor-dash | - | - | - | - | 1 | 0 | 0 | 13.5 |
+| w1-forest-edge | 7 | 0 | 0 | 8.5 | 8 | 0 | 0 | 7.5 |
+| w1-high-step-twist | 2 | 0 | 0 | 17 | - | - | - | - |
+| w1-high-walk | 1 | 0 | 0 | 6.5 | 6 | 0 | 0 | 5.5 |
+| w1-high-walk-up | 1 | 0 | 0 | 4.5 | 4 | 0 | 0 | 5.5 |
+| w1-hollow-twoway | 9 | 0 | 0 | 15 | 8 | 0 | 0 | 15 |
+| w1-home-banks | 8 | 0 | 0 | 6.5 | 10 | 0 | 0 | 8 |
+| w1-hop-bounce | - | - | - | - | 35 | 0 | 0 | 19 |
+| w1-last-step-up | 4 | 0 | 0 | 8 | 5 | 0 | 0 | 6 |
+| w1-leap-stones | 5 | 0 | 0 | 22.5 | 11 | 1.18 | 0 | 26.5 |
+| w1-learn | 28 | 0 | 0 | 19.5 | 25 | 0 | 0 | 19.5 |
+| w1-log-chain | 29 | 0 | 0 | 15.5 | 7 | 0.14 | 0 | 14.5 |
+| w1-log-chain-rise | 2 | 0 | 0 | 17.5 | 11 | 0 | 0 | 14.5 |
+| w1-log-stair-test | - | - | - | - | 16 | 0.06 | 0 | 16.5 |
+| w1-log-steps-descent | 2 | 0 | 0 | 17 | - | - | - | - |
+| w1-log-teach | 11 | 0 | 0 | 16.5 | 9 | 0 | 0 | 17 |
+| w1-log-walk | 29 | 0 | 0 | 7.5 | 24 | 0 | 0 | 7 |
+| w1-meadow | 30 | 0 | 0 | 16.5 | 24 | 0 | 0 | 16 |
+| w1-morning-path | 10 | 0 | 0 | 7.5 | 10 | 0 | 0 | 7.5 |
+| w1-mound-log | 15 | 0 | 0 | 22.5 | 11 | 0 | 0 | 22.5 |
+| w1-mushroom-bank-teach | 25 | 0 | 0 | 15.5 | 7 | 0 | 0 | 17 |
+| w1-mushroom-chain | - | - | - | - | 4 | 0 | 0 | 18 |
+| w1-mushroom-chain-back | - | - | - | - | 12 | 0 | 0 | 19 |
+| w1-mushroom-fork | 19 | 0 | 0 | 17 | 2 | 0 | 0 | 17 |
+| w1-mushroom-fork-dip | 13 | 0 | 0 | 16 | 2 | 0 | 0 | 18.5 |
+| w1-mushroom-lift | 15 | 0 | 0 | 15.5 | 1 | 0 | 0 | 15 |
+| w1-mushroom-log | 11 | 0 | 0 | 16 | - | - | - | - |
+| w1-quiet-arrival | 31 | 0 | 0 | 6.5 | 23 | 0 | 0 | 6.5 |
+| w1-root-stair-fork | - | - | - | - | 20 | 0 | 0 | 13.5 |
+| w1-second-jump | - | - | - | - | 2 | 1.5 | 0 | 24 |
+| w1-seed-perch | 40 | 0 | 0 | 17.5 | 40 | 0 | 0 | 15.5 |
+| w1-stair-fork | - | - | - | - | 16 | 0 | 0 | 18.5 |
+| w1-stair-gap-twist | 3 | 0 | 0 | 16 | - | - | - | - |
+| w1-stair-run | 2 | 0 | 0 | 15.5 | 2 | 0 | 0 | 18 |
+| w1-stair-test | 14 | 0 | 0 | 18.5 | 1 | 0 | 0 | 14 |
+| w1-step-stones-teach | 1 | 0 | 0 | 12.5 | 6 | 0 | 0 | 13.5 |
+| w1-stone-dips | 1 | 0 | 0 | 27 | 1 | 0 | 0 | 23 |
+| w1-stone-zigzag | 3 | 0 | 0 | 15 | 3 | 0 | 0 | 23 |
+| w1-stump-descent | 1 | 0 | 0 | 16.5 | 1 | 0 | 0 | 11 |
+| w1-stump-stones | 2 | 0 | 0 | 20.5 | - | - | - | - |
+| w1-sunlit-log | 5 | 0 | 0 | 7 | 12 | 0 | 0 | 7 |
+| w1-twin-bounce | - | - | - | - | 9 | 0 | 0 | 15.5 |
+| w1-twin-mushroom-fork | - | - | - | - | 12 | 0 | 0 | 19.5 |
+| w1-two-answers | 1 | 0 | 0 | 18 | 1 | 0 | 0 | 17.5 |
+| w1-zigzag-run | - | - | - | - | 1 | 0 | 0 | 17.5 |
+
+per piece, middle normal (sorted by put-backs a run):
+| piece | runs | put-backs/run | lives/run | s p50 | base runs | base put-backs/run | base lives/run | base s p50 |
+|---|---|---|---|---|---|---|---|---|
+| w1-bank-double-teach | 1 | 1 | 0 | 22 | 1 | 0 | 0 | 13.5 |
+| w1-two-answers | 1 | 1 | 0 | 25.5 | 1 | 0 | 0 | 16.5 |
+| w1-double-teach | 16 | 0.44 | 0 | 16.5 | 20 | 0.55 | 0 | 17 |
+| w1-dip-double-teach | 23 | 0.3 | 0 | 16.5 | 19 | 0.37 | 0 | 16 |
+| w1-last-step-up | 4 | 0.25 | 0 | 10 | 5 | 0 | 0 | 7.5 |
+| w1-backstep-twist | 2 | 0 | 0 | 19.5 | 1 | 0 | 0 | 17 |
+| w1-bank-run | 9 | 0 | 0 | 17.5 | 10 | 0 | 0 | 14.5 |
+| w1-bank-stair-fork | 25 | 0 | 0 | 19 | 1 | 0 | 0 | 20 |
+| w1-bank-stair-test | 8 | 0 | 0 | 17.5 | 1 | 0 | 0 | 13 |
+| w1-bough-bench | 2 | 0 | 0 | 5 | 2 | 0 | 0 | 6.5 |
+| w1-bough-bench-up | 2 | 0 | 0 | 6 | 4 | 0 | 0 | 6 |
+| w1-bough-descent | 1 | 0 | 0 | 14.5 | - | - | - | - |
+| w1-bounce-double | - | - | - | - | 8 | 0 | 0 | 21 |
+| w1-bounce-over-dip | - | - | - | - | 2 | 0 | 0 | 11 |
+| w1-bounce-wall | 1 | 0 | 0 | 17.5 | 2 | 0 | 0 | 16 |
+| w1-cache-stones | 7 | 0 | 0 | 17 | 2 | 0 | 0 | 16.5 |
+| w1-canopy-drop | 5 | 0 | 0 | 13.5 | 2 | 0 | 0 | 13.5 |
+| w1-canopy-rungs | 9 | 0 | 0 | 16 | 1 | 0 | 0 | 15 |
+| w1-canopy-rungs-level | 19 | 0 | 0 | 17 | 18 | 0.67 | 0 | 18 |
+| w1-clearing | 11 | 0 | 0 | 7 | 10 | 0 | 0 | 8.5 |
+| w1-fallen-trunk | 1 | 0 | 0 | 30.5 | 2 | 0 | 0 | 25 |
+| w1-fern-bank | 19 | 0 | 0 | 6.5 | 18 | 0 | 0 | 6.5 |
+| w1-floor-dash | - | - | - | - | 1 | 0 | 0 | 16 |
+| w1-forest-edge | 7 | 0 | 0 | 8 | 8 | 0 | 0 | 9 |
+| w1-high-step-twist | 2 | 0 | 0 | 16 | - | - | - | - |
+| w1-high-walk | 1 | 0 | 0 | 6.5 | 6 | 0 | 0 | 5 |
+| w1-high-walk-up | 1 | 0 | 0 | 7 | 4 | 0 | 0 | 5.5 |
+| w1-hollow-twoway | 9 | 0 | 0 | 17.5 | 8 | 0 | 0 | 16 |
+| w1-home-banks | 8 | 0 | 0 | 7.5 | 10 | 0 | 0 | 7.5 |
+| w1-hop-bounce | - | - | - | - | 35 | 0 | 0 | 17.5 |
+| w1-leap-stones | 5 | 0 | 0 | 24 | 11 | 0.36 | 0 | 28 |
+| w1-learn | 28 | 0 | 0 | 19.5 | 25 | 0 | 0 | 19.5 |
+| w1-log-chain | 29 | 0 | 0 | 14 | 7 | 0.86 | 0 | 16.5 |
+| w1-log-chain-rise | 2 | 0 | 0 | 15 | 11 | 1.18 | 0 | 19 |
+| w1-log-stair-test | - | - | - | - | 16 | 0.06 | 0 | 17.5 |
+| w1-log-steps-descent | 2 | 0 | 0 | 19.5 | - | - | - | - |
+| w1-log-teach | 11 | 0 | 0 | 15.5 | 9 | 0 | 0 | 16.5 |
+| w1-log-walk | 29 | 0 | 0 | 8 | 24 | 0 | 0 | 7 |
+| w1-meadow | 30 | 0 | 0 | 16 | 24 | 0 | 0 | 15.5 |
+| w1-morning-path | 10 | 0 | 0 | 8 | 10 | 0 | 0 | 7 |
+| w1-mound-log | 15 | 0 | 0 | 25 | 11 | 0 | 0 | 25 |
+| w1-mushroom-bank-teach | 25 | 0 | 0 | 16 | 7 | 0 | 0 | 15.5 |
+| w1-mushroom-chain | - | - | - | - | 4 | 0.25 | 0 | 16.5 |
+| w1-mushroom-chain-back | - | - | - | - | 12 | 0.42 | 0 | 19.5 |
+| w1-mushroom-fork | 19 | 0 | 0 | 18 | 2 | 0 | 0 | 16 |
+| w1-mushroom-fork-dip | 13 | 0 | 0 | 17 | 2 | 0 | 0 | 20 |
+| w1-mushroom-lift | 15 | 0 | 0 | 17.5 | 1 | 0 | 0 | 18.5 |
+| w1-mushroom-log | 11 | 0 | 0 | 15.5 | - | - | - | - |
+| w1-quiet-arrival | 31 | 0 | 0 | 6.5 | 23 | 0 | 0 | 6.5 |
+| w1-root-stair-fork | - | - | - | - | 20 | 0 | 0 | 17 |
+| w1-second-jump | - | - | - | - | 2 | 0 | 0 | 21.5 |
+| w1-seed-perch | 40 | 0 | 0 | 18.5 | 40 | 0 | 0 | 18.5 |
+| w1-stair-fork | - | - | - | - | 16 | 0 | 0 | 20 |
+| w1-stair-gap-twist | 3 | 0 | 0 | 17 | - | - | - | - |
+| w1-stair-run | 2 | 0 | 0 | 13.5 | 2 | 0 | 0 | 17.5 |
+| w1-stair-test | 14 | 0 | 0 | 18 | 1 | 0 | 0 | 15.5 |
+| w1-step-stones-teach | 1 | 0 | 0 | 12 | 6 | 0 | 0 | 12.5 |
+| w1-stone-dips | 1 | 0 | 0 | 21 | 1 | 0 | 0 | 20.5 |
+| w1-stone-zigzag | 3 | 0 | 0 | 18.5 | 3 | 0 | 0 | 22.5 |
+| w1-stump-descent | 1 | 0 | 0 | 17.5 | 1 | 0 | 0 | 15.5 |
+| w1-stump-stones | 2 | 0 | 0 | 19.5 | - | - | - | - |
+| w1-sunlit-log | 5 | 0 | 0 | 7.5 | 12 | 0.08 | 0 | 8 |
+| w1-twin-bounce | - | - | - | - | 9 | 0 | 0 | 16 |
+| w1-twin-mushroom-fork | - | - | - | - | 12 | 0 | 0 | 20.5 |
+| w1-zigzag-run | - | - | - | - | 1 | 0 | 0 | 14.5 |
+
+per piece, child easy (sorted by put-backs a run):
+| piece | runs | put-backs/run | lives/run | s p50 | base runs | base put-backs/run | base lives/run | base s p50 |
+|---|---|---|---|---|---|---|---|---|
+| w1-log-chain | 29 | 0.28 | 0 | 23.5 | 7 | 0.43 | 0 | 25.5 |
+| w1-canopy-rungs | 9 | 0.22 | 0 | 25.5 | 1 | 9 | 0 | 45 |
+| w1-quiet-arrival | 31 | 0.1 | 0 | 10 | 23 | 0.09 | 0 | 9.5 |
+| w1-backstep-twist | 2 | 0 | 0 | 32.5 | 1 | 0 | 0 | 29 |
+| w1-bank-double-teach | 1 | 0 | 0 | 25 | 1 | 0 | 0 | 16.5 |
+| w1-bank-run | 9 | 0 | 0 | 24.5 | 10 | 0 | 0 | 21.5 |
+| w1-bank-stair-fork | 25 | 0 | 0 | 27.5 | 1 | 0 | 0 | 26.5 |
+| w1-bank-stair-test | 8 | 0 | 0 | 26 | 1 | 0 | 0 | 19 |
+| w1-bough-bench | 2 | 0 | 0 | 7.5 | 2 | 0 | 0 | 7.5 |
+| w1-bough-bench-up | 2 | 0 | 0 | 8.5 | 4 | 0 | 0 | 5 |
+| w1-bough-descent | 1 | 0 | 0 | 18.5 | - | - | - | - |
+| w1-bounce-double | - | - | - | - | 8 | 0 | 0 | 24.5 |
+| w1-bounce-over-dip | - | - | - | - | 2 | 0 | 0 | 21 |
+| w1-bounce-wall | 1 | 0 | 0 | 29.5 | 2 | 0 | 0 | 18 |
+| w1-cache-stones | 7 | 0 | 0 | 22.5 | 2 | 0 | 0 | 21.5 |
+| w1-canopy-drop | 5 | 0 | 0 | 26.5 | 2 | 0 | 0 | 21 |
+| w1-canopy-rungs-level | 19 | 0 | 0 | 22 | 18 | 1.28 | 0 | 27.5 |
+| w1-clearing | 11 | 0 | 0 | 10.5 | 10 | 0 | 0 | 11 |
+| w1-dip-double-teach | 23 | 0 | 0 | 22.5 | 19 | 0.58 | 0 | 23.5 |
+| w1-double-teach | 16 | 0 | 0 | 21.5 | 20 | 2.65 | 0 | 31 |
+| w1-fallen-trunk | 1 | 0 | 0 | 31.5 | 2 | 0 | 0 | 29 |
+| w1-fern-bank | 19 | 0 | 0 | 12 | 18 | 0 | 0 | 10.5 |
+| w1-floor-dash | - | - | - | - | 1 | 0 | 0 | 23 |
+| w1-forest-edge | 7 | 0 | 0 | 13.5 | 8 | 0 | 0 | 12 |
+| w1-high-step-twist | 2 | 0 | 0 | 25.5 | - | - | - | - |
+| w1-high-walk | 1 | 0 | 0 | 10.5 | 6 | 0 | 0 | 10 |
+| w1-high-walk-up | 1 | 0 | 0 | 12.5 | 4 | 0 | 0 | 8.5 |
+| w1-hollow-twoway | 9 | 0 | 0 | 25 | 8 | 0 | 0 | 25 |
+| w1-home-banks | 8 | 0 | 0 | 12.5 | 10 | 0 | 0 | 10.5 |
+| w1-hop-bounce | - | - | - | - | 35 | 0 | 0 | 27 |
+| w1-last-step-up | 4 | 0 | 0 | 13 | 5 | 0 | 0 | 9 |
+| w1-leap-stones | 5 | 0 | 0 | 32 | 11 | 0.73 | 0 | 40 |
+| w1-learn | 28 | 0 | 0 | 30 | 25 | 0 | 0 | 30.5 |
+| w1-log-chain-rise | 2 | 0 | 0 | 19 | 11 | 0.27 | 0 | 25 |
+| w1-log-stair-test | - | - | - | - | 16 | 0.19 | 0 | 28 |
+| w1-log-steps-descent | 2 | 0 | 0 | 28.5 | - | - | - | - |
+| w1-log-teach | 11 | 0 | 0 | 24 | 9 | 0 | 0 | 28.5 |
+| w1-log-walk | 29 | 0 | 0 | 13 | 24 | 0 | 0 | 11.5 |
+| w1-meadow | 30 | 0 | 0 | 24 | 24 | 0 | 0 | 25 |
+| w1-morning-path | 10 | 0 | 0 | 14 | 10 | 0 | 0 | 11.5 |
+| w1-mound-log | 15 | 0 | 0 | 34.5 | 11 | 0 | 0 | 35 |
+| w1-mushroom-bank-teach | 25 | 0 | 0 | 24.5 | 7 | 0 | 0 | 24 |
+| w1-mushroom-chain | - | - | - | - | 4 | 0.25 | 0 | 22.5 |
+| w1-mushroom-chain-back | - | - | - | - | 12 | 0.33 | 0 | 31 |
+| w1-mushroom-fork | 19 | 0 | 0 | 23 | 2 | 0 | 0 | 27 |
+| w1-mushroom-fork-dip | 13 | 0 | 0 | 23 | 2 | 0 | 0 | 23 |
+| w1-mushroom-lift | 15 | 0 | 0 | 24.5 | 1 | 0 | 0 | 27 |
+| w1-mushroom-log | 11 | 0 | 0 | 24 | - | - | - | - |
+| w1-root-stair-fork | - | - | - | - | 20 | 0 | 0 | 24 |
+| w1-second-jump | - | - | - | - | 2 | 1.5 | 0 | 37 |
+| w1-seed-perch | 40 | 0 | 0 | 25 | 40 | 0 | 0 | 24.5 |
+| w1-stair-fork | - | - | - | - | 16 | 0 | 0 | 29 |
+| w1-stair-gap-twist | 3 | 0 | 0 | 24 | - | - | - | - |
+| w1-stair-run | 2 | 0 | 0 | 20 | 2 | 0 | 0 | 24.5 |
+| w1-stair-test | 14 | 0 | 0 | 29 | 1 | 0 | 0 | 29 |
+| w1-step-stones-teach | 1 | 0 | 0 | 18 | 6 | 0 | 0 | 21 |
+| w1-stone-dips | 1 | 0 | 0 | 28.5 | 1 | 0 | 0 | 28 |
+| w1-stone-zigzag | 3 | 0 | 0 | 25.5 | 3 | 0 | 0 | 34.5 |
+| w1-stump-descent | 1 | 0 | 0 | 23.5 | 1 | 0 | 0 | 25.5 |
+| w1-stump-stones | 2 | 0 | 0 | 27.5 | - | - | - | - |
+| w1-sunlit-log | 5 | 0 | 0 | 10.5 | 12 | 0 | 0 | 10 |
+| w1-twin-bounce | - | - | - | - | 9 | 0 | 0 | 19 |
+| w1-twin-mushroom-fork | - | - | - | - | 12 | 0 | 0 | 27.5 |
+| w1-two-answers | 1 | 0 | 0 | 26.5 | 1 | 1 | 0 | 37 |
+| w1-zigzag-run | - | - | - | - | 1 | 0 | 0 | 23.5 |
+
+per piece, child normal (sorted by put-backs a run):
+| piece | runs | put-backs/run | lives/run | s p50 | base runs | base put-backs/run | base lives/run | base s p50 |
+|---|---|---|---|---|---|---|---|---|
+| w1-two-answers | 1 | 4 | 0 | 52.5 | 1 | 2 | 0 | 43 |
+| w1-dip-double-teach | 23 | 1.7 | 0 | 34.5 | 19 | 0.79 | 0 | 31.5 |
+| w1-double-teach | 16 | 1.69 | 0 | 36.5 | 20 | 1.15 | 0 | 31.5 |
+| w1-high-step-twist | 2 | 0.5 | 0 | 37 | - | - | - | - |
+| w1-log-chain-rise | 2 | 0.5 | 0 | 32 | 11 | 1 | 0 | 34 |
+| w1-canopy-rungs | 9 | 0.22 | 0 | 31 | 1 | 2 | 0 | 40 |
+| w1-log-chain | 29 | 0.21 | 0 | 32 | 7 | 1.29 | 0 | 36.5 |
+| w1-canopy-rungs-level | 19 | 0.11 | 0 | 33 | 18 | 3.67 | 0 | 39.5 |
+| w1-backstep-twist | 2 | 0 | 0 | 38.5 | 1 | 0 | 0 | 40.5 |
+| w1-bank-double-teach | 1 | 0 | 0 | 38 | 1 | 0 | 0 | 37.5 |
+| w1-bank-run | 9 | 0 | 0 | 37 | 10 | 0 | 0 | 30 |
+| w1-bank-stair-fork | 25 | 0 | 0 | 40 | 1 | 0 | 0 | 38 |
+| w1-bank-stair-test | 8 | 0 | 0 | 37.5 | 1 | 0 | 0 | 33.5 |
+| w1-bough-bench | 2 | 0 | 0 | 8 | 2 | 0 | 0 | 10.5 |
+| w1-bough-bench-up | 2 | 0 | 0 | 10 | 4 | 0 | 0 | 10 |
+| w1-bough-descent | 1 | 0 | 0 | 32.5 | - | - | - | - |
+| w1-bounce-double | - | - | - | - | 8 | 0 | 0 | 40.5 |
+| w1-bounce-over-dip | - | - | - | - | 2 | 0 | 0 | 36 |
+| w1-bounce-wall | 1 | 0 | 0 | 27 | 2 | 0 | 0 | 30.5 |
+| w1-cache-stones | 7 | 0 | 0 | 31 | 2 | 0 | 0 | 28 |
+| w1-canopy-drop | 5 | 0 | 0 | 32 | 2 | 0.5 | 0 | 32.5 |
+| w1-clearing | 11 | 0 | 0 | 16 | 10 | 0 | 0 | 17 |
+| w1-fallen-trunk | 1 | 0 | 0 | 52.5 | 2 | 0 | 0 | 51 |
+| w1-fern-bank | 19 | 0 | 0 | 17.5 | 18 | 0 | 0 | 15.5 |
+| w1-floor-dash | - | - | - | - | 1 | 0 | 0 | 34 |
+| w1-forest-edge | 7 | 0 | 0 | 18.5 | 8 | 0 | 0 | 20 |
+| w1-high-walk | 1 | 0 | 0 | 17 | 6 | 0 | 0 | 12.5 |
+| w1-high-walk-up | 1 | 0 | 0 | 10 | 4 | 0.25 | 0 | 12 |
+| w1-hollow-twoway | 9 | 0 | 0 | 54 | 8 | 0 | 0 | 60 |
+| w1-home-banks | 8 | 0 | 0 | 19 | 10 | 0 | 0 | 17 |
+| w1-hop-bounce | - | - | - | - | 35 | 0 | 0 | 32 |
+| w1-last-step-up | 4 | 0 | 0 | 14 | 5 | 0.2 | 0 | 16 |
+| w1-leap-stones | 5 | 0 | 0 | 36.5 | 11 | 0.73 | 0 | 46.5 |
+| w1-learn | 28 | 0 | 0 | 40 | 25 | 0 | 0 | 41.5 |
+| w1-log-stair-test | - | - | - | - | 16 | 0.06 | 0 | 31.5 |
+| w1-log-steps-descent | 2 | 0 | 0 | 44 | - | - | - | - |
+| w1-log-teach | 11 | 0 | 0 | 36 | 9 | 0 | 0 | 32.5 |
+| w1-log-walk | 29 | 0 | 0 | 19 | 24 | 0 | 0 | 19.5 |
+| w1-meadow | 30 | 0 | 0 | 33 | 24 | 0 | 0 | 37.5 |
+| w1-morning-path | 10 | 0 | 0 | 17.5 | 10 | 0 | 0 | 19 |
+| w1-mound-log | 15 | 0 | 0 | 50.5 | 11 | 0 | 0 | 44 |
+| w1-mushroom-bank-teach | 25 | 0 | 0 | 32.5 | 7 | 0 | 0 | 31.5 |
+| w1-mushroom-chain | - | - | - | - | 4 | 0.75 | 0 | 28.5 |
+| w1-mushroom-chain-back | - | - | - | - | 12 | 0.58 | 0 | 40.5 |
+| w1-mushroom-fork | 19 | 0 | 0 | 33.5 | 2 | 0 | 0 | 30.5 |
+| w1-mushroom-fork-dip | 13 | 0 | 0 | 33.5 | 2 | 0 | 0 | 43.5 |
+| w1-mushroom-lift | 15 | 0 | 0 | 33 | 1 | 0 | 0 | 52.5 |
+| w1-mushroom-log | 11 | 0 | 0 | 33.5 | - | - | - | - |
+| w1-quiet-arrival | 31 | 0 | 0 | 16 | 23 | 0 | 0 | 16 |
+| w1-root-stair-fork | - | - | - | - | 20 | 0 | 0 | 33.5 |
+| w1-second-jump | - | - | - | - | 2 | 0.5 | 0 | 38.5 |
+| w1-seed-perch | 40 | 0 | 0 | 41.5 | 40 | 0 | 0 | 35 |
+| w1-stair-fork | - | - | - | - | 16 | 0 | 0 | 38 |
+| w1-stair-gap-twist | 3 | 0 | 0 | 37.5 | - | - | - | - |
+| w1-stair-run | 2 | 0 | 0 | 33.5 | 2 | 0 | 0 | 35.5 |
+| w1-stair-test | 14 | 0 | 0 | 37 | 1 | 0 | 0 | 30 |
+| w1-step-stones-teach | 1 | 0 | 0 | 37 | 6 | 0 | 0 | 32 |
+| w1-stone-dips | 1 | 0 | 0 | 50 | 1 | 0 | 0 | 48.5 |
+| w1-stone-zigzag | 3 | 0 | 0 | 52 | 3 | 0 | 0 | 56 |
+| w1-stump-descent | 1 | 0 | 0 | 39.5 | 1 | 0 | 0 | 27.5 |
+| w1-stump-stones | 2 | 0 | 0 | 44 | - | - | - | - |
+| w1-sunlit-log | 5 | 0 | 0 | 16 | 12 | 0.08 | 0 | 17 |
+| w1-twin-bounce | - | - | - | - | 9 | 0 | 0 | 33.5 |
+| w1-twin-mushroom-fork | - | - | - | - | 12 | 0 | 0 | 37 |
+| w1-zigzag-run | - | - | - | - | 1 | 0 | 0 | 42.5 |
+
+C1 done-item 7: PASS

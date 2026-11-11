@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { generateAllLevels } from './worldsData.ts';
 import { buildStage, builtOnGen2, generateStage, setLayoutVariant } from './stageGenerator.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
-import { checkLanes, validateStage } from './levelCheck.ts';
+import { checkLanes, validateAsJudged, validateStage } from './levelCheck.ts';
 import { measureStage } from './stageMetrics.ts';
 import { isGen2Stage } from './gen2/game.ts';
 import { gen2Model } from './gen2/pipeline.ts';
@@ -157,7 +157,8 @@ test('skills are respected on the lanes: no swing before the swing is taught, no
     for (const f of s.lanes ?? []) {
       if (mission < 4) assert.equal(f.high.terrain === 'swing', false, `${l.id}: a swing lane before the swing is taught`);
     }
-    assert.equal(validateStage(s).ok, true, l.id);
+    // (as the game judges it: 1-1 on its flown arcs, levelCheck.ts validateAsJudged; changed, INT-1-1: its double test gaps)
+    assert.equal(validateAsJudged(s).ok, true, l.id);
   }
 });
 

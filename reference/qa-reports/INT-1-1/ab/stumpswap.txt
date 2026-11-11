@@ -1,0 +1,5 @@
+== stumpswap
+    1  needs nothing | keep pass(0) | drop pass(1)   e.g. easy 15965 w1-stone-zigzag
+    1  needs nothing | keep pass(2) | drop pass(2)   e.g. normal 45554 w1-cache-stones
+    1  needs nothing | keep pass(3) | drop pass(3)   e.g. normal 1025 w1-leap-stones
+    1  needs nothing | keep pass(6) | drop pass(6)   e.g. normal 24741 w1-leap-stones

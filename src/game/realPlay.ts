@@ -10,6 +10,7 @@
  */
 import { headlessCanvas } from './headlessDom.ts';
 import { GameEngine } from './engine.ts';
+import { helpLineOnScreen } from './helpLadder.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { EXTRA_STAGES } from './extraStages.ts';
 import { KIT_STAGE_ID, kitStageConfig } from './kitStage.ts';
@@ -137,10 +138,15 @@ export class RealPlay {
     e.guide = (text: string, seconds: number) => {
       this.said.push({ text, x: e.player.x, y: e.player.y, t: e.gameTime });
       guide(text, seconds);
+      // (no bubble here: a help ladder line counts as on screen at once, helpLadder.ts helpLineOnScreen; DotGuide.tsx reports it in play)
+      helpLineOnScreen(text);
     };
     e.loseLife = () => {
       this.died = true;
     };
+    // (1-1's help offer, R-165.62: there is no screen to show it on here, and the stage holds still until it is answered; a run that
+    // reaches it without asking for it answers no, so play goes on. A test of the offer sets its own helpAsk, helpLadder11.test.ts)
+    if ('helpAsk' in e) e.helpAsk = (_o: unknown, answer: (yes: boolean) => void) => answer(false);
     e.inputGrace = 0;
   }
 

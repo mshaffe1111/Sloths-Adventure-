@@ -1,0 +1,21 @@
+ "easy-port": {
+  "cb": [
+   "1.3 onCoach null",
+   "1.3 onGuide Flick up again in the air to jump twice",
+   "1.3 onCoach jump",
+   "2.5 onLesson fruit",
+   "2.7 putBack",
+   "3.9 putBack",
+   "5 putBack",
+   "5.5 onGuide Jump, then flick up again in the air!",
+   "15.3 putBack",
+   "16.5 putBack",
+   "17.6 putBack",
+   "18.7 putBack",
+   "19.9 putBack",
+   "20.4 onGuide Ooh, look! A step. Up you go."
+  ],
+  "said": [
+   "Flick up again midair to jump twice."
+  ],
+  "flickUp": 0,

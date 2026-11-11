@@ -6,7 +6,7 @@ import { generateAllLevels } from './worldsData.ts';
 import { generateStage, setLayoutVariant } from './stageGenerator.ts';
 import { buildProtoStage } from './protoStage.ts';
 import { skillHeldAt } from './skills.ts';
-import { validateStage } from './levelCheck.ts';
+import { validateAsJudged } from './levelCheck.ts';
 
 const plat = (id: number, x: number, y: number, width: number, height = 26): Platform => ({ id, x, y, width, height, type: 'solid' });
 const flower = (id: number, x: number, y: number): Collectible => ({ id, type: 'flower', x, y, collected: false, bobPhase: 0 });
@@ -53,7 +53,8 @@ test('every flower, fruit and leaf in every stage is somewhere he can get it', (
       const w = { platforms: st.platforms, vines: st.vines, ropes: st.ropes, waterY: st.waterY, glide: skillHeldAt('glide', (l.worldIndex - 1) * 10 + l.miniIndex) };
       for (const c of badPickups(w, st.collectibles)) bad.push(`${l.id}/${v} ${c.type} (${Math.round(c.x)}, ${Math.round(c.y)})`);
       if (v === 1) {
-        const errs = validateStage(st).errors.filter((e) => /out of reach|inside platform|overlap/.test(e));
+        // (as the game judges it: 1-1 on its flown arcs, levelCheck.ts validateAsJudged; changed, INT-1-1)
+        const errs = validateAsJudged(st).errors.filter((e) => /out of reach|inside platform|overlap/.test(e));
         if (errs.length) bad.push(`${l.id}: ${errs[0]}`);
       }
     }

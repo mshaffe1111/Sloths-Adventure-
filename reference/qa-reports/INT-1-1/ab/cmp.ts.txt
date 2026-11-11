@@ -1,0 +1,40 @@
+// for each special case: pieces whose grown boxes change when it is dropped; fly both (with the rule, without), and without help
+import '/home/user/Sloths-Adventure-/src/game/headlessDom.ts';
+import { RealPlay } from '/home/user/Sloths-Adventure-/src/game/realPlay.ts';
+import { setDifficulty } from '/home/user/Sloths-Adventure-/src/game/difficulty.ts';
+import { withPlaySeed } from '/home/user/Sloths-Adventure-/src/game/testlink1_1.ts';
+import { PROVEN_SEEDS } from '/home/user/Sloths-Adventure-/src/game/gen2/provenSeeds.ts';
+import { plainRun, breaches } from '/home/user/Sloths-Adventure-/src/game/helpSweep.ts';
+const G = globalThis as { __helpDrop?: Set<string> };
+const drop = process.argv[2];
+const n = Number(process.argv[3] ?? 200);
+const tally: Record<string, number> = {};
+const ex: Record<string, string[]> = {};
+const add = (k: string, e: string) => { tally[k] = (tally[k] ?? 0) + 1; (ex[k] ??= []).length < 4 && ex[k].push(e); };
+const fly = (sd: number, k: string, set: 'easy' | 'normal', d: boolean, grow: boolean) => {
+  setDifficulty(set);
+  G.__helpDrop = new Set(d ? [drop] : []);
+  const r = withPlaySeed(sd, () => new RealPlay('1-1', 1));
+  try { return plainRun(r, r.e as any, k, grow); } finally { (r.e as any).stop(); G.__helpDrop = new Set(); }
+};
+for (const set of ['easy', 'normal'] as const) for (const sd of PROVEN_SEEDS['1-1'].seeds.slice(0, n)) {
+  setDifficulty(set);
+  const r = withPlaySeed(sd, () => new RealPlay('1-1', 1));
+  const e = r.e as any;
+  const diffs: string[] = [];
+  for (const pc of e.currentStage.meta.pieces) {
+    G.__helpDrop = new Set(); const a = JSON.stringify(e.stepBoxes(pc));
+    G.__helpDrop = new Set([drop]); const bx = e.stepBoxes(pc); const b = JSON.stringify(bx);
+    const br = breaches(r.platforms, bx); if (br.length) add('drop: breach', `${set} ${sd} ${pc.k} ${br[0]}`);
+    G.__helpDrop = new Set();
+    if (a !== b) diffs.push(pc.k);
+  }
+  e.stop();
+  for (const k of diffs) {
+    const keep = fly(sd, k, set, false, true), dr = fly(sd, k, set, true, true), bare = fly(sd, k, set, false, false);
+    const tag = `${bare.ok ? 'needs nothing' : 'needs help'} | keep ${keep.ok ? 'pass' : 'FAIL'}(${keep.grown}) | drop ${dr.ok ? 'pass' : 'FAIL'}(${dr.grown})`;
+    add(tag, `${set} ${sd} ${k}${dr.ok ? '' : ' drop: ' + dr.why}${keep.ok ? '' : ' keep: ' + keep.why}`);
+  }
+}
+console.log(`== ${drop}`);
+for (const k of Object.keys(tally).sort()) console.log(`${String(tally[k]).padStart(5)}  ${k}   e.g. ${ex[k].join('; ')}`);

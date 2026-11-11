@@ -55,3 +55,4 @@ Write the list down in the report: each object, why it's there, what holds it up
 - Pieces no kit paints (a styleless piece, World 1 lily pads) fall back to terrain.ts's code earth, three gradients each, and read as a
   grey slab. Every piece kind needs a painted look.
 - Fading a lower layer in from a lighter value showed a new edge. Match the value where the upper layer ends.
+- A camera change is proved with a per-engine-frame trace (the largest step in px of world, his room to the HUD plate), before and after, on the stage it is for and one other world; a still hides a one-frame snap (INT-1-1, the Critic: reference/qa-reports/INT-1-1/delta2/).

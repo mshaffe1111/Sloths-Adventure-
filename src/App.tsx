@@ -1051,6 +1051,8 @@ export default function App() {
   // a back swipe from the screen's edge pauses the stage instead of leaving the game (backGuard.ts, polish report CT-6)
   const onBackSwipe = useRef<() => void>(() => {});
   onBackSwipe.current = () => {
+    // (an open pop-up owns Back first, as the phone's Back button does: over 1-1's help offer it is a no, never the pause menu under it)
+    if (handleBack()) return;
     if (screen === 'playing') pauseGame();
   };
   const onStage = screen === 'playing' || screen === 'paused';

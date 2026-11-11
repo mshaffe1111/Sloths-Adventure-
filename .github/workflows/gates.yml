@@ -2,7 +2,7 @@ name: Gates (art, known lists, clip, draw)
 
 # The gates that are not unit tests (reference/methods/gates.md, LAWS.md law 5). deploy.yml calls this before it publishes, so a
 # failing gate blocks the live site. The unit tests (playerText.test.ts among them) run in deploy.yml's own test shards.
-#   gates      artcheck (1 s) + knowncheck (1 s) + roadmapcheck (1 s) + clipcheck (about 3 min): about 4.5 min with setup (measured 2026-11-01)
+#   gates      artcheck (1 s) + build and chunkcheck (about 30 s) + knowncheck (1 s) + roadmapcheck (1 s) + clipcheck (about 3 min): about 4.5 min with setup (measured 2026-11-01)
 #   drawcheck  its own runner, side by side: about 6.5 min with setup (measured 2026-11-01)
 #   rolled     the rolled stages' proven-seed lists (seedlist --check: every listed seed clean on both settings, its replay identical to
 #              its search) and the stage-start build time (buildcheck: p95 <= 150 ms at CPU x4): about 1 + 3 min here, 2026-11-06
@@ -27,6 +27,9 @@ jobs:
           node-version: 22
       - run: npm install --no-audit --no-fund --legacy-peer-deps
       - run: node tools/perf/artcheck.mjs
+      # every JS chunk at least 200 KB under Workbox's 4 MiB precache limit (R-165.103; React sits in its own vendor chunk)
+      - run: npx vite build
+      - run: node tools/perf/chunkcheck.mjs
       - run: node tools/perf/knowncheck.mjs
       # open work in the repo (defect log, known lists, NEXT.md files) must have an R-id on reference/ROADMAP.md; done items need a real
       # PR or commit (needs the full history above)
@@ -77,5 +80,9 @@ jobs:
       - run: npm install --no-audit --no-fund --legacy-peer-deps
       # (an engine or kit change that stales a rolled stage's seed list fails here until the list is rebuilt: tools/engine/seedlist.ts 1-1)
       - run: npx tsx tools/engine/seedlist.ts 1-1 --check
+      # (the child, middle and expert bots, R-165.59: mapped from the tester profiles and calibrated on 1-1; a change to 1-1, the engine
+      # or the bots that moves a run fails here until the calibration is re-run and calibration-main.jsonl recommitted with it,
+      # reference/qa-reports/R-165.59/BOTS.md; about 40 s)
+      - run: npx tsx --test tools/inspect/tierBots.test.ts
       - run: npm install --no-save --no-audit --no-fund --legacy-peer-deps playwright@1.63.0 && npx playwright install --with-deps chromium
       - run: node tools/perf/buildcheck.mjs

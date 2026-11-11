@@ -15,9 +15,13 @@ test('an unmarked floorless gap is a breach; inside a soft zone it is not (plant
 });
 
 test('the double after its teach: a gap only the double crosses with a soft zone under it keeps it; none, or a bare one, breaks it (planted)', () => {
-  const ps = [P(1, 0, 600, 500), P(2, 700, 600, 500)];
+  // (R-165.61: "only the double crosses" on the flown arcs, reach.ts: one jump at its best crosses 246, a double flick 283 from 70 px;
+  // the old closed-form 200 px gap is now a gap one jump crosses)
+  const ps = [P(1, 0, 600, 500), P(2, 760, 600, 500)];
   const base = { config: { levelHeight: 2000 }, gen2: { nodes: [{ token: 'Tg2>', x0: 0 }] } };
-  assert.deepEqual(promiseBreaches11({ ...base, platforms: ps, heartFalls: [{ x0: 500, x1: 700, soft: true }] }), []);
+  assert.deepEqual(promiseBreaches11({ ...base, platforms: ps, heartFalls: [{ x0: 500, x1: 760, soft: true }] }), []);
+  assert.match(promiseBreaches11({ ...base, platforms: [P(1, 0, 600, 500), P(2, 700, 600, 500)], heartFalls: [{ x0: 500, x1: 700, soft: true }] }).join(';'), /no gap only the second jump/, '200 px: one jump crosses it');
+  assert.deepEqual(promiseBreaches11({ ...base, platforms: [P(1, 0, 600, 500), P(2, 700, 600, 500)] }, 'easy').filter((b) => /second jump|double gap/.test(b)), [], 'Easy: the double promises are not judged (registry settings)');
   assert.match(promiseBreaches11({ ...base, platforms: ps }).join(';'), /nothing under the double gap/);
   assert.match(promiseBreaches11({ ...base, platforms: [P(1, 0, 600, 500), P(2, 560, 600, 500)] }).join(';'), /no gap only the second jump/);
 });

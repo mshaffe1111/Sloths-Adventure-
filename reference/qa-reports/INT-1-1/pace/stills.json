@@ -1,0 +1,138 @@
+{
+ "easy-port-sent3": 1.943,
+ "easy-port-sent8": 5.048,
+ "easy-port": {
+  "cb": [
+   "2.8 onGuide Flick up again in the air to jump twice",
+   "4.7 putBack",
+   "5.5 putBack",
+   "6.3 putBack",
+   "6.9 onGuide Run first, then flick up and forward!",
+   "7.1 putBack",
+   "8 putBack",
+   "8.7 putBack",
+   "9.5 putBack",
+   "10.3 putBack",
+   "10.8 onGuide Run first, then flick up and forward!",
+   "10.8 onGuide Ooh, look! A step. Up you go.",
+   "11.1 putBack",
+   "12 putBack",
+   "13 putBack",
+   "14 putBack"
+  ],
+  "said": [
+   "3.1 Flick up again midair to jump twice.",
+   "6.9 Run first, then flick up and forward!",
+   "11 Ooh, look! A step. Up you go."
+  ],
+  "flickUp": 0,
+  "events": {
+   "asking": null,
+   "paused": false,
+   "on": true
+  }
+ },
+ "easy-land-sent3": 1.914,
+ "easy-land-sent8": 5.312,
+ "easy-land": {
+  "cb": [
+   "3 onGuide Flick up again in the air to jump twice",
+   "4.8 putBack",
+   "5.7 putBack",
+   "6.5 putBack",
+   "7 onGuide Run first, then flick up and forward!",
+   "7.3 putBack",
+   "8.1 putBack",
+   "8.8 putBack",
+   "9.6 putBack",
+   "10.6 putBack",
+   "11.1 onGuide Run first, then flick up and forward!",
+   "11.1 onGuide Ooh, look! A step. Up you go.",
+   "11.5 putBack",
+   "12.5 putBack",
+   "13.2 putBack",
+   "14 putBack"
+  ],
+  "said": [
+   "3.3 Flick up again midair to jump twice.",
+   "7.1 Run first, then flick up and forward!",
+   "11.4 Ooh, look! A step. Up you go."
+  ],
+  "flickUp": 0,
+  "events": {
+   "asking": null,
+   "paused": false,
+   "on": true
+  }
+ },
+ "normal-port-sent3": 2.503,
+ "normal-port-sent8": 6.637,
+ "normal-port": {
+  "cb": [
+   "2.5 onGuide Flick up again in the air to jump twice",
+   "4.1 putBack",
+   "5 putBack",
+   "5.9 putBack",
+   "6.5 onGuide Run first, then flick up and forward!",
+   "6.8 putBack",
+   "7.7 putBack",
+   "8.6 putBack",
+   "9.5 putBack",
+   "10.4 putBack",
+   "11.3 putBack",
+   "12.2 putBack",
+   "13.1 putBack",
+   "14 putBack",
+   "15.1 onGuide Run first, then flick up and forward!"
+  ],
+  "said": [
+   "2.7 Flick up again midair to jump twice.",
+   "6.5 Run first, then flick up and forward!"
+  ],
+  "flickUp": 0,
+  "events": {
+   "asking": {
+    "k": "w1-log-chain-rise",
+    "count": 12,
+    "cut": "w1-boulder-grey-moss"
+   },
+   "paused": true,
+   "on": true
+  }
+ },
+ "normal-land-sent3": 1.933,
+ "normal-land-sent8": 5.465,
+ "normal-land": {
+  "cb": [
+   "3.2 onGuide Flick up again in the air to jump twice",
+   "5.3 putBack",
+   "6.2 putBack",
+   "7.1 putBack",
+   "7.7 onGuide Run first, then flick up and forward!",
+   "7.9 putBack",
+   "8.8 putBack",
+   "9.6 putBack",
+   "10.7 putBack",
+   "11.7 putBack",
+   "12.8 putBack",
+   "13.6 putBack",
+   "14.5 putBack",
+   "15.3 putBack",
+   "16.4 onGuide Run first, then flick up and forward!"
+  ],
+  "said": [
+   "3.6 Flick up again midair to jump twice.",
+   "8 Run first, then flick up and forward!"
+  ],
+  "flickUp": 0,
+  "events": {
+   "asking": {
+    "k": "w1-log-chain-rise",
+    "count": 12,
+    "cut": "w1-boulder-grey-moss"
+   },
+   "paused": true,
+   "on": true
+  }
+ }
+}
