@@ -311,3 +311,6 @@ me: the whatsNew entry, and any other changed player string, before the PR.
 one." (the first-ever run is fixed, FIRST_RUN_11; 200 proven layouts can repeat; 1-1 is a run, not a climb). Line 3 becomes "Stuck on a
 jump? Dot can help with a little step up." (the help covers all three jump kinds). The title, lines 1 and 4, R-165.57's coach text and
 the A2 lines are approved as sent.
+**0.9.6 player text: APPROVED at 5:50 PM ET on release-0.9.6@06bbd29f** (checked in the code). This covers What's New as changed,
+R-165.57's pad coach text, the helpLadder.ts lines, and the screen-reader labels. The 1-1 hints "No soft moss up here!" and "This way,
+Pokey! Try over here." are silenced (one tip, one channel). Next: read the release notes and the STATE decisions after the merge.
