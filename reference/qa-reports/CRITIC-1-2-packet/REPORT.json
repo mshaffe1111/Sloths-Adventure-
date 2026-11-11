@@ -1,0 +1,201 @@
+{
+ "audited": {
+  "branch": "t-design-1-2",
+  "head": "f60e6503",
+  "files": [
+   "reference/packets/2026-11-11/CONTENT-1-2-relay.md",
+   "reference/packets/2026-11-11/ENGINE-1-2-routing.md"
+  ]
+ },
+ "status": "REJECT",
+ "verdicts": {
+  "CONTENT-1-2-relay.md": "REJECT",
+  "ENGINE-1-2-routing.md": "REJECT"
+ },
+ "violations": [
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 1,
+   "item": "deal",
+   "file": "CONTENT",
+   "line": "CONTENT:32,47-48; w1.ts:49",
+   "rule": "deal",
+   "evidence": "`floating 10` lands only in the last third (the kit's window); the only floating sections are a P and a D; graphs A and B have F,C / X,W there, C deals it to its late F. Rolls with \"no floating section left\": A 52 of 56 built, B 57 of 59, C 29 of 60 (meadow held to rest so B builds at all); rolls with no pool-short of any kind: 8 of 175 (out/supply-rolls.txt). probe12.ts:31 ran a different brief (teaches [], deal 40/30/30): the packet's own was never rolled (D37)",
+   "fix": "add floating sections for F, C, X and W (Matt: more pieces), or take floating out of 1-2's deal; paste a probe on the packet's brief."
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 2,
+   "item": "rests",
+   "file": "CONTENT",
+   "line": "CONTENT:58; w1.ts:1418",
+   "rule": "rests",
+   "evidence": "4 rests for graph B's 4 R nodes and w1-meadow is also an arrival (`['rest','arrive']`): it opens 23 of 63 built rolls (no `hint.1-2.follow`), and B throws \"pool is spent\" on 58 of 60",
+   "fix": "6 rests or more; an own rest in the meadow's place and '1-2' off w1-meadow's feel."
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 3,
+   "item": "holes",
+   "file": "CONTENT",
+   "line": "CONTENT:64-99",
+   "rule": "holes",
+   "evidence": "no climb P, no bounce D, no climb or floating C (C has 2 sections in all): named on 15-27 rolls of 60 a graph (out/supply-by-graph.txt, two lines a roll)",
+   "fix": "fill each job by type the deal can ask for, or say which types each job may be dealt."
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 4,
+   "item": "tips",
+   "file": "pipeline.ts",
+   "line": "pipeline.ts:2684-2685",
+   "rule": "tips",
+   "evidence": "a `tip` socket whose id has no row fails the roll; CONTENT:146-148 lays three such (roots, under, the thorn line, which has no id); N3 is in every roll",
+   "fix": "name the id; lay none as `tip` until the row exists (keep section, piece and t in one constant and the report)."
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 5,
+   "item": "knot-bank",
+   "file": "w1.ts",
+   "line": "w1.ts:715-720",
+   "rule": "knot-bank",
+   "evidence": "9 sections carry '1-2' today, not 8: w1-knot-bank (with `hint.1-1.bank`) stays in 1-2's pool beside its own version; done-item 1 goes red and \"byte for byte\" forbids the cure",
+   "fix": "allow the tag edit: '1-2' off its feel."
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 6,
+   "item": "made things",
+   "file": "w1CutArt.ts",
+   "line": "w1CutArt.ts:69-84,:105; w1.ts:1522",
+   "rule": "made things",
+   "evidence": "every thin log is drawn as a plank and a tall narrow stone as the sawn w1-stump-wide on any World 1 gen2 stage; in neither WRITE; \"none lays a made thing\" has no test",
+   "fix": "name the owner and the test (no plank or w1-stump-wide `cut` on a listed 1-2 seed)."
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 7,
+   "item": "petals",
+   "file": "goals.ts",
+   "line": "goals.ts:21,:80",
+   "rule": "petals",
+   "evidence": "the quota is 87.5% of ALL petals, so the low-road rule allows off-road petals of 12.5% of the laid minus 2 (4 of 50, 10 of 96); the packet asks 3 caches of 3-4, a petal on every off-path landing, and ENGINE item 0 adds 3 per fork end",
+   "fix": "give the numbers (petals on the low road, the most off it) or make a cache something that is not a petal."
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 8,
+   "item": "show first",
+   "file": "CONTENT",
+   "line": "CONTENT:173-176; ENGINE:82-87,:97-98",
+   "rule": "show first",
+   "evidence": "the clumps are loose PNGs and the bed's drawing is Engine's: at 2 h Content has a leaf-bed soft pit; both packets claim Matt's still",
+   "fix": "one owner (Engine's still); Content's first still is the chain's layout, for the lead."
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 9,
+   "item": "bots",
+   "file": "tierBots.ts",
+   "line": "tierBots.ts:18-22,:32-37",
+   "rule": "bots",
+   "evidence": "the expert has no Easy bot (skipped silently): \"140 s on each setting\" cannot run; a run has no hearts field",
+   "fix": "Easy's floor on the middle tier; the Critic adds hearts per run and piece before item 7."
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 10,
+   "item": "variety tool",
+   "file": "tools/engine/stage.ts",
+   "line": "tools/engine/stage.ts:326-333",
+   "rule": "variety tool",
+   "evidence": "stage.ts rolls raw gen2 seeds only `if (id === '1-1')`; nothing over listed seeds, graph share or per-section counts",
+   "fix": "say the builder writes it in w1.stage12.test.ts on `stageVariety`."
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 11,
+   "item": "order and time",
+   "file": "CONTENT",
+   "line": "CONTENT:2,:143-147; ENGINE:23-27; seedList.ts:67; seedlist.ts:23",
+   "rule": "order and time",
+   "evidence": "routing before the list throws, the list is \"after routing\", and `KITS` is in item 4; \"about 8 h\" has no source (D25: C1's 3 h 49 m re-laid existing sections; this authors 28) and counts no wait",
+   "fix": "`KITS['1-2']` in Engine's first push, list on raw builds, then routing; done-items in three phases, waits timed apart."
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 12,
+   "item": "left to guess",
+   "file": "CONTENT",
+   "line": "CONTENT:82-99,:109",
+   "rule": "left to guess",
+   "evidence": "\"first-run seed\" (the lock is 1-1's); N18 \"only after an R\" (E follows S in all three graphs; no such rule in types.ts); where `hint.1-2.highlow` lies; what stands for a root arch (N3 b, N9, N11: none painted); the pillar's art (props-atlas#stump is 127 px at scale, the pillar 150-170; pickCut stops at 140); clumps at 56 px are 90-144 wide, so \"three or more a hollow\" cannot fit N4's and N8's 80-135 px dips; N16 Easy `ch(2)` against chain.md \u00a73 \"else 3\".",
+   "fix": "in the evidence, item by item"
+  },
+  {
+   "packet": "ENGINE-1-2-routing.md",
+   "n": 1,
+   "item": "missing item",
+   "file": "nodeCode.ts",
+   "line": "nodeCode.ts:138-141; pipeline.ts:654-661",
+   "rule": "missing item",
+   "evidence": "V3 fails any roll where a section uses the double with no double teach IN the stage (`lessons` is not read): the two reused test-backs, two-lifts-12, bounce-wall-12, mushroom-log-12, root-stair-fork-12 (probe12b v3)",
+   "fix": "add it; nodeCode.ts is not in WRITE (:39-42)."
+  },
+  {
+   "packet": "ENGINE-1-2-routing.md",
+   "n": 2,
+   "item": "promise",
+   "file": "ENGINE",
+   "line": "ENGINE:88-89; CONTENT:84",
+   "rule": "promise",
+   "evidence": "`thorn.untaught` (no thorn drop before the END of the teach node) refuses every roll: N3's own first chain is one",
+   "fix": "\"before the thorn line's socket\"."
+  },
+  {
+   "packet": "ENGINE-1-2-routing.md",
+   "n": 3,
+   "item": "order",
+   "file": "ENGINE",
+   "line": "ENGINE:23-27,:124-128",
+   "rule": "order",
+   "evidence": "as CONTENT 11",
+   "fix": "`KITS` first."
+  },
+  {
+   "packet": "ENGINE-1-2-routing.md",
+   "n": 4,
+   "item": "put-back",
+   "file": "ENGINE",
+   "line": "ENGINE:78-79",
+   "rule": "put-back",
+   "evidence": "\"never a piece with a mushroom on it\" and \"the entry ledge, short of its mushroom\": the entry ledge carries the mushroom; N16's island and N5's middle ledges unnamed",
+   "fix": "\"the last ledge he stood on that is not a pillar, short of its mushroom\"."
+  },
+  {
+   "packet": "ENGINE-1-2-routing.md",
+   "n": 5,
+   "item": "also",
+   "file": "ENGINE",
+   "line": "ENGINE:34,:83-86,:97-98,:2",
+   "rule": "also",
+   "evidence": "a wordless tip must be made legal or forbidden (CONTENT 4); the clump rule by hollow width (CONTENT 12); the still's owner (CONTENT 8); made things (CONTENT 6); \"about 8 h\" has no source.",
+   "fix": "in the evidence, item by item"
+  }
+ ],
+ "holds": [
+  "cites: ENGINE 55/57 exact at fa5ad9d1, CONTENT 47/52 at 5dafe73b",
+  "chain flights and chainlay12 reproduce",
+  "1-1 isolation: 28 builds, 0 differ",
+  "finds11 --all: 610 forks, 554 bare, exit 1"
+ ],
+ "tests_added": [
+  "reference/qa-reports/CRITIC-1-2-packet/probe12b.ts (iso | supply | v3; proof runs, not in the suite)",
+  "reference/qa-reports/CRITIC-1-2-packet/cites.py + cites-engine.txt + cites-content.txt"
+ ],
+ "not_run": [
+  "tsc, the suite and the gates: no production code changed in a packet audit",
+  "heights and reach of the 28 unbuilt sections: they do not exist yet"
+ ]
+}

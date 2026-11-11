@@ -1,0 +1,19 @@
+throws 57 of 120 sections per roll 14 - 16
+graphs: see the per-graph runs below
+first section [["w1-meadow",23],["w1-rain-path",21],["w1-root-walk",19]]
+52 THROW gen# 1-2: no section fits node n# (rest): the pool is spent (4 that fit are laid already, slot #)
+42 pool short at slot # (n# combine: no climb section left)
+40 pool short at slot # (n# descent: no bounce section left)
+36 pool short at slot # (n# fork: no floating section left)
+34 pool short at slot # (n# combine: no floating section left)
+34 pool short at slot # (n# practise: no climb section left)
+26 node code: V3 at token 4: P2^+ uses the double before its teach
+26 node code: V3 at token 4: Pc2 uses the double before its teach
+26 node code: V11 at token 6: 'b' on two neighbouring content nodes
+20 node code: V3 at token 13: P2^+ uses the double before its teach
+20 node code: V3 at token 13: Pc2 uses the double before its teach
+16 node code: V3 at token 6: Cg2> uses the double before its teach
+pool 44 never laid: w1-stump-stile, w1-log-steps-descent, w1-stair-gap-twist, w1-knot-bank-12, w1-drop-bounce-12, w1-dip-bounce-12, w1-two-answers-12, w1-cap-run
+graphs [rolled, structurally clean] [["harvest-12-C",[45,0]],["harvest-12-A",[18,0]]]
+NOARR=1 throws 8 of 120 sections per roll 14 - 17
+NOARR=1 graphs [rolled, structurally clean] [["harvest-12-C",[45,0]],["harvest-12-A",[34,0]],["harvest-12-B",[33,0]]]
