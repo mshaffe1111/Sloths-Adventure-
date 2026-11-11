@@ -84,3 +84,9 @@ ADR-001 §3 freezes an "easy-any" scope for the verdicts. For E0a the lead narro
 every other stage keeps today's closed-form checks and reports the verdicts as notJudged, until each world is flown and moved on
 purpose. Reason: only 1-1's reach has been flown (reach.md) and only 1-1 is being re-laid; judging other worlds by numbers flown on
 1-1 would move stages nobody has looked at. The Architect's ADR-001 gets this note when its branch merges.
+
+## The lead's ruling on made things in 1-1 (11-11)
+The 11-06 rule (no made things in the home forest: rope, planks, sawn or carved wood and stone, crates, ladders, frames) now covers
+all art (Content applied it to all four cut sets). Today's 1-1 cut atlas (w1-cut.webp) draws 5 planks. They stay until the re-lay; the
+re-lay (B1, C1) replaces each with a natural piece of the same footprint (a flat-topped fallen log or a cut stump from Matt's batches),
+and the C1 packet names it as a done-item.
