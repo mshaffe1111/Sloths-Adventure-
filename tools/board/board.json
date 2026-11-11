@@ -64,11 +64,11 @@
       "cards": [
         {
           "id": "R-165.69",
-          "title": "Tester names in main's old history: rewrite the history, or clean the files only?"
+          "title": "Tester names in main's old git history: clean the files now, and rewrite the history once before launch?"
         },
         {
           "id": "R-165.55",
-          "title": "Three story questions from the story keeper: the skulls, the two food lines, Meeca's parents"
+          "title": "Story questions: Meeca's parents handed to the story keeper (11-11); the skulls and the two food lines go to it too"
         }
       ]
     },
@@ -106,7 +106,8 @@
         },
         {
           "id": "R-165.59",
-          "title": "Delete only the pre-0.9.5 recordings, once the analyst's totals exist"
+          "title": "Tester data: the analyst saves the bot inputs, the bots are built, then you purge the whole sheet (your call 11-11)",
+          "waits": "the bot inputs and the bots"
         },
         {
           "id": "R-165.57",
