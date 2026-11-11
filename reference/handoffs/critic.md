@@ -1,7 +1,7 @@
 # Critic: turnover note (rewritten at the end of every task; this one 2026-11-11 4:20 PM ET, the 1-2 packet audit)
 First note under this name: the scripts, the gate order with timings, the traps and the PR body template are still in reference/handoffs/release-clerk.md; read it with this.
 ## Where things stand
-- ATTEMPT 2 audited at t-design-1-2@0cd2a2e8: CONTENT REJECT on 1 line (bare step-down runs against the 4 s quiet line), ENGINE REJECT on 3 (the testers' course moves with EARLY_DOUBLE, item 0 has two owners, blooms name 8-2 too). Report: REPORT-attempt2.md. All 20 attempt-1 lines closed.
+- ATTEMPT 2 audited at t-design-1-2@35364c97: CONTENT REJECT on 1 line (bare step-down runs against the 4 s quiet line), ENGINE REJECT on 3 (the testers' course moves with EARLY_DOUBLE, item 0 has two owners, blooms name 8-2 too). Report: REPORT-attempt2.md. All 20 attempt-1 lines closed.
 - Next delta: re-run quiet11.ts and ctest12.ts ideas on the Designer's edits; cites-*-2.txt at the head they name.
 - Audited t-design-1-2@f60e6503: CONTENT-1-2-relay.md REJECT (12 lines), ENGINE-1-2-routing.md REJECT (5 lines). Report, JSON and proofs: reference/qa-reports/CRITIC-1-2-packet/ on branch t-critic-1-2-packet.
 - The delta audit is next: re-run `probe12b.ts supply` on the Designer's new tables (edit the NEW list to the new tags) and `cites.py` at the head the packets name.

@@ -236,7 +236,7 @@
  },
  "audited": {
   "branch": "t-design-1-2",
-  "head": "0cd2a2e8",
+  "head": "35364c97",
   "cites_at": "t-int-1-1@53bd446a"
  },
  "status": "REJECT",
@@ -258,7 +258,7 @@
    "packet": "ENGINE-1-2-routing.md",
    "n": 1,
    "file": "reference/packets/2026-11-11/ENGINE-1-2-routing.md",
-   "line": "150-164, 186; src/game/levelCheck.ts:132-134; src/game/stageGenerator.ts:2862",
+   "line": "150-165, 187; src/game/levelCheck.ts:132-134; src/game/stageGenerator.ts:2862",
    "rule": "#ctest unchanged",
    "evidence": "out/ctest12.txt: 6 of 16 control-course builds differ with EARLY_DOUBLE + 1-2",
    "fix": "count the double for the gen2-built 1-2 only, or the ctest proof in item 5 gates"
@@ -267,7 +267,7 @@
    "packet": "ENGINE-1-2-routing.md",
    "n": 2,
    "file": "reference/packets/2026-11-11/ENGINE-1-2-routing.md",
-   "line": "26, 60-75, 187-188; STATE.md:357 on the lead branch",
+   "line": "26, 60-75, 188-189; STATE.md:357 on the lead branch",
    "rule": "D40 one owner; name what it is built on",
    "evidence": "item 0 and R-165.119 already with t-engine-11-followup",
    "fix": "strike item 0 or name its owner; name the follow-up head as a frozen input"
@@ -276,7 +276,7 @@
    "packet": "ENGINE-1-2-routing.md",
    "n": 3,
    "file": "reference/packets/2026-11-11/ENGINE-1-2-routing.md",
-   "line": "170-171, 175",
+   "line": "171-172, 176",
    "rule": "what must not move",
    "evidence": "8-2 is a gen2 harvest stage; the rule names every harvest stage; the gate says nothing differs",
    "fix": "World 1 only by a kit row, or prove 8-2 has no off-main pickup"
