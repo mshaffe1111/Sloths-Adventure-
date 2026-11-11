@@ -1,8 +1,8 @@
 {
  "holds": [
-  "rule 7: 32 of 42 named, counted against the tables",
-  "saved quiet12 equals the re-run, all 11 rows",
-  "engine item numbers and data row names agree across the two packets"
+  "ENGINE three wording fixes written in",
+  "pipeline.ts:2178-2185 gap arcs and FLOWER_UP 34 read in code",
+  "no line still puts a petal over a cap or a dip"
  ],
  "tests_added": [
   "reference/qa-reports/CRITIC-1-2-packet/probe12b.ts (iso | supply | v3; proof runs, not in the suite)",
@@ -12,7 +12,8 @@
   "reference/qa-reports/CRITIC-1-2-packet/cites-content-2.txt",
   "reference/qa-reports/CRITIC-1-2-packet/cites-engine-2.txt",
   "reference/qa-reports/CRITIC-1-2-packet/ncount12.ts",
-  "reference/qa-reports/CRITIC-1-2-packet/mirror12.ts"
+  "reference/qa-reports/CRITIC-1-2-packet/mirror12.ts",
+  "reference/qa-reports/CRITIC-1-2-packet/mainflag12.ts"
  ],
  "not_run": [
   "tsc, the suite and the gates: no production code changed in a packet audit",
@@ -238,41 +239,23 @@
  },
  "audited": {
   "branch": "t-design-1-2",
-  "head": "3507c3a2",
+  "head": "50e7905d",
   "cites_at": "t-int-1-1@53bd446a"
  },
- "status": "CONTENT PASS; ENGINE REJECT",
+ "status": "REJECT",
  "verdicts": {
-  "CONTENT-1-2-relay.md": "PASS (two notes)",
-  "ENGINE-1-2-routing.md": "REJECT (2 lines, plus 1 left to guess; unchanged since 65d31898)"
+  "CONTENT-1-2-relay.md": "REJECT (1 line: CONTENT:272)",
+  "ENGINE-1-2-routing.md": "REJECT (the same line: ENGINE:217, 220-221)"
  },
  "violations": [
   {
-   "packet": "ENGINE-1-2-routing.md",
+   "packet": "both",
    "n": 1,
    "file": "reference/packets/2026-11-11/ENGINE-1-2-routing.md",
-   "line": "139",
-   "rule": "a done-test a Critic can run",
-   "evidence": "engine.ts holds \"thorn\" 23 times today; the grep can never be empty",
-   "fix": "no NEW one in engine.ts (23 today); none in the other three"
-  },
-  {
-   "packet": "ENGINE-1-2-routing.md",
-   "n": 2,
-   "file": "reference/packets/2026-11-11/ENGINE-1-2-routing.md",
-   "line": "27-30, 242-244; src/game/protoStage.ts:1496,1514,1664,5330",
-   "rule": "a done-test a Critic can run",
-   "evidence": "the old builder holds four plan === 1-2 branches until item 7; the check after push 2 fails on them",
-   "fix": "allow them by name until item 7"
-  },
-  {
-   "packet": "ENGINE-1-2-routing.md",
-   "n": 3,
-   "file": "reference/packets/2026-11-11/ENGINE-1-2-routing.md",
-   "line": "25-26, 251-253",
-   "rule": "nothing left to guess",
-   "evidence": "how a test adds a row to the three tables, and whether the fixture seeds must roll clean, is not said",
-   "fix": "one exported test-only function; the seeds need only build"
+   "line": "ENGINE:217, 220-221; CONTENT:272; src/game/gen2/worlds/w1.ts:158, 1504; src/game/gen2/types.ts:278-279",
+   "rule": "off the road is main: false; a stump has no main flag",
+   "evidence": "out/mainflag12.txt: of 285 pickups written in the 11 reused sections, 111 on main: true, 38 on main: false, 136 on a piece with no flag",
+   "fix": "\"a piece marked main: false\" in ENGINE item 6 and its done-tests; \"any piece not marked main: false\" in CONTENT done-item 4"
   }
  ],
  "attempt2": {
@@ -393,7 +376,19 @@
   "content_closed_in_attempt6": true
  },
  "notes_content": [
-  "THORN_12 (CONTENT:201) is used once and defined nowhere",
-  "CONTENT:179: the bloom rule failure is expected in phase 1 only, not phase 2"
- ]
+  "CONTENT:184: the bloom rule failure is expected in phase 1 only"
+ ],
+ "attempt6": {
+  "audited": {
+   "branch": "t-design-1-2",
+   "head": "3507c3a2",
+   "cites_at": "t-int-1-1@53bd446a"
+  },
+  "status": "CONTENT PASS; ENGINE REJECT",
+  "verdicts": {
+   "CONTENT-1-2-relay.md": "PASS (two notes)",
+   "ENGINE-1-2-routing.md": "REJECT (2 lines, plus 1 left to guess; unchanged since 65d31898)"
+  },
+  "note": "CONTENT PASS was for the text at 3507c3a2; ENGINE three wording lines closed in attempt 7"
+ }
 }
