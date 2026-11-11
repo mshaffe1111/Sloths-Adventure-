@@ -42,12 +42,12 @@
   },
   {
    "role": "Engine",
-   "task": "the recorder counts every move (E1)",
+   "task": "the recorder counts every move (E1): report drafted, last gates running",
    "status": "working"
   },
   {
    "role": "Content",
-   "task": "all three art batches cut and tagged: passed",
+   "task": "Hugging Face picture list 1: 18 pieces, $2.04 of $6.50; Critic checking",
    "status": "reported"
   },
   {
