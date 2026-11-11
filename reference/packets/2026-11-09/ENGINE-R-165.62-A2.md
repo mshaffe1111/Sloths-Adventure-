@@ -61,6 +61,10 @@ loop never reaches a player without its help.
   to jump." (count those lines over 5 put-backs first; the coach ends after one jump, touchCoach.ts:149-153; the candidates are
   dotGuideHelp.ts, DotGuide.tsx and the gen2 w1.ts teach table: edit only the one the flight names), tools/perf/clipcheck.mjs (the
   route to HelpOffer), tools/playtesters/LOG_EVENTS.md (two rows), tests beside each file, reference/handoffs/engine-core.md.
+- ADDED 11-11 3:05 AM ET on the builder's pushback (Dot's guide dropped the ladder's lines: on Tips DotSay refuses them as a known-move
+  teach, on Help her queue never shows them): src/components/DotGuide.tsx, engineLine only, plus its test: the ladder's lines are
+  queued as struggle help on Help and Tips, never on Quiet. On Quiet the player chose no tips: no Dot line, but Easy's step still
+  grows and Normal's offer (pictures) still shows.
 ## Definition of done (the Critic checks each)
 1. helpLadder.test.ts: for each setting, a scripted run of put-backs at one piece fires each rung at exactly its count, once, and
    nothing else; the count resets past the piece and on a stage end, and not on a refused offer or a pause. Its red: the same test with
