@@ -233,3 +233,17 @@ branch carries the rejected 11-04 World 1 rebuild in src/, so NEVER build or rel
 - Never build ahead of proof (D44).
 - The engine does the work; people give a short brief (D45).
 - One okay stage is never the bar ("variety", Matt).
+
+## 9. Decisions, 11-11: 1-1's help after set-backs (A2; for the lead's ONE-ONE-FIX-PLAN, ccr-ca657d3c-n09zty)
+- Guards: no help line says slow, late, hurry or "too" (that's the General's wound); Dot helps, never does it for him, never sounds disappointed.
+- At 3 set-backs in a piece, once per piece:
+  - long jump: touch "Run first, then flick up and forward!" / pad "Run first, then hold Jump. Big one!";
+  - double: touch "Jump, then flick up again in the air!" / pad "Jump, then tap Jump again in the air!" ("hold" if a tapped double
+    can't clear the gap);
+  - bounce, both: "Land right on the mushroom. Boing!".
+- Easy at 5: a quiet full jump, no words. Easy at 8, when the step grows: "Ooh, look! A step. Up you go." (no arrow or ring).
+- Normal at 12: "Want a little step? I won't tell anyone." Re-ask once, 8 set-backs later: "Still want that step? It's yours."
+  - YES picture: Pokey on a small mossy step. NO picture: Pokey jumping on his own. No ticks, crosses or thumbs; ≥44 px; clear of the
+    insets.
+  - After a no: silence.
+- The teach line plays once only. Dot is silent through set-backs except at these points, and each piece starts its count fresh.
