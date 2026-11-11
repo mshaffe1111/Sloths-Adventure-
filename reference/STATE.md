@@ -129,6 +129,11 @@
   - The A2 packet PASSED 11-11 2:23 AM ET after two rounds (Critic session_01FhBbYN9fhELggd71AFucQv; its last line applied as written,
     no re-audit needed by its word): steps under every rise over 60 px, height = rise - 60, run 24/24 Easy and 16/24 Normal.
   - WORKING: the Engine member on A2, Opus high, created 2:23 AM ET, due 6:30 AM ET, branch t-engine-help from t-engine-putback.
+- 11-11 3:50 AM ET: the analyst's bot inputs are in (t-w11-analyst@27a9c46d, tools/playtesters/profiles/, 33 players, 4 tiers) with a
+  CORRECTION: the tap-then-jump misread is 154 of 700 punches (9 of 10 players), not 481 (its rule counted the jump release `jumpUp` and
+  the jab's designed take-backs). The 11-09 report Critic passed the larger number. A fresh Critic is proving which is right from the
+  recorder code. If 154 holds: R-165.87 (fix A3) stays, smaller; the lead told Matt the larger number on 11-09, and must correct it,
+  and a defect entry follows (a counting rule passed without a check of what each event means).
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,
