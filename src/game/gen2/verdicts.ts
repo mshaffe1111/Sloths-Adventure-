@@ -8,7 +8,7 @@
  */
 import type { Difficulty } from '../difficulty.ts';
 import type { Platform } from '../types.ts';
-import { APEX, arc, BAND_SOURCE, BANDS, BODY_H, lesserArcs, linkArcs, scopeOf, SPARE } from './reach.ts';
+import { APEX, arc, BAND_SOURCE, BANDS, BLOCK_H, BODY_H, lesserArcs, linkArcs, scopeOf, SPARE, TAKEOFF } from './reach.ts';
 import type {
   Drop, FirstRunLayout, JudgedStage, LethalLook, Measure, PromiseRegistry, ReachMove, RollVerdict, SectionKind, SoftLook, Verdict, VerdictName,
 } from './verdicts.types.ts';
@@ -43,20 +43,31 @@ export const TAUGHT: Record<SectionKind, ReachMove> = {
  * A laid jump as a section kind (ADR-001 `asks`): a bounce lip is the bounce teach in a teach node, else the bounce + air jump test; a
  * double that rises more than a block's 50 px is the rise form (thin under a thin lip), a level one the double gap; a single that rises
  * more than 20 px is a single rise, else a single gap. The figure: the rise for a rise kind, the gap lip to lip for a gap kind.
+ * A 'double' PLACE that is not a declared double block (pieces' `block`) and whose figure fits the single band on this setting is a
+ * single section (w1-leap-stones' 50-60 px stones: the place is the builder's envelope, not a lesson; the Critic, E0a attempt 1).
  */
-export function classify(a: RouteAsk, inTeach: boolean): { kind: SectionKind; figure: number } {
+export function classify(a: RouteAsk, inTeach: boolean, setting: Difficulty): { kind: SectionKind; figure: number } {
   const rise = a.yTake - a.yLand, gap = a.x1 - a.x0;
   if (a.move === 'bounce' || a.block === 'bounce') return { kind: inTeach ? 'bounce-teach' : 'bounce-air-test', figure: rise };
+  const single = (): { kind: SectionKind; figure: number } => (rise > 20 ? { kind: 'single-rise', figure: rise } : { kind: 'single-gap', figure: gap });
+  if (a.move === 'double' && a.block !== 'double') {
+    const s = single(), band = BANDS[s.kind][setting];
+    if (band !== 'none' && s.figure <= band.hi) return s;
+  }
   if (a.move === 'double' || a.block === 'double') return rise > 50 ? { kind: a.thin ? 'double-teach-rise-thin' : 'double-teach-rise', figure: rise } : { kind: 'double-test-gap', figure: gap };
-  return rise > 20 ? { kind: 'single-rise', figure: rise } : { kind: 'single-gap', figure: gap };
+  return single();
 }
 
-/** the clear height over the take-off floor along a jump: the lowest underside of a piece wholly above both lips, over the jump's span */
+/**
+ * The clear height over the take-off floor along a jump: the lowest underside of a solid block (BLOCK_H, 50 px or taller: a bough or a
+ * stone is no ceiling, he passes through or lands on it) wholly above both lips, over the take-off run (TAKEOFF.easy, 70 px before the
+ * lip, the longer rule) and the flight up to the far lip; never over the landing, whose next piece is the route's next step
+ */
 export function headroomOf(a: Pick<RouteAsk, 'x0' | 'x1' | 'yTake' | 'yLand'>, platforms: readonly Platform[]): number {
   const top = Math.min(a.yTake, a.yLand);
   let low = -Infinity;
   for (const p of platforms) {
-    if (p.type === 'bouncy' || p.x > a.x1 + 10 || p.x + p.width < a.x0 - 10) continue;
+    if (p.type !== 'solid' || p.height < BLOCK_H.px || p.x >= a.x1 || p.x + p.width <= a.x0 - TAKEOFF.easy) continue;
     const under = p.y + p.height;
     if (under < top - 1 && under > low) low = under;
   }

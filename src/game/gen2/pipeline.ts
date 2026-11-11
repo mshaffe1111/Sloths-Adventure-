@@ -145,6 +145,10 @@ export function gapFor(dyUp: number, dbl: boolean, budget: Pick<StageBudget, 'id
   const env = gapEnvelope(dbl, budget.difficulty);
   return dyUp > 20 ? Math.min(maxGap(dyUp, dbl, budget.margin), env) : env;
 }
+/** is a laid piece's lip thin (under reach.md's 50 px block)? read off the shape as layStage builds it (`mk`): a bank stands to the
+ *  ground (a block), a branch is 24 px and a stone 22 (thin), a hollow log its art's height, any other its own `h` */
+export const thinLaid = (pc: Pick<SectionPiece, 'shape' | 'h'>, w: number): boolean =>
+  pc.shape === 'bank' ? false : pc.shape === 'branch' || pc.shape === 'stone' ? true : pc.shape === 'hollow' ? hollowLogSize('moss', R(w)).height < BLOCK_H.px : (pc.h ?? 24) < BLOCK_H.px;
 /** the highest rise a piece is laid to: on 1-1 the band's top (reach.ts riseEnvelope); elsewhere `k` of riseLimit, as before */
 export const riseCap = (dbl: boolean, k: number, budget: Pick<StageBudget, 'id' | 'riseShare' | 'difficulty'>, thin = false): number =>
   judgedOnArcs(budget.id) ? riseEnvelope(dbl, budget.difficulty, thin) : riseLimit(dbl, budget.riseShare) * k;
@@ -854,7 +858,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const cap = bounceCap(pc);
       y = cap !== undefined ? Math.max(a.y + dy, cap) : a.y + Math.max(-riseCap(false, 0.9, budget), dy);
       // (a bounce lip: the reach it asks of the bounce, over the floor its mushroom stands on; verdicts.ts judges it on 1-1)
-      if (cap !== undefined) asks.push({ x0: a.x + a.w, x1: a.x + a.w, yTake: ref(pc.from!).y + CAP_UP.px, yLand: y, move: 'bounce', block: pc.block, thin: (pc.h ?? 24) < BLOCK_H.px, key: pc.key });
+      if (cap !== undefined) asks.push({ x0: a.x + a.w, x1: a.x + a.w, yTake: ref(pc.from!).y + CAP_UP.px, yLand: y, move: 'bounce', block: pc.block, thin: thinLaid(pc, w), key: pc.key });
     } else if (pl.kind === 'jump' || pl.kind === 'double' || pl.kind === 'pit') {
       const a = ref(pl.after);
       const glide = pl.kind === 'pit' && pl.jump === 'glide' && budget.moves.includes('glide') && dblOK;
@@ -862,7 +866,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       let dy = pl.kind === 'pit' || pl.dy === undefined ? 0 : roll(rng, pl.dy);
       if (T && !pc.block) dy *= T.rise;
       const cap = bounceCap(pc);
-      dy = cap !== undefined ? Math.max(dy, cap - a.y) : Math.max(-riseCap(dbl, 0.95, budget, (pc.h ?? 24) < BLOCK_H.px), dy);
+      dy = cap !== undefined ? Math.max(dy, cap - a.y) : Math.max(-riseCap(dbl, 0.95, budget, thinLaid(pc, w)), dy);
       const g = glide ? glideGap(-dy, budget) : gapFor(-dy, dbl, budget);
       // (a pixel band, gapPx: laid in it exactly from the same one draw a share takes, so the stream after it is unchanged; never past the
       // jump's reach at this rise, which fails the section by name)
@@ -880,7 +884,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const back = (glide || pc.block) && !pl.water && !putBack ? { back: { lips: [a.y, y] as [number, number] } } : {};
       gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back, ...(putBack ? { putBack } : {}) });
       // (the reach this jump asks: verdicts.ts classifies and judges it on 1-1, ADR-001; a glide is no flown move)
-      if (!glide) asks.push({ x0: a.x + a.w, x1: x, yTake: cap !== undefined ? ref(pc.from!).y + CAP_UP.px : a.y, yLand: y, move: cap !== undefined ? 'bounce' : dbl || pc.block === 'double' ? 'double' : 'single', block: pc.block, thin: (pc.h ?? 24) < BLOCK_H.px, key: pc.key });
+      if (!glide) asks.push({ x0: a.x + a.w, x1: x, yTake: cap !== undefined ? ref(pc.from!).y + CAP_UP.px : a.y, yLand: y, move: cap !== undefined ? 'bounce' : dbl || pc.block === 'double' ? 'double' : 'single', block: pc.block, thin: thinLaid(pc, w), key: pc.key });
     } else if (pl.kind === 'rope') {
       // a ledge past a gap no jump or glide clears, a shimmy rope across (rope.ts; the rope itself is hung once both are placed: layStage)
       // (its gap is a liana's, `back` (World 8, 2026-10-31): a soft pit climbing back to `after`, or World 8 Normal's heart fall)
@@ -2732,7 +2736,7 @@ function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2S
   const nodes = st.gen2.nodes ?? [];
   const asks: JudgedStage['asks'][number][] = (ASKS.get(st) ?? []).map((a) => {
     const node = nodes.find((n) => a.x0 >= n.x0 - 1 && a.x0 <= n.x1 + 1);
-    const { kind, figure } = classify(a, !!node && JOB_OF[node.token[0]] === 'teach');
+    const { kind, figure } = classify(a, !!node && JOB_OF[node.token[0]] === 'teach', setting);
     return { section: a.section, kind, x0: a.x0, x1: a.x1, figure, move: TAUGHT[kind], headroom: headroomOf(a, st.platforms) };
   });
   return {

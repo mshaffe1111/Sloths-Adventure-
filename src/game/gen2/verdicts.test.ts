@@ -183,3 +183,75 @@ for (const id of ['5-7', '7-1']) {
     }
   });
 }
+
+// ───────────────────────── attempt 2: the Critic's three verdict bugs and the lead's finish reach (each planted red first) ─────────────────────────
+import { classify, headroomOf } from './verdicts.ts';
+import { layLocal, planBudget, rngFor } from './pipeline.ts';
+import { w1World } from './worlds/w1.ts';
+import { finishReach } from '../stageGenerator.ts';
+import { fixPickups } from '../flowerReach.ts';
+import type { SectionTemplate } from './types.ts';
+import type { GeneratedStage } from '../stageGenerator.ts';
+
+const c11 = generateAllLevels().find((l) => l.id === '1-1')!;
+const W1 = w1World().manifest;
+const riseTpl = (shape: 'bank' | 'branch'): SectionTemplate => ({
+  id: 'rise-probe', name: 'one double rise', archetypes: 'any', phases: ['sho'], difficulty: 3,
+  pieces: [
+    { key: 'a', shape: 'bank', w: [300, 300], place: { kind: 'start' } },
+    { key: 'b', shape, w: [300, 300], place: { kind: 'double', after: 'a', dy: [-140, -136], share: [0.2, 0.25], soft: true } as never },
+  ],
+  entry: { piece: 'a', kind: 'ground' }, exit: { piece: 'b', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
+});
+const risesOf = (shape: 'bank' | 'branch', d: Difficulty) => Array.from({ length: 16 }, (_, k) => {
+  const L = layLocal(riseTpl(shape), planBudget(c11, W1, d), rngFor(31, k), false, { pitDepth: W1.pitDepth });
+  const a = L.pieces.find((p) => p.key === 'a')!, b = L.pieces.find((p) => p.key === 'b')!;
+  return a.y - b.y;
+});
+test('a bank is a block: Normal\'s D bank lays 136-140 and Easy\'s 128-132 (the block rows); a branch lip keeps the thin rows', () => {
+  for (const [d, lo, hi] of [['normal', 136, 140], ['easy', 128, 132]] as const) {
+    const r = risesOf('bank', d);
+    assert.ok(r.every((x) => x >= lo && x <= hi), `${d} bank: ${r.join(', ')} not all in ${lo}-${hi}`);
+  }
+  assert.ok(risesOf('branch', 'normal').every((x) => x <= 134), 'a thin lip on Normal stays in its 128-134 row');
+  // (and the ask says so: a bank landing is not thin)
+  const L = layLocal(riseTpl('bank'), planBudget(c11, W1, 'normal'), rngFor(31, 0), false, { pitDepth: W1.pitDepth });
+  assert.equal(L.asks?.[0]?.thin, false);
+});
+
+test('headroom: only a solid piece 50 px or taller over the take-off and the flight cuts the arc; a bough, or a bank over the landing, does not', () => {
+  const a = { x0: 1000, x1: 1200, yTake: G, yLand: G };
+  const bough = { ...P(9, 1050, G - 84, 120), height: 24 };
+  assert.equal(headroomOf(a, [P(1, 0, G, 1000), P(2, 1200, G, 600), bough]), 9999, 'a 24 px bough is no ceiling');
+  const overLanding = { ...P(9, 1200, G - 160, 200), height: 60 };
+  assert.equal(headroomOf(a, [P(1, 0, G, 1000), P(2, 1200, G, 600), overLanding]), 9999, 'a bank over the landing is the next step, not a ceiling');
+  const roof = { ...P(9, 1080, G - 180, 80), height: 60 };
+  assert.equal(headroomOf(a, [P(1, 0, G, 1000), P(2, 1200, G, 600), roof]), 120, 'a block over the flight: 120 px clear');
+  const overTakeoff = { ...P(9, 940, G - 180, 50), height: 60 };
+  assert.equal(headroomOf(a, [P(1, 0, G, 1000), P(2, 1200, G, 600), overTakeoff]), 120, 'a block over the take-off run (70 px before the lip)');
+});
+
+test('classify: a "double" place whose figure fits the single band is a single section; a declared double block stays a block', () => {
+  const stone = { x0: 0, x1: 170, yTake: G, yLand: G - 60, move: 'double' as const, thin: false, key: 's', section: 's1' };
+  assert.deepEqual(classify(stone, false, 'normal'), { kind: 'single-rise', figure: 60 });
+  assert.deepEqual(classify({ ...stone, yLand: G - 70 }, false, 'easy'), { kind: 'double-teach-rise', figure: 70 }, 'Easy: 70 is over the single band 63');
+  assert.deepEqual(classify({ ...stone, yLand: G, x1: 120 }, false, 'normal'), { kind: 'single-gap', figure: 120 });
+  assert.deepEqual(classify({ ...stone, block: 'double' }, false, 'normal'), { kind: 'double-teach-rise', figure: 60 }, 'a declared block is judged as one');
+});
+
+test('1-1\'s finish reach (stageGenerator finishReach): the far bank of a 256 px gap is on the route, and its flower stays', () => {
+  const st = {
+    config: c11, trees: [], vines: [], ropes: [], enemies: [], boss: null, checkpoints: [],
+    platforms: [P(1, 0, G, 600), P(2, 856, G, 700)],
+    collectibles: [{ id: 1, x: 1200, y: G - 40, type: 'flower', collected: false }],
+    spawnX: 100, spawnY: G, exitTotemX: 1450, exitTotemY: G,
+  } as unknown as GeneratedStage;
+  for (const d of ['normal', 'easy'] as const) {
+    const ids = finishReach(st, d);
+    assert.ok(ids.includes(2), `${d}: the far bank is reached (${ids})`);
+    const items = st.collectibles.map((q) => ({ ...q }));
+    fixPickups({ platforms: st.platforms, vines: [], ropes: [], glide: false, onRoute: new Set(ids) } as never, items);
+    assert.deepEqual([items[0].x, items[0].y], [1200, G - 40], `${d}: the flower stays`);
+  }
+  assert.ok(!finishReach({ ...st, config: { ...c11, id: '1-2' } } as GeneratedStage, 'normal').includes(2), 'outside 1-1: the closed form, as before');
+});
