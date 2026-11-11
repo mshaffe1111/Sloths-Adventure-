@@ -46,13 +46,13 @@ def norm_row(r):
     """-> dict with arrived, player, session, part, version, data (A..H or the old B..H)."""
     if len(r) >= 8 or (r and re.match(r'\d+/\d+/\d{4}', str(r[0]))):
         r = list(r) + [''] * (8 - len(r))
-        a, p, s, part, _dev, ver, _sec, data = r[:8]
+        a, p, s, part, dev, ver, _sec, data = r[:8]
     else:
         r = list(r) + [''] * (7 - len(r))
         a = ''
-        p, s, part, _dev, ver, _sec, data = r[:7]
+        p, s, part, dev, ver, _sec, data = r[:7]
     return {'arrived': a, 'player': p, 'session': s, 'part': int(part or 0) if str(part).isdigit() else 0, 'version': ver,
-            'data': data}
+            'data': data, 'device': dev}
 
 
 def decode(c):
@@ -82,7 +82,7 @@ def load(paths):
     sessions = {}
     for r in rows:
         s = sessions.setdefault(r['session'], {'player': r['player'], 'rows': 0, 'm': [], 'version': r['version'],
-                                               'first': r['arrived'], 'last': r['arrived']})
+                                               'first': r['arrived'], 'last': r['arrived'], 'device': r['device']})
         s['rows'] += 1
         s['last'] = max(s['last'], r['arrived'], key=lambda x: parse_arrived(x) or datetime.min)
         s['first'] = min(s['first'], r['arrived'], key=lambda x: parse_arrived(x) or datetime.max)
@@ -457,17 +457,18 @@ def players(runs, sessions):
               f"({lives / max(mins, 0.1):.2f}/min)  put-backs {soft:3}  punch intents {punch:3} ({punch / max(mins, 0.1):.1f}/min)  left mid-stage {sum(r['end'] != 'finish' and bool(r['slices']) for r in rs)}")
     foes = sum(1 for r in runs for m in r['m'] if m[0] == 'e' and m[2] in ('stomp', 'hurt'))
     print(f'  stomps + hurts in these runs: {foes} (0 = nothing in the stage can be punched, so every punch intent is a misread)')
-    # a punch the player meant as a jump: a jump intent follows within 0.6 s
-    retried, total = C(), C()
+    # a punch the player meant as a jump: NOT taken back by the jab rule (punchCancel, touchGestures.ts:487-499, CT-17) and followed by a
+    # jump PRESS (`jump`; `jumpUp` is the release, TouchController.tsx:50) within 0.6 s among the next 5 intents (jumps_of)
+    retried, total, kept = C(), C(), C()
     for r in runs:
-        il = [m for m in r['m'] if m[0] == 'i']
-        for i, m in enumerate(il):
-            if m[2] == 'punch':
-                total[r['who']] += 1
-                if any(q[2] in ('jump', 'jumpUp') and 0 < q[1] - m[1] <= 600 for q in il[i + 1:i + 6]):  # next 5 intents
-                    retried[r['who']] += 1
-    print(f'  punch intents followed by a jump intent within 0.6 s (looking at the next 5 intents): {sum(retried.values())} of {sum(total.values())}, '
-          f'{len([w for w in retried if retried[w]])} of {len(by)} players {dict(sorted(retried.items()))}')
+        j = jumps_of(r, None)
+        total[r['who']] += j['punch']
+        kept[r['who']] += j['punchKept']
+        if j['misread']:
+            retried[r['who']] += j['misread']
+    print(f'  punches {sum(total.values())}, taken back by the jab rule {sum(total.values()) - sum(kept.values())}, kept '
+          f'{sum(kept.values())}; kept and followed by a jump press within 0.6 s (next 5 intents): {sum(retried.values())}, '
+          f'{len(retried)} of {len(by)} players {dict(sorted(retried.items()))}')
     misread = []
     if foes == 0 and retried:
         top = max(retried.values()) / max(1, sum(retried.values()))
@@ -590,6 +591,310 @@ def ranking(findings):
     print()
 
 
+# ---------------------------------------------------------------- bot profiles (--profiles <outdir>), W11-ANALYST attempt 5
+# Everything the player bots need, so the sheet can be purged (Matt, 11-11). Aggregates only: P-numbers, no name, code, device model,
+# session id or survey text. Field meanings and methods: tools/playtesters/profiles/README.md.
+JAB_CANCEL_MS = 100  # touchGestures.ts:91 TUNING.jabCancelMs: a punch taken back within this is the designed jab-then-flick (CT-17)
+MISREAD_MS = 600  # an UNCANCELLED punch followed by a jump press within this, among the next 5 intents
+COYOTE_MAX_MS = 400  # an air press this soon after walking off a ledge (no jump in between) is a late (coyote) press
+LIP_LOOK_PX = 300  # a ground press counts as aimed at the lip when the walkable edge ahead is this close
+HALF_BODY = 22  # Pokey is 44 px wide and p.x is his middle: he stays on the ground until his middle is about 22 px past the edge
+
+
+def dist(xs):
+    xs = sorted(x for x in xs if x is not None)
+    if not xs:
+        return None
+    q = lambda f: round(xs[min(len(xs) - 1, int(len(xs) * f))], 1)
+    return {'n': len(xs), 'p10': q(0.1), 'p25': q(0.25), 'p50': q(0.5), 'p75': q(0.75), 'p90': q(0.9)}
+
+
+def layouts_for(runs):
+    """the platforms of every layout played, rebuilt by tools/playtesters/layouts.ts (needs npx tsx; the run's `list` must match)"""
+    keys = sorted({f"{r['seed']} {r['mode']}" for r in runs})
+    try:
+        out = subprocess.run(['npx', 'tsx', 'tools/playtesters/layouts.ts'], cwd=REPO, input='\n'.join(keys),
+                             capture_output=True, text=True, timeout=1800).stdout
+        L = json.loads(out)
+    except Exception as e:  # no node: the lip measures are left out, the rest is built
+        print(f'  layouts: not rebuilt ({str(e)[:80]}); lip measures skipped')
+        return {}, None
+    return L, L.get('_list')
+
+
+def ground_runs(plats):
+    """walkable surfaces: platform tops merged where they touch at the same height -> {y: [(x0, x1), ...]}"""
+    by = D(list)
+    for p in plats:
+        by[p[1]].append((p[0], p[0] + p[2]))
+    out = {}
+    for y, segs in by.items():
+        segs.sort()
+        merged = [list(segs[0])]
+        for a, b in segs[1:]:
+            if a <= merged[-1][1] + 2:
+                merged[-1][1] = max(merged[-1][1], b)
+            else:
+                merged.append([a, b])
+        out[y] = merged
+    return out
+
+
+def walked_off(g, G, x_now=None):
+    """the ground line g was within 60 px of the edge he was moving toward: that edge's distance to x_now (+ = past it), else None"""
+    x, y, vx = g[2], g[3], g[4]
+    for a, b in G.get(y, []):
+        if a - HALF_BODY <= x <= b + HALF_BODY:
+            edge = b if vx > 0 else a
+            if abs(edge - x) > 60:
+                return None
+            if x_now is None:
+                return True
+            return round((x_now - edge) if vx > 0 else (edge - x_now))
+    return None
+
+
+def jumps_of(r, G):
+    """the run's jump presses, measured: hold, the lip, coyote, the second press; and its punches"""
+    o = {'hold': [], 'lip': [], 'still': 0, 'ground': 0, 'coyoteMs': [], 'coyotePx': [], 'dblDelay': [], 'airNoFirst': 0,
+         'punch': 0, 'punchTakenBack': 0, 'punchKept': 0, 'misread': 0}
+    last_p, air_since, jumped_in_air, first_air_press, left_ground = None, None, False, None, None
+    il = [m for m in r['m'] if m[0] == 'i']
+    nxt = {id(m): i for i, m in enumerate(il)}
+    for m in r['m']:
+        k = m[0]
+        if k == 'p':
+            st = str(m[6])[0]
+            if st == 'g' and (first_air_press is None or m[1] - first_air_press > 150):
+                # (a ground line in the tick between a ground press and the take-off keeps the press)
+                air_since, jumped_in_air, first_air_press = None, False, None
+            elif st == 'a' and last_p is not None and str(last_p[6])[0] == 'g':
+                air_since = m[1]
+                left_ground = last_p
+            last_p = m
+            continue
+        if k != 'i':
+            continue
+        n = m[2]
+        if n == 'jump':
+            up = next((q[1] for q in il[nxt[id(m)] + 1:] if q[2] == 'jumpUp'), None)
+            if up is not None and up - m[1] < 5000:
+                o['hold'].append(up - m[1])
+            st = str(last_p[6])[0] if last_p else '?'
+            if st in ('g', 'k'):
+                o['ground'] += 1
+                x, y, vx = last_p[2], last_p[3], last_p[4]
+                if abs(vx) < 30:
+                    o['still'] += 1
+                elif G:
+                    for a, b in G.get(y, []):
+                        if a - HALF_BODY <= x <= b + HALF_BODY:
+                            d = (b - x) if vx > 0 else (x - a)
+                            if d <= LIP_LOOK_PX:
+                                o['lip'].append(d)
+                            break
+                jumped_in_air, first_air_press = True, m[1]
+            elif st == 'a':
+                if jumped_in_air and first_air_press is not None:
+                    o['dblDelay'].append(m[1] - first_air_press)
+                    jumped_in_air = False
+                elif air_since is not None and m[1] - air_since <= COYOTE_MAX_MS and left_ground is not None and G \
+                        and abs(left_ground[4]) >= 30 and walked_off(left_ground, G):
+                    # he walked off a ledge (his last ground line within 60 px of the edge he was moving toward) and pressed late
+                    o['coyoteMs'].append(m[1] - air_since)
+                    o['coyotePx'].append(walked_off(left_ground, G, last_p[2]))
+                    jumped_in_air, first_air_press = True, m[1]
+                else:
+                    o['airNoFirst'] += 1
+        elif n == 'punch':
+            o['punch'] += 1
+            later = il[nxt[id(m)] + 1:nxt[id(m)] + 6]
+            if any(q[2] == 'punchCancel' and q[1] - m[1] <= JAB_CANCEL_MS + 50 for q in later):
+                o['punchTakenBack'] += 1
+            else:
+                o['punchKept'] += 1
+                if any(q[2] == 'jump' and 0 < q[1] - m[1] <= MISREAD_MS for q in later):
+                    o['misread'] += 1
+    return o
+
+
+def run_facts(r, G):
+    j = jumps_of(r, G)
+    pieces = D(lambda: {'t': 0.0, 'lives': 0, 'putbacks': 0})
+    stretch = D(float)
+    for s_ in r['slices']:
+        pc = pieces[s_['id']]
+        pc['t'] += s_['dur']
+        pc['lives'] += len(s_['life'])
+        pc['putbacks'] += s_['soft']
+        stretch[s_['words']] += s_['dur']
+    return {'mode': r['mode'], 'seed': r['seed'], 'finished': r['end'] == 'finish', 'finishS': r['finish'][1] if r['finish'] else None,
+            'leftIn': r['quit_in'] if r['end'] != 'finish' and r['slices'] else None, 'played': bool(r['slices']),
+            'lives': sum(len(s_['life']) for s_ in r['slices']), 'putbacks': sum(s_['soft'] for s_ in r['slices']),
+            'pauses': sum(s_['pause'] for s_ in r['slices']), 'minutes': sum(s_['dur'] for s_ in r['slices']) / 60,
+            'pieces': pieces, 'stretch': stretch, 'j': j,
+            'doubleUsed': any(m[0] == 'e' and m[2] == 'move' and str(m[3]).startswith('double') for m in r['m'])}
+
+
+def pool(facts):
+    """one block of play numbers over a list of run facts"""
+    J = D(list)
+    cnt = C()
+    for f in facts:
+        for k in ('hold', 'lip', 'coyoteMs', 'coyotePx', 'dblDelay'):
+            J[k] += f['j'][k]
+        for k in ('still', 'ground', 'airNoFirst', 'punch', 'punchTakenBack', 'punchKept', 'misread'):
+            cnt[k] += f['j'][k]
+    played = [f for f in facts if f['played']]
+    mins = sum(f['minutes'] for f in played) or 0.01
+    pieces = D(lambda: {'runs': 0, 'lives': 0, 'putbacks': 0, 'seconds': []})
+    stretch = D(list)
+    for f in played:
+        for pid, pc in f['pieces'].items():
+            x = pieces[pid]
+            x['runs'] += 1
+            x['lives'] += pc['lives']
+            x['putbacks'] += pc['putbacks']
+            x['seconds'].append(pc['t'])
+        for w, t in f['stretch'].items():
+            stretch[w].append(t)
+    return {
+        'runs': len(facts), 'runsPlayed': len(played), 'finished': sum(f['finished'] for f in facts),
+        'finishSeconds': dist([f['finishS'] for f in facts if f['finishS']]),
+        'livesPerRun': round(sum(f['lives'] for f in played) / max(1, len(played)), 2),
+        'putbacksPerRun': round(sum(f['putbacks'] for f in played) / max(1, len(played)), 2),
+        'pausesPerRun': round(sum(f['pauses'] for f in played) / max(1, len(played)), 2),
+        'leftMidStage': dict(C(f['leftIn'] for f in facts if f['leftIn'])),
+        'doubleUsedShare': round(sum(f['doubleUsed'] for f in played) / max(1, len(played)), 2),
+        'jumpHoldMs': dist(J['hold']),
+        'groundPressToLipPx': dist(J['lip']),
+        'groundPressFromStandstillShare': round(cnt['still'] / max(1, cnt['ground']), 3),
+        'latePressAfterLeavingLedgeMs': dist(J['coyoteMs']),
+        'latePressPastLipPx': dist(J['coyotePx']),
+        'latePressShareOfLipJumps': round(len(J['coyoteMs']) / max(1, len(J['coyoteMs']) + len(J['lip'])), 3),
+        'secondPressDelayMs': dist(J['dblDelay']),
+        'airPressWithoutFirstJump': cnt['airNoFirst'],
+        'punchesPerMinute': round(cnt['punch'] / mins, 2),
+        'punchTakenBackShare': round(cnt['punchTakenBack'] / max(1, cnt['punch']), 3),
+        'misreadPerMinute': round(cnt['misread'] / mins, 2),
+        'misreadShareOfKeptPunches': round(cnt['misread'] / max(1, cnt['punchKept']), 3),
+        'pieces': {k: {'runs': v['runs'], 'lives': v['lives'], 'putbacks': v['putbacks'], 'seconds': dist(v['seconds'])}
+                   for k, v in sorted(pieces.items())},
+        'stretchSeconds': {k: dist(v) for k, v in sorted(stretch.items())},
+    }
+
+
+TIER_RULE = ('child: median finish >= 380 s on any setting, or >= 20 put-backs a run on Easy; expert: median finish <= 190 s and '
+             '<= 1.0 lives + put-backs a run; middle: everyone else with a finished gen2 1-1 run; unrated: no finished run')
+
+
+def tier_of(facts):
+    fin = [f['finishS'] for f in facts if f['finishS']]
+    if not fin:
+        return 'unrated'  # no finished run: too little to tier
+    played = [f for f in facts if f['played']] or facts
+    med_f = statistics.median(fin)
+    easy_pb = [f['putbacks'] for f in played if f['mode'] == 'easy']
+    if med_f >= 380 or (easy_pb and statistics.mean(easy_pb) >= 20):
+        return 'child'
+    if med_f <= 190 and sum(f['lives'] + f['putbacks'] for f in played) / max(1, len(played)) <= 1.0:
+        return 'expert'
+    return 'middle'
+
+
+def survey_counts(sessions, pid_of_session):
+    out = D(C)
+    for sid, s_ in sessions.items():
+        for m in s_['m']:
+            if m[0] == 'e' and m[2] == 'survey' and sid in pid_of_session:
+                try:
+                    j = json.loads(str(m[3]))
+                except ValueError:
+                    continue
+                if isinstance(j, dict) and j.get('v') == 2:
+                    for k in ('fun', 'long', 'knew', 'tips', 'next'):
+                        if k in j:
+                            out[pid_of_session[sid]][f'{k}={j[k]}'] += 1
+                    for h in j.get('hard', []) or []:
+                        out[pid_of_session[sid]][f'hard={h}'] += 1
+    return out
+
+
+def touch_profile(sessions_of_player):
+    """profile.py's touch numbers (tap, flick, hold, thumbs), with its survey text and device names left out"""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import profile as touch  # tools/playtesters/profile.py (the Critic's): only its numbers are kept
+    t = touch.profile([{'device': s_.get('device') or '', 'parts': [s_['m']]} for s_ in sessions_of_player])
+    for k in ('survey', 'devices'):
+        t.pop(k, None)
+    return t
+
+
+def profiles(sessions, runs, pseud, outdir):
+    print(f'PROFILES -> {outdir}')
+    L, lst = layouts_for(runs)
+    lists = {r['list'] for r in runs}
+    if lst and lists != {lst}:
+        print(f'  layouts: the runs logged list {lists}, the code builds {lst}: lip measures skipped')
+        L = {}
+    G = {k: ground_runs(v) for k, v in L.items() if not k.startswith('_') and isinstance(v, list)}
+    facts = D(list)
+    for r in runs:
+        facts[r['who']].append(run_facts(r, G.get(f"{r['seed']} {r['mode']}")))
+    by_player_sessions = D(list)
+    pid_of_session = {}
+    for sid, s_ in sessions.items():
+        by_player_sessions[pseud[player_key(s_)]].append(s_)
+        pid_of_session[sid] = pseud[player_key(s_)]
+    surveys = survey_counts(sessions, pid_of_session)
+    os.makedirs(os.path.join(outdir, 'players'), exist_ok=True)
+    os.makedirs(os.path.join(outdir, 'tiers'), exist_ok=True)
+    tiers, index = D(list), {}
+    for pid in sorted(by_player_sessions, key=lambda w: int(w[1:])):
+        ss = by_player_sessions[pid]
+        side = C(session_side(s_) for s_ in ss).most_common(1)[0][0]
+        fs = facts.get(pid, [])
+        tier = tier_of(fs) if fs else None
+        doc = {'player': pid, 'side': side, 'tier': tier, 'sessions': len(ss), 'touch': touch_profile(ss)}
+        # how their touch changed: one snapshot per session of 50+ strokes, oldest first (profile.py's 'curve', no session ids)
+        curve = []
+        for s_ in sorted(ss, key=lambda s_: parse_arrived(s_['first']) or datetime.min):
+            one = touch_profile([s_])
+            if one['strokes'] >= 50:
+                curve.append({k: one[k] for k in ('minutesPlayed', 'mix', 'tapMs', 'flickPx', 'flickPxPerMs', 'jumpFlickOffVerticalDeg',
+                                                  'jumpHoldMs', 'touchStartX', 'touchStartY', 'leftHalfShare', 'twoFingerShare',
+                                                  'gapBetweenTouchesMs', 'livesLostPerMinute')})
+        doc['touchCurve'] = curve
+        if fs:
+            tiers[tier].append(pid)
+            doc['gen2_1_1'] = {mode: pool([f for f in fs if f['mode'] == mode]) for mode in ('normal', 'easy')
+                               if any(f['mode'] == mode for f in fs)}
+            doc['gen2_1_1']['firstRun'] = pool(fs[:1])
+            doc['gen2_1_1']['laterRuns'] = pool(fs[1:]) if len(fs) > 1 else None
+            doc['gen2_1_1']['finishTrend'] = [f['finishS'] for f in fs if f['finishS']]
+            doc['survey'] = dict(surveys.get(pid, {}))
+        json.dump(doc, open(os.path.join(outdir, 'players', f'{pid}.json'), 'w'), indent=1)
+        index[pid] = {'side': side, 'tier': tier, 'sessions': len(ss), 'gen2Runs': len(fs)}
+    for tier, pids in tiers.items():
+        fs = [f for p in pids for f in facts[p]]
+        firsts = [facts[p][0] for p in pids]
+        laters = [f for p in pids for f in facts[p][1:]]
+        doc = {'tier': tier, 'rule': TIER_RULE, 'players': pids, 'note': 'pooled over runs; perPlayer keeps one player from '
+               'counting as many', 'all': {mode: pool([f for f in fs if f['mode'] == mode]) for mode in ('normal', 'easy')
+                                           if any(f['mode'] == mode for f in fs)},
+               'firstRun': pool(firsts), 'laterRuns': pool(laters) if laters else None,
+               'perPlayer': {p: {'runs': len(facts[p]), 'finishMedianS': (statistics.median([f['finishS'] for f in facts[p]
+                                 if f['finishS']]) if any(f['finishS'] for f in facts[p]) else None),
+                                 'jumpHoldMsP50': (dist(sum((f['j']['hold'] for f in facts[p]), [])) or {}).get('p50'),
+                                 'groundPressToLipPxP50': (dist(sum((f['j']['lip'] for f in facts[p]), [])) or {}).get('p50')}
+                             for p in pids},
+               'touch': touch_profile([s_ for p in pids for s_ in by_player_sessions[p]])}
+        json.dump(doc, open(os.path.join(outdir, 'tiers', f'{tier}.json'), 'w'), indent=1)
+        print(f'  tier {tier:6}: {len(pids)} players {pids}, {len(fs)} runs')
+    json.dump({'rule': TIER_RULE, 'layoutList': lst, 'players': index}, open(os.path.join(outdir, 'index.json'), 'w'), indent=1)
+    print(f'  {len(index)} player files, {len(tiers)} tier files, index.json')
+
+
 def self_test():
     """the slicing on a made-up run: times close on the next section and on the finish; away time is removed"""
     r = {'m': [['e', 0, 'gen2', '1-1 seed 7 normal build x list y'], ['e', 1000, 'section', 'A | a:ki'], ['p', 1100, 0, 0, 0, 0, 'g'],
@@ -614,6 +919,11 @@ def main(argv):
         i = argv.index('--delta')
         delta = datetime.strptime(argv[i + 1], '%m/%d/%Y %H:%M:%S')  # Eastern time, as this report prints it
         argv = argv[:i] + argv[i + 2:]
+    prof = None
+    if '--profiles' in argv:
+        i = argv.index('--profiles')
+        prof = argv[i + 1]
+        argv = argv[:i] + argv[i + 2:]
     sessions, nrows, unread = load(export_files(argv))
     pseud = {}
     for s in sorted(sessions.values(), key=lambda s: parse_arrived(s['first']) or datetime.min):
@@ -634,6 +944,8 @@ def main(argv):
     glitches(runs)
     teaching(runs)
     ranking(findings)
+    if prof:
+        profiles(sessions, [r for r in runs_of(sessions, pseud) if r['stage'] == '1-1'], pseud, prof)
 
 
 if __name__ == '__main__':

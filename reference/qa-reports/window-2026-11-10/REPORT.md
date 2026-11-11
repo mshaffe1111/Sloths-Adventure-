@@ -28,7 +28,7 @@ finish sits inside a slice (lives total 36 = the sum of the per-section counts).
   engine.ts, sectionTrack.ts. Done-items: a planted test on seed 12727 `w1-log-chain`; `stuckHelp` is logged. Evidence: WINDOW §4.
 - ENGINE: "tap then flick = jump". Objective: when nothing punchable is in reach, a tap followed by a jump flick within 0.6 s is read as
   the jump. Files: the touch rules (TouchController, input). Done-item: a replay of P24-style input shows 0 punch intents in 1-1.
-  Evidence: 475 of 693 punches (9 of 9 players).
+  Evidence: 154 of 700 punches kept and followed by a jump press (9 of 10 players; corrected 11-11 from 475).
 - DESIGNER then CONTENT: catch roads under the raised chains (`w1-log-chain-rise`, `w1-mushroom-chain-back`, `w1-log-chain`), or the
   put-back rule extended to them. Done-item: the bot replay on WINDOW §6 seeds shows 0 pit lives. Evidence: 24 of the 36 Normal lives.
 - CRITIC: rebuild the child bot from WINDOW §4 (P27's put-back loop and punch rate).
@@ -46,3 +46,15 @@ finish sits inside a slice (lives total 36 = the sum of the per-section counts).
 5. Grep the diff for names and codes before every commit. Delete the raw exports at the end.
 ## 7. Turnover note
 reference/handoffs/analyst.md was created in this commit (first analyst).
+## Attempt 5 (11-11): the bot inputs, so the sheet can be purged
+- tools/playtesters/profiles/ has 33 player files (P-numbers), 4 tier files and index.json, plus a README for every field.
+  `report.py <full export> --profiles tools/playtesters/profiles` rebuilds them. The layouts come from the new tools/playtesters/layouts.ts.
+- Tiers come from play: expert P24, P30; middle P25, P28, P29, P31; child P26, P27, P32 (6 runs: thin); unrated P33.
+- Correction to #3: the true misread count is 154 of 700 punches (9 of 10 players), not 481. The old rule counted jump RELEASES and the jab rule's
+  designed take-backs. The ranking is unchanged.
+**Nothing in the sheet is needed after this commit, except:** (1) stroke-by-stroke finger paths, if a bot must replay exact
+strokes rather than sample the distributions (none does today); (2) survey free text (`note`), never read by rule, if Matt wants it;
+(3) the before-0.9.5 players' per-stage lives and section times on the old stages (only their touch numbers are kept; those stages
+were replaced); (4) the name to P-number join, which is never in the repo. Once the sheet goes, the four personas in ../personas/
+can't be rebuilt from it by name (profile.py reads names); their numbers are already in the repo.
+

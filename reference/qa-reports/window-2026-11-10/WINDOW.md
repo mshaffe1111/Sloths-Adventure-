@@ -7,7 +7,9 @@
 - **Runs:** Normal: 2 runs from 2 players; 1 finished in 214 s, and 1 was left mid-stage in `w1-dip-double-teach` (seed 15079, ONE).
   Easy: 2 runs from 1 player, both finished (180 and 187 s).
 - **0 lives lost and 0 stuck.** No top-10 finding rose or fell. #1-2 and #4 (raised pits), #5-6 and #8-10 got no new hits.
-  - #3 (tap read as punch): +6 of 7 punches followed by a jump, from 2 of 3 players. Window total: 481 of 700.
+  - #3 (tap read as punch): CORRECTED 11-11 (attempt 5). The window total is **154 of 700 punches**, from 9 of 10 players, not 481. The old rule
+    counted `jumpUp`, which is the jump RELEASE (TouchController.tsx:50), as a jump. It also counted the 257 punches that the jab rule takes
+    back by design when the finger flicks (punchCancel, touchGestures.ts:487-499). Now only a kept punch followed by a jump PRESS counts.
   - #7 (Easy `w1-double-teach` put-backs): +2 from 1 player (seed 4364).
   - New, ONE player: a mid-stage leave at `w1-dip-double-teach` (score 5).
   - Window totals for the 1-1 runs: 99 runs, 36 Normal lives (all raised pits).
@@ -78,9 +80,10 @@ Stuck (120 s or more in one piece): 2 runs, both P26 (ONE, the slow player): `w1
 **Players.** Lives per minute range 0.04-0.35. Lives do NOT fall with practice: P24's lives per run over runs 1-12 are 0,0,0,1,0,0,1,1,0,1,0,2.
 P28's are 1,0,4,0,2,1,1,2,2,0. The raised pits keep killing experienced players. Finish times: P24 177 s first, median 166 over 38 runs.
 P26 is slow (612, 444, 559, 386: FEW-run outlier). P32 414 (ONE run).
-**Input misreads.** 1-1 has nothing to punch: 0 stomps and 0 hurts in all 95 runs. Even so, 693 taps were read as punches, and **475
-of them were followed by a jump within 0.6 s** (looking at the next 5 intents): the player meant to jump. That is all 9 of 9 players, both settings. P24 has 246 (52%), so
-it is not one player's habit.
+**Input misreads.** 1-1 has nothing to punch: 0 stomps and 0 hurts in all 95 runs. Even so, 693 taps were read as punches. **Corrected 11-11:** 257 of the full window's 700
+were taken back by the jab rule as designed (a flick, CT-17). **154 were kept and followed by a jump press within 0.6 s** (looking at the
+next 5 intents): the player meant to jump. That is 9 of 10 players, both settings: P27 44, P24 43, P25 32, P30 20. It is not one player's
+habit. (Attempt 1 said 475, but that count included jump releases and the designed take-backs.)
 **Survey (v2, 87 surveys, 9 players):** fun 5 in 63/5 players, 4 in 22/7, 3 in 2/2. Length "About right" 87/9. Knew where to go:
 Always 57/6, Mostly 30/6. Tips: "Didn't notice them" 18/4, Yes 3/2.
 **Phones.** Median fps is 30.0 in both orientations. Portrait: 47 stalls, 110 long tasks, 83 resolution step-downs. 55 of the Normal
@@ -97,8 +100,8 @@ All 14 runs finished. Easy has no lives, so its put-backs (`softFall`) stand in 
 The time went to `w1-log-chain` (6 entries, 1,353 s, 152 put-backs spread across the whole chain, x 35135-37099),
 `w1-canopy-rungs-level` (115 s, 14 put-backs) and `w1-leap-stones` (117 s, 12 put-backs). No help-after-put-backs exists; stuckHelp watches walls only (engine.ts:4524), so it could not fire here (0 `stuckHelp` in
 all 95 runs). He also never saw `hint.1-1.double` (his Dot lines: coach.run, coach.jump, hint.1-1.gaps, hint.1-1.noMoss). He tapped
-167 punches in 37.6 minutes of play (report.py's in-section time, time away removed) = 4.4 a minute; 81 were followed by a jump
-within 0.6 s (looking at the next 5 intents).
+167 punches in 37.6 minutes of play (report.py's in-section time, time away removed) = 4.4 a minute; 44 were followed by a jump press
+within 0.6 s (corrected 11-11 from 81, which counted releases).
 The other Easy put-backs: `w1-canopy-rungs-level` 17 (2 of 3 players, P27 has 14), `w1-dip-double-teach` 9 (2 of 2), `w1-double-teach` 6
 (2 of 2). Finish times without P27: median 187.5 s for P25 (10 runs) and 191 s for P29 (3 runs).
 **Phones.** Portrait: 13 runs, fps median 29.9, min 15.2, sd 2.3 ms, 48 step-downs (P25's device 34, P29's 13). Landscape: 1 run (P29, seed 12943),
@@ -122,7 +125,7 @@ fps median 25.2, sd 12.2 ms: ONE.
 |---|---|---|---|---|---|---|
 | 1 | 15 | Normal, w1-log-chain-rise | 10 pit lives in 7 of 18 runs | 5 of 6 | 3747, 15458, 19582, 26871, 35286 | layout, else engine |
 | 2 | 15 | Normal, w1-mushroom-chain-back | 8 pit lives in 7 of 16 runs | 5 of 5 | 23436, 1769, 25908, 29944, 172 | layout, else engine |
-| 3 | 9 | Both, every piece | 475 taps read as punch, then a jump | 9 of 9 | any; P24's runs, e.g. 3747 | engine (touch rules) |
+| 3 | 9 | Both, every piece | 154 kept punches, then a jump press (corrected from 475) | 9 of 10 | any; P24's runs, e.g. 3747 | engine (touch rules) |
 | 4 | 9 | Normal, w1-log-chain | 6 pit lives in 5 of 19 runs | 3 of 6 | 21537, 30782, 1589, 14194, 30947 | layout, else engine |
 | 5 | 6 | Easy, w1-canopy-rungs-level | 17 put-backs (FEW, SKEWED: P27 14) | 2 of 3 | 12727, 33940, 24110 | layout |
 | 6 | 6 | Easy, w1-dip-double-teach | 9 put-backs (FEW) | 2 of 2 | 12727, 33940, 25908, 24110 | layout |

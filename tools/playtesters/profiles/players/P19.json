@@ -1,0 +1,146 @@
+{
+ "player": "P19",
+ "side": "before",
+ "tier": null,
+ "sessions": 2,
+ "touch": {
+  "sessions": 2,
+  "minutesPlayed": 70.9,
+  "strokes": 298,
+  "mix": {
+   "drag": 0.372,
+   "flick": 0.57,
+   "tap": 0.057
+  },
+  "tapMs": {
+   "p10": 54,
+   "p50": 70,
+   "p90": 96
+  },
+  "holdMs": null,
+  "flickPx": {
+   "p10": 73.007,
+   "p50": 148.007,
+   "p90": 241.572
+  },
+  "flickPxPerMs": {
+   "p10": 0.534,
+   "p50": 1.187,
+   "p90": 1.996
+  },
+  "flickMs": {
+   "p10": 80,
+   "p50": 129,
+   "p90": 213
+  },
+  "dragMs": {
+   "p10": 338,
+   "p50": 546,
+   "p90": 1530
+  },
+  "jumpFlickOffVerticalDeg": {
+   "p10": 3.342,
+   "p50": 23.703,
+   "p90": 37.497
+  },
+  "jumpHoldMs": {
+   "p10": 50,
+   "p50": 84,
+   "p90": 233
+  },
+  "gapBetweenTouchesMs": {
+   "p10": 146,
+   "p50": 388,
+   "p90": 879
+  },
+  "touchStartX": {
+   "p10": 0.366,
+   "p50": 0.466,
+   "p90": 0.593
+  },
+  "touchStartY": {
+   "p10": 0.683,
+   "p50": 0.772,
+   "p90": 0.848
+  },
+  "leftHalfShare": 0.681,
+  "twoFingerShare": 0.0,
+  "touchSizePx": {
+   "p10": 24,
+   "p50": 24,
+   "p90": 36
+  },
+  "perMinute": {
+   "duck": 5.2,
+   "jumpUp": 7.5,
+   "move": 6.5,
+   "jump": 2.8,
+   "punch": 0.3,
+   "kick": 0.1,
+   "climb": 0.4
+  },
+  "hurtPerMinute": 0.08,
+  "livesLostPerMinute": 0.0,
+  "secondsPerSection": {
+   "p10": 2.067,
+   "p50": 7.769,
+   "p90": 30.707
+  },
+  "quits": 0,
+  "finishes": 1,
+  "stuckHelp": 0
+ },
+ "touchCurve": [
+  {
+   "minutesPlayed": 22.8,
+   "mix": {
+    "drag": 0.362,
+    "flick": 0.579,
+    "tap": 0.059
+   },
+   "tapMs": {
+    "p10": 54,
+    "p50": 70,
+    "p90": 96
+   },
+   "flickPx": {
+    "p10": 72.422,
+    "p50": 146.209,
+    "p90": 241.572
+   },
+   "flickPxPerMs": {
+    "p10": 0.497,
+    "p50": 1.183,
+    "p90": 1.996
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 3.342,
+    "p50": 24.057,
+    "p90": 37.497
+   },
+   "jumpHoldMs": {
+    "p10": 50,
+    "p50": 84,
+    "p90": 217
+   },
+   "touchStartX": {
+    "p10": 0.366,
+    "p50": 0.461,
+    "p90": 0.58
+   },
+   "touchStartY": {
+    "p10": 0.693,
+    "p50": 0.774,
+    "p90": 0.848
+   },
+   "leftHalfShare": 0.697,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 146,
+    "p50": 379,
+    "p90": 846
+   },
+   "livesLostPerMinute": 0.0
+  }
+ ]
+}

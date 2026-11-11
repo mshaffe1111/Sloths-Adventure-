@@ -1,0 +1,38 @@
+{
+ "player": "P8",
+ "side": "other",
+ "tier": null,
+ "sessions": 1,
+ "touch": {
+  "sessions": 1,
+  "minutesPlayed": 0.3,
+  "strokes": 0,
+  "mix": {},
+  "tapMs": null,
+  "holdMs": null,
+  "flickPx": null,
+  "flickPxPerMs": null,
+  "flickMs": null,
+  "dragMs": null,
+  "jumpFlickOffVerticalDeg": null,
+  "jumpHoldMs": null,
+  "gapBetweenTouchesMs": null,
+  "touchStartX": null,
+  "touchStartY": null,
+  "leftHalfShare": 0.0,
+  "twoFingerShare": 0.0,
+  "touchSizePx": null,
+  "perMinute": {},
+  "hurtPerMinute": 0.0,
+  "livesLostPerMinute": 0.0,
+  "secondsPerSection": {
+   "p10": 6.398,
+   "p50": 12.174,
+   "p90": 12.174
+  },
+  "quits": 0,
+  "finishes": 0,
+  "stuckHelp": 0
+ },
+ "touchCurve": []
+}

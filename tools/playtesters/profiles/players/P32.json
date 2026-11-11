@@ -1,0 +1,849 @@
+{
+ "player": "P32",
+ "side": "since",
+ "tier": "child",
+ "sessions": 1,
+ "touch": {
+  "sessions": 1,
+  "minutesPlayed": 9.1,
+  "strokes": 355,
+  "mix": {
+   "drag": 0.623,
+   "flick": 0.338,
+   "tap": 0.037,
+   "hold": 0.003
+  },
+  "tapMs": {
+   "p10": 31,
+   "p50": 92,
+   "p90": 108
+  },
+  "holdMs": {
+   "p10": 306,
+   "p50": 306,
+   "p90": 306
+  },
+  "flickPx": {
+   "p10": 69.34,
+   "p50": 128.655,
+   "p90": 186.625
+  },
+  "flickPxPerMs": {
+   "p10": 0.332,
+   "p50": 0.7,
+   "p90": 1.132
+  },
+  "flickMs": {
+   "p10": 149,
+   "p50": 190,
+   "p90": 257
+  },
+  "dragMs": {
+   "p10": 350,
+   "p50": 665,
+   "p90": 1914
+  },
+  "jumpFlickOffVerticalDeg": {
+   "p10": 16.06,
+   "p50": 30.256,
+   "p90": 40.937
+  },
+  "jumpHoldMs": {
+   "p10": 57,
+   "p50": 148,
+   "p90": 847
+  },
+  "gapBetweenTouchesMs": {
+   "p10": 150,
+   "p50": 319,
+   "p90": 817
+  },
+  "touchStartX": {
+   "p10": 0.467,
+   "p50": 0.533,
+   "p90": 0.625
+  },
+  "touchStartY": {
+   "p10": 0.736,
+   "p50": 0.784,
+   "p90": 0.822
+  },
+  "leftHalfShare": 0.237,
+  "twoFingerShare": 0.0,
+  "touchSizePx": null,
+  "perMinute": {
+   "duck": 45.5,
+   "jumpUp": 74.5,
+   "move": 67.3,
+   "jump": 30.1,
+   "punch": 1.5,
+   "mega": 0.1
+  },
+  "hurtPerMinute": 0.0,
+  "livesLostPerMinute": 0.22,
+  "secondsPerSection": {
+   "p10": 5.328,
+   "p50": 20.309,
+   "p90": 36.056
+  },
+  "quits": 0,
+  "finishes": 1,
+  "stuckHelp": 0
+ },
+ "touchCurve": [
+  {
+   "minutesPlayed": 9.1,
+   "mix": {
+    "drag": 0.623,
+    "flick": 0.338,
+    "tap": 0.037,
+    "hold": 0.003
+   },
+   "tapMs": {
+    "p10": 31,
+    "p50": 92,
+    "p90": 108
+   },
+   "flickPx": {
+    "p10": 69.34,
+    "p50": 128.655,
+    "p90": 186.625
+   },
+   "flickPxPerMs": {
+    "p10": 0.332,
+    "p50": 0.7,
+    "p90": 1.132
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 16.06,
+    "p50": 30.256,
+    "p90": 40.937
+   },
+   "jumpHoldMs": {
+    "p10": 57,
+    "p50": 148,
+    "p90": 847
+   },
+   "touchStartX": {
+    "p10": 0.467,
+    "p50": 0.533,
+    "p90": 0.625
+   },
+   "touchStartY": {
+    "p10": 0.736,
+    "p50": 0.784,
+    "p90": 0.822
+   },
+   "leftHalfShare": 0.237,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 150,
+    "p50": 319,
+    "p90": 817
+   },
+   "livesLostPerMinute": 0.22
+  }
+ ],
+ "gen2_1_1": {
+  "normal": {
+   "runs": 1,
+   "runsPlayed": 1,
+   "finished": 1,
+   "finishSeconds": {
+    "n": 1,
+    "p10": 414,
+    "p25": 414,
+    "p50": 414,
+    "p75": 414,
+    "p90": 414
+   },
+   "livesPerRun": 2.0,
+   "putbacksPerRun": 2.0,
+   "pausesPerRun": 0.0,
+   "leftMidStage": {},
+   "doubleUsedShare": 1.0,
+   "jumpHoldMs": {
+    "n": 273,
+    "p10": 57,
+    "p25": 99,
+    "p50": 148,
+    "p75": 391,
+    "p90": 847
+   },
+   "groundPressToLipPx": {
+    "n": 50,
+    "p10": 18,
+    "p25": 29,
+    "p50": 72,
+    "p75": 110,
+    "p90": 172
+   },
+   "groundPressFromStandstillShare": 0.629,
+   "latePressAfterLeavingLedgeMs": {
+    "n": 12,
+    "p10": 18,
+    "p25": 46,
+    "p50": 83,
+    "p75": 120,
+    "p90": 129
+   },
+   "latePressPastLipPx": {
+    "n": 12,
+    "p10": 16,
+    "p25": 19,
+    "p50": 21,
+    "p75": 23,
+    "p90": 23
+   },
+   "latePressShareOfLipJumps": 0.194,
+   "secondPressDelayMs": {
+    "n": 47,
+    "p10": 300,
+    "p25": 333,
+    "p50": 432,
+    "p75": 533,
+    "p90": 732
+   },
+   "airPressWithoutFirstJump": 36,
+   "punchesPerMinute": 2.06,
+   "punchTakenBackShare": 0.0,
+   "misreadPerMinute": 0.29,
+   "misreadShareOfKeptPunches": 0.143,
+   "pieces": {
+    "w1-bough-descent": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 20.3,
+      "p25": 20.3,
+      "p50": 20.3,
+      "p75": 20.3,
+      "p90": 20.3
+     }
+    },
+    "w1-canopy-rungs": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 51.7,
+      "p25": 51.7,
+      "p50": 51.7,
+      "p75": 51.7,
+      "p90": 51.7
+     }
+    },
+    "w1-dip-double-teach": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 1,
+     "seconds": {
+      "n": 1,
+      "p10": 24.5,
+      "p25": 24.5,
+      "p50": 24.5,
+      "p75": 24.5,
+      "p90": 24.5
+     }
+    },
+    "w1-fern-bank": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 5.2,
+      "p25": 5.2,
+      "p50": 5.2,
+      "p75": 5.2,
+      "p90": 5.2
+     }
+    },
+    "w1-hollow-twoway": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 20.6,
+      "p25": 20.6,
+      "p50": 20.6,
+      "p75": 20.6,
+      "p90": 20.6
+     }
+    },
+    "w1-hop-bounce": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 36.1,
+      "p25": 36.1,
+      "p50": 36.1,
+      "p75": 36.1,
+      "p90": 36.1
+     }
+    },
+    "w1-last-step-up": {
+     "runs": 1,
+     "lives": 1,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 16.3,
+      "p25": 16.3,
+      "p50": 16.3,
+      "p75": 16.3,
+      "p90": 16.3
+     }
+    },
+    "w1-log-stair-test": {
+     "runs": 1,
+     "lives": 1,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 26.6,
+      "p25": 26.6,
+      "p50": 26.6,
+      "p75": 26.6,
+      "p90": 26.6
+     }
+    },
+    "w1-log-walk": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 7.0,
+      "p25": 7.0,
+      "p50": 7.0,
+      "p75": 7.0,
+      "p90": 7.0
+     }
+    },
+    "w1-meadow": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 24.7,
+      "p25": 24.7,
+      "p50": 24.7,
+      "p75": 24.7,
+      "p90": 24.7
+     }
+    },
+    "w1-mound-log": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 31.4,
+      "p25": 31.4,
+      "p50": 31.4,
+      "p75": 31.4,
+      "p90": 31.4
+     }
+    },
+    "w1-seed-perch": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 35.4,
+      "p25": 35.4,
+      "p50": 35.4,
+      "p75": 35.4,
+      "p90": 35.4
+     }
+    },
+    "w1-step-stones-teach": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 17.8,
+      "p25": 17.8,
+      "p50": 17.8,
+      "p75": 17.8,
+      "p90": 17.8
+     }
+    },
+    "w1-twin-mushroom-fork": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 50.1,
+      "p25": 50.1,
+      "p50": 50.1,
+      "p75": 50.1,
+      "p90": 50.1
+     }
+    },
+    "w1-two-answers": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 1,
+     "seconds": {
+      "n": 1,
+      "p10": 40.1,
+      "p25": 40.1,
+      "p50": 40.1,
+      "p75": 40.1,
+      "p90": 40.1
+     }
+    }
+   },
+   "stretchSeconds": {
+    "Bounce, then double jump": {
+     "n": 1,
+     "p10": 35.4,
+     "p25": 35.4,
+     "p50": 35.4,
+     "p75": 35.4,
+     "p90": 35.4
+    },
+    "The double-jump gaps": {
+     "n": 1,
+     "p10": 64.6,
+     "p25": 64.6,
+     "p50": 64.6,
+     "p75": 64.6,
+     "p90": 64.6
+    },
+    "The drops back down": {
+     "n": 1,
+     "p10": 20.3,
+     "p25": 20.3,
+     "p50": 20.3,
+     "p75": 20.3,
+     "p90": 20.3
+    },
+    "The first jumps": {
+     "n": 1,
+     "p10": 31.4,
+     "p25": 31.4,
+     "p50": 31.4,
+     "p75": 31.4,
+     "p90": 31.4
+    },
+    "The high branches": {
+     "n": 1,
+     "p10": 51.7,
+     "p25": 51.7,
+     "p50": 51.7,
+     "p75": 51.7,
+     "p90": 51.7
+    },
+    "The logs": {
+     "n": 1,
+     "p10": 20.6,
+     "p25": 20.6,
+     "p50": 20.6,
+     "p75": 20.6,
+     "p90": 20.6
+    },
+    "The mushroom bounce": {
+     "n": 1,
+     "p10": 86.2,
+     "p25": 86.2,
+     "p50": 86.2,
+     "p75": 86.2,
+     "p90": 86.2
+    },
+    "The stepping stones": {
+     "n": 1,
+     "p10": 17.8,
+     "p25": 17.8,
+     "p50": 17.8,
+     "p75": 17.8,
+     "p90": 17.8
+    },
+    "The tall steps (double jump)": {
+     "n": 1,
+     "p10": 26.6,
+     "p25": 26.6,
+     "p50": 26.6,
+     "p75": 26.6,
+     "p90": 26.6
+    },
+    "Walking": {
+     "n": 1,
+     "p10": 53.1,
+     "p25": 53.1,
+     "p50": 53.1,
+     "p75": 53.1,
+     "p90": 53.1
+    }
+   }
+  },
+  "firstRun": {
+   "runs": 1,
+   "runsPlayed": 1,
+   "finished": 1,
+   "finishSeconds": {
+    "n": 1,
+    "p10": 414,
+    "p25": 414,
+    "p50": 414,
+    "p75": 414,
+    "p90": 414
+   },
+   "livesPerRun": 2.0,
+   "putbacksPerRun": 2.0,
+   "pausesPerRun": 0.0,
+   "leftMidStage": {},
+   "doubleUsedShare": 1.0,
+   "jumpHoldMs": {
+    "n": 273,
+    "p10": 57,
+    "p25": 99,
+    "p50": 148,
+    "p75": 391,
+    "p90": 847
+   },
+   "groundPressToLipPx": {
+    "n": 50,
+    "p10": 18,
+    "p25": 29,
+    "p50": 72,
+    "p75": 110,
+    "p90": 172
+   },
+   "groundPressFromStandstillShare": 0.629,
+   "latePressAfterLeavingLedgeMs": {
+    "n": 12,
+    "p10": 18,
+    "p25": 46,
+    "p50": 83,
+    "p75": 120,
+    "p90": 129
+   },
+   "latePressPastLipPx": {
+    "n": 12,
+    "p10": 16,
+    "p25": 19,
+    "p50": 21,
+    "p75": 23,
+    "p90": 23
+   },
+   "latePressShareOfLipJumps": 0.194,
+   "secondPressDelayMs": {
+    "n": 47,
+    "p10": 300,
+    "p25": 333,
+    "p50": 432,
+    "p75": 533,
+    "p90": 732
+   },
+   "airPressWithoutFirstJump": 36,
+   "punchesPerMinute": 2.06,
+   "punchTakenBackShare": 0.0,
+   "misreadPerMinute": 0.29,
+   "misreadShareOfKeptPunches": 0.143,
+   "pieces": {
+    "w1-bough-descent": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 20.3,
+      "p25": 20.3,
+      "p50": 20.3,
+      "p75": 20.3,
+      "p90": 20.3
+     }
+    },
+    "w1-canopy-rungs": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 51.7,
+      "p25": 51.7,
+      "p50": 51.7,
+      "p75": 51.7,
+      "p90": 51.7
+     }
+    },
+    "w1-dip-double-teach": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 1,
+     "seconds": {
+      "n": 1,
+      "p10": 24.5,
+      "p25": 24.5,
+      "p50": 24.5,
+      "p75": 24.5,
+      "p90": 24.5
+     }
+    },
+    "w1-fern-bank": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 5.2,
+      "p25": 5.2,
+      "p50": 5.2,
+      "p75": 5.2,
+      "p90": 5.2
+     }
+    },
+    "w1-hollow-twoway": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 20.6,
+      "p25": 20.6,
+      "p50": 20.6,
+      "p75": 20.6,
+      "p90": 20.6
+     }
+    },
+    "w1-hop-bounce": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 36.1,
+      "p25": 36.1,
+      "p50": 36.1,
+      "p75": 36.1,
+      "p90": 36.1
+     }
+    },
+    "w1-last-step-up": {
+     "runs": 1,
+     "lives": 1,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 16.3,
+      "p25": 16.3,
+      "p50": 16.3,
+      "p75": 16.3,
+      "p90": 16.3
+     }
+    },
+    "w1-log-stair-test": {
+     "runs": 1,
+     "lives": 1,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 26.6,
+      "p25": 26.6,
+      "p50": 26.6,
+      "p75": 26.6,
+      "p90": 26.6
+     }
+    },
+    "w1-log-walk": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 7.0,
+      "p25": 7.0,
+      "p50": 7.0,
+      "p75": 7.0,
+      "p90": 7.0
+     }
+    },
+    "w1-meadow": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 24.7,
+      "p25": 24.7,
+      "p50": 24.7,
+      "p75": 24.7,
+      "p90": 24.7
+     }
+    },
+    "w1-mound-log": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 31.4,
+      "p25": 31.4,
+      "p50": 31.4,
+      "p75": 31.4,
+      "p90": 31.4
+     }
+    },
+    "w1-seed-perch": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 35.4,
+      "p25": 35.4,
+      "p50": 35.4,
+      "p75": 35.4,
+      "p90": 35.4
+     }
+    },
+    "w1-step-stones-teach": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 17.8,
+      "p25": 17.8,
+      "p50": 17.8,
+      "p75": 17.8,
+      "p90": 17.8
+     }
+    },
+    "w1-twin-mushroom-fork": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 50.1,
+      "p25": 50.1,
+      "p50": 50.1,
+      "p75": 50.1,
+      "p90": 50.1
+     }
+    },
+    "w1-two-answers": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 1,
+     "seconds": {
+      "n": 1,
+      "p10": 40.1,
+      "p25": 40.1,
+      "p50": 40.1,
+      "p75": 40.1,
+      "p90": 40.1
+     }
+    }
+   },
+   "stretchSeconds": {
+    "Bounce, then double jump": {
+     "n": 1,
+     "p10": 35.4,
+     "p25": 35.4,
+     "p50": 35.4,
+     "p75": 35.4,
+     "p90": 35.4
+    },
+    "The double-jump gaps": {
+     "n": 1,
+     "p10": 64.6,
+     "p25": 64.6,
+     "p50": 64.6,
+     "p75": 64.6,
+     "p90": 64.6
+    },
+    "The drops back down": {
+     "n": 1,
+     "p10": 20.3,
+     "p25": 20.3,
+     "p50": 20.3,
+     "p75": 20.3,
+     "p90": 20.3
+    },
+    "The first jumps": {
+     "n": 1,
+     "p10": 31.4,
+     "p25": 31.4,
+     "p50": 31.4,
+     "p75": 31.4,
+     "p90": 31.4
+    },
+    "The high branches": {
+     "n": 1,
+     "p10": 51.7,
+     "p25": 51.7,
+     "p50": 51.7,
+     "p75": 51.7,
+     "p90": 51.7
+    },
+    "The logs": {
+     "n": 1,
+     "p10": 20.6,
+     "p25": 20.6,
+     "p50": 20.6,
+     "p75": 20.6,
+     "p90": 20.6
+    },
+    "The mushroom bounce": {
+     "n": 1,
+     "p10": 86.2,
+     "p25": 86.2,
+     "p50": 86.2,
+     "p75": 86.2,
+     "p90": 86.2
+    },
+    "The stepping stones": {
+     "n": 1,
+     "p10": 17.8,
+     "p25": 17.8,
+     "p50": 17.8,
+     "p75": 17.8,
+     "p90": 17.8
+    },
+    "The tall steps (double jump)": {
+     "n": 1,
+     "p10": 26.6,
+     "p25": 26.6,
+     "p50": 26.6,
+     "p75": 26.6,
+     "p90": 26.6
+    },
+    "Walking": {
+     "n": 1,
+     "p10": 53.1,
+     "p25": 53.1,
+     "p50": 53.1,
+     "p75": 53.1,
+     "p90": 53.1
+    }
+   }
+  },
+  "laterRuns": null,
+  "finishTrend": [
+   414
+  ]
+ },
+ "survey": {
+  "fun=5": 1,
+  "long=About right": 1,
+  "knew=Mostly": 1,
+  "tips=Yes": 1,
+  "next=Yes": 1,
+  "hard=The drops back down": 1
+ }
+}

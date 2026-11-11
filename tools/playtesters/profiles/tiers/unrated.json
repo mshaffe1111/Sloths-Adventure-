@@ -1,0 +1,352 @@
+{
+ "tier": "unrated",
+ "rule": "child: median finish >= 380 s on any setting, or >= 20 put-backs a run on Easy; expert: median finish <= 190 s and <= 1.0 lives + put-backs a run; middle: everyone else with a finished gen2 1-1 run; unrated: no finished run",
+ "players": [
+  "P33"
+ ],
+ "note": "pooled over runs; perPlayer keeps one player from counting as many",
+ "all": {
+  "normal": {
+   "runs": 1,
+   "runsPlayed": 1,
+   "finished": 0,
+   "finishSeconds": null,
+   "livesPerRun": 0.0,
+   "putbacksPerRun": 1.0,
+   "pausesPerRun": 1.0,
+   "leftMidStage": {
+    "w1-dip-double-teach": 1
+   },
+   "doubleUsedShare": 1.0,
+   "jumpHoldMs": {
+    "n": 51,
+    "p10": 17,
+    "p25": 34,
+    "p50": 51,
+    "p75": 99,
+    "p90": 135
+   },
+   "groundPressToLipPx": {
+    "n": 3,
+    "p10": 134,
+    "p25": 134,
+    "p50": 176,
+    "p75": 210,
+    "p90": 210
+   },
+   "groundPressFromStandstillShare": 0.611,
+   "latePressAfterLeavingLedgeMs": {
+    "n": 1,
+    "p10": 133,
+    "p25": 133,
+    "p50": 133,
+    "p75": 133,
+    "p90": 133
+   },
+   "latePressPastLipPx": {
+    "n": 1,
+    "p10": 34,
+    "p25": 34,
+    "p50": 34,
+    "p75": 34,
+    "p90": 34
+   },
+   "latePressShareOfLipJumps": 0.25,
+   "secondPressDelayMs": {
+    "n": 11,
+    "p10": 233,
+    "p25": 250,
+    "p50": 333,
+    "p75": 382,
+    "p90": 416
+   },
+   "airPressWithoutFirstJump": 21,
+   "punchesPerMinute": 0.0,
+   "punchTakenBackShare": 0.0,
+   "misreadPerMinute": 0.0,
+   "misreadShareOfKeptPunches": 0.0,
+   "pieces": {
+    "w1-dip-double-teach": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 1,
+     "seconds": {
+      "n": 1,
+      "p10": 17.6,
+      "p25": 17.6,
+      "p50": 17.6,
+      "p75": 17.6,
+      "p90": 17.6
+     }
+    },
+    "w1-home-banks": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 8.5,
+      "p25": 8.5,
+      "p50": 8.5,
+      "p75": 8.5,
+      "p90": 8.5
+     }
+    },
+    "w1-step-stones-teach": {
+     "runs": 1,
+     "lives": 0,
+     "putbacks": 0,
+     "seconds": {
+      "n": 1,
+      "p10": 10.8,
+      "p25": 10.8,
+      "p50": 10.8,
+      "p75": 10.8,
+      "p90": 10.8
+     }
+    }
+   },
+   "stretchSeconds": {
+    "The double-jump gaps": {
+     "n": 1,
+     "p10": 17.6,
+     "p25": 17.6,
+     "p50": 17.6,
+     "p75": 17.6,
+     "p90": 17.6
+    },
+    "The stepping stones": {
+     "n": 1,
+     "p10": 10.8,
+     "p25": 10.8,
+     "p50": 10.8,
+     "p75": 10.8,
+     "p90": 10.8
+    },
+    "Walking": {
+     "n": 1,
+     "p10": 8.5,
+     "p25": 8.5,
+     "p50": 8.5,
+     "p75": 8.5,
+     "p90": 8.5
+    }
+   }
+  }
+ },
+ "firstRun": {
+  "runs": 1,
+  "runsPlayed": 1,
+  "finished": 0,
+  "finishSeconds": null,
+  "livesPerRun": 0.0,
+  "putbacksPerRun": 1.0,
+  "pausesPerRun": 1.0,
+  "leftMidStage": {
+   "w1-dip-double-teach": 1
+  },
+  "doubleUsedShare": 1.0,
+  "jumpHoldMs": {
+   "n": 51,
+   "p10": 17,
+   "p25": 34,
+   "p50": 51,
+   "p75": 99,
+   "p90": 135
+  },
+  "groundPressToLipPx": {
+   "n": 3,
+   "p10": 134,
+   "p25": 134,
+   "p50": 176,
+   "p75": 210,
+   "p90": 210
+  },
+  "groundPressFromStandstillShare": 0.611,
+  "latePressAfterLeavingLedgeMs": {
+   "n": 1,
+   "p10": 133,
+   "p25": 133,
+   "p50": 133,
+   "p75": 133,
+   "p90": 133
+  },
+  "latePressPastLipPx": {
+   "n": 1,
+   "p10": 34,
+   "p25": 34,
+   "p50": 34,
+   "p75": 34,
+   "p90": 34
+  },
+  "latePressShareOfLipJumps": 0.25,
+  "secondPressDelayMs": {
+   "n": 11,
+   "p10": 233,
+   "p25": 250,
+   "p50": 333,
+   "p75": 382,
+   "p90": 416
+  },
+  "airPressWithoutFirstJump": 21,
+  "punchesPerMinute": 0.0,
+  "punchTakenBackShare": 0.0,
+  "misreadPerMinute": 0.0,
+  "misreadShareOfKeptPunches": 0.0,
+  "pieces": {
+   "w1-dip-double-teach": {
+    "runs": 1,
+    "lives": 0,
+    "putbacks": 1,
+    "seconds": {
+     "n": 1,
+     "p10": 17.6,
+     "p25": 17.6,
+     "p50": 17.6,
+     "p75": 17.6,
+     "p90": 17.6
+    }
+   },
+   "w1-home-banks": {
+    "runs": 1,
+    "lives": 0,
+    "putbacks": 0,
+    "seconds": {
+     "n": 1,
+     "p10": 8.5,
+     "p25": 8.5,
+     "p50": 8.5,
+     "p75": 8.5,
+     "p90": 8.5
+    }
+   },
+   "w1-step-stones-teach": {
+    "runs": 1,
+    "lives": 0,
+    "putbacks": 0,
+    "seconds": {
+     "n": 1,
+     "p10": 10.8,
+     "p25": 10.8,
+     "p50": 10.8,
+     "p75": 10.8,
+     "p90": 10.8
+    }
+   }
+  },
+  "stretchSeconds": {
+   "The double-jump gaps": {
+    "n": 1,
+    "p10": 17.6,
+    "p25": 17.6,
+    "p50": 17.6,
+    "p75": 17.6,
+    "p90": 17.6
+   },
+   "The stepping stones": {
+    "n": 1,
+    "p10": 10.8,
+    "p25": 10.8,
+    "p50": 10.8,
+    "p75": 10.8,
+    "p90": 10.8
+   },
+   "Walking": {
+    "n": 1,
+    "p10": 8.5,
+    "p25": 8.5,
+    "p50": 8.5,
+    "p75": 8.5,
+    "p90": 8.5
+   }
+  }
+ },
+ "laterRuns": null,
+ "perPlayer": {
+  "P33": {
+   "runs": 1,
+   "finishMedianS": null,
+   "jumpHoldMsP50": 51,
+   "groundPressToLipPxP50": 176
+  }
+ },
+ "touch": {
+  "sessions": 1,
+  "minutesPlayed": 0.8,
+  "strokes": 59,
+  "mix": {
+   "drag": 0.169,
+   "flick": 0.831
+  },
+  "tapMs": null,
+  "holdMs": null,
+  "flickPx": {
+   "p10": 95.189,
+   "p50": 142.524,
+   "p90": 171.843
+  },
+  "flickPxPerMs": {
+   "p10": 0.708,
+   "p50": 1.005,
+   "p90": 1.565
+  },
+  "flickMs": {
+   "p10": 96,
+   "p50": 130,
+   "p90": 212
+  },
+  "dragMs": {
+   "p10": 429,
+   "p50": 988,
+   "p90": 3280
+  },
+  "jumpFlickOffVerticalDeg": {
+   "p10": 40.732,
+   "p50": 41.082,
+   "p90": 43.132
+  },
+  "jumpHoldMs": {
+   "p10": 17,
+   "p50": 51,
+   "p90": 135
+  },
+  "gapBetweenTouchesMs": {
+   "p10": 120,
+   "p50": 196,
+   "p90": 721
+  },
+  "touchStartX": {
+   "p10": 0.455,
+   "p50": 0.555,
+   "p90": 0.622
+  },
+  "touchStartY": {
+   "p10": 0.661,
+   "p50": 0.776,
+   "p90": 0.838
+  },
+  "leftHalfShare": 0.237,
+  "twoFingerShare": 0.0,
+  "touchSizePx": {
+   "p10": 12,
+   "p50": 12,
+   "p90": 24
+  },
+  "perMinute": {
+   "duck": 85.5,
+   "jumpUp": 152.5,
+   "move": 149.9,
+   "jump": 67.0
+  },
+  "hurtPerMinute": 0.0,
+  "livesLostPerMinute": 0.0,
+  "secondsPerSection": {
+   "p10": 8.464,
+   "p50": 10.767,
+   "p90": 10.767
+  },
+  "quits": 0,
+  "finishes": 0,
+  "stuckHelp": 0
+ }
+}
