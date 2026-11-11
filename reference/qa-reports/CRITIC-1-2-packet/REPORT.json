@@ -1,8 +1,8 @@
 {
  "holds": [
-  "ENGINE three wording fixes written in",
-  "pipeline.ts:2178-2185 gap arcs and FLOWER_UP 34 read in code",
-  "no line still puts a petal over a cap or a dip"
+  "main: false wording in every place; old wording found nowhere",
+  "bloom sprite facts read in code and inventory",
+  "cites at 53bd446a: ENGINE 83/85"
  ],
  "tests_added": [
   "reference/qa-reports/CRITIC-1-2-packet/probe12b.ts (iso | supply | v3; proof runs, not in the suite)",
@@ -239,25 +239,15 @@
  },
  "audited": {
   "branch": "t-design-1-2",
-  "head": "876d0c73",
+  "head": "d9267c6b",
   "cites_at": "t-int-1-1@53bd446a"
  },
- "status": "REJECT",
+ "status": "PASS",
  "verdicts": {
-  "CONTENT-1-2-relay.md": "REJECT (1 line: CONTENT:274)",
-  "ENGINE-1-2-routing.md": "REJECT (the same line: ENGINE:220, 223-224)"
+  "CONTENT-1-2-relay.md": "PASS",
+  "ENGINE-1-2-routing.md": "PASS"
  },
- "violations": [
-  {
-   "packet": "both",
-   "n": 1,
-   "file": "reference/packets/2026-11-11/ENGINE-1-2-routing.md",
-   "line": "ENGINE:220, 223-224; CONTENT:274; src/game/gen2/worlds/w1.ts:158, 1504; src/game/gen2/types.ts:278-279",
-   "rule": "off the road is main: false; a stump has no main flag",
-   "evidence": "out/mainflag12.txt: of 285 pickups written in the 11 reused sections, 111 on main: true, 38 on main: false, 136 on a piece with no flag",
-   "fix": "\"a piece marked main: false\" in ENGINE item 6 and its done-tests; \"any piece not marked main: false\" in CONTENT done-item 4"
-  }
- ],
+ "violations": [],
  "attempt2": {
   "audited": {
    "branch": "t-design-1-2",
@@ -388,5 +378,39 @@
    "ENGINE-1-2-routing.md": "REJECT (2 lines, plus 1 left to guess; unchanged since 65d31898)"
   },
   "note": "CONTENT PASS was for the text at 3507c3a2; ENGINE three wording lines closed in attempt 7"
- }
+ },
+ "attempt7": {
+  "audited": {
+   "branch": "t-design-1-2",
+   "head": "876d0c73",
+   "cites_at": "t-int-1-1@53bd446a"
+  },
+  "status": "REJECT",
+  "verdicts": {
+   "CONTENT-1-2-relay.md": "REJECT (1 line: CONTENT:274)",
+   "ENGINE-1-2-routing.md": "REJECT (the same line: ENGINE:220, 223-224)"
+  },
+  "violations": [
+   {
+    "packet": "both",
+    "n": 1,
+    "file": "reference/packets/2026-11-11/ENGINE-1-2-routing.md",
+    "line": "ENGINE:220, 223-224; CONTENT:274; src/game/gen2/worlds/w1.ts:158, 1504; src/game/gen2/types.ts:278-279",
+    "rule": "off the road is main: false; a stump has no main flag",
+    "evidence": "out/mainflag12.txt: of 285 pickups written in the 11 reused sections, 111 on main: true, 38 on main: false, 136 on a piece with no flag",
+    "fix": "\"a piece marked main: false\" in ENGINE item 6 and its done-tests; \"any piece not marked main: false\" in CONTENT done-item 4"
+   }
+  ],
+  "closed_in_attempt8": true
+ },
+ "notes_engine": [
+  "item 6: the bloom at 0.45 of Pokey against the inventory 0.36 for f76: show and say in the still",
+  "the golden allamanda is also plain World 1 decor: name it if both show in 1-2"
+ ],
+ "not_proved": [
+  "heights, reach and look of the 42 unbuilt sections",
+  "seed yield on real pieces",
+  "the thorn bed and bloom look",
+  "how a child plays a chain"
+ ]
 }

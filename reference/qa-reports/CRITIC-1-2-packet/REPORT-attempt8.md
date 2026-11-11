@@ -1,0 +1,15 @@
+# Critic: 1-2 packets, attempt 8 (delta audit), 2026-11-11 5:40 PM ET, on t-design-1-2@d9267c6b (cites at t-int-1-1@53bd446a)
+**CONTENT: PASS. ENGINE: PASS.** Each with the notes below for its builder. No line is open.
+**Method used:** the diff 876d0c73..d9267c6b read line by line (two commits: the bonus bloom's sprite, the `main: false` wording); both packets searched for the old wording; every new cite checked by script. **Lessons applied:** D24, D34, D37.
+## Closed, and how I know
+- The `main` line (attempt 7): ENGINE item 6 and both its done-tests, CONTENT rule 5 (two places), the "Petals" bloom line and done-item 4 all read "a piece marked `main: false`" / "any piece not marked `main: false`"; a search of both packets for "not `main`", "non-main", "main-road piece" and "on main pieces" finds nothing.
+- The bonus bloom (the story keeper's ruling, new at 63237e56), read in code: World 1's flower pool holds sheet 76 (flowerSprites.ts:22); the inventory has `flowers-atlas#f76` in game, 120x108; a `fruit` draws one of six vector blooms by id today, two of them hibiscus (vectorArt.ts:1013-1020, :1094-1095); a find stands with no bob (:1078-1080); the petal draws at :1092. `bloomSprite` is a third brief field with a draw test and its "Any stage" proof; vectorArt.ts is in WRITE for item 6 only.
+- Cites at 53bd446a: ENGINE 83 of 85 (verdicts.ts:120 and w1Pits.ts:148-155 within 12 lines of what they name, as since attempt 1); CONTENT's unchanged.
+## Notes for the builders (not blockers)
+- ENGINE item 6 draws the bloom "about 40 px tall (0.45 of Pokey)"; the inventory judged f76 to scale at 0.36 (32 px). A pickup may be larger than the decor flower, but the still must show it beside Pokey and a petal (27 px): say which size it is and why.
+- The golden allamanda is also one of World 1's ordinary painted flowers (the pool of flowerSprites.ts:22): if it stands as plain decor in 1-2's stills beside a bloom that counts, name it.
+- ENGINE's still of the bloom on a bough over low petals now travels with the thorn hollow's: both are Matt's first look at 1-2's new things.
+## What these PASSES cover, and what they do not
+Eight rounds on the two packets: 20 + 4 + 2 + 5 + 1 lines found, all closed, each with a proof run on branch t-critic-1-2-packet. Proved: 1-1 does not move with the packet's rows; the brief rolls in the real pipeline on tagged stand-ins (720 of 720); the ways down keep the quiet line; the hop step stays under its ceiling; nothing with a direction is laid mirrored once flagged; the testers' course has its own gate; every cite is where it says. NOT proved by any packet audit: the heights, reach and look of 42 sections that do not exist yet; the seed yield on real pieces (1-1's own is 2%); the thorn bed's and the bloom's look; how a child plays a chain. Those are the build audits', the stills' and the play window's.
+## Method update
+dispatch-packet.md: "a packet that is rewritten after a PASS is audited again from the diff, and the PASS names the head it was given at" (three times tonight a PASS was overtaken by a later commit).

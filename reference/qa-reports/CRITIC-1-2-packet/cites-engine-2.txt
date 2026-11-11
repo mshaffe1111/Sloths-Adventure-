@@ -74,3 +74,12 @@ src/game/gen2/pipeline.ts|2531|2540|validateStage
 src/game/stageGenerator.ts|2949|2951|finishReach
 src/game/levelCheck.ts|498|498|doubleAllowed
 src/game/gen2/types.ts|534|550|interface GraphBrief
+src/game/flowerSprites.ts|22|22|76
+src/game/vectorArt.ts|1013|1020|CLASSIC_BLOOMS
+src/game/vectorArt.ts|1094|1095|CLASSIC_BLOOMS|drawBloom
+src/game/vectorArt.ts|1078|1080|find
+src/game/vectorArt.ts|1092|1092|petal
+src/game/gen2/pipeline.ts|2178|2185|arc
+src/game/gen2/worlds/w1.ts|158|158|const stump
+src/game/protoStage.ts|2437|2437|ctest
+src/game/gen2/types.ts|104|104|WorldManifest
