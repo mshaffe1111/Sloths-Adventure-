@@ -512,11 +512,10 @@ export class GameEngine {
   private isPaused: boolean = false;
   private animFrameId: number | null = null;
   private lastTime: number = 0;
+  /** when the last frame that ran (updated and drew) began: every frame's true gap is measured from it */
   private lastRenderTime: number = 0;
   private readonly frameIntervalMs: number = 1000 / 30; // 33.33ms fixed 30 FPS
-  /** the longest slice the simulation takes in one go (frames longer than this are cut into equal parts) */
-  private readonly STEP = 1 / 60;
-  /** seconds of real time not yet simulated */
+  /** real time (ms) not yet played, carried to the next frame: the game is stepped only in whole 1/30 s steps (loop) */
   private acc = 0;
   /**
    * the swinging vines' clock (physics.ts, the self-swing): every liana's angle is worked out from it, so it swings the same on every
@@ -1151,6 +1150,7 @@ export class GameEngine {
     recorder.stage(this, true);
     this.lastTime = performance.now();
     this.lastRenderTime = this.lastTime;
+    this.acc = 0;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
     const cfg = this.currentStage.config;
     // the Android app, after the phone cut the last run of this stage off: start at the flag it had reached (flagResume.ts). Not in the
@@ -1282,18 +1282,25 @@ export class GameEngine {
 
     // 30 FPS cap: one steady 30 fps rhythm (every other frame on a 60 Hz screen) looks smoother than a
     // frame rate that wobbles between 30 and 60.
+    // The game is played in whole steps of exactly 1/30 s (PERFORMANCE-RULES.md §3.2), from an account of real time not yet played
+    // (`acc`), so the game keeps real time on any screen and any frame rate (R-165.116: the old phase line counted a late frame's
+    // remainder twice, and one dropped refresh left a 30 fps phone playing at 1.5x). A frame runs only when a step is due: a vsync a
+    // hair early (33.2 ms) still counts (the 2 ms), and what is left over carries, which also keeps 75 and 48 Hz screens near 30 fps.
+    // A frame on time (within 0.5 ms: a 59.94 or 60.06 Hz screen) is one step and its hair is let go, so the rhythm never slips a
+    // frame just to keep the account.
     const elapsed = now - this.lastRenderTime;
-    // a vsync that lands a hair early (33.2 ms) still counts, or every fourth frame would be skipped and run at 50 ms
-    if (elapsed < this.frameIntervalMs - 2) {
-      return;
+    let due = 1;
+    if (Math.abs(elapsed - this.frameIntervalMs) > 0.5) {
+      const owed = this.acc + elapsed;
+      if (owed < this.frameIntervalMs - 2) return;
+      due = Math.floor((owed + 2) / this.frameIntervalMs);
+      this.acc = owed - due * this.frameIntervalMs;
     }
-    this.lastRenderTime = elapsed < this.frameIntervalMs + 2 ? now : now - (elapsed % this.frameIntervalMs);
-
-    // a frame that came late is played in up to three steps, so the game keeps real time: one long step capped at 0.05 s made Pokey
-    // truly slower whenever a phone dropped under 20 fps (a Pixel's 100-170 ms stalls felt "sluggish"; PERFORMANCE-RULES.md §3.2).
-    // Each step stays at most 0.05 s, as before, so nothing can pass through anything; at a steady 30 fps it is one step, as before.
-    const steps = elapsed < this.frameIntervalMs * 1.5 ? 1 : Math.min(3, Math.round(elapsed / this.frameIntervalMs));
-    const dt = Math.min(elapsed / steps / 1000, 0.05);
+    this.lastRenderTime = now;
+    // a late frame catches up in up to three steps, so a slow phone does not play slow; past three the rest is dropped (a stall is
+    // not played back in a burst), and every step is the same small size, so nothing can pass through anything
+    const steps = Math.min(3, due);
+    const dt = 1 / 30;
     // the frame-time check (menu switch, off by default): how long this frame's update and draw took on their own
     const pl = perfEnabled() ? perfLog : null;
     // (the control test times it too: a stall line says how much of the gap was the game's own work, js below)
