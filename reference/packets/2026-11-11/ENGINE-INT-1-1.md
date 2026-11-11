@@ -12,15 +12,24 @@ packet reference/packets/2026-11-09/ENGINE-R-165.62-A2.md and the A2 Critic find
 1. Merge t-engine-chunks (vendor split + chunkcheck). Main chunk under 3,994,304 B after everything below.
 2. Bring in the help ladder from t-engine-help@98186930: KEEP the layout-free parts (helpLadder counting and rungs, Dot's lines and
    the bubble rules, HelpOffer + Back = no, addStep, the stair builder, canGrow: no line/offer where nothing can grow, the sweep).
+   Also KEEP by name: BOUNCE_NEAR/BOUNCE_ALONE (no stair where the mushroom alone reaches; without it a stair buries the mushroom);
+   App.tsx handleBack() first in onBackSwipe; padControl.ts padFullJump (:142/:197); StuckWatch silenced in 1-1; the "No soft moss"
+   mark (check C1 still sends that hint text); DotGuide.tsx engineLine; the bubble take-down at 8 s and when the offer opens; the
+   LOG_EVENTS.md rows; the clipcheck route to HelpOffer.
    DROP the special cases written for the OLD layouts (skyline catch-flag and hidden-under-floating rules, stump take-in, narrow-stump
-   swap, sliver trims, BOUNCE_NEAR/BOUNCE_ALONE, planks in wide gaps) unless the new layout still needs one: then prove it with a seed.
+   swap, sliver trims, planks in wide gaps) unless the new layout still needs one: then prove it with a seed.
    The help schedule is unchanged (Easy 3 line / 5 pad / 8 steps; Normal 3 line / 12 offer, re-ask once 8 later; Quiet no lines).
 3. The help sweep on the NEW 1-1, every listed seed, both settings: zero floating rocks, zero faces over 60, zero sunk; Dot never
-   promises a step that does not grow; plain jumps pass every piece after the steps.
+   promises a step that does not grow; plain jumps pass every piece where canGrow is true, after the steps; the sweep lists the
+   canGrow-false pieces with a count per setting and the reason (e.g. a double gap C1 teaches).
 4. The suite: fix the failures the C1 Critic classifies as expected from E0a+C1 (tests pinned to old seeds or old closed-form reach:
-   update them to the new truth, never delete or skip; a test that must change says why in one line). Full suite green in 3 shards.
+   update them to the new truth, never delete or skip; a test that must change says why in one line). Re-pin the help's own tests to
+   new-layout seeds and pieces (helpLadder11's s3747 log-chain-rise, helpLadderPieces' s7 and s1, clipcheck's 12-drop route). Full
+   suite green in 3 shards.
 5. Stills: the step growing (Easy 8) and the offer (Normal 12) on the NEW layout, upright and sideways; Dot's line at 3.
 ## Done (the Critic checks each)
 tsc; full suite 0 fail; seedlist 1-1 --check PASS; lockall: only 1-1; chunkcheck; drawcheck; clipcheck; knowncheck; roadmapcheck;
-c1judge on the passed bots (put-backs per run no higher than C1's own run, lives 0, rescues 0 middle/expert); the sweep in 3; stills in 5.
+c1judge on the passed bots (put-backs per run no higher than C1's own run, lives 0, rescues 0 middle/expert); the sweep in 3; stills in 5; every help flight on the REAL loseLife (RealPlay stubs it) with 0 lostLife; the
+Normal offer flight (paused, Back = no, re-ask at 20); one touch flight with "Flick up" said once; Dot's lines word for word against
+reference/specs/help-lines.md.
 Push, ls-remote, REPORT.md (7 sections, 50 lines), ONE send_message to the lead (session_01FhBbYMoqqEdVR3qFjTCugy), 6 lines. Stop.
