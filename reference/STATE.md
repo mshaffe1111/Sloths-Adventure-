@@ -160,6 +160,10 @@
   it: Critics never launch HF jobs): wrapfix.py cross-fades alpha (see-through ghosts at the wrap, worst P-03-b), stump-medium reads as a
   lid. Passed: sizes, wrap RGB, pinkscan, spend $2.04, dist unchanged (185,432,195 B). Stairs not usable, palisade far-background only:
   both to list 2. Attempt 2 sent to Content.
+- 11-11 4:57 AM ET: E0a in (t-engine-e0a@3bf6c123, off A1): verdicts 21/21, lock 101/102 unchanged (only 1-1). The verdicts refuse all
+  138 seeds of today's 1-1 (teach.double-no-gap-after 138, band.out 130, floor.unmarked 112, block.lesser-passes 66), so the suite is red
+  (127) by design until C1 re-lays 1-1 (ADR-001). Lead ruling: E0a never ships alone; test link A = A1+A2 only; DoD 5 judged on the
+  E0a+C1 branch. Critic session_01FhBbYJx8aENYrnzwB7AeRN (high) proving each refusal real or wrong before C1 re-lays to them.
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,
