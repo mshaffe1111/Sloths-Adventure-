@@ -1,7 +1,7 @@
 # TASK 1-2 (R-165.11: build stage 1-2, The Petal Trail, on gen2, the way 1-1 was re-laid)   to: Content
 # model: the content tier (tools/team/models.json on the lead's branch)   effort: high   due: see "Time"; a safe-keeping push at least hourly
 Written by the Designer, 2026-11-11 5:03 PM ET; attempt 3: after the packet Critic's 14 lines (t-critic-1-2-packet@51fe547a), the lead's
-rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Attempt 4, 5:05 PM ET: the lead's rulings of 4:58 PM ET applied exactly. Attempt 5, 2026-11-11 5:24 PM ET: the lead's ruling of 5:10 PM ET on the Critic's one attempt-3 line (the hop step, @5d73c0da); 2026-11-11 5:30 PM ET: three data rows named for D43 ("Phases" 2, "Help"). Attempt 6, 2026-11-11 5:32 PM ET: the Critic's two attempt-5 lines (@fee80d5c; the lead 5:31 PM ET): rule 7, never mirrored, and one quiet row as printed; 2026-11-11 5:35 PM ET: the story keeper's must through the lead (5:33 PM ET), petals LOW on the bark and none up in the chain (rule 5, N21, done-item 4), and `THORN_12` defined in phase 1; the bloom rule's expected failure is phase 1 only (the Critic's two notes on its PASS of attempt 6 at 3507c3a2). 2026-11-11 5:38 PM ET: the lead's and the story keeper's rulings on the bonus blooms (rule 5's last sentence, done-item 4's first). Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
+rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Attempt 4, 5:05 PM ET: the lead's rulings of 4:58 PM ET applied exactly. Attempt 5, 2026-11-11 5:24 PM ET: the lead's ruling of 5:10 PM ET on the Critic's one attempt-3 line (the hop step, @5d73c0da); 2026-11-11 5:30 PM ET: three data rows named for D43 ("Phases" 2, "Help"). Attempt 6, 2026-11-11 5:32 PM ET: the Critic's two attempt-5 lines (@fee80d5c; the lead 5:31 PM ET): rule 7, never mirrored, and one quiet row as printed; 2026-11-11 5:35 PM ET: the story keeper's must through the lead (5:33 PM ET), petals LOW on the bark and none up in the chain (rule 5, N21, done-item 4), and `THORN_12` defined in phase 1; the bloom rule's expected failure is phase 1 only (the Critic's two notes on its PASS of attempt 6 at 3507c3a2). 2026-11-11 5:38 PM ET: the lead's and the story keeper's rulings on the bonus blooms (rule 5's last sentence, done-item 4's first); 2026-11-11 5:39 PM ET: the Critic's last line (attempt 7, @49150266): "a piece marked `main: false`". Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
 
 ## First, before any tool call
 `git fetch origin ccr-ca657d3c-n09zty t-design-1-2 t-designer-reach t-engine-inventory art-director` and the head the lead names.
@@ -67,12 +67,12 @@ and no pickup, and the seed list refuses a quiet stretch over 4 s (seedList.ts:2
 lead's rule, 11-11), and the rhythms below hold a stricter line: no two in a row, and a bare `n` only where the next beat is a
 jump or a mushroom. (4) No own or new section carries a `hint.1-1.*`,
 `coach.*`, squirrel or bootprint socket. (5) PETALS SIT LOW, ON BARK (reference/engine/BRIEF-1-2.md:21, a "must": "petals LOW on bark and branches the whole way"; the
-story keeper through the lead, 11-11 5:33 PM ET): every petal is a `pickup` socket on a piece of the main road at the kit's
+story keeper through the lead, 11-11 5:33 PM ET): every petal is a `pickup` socket on a piece of the road (any piece not marked `main: false`: a stump has no flag, w1.ts:158) at the kit's
 34 px (`petals()`, w1.ts:113). NONE over a cap, a pillar, a gap, a dip or a hollow; none in a jump's or a bounce's arc. At a
 chain or a thorn dip the petals are on the ledge before it and the bank after it, and on N23's island. The pipeline lays an arc
 of 3 petals 70-120 px up over about 7 gaps in 10 by itself (pipeline.ts:2178-2185): Engine's item 6 turns that off where the
 brief says `petals: 'low'`, which you set on `briefs['1-2']` in phase 2. PETAL or BLOOM, never confused (the lead and the story
-keeper, 11-11 5:36-5:37 PM ET): a PETAL is Meeca's trail, loose and pink, low on the floor road (the main-road pieces, a hop
+keeper, 11-11 5:36-5:37 PM ET): a PETAL is Meeca's trail, loose and pink, low on the floor road (any piece not marked `main: false`, a hop
 stump or a mound on them included); a BONUS BLOOM is the explorer's reward, a flower GROWING where it stands (on a bough, at a
 high road's end), as high as the piece it grows on, never a petal and never the hibiscus. N21's 4 blooms stay up on the bough. (6) Every own and new id is added to `JOBS`,
 `CONTENT` and `TERRAIN` (w1.ts:1415-1462). Supply by job and type, as rolled: notes §8. (7) NEVER MIRRORED (the Critic's
@@ -174,7 +174,7 @@ Both exits are walk-ons of a rest's length, so either may follow S (V5); no othe
   Three forks with a 3-petal cache each are already 9: caches CANNOT be petals.
 - So off the road pays in BONUS BLOOMS (RULED by the lead, 11-11 4:47 PM ET: "exploring always pays"): a `fruit` pickup counts toward the goal when gathered and is never counted in the quota
   (engine.ts:3009-3010, :3080; goals.ts:57 counts flowers and leaves only). Engine's item 6 makes the pipeline lay a `fruit` for a
-  pickup socket on a piece that is NOT `main`, on a stage whose brief says `offRoad: 'fruit'` (World 1's 1-2 only: 8-2 is a
+  pickup socket on a piece marked `main: false`, on a stage whose brief says `offRoad: 'fruit'` (World 1's 1-2 only: 8-2 is a
   gen2 harvest too and must not move). You add that field to `briefs['1-2']` in phase 2, once Engine's type has it. You lay ordinary `pickup` sockets and keep high roads and
   off-path pieces `main: false`; there is nothing to flip later.
 - Numbers, each roll: PETALS only on the main road and LOW (rule 5): 2 on the ledge before and 2 on the bank after every chain and every
@@ -280,7 +280,7 @@ The thorn floor's look goes to Matt on Engine's still. Keep building while they 
    `bloomSprite: 76`, which you set in phase 2. Checked on the built stage: every `fruit` carries that sprite and none a
    petal's or a classic bloom's; a still each way of N21's bough with its 4 blooms over the low petals.
    PETALS LOW (rule 5), a w1.stage12.test check on the BUILT stage, every listed seed,
-   both settings: every petal (a `flower` or `leaf`, what the quota counts) has a main-road piece straight under it with its top
+   both settings: every petal (a `flower` or `leaf`, what the quota counts) has a piece of the road (any piece not marked `main: false`) straight under it with its top
    20 to 50 px below the petal, and none is over a gap, a hollow or a pillar; breaches printed by section, 0. Before item 6 the
    engine's arcs breach it: named, not fixed. A breach from a reused section is a PUSHBACK (its tag comes off), never an edit to
    it. Then petals, blooms and the find, per that section: the low-road rule's smallest spare; no bare
