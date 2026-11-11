@@ -1,30 +1,36 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten at the end of INT-1-1 (11-11): branch `t-int-1-1` = C1's re-laid 1-1 (t-content-c1@7dff5800, on E0a d2748131 and A1
-41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder (t-engine-help@98186930) fitted to the
-new layout. Not merged: it is the one PR that ships E0 + C1 + A1 + A2 (ADR-001), after its Critic. Sections 0a-0b below are still true.
+Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` = C1's re-laid 1-1 (t-content-c1@0fc0835a, passed,
+on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
+(t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
+A2 (ADR-001). Sections 0a-0b below are still true.
 
 ## 0c. Rulings and facts to keep (INT-1-1, 11-11)
-- **The help promises only what gets him through.** `engine.canGrowAt(piece)` = something grows AND `stepPlan(...).unsolved === 0`
-  (no join in the piece is left that a plain jump can't make: a climb or gap with no room for its stair or pad). HelpLadder's canGrow
-  is that call, so Easy's step at 8, Normal's offer at 12 and the re-ask all need it. Red without it: w1-hollow-twoway, Normal, 18 of 200.
-- **A hollow log is road** in `roadBoxes()`: gen2 lays its platform the art's full height (pipeline.ts ~:1164, `hollowLogSize`), so
-  its inside does not let him through today, though w1NewArt.ts says it should (the HOLLOW_SHELL platform). Open: Suggestions.
-- **The stair builder on the new layout** (each decided by an A/B with the rule switched off, 200 seeds x 2, flown; reference/qa-reports/
-  INT-1-1/REPORT numbers): KEPT, each needed: catch boughs are not road (seed 769 Normal w1-canopy-rungs-level loses its step without),
-  a log under a log is hidden (769 Normal w1-quiet-arrival), a stump wholly inside a rock is taken in (769 Easy w1-mushroom-bank-teach:
-  plain jumps fail without), pads in gaps wider than a plain jump (4106 Normal w1-dip-double-teach: plain jumps fail without),
-  BOUNCE_NEAR/BOUNCE_ALONE. DROPPED (no help lost, nothing broken): the narrow-stump swap and the sliver trims; anything else under a
-  rock now means no room for that stair. A stair whose rounded faces would pass 60 is refused at `rise > STEP_LEFT` (was `- 0.5`, which
-  refused an exact 60 and broke helpLadder.test's mushroom case).
-- **The sweep:** `npx tsx tools/inspect/helpSweep.ts --fly` (src/game/helpSweep.ts: breaches, whyNothing, plainRun). The suite runs
-  the breach sweep on all 200 and flies every 10th seed (helpLadderSweep.test.ts). Pinned help pieces: helpLadder11 seed 982
-  w1-log-chain-rise; helpLadderPieces 769 Easy w1-mushroom-bank-teach, 4106 Normal w1-dip-double-teach (both red as laid).
-- **RealPlay answers the help offer no** unless a test sets `e.helpAsk` (no screen there; the stage would stay paused). The tier bots
-  and c1judge run through it.
-- **The sideways camera in a bounce:** in the air past one jump's rise over the height he left, `refY` climbs at 3x his rise and is his
-  own height from 1.5 jumps up, and the HUD hold applies at once (engine.ts updateCamera). Hops are unchanged.
-- **Judging a shipped stage:** tests use `validateAsJudged` (levelCheck.ts): 1-1 on its flown arcs, everything else the closed form.
+- **The help promises only what gets him through** (the lead's ruling): `engine.canGrowAt(piece)` = something grows AND
+  `stepPlan(...).unsolved === 0`. HelpLadder's canGrow is that call (Easy's step at 8, Normal's offer at 12, the re-ask). The pieces where
+  nothing can grow are listed by the sweep and stand as they are.
+- **Pads** are the gap less 2 x PAD_EDGE (50), PAD_W (60) the least (the lead's ruling: a 60 px pad was overshot from the lip, 3868 N
+  w1-two-answers, pinned in helpLadderPieces).
+- **A hollow log is road** in `roadBoxes()`: gen2 lays its platform the art's full height (pipeline.ts ~:1164), so its inside does not
+  let him through today, though w1NewArt.ts says it should. Open (a suggested Engine packet).
+- **Stair builder rules on the new layout** (A/B over 200 seeds x 2, reference/qa-reports/INT-1-1/ab/): KEPT catch boughs not road,
+  hidden log, stump take-in, pads, BOUNCE_NEAR/ALONE; DROPPED the narrow-stump swap and the sliver trims. Faces: `rise > STEP_LEFT`.
+- **Dot's ladder lines** (dotGuide.ts `anyway`, helpLadder.ts, DotGuide.tsx): such a line goes first in her queue, even in danger (he
+  blinks 1.2 s after every set-back, which is danger, and her clock stands still then), with no breath gap; pushHelpLine clears the
+  stage's own engine tip at once; passedLine takes a ladder line down at once; the engine's 8 s (LINE_UP_S) count from when her bubble
+  first shows it (helpLineOnScreen from DotGuide; RealPlay reports at once; LINE_WAIT_S 30 if never shown). While a ladder is on
+  (helpLadderOn) the old stuck helper ("This way, Pokey!") is quiet. Proof scripts: the Critic's proof.mjs (LINE='A step'), pace.mjs.
+- **The camera in a bounce or a double** (engine.ts updateCamera): from his climb, the height he will top out at (`topY`); once that is
+  past one jump's rise over the height he left (`lift`), refY ramps to it and the view moves to keep him under the HUD band, never more
+  than CAM_RISE_STEP (11 px of world) a frame, and back down after it the same way (`camLifted`). Hops are unchanged. Prove any camera
+  change per engine frame (delta2/camworld.mjs, the Critic's cam.mjs), never from a still: the first version snapped 44-72 px in a frame.
+- **The sweep:** `npx tsx tools/inspect/helpSweep.ts --fly`; the suite runs the breach sweep on all 200 seeds and flies every 10th.
+  Every help flight runs on the engine's real loseLife and fails on any `lostLife`. RealPlay answers the offer no unless a test sets
+  `e.helpAsk`.
+- **Judging a shipped stage in a test:** `validateAsJudged` (levelCheck.ts): 1-1 on its flown arcs, everything else the closed form.
+- **The tier bots' pin** (tierBots.test.ts) reads calibration-main.jsonl, recommitted on the re-lay; the 0.9.5 runs the bots were
+  calibrated on are calibration-0.9.5.jsonl. On the new 1-1 the table no longer matches the testers (by design): re-measure after a
+  play window.
 
 ## 0a. Rulings to keep (R-165.61, ADR-001/002, packet E0a, 11-11)
 - **THE BOUNDARY: the flown reach and the verdicts gate 1-1 ONLY** (`reach.ts judgedOnArcs`). 5-7, 5-9, Worlds 6-8 and the old
