@@ -156,9 +156,10 @@ gapPx/blocks, `stage.ts --roll` fail-closed). Read it for the open findings at i
 16. **Read thickness off the laid shape, never `pc.h`** (`thinLaid`): a bank has no `h` and is a block; that bug made every D bank thin
    (attempt 1). Headroom counts solid blocks of 50 px or more over the take-off run and the flight only. A 'double' place inside the single
    band is a single section (`classify`, setting-aware).
-17. **w1Pits over-reports falls; read `promises11.realFalls`, never raw findW1Pits, for "can he fall here".** The lead's ruling (11-11):
-   a slot closes only where a solid piece lies AT its lip level (top within 10 px of a lip, or plugging it) and has no lower floor inside
-   the slot to walk in under it (seed 172's deck over block 146 is a real hole). `top` is the LOWER lip. floor.unmarked: 109 of 138.
+17. **w1Pits over-reports falls; read `promises11.realFalls`, never raw findW1Pits, for "can he fall here".** The lead's ruling (11-11),
+   both lines: a piece over a slot closes what it covers unless he can get under it (its top more than 10 px above the upper lip, or a
+   floor inside the slot more than 10 px below it: seed 172's deck over block 146 is a real hole); and an opening narrower than his body
+   (BODY_W 32 px) is no drop whatever covers it (seed 323's 23 px). `top` is the LOWER lip.
 
 ## 4. Day one, for a fresh engine engineer
 
