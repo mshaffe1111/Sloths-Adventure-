@@ -8,6 +8,7 @@ unmerged except the held patch reference/qa-reports/engine-core/held/round10-wal
 
 | What | State | Where |
 |---|---|---|
+| Main JS chunk headroom (R-165.103, 11-11): React, react-dom and scheduler in a static 'vendor' chunk; `tools/perf/chunkcheck.mjs` holds every JS chunk to 3,994,304 B (gates job, after a build) | In review on t-engine-chunks: main 3,944,491 B (49,813 B under the gate; t-engine-e0a's +15 KB fits). OPEN: cold stage start measured +298 ms median at CPU x4 against main (title +117 ms); no cause found (the profiles are canvas-native work, same code). Next room, if needed: more static manualChunks (gen2/seeds.ts 219 KB, story + journal 150 KB), never a dynamic import a stage needs | vite.config.ts `build.rollupOptions.output.manualChunks` |
 | Branch share of thin landings at most 30% a roll (the designer's Round 11) | OPEN. 0.9.5 shipped without it by the lead's ruling (A), because Matt played the same mix on 11-05. The 138 listed rolls read median 48%, worst 65% (branch / solids 30 px tall or less, both settings). `floorRoll.catchStyles ['log','branch']` is NOT in the w1 kit. On seeds 1-40 it alone left 15 of 22 rolls over by that count. The planner counts pieces up to 60 px; agree ONE measure first | R-165.46 |
 | 1-1's proven list: 138 seeds; the target is 300 (`SEED_LIST_TARGET`), tonight's floor was 100 (`SEED_LIST_MIN`) | OPEN. The yield is about 0.36%, so 300 needs about 85,000 tries: about 1.5 h on 4 workers. Or raise the yield. Then put SEED_LIST_MIN back to 300 | R-165.47 |
 | Soft floors under the 6 floorless spots | Not in 0.9.5 (the planner's; the lead's ruling: next week). The list filter (`floorlessGaps`) keeps unmarked floorless rolls out meanwhile, and it stays in permanently | gen2/promises11.ts |
@@ -88,6 +89,7 @@ gapPx/blocks, `stage.ts --roll` fail-closed). Read it for the open findings at i
 
 ## 3. Traps I hit (each cost real time)
 
+0. **Timing a stage start from a scripted tap.** The orchestra's ~100 samples load and decode around the intro; a tap that lands while they are still decoding reads 300-900 ms slower. Wait for the resource list to stop growing before the tap, interleave the two builds, and swap their ports: one batch of 10 is not enough (spread about 2 s at CPU x4).
 1. **A gate that passes on the wrong build.** The lock, the suite and stills read whatever build you point them at:
    - vite preview served a stale build;
    - `window.__engine` is overwritten in dev (engine.ts ~:833), so scripts need a `typeof` check;
