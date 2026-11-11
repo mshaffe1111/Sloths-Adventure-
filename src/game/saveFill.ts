@@ -118,7 +118,7 @@ export function fillFinishedGame(mem: Store & Storage) {
       earned: Object.fromEntries(BADGES.map((b) => [b.id, 1_999_999_999_999])),
       kills,
       seen: creatures.slice(0, 40),
-      counters: counters as ReturnType<typeof emptyCounters>,
+      counters: counters as unknown as ReturnType<typeof emptyCounters>,
       quiet: ids.slice(0, 200),
     });
     saveCosmetic({ coat: 'moonlight', trail: true });
