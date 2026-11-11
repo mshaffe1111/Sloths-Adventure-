@@ -8,7 +8,8 @@ Play scale: 540 game px tall sideways, Pokey 48 game px; ship_px is at most twic
 | source | rows |
 |---|---|
 | (B4 rows shown in menus only: worlds = menu) | 849 |
-| A catalog-cut | 349 |
+| (images under src/assets covered) | 899/903 |
+| A catalog-cut | 363 |
 | B1 | 812 |
 | B2 | 1111 |
 | B2 overlap with B4 (dropped) | 7 |
@@ -16,7 +17,14 @@ Play scale: 540 game px tall sideways, Pokey 48 game px; ship_px is at most twic
 | B4 | 4454 |
 | B4 overlap with B2 (dropped) | 76 |
 
-Total rows: **6926**. Duplicates dropped: 83. Rows failing a check: 0.
+Total rows: **6940**. Duplicates dropped: 83. Rows failing a check: 4.
+
+### Rows failing a check
+
+- - src/assets/flora/heartbloom-bloom.webp: image under src/assets with no row
+- - src/assets/flora/heartbloom-bud.webp: image under src/assets with no row
+- - src/assets/flora/heartbloom-epic.webp: image under src/assets with no row
+- - src/assets/flora/heartbloom-ultimate.webp: image under src/assets with no row
 
 ### Made things the game shows in World 1 today (the 11-11 rule: the lead's call to keep, re-paint natural, or move)
 
@@ -40,7 +48,7 @@ Total rows: **6926**. Duplicates dropped: 83. Rows failing a check: 0.
 
 ## World 1: Emerald Canopy
 
-2420 pieces fit (2093 in game today, 327 available; 2048 have it as best fit).
+2428 pieces fit (2093 in game today, 335 available; 2057 have it as best fit).
 
 | layer | in game | available | ready | needs fix |
 |---|---|---|---|---|
@@ -52,9 +60,9 @@ Total rows: **6926**. Duplicates dropped: 83. Rows failing a check: 0.
 | decor near | 266 | 110 | 103 | 3 |
 | enemy | 306 | 18 | 18 | 0 |
 | pickup | 7 | 0 | 0 | 0 |
-| platform | 78 | 62 | 42 | 16 |
+| platform | 78 | 63 | 43 | 16 |
 | soft landing | 3 | 14 | 14 | 0 |
-| step | 11 | 38 | 34 | 4 |
+| step | 11 | 45 | 40 | 5 |
 | ui | 32 | 0 | 0 | 0 |
 
 Cast and UI shown here (not level art): character 1194, enemy 324, pickup 7, ui 32.
@@ -81,7 +89,7 @@ Cast and UI shown here (not level art): character 1194, enemy 324, pickup 7, ui 
 | checkpoints / collectibles / Thorn Gate / nest nets | 2 | 10 |
 | src/game/plates.ts | 10 | 10 |
 | prop/proto.dress w1Pebble / w1Stones / w1Sprig | 0 | 9 |
-| (299 more slots, 406 pieces: see the csv) | | |
+| (299 more slots, 413 pieces: see the csv) | | |
 
 **Gaps** (standable, climb and danger slots with fewer than 3 usable pieces here): climbable/ropes rope, climbable/vines swing_liana, landing/platforms bouncy, landing/platforms fragile ruin, landing/platforms solid -, landing/platforms solid branch, landing/platforms solid canopy_bridge, landing/platforms solid fungus_shelf, new slot: pit lip pair, pickCut kind perch, pickCut kind stump, stageArtData.ts PIT_WATER strip.
 
@@ -89,7 +97,7 @@ Cast and UI shown here (not level art): character 1194, enemy 324, pickup 7, ui 
 
 ## World 2: Sunlit Riverbank
 
-2633 pieces fit (2344 in game today, 289 available; 652 have it as best fit).
+2638 pieces fit (2344 in game today, 294 available; 657 have it as best fit).
 
 | layer | in game | available | ready | needs fix |
 |---|---|---|---|---|
@@ -101,7 +109,7 @@ Cast and UI shown here (not level art): character 1194, enemy 324, pickup 7, ui 
 | decor near | 313 | 106 | 99 | 3 |
 | enemy | 479 | 0 | 0 | 0 |
 | pickup | 7 | 0 | 0 | 0 |
-| platform | 100 | 59 | 47 | 7 |
+| platform | 100 | 64 | 47 | 12 |
 | soft landing | 3 | 10 | 9 | 0 |
 | step | 10 | 50 | 39 | 10 |
 | ui | 32 | 0 | 0 | 0 |
@@ -138,7 +146,7 @@ Cast and UI shown here (not level art): character 1194, enemy 479, pickup 7, ui 
 
 ## World 3: Mossy Grotto
 
-2656 pieces fit (2327 in game today, 329 available; 570 have it as best fit).
+2665 pieces fit (2327 in game today, 338 available; 570 have it as best fit).
 
 | layer | in game | available | ready | needs fix |
 |---|---|---|---|---|
@@ -150,9 +158,9 @@ Cast and UI shown here (not level art): character 1194, enemy 479, pickup 7, ui 
 | decor near | 286 | 99 | 94 | 3 |
 | enemy | 434 | 0 | 0 | 0 |
 | pickup | 7 | 0 | 0 | 0 |
-| platform | 75 | 72 | 58 | 11 |
+| platform | 75 | 73 | 59 | 11 |
 | soft landing | 2 | 13 | 13 | 0 |
-| step | 20 | 53 | 44 | 9 |
+| step | 20 | 61 | 51 | 10 |
 | ui | 32 | 0 | 0 | 0 |
 
 Cast and UI shown here (not level art): character 1194, enemy 434, pickup 7, ui 32.
@@ -163,7 +171,7 @@ Cast and UI shown here (not level art): character 1194, enemy 434, pickup 7, ui 
 | src/game/butterflySprites.ts | 40 | 40 |
 | W4 falling-rock effects | 39 | 39 |
 | src/game/bossFx.ts | 39 | 39 |
-| landing/platforms solid moss_stone | 0 | 33 |
+| landing/platforms solid moss_stone | 0 | 34 |
 | stage plants | 32 | 32 |
 | falling leaves, the glide leaf, leaf bits | 17 | 27 |
 | src/game/bossAtk.ts | 27 | 27 |
@@ -179,7 +187,7 @@ Cast and UI shown here (not level art): character 1194, enemy 434, pickup 7, ui 
 | pickCut kind stone | 10 | 10 |
 | checkpoints / collectibles / Thorn Gate / nest nets | 2 | 10 |
 | prop dress | 0 | 9 |
-| (362 more slots, 490 pieces: see the csv) | | |
+| (362 more slots, 497 pieces: see the csv) | | |
 
 **Gaps** (standable, climb and danger slots with fewer than 3 usable pieces here): climbable/ropes rope, landing/platforms fragile ruin, landing/platforms solid -, landing/platforms solid branch, landing/platforms solid canopy_bridge, landing/platforms solid fungus_shelf, new slot: pit lip pair, pickCut kind perch, pickCut kind stump, stageArtData.ts PIT_WATER strip.
 
@@ -187,7 +195,7 @@ Cast and UI shown here (not level art): character 1194, enemy 434, pickup 7, ui 
 
 ## World 4: Mist Cascades
 
-2164 pieces fit (1990 in game today, 174 available; 293 have it as best fit).
+2173 pieces fit (1990 in game today, 183 available; 293 have it as best fit).
 
 | layer | in game | available | ready | needs fix |
 |---|---|---|---|---|
@@ -199,9 +207,9 @@ Cast and UI shown here (not level art): character 1194, enemy 434, pickup 7, ui 
 | decor near | 168 | 63 | 60 | 2 |
 | enemy | 249 | 0 | 0 | 0 |
 | pickup | 7 | 0 | 0 | 0 |
-| platform | 49 | 30 | 26 | 2 |
+| platform | 49 | 31 | 27 | 2 |
 | soft landing | 1 | 2 | 2 | 0 |
-| step | 15 | 45 | 40 | 5 |
+| step | 15 | 53 | 47 | 6 |
 | ui | 38 | 0 | 0 | 0 |
 
 Cast and UI shown here (not level art): character 1178, enemy 249, pickup 7, ui 38.
@@ -213,8 +221,8 @@ Cast and UI shown here (not level art): character 1178, enemy 249, pickup 7, ui 
 | W4 falling-rock effects | 39 | 39 |
 | src/game/bossFx.ts | 39 | 39 |
 | src/game/bossAtk.ts | 27 | 27 |
+| landing/platforms solid moss_stone | 0 | 23 |
 | 4-D Dot's flight set + W5 web patches | 22 | 23 |
-| landing/platforms solid moss_stone | 0 | 22 |
 | falling leaves, the glide leaf, leaf bits | 17 | 17 |
 | drifting petals | 17 | 17 |
 | new slot: World 4 cascades props | 0 | 16 |
@@ -226,9 +234,9 @@ Cast and UI shown here (not level art): character 1178, enemy 249, pickup 7, ui 
 | landing/platforms solid | 0 | 10 |
 | prop/proto.dress w1Pebble / w1Stones / w1Sprig | 0 | 9 |
 | other/proto.stilt moss-hide / log-hide / root-arch | 0 | 9 |
+| new slot: wall corner cap or foot | 0 | 8 |
 | banks of World 4 | 8 | 8 |
-| hazard look | 0 | 7 |
-| (209 more slots, 258 pieces: see the csv) | | |
+| (209 more slots, 264 pieces: see the csv) | | |
 
 **Gaps** (standable, climb and danger slots with fewer than 3 usable pieces here): climbable/ropes rope, climbable/vines swing_liana, climbable/vines tree_climb, landing/platforms bouncy, landing/platforms bouncy moss_stone, landing/platforms fragile ruin, landing/platforms solid -, landing/platforms solid branch, landing/platforms solid canopy_bridge, landing/platforms solid fungus_shelf, landing/platforms solid log, new slot: ground band strip, new slot: pit lip pair, new slot: step set piece, other/proto.thorns, pickCut kind log, pickCut kind perch, pickCut kind stump.
 
@@ -285,7 +293,7 @@ Cast and UI shown here (not level art): character 1562, enemy 934, pickup 7, ui 
 
 ## World 6: Deep Mangrove
 
-2943 pieces fit (2530 in game today, 413 available; 278 have it as best fit).
+2957 pieces fit (2530 in game today, 427 available; 278 have it as best fit).
 
 | layer | in game | available | ready | needs fix |
 |---|---|---|---|---|
@@ -297,9 +305,9 @@ Cast and UI shown here (not level art): character 1562, enemy 934, pickup 7, ui 
 | decor near | 343 | 134 | 129 | 1 |
 | enemy | 519 | 21 | 21 | 0 |
 | pickup | 7 | 0 | 0 | 0 |
-| platform | 116 | 85 | 66 | 14 |
+| platform | 116 | 91 | 67 | 19 |
 | soft landing | 5 | 6 | 5 | 0 |
-| step | 20 | 53 | 47 | 5 |
+| step | 20 | 61 | 54 | 6 |
 | ui | 32 | 2 | 2 | 0 |
 
 Cast and UI shown here (not level art): character 1230, enemy 540, pickup 7, ui 34.
@@ -311,7 +319,7 @@ Cast and UI shown here (not level art): character 1230, enemy 540, pickup 7, ui 
 | W4 falling-rock effects | 39 | 39 |
 | src/game/bossFx.ts | 39 | 39 |
 | stage plants | 32 | 32 |
-| landing/platforms solid moss_stone | 0 | 30 |
+| landing/platforms solid moss_stone | 0 | 31 |
 | falling leaves, the glide leaf, leaf bits | 17 | 27 |
 | src/game/bossAtk.ts | 27 | 27 |
 | landing/platforms solid log | 0 | 23 |
@@ -326,7 +334,7 @@ Cast and UI shown here (not level art): character 1230, enemy 540, pickup 7, ui 
 | falls43 / fallZones | 12 | 12 |
 | stage flowers | 12 | 12 |
 | climbable/vines tree_climb | 0 | 11 |
-| (456 more slots, 602 pieces: see the csv) | | |
+| (456 more slots, 609 pieces: see the csv) | | |
 
 **Gaps** (standable, climb and danger slots with fewer than 3 usable pieces here): climbable/vines swing_liana, landing/platforms bouncy, landing/platforms bouncy moss_stone, landing/platforms fragile ruin, landing/platforms solid branch, landing/platforms solid fungus_shelf, new slot: pit lip pair, pickCut kind perch, pickCut kind stump.
 
@@ -481,7 +489,7 @@ Cast and UI shown here (not level art): character 1178, enemy 528, pickup 7, ui 
 
 ## World 10: Stormy Highlands Fortress
 
-2828 pieces fit (2402 in game today, 426 available; 319 have it as best fit).
+2833 pieces fit (2402 in game today, 431 available; 319 have it as best fit).
 
 | layer | in game | available | ready | needs fix |
 |---|---|---|---|---|
@@ -493,7 +501,7 @@ Cast and UI shown here (not level art): character 1178, enemy 528, pickup 7, ui 
 | decor near | 253 | 119 | 84 | 32 |
 | enemy | 497 | 85 | 60 | 25 |
 | pickup | 7 | 0 | 0 | 0 |
-| platform | 73 | 84 | 63 | 15 |
+| platform | 73 | 89 | 63 | 20 |
 | soft landing | 1 | 2 | 2 | 0 |
 | step | 17 | 34 | 28 | 6 |
 | ui | 38 | 0 | 0 | 0 |
@@ -547,11 +555,10 @@ Contact sheet: `master-sheets/1-1-best12.jpg` (dark half / light half, cyan = fo
 | pit lip / danger | W1-02-a | 2345x1276 | none (hurts: no stand line) | 420x229 | 1 Emerald Canopy: fern-lined earth pit: fills the W1 kit gap (pit floors and lips) |
 | floating ledge | W1-10-j | 1226x275 | y 7 x 38-1185 (cut catalog, flat 0.6) | 192x43 | 1 Emerald Canopy: woven roots and moss: the forest floor |
 
-## App size if every piece shipped at ship_px
+## App size if every in-build piece shipped at ship_px (an estimate)
 
-- Shipped today (part B rows): 140.4 MB as listed; at ship_px 104.4 MB: saving **36.0 MB** (atlas rows share one file, see B's draw_cost).
-- Cut pieces (part A): 180.8 MB as cut PNGs; 20.6 MB as full-size WebP; **6.0 MB** as WebP at ship_px (saving 14.6 MB against shipping them full size).
-- All rows: 321.2 MB listed, 110.4 MB at ship_px.
+- 5381 rows the build imports and a stage or screen shows: 94.1 MB now, about 71.7 MB at ship_px: an estimated saving of **22.4 MB**.
+- Estimate: atlas frames carry an area share of their sheet's file size and the ship size is scaled by area, not re-encoded. Rows not imported by the build or shown on no stage are left out; cut pieces (part A) are not in the build.
 
 ## Spot-check: 20 older-batch pieces, old tag against new
 

@@ -210,7 +210,9 @@ LOOK = {
 }
 
 # source-3 pieces that LOOK made though their cut catalog does not say so (squared, sawn timber beams; seen on the w02 platform sheet)
-MADE3 = {'M-14-a', 'M-14-b', 'M-15-a', 'M-15-b'}
+MADE3 = {'M-14-a', 'M-14-b', 'M-15-a', 'M-15-b',
+         # attempt 2 (Critic: M-04-c): every source-3 row re-read by eye for carving, crates, iron, cut or hand-stacked stone
+         'M-01-c', 'M-04-a', 'M-04-b', 'M-04-c', 'M-04-d', 'M-06-b', 'M-06-c', 'M-06-d', 'N-02-f', 'N-05-c', 'N-01-d', 'N-03-c'}
 # source-3 pieces drawn three-quarter whose cut notes do not say so (seen on the w07 step sheet)
 ANG3 = {'M-04-d', 'N-02-c', 'M-05-a'}
 
@@ -421,6 +423,20 @@ def build_cut(args):
         finish(r, img, role, fw, {}, made, st, f"{desc}. Old tag {old}. {pc.get('note', '')} {(fj or {}).get('note', '')}".strip(), fj=fj)
         r['_old'] = old
         counts['2 art-director kept (A rows)'] += 1
+    # source 2b: the 14 W1-tinted variants (art-director e8061008, tools/art/w1keepers/tint.py: soil moved to W1's bank colour, same
+    # shape, so the base piece's footing holds); not manifest rows, so listed here from the files themselves
+    for tp in sorted(glob.glob(os.path.join(s2, 'reference/art/cut', '*-w1.png'))):
+        fn = os.path.basename(tp); base = fn[:-7]
+        fam, role, st = LOOK[base]
+        desc, made, fw = F[fam]
+        img = Image.open(tp).convert('RGBA')
+        if made:
+            st = 'needs fix: a W1 soil tint of a board-topped (made) ledge: no W1 use under the 11-11 rule; the base piece covers its worlds'
+        fj = foot.get(base)
+        r = dict(id=fn[:-4], source='art-director W1 tint (e8061008)', file='origin/art-director:reference/art/cut/' + fn, kind=f'W1 soil tint of {base}', _path=tp,
+                 float_class='may float (pending Matt; use from the floor up only)' if role == 'ledge' else 'grounded')
+        finish(r, img, role, fw, {}, made, st, f'{desc}. W1-tinted twin of {base} (INTEGRATE-1-1.md "The earth-wall tint"); footing = the base piece\'s.', fj=fj)
+        counts['2b art-director W1 tints'] += 1
     # source 3: the 11-09, 11-11, 11-11b cuts and HF list 1 (already ten-world tagged)
     for cat, adir in (('matt-2026-11-09/cut', 'w1-1109'), ('matt-2026-11-11/cut', 'w1-1111'), ('matt-2026-11-11b/cut', 'w1-1111b'), ('hf-list1', 'w1-1111c')):
         for c in csv.DictReader(open(os.path.join(ROOT, 'reference/art-incoming', cat, 'catalog.csv'))):
@@ -613,6 +629,13 @@ def merge(args):
             else: bad.append((r['part'], r['id'], 'made thing tagged W1'))
         if r.get('layer') in STANDABLE and (not (r.get('footing') or '').strip() or not (r.get('ship_px') or '').strip()):
             bad.append((r['part'], r['id'], 'standable without footing or ship_px'))
+    # every image the game ships (src/assets) must be a row or an atlas's frames' file
+    have = {re.split(r'[# ]', r.get('file', ''))[0] for r in rows}
+    imgs = sorted(p for p in glob.glob(os.path.join(ROOT, 'src/assets/**/*'), recursive=True) if p.lower().endswith(('.webp', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.avif')))
+    rel = [os.path.relpath(p, ROOT) for p in imgs]
+    for f in rel:
+        if f not in have: bad.append(('-', f, 'image under src/assets with no row'))
+    counts['(images under src/assets covered)'] = f'{sum(1 for f in rel if f in have)}/{len(rel)}'
     cols = COLS + ['part']
     with open(os.path.join(ART, 'CATALOG-MASTER.csv'), 'w', newline='') as f:
         wr = csv.DictWriter(f, cols, extrasaction='ignore'); wr.writeheader(); wr.writerows(rows)
@@ -672,15 +695,17 @@ def write_md(rows, counts, dup, bad, missing, conflicts=()):
     a_rows = [r for r in rows if r.get('part') == 'A']
     for slot, r in pick_11([dict(r, worlds=r['worlds']) for r in a_rows]):
         L.append(f"| {slot} | {r['id']} | {r['w']}x{r['h']} | {r['footing']} | {r['on_screen_px']} | {r['worlds'].split(';')[0]} |")
-    sz = json.load(open(os.path.join(ART, 'catalog-cut-sizes.json')))
-    allk = sum(kb(r.get('file_kb')) for r in rows); allship = sum(kb(r.get('file_kb_ship')) for r in rows)
-    bk = sum(kb(r.get('file_kb')) for r in rows if r.get('part', '').startswith('B')); bship = sum(kb(r.get('file_kb_ship')) for r in rows if r.get('part', '').startswith('B'))
-    L += ['', '## App size if every piece shipped at ship_px', '',
-          f"- Shipped today (part B rows): {bk/1024:.1f} MB as listed; at ship_px {bship/1024:.1f} MB: saving **{(bk-bship)/1024:.1f} MB** (atlas rows share one file, see B's draw_cost).",
-          f"- Cut pieces (part A): {sz['png_kb']/1024:.1f} MB as cut PNGs; {sz['webp_native_kb']/1024:.1f} MB as full-size WebP; **{sz['webp_ship_kb']/1024:.1f} MB** as WebP at ship_px "
-          f"(saving {(sz['webp_native_kb']-sz['webp_ship_kb'])/1024:.1f} MB against shipping them full size).",
-          f'- All rows: {allk/1024:.1f} MB listed, {allship/1024:.1f} MB at ship_px.', '']
-    olds = [r for r in a_rows if r['source'].startswith(('art-raw', 'art-director'))]
+    def inbuild(r):
+        u = (r.get('used_in') or '').lower(); st = (r.get('status') or '').lower()
+        return st.startswith('in game') and u and not u.startswith(('none', 'not ')) and 'not imported' not in u + st and 'no stage' not in u + st
+    ib = [r for r in rows if r.get('part', '').startswith('B') and inbuild(r)]
+    k0 = sum(kb(r.get('file_kb')) for r in ib); k1 = sum(kb(r.get('file_kb_ship')) for r in ib)
+    L += ['', '## App size if every in-build piece shipped at ship_px (an estimate)', '',
+          f'- {len(ib)} rows the build imports and a stage or screen shows: {k0/1024:.1f} MB now, about {k1/1024:.1f} MB at ship_px: '
+          f'an estimated saving of **{(k0-k1)/1024:.1f} MB**.',
+          '- Estimate: atlas frames carry an area share of their sheet\'s file size and the ship size is scaled by area, not re-encoded. '
+          'Rows not imported by the build or shown on no stage are left out; cut pieces (part A) are not in the build.', '']
+    olds = [r for r in a_rows if r['source'].startswith(('art-raw', 'art-director')) and r['id'] in LOOK]
     L += ['## Spot-check: 20 older-batch pieces, old tag against new', '', '| id | old tag | new worlds (best first) | why |', '|---|---|---|---|']
     fam_of = {k: v[0] for k, v in LOOK.items()}
     pick, used = [], set()
