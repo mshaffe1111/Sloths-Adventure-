@@ -1,4 +1,4 @@
-# Designer handoff (rewritten 2026-11-11 5:24 PM ET by the Designer of the 1-2 packets, R-165.11, after their third Critic round; before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07)
+# Designer handoff (rewritten 2026-11-11 5:32 PM ET by the Designer of the 1-2 packets, R-165.11, after their fourth Critic round; before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07)
 
 Read first, in order:
 - reference/LAWS.md;
@@ -110,7 +110,7 @@ Every ruling below cites the file and section where it's written in full.
 ## 4. Open items (none of these is finished; check each before assuming)
 
 - **From the 1-2 packets (11-11):**
-  - both packets at attempt 5 are with the packet Critic: CONTENT for the mixed way down; ENGINE (it had PASSED at 7ed328b6)
+  - both packets are with the packet Critic: CONTENT attempt 6 (the mixed way down; 32 sections named never mirrored); ENGINE attempt 5 (it had PASSED at 7ed328b6)
     rewritten for the lead's standing rule D43, 11-11: every engine item for ANY stage from data (a listed-stage table, a
     `hurt` place flag with the world's `hurtFloor` row, a judged-stage table, brief fields), proven on 1-2, never a stage id
     in engine code. Write every future engine packet that way from the first draft (the yield floor is 1 clean in 50 for now, the lead 11-11; R-165.120 raises it)
@@ -168,6 +168,10 @@ Every ruling below cites the file and section where it's written in full.
 - **`w1World()` hands out the same section objects every call:** a probe that edits tags copies each section first.
 - **A probe on another brief proves nothing about the packet's** (the Critic's line 1 on attempt 1).
 - **A rhythm's steps down are quiet time.** Check any run-out against the quiet line (QUIET_MAX 4 s) before it goes in a packet.
+- **Half of a section's lays are MIRRORED (11-11)** unless it is `mirrorable: false`, a climb, holds a block or ends over 25 px
+  off its entry (pipeline.ts:1445-1450). For every new section ask first what it is played in reverse; one with a direction (a
+  chain, a mushroom before a lip, a drop, widths in order, a tip on its `in`) is named not mirrorable in the packet, with a test.
+- **Paste a probe's row from the run the packet names**, never from a run of that one row alone: quiet12's rows moved with run order.
 - **Any way DOWN is silent unless it carries a hop (11-11).** The kit's `Y` and `F`, a drop across a soft gap and a walk-off are
   no beat to the inspector (tools/inspect/route.ts:266). And a new beat is counted per ROLL before it is written into many
   rhythms (STAGE-RULES §0 rule 3): `N` was 13 a roll before anyone counted. `BEATS=1` on sims/quiet12.ts prints what is read.
