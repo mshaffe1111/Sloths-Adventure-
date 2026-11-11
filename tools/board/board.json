@@ -31,33 +31,28 @@
   ],
   "team": [
     {
-      "role": "Content",
-      "task": "your art cut: 54 pieces passed",
-      "status": "reported"
-    },
-    {
-      "role": "Architect",
-      "task": "safety report and file lists: passed",
-      "status": "reported"
-    },
-    {
       "role": "Engine",
-      "task": "fix A2, help after put-backs (Opus, high)",
+      "task": "fix A2, help after put-backs: finishing",
       "status": "working"
     },
     {
-      "role": "Designer",
-      "task": "real jump numbers: passed; help §5 on Wednesday",
-      "status": "reported"
+      "role": "Engine",
+      "task": "stage safety checks for 1-1 (E0a)",
+      "status": "working"
     },
     {
-      "role": "Analyst",
-      "task": "tester data and the closing update: passed",
-      "status": "reported"
+      "role": "Engine",
+      "task": "the recorder counts every move (E1)",
+      "status": "working"
+    },
+    {
+      "role": "Content",
+      "task": "art fixes and world tags for all four sets",
+      "status": "working"
     },
     {
       "role": "Story keeper",
-      "task": "Dot's help lines written; reviews the built ones",
+      "task": "reviews Dot's built help lines",
       "status": "on call"
     }
   ],
@@ -83,6 +78,10 @@
       "hint": "in the order it will be picked up",
       "cards": [
         {
+          "id": "R-165.99",
+          "title": "The app size budget: 173 MB of Google Play's 200 MB used today"
+        },
+        {
           "id": "R-165.87",
           "title": "Fix A3: a tap meant as a jump is a jump (all 9 testers' taps were misread)",
           "waits": "the Designer's touch rule"
@@ -96,10 +95,6 @@
             "R-165.53",
             "R-165.54"
           ]
-        },
-        {
-          "id": "R-165.58",
-          "title": "Engine: fix the play recorder so the next window's data is clean"
         },
         {
           "id": "R-165.65",
@@ -174,11 +169,15 @@
       "key": "doing",
       "name": "Doing",
       "hint": "being built now; at most 3 at once",
-      "limit": 3,
+      "limit": 4,
       "cards": [
         {
           "id": "R-165.62",
           "title": "Fix A2: help after repeated put-backs, being built"
+        },
+        {
+          "id": "R-165.58",
+          "title": "The recorder counts every double jump and bounce (E1), being built"
         }
       ]
     },
@@ -193,7 +192,7 @@
         },
         {
           "id": "R-165.61",
-          "title": "Architect: the stage safety report and the builders' file lists: PASSED, waits for the release"
+          "title": "Architect's safety report PASSED; its build for 1-1 (E0a) running now"
         },
         {
           "id": "R-165.86",
