@@ -113,6 +113,14 @@
   replaces the Fable lines above. Money: about $20 left of his $82 (Matt, same message).
 - LEAD MODEL: Matt switched the lead session to Sonnet 5.5 at 9:38 PM ET ("The Fable 5.2 just burns tokens"). The lead had been on Fable 5.2 at
   effort medium, so effort was not the cause; the model tier and a 480k-token context were. Members unchanged (Opus; Engine on Fable).
+- WEDNESDAY 11-11, from 2:06 AM ET (the weekly reset was 2:00 AM ET):
+  - The OLD trigger trig_018T4m55rQ1cTxAbGtXyKwLX (written 11-07) fired at 2:06 AM ET with its 11-07 to-do list; every item in it was
+    done on 11-09 (both REJECTs answered and passed, D35 and D36 logged, the analyst and Designer dispatched and passed). Not acted on;
+    it is spent (run_once_fired). The lead forgot to delete it on 11-09 as lead.md said: noted here, no harm.
+  - The art cut's Critic (session_01FhBbYKaDjEyKBkHBkQSaNQ) died on the weekly limit at 11:16 PM ET Monday before reporting; asked at
+    2:07 AM ET to restart its audit of t-c2-art-cut@fa3e6e77.
+  - The story keeper (session_019iachLiuwNTAZUBSJWUmR3) asked at 2:07 AM ET for Dot's words for the help schedule (A2). Its context is
+    about 863k tokens, near its compaction point: each message to it is costly; ask in one message, take one reply.
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,
