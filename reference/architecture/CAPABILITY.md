@@ -104,16 +104,33 @@ with Canvas 2D, not PixiJS (no pixi in package.json; the WebGL move, R-3.1, is n
 | 26 | Vine-leash escort | NO | Section 1, tethers. | 12-20 h |
 | 28 | Card pick | NO | Section 1. | 12-20 h, high |
 | 30 | Shrinking safe zone | PARTLY | 6-8's rising tide is one (risingTide.ts); the arena shell is free (stageGenerator.ts:2592). | 4-6 h |
-## 5. Matt's 30 arcade-era ideas (ideas/MATT-80S-ARCADE-IDEAS-2026-11-11.md), grouped by shared building block
-Our own rainforest versions only. Layers are ADR-003's: layout, clock, rule (mutator), mission, or one-off. Hours are for the shared block, then each idea.
+## 5. Matt's 30 arcade-era ideas (ideas/MATT-80S-ARCADE-IDEAS) and 24 archetypes (ideas/MATT-PLATFORMER-ARCHETYPES), by shared block
+Our own rainforest versions only. "A" marks an archetype; a bare number is from the arcade list. Layers are ADR-003's.
 | Block (layer) | Ideas | Today | Hours |
 |---|---|---|---|
-| Things on a beat (clock + `beat-solid`) | 3 mud crust, 4 snap-jaw stones, 11 bark that opens and closes, 23 timed stone doors, 25 orchids that cycle | PARTLY: zones with period, warn and on (zones.ts:22), thorn-vine rhythm (thornVine.ts:13), crumble and regrow. No platform turns solid on a beat. | 4-6 h, then 1-3 h each plus art; 25 also needs high-jump and dizzy power-ups (powerUps.ts:5 has speed, invincible, magnet): 3-5 h |
-| Things that roll or drop at him (clock + `crosser`) | 1 fruit knocks climbers, 5 two-height rollers, 7 fruit down a climb with alcoves | PARTLY: timed drops fall straight down only (rockfall.ts:35). | 8-12 h, shared with Frogger lanes |
-| Drop a thing on predators (mechanic) | 8 shake the vine, 12 cut the tendril, 28 boulder on a leaf bridge | PARTLY: knots tie and untie (w4Kit.ts:66, puzzleKit.ts:110). Nothing that falls hurts an animal. | 6-10 h |
-| Rides up (layout + mechanic) | 6 bubbles, 9 seed-fluff shaft, 13 overhead current, 26 vine elevator, 27 waterfall climb | PARTLY: lifts (lift.ts), World 4 updrafts (w4Play.ts:84), drifting logs, wind zones. Throwing exists in the kit (puzzleKit.ts:17). | A steerable rising ride: 4-8 h; 26's throwing: 3-5 h; 27's ceilings broken from below need breakable blocks: 4-6 h |
-| Pursuers and tricked predators (rule) | 14 hole becomes a bridge, 17 bump from below and flip, 30 a predator that copies his path | NO. Predators patrol and walk to a lure (predatorAI.ts:361); stomping (fight.ts). Nothing copies his path, and no blow comes from below. | 30: 8-12 h; 14: 8-12 h; 17: 4-6 h |
-| Meters and soft failure (rule) | 10 a safe fall puts him back, 24 a drowsiness meter, 21 a tunnel that goes dark | 10 YES (A1 `softFallStage`, E0a: pipeline.ts:1092). 24 and 21 PARTLY: 8-4's jar meter and light ring (lantern.ts:1-8), and a 'dark' zone (zones.ts:20). | 24: 4-6 h (the general meter); 21: 3-5 h |
-| Route and mission puzzles (mission + kit wires) | 15 step painting, 16 a pickup changes the layout, 23 colour keys | PARTLY: gates wired all/any/not (puzzlePlay.ts:1216); goal shares (goals.ts:19). | 15: 3-5 h (the same as the pollinator, #29 in §4); 16 and 23: a pickup that sets a wire, 3-5 h |
-| Layouts | 2 over and under, 19 a river with a long dive | 2 PARTLY: gen2 already rolls a fork into two roads (pipeline.ts:458), both side-on. 19 PARTLY: the dive is 40 px for 3 s (swim.ts). | 2: an under-tunnel kit 4-8 h plus art; 19: 3-5 h |
-| One-offs for special stages | 18 a drum stuns everything, 20 sap bubbles, 22 a grapple to the underside, 29 a hidden gust warp | 18 and 29 PARTLY (one stun at a time; the secret gate in secret.ts). 20 NO. 22 NO: it needs hanging (R-160.1). | 18: 3-5 h; 20: 6-10 h; 22: 10-16 h; 29: 6-10 h |
+| Things on a beat (clock + `beat-solid`) | 3, 4, 11, 23, 25; A2 gusts, A7 sinking pads | PARTLY: zones with period, warn and on, and wind that blows either way (zones.ts:22, :31); thorn-vine rhythm (thornVine.ts:13). No platform turns solid or sinks on a beat. | 4-6 h, then 1-3 h each plus art; 25's high-jump and dizzy power-ups 3-5 h (powerUps.ts:5) |
+| Crumble and regrow (mechanic) | A10 rotting boughs | YES: crumble in gen2 (gen2/types.ts:285; taught in World 7, w7.ts:179), creaky limbs in World 1 (w1mix.ts:167), regrow (regrow.ts). | Per-piece times (0.75 s, 3 s): 1-2 h |
+| Bounce (layout) | A9 bounce chain | YES: `bouncy` pieces, World 1 sections (w1.ts:541, :551, :733), flown arcs (E0a: reach.ts:67-68). | Sections only: 2-4 h |
+| Swing, glide, seesaw (mechanic) | A12 pendulum, A13 leaf glide + updrafts, A14 seesaw, A24 ziplines | A12 YES: lianas with amp and period (gen2/types.ts:208), Worlds 6-8 (w6Swing.ts, w6SwingRoute.test.ts). A13 YES (glide.ts; updrafts w4Play.ts:84). A14 YES (puzzleKit.ts:83; 1-6). A24 NO: ropes are fixed (rope.ts:29). | A24: 4-6 h. Swing and glide arcs are unflown: Designer 2-4 h |
+| Rolls or drops at him (clock + `crosser`) | 1, 5, 7 | PARTLY: timed drops fall straight down only (rockfall.ts:35). | 8-12 h, shared with Frogger lanes |
+| Drop a thing on predators | 8, 12, 28 | PARTLY: knots tie and untie (w4Kit.ts:66, puzzleKit.ts:110); nothing that falls hurts an animal. | 6-10 h |
+| Rides up | 6, 9, 13, 26, 27 | PARTLY: lifts, updrafts, drifting logs, wind; throwing in the kit (puzzleKit.ts:17). | A steerable rising ride 4-8 h; 26's throws 3-5 h; 27's breakable ceilings 4-6 h |
+| Push (mechanic) | A8 giant seed | PARTLY: push logs and boulders (types.ts:310, engine.ts:2307; 1-6, 4-3, 4-9); plates take a weight (puzzleKit.ts:66). | Crushing and holding switches: 4-6 h |
+| Stealth (rule) | A1 predator shadow, A22 sound stealth | PARTLY: watchers and cover (engine.ts:1500), noise turns watchers (noise.ts:1-4, predatorAI.ts:361), `hide` move (gen2/types.ts:34), gen2 stealth 5-7. | A1: 2-4 h; A22, landings that make noise: 3-5 h |
+| Pressure from behind (rule) | A3 flash flood, A6 lily-pad raft, A19 switch then race back | A3 YES on a hand-built stage (6-8, risingTide.ts). A6 PARTLY: you ride drifting logs (engine.ts:1547); no auto-scroll. A19 NO: needs right-to-left (§1). | A3 in gen2: 3-5 h; A6: 4-6 h; A19: 6-10 h plus a wire that changes the stage |
+| Pursuers and tricks | 14, 17, 30 | NO: nothing copies his path, and no blow comes from below. | 4-12 h each |
+| Meters, light, soft failure (rule) | 10, 21, 24; A4 glowing night | 10 YES (A1 `softFallStage`, E0a: pipeline.ts:1092). Others PARTLY: 8-4's jar meter and light ring (lantern.ts:1-8), 'dark' zone (zones.ts:20). | The general meter 4-6 h; each 3-5 h |
+| Followers (rule) | A15 the hummingbird rides along, A21 rescue caravan | PARTLY: Dot is the hummingbird (dotSprite.ts:2) and perches as a guide; Flicker hovers (meecaPlay.ts:656). Nothing pecks a switch or scatters. | A15: 6-10 h; A21: 10-16 h (the tether's follower) |
+| Route puzzles (mission + wires) | 15, 16, 23; A23 wash away thorns | PARTLY: gates wired all/any/not (puzzlePlay.ts:1216); sluices (river.ts:54). | 3-6 h each |
+| Layouts | 2, 19; A16 inside a hollow kapok | PARTLY: gen2 forks into two roads (pipeline.ts:458); dive 40 px, 3 s (swim.ts); `hollow` pieces and towers (gen2/types.ts:201). | 4-8 h each plus art |
+| Physics changes (rule, `reach: 'changes'`) | A5 slippery moss | NO: physics.ts has no friction setting. Every arc moves. | 4-6 h plus flying the arcs |
+| Look only (art) | A20 sunset silhouette | PARTLY: per-world palette and backdrops (types.ts WorldPalette). | 2-4 h code plus an HF picture list |
+| One-offs | 18, 20, 22, 29; A11 under-branch, A17 wrap-around, A18 layer swap | 18 and 29 PARTLY; 20, 22, A11 (needs R-160.1), A17 and A18 NO. | 3-10 h; A11 10-16 h; A17 8-12 h; A18 16-24 h |
+
+**Build first after 1-1 (the closing question):** four archetypes fit the physics and the piece tags gen2 already has.
+1. **A9 bounce chain:** the only one the verdicts can judge today (its arcs are flown).
+2. **A10 rotting boughs:** crumble and regrow are both in gen2.
+3. **A12 pendulum swing:** lianas with route tests in Worlds 6-8; the Designer flies the swing arc first.
+4. **A22 sound stealth:** noise, watchers and `hide` already exist; it needs only landings that make noise.
+Each is 2-6 h of sections plus a brief. The runner-up is A14 seesaw (a kit room). A3 flood climb and A13 glide wait for the travel mode.
+Matt's 1-2 to 1-9 pacing is the Designer's to reconcile with World 1's stages (ideas doc).
