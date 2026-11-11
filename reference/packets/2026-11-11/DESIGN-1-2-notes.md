@@ -88,6 +88,14 @@ it is met: no two `N` side by side in any rhythm (stricter than 3), 2 at most in
 the graphs as they are). One thing the flight added to the ruling: `Y`, `F` and a drop are no beat to the inspector, so each
 stands between two beats and never last. The first mix I flew, with a jump-down drop and `Y` last, failed on 23 of 51 rolls.
 
+**Standing rule D43 (Matt through the lead, 11-11 5:24 PM ET: the engine was built one level at a time), applied to the ENGINE
+packet:** every item is written for any stage and proven on 1-2; no '1-2' in engine code. HOW: a listed-stage table (item 1; the
+game reads it in item 7, replacing about ten '1-1' literals); the hurt floor is a place flag `hurt` plus the world manifest's
+`hurtFloor` row (World 1's row says thorns; `hazard.untaught`, look `'hurt-art'`); the judged stages and their scopes are a table
+beside the flown rows; the find, the taught-before double and the bonus blooms already read finds.ts, the kit's `lessons` and
+the brief; help reads the brief's `help` and a piece's mark. Each item has an "Any stage" proof (a stub kit or a test-only
+fixture stage). Content enters three rows in its phase 2: the manifest's `hurtFloor`, `help: 'marked'`, the mark on N4's chain.
+
 After the Critic's attempt-2 audit (79f8e8b0), one thing changed in HOW ruling 3 is met (the lead ruled the same at 4:58 PM ET): `EARLY_DOUBLE` is not
 widened by id (that moved the testers' control course on 1-2's id, 6 of 16 builds); the double counts on a stage gen2 BUILT whose
 kit's `lessons` say so (Engine item 5). The ruling's intent holds and nothing shipped moves in push 2. If the lead prefers the
@@ -202,3 +210,4 @@ out). The yield count names any other that breaks it.
 | **Attempt 2**, for the lead: the yield floor | Ruled: 1 in 50 for now; a rule-caused shortfall is a PUSHBACK naming the rule; R-165.120 raises the floor later |
 | **Attempt 3, C1** the hop step written 3-6 times in a row, 13 a roll (STAGE-RULES.md:23-24) | The lead ruled the Critic's cure. The 14 rhythms rewritten: no two `N` side by side, a drop `J` or the kit's `Y` between hop steps or between two steps up; flown (quiet12.ts, 11 ways down); counted (ncount12.ts: median 4 / 2 / 4, max 6, 0 of 360 over the ceiling of 6); the ceiling and the side-by-side rules are in done-item 1 |
 | **Attempt 3, E notes** | pipeline.ts:193 `jumpLinkGap` named as the fifth reader in item 5; item 5's gate worded with ctest12.ts `--record <file.json>` on the base and `--check <file.json>` on the head (exit 1 on a difference) |
+| **D43** (the lead, 5:24 PM ET, before the Critic's last delta) | ENGINE attempt 5: "The standing rule" section, items 1-7 each for any stage from data with an "Any stage" proof, the grep check per push; CONTENT names its three rows ("Phases" 2, "Help") |

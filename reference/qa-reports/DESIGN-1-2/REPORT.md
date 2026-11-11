@@ -14,7 +14,7 @@ arg parsing), D37 (every engine claim run: supply12, chainlay12, finds11), D40 (
 | Stage brief, graphs, sections, thorny floor, petals, Easy, bots, stills, gates, done-items, what is shared | CONTENT-1-2-relay.md | 53 sections: 11 reused, 17 own, 25 new; 10 done-items by phase |
 | The Engine packet | ENGINE-1-2-routing.md | items 1-7 in two pushes (item 0 struck: the follow-up round's), each with file:line, a done-test and its gates |
 | The Critic's one attempt-3 line (the hop step, 13 a roll) and the lead's ruling of 5:10 PM ET | CONTENT rule 3, the 14 rhythms, done-item 1; notes §1, §3, §9 | no two `N` side by side; a drop `J` or the kit's `Y` between beats; flown: `J N J N` over 4 s on 0 of 52, a drop between steps up 0 of 50 (`quiet12.ts`, 11 ways down); counted: median 4 / 2 / 4, max 6, 0 of 360 rolls over 6 (`ncount12.ts`) |
-| The Critic's two ENGINE notes (the packet PASSED) | ENGINE item 5 | pipeline.ts:193 named as the fifth reader; the gate worded with ctest12.ts `--record` / `--check` |
+| The Critic's two ENGINE notes; the lead's standing rule D43 (5:24 PM ET) | ENGINE attempt 5 | item 5: pipeline.ts:193 and ctest12.ts `--record` / `--check`; every item for any stage from data, proven on 1-2, each with an "Any stage" proof; a grep check per push; CONTENT names its three data rows |
 | The lead's rulings of 4:58 PM ET | both packets, attempt 4 | item 0 struck; yield floor 1 in 50; a quiet test per section (done-item 2b); the rest already met at 89005905 |
 ## 2. Polish check
 No screens (packets). Tables checked for broken code spans; times from `date`; every new cite read at 53bd446a.
@@ -35,7 +35,7 @@ No screens (packets). Tables checked for broken code spans; times from `date`; e
   bounce combine to 1-1 or the graph is dropped and named. It belongs with R-165.120 (the yield).
 - **DESIGNER help.md §5** (failures counted through a lost life, one system with assist.ts) before 1-2 reaches testers.
 ## 5. Unresolved
-- Nothing is open with the lead (4:58 and 5:10 PM ET rulings applied). CONTENT attempt 5 is with the packet Critic; ENGINE passed.
+- Nothing is open with the lead (4:58 and 5:10 PM ET rulings applied). Both packets at attempt 5 are with the packet Critic (ENGINE had passed at attempt 4; D43 reopened it).
 - The ruling's `Y`, `F` and a drop are no beat to the inspector (flown): each is laid between two beats, never last. The first
   mix I flew (`J N J Y`, a jump-down drop) broke the quiet line on 23 of 51 rolls and is not in the packet.
 - Thin supply cells are named in notes §8: eight job-and-type cells hold one section each (the three test cells hold two).
