@@ -52,5 +52,30 @@ def args(name, sha):
                       'secrets': {'HF_TOKEN': '$HF_TOKEN'}, 'volumes': ['hf://buckets/mshaffe111/w5-xfer:/out:rw'], 'name': tag}))
 
 
+
+
+def hd(sha):  # item 2's circular native pass (hfbatch/striphdgpu.py, hf-art.md §4: s25, tile 1024) on the 4 picked strips
+    raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{sha}/reference/art-incoming/hf-list1/strip-src/'
+    src = H.parents[2] / 'reference/art-incoming/hf-list1/strip-src'
+    items = []
+    for f in sorted(src.glob('*.png')):
+        pid = f.stem[3:9]
+        items.append({'name': f'hd-{f.stem}', 'src': raw + f.name, 'h': Image.open(f).height, 'prompt': f'{P2[pid]}, {STYLE}',
+                      'strength': 0.25, 'seed': 7, 'bg': [255, 0, 255]})
+    spec = {'tag': 'hfl1-hd', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]}, 'tw': 1024,
+            'items': items}
+    (H / 'spec-hd.json').write_text(json.dumps(spec, indent=1)); print('spec-hd.json', len(items))
+
+
+def hdargs(sha):
+    gh = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{sha}/tools/art/'
+    fetch = f'mkdir -p /out/hflist1 && curl -sSfL {gh}hflist1/spec-hd.json -o /out/hflist1/spec-hd.json && '
+    print(json.dumps({'image': 'ostris/aitoolkit:latest', 'flavor': 'rtx-pro-6000', 'timeout': '1h', 'detach': True,
+                      'command': ['bash', '-lc', fetch + f'curl -sSfL {gh}hfbatch/striphdgpu.py -o /tmp/g.py && SPEC=hflist1/spec-hd.json '
+                                  'SUB=hflist1/hfl1-hd TAG=hfl1-hd python /tmp/g.py'],
+                      'secrets': {'HF_TOKEN': '$HF_TOKEN'}, 'volumes': ['hf://buckets/mshaffe111/w5-xfer:/out:rw'], 'name': 'hfl1-hd'}))
+
+
 if __name__ == '__main__':
-    specs() if sys.argv[1] == 'specs' else args(sys.argv[2], sys.argv[3])
+    c = sys.argv[1]
+    specs() if c == 'specs' else hd(sys.argv[2]) if c == 'hd' else hdargs(sys.argv[2]) if c == 'hdargs' else args(sys.argv[2], sys.argv[3])
