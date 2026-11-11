@@ -234,7 +234,9 @@ never raise the quota.
   A third brief field, `bloomSprite?: number` (a painted flower's sheet number, flowerSprites.ts): where a brief sets it the
   pipeline stamps it on each `fruit` it lays, and the draw paints THAT flower from the painted atlas, standing on its piece
   (its base on the piece's top, no bob, as a `find` stands, vectorArt.ts:1078-1080), 32 px tall (the inventory's own scale for f76, 0.36 of Pokey's drawn
-  89.1 units, D41: the size a painted flower pickup has on every other stage; the petal is 27 px); while the atlas loads it draws nothing, never a vector bloom. Content sets `bloomSprite: 76` on
+  89.1 units, D41. A painted flower PICKUP on other stages is smaller: its longest side 25 px, `FLOWER_SIZE`,
+  flowerSprites.ts:84, :93, so f76 would stand 22.5 px there; the bloom is drawn larger on purpose, to read as a plant growing
+  on the bough and not as a pickup dropped there. The petal is 27 px); while the atlas loads it draws nothing, never a vector bloom. Content sets `bloomSprite: 76` on
   `briefs['1-2']` (the inventory's `flowers-atlas#f76`, the golden allamanda with its leaves; in World 1's pool,
   flowerSprites.ts:22). A `fruit` on a stage with no such field draws as today. Done-test: a draw test that a 1-2 `fruit`
   asks for frame f76 and never `CLASSIC_BLOOMS` or the petal; the still below.
@@ -305,5 +307,5 @@ PUSHBACK.md and one message, then stop.
 attempt 4 at 7ed328b6 applied the lead's rulings of 4:58 PM ET, item 0 struck, and PASSED with two notes, written in at 3864e805;
 attempt 5 at 65d31898 applied the lead's standing rule D43: each item for any stage from data, proven on 1-2, with its "Any stage"
 proof; the Critic: sound, three wording fixes, written in 2026-11-11 5:35 PM ET with the story keeper's must (item 6: petals low by a brief
-field), and made exact to the Critic's words 2026-11-11 5:36 PM ET (the lead, 5:34 PM ET); 2026-11-11 5:38 PM ET: item 6's bloom sprite (the story keeper); 2026-11-11 5:39 PM ET: the Critic's last line (attempt 7): "a piece marked `main: false`". PASSED by the Critic at d9267c6b (t-critic-1-2-packet@65523e00, REPORT-attempt8.md); its two builder notes on item 6 (the bloom's size, the allamanda as decor) written in 2026-11-11 5:41 PM ET, nothing else changed.
+field), and made exact to the Critic's words 2026-11-11 5:36 PM ET (the lead, 5:34 PM ET); 2026-11-11 5:38 PM ET: item 6's bloom sprite (the story keeper); 2026-11-11 5:39 PM ET: the Critic's last line (attempt 7): "a piece marked `main: false`". PASSED by the Critic at d9267c6b (t-critic-1-2-packet@65523e00, REPORT-attempt8.md); its two builder notes on item 6 (the bloom's size, the allamanda as decor) written in 2026-11-11 5:41 PM ET, nothing else changed; one clause on the pickup's size corrected 2026-11-11 5:43 PM ET (the Critic, at ab6cd4dd).
 Each line is answered in DESIGN-1-2-notes.md §9)
