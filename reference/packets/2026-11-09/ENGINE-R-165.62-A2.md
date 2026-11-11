@@ -19,14 +19,14 @@ loop never reaches a player without its help.
   |---|---|---|
   | 3 | Dot says the move the piece needs (help-lines.md) | the same |
   | 5 | quiet: a pad tap is a full jump at this piece, no words | nothing |
-  | 8 | steps grow by themselves under EVERY rise and in EVERY gap of that piece that a plain jump can't clear (see below), kept for the run | nothing |
+  | 8 | steps grow by themselves under every rise taller than 60 px and in every gap wider than a plain jump, in that piece (see below), kept for the run | nothing |
   | 12 | (past) | Dot offers the step; a yes grows them as Easy's do; after a no she asks once more 8 put-backs later, then never at that piece |
-- The step (the lead's ruling, 11-11, on the packet Critic's run: s3747's w1-log-chain-rise has three rises, Easy 114 / Normal
-  140-142 px, none cleared by a plain jump, so one step would leave the loop): at the rung, a step grows under every rise in the
-  piece whose height a plain running jump does not clear, each step tall enough that the climb left on top of it is 60 px (step
-  height = measured rise - 60, so the climb left is inside both settings' single-rise band), and a 60 px wide pad at the middle of
-  every gap a plain jump does not clear. Heights come from the piece as laid (meta.pieces), never from a constant. The whole piece
-  must then be passable to its exit with plain jumps only, flown.
+- The step (the lead's ruling, 11-11, on the packet Critic's two runs at s3747's w1-log-chain-rise: three rises, Easy 114 / Normal
+  140-142 px; a held plain jump clears Easy's but players still miss them by timing, so height alone can't decide): at the rung, a
+  step grows under EVERY rise taller than 60 px in the piece, step height = measured rise - 60 (so the climb left is 60 px, run: a
+  plain jump clears it 24/24 on Easy and 16/24 per rise on Normal, 0 without a step), and a 60 px wide pad at the middle of every gap
+  wider than a plain jump. Normal: the same, on a yes. Heights come from the piece as laid (meta.pieces), never from a constant. The
+  whole piece must then be passable to its exit with plain jumps only, flown on both settings.
 - The count: per piece (the piece he was trying to reach when he fell). Reset by standing on the piece beyond, or the stage ending
   (cleared, left, restarted). NOT reset by a put-back, a pause, time, a refused offer or a step already given. Each rung fires once.
   COUNT ONLY in this packet: help.md §2's seconds triggers are NOT built (a later packet).
