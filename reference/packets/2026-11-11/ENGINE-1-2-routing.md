@@ -40,6 +40,9 @@ its raw builds are clean, because `lockall` and the game build 1-2 through `gene
   src/game/engine.ts, types.ts (`Platform.pit`), w1Pits.ts, stageGenerator.ts, testlink1_1.ts, buildAhead.ts; src/components/WorldMap.tsx;
   tools/engine/seedlist.ts; the tests beside each; src/assets/props/pits/ (the thorn bed's pieces); in item 4 only: protoStage.ts,
   w1Sections.ts, and `w1Finish` in w1.ts (w1.ts:1517-1527). REPORT.md under reference/qa-reports/E12/, your turnover note.
+  For item 0's own gates: src/game/gen2/firstRun11.ts (the first run's lock, re-recorded only if `first-run.drift` fires),
+  reference/qa-reports/R-165.59/calibration-main.jsonl (the tier bots' calibration, re-run because 1-1 changed), and, only if
+  the list must be rebuilt, src/game/gen2/provenSeeds.ts through the tool (on R-165.112's head, the lead's word first).
 - A type or interface change is the Architect's by the roster (verdicts.types.ts, gen2/types.ts): the lead has put them in this
   packet; say in REPORT.md exactly what you added.
 - Nothing else. A needed change elsewhere is a PUSHBACK naming file and line.
