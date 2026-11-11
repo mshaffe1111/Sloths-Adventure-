@@ -113,3 +113,11 @@ test("every Dot line a W1 section can say has words (W1_TIPS): no raw text id re
   for (const s of W1_SECTIONS) for (const v of s.subBlocks![0].versions) for (const k of v.sockets ?? []) if (k.role === 'tip') for (const id of k.allow ?? []) if (!W1_TIPS[id]) missing.add(`${s.id}/${v.id}: ${id}`);
   assert.deepEqual([...missing], []);
 });
+
+test('C1 (R-165.108): every off-path piece of every 1-1 section version holds a petal or a find; none is empty', () => {
+  const empty: string[] = [];
+  for (const q of W1_SECTIONS.filter((s) => s.feel.includes('1-1'))) for (const v of q.subBlocks![0].versions) {
+    for (const p of v.pieces) if (p.main === false && p.landing && !(v.sockets ?? []).some((so) => so.on === p.key && (so.role === 'pickup' || so.role === 'find'))) empty.push(`${q.id}/${v.id} ${p.key}`);
+  }
+  assert.deepEqual(empty, []);
+});

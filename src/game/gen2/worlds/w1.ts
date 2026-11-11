@@ -1478,7 +1478,21 @@ function teachLines(q: W1Section): W1Section {
   });
   return { ...q, mirrorable: false, subBlocks: [{ ...sub, versions }] };
 }
-export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map(teachLines).map((q) => ({ ...q, jobs: JOBS[q.id] ?? JOBS[R6_BASE[q.id]], content: CONTENT[q.id] ?? CONTENT[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[0], terrain: TERRAIN[q.id] ?? TERRAIN[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[1], ...(ANSWERS[q.id] ? { answers: ANSWERS[q.id] } : {}), ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
+/**
+ * C1 (R-165.108, Matt 11-11: "If we want people to explore them, we need to make sure that there's things that are worth value all over the
+ * place"): every off-path piece (a landing off the route: a fork's high road, a mid road, a rest's step, a shelf) holds something, a petal
+ * at least where the section gave it none. Run on every version; w1.test holds it at zero empty
+ */
+export function offPathFilled(q: W1Section): W1Section {
+  const sub = q.subBlocks![0];
+  const versions = sub.versions.map((v) => {
+    const socks = v.sockets ?? [];
+    const add = v.pieces.filter((p) => p.main === false && p.landing && !socks.some((so) => so.on === p.key && (so.role === 'pickup' || so.role === 'find')));
+    return add.length ? { ...v, sockets: [...socks, ...add.map((p) => petals(`op-${p.key}`, p.key, [0.4, 0.6], 1))] } : v;
+  });
+  return { ...q, subBlocks: [{ ...sub, versions }] };
+}
+export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map(teachLines).map(offPathFilled).map((q) => ({ ...q, jobs: JOBS[q.id] ?? JOBS[R6_BASE[q.id]], content: CONTENT[q.id] ?? CONTENT[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[0], terrain: TERRAIN[q.id] ?? TERRAIN[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[1], ...(ANSWERS[q.id] ? { answers: ANSWERS[q.id] } : {}), ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
 
 /** the phases a stage's slots fill */
 export const W1_PHASES: readonly Phase[] = ['start', 'ki', 'sho', 'rest', 'ten', 'ketsu', 'goal'];
