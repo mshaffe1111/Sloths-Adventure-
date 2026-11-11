@@ -42,7 +42,7 @@ B = ['## By world (Matt, 11-11: "determine where they work the best... some may 
 for n in W:
     ps = [(x['id'], x['world'].split(';')[0].strip().startswith(f'{n} ')) for x in kept if fits(x, n)]
     B.append(f"| {n} {W[n]} ({len(ps)}) | {', '.join(f'**{i}**' if best else i for i, best in ps) or 'none'} | {GAP[n]} |")
-STANDK = {'walkable log or plank', 'block', 'lily pad', 'soft landing', 'rock', 'puzzle piece', 'step set piece'}
+STANDK = {'ground strip', 'walkable log or plank', 'block', 'lily pad', 'soft landing', 'rock', 'puzzle piece', 'step set piece'}
 w1 = [x['id'] for x in kept if fits(x, 1) and x['kind'] in STANDK]
 B.insert(2, f"**World 1 flat tops left** (pieces you can stand on that still fit W1, after the made-things and sawn-wood rulings): **{len(w1)}**: {', '.join(w1) or 'none'}.\n")
 B = '\n'.join(B) + '\n\n'
