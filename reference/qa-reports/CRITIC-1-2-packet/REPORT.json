@@ -403,7 +403,9 @@
   ],
   "closed_in_attempt8": true
  },
- "notes_engine": [],
+ "notes_engine": [
+  "ENGINE item 6: \"the size a painted flower pickup has on every other stage\" is not true: FLOWER_SIZE is 25 px on the longest side (flowerSprites.ts:84); 32 px is the inventory scale. The instruction (32 px) stands."
+ ],
  "not_proved": [
   "heights, reach and look of the 42 unbuilt sections",
   "seed yield on real pieces",
