@@ -9,3 +9,4 @@
 - 07:55 relay test (b)/(c) findings fixed in the layout (edges, fork roads, perch); full list build restarted
 - 08:37 list 480 PASS --check; relay (a) only the Easy-slot pushback, (b)/(c) 33 seeds; judge FAIL on put-backs (expert N 0.68 vs 0.6, child N 4.1 vs 3.8, all at the new test gaps): tests to 253-256, one a section; list rebuild 2
 - 08:55 lead named E0a d2748131 (attempt 6): rebased; list build 2 runs on attempt-5 code, re-checked on d2748131 after
+- 09:41 final list 327 PASS; relay (b) 0/0, (c) 0/0; judge PASS but expert N put-backs 0.68 v 0.6; first run 4106 locked; off-path petals; rolls re-picked; gates next
