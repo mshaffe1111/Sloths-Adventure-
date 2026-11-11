@@ -39,3 +39,24 @@ Cut from the engine: anything only one or two stages use (GAME-MAP marks these C
 ## What merges, in what order
 release-0.9.6 to main (Matt's merge) -> t-engine-seedchunks and t-engine-11-followup (after their Critics) -> the lanes, each after its
 Critic, in the order they pass. The audits' failing tests (t-audit-engine-a/b/c) are brought in by the packet that fixes each.
+
+## The lead's review of the game map (11-11 6:20 PM ET, Matt: "clear eyes... do not just assume what's been done is the best")
+Sound, keep: the brief recipe (mission x direction x clock x rules x moves), ADR-003's one engine with plug-in modes, one clock, the
+cut list (§10 C: about 65 h of one-stage pieces done the cheap way for about 9 h), the move ladder, building world pieces one world ahead.
+Change:
+1. **Measure the engine by "hours to lay a stage", not by a feature list.** The map's own numbers: about 300 h engine, about 700 h laying
+   86 stages (about 8 h a stage; 1-1's re-lay took 6 h 04 m with two Critic rounds). The engine is worth what it cuts from that. Target:
+   2 h or less a stage, Critic included, by the end of World 1.
+2. **Generator yield goes first, before gen2 learns new directions.** gen2 lays a clean 1-1 from a fresh seed 2 times in 120 (R-165.120).
+   Every stage then depends on hunting seeds, which is why laying costs 6-8 h. If the cause is structural (V19b and "pool short" refusing
+   most rolls), fixing it may change the generator, and building every-direction laying (A7) on it first would be building on what gets
+   replaced (D40). So: A5 verdicts by brief, then A9 yield measured and fixed, then A7.
+3. **A proper home for one-stage set pieces (the stage script).** Today the choice is "general in the engine" or "hard-code a branch",
+   and the hard-coding is how gen2 became 1-1-only. The 27 hand-made stages (guardians, hidden, set pieces) and every cut-list piece get
+   a per-stage script beside the world data, built on the engine's plugs (MutatorRun, ModeHost, one clock). It may name its stage; engine
+   core may not (A1's gate draws exactly that line). Nothing used by one stage enters the engine.
+4. **A vertical slice before mass production.** Lay 1-2 and 1-3 on the general engine as the proof that "laying is fast", measure the
+   real hours, and only then plan World 1's remaining stages on that number. 1-2 lands as a stage laid by data, never as engine work.
+5. **Review depth follows risk.** Engine pieces: a cold Critic each. Stages laid on proven pieces: bots and gates on every stage, a
+   Critic on the first stage of each new piece and a sample after that, not two Critic rounds on every stage. (Cost seen today: the two
+   1-2 packets used about $98 of model time across 8 rounds for one level's paperwork.)
