@@ -8,7 +8,7 @@ C1 (the re-lay, its Critic's verdict named by the lead), the help ladder's layou
 `git fetch origin ccr-ca657d3c-n09zty t-content-c1 t-engine-e0a t-engine-help t-engine-chunks t-content-c1-tests t-bots-tiers`. Read
 roles/ENGINE.md, LAWS.md, LESSONS.md (D37-D41), ONE-ONE-FIX-PLAN.md (the help schedule, its amendment, the 5:46 AM ruling), the help
 packet reference/packets/2026-11-09/ENGINE-R-165.62-A2.md and the A2 Critic findings in STATE.md (11-11 4:43 and 6:26 AM entries).
-## Build (branch t-int-1-1 from the C1 head the lead names)
+## Build (branch t-int-1-1 from the C1 head the lead names; merge t-content-c1-tests too)
 1. Merge t-engine-chunks (vendor split + chunkcheck). Main chunk under 3,994,304 B after everything below.
 2. Bring in the help ladder from t-engine-help@98186930: KEEP the layout-free parts (helpLadder counting and rungs, Dot's lines and
    the bubble rules, HelpOffer + Back = no, addStep, the stair builder, canGrow: no line/offer where nothing can grow, the sweep).
@@ -24,8 +24,15 @@ packet reference/packets/2026-11-09/ENGINE-R-165.62-A2.md and the A2 Critic find
    canGrow-false pieces with a count per setting and the reason (e.g. a double gap C1 teaches).
 4. The suite: fix the failures the C1 Critic classifies as expected from E0a+C1 (tests pinned to old seeds or old closed-form reach:
    update them to the new truth, never delete or skip; a test that must change says why in one line). Re-pin the help's own tests to
-   new-layout seeds and pieces (helpLadder11's s3747 log-chain-rise, helpLadderPieces' s7 and s1, clipcheck's 12-drop route). Full
-   suite green in 3 shards.
+   new-layout seeds and pieces (helpLadder11's s3747 log-chain-rise, helpLadderPieces' s7 and s1, clipcheck's 12-drop route). The C1
+   Critic's classification (all by design, none a regression): 8 closed-form reach tests (levels x2, skills, layoutMemory, glideStages,
+   stageQuality, flowerReach, stage11gen2:63): update to the arcs; 11 pinned seeds (softFalls11 x4, softFall11 x6, proven.test:29's
+   79191): move to listed seeds or roll A 4106; 2 pinned layouts (verdicts.test:265 seed 172; w1Pits.test:57 x22604): planted cases;
+   forks11: judge listed seeds, not raw builds; w1.relay.test.ts:164 (from t-content-c1-tests): skip the teach's own D rise when
+   at === s.x0 (PUSHBACK 1, upheld). Full suite green in 3 shards.
+6. c1judge done-item: judge put-backs OUTSIDE the four double-test pieces (PUSHBACK 2, upheld: the excess is the designed test).
+7. The sideways camera's top margin: on seed 4106's seed-perch high log (x29700) a petal draws under the progress bar and Pokey's hands
+   touch it. Fix the margin or the petal's height, with a still before and after.
 5. Stills: the step growing (Easy 8) and the offer (Normal 12) on the NEW layout, upright and sideways; Dot's line at 3.
 ## Done (the Critic checks each)
 tsc; full suite 0 fail; seedlist 1-1 --check PASS; lockall: only 1-1; chunkcheck; drawcheck; clipcheck; knowncheck; roadmapcheck;
