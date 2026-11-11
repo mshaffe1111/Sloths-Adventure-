@@ -24,11 +24,6 @@ Each fix had a planted red first (verdicts.test.ts tests 22-25). The reds were r
 4. **stageGenerator `finishReach`.** 1-1 passes the flown arcs (linkArcs) to validateStage; other stages behave as before. Test: a flower past a 256 px gap stays, on both settings; 1-2 still uses the closed form.
 **Re-run results:**
 - seedlist --check refuses 138/138. By name: teach.double-no-gap-after 138, band.out 131, **floor.unmarked 113 (it did NOT fall away)**, block.lesser-passes 62, block.spare-thin 52, drop.untyped 34. The new floor.unmarked hits are 60 px unmarked gaps in the full search (seed 476 Normal x 22458..22518). Replaying the stored plans gave only 9, so the moved envelope lays new 60 px seams. Cause not found yet: OPEN.
-- Lock: 101/102 unchanged, exit 0.
-- Suite: 822/68, 775/32, 754/26. All 126 are the "1-1 cannot build" cause.
-- Main chunk: 4,179,880 bytes, 14,424 spare.
-- Not checked: the petal trail check (petalPass.ts:32, 44) also calls validateStage without the arcs on 1-1. It may still drop a pickup past a 252-262 gap; this one-flower test does not cover it (out of lane).
-
 ## 1. Done-items (6): 1, 2, 3, 6 met; 4 met as a measurement (nothing could be re-proven); 5 NOT met (see Pushback)
 1. **Each name planted** (verdicts.test.ts, 21/21 green). There is one red per name, printed as `# red:` in its own test: arc.single-gap-over, arc.single-rise-over, block.lesser-passes, block.spare-thin, block.taught-fails, band.out, headroom.cuts-arc, floor.unmarked, drop.lethal-in-no-lethal, drop.unwarned, drop.look-lies, drop.untyped, teach.double-no-gap-after, teach.double-gap-unsafe, first-run.drift (firstRunVerdicts). A clean twin is accepted on both settings. reach.unflown appears only in the notJudged list of an unflown-scope roll (1-2 Normal), together with the 7 arc names. A test also reads ALL_VERDICTS against the 16-name union in verdicts.types.ts. verdicts.types.ts is byte-identical to c4687177.
 2. **Flown figures on 1-1's path.** reach.ts holds every row of reach.md §2 and bands.md §1-2, each with its `source`. On 1-1 the pipeline reads it through `gapFor` (level double 262 N, not 229.8), `riseCap` (Easy double 132 / thin 128, not 113.9), `bounceLipOverCap`, `blockBreaches(arcsOf)`, and the seam stone's `jumpOK`. checkStage passes `validateStage(…, {arcs})` and promises11 runs `doubleGap` on lesser/link arcs. The test strips comments from verdicts.ts and reach.ts and finds no reachJump, JUMP_RISE, DOUBLE_RISE, BOUNCE_REACH, TAKEOFF_SLACK or physics. It also pins the 1-1 envelope figures.
@@ -49,12 +44,10 @@ No screen changed and there are no stills: E0a is gate code. The visible effect 
 - `Gen2Meta.verdicts` is `Partial<Record<Difficulty, RollVerdict>>` and optional, not the PACKETS.md `Record`. A Normal build never builds Easy, so it cannot hold Easy's verdict without doubling build time. An Easy build carries both.
 
 ## 4. Suggestions (ready packets)
-- **E-next (stageGenerator.ts, out of my lane):** `finishStage(stage, validateStage(stage, {rooms:false}).reachableIds)` at :2904 calls validateStage without `arcs`. After C1, a 252-262 double gap in 1-1 is outside the closed-form reach, so pickups past it could be dropped as unreachable. Fix: pass `{ rooms: false, arcs: linkArcs(difficulty) }` when `config.id === '1-1'`. Done when a C1 roll with a 256 gap keeps every pickup (flowerReach test).
 - **C1:** classify reads `move`/`block` and the landing's thickness. A 'double' piece with dy above 50 px is the rise form, and a level one is the double gap (Normal only). A bounce lip in a T-node is the teach (232-246), elsewhere the U/V test (236-250).
 
 ## 5. Unresolved
 - Raised gaps were never flown. On 1-1 they keep the closed-form envelope capped by the band, and validateStage adds flown links only for level jumps (20 px or less). A Designer flight of raised gaps would retire that last closed-form use.
-- headroom.cuts-arc needs apex plus body 48 px (engine.ts:957) over the take-off across the jump's span. It refused 42/138 seeds. These have not yet been looked at in stills, so one may be a false bonk (a canopy beside the arc).
 - rulers.ts holds no reach figure (grep), so nothing there changed.
 
 ## 6. Method update
