@@ -9,6 +9,7 @@ import { setDifficulty } from './difficulty.ts';
 import { withPlaySeed } from './testlink1_1.ts';
 import { recorder } from './playRecorder.ts';
 import type { Platform } from './types.ts';
+import { FIRST_RUN_11 } from './gen2/firstRun11.ts';
 
 type Eng = { lives: number; softOn: boolean; softAt: { x: number; y: number } | null; isGameOver: boolean; loseLife?: unknown; currentStage: { gen2?: { softFalls?: boolean }; meta: { pieces: Array<{ k: string; x0: number; x1: number }> } } };
 
@@ -80,9 +81,10 @@ function sweep(seed: number, setting: 'normal' | 'easy', brief = true) {
   return { lost, wrong, backs, solids: solids.length };
 }
 
-// (listed seeds of the re-laid 1-1, INT-1-1: the first run's 4106, and 982 and 1025, which lay w1-log-chain-rise; the 11-10 window's
-// seeds 3747, 15458 and 19582 are no longer on the list and no longer build)
-const SWEEP = [4106, 982, 1025];
+// (listed seeds of the re-laid 1-1, INT-1-1: the first run's seed, and 982 and 1025, which lay w1-log-chain-rise; the 11-10 window's
+// seeds 3747, 15458 and 19582 are no longer on the list and no longer build. Changed, 11-FOLLOWUP: the first run is read from
+// firstRun11.ts (9652 since R-165.122's rebuild; 4106 left the list, Easy V19b), so a re-pick moves this sweep with it)
+const SWEEP = [FIRST_RUN_11.seed, 982, 1025];
 for (const setting of ['normal', 'easy'] as const) {
   for (const seed of SWEEP) {
     test(`1-1 ${setting} seed ${seed}: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall`, () => {
