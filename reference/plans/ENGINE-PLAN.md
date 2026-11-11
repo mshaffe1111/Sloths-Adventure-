@@ -76,3 +76,13 @@ have it go back through 1-1... decide what we're doing with 1-2... it could take
   the empty walk at x 140) are done in one pass after the engine pieces land, on the general engine.
 - **The order:** the release; then the engine (generator yield first, Part A, World 1 and 2 pieces); then 1-2 and 1-3 laid fast; then
   1-1's polish pass; then World 1 laid.
+
+## THE PLAN AS TOLD TO MATT (11-11 6:25 PM ET); this section wins over everything above it
+1. **Proof run, to Fri 11-13:** the generator fix, any stage by data, hurt floors; then 1-2 and 1-3 laid as data. Measure hours per stage.
+2. **Then a world at a time, never a level at a time:** a stage is one brief row (data) + the generator + the bots. Two or three Opus
+   builders each lay several stages of one world in parallel; the world's new pieces are built one world ahead. Target: World 1 by
+   about 11-17, then a world every 2-3 days (the real rate is measured on Friday and told to Matt).
+3. **If Friday fails:** stop rebuilding; give each existing level its twist with the moves the engine has; time one level first.
+4. **Tokens down, quality up:** quality moves from AI reviewers (tokens) to the machine checks every stage already runs (bots, fairness
+   verdicts, the stage lock: compute, not tokens) plus Matt playing the test link plus the lead looking at stills. One reviewer sweep a
+   day. Full gates once per release. Short sessions. Fable only on the hardest engine problem of the day.
