@@ -171,7 +171,7 @@ Petals are pressed flat at the soldiers' MARCHING height, low; they're the trail
      (finds.ts:214) becomes "Our girl, till her mother and father are home." It works whoever the painted photo shows, and adults will
      feel it. No new scene, no Dot line, no stage change.
    - Written into the Cast Bible (doc rev 44), under Meeca.
-2. **The two food lines: RULED, KEEP BOTH (story keeper, 11-11, handed over by Matt).** VOICE's rule is that after Meeca is taken, the
+2. **The two food lines: RULED, KEEP BOTH (story keeper, 11-11; handed over by the lead, Matt told and raised no objection).** VOICE's rule is that after Meeca is taken, the
    HEROES don't think about eating. Neither line breaks it:
    - "She took a sandwich" (W4) is Pokey's dry hyperbole about the eagle's endless dive, a joke ABOUT the eagle, in his voice;
    - "Bring snacks" is Meeca joking because she's scared, in her last note, and it calls back to Dot going for snacks just before
@@ -192,7 +192,7 @@ Petals are pressed flat at the soldiers' MARCHING height, low; they're the trail
 8. **The bounce teach: DECIDED (story keeper, 11-08): the `lesson.bounce` card teaches it, with no `hint.1-1.bounce` row** (not on main as of
    0.9.5; its words were `ctest.bounce`'s). One tip, one channel. Open only to confirm the card fires at gen2 1-1's first mushroom.
 9. **Story delivery:** the words box keeps room for six lines, leaving dead space under short lines upright (DIRECTION.md 8, flagged).
-10. **Skulls: RULED (story keeper, 11-11, handed over by Matt).** No skulls or bones as REMAINS anywhere: not in soil, dressing,
+10. **Skulls: RULED (story keeper, 11-11; handed over by the lead, Matt told and raised no objection).** No skulls or bones as REMAINS anywhere: not in soil, dressing,
     props or backdrops (a kids' game; the W9 basalt soil skulls come out). ONE exception: a painted, cartoon skull on a WARNING SIGN where
     the sign warns of real danger, as in Matt's own 7-4 flume concept ("skull sign and TURN BACK", 7-4-slide-mockup/v2/README.md:56).
     The art gate fails remains and allows only pieces tagged as warning signage.
