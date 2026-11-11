@@ -39,7 +39,7 @@ decides everything else and makes it happen. The lead does not write game code; 
 - gen2 is the foundation; the whole game uses it; old stages get reworked on it.
 - No hard-coding one level in the engine (D43); a generality gate is on the roadmap (R-165.123).
 - Each world must play clearly different (the game map's freshness rule: 1 new move + 2-3 world rules per world).
-- Models: Opus 5.5; engine work xhigh; Fable only when Matt says.
+- Models: Opus 5.5 today; engine work xhigh. Matt, 11-11: "Using Fable 5.2, the strongest and best model out there now, would have helped us get to the next level, but we didn't use it right": when he allows Fable, put it on the core engine build first (not on level-by-level work or reviews of one-off features).
 
 ## 3. Your first day (a proposal, yours to change, with Matt's approval)
 1. Read everything in §0. Check every in-flight helper (handoffs/lead.md table): get_session, git ls-remote, ReadNotifications.
