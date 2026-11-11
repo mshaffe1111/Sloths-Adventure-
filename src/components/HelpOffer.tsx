@@ -1,7 +1,7 @@
 /**
  * Normal's help offer in 1-1 (R-165.62, helpLadder.ts; the story keeper's words, reference/specs/help-lines.md §3): Dot asks whether
  * Pokey wants a little step. The two answers are pictures, for a player who can't read: YES is Pokey standing on the very stone that
- * will grow, NO is Pokey jumping on his own. No tick or cross: saying no is never failing. The stage holds still while it is up
+ * will grow, NO is Pokey mid-leap on his own (the standard hero's apex: leaning into it, arms reaching, not a cheer). No tick or cross: saying no is never failing. The stage holds still while it is up
  * (engine.ts askHelp); the phone's Back is a no (PLAY-STORE-RULES §6, nav/backStack.ts). Mounted by the engine on its own root, loaded
  * only the first time it is asked.
  */
@@ -9,6 +9,7 @@ import React, { useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { DotFace } from './DotFace.tsx';
 import { HeroPose } from './HeroPose.tsx';
+import { standardEnabled } from '../game/heroStandard.ts';
 import { backStack } from './nav/backStack.ts';
 import { W1_CUT, W1_CUT_URL } from '../game/w1CutArt.ts';
 import { OFFER_LINE, REASK_LINE } from '../game/helpLadder.ts';
@@ -113,7 +114,7 @@ export const HelpOffer: React.FC<{ reask: boolean; cut?: string; onAnswer: (yes:
           </button>
           <button type="button" className="ho-btn ho-no" aria-label="No, I will jump" onClick={() => answer(false)}>
             <span className="ho-pic" aria-hidden="true" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <HeroPose frame="jump_up" height={88} maxWidth={96} />
+              <HeroPose frame={standardEnabled() ? 'apex' : 'jump_up'} height={88} maxWidth={96} />
             </span>
           </button>
         </div>

@@ -13,7 +13,7 @@ import { withPlaySeed } from './testlink1_1.ts';
 import { recorder } from './playRecorder.ts';
 import { InputEngine } from './inputEngine.ts';
 import { PadInput } from './padControl.ts';
-import { MOVE_LINES, STEP_LINE, padFullJump } from './helpLadder.ts';
+import { MOVE_LINES, STEP_LINE, STEP_CUT, LINE_UP_S, padFullJump } from './helpLadder.ts';
 import { dotHelp, setDotHelp } from './dotGuideHelp.ts';
 import type { Platform } from './types.ts';
 
@@ -160,6 +160,11 @@ test('1-1 Easy, seed 3747, w1-log-chain-rise: the line at 3, the full pad jump a
   assert.equal(f.r.said.filter((s) => s.text === STEP_LINE).length, 1, 'Dot: the step line');
   const grown = e.helpState().grown;
   assert.ok(grown.length >= 3, `steps grown: ${grown.length}`);
+  assert.ok(grown.filter((g) => g.height > 30).every((g) => g.cut === STEP_CUT), 'every step is the one mossy rock (the YES picture)');
+  // the move line came down after its time (her own clock holds while he blinks after each set-back)
+  const ml = f.r.said.find((x) => x.text === MOVE_LINES.double.touch || x.text === MOVE_LINES.double.pad)!;
+  const mlDown = f.r.passed.find((x) => x.text === ml.text);
+  assert.ok(mlDown && Math.abs(mlDown.t - ml.t - LINE_UP_S) < 0.1, `the move line down ${LINE_UP_S} s after it was said (${ml.t.toFixed(1)} -> ${mlDown?.t.toFixed(1)})`);
   for (const g of grown) {
     assert.ok(g.x >= piece.x0 - 100 && g.x < piece.x1, 'in the piece');
     assert.ok(e.platforms.includes(g), 'standable: in the platforms');
@@ -188,7 +193,12 @@ test('1-1 Normal, seed 3747: the line at 3, the offer at 12 (the stage held), a 
   putBack(f);
   assert.equal(asked.length, 1, 'the offer at 12');
   assert.equal(asked[0].reask, false);
-  assert.ok(asked[0].cut, 'the offer shows the stone that would grow');
+  assert.equal(asked[0].cut, STEP_CUT, 'the offer shows the stone that would grow');
+  // her bubble: the move line was taken down when the offer opened (or before, at its time), and nothing is said from here on
+  const move = f.r.said.find((x) => x.text === MOVE_LINES.double.touch || x.text === MOVE_LINES.double.pad)!;
+  const down = f.r.passed.find((x) => x.text === move.text);
+  assert.ok(down && down.t <= r.t + 1e-6 && down.t - move.t <= LINE_UP_S + 0.05, `the move line taken down by the offer (said ${move.t.toFixed(1)}, down ${down?.t.toFixed(1)}, offer ${r.t.toFixed(1)})`);
+  const saidAtOffer = f.r.said.length;
   assert.deepEqual(helps(f).slice(1), [`help offer ${PIECE} 12 N`, `helpOffer shown ${PIECE} 12`]);
   assert.equal(e.helpState().paused, true, 'the stage is paused while it shows');
   const at = { x: r.p.x, y: r.p.y, t: r.t };
@@ -205,6 +215,7 @@ test('1-1 Normal, seed 3747: the line at 3, the offer at 12 (the stage held), a 
   asked[1].answer(false);
   for (let n = 21; n <= 36; n++) putBack(f);
   assert.equal(asked.length, 2, 'after a second no, never again at that piece');
+  assert.equal(f.r.said.length, saidAtOffer, `nothing said after a no: ${f.r.said.slice(saidAtOffer).map((x) => x.text).join(' | ')}`);
   assert.equal(e.helpState().grown.length, 0);
   assert.deepEqual(helps(f).filter((v) => v.startsWith('helpOffer')), [`helpOffer shown ${PIECE} 12`, `helpOffer no ${PIECE} 12`, `helpOffer shown ${PIECE} 20`, `helpOffer no ${PIECE} 20`]);
   assert.ok(!f.events.some((v) => v.startsWith('stuckHelp')), 'no stuckHelp');
@@ -259,4 +270,18 @@ test('1-1 on Quiet (Dot\'s help setting): no line from her, but Easy\'s steps st
   } finally {
     setDotHelp('reminders');
   }
+});
+
+test('the offer opens over a clear bubble: a ladder line still up is taken down the moment it opens', () => {
+  const f = fly('normal');
+  for (let n = 1; n <= 11; n++) putBack(f);
+  // (a line said just now, well inside its time: only the offer's opening can take it down)
+  const e = f.e as unknown as { helpLine: { text: string; until: number } | null; gameTime: number };
+  e.helpLine = { text: MOVE_LINES.double.touch, until: e.gameTime + 1000 };
+  const before = f.r.passed.length;
+  putBack(f);
+  assert.equal(f.asked.length, 1, 'the offer');
+  assert.deepEqual(f.r.passed.slice(before).map((x) => x.text), [MOVE_LINES.double.touch], 'taken down as it opened');
+  f.asked[0].answer(false);
+  f.done();
 });

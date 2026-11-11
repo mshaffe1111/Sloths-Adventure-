@@ -66,3 +66,15 @@ test('planted: the old path (her tip rules) holds the help back on Tips: not up 
 test('a line that is not the ladder\'s goes the old way', () => {
   assert.equal(helpGuideLine('Flick up again in the air to jump twice', 'teach'), undefined);
 });
+
+test('the engine\'s "passed" takes a ladder line down (DotGuide passedLine clears by the engine line\'s key)', () => {
+  const q = new GuideQueue(true);
+  const l = helpGuideLine(MOVE_LINES.double.touch, 'reminders', 6000)!;
+  pushHelpLine(q, l as GuideLine, 3000);
+  for (let now = 3000; now < 6000; now += 100) q.tick(now, env as never);
+  assert.equal(q.cur?.line.text, MOVE_LINES.double.touch, 'up');
+  const key = engineGuideLine(MOVE_LINES.double.touch, '1-1', { dot: true })!.key;
+  q.clear((x) => x.key === key, 6000);
+  for (let now = 6000; now < 7000; now += 100) q.tick(now, env as never);
+  assert.equal(q.cur, null, 'her bubble is clear');
+});

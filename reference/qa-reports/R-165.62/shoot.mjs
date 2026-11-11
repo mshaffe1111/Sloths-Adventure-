@@ -21,7 +21,7 @@ for (const setting of ['easy', 'normal']) for (const o of [{ id: 'port', viewpor
   await ctx.addInitScript(([i, s]) => { const order = [i, ...Array.from({ length: 138 }, (_, j) => j).filter((j) => j !== i)]; localStorage.setItem('sloth_difficulty', s); localStorage.setItem('sloth_coach_done', '1'); localStorage.setItem('sloth_play11_order', JSON.stringify({ n: 138, order, i: 0 })); }, [idx, setting]);
   const page = await ctx.newPage();
   page.on('pageerror', (e) => console.log(tag, 'pageerror', e.message.slice(0, 160)));
-  await page.goto(`http://127.0.0.1:${port}/?layout=1${process.env.LESSONS_OFF ? "&lessons=off" : ""}`, { timeout: 300000 });
+  await page.goto(`http://127.0.0.1:${port}/?layout=1&lessons=off`, { timeout: 300000 });
   for (let t = Date.now(); Date.now() - t < 300000; ) { if (await page.evaluate(() => typeof window.__play === 'function')) break; await sleep(1000); }
   await sleep(3000);
   await page.evaluate((i) => window.__play('1-1', i + 1), idx);
@@ -64,23 +64,22 @@ for (const setting of ['easy', 'normal']) for (const o of [{ id: 'port', viewpor
   for (let n = 4; n <= last; n++) await putBack();
   await sleep(1200);
   if (setting === 'easy') {
-    // (framed on the first grown step, the log he is set back on in view)
-    await page.evaluate(() => { const e = window.__engine(); const g = e.helpState().grown[0]; Object.assign(e.player, { x: g.x - 120, y: g.y + g.height, vx: 0, vy: 0 }); });
+    // (he stands on the first grown step: the step itself under him, the log he is set back on in view)
+    await page.evaluate(() => { const e = window.__engine(); const g = e.helpState().grown.find((q) => q.height > 30); Object.assign(e.player, { x: g.x + g.width / 2, y: g.y, vx: 0, vy: 0 }); });
     report[`${tag}-line8`] = await waitBub('A step. Up you go');
     await sleep(900);
     report[`${tag}-line8-at-shot`] = await page.evaluate(() => window.__bub);
+    report[`${tag}-step-cut`] = await page.evaluate(() => window.__engine().helpState().grown.map((q) => q.cut).join(','));
     await shot('08-step');
-    // walk him up to the first grown step, standing on it
-    await page.evaluate(() => { const e = window.__engine(); const g = e.helpState().grown[0]; Object.assign(e.player, { x: g.x + g.width / 2, y: g.y, vx: 0, vy: 0 }); });
-    await sleep(1200);
-    await shot('08-on-step');
   } else {
     await page.locator('.ho-scrim').waitFor({ state: 'visible', timeout: 10000 });
     await sleep(600);
+    report[`${tag}-bubble-at-offer`] = await page.evaluate(() => document.querySelector('.dg-bub-body')?.textContent.trim() ?? '');
     await shot('12-offer');
     const held = await page.evaluate(async () => { const e = window.__engine(); const a = [e.player.x, e.gameTime]; await new Promise((r) => setTimeout(r, 800)); return { paused: e.helpState().paused, still: e.player.x === a[0] && e.gameTime === a[1] }; });
     await page.keyboard.press('Escape');
-    await sleep(800);
+    await sleep(3000);
+    report[`${tag}-bubble-after-no`] = await page.evaluate(() => document.querySelector('.dg-bub-body')?.textContent.trim() ?? '');
     const gone = await page.evaluate(() => ({ offer: !!document.querySelector('.ho-scrim'), pauseMenu: !!document.querySelector('.pm-card'), asking: !!window.__engine().helpState().asking, grown: window.__engine().helpState().grown.length }));
     report[`${tag}-back`] = { held, gone };
     await shot('12-after-back');

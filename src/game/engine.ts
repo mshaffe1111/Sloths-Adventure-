@@ -24,7 +24,7 @@ import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
 import { maxGap, softFallStage } from './gen2/pipeline.ts';
-import { HelpLadder, moveLine, pieceMoveLaid, setHelpLadder, stepsFor, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
+import { HelpLadder, LINE_UP_S, moveLine, pieceMoveLaid, setHelpLadder, stepsFor, STEP_CUT, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
 import { pickCut } from './w1CutArt.ts';
 import { difficulty, easeInShare, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
@@ -1244,6 +1244,7 @@ export class GameEngine {
     this.help?.end();
     this.helpAsking = null;
     this.helpDue = null;
+    this.helpLine = null;
     setHelpLadder(null);
     // (the banner goes back to its usual place for whatever comes next)
     if (typeof document !== 'undefined') {
@@ -1463,6 +1464,7 @@ export class GameEngine {
   private update(dt: number) {
     // (the help offer is up: nothing moves until it is answered)
     if (this.helpAsking) return;
+    if (this.helpLine && this.gameTime >= this.helpLine.until) this.helpLineDown();
     if (this.helpDue && this.irisOpen <= 0 && this.player.grounded) {
       const a = this.helpDue;
       this.helpDue = null;
@@ -5049,10 +5051,10 @@ export class GameEngine {
     const s = help.setting === 'easy' ? 'E' : 'N';
     for (const a of help.putBack(x)) {
       recorder.event('help', `${a.rung} ${a.piece.k} ${a.count} ${s}`);
-      if (a.rung === 'move') this.guide(moveLine(this.pieceMove(a.piece), lessonInputMode()), 6);
+      if (a.rung === 'move') this.helpSay(moveLine(this.pieceMove(a.piece), lessonInputMode()), 6);
       else if (a.rung === 'step') {
         this.growSteps(a.piece);
-        this.guide(STEP_LINE, 5);
+        this.helpSay(STEP_LINE, 5);
       } else if (a.rung === 'offer' || a.rung === 'reask') this.helpDue = a;
       // ('pad': quiet, padControl reads helpLadder.padFullJump)
     }
@@ -5065,6 +5067,20 @@ export class GameEngine {
     return pieceMoveLaid(piece, solids, this.platforms.filter((q) => q.type === 'bouncy'), (dyUp) => maxGap(dyUp, false, margin));
   }
 
+  /** the ladder's line up in her bubble, and when it comes down (game time) */
+  private helpLine: { text: string; until: number } | null = null;
+  private helpSay(text: string, seconds: number) {
+    this.helpLineDown();
+    this.guide(text, seconds);
+    this.helpLine = { text, until: this.gameTime + LINE_UP_S };
+  }
+  /** takes the ladder's line down (DotGuide passedLine): after its time, and always when the offer opens */
+  private helpLineDown() {
+    if (!this.helpLine) return;
+    this.callbacks.onGuide?.(this.helpLine.text, 0, true);
+    this.helpLine = null;
+  }
+
   /** the boxes the ladder would grow at a piece, from the piece as laid (helpLadder.ts stepsFor) */
   private stepBoxes(piece: Piece) {
     const margin = (this.currentStage as { gen2?: { budget?: { margin?: number } } }).gen2?.budget?.margin ?? (isEasy() ? 0.65 : 0.82);
@@ -5075,7 +5091,8 @@ export class GameEngine {
   /** a grown piece: a step stands on its log as a World 1 stone, a pad floats as a plank (w1CutArt.ts pickCut: art already in the atlas) */
   private stepPlatform(b: { x: number; y: number; width: number; height: number }, id: number): Platform {
     const pf: Platform = { id, x: b.x, y: b.y, width: b.width, height: b.height, type: 'solid', style: b.height > 30 ? 'moss_stone' : 'log', ownLook: true };
-    const cut = pickCut(pf);
+    // (a step is always the one mossy rock, so the offer's YES picture is exactly what grows; a pad is a plank)
+    const cut = b.height > 30 ? STEP_CUT : pickCut(pf);
     if (cut) pf.cut = cut;
     return pf;
   }
@@ -5101,8 +5118,9 @@ export class GameEngine {
 
   /** Normal's offer (or its one re-ask): the stage holds still and the offer is shown; its answer comes to answerHelp */
   private askHelp(a: HelpAct) {
-    const box = this.stepBoxes(a.piece).find((b) => b.height > 30);
-    const cut = box ? this.stepPlatform(box, 0).cut : undefined;
+    const cut = STEP_CUT;
+    // (her bubble is clear while the offer is up, and stays clear after a no)
+    this.helpLineDown();
     this.helpAsking = { k: a.piece.k, count: a.count, cut };
     this.outerPause = false;
     this.isPaused = true;

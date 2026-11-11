@@ -30,6 +30,10 @@ export const MOVE_LINES: Record<Move, { touch: string; pad: string }> = {
   bounce: { touch: 'Land right on the mushroom. Boing!', pad: 'Land right on the mushroom. Boing!' },
 };
 export const STEP_LINE = 'Ooh, look! A step. Up you go.';
+/** the one sprite every grown step is drawn with, and the offer's YES picture (the story keeper: YES shows exactly what grows) */
+export const STEP_CUT = 'w1-boulder-grey-moss';
+/** a ladder line is taken down this long (s of play) after it is said: her own clock holds while he blinks after each set-back */
+export const LINE_UP_S = 8;
 export const OFFER_LINE = "Want a little step? I won't tell anyone.";
 export const REASK_LINE = "Still want that step? It's yours.";
 
@@ -46,7 +50,8 @@ export function helpGuideLine(text: string, help: 'teach' | 'reminders' | 'quiet
   if (!HELP_LINES.has(text)) return undefined;
   if (help === 'quiet') return null;
   // (`soon`: due now, so neither Tips' 30 s gap nor its busy count holds it back; a fall in progress still does)
-  return { key: `help:${text}`, text, kind: 'struggle', who: 'Dot', source: 'struggle', soon: true, ms };
+  // (keyed as any engine line is, `engine:<words>`: the engine's "passed" for it, DotGuide passedLine, takes it down)
+  return { key: `engine:${text}`, text, kind: 'struggle', who: 'Dot', source: 'struggle', soon: true, ms };
 }
 
 /**
