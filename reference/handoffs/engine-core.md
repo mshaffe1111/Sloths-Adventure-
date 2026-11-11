@@ -153,8 +153,11 @@ gapPx/blocks, `stage.ts --roll` fail-closed). Read it for the open findings at i
 
 15. **The flown bands refuse today's World 1 data, by design.** Before C1, every 1-1 roll fails; a suite test that builds Play's 1-1
    goes red on this branch. Do not loosen a verdict to get green: the content moves (bands.md §5), or it is a pushback.
-16. **`headroom.cuts-arc` and `drop.untyped` read the built stage.** They refused a few seeds (42 and 2 of 138); look at those stills
-   before calling them false: a bough under the arc is a real bonk.
+16. **Read thickness off the laid shape, never `pc.h`** (`thinLaid`): a bank has no `h` and is a block; that bug made every D bank thin
+   (attempt 1). Headroom counts solid blocks of 50 px or more over the take-off run and the flight only. A 'double' place inside the single
+   band is a single section (`classify`, setting-aware).
+17. **OPEN after attempt 2: floor.unmarked rose to 113/138 in the full search** (60 px unmarked gaps, e.g. seed 476 Normal x 22458).
+   Replays show only 9, so the envelope change lays new 60 px seams. Find which lay (seam `Math.max(60, …)` or a pit) before C1 re-proves.
 
 ## 4. Day one, for a fresh engine engineer
 

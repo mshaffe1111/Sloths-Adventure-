@@ -1,6 +1,20 @@
-# E0a report (R-165.61: verdicts and flown reach), Engine, attempt 1. Branch t-engine-e0a from t-engine-putback@41c2e248
+# E0a report (R-165.61: verdicts and flown reach), Engine, attempt 2 (attempt 1 below, as it stood). Branch t-engine-e0a from t-engine-putback@41c2e248
 **Method used:** test-first on planted rolls. Main's lock recorded before the first change. Every reach and band figure is entered as data with its spec line. The verdicts were then run on the 138 listed seeds and the full suite was diffed against A1's base.
 **Lessons applied:** D37: the behaviour claims are proved with a pasted run (1-1 builds below), not taken from a summary. D36: worktrees for main and the base, own branch checked with `git status -sb`. The pins come from origin/main, never from memory.
+
+
+## Attempt 2 (the Critic's 3 verdict bugs and the lead's finish reach), f7207710 + this commit
+Each fix had a planted red first (verdicts.test.ts tests 22-25). The reds were run before the fix: Normal bank `134 x16 not in 136-140`, classify `double-teach-rise` where `single-rise` was expected, `the far bank is reached (1)` was false, and the headroom asserts failed. After the fix, verdicts.test.ts is 25/25.
+1. **A bank is a block.** `thinLaid` reads the shape the way layStage builds it: bank is a block; branch 24 and stone 22 are thin; hollow uses its art's height. Normal D now lays 136-140 and Easy 128-132. w1.test's exitDy failure is green with no change to w1.ts.
+2. **headroomOf** counts only solid pieces 50 px or taller, over the 70 px take-off run and the flight, never over the landing. headroom.cuts-arc now refuses 0 seeds (was 39).
+3. **classify(a, inTeach, setting).** A 'double' place that is not a declared double block, and whose figure fits the single band, is now a single section.
+4. **stageGenerator `finishReach`.** 1-1 passes the flown arcs (linkArcs) to validateStage; other stages behave as before. Test: a flower past a 256 px gap stays, on both settings; 1-2 still uses the closed form.
+**Re-run results:**
+- seedlist --check refuses 138/138. By name: teach.double-no-gap-after 138, band.out 131, **floor.unmarked 113 (it did NOT fall away)**, block.lesser-passes 62, block.spare-thin 52, drop.untyped 34. The new floor.unmarked hits are 60 px unmarked gaps in the full search (seed 476 Normal x 22458..22518). Replaying the stored plans gave only 9, so the moved envelope lays new 60 px seams. Cause not found yet: OPEN.
+- Lock: 101/102 unchanged, exit 0.
+- Suite: 822/68, 775/32, 754/26. All 126 are the "1-1 cannot build" cause.
+- Main chunk: 4,179,880 bytes, 14,424 spare.
+- Not checked: the petal trail check (petalPass.ts:32, 44) also calls validateStage without the arcs on 1-1. It may still drop a pickup past a 252-262 gap; this one-flower test does not cover it (out of lane).
 
 ## 1. Done-items (6): 1, 2, 3, 6 met; 4 met as a measurement (nothing could be re-proven); 5 NOT met (see Pushback)
 1. **Each name planted** (verdicts.test.ts, 21/21 green). There is one red per name, printed as `# red:` in its own test: arc.single-gap-over, arc.single-rise-over, block.lesser-passes, block.spare-thin, block.taught-fails, band.out, headroom.cuts-arc, floor.unmarked, drop.lethal-in-no-lethal, drop.unwarned, drop.look-lies, drop.untyped, teach.double-no-gap-after, teach.double-gap-unsafe, first-run.drift (firstRunVerdicts). A clean twin is accepted on both settings. reach.unflown appears only in the notJudged list of an unflown-scope roll (1-2 Normal), together with the 7 arc names. A test also reads ALL_VERDICTS against the 16-name union in verdicts.types.ts. verdicts.types.ts is byte-identical to c4687177.
