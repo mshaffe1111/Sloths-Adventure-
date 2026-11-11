@@ -254,9 +254,10 @@ def wtag(n, why):
 
 
 def parse_worlds(s):
+    """world numbers in order from 'N reason; N reason' (A, B2-B4) or 'USED N reason | COULD N reason' (B1)"""
     out = []
-    for part in re.split(r';\s*', s or ''):
-        m = re.match(r'\s*(\d+)\b', part)
+    for part in re.split(r'[;|]\s*', s or ''):
+        m = re.match(r'\s*(?:(?:USED|COULD|used|could)\b:?\s*)?(?:W)?(\d+)\b', part)
         if m and int(m.group(1)) in WORLD and int(m.group(1)) not in out: out.append(int(m.group(1)))
     return out
 
@@ -555,7 +556,17 @@ def load_b():
 
 
 def slot_key(s):
+    """one key per engine slot across the parts' wordings: 'landing/platforms solid log', 'climbable/vines swing_liana', 'pickCut kind
+    stone', a code file, or a new slot's name"""
     s = (s or '').strip()
+    for a, b in (('landing platforms', 'landing/platforms'), ('climbable vines', 'climbable/vines'), ('climbable ropes', 'climbable/ropes')):
+        s = s.replace(a, b)
+    if s.startswith(('landing/platforms', 'climbable/')):
+        return ' '.join(re.split(r'[;(:/]\s|\s/\s|[;(:]', s)[0].split()[:3]).rstrip(':')
+    m = re.match(r'(pickCut kind \w+)', s)
+    if m: return m.group(1)
+    m = re.match(r'(src/[\w/.-]+?\.tsx?)', s)
+    if m: return m.group(1)
     if s.startswith('new slot'): return s.split('(')[0].strip()[:60]
     return re.split(r'[;(]', s)[0].strip()[:60] or '(none)'
 
@@ -565,30 +576,48 @@ def merge(args):
     bs = load_b()
     missing = [n for n, v in bs.items() if v is None]
     if missing and not args.allow_missing: sys.exit(f'B parts not pushed yet: {missing} (use --allow-missing for a partial merge)')
-    rows, seen, dup, counts = [], {}, [], Counter()
+    rows, seen, dup, counts, conflicts = [], {}, [], Counter(), []
     for r in a:
         r['part'] = 'A'; rows.append(r); seen[r['file']] = r; counts['A catalog-cut'] += 1
+    # one row per image or atlas frame: on a file clash between B parts, characters, enemies and UI belong to B4, everything else to
+    # the world-art part (B1 W1-4, B2 W5-10, B3 backdrops) that read its draw path
+    own = {}
     for n, rs in bs.items():
         for r in rs or []:
             r['part'] = f'B{n}'
-            key = r.get('file', '') + '#' + r.get('id', '')
-            if r.get('file') in seen and not r.get('file', '').endswith(('.json',)) and seen[r['file']]['part'] == 'A':
-                dup.append((r['id'], r['file'], 'A owns it')); counts[f'B{n} overlap with A (dropped)'] += 1; continue
-            if key in seen: dup.append((r['id'], r['file'], seen[key]['part'])); counts[f'B{n} duplicate (dropped)'] += 1; continue
-            seen[key] = r; rows.append(r); counts[f'B{n}'] += 1
-    bad = []
+            f = r.get('file', '').split(' ')[0]
+            if f in seen and seen[f]['part'] == 'A':
+                dup.append((r['id'], f, 'A owns it')); counts[f'B{n} overlap with A (dropped)'] += 1; continue
+            if f in own:
+                o = own[f]
+                b4 = r if r['part'] == 'B4' else o if o['part'] == 'B4' else None
+                keep = (b4 if b4 is not None and b4.get('layer') in ('character', 'enemy', 'ui') else (o if o is not b4 else r)) if b4 is not None else o
+                drop = r if keep is o else o
+                dup.append((drop['id'], f, f"{keep['part']} owns it")); counts[f"{drop['part']} overlap with {keep['part']} (dropped)"] += 1
+                own[f] = keep; continue
+            own[f] = r
+    for r in own.values():
+        rows.append(r); counts[r['part']] += 1
+    bad, menus = [], 0
     for r in rows:
         ws = parse_worlds(r.get('worlds', ''))
-        if not ws: bad.append((r['part'], r['id'], 'no world'))
+        menu = 'menu' in (r.get('worlds') or '').lower() and r.get('layer') in ('ui', 'character', 'backdrop', 'enemy', 'pickup', 'decor near', 'decor mid')
+        if menu and not ws: menus += 1
+        if not ws and not menu: bad.append((r['part'], r['id'], 'no world'))
         if not (r.get('engine_slot') or '').strip(): bad.append((r['part'], r['id'], 'no engine slot'))
         if not (r.get('layer') or '').strip(): bad.append((r['part'], r['id'], 'no layer'))
-        if (r.get('made_thing') or '').lower().startswith('y') and 1 in ws: bad.append((r['part'], r['id'], 'made thing tagged W1'))
+        if (r.get('made_thing') or '').lower().startswith('y') and 1 in ws:
+            # a made thing the game ALREADY shows in World 1 is a fact for the lead to rule on (B1/B4 mark it); a W1 tag on one not in the
+            # game is a tagging error
+            if (r.get('status') or '').lower().startswith('in game'): conflicts.append(r)
+            else: bad.append((r['part'], r['id'], 'made thing tagged W1'))
         if r.get('layer') in STANDABLE and (not (r.get('footing') or '').strip() or not (r.get('ship_px') or '').strip()):
             bad.append((r['part'], r['id'], 'standable without footing or ship_px'))
     cols = COLS + ['part']
     with open(os.path.join(ART, 'CATALOG-MASTER.csv'), 'w', newline='') as f:
         wr = csv.DictWriter(f, cols, extrasaction='ignore'); wr.writeheader(); wr.writerows(rows)
-    write_md(rows, counts, dup, bad, missing)
+    counts['(B4 rows shown in menus only: worlds = menu)'] = menus
+    write_md(rows, counts, dup, bad, missing, conflicts)
     for k, v in sorted(counts.items()): print(f'{k}: {v}')
     print('master rows', len(rows), 'problems', len(bad))
     for b in bad[:40]: print('  BAD', b)
@@ -600,7 +629,7 @@ def kb(x):
     except (TypeError, ValueError): return 0.0
 
 
-def write_md(rows, counts, dup, bad, missing):
+def write_md(rows, counts, dup, bad, missing, conflicts=()):
     L = ['# CATALOG-MASTER: every art piece, cut or in the game, all ten worlds', '',
          'Built by `python3 tools/art/catalog_master.py --merge` from `catalog-cut.csv` (part A: cut pieces not yet placed) and '
          '`catalog-game-B1..B4.csv` (part B: everything the game ships). Never hand-edited. Columns: see `tools/art/catalog_master.py` COLS.',
@@ -609,6 +638,9 @@ def write_md(rows, counts, dup, bad, missing):
     L += ['## Counts per source (sources minus overlap)', '', '| source | rows |', '|---|---|'] + [f'| {k} | {v} |' for k, v in sorted(counts.items())]
     L += ['', f'Total rows: **{len(rows)}**. Duplicates dropped: {len(dup)}. Rows failing a check: {len(bad)}.', '']
     if bad: L += ['### Rows failing a check', ''] + [f'- {p} {i}: {w}' for p, i, w in bad[:80]] + ['']
+    if conflicts:
+        L += ['### Made things the game shows in World 1 today (the 11-11 rule: the lead\'s call to keep, re-paint natural, or move)', '',
+              '| part | id | used in | status |', '|---|---|---|---|'] + [f"| {r['part']} | {r['id']} | {(r.get('used_in') or '')[:60]} | {(r.get('status') or '')[:110]} |" for r in conflicts] + ['']
     ingame = lambda r: (r.get('status') or '').lower().startswith('in game')
     for n in WORLD:
         rs = [r for r in rows if n in parse_worlds(r.get('worlds', ''))]
@@ -618,14 +650,23 @@ def write_md(rows, counts, dup, bad, missing):
         for lay in sorted({r.get('layer', '') for r in rs}):
             q = [r for r in rs if r.get('layer') == lay]
             L.append(f"| {lay} | {sum(1 for r in q if ingame(r))} | {sum(1 for r in q if not ingame(r))} | {sum(1 for r in q if (r.get('status') or '').startswith('ready'))} | {sum(1 for r in q if (r.get('status') or '').startswith('needs fix'))} |")
-        sc = Counter(slot_key(r.get('engine_slot')) for r in rs if not (r.get('status') or '').startswith('needs fix'))
-        ig = Counter(slot_key(r.get('engine_slot')) for r in rs if ingame(r))
-        L += ['', '| engine slot | in game | usable (in game + ready) |', '|---|---|---|'] + [f'| {k} | {ig.get(k, 0)} | {v} |' for k, v in sorted(sc.items(), key=lambda kv: -kv[1])]
-        allslots = Counter(slot_key(r.get('engine_slot')) for r in rows if r.get('layer') in STANDABLE | {'danger look', 'climb'})
-        gaps = [k for k in allslots if sc.get(k, 0) < 3]
+        LEVEL = STANDABLE | {'danger look', 'climb', 'decor near', 'decor mid', 'backdrop'}
+        cast = Counter(r.get('layer') for r in rs if r.get('layer') not in LEVEL)
+        L += ['', 'Cast and UI shown here (not level art): ' + ', '.join(f'{k} {v}' for k, v in sorted(cast.items())) + '.']
+        lv = [r for r in rs if r.get('layer') in LEVEL]
+        sc = Counter(slot_key(r.get('engine_slot')) for r in lv if not (r.get('status') or '').startswith('needs fix'))
+        ig = Counter(slot_key(r.get('engine_slot')) for r in lv if ingame(r))
+        top = sorted(sc.items(), key=lambda kv: -kv[1])
+        L += ['', '| level-art engine slot (top 20 by pieces) | in game | usable (in game + ready) |', '|---|---|---|'] + [f'| {k} | {ig.get(k, 0)} | {v} |' for k, v in top[:20]]
+        if len(top) > 20: L.append(f'| ({len(top) - 20} more slots, {sum(v for _, v in top[20:])} pieces: see the csv) | | |')
+        play = ('landing', 'climbable', 'other/', 'new slot', 'stageArtData', 'pickCut', 'w1CutArt')
+        allslots = Counter(k for k in (slot_key(r.get('engine_slot')) for r in rows if r.get('layer') in STANDABLE | {'danger look', 'climb'}) if k.startswith(play))
+        gaps = [k for k in allslots if sc.get(k, 0) < 3 and not (k.startswith('new slot: lava') and n != 9)
+                and not (re.match(r'new slot: World (\d+)', k) and re.match(r'new slot: World (\d+)', k).group(1) != str(n))]
         L += ['', f"**Gaps** (standable, climb and danger slots with fewer than 3 usable pieces here): {', '.join(sorted(gaps)) or 'none'}.", '']
         mv = [r for r in rs if str(r.get('world_best')) != str(n) and ingame(r)]
-        if mv: L += [f"**Could move in from other worlds' kits** (in game elsewhere, tagged to fit here): {', '.join(r['id'] for r in mv[:40])}{' ...' if len(mv) > 40 else ''}.", '']
+        mv = [r for r in mv if r.get('layer') in STANDABLE | {'danger look', 'climb', 'decor near', 'decor mid'}]
+        if mv: L += [f"**Could move in from other worlds' kits** ({len(mv)} level pieces in game elsewhere, tagged to fit here; first 30): {', '.join(r['id'] for r in mv[:30])}.", '']
     L += ['## The 12 best candidates for the re-laid 1-1', '', 'Contact sheet: `master-sheets/1-1-best12.jpg` (dark half / light half, cyan = footing).', '',
           '| slot | id | size | footing | on screen | why |', '|---|---|---|---|---|---|']
     a_rows = [r for r in rows if r.get('part') == 'A']

@@ -4,7 +4,7 @@
 - `tools/art/catalog_master.py`: `--cut` builds part A from sources 1-3 (it extracts origin/art-raw-2026-11-07 and origin/art-director
   itself); `--merge` joins A with `catalog-game-B1..B4.csv` into `CATALOG-MASTER.csv/.md` and fails on any row with no world, no engine
   slot, no layer, a made thing tagged W1, or a standable row without footing or ship_px.
-- `reference/art/catalog-cut.csv` (349 rows, the packet's columns plus `notes`), `holds-rejects.csv` (9), `catalog-cut-sizes.json`,
+- `reference/art/CATALOG-MASTER.csv/.md` (the merge, section 6), `reference/art/catalog-cut.csv` (349 rows, the packet's columns plus `notes`), `holds-rejects.csv` (9), `catalog-cut-sizes.json`,
   `master-sheets/` (62 sheets, one per world and layer, plus `1-1-best12.jpg`).
 
 ## 2. Counts (sources minus overlap)
@@ -31,10 +31,14 @@ min(own size, 2 x on screen). A's 349 pieces: 180.8 MB as cut PNGs, 20.6 MB as f
 - 60 rows need a fix: 23 angled/three-quarter, 8 small P pieces with a 2000 px HF redo, 26 under 1.5x their play size, 3 other
   (M-04-b painted words, P-01-a tile seam, P-07-d pink glow).
 
-## 6. Not done / open
-- The merge waits for B1-B4's CSVs; CATALOG-MASTER is partial until then (it says so at the top).
-- Flag for the lead: 1-1's atlas planks (w1-plank-ledge-a/b/c) look like the same board-on-top cut as the w1-ledge-* pieces that lost
-  W1 here; B1 owns those rows, please check them against the 11-11 made-things rule.
+## 6. The merge (A + B1-B4) and what is open
+- CATALOG-MASTER.csv: 6,926 rows, 0 check failures. A 349, B1 812, B2 1,111, B3 200, B4 4,454; 83 B2/B4 clashes on the boss atlases
+  and pokey-jar kept once (characters/enemies/UI to B4, set pieces and hazards to B2); no B row repeats an A file. 849 B4 rows are
+  menu-only (worlds = "menu"), accepted as their place shown.
+- 15 made things the game shows in W1 today are listed for the lead's call, not failed: 1-1's planks a/b/c and w1-stump-wide (both
+  B1 and I read them as sawn boards), the trail post, W1's gate (shut/open), two puzzle-kit doors, six keepsake pickups.
+- Shipped art at ship_px: 140.4 MB listed to 104.4 MB (saving 36.0 MB, B's per-frame shares). Gaps per world are in the .md.
+- Open: B rows' own "needs fix" (198 across the table) are B's findings, carried as written.
 
 ## 7. Rules kept
 Nothing under src/ changed; no art placed, cut or generated; no Hugging Face job; no tester text.
