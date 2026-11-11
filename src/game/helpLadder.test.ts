@@ -120,7 +120,7 @@ test('the steps come from the piece as laid: a rock under every rise over 60 px 
   ];
   const piece = { k: 'w1-log-chain-rise', x0: 28665, x1: 31465 };
   const steps = stepsFor(piece, solids, () => 150);
-  const rocks = steps.filter((b) => !b.plank), planks = steps.filter((b) => b.plank);
+  const rocks = steps.filter((b) => !b.plank).sort((a, b) => a.x - b.x), planks = steps.filter((b) => b.plank);
   // three rises of 114: one rock each at the end of the lower log, its top 57 under the next log (two 57 px faces), TOP_W wide
   assert.deepEqual(rocks.map((s) => [s.x, s.y, s.width, s.height]), [[28985, 655, 160, 57], [29520, 541, 160, 57], [30073, 427, 160, 57]]);
   // the 202 px level gap: a plank at its middle

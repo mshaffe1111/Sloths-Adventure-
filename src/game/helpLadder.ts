@@ -99,6 +99,8 @@ export class HelpLadder {
     private readonly pieces: readonly Piece[],
     /** the schedule (the tests plant a wrong one to show they catch it) */
     private readonly r: Rungs = RUNGS,
+    /** whether anything can grow at a piece: where nothing can, Dot never promises a step (no step rung, no offer, no re-ask) */
+    private readonly canGrow: (p: Piece) => boolean = () => true,
   ) {}
 
   /** the piece at world x (the last one whose span holds it), or null at a seam */
@@ -130,10 +132,10 @@ export class HelpLadder {
     if (c.n === this.r.move) fire('move');
     if (this.setting === 'easy') {
       if (c.n === this.r.pad) fire('pad');
-      if (c.n === this.r.step) fire('step');
+      if (c.n === this.r.step && this.canGrow(piece)) fire('step');
     } else if (!c.asking) {
-      if (c.n === this.r.offer && !c.fired.has('step')) fire('offer');
-      else if (c.noes === 1 && c.n === c.noAt + this.r.reaskAfter) fire('reask');
+      if (c.n === this.r.offer && !c.fired.has('step') && this.canGrow(piece)) fire('offer');
+      else if (c.noes === 1 && c.n === c.noAt + this.r.reaskAfter && this.canGrow(piece)) fire('reask');
       if (out.some((a) => a.rung === 'offer' || a.rung === 'reask')) c.asking = true;
     }
     return out;
@@ -306,7 +308,7 @@ export function stepsFor(piece: Piece, solids: readonly Box[], plainGap: (dyUp: 
   /** lays one stair (the top tread `topW` wide where it fits); false, laying nothing, when the ground has no room for all of it */
   const build = (a: Seg, face: number, lipY: number, topW: number): boolean => {
     // (first where the rocks go: STEP_W treads leftwards, each on the lowest surface under it, until the surface is within reach)
-    const rocks: Array<{ x: number; w: number; foot: number }> = [];
+    const rocks: Array<{ x: number; w: number; foot: number; high: number }> = [];
     let cur = lipY, x = face, endY = NaN;
     for (let guard = 0; guard < 12; guard++) {
       const s0 = segs.find((q) => q.x0 < x - 0.5 && q.x1 >= x - 0.5);
@@ -314,22 +316,24 @@ export function stepsFor(piece: Piece, solids: readonly Box[], plainGap: (dyUp: 
         endY = s0.y;
         break;
       }
-      // (the top tread is as wide as TOP_W where the ground allows: he lands on it and runs before the last jump)
+      if (!s0) break;
+      // (the level it stands on: the stretch at its right edge; a stump too narrow to carry a tread, on ground beside it, is part of
+      // that ground's rock instead)
+      let base = s0;
+      const g = segs.find((q) => Math.abs(q.x1 - s0.x0) < 0.5);
+      if (s0.x1 - s0.x0 < STEP_W && x - s0.x0 < STEP_W && g && g.y > s0.y + 2 && s0.bottom >= g.y - 2) base = g;
+      // (one level under it: anything else that reaches in from its left, or a dip or a floating log inside it, trims it from the
+      // left; a stump wholly inside it that stands on its level it takes in. Never sunk in a ledge that runs on past it)
       let x0 = x - (rocks.length ? STEP_W : topW);
-      const fits = (from: number) => {
-        const under = segs.filter((q) => q.x1 > from + 0.5 && q.x0 < x - 0.5);
-        let covered = x;
-        for (const q of [...under].sort((p, r) => r.x1 - p.x1)) if (q.x1 >= covered - 0.5) covered = Math.min(covered, q.x0);
-        return covered <= from + 0.5 && !under.some((q) => q.y < Math.max(...under.map((u) => u.y)) - 2 && q.bottom < Math.max(...under.map((u) => u.y)) - 2) ? under : null;
-      };
-      let under = s0 ? fits(x0) : null;
-      if (!under && !rocks.length && s0) {
-        x0 = x - STEP_W;
-        under = fits(x0);
+      for (let pass = 0; pass < 6; pass++) {
+        const odd = segs.filter((q) => q.x1 > x0 + 0.5 && q.x0 < x - 0.5 && Math.abs(q.y - base.y) > 2 && !(q.y < base.y && q.x0 >= x0 - 0.5 && q.bottom >= base.y - 2));
+        if (!odd.length) break;
+        x0 = Math.max(...odd.map((q) => q.x1));
       }
-      if (!under) break; // (air, or a floating log, under the next tread: the stair starts here)
-      const foot = Math.max(...under.map((q) => q.y));
-      rocks.push({ x: x0, w: x - x0, foot });
+      // (the top tread is as wide as TOP_W where the ground allows; trimmed, every tread still at least 60)
+      if (x - x0 < 60 - 0.5) break;
+      const under = segs.filter((q) => q.x1 > x0 + 0.5 && q.x0 < x - 0.5);
+      rocks.push({ x: x0, w: x - x0, foot: base.y, high: Math.min(...under.map((q) => q.y)) });
       cur += STEP_LEFT;
       x = x0;
     }
@@ -340,14 +344,37 @@ export function stepsFor(piece: Piece, solids: readonly Box[], plainGap: (dyUp: 
     if (endY - lipY <= STEP_LEFT) return true;
     const rise = (endY - lipY) / (rocks.length + 1);
     // (no room for a whole stair, the ground under it too short: nothing grows here, never a wall; counted, stairsLeftOut)
-    if (rise > STEP_LEFT + 0.5) return false;
-    rocks.forEach((r, k) => {
+    if (rise > STEP_LEFT - 0.5) return false; // (rounded, every face stays at STEP_LEFT or less)
+    const laid: Box[] = [];
+    for (let k = 0; k < rocks.length; k++) {
+      const r = rocks[k];
       const top = Math.round(lipY + (k + 1) * rise);
-      if (r.foot - top > 0) out.push({ x: Math.round(r.x), y: top, width: Math.round(r.w), height: Math.round(r.foot - top) });
-    });
+      // (a piece it takes in must stay under its top: one standing higher would bury its tread, the Critic's find)
+      if (r.high < top - 2) return false;
+      if (r.foot - top > 0) laid.push({ x: Math.round(r.x), y: top, width: Math.round(r.w), height: Math.round(r.foot - top) });
+    }
+    // (checked against the stage's own pieces, not just their tops: each rock stands (its whole foot on a top at its foot, or inside a body
+    // that reaches it) and overlaps nothing but a stump wholly inside it, no higher than its top; else this stair is not laid)
+    const stage = solids.filter((q) => !q.plank);
+    for (const r of laid) {
+      const foot = r.y + r.height;
+      const holds = stage.filter((q) => q.x < r.x + r.width && q.x + q.width > r.x && (Math.abs(q.y - foot) <= 2 || (q.y < foot - 2 && q.y + q.height >= foot - 2)));
+      let covered = r.x;
+      for (const q of [...holds].sort((p, o) => p.x - o.x)) if (q.x <= covered + 1) covered = Math.max(covered, q.x + q.width);
+      if (covered < r.x + r.width - 1) return false;
+      for (const q of stage) {
+        if (!(q.x < r.x + r.width - 0.5 && q.x + q.width > r.x + 0.5 && q.y < foot - 2 && q.y + q.height > r.y + 0.5)) continue;
+        const inside = q.x >= r.x - 0.5 && q.x + q.width <= r.x + r.width + 0.5 && q.y >= r.y - 2;
+        if (!inside) return false;
+      }
+    }
+    // (never over a box already grown: two stairs laid over each other made a tread across two rocks)
+    if (laid.some((b) => out.some((o) => b.x < o.x + o.width - 0.5 && o.x < b.x + b.width - 0.5 && b.y < o.y + o.height - 0.5 && o.y < b.y + b.height - 0.5))) return false;
+    out.push(...laid);
     return true;
   };
-  for (let i = 0; i + 1 < segs.length; i++) {
+  // (right to left: the stair to the highest lip is laid first, and takes in the small steps below it)
+  for (let i = segs.length - 2; i >= 0; i--) {
     const a = segs[i], b = segs[i + 1];
     // (only the joins that touch the piece: the one into it, those inside it, the one out of it)
     if (b.x1 < piece.x0 || a.x0 > piece.x1) continue;
@@ -355,7 +382,9 @@ export function stepsFor(piece: Piece, solids: readonly Box[], plainGap: (dyUp: 
     const rise = a.y - b.y;
     if (gap > 1 && gap > plainGap(Math.min(rise, STEP_LEFT))) {
       const padY = Math.min(Math.max(a.y, b.y), b.y + STEP_LEFT);
-      out.push({ x: Math.round(a.x1 + gap / 2 - PAD_W / 2), y: padY, width: PAD_W, height: 24, plank: true });
+      const pad: Box = { x: Math.round(a.x1 + gap / 2 - PAD_W / 2), y: padY, width: PAD_W, height: 24, plank: true };
+      if (out.some((o) => pad.x < o.x + o.width - 0.5 && o.x < pad.x + pad.width - 0.5 && pad.y < o.y + o.height - 0.5 && o.y < pad.y + pad.height - 0.5)) continue;
+      out.push(pad);
       stair(a, a.x1, padY);
     } else stair(a, a.x1, b.y);
   }
