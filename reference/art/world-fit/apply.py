@@ -36,7 +36,8 @@ md = md[:a] + '\n'.join(T) + md[b:]
 # By world section
 B = ['## By world (Matt, 11-11: "determine where they work the best... some may work in multiple worlds")\n',
      'Every world a piece fits, judged by material and mood (STORY-KEEPER\'s ten worlds); **bold** = that world is the piece\'s best fit. '
-     'The gap is what reference/art/KIT-AUDIT.md (11-06) says the world\'s kit is short of.\n',
+     'The gap is what reference/art/KIT-AUDIT.md (11-06) says the world\'s kit is short of. '
+     '**Made things are never World 1** (the lead, 11-11: no made things in the home forest; rope is a made thing, like the lantern): ladders, rope bridges and rope posts, crates, barrels, the lever, sawn posts and boards, carved totems and carved or rune stones go to W2 Sunlit Riverbank (rope and wood work) or W7 Ancient Ruins (carved stone, the lever). Natural pieces (rock, stump, log, root steps, moss, fungus) stay as tagged.\n',
      '| World | Pieces (best fit in bold) | Its kit gap |', '|---|---|---|']
 for n in W:
     ps = [(x['id'], x['world'].split(';')[0].strip().startswith(f'{n} ')) for x in kept if fits(x, n)]

@@ -17,7 +17,7 @@ W1-10-j,floating earth island (FLOAT CANDIDATE),1 Emerald Canopy; 8 Twilight Tre
 W1-12-a,stump-step,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,big mossy stump on a root mat
 W1-13-a,stump-step,1 Emerald Canopy; 6 Deep Mangrove; 8 Twilight Treetops,stump with long root claws
 W1-14-b,stump-step,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,moss-capped stump
-W1-16-a,rock (grounded),7 Ancient Ruins; 1 Emerald Canopy; 3 Mossy Grotto,root-bound stone-block staircase reads as a ruin stair; fills 7 rubble
+W1-16-a,rock (grounded),7 Ancient Ruins; 3 Mossy Grotto,stone-block staircase: a ruin stair (fills 7 rubble) (made thing; lead 11-11: no made things in the home forest)
 W1-17-a,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 5 Orchid Sanctuary,gnarled fallen log with berries; fills 5 log
 W1-17-b,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 2 Sunlit Riverbank,long straight log with fungi; fills 6 log variety
 W1-18-a,vine,1 Emerald Canopy; 8 Twilight Treetops; 5 Orchid Sanctuary,upright fungus trunk climb
@@ -37,7 +37,7 @@ W1-22-c,walkable log,2 Sunlit Riverbank; 6 Deep Mangrove; 4 Mist Cascades,bleach
 W1-22-d,walkable log,2 Sunlit Riverbank; 6 Deep Mangrove; 4 Mist Cascades,small copy of W1-22-c
 W1-23-a,stump-step,1 Emerald Canopy; 2 Sunlit Riverbank,cartoon cut stump (bolder outlines)
 W1-24-a,plank,2 Sunlit Riverbank; 10 Stormy Highlands Fortress; 7 Ancient Ruins,"plank stack: village deck, fortress stores"
-W1-24-b,stump-step,2 Sunlit Riverbank; 1 Emerald Canopy,pyramid of log rounds: a village woodpile step set
+W1-24-b,stump-step,2 Sunlit Riverbank,pyramid of sawn log rounds: a village woodpile step set (made thing; lead 11-11: no made things in the home forest)
 W1-25-a,plank,2 Sunlit Riverbank; 10 Stormy Highlands Fortress; 6 Deep Mangrove,long cut beam: village bridge or dock; fortress beam; fills 2 docks
 W1-26-a,walkable log,1 Emerald Canopy; 5 Orchid Sanctuary; 6 Deep Mangrove,vine-wrapped log with bromeliad and fern
 W1-26-b,walkable log,5 Orchid Sanctuary; 1 Emerald Canopy; 6 Deep Mangrove,log on root legs with orchids: the orchid garden first (fills 5 floor)

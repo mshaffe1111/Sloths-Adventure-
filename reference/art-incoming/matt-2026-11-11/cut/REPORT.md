@@ -1,4 +1,10 @@
 # REPORT: R-165.85, the 11-11 batch (13 sheets), Content, 2026-11-11
+## Attempt 2 (the critic's three items, and the lead's made-things ruling)
+1. N-03-d: W3 dressing only, never on a walk line; W10 a painted hazard candidate.
+2. N-06-e: the box outline and smear above the broken top are cleared (cutter/snagfix.py, 1393 px; checked at 2x on dark and light).
+3. Alpha-zero proof on N-01-a, N-09-b, N-11-b: 0 visible (alpha > 0) pixels changed, alpha identical everywhere; only hidden RGB was zeroed.
+4. Made things out of W1 in all four sets (By world sections say so). 11-05 tags re-checked against the pictures: 21 of 111 changed.
+
 ## Method used
 The 11-09 cutter and its attempt-2 checks from the start (edgefix, widened pinkscan, 3 px flatness test). New: labelbox boxes for
 sheet 09's prompt text and 10's labels, stepped boxes to free the palm from 06's smeared ledge, specks.py for stray text dots,

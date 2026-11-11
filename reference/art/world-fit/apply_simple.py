@@ -10,7 +10,8 @@ with open(f'{out}/world-fit.csv', 'w', newline='') as f:
     w = csv.writer(f); w.writerow(['id', 'kind', 'worlds_best_first', 'why'])
     for r in rows: w.writerow([r['id'], r['kind'], fmt(F[r['id']][0]), F[r['id']][1]])
 L = [f'# World fit: {title}\n', 'Matt, 11-11: "determine where they work the best... some may work in multiple worlds" (universal for all art). '
-     'Every world each piece fits, best first, with a reason, in `world-fit.csv`; by material and mood, with the kit gaps from reference/art/KIT-AUDIT.md (11-06). Data only, no art changed.\n',
+     'Every world each piece fits, best first, with a reason, in `world-fit.csv`; by material and mood, with the kit gaps from reference/art/KIT-AUDIT.md (11-06). Data only, no art changed. '
+     '**Made things are never World 1** (the lead, 11-11): rope, sawn posts and boards, lashed frames, carved stone go to W2 Sunlit Riverbank or W7 Ancient Ruins; natural pieces stay as tagged.\n',
      '## By world\n', '| World | Pieces (best fit in bold) | Its kit gap |', '|---|---|---|']
 for n in W:
     ps = [(i, F[i][0][0] == n) for i in ids if n in F[i][0]]
