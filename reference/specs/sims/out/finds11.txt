@@ -1,0 +1,26 @@
+seed 4106: sections with a find socket: w1-mushroom-fork-dip, w1-bank-stair-fork, w1-seed-perch
+   find fills: seed@29845 in s12
+   w1-mushroom-fork-dip x 13485-16550 uid s6: collectibles 10 (flower)
+   w1-bank-stair-fork x 21732-24779 uid s9: collectibles 12 (flower)
+   w1-seed-perch x 28946-31857 uid s12: collectibles 7 (flower,seed)
+seed 1025: sections with a find socket: w1-bank-stair-fork, w1-mushroom-fork, w1-seed-perch
+   find fills: seed@33437 in s13
+   w1-bank-stair-fork x 10135-13213 uid s5: collectibles 13 (flower)
+   w1-mushroom-fork x 16058-19156 uid s7: collectibles 9 (flower)
+   w1-seed-perch x 32781-35235 uid s13: collectibles 8 (flower,seed)
+seed 1136: sections with a find socket: w1-bank-stair-fork, w1-hollow-twoway, w1-seed-perch
+   find fills: seed@27012 in s11
+   w1-bank-stair-fork x 12446-15535 uid s5: collectibles 11 (flower)
+   w1-hollow-twoway x 18523-20828 uid s7: collectibles 8 (flower)
+   w1-seed-perch x 26322-28904 uid s11: collectibles 8 (flower,seed)
+--- high-road pieces (thin, 150 px or more over the section floor) with nothing over them
+   normal seed 4106 w1-mushroom-fork-dip: thin piece x 15043-15277 y 579 holds nothing
+   normal seed 4106 w1-bank-stair-fork: thin piece x 23145-23379 y 549 holds nothing
+   normal seed 1025 w1-bank-stair-fork: thin piece x 11562-11795 y 662 holds nothing
+   normal seed 1025 w1-mushroom-fork: thin piece x 17435-17635 y 564 holds nothing
+   normal seed 1136 w1-bank-stair-fork: thin piece x 13629-13846 y 786 holds nothing
+   easy seed 4106 w1-mushroom-fork-dip: thin piece x 16145-16427 y 579 holds nothing
+   easy seed 4106 w1-bank-stair-fork: thin piece x 24958-25240 y 534 holds nothing
+   easy seed 1025 w1-bank-stair-fork: thin piece x 12306-12587 y 573 holds nothing
+   easy seed 1025 w1-mushroom-fork: thin piece x 18524-18772 y 394 holds nothing
+   easy seed 1136 w1-bank-stair-fork: thin piece x 14585-14850 y 768 holds nothing
