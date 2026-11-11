@@ -1,0 +1,54 @@
+{
+ "finished-normal-W2000": {
+  "cycle": 3.93,
+  "sentAt": [
+   [
+    13.4,
+    "Run first, t",
+    ""
+   ],
+   [
+    21.4,
+    "Run first, t",
+    "true"
+   ]
+  ],
+  "moveLine": [
+   14.7,
+   7.3
+  ],
+  "stepLine": null,
+  "offerUp": true
+ },
+ "finished-easy-W2000": {
+  "cycle": 3.96,
+  "sentAt": [
+   [
+    13.9,
+    "Run first, t",
+    ""
+   ],
+   [
+    21.9,
+    "Run first, t",
+    "true"
+   ],
+   [
+    33.7,
+    "Ooh, look! A",
+    ""
+   ],
+   [
+    41.7,
+    "Ooh, look! A",
+    "true"
+   ]
+  ],
+  "moveLine": [
+   15.2,
+   7.3
+  ],
+  "stepLine": null,
+  "offerUp": false
+ }
+}

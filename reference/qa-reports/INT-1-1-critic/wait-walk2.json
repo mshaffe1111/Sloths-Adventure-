@@ -1,0 +1,95 @@
+{
+ "walk2-easy-W0": {
+  "cycle": 1.66,
+  "sentAt": [
+   [
+    9,
+    "Run first, t",
+    ""
+   ],
+   [
+    17,
+    "Run first, t",
+    "true"
+   ],
+   [
+    17.3,
+    "Ooh, look! A",
+    ""
+   ],
+   [
+    25.3,
+    "Ooh, look! A",
+    "true"
+   ]
+  ],
+  "moveLine": null,
+  "stepLine": [
+   25.2,
+   2.8
+  ],
+  "offerUp": false
+ },
+ "walk2-easy-W600": {
+  "cycle": 2.14,
+  "sentAt": [
+   [
+    9.5,
+    "Run first, t",
+    ""
+   ],
+   [
+    17.5,
+    "Run first, t",
+    "true"
+   ],
+   [
+    20.2,
+    "Ooh, look! A",
+    ""
+   ],
+   [
+    28.3,
+    "Ooh, look! A",
+    "true"
+   ]
+  ],
+  "moveLine": [
+   10.7,
+   7.2
+  ],
+  "stepLine": null,
+  "offerUp": false
+ },
+ "walk2-easy-W2000": {
+  "cycle": 3.33,
+  "sentAt": [
+   [
+    11.2,
+    "Run first, t",
+    ""
+   ],
+   [
+    19.3,
+    "Run first, t",
+    "true"
+   ],
+   [
+    27.9,
+    "Ooh, look! A",
+    ""
+   ],
+   [
+    35.9,
+    "Ooh, look! A",
+    "true"
+   ]
+  ],
+  "moveLine": [
+   12.5,
+   7.2
+  ],
+  "stepLine": null,
+  "offerUp": false
+ }
+}

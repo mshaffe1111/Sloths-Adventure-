@@ -6,14 +6,14 @@ const [port, out, mode = 'walk'] = process.argv.slice(2);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const browser = await chromium.launch();
 const report = {};
-for (const setting of ['normal', 'easy']) for (const W of (process.env.WS ?? '0,600,1200').split(',').map(Number)) {
+for (const setting of (process.env.SETS ?? 'normal,easy').split(',')) for (const W of (process.env.WS ?? '0,600,1200').split(',').map(Number)) {
   const idx = 1, k = 'w1-log-chain-rise';
   const tag = `${mode}-${setting}-W${W}`;
   const ctx = await browser.newContext({ viewport: { width: 412, height: 915 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
   await ctx.route(/script\.google\.com/, (r) => r.abort());
-  await ctx.addInitScript(([i, s]) => { const order = [i, ...Array.from({ length: 200 }, (_, j) => j).filter((j) => j !== i)]; localStorage.setItem('sloth_difficulty', s); localStorage.setItem('sloth_coach_done', '1'); localStorage.setItem('sloth_play11_order', JSON.stringify({ n: 200, order, i: 0 })); }, [idx, setting]);
+  await ctx.addInitScript(([i, s]) => { const order = [i, ...Array.from({ length: 200 }, (_, j) => j).filter((j) => j !== i)]; localStorage.setItem('sloth_difficulty', s); localStorage.setItem('sloth_coach_done', '1'); if (location.search.includes('finished')) { localStorage.setItem('sloth_lvl_1-1', JSON.stringify({ completed: true, bestTime: 200, stars: 2 })); localStorage.setItem('sloth_lvl_1-2', JSON.stringify({ completed: true })); } localStorage.setItem('sloth_play11_order', JSON.stringify({ n: 200, order, i: 0 })); }, [idx, setting]);
   const page = await ctx.newPage();
-  await page.goto(`http://127.0.0.1:${port}/?layout=1&lessons=off`, { timeout: 300000 });
+  await page.goto(`http://127.0.0.1:${port}/?layout=1&lessons=off${process.env.SAVE ? '&' + process.env.SAVE : ''}`, { timeout: 300000 });
   for (let t = Date.now(); Date.now() - t < 300000; ) { if (await page.evaluate(() => typeof window.__play === 'function')) break; await sleep(1000); }
   await sleep(2500);
   await page.evaluate((i) => window.__play('1-1', i + 1), idx);
@@ -47,7 +47,7 @@ for (const setting of ['normal', 'easy']) for (const W of (process.env.WS ?? '0,
   await sleep(setting === 'easy' ? 12000 : 700);
   const said = await page.evaluate(() => window.__said), cb = await page.evaluate(() => window.__cb);
   const shown = (re) => { const i = said.findIndex((x) => re.test(x[1])); if (i < 0) return null; const end = said[i + 1]; return [said[i][0], end ? +(end[0] - said[i][0]).toFixed(1) : 'still up']; };
-  report[tag] = { cycle: counts.length > 3 ? +((counts[counts.length - 1][1] - counts[0][1]) / (counts.length - 1)).toFixed(2) : null, sentAt: cb.filter((c) => /Run first|A step/.test(c[1])).map((c) => [c[0], c[1].slice(0, 12), c[3] ?? '']), moveLine: shown(/Run first/), stepLine: shown(/A step/), offerUp: await page.evaluate(() => !!document.querySelector('.ho-scrim')) };
+  report[tag] = { cycle: counts.length > 3 ? +((counts[counts.length - 1][1] - counts[0][1]) / (counts.length - 1)).toFixed(2) : null, sentAt: cb.filter((c) => /Run first|A step/.test(c[1])).map((c) => [c[0], c[1].slice(0, 12), c[3] ?? '']), moveLine: shown(/Run first/), stepLine: shown(/A step/), all: said.filter((x) => x[1]).map((x) => `${x[0]} ${x[1]}`), backs: counts.map((c) => c[1]), offerUp: await page.evaluate(() => !!document.querySelector('.ho-scrim')) };
   console.log(tag, JSON.stringify(report[tag]));
   await ctx.close();
 }
