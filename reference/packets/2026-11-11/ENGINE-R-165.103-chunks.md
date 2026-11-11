@@ -22,19 +22,20 @@ pokeyJournal 149,927 (menu only), dotLinesData 82,799.
 ## Files
 - WRITE: vite.config.ts; NEW tools/perf/chunkcheck.mjs (run after vite build: fails when any JS chunk passes 3,994,304 B, printing each
   chunk's size); reference/methods/gates.md (its row); .github/workflows/gates.yml (a step after the build); CLAUDE.md (one line in
-  Checks); reference/ROADMAP.md (R-165.103's State when done); REPORT.md; your turnover note (reference/handoffs/engine-core.md).
+  Checks); reference/ROADMAP.md (R-165.103's row: State and proof when done); REPORT.md; your turnover note (reference/handoffs/engine-core.md).
 ## Definition of done (the Critic checks each)
 1. vite build output pasted: main chunk 3,994,304 B or less, no file over 4 MiB; chunkcheck PASS, and red when its budget is set 1 byte
    under today's main chunk.
 2. Offline (a scratch script, not committed): `vite preview` of dist, wait for the service worker to activate, context.setOffline(true),
    reload, tap through the real UI into 1-1 (the DEV-only __play hooks don't exist in dist), assert zero failed requests and 60 frames
    drawn. Store: `npm run build:store` passes and its dist serves 1-1.
-3. Cold start, prod dist, CPU x4, 10 runs each before and after, median of performance marks at the first title draw and the first
-   stage frame: after no worse than before + 50 ms. drawcheck PASS.
+3. Cold start, measured from outside (scratch Playwright script, not committed, no src change): prod dist, CPU x4, 10 runs each before
+   and after; median time from navigation start to the first non-blank canvas pixel (title), and from the 1-1 tap to the stage canvas's
+   first drawn frame: after no worse than before + 50 ms. drawcheck PASS.
 4. tsc, full suite in 3 shards, lock 102/102, seedlist 1-1, knowncheck, roadmapcheck, buildcheck (alone).
 5. Merge note: the same vite.config.ts change on t-engine-help and t-engine-e0a builds under budget (bytes; don't push to them).
 ## Return
 Branch t-engine-chunks from origin/main, pushed (git ls-remote). REPORT.md (the 7 sections plus "Method used" and "Lessons applied"), 40
 lines or fewer. Then ONE send_message to the lead (session_01FhBbYMoqqEdVR3qFjTCugy), 6 lines or fewer. Then stop.
 ## Attempt
-1 (rewritten 11-11 6:35 AM ET on its packet Critic's seven findings)
+1 (rewritten 11-11 6:35 AM ET on its packet Critic's seven findings; its two last lines applied 6:36 AM ET, PASS by its word)
