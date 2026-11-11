@@ -206,6 +206,12 @@
   60 px y-window causes the A1 loops (a bot limit, not the stage), REPORT says no per-piece seconds (false), KID/ADULT bug overstated
   (they let go 8-17 frames late), pin not in CI. Attempt 2 sent. FOR C1: A1's put-back spot can land PAST the mushroom he needs
   (w1-mushroom-chain area, x29758): the re-lay must put back before the help a piece needs.
+- 11-11 6:43 AM ET: MATT: "Why aren't we doing the relay then this? Doesnt make sense to spend all this time on fixing stuff that is
+  going to change." Lead agreed: A2 STOPPED at attempt 4, WIP t-engine-help@98186930 (canGrow check, no overlaps/sunk rocks; suite not
+  run). Kept for the re-laid 1-1: helpLadder counting/rungs, Dot's lines and bubble, HelpOffer + Back = no, addStep, stair builder, the
+  sweep. Revisit after the re-lay: skyline road special cases, BOUNCE_NEAR/ALONE, TOP_W 160, planks. Test link now = A1 alone (gates
+  running on 41c2e248). C1 packet written (packets/2026-11-11/CONTENT-C1-relay.md), out for its packet audit. Lesson for the lead: when a
+  fix goes round twice, ask whether it patches something about to be replaced.
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,
