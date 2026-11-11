@@ -156,9 +156,9 @@ gapPx/blocks, `stage.ts --roll` fail-closed). Read it for the open findings at i
 16. **Read thickness off the laid shape, never `pc.h`** (`thinLaid`): a bank has no `h` and is a block; that bug made every D bank thin
    (attempt 1). Headroom counts solid blocks of 50 px or more over the take-off run and the flight only. A 'double' place inside the single
    band is a single section (`classify`, setting-aware).
-17. **w1Pits over-reports falls; read `promises11.realFalls`, never raw findW1Pits, for "can he fall here".** A slot spanned at the lips'
-   level by one solid piece, or floored at or under the UPPER lip to under 32 px, is no fall (`top` is the LOWER lip). With that,
-   floor.unmarked went from 113 to 60. Open: whether a slot fully covered by a thin deck (seed 172 x30784) is a real hole: the lead's call.
+17. **w1Pits over-reports falls; read `promises11.realFalls`, never raw findW1Pits, for "can he fall here".** The lead's ruling (11-11):
+   a slot closes only where a solid piece lies AT its lip level (top within 10 px of a lip, or plugging it) and has no lower floor inside
+   the slot to walk in under it (seed 172's deck over block 146 is a real hole). `top` is the LOWER lip. floor.unmarked: 109 of 138.
 
 ## 4. Day one, for a fresh engine engineer
 

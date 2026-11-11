@@ -1,8 +1,17 @@
-# E0a report (R-165.61: verdicts and flown reach), Engine, attempt 3 (attempts 2 and 1 below, as they stood). Branch t-engine-e0a from t-engine-putback@41c2e248
+# E0a report (R-165.61: verdicts and flown reach), Engine, attempt 4 (attempts 3, 2 and 1 below, as they stood). Branch t-engine-e0a from t-engine-putback@41c2e248
 **Method used:** test-first on planted rolls. Main's lock recorded before the first change. Every reach and band figure is entered as data with its spec line. The verdicts were then run on the 138 listed seeds and the full suite was diffed against A1's base.
 **Lessons applied:** D37: the behaviour claims are proved with a pasted run (1-1 builds below), not taken from a summary. D36: worktrees for main and the base, own branch checked with `git status -sb`. The pins come from origin/main, never from memory.
 
 
+
+
+## Attempt 4 (51a7c617): the lead's ruling on what closes a slot
+`realFalls`: a slot is closed only by a solid piece AT its lip level, meaning its top is within 10 px of a lip or it plugs the lip. The piece must also have no lower floor inside the slot that he could step off and walk in under. Red first on ddc10c90 (seed 172 was not refused); it is green now.
+- Seed 172 x30784..31835 is refused: a real hole.
+- Seed 476's stone still plugs its slot.
+- **Seed 323 x27200..27273 is a fall again** under the ruling. Branch 128's top is 22 px under one lip and 46 px over the other. The test asserts it as a fall.
+**Re-run:** seedlist --check refuses 138/138. By name: teach.double-no-gap-after 138, band.out 131, floor.unmarked 109, block.lesser-passes 62, block.spare-thin 52, drop.untyped 31. Lock: 101/102, exit 0. verdicts.test: 28/28. Main chunk: 4,180,585 bytes.
+**Full suite, 3 shards:** 822/68, 775/32 and 754/26 pass/fail. That is 126 failures, all because 1-1 cannot build (123 by its error text; the dump child, the seed-list test and recipes.test build 1-1 too). A1's base has 0.
 
 ## Attempt 3 (d88d8fcd): w1Pits false positives, the petal pass's reach
 1. `promises11.realFalls`, read by both floorlessGaps and routeGaps (pipeline). A slot is no longer a fall when one solid piece spans it edge to edge across the lips' level (seed 476 Normal x22458, stone 122). It is also not a fall when the pieces at or under the UPPER lip floor it to an opening under 32 px (seed 323 Normal x27200, branch 128 at y1005 leaves 23 px). w1Pits' `top` is the lower lip, which is why the upper lip has to be found from the edge pieces. Red first at both seeds.
