@@ -65,7 +65,7 @@ first try). "Steering" aims at each cap every frame.
 | Cap to cap, a step down of 24-36 px (lay S 216-224) | S 215-225 | S 215-225 |
 | A cap higher than 66 px over the last, or lower than 36 px under it | not laid (the band narrows and was flown at 3 heights only) | not laid |
 | Pillar under a cap (a stump standing on the pit floor, never floating) | 150-170 wide (35-70 px of pit between pillars) | 110-130 wide (75-110 px between) |
-| Caps in one chain (pillars after the floor mushroom) | 2 in the first chain of the stage, else 3 | 2 in the first chain, else 3 to 5 |
+| Caps in one chain (pillars after the floor mushroom) | 2 or 3 (2 in the stage's first chain, before a lift, and either side of an island) | 2 to 5 (2 in the first chain and before a lift) |
 | The exit bank: its lip past the last pillar's edge / its top over the pillar top | 40-80 px / 0-60 px | 40-100 px / 0-90 px |
 | The entry: the floor mushroom's edge before the lip | 20-60 px | 20-60 px |
 

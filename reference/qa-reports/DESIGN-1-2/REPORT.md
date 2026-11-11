@@ -1,53 +1,51 @@
-# Designer report: the 1-2 packet (R-165.11), 2026-11-11 3:49 PM ET, branch t-design-1-2 on t-int-1-1@5dafe73b
-**Method used:** reference/methods/dispatch-packet.md (the packet's parts), C1's packet as the shape, its two audits as the list of
-what to prevent; every engine claim read in code or run (D37); every number flown (roles/DESIGNER.md).
-**Lessons applied:** D19 (judge what the screen lays, not sockets: the fork-end find), D32 (tool flags read from arg parsing), D37 (one
-pasted run per engine claim: probe12, chainlay12), D40 (named what it is built on; §E kept out of Content's files), D41 (art to 89.1 units).
-## 1. Done-items (the lead's list)
+# Designer report: the 1-2 packets (R-165.11), attempt 2, 2026-11-11 4:46 PM ET, branch t-design-1-2, cites at t-int-1-1@53bd446a
+**Method used:** reference/methods/dispatch-packet.md; C1's packet as the shape; the packet Critic's method update applied (the
+probe runs the packet's OWN brief and prints each job's dealt types against the sections that answer them).
+**Lessons applied:** D19 (the built stage, not sockets), D25 (time from C1's measured history, as a range), D32 (tool flags from
+arg parsing), D37 (every engine claim run: supply12, chainlay12, finds11), D40 (three pushes, routing last), D41 (art to 89.1 units).
+## 1. Done-items
 | Asked | Where | Evidence |
 |---|---|---|
-| The stage brief (beat, teaches nothing new, feel, length, tempo, deal) | packet "The stage brief" | length floor 140 s against the engine's own 135 s target (notes §2) |
-| The graphs in node code | packet "The graphs" | 3 harvest graphs, valid by the engine's checker: sims/out/probe12.txt |
-| The section list | packet "The sections" | 44: 16 reused as they are, 10 own versions, 18 new |
-| The thorny floor: what hurts, how shown, HF | packet "The thorny floor", notes §5 | painted clumps exist (9 ready, unplaced); HF none needed, 4 prompts named, nothing launched |
-| Petals as the goal, rewards, hidden finds | packet "Petals, rewards and hidden finds" | the quota's source read (goals.ts); the low-road rule; caches; the note |
-| Easy variant | packet "Easy", chain.md §3 | flown on Easy: sims/out/easy-1-2-chain.txt |
-| What the bots must show | done-item 7 | tier-bot flags read from tierBots.ts:168-171 |
-| Stills and clips, upright and sideways, Easy and Normal | done-item 8, "Show first" | |
-| The gates | done-item 9 | CLAUDE.md's list |
-| Definition of done, item by item | 10 items | |
-| What is shared, and other stages' locks | packet "What is shared" | lockall and seedlist flags read from the tools |
-Also delivered: reference/specs/chain.md (the bounce chain, flown on 1-2, both settings); sims/flight.ts (+ `FLIGHT_STAGE`, `chain`),
-chainlay12.ts (gen2 lays a chain in band today: 36 of 36 lays), probe12.ts, finds11.ts; the turnover note rewritten.
+| Every Critic line fixed (CONTENT 14, ENGINE 6) | DESIGN-1-2-notes.md §9, line by line | both packets rewritten as attempt 2 |
+| The lead's nine rulings | notes §3 | in the packets |
+| The deal re-probed on the packet's own brief, real pipeline | `FLOWN=1 npx tsx reference/specs/sims/supply12.ts 120` | 720 of 720 rolls build, 0 throws; pool short on 2 / 6 / 3 rolls of 120 (graphs A / B / C); no section never laid; sims/out/supply12-flown.txt |
+| The same on today's engine, for the record | `npx tsx reference/specs/sims/supply12.ts 60` | most seeds throw or swap: sims/out/supply12-today.txt |
+| Stage brief, graphs, sections, thorny floor, petals, Easy, bots, stills, gates, done-items, what is shared | CONTENT-1-2-relay.md | 51 sections: 13 reused, 13 own, 25 new; 10 done-items by phase |
+| The Engine packet | ENGINE-1-2-routing.md | 8 items in 3 pushes, each with file:line, a done-test and its gates |
 ## 2. Polish check
-No screens were made (a packet). The packet's hold point puts the first thorn hollow in front of Matt before the rest is dressed.
-Tables checked for broken code spans; times pasted from `date`.
-## 3. Pushback
-1. **"Teaches nothing new" holds for moves only.** A thorny floor is a first hazard, and STAGE-RULES §1 says every first appearance
-   is taught in a safe spot before it can hurt. The packet adds one thorn lesson (a T node) and no move lesson.
-2. **"Sections only" (CAPABILITY, A9) is not the whole cost.** The arcs are flown, but 1-2 on gen2 also needs Engine work: routing
-   (7 places), the verdicts' 1-1-only scope, a floor that costs a heart (no such drop type exists), and the note as the find
-   (gen2 lays a golden seed). Listed with file:line as the packet's §E; Content can lay and probe sections without it.
-3. **1-1's bands were not 1-2's until flown:** the early-stage help fades by stage number. Flown: 1 px lower on doubles, so they hold.
-4. **The old brief's story source (story-briefs/1-2.md) is on none of the branches I read** (the lead's, t-int-1-1, engine-spec,
-   engine-core): its line cites could not be re-read. The packet takes the story from BRIEF-1-2.md and the code.
+No screens (packets). Tables checked for broken code spans; times from `date`; every new cite read at 53bd446a.
+## 3. Pushback (on my own attempt 1, and on the engine as found)
+1. **The level check counts no double jump on 1-2** (levelCheck.ts:132-134: `EARLY_DOUBLE` holds '1-1' only). Neither packet nor
+   the audit had it: on 1-2 today every section with a double or bounce-plus-jump block reads as unreachable and is swapped out
+   (11 of the pool). It is Engine item 5, beside the Critic's V3 line.
+2. **Caches cannot be petals on a harvest stage.** The quota is 87.5% of all petals laid: 4 to 7 petals a roll may sit off the low
+   road, and three fork ends are 9. The game already has the answer: a `fruit` pickup counts toward the goal and is not in the
+   quota (engine.ts:3002, :3073; goals.ts:51). Engine item 6 lays one for every off-road pickup on a harvest stage. THE LEAD'S CALL.
+3. **A required section is fitted by its phases, a reward node by nothing else** (pipeline.ts:1348): attempt 1's note hollow would
+   have fitted no node. It now carries `phases: ['sho', 'ten']`.
+4. **Attempt 1's probe ran another brief** (the Critic's line 1 is right). probe12.ts is kept and labelled as what it was.
 ## 4. Suggestions (ready packets)
-- **WRITTEN on the lead's word (11-11): reference/packets/2026-11-11/ENGINE-1-2-routing.md.** Item 0 the 1-1 high-road ends (red
-  check `npx tsx reference/specs/sims/finds11.ts --all`: 540 bare ends on the 200 listed seeds, both settings); 1 the thorn hollow
-  (typed, laid, hurt, drawn); 2 the verdict scope with 1-2's own flown rows (chain.md §1); 3 the note as the find; 4 routing and
-  the old 1-2 deleted, last. Each with file:line at t-int-1-1@fa5ad9d1, a done-test and its gates.
-- **DESIGNER help.md §5** before 1-2 reaches testers: 1-2 has thorns and no help for a stuck child.
+- **1-1's sprint-B never rolls clean** (the Critic, beside its task: 28 of 28 "combine: no bounce section left"): the same supply
+  run, `npx tsx reference/qa-reports/CRITIC-1-2-packet/probe12b.ts supply 60 1-1`, names the cell; a Content packet adds one
+  bounce combine to 1-1 or the graph is dropped and named. It belongs with R-165.120 (the yield).
+- **DESIGNER help.md §5** (failures counted through a lost life, one system with assist.ts) before 1-2 reaches testers.
 ## 5. Unresolved
-- The packet has not been audited cold (D34: its Critic comes next). The six calls for the lead: notes §3.
-- Not run by me: tools/engine/stage.ts and era.ts on a gen2 1-2 (it does not build yet); the packet tells the builder to prove them.
-- No thorn hollow has been drawn: the clumps' fit as a floor (no tiling strip exists) is judged at the builder's first still.
+- Three open calls for the lead (notes §3): bonus blooms; what the ladder grows at a chain (my pick: the lesson's own fallen
+  log); `EARLY_DOUBLE` moving the old 1-2's validation between pushes 2 and 3.
+- Thin supply cells are named in notes §8: eight job-and-type cells hold one section each.
+- supply12 proves tags and counts with stand-ins, not heights: the builder's raw builds are the proof of reach.
+- Not run by me: the tier bots or stage.ts on a 1-2 that does not build yet. The thorn bed has not been drawn.
+- roadmapcheck fails in my container on commits from branches not fetched here; I added no roadmap row.
 ## 6. Method update
-- dispatch-packet.md, add under "Frozen inputs": "A packet for a stage on a new engine path includes one pasted probe build of that
-  stage (`buildGen2Stage` with the brief added in memory) and names the first error it stops on." Proof: probe12 found in 3 s that
-  1-2 needs harvest graphs, `lessons`, and dies at the first rest; none of it was in the 11-05 brief.
-- roles/DESIGNER.md "Traps", add: "The early-stage help is a ramp by stage (`easeAssist`): fly each new stage with `FLIGHT_STAGE`."
+- dispatch-packet.md "Frozen inputs" (with the Critic's wording): the pasted probe uses the packet's OWN brief and prints, for
+  every graph, each job's dealt types against the sections that answer them; AND it is run twice, on today's engine and with the
+  engine items it waits on stood in, so the packet says what works before and after each push. Proof: the second run found the
+  double is not counted on 1-2 and that a required section fits by phase; neither showed on today's engine, where the roll
+  throws first.
+- roles/DESIGNER.md "Traps": "The engine's kit hands out the same section objects on every call (`w1World()`): a probe that edits
+  tags copies each section first." It cost me one wrong run.
 ## 7. Turnover note
-reference/handoffs/designer.md rewritten in this commit (base: t-designer-reach's 11-09 note, so nothing of the reach flight is lost).
+reference/handoffs/designer.md rewritten in this commit.
 ## Benchmark (the Designer's part)
-Times from `date`: started about 3:28 PM ET (the lead's STATE line); report written 2026-11-11 3:49 PM ET. Slowed by: the specs living on another
-branch (t-designer-reach not merged into t-int-1-1), the inventory on a third, and no story brief for 1-2 on any.
+Attempt 1: about 3:28 PM to 3:51 PM ET (packet), 3:53 to 3:59 PM (Engine packet). Critic's audit back 4:25 PM. Attempt 2: 4:26 PM
+to 2026-11-11 4:46 PM ET. One review round so far. What would have saved the round: running the packet's own brief before writing the pool.

@@ -1,0 +1,89 @@
+today's engine: 1-2 judged closed-form (not on the flown arcs)
+== harvest-12-A normal: 60 seeds: built 8, throws 52, rolls with a pool-short 8, structurally clean 0, clean but for V3 0; sections a roll 14-16
+     52  THROW gen# section w1-two-answers-12: b0o's gapPx 253-256 is past the double's reach 230 px at a 0 px rise
+      8  pool short at slot # (n# combine: no section for the job left)
+      5  node code: V11 at token #: 'g' on two neighbouring content nodes
+      4  pool short at slot # (n# test: no climb section left)
+      1  pool short at slot # (n# practise: no climb section left)
+      1  node code: V11 at token #: 4 of 8 content nodes are 'g' (cap 3)
+      1  node code: V11 at token #: 'c' on two neighbouring content nodes
+   job+type tokens laid: A:8 Cc:8 E:8 F[P|Pb]:13 F[P|Pc]:10 F[P|Pg]:6 H:8 Pg:8 R:29 Sb:8 Tb:8 Xg:8
+== harvest-12-A easy: 60 seeds: built 8, throws 52, rolls with a pool-short 8, structurally clean 0, clean but for V3 0; sections a roll 14-16
+     52  THROW gen# section w1-two-answers-12: b0o's gapPx 253-256 is past the double's reach 230 px at a 0 px rise
+      8  pool short at slot # (n# combine: no section for the job left)
+      5  node code: V11 at token #: 'g' on two neighbouring content nodes
+      4  pool short at slot # (n# test: no climb section left)
+      1  pool short at slot # (n# practise: no climb section left)
+      1  node code: V11 at token #: 4 of 8 content nodes are 'g' (cap 3)
+      1  node code: V11 at token #: 'c' on two neighbouring content nodes
+   job+type tokens laid: A:8 Cc:8 E:8 F[P|Pb]:13 F[P|Pc]:10 F[P|Pg]:6 H:8 Pg:8 R:29 Sb:8 Tb:8 Xg:8
+== harvest-12-B normal: 60 seeds: built 23, throws 37, rolls with a pool-short 13, structurally clean 10, clean but for V3 10; sections a roll 16-17
+     37  THROW gen# section w1-two-answers-12: b0o's gapPx 253-256 is past the double's reach 230 px at a 0 px rise
+     22  node code: V11 at token #: 'g' on two neighbouring content nodes
+     10  pool short at slot # (n# test: no bounce section left)
+      7  pool short at slot # (n# practise: no climb section left)
+      5  node code: V11 at token #: 5 of 8 content nodes are 'g' (cap 3)
+      4  node code: V11 at token #: 4 of 8 content nodes are 'g' (cap 3)
+      2  node code: V14 at token #: 5 'g' nodes for a deal of 3
+      1  pool short at slot # (n# descent: no climb section left)
+   job+type tokens laid: A:23 Db:4 Dc:9 Dg:10 E:23 F[P|Pb]:20 F[P|Pc]:19 F[P|Pg]:41 H:23 Pb:12 Pg:11 R:92 Sb:23 Tb:23 Wc:23 Xg:23
+== harvest-12-B easy: 60 seeds: built 23, throws 37, rolls with a pool-short 13, structurally clean 10, clean but for V3 10; sections a roll 16-17
+     37  THROW gen# section w1-two-answers-12: b0o's gapPx 253-256 is past the double's reach 230 px at a 0 px rise
+     22  node code: V11 at token #: 'g' on two neighbouring content nodes
+     10  pool short at slot # (n# test: no bounce section left)
+      7  pool short at slot # (n# practise: no climb section left)
+      5  node code: V11 at token #: 5 of 8 content nodes are 'g' (cap 3)
+      4  node code: V11 at token #: 4 of 8 content nodes are 'g' (cap 3)
+      2  node code: V14 at token #: 5 'g' nodes for a deal of 3
+      1  pool short at slot # (n# descent: no climb section left)
+   job+type tokens laid: A:23 Db:4 Dc:9 Dg:10 E:23 F[P|Pb]:20 F[P|Pc]:19 F[P|Pg]:41 H:23 Pb:12 Pg:11 R:92 Sb:23 Tb:23 Wc:23 Xg:23
+== harvest-12-C normal: 60 seeds: built 7, throws 53, rolls with a pool-short 7, structurally clean 0, clean but for V3 0; sections a roll 15-16
+     53  THROW gen# section w1-two-answers-12: b0o's gapPx 253-256 is past the double's reach 230 px at a 0 px rise
+      7  pool short at slot # (n# combine: no section for the job left)
+      4  pool short at slot # (n# test: no climb section left)
+      4  node code: V11 at token #: 'c' on two neighbouring content nodes
+      4  node code: V11 at token #: 'g' on two neighbouring content nodes
+      1  pool short at slot # (n# practise: no climb section left)
+      1  node code: V11 at token #: 'b' on two neighbouring content nodes
+   job+type tokens laid: A:7 Cc:7 Db:4 Dc:2 Dg:1 E:7 F[P|Pb]:5 F[P|Pc]:11 F[P|Pg]:9 H:7 Mc:2 Mg:5 Pb:5 Pg:2 R:14 Sb:7 Tb:7 Xg:7
+== harvest-12-C easy: 60 seeds: built 7, throws 53, rolls with a pool-short 7, structurally clean 0, clean but for V3 0; sections a roll 15-16
+     53  THROW gen# section w1-two-answers-12: b0o's gapPx 253-256 is past the double's reach 230 px at a 0 px rise
+      7  pool short at slot # (n# combine: no section for the job left)
+      4  pool short at slot # (n# test: no climb section left)
+      4  node code: V11 at token #: 'c' on two neighbouring content nodes
+      4  node code: V11 at token #: 'g' on two neighbouring content nodes
+      1  pool short at slot # (n# practise: no climb section left)
+      1  node code: V11 at token #: 'b' on two neighbouring content nodes
+   job+type tokens laid: A:7 Cc:7 Db:4 Dc:2 Dg:1 E:7 F[P|Pb]:5 F[P|Pc]:11 F[P|Pg]:9 H:7 Mc:2 Mg:5 Pb:5 Pg:2 R:14 Sb:7 Tb:7 Xg:7
+pool 51; never laid: w1-bank-run, w1-zigzag-run, w1-stair-test-back, w1-bank-stair-test-back, w1-knot-bank-12, w1-two-lifts-12, w1-bounce-wall-12, w1-mushroom-log-12, w1-drop-bounce-12, w1-dip-bounce-12, w1-two-answers-12, w1-root-steps, w1-stair-lift, w1-cap-lift
+laid, fewest first: bank-run:0 zigzag-run:0 stair-test-back:0 bank-stair-test-back:0 knot-bank-12:0 two-lifts-12:0 bounce-wall-12:0 mushroom-log-12:0 drop-bounce-12:0 dip-bounce-12:0 two-answers-12:0 root-steps:0
+supply by job/type:
+   arrive/structural      3  rain-path, root-walk, rain-banks
+   choice-reward/ground   1  hollow-twoway
+   climb/climb            3  stair-run, bank-run, zigzag-run
+   combine/bounce         2  bounce-wall-12, cap-lift
+   combine/climb          1  stair-lift
+   combine/ground         1  mushroom-log-12
+   descent/bounce         1  cap-steps-down
+   descent/climb          1  dropdown-stair
+   descent/ground         1  stump-descent
+   exit/structural        2  low-bark-arrival, root-bridge-out
+   flow/bounce            1  cap-run
+   flow/climb             3  stair-run, bank-run, zigzag-run
+   flow/ground            2  floor-dash, root-run
+   fork/bounce            2  mushroom-fork-12, thorn-fork
+   fork/climb             3  bank-stair-fork, root-stair-fork-12, root-ledge-fork
+   fork/ground            3  hollow-twoway, floor-dash, under-roots-fork
+   practise/bounce        2  cap-hop, cap-run
+   practise/climb         1  root-steps
+   practise/ground        5  stump-stile, stone-zigzag, stump-descent, knot-bank-12, root-hops
+   rest/structural        7  log-walk-12, root-meadow-12, fern-bank-12, clearing-12, log-shelter, petal-bank, hollow-log-rest
+   reward/structural      1  note-hollow
+   signature/bounce       3  thorn-chain, thorn-chain-rise, thorn-chain-isles
+   teach/bounce           1  thorn-hollow-teach
+   test/bounce            1  two-lifts-12
+   test/climb             2  stair-test-back, bank-stair-test-back
+   test/ground            1  thorn-leap
+   twist/bounce           2  drop-bounce-12, dip-bounce-12
+   twist/climb            1  stair-gap-twist
+   twist/ground           1  two-answers-12
