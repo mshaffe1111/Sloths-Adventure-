@@ -143,8 +143,12 @@ export interface FirstTimer {
   readHold?: number;
   /** and a double up a step gets its second press from dbl2Q's quantiles up to this one (early enough to climb): a tuning field */
   readDbl?: number;
-  /** a double across a gap, up to this one (before he has fallen past the far ledge): a tuning field */
-  readGap?: number;
+  /** a double across a gap, from the first of these quantiles to the second (late enough to carry him, before he has fallen past the
+   *  far ledge): a tuning field */
+  readGap?: [number, number];
+  /** at a gap that needs his double, his press distance is drawn again up to this quantile of aimQ, if it was further out (aimQ counts
+   *  every moving ground press near an edge, hops along flat ground among them): a tuning field */
+  readAim?: number;
 }
 export const FT_KID: FirstTimer = {
   name: 'KID', setting: 'easy', look: 1.2, heed: 1.1, stopReact: 0.4, thumb: [0.09, 0.065], hold: [0.16, 0.08], short: 0.08, upOnly: 0.45,
@@ -166,32 +170,32 @@ const ms = (q: Q5): Q5 => q.map((v) => v / 1000) as Q5;
 const KEPT_KID = { look: FT_KID.look, heed: FT_KID.heed, stopReact: FT_KID.stopReact, thumb: FT_KID.thumb, hold: FT_KID.hold, short: 0, upOnly: FT_KID.upOnly, upOnlyT: FT_KID.upOnlyT, dblAt: FT_KID.dblAt, hopFoe: FT_KID.hopFoe, hesitate: FT_KID.hesitate, swap: FT_KID.swap, drift: FT_KID.drift, thumbSpeed: FT_KID.thumbSpeed, slip: FT_KID.slip, slipFrames: FT_KID.slipFrames, release: FT_KID.release, releaseMax: FT_KID.releaseMax };
 const KEPT_ADULT = { look: FT_ADULT.look, heed: FT_ADULT.heed, stopReact: FT_ADULT.stopReact, thumb: FT_ADULT.thumb, hold: FT_ADULT.hold, short: 0, upOnly: FT_ADULT.upOnly, upOnlyT: FT_ADULT.upOnlyT, dblAt: FT_ADULT.dblAt, hopFoe: FT_ADULT.hopFoe, hesitate: FT_ADULT.hesitate, swap: FT_ADULT.swap, drift: FT_ADULT.drift, thumbSpeed: FT_ADULT.thumbSpeed, slip: FT_ADULT.slip, slipFrames: FT_ADULT.slipFrames, release: FT_ADULT.release, releaseMax: FT_ADULT.releaseMax };
 export const FT_EXPERT: FirstTimer = {
-  ...KEPT_ADULT, name: 'EXPERT', setting: 'normal', gapShare: 0.5, upOnly: 0.2, edgeAim: 61, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: 0.75,
+  ...KEPT_ADULT, name: 'EXPERT', setting: 'normal', gapShare: 0.5, upOnly: 0.2, edgeAim: 61, knowsDouble: true, readHold: 0.5, readDbl: 0.75, readGap: [0.4, 0.9], readAim: 0.5,
   holdQ: ms([84, 125, 180, 278, 701]), aimQ: [17, 36, 61, 91, 131], lateShare: 0.073, lateQ: ms([17, 41, 92, 157, 259]),
   standShare: 0.206, standQ: ms([100, 133, 200, 300, 500]), dblShare: 0.236, dbl2Q: ms([284, 329, 441, 559, 683]),
   steerQ: ms([137, 267, 563, 1128, 1853]), gapQ: ms([50, 230, 328, 469, 763]),
 };
 export const FT_MIDDLE: FirstTimer = {
-  ...KEPT_ADULT, name: 'MIDDLE', setting: 'normal', gapShare: 0.5, upOnly: 0.02, edgeAim: 58, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: 0.75,
+  ...KEPT_ADULT, name: 'MIDDLE', setting: 'normal', gapShare: 0.5, upOnly: 0.02, edgeAim: 58, knowsDouble: true, readHold: 0.5, readDbl: 0.75, readGap: [0.4, 0.9], readAim: 0.5,
   holdQ: ms([50, 82, 118, 181, 329]), aimQ: [11, 32, 58, 92, 156], lateShare: 0.123, lateQ: ms([16, 37, 99, 152, 234]),
   standShare: 0.524, standQ: ms([133, 200, 292, 401, 601]), dblShare: 0.262, dbl2Q: ms([250, 319, 416, 517, 650]),
   steerQ: ms([104, 164, 333, 712, 1303]), gapQ: ms([164, 266, 473, 719, 1033]),
 };
 export const FT_MIDDLE_EASY: FirstTimer = {
-  ...KEPT_ADULT, name: 'MIDDLE', setting: 'easy', gapShare: 0.5, upOnly: 0.02, edgeAim: 61, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: 0.75,
+  ...KEPT_ADULT, name: 'MIDDLE', setting: 'easy', gapShare: 0.5, upOnly: 0.02, edgeAim: 61, knowsDouble: true, readHold: 0.5, readDbl: 0.75, readGap: [0.4, 0.9], readAim: 0.5,
   holdQ: ms([51, 91, 135, 202, 467]), aimQ: [8, 30, 61, 106, 182], lateShare: 0.11, lateQ: ms([16, 34, 66, 117, 216]),
   standShare: 0.483, standQ: ms([115, 158, 235, 335, 468]), dblShare: 0.255, dbl2Q: ms([249, 317, 383, 484, 627]),
   steerQ: ms([107, 169, 367, 767, 1401]), gapQ: ms([102, 233, 393, 615, 863]),
 };
 export const FT_CHILD: FirstTimer = {
-  ...KEPT_KID, name: 'CHILD', setting: 'normal', upOnly: 0.16, edgeAim: 73, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: 0.75,
+  ...KEPT_KID, name: 'CHILD', setting: 'normal', upOnly: 0.16, edgeAim: 73, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.75],
   holdQ: ms([22, 49, 74, 115, 231]), aimQ: [1, 28, 73, 119, 232], lateShare: 0.121, lateQ: ms([18, 46, 83, 113, 129]),
   standShare: 0.81, standQ: ms([237, 394, 560, 740, 1131]), dblShare: 0.234, dbl2Q: ms([291, 323, 406, 530, 710]),
   steerQ: ms([56, 80, 120, 192, 524]), gapQ: ms([268, 420, 630, 1041, 1489]),
 };
 /** the child tier's one Easy run (P27, 37 minutes, 187 put-backs): an outlier no bot is tuned to; printed, never checked */
 export const FT_CHILD_EASY: FirstTimer = {
-  ...KEPT_KID, name: 'CHILD', setting: 'easy', upOnly: 0.16, edgeAim: 71, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: 0.75,
+  ...KEPT_KID, name: 'CHILD', setting: 'easy', upOnly: 0.16, edgeAim: 71, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.75],
   holdQ: ms([49, 100, 219, 395, 1108]), aimQ: [0, 27, 71, 161, 245], lateShare: 0.25, lateQ: ms([65, 100, 180, 247, 362]),
   standShare: 0.663, standQ: ms([132, 263, 631, 1187, 2371]), dblShare: 0.3, dbl2Q: ms([361, 413, 543, 724, 1251]),
   steerQ: ms([64, 132, 231, 444, 931]), gapQ: ms([50, 83, 297, 717, 1708]),
@@ -864,7 +868,7 @@ export class FirstTimerRun {
   private learned = new Set<string>();
   // ── a tier bot's own state (R-165.59; KID and ADULT never touch it) ──
   /** how he takes the next edge: where he presses (px before the lip), and run / late (walk off, then press) / stand (stop, then press) */
-  private edge: { aim: number; how: 'run' | 'late' | 'stand'; stand: number; late: number } | null = null;
+  private edge: { aim: number; how: 'run' | 'late' | 'stand'; stand: number; late: number; read?: boolean } | null = null;
   /** walking off for a late press, the way he goes */
   private lateArmed: { dir: -1 | 1; t: number; here: Platform | null } | null = null;
   /** stopped at an edge to jump from standing: till when he stands (-1: still slowing) */
@@ -876,6 +880,8 @@ export class FirstTimerRun {
   readonly secondPressMs: number[] = [];
   /** the furthest right he got (px) */
   maxX = -Infinity;
+  /** the jump coming is for a way on over his head: read as a climb */
+  private climbJump = false;
   /** when he was last put back (a tier bot does not read the set-back's stillness as being stopped dead) */
   private backAt = -Infinity;
 
@@ -1051,7 +1057,8 @@ export class FirstTimerRun {
     for (const q of this.sim.platforms) {
       if (q.broken || q === here || q.type === 'bouncy') continue;
       const d = dir > 0 ? q.x - edgeX : edgeX - (q.x + q.width);
-      if (d > -40 && d < 260 && here.y - q.y > 90 && here.y - q.y < 260) return true;
+      // (from 150 px back over his own ground: a block standing on it, against his face, counts as well as a ledge past its end)
+      if (d > -150 && d < 260 && here.y - q.y > 90 && here.y - q.y < 260) return true;
     }
     return false;
   }
@@ -1233,7 +1240,12 @@ export class FirstTimerRun {
         if (far) dir = far.x > p.x + 16 ? 1 : far.x < p.x - 16 ? -1 : 0;
       }
       // (the way on is below, close across: he keeps going the way he was until he finds the edge, never turns back for it)
-      if (dy > 40 && Math.abs(dx) < 120 && this.way !== 0) dir = this.way;
+      // (a tier bot heads the way the route goes on from there, not back the way a bounce threw him, which on w1-twin-mushroom-fork put
+      // him on the mushroom again and again)
+      if (dy > 40 && Math.abs(dx) < 120 && this.way !== 0) {
+        const far = who.holdQ ? this.prog.target(p, 240) : null;
+        dir = far && Math.abs(far.x - p.x) > 40 ? (far.x > p.x ? 1 : -1) : this.way;
+      }
     }
     if (dir !== 0) this.way = dir;
     const fdir: -1 | 1 = dir === 0 ? (p.facing >= 0 ? 1 : -1) : dir;
@@ -1423,9 +1435,17 @@ export class FirstTimerRun {
     if (who.holdQ && dir !== 0 && !this.jump && tgt) {
       const hi = this.prog.target(p, 320);
       if (hi && hi.y < p.y - 100) {
-        const b = this.sim.platforms.find((q) => q.type === 'bouncy' && !q.broken && q.y < p.y && p.y - q.y < 60 && (dir > 0 ? q.x - p.x > 10 && q.x - p.x < 160 : p.x - (q.x + q.width) > 10 && p.x - (q.x + q.width) < 160));
+        const b = this.sim.platforms.find((q) => q.type === 'bouncy' && !q.broken && q.y < p.y && p.y - q.y < 110 && (dir > 0 ? q.x - p.x > 10 && q.x - p.x < 160 : p.x - (q.x + q.width) > 10 && p.x - (q.x + q.width) < 160));
         if (b) return this.hopOnto(b, dir, dir);
       }
+    }
+    // (a tier bot with the way on straight over his head, over his reach on foot: he jumps up for it, a double over one jump's height,
+    // read as a climb; the route's point flips side to side over him and a first-timer only dithers there)
+    if (who.holdQ && tgt && !this.pending && Math.abs(tgt.x - p.x) < 40 && tgt.y < p.y - 60) {
+      const far = this.prog.target(p, 200);
+      const d: -1 | 1 = far && Math.abs(far.x - p.x) > 16 ? (far.x > p.x ? 1 : -1) : fdir;
+      this.climbJump = true;
+      return this.decide(d, tgt.y < p.y - 90 ? 'double' : this.mem.plan(p.x, p.y), false, {});
     }
     // (walking off for a late press that never came: the ground went on after all)
     if (this.lateArmed && t - this.lateArmed.t > 1) this.lateArmed = null;
@@ -1480,7 +1500,8 @@ export class FirstTimerRun {
       // it throw him up, as every tester did at w1-hop-bounce (38 expert runs, no life or put-back there))
       const back = face !== null ? this.bounceBack(fdir, face) : null;
       if (back) return back;
-      return this.decide(fdir, this.mem.plan(p.x, p.y), false, side(dir));
+      // (a tier bot stopped at a face reads it as he reads an edge: a step over one jump's height gets a double)
+      return this.decide(fdir, who.holdQ ? this.jumpFor(p, fdir, this.floorAt(p.x, p.y, 6)) : this.mem.plan(p.x, p.y), false, side(dir));
     }
     // the way goes up right here (a ledge over him): jump for it
     if (up && dir === 0 && tgt && tgt.y < p.y - 60) return this.decide(fdir, this.mem.plan(p.x, p.y), false, {});
@@ -1528,7 +1549,16 @@ export class FirstTimerRun {
         if (back) return back;
         if (!drops && tierEdge) {
           // (the measured press distance already holds his thumb's latency: the press comes now)
-          if (tierEdge.how === 'run') return this.startJump(dir, this.jumpFor(p, dir, here), false);
+          const kind = this.jumpFor(p, dir, here);
+          if (tierEdge.how === 'run' && kind === 'double' && who.readAim !== undefined && !tierEdge.read) {
+            tierEdge.read = true;
+            const near = drawQ(this.r, who.aimQ!, 0, 0, who.readAim);
+            if (near < tierEdge.aim) {
+              tierEdge.aim = near;
+              return side(dir);
+            }
+          }
+          if (tierEdge.how === 'run') return this.startJump(dir, kind, false);
           if (tierEdge.how === 'stand') {
             this.standing = { dir, until: -1 };
             return {};
@@ -1666,15 +1696,18 @@ export class FirstTimerRun {
   private startJump(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean): Pad {
     const p = this.sim.p, who = this.who;
     // (a tier bot: where a jump has failed him he holds on longer; any jump may get its second press, at his own delay)
-    const needs = who.readHold !== undefined && dir !== 0 && (this.faceAhead(dir, 60) !== null || !this.floorAt(p.x + dir * ((this.edge?.aim ?? 0) + 100), p.y, 40));
+    const overhead = this.climbJump;
+    this.climbJump = false;
+    const needs = who.readHold !== undefined && (overhead || dir !== 0 && (this.faceAhead(dir, 60) !== null || !this.floorAt(p.x + dir * ((this.edge?.aim ?? 0) + 100), p.y, 40)));
     let hold = flickHold(this.r, who, who.retryHold && this.mem.fails(p.x, p.y) > 0 ? who.retryHold : needs ? (who.readHold ?? 0) : 0);
     let d2 = -1;
     if (who.dbl2Q) {
       if (kind === 'single' && this.r() < (who.dblShare ?? 0)) kind = 'double';
       // (up a step, the second press early enough to climb: from dbl2Q's quantiles up to readDbl; across a gap, his own delay)
       const here = this.floorAt(p.x, p.y, 6);
-      const climb = needs && dir !== 0 && !!here && this.stepUp(here, dir);
-      d2 = drawQ(this.r, who.dbl2Q, 2 * DT, 0, climb ? (who.readDbl ?? 1) : needs ? (who.readGap ?? 1) : 1);
+      const climb = overhead || (needs && dir !== 0 && !!here && this.stepUp(here, dir));
+      const [lo, hi] = climb ? [0, who.readDbl ?? 1] : needs ? (who.readGap ?? [0, 1]) : [0, 1];
+      d2 = drawQ(this.r, who.dbl2Q, 2 * DT, lo, hi);
       if (kind === 'double') hold = Math.min(hold, d2 - DT);
       this.edge = null;
       this.lateArmed = null;
