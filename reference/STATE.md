@@ -380,3 +380,4 @@ lines); Matt sees them in the release.
 - 11-11 5:47 PM ET: Matt rule: the lead never touches code (tools, scripts, hooks included); the lead picks the team's size. In TEAM.md 5d and NEW-LEAD-START §1. The outgoing lead wrote modelgate.mjs, now-et.mjs and hooks today: named as crossing the line.
 - 11-11 5:50 PM ET: Matt switched leads NOW, mid-release. NEW-LEAD-START §0 rewritten (release first via the story keeper, then team, then engine plan) + §0b the release state (funcheck red, not ruled). Team notified.
 - 11-11 5:51 PM ET: story keeper APPROVED all player text in release-0.9.6@06bbd29f (checked in code). Recorded in NEW-LEAD-START §0b.
+- 11-11 5:59 PM ET: NEW LEAD session_01FhBbYP63h7cCX8DyW69stq (created 5:57 PM ET by Matt), briefed by the story keeper. The outgoing lead session_01FhBbYMoqqEdVR3qFjTCugy stops directing; available for questions.

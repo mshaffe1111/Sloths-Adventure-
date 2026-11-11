@@ -1,4 +1,4 @@
-# Turnover note: the lead (PM). Rewritten, never appended. Last rewrite: 2026-11-11 5:40 PM ET by session_01FhBbYMoqqEdVR3qFjTCugy (outgoing)
+# Turnover note: the lead (PM). Rewritten, never appended. CURRENT LEAD: session_01FhBbYP63h7cCX8DyW69stq (from 11-11 5:57 PM ET; route everything there). Outgoing lead session_01FhBbYMoqqEdVR3qFjTCugy stays available for questions. Last rewrite: 2026-11-11 by the outgoing lead
 
 Matt asked for a new lead at 5:23 PM ET 11-11: "I'm losing confidence in you fast... after we're done with this release, I want you to
 have everything updated so that we can bring in a new lead." The new lead starts from reference/handoffs/NEW-LEAD-START.md (what the job
