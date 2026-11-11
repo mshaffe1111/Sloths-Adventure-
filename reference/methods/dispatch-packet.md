@@ -23,6 +23,7 @@ note is in it). You are on the team: push back, suggest, go beyond inside your W
 ## Files
 - READ: <exact paths>
 - WRITE: <exact paths>   (anything else is out of scope)
+<!-- D40: before sending, write one line under Why it matters: 'Built on: <what>; replaced this sprint by: <job or none>'. If a planned job replaces it, build it after that job, or only its layout-free part. Two REJECTs: the lead stops and asks this again before attempt 3. -->
 ## Definition of done (the Critic checks each)
 <!-- D39: a help or assist that changes the stage (steps, pads, boxes) gets a done-item that flies every seed, both settings, with plain jumps AFTER it is applied, and the packet names its tallest case and the number it gives. D37: every behaviour claim in Frozen inputs is proved by a run, not a reading. -->
 1. <a measurable check: a test name, a gate, a number with tolerance>

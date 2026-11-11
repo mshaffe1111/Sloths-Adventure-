@@ -50,6 +50,7 @@ list; each has an R-number); story and taste calls (story keeper first); changes
 Everything else is yours on his standing permission (11-07).
 
 ## 4. Running the team
+- **Order by dependency, not by how soon Matt can test (D40, Matt 11-11: "I need you to think through things better. Too much time and effort wasted already").** Before a packet goes out, name what it is built on and whether a planned job replaces that this sprint; if so, build it after. Two REJECTs in a row: stop and ask whether the job patches something about to be replaced before attempt 3.
 0. **Canon versus delivery** (TEAM.md): the story keeper owns what the story is; how it's delivered is bounded by the frame budget,
    the rules for players who can't read yet and the Critic's gates; after 2 failed revisions the trade-off goes to Matt as one
    multiple-choice question.
