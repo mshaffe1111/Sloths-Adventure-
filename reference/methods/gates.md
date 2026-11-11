@@ -10,7 +10,7 @@ Last proven: 2026-11-01, kaizen-gates (built clipcheck, playerText.test, knownch
 | # | Command | Catches | Time here / in CI |
 |---|---|---|---|
 | 1 | `npx tsc --noEmit -p .` | type errors | about 2 min / in publish |
-| 2 | `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts` | every unit test, including `artUse.test.ts` (art made but never drawn) and `playerText.test.ts` (repeated, look-alike or filler player text; a journal page that repeats a line) | over 25 min in this container (run it in the background) / 6 shards side by side |
+| 2 | `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts src/game/art/*.test.ts` | every unit test, including `artUse.test.ts` (art made but never drawn) and `playerText.test.ts` (repeated, look-alike or filler player text; a journal page that repeats a line) | over 25 min in this container (run it in the background) / 6 shards side by side |
 | 3 | `npx vite build` | build errors, any asset over 4 MiB | about 10 s |
 | 4 | `node tools/perf/artcheck.mjs` | an image over 4096 px on a side | seconds |
 | 5 | `node tools/perf/knowncheck.mjs` | a known-defect list that GREW (clipknown, playerText.known, limits.json, artUse.allow) compared with main | seconds |
