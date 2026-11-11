@@ -74,6 +74,31 @@
    "role": "Engine",
    "task": "writing the re-lay checks in parallel (due 9:30 AM)",
    "status": "working"
+  },
+  {
+   "role": "Content",
+   "task": "art director A: new cut pieces + the master merge (the inventory, R-165.104)",
+   "status": "working"
+  },
+  {
+   "role": "Content",
+   "task": "art director B1: Worlds 1-4 + the 1-1 atlas (the inventory, R-165.104)",
+   "status": "working"
+  },
+  {
+   "role": "Content",
+   "task": "art director B2: Worlds 5-10 (the inventory, R-165.104)",
+   "status": "working"
+  },
+  {
+   "role": "Content",
+   "task": "art director B3: every backdrop (the inventory, R-165.104)",
+   "status": "working"
+  },
+  {
+   "role": "Content",
+   "task": "art director B4: characters, enemies, UI, story (the inventory, R-165.104)",
+   "status": "working"
   }
  ],
  "columns": [
@@ -88,6 +113,10 @@
    "name": "To do",
    "hint": "in the order it will be picked up",
    "cards": [
+    {
+     "id": "R-165.104",
+     "title": "The art inventory: every piece labelled (ten worlds, how the engine uses it) and readable by the engine"
+    },
     {
      "id": "R-165.103",
      "title": "Make room in the game's main code file (only 8 KB left under the 4 MB limit) before the 1-1 re-lay merges",
