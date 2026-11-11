@@ -43,8 +43,13 @@ them. No flight did: see below.)
   plain jumps (6 jumps, 4 grown: 3 steps + 1 pad); Normal line at 3, offer at 12 with the stage held, no, re-ask at 20, no, never again; yes grows the steps and the piece
   passes; steps in the draw list and gone on stop/restart; no stuckHelp, no "Too tall". Red on 41c2e248: 12 put-backs a setting, 0 help
   events. **The on-screen half (her bubble) fails, as above.**
-- 3: seedlist 1-1 PASS (138). lockall --check against A1's lock is running; its result goes in the report.
+- 3 PASS: `lockall --layouts 16 --intended 1-1 --check` against A1's lock (41c2e248): `lock: 102/102 stages unchanged` (1-1 too: no
+  stage data moves; 1-2, 1-5 and World 8 byte-identical). seedlist 1-1 PASS (138 seeds). The ladder is null off 1-1 (engine.ts).
 - 4: tsc clean; full suite, 3 shards on 41c2e248+A2's first commit: 927 ok, 0 fail. Not yet done: clipcheck route (planned: a
   NODE_ENV=development build only for the offer step, driving real put-backs through the dev-only `__engine`; prod dist grepped).
 - Fixed in my own work after looking at the stills: the offer came up over the set-back's closed iris (a black stage behind it). It now
-  waits until the iris is open and he stands.
+  waits until the iris is open and he stands. Stills (upright, dsf 1) in R-165.62/: `normal-port-12-offer.png` (stage visible
+  behind; YES = Pokey on the stone that grows, NO = jump pose), `normal-port-12-after-back.png` (Escape = no: offer gone, no pause
+  menu, nothing grown), `easy-port-08-step.png` / `easy-*-08-on-step.png` (the grown stone, stood on). `*-03-line.png` shows the
+  blocker: her bubble still holds the stage's old double line, not the ladder's. The sideways Normal re-shoot hit a dev-server
+  fetch flake and was not retaken.
