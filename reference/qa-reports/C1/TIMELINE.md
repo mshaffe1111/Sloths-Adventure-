@@ -8,3 +8,4 @@
 - 07:38 E0a moved to attempt 5 (96dd2fd9, not yet named): list build on cf0b7752 stopped, branch rebased onto 96dd2fd9 to build the list on the newest rules; lead's notes read (judge tools come from t-content-c1-tests; progress stills hourly)
 - 07:55 relay test (b)/(c) findings fixed in the layout (edges, fork roads, perch); full list build restarted
 - 08:37 list 480 PASS --check; relay (a) only the Easy-slot pushback, (b)/(c) 33 seeds; judge FAIL on put-backs (expert N 0.68 vs 0.6, child N 4.1 vs 3.8, all at the new test gaps): tests to 253-256, one a section; list rebuild 2
+- 08:55 lead named E0a d2748131 (attempt 6): rebased; list build 2 runs on attempt-5 code, re-checked on d2748131 after
