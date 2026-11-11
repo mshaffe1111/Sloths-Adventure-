@@ -4,7 +4,10 @@ import sys, os, json, csv, shutil
 ROOT, OUT, KEPT = sys.argv[1:4]; sys.path.insert(0, ROOT + '/pylib'); sys.path.insert(0, ROOT + '/cutcode')
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-from mtable import K, R, LABELTEXT, STAND, HAND, SMALL_OK
+import importlib
+T = importlib.import_module(os.environ.get('TABLE', 'mtable'))
+K, R, LABELTEXT, STAND, HAND, SMALL_OK = T.K, T.R, T.LABELTEXT, T.STAND, T.HAND, T.SMALL_OK
+EXTRA_REJ = getattr(T, 'EXTRA_REJ', {})
 from walk import walk_top
 # attempt 2 (the critic, 11-10): side-on lily pads have no flat top (the rim curves away at both ends): by hand.
 WALK_HAND = {'M-03-a', 'M-03-b', 'M-03-c', 'M-03-d'}
@@ -20,11 +23,11 @@ for r in info:
         if pid in LABELTEXT: print('label text dropped', pid); continue
         if pid not in K: print('UNCLASSIFIED', pid); continue
         label, kind, world, flt, notes = K[pid]
-        row = dict(id=pid, sheet=r['sheet'].replace('M-', ''), label=label, kind=kind, w=p['w'], h=p['h'],
+        row = dict(id=pid, sheet=r['sheet'].split('-')[1], label=label, kind=kind, w=p['w'], h=p['h'],
                    walk_y='', walk_x0='', walk_x1='', flat='', world=world, float_class=flt, status='kept', reason='', notes=notes)
         if pid in R: row['status'] = 'rejected'; row['reason'] = R[pid]
         elif ls < 600 and pid not in SMALL_OK: row['status'] = 'rejected'; row['reason'] = f'under 600 px on its long side ({ls} px): re-roll larger'
-        im = Image.open(src)
+        im = Image.open(src); row['w'], row['h'] = im.size; ls = max(im.size)
         if row['status'] == 'kept':
             shutil.copy(src, f'{KEPT}/{pid}.png')
             if kind in STAND:
@@ -46,9 +49,13 @@ for r in info:
             j = Image.new('RGB', im.size, (48, 48, 52)); j.paste(im, (0, 0), im); j.thumbnail((1400, 1400))
             j.save(f'{OUT}/rejected/{pid}.jpg', quality=85)
         rows.append(row)
+for pid, (label, kind, world, flt, reason, crop, w_, h_) in EXTRA_REJ.items():
+    j = Image.open(f'{ROOT}/{crop}'); j.thumbnail((1400, 1400)); j.save(f'{OUT}/rejected/{pid}.jpg', quality=85)
+    rows.append(dict(id=pid, sheet=pid.split('-')[1], label=label, kind=kind, w=w_, h=h_, walk_y='', walk_x0='', walk_x1='', flat='',
+                     world=world, float_class=flt, status='rejected', reason=reason, notes='raw sheet crop (not keyed)', src=f'{ROOT}/{crop}'))
 cols = ['id', 'sheet', 'label', 'kind', 'w', 'h', 'walk_y', 'walk_x0', 'walk_x1', 'flat', 'world', 'float_class', 'status', 'reason', 'notes']
 with open(f'{OUT}/catalog.csv', 'w', newline='') as f:
-    wr = csv.DictWriter(f, cols); wr.writeheader(); [wr.writerow(x) for x in rows]
+    wr = csv.DictWriter(f, cols, extrasaction='ignore'); wr.writeheader(); [wr.writerow(x) for x in rows]
 font = ImageFont.load_default(size=22)
 def sheet(items, name, cell=420, cols=4, rejected=False):
     n = len(items); rws = (n + cols - 1) // cols; lh = 58
@@ -59,7 +66,7 @@ def sheet(items, name, cell=420, cols=4, rejected=False):
         for i, row in enumerate(items):
             x = ox + (i % cols) * cell; y = 10 + (i // cols) * (cell + lh)
             d.rectangle([x + 4, y, x + cell - 4, y + cell], fill=ground)
-            im = Image.open(f"{ROOT}/artcut/pieces/{row['id']}.png"); s = min((cell - 20) / im.width, (cell - 20) / im.height)
+            im = Image.open(row.get('src') or f"{ROOT}/artcut/pieces/{row['id']}.png").convert('RGBA'); s = min((cell - 20) / im.width, (cell - 20) / im.height)
             t = im.resize((max(1, int(im.width * s)), max(1, int(im.height * s))), Image.LANCZOS)
             px, py = x + (cell - t.width) // 2, y + (cell - t.height) // 2
             out.paste(t, (px, py), t)

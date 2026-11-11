@@ -9,7 +9,7 @@ from scipy import ndimage as ndi
 SKIP = {'M-02-a', 'M-03-a'}
 # pieces with painted pink (lotus flowers and buds): edge pass only, no whole-piece pass
 PINK = {'M-02-b', 'M-03-b', 'M-02-e', 'M-03-d'}
-for f in sorted(glob.glob(f'{ROOT}/artcut/pieces/M-*.png')):
+for f in sorted(glob.glob(f'{ROOT}/artcut/pieces/' + (sys.argv[2] if len(sys.argv) > 2 else 'M-*') + '.png')):
     pid = os.path.basename(f)[:-4]
     if pid in SKIP: continue
     a = np.asarray(Image.open(f)).astype(np.float32).copy()

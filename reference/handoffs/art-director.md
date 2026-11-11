@@ -1,9 +1,16 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-11 (attempt 2 of R-165.85)
+# Hand-off: the art director role (Content), rewritten 2026-11-11 (R-165.85: the 11-09 batch passed; the 11-11 batch cut)
 
 Last task: R-165.85 (cut only), Matt's 15 sheets of 11-09, by the Content member on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
 
-## 0. Matt's 11-09 sheets: cut, not placed
+## 0a. Matt's 11-11 sheets (third batch): cut, not placed
+- 54 kept in `src/assets/w1-1111/`, 1 rejected (the smeared ledge on 06); catalogue: `reference/art-incoming/matt-2026-11-11/cut/`.
+- Fills root steps, full-size rocks, mid-size stump steps, cairns, ladders, a short rope bridge. Five pieces are "later world"
+  (basalt, sandstone arch, geode, black spheres, white jagged rock; the last reads as danger).
+- Only N-08-d passes the 3 px flatness test; mossy blocks (N-12-b, N-13-a) and the island N-02-e come close: stand lines by hand.
+- Size trick: zero RGB under alpha 0 and save optimised; lossless for what shows, ~5% smaller. The 11-09 PNGs haven't had it.
+
+## 0. Matt's 11-09 sheets: cut, not placed (passed the Critic at eddc6b0c)
 - 54 pieces kept (attempt 2: the lead allowed six under 600 px), full size, in `src/assets/w1-1109/` (no code refers to them). Catalogue, contact sheets by kind, rejected cuts and
   the cutter: `reference/art-incoming/matt-2026-11-09/cut/` (CATALOG.md first).
 - Next: the 1-1 re-lay (R-165.72) and Matt's mock-up sheet pick from these. Platform logs: M-14-a, M-15-a/b (M-15-a/b are near
@@ -140,6 +147,9 @@ already have rocks and a root arch (`w1-hide-root-arch`), so check both sets bef
 15. **The pink scan must catch dark magenta too** (r>g+45, b>g+25 within 8 px of the edge; the critic found 120,60,95 spikes the
     bright-only scan missed). Run `edgefix.py` on every piece, then the scan; painted pink (lotus, Victoria rims) is checked at 2x by eye.
 16. **The auto walk line is only a line if it's flat**: measure the share within 3 px of level; under 50% it is "by hand".
-17. **Never pipe the builder into `head`**: a broken pipe stops it half way and leaves contact sheets missing.
+17. **Prompt text painted on a sheet** (11-11 sheet 09): the glyph finder misses big bold text; set `labelbox` boxes that stay clear
+    of the art, then `specks.py` for stray dots. A smeared piece touching a good one (sheet 06): clear it with boxes stepped along the
+    good piece's edge, keep a raw crop as its rejected record.
+18. **Never pipe the builder into `head`**: a broken pipe stops it half way and leaves contact sheets missing.
 
 Stopping now.
