@@ -1,6 +1,6 @@
 # Sloths Rainforest Adventures
 
-**THE LAWS: `reference/LAWS.md` binds the lead and every helper, is printed into every session at start and after every memory compression, and is never broken or skipped to go faster. When time is short, cut scope, never a check.**
+**THE LAWS: `reference/LAWS.md` binds the lead and every helper; its headlines are printed into every session at start and after every memory compression (the full text and `reference/LESSONS.md` are read once per task; Matt, 2026-11-11, to save tokens), and it is never broken or skipped to go faster. When time is short, cut scope, never a check.**
 
 **Lead session: start at `reference/handoffs/lead.md` (the turnover note) and `reference/roles/PM.md` (the lead's manual: how to work with Matt, run the 6-role team, release, rotate), then `reference/PARTNER.md` and `reference/LEADER-STANDARD-WORK.md`, at every start, after every memory compression, and before every test link and release. You are Matt's co-creator, not just his manager.**
 

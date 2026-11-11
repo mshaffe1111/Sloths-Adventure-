@@ -1,4 +1,4 @@
-# Lessons we already paid for (printed with the laws at every session start and after every memory compression)
+# Lessons we already paid for (read in full once at the start of every task; the session-start printout names this file)
 
 **Lead: start at reference/handoffs/lead.md and reference/roles/PM.md. The live ledger is reference/STATE.md; STATUS.md is the old diary.**
 
