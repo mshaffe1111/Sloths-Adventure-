@@ -662,8 +662,13 @@ def write_md(rows, counts, dup, bad, missing, conflicts=()):
     L += ['', f'Total rows: **{len(rows)}**. Duplicates dropped: {len(dup)}. Rows failing a check: {len(bad)}.', '']
     if bad: L += ['### Rows failing a check', ''] + [f'- {p} {i}: {w}' for p, i, w in bad[:80]] + ['']
     if conflicts:
-        L += ['### Made things the game shows in World 1 today (the 11-11 rule: the lead\'s call to keep, re-paint natural, or move)', '',
-              '| part | id | used in | status |', '|---|---|---|---|'] + [f"| {r['part']} | {r['id']} | {(r.get('used_in') or '')[:60]} | {(r.get('status') or '')[:110]} |" for r in conflicts] + ['']
+        def ruling(r):
+            i = r['id']
+            if i in ('w1-plank-ledge-a', 'w1-plank-ledge-b', 'w1-plank-ledge-c', 'w1-stump-wide') or 'TrailPost' in i: return 'SWAP (Matt 11-11): replace with natural W1 pieces'
+            if i in ('w1#shut', 'w1#open') or i.startswith('puzzle-kit#') and ('Door' in i or 'Gate' in i) or i.startswith('B4:pickups/'): return 'STAYS (Matt 11-11)'
+            return "Matt's call"
+        L += ['### Made things the game shows in World 1 today (Matt, 11-11: swap the 1-1 planks, the sawn wide stump and the trail post; the gate, puzzle doors and keepsakes stay; the rest are his call)', '',
+              '| part | id | used in | ruling | status |', '|---|---|---|---|---|'] + [f"| {r['part']} | {r['id']} | {(r.get('used_in') or '')[:60]} | {ruling(r)} | {(r.get('status') or '')[:100]} |" for r in conflicts] + ['']
     ingame = lambda r: (r.get('status') or '').lower().startswith('in game')
     for n in WORLD:
         rs = [r for r in rows if n in parse_worlds(r.get('worlds', ''))]

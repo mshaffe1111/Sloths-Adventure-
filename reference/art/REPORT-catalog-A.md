@@ -34,10 +34,12 @@ min(own size, 2 x on screen). A's 349 pieces: 180.8 MB as cut PNGs, 20.6 MB as f
   carved or built; N-02-f, N-05-c squared stone; N-01-d, N-03-c hand-stacked cairns).
 
 ## 6. The merge (A + B1-B4) and what is open
-- Attempt 2 merge against B's first heads: 6,940 rows; the only failures are the 4 heartbloom flowers (src/assets/flora), which B is
-  adding (images covered 899/903). Re-merge waits for B1, B2 and B4's fixed heads.
+- Attempt 2 merge against B1 6a4a6d2d, B2 9c9751e8, B3 040a1561, B4 50640eb5: 9,364 rows, 0 check failures, images under src/assets
+  covered 903/903 (A 363, B1 812, B2 3,531, B3 200, B4 4,458; 83 boss and pokey-jar frames kept once).
 - B2/B4 clashes on the boss atlases and pokey-jar kept once (characters/enemies/UI to B4, set pieces and hazards to B2).
-- Made things the game shows in W1 today are listed for the lead's call (regenerated at the re-merge).
+- The W1 made-things table (26 rows) carries Matt's 11-11 ruling: SWAP 5 (1-1 planks a/b/c, w1-stump-wide, trail post), STAY 10
+  (gate shut/open, two puzzle doors, six keepsakes), Matt's call 11 (hollow log, perch, trunk, wood stump, toucan, fallen log,
+  checkpoint flag x2, jungle sign, rope tile and post).
 - App size: only the in-build saving, as an estimate: 94.1 MB now, about 71.7 MB at ship_px, about 22.4 MB saved (area shares, not
   re-encoded; not-imported and no-stage rows left out).
 - Critic item 3 (ground/w*#fills cite groundPaint.ts:219): those are B2's rows; B2 is re-reading its code-sourced slots.
