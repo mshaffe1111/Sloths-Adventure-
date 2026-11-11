@@ -59,8 +59,8 @@ src/game/levelCheck.ts|132|134|EARLY_DOUBLE
 src/game/easyMode.ts|107|107|doubleAllowed
 src/game/gen2/nodeCode.ts|138|141|V3
 src/game/gen2/pipeline.ts|654|661|checkCode
-src/game/engine.ts|3002|3003|fruit
-src/game/engine.ts|3073|3073|fruit
+src/game/engine.ts|3009|3010|fruit
+src/game/engine.ts|3080|3080|fruit
 src/game/gen2/pipeline.ts|2097|2106|pickup
 src/game/gen2/pipeline.ts|2187|2196|quota.lay
 src/game/vectorArt.ts|1087|1092|fruit|bloom
@@ -70,3 +70,7 @@ tools/engine/seedlist.ts|11|11|buildGen2Stage
 tools/engine/seedlist.ts|34|34|buildGen2Stage
 src/game/gen2/pipeline.ts|2684|2685|unsaid
 src/game/w1CutArt.ts|69|84|plank
+src/game/gen2/pipeline.ts|2531|2540|validateStage
+src/game/stageGenerator.ts|2949|2951|finishReach
+src/game/levelCheck.ts|498|498|doubleAllowed
+src/game/gen2/types.ts|534|550|interface GraphBrief

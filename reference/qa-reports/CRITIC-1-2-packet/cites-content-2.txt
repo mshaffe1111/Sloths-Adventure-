@@ -10,9 +10,9 @@ src/game/gen2/worlds/w1.ts|1415|1462|const JOBS
 src/game/engine.ts|7462|7462|private heartFall
 src/game/stageGenerator.ts|2896|2904|risky
 src/game/gen2/worlds/w1.ts|1517|1527|function w1Finish
-src/game/goals.ts|51|51|flower|leaf
-src/game/engine.ts|3002|3003|fruit
-src/game/engine.ts|3073|3073|fruit
+src/game/goals.ts|57|57|flower|leaf
+src/game/engine.ts|3009|3010|fruit
+src/game/engine.ts|3080|3080|fruit
 src/game/gen2/pipeline.ts|292|292|harvest
 src/game/finds.ts|356|356|findForStage
 src/game/gen2/pipeline.ts|2129|2129|type: 'seed'

@@ -1,1 +1,1 @@
-ctest course, 8 seeds x 2 settings, with EARLY_DOUBLE + 1-2: 6 of 16 differ 
+ctest course, 8 seeds x 2 settings, with EARLY_DOUBLE + 1-2: 6 of 16 differ (seed 1 normal, seed 1 easy, seed 2 normal, seed 2 easy, seed 5 normal, seed 5 easy)
