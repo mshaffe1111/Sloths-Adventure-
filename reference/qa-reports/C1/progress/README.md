@@ -4,3 +4,4 @@
   Not polished. Seen: a mushroom-shaped dressing plant stands in the test gap's backdrop (dressing, not a bouncy mushroom): named for C2.
 - 0930ET (seed 769, the final list on E0a d2748131): x26200 the log chain re-laid inside the single band (single steps up, a catch log
   under each gap; was two 136-140 doubles and two level doubles over open ground). The logs still draw as sawn plank ledges: C2's swap.
+- 1051ET (seed 4106, the locked first run, Normal): x1200 the opening (home banks, no gap in the first 1,300 px); x23300 a rewarded off-path spot, bank-stair-fork's high road (petals on it, a find at its end; the low road below).
