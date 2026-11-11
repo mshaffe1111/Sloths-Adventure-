@@ -297,3 +297,7 @@ re-lay packet (the petals stay LOW on the bark, BRIEF-1-2).
 
 **A new lead is coming** (Matt's decision, relayed by the lead at 5:29 PM ET). Brief it from this file when it messages, then route
 everything to it.
+
+**1-2 bonus blooms (the lead's ruling, 5:36 PM ET; keeper OK with a condition).** Four bonus blooms may sit high on a bough over a cap as
+the explorer's reward. They must be a flower GROWING on the bough, distinct from Meeca's loose pink trail petals, and not the hibiscus.
+A high bloom that reads as her petal breaks "I put it low so you wouldn't have to look up."
