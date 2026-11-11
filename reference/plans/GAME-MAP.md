@@ -28,7 +28,7 @@ long part (about 700 h, section 6).
 | 2 Sunlit Riverbank | **ride**: hop on things that move and let them carry you | 1. nothing stands still (drifting logs, sinking pads, rafts) 2. river lanes going both ways 3. bring the freed animals home; first run back to the LEFT | hurry (the rides don't wait) | The Rapids (raft ride) | Crocus Rex |
 | 3 Mossy Grotto | **hang under** roots and branches (the sloth's own move) | 1. dark: you see only near light 2. quiet: noise wakes things up 3. the first stage that goes DOWN | patience (slow and quiet) | The Cave Slide | Shadow Prowler |
 | 4 Mist Cascades | **leaf glide** | 1. the air moves you (gusts, updrafts) 2. rocks fall on a beat 3. tall stages both ways: climb up, glide down | hurry (keep ahead of the rocks) | Up the Falls (+ Dot's Flight, built) | Sky Sovereign |
-| 5 Orchid Sanctuary | **lead on a vine**: tie freed creatures to you, tie the vine off to a post | 1. the clock: orchids close 2. silk that hums: touch a thread and spiders come 3. don't stop: stand still too long and Pokey sits down | hurry | The Wilted Garden (+ Meeca's stage, built) | Tarantula Queen |
+| 5 Orchid Sanctuary | **lead on a vine**: tie freed creatures to you, tie the vine off to a post | 1. the clock: orchids close 2. silk that hums: touch a thread and spiders come 3. don't stop: stop too long and Pokey goes drowsy and sits (story keeper 11-11) | hurry | The Wilted Garden (+ Meeca's stage, built) | Tarantula Queen |
 | 6 Deep Mangrove | **swim and dive** | 1. the tide raises and lowers the whole stage 2. water is a place, not a pit 3. food chain: lure hunters to what hunts them | patience (wait for the tide) | The Sunken Hollow (dive to find it) | Marsh Reaver |
 | 7 Ancient Ruins | **break and push**: the punch now breaks cracked stone | 1. floors fall away 2. the temple is a machine: switches, timed doors, a find that changes the room 3. alone: no Dot, no help from her | hurry | Under the Ruins (+ Thornbark, built) | Stone Idol Golem |
 | 8 Twilight Treetops | **swing and fling**: let go at the top of the swing to fly | 1. night: you carry your light (the jar) 2. things are there only when lit 3. swing chains with no ground | patience | The Moth Lights | Night-Wing Monarch |
@@ -215,8 +215,8 @@ the first trip down.
 | 3-3 Footprints in a Circle | purge | → | drive off the prowlers | lure a prowler under a loose stalactite and knock it down (1-3's trap, now a lure) | |
 | 3-4 The Sinkhole | ascent | ↑ | climb to the moonlight | sleepy mushrooms puff on a beat as you climb (built: spores, zones.ts) | |
 | 3-5 Sleeping Vines | stealth | → | don't wake them | noise wakes the thorn vines: a loud landing or a punch wakes them; hanging and soft landings don't | noise wakes things |
-| 3-6 Grandma's Things | relic_hunt (5) | → | search the ferns | carry a firefly jar: it lights a small circle around you | |
-| 3-7 Which Fern? | relic_hunt (6) | ← | search more | all ferns look alike; a faint glow trail (Dot's pollen) shows which way she went (new, needs Matt's OK) | |
+| 3-6 Grandma's Things | relic_hunt (5) | → | search the ferns | carry a glowing fungus cap (or follow glowworm light): it lights a small circle around you; no firefly, Flicker at 6-6 is the first (story keeper 11-11) | |
+| 3-7 Which Fern? | relic_hunt (6) | ← | search more | all ferns look alike; crouch by the right fern and it rustles (the script's own clue, STORY-REWRITE:387-395); no pollen trail (story keeper 11-11) | |
 | 3-8 Thorn Vine Swing | vine_runner | → | swing past the thorns | thorn vines pulse on a beat (built: thornVine.ts); swing on the quiet beat | |
 | 3-9 The Prowler's Ring | gauntlet | → | break out | dark + hanging + quiet + prowlers together | |
 
@@ -227,10 +227,10 @@ the first trip down.
   predators that walk to a lure (predatorAI.ts:361), the slide (w7SlideRun.ts). New: hanging under (R-160.1, CAPABILITY puts it at 10-16 h
   plus art); one general light-and-meter piece (4-6 h); noise that wakes sleepers (2-4 h on top of World 1's noisy landings, **my
   judgement**); down stages in gen2 (kit step 4); the slide and Dot's flight moved onto the one engine as modes (10-16 h, CAPABILITY §1);
-  the glow trail (3-5 h, **my judgement**).
+  the rustling fern (1-2 h, **my judgement**; it replaces the glow trail, story keeper 11-11).
 - **Art.** Thin: 183 best-fit pieces, only 38 to stand on and **0 climb pieces** best-fit to World 3. Missing: Pokey hanging (idle, creep,
-  drop), roof roots to hang from, lit rims on every ledge (the dark rule, STAGE-RULES §4), a firefly jar to carry (8-4 has one: B4:w8/pokey-
-  jar), loose stalactites, the slide chute in grotto stone. **The thinnest standing art of any world: Hugging Face first here.**
+  drop), roof roots to hang from, lit rims on every ledge (the dark rule, STAGE-RULES §4), a glowing fungus cap to carry (not a firefly jar: story keeper
+  11-11), loose stalactites, the slide chute in grotto stone. **The thinnest standing art of any world: Hugging Face first here.**
 
 ### World 4, Mist Cascades (Act II, The Cost)
 
@@ -266,12 +266,12 @@ humming silk; don't stop.
 
 | Stage | Mission | Way | Classic job | Twist | Teaches |
 |---|---|---|---|---|---|
-| 5-1 The Loveliest Place | sprint | → | run through | don't stop: stand still about 3 s and Pokey sits down to admire it, and loses time (new, needs Matt's OK) | don't stop |
+| 5-1 The Loveliest Place | sprint | → | run through | don't stop: stop too long and Pokey goes drowsy (yawns, sits); a tap wakes him; it costs seconds, never a heart. It punishes STOPPING, never slowness: no line or sign says slow, late or hurry. The timer pauses while Dot speaks, at story rest points and at flags; Easy's is longer. Taught by Meeca's carving "POKEY. DON'T SIT. M." and Dot's "Rules. Don't sit." (STORY-REWRITE:689) (story keeper 11-11) | don't stop |
 | 5-2 Don't Sit | stealth | → | stay hidden | keep moving AND stay hidden: cover that moves with the breeze | |
 | 5-3 Closing Orchids | harvest | → | gather orchids | the orchids close in waves: a clock you can see on each flower | the clock |
 | 5-4 Silk Bridges | vine_runner | → | swing on the silk | sticky webs slow you (built: zones.ts webs) | |
 | 5-5 Caught in Silk | rescue | → | free the creatures | **the vine leash**: freed creatures tie on behind you; thorns cut the vine and you go back; tie it off to a post while you climb or fight | lead on a vine |
-| 5-6 Where She Ran | relic_hunt | ← | follow her messages | Meeca ran back the way she came: a chase to the LEFT, message to message | |
+| 5-6 Where She Ran | relic_hunt | ← | follow where she ran | the chase goes LEFT (story keeper 11-11); what marks her way (scratched petals, at most one word-mark) is question 9 for Matt | |
 | 5-7 Don't Touch the Silk | stealth | → | keep out of sight | touch a humming thread and the dozing spiders wake (built in gen2 5-7, w5Sections.ts:12): stealth by touch, not sight | humming silk |
 | 5-8 Up the Bloom Trees | ascent | ↑ | climb above the webs | the vine leash on a climb: tie off, climb, untie | |
 | 5-9 The Queen's Garden | gauntlet | → | fight through | the clock + silk + the leash together (5-9 is gen2 today, w5Arena.ts) | |
@@ -299,7 +299,7 @@ place; the food chain (R-165.95, the lead put it in Worlds 5-6).
 | 6-2 Flat Water | stealth | → | stay hidden | ripples show where something swims under; cross when it is far | |
 | 6-3 Root to Root | vine_runner | → | keep swinging | the tide rises and falls: which roots you can reach changes on the beat | the tide |
 | 6-4 Low Tide | sprint | → | cross the mudflats | the tide comes in behind you (built: tide zones) | |
-| 6-5 The Spear | purge | → | chase the hunters out | food chain: lure the hunters to the caiman's water and let it chase them off | food chain |
+| 6-5 The Spear | purge | → | chase the hunters out | food chain: lure the hunters to the caiman's water and it chases them off; never eaten, nothing left behind (story keeper 11-11) | food chain |
 | 6-6 Lights in the Roots | sprint | → | follow the light | Flicker's light in the dark roots (the light rule from World 3) | |
 | 6-7 Through the Roots | vine_runner | ↓ | raise and lower the water | the built room; swim and dive down the root well | swim and dive |
 | 6-8 Stilt Climb | ascent | ↑ | climb out | the tide rises under you (built: risingTide.ts) | |
@@ -355,8 +355,8 @@ swing chains.
 | 8-4 Lantern Run | sprint | → | carry the jar | the built special stage, kept (w8Lantern.ts) | |
 | 8-5 Next Branch | vine_runner | → | branch to branch | swing chains with no ground: fling, catch, fling | |
 | 8-6 Glide by Moonlight | sprint | ↓ | glide tree to tree | glide down through the dark, moonbeams light the landings | |
-| 8-7 The Tallest Tree | ascent | ↑ | climb to see | climb with the jar: its light drains, fireflies refill it | |
-| 8-8 Night Hunters | purge | → | drive them off | food chain at night: lure the hunters into the owl's light | |
+| 8-7 The Tallest Tree | ascent | ↑ | climb to see | climb with the jar: its light drains, glowing flowers refill it (never by catching fireflies) (story keeper 11-11) | |
+| 8-8 Night Hunters | purge | → | drive them off | food chain at night: lure the hunters into the owl's light and it chases them off; never eaten (story keeper 11-11) | |
 | 8-9 Monarch's Wood | gauntlet | → | fight through | dark + fling + lit-only branches | |
 
 - **Hidden stage: The Moth Lights**: lead a swarm of moths through the dark; they light the way, and lose them and it goes dark (reuses
@@ -380,7 +380,7 @@ hot-air ride** (built: glide.ts ventLift; HANDOFF: "hot-air lift in World 9"). *
 | 9-3 Ember Canopy | vine_runner | → | swing over glowing rock | vines smoulder and drop a moment after you fling off them | |
 | 9-4 The Drake's Doorstep | stealth | → | stay out of sight | the Drake's gaze sweeps like the eagle's shadow, and it remembers you ("Intruder.") | |
 | 9-5 Vent Riding | sprint | ↑ | ride the hot air | open the leaf over vents and rise | hot-air ride |
-| 9-6 Ash Fields | purge | → | clear the hunters | break boulders onto them, lure them into the geysers (geysers on a beat, built) | |
+| 9-6 Ash Fields | purge | → | clear the hunters | break boulders in their way, lure them onto the geysers and they are tossed or blown away; never burned, nothing left behind (geysers on a beat, built) (story keeper 11-11) | |
 | 9-7 Lava Steps | ascent | ↑ | climb the steps | crust floors harden and melt on a beat | crust floors |
 | 9-8 Pell's Thread | relic_hunt (4) | → | find the thread | the thread runs through the vents: follow it up and down | |
 | 9-9 The Drake's Hoard | gauntlet | → | fight through | heat + lava + vents together | |
@@ -435,7 +435,7 @@ waits.
 |---|---|---|---|
 | 0 Foundation | 1-1 finishes, 1-2 in build | generator yield up (R-165.120, 4-8 h); kit step 2 travel modes (6-10); kit step 3 verdicts by brief (6-8); kit step 4 gen2 lays up, down and left (8-12); shared brick library across worlds (4-8); help ladder for any stage (4-6); bots for any stage (3-5); one clock wired to the old timers (4-6, **mine**). Steps 2-4 wait for E0a and A2 to merge (ADR-003) | about 51 h |
 | A | World 1 (1-3 to 1-9) | World 1's own pieces first (drop traps, crumble times, root tunnel, noisy landings, shadow, lanes, pursuer, zipline, golden finds), then World 2's: moving platforms, sinking pads, followers + "bring home", out and back, rising water, auto-scroll | +52 (W1) +47 (W2) |
-| B | World 2 | World 3: hanging (R-160.1), the light meter, sleepers that wake, the slide and Dot's flight as modes on the one engine | +38 |
+| B | World 2 | World 3: hanging (R-160.1), the light meter, sleepers that wake, the rustling fern, the slide and Dot's flight as modes on the one engine | +36 |
 | C | World 3 | World 4: glide arcs flown, wind/updraft/rockfall bricks, the rising ride | +15 |
 | D | World 4 | World 5: the vine leash, the goal clock, don't stop, bloom count | +28 |
 | E | World 5 | World 6: water anywhere, currents, diving, predator against predator | +35 |
@@ -466,7 +466,7 @@ the first stage with a new piece goes slower. C1 laid on a finished brick pool, 
 | Foundation | 51 | | | | | | **51** |
 | 1 | 52 | 8 x 8 = 64 | 16 | 3 | 8 | 3 | **146** |
 | 2 | 47 | 72 | 16 | 3 | 8 | 3 | **149** |
-| 3 | 38 | 72 | 16 | 3 | 8 | 3 | **140** |
+| 3 | 36 | 72 | 16 | 3 | 8 | 3 | **138** |
 | 4 | 15 | 7 x 8 + 2 kept set pieces x 4 = 64 | 16 | 3 | 8 | 3 | **109** |
 | 5 | 28 | 72 | 16 | 3 | 8 | 3 | **130** |
 | 6 | 35 | 72 | 16 | 3 | 8 | 3 | **137** |
@@ -544,9 +544,11 @@ Puzzle rooms are hand-made bricks inside generated stages (STAGE-RULES §3: two 
      you played Worlds 1-5 and found them "basically just run and jump" (STAGE-RULES §0); Worlds 6-8 were rebuilt in gen2 later, so
      some stages may already carry their twist. It could save about a quarter of the laying (**my judgement**, not checked yet).
    - (c) Only re-lay the stages whose twist changes.
-5. **World 5's "don't stop" rule (stand still too long and Pokey sits down to admire the view)?**
-   - (a) **Yes, as World 5's hurry rule. Recommended:** it is the story's own joke ("POKEY. DON'T SIT.", stagePlan.ts:80) turned into
-     play; the story keeper checks it first.
+5. **World 5's "don't stop" rule (stop too long and Pokey goes drowsy and sits)?**
+   - (a) **Yes, with the story keeper's four conditions (11-11): costs seconds never a heart; punishes stopping, never slowness, and no
+     line says slow, late or hurry; the timer pauses for Dot, story rest points and flags, longer on Easy; taught by Meeca's carving
+     "POKEY. DON'T SIT. M." and Dot's "Rules. Don't sit." Recommended:** it is the story's own joke (stagePlan.ts:80) turned into play,
+     and the conditions keep it from ever echoing the General's "too slow".
    - (b) No; World 5's clock is only the closing orchids.
 6. **The pick-a-card road (R-165.98): where does it start?**
    - (a) **World 10's hidden stage first, then card totems in later stages if it plays well. Recommended:** it is the riskiest piece in
@@ -564,6 +566,11 @@ Puzzle rooms are hand-made bricks inside generated stages (STAGE-RULES §3: two 
      55 h of engine for pieces only one or two stages use, and every stage still gets its twist.
    - (b) Build them all in the sprint (about 65 h).
    - (c) Go line by line.
+9. **5-6 Where She Ran: how does Meeca mark the way she ran?** (more carved messages would be new story, story keeper 11-11)
+   - (a) **Scratched petals along the way, and at most one word-mark; the story keeper writes any words. Recommended:** the
+     petals are already her trail (World 1's job), so it reads without new story.
+   - (b) Petals only, no words at all.
+   - (c) Carved messages like the stage line says ("Follow where she ran"), written by the story keeper with you.
 
 ---
 
@@ -582,7 +589,7 @@ Puzzle rooms are hand-made bricks inside generated stages (STAGE-RULES §3: two 
   the archetypes (1 shadow, 3 flood, 6 raft, 7 sinking pads, 8 push, 9 bounce chain, 10 rotting boughs, 12 pendulum, 16 hollow, 19 race
   back, 22 sound stealth, 24 zipline). Parked ideas stay parked (mirage platforms, shrink/grow, time-only-when-you-move, mimic forest).
 - **My judgement, not backed by a file:** every hidden stage's idea except Zipline Canopy, Under the Ruins and the Sunken Hollow; the
-  "don't stop" rule; the glow trail; the two-parts-of-the-recipe neighbour rule; hours marked "mine"; the hours for hidden stages,
+  "don't stop" rule (now ruled by the story keeper, with conditions); the two-parts-of-the-recipe neighbour rule; hours marked "mine"; the hours for hidden stages,
   guardian ports, art and review; the wall-clock estimate; "at most two builders a world".
 
 ---
@@ -617,7 +624,7 @@ with a range** (marked G). "Lane" is who can run it at the same time as the othe
 | A8 | Any stage routed through gen2 | the seed-list tool, the first-run lock and routing take any stage id, not a list of two | 4-8 G (1-2's routing alone was 3-5 P) | A5 | Engine 2 | all 86 | 1-2 and one stage of another world |
 | A9 | Generator yield (R-165.120) | fresh-seed clean rate measured per stage, the refusing rules named, raised to a target | 4-8 (roadmap) | A5 | Designer + Engine 2 | all 86 | 1-1 and 1-2 above the target |
 | A10 | Falls and hearts for every stage | soft, deadly and heart-cost falls (1-2's thorn hollow), each with its own look from the world kit; hearts follow risk by world band | 6-10 G (1-2's one fall end was about 4-6 P) | A5 | Engine 2 | all | a soft, a deadly and a thorn fall in two worlds |
-| A11 | Help ladder for any stage | turned on from the brief; "past" read from travel; its step art by world from the inventory | 4-6 C | A3 | Engine 3 | all | 1-1 + a climb + a World 2 stage |
+| A11 | Help ladder for any stage | turned on from the brief; "past" read from travel; its step art by world from the inventory; the speaker per world: Dot, or silent (Dot leaves mid World 6, Flicker never speaks, World 7 is alone; from 6-6 until Dot is back in World 8 the help step grows silently) (story keeper 11-11) | 4-6 C | A3 | Engine 3 | all | 1-1 + a climb + a World 2 stage |
 | A12 | Bots for any stage | seeds per stage, progress by travel | 3-5 C | A3 | Engine 3 | all | the first-timer bot on a climb and a left stage |
 | A13 | One brick library across worlds | bricks picked by the inventory's engine slot; inventory layers for push, break, switch, moving, crosser | 5-10 C | nothing | Engine 3 | all | one brick laid in two worlds' art |
 | A14 | One clock | every timer (zones, rocks, thorn vines, sluices, lifts) reads one clock with a warning phase; Easy never faster | 4-6 G | A2 | Engine 3 | 40+ | the rocks and the tide on the one clock, unchanged |

@@ -29,7 +29,7 @@ Every ruling below cites the file and section where it's written in full.
 | The entered data (the porter's) | engine-core `src/game/gen2/worlds/w1.ts`: sections, JOBS, CONTENT, TERRAIN, VERSION_JOBS, the `easy` twins, W1_KIT (owns, decor, required, graphs) |
 | **The flown numbers (11-09):** reach, bands, touch, help, the flight sim and its saved runs, the Engine packet | `reference/specs/` on t-designer-reach (reach.md, bands.md, touch.md, help.md, sims/flight.ts, sims/out/, packets/ENGINE-flight-test.md) |
 | **The bounce chain (11-11):** flown on 1-2, its bands, the worked lay, the 1-2 build probe, the fork-end check | `reference/specs/chain.md`, `sims/flight.ts` (mode `chain`, `FLIGHT_STAGE`), `sims/chainlay12.ts`, `sims/probe12.ts`, `sims/finds11.ts`, `sims/out/` (branch t-design-1-2) |
-| **The game map (11-11):** all 10 worlds (move ladder, world rules, 9 stages each, hidden stages, guardians), the engine build order, hours, risks, the engine sprint list (§10, then freeze), 8 questions for Matt | `reference/plans/GAME-MAP.md`, method `reference/methods/game-map.md` (branch t-design-game-map) |
+| **The game map (11-11):** all 10 worlds (move ladder, world rules, 9 stages each, hidden stages, guardians), the engine build order, hours, risks, the engine sprint list (§10, then freeze), 9 questions for Matt | `reference/plans/GAME-MAP.md`, method `reference/methods/game-map.md` (branch t-design-game-map) |
 | The engine's real abilities and the stage kit the map is built on | `reference/architecture/CAPABILITY.md` (t-architect-capability), `ADR-003-stage-kit.md` (t-architect-stagekit) |
 | The designer's own working notes | `reference/engine/DESIGNER-NOTES.md` |
 
@@ -112,9 +112,9 @@ Every ruling below cites the file and section where it's written in full.
 ## 4. Open items (none of these is finished; check each before assuming)
 
 - **The game map (11-11, R-165.111 step 2):**
-  - it is a DRAFT with Matt; nothing is built from it until he answers §8's eight questions (1-8 lanes or chase; hanging in W3 or
+  - it is a DRAFT with Matt; nothing is built from it until he answers §8's nine questions (1-8 lanes or chase; hanging in W3 or
     W1; followers then the vine; how much of W2-10 to re-lay; W5 "don't stop"; where the card pick starts; lay W1 during the sprint
-    or after; cut the one-or-two-stage pieces). After each answer: edit the worlds it touches, re-run §3's ladder and freshness
+    or after; cut the one-or-two-stage pieces; how Meeca marks 5-6). The story keeper's six calls of 11-11 are folded in (marked "story keeper 11-11"). After each answer: edit the worlds it touches, re-run §3's ladder and freshness
     tables, re-total §6 and §10 (method file "Updating the map");
   - the likely next ask (the new lead may make it): turn §10 into the engine plan (packets per line, each "works for any stage,
     proven on N", D43) and each world's section into a world packet;
