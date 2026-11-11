@@ -226,8 +226,9 @@ const gStones = (heights: number[], share: [number, number] = [0.55, 0.68], dbl 
 /** mushroomCache (protoStage.ts:1143 on main): a mushroom on the floor, a bough DOUBLE_RISE + 70 up, 4 petals on it */
 const gCache = (): G => (k, after) => {
   const f = floor(`${k}f`, [640, 760], startOr(after));
-  const b = bough(`${k}b`, f.key, [0.2, 0.26], [-(Math.round(DOUBLE_RISE) + 70), -(Math.round(DOUBLE_RISE) + 70)], [270, 270]);
-  return { pieces: [f, mushroom(`${k}m`, f.key, [0.25, 0.3]), b], sockets: [petals(`${k}p`, b.key, [0.2, 0.8], 4, 190)], last: f.key };
+  // (C1: the mushroom's edge 23-52 px short of the bough's near end, bands.md §4's 20-60: the bounce gives the rise, a lip's place)
+  const b = bough(`${k}b`, f.key, [0.22, 0.22], [-(Math.round(DOUBLE_RISE) + 70), -(Math.round(DOUBLE_RISE) + 70)], [270, 270]);
+  return { pieces: [f, mushroom(`${k}m`, f.key, [0.065, 0.085]), b], sockets: [petals(`${k}p`, b.key, [0.2, 0.8], 4, 190)], last: f.key };
 };
 /** the soft gaps a plain jump crosses, each wider (old 1-1 Learn: one x 0.35 / 0.45 / 0.55; gen2's share is of the gap allowed) */
 const gSoftGaps = (): G => (k, after) => {
@@ -531,7 +532,9 @@ const gLogRoad = (n: number, ends: boolean, hops = false, withFind = false, post
 /** a perched mushroom: a stump on `on`, the mushroom on the stump (the perch rule, Q2). Under 50 px (FR9b's perch exception, the
  *  designer 11-06): no wall, the step help lifts him onto it and the mushroom; at 50-56 its face was a step he could only bounce off from
  *  (plainWalk's one-jump steps, 1-1 seeds 1 and 3) */
-const perch = (k: string, on: string, at: R2): W1Piece[] => [stumpL(`${k}st`, on, at, [40, 46]), mushroom(`${k}m`, `${k}st`, [0.4, 0.6])];
+const perch = (k: string, on: string, at: R2): W1Piece[] => [stumpL(`${k}st`, on, at, [40, 46]), mushroom(`${k}m`, `${k}st`, [0.5, 0.5])];
+/** (C1) the `at` over a perch's stump (154-220 wide, the mushroom at its middle) where a bough starts 25-51 px past the mushroom's edge */
+const PAST_PERCH: R2 = [0.88, 0.9];
 
 /** #1 */
 const stumpStile = section({
@@ -603,9 +606,9 @@ const fallenTrunk = section({
   versions: [false, true].map((m) => ({ id: m ? 'mushroom' : 'double', groups: [gRest([160, 200]), times(3, (k, after) => {
     const f = floor(`${k}f`, [820, 900], startOr(after));
     // (C1: the trunk's top in the D band (Normal 136-140; Easy's cap 132), and no stump before it: flat floor up to its face, the stair's room)
-    const T: W1Piece = { key: `${k}T`, shape: 'block', w: [220, 260], place: { kind: 'on', on: f.key, at: [0.5, 0.55], h: [137, 140] }, style: 'log', landing: true };
+    const T: W1Piece = { key: `${k}T`, shape: 'block', w: [220, 260], place: { kind: 'on', on: f.key, at: [0.52, 0.53], h: [137, 140] }, style: 'log', landing: true };
     const lo = [stump(`${k}l1`, f.key, [0.9, 0.92], [34, 40], [120, 140])];
-    return { pieces: [f, ...(m ? [mushroom(`${k}m`, f.key, [0.28, 0.32])] : []), T, ...lo], sockets: [petals(`${k}pt`, T.key, [0.3, 0.7], 2), ...lo.map((q) => petals(`p-${q.key}`, q.key, 0.5, 1))], last: f.key };
+    return { pieces: [f, ...(m ? [mushroom(`${k}m`, f.key, [0.265, 0.275])] : []), T, ...lo], sockets: [petals(`${k}pt`, T.key, [0.3, 0.7], 2), ...lo.map((q) => petals(`p-${q.key}`, q.key, 0.5, 1))], last: f.key };
   }), gRest([200, 260])] })),
   feel: ['1-1', '1-3'], not: NOT_11, rating: 5,
   source: 'W1-NEW-SECTIONS #7: a fallen log too tall for one jump, a double over it or a mushroom beside it (LEDGER-ENGINE-GEMINI:479)',
@@ -927,7 +930,7 @@ const seedPerch = section({
   versions: [{ id: 'perch', groups: [gRest([200, 240]), (k, after) => {
     const f = floor(`${k}f`, [640, 720], startOr(after));
     // (Round 11: the seed's perch is a log, floating: Matt's rule, walked-on logs may float)
-    const b: W1Piece = { ...bough(`${k}b`, `${k}st`, [0.2, 0.4], [-(Math.round(DOUBLE_RISE) + 50), -(Math.round(DOUBLE_RISE) + 50)], [200, 240]), style: 'log' };
+    const b: W1Piece = { ...bough(`${k}b`, `${k}st`, PAST_PERCH, [-(Math.round(DOUBLE_RISE) + 50), -(Math.round(DOUBLE_RISE) + 50)], [200, 240]), style: 'log' };
     // (FR9b: a 50-56 px stump on the floor past the perch, a wall he hops: the perch itself is under 50, no beat, and the floor ran 4-5.6 s quiet)
     return { pieces: [f, ...perch(k, f.key, [0.3, 0.35]), b, stumpL(`${k}w`, f.key, [0.74, 0.8], [50, 56])], sockets: [{ id: 'seed', role: 'find', on: b.key, t: 0.5, dn: 70 }], last: f.key };
   }, gStile([40, 76, 100, 76, 40])] },
@@ -936,7 +939,7 @@ const seedPerch = section({
   { id: 'low', groups: [gRest([200, 240]), (k, after) => {
     const c1 = bankW(`${k}c1`, after!, [-78, -62], [260, 320]), c2 = bankW(`${k}c2`, c1.key, [-78, -62], [640, 720]);
     // (Round 11: the seed's perch is a log, floating: Matt's rule, walked-on logs may float)
-    const b: W1Piece = { ...bough(`${k}b`, `${k}st`, [0.2, 0.4], [-(Math.round(DOUBLE_RISE) + 50), -(Math.round(DOUBLE_RISE) + 50)], [200, 240]), style: 'log' };
+    const b: W1Piece = { ...bough(`${k}b`, `${k}st`, PAST_PERCH, [-(Math.round(DOUBLE_RISE) + 50), -(Math.round(DOUBLE_RISE) + 50)], [200, 240]), style: 'log' };
     const n1 = bankW(`${k}n1`, c2.key, [62, 78], [260, 320]), n2 = bankW(`${k}n2`, n1.key, [62, 78], [360, 420]);
     return { pieces: [c1, c2, ...perch(k, c2.key, [0.3, 0.35]), b, stumpL(`${k}w`, c2.key, [0.74, 0.8], [50, 56]), n1, n2, stumpL(`${k}w2`, n2.key, [0.45, 0.55], [50, 56])], sockets: [{ id: 'seed', role: 'find', on: b.key, t: 0.5, dn: 70 }, petals(`${k}p`, c1.key, [0.3, 0.6], 1)], last: n2.key };
   }, gStile([40, 76, 40])] }],
@@ -1314,6 +1317,9 @@ for (const q of [w59, w63, w65]) q.feel = ['1-5'];
 // (C1: out of 1-1 too, their climbs thin logs floating over open ground (the testers' raised pieces, R-165.72): #41 and its back, #61 and
 //  its level)
 for (const q of [logStairTest, w41back, w61, w61level]) q.feel = ['1-5'];
+// (C1: out of 1-1, the help's room (w1.relay.test (b), (c)): the two mushroom chains put him back on the bough past the mushroom after a
+//  miss in the chain; #37's and #38's and #48's high roads start a thin log 118-184 px over a gap or a stump, where no stair fits)
+for (const q of [mushroomChain, mushroomChainBack, twinMushroomFork, stairFork, w48]) q.feel = ['1-5'];
 const ROUND6 = [canopyRungsLevel, w40back, w41back, w49back, mushroomChainBack, w61level, w66, w67, w63, w64, w65];
 /** #68 (Round 7 (c), arrive): the home banks, flat, no ground end in the first 1,300 px (STAGE-RULES:161), one 50 px stump about 900 px
  *  in (FR9: no plain floor over 4 s), the squirrels and Dot's run line at its start; a third arrival now the meadow is a rest only */
