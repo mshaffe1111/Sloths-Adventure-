@@ -59,6 +59,11 @@
    "role": "Critic",
    "task": "building the child, middle and expert bots from the saved tester numbers (packet passed)",
    "status": "working"
+  },
+  {
+   "role": "Critic",
+   "task": "checking the plan to make room in the main code file (R-165.103)",
+   "status": "working"
   }
  ],
  "columns": [
