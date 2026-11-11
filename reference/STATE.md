@@ -219,7 +219,8 @@ unspoken).
 Story keeper's answers, 11-07 evening (STORY-KEEPER.md updated in commit 948f8931 on ccr-0d59a91c-oy3imz; read only, never build from it):
 - #8 decided: `lesson.bounce` teaches the bounce, no hint.1-1.bounce row. Content's 1-1 packet done-item: the card fires at gen2 1-1's
   FIRST mushroom.
-- R-165.57 words (lead approves, conditional): pad jump "Press Jump" / "Tap the Jump button to leap."; pad nice "Nice jump!" / "In the
+- R-165.57 SETTLED 11-11: the condition below came out "hold" (touch.md: a tapped pad jump is a 61.7 px hop); nice line = "In the air,
+  hold Jump again for a double jump." (story keeper, STORY-KEEPER §9). Earlier: R-165.57 words (lead approves, conditional): pad jump "Press Jump" / "Tap the Jump button to leap."; pad nice "Nice jump!" / "In the
   air, tap Jump again for a double jump."; run unchanged. Condition, in the Engine/Critic packet: a pad player TAPPING twice clears the
   double-teach gap (195-205 px) in the real engine; if not, the nice line says "press and hold Jump again".
 - #3: the story keeper fixes the Cast Bible (Dot is she, Grandpa's timeline) to match the approved VOICE.md: lead OK'd.
