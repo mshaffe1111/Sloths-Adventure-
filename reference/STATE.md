@@ -202,6 +202,10 @@
   late lift-off re-arms every frame (KID/ADULT never let go of the steer): fixed for tier bots only; KID/ADULT re-baseline needs its own
   packet. Audit Critic session_01FhBbYN7pL1PmUjQTbk71Mq. Lead looked at middle-v3-stuck: a 70 px step onto a pillar over a drop (today's 1-1).
 - 11-11 6:37 AM ET: R-165.103 packet PASSED (packet Critic session_01FhBbYJx6qkpV41atjXeT1K, two rounds; vendor split first, proven on main to 3,944,490 B); Engine dispatched, branch t-engine-chunks.
+- 11-11 6:41 AM ET: BOTS REJECT (Critic session_01FhBbYN7pL1PmUjQTbk71Mq): 3 rescue misses (lead does not accept them: fix), bounceBack's
+  60 px y-window causes the A1 loops (a bot limit, not the stage), REPORT says no per-piece seconds (false), KID/ADULT bug overstated
+  (they let go 8-17 frames late), pin not in CI. Attempt 2 sent. FOR C1: A1's put-back spot can land PAST the mushroom he needs
+  (w1-mushroom-chain area, x29758): the re-lay must put back before the help a piece needs.
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,
