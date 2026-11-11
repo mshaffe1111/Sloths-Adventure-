@@ -3,6 +3,12 @@
 Last task: R-165.85 (cut only), Matt's 15 sheets of 11-09, by the Content member on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
 
+## 0c. Hugging Face picture list 1 (R-165.100): done, $2.04 of the $6.50 cap
+- 18 pieces at about 2000 px in `src/assets/w1-1111c/` (HF1-*); catalogue `reference/art-incoming/hf-list1/`. Specs and scripts:
+  `tools/art/hflist1/` (starts.py, make_specs.py, wrapfix.py, catalog.py). Starts live in reference/ (tools/ ignores pictures).
+- Strips tile (wrap colour difference 0.9-2.5); the native pass alone did not, wrapfix.py's cross-fade does.
+- Still angled: the stairs and the palisade (a side-on start is needed). Every job is in reference/art/HF-SPEND.md.
+
 ## 0b. Matt's 11-11b sheets (fourth batch, from the lead's prompts): cut, not placed
 - 45 kept in `src/assets/w1-1111b/`, none rejected; catalogue `reference/art-incoming/matt-2026-11-11b/cut/`. 1024 px sheets (no 600 px floor).
 - Soft art on magenta (mist, steam, waterfall, glow): `softfix.py` unmixes it as an overlay; `waterfix.py`, `pitfix.py` fix leftover hue.
