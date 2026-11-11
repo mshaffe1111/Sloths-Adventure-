@@ -47,6 +47,7 @@ a memory compression. If it's older than the last decision in STATE.md, rewrite 
   The lead tells him each trigger at once (D34 and D35 were told in the lead's chat replies of 11-07 and 11-09, which no file holds; the 11-09 compression: told 11-09 about 2:15 PM ET, no answer yet).
 - Who the game is for (11-07, R-165.71): "This isn't supposed to be a kid game." Normal is for 12 and up, hard enough for adults;
   Easy is for children. Per-setting rulings are in STATE.md.
+- **Every art piece gets a world fit (Matt, 11-11 3:11 AM ET, a standing rule for all art going forward): "you need to determine where they work the best. Some of these may work in multiple worlds... That's universal for all art going forward."** Every cut piece, from any batch, is tagged with every world it fits, best first, each with a one-line reason by material and mood, and each catalogue carries a "By world" section. Batches already cut without it are re-tagged.
 - Mock-ups (11-08, same source): new art goes to him as one mock-up sheet for a yes or no, not quiz sheets.
 
 ## The backup lead
