@@ -1,4 +1,4 @@
-# Designer report: the 1-2 packets (R-165.11), attempt 5, 2026-11-11 5:24 PM ET, branch t-design-1-2, cites at t-int-1-1@53bd446a
+# Designer report: the 1-2 packets (R-165.11), attempt 6, 2026-11-11 5:32 PM ET, branch t-design-1-2, cites at t-int-1-1@53bd446a
 **Method used:** reference/methods/dispatch-packet.md; C1's packet as the shape; the packet Critic's method update applied (the
 probe runs the packet's OWN brief and prints each job's dealt types against the sections that answer them).
 **Lessons applied:** D19 (the built stage, not sockets), D25 (time from C1's measured history, as a range), D32 (tool flags from
@@ -13,7 +13,7 @@ arg parsing), D37 (every engine claim run: supply12, chainlay12, finds11), D40 (
 | The same on today's engine, for the record | `npx tsx reference/specs/sims/supply12.ts 60` | most seeds throw or swap: sims/out/supply12-today.txt |
 | Stage brief, graphs, sections, thorny floor, petals, Easy, bots, stills, gates, done-items, what is shared | CONTENT-1-2-relay.md | 53 sections: 11 reused, 17 own, 25 new; 10 done-items by phase |
 | The Engine packet | ENGINE-1-2-routing.md | items 1-7 in two pushes (item 0 struck: the follow-up round's), each with file:line, a done-test and its gates |
-| The Critic's one attempt-3 line (the hop step, 13 a roll) and the lead's ruling of 5:10 PM ET | CONTENT rule 3, the 14 rhythms, done-item 1; notes §1, §3, §9 | no two `N` side by side; a drop `J` or the kit's `Y` between beats; flown: `J N J N` over 4 s on 0 of 52, a drop between steps up 0 of 50 (`quiet12.ts`, 11 ways down); counted: median 4 / 2 / 4, max 6, 0 of 360 rolls over 6 (`ncount12.ts`) |
+| The Critic's one attempt-3 line (the hop step, 13 a roll) and the lead's ruling of 5:10 PM ET | CONTENT rule 3, the 14 rhythms, done-item 1; notes §1, §3, §9 | no two `N` side by side; a drop `J` or the kit's `Y` between beats; flown: `J N J N` over 4 s on 0 of 52, a drop between steps up 1 of 47, 4.2 s (`quiet12.ts`, 11 ways down, the full run as printed); counted: median 4 / 2 / 4, max 6, 0 of 360 rolls over 6 (`ncount12.ts`) |
 | The Critic's two ENGINE notes; the lead's standing rule D43 (5:24 PM ET) | ENGINE attempt 5 | item 5: pipeline.ts:193 and ctest12.ts `--record` / `--check`; every item for any stage from data, proven on 1-2, each with an "Any stage" proof; a grep check per push; CONTENT names its three data rows |
 | The lead's rulings of 4:58 PM ET | both packets, attempt 4 | item 0 struck; yield floor 1 in 50; a quiet test per section (done-item 2b); the rest already met at 89005905 |
 ## 2. Polish check
@@ -35,7 +35,8 @@ No screens (packets). Tables checked for broken code spans; times from `date`; e
   bounce combine to 1-1 or the graph is dropped and named. It belongs with R-165.120 (the yield).
 - **DESIGNER help.md §5** (failures counted through a lost life, one system with assist.ts) before 1-2 reaches testers.
 ## 5. Unresolved
-- Nothing is open with the lead (4:58 and 5:10 PM ET rulings applied). Both packets at attempt 5 are with the packet Critic (ENGINE had passed at attempt 4; D43 reopened it).
+- Nothing is open with the lead (4:58 and 5:10 PM ET rulings applied). CONTENT attempt 6 (the Critic's two attempt-5 lines: 32 sections named never mirrored, with a test; one quiet row corrected to
+  the full run's print) and ENGINE attempt 5 (D43) are with the packet Critic.
 - The ruling's `Y`, `F` and a drop are no beat to the inspector (flown): each is laid between two beats, never last. The first
   mix I flew (`J N J Y`, a jump-down drop) broke the quiet line on 23 of 51 rolls and is not in the packet.
 - Thin supply cells are named in notes §8: eight job-and-type cells hold one section each (the three test cells hold two).
@@ -54,6 +55,6 @@ No screens (packets). Tables checked for broken code spans; times from `date`; e
 reference/handoffs/designer.md rewritten in this commit.
 ## Benchmark (the Designer's part)
 Attempt 1: about 3:28 PM to 3:51 PM ET (packet), 3:53 to 3:59 PM (Engine packet). Critic's audit back 4:25 PM. Attempt 2: 4:26 PM
-to 4:47 PM. The Critic's second audit back 4:57 PM. Attempt 3: to 5:03 PM, attempt 4 to 5:05 PM. The third audit back 5:10 PM. Attempt 5: to 2026-11-11 5:24 PM ET.
-Three review rounds. What would have saved the first: running the packet's own brief before writing the pool; the second:
-checking each run-out against the quiet line; the third: counting each new beat per roll against STAGE-RULES §0 rule 3.
+to 4:47 PM. The Critic's second audit back 4:57 PM. Attempt 3: to 5:03 PM, attempt 4 to 5:05 PM. The third audit back 5:10 PM. Attempt 5: to 5:24 PM (D43 to 5:30). The fourth audit back 5:31 PM. Attempt 6: to 2026-11-11 5:32 PM ET.
+Four review rounds. What would have saved the first: running the packet's own brief before writing the pool; the second:
+checking each run-out against the quiet line; the third: counting each new beat per roll; the fourth: asking what each section is mirrored.

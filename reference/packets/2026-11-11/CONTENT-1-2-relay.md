@@ -1,7 +1,7 @@
 # TASK 1-2 (R-165.11: build stage 1-2, The Petal Trail, on gen2, the way 1-1 was re-laid)   to: Content
 # model: the content tier (tools/team/models.json on the lead's branch)   effort: high   due: see "Time"; a safe-keeping push at least hourly
 Written by the Designer, 2026-11-11 5:03 PM ET; attempt 3: after the packet Critic's 14 lines (t-critic-1-2-packet@51fe547a), the lead's
-rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Attempt 4, 5:05 PM ET: the lead's rulings of 4:58 PM ET applied exactly. Attempt 5, 2026-11-11 5:24 PM ET: the lead's ruling of 5:10 PM ET on the Critic's one attempt-3 line (the hop step, @5d73c0da); 2026-11-11 5:30 PM ET: three data rows named for D43 ("Phases" 2, "Help"). Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
+rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Attempt 4, 5:05 PM ET: the lead's rulings of 4:58 PM ET applied exactly. Attempt 5, 2026-11-11 5:24 PM ET: the lead's ruling of 5:10 PM ET on the Critic's one attempt-3 line (the hop step, @5d73c0da); 2026-11-11 5:30 PM ET: three data rows named for D43 ("Phases" 2, "Help"). Attempt 6, 2026-11-11 5:32 PM ET: the Critic's two attempt-5 lines (@fee80d5c; the lead 5:31 PM ET): rule 7, never mirrored, and one quiet row as printed. Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
 
 ## First, before any tool call
 `git fetch origin ccr-ca657d3c-n09zty t-design-1-2 t-designer-reach t-engine-inventory art-director` and the head the lead names.
@@ -67,7 +67,16 @@ and no pickup, and the seed list refuses a quiet stretch over 4 s (seedList.ts:2
 lead's rule, 11-11), and the rhythms below hold a stricter line: no two in a row, and a bare `n` only where the next beat is a
 jump or a mushroom. (4) No own or new section carries a `hint.1-1.*`,
 `coach.*`, squirrel or bootprint socket. (5) Petals sit LOW and on the main road. (6) Every own and new id is added to `JOBS`,
-`CONTENT` and `TERRAIN` (w1.ts:1415-1462). Supply by job and type, as rolled: notes §8.
+`CONTENT` and `TERRAIN` (w1.ts:1415-1462). Supply by job and type, as rolled: notes §8. (7) NEVER MIRRORED (the Critic's
+attempt-5 line, the lead 11-11 5:31 PM ET): the pipeline flips a section on about half its lays (pipeline.ts:1445-1450) and
+`section()` makes every section mirrorable (w1.ts:332); flipped, a drop is a 130-140 px rise and a chain's floor mushroom is at
+its far end (the Critic's mirror12.ts: the chain flipped on 58 of 120 rolls, the note hollow on 62 of 119). Every own and new
+section that has a direction is `mirrorable = false`, set as w1.ts:1394-1400 sets 1-1's: every one with a chain, a floor
+mushroom before a gap or lip, `J`, `Y`, widths or gaps in a set order, a fork whose high road starts from a low piece, a tip on
+its `in`, or an exit totem. BY NAME (32 of the 42): own: w1-mushroom-fork-12, w1-root-stair-fork-12, w1-two-lifts-12, w1-one-lift-12,
+w1-stair-test-12, w1-bank-wall-12, w1-wide-dip-12, w1-bounce-wall-12, w1-mushroom-log-12, w1-drop-bounce-12, w1-dip-bounce-12,
+w1-two-answers-12; new: N1-N6, N8, N10-N16, N20-N25. The 10 that stay mirrorable have no direction: w1-knot-bank-12, the four own
+rests, N7, N9, N17, N18, N19.
 
 **Tag edits on existing sections (the only edits to them):** `'1-2'` comes OFF w1-meadow (it is also an arrival, w1.ts:1418: it
 opened 23 of 63 rolls with no `hint.1-2.follow`), OFF w1-knot-bank (it carries `hint.1-1.bank`) and OFF w1-log-road (floating).
@@ -82,7 +91,7 @@ w1-floor-dash (F/M g), w1-bank-stair-fork (F c).
 `J`, the drop: a ledge 130-140 px lower and 180-220 px wide, placed by `walk` with no gap (he walks off the lip and lands on it;
 a double climbs back up, 207 px or more against it, chain.md §1), one petal on it. One drop pays back two steps.
 Flown in the kit against the quiet line (`FLOWN=1 npx tsx reference/specs/sims/quiet12.ts 120`, saved in sims/out/quiet12.txt),
-worst quiet stretch over 4 s: `J N J N` on 0 rolls of 52 (3.7 s at most); a drop between two steps up (`J N c J c N`) 0 of 50; a
+worst quiet stretch over 4 s: `J N J N` on 0 rolls of 52 (3.7 s at most); a drop between two steps up (`J N c J c N`) 1 of 47 (4.2 s); a
 drop after a hop wall (`J N H J N`) 0 of 46; `J N Y N` 1 of 47 (4.3 s). What fails, so no rhythm holds it: a silent piece last
 (`J N J Y` 23 of 51, `N J N J` 1 of 48), two silent pieces side by side (`N J Y J` 48 of 53), a drop across a gap (read as no beat
 and 100 px longer), six bare `n` (50 of 50). Hop steps a roll as written (`npx tsx reference/specs/sims/ncount12.ts 120`, the MOST
@@ -242,7 +251,8 @@ The thorn floor's look goes to Matt on Engine's still. Keep building while they 
    bootprint socket, or a `tip` whose id has no row; none of yours adds a made thing; no own or new version lays two bare `n` in a row, two `N` side by side, two of `J` / `Y` / `F`
    side by side or one of them as its last piece; and THE CEILING (the lead, 11-11 5:10 PM ET): no roll holds more than 6 `N`,
    counted on the LAID pieces of every roll the yield run builds, all three graphs (as written:
-   `npx tsx reference/specs/sims/ncount12.ts 120`, 0 of 360 over 6; exit 1 on a breach).
+   `npx tsx reference/specs/sims/ncount12.ts 120`, 0 of 360 over 6; exit 1 on a breach). And rule 7: each of the 32 named
+   sections has `mirrorable === false`, and on every roll the yield run builds `gen2.plan[].mirrored` is false for each of them.
 2b. [1] The quiet line, per section (the lead, 11-11 4:58 PM ET): every own and new section, laid in the kit as
    reference/specs/sims/quiet12.ts lays its probes (your copy, your real sections, `FLOWN=1` until Engine's push 2), has a worst
    quiet stretch touching it of 4 s or less on 9 rolls in 10 that lay it; the table printed, one row a section. The same run on
@@ -301,7 +311,8 @@ Branch t-content-1-2 from the named head, pushed (`git ls-remote` equals HEAD) a
 lead (the session id on line 1 of reference/handoffs/lead.md) at the end of each phase, 8 lines or fewer. A blocker or a wrong
 frozen input: PUSHBACK.md on the branch and one message, then stop.
 ## Attempt
-5 (attempt 1 REJECTED at f60e6503, 14 lines; attempt 2 at 35364c97: all 14 closed, 1 new line, the quiet line; attempt 3 at
+6 (attempt 1 REJECTED at f60e6503, 14 lines; attempt 2 at 35364c97: all 14 closed, 1 new line, the quiet line; attempt 3 at
 89005905 met it; attempt 4 at 7ed328b6 applied the lead's rulings of 4:58 PM ET: the yield floor 1 in 50, a quiet test per section;
-1 line left, the hop step written 3-6 times in a row; attempt 5 applies the lead's ruling of 5:10 PM ET: a mixed way down, flown.
+1 line left, the hop step written 3-6 times in a row; attempt 5 at 3864e805 applied the lead's ruling of 5:10 PM ET, a mixed way down, flown: that line closed, 1 new line (mirrored) and
+1 number; attempt 6 applies both exactly: rule 7 and its test, and the quiet row as the full run prints it.
 Each line is answered in DESIGN-1-2-notes.md §9)
