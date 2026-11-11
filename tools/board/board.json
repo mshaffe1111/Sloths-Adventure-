@@ -37,8 +37,8 @@
   },
   {
    "role": "Engine",
-   "task": "stage safety checks (E0a): Critic found 3 rules too strict; attempt 2 fixing",
-   "status": "working"
+   "task": "stage safety checks (E0a) attempt 2 built; Critic re-checking (one refusal still unexplained)",
+   "status": "reported"
   },
   {
    "role": "Engine",
@@ -57,8 +57,8 @@
   },
   {
    "role": "Critic",
-   "task": "building the child, middle and expert bots from the saved tester numbers (packet passed)",
-   "status": "working"
+   "task": "tier bots built (match real testers on most measures; 3 rescue misses named); Critic checking",
+   "status": "reported"
   },
   {
    "role": "Critic",

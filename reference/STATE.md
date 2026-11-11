@@ -193,6 +193,14 @@
 - 11-11 6:26 AM ET: A2 REJECT on 2ad78d57 (the lead's CHECK): Dot says the step line / Normal offers a step where nothing can grow
   (861/1,874 Easy and 442/1,885 Normal pieces). Stairs blocker fixed (chain-back and hop-bounce pass after steps); faces over 60 down
   1,288 -> 8, one rock sunk 63 px; suite 2512/0. Attempt 4 sent: no line/offer when stepBoxes is empty; zero faces over 60, zero sunk.
+- 11-11 6:30 AM ET: E0a attempt 2 in (t-engine-e0a@cf0b7752): 4 fixes, verdicts 25/25, headroom refusals 39 -> 0; floor.unmarked still
+  113 (cause unknown), new block.spare-thin 52, drop.untyped 34; main chunk 4,179,880 B. Delta to its Critic. petalPass.ts:32/44 also
+  validates without arcs (same pickup-drop risk) - for C1/E0b.
+- 11-11 6:30 AM ET: tier bots built (t-bots-tiers@164e4cf8): middle Normal and child Normal pass all; expert Normal and middle Easy pass
+  every measure but miss on rescues (1 and 2), named, tolerance untouched. On A1: Normal lives 0 in 120 runs; put-backs/run expert 0.33,
+  middle 1.83, child 4.03; middle Normal loops 8-10 put-backs at mushroom-chain, chain-back, log-chain-rise (for C1). Found: FirstTimer's
+  late lift-off re-arms every frame (KID/ADULT never let go of the steer): fixed for tier bots only; KID/ADULT re-baseline needs its own
+  packet. Audit Critic session_01FhBbYN7pL1PmUjQTbk71Mq. Lead looked at middle-v3-stuck: a 70 px step onto a pillar over a drop (today's 1-1).
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,
