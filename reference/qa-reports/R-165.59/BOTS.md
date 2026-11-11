@@ -103,10 +103,64 @@ and faster only at w1-hop-bounce (17.5 vs 22.1 s) and w1-twin-mushroom-fork (20.
 The two don't add up the same way: the profiles' piece seconds are slices between the game's section lines, and 26 of the tier's 53
 pieces have fewer than 5 runs, so they are not in this table. A limit: gapShare fits the bot's whole-stage time, not each piece's.
 
-## The same bots on A1 (t-engine-putback@41c2e248, my two tools/inspect files copied into a worktree), variants 1-40
-`calibration-a1.jsonl`. Normal lives a run: **0 for every tier** (0 in 120 Normal runs). Put-backs a run: expert 0.6, middle Normal
-1.53, middle Easy 1.48, child Normal 3.8. Rescues: expert 0, middle Normal 0, middle Easy 0, child 8. All 160 runs finished. No middle or
-expert run has 5+ put-backs in one piece (the child has 10 at w1-canopy-rungs-level in v10 and v22).
+## A1 baseline: today's 1-1 on t-engine-putback@41c2e248, the final bots, all tiers on both settings, variants 1-40
+`calibration-a1.jsonl` (one line a run, per-piece lives, put-backs and seconds; each tier's table at its end). Run from a worktree of
+41c2e248 with my two tools/inspect files copied in. **The 1-1 re-lay is judged against this file.** Expert has no Easy bot: the expert
+testers played Normal only (0 Easy runs), so there is no profile to build one from.
+
+| tier setting | runs/finished | finish p50 s | finish min s | lives (all runs) | put-backs/run | rescues |
+|---|---|---|---|---|---|---|
+| expert Normal | 40/40 | 172.5 | 152.9 | 0 | 0.6 | 0 |
+| middle Easy | 40/40 | 196.2 | 169.4 | 0 | 1.48 | 0 |
+| middle Normal | 40/40 | 204.8 | 172 | 0 | 1.53 | 0 |
+| child Normal | 40/40 | 427.6 | 365.6 | 0 | 3.8 | 8 |
+| child Easy | 40/40 | 301.4 | 280.9 | 0 | 3.1 | 1 |
+
+Per piece: put-backs a run over the runs that entered it (runs in brackets), and rescues (R) at a stuck spot in that piece; only pieces
+with a put-back or rescue in some row (every other piece is 0 in every row). Child Easy's 1 rescue is a put-past after 8 tries at one
+spot, not a stuck spot, so it has no piece here.
+
+| piece | expert N | middle E | middle N | child N | child E |
+|---|---|---|---|---|---|
+| w1-canopy-drop | 0 (2) | 0 (2) | 0 (2) | 0.5 (2) | 0 (2) |
+| w1-canopy-rungs | 0 (1) | 0 (1) | 0 (1) | 2 (1) | 9 (1) |
+| w1-canopy-rungs-level | 0.22 (18) | 1 (18) | 0.67 (18) | 3.67 (18) | 1.28 (18) |
+| w1-dip-double-teach | 0.11 (19) | 0.42 (19) | 0.37 (19) | 0.79 (19) | 0.58 (19) |
+| w1-double-teach | 0.1 (20) | 0.75 (20) | 0.55 (20) | 1.15 (20) | 2.65 (20) |
+| w1-fallen-trunk | 0 (2) | 0 (2) | 0 (2) | 0 (2), 2R | 0 (2) |
+| w1-high-walk-up | 0 (4) | 0 (4) | 0 (4) | 0.25 (4) | 0 (4) |
+| w1-hollow-twoway | 0 (8) | 0 (8) | 0 (8) | 0 (8), 3R | 0 (8) |
+| w1-last-step-up | 0 (5) | 0 (5) | 0 (5) | 0.2 (5) | 0 (5) |
+| w1-leap-stones | 0.18 (11) | 1.18 (11) | 0.36 (11) | 0.73 (11) | 0.73 (11) |
+| w1-learn | 0 (25) | 0 (25) | 0 (25) | 0 (25), 1R | 0 (25) |
+| w1-log-chain | 0 (7) | 0.14 (7) | 0.86 (7) | 1.29 (7) | 0.43 (7) |
+| w1-log-chain-rise | 0.36 (11) | 0 (11) | 1.18 (11) | 1 (11) | 0.27 (11) |
+| w1-log-stair-test | 0.38 (16) | 0.06 (16) | 0.06 (16) | 0.06 (16) | 0.19 (16) |
+| w1-log-walk | 0 (24) | 0 (24) | 0 (24) | 0 (24), 1R | 0 (24) |
+| w1-meadow | 0 (24) | 0 (24) | 0 (24) | 0 (24), 1R | 0 (24) |
+| w1-mushroom-chain | 0 (4) | 0 (4) | 0.25 (4) | 0.75 (4) | 0.25 (4) |
+| w1-mushroom-chain-back | 0.17 (12) | 0 (12) | 0.42 (12) | 0.58 (12) | 0.33 (12) |
+| w1-quiet-arrival | 0 (23) | 0 (23) | 0 (23) | 0 (23) | 0.09 (23) |
+| w1-second-jump | 0.5 (2) | 1.5 (2) | 0 (2) | 0.5 (2) | 1.5 (2) |
+| w1-sunlit-log | 0.08 (12) | 0 (12) | 0.08 (12) | 0.08 (12) | 0 (12) |
+| w1-two-answers | 0 (1) | 0 (1) | 0 (1) | 2 (1) | 1 (1) |
+
+**Which loseLife the bot run uses, and what counts as a life.** RealPlay stubs `e.loseLife` (realPlay.ts:141, `this.died = true`).
+firsttimer.ts replaces that stub, in its constructor, with a wrapper that records a harm of kind `life` (with the reason: water, pit or
+hurt) and then calls the engine's own `GameEngine.prototype.loseLife` (engine.ts:4912 on 41c2e248, which records the `lostLife`
+event). So a life in these files is exactly one real engine loseLife call. A fall the engine turns into a put-back never reaches loseLife:
+`softFall()` (or `heartFall()`'s soft zones calling it) returns true first (engine.ts:2523), and the bot counts it as a put-back
+(`softFalls`). A hit (`damagePlayer`) is kind `hit`, never a life; 1-1 has nothing that hits. One pasted run, middle Normal variant 2, the
+same bot on both builds (the pit at x 33653 is a life on main and a put-back on A1, where softFallStage turns softOn on for 1-1 Normal):
+```
+== main (origin/main), middle Normal v2
+engine softOn false | e.loseLife is RealPlay stub: false | bot wrapper calls proto.loseLife: true | proto.loseLife records lostLife: true
+{"variant":2,"end":"shrine","time":243.2,"lives":[[33653,1962,"pit"]],"hits":0,"softFalls":2,"softFallXs":[8155,26963],"rescues":0}
+== A1 (41c2e248), middle Normal v2
+engine softOn true | e.loseLife is RealPlay stub: false | bot wrapper calls proto.loseLife: true | proto.loseLife records lostLife: true
+{"variant":2,"end":"shrine","time":237.1,"lives":[],"hits":0,"softFalls":3,"softFallXs":[8155,26963,33653],"rescues":0}
+```
+
 On the attempt-1 bots (164e4cf8) A1 showed put-back loops: v4 middle Normal, 9 standing doubles into the pit from 29758,864 because the
 mushroom he needed sat on a 43 px block, 73 px over his floor, outside the 60 px window (fixed: the window now takes a block up to 110 px);
 v7 middle Normal, 8 put-backs at w1-mushroom-chain-back and 0 rescues: one at 28176, then 7 standing doubles from 28665,717. The put-back

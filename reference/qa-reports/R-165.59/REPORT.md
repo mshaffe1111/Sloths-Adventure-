@@ -6,9 +6,11 @@
    middle Easy, middle Normal, child Normal all PASS every check; rescues 0 in every middle and expert row.** Child Easy printed (outlier).
    The attempt-1 misses: v30 w1-backstep-twist (expert, middle Easy) and v16 w1-twin-mushroom-fork (middle Easy) now play through.
    Per-piece seconds, middle Normal, bot vs testers (25 pieces with 5+ runs a side): BOTS.md.
-3. A1 (worktree at 41c2e248, my two files copied in): Normal lives 0 for every tier (0 in 120 Normal runs); put-backs a run expert
-   0.6, middle 1.53 (Easy 1.48), child 3.8; rescues 0 / 0 / 8 (child). calibration-a1.jsonl. v4 (the 9 standing doubles: the
-   mushroom 73 px up on a block, outside the 60 px window) fixed by a 110 px window; v7 (8 put-backs, 0 rescues) explained in BOTS.md.
+3. A1 baseline (worktree at 41c2e248, final bots, all tiers on both settings, variants 1-40; calibration-a1.jsonl, BOTS.md tables:
+   finish p50/min, put-backs, rescues, per piece): lives 0 in all 200 runs; put-backs a run expert 0.6, middle 1.53 (Easy 1.48), child
+   3.8 (Easy 3.1); rescues 0 for middle and expert, child 8 (Easy 1). No expert Easy bot: the expert testers played no Easy runs.
+   loseLife: the bot's wrapper calls the engine's real one (not RealPlay's stub); proved by one pasted run, main vs A1, in BOTS.md.
+   v4 and v7 (attempt-1 loops) explained there.
 4. `npx tsx --test tools/inspect/tierBots.test.ts`: 7/7, 24 s. Red-proved again: expert aimQ p50 61→62 fails "expert normal: every
    mapped number" and the replay; restored, 7/7. botBaseline kid/adult 1-1..1-5 seeds 1-3: `diff <(jq -c 'del(.ms)')` empty (30 runs).
    firsttimer.test.ts 8/8; the src tests that import firsttimer.ts (firstTimerBot, w6Stages, teachSpoken) 31/31. `tsc -p .` clean.
