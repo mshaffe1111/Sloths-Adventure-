@@ -255,3 +255,44 @@ test('1-1\'s finish reach (stageGenerator finishReach): the far bank of a 256 px
   }
   assert.ok(!finishReach({ ...st, config: { ...c11, id: '1-2' } } as GeneratedStage, 'normal').includes(2), 'outside 1-1: the closed form, as before');
 });
+
+// ───────────────────────── attempt 3: floorless false positives and the petal pass's reach (each planted red first) ─────────────────────────
+import { floorlessGaps } from './promises11.ts';
+import { buildGen2Stage } from './pipeline.ts';
+import { unreachablePickups } from '../petalPass.ts';
+
+const overlaps = (gs: Array<[number, number]>, x0: number, x1: number) => gs.filter(([a, b]) => a < x1 && b > x0);
+test('floorless: a slot a solid piece spans edge to edge at lip level, or one a lower piece floors to under his body (32 px), is no fall (seeds 476, 323 Normal)', () => {
+  const b = (seed: number) => buildGen2Stage({ config: c11, kit: w1World(), seed, difficulty: 'normal' });
+  assert.deepEqual(overlaps(floorlessGaps(b(476)), 22458, 22518), [], 'seed 476 x22458..22518: stone 122 spans it');
+  assert.deepEqual(overlaps(floorlessGaps(b(323)), 27200, 27273), [], 'seed 323 x27200..27273: branch 128 floors it to 23 px');
+  // (seed 172 x30784..31835, which the lead asked to stay refused, is covered edge to edge by 146 (y906), branch 147 and log 148 (y838):
+  // no opening at all, so this rule clears it too. PUSHBACK to the lead with the geometry; not asserted either way until ruled)
+  // (planted: the same two shapes, and a plain 60 px slot that stays a fall)
+  const span = [P(1, 0, G, 1000), P(2, 1060, G, 1000), { ...P(3, 990, G - 70, 80), height: 120 }];
+  assert.deepEqual(floorlessGaps({ platforms: span }), []);
+  const floored = [P(1, 0, G, 1000), P(2, 1073, G, 1000), { ...P(3, 900, G + 123, 150), height: 24 }];
+  assert.deepEqual(floorlessGaps({ platforms: floored }), [], '73 px slot floored to 23 px');
+  assert.equal(floorlessGaps({ platforms: [P(1, 0, G, 1000), P(2, 1060, G, 1000)] }).length, 1, 'a bare 60 px slot is a fall');
+});
+
+test('the petal pass on 1-1 judges reach with the flown arcs: a flower past a 256 px gap is not out of reach; outside 1-1 as before', () => {
+  for (const d of ['normal', 'easy'] as const) {
+    const st = {
+      config: c11, trees: [], vines: [], ropes: [], enemies: [], boss: null, checkpoints: [],
+      platforms: [P(1, 0, G, 600), P(2, 856, G, 700)],
+      collectibles: [{ id: 7, x: 1200, y: G - 40, type: 'flower', collected: false }],
+      spawnX: 100, spawnY: G, exitTotemX: 450, exitTotemY: G, gen2: { budget: { difficulty: d } },
+    } as unknown as GeneratedStage;
+    assert.deepEqual([...unreachablePickups(st)], [], `${d}: the flower past the gap is reachable`);
+    assert.deepEqual([...unreachablePickups({ ...st, config: { ...c11, id: '1-2' } } as GeneratedStage)], [7], `${d}: 1-2, closed form, as before`);
+  }
+});
+
+test('block.spare-thin prints its spare rounded as its measure is (4.6 prints 5, never 4)', () => {
+  const v = roll('easy', { asks: [ask('double-teach-rise', 127.6)] });
+  const f = v.accepted ? undefined : v.failed.find((x) => x.name === 'block.spare-thin');
+  assert.ok(f, 'spare-thin');
+  assert.match(f!.line, /: 5 px over/);
+  assert.equal(f!.measure?.measured, 128);
+});

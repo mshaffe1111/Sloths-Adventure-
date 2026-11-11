@@ -20,7 +20,7 @@ import { doubleAllowed, jumpOK, SAFE_APPROACH, swingLandings, validateStage } fr
 import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11 } from './verdicts.ts';
-import { PROMISES_11 } from './promises11.ts';
+import { PROMISES_11, realFalls } from './promises11.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
 import { DOUBLE_RISE, JUMP_RISE, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, TAKEOFF_SLACK, TIMED } from '../physics.ts';
@@ -2741,7 +2741,7 @@ function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2S
   });
   return {
     stageId: st.config.id, setting, policy: st.gen2.softFalls ? 'no-lethal' : 'per-gap', drops: st.gen2.drops ?? [], asks,
-    routeGaps: findW1Pits(st.platforms).filter((q) => q.kind === 'fall').map((q) => [q.x0, q.x1] as const), built: st,
+    routeGaps: realFalls(st.platforms).map((q) => [q.x0, q.x1] as const), built: st,
   } as Judged11 & { built: Gen2Stage };
 }
 

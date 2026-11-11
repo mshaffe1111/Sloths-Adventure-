@@ -3,7 +3,9 @@
  * pickupCheck holds every shipped stage to it (the per-screen cap, no rows, nothing out of reach, nothing below a required jump's arc).
  */
 import type { GeneratedStage } from './stageGenerator.ts';
-import { validateStage } from './levelCheck.ts';
+import { validateStage, type CheckOptions } from './levelCheck.ts';
+import { judgedOnArcs, linkArcs } from './gen2/reach.ts';
+import type { Difficulty } from './difficulty.ts';
 import { badPickups } from './flowerReach.ts';
 import { skillHeldAt } from './skills.ts';
 import { busiestScreen, clumpExtras, fillGaps, KEEP, nightBlooms, ON_FLOOR, isPetal, offArc, PER_SCREEN, petalTrail, rowExtras, type PetalOut } from './petals.ts';
@@ -12,6 +14,13 @@ const OUT_OF_REACH = /^(?:flower|leaf|fruit) #(\d+) at \(.*\) is out of reach$/;
 
 const isLiana = (v: GeneratedStage['vines'][number]) => v.vineType === 'swing_liana' || !!v.isSwingingVine || !!v.silk;
 const reachesExit = (errors: readonly string[]) => !errors.some((e) => /^exit platform \d+ is not reachable/.test(e));
+
+/** the reach the petal pass judges by: the rooms walked solved; on 1-1 the level jumps the flown arcs cross too (R-165.61, the same rule
+ *  as stageGenerator finishReach: gen2/reach.ts linkArcs, the stage's own setting); every other stage as before */
+const reachOpts = (stage: GeneratedStage): CheckOptions => ({
+  rooms: false,
+  ...(judgedOnArcs(stage.config.id) ? { arcs: linkArcs((stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty ?? 'normal') } : {}),
+});
 
 /**
  * The pickups the level check finds out of reach (by id). As the stages' own tests apply it (tools/inspect/eraRoll.ts checkRoll): the
@@ -29,7 +38,7 @@ export function unreachablePickups(stage: GeneratedStage): Set<number> {
  */
 function judgeReach(stage: GeneratedStage, raw?: Set<number>): Set<number> | null {
   // (the reach only: the rooms are walked solved, never each solved again, levelCheck CheckOptions.rooms)
-  let errors = validateStage(stage, { rooms: false }).errors;
+  let errors = validateStage(stage, reachOpts(stage)).errors;
   let spans: Array<[number, number]> = [];
   if (!reachesExit(errors)) {
     const xs = stage.vines.filter(isLiana).map((v) => v.x).sort((a, b) => a - b);
@@ -41,7 +50,7 @@ function judgeReach(stage: GeneratedStage, raw?: Set<number>): Set<number> | nul
     const floor = stage.spawnY ?? 580;
     const bridges = spans.map((sp, i) => ({ id: 90000 + i, x: sp[0] - 260, y: floor, width: sp[1] - sp[0] + 520, height: 20, type: 'solid' as const }));
     if (bridges.length) {
-      const bridged = validateStage({ ...stage, platforms: [...stage.platforms, ...bridges] } as GeneratedStage, { rooms: false }).errors;
+      const bridged = validateStage({ ...stage, platforms: [...stage.platforms, ...bridges] } as GeneratedStage, reachOpts(stage)).errors;
       if (reachesExit(bridged) || !raw) errors = bridged;
     }
     if (!reachesExit(errors)) {
@@ -91,7 +100,7 @@ export function petalPass<T extends GeneratedStage>(stage: T, out?: PetalOut): T
       const bad = new Set(badPickups({ platforms: stage.platforms, vines: stage.vines, ropes: stage.ropes, waterY: stage.waterY, glide }, added));
       // (and none only a silk line reaches: a ledge up a silk line is that line's own reward, its cocoons; World 5)
       if (stage.vines.some((v) => v.silk)) {
-        for (const e of validateStage({ ...stage, vines: stage.vines.filter((v) => !v.silk) }, { rooms: false }).errors) {
+        for (const e of validateStage({ ...stage, vines: stage.vines.filter((v) => !v.silk) }, reachOpts(stage)).errors) {
           const m = e.match(OUT_OF_REACH);
           if (m) bad.add(added.find((c) => c.id === Number(m[1]))!);
         }

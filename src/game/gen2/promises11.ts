@@ -20,10 +20,34 @@ import type { JudgedStage, PromiseDef, PromiseRegistry, Verdict } from './verdic
 type Zone = { x0: number; x1: number; soft?: boolean };
 interface Built { platforms: Platform[]; heartFalls?: Zone[]; waterY?: number; config: { levelHeight: number }; gen2?: { nodes?: Array<{ token: string; x0: number }> } }
 
+/** the narrowest slot he can fall into (the Critic, E0a attempt 2: seed 323 Normal's 23 px slot is no drop; his body is about 32 px) */
+export const BODY_W = { px: 32, source: 'the Critic, E0a attempt 2 (seed 323 Normal x27200..27273)' } as const;
+
+/**
+ * World 1's floorless slots he can really fall into (w1Pits 'fall' gaps, R-165.61 attempt 3): not a slot a solid piece spans edge to
+ * edge across the lips' level (a stone standing in it), and not one the pieces at or under the upper lip floor to an opening under BODY_W
+ */
+export function realFalls(platforms: readonly Platform[]): ReturnType<typeof findW1Pits> {
+  return findW1Pits(platforms).filter((q) => {
+    if (q.kind !== 'fall') return false;
+    const solid = platforms.filter((p) => p.type === 'solid' && !p.broken && p.x < q.x1 && p.x + p.width > q.x0);
+    if (solid.some((p) => p.x <= q.x0 + 1 && p.x + p.width >= q.x1 - 1 && p.y <= q.top + 1 && p.y + p.height >= q.top - 1)) return false;
+    // (the widest opening left between the pieces at or under the upper lip: a falling body meets them before the slot; w1Pits' `top`
+    // is the LOWER lip, so a branch between the two lips, seed 323 Normal's 128, is found from the upper one)
+    const edge = platforms.filter((p) => p.type === 'solid' && (Math.abs(p.x + p.width - q.x0) <= 2 || Math.abs(p.x - q.x1) <= 2)).map((p) => p.y);
+    const upper = Math.min(q.top, ...edge);
+    const cov = solid.filter((p) => p.y >= upper - 1).map((p) => [Math.max(q.x0, p.x), Math.min(q.x1, p.x + p.width)] as const).sort((a, b) => a[0] - b[0]);
+    let at = q.x0, open = 0;
+    for (const [a, b] of cov) { open = Math.max(open, a - at); at = Math.max(at, b); }
+    open = Math.max(open, q.x1 - at);
+    return open >= BODY_W.px;
+  });
+}
+
 /** the unmarked floorless gaps outside a soft zone (x0..x1 each) */
 export function floorlessGaps(st: Pick<Built, 'platforms' | 'heartFalls'>): Array<[number, number]> {
   const soft = (st.heartFalls ?? []).filter((z) => z.soft);
-  return findW1Pits(st.platforms).filter((q) => q.kind === 'fall' && !q.drop && !soft.some((z) => q.x0 >= z.x0 - 4 && q.x1 <= z.x1 + 4)).map((q) => [q.x0, q.x1]);
+  return realFalls(st.platforms).filter((q) => !q.drop && !soft.some((z) => q.x0 >= z.x0 - 4 && q.x1 <= z.x1 + 4)).map((q) => [q.x0, q.x1]);
 }
 
 /** from `tip` on, the first gap within 1,500 px one jump at its best can't cross and a double flick can (reach.ts, flown, `setting`);
