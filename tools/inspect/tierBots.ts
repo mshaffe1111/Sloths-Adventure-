@@ -34,7 +34,7 @@ export interface TierRun {
   rescues: number;
   secondPressMs: number[];
   /** the pieces he entered, in order, and in each the lives and put-backs (soft falls) it cost him */
-  pieces: Array<{ id: string; lives: number; putbacks: number }>;
+  pieces: Array<{ id: string; lives: number; putbacks: number; seconds: number }>;
   stuck: Array<{ x: number; t: number; piece: string | null; what: string; rescued: boolean }>;
 }
 
@@ -59,7 +59,12 @@ export function runTier(tier: Tier, setting: Setting, variant: number, stage = '
   const r = firstTimer(stage, variant, who, { cap: 1200 });
   const maxX = r.maxX ?? r.x;
   const entered = pieces.filter((p) => p.x0 <= maxX || r.end === 'shrine');
-  const tally = entered.map((p) => ({ id: p.id, lives: 0, putbacks: 0 }));
+  const tally = entered.map((p) => ({ id: p.id, lives: 0, putbacks: 0, seconds: 0 }));
+  // (seconds in each piece: his place every 0.5 s, as the profiles' pieces.<id>.seconds count time in a section's slice)
+  for (const x of r.xTrace ?? []) {
+    const row = tally.find((q) => q.id === pieceAt(pieces, x));
+    if (row) row.seconds += 0.5;
+  }
   const add = (x: number, k: 'lives' | 'putbacks') => {
     const id = pieceAt(pieces, x);
     const row = tally.find((q) => q.id === id);
@@ -91,7 +96,17 @@ export interface TierProfile {
   putbacksPerRun: number;
   secondPressDelayMs: { p50: number };
   runsPlayed: number;
-  pieces: Record<string, { runs: number; lives: number; putbacks: number }>;
+  pieces: Record<string, { runs: number; lives: number; putbacks: number; seconds?: { p50: number } }>;
+}
+
+/** seconds in each piece, bot vs tier (p50 over the runs that entered it), pieces with 5+ runs on both sides */
+export function pieceSeconds(runs: TierRun[], prof: TierProfile): Array<{ id: string; tierRuns: number; tierP50: number; botRuns: number; botP50: number }> {
+  const bot: Record<string, number[]> = {};
+  for (const r of runs) for (const p of r.pieces) (bot[p.id] ??= []).push(p.seconds);
+  return Object.entries(prof.pieces ?? {})
+    .filter(([id, v]) => v.runs >= 5 && (bot[id]?.length ?? 0) >= 5 && v.seconds)
+    .map(([id, v]) => ({ id, tierRuns: v.runs, tierP50: v.seconds!.p50, botRuns: bot[id].length, botP50: pct(bot[id], 50) as number }))
+    .sort((a, b) => (a.id < b.id ? -1 : 1));
 }
 export function loadProfile(tier: Tier, setting: Setting, dir = path.join(import.meta.dirname, '../playtesters/profiles/tiers')): TierProfile | null {
   const j = JSON.parse(fs.readFileSync(path.join(dir, `${tier}.json`), 'utf8'));
@@ -171,7 +186,10 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.met
     }
     if (cal) {
       const prof = loadProfile(tier, setting);
-      if (prof) out.push(calibrate(tier, setting, runs, prof));
+      if (prof) {
+        out.push(calibrate(tier, setting, runs, prof));
+        console.log(JSON.stringify({ pieceSeconds: { tier, setting, rows: pieceSeconds(runs, prof) } }));
+      }
     }
   }
   for (const c of out) console.log(JSON.stringify({ calibration: c }));

@@ -1,4 +1,4 @@
-# R-165.59: the child, middle and expert bots (11-11, Critic as builder)
+# R-165.59: the child, middle and expert bots (11-11, Critic as builder; attempt 2)
 
 Code: `tools/inspect/firsttimer.ts` (FT_CHILD, FT_MIDDLE, FT_EXPERT play Normal; FT_MIDDLE_EASY, FT_CHILD_EASY the same players on Easy),
 `tools/inspect/tierBots.ts` (the CLI and the checks), pinned by `tools/inspect/tierBots.test.ts`.
@@ -6,6 +6,10 @@ Source: `tools/playtesters/profiles/` copied unchanged from t-w11-analyst@437a3a
 `tiers/<tier>.json` → `all.<setting>.<field>` unless named; a distribution `[p10, p25, p50, p75, p90]` is sampled (firsttimer.ts `drawQ`:
 piecewise linear through the five points, tails carried on at the last span's slope). Times are the profile's ms / 1000.
 Run: `npx tsx tools/inspect/tierBots.ts --stage 1-1 --tiers child,middle,expert --seeds 1-40 --setting both --calibrate`.
+
+**The pin (enforced).** `tierBots.test.ts` runs in CLAUDE.md's checks and in CI (`.github/workflows/gates.yml`, job `rolled`). Any change to
+1-1, the engine or the bots that moves a run fails it: re-run the calibration (the command above, all tiers, both settings, variants 1-40),
+check the table, and recommit `calibration-main.jsonl` in the same change.
 
 ## Mapping: every field, its value, its source
 
@@ -27,39 +31,94 @@ Run: `npx tsx tools/inspect/tierBots.ts --stage 1-1 --tiers child,middle,expert 
 **Tuning fields** (no profile number; each fitted on 1-1 to the tolerances, never the reverse): `gapShare` 0.5 (middle, expert; child 1):
 the share of moveGapMs spells taken on open ground (fitted to finishSeconds). `readHold` 0.5: at a gap or face he must clear, the hold is
 drawn from holdQ's p50 up. `readDbl` 0.75 (child 0.5): up a step, the second press from dbl2Q's quantile ≤ this. `readGap` [0.4, 0.9]
-(child [0, 0.75]): across a gap, the second press between these quantiles. `readAim` 0.5 (child none): at a gap that needs a double, a
-press distance past aimQ p50 is drawn again up to p50 (aimQ holds every moving press near an edge, hops on flat ground among them).
-`retryHold` unset. Tier-bot rules (no field): sees a pit under an edge; a step over 90 px up gets a double; hops onto a bounce mushroom
-when the way on is 100+ px up, doubles off its top; never steers to land on one; a way on straight overhead is jumped for; the put-back's
-stillness is not "stopped dead"; the late lift-off arms once per let-go; 8 tries at a spot before the put-past (KID/ADULT: 3); 20 min cap.
+(child [0, 0.9]): across a gap, the second press between these quantiles. `readAim` 0.5 (expert, middle Normal; none for middle Easy and
+the child): at a gap that needs a double, a press distance past aimQ p50 is drawn again up to p50. `retryHold` unset.
+**Tier-bot rules** (no field): sees a pit under an edge; a step over 90 px up gets a double; a bounce mushroom: hopped onto when the way on
+is 100+ px up and it is ahead, or when the way on is over a double's reach (170 px) and it is within 220 px either side, on his floor or on
+a block up to 110 px over it (a double when it sits 80+ px up), with a double off its top; never steered onto as a landing; off a ledge
+100+ px over the way on, the end without a mushroom on it or under it, kept to until he stands on other ground (6 s at most); a way on
+straight overhead (40 px; 80 px when the ledge spans over him) within a double's reach (175 px) is jumped for, steered to 30 px inside
+that ledge; out of reach, he hops onto the nearest 20-100 px step within 160 px first; a late press needs a lip (at a face he jumps),
+and a late plan that does not walk off within 1 s is drawn again; the put-back's stillness is not "stopped dead"; the late lift-off arms
+once per let-go (KID and ADULT let go 8-17 frames late, past releaseMax: the audit Critic measured KID p50 4 max 17, cap 4; ADULT p50 8
+max 16, cap 2); 8 tries at a spot before the put-past (KID/ADULT: 3); 20 min cap.
 
-**Profile fields the bots do not use, and why.** finishSeconds, livesPerRun, putbacksPerRun, leftMidStage, pieces, stretchSeconds:
-outcomes, the calibration targets. pausesPerRun: game time stops in the pause. punchesPerMinute, punchTakenBackShare, misread*: 1-1 has
-nothing to punch, a taken-back punch is no punch (D38), and the harness never reads a jump press as a punch. latePressPastLipPx: follows
-from lateQ and run speed. reversalShare, reversalGapMs: the bot steers by the route; their time is inside the fitted gapShare.
-dragToMovePx: the pad is the move itself. duckMs, climbMs, climbSpeedPxPerS: nothing to duck under or climb on 1-1 (null). touch.* other
-than jumpFlickOffVerticalDeg and twoFingerShare, touch.play, touchCurve, steeringAllStages: screen-level gestures and whole sessions; the
-bot plays at the intent level. firstRun, laterRuns, perPlayer: the bots play the pooled `all` numbers.
+**Profile fields the bots do not use, and why.** finishSeconds, livesPerRun, putbacksPerRun, leftMidStage, pieces (lives, put-backs,
+seconds), stretchSeconds: outcomes, the calibration targets (pieces.seconds is compared below). pausesPerRun: game time stops in the
+pause. punchesPerMinute, punchTakenBackShare, misread*: 1-1 has nothing to punch, a taken-back punch is no punch (D38), and the harness
+never reads a jump press as a punch. latePressPastLipPx: follows from lateQ and run speed. reversalShare, reversalGapMs: the bot steers by
+the route; their time is inside the fitted gapShare. dragToMovePx: the pad is the move itself. duckMs, climbMs, climbSpeedPxPerS: nothing
+to duck under or climb on 1-1 (null). touch.* other than jumpFlickOffVerticalDeg and twoFingerShare, touch.play, touchCurve,
+steeringAllStages: screen-level gestures and whole sessions; the bot plays at the intent level. firstRun, laterRuns, perPlayer: the bots
+play the pooled `all` numbers.
 
 ## Calibration on origin/main 1-1 (0.9.5, layout list e03e9c8c, 138 seeds), variants 1-40 every tier and setting
 Variant n → provenSeedFor('1-1', n − 1). Tier n (played runs): expert Normal 46, middle Easy 15, middle Normal 27, child Normal 5, child
-Easy 1 (P27, the outlier). Bot runs: `calibration-main.jsonl` (one line a run, the table at its end). Tolerances: finish p50 12%; lives,
-put-backs (means) max(30%, 0.3); second press p50 25%; pieces 2 of top 3 (5+ runs both sides); rescues 0 (middle, expert).
+Easy 1 (P27, the outlier). Bot runs: `calibration-main.jsonl` (one line a run; the per-piece seconds and the table at its end).
+Tolerances: finish p50 12%; lives, put-backs (means) max(30%, 0.3); second press p50 25%; pieces 2 of top 3 (5+ runs both sides);
+rescues 0 (middle, expert).
 
-| tier setting | runs/finished | finish p50 s | lives/run | put-backs/run | 2nd press p50 ms | top 3 pieces (bot vs tier) | rescues | |
+| tier setting | runs/finished | finish p50 s | lives/run | put-backs/run | 2nd press p50 ms | top 3 pieces, bot (vs tier) | rescues | |
 |---|---|---|---|---|---|---|---|---|
-| expert Normal | 40/40 | 177.2 vs 167 | 0.18 vs 0.28 | 0.15 vs 0.2 | 467 vs 441 | log-chain-rise, mushroom-chain-back, double-teach vs mushroom-chain-back, canopy-rungs-level, log-chain-rise: 2 of 3 | **1** (v30 w1-backstep-twist) | MISS (rescue) |
-| middle Easy | 40/40 | 208.6 vs 187 | 0 vs 0 | 1.25 vs 1.2 | 433 vs 383 | double-teach, dip-double-teach, mushroom-chain-back: 3 of 3 | **2** (v16 w1-twin-mushroom-fork, v30 w1-backstep-twist) | MISS (rescues) |
-| middle Normal | 40/40 | 219.4 vs 213 | 0.57 vs 0.63 | 0.63 vs 0.7 | 433 vs 416 | log-chain-rise, double-teach, mushroom-chain-back vs canopy-rungs-level, log-chain-rise, mushroom-chain-back: 2 of 3 | 0 | PASS |
-| child Normal (thin) | 40/40 | 460.3 vs 444 | 1.55 vs 1.2 | 3.08 vs 3.4 | 367 vs 406 | only w1-seed-perch has 5+ tier runs: vacuous | 12 (printed) | PASS |
-| child Easy (outlier) | 40/40 | 341.6 vs 2231 | 0 vs 0 | 4.47 vs 187 | 433 vs 543 | none eligible | 10 | printed only |
+| expert Normal | 40/40 | 173.9 vs 167 | 0.35 vs 0.28 | 0.28 vs 0.2 | 467 vs 441 | log-stair-test, log-chain-rise, canopy-rungs-level (tier: mushroom-chain-back, canopy-rungs-level, log-chain-rise): 2 of 3 | 0 | PASS |
+| middle Easy | 40/40 | 196.2 vs 187 | 0 vs 0 | 1.48 vs 1.2 | 433 vs 383 | double-teach, dip-double-teach, log-stair-test (tier: double-teach, dip-double-teach, mushroom-chain-back): 2 of 3 | 0 | PASS |
+| middle Normal | 40/40 | 207 vs 213 | 0.57 vs 0.63 | 0.83 vs 0.7 | 433 vs 416 | log-chain-rise, canopy-rungs-level, double-teach (tier: canopy-rungs-level, log-chain-rise, mushroom-chain-back): 2 of 3 | 0 | PASS |
+| child Normal (thin) | 40/40 | 429 vs 444 | 1.3 vs 1.2 | 2.93 vs 3.4 | 367 vs 406 | only w1-seed-perch has 5+ tier runs: vacuous | 8 (printed) | PASS |
+| child Easy (outlier) | 40/40 | 301.4 vs 2231 | 0 vs 0 | 3.1 vs 187 | 433 vs 543 | none eligible | 1 | printed only |
 
-Child rescues (no player has one; they hide stuck time): w1-fern-bank ×2, w1-root-stair-fork ×2, w1-hollow-twoway ×2, w1-twin-bounce ×2,
-w1-bank-stair-fork, w1-fallen-trunk, w1-learn, w1-log-walk (variants 6, 10, 15 ×3, 17, 19 ×3, 25, 31, 37).
+Child rescues (no player has one; they hide stuck time): w1-hollow-twoway ×3, w1-fallen-trunk ×2, w1-log-walk, w1-learn, w1-meadow
+(variants 5, 13, 19 ×3, 30 ×2, 32).
+
+### Seconds in each piece, middle Normal (p50 over the runs that entered it; pieces with 5+ runs on both sides)
+| piece | tier runs | tier s | bot runs | bot s |
+|---|---|---|---|---|
+| w1-canopy-rungs-level | 6 | 16.1 | 18 | 16.5 |
+| w1-clearing | 5 | 5.8 | 10 | 8.5 |
+| w1-dip-double-teach | 15 | 11.8 | 19 | 16 |
+| w1-double-teach | 11 | 15.1 | 20 | 17 |
+| w1-fern-bank | 12 | 4.8 | 18 | 6.5 |
+| w1-forest-edge | 6 | 7.1 | 8 | 9 |
+| w1-home-banks | 8 | 5.9 | 10 | 7.5 |
+| w1-hop-bounce | 23 | 22.1 | 35 | 17.5 |
+| w1-leap-stones | 5 | 27 | 11 | 28 |
+| w1-learn | 18 | 16.4 | 25 | 19.5 |
+| w1-log-chain-rise | 9 | 13.4 | 11 | 18 |
+| w1-log-stair-test | 11 | 14.9 | 16 | 17.5 |
+| w1-log-teach | 7 | 12.2 | 9 | 16.5 |
+| w1-log-walk | 13 | 6.1 | 24 | 7 |
+| w1-meadow | 17 | 12.8 | 24 | 15.5 |
+| w1-morning-path | 9 | 6 | 10 | 7 |
+| w1-mound-log | 5 | 19 | 11 | 25 |
+| w1-mushroom-bank-teach | 7 | 13.5 | 7 | 15.5 |
+| w1-mushroom-chain-back | 5 | 16.4 | 12 | 20 |
+| w1-quiet-arrival | 17 | 6 | 23 | 7 |
+| w1-root-stair-fork | 18 | 13.8 | 20 | 17 |
+| w1-seed-perch | 26 | 18.3 | 40 | 18.5 |
+| w1-stair-fork | 11 | 16.3 | 16 | 20 |
+| w1-sunlit-log | 5 | 7.3 | 12 | 8 |
+| w1-twin-mushroom-fork | 10 | 21.2 | 12 | 20.5 |
+
+The bot is slower than the testers in 23 of 25 pieces (most by 0.2-4 s; log-teach, mound-log, dip-double-teach, log-chain-rise by 4-6 s)
+and faster only at w1-hop-bounce (17.5 vs 22.1 s) and w1-twin-mushroom-fork (20.5 vs 21.2 s), yet its finish is 6 s faster (207 vs 213).
+The two don't add up the same way: the profiles' piece seconds are slices between the game's section lines, and 26 of the tier's 53
+pieces have fewer than 5 runs, so they are not in this table. A limit: gapShare fits the bot's whole-stage time, not each piece's.
 
 ## The same bots on A1 (t-engine-putback@41c2e248, my two tools/inspect files copied into a worktree), variants 1-40
-`calibration-a1.jsonl`. Normal lives a run: **0 for every tier** (expert 0/40 runs, middle 0, child 0). Put-backs a run: expert 0.33,
-middle Normal 1.83, middle Easy 1.25, child Normal 4.03. Rescues: expert 1, middle Normal 3, middle Easy 2, child 12. All 160 runs finished.
-Middle Normal's 3 new rescues are put-back loops (8 tries at one spot, then put past): v4 w1-mushroom-chain 9 put-backs, v28
-w1-mushroom-chain-back 8, v32 w1-log-chain-rise 10. On main the same misses were lives (back to the flag); A1's put-back returns him to the
-same take-off, so a player who misses that jump the same way can loop there. Worth a look before C1.
+`calibration-a1.jsonl`. Normal lives a run: **0 for every tier** (0 in 120 Normal runs). Put-backs a run: expert 0.6, middle Normal
+1.53, middle Easy 1.48, child Normal 3.8. Rescues: expert 0, middle Normal 0, middle Easy 0, child 8. All 160 runs finished. No middle or
+expert run has 5+ put-backs in one piece (the child has 10 at w1-canopy-rungs-level in v10 and v22).
+On the attempt-1 bots (164e4cf8) A1 showed put-back loops: v4 middle Normal, 9 standing doubles into the pit from 29758,864 because the
+mushroom he needed sat on a 43 px block, 73 px over his floor, outside the 60 px window (fixed: the window now takes a block up to 110 px);
+v7 middle Normal, 8 put-backs at w1-mushroom-chain-back and 0 rescues: one at 28176, then 7 standing doubles from 28665,717. The put-back
+had set him on the lower 717 ledge he last stood still on, 223 px under the next ledge (494), past a double's reach (about 185 px), and the
+8th try got him round. The 8-tries put-past counts tries at one spot, so 7 never fired it. The final bots no longer drop to that ledge
+there. **For the lead:** on A1 a put-back returns a player to the last still ground, which can sit under the way on rather than beside it,
+so a child who misses the same way can loop there.
+
+## The stand at middle v3 (164e4cf8) and the stills
+The 9.4 s stand at middle v3 (x 24316, w1-log-stair-test) was not the pit rule. The edge plan was "late press" (walk off, then press), a
+70 px stump stood at the log's end so he could not walk off, and the plan re-armed every second: he held right against the stump, vx 0, for
+9.4 s. Fixed: a late press needs a lip (at a face he jumps), and an unused late plan is drawn again. Middle Normal stops of 8 s+ (not
+rescued): 164e4cf8 50 stops in 30 of 40 runs (46 at an open drop); now 2 stops in 2 runs (v2 w1-root-stair-fork, v16
+w1-twin-mushroom-fork). Stills of the v16 stop: `middle-v16-stuck-sideways.jpg`, `-upright.jpg` (x 20873, 9.6 s, a mossy block in a
+144 px dip under a ledge with a mushroom, the floor mushroom ahead). The attempt-1 stills of the v3 stand are kept: `middle-v3-stuck-*.jpg`.

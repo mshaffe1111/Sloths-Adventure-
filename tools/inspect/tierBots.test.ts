@@ -33,9 +33,9 @@ const KEPT = ['look', 'heed', 'stopReact', 'thumb', 'hold', 'upOnlyT', 'dblAt', 
 const TUNED: Record<string, Partial<FirstTimer>> = {
   'expert normal': { gapShare: 0.5, knowsDouble: true, readHold: 0.5, readDbl: 0.75, readGap: [0.4, 0.9], readAim: 0.5 },
   'middle normal': { gapShare: 0.5, knowsDouble: true, readHold: 0.5, readDbl: 0.75, readGap: [0.4, 0.9], readAim: 0.5 },
-  'middle easy': { gapShare: 0.5, knowsDouble: true, readHold: 0.5, readDbl: 0.75, readGap: [0.4, 0.9], readAim: 0.5 },
-  'child normal': { gapShare: undefined, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.75], readAim: undefined },
-  'child easy': { gapShare: undefined, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.75], readAim: undefined },
+  'middle easy': { gapShare: 0.5, knowsDouble: true, readHold: 0.5, readDbl: 0.75, readGap: [0.4, 0.9], readAim: undefined },
+  'child normal': { gapShare: undefined, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9], readAim: undefined },
+  'child easy': { gapShare: undefined, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9], readAim: undefined },
 };
 
 for (const tier of ['child', 'middle', 'expert'] as Tier[]) {
