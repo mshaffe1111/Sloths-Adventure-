@@ -38,9 +38,11 @@ test('the same gap by share moves with the roll tempo (why a share cannot hold t
   const g2 = gapsOf(tpl({ kind: 'double', share: [0.7, 0.7] }), { gap: 0.6, gapMax: 1, rise: 1 });
   assert.ok(Math.min(...g1) > Math.max(...g2) + 20, `share gaps ${g1[0]} vs ${g2[0]}`);
 });
-test("Easy's margin (0.65) puts a level double's reach at 203.6 px: the designer's TEST band 205-230 is past it, refused by name", () => {
+test("1-1 Easy (R-165.61): a level double is laid to the flown double flick from 70 px (287, reach.ts), past it refused by name; the old 203.6 clamp is gone", () => {
+  // (Easy has no double gap at all, bands.md §2: the lay allows what a player can do, and the verdict band.out refuses the section)
   const easy = planBudget(c, M, 'easy');
-  assert.throws(() => layLocal(tpl({ kind: 'double', gapPx: [205, 230] }), easy, rngFor(31, 0), false, { pitDepth: M.pitDepth }), /past the double's reach 204 px/);
+  assert.doesNotThrow(() => layLocal(tpl({ kind: 'double', gapPx: [205, 230] }), easy, rngFor(31, 0), false, { pitDepth: M.pitDepth }));
+  assert.throws(() => layLocal(tpl({ kind: 'double', gapPx: [280, 290] }), easy, rngFor(31, 0), false, { pitDepth: M.pitDepth }), /past the double's reach 287 px/);
 });
 test('a gapPx band past the jump reach fails the section by name', () => {
   assert.throws(() => gapsOf(tpl({ kind: 'jump', gapPx: [600, 620] })), /gapPx 600-620 .*past/);
