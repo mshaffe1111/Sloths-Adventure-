@@ -6,10 +6,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import './headlessDom.ts';
-import { PROVEN_SEEDS } from './gen2/provenSeeds.ts';
+import { provenSeeds } from './gen2/seedList.ts';
 import { plainThrough, sweepSeed } from './helpSweep.ts';
 
-const seeds = PROVEN_SEEDS['1-1'].seeds;
+const seeds = provenSeeds('1-1');
 for (const setting of ['easy', 'normal'] as const) {
   test(`every listed 1-1 seed on ${setting}: every grown rock stands, no face over 60 px, none sunk; Dot promises only a step that grows`, (t) => {
     const bad: string[] = [];

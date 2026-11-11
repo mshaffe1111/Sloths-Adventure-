@@ -7,7 +7,7 @@
  */
 import ROLLS from './testlink1_1.json';
 import { qaBuild } from './playRecorder.ts';
-import { provenSeedFor, provenSeeds } from './gen2/seedList.ts';
+import { provenSeedFor, provenSeeds, seedListReady, standIn } from './gen2/seedList.ts';
 
 export type Pick11 = 'play' | 'A' | 'B' | 'C';
 let pick: Pick11 = 'play';
@@ -64,8 +64,24 @@ const drawNext = (rand: () => number): number => {
   writeOrder(o);
   return provenSeedFor('1-1', o.order[o.i]);
 };
-export const peekPlay11 = (rand: () => number = Math.random): number => (nextSeed ??= drawNext(rand));
-export const newPlay11 = (rand: () => number = Math.random): number => {
+/**
+ * The list is its own file, loaded on its own (R-165.112, gen2/seedList.ts loadSeedList). Is it in memory now? Until it is, nothing is
+ * drawn and the device's shuffled order is not touched (a list of another length would re-shuffle it)
+ */
+const listed = (): boolean => seedListReady('1-1');
+/** Play was pressed before the list was in memory: the draw waits for the stage's build (play11Seed), which comes after the app's wait
+ *  for the list (App.tsx launchEngine, seedListSettled); holds the press's own dice */
+let owed: (() => number) | null = null;
+/** the next play's seed; null while the list is not in memory (nothing to build ahead yet) */
+export const peekPlay11 = (rand: () => number = Math.random): number | null => (listed() ? (nextSeed ??= drawNext(rand)) : null);
+/** a press of Play: draws the play's seed, or null when the list is not in memory yet (the draw is owed to the build) */
+export const newPlay11 = (rand: () => number = Math.random): number | null => {
+  owed = null;
+  if (!listed()) {
+    playSeed = null;
+    owed = rand;
+    return null;
+  }
   playSeed = nextSeed ?? drawNext(rand);
   nextSeed = null;
   // (this entry is played: the next Play takes the one after it)
@@ -73,7 +89,18 @@ export const newPlay11 = (rand: () => number = Math.random): number => {
   writeOrder({ ...o, i: o.i + 1 });
   return playSeed;
 };
-export const play11Seed = (variant: number): number => playSeed ?? provenSeedFor('1-1', variant - 1);
+/**
+ * The seed the stage is built on: the play's drawn seed (an owed draw is made now); with none drawn (the tests and the tools) the
+ * layout variant picks it. With the list still not in memory (its load failed, or stalled past the app's wait) the play gets 1-1's
+ * stand-in, a listed seed whose proven plan is in the main script (seedList.ts standIn: the fixed first run), and keeps it: a restart or
+ * a respawn in the same play builds the same stage even if the list arrives meanwhile
+ */
+export const play11Seed = (variant: number): number => {
+  if (owed && listed()) newPlay11(owed);
+  if (playSeed === null && !listed()) playSeed = standIn('1-1')!.seed;
+  owed = null;
+  return playSeed ?? provenSeedFor('1-1', variant - 1);
+};
 /** run `fn` as if `seed` had been drawn for this play (the build-ahead builds the next play's stage with it) */
 export function withPlaySeed<T>(seed: number, fn: () => T): T {
   const was = playSeed;
@@ -85,7 +112,7 @@ export function withPlaySeed<T>(seed: number, fn: () => T): T {
   }
 }
 /** forget the drawn seeds (tests) */
-export const clearPlay11 = (): void => { playSeed = null; nextSeed = null; memOrder = null; try { localStorage.removeItem(ORDER_KEY); } catch { /* blocked */ } };
+export const clearPlay11 = (): void => { playSeed = null; nextSeed = null; owed = null; memOrder = null; try { localStorage.removeItem(ORDER_KEY); } catch { /* blocked */ } };
 
 /**
  * A child process measuring a picked roll (stage.ts --roll, the red team's RT-ENGINE #1: its children graded the mixer's 1-1): set the

@@ -9,7 +9,7 @@ import '../headlessDom.ts';
 import { buildGen2Stage, softFallStage } from './pipeline.ts';
 import { buildPlayStage } from './seedList.ts';
 import { floorlessGaps } from './promises11.ts';
-import { PROVEN_SEEDS } from './provenSeeds.ts';
+import { provenSeeds } from './seedList.ts';
 import { w1Finish, w1World } from './worlds/w1.ts';
 import { generateStage, setLayoutVariant } from '../stageGenerator.ts';
 import { generateAllLevels } from '../worldsData.ts';
@@ -20,7 +20,7 @@ const cfg = (id: string) => ({ ...generateAllLevels().find((l) => l.id === id)!,
  * the first 16 listed seeds of the re-laid 1-1 (4106, the first run, among them). Changed, INT-1-1: these were the 11-10 play window's
  * seeds (reference/qa-reports/window-2026-11-10), which are no longer listed and no longer build on the re-lay
  */
-const WINDOW = PROVEN_SEEDS['1-1'].seeds.slice(0, 16);
+const WINDOW = provenSeeds('1-1').slice(0, 16);
 
 /** World 1's kit as it was before the 1-1 brief said `softFalls` (origin/main's) */
 function kitWithout(): WorldKit {
