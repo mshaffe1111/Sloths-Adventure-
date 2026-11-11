@@ -505,6 +505,14 @@ export class GuideQueue {
         this.waiting.push({ line: l, until: now + Math.max(GUIDE.backMs, waitFor(l)), seq: ++this.seq, base: l.move ? cur.base : undefined });
       }
     }
+    // (1-1's help ladder line goes first, whatever waits: a line of the same kind queued before it, held back by the blink or the gaps
+    // between lines, held the step line 14 s unseen when he stopped to look, INT-1-1, the Critic's delta 2)
+    const any = env.hold ? undefined : this.waiting.find((w) => w.line.anyway && !heldBack(w.line, env));
+    if (any) {
+      this.waiting.splice(this.waiting.indexOf(any), 1);
+      this.begin(any.line, now, 0);
+      return this.cur;
+    }
     const b = this.best(now, env);
     if (!b) return null;
     // (an `anyway` line skips the breath too: her clock stands still while he blinks, so at a set-back every 2 s the breath never passed)

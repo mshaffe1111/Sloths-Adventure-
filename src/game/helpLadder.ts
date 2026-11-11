@@ -208,6 +208,10 @@ let current: HelpLadder | null = null;
 export function setHelpLadder(l: HelpLadder | null): void {
   current = l;
 }
+/** a stage's help ladder is on (1-1): Dot's older struggle helpers stay quiet there (DotGuide.tsx) */
+export function helpLadderOn(): boolean {
+  return !!current;
+}
 /** true while a tap on the pad's Jump should be a full jump (Easy's rung 5 at the piece he is at) */
 export function padFullJump(): boolean {
   return !!current && current.padFull();

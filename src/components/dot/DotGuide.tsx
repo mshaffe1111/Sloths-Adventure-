@@ -12,7 +12,7 @@ import { countedText, GuideQueue, isUrgent, noteSaid, roomMaySay, readMs, showFo
 import { MoveWatch, StruggleWatch, inDanger, type DeathCause, type StruggleHelp } from '../../game/dotGuideWatch.ts';
 import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markMoveDone, markSkillSeen, markSkipOffered, movesDone, offersSkip, seenSkills, skipTapCounts, skipTips, type DotHelp } from '../../game/dotGuideHelp.ts';
 import { recorder } from '../../game/playRecorder.ts';
-import { HELP_LINES, helpGuideLine, helpLineOnScreen, pushHelpLine } from '../../game/helpLadder.ts';
+import { HELP_LINES, helpGuideLine, helpLadderOn, helpLineOnScreen, pushHelpLine } from '../../game/helpLadder.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuidePlatform, type GuideView } from '../../game/dotGuideView.ts';
 import {
   aheadRect,
@@ -1274,7 +1274,9 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         }
         // back and forth with no progress (never a clock, DOT-11); not in a puzzle room (the room's own watch helps there)
         if (run.puzzle && Math.abs(v.px - run.puzzle.x) > PUZZLE_NEAR) run.puzzle = null;
-        const s = v.kit.length ? null : run.struggle.step(dt, v.px, v.py);
+        // (not in 1-1 while its help ladder is on: the ladder is the one place that decides help there, helpLadder.ts; "This way,
+        // Pokey!" came 2.5 s after the steps grew, before her step line, the Critic's delta 2)
+        const s = v.kit.length || helpLadderOn() ? null : run.struggle.step(dt, v.px, v.py);
         if (s && !run.puzzleHelp()) {
           // (she flies to the way on: the next trunk, vine or ledge ahead; with none in view she says nothing, no promise of an arrow)
           const tp: TopicId | undefined = findTarget('trunk', v) ? 'trunk' : findTarget('vine', v) ? 'vine' : findTarget('ledge', v) ? 'ledge' : undefined;

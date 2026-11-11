@@ -14,22 +14,10 @@
   "grounded": true
  },
  "sideways-bounce": {
-  "camY": 267,
-  "vh": 540,
-  "barBottom": 68,
-  "petalTops": [
-   71,
-   94,
-   94
-  ],
-  "petalR": 14,
-  "heroTop": 90,
-  "feet": 158,
-  "grounded": false,
   "dx": -10,
   "onLog": false,
-  "minHeroRoom": 22,
-  "minPetalRoom": -54
+  "minHeroRoom": null,
+  "minPetalRoom": null
  },
  "seed": {
   "seed": 4106,
@@ -63,12 +51,12 @@
    257
   ],
   "petalR": 17,
-  "heroTop": 251,
-  "feet": 334,
+  "heroTop": 254,
+  "feet": 337,
   "grounded": false,
   "dx": -10,
   "onLog": false,
-  "minHeroRoom": 181,
+  "minHeroRoom": 184,
   "minPetalRoom": 142
  }
 }

@@ -131,3 +131,18 @@ test('in danger with her clock still: the ladder line takes over from the stage 
   q.tick(9100, env(true));
   assert.equal(q.cur?.line.text, STEP_LINE);
 });
+
+// (delta 2: the old stuck helper, "This way, Pokey! Try over here.", spoke 2.5 s after the steps grew; DotGuide.tsx asks helpLadderOn()
+// and keeps it quiet while a ladder is on. The seam: on in 1-1, off on another stage and after the stage ends)
+test('helpLadderOn: true while 1-1 runs (its ladder on), false on 1-2 and once the stage has ended', async () => {
+  const { helpLadderOn } = await import('./helpLadder.ts');
+  setDifficulty('easy');
+  const r = withPlaySeed(SEED, () => new RealPlay('1-1', 1));
+  assert.equal(helpLadderOn(), true);
+  (r.e as unknown as Eng).stop();
+  assert.equal(helpLadderOn(), false);
+  const o = new RealPlay('1-2', 1);
+  assert.equal(helpLadderOn(), false);
+  (o.e as unknown as Eng).stop();
+  setDifficulty('normal');
+});

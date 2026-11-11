@@ -399,6 +399,10 @@ function debrisLook(color: string): 'star' | 'leaf' | 'grit' | 'earth' {
   return 'earth';
 }
 
+/** the most the view moves up in one frame while it keeps a bouncing or double-jumping hero under the HUD (px of world; the eased view's
+ *  old worst step was 10.8, INT-1-1) */
+const CAM_RISE_STEP = 11;
+
 export class GameEngine {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
@@ -567,6 +571,8 @@ export class GameEngine {
   private vineLashed = false;
   /** the height the camera keeps level with, and its eased look-ahead (cameraFollow.ts) */
   private camAnchorY = NaN;
+  /** the view was lifted for a bounce (updateCamera's `lift`): its way back down is held to CAM_RISE_STEP a frame too */
+  private camLifted = false;
   private camLookX: number = CAM.lookAhead;
   /** the way the view looks (his facing, held through a swing), and the facing he caught the swinging vine with */
   private camFacing = 1;
@@ -5674,11 +5680,16 @@ export class GameEngine {
     // bounce, a double) the height it keeps him under the HUD by comes up at three times his own climb, and is his own height from one and
     // a half jumps' rise up (a bounce tops out higher, about 180): bouncing up beside 1-1's high seed-perch log his hands and the petals
     // over it went under the HUD (INT-1-1, seed 4106 x29700 sideways). Continuous: at one jump's rise it is the height he left)
-    const refY = p.grounded || !Number.isFinite(this.camAnchorY) ? p.y : Math.min(this.camAnchorY, Math.max(p.y, 3 * p.y + 3 * JUMP_RISE - 2 * this.camAnchorY));
+    // (the height he will top out at, from his climb now: the view starts toward it on the bounce's first frame, so at no more than
+    // CAM_RISE_STEP a frame it is there by the top, INT-1-1 delta 2: read from where he is, it started too late to ease)
+    const topY = !p.grounded && p.vy < 0 ? p.y - (p.vy * p.vy) / (2 * PHYS.gravUp) : p.y;
+    const lift = !p.grounded && Number.isFinite(this.camAnchorY) && topY + JUMP_RISE < this.camAnchorY;
+    const refY = p.grounded || !Number.isFinite(this.camAnchorY) ? p.y : Math.min(this.camAnchorY, Math.max(topY, 3 * topY + 3 * JUMP_RISE - 2 * this.camAnchorY));
     this.camera.targetY = Math.min(this.camera.targetY, underHud(refY, band));
 
     // Smooth damp camera
     const smoothFactor = Math.min(1, dt * RUN.follow);
+    const y0 = this.camera.y;
     this.camera.x += (this.camera.targetX - this.camera.x) * smoothFactor;
     this.camera.y += (this.camera.targetY - this.camera.y) * smoothFactor;
     // the easing never loses him off the side: the aim keeps him in the view, but on a narrow view the eased camera trailed a quick swing
@@ -5689,9 +5700,16 @@ export class GameEngine {
     this.camera.x = kept + (this.camera.x - kept) * teaK;
     // (standing, never even for a moment while the view eases)
     if (p.grounded) this.camera.y = Math.min(this.camera.y, underHud(p.y, band));
-    // (and rising past a plain jump's height, at once as well: the eased view trailed a bounce by 50 px and more. It joins the standing
-    // hold without a step: it starts to act only once he is a jump's rise over the height he left, where refY is that height)
-    else if (Number.isFinite(this.camAnchorY) && p.y + JUMP_RISE < this.camAnchorY) this.camera.y = Math.min(this.camera.y, underHud(refY, band));
+    // (and rising past a plain jump's height, toward the same hold, but never more than CAM_RISE_STEP a frame: the eased view trailed a
+    // bounce by 50 px and more, and a hold applied at once moved the view 44-72 px in one frame, a snap (the Critic, INT-1-1); the old
+    // worst step was 10.8. It acts only once he is a jump's rise over the height he left, where refY is that height)
+    else if (lift) this.camera.y = Math.max(Math.min(this.camera.y, underHud(refY, band)), y0 - CAM_RISE_STEP);
+    // (and back down after it the same way: the eased return from a lifted view stepped 15 px a frame)
+    if (lift) this.camLifted = true;
+    else if (this.camLifted) {
+      if (this.camera.y > y0 + CAM_RISE_STEP) this.camera.y = y0 + CAM_RISE_STEP;
+      if (Math.abs(this.camera.y - this.camera.targetY) < 1 || this.camera.y <= y0) this.camLifted = false;
+    }
 
     // Clamp camera within stage bounds
     this.camera.x = Math.max(0, Math.min(this.currentStage.config.levelWidth - vw, this.camera.x));
