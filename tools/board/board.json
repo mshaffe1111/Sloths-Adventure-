@@ -61,8 +61,8 @@
    "status": "reported"
   },
   {
-   "role": "Critic",
-   "task": "checking the plan to make room in the main code file (R-165.103)",
+   "role": "Engine",
+   "task": "making room in the main code file (vendor split, R-165.103)",
    "status": "working"
   }
  ],
