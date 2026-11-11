@@ -301,3 +301,9 @@ everything to it.
 **1-2 bonus blooms (the lead's ruling, 5:36 PM ET; keeper OK with a condition).** Four bonus blooms may sit high on a bough over a cap as
 the explorer's reward. They must be a flower GROWING on the bough, distinct from Meeca's loose pink trail petals, and not the hibiscus.
 A high bloom that reads as her petal breaks "I put it low so you wouldn't have to look up."
+
+**0.9.6 release (main 181d2846 + t-int-1-1@874f11f6; the lead asked for the checklist at 5:38 PM ET).** I sent the lead the checklist:
+methods/release.md plus its gaps. The player-text check of 874f11f6: the A2 help lines match my OK (324cd3cc is in the candidate). ONE FIX
+asked for before the PR: the pad coach (CoachOverlay pad.jump) still says "Tap it again in the air for a double jump", while Dot's pad
+help says "hold Jump again in the air". That is two channels saying two things. Land R-165.57's text in the candidate. Still to come to
+me: the whatsNew entry, and any other changed player string, before the PR.
