@@ -3,7 +3,7 @@
 // the thresholds planted off by one (4/6/9/13) fail.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HelpLadder, RUNGS, stepsFor, padFullJump, setHelpLadder, pieceMove, moveLine, MOVE_LINES, STEP_LINE, OFFER_LINE, REASK_LINE, type Rungs, type Box } from './helpLadder.ts';
+import { HelpLadder, RUNGS, stepsFor, pieceMoveLaid, padFullJump, setHelpLadder, pieceMove, moveLine, MOVE_LINES, STEP_LINE, OFFER_LINE, REASK_LINE, type Rungs, type Box } from './helpLadder.ts';
 
 const PIECES = [
   { k: 'a', x0: 0, x1: 1000 },
@@ -127,4 +127,16 @@ test('the steps come from the piece as laid: a step under every rise over 60 px 
   for (const s of steps.slice(0, 3)) assert.equal(s.y - (s.y - 60), 60);
   // (no gap wider than a plain jump: no pad)
   assert.equal(stepsFor(piece, solids, () => 1000).length, 3);
+});
+
+test('the move a piece needs, from the piece as laid: a mushroom is the bounce, a join no single jump makes is the double, else a single', () => {
+  const piece = { k: 'p', x0: 0, x1: 1000 };
+  const single = (dyUp: number) => (dyUp > 97 ? -1 : 150);
+  const level = [{ x: 0, y: 500, width: 400, height: 24 }, { x: 500, y: 500, width: 400, height: 24 }];
+  assert.equal(pieceMoveLaid(piece, level, [], single), 'single');
+  const rise = [{ x: 0, y: 500, width: 400, height: 24 }, { x: 470, y: 386, width: 400, height: 24 }];
+  assert.equal(pieceMoveLaid(piece, rise, [], single), 'double', 'a 114 px rise');
+  const wide = [{ x: 0, y: 500, width: 300, height: 24 }, { x: 520, y: 500, width: 300, height: 24 }];
+  assert.equal(pieceMoveLaid(piece, wide, [], single), 'double', 'a 220 px gap');
+  assert.equal(pieceMoveLaid(piece, rise, [{ x: 420, y: 520, width: 40, height: 30 }], single), 'bounce');
 });

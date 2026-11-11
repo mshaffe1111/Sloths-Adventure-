@@ -61,10 +61,10 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const freePort = () => new Promise((res) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => res(p)); }); });
 
 // a production build served by vite preview: six pages load it far faster than the dev server's thousand modules
-// (`dev`: a development build, NODE_ENV=development, for the one step that needs the dev-only engine handle: the help offer, R-165.62)
+// (`dev`: a development build, NODE_ENV=development, minified so it fits the PWA's 4 MiB precache limit, for the one step that needs the dev-only engine handle: the help offer, R-165.62)
 async function startServer(dev = false) {
   const dist = path.join(out, dev ? 'dist-dev' : 'dist');
-  const b = spawn('npx', ['vite', 'build', '--outDir', dist, '--emptyOutDir', '--logLevel', 'error'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], env: dev ? { ...process.env, NODE_ENV: 'development' } : process.env });
+  const b = spawn('npx', ['vite', 'build', '--outDir', dist, '--emptyOutDir', '--logLevel', 'error', ...(dev ? ['--minify'] : [])], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], env: dev ? { ...process.env, NODE_ENV: 'development' } : process.env });
   let blog = '';
   b.stdout.on('data', (d) => (blog += d));
   b.stderr.on('data', (d) => (blog += d));

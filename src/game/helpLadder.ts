@@ -193,6 +193,30 @@ export function pieceMove(needs: readonly string[] | undefined): Move {
   if (needs?.includes('double')) return 'double';
   return 'single';
 }
+/**
+ * what the piece asks of him, read from the piece as laid (no section tables: importing them pulled the stage data into the main chunk):
+ * a mushroom in it is the bounce; a join on its road no single jump makes (`singleGap(dyUp)` under the gap, or -1: too high) is the
+ * double; else a long single jump
+ */
+export function pieceMoveLaid(piece: Piece, solids: readonly Box[], mushrooms: readonly Box[], singleGap: (dyUp: number) => number): Move {
+  if (mushrooms.some((m) => m.x + m.width > piece.x0 && m.x < piece.x1)) return 'bounce';
+  const run = roadOf(piece, solids);
+  for (let i = 0; i + 1 < run.length; i++) {
+    const a = run[i], b = run[i + 1];
+    const g = singleGap(a.y - b.y);
+    if (b.x - (a.x + a.width) > g) return 'double';
+  }
+  return 'single';
+}
+/** a piece's road: its standing pieces under no other, with the road piece on either side of it */
+function roadOf(piece: Piece, solids: readonly Box[]): Box[] {
+  const under = (a: Box) => solids.some((b) => b !== a && b.y < a.y && b.x < a.x + a.width && b.x + b.width > a.x);
+  const road = solids.filter((a) => a.width >= 40 && !under(a)).sort((a, b) => a.x - b.x);
+  const inside = road.filter((a) => a.x + a.width > piece.x0 && a.x < piece.x1);
+  if (!inside.length) return [];
+  const i0 = road.indexOf(inside[0]), i1 = road.indexOf(inside[inside.length - 1]);
+  return road.slice(Math.max(0, i0 - 1), Math.min(road.length, i1 + 2));
+}
 export function moveLine(m: Move, mode: 'screen' | 'pad' | 'keys'): string {
   return mode === 'screen' ? MOVE_LINES[m].touch : MOVE_LINES[m].pad;
 }
@@ -216,12 +240,7 @@ export const PAD_W = 60;
  * (no higher than STEP_LEFT under the far side, with a step under it if the near side is lower still).
  */
 export function stepsFor(piece: Piece, solids: readonly Box[], plainGap: (dyUp: number) => number): Box[] {
-  const under = (a: Box) => solids.some((b) => b !== a && b.y < a.y && b.x < a.x + a.width && b.x + b.width > a.x);
-  const road = solids.filter((a) => a.width >= 40 && !under(a)).sort((a, b) => a.x - b.x);
-  const inside = road.filter((a) => a.x + a.width > piece.x0 && a.x < piece.x1);
-  if (!inside.length) return [];
-  const i0 = road.indexOf(inside[0]), i1 = road.indexOf(inside[inside.length - 1]);
-  const run = road.slice(Math.max(0, i0 - 1), Math.min(road.length, i1 + 2));
+  const run = roadOf(piece, solids);
   const out: Box[] = [];
   const stepOn = (a: Box, topY: number) => {
     const h = a.y - topY;

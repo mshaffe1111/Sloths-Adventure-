@@ -24,8 +24,7 @@ import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
 import { maxGap, softFallStage } from './gen2/pipeline.ts';
-import { HelpLadder, moveLine, pieceMove, setHelpLadder, stepsFor, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
-import { W1_SECTIONS } from './gen2/worlds/w1.ts';
+import { HelpLadder, moveLine, pieceMoveLaid, setHelpLadder, stepsFor, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
 import { pickCut } from './w1CutArt.ts';
 import { difficulty, easeInShare, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
@@ -5050,13 +5049,20 @@ export class GameEngine {
     const s = help.setting === 'easy' ? 'E' : 'N';
     for (const a of help.putBack(x)) {
       recorder.event('help', `${a.rung} ${a.piece.k} ${a.count} ${s}`);
-      if (a.rung === 'move') this.guide(moveLine(pieceMove(W1_SECTIONS.find((q) => q.id === a.piece.k)?.needs), lessonInputMode()), 6);
+      if (a.rung === 'move') this.guide(moveLine(this.pieceMove(a.piece), lessonInputMode()), 6);
       else if (a.rung === 'step') {
         this.growSteps(a.piece);
         this.guide(STEP_LINE, 5);
       } else if (a.rung === 'offer' || a.rung === 'reask') this.helpDue = a;
       // ('pad': quiet, padControl reads helpLadder.padFullJump)
     }
+  }
+
+  /** the move a piece needs, from the piece as laid (helpLadder.ts pieceMoveLaid) */
+  private pieceMove(piece: Piece) {
+    const margin = (this.currentStage as { gen2?: { budget?: { margin?: number } } }).gen2?.budget?.margin ?? (isEasy() ? 0.65 : 0.82);
+    const solids = this.platforms.filter((q) => q.type === 'solid' && !q.broken && !q.push && !q.chase && !q.hollow && !this.grown.includes(q));
+    return pieceMoveLaid(piece, solids, this.platforms.filter((q) => q.type === 'bouncy'), (dyUp) => maxGap(dyUp, false, margin));
   }
 
   /** the boxes the ladder would grow at a piece, from the piece as laid (helpLadder.ts stepsFor) */
