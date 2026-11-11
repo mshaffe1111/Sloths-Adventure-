@@ -15,7 +15,11 @@ at about 1,500 rises per setting on today's layouts, so it took four tries and w
 replaces). The re-lay is the fix; the help system rides on it.
 ## Frozen inputs (do not change)
 - DISPATCH ORDER (Matt's standing rule, 11-11: no patching what is being replaced; fix and polish only when ready to finalize): this
-  packet goes out once E0a has PASSED (the verdicts it lays to). The tier bots are needed only for done-item 7, at the end; the lead
+  packet goes out now (lead ruling 11-11 7:00 AM ET, Matt: "Was expecting 1-1 would be done 2day"), from t-engine-e0a@cf0b7752. E0a's
+  last fix (attempt 3) removes two FALSE refusals only, in files outside your WRITE (promises11.ts floorlessGaps/routeGaps: a slot a
+  solid piece spans edge to edge at lip level, or one floored below his body width, is not a drop; petalPass.ts arcs). Until the lead
+  names the new head, treat floor.unmarked/drop.untyped hits of exactly those two kinds as known false; every other refusal is real.
+  When the lead names the head, rebase onto it (E0 commits first) and re-run seedlist --check. The tier bots are needed only for done-item 7, at the end; the lead
   names their passed head before you run it. Base: the passed t-engine-e0a head the lead names (E0 and C1 ship in ONE
   PR, E0 commits first). A verdict you think is wrong is a PUSHBACK with a drawn case, never a work-around.
 - reference/specs/ is READ-ONLY at t-designer-reach@e97542b4 (§5 corrected 11-11: D bank Easy 128-132 / Normal 136-140; THIN limbs E,
@@ -60,6 +64,10 @@ replaces). The re-lay is the fix; the help system rides on it.
 9. The 5 plank footprints named (piece, x, size) for C2.
 10. tsc, the full suite in 3 shards (the 1-1-cannot-build failures on E0a gone), knowncheck, roadmapcheck, buildcheck (alone),
    drawcheck. Main chunk size stated (R-165.103 lands separately; do not split code yourself).
+## The benchmark (Matt, 11-11: "so that we can start seeing how well a new helper could make a level, the quality, and time it takes")
+This re-lay is also the first measure of how a fresh helper builds a level. Keep reference/qa-reports/C1/TIMELINE.md as you go: the ET
+time (from `date`) you start, each phase start (read-in, layout, verdicts green, bots, stills, report), every PUSHBACK, and the time you
+send your report. In REPORT.md add a "Benchmark" section: hours per phase, what slowed you (named), what a tool or doc would have saved.
 ## Return
 Branch t-content-c1 from the named t-engine-e0a head, pushed (git ls-remote). REPORT.md (the 7 sections plus "Method used" and "Lessons
 applied"), 60 lines or fewer. Then ONE send_message to the lead (session_01FhBbYMoqqEdVR3qFjTCugy), 8 lines or fewer. Then stop. A
