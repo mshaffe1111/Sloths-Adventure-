@@ -14,43 +14,51 @@ Testers lost lives and quit in raised pieces on today's 1-1 (36 Normal lives, al
 at about 1,500 rises per setting on today's layouts, so it took four tries and was stopped (Matt, 11-11: stop patching what the re-lay
 replaces). The re-lay is the fix; the help system rides on it.
 ## Frozen inputs (do not change)
-- Branch from t-engine-e0a (the verdicts; E0 and C1 ship in ONE PR, E0 commits first: PACKETS.md). Take its newest head the lead names
-  (cf0b7752 today, its audit is open; rebase onto a later head if the lead says). The verdicts judge your layout; a verdict you think is
-  wrong is a PUSHBACK with a drawn case, never a work-around.
-- reference/specs/ is READ-ONLY. A band you can't meet is a PUSHBACK, not a new number.
-- Help (from A2, t-engine-help@98186930, whose layout-free parts are kept): a stair has faces 60 px or less, treads 80 px (the top one
-  160 for a run-up), rests on the ground or the rock below, its top within 60 px below the lip.
-- Made things: none in 1-1 (ONE-ONE-FIX-PLAN, 11-11 ruling); today's 5 planks (w1-cut.webp) become natural pieces of the same footprint
-  (a flat-topped fallen log or a natural flat-top stump; no saw rings).
+- DISPATCH ORDER (Matt's standing rule, 11-11: no patching what is being replaced; fix and polish only when ready to finalize): this
+  packet goes out only after E0a and the tier bots have PASSED. Base: the passed t-engine-e0a head the lead names (E0 and C1 ship in ONE
+  PR, E0 commits first). A verdict you think is wrong is a PUSHBACK with a drawn case, never a work-around.
+- reference/specs/ is READ-ONLY at the t-designer-reach head the lead names (§5 corrected for thin pieces: bands.md:20). A band you
+  can't meet is a PUSHBACK, not a new number.
+- Help is NOT built here. Dot's help (A2's ladder) goes onto the finished 1-1 in its own packet. C1 only lays room for it, to A2's stair
+  geometry, frozen for C1: faces 60 px or less, treads 80 px, the top tread 160 px (TOP_W), the top within 60 px below the lip, resting
+  on the ground.
+- Art is NOT placed here (C2 places art after Matt's yes on a mock-up, PACKETS.md:66-72). C1 keeps today's 5 plank footprints and names
+  them for C2 (Matt's P-06-a "mossy fallen log, flat top" is the likely fit).
+- The 1-1 baseline: calibration-a1.jsonl on the passed t-bots-tiers head (today's 1-1 on A1, 3 tiers, both settings, variants 1-40).
 ## Files
 - WRITE: src/game/gen2/worlds/w1.ts, src/game/gen2/worlds/w1.test.ts, NEW src/game/gen2/firstRun11.ts (ADR-002: the one fixed first-run
   layout and its lock), src/game/gen2/provenSeeds.ts, the lockall record, tools/engine/seedlist.ts's output files, REPORT.md, your
   turnover note. Nothing else (a needed change elsewhere is a PUSHBACK naming file and line).
 ## Definition of done (the Critic checks each)
-1. Every row of bands.md §5 entered (DOUBLE_TEACH by the D rise block on both settings; DOUBLE_TEST [252, 262] Normal only; Easy D/E
-   blocks 128-132; bounce lips 232-246 with the mushroom's edge 20-60 px from the face; U/V 236-250; w1.ts:519's post checked; the three
-   chains inside the single band or with a catch road; a practice gap before each double gap). A table in REPORT.md: row, today, now,
-   w1.ts line.
-2. PER SETTING: Easy has no double gap (its band is 'none'), so where Normal lays its 252-262 test gap, Easy lays its own variant;
-   seedlist --check passes on BOTH settings for every listed seed (E0a's Critic: an Easy build carries Normal's verdict too).
-3. Every rise in 1-1, both settings, is either within a plain single jump's climb (reach.md) or has room for A2's stair: run A2's stair
-   sweep (t-engine-help@98186930's helpLadderSweep / stepBoxes) on your layouts: zero rises with no stair room, zero faces over 60.
-4. A put-back never lands past the thing the piece needs (the tier-bots Critic found A1 putting Pokey back past the mushroom he needs at
-   w1-mushroom-chain area x29758): for each piece with a mushroom or a step he must use, the put-back spot is before it. A test.
-5. Today's 5 planks replaced by natural pieces (name each, its footprint, the art piece from t-c2-art-cut's catalog).
-6. Verdicts: seedlist 1-1 --check PASS; the refusal list by name is empty for the listed seeds; provenSeeds.ts re-proven; lockall --check
-   against main's lock (record it on main first): only 1-1 moves. firstRun11.ts picks the first-run layout: the seed whose tier-bot runs
-   give the gentlest first two minutes (name the measure), locked.
-7. Played: the tier bots (t-bots-tiers, the head the lead names once they pass) on your 1-1, 40 variants per tier and setting: Normal
-   lives 0; no rescues for middle and expert; put-backs per run no higher than on today's 1-1 per tier (from calibration-a1.jsonl);
-   middle-tier median finish at least 120 s (stages take at least 2 minutes). Print the per-piece table.
-8. Polish check (STAGE-RULES §5b): stills upright AND sideways of every piece type and of the first two minutes of the first-run layout,
-   looked at the way Matt will on a phone; anything rough fixed or named.
-9. tsc, the full suite in 3 shards (green: the 126 "1-1 cannot build" failures on E0a must be gone), knowncheck, roadmapcheck,
-   buildcheck (alone), drawcheck. Main chunk size stated (R-165.103 is landing separately; do not split code yourself).
+1. Every row of bands.md §5 entered at the named spec head (DOUBLE_TEACH by the D rise block on both settings; DOUBLE_TEST [252, 262]
+   Normal only; thin rises on bands.md:20's rows; bounce lips 232-246 with the mushroom's edge 20-60 px from the face; U/V 236-250;
+   w1.ts:519's post checked; the three chains inside the single band or with a catch road; the Easy log chain). A table in REPORT.md:
+   row, today, now, w1.ts line. Fewer or shorter bounce pieces than today: count both.
+2. PER SETTING: Easy has no double gap, so where Normal lays its 252-262 test gap, Easy lays its own variant. seedlist --check passes on
+   BOTH settings for every listed seed.
+3. Teach first (STAGE-RULES): a w1.test.ts check that a practice gap comes before every 252-262 test gap and that Easy's variant is
+   taught; the bounce card fires at the first mushroom (story keeper #8).
+4. Room for help: a w1.test.ts check over every listed seed and both settings: every rise is within a plain single jump's climb
+   (reach.md), or has flat solid ground in front of its face long enough for the frozen stair (n = ceil((rise - 60) / 60) rocks: 80 px for
+   each lower tread plus the 160 px top), with no pit in it. Name the tallest rise and the room it has.
+5. Put-backs before the need: the engine puts him back on the last solid ground at least 60 px wide (engine.ts:2467-2471, bouncy
+   excluded). Layout rule, checked in w1.test.ts with RealPlay: between a mushroom or rise he must use and its face there is no solid
+   ground 60 px or wider that he could be put back on past it.
+6. Verdicts: seedlist 1-1 --check PASS; the refusal list by name empty for the listed seeds (the joins closed: no deck holes);
+   provenSeeds.ts re-proven; lockall --check against main's lock (record it on main first): only 1-1 moves. firstRun11.ts picks the
+   first-run layout: the seed whose tier-bot runs give the gentlest first two minutes (name the measure), locked.
+7. Played with the passed tier bots, 40 variants per tier per setting, against the baseline: no rescues for middle and expert;
+   put-backs per run per tier no higher than the baseline's; lives counted with the REAL loseLife (RealPlay stubs it, realPlay.ts:141:
+   say how, with one pasted run) and the harm kinds named: 0 on Normal; length: the EXPERT tier's minimum over all 40 variants, each
+   setting, at least 120 s with STAGE-RULES.md:68's climb discount. Print the per-piece table.
+8. Polish (STAGE-RULES §5b): stills upright AND sideways of every piece type, and a clip of the first two minutes on Easy and on Normal,
+   both orientations, looked at the way Matt will on a phone; anything rough fixed or named (art itself is C2's).
+9. The 5 plank footprints named (piece, x, size) for C2.
+10. tsc, the full suite in 3 shards (the 1-1-cannot-build failures on E0a gone), knowncheck, roadmapcheck, buildcheck (alone),
+   drawcheck. Main chunk size stated (R-165.103 lands separately; do not split code yourself).
 ## Return
 Branch t-content-c1 from the named t-engine-e0a head, pushed (git ls-remote). REPORT.md (the 7 sections plus "Method used" and "Lessons
 applied"), 60 lines or fewer. Then ONE send_message to the lead (session_01FhBbYMoqqEdVR3qFjTCugy), 8 lines or fewer. Then stop. A
 blocker or a wrong frozen input: PUSHBACK.md on the branch and one message, then stop.
 ## Attempt
-1
+1 (rewritten 11-11 6:55 AM ET on its packet Critic's nine findings and Matt's standing rule)
