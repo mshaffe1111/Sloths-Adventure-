@@ -121,6 +121,9 @@
     2:07 AM ET to restart its audit of t-c2-art-cut@fa3e6e77.
   - The story keeper (session_019iachLiuwNTAZUBSJWUmR3) asked at 2:07 AM ET for Dot's words for the help schedule (A2). Its context is
     about 863k tokens, near its compaction point: each message to it is costly; ask in one message, take one reply.
+  - The lead's own 2:05 AM reminder fired too: its "Engine on Fable 5.2" and "dispatch the Architect" lines are superseded (Opus for
+    all, R-165.91; the Architect passed 11-09). The A2 packet is written (packets/2026-11-09/ENGINE-R-165.62-A2.md), waiting for Dot's
+    words. The analyst (same session, attempt 3) asked at 2:09 AM ET for the delta read of the closed window.
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,
