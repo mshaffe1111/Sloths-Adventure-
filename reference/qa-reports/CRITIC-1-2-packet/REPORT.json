@@ -1,8 +1,8 @@
 {
  "holds": [
-  "quiet12 and supply12 FLOWN runs reproduce byte for byte",
-  "cites at 53bd446a: CONTENT 37/37, ENGINE 74/76",
-  "all four attempt-2 lines closed"
+  "ncount12: median 4/2/4, max 6, 0 of 360 over the ceiling",
+  "quiet12: 10 of 11 rows equal the saved run",
+  "ENGINE notes written in"
  ],
  "tests_added": [
   "reference/qa-reports/CRITIC-1-2-packet/probe12b.ts (iso | supply | v3; proof runs, not in the suite)",
@@ -11,7 +11,8 @@
   "reference/qa-reports/CRITIC-1-2-packet/ctest12.ts",
   "reference/qa-reports/CRITIC-1-2-packet/cites-content-2.txt",
   "reference/qa-reports/CRITIC-1-2-packet/cites-engine-2.txt",
-  "reference/qa-reports/CRITIC-1-2-packet/ncount12.ts"
+  "reference/qa-reports/CRITIC-1-2-packet/ncount12.ts",
+  "reference/qa-reports/CRITIC-1-2-packet/mirror12.ts"
  ],
  "not_run": [
   "tsc, the suite and the gates: no production code changed in a packet audit",
@@ -237,23 +238,32 @@
  },
  "audited": {
   "branch": "t-design-1-2",
-  "head": "7ed328b6",
+  "head": "3864e805",
   "cites_at": "t-int-1-1@53bd446a"
  },
  "status": "REJECT",
  "verdicts": {
-  "CONTENT-1-2-relay.md": "REJECT (1 line)",
-  "ENGINE-1-2-routing.md": "PASS (two notes)"
+  "CONTENT-1-2-relay.md": "REJECT (1 line, plus 1 number to correct)",
+  "ENGINE-1-2-routing.md": "PASS"
  },
  "violations": [
   {
    "packet": "CONTENT-1-2-relay.md",
    "n": 1,
    "file": "reference/packets/2026-11-11/CONTENT-1-2-relay.md",
-   "line": "58-62, 83-92, 109, 112-113; reference/STAGE-RULES.md:23-24",
-   "rule": "STAGE-RULES \u00a70 rule 3: no beat repeated to fill time",
-   "evidence": "out/ncount12.txt: median 13 N beats a roll on graphs A and C, 9 on B, max 19; 257 of 360 rolls hold 10 or more; 209 hold a run of 5 or 6 in a row",
-   "fix": "no more than 3 N in a row; mix the kit own down beats (Y, F), a drop, or end high into a D node; a ceiling on N a roll as a test; re-fly with quiet12"
+   "line": "56-62, 82, 118-119, 123, 128, 133-136; src/game/gen2/pipeline.ts:1445-1450; src/game/gen2/worlds/w1.ts:332",
+   "rule": "a section with a direction is never laid mirrored",
+   "evidence": "out/mirror12.txt: the worked chain mirrored on 58 of 120 rolls (floor mushroom at the far end); the note hollow mirrored on 62 of 119 with a step up of 130-140 px",
+   "fix": "mirrorable = false for every section with a chain, a floor mushroom before a gap, J, Y, rising widths, and N20; a test on gen2.plan[].mirrored"
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 2,
+   "file": "reference/packets/2026-11-11/CONTENT-1-2-relay.md",
+   "line": "85-86; reference/specs/sims/out/quiet12.txt:10",
+   "rule": "D37: a pasted run is what the script prints",
+   "evidence": "out/quiet12-rerun.txt: J N c J c N over 4 s on 1 of 47 (4.2 s), not 0 of 50 (3.7 s)",
+   "fix": "paste the printed row"
   }
  ],
  "attempt2": {
@@ -307,8 +317,28 @@
   ],
   "closed_in_attempt3": true
  },
- "notes_engine": [
-  "item 5: name the fifth reader of doubleAllowed, src/game/gen2/pipeline.ts:193",
-  "ctest12.ts now has --record and --check, as the gate describes"
- ]
+ "attempt3_4": {
+  "audited": {
+   "branch": "t-design-1-2",
+   "head": "7ed328b6",
+   "cites_at": "t-int-1-1@53bd446a"
+  },
+  "status": "REJECT",
+  "verdicts": {
+   "CONTENT-1-2-relay.md": "REJECT (1 line)",
+   "ENGINE-1-2-routing.md": "PASS (two notes)"
+  },
+  "violations": [
+   {
+    "packet": "CONTENT-1-2-relay.md",
+    "n": 1,
+    "file": "reference/packets/2026-11-11/CONTENT-1-2-relay.md",
+    "line": "58-62, 83-92, 109, 112-113; reference/STAGE-RULES.md:23-24",
+    "rule": "STAGE-RULES \u00a70 rule 3: no beat repeated to fill time",
+    "evidence": "out/ncount12.txt: median 13 N beats a roll on graphs A and C, 9 on B, max 19; 257 of 360 rolls hold 10 or more; 209 hold a run of 5 or 6 in a row",
+    "fix": "no more than 3 N in a row; mix the kit own down beats (Y, F), a drop, or end high into a D node; a ceiling on N a roll as a test; re-fly with quiet12"
+   }
+  ],
+  "closed_in_attempt5": true
+ }
 }
