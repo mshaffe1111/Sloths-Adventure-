@@ -19,5 +19,8 @@ First note under this name: the scripts, the gate order with timings, the traps 
 - The deal hands out content types by quota, window and neighbours, never by what the pool holds for that job (pipeline.ts:595-618); a job with no section of a dealt type fails the roll (Law 22, pipeline.ts:2686-2688). Check every packet's job-by-type grid against its deal and the kit's windows (w1.ts:49).
 - The node code's V3 knows only this stage's teach nodes (nodeCode.ts:138-141), not `manifest.lessons`.
 - tierBots: the expert has no Easy bot (tierBots.ts:18-22) and a run carries no hearts; both are the Critic's to add before 1-2's bot run (not started).
+## Done since
+- Hearts per run and per piece in the tier bots: branch t-critic-bots-hearts@dabd303a on t-int-1-1@874f11f6 (tools/inspect/firsttimer.ts, tierBots.ts, tierBots.test.ts, R-165.59/BOTS.md). tierBots.test 8 of 8; the 48 other tests that use the first-timer bot pass. calibration-main.jsonl not touched (the replay compares the fields a line has and requires 0 hearts on 1-1).
 ## Owed by me
-- hearts per run and per piece in tools/inspect/tierBots.ts, and an Easy answer for the expert floor, when the lead says go.
+- The delta on the Designer's attempt 3 (four narrow edits, the lead's rulings of 4:58 PM ET): re-run quiet11.ts on the new rhythms' stand-ins if any exist, ctest12.ts idea against item 5's new wording, the cites.
+- An Easy answer for the expert floor is settled (the middle tier, CONTENT brief `length`): nothing owed.
