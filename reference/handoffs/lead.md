@@ -35,20 +35,20 @@ is, Matt's direction, the first day), then this note, then STATE.md (the live le
   ~11:40 AM to 5:25 PM ET, 4 Critic rounds, 6 defects caught by the Critic. 1-2 packets: Designer 3:28-3:52 PM ET, then 4 Critic rounds
   (still open). The lead's hour estimates today were low every time (D42 clock, "60-100 h engine" vs the map's 295 h): measure, never guess.
 
-## In flight (rewritten by the new lead session_01FhBbYP63h7cCX8DyW69stq, 11-11 6:12 PM ET; check each with get_session and git ls-remote)
+## In flight (the lead, 11-11 6:22 PM ET; Matt 6:19 PM: "You determine what should be done... The only person on the team that stays is the storyteller")
+Goal: two new levels (1-2, 1-3) on Matt's test link by Friday 11-13, laid on gen2. If gen2 can't by then, stop rebuilding and add a twist to
+each existing level with the moves the engine already has (time one level first). Spend only on that and on the release.
 | Work | Session | Branch | State |
 |---|---|---|---|
-| Story keeper (permanent) | session_019iachLiuwNTAZUBSJWUmR3 | - | release checklist holder; all player text |
-| Release clerk: 0.9.6 full gate (Opus xhigh) | session_01FhBbYNQH2E77sZaoHs9zNm | release-0.9.6@06bbd29f | gates running; reports the table to the lead; rebuilds EnK5 from the final head |
-| EN-Y the critical path on Fable high, 3 h hard stop 9:20 PM: yield table + fix, then any stage by data + hurt floors (1-2 packet items 1-3) | session_01FhBbYMEqTtxP72ifdjF22d | t-engine-yield | started 6:09 PM; milestones ~7, ~8, 9:20 PM |
-| EN-T travel as a mode (Opus xhigh, 10 h) | session_01FhBbYJwFzGWE5RsE6Hnd4Z | t-engine-travel | started 6:14 PM (Fable session stopped, archived) |
-| EN-G frame loop, saves, generality gate (Opus xhigh, 8 h) | session_01FhBbYLQXMXf7W8kWmXUkvc | t-engine-guards (on 3ce6ac43) | started 6:14 PM (Fable session stopped, archived) |
-| R-165.112 seed lists in their own chunk (Fable) | session_01FhBbYKLJaSijKJGsXKEZNB | t-engine-seedchunks | final gates; retire after its Critic |
-| its Critic (Opus high) | session_01FhBbYMct2YXASz55Nd3jbZ | t-critic-seedchunks | auditing |
-| 1-1 follow-up (R-165.115/.119/.122) | session_01FhBbYLVQnNER5KWRX5LQrf | t-engine-11-followup | told to push and stop; PARKED unreviewed until 1-1's pass after the engine |
-Retired 11-11 by the new lead (archived, branches verified): 1-2 Designer (t-design-1-2@6c70f6ff), 1-2 packet Critic
-(t-critic-1-2-packet@b904dbc0), game-map Designer (t-design-game-map@6909c3c9). Packets: reference/packets/2026-11-11/ENGINE-LANES-1.md.
-Plan: reference/plans/ENGINE-PLAN.md. Cost rules: TEAM.md. 1-2 is not built as its own job (ENGINE-PLAN.md).
+| Story keeper (permanent) | session_019iachLiuwNTAZUBSJWUmR3 | - | release checklist; all player text |
+| Release clerk 0.9.6 | session_01FhBbYNQH2E77sZaoHs9zNm | release-0.9.6 | last 4 gates; then EnK5; retire after live |
+| EN-Y Fable high: yield fix, then any stage by data + hurt floors | session_01FhBbYMEqTtxP72ifdjF22d | t-engine-yield | hard stop 9:20 PM ET; step 1 done 6:15 PM (9% N / 2% E clean; post-search rules never retried) |
+| EN-G Opus: R-165.116 + R-165.117 only | session_01FhBbYLQXMXf7W8kWmXUkvc | t-engine-guards | hard stop 9:20 PM ET |
+| 1-1 follow-up | session_01FhBbYLVQnNER5KWRX5LQrf | t-engine-11-followup@f24af141+ | told to push and end; retire |
+Parked, saved, not merged: t-engine-seedchunks@889302163 (R-165.112; its Critic saw roadmapcheck failing on the head: fix at merge),
+t-engine-11-followup (1-1 polish pass later), t-engine-travel (not started; resumes only if gen2 proves out).
+Retired 11-11 (archived, branches verified): 1-2 Designer, 1-2 packet Critic, game-map Designer, seedchunks builder and Critic,
+EN-T (Fable and Opus), EN-G (Fable). Cost rules: TEAM.md.
 
 ## The audits (11-11, a ready fix list)
 - B (gen2, complete): t-audit-engine-b@f06297d4, reference/audits/2026-11-11/ENGINE-AUDIT-B.md: HIGH 3, MED 3, LOW 8. Rows R-165.119
