@@ -1,0 +1,263 @@
+{
+ "player": "P20",
+ "side": "before",
+ "tier": null,
+ "sessions": 1,
+ "gen2Runs": 0,
+ "thin": false,
+ "thinWhy": [],
+ "touchPlacedShare": 1.0,
+ "touch": {
+  "unplacedStrokes": 0,
+  "touchPlacedShare": 1.0,
+  "portrait": {
+   "strokes": 117,
+   "minutes": 0.0,
+   "mix": {
+    "drag": 0.342,
+    "flick": 0.59,
+    "tap": 0.068
+   },
+   "tapMs": {
+    "n": 8,
+    "p10": 46,
+    "p25": 62,
+    "p50": 79,
+    "p75": 87,
+    "p90": 87
+   },
+   "holdMs": null,
+   "flickPx": {
+    "n": 69,
+    "p10": 38.0,
+    "p25": 56.8,
+    "p50": 88.4,
+    "p75": 112.5,
+    "p90": 165.6
+   },
+   "flickPxPerMs": {
+    "n": 69,
+    "p10": 0.411,
+    "p25": 0.546,
+    "p50": 0.782,
+    "p75": 1.012,
+    "p90": 1.411
+   },
+   "flickMs": {
+    "n": 69,
+    "p10": 79,
+    "p25": 88,
+    "p50": 104,
+    "p75": 129,
+    "p90": 154
+   },
+   "dragMs": {
+    "n": 40,
+    "p10": 380,
+    "p25": 521,
+    "p50": 646,
+    "p75": 1130,
+    "p90": 1989
+   },
+   "jumpFlickOffVerticalDeg": {
+    "n": 31,
+    "p10": 5.6,
+    "p25": 9.6,
+    "p50": 22.4,
+    "p75": 28.8,
+    "p90": 31.3
+   },
+   "touchStartX": {
+    "n": 117,
+    "p10": 0.287,
+    "p25": 0.341,
+    "p50": 0.419,
+    "p75": 0.534,
+    "p90": 0.659
+   },
+   "touchStartY": {
+    "n": 117,
+    "p10": 0.414,
+    "p25": 0.474,
+    "p50": 0.511,
+    "p75": 0.588,
+    "p90": 0.674
+   },
+   "leftHalfShare": 0.658,
+   "twoFingerShare": 0.0,
+   "touchSizePx": {
+    "n": 117,
+    "p10": 12,
+    "p25": 12,
+    "p50": 24,
+    "p75": 24,
+    "p90": 24
+   },
+   "gapBetweenTouchesMs": {
+    "n": 116,
+    "p10": 163,
+    "p25": 221,
+    "p50": 579,
+    "p75": 1097,
+    "p90": 1397
+   },
+   "screenWidthPx": {
+    "n": 117,
+    "p10": 320,
+    "p25": 320,
+    "p50": 320,
+    "p75": 320,
+    "p90": 320
+   },
+   "screenHeightPx": {
+    "n": 117,
+    "p10": 485,
+    "p25": 485,
+    "p50": 485,
+    "p75": 485,
+    "p90": 485
+   }
+  },
+  "play": {
+   "minutes": 2.4,
+   "starts": 1,
+   "finishes": 0,
+   "quits": 0,
+   "stuckHelp": 0,
+   "hurtPerMinute": 0.0,
+   "livesLostPerMinute": 0.0,
+   "intentsPerMinute": {
+    "climb": 13.4,
+    "duck": 52.0,
+    "jump": 24.3,
+    "jumpUp": 75.6,
+    "move": 78.9,
+    "punch": 4.2
+   }
+  }
+ },
+ "steeringAllStages": {
+  "moveHoldMs": {
+   "n": 94,
+   "p10": 29,
+   "p25": 50,
+   "p50": 101,
+   "p75": 517,
+   "p90": 800
+  },
+  "moveGapMs": {
+   "n": 93,
+   "p10": 217,
+   "p25": 317,
+   "p50": 718,
+   "p75": 1384,
+   "p90": 2151
+  },
+  "reversalShare": 0.266,
+  "reversalGapMs": {
+   "n": 25,
+   "p10": 67,
+   "p25": 484,
+   "p50": 1174,
+   "p75": 1451,
+   "p90": 2268
+  },
+  "dragToMovePx": {
+   "n": 94,
+   "p10": 17,
+   "p25": 18,
+   "p50": 21,
+   "p75": 25,
+   "p90": 31
+  },
+  "standStillMs": {
+   "n": 65,
+   "p10": 133,
+   "p25": 467,
+   "p50": 700,
+   "p75": 834,
+   "p90": 1702
+  },
+  "duckMs": {
+   "n": 1,
+   "p10": 351,
+   "p25": 351,
+   "p50": 351,
+   "p75": 351,
+   "p90": 351
+  },
+  "climbMs": null,
+  "climbSpeedPxPerS": null
+ },
+ "touchCurve": [
+  {
+   "orientation": "portrait",
+   "strokes": 117,
+   "minutes": 0.0,
+   "mix": {
+    "drag": 0.342,
+    "flick": 0.59,
+    "tap": 0.068
+   },
+   "tapMs": {
+    "n": 8,
+    "p10": 46,
+    "p25": 62,
+    "p50": 79,
+    "p75": 87,
+    "p90": 87
+   },
+   "flickPx": {
+    "n": 69,
+    "p10": 38.0,
+    "p25": 56.8,
+    "p50": 88.4,
+    "p75": 112.5,
+    "p90": 165.6
+   },
+   "flickPxPerMs": {
+    "n": 69,
+    "p10": 0.411,
+    "p25": 0.546,
+    "p50": 0.782,
+    "p75": 1.012,
+    "p90": 1.411
+   },
+   "jumpFlickOffVerticalDeg": {
+    "n": 31,
+    "p10": 5.6,
+    "p25": 9.6,
+    "p50": 22.4,
+    "p75": 28.8,
+    "p90": 31.3
+   },
+   "touchStartX": {
+    "n": 117,
+    "p10": 0.287,
+    "p25": 0.341,
+    "p50": 0.419,
+    "p75": 0.534,
+    "p90": 0.659
+   },
+   "touchStartY": {
+    "n": 117,
+    "p10": 0.414,
+    "p25": 0.474,
+    "p50": 0.511,
+    "p75": 0.588,
+    "p90": 0.674
+   },
+   "leftHalfShare": 0.658,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "n": 116,
+    "p10": 163,
+    "p25": 221,
+    "p50": 579,
+    "p75": 1097,
+    "p90": 1397
+   },
+   "livesLostPerMinute": 0.0
+  }
+ ]
+}
