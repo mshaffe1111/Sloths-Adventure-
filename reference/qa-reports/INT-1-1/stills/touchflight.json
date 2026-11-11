@@ -15,28 +15,27 @@
  },
  "said": [
   [
-   2.9,
+   2.6,
    "Flick up and forward to jump."
   ],
   [
-   10.3,
+   10.9,
    "Flick up again midair to jump twice."
   ],
   [
-   18.4,
+   17.6,
    "Run first, then flick up and forward!"
   ]
  ],
  "cb": [
-  "1.1 onCoach run",
-  "1.5 onCoach null",
-  "1.7 onCoach jump",
-  "2.5 onLesson fruit",
-  "3.4 onCoach nice",
-  "5.7 onCoach null",
-  "10 onGuide Flick up again in the air to jump twice",
-  "16.5 onGuide Run first, then flick up and forward!",
-  "24.6 onGuide Run first, then flick up and forward!"
+  "2.3 onCoach null",
+  "2.5 onCoach jump",
+  "3.4 onLesson fruit",
+  "4.2 onCoach nice",
+  "6.5 onCoach null",
+  "10.8 onGuide Flick up again in the air to jump twice",
+  "17.4 onGuide Run first, then flick up and forward!",
+  "26.3 onGuide Run first, then flick up and forward!"
  ],
  "input": "gesture"
 }
