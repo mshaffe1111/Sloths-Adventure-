@@ -334,7 +334,7 @@ for rel in files:
             'id': 'B4:' + rel[:-5] + ('#' + f['key'] if n > 1 or f['key'] != '(whole)' else ''),
             'source': 'game (src/assets)',
             'file': 'src/assets/' + rel + ('#' + f['key'] if n > 1 or f['key'] != '(whole)' else ''),
-            'kind': gr['kind'], 'w': fw, 'h': fh,
+            'kind': 'prop' if layer == 'decor near' and rel == 'bosses/boss-fx.webp' else gr['kind'], 'w': fw, 'h': fh,
             'walk_y': '', 'walk_x0': '', 'walk_x1': '', 'flat': '', 'float_class': '',
             'world_best': str(fws[0]) if fws else 'menu',
             'worlds': fmt_worlds(fws, 'shown: ' + why),
