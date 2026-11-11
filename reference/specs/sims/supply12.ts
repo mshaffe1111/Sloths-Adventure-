@@ -24,13 +24,13 @@ export const BRIEF_12 = { ends: 'quiet', trend: 'level', branching: 'lots', teac
  *  floating, which 1-2's deal no longer holds) */
 export const FEEL_OFF = ['w1-meadow', 'w1-knot-bank', 'w1-log-road'];
 /** reused as they are, '1-2' ADDED to feel */
-export const FEEL_ADD = ['w1-stair-run', 'w1-bank-run', 'w1-zigzag-run', 'w1-stump-descent', 'w1-stair-test-back', 'w1-bank-stair-test-back', 'w1-stair-gap-twist'];
+export const FEEL_ADD = ['w1-stair-run', 'w1-bank-run', 'w1-zigzag-run', 'w1-stump-descent', 'w1-stair-gap-twist'];
 /** own and new sections: [id, stand-in source, jobs, content, extra] */
 type Row = [string, string, string[], string, Record<string, unknown>?];
 export const POOL: Row[] = [
-  // own versions (13)
+  // own versions (17; the two reused test-backs are out: their four bare steps down break the quiet line, the Critic's quiet11.ts)
   ['w1-knot-bank-12', 'w1-knot-bank', ['practise'], 'ground'], ['w1-mushroom-fork-12', 'w1-mushroom-fork', ['fork'], 'bounce'], ['w1-root-stair-fork-12', 'w1-bank-stair-fork', ['fork'], 'climb'],
-  ['w1-two-lifts-12', 'w1-two-lifts', ['test'], 'bounce'], ['w1-bounce-wall-12', 'w1-bounce-wall', ['combine'], 'bounce'], ['w1-mushroom-log-12', 'w1-mushroom-log', ['combine'], 'ground'],
+  ['w1-two-lifts-12', 'w1-two-lifts', ['test'], 'bounce'], ['w1-one-lift-12', 'w1-two-lifts', ['test'], 'bounce'], ['w1-stair-test-12', 'w1-stair-test-back', ['test'], 'climb'], ['w1-bank-wall-12', 'w1-bank-stair-test-back', ['test'], 'climb'], ['w1-wide-dip-12', 'w1-dip-double-teach', ['test'], 'ground'], ['w1-bounce-wall-12', 'w1-bounce-wall', ['combine'], 'bounce'], ['w1-mushroom-log-12', 'w1-mushroom-log', ['combine'], 'ground'],
   ['w1-drop-bounce-12', 'w1-drop-bounce-twist', ['twist'], 'bounce'], ['w1-dip-bounce-12', 'w1-dip-bounce-twist', ['twist'], 'bounce'], ['w1-two-answers-12', 'w1-two-answers', ['twist'], 'ground'],
   ['w1-log-walk-12', 'w1-log-walk', ['rest'], 'structural'], ['w1-root-meadow-12', 'w1-log-walk', ['rest'], 'structural'], ['w1-fern-bank-12', 'w1-fern-bank', ['rest'], 'structural'], ['w1-clearing-12', 'w1-clearing', ['rest'], 'structural'],
   // new (25)

@@ -1,4 +1,4 @@
-# 1-2 packets: the Designer's notes (proof runs, what was checked, rulings, the Critic's lines answered)   2026-11-11 4:46 PM ET, cites at t-int-1-1@53bd446a
+# 1-2 packets: the Designer's notes (proof runs, what was checked, rulings, the Critic's lines answered)   2026-11-11 5:03 PM ET, cites at t-int-1-1@53bd446a
 Companion to CONTENT-1-2-relay.md. Every fact below was read in the code or run at this head (D37); each run is one command.
 
 ## 1. Proof runs (all saved under reference/specs/sims/out/)
@@ -11,7 +11,8 @@ Companion to CONTENT-1-2-relay.md. Every fact below was read in the code or run 
 | gen2 lays a chain to those bands from section data today (`gapPx`), both settings | `npx tsx reference/specs/sims/chainlay12.ts` | 36 lays in band; chainlay12.txt |
 | On built 1-1 rolls the end of a `gFork` high road holds nothing | `npx tsx reference/specs/sims/finds11.ts` | §4; finds11.txt |
 | 1-2 rolled on the packet's OWN brief, today's engine | `npx tsx reference/specs/sims/supply12.ts 60` | most seeds throw: a 253-256 px gap is "past the double's reach 230 px" (1-2 is not on the flown reach), and every section with a double or bounce-plus-jump block is swapped out as unreachable (the level check counts no double on 1-2, levelCheck.ts:132-134); out/supply12-today.txt |
-| The same, as it will roll after Engine items 3 and 5 | `FLOWN=1 npx tsx reference/specs/sims/supply12.ts 120` | 720 of 720 rolls build, 0 throws; the pool runs short on 2, 6 and 3 rolls of 120 (graphs A, B, C); no section never laid; every other line is V3 (item 5); out/supply12-flown.txt |
+| The same, as it will roll after Engine items 3 and 5 | `FLOWN=1 npx tsx reference/specs/sims/supply12.ts 120` | 720 of 720 rolls build (360 different plans: Easy lays Normal's), 0 throws; the pool runs short on 2, 6 and 3 rolls of 120 (graphs A, B, C); no section of the 53 never laid; every other line is V3 (item 5); out/supply12-flown.txt |
+| A run of steps down keeps the 4 s quiet line when each step carries its own hop | `FLOWN=1 npx tsx reference/specs/sims/quiet12.ts 120` | six bare `n`: 8.7 to 11.1 s on 50 of 50 rolls; six `N` (a hop stump on each step): median 2.1 s, max 4.1 s, over 4 s on 1 of 41; out/quiet12.txt |
 flight.ts is t-designer-reach's file with two additions: `FLIGHT_STAGE` (the stage flown; default 1-1, so every old figure
 reproduces) and the `chain` mode. supply12.ts is built on the Critic's probe12b.ts (t-critic-1-2-packet); probe12.ts is kept as the
 first run it was (a different brief: teaches none, deal 40/30/30), not as proof of the packet's brief.
@@ -72,7 +73,10 @@ first run it was (a different brief: teaches none, deal 40/30/30), not as proof 
 | Caches as bonus blooms | ACCEPTED: off-road pickups on a harvest stage are `fruit` (counts toward the goal, outside the quota), Engine item 6; exploring always pays |
 | What the ladder grows at a chain | ACCEPTED: the lesson's own fallen log across the first hollow (natural, to Pokey's scale), else the line alone; Engine item 7 |
 | `EARLY_DOUBLE` gains '1-2' | ACCEPTED: Engine item 5; the old 1-2 is being replaced and nothing ships between pushes 2 and 3 (D40) |
-Nothing is open with the lead. Open with the packet Critic: attempt 2's audit.
+After the Critic's attempt-2 audit (79f8e8b0), one thing changed in HOW ruling 3 is met, for the lead to see: `EARLY_DOUBLE` is not
+widened by id (that moved the testers' control course on 1-2's id, 6 of 16 builds); the double counts on a stage gen2 BUILT whose
+kit's `lessons` say so (Engine item 5). The ruling's intent holds and nothing shipped moves in push 2. If the lead prefers the
+wider edit, the control course's hashes go in that item's gates instead.
 
 ## 4. Found on 1-1 while writing: the end of each fork's high road holds nothing
 `find` sockets are filled only in the stage's required section (pipeline.ts:2126, the 11-06 fix that pinned the seed to its
@@ -116,7 +120,7 @@ Sizes are judged against Pokey's drawn 89.1 units (D41), in the stage, both orie
 | knobs `d 0.1` | replaced by the flown bands |
 | Dot rows roots / under | not in dotLinesData.ts at this head (R-165.45 holds them): sockets only |
 | art gaps: root arch, root bridge, pink bell, hibiscus, snake | bell: the Keeper's Bell find already exists (finds.ts); root bridge: a fallen log does it (natural pieces); arch, hibiscus, snake: §5 |
-| the gap list (arrive 0, goal 0, rest 0, test 0 ...) | confirmed by probe12 (dies at the first rest); filled by the packet's 51 |
+| the gap list (arrive 0, goal 0, rest 0, test 0 ...) | confirmed by probe12 (dies at the first rest); filled by the packet's 53 |
 | "1-2 probably wants to run longer than 1-1" | kept as a floor of 140 s for the expert; the engine's own target for 1-2 is 4 s under 1-1's, named in §2 |
 
 ## 7. Risks the builder should know before starting
@@ -134,19 +138,22 @@ Sizes are judged against Pokey's drawn 89.1 units (D41), in the stage, both orie
 | practise | stump-stile, stone-zigzag, stump-descent, knot-bank-12, root-hops | cap-hop, cap-run | root-steps |
 | flow | floor-dash, root-run | cap-run | stair-run, bank-run, zigzag-run |
 | fork | hollow-twoway, floor-dash, under-roots-fork | mushroom-fork-12, thorn-fork | bank-stair-fork, root-stair-fork-12, root-ledge-fork |
-| test | thorn-leap | two-lifts-12 | stair-test-back, bank-stair-test-back |
+| test | wide-dip-12, thorn-leap | two-lifts-12, one-lift-12 | stair-test-12, bank-wall-12 |
 | combine | mushroom-log-12 | bounce-wall-12, cap-lift | stair-lift |
 | twist | two-answers-12 | drop-bounce-12, dip-bounce-12 | stair-gap-twist |
 | descent | stump-descent | cap-steps-down | dropdown-stair |
 | climb | (V8: a climb is climb) | | stair-run, bank-run, zigzag-run |
 | teach (thorns) | | thorn-hollow-teach | |
 Structural: arrive 3 (rain-path, root-walk, rain-banks); rest 7; reward 1 (note-hollow); signature 3; exit 2.
-Thin cells, named: practise/climb, test/ground, test/bounce, combine/ground, combine/climb, twist/ground, twist/climb and every
-descent have ONE section. The run still built 720 of 720 with the pool short on 11 rolls, because a node whose type has no section
-left is refilled by its job. If the builder's real sections lose one of these to the verdicts, that cell is the first to go
-short: the yield count of done-item 6 will name it, and the cure is a second section for the cell, never a reroll.
+The test node is in every graph: its three cells hold two sections each (attempt 3). Thin cells, named: practise/climb,
+combine/ground, combine/climb, twist/ground, twist/climb and every descent have ONE section. The run still built 720 of 720 with
+the pool short on 11 rolls, because a node whose type has no section left is refilled by its job. If the builder's real sections
+lose one of these to the verdicts, that cell is the first to go short: the yield count of done-item 6 will name it, and the cure
+is a second section for the cell, never a reroll.
 Also seen in the run: V11 ("'g' on two neighbouring content nodes") on about 1 roll in 8 of graph B. It is the deal's own cap
 failing on some seeds, as it does on 1-1; those rolls are refused, not listed, and are part of the yield.
+The quiet line: the reused sections were not measured against it one by one (only the two test-backs, by the Critic, which are
+out). The yield count names any other that breaks it.
 
 ## 9. The packet Critic's lines (t-critic-1-2-packet@51fe547a), each answered
 | Line | Answer |
@@ -172,3 +179,9 @@ failing on some seeds, as it does on 1-1; those rolls are refused, not listed, a
 | E5 also | A wordless tip stays forbidden (no change); clumps by width; the still is Engine's; made things are C2's; the time is sourced |
 | E6 WRITE, item 0 | The two files added (pushed at ee75a0a3) |
 | Beside the task | 1-1's sprint-B never rolls clean: the lead's to number; not touched here |
+| **Attempt 2, C1** quiet line | A new letter `N` (a step down with its own hop stump and petal), flown: six in a row keep the line (quiet12.ts); no two bare `n` in a row in any own or new rhythm; the two reused test-backs are out and test/climb has its own two sections; every test cell now holds two |
+| **Attempt 2, E1** the testers' course | `EARLY_DOUBLE` is not widened; the double counts on a gen2-built stage whose `lessons` say so; ctest12.ts (0 of 16 differ) is in item 5's gates; nothing shipped moves in push 2 |
+| **Attempt 2, E2** one owner | Item 0 is marked as the t-engine-11-followup round's and kept only as its done-test; this packet starts from that round's passed head (item 0 and R-165.119's ladder on it) |
+| **Attempt 2, E3** blooms | Keyed on the brief (`offRoad: 'fruit'`, set on 1-2 only), not on the objective; 8-2 named as unchanged in the gate |
+| **Attempt 2**, cites | engine.ts:3009-3010 and :3080, goals.ts:57 |
+| **Attempt 2**, for the lead: the yield floor | 1-1 reaches 6 of 600; done-item 6 now says a shortfall caused by a rule is a PUSHBACK naming the rule (R-165.120), never a deeper search |

@@ -1,7 +1,7 @@
 # TASK E12 (R-165.115 first: the 1-1 high-road ends; then R-165.11's engine half: what 1-2 on gen2 stands on)   to: Engine
 # model: the engine tier (tools/team/models.json on the lead's branch)   effort: high   due: see "Time"; a safe-keeping push at least hourly
-Written by the Designer, 2026-11-11 4:46 PM ET; attempt 2 after the packet Critic's 6 lines (t-critic-1-2-packet@51fe547a; item 0 passed on its
-own once its WRITE was fixed) and the lead's rulings of 11-11. Every file:line was read at t-int-1-1@53bd446a (D37).
+Written by the Designer, 2026-11-11 5:03 PM ET; attempt 3: after the packet Critic's 6 lines (t-critic-1-2-packet@51fe547a), the lead's
+rulings of 11-11, and the Critic's three attempt-2 lines (@79f8e8b0: the testers' course, one owner, the blooms' reach). Every file:line was read at t-int-1-1@53bd446a (D37).
 
 ## First, before any tool call
 `git fetch origin ccr-ca657d3c-n09zty t-design-1-2 t-designer-reach` and the passed t-int-1-1 head the lead names. Read
@@ -23,7 +23,9 @@ pays in blooms that never raise the quota.
   with items 3 and 5 stood in, every one of 720 rolls builds (`FLOWN=1`, out/supply12-flown.txt).
 
 ## Three pushes (the order decides who waits on whom)
-- **Push 1: item 0, alone.** It starts as soon as 1-1 passes; nothing else rides on it.
+- **Push 1: item 0, alone: NOT YOURS.** R-165.115 went to the t-engine-11-followup round at 4:27 PM ET (the lead's STATE.md:357),
+  with R-165.119's fixed help ladder. Item 0 stays below as that round's done-test and gates, so one text is checked; you do not
+  build it. One owner per file (D40): you start from that round's PASSED head, which the lead names.
 - **Push 2: items 1-6, what a RAW build needs.** None needs 1-2 routed: each is proved with `buildGen2Stage` and RealPlay. Item 1
   (`KITS['1-2']`) is in this push so the seed list can be built on raw builds (the tool calls `buildGen2Stage`,
   tools/engine/seedlist.ts:11, :34) BEFORE routing. The lead names this head to Content.
@@ -31,6 +33,7 @@ pays in blooms that never raise the quota.
   (`provenSeedFor`, seedList.ts:67), and `lockall` and the game build 1-2 through `generateStage`. Nothing reaches main half-routed.
 
 ## Frozen inputs
+- Base: the passed head of t-engine-11-followup (it holds item 0 and R-165.119's ladder, which item 7 turns on), named by the lead.
 - The numbers: reference/specs/chain.md §1 (the Normal 1-2 rows) and §3 (the chain bands and the rule for a stepped cap);
   bands.md §2 at t-designer-reach. A number you can't enter as written is a PUSHBACK.
 - The player-facing rules (the lead, 11-11): Normal: touching the thorn bed costs ONE heart, the hurt sound, blink and haptic, and
@@ -44,12 +47,13 @@ pays in blooms that never raise the quota.
   touched here, and named in your report as seen.
 
 ## Files
-- WRITE: src/game/gen2/pipeline.ts, reach.ts, verdicts.ts, verdicts.types.ts, promises11.ts, nodeCode.ts, types.ts (the place flag
-  only); src/game/engine.ts, types.ts (`Platform.pit`), levelCheck.ts (`EARLY_DOUBLE` only), w1Pits.ts, stagePreload.ts (the bed's
+- WRITE: src/game/gen2/pipeline.ts, reach.ts, verdicts.ts, verdicts.types.ts, promises11.ts, nodeCode.ts, types.ts (the place flag,
+  the brief's `offRoad` field and the built stage's taught-before field, nothing else); src/game/engine.ts, types.ts
+  (`Platform.pit`), levelCheck.ts and easyMode.ts (how `doubleAllowed` is asked, item 5; `EARLY_DOUBLE` itself is NOT widened), w1Pits.ts, stagePreload.ts (the bed's
   files), helpLadder.ts (item 7 only), stageGenerator.ts, testlink1_1.ts, buildAhead.ts; src/components/WorldMap.tsx;
   tools/engine/seedlist.ts; the tests beside each; src/assets/props/pits/ (the thorn bed's pieces); in item 7 only: protoStage.ts,
   w1Sections.ts, and `w1Finish` in w1.ts (w1.ts:1517-1527). REPORT.md under reference/qa-reports/E12/, your turnover note.
-  For item 0's own gates: src/game/gen2/firstRun11.ts (the first run's lock, re-recorded only if `first-run.drift` fires),
+  For item 0's own gates (the follow-up round's, kept for the record): src/game/gen2/firstRun11.ts (the first run's lock, re-recorded only if `first-run.drift` fires),
   reference/qa-reports/R-165.59/calibration-main.jsonl (the tier bots' calibration, re-run because 1-1 changed), and, only if
   the list must be rebuilt, src/game/gen2/provenSeeds.ts through the tool (on R-165.112's head, the lead's word first).
 - A type or interface change is the Architect's by the roster (verdicts.types.ts, gen2/types.ts): the lead has put them in this
@@ -57,7 +61,7 @@ pays in blooms that never raise the quota.
 - Nothing else. A needed change elsewhere is a PUSHBACK naming file and line.
 
 ## Definition of done (the Critic checks each; every item names its test and its gate)
-**0. 1-1: the end of a fork's high road holds a cache. (Push 1)**
+**0. 1-1: the end of a fork's high road holds a cache. (Push 1; OWNER: the t-engine-11-followup round, not this packet's builder)**
 - Cause: `gFork` lays the fork's `find` socket on its last high piece (w1.ts:1118); the pipeline fills a `find` only in the stage's
   required section (pipeline.ts:2126, the 11-06 fix that pinned the seed to its perch); `offPathFilled` skips a piece that has a find
   socket (w1.ts:1504). So that piece is bare.
@@ -147,33 +151,38 @@ pays in blooms that never raise the quota.
   exactly one find, the note, at the socket, no seed, both settings, 6 seeds; 1-1's seed promise green.
 - Gates: lockall: nothing differs.
 
-**5. The double jump counts on 1-2. (Push 2; found by the Critic and by the supply run; RULED by the lead, 11-11 4:47 PM ET)**
+**5. The double jump counts on the gen2-built 1-2. (Push 2; found by the Critic and by the supply run; the lead's ruling 11-11 4:47 PM ET: the double counts on 1-2)**
 - The level check counts a double only on 1-1 and from 1-6 (levelCheck.ts:132-134: `EARLY_DOUBLE` holds '1-1'; its own comment
   says the double is "in the player's kit from then on"). On 1-2 every piece that needs a double or a bounce plus an air jump
-  reads as unreachable ("exit platform is not reachable"), and its section is swapped out: 11 of 1-2's sections never lay.
-  `EARLY_DOUBLE` gains '1-2' (easyMode.ts:107 reads the same rule).
+  reads as unreachable ("exit platform is not reachable"), and its section is swapped out: 11 of the first pool never laid.
+- HOW, narrowed after the Critic's attempt-2 line: `EARLY_DOUBLE` is NOT widened. Widening it by id also moves the testers'
+  control course, which the old builder lays on 1-2's id (6 of 16 builds differ: the Critic's ctest12.ts), and the old 1-2.
+  The double counts on a stage BUILT BY gen2 whose kit's `lessons` say an earlier stage taught it: the built stage carries
+  that (a field on its gen2 meta, set in the pipeline), and every reader of `doubleAllowed` asks it of the stage, not only of the
+  id: the gen2 level check (pipeline.ts:2531-2540), the pickups' reach (stageGenerator.ts:2949-2951 `finishReach`), Easy's hold
+  softening (easyMode.ts:107) and levelCheck.ts:498. A stage gen2 did not build answers exactly as today.
 - The node code's V3 counts a double or a bounce as taught only by a T token IN the stage (nodeCode.ts:138-141; called at
   pipeline.ts:654-661), so every 1-2 roll with a D rise or a bounce node fails "uses the double before its teach". V3 reads the
   world's `lessons` for the stage: a move an earlier stage taught is taught.
 - Done-tests: a raw 1-2 build lays w1-stair-test-back and keeps it (it is swapped out on every roll today); `checkCode` passes
   `A Tb Pg1 R Xc2 R Sb E` when `lessons` says 1-1 taught the double and still refuses it when it does not; on 1-1 nothing moves.
   `FLOWN` is no longer needed: `npx tsx reference/specs/sims/supply12.ts 120` gives what `FLOWN=1` gives today (720 of 720 built,
-  V3 lines gone).
-- Gates: lockall `--intended 1-2`: the OLD 1-2 may move here (its validator now counts the double); the lead's ruling: the old
-  1-2 is being replaced and nothing ships between pushes 2 and 3 (D40), so that is accepted; say what moved, and that the old 1-2
-  is deleted in item 7; nothing else differs. The full suite (`doubleAllowed` is also read by easyMode.ts, mixer/w1mix.ts
-  and gen2/pipeline.ts).
+  V3 lines gone). An Easy raw 1-2 build keeps its D rises at 128-132 with no step or catch added by the softening.
+- Gates: the control course does not move: `npx tsx reference/qa-reports/CRITIC-1-2-packet/ctest12.ts` (on t-critic-1-2-packet)
+  prints 0 of 16 builds differ against hashes recorded on your base; lockall: NOTHING differs (the old 1-2 included); the full suite.
 
 **6. Off the road pays in bonus blooms on a harvest stage. (Push 2; RULED by the lead, 11-11 4:47 PM ET: "exploring always pays")**
-- A harvest's quota is 87.5% of the PETALS laid (goals.ts:21, :51: flowers and leaves), so a petal off the natural road costs a
+- A harvest's quota is 87.5% of the PETALS laid (goals.ts:21, :57: flowers and leaves), so a petal off the natural road costs a
   player who stays on it; with 3-4 forks a roll there is room for 4 to 7 (CONTENT packet "Petals"). A `fruit` pickup already
-  counts toward the goal when gathered and is never in the quota (engine.ts:3002-3003, :3073).
-- Rule: on a stage whose objective is `harvest`, a `pickup` socket on a piece that is not `main` lays `fruit`, not `flower`
-  (pipeline.ts:2097-2106), and item 0's cache does the same there. On every other stage, as today (1-1's caches are petals).
+  counts toward the goal when gathered and is never in the quota (engine.ts:3009-3010, :3080).
+- Rule, keyed on the stage's BRIEF, never on its objective (8-2 is a gen2 harvest too, gen2/game.ts `GEN2_STAGES`, and must not
+  move): a new field on `GraphBrief` (gen2/types.ts:534-550), `offRoad?: 'fruit'`. Where a stage's brief sets it, a `pickup`
+  socket on a piece that is not `main` lays `fruit`, not `flower` (pipeline.ts:2097-2106), and item 0's cache does the same
+  there. Content sets it on `briefs['1-2']` only. On every other stage, as today (1-1's caches are petals; 8-2 untouched).
   The engine's harvest top-up and trim (pipeline.ts:292, :2187-2196; stageGenerator.ts capHarvest) count and move petals only.
 - Done-tests: a raw 1-2 build: every pickup over a non-main piece is a `fruit`; the quota (`withGoals`) equals 87.5% of the
   flowers on main pieces; a RealPlay run that gathers a bloom sees the goal count rise by one. 1-1 unchanged.
-- Gates: lockall: nothing differs. A still of a bloom beside a petal in 1-2, both ways: they must not look alike (the `fruit`
+- Gates: lockall: nothing differs, 8-2 named in the output as unchanged. A still of a bloom beside a petal in 1-2, both ways: they must not look alike (the `fruit`
   draws as a classic bloom, the petal as Meeca's painted petal, vectorArt.ts:1087-1092); if they do, name it for the art pass.
 
 **7. Route 1-2 to gen2, delete the old 1-2, help at its first chain. (Push 3, on Content's head, the lead's word first)**
@@ -186,7 +195,7 @@ pays in blooms that never raise the quota.
   fewer than 3 find a spot (:1583). 1-2 has none (its brief's not-list).
 - `#ctest` on 1-2's id still builds the testers' old control course (stageGenerator.ts:23, :2862): unchanged, with a test.
 - Help (the lead's ruling on audit B-01): the ladder runs in 1-2 at ONE piece, the first chain of the section whose `teaches` is
-  'thorns', on R-165.119's fixed ladder (it counts tries, not only falls); everywhere else in 1-2 it stays off (engine.ts:849 is
+  'thorns', on R-165.119's fixed ladder as it stands on your base (it counts tries, not only falls; you do not re-fix it); everywhere else in 1-2 it stays off (engine.ts:849 is
   1-1 only today). Its line there is the ladder's own bounce line (helpLadder.ts:31). What it grows is NOT the boulder stair
   (`STEP_CUT`, helpLadder.ts:35): at a chain there is no rise. RULED by the lead, 11-11 4:47 PM ET: it lays the lesson's own
   fallen log across that hollow at lip height (the natural piece the lesson showed him, drawn to Pokey's scale: 89.1 units, D41),
@@ -206,18 +215,19 @@ pays in blooms that never raise the quota.
   clipcheck, knowncheck, roadmapcheck; a fresh save and an old save that cleared the old 1-2 both open the new one (a still each way).
 
 ## What must not move
-1-1's platforms, seeds, first-run layout and pins (item 0 changes its pickups only); every stage but 1-1 in item 0 and but 1-2
-in items 5 and 7; World 8's heart falls (w8.ts:183; the same engine path: its tests stay green); the soft and lethal drop looks.
+1-1's platforms, seeds, first-run layout and pins; every stage but 1-2, and 1-2 only in item 7 (push 2 moves NO shipped stage:
+not the old 1-2, not the control course on its id, not 8-2); World 8's heart falls (w8.ts:183; the same engine path: its tests
+stay green); the soft and lethal drop looks.
 
 ## Time (D25: from history where there is any)
-Item 0: 1.5 to 2 h (the roadmap's range for R-165.115; no history). Items 1-6: no history for any of them; a range of 8 to 12 h,
+Item 0 is the follow-up round's (1.5 to 2 h by the roadmap's range for R-165.115). Items 1-6: no history for any of them; a range of 8 to 12 h,
 the thorn hollow (item 2) about half of it. Item 7: 3 to 5 h. Waits on Content and the lead are timed apart in your TIMELINE.
 
 ## Return
-Branch t-engine-1-2 from the named head, pushed (`git ls-remote` equals HEAD) after each of the three pushes. REPORT.md (60 lines
+Branch t-engine-1-2 from the named head, pushed (`git ls-remote` equals HEAD) after push 2 and after push 3. REPORT.md (60 lines
 or fewer, the 7 sections, "Method used", "Lessons applied"), your turnover note rewritten. ONE send_message to the lead (the
 session id on line 1 of reference/handoffs/lead.md) after each push, 8 lines or fewer. A blocker or a wrong frozen input:
 PUSHBACK.md and one message, then stop.
 ## Attempt
-2 (attempt 1: item 0 PASSED on its own; items 1-4 REJECTED by the packet Critic at f60e6503, 6 lines; each is answered in
-DESIGN-1-2-notes.md §9)
+3 (attempt 1: item 0 PASSED on its own, the rest REJECTED at f60e6503, 6 lines; attempt 2 at 35364c97: all 6 closed, 3 new
+lines; each is answered in DESIGN-1-2-notes.md §9)
