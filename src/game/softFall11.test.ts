@@ -80,7 +80,9 @@ function sweep(seed: number, setting: 'normal' | 'easy', brief = true) {
   return { lost, wrong, backs, solids: solids.length };
 }
 
-const SWEEP = [3747, 15458, 19582];
+// (listed seeds of the re-laid 1-1, INT-1-1: the first run's 4106, and 982 and 1025, which lay w1-log-chain-rise; the 11-10 window's
+// seeds 3747, 15458 and 19582 are no longer on the list and no longer build)
+const SWEEP = [4106, 982, 1025];
 for (const setting of ['normal', 'easy'] as const) {
   for (const seed of SWEEP) {
     test(`1-1 ${setting} seed ${seed}: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall`, () => {
@@ -93,17 +95,17 @@ for (const setting of ['normal', 'easy'] as const) {
 }
 
 test('planted: without the brief\'s word (origin/main\'s 1-1) the same sweep on Normal loses lives in the pits, through the real loseLife', () => {
-  const s = sweep(3747, 'normal', false);
+  const s = sweep(982, 'normal', false);
   assert.ok(s.lost.length >= 3, `lives lost: ${s.lost.join(', ') || 'none'}`);
   assert.ok(s.lost.some((w) => w.startsWith('w1-log-chain-rise')), s.lost.join(', '));
 });
 
-test('1-1 Normal seed 3747, w1-log-chain-rise: walked off a rising gap he is set back on the ledge he left, softFall recorded, no life lost', () => {
-  const f = real(3747, 'normal');
+test('1-1 Normal seed 982, w1-log-chain-rise: walked off a rising gap he is set back on the ledge he left, softFall recorded, no life lost', () => {
+  const f = real(982, 'normal');
   const { r, e, events } = f;
   assert.equal(e.softOn, true, 'the whole-stage soft fall is on from the stage\'s brief');
   const piece = e.currentStage.meta.pieces.find((q) => q.k === 'w1-log-chain-rise');
-  assert.ok(piece, 'seed 3747 lays w1-log-chain-rise');
+  assert.ok(piece, 'seed 982 lays w1-log-chain-rise');
   // the piece's first rise: its take-off log, the next log on standing 60 px or more higher (the gaps that cost the window's lives)
   const logs = r.platforms.filter((p) => p.type === 'solid' && p.style === 'log' && p.width >= 300 && p.x >= piece!.x0 - 2 && p.x + p.width <= piece!.x1 + 2).sort((a, b) => a.x - b.x);
   assert.ok(logs.length >= 2 && logs[1].y <= logs[0].y - 60, 'the piece rises from its first log to its second');

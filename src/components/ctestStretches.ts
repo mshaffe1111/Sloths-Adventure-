@@ -34,6 +34,8 @@ export const STRETCH_WORDS: Readonly<Record<string, string | null>> = {
   'w1-bank-double-teach': 'the tall steps (double jump)',
   'w1-stump-towers': 'the tall steps (double jump)',
   'w1-fallen-trunk': 'the tall steps (double jump)',
+  // (1-3's copy of the same body, C1 attempt 2: the same words, no new ones; INT-1-1)
+  'w1-fallen-trunk-13': 'the tall steps (double jump)',
   'w1-stilt-logs': 'the tall steps (double jump)',
   'w1-stair-fork': 'the tall steps (double jump)',
   'w1-root-stair-fork': 'the tall steps (double jump)',

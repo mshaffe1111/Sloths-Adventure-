@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import { dropOutline, findW1Pits, paintedBank, SUNK_STEP } from './w1Pits.ts';
 import { endFace } from './groundPaint.ts';
 import { RealPlay } from './realPlay.ts';
+import { floorlessGaps } from './gen2/promises11.ts';
 import type { Platform } from './types.ts';
 
 const G = 580;
@@ -64,7 +65,9 @@ test('World 1, layout 1: the vault pits are soft pits with steps; the only unmar
     const softZones = (sim.stage.heartFalls ?? []).filter((z) => z.soft);
     soft[id] = g.filter((q) => q.kind === 'soft').length;
     // (unmarked floorless gaps, read as water: a builder's marked drop, `pit: 'drop'`, is a pit and is not counted here)
-    falls[id] = g.filter((q) => q.kind === 'fall' && !q.drop && !softZones.some((z) => q.x0 >= z.x0 - 4 && q.x1 <= z.x1 + 4)).length;
+    // (1-1 since E0a (R-165.61): a slot is a fall only when he can fall into it, promises11.ts realFalls, the verdict's own reading; changed,
+    // INT-1-1: the re-laid 1-1's dip at x22604 on layout 1 is a slot a block fills, which findW1Pits alone reads as a fall: planted below)
+    falls[id] = id === '1-1' ? floorlessGaps(sim.stage).length : g.filter((q) => q.kind === 'fall' && !q.drop && !softZones.some((z) => q.x0 >= z.x0 - 4 && q.x1 <= z.x1 + 4)).length;
     // (a way out: a step standing in the pit, or the floor itself within a sunk step (75 px, findW1Pits' own rule) of the lower lip,
     // so he walks or hops straight out: 1-2's rebuilt root tier, layout 1, floor 930 against the bank at 880; the lead, 2026-11-04)
     for (const q of g.filter((q) => q.kind === 'soft')) assert.ok((q.steps ?? []).length >= 1 || q.floor! - q.top <= SUNK_STEP, `${id} ${q.x0}: a soft pit with no step out`);
@@ -74,6 +77,14 @@ test('World 1, layout 1: the vault pits are soft pits with steps; the only unmar
   assert.ok(soft['1-3'] >= 3 && soft['1-9'] >= 3, JSON.stringify(soft));
   assert.ok(falls['1-8'] >= 10, JSON.stringify(falls));
   for (const id of ['1-1', '1-2', '1-3', '1-4', '1-5', '1-7', '1-9']) assert.equal(falls[id], 0, `${id}: ${falls[id]} floorless gaps`);
+});
+
+test('1-1 (layout 1, seed 769, x22604): a 119 px slot between two banks with a block in it is no fall by realFalls, though findW1Pits alone reads one', () => {
+  // (the pieces as laid, and a wide bank on the stage's ground line (its banks' commonest top, 1112), which findW1Pits reads as the band)
+  const slot = [P(1, 10000, 1112, 6000, 500), P(99, 22357, 708, 247, 979), P(100, 22604, 776, 119, 120), P(101, 22723, 708, 217, 979)];
+  assert.deepEqual(findW1Pits(slot).filter((q) => q.kind === 'fall').map((q) => [q.x0, q.x1]), [[22604, 22723]], 'findW1Pits alone: a fall');
+  assert.deepEqual(floorlessGaps({ platforms: slot }), [], 'realFalls: the block fills it');
+  assert.deepEqual(floorlessGaps({ platforms: slot.filter((q) => q.id !== 100) }), [[22604, 22723]], 'planted: without the block it is a fall');
 });
 
 test("a floorless gap is water unless a builder marks a bank `pit: 'drop'`: then it is a painted drop", () => {

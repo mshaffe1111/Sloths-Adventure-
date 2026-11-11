@@ -24,7 +24,7 @@ import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
 import { maxGap, softFallStage } from './gen2/pipeline.ts';
-import { HelpLadder, LINE_UP_S, moveLine, pieceMoveLaid, setHelpLadder, stepsFor, STEP_CUT, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
+import { HelpLadder, LINE_UP_S, moveLine, pieceMoveLaid, setHelpLadder, stepPlan, stepsFor, STEP_CUT, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
 import { pickCut } from './w1CutArt.ts';
 import { difficulty, easeInShare, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
@@ -54,7 +54,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, DOUBLE_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
+import { ASSIST, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, HANG_PICK, ROPE_FROM, ROPE_GRAB, ROPE_SLIDE, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
@@ -840,7 +840,7 @@ export class GameEngine {
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
     // (the help ladder, helpLadder.ts: 1-1 only, its pieces as laid; off on every other stage until help.md §5 has passed)
-    this.help = config.id === '1-1' && softFallStage(this.currentStage) && this.currentStage.meta?.pieces?.length ? new HelpLadder(isEasy() ? 'easy' : 'normal', this.currentStage.meta.pieces, undefined, (pc) => this.stepBoxes(pc).length > 0) : null;
+    this.help = config.id === '1-1' && softFallStage(this.currentStage) && this.currentStage.meta?.pieces?.length ? new HelpLadder(isEasy() ? 'easy' : 'normal', this.currentStage.meta.pieces, undefined, (pc) => this.canGrowAt(pc)) : null;
     setHelpLadder(this.help);
     // each liana's own swing: its size (neighbours' swings never meet) and its place in the swing (physics.ts swingSetup)
     swingSetup(this.vines);
@@ -5065,10 +5065,14 @@ export class GameEngine {
     const road = this.roadBoxes();
     return pieceMoveLaid(piece, road, road.filter((q) => q.bouncy), this.plainGap());
   }
-  /** the stage's standing pieces as the step code reads them: solid and bouncy, each with its mushroom and catch marks */
+  /**
+   * the stage's standing pieces as the step code reads them: solid and bouncy, each with its mushroom and catch marks. A hollow log is
+   * road like any log (INT-1-1): gen2 lays its platform the art's full height (pipeline.ts, hollowLogSize), so its inside does not let
+   * him through today, and a step promised past it got him nowhere (w1-hollow-twoway on Normal, 18 of 200 listed seeds)
+   */
   private roadBoxes() {
     return this.platforms
-      .filter((q) => (q.type === 'solid' || q.type === 'bouncy') && !q.broken && !q.push && !q.chase && !q.hollow && !this.grown.includes(q))
+      .filter((q) => (q.type === 'solid' || q.type === 'bouncy') && !q.broken && !q.push && !q.chase && !this.grown.includes(q))
       .map((q) => ({ x: q.x, y: q.y, width: q.width, height: q.height, bouncy: q.type === 'bouncy', catch: !!q.catch }));
   }
   /** the widest gap a plain single jump makes for a rise (gen2's jump envelope at the stage's own margin) */
@@ -5094,6 +5098,11 @@ export class GameEngine {
   /** the boxes the ladder would grow at a piece, from the piece as laid (helpLadder.ts stepsFor) */
   private stepBoxes(piece: Piece) {
     return stepsFor(piece, this.roadBoxes(), this.plainGap());
+  }
+  /** whether the ladder may promise a step at a piece: something grows, and after it every join there is a plain jump (stepPlan) */
+  private canGrowAt(piece: Piece) {
+    const p = stepPlan(piece, this.roadBoxes(), this.plainGap());
+    return p.boxes.length > 0 && p.unsolved === 0;
   }
 
   /** a grown piece: a step stands on its log as a World 1 stone, a pad floats as a plank (w1CutArt.ts pickCut: art already in the atlas) */
@@ -5655,7 +5664,11 @@ export class GameEngine {
     // his head stays under the HUD along the top, whatever the view wanted (cameraFollow.ts HUD_BAND): measured from the ground he
     // stands on (in the air, the height the camera keeps level with), so a hop does not drag the view up after him
     const band = (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom;
-    const refY = p.grounded || !Number.isFinite(this.camAnchorY) ? p.y : this.camAnchorY;
+    // (in the air: up to a plain jump's rise over that height, the view stays where it is (a hop never drags it); past it (a mushroom's
+    // bounce, a double) the height it keeps him under the HUD by comes up at three times his own climb, and is his own height from one and
+    // a half jumps' rise up (a bounce tops out higher, about 180): bouncing up beside 1-1's high seed-perch log his hands and the petals
+    // over it went under the HUD (INT-1-1, seed 4106 x29700 sideways). Continuous: at one jump's rise it is the height he left)
+    const refY = p.grounded || !Number.isFinite(this.camAnchorY) ? p.y : Math.min(this.camAnchorY, Math.max(p.y, 3 * p.y + 3 * JUMP_RISE - 2 * this.camAnchorY));
     this.camera.targetY = Math.min(this.camera.targetY, underHud(refY, band));
 
     // Smooth damp camera
@@ -5670,6 +5683,9 @@ export class GameEngine {
     this.camera.x = kept + (this.camera.x - kept) * teaK;
     // (standing, never even for a moment while the view eases)
     if (p.grounded) this.camera.y = Math.min(this.camera.y, underHud(p.y, band));
+    // (and rising past a plain jump's height, at once as well: the eased view trailed a bounce by 50 px and more. It joins the standing
+    // hold without a step: it starts to act only once he is a jump's rise over the height he left, where refY is that height)
+    else if (Number.isFinite(this.camAnchorY) && p.y + JUMP_RISE < this.camAnchorY) this.camera.y = Math.min(this.camera.y, underHud(refY, band));
 
     // Clamp camera within stage bounds
     this.camera.x = Math.max(0, Math.min(this.currentStage.config.levelWidth - vw, this.camera.x));

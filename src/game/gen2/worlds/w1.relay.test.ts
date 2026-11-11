@@ -132,8 +132,9 @@ export const taughtAt = (st: Laid, move: 'jump' | 'double' | 'bounce'): number |
 
 /** what a stretch of the route asks beyond a plain single jump: the double (a gap over 246, a rise over the climb), the bounce (a rise a
  *  mushroom gives), or nothing more */
-export function asksIn(st: Laid, x0: number, x1: number): 'double' | 'bounce' | 'single' {
-  const over = risesOf(st).filter((r) => r.x >= x0 && r.x < x1 && r.rise > r.climb);
+export function asksIn(st: Laid, x0: number, x1: number, skipRises = 0): 'double' | 'bounce' | 'single' {
+  // (`skipRises`: the first rises over the climb left out, the double teach's own D rise when the stretch is the teach section itself)
+  const over = risesOf(st).filter((r) => r.x >= x0 && r.x < x1 && r.rise > r.climb).sort((p, q) => p.x - q.x).slice(skipRises);
   if (over.some((r) => r.mushroom)) return 'bounce';
   if (over.length || gapsOf(st).some((g) => g.x0 >= x0 && g.x0 < x1 && g.level && g.width > SINGLE_GAP)) return 'double';
   return 'single';
@@ -160,7 +161,14 @@ export function teachFirst(st: Laid, setting: Setting, normal?: Laid): string[] 
       const i = normal!.gen2.sections.findIndex((s) => t.x0 >= s.x0 && t.x0 < s.x1);
       const s = st.gen2.sections[i];
       if (i < 0 || !s || s.template !== normal!.gen2.sections[i].template) { bad.push(`Normal's test at x ${t.x0}: Easy has no section in its slot`); continue; }
-      const move = asksIn(st, s.x0, s.x1), at = taughtAt(st, move === 'single' ? 'jump' : move);
+      // (PUSHBACK 1, upheld by the C1 Critic: the test lies within 1,500 px of the teach, so inside the teach section on Easy; that section's
+      // own D rise (its first rise over the climb) is the teach, not an ask: it is left out when the slot is the double's teach section
+      // itself, at === s.x0. A rise over the climb after it asks a double taught before it, at that first rise: no line)
+      let move = asksIn(st, s.x0, s.x1);
+      const ownTeach = move === 'double' && taughtAt(st, 'double') === s.x0;
+      if (ownTeach) move = asksIn(st, s.x0, s.x1, 1);
+      if (ownTeach && move === 'double') continue;
+      const at = taughtAt(st, move === 'single' ? 'jump' : move);
       if (at === undefined || at > s.x0 || (at === s.x0 && move !== 'single')) bad.push(`Easy's variant of Normal's test (${s.template}, x ${R(s.x0)}) asks the ${move}, not taught before it`);
     }
   }
@@ -305,8 +313,16 @@ test("planted (a): Easy's variant in the test's slot asks a taught move and lays
   const wide = { ...easy, gen2: { ...easy.gen2, drops: [D(1800, 2100, 860, true)] } };
   assert.ok(teachFirst(wide, 'easy', n).some((l) => /Easy lays a double gap/.test(l)));
   // (the same variant with the double taught after it)
-  const late = { ...easy, gen2: { ...easy.gen2, sections: [sec('w1-learn', 0, 1000), sec('w1-high-walk', 1000, 2855), sec('w1-mushroom-bank-teach', 2855, 4055), sec('w1-double-teach', 4055, 5000)] } };
+  const late = { ...easy, gen2: { ...easy.gen2, sections: [sec('w1-learn', 0, 1000), sec('w1-high-walk', 1000, 2855), sec('w1-mushroom-bank-teach', 2855, 4055), sec('w1-fern-bank', 4055, 5000), sec('w1-double-teach', 5000, 6000)] } };
   assert.ok(teachFirst(late, 'easy', { ...n, gen2: { ...n.gen2, sections: late.gen2.sections } }).some((l) => /not taught before it/.test(l)));
+  // (PUSHBACK 1: the slot IS the double's teach section: its own D rise is the teach, not an ask; a second rise over the climb after it
+  // asks the double just taught there; the old line flagged both)
+  const own = { ...easy, gen2: { ...easy.gen2, sections: [sec('w1-learn', 0, 1000), sec('w1-high-walk', 1000, 2855), sec('w1-mushroom-bank-teach', 2855, 4055), sec('w1-double-teach', 4055, 5000)] } };
+  const ownN = { ...n, gen2: { ...n.gen2, sections: own.gen2.sections } };
+  assert.deepEqual(teachFirst(own, 'easy', ownN).filter((l) => /not taught before it/.test(l)), [], 'the teach\'s own rise');
+  const twice = { ...own, platforms: [...own.platforms.filter((q) => q.x !== 4255), P(4255, 495, 200, 300), P(4455, 365, 400, 300)] };
+  assert.deepEqual(teachFirst(twice, 'easy', ownN).filter((l) => /not taught before it/.test(l)), [], 'a second rise after the teach\'s own');
+  assert.equal(asksIn(twice, 4055, 5000, 1), 'double', 'the second rise does ask the double');
 });
 
 test('planted (a): the bounce card is wanted at the first mushroom, the teach\'s; a mushroom before the teach fails', () => {

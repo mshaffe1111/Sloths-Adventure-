@@ -290,6 +290,16 @@ export function takeStairsLeftOut(): number {
   return n;
 }
 export function stepsFor(piece: Piece, solids: readonly Box[], plainGap: (dyUp: number) => number): Box[] {
+  return stepPlan(piece, solids, plainGap).boxes;
+}
+/**
+ * What grows at a piece, and how many joins in it a plain jump still can't make after it grows (`unsolved`: a climb or a gap no plain
+ * jump makes, where no stair or pad had room). The ladder promises a step only where something grows AND nothing is left unsolved
+ * (INT-1-1: on the new 1-1 a step grown at one join while the piece's real climb had no room let Dot promise help that did not get him
+ * through, w1-hollow-twoway on Normal, seed 1136)
+ */
+export function stepPlan(piece: Piece, solids: readonly Box[], plainGap: (dyUp: number) => number): { boxes: Box[]; unsolved: number } {
+  let unsolved = 0;
   const segs = skyline(piece, solids);
   const mushrooms = solids.filter((m) => m.bouncy);
   const out: Box[] = [];
@@ -298,12 +308,15 @@ export function stepsFor(piece: Piece, solids: readonly Box[], plainGap: (dyUp: 
    * its foot is the lowest surface under it (a rock as wide as a tread may take in a narrow stump: it stands on the ground beside it,
    * the stump inside it, never over air); it stops as soon as the surface under it is within STEP_LEFT of the tread above
    */
-  const stair = (a: Seg, face: number, lipY: number) => {
-    if (a.y - lipY <= STEP_LEFT || a.bouncy) return;
+  /** true when the stair is laid or none is needed there; false when it had no room */
+  const stair = (a: Seg, face: number, lipY: number): boolean => {
+    if (a.y - lipY <= STEP_LEFT || a.bouncy) return true;
     // (a mushroom just before the face whose bounce alone reaches the lip gives the rise: nothing grows; one that needs a second jump
     // after it does not, and the stair grows over it)
-    if (mushrooms.some((m) => m.x + m.width > face - BOUNCE_NEAR && m.x < face && m.y + m.height >= a.y - 2 && m.y - lipY <= BOUNCE_ALONE)) return;
-    if (!build(a, face, lipY, TOP_W) && !build(a, face, lipY, STEP_W)) stairsLeftOut++;
+    if (mushrooms.some((m) => m.x + m.width > face - BOUNCE_NEAR && m.x < face && m.y + m.height >= a.y - 2 && m.y - lipY <= BOUNCE_ALONE)) return true;
+    if (build(a, face, lipY, TOP_W) || build(a, face, lipY, STEP_W)) return true;
+    stairsLeftOut++;
+    return false;
   };
   /** lays one stair (the top tread `topW` wide where it fits); false, laying nothing, when the ground has no room for all of it */
   const build = (a: Seg, face: number, lipY: number, topW: number): boolean => {
@@ -317,21 +330,13 @@ export function stepsFor(piece: Piece, solids: readonly Box[], plainGap: (dyUp: 
         break;
       }
       if (!s0) break;
-      // (the level it stands on: the stretch at its right edge; a stump too narrow to carry a tread, on ground beside it, is part of
-      // that ground's rock instead)
-      let base = s0;
-      const g = segs.find((q) => Math.abs(q.x1 - s0.x0) < 0.5);
-      if (s0.x1 - s0.x0 < STEP_W && x - s0.x0 < STEP_W && g && g.y > s0.y + 2 && s0.bottom >= g.y - 2) base = g;
-      // (one level under it: anything else that reaches in from its left, or a dip or a floating log inside it, trims it from the
-      // left; a stump wholly inside it that stands on its level it takes in. Never sunk in a ledge that runs on past it)
-      let x0 = x - (rocks.length ? STEP_W : topW);
-      for (let pass = 0; pass < 6; pass++) {
-        const odd = segs.filter((q) => q.x1 > x0 + 0.5 && q.x0 < x - 0.5 && Math.abs(q.y - base.y) > 2 && !(q.y < base.y && q.x0 >= x0 - 0.5 && q.bottom >= base.y - 2));
-        if (!odd.length) break;
-        x0 = Math.max(...odd.map((q) => q.x1));
-      }
-      // (the top tread is as wide as TOP_W where the ground allows; trimmed, every tread still at least 60)
-      if (x - x0 < 60 - 0.5) break;
+      // (the level it stands on: the stretch at its right edge)
+      const base = s0;
+      // (one level under it: a stump wholly inside it that stands on its level it takes in; anything else under it (a ledge reaching in,
+      // a dip, a floating log) and there is no room for this stair: never sunk in a ledge, never over a hole. INT-1-1: the old layouts'
+      // trims and narrow-stump swap are gone; on the re-laid 1-1 dropping them loses no help and breaks nothing, helpSweep.ts)
+      const x0 = x - (rocks.length ? STEP_W : topW);
+      if (segs.some((q) => q.x1 > x0 + 0.5 && q.x0 < x - 0.5 && Math.abs(q.y - base.y) > 2 && !(q.y < base.y && q.x0 >= x0 - 0.5 && q.bottom >= base.y - 2))) return false;
       const under = segs.filter((q) => q.x1 > x0 + 0.5 && q.x0 < x - 0.5);
       rocks.push({ x: x0, w: x - x0, foot: base.y, high: Math.min(...under.map((q) => q.y)) });
       cur += STEP_LEFT;
@@ -344,7 +349,7 @@ export function stepsFor(piece: Piece, solids: readonly Box[], plainGap: (dyUp: 
     if (endY - lipY <= STEP_LEFT) return true;
     const rise = (endY - lipY) / (rocks.length + 1);
     // (no room for a whole stair, the ground under it too short: nothing grows here, never a wall; counted, stairsLeftOut)
-    if (rise > STEP_LEFT - 0.5) return false; // (rounded, every face stays at STEP_LEFT or less)
+    if (rise > STEP_LEFT) return false; // (lipY and endY whole pixels: each rounded face is at most ceil(rise), STEP_LEFT or less)
     const laid: Box[] = [];
     for (let k = 0; k < rocks.length; k++) {
       const r = rocks[k];
@@ -380,13 +385,19 @@ export function stepsFor(piece: Piece, solids: readonly Box[], plainGap: (dyUp: 
     if (b.x1 < piece.x0 || a.x0 > piece.x1) continue;
     const gap = b.x0 - a.x1;
     const rise = a.y - b.y;
+    // (a join a plain single jump can't make as laid: the same test as pieceMoveLaid's)
+    const need = gap > 1 ? gap > plainGap(rise) : plainGap(rise) < 0;
     if (gap > 1 && gap > plainGap(Math.min(rise, STEP_LEFT))) {
       const padY = Math.min(Math.max(a.y, b.y), b.y + STEP_LEFT);
       const pad: Box = { x: Math.round(a.x1 + gap / 2 - PAD_W / 2), y: padY, width: PAD_W, height: 24, plank: true };
-      if (out.some((o) => pad.x < o.x + o.width - 0.5 && o.x < pad.x + pad.width - 0.5 && pad.y < o.y + o.height - 0.5 && o.y < pad.y + pad.height - 0.5)) continue;
+      if (out.some((o) => pad.x < o.x + o.width - 0.5 && o.x < pad.x + pad.width - 0.5 && pad.y < o.y + o.height - 0.5 && o.y < pad.y + pad.height - 0.5)) {
+        if (need) unsolved++;
+        continue;
+      }
       out.push(pad);
-      stair(a, a.x1, padY);
-    } else stair(a, a.x1, b.y);
+      // (the climb to the pad, across half the gap: unsolved only when a plain jump can't make it and no stair had room)
+      if (!stair(a, a.x1, padY) && pad.x - a.x1 > plainGap(a.y - padY)) unsolved++;
+    } else if (!stair(a, a.x1, b.y) && need) unsolved++;
   }
-  return out;
+  return { boxes: out, unsolved };
 }

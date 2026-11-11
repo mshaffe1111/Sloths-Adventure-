@@ -5,7 +5,7 @@ import { w1Pick, w1RollDistance } from './w1Sections.ts';
 import { isSaveKey, resetProgress, type Store } from './saveFile.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { generateStage, setLayoutVariant } from './stageGenerator.ts';
-import { validateStage } from './levelCheck.ts';
+import { validateAsJudged, validateStage } from './levelCheck.ts';
 
 const memory = () => {
   const m = new Map<string, string>();
@@ -57,7 +57,8 @@ test('stage 1-1 comes out different for different players, and is always beatabl
   for (let v = 1; v <= 60; v++) {
     setLayoutVariant(v * 7919 + 13);
     const s = generateStage(cfg);
-    assert.ok(validateStage(s).ok, `1-1 variant ${v} must be beatable`);
+    // (as the game judges 1-1, on its flown arcs: levelCheck.ts validateAsJudged; changed, INT-1-1)
+    assert.ok(validateAsJudged(s).ok, `1-1 variant ${v} must be beatable`);
     seen.add(((s.meta as { chunks: string[] }).chunks).join());
   }
   setLayoutVariant(null);

@@ -1,0 +1,74 @@
+{
+ "sideways-stand": {
+  "camY": 160,
+  "vh": 540,
+  "barBottom": 68,
+  "petalTops": [
+   152,
+   175,
+   175
+  ],
+  "petalR": 14,
+  "heroTop": 138,
+  "feet": 206,
+  "grounded": true
+ },
+ "sideways-bounce": {
+  "camY": 267,
+  "vh": 540,
+  "barBottom": 68,
+  "petalTops": [
+   71,
+   94,
+   94
+  ],
+  "petalR": 14,
+  "heroTop": 90,
+  "feet": 158,
+  "grounded": false,
+  "dx": -10,
+  "onLog": false,
+  "minHeroRoom": 22,
+  "minPetalRoom": -54
+ },
+ "seed": {
+  "seed": 4106,
+  "L": [
+   29729,
+   430,
+   231
+  ]
+ },
+ "upright-stand": {
+  "camY": 0,
+  "vh": 977,
+  "barBottom": 70,
+  "petalTops": [
+   337,
+   365,
+   365
+  ],
+  "petalR": 17,
+  "heroTop": 319,
+  "feet": 403,
+  "grounded": true
+ },
+ "upright-bounce": {
+  "camY": 116,
+  "vh": 977,
+  "barBottom": 70,
+  "petalTops": [
+   229,
+   257,
+   257
+  ],
+  "petalR": 17,
+  "heroTop": 251,
+  "feet": 334,
+  "grounded": false,
+  "dx": -10,
+  "onLog": false,
+  "minHeroRoom": 181,
+  "minPetalRoom": 142
+ }
+}

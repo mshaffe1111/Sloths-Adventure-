@@ -263,12 +263,21 @@ import { unreachablePickups } from '../petalPass.ts';
 
 const overlaps = (gs: Array<[number, number]>, x0: number, x1: number) => gs.filter(([a, b]) => a < x1 && b > x0);
 test('floorless (the lead\'s ruling, 11-11): a slot is closed only by a solid piece at its lip level (top within 10 px, or one plugging the lip) across its width with no floor under it to pass in by; seed 172\'s deck is a real hole, seed 476\'s stone plugs its slot, seed 323\'s 23 px opening is no drop', () => {
-  const b = (seed: number) => buildGen2Stage({ config: c11, kit: w1World(), seed, difficulty: 'normal' });
-  assert.deepEqual(overlaps(floorlessGaps(b(476)), 22458, 22518), [], 'seed 476 x22458..22518: stone 122 (811-931) plugs the 882 lip');
-  assert.ok(overlaps(floorlessGaps(b(172)), 30784, 31835).length > 0, 'seed 172 x30784..31835: off block 146 (906) he goes under the 838 deck: a real hole');
+  // (changed, INT-1-1: the three seeds' raw rolls were re-laid by C1, so each case is planted: the pieces E0a's roll laid there (d2748131,
+  // buildGen2Stage Normal), and a wide bank at that stage's ground line (its banks' commonest top), which findW1Pits reads as the ground
+  // band. Each plant is red without the piece that decides it)
+  const bank = (y: number) => ({ ...P(900, 10000, y, 6000), height: 500 });
+  const S = (id: number, x: number, y: number, width: number, height: number, style: 'moss_stone' | 'branch' | 'log' = 'moss_stone', extra: object = {}) => ({ id, x, y, width, height, type: 'solid' as const, style, ...extra });
+  const s476 = [bank(951), S(108, 22195, 882, 263, 615), S(109, 22518, 743, 340, 754), S(122, 22458, 811, 60, 120)];
+  assert.deepEqual(overlaps(floorlessGaps({ platforms: s476 }), 22458, 22518), [], 'seed 476 x22458..22518: stone 122 (811-931) plugs the 882 lip');
+  assert.ok(overlaps(floorlessGaps({ platforms: s476.filter((q) => q.id !== 122) }), 22458, 22518).length > 0, 'planted: without the stone the slot is a fall');
+  const s172 = [bank(1099), S(142, 30201, 747, 306, 1097), S(143, 30507, 821, 277, 1023), S(146, 30784, 906, 110, 120), S(147, 30894, 838, 256, 24, 'branch'), S(148, 31150, 838, 685, 24, 'log'), S(149, 30754, 928, 190, 24, 'branch', { catch: true }), S(150, 31835, 838, 560, 1006)];
+  assert.ok(overlaps(floorlessGaps({ platforms: s172 }), 30784, 31835).length > 0, 'seed 172 x30784..31835: off block 146 (906) he goes under the 838 deck: a real hole');
   // (seed 323 x27200..27273: branch 128 (top 1005) leaves a 23 px opening to log 127; an opening under his body width is no drop: the
   // lead's second line on the ruling, 11-11)
-  assert.deepEqual(overlaps(floorlessGaps(b(323)), 27200, 27273), [], 'seed 323: a 23 px opening, not a fall');
+  const s323 = [bank(1071), S(119, 26656, 899, 430, 24, 'branch'), S(121, 26869, 1042, 185, 24, 'log'), S(123, 27086, 983, 114, 120), S(124, 27200, 915, 306, 24, 'branch'), S(127, 27273, 1051, 214, 24, 'log'), S(128, 27056, 1005, 194, 24, 'branch', { catch: true })];
+  assert.deepEqual(overlaps(floorlessGaps({ platforms: s323 }), 27200, 27273), [], 'seed 323: a 23 px opening, not a fall');
+  assert.ok(overlaps(floorlessGaps({ platforms: s323.filter((q) => q.id !== 128) }), 27200, 27273).length > 0, 'planted: without branch 128 the slot is a fall');
   // (planted: a piece at lip level closes the slot to 23 px; the same piece with a lower floor beside it under the slot does not)
   const atLip = [P(1, 0, G, 1000), P(2, 1073, G, 1000), { ...P(3, 900, G + 4, 150), height: 24 }];
   assert.deepEqual(floorlessGaps({ platforms: atLip }), [], 'closed at lip level to 23 px');

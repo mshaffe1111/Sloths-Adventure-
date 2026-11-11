@@ -2,7 +2,7 @@
  * The C1 re-lay's judge (R-165.72, the C1 packet's done-item 7): the passed tier bots (tierBots.ts, t-bots-tiers@42c83a77) over 1-1's
  * variants on the CURRENT checkout, the five tier and setting rows, set against the A1 baseline (R-165.59 calibration-a1.jsonl):
  *   - rescues: none in a middle or expert run (a rescue is the bot's put-on after 20 s stuck, which no player has);
- *   - put-backs a run, per tier and setting: no higher than the baseline's;
+ *   - put-backs a run, per tier and setting, outside the double-test pieces (DOUBLE_TEST_PIECES): no higher than the baseline's;
  *   - lives, counted with the engine's REAL loseLife (RealPlay stubs it, realPlay.ts:141; firsttimer.ts replaces the stub with a wrapper
  *     that calls GameEngine.prototype.loseLife, firsttimer.ts:935-946; this tool wraps that prototype method too, so each life is one real
  *     engine call, its reason named): 0 on Normal;
@@ -28,6 +28,14 @@ export const BOTS_PASSED = '42c83a77';
 export const BOTS_FAILED = '164e4cf8';
 export const ROWS: ReadonlyArray<readonly [Tier, Setting]> = [['expert', 'normal'], ['middle', 'easy'], ['middle', 'normal'], ['child', 'easy'], ['child', 'normal']];
 export const LENGTH = { minSeconds: 120, climbShort: 20 } as const;
+/**
+ * The pieces that lay the double TEST gap on Normal (w1.ts DOUBLE_TEST 253-256, after a practice gap): the C1 Critic upheld PUSHBACK 2
+ * (11-11): the extra put-backs there are the designed test, so put-backs are judged outside them (INT-1-1 item 6). Read from w1.ts: the
+ * packet named four; the code lays the test gap in five (w1-high-step-twist's `t X` version is the fifth), all five are left out.
+ */
+export const DOUBLE_TEST_PIECES: readonly string[] = ['w1-dip-double-teach', 'w1-double-teach', 'w1-bank-double-teach', 'w1-two-answers', 'w1-high-step-twist'];
+/** a run's put-backs outside the double-test pieces */
+export const putbacksOutside = (r: TierRun): number => r.putbacks - r.pieces.filter((p) => DOUBLE_TEST_PIECES.includes(p.id)).reduce((a, p) => a + p.putbacks, 0);
 
 /** why the judge will not run on this checkout, or null: the passed bots must be in it, and HEAD is never the failed attempt */
 export function refusal(head: string, hasPassed: boolean): string | null {
@@ -42,6 +50,8 @@ export interface Row {
   tier: Tier; setting: Setting; runs: number; finished: number; errors: string[];
   rescues: number; baseRescues: number | null;
   putbacksPerRun: number; basePutbacksPerRun: number | null;
+  /** put-backs a run outside DOUBLE_TEST_PIECES (the check reads these), candidate and baseline */
+  outsidePerRun: number; baseOutsidePerRun: number | null;
   lives: number; causes: Record<string, number>; baseLives: number | null;
   finishMin: number | null; finishP50: number | null; baseFinishMin: number | null; baseFinishP50: number | null;
   checks: Array<{ name: string; pass: boolean; why: string }>;
@@ -59,6 +69,7 @@ export function judgeRow(tier: Tier, setting: Setting, runs: JudgedRun[], errors
     tier, setting, runs: runs.length, finished: fin.length, errors,
     rescues: runs.reduce((a, r) => a + r.rescues, 0), baseRescues: base.length ? base.reduce((a, r) => a + r.rescues, 0) : null,
     putbacksPerRun: r2(mean(runs.map((r) => r.putbacks))), basePutbacksPerRun: base.length ? r2(mean(base.map((r) => r.putbacks))) : null,
+    outsidePerRun: r2(mean(runs.map(putbacksOutside))), baseOutsidePerRun: base.length ? r2(mean(base.map(putbacksOutside))) : null,
     lives: runs.reduce((a, r) => a + r.lives, 0), causes, baseLives: base.length ? base.reduce((a, r) => a + r.lives, 0) : null,
     finishMin: fin.length ? Math.min(...fin) : null, finishP50: pct(fin, 50), baseFinishMin: bfin.length ? Math.min(...bfin) : null, baseFinishP50: pct(bfin, 50),
     checks: [],
@@ -66,7 +77,8 @@ export function judgeRow(tier: Tier, setting: Setting, runs: JudgedRun[], errors
   const C = row.checks;
   C.push({ name: 'every run plays', pass: errors.length === 0 && runs.length > 0, why: errors.length ? `${errors.length} errors: ${errors[0].slice(0, 160)}` : `${runs.length} runs` });
   if (tier !== 'child') C.push({ name: 'no rescues (middle, expert)', pass: runs.length > 0 && row.rescues === 0, why: `${row.rescues} (baseline ${row.baseRescues ?? 'none'})` });
-  C.push({ name: 'put-backs a run <= baseline', pass: runs.length > 0 && row.basePutbacksPerRun !== null && row.putbacksPerRun <= row.basePutbacksPerRun + 1e-9, why: `${row.putbacksPerRun} vs ${row.basePutbacksPerRun ?? 'no baseline row'}` });
+  // (outside the double-test pieces, both sides read the same way; the whole-run numbers are printed beside it)
+  C.push({ name: 'put-backs a run <= baseline', pass: runs.length > 0 && row.baseOutsidePerRun !== null && row.outsidePerRun <= row.baseOutsidePerRun + 1e-9, why: `${row.outsidePerRun} vs ${row.baseOutsidePerRun ?? 'no baseline row'} outside the double tests (whole run ${row.putbacksPerRun} vs ${row.basePutbacksPerRun ?? '-'})` });
   if (setting === 'normal') C.push({ name: 'lives 0 on Normal (real loseLife)', pass: runs.length > 0 && row.lives === 0, why: `${row.lives}${row.lives ? ` (${Object.entries(causes).map(([k, n]) => `${k} ${n}`).join(', ')})` : ''}` });
   if (tier === 'expert') {
     const floor = LENGTH.minSeconds - (climb ? LENGTH.climbShort : 0);
@@ -156,11 +168,11 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.met
     console.log(`  ${tier} ${setting}: ${runs.length} runs, ${errors.length} errors, ${Math.round((Date.now() - t0) / 1000)} s`);
   }
 
-  console.log('\n| tier | setting | runs | finished | rescues (base) | put-backs/run (base) | lives (base), kinds | finish min / p50 (base) | verdict |');
+  console.log('\n| tier | setting | runs | finished | rescues (base) | put-backs/run outside the double tests (base); whole run | lives (base), kinds | finish min / p50 (base) | verdict |');
   console.log('|---|---|---|---|---|---|---|---|---|');
   for (const r of judged) {
     const kinds = Object.entries(r.causes).map(([k, n]) => `${k} ${n}`).join(', ');
-    console.log(`| ${r.tier} | ${r.setting} | ${r.runs} | ${r.finished} | ${r.rescues} (${r.baseRescues ?? '-'}) | ${r.putbacksPerRun} (${r.basePutbacksPerRun ?? '-'}) | ${r.lives} (${r.baseLives ?? '-'})${kinds ? `, ${kinds}` : ''} | ${r.finishMin ?? '-'} / ${r.finishP50 ?? '-'} (${r.baseFinishMin ?? '-'} / ${r.baseFinishP50 ?? '-'}) | ${r.checks.every((c) => c.pass) ? 'PASS' : 'FAIL'} |`);
+    console.log(`| ${r.tier} | ${r.setting} | ${r.runs} | ${r.finished} | ${r.rescues} (${r.baseRescues ?? '-'}) | ${r.outsidePerRun} (${r.baseOutsidePerRun ?? '-'}); ${r.putbacksPerRun} (${r.basePutbacksPerRun ?? '-'}) | ${r.lives} (${r.baseLives ?? '-'})${kinds ? `, ${kinds}` : ''} | ${r.finishMin ?? '-'} / ${r.finishP50 ?? '-'} (${r.baseFinishMin ?? '-'} / ${r.baseFinishP50 ?? '-'}) | ${r.checks.every((c) => c.pass) ? 'PASS' : 'FAIL'} |`);
   }
   if (!rows.some(([t, s]) => t === 'expert' && s === 'easy')) console.log('\n(length on Easy: there is no expert Easy bot, the expert testers played no Easy runs, tierBots.ts BOTS; the Easy minimum is the middle row\'s, printed above)');
   console.log('\nchecks:');

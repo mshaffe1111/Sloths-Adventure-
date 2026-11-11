@@ -1,4 +1,5 @@
-// The help ladder flown on 1-1 in the real engine at 30 fps (R-165.62 done-item 2): seed 3747, the piece w1-log-chain-rise, every
+// The help ladder flown on 1-1 in the real engine at 30 fps (R-165.62 done-item 2; re-pinned to the re-laid 1-1, INT-1-1: seed 982, a
+// listed seed, whose w1-log-chain-rise drops him into a pit off its first log on both settings; s3747 is no longer a listed seed): every
 // put-back a real walk off a log into the gap (RealPlay; A1's soft fall sets him back). Easy: Dot's move line at 3, a pad tap is a full
 // jump at 5 (the hop read before and after), the steps grow at 8 and he passes the WHOLE piece to its exit with plain jumps only.
 // Normal: the line at 3, the offer at 12 with the stage held still, a no grows nothing, the re-ask at 20, a second no never asks again;
@@ -17,7 +18,7 @@ import { MOVE_LINES, STEP_LINE, STEP_CUT, LINE_UP_S, padFullJump } from './helpL
 import { dotHelp, setDotHelp } from './dotGuideHelp.ts';
 import type { Platform } from './types.ts';
 
-const SEED = 3747;
+const SEED = 982;
 const PIECE = 'w1-log-chain-rise';
 type Piece = { k: string; x0: number; x1: number };
 type Eng = {
@@ -131,20 +132,19 @@ function plainRun(f: Flight): { ok: boolean; why: string; jumps: number } {
 
 const helps = (f: Flight) => f.events.filter((v) => v.startsWith('help ') || v.startsWith('helpOffer'));
 const flickUp = (f: Flight) => f.r.said.filter((s) => /flick up and forward to jump|slide up and across to jump/i.test(s.text)).length;
-const moveSaid = (f: Flight) => f.r.said.filter((s) => s.text === MOVE_LINES.double.touch || s.text === MOVE_LINES.double.pad).length;
+// (the re-laid chain rises inside a single jump's band, C1: the move Dot names there is the single)
+const moveSaid = (f: Flight) => f.r.said.filter((s) => s.text === MOVE_LINES.single.touch || s.text === MOVE_LINES.single.pad).length;
 
-test('1-1 Easy, seed 3747, w1-log-chain-rise: the line at 3, the full pad jump at 5, the steps at 8, then the whole piece on plain jumps', (t) => {
+test(`1-1 Easy, seed ${SEED}, w1-log-chain-rise: the line at 3, the full pad jump at 5, the steps at 8, then the whole piece on plain jumps`, (t) => {
   const f = fly('easy');
   const { e, piece } = f;
   assert.equal(e.helpState().on, true, 'the ladder is on in 1-1');
-  // (no "before" red on Easy: a held plain jump clears its 114 px rises, the packet Critic's run; players miss them by timing. Normal's
-  // 140 px rises are the red, below)
   const hop0 = padHop(f);
   for (let n = 1; n <= 2; n++) putBack(f);
   assert.deepEqual(helps(f), [], 'nothing at 1 and 2');
   putBack(f);
   assert.deepEqual(helps(f), [`help move ${PIECE} 3 E`]);
-  assert.equal(moveSaid(f), 1, 'Dot says the move (the double) once');
+  assert.equal(moveSaid(f), 1, 'Dot says the move (the single: a run and a held jump) once');
   putBack(f);
   assert.equal(padFullJump(), false, 'the tap is still a hop at 4');
   putBack(f);
@@ -162,7 +162,7 @@ test('1-1 Easy, seed 3747, w1-log-chain-rise: the line at 3, the full pad jump a
   assert.ok(grown.length >= 3, `steps grown: ${grown.length}`);
   assert.ok(grown.filter((g) => g.style === 'moss_stone').every((g) => g.cut === STEP_CUT), 'every step is the one mossy rock (the YES picture)');
   // the move line came down after its time (her own clock holds while he blinks after each set-back)
-  const ml = f.r.said.find((x) => x.text === MOVE_LINES.double.touch || x.text === MOVE_LINES.double.pad)!;
+  const ml = f.r.said.find((x) => x.text === MOVE_LINES.single.touch || x.text === MOVE_LINES.single.pad)!;
   const mlDown = f.r.passed.find((x) => x.text === ml.text);
   assert.ok(mlDown && Math.abs(mlDown.t - ml.t - LINE_UP_S) < 0.1, `the move line down ${LINE_UP_S} s after it was said (${ml.t.toFixed(1)} -> ${mlDown?.t.toFixed(1)})`);
   for (const g of grown) {
@@ -183,7 +183,7 @@ test('1-1 Easy, seed 3747, w1-log-chain-rise: the line at 3, the full pad jump a
   f.done();
 });
 
-test('1-1 Normal, seed 3747: the line at 3, the offer at 12 (the stage held), a no grows nothing, the re-ask at 20, a second no is final', () => {
+test(`1-1 Normal, seed ${SEED}: the line at 3, the offer at 12 (the stage held), a no grows nothing, the re-ask at 20, a second no is final`, () => {
   const f = fly('normal');
   const { e, r, asked } = f;
   for (let n = 1; n <= 11; n++) putBack(f);
@@ -195,7 +195,7 @@ test('1-1 Normal, seed 3747: the line at 3, the offer at 12 (the stage held), a 
   assert.equal(asked[0].reask, false);
   assert.equal(asked[0].cut, STEP_CUT, 'the offer shows the stone that would grow');
   // her bubble: the move line was taken down when the offer opened (or before, at its time), and nothing is said from here on
-  const move = f.r.said.find((x) => x.text === MOVE_LINES.double.touch || x.text === MOVE_LINES.double.pad)!;
+  const move = f.r.said.find((x) => x.text === MOVE_LINES.single.touch || x.text === MOVE_LINES.single.pad)!;
   const down = f.r.passed.find((x) => x.text === move.text);
   assert.ok(down && down.t <= r.t + 1e-6 && down.t - move.t <= LINE_UP_S + 0.05, `the move line taken down by the offer (said ${move.t.toFixed(1)}, down ${down?.t.toFixed(1)}, offer ${r.t.toFixed(1)})`);
   const saidAtOffer = f.r.said.length;
@@ -223,13 +223,14 @@ test('1-1 Normal, seed 3747: the line at 3, the offer at 12 (the stage held), a 
   f.done();
 });
 
-test('1-1 Normal, seed 3747: a yes at 12 grows the steps, the piece is then passed on plain jumps; each step drawn, and gone after a restart', () => {
+test(`1-1 Normal, seed ${SEED}: a yes at 12 grows the steps, the piece is then passed on plain jumps; each step drawn, and gone after a restart`, () => {
   const f = fly('normal');
   const { e, asked } = f;
+  // (changed, INT-1-1: the re-laid chain's rises are inside a single jump's band (C1), so plain jumps pass it as laid; the red where only
+  // the steps get him through is Normal's double test gap, helpLadderPieces.test.ts)
   const before = plainRun(f);
-  assert.equal(before.ok, false, 'without the steps, plain jumps do not pass Normal\'s piece');
-  // (the failed run above was a real fall at the piece: put-back 1)
-  for (let n = 2; n <= 12; n++) putBack(f);
+  assert.equal(before.ok, true, `the re-laid chain on plain jumps as laid: ${before.why}`);
+  for (let n = 1; n <= 12; n++) putBack(f);
   assert.equal(asked.length, 1);
   assert.ok(f.events.includes(`helpOffer shown ${PIECE} 12`), 'the offer at 12');
   asked[0].answer(true);

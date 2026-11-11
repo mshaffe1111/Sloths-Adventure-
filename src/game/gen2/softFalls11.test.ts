@@ -9,14 +9,18 @@ import '../headlessDom.ts';
 import { buildGen2Stage, softFallStage } from './pipeline.ts';
 import { buildPlayStage } from './seedList.ts';
 import { floorlessGaps } from './promises11.ts';
+import { PROVEN_SEEDS } from './provenSeeds.ts';
 import { w1Finish, w1World } from './worlds/w1.ts';
 import { generateStage, setLayoutVariant } from '../stageGenerator.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import type { Gen2Stage, WorldKit } from './types.ts';
 
 const cfg = (id: string) => ({ ...generateAllLevels().find((l) => l.id === id)!, unlocked: true });
-/** the seeds of the 11-10 play window (reference/qa-reports/window-2026-11-10) */
-const WINDOW = [3747, 15458, 19582, 26871, 35286, 23436, 1769, 25908, 29944, 172, 21537, 30782, 1589, 14194, 30947, 12727];
+/**
+ * the first 16 listed seeds of the re-laid 1-1 (4106, the first run, among them). Changed, INT-1-1: these were the 11-10 play window's
+ * seeds (reference/qa-reports/window-2026-11-10), which are no longer listed and no longer build on the re-lay
+ */
+const WINDOW = PROVEN_SEEDS['1-1'].seeds.slice(0, 16);
 
 /** World 1's kit as it was before the 1-1 brief said `softFalls` (origin/main's) */
 function kitWithout(): WorldKit {
@@ -33,7 +37,7 @@ function hardFalls(st: Gen2Stage): Array<[number, number]> {
 }
 
 for (const setting of ['normal', 'easy'] as const) {
-  test(`1-1 ${setting}: on every window seed a fall into any gap that is not water is a soft set-back, and water stays water`, () => {
+  test(`1-1 ${setting}: on the first 16 listed seeds a fall into any gap that is not water is a soft set-back, and water stays water`, () => {
     for (const seed of WINDOW) {
       const st = w1Finish(buildPlayStage(cfg('1-1'), w1World(), seed, setting));
       assert.equal(st.gen2.seed, seed, `seed ${seed} is laid as listed`);

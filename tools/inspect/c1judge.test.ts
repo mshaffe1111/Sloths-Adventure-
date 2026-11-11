@@ -1,7 +1,7 @@
 // c1judge.ts (R-165.72, C1 done-item 7): the refusal and each check, planted good and bad
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { judgeRow, pieceTable, refusal, BOTS_FAILED, BOTS_PASSED, type JudgedRun } from './c1judge.ts';
+import { judgeRow, pieceTable, refusal, BOTS_FAILED, BOTS_PASSED, DOUBLE_TEST_PIECES, type JudgedRun } from './c1judge.ts';
 
 const run = (o: Partial<JudgedRun>): JudgedRun => ({
   tier: 'expert', setting: 'normal', stage: '1-1', variant: 1, end: 'shrine', finishSeconds: 150, lives: 0, putbacks: 1, rescues: 0, secondPressMs: [],
@@ -37,4 +37,18 @@ test('the child keeps its rescues printed, Easy has no lives check, and the piec
   assert.deepEqual(fails(judgeRow('child', 'easy', [c], [], [{ ...c, putbacks: 1 }], false)), []);
   const t = pieceTable([run({ putbacks: 2 })], base);
   assert.equal(t[2], '| w1-learn | 1 | 2 | 0 | 20 | 2 | 1.5 | 0 | 20 |');
+});
+
+test('put-backs are judged outside the double-test pieces (INT-1-1 item 6, PUSHBACK 2 upheld): the excess at the designed test is not counted, any other is', () => {
+  const at = (id: string, n: number) => ({ id, lives: 0, putbacks: n, seconds: 20 });
+  // (1 a run elsewhere, the baseline's 1.5 or less; 3 more at the double test: passes)
+  const test = run({ putbacks: 4, pieces: [at('w1-learn', 1), at('w1-dip-double-teach', 3)] });
+  assert.deepEqual(fails(judgeRow('expert', 'normal', [test], [], base, false)), []);
+  // (planted: the same 3 at a piece that is not a double test fails)
+  const other = run({ putbacks: 4, pieces: [at('w1-learn', 1), at('w1-log-chain', 3)] });
+  assert.deepEqual(fails(judgeRow('expert', 'normal', [other], [], base, false)), ['put-backs a run <= baseline']);
+  // (the baseline is read the same way: its put-backs at those pieces are left out too)
+  const baseTest = [run({ putbacks: 5, pieces: [at('w1-learn', 0), at('w1-double-teach', 5)] })];
+  assert.deepEqual(fails(judgeRow('expert', 'normal', [run({ putbacks: 1 })], [], baseTest, false)), ['put-backs a run <= baseline']);
+  assert.ok(DOUBLE_TEST_PIECES.includes('w1-double-teach') && DOUBLE_TEST_PIECES.length === 5);
 });

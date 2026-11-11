@@ -141,6 +141,9 @@ export class RealPlay {
     e.loseLife = () => {
       this.died = true;
     };
+    // (1-1's help offer, R-165.62: there is no screen to show it on here, and the stage holds still until it is answered; a run that
+    // reaches it without asking for it answers no, so play goes on. A test of the offer sets its own helpAsk, helpLadder11.test.ts)
+    if ('helpAsk' in e) e.helpAsk = (_o: unknown, answer: (yes: boolean) => void) => answer(false);
     e.inputGrace = 0;
   }
 
