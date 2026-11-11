@@ -237,12 +237,12 @@
  },
  "audited": {
   "branch": "t-design-1-2",
-  "head": "89005905",
+  "head": "7ed328b6",
   "cites_at": "t-int-1-1@53bd446a"
  },
  "status": "REJECT",
  "verdicts": {
-  "CONTENT-1-2-relay.md": "REJECT (1 line, plus 1 ruling not written in)",
+  "CONTENT-1-2-relay.md": "REJECT (1 line)",
   "ENGINE-1-2-routing.md": "PASS (two notes)"
  },
  "violations": [
@@ -250,19 +250,10 @@
    "packet": "CONTENT-1-2-relay.md",
    "n": 1,
    "file": "reference/packets/2026-11-11/CONTENT-1-2-relay.md",
-   "line": "58-61, 76-87, 98, 101-102; reference/STAGE-RULES.md:23-24",
+   "line": "58-62, 83-92, 109, 112-113; reference/STAGE-RULES.md:23-24",
    "rule": "STAGE-RULES \u00a70 rule 3: no beat repeated to fill time",
    "evidence": "out/ncount12.txt: median 13 N beats a roll on graphs A and C, 9 on B, max 19; 257 of 360 rolls hold 10 or more; 209 hold a run of 5 or 6 in a row",
    "fix": "no more than 3 N in a row; mix the kit own down beats (Y, F), a drop, or end high into a D node; a ceiling on N a roll as a test; re-fly with quiet12"
-  },
-  {
-   "packet": "CONTENT-1-2-relay.md",
-   "n": 2,
-   "file": "reference/packets/2026-11-11/CONTENT-1-2-relay.md",
-   "line": "246",
-   "rule": "the lead ruling of 4:58 PM ET (yield floor 1 in 50 for now)",
-   "evidence": "the packet says 1 clean in 10",
-   "fix": "write the ruling in, or the lead confirms 1 in 10"
   }
  ],
  "attempt2": {

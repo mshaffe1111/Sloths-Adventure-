@@ -1,7 +1,7 @@
 # Critic: turnover note (rewritten at the end of every task; this one 2026-11-11 4:20 PM ET, the 1-2 packet audit)
 First note under this name: the scripts, the gate order with timings, the traps and the PR body template are still in reference/handoffs/release-clerk.md; read it with this.
 ## Where things stand
-- ATTEMPT 3 audited at t-design-1-2@89005905: ENGINE PASS (two notes); CONTENT REJECT on 1 line (the new step-down beat `N` is written 3-6 in a row into 14 rhythms: a median of 13 a roll, against STAGE-RULES §0 rule 3) plus the lead's yield floor not written in. Report: REPORT-attempt3.md; count: ncount12.ts.
+- ATTEMPTS 3 and 4 audited at t-design-1-2@7ed328b6: ENGINE PASS (two notes); CONTENT REJECT on 1 line (the new step-down beat `N` is written 3-6 in a row into 14 rhythms: a median of 13 a roll, against STAGE-RULES §0 rule 3); the yield floor was written in by attempt 4. Report: REPORT-attempt3.md; count: ncount12.ts.
 - ATTEMPT 2 audited at t-design-1-2@35364c97: CONTENT REJECT on 1 line (bare step-down runs against the 4 s quiet line), ENGINE REJECT on 3 (the testers' course moves with EARLY_DOUBLE, item 0 has two owners, blooms name 8-2 too). Report: REPORT-attempt2.md. All 20 attempt-1 lines closed.
 - Next delta: re-run quiet11.ts and ctest12.ts ideas on the Designer's edits; cites-*-2.txt at the head they name.
 - Audited t-design-1-2@f60e6503: CONTENT-1-2-relay.md REJECT (12 lines), ENGINE-1-2-routing.md REJECT (5 lines). Report, JSON and proofs: reference/qa-reports/CRITIC-1-2-packet/ on branch t-critic-1-2-packet.
