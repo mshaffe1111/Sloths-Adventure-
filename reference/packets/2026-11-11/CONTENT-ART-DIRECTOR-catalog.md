@@ -12,7 +12,7 @@ nothing (D40). No art is placed, cut again or generated here; no HF job.
 reference/LAWS.md, reference/LESSONS.md (D37-D40), reference/STAGE-RULES.md §4 (art) and §5b (polish), reference/PERFORMANCE-RULES.md
 §1 and §8, reference/methods/kit-audit.md, and how the engine draws and stands on art: tools/engine/catalog-map.json (every kit slot:
 cat, arr, key, footing, mayFloat, uses, worlds), src/game/w1CutArt.ts, src/game/stageArt.ts and src/game/stageArtData.ts (how a cut piece becomes a
-drawn piece with a footing line), src/game/paintedScenery.ts (decor layers).
+drawn piece with a footing line), src/game/paintedScenery.ts (decor layers), src/game/paintedBackdrops.ts (backdrop and near strips).
 ## Two members, one table (run in parallel; identical columns; part A merges at the end)
 - PART A: the cut pieces not yet in the game (sources 1-3 below). Output reference/art/catalog-cut.csv.
 - PART B: everything the game ships today: every image under src/assets (each atlas frame or sprite separately, by the atlas's own
@@ -25,14 +25,17 @@ drawn piece with a footing line), src/game/paintedScenery.ts (decor layers).
 1. art-raw-2026-11-07: cut/catalog.csv (91 kept; world_fit W1/W2/both)
 2. art-director: reference/art/cut/manifest.json (107 keep, 4 hold; tags by kin)
 3. t-c2-art-cut: reference/art-incoming/matt-2026-11-09/cut, matt-2026-11-11/cut, matt-2026-11-11b/cut, hf-list1 (catalog.csv each)
-4. (part B) The 18 pieces already in 1-1's atlas (w1CutArt.ts / w1-cut.webp)
+4. (part B) The 18 pieces already in 1-1's atlas (w1CutArt.ts / w1-cut.json): all 18 are ALREADY rows of the art-director manifest
+   (source 2, from gemini-2026-11-05): set status "in game" on those rows, keyed by file stem = atlas name; never add them twice.
+   Print every count as sources minus overlap.
 ## Build (part A branch t-art-catalog-a, part B t-art-catalog-b, both from origin/t-c2-art-cut; WRITE: reference/art/catalog-cut.csv
 ## (A), reference/art/catalog-game.csv (B), reference/art/CATALOG-MASTER.csv/.md and tools/art/catalog_master.py (A),
-## reference/art/master-sheets/ (both); nothing under src/)
+## reference/art/master-sheets/ (both), REPORT.md (each its own); nothing under src/)
 1. tools/art/catalog_master.py merges every source into ONE table, one row per kept piece (holds and rejects listed separately), the
    same columns for all: id, source, file, kind, w, h, walk_y, walk_x0, walk_x1, flat, float_class, world_best, worlds (all ten, best
    first, each "N reason"), no_fit (the rest, each with why), made_thing (y/n: never W1), and the ENGINE columns: engine_slot (the
-   catalog-map.json cat/arr/key it can fill, or "new slot: <what>"), footing (the walk line in piece pixels, or none for decor), layer
+   catalog-map.json cat/arr/key it can fill (stage-data slots); for cut platforms ALSO w1CutArt.ts pickCut's kind (stone/stump/log)
+   with its size window; for backdrops the paintedBackdrops.ts strip; or "new slot: <what>"), footing (the walk line in piece pixels, or none for decor), layer
    (platform / step / soft landing / danger look / decor near / decor mid / backdrop), on_screen_px (its drawn size at play scale),
    ship_px (the size to ship it at: no bigger than on_screen x 2, R-165.99 app size), file_kb now and at ship_px, draw_cost (one
    blit or a part of an atlas, and which), used_in (stages it appears in today, from the code), status (in game / ready / needs fix:
