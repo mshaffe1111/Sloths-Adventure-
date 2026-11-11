@@ -27,7 +27,7 @@ is, Matt's direction, the first day), then this note, then STATE.md (the live le
   spots: high roads end empty (R-165.115), no help at the double wall for a player who never falls (R-165.119), ~13 hop rocks walked
   through (R-165.122), seed fruit 5-8 px under the plate at a bounce top, child bot on Normal 13 rescues in 40 (baseline 8). Not yet seen
   on a real phone. Nothing is merged to main: main is still 0.9.5. A release needs Matt's word "push" (reference/methods/release.md).
-- **The game map (draft, waiting on Matt):** t-design-game-map@4d6eeacc reference/plans/GAME-MAP.md, sent to Matt 5:26 PM. 113 stages
+- **The game map (draft, waiting on Matt):** t-design-game-map@6909c3c9 reference/plans/GAME-MAP.md (story keeper calls folded in; 9 questions), sent to Matt 5:26 PM and again 5:38 PM. 113 stages
   (86 gen2, 27 hand-made, 17 exist); every world 1 new move + 2-3 world rules; §8 has 8 questions for Matt; §10 is the engine sprint
   list (~295 h with cuts, 350 without; the Designer's freeze date 11-23 to 11-26 is judgement). Matt then said: a LARGE PORTION of the
   engine first, not all of it. The new lead's first job is to turn §10 into that plan (NEW-LEAD-START.md §3).
