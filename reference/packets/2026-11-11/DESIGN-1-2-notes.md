@@ -13,6 +13,8 @@ Companion to CONTENT-1-2-relay.md. Every fact below was read in the code or run 
 | 1-2 rolled on the packet's OWN brief, today's engine | `npx tsx reference/specs/sims/supply12.ts 60` | most seeds throw: a 253-256 px gap is "past the double's reach 230 px" (1-2 is not on the flown reach), and every section with a double or bounce-plus-jump block is swapped out as unreachable (the level check counts no double on 1-2, levelCheck.ts:132-134); out/supply12-today.txt |
 | The same, as it will roll after Engine items 3 and 5 | `FLOWN=1 npx tsx reference/specs/sims/supply12.ts 120` | 720 of 720 rolls build (360 different plans: Easy lays Normal's), 0 throws; the pool runs short on 2, 6 and 3 rolls of 120 (graphs A, B, C); no section of the 53 never laid; every other line is V3 (item 5); out/supply12-flown.txt |
 | A run of steps down keeps the 4 s quiet line when each step carries its own hop | `FLOWN=1 npx tsx reference/specs/sims/quiet12.ts 120` | six bare `n`: 8.7 to 11.1 s on 50 of 50 rolls; six `N` (a hop stump on each step): median 2.1 s, max 4.1 s, over 4 s on 1 of 41; out/quiet12.txt |
+| A MIXED way down keeps the quiet line (the lead's ruling, 5:10 PM ET) | the same run (11 ways down; `DOWN=JNJN,JNYN` picks; `BEATS=1` prints the beats read) | over 4 s: `J N J N` 0 of 52 (max 3.7 s); `J N c J c N` 0 of 50; `J N H J N` 0 of 46; `J N Y N` 1 of 47 (4.3 s). FAILS: `J N J Y` 23 of 51 and `N J N J` 1 of 48 (a silent piece last), `N J Y J` 48 of 53 (two side by side). The inspector reads NO beat at the kit's `Y`, at a drop across a soft gap, or at a walk-off drop (tools/inspect/route.ts:266, beats.ts:113-123): so the ruling's `Y`, `F` and drop are laid only between two beats; out/quiet12.txt |
+| Hop steps a roll, as written | `npx tsx reference/specs/sims/ncount12.ts 120` (the MOST of each section's versions; exit 1 over the ceiling) | A: median 4, max 6; B: median 2, max 5; C: median 4, max 6; 0 of 360 rolls over 6. Attempt 4 by the Critic's count: 13 / 9 / 13, up to 19, a run of 5-6 on 209 of 360 |
 flight.ts is t-designer-reach's file with two additions: `FLIGHT_STAGE` (the stage flown; default 1-1, so every old figure
 reproduces) and the `chain` mode. supply12.ts is built on the Critic's probe12b.ts (t-critic-1-2-packet); probe12.ts is kept as the
 first run it was (a different brief: teaches none, deal 40/30/30), not as proof of the packet's brief.
@@ -77,6 +79,14 @@ first run it was (a different brief: teaches none, deal 40/30/30), not as proof 
 more than 2 bare `n` in a row, a phase-1 quiet done-test per section, more pieces in the X node; the double counted for the
 gen2-built 1-2 ONLY, `#ctest`'s hashes in item 5's gates; item 0 STRUCK from the Engine packet (the t-engine-11-followup
 round's), item 7 on that round's passed head; blooms World 1 only by a kit row; the yield floor 1 in 50 for now.
+
+**Ruled 11-11 5:10 PM ET (the lead, on the Critic's one attempt-3 line), applied exactly:** Matt's rule 3 stands; the hop step
+`N` at 13 a roll is not acceptable. No more than 3 `N` in a row; a longer way down mixes the kit's own down beats (`Y`, `F`), a
+drop, or ends high into a D node; a ceiling of 6 `N` a roll as a w1.stage12.test check; the mixed run re-flown with quiet12. HOW
+it is met: no two `N` side by side in any rhythm (stricter than 3), 2 at most in a section; a new letter `J`, the drop (a ledge
+130-140 px lower, 180-220 wide, walked off); `Y` once; no section ends high (graph A has no D node, and the supply proof stands on
+the graphs as they are). One thing the flight added to the ruling: `Y`, `F` and a drop are no beat to the inspector, so each
+stands between two beats and never last. The first mix I flew, with a jump-down drop and `Y` last, failed on 23 of 51 rolls.
 
 After the Critic's attempt-2 audit (79f8e8b0), one thing changed in HOW ruling 3 is met (the lead ruled the same at 4:58 PM ET): `EARLY_DOUBLE` is not
 widened by id (that moved the testers' control course on 1-2's id, 6 of 16 builds); the double counts on a stage gen2 BUILT whose
@@ -190,3 +200,5 @@ out). The yield count names any other that breaks it.
 | **Attempt 2, E3** blooms | Keyed on the brief (`offRoad: 'fruit'`, set on 1-2 only), not on the objective; 8-2 named as unchanged in the gate |
 | **Attempt 2**, cites | engine.ts:3009-3010 and :3080, goals.ts:57 |
 | **Attempt 2**, for the lead: the yield floor | Ruled: 1 in 50 for now; a rule-caused shortfall is a PUSHBACK naming the rule; R-165.120 raises the floor later |
+| **Attempt 3, C1** the hop step written 3-6 times in a row, 13 a roll (STAGE-RULES.md:23-24) | The lead ruled the Critic's cure. The 14 rhythms rewritten: no two `N` side by side, a drop `J` or the kit's `Y` between hop steps or between two steps up; flown (quiet12.ts, 11 ways down); counted (ncount12.ts: median 4 / 2 / 4, max 6, 0 of 360 over the ceiling of 6); the ceiling and the side-by-side rules are in done-item 1 |
+| **Attempt 3, E notes** | pipeline.ts:193 `jumpLinkGap` named as the fifth reader in item 5; item 5's gate worded with ctest12.ts `--record <file.json>` on the base and `--check <file.json>` on the head (exit 1 on a difference) |

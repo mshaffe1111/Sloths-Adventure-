@@ -2,7 +2,8 @@
 # model: the engine tier (tools/team/models.json on the lead's branch)   effort: high   due: see "Time"; a safe-keeping push at least hourly
 Written by the Designer, 2026-11-11 5:03 PM ET; attempt 3: after the packet Critic's 6 lines (t-critic-1-2-packet@51fe547a), the lead's
 rulings of 11-11, and the Critic's three attempt-2 lines (@79f8e8b0: the testers' course, one owner, the blooms' reach). Attempt 4, 5:05 PM ET:
-the lead's rulings of 4:58 PM ET applied exactly (item 0 struck). Every file:line was read at t-int-1-1@53bd446a (D37).
+the lead's rulings of 4:58 PM ET applied exactly (item 0 struck). PASSED by the Critic at 7ed328b6; its two notes written in 2026-11-11 5:24 PM ET
+(item 5: the fifth reader, and the control-course tool's `--record` / `--check`). Every file:line was read at t-int-1-1@53bd446a (D37).
 
 ## First, before any tool call
 `git fetch origin ccr-ca657d3c-n09zty t-design-1-2 t-designer-reach` and the passed t-int-1-1 head the lead names. Read
@@ -140,7 +141,8 @@ pays in blooms that never raise the quota.
   The double counts on a stage BUILT BY gen2 whose kit's `lessons` say an earlier stage taught it: the built stage carries
   that (a field on its gen2 meta, set in the pipeline), and every reader of `doubleAllowed` asks it of the stage, not only of the
   id: the gen2 level check (pipeline.ts:2531-2540), the pickups' reach (stageGenerator.ts:2949-2951 `finishReach`), Easy's hold
-  softening (easyMode.ts:107) and levelCheck.ts:498. A stage gen2 did not build answers exactly as today.
+  softening (easyMode.ts:107), levelCheck.ts:498, and the fifth reader, the gen2 link reach `jumpLinkGap` (pipeline.ts:193: it
+  is handed a world and a stage number, so it is handed the kit's answer too). A stage gen2 did not build answers exactly as today.
 - The node code's V3 counts a double or a bounce as taught only by a T token IN the stage (nodeCode.ts:138-141; called at
   pipeline.ts:654-661), so every 1-2 roll with a D rise or a bounce node fails "uses the double before its teach". V3 reads the
   world's `lessons` for the stage: a move an earlier stage taught is taught.
@@ -148,8 +150,11 @@ pays in blooms that never raise the quota.
   `A Tb Pg1 R Xc2 R Sb E` when `lessons` says 1-1 taught the double and still refuses it when it does not; on 1-1 nothing moves.
   `FLOWN` is no longer needed: `npx tsx reference/specs/sims/supply12.ts 120` gives what `FLOWN=1` gives today (720 of 720 built,
   V3 lines gone). An Easy raw 1-2 build keeps its D rises at 128-132 with no step or catch added by the softening.
-- Gates: the control course does not move: `npx tsx reference/qa-reports/CRITIC-1-2-packet/ctest12.ts` (on t-critic-1-2-packet)
-  prints 0 of 16 builds differ against hashes recorded on your base; lockall: NOTHING differs (the old 1-2 included); the full suite.
+- Gates: the control course does not move. The tool is the Critic's, on t-critic-1-2-packet@5d73c0da (`git checkout
+  origin/t-critic-1-2-packet -- reference/qa-reports/CRITIC-1-2-packet/ctest12.ts`; do not commit it). On your BASE, before the
+  change: `npx tsx reference/qa-reports/CRITIC-1-2-packet/ctest12.ts --record <file.json>`. On your head: `... ctest12.ts --check
+  <file.json>` prints "0 of 16 builds differ" and exits 0 (exit 1 on any difference). lockall: NOTHING differs (the old 1-2
+  included); the full suite.
 
 **6. Off the road pays in bonus blooms on a harvest stage. (Push 2; RULED by the lead, 11-11 4:47 PM ET: "exploring always pays")**
 - A harvest's quota is 87.5% of the PETALS laid (goals.ts:21, :57: flowers and leaves), so a petal off the natural road costs a

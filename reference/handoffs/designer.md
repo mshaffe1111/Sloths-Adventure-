@@ -1,4 +1,4 @@
-# Designer handoff (rewritten 2026-11-11 5:03 PM ET by the Designer of the 1-2 packets, R-165.11, after their second Critic round; before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07)
+# Designer handoff (rewritten 2026-11-11 5:24 PM ET by the Designer of the 1-2 packets, R-165.11, after their third Critic round; before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07)
 
 Read first, in order:
 - reference/LAWS.md;
@@ -88,8 +88,11 @@ Every ruling below cites the file and section where it's written in full.
     floating (World 1's window puts floating in the last third, where 1-2's graphs hold F, C, X and W); one hazard lesson (thorns)
     and no new move; ONE signature, the bounce chain over a thorn hollow, in three sections that are 1-2's alone; the note hollow
     is the required H and carries `phases: ['sho', 'ten']` (a required section is fitted by phase). Three harvest graphs. 53
-    sections: 11 reused, 17 own, 25 new; every own and new one level within 110 px unless U or D, paid back by `N` steps (a
-    step down with its own hop: a bare `n` is quiet time, and the seed list refuses over 4 s; flown, sims/quiet12.ts).
+    sections: 11 reused, 17 own, 25 new; every own and new one level within 110 px unless U or D. The way down is MIXED (the lead, 11-11 5:10 PM ET, on
+    STAGE-RULES §0 rule 3): a hop step `N` (a step down with its own hop stump) never twice side by side and 6 a roll at most,
+    with a drop `J` (a ledge 130-140 px lower, walked off) or the kit's `Y` between beats. A bare `n`, `Y`, `F` and any drop are
+    NO beat to the inspector, and the seed list refuses a quiet stretch over 4 s: one silent piece at a time, never last, never
+    before a long floor (flown, sims/quiet12.ts; counted, sims/ncount12.ts).
 16. **The chain's bands (chain.md §3, flown):** cap centre to cap centre 205-220 level, 195-210 a step up of 24-36 (lay 198-206),
     215-225 a step down (lay 216-224); pillars wider than the cap (Normal 110-130, Easy 150-170) so a near miss lands on wood;
     Normal 2-5 caps, Easy 2-3. A chain is S, M, P, D or part of a C or F, never an X: the pillars alone are a stepping-stone road.
@@ -107,8 +110,9 @@ Every ruling below cites the file and section where it's written in full.
 ## 4. Open items (none of these is finished; check each before assuming)
 
 - **From the 1-2 packets (11-11):**
-  - attempt 4 of both packets is with the packet Critic (the yield floor is 1 clean in 50 for now, the lead 11-11; R-165.120 raises it)
-  - earlier rounds: (attempt 1: CONTENT 14 lines, ENGINE 6; attempt 2: 1 and 3; each answered in
+  - the ENGINE packet PASSED the packet Critic (7ed328b6, two notes since written in); CONTENT attempt 5 (the mixed way down)
+    is with the Critic (the yield floor is 1 clean in 50 for now, the lead 11-11; R-165.120 raises it)
+  - earlier rounds: (attempt 1: CONTENT 14 lines, ENGINE 6; attempt 2: 1 and 3; attempt 3: 1 and two notes; each answered in
     DESIGN-1-2-notes.md §9); the lead's rulings are all in notes §3, none open (bonus blooms; the ladder grows the lesson's own
     fallen log at the first chain, else the line alone; the double counts on the gen2-BUILT 1-2 only, `EARLY_DOUBLE` not
     widened, so `#ctest` on 1-2's id does not move; item 0 struck from the Engine packet: the t-engine-11-followup round's);
@@ -162,6 +166,9 @@ Every ruling below cites the file and section where it's written in full.
 - **`w1World()` hands out the same section objects every call:** a probe that edits tags copies each section first.
 - **A probe on another brief proves nothing about the packet's** (the Critic's line 1 on attempt 1).
 - **A rhythm's steps down are quiet time.** Check any run-out against the quiet line (QUIET_MAX 4 s) before it goes in a packet.
+- **Any way DOWN is silent unless it carries a hop (11-11).** The kit's `Y` and `F`, a drop across a soft gap and a walk-off are
+  no beat to the inspector (tools/inspect/route.ts:266). And a new beat is counted per ROLL before it is written into many
+  rhythms (STAGE-RULES §0 rule 3): `N` was 13 a roll before anyone counted. `BEATS=1` on sims/quiet12.ts prints what is read.
 - **A rule keyed on a stage id hits every build on that id** (`#ctest` lives on 1-2's); one keyed on an objective hits every
   stage with it (8-2 is a gen2 harvest). Key on the built stage or its brief.
 - **A socket is not a pickup (11-11).** gen2 fills a `find` only in the stage's required section; a fork's `find` socket stays empty and
