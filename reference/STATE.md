@@ -93,7 +93,8 @@
   branch t-c2-art-cut; packet passed by a Critic (session_01FhBbYLu2qvAbccX1MFpoDX) at ff864873. REPORTED 11:14 PM ET: t-c2-art-cut@fa3e6e77, 48 kept / 10 rejected,
   30 MB added; flags kept (M-04-b crate words, M-06-e pitcher plants, sheet 02 top view); rough spots named (M-09-a root pockets, M-05-a
   mauve trunk top). The lead's ruling on its pushback: the 7 clean pieces under 600 px are allowed and move into src/assets/w1-1109/ when
-  C2 places art. Its Critic is out. Its Critic follows on its report (about $3). The sprint board is republished
+  C2 places art. PASSED 11-11 2:17 AM ET at t-c2-art-cut@eddc6b0c (two attempts): 54 kept, 4 rejected, 30.4 MB; 5 pieces have a true
+  flat top, 28 are "by hand" with their readings. Its Critic follows on its report (about $3). The sprint board is republished
   at every member start, stop and verdict (Matt, 10:26 PM ET: "make sure to keep sprint board updated").
 - WORKING: session_01FhBbYMHMXc5mHeNEeVEhTR, "Designer: the real reach numbers, flown in the engine (R-165.60)", Fable 5.2 (Matt,
   tonight), created 11-09 8:43 PM ET, due 12:45 AM ET, branch t-designer-reach. Sent alongside the analyst because Matt asked for

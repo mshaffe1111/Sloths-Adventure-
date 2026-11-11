@@ -32,13 +32,8 @@
   "team": [
     {
       "role": "Content",
-      "task": "your art cut: 48 pieces kept, a Critic is checking",
+      "task": "your art cut: 54 pieces passed",
       "status": "reported"
-    },
-    {
-      "role": "Critic",
-      "task": "checking the art cut",
-      "status": "working"
     },
     {
       "role": "Architect",
@@ -57,12 +52,12 @@
     },
     {
       "role": "Analyst",
-      "task": "tester data: passed; the closing delta on Wednesday",
+      "task": "tester data and the closing update: passed",
       "status": "reported"
     },
     {
       "role": "Story keeper",
-      "task": "Dot's words for the help, Wednesday",
+      "task": "Dot's help lines written; reviews the built ones",
       "status": "on call"
     }
   ],
@@ -90,7 +85,7 @@
         {
           "id": "R-165.62",
           "title": "Fix A2: help after repeated put-backs (by itself on Easy, offered on Normal)",
-          "waits": "Wednesday 2:00 AM ET reset, and Dot's words from the story keeper"
+          "waits": "a Critic passing its packet (Dot's words are in)"
         },
         {
           "id": "R-165.87",
@@ -125,7 +120,7 @@
         },
         {
           "id": "R-165.57",
-          "title": "New words for the two old coach lines on the pad"
+          "title": "Pad coach line settled: \"In the air, hold Jump again for a double jump.\""
         },
         {
           "id": "R-165.63",
@@ -194,7 +189,7 @@
       "cards": [
         {
           "id": "R-165.85",
-          "title": "Your 15 sheets cut: 48 pieces kept and catalogued; a Critic is checking (placing comes with the re-lay)"
+          "title": "Your 15 sheets: 54 pieces cut and catalogued, PASSED; placing comes with the re-lay"
         },
         {
           "id": "R-165.61",
