@@ -22,7 +22,7 @@
   bites" Normal 12->16, Easy 8->16 (soft falls, by Matt's no-lethal-1-1 rule); Easy "pacing" 11->12; worst "dead walk" 4.0 s Normal / 4.2 s
   Easy at x 140 (home banks) vs 2.6/2.8 s; 1-2 Normal "nothing new" 14->16; 1-1 Normal "repeat" better 13->12. NOT YET RULED: needs your
   ruling and Matt's acceptance, with these numbers in the PR body. Suite, lock, browser gates were still running at 5:50 PM.
-- Player strings changed from main: sent to the story keeper for approval at 5:48 PM; its answer comes to the lead.
+- Player strings: APPROVED by the story keeper (checked in the code at release-0.9.6@06bbd29f; message 5:48 PM ET). Its gate is clear; the PR still waits on every gate green or ruled.
 - Matt's test link EnK5 v244 = 874f11f6, without the What's New and R-165.57 text: rebuild it from the final candidate before the PR.
 - Matt's steps in writing: reference/methods/MATT-RELEASE-STEPS.md. The team's: reference/methods/release.md (story keeper additions at the end).
 
