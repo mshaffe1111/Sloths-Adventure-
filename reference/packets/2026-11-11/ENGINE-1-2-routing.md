@@ -68,8 +68,8 @@ never raise the quota.
 
 ## Files
 - WRITE: src/game/gen2/listed.ts (NEW: the listed-stage table, item 1), pipeline.ts, reach.ts, verdicts.ts, verdicts.types.ts,
-  promises11.ts, nodeCode.ts, types.ts (the `hurt` place flag, the manifest's `hurtFloor` row, the brief's `offRoad`, `petals` and `help`
-  fields, a piece's `help` mark and the built stage's taught-before field, nothing else); src/game/engine.ts, types.ts
+  promises11.ts, nodeCode.ts, types.ts (the `hurt` place flag, the manifest's `hurtFloor` row, the brief's `offRoad`, `petals`, `bloomSprite` and `help`
+  fields, a piece's `help` mark and the built stage's taught-before field, nothing else); src/game/engine.ts, vectorArt.ts (the `fruit` draw, item 6 only), types.ts
   (`Platform.pit` gains `'hurt'`), levelCheck.ts and easyMode.ts (how `doubleAllowed` is asked, item 5; `EARLY_DOUBLE` itself is NOT widened), w1Pits.ts, stagePreload.ts (the bed's
   files), helpLadder.ts (item 7 only), stageGenerator.ts, testlink1_1.ts, buildAhead.ts; src/components/WorldMap.tsx;
   tools/engine/seedlist.ts; the tests beside each; src/assets/props/pits/ (the thorn bed's pieces); in item 7 only: protoStage.ts,
@@ -228,10 +228,22 @@ never raise the quota.
   any gap; pickups come only from `pickup` sockets (at their `dn`) and the harvest top-up, which is low already (:2193, 34 px
   over a main piece 200 px or wider). Content sets it on `briefs['1-2']`. Done-test: a raw 1-2 build, 6 seeds, both settings: no
   `flower` is over a gap or more than 50 px over the piece under it; the laid count still reaches the harvest's (`quota.lay`).
-- **Any stage:** two brief fields, no id and no objective. Proof: the fixture stage with `offRoad: 'fruit'` and `petals: 'low'`
-  on its stub brief lays fruit off the road and no arc, and without the fields lays what it lays today.
-- Gates: lockall: nothing differs, 8-2 named in the output as unchanged. A still of a bloom beside a petal in 1-2, both ways: they must not look alike (the `fruit`
-  draws as a classic bloom, the petal as Meeca's painted petal, vectorArt.ts:1087-1092); if they do, name it for the art pass.
+- A BLOOM IS NOT A PETAL (the story keeper, binding, 11-11 5:37 PM ET: "bonus blooms are a growing flower, distinct from the
+  petal sprite", and NOT the hibiscus; the lead 5:36 PM ET: they stay up on the bough). Today a `fruit` draws one of six vector
+  blooms by its id (`CLASSIC_BLOOMS`, vectorArt.ts:1013-1020, drawn at :1094-1095): two are hibiscus and one is a pink orchid.
+  A third brief field, `bloomSprite?: number` (a painted flower's sheet number, flowerSprites.ts): where a brief sets it the
+  pipeline stamps it on each `fruit` it lays, and the draw paints THAT flower from the painted atlas, standing on its piece
+  (its base on the piece's top, no bob, as a `find` stands, vectorArt.ts:1078-1080), about 40 px tall (0.45 of Pokey's drawn
+  89.1 units, D41); while the atlas loads it draws nothing, never a vector bloom. Content sets `bloomSprite: 76` on
+  `briefs['1-2']` (the inventory's `flowers-atlas#f76`, the golden allamanda with its leaves; in World 1's pool,
+  flowerSprites.ts:22). A `fruit` on a stage with no such field draws as today. Done-test: a draw test that a 1-2 `fruit`
+  asks for frame f76 and never `CLASSIC_BLOOMS` or the petal; the still below.
+- **Any stage:** three brief fields, no id and no objective. Proof: the fixture stage with `offRoad: 'fruit'`, `petals: 'low'`
+  and a `bloomSprite` on its stub brief lays fruit off the road with that sprite and no arc, and without the fields lays and
+  draws what it does today.
+- Gates: lockall: nothing differs, 8-2 named in the output as unchanged. A still of a bloom on a bough over low petals in 1-2, both ways, sent
+  to the lead with item 2's still: the bloom reads as a growing yellow flower, the petal as Meeca's loose pink petal
+  (vectorArt.ts:1092); if a child could mix them up, say so plainly and name what the art pass must change.
 
 **7. Routing reads the listed-stage table, so any listed stage plays from gen2; 1-2 is the first moved by a row. Delete the old 1-2; help where data marks it. (Push 3, on Content's head, the lead's word first)**
 - The game reads item 1's table wherever it says '1-1' today for "a stage rolled from the proven list" (about ten places):
@@ -291,5 +303,5 @@ PUSHBACK.md and one message, then stop.
 attempt 4 at 7ed328b6 applied the lead's rulings of 4:58 PM ET, item 0 struck, and PASSED with two notes, written in at 3864e805;
 attempt 5 at 65d31898 applied the lead's standing rule D43: each item for any stage from data, proven on 1-2, with its "Any stage"
 proof; the Critic: sound, three wording fixes, written in 2026-11-11 5:35 PM ET with the story keeper's must (item 6: petals low by a brief
-field), and made exact to the Critic's words 2026-11-11 5:36 PM ET (the lead, 5:34 PM ET).
+field), and made exact to the Critic's words 2026-11-11 5:36 PM ET (the lead, 5:34 PM ET); 2026-11-11 5:38 PM ET: item 6's bloom sprite (the story keeper).
 Each line is answered in DESIGN-1-2-notes.md §9)

@@ -39,9 +39,9 @@ No screens (packets). Tables checked for broken code spans; times from `date`; e
   mix I flew (`J N J Y`, a jump-down drop) broke the quiet line on 23 of 51 rolls and is not in the packet.
 - Petals LOW on the bark (BRIEF-1-2 "must", the story keeper 5:33 PM ET): my "a petal over every cap" was wrong, and the pipeline
   hangs a 3-petal arc over most gaps by itself (pipeline.ts:2178-2185): CONTENT rule 5 and done-item 4, ENGINE item 6 (`petals: 'low'`).
+  Bonus blooms stay high (the lead) as a painted growing flower, `flowers-atlas#f76`, never the hibiscus (the story keeper): `bloomSprite`.
 - Thin supply cells: notes §8 (eight job-and-type cells hold one section each; the three test cells hold two).
-- supply12 proves tags and counts with stand-ins, not heights: the builder's raw builds are the proof of reach.
-- Not run by me: the tier bots or stage.ts on a 1-2 that does not build yet. The thorn bed has not been drawn.
+- supply12 proves tags and counts with stand-ins, not heights: the builder's raw builds are the proof of reach. Not run by me: the tier bots or stage.ts on a 1-2 that does not build yet. The thorn bed has not been drawn.
 - roadmapcheck fails in my container on commits from branches not fetched here; I added no roadmap row.
 ## 6. Method update
 - dispatch-packet.md "Frozen inputs" (with the Critic's wording): the pasted probe uses the packet's OWN brief and prints, for
