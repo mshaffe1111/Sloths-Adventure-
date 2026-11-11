@@ -68,8 +68,12 @@ import type { Stage } from './stages.ts';
  *     dead zone and the drift (about 0.2-0.35 s for the kid, 0.1-0.2 s for the adult); now and then it slips into the dead zone;
  *   - lifting off to stop comes late by a log-normal 1-4 frames (kid) / 0-2 (adult) (Channel 2), so he runs on past where he meant to.
  */
+/** a distribution as the tester profiles keep it (tools/playtesters/profiles/README.md "Distributions"): [p10, p25, p50, p75, p90] */
+export type Q5 = [number, number, number, number, number];
+
 export interface FirstTimer {
-  name: 'KID' | 'ADULT';
+  /** KID and ADULT: the hand-tuned first-timers; CHILD, MIDDLE and EXPERT: the tier bots built from the testers' saved numbers (R-165.59) */
+  name: 'KID' | 'ADULT' | 'CHILD' | 'MIDDLE' | 'EXPERT';
   setting: 'easy' | 'normal';
   /** s at the stage start before he takes in anything (the goal card, finding his thumb): he holds the way on, nothing else */
   look: number;
@@ -109,6 +113,42 @@ export interface FirstTimer {
   /** Channel 2: frames of late lift-off when he means to stop: round(exp(N(mu, sd))), clipped to the range */
   release: [number, number];
   releaseMax: [number, number];
+  // ── the tier bots' own fields (R-165.59): each one is drawn from a tester profile distribution; KID and ADULT have none of them,
+  // so they play exactly as before. Every value and its source: reference/qa-reports/R-165.59/BOTS.md ──
+  /** the jump press held, press to release (s): replaces `hold` and `short` (profiles jumpHoldMs) */
+  holdQ?: Q5;
+  /** where a running ground jump is pressed, px before the lip (Pokey's middle to the end of the ground): replaces `edgeAim`, and the
+   *  press then comes at once (the measured distance already has the thumb's latency in it) (profiles groundPressToLipPx) */
+  aimQ?: Q5;
+  /** chance an edge jump is pressed late, after walking off (coyote), and how late (s) (latePressShareOfLipJumps, latePressAfterLeavingLedgeMs) */
+  lateShare?: number;
+  lateQ?: Q5;
+  /** chance he stops at an edge and jumps from standing, and how long he stands (s) (groundPressFromStandstillShare, steering.standStillMs) */
+  standShare?: number;
+  standQ?: Q5;
+  /** chance any jump gets a second press, and the second press's delay after the first (s) (secondPressDelayMs: its n over the first presses) */
+  dblShare?: number;
+  dbl2Q?: Q5;
+  /** the steering rhythm on open ground: a direction held (s), then let go (s) (steering.moveHoldMs, steering.moveGapMs) */
+  steerQ?: Q5;
+  gapQ?: Q5;
+  /** the share of those let-go spells he takes on open ground (the rest the testers took in the air, at a stop or on a landing, where the
+   *  bot steers by need): a tuning field, fitted to the tier's finish time */
+  gapShare?: number;
+  /** where a jump has failed him before, his hold is drawn from this quantile of holdQ up (he holds on longer): a tuning field, no profile */
+  retryHold?: number;
+  /** he knows the double jump from the start (doubleUsedShare 1.0: every tester run used it): a gap one jump does not cross gets one */
+  knowsDouble?: boolean;
+  /** at a gap or a face he must clear, his hold is drawn from this quantile of holdQ up (he reads the jump): a tuning field */
+  readHold?: number;
+  /** and a double up a step gets its second press from dbl2Q's quantiles up to this one (early enough to climb): a tuning field */
+  readDbl?: number;
+  /** a double across a gap, from the first of these quantiles to the second (late enough to carry him, before he has fallen past the
+   *  far ledge): a tuning field */
+  readGap?: [number, number];
+  /** at a gap that needs his double, his press distance is drawn again up to this quantile of aimQ, if it was further out (aimQ counts
+   *  every moving ground press near an edge, hops along flat ground among them): a tuning field */
+  readAim?: number;
 }
 export const FT_KID: FirstTimer = {
   name: 'KID', setting: 'easy', look: 1.2, heed: 1.1, stopReact: 0.4, thumb: [0.09, 0.065], hold: [0.16, 0.08], short: 0.08, upOnly: 0.45,
@@ -119,6 +159,46 @@ export const FT_ADULT: FirstTimer = {
   name: 'ADULT', setting: 'normal', look: 0.8, heed: 0.9, stopReact: 0.3, thumb: [0.03, 0.03], hold: [0.2, 0.035], short: 0.03, upOnly: 0.25,
   upOnlyT: [0.06, 0.14], edgeAim: 22, dblAt: [-200, 90], hopFoe: 0.8, hesitate: 0.2, swap: [0.133, 0.2], drift: [4, 2], thumbSpeed: 320,
   slip: 0.01, slipFrames: [2, 3], release: [0, 0.5], releaseMax: [0, 2],
+};
+/**
+ * The tier bots (R-165.59): child, middle and expert, built from the testers' saved numbers (tools/playtesters/profiles/tiers/<tier>.json,
+ * `all.<setting>`: P-numbers only), calibrated on 0.9.5's gen2 1-1 (reference/qa-reports/R-165.59/BOTS.md: every field, its value and its
+ * source; tools/inspect/tierBots.test.ts pins both). Times are the profiles' ms / 1000. The fields no profile measures are kept from FT_KID
+ * (child) or FT_ADULT (middle, expert). FT_<TIER> plays Normal; FT_<TIER>_EASY is the same player on Easy, from that setting's numbers.
+ */
+const ms = (q: Q5): Q5 => q.map((v) => v / 1000) as Q5;
+const KEPT_KID = { look: FT_KID.look, heed: FT_KID.heed, stopReact: FT_KID.stopReact, thumb: FT_KID.thumb, hold: FT_KID.hold, short: 0, upOnly: FT_KID.upOnly, upOnlyT: FT_KID.upOnlyT, dblAt: FT_KID.dblAt, hopFoe: FT_KID.hopFoe, hesitate: FT_KID.hesitate, swap: FT_KID.swap, drift: FT_KID.drift, thumbSpeed: FT_KID.thumbSpeed, slip: FT_KID.slip, slipFrames: FT_KID.slipFrames, release: FT_KID.release, releaseMax: FT_KID.releaseMax };
+const KEPT_ADULT = { look: FT_ADULT.look, heed: FT_ADULT.heed, stopReact: FT_ADULT.stopReact, thumb: FT_ADULT.thumb, hold: FT_ADULT.hold, short: 0, upOnly: FT_ADULT.upOnly, upOnlyT: FT_ADULT.upOnlyT, dblAt: FT_ADULT.dblAt, hopFoe: FT_ADULT.hopFoe, hesitate: FT_ADULT.hesitate, swap: FT_ADULT.swap, drift: FT_ADULT.drift, thumbSpeed: FT_ADULT.thumbSpeed, slip: FT_ADULT.slip, slipFrames: FT_ADULT.slipFrames, release: FT_ADULT.release, releaseMax: FT_ADULT.releaseMax };
+export const FT_EXPERT: FirstTimer = {
+  ...KEPT_ADULT, name: 'EXPERT', setting: 'normal', gapShare: 0.5, upOnly: 0.2, edgeAim: 61, knowsDouble: true, readHold: 0.5, readDbl: 0.75, readGap: [0.4, 0.9], readAim: 0.5,
+  holdQ: ms([84, 125, 180, 278, 701]), aimQ: [17, 36, 61, 91, 131], lateShare: 0.073, lateQ: ms([17, 41, 92, 157, 259]),
+  standShare: 0.206, standQ: ms([100, 133, 200, 300, 500]), dblShare: 0.236, dbl2Q: ms([284, 329, 441, 559, 683]),
+  steerQ: ms([137, 267, 563, 1128, 1853]), gapQ: ms([50, 230, 328, 469, 763]),
+};
+export const FT_MIDDLE: FirstTimer = {
+  ...KEPT_ADULT, name: 'MIDDLE', setting: 'normal', gapShare: 0.5, upOnly: 0.02, edgeAim: 58, knowsDouble: true, readHold: 0.5, readDbl: 0.75, readGap: [0.4, 0.9], readAim: 0.5,
+  holdQ: ms([50, 82, 118, 181, 329]), aimQ: [11, 32, 58, 92, 156], lateShare: 0.123, lateQ: ms([16, 37, 99, 152, 234]),
+  standShare: 0.524, standQ: ms([133, 200, 292, 401, 601]), dblShare: 0.262, dbl2Q: ms([250, 319, 416, 517, 650]),
+  steerQ: ms([104, 164, 333, 712, 1303]), gapQ: ms([164, 266, 473, 719, 1033]),
+};
+export const FT_MIDDLE_EASY: FirstTimer = {
+  ...KEPT_ADULT, name: 'MIDDLE', setting: 'easy', gapShare: 0.5, upOnly: 0.02, edgeAim: 61, knowsDouble: true, readHold: 0.5, readDbl: 0.75, readGap: [0.4, 0.9],
+  holdQ: ms([51, 91, 135, 202, 467]), aimQ: [8, 30, 61, 106, 182], lateShare: 0.11, lateQ: ms([16, 34, 66, 117, 216]),
+  standShare: 0.483, standQ: ms([115, 158, 235, 335, 468]), dblShare: 0.255, dbl2Q: ms([249, 317, 383, 484, 627]),
+  steerQ: ms([107, 169, 367, 767, 1401]), gapQ: ms([102, 233, 393, 615, 863]),
+};
+export const FT_CHILD: FirstTimer = {
+  ...KEPT_KID, name: 'CHILD', setting: 'normal', upOnly: 0.16, edgeAim: 73, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9],
+  holdQ: ms([22, 49, 74, 115, 231]), aimQ: [1, 28, 73, 119, 232], lateShare: 0.121, lateQ: ms([18, 46, 83, 113, 129]),
+  standShare: 0.81, standQ: ms([237, 394, 560, 740, 1131]), dblShare: 0.234, dbl2Q: ms([291, 323, 406, 530, 710]),
+  steerQ: ms([56, 80, 120, 192, 524]), gapQ: ms([268, 420, 630, 1041, 1489]),
+};
+/** the child tier's one Easy run (P27, 37 minutes, 187 put-backs): an outlier no bot is tuned to; printed, never checked */
+export const FT_CHILD_EASY: FirstTimer = {
+  ...KEPT_KID, name: 'CHILD', setting: 'easy', upOnly: 0.16, edgeAim: 71, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9],
+  holdQ: ms([49, 100, 219, 395, 1108]), aimQ: [0, 27, 71, 161, 245], lateShare: 0.25, lateQ: ms([65, 100, 180, 247, 362]),
+  standShare: 0.663, standQ: ms([132, 263, 631, 1187, 2371]), dblShare: 0.3, dbl2Q: ms([361, 413, 543, 724, 1251]),
+  steerQ: ms([64, 132, 231, 444, 931]), gapQ: ms([50, 83, 297, 717, 1708]),
 };
 
 /** seeded random numbers (mulberry32): the same seed plays the same run */
@@ -135,8 +215,28 @@ export function rng(seed: number): () => number {
 const between = (r: () => number, [a, b]: [number, number]) => a + (b - a) * r();
 /** a normal draw (Box-Muller) */
 export const gauss = (r: () => number, [mu, sd]: [number, number]) => mu + sd * Math.sqrt(-2 * Math.log(Math.max(1e-9, r()))) * Math.cos(2 * Math.PI * r());
+/** the random streams' salt: KID and ADULT keep theirs (kid, adult); each tier bot has its own */
+function salt(who: FirstTimer, kid: number, adult: number): number {
+  return who.name === 'KID' ? kid : who.name === 'ADULT' ? adult : kid * 100 + ({ CHILD: 11, MIDDLE: 13, EXPERT: 17 } as const)[who.name];
+}
+/**
+ * a draw from a profile distribution: the inverse of the piecewise-linear curve through its five points (u = 0.10 .. 0.90), the tails
+ * carried on at the slope of the last span to u = 0 and 1 (not under `min`); `lo` draws from that quantile up
+ */
+export function drawQ(r: () => number, q: Q5, min = 0, lo = 0, hi = 1): number {
+  const u = lo + (hi - lo) * r();
+  const P = [0.1, 0.25, 0.5, 0.75, 0.9];
+  const v0 = q[0] - ((q[1] - q[0]) * 0.1) / 0.15, v1 = q[4] + ((q[4] - q[3]) * 0.1) / 0.15;
+  const xs = [0, ...P, 1], ys = [v0, ...q, v1];
+  let i = 0;
+  while (i < xs.length - 2 && u > xs[i + 1]) i++;
+  const f = (u - xs[i]) / (xs[i + 1] - xs[i]);
+  return Math.max(min, ys[i] + f * (ys[i + 1] - ys[i]));
+}
 /** the thumb's hold on one flick */
-export function flickHold(r: () => number, who: FirstTimer): number {
+export function flickHold(r: () => number, who: FirstTimer, lo = 0): number {
+  // (a tier bot: the testers' own holds, one frame at least, as a press and its release can fall in one 30 fps frame)
+  if (who.holdQ) return Math.min(1.5, drawQ(r, who.holdQ, DT, lo));
   if (r() < who.short) return 2 * DT;
   return Math.max(2 * DT, Math.min(0.45, gauss(r, who.hold)));
 }
@@ -503,6 +603,12 @@ export interface FTRun {
   /** no route could be traced, so he headed straight for the shrine (his findings there say more about the bot than the stage) */
   noRoute: boolean;
   frames: number;
+  /** a tier bot's double jumps: each second press, ms after the first (R-165.59) */
+  secondPressMs?: number[];
+  /** the furthest right he got (px): which pieces he entered */
+  maxX?: number;
+  /** where he was every 0.5 s of play (px): the seconds he spent in each piece */
+  xTrace?: number[];
   ms: number;
 }
 
@@ -600,6 +706,18 @@ interface Jump {
   dir: -1 | 0 | 1;
   pressed2: boolean;
   dblAt: number;
+  /** a tier bot's second press: s after the first (dbl2Q), or -1 */
+  d2: number;
+  /** a tier bot's hop back onto a bounce mushroom: the way on, steered once the bounce throws him up (0: none) */
+  back?: -1 | 0 | 1;
+  /** the mushroom's middle: he steers back until he is over it, then lets go */
+  backX?: number;
+  /** thrown up by the mushroom: the second press that follows is not a double's delay */
+  bounced?: boolean;
+  /** a jump he read (a gap or a face): the second press is held as the first */
+  needs?: boolean;
+  /** a jump up for a way on over his head: he steers to this x, then lets go */
+  toX?: number;
   left: boolean;
   /** the face stop (stops[]) this jump answers */
   stop?: number;
@@ -678,6 +796,8 @@ export class FirstTimerRun {
   private travelUntil = -1;
   private driftUntil = -1;
   private releaseLeft = 0;
+  /** a tier bot's late lift-off has been drawn for this let-go */
+  private releaseArmed = false;
   private driftPx = 0;
   /** waiting at an edge for something drifting across since (s), or -1 */
   private edgeWait = -1;
@@ -750,9 +870,37 @@ export class FirstTimerRun {
   private goal: { got: number; need: number } | null = null;
   private sealedT = 0;
   private learned = new Set<string>();
+  // ── a tier bot's own state (R-165.59; KID and ADULT never touch it) ──
+  /** how he takes the next edge: where he presses (px before the lip), and run / late (walk off, then press) / stand (stop, then press) */
+  private edge: { aim: number; how: 'run' | 'late' | 'stand'; stand: number; late: number; read?: boolean } | null = null;
+  /** walking off for a late press, the way he goes */
+  private lateArmed: { dir: -1 | 1; t: number; here: Platform | null } | null = null;
+  /** stopped at an edge to jump from standing: till when he stands (-1: still slowing) */
+  private standing: { dir: -1 | 1; until: number } | null = null;
+  /** the steering rhythm: the direction held till, then let go till */
+  private steerUntil = -1;
+  private gapUntil = -1;
+  /** each double's second press, ms after the first (the profiles' secondPressDelayMs) */
+  readonly secondPressMs: number[] = [];
+  /** the furthest right he got (px) */
+  maxX = -Infinity;
+  /** where he was every 15 frames (0.5 s) */
+  readonly xTrace: number[] = [];
+  /** the same loss at one spot this many times and he is put past it: 3 for KID and ADULT; a tier bot is a player, who tries again (8, a
+   *  stop for a spot he cannot pass, counted as a rescue) */
+  private get tries3(): number {
+    return this.who.holdQ ? 8 : 3;
+  }
+  /** the ledge he is walking off the far end of, away from its mushroom, and which way */
+  private dropOff: { id: number; dir: -1 | 1; t: number } | null = null;
+  /** the jump coming is for a way on over his head: read as a climb, steered to this x */
+  private climbJump = false;
+  private climbToX: number | null = null;
+  /** when he was last put back (a tier bot does not read the set-back's stillness as being stopped dead) */
+  private backAt = -Infinity;
 
   constructor(readonly id: string, readonly seed: number, readonly who: FirstTimer, readonly opts: RunOptions = {}) {
-    this.r = rng(seed * 7919 + (opts.trial ?? 0) * 104723 + (who.name === 'KID' ? 1 : 2));
+    this.r = rng(seed * 7919 + (opts.trial ?? 0) * 104723 + salt(who, 1, 2));
     this.sim = new RealPlay(id, seed);
     this.sim.safe = false;
     const e = (this.e = this.sim.e as Eng);
@@ -789,6 +937,7 @@ export class FirstTimerRun {
       this.harms.push({ kind: 'life', t: this.sim.t, x: p.x, y: p.y, cause: reason === 'hurt' ? this.lastCause : reason, onScreen: null });
       const j = this.jump;
       if (j) this.tries.push({ x: j.x, y: j.y, dir: j.dir, t0: j.t0, t1: this.t, kind: j.kind, ok: false, hurt: true, running: j.running, hold: j.hold });
+      if (TRACE) process.stderr.write(`  ${this.t.toFixed(2)} ${j ? `${j.kind} from ${Math.round(j.x)},${Math.round(j.y)} hold ${j.hold.toFixed(2)}${j.d2 >= 0 ? ` d2 ${j.d2.toFixed(2)} 2nd ${j.pressed2}` : ''} run ${j.running}` : `no jump, ground ${Math.round(this.ground.x)},${Math.round(this.ground.y)}`} -> LIFE LOST\n`);
       const deaths = this.mem.died(this.ground.x, this.ground.y);
       if (!this.whatAt.some((w) => Math.abs(w.x - this.ground.x) < 60 && Math.abs(w.y - this.ground.y) < 30)) {
         this.whatAt.push({ x: this.ground.x, y: this.ground.y, what: `${reason === 'water' ? 'drowned' : reason === 'pit' ? 'fell' : 'lost a life'} going on from here`, step: null, dip: null, puzzle: false });
@@ -796,7 +945,7 @@ export class FirstTimerRun {
       const best = this.prog.best;
       proto.loseLife.call(e, reason);
       this.respawned();
-      if (deaths >= 3 && this.prog.best <= best) {
+      if (deaths >= this.tries3 && this.prog.best <= best) {
         // (the same death three times: it is noted as a loop, and he is put past it, so the rest of the stage is played)
         this.prog.hi = Math.max(this.prog.hi, this.progAt(p.x, p.y));
         if (!this.rescue()) this.end = 'stranded';
@@ -811,9 +960,10 @@ export class FirstTimerRun {
         this.softFalls.push(at);
         const j = this.jump;
         if (j) this.tries.push({ x: j.x, y: j.y, dir: j.dir, t0: j.t0, t1: this.t, kind: j.kind, ok: false, hurt: true, running: j.running, hold: j.hold });
+        if (TRACE) process.stderr.write(`  ${this.t.toFixed(2)} ${j ? `${j.kind} from ${Math.round(j.x)},${Math.round(j.y)} hold ${j.hold.toFixed(2)}${j.d2 >= 0 ? ` d2 ${j.d2.toFixed(2)} 2nd ${j.pressed2}` : ''} run ${j.running}` : `no jump, ground ${Math.round(this.ground.x)},${Math.round(this.ground.y)}`} -> PUT BACK\n`);
         const deaths = this.mem.died(this.ground.x, this.ground.y);
         this.respawned();
-        if (deaths >= 3 && this.prog.best <= best) {
+        if (deaths >= this.tries3 && this.prog.best <= best) {
           this.prog.hi = Math.max(this.prog.hi, this.progAt(p.x, p.y));
           if (!this.rescue()) this.end = 'stranded';
         }
@@ -845,6 +995,11 @@ export class FirstTimerRun {
   }
 
   private respawned() {
+    this.backAt = this.t;
+    this.dropOff = null;
+    this.edge = null;
+    this.lateArmed = null;
+    this.standing = null;
     this.padPause = null;
     this.pending = null;
     this.punchAt = null;
@@ -896,7 +1051,7 @@ export class FirstTimerRun {
    */
   private jumpFor(p: { x: number; y: number }, dir: -1 | 0 | 1, here: Platform | null): 'single' | 'double' {
     const plan = this.mem.plan(p.x, p.y);
-    if (plan === 'double' || !this.learned.has('double') || !here || dir === 0) return plan;
+    if (plan === 'double' || !(this.learned.has('double') || this.who.knowsDouble) || !here || dir === 0) return plan;
     const edgeX = dir > 0 ? here.x + here.width : here.x;
     let gap = Infinity;
     for (const q of this.sim.platforms) {
@@ -906,7 +1061,21 @@ export class FirstTimerRun {
       if (d >= 5 && d < gap) gap = d;
     }
     const one = this.who.setting === 'easy' ? reachJumpHeld(0, false) : reachJump(0, false);
-    return gap > one && gap < 600 ? 'double' : 'single';
+    if (gap > one && gap < 600) return 'double';
+    // (a tier bot reads a step up as well: the next ledge ahead over a single jump's height (about 108 px; 90 with his margin) gets a double)
+    return this.who.knowsDouble && this.stepUp(here, dir) ? 'double' : 'single';
+  }
+
+  /** a tier bot's read of a step up: a ledge ahead of the edge of `here` (within 260 px) over a single jump's height (90 px with margin) */
+  private stepUp(here: Platform, dir: -1 | 1): boolean {
+    const edgeX = dir > 0 ? here.x + here.width : here.x;
+    for (const q of this.sim.platforms) {
+      if (q.broken || q === here || q.type === 'bouncy') continue;
+      const d = dir > 0 ? q.x - edgeX : edgeX - (q.x + q.width);
+      // (from 150 px back over his own ground: a block standing on it, against his face, counts as well as a ledge past its end)
+      if (d > -150 && d < 260 && here.y - q.y > 90 && here.y - q.y < 260) return true;
+    }
+    return false;
   }
 
   floorAt(x: number, y: number, down = 40): Platform | null {
@@ -958,6 +1127,8 @@ export class FirstTimerRun {
     if (dir === 0 || p.vy < -60) return 0;
     for (const q of this.sim.platforms) {
       if (q.broken || q.width >= 220 || p.x < q.x || p.x > q.x + q.width || q.y < p.y - 2 || q.y > p.y + 140) continue;
+      // (a tier bot does not aim to land on a bounce mushroom: on w1-twin-mushroom-fork he steered back onto one until rescued)
+      if (this.who.holdQ && q.type === 'bouncy') continue;
       const past = dir * (p.x - (q.x + q.width / 2));
       if (past > q.width * 0.15) return 2;
       if (past > -q.width * 0.25) return 1;
@@ -1074,6 +1245,7 @@ export class FirstTimerRun {
   private intend(): Pad {
     const sim = this.sim, p = sim.p, e = this.e, t = this.t, who = this.who;
     const tgt = this.prog.target(p);
+    if (this.dropOff && ((p.grounded && e.standingOnId !== this.dropOff.id) || t - this.dropOff.t > 6)) this.dropOff = null;
     // which way: along the route; with no route, right
     let dir: -1 | 0 | 1 = 1;
     let up = false;
@@ -1086,7 +1258,30 @@ export class FirstTimerRun {
         if (far) dir = far.x > p.x + 16 ? 1 : far.x < p.x - 16 ? -1 : 0;
       }
       // (the way on is below, close across: he keeps going the way he was until he finds the edge, never turns back for it)
-      if (dy > 40 && Math.abs(dx) < 120 && this.way !== 0) dir = this.way;
+      // (a tier bot heads the way the route goes on from there, not back the way a bounce threw him, which on w1-twin-mushroom-fork put
+      // him on the mushroom again and again)
+      if (dy > 40 && Math.abs(dx) < 120 && this.way !== 0) {
+        const far = who.holdQ ? this.prog.target(p, 240) : null;
+        dir = far && Math.abs(far.x - p.x) > 40 ? (far.x > p.x ? 1 : -1) : this.way;
+        // (and not over a bounce mushroom on his own ledge: off the other end. v16 middle Easy: up on a ledge over the route, he
+        // walked into its mushroom and bounced on it until rescued)
+        const here = who.holdQ && p.grounded ? this.floorAt(p.x, p.y, 6) : null;
+        if (here) {
+          const inWay = (d: number) => this.sim.platforms.some((b) => b.type === 'bouncy' && !b.broken && Math.abs(b.y + b.height - here.y) < 6 && (d > 0 ? b.x > p.x && b.x < here.x + here.width : b.x + b.width < p.x && b.x + b.width > here.x));
+          // (and once he has picked the end, he keeps to it until he is off that ledge: the route's point pulled him back at the end, v16)
+          // (an end with a bounce mushroom under it, within 100 px, throws him back up: v1 expert, off the left end onto the floor's)
+          const below = (d: number) => {
+            const ex = d > 0 ? here.x + here.width : here.x;
+            return this.sim.platforms.some((b) => b.type === 'bouncy' && !b.broken && b.y > here.y && b.x + b.width > ex - 100 && b.x < ex + 100);
+          };
+          const bad = (d: number) => inWay(d) || below(d);
+          // (only off a ledge well over the way on, 100+ px: on a 42 px block (v18 seed-perch) the way is over the mushroom)
+          if (!this.dropOff && dy > 100 && inWay(dir) && !bad(-dir)) this.dropOff = { id: here.id, dir: dir > 0 ? -1 : 1, t };
+        }
+        // (kept until he stands on other ground (the engine's standingOnId) or 6 s pass: at the lip his middle is past the ledge and it
+        // no longer reads as his floor)
+        if (who.holdQ && this.dropOff) dir = this.dropOff.dir;
+      }
     }
     if (dir !== 0) this.way = dir;
     const fdir: -1 | 1 = dir === 0 ? (p.facing >= 0 ? 1 : -1) : dir;
@@ -1167,17 +1362,43 @@ export class FirstTimerRun {
     const j = this.jump;
     if (j) {
       const age = t - j.t0;
+      if (j.back && p.vy < -700) {
+        // (thrown up: the way on, as the route has it now, or the way he named)
+        const far = this.prog.target(p, 200);
+        j.dir = far && Math.abs(far.x - p.x) > 16 ? (far.x > p.x ? 1 : -1) : j.back;
+        j.back = 0;
+        // (and a second press near the bounce's top, his second-press delay drawn up to readDbl's quantile; not counted as a double's delay)
+        j.kind = 'double';
+        j.pressed2 = false;
+        j.bounced = true;
+        j.d2 = age + drawQ(this.r, who.dbl2Q!, 2 * DT, 0, who.readDbl ?? 1);
+      }
+      const aimX = j.back && j.backX !== undefined ? j.backX : j.toX;
+      if (aimX !== undefined) {
+        const out: Pad = Math.abs(p.x - aimX) > 6 ? side(aimX > p.x ? 1 : -1) : {};
+        if (age < j.hold) out.jump = true;
+        // (the second press on the way up to a high mushroom)
+        if (j.kind === 'double' && !j.pressed2 && j.d2 >= 0 && age >= j.d2 - 1e-6 && !p.grounded && p.jumpsLeft > 0) {
+          j.pressed2 = true;
+          out.press = true;
+          out.jump = true;
+          this.lastPress = t;
+          j.hold = age + flickHold(this.r, who, who.readHold ?? 0);
+        }
+        return out;
+      }
       // (past the middle of a small landing, a log or a pad, the thumb steers back onto it: round 2 of LV-2, 2-1's drownings were the bot
       // landing on a log's far end at a run and running off it)
       const small = age < j.upOnly ? 0 : this.overSmall(j.dir);
       const out: Pad = age < j.upOnly || small === 1 ? {} : small === 2 ? side(j.dir === 1 ? -1 : 1) : side(j.dir);
       if (age < j.hold) out.jump = true;
-      if (j.kind === 'double' && !j.pressed2 && age > j.hold + DT && !p.grounded && p.vy > j.dblAt && p.jumpsLeft > 0) {
+      if (j.kind === 'double' && !j.pressed2 && (j.d2 >= 0 ? age >= j.d2 - 1e-6 : age > j.hold + DT && p.vy > j.dblAt) && !p.grounded && p.jumpsLeft > 0) {
+        if (j.d2 >= 0 && !j.bounced) this.secondPressMs.push(Math.round(age * 1000));
         j.pressed2 = true;
         out.press = true;
         out.jump = true;
         this.lastPress = t;
-        j.hold = age + flickHold(this.r, who);
+        j.hold = age + flickHold(this.r, who, j.needs || j.bounced ? (who.readHold ?? 0) : 0);
       }
       if (this.learned.has('glide') && e.skills?.has('glide') && !p.grounded && p.vy > 150 && age > 0.4) out.jump = true;
       return out;
@@ -1230,6 +1451,13 @@ export class FirstTimerRun {
       return side(fdir);
     }
     if (!p.grounded) {
+      // (a tier bot walking off for a late press: the press comes his late-press time after he left the ground; the engine's coyote time
+      // decides whether it is still a jump)
+      if (this.lateArmed && this.edge && this.airFrom && t >= this.airFrom.t + this.edge.late) {
+        const d = this.lateArmed.dir, here = this.lateArmed.here;
+        this.lateArmed = null;
+        return this.startJump(d, this.jumpFor(this.ground, d, here), true);
+      }
       // in the air off a ledge he walked off: steer the way on; grab a trunk if he touches one on the way up
       const out = this.overSmall(fdir) ? {} : side(fdir);
       if (e.nearTreeVine && up) out.up = true;
@@ -1240,6 +1468,83 @@ export class FirstTimerRun {
     // on the ground
     // (the first moments of a stage: he holds the way on and takes nothing in yet)
     if (t < who.look) return side(dir || 1);
+    // (a tier bot stopped at an edge: he lets go, comes to a stand, stands his time, then jumps from there)
+    if (this.standing) {
+      const s = this.standing;
+      if (s.until < 0 && Math.abs(p.vx) < 10) s.until = t + (this.edge?.stand ?? 0.2);
+      if (s.until < 0 || t < s.until) return {};
+      this.standing = null;
+      return this.startJump(s.dir, this.jumpFor(p, s.dir, this.floorAt(p.x, p.y, 6)), false);
+    }
+    // (a tier bot: the way on far over him and a bounce mushroom just ahead on his floor: he hops onto it)
+    if (who.holdQ && dir !== 0 && !this.jump && tgt) {
+      const hi = this.prog.target(p, 320);
+      if (hi && hi.y < p.y - 100) {
+        const b = this.sim.platforms.find((q) => q.type === 'bouncy' && !q.broken && q.y < p.y && p.y - q.y < 110 && (dir > 0 ? q.x - p.x > 10 && q.x - p.x < 160 : p.x - (q.x + q.width) > 10 && p.x - (q.x + q.width) < 160));
+        if (b) return this.hopOnto(b, dir, dir);
+      }
+      // (and the way on over a double's reach (170 px) with a bounce mushroom within 220 px either side, on his floor or on a block up
+      // to 110 px over it: he goes back for it. A1 v4 middle: put back right of a block whose mushroom sits 73 px over the floor, the way
+      // on 250 px up, he made 9 standing doubles into the pit)
+      if (hi && hi.y < p.y - 170 && p.grounded) {
+        let best: Platform | null = null;
+        for (const q of this.sim.platforms) {
+          if (q.type !== 'bouncy' || q.broken || q.y > p.y + 10 || p.y - q.y > 110) continue;
+          const d = Math.abs(q.x + q.width / 2 - p.x);
+          if (d < 220 && (!best || d < Math.abs(best.x + best.width / 2 - p.x))) best = q;
+        }
+        if (best) {
+          const to: -1 | 1 = best.x + best.width / 2 > p.x ? 1 : -1;
+          return this.hopOnto(best, to, hi.x > p.x ? 1 : -1);
+        }
+      }
+    }
+    // (a tier bot with the way on straight over his head, over his reach on foot: he jumps up for it, a double over one jump's height,
+    // read as a climb; the route's point flips side to side over him and a first-timer only dithers there)
+    // (within 40 px across; within 80 when the ledge the way goes up to spans over him, give or take 40 px)
+    // (and only within a double's reach, 175 px: from w1-backstep-twist's right block, 211 px under the ledge, he doubled straight up 14
+    // times; the way round is the route's)
+    // (the ledge: the lowest one 60-260 px over him that the route's point stands under or on)
+    let q: Platform | undefined;
+    if (who.holdQ && tgt && tgt.y < p.y - 60) {
+      for (const u of this.sim.platforms) {
+        if (u.broken || u.y > p.y - 60 || u.y < p.y - 260 || u.y > tgt.y + 30 || tgt.x <= u.x - 40 || tgt.x >= u.x + u.width + 40) continue;
+        if (!q || u.y > q.y) q = u;
+      }
+    }
+    const over = !!q && p.x > q.x - 40 && p.x < q.x + q.width + 40;
+    const reach = !q || p.y - q.y <= 175;
+    // (out of reach, the way on straight over him: he hops up onto the nearest step (20-100 px up, within 160 px) first. v30 expert: in
+    // a dip between two 50 px blocks under a ledge 196 px up, he stood 20 s)
+    if (who.holdQ && tgt && q && !reach && !this.pending && p.grounded && Math.abs(tgt.x - p.x) < 40) {
+      let st: Platform | null = null;
+      for (const u of this.sim.platforms) {
+        if (u.broken || u.y < p.y - 100 || u.y > p.y - 20) continue;
+        const d = Math.abs(Math.max(u.x, Math.min(u.x + u.width, p.x)) - p.x);
+        if (d < 160 && (!st || d < Math.abs(Math.max(st.x, Math.min(st.x + st.width, p.x)) - p.x))) st = u;
+      }
+      if (st) {
+        const to: -1 | 1 = st.x + st.width / 2 > p.x ? 1 : -1;
+        return this.decide(to, 'single', false, side(to));
+      }
+    }
+    if (who.holdQ && tgt && !this.pending && reach && Math.abs(tgt.x - p.x) < (over ? 80 : 40) && tgt.y < p.y - 60) {
+      // (he steers for a spot 30 px inside the ledge the way goes up to, then lets go: w1-backstep-twist's way up through two thin
+      // ledges, 137 and 142 px, from a block's corner; steering on the whole way he flew off the block, 8 times)
+      // (no ledge there, the route's point in the air on a way down: he goes on the way the route does, as before)
+      const far = this.prog.target(p, 200);
+      const d: -1 | 1 = far && Math.abs(far.x - p.x) > 16 ? (far.x > p.x ? 1 : -1) : fdir;
+      const toX = q ? Math.max(q.x + 30, Math.min(q.x + q.width - 30, p.x)) : null;
+      this.climbJump = true;
+      this.climbToX = toX;
+      return this.decide(toX === null ? d : toX > p.x + 6 ? 1 : toX < p.x - 6 ? -1 : 0, tgt.y < p.y - 90 ? 'double' : this.mem.plan(p.x, p.y), false, {});
+    }
+    // (walking off for a late press that never came: the ground went on after all)
+    if (this.lateArmed && t - this.lateArmed.t > 1) {
+      this.lateArmed = null;
+      this.edge = null;
+    }
+    if (this.lateArmed) return side(this.lateArmed.dir);
     // (a press on its way: he keeps going until it comes)
     if (this.pending) return side(this.pending.dir);
     // (just landed: the thumb comes back down before the next flick)
@@ -1278,7 +1583,7 @@ export class FirstTimerRun {
     // trunk's lastY did in round 5: every 0.3 s of walking was a "stop", so he hopped along flat ground and took off ~110 px before a
     // ledge's end instead of edgeAim's 22-44. The frame's own movement, moveX, is what it means)
     const moved = Math.abs(this.moveX);
-    this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing ? this.blockedT + DT : 0;
+    this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing && t >= this.gapUntil && !(who.holdQ && t - this.backAt < 1) ? this.blockedT + DT : 0;
     if (this.blockedT >= who.stopReact) {
       this.blockedT = 0;
       const face = this.faceAhead(fdir, 30);
@@ -1286,19 +1591,31 @@ export class FirstTimerRun {
         this.stops.push({ x: p.x, y: p.y, h: face, t });
         this.nextStop = this.stops.length - 1;
       }
-      return this.decide(fdir, this.mem.plan(p.x, p.y), false, side(dir));
+      // (a tier bot under a wall taller than his double (about 185 px), a bounce mushroom just behind him: he hops back onto it and lets
+      // it throw him up, as every tester did at w1-hop-bounce (38 expert runs, no life or put-back there))
+      const back = face !== null ? this.bounceBack(fdir, face) : null;
+      if (back) return back;
+      // (a tier bot stopped at a face reads it as he reads an edge: a step over one jump's height gets a double)
+      return this.decide(fdir, who.holdQ ? this.jumpFor(p, fdir, this.floorAt(p.x, p.y, 6)) : this.mem.plan(p.x, p.y), false, side(dir));
     }
     // the way goes up right here (a ledge over him): jump for it
     if (up && dir === 0 && tgt && tgt.y < p.y - 60) return this.decide(fdir, this.mem.plan(p.x, p.y), false, {});
     if (dir !== 0) {
       // an edge coming: he means to jump `edgeAim` px before it (the thumb's latency moves it), unless the way on drops down
-      const ahead = this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40);
+      // (a tier bot looks his own press distance ahead, drawn afresh for each edge; a stand lets go at the press distance's p25 and
+      // 31 px more (his lift-off up to 2 frames late, 19 px, and the 12 px Pokey slides to a stop), so he stands about p25 before the lip:
+      // groundPressToLipPx counts only presses made moving)
+      const tierEdge = who.aimQ ? this.edgePlan() : null;
+      const look = tierEdge ? (tierEdge.how === 'stand' ? who.aimQ![1] + 31 : tierEdge.aim) : 22 + who.edgeAim;
+      const ahead = this.floorAt(p.x + dir * look, p.y, 40);
       if (!ahead) {
         const on = this.prog.target(p, 160);
         // (a ledge at about his height just across the gap is a jump, whatever the way does after it: 2-7's lifts, round 4, the kid
         // walked off a plank into the river six times because the route dropped down past the next bank)
-        const across = this.sim.platforms.some((q) => !q.broken && q.type !== 'drift' && Math.abs(q.y - p.y) < 50 && (dir > 0 ? q.x > p.x && q.x - p.x < 150 + who.edgeAim : q.x + q.width < p.x && p.x - (q.x + q.width) < 150 + who.edgeAim) && !this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40));
-        const drops = on && on.y > p.y + 50 && !across;
+        const across = this.sim.platforms.some((q) => !q.broken && q.type !== 'drift' && Math.abs(q.y - p.y) < 50 && (dir > 0 ? q.x > p.x && q.x - p.x < 150 + who.edgeAim : q.x + q.width < p.x && p.x - (q.x + q.width) < 150 + who.edgeAim) && !this.floorAt(p.x + dir * look, p.y, 40));
+        // (a tier bot sees a pit: where nothing stands under the edge for 400 px, the way down to a lower ledge across it is a jump)
+        const pit = !!who.holdQ && !this.floorAt(p.x + dir * (look + 40), p.y, 400);
+        const drops = on && on.y > p.y + 50 && !across && !pit;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
         const here = this.floorAt(p.x, p.y, 6);
         if (!drops && here && here.type !== 'drift' && here.type !== 'moving') {
@@ -1322,6 +1639,31 @@ export class FirstTimerRun {
           }
         }
         this.edgeWait = -1;
+        const wall = tierEdge ? this.faceAhead(dir, 60) : null;
+        const back = wall !== null ? this.bounceBack(dir, wall) : null;
+        if (back) return back;
+        if (!drops && tierEdge) {
+          // (the measured press distance already holds his thumb's latency: the press comes now)
+          const kind = this.jumpFor(p, dir, here);
+          // (a late press is a walk-off: with a face ahead (a stump at a log's end, middle v3 on 164e4cf8: 9.4 s pressed against it,
+          // the plan re-armed every second) there is no lip to walk off, so he jumps)
+          if (tierEdge.how === 'late' && this.faceAhead(dir, 40) !== null) tierEdge.how = 'run';
+          if (tierEdge.how === 'run' && kind === 'double' && who.readAim !== undefined && !tierEdge.read) {
+            tierEdge.read = true;
+            const near = drawQ(this.r, who.aimQ!, 0, 0, who.readAim);
+            if (near < tierEdge.aim) {
+              tierEdge.aim = near;
+              return side(dir);
+            }
+          }
+          if (tierEdge.how === 'run') return this.startJump(dir, kind, false);
+          if (tierEdge.how === 'stand') {
+            this.standing = { dir, until: -1 };
+            return {};
+          }
+          this.lateArmed = { dir, t, here };
+          return side(dir);
+        }
         if (!drops) return this.decide(dir, this.jumpFor(p, dir, here), false, side(dir));
       }
       // an animal walking at him: hop it (or punch it, once told how), or walk on into it
@@ -1339,6 +1681,61 @@ export class FirstTimerRun {
       }
     }
     return side(dir);
+  }
+
+  /** a tier bot under a wall `face` px tall, over his double (about 185 px), with a bounce mushroom just behind him: he hops back onto it
+   *  and lets it throw him up the way on, as every tester did at w1-hop-bounce (38 expert runs, no life or put-back there) */
+  private bounceBack(fdir: -1 | 1, face: number): Pad | null {
+    const p = this.sim.p;
+    if (!this.who.holdQ || face <= 170) return null;
+    const b = this.sim.platforms.find((q) => q.type === 'bouncy' && !q.broken && Math.abs(q.y - p.y) < 60 && (fdir > 0 ? q.x + q.width <= p.x + 10 && p.x - (q.x + q.width) < 160 : q.x >= p.x - 10 && q.x - p.x < 160));
+    if (!b) return null;
+    return this.hopOnto(b, fdir > 0 ? -1 : 1, fdir);
+  }
+  /** a short hop onto a bounce mushroom `b`, going `dir`; once it throws him up he steers the way on (the route; else `then`) */
+  private hopOnto(b: Platform, dir: -1 | 1, then: -1 | 1): Pad {
+    // (a mushroom up on a block over a single's reach of his feet (80 px) gets a double, read as a climb)
+    const high = this.sim.p.y - b.y > 80;
+    if (high) this.climbJump = true;
+    const out = this.startJump(dir, high ? 'double' : 'single', true);
+    this.jump!.back = then;
+    this.jump!.backX = b.x + b.width / 2;
+    return out;
+  }
+
+  /** a tier bot's next edge: drawn once, kept until he jumps or is put back */
+  private edgePlan(): NonNullable<FirstTimerRun['edge']> {
+    if (!this.edge) {
+      const r = this.r, w = this.who;
+      const u = r();
+      const how = u < (w.lateShare ?? 0) ? 'late' : r() < (w.standShare ?? 0) ? 'stand' : 'run';
+      this.edge = { aim: drawQ(r, w.aimQ!, 0), how, stand: w.standQ ? drawQ(r, w.standQ, DT) : 0.2, late: w.lateQ ? drawQ(r, w.lateQ, 0) : 0.05 };
+    }
+    return this.edge;
+  }
+
+  /** a tier bot's steering rhythm on open ground: a direction held its time, then let go its time (the profiles' moveHoldMs, moveGapMs) */
+  private rhythm(want: Pad): Pad {
+    const w = this.who, p = this.sim.p, t = this.t;
+    if (!w.steerQ || !w.gapQ) return want;
+    if (!p.grounded || this.jump || this.pending || this.standing || this.lateArmed || want.press || !(want.left || want.right)) return want;
+    if (t < this.gapUntil) {
+      const out = { ...want };
+      delete out.left;
+      delete out.right;
+      return out;
+    }
+    if (this.steerUntil < 0 || this.steerUntil < this.gapUntil) this.steerUntil = t + drawQ(this.r, w.steerQ, DT);
+    if (t < this.steerUntil) return want;
+    if (this.r() >= (w.gapShare ?? 1)) {
+      this.steerUntil = t + drawQ(this.r, w.steerQ, DT);
+      return want;
+    }
+    this.gapUntil = t + drawQ(this.r, w.gapQ, DT);
+    const out = { ...want };
+    delete out.left;
+    delete out.right;
+    return out;
   }
 
   /** he decides to flick: it comes after the thumb's latency (N(mean, sd); an early one comes at once) */
@@ -1367,11 +1764,17 @@ export class FirstTimerRun {
       this.driftPx = 0;
     }
     if (steer !== 0 && this.r() < who.slip * DT) this.driftUntil = t + Math.round(between(this.r, who.slipFrames)) * DT;
-    if (steer === 0 && this.lastSteer !== 0 && !want.press) {
+    // (R-165.59: lastSteer is not moved on while the late lift-off runs, so for KID and ADULT this re-arms every frame and the steer is
+    // never let go once held; a tier bot arms it once per let-go, as the thumb does)
+    if (steer === 0 && this.lastSteer !== 0 && !want.press && !(who.holdQ && this.releaseArmed)) {
       const [lo, hi] = who.releaseMax;
       this.releaseLeft = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(this.r, who.release)))));
+      this.releaseArmed = true;
     }
-    if (steer !== 0) this.releaseLeft = 0;
+    if (steer !== 0) {
+      this.releaseLeft = 0;
+      this.releaseArmed = false;
+    }
     if (t < this.travelUntil || t < this.driftUntil) drop();
     else if (steer === 0 && this.releaseLeft > 0 && !want.down) {
       this.releaseLeft--;
@@ -1384,7 +1787,7 @@ export class FirstTimerRun {
   }
 
   private pad(): Pad {
-    const out = this.thumbify(this.intend());
+    const out = this.thumbify(this.rhythm(this.intend()));
     this.wasOnTrunk = !!this.sim.p.climbing;
     if (out.press) this.lastPress = this.t;
     return out;
@@ -1393,10 +1796,28 @@ export class FirstTimerRun {
   /** a flick up: short, sometimes straight up for a moment; a second flick only where a single one failed before */
   private startJump(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean): Pad {
     const p = this.sim.p, who = this.who;
-    const hold = flickHold(this.r, who);
+    // (a tier bot: where a jump has failed him he holds on longer; any jump may get its second press, at his own delay)
+    const overhead = this.climbJump;
+    const toX = this.climbToX;
+    this.climbJump = false;
+    this.climbToX = null;
+    const needs = who.readHold !== undefined && (overhead || dir !== 0 && (this.faceAhead(dir, 60) !== null || !this.floorAt(p.x + dir * ((this.edge?.aim ?? 0) + 100), p.y, 40)));
+    let hold = flickHold(this.r, who, who.retryHold && this.mem.fails(p.x, p.y) > 0 ? who.retryHold : needs ? (who.readHold ?? 0) : 0);
+    let d2 = -1;
+    if (who.dbl2Q) {
+      if (kind === 'single' && this.r() < (who.dblShare ?? 0)) kind = 'double';
+      // (up a step, the second press early enough to climb: from dbl2Q's quantiles up to readDbl; across a gap, his own delay)
+      const here = this.floorAt(p.x, p.y, 6);
+      const climb = overhead || (needs && dir !== 0 && !!here && this.stepUp(here, dir));
+      const [lo, hi] = climb ? [0, who.readDbl ?? 1] : needs ? (who.readGap ?? [0, 1]) : [0, 1];
+      d2 = drawQ(this.r, who.dbl2Q, 2 * DT, lo, hi);
+      if (kind === 'double') hold = Math.min(hold, d2 - DT);
+      this.edge = null;
+      this.lateArmed = null;
+    }
     const upOnly = !off && this.r() < who.upOnly ? between(this.r, who.upOnlyT) : 0;
     this.pending = null;
-    this.jump = { t0: this.t, x: p.x, y: p.y, cur: this.prog.cur, kind, hold, upOnly, dir, pressed2: false, dblAt: between(this.r, who.dblAt), left: false, stop: this.nextStop ?? undefined, harms: this.harms.length, running: p.grounded && Math.abs(p.vx) > 150 };
+    this.jump = { t0: this.t, x: p.x, y: p.y, cur: this.prog.cur, kind, hold, upOnly, dir, pressed2: false, dblAt: between(this.r, who.dblAt), d2, needs: needs || undefined, toX: overhead && toX !== null ? toX : undefined, left: false, stop: this.nextStop ?? undefined, harms: this.harms.length, running: p.grounded && Math.abs(p.vx) > 150 };
     this.nextStop = null;
     const out: Pad = upOnly > 0 ? {} : dir > 0 ? { right: true } : dir < 0 ? { left: true } : {};
     out.press = true;
@@ -1506,7 +1927,7 @@ export class FirstTimerRun {
             const d = this.describe(j.dir === -1 ? -1 : 1);
             this.whatAt.push({ x: j.x, y: j.y, ...d });
           }
-          if (TRACE) process.stderr.write(`  ${t.toFixed(2)} ${j.kind} from ${Math.round(j.x)},${Math.round(j.y)} hold ${j.hold.toFixed(2)} up ${j.upOnly.toFixed(2)} -> ${Math.round(p.x)},${Math.round(p.y)} ${ok ? 'ok' : 'FELL BACK'}\n`);
+          if (TRACE) process.stderr.write(`  ${t.toFixed(2)} ${j.kind} from ${Math.round(j.x)},${Math.round(j.y)} hold ${j.hold.toFixed(2)} up ${j.upOnly.toFixed(2)}${j.d2 >= 0 ? ` d2 ${j.d2.toFixed(2)} 2nd ${j.pressed2}` : ''} -> ${Math.round(p.x)},${Math.round(p.y)} ${ok ? 'ok' : 'FELL BACK'}\n`);
         }
       }
       this.airFrom = null;
@@ -1534,10 +1955,10 @@ export class FirstTimerRun {
           this.fallTop = top;
           this.fallBacks = 1;
         }
-        if (this.fallBacks >= 3 && this.prog.best <= top) {
+        if (this.fallBacks >= this.tries3 && this.prog.best <= top) {
           this.fallBacks = 0;
           const at = this.prog.pts[top];
-          this.stuck.push({ x: Math.round(at.x), y: Math.round(at.y), t: +t.toFixed(1), dur: 0, what: 'fell back down from here 3 times', step: null, dip: null, puzzle: false, rescued: true });
+          this.stuck.push({ x: Math.round(at.x), y: Math.round(at.y), t: +t.toFixed(1), dur: 0, what: `fell back down from here ${this.tries3} times`, step: null, dip: null, puzzle: false, rescued: true });
           this.prog.hi = Math.max(this.prog.hi, top);
           if (!this.rescue()) this.end = 'stranded';
         }
@@ -1564,7 +1985,7 @@ export class FirstTimerRun {
       }
       if (this.stuckOpen) this.stuckOpen.dur = +this.noProg.toFixed(1);
       const fallbacks = this.mem.fails(p.x, p.y);
-      if (this.noProg >= (this.opts.rescueAfter ?? 20) || (fallbacks >= 5 && this.noProg > 8.5)) {
+      if (this.noProg >= (this.opts.rescueAfter ?? 20) || (fallbacks >= (this.who.holdQ ? 8 : 5) && this.noProg > 8.5)) {
         if (!this.rescue()) this.end = 'stranded';
       }
     }
@@ -1578,6 +1999,8 @@ export class FirstTimerRun {
     // the sealed shrine: he stands at it a moment and gives up (the run ends there)
     if (this.sealed()) this.sealedT += DT;
     if (p.grounded) this.ground = { x: p.x, y: p.y };
+    if (p.x > this.maxX) this.maxX = p.x;
+    if (this.who.holdQ && this.frames % 15 === 0) this.xTrace.push(Math.round(p.x));
     // (the frame's own movement, for the next frame's choices: by then lastX and lastY are where he already is)
     this.moveX = p.x - this.lastX;
     this.moveY = p.y - this.lastY;
@@ -1696,7 +2119,7 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
   else setDifficulty(who.setting);
   // (the engine's own chances, the eagle's passes and the like, are seeded too: the same seed plays the same run)
   const mr = Math.random;
-  Math.random = rng(seed * 104729 + (opts.trial ?? 0) * 31 + (who.name === 'KID' ? 3 : 5));
+  Math.random = rng(seed * 104729 + (opts.trial ?? 0) * 31 + salt(who, 3, 5));
   let run: FirstTimerRun;
   try {
     run = new FirstTimerRun(id, seed, who, opts).play();
@@ -1740,6 +2163,7 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     turns: { n: run.turns, lag: +run.turnLag.toFixed(1) },
     backtrack: { route: run.routeRatio, bot: run.end === 'shrine' && run.direct > 0 && run.rescues === 0 ? +(run.walked / run.direct).toFixed(2) : null },
     frames: run.frames,
+    ...(who.holdQ ? { secondPressMs: run.secondPressMs, maxX: Math.round(run.maxX), xTrace: run.xTrace } : {}),
     ms: Date.now() - t0,
   };
   out.flags = flagsFor(out);

@@ -77,5 +77,9 @@ jobs:
       - run: npm install --no-audit --no-fund --legacy-peer-deps
       # (an engine or kit change that stales a rolled stage's seed list fails here until the list is rebuilt: tools/engine/seedlist.ts 1-1)
       - run: npx tsx tools/engine/seedlist.ts 1-1 --check
+      # (the child, middle and expert bots, R-165.59: mapped from the tester profiles and calibrated on 1-1; a change to 1-1, the engine
+      # or the bots that moves a run fails here until the calibration is re-run and calibration-main.jsonl recommitted with it,
+      # reference/qa-reports/R-165.59/BOTS.md; about 40 s)
+      - run: npx tsx --test tools/inspect/tierBots.test.ts
       - run: npm install --no-save --no-audit --no-fund --legacy-peer-deps playwright@1.63.0 && npx playwright install --with-deps chromium
       - run: node tools/perf/buildcheck.mjs
