@@ -5,15 +5,17 @@
     "11-11 1:34 PM Matt: engine and gameplay on Fable 5.2 until he says go back; engine on Opus always high (TEAM.md 5b)",
     "11-11 1:36 PM Matt: reviewers (critics) on Fable too",
     "11-11 Matt: tiers from Sonnet to Fable by importance; this table and its gate",
-    "11-11 4:36 PM Matt: \"We will need to start using Opus again for all models\": every tier on Opus 5.5 (Fable period over; engine on Opus always high)"
+    "11-11 4:36 PM Matt: \"We will need to start using Opus again for all models\": every tier on Opus 5.5 (Fable period over; engine on Opus always high)",
+    "11-11 4:37 PM Matt: \"U will need to make the efforts based on work\": the lead picks effort per task inside each tier's range; xhigh allowed for the hardest critical work (merge reviews, core engine); max still asks Matt"
   ],
   "tiers": {
     "critical": {
       "model": "claude-opus-5-5",
       "effort": [
-        "high"
+        "high",
+        "xhigh"
       ],
-      "what": "anything that ships or judges what ships: engine, stage and mechanic builds, integration, reviewers, architecture"
+      "what": "anything that ships or judges what ships: engine, stage and mechanic builds, integration, reviewers, architecture; xhigh for merge/release reviews and core-engine fixes, high otherwise"
     },
     "core": {
       "model": "claude-opus-5-5",
@@ -33,6 +35,7 @@
     "mechanical": {
       "model": "claude-opus-5-5",
       "effort": [
+        "medium",
         "high"
       ],
       "what": "fixed-recipe jobs with a checker after them: shooting stills and clips to a list, running gates and reporting, moving or converting files"
@@ -57,8 +60,7 @@
       "low"
     ],
     "askMatt": [
-      "max",
-      "xhigh"
+      "max"
     ]
   }
 }

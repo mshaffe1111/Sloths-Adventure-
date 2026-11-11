@@ -39,6 +39,8 @@ if (arg === '--table') {
     [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'low' }, false],
     [{ tags: ['engine'], model: 'claude-opus-5-5', effort: 'high' }, false],
     [{ tags: ['sloths-team', 'engine', 'critic'], model: 'claude-opus-5-5', effort: 'high' }, false],
+    [{ tags: ['sloths-team', 'critic'], model: 'claude-opus-5-5', effort: 'xhigh' }, true],
+    [{ tags: ['sloths-team', 'art'], model: 'claude-opus-5-5', effort: 'xhigh' }, false],
   ];
   let bad = 0;
   for (const [c, want] of cases) { const r = judge(c); if (r.ok !== want) { bad++; console.log('FAIL', JSON.stringify(c), r.why); } }
