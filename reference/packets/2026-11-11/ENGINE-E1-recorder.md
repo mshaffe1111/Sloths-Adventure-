@@ -11,18 +11,19 @@ how often players use the moves the help teaches.
 The window's analyst found `move double` counts runs, not uses (playRecorder.ts:409-416, logged once per stage by design), so the data
 can't say whether a player who got help then used the move.
 ## Frozen inputs (do not change)
-- The first use per stage is still marked as first (old reports and report.py read it).
+- The format: the first use per stage stays `move <kind> <x>` (old readers' counts unchanged); every later use is `use <kind> <x>`.
 - Old logs read exactly as before in report.py (a test with an old-format row).
 - Nothing in engine.ts (the calls exist). Fix A2 (t-engine-help) logs `help` and `helpOffer` through `recorder.event` and does not
   change playRecorder.ts: keep `event(what, detail)` as it is.
 - Tester privacy: no tester name, code or survey text in the repo or the report.
 ## Files
-- WRITE: src/game/playRecorder.ts, its test, tools/playtesters/report.py (reads uses; old logs as before) and its self-test,
-  tools/playtesters/LOG_EVENTS.md (the changed row), reference/handoffs/engine-core.md only if E0 and A2 are not writing it (if they
-  are, put your note in REPORT.md instead).
+- WRITE: src/game/playRecorder.ts, NEW src/game/playRecorder.test.ts, src/game/recorderMoments.test.ts (its :43-70 asserts once per
+  stage and must change), tools/playtesters/report.py (reads `use` rows; old logs as before) with a NEW --self-test (today it crashes:
+  FileNotFoundError on '--self-test'; name its fixture rows and the exact line it prints). NOT LOG_EVENTS.md (A2 edits it): the new
+  row goes in REPORT.md and lands after A2 merges. Your turnover note goes in REPORT.md (E0a writes engine-core.md).
 ## Definition of done (the Critic checks each)
-1. A test drives three double jumps and two bounces in one stage: three and two use events, the first of each marked first. Red on
-   origin/main shown.
+1. A test drives three double jumps and two bounces in one stage (RealPlay): one `move double` and two `use double`, one `move
+   bounce` and one `use bounce`. Red on origin/main shown (today: 2 events for 5 uses).
 2. report.py --self-test green, with an old-format row read as before and a new-format row counted by uses.
 3. tsc clean; the playRecorder and report tests green; the full suite in 3 shards green.
 ## Return
