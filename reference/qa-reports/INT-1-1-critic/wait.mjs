@@ -17,6 +17,7 @@ for (const setting of (process.env.SETS ?? 'normal,easy').split(',')) for (const
   for (let t = Date.now(); Date.now() - t < 300000; ) { if (await page.evaluate(() => typeof window.__play === 'function')) break; await sleep(1000); }
   await sleep(2500);
   await page.evaluate((i) => window.__play('1-1', i + 1), idx);
+  for (let t = Date.now(); Date.now() - t < 90000; ) { if (await page.evaluate(() => typeof window.__engine === 'function' && !!window.__engine()?.currentStage?.meta?.pieces)) break; await sleep(500); }
   await sleep(4500);
   await page.evaluate((k) => {
     const e = window.__engine(), s = e.currentStage, pc = s.meta.pieces.find((q) => q.k === k);

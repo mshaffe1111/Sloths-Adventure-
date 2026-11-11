@@ -1,0 +1,476 @@
+{
+ "offer-port": {
+  "errs": [],
+  "aim": {
+   "seed": 982,
+   "L": [
+    35477,
+    745,
+    492
+   ],
+   "pc": {
+    "k": "w1-log-chain-rise",
+    "x0": 35477,
+    "x1": 38386,
+    "beat": "ketsu"
+   },
+   "can": true
+  },
+  "at12": {
+   "asking": {
+    "k": "w1-log-chain-rise",
+    "count": 12,
+    "cut": "w1-boulder-grey-moss"
+   },
+   "paused": true,
+   "grown": [],
+   "offer": true,
+   "pm": false,
+   "bub": "",
+   "px": 35597,
+   "py": 745,
+   "t": 15.3
+  },
+  "yesBox": {
+   "x": 78,
+   "y": 427.1875,
+   "width": 120,
+   "height": 120
+  },
+  "noBox": {
+   "x": 214,
+   "y": 427.1875,
+   "width": 120,
+   "height": 120
+  },
+  "card": {
+   "x": 16,
+   "y": 348.8125,
+   "width": 380,
+   "height": 217.375
+  },
+  "afterStrayTaps": {
+   "asking": {
+    "k": "w1-log-chain-rise",
+    "count": 12,
+    "cut": "w1-boulder-grey-moss"
+   },
+   "paused": true,
+   "grown": [],
+   "offer": true,
+   "pm": false,
+   "bub": "",
+   "px": 35597,
+   "py": 745,
+   "t": 15.3
+  },
+  "afterNo": {
+   "asking": null,
+   "paused": false,
+   "grown": [],
+   "offer": false,
+   "pm": false,
+   "bub": "",
+   "px": 35597,
+   "py": 745,
+   "t": 17
+  },
+  "timeMovesAfterNo": 1.1999999999999993,
+  "at20": {
+   "asking": {
+    "k": "w1-log-chain-rise",
+    "count": 20,
+    "cut": "w1-boulder-grey-moss"
+   },
+   "paused": true,
+   "grown": [],
+   "offer": true,
+   "pm": false,
+   "bub": "",
+   "px": 35597,
+   "py": 745,
+   "t": 27.6
+  },
+  "afterYes": {
+   "asking": null,
+   "paused": false,
+   "grown": [
+    [
+     38418,
+     450,
+     80,
+     34,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     37428,
+     402,
+     160,
+     39,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     37020,
+     480,
+     160,
+     39,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     36600,
+     556,
+     160,
+     36,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     36197,
+     630,
+     160,
+     38,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     35809,
+     707,
+     160,
+     38,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     35397,
+     779,
+     80,
+     34,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ]
+   ],
+   "offer": false,
+   "pm": false,
+   "bub": "",
+   "px": 35597,
+   "py": 745,
+   "t": 29.6
+  },
+  "after30": {
+   "asking": null,
+   "paused": false,
+   "grown": [
+    [
+     38418,
+     450,
+     80,
+     34,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     37428,
+     402,
+     160,
+     39,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     37020,
+     480,
+     160,
+     39,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     36600,
+     556,
+     160,
+     36,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     36197,
+     630,
+     160,
+     38,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     35809,
+     707,
+     160,
+     38,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     35397,
+     779,
+     80,
+     34,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ]
+   ],
+   "offer": false,
+   "pm": false,
+   "bub": "",
+   "px": 38458,
+   "py": 450,
+   "t": 43.1
+  },
+  "said": [
+   [
+    5,
+    "Run first, then flick up and forward!"
+   ]
+  ]
+ },
+ "offer-land": {
+  "errs": [],
+  "aim": {
+   "seed": 982,
+   "L": [
+    35477,
+    745,
+    492
+   ],
+   "pc": {
+    "k": "w1-log-chain-rise",
+    "x0": 35477,
+    "x1": 38386,
+    "beat": "ketsu"
+   },
+   "can": true
+  },
+  "at12": {
+   "asking": {
+    "k": "w1-log-chain-rise",
+    "count": 12,
+    "cut": "w1-boulder-grey-moss"
+   },
+   "paused": true,
+   "grown": [],
+   "offer": true,
+   "pm": false,
+   "bub": "",
+   "px": 35597,
+   "py": 745,
+   "t": 18.1
+  },
+  "yesBox": {
+   "x": 444.5,
+   "y": 145,
+   "width": 120,
+   "height": 120
+  },
+  "noBox": {
+   "x": 580.5,
+   "y": 145,
+   "width": 120,
+   "height": 120
+  },
+  "card": {
+   "x": 197.5,
+   "y": 128,
+   "width": 520,
+   "height": 156
+  },
+  "afterStrayTaps": {
+   "asking": {
+    "k": "w1-log-chain-rise",
+    "count": 12,
+    "cut": "w1-boulder-grey-moss"
+   },
+   "paused": true,
+   "grown": [],
+   "offer": true,
+   "pm": false,
+   "bub": "",
+   "px": 35597,
+   "py": 745,
+   "t": 18.1
+  },
+  "afterNo": {
+   "asking": null,
+   "paused": false,
+   "grown": [],
+   "offer": false,
+   "pm": false,
+   "bub": "",
+   "px": 35597,
+   "py": 745,
+   "t": 19.7
+  },
+  "timeMovesAfterNo": 1.1000000000000014,
+  "at20": {
+   "asking": {
+    "k": "w1-log-chain-rise",
+    "count": 20,
+    "cut": "w1-boulder-grey-moss"
+   },
+   "paused": true,
+   "grown": [],
+   "offer": true,
+   "pm": false,
+   "bub": "",
+   "px": 35597,
+   "py": 745,
+   "t": 30.3
+  },
+  "afterYes": {
+   "asking": null,
+   "paused": false,
+   "grown": [
+    [
+     38418,
+     450,
+     80,
+     34,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     37428,
+     402,
+     160,
+     39,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     37020,
+     480,
+     160,
+     39,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     36600,
+     556,
+     160,
+     36,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     36197,
+     630,
+     160,
+     38,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     35809,
+     707,
+     160,
+     38,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     35397,
+     779,
+     80,
+     34,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ]
+   ],
+   "offer": false,
+   "pm": false,
+   "bub": "",
+   "px": 35597,
+   "py": 745,
+   "t": 32.7
+  },
+  "after30": {
+   "asking": null,
+   "paused": false,
+   "grown": [
+    [
+     38418,
+     450,
+     80,
+     34,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     37428,
+     402,
+     160,
+     39,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     37020,
+     480,
+     160,
+     39,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     36600,
+     556,
+     160,
+     36,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     36197,
+     630,
+     160,
+     38,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     35809,
+     707,
+     160,
+     38,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ],
+    [
+     35397,
+     779,
+     80,
+     34,
+     "moss_stone",
+     "w1-boulder-grey-moss"
+    ]
+   ],
+   "offer": false,
+   "pm": false,
+   "bub": "",
+   "px": 38458,
+   "py": 450,
+   "t": 48.6
+  },
+  "said": [
+   [
+    2.7,
+    "Flick up again midair to jump twice."
+   ],
+   [
+    6.3,
+    "Run first, then flick up and forward!"
+   ]
+  ]
+ }
+}

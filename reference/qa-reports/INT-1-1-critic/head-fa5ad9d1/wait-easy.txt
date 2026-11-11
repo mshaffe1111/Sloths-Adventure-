@@ -1,0 +1,4 @@
+Easy pace sweep on fa5ad9d1 (wait.mjs, the run's printed lines; its JSON was lost when the Normal half failed to start under load and was re-run as wait-normal.json):
+W0   move line sent 7.2 shown 7.3 (up 8.3 s); step line sent 15.5 shown 15.6 (up 6.5 s); nothing else said
+W600 move line sent 9.3 shown 9.4 (up 9.3 s); step line sent 20.0 shown 20.2 (up 6.5 s); nothing else said
+W2000 move line sent 12.6 shown 12.7 (up 9.2 s); step line sent 32.1 shown 32.2 (up 6.6 s); nothing else said
