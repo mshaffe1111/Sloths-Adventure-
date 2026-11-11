@@ -22,6 +22,7 @@ RULES = [  # (name test, worlds, reason)
  (lambda n: 'vine-fungus' in n, [8, 1, 3], 'fungus vine: night treetops ~blue-night'),
  (lambda n: 'bush-monstera' in n, [1, 5, 6], 'monstera hide bush: canopy, garden ~orchid, swamp ~grey-wet'),
  (lambda n: 'bush-hedge' in n, [5, 1], 'tall hedge: the orchid garden\'s clipped look first'),
+ (lambda n: n in ('w1-stump-wide', 'w1-hide-stump-hollow'), [2, 6, 8], "sawn (a made thing; the lead, 11-11): the picture shows a flat sawn top; worked wood belongs to the riverbank village"),
  (lambda n: 'stump' in n, [1, 6, 8], 'stump: canopy floor, swamp ~grey-wet, night ~blue-night'),
  (lambda n: 'rock-arch' in n or 'hide-rock-arch' in n, [7, 3, 4, 1], 'stone arch: a ruin gateway ~sand-stone, grotto ~cool-dark, cliffs ~slate'),
  (lambda n: 'rock-slabs' in n or 'slab-overhang' in n, [7, 4, 3, 1], 'stacked slabs: ruin masonry ~sand-stone (fills 7 root-split slabs), cliff ~slate'),
@@ -41,7 +42,7 @@ RULES = [  # (name test, worlds, reason)
  (lambda n: 'grass-tuft' in n, [1, 2, 5, 6, 8], 'grass tuft: dressing for any green world'),
  (lambda n: 'plank-ledge' in n, [2, 1, 6], 'cut plank ledge: village first, swamp boardwalk ~grey-wet'),
  (lambda n: 'trunk-fungus' in n or 'fungus' in n, [8, 1, 3], 'fungus trunk or shelf: night treetops ~blue-night, canopy, grotto'),
- (lambda n: 'log-plank' in n, [1, 6, 8, 5], 'log platform: canopy, swamp, night; the garden has no log (fills 5)'),
+ (lambda n: 'log-plank' in n, [1, 6, 8, 5], 'split log with rough broken ends (natural, despite the name): canopy, swamp, night; the garden has no log (fills 5)'),
 ]
 F = {}
 for p in M:

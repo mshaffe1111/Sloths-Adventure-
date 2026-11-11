@@ -27,7 +27,7 @@ w1-thorn-hang-a,hanging hazard,1 Emerald Canopy; 8 Twilight Treetops; 3 Mossy Gr
 w1-thorn-hang-b,hanging hazard,1 Emerald Canopy; 8 Twilight Treetops; 3 Mossy Grotto; 10 Stormy Highlands Fortress,"hanging thorns: canopy, the night treetops (fills 8 hazard), grotto ~cool-dark, fortress ~dead-grey"
 w1-thorn-hang-c,hanging hazard,1 Emerald Canopy; 8 Twilight Treetops; 3 Mossy Grotto; 10 Stormy Highlands Fortress,"hanging thorns: canopy, the night treetops (fills 8 hazard), grotto ~cool-dark, fortress ~dead-grey"
 w1-thorn-hang-swag,hanging hazard,1 Emerald Canopy; 8 Twilight Treetops; 3 Mossy Grotto; 10 Stormy Highlands Fortress,"hanging thorns: canopy, the night treetops (fills 8 hazard), grotto ~cool-dark, fortress ~dead-grey"
-w1-stump-wide,wide standable stump,1 Emerald Canopy; 6 Deep Mangrove; 8 Twilight Treetops,"stump: canopy floor, swamp ~grey-wet, night ~blue-night"
+w1-stump-wide,wide standable stump,2 Sunlit Riverbank; 6 Deep Mangrove; 8 Twilight Treetops,"sawn (a made thing; the lead, 11-11): the picture shows a flat sawn top; worked wood belongs to the riverbank village"
 w1-post-short-rope,short post,2 Sunlit Riverbank; 6 Deep Mangrove,"rope-lashed or rope (a made thing): the riverbank village, the mangrove; not W1 (lead, 11-11: no made things in the home forest)"
 w1-frame-xbundle-a,scaffold frame,2 Sunlit Riverbank; 6 Deep Mangrove,"rope-lashed or rope (a made thing): the riverbank village, the mangrove; not W1 (lead, 11-11: no made things in the home forest)"
 w1-vine-curtain,dressing / hide curtain,1 Emerald Canopy; 6 Deep Mangrove; 5 Orchid Sanctuary,"climb or curtain vine: canopy, swamp ~grey-wet, garden"
@@ -62,7 +62,7 @@ w1-hide-log-on-stump,hide-under leaning log,1 Emerald Canopy; 6 Deep Mangrove; 8
 w1-hide-rock-arch-low,hide-under arch,3 Mossy Grotto; 4 Mist Cascades; 1 Emerald Canopy,"the picture shows a natural mossy rock arch, not masonry: grotto ~cool-dark first, cliffs ~slate"
 w1-hide-slab-overhang,hide-under overhang,4 Mist Cascades; 3 Mossy Grotto; 1 Emerald Canopy,"the picture shows natural layered rock slabs, not masonry: cliffs ~slate first, grotto"
 w1-rock-slabs-low,low slab step,4 Mist Cascades; 3 Mossy Grotto; 1 Emerald Canopy,"the picture shows natural layered rock slabs, not masonry: cliffs ~slate first, grotto"
-w1-hide-stump-hollow,PERCH only (narrow top) + hide spot,1 Emerald Canopy; 6 Deep Mangrove; 8 Twilight Treetops,"stump: canopy floor, swamp ~grey-wet, night ~blue-night"
+w1-hide-stump-hollow,PERCH only (narrow top) + hide spot,2 Sunlit Riverbank; 6 Deep Mangrove; 8 Twilight Treetops,"sawn (a made thing; the lead, 11-11): the picture shows a flat sawn top; worked wood belongs to the riverbank village"
 w1-hide-root-arch,root arch (1-2 brief),1 Emerald Canopy; 7 Ancient Ruins; 6 Deep Mangrove,"root arch: canopy, temple roots, swamp"
 w1-hide-cave-big,hide / secret door cave,3 Mossy Grotto; 4 Mist Cascades; 1 Emerald Canopy; 10 Stormy Highlands Fortress,"boulder cave: the grotto ~cool-dark first, cliffs ~slate, highlands"
 w1-rock-root-block,standable root block,1 Emerald Canopy; 7 Ancient Ruins; 3 Mossy Grotto,"rock gripped by roots: canopy, ruins swallowed by roots"
@@ -106,7 +106,7 @@ w1-mossrock-c,dressing,1 Emerald Canopy; 3 Mossy Grotto; 4 Mist Cascades; 2 Sunl
 w1-mossrock-d,dressing,1 Emerald Canopy; 3 Mossy Grotto; 4 Mist Cascades; 2 Sunlit Riverbank,small mossy stones: dressing for any rocky world; river pebbles
 w1-trunk-fungus-B,"ONE-PIECE CLIMB TRUNK (spiral steps, best)",8 Twilight Treetops; 1 Emerald Canopy; 3 Mossy Grotto,"fungus trunk or shelf: night treetops ~blue-night, canopy, grotto"
 w1-boulder-grey-moss-b,standable boulder,3 Mossy Grotto; 4 Mist Cascades; 1 Emerald Canopy; 10 Stormy Highlands Fortress,"grey mossy boulder: grotto ~cool-dark, cliffs ~slate, canopy, highlands"
-w1-log-plank-a,log platform,1 Emerald Canopy; 6 Deep Mangrove; 8 Twilight Treetops; 5 Orchid Sanctuary,"log platform: canopy, swamp, night; the garden has no log (fills 5)"
-w1-log-plank-b,log platform,1 Emerald Canopy; 6 Deep Mangrove; 8 Twilight Treetops; 5 Orchid Sanctuary,"log platform: canopy, swamp, night; the garden has no log (fills 5)"
+w1-log-plank-a,log platform,1 Emerald Canopy; 6 Deep Mangrove; 8 Twilight Treetops; 5 Orchid Sanctuary,"split log with rough broken ends (natural, despite the name): canopy, swamp, night; the garden has no log (fills 5)"
+w1-log-plank-b,log platform,1 Emerald Canopy; 6 Deep Mangrove; 8 Twilight Treetops; 5 Orchid Sanctuary,"split log with rough broken ends (natural, despite the name): canopy, swamp, night; the garden has no log (fills 5)"
 w1-grass-tuft-b,dressing,1 Emerald Canopy; 2 Sunlit Riverbank; 5 Orchid Sanctuary; 6 Deep Mangrove; 8 Twilight Treetops,grass tuft: dressing for any green world
 w1-grass-tuft-c,dressing,1 Emerald Canopy; 2 Sunlit Riverbank; 5 Orchid Sanctuary; 6 Deep Mangrove; 8 Twilight Treetops,grass tuft: dressing for any green world

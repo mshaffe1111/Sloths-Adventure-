@@ -16,5 +16,8 @@ L = [f'# World fit: {title}\n', 'Matt, 11-11: "determine where they work the bes
 for n in W:
     ps = [(i, F[i][0][0] == n) for i in ids if n in F[i][0]]
     L.append(f"| {n} {W[n]} ({len(ps)}) | {', '.join(f'**{i}**' if b else i for i, b in ps) or 'none'} | {GAP[n]} |")
+import re as _re
+w1 = [r['id'] for r in rows if 1 in F[r['id']][0] and _re.search(r'walkable|plank|stump|rock|island|pit wall|standable|platform|step|ledge|perch|boulder|bough', r['kind'], _re.I)]
+L.insert(2, f"**World 1 flat tops left** (pieces you can stand on that still fit W1, after the made-things and sawn-wood rulings): **{len(w1)}**: {', '.join(w1) or 'none'}.\n")
 open(f'{out}/BY-WORLD.md', 'w').write('\n'.join(L) + '\n')
 print({n: sum(1 for i in ids if n in F[i][0]) for n in W})

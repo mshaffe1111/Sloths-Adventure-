@@ -7,39 +7,39 @@ W1-06-a,floating earth island (FLOAT CANDIDATE),1 Emerald Canopy; 8 Twilight Tre
 W1-07-a,floating earth island (FLOAT CANDIDATE),1 Emerald Canopy; 3 Mossy Grotto; 8 Twilight Treetops,thick moss island with a chanterelle cluster
 W1-08-a,floating earth island (FLOAT CANDIDATE),1 Emerald Canopy; 8 Twilight Treetops,moss island with root base
 W1-09-e,stump-step,7 Ancient Ruins; 3 Mossy Grotto; 4 Mist Cascades,root-wrapped rock pillar: a ruin column; fills 7 columns
-W1-09-j,stump-step,8 Twilight Treetops; 1 Emerald Canopy; 6 Deep Mangrove,tall thin trunk pillar: treetop pole step
+W1-09-j,stump-step,2 Sunlit Riverbank; 8 Twilight Treetops; 6 Deep Mangrove,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a flat sawn top"
 W1-09-m,floating earth island (FLOAT CANDIDATE),1 Emerald Canopy; 4 Mist Cascades; 8 Twilight Treetops,"wide root-bound earth slab: forest ledge, cliff shelf"
 W1-09-n,floating earth island (FLOAT CANDIDATE),4 Mist Cascades; 1 Emerald Canopy; 3 Mossy Grotto,earth slab with rock at its base: cliffs first
-W1-10-a,stump-step,1 Emerald Canopy; 2 Sunlit Riverbank; 6 Deep Mangrove,"wide low stump, flat cut top"
-W1-10-e,stump-step,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,wide mossy stump
+W1-10-a,stump-step,2 Sunlit Riverbank; 6 Deep Mangrove,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a flat sawn top"
+W1-10-e,stump-step,2 Sunlit Riverbank; 3 Mossy Grotto; 6 Deep Mangrove,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a flat sawn top"
 W1-10-i,floating earth island (FLOAT CANDIDATE),1 Emerald Canopy; 8 Twilight Treetops; 6 Deep Mangrove,"earth slab, roots hanging under it"
 W1-10-j,floating earth island (FLOAT CANDIDATE),1 Emerald Canopy; 8 Twilight Treetops; 4 Mist Cascades,thin earth slab
-W1-12-a,stump-step,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,big mossy stump on a root mat
+W1-12-a,stump-step,2 Sunlit Riverbank; 3 Mossy Grotto; 6 Deep Mangrove,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a flat sawn top"
 W1-13-a,stump-step,1 Emerald Canopy; 6 Deep Mangrove; 8 Twilight Treetops,stump with long root claws
 W1-14-b,stump-step,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,moss-capped stump
 W1-16-a,rock (grounded),7 Ancient Ruins; 3 Mossy Grotto,stone-block staircase: a ruin stair (fills 7 rubble) (made thing; lead 11-11: no made things in the home forest)
 W1-17-a,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 5 Orchid Sanctuary,gnarled fallen log with berries; fills 5 log
-W1-17-b,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 2 Sunlit Riverbank,long straight log with fungi; fills 6 log variety
+W1-17-b,walkable log,2 Sunlit Riverbank; 6 Deep Mangrove,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a sawn end with rings"
 W1-18-a,vine,1 Emerald Canopy; 8 Twilight Treetops; 5 Orchid Sanctuary,upright fungus trunk climb
-W1-18-b,other,1 Emerald Canopy; 8 Twilight Treetops; 3 Mossy Grotto,upright puffball pole
-W1-19-a,walkable log,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,mushroom log (puffballs on top)
+W1-18-b,other,2 Sunlit Riverbank; 8 Twilight Treetops; 3 Mossy Grotto,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a sawn end with rings"
+W1-19-a,walkable log,2 Sunlit Riverbank; 3 Mossy Grotto; 6 Deep Mangrove,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a sawn end with rings"
 W1-19-b,bough,1 Emerald Canopy; 8 Twilight Treetops; 5 Orchid Sanctuary,curved bough: perch or decor; fills 5 branch
-W1-20-a,walkable log,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,"mushroom log, broken end"
-W1-20-b,walkable log,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,small copy of W1-20-a
+W1-20-a,walkable log,2 Sunlit Riverbank; 3 Mossy Grotto; 6 Deep Mangrove,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a sawn end with rings"
+W1-20-b,walkable log,2 Sunlit Riverbank; 3 Mossy Grotto; 6 Deep Mangrove,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a sawn end with rings"
 W1-20-c,bough,8 Twilight Treetops; 1 Emerald Canopy; 5 Orchid Sanctuary,arched bough with fungi
-W1-21-a,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 3 Mossy Grotto,"hollow log with ink-caps: forest hide spot, swamp"
-W1-21-b,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 3 Mossy Grotto,small copy of W1-21-a
+W1-21-a,walkable log,2 Sunlit Riverbank; 6 Deep Mangrove; 3 Mossy Grotto,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a sawn end with rings"
+W1-21-b,walkable log,2 Sunlit Riverbank; 6 Deep Mangrove; 3 Mossy Grotto,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a sawn end with rings"
 W1-21-c,decor,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,brush and twig pile with mushrooms
 W1-21-d,decor,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,small copy of W1-21-c
-W1-22-a,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 5 Orchid Sanctuary,mossy flat-topped log
-W1-22-b,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 5 Orchid Sanctuary,small copy of W1-22-a
+W1-22-a,walkable log,2 Sunlit Riverbank; 6 Deep Mangrove; 5 Orchid Sanctuary,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a sawn end with rings"
+W1-22-b,walkable log,2 Sunlit Riverbank; 6 Deep Mangrove; 5 Orchid Sanctuary,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a sawn end with rings"
 W1-22-c,walkable log,2 Sunlit Riverbank; 6 Deep Mangrove; 4 Mist Cascades,bleached driftwood: riverbank first
 W1-22-d,walkable log,2 Sunlit Riverbank; 6 Deep Mangrove; 4 Mist Cascades,small copy of W1-22-c
-W1-23-a,stump-step,1 Emerald Canopy; 2 Sunlit Riverbank,cartoon cut stump (bolder outlines)
+W1-23-a,stump-step,2 Sunlit Riverbank,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a flat sawn top"
 W1-24-a,plank,2 Sunlit Riverbank; 10 Stormy Highlands Fortress; 7 Ancient Ruins,"plank stack: village deck, fortress stores"
 W1-24-b,stump-step,2 Sunlit Riverbank,pyramid of sawn log rounds: a village woodpile step set (made thing; lead 11-11: no made things in the home forest)
 W1-25-a,plank,2 Sunlit Riverbank; 10 Stormy Highlands Fortress; 6 Deep Mangrove,long cut beam: village bridge or dock; fortress beam; fills 2 docks
-W1-26-a,walkable log,1 Emerald Canopy; 5 Orchid Sanctuary; 6 Deep Mangrove,vine-wrapped log with bromeliad and fern
+W1-26-a,walkable log,2 Sunlit Riverbank; 5 Orchid Sanctuary; 6 Deep Mangrove,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a sawn end with rings"
 W1-26-b,walkable log,5 Orchid Sanctuary; 1 Emerald Canopy; 6 Deep Mangrove,log on root legs with orchids: the orchid garden first (fills 5 floor)
 W1-27-a,walkable log,1 Emerald Canopy; 5 Orchid Sanctuary; 6 Deep Mangrove,mossy vine log with bromeliads
 W1-27-b,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 3 Mossy Grotto,mossy log with a moss drape
@@ -48,9 +48,9 @@ W2-04-a,bush,1 Emerald Canopy; 2 Sunlit Riverbank; 5 Orchid Sanctuary,leafy shru
 W2-04-b,bush,1 Emerald Canopy; 2 Sunlit Riverbank; 5 Orchid Sanctuary,dense round bush
 W2-05-a,bush,1 Emerald Canopy; 5 Orchid Sanctuary; 8 Twilight Treetops,monstera clump (dark back leaves suit night)
 W2-05-b,fern,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,wide fern clump
-W2-06-a,walkable log,2 Sunlit Riverbank; 1 Emerald Canopy,smooth orange beam with a branch stub
+W2-06-a,walkable log,2 Sunlit Riverbank,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a sawn end with rings"
 W2-06-b,walkable log,2 Sunlit Riverbank; 1 Emerald Canopy; 6 Deep Mangrove,low mossy log
-W2-07-a,walkable log,5 Orchid Sanctuary; 2 Sunlit Riverbank; 1 Emerald Canopy,orange log with bromeliads and an orchid: garden first
+W2-07-a,walkable log,2 Sunlit Riverbank; 5 Orchid Sanctuary,"sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a sawn end with rings"
 W2-07-b,walkable log,1 Emerald Canopy; 2 Sunlit Riverbank; 3 Mossy Grotto,mossy log with shelf fungi
 W2-08-a,rock (grounded),4 Mist Cascades; 9 Volcanic Jungle; 2 Sunlit Riverbank,"jagged brown outcrop: cliffs, volcano"
 W2-08-b,rock (grounded),3 Mossy Grotto; 4 Mist Cascades; 1 Emerald Canopy,moss-covered rock mound with shelf fungi: grotto

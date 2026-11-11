@@ -13,13 +13,13 @@ Attempt 2 (the critic, 11-10): six pieces under 600 px are kept by the lead's ru
 | den or hide spot | 4 | 0 | 2 | 0 |
 | lily pad | 8 | 0 | 0 | 8 |
 | plant or dressing | 10 | 4 | 6 | 2 |
-| puzzle piece | 8 | 0 | 2 | 4 |
+| puzzle piece | 8 | 0 | 1 | 4 |
 | rock | 2 | 0 | 1 | 1 |
 | soft landing | 7 | 0 | 5 | 3 |
 | step set piece | 2 | 0 | 0 | 1 |
 | tree | 6 | 0 | 2 | 4 |
-| walkable log or plank | 5 | 0 | 5 | 3 |
-| **total** | **54** | **4** | **24** | **26** |
+| walkable log or plank | 5 | 0 | 1 | 5 |
+| **total** | **54** | **4** | **19** | **28** |
 
 Per sheet (pieces shown on the sheet = cuts here): 01: 4, 02: 4 pads + 1 reed tuft, 03: 4, 04: 4, 05: 2, 06: 4 labelled items = 6 cuts (the totems are three separate stones), 07: 4, 08: 4, 09: 2, 10: 4, 11: 4, 12: 8 plants = 9 cuts (one leaf keyed loose), 13: 2, 14: 2, 15: 2.
 
@@ -35,14 +35,16 @@ Float class is Matt's 11-07 ruling (STAGE-RULES "What may float"): **may float**
 
 Every world a piece fits, judged by material and mood (STORY-KEEPER's ten worlds); **bold** = that world is the piece's best fit. The gap is what reference/art/KIT-AUDIT.md (11-06) says the world's kit is short of. **Made things are never World 1** (the lead, 11-11: no made things in the home forest; rope is a made thing, like the lantern): ladders, rope bridges and rope posts, crates, barrels, the lever, sawn posts and boards, carved totems and carved or rune stones go to W2 Sunlit Riverbank (rope and wood work) or W7 Ancient Ruins (carved stone, the lever). Natural pieces (rock, stump, log, root steps, moss, fungus) stay as tagged.
 
+**World 1 flat tops left** (pieces you can stand on that still fit W1, after the made-things and sawn-wood rulings): **8**: M-01-a, M-06-f, M-07-a, M-07-b, M-07-c, M-08-b, M-08-c, M-13-a.
+
 | World | Pieces (best fit in bold) | Its kit gap |
 |---|---|---|
-| 1 Emerald Canopy (24) | M-01-a, M-01-b, **M-06-a**, M-06-e, M-06-f, M-07-a, **M-07-b**, **M-07-c**, **M-08-b**, M-08-c, **M-10-a**, M-10-d, **M-11-c**, M-11-d, **M-12-a**, M-12-b, M-12-e, M-12-h, **M-12-i**, M-13-a, **M-14-a**, **M-14-b**, **M-15-a**, **M-15-b** | floor kinds (stones, stumps, logs), a painted thorn hazard |
-| 2 Sunlit Riverbank (26) | M-01-b, **M-01-d**, **M-02-a**, **M-02-b**, M-02-d, M-02-e, **M-03-a**, **M-03-b**, M-03-c, M-03-d, **M-04-b**, M-04-c, **M-05-b**, M-06-f, M-07-b, **M-07-d**, **M-08-d**, M-09-a, **M-09-b**, **M-10-b**, M-10-c, M-12-b, M-12-i, M-13-b, M-15-a, M-15-b | docks, rafts, floor kinds, painted water |
+| 1 Emerald Canopy (19) | M-01-a, **M-06-a**, M-06-e, M-06-f, M-07-a, **M-07-b**, **M-07-c**, **M-08-b**, M-08-c, **M-10-a**, M-10-d, **M-11-c**, M-11-d, **M-12-a**, M-12-b, M-12-e, M-12-h, **M-12-i**, M-13-a | floor kinds (stones, stumps, logs), a painted thorn hazard |
+| 2 Sunlit Riverbank (28) | **M-01-b**, **M-01-d**, **M-02-a**, **M-02-b**, M-02-d, M-02-e, **M-03-a**, **M-03-b**, M-03-c, M-03-d, **M-04-b**, M-04-c, **M-05-b**, M-06-f, M-07-b, **M-07-d**, **M-08-d**, M-09-a, **M-09-b**, **M-10-b**, M-10-c, M-12-b, M-12-i, M-13-b, **M-14-a**, **M-14-b**, **M-15-a**, **M-15-b** | docks, rafts, floor kinds, painted water |
 | 3 Mossy Grotto (12) | M-01-a, M-01-c, M-04-a, M-06-b, M-06-c, M-06-d, **M-07-a**, **M-08-a**, **M-08-c**, M-11-a, M-11-b, **M-13-a** | floor kinds, darker shelves |
 | 4 Mist Cascades (3) | M-11-b, M-13-a, **M-13-b** | floor kinds, a painted hazard |
 | 5 Orchid Sanctuary (27) | M-02-b, **M-02-e**, M-03-a, M-03-b, **M-03-d**, M-05-a, M-05-b, **M-06-e**, M-07-b, M-07-c, M-07-d, M-08-b, M-08-d, M-09-b, M-10-b, **M-10-d**, M-11-d, M-12-a, **M-12-b**, **M-12-d**, **M-12-e**, **M-12-h**, M-12-i, M-14-a, M-14-b, M-15-a, M-15-b | its own floor (no branch, log, liana or perch) |
-| 6 Deep Mangrove (20) | **M-01-b**, M-01-d, M-02-a, M-02-b, **M-02-d**, M-02-e, M-03-a, M-03-b, **M-03-c**, M-03-d, M-05-b, M-06-a, M-06-e, **M-06-f**, **M-10-c**, **M-11-a**, M-11-c, M-12-a, M-14-a, M-14-b | variety (one log tiled three times) |
+| 6 Deep Mangrove (20) | M-01-b, M-01-d, M-02-a, M-02-b, **M-02-d**, M-02-e, M-03-a, M-03-b, **M-03-c**, M-03-d, M-05-b, M-06-a, M-06-e, **M-06-f**, **M-10-c**, **M-11-a**, M-11-c, M-12-a, M-14-a, M-14-b | variety (one log tiled three times) |
 | 7 Ancient Ruins (13) | **M-01-c**, M-01-d, **M-04-a**, **M-04-d**, **M-05-a**, **M-06-b**, **M-06-c**, **M-06-d**, M-09-a, M-10-a, M-10-d, **M-11-b**, M-12-d | rubble blocks, fallen columns, root-split slabs |
 | 8 Twilight Treetops (12) | M-06-a, M-07-a, M-07-c, M-08-b, M-08-c, **M-09-a**, M-10-a, M-11-c, **M-11-d**, M-12-h, M-14-a, M-14-b | a painted hazard, floor kinds |
 | 9 Volcanic Jungle (6) | **M-01-a**, M-08-a, M-09-b, M-10-b, M-12-d, M-13-b | floor kinds |
@@ -55,7 +57,7 @@ walk = the measured flat top in the PNG's own pixels: y from the top, then the x
 | id | label | kind | size | walk y (x0-x1) flat | worlds, best first | why | float | notes |
 |---|---|---|---|---|---|---|---|---|
 | M-01-a | Mossy Volcanic Boulder Block | puzzle piece | 735x678 | by hand | 9 Volcanic Jungle; 3 Mossy Grotto; 1 Emerald Canopy | volcanic boulder block (porous lava rock under moss): volcano first; a puzzle block in grotto or forest | grounded | Pushable or breakable block (R-165.81). Three-quarter view cube: the line is the back edge of the top face; set the stand line on the front edge by hand. Fern sprigs at two corners. No flat top: the silhouette top near y 55 (x 207-605) is only 8% within 3 px of level; stand line by hand. |
-| M-01-b | Heavy Water-Logged Mahogany Log | puzzle piece | 810x596 | by hand | 6 Deep Mangrove; 2 Sunlit Riverbank; 1 Emerald Canopy | water-logged mahogany log: swamp and riverbank; a roll or push puzzle | grounded | Rollable or pushable log, shown on a diagonal (three-quarter view), so it is not a side-on platform. Shelf fungi along the side. No flat top: the silhouette top near y 56 (x 457-776) is only 6% within 3 px of level; stand line by hand. |
+| M-01-b | Heavy Water-Logged Mahogany Log | puzzle piece | 810x596 | by hand | 2 Sunlit Riverbank; 6 Deep Mangrove | sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a sawn end with rings; worked wood belongs to the riverbank village | grounded | Rollable or pushable log, shown on a diagonal (three-quarter view), so it is not a side-on platform. Shelf fungi along the side. No flat top: the silhouette top near y 56 (x 457-776) is only 6% within 3 px of level; stand line by hand. |
 | M-01-c | Carved Stone Monolith Block | puzzle piece | 517x712 | by hand | 7 Ancient Ruins; 3 Mossy Grotto | carved stone monolith block: ruins first; fills 7 rubble blocks | grounded | Tall carved block (a face on the front). Three-quarter view; stand line by hand. No flat top: the silhouette top near y 51 (x 135-488) is only 8% within 3 px of level; stand line by hand. |
 | M-01-d | Heavy Root-Bound Wooden Crate | puzzle piece | 672x705 | by hand | 2 Sunlit Riverbank; 6 Deep Mangrove; 7 Ancient Ruins | root-bound crate: a village crate the swamp and roots took back (made thing; lead 11-11: no made things in the home forest) | grounded | Crate wrapped in roots, no painted words. Three-quarter view; stand line by hand. No flat top: the silhouette top near y 58 (x 159-535) is only 16% within 3 px of level; stand line by hand. |
 | M-02-a | Victoria Lily Pad Platform | lily pad | 815x543 | by hand | 2 Sunlit Riverbank; 6 Deep Mangrove | top-view Victoria pad: water-surface decor only | may float | TOP VIEW, NOT FOR PLATFORMS (the game is side-on; use M-03-a). Water-surface decor at most. No flat top: the silhouette top near y 44 (x 102-712) is only 6% within 3 px of level; stand line by hand. |
@@ -104,10 +106,10 @@ walk = the measured flat top in the PNG's own pixels: y from the top, then the x
 | M-12-i | unlabelled (berry bush) | plant or dressing | 615x498 |  | 1 Emerald Canopy; 5 Orchid Sanctuary; 2 Sunlit Riverbank | berry bush | grounded | Round berry bush; ground dressing. |
 | M-13-a | unlabelled (mossy rock) | rock | 909x577 | by hand | 3 Mossy Grotto; 4 Mist Cascades; 1 Emerald Canopy; 10 Stormy Highlands Fortress | mossy grey rock: grotto, cliffs, forest, highlands | grounded | Full-size grounded rock, moss on top; uneven top, the measured line is its highest flat run. No flat top: the silhouette top near y 32 (x 164-771) is only 32% within 3 px of level; stand line by hand. |
 | M-13-b | unlabelled (smooth brown boulder) | rock | 890x548 | 3 (355-604) 1.0 | 4 Mist Cascades; 10 Stormy Highlands Fortress; 9 Volcanic Jungle; 2 Sunlit Riverbank | smooth brown boulder, flat crown: cliffs, highlands, volcano, riverbank | grounded | Full-size grounded boulder, domed top: the walk line is the flat crown only (x 355-604); the sides fall away. |
-| M-14-a | unlabelled (long dark log platform) | walkable log or plank | 1215x298 | 3 (33-1183) 0.97 | 1 Emerald Canopy; 6 Deep Mangrove; 8 Twilight Treetops; 5 Orchid Sanctuary | dark side-on log platform: forest, swamp, night canopy, the garden that has no log (fills 5) | may float | Flat-topped side-on log, long. Darker wood than 15. |
-| M-14-b | unlabelled (short dark log platform) | walkable log or plank | 566x296 | 2 (26-534) 0.94 | 1 Emerald Canopy; 6 Deep Mangrove; 8 Twilight Treetops; 5 Orchid Sanctuary | short dark log platform | may float | Under 600 px, kept by the lead (11-10). |
-| M-15-a | unlabelled (plank or log platform) | walkable log or plank | 880x363 | 16 (62-823) 0.75 | 1 Emerald Canopy; 2 Sunlit Riverbank; 5 Orchid Sanctuary | light side-on log platform: forest, riverbank, garden | may float | Flat-topped side-on log, lighter wood. Near-twin of M-15-b (same length, slightly different grain): counts as one shape for variety. |
-| M-15-b | unlabelled (plank or log platform) | walkable log or plank | 881x363 | 16 (62-824) 0.84 | 1 Emerald Canopy; 2 Sunlit Riverbank; 5 Orchid Sanctuary | twin of M-15-a | may float | Near-twin of M-15-a. |
+| M-14-a | unlabelled (long dark log platform) | walkable log or plank | 1215x298 | 3 (33-1183) 0.97 | 2 Sunlit Riverbank; 6 Deep Mangrove; 8 Twilight Treetops; 5 Orchid Sanctuary | sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): a square-sawn beam; worked wood belongs to the riverbank village | may float | Flat-topped side-on log, long. Darker wood than 15. |
+| M-14-b | unlabelled (short dark log platform) | walkable log or plank | 566x296 | 2 (26-534) 0.94 | 2 Sunlit Riverbank; 6 Deep Mangrove; 8 Twilight Treetops; 5 Orchid Sanctuary | sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): a short square-sawn beam; worked wood belongs to the riverbank village | may float | Under 600 px, kept by the lead (11-10). |
+| M-15-a | unlabelled (plank or log platform) | walkable log or plank | 880x363 | 16 (62-823) 0.75 | 2 Sunlit Riverbank; 5 Orchid Sanctuary | sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): a square-sawn beam; worked wood belongs to the riverbank village | may float | Flat-topped side-on log, lighter wood. Near-twin of M-15-b (same length, slightly different grain): counts as one shape for variety. |
+| M-15-b | unlabelled (plank or log platform) | walkable log or plank | 881x363 | 16 (62-824) 0.84 | 2 Sunlit Riverbank; 5 Orchid Sanctuary | sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): a square-sawn beam; worked wood belongs to the riverbank village | may float | Near-twin of M-15-a. |
 
 ## Rejected
 

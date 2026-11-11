@@ -1,6 +1,6 @@
 F = {
  'M-01-a': ([9, 3, 1], 'volcanic boulder block (porous lava rock under moss): volcano first; a puzzle block in grotto or forest'),
- 'M-01-b': ([6, 2, 1], 'water-logged mahogany log: swamp and riverbank; a roll or push puzzle'),
+ 'M-01-b': ([2, 6], "sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): the picture shows a sawn end with rings; worked wood belongs to the riverbank village"),
  'M-01-c': ([7, 3], 'carved stone monolith block: ruins first; fills 7 rubble blocks'),
  'M-01-d': ([2, 6, 7], 'root-bound crate: a village crate the swamp and roots took back (made thing; lead 11-11: no made things in the home forest)'),
  'M-02-a': ([2, 6], 'top-view Victoria pad: water-surface decor only'),
@@ -53,8 +53,8 @@ F = {
  'M-12-i': ([1, 5, 2], 'berry bush'),
  'M-13-a': ([3, 4, 1, 10], 'mossy grey rock: grotto, cliffs, forest, highlands'),
  'M-13-b': ([4, 10, 9, 2], 'smooth brown boulder, flat crown: cliffs, highlands, volcano, riverbank'),
- 'M-14-a': ([1, 6, 8, 5], 'dark side-on log platform: forest, swamp, night canopy, the garden that has no log (fills 5)'),
- 'M-14-b': ([1, 6, 8, 5], 'short dark log platform'),
- 'M-15-a': ([1, 2, 5], 'light side-on log platform: forest, riverbank, garden'),
- 'M-15-b': ([1, 2, 5], 'twin of M-15-a'),
+ 'M-14-a': ([2, 6, 8, 5], "sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): a square-sawn beam; worked wood belongs to the riverbank village"),
+ 'M-14-b': ([2, 6, 8, 5], "sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): a short square-sawn beam; worked wood belongs to the riverbank village"),
+ 'M-15-a': ([2, 5], "sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): a square-sawn beam; worked wood belongs to the riverbank village"),
+ 'M-15-b': ([2, 5], "sawn (a made thing; the lead, 11-11: saws don't belong in Pokey's home forest): a square-sawn beam; worked wood belongs to the riverbank village"),
 }
