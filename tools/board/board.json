@@ -63,10 +63,6 @@
       "hint": "one question at a time, in this order",
       "cards": [
         {
-          "id": "R-165.69",
-          "title": "Tester names in main's old git history: clean the files now, and rewrite the history once before launch?"
-        },
-        {
           "id": "R-165.55",
           "title": "Story questions: Meeca's parents handed to the story keeper (11-11); the skulls and the two food lines go to it too"
         }
@@ -163,6 +159,11 @@
         {
           "id": "R-165.89",
           "title": "Small glitches from the window, each with its seed"
+        },
+        {
+          "id": "R-165.69",
+          "title": "Tester names: clean the files now (R-165.68); rewrite the old history once before launch (Matt chose A)",
+          "waits": "launch prep, when nothing is in flight"
         }
       ]
     },

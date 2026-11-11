@@ -217,7 +217,7 @@ when he changes it (LAWS 22; D35). Story stays with the story keeper (Matt has t
   float (STAGE-RULES.md 'What may float').
 - R-165.55: the story keeper's open story threads (reference/story/STORY-KEEPER.md).
 - R-165.56: done (PR #67 and #68, merged 11-07).
-Matt's question queue (one at a time, in this order): R-165.69 (rewrite main's history to remove tester names: his call); the story
+Matt's question queue: EMPTY of his own items. R-165.69 DECIDED 11-11 (A: clean files now, rewrite history once before launch). The story
 keeper's two left (11-07): #10 skulls (all out, or only remains in soil?), #2 the two food lines (keep each, yes/no). #1 Meeca's parents
 was handed to the story keeper by Matt on 11-11 (it decides).
 Story keeper's answers, 11-07 evening (STORY-KEEPER.md updated in commit 948f8931 on ccr-0d59a91c-oy3imz; read only, never build from it):
