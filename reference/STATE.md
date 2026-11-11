@@ -155,6 +155,7 @@
   stair (no floating box, faces <= 60, treads >= 60 wide); tests over 138 seeds x 2; plus App.tsx:1053 back swipe and one touch flight
   for the "Flick up" repeat. Everything else in A2 checked fine (rungs flown with the real loseLife, Dot's lines word for word, suite
   2501/0, main chunk 4,171,195 B: only 23 KB under the 4 MiB limit, the next import breaks it). Defect D39 logged (the lead's ruling).
+- 11-11 4:47 AM ET: E1 DONE (t-engine-e1@7a4793b, 3/3, gates read alone); Critic session_01FhBbYMh5nZyXY5SEPjcVMg on AUDIT-ENGINE-E1.md.
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,

@@ -42,8 +42,8 @@
   },
   {
    "role": "Engine",
-   "task": "the recorder counts every move (E1): report drafted, last gates running",
-   "status": "working"
+   "task": "the recorder counts every move (E1): built, 3/3; Critic checking",
+   "status": "reported"
   },
   {
    "role": "Content",
