@@ -403,17 +403,19 @@ class PlayRecorder {
     if (what === 'finish' || what === 'survey' || what === 'quit') void this.flush(false);
   }
 
-  /** the moves already noted this stage ('move': the first double jump, the first bounce) */
+  /** the moves already used this stage (the first use is `move`, every later one `use`) */
   private movesSeen = new Set<string>();
-  /** a stage (re)starts: each move is noted again the first time it is used in it */
+  /** a stage (re)starts: the next use of each move is its first in this stage again */
   stageStart() {
     this.movesSeen.clear();
   }
-  /** the first use of a move in this stage: `move <kind> <x>` (later uses are in the intents and Pokey's lines already) */
+  /** every use of a move (the double jump, the bounce): the first in this stage `move <kind> <x>` (old readers count it as before),
+   *  every later one `use <kind> <x>` (R-165.58: uses, not runs; report.py adds both). Named for its first job; engine.ts calls it. */
   moveOnce(kind: string, x: number) {
-    if (!this.on || this.movesSeen.has(kind)) return;
+    if (!this.on) return;
+    const first = !this.movesSeen.has(kind);
     this.movesSeen.add(kind);
-    this.event('move', `${kind} ${Math.round(x)}`);
+    this.event(first ? 'move' : 'use', `${kind} ${Math.round(x)}`);
   }
 
   /** Pokey, once a tick: kept ten times a second, and at once whenever what he is doing changes */

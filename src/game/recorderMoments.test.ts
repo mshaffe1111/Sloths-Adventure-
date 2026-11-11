@@ -1,5 +1,5 @@
 // The testers' recorder moments (the lead, 11-06: what else the data should capture), each planted in the real engine (realPlay.ts):
-// pickup, softFall, dot, move (the first double jump and the first bounce of a stage, once each), and section in plain words. The pause
+// pickup, softFall, dot, move/use (the first double jump and bounce of a stage `move`, every later one `use`: R-165.58), and section in plain words. The pause
 // and restart moments are App.tsx's (PauseMenu's taps); they are checked in the browser with the rest (tools/perf/clipcheck.mjs walks
 // the testers' link) and named here only as a reminder.
 import test from 'node:test';
@@ -40,7 +40,7 @@ function bare(r: RealPlay, extra: Platform[] = []) {
   return e;
 }
 
-test("recorder 'move': the first double jump and the first bounce of a stage, once each, with x; a new stage notes them again", () => {
+test("recorder 'move': the first double jump and the first bounce of a stage are 'move' with x, the next ones 'use'; a new stage starts over", () => {
   const r = new RealPlay('1-1', 1);
   bare(r, [P(9002, 1600, 680, 70, 20, 'bouncy', undefined)]);
   const { log, stop } = listen();
@@ -54,6 +54,7 @@ test("recorder 'move': the first double jump and the first bounce of a stage, on
     const dbl = log.filter(([w, d]) => w === 'move' && d.startsWith('double'));
     assert.equal(dbl.length, 1, JSON.stringify(log));
     assert.match(dbl[0][1], /^double \d+$/);
+    assert.equal(log.filter(([w, d]) => w === 'use' && d.startsWith('double')).length, 1, JSON.stringify(log));
     // the mushroom: dropped onto it
     r.fly(1635, 560, 0, 200, 1);
     for (let i = 0; i < 30; i++) r.frame({});
@@ -61,11 +62,13 @@ test("recorder 'move': the first double jump and the first bounce of a stage, on
     for (let i = 0; i < 30; i++) r.frame({});
     const bnc = log.filter(([w, d]) => w === 'move' && d.startsWith('bounce'));
     assert.equal(bnc.length, 1, JSON.stringify(log));
+    assert.equal(log.filter(([w, d]) => w === 'use' && d.startsWith('bounce')).length, 1, JSON.stringify(log));
     // a restart: noted again
     recorder.stageStart();
     r.fly(900, 400, 0, 0, 1);
     r.frame({ press: true, jump: true });
     assert.equal(log.filter(([w, d]) => w === 'move' && d.startsWith('double')).length, 2);
+    assert.equal(log.filter(([w, d]) => w === 'use' && d.startsWith('double')).length, 1);
   } finally {
     stop();
   }
