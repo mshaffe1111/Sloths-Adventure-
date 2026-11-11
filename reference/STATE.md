@@ -144,6 +144,9 @@
   $6.50 cap (HF-SPEND.md). Strips tile (wrap difference 0.9-2.5); stairs P-08-c and palisade P-11-c still angled (side-on redo ~$0.30
   on list 2). Lead's own look: P-04-c's top edge shows pale leftover shapes on a light background; sent to the Critic
   (session_01FhBbYNLAiTv8NfA3ccsCcL, AUDIT-CONTENT-HF-LIST1.md, created 4:22 AM ET).
+- 11-11 4:24 AM ET: A2 attempt 2 in (t-engine-help@324cd3cc): the story keeper's four items fixed (NO card = Pokey mid-leap; one rock
+  sprite for YES and grown steps; ladder bubble down at 8 s and at the offer; 08 stills lessons-off). Lead looked at the stills: Pokey on
+  the rock, offer fits both ways. Sent to the story keeper (OK or fix) and to the A2 Critic as its new head; suite not re-run by Engine.
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,
