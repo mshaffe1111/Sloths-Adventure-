@@ -63,7 +63,7 @@ first run it was (a different brief: teaches none, deal 40/30/30), not as proof 
 | Rests | 7; '1-2' off w1-meadow and w1-knot-bank |
 | The double with no teach in the stage | An Engine item (5): the node code reads `lessons`, and the level check counts the double on 1-2 |
 | Order | `KITS['1-2']` first, the list on raw builds, then routing |
-| Seed yield (audit B-02) | A yield floor per graph (1 clean in 10), refusing rules counted, a budget (`--to 3000`); a graph under the floor is dropped and named |
+| Seed yield (audit B-02) | A yield floor per graph, refusing rules counted, a budget (`--to 8000`); a graph under the floor is dropped and named. The floor: 1 clean in 50 for now (4:58 PM ET: 1-1 reaches 2%); R-165.120 raises it later |
 | Help (audit B-01) | The ladder runs at 1-2's first chain on R-165.119's fixed ladder; its test stays |
 | Petals | Real numbers per cache; the time from C1's benchmark |
 
@@ -73,7 +73,12 @@ first run it was (a different brief: teaches none, deal 40/30/30), not as proof 
 | Caches as bonus blooms | ACCEPTED: off-road pickups on a harvest stage are `fruit` (counts toward the goal, outside the quota), Engine item 6; exploring always pays |
 | What the ladder grows at a chain | ACCEPTED: the lesson's own fallen log across the first hollow (natural, to Pokey's scale), else the line alone; Engine item 7 |
 | `EARLY_DOUBLE` gains '1-2' | ACCEPTED: Engine item 5; the old 1-2 is being replaced and nothing ships between pushes 2 and 3 (D40) |
-After the Critic's attempt-2 audit (79f8e8b0), one thing changed in HOW ruling 3 is met, for the lead to see: `EARLY_DOUBLE` is not
+**Ruled 11-11 4:58 PM ET (the lead, on the Critic's attempt-2 lines), applied exactly:** 1-2's own test/climb versions, never
+more than 2 bare `n` in a row, a phase-1 quiet done-test per section, more pieces in the X node; the double counted for the
+gen2-built 1-2 ONLY, `#ctest`'s hashes in item 5's gates; item 0 STRUCK from the Engine packet (the t-engine-11-followup
+round's), item 7 on that round's passed head; blooms World 1 only by a kit row; the yield floor 1 in 50 for now.
+
+After the Critic's attempt-2 audit (79f8e8b0), one thing changed in HOW ruling 3 is met (the lead ruled the same at 4:58 PM ET): `EARLY_DOUBLE` is not
 widened by id (that moved the testers' control course on 1-2's id, 6 of 16 builds); the double counts on a stage gen2 BUILT whose
 kit's `lessons` say so (Engine item 5). The ruling's intent holds and nothing shipped moves in push 2. If the lead prefers the
 wider edit, the control course's hashes go in that item's gates instead.
@@ -181,7 +186,7 @@ out). The yield count names any other that breaks it.
 | Beside the task | 1-1's sprint-B never rolls clean: the lead's to number; not touched here |
 | **Attempt 2, C1** quiet line | A new letter `N` (a step down with its own hop stump and petal), flown: six in a row keep the line (quiet12.ts); no two bare `n` in a row in any own or new rhythm; the two reused test-backs are out and test/climb has its own two sections; every test cell now holds two |
 | **Attempt 2, E1** the testers' course | `EARLY_DOUBLE` is not widened; the double counts on a gen2-built stage whose `lessons` say so; ctest12.ts (0 of 16 differ) is in item 5's gates; nothing shipped moves in push 2 |
-| **Attempt 2, E2** one owner | Item 0 is marked as the t-engine-11-followup round's and kept only as its done-test; this packet starts from that round's passed head (item 0 and R-165.119's ladder on it) |
+| **Attempt 2, E2** one owner | Item 0 is STRUCK (the lead's ruling); the packet's base is the t-engine-11-followup round's passed head, frozen |
 | **Attempt 2, E3** blooms | Keyed on the brief (`offRoad: 'fruit'`, set on 1-2 only), not on the objective; 8-2 named as unchanged in the gate |
 | **Attempt 2**, cites | engine.ts:3009-3010 and :3080, goals.ts:57 |
-| **Attempt 2**, for the lead: the yield floor | 1-1 reaches 6 of 600; done-item 6 now says a shortfall caused by a rule is a PUSHBACK naming the rule (R-165.120), never a deeper search |
+| **Attempt 2**, for the lead: the yield floor | Ruled: 1 in 50 for now; a rule-caused shortfall is a PUSHBACK naming the rule; R-165.120 raises the floor later |
