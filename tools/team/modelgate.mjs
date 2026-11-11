@@ -28,7 +28,7 @@ if (arg === '--table') {
   for (const [n, t] of Object.entries(T.tiers)) console.log(`${n.padEnd(10)} ${t.model.padEnd(18)} ${t.effort.join('/').padEnd(11)} ${Object.keys(T.roles).filter((r) => T.roles[r] === n).join(', ')}`);
 } else if (arg === '--self-test') {
   const cases = [
-    [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'xhigh' }, true],
+    [{ tags: ['sloths-team', 'engine'], model: 'claude-fable-5-2', effort: 'high' }, true],
     [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'high' }, false],
     [{ tags: ['sloths-team', 'engine'], model: 'claude-fable-5-2', effort: 'xhigh' }, false],
     [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'medium' }, false],
