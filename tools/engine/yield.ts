@@ -79,6 +79,7 @@ async function main(): Promise<void> {
   const config = { ...generateAllLevels().find((l) => l.id === id)!, unlocked: true };
   const from = Number(arg('--from', '50001')), count = Number(arg('--count', '200')), min = Number(arg('--min', '0'));
   const errs = { normal: [] as string[][], easy: [] as string[][], easyOnly: [] as string[][] };
+  const perSeed: Array<{ seed: number; normal: string[]; easy: string[] }> = [];
   const sections = { all: new Map<string, number>(), refused: new Map<string, number>() };
   const t0 = Date.now();
   for (let seed = from; seed < from + count; seed++) {
@@ -88,6 +89,7 @@ async function main(): Promise<void> {
     const n = one('normal'), e = one('easy');
     errs.normal.push(n.errors); errs.easy.push(e.errors);
     errs.easyOnly.push(easyOnly(n.errors, e.errors));
+    perSeed.push({ seed, normal: [...new Set(n.errors.map(ruleOf))], easy: [...new Set(e.errors.map(ruleOf))] });
     for (const p of e.st?.gen2.plan ?? []) {
       sections.all.set(p.template, (sections.all.get(p.template) ?? 0) + 1);
       if (e.errors.length) sections.refused.set(p.template, (sections.refused.get(p.template) ?? 0) + 1);
@@ -99,7 +101,7 @@ async function main(): Promise<void> {
   console.log(printTable('EASY (carries Normal\'s errors)', E, alone(errs.easy)));
   console.log(`EASY ONLY (rules a seed's Easy roll breaks and its Normal roll does not): ${EO.rolls - EO.clean} rolls\n${EO.rows.map((r) => `  ${String(r.stopped).padStart(7)} | ${r.rule}`).join('\n')}`);
   const out = arg('--json', '');
-  if (out) fs.writeFileSync(out, JSON.stringify({ id, from, count, normal: N, easy: E, easyOnly: EO, sections: { all: [...sections.all], refused: [...sections.refused] } }, null, 1));
+  if (out) fs.writeFileSync(out, JSON.stringify({ id, from, count, normal: N, easy: E, easyOnly: EO, sections: { all: [...sections.all], refused: [...sections.refused] }, seeds: perSeed }, null, 1));
   if (100 * N.clean < min * N.rolls || 100 * E.clean < min * E.rolls) { console.log(`yield ${id}: FAIL (under ${min}% clean)`); process.exit(1); }
 }
 

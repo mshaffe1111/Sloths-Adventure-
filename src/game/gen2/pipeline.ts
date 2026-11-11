@@ -505,9 +505,8 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
   });
   const total = nodes.reduce((s, n) => s + n.share, 0);
   for (const n of nodes) n.share /= total;
-  const deal = dealContent(nodes, M, brief, budget.id, r);
   // (length from the chunk count: a quiet node or a fork one section, the working nodes the rest by share, each at least one, largest
-  // remainder)
+  // remainder. Before the deal, which reads the counts: a node's type must be one the pool can fill for every section it holds)
   if (G.chunkSeconds) {
     // (a quiet node holds one section; so does a fork, whose two roads are one two-road section, one content node, NODES.md §8.2)
     const quiet = (n: MissionNode) => n.role === 'start' || n.role === 'goal' || n.role === 'rest' || n.job === 'fork' || n.job === 'reward';
@@ -521,7 +520,77 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
     for (const k of raw.map((x, k) => [x - Math.floor(x), k] as const).sort((a, b) => b[0] - a[0]).map(([, k]) => k)) if (spare-- > 0) got[k]++;
     for (const n of nodes) n.count = quiet(n) ? 1 : got[work.indexOf(n)];
   }
+  const deal = dealContent(nodes, M, brief, budget, r, seed);
   return { archetype: budget.archetype, flow: 'right', nodes, id: g.id, ...(deal ? { deal } : {}) };
+}
+
+/**
+ * How many of `slots` (each its candidate section ids) are left with no section when a section serves at most `cap(id)` of them: 0 when
+ * every slot can be filled at once (augmenting paths over the slots; a stage is a dozen slots and a pool under a hundred sections).
+ * R-165.120: the deal and the lay ask this BEFORE they commit, so a scarce section is kept for the node that has nothing else.
+ */
+export function unfilled(slots: ReadonlyArray<readonly string[]>, cap: (id: string) => number): number {
+  const held = new Map<string, number[]>();
+  const fill = (s: number, seen: Set<string>): boolean => {
+    for (const id of slots[s]) {
+      if (seen.has(id)) continue;
+      seen.add(id);
+      const h = held.get(id) ?? [];
+      if (h.length < cap(id)) { h.push(s); held.set(id, h); return true; }
+      for (let k = 0; k < h.length; k++) if (fill(h[k], seen)) { h[k] = s; return true; }
+    }
+    return false;
+  };
+  let miss = 0;
+  slots.forEach((_, s) => { if (!fill(s, new Set())) miss++; });
+  return miss;
+}
+
+/** what the pool's look-ahead reads of a stage: its nodes in order, its length in slots, and each section's way up or down */
+interface PoolView {
+  M: WorldManifest;
+  budget: Pick<StageBudget, 'id' | 'archetype' | 'moves'>;
+  nodes: readonly MissionNode[];
+  /** the stage's slot count, when the graph counts its chunks (a section's `window` is read against it); 0: no window is read */
+  stageLen: number;
+  exitDy: (t: SectionTemplate) => number;
+}
+
+/**
+ * The part of the lay's `fits` that is known before anything is laid: may section `t` fill slot `i` of node `n` by its rule (the job and
+ * the dealt type, a teach node's move, a required section in its reward node, what it needs and uses against the teach nodes before it,
+ * its window, a mustRise node's way up)? Never looser than the rule and never stricter: what the lay alone knows (the corridor, V19's
+ * heights, the bans of a repair) is not read, so a slot this refuses the lay refuses too. Returns a function over the view's sections.
+ */
+function poolFits(V: PoolView): (t: SectionTemplate, n: MissionNode, i: number) => boolean {
+  const { M, budget } = V;
+  const known = new Set(Object.entries(M.lessons ?? {}).filter(([, st]) => stageOrder(st) < stageOrder(budget.id)).map(([m]) => m));
+  const index = new Map(V.nodes.map((n, k) => [n.id, k]));
+  const teachAt = new Map<string, number>();
+  V.nodes.forEach((n, k) => { if (n.job === 'teach' && n.teaches && !teachAt.has(n.teaches)) teachAt.set(n.teaches, k); });
+  const required = new Set((M.required?.[budget.id] ?? []).map((r) => r.section));
+  return (t, n, i) => {
+    const at = index.get(n.id) ?? 0;
+    // (a move the stage teaches is known from its teach node on; one no node here teaches is the lay's to know)
+    const taught = (m: string) => known.has(m) || (teachAt.has(m) ? teachAt.get(m)! < at : true);
+    if (required.has(t.id)) {
+      if (n.job !== 'reward' || !t.phases.includes(n.phase)) return false;
+    } else if (n.job === 'teach') {
+      if (!(n.teaches ? t.teaches === n.teaches : !!t.teaches)) return false;
+      if (n.content && t.content && t.content !== n.content) return false;
+    } else {
+      if (t.teaches && teachAt.has(t.teaches) && !taught(t.teaches)) return false;
+      if (n.content && t.content && t.content !== n.content) return false;
+      if (n.job === 'fork' || n.job === 'reward') { if (!t.jobs?.includes(n.job)) return false; }
+      else if (!(n.job && t.jobs ? t.jobs.includes(n.job) : t.phases.includes(n.phase))) return false;
+    }
+    if (n.mustRise && !required.has(t.id) && V.exitDy(t) >= 0) return false;
+    if (!(t.archetypes === 'any' || t.archetypes.includes(budget.archetype))) return false;
+    if (!(t.needs ?? []).every((m) => budget.moves.includes(m)) || !hangsNeed(t).every((m) => budget.moves.includes(m))) return false;
+    if (!(t.uses ?? []).every((m) => t.teaches === m || taught(m))) return false;
+    if (t.window && V.stageLen && ((i + 0.5) / V.stageLen < t.window[0] || (i + 0.5) / V.stageLen > t.window[1])) return false;
+    return true;
+  };
 }
 
 /** the jobs a content node holds (NODES.md §7.1: structural nodes, and the signature, sit outside the mix) */
@@ -535,7 +604,8 @@ const CONTENT_JOBS: ReadonlySet<NodeJob> = new Set(['teach', 'practise', 'fork',
  * neighbouring content nodes, but a practise after its own teach and a teach after anything) and the windows (V12), the type with the
  * most left first; a few re-deals on the seed keep the one that breaks the fewest. A world with no mix deals nothing.
  */
-function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, stageId: string, r: Rng): Partial<Record<ContentType, number>> | undefined {
+function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, budget: StageBudget, r: Rng, seed: number): Partial<Record<ContentType, number>> | undefined {
+  const stageId = budget.id;
   const shares = brief.deal ?? M.graphs?.mix;
   if (!shares) return undefined;
   const slots = nodes.map((n, i) => ({ n, i })).filter((x) => CONTENT_JOBS.has(x.n.job!));
@@ -616,8 +686,83 @@ function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, 
     for (const [t, k] of left) if (Math.abs(k) > 1) bad++;
     if (bad < bestBad) { best = got; bestBad = bad; }
   }
-  for (const { n, i } of slots) n.content = best!.get(i);
+  // (R-165.120, the pool: a type is dealt to a node only when the stage's pool can fill it. The deal above knows the counts and the
+  // caps but not the sections: it gave a node a type no section of its job has, or two nodes the one section they share, and the lay
+  // then filled the slot past its rule and the roll failed by name ("pool short"). When the pool cannot fill the dealt stage, the
+  // fewest nodes are re-typed (the same caps, neighbours, windows, lessons and deal counts held as above) until it can; a deal the
+  // pool fills is left exactly as dealt)
+  const supplied = supplyDeal(nodes, slots, best!, M, budget, seed, (got) => {
+    let bad = 0;
+    const used = new Map<ContentType, number>();
+    let prev: { n: MissionNode; c: ContentType } | undefined;
+    for (const { n, i } of slots) {
+      const c = got.get(i)!;
+      used.set(c, (used.get(c) ?? 0) + 1);
+      if (!fixed.has(i) && (!inWin(c, i) || !taughtBy(c, i))) bad++;
+      if (prev && !neighbourOK(prev, n, c)) bad++;
+      prev = { n, c };
+    }
+    for (const [, k] of used) if (k > cap) bad += k - cap;
+    for (const t of new Set([...deal.keys(), ...used.keys()])) if (Math.abs((used.get(t) ?? 0) - (deal.get(t) ?? 0)) > 1) bad++;
+    return bad;
+  }, [...new Set([...types, ...fixed.values()])], new Set(fixed.keys()));
+  for (const { n, i } of slots) n.content = supplied.get(i);
   return Object.fromEntries(deal);
+}
+
+/**
+ * The dealt types as the pool can fill them (dealContent's last step). `breaches` counts the deal's own rules a typing breaks; a
+ * re-typing is taken only when it breaks no more of them than the deal did and leaves fewer slots the pool cannot fill: first one
+ * node changed, then two (two nodes trading types keeps every count), then three; among equals the seed chooses (its own stream).
+ */
+function supplyDeal(
+  nodes: MissionNode[], slots: ReadonlyArray<{ n: MissionNode; i: number }>, dealt: ReadonlyMap<number, ContentType>, M: WorldManifest, budget: StageBudget, seed: number,
+  breaches: (got: ReadonlyMap<number, ContentType>) => number, types: readonly ContentType[], fixed: ReadonlySet<number>,
+): ReadonlyMap<number, ContentType> {
+  if (!nodes.every((n) => n.count)) return dealt;
+  const stageLen = nodes.reduce((a, n) => a + n.count!, 0);
+  const fits = poolFits({ M, budget, nodes, stageLen, exitDy: (t) => t.exitDy });
+  const byId = new Map(M.sections.map((t) => [t.id, t]));
+  const maxPer = (id: string) => byId.get(id)?.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity;
+  const short = (got: ReadonlyMap<number, ContentType>): number => {
+    const need: string[][] = [];
+    let i = 0;
+    nodes.forEach((n, k) => {
+      const typed = got.has(k) ? { ...n, content: got.get(k) } : n;
+      for (let c = 0; c < n.count!; c++, i++) need.push(M.sections.filter((t) => fits(t, typed, i)).map((t) => t.id));
+    });
+    return unfilled(need, maxPer);
+  };
+  const base = short(dealt);
+  if (!base) return dealt;
+  const rules = breaches(dealt);
+  const open = slots.map((q) => q.i).filter((i) => !fixed.has(i));
+  const rng = rngFor(seed, 71);
+  let at = 0;
+  let bestShort = base, found: Array<Map<number, ContentType>> = [];
+  for (let k = 1; k <= 3 && bestShort > 0; k++) {
+    const walk = (from: number, left: number, got: Map<number, ContentType>) => {
+      if (!left) {
+        if (breaches(got) > rules) return;
+        const sh = short(got);
+        // (fewer slots short wins; among equals the fewest nodes changed, so a later round only replaces with strictly fewer)
+        if (sh < bestShort) { bestShort = sh; found = [new Map(got)]; at = k; }
+        else if (sh === bestShort && sh < base && at === k) found.push(new Map(got));
+        return;
+      }
+      for (let a = from; a <= open.length - left; a++) {
+        const was = got.get(open[a])!;
+        for (const t of types) {
+          if (t === was) continue;
+          got.set(open[a], t);
+          walk(a + 1, left - 1, got);
+        }
+        got.set(open[a], was);
+      }
+    };
+    walk(0, k, new Map(dealt));
+  }
+  return found.length ? found[Math.floor(rng() * found.length)] : dealt;
 }
 
 /** a content type's letter in the node code (§8.0) */
@@ -1331,6 +1476,26 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     !opt.bans?.get(i)?.has(t.id) &&
     !opt.bans?.get(-1)?.has(t.id);
 
+  // (R-165.120, the pool's look-ahead, on a rolled graph that counts its chunks: how many of the slots this build has still to choose
+  // would be left with no section if `c` were taken at slot `i` (poolFits: the rule's fixed part; the bans of a repair held too))
+  const lookAhead = !!graph.id && chunkTotal > 0;
+  const staticFits = poolFits({ M, budget, nodes: graph.nodes, stageLen: chunkTotal ? stageLen : 0, exitDy: exitDyOf });
+  const nodeOf = new Map(graph.nodes.map((q) => [q.id, q]));
+  const maxPer = (t: SectionTemplate) => t.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity;
+  const leftShort = (n: MissionNode, i: number): ((c: SectionTemplate) => number) | undefined => {
+    const todo: Array<{ n: MissionNode; i: number }> = [];
+    if (opt.plan) {
+      for (const k of opt.open ?? []) if (k > i && opt.plan[k] && nodeOf.has(opt.plan[k].node)) todo.push({ n: nodeOf.get(opt.plan[k].node)!, i: k });
+    } else {
+      let k = i + 1;
+      for (let c = inNode.k + 1; c < inNode.of; c++) todo.push({ n, i: k++ });
+      for (const q of graph.nodes.slice(graph.nodes.indexOf(n) + 1)) for (let c = 0; c < (q.count ?? 1); c++) todo.push({ n: q, i: k++ });
+    }
+    if (!todo.length) return undefined;
+    const free = (t: SectionTemplate) => maxPer(t) - (used.get(t.id) ?? 0) - ahead(t.id, i);
+    const need = todo.map((q) => M.sections.filter((t) => free(t) > 0 && staticFits(t, q.n, q.i) && !opt.bans?.get(q.i)?.has(t.id) && !opt.bans?.get(-1)?.has(t.id)).map((t) => t.id));
+    return (c) => unfilled(need, (id) => free(byId.get(id)!) - (id === c.id ? 1 : 0));
+  };
   let lastLoose = '';
   // (the slot's place in its node, for the cadence: a hard node ramps through its sections, then its last one cools)
   let inNode = { k: 0, of: 0 };
@@ -1413,7 +1578,15 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     // decides which few are drawn, so the variety is the bag's)
     if (n.dials) pool.sort((a, b) => Math.abs(a.difficulty / 10 - want) - Math.abs(b.difficulty / 10 - want));
     const t = cool.pick(pool.length ? pool : cands, (c) => c.id) ?? pickWeighted(pickRng, cands, weight)!;
-    return t;
+    // (R-165.120, the pool's look-ahead: the pick stands unless taking it leaves a later slot with no section its rule allows, when
+    // another candidate here would not: the scarce section is kept for the node that has nothing else. The pick's own order decides
+    // among those that keep the pool whole; with none, the pick stands and the roll fails by name, as before)
+    const left = lookAhead ? leftShort(n, i) : undefined;
+    if (!left || !left(t)) return t;
+    const rest = [...pool, ...cands.filter((c) => !pool.includes(c) && weight(c) > 0).sort((a, b) => weight(b) - weight(a))].filter((c) => c !== t);
+    let pick = t, least = left(t);
+    for (const c of rest) { const k = left(c); if (k < least) { pick = c; least = k; } if (!least) break; }
+    return pick;
   };
 
   for (const n of graph.nodes) {
@@ -2766,6 +2939,36 @@ function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
   }
 }
 
+/** one rule a built roll breaks, and the slot to change for it when the rule names a place (a plan index) */
+export interface Unmet { line: string; slot?: number }
+
+/**
+ * Everything that would refuse a built roll once the search has returned it (rollErrors: a slot filled past its rule, a required section
+ * with no node, a V-rule in the node code, V19b's window, the flags, the verdicts), judged on one setting's build, each with the slot it
+ * names when it names one: a verdict's by where it lies (the section over its middle, or the one a seam's gap joins), a late rise that
+ * ended short by its own slot. The search reads this before it takes a plan (R-165.120: these were judged only after the search had
+ * returned, so no roll was ever repaired or rolled again for them).
+ */
+export function rollUnmet(st: Gen2Stage, req: BuildRequest): Unmet[] {
+  applyVerdicts(st, req);
+  const secs = st.gen2.sections;
+  const slotAt = (x0: number, x1: number): number | undefined => {
+    if (x1 <= 0) return undefined;
+    const mid = (x0 + x1) / 2;
+    const i = secs.findIndex((q) => mid >= q.x0 && mid <= q.x1);
+    if (i >= 0) return i;
+    const next = secs.findIndex((q) => q.x0 > mid);
+    return next >= 0 ? next : undefined;
+  };
+  const failed = st.gen2.verdicts?.[req.difficulty];
+  const at = new Map<string, number | undefined>((failed && !failed.accepted ? failed.failed : []).map((f) => [`verdict ${f.name} (${f.setting}): ${f.line}`, slotAt(f.at.x0, f.at.x1)] as const));
+  return rollErrors(st.gen2).map((line): Unmet => {
+    const rise = /^pool short at slot (\d+) \(.*the late rise ended/.exec(line);
+    const slot = rise ? Number(rise[1]) - 1 : at.get(line);
+    return slot === undefined ? { line } : { line, slot };
+  });
+}
+
 export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   // (the stage's own pool, cut to its tags before anything is chosen: the red team 11-05, 1-2 would have been dealt 1-1's sections)
   const M0 = req.kit.manifest;
@@ -2808,6 +3011,8 @@ function buildRolled(req: BuildRequest): Gen2Stage {
   const budget = planBudget(req.config, M, req.difficulty);
   const graph = missionGraph(budget, M, req.seed);
   let best: Gen2Stage | null = null;
+  // (the first roll that passed its check and was refused by a rule judged on the built stage: what a seed with no clean roll returns)
+  let refused: Gen2Stage | null = null;
   const maxRerolls = req.maxRerolls ?? 6;
   const failedAt = new Map<string, number>();
   const versionTries = new Map<string, Set<string>>();
@@ -2872,18 +3077,49 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     let open = new Set<number>();
     let grew = false;
     let lastMeeting: Gen2Stage | null = null;
+    let swapped = false;
     for (let it = 0; it < 24; it++) {
-      const b = assemble(req, budget, graph, seed, { bans, recent: req.recent, usedVersions: req.usedVersions, plan, open });
+      let b: Built;
+      try {
+        b = assemble(req, budget, graph, seed, { bans, recent: req.recent, usedVersions: req.usedVersions, plan, open });
+      } catch (e) {
+        // (a slot the after-rules' swaps left with no section: this roll's repairs are spent, and the stage is rolled again; a build
+        // that throws with no such swap behind it throws as it always did)
+        if (!swapped) throw e;
+        repairs.push({ kind: 'reroll', note: `no section left for a swapped slot: ${(e as Error).message}` });
+        break;
+      }
       let v = checkAndRepair(b, budget, repairs, tried);
       const st = b.stage;
       // (Easy is Normal's stage, the red team 11-05, RT-ENGINE #4: a plan is taken only when Easy lays it cleanly too. An Easy-only breach
       // (its kinder pads widening a take-off into a block's reach, seed 124) bans that section at that slot for both settings)
+      let eb: Built | undefined;
       if (v.ok) {
-        const ev = checkAndRepair(assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st)), easyBudget, [], new Set());
+        eb = assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st));
+        const ev = checkAndRepair(eb, easyBudget, [], new Set());
         if (!ev.ok) v = { ...ev, why: `on Easy: ${ev.why ?? 'its check fails'}` };
       }
       st.gen2.rerolls = rr;
       st.gen2.repairs = [...repairs];
+      /** the section at slot `k` is banned there and the slot chosen fresh, the rest of the plan kept */
+      const swapOut = (k: number, why: string | undefined, here = false) => {
+        const tpl = b.laid.plan[k].template;
+        const set = bans.get(k) ?? new Set<string>();
+        set.add(tpl);
+        bans.set(k, set);
+        // (a section that failed at two slots is kept out of the whole stage: it is the section, not the seam, and the curation
+        // report names it for its author; `here`, a rule judged on the built stage, bans it at its slot only: such a rule reads the
+        // section among its neighbours, the join and the ground line, so the same section may stand cleanly elsewhere)
+        if (!here) failedAt.set(tpl, (failedAt.get(tpl) ?? 0) + 1);
+        if (failedAt.get(tpl)! >= 2) bans.set(-1, new Set([...(bans.get(-1) ?? []), tpl]));
+        repairs.push({ kind: 'swap', section: `s${k + 1}`, note: `${tpl} swapped out${why ? `: ${why}` : ''}` });
+        plan = b.laid.plan;
+        open = new Set([k]);
+        // (audit fix 3, a rolled graph's stage: a swapped-out section that taught a move takes its lesson with it, so every later slot
+        // that uses the move is chosen fresh too, under the uses rule, and nothing is laid before it is taught)
+        const lost = graph.id ? byId.get(tpl)?.teaches : undefined;
+        if (lost) plan.forEach((p, i) => { if (i > k && byId.get(p.template)?.uses?.includes(lost)) open.add(i); });
+      };
       const grow = (note: string) => {
         if (lastMeeting) return false;
         const g = growPlan(b.laid.plan, graph, byId);
@@ -2925,21 +3161,7 @@ function buildRolled(req: BuildRequest): Gen2Stage {
           }
         }
         if (v.swap !== undefined && b.laid.plan[v.swap]) {
-          const tpl = b.laid.plan[v.swap].template;
-          const set = bans.get(v.swap) ?? new Set<string>();
-          set.add(tpl);
-          bans.set(v.swap, set);
-          // (a section that failed at two slots is kept out of the whole stage: it is the section, not the seam, and the curation
-          // report names it for its author)
-          failedAt.set(tpl, (failedAt.get(tpl) ?? 0) + 1);
-          if (failedAt.get(tpl)! >= 2) bans.set(-1, new Set([...(bans.get(-1) ?? []), tpl]));
-          repairs.push({ kind: 'swap', section: `s${v.swap + 1}`, note: `${tpl} swapped out${v.why ? `: ${v.why}` : ''}` });
-          plan = b.laid.plan;
-          open = new Set([v.swap]);
-          // (audit fix 3, a rolled graph's stage: a swapped-out section that taught a move takes its lesson with it, so every later slot
-          // that uses the move is chosen fresh too, under the uses rule, and nothing is laid before it is taught)
-          const lost = graph.id ? byId.get(tpl)?.teaches : undefined;
-          if (lost) plan.forEach((p, k) => { if (k > v.swap! && byId.get(p.template)?.uses?.includes(lost)) open.add(k); });
+          swapOut(v.swap, v.why);
           continue;
         }
         break;
@@ -2975,13 +3197,30 @@ function buildRolled(req: BuildRequest): Gen2Stage {
           continue;
         }
       }
+      // (R-165.120: a rolled graph's plan is taken only when nothing would refuse the roll afterwards, on either setting: the rules judged
+      // on the built stage (rollUnmet) are the search's own now. One that names a place swaps the section there, as a failed check does;
+      // the rest roll the stage again. A roll with nothing to answer returns here exactly as it always did)
+      if (graph.id && eb) {
+        const unmet = [...rollUnmet(st, req), ...rollUnmet(eb.stage, easyReq)];
+        if (unmet.length) {
+          refused ??= st;
+          const at = unmet.find((u) => u.slot !== undefined && b.laid.plan[u.slot] && !required.has(b.laid.plan[u.slot].template));
+          if (at) {
+            swapOut(at.slot!, at.line, true);
+            swapped = true;
+            continue;
+          }
+          repairs.push({ kind: 'reroll', note: `refused after its check: ${unmet[0].line}` });
+          break;
+        }
+      }
       if (over) st.gen2.repairs.push({ kind: 'length', note: `ships long: no shorter meets the floors and the goal (${clock}, ceiling ${budget.seconds.max.toFixed(0)} s)` });
       return st;
     }
     if (lastMeeting) return lastMeeting;
     repairs.push({ kind: 'reroll', note: `roll ${rr} failed` });
   }
-  return best!;
+  return refused ?? best!;
 }
 
 /** the plan with one more slot, chosen fresh (its index is returned as `open`), at the end of the node before the shrine's */
