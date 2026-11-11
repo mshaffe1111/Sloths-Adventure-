@@ -1,4 +1,4 @@
-// 11-FOLLOWUP stills (R-165.115, R-165.119, R-165.122) on the first run's seed 5542, upright 390x844 and sideways 844x390, Easy and
+// 11-FOLLOWUP stills (R-165.115, R-165.119, R-165.122) on the first run's seed 9652, upright 390x844 and sideways 844x390, Easy and
 // Normal, dsf 2, the dev server (window.__engine, window.__play):
 //   cache-<s>-<o>.png   Pokey on a fork's high-road end: the cache over it (gen2.fills 'cache')
 //   wall-<s>-<o>.png    three single jumps at the double teach's wall (real key input, never a fall): Dot's line in her bubble, read
@@ -11,7 +11,7 @@ import fs from 'node:fs';
 import { createRequire } from 'node:module';
 const { chromium } = createRequire(import.meta.url)('playwright');
 const out = process.argv[2];
-const SEED = 5542;
+const SEED = 9652;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const listIndex = (root) => { const t = fs.readFileSync(`${root}/src/game/gen2/provenSeeds.ts`, 'utf8'); return JSON.parse(t.slice(t.indexOf('= {') + 2, t.lastIndexOf('}') + 1))['1-1'].seeds.indexOf(SEED); };
 async function server(root, port) {

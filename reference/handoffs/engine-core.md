@@ -1,9 +1,30 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` = C1's re-laid 1-1 (t-content-c1@0fc0835a, passed,
-on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
-(t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
-A2 (ADR-001). Sections 0a-0b below are still true.
+Rewritten at the end of 11-FOLLOWUP (11-11), branch `t-engine-11-followup` on INT-1-1's passed head 874f11f6: the high-road caches
+(R-165.115), the help ladder's wall tries (R-165.119), 1-1's hop rocks as walls and judged (R-165.122), the list rebuilt, the first run
+re-picked. INT-1-1 (`t-int-1-1`) = C1's re-laid 1-1 + the vendor split + the help ladder, passed. Not merged. Sections 0c-0b below still hold.
+
+## 0d. Rulings and facts to keep (11-FOLLOWUP, 11-11)
+- **A find socket the seed does not take holds a cache** (pipeline.ts fillSockets, `CACHE_N` 3, `CACHE_DX` = petals.ts `CLUMP_GAP` 50,
+  `CACHE_LIFT` 16): the petals already over that piece count, the rest go outward from the socket, 50 px from any other pickup (closer, the
+  petal pass keeps one of a clump; the Designer's "30 px apart" breaks PICKUP_APART 36 and CLUMP_GAP 50). Forks, the hollow log's top and
+  a log road's last log. Gate: highRoadCache.test.ts on the GAME's build (generateStage), every listed seed, both settings. The petal pass's
+  screen cap can still thin one (2 of 293 candidates, w1-floor-dash): such seeds are left off the list; the list builder does not check it.
+- **A failed try at a wall counts on the help ladder as a put-back** (stuckHelper.ts `TryWatch`, engine.ts `helpTries` (not cosmetic: in
+  the physics frame, so RealPlay and the bots run it), helpLadder.ts `tried`): a jump held or driven toward a face (WALL_H tall, over the
+  mantle, under a double's reach, within TRY_NEAR 90 px) that lands back at the height it left, near it, short of the face. Pressed against
+  the face his vx is 0, so `held` = the controls' push or a touch flick's airDrive. Reset on every put-back. The old StuckWatch and Dot's
+  struggle line stay muted while the ladder is on (INT-1-1's ruling kept). Proof: helpLadderTries.test.ts, the browser stills.
+- **Hop rocks on 1-1** (pipeline.ts `hopLay`, judgedOnArcs stages only = THE BOUNDARY): an `on` block he lands on (not a perch = a stump
+  with a mushroom on it, the Designer's FR9b exception; not a post, a mushroom or the hollow log) is laid at physics.ts `WALL_H` (50, the
+  engine's side-wall; engine.ts reads the same constant) or taller (`HOP_SPREAD` 6 by its roll's share); its take-off is the highest lower
+  surface a single reaches its face from; none asked when he comes to it level or from above (`ARRIVE`); its rise is clamped into the
+  setting's single band unless its range starts in Normal's double-teach band over that take-off (the fallen trunk: asked as a double).
+  Every climbed one pushes an ask the verdicts judge. Gate: hopRocks.test.ts (toys planted, every listed seed, the real engine).
+- **The list** (200, rebuilt from C1's 327 candidates through today's filters: 293 pass, 21 more left out because the relay test's (b)
+  room for help / (c) put-backs or the cache test refuse them on Easy, where the clamp lowers a stair's first step under a high road).
+  **The first run is 9652** (variant 20), re-picked by C1's own measure (firstRun11.ts header; reproduced 4106 on the old data first).
+  4106 left the list: Easy V19b fails by 14 px. Pins A 9652 / B 1025 / C 1700. Calibration recommitted on the final list.
 
 ## 0c. Rulings and facts to keep (INT-1-1, 11-11)
 - **The help promises only what gets him through** (the lead's ruling): `engine.canGrowAt(piece)` = something grows AND
@@ -101,8 +122,11 @@ A2 (ADR-001). Sections 0a-0b below are still true.
 | The set-back under a rise lands on the low catch branch when he touched it on the way down (the last ledge he stood on) | As Easy has always done; from it he steps back up to the take-off log. Watch it in the A2 work | engine.ts softAt |
 | Main JS chunk headroom (R-165.103, 11-11): React, react-dom and scheduler in a static 'vendor' chunk; `tools/perf/chunkcheck.mjs` holds every JS chunk to 3,994,304 B (gates job, after a build) | In review on t-engine-chunks: main 3,944,491 B (49,813 B under the gate; t-engine-e0a's +15 KB fits). OPEN: cold stage start measured +298 ms median at CPU x4 against main (title +117 ms); no cause found (the profiles are canvas-native work, same code). buildcheck alone: this branch 1 PASS / 3 FAIL (p95 129-166 ms), main 3 PASS (123-146 ms, max 159); it runs the dev server, which manualChunks should not touch, unproven. Next room, if needed: more static manualChunks (gen2/seeds.ts 219 KB, story + journal 150 KB), never a dynamic import a stage needs | vite.config.ts `build.rollupOptions.output.manualChunks` |
 | Branch share of thin landings at most 30% a roll (the designer's Round 11) | OPEN. 0.9.5 shipped without it by the lead's ruling (A), because Matt played the same mix on 11-05. The 138 listed rolls read median 48%, worst 65% (branch / solids 30 px tall or less, both settings). `floorRoll.catchStyles ['log','branch']` is NOT in the w1 kit. On seeds 1-40 it alone left 15 of 22 rolls over by that count. The planner counts pieces up to 60 px; agree ONE measure first | R-165.46 |
-| **1-1 after E0a: every roll is refused until C1's re-lay** | The 138 listed seeds are all refused (band.out, block.lesser-passes, teach.double-no-gap-after on every one; see REPORT.md). Play's 1-1 throws on this branch alone: never merge E0 without C1 | R-165.72 |
-| 1-1's proven list: 138 seeds (stale under E0a); the target is 300 (`SEED_LIST_TARGET`), tonight's floor was 100 (`SEED_LIST_MIN`) | OPEN. The yield is about 0.36%, so 300 needs about 85,000 tries: about 1.5 h on 4 workers. Or raise the yield. Then put SEED_LIST_MIN back to 300 | R-165.47 |
+| 1-1's proven list: 200 seeds (the chunk cap; t-engine-seedchunks moves the list to its own chunk), first run 9652 | Rebuilt 11-FOLLOWUP from C1's 327 candidates; past them a fresh search (`--from 108231`) | 11-FOLLOWUP REPORT.md |
+| Perch stumps (40-46, a mushroom on top: FR9b) and log posts under 50 px are still walked through (the B-04 class) | OPEN: the Designer's call (a perch at 50+ was "a step he could only bounce off"; a post at 50 lifts its log to 74, over Easy's 63) | 11-FOLLOWUP Suggestions |
+| The hollow log (124/150, the art's height) is climbed from a 50-56 step: 71-97 px, over Easy's 63 and, at 150, Normal's 80; not a hop rock, unjudged | OPEN: its inside should be walk-through (w1NewArt.ts); Content/Designer | 11-FOLLOWUP Suggestions |
+| Easy's seed promise: the perch mushroom 260-262 px from the seed on 4 listed seeds (1700, 1753, 2328, 3038; as before this task) | OPEN: the 260 px is Normal's measure; storyChecks holds Normal only | 11-FOLLOWUP REPORT.md |
+| Worlds 5-8 gen2 `on` pieces under WALL_H | Not touched (THE BOUNDARY; their curated rolls would move); count them before the kit step widens judgedOnArcs | ENGINE-AUDIT-B B-04 yokoten |
 | Soft floors under the 6 floorless spots | Not in 0.9.5 (the planner's; the lead's ruling: next week). The list filter (`floorlessGaps`) keeps unmarked floorless rolls out meanwhile, and it stays in permanently | gen2/promises11.ts |
 | The double TEST band 205-228 px and Easy's twin versions | Held. Every double gap is laid in the TEACH band 195-203 (`DOUBLE_TEACH`), because a level double reaches 204 px on some budgets. The test band waits on per-version Easy twins (rise 110-114 px) | w1.ts `DOUBLE_TEACH`/`DOUBLE_TEST` |
 | funcheck findings that held 0.9.5 from going live | Logged by the lead after the merge | R-165.48-.51 |
@@ -242,6 +266,15 @@ gapPx/blocks, `stage.ts --roll` fail-closed). Read it for the open findings at i
    underside 48 px or more over that lip's top, or a
    floor inside the slot more than 10 px below it: seed 172's deck over block 146 is a real hole); and an opening narrower than his body
    (BODY_W 32 px) is no drop whatever covers it (seed 323's 23 px). `top` is the LOWER lip.
+
+19. **(11-FOLLOWUP) A jump's first frame in the air is already a frame up**, and pressed against a wall his vx is 0 and a touch flick
+    holds no direction: read a take-off from the last frame on the ground, and "toward" from the controls or the flick's airDrive.
+20. **A clamp that lowers one piece widens the climb from it** (a fork's first low step clamped to Easy's 63 made the high road 118 px
+    thin over it): the relay test's (b)/(c) caught it, not the verdicts. Run w1.relay.test.ts over the candidates before listing them.
+21. **Parse a test's own failure list, never grep its log for "seed N"**: the log's other lines name seeds too (it dropped 769 and 982).
+22. **The quiet line moves with any height or petal change** (the route model picks another road): re-merge, never patch a seed.
+23. **C1's first-run measure is noisy by variant**: the bots' noise follows the variant number, so a list change moves the pick. Re-run
+    the calibration on the final list, then pick (the probe that reproduces 4106 on the old data is in the 11-FOLLOWUP report).
 
 ## 4. Day one, for a fresh engine engineer
 
