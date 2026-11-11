@@ -81,3 +81,35 @@ lists). One trap: if C1 re-lays a section that 1-2, 1-3 or 1-5 share to 1-1's ba
 
 Steps 1 and 5 never touch C1's files and can start now. Steps 2-4 touch engine.ts, pipeline.ts, reach.ts and verdicts.ts, so they wait
 for E0a and A2 to merge (D40). Total to a working kit (steps 1-4): about 25-35 h. Each mechanic after that: 4-12 h.
+
+## 4. The outside analysis of Matt's 30 ideas, checked (reference/ideas/MATT-30-IDEAS-ARCHITECTURE-2026-11-11.md)
+**Its pattern** (a stage = a layout profile + a timing clock + a rule change) **fits, with two corrections.** The layout profile is
+gen2's mission graph plus its sections, but it only runs right today (section 1). There is **no shared clock**: each rhythm keeps its own
+(`Zone` period/offset zones.ts:22, rocks rockfall.ts:35, thorn vines, river sluices, lift waits). One `Clock` type is about 2-3 h of types.
+Rule changes today are one-off `proto` flags (`proto.watch`, `.lantern`, `.chase`, `.w4.descent`). The three layers map onto section
+3's `StageBrief { travel, clock, mutators[] }` and `StageMode`. **Disagree:** "code once, mix freely" and "zero changes". Any change to
+reach (time, size, climb rules) moves every verdict, so each mix is judged again; and the bots run only on 1-1 today. **Wrong:** we draw
+with Canvas 2D, not PixiJS (no pixi in package.json; the WebGL move, R-3.1, is not done). None of the 21 needs zero changes.
+| # | Idea | Verdict | Proof (file:line) | Real hours, risk |
+|---|---|---|---|---|
+| 4 | Time follows his speed | NO | The only slow-motion is a boss's last hit and the camera (`slowMoLeft` engine.ts:472, :4407). No world time-scale. Our ruling: a puzzle-room type only (R-165.96). | 10-16 h, high: every timer reads game time |
+| 7 | Camouflage when slow | PARTLY | Stealth stages exist (stagePlan.ts:40); cover in bushes from watchers (engine.ts:1500, watcher.ts). Agree. | "Still hides anywhere": 3-5 h, low |
+| 24 | Heartbeat slow-motion | PARTLY | slowMoLeft only zooms the camera (engine.ts:3867). | Needs #4's time-scale: 6-10 h |
+| 2 | Convoy trailing behind | NO | Flicker hovers only (meecaPlay.ts:656-679). | 10-16 h, medium (shares the follower with #26) |
+| 15 | Platforms solid on a beat | NO | No Platform field turns solid on a clock (types.ts:275-343). The clock pattern exists in zones. | 4-6 h, plus a verdict that a timed route exists |
+| 18 | Breathing tree | PARTLY | Sine platforms move side to side only (types.ts:300-303). Agree. | Up-down: 2-4 h |
+| 19 | Amber static | PARTLY | The magnet power-up already pulls pickups (powerUps.ts:5). | Climbing bare trunks changes reach: 4-6 h |
+| 27 | Mimic forest | Our ruling | Only with a tell a player can always see; never World 1. | n/a |
+| 29 | Pollinator bloom | PARTLY | Goal shares and counting (goals.ts:19, engine.ts:3030). | Counting platforms he stood on: 3-5 h, low |
+| 1 | Frogger lanes | PARTLY | Section 1. | 8-12 h |
+| 8 | Sunbeam warmth | PARTLY | 8-4's lantern is the same model: a meter that drains and refills at spots, never deadly when empty (lantern.ts:1-8). | Make the meter general: 4-6 h, low |
+| 9 | Moth swarm helper | PARTLY | Moths and swarm are drawing only (w8LanternRun.ts:1-5). | A helper that acts: 6-10 h |
+| 11 | Lagoon with a ballast stone | PARTLY | Swim with a 40 px, 3 s dive (swim.ts); carrying exists in the puzzle kit. | Sinking under: 10-20 h, high |
+| 13 | Scent ribbons | Our ruling | Parked (mirage platforms break "what looks standable is standable"). | n/a |
+| 16 | Big/small scale | Disagree | Every reach number, verdict and band changes. Parked (R-165.97). | 30 h+, high |
+| 17 | Reflection world | NO | No second collision layer. Parked. | 16-24 h plus twice the art |
+| 21 | Food chain | PARTLY | Predators already walk to a lure (predatorAI.ts:361-366 `lureX`); the kit's lure beetle (puzzleKit.ts:39). | Predator hurts predator: 6-10 h |
+| 23 | Wildlife photographer | PARTLY | Stealth, cover and watchers exist (#7). | A photo action: 8-12 h |
+| 26 | Vine-leash escort | NO | Section 1, tethers. | 12-20 h |
+| 28 | Card pick | NO | Section 1. | 12-20 h, high |
+| 30 | Shrinking safe zone | PARTLY | 6-8's rising tide is one (risingTide.ts); the arena shell is free (stageGenerator.ts:2592). | 4-6 h |
