@@ -42,7 +42,7 @@ each existing level with the moves the engine already has (time one level first)
 |---|---|---|---|
 | Story keeper (permanent) | session_019iachLiuwNTAZUBSJWUmR3 | - | release checklist; all player text |
 | Release clerk 0.9.6 | session_01FhBbYNQH2E77sZaoHs9zNm | release-0.9.6 | last 4 gates; then EnK5; retire after live |
-| EN-Y Fable high: yield fix, then any stage by data + hurt floors | session_01FhBbYMEqTtxP72ifdjF22d | t-engine-yield | hard stop 9:20 PM ET; step 1 done 6:15 PM (9% N / 2% E clean; post-search rules never retried) |
+| EN-Y Fable high, raised bar (Matt 6:21 PM): yield fix + any stage by data + hurt floors + travel mode, then LAY 1-2 and 1-3, parallel subagents | session_01FhBbYMEqTtxP72ifdjF22d | t-engine-yield | hard stop 9:20 PM ET; step 1 done 6:15 PM (9% N / 2% E clean; post-search rules never retried) |
 | EN-G Opus: R-165.116 + R-165.117 only | session_01FhBbYLQXMXf7W8kWmXUkvc | t-engine-guards | hard stop 9:20 PM ET |
 | 1-1 follow-up | session_01FhBbYLVQnNER5KWRX5LQrf | t-engine-11-followup@f24af141+ | told to push and end; retire |
 Parked, saved, not merged: t-engine-seedchunks@889302163 (R-165.112; its Critic saw roadmapcheck failing on the head: fix at merge),
