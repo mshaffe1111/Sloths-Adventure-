@@ -1,0 +1,92 @@
+id,kind,worlds_best_first,why
+W1-02-a,pit wall or lip,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,earthen pit wall with a log rail: forest pits; grotto and swamp edges; fills the pit gap everywhere
+W1-03-a,floating earth island (FLOAT CANDIDATE),8 Twilight Treetops; 1 Emerald Canopy; 3 Mossy Grotto,"mossy floating mound with shelf fungi: treetops, canopy"
+W1-04-a,floating earth island (FLOAT CANDIDATE),8 Twilight Treetops; 1 Emerald Canopy; 4 Mist Cascades,lumpy moss island with a dangling root
+W1-05-a,floating earth island (FLOAT CANDIDATE),1 Emerald Canopy; 8 Twilight Treetops; 5 Orchid Sanctuary,"flat moss disc, mushrooms on the rim: a clean platform; fills 5 floor"
+W1-06-a,floating earth island (FLOAT CANDIDATE),1 Emerald Canopy; 8 Twilight Treetops; 5 Orchid Sanctuary,flat moss slab with chanterelles and oak leaves
+W1-07-a,floating earth island (FLOAT CANDIDATE),1 Emerald Canopy; 3 Mossy Grotto; 8 Twilight Treetops,thick moss island with a chanterelle cluster
+W1-08-a,floating earth island (FLOAT CANDIDATE),1 Emerald Canopy; 8 Twilight Treetops,moss island with root base
+W1-09-e,stump-step,7 Ancient Ruins; 3 Mossy Grotto; 4 Mist Cascades,root-wrapped rock pillar: a ruin column; fills 7 columns
+W1-09-j,stump-step,8 Twilight Treetops; 1 Emerald Canopy; 6 Deep Mangrove,tall thin trunk pillar: treetop pole step
+W1-09-m,floating earth island (FLOAT CANDIDATE),1 Emerald Canopy; 4 Mist Cascades; 8 Twilight Treetops,"wide root-bound earth slab: forest ledge, cliff shelf"
+W1-09-n,floating earth island (FLOAT CANDIDATE),4 Mist Cascades; 1 Emerald Canopy; 3 Mossy Grotto,earth slab with rock at its base: cliffs first
+W1-10-a,stump-step,1 Emerald Canopy; 2 Sunlit Riverbank; 6 Deep Mangrove,"wide low stump, flat cut top"
+W1-10-e,stump-step,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,wide mossy stump
+W1-10-i,floating earth island (FLOAT CANDIDATE),1 Emerald Canopy; 8 Twilight Treetops; 6 Deep Mangrove,"earth slab, roots hanging under it"
+W1-10-j,floating earth island (FLOAT CANDIDATE),1 Emerald Canopy; 8 Twilight Treetops; 4 Mist Cascades,thin earth slab
+W1-12-a,stump-step,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,big mossy stump on a root mat
+W1-13-a,stump-step,1 Emerald Canopy; 6 Deep Mangrove; 8 Twilight Treetops,stump with long root claws
+W1-14-b,stump-step,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,moss-capped stump
+W1-16-a,rock (grounded),7 Ancient Ruins; 1 Emerald Canopy; 3 Mossy Grotto,root-bound stone-block staircase reads as a ruin stair; fills 7 rubble
+W1-17-a,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 5 Orchid Sanctuary,gnarled fallen log with berries; fills 5 log
+W1-17-b,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 2 Sunlit Riverbank,long straight log with fungi; fills 6 log variety
+W1-18-a,vine,1 Emerald Canopy; 8 Twilight Treetops; 5 Orchid Sanctuary,upright fungus trunk climb
+W1-18-b,other,1 Emerald Canopy; 8 Twilight Treetops; 3 Mossy Grotto,upright puffball pole
+W1-19-a,walkable log,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,mushroom log (puffballs on top)
+W1-19-b,bough,1 Emerald Canopy; 8 Twilight Treetops; 5 Orchid Sanctuary,curved bough: perch or decor; fills 5 branch
+W1-20-a,walkable log,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,"mushroom log, broken end"
+W1-20-b,walkable log,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,small copy of W1-20-a
+W1-20-c,bough,8 Twilight Treetops; 1 Emerald Canopy; 5 Orchid Sanctuary,arched bough with fungi
+W1-21-a,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 3 Mossy Grotto,"hollow log with ink-caps: forest hide spot, swamp"
+W1-21-b,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 3 Mossy Grotto,small copy of W1-21-a
+W1-21-c,decor,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,brush and twig pile with mushrooms
+W1-21-d,decor,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,small copy of W1-21-c
+W1-22-a,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 5 Orchid Sanctuary,mossy flat-topped log
+W1-22-b,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 5 Orchid Sanctuary,small copy of W1-22-a
+W1-22-c,walkable log,2 Sunlit Riverbank; 6 Deep Mangrove; 4 Mist Cascades,bleached driftwood: riverbank first
+W1-22-d,walkable log,2 Sunlit Riverbank; 6 Deep Mangrove; 4 Mist Cascades,small copy of W1-22-c
+W1-23-a,stump-step,1 Emerald Canopy; 2 Sunlit Riverbank,cartoon cut stump (bolder outlines)
+W1-24-a,plank,2 Sunlit Riverbank; 10 Stormy Highlands Fortress; 7 Ancient Ruins,"plank stack: village deck, fortress stores"
+W1-24-b,stump-step,2 Sunlit Riverbank; 1 Emerald Canopy,pyramid of log rounds: a village woodpile step set
+W1-25-a,plank,2 Sunlit Riverbank; 10 Stormy Highlands Fortress; 6 Deep Mangrove,long cut beam: village bridge or dock; fortress beam; fills 2 docks
+W1-26-a,walkable log,1 Emerald Canopy; 5 Orchid Sanctuary; 6 Deep Mangrove,vine-wrapped log with bromeliad and fern
+W1-26-b,walkable log,5 Orchid Sanctuary; 1 Emerald Canopy; 6 Deep Mangrove,log on root legs with orchids: the orchid garden first (fills 5 floor)
+W1-27-a,walkable log,1 Emerald Canopy; 5 Orchid Sanctuary; 6 Deep Mangrove,mossy vine log with bromeliads
+W1-27-b,walkable log,1 Emerald Canopy; 6 Deep Mangrove; 3 Mossy Grotto,mossy log with a moss drape
+W2-01-h,plank,2 Sunlit Riverbank; 6 Deep Mangrove; 8 Twilight Treetops,woven wicker bridge: village and river crossing
+W2-04-a,bush,1 Emerald Canopy; 2 Sunlit Riverbank; 5 Orchid Sanctuary,leafy shrub
+W2-04-b,bush,1 Emerald Canopy; 2 Sunlit Riverbank; 5 Orchid Sanctuary,dense round bush
+W2-05-a,bush,1 Emerald Canopy; 5 Orchid Sanctuary; 8 Twilight Treetops,monstera clump (dark back leaves suit night)
+W2-05-b,fern,1 Emerald Canopy; 3 Mossy Grotto; 6 Deep Mangrove,wide fern clump
+W2-06-a,walkable log,2 Sunlit Riverbank; 1 Emerald Canopy,smooth orange beam with a branch stub
+W2-06-b,walkable log,2 Sunlit Riverbank; 1 Emerald Canopy; 6 Deep Mangrove,low mossy log
+W2-07-a,walkable log,5 Orchid Sanctuary; 2 Sunlit Riverbank; 1 Emerald Canopy,orange log with bromeliads and an orchid: garden first
+W2-07-b,walkable log,1 Emerald Canopy; 2 Sunlit Riverbank; 3 Mossy Grotto,mossy log with shelf fungi
+W2-08-a,rock (grounded),4 Mist Cascades; 9 Volcanic Jungle; 2 Sunlit Riverbank,"jagged brown outcrop: cliffs, volcano"
+W2-08-b,rock (grounded),3 Mossy Grotto; 4 Mist Cascades; 1 Emerald Canopy,moss-covered rock mound with shelf fungi: grotto
+W2-09-a,rock (grounded),4 Mist Cascades; 2 Sunlit Riverbank; 9 Volcanic Jungle,brown natural rock stairs: cliffs first; fills 4 floor
+W2-09-b,rock (grounded),3 Mossy Grotto; 4 Mist Cascades; 1 Emerald Canopy,mossy stepped rock mound
+W2-10-a,vine,1 Emerald Canopy; 5 Orchid Sanctuary; 8 Twilight Treetops,flowering diagonal liana
+W2-10-b,vine,1 Emerald Canopy; 6 Deep Mangrove; 3 Mossy Grotto,mossy diagonal liana with ferns
+W2-11-a,vine,5 Orchid Sanctuary; 1 Emerald Canopy; 8 Twilight Treetops,flowering climb vine: garden (fills 5 liana)
+W2-11-b,vine,1 Emerald Canopy; 6 Deep Mangrove; 3 Mossy Grotto,mossy S-curve vine
+W2-12-a,decor,1 Emerald Canopy; 5 Orchid Sanctuary; 8 Twilight Treetops,giant canopy leaf
+W2-12-b,hide spot,1 Emerald Canopy; 3 Mossy Grotto,fern bower hide spot
+W2-12-d,hide spot,8 Twilight Treetops; 3 Mossy Grotto; 1 Emerald Canopy,"root hollow with glowing eyes: night canopy, grotto"
+W2-12-e,bush,1 Emerald Canopy; 5 Orchid Sanctuary,young monstera
+W2-13-a,cave,3 Mossy Grotto; 4 Mist Cascades; 10 Stormy Highlands Fortress,mossy rock cave mouth: grotto
+W2-13-b,cave,1 Emerald Canopy; 6 Deep Mangrove; 3 Mossy Grotto,root-tangle cave mouth with bromeliads
+W2-13-c,cave,7 Ancient Ruins; 10 Stormy Highlands Fortress; 3 Mossy Grotto,"stacked-stone dolmen cave: ruins, highlands"
+W2-13-d,cave,1 Emerald Canopy; 6 Deep Mangrove; 8 Twilight Treetops,hollow under a stump on arching roots
+W2-14-a,thorn hazard,1 Emerald Canopy; 5 Orchid Sanctuary; 6 Deep Mangrove,red thorn bramble: the painted thorn hazard W1 lacks
+W2-14-b,bush,1 Emerald Canopy; 2 Sunlit Riverbank; 5 Orchid Sanctuary,leafy plant with black berries
+W2-14-c,thorn hazard,9 Volcanic Jungle; 8 Twilight Treetops; 10 Stormy Highlands Fortress,"trunk bristling with black spikes: volcano, night canopy hazard (fills 8 hazard)"
+W2-14-d,thorn hazard,9 Volcanic Jungle; 4 Mist Cascades,prickly pear: hot dry volcanic slopes
+W2-15-a,thorn hazard,9 Volcanic Jungle; 8 Twilight Treetops; 10 Stormy Highlands Fortress,"spike trunk, second variant"
+W2-15-b,bush,1 Emerald Canopy; 6 Deep Mangrove; 2 Sunlit Riverbank,nettle clump: reads as a mild hazard
+W2-15-c,bush,1 Emerald Canopy; 2 Sunlit Riverbank; 5 Orchid Sanctuary,black-berry plant
+W2-15-d,thorn hazard,1 Emerald Canopy; 5 Orchid Sanctuary; 6 Deep Mangrove,"thorn bramble, second variant"
+W2-16-a,water band,6 Deep Mangrove; 2 Sunlit Riverbank,muddy river band with reeds: swamp first
+W2-16-b,water band,6 Deep Mangrove; 2 Sunlit Riverbank,muddy river band
+W2-16-c,water band,2 Sunlit Riverbank; 4 Mist Cascades,blue wave panel: the river; falls pools; fills 2 painted water
+W2-16-d,water band,2 Sunlit Riverbank; 4 Mist Cascades,wave panel with a rock
+W2-16-e,water band,2 Sunlit Riverbank; 4 Mist Cascades,long wave strip with a rock
+W2-17-a,water band,6 Deep Mangrove; 2 Sunlit Riverbank,muddy river band
+W2-17-b,water band,2 Sunlit Riverbank; 4 Mist Cascades,wave panel
+W2-17-c,water band,2 Sunlit Riverbank; 4 Mist Cascades,wave panel with a rock
+W2-18-a,water band,6 Deep Mangrove; 2 Sunlit Riverbank,muddy river band
+W2-18-b,water band,2 Sunlit Riverbank; 4 Mist Cascades,long wave band with a rock
+W2-19-a,bough,8 Twilight Treetops; 5 Orchid Sanctuary; 1 Emerald Canopy,"gnarled branch with orchids: treetops, garden (fills 5 branch)"
+W2-19-c,bough,8 Twilight Treetops; 1 Emerald Canopy; 6 Deep Mangrove,long mossy branch
+W2-20-a,decor,5 Orchid Sanctuary; 1 Emerald Canopy,small flowering tree: garden
+W2-20-b,walkable log,1 Emerald Canopy; 5 Orchid Sanctuary; 6 Deep Mangrove,diagonal mossy log ramp
