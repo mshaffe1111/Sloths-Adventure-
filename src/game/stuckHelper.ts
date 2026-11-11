@@ -5,9 +5,10 @@
  * lands back at the same height near where it began, without the second jump. Three of those in a row (a landing higher up resets
  * the count) and it says its line, once.
  */
+import { RUNGS } from './helpLadder.ts';
 
-/** how many failed jumps at a wall before Dot speaks */
-export const STUCK_TRIES = 3;
+/** how many failed jumps at a wall before Dot speaks: the help ladder's first rung (helpLadder.ts; in 1-1 the ladder speaks instead) */
+export const STUCK_TRIES = RUNGS.move;
 /** a landing this far from the take-off still counts as going nowhere */
 const NEAR_X = 110;
 

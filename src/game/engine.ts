@@ -23,7 +23,10 @@ import { W5_STEP_HELP, W5_STEP_HELP_KEYS, W5_STEP_HELP_PAD } from './w5Lines.ts'
 import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
-import { softFallStage } from './gen2/pipeline.ts';
+import { maxGap, softFallStage } from './gen2/pipeline.ts';
+import { HelpLadder, moveLine, pieceMove, setHelpLadder, stepsFor, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
+import { W1_SECTIONS } from './gen2/worlds/w1.ts';
+import { pickCut } from './w1CutArt.ts';
 import { difficulty, easeInShare, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
@@ -837,6 +840,9 @@ export class GameEngine {
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
+    // (the help ladder, helpLadder.ts: 1-1 only, its pieces as laid; off on every other stage until help.md §5 has passed)
+    this.help = config.id === '1-1' && softFallStage(this.currentStage) && this.currentStage.meta?.pieces?.length ? new HelpLadder(isEasy() ? 'easy' : 'normal', this.currentStage.meta.pieces) : null;
+    setHelpLadder(this.help);
     // each liana's own swing: its size (neighbours' swings never meet) and its place in the swing (physics.ts swingSetup)
     swingSetup(this.vines);
     this.ropes = this.currentStage.ropes ?? [];
@@ -899,6 +905,9 @@ export class GameEngine {
     // frame it arrives, not when he meets it (sheetWarm.ts: QA's 'blank wait' lines and the freezes after a sheet)
     this.arrivals = new ArrivalWarm(warmStageSheets({ enemies: this.enemies, vines: this.vines, proto: this.proto, ropes: this.ropes }));
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
+    // (1-1: since R-165.86 every fall there is soft, so Dot's "No soft moss up here!" (gen2 w1.ts's hint.1-1.noMoss socket) is false: never
+    // said, R-165.62. Marked heard, not taken out of the stage the next roll reads)
+    if (this.help && this.proto) for (const h of this.proto.hints) if (h.text === 'No soft moss up here!') h.shown = true;
     if (this.currentStage.waterHint) this.currentStage.waterHint.shown = false;
     this.passTips = [];
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
@@ -1193,10 +1202,14 @@ export class GameEngine {
       this.pauseHeld = air ? { jump: this.gameTime - this.heldJumpAt < HELD_RECENT, dir: this.gameTime - this.heldDirAt < HELD_RECENT ? this.heldDir : 0 } : null;
     }
     this.isPaused = true;
+    if (this.helpAsking) this.outerPause = true;
   }
 
   public resume() {
     const was = this.isPaused;
+    this.outerPause = false;
+    // (Normal's help offer is up: the stage stays still until it is answered, whatever else let go of the pause)
+    if (this.helpAsking) return;
     this.isPaused = false;
     this.lastTime = performance.now();
     this.lastRenderTime = this.lastTime;
@@ -1221,6 +1234,17 @@ export class GameEngine {
   public stop() {
     // the stage ended the normal way (cleared, restarted, left): nothing to come back to
     clearFlag();
+    // (the help ladder's counts and its grown steps go with the stage)
+    if (this.grown.length) {
+      const gone = (q: Platform) => !this.grown.includes(q);
+      this.platforms = this.platforms.filter(gone);
+      this.drawPlats = this.drawPlats.filter(gone);
+      this.paintedPlats = this.paintedPlats.filter(gone);
+      this.grown = [];
+    }
+    this.help?.end();
+    this.helpAsking = null;
+    setHelpLadder(null);
     // (the banner goes back to its usual place for whatever comes next)
     if (typeof document !== 'undefined') {
       delete document.documentElement.dataset.wayLow;
@@ -1437,6 +1461,8 @@ export class GameEngine {
    * Main Physics & Simulation Tick (30 FPS)
    */
   private update(dt: number) {
+    // (the help offer is up: nothing moves until it is answered)
+    if (this.helpAsking) return;
     // a life lost: the world holds for the beat (AN-1; in update, so the bots that play the engine directly have it too)
     if (this.down) {
       this.stepDown(dt);
@@ -2471,6 +2497,8 @@ export class GameEngine {
         const prev = this.softAt;
         const fellOnto = !!prev && g && g.y > prev.y + 100 && g.width < 400 && !(prev.x >= g.x && prev.x <= g.x + g.width);
         if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60 && !fellOnto) this.softAt = { x: Math.max(g.x + 30, Math.min(g.x + g.width - 30, p.x)), y: g.y, x0: g.x, x1: g.x + g.width };
+        // (standing past a piece the help ladder counts resets it: one compare, helpLadder.ts stood)
+        if (g && this.help) this.help.stood(p.x);
       }
       // (the water a stage draws, proto.water: a splash where he goes in, once, then the stage's own fall)
       const zone = this.proto?.water?.find((z) => p.x > z.x0 && p.x < z.x1);
@@ -4544,7 +4572,8 @@ export class GameEngine {
     if (this.boss && !this.boss.defeated && (this.entrance || this.entranceDone)) return;
     if (p.grounded) this.wallWasAhead = this.wallAhead();
     const air = !p.grounded && !p.climbing && !p.isVineSwinging;
-    if (this.stuck.tick({ grounded: !air, x: p.x, y: p.y, doubleJumping: !!p.isDoubleJumping, wallAhead: this.wallWasAhead })) {
+    // (in 1-1 the help ladder's line at 3 replaces it: its "Too tall" breaks the story's first guard, help-lines.md)
+    if (this.stuck.tick({ grounded: !air, x: p.x, y: p.y, doubleJumping: !!p.isDoubleJumping, wallAhead: this.wallWasAhead }) && !this.help) {
       this.guide(stuckLine(lessonInputMode()), 6);
       // (in World 5 the stillness waits while she says it: her help is read, not the silk's warning over it)
       this.w5?.holdStill(STUCK_HOLD);
@@ -4992,12 +5021,107 @@ export class GameEngine {
     return true;
   }
 
+  // ───────────────────────────── the help ladder (R-165.62, helpLadder.ts) ─────────────────────────────
+  /** 1-1's help ladder (null on every other stage) */
+  private help: HelpLadder | null = null;
+  /** the steps the ladder grew this run (cleared with the stage: never in the stage's own platform list) */
+  private grown: Platform[] = [];
+  /** Normal's offer is up: the stage holds still until it is answered */
+  private helpAsking: { k: string; count: number; cut?: string } | null = null;
+  /** the stage was paused from outside (the menu) while the offer was up: answering it does not start play under the menu */
+  private outerPause = false;
+  /** how the offer is put on screen (HelpOffer.tsx, loaded only when first asked); the tests answer it themselves */
+  helpAsk: (o: { reask: boolean; cut?: string }, answer: (yes: boolean) => void) => void = (o, answer) => {
+    void import('../components/HelpOffer.tsx').then((m) => m.showHelpOffer(o, answer));
+  };
+
+  /** a put-back in 1-1: the ladder counts it, and whatever rung it reaches happens now */
+  private helpPutBack(x: number) {
+    const help = this.help!;
+    const s = help.setting === 'easy' ? 'E' : 'N';
+    for (const a of help.putBack(x)) {
+      recorder.event('help', `${a.rung} ${a.piece.k} ${a.count} ${s}`);
+      if (a.rung === 'move') this.guide(moveLine(pieceMove(W1_SECTIONS.find((q) => q.id === a.piece.k)?.needs), lessonInputMode()), 6);
+      else if (a.rung === 'step') {
+        this.growSteps(a.piece);
+        this.guide(STEP_LINE, 5);
+      } else if (a.rung === 'offer' || a.rung === 'reask') this.askHelp(a);
+      // ('pad': quiet, padControl reads helpLadder.padFullJump)
+    }
+  }
+
+  /** the boxes the ladder would grow at a piece, from the piece as laid (helpLadder.ts stepsFor) */
+  private stepBoxes(piece: Piece) {
+    const margin = (this.currentStage as { gen2?: { budget?: { margin?: number } } }).gen2?.budget?.margin ?? (isEasy() ? 0.65 : 0.82);
+    const solids = this.platforms.filter((q) => q.type === 'solid' && !q.broken && !q.push && !q.chase && !q.hollow && !this.grown.includes(q));
+    return stepsFor(piece, solids, (dyUp) => maxGap(dyUp, false, margin));
+  }
+
+  /** a grown piece: a step stands on its log as a World 1 stone, a pad floats as a plank (w1CutArt.ts pickCut: art already in the atlas) */
+  private stepPlatform(b: { x: number; y: number; width: number; height: number }, id: number): Platform {
+    const pf: Platform = { id, x: b.x, y: b.y, width: b.width, height: b.height, type: 'solid', style: b.height > 30 ? 'moss_stone' : 'log', ownLook: true };
+    const cut = pickCut(pf);
+    if (cut) pf.cut = cut;
+    return pf;
+  }
+
+  /** grows a piece's steps (each one addStep) */
+  private growSteps(piece: Piece) {
+    let id = 1 + this.platforms.reduce((m, q) => Math.max(m, q.id), 0);
+    for (const b of this.stepBoxes(piece)) this.addStep(this.stepPlatform(b, id++));
+  }
+
+  /**
+   * the one way a step joins the stage: into the platforms he stands on AND the list it is drawn from (a cut piece is drawn by
+   * protoArt's painted pass over this.platforms; anything else by terrain from drawPlats/paintedPlats). Each list is copied, never pushed
+   * into: `platforms` starts as the stage object's own array, which a restart or a later roll reads.
+   */
+  public addStep(pf: Platform) {
+    const was = this.platforms;
+    this.platforms = [...was, pf];
+    this.drawPlats = this.drawPlats === was ? this.platforms : [...this.drawPlats, pf];
+    if (!paintedPlatforms([pf]).has(pf.id)) this.paintedPlats = [...this.paintedPlats, pf];
+    this.grown.push(pf);
+  }
+
+  /** Normal's offer (or its one re-ask): the stage holds still and the offer is shown; its answer comes to answerHelp */
+  private askHelp(a: HelpAct) {
+    const box = this.stepBoxes(a.piece).find((b) => b.height > 30);
+    const cut = box ? this.stepPlatform(box, 0).cut : undefined;
+    this.helpAsking = { k: a.piece.k, count: a.count, cut };
+    this.outerPause = false;
+    this.isPaused = true;
+    recorder.event('helpOffer', `shown ${a.piece.k} ${a.count}`);
+    this.helpAsk({ reask: a.rung === 'reask', cut }, (yes) => this.answerHelp(yes));
+  }
+
+  /** the offer answered (Back is a no): a yes grows the steps; play goes on unless the menu is up */
+  public answerHelp(yes: boolean) {
+    const h = this.helpAsking;
+    if (!h || !this.help) return;
+    this.helpAsking = null;
+    recorder.event('helpOffer', `${yes ? 'yes' : 'no'} ${h.k} ${h.count}`);
+    if (this.help.answer(h.k, yes)) {
+      const piece = this.currentStage.meta!.pieces!.find((q) => q.k === h.k)!;
+      recorder.event('help', `step ${h.k} ${h.count} N`);
+      this.growSteps(piece);
+    }
+    if (!this.outerPause) this.resume();
+  }
+
+  /** what the help ladder has done this run (the tests and the stills read it) */
+  public helpState() {
+    return { asking: this.helpAsking, grown: this.grown.slice(), paused: this.isPaused, on: !!this.help };
+  }
+
   /** Easy's soft fall on land (softOn): back on the last still ground he stood on, nothing lost. False when it does not apply */
   private softFall(): boolean {
     const at = this.softAt;
     if (!this.softOn || !at) return false;
     const p = this.player;
     recorder.event('softFall', Math.round(p.x));
+    // (the x he fell at: the piece he was trying to reach, for the help ladder once he is back on his ledge)
+    const fellX = p.x;
     sound.playWhoosh();
     // (set back clear of the edge he left by, 150 px or half the ledge: at the edge itself a held direction walked him straight off
     // again, 9 set-backs in 12 s on gen2 1-1 Roll A Easy, the red team's F10)
@@ -5027,6 +5151,7 @@ export class GameEngine {
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
     this.camAnchorY = NaN;
+    if (this.help) this.helpPutBack(fellX);
     return true;
   }
 

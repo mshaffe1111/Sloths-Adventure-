@@ -1,3 +1,4 @@
+import { padFullJump } from './helpLadder.ts';
 /**
  * padControl — the maths of the floating thumb pad. Pure, so it can be tested without a screen.
  *
@@ -139,7 +140,8 @@ export class PadInput {
     else s.delete(src);
     const after = s.size > 0;
     if (!before && after) {
-      this.inp.triggerTouchUp(lean, src === 'btn' ? PAD_HOP_MS : undefined);
+      // (Easy's help at 5 put-backs in one piece of 1-1: a tap is a full jump there, helpLadder.ts; no hold given rises 97 px)
+      this.inp.triggerTouchUp(lean, src === 'btn' && !padFullJump() ? PAD_HOP_MS : undefined);
       this.inp.triggerHaptic(15);
     } else if (before && !after) this.inp.releaseTouchUp();
   }
@@ -194,7 +196,7 @@ export class PadInput {
     // held up from before the grab): the pad holding Jump down swallowed it (polish report CT-26)
     if (on && this.jumpSrc.size > 0 && !this.jumpSrc.has('btn')) {
       this.jumpSrc.add('btn');
-      this.inp.triggerTouchUp(0, PAD_HOP_MS);
+      this.inp.triggerTouchUp(0, padFullJump() ? undefined : PAD_HOP_MS);
       this.inp.triggerHaptic(15);
       return;
     }
