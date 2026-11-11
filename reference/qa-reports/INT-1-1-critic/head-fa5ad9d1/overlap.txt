@@ -1,0 +1,5 @@
+node overlap.mjs <port> <setting> <port|land> <line>   (seed 982 w1-log-chain-rise, a 2 s wait after each set-back, then standing)
+fa5ad9d1 easy land "A step": rocksOnScreen 3, the bubble covers a grown step's box: median 0.44, max 0.52 of it (40 settled samples)
+fa5ad9d1 easy port "A step": rocksOnScreen 2, bubble on a rock 0
+fa5ad9d1 normal port / land "Run first": no grown rock; bubble on Pokey 0
+(the Dot-on-Pokey number from this script reads 0 on both heads and is wrong: her sprite is not where .dg-dot's box is; trust the stills)
