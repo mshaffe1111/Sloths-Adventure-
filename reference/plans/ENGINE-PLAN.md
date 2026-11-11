@@ -60,3 +60,16 @@ Change:
 5. **Review depth follows risk.** Engine pieces: a cold Critic each. Stages laid on proven pieces: bots and gates on every stage, a
    Critic on the first stage of each new piece and a sample after that, not two Critic rounds on every stage. (Cost seen today: the two
    1-2 packets used about $98 of model time across 8 rounds for one level's paperwork.)
+
+## Matt, 11-11 6:03 PM ET, and the lead's rulings on 1-1 and 1-2
+Matt: "how long do we spend time working on a very small fix that appears one time in a game versus doing global changes so that we can
+make 70% of the game better and then go back and fix little things... My expectation with this engine is to make levels going fast. Then
+have it go back through 1-1... decide what we're doing with 1-2... it could take up to 20 hours... that's unacceptable."
+- **1-2 is NOT built as its own job.** Its passed packets (t-design-1-2@6c70f6ff) are mined, not run: the general parts (routing any
+  stage by data = A8, hurt floors and heart costs = A10, a stage's own find in a required section) go into the engine lanes, written
+  for any stage and proven on 1-2 plus one stage of another world. The 1-2-only parts wait. 1-2 is then laid as data on the finished
+  pieces, as the vertical slice with 1-3, and its hours are measured. If laying it takes more than a few hours, the engine is not done.
+- **1-1:** ships as 0.9.6. The follow-up round (t-engine-11-followup) is parked unreviewed; 1-1's small fixes (R-165.115, .119, .122,
+  the empty walk at x 140) are done in one pass after the engine pieces land, on the general engine.
+- **The order:** the release; then the engine (generator yield first, Part A, World 1 and 2 pieces); then 1-2 and 1-3 laid fast; then
+  1-1's polish pass; then World 1 laid.
