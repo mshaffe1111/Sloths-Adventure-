@@ -42,10 +42,12 @@ replaces). The re-lay is the fix; the help system rides on it.
    taught; the bounce card fires at the first mushroom (story keeper #8).
 4. Room for help: a w1.test.ts check over every listed seed and both settings: every rise is within a plain single jump's climb
    (reach.md), or has flat solid ground in front of its face long enough for the frozen stair (n = ceil((rise - 60) / 60) rocks: 80 px for
-   each lower tread plus the 160 px top), with no pit in it. Name the tallest rise and the room it has.
-5. Put-backs before the need: the engine puts him back on the last solid ground at least 60 px wide (engine.ts:2467-2471, bouncy
-   excluded). Layout rule, checked in w1.test.ts with RealPlay: between a mushroom or rise he must use and its face there is no solid
-   ground 60 px or wider that he could be put back on past it.
+   each lower tread plus the 160 px top), with no pit in it. A rise given by a mushroom whose edge is 20-60 px from the face (bands.md
+   §5) is exempt: count these and name them. Name the tallest NON-mushroom rise and the room it has.
+5. Put-backs before the need: the engine records the put-back spot at his own x on any platform at least 60 px wide (clamped 30 px
+   from its ends; engine.ts:2467-2471, bouncy excluded). Layout rule: no spot past the mushroom's near edge (or the rise's foot) on a
+   platform at least 60 px wide where softAt can be set; proved in w1.test.ts by RealPlay falls into each following gap, put-back x
+   printed.
 6. Verdicts: seedlist 1-1 --check PASS; the refusal list by name empty for the listed seeds (the joins closed: no deck holes);
    provenSeeds.ts re-proven; lockall --check against main's lock (record it on main first): only 1-1 moves. firstRun11.ts picks the
    first-run layout: the seed whose tier-bot runs give the gentlest first two minutes (name the measure), locked.
@@ -63,4 +65,4 @@ Branch t-content-c1 from the named t-engine-e0a head, pushed (git ls-remote). RE
 applied"), 60 lines or fewer. Then ONE send_message to the lead (session_01FhBbYMoqqEdVR3qFjTCugy), 8 lines or fewer. Then stop. A
 blocker or a wrong frozen input: PUSHBACK.md on the branch and one message, then stop.
 ## Attempt
-1 (rewritten 11-11 6:55 AM ET on its packet Critic's nine findings and Matt's standing rule)
+1 (rewritten 11-11 6:55 AM ET on its packet Critic's nine findings and Matt's standing rule; its two last lines applied 6:58 AM ET, PASS by its word)
