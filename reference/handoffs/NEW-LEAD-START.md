@@ -70,3 +70,41 @@ decides everything else and makes it happen. The lead does not write game code; 
 - Game map: t-design-game-map reference/plans/GAME-MAP.md. Capability and stage kit: t-architect-capability
   reference/architecture/CAPABILITY.md and ADR-003. Audits: t-audit-engine-a/b/c reference/audits/2026-11-11/.
 - Gates: CLAUDE.md "Checks" and reference/methods/gates.md.
+
+## 6. The team: who reports to you, and retiring people as you go
+- **Told at 5:29 PM ET 11-11:** every active member was told a new lead is coming, to keep working as briefed, and to report ONLY to
+  the new lead once it messages them with its session id. **Your first act: send_message each member in handoffs/lead.md's in-flight
+  table (and the story keeper) with your session id.** Until then their reports land in the old lead's session
+  (session_01FhBbYMoqqEdVR3qFjTCugy): read its last messages with list_events if anything seems missing.
+- **The story keeper is permanent** (session_019iachLiuwNTAZUBSJWUmR3): every story, dialogue, Dot or player-text call goes to it
+  first; never retire it.
+- **Retire as you go (Matt, 11-11):** a member is retired when its task has passed its Critic, its branch is pushed (ls-remote = HEAD)
+  and its role's turnover note (reference/handoffs/<role>.md) is rewritten. Then archive_session it (Matt approves archiving; he asked
+  for this) and remove it from the in-flight table. Retire on these triggers too: its context is over ~70% used (get_session
+  context_usage), it repeats a mistake after being told, or its task is cancelled. A fresh member starts from the role card
+  (reference/roles/<ROLE>.md), the turnover note and the packet: never from a chat history.
+- **Build the team you need for the plan:** reference/roles/ has the cards (ENGINE, CONTENT, DESIGNER, CRITIC, ARCHITECT, ...);
+  reference/TEAM.md the rules; tools/team/models.json the model and effort per role (the hook refuses a mismatch).
+
+## 7. Where everything we have learned lives (carry all of it forward)
+| What | Where |
+|---|---|
+| Matt's rules, laws, lessons | CLAUDE.md (his file), reference/LAWS.md, reference/LESSONS.md (D1-D43), reference/CONTINUOUS-IMPROVEMENT.md (5 Whys log), reference/PARTNER.md, LEADER-STANDARD-WORK.md |
+| Matt's decisions, dated | reference/STATE.md (ledger), reference/handoffs/lead.md, Matt's memory file /areas/sloths-adventure.md |
+| Every request and idea, numbered | reference/ROADMAP.md (R-ids; `node tools/roadmapcheck.mjs`), reference/BUILD-PLAN.md |
+| Matt's idea lists (11-11) | reference/ideas/: MATT-30-IDEAS-ARCHITECTURE, MATT-80S-ARCADE-IDEAS, MATT-PLATFORMER-ARCHETYPES, MATT-IDEAS, W1-PLAN-DRAFT ("look at the potential, not exactly how it's phrased"); older: SECRET-LEVELS.md, SEQUEL-IDEAS.md |
+| The game map (draft, Matt's 8 questions open) | branch t-design-game-map: reference/plans/GAME-MAP.md, reference/methods/game-map.md |
+| What the engine can do; the stage kit | branch t-architect-capability: reference/architecture/CAPABILITY.md, ADR-003 (StageBrief = mission x spatial x clocks x mutators x mechanics) |
+| The whole-engine audits | branches t-audit-engine-a/b/c: reference/audits/2026-11-11/ENGINE-AUDIT-A/B/C.md + failing tests |
+| Stage rules and research | reference/STAGE-RULES.md, GEMINI-PCG-RESEARCH.md, GEMINI-LEDGER.md, reference/engine/ (NODES.md, WORLD-RULEBOOK.md, story-briefs/, BRIEF-1-2.md) |
+| 1-1 (shipping on the test link) | branch t-int-1-1 (874f11f6), reports reference/qa-reports/INT-1-1/ and INT-1-1-critic/, C1 on t-content-c1, reference/ONE-ONE-FIX-PLAN.md (Matt's made-things and no-planks rulings) |
+| 1-2 | branch t-design-1-2: packets/2026-11-11/CONTENT-1-2-relay.md, ENGINE-1-2-routing.md, DESIGN-1-2-notes.md; Critic reports on t-critic-1-2-packet |
+| Packets and audits of today | reference/packets/2026-11-11/ (on the work branch) |
+| Art: inventory and scale | src/game/art/inventory.ts, the master catalog (CATALOG-MASTER.csv on the inventory branch t-engine-inventory), reference/art/ (HF-SPEND.md, PROMPTS-2026-11-11.md), reference/art-incoming/ (Matt's golden seeds sheet) |
+| Story | reference/story/, the story keeper's bible STORY-KEEPER.md, src/game/stagePlan.ts (approved stage names and missions) |
+| Phone, Play Store, speed | reference/PLAY-STORE-RULES.md, PERFORMANCE-RULES.md, reference/methods/gates.md |
+| How to test and release | reference/HANDOFF.md §6 (test link), reference/methods/release.md |
+| Each role's state | reference/handoffs/<role>.md (lead, designer, engine-core, art-director, critic, planner, release-clerk, tester-page) |
+| The team's tools | tools/team/ (model gate), tools/session/ (laws-short, now-et hooks), tools/mods/output-trim (token saver), .claude/settings.json |
+Most of these branches are NOT merged into the work branch or main yet. Read them with `git fetch origin <branch>` and
+`git show origin/<branch>:<path>`; plan which merge into the release, in what order, as part of the engine plan.
