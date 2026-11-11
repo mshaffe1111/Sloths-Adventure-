@@ -121,7 +121,8 @@ test('no made thing has World 1 as its best fit, and World 1 queries leave made 
   assert.ok(KEEPSAKES.every((id) => inv.byId(id)?.layer === 'pickup'));
   assert.equal(W(1).byWorld(1).filter((r) => r.made_thing).length, 0);
   // the made things the game shows in World 1 today (the catalog's table for Matt's ruling) come back only when asked for
-  const made1 = [...W(1).byWorld(1, { includeMade: true }), ...FILE.cast.byWorld(1, { includeMade: true })].filter((r) => r.made_thing);
+  const all1 = { includeMade: true, inScale: false };
+  const made1 = [...W(1).byWorld(1, all1), ...FILE.cast.byWorld(1, all1)].filter((r) => r.made_thing);
   assert.ok(made1.some((r) => r.id === 'w1-plank-ledge-a'), 'the 1-1 plank (SWAP) is found with includeMade');
   assert.equal(made1.length, CSV.filter((r) => r.made_thing === 'y' && worldsOf(r.worlds).includes(1)).length);
   // other worlds keep their made things
@@ -129,13 +130,13 @@ test('no made thing has World 1 as its best fit, and World 1 queries leave made 
 });
 
 test('three queries agree with counts taken straight from the csv', () => {
-  const plat1 = CSV.filter((r) => worldsOf(r.worlds).includes(1) && r.made_thing !== 'y' && r.layer === 'platform'
+  const plat1 = CSV.filter((r) => worldsOf(r.worlds).includes(1) && r.made_thing !== 'y' && r.layer === 'platform' && r.scale_ok !== 'n'
     && isNum(r.walk_y) && isNum(r.walk_x0) && isNum(r.walk_x1));
   const q1 = W(1).byWorld(1, { layer: 'platform', standable: true });
   assert.equal(q1.length, plat1.length);
   assert.deepEqual(q1.map((r) => r.id), plat1.map((r) => r.id));
 
-  const step5 = CSV.filter((r) => worldsOf(r.worlds).includes(5) && r.layer === 'step' && Number(r.w) >= 100 && Number(r.w) <= 300);
+  const step5 = CSV.filter((r) => worldsOf(r.worlds).includes(5) && r.layer === 'step' && r.scale_ok !== 'n' && Number(r.w) >= 100 && Number(r.w) <= 300);
   assert.equal(W(5).byWorld(5, { layer: 'step', minW: 100, maxW: 300 }).length, step5.length);
 
   const climb1 = CSV.filter((r) => worldsOf(r.worlds).includes(1) && LEVEL_LAYERS.has(r.layer) && /^climbable\/vines tree_climb\b/.test(r.engine_slot));
@@ -161,10 +162,42 @@ test('gaps(1): the World 1 play slots with fewer than 3 usable pieces', () => {
   assert.ok(!g1.some((k) => k.startsWith('new slot: lava')), 'lava is World 9 only');
   assert.ok(W(9).gaps(9).some((k) => k.startsWith('new slot: lava')) || W(9).byWorld(9).filter((r) => r.engine_slot.startsWith('new slot: lava')).length >= 3);
   assert.throws(() => W(2).gaps(1), /load world 1/);
-  // the same gaps as the catalog's World 1 line, plus pickCut kind log (under 3 once made logs leave World 1)
+  // every gap on the catalog's World 1 line, plus only slots that fall under 3 because made or out-of-scale pieces leave World 1
   const md = readFileSync(`${ROOT}reference/art/CATALOG-MASTER.md`, 'utf8');
   const line = /## World 1:[\s\S]*?\*\*Gaps\*\*[^:]*: ([^\n]*)\./.exec(md)?.[1].split(', ') ?? [];
-  assert.deepEqual(g1, [...line, 'pickCut kind log'].sort());
+  assert.ok(line.length > 5 && line.every((k) => g1.includes(k)), `catalog gaps ${line.join(', ')}`);
+  for (const k of g1.filter((x) => !line.includes(x))) {
+    const n = W(1).byWorld(1, { slot: k, includeMade: true, inScale: false }).filter((r) => !r.status.startsWith('needs fix')).length;
+    assert.ok(n >= 3, `${k}: a new gap must come from made or out-of-scale pieces leaving (${n} with them)`);
+  }
+});
+
+test('scale: pokey_scale is drawn height / Pokey drawn standing height; out-of-scale pieces leave byWorld unless inScale: false', () => {
+  // Pokey's size comes from the code, never a copied number (the 48 in older notes is his collider)
+  const hero = readFileSync(`${ROOT}src/game/heroSprite.ts`, 'utf8');
+  const units = Number(/HERO_UNITS = ([\d.]+)/.exec(hero)?.[1]) * Number(/HERO_SPRITE_SCALE = ([\d.]+)/.exec(hero)?.[1]);
+  for (const n of NAMES) assert.equal(JSON.parse(readFileSync(new URL(`./inventory/${n}.json`, import.meta.url), 'utf8')).pokey_units, Math.round(units * 100) / 100);
+  // the known cases (lead 11-11): the hollow log and the climb perch are out of scale, and World 1 queries drop them
+  for (const id of ['w1-new#hollowlog-plain', 'w1-new#hollowlog-moss', 'props-atlas#perch']) {
+    const r = inv.byId(id)!;
+    assert.equal(r.scale_ok, false, id);
+    const c = CSV.find((x) => x.id === id)!;
+    assert.ok(Math.abs(r.pokey_scale! - Number(/x(\d+)/.exec(c.on_screen_px)![1]) / units) < 0.01, `${id} ${r.pokey_scale}`);
+    // (the hollow log is also a made thing: made things leave World 1 anyway, so this asks with includeMade)
+    assert.ok(!W(1).byWorld(1, { includeMade: true }).some((x) => x.id === id), `${id} left out`);
+    assert.ok(W(1).byWorld(1, { includeMade: true, inScale: false }).some((x) => x.id === id), `${id} back with inScale: false`);
+  }
+  // a planted piece: one standable log 1.4 Pokeys tall in an otherwise clean file
+  const file = JSON.parse(readFileSync(new URL('./inventory/w1.json', import.meta.url), 'utf8')) as InventoryFile;
+  const cols = file.cols, row = (id: string, sc: number, ok: boolean) => cols.map((c) => ({ id, file: 'src/x.webp', frame: null, world_best: 1, worlds: [1],
+    kind: 'log', layer: 'platform', engine_slot: 'landing/platforms solid log', w: 200, h: 125, walk_y: 5, walk_x0: 10, walk_x1: 190,
+    float_class: 'grounded', made_thing: false, status: 'ready', pokey_scale: sc, scale_ok: ok } as Record<string, unknown>)[c]);
+  const planted = new Inventory({ ...file, rows: [row('planted-big-log', 1.4, false), row('ok-log', 0.6, true)] });
+  assert.deepEqual(planted.byWorld(1, { layer: 'platform' }).map((r) => r.id), ['ok-log']);
+  assert.deepEqual(planted.byWorld(1, { layer: 'platform', inScale: false }).map((r) => r.id), ['planted-big-log', 'ok-log']);
+  // every judged row agrees with its range; no in-range row is marked out
+  for (const r of ALL) if (r.scale_ok !== null) assert.ok(r.pokey_scale !== null, r.id);
+  console.log(`  out of scale: ${ALL.filter((r) => r.scale_ok === false).length} rows (W1 file ${W(1).rows.filter((r) => r.scale_ok === false).length}); Pokey ${units.toFixed(1)} units`);
 });
 
 test('loadInventory loads one file once and gives its rows', async () => {

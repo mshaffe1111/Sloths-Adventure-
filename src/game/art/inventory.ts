@@ -35,6 +35,11 @@ export interface ArtRow {
   float_class: string;
   made_thing: boolean;
   status: string;
+  /** drawn height on screen / Pokey's drawn standing height (89.1 units, heroSprite.ts:30,32); null when it has no fixed height
+   *  (drawn to fit its platform, tiled, or not level art) */
+  pokey_scale: number | null;
+  /** inside its layer's range (catalog_master.py SCALE_RANGE); null when its layer has no range or it is terrain or fitted */
+  scale_ok: boolean | null;
 }
 
 export interface InventoryFile {
@@ -43,6 +48,8 @@ export interface InventoryFile {
   file: string;
   cols: string[];
   rows: unknown[][];
+  /** Pokey's drawn standing height in world units, the scale's 1.0 */
+  pokey_units: number;
   /** world files only: every standable, climb and danger slot in the whole catalog (what gaps() checks a world against) */
   play_slots?: string[];
 }
@@ -70,6 +77,8 @@ export interface WorldQuery {
   standable?: boolean;
   /** World 1 only: also return made things (never placed in World 1; for audits) */
   includeMade?: boolean;
+  /** default true: leave out pieces drawn out of scale with Pokey (scale_ok false; R-165.107). false: return them too (for audits) */
+  inScale?: boolean;
 }
 
 export class Inventory {
@@ -111,6 +120,7 @@ export class Inventory {
     return this.rows.filter((r) =>
       r.worlds.includes(w)
       && !(w === 1 && r.made_thing && !q.includeMade)
+      && !(q.inScale !== false && r.scale_ok === false)
       && (q.layer === undefined || r.layer === q.layer)
       && (q.slot === undefined || r.engine_slot === q.slot)
       && (q.minW === undefined || r.w >= q.minW)

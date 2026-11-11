@@ -604,6 +604,67 @@ def slot_key(s):
     return re.split(r'[;(]', s)[0].strip()[:60] or '(none)'
 
 
+# ---- scale against Pokey (R-165.107, Matt 11-11: "we should keep things to scale... make sure that it is sized properly") ----
+def pokey_units():
+    """Pokey's drawn standing height in world units, read from the code: HERO_UNITS x HERO_SPRITE_SCALE (src/game/heroSprite.ts:30,32;
+    every hero frame is drawn with k = that / the standing frame's height, heroSprite.ts:143). Not the 48-unit collider (engine.ts:954)."""
+    t = open(os.path.join(ROOT, 'src', 'game', 'heroSprite.ts')).read()
+    u = float(re.search(r'export const HERO_UNITS = ([\d.]+);', t).group(1))
+    k = float(re.search(r'export const HERO_SPRITE_SCALE = ([\d.]+);', t).group(1))
+    return u * k
+
+
+# per-layer range of the drawn height in Pokey standing heights (lead 11-11, R-165.107). None: no range set (backdrops may exceed;
+# climb, danger look and decor mid have none in the lead's table: they tile or stretch, or wait on a ruling). TERRAIN rows (ground,
+# banks, soil, walls, and set pieces laid one platform per drawn ledge) are exempt from the platform and step caps.
+SCALE_RANGE = {
+    'step': (0.5, 1.0),
+    'platform': (None, 1.0),
+    'soft landing': (None, 1.0),
+    'decor near': (0.2, 2.0),
+    'backdrop': None, 'climb': None, 'danger look': None, 'decor mid': None,
+}
+TERRAIN = re.compile(r'ground|bank|soil|wall|floor|cliff|\blip|PIT_WATER|set piece|step set', re.I)
+
+
+def drawn_h(r):
+    """(drawn height in world units, basis) from on_screen_px. The parts wrote it three ways: 'WxH ...' in world units (A, B1, B3);
+    a bare longest side in world units (B2); a bare longest side in CSS px on an upright phone, 0.94 px a unit (B4); 'est:N' an estimate
+    (B4). 'stand span' rows (B1: a cut piece drawn to fit its platform, w1CutArt.ts cutBox:40-53) are sized by the platform the
+    generator rolls and cropped at the foot, so they get no fixed height: basis 'fitted'; so are part A's pieces bound for pickCut."""
+    s = (r.get('on_screen_px') or '').strip()
+    try: w, h = float(r['w']), float(r['h'])
+    except (TypeError, ValueError): return None, 'none'
+    if 'stand span' in s or 'pickCut' in (r.get('engine_slot') or ''): return None, 'fitted'
+    m = re.match(r'^(?:about\s*)?(\d+(?:\.\d+)?)\s*x\s*(\d+(?:\.\d+)?)', s)
+    if m: return float(m.group(2)), 'drawn'
+    m = re.match(r'^(est:)?(\d+(?:\.\d+)?)\b', s)
+    if m:
+        n = float(m.group(2)) / (0.94 if r.get('part') == 'B4' else 1)
+        return n * h / max(w, h, 1), 'estimate' if m.group(1) else 'drawn'
+    return None, 'none'
+
+
+def add_scale(rows):
+    pu = pokey_units()
+    for r in rows:
+        r['pokey_scale'] = r['scale_ok'] = r['scale_basis'] = ''
+        lay = r.get('layer')
+        if lay not in SCALE_RANGE: continue
+        d, basis = drawn_h(r)
+        r['scale_basis'] = basis
+        if d is None: continue
+        sc = d / pu
+        r['pokey_scale'] = f'{sc:.2f}'
+        rng = SCALE_RANGE[lay]
+        if rng is None: continue
+        if lay in ('platform', 'soft landing', 'step') and TERRAIN.search(' '.join((r.get('engine_slot') or '', r.get('kind') or '', r.get('id') or ''))):
+            r['scale_basis'] = basis + ' (terrain: no cap)'; continue
+        lo, hi = rng
+        r['scale_ok'] = 'y' if (lo is None or sc >= lo - 1e-9) and (hi is None or sc <= hi + 1e-9) else 'n'
+    return pu
+
+
 def merge(args):
     a = list(csv.DictReader(open(os.path.join(ART, 'catalog-cut.csv'))))
     bs = load_b()
@@ -653,7 +714,8 @@ def merge(args):
     for f in rel:
         if f not in have: bad.append(('-', f, 'image under src/assets with no row'))
     counts['(images under src/assets covered)'] = f'{sum(1 for f in rel if f in have)}/{len(rel)}'
-    cols = COLS + ['part']
+    add_scale(rows)
+    cols = COLS + ['part', 'pokey_scale', 'scale_ok', 'scale_basis']
     with open(os.path.join(ART, 'CATALOG-MASTER.csv'), 'w', newline='') as f:
         wr = csv.DictWriter(f, cols, extrasaction='ignore'); wr.writeheader(); wr.writerows(rows)
     counts['(B4 rows shown in menus only: worlds = menu)'] = menus
@@ -678,6 +740,22 @@ def write_md(rows, counts, dup, bad, missing, conflicts=()):
     L += ['## Counts per source (sources minus overlap)', '', '| source | rows |', '|---|---|'] + [f'| {k} | {v} |' for k, v in sorted(counts.items())]
     L += ['', f'Total rows: **{len(rows)}**. Duplicates dropped: {len(dup)}. Rows failing a check: {len(bad)}.', '']
     if bad: L += ['### Rows failing a check', ''] + [f'- {p} {i}: {w}' for p, i, w in bad[:80]] + ['']
+    pu = pokey_units()
+    # drawn in a World 1 stage today: in game, and its used_in names a 1-N stage, every stage, or the puzzle rooms (1-4, 1-6 have them)
+    in_w1 = lambda r: bool(re.search(r'(^|[\s,(])1-\d+\b', r.get('used_in') or '')) or (r.get('used_in') or '').startswith(('every stage', 'puzzle rooms'))
+    w1g = [r for r in rows if (r.get('status') or '').lower().startswith('in game') and r.get('layer') in SCALE_RANGE and in_w1(r)]
+    out = sorted((r for r in w1g if r.get('scale_ok') == 'n'), key=lambda r: -float(r['pokey_scale']))
+    fitted = [r for r in w1g if r.get('scale_basis') == 'fitted']
+    L += [f'### In-game World 1 pieces out of scale (R-165.107: drawn height / Pokey standing {pu:.1f} units, heroSprite.ts:30,32)', '',
+          'Ranges (catalog_master.py SCALE_RANGE): step 0.5-1.0; platform and soft landing no taller than 1.0; terrain (ground, '
+          'banks, soil, walls, set pieces laid one platform a ledge) exempt; decor near 0.2-2.0; backdrop, climb, danger look and decor mid: no range set. Pokey is 89.1 units drawn '
+          '(the 48 in older notes is his collider, engine.ts:954). Columns pokey_scale, scale_ok, scale_basis in the csv.', '',
+          '| id | layer | pokey_scale | range | on screen | used in |', '|---|---|---|---|---|---|']
+    for r in out:
+        lo, hi = SCALE_RANGE[r['layer']]
+        L.append(f"| {r['id']} | {r['layer']} | {r['pokey_scale']} | {f'{lo}-{hi}' if lo is not None else f'up to {hi}'} | {(r.get('on_screen_px') or '')[:40]} | {(r.get('used_in') or '')[:40]} |")
+    L += ['', f"Not judged: {len(fitted)} in-game W1 pieces drawn to fit their platform (w1CutArt.ts cutBox:40-53; their size is the platform's, "
+          f"the generator's numbers): {', '.join(r['id'] for r in fitted)}.", '']
     if conflicts:
         def ruling(r):
             i = r['id']
@@ -745,7 +823,7 @@ def write_md(rows, counts, dup, bad, missing, conflicts=()):
 
 # ---- --emit: the engine's copy (src/game/art/inventory.json), the columns it needs only; never hand-edited ----
 EMIT_COLS = ['id', 'file', 'frame', 'world_best', 'worlds', 'kind', 'layer', 'engine_slot', 'w', 'h', 'walk_y', 'walk_x0', 'walk_x1',
-             'float_class', 'made_thing', 'status']
+             'float_class', 'made_thing', 'status', 'pokey_scale', 'scale_ok']
 
 
 def num(v):
@@ -777,7 +855,8 @@ def emit(args):
         out.append([r['id'], base.strip(), frame.strip() or None, int(wb) if wb.isdigit() else None, parse_worlds(r.get('worlds', '')),
                     r.get('kind', ''), r.get('layer', ''), slot, num(r['w']), num(r['h']), num(r['walk_y']),
                     num(r['walk_x0']), num(r['walk_x1']), (r.get('float_class') or '').strip(), (r.get('made_thing') or '').lower().startswith('y'),
-                    (r.get('status') or '').strip()])
+                    (r.get('status') or '').strip(), float(r['pokey_scale']) if r.get('pokey_scale') else None,
+                    {'y': True, 'n': False}.get((r.get('scale_ok') or '').strip())])
     d = os.path.join(ROOT, 'src', 'game', 'art', 'inventory')
     os.makedirs(d, exist_ok=True)
     old = os.path.join(ROOT, 'src', 'game', 'art', 'inventory.json')
@@ -787,7 +866,7 @@ def emit(args):
     files['cast'] = [r for r in out if r[L] not in LEVEL_LAYERS or not r[W]]
     note = 'generated by python3 tools/art/catalog_master.py --emit from reference/art/CATALOG-MASTER.csv; never hand-edit'
     for name, rows in files.items():
-        body = {'note': note, 'file': name, 'cols': EMIT_COLS, 'rows': rows}
+        body = {'note': note, 'file': name, 'pokey_units': round(pokey_units(), 2), 'cols': EMIT_COLS, 'rows': rows}
         if name != 'cast': body['play_slots'] = sorted(play)
         p = os.path.join(d, f'{name}.json')
         with open(p, 'w') as fh:

@@ -19,6 +19,31 @@ Play scale: 540 game px tall sideways, Pokey 48 game px; ship_px is at most twic
 
 Total rows: **9364**. Duplicates dropped: 83. Rows failing a check: 0.
 
+### In-game World 1 pieces out of scale (R-165.107: drawn height / Pokey standing 89.1 units, heroSprite.ts:30,32)
+
+Ranges (catalog_master.py SCALE_RANGE): step 0.5-1.0; platform and soft landing no taller than 1.0; terrain (ground, banks, soil, walls, set pieces laid one platform a ledge) exempt; decor near 0.2-2.0; backdrop, climb, danger look and decor mid: no range set. Pokey is 89.1 units drawn (the 48 in older notes is his collider, engine.ts:954). Columns pokey_scale, scale_ok, scale_basis in the csv.
+
+| id | layer | pokey_scale | range | on screen | used in |
+|---|---|---|---|---|---|
+| puzzle-kit#acornTree | decor near | 3.37 | 0.2-2.0 | 361x300 (KIT_ART k=1.163 (puzzleArt.ts:3 | puzzle rooms (which room lays this piece |
+| w1#shut | decor near | 2.81 | 0.2-2.0 | 195x250 (GATE_H 250 (stageArt.ts:307)) | 1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 1-10 |
+| w1#open | decor near | 2.81 | 0.2-2.0 | 198x250 (GATE_H 250 (stageArt.ts:307)) | 1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 1-10 |
+| rope-kit#post | platform | 2.49 | up to 1.0 | 24x222 (post ~24 wide) | 1-3 1-4 1-5 1-7 1-9 10-1 2-6 3-4 4-1 4-6 |
+| props-atlas#perch | platform | 2.42 | up to 1.0 | 260x216 (perch w = reach + 70 (protoArt. | 1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 1-10 |
+| props2-atlas#bushTall | decor near | 2.26 | 0.2-2.0 | 140x201 (bush / hollow ~140) | 1-7 4-5 6-2 6-3 6-7 8-2 |
+| w1-new#hollowlog-moss | platform | 2.21 | up to 1.0 | 403x197 (hollow log 310-380 wide x1.06 ( | 1-4 3-4 4-1 4-6 |
+| puzzle-kit#gustCrack | decor near | 2.02 | 0.2-2.0 | 174x180 (KIT_ART k=1 (puzzleArt.ts:30 ki | puzzle rooms (which room lays this piece |
+| w1-new#hollowlog-plain | platform | 2.01 | up to 1.0 | 403x179 (hollow log 310-380 wide x1.06 ( | 1-4 3-4 4-1 4-6 |
+| puzzle-kit#pulleyPost | decor near | 2.01 | 0.2-2.0 | 68x179 (KIT_ART k=1 (puzzleArt.ts:30 kit | puzzle rooms (which room lays this piece |
+| props-atlas#liana | platform | 1.68 | up to 1.0 | 40x150 (trunk / liana ~40 wide, tiled up | 1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 1-10 |
+| crown#crown | platform | 1.62 | up to 1.0 | 300x144 (crown ~300) | 1-8 |
+| props-atlas#trunk | platform | 1.53 | up to 1.0 | 40x136 (trunk / liana ~40 wide, tiled up | 1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 1-10 |
+| props-atlas#stump | step | 1.43 | 0.5-1.0 | 160x127 (platform x1.15 (protoArt.ts:367 | 1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 1-10 |
+| leaves-atlas#warm_A11_0 | decor near | 0.18 | 0.2-2.0 | 38x16 (leaf size <=38, glide leaf ~60 (l | 1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 1-10 |
+| puzzle-kit#pebble | decor near | 0.16 | 0.2-2.0 | 21x14 (KIT_ART k=0.629 (puzzleArt.ts:30  | puzzle rooms (which room lays this piece |
+
+Not judged: 14 in-game W1 pieces drawn to fit their platform (w1CutArt.ts cutBox:40-53; their size is the platform's, the generator's numbers): w1-boulder-grey-moss, w1-boulder-grey-moss-b, w1-plank-ledge-a, w1-plank-ledge-b, w1-plank-ledge-c, w1-rock-block-big, w1-rock-boulder-moss, w1-rock-boulder-moss-big, w1-rock-root-block, w1-rock-roots, w1-rock-slabs-low, w1-rock-slabs-stacked, w1-rock-slabs-stacked-big, w1-stump-wide.
+
 ### Made things the game shows in World 1 today (Matt, 11-11: swap the 1-1 planks, the sawn wide stump and the trail post; the gate, puzzle doors and keepsakes stay; the rest are his call)
 
 | part | id | used in | ruling | status |
