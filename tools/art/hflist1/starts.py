@@ -1,6 +1,6 @@
 """Hugging Face picture list 1 (R-165.100): magenta paste-up starts for img2img (hf-art.md §5: flat (255,0,255), no half-transparent
 pixels, nothing floating). Inputs are the cut pieces of the 11-09, 11-11 and 11-11b batches (transparent PNGs).
-usage: python3 starts.py <dir with P-*.png, N-*.png, M-*.png> <out dir>"""
+usage: python3 starts.py <dir with P-*.png, N-*.png, M-*.png> reference/art-incoming/hf-list1/starts"""
 import sys, os
 import numpy as np
 from PIL import Image

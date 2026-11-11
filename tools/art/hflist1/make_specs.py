@@ -25,7 +25,7 @@ SEEDS = (11, 23)
 
 
 def it(start, prompt, strengths):
-    w, h = Image.open(H / 'starts' / start).size
+    w, h = Image.open(H.parents[2] / 'reference/art-incoming/hf-list1/starts' / start).size  # starts live in reference/ (tools/ ignores pictures)
     return [{'name': f"{start[:-4]}-s{s}-{sd}", 'start': start, 'prompt': f'{prompt}, {STYLE}', 'strength': s / 100, 'seed': sd, 'w': w, 'h': h}
             for s in strengths for sd in SEEDS]
 
@@ -45,7 +45,7 @@ def specs():
 def args(name, sha):
     gh = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{sha}/tools/art/'
     spec = json.loads((H / name).read_text()); tag = spec['tag']
-    fetch = (f'mkdir -p /out/hflist1 && curl -sSfL {gh}hflist1/{name} | sed "s#\\"BASE\\"#\\"{gh}hflist1/starts/\\"#" > /out/hflist1/{name} && ')
+    fetch = (f'mkdir -p /out/hflist1 && curl -sSfL {gh}hflist1/{name} | sed "s#\\"BASE\\"#\\"{gh[:-len('tools/art/')]}reference/art-incoming/hf-list1/starts/\\"#" > /out/hflist1/{name} && ')
     print(json.dumps({'image': 'ostris/aitoolkit:latest', 'flavor': 'rtx-pro-6000', 'timeout': '1h', 'detach': True,
                       'command': ['bash', '-lc', fetch + f'curl -sSfL {gh}w6to10/img2imggpu.py -o /tmp/g.py && SPEC=hflist1/{name} '
                                   f'SUB=hflist1/{tag} TAG={tag} python /tmp/g.py'],
