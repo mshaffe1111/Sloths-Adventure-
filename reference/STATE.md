@@ -190,6 +190,9 @@
   knowncheck, roadmapcheck, drawcheck (355 s), clipcheck (83 known, none new), kbdcheck, seedlist 1-1 (138) all PASS. buildcheck alone:
   FAIL 162 ms, then PASS 140 and 149 (Normal p95, budget 150): sits on the line on this machine, as main and A1 do (Critics' runs).
   Flaky near its budget: watch in CI; if CI fails it, that is a real slowdown to find, not to re-run past.
+- 11-11 6:26 AM ET: A2 REJECT on 2ad78d57 (the lead's CHECK): Dot says the step line / Normal offers a step where nothing can grow
+  (861/1,874 Easy and 442/1,885 Normal pieces). Stairs blocker fixed (chain-back and hop-bounce pass after steps); faces over 60 down
+  1,288 -> 8, one rock sunk 63 px; suite 2512/0. Attempt 4 sent: no line/offer when stepBoxes is empty; zero faces over 60, zero sunk.
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,

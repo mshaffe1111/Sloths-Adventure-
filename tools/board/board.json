@@ -32,8 +32,8 @@
  "team": [
   {
    "role": "Engine",
-   "task": "fix A2 attempt 3 (stairs) built; Critic re-checking",
-   "status": "reported"
+   "task": "fix A2: stairs fixed; Dot offered steps where none can grow; attempt 4 fixing",
+   "status": "working"
   },
   {
    "role": "Engine",
