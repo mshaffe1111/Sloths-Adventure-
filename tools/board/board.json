@@ -32,8 +32,8 @@
   "team": [
     {
       "role": "Engine",
-      "task": "fix A2, help after put-backs: finishing",
-      "status": "working"
+      "task": "fix A2 built; Critic and story keeper checking",
+      "status": "reported"
     },
     {
       "role": "Engine",
@@ -177,10 +177,6 @@
       "limit": 4,
       "cards": [
         {
-          "id": "R-165.62",
-          "title": "Fix A2: help after repeated put-backs, being built"
-        },
-        {
           "id": "R-165.58",
           "title": "The recorder counts every double jump and bounce (E1), being built"
         }
@@ -191,6 +187,10 @@
       "name": "Checking",
       "hint": "built; a Critic is checking it, or it passed and waits for the release",
       "cards": [
+        {
+          "id": "R-165.62",
+          "title": "Fix A2, help after put-backs: built (7 of 7, suite 2,501 green); a Critic and the story keeper are checking"
+        },
         {
           "id": "R-165.85",
           "title": "All your art cut and world-tagged (3 batches, 162 pieces): PASSED; placing comes with the re-lay"
