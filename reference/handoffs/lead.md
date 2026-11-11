@@ -35,20 +35,20 @@ is, Matt's direction, the first day), then this note, then STATE.md (the live le
   ~11:40 AM to 5:25 PM ET, 4 Critic rounds, 6 defects caught by the Critic. 1-2 packets: Designer 3:28-3:52 PM ET, then 4 Critic rounds
   (still open). The lead's hour estimates today were low every time (D42 clock, "60-100 h engine" vs the map's 295 h): measure, never guess.
 
-## In flight (session ids; check each with get_session and git ls-remote)
-| Work | Session | Branch | State at 5:40 PM |
+## In flight (rewritten by the new lead session_01FhBbYP63h7cCX8DyW69stq, 11-11 6:12 PM ET; check each with get_session and git ls-remote)
+| Work | Session | Branch | State |
 |---|---|---|---|
-| 1-1 follow-up round: R-165.115, .119, .122 (Opus xhigh) | session_01FhBbYLVQnNER5KWRX5LQrf | t-engine-11-followup | building; frozen base t-int-1-1@874f11f6; needs a Critic when it reports |
-| R-165.112 seed lists in their own chunk (Fable, finishing) | session_01FhBbYKLJaSijKJGsXKEZNB | t-engine-seedchunks (afbf2397c, rebasing) | done-items 7/7; told to rebase on 874f11f6 |
+| Story keeper (permanent) | session_019iachLiuwNTAZUBSJWUmR3 | - | release checklist holder; all player text |
+| Release clerk: 0.9.6 full gate (Opus xhigh) | session_01FhBbYNQH2E77sZaoHs9zNm | release-0.9.6@06bbd29f | gates running; reports the table to the lead; rebuilds EnK5 from the final head |
+| EN-Y generator yield (Fable high, 8 h) | session_01FhBbYMEqTtxP72ifdjF22d | t-engine-yield | started 6:09 PM |
+| EN-T travel as a mode (Fable high, 10 h) | session_01FhBbYLpfRZANRpmtbkiRov | t-engine-travel | started 6:09 PM |
+| EN-G frame loop, saves, generality gate (Fable high, 8 h) | session_01FhBbYLp3DKuQUVsbTiibZS | t-engine-guards | started 6:09 PM |
+| R-165.112 seed lists in their own chunk (Fable) | session_01FhBbYKLJaSijKJGsXKEZNB | t-engine-seedchunks | final gates; retire after its Critic |
 | its Critic (Opus high) | session_01FhBbYMct2YXASz55Nd3jbZ | t-critic-seedchunks | auditing |
-| 1-2 packets (Designer, Fable) | session_01FhBbYKCku6yT7xx6DqGHwZ | t-design-1-2 (3864e805) | BOTH PACKETS PASSED, final head 6c70f6ff (8 rounds; dispatch both from it; Critic record t-critic-1-2-packet@817655ad); builders not started: the new lead sequences them in the engine plan |
-| 1-2 packet Critic (Fable) | session_01FhBbYMm5Pn1AdekqjM9JL8 | t-critic-1-2-packet | delta on the Designer's head |
-| Game map (Opus) | session_01FhBbYPFoKfvK2jTHjNBYPr | t-design-game-map | done (draft) |
-| tier bots count hearts (by the 1-2 Critic) | - | t-critic-bots-hearts@dabd303a | done, not merged; 1-2 needs it |
-Finished today and safe to leave: INT-1-1 builder session_01FhBbYL8QEP4FuhgBgpyLKS and Critic session_01FhBbYPHx3ipm9ReFRHpyP4
-(handoffs/critic.md new); C1 builder session_01FhBbYKuMAy8KTe8bM5g9Tk and Critic session_01FhBbYNCMfYX89MSQeUvy8K; audits A/B/C.
-1-2 ENGINE builder: the outgoing lead starts it (Opus xhigh) once the follow-up round passes (its frozen base); it is general engine work (Matt: engine first). 1-2 CONTENT waits for the new lead's engine plan; 1-2's engine items belong
-in the sprint (NEW-LEAD-START.md §3).
+| 1-1 follow-up (R-165.115/.119/.122) | session_01FhBbYLVQnNER5KWRX5LQrf | t-engine-11-followup | told to push and stop; PARKED unreviewed until 1-1's pass after the engine |
+Retired 11-11 by the new lead (archived, branches verified): 1-2 Designer (t-design-1-2@6c70f6ff), 1-2 packet Critic
+(t-critic-1-2-packet@b904dbc0), game-map Designer (t-design-game-map@6909c3c9). Packets: reference/packets/2026-11-11/ENGINE-LANES-1.md.
+Plan: reference/plans/ENGINE-PLAN.md. Cost rules: TEAM.md. 1-2 is not built as its own job (ENGINE-PLAN.md).
 
 ## The audits (11-11, a ready fix list)
 - B (gen2, complete): t-audit-engine-b@f06297d4, reference/audits/2026-11-11/ENGINE-AUDIT-B.md: HIGH 3, MED 3, LOW 8. Rows R-165.119
