@@ -64,3 +64,4 @@ that do the best job get the follow-on work.
 - Before a packet goes out, name what it is built on and whether a planned job replaces that this sprint; if so, build it after. Two REJECTs in a row: stop and ask whether it patches something about to be replaced. (D40)
 - Pokey's drawn height is 89.1 units (heroSprite.ts:30,32), not 48 (his collider): size art against the drawn height, read from the code. (D41)
 - Every time Matt sees comes from a command, never from converting UTC in your head: November is EST (UTC-5), not EDT. The UserPromptSubmit hook prints the ET time each turn. (D42)
+- Engine work is done for every stage, never one: a packet's done-list says 'works for any stage, proven on N', and no stage id, seed or x literal lives in engine code (world data only). When Matt asks for a level fast and the engine first, name the trade out loud. (D43)
