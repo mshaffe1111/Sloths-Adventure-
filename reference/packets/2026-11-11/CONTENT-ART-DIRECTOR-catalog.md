@@ -38,7 +38,7 @@ engine has easy access to it."
    (source 2, from gemini-2026-11-05): set status "in game" on those rows, keyed by file stem = atlas name; never add them twice.
    Print every count as sources minus overlap.
 ## Build (part A branch t-art-catalog-a, parts B t-art-catalog-b1..b4, both from origin/t-c2-art-cut; WRITE: reference/art/catalog-cut.csv
-## (A), reference/art/catalog-game.csv (B), reference/art/CATALOG-MASTER.csv/.md and tools/art/catalog_master.py (A),
+## (A), reference/art/catalog-game-B<n>.csv (B1-B4), reference/art/CATALOG-MASTER.csv/.md and tools/art/catalog_master.py (A),
 ## reference/art/master-sheets/ (both), REPORT.md (each its own); nothing under src/)
 1. tools/art/catalog_master.py merges every source into ONE table, one row per kept piece (holds and rejects listed separately), the
    same columns for all: id, source, file, kind, w, h, walk_y, walk_x0, walk_x1, flat, float_class, world_best, worlds (all ten, best
