@@ -1,60 +1,60 @@
-# REPORT: R-165.86, no fall in 1-1 costs a life (Engine, attempt 1), 2026-11-09 9:32 PM ET
-Branch t-engine-putback from origin/main 181d2846. PUSHBACK.md (accepted by the lead) is on the branch.
+# REPORT: R-165.62 (A2, help after put-backs in 1-1), Engine, attempt 1. Branch t-engine-help from t-engine-putback@41c2e248
 
 ## Method used
-reference/methods/stage-fix.md's order (planted failure first, prove nothing else moved); the packet. No method file covers an engine
-rule read from stage data: see Method update.
+Test-first: the schedule with a planted off-by-one red; real-engine flights with real put-backs (seed 3747, w1-log-chain-rise); browser
+stills reading Dot's own bubble (`.dg-bub-body`); the lock against A1. One pushback (PUSHBACK.md); the lead added DotGuide.tsx engineLine.
 
 ## Lessons applied
-- Check a fact in code before acting (D7): the frozen input "Easy has no soft falls in 1-1" was measured on main and was wrong.
-- A gate must call the same code the screen calls (D19): the tests ask `softFallStage`, the function the engine asks.
-- Test the measuring tool (D15): RealPlay stubs loseLife; the sweep deletes the stub (softFall11.test.ts `real()`). Critic: fly it the same way.
-- Times from `date`, hashes from git (D20, D30).
+D37 (every claim run); A1's trap 9 (RealPlay's loseLife stub); frozen inputs measured first (two were wrong). New: trap 15 below.
 
 ## 1. Done-items
-1. PASS. `src/game/gen2/softFalls11.test.ts`: 1-1 laid on all 16 window seeds, Normal and Easy: no gap that is not water costs a
-   life (softFallStage, or a soft zone). `src/game/softFall11.test.ts`: seeds 3747, 15458, 19582 on each setting, off the right edge
-   of every solid piece with the REAL loseLife: no lostLife, lives unchanged, every set-back standing on a solid ledge behind the fall.
-   Red on origin/main: reference/qa-reports/R-165.86/red-on-main.txt (6 fail: both lay tests, the 3 Normal sweeps, the flight; the 3
-   Easy sweeps pass on main, as the pushback said). Both files also hold a planted test (the stage without the brief's word).
-2. PASS. softFall11.test.ts "w1-log-chain-rise": Normal seed 3747, walked off the first rise: one `softFall`, no `lostLife`, lives
-   and hearts unchanged, standing on the ledge he left, clear of its edge.
-3. PASS. softFalls11.test.ts: 1-2 and 8-3 Normal (8-3 has heart falls), layouts 1-3: platforms, heartFalls and gen2.falls hash the
-   same as origin/main (pins made on a worktree of 181d2846). Also: 1-1's ground, zones, gaps and floorlessGaps verdicts are the same
-   with and without the word, on 4 listed seeds and raw rolls 1-6, both settings; floorlessGaps ignores the word (planted).
-4. PASS. `npx tsc --noEmit -p .` clean. `npx tsx --test src/game/gen2/*.test.ts`: 264 pass, 0 fail. Touched and 1-1-hosted tests
-   (softFall, softFall11, plainWalk, vineFollowUps, recorderMoments, w1NewArt, stage11, realPlay, firsttimer, gen2/worlds/*): 98 + 18
-   pass, 0 fail. `npx tsx tools/engine/seedlist.ts 1-1 --check`: PASS (138 seeds, each clean on both settings). No seed changed.
-5. PASS, one thing named. reference/qa-reports/R-165.86/setback-sideways.png and setback-upright.png (contact sheets, dev build,
-   Normal, seed 3747): he lands standing on the log, 150 px back from its edge; hearts and lives as before. The frame log
-   (camera-*.json) shows ONE camera jump, on the frame the iris starts (0.45), then only the usual settle; no flash.
-   Rough: Dot's "Flick up and forward to jump." comes up after the set-back in these stills; it is the stage's own hint at that spot
-   (lessons were off), not new, but after every set-back it will read as nagging. A2 (R-165.62) should own what is said there.
-6. PASS. reference/handoffs/engine-core.md rewritten (§0 rulings, the open rows, traps 9-12).
+1. PASS. helpLadder.test.ts: Easy 3/5/8 and Normal 3/12/re-ask 20, each once and nothing else in 30-40 put-backs; per piece; reset past
+   the piece and on end, not on a refused offer or a step given. Red: 4/6/9/13, and each threshold +1 alone, all fail (assert.throws).
+2. PASS. helpLadder11.test.ts, 4 flights. Easy: move line at 3; pad tap rise 62 px before, 97 px at 5; 4 grown (3 steps, 1 pad) at 8; the
+   whole piece on 6 plain jumps, no double. Normal: line at 3; offer at 12 with the stage frozen (x, y, t unchanged over 30 frames);
+   no; re-ask at 20; no; never again (to 36). A yes grows the steps and the piece passes on plain jumps; Normal fails it without them.
+   Steps are in the draw list, and gone on stop and after a restart. Quiet: no line, but the steps grow and the offer shows. No
+   stuckHelp, no "Too tall". Red on 41c2e248: 12 put-backs a setting, 0 help events (R-165.62/red-on-a1.txt). Her bubble:
+   helpLadderGuide.test.ts (Help and Tips: each line up within 5 s after the stage's double teach; Quiet: none; red: the old path on
+   Tips is not up in 5 s).
+3. PASS. `lockall --layouts 16 --intended 1-1 --check` vs A1's lock: "lock: 102/102 stages unchanged" (1-2, 1-5, W8 included; 1-1's
+   data too). The ladder is null off 1-1. A1's tests are green in the suite.
+4. tsc clean. seedlist 1-1 --check PASS (138). clipcheck PASS (83 known, none new; 190 s): the offer is judged upright and sideways on
+   the fresh save, with a planted 26 px button inside `.ho-card` caught. Route: real put-backs (12 drops, A1 sets him back) on a
+   NODE_ENV=development store build through the dev-only `window.__engine`; startServer fails if the production build carries
+   `__engine` (it doesn't; grepped). Production main chunk 4,171,195 B (A1 4,164,708; HelpOffer is a lazy chunk). Full suite: below.
+5. Stills in R-165.62/ (dsf 1, 412x915 and 915x412): {easy,normal}-{port,land}-03-line, easy-land-08-step, easy-port-08-on-step,
+   normal-{port,land}-12-offer, normal-{port,land}-12-after-back (Escape = no: offer gone, no pause menu, nothing grown).
+6. For the story keeper, via the lead: the four 03-line stills (the move line, touch words), the two 08 stills (the step line + the
+   stone), the two 12-offer stills (the line + YES Pokey on the stone that grows / NO jump pose).
+7. reference/handoffs/engine-core.md rewritten (header, §0b rulings, §1 open, §2 where the ladder lives, traps 15-18).
 
 ## 2. Polish check
-The two sheets above, judged upright and sideways. Nothing fixed: softFall's own picture is used unchanged.
+- The offer over a black stage (asked under the set-back's closed iris): fixed, now asked once the iris is open and he stands.
+- Her bubble showed none of the ladder's lines: fixed (struggle help, `soon`, takes the stage's own move tip's place).
+- Upright step still, first take: Pokey dropped to the log below; replaced by on-step (he stands on the stone).
+- Rough, named: NO's `jump_up` pose (arms up) reads a little like a cheer. Upright, the offer's line wraps to two lines (fits).
+- Risk, named: in a browser run with lessons on, a first-time "gap" lesson (a teleport artifact) took the bubble and the step line
+  never came back. With lessons off (a real player at the chain has had them) both lines show. A lesson landing in the same second
+  can still drop it.
 
 ## 3. Pushback
-PUSHBACK.md, accepted: 1-1 is not in GEN2_STAGES, so Easy already had softOn on main. Only Normal changes for the player.
+PUSHBACK.md (accepted). Frozen inputs that were wrong: "No soft moss" in gen2 1-1 comes from w1.ts's hint.1-1.noMoss sockets, not
+mixer:76 (the engine marks it heard in 1-1; the mixer line is also gone). The coach has no Pokey pose: NO is the hero's jump_up.
+"Flick up and forward to jump." repeating: no source in 4 flights (RealPlay both settings x12; browser at the chain x4; browser fresh
+save at the coach's first gap x6): said at most once, from the touch coach's jump step. No file edited for it.
 
-## 4. Suggestions (outside my walls)
-- RealPlay notes soft set-backs. Objective: `RealPlay.setBacks` counts softFall, so tools that read `died` on 1-1 (realReach.ts,
-  plainWalk.test.ts, tools/inspect/firsttimer.ts, tools/validate/play.ts) can tell a failed jump from a made one now that no fall in
-  1-1 dies on either setting. Files: src/game/realPlay.ts and those readers. Done: a planted fall in 1-1 Normal is counted.
-- softFall.test.ts's two zone tests are hosted in 1-1; I set the toy's `softOn = false` (3 lines, assertion kept). A plain host stage
-  for toys would be cleaner.
+## 4. Suggestions
+- App.tsx (owner: UI): a web back swipe while the offer is up runs guardBack and opens the pause menu over it. Ask the back stack first
+  in onBackSwipe as androidBack does. Done when a browser history.back() on the offer answers no.
+- roadmapcheck can't run here ("shallow clone, proofs cannot be checked"); CI runs it with fetch-depth 0. knowncheck PASS.
+- dotGuide.ts: a struggle line cut by a first-time lesson is not re-queued. Done when a test shows it comes back.
 
-## 5. Unresolved
-- NOT run (the lean ruling; the Critic and the promote run them): the full suite, vite build, drawcheck, clipcheck, artcheck, the
-  other gates, and lockall. Expect the lock to show 1-1 changed in its gen2 record only (`softFalls`, and the brief copy).
-- softFall.test.ts was edited though the packet's file list names only "tests beside each file you touch": it is engine.ts's test.
-- Evidence files sit in reference/qa-reports/R-165.86/ (not in the packet's WRITE list; delete at will).
-- Under a rise he can be set back on the low catch branch if he touched it on the way down (read from the layout and softAt's rule, not shot; as Easy does today).
+## 5. Unresolved: the NO picture's pose (above) waits on the story keeper's word.
+- Found and fixed on the way: importing w1.ts's section tables into the engine pushed the main chunk to 4.48 MB (over the 4 MiB rule);
+  the move a piece needs is now read from the piece as laid (pieceMoveLaid, tested).
 
-## 6. Method update
-Propose for methods/stage-fix.md: "A no-life-lost test in RealPlay must delete the harness's loseLife stub and carry a planted run
-that loses lives." Proof: on origin/main the sweep with the stub passes; without it, 9 lives go on seed 3747.
+## 6. Method update (methods/stage-fix.md): "A Dot line is done when it is in her bubble (`.dg-bub-body`) in the browser, on Help and Tips."
 
-## 7. Turnover note
-reference/handoffs/engine-core.md rewritten in this commit.
+## 7. Turnover note: reference/handoffs/engine-core.md rewritten (commit 132134b2).
+## Full suite (3 shards, final code): PENDING
