@@ -149,6 +149,12 @@
   the rock, offer fits both ways. Sent to the story keeper (OK or fix) and to the A2 Critic as its new head; suite not re-run by Engine.
 - 11-11 4:27 AM ET: A2 STORY: OK from the story keeper on 324cd3cc (all four fixes, both orientations, words match §9). A2 now waits
   only on its Critic (session_01FhBbYLqBBBn59SLSAARu26).
+- 11-11 4:43 AM ET: A2 REJECT (Critic session_01FhBbYLqBBBn59SLSAARu26 on 11f55f3e; 324cd3cc does not touch it): grown steps make
+  mushroom pieces harder (roadOf drops ground under resting platforms, ignores mushrooms; one step of rise - 60 leaves faces over 60 on
+  rises over 120; 1,288 boxes over 120 px in 276 builds). Lead ruling sent as attempt 3: mushrooms count as road; rises over 120 get a
+  stair (no floating box, faces <= 60, treads >= 60 wide); tests over 138 seeds x 2; plus App.tsx:1053 back swipe and one touch flight
+  for the "Flick up" repeat. Everything else in A2 checked fine (rungs flown with the real loseLife, Dot's lines word for word, suite
+  2501/0, main chunk 4,171,195 B: only 23 KB under the 4 MiB limit, the next import breaks it). Defect D39 logged (the lead's ruling).
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,

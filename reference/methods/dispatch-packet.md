@@ -24,6 +24,7 @@ note is in it). You are on the team: push back, suggest, go beyond inside your W
 - READ: <exact paths>
 - WRITE: <exact paths>   (anything else is out of scope)
 ## Definition of done (the Critic checks each)
+<!-- D39: a help or assist that changes the stage (steps, pads, boxes) gets a done-item that flies every seed, both settings, with plain jumps AFTER it is applied, and the packet names its tallest case and the number it gives. D37: every behaviour claim in Frozen inputs is proved by a run, not a reading. -->
 1. <a measurable check: a test name, a gate, a number with tolerance>
 2. tsc clean; the named tests pass; the gates that apply pass.
 ## Return (lean: reference/roles/README.md "Lean output")

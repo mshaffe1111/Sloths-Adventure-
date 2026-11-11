@@ -47,5 +47,6 @@ screen, upright and sideways, before you call it done. You have shipped PixiJS a
 - Escalating help (reference/research/STUCK-PLAYERS.md): quiet help on Easy after 3 falls, an offer after 5 at one flag.
 
 ## Traps
+- Help that changes the stage (grown steps, pads, boxes) can make a piece HARDER: fly every seed, both settings, with plain jumps after it is applied; no box floats; no face over the plain jump's climb. (D39)
 - A test may require properties of a pinned roll (counts, kinds), never its exact x positions.
 - CI turns colour on: a gate that reads tool output strips ANSI codes (kbdcheck failed the deploy this way).

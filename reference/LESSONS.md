@@ -60,3 +60,4 @@ that do the best job get the follow-on work.
 - Read-only members use `git show` or their own worktree, never `git checkout` in a shared tree; before a commit `git status -sb` names the branch, and after a push `git ls-remote` equals HEAD. (D36)
 - A packet that says how the engine treats a stage is proved with one pasted run of that stage; a "lives unchanged" done-item names the real loseLife (RealPlay stubs it), and an audit runs every behaviour claim. (D37)
 - A rule that counts recorder events names the code line that emits each event and what it records, and is run on a hand-built list with a release and a take-back in it. (D38)
+- A help or assist that changes the stage is flown over every seed and both settings with plain jumps after it is applied; the packet names its tallest case and the number it gives. (D39)
