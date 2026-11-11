@@ -1,0 +1,6 @@
+known-list check against 181d2846
+✓ tools/perf/clipknown.json: 44 entries
+✓ src/game/playerText.known.json: 4 entries
+✓ tools/perf/limits.json: 14 entries
+✓ src/game/artUse.allow.json: 210 entries
+PASS

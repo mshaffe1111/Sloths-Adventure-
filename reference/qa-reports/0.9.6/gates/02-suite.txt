@@ -1,0 +1,32 @@
+# full suite, 3 shards, on 06bbd29f (summary lines; the full TAP logs are 225-236 KB each and stay in the clerk's scratchpad)
+## shard 1/3
+# tests 891
+# suites 0
+# pass 890
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 1
+# duration_ms 922684.045212
+EXIT 0 secs 923
+## shard 2/3
+# tests 875
+# suites 0
+# pass 875
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1352484.010492
+EXIT 0 secs 1353
+## shard 3/3
+not ok 659 - 4-3 in the real engine: everything picked up, the shrine reached, nowhere he is stranded # TODO the engine's wall check has no bottom, so a boulder on a ledge is a wall on the floor below it, and walking there pushes it: the pool's log is never reached (the boulder fixer)
+# tests 796
+# suites 0
+# pass 795
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 1
+# duration_ms 1616333.207335
+EXIT 0 secs 1617
