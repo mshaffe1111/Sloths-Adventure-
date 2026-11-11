@@ -21,9 +21,15 @@ engine has easy access to it."
 - PART B: everything the game ships today: every image under src/assets (each atlas frame or sprite separately, by the atlas's own
   frame list where it has one), every kit slot in tools/engine/catalog-map.json, src/game/stageArtData.ts, the world props and dress
   atlases, backdrops (sky/far/mid/near and their variants), hazards, animals and enemies, characters, UI art. Output
-  reference/art/catalog-game.csv, plus the 18 1-1 pieces (source 4). For pieces the engine uses today, engine_slot and footing are read
+  catalog-game-B<n>.csv per part (below), plus the 18 1-1 pieces (source 4, B1). For pieces the engine uses today, engine_slot and footing are read
   from the code (file:line), not guessed (D37); `worlds` says where it is USED now and where it COULD be used, separately.
-- Part A, when B has pushed, runs catalog_master.py to merge both into CATALOG-MASTER.csv/.md.
+- PART B is split four ways (the packet Critic counted 903 images and about 3,076 atlas frames; about 3 h each, same columns, one
+  row group per atlas with frames inheriting what they share in one draw path): B1 Worlds 1-4 props/dress/hazards + the 1-1 atlas
+  (owns the 18 rows: A skips any art-director manifest stem that is in w1-cut.json); B2 Worlds 5-10 (w6to10, orch and the rest);
+  B3 every backdrop (sky/far/mid/near and variants, near strips: paintedBackdrops.ts strip and line); B4 characters, animals and
+  enemies, UI, icons, story and photos (worlds = where shown; no "could use" tags). Each writes reference/art/catalog-game-B<n>.csv on
+  branch t-art-catalog-b<n> and messages part A its head.
+- Part A, when B1-B4 have pushed, runs catalog_master.py to merge everything into CATALOG-MASTER.csv/.md.
 ## Sources for part A
 1. art-raw-2026-11-07: cut/catalog.csv (91 kept; world_fit W1/W2/both)
 2. art-director: reference/art/cut/manifest.json (107 keep, 4 hold; tags by kin)
@@ -31,7 +37,7 @@ engine has easy access to it."
 4. (part B) The 18 pieces already in 1-1's atlas (w1CutArt.ts / w1-cut.json): all 18 are ALREADY rows of the art-director manifest
    (source 2, from gemini-2026-11-05): set status "in game" on those rows, keyed by file stem = atlas name; never add them twice.
    Print every count as sources minus overlap.
-## Build (part A branch t-art-catalog-a, part B t-art-catalog-b, both from origin/t-c2-art-cut; WRITE: reference/art/catalog-cut.csv
+## Build (part A branch t-art-catalog-a, parts B t-art-catalog-b1..b4, both from origin/t-c2-art-cut; WRITE: reference/art/catalog-cut.csv
 ## (A), reference/art/catalog-game.csv (B), reference/art/CATALOG-MASTER.csv/.md and tools/art/catalog_master.py (A),
 ## reference/art/master-sheets/ (both), REPORT.md (each its own); nothing under src/)
 1. tools/art/catalog_master.py merges every source into ONE table, one row per kept piece (holds and rejects listed separately), the
@@ -61,4 +67,4 @@ never W1; queries return what the CSV says). It changes no stage (lock 102/102 u
 does that when 1-1 is ready to finish). It stays OUT of the main JS chunk: loaded with the stage build (buildAhead.ts) or a dynamic
 import, chunkcheck's budget held. A packet of its own, written when A and B have pushed.
 ## Return
-Push, ls-remote, REPORT.md (7 sections, 40 lines), ONE send_message to the lead (session_01FhBbYMoqqEdVR3qFjTCugy), 6 lines. Stop. Part B also messages part A its head.
+Push, ls-remote, REPORT.md (7 sections, 40 lines), ONE send_message to the lead (session_01FhBbYMoqqEdVR3qFjTCugy), 6 lines. Stop. Each B part also messages part A its head.
