@@ -7,7 +7,7 @@ both settings, tallest case named), D40 (rebased each time E0a moved; checks tak
 1. Met. Rows below; bounce: 25 → 12 sections in 1-1, 77 → 32 mushrooms; double-asking sections 41 → 18.
 2. Met. Every version with a 253-256 gap has an `easy` twin (single hops). `seedlist --check` PASS, 200 seeds, 0 refused, both settings.
 3. Normal met (practice before every test, all listed seeds). Easy: relay (a) red on its reading, PUSHBACK 1. Bounce card: (a)'s check passes it.
-4. Met, on the SHIPPED 200 seeds: relay (b) 0 rises without room either setting; 637 rises given by a mushroom 20-60 px from the face; tallest non-mushroom: TALLEST.
+4. Met, on the SHIPPED 200 seeds: relay (b) 0 rises without room either setting; 637 rises given by a mushroom 20-60 px from the face; tallest non-mushroom 281 px thin (seed 32886, w1-backstep-twist), room 584 of 400 Normal, 576 Easy; each count is per setting.
 5. Met, on the shipped 200: relay (c) 784 falls after a need, 511 put back before it, 0 past it, 273 landed on a floor.
 6. Met. List 200 (first 200 of 327 proven; cut for the chunk, §5). Lock: 101/102 unchanged, only 1-1. First run: seed 4106 (variant 11), locked, judged by --check.
 7. One line FAILS: expert Normal put-backs 0.68 vs 0.60 (PUSHBACK 2). Rescues mid/expert 0; lives 0 on Normal (real loseLife, kinds: none); expert min 162.6 s (N); middle Easy min 175.5 s.
