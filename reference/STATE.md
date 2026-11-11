@@ -340,3 +340,4 @@ Not Matt's: the pad's two coach lines (R-165.57) are the lead's call with the st
 lines); Matt sees them in the release.
 
 ## Defect log: reference/CONTINUOUS-IMPROVEMENT.md. Method index: reference/methods/README.md. Team: reference/TEAM.md.
+- 11-11 12:44 PM ET: C1 attempt 2 (a954e085) delta: 5 of 6 PASS (stills, 130 s clips, camera named, numbers on shipped 200, seedlist --check 200/0, lock 101/102 unchanged). REJECT on (4) only: hop-bounce/twin-bounce were wrongly parked (keep feel ['1-3'] / ['1-5'], unparked; Critic's round-1 wording caused it). Fix sent to C1 (session_01FhBbYKuMAy8KTe8bM5g9Tk), head goes straight to the Critic. PUSHBACK 3 ruled ACCEPT AS LAID (gFork/BEATS; lock unchanged; 1-2/1-5 re-lays re-check, D40). INT told to merge the new C1 head and push t-int-1-1 (not on remote yet).
