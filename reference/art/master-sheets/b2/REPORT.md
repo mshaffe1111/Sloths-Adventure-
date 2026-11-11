@@ -20,7 +20,7 @@ rows are one per atlas frame, `#<frame>`, the same unit as B4): dedupe on id. No
 ## 3. Status (read from the code, file:line in engine_slot/used_in)
 in game 749 | ships, frame not drawn 51 (kits' bank/fill/bankEnd/buttress outside W8; 10 meeca-night, 12 w5-props, 5 w6balt frames)
 | ready, not imported (does not ship) 2,648 (most of w6to10: W9/W10 props-made, all lairs but the Queen's, 16 of 18 creature/boss
-sheets (2,418 frames), story, gemini story poses) | needs fix 90.
+sheets (2,406 frames), story, gemini story poses) | needs fix 90.
 
 ## 4. Needs fix (looked at on the sheets)
 - 63 rows: boss-910.webp and boss-1010.webp have frame lists (boss910Data.ts, boss1010Data.ts) but no import: they never ship.
