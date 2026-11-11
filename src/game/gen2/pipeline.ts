@@ -1211,6 +1211,14 @@ export interface LayOptions {
   recent?: readonly string[];
   /** sub-block versions (versionKey) the world's earlier stages used */
   usedVersions?: readonly string[];
+  /** slot -> the most its section's exit may lie under its entry (px, up is negative): a repair that needs the route higher from
+   *  that slot on (V19b: the end above the bough window) asks the slot for a section that climbs at least this much */
+  lift?: ReadonlyMap<number, number>;
+  /** pace the climb (a roll after one the after-rules refused, R-165.120): on an up stage the lay keeps back the rise its later
+   *  nodes must make (a climb, the late rise over the bough window), and its ground joins are steps down or walks before the late
+   *  rise and never a step down after it. It changes only what the plan keeps (the section, the join's kind), so a plan laid again
+   *  is the same stage. Unset, the lay is as it always was */
+  pace?: boolean;
 }
 
 /** the start runway (nothing can hurt in the first seconds) and the shrine's bank */
@@ -1473,6 +1481,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     (used.get(t.id) ?? 0) + ahead(t.id, i) < (t.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity) &&
     // (the placement window: the slot's place among the stage's chunks, when the graph counts them)
     (!t.window || !chunkTotal || ((i + 0.5) / stageLen >= t.window[0] && (i + 0.5) / stageLen <= t.window[1])) &&
+    (opt.lift?.get(i) === undefined || exitDyOf(t) <= opt.lift.get(i)!) &&
     !opt.bans?.get(i)?.has(t.id) &&
     !opt.bans?.get(-1)?.has(t.id);
 
@@ -1495,6 +1504,25 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     const free = (t: SectionTemplate) => maxPer(t) - (used.get(t.id) ?? 0) - ahead(t.id, i);
     const need = todo.map((q) => M.sections.filter((t) => free(t) > 0 && staticFits(t, q.n, q.i) && !opt.bans?.get(q.i)?.has(t.id) && !opt.bans?.get(-1)?.has(t.id)).map((t) => t.id));
     return (c) => unfilled(need, (id) => free(byId.get(id)!) - (id === c.id ? 1 : 0));
+  };
+  // (R-165.120, pacing the climb, `opt.pace` on an up stage that counts its chunks: the rise each later slot must make whatever is
+  // chosen there (the least climb among the sections its rule allows; a node that must rise, the least of its rising ones), summed
+  // from the end. A section here overspends by what its exit leaves short of that, under the corridor's top)
+  const paced = !!opt.pace && lookAhead && upStage;
+  let riseAfter: number[] | undefined;
+  const overspent = (c: SectionTemplate, i: number): number => {
+    if (!riseAfter) {
+      const slotNode: MissionNode[] = opt.plan ? opt.plan.map((p) => nodeOf.get(p.node)!) : graph.nodes.flatMap((q) => Array.from({ length: q.count ?? 1 }, () => q));
+      const least = slotNode.map((q, k) => {
+        if (!q) return 0;
+        const first = k === 0 || slotNode[k - 1] !== q;
+        const mustClimb = first && (!!q.mustRise || (endHigh && q.job === 'signature'));
+        const dys = M.sections.filter((t) => staticFits(t, q, k) && !opt.bans?.get(-1)?.has(t.id)).map(exitDyOf).filter((d) => !mustClimb || d < 0);
+        return dys.length ? Math.max(0, -Math.max(...dys)) : 0;
+      });
+      riseAfter = least.map((_, k) => least.slice(k + 1).reduce((a, b) => a + b, 0));
+    }
+    return Math.max(0, M.corridor.top - (entryY() + exitDyOf(c) - (riseAfter[i] ?? 0)));
   };
   let lastLoose = '';
   // (the slot's place in its node, for the cadence: a hard node ramps through its sections, then its last one cools)
@@ -1581,11 +1609,15 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     // (R-165.120, the pool's look-ahead: the pick stands unless taking it leaves a later slot with no section its rule allows, when
     // another candidate here would not: the scarce section is kept for the node that has nothing else. The pick's own order decides
     // among those that keep the pool whole; with none, the pick stands and the roll fails by name, as before)
+    // (and, pacing the climb: nor unless it spends rise the later nodes must make (`overspent`); the pool first, then the pace)
     const left = lookAhead ? leftShort(n, i) : undefined;
-    if (!left || !left(t)) return t;
+    const cost = (c: SectionTemplate): [number, number] => [left ? left(c) : 0, paced ? overspent(c, i) : 0];
+    const less = (a: [number, number], b: [number, number]) => a[0] < b[0] || (a[0] === b[0] && a[1] < b[1]);
+    let least = cost(t);
+    if (!least[0] && !least[1]) return t;
     const rest = [...pool, ...cands.filter((c) => !pool.includes(c) && weight(c) > 0).sort((a, b) => weight(b) - weight(a))].filter((c) => c !== t);
-    let pick = t, least = left(t);
-    for (const c of rest) { const k = left(c); if (k < least) { pick = c; least = k; } if (!least) break; }
+    let pick = t;
+    for (const c of rest) { const k = cost(c); if (less(k, least)) { pick = c; least = k; } if (!least[0] && !least[1]) break; }
     return pick;
   };
 
@@ -1637,6 +1669,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         const walkW = n.dials ? (n.dials.tempo === 'hurry' ? 0.6 : 1.5) : 1;
         const r0 = jrng() * (walkW + stepW + pitW2);
         join = fixed ? fixed.join : r0 < walkW ? 'walk' : r0 < walkW + stepW ? 'step' : 'pit';
+        // (pacing the climb: a step leans to the corridor's middle, so under the middle it climbs and over it it comes down. Before
+        // the late rise a step that would climb is a walk (the climbs ahead need that height) and a walk over the middle is a step
+        // down (it gives height back); after the late rise a step that would come down is a walk, so the end stays above the bough
+        // window. Only the KIND of join changes, which the plan keeps: a plan laid again is the same stage)
+        if (!fixed && paced && join !== 'pit') {
+          const down = cur.y + L.exit.y <= (M.corridor.top + M.corridor.bottom) / 2;
+          join = rise.length ? (down ? 'walk' : join) : down ? 'step' : 'walk';
+        }
       } else join = fixed ? fixed.join : 'jump';
       const j = jrng();
       let dx = 0;
@@ -2939,6 +2979,35 @@ function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
   }
 }
 
+/**
+ * V19b's repair, from the gate's own numbers on the built stage (storyChecks endAboveWindow: the end against the route's top where the
+ * bough window begins, at WINDOW_AT of the way). The end must come up by what it lacks, 20 px clear. The LAST slot after the window
+ * whose pool holds a section that climbs that much more than the one laid there takes it (`lift`: the most its exit may lie under its
+ * entry): the exit's step up for a small lack, the signature's higher climb for a large one. But first, when the section the window
+ * stands in sets the bar by its own high point (it climbs and comes back down), that section is swapped. With neither, nothing here
+ * repairs it and the stage is rolled again.
+ */
+function windowFix(B: Built, plan: readonly PlanSlot[], graph: MissionGraph, M: WorldManifest, budget: StageBudget, required: ReadonlySet<string>): { slot: number; lift?: number } | undefined {
+  const w = endAboveWindow(B.stage as never);
+  const secs = B.laid.sections;
+  let ws = secs.findIndex((q) => w.windowX >= q.x0 && w.windowX <= q.x1);
+  if (ws < 0) ws = secs.findIndex((q) => q.x0 > w.windowX);
+  if (w.pass || ws < 0 || !Number.isFinite(w.windowY)) return undefined;
+  // (the section the window stands in climbs and comes back down: its high point is the bar, and it is swapped first)
+  if (w.windowY < secs[ws].exit.y - 30 && !required.has(secs[ws].template)) return { slot: ws };
+  const lack = w.endY - w.windowY + 20;
+  const fits = poolFits({ M, budget, nodes: graph.nodes, stageLen: graph.nodes.every((n) => n.count) ? plan.length : 0, exitDy: (t) => t.exitDy });
+  const nodeOf = new Map(graph.nodes.map((n) => [n.id, n]));
+  const laidN = (id: string) => plan.filter((p) => p.template === id).length;
+  for (let k = secs.length - 1; k > ws; k--) {
+    const n = nodeOf.get(secs[k].node);
+    if (!n || required.has(secs[k].template)) continue;
+    const want = Math.round(secs[k].exit.y - secs[k].entry.y - lack);
+    if (M.sections.some((t) => t.id !== secs[k].template && t.exitDy <= want && fits(t, n, k) && laidN(t.id) < (t.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity))) return { slot: k, lift: want };
+  }
+  return undefined;
+}
+
 /** one rule a built roll breaks, and the slot to change for it when the rule names a place (a plan index) */
 export interface Unmet { line: string; slot?: number }
 
@@ -3078,10 +3147,11 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     let grew = false;
     let lastMeeting: Gen2Stage | null = null;
     let swapped = false;
+    const lift = new Map<number, number>();
     for (let it = 0; it < 24; it++) {
       let b: Built;
       try {
-        b = assemble(req, budget, graph, seed, { bans, recent: req.recent, usedVersions: req.usedVersions, plan, open });
+        b = assemble(req, budget, graph, seed, { bans, recent: req.recent, usedVersions: req.usedVersions, plan, open, lift, pace: !!refused });
       } catch (e) {
         // (a slot the after-rules' swaps left with no section: this roll's repairs are spent, and the stage is rolled again; a build
         // that throws with no such swap behind it throws as it always did)
@@ -3201,16 +3271,25 @@ function buildRolled(req: BuildRequest): Gen2Stage {
       // on the built stage (rollUnmet) are the search's own now. One that names a place swaps the section there, as a failed check does;
       // the rest roll the stage again. A roll with nothing to answer returns here exactly as it always did)
       if (graph.id && eb) {
-        const unmet = [...rollUnmet(st, req), ...rollUnmet(eb.stage, easyReq)];
+        const unmet = [...rollUnmet(st, req).map((u) => ({ ...u, of: b })), ...rollUnmet(eb.stage, easyReq).map((u) => ({ ...u, of: eb! }))];
         if (unmet.length) {
+          if (refused) refused.gen2.repairs.push({ kind: 'reroll', note: `roll ${rr}, try ${it + 1}: ${unmet[0].line}` });
           refused ??= st;
-          const at = unmet.find((u) => u.slot !== undefined && b.laid.plan[u.slot] && !required.has(b.laid.plan[u.slot].template));
-          if (at) {
-            swapOut(at.slot!, at.line, true);
+          // (each rule's own repair: V19b by its numbers (windowFix), a rule that names a place by a swap there; a required section
+          // is never swapped. One rule with no repair and the stage is rolled again: a swap would not answer it)
+          const fixes = unmet.map((u) => {
+            if (/^V19b/.test(u.line)) return windowFix(u.of, b.laid.plan, graph, M, budget, required);
+            return u.slot !== undefined && b.laid.plan[u.slot] && !required.has(b.laid.plan[u.slot].template) ? { slot: u.slot } : undefined;
+          });
+          const k = fixes.every((f) => f) ? 0 : -1;
+          if (k >= 0) {
+            const f = fixes[k]!;
+            if (f.lift !== undefined) lift.set(f.slot, f.lift);
+            swapOut(f.slot, unmet[k].line, true);
             swapped = true;
             continue;
           }
-          repairs.push({ kind: 'reroll', note: `refused after its check: ${unmet[0].line}` });
+          repairs.push({ kind: 'reroll', note: `refused after its check: ${unmet[fixes.findIndex((f) => !f)].line}` });
           break;
         }
       }

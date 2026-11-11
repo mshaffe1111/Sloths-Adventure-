@@ -2,11 +2,15 @@
 // rolls each refusing rule stops. A fresh seed is one the proven list never saw: the range starts above the list's highest by default.
 // Easy is Normal's stage under Easy's rules (pipeline.buildRolled), so an Easy roll carries every Normal error; the Easy column counts a
 // rule when the Easy build names it, and "Easy only" when the Normal build of the same seed does not name that rule.
-//   npx tsx tools/engine/yield.ts 1-1 [--from 50001] [--count 200] [--json out.json] [--min 50]
+//   npx tsx tools/engine/yield.ts 1-1 [--from 50001] [--count 200] [--json out.json] [--min 50] [--par 4]
+//   --par N: the range split over N processes (the same table: each seed's roll does not depend on the others)
 //   --min P: exit 1 when either setting's clean rate is under P percent (a gate's floor; the default 0 only reports)
 // Counted: `clean` = gen2.errors empty; `stopped by` = rolls where the rule appears at least once (a roll with three V19b lines counts
 // once); `first` = rolls where the rule is the roll's first error. yield.test.ts proves each counter on planted lines.
 import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { spawn } from 'node:child_process';
 import type { Gen2Stage, WorldKit } from '../../src/game/gen2/types.ts';
 
 /** a refusal line's rule, by name: the part of the line that says WHICH rule refused, never its numbers */
@@ -82,17 +86,36 @@ async function main(): Promise<void> {
   const perSeed: Array<{ seed: number; normal: string[]; easy: string[] }> = [];
   const sections = { all: new Map<string, number>(), refused: new Map<string, number>() };
   const t0 = Date.now();
-  for (let seed = from; seed < from + count; seed++) {
+  const raw = arg('--raw', ''), par = Math.max(1, Number(arg('--par', '1')));
+  type Raw = Array<{ seed: number; normal: string[]; easy: string[]; plan: string[] }>;
+  let rolls: Raw = [];
+  if (par > 1 && !raw) {
+    // (each child lays its share and writes each seed's lines; the parent counts them, so the counters are the same code either way)
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'yield-'));
+    const share = Math.ceil(count / par);
+    const parts = await Promise.all(Array.from({ length: par }, (_, k) => new Promise<Raw>((done, fail) => {
+      const a = from + k * share, c = Math.min(share, from + count - a), file = path.join(dir, `${k}.json`);
+      if (c <= 0) return done([]);
+      spawn(process.execPath, [...process.execArgv, process.argv[1], id, '--from', String(a), '--count', String(c), '--raw', file], { stdio: ['ignore', 'ignore', 'inherit'] })
+        .on('exit', (code) => (code === 0 ? done(JSON.parse(fs.readFileSync(file, 'utf8')) as Raw) : fail(new Error(`yield: the worker for seeds ${a}.. exited ${code}`))));
+    })));
+    rolls = parts.flat();
+    fs.rmSync(dir, { recursive: true, force: true });
+  } else for (let seed = from; seed < from + count; seed++) {
     const one = (difficulty: 'normal' | 'easy'): { errors: string[]; st?: Gen2Stage } => {
       try { const st = buildGen2Stage({ config, kit: kit(), seed, difficulty }); return { errors: st.gen2.errors ?? [], st }; } catch (e) { return { errors: [`THREW: ${(e as Error).message}`] }; }
     };
     const n = one('normal'), e = one('easy');
-    errs.normal.push(n.errors); errs.easy.push(e.errors);
-    errs.easyOnly.push(easyOnly(n.errors, e.errors));
-    perSeed.push({ seed, normal: [...new Set(n.errors.map(ruleOf))], easy: [...new Set(e.errors.map(ruleOf))] });
-    for (const p of e.st?.gen2.plan ?? []) {
-      sections.all.set(p.template, (sections.all.get(p.template) ?? 0) + 1);
-      if (e.errors.length) sections.refused.set(p.template, (sections.refused.get(p.template) ?? 0) + 1);
+    rolls.push({ seed, normal: n.errors, easy: e.errors, plan: (e.st?.gen2.plan ?? []).map((p) => p.template) });
+  }
+  if (raw) { fs.writeFileSync(raw, JSON.stringify(rolls)); return; }
+  for (const { seed, normal, easy, plan } of rolls) {
+    errs.normal.push(normal); errs.easy.push(easy);
+    errs.easyOnly.push(easyOnly(normal, easy));
+    perSeed.push({ seed, normal: [...new Set(normal.map(ruleOf))], easy: [...new Set(easy.map(ruleOf))] });
+    for (const t of plan) {
+      sections.all.set(t, (sections.all.get(t) ?? 0) + 1);
+      if (easy.length) sections.refused.set(t, (sections.refused.get(t) ?? 0) + 1);
     }
   }
   const N = tally(errs.normal), E = tally(errs.easy), EO = tally(errs.easyOnly);
