@@ -239,20 +239,20 @@
  },
  "audited": {
   "branch": "t-design-1-2",
-  "head": "50e7905d",
+  "head": "876d0c73",
   "cites_at": "t-int-1-1@53bd446a"
  },
  "status": "REJECT",
  "verdicts": {
-  "CONTENT-1-2-relay.md": "REJECT (1 line: CONTENT:272)",
-  "ENGINE-1-2-routing.md": "REJECT (the same line: ENGINE:217, 220-221)"
+  "CONTENT-1-2-relay.md": "REJECT (1 line: CONTENT:274)",
+  "ENGINE-1-2-routing.md": "REJECT (the same line: ENGINE:220, 223-224)"
  },
  "violations": [
   {
    "packet": "both",
    "n": 1,
    "file": "reference/packets/2026-11-11/ENGINE-1-2-routing.md",
-   "line": "ENGINE:217, 220-221; CONTENT:272; src/game/gen2/worlds/w1.ts:158, 1504; src/game/gen2/types.ts:278-279",
+   "line": "ENGINE:220, 223-224; CONTENT:274; src/game/gen2/worlds/w1.ts:158, 1504; src/game/gen2/types.ts:278-279",
    "rule": "off the road is main: false; a stump has no main flag",
    "evidence": "out/mainflag12.txt: of 285 pickups written in the 11 reused sections, 111 on main: true, 38 on main: false, 136 on a piece with no flag",
    "fix": "\"a piece marked main: false\" in ENGINE item 6 and its done-tests; \"any piece not marked main: false\" in CONTENT done-item 4"
@@ -375,9 +375,7 @@
   ],
   "content_closed_in_attempt6": true
  },
- "notes_content": [
-  "CONTENT:184: the bloom rule failure is expected in phase 1 only"
- ],
+ "notes_content": [],
  "attempt6": {
   "audited": {
    "branch": "t-design-1-2",
