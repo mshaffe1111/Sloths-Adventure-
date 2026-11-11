@@ -233,8 +233,8 @@ never raise the quota.
   blooms by its id (`CLASSIC_BLOOMS`, vectorArt.ts:1013-1020, drawn at :1094-1095): two are hibiscus and one is a pink orchid.
   A third brief field, `bloomSprite?: number` (a painted flower's sheet number, flowerSprites.ts): where a brief sets it the
   pipeline stamps it on each `fruit` it lays, and the draw paints THAT flower from the painted atlas, standing on its piece
-  (its base on the piece's top, no bob, as a `find` stands, vectorArt.ts:1078-1080), about 40 px tall (0.45 of Pokey's drawn
-  89.1 units, D41); while the atlas loads it draws nothing, never a vector bloom. Content sets `bloomSprite: 76` on
+  (its base on the piece's top, no bob, as a `find` stands, vectorArt.ts:1078-1080), 32 px tall (the inventory's own scale for f76, 0.36 of Pokey's drawn
+  89.1 units, D41: the size a painted flower pickup has on every other stage; the petal is 27 px); while the atlas loads it draws nothing, never a vector bloom. Content sets `bloomSprite: 76` on
   `briefs['1-2']` (the inventory's `flowers-atlas#f76`, the golden allamanda with its leaves; in World 1's pool,
   flowerSprites.ts:22). A `fruit` on a stage with no such field draws as today. Done-test: a draw test that a 1-2 `fruit`
   asks for frame f76 and never `CLASSIC_BLOOMS` or the petal; the still below.
@@ -243,7 +243,9 @@ never raise the quota.
   draws what it does today.
 - Gates: lockall: nothing differs, 8-2 named in the output as unchanged. A still of a bloom on a bough over low petals in 1-2, both ways, sent
   to the lead with item 2's still: the bloom reads as a growing yellow flower, the petal as Meeca's loose pink petal
-  (vectorArt.ts:1092); if a child could mix them up, say so plainly and name what the art pass must change.
+  (vectorArt.ts:1092); if a child could mix them up, say so plainly and name what the art pass must change. The still shows the bloom beside Pokey
+  and a petal. The golden allamanda is also one of World 1's ordinary painted flowers (the same pool): if one stands as plain
+  decor in a 1-2 still near a bloom that counts, name it in REPORT.md (the Critic's two notes on its PASS at d9267c6b).
 
 **7. Routing reads the listed-stage table, so any listed stage plays from gen2; 1-2 is the first moved by a row. Delete the old 1-2; help where data marks it. (Push 3, on Content's head, the lead's word first)**
 - The game reads item 1's table wherever it says '1-1' today for "a stage rolled from the proven list" (about ten places):
@@ -303,5 +305,5 @@ PUSHBACK.md and one message, then stop.
 attempt 4 at 7ed328b6 applied the lead's rulings of 4:58 PM ET, item 0 struck, and PASSED with two notes, written in at 3864e805;
 attempt 5 at 65d31898 applied the lead's standing rule D43: each item for any stage from data, proven on 1-2, with its "Any stage"
 proof; the Critic: sound, three wording fixes, written in 2026-11-11 5:35 PM ET with the story keeper's must (item 6: petals low by a brief
-field), and made exact to the Critic's words 2026-11-11 5:36 PM ET (the lead, 5:34 PM ET); 2026-11-11 5:38 PM ET: item 6's bloom sprite (the story keeper); 2026-11-11 5:39 PM ET: the Critic's last line (attempt 7): "a piece marked `main: false`".
+field), and made exact to the Critic's words 2026-11-11 5:36 PM ET (the lead, 5:34 PM ET); 2026-11-11 5:38 PM ET: item 6's bloom sprite (the story keeper); 2026-11-11 5:39 PM ET: the Critic's last line (attempt 7): "a piece marked `main: false`". PASSED by the Critic at d9267c6b (t-critic-1-2-packet@65523e00, REPORT-attempt8.md); its two builder notes on item 6 (the bloom's size, the allamanda as decor) written in 2026-11-11 5:41 PM ET, nothing else changed.
 Each line is answered in DESIGN-1-2-notes.md §9)
