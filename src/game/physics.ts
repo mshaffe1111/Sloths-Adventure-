@@ -5,6 +5,10 @@
  */
 import { GLIDE } from './glide.ts';
 
+/** a solid block this tall or taller is a wall he cannot walk through (engine.ts's side-wall pass); a lower one is no wall (he walks past
+ *  it), and its lip is caught as a thin piece's (LIP_CATCH). gen2 lays every 1-1 hop rock at least this tall (pipeline.ts, R-165.122) */
+export const WALL_H = 50;
+
 export const PHYS = {
   maxRun: 285,
   groundAcc: 2600,

@@ -18,7 +18,7 @@ import { drawStiltDecor, drawStiltLedges } from './w6StiltArt.ts';
 import { recorder } from './playRecorder.ts';
 import { dotLogId } from './recorderLabels.ts';
 import { liftY, pickFloor } from './lift.ts';
-import { StuckWatch, stuckLine } from './stuckHelper.ts';
+import { StuckWatch, stuckLine, TryWatch } from './stuckHelper.ts';
 import { W5_STEP_HELP, W5_STEP_HELP_KEYS, W5_STEP_HELP_PAD } from './w5Lines.ts';
 import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
@@ -54,7 +54,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
+import { ASSIST, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, WALL_H, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, HANG_PICK, ROPE_FROM, ROPE_GRAB, ROPE_SLIDE, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
@@ -293,6 +293,8 @@ export const FACE_NEAR = 90;
 /** World 5: how far over a ledge's edge the lip's hoist puts his body (px past the face), so a foot is on it (the floor check wants ~8) */
 export const LIP_IN = 13;
 const STUCK_HOLD = 7;
+/** how far ahead (px, his body's edge to the face) a wall is the one a jump tries for (the help ladder's tries, R-165.119) */
+const TRY_NEAR = 90;
 
 /** what the shrine says when Pokey steps into it, one line per world in its own voice (polish report ST-5: it said "SANCTUARY UNLOCKED!
  * VICTORY!" on every stage of every world, and World 10's fortress is no sanctuary) */
@@ -847,6 +849,7 @@ export class GameEngine {
     this.vines = this.currentStage.vines;
     // (the help ladder, helpLadder.ts: 1-1 only, its pieces as laid; off on every other stage until help.md §5 has passed)
     this.help = config.id === '1-1' && softFallStage(this.currentStage) && this.currentStage.meta?.pieces?.length ? new HelpLadder(isEasy() ? 'easy' : 'normal', this.currentStage.meta.pieces, undefined, (pc) => this.canGrowAt(pc)) : null;
+    this.tries = new TryWatch();
     setHelpLadder(this.help);
     // each liana's own swing: its size (neighbours' swings never meet) and its place in the swing (physics.ts swingSetup)
     swingSetup(this.vines);
@@ -2325,7 +2328,7 @@ export class GameEngine {
         const half = 19;
         const prevX = p.x - (p.vx + this.windV + this.bossShove + this.bossGust) * dt;
         for (const plat of this.platforms) {
-          if (plat.broken || plat.type !== 'solid' || plat.height < 50) continue;
+          if (plat.broken || plat.type !== 'solid' || plat.height < WALL_H) continue;
           // (not when he stands on it or above its top, nor when he is wholly under it: a boulder up on a shelf, World 4, is no wall to him
           // on the ground under the shelf, and he cannot push it from below)
           if (!blockBeside(p.y, p.height, plat)) continue;
@@ -2443,7 +2446,7 @@ export class GameEngine {
         if (p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y) return true;
         // Meeca's stage: a thin log (no face to hoist up, LIP_CATCH) caught at the top of a jump with her feet just under its top and her
         // middle over it. QA 2026-10-31, the blind tester sideways: "level with the top of the log, then dropped through it", twice
-        return !!this.mc && plat.height < 50 && plat.type === 'solid' && !p.climbing && p.vy >= -LIP_CATCH.v && playerFeet > plat.y && playerFeet <= plat.y + LIP_CATCH.px && p.x > plat.x + LIP_CATCH.inside && p.x < plat.x + plat.width - LIP_CATCH.inside;
+        return !!this.mc && plat.height < WALL_H && plat.type === 'solid' && !p.climbing && p.vy >= -LIP_CATCH.v && playerFeet > plat.y && playerFeet <= plat.y + LIP_CATCH.px && p.x > plat.x + LIP_CATCH.inside && p.x < plat.x + plat.width - LIP_CATCH.inside;
       });
       // two at the same height (a basket flush on the path at its bottom stop): the one under his middle, a moving one first (lift.ts),
       // so a lift never rises without him
@@ -2519,6 +2522,8 @@ export class GameEngine {
         // (standing past a piece the help ladder counts resets it: one compare, helpLadder.ts stood)
         if (g && this.help) this.help.stood(p.x);
       }
+      // (a failed try at a wall counts on the help ladder as a put-back does, R-165.119)
+      if (this.help) this.helpTries();
       // (the water a stage draws, proto.water: a splash where he goes in, once, then the stage's own fall)
       const zone = this.proto?.water?.find((z) => p.x > z.x0 && p.x < z.x1);
       if (zone && this.splashedIn !== zone && !p.grounded && p.vy >= 0 && p.y > zone.y + 4 && p.y < zone.y + 120) {
@@ -5056,11 +5061,47 @@ export class GameEngine {
     void import('../components/HelpOffer.tsx').then((m) => m.showHelpOffer(o, answer));
   };
 
+  /**
+   * The help ladder's tries (R-165.119; ENGINE-AUDIT-B B-01): at the double's teach face a miss lands him back on the ground he left, no
+   * fall, so before this no rung ever fired there. Each failed try at a wall (stuckHelper.ts TryWatch) is counted at the piece beyond
+   * the face, on the same count as the put-backs. Not cosmetic: RealPlay and the bots run it as the game does.
+   */
+  private tries = new TryWatch();
+  private helpTries() {
+    const p = this.player;
+    const ground = p.grounded || p.climbing || p.isVineSwinging || !!p.hanging;
+    const held = this.input.state.right && !this.input.state.left ? 1 : this.input.state.left && !this.input.state.right ? -1 : 0;
+    const at = this.tries.tick({ grounded: ground, x: p.x, y: p.y, vx: p.vx, held, face: p.grounded ? this.faceAhead() : null });
+    if (at === null) return;
+    const dir = p.facing >= 0 ? 1 : -1;
+    recorder.event('helpTry', Math.round(at));
+    this.helpActs(this.help!.tried(at + dir));
+  }
+  /** a wall just ahead of him on the ground (its near x and the way he faces it): a solid block he cannot walk through or be hoisted onto
+   *  (its top more than the mantle over his feet) and no taller than a double climbs, standing down to his feet, within TRY_NEAR px */
+  private faceAhead(): { x: number; dir: 1 | -1 } | null {
+    const p = this.player;
+    const dir: 1 | -1 = p.facing >= 0 ? 1 : -1;
+    for (const q of this.platforms) {
+      if (q.type !== 'solid' || q.broken || q.height < WALL_H || this.grown.includes(q)) continue;
+      const near = dir > 0 ? q.x - (p.x + 19) : p.x - 19 - (q.x + q.width);
+      if (near < -2 || near > TRY_NEAR) continue;
+      const up = p.y - q.y;
+      if (up > this.forgive.mantle && up <= DOUBLE_RISE + 10 && q.y + q.height >= p.y - 12) return { x: dir > 0 ? q.x : q.x + q.width, dir };
+    }
+    return null;
+  }
+
   /** a put-back in 1-1: the ladder counts it, and whatever rung it reaches happens now */
   private helpPutBack(x: number) {
+    this.tries.reset();
+    this.helpActs(this.help!.putBack(x));
+  }
+  /** what the ladder answered (a put-back's or a try's), carried out now */
+  private helpActs(acts: HelpAct[]) {
     const help = this.help!;
     const s = help.setting === 'easy' ? 'E' : 'N';
-    for (const a of help.putBack(x)) {
+    for (const a of acts) {
       recorder.event('help', `${a.rung} ${a.piece.k} ${a.count} ${s}`);
       if (a.rung === 'move') this.helpSay(moveLine(this.pieceMove(a.piece), lessonInputMode()), 6);
       else if (a.rung === 'step') {
@@ -6202,7 +6243,7 @@ export class GameEngine {
   private faceBeside(dir: -1 | 1): boolean {
     const p = this.player;
     for (const q of this.platforms) {
-      if (q.type !== 'solid' || q.broken || q.height < 50) continue;
+      if (q.type !== 'solid' || q.broken || q.height < WALL_H) continue;
       const near = dir > 0 ? q.x - (p.x + 19) : p.x - 19 - (q.x + q.width);
       if (near < -2 || near > FACE_NEAR) continue;
       const rise = p.y - q.y;
@@ -6215,7 +6256,7 @@ export class GameEngine {
   private stepAt(dir: -1 | 1): boolean {
     const p = this.player;
     for (const q of this.platforms) {
-      if (q.type !== 'solid' || q.broken || q.height < 50) continue;
+      if (q.type !== 'solid' || q.broken || q.height < WALL_H) continue;
       const near = dir > 0 ? q.x - (p.x + 19) : p.x - 19 - (q.x + q.width);
       if (near < -2 || near > STEP_UP.near) continue;
       const rise = p.y - q.y;

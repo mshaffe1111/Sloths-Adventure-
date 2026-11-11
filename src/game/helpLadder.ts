@@ -10,7 +10,8 @@
  *   12                     | (past)                                  | Dot offers the step; a yes grows it; after a no she asks once
  *                          |                                         | more 8 put-backs later, then never at that piece
  *
- * Counted per piece (the piece he was trying to reach when he fell: the piece at the x of the fall). Reset by standing on the piece
+ * Counted per piece (the piece he was trying to reach when he fell: the piece at the x of the fall). A failed try at a wall counts the same
+ * as a put-back (`tried`, R-165.119): at the double's teach face a miss is no fall. Reset by standing on the piece
  * beyond, or the stage ending; NOT by a put-back, a pause, time, a refused offer or a step already given. Each rung fires once a piece.
  * The words are the story keeper's (reference/specs/help-lines.md), word for word.
  */
@@ -158,6 +159,14 @@ export class HelpLadder {
       if (out.some((a) => a.rung === 'offer' || a.rung === 'reask')) c.asking = true;
     }
     return out;
+  }
+
+  /**
+   * A failed try at a wall while heading for world x (R-165.119, ENGINE-AUDIT-B B-01: the double's lesson is a face on solid ground, so a
+   * miss there is no fall and no put-back): it counts at that piece exactly as a put-back does, on the same count and the same rungs
+   */
+  tried(x: number): HelpAct[] {
+    return this.putBack(x);
   }
 
   /** Normal's answer to the offer at a piece: true when the steps should grow */

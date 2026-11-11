@@ -56,3 +56,47 @@ export function stuckLine(mode: 'screen' | 'pad' | 'keys'): string {
       ? 'Too tall for one jump! Press Jump again in the air to jump twice'
       : 'Too tall for one jump! Press Space again in the air to jump twice';
 }
+
+/**
+ * The help ladder's tries (1-1, R-165.119; ENGINE-AUDIT-B B-01): a jump taken at a wall that lands back at the height it left, near
+ * where it began and short of the face, is a failed try. On solid ground there is no fall, so no put-back: the ladder counts each failed
+ * try the same as a put-back (helpLadder.ts tried), single or double, every time (not once a stage, as StuckWatch speaks). A jump that
+ * never moved toward the wall (a hop on the spot for a petal) is no try.
+ */
+export class TryWatch {
+  private wasGrounded = true;
+  private takeoff: { x: number; y: number; face: { x: number; dir: 1 | -1 } | null; toward: boolean } | null = null;
+  private last: { x: number; y: number; face: { x: number; dir: 1 | -1 } | null } | null = null;
+
+  /**
+   * once a frame. `face`: the near x of a wall just ahead and the way he faces it (the engine works it out on the ground), or null; `vx`
+   * his speed, `held` the way the controls push him (-1, 0, 1). Returns the face's x on the frame a try at it fails, else null.
+   */
+  tick(s: { grounded: boolean; x: number; y: number; vx: number; held: -1 | 0 | 1; face: { x: number; dir: 1 | -1 } | null }): number | null {
+    let failed: number | null = null;
+    // (where he stood and the wall before him, as on his last frame on the ground: in the air there is no wall to read, and the first frame
+    // in the air is already a jump's frame up)
+    if (s.grounded) this.last = { x: s.x, y: s.y, face: s.face };
+    if (this.wasGrounded && !s.grounded && this.last) this.takeoff = { ...this.last, toward: false };
+    else if (!s.grounded && this.takeoff?.face) {
+      // (moving toward it, or held toward it: pressed against the face his speed is 0)
+      if (s.vx * this.takeoff.face.dir > TOWARD_VX || s.held === this.takeoff.face.dir) this.takeoff.toward = true;
+    } else if (s.grounded && !this.wasGrounded && this.takeoff) {
+      const t = this.takeoff;
+      const short = t.face && (t.face.dir > 0 ? s.x < t.face.x : s.x > t.face.x);
+      if (t.face && t.toward && short && s.y >= t.y - 20 && Math.abs(s.x - t.x) < NEAR_X) failed = t.face.x;
+      this.takeoff = null;
+    }
+    this.wasGrounded = s.grounded;
+    return failed;
+  }
+
+  /** forget the jump in flight (a put-back or a respawn moved him: that landing is no try) */
+  reset(): void {
+    this.takeoff = null;
+    this.last = null;
+    this.wasGrounded = true;
+  }
+}
+/** a try is a jump that moved toward the wall at least this fast (px/s) at some moment in the air, or was held toward it */
+const TOWARD_VX = 30;
