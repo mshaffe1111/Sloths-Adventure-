@@ -9,7 +9,8 @@
    softFall, section w1-fixture-b, finish 120; NEW = OLD plus `use double 1000`, `use double 1400`, `use bounce 2635`. The self-test
    pins the 8 lines above MOVES to what origin/main's report.py prints for OLD (diffed: identical; the only change is the new MOVES
    block). Planted: dropping 'use' from the reader turns it FAIL, exit 1. On main `--self-test` crashed (FileNotFoundError), confirmed.
-3. tsc clean. playRecorder + recorderMoments: 9/9. Full suite: see Unresolved/last line (3 shards).
+3. PASS. tsc clean. playRecorder + recorderMoments 9/9. Full suite, 3 shards (355 files): 911/0, 781/0 (shard 1 rerun in 3 parts:
+   285+261+235, its one `not ok` is an existing # TODO), 775/0. One shard-0 miss was the timing test (below), green alone 21/0.
 Also: lockall 16 layouts vs main: 102/102 stages unchanged; seedlist 1-1 --check PASS (138); knowncheck, artcheck, roadmapcheck
 PASS; vite build OK.
 ## 2. Polish check
@@ -23,9 +24,8 @@ None on the packet. Note: origin/t-w11-analyst carries a much larger report.py (
 - (Engine) rename `moveOnce` -> `moveUsed` in a packet that may touch engine.ts:2211/4897 (the name now says less than it does).
 - (CI) add `python3 -I tools/playtesters/report.py --self-test` to .github/workflows/gates.yml (outside my WRITE list).
 ## 5. Unresolved
-- buildcheck FAILED in this container while 3 test shards + lockall ran at once (p95 212/160 ms vs 150); it times stage builds and
-  my diff touches no generator code (lock unchanged). Rerun alone: see last line.
-- drawcheck / clipcheck / kbdcheck: see last line.
+- None. Under load (3 shards + lockall at once) buildcheck read p95 212/160 ms and stageQuality's "generating a stage is quick" p90
+  581 ms; rerun alone: buildcheck PASS (p95 121/98 ms), stageQuality 21/0. drawcheck PASS, clipcheck PASS (83 known), kbdcheck PASS.
 ## 6. Method update
 gates.md: a timing gate (buildcheck, stageQuality "generating a stage is quick") is only read with nothing else running.
 ## 7. Turnover note
