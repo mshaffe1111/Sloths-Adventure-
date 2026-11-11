@@ -127,7 +127,7 @@ const floor = (key: string, w: SectionPiece['w'], place: SectionPiece['place'] =
 //    since a laid rise or gap rounds to the band's edge) ──
 /** a double gap is a Normal TEST only, 252-262 px lip to lip: one jump crosses 246 at best (bands.md §2-3). The old TEACH band 195-205 and
  *  TEST 205-228 are gone: one jump crosses both. Easy has no double gap: every version that lays one names its Easy twin */
-const DOUBLE_TEST: [number, number] = [253, 261];
+const DOUBLE_TEST: [number, number] = [253, 256]; // (the band's easy end: a double flick lands 72% at 250, 67% at 256, 61% at 262; the bots' put-backs, C1)
 /** the D block rise onto a bank (a face 50 px or taller): Normal 136-140; Easy's 128-132 is the pipeline's riseCap (reach.ts) */
 const D_RISE: [number, number] = [-140, -137];
 /** a thin double rise (a log or bough top, no lip hoist), from the ground only (a stair must fit in front of it): Normal 128-134;
@@ -378,15 +378,16 @@ const developStoneDips = section({
 const twistGaps = section({
   id: 'w1-second-jump', floor: 'jump', name: 'the second jump', phases: ['ten'], difficulty: 5, needs: ['double'], uses: ['double'], maxPerStage: 1, // (Round 2 (c): the double's first test; #8 teaches it)
   // (C1: the gaps 252-262 on Normal, a practice gap first; Easy's twin lays single gaps; the stones single jumps, inside the band)
-  versions: [{ id: 'old', groups: [gShelf(), gPractice(), gDoubleGaps([[0.85, 0.89], [0.89, 0.93]]), gRest([200, 260]), gStones([60, 70, 50], [0.5, 0.6])], easy: [gShelf(), gLevelHop(), gLevelHop(), gLevelHop(), gRest([200, 260]), gStones([60, 70, 50], [0.5, 0.6])] }],
+  versions: [{ id: 'old', groups: [gShelf(), gPractice(), gDoubleGaps([[0.85, 0.89]]), gRest([200, 260]), gStones([60, 70, 50], [0.5, 0.6])], easy: [gShelf(), gLevelHop(), gLevelHop(), gRest([200, 260]), gStones([60, 70, 50], [0.5, 0.6])] }],
   feel: ['1-1'], not: NOT_11, rating: 5,
   source: "w1Sections '1-1' twist 'gaps' (on main 273-280): practiceShelf, gapRun(reachTwo x 0.62/0.72/0.82), a run of 200-260, pillars [60,70,50] dbl at 0.6-0.72",
 });
 const twistLeapStones = section({
   id: 'w1-leap-stones', floor: 'jump', name: 'leaps and stones', phases: ['ten', 'ketsu'], difficulty: 6, needs: ['double'], uses: ['double'],
   // (C1: practice then test gaps on Normal, Easy's twin single gaps; the 'double' stones of 50-70 px were single jumps by the flown band)
-  versions: [{ id: 'two-gaps', groups: [gRest([200, 260]), gPractice(), gDoubleGaps([[0.85, 0.89]]), gStones([60, 70, 50], [0.5, 0.6]), gStones([50, 60, 60, 50], [0.5, 0.6])], easy: [gRest([200, 260]), gLevelHop(), gLevelHop(), gStones([60, 70, 50], [0.5, 0.6]), gStones([50, 60, 60, 50], [0.5, 0.6])] },
-    { id: 'one-gap', groups: [gRest([200, 260]), gPractice(), gDoubleGaps([[0.85, 0.89]]), gStones([60, 70, 50], [0.5, 0.6]), gBusy(['dip']), gStones([50, 60, 50], [0.5, 0.6])], easy: [gRest([200, 260]), gLevelHop(), gLevelHop(), gStones([60, 70, 50], [0.5, 0.6]), gBusy(['dip']), gStones([50, 60, 50], [0.5, 0.6])] }],
+  // (C1, the bots: one test a stage is enough past the teach's; here two practice gaps, a floor under each, a miss a climb on)
+  versions: [{ id: 'two-gaps', groups: [gRest([200, 260]), gPractice(), gPractice(), gStones([60, 70, 50], [0.5, 0.6]), gStones([50, 60, 60, 50], [0.5, 0.6])], easy: [gRest([200, 260]), gLevelHop(), gLevelHop(), gStones([60, 70, 50], [0.5, 0.6]), gStones([50, 60, 60, 50], [0.5, 0.6])] },
+    { id: 'one-gap', groups: [gRest([200, 260]), gPractice(), gStones([60, 70, 50], [0.5, 0.6]), gBusy(['dip']), gStones([50, 60, 50], [0.5, 0.6])], easy: [gRest([200, 260]), gLevelHop(), gStones([60, 70, 50], [0.5, 0.6]), gBusy(['dip']), gStones([50, 60, 50], [0.5, 0.6])] }],
   feel: ['1-1'], not: NOT_11, rating: 6,
   source: "w1Sections '1-1' twist 'stoneLeaps' and 'highLeaps' (on main 284-302) less the practice shelf (in w1-second-jump): gapRun(reachTwo x 0.62[/0.72]), pillars [60,70,50] dbl, busy(2, [leap, dip]), pillars [50,60,60,50] dbl",
 });
@@ -622,7 +623,7 @@ const doubleTeach = section({
   versions: [1, 2].map((n) => {
     const head: G[] = [(k, after) => { const g = gRest([260, 300])(k, after); g.sockets.push(dot(`${k}nice`, g.last, 0.2, 'coach.nice')); return g; }, (k, after) => riseFace(k, after, false, [280, 320], false)];
     const tail: G = (k: string, after: string | null) => { const g = gRest([200, 240])(k, after); g.sockets.push(dot(`${k}dbl`, g.last, 0.3, 'hint.1-1.double')); return g; };
-    return { id: n === 1 ? 'rise' : 'rise-two', groups: [...head, gPractice(), gDoubleGaps(([[0.85, 0.89], [0.89, 0.93]] as R2[]).slice(0, n)), gLogHop(), gDip(), tail], easy: [...head, ...Array.from({ length: n + 1 }, () => gLevelHop()), gLogHop(), gDip(), tail] };
+    return { id: n === 1 ? 'rise' : 'rise-two', groups: [...head, ...Array.from({ length: n }, () => gPractice()), gDoubleGaps([[0.85, 0.89]]), gLogHop(), gDip(), tail], easy: [...head, ...Array.from({ length: n + 1 }, () => gLevelHop()), gLogHop(), gDip(), tail] };
   }),
   feel: ['1-1'], not: NOT_11, rating: 3,
   source: 'W1-NEW-SECTIONS #8, re-laid C1 (bands.md §3: the double gap is no lesson); before: one gap just past a single jump over a safe dip (soft pit: a floor under it, stair steps back, pipeline pitUnder/pitSteps), then two more (R2, the 3:11 ruling)',
