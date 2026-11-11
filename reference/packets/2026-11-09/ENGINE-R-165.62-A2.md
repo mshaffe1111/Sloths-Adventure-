@@ -30,7 +30,10 @@ loop never reaches a player without its help.
   It must look standable and must be standable (a test stands Pokey on it).
 - The yes and no of Normal's offer work as pictures for a player who can't read (help-lines.md says what they show), tap targets at
   least 44 px and inside the phone's insets, upright and sideways (clipcheck rules; PLAY-STORE-RULES §6 for a new pop-up).
-- Dot's existing "Flick up and forward to jump." after each set-back: do what help-lines.md says.
+- Dot's words are help-lines.md, word for word, with its two story guards. Her existing "Flick up and forward to jump." stops
+  repeating after set-backs (help-lines.md §4): teach once, silent until the line at 3, silent again until the step or the offer.
+- The YES picture is Pokey on the same sprite the grown step uses; the NO picture is the coach's existing jump pose. Both drawn from
+  sprites already in the game (no new art).
 - Logging: use the existing `recorder.event(what, detail)` (playRecorder.ts:395) with events `help` (rung, piece key, count, setting)
   and `helpOffer` (shown / yes / no). Do NOT change playRecorder.ts's shape (E1 owns it); LOG_EVENTS.md gets the two new rows.
 - RealPlay stubs loseLife (realPlay.ts:141); 1-1 now sets back instead of dying (A1). Any test of the ladder drives real put-backs.
@@ -56,7 +59,9 @@ loop never reaches a player without its help.
    --check` green; `node tools/perf/clipcheck.mjs` covers HelpOffer upright and sideways (add it to the screens it walks) and passes.
 5. Polish check (LAWS 1): stills, upright and sideways, of Dot's line at 3, the grown step at 8 on Easy, and Normal's offer at 12 with
    its pictures. Name anything rough.
-6. The turnover note rewritten.
+6. The story keeper's review (session_019iachLiuwNTAZUBSJWUmR3): the lead sends it the built lines and pictures; its OK counts
+   before the Critic's PASS (TEAM.md). Show the lines in a still each.
+7. The turnover note rewritten.
 ## Return
 Branch t-engine-help from t-engine-putback@41c2e248 (it builds on A1), pushed (git ls-remote). REPORT.md with "Method used" and
 "Lessons applied" first, then the 7 sections of roles/README.md, 60 lines or fewer. Then ONE send_message to the lead, 10 lines or
