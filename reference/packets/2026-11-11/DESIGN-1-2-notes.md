@@ -66,14 +66,13 @@ first run it was (a different brief: teaches none, deal 40/30/30), not as proof 
 | Help (audit B-01) | The ladder runs at 1-2's first chain on R-165.119's fixed ladder; its test stays |
 | Petals | Real numbers per cache; the time from C1's benchmark |
 
-**Open, for the lead to rule (each has my pick written into the packets):**
-1. **Caches as bonus blooms.** The quota leaves 4 to 7 petals a roll for everything off the low road (packet "Petals"); three fork
-   ends alone are 9. My pick: off-road pickups on a harvest stage are `fruit` (Engine item 6): they count toward the goal and never
-   raise it. The other ways: fewer forks (against "branching lots"), or caches that hold nothing a player can count.
-2. **What the ladder grows at a chain.** There is no rise to stair. My pick (Engine item 7): the lesson's own fallen log laid across
-   the first hollow; if that cannot be built in the item, the line alone ships and the PUSHBACK says so.
-3. **`EARLY_DOUBLE` gains '1-2'** (Engine item 5) changes how the OLD 1-2 is validated between push 2 and push 3. Nothing ships in
-   between; the old 1-2 is deleted in item 7.
+**Ruled 11-11 4:47 PM ET (the lead), the three calls attempt 2 left open:**
+| Call | Ruled |
+|---|---|
+| Caches as bonus blooms | ACCEPTED: off-road pickups on a harvest stage are `fruit` (counts toward the goal, outside the quota), Engine item 6; exploring always pays |
+| What the ladder grows at a chain | ACCEPTED: the lesson's own fallen log across the first hollow (natural, to Pokey's scale), else the line alone; Engine item 7 |
+| `EARLY_DOUBLE` gains '1-2' | ACCEPTED: Engine item 5; the old 1-2 is being replaced and nothing ships between pushes 2 and 3 (D40) |
+Nothing is open with the lead. Open with the packet Critic: attempt 2's audit.
 
 ## 4. Found on 1-1 while writing: the end of each fork's high road holds nothing
 `find` sockets are filled only in the stage's required section (pipeline.ts:2126, the 11-06 fix that pinned the seed to its

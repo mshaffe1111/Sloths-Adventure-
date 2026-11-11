@@ -132,7 +132,7 @@ Both exits are walk-ons of a rest's length, so either may follow S (V5); no othe
   1.5 times the goal at least and trims to 2.2 times (72 for 1-2's goal of 33; pipeline.ts:292, stageGenerator.ts capHarvest). So a
   player may miss only 12.5% of them: 6 of 50, 9 of 72. With a spare of 2, petals off the natural road could number 4 to 7 a roll.
   Three forks with a 3-petal cache each are already 9: caches CANNOT be petals.
-- So off the road pays in BONUS BLOOMS: a `fruit` pickup counts toward the goal when gathered and is never counted in the quota
+- So off the road pays in BONUS BLOOMS (RULED by the lead, 11-11 4:47 PM ET: "exploring always pays"): a `fruit` pickup counts toward the goal when gathered and is never counted in the quota
   (engine.ts:3002-3003, :3073; goals.ts:51 counts flowers and leaves only). Engine's item 6 makes the pipeline lay a `fruit` for a
   pickup socket on a piece that is NOT `main`, on a harvest stage. You lay ordinary `pickup` sockets and keep high roads and
   off-path pieces `main: false`; there is nothing to flip later.
@@ -162,7 +162,9 @@ flag: Easy widens a landing on its near side, which would move S). Thorns cost n
 
 ## Help (the lead's ruling, 11-11)
 The help ladder runs in 1-2 at N4's first chain only, on R-165.119's fixed ladder (it counts tries, not only falls); Engine turns it
-on (its item 7). Its line for a bounce piece already has words (helpLadder.ts:31). Your test: the child bot on Easy never stalls
+on (its item 7). Its line for a bounce piece already has words (helpLadder.ts:31). What it grows there (RULED, 11-11 4:47 PM ET):
+the lesson's own fallen log laid across the hollow, natural and to Pokey's scale; if Engine cannot build that piece, the line
+alone. So N4's first hollow is laid with clear air at lip height from lip to lip (no bough or decor across it). Your test: the child bot on Easy never stalls
 more than 20 s at N4 on any listed seed. Testers do not get 1-2 until the thorn line has words (the lead's hold).
 
 ## Phases (what you can do when; Engine's packet has the same order)

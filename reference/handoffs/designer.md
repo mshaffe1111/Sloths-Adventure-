@@ -98,7 +98,7 @@ Every ruling below cites the file and section where it's written in full.
     still is Matt's hold point.
 18. **A reused section is touched only in its `feel`.** Anything else is the new stage's own section. Off-path rewards are judged
     on the BUILT stage, never on sockets.
-19. **A harvest stage pays off the road in bonus blooms, not petals** (my pick, the lead's call still open): the quota is 87.5% of
+19. **A harvest stage pays off the road in bonus blooms, not petals** (ruled by the lead, 11-11): the quota is 87.5% of
     all petals, so 4 to 7 a roll may sit off the low road; a `fruit` counts toward the goal and is not in the quota.
 20. **A packet's pool is proved by rolling the packet's own brief** in the real pipeline, twice: on today's engine and with the
     engine items it waits on stood in (sims/supply12.ts, `FLOWN=1`). The supply table by job and type goes in the notes.
@@ -107,8 +107,8 @@ Every ruling below cites the file and section where it's written in full.
 
 - **From the 1-2 packets (11-11):**
   - attempt 2 of both packets is with the packet Critic (attempt 1: CONTENT 14 lines, ENGINE 6; each answered in
-    DESIGN-1-2-notes.md §9); the lead's rulings are in notes §3, with three calls still open (bonus blooms; what the ladder grows
-    at a chain; `EARLY_DOUBLE` and the old 1-2 between pushes);
+    DESIGN-1-2-notes.md §9); the lead's rulings are all in notes §3, none open (bonus blooms; the ladder grows the lesson's own
+    fallen log at the first chain, else the line alone; `EARLY_DOUBLE` gains '1-2');
   - Engine work 1-2 stands on: ENGINE-1-2-routing.md, 8 items in 3 pushes (item 0 the 1-1 high-road ends; then the seed tool, the
     thorn hollow, the reach scope, the note, the double counted, the blooms; routing and help last);
   - thin supply cells (one section each) are named in notes §8: the builder's yield count will show the first to go short;
