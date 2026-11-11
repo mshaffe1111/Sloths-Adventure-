@@ -70,6 +70,24 @@ artifact on a branch.
   Its bible: reference/story/STORY-KEEPER.md (on branch `studio` since 11-07; on main once studio merges). It listed 10 open story threads on 11-07; where each stands: ROADMAP R-165.55.
   Never build from ccr-0d59a91c-oy3imz (it carries the rejected 11-04 src/).
 
+## Cost rules (Matt, 11-11 6:06 PM ET: "we need to bring the cost down... It's your team. You run the team the way you think is best")
+Where today's money went (session records, 11-11): the two 1-2 packets cost about $98 across 8 rounds (Designer $62, Critic $36) for one
+level's paperwork; sessions ran to 360k-635k tokens of context, and every turn re-reads the whole context, so a long session costs more
+per step the longer it lives. These rules replace any older rule they contradict.
+1. **Review by risk, not by habit.** A cold Critic, one round, on engine pieces and on a release. A second round re-checks only the
+   failing items (a delta), never the whole task. No Critic on packets: the lead reads the packet. No Critic on a stage laid from proven
+   pieces: its bots and gates are the check; the lead looks at its stills.
+2. **The auditor sweeps; it does not gate.** One audit pass about once a day (or after a batch of merges) over what merged, looking for
+   bugs across the engine. Its findings become a fix list the lead triages: global ones first, one-stage ones parked for that stage's finalize.
+3. **Short sessions.** One packet per session. Retire a member when its packet is done or its context passes about 40%, not 70%. A new
+   member starts from its role card, turnover note and packet.
+4. **Gates where they pay.** A builder runs tsc, the tests for what it touched and the fast gates. The full suite and the slow browser
+   gates (drawcheck, clipcheck, lockall) run once per integration and per release, by one runner, not by every builder and Critic.
+5. **Effort.** Engine builders: Fable 5.2 high (Matt 11-11). Everyone else: Opus 5.5 high, medium for following steps; xhigh only for
+   a release review. No rounds of polish on one-stage features before that stage's finalize (D44).
+6. **Small packets with a stop line.** Each packet names its budget in hours; past it, the builder stops and reports what is left.
+7. **The lead reports spend daily** to Matt: cost per session (get_session usage) against what it bought.
+
 ## The rules (the PM enforces them)
 1. **Packets, never chat history.** Each task: the objective; frozen inputs (spec numbers, interface); allowed files (read / write);
    the definition of done, which the Critic checks; due time. Template: reference/methods/dispatch-packet.md.
