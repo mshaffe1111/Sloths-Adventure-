@@ -14,8 +14,11 @@ const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? p
 const N = Number(arg('--layouts') ?? 16);
 const only = arg('--stages')?.split(',');
 const levels = generateAllLevels().filter((c) => !c.secret && (!only || only.includes(c.id)));
+/** a built stage's gen2 without the verdicts' two fields (verdicts, drops): what the lock compares (the report names a stage that gained them) */
+const stripVerdicts = (g: unknown) => { if (!g || typeof g !== 'object') return g; const { verdicts: _v, drops: _d, ...rest } = g as Record<string, unknown>; return rest; };
 const h = (x: unknown) => createHash('sha256').update(JSON.stringify(x) ?? 'undefined').digest('hex').slice(0, 12);
 const out: Record<string, Record<string, string>> = {};
+const gained = new Set<string>();
 for (const c of levels) {
   for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) {
     setLayoutVariant(v);
@@ -23,8 +26,11 @@ for (const c of levels) {
     try { st = setting === 'easy' ? easyStage(withGoals(generateStage({ ...c, unlocked: true }, 'easy'))) : withGoals(generateStage({ ...c, unlocked: true }, 'normal')); }
     catch (e) { out[`${c.id} ${setting} ${v}`] = { error: String((e as Error).message).slice(0, 120) }; setLayoutVariant(null); continue; }
     setLayoutVariant(null);
+    if (st.gen2?.verdicts || st.gen2?.drops) gained.add(c.id);
     const parts: Record<string, string> = { size: h([st.config.levelWidth, st.config.levelHeight, st.config.targetCount, st.spawnX, st.spawnY, st.exitTotemX]) };
-    for (const [k, val] of Object.entries(st)) if (k !== 'meta' && k !== 'config' && k !== 'proto') parts[k] = h(val);
+    // (R-165.61, packet E0a option (a): a stage's `gen2` is hashed without the two fields E0 adds, `verdicts` and `drops`, so 5-7, 5-9
+    // and Worlds 6-8 may differ only there; any other part of gen2 that moves names the stage)
+    for (const [k, val] of Object.entries(st)) if (k !== 'meta' && k !== 'config' && k !== 'proto') parts[k] = h(k === 'gen2' ? stripVerdicts(val) : val);
     for (const [k, val] of Object.entries(st.proto ?? {})) parts['proto.' + k] = h(val);
     out[`${c.id} ${setting} ${v}`] = parts;
   }
@@ -44,6 +50,7 @@ if (chk) {
   }
   const bad = Object.keys(byStage).filter((s) => !intended.has(s));
   console.log(`\nlock: ${levels.length - Object.keys(byStage).length}/${levels.length} stages unchanged`);
+  console.log(`lock: gen2 gained verdicts and drops (not hashed): ${[...gained].join(', ') || 'none'}`);
   for (const [s, ps] of Object.entries(byStage)) console.log(`  ${s}${intended.has(s) ? ' (intended)' : ''}: ${[...ps].join(', ')}`);
   if (bad.length) process.exit(1);
 }

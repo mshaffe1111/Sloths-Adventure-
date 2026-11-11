@@ -11,6 +11,7 @@
  *
  * Coordinates: x grows right, y grows DOWN (the engine's). "dy" in a template is screen dy: negative is up.
  */
+import type { Drop, RollVerdict } from './verdicts.types.ts';
 import type { Difficulty } from '../difficulty.ts';
 import type { Anchor, PieceSpec, RoomSpec } from '../puzzleKit.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
@@ -714,6 +715,12 @@ export interface Gen2Meta {
   barren: Array<[number, number]>;
   /** the route's gaps and what a fall into each one ends in (soft: a climb out; water or void: a life; a section's `water` gap is water) */
   falls?: Array<{ x0: number; x1: number; y: number; kind: PitKind }>;
+  /** the roll's verdicts by setting (R-165.61, ADR-001; pipeline applyVerdicts): the build's own setting, and on an Easy build Normal's
+   *  too (Easy lays Normal's plan). 1-1 is judged; every other stage carries every name as `notJudged` (THE BOUNDARY, packet E0a).
+   *  `errors` stays, and carries each failed verdict's line (rollErrors) */
+  verdicts?: Partial<Record<Difficulty, RollVerdict>>;
+  /** every fall on the route as a Drop: what it ends in and how its bottom is drawn (ADR-001 decision 6; from `falls`, which stays) */
+  drops?: Drop[];
 }
 
 /** the result: the stage the engine plays (GeneratedStage, with the hand-built stages' proto extras), and what gen2 built */

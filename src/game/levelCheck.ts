@@ -104,11 +104,24 @@ export function easyHoldCheck(easy: GeneratedStage): string[] {
  * the widest gap (px) a ~70% hold jumps from a to b at their heights (onto a face, with the lip's hoist, HOLD_MANTLE), as the Easy
  * check counts it; below 0: not at any gap (the rise is too much for it)
  */
-export function heldMaxGap(a: Platform, b: Platform, allowDouble: boolean): number {
+export function heldMaxGap(a: Platform, b: Platform, allowDouble: boolean, arcs?: JumpArcs): number {
   const dy = a.y - b.y;
   const dyJ = b.type === 'solid' && b.height >= 50 && dy > 0 ? Math.max(0, dy - HOLD_MANTLE) : dy;
   const r = allowDouble ? Math.max(reachJumpHeld(dyJ, false), reachJumpHeld(dyJ, true)) : reachJumpHeld(dyJ, false);
-  return r < 0 ? -1 : r * MARGIN - TAKEOFF_SLACK;
+  const closed = r < 0 ? -1 : r * MARGIN - TAKEOFF_SLACK;
+  // (1-1, R-165.61: the flown gap of the moves that climb this rise, gen2/reach.ts; the closed form where it reaches further)
+  return arcs ? Math.max(closed, arcGap(arcs, a, b, allowDouble)) : closed;
+}
+/** the flown arcs a 1-1 check links by (gen2/reach.ts linkArcs or lesserArcs): per move, the level gap lip to lip and the climb */
+export interface JumpArcs { single: { gap: number; climb: { block: number; thin: number } }; double: { gap: number; climb: { block: number; thin: number } } }
+/** the widest gap (px) a flown move crosses from a onto b: the level gap of the moves whose climb reaches b's top (block or thin), -1 for
+ *  none. The flown table has level gaps only (reach.md §2), so a raised landing is credited the level gap of a move that climbs it */
+export function arcGap(arcs: JumpArcs, a: Platform, b: Platform, allowDouble: boolean): number {
+  const rise = a.y - b.y;
+  const thin = !(b.type === 'solid' && b.height >= 50);
+  let best = -1;
+  for (const m of allowDouble ? [arcs.single, arcs.double] : [arcs.single]) if (rise <= (thin ? m.climb.thin : m.climb.block)) best = Math.max(best, m.gap);
+  return best;
 }
 /**
  * the stages before 1-6 that count the double jump: the mixer's 1-1 teaches the second jump (its node 'teach double', mixer/stages.ts
@@ -119,10 +132,12 @@ export const EARLY_DOUBLE: ReadonlySet<string> = new Set(['1-1']);
 export const doubleAllowed = (cfg: { worldIndex: number; miniIndex: number }) => (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6 || EARLY_DOUBLE.has(`${cfg.worldIndex}-${cfg.miniIndex}`);
 
 /** Can the player get from platform a to platform b with jumps (and a double jump)? */
-export function jumpOK(a: Platform, b: Platform, allowDouble = true): { ok: boolean; gap: number } {
+export function jumpOK(a: Platform, b: Platform, allowDouble = true, arcs?: JumpArcs): { ok: boolean; gap: number } {
   const [ax0, ax1] = ext(a);
   const [bx0, bx1] = ext(b);
   const gap = Math.max(0, bx0 - ax1, ax0 - bx1);
+  // (1-1, R-165.61: given the flown arcs, they alone decide, never the closed form: gen2/reach.ts)
+  if (arcs && a.type !== 'bouncy') { const g = arcGap(arcs, a, b, allowDouble); return { ok: g >= 0 && gap <= g, gap }; }
   const dy = a.y - b.y;
   const f = a.type === 'bouncy' ? reachBounce : reachJump;
   const r = allowDouble ? Math.max(f(dy, false), f(dy, true)) : f(dy, false);
@@ -305,6 +320,9 @@ export interface CheckOptions {
    * by its room, so none is a reach error, and the room solver was most of a room stage's build (8-3 about 0.9 s of 1.1 s, 2026-10-31)
    */
   rooms?: boolean;
+  /** 1-1 only (R-165.61, gen2 checkStage): the flown arcs (gen2/reach.ts linkArcs). A level jump (the landing no more than 20 px up) is
+   *  linked when a flown move crosses it, besides the closed form; every other stage passes none and links exactly as before */
+  arcs?: JumpArcs;
 }
 
 /** the graph a check walked: every piece of ground (a platform, less what a boulder or pouring water covers), the links, what was reached */
@@ -529,6 +547,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
     const maxDrop = nP ? maxY - minY : 0;
     const leftReach = (allowGlide ? Math.max(maxDropReach(maxDrop), reachGlide(-maxDrop, true), reachBounceGlide(-maxDrop, true)) : maxDropReach(maxDrop)) * MARGIN - TAKEOFF_SLACK;
     const rightWindow = allowGlide ? Math.max(460, leftReach) : 460;
+    const linkReach = opts.arcs ? Math.max(leftReach, opts.arcs.single.gap, opts.arcs.double.gap) : leftReach;
     for (let i = 0; i < nP; i++) {
       const a = byX[i];
       const ax0 = px0[i], ax1 = px1[i];
@@ -536,7 +555,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
       let lo = 0, hi = i;
       while (lo < hi) {
         const mid = (lo + hi) >> 1;
-        if (prefMax1[mid] < ax0 - leftReach) lo = mid + 1; else hi = mid;
+        if (prefMax1[mid] < ax0 - linkReach) lo = mid + 1; else hi = mid;
       }
       for (let j = lo; j < nP; j++) {
         if (i === j) continue;
@@ -548,7 +567,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
         const b = byX[j];
         const bx1 = px1[j];
         const gap = Math.max(0, bx0 - ax1, ax0 - bx1);
-        if (gap > leftReach) continue;
+        if (gap > linkReach) continue;
         const dy = a.y - b.y;
         if (-dy > deep) continue;
         const f = a.type === 'bouncy' ? reachBounce : opts.hold ? (d: number, dbl: boolean) => reachJumpHeld(d, dbl, opts.hold) : reachJump;
@@ -559,7 +578,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
           const fg = a.type === 'bouncy' ? reachBounceGlide : reachGlide;
           r = Math.max(r, fg(dy, false), fg(dy, true));
         }
-        if (r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK) {
+        if ((r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK) || (opts.arcs && a.type !== 'bouncy' && dy <= 20 && gap <= arcGap(opts.arcs, a, b, allowDouble))) {
           if (pouring.length && waterBetween(ax0, ax1, a.y, bx0, bx1, b.y)) continue;
           if (a.type !== 'bouncy' && blockBetween(a, b, ax0, ax1, bx0, bx1)) continue;
           // (gen2 stages only for this release, the lead 11-06: roofedDrop moved 4-9 layout 4's find; only 1-1 may change in 0.9.5, so the
