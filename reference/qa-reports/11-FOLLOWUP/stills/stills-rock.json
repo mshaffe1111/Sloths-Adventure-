@@ -1,0 +1,58 @@
+{
+ "rock-easy-upright-before": {
+  "x": 2047,
+  "w": 199,
+  "h": 34,
+  "floorY": 1577,
+  "px": 2168
+ },
+ "rock-easy-upright-after": {
+  "x": 2047,
+  "w": 199,
+  "h": 50,
+  "floorY": 1577,
+  "px": 2028
+ },
+ "rock-easy-sideways-before": {
+  "x": 2047,
+  "w": 199,
+  "h": 34,
+  "floorY": 1577,
+  "px": 2172
+ },
+ "rock-easy-sideways-after": {
+  "x": 2047,
+  "w": 199,
+  "h": 50,
+  "floorY": 1577,
+  "px": 2028
+ },
+ "rock-normal-upright-before": {
+  "x": 4603,
+  "w": 169,
+  "h": 34,
+  "floorY": 1625,
+  "px": 4682
+ },
+ "rock-normal-upright-after": {
+  "x": 4603,
+  "w": 169,
+  "h": 50,
+  "floorY": 1625,
+  "px": 4584
+ },
+ "rock-normal-sideways-before": {
+  "x": 4603,
+  "w": 169,
+  "h": 34,
+  "floorY": 1625,
+  "px": 4727
+ },
+ "rock-normal-sideways-after": {
+  "x": 4603,
+  "w": 169,
+  "h": 50,
+  "floorY": 1625,
+  "px": 4584
+ }
+}

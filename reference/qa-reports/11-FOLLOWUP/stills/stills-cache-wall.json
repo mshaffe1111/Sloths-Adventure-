@@ -1,0 +1,86 @@
+{
+ "cache-easy-upright": {
+  "x": 14261,
+  "y": 1067,
+  "w": 266,
+  "petals": 3,
+  "section": "w1-bank-stair-fork"
+ },
+ "wall-easy-upright": {
+  "wall": {
+   "x": 7401,
+   "y": 1577,
+   "rise": 132
+  },
+  "bubble": "Jump, then flick up again in the air!",
+  "said": [
+   "Flick up again midair to jump twice.",
+   "Jump, then flick up again in the air!"
+  ],
+  "x": 7382,
+  "help": true
+ },
+ "cache-easy-sideways": {
+  "x": 14261,
+  "y": 1067,
+  "w": 266,
+  "petals": 3,
+  "section": "w1-bank-stair-fork"
+ },
+ "wall-easy-sideways": {
+  "wall": {
+   "x": 7401,
+   "y": 1577,
+   "rise": 132
+  },
+  "bubble": "Jump, then flick up again in the air!",
+  "said": [
+   "Flick up again midair to jump twice.",
+   "Jump, then flick up again in the air!"
+  ],
+  "x": 7382,
+  "help": true
+ },
+ "cache-normal-upright": {
+  "x": 13630,
+  "y": 1102,
+  "w": 218,
+  "petals": 3,
+  "section": "w1-bank-stair-fork"
+ },
+ "wall-normal-upright": {
+  "wall": {
+   "x": 6943,
+   "y": 1625,
+   "rise": 138
+  },
+  "bubble": "Jump, then flick up again in the air!",
+  "said": [
+   "Flick up again midair to jump twice.",
+   "Jump, then flick up again in the air!"
+  ],
+  "x": 6924,
+  "help": true
+ },
+ "cache-normal-sideways": {
+  "x": 13630,
+  "y": 1102,
+  "w": 218,
+  "petals": 3,
+  "section": "w1-bank-stair-fork"
+ },
+ "wall-normal-sideways": {
+  "wall": {
+   "x": 6943,
+   "y": 1625,
+   "rise": 138
+  },
+  "bubble": "Jump, then flick up again in the air!",
+  "said": [
+   "Flick up again midair to jump twice.",
+   "Jump, then flick up again in the air!"
+  ],
+  "x": 6924,
+  "help": true
+ }
+}

@@ -5,7 +5,7 @@
 //                       from .dg-bub-body, with the try count the engine recorded
 //   rock-<s>-<o>-<before|after>.png   a plain walk into the same hop rock: before (BASE=<dir of the base checkout>, its own dev server)
 //                       he is inside it; after, stopped at its face
-// node reference/qa-reports/11-FOLLOWUP/shoot.mjs <outdir>   (BASE=<base checkout> for the before stills)
+// node reference/qa-reports/11-FOLLOWUP/shoot.mjs <outdir>   (BASE=<base checkout> for the rock stills; PARTS=rock for those alone)
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
@@ -46,6 +46,7 @@ const base = process.env.BASE ? await server(process.env.BASE, 5292) : null;
 const idxNew = listIndex(process.cwd()), idxBase = process.env.BASE ? listIndex(process.env.BASE) : -1;
 for (const setting of ['easy', 'normal']) for (const view of VIEWS) {
   const tag = `${setting}-${view.id}`;
+  if (process.env.PARTS !== 'rock') {
   const { ctx, page } = await open(5291, idxNew, setting, view);
   // (1) the cache: on the high-road end, looking at it
   const cache = await page.evaluate(() => {
@@ -88,34 +89,37 @@ for (const setting of ['easy', 'normal']) for (const view of VIEWS) {
     await page.screenshot({ path: `${out}/wall-${tag}.png` });
     report[`wall-${tag}`] = { wall, bubble: line, said: await page.evaluate(() => window.__said), x: await page.evaluate(() => Math.round(window.__engine().player.x)), help: await page.evaluate(() => window.__engine().helpState().on) };
   }
-  // (3) a hop rock: a plain walk into it, held right for 1.5 s
-  const rock = await page.evaluate(() => {
-    const e = window.__engine(), s = e.currentStage, P = s.platforms.filter((p) => p.type === 'solid');
-    const near = (k) => s.platforms.some((m) => m.type === 'bouncy' && m.x < k.x + k.width + 100 && m.x + m.width > k.x - 120);
-    const k = P.find((k) => k.height >= 50 && k.height <= 56 && k.width <= 230 && k.x > 2000 && !near(k) && P.some((f) => f !== k && Math.abs(f.y - (k.y + k.height)) <= 1 && f.x <= k.x - 80 && f.x + f.width >= k.x + k.width + 80));
-    const f = P.find((f) => f !== k && Math.abs(f.y - (k.y + k.height)) <= 1 && f.x <= k.x - 80);
-    return { x: k.x, w: k.width, h: k.height, floorY: f.y };
-  });
-  await place(page, rock.x - 58, rock.floorY);
-  await sleep(500);
-  await page.keyboard.down('ArrowRight'); await sleep(1500);
-  report[`rock-${tag}-after`] = { ...rock, px: await page.evaluate(() => Math.round(window.__engine().player.x)) };
-  await page.screenshot({ path: `${out}/rock-${tag}-after.png` });
-  await page.keyboard.up('ArrowRight');
   await ctx.close();
+  }
+  // (3) a hop rock the base laid under the engine's wall: a plain walk into it on the base (he is inside it), then into the same rock
+  // on this build (held right 1.5 s: stopped at its face)
+  const findRock = (pg, x) => pg.evaluate((x) => {
+    const s = window.__engine().currentStage, P = s.platforms.filter((p) => p.type === 'solid');
+    const near = (k) => s.platforms.some((m) => m.type === 'bouncy' && m.x < k.x + k.width + 100 && m.x + m.width > k.x - 120);
+    const floorOf = (k) => P.find((f) => f !== k && Math.abs(f.y - (k.y + k.height)) <= 1 && f.x <= k.x - 80 && f.x + f.width >= k.x + k.width + 80);
+    const k = x === null ? P.find((k) => k.height >= 30 && k.height < 50 && k.width >= 110 && k.width <= 230 && k.x > 2000 && !near(k) && floorOf(k)) : P.find((k) => k.x === x);
+    const f = k && floorOf(k);
+    return k && f ? { x: k.x, w: k.width, h: k.height, floorY: f.y } : null;
+  }, x);
+  const walkInto = async (pg, r, name, untilInside) => {
+    await place(pg, r.x - 58, r.floorY);
+    await sleep(500);
+    await pg.keyboard.down('ArrowRight');
+    if (untilInside) { for (let i = 0; i < 40; i++) { await sleep(50); if (await pg.evaluate((m) => window.__engine().player.x >= m, r.x + r.w / 2 - 10)) break; } } else await sleep(1500);
+    const px = await pg.evaluate(() => Math.round(window.__engine().player.x));
+    await pg.screenshot({ path: `${out}/rock-${tag}-${name}.png` });
+    await pg.keyboard.up('ArrowRight');
+    return { ...r, px };
+  };
   if (base) {
     const b = await open(5292, idxBase, setting, view);
-    const r0 = await b.page.evaluate((x) => { const s = window.__engine().currentStage; const k = s.platforms.find((p) => p.type === 'solid' && p.x === x); const f = s.platforms.find((g) => g !== k && g.type === 'solid' && Math.abs(g.y - (k.y + k.height)) <= 1 && g.x <= k.x - 80); return k && f ? { x: k.x, w: k.width, h: k.height, floorY: f.y } : null; }, rock.x);
-    if (r0) {
-      await place(b.page, r0.x - 58, r0.floorY);
-      await sleep(500);
-      await b.page.keyboard.down('ArrowRight');
-      for (let i = 0; i < 40; i++) { await sleep(50); if (await b.page.evaluate((m) => window.__engine().player.x >= m, r0.x + r0.w / 2 - 10)) break; }
-      report[`rock-${tag}-before`] = { ...r0, px: await b.page.evaluate(() => Math.round(window.__engine().player.x)) };
-      await b.page.screenshot({ path: `${out}/rock-${tag}-before.png` });
-      await b.page.keyboard.up('ArrowRight');
-    } else report[`rock-${tag}-before`] = 'no rock at that x on the base build';
+    const r0 = await findRock(b.page, null);
+    report[`rock-${tag}-before`] = r0 ? await walkInto(b.page, r0, 'before', true) : 'no rock under 50 px on the base build';
     await b.ctx.close();
+    const n = await open(5291, idxNew, setting, view);
+    const r1 = r0 && await findRock(n.page, r0.x);
+    report[`rock-${tag}-after`] = r1 ? await walkInto(n.page, r1, 'after', false) : 'no rock at that x on this build';
+    await n.ctx.close();
   }
   console.log(tag, JSON.stringify({ cache: report[`cache-${tag}`], wall: report[`wall-${tag}`]?.bubble, rock: report[`rock-${tag}-after`], before: report[`rock-${tag}-before`] }));
 }
