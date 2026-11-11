@@ -13,6 +13,9 @@ reference/LAWS.md, reference/LESSONS.md (D37-D40), reference/STAGE-RULES.md §4 
 §1 and §8, reference/methods/kit-audit.md, and how the engine draws and stands on art: tools/engine/catalog-map.json (every kit slot:
 cat, arr, key, footing, mayFloat, uses, worlds), src/game/w1CutArt.ts, src/game/stageArt.ts and src/game/stageArtData.ts (how a cut piece becomes a
 drawn piece with a footing line), src/game/paintedScenery.ts (decor layers), src/game/paintedBackdrops.ts (backdrop and near strips).
+Matt, 11-11 (standing): "We can't understand what we have until we label everything and know the inventory... We can't understand what
+we're going to need for level 2 until we know what we have today. And it all needs to be inventoried and placed in a way that the
+engine has easy access to it."
 ## Two members, one table (run in parallel; identical columns; part A merges at the end)
 - PART A: the cut pieces not yet in the game (sources 1-3 below). Output reference/art/catalog-cut.csv.
 - PART B: everything the game ships today: every image under src/assets (each atlas frame or sprite separately, by the atlas's own
@@ -50,5 +53,12 @@ drawn piece with a footing line), src/game/paintedScenery.ts (decor layers), src
 1. Every kept piece from all sources, and every image the game ships, is in the master table once (count per source printed and matched); no row lacks a world,
    an engine slot or a layer. 2. A spot-check list of 20 older-batch pieces with old tag vs new tags and the reason. 3. footing and
    ship_px filled for every platform/step/soft-landing row. 4. Made things never W1. 5. No tester text; no HF job; nothing under src/.
+## PART C (Engine, after A's merge passes its Critic): the engine's inventory
+NEW src/game/art/inventory.json generated from CATALOG-MASTER.csv by tools/art/catalog_master.py --emit (never hand-edited), and NEW
+src/game/art/inventory.ts: typed rows and queries the level builder calls (byWorld(w, {layer, slot, minW, maxW, standable}), bySlot,
+byId, gaps(world)), with inventory.test.ts (every row has a file that exists, a world, a layer; footing inside the image; made things
+never W1; queries return what the CSV says). It changes no stage (lock 102/102 unchanged) and nothing is wired into a stage yet (C2
+does that when 1-1 is ready to finish). It stays OUT of the main JS chunk: loaded with the stage build (buildAhead.ts) or a dynamic
+import, chunkcheck's budget held. A packet of its own, written when A and B have pushed.
 ## Return
 Push, ls-remote, REPORT.md (7 sections, 40 lines), ONE send_message to the lead (session_01FhBbYMoqqEdVR3qFjTCugy), 6 lines. Stop. Part B also messages part A its head.
