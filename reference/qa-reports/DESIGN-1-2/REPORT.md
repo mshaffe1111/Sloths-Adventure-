@@ -20,7 +20,8 @@ No screens (packets). Tables checked for broken code spans; times from `date`; e
    (11 of the pool). It is Engine item 5, beside the Critic's V3 line.
 2. **Caches cannot be petals on a harvest stage.** The quota is 87.5% of all petals laid: 4 to 7 petals a roll may sit off the low
    road, and three fork ends are 9. The game already has the answer: a `fruit` pickup counts toward the goal and is not in the
-   quota (engine.ts:3002, :3073; goals.ts:51). Engine item 6 lays one for every off-road pickup on a harvest stage. THE LEAD'S CALL.
+   quota (engine.ts:3002, :3073; goals.ts:51). Engine item 6 lays one for every off-road pickup on a harvest stage. ACCEPTED by the
+   lead, 11-11 4:47 PM ET.
 3. **A required section is fitted by its phases, a reward node by nothing else** (pipeline.ts:1348): attempt 1's note hollow would
    have fitted no node. It now carries `phases: ['sho', 'ten']`.
 4. **Attempt 1's probe ran another brief** (the Critic's line 1 is right). probe12.ts is kept and labelled as what it was.
@@ -30,8 +31,8 @@ No screens (packets). Tables checked for broken code spans; times from `date`; e
   bounce combine to 1-1 or the graph is dropped and named. It belongs with R-165.120 (the yield).
 - **DESIGNER help.md §5** (failures counted through a lost life, one system with assist.ts) before 1-2 reaches testers.
 ## 5. Unresolved
-- Three open calls for the lead (notes §3): bonus blooms; what the ladder grows at a chain (my pick: the lesson's own fallen
-  log); `EARLY_DOUBLE` moving the old 1-2's validation between pushes 2 and 3.
+- Nothing is open with the lead: the three calls attempt 2 left open were accepted 11-11 4:47 PM ET (notes §3). Attempt 2 is
+  with the packet Critic.
 - Thin supply cells are named in notes §8: eight job-and-type cells hold one section each.
 - supply12 proves tags and counts with stand-ins, not heights: the builder's raw builds are the proof of reach.
 - Not run by me: the tier bots or stage.ts on a 1-2 that does not build yet. The thorn bed has not been drawn.

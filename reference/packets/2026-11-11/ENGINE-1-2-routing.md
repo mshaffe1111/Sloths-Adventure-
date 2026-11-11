@@ -147,7 +147,7 @@ pays in blooms that never raise the quota.
   exactly one find, the note, at the socket, no seed, both settings, 6 seeds; 1-1's seed promise green.
 - Gates: lockall: nothing differs.
 
-**5. The double jump counts on 1-2. (Push 2; found by the Critic and by the supply run)**
+**5. The double jump counts on 1-2. (Push 2; found by the Critic and by the supply run; RULED by the lead, 11-11 4:47 PM ET)**
 - The level check counts a double only on 1-1 and from 1-6 (levelCheck.ts:132-134: `EARLY_DOUBLE` holds '1-1'; its own comment
   says the double is "in the player's kit from then on"). On 1-2 every piece that needs a double or a bounce plus an air jump
   reads as unreachable ("exit platform is not reachable"), and its section is swapped out: 11 of 1-2's sections never lay.
@@ -159,11 +159,12 @@ pays in blooms that never raise the quota.
   `A Tb Pg1 R Xc2 R Sb E` when `lessons` says 1-1 taught the double and still refuses it when it does not; on 1-1 nothing moves.
   `FLOWN` is no longer needed: `npx tsx reference/specs/sims/supply12.ts 120` gives what `FLOWN=1` gives today (720 of 720 built,
   V3 lines gone).
-- Gates: lockall `--intended 1-2`: the OLD 1-2 may move here (its validator now counts the double); say what moved, and that the
-  old 1-2 is deleted in item 7; nothing else differs. The full suite (`doubleAllowed` is also read by easyMode.ts, mixer/w1mix.ts
+- Gates: lockall `--intended 1-2`: the OLD 1-2 may move here (its validator now counts the double); the lead's ruling: the old
+  1-2 is being replaced and nothing ships between pushes 2 and 3 (D40), so that is accepted; say what moved, and that the old 1-2
+  is deleted in item 7; nothing else differs. The full suite (`doubleAllowed` is also read by easyMode.ts, mixer/w1mix.ts
   and gen2/pipeline.ts).
 
-**6. Off the road pays in bonus blooms on a harvest stage. (Push 2)**
+**6. Off the road pays in bonus blooms on a harvest stage. (Push 2; RULED by the lead, 11-11 4:47 PM ET: "exploring always pays")**
 - A harvest's quota is 87.5% of the PETALS laid (goals.ts:21, :51: flowers and leaves), so a petal off the natural road costs a
   player who stays on it; with 3-4 forks a roll there is room for 4 to 7 (CONTENT packet "Petals"). A `fruit` pickup already
   counts toward the goal when gathered and is never in the quota (engine.ts:3002-3003, :3073).
@@ -187,9 +188,10 @@ pays in blooms that never raise the quota.
 - Help (the lead's ruling on audit B-01): the ladder runs in 1-2 at ONE piece, the first chain of the section whose `teaches` is
   'thorns', on R-165.119's fixed ladder (it counts tries, not only falls); everywhere else in 1-2 it stays off (engine.ts:849 is
   1-1 only today). Its line there is the ladder's own bounce line (helpLadder.ts:31). What it grows is NOT the boulder stair
-  (`STEP_CUT`, helpLadder.ts:35): at a chain there is no rise. It lays the lesson's own fallen log across that hollow at lip
-  height (the natural piece the lesson showed him), on Easy by itself and on Normal on a yes, at the ladder's counts; gone when
-  the stage ends. If that grown piece cannot be built inside this item, PUSHBACK: ship the line alone and say so.
+  (`STEP_CUT`, helpLadder.ts:35): at a chain there is no rise. RULED by the lead, 11-11 4:47 PM ET: it lays the lesson's own
+  fallen log across that hollow at lip height (the natural piece the lesson showed him, drawn to Pokey's scale: 89.1 units, D41),
+  on Easy by itself and on Normal on a yes, at the ladder's counts; gone when the stage ends. Else the line alone: if the grown
+  log cannot be built inside this item, ship the line, say so in REPORT.md, and name what the log needs.
 - The old 1-2 is deleted, no switch: `HAND_STAGES['1-2']` (protoStage.ts:70), w1Sections.ts's '1-2' rows (:334 on), 1-2's
   `CATCH_UPS` (protoStage.ts:506), and anything only they read; a grep in REPORT.md shows nothing else read them. The `ctest`
   plan keeps what it needs.
