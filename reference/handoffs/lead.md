@@ -40,9 +40,9 @@ is, Matt's direction, the first day), then this note, then STATE.md (the live le
 |---|---|---|---|
 | Story keeper (permanent) | session_019iachLiuwNTAZUBSJWUmR3 | - | release checklist holder; all player text |
 | Release clerk: 0.9.6 full gate (Opus xhigh) | session_01FhBbYNQH2E77sZaoHs9zNm | release-0.9.6@06bbd29f | gates running; reports the table to the lead; rebuilds EnK5 from the final head |
-| EN-Y generator yield (Fable high, 8 h) | session_01FhBbYMEqTtxP72ifdjF22d | t-engine-yield | started 6:09 PM |
-| EN-T travel as a mode (Fable high, 10 h) | session_01FhBbYLpfRZANRpmtbkiRov | t-engine-travel | started 6:09 PM |
-| EN-G frame loop, saves, generality gate (Fable high, 8 h) | session_01FhBbYLp3DKuQUVsbTiibZS | t-engine-guards | started 6:09 PM |
+| EN-Y generator yield: measure, root cause, FIX-PLAN.md (Fable high, 2 h: Matt has ~2 h of Fable total) | session_01FhBbYMEqTtxP72ifdjF22d | t-engine-yield | started 6:09 PM; an Opus builder implements its plan |
+| EN-T travel as a mode (Opus xhigh, 10 h) | session_01FhBbYJwFzGWE5RsE6Hnd4Z | t-engine-travel | started 6:14 PM (Fable session stopped, archived) |
+| EN-G frame loop, saves, generality gate (Opus xhigh, 8 h) | session_01FhBbYLQXMXf7W8kWmXUkvc | t-engine-guards (on 3ce6ac43) | started 6:14 PM (Fable session stopped, archived) |
 | R-165.112 seed lists in their own chunk (Fable) | session_01FhBbYKLJaSijKJGsXKEZNB | t-engine-seedchunks | final gates; retire after its Critic |
 | its Critic (Opus high) | session_01FhBbYMct2YXASz55Nd3jbZ | t-critic-seedchunks | auditing |
 | 1-1 follow-up (R-165.115/.119/.122) | session_01FhBbYLVQnNER5KWRX5LQrf | t-engine-11-followup | told to push and stop; PARKED unreviewed until 1-1's pass after the engine |
