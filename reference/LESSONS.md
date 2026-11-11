@@ -62,3 +62,4 @@ that do the best job get the follow-on work.
 - A rule that counts recorder events names the code line that emits each event and what it records, and is run on a hand-built list with a release and a take-back in it. (D38)
 - A help or assist that changes the stage is flown over every seed and both settings with plain jumps after it is applied; the packet names its tallest case and the number it gives. (D39)
 - Before a packet goes out, name what it is built on and whether a planned job replaces that this sprint; if so, build it after. Two REJECTs in a row: stop and ask whether it patches something about to be replaced. (D40)
+- Pokey's drawn height is 89.1 units (heroSprite.ts:30,32), not 48 (his collider): size art against the drawn height, read from the code. (D41)
