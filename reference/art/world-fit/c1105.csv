@@ -1,0 +1,112 @@
+id,kind
+w1-post-tall-vine,climb post / one-piece vertical
+w1-post-tall-rope,climb post (rope-lashed: made thing)
+hold-w1-totem-carved,carved monkey totem
+w1-post-rope-wrapped,post / scaffold
+hold-w1-pole-carved,carved paw pole
+w1-vine-column-a,climb vine (small: re-roll or upscale)
+w1-vine-column-b,climb vine (small)
+w1-rope-plain,climb rope (small)
+w1-rope-thin,climb rope (small)
+w1-vine-monstera,dressing (small)
+w1-vine-flowering,dressing (small)
+w1-vine-fungus,dressing (small)
+hold-w1-rope-swing-log,rope swing (no swing mechanic)
+hold-w1-golden-fruit,pickup idea
+w1-bush-monstera,hide-in-bush
+w1-bush-hedge-tall,hide-in-bush (tall)
+w1-thorn-vine-column,hazard (vertical)
+w1-thorn-tangle-big,hazard
+w1-thorn-tangle-flat,hazard (low)
+w1-thorn-mound,hazard
+w1-thorn-bramble-a,hazard
+w1-thorn-bramble-b,hazard (low)
+w1-thorn-bramble-long,hazard (long)
+w1-thorn-ball,hazard
+w1-thorn-hang-a,hanging hazard
+w1-thorn-hang-b,hanging hazard
+w1-thorn-hang-c,hanging hazard
+w1-thorn-hang-swag,hanging hazard
+w1-stump-wide,wide standable stump
+w1-post-short-rope,short post
+w1-frame-xbundle-a,scaffold frame
+w1-vine-curtain,dressing / hide curtain
+w1-thorn-row,"hazard (long, low)"
+w1-post-stubs,post with stub steps
+w1-post-vine-wrapped,post
+w1-log-lashed-short,small log platform
+w1-frame-a,scaffold A-frame
+w1-frame-xbundle-b,scaffold frame
+w1-thorn-pile,hazard
+w1-leaf-monstera-hang,dressing
+w1-garland-vine,canopy dressing
+w1-rock-block-big,standable rock block
+w1-rock-boulder-moss,standable boulder
+w1-rock-roots,rock with roots
+w1-rock-spire,rock (dressing / small step)
+w1-rock-arch,hide-under arch
+w1-rock-slabs-stacked,stacked slabs step
+w1-pebble-a,dressing
+w1-pebble-b,dressing
+w1-pebble-c,dressing
+w1-branch-long-a,DRESSING only (drawn diagonal); flat re-roll on the redo lis
+w1-branch-leafy,DRESSING only (drawn diagonal); flat re-roll on the redo lis
+w1-branch-hanging-vine,branch with hanging vine
+w1-branch-knotted,DRESSING only (drawn diagonal); flat re-roll on the redo lis
+w1-branch-twig,thin twig (dressing)
+w1-sticks-bundle,dressing
+w1-branch-twisted,branch (dressing)
+w1-sticks-thorny,hazard
+w1-hide-boulder-cave,hide-under cave
+w1-hide-log-on-stump,hide-under leaning log
+w1-hide-rock-arch-low,hide-under arch
+w1-hide-slab-overhang,hide-under overhang
+w1-rock-slabs-low,low slab step
+w1-hide-stump-hollow,PERCH only (narrow top) + hide spot
+w1-hide-root-arch,root arch (1-2 brief)
+w1-hide-cave-big,hide / secret door cave
+w1-rock-root-block,standable root block
+w1-rock-boulder-moss-big,standable boulder
+w1-rock-slabs-stacked-big,stacked slabs step
+w1-hide-stump-hollow-tall,PERCH only (narrow top) + hide spot
+w1-trunk-twisted-rock,set piece: twisted trunk with rock
+w1-wall-earth-A,ONE-PIECE WALL (master): measure each ledge top
+w1-wall-cap-tl,wall corner cap
+w1-wall-cap-tr,wall corner cap
+w1-wall-foot-l,wall foot corner
+w1-wall-foot-r,wall foot corner
+w1-roots-hang-a,hanging roots
+w1-roots-hang-b,hanging roots
+w1-ledge-thin,floating ledge
+w1-ledge-earth-a,floating earth ledge
+w1-ledge-earth-long,floating earth ledge
+w1-ledge-earth-small,floating earth ledge
+w1-ledge-earth-b,floating earth ledge
+w1-ground-chunk,ground chunk
+w1-mossrock-a,dressing
+w1-mossrock-b,dressing
+w1-grass-tuft-a,dressing
+w2-lantern-hanging,lantern (made thing)
+w1-wall-earth-B,"ONE-PIECE WALL (variant, more roots)"
+w1-plank-ledge-a,plank ledge
+w1-plank-ledge-b,plank ledge
+w1-plank-ledge-c,plank ledge
+w1-roots-hang-c,hanging roots
+w1-roots-hang-glow,hanging roots with glow
+w1-wall-earth-C,ONE-PIECE WALL (variant C)
+w1-boulder-grey-moss,standable boulder
+w1-ledge-overhang-big,big overhang ledge (roots under)
+w1-trunk-fungus-A,ONE-PIECE CLIMB TRUNK: measure each shelf top
+w1-wall-foot-l-41,wall foot corner
+w1-fungus-shelf-big,floating fungus shelf
+w1-fungus-cluster,fungus shelf / dressing
+w1-stump-forked-a,forked stump
+w1-stump-forked-b,forked stump
+w1-mossrock-c,dressing
+w1-mossrock-d,dressing
+w1-trunk-fungus-B,"ONE-PIECE CLIMB TRUNK (spiral steps, best)"
+w1-boulder-grey-moss-b,standable boulder
+w1-log-plank-a,log platform
+w1-log-plank-b,log platform
+w1-grass-tuft-b,dressing
+w1-grass-tuft-c,dressing
