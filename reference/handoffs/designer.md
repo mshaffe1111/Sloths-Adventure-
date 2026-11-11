@@ -107,9 +107,11 @@ Every ruling below cites the file and section where it's written in full.
 ## 4. Open items (none of these is finished; check each before assuming)
 
 - **From the 1-2 packets (11-11):**
-  - attempt 3 of both packets is with the packet Critic (attempt 1: CONTENT 14 lines, ENGINE 6; attempt 2: 1 and 3; each answered in
+  - attempt 4 of both packets is with the packet Critic (the yield floor is 1 clean in 50 for now, the lead 11-11; R-165.120 raises it)
+  - earlier rounds: (attempt 1: CONTENT 14 lines, ENGINE 6; attempt 2: 1 and 3; each answered in
     DESIGN-1-2-notes.md §9); the lead's rulings are all in notes §3, none open (bonus blooms; the ladder grows the lesson's own
-    fallen log at the first chain, else the line alone; `EARLY_DOUBLE` gains '1-2');
+    fallen log at the first chain, else the line alone; the double counts on the gen2-BUILT 1-2 only, `EARLY_DOUBLE` not
+    widened, so `#ctest` on 1-2's id does not move; item 0 struck from the Engine packet: the t-engine-11-followup round's);
   - Engine work 1-2 stands on: ENGINE-1-2-routing.md (item 0, the 1-1 high-road ends, is the t-engine-11-followup round's; then
     the seed tool, the thorn hollow, the reach scope, the note, the double counted on a gen2-built stage, the blooms by a brief
     field; routing and help last);

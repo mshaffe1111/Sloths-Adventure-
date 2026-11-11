@@ -12,7 +12,8 @@ arg parsing), D37 (every engine claim run: supply12, chainlay12, finds11), D40 (
 | The deal re-probed on the packet's own brief, real pipeline | `FLOWN=1 npx tsx reference/specs/sims/supply12.ts 120` | 720 of 720 rolls build, 0 throws; pool short on 2 / 6 / 3 rolls of 120 (graphs A / B / C); none of the 53 never laid; every test cell holds two; sims/out/supply12-flown.txt |
 | The same on today's engine, for the record | `npx tsx reference/specs/sims/supply12.ts 60` | most seeds throw or swap: sims/out/supply12-today.txt |
 | Stage brief, graphs, sections, thorny floor, petals, Easy, bots, stills, gates, done-items, what is shared | CONTENT-1-2-relay.md | 53 sections: 11 reused, 17 own, 25 new; 10 done-items by phase |
-| The Engine packet | ENGINE-1-2-routing.md | items 1-7 in two pushes (item 0 is the follow-up round's), each with file:line, a done-test and its gates |
+| The Engine packet | ENGINE-1-2-routing.md | items 1-7 in two pushes (item 0 struck: the follow-up round's), each with file:line, a done-test and its gates |
+| The lead's rulings of 4:58 PM ET | both packets, attempt 4 | item 0 struck; yield floor 1 in 50; a quiet test per section (done-item 2b); the rest already met at 89005905 |
 ## 2. Polish check
 No screens (packets). Tables checked for broken code spans; times from `date`; every new cite read at 53bd446a.
 ## 3. Pushback (on my own attempt 1, and on the engine as found)
@@ -32,9 +33,8 @@ No screens (packets). Tables checked for broken code spans; times from `date`; e
   bounce combine to 1-1 or the graph is dropped and named. It belongs with R-165.120 (the yield).
 - **DESIGNER help.md §5** (failures counted through a lost life, one system with assist.ts) before 1-2 reaches testers.
 ## 5. Unresolved
-- With the lead, to see: ruling 3 is met more narrowly than ruled (the double counts on a gen2-built stage, `EARLY_DOUBLE` not
-  widened), so the testers' course and the old 1-2 do not move; and 1-1's own fresh-seed yield (6 of 600) is five times under the
-  floor asked of 1-2 (done-item 6 now makes a rule-caused shortfall a PUSHBACK). Attempt 3 is with the packet Critic.
+- Nothing is open with the lead (4:58 PM ET rulings applied: the double for the gen2-built 1-2 only; yield floor 1 in 50 for
+  now). Attempt 4 is with the packet Critic.
 - Thin supply cells are named in notes §8: eight job-and-type cells hold one section each (the three test cells hold two).
 - supply12 proves tags and counts with stand-ins, not heights: the builder's raw builds are the proof of reach.
 - Not run by me: the tier bots or stage.ts on a 1-2 that does not build yet. The thorn bed has not been drawn.

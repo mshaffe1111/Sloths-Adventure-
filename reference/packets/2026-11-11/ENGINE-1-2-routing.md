@@ -1,7 +1,8 @@
-# TASK E12 (R-165.115 first: the 1-1 high-road ends; then R-165.11's engine half: what 1-2 on gen2 stands on)   to: Engine
+# TASK E12 (R-165.11's engine half: what 1-2 on gen2 stands on)   to: Engine
 # model: the engine tier (tools/team/models.json on the lead's branch)   effort: high   due: see "Time"; a safe-keeping push at least hourly
 Written by the Designer, 2026-11-11 5:03 PM ET; attempt 3: after the packet Critic's 6 lines (t-critic-1-2-packet@51fe547a), the lead's
-rulings of 11-11, and the Critic's three attempt-2 lines (@79f8e8b0: the testers' course, one owner, the blooms' reach). Every file:line was read at t-int-1-1@53bd446a (D37).
+rulings of 11-11, and the Critic's three attempt-2 lines (@79f8e8b0: the testers' course, one owner, the blooms' reach). Attempt 4, 5:05 PM ET:
+the lead's rulings of 4:58 PM ET applied exactly (item 0 struck). Every file:line was read at t-int-1-1@53bd446a (D37).
 
 ## First, before any tool call
 `git fetch origin ccr-ca657d3c-n09zty t-design-1-2 t-designer-reach` and the passed t-int-1-1 head the lead names. Read
@@ -10,22 +11,17 @@ reference/packets/2026-11-11/CONTENT-1-2-relay.md (what Content builds on your w
 find, §8 the supply run), reference/specs/chain.md (§1 the rows, §3 the bands).
 
 ## Objective
-First, the end of every fork's high road in 1-1 holds something. Then: 1-2 can be rolled, judged on the flown reach, and played
+1-2 can be rolled, judged on the flown reach, and played
 from gen2, a fall onto its thorns costs a heart and sets Pokey back, Meeca's note stands in its hollow, and looking off the road
 pays in blooms that never raise the quota.
 
 ## Why it matters
-- Item 0: on all 200 listed 1-1 seeds, both settings, 540 high-road end pieces in 610 fork sections hold nothing
-  (`npx tsx reference/specs/sims/finds11.ts --all`, exit 1 today). Matt, 11-11 (R-165.108): "things that are worth value all over
-  the place". Matt shipped tonight's link with it named; this is the fix right after (R-165.115).
 - Items 1-7: Matt chose to start 1-2 tonight as the benchmark of a new helper building a level. Rolled on today's engine, 1-2
   throws or swaps out every section that needs a double (`npx tsx reference/specs/sims/supply12.ts 60`, out/supply12-today.txt);
   with items 3 and 5 stood in, every one of 720 rolls builds (`FLOWN=1`, out/supply12-flown.txt).
 
 ## Three pushes (the order decides who waits on whom)
-- **Push 1: item 0, alone: NOT YOURS.** R-165.115 went to the t-engine-11-followup round at 4:27 PM ET (the lead's STATE.md:357),
-  with R-165.119's fixed help ladder. Item 0 stays below as that round's done-test and gates, so one text is checked; you do not
-  build it. One owner per file (D40): you start from that round's PASSED head, which the lead names.
+- **Push 1 is not this packet's:** the t-engine-11-followup round (R-165.115 and R-165.119). You start from its PASSED head.
 - **Push 2: items 1-6, what a RAW build needs.** None needs 1-2 routed: each is proved with `buildGen2Stage` and RealPlay. Item 1
   (`KITS['1-2']`) is in this push so the seed list can be built on raw builds (the tool calls `buildGen2Stage`,
   tools/engine/seedlist.ts:11, :34) BEFORE routing. The lead names this head to Content.
@@ -33,14 +29,14 @@ pays in blooms that never raise the quota.
   (`provenSeedFor`, seedList.ts:67), and `lockall` and the game build 1-2 through `generateStage`. Nothing reaches main half-routed.
 
 ## Frozen inputs
-- Base: the passed head of t-engine-11-followup (it holds item 0 and R-165.119's ladder, which item 7 turns on), named by the lead.
+- Base, FROZEN: the PASSED head of t-engine-11-followup (it holds the 1-1 fork-end fix and R-165.119's ladder, which item 7 turns
+  on at one piece of 1-2), named by the lead. One owner per file (D40): you do not re-fix either.
 - The numbers: reference/specs/chain.md §1 (the Normal 1-2 rows) and §3 (the chain bands and the rule for a stepped cap);
   bands.md §2 at t-designer-reach. A number you can't enter as written is a PUSHBACK.
 - The player-facing rules (the lead, 11-11): Normal: touching the thorn bed costs ONE heart, the hurt sound, blink and haptic, and
   sets him back; the last heart is a life (the engine's `heartFall` as it is, engine.ts:7462-7492). Easy: the same set-back, hurt
   sound and blink, NO heart. Dot's thorn line has no row yet: no `tip` socket is laid for it, and a `tip` whose id has no row
   keeps failing the roll as it does today (pipeline.ts:2684-2685): that rule does not change.
-- 1-1 after item 0 keeps every platform where it is: item 0 adds pickups only.
 - src/game/gen2/worlds/w1.ts is Content's (one packet at a time, roles/README "Shared files"): you edit it only in item 7.
 - Made things: thin logs draw as planks and tall narrow stones as the sawn `w1-stump-wide` on every World 1 gen2 stage
   (w1CutArt.ts:69-84, :105; w1.ts:1522). That is the planned art pass's (C2), on 1-1 and 1-2 alike (the lead, 11-11): not
@@ -53,30 +49,14 @@ pays in blooms that never raise the quota.
   files), helpLadder.ts (item 7 only), stageGenerator.ts, testlink1_1.ts, buildAhead.ts; src/components/WorldMap.tsx;
   tools/engine/seedlist.ts; the tests beside each; src/assets/props/pits/ (the thorn bed's pieces); in item 7 only: protoStage.ts,
   w1Sections.ts, and `w1Finish` in w1.ts (w1.ts:1517-1527). REPORT.md under reference/qa-reports/E12/, your turnover note.
-  For item 0's own gates (the follow-up round's, kept for the record): src/game/gen2/firstRun11.ts (the first run's lock, re-recorded only if `first-run.drift` fires),
-  reference/qa-reports/R-165.59/calibration-main.jsonl (the tier bots' calibration, re-run because 1-1 changed), and, only if
-  the list must be rebuilt, src/game/gen2/provenSeeds.ts through the tool (on R-165.112's head, the lead's word first).
 - A type or interface change is the Architect's by the roster (verdicts.types.ts, gen2/types.ts): the lead has put them in this
   packet; say in REPORT.md exactly what you added.
 - Nothing else. A needed change elsewhere is a PUSHBACK naming file and line.
 
 ## Definition of done (the Critic checks each; every item names its test and its gate)
-**0. 1-1: the end of a fork's high road holds a cache. (Push 1; OWNER: the t-engine-11-followup round, not this packet's builder)**
-- Cause: `gFork` lays the fork's `find` socket on its last high piece (w1.ts:1118); the pipeline fills a `find` only in the stage's
-  required section (pipeline.ts:2126, the 11-06 fix that pinned the seed to its perch); `offPathFilled` skips a piece that has a find
-  socket (w1.ts:1504). So that piece is bare.
-- Fix where the fill is decided, in pipeline.ts (:2120-2129), not in w1.ts: a `find` socket that is not the stage's find home lays
-  a cache of 3 pickups over its piece (an arc, 30 px apart, at the socket's height). The seed stays alone on its perch.
-- Done-test: `npx tsx reference/specs/sims/finds11.ts --all` prints 0 for w1-mushroom-fork, w1-mushroom-fork-dip and
-  w1-bank-stair-fork (180, 164 and 196 today) and exits 0, or you say why not: its 14 hits in w1-hollow-twoway may be the engine's
-  own catch pieces; read each kind and say which they are. A suite test of your own that reads `collectibles` on built listed
-  seeds, both settings, with a planted failure (D19: the old test counts sockets, w1.test.ts:117). The seed on its perch on every
-  listed seed (the existing promise test stays green).
-- Gates: `npx tsx tools/engine/lockall.ts --layouts 16 --check <base.json> --intended 1-1` (record `<base.json>` on your base first):
-  only 1-1 differs, and in its pickups only (print the parts that changed); `npx tsx tools/engine/seedlist.ts 1-1 --check` PASS, 200
-  seeds, 0 refused; the first run's lock (src/game/gen2/firstRun11.ts) re-recorded on purpose if `first-run.drift` fires, said in
-  REPORT.md; `npx tsx --test tools/inspect/tierBots.test.ts` and, since 1-1 changed, the calibration re-run and
-  reference/qa-reports/R-165.59/calibration-main.jsonl recommitted (CLAUDE.md "Checks"); the test link's pins A, B, C still listed.
+**0. STRUCK (the lead, 11-11 4:58 PM ET).** The 1-1 high-road ends (R-165.115) belong to the t-engine-11-followup round
+(session_01FhBbYLVQnNER5KWRX5LQrf), with R-165.119's help ladder. Its text is in this file's history at 89005905; its red check is
+`npx tsx reference/specs/sims/finds11.ts --all`. Nothing of it is built here.
 
 **1. The seed list tool takes 1-2. (Push 2)**
 - tools/engine/seedlist.ts:23 `KITS` gains '1-2' (`w1World`); the squirrel check stays 1-1's (:35); the verdicts' refusal count
@@ -151,7 +131,7 @@ pays in blooms that never raise the quota.
   exactly one find, the note, at the socket, no seed, both settings, 6 seeds; 1-1's seed promise green.
 - Gates: lockall: nothing differs.
 
-**5. The double jump counts on the gen2-built 1-2. (Push 2; found by the Critic and by the supply run; the lead's ruling 11-11 4:47 PM ET: the double counts on 1-2)**
+**5. The double jump counts on the gen2-built 1-2 ONLY. (Push 2; the lead's rulings 11-11 4:47 and 4:58 PM ET: `#ctest` must not move)**
 - The level check counts a double only on 1-1 and from 1-6 (levelCheck.ts:132-134: `EARLY_DOUBLE` holds '1-1'; its own comment
   says the double is "in the player's kit from then on"). On 1-2 every piece that needs a double or a bounce plus an air jump
   reads as unreachable ("exit platform is not reachable"), and its section is swapped out: 11 of the first pool never laid.
@@ -177,8 +157,8 @@ pays in blooms that never raise the quota.
   counts toward the goal when gathered and is never in the quota (engine.ts:3009-3010, :3080).
 - Rule, keyed on the stage's BRIEF, never on its objective (8-2 is a gen2 harvest too, gen2/game.ts `GEN2_STAGES`, and must not
   move): a new field on `GraphBrief` (gen2/types.ts:534-550), `offRoad?: 'fruit'`. Where a stage's brief sets it, a `pickup`
-  socket on a piece that is not `main` lays `fruit`, not `flower` (pipeline.ts:2097-2106), and item 0's cache does the same
-  there. Content sets it on `briefs['1-2']` only. On every other stage, as today (1-1's caches are petals; 8-2 untouched).
+  socket on a piece that is not `main` lays `fruit`, not `flower` (pipeline.ts:2097-2106), and the fork-end cache the follow-up round's
+  fix lays does the same there. Content sets it on `briefs['1-2']` only. On every other stage, as today (1-1's caches are petals; 8-2 untouched).
   The engine's harvest top-up and trim (pipeline.ts:292, :2187-2196; stageGenerator.ts capHarvest) count and move petals only.
 - Done-tests: a raw 1-2 build: every pickup over a non-main piece is a `fruit`; the quota (`withGoals`) equals 87.5% of the
   flowers on main pieces; a RealPlay run that gathers a bloom sees the goal count rise by one. 1-1 unchanged.
@@ -220,7 +200,7 @@ not the old 1-2, not the control course on its id, not 8-2); World 8's heart fal
 stay green); the soft and lethal drop looks.
 
 ## Time (D25: from history where there is any)
-Item 0 is the follow-up round's (1.5 to 2 h by the roadmap's range for R-165.115). Items 1-6: no history for any of them; a range of 8 to 12 h,
+Items 1-6: no history for any of them; a range of 8 to 12 h,
 the thorn hollow (item 2) about half of it. Item 7: 3 to 5 h. Waits on Content and the lead are timed apart in your TIMELINE.
 
 ## Return
@@ -229,5 +209,5 @@ or fewer, the 7 sections, "Method used", "Lessons applied"), your turnover note 
 session id on line 1 of reference/handoffs/lead.md) after each push, 8 lines or fewer. A blocker or a wrong frozen input:
 PUSHBACK.md and one message, then stop.
 ## Attempt
-3 (attempt 1: item 0 PASSED on its own, the rest REJECTED at f60e6503, 6 lines; attempt 2 at 35364c97: all 6 closed, 3 new
-lines; each is answered in DESIGN-1-2-notes.md §9)
+4 (attempt 1 REJECTED at f60e6503, 6 lines; attempt 2 at 35364c97: all 6 closed, 3 new lines; attempt 3 at 89005905 met them;
+attempt 4 applies the lead's rulings of 4:58 PM ET exactly: item 0 struck. Each line is answered in DESIGN-1-2-notes.md §9)

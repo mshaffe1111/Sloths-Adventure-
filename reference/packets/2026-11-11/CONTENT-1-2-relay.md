@@ -1,7 +1,7 @@
 # TASK 1-2 (R-165.11: build stage 1-2, The Petal Trail, on gen2, the way 1-1 was re-laid)   to: Content
 # model: the content tier (tools/team/models.json on the lead's branch)   effort: high   due: see "Time"; a safe-keeping push at least hourly
 Written by the Designer, 2026-11-11 5:03 PM ET; attempt 3: after the packet Critic's 14 lines (t-critic-1-2-packet@51fe547a), the lead's
-rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
+rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Attempt 4, 5:05 PM ET: the lead's rulings of 4:58 PM ET applied exactly. Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
 
 ## First, before any tool call
 `git fetch origin ccr-ca657d3c-n09zty t-design-1-2 t-designer-reach t-engine-inventory art-director` and the head the lead names.
@@ -57,8 +57,9 @@ Rules: (1) A section 1-1 lays is REUSED only as it is: its `feel` gains or loses
 that needs another number, a thorn hollow or other words is 1-2's OWN section (id ending `-12`, `feel: ['1-2']`), the original left
 byte for byte. (3) Every own and new section ends within 110 px of its start height unless its job is U or D: 1-2 is level, so a
 lift is paid back inside the section, by steps down that each carry a hop: the new letter `N` (below). A bare `n` holds no jump
-and no pickup, and the seed list refuses a quiet stretch over 4 s (seedList.ts:22): NEVER two bare `n` in a row in an own or new
-rhythm, and a bare `n` only where the next beat is a jump or a mushroom. (4) No own or new section carries a `hint.1-1.*`,
+and no pickup, and the seed list refuses a quiet stretch over 4 s (seedList.ts:22): never more than 2 bare `n` in a row (the
+lead's rule, 11-11), and the rhythms below hold a stricter line: no two in a row, and a bare `n` only where the next beat is a
+jump or a mushroom. (4) No own or new section carries a `hint.1-1.*`,
 `coach.*`, squirrel or bootprint socket. (5) Petals sit LOW and on the main road. (6) Every own and new id is added to `JOBS`,
 `CONTENT` and `TERRAIN` (w1.ts:1415-1462). Supply by job and type, as rolled: notes §8.
 
@@ -149,7 +150,7 @@ Both exits are walk-ons of a rest's length, so either may follow S (V5); no othe
   off-path pieces `main: false`; there is nothing to flip later.
 - Numbers, each roll: PETALS only on the main road: one over every cap, one over every thorn dip, 1-2 on each low-road beat, 3 on
   N23's island; 50 to 72 in all after the engine's trim. BLOOMS: 3 at the end of every fork's high road (5 forks of yours, plus
-  the reused ones once Engine's item 0 lands); 1 on every other off-path landing (`offPathFilled`, w1.ts:1500); 4 on one bough over
+  the reused ones once the follow-up round's fork-end fix, R-165.115, lands); 1 on every other off-path landing (`offPathFilled`, w1.ts:1500); 4 on one bough over
   a cap in N21 (one extra bounce reaches it). About 15 to 25 blooms a roll.
 - RULE, on every listed seed and both settings, read on the BUILT stage: a run that takes every LOW road and no off-path piece
   gathers the quota with 2 or more to spare; print the smallest spare. And every off-path landing of an own or new section has a
@@ -227,6 +228,10 @@ The thorn floor's look goes to Matt on Engine's still. Keep building while they 
 1. [1] The kit rows, the three graphs, the tag edits and all 42 own and new sections entered; the report lists the 53 as reused /
    own / new with w1.ts lines. A w1.stage12.test check: no section in 1-2's pool holds a `hint.1-1.*`, `coach.*`, squirrel or
    bootprint socket, or a `tip` whose id has no row; none of yours adds a made thing; no own or new version lays two bare `n` in a row.
+2b. [1] The quiet line, per section (the lead, 11-11 4:58 PM ET): every own and new section, laid in the kit as
+   reference/specs/sims/quiet12.ts lays its two (your copy, your real sections, `FLOWN=1` until Engine's push 2), has a worst
+   quiet stretch touching it of 4 s or less on 9 rolls in 10 that lay it; the table printed, one row a section. The same run on
+   each of the 11 reused sections, reported (a reused one over the line is named, and comes out of 1-2's pool by its tag).
 2. [1 alone, 2 on rolls] Bands: every laid jump inside bands.md §2; every chain inside chain.md §3, measured cap centre to cap
    centre on the LAID pieces and printed (the tempo stretches a written step). The proofs of chain.md §4. No double gap on Easy.
 3. [2] Thorns: every hollow per the table on every listed seed; the thorn lesson's `show` piece comes before the first hollow that
@@ -243,12 +248,10 @@ The thorn floor's look goes to Matt on Engine's still. Keep building while they 
    53 sections on 3 listed seeds or more (name any that is not, and why).
 6. [2] The seed list, with its yield (the lead's ruling on audit B-02; CLAUDE.md "Variety": never a list dug out by rerolling).
    Before the list: over fresh seeds 1-300 on each setting, print for each graph how many roll clean and, for the rest, how many
-   each refusing rule refused. FLOOR: 1 clean in 10 on each graph, both settings clean. Under the floor: fix the section the top
-   rule names and measure again; a graph that cannot reach the floor is dropped and named in the report (two graphs at least must
-   remain). Know before you start: 1-1 itself rolls clean on 6 of 600 fresh builds (the Critic, attempt 2), five times under
-   this floor, and part of that is the engine's own rules (the deal's V11 cap, the quiet line at joins). Where 1-2 sits under the
-   floor for a cause in a rule and not in a section, that is a PUSHBACK naming the rule and its count (it joins R-165.120); the
-   list is never dug deeper to make up for it. Then `npx tsx tools/engine/seedlist.ts 1-2 --count 120 --from 1 --to 3000` (4 workers: `--worker i/4 --part F`, then
+   each refusing rule refused. FLOOR, for now (the lead, 11-11 4:58 PM ET): 1 clean in 50 on each graph, both settings clean; 1-1
+   itself reaches 2% on fresh seeds (6 of 600, the Critic), and R-165.120 raises the floor later. Under the floor: fix the section
+   the top rule names and measure again; a graph that cannot reach the floor is dropped and named in the report (two graphs at
+   least must remain); a shortfall whose cause is a rule and not a section is a PUSHBACK naming the rule and its count. Then `npx tsx tools/engine/seedlist.ts 1-2 --count 120 --from 1 --to 8000` (4 workers: `--worker i/4 --part F`, then
    `--merge`), its tries and its time printed; `npx tsx tools/engine/seedlist.ts 1-2 --check` PASS, 100 seeds or more, 0 refused.
 7. [3] The tier bots, 40 variants a tier a setting (`npx tsx tools/inspect/tierBots.ts --stage 1-2 --tiers child,middle,expert
    --seeds 1-40 --setting both`; calibrated on 1-1's testers only: say so; the expert plays Normal only). Must show: 0 rescues for
@@ -283,5 +286,6 @@ Branch t-content-1-2 from the named head, pushed (`git ls-remote` equals HEAD) a
 lead (the session id on line 1 of reference/handoffs/lead.md) at the end of each phase, 8 lines or fewer. A blocker or a wrong
 frozen input: PUSHBACK.md on the branch and one message, then stop.
 ## Attempt
-3 (attempt 1 REJECTED at f60e6503, 14 lines; attempt 2 at 35364c97: all 14 closed, 1 new line, the quiet line; each is answered
-in DESIGN-1-2-notes.md §9)
+4 (attempt 1 REJECTED at f60e6503, 14 lines; attempt 2 at 35364c97: all 14 closed, 1 new line, the quiet line; attempt 3 at
+89005905 met it; attempt 4 applies the lead's rulings of 4:58 PM ET exactly: the yield floor 1 in 50, a quiet test per section.
+Each line is answered in DESIGN-1-2-notes.md §9)
