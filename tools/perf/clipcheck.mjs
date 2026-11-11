@@ -61,14 +61,20 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const freePort = () => new Promise((res) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => res(p)); }); });
 
 // a production build served by vite preview: six pages load it far faster than the dev server's thousand modules
-async function startServer() {
-  const dist = path.join(out, 'dist');
-  const b = spawn('npx', ['vite', 'build', '--outDir', dist, '--emptyOutDir', '--logLevel', 'error'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
+// (`dev`: a development build, NODE_ENV=development, for the one step that needs the dev-only engine handle: the help offer, R-165.62)
+async function startServer(dev = false) {
+  const dist = path.join(out, dev ? 'dist-dev' : 'dist');
+  const b = spawn('npx', ['vite', 'build', '--outDir', dist, '--emptyOutDir', '--logLevel', 'error'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], env: dev ? { ...process.env, NODE_ENV: 'development' } : process.env });
   let blog = '';
   b.stdout.on('data', (d) => (blog += d));
   b.stderr.on('data', (d) => (blog += d));
   const code = await new Promise((r) => b.on('exit', r));
   if (code) throw new Error(`vite build failed:\n${blog}`);
+  // the route to the help offer drives real put-backs through window.__engine, which only a development build has: the production
+  // build must not carry it (fails closed), and the development build must
+  const js = fs.readdirSync(path.join(dist, 'assets')).filter((f) => f.endsWith('.js')).map((f) => fs.readFileSync(path.join(dist, 'assets', f), 'utf8')).join('\n');
+  if (!dev && js.includes('__engine')) throw new Error('the production build carries the dev-only window.__engine handle');
+  if (dev && !js.includes('__engine')) throw new Error('the development build has no window.__engine: the help-offer route cannot run');
   const port = await freePort();
   const p = spawn('npx', ['vite', 'preview', '--outDir', dist, '--port', String(port), '--host', '127.0.0.1', '--strictPort'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
   let log = '';
@@ -263,7 +269,7 @@ const scrollAll = (page) => page.evaluate(() => {
 });
 
 // ---- one walk: one save at one size -----------------------------------------------------------------------------------------------
-async function walk(browser, base, save, size) {
+async function walk(browser, base, save, size, devBase) {
   const tag = `${save} ${size.id}`;
   const ctx = await browser.newContext({ viewport: size.viewport, deviceScaleFactor: 1, hasTouch: true, isMobile: true, serviceWorkers: 'block' });
   await ctx.route(/script\.google\.com/, (r) => r.abort());
@@ -476,6 +482,28 @@ async function walk(browser, base, save, size) {
     await plant('pause: planted', '.pm-card');
   });
 
+  // Normal's help offer in 1-1 (R-165.62, HelpOffer.tsx): real put-backs, 12 at one piece, until it comes up. Each put-back is the engine's
+  // own fall: he is dropped below the stage where he stands, and A1's soft fall sets him back. On the development build only (it alone has
+  // window.__engine; startServer proves the production build does not). Fails closed: no offer up is a screen that could not be opened
+  if (save === 'fresh' && devBase) await tryStep('help offer', async () => {
+    await page.goto(`${devBase}/?lessons=off`);
+    await seed(page, 'fresh');
+    await page.evaluate(() => localStorage.setItem('sloth_difficulty', 'normal'));
+    await page.goto(`${devBase}/?lessons=off&autostart=1&level=1-1`);
+    await page.locator('canvas').first().waitFor({ state: 'attached', timeout: 30000 });
+    await page.waitForFunction(() => typeof window.__engine === 'function' && !!window.__engine()?.helpState?.().on, null, { timeout: 30000 });
+    await settle(4000);
+    for (let n = 0; n < 16 && !(await page.locator('.ho-scrim').count()); n++) {
+      await page.evaluate(() => { const e = window.__engine(); const p = e.player; p.y = e.currentStage.config.levelHeight + 140; p.vy = 300; p.grounded = false; });
+      await page.waitForFunction(() => { const e = window.__engine(); return !!document.querySelector('.ho-scrim') || (e.player.grounded && e.player.y < e.currentStage.config.levelHeight); }, null, { timeout: 8000 });
+      await settle(700);
+    }
+    await page.locator('.ho-card').first().waitFor({ state: 'visible', timeout: 10000 });
+    await settle(900);
+    await judge('play: help offer');
+    await plant('help offer: planted', '.ho-card');
+  });
+
   // Dot's very first tip, with its Skip tips button (once per device, never on 1-1: dotGuideHelp.ts offersSkip): 1-3 on the fresh save,
   // lessons on, says "Run through petals" within its first seconds. Judged inside her layer only. Sideways its Skip sat inside the right
   // 48 px inset until 11-06 (VineHud's guide safe area now keeps the phone's insets). Fails closed: no Skip up is a screen not opened
@@ -542,16 +570,19 @@ async function walk(browser, base, save, size) {
 const t0 = Date.now();
 console.log(`clip check: every menu screen at 412x915 and 915x412, on a fresh, an old and a finished save`);
 const server = process.env.CLIPCHECK_URL ? { url: process.env.CLIPCHECK_URL.replace(/\/$/, ''), stop: () => {} } : await startServer();
+// (the help offer's route: a development build of its own; CLIPCHECK_DEV_URL points at a dev server instead)
+const devServer = process.env.CLIPCHECK_DEV_URL ? { url: process.env.CLIPCHECK_DEV_URL.replace(/\/$/, ''), stop: () => {} } : await startServer(true);
 const browser = await chromium.launch();
 let results;
 try {
   // warm vite's dependency pass once, so six pages don't race it
   { const p = await browser.newPage(); await p.goto(`${server.url}/?lessons=off`); await p.locator('.ttl-play').waitFor({ timeout: 90000 }).catch(() => {}); await p.close(); }
   const jobs = SAVES.flatMap((s) => SIZES.map((z) => [s, z])).filter(([s, z]) => !process.env.CLIPCHECK_WALKS || process.env.CLIPCHECK_WALKS.split(',').includes(`${s}:${z.id}`));
-  results = await Promise.all(jobs.map(([s, z]) => walk(browser, server.url, s, z).catch((e) => ({ tag: `${s} ${z.id}`, found: [], missed: [`walk: ${e.message.split('\n')[0]}`], errors: [] }))));
+  results = await Promise.all(jobs.map(([s, z]) => walk(browser, server.url, s, z, devServer.url).catch((e) => ({ tag: `${s} ${z.id}`, found: [], missed: [`walk: ${e.message.split('\n')[0]}`], errors: [] }))));
 } finally {
   await browser.close();
   server.stop();
+  devServer.stop();
 }
 
 // ---- report: one line per distinct breach, with every place it was seen ------------------------------------------------------------

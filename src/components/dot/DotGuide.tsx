@@ -12,7 +12,7 @@ import { countedText, GuideQueue, isUrgent, noteSaid, roomMaySay, readMs, showFo
 import { MoveWatch, StruggleWatch, inDanger, type DeathCause, type StruggleHelp } from '../../game/dotGuideWatch.ts';
 import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markMoveDone, markSkillSeen, markSkipOffered, movesDone, offersSkip, seenSkills, skipTapCounts, skipTips, type DotHelp } from '../../game/dotGuideHelp.ts';
 import { recorder } from '../../game/playRecorder.ts';
-import { helpGuideLine } from '../../game/helpLadder.ts';
+import { helpGuideLine, pushHelpLine } from '../../game/helpLadder.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuidePlatform, type GuideView } from '../../game/dotGuideView.ts';
 import {
   aheadRect,
@@ -290,7 +290,7 @@ class GuideRun {
     // dropped them as a move already taught, R-165.62)
     const help = helpGuideLine(text, this.help, ms);
     if (help !== undefined) {
-      if (help) this.queue.push(help, this.clock);
+      if (help) pushHelpLine(this.queue, help as GuideLine, this.clock);
       return;
     }
     const v = this.view;

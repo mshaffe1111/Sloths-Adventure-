@@ -42,10 +42,20 @@ export const HELP_LINES: ReadonlySet<string> = new Set([...Object.values(MOVE_LI
  * help that her tip rules don't judge again (the ladder is the one place that decides help: a move already taught this stage is the
  * point, not a repeat)
  */
-export function helpGuideLine(text: string, help: 'teach' | 'reminders' | 'quiet', ms?: number): { key: string; text: string; kind: 'struggle'; who: 'Dot'; source: 'struggle'; ms?: number } | null | undefined {
+export function helpGuideLine(text: string, help: 'teach' | 'reminders' | 'quiet', ms?: number): { key: string; text: string; kind: 'struggle'; who: 'Dot'; source: 'struggle'; soon: true; ms?: number } | null | undefined {
   if (!HELP_LINES.has(text)) return undefined;
   if (help === 'quiet') return null;
-  return { key: `help:${text}`, text, kind: 'struggle', who: 'Dot', source: 'struggle', ms };
+  // (`soon`: due now, so neither Tips' 30 s gap nor its busy count holds it back; a fall in progress still does)
+  return { key: `help:${text}`, text, kind: 'struggle', who: 'Dot', source: 'struggle', soon: true, ms };
+}
+
+/**
+ * Puts a ladder line in Dot's queue (DotGuide.tsx engineLine): the stage's own move tips, up or waiting, give way first (the ladder's line
+ * is the better one now, about the same move; the stage's double tip stayed up until the double was done, holding the help behind it)
+ */
+export function pushHelpLine<L extends { kind: string; source?: string }>(q: { clear(f: (l: L) => boolean, now: number): void; push(l: L, now: number): void }, line: L, now: number): void {
+  q.clear((l) => l.kind === 'teach' && l.source === 'engine', now);
+  q.push(line, now);
 }
 
 export interface Piece {

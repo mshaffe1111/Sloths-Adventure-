@@ -54,8 +54,11 @@ for (const setting of ['easy', 'normal']) for (const o of [{ id: 'port', viewpor
     await sleep(500);
   };
   const shot = async (name) => page.screenshot({ path: `${out}/${tag}-${name}.png` });
+  // (her bubble: wait for the line itself, up to 20 s: her calm queue spaces lines out)
+  const waitBub = async (re) => { for (let i = 0; i < 80; i++) { if (await page.evaluate((r) => new RegExp(r).test(window.__bub), re)) return true; await sleep(250); } return false; };
   for (let n = 1; n <= 3; n++) await putBack();
-  await sleep(Number(process.env.WAIT ?? 700));
+  report[`${tag}-line3`] = await waitBub('Jump, then flick up again in the air');
+  await sleep(600);
   await shot('03-line');
   const last = setting === 'easy' ? 8 : 12;
   for (let n = 4; n <= last; n++) await putBack();
@@ -63,7 +66,8 @@ for (const setting of ['easy', 'normal']) for (const o of [{ id: 'port', viewpor
   if (setting === 'easy') {
     // (framed on the first grown step, the log he is set back on in view)
     await page.evaluate(() => { const e = window.__engine(); const g = e.helpState().grown[0]; Object.assign(e.player, { x: g.x - 120, y: g.y + g.height, vx: 0, vy: 0 }); });
-    await sleep(1500);
+    report[`${tag}-line8`] = await waitBub('A step. Up you go');
+    await sleep(400);
     await shot('08-step');
     // walk him up to the first grown step, standing on it
     await page.evaluate(() => { const e = window.__engine(); const g = e.helpState().grown[0]; Object.assign(e.player, { x: g.x + g.width / 2, y: g.y, vx: 0, vy: 0 }); });
