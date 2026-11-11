@@ -169,6 +169,7 @@
   (edge alpha at or below mid-strip), wrap 0.9-2.5, pinkscan 0, 16 kept, all ten worlds per piece, $2.04, no token. Waiting for list 2:
   stump-medium (lid top), stairs P-08-c (angled), palisade foreground use; round P-03-b's underside step before any raised-ledge use.
   Not merged: rides with C2 (the art into 1-1) and the release PR.
+- 11-11 5:27 AM ET: bots packet written (packets/2026-11-11/CRITIC-BOTS-R-165.59.md: FT_CHILD/MIDDLE/EXPERT from the profiles, calibrated on main's 1-1 against the tiers, then run on A1); packet Critic session_01FhBbYKy9NxX4GEBPAZCSZ1. A2 Engine cost $23.58 at 5:25 AM (context 468k).
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,

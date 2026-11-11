@@ -56,9 +56,9 @@
    "status": "on call"
   },
   {
-   "role": "Analyst",
-   "task": "bot inputs for the tier bots: passed, sheet safe to purge",
-   "status": "reported"
+   "role": "Critic",
+   "task": "bots packet (child, middle, expert from the saved tester numbers): being checked before dispatch",
+   "status": "working"
   }
  ],
  "columns": [
@@ -107,7 +107,7 @@
     },
     {
      "id": "R-165.59",
-     "title": "Tester data: bot inputs saved and passed 11-11 4:04 AM; the sheet is safe for you to purge any time. Next: the bots built from them",
+     "title": "Tester bots: inputs saved and passed; the sheet is safe to purge. Bots packet written 5:26 AM, checked before building",
      "waits": "the bots built from the saved inputs (the sheet is no longer needed)"
     },
     {
