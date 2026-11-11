@@ -17,7 +17,7 @@ A "share" is the share of the tries in the table (take-off spots x second-press 
 | Single jump, gap | up to 114 px | up to 143 px | Flick from 70 px before the lip: 132 (E), 128 (N); from the lip 217 / 213. A Pad tap: 77 from 70 px before, 147 from the lip |
 | Single jump, rise | up to 63 px | up to 80 px | Single climbs 123 (block), 117 (thin). A Pad tap climbs 87 at best, and 64% of spots at 84 |
 | **Double teach, rise form** (block face) | **128-132 px** | **136-140 px** (as laid today) | One jump: 0% from 124 px up (it climbs 123). Double flick: 100% up to 150. Pad tap,tap: 53% at 128-132, 45-37% at 136-140 |
-| Double teach, rise form, thin lip (log, bough) | 122-128 px | 128-134 px | One jump climbs 117; double flick 206. Shares not flown for thin |
+| Double teach, rise form, thin lip (log, bough; a `branch` shape is 24 px, pipeline.ts:1122, so no lip hoist) | 122-128 px | 128-134 px | Flown onto a thin top (`flight.ts <setting> tshare`; sims/out/*-tshare.txt; both settings the same): one jump 100% up to 117, 0% from 118. Double flick 100% up to 150. Pad tap,tap 53% at 122-128, 46-40% at 131-134, 33% at 136, 7% at 140 |
 | Double gap (Normal only; Easy has none) | none | **TEST 252-262 px**. No gap TEACH (see §3) | One jump crosses 246 at best (the Critic's finer flight, 2 of 1000 tries; mine 244), so 252 is 6 px over. Double flick: 72% at 250, 67% at 256, 61% at 262; Pad tap,tap 18-9% |
 | Bounce teach, floor mushroom | **lip 232-246 px over the floor, the mushroom's edge 20-60 px from the face; the check is the bounce plus one air jump** (see §4) | the same | Bounce alone climbs 223; a plain double 214; bounce + air jump 317. At 232-246: bounce alone 0%, plain double 0%, bounce + flick 61-55% |
 | Bounce + air jump test (U, V) | 236-250 px | 236-250 px | 58-55% at 240-250, 49% at 260 |
@@ -46,8 +46,10 @@ climbed by a plain double on 71% (hold) or 51% (flick) of tries at 205, and stil
 |---|---|---|---|
 | `DOUBLE_TEACH` [195, 203] (w1.ts:127): w1-second-jump (347), w1-leap-stones (353-354), w1-double-teach gaps4 / gaps5 (581), keys `d`, `t` (907, 909) | a "double" gap | one jump crosses it (213-223 from the last ground frame) | The teach uses the D rise block on both settings. Where a gap stays as a Normal test: [252, 262] |
 | `DOUBLE_TEST` [205, 228] (w1.ts:127) | a "double" test gap | one jump crosses up to 246 | [252, 262], Normal only |
-| Every double rise block `dy [-140, -136]` (D, E at 921 and 925; rungs 616-617; 725, 752, 827, 853, 1113-1291) on **Easy** | laid at Easy's 113.9 clamp (pipeline.ts:840) | one jump climbs 113.9 on 100% of spots | Easy 128-132 |
-| The same blocks on Normal | 136-140 | one jump 0%, double flick 100% | no change |
+| The BLOCK double rise `dy [-140, -136]`: D (a bank, w1.ts:921) on **Easy** | laid at Easy's 113.9 clamp (pipeline.ts:840) | one jump climbs 113.9 on 100% of spots (it climbs 123) | Easy 128-132 |
+| D on Normal | 136-140 | one jump 0%, double flick 100%, Pad tap,tap 45-37% | no change |
+| The THIN double rises `dy [-140, -136]` (limbs: a `branch` shape, 24 px, no hoist): E (925), the rungs (616-617), 725, 752, 827, 853, 1113-1294 on **Easy** | laid at the 113.9 clamp | one jump lands a thin top up to 117 on 100% of spots | Easy 122-128 |
+| The same thin rises on Normal | 136-140 | one jump 0% (from 118), double flick 100%; but a Pad tap,tap lands 33% at 136 and 7% at 140, against 53-40% at 128-134. A thin top gives 6 px less than a block (no lip hoist), so 136-140 thin is as hard as 142-146 on a block | **Normal 128-134** |
 | Easy rise twins 110-114 px (designer.md §3.2 as it stood; not found entered on main: the only [110, 114] there is a log road's post height, w1.ts:519, which Content should check is not meant as a double block) | "a double rise" | one jump climbs 123 (block), 117 (thin) | block 128-132, thin 122-128 |
 | Bounce lips `[-220, -200]`: mushroom-lift mound and log-road (544, 545), block `B` (950), #35, #66, #67 | "the bounce" | a plain double climbs up to 214 | [-246, -232], mushroom's edge 20-60 px from the face |
 | U, V `[-260, -240]` (946, 948) | bounce + air jump | 49% at 260 | [-250, -236] |

@@ -1,7 +1,7 @@
 /**
  * flight.ts: Pokey's reach, flown in the real engine at 30 fps (R-165.60). Designer sim; nothing in the game imports it.
  *
- *   npx tsx reference/specs/sims/flight.ts <normal|easy> <apex|rise|rshare|dist|ddist|bdist|touch|harness|consts|all>
+ *   npx tsx reference/specs/sims/flight.ts <normal|easy> <apex|rise|rshare|tshare|dist|ddist|bdist|touch|harness|consts|all>
  *
  * The engine is src/game/engine.ts run by realPlay.ts on stage 1-1 (seed 1), its stage swapped for a bare world (RealPlay.bare).
  * The controls go through the game's own InputEngine (the press keep, the 220 ms / 80 ms minimum hold), wired as touchRig.ts wires it,
@@ -293,6 +293,30 @@ function rshareRun(rig: Rig) {
   }
 }
 
+// ───────────────────────────── tshare: the same shares onto a THIN top (a log, a bough: no lip hoist) ─────────────────────────────
+function tshareRun(rig: Rig) {
+  const A = () => solid(1, 100, FLOOR, 6000, 600);
+  const pct = (ok: number, n: number) => `${((100 * ok) / n).toFixed(0)}%`.padStart(8);
+  console.log(`\n[tshare] ${setting}: share of tries that end standing on a THIN top H px over the floor. Take-off 10-110 px before its near end (11 spots); a double's second press 2-16 frames after the first`);
+  console.log('     H  1 hold  1 flick   1 tap  2 hold 2 flick   2 tap');
+  for (const H of [110, 114, 117, 118, 122, 125, 128, 131, 134, 136, 140, 150, 180, 200, 206, 209]) {
+    let line = String(H).padStart(6);
+    for (const dbl of [false, true]) {
+      for (const press of ['hold', 'flick', 'tap'] as Press[]) {
+        let n = 0, ok = 0;
+        for (let d = 10; d <= 110; d += 10) {
+          for (const f2 of dbl ? [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] : [-1]) {
+            n++;
+            if (fly(rig, [A(), far(0, H, 'thin')], 2, { x0: LIP - d, f1: 0, f2, press }).ok) ok++;
+          }
+        }
+        line += pct(ok, n);
+      }
+    }
+    console.log(line);
+  }
+}
+
 // ───────────────────────────── dist: the widest level gap ─────────────────────────────
 const BUCKETS = ['>=70 before lip', '>=35 before lip', 'centre at/before lip', 'last ground frame', 'coyote 1-2', 'coyote 3+', 'ANY (physical)'] as const;
 function bucketOf(pressX: number, k: number): number[] {
@@ -443,6 +467,7 @@ if (want('consts')) consts();
 if (want('apex')) apexRun(rig);
 if (want('rise')) riseRun(rig);
 if (want('rshare')) rshareRun(rig);
+if (want('tshare')) tshareRun(rig);
 if (want('dist')) distRun(rig, false, ['hold', 'flick', 'tap']);
 if (want('ddist')) distRun(rig, true, ['hold', 'flick', 'tap']);
 if (want('bdist')) bounceDist(rig);

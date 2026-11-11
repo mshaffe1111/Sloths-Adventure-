@@ -40,10 +40,10 @@ against sims/out/normal.txt and easy.txt; 0 backslash-backticks; no tester name,
   bot clears every teach and the single-jump bot fails every block on 16 seeds, both settings.
 - **Engine, the Easy tap:** on Easy the Pad's Jump button holds 220 ms (padControl.ts `PAD_HOP_MS` by setting); done = flight.ts
   `easy rshare` shows tap,tap at 100% on 128-132. Until then Content changes `COACH_TEXT.pad.jump` to "press and hold".
-- **Designer, next flights:** Normal from stage 25 (no early help), a gap onto a raised bank, thin-lip shares, a raised mushroom.
+- **Designer, next flights:** Normal from stage 25 (no early help), a gap onto a raised bank, a raised mushroom.
 
 ## 5. Unresolved
-- Not flown: Normal from stage 25; thin-lip shares; a tap with a 220 ms hold (inferred from the flick); the coyote frame count on its own; help.md's thresholds.
+- Not flown: Normal from stage 25 (thin-lip shares were flown 11-11: sims/out/*-tshare.txt); a tap with a 220 ms hold (inferred from the flick); the coyote frame count on its own; help.md's thresholds.
 - help.md was the last priority and is a proposal, not a measured spec. Nothing else was cut.
 - The Analyst's hold-time data was not read (not to wait for it): whether real Pad presses are taps is open.
 - Matt typed "Additional art" with 12 images in this session by mistake ("wrong bot"); relayed to the lead as text, no action taken.

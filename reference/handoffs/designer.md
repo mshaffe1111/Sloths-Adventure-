@@ -87,7 +87,7 @@ Every ruling below cites the file and section where it's written in full.
   - the Engine packet `reference/specs/packets/ENGINE-flight-test.md` (the permanent flight test, the ruler, the two clamps);
   - then a Content packet enters bands.md §5 in w1.ts and rebuilds the seed list and pins;
   - the Pad coach line and the Easy tap (touch.md §3): a tapped Pad jump is a 61.7 px hop;
-  - NOT flown: Normal from stage 25 (no early-stage help: second jump 540, stand 11.4 px), a gap onto a raised bank, thin-lip shares,
+  - NOT flown: Normal from stage 25 (no early-stage help: second jump 540, stand 11.4 px), a gap onto a raised bank,
     a raised mushroom. Fly them before ruling on them.
 - **With engine-core and the porter, to enter or verify:**
   - Round 11 (the branch swaps), plus the per-roll thin-branch report on 16 seeds, both settings;
