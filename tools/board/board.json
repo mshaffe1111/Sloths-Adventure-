@@ -57,7 +57,7 @@
   },
   {
    "role": "Critic",
-   "task": "bots packet (child, middle, expert from the saved tester numbers): being checked before dispatch",
+   "task": "building the child, middle and expert bots from the saved tester numbers (packet passed)",
    "status": "working"
   }
  ],
