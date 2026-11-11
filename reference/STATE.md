@@ -216,6 +216,7 @@
   width) and petalPass.ts:32/44 without arcs. floor.unmarked: 57 of 208 are the bug, 151 REAL holes (search seams, e.g. seed 172 Normal
   x30784..31835 under the deck, soft but drawn as water) - C1 must keep joins closed. block.spare-thin real (bounce lips 225-228 vs 223).
   Attempt 3 sent. C1 waits for E0a PASS (D40); C1's packet check runs meanwhile.
+- 11-11 6:50 AM ET: MATT'S STANDING RULE: no patching what is being replaced; fix and patch only when ready to finalize (CLAUDE.md, PM.md, lead.md, D40). Applied: A2 stopped; HF list 2 (stairs, stump, palisade) waits for the re-lay to need them; old KID/ADULT bot re-baseline waits; E0a rule fixes, bots and the chunk split continue (none is replaced: they are what the re-lay is built and judged on).
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,

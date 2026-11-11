@@ -118,3 +118,6 @@ CLAUDE.md:25 says "HF: $72 left, total"; Matt said $65.55 on 11-07. Offer him th
 - Consultant finding numbers: use responses.md's (Top-10) numbering; the review's headings number differently.
 - Tester names, codes and survey text never go into the repo or a packet. Grep your diff before every commit.
 - "Morning brief" and "Heartbeat" in list_triggers are Matt's own, not the team's: leave them.
+
+## Standing rule (Matt, 11-11 6:50 AM ET)
+- **No patching what is being replaced (Matt, 2026-11-11: "real fix is we dont start patching things that being replaced. We only fix and patch when we are ready to finalize. You are the lead... You must understand these things or we will never get things done.").** Build in dependency order: foundations first (rules, tools, room to ship), then the thing itself, then fixes and polish on the finished thing when it is ready to finalize. Before any packet: name what it is built on and whether a planned job replaces it this sprint; if so, it waits. (D40)

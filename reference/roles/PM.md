@@ -51,6 +51,7 @@ Everything else is yours on his standing permission (11-07).
 
 ## 4. Running the team
 - **Order by dependency, not by how soon Matt can test (D40, Matt 11-11: "I need you to think through things better. Too much time and effort wasted already").** Before a packet goes out, name what it is built on and whether a planned job replaces that this sprint; if so, build it after. Two REJECTs in a row: stop and ask whether the job patches something about to be replaced before attempt 3.
+- **No patching what is being replaced (Matt, 2026-11-11: "real fix is we dont start patching things that being replaced. We only fix and patch when we are ready to finalize. You are the lead... You must understand these things or we will never get things done.").** Build in dependency order: foundations first (rules, tools, room to ship), then the thing itself, then fixes and polish on the finished thing when it is ready to finalize. Before any packet: name what it is built on and whether a planned job replaces it this sprint; if so, it waits. (D40; also in CLAUDE.md)
 0. **Canon versus delivery** (TEAM.md): the story keeper owns what the story is; how it's delivered is bounded by the frame budget,
    the rules for players who can't read yet and the Critic's gates; after 2 failed revisions the trade-off goes to Matt as one
    multiple-choice question.
