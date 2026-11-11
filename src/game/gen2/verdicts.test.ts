@@ -275,6 +275,9 @@ test('floorless (the lead\'s ruling, 11-11): a slot is closed only by a solid pi
   // (the deck case is asserted on seed 172 itself: a planted copy is merged into the ground by w1Pits and finds no slot at all)
   assert.deepEqual(floorlessGaps({ platforms: [P(1, 0, G, 1000), P(2, 1060, G, 1000), { ...P(3, 990, G - 70, 80), height: 120 }] }), [], 'a plug across the lip');
   assert.equal(floorlessGaps({ platforms: [P(1, 0, G, 1000), P(2, 1060, G, 1000)] }).length, 1, 'a bare 60 px slot is a fall');
+  // (the Critic, fc1efb3b: a bough near the HIGHER lip, 98 px over the lower one: he walks under it from the lower lip and drops)
+  const bough = [{ ...P(1, 0, 882, 1000), height: 300 }, { ...P(2, 1060, 743, 1000), height: 400 }, { ...P(3, 1000, 760, 60), height: 24, style: 'branch' as const }];
+  assert.equal(floorlessGaps({ platforms: bough }).length, 1, 'a bough he passes under from the lower lip closes nothing');
 });
 
 test('the petal pass on 1-1 judges reach with the flown arcs: a flower past a 256 px gap is not out of reach; outside 1-1 as before', () => {

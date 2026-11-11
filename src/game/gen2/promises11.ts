@@ -14,7 +14,7 @@ import { jumpOK } from '../levelCheck.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Platform } from '../types.ts';
 import type { Difficulty } from '../difficulty.ts';
-import { lesserArcs, linkArcs } from './reach.ts';
+import { BODY_H, lesserArcs, linkArcs } from './reach.ts';
 import type { JudgedStage, PromiseDef, PromiseRegistry, Verdict } from './verdicts.types.ts';
 
 type Zone = { x0: number; x1: number; soft?: boolean };
@@ -25,8 +25,8 @@ export const BODY_W = { px: 32, source: 'the Critic, E0a attempt 2 (seed 323 Nor
 
 /**
  * World 1's floorless slots he can really fall into (w1Pits 'fall' gaps; the lead's ruling, 11-11, on the Critic's flight). A piece over
- * the slot closes the part it covers unless he can get under it: its top more than 10 px above the slot's upper lip (he walks under it
- * from the lip), or a floor inside the slot more than 10 px under it (seed 172: off block 146, top 906, he walks under the 838 deck). A
+ * the slot closes the part it covers unless he can get under it: from EITHER lip, its underside at least his body's 48 px (reach.ts
+ * BODY_H) over that lip's top, or from a floor inside the slot more than 10 px under it (seed 172: off block 146, top 906, he walks under the 838 deck). A
  * piece at lip level (top within 10 px) or plugging it closes it. Then the widest part left open: under BODY_W, his body cannot drop
  * through, no fall (seed 323: branch 128 leaves 23 px); BODY_W or wider, a fall.
  */
@@ -35,8 +35,10 @@ export function realFalls(platforms: readonly Platform[]): ReturnType<typeof fin
     if (q.kind !== 'fall') return false;
     const solid = platforms.filter((p) => p.type === 'solid' && !p.broken && p.x < q.x1 && p.x + p.width > q.x0);
     const edge = platforms.filter((p) => p.type === 'solid' && (Math.abs(p.x + p.width - q.x0) <= 2 || Math.abs(p.x - q.x1) <= 2)).map((p) => p.y);
-    const upper = Math.min(q.top, ...edge);
-    const passUnder = (p: Platform) => p.y < upper - 10 || solid.some((f) => f !== p && f.y > p.y + 10);
+    // (he passes under a piece from a lip whose top stands BODY_H.px or more below its underside; or from a floor inside the slot more
+    // than 10 px under its top. The Critic, fc1efb3b: from EITHER lip, never only the higher one)
+    const lips = [q.top, ...edge];
+    const passUnder = (p: Platform) => lips.some((L) => p.y + p.height <= L - BODY_H.px) || solid.some((f) => f !== p && f.y > p.y + 10);
     const cov = solid.filter((p) => !passUnder(p)).map((p) => [Math.max(q.x0, p.x), Math.min(q.x1, p.x + p.width)] as const).sort((a, b) => a[0] - b[0]);
     let at = q.x0, open = 0;
     for (const [a, b] of cov) { open = Math.max(open, a - at); at = Math.max(at, b); }
