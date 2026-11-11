@@ -21,7 +21,7 @@ for (const setting of ['easy', 'normal']) for (const o of [{ id: 'port', viewpor
   await ctx.addInitScript(([i, s]) => { const order = [i, ...Array.from({ length: 138 }, (_, j) => j).filter((j) => j !== i)]; localStorage.setItem('sloth_difficulty', s); localStorage.setItem('sloth_coach_done', '1'); localStorage.setItem('sloth_play11_order', JSON.stringify({ n: 138, order, i: 0 })); }, [idx, setting]);
   const page = await ctx.newPage();
   page.on('pageerror', (e) => console.log(tag, 'pageerror', e.message.slice(0, 160)));
-  await page.goto(`http://127.0.0.1:${port}/?layout=1`, { timeout: 300000 });
+  await page.goto(`http://127.0.0.1:${port}/?layout=1${process.env.LESSONS_OFF ? "&lessons=off" : ""}`, { timeout: 300000 });
   for (let t = Date.now(); Date.now() - t < 300000; ) { if (await page.evaluate(() => typeof window.__play === 'function')) break; await sleep(1000); }
   await sleep(3000);
   await page.evaluate((i) => window.__play('1-1', i + 1), idx);
@@ -67,7 +67,8 @@ for (const setting of ['easy', 'normal']) for (const o of [{ id: 'port', viewpor
     // (framed on the first grown step, the log he is set back on in view)
     await page.evaluate(() => { const e = window.__engine(); const g = e.helpState().grown[0]; Object.assign(e.player, { x: g.x - 120, y: g.y + g.height, vx: 0, vy: 0 }); });
     report[`${tag}-line8`] = await waitBub('A step. Up you go');
-    await sleep(400);
+    await sleep(900);
+    report[`${tag}-line8-at-shot`] = await page.evaluate(() => window.__bub);
     await shot('08-step');
     // walk him up to the first grown step, standing on it
     await page.evaluate(() => { const e = window.__engine(); const g = e.helpState().grown[0]; Object.assign(e.player, { x: g.x + g.width / 2, y: g.y, vx: 0, vy: 0 }); });

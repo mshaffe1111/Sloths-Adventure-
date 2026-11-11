@@ -1,0 +1,148 @@
+{
+ "easy-port-line3": true,
+ "easy-port-line8": false,
+ "easy-port": {
+  "cb": [
+   "2 onGuide Flick up again in the air to jump twice",
+   "2.6 onLesson fruit",
+   "3.5 putBack",
+   "4.6 putBack",
+   "5.8 putBack",
+   "6.3 onGuide Jump, then flick up again in the air!",
+   "9.6 putBack",
+   "10.8 putBack",
+   "11.9 putBack",
+   "13.1 putBack",
+   "14.2 putBack",
+   "14.7 onGuide Ooh, look! A step. Up you go.",
+   "17 onLesson gap",
+   "23.2 onLesson checkpoint"
+  ],
+  "said": [
+   "Flick up again midair to jump twice.",
+   "Jump, then flick up again in the air!",
+   "Flick up just before the edge."
+  ],
+  "flickUp": 0,
+  "events": {
+   "asking": null,
+   "paused": false,
+   "on": true
+  }
+ },
+ "easy-land-line3": true,
+ "easy-land-line8": false,
+ "easy-land": {
+  "cb": [
+   "2.1 onGuide Flick up again in the air to jump twice",
+   "2.6 onLesson fruit",
+   "3.8 putBack",
+   "5.2 putBack",
+   "6.6 putBack",
+   "7.1 onGuide Jump, then flick up again in the air!",
+   "11.2 putBack",
+   "12.5 putBack",
+   "13.8 putBack",
+   "15.2 putBack",
+   "16.5 putBack",
+   "17 onGuide Ooh, look! A step. Up you go.",
+   "19.6 onLesson gap",
+   "25.7 onLesson checkpoint"
+  ],
+  "said": [
+   "Flick up again midair to jump twice.",
+   "Jump, then flick up again in the air!",
+   "Flick up just before the edge."
+  ],
+  "flickUp": 0,
+  "events": {
+   "asking": null,
+   "paused": false,
+   "on": true
+  }
+ },
+ "normal-port-line3": true,
+ "normal-port-back": {
+  "held": {
+   "paused": true,
+   "still": true
+  },
+  "gone": {
+   "offer": false,
+   "pauseMenu": false,
+   "asking": false,
+   "grown": 0
+  }
+ },
+ "normal-port": {
+  "cb": [
+   "2.2 onGuide Flick up again in the air to jump twice",
+   "2.6 onLesson fruit",
+   "3.8 putBack",
+   "5 putBack",
+   "6.2 putBack",
+   "6.9 onGuide Jump, then flick up again in the air!",
+   "9.9 putBack",
+   "11.1 putBack",
+   "12.3 putBack",
+   "13.5 putBack",
+   "14.7 putBack",
+   "15.9 putBack",
+   "17.2 putBack",
+   "18.4 putBack",
+   "19.7 putBack"
+  ],
+  "said": [
+   "Flick up again midair to jump twice.",
+   "Jump, then flick up again in the air!"
+  ],
+  "flickUp": 0,
+  "events": {
+   "asking": null,
+   "paused": false,
+   "on": true
+  }
+ },
+ "normal-land-line3": true,
+ "normal-land-back": {
+  "held": {
+   "paused": true,
+   "still": true
+  },
+  "gone": {
+   "offer": false,
+   "pauseMenu": false,
+   "asking": false,
+   "grown": 0
+  }
+ },
+ "normal-land": {
+  "cb": [
+   "2.2 onGuide Flick up again in the air to jump twice",
+   "2.6 onLesson fruit",
+   "3.7 putBack",
+   "4.9 putBack",
+   "6.2 putBack",
+   "6.8 onGuide Jump, then flick up again in the air!",
+   "10.6 putBack",
+   "11.8 putBack",
+   "12.9 putBack",
+   "14.1 putBack",
+   "15.3 putBack",
+   "16.5 putBack",
+   "17.8 putBack",
+   "19.1 putBack",
+   "20.3 putBack"
+  ],
+  "said": [
+   "Flick up again midair to jump twice.",
+   "Jump, then flick up again in the air!"
+  ],
+  "flickUp": 0,
+  "events": {
+   "asking": null,
+   "paused": false,
+   "on": true
+  }
+ }
+}

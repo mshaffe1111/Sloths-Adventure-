@@ -1,7 +1,8 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten at the end of R-165.86 (no fall in 1-1 costs a life), branch `t-engine-putback` from origin/main 181d2846, not merged: it waits
-on the Critic and the promote. Before it: the 0.9.5 porter's run (branch `engine-core`, merged through PR #63 and #64).
+Rewritten at the end of R-165.62 (A2: help after put-backs in 1-1), branch `t-engine-help` built on `t-engine-putback`@41c2e248 (A1,
+R-165.86). Neither is merged: A1 and A2 ship together on test link A (Matt, 11-09) after the Critic, the story keeper and the promote.
+Before them: the 0.9.5 porter's run (branch `engine-core`, merged through PR #63 and #64).
 
 ## 0. Rulings to keep (R-165.86, the lead, 11-09)
 - **No fall in 1-1 costs a life, on Easy or Normal.** It is stage data: the 1-1 brief's `softFalls` (types.ts `GraphBrief`; w1.ts
@@ -16,12 +17,33 @@ on the Critic and the promote. Before it: the 0.9.5 porter's run (branch `engine
 - Water still costs a life (the engine's water checks come before the fall check). 1-1 lays none today.
 - Normal's bite starts at 1-2. After this, a pit in 1-1 looks the same as a deadly one elsewhere: R-165.61 and the re-lay (B1) own that.
 
+## 0b. Rulings to keep (R-165.62, the lead, 11-09 / 11-11)
+- **The help ladder (src/game/helpLadder.ts) is the ONE place that decides help in 1-1.** Put-backs counted per piece (the piece at the x
+  of the fall, meta.pieces); reset by standing past the piece (one compare a grounded frame) or the stage ending; never by a pause, time,
+  a refused offer or a step given. Easy 3 move line / 5 pad tap = full jump / 8 steps grow; Normal 3 move line / 12 offer, re-ask 8
+  after a no, never after a second no; a yes grows Easy's steps. Off on every other stage (`this.help` null) until help.md §5 passes.
+- **The step:** a step under EVERY rise over 60 px in the piece (height = rise - 60), a 60 px pad mid every gap wider than
+  `maxGap(dy, false, margin)`; from the piece as laid (`stepsFor`), never a constant. A World 1 cut stone (pickCut), added only through
+  `engine.addStep()`, which copies `platforms`/`drawPlats`/`paintedPlats` (platforms starts as the stage object's own array: never push
+  into it). Cleared in `stop()`.
+- **Dot's ladder lines are struggle help that is due now** (`helpGuideLine`: kind struggle, `soon`), queued by DotGuide.tsx engineLine
+  through `pushHelpLine`, which first clears the stage's own engine teach tips. On Help and Tips; never on Quiet (the step and the offer
+  still happen there). Her tip rules dropped them before (a move already taught; Tips' 30 s gap).
+- **The offer pauses the stage** (`helpAsking`: update() returns, resume() keeps it still) and waits until the set-back's iris is open
+  and he stands (`helpDue`): asked over the closed iris, the stage behind it was black. Back and Escape are a no (HelpOffer bindBack).
+- In 1-1 StuckWatch never speaks ("Too tall" breaks story guard 1) and "No soft moss up here!" is marked heard at load (it comes from
+  w1.ts's `hint.1-1.noMoss` sockets, not mixer/stages.ts, whose line is also gone).
+
 ## 1. What's open (each has an R-id on reference/ROADMAP.md or a note)
 
 | What | State | Where |
 |---|---|---|
-| R-165.86 on `t-engine-putback` | Built and tested; waits on the Critic's full suite, drawcheck, clipcheck and the lock (not run here: the lean ruling) | REPORT.md on the branch; reference/qa-reports/R-165.86/ |
-| Help after repeated put-backs in one piece (A2) | OPEN, ships with A1: with no life to lose, a player who can't clear a chain is set back again and again | R-165.62 |
+| R-165.86 (A1) on `t-engine-putback` | Passed; ships with A2 | REPORT.md on that branch; reference/qa-reports/R-165.86/ |
+| R-165.62 (A2) on `t-engine-help` | Built; waits on the story keeper (lines and pictures in qa-reports/R-165.62/) and the Critic | REPORT.md on the branch |
+| Help past 1-1 (failures counted through lives and game overs, the extra-lives offer made one system with the ladder) | BLOCKED on the Designer's help.md §5; assist.ts and GameOverCard.tsx untouched | PACKETS.md E2 |
+| The ghost that shows the move; help.md §2's seconds triggers | Cut from test link A; later packets | help.md |
+| The window's repeating "Flick up and forward to jump." | Not reproduced in 4 flights on A1+A2 (said at most once: the coach's jump step); no file edited | REPORT.md |
+| A web back swipe while the offer is up opens the pause menu over it (App's guardBack); Android Back and Escape are a no | Open, App.tsx is not the Engine's | REPORT.md Suggestions |
 | The harness's `died` in 1-1 on Normal | OPEN. RealPlay notes a fall through its loseLife stub; in 1-1 a fall is now a set-back on both settings (as it always was on Easy), so `died` stays false there. Tools that read it on 1-1 (realReach, plainWalk, firsttimer, tools/validate/play.ts) see a set-back, not a death. RealPlay should note set-backs too (realPlay.ts was not mine to write) | REPORT.md Suggestions |
 | The set-back under a rise lands on the low catch branch when he touched it on the way down (the last ledge he stood on) | As Easy has always done; from it he steps back up to the take-off log. Watch it in the A2 work | engine.ts softAt |
 | Branch share of thin landings at most 30% a roll (the designer's Round 11) | OPEN. 0.9.5 shipped without it by the lead's ruling (A), because Matt played the same mix on 11-05. The 138 listed rolls read median 48%, worst 65% (branch / solids 30 px tall or less, both settings). `floorRoll.catchStyles ['log','branch']` is NOT in the w1 kit. On seeds 1-40 it alone left 15 of 22 rolls over by that count. The planner counts pieces up to 60 px; agree ONE measure first | R-165.46 |
@@ -103,6 +125,16 @@ gapPx/blocks, `stage.ts --roll` fail-closed). Read it for the open findings at i
   - `live-dips-to-judge.txt`;
   - `NEXT.md`.
 
+**Help ladder (R-165.62)**
+- `src/game/helpLadder.ts`: the schedule (RUNGS), the lines (help-lines.md word for word), `HelpLadder`, `stepsFor`, `padFullJump`
+  (padControl.ts reads it at both Jump-button calls), `helpGuideLine` / `pushHelpLine` (DotGuide.tsx engineLine).
+- engine.ts: built where the stage loads (`this.help`), `helpPutBack` from `softFall()`, `addStep`, `askHelp`/`answerHelp`,
+  `helpState()` (tests and stills), `helpAsk` (HelpOffer.tsx, loaded on first ask; tests replace it).
+- `src/components/HelpOffer.tsx`: the pop-up and its two pictures. clipcheck reaches it through a NODE_ENV=development build (the
+  dev-only `window.__engine` drives real put-backs); startServer fails if the production build carries `__engine`.
+- Tests: helpLadder.test.ts (schedule, planted 4/6/9/13), helpLadder11.test.ts (real put-backs, seed 3747, both settings, Quiet),
+  helpLadderGuide.test.ts (her bubble), HelpOffer.test.ts. Stills: reference/qa-reports/R-165.62/shoot.mjs.
+
 ## 3. Traps I hit (each cost real time)
 
 1. **A gate that passes on the wrong build.** The lock, the suite and stills read whatever build you point them at:
@@ -128,6 +160,15 @@ gapPx/blocks, `stage.ts --roll` fail-closed). Read it for the open findings at i
 12. **A toy stage hosted in `RealPlay('1-1', ...)` inherits 1-1's rule: every fall is soft.** A toy that needs a deadly pit sets `e.softOn = false` itself (softFall.test.ts) or is hosted elsewhere.
 13. **The container restarts.** It killed a final suite mid-run once. Push safe-keeping commits as soon as they're worth keeping; a release still waits for the word.
 14. **Shell.** `rm -f $VAR/*` is refused by the safety check: use literal paths or `"${VAR:?}"`. Foreground commands time out at 2 min; long runs go in the background, with an `until grep` wait.
+15. **An engine line is not a line on screen.** Dot's guide (DotGuide.tsx -> dotSay.ts -> dotGuideHelp.ts, then GuideQueue's calm
+    gaps) re-judges every `guide()` text as a stage tip: a known move is dropped on Tips, Tips waits 30 s between lines, and a move
+    tip stays up until the move is done. RealPlay's `said` records what the engine sent, not what she showed: read `.dg-bub-body` in
+    the browser before calling a line done.
+16. **After steps grow, the walk-off put-back climbs the step.** Drop him from under the next log instead (helpLadder11.test.ts
+    putBack).
+17. **A held plain jump clears Easy's 114 px chain rises.** Easy has no "before" red for plain jumps; Normal's 140 px rises are the red.
+18. **The dev server can fail a lazy import under load** ("Failed to fetch dynamically imported module"). Run one browser job at a time.
+
 
 ## 4. Day one, for a fresh engine engineer
 
