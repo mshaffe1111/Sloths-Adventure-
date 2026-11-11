@@ -1,60 +1,37 @@
-# REPORT: R-165.86, no fall in 1-1 costs a life (Engine, attempt 1), 2026-11-09 9:32 PM ET
-Branch t-engine-putback from origin/main 181d2846. PUSHBACK.md (accepted by the lead) is on the branch.
+# E0a report (R-165.61: verdicts and flown reach), Engine, attempt 1. Branch t-engine-e0a from t-engine-putback@41c2e248
+**Method used:** test-first on planted rolls. Main's lock recorded before the first change. Every reach and band figure is entered as data with its spec line. The verdicts were then run on the 138 listed seeds and the full suite was diffed against A1's base.
+**Lessons applied:** D37: the behaviour claims are proved with a pasted run (1-1 builds below), not taken from a summary. D36: worktrees for main and the base, own branch checked with `git status -sb`. The pins come from origin/main, never from memory.
 
-## Method used
-reference/methods/stage-fix.md's order (planted failure first, prove nothing else moved); the packet. No method file covers an engine
-rule read from stage data: see Method update.
-
-## Lessons applied
-- Check a fact in code before acting (D7): the frozen input "Easy has no soft falls in 1-1" was measured on main and was wrong.
-- A gate must call the same code the screen calls (D19): the tests ask `softFallStage`, the function the engine asks.
-- Test the measuring tool (D15): RealPlay stubs loseLife; the sweep deletes the stub (softFall11.test.ts `real()`). Critic: fly it the same way.
-- Times from `date`, hashes from git (D20, D30).
-
-## 1. Done-items
-1. PASS. `src/game/gen2/softFalls11.test.ts`: 1-1 laid on all 16 window seeds, Normal and Easy: no gap that is not water costs a
-   life (softFallStage, or a soft zone). `src/game/softFall11.test.ts`: seeds 3747, 15458, 19582 on each setting, off the right edge
-   of every solid piece with the REAL loseLife: no lostLife, lives unchanged, every set-back standing on a solid ledge behind the fall.
-   Red on origin/main: reference/qa-reports/R-165.86/red-on-main.txt (6 fail: both lay tests, the 3 Normal sweeps, the flight; the 3
-   Easy sweeps pass on main, as the pushback said). Both files also hold a planted test (the stage without the brief's word).
-2. PASS. softFall11.test.ts "w1-log-chain-rise": Normal seed 3747, walked off the first rise: one `softFall`, no `lostLife`, lives
-   and hearts unchanged, standing on the ledge he left, clear of its edge.
-3. PASS. softFalls11.test.ts: 1-2 and 8-3 Normal (8-3 has heart falls), layouts 1-3: platforms, heartFalls and gen2.falls hash the
-   same as origin/main (pins made on a worktree of 181d2846). Also: 1-1's ground, zones, gaps and floorlessGaps verdicts are the same
-   with and without the word, on 4 listed seeds and raw rolls 1-6, both settings; floorlessGaps ignores the word (planted).
-4. PASS. `npx tsc --noEmit -p .` clean. `npx tsx --test src/game/gen2/*.test.ts`: 264 pass, 0 fail. Touched and 1-1-hosted tests
-   (softFall, softFall11, plainWalk, vineFollowUps, recorderMoments, w1NewArt, stage11, realPlay, firsttimer, gen2/worlds/*): 98 + 18
-   pass, 0 fail. `npx tsx tools/engine/seedlist.ts 1-1 --check`: PASS (138 seeds, each clean on both settings). No seed changed.
-5. PASS, one thing named. reference/qa-reports/R-165.86/setback-sideways.png and setback-upright.png (contact sheets, dev build,
-   Normal, seed 3747): he lands standing on the log, 150 px back from its edge; hearts and lives as before. The frame log
-   (camera-*.json) shows ONE camera jump, on the frame the iris starts (0.45), then only the usual settle; no flash.
-   Rough: Dot's "Flick up and forward to jump." comes up after the set-back in these stills; it is the stage's own hint at that spot
-   (lessons were off), not new, but after every set-back it will read as nagging. A2 (R-165.62) should own what is said there.
-6. PASS. reference/handoffs/engine-core.md rewritten (§0 rulings, the open rows, traps 9-12).
+## 1. Done-items (6): 1, 2, 3, 6 met; 4 met as a measurement (nothing could be re-proven); 5 NOT met (see Pushback)
+1. **Each name planted** (verdicts.test.ts, 21/21 green). There is one red per name, printed as `# red:` in its own test: arc.single-gap-over, arc.single-rise-over, block.lesser-passes, block.spare-thin, block.taught-fails, band.out, headroom.cuts-arc, floor.unmarked, drop.lethal-in-no-lethal, drop.unwarned, drop.look-lies, drop.untyped, teach.double-no-gap-after, teach.double-gap-unsafe, first-run.drift (firstRunVerdicts). A clean twin is accepted on both settings. reach.unflown appears only in the notJudged list of an unflown-scope roll (1-2 Normal), together with the 7 arc names. A test also reads ALL_VERDICTS against the 16-name union in verdicts.types.ts. verdicts.types.ts is byte-identical to c4687177.
+2. **Flown figures on 1-1's path.** reach.ts holds every row of reach.md §2 and bands.md §1-2, each with its `source`. On 1-1 the pipeline reads it through `gapFor` (level double 262 N, not 229.8), `riseCap` (Easy double 132 / thin 128, not 113.9), `bounceLipOverCap`, `blockBreaches(arcsOf)`, and the seam stone's `jumpOK`. checkStage passes `validateStage(…, {arcs})` and promises11 runs `doubleGap` on lesser/link arcs. The test strips comments from verdicts.ts and reach.ts and finds no reachJump, JUMP_RISE, DOUBLE_RISE, BOUNCE_REACH, TAKEOFF_SLACK or physics. It also pins the 1-1 envelope figures.
+3. **Outside 1-1 nothing moved.** `lockall --check lockall-main-0.9.5.json --intended 1-1` gives `101/102 stages unchanged` and exit 0. Only 1-1 changed (intended). The lock names the stages whose gen2 gained verdicts and drops, which are not hashed: 5-7, 5-9, 6-1..6-9 (7 stages), 7-1..7-9 (6), 8-1..8-9 (7). Test: 5-7 and 7-1 on both settings hash equal to origin/main@181d2846 (platforms, falls, errors and plan, plus gen2 less the two fields), and each carries NOT_JUDGED_ALL plus one Drop per fall. `falls` is untouched everywhere.
+4. **Seed list.** `seedlist 1-1 --check` (full search, both settings) prints FAIL, exit 1: "the verdicts refuse **138 of 138** listed seeds". Seeds refused by each name: teach.double-no-gap-after 138, band.out 130, floor.unmarked 112, block.lesser-passes 66, block.spare-thin 52, headroom.cuts-arc 39, drop.untyped 31, drop.look-lies 1. Replaying the stored plans instead also refuses 138/138 (band.out and block.lesser-passes 138). Re-prove: seeds 1-40 kept **0 of 40**, and provenGen2Stage's 24-seed walk finds none either. provenSeeds.ts is NOT rewritten: an empty list moves the same throw into Play. It stays stale, and `--check` FAILS by name until C1. The first-run check is wired (firstRun11.ts, absent: stated).
+5. **tsc clean; vite build passes; artcheck and knowncheck PASS.** **The full suite is RED:** 822/68, 775/32 and 753/27 pass/fail across the 3 shards (127 failures, bc7e1f9a). A1's base on the same shards is 784/807/784 pass, 0 fail, so every failure is E0a's:
+   - 126 come from "1-1 cannot build": the error is `gen2 1-1 (normal): no seed of 24 from 172 builds cleanly … verdict band.out … bounce-teach 212 px, under 232`. These include the CT/climb tests that host toys in RealPlay('1-1'), the dump child, recipes.test, and V19b and the forks ("0 clean rolls").
+   - 1 is w1.test's exitDy row (w1-stair-test/b -416 laid -390, and two stair-test-back rows): the thin rise clamp is now the band's 134 where the authored value is 138. That is C1's data.
+   - gapPx.test was updated to the new rule (the Easy double envelope is the flick, 287; past it the lay refuses by name).
+   - roadmapcheck FAILs on the shallow clone (environment). drawcheck and clipcheck were not run: they build 1-1, which throws.
+6. **Turnover note:** reference/handoffs/engine-core.md is rewritten (§0a rulings, open row, §2 files, traps 15-16).
 
 ## 2. Polish check
-The two sheets above, judged upright and sideways. Nothing fixed: softFall's own picture is used unchanged.
+No screen changed and there are no stills: E0a is gate code. The visible effect on this branch is real and bad: **1-1 does not build at all** (the pasted error above). It must never reach a test link or main without C1.
 
-## 3. Pushback
-PUSHBACK.md, accepted: 1-1 is not in GEN2_STAGES, so Easy already had softOn on main. Only Normal changes for the player.
+## 3. Pushback (rule 3)
+- **DoD 5 cannot be met while DoD 4 holds.** The frozen bands refuse every roll today's w1.ts can lay. DOUBLE_TEACH gaps of 195-203 are crossed by one jump (246). Bounce lips of 200-220 are climbed by a bounce alone (223). Thin double rungs of 136-140 are over the thin band (128-134). So 1-1 throws and about 125 tests that build Play's 1-1 go red. No honest switch exists (no on/off: "new replaces old"). The full suite can only be green on the E0+C1 integration branch, as ADR-001 says. Ruling asked: move DoD 5 to the integration branch, judged after C1.
+- `Gen2Meta.verdicts` is `Partial<Record<Difficulty, RollVerdict>>` and optional, not the PACKETS.md `Record`. A Normal build never builds Easy, so it cannot hold Easy's verdict without doubling build time. An Easy build carries both.
 
-## 4. Suggestions (outside my walls)
-- RealPlay notes soft set-backs. Objective: `RealPlay.setBacks` counts softFall, so tools that read `died` on 1-1 (realReach.ts,
-  plainWalk.test.ts, tools/inspect/firsttimer.ts, tools/validate/play.ts) can tell a failed jump from a made one now that no fall in
-  1-1 dies on either setting. Files: src/game/realPlay.ts and those readers. Done: a planted fall in 1-1 Normal is counted.
-- softFall.test.ts's two zone tests are hosted in 1-1; I set the toy's `softOn = false` (3 lines, assertion kept). A plain host stage
-  for toys would be cleaner.
+## 4. Suggestions (ready packets)
+- **E-next (stageGenerator.ts, out of my lane):** `finishStage(stage, validateStage(stage, {rooms:false}).reachableIds)` at :2904 calls validateStage without `arcs`. After C1, a 252-262 double gap in 1-1 is outside the closed-form reach, so pickups past it could be dropped as unreachable. Fix: pass `{ rooms: false, arcs: linkArcs(difficulty) }` when `config.id === '1-1'`. Done when a C1 roll with a 256 gap keeps every pickup (flowerReach test).
+- **C1:** classify reads `move`/`block` and the landing's thickness. A 'double' piece with dy above 50 px is the rise form, and a level one is the double gap (Normal only). A bounce lip in a T-node is the teach (232-246), elsewhere the U/V test (236-250).
 
 ## 5. Unresolved
-- NOT run (the lean ruling; the Critic and the promote run them): the full suite, vite build, drawcheck, clipcheck, artcheck, the
-  other gates, and lockall. Expect the lock to show 1-1 changed in its gen2 record only (`softFalls`, and the brief copy).
-- softFall.test.ts was edited though the packet's file list names only "tests beside each file you touch": it is engine.ts's test.
-- Evidence files sit in reference/qa-reports/R-165.86/ (not in the packet's WRITE list; delete at will).
-- Under a rise he can be set back on the low catch branch if he touched it on the way down (read from the layout and softAt's rule, not shot; as Easy does today).
+- Raised gaps were never flown. On 1-1 they keep the closed-form envelope capped by the band, and validateStage adds flown links only for level jumps (20 px or less). A Designer flight of raised gaps would retire that last closed-form use.
+- headroom.cuts-arc needs apex plus body 48 px (engine.ts:957) over the take-off across the jump's span. It refused 42/138 seeds. These have not yet been looked at in stills, so one may be a false bonk (a canopy beside the arc).
+- rulers.ts holds no reach figure (grep), so nothing there changed.
 
 ## 6. Method update
-Propose for methods/stage-fix.md: "A no-life-lost test in RealPlay must delete the harness's loseLife stub and carry a planted run
-that loses lives." Proof: on origin/main the sweep with the stub passes; without it, 9 lives go on seed 3747.
+Before attributing failures, run the full suite on the base branch in the same shards, then classify each failure by its error text. Here that showed 126 of 127 share one cause.
 
 ## 7. Turnover note
-reference/handoffs/engine-core.md rewritten in this commit.
+reference/handoffs/engine-core.md, rewritten this task.
