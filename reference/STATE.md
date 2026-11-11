@@ -134,6 +134,12 @@
   the jab's designed take-backs). The 11-09 report Critic passed the larger number. A fresh Critic is proving which is right from the
   recorder code. If 154 holds: R-165.87 (fix A3) stays, smaller; the lead told Matt the larger number on 11-09, and must correct it,
   and a defect entry follows (a counting rule passed without a check of what each event means).
+- 11-11 4:04 AM ET: BOT INPUTS PASS (bot-inputs Critic session_01FhBbYLpqqFAGsZjoLtDdEH, delta re-audit of t-w11-analyst@437a3a13):
+  3-decimal shares with the 0..1 assert kept, reversals counted both ways, touchPlacedShare per player with thin players marked,
+  README rows for finishMedianS, jumpHoldMsP50, groundPressToLipPxP50; privacy greps 0 and 0. SHEET SAFE TO PURGE: YES. Lost with the
+  sheet (REPORT.md's list): exact stroke paths, survey free text, old-stage lives, the name-to-P join, 1,431 unplaced strokes (2.7%,
+  none feed a tier). Minor: P8 has 0 strokes but its thinWhy reads "under 0.8". Lead told Matt; he deletes the sheet when he likes.
+  Next for R-165.59: the tier bots built from tools/playtesters/profiles/ (a packet, then a Critic).
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,
