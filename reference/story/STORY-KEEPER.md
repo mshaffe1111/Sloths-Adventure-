@@ -171,8 +171,12 @@ Petals are pressed flat at the soldiers' MARCHING height, low; they're the trail
      (finds.ts:214) becomes "Our girl, till her mother and father are home." It works whoever the painted photo shows, and adults will
      feel it. No new scene, no Dot line, no stage change.
    - Written into the Cast Bible (doc rev 44), under Meeca.
-2. **Two food mentions left for Matt:** "She took a sandwich" (the eagle, W4) and "Bring snacks" (Meeca's last note, a callback to Dot
-   going for snacks) (STORY-REWRITE:1910, :1866).
+2. **The two food lines: RULED, KEEP BOTH (story keeper, 11-11, handed over by Matt).** VOICE's rule is that after Meeca is taken, the
+   HEROES don't think about eating. Neither line breaks it:
+   - "She took a sandwich" (W4) is Pokey's dry hyperbole about the eagle's endless dive, a joke ABOUT the eagle, in his voice;
+   - "Bring snacks" is Meeca joking because she's scared, in her last note, and it calls back to Dot going for snacks just before
+     everything went wrong (STORY-REWRITE:1866).
+   No other food joke is to be added after the kidnapping.
 3. **The Cast Bible: FIXED 11-08 (doc rev 43)** to match VOICE: Dot is she everywhere; Grandpa sat by her chair for a year, then one morning
    was gone, into the war look (not "the same night"); "that winter" became "the year of the storm" (no winter in a rainforest); "post"
    became "mail" (plain American speech).
@@ -188,7 +192,10 @@ Petals are pressed flat at the soldiers' MARCHING height, low; they're the trail
 8. **The bounce teach: DECIDED (story keeper, 11-08): the `lesson.bounce` card teaches it, with no `hint.1-1.bounce` row** (not on main as of
    0.9.5; its words were `ctest.bounce`'s). One tip, one channel. Open only to confirm the card fires at gen2 1-1's first mushroom.
 9. **Story delivery:** the words box keeps room for six lines, leaving dead space under short lines upright (DIRECTION.md 8, flagged).
-10. **The skull rule:** see §4.
+10. **Skulls: RULED (story keeper, 11-11, handed over by Matt).** No skulls or bones as REMAINS anywhere: not in soil, dressing,
+    props or backdrops (a kids' game; the W9 basalt soil skulls come out). ONE exception: a painted, cartoon skull on a WARNING SIGN where
+    the sign warns of real danger, as in Matt's own 7-4 flume concept ("skull sign and TURN BACK", 7-4-slide-mockup/v2/README.md:56).
+    The art gate fails remains and allows only pieces tagged as warning signage.
 
 ## 7. The story keeper's checks (how I judge any change)
 
