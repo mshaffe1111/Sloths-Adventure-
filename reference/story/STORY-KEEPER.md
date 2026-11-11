@@ -238,8 +238,8 @@ branch carries the rejected 11-04 World 1 rebuild in src/, so NEVER build or rel
 - Guards: no help line says slow, late, hurry or "too" (that's the General's wound); Dot helps, never does it for him, never sounds disappointed.
 - At 3 set-backs in a piece, once per piece:
   - long jump: touch "Run first, then flick up and forward!" / pad "Run first, then hold Jump. Big one!";
-  - double: touch "Jump, then flick up again in the air!" / pad "Jump, then tap Jump again in the air!" ("hold" if a tapped double
-    can't clear the gap);
+  - double: touch "Jump, then flick up again in the air!" / pad "Jump, then hold Jump again in the air!" (DECIDED "hold": a tapped pad jump is a 61.7 px hop, and tap-tap
+    clears Easy's double only about half the time, per the Designer's touch.md; so R-165.57's pad "nice" line should say hold too);
   - bounce, both: "Land right on the mushroom. Boing!".
 - Easy at 5: a quiet full jump, no words. Easy at 8, when the step grows: "Ooh, look! A step. Up you go." (no arrow or ring).
 - Normal at 12: "Want a little step? I won't tell anyone." Re-ask once, 8 set-backs later: "Still want that step? It's yours."
@@ -247,3 +247,5 @@ branch carries the rejected 11-04 World 1 rebuild in src/, so NEVER build or rel
     insets.
   - After a no: silence.
 - The teach line plays once only. Dot is silent through set-backs except at these points, and each piece starts its count fresh.
+- Lead's spec: reference/specs/help-lines.md on ccr-ca657d3c-n09zty (0ba1f511). The keeper reviews the BUILT lines and pictures (stills
+  from the Engine member) as a done-item of ENGINE-R-165.62-A2.
