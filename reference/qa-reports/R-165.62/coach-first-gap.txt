@@ -1,0 +1,3 @@
+{"spot":708,"x":140,"y":1123,"coach":true}
+at {"x":689.5306438656237,"y":1123}
+{"cb":[[1.1,"onCoach","run"],[1.2,"onCoach","null"],[1.6,"onCoach","jump"],[2.6,"onLesson","fruit"],[5.3,"walkOff"],[8.7,"onLesson","checkpoint"],[14.2,"walkOff"],[15.1,"onGuide","Touch anywhere and slide to run. You do not have to touch Po"],[22.9,"walkOff"],[31.6,"walkOff"],[40,"walkOff"],[48.2,"walkOff"]],"said":[[2.7,"Flick up and forward to jump."],[16,"A flag! Fall, and you start again here."]],"falls":{"asking":null,"grown":[],"paused":false,"on":true}}

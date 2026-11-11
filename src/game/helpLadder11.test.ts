@@ -66,7 +66,8 @@ function putBack(f: Flight): void {
     if (f.e.helpState().asking) break;
   }
   assert.equal(events.filter((v) => v.startsWith('softFall')).length, n + 1, 'a real put-back');
-  for (let i = 0; i < 10 && !f.e.helpState().asking; i++) r.frame({});
+  // (settle: the iris opens and he stands; Normal's offer comes then)
+  for (let i = 0; i < 45 && !f.e.helpState().asking; i++) r.frame({});
 }
 
 /** a tap on the Pad's Jump button standing on a flat log: how high he rises (px) */
@@ -131,7 +132,7 @@ const helps = (f: Flight) => f.events.filter((v) => v.startsWith('help ') || v.s
 const flickUp = (f: Flight) => f.r.said.filter((s) => /flick up and forward to jump|slide up and across to jump/i.test(s.text)).length;
 const moveSaid = (f: Flight) => f.r.said.filter((s) => s.text === MOVE_LINES.double.touch || s.text === MOVE_LINES.double.pad).length;
 
-test('1-1 Easy, seed 3747, w1-log-chain-rise: the line at 3, the full pad jump at 5, the steps at 8, then the whole piece on plain jumps', () => {
+test('1-1 Easy, seed 3747, w1-log-chain-rise: the line at 3, the full pad jump at 5, the steps at 8, then the whole piece on plain jumps', (t) => {
   const f = fly('easy');
   const { e, piece } = f;
   assert.equal(e.helpState().on, true, 'the ladder is on in 1-1');
@@ -150,6 +151,7 @@ test('1-1 Easy, seed 3747, w1-log-chain-rise: the line at 3, the full pad jump a
   assert.equal(padFullJump(), true, 'a tap is a full jump at 5');
   const hop5 = padHop(f);
   assert.ok(hop0 < 70 && hop5 > 90, `the pad tap's rise: ${hop0} px before, ${hop5} px at 5`);
+  t.diagnostic(`pad tap rise: ${hop0} px before, ${hop5} px at 5`);
   for (let n = 6; n <= 7; n++) putBack(f);
   assert.equal(e.helpState().grown.length, 0, 'no step before 8');
   putBack(f);
@@ -171,6 +173,7 @@ test('1-1 Easy, seed 3747, w1-log-chain-rise: the line at 3, the full pad jump a
   assert.equal(flickUp(f), 0, '"Flick up and forward to jump." is not said again at the piece');
   const after = plainRun(f);
   assert.ok(after.ok, `with the steps, plain jumps pass the whole piece: ${after.why}`);
+  t.diagnostic(`Easy: ${grown.length} grown, the piece passed on ${after.jumps} plain jumps`);
   f.done();
 });
 

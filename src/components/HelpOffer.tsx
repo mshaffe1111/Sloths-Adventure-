@@ -13,6 +13,25 @@ import { backStack } from './nav/backStack.ts';
 import { W1_CUT, W1_CUT_URL } from '../game/w1CutArt.ts';
 import { OFFER_LINE, REASK_LINE } from '../game/helpLadder.ts';
 
+/**
+ * Back while the offer is up is a no (PLAY-STORE-RULES §6): the phone's Back (App.tsx asks the back stack first) and Escape on a keyboard
+ * (caught before the game's own Escape, which would pause). Returns the function that lets go of both
+ */
+export function bindBack(no: () => void, w: Pick<Window, 'addEventListener' | 'removeEventListener'> = window): () => void {
+  const off = backStack.push(no);
+  const key = (e: KeyboardEvent) => {
+    if (e.key !== 'Escape') return;
+    e.stopPropagation();
+    e.preventDefault();
+    no();
+  };
+  w.addEventListener('keydown', key as EventListener, true);
+  return () => {
+    off();
+    w.removeEventListener('keydown', key as EventListener, true);
+  };
+}
+
 /** the picture's box (px): each answer is a tap target this size, well over 44 */
 const PIC = 104;
 
@@ -77,22 +96,8 @@ export const HelpOffer: React.FC<{ reask: boolean; cut?: string; onAnswer: (yes:
     onAnswer(yes);
   };
   // the phone's Back, and Escape on a keyboard: a no
-  useEffect(() => {
-    const off = backStack.push(() => answer(false));
-    const key = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.stopPropagation();
-        e.preventDefault();
-        answer(false);
-      }
-    };
-    window.addEventListener('keydown', key, true);
-    return () => {
-      off();
-      window.removeEventListener('keydown', key, true);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => bindBack(() => answer(false)), []);
   const stop = (e: React.SyntheticEvent) => e.stopPropagation();
   return (
     <div className="ho-scrim" role="dialog" aria-modal="true" aria-label="Dot offers a step" onPointerDown={stop} onTouchStart={stop}>

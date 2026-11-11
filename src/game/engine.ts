@@ -1244,6 +1244,7 @@ export class GameEngine {
     }
     this.help?.end();
     this.helpAsking = null;
+    this.helpDue = null;
     setHelpLadder(null);
     // (the banner goes back to its usual place for whatever comes next)
     if (typeof document !== 'undefined') {
@@ -1463,6 +1464,12 @@ export class GameEngine {
   private update(dt: number) {
     // (the help offer is up: nothing moves until it is answered)
     if (this.helpAsking) return;
+    if (this.helpDue && this.irisOpen <= 0 && this.player.grounded) {
+      const a = this.helpDue;
+      this.helpDue = null;
+      this.askHelp(a);
+      return;
+    }
     // a life lost: the world holds for the beat (AN-1; in update, so the bots that play the engine directly have it too)
     if (this.down) {
       this.stepDown(dt);
@@ -5026,6 +5033,8 @@ export class GameEngine {
   private help: HelpLadder | null = null;
   /** the steps the ladder grew this run (cleared with the stage: never in the stage's own platform list) */
   private grown: Platform[] = [];
+  /** Normal's offer, due once the set-back's iris has opened and he stands (asked over the closed iris, the stage behind was black) */
+  private helpDue: HelpAct | null = null;
   /** Normal's offer is up: the stage holds still until it is answered */
   private helpAsking: { k: string; count: number; cut?: string } | null = null;
   /** the stage was paused from outside (the menu) while the offer was up: answering it does not start play under the menu */
@@ -5045,7 +5054,7 @@ export class GameEngine {
       else if (a.rung === 'step') {
         this.growSteps(a.piece);
         this.guide(STEP_LINE, 5);
-      } else if (a.rung === 'offer' || a.rung === 'reask') this.askHelp(a);
+      } else if (a.rung === 'offer' || a.rung === 'reask') this.helpDue = a;
       // ('pad': quiet, padControl reads helpLadder.padFullJump)
     }
   }
