@@ -69,6 +69,11 @@
    "role": "Content",
    "task": "re-laying stage 1-1 (C1), timed as the first measure of a new helper building a level",
    "status": "working"
+  },
+  {
+   "role": "Engine",
+   "task": "writing the re-lay checks in parallel (due 9:30 AM)",
+   "status": "working"
   }
  ],
  "columns": [
