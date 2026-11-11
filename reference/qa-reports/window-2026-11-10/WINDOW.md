@@ -6,9 +6,9 @@
   Command: `python3 -I tools/playtesters/report.py <folder of the new rows> --delta "11/9/2026 19:25:00"`.
 - **Runs:** Normal: 2 runs from 2 players; 1 finished in 214 s, and 1 was left mid-stage in `w1-dip-double-teach` (seed 15079, ONE).
   Easy: 2 runs from 1 player, both finished (180 and 187 s).
-- **0 lives lost and 0 stuck.** No top-10 finding rose or fell. #1-2 and #4 (raised pits) and #5 and #7-10 got no new hits.
-  - #3 (tap read as punch): +6 of 7 punches followed by a jump, from 2 of 3 players.
-  - #6 (Easy `w1-double-teach` put-backs): +2 from 1 player (seed 4364).
+- **0 lives lost and 0 stuck.** No top-10 finding rose or fell. #1-2 and #4 (raised pits), #5-6 and #8-10 got no new hits.
+  - #3 (tap read as punch): +6 of 7 punches followed by a jump, from 2 of 3 players. Window total: 481 of 700.
+  - #7 (Easy `w1-double-teach` put-backs): +2 from 1 player (seed 4364).
   - New, ONE player: a mid-stage leave at `w1-dip-double-teach` (score 5).
   - Window totals for the 1-1 runs: 99 runs, 36 Normal lives (all raised pits).
 - **Can't tell from the new rows alone:** whether these 3 players are new or returning. The delta's P-numbers are local to it (P1-P3),
