@@ -28,16 +28,17 @@ if (arg === '--table') {
   for (const [n, t] of Object.entries(T.tiers)) console.log(`${n.padEnd(10)} ${t.model.padEnd(18)} ${t.effort.join('/').padEnd(11)} ${Object.keys(T.roles).filter((r) => T.roles[r] === n).join(', ')}`);
 } else if (arg === '--self-test') {
   const cases = [
-    [{ tags: ['sloths-team', 'engine'], model: 'claude-fable-5-2', effort: 'high' }, true],
-    [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'high' }, false],
-    [{ tags: ['sloths-team', 'critic'], model: 'claude-fable-5-2' }, false],
+    [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'high' }, true],
+    [{ tags: ['sloths-team', 'engine'], model: 'claude-fable-5-2', effort: 'high' }, false],
+    [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'medium' }, false],
+    [{ tags: ['sloths-team', 'critic'], model: 'claude-opus-5-5' }, false],
     [{ tags: ['sloths-team', 'art'], model: 'claude-opus-5-5', effort: 'medium' }, false],
     [{ tags: ['sloths-team', 'docs'], model: 'claude-opus-5-5', effort: 'medium' }, true],
-    [{ tags: ['sloths-team', 'runner'], model: 'claude-sonnet-5-5', effort: 'high' }, true],
-    [{ tags: ['sloths-team', 'engine'], model: 'claude-fable-5-2', effort: 'max' }, false],
-    [{ tags: ['sloths-team', 'engine'], model: 'claude-fable-5-2', effort: 'low' }, false],
-    [{ tags: ['engine'], model: 'claude-fable-5-2', effort: 'high' }, false],
-    [{ tags: ['sloths-team', 'engine', 'critic'], model: 'claude-fable-5-2', effort: 'high' }, false],
+    [{ tags: ['sloths-team', 'runner'], model: 'claude-opus-5-5', effort: 'high' }, true],
+    [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'max' }, false],
+    [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'low' }, false],
+    [{ tags: ['engine'], model: 'claude-opus-5-5', effort: 'high' }, false],
+    [{ tags: ['sloths-team', 'engine', 'critic'], model: 'claude-opus-5-5', effort: 'high' }, false],
   ];
   let bad = 0;
   for (const [c, want] of cases) { const r = judge(c); if (r.ok !== want) { bad++; console.log('FAIL', JSON.stringify(c), r.why); } }
