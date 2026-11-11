@@ -1,40 +1,70 @@
 {
   "task": "INT-1-1",
-  "audited": "t-int-1-1@8cf55b8f (first run on 996d0c63; 1decad29 was superseded before it was flown)",
-  "status": "REJECT",
-  "violations": [
+  "audited": "t-int-1-1@874f11f6 (its code is 53bd446a: `git diff 53bd446a 874f11f6 -- . ':!reference'` is empty; 874f11f6 changes one line of the builder's REPORT.md)",
+  "heads_seen": ["996d0c63 (REJECT)", "1decad29 (superseded before it was flown)", "8cf55b8f (REJECT)", "fa5ad9d1 / 481a47e2 (one rule open)", "53bd446a / 874f11f6 (PASS)"],
+  "status": "PASS",
+  "violations": [],
+  "found_and_fixed": [
     {
-      "file": "src/components/dot/DotGuide.tsx",
-      "line": 1277,
-      "rule": "help-lines.md §2 (one line as the step grows) and §4 (silent between rungs); helpLadder.ts:3 (the ladder is the ONE place that decides help in 1-1); STAGE-RULES §5b item 9",
-      "evidence": "8cf55b8f, browser, Easy, seed 982 w1-log-chain-rise, real walk-offs then standing still: 'Ooh, look! A step. Up you go.' is on screen 14.2 s after the engine sends it (upright, a set-back every 1.7 s), 14.0 and 12.6 s in two more runs; sideways at a 4 s pace the stuck helper says 'This way, Pokey! Try over here.' (dotGuideWatch.ts:146, help.stuck15) 2.5 s after the steps grow and the step line comes 7.8 s after. In the +1 s still Dot is flying in from the bottom edge and has not landed at +10 s. head-8cf55b8f/proof-step-*.json and .png, wait-walk.json",
-      "fix": "the stuck helper says nothing in 1-1 while the ladder is on; the ladder's line gets a perch it can land on at once; prove with proof.mjs LINE='A step' standing still (and wait.mjs), both ways"
+      "head": "996d0c63",
+      "file": "src/game/engine.ts:5094 (helpLineDown at 8 s of game time) with dotGuideWatch.ts:90 (blinking is danger) and DotGuide.tsx:859",
+      "rule": "help-lines.md §1; the packet's 'Dot's line at 3'",
+      "evidence": "at a set-back every 2.0 s or less (hold right 1.7 s, run and jump 2.15 s) the move line was sent and never shown, Easy and Normal, both ways; failing test src/game/helpLadderCadence.test.ts (2 red); wait-walk.json, proof-*.png",
+      "fixed_on": "8cf55b8f: up 0.1 s after it is sent, 8-9 s, at 1.7 / 2.1 / 3.4-3.9 s paces (head-53bd446a/wait-*.json)"
     },
     {
-      "file": "src/game/engine.ts",
-      "line": 5677,
-      "rule": "STAGE-RULES §5b item 10 (motion is smooth: no snapping); PERFORMANCE-RULES (silky smooth); packet item 7 asked for the margin or the petal's height at that log",
-      "evidence": "per engine frame, sideways 915x412, seed 4106 (cam.mjs; before = 7dff5800): the bounce by the seed-perch log moves the view 39-42 px in ONE frame on 8cf55b8f (before: 10.8 at most); a double jump on flat ground 24 then 32 px in two frames (before: 8.7 at most), on any stage, since the code (5677, 5694) is not 1-1's. His drawn top clears the plate by -2 to 14 px, not the report's 22 (a 20 ms poll missed the frame). head-8cf55b8f/cam.json, before-cam.json",
-      "fix": "ease it (cap the view's step per frame near the old 11 px) or lift only that log's top margin; a per-frame trace before and after on 1-1 and one other world"
+      "head": "996d0c63",
+      "file": "src/game/helpLadder11.test.ts, helpSweep.ts",
+      "rule": "the packet's done-item: every help flight on the real loseLife, 0 lostLife (D37)",
+      "evidence": "no help flight removed RealPlay's stub (realPlay.ts:141) or asserted lostLife",
+      "fixed_on": "8cf55b8f: helpLadder11.test.ts:46, helpSweep.ts:121; 2,898 sweep flights, 0 lives"
     },
     {
-      "file": "reference/qa-reports/INT-1-1/REPORT.md",
-      "line": 9,
-      "rule": "roles/README rules 7 and 10; LESSONS D29 (gates on the exact head)",
-      "evidence": "the report's suite (2,550 on b575da9), chunk bytes (3,981,614) and c1judge (HEAD 967376d5) are not 8cf55b8f's; line 11 and 24 say '22 px clear'; reference/handoffs/engine-core.md was not rewritten for the delta (no PAD_EDGE, `anyway`, LINE_WAIT_S or NO_POSE in it)",
-      "fix": "restate every number on the final head; rewrite engine-core.md §0c"
+      "head": "8cf55b8f",
+      "file": "src/components/dot/DotGuide.tsx:1277 (the stuck helper) and her queue's order",
+      "rule": "help-lines.md §2 and §4; helpLadder.ts:3",
+      "evidence": "Easy: 'Ooh, look! A step. Up you go.' 12.6-14.2 s late when he stops to look; sideways 'This way, Pokey! Try over here.' came first (head-8cf55b8f/)",
+      "fixed_on": "fa5ad9d1: up 0-0.2 s after the steps grow, 6.5 s, nothing else said, three paces"
+    },
+    {
+      "head": "996d0c63 and 8cf55b8f",
+      "file": "src/game/engine.ts:5677,5694",
+      "rule": "STAGE-RULES §5b item 10; PERFORMANCE-RULES",
+      "evidence": "the item-7 camera fix moved the view 39-72 px in one frame on the bounce (10.8 before) and 24+32 px on any sideways double jump in every world (8.7 before); his top cleared the plate by -2 to 14 px, not the reported 22 (before-cam.json, after-cam.json, head-8cf55b8f/cam.json)",
+      "fixed_on": "fa5ad9d1: 11 px an update at most going up, on the bounce and a flat double jump; his top clears the plate by 15-26 px on 53bd446a (head-53bd446a/cam.json)"
+    },
+    {
+      "head": "fa5ad9d1",
+      "file": "src/components/dot/DotGuide.tsx (planFor), src/game/dotGuidePerch.ts",
+      "rule": "LESSONS D10/D22; STAGE-RULES §5b item 7",
+      "evidence": "sideways, Easy, seed 982: the step line's bubble covered 44% (median) to 52% of the nearest grown step (head-fa5ad9d1/overlap.txt, proof-step-easy-land-W2000-plus3.png)",
+      "fixed_on": "53bd446a: 0 in four views; Dot hovers under the top HUD, clear of Pokey (head-53bd446a/overlap-and-wall.txt and stills)"
+    },
+    {
+      "head": "8cf55b8f, fa5ad9d1",
+      "file": "reference/qa-reports/INT-1-1/REPORT.md, reference/handoffs/engine-core.md",
+      "rule": "roles/README rules 7 and 10; LESSONS D29",
+      "evidence": "gate numbers quoted from older commits; the note had none of the delta's rulings",
+      "fixed_on": "874f11f6: the gate line is 53bd446a's and matches my run; engine-core.md §0c carries the rulings"
     }
   ],
   "named_not_counted": [
-    "the seed fruit's top is 4-6 px under the HUD plate at the bounce's top (item d): the builder named it; the lead's call",
-    "rotation with the offer up was not flown (Playwright cannot rotate a phone context here)",
-    "every number is headless Chromium at 412x915 and 915x412, not a phone"
+    "the seed fruit's top is 5-8 px under the HUD plate at the bounce's top in 5 of 6 bounces on 53bd446a (1 px clear in the sixth): the lead accepted it as named rough for tonight; the builder's REPORT.md:23 says 'clear at the top', which holds for one bounce in six",
+    "the builder's REPORT.md quotes lockall from 1decad29; my lockall on 53bd446a: 101/102 unchanged, only 1-1",
+    "audit A-05 (the 11 px cap is per update): true, a late frame of 2-3 updates draws 22-33 px (4 such frames in 6 bounces on my loaded machine); it is the frame loop's catch-up, in which Pokey moves 2-3 times as far too, and the old eased view did the same at 10.8 px an update: not made worse by INT",
+    "audit B-01 (stuck at a wall, never falls, no help): the same on 8cf55b8f and fa5ad9d1: at the w1-double-teach wall Dot says nothing in 40 s, jumping, standing or pacing, Easy and Normal (wall.mjs); quieting the stuck helper did not make it worse",
+    "the child bot on Normal needs 13 rescues in 40 runs (A1's baseline 8); the done-item asks 0 only of middle and expert",
+    "never seen on a real phone: every number is headless Chromium at 412x915 and 915x412"
   ],
-  "fixed_during_audit": [
-    "Dot's move line at 3 was never shown at a set-back every 2 s or less (996d0c63): fixed on 8cf55b8f, up 0.1 s after it is sent at every pace, both settings",
-    "help flights now run on the real loseLife and fail on a lostLife (helpLadder11.test.ts:46, helpSweep.ts:121)",
-    "the pad is gap - 100 (PAD_EDGE 50); the NO card is the mid-leap `rise`; t-content-c1@0fc0835a merged"
-  ],
-  "tests_added": ["src/game/helpLadderCadence.test.ts (red on 996d0c63, green on 8cf55b8f; the builder took it in and added the step line's)"],
-  "gates_on_8cf55b8f": "see REPORT.md"
+  "tests_added": ["src/game/helpLadderCadence.test.ts (mine: red on 996d0c63, green since 8cf55b8f; the builder took it in and added the step line's and a queue case)"],
+  "gates_on_53bd446a": {
+    "tsc": "PASS",
+    "suite": "890 + 875 + 795 = 2,560 pass, 0 fail, 2 old todos (4-3); todo markers 3 = main's 3",
+    "vite build + chunkcheck": "PASS, main 3,982,660 B, 11,644 spare",
+    "artcheck": "PASS", "knowncheck": "PASS (also on 874f11f6)", "roadmapcheck": "PASS (also on 874f11f6)",
+    "drawcheck": "PASS (332 s)", "clipcheck": "PASS (83 known, the list unchanged from main)", "kbdcheck": "PASS", "buildcheck": "PASS (run last, alone)",
+    "seedlist 1-1 --check": "PASS (200 seeds, 0 refused)", "lockall": "101/102 unchanged, only 1-1 (intended)", "tierBots.test": "7/7",
+    "help sweep --fly": "PASS: 0 breaches; Easy 1024/1024, Normal 1874/1874; promised but nothing grew 0",
+    "c1judge": "PASS: the same five rows as C1's own head; lives 0; rescues 0 middle and expert"
+  }
 }
