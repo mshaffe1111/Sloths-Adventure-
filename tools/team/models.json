@@ -8,7 +8,8 @@
     "11-11 4:36 PM Matt: \"We will need to start using Opus again for all models\": every tier on Opus 5.5 (Fable period over; engine on Opus always high)",
     "11-11 4:37 PM Matt: \"U will need to make the efforts based on work\": the lead picks effort per task inside each tier's range; xhigh allowed for the hardest critical work (merge reviews, core engine); max still asks Matt",
     "11-11 4:40 PM Matt: \"For now use engine work on xhigh\": engine and integration roles on Opus 5.5 xhigh only",
-    "11-11 ~6 PM Matt (to the new lead): engine tier on Fable 5.2 high for the core engine build; critics and everything else stay Opus 5.5"
+    "11-11 ~6 PM Matt (to the new lead): engine tier on Fable 5.2 high for the core engine build; critics and everything else stay Opus 5.5",
+    "11-11 6:13 PM Matt: only about 2 hours of Fable in total; engine back on Opus 5.5 xhigh; Fable only via role engine-fable on packets the lead names"
   ],
   "tiers": {
     "critical": {
@@ -20,11 +21,18 @@
       "what": "anything that ships or judges what ships: engine, stage and mechanic builds, integration, reviewers, architecture; xhigh for merge/release reviews and core-engine fixes, high otherwise"
     },
     "engine": {
+      "model": "claude-opus-5-5",
+      "effort": [
+        "xhigh"
+      ],
+      "what": "engine and integration work on Opus 5.5 xhigh. Fable 5.2 high only on a packet the lead names as needing the strongest model, about 2 hours total (Matt 11-11 6:13 PM ET)"
+    },
+    "fable": {
       "model": "claude-fable-5-2",
       "effort": [
         "high"
       ],
-      "what": "core engine builds (Matt 11-11 ~6 PM ET: 'You can use Fable 5.2 High to get the engine fixed and ready'); Fable goes on core engine builds first, not on reviews or one-level work"
+      "what": "the lead's named strongest-model packets only (diagnosis and design); Matt has about 2 hours of Fable in total"
     },
     "core": {
       "model": "claude-opus-5-5",
@@ -55,6 +63,7 @@
     "content": "critical",
     "designer": "critical",
     "integration": "engine",
+    "engine-fable": "fable",
     "critic": "critical",
     "architect": "critical",
     "art": "core",
