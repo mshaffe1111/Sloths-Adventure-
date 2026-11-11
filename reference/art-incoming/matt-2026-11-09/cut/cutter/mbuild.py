@@ -4,8 +4,12 @@ import sys, os, json, csv, shutil
 ROOT, OUT, KEPT = sys.argv[1:4]; sys.path.insert(0, ROOT + '/pylib'); sys.path.insert(0, ROOT + '/cutcode')
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-from mtable import K, R, LABELTEXT, STAND, HAND
+from mtable import K, R, LABELTEXT, STAND, HAND, SMALL_OK
 from walk import walk_top
+# attempt 2 (the critic, 11-10): side-on lily pads have no flat top (the rim curves away at both ends): by hand.
+WALK_HAND = {'M-03-a', 'M-03-b', 'M-03-c', 'M-03-d'}
+# domed boulder: the flat crown only (columns whose top is within 4 px of the highest)
+WALK_SET = {'M-13-b': (3, 355, 604)}
 info = json.load(open(ROOT + '/artcut/_cutinfo.json'))
 for d in ('rejected', 'sheets'): os.makedirs(f'{OUT}/{d}', exist_ok=True)
 os.makedirs(KEPT, exist_ok=True)
@@ -17,22 +21,32 @@ for r in info:
         if pid not in K: print('UNCLASSIFIED', pid); continue
         label, kind, world, flt, notes = K[pid]
         row = dict(id=pid, sheet=r['sheet'].replace('M-', ''), label=label, kind=kind, w=p['w'], h=p['h'],
-                   walk_y='', walk_x0='', walk_x1='', world=world, float_class=flt, status='kept', reason='', notes=notes)
+                   walk_y='', walk_x0='', walk_x1='', flat='', world=world, float_class=flt, status='kept', reason='', notes=notes)
         if pid in R: row['status'] = 'rejected'; row['reason'] = R[pid]
-        elif ls < 600: row['status'] = 'rejected'; row['reason'] = f'under 600 px on its long side ({ls} px): re-roll larger'
+        elif ls < 600 and pid not in SMALL_OK: row['status'] = 'rejected'; row['reason'] = f'under 600 px on its long side ({ls} px): re-roll larger'
         im = Image.open(src)
         if row['status'] == 'kept':
             shutil.copy(src, f'{KEPT}/{pid}.png')
             if kind in STAND:
-                res = walk_top(np.asarray(im)[..., 3])
-                if res: row['walk_y'], row['walk_x0'], row['walk_x1'] = res[0], res[1], res[2]
+                al = np.asarray(im)[..., 3]
+                res = walk_top(al)
+                if pid in WALK_HAND: row['walk_y'] = 'by hand'
+                elif pid in WALK_SET: row['walk_y'], row['walk_x0'], row['walk_x1'] = WALK_SET[pid]
+                elif res: row['walk_y'], row['walk_x0'], row['walk_x1'] = res[0], res[1], res[2]
+                if isinstance(row['walk_y'], int):   # flatness check: share of the span within 3 px of the line
+                    op = al > 128; top = np.where(op.any(0), op.argmax(0), 99999)[row['walk_x0']:row['walk_x1'] + 1]
+                    row['flat'] = round(float((np.abs(top - row['walk_y']) <= 3).mean()), 2)
+                    print('walk', pid, row['walk_y'], row['walk_x0'], row['walk_x1'], 'flat', row['flat'])
+                    if row['flat'] < 0.5:   # the critic's test: not a flat top, so no auto line; the reading goes in the notes
+                        row['notes'] = (row['notes'] + f" No flat top: the silhouette top near y {row['walk_y']} (x {row['walk_x0']}-{row['walk_x1']}) is only {int(row['flat'] * 100)}% within 3 px of level; stand line by hand.").strip()
+                        row['walk_y'], row['walk_x0'], row['walk_x1'] = 'by hand', '', ''
             elif kind in HAND:
                 row['walk_y'] = 'by hand'
         else:
             j = Image.new('RGB', im.size, (48, 48, 52)); j.paste(im, (0, 0), im); j.thumbnail((1400, 1400))
             j.save(f'{OUT}/rejected/{pid}.jpg', quality=85)
         rows.append(row)
-cols = ['id', 'sheet', 'label', 'kind', 'w', 'h', 'walk_y', 'walk_x0', 'walk_x1', 'world', 'float_class', 'status', 'reason', 'notes']
+cols = ['id', 'sheet', 'label', 'kind', 'w', 'h', 'walk_y', 'walk_x0', 'walk_x1', 'flat', 'world', 'float_class', 'status', 'reason', 'notes']
 with open(f'{OUT}/catalog.csv', 'w', newline='') as f:
     wr = csv.DictWriter(f, cols); wr.writeheader(); [wr.writerow(x) for x in rows]
 font = ImageFont.load_default(size=22)

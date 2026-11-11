@@ -1,59 +1,59 @@
-id,sheet,label,kind,w,h,walk_y,walk_x0,walk_x1,world,float_class,status,reason,notes
-M-01-a,01,Mossy Volcanic Boulder Block,puzzle piece,735,678,55,207,605,W1,grounded,kept,,Pushable or breakable block (R-165.81). Three-quarter view cube: the line is the back edge of the top face; set the stand line on the front edge by hand. Fern sprigs at two corners.
-M-01-b,01,Heavy Water-Logged Mahogany Log,puzzle piece,810,596,56,457,776,both,grounded,kept,,"Rollable or pushable log, shown on a diagonal (three-quarter view), so it is not a side-on platform. Shelf fungi along the side."
-M-01-c,01,Carved Stone Monolith Block,puzzle piece,517,712,51,135,488,W1,grounded,kept,,Tall carved block (a face on the front). Three-quarter view; stand line by hand.
-M-01-d,01,Heavy Root-Bound Wooden Crate,puzzle piece,672,705,58,159,535,W1,grounded,kept,,"Crate wrapped in roots, no painted words. Three-quarter view; stand line by hand."
-M-02-a,02,Victoria Lily Pad Platform,lily pad,815,543,44,102,712,both,may float,kept,,"TOP VIEW, NOT FOR PLATFORMS (the game is side-on; use M-03-a). Water-surface decor at most."
-M-02-b,02,Soft Lotus Pad Platform,lily pad,707,438,37,130,567,both,may float,kept,,"TOP VIEW, NOT FOR PLATFORMS (use M-03-b)."
-M-02-c,02,unlabelled (reeds tuft beside the weathered pad),plant or dressing,285,215,,,,both,grounded,rejected,unlabelled reeds with a smear of magenta painted under them (the smear is the same hue as the ground and cannot be keyed apart); also under 600 px,
-M-02-d,02,Weathered Lily Pad Platform,lily pad,866,568,23,189,679,both,may float,kept,,"TOP VIEW, NOT FOR PLATFORMS (use M-03-c)."
-M-02-e,02,Flowering Lily Pad Platform,lily pad,842,552,26,172,670,both,may float,kept,,"TOP VIEW, NOT FOR PLATFORMS (use M-03-d). The pink is the painted lotus flower, not ground."
-M-03-a,03,Victoria Lily Pad Platform,lily pad,816,397,32,414,736,both,may float,kept,,Side-on platform set. Raised red rim all round; the measured line is only the right half of the back rim (a notch splits it): set the stand line along the rim by hand. Floats on water only.
-M-03-b,03,Soft Lotus Pad Platform,lily pad,820,275,22,155,669,both,may float,kept,,"Side-on, thinnest pad (275 px tall); lotus bud on the left edge. Floats on water only."
-M-03-c,03,Weathered Lily Pad Platform,lily pad,868,393,17,179,681,both,may float,kept,,"Side-on, mottled and holed: reads as old, could be the crumbling version. Floats on water only."
-M-03-d,03,Flowering Lily Pad Platform,lily pad,848,361,47,164,686,both,may float,kept,,"Side-on; a big lotus flower sits in the middle of the top, so the walk line has a bump in the centre. Floats on water only."
-M-04-a,04,Ancient Stone Block,puzzle piece,671,681,58,69,621,W1,grounded,kept,,Carved glyph block. Three-quarter view; stand line by hand.
-M-04-b,04,Heavy Wooden Crate,puzzle piece,606,567,45,80,525,both,grounded,kept,,"FLAG: painted words ""CAUTION: FRAGILE"" on the side, a problem for players who cannot read (and breaks the no-words-in-art feel). Art not edited. Use M-01-d, or ask for a wordless re-paint."
-M-04-c,04,Rusted Iron Barrel,puzzle piece,510,669,17,4,398,W2,grounded,kept,,Two loose iron rings lie at its foot (part of the cut). Man-made and rusty: reads more as a ruin or W2 prop than W1 rainforest.
-M-04-d,04,Puzzle Lever Mechanism,puzzle piece,838,691,47,224,569,both,grounded,kept,,Lever and gear on a stone base. Needs an on and off pose for a real lever; only one pose is painted.
-M-05-a,05,Mossy Banyan Root Terraced Steps,step set piece,1871,896,by hand,,,W1,grounded,kept,,"A climb up root-wrapped stone steps (fills the root-step gap as one big set piece). Matt painted the trunk top fading into the ground colour; the fade is now a clean transparent fade (cutter/fadefix.py), so lay foliage or a canopy over its top. Steps are not flat: stand lines by hand."
-M-05-b,05,Giant Water Lily Pad and Stone Step Formation,step set piece,1849,637,by hand,,,both,grounded,kept,,"A pond crossing: lily pads and stone steps in painted water. The water is part of the picture: if the player can fall in, it must read as the hazard (STAGE-RULES §4). Stand lines by hand."
-M-06-a,06,Hollow Stump Den,den or hide spot,952,634,,,,W1,grounded,kept,,"Hide spot with a dark doorway, spreading roots."
-M-06-b,06,Ancient Stone Totems,plant or dressing,190,466,,,,W1,grounded,rejected,under 600 px on its long side (466 px): re-roll larger,Left totem of three.
-M-06-c,06,Ancient Stone Totems,plant or dressing,218,607,,,,W1,grounded,kept,,Middle (tallest) totem of three; the only one at 600 px or more.
-M-06-d,06,Ancient Stone Totems,plant or dressing,168,380,,,,W1,grounded,rejected,under 600 px on its long side (380 px): re-roll larger,Right totem of three.
-M-06-e,06,Pitcher Plant Patch,danger-looking,890,634,,,,W1,grounded,kept,,FLAG: reads as danger (open carnivorous pitchers). Either make it a real hazard or keep it off every landing and path; never decor where Pokey lands.
-M-06-f,06,Swamp Log & Puddle,walkable log or plank,981,533,111,465,842,both,grounded,kept,,"Mossy log lying in a painted mud puddle: grounded, not a floating platform. The puddle is wide; lay it on flat ground."
-M-07-a,07,Giant Shelf Fungus,soft landing,912,562,54,136,782,W1,attached,kept,,Stacked bracket fungus. Bracket fungi grow on trunks: attach to a trunk or stump. Bumpy top: stand line is the top tier.
-M-07-b,07,Coiled Vine Mat,soft landing,903,487,28,181,742,W1,grounded,kept,,"Flat coiled mat, low and wide: a landing pad on the ground."
-M-07-c,07,Leaf Nest,soft landing,1089,522,60,265,912,W1,grounded,kept,,Pile of big leaves; leaf tips stick up past the walk line.
-M-07-d,07,Frond Bundle,soft landing,960,525,37,364,787,W1,grounded,kept,,Tied bundle of fronds; near-flat top.
-M-08-a,08,Mossy Tuff Block,block,737,579,52,81,616,W1,grounded,kept,,Moss-topped stone block with glowing cyan crystals (a hint the block is special). Three-quarter view; stand line by hand.
-M-08-b,08,Vine Coil Cushion,soft landing,895,475,27,175,723,W1,grounded,kept,,Coiled vine nest with a dip in the middle; same family as M-07-b.
-M-08-c,08,Spongy Fungi Mat,soft landing,1077,477,38,258,770,W1,grounded,kept,,Flat spongy fungus mat; close cousin of M-07-a but flat.
-M-08-d,08,Frond Bundle Pad,soft landing,1124,483,63,304,812,W1,grounded,kept,,Flatter frond bundle; same family as M-07-d.
-M-09-a,09,Giant Ceiba Tree,tree,1156,1750,,,,both,grounded,kept,,Huge backdrop tree with buttress roots and plank shelves between them (1750 px tall). Backdrop or climb. A few small dark-red pockets stay deep between the left and right roots (ground seen through; only visible on a light ground).
-M-09-b,09,Royal Palm,tree,785,1726,,,,both,grounded,kept,,Tall smooth palm (1734 px); bare trunk is a pole climb candidate.
-M-10-a,10,Strangler Fig,tree,985,763,,,,W1,grounded,kept,,Wide tree on a cage of roots; the roots read as climbable.
-M-10-b,10,Traveler's Palm,tree,624,756,,,,both,grounded,kept,,Fan palm on a thin trunk; backdrop.
-M-10-c,10,Red Mangrove,tree,635,684,,,,W2,grounded,kept,,Stilt roots stand in a strip of painted water: a waterside tree.
-M-10-d,10,Cannonball Tree,tree,509,695,,,,W1,grounded,kept,,Trunk with cannonball fruit and flowers; crown cut short at the top by the painter.
-M-11-a,11,Cypress Knee Cavern,den or hide spot,1005,743,,,,both,grounded,kept,,Cave mouth under cypress knees and roots.
-M-11-b,11,Vine-Curtained Rock Arch,den or hide spot,1020,659,,,,W1,grounded,kept,,Walk-through arch. Matt painted a floor shadow under it in the ground colour; it is now a clean grey see-through shadow (cutter/floorfix.py).
-M-11-c,11,Burl Hollow Den,den or hide spot,899,662,,,,W1,grounded,kept,,Big burl trunk with a dark hollow; a small dead branch on the right.
-M-11-d,11,Palm Frond Canopy,plant or dressing,839,670,,,,W1,attached,kept,,A canopy to hang under (R-160.1): fronds hang from a vine bar. Attach both ends to trunks.
-M-12-a,12,unlabelled (elephant ear plant),plant or dressing,629,586,,,,W1,grounded,kept,,"Ground dressing, in front or behind."
-M-12-b,12,unlabelled (bird of paradise),plant or dressing,624,602,,,,W1,grounded,kept,,Ground dressing with orange flowers.
-M-12-c,12,unlabelled (one loose leaf),plant or dressing,219,125,,,,W1,grounded,rejected,"a single loose leaf the keyer split off the bird of paradise (M-12-b); a fragment, not a piece; also under 600 px",
-M-12-d,12,unlabelled (snake plant),plant or dressing,410,546,,,,W1,grounded,rejected,under 600 px on its long side (546 px): re-roll larger,
-M-12-e,12,unlabelled (flowering shrub),plant or dressing,507,576,,,,W1,grounded,rejected,under 600 px on its long side (576 px): re-roll larger,
-M-12-f,12,unlabelled (maidenhair fern),plant or dressing,647,429,,,,W1,grounded,rejected,"polish: its stems are painted magenta like the ground and keyed out with it, so the leaves hang loose in the air (rough at phone size)",
-M-12-g,12,unlabelled (spider plant),plant or dressing,370,357,,,,W1,grounded,rejected,under 600 px on its long side (370 px): re-roll larger,
-M-12-h,12,unlabelled (bromeliad),plant or dressing,580,427,,,,W1,grounded,rejected,under 600 px on its long side (580 px): re-roll larger,
-M-12-i,12,unlabelled (berry bush),plant or dressing,615,498,,,,W1,grounded,kept,,Round berry bush; ground dressing.
-M-13-a,13,unlabelled (mossy rock),rock,909,577,32,164,771,both,grounded,kept,,"Full-size grounded rock, moss on top; uneven top, the measured line is its highest flat run."
-M-13-b,13,unlabelled (smooth brown boulder),rock,890,548,17,166,756,both,grounded,kept,,"Full-size grounded boulder, domed top."
-M-14-a,14,unlabelled (long dark log platform),walkable log or plank,1215,298,3,33,1183,both,may float,kept,,"Flat-topped side-on log, long. Darker wood than 15."
-M-14-b,14,unlabelled (short dark log platform),walkable log or plank,566,296,,,,both,may float,rejected,under 600 px on its long side (566 px): re-roll larger,
-M-15-a,15,unlabelled (plank or log platform),walkable log or plank,880,363,16,62,823,both,may float,kept,,"Flat-topped side-on log, lighter wood. Near-twin of M-15-b (same length, slightly different grain): counts as one shape for variety."
-M-15-b,15,unlabelled (plank or log platform),walkable log or plank,881,363,16,62,824,both,may float,kept,,Near-twin of M-15-a.
+id,sheet,label,kind,w,h,walk_y,walk_x0,walk_x1,flat,world,float_class,status,reason,notes
+M-01-a,01,Mossy Volcanic Boulder Block,puzzle piece,735,678,by hand,,,0.08,W1,grounded,kept,,Pushable or breakable block (R-165.81). Three-quarter view cube: the line is the back edge of the top face; set the stand line on the front edge by hand. Fern sprigs at two corners. No flat top: the silhouette top near y 55 (x 207-605) is only 8% within 3 px of level; stand line by hand.
+M-01-b,01,Heavy Water-Logged Mahogany Log,puzzle piece,810,596,by hand,,,0.06,both,grounded,kept,,"Rollable or pushable log, shown on a diagonal (three-quarter view), so it is not a side-on platform. Shelf fungi along the side. No flat top: the silhouette top near y 56 (x 457-776) is only 6% within 3 px of level; stand line by hand."
+M-01-c,01,Carved Stone Monolith Block,puzzle piece,517,712,by hand,,,0.08,W1,grounded,kept,,Tall carved block (a face on the front). Three-quarter view; stand line by hand. No flat top: the silhouette top near y 51 (x 135-488) is only 8% within 3 px of level; stand line by hand.
+M-01-d,01,Heavy Root-Bound Wooden Crate,puzzle piece,672,705,by hand,,,0.16,W1,grounded,kept,,"Crate wrapped in roots, no painted words. Three-quarter view; stand line by hand. No flat top: the silhouette top near y 58 (x 159-535) is only 16% within 3 px of level; stand line by hand."
+M-02-a,02,Victoria Lily Pad Platform,lily pad,815,543,by hand,,,0.06,both,may float,kept,,"TOP VIEW, NOT FOR PLATFORMS (the game is side-on; use M-03-a). Water-surface decor at most. No flat top: the silhouette top near y 44 (x 102-712) is only 6% within 3 px of level; stand line by hand."
+M-02-b,02,Soft Lotus Pad Platform,lily pad,707,438,by hand,,,0.05,both,may float,kept,,"TOP VIEW, NOT FOR PLATFORMS (use M-03-b). No flat top: the silhouette top near y 37 (x 130-567) is only 5% within 3 px of level; stand line by hand."
+M-02-c,02,unlabelled (reeds tuft beside the weathered pad),plant or dressing,285,215,,,,,both,grounded,rejected,unlabelled reeds with a smear of magenta painted under them (the smear is the same hue as the ground and cannot be keyed apart); also under 600 px,
+M-02-d,02,Weathered Lily Pad Platform,lily pad,866,568,by hand,,,0.12,both,may float,kept,,"TOP VIEW, NOT FOR PLATFORMS (use M-03-c). No flat top: the silhouette top near y 23 (x 189-679) is only 12% within 3 px of level; stand line by hand."
+M-02-e,02,Flowering Lily Pad Platform,lily pad,842,552,by hand,,,0.1,both,may float,kept,,"TOP VIEW, NOT FOR PLATFORMS (use M-03-d). The pink is the painted lotus flower, not ground. No flat top: the silhouette top near y 26 (x 172-670) is only 10% within 3 px of level; stand line by hand."
+M-03-a,03,Victoria Lily Pad Platform,lily pad,816,397,by hand,,,,both,may float,kept,,Side-on platform set. Raised red rim all round; no flat top (the rim curves away at both ends): stand line by hand. Floats on water only.
+M-03-b,03,Soft Lotus Pad Platform,lily pad,820,275,by hand,,,,both,may float,kept,,"Side-on, thinnest pad (275 px tall); lotus bud on the left edge. No flat top (edges curl down): stand line by hand. Floats on water only."
+M-03-c,03,Weathered Lily Pad Platform,lily pad,868,393,by hand,,,,both,may float,kept,,"Side-on, mottled and holed: reads as old, could be the crumbling version. No flat top: stand line by hand. Floats on water only."
+M-03-d,03,Flowering Lily Pad Platform,lily pad,848,361,by hand,,,,both,may float,kept,,"Side-on; a big lotus flower sits in the middle of the top, so there is no flat top: stand line by hand. Floats on water only."
+M-04-a,04,Ancient Stone Block,puzzle piece,671,681,by hand,,,0.18,W1,grounded,kept,,Carved glyph block. Three-quarter view; stand line by hand. No flat top: the silhouette top near y 58 (x 69-621) is only 18% within 3 px of level; stand line by hand.
+M-04-b,04,Heavy Wooden Crate,puzzle piece,606,567,by hand,,,0.1,both,grounded,kept,,"FLAG: painted words ""CAUTION: FRAGILE"" on the side, a problem for players who cannot read (and breaks the no-words-in-art feel). Art not edited. Use M-01-d, or ask for a wordless re-paint. No flat top: the silhouette top near y 45 (x 80-525) is only 10% within 3 px of level; stand line by hand."
+M-04-c,04,Rusted Iron Barrel,puzzle piece,510,669,by hand,,,0.13,W2,grounded,kept,,Two loose iron rings lie at its foot (part of the cut). Man-made and rusty: reads more as a ruin or W2 prop than W1 rainforest. No flat top: the silhouette top near y 17 (x 4-398) is only 13% within 3 px of level; stand line by hand.
+M-04-d,04,Puzzle Lever Mechanism,puzzle piece,838,691,by hand,,,0.1,both,grounded,kept,,Lever and gear on a stone base. Needs an on and off pose for a real lever; only one pose is painted. No flat top: the silhouette top near y 47 (x 224-569) is only 10% within 3 px of level; stand line by hand.
+M-05-a,05,Mossy Banyan Root Terraced Steps,step set piece,1871,896,by hand,,,,W1,grounded,kept,,"A climb up root-wrapped stone steps (fills the root-step gap as one big set piece). Matt painted the trunk top fading into the ground colour; the fade is now a clean transparent fade (cutter/fadefix.py), so lay foliage or a canopy over its top. Steps are not flat: stand lines by hand."
+M-05-b,05,Giant Water Lily Pad and Stone Step Formation,step set piece,1849,637,by hand,,,,both,grounded,kept,,"A pond crossing: lily pads and stone steps in painted water. The water is part of the picture: if the player can fall in, it must read as the hazard (STAGE-RULES §4). Stand lines by hand."
+M-06-a,06,Hollow Stump Den,den or hide spot,952,634,,,,,W1,grounded,kept,,"Hide spot with a dark doorway, spreading roots."
+M-06-b,06,Ancient Stone Totems,plant or dressing,190,466,,,,,W1,grounded,kept,,"Left totem of three. Under 600 px, kept by the lead (11-10)."
+M-06-c,06,Ancient Stone Totems,plant or dressing,218,607,,,,,W1,grounded,kept,,Middle (tallest) totem of three; the only one at 600 px or more.
+M-06-d,06,Ancient Stone Totems,plant or dressing,168,380,,,,,W1,grounded,kept,,"Right totem of three. Under 600 px, kept by the lead (11-10)."
+M-06-e,06,Pitcher Plant Patch,danger-looking,890,634,,,,,W1,grounded,kept,,FLAG: reads as danger (open carnivorous pitchers). Either make it a real hazard or keep it off every landing and path; never decor where Pokey lands.
+M-06-f,06,Swamp Log & Puddle,walkable log or plank,981,533,by hand,,,0.08,both,grounded,kept,,"Mossy log lying in a painted mud puddle: grounded, not a floating platform. The puddle is wide; lay it on flat ground. No flat top: the silhouette top near y 111 (x 465-842) is only 8% within 3 px of level; stand line by hand."
+M-07-a,07,Giant Shelf Fungus,soft landing,912,562,by hand,,,0.19,W1,attached,kept,,Stacked bracket fungus. Bracket fungi grow on trunks: attach to a trunk or stump. Bumpy top: stand line is the top tier. No flat top: the silhouette top near y 54 (x 136-782) is only 19% within 3 px of level; stand line by hand.
+M-07-b,07,Coiled Vine Mat,soft landing,903,487,by hand,,,0.06,W1,grounded,kept,,"Flat coiled mat, low and wide: a landing pad on the ground. No flat top: the silhouette top near y 28 (x 181-742) is only 6% within 3 px of level; stand line by hand."
+M-07-c,07,Leaf Nest,soft landing,1089,522,by hand,,,0.14,W1,grounded,kept,,Pile of big leaves; leaf tips stick up past the walk line. No flat top: the silhouette top near y 60 (x 265-912) is only 14% within 3 px of level; stand line by hand.
+M-07-d,07,Frond Bundle,soft landing,960,525,by hand,,,0.1,W1,grounded,kept,,Tied bundle of fronds; near-flat top. No flat top: the silhouette top near y 37 (x 364-787) is only 10% within 3 px of level; stand line by hand.
+M-08-a,08,Mossy Tuff Block,block,737,579,by hand,,,0.1,W1,grounded,kept,,Moss-topped stone block with glowing cyan crystals (a hint the block is special). Three-quarter view; stand line by hand. No flat top: the silhouette top near y 52 (x 81-616) is only 10% within 3 px of level; stand line by hand.
+M-08-b,08,Vine Coil Cushion,soft landing,895,475,by hand,,,0.16,W1,grounded,kept,,Coiled vine nest with a dip in the middle; same family as M-07-b. No flat top: the silhouette top near y 27 (x 175-723) is only 16% within 3 px of level; stand line by hand.
+M-08-c,08,Spongy Fungi Mat,soft landing,1077,477,by hand,,,0.16,W1,grounded,kept,,Flat spongy fungus mat; close cousin of M-07-a but flat. No flat top: the silhouette top near y 38 (x 258-770) is only 16% within 3 px of level; stand line by hand.
+M-08-d,08,Frond Bundle Pad,soft landing,1124,483,by hand,,,0.15,W1,grounded,kept,,Flatter frond bundle; same family as M-07-d. No flat top: the silhouette top near y 63 (x 304-812) is only 15% within 3 px of level; stand line by hand.
+M-09-a,09,Giant Ceiba Tree,tree,1156,1750,,,,,both,grounded,kept,,"Huge backdrop tree with buttress roots and plank shelves between them (1750 px tall). Backdrop or climb. A few small dark-red pockets stay deep between the left and right roots (ground seen through): plain on a light ground, faint on dark and jungle-green grounds too."
+M-09-b,09,Royal Palm,tree,785,1726,,,,,both,grounded,kept,,Tall smooth palm (1734 px); bare trunk is a pole climb candidate.
+M-10-a,10,Strangler Fig,tree,985,763,,,,,W1,grounded,kept,,Wide tree on a cage of roots; the roots read as climbable.
+M-10-b,10,Traveler's Palm,tree,624,756,,,,,both,grounded,kept,,Fan palm on a thin trunk; backdrop.
+M-10-c,10,Red Mangrove,tree,635,684,,,,,W2,grounded,kept,,Stilt roots stand in a strip of painted water: a waterside tree.
+M-10-d,10,Cannonball Tree,tree,509,695,,,,,W1,grounded,kept,,Trunk with cannonball fruit and flowers; crown cut short at the top by the painter.
+M-11-a,11,Cypress Knee Cavern,den or hide spot,1005,743,,,,,both,grounded,kept,,Cave mouth under cypress knees and roots.
+M-11-b,11,Vine-Curtained Rock Arch,den or hide spot,1020,659,,,,,W1,grounded,kept,,Walk-through arch. Matt painted a floor shadow under it in the ground colour; it is now a clean grey see-through shadow (cutter/floorfix.py).
+M-11-c,11,Burl Hollow Den,den or hide spot,899,662,,,,,W1,grounded,kept,,Big burl trunk with a dark hollow; a small dead branch on the right.
+M-11-d,11,Palm Frond Canopy,plant or dressing,839,670,,,,,W1,attached,kept,,A canopy to hang under (R-160.1): fronds hang from a vine bar. Attach both ends to trunks.
+M-12-a,12,unlabelled (elephant ear plant),plant or dressing,629,586,,,,,W1,grounded,kept,,"Ground dressing, in front or behind."
+M-12-b,12,unlabelled (bird of paradise),plant or dressing,624,602,,,,,W1,grounded,kept,,Ground dressing with orange flowers.
+M-12-c,12,unlabelled (one loose leaf),plant or dressing,219,125,,,,,W1,grounded,rejected,"a single loose leaf the keyer split off the bird of paradise (M-12-b); a fragment, not a piece; also under 600 px",
+M-12-d,12,unlabelled (snake plant),plant or dressing,410,546,,,,,W1,grounded,kept,,"Under 600 px, kept by the lead (11-10)."
+M-12-e,12,unlabelled (flowering shrub),plant or dressing,507,576,,,,,W1,grounded,kept,,"Under 600 px, kept by the lead (11-10)."
+M-12-f,12,unlabelled (maidenhair fern),plant or dressing,647,429,,,,,W1,grounded,rejected,"polish: its stems are painted magenta like the ground and keyed out with it, so the leaves hang loose in the air (rough at phone size)",
+M-12-g,12,unlabelled (spider plant),plant or dressing,370,357,,,,,W1,grounded,rejected,not clean: mauve ground keyed in between its leaves and pink edges on a light ground; also under 600 px,
+M-12-h,12,unlabelled (bromeliad),plant or dressing,580,427,,,,,W1,grounded,kept,,"Under 600 px, kept by the lead (11-10)."
+M-12-i,12,unlabelled (berry bush),plant or dressing,615,498,,,,,W1,grounded,kept,,Round berry bush; ground dressing.
+M-13-a,13,unlabelled (mossy rock),rock,909,577,by hand,,,0.32,both,grounded,kept,,"Full-size grounded rock, moss on top; uneven top, the measured line is its highest flat run. No flat top: the silhouette top near y 32 (x 164-771) is only 32% within 3 px of level; stand line by hand."
+M-13-b,13,unlabelled (smooth brown boulder),rock,890,548,3,355,604,1.0,both,grounded,kept,,"Full-size grounded boulder, domed top: the walk line is the flat crown only (x 355-604); the sides fall away."
+M-14-a,14,unlabelled (long dark log platform),walkable log or plank,1215,298,3,33,1183,0.97,both,may float,kept,,"Flat-topped side-on log, long. Darker wood than 15."
+M-14-b,14,unlabelled (short dark log platform),walkable log or plank,566,296,2,26,534,0.94,both,may float,kept,,"Under 600 px, kept by the lead (11-10)."
+M-15-a,15,unlabelled (plank or log platform),walkable log or plank,880,363,16,62,823,0.75,both,may float,kept,,"Flat-topped side-on log, lighter wood. Near-twin of M-15-b (same length, slightly different grain): counts as one shape for variety."
+M-15-b,15,unlabelled (plank or log platform),walkable log or plank,881,363,16,62,824,0.84,both,may float,kept,,Near-twin of M-15-a.

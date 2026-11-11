@@ -10,7 +10,8 @@ The 27-sheet cutter from art-raw-2026-11-07 (cut/cutter/), reused, with three ch
 Per-sheet keys in `config.json` (speckkill/keyall/pocketc on M-06, M-09, M-11, M-12) are the old cutter's, as used on W2-04/05.
 
 Run (scipy goes in pylib/: `pip install --target ROOT/pylib scipy`): lay out ROOT/artraw/M/, ROOT/cutcode/ (these files), then
-`python3 cutcode/cut.py ROOT`, `python3 cutcode/fadefix.py ROOT`, `python3 cutcode/floorfix.py ROOT`,
+`python3 cutcode/cut.py ROOT`, `python3 cutcode/fadefix.py ROOT`, `python3 cutcode/floorfix.py ROOT`, `python3 cutcode/edgefix.py ROOT` (attempt 2: fades ground-hued pockets and pulls spill
+from an 8 px edge band on every piece except the painted-pink lily pads),
 `python3 cutcode/mbuild.py ROOT <this cut folder> <repo>/src/assets/w1-1109`, and `python3 cutcode/pinkscan.py ROOT 'M-*'`
-(the edge count must be 0 on every kept piece). `mtable.py` holds each piece's label, kind, world, float class and notes.
+(hot-edge and dark-edge must be 0 on every kept piece except the five painted-pink lily pads, checked at 2x). `mtable.py` holds each piece's label, kind, world, float class and notes.
 `keylib.py` and `walk.py` are unchanged from the 27-sheet cutter.

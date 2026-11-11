@@ -1,17 +1,17 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-09 11:12 PM ET
+# Hand-off: the art director role (Content), rewritten 2026-11-11 (attempt 2 of R-165.85)
 
 Last task: R-165.85 (cut only), Matt's 15 sheets of 11-09, by the Content member on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
 
 ## 0. Matt's 11-09 sheets: cut, not placed
-- 48 pieces kept, full size, in `src/assets/w1-1109/` (no code refers to them). Catalogue, contact sheets by kind, rejected cuts and
+- 54 pieces kept (attempt 2: the lead allowed six under 600 px), full size, in `src/assets/w1-1109/` (no code refers to them). Catalogue, contact sheets by kind, rejected cuts and
   the cutter: `reference/art-incoming/matt-2026-11-09/cut/` (CATALOG.md first).
 - Next: the 1-1 re-lay (R-165.72) and Matt's mock-up sheet pick from these. Platform logs: M-14-a, M-15-a/b (M-15-a/b are near
   twins). Side-on lily pads: M-03-a to d (sheet 02 is top view, never platforms). Puzzle pieces for R-165.81: M-01-a to d, M-04-a to d.
 - Flags still open: M-04-b crate has painted words; M-06-e pitcher plants read as danger; M-04-d lever has one pose only.
-- Three-quarter-view blocks and the diagonal log M-01-b have no true side-on stand line: the cyan line is the top silhouette; set the
-  stand line by hand when placing.
-- 10 cuts rejected, 7 only for the 600 px rule (the short log M-14-b and five plants are clean): ask the lead before re-rolling.
+- Walk lines pass the critic's test (at least 50% within 3 px of level) or are "by hand": only M-13-b's crown, M-14-a/b and M-15-a/b
+  have a line. Blocks, soft landings and lily pads are by hand; their silhouette reading is in the notes.
+- 4 cuts rejected: M-02-c reeds, M-12-c loose leaf, M-12-f fern, M-12-g spider plant (mauve between its leaves).
 
 ## 1. What's open
 | Item | State | Where |
@@ -137,6 +137,9 @@ already have rocks and a root arch (`w1-hide-root-arch`), so check both sets bef
 13. **Painted fades and shadows in the ground colour** (M-05's trunk top, M-11's floor shadow under the arch) key as solid pink-red.
     Model them as ground plus an overlay and unmix (cutter/fadefix.py, floorfix.py); erasing by hue leaves holes.
 14. **speckkill erases art painted in the ground's hue** (M-12-f's magenta fern stems went with the ground). Use it per sheet, then look.
-15. **Never pipe the builder into `head`**: a broken pipe stops it half way and leaves contact sheets missing.
+15. **The pink scan must catch dark magenta too** (r>g+45, b>g+25 within 8 px of the edge; the critic found 120,60,95 spikes the
+    bright-only scan missed). Run `edgefix.py` on every piece, then the scan; painted pink (lotus, Victoria rims) is checked at 2x by eye.
+16. **The auto walk line is only a line if it's flat**: measure the share within 3 px of level; under 50% it is "by hand".
+17. **Never pipe the builder into `head`**: a broken pipe stops it half way and leaves contact sheets missing.
 
 Stopping now.

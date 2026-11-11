@@ -1,4 +1,14 @@
-# REPORT: R-165.85 (cut only), Content, attempt 1, 2026-11-09 11:12 PM ET
+# REPORT: R-165.85 (cut only), Content, attempt 2 (delta), 2026-11-11
+## Attempt 2: the critic's five items
+1. Pink scan widened (r>g+45, b>g+25 within 8 px of the edge) and run on all pieces; new cutter/edgefix.py on every piece. M-07-d's
+   spikes are gone. Edge count 0 on 49 of 54 kept; the 5 left are painted (Victoria rims M-02-a/M-03-a, lotus M-02-b/e, M-03-d), checked at 2x.
+2. M-05-a bromeliad: magenta fringe gone (edge count 0); the bromeliad's own red is kept.
+3. M-13-b walk line = flat crown y 3, x 355-604 (100% within 3 px). M-03-a to d "by hand". The same test applied to EVERY line:
+   only M-13-b, M-14-a/b, M-15-a/b pass; 28 tops are "by hand" with their silhouette reading in the notes.
+4. Six small pieces moved to kept (the lead's ruling); M-12-g stays rejected. Now 54 kept, 4 rejected, 31 MB total added.
+5. M-09-a note: the root pockets are plain on light and faint on dark and jungle-green grounds.
+
+## Attempt 1
 (Kept here, not at the repo root, so the diff stays inside reference/ and src/assets/w1-1109/ as done-item 5 asks.)
 
 ## Method used
