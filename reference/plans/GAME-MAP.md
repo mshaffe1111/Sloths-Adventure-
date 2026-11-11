@@ -21,7 +21,7 @@ Every world after that adds one new move and at least two new rules of its world
 | World | Pokey's new move | New rules of the world (what changes how you play) | Hurry or patience | Hidden stage | Guardian |
 |---|---|---|---|---|---|
 | 1 Emerald Canopy | the basics: jump, double jump, bounce, punch, rope, climb, swing, hide | classic, one twist per stage: rotting boughs, drop traps, two roads, the pendulum, quiet feet, animals crossing, a boa that copies you | both, taught | Zipline Canopy | Venom Fang |
-| 2 Sunlit Riverbank | **ride**: hop on things that move and let them carry you | 1. nothing stands still (drifting logs, sinking pads, rafts) 2. river lanes going both ways 3. bring the freed animals home; first run back to the LEFT | patience (wait for your ride) | The Rapids (raft ride) | Crocus Rex |
+| 2 Sunlit Riverbank | **ride**: hop on things that move and let them carry you | 1. nothing stands still (drifting logs, sinking pads, rafts) 2. river lanes going both ways 3. bring the freed animals home; first run back to the LEFT | hurry (the rides don't wait) | The Rapids (raft ride) | Crocus Rex |
 | 3 Mossy Grotto | **hang under** roots and branches (the sloth's own move) | 1. dark: you see only near light 2. quiet: noise wakes things up 3. the first stage that goes DOWN | patience (slow and quiet) | The Cave Slide | Shadow Prowler |
 | 4 Mist Cascades | **leaf glide** | 1. the air moves you (gusts, updrafts) 2. rocks fall on a beat 3. tall stages both ways: climb up, glide down | hurry (keep ahead of the rocks) | Up the Falls (+ Dot's Flight, built) | Sky Sovereign |
 | 5 Orchid Sanctuary | **lead on a vine**: tie freed creatures to you, tie the vine off to a post | 1. the clock: orchids close 2. silk that hums: touch a thread and spiders come 3. don't stop: stand still too long and Pokey sits down | hurry | The Wilted Garden (+ Meeca's stage, built) | Tarantula Queen |
@@ -32,8 +32,9 @@ Every world after that adds one new move and at least two new rules of its world
 | 10 Stormy Highlands | **hold on**: freeze on the lightning flash (R-2.7) | 1. lightning on a beat 2. thunder gusts tear you off unless you hold 3. every move from Worlds 1-9, three and four at once | patience | Pokey's Own Road (pick-a-card) | General Iron-Claw |
 
 Why the "hurry or patience" column: STAGE-RULES §0b.3 says every mechanic has a hurry and a patience version and worlds alternate, so
-two worlds in a row never feel the same speed. The list above alternates from World 2 on (Worlds 4 and 5 are both hurry worlds; World 5's
-"don't stop" is the strongest hurry rule and World 4's rocks are on a beat you can wait out, so they still feel different, **my judgement**).
+two worlds in a row never feel the same speed. The list alternates from World 2 on with one exception: Worlds 4 and 5 are both hurry
+worlds. World 5's "don't stop" is the strongest hurry rule in the game, and World 4's rocks are on a beat you can wait out between, so the
+two still feel different (**my judgement**).
 
 **Counts:** 113 stages in all. 90 core stages (1-1 done, 89 to lay), 10 guardians, 10 hidden stages (new), and 3 extras already built
 (4-D Dot's Flight, 5-M Meeca's stage, S-1 Thornbark). **86 laid by the generator (gen2), 27 hand-made** (10 guardians, 10 hidden, 3
@@ -82,7 +83,7 @@ recipe** (STAGE-RULES §0b.6 already forbids neighbours sharing a tempo and a ca
 | 3-2 | hang under | 3-5, 3-9, 6-1, 8-5, 10-6 (under the iron netting) |
 | 4-1/4-2 | leaf glide (required from 4-7, skills.ts) | 4-*, 6-6, 8-6, 9-5 (rides the vents) |
 | 5-5 | lead on a vine, tie off to a post | 5-9, 6-5, 8-8, 10-7 |
-| 6-7 | swim and dive (swim exists in 6-7 today) | 6-8, 6-9, 9 (no water), 10-7 (the moat) |
+| 6-7 | swim and dive (swim exists in 6-7 today) | 6-8, 6-9, the Sunken Hollow, 10-7 (the moat) |
 | 7-5 | punch breaks cracked stone | 7-*, 9-6, 10-7 |
 | 8-3 | swing and fling | 8-5, 8-9, 9-3, 10-6 |
 | 9-5 | hot-air ride over vents | 9-*, 10-8 |
@@ -93,7 +94,7 @@ recipe** (STAGE-RULES §0b.6 already forbids neighbours sharing a tempo and a ca
 | World | New rules | What comes back, harder | Passes? |
 |---|---|---|---|
 | 1 | the basics, one twist per stage (World 1's draft) | n/a, the first world | n/a |
-| 2 | moving ground; river lanes; bring them home; first run left | swing (onto moving logs), drop traps (on snappers), lanes from 1-8 (now you ride them) | yes, 3 |
+| 2 | moving ground; river lanes; bring them home; first run left | swing (onto moving logs), drop traps (on snappers), the 1-8 lanes now ridden (or new here, question 1) | yes, 3 |
 | 3 | dark; quiet wakes things; first run down; hanging | stealth from 1-7 (sleepers now wake on noise), the pendulum (3-8 past thorns), search | yes, 3 |
 | 4 | wind; falling rocks on a beat; tall both ways; gliding | swing (in wind), stealth (the eagle's shadow), rescue (with updrafts) | yes, 3 |
 | 5 | the clock; humming silk; don't stop; the vine leash | rescue (now on a vine), search (a chase), stealth (touch, not sight) | yes, 3 |
@@ -102,6 +103,21 @@ recipe** (STAGE-RULES §0b.6 already forbids neighbours sharing a tempo and a ca
 | 8 | carried light; lit-only things; swing chains; the fling | glide (in the dark), the light meter (8-4), the vine leash (8-8), food chain | yes, 3 |
 | 9 | heat; rising lava; crust floors on a beat; vent riding | rising water from 2-8/6-8 as lava, the shadow stealth (the Drake's gaze), crumble (as crust) | yes, 3 |
 | 10 | lightning beat; hold on; everything at once | every move; three and four mechanics in one stretch (STAGE-RULES §0b.5) | yes, 2 + the mix |
+
+**Enemies and set pieces, world by world** ("built" = read in the code; the rest is the plan, **my judgement**):
+
+| World | Enemies (built) | New enemy behaviour in this plan | The world's big set piece |
+|---|---|---|---|
+| 1 | snakes, the boa, eagles (stagePlan.ts 1-3, 1-7, 1-9); marching army ants exist as a type (types.ts:50) | snakes knocked off by traps; the eagle's shadow; ants and nuts crossing in lanes; a boa that copies you | 1-8 The Long Branch |
+| 2 | snapping turtles (the river snappers, types.ts:41), caiman, frogs | snap-jaw stones on a beat; animals that follow you home | 2-7's out and back |
+| 3 | prowlers (stagePlan.ts 3-3) | prowlers that come to noise; sleeping thorn vines that wake | 3-1's trip down into the dark |
+| 4 | eagles, capuchin guards (4-9) | the Sovereign's shadow; guards the wind blows off | 4-7 The Long Drop; 4-D Dot's Flight |
+| 5 | spiders, awake and dozing (w5Sections.ts:12) | spiders woken by a touched thread | 5-M Meeca's stage |
+| 6 | frog, tayra, ocelot, jaguar, harpy, caiman (w6.ts:78) | something under flat water; hunters lured to the caiman | 6-7's root well (swim and dive) |
+| 7 | sentries (w7.ts:109) | sentries a punch can't hurt: drop stone on them | 7-4's slide |
+| 8 | boa, harpy, jaguar, ocelot, tayra (World 8's gen2 sections) | night hunters lured into the light | 8-4 Lantern Run |
+| 9 | (not checked: the World 9 stages are built by the old generator) | the Drake's gaze that remembers you; hunters lured into geysers | 9-5 Vent Riding |
+| 10 | (not checked) | lightning and thunder as the "enemy"; guards on the walls | 10-2 The Thousand Steps |
 
 **How it ramps from 1 to 10** (STAGE-RULES §0.5, §0b.5, §1b; the exact numbers per world are a later talk with Matt, §0.5 says so):
 - **Worlds 1-3: one thing at a time.** One twist per stage, each taught safely, a miss lands on ground (§0b.2 part 1). The Normal bot clears
@@ -252,16 +268,16 @@ humming silk; don't stop.
 | 5-4 Silk Bridges | vine_runner | → | swing on the silk | sticky webs slow you (built: zones.ts webs) | |
 | 5-5 Caught in Silk | rescue | → | free the creatures | **the vine leash**: freed creatures tie on behind you; thorns cut the vine and you go back; tie it off to a post while you climb or fight | lead on a vine |
 | 5-6 Where She Ran | relic_hunt | ← | follow her messages | Meeca ran back the way she came: a chase to the LEFT, message to message | |
-| 5-7 Don't Touch the Silk | stealth | → | keep out of sight | touch a humming thread and the spiders come (stealth by touch, not sight) | humming silk |
+| 5-7 Don't Touch the Silk | stealth | → | keep out of sight | touch a humming thread and the dozing spiders wake (built in gen2 5-7, w5Sections.ts:12): stealth by touch, not sight | humming silk |
 | 5-8 Up the Bloom Trees | ascent | ↑ | climb above the webs | the vine leash on a climb: tie off, climb, untie | |
 | 5-9 The Queen's Garden | gauntlet | → | fight through | the clock + silk + the leash together (5-9 is gen2 today, w5Arena.ts) | |
 
 - **Extra (built): 5-M Meeca's stage.** **Hidden stage: The Wilted Garden**, a grey dead garden that blooms where Pokey steps; bloom most of it to
   open the way (Matt's 30 ideas #29). **Opened by** the guarana at the end of 5-6's chase.
 - **Guardian:** Tarantula Queen (built).
-- **Engine pieces.** Exists: webs, Meeca's stage, 5-7 and 5-9 in gen2. New: the vine leash with tie-off posts (12-20 h, medium-high risk:
-  rope physics on phones, CAPABILITY §1); a goal clock (4-6 h); the "don't stop" stillness rule (2-4 h on the general meter, **my judgement**);
-  the silk alarm (3-5 h, **my judgement**); counting stepped-on platforms for the bloom (3-5 h). The vine changes Pokey's reach, so every
+- **Engine pieces.** Exists: webs, Meeca's stage, 5-7 and 5-9 in gen2, spiders that doze until a thread hums (w5Sections.ts:12). New:
+  the vine leash with tie-off posts (12-20 h, medium-high risk: rope physics on phones, CAPABILITY §1); a goal clock (4-6 h); the "don't
+  stop" stillness rule (2-4 h on the general meter, **my judgement**); counting stepped-on platforms for the bloom (3-5 h). The vine changes Pokey's reach, so every
   stage with it is judged on its own flown arcs (ADR-003 decision 5).
 - **Art.** 208 best-fit pieces but only 36 to stand on (the thinnest after World 3). Missing: the vine leash and tie-off posts (the rope
   drawing exists, ropeArt.ts), orchids open/closing/shut, a humming-thread state, the wilted and bloomed garden (a dead-wood set), Pokey
@@ -414,13 +430,13 @@ is being laid**, and a piece that a planned job will replace waits.
 | A | World 1 (1-3 to 1-9) | World 1's own pieces first (drop traps, crumble times, root tunnel, noisy landings, shadow, lanes, pursuer, zipline, golden finds), then World 2's: moving platforms, sinking pads, followers + "bring home", out and back, rising water, auto-scroll | +52 (W1) +47 (W2) |
 | B | World 2 | World 3: hanging (R-160.1), the light meter, sleepers that wake, the slide and Dot's flight as modes on the one engine | +38 |
 | C | World 3 | World 4: glide arcs flown, wind/updraft/rockfall bricks, the rising ride | +15 |
-| D | World 4 | World 5: the vine leash, the goal clock, don't stop, silk alarm, bloom count | +32 |
+| D | World 4 | World 5: the vine leash, the goal clock, don't stop, bloom count | +28 |
 | E | World 5 | World 6: water anywhere, currents, diving, predator against predator | +35 |
 | F | World 6 | World 7: breakable blocks, the find that changes the room, ceilings, push to crush and hold, snapping vines, Under the Ruins | +29 |
 | G | World 7 | World 8: the fling, lit-only platforms, moths | +16 |
 | H | World 8 | World 9: heat, crust floors, lava, gaze sweep | +9 |
 | I | World 9 | World 10: the hold rule, the card pick | +22 |
-| | | **Engine total** | **about 360 h (range about 260-470)** |
+| | | **Engine total** | **about 340 h (range about 240-450)** |
 
 **The top three to build next**, in order: (1) **raise the generator's yield** (R-165.120): today gen2 lays a clean 1-1 from a fresh seed
 2 times in 120, and every stage after inherits that; (2) **the travel mode, kit steps 2-4** (20-30 h): 1-4 is a climb and gen2 throws on
@@ -445,13 +461,13 @@ the first stage with a new piece goes slower. C1 laid on a finished brick pool, 
 | 2 | 47 | 72 | 16 | 3 | 8 | 3 | **149** |
 | 3 | 38 | 72 | 16 | 3 | 8 | 3 | **140** |
 | 4 | 15 | 7 x 8 + 2 kept set pieces x 4 = 64 | 16 | 3 | 8 | 3 | **109** |
-| 5 | 32 | 72 | 16 | 3 | 8 | 3 | **134** |
+| 5 | 28 | 72 | 16 | 3 | 8 | 3 | **130** |
 | 6 | 35 | 72 | 16 | 3 | 8 | 3 | **137** |
 | 7 | 29 | 8 x 8 + 7-4 kept x 4 = 68 | 16 | 3 | 8 | 3 | **127** |
 | 8 | 16 | 8 x 8 + 8-4 kept x 4 = 68 | 16 | 3 | 8 | 3 | **114** |
 | 9 | 9 | 72 | 16 | 3 | 8 | 3 | **111** |
 | 10 | 22 | 72 | 16 | 3 | 8 | 3 | **124** |
-| **All** | **about 360** | **about 680** | **160** | **30** | **80** | **30** | **about 1,340 helper-hours** (range about 950-1,750) |
+| **All** | **about 340** | **about 700** | **160** | **30** | **80** | **30** | **about 1,340 helper-hours** (range about 950-1,750) |
 
 **Plainly: this is a lot of work.** About half of it is laying stages, not engine. With the team running about five helpers at once
 (one Engine one world ahead, two builders laying, Content on art, the Critic), a world is roughly **25-30 hours of wall-clock time**, and
