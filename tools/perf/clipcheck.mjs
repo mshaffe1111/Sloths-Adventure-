@@ -61,10 +61,11 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const freePort = () => new Promise((res) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => res(p)); }); });
 
 // a production build served by vite preview: six pages load it far faster than the dev server's thousand modules
-// (`dev`: a development build, NODE_ENV=development, minified so it fits the PWA's 4 MiB precache limit, for the one step that needs the dev-only engine handle: the help offer, R-165.62)
+// (`dev`: a development build, NODE_ENV=development, built as the store build (no service worker: its 4.5 MB unminified main chunk
+// is over the PWA's precache limit, and the walks block service workers anyway), for the one step that needs the dev-only engine handle: the help offer, R-165.62)
 async function startServer(dev = false) {
   const dist = path.join(out, dev ? 'dist-dev' : 'dist');
-  const b = spawn('npx', ['vite', 'build', '--outDir', dist, '--emptyOutDir', '--logLevel', 'error', ...(dev ? ['--minify'] : [])], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], env: dev ? { ...process.env, NODE_ENV: 'development' } : process.env });
+  const b = spawn('npx', ['vite', 'build', '--outDir', dist, '--emptyOutDir', '--logLevel', 'error'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], env: dev ? { ...process.env, NODE_ENV: 'development', VITE_STORE_BUILD: '1' } : process.env });
   let blog = '';
   b.stdout.on('data', (d) => (blog += d));
   b.stderr.on('data', (d) => (blog += d));
@@ -489,12 +490,16 @@ async function walk(browser, base, save, size, devBase) {
     await page.goto(`${devBase}/?lessons=off`);
     await seed(page, 'fresh');
     await page.evaluate(() => localStorage.setItem('sloth_difficulty', 'normal'));
-    await page.goto(`${devBase}/?lessons=off&autostart=1&level=1-1`);
+    // (the development build's own route into 1-1: a fresh save's autostart opens World 1's story first)
+    await page.goto(`${devBase}/?lessons=off`);
+    await page.waitForFunction(() => typeof window.__play === 'function', null, { timeout: 60000 });
+    await page.evaluate(() => window.__play('1-1'));
     await page.locator('canvas').first().waitFor({ state: 'attached', timeout: 30000 });
     await page.waitForFunction(() => typeof window.__engine === 'function' && !!window.__engine()?.helpState?.().on, null, { timeout: 30000 });
     await settle(4000);
     for (let n = 0; n < 16 && !(await page.locator('.ho-scrim').count()); n++) {
-      await page.evaluate(() => { const e = window.__engine(); const p = e.player; p.y = e.currentStage.config.levelHeight + 140; p.vy = 300; p.grounded = false; });
+      // (dropped under the middle of the stage's second piece: the fall's x is the piece it counts at; A1 sets him back where he stood)
+      await page.evaluate(() => { const e = window.__engine(); const p = e.player; const pc = e.currentStage.meta.pieces[1]; p.x = (pc.x0 + pc.x1) / 2; p.y = e.currentStage.config.levelHeight + 140; p.vy = 300; p.grounded = false; });
       await page.waitForFunction(() => { const e = window.__engine(); return !!document.querySelector('.ho-scrim') || (e.player.grounded && e.player.y < e.currentStage.config.levelHeight); }, null, { timeout: 8000 });
       await settle(700);
     }
