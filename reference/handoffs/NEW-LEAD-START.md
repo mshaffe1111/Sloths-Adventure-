@@ -2,12 +2,29 @@
 
 ## 0. The prompt Matt pastes to start the new lead
 > You are the new lead (PM) for my game Sloths Rainforest Adventures, repo mshaffe1111/Sloths-Adventure-, work branch
-> ccr-ca657d3c-n09zty. Read reference/handoffs/NEW-LEAD-START.md first, all of it, then reference/handoffs/lead.md,
-> reference/STATE.md (newest at the bottom), reference/plans/GAME-MAP.md on branch t-design-game-map, reference/roles/PM.md,
-> reference/LAWS.md and reference/LESSONS.md. The last lead lost my trust because it worked level to level and stopped
-> executing. Your job: plan the engine work so that a large portion of the engine is done up front and levels can be made fast,
-> get my approval on that plan, then run the team and execute it without stalling. Tell me in your first reply, in plain words:
-> what you understand the job to be, the plan for the next 3 days with hours, and the one question you need me to answer first.
+> ccr-ca657d3c-n09zty. You take over NOW, in the middle of a release. Read reference/handoffs/NEW-LEAD-START.md first, all of it,
+> then reference/handoffs/lead.md, reference/STATE.md (newest at the bottom), reference/LESSONS.md (D39-D44 are this week's),
+> reference/LAWS.md, reference/roles/PM.md and reference/methods/release.md.
+> FIRST: the release. Release 0.9.6 (the new 1-1) is in progress: candidate branch release-0.9.6, built by the release clerk
+> (session_01FhBbYNQH2E77sZaoHs9zNm). Go to the story keeper (session_019iachLiuwNTAZUBSJWUmR3): it has the release checklist and
+> the player-text approval, and it knows the steps. Finish the release (gates green or named and accepted by me, PR, I merge, you
+> watch it to live). SECOND: message every team member with your session id (the table in handoffs/lead.md) so they report to you.
+> THEN: plan the core engine so levels can be made fast. The last lead lost my trust: it spent half a week's tokens going back and
+> forth on a feature only one level uses (1-1's help step), audited things that didn't need auditing, and focused on one level
+> instead of building the engine pieces we already knew we needed. You never touch code; you decide the team's size; you judge
+> what is small and what is large, and put the effort where it pays off. Tell me in your first reply, in plain words: what you
+> understand the job to be, where the release stands, and the one question you need me to answer first.
+
+## 0b. The release in progress (11-11, 5:50 PM ET)
+- Candidate release-0.9.6 at 06bbd29f = main 181d2846 + t-int-1-1@874f11f6 + What's New (approved by the story keeper) + R-165.57 coach
+  text (the story keeper's words). Release clerk: session_01FhBbYNQH2E77sZaoHs9zNm; it builds and gates, never opens the PR or merges.
+- Gates: funcheck FAILS on the candidate AND on main with the same totals (0.9.5's named, accepted fail). Deltas vs main, all 1-1: "nothing
+  bites" Normal 12->16, Easy 8->16 (soft falls, by Matt's no-lethal-1-1 rule); Easy "pacing" 11->12; worst "dead walk" 4.0 s Normal / 4.2 s
+  Easy at x 140 (home banks) vs 2.6/2.8 s; 1-2 Normal "nothing new" 14->16; 1-1 Normal "repeat" better 13->12. NOT YET RULED: needs your
+  ruling and Matt's acceptance, with these numbers in the PR body. Suite, lock, browser gates were still running at 5:50 PM.
+- Player strings changed from main: sent to the story keeper for approval at 5:48 PM; its answer comes to the lead.
+- Matt's test link EnK5 v244 = 874f11f6, without the What's New and R-165.57 text: rebuild it from the final candidate before the PR.
+- Matt's steps in writing: reference/methods/MATT-RELEASE-STEPS.md. The team's: reference/methods/release.md (story keeper additions at the end).
 
 ## 1. What this job is (read it as the definition of done for you)
 The lead is Matt's partner and the team's manager. Matt is the Creative Director: he decides direction, taste and releases; the lead
