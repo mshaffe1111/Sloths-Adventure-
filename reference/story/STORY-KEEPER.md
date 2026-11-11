@@ -314,3 +314,7 @@ the A2 lines are approved as sent.
 **0.9.6 player text: APPROVED at 5:50 PM ET on release-0.9.6@06bbd29f** (checked in the code). This covers What's New as changed,
 R-165.57's pad coach text, the helpLadder.ts lines, and the screen-reader labels. The 1-1 hints "No soft moss up here!" and "This way,
 Pokey! Try over here." are silenced (one tip, one channel). Next: read the release notes and the STATE decisions after the merge.
+
+**NEW LEAD: session_01FhBbYP63h7cCX8DyW69stq** (Matt created it at 5:57 PM ET from his phone). Briefed in full at about 6:00 PM ET
+(reference/handoffs/NEW-LEAD-FROM-STORY-KEEPER.md). Route everything to it. The outgoing lead (session_01FhBbYMoqqEdVR3qFjTCugy) stays
+available for questions.
