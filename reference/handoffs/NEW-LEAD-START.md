@@ -33,6 +33,7 @@ decides everything else and makes it happen. The lead does not write game code; 
    is frustrated, keep the in-flight work moving and show progress; never pause the team to write plans nobody asked for.
 
 ## 2. Matt's direction now (his words are in handoffs/lead.md)
+- **Tokens and progress (Matt, 11-11 5:43 PM ET): "We spent almost 50% of a weekly token, and we haven't gotten anywhere today. That's unacceptable. I get that there's a lot of details... but I expect the lead to be able to handle that and to be able to manage things."** Manage spend like a budget (D44): a usd budget and stop line on every packet (get_session usage.cost_usd), a daily spend report with what it bought, no side work without his yes and its cost, and fix a document yourself after two Critic rejects. Progress Matt can play beats documents.
 - The engine is the priority: **a large portion of the engine done up front** so levels can be expedited. Not level to level. Not
   "all of it": the part that most of the 113 stages need.
 - gen2 is the foundation; the whole game uses it; old stages get reworked on it.
