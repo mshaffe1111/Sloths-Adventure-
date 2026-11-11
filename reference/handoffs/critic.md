@@ -1,31 +1,27 @@
-# Critic: turnover note (rewritten at the end of every task; this one 2026-11-11 4:20 PM ET, the 1-2 packet audit)
-First note under this name: the scripts, the gate order with timings, the traps and the PR body template are still in reference/handoffs/release-clerk.md; read it with this.
-## Where things stand
-- ATTEMPT 5 audited at t-design-1-2@3864e805: ENGINE PASS; CONTENT REJECT on 1 line (sections with a direction are laid mirrored on half their lays: the chain, the note hollow's drop; mirror12.ts) plus one pasted number. Report: REPORT-attempt5.md.
-- ATTEMPTS 3 and 4 audited at t-design-1-2@7ed328b6: ENGINE PASS (two notes); CONTENT REJECT on 1 line (the new step-down beat `N` is written 3-6 in a row into 14 rhythms: a median of 13 a roll, against STAGE-RULES §0 rule 3); the yield floor was written in by attempt 4. Report: REPORT-attempt3.md; count: ncount12.ts.
-- ATTEMPT 2 audited at t-design-1-2@35364c97: CONTENT REJECT on 1 line (bare step-down runs against the 4 s quiet line), ENGINE REJECT on 3 (the testers' course moves with EARLY_DOUBLE, item 0 has two owners, blooms name 8-2 too). Report: REPORT-attempt2.md. All 20 attempt-1 lines closed.
-- Next delta: re-run quiet11.ts and ctest12.ts ideas on the Designer's edits; cites-*-2.txt at the head they name.
-- Audited t-design-1-2@f60e6503: CONTENT-1-2-relay.md REJECT (12 lines), ENGINE-1-2-routing.md REJECT (5 lines). Report, JSON and proofs: reference/qa-reports/CRITIC-1-2-packet/ on branch t-critic-1-2-packet.
-- The delta audit is next: re-run `probe12b.ts supply` on the Designer's new tables (edit the NEW list to the new tags) and `cites.py` at the head the packets name.
-## Tools left behind (reference/qa-reports/CRITIC-1-2-packet/)
-- `npx tsx probe12b.ts iso`: 1-1 built with and without a packet's kit rows (the lock question, in 20 s, before any lockall).
-- `npx tsx probe12b.ts supply N [stage] [lines]` with ONLY=<graph id>, NOARR=1, XREST=n: rolls a packet's brief with tagged stand-ins and counts, per roll, what the deal asked for that the pool could not answer. It proves tags and counts only, never heights.
-- `python3 cites.py <rev> <list>`: every file:line of a packet against a pattern, at the head the packet names (list rows: file|from|to|regex).
-## Traps (new)
-- Ask of every new section what it is when laid MIRRORED (pipeline.ts:1445-1450; w1.ts:332 makes every section mirrorable). I missed this for four attempts.
-- A cure for a gate can break a fun rule: after any rhythm change, count the repeated beat per roll (ncount12.ts) against STAGE-RULES §0.
-- When a packet's gate names one of your scripts, run it as the gate words it (ctest12.ts had no record mode).
-- The seed list refuses any quiet stretch over 4 s (seedList.ts:22); a run of bare `n` steps measures 6 s and more (quiet11.ts). Check every rhythm's run-out.
-- `#ctest` builds on 1-2's stage id (stageGenerator.ts:2862): any rule keyed on '1-2' can move the testers' course, and lockall does not cover it (ctest12.ts).
-- STATE.md on the lead's branch moves while a packet is being rewritten: read it again before each verdict (item 0 was dispatched elsewhere mid-audit).
-- `npm ci` fails here (no lock file): CI uses `npm install --no-audit --no-fund --legacy-peer-deps`; delete the package-lock.json it writes before committing.
-- `npx tsx` runs without node_modules for pure gen2 code and then dies on anything that imports react (flight.ts): install first.
-- A designer's probe can pass on a brief that is not the packet's (probe12.ts:31): diff the probe's brief against the packet before trusting it.
-- The deal hands out content types by quota, window and neighbours, never by what the pool holds for that job (pipeline.ts:595-618); a job with no section of a dealt type fails the roll (Law 22, pipeline.ts:2686-2688). Check every packet's job-by-type grid against its deal and the kit's windows (w1.ts:49).
-- The node code's V3 knows only this stage's teach nodes (nodeCode.ts:138-141), not `manifest.lessons`.
-- tierBots: the expert has no Easy bot (tierBots.ts:18-22) and a run carries no hearts; both are the Critic's to add before 1-2's bot run (not started).
-## Done since
-- Hearts per run and per piece in the tier bots: branch t-critic-bots-hearts@dabd303a on t-int-1-1@874f11f6 (tools/inspect/firsttimer.ts, tierBots.ts, tierBots.test.ts, R-165.59/BOTS.md). tierBots.test 8 of 8; the 48 other tests that use the first-timer bot pass. calibration-main.jsonl not touched (the replay compares the fields a line has and requires 0 hearts on 1-1).
-## Owed by me
-- The delta on the Designer's attempt 3 (four narrow edits, the lead's rulings of 4:58 PM ET): re-run quiet11.ts on the new rhythms' stand-ins if any exist, ctest12.ts idea against item 5's new wording, the cites.
-- An Easy answer for the expert floor is settled (the middle tier, CONTENT brief `length`): nothing owed.
+# Critic: turnover note (rewritten at the end of every task; this one 2026-11-11 5:32 PM ET)
+The scripts, the gate order with timings, the traps and the PR body template are still in reference/handoffs/release-clerk.md; read it with this. A NEW LEAD is coming (the lead, 5:29 PM ET): report to session_01FhBbYMoqqEdVR3qFjTCugy until the new lead messages its id, then only to the new lead.
+## The task: the packet audit of stage 1-2 (two packets by the Designer, session_01FhBbYKCku6yT7xx6DqGHwZ, on t-design-1-2)
+- reference/packets/2026-11-11/CONTENT-1-2-relay.md and ENGINE-1-2-routing.md. Five attempts audited; every report, the JSON and every proof is on branch t-critic-1-2-packet under reference/qa-reports/CRITIC-1-2-packet/ (REPORT.md attempt 1, REPORT-attempt2.md, -attempt3.md for 3 and 4, -attempt5.md; REPORT.json holds the current verdict and the closed ones).
+- WHERE IT STANDS at t-design-1-2@65d31898: CONTENT REJECT on 1 line (sections with a direction are laid mirrored on half their lays: the chain, the note hollow's drop; mirror12.ts) plus 2 small ones (a pasted number, THORN_12 undefined). ENGINE (rewritten for D43, any stage from data) REJECT on 2 lines (two proofs that cannot pass as worded: the "thorn" grep in engine.ts, the '1-2' grep against the old builder before item 7) plus the test fixture left to guess. All earlier lines are closed. The next delta is a short one.
+- Rulings of the lead already in the packets, not to be re-opened: Engine work in its own packet; one thorn lesson; Easy thorns set him back, Normal a heart too; the thorn look is ENGINE's still and Matt's hold point; no tip socket without a row; bonus blooms (`fruit`) off the road; the ladder at the first chain grows the lesson's log; the double counts on the gen2-built 1-2 only (`#ctest` must not move); item 0 is t-engine-11-followup's; yield floor 1 in 50 for now; never more than 3 hop steps in a row, 6 a roll; D43.
+## Also done: hearts in the tier bots
+- Branch t-critic-bots-hearts@dabd303a on t-int-1-1@874f11f6: a run line carries `hearts`, `heartFalls` and `hearts` per piece (tools/inspect/firsttimer.ts, tierBots.ts, tierBots.test.ts, R-165.59/BOTS.md). tierBots.test 8 of 8; calibration-main.jsonl not touched. Not merged anywhere yet: the lead has the head.
+## Tools (reference/qa-reports/CRITIC-1-2-packet/; each prints its own usage)
+- probe12b.ts (iso | supply | v3): a packet's kit rows against 1-1's builds; its brief rolled with tagged stand-ins; the double rule.
+- cites.py + cites-*.txt: every file:line of a packet against a pattern at the head it names.
+- quiet11.ts: the quiet stretch at a named section on fresh 1-1 rolls. ctest12.ts (--record, --check, --widen): the testers' control course. ncount12.ts: a repeated beat per roll. mirror12.ts: what the pipeline lays mirrored.
+- The Designer's own, which I re-run each round: reference/specs/sims/supply12.ts, quiet12.ts (12 minutes), ncount12.ts, chainlay12.ts, flight.ts.
+## Traps
+- `npm ci` fails here (no lock file): use `npm install --no-audit --no-fund --legacy-peer-deps` and delete the package-lock.json it writes before any commit.
+- A probe can pass on a brief that is not the packet's: diff the two first.
+- The deal hands out content types by quota, window and neighbours, never by what the pool holds for the job (pipeline.ts:595-618); a job with no section of the dealt type fails the roll.
+- The seed list refuses a quiet stretch over 4 s (seedList.ts:22); the inspector reads no beat at a drop or a walk-off (tools/inspect/route.ts:266).
+- `#ctest` builds on 1-2's stage id (stageGenerator.ts:2862); lockall does not cover it.
+- Ask of every new section what it is when laid MIRRORED (pipeline.ts:1445-1450; w1.ts:332). I missed this for four attempts.
+- A cure for a gate can break a fun rule (STAGE-RULES §0): count the repeated beat after any rhythm change.
+- When a packet's gate names one of your scripts, run it as the gate words it.
+- The Designer pushes while you audit, and STATE.md on the lead's branch moves: `git ls-remote` and read both again before every verdict.
+## Owed
+- The delta on the Designer's next head (CONTENT: the mirror rule and its test; ENGINE: the two greps and the fixture).
+- tools/inspect/tierBots.ts:6 maps a variant through the 1-1 pick: it should read ENGINE item 1's listed table once item 7 lands (asked of the lead, not yet answered).
+- When the builds come: the build audits of t-content-1-2 and t-engine-1-2 per roles/CRITIC.md "Every audit".

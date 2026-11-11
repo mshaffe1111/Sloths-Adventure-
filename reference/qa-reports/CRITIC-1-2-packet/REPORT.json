@@ -238,13 +238,13 @@
  },
  "audited": {
   "branch": "t-design-1-2",
-  "head": "3864e805",
+  "head": "65d31898",
   "cites_at": "t-int-1-1@53bd446a"
  },
  "status": "REJECT",
  "verdicts": {
-  "CONTENT-1-2-relay.md": "REJECT (1 line, plus 1 number to correct)",
-  "ENGINE-1-2-routing.md": "PASS"
+  "CONTENT-1-2-relay.md": "REJECT (1 line, plus 2 small ones)",
+  "ENGINE-1-2-routing.md": "REJECT (2 lines, plus 1 left to guess): the D43 rewrite; the earlier PASS was for the text at 3864e805"
  },
  "violations": [
   {
@@ -264,6 +264,42 @@
    "rule": "D37: a pasted run is what the script prints",
    "evidence": "out/quiet12-rerun.txt: J N c J c N over 4 s on 1 of 47 (4.2 s), not 0 of 50 (3.7 s)",
    "fix": "paste the printed row"
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 3,
+   "file": "reference/packets/2026-11-11/CONTENT-1-2-relay.md",
+   "line": "201",
+   "rule": "nothing left to guess",
+   "evidence": "THORN_12 used once, defined nowhere",
+   "fix": "one clause in phase 1"
+  },
+  {
+   "packet": "ENGINE-1-2-routing.md",
+   "n": 1,
+   "file": "reference/packets/2026-11-11/ENGINE-1-2-routing.md",
+   "line": "139",
+   "rule": "a done-test a Critic can run",
+   "evidence": "engine.ts holds \"thorn\" 23 times today; the grep can never be empty",
+   "fix": "no NEW one in engine.ts (23 today); none in the other three"
+  },
+  {
+   "packet": "ENGINE-1-2-routing.md",
+   "n": 2,
+   "file": "reference/packets/2026-11-11/ENGINE-1-2-routing.md",
+   "line": "27-30, 242-244; src/game/protoStage.ts:1496,1514,1664,5330",
+   "rule": "a done-test a Critic can run",
+   "evidence": "the old builder holds four plan === 1-2 branches until item 7; the check after push 2 fails on them",
+   "fix": "allow them by name until item 7"
+  },
+  {
+   "packet": "ENGINE-1-2-routing.md",
+   "n": 3,
+   "file": "reference/packets/2026-11-11/ENGINE-1-2-routing.md",
+   "line": "25-26, 251-253",
+   "rule": "nothing left to guess",
+   "evidence": "how a test adds a row to the three tables, and whether the fixture seeds must roll clean, is not said",
+   "fix": "one exported test-only function; the seeds need only build"
   }
  ],
  "attempt2": {
