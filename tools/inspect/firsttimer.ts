@@ -880,6 +880,11 @@ export class FirstTimerRun {
   readonly secondPressMs: number[] = [];
   /** the furthest right he got (px) */
   maxX = -Infinity;
+  /** the same loss at one spot this many times and he is put past it: 3 for KID and ADULT; a tier bot is a player, who tries again (8, a
+   *  stop for a spot he cannot pass, counted as a rescue) */
+  private get tries3(): number {
+    return this.who.holdQ ? 8 : 3;
+  }
   /** the jump coming is for a way on over his head: read as a climb */
   private climbJump = false;
   /** when he was last put back (a tier bot does not read the set-back's stillness as being stopped dead) */
@@ -931,7 +936,7 @@ export class FirstTimerRun {
       const best = this.prog.best;
       proto.loseLife.call(e, reason);
       this.respawned();
-      if (deaths >= 3 && this.prog.best <= best) {
+      if (deaths >= this.tries3 && this.prog.best <= best) {
         // (the same death three times: it is noted as a loop, and he is put past it, so the rest of the stage is played)
         this.prog.hi = Math.max(this.prog.hi, this.progAt(p.x, p.y));
         if (!this.rescue()) this.end = 'stranded';
@@ -949,7 +954,7 @@ export class FirstTimerRun {
         if (TRACE) process.stderr.write(`  ${this.t.toFixed(2)} ${j ? `${j.kind} from ${Math.round(j.x)},${Math.round(j.y)} hold ${j.hold.toFixed(2)}${j.d2 >= 0 ? ` d2 ${j.d2.toFixed(2)} 2nd ${j.pressed2}` : ''} run ${j.running}` : `no jump, ground ${Math.round(this.ground.x)},${Math.round(this.ground.y)}`} -> PUT BACK\n`);
         const deaths = this.mem.died(this.ground.x, this.ground.y);
         this.respawned();
-        if (deaths >= 3 && this.prog.best <= best) {
+        if (deaths >= this.tries3 && this.prog.best <= best) {
           this.prog.hi = Math.max(this.prog.hi, this.progAt(p.x, p.y));
           if (!this.rescue()) this.end = 'stranded';
         }
@@ -1112,6 +1117,8 @@ export class FirstTimerRun {
     if (dir === 0 || p.vy < -60) return 0;
     for (const q of this.sim.platforms) {
       if (q.broken || q.width >= 220 || p.x < q.x || p.x > q.x + q.width || q.y < p.y - 2 || q.y > p.y + 140) continue;
+      // (a tier bot does not aim to land on a bounce mushroom: on w1-twin-mushroom-fork he steered back onto one until rescued)
+      if (this.who.holdQ && q.type === 'bouncy') continue;
       const past = dir * (p.x - (q.x + q.width / 2));
       if (past > q.width * 0.15) return 2;
       if (past > -q.width * 0.25) return 1;
@@ -1852,10 +1859,10 @@ export class FirstTimerRun {
           this.fallTop = top;
           this.fallBacks = 1;
         }
-        if (this.fallBacks >= 3 && this.prog.best <= top) {
+        if (this.fallBacks >= this.tries3 && this.prog.best <= top) {
           this.fallBacks = 0;
           const at = this.prog.pts[top];
-          this.stuck.push({ x: Math.round(at.x), y: Math.round(at.y), t: +t.toFixed(1), dur: 0, what: 'fell back down from here 3 times', step: null, dip: null, puzzle: false, rescued: true });
+          this.stuck.push({ x: Math.round(at.x), y: Math.round(at.y), t: +t.toFixed(1), dur: 0, what: `fell back down from here ${this.tries3} times`, step: null, dip: null, puzzle: false, rescued: true });
           this.prog.hi = Math.max(this.prog.hi, top);
           if (!this.rescue()) this.end = 'stranded';
         }
@@ -1882,7 +1889,7 @@ export class FirstTimerRun {
       }
       if (this.stuckOpen) this.stuckOpen.dur = +this.noProg.toFixed(1);
       const fallbacks = this.mem.fails(p.x, p.y);
-      if (this.noProg >= (this.opts.rescueAfter ?? 20) || (fallbacks >= 5 && this.noProg > 8.5)) {
+      if (this.noProg >= (this.opts.rescueAfter ?? 20) || (fallbacks >= (this.who.holdQ ? 8 : 5) && this.noProg > 8.5)) {
         if (!this.rescue()) this.end = 'stranded';
       }
     }
