@@ -1,8 +1,8 @@
-// AUDIT-B (2026-11-11, ENGINE-AUDIT-B.md B-01 and B-03). FAILING ON PURPOSE: these prove two defects in gen2 1-1; nothing here fixes them.
-//   B-01: a "hop" rock under 50 px is no wall in the engine (engine.ts:2327 `plat.height < 50` continue): a plain walk goes through it.
+// AUDIT-B (2026-11-11, ENGINE-AUDIT-B.md B-04 and B-05). FAILING ON PURPOSE: these prove two defects in gen2 1-1; nothing here fixes them.
+//   B-04: a "hop" rock under 50 px is no wall in the engine (engine.ts:2327 `plat.height < 50` continue): a plain walk goes through it.
 //         w1.ts gLowStumps was raised to 50 px for this ("a 36-42 px stump was walked through"); gLogHop, gShelf, gBounceWall and the
 //         forks' low rocks still roll 34-46 px, and pipeline.ts:1619 counts each as an 'h' beat.
-//   B-03: an `on` piece's rise is clamped by riseCap(dblOK, ...) (pipeline.ts:962: the DOUBLE's envelope on 1-1) and pushes no ask
+//   B-05: an `on` piece's rise is clamped by riseCap(dblOK, ...) (pipeline.ts:962: the DOUBLE's envelope on 1-1) and pushes no ask
 //         (pipeline.ts asks: jump / double / pit / seam / bounce lip only), so verdicts.ts never judges it: Easy lays 76-80 px stumps
 //         over its 63 px single-rise band in the first lesson, on every listed seed.
 // Run: npx tsx --test src/game/gen2/audit-b/w1-hops.test.ts
@@ -28,7 +28,7 @@ test('the measuring tool: the re-lay is the stage the game plays (first 6 listed
   }
 });
 
-test('B-01: every hop rock on the way stops a plain walk (real engine, Normal, the first 3 listed seeds)', () => {
+test('B-04: every hop rock on the way stops a plain walk (real engine, Normal, the first 3 listed seeds)', () => {
   const through: string[] = [];
   let rocks = 0;
   for (const seed of SEEDS.slice(0, 3)) {
@@ -52,7 +52,7 @@ test('B-01: every hop rock on the way stops a plain walk (real engine, Normal, t
 });
 
 for (const setting of ['easy', 'normal'] as const) {
-  test(`B-03: no hop piece on the way rises over ${setting}'s single-rise band unless it is a declared block (all ${SEEDS.length} listed seeds)`, () => {
+  test(`B-05: no hop piece on the way rises over ${setting}'s single-rise band unless it is a declared block (all ${SEEDS.length} listed seeds)`, () => {
     const hi = (BANDS['single-rise'][setting] as { hi: number }).hi;
     const over: string[] = [];
     const seeds = new Set<number>();
