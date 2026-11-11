@@ -1,4 +1,22 @@
-# REPORT: R-165.100, Hugging Face picture list 1, Content, attempt 1, 2026-11-11
+# REPORT: R-165.100, Hugging Face picture list 1, Content, attempt 2, 2026-11-11
+## Attempt 2 (the critic's four items; no new HF job, spend still $2.04)
+1. **wrapfix.py:** RGB is blended only. In the fade zone the alpha is snapped under 200 and gets a 1 px anti-aliased rim; the strips were re-cut and pinkscan is 0.
+   Semi-clear px per column, first 160 px against mid-strip:
+   - P-01-a: 3.2/3.1 against 3.3/2.9
+   - P-03-a: 3.2/4.0 against 3.2/2.9
+   - P-03-b: 3.7/3.5 against 3.1/2.7
+   - P-04-c: 3.3/3.1 against 2.8/2.3
+   A plain min(end, start) alpha left a notch at the zone's end, so the alpha is ramped instead (still snapped, so no ghost). I looked at the light-ground 2x pairs (sheets/seam-pairs-light-2x.jpg).
+   Named: P-03-a and P-03-b each have one leaf tip under the band with a square-cut end (from the take; small).
+2. **HF1-stump-medium:** dropped and marked redo in list 2. Every take has a lid-like top, and none passes both flatness and a natural look.
+3. **Stairs and palisade:**
+   - Stairs P-08-c: NOT usable, dropped; redo side-on in list 2.
+   - Palisade P-11-c: far background in W2/W10 only until list 2. Both are in the catalogue.
+4. **World fit:** every piece names all ten worlds, checked by script.
+5. **hf-art.md:** the alpha rule added (plus the native-pass seam, the tools/ ignore, and repaint-in-place keeping the angle).
+Kept set: 16 (was 18). redo/ holds the two previews.
+
+## Attempt 1
 ## Method used
 hf-art.md as written:
 - Qwen-Image with the style LoRA (1.0), img2imggpu.py and striphdgpu.py, rtx-pro-6000.
