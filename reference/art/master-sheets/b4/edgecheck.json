@@ -671,6 +671,22 @@
 "fill": 0.98,
 "white_edge": 0.002
 },
+"flora/heartbloom-bloom.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"flora/heartbloom-bud.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"flora/heartbloom-epic.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"flora/heartbloom-ultimate.webp": {
+"fill": 1.0,
+"white_edge": 0.059
+},
 "w8/pokey-jar.webp": {
 "fill": 1.0,
 "white_edge": 0.0

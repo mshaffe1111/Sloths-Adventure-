@@ -1,13 +1,13 @@
 # ART-CAT part B4: characters, animals and enemies, UI, icons, story and photos (2026-11-11)
 
 ## 1. What was made
-- `reference/art/catalog-game-B4.csv`: 324 shipped images, 4,530 rows (one per atlas frame from the game's own frame tables, or one per single sprite). Columns are the packet's, in its order.
+- `reference/art/catalog-game-B4.csv`: 328 shipped images, 4,534 rows (one per atlas frame from the game's own frame tables, or one per single sprite). Columns are the packet's, in its order.
 - `reference/art/master-sheets/b4-all-<layer>.webp` (every image whole, on a light and a dark checker) and `b4-play-w1..w10.webp` (one frame of every sheet a world draws, at on-screen size x2 over that world's mid backdrop).
 - `reference/art/master-sheets/b4/`: `extract_b4.mts` (frames, stage sheets, creature sheets, read from src/game), `build_b4.py` (the CSV), `sheets_b4.py`, `edgecheck_b4.py` (fill, white fringe, white edge specks per frame), `rects.json`, `edgecheck*.json`. Nothing under src/ changed. No HF job.
 
 ## 2. Counts (per source, matched)
-- Images by folder: story 92, enemies 52, icons 49, photos 40, hero 28 (19 clips), ui 14, characters 13, items 12, title 8, pickups 7, bosses 4, flora 2 (birds, butterflies), hud 1, medals 1, w8 1 (pokey-jar) = 324, each once.
-- Rows: 122 sheets give 4,328 frames; 202 single sprites give 202 rows. By layer: enemy 2,224, character 1,518, ui 431, backdrop 120 (story plates, live plates, story ground, castles), decor mid 88 (birds, butterflies), danger look 79 (boss attacks, boss fx), decor near 63 (9-10/10-10 set pieces), pickup 7.
+- Images by folder: story 92, enemies 52, icons 49, photos 40, hero 28 (19 clips), ui 14, characters 13, items 12, title 8, pickups 7, bosses 4, flora 6 (birds, butterflies, the four Heartbloom stages, storyArt.ts:120-123; added in attempt 2), hud 1, medals 1, w8 1 (pokey-jar) = 328, each once.
+- Rows: 122 sheets give 4,328 frames; 206 single sprites give 206 rows. By layer: enemy 2,224, character 1,518, ui 431, backdrop 120 (story plates, live plates, story ground, castles), decor mid 88 (birds, butterflies), danger look 79 (boss attacks, boss fx), decor near 63 (9-10/10-10 set pieces), pickup 7.
 - Every row has world_best, worlds, engine_slot and layer (0 missing). Menu-only art has world_best `menu`.
 - Overlap: none inside B4. Boundary left to other parts: `lairs/*` (7, boss lair backdrops: B3), `flora/` flowers/leaves/plants/petals/heartbloom (B1), `w8/lantern`, `w6to10/creatures/*` (fruit bat, sentry: B2), `proto/*`, `kits/*`, `ground/*`. Part A: dedupe on `file` if a neighbour also listed one.
 
@@ -31,6 +31,7 @@ in game 3,944; in game (crest only) 50; ready: data wired, no stage draws it 418
 B4 ships 70.7 MB of images. Shipped at ship_px they would be about 48.4 MB (saving 22.3 MB): 8.4 MB of it from sheets whose scale is read from code (sure), 13.9 MB from estimated ones (check before cutting). Biggest: soldier-anim, flicker-anim, mantis-anim, goldsnake-anim, pell-anim, prowler-anim (each about 0.9-1.6 MB).
 
 ## 7. For the lead
+- Made things (attempt 2): boss-fx `signNo`, `rowboat`, `helmets` (2-10, lairCroc.ts), `pole` (4-10), `rodLit`/`rodDark` (World 10), `pennant0-2` (no caller found; lairs 2-10) are made_thing=y with their own worlds, none W1. The sign, boat, helmets, pole and pennants are layer decor near.
 - Made things in World 1: the 6 keepsake pickups (bell, locket, rattle, ribbon, scroll, teddy) load on every stage, World 1 included (stageManifest ALWAYS 'pickups'). They are story keepsakes, not level art, so I left them as they are and flag it here. Your call.
 - Per world (images shown there): W1 91, W2 79, W3 78, W4 76, W5 91, W6 88, W7 91, W8 84, W9 85, W10 92; menus 152.
 - Rerun: `npx tsx reference/art/master-sheets/b4/extract_b4.mts /tmp/b4.json && python3 reference/art/master-sheets/b4/build_b4.py /tmp/b4.json && python3 reference/art/master-sheets/b4/edgecheck_b4.py && python3 reference/art/master-sheets/b4/sheets_b4.py`.

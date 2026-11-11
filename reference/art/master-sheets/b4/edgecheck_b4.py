@@ -10,7 +10,7 @@ A = os.path.join(ROOT, 'src/assets')
 out = {}
 pats = ['icons/*.webp', 'pickups/*.webp', 'ui/*.webp', 'title/log.webp', 'title/slab.webp', 'hero/title-idle.webp', 'enemies/goldsnake-*.webp',
         'enemies/*-atlas.webp', 'enemies/*-anim.webp', 'enemies/*-poses.webp', 'characters/*.webp', 'hero/*.webp', 'hero/clips/*.webp',
-        'bosses/*.webp', 'flora/birds-atlas.webp', 'flora/butterflies-atlas.webp', 'w8/pokey-jar.webp', 'story/hd/*.webp', 'story/drake/*.webp']
+        'bosses/*.webp', 'flora/birds-atlas.webp', 'flora/butterflies-atlas.webp', 'flora/heartbloom-*.webp', 'w8/pokey-jar.webp', 'story/hd/*.webp', 'story/drake/*.webp']
 for pat in pats:
     for p in sorted(glob.glob(os.path.join(A, pat))):
         rel = os.path.relpath(p, A)

@@ -28,7 +28,8 @@ STAGES = data['stages']           # stage id -> sheet keys it asks for (stageShe
 FOE = data['foeSheets']           # creature -> its sheet files (spriteSheets.ts, creatureAnim.ts)
 
 DIRS = ['characters', 'hero', 'enemies', 'bosses', 'icons', 'hud', 'medals', 'ui', 'title', 'photos', 'story', 'items', 'pickups']
-EXTRA = ['flora/birds-atlas.webp', 'flora/butterflies-atlas.webp', 'w8/pokey-jar.webp']
+EXTRA = ['flora/birds-atlas.webp', 'flora/butterflies-atlas.webp', 'flora/heartbloom-bud.webp', 'flora/heartbloom-bloom.webp', 'flora/heartbloom-epic.webp',
+         'flora/heartbloom-ultimate.webp', 'w8/pokey-jar.webp']
 files = []
 for d in DIRS:
     for p in sorted(glob.glob(os.path.join(A, d, '**', '*'), recursive=True)):
@@ -198,6 +199,8 @@ g('flora/birds-atlas', 'animal', 'decor mid', 'src/game/birdSprites.ts:79 BIRD_F
   lambda: ([2, 4, 5, 6, 7, 9], 'every stage of its worlds (backdrop fauna, birdSprites.ts:156)', 'birds'), est=lambda w, h: 30 * Z)
 g('flora/butterflies-atlas', 'animal', 'decor mid', 'src/game/butterflySprites.ts:73 BUTTERFLY_FRAMES; size 28-38 units (butterflySprites.ts:23)', None,
   lambda: ([1, 3, 5, 7, 8, 10], 'every stage of its worlds (butterflySprites.ts:34)', 'butterflies'), est=lambda w, h: 34 * Z)
+g('flora/heartbloom-', 'story', 'decor near', 'src/game/storyArt.ts:120-123 BLOOM_URLS (bloomImage, the Heartbloom in its four stages)', None,
+  story(list(range(1, 11)), 'the Heartbloom in the story scenes'), est=half)
 # UI
 g('hud/hud-atlas', 'ui', 'ui', 'src/components/hud/painted.tsx:14 HUD_PIECES (hudAtlasData.ts), HUD_ART_SCALE 3 (CSS px = sheet/3)', None, every_stage('HUD vine, plates, menu leaf'), made='n', est=lambda w, h: max(w, h) / 3)
 g('icons/', 'icon', 'ui', 'src/components/icons/PaintedIcon.tsx:19 glob icons/*.webp (shipped at 2x its largest on-screen size, PaintedIcon.tsx:5)', None, menus('painted icons'), made='y', est=half)
@@ -274,6 +277,12 @@ def no_fit(ws):
 EDGE = json.load(open(os.path.join(ROOT, 'reference/art/master-sheets/b4/edgecheck-frames.json')))
 EDGE_FIX = {'enemies/ironclaw-atlas.webp': (0.05, 'needs fix: white key-out specks along the cape and edges (seen at play size on dark ground); re-key the frame'),
             'medals/medals.webp': (0.2, 'needs fix: thick white sticker rim round the emblem; trim to the painted edge')}
+# boss-fx pieces that are made things (never World 1, never W1-best): where each is drawn (lairCroc.ts:82 signNo, rowboat, helmets;
+# lairSovereign.ts:123 pole; zoneArt.ts:352 World 10's lightning rod; the pennants are tinted cloths (bossFx.ts:109), no caller found: lairs 2-10)
+FX_MADE = {'signNo': ([2], '2-10 (lairCroc.ts:82)'), 'rowboat': ([2], '2-10 (lairCroc.ts)'), 'helmets': ([2], '2-10 (lairCroc.ts)'),
+           'pole': ([4], '4-10 (lairSovereign.ts:123)'), 'rodLit': ([10], 'World 10 zones (zoneArt.ts:352)'), 'rodDark': ([10], 'World 10 zones (zoneArt.ts:352)'),
+           'pennant0': (list(range(2, 11)), 'no caller found (bossFx.ts:109 tints them)'), 'pennant1': (list(range(2, 11)), 'no caller found (bossFx.ts:109 tints them)'),
+           'pennant2': (list(range(2, 11)), 'no caller found (bossFx.ts:109 tints them)')}
 rows = []
 rects = {}
 missing_ref = []
@@ -307,6 +316,12 @@ for rel in files:
         area_ratio = (ship / max(fw, fh)) ** 2
         f_kb = kb * (fw * fh) / (W * H)
         st = status
+        made = 'n' if os.path.basename(rel) in ('petal.webp',) else gr['made']
+        fws, fused = ws, used
+        if rel == 'bosses/boss-fx.webp' and f['key'] in FX_MADE:
+            made = 'y'
+            fws, fused = FX_MADE[f['key']]
+        layer = 'decor near' if rel == 'bosses/boss-fx.webp' and f['key'] in FX_MADE and not f['key'].startswith('rod') else gr['layer']
         fx = EDGE_FIX.get(rel)
         if fx and EDGE.get('src/assets/' + rel + '#' + f['key'], 0) > fx[0]:
             st = fx[1]
@@ -321,19 +336,19 @@ for rel in files:
             'file': 'src/assets/' + rel + ('#' + f['key'] if n > 1 or f['key'] != '(whole)' else ''),
             'kind': gr['kind'], 'w': fw, 'h': fh,
             'walk_y': '', 'walk_x0': '', 'walk_x1': '', 'flat': '', 'float_class': '',
-            'world_best': str(ws[0]) if ws else 'menu',
-            'worlds': fmt_worlds(ws, 'shown: ' + why),
-            'no_fit': no_fit(ws),
-            'made_thing': 'n' if os.path.basename(rel) in ('petal.webp',) else gr['made'],
+            'world_best': str(fws[0]) if fws else 'menu',
+            'worlds': fmt_worlds(fws, 'shown: ' + why),
+            'no_fit': no_fit(fws),
+            'made_thing': made,
             'engine_slot': slot + ('' if f['key'] == '(whole)' else f' [{f["key"]}]'),
             'footing': footing,
-            'layer': gr['layer'],
+            'layer': layer,
             'on_screen_px': on,
             'ship_px': ship,
             'file_kb_now': round(f_kb, 1),
             'file_kb_ship': round(f_kb * min(1.0, area_ratio), 1),
             'draw_cost': ('one blit' if n == 1 else f'1 of {n} frames in {os.path.basename(rel)} (one decode, one drawImage per frame)'),
-            'used_in': used,
+            'used_in': fused,
             'status': st,
         })
 
