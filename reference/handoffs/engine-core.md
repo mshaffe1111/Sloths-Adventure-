@@ -157,7 +157,8 @@ gapPx/blocks, `stage.ts --roll` fail-closed). Read it for the open findings at i
    (attempt 1). Headroom counts solid blocks of 50 px or more over the take-off run and the flight only. A 'double' place inside the single
    band is a single section (`classify`, setting-aware).
 17. **w1Pits over-reports falls; read `promises11.realFalls`, never raw findW1Pits, for "can he fall here".** The lead's ruling (11-11),
-   both lines: a piece over a slot closes what it covers unless he can get under it (its top more than 10 px above the upper lip, or a
+   both lines and the Critic's (attempt 6): a piece over a slot closes what it covers unless he can get under it (from EITHER lip, its
+   underside 48 px or more over that lip's top, or a
    floor inside the slot more than 10 px below it: seed 172's deck over block 146 is a real hole); and an opening narrower than his body
    (BODY_W 32 px) is no drop whatever covers it (seed 323's 23 px). `top` is the LOWER lip.
 

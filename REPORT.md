@@ -9,7 +9,7 @@
 `realFalls`: a slot is closed only by a solid piece AT its lip level, meaning its top is within 10 px of a lip or it plugs the lip. The piece must also have no lower floor inside the slot that he could step off and walk in under. Red first on ddc10c90 (seed 172 was not refused); it is green now.
 - Seed 172 x30784..31835 is refused: a real hole.
 - Seed 476's stone still plugs its slot.
-- Attempt 5 (96dd2fd9, the lead's second line): an opening under his body (32 px) is no drop whatever covers it, and a piece he can pass under closes nothing. So seed 323 (23 px) is not a fall and seed 172 stays refused. Red first; verdicts tests 30/30 with promises11; lock 101/102.
+- Attempt 5 (96dd2fd9, the lead's second line): an opening under his body (32 px) is no drop whatever covers it, and a piece he can pass under closes nothing. So seed 323 (23 px) is not a fall and seed 172 stays refused. Red first; verdicts tests 30/30 with promises11; lock 101/102. Attempt 6 (7fe80912, the Critic): a piece closes only where he can't pass under it from EITHER lip (underside within 48 px of that lip). Red first on the planted bough. Suite on 7fe80912: 822/68, 775/32, 754/26, all building 1-1. Lock 101/102.
 **Re-run:** seedlist --check refuses 138/138. By name: teach.double-no-gap-after 138, band.out 131, floor.unmarked 109, block.lesser-passes 62, block.spare-thin 52, drop.untyped 31. Lock: 101/102, exit 0. verdicts.test: 28/28. Main chunk: 4,180,585 bytes.
 **Full suite, 3 shards:** 822/68, 775/32 and 754/26 pass/fail. That is 126 failures, all because 1-1 cannot build (123 by its error text; the dump child, the seed-list test and recipes.test build 1-1 too). A1's base has 0.
 
