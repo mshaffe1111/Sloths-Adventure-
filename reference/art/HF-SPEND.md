@@ -16,9 +16,9 @@ Logged before launch (start/end in UTC; ET to Matt). Spec and starts: tools/art/
 
 | Job | What | Takes | Est. before | Job id | Start (UTC) | End (UTC) | Minutes | Cost |
 |---|---|---|---|---|---|---|---|---|
-| hfl1-A | item 1: P-08-c, P-08-d, P-10-a, P-10-d at 2000 px, s52/s60 x 2 seeds | 16 | ~$0.85 | pending | | | | |
-| hfl1-B | item 1: P-11-a, P-11-c, P-11-d at 2000 px, s52/s60 x 2 seeds | 12 | ~$0.65 | pending | | | | |
-| hfl1-C | item 2: 4 ground strips, square ends, s52/s60 x 2 seeds | 16 | ~$0.55 | pending | | | | |
-| hfl1-D | item 3: 3 natural stumps s60/s68 x 2; item 4: 4 side-on slabs s62/s68 x 2 | 28 | ~$0.90 | pending | | | | |
+| hfl1-A | item 1: P-08-c, P-08-d, P-10-a, P-10-d at 2000 px, s52/s60 x 2 seeds | 16 | ~$0.85 | 6af42dc6ab34849891adf054 | 2026-11-11 08:56:38 | | | |
+| hfl1-B | item 1: P-11-a, P-11-c, P-11-d at 2000 px, s52/s60 x 2 seeds | 12 | ~$0.65 | 6af42de69737d9a9e092b8ac | 2026-11-11 08:57:10 | | | |
+| hfl1-C | item 2: 4 ground strips, square ends, s52/s60 x 2 seeds | 16 | ~$0.55 | 6af42deaab34849891adf05e | 2026-11-11 08:57:14 | | | |
+| hfl1-D | item 3: 3 natural stumps s60/s68 x 2; item 4: 4 side-on slabs s62/s68 x 2 | 28 | ~$0.90 | 6af42ded9737d9a9e092b8ae | 2026-11-11 08:57:17 | | | |
 | hfl1-hd | item 2: circular native pass on the 4 picked strips | 4 | ~$0.50 | later | | | | |
 
