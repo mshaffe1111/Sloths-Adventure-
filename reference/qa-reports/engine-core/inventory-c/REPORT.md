@@ -40,3 +40,4 @@ reference/handoffs/engine-core.md §1: the inventory row (where, how to regenera
 - inventory.ts byWorld `inScale` (default true: scale_ok false left out). W1 byWorld(1,{platform,standable}) 110 -> 94; gaps(1) 13 -> 14 (+ bouncy moss_stone; the test proves each new gap comes only from made or out-of-scale pieces leaving).
 - Test 8/8: new "scale" test (Pokey from heroSprite.ts in every file; the known cases out and back with inScale:false; a planted 1.4-Pokey log left out, back with inScale:false). Planted: removing the filter reds tests 5 and 7.
 - No stage or engine file changed; pinned build main chunk 4,164,551 B, index-M91tLpym.js (same as base); tsc, knowncheck, roadmapcheck PASS.
+- Full suite (6 shards, a9ba4be0): 2,473 pass + stageQuality "generating a stage is quick" (timing under 6-way load; alone: pass), 2 todo, 0 other fail.
