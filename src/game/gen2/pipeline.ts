@@ -2195,16 +2195,20 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         // the stage took the one seed, 34 px over a fork log far from its perch, so the perch's own socket was never filled: the seed's
         // promise failed on Rolls A and C)
         // (R-165.115, Matt 11-11 "things that are worth value all over the place": a find socket the seed does not take, a fork's
-        // high-road end, holds a cache instead: CACHE_N petals in a low arc over its piece at the socket's height, CACHE_DX apart, the
-        // petal pass's clump distance (petals.ts CLUMP_GAP), so none of them is thinned out as a clump; it was laid bare before)
+        // high-road end, the hollow log's top, a log road's last log, holds a cache instead: CACHE_N petals over its piece at the socket's
+        // height, the ones the section already put there counted, the rest in a low arc from the socket outward, CACHE_DX apart and as far
+        // from any other (the petal pass's clump distance, petals.ts CLUMP_GAP: closer, it keeps one of a clump). It was laid bare before)
         if ((seedHome && sec.uid !== seedHome) || C.some((c) => c.type === 'seed')) {
           const look = lookAt(k.x, k.y);
           const y0 = k.piece.y - (s.dn ?? FLOWER_UP);
           const lo = k.piece.x + 20, hi = k.piece.x + k.piece.width - 20;
-          const mid = Math.max(lo + CACHE_DX, Math.min(hi - CACHE_DX, k.x));
-          for (let i = 0; i < CACHE_N; i++) {
-            const off = i - (CACHE_N - 1) / 2;
-            flower(Math.max(lo, Math.min(hi, mid + off * CACHE_DX)), y0 - (off === 0 ? CACHE_LIFT : 0), look);
+          const over = () => C.filter((c) => c.type === 'flower' && c.x >= k.piece.x && c.x <= k.piece.x + k.piece.width && c.y < k.piece.y && c.y >= k.piece.y - 110).length;
+          const mid = Math.max(lo, Math.min(hi, k.x));
+          for (let j = 0; j <= 8 && over() < CACHE_N; j++) {
+            const off = j === 0 ? 0 : (j % 2 ? -1 : 1) * Math.ceil(j / 2);
+            const x = mid + off * CACHE_DX, y = y0 - (off === 0 ? CACHE_LIFT : 0);
+            if (x < lo || x > hi || C.some((c) => Math.hypot(c.x - x, c.y - y) < CACHE_DX)) continue;
+            flower(x, y, look);
           }
           fills.push({ section: sec.uid, socket: s.id, role: 'find', what: 'cache', x: k.x, y: k.y });
           continue;

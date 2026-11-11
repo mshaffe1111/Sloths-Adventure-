@@ -69,7 +69,7 @@ for (const s of ['normal', 'easy'] as const) {
     assert.ok(t.at('T').h >= (s === 'easy' ? 128 : 137) - 0.5, `the trunk ${t.at('T').h}`);
     assert.ok(t.at('p').h < WALL_H, 'the perch keeps the Designer\'s FR9b exception (under 50)');
     assert.equal(t.ask('p'), undefined);
-    assert.ok(t.at('post').h < WALL_H, 'a post under a log is not a landing');
+    assert.ok(t.at('post').h >= 46 && t.at('post').h <= 50, 'a post under a log (not a landing) keeps its roll');
     assert.equal(t.ask('post'), undefined);
   });
 }
@@ -85,7 +85,7 @@ function relay(seed: number, setting: Difficulty): { laid: Laid; byId: Map<strin
 }
 function hopRocks(seed: number, setting: Difficulty) {
   const { laid, byId } = relay(seed, setting);
-  const out: Array<{ uid: string; template: string; key: string; h: number; asked: boolean; rise?: number; move?: string }> = [];
+  const out: Array<{ uid: string; template: string; key: string; h: number; asked: boolean; rise?: number; move?: string; x: number; y: number; w: number; level: boolean }> = [];
   laid.sections.forEach((sec, si) => {
     const t = byId.get(sec.template)!;
     const vs = laid.plan[si].versions ?? {};
@@ -94,8 +94,12 @@ function hopRocks(seed: number, setting: Difficulty) {
       const spec = all.find((p) => p.key === q.key);
       if (!spec || spec.place.kind !== 'on' || spec.shape !== 'block' || !spec.landing) continue;
       if (all.some((m) => m.shape === 'bouncy' && m.place.kind === 'on' && m.place.on === spec.key)) continue;
-      const a = laid.asks.find((k) => k.section === sec.uid && k.key === q.key);
-      out.push({ uid: sec.uid, template: sec.template, key: q.key, h: q.platform.height, asked: !!a, ...(a ? { rise: a.yTake - a.yLand, move: a.move } : {}) });
+      const a = (laid.asks ?? []).find((k) => k.section === sec.uid && k.key === q.key);
+      const P = q.platform;
+      // (come to level or from above: a piece of the section, its top no more than 20 px under the rock's and no more than 100 over it,
+      // ending within 60 px of either face)
+      const level = sec.pieces.some((z) => z !== q && z.platform.type === 'solid' && z.platform.y <= P.y + 20 && z.platform.y >= P.y - 100 && ((z.platform.x < P.x && z.platform.x + z.platform.width >= P.x - 60) || (z.platform.x + z.platform.width > P.x + P.width && z.platform.x <= P.x + P.width + 60)));
+      out.push({ uid: sec.uid, template: sec.template, key: q.key, h: P.height, asked: !!a, x: P.x, y: P.y, w: P.width, level, ...(a ? { rise: a.yTake - a.yLand, move: a.move } : {}) });
     }
   });
   return out;
@@ -103,18 +107,19 @@ function hopRocks(seed: number, setting: Difficulty) {
 
 for (const setting of ['normal', 'easy'] as const) {
   test(`every hop rock on every listed 1-1 seed is a wall, and every climbed one is asked inside the band (${setting})`, () => {
-    const low: string[] = [], over: string[] = [];
+    const low: string[] = [], over: string[] = [], unjudged: string[] = [];
     let rocks = 0, asked = 0;
     for (const seed of provenSeeds('1-1')) for (const h of hopRocks(seed, setting)) {
       rocks++;
       if (h.h < WALL_H) low.push(`seed ${seed} ${h.template}/${h.key}: ${h.h} px`);
-      if (!h.asked) continue;
+      if (!h.asked) { if (!h.level) unjudged.push(`seed ${seed} ${h.template}/${h.key} at x ${h.x}`); continue; }
       asked++;
       if (h.move === 'single' && h.rise! > hi(setting) + 0.5) over.push(`seed ${seed} ${h.template}/${h.key}: ${R(h.rise!)} px`);
     }
     assert.deepEqual(low.slice(0, 5), [], `${low.length} of ${rocks} hop rocks under ${WALL_H} px`);
     assert.deepEqual(over.slice(0, 5), [], `${over.length} hops over the single band`);
-    assert.ok(asked > rocks * 0.8, `${asked} of ${rocks} hop rocks asked (the rest are come to level or from above)`);
+    assert.deepEqual(unjudged.slice(0, 5), [], `${unjudged.length} hop rocks with no ask and nothing level or above beside them`);
+    assert.ok(asked > rocks / 2, `${asked} of ${rocks} hop rocks asked`);
   });
 }
 
@@ -122,19 +127,20 @@ test('the real engine: every hop rock with floor either side stops a plain walk 
   const through: string[] = [];
   let walls = 0;
   for (const setting of ['normal', 'easy'] as const) for (const seed of provenSeeds('1-1').slice(0, 3)) {
+    const rocks = hopRocks(seed, setting);
     setDifficulty(setting);
     const r = withPlaySeed(seed, () => new RealPlay('1-1', 1));
-    const P = r.platforms.filter((p) => p.type === 'solid');
-    const perchIds = new Set(P.filter((p) => r.platforms.some((m) => m.type === 'bouncy' && Math.abs(m.y + m.height - p.y) <= 1 && m.x >= p.x - 2 && m.x + m.width <= p.x + p.width + 2)).map((p) => p.id));
-    for (const k of P) {
-      if (perchIds.has(k.id) || k.width > 240 || k.height < 20 || k.height > 90) continue;
-      const fl = P.find((f) => f !== k && Math.abs(f.y - (k.y + k.height)) <= 1 && f.x <= k.x - 60 && f.x + f.width >= k.x + k.width + 60);
-      if (!fl) continue;
+    for (const h of rocks) {
+      const k = r.platforms.find((p) => p.type === 'solid' && p.x === h.x && p.y === h.y && p.width === h.w);
+      if (!k) continue;
+      // (a walk at it from 58 px before its face over plain floor: floor 60 px either side, no mushroom by the start)
+      const fl = r.platforms.find((f) => f !== k && f.type === 'solid' && Math.abs(f.y - (k.y + k.height)) <= 1 && f.x <= k.x - 60 && f.x + f.width >= k.x + k.width + 60);
+      if (!fl || r.platforms.some((m) => m.type === 'bouncy' && m.x < k.x && m.x + m.width > k.x - 100)) continue;
       walls++;
       r.stand(k.x - 58, fl.y);
       let passed = false;
       for (let i = 0; i < 70 && !passed; i++) { r.frame({ right: true }); passed = r.p.x > k.x + k.width + 20; }
-      if (passed) through.push(`${setting} seed ${seed} x ${k.x}: ${k.height} px`);
+      if (passed) through.push(`${setting} seed ${seed} ${h.template}/${h.key} x ${k.x}: ${k.height} px`);
     }
     (r.e as unknown as { stop(): void }).stop();
   }

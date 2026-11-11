@@ -5070,7 +5070,10 @@ export class GameEngine {
   private helpTries() {
     const p = this.player;
     const ground = p.grounded || p.climbing || p.isVineSwinging || !!p.hanging;
-    const held = this.input.state.right && !this.input.state.left ? 1 : this.input.state.left && !this.input.state.right ? -1 : 0;
+    // (held: the controls' push, or a touch flick's own drive toward the face: pressed against it his speed is 0, and a thumb that lifted to
+    // flick holds no direction at all)
+    const steer = this.input.state.right && !this.input.state.left ? 1 : this.input.state.left && !this.input.state.right ? -1 : 0;
+    const held = (steer || Math.sign(this.airDrive.drive)) as -1 | 0 | 1;
     const at = this.tries.tick({ grounded: ground, x: p.x, y: p.y, vx: p.vx, held, face: p.grounded ? this.faceAhead() : null });
     if (at === null) return;
     const dir = p.facing >= 0 ? 1 : -1;
