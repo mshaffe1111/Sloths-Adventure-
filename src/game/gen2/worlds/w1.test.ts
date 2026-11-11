@@ -6,7 +6,7 @@ import { NOT_ELSEWHERE, W1_SECTIONS } from './w1.ts';
 // pipeline reads it: every reference resolves, every version gives the keys the rest refers to, World 1 art only, each section tagged.
 test('every W1 section: references resolve in each version, keys unique, the exit in every version, World 1 art only, tags present', () => {
   for (const s of W1_SECTIONS) {
-    assert.ok(s.feel.length && s.not.length && s.rating >= 1 && s.rating <= 10 && s.source, `${s.id}: tags`);
+    assert.ok((s.feel.length || s.parked) && s.not.length && s.rating >= 1 && s.rating <= 10 && s.source, `${s.id}: tags`);
     for (const v of s.subBlocks?.length ? s.subBlocks[0].versions : [{ id: 'only', pieces: [], sockets: [] }]) {
       const pieces = [...s.pieces, ...v.pieces];
       const keys = pieces.map((p) => p.key);
