@@ -73,7 +73,7 @@ export const SPEC_11: StageSpec = {
     // (n8 on, the trees: bough stair or a bounce up into the boughs; the kapok climb is 1-4's)
     { job: 'climb up', deck: ['bough stair', 'bounce up'], lay: { band: [650, 950] } },
     { job: 'test double', deck: ['double chain'], flagBefore: true, line: { text: 'Look how high we are!', at: 'end' }, lay: { band: [380, 750] } },
-    { job: 'canopy fork', deck: { high: ['bough hops', 'bough stair'], low: ['bough hops', 'stump hop'] }, line: { text: 'No soft moss up here!' }, lay: { band: [380, 560] } },
+    { job: 'canopy fork', deck: { high: ['bough hops', 'bough stair'], low: ['bough hops', 'stump hop'] }, lay: { band: [380, 560] } }, // (no "No soft moss up here!": since R-165.86 every fall in 1-1 is soft, R-165.62)
     { job: 'cool down', deck: ['top branch'], lay: { band: [340, 480] } },
   ],
   goal: { kind: 'sprint' },

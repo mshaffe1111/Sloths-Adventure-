@@ -12,6 +12,7 @@ import { countedText, GuideQueue, isUrgent, noteSaid, roomMaySay, readMs, showFo
 import { MoveWatch, StruggleWatch, inDanger, type DeathCause, type StruggleHelp } from '../../game/dotGuideWatch.ts';
 import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markMoveDone, markSkillSeen, markSkipOffered, movesDone, offersSkip, seenSkills, skipTapCounts, skipTips, type DotHelp } from '../../game/dotGuideHelp.ts';
 import { recorder } from '../../game/playRecorder.ts';
+import { helpGuideLine, pushHelpLine } from '../../game/helpLadder.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuidePlatform, type GuideView } from '../../game/dotGuideView.ts';
 import {
   aheadRect,
@@ -285,6 +286,13 @@ class GuideRun {
    * closes it), and what is said is Matt's approved line for it (dotLines.ts). A cut line is not said.
    */
   engineLine(text: string, ms: number): void {
+    // (1-1's help ladder, helpLadder.ts: its lines go straight in as struggle help, on Help and Tips, never on Quiet. Her tip rules
+    // dropped them as a move already taught, R-165.62)
+    const help = helpGuideLine(text, this.help, ms);
+    if (help !== undefined) {
+      if (help) pushHelpLine(this.queue, help as GuideLine, this.clock);
+      return;
+    }
     const v = this.view;
     const l = engineGuideLine(text, this.stageId, { boss: v.boss, flight: v.flight, dot: this.dot, ms });
     if (!l) return;

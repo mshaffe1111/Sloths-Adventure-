@@ -1,0 +1,16 @@
+import test from 'node:test';
+import './headlessDom.ts';
+import { engineGuideLine } from './dotLines.ts';
+import { DotSay } from './dotSay.ts';
+import { GuideQueue } from './dotGuide.ts';
+test('p', () => {
+  for (const help of ['teach', 'reminders'] as const) {
+    const q = new GuideQueue(true);
+    const ds = new DotSay(q, help, new Set(), new Set(['double', 'jump']));
+    // the stage's own double teach (said and read: kept), then the ladder's lines
+    const hint = engineGuideLine('Flick up again in the air to jump twice', '1-1', { dot: true })!;
+    ds.say(hint, 0); const env = { danger: false, moveCount: () => 0, stale: () => false }; q.tick(100, env as never); q.tick(5000, env as never); ds.keep(5000);
+    const out = ['Jump, then flick up again in the air!', 'Ooh, look! A step. Up you go.'].map((t) => `${t} -> ${ds.allows(engineGuideLine(t, '1-1', { dot: true, ms: 6000 })!)}`);
+    console.log(help, JSON.stringify(out), 'stageThings', JSON.stringify([...ds.stageThings]));
+  }
+});

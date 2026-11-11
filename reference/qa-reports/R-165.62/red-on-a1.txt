@@ -1,0 +1,6 @@
+(run: copy to src/game/_red.test.ts in a worktree of the ref, then npx tsx --test src/game/_red.test.ts)
+# easy: put-backs 12, help events 0, Dot said: ["No soft moss up here!"]
+# normal: put-backs 12, help events 0, Dot said: ["No soft moss up here!"]
+t-engine-help: easy: put-backs 8 (the 9th walk-off meets the grown step and climbs it), help events 3, Dot said: ["Flick up again in the air to jump twice","Jump, then hold Jump again in the air!","Ooh, look! A step. Up you go."]
+t-engine-help: normal: put-backs 12, help events 3 (move, offer, helpOffer shown), Dot said: ["Flick up again in the air to jump twice","Jump, then hold Jump again in the air!"]
+(the first line in each is the stage's own double-jump teach hint, said once because stand() places him past it; "No soft moss up here!" is gone)
