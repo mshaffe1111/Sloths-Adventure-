@@ -10,7 +10,7 @@ nothing (D40). No art is placed, cut again or generated here; no HF job.
 `git fetch origin ccr-ca657d3c-n09zty main t-c2-art-cut art-raw-2026-11-07 art-director`. Read reference/roles/CONTENT.md,
 reference/LAWS.md, reference/LESSONS.md (D37-D40), reference/STAGE-RULES.md §4 (art) and §5b (polish), reference/PERFORMANCE-RULES.md
 §1 and §8, reference/methods/kit-audit.md, and how the engine draws and stands on art: tools/engine/catalog-map.json (every kit slot:
-cat, arr, key, footing, mayFloat, uses, worlds), src/game/gen2/worlds/w1CutArt.ts and src/game/stageArt.ts (how a cut piece becomes a
+cat, arr, key, footing, mayFloat, uses, worlds), src/game/w1CutArt.ts, src/game/stageArt.ts and src/game/stageArtData.ts (how a cut piece becomes a
 drawn piece with a footing line), src/game/paintedScenery.ts (decor layers).
 ## Sources (all of them)
 1. art-raw-2026-11-07: cut/catalog.csv (91 kept; world_fit W1/W2/both)
