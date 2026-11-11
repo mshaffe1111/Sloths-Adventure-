@@ -1,46 +1,43 @@
-# Critic's audit of INT-1-1: REJECT on t-int-1-1@8cf55b8f (11-11; first run on 996d0c63, the delta on 8cf55b8f)
-REPORT.json has each violation with file, line, rule, evidence and fix. Proof scripts and output are in this folder; `head-8cf55b8f/` is the final head's.
+# Critic's audit of INT-1-1: PASS on t-int-1-1@874f11f6 (code 53bd446a), 11-11 5:25 PM ET
+Five heads were seen: 996d0c63 REJECT, 8cf55b8f REJECT, fa5ad9d1 one rule open, 53bd446a / 874f11f6 PASS. REPORT.json has every
+find with file, line, rule, evidence and the head that fixed it; a folder per head holds the proof.
 
-## Open on 8cf55b8f (each one Matt would meet on his phone tonight)
-1. **Easy's step line is not there when the step grows.** If he stops to look after the 8th set-back, "Ooh, look! A step. Up you go."
-   comes 12.6-14.2 s late (3 runs), and sideways the old stuck helper says "This way, Pokey! Try over here." first (2.5 s), the step
-   line 7.8 s after. The builder's pace proof shows 0.2 s only because its put-backs go on after the steps grow.
-2. **The camera fix snaps the view, in every world.** Sideways, per engine frame: 39-42 px in one frame on the bounce by the perch log
-   (10.8 before), 24 then 32 px on any double jump from flat ground (8.7 before). Pokey's top clears the plate by -2 to 14 px, not 22.
-3. **The report and the turnover note are not the final head's**: suite, chunk bytes and c1judge are quoted from older commits;
-   engine-core.md has none of the delta's rulings.
-Named, not counted: the seed fruit is 4-6 px under the plate at the bounce's top (item d, the lead's call).
+## Found, sent to the builder as proven, fixed and re-flown (each one Matt would have met on his phone)
+1. Dot's line at 3 was never shown to a player who tries again within 2 s (blinking counted as danger; the 8 s ran out unseen).
+   My failing test, helpLadderCadence.test.ts. Now up 0.1 s after it is sent, 8-9 s, at every pace, Easy and Normal.
+2. Easy's "Ooh, look! A step. Up you go." came 12.6-14.2 s late when he stopped to look, and the old stuck helper's "This way,
+   Pokey! Try over here." came first. Now up 0-0.2 s after the steps grow; nothing else is said; Normal is silent from 3 to the offer.
+3. The camera fix snapped the view 39-72 px in one frame on a bounce and 24+32 px on any sideways double jump, in every world.
+   Now 11 px an update at most going up; Pokey's top clears the HUD plate by 15-26 px (before the task: 24-25 px under it).
+4. Sideways, the step line's bubble covered half of the step it names. Now 0; Dot hovers under the top HUD, clear of Pokey.
+5. No help flight ran on the real loseLife. Now all do: 2,898 sweep flights, 0 lives.
+6. The builder's report and turnover note quoted older commits. Now restated; its gate line matches my run.
+Also checked on the final code: (a) C1@0fc0835a merged; (b) the NO card reads as a jump, both ways; (c) the pad is gap - 100.
 
-## Fixed during the audit (red on 996d0c63, checked green on 8cf55b8f)
-- Dot's line at 3 was never shown to a player who tries again within 2 s (blinking is "danger" to her guide): my failing test
-  src/game/helpLadderCadence.test.ts. Now up 0.1 s after it is sent, about 9 s, at 1.7 / 2.1 / 4 s paces, Easy and Normal.
-- No help flight ran on the real loseLife: now helpLadder11 and the sweep's flights do, and fail on a lostLife.
-- (a) C1@0fc0835a merged. (b) The NO card is a mid-leap pose that reads as a jump, both ways. (c) The pad is gap - 100: a 154 px
-  plank that reads as a plank; 3868 w1-two-answers is pinned.
+## Gates on 53bd446a, every one run by me in a detached worktree (874f11f6 differs by one report line)
+tsc PASS. Suite 890 + 875 + 795 = 2,560 pass, 0 fail, 2 old todos (todo markers 3 = main's 3). Build and chunkcheck PASS (main
+3,982,660 B, 11,644 spare). artcheck, knowncheck, roadmapcheck PASS. drawcheck PASS. clipcheck PASS (83 known, unchanged from
+main). kbdcheck PASS. buildcheck PASS (last, alone). seedlist 1-1 PASS (200, 0 refused). lockall 101/102, only 1-1. tierBots 7/7.
+Help sweep: 0 breaches, Easy 1024/1024, Normal 1874/1874, 0 promised-nothing-grew. c1judge PASS (lives 0; rescues 0 middle, expert).
 
-## Gates on 8cf55b8f, run by me in a detached worktree
-- PASS so far: tsc; vite build; chunkcheck (main 3,981,834 B, 12,470 spare); artcheck; knowncheck; roadmapcheck; todo markers 3 = main's 3.
-- RUNNING at the time of the verdict (3:08 PM ET): the full suite (3 shards), lockall, the help sweep --fly, c1judge, seedlist 1-1
-  --check, tierBots.test, buildcheck, drawcheck, clipcheck, kbdcheck. This section is rewritten when they end; a red one goes to the lead at once.
-- On 996d0c63 (the first head), all run by me: suite 2,550 pass / 0 fail / 2 old todos; seedlist PASS (200, 0 refused); lockall
-  101/102, only 1-1; drawcheck PASS; clipcheck PASS (83 known, list unchanged from main); kbdcheck PASS; tierBots.test 7/7;
-  buildcheck PASS alone (red at p95 151 ms beside three test shards: a load artefact).
+## Play-check on the final code (headless Chromium, 412x915 and 915x412)
+- Offer at 12 with real finger taps: the stage holds, her bubble is clear, stray taps do nothing, NO resumes with no stray jump,
+  re-ask at 20, YES grows 7 steps, 10 more set-backs never ask again. Rotation with the offer up, both ways: the card stays whole and
+  on screen, the stage stays held, the answer works. App backgrounded with the offer up (996d0c63): the pause menu comes up under it.
+- The builder's touch flight: gestures, "Flick up and forward to jump." once, Back = no.
+- Grown steps and the plank read as part of the place, nothing floats or sinks; first-run screens clean, Easy and Normal, both ways.
 
-## Play-check (headless Chromium, 412x915 and 915x412, real finger taps on the offer)
-- Offer at 12: the stage holds; taps on the scrim and on the menu leaf under it do nothing; NO resumes play with no stray jump and Dot
-  says nothing; re-ask at 20; YES grows the steps; 10 more set-backs never ask again. Her bubble is clear when the offer opens.
-- App sent to the background with the offer up: the pause menu comes up under the offer; answer, then Resume: play goes on.
-- Grown steps (769 E mushroom-bank-teach, 4106 N dip-double-teach, 982 N log-chain-rise, 3868 N two-answers): mossy boulders that
-  stand, nothing floating or sunk; they read as part of the place. C2 still owes their own art (the builder named it).
-- First run, fresh save, Easy and Normal, both ways: the opening screen, the coach's line and the HUD are clean.
-- Stills in INT-1-1/stills/: all 14 looked at. The two step stills are staged (he is put on the step), so they hide find 1.
+## Named, not counted (the lead's rulings or outside INT)
+- The seed fruit is 5-8 px under the plate at the bounce's top in 5 of 6 bounces (accepted as named rough); the builder's report
+  says "clear at the top", true for one in six.
+- Audit A-05: the camera cap is per update, so a late frame of 2-3 updates draws 22-33 px. It is the frame loop's catch-up (Pokey
+  moves 2-3 times as far in that frame too) and the old view did the same: not made worse by INT. A-01 is the real defect.
+- Audit B-01: stuck at the double-teach wall with no set-back, Dot says nothing in 40 s, on 8cf55b8f and on fa5ad9d1 alike
+  (jumping, standing, pacing): quieting the stuck helper did not make it worse.
+- The child bot on Normal needs 13 rescues in 40 runs (baseline 8). Nothing here was seen on a real phone.
 
-## Pushback and suggestions: did they hold
-- PUSHBACK 1 and 2: ruled by the lead; built as ruled (checked). The hollow-log suggestion is sound (a packet for Engine).
-- Suggestion from this audit: a browser pace gate for Dot's lines in 1-1 (wait.mjs as pass/fail), mine to build (handoffs/critic.md).
+## Pushback and suggestions
+PUSHBACK 1 and 2 were ruled by the lead and are built as ruled. The hollow-log packet is sound. Mine: a browser pace gate for Dot's
+lines in 1-1 (wait.mjs and overlap.mjs as pass/fail), so a line that is sent but not shown fails by itself (handoffs/critic.md).
 
-## Not done, named
-- Rotation with the offer up (the browser harness cannot rotate a phone context). Nothing here was seen on a real phone.
-- The builder's touchflight.mjs: timed out at start-up on my loaded machine (its fixed 5 s wait); retried when the gates end.
-
-Turnover note: reference/handoffs/critic.md (new: the first Critic's note, seeded from release-clerk.md).
+Turnover note: reference/handoffs/critic.md (the Critic's first; rewritten at the end of this audit).
