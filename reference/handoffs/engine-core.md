@@ -19,7 +19,9 @@ A2 (ADR-001). Sections 0a-0b below are still true.
   blinks 1.2 s after every set-back, which is danger, and her clock stands still then), with no breath gap; pushHelpLine clears the
   stage's own engine tip at once; passedLine takes a ladder line down at once; the engine's 8 s (LINE_UP_S) count from when her bubble
   first shows it (helpLineOnScreen from DotGuide; RealPlay reports at once; LINE_WAIT_S 30 if never shown). While a ladder is on
-  (helpLadderOn) the old stuck helper ("This way, Pokey!") is quiet. Proof scripts: the Critic's proof.mjs (LINE='A step'), pace.mjs.
+  (helpLadderOn) the old stuck helper ("This way, Pokey!") is quiet. A ladder line hovers in the band under the top HUD (DotGuide planFor),
+  and the grown steps are hard keep-outs for her bubble (grownRects, from helpLadder.ts setGrownSteps). Proof scripts: the Critic's
+  proof.mjs (LINE='A step') and overlap.mjs, pace.mjs.
 - **The camera in a bounce or a double** (engine.ts updateCamera): from his climb, the height he will top out at (`topY`); once that is
   past one jump's rise over the height he left (`lift`), refY ramps to it and the view moves to keep him under the HUD band, never more
   than CAM_RISE_STEP (11 px of world) a frame, and back down after it the same way (`camLifted`). Hops are unchanged. Prove any camera

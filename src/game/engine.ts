@@ -24,7 +24,7 @@ import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
 import { maxGap, softFallStage } from './gen2/pipeline.ts';
-import { HelpLadder, LINE_UP_S, LINE_WAIT_S, takeHelpOnScreen, moveLine, pieceMoveLaid, setHelpLadder, stepPlan, stepsFor, STEP_CUT, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
+import { HelpLadder, setGrownSteps, LINE_UP_S, LINE_WAIT_S, takeHelpOnScreen, moveLine, pieceMoveLaid, setHelpLadder, stepPlan, stepsFor, STEP_CUT, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
 import { pickCut } from './w1CutArt.ts';
 import { difficulty, easeInShare, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
@@ -1252,6 +1252,7 @@ export class GameEngine {
     this.helpDue = null;
     this.helpLine = null;
     setHelpLadder(null);
+    setGrownSteps([]);
     // (the banner goes back to its usual place for whatever comes next)
     if (typeof document !== 'undefined') {
       delete document.documentElement.dataset.wayLow;
@@ -5130,6 +5131,7 @@ export class GameEngine {
   private growSteps(piece: Piece) {
     let id = 1 + this.platforms.reduce((m, q) => Math.max(m, q.id), 0);
     for (const b of this.stepBoxes(piece)) this.addStep(this.stepPlatform(b, id++));
+    setGrownSteps(this.grown);
   }
 
   /**

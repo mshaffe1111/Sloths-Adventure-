@@ -208,6 +208,14 @@ let current: HelpLadder | null = null;
 export function setHelpLadder(l: HelpLadder | null): void {
   current = l;
 }
+/** the steps the ladder has grown this run (world boxes): where he must act, so Dot's bubble keeps off them (dotGuidePerch grownRects) */
+let grownNow: ReadonlyArray<{ x: number; y: number; width: number; height: number }> = [];
+export function setGrownSteps(b: ReadonlyArray<{ x: number; y: number; width: number; height: number }>): void {
+  grownNow = b;
+}
+export function grownSteps(): ReadonlyArray<{ x: number; y: number; width: number; height: number }> {
+  return grownNow;
+}
 /** a stage's help ladder is on (1-1): Dot's older struggle helpers stay quiet there (DotGuide.tsx) */
 export function helpLadderOn(): boolean {
   return !!current;

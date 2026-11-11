@@ -25,6 +25,7 @@ import {
   hoverOrder,
   hoverSpot,
   landingRects,
+  grownRects,
   lawRects,
   softAhead,
   pickupRects,
@@ -681,6 +682,11 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         const side = tx > v.cssW / 2 ? -1 : 1;
         p.sx = Math.max(safe.rect.x0 + 30, Math.min(safe.rect.x1 - 30, tx + side * 46));
         p.sy = Math.max(safe.rect.y0 + 40, Math.min(safe.rect.y1 - 30, ty - 56));
+      } else if (l.anyway) {
+        // (1-1's help ladder lines point at nothing: she hovers in the band under the top HUD, over the middle, and her bubble finds room
+        // there. Beside him it sat over the step it names, sideways (the Critic, INT-1-1 delta 3); the grown steps are hard keep-outs)
+        p.sx = v.cssW / 2;
+        p.sy = safe.rect.y0 + 40;
       } else {
         const h = hoverSpot(v);
         p.sx = h.x;
@@ -726,6 +732,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       // the way forward (the platform tops ahead and the next landing, QA v189: it sat along a pillar's top in 4-2) and the thing she
       // points at
       landingRects(v, run.hard);
+      // (and 1-1's grown steps: where he must act)
+      grownRects(v, run.hard);
       const t = p?.target;
       if (t) {
         const tx = toScreenX(v, t.x);
@@ -770,6 +778,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       if (p.mode !== 'perch') rects.push(aheadRect(v));
       // the landings ahead of him (the block he must jump to) and the score pop-ups
       landingRects(v, rects);
+      grownRects(v, rects);
       popupRects(v, rects);
       // her middle: a perched Dot stands on her spot, so her middle is a little above it
       const my = p.mode === 'perch' ? spot.y - 22 : spot.y;
@@ -1128,6 +1137,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         const rects = dangerRects(v, run.rects);
         rects.push(pokeyRect(v, 12));
         landingRects(v, rects);
+        grownRects(v, rects);
         popupRects(v, rects);
         hardNow();
         // (on a vine, a liana or a rope what he needs to see is above him: his thought goes under him first, World 7's climbs above all)

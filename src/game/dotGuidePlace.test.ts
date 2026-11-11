@@ -264,3 +264,18 @@ test("upright, with every side of her blocked by a carving and by Pokey, her bub
     assert.ok(!overlaps(box, { ...pk, y1: pk.y1 + 12 }), `${w}x${h}: on Pokey (or his feet) at ${b.x},${b.y}`);
   }
 });
+
+test("1-1's grown steps are keep-outs for her bubble (INT-1-1, the Critic's delta 3): on screen, each step with the air he stands in over it", async () => {
+  const { grownRects } = await import('./dotGuidePerch.ts');
+  const { setGrownSteps } = await import('./helpLadder.ts');
+  const v = view(915, 412, 300);
+  assert.deepEqual(grownRects(v, []), [], 'none grown: no keep-out');
+  setGrownSteps([{ x: v.camX + 200, y: v.camY + 300, width: 160, height: 31 }, { x: v.camX + 5000, y: v.camY + 300, width: 160, height: 31 }]);
+  try {
+    const r = grownRects(v, []);
+    assert.equal(r.length, 1, 'only the step on screen');
+    assert.ok(r[0].y1 > r[0].y0 && r[0].x1 - r[0].x0 >= 160 * v.zoom, JSON.stringify(r[0]));
+  } finally {
+    setGrownSteps([]);
+  }
+});
