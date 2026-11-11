@@ -103,7 +103,10 @@ Every ruling below cites the file and section where it's written in full.
 18. **A reused section is touched only in its `feel`.** Anything else is the new stage's own section. Off-path rewards are judged
     on the BUILT stage, never on sockets.
 19. **A harvest stage pays off the road in bonus blooms, not petals** (ruled by the lead, 11-11): the quota is 87.5% of
-    all petals, so 4 to 7 a roll may sit off the low road; a `fruit` counts toward the goal and is not in the quota.
+    all petals, so 4 to 7 a roll may sit off the low road; a `fruit` counts toward the goal and is not in the quota. PETAL or
+    BLOOM (the lead and the story keeper, 11-11): a petal is Meeca's trail, loose and pink, LOW on the floor road, never over a
+    cap, a gap or a hollow; a bonus bloom is a painted flower GROWING where it stands (`flowers-atlas#f76` on 1-2), as high as
+    its piece, never a petal, never the hibiscus.
 20. **A packet's pool is proved by rolling the packet's own brief** in the real pipeline, twice: on today's engine and with the
     engine items it waits on stood in (sims/supply12.ts, `FLOWN=1`). The supply table by job and type goes in the notes.
 
