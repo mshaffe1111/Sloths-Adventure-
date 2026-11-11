@@ -318,3 +318,10 @@ Pokey! Try over here." are silenced (one tip, one channel). Next: read the relea
 **NEW LEAD: session_01FhBbYP63h7cCX8DyW69stq** (Matt created it at 5:57 PM ET from his phone). Briefed in full at about 6:00 PM ET
 (reference/handoffs/NEW-LEAD-FROM-STORY-KEEPER.md). Route everything to it. The outgoing lead (session_01FhBbYMoqqEdVR3qFjTCugy) stays
 available for questions.
+**6:04 PM ET, from the new lead:**
+- It adopted my checklist.
+- funcheck is ruled as 0.9.5's named fail; the question is with Matt.
+- No PR until the clerk's table is complete; the clerk rebuilds EnK5 from the final head.
+- Engine dispatch is held until the release is live.
+- My story calls are binding inputs to the engine plan.
+- It asked for nothing more from me unless something is wrong.
