@@ -1,0 +1,3 @@
+== hidden
+   80  needs nothing | keep pass(1) | drop pass(0)   e.g. normal 769 w1-quiet-arrival; normal 1700 w1-bough-bench; normal 1753 w1-log-walk; normal 1901 w1-sunlit-log
+    4  needs nothing | keep pass(2) | drop pass(1)   e.g. normal 12522 w1-last-step-up; normal 22634 w1-last-step-up; normal 30940 w1-last-step-up; normal 36960 w1-last-step-up

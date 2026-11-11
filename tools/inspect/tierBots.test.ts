@@ -3,7 +3,8 @@
  *   1. Every mapped number equals its tester-profile field (tools/playtesters/profiles/tiers/<tier>.json, `all.<setting>`), every kept
  *      field equals FT_KID's (child) or FT_ADULT's (middle, expert), and each tuning field holds its calibrated value
  *      (reference/qa-reports/R-165.59/BOTS.md has the table).
- *   2. The calibration: the committed runs (reference/qa-reports/R-165.59/calibration-main.jsonl, 0.9.5's 1-1, variants 1-40) re-judged
+ *   2. The calibration: the committed runs (reference/qa-reports/R-165.59/calibration-main.jsonl, the current 1-1, variants 1-40; the
+ *      runs the bots were calibrated on, 0.9.5's 1-1, are calibration-0.9.5.jsonl: recommitted by INT-1-1 for C1's re-lay) re-judged
  *      give the committed table, and a short replay of three variants per tier and setting gives exactly the committed lines, so a change
  *      to the bots, the engine or the stage that moves a run is caught here.
  *   npx tsx --test tools/inspect/tierBots.test.ts   (about 40 s)

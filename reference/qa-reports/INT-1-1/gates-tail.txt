@@ -1,0 +1,16 @@
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 0.52/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+
+PASS (312 s; raw results in /tmp/drawcheck-Cx6bgv)
+exit 0
+      world map: World 5 of 10 @ side/done
+
+PASS (83 known) (217 s; contact sheet and breaches.json in /tmp/clipcheck-qXjFaJ)
+exit 0
+✓ planted: with the keep-in-view off, the check goes red as it must
+
+PASS (110 s; stills in reference/qa/tester-page-1106/keyboard/)
+exit 0
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+  normal: p50 44 ms, p95 90 ms, max 93 ms (30 builds, CPU x4)
+  easy: p50 41 ms, p95 57 ms, max 72 ms (30 builds, CPU x4)
+exit 0

@@ -1,0 +1,15 @@
+== catch
+    6  needs nothing | keep pass(0) | drop pass(1)   e.g. easy 9448 w1-last-step-up; easy 12522 w1-last-step-up; easy 35605 w1-bough-bench-up; easy 36960 w1-last-step-up
+  262  needs nothing | keep pass(1) | drop pass(0)   e.g. normal 769 w1-canopy-rungs-level; normal 769 w1-quiet-arrival; normal 982 w1-quiet-arrival; normal 1700 w1-bough-bench
+   22  needs nothing | keep pass(1) | drop pass(1)   e.g. easy 1025 w1-last-step-up; easy 6792 w1-last-step-up; easy 9448 w1-high-walk-up; easy 9816 w1-bough-bench-up
+   11  needs nothing | keep pass(2) | drop pass(1)   e.g. normal 1025 w1-last-step-up; normal 6792 w1-last-step-up; normal 22006 w1-last-step-up; normal 29834 w1-last-step-up
+  288  needs nothing | keep pass(2) | drop pass(2)   e.g. easy 769 w1-log-chain; easy 1136 w1-log-chain; easy 1700 w1-log-chain; easy 2328 w1-log-chain
+   13  needs nothing | keep pass(3) | drop pass(2)   e.g. normal 1901 w1-seed-perch; normal 4728 w1-seed-perch; normal 14364 w1-seed-perch; normal 17973 w1-seed-perch
+   12  needs nothing | keep pass(3) | drop pass(3)   e.g. easy 7054 w1-log-chain; easy 21752 w1-log-chain; easy 24105 w1-log-chain; easy 30204 w1-log-chain
+   41  needs nothing | keep pass(3) | drop pass(4)   e.g. easy 1753 w1-canopy-rungs; easy 1901 w1-canopy-rungs; easy 3868 w1-canopy-rungs; easy 4106 w1-canopy-rungs
+   30  needs nothing | keep pass(4) | drop pass(4)   e.g. easy 4728 w1-canopy-rungs; normal 1753 w1-canopy-rungs; normal 1901 w1-canopy-rungs; normal 4106 w1-canopy-rungs
+    1  needs nothing | keep pass(4) | drop pass(5)   e.g. normal 27420 w1-canopy-rungs
+   23  needs nothing | keep pass(5) | drop pass(4)   e.g. normal 1025 w1-seed-perch; normal 1700 w1-seed-perch; normal 3868 w1-seed-perch; normal 5597 w1-seed-perch
+   30  needs nothing | keep pass(5) | drop pass(5)   e.g. easy 982 w1-log-chain-rise; easy 1025 w1-log-chain-rise; easy 20592 w1-log-chain-rise; easy 24432 w1-log-chain-rise
+    1  needs nothing | keep pass(6) | drop pass(5)   e.g. normal 982 w1-seed-perch
+    5  needs nothing | keep pass(7) | drop pass(6)   e.g. normal 9448 w1-seed-perch; normal 12522 w1-seed-perch; normal 24432 w1-seed-perch; normal 32886 w1-seed-perch

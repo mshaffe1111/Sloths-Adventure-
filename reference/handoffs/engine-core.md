@@ -1,7 +1,30 @@
 # Handoff: engine-core (the Engine member's turnover note)
 
-Rewritten at the end of R-165.61 E0a (the verdicts and the flown reach), branch `t-engine-e0a` from `t-engine-putback`@41c2e248 (A1),
-not merged: E0 ships with C1's 1-1 re-lay in ONE PR (ADR-001), never alone. E0b (the first-run picker) and C1 build on this branch.
+Rewritten at the end of INT-1-1 (11-11): branch `t-int-1-1` = C1's re-laid 1-1 (t-content-c1@7dff5800, on E0a d2748131 and A1
+41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder (t-engine-help@98186930) fitted to the
+new layout. Not merged: it is the one PR that ships E0 + C1 + A1 + A2 (ADR-001), after its Critic. Sections 0a-0b below are still true.
+
+## 0c. Rulings and facts to keep (INT-1-1, 11-11)
+- **The help promises only what gets him through.** `engine.canGrowAt(piece)` = something grows AND `stepPlan(...).unsolved === 0`
+  (no join in the piece is left that a plain jump can't make: a climb or gap with no room for its stair or pad). HelpLadder's canGrow
+  is that call, so Easy's step at 8, Normal's offer at 12 and the re-ask all need it. Red without it: w1-hollow-twoway, Normal, 18 of 200.
+- **A hollow log is road** in `roadBoxes()`: gen2 lays its platform the art's full height (pipeline.ts ~:1164, `hollowLogSize`), so
+  its inside does not let him through today, though w1NewArt.ts says it should (the HOLLOW_SHELL platform). Open: Suggestions.
+- **The stair builder on the new layout** (each decided by an A/B with the rule switched off, 200 seeds x 2, flown; reference/qa-reports/
+  INT-1-1/REPORT numbers): KEPT, each needed: catch boughs are not road (seed 769 Normal w1-canopy-rungs-level loses its step without),
+  a log under a log is hidden (769 Normal w1-quiet-arrival), a stump wholly inside a rock is taken in (769 Easy w1-mushroom-bank-teach:
+  plain jumps fail without), pads in gaps wider than a plain jump (4106 Normal w1-dip-double-teach: plain jumps fail without),
+  BOUNCE_NEAR/BOUNCE_ALONE. DROPPED (no help lost, nothing broken): the narrow-stump swap and the sliver trims; anything else under a
+  rock now means no room for that stair. A stair whose rounded faces would pass 60 is refused at `rise > STEP_LEFT` (was `- 0.5`, which
+  refused an exact 60 and broke helpLadder.test's mushroom case).
+- **The sweep:** `npx tsx tools/inspect/helpSweep.ts --fly` (src/game/helpSweep.ts: breaches, whyNothing, plainRun). The suite runs
+  the breach sweep on all 200 and flies every 10th seed (helpLadderSweep.test.ts). Pinned help pieces: helpLadder11 seed 982
+  w1-log-chain-rise; helpLadderPieces 769 Easy w1-mushroom-bank-teach, 4106 Normal w1-dip-double-teach (both red as laid).
+- **RealPlay answers the help offer no** unless a test sets `e.helpAsk` (no screen there; the stage would stay paused). The tier bots
+  and c1judge run through it.
+- **The sideways camera in a bounce:** in the air past one jump's rise over the height he left, `refY` climbs at 3x his rise and is his
+  own height from 1.5 jumps up, and the HUD hold applies at once (engine.ts updateCamera). Hops are unchanged.
+- **Judging a shipped stage:** tests use `validateAsJudged` (levelCheck.ts): 1-1 on its flown arcs, everything else the closed form.
 
 ## 0a. Rulings to keep (R-165.61, ADR-001/002, packet E0a, 11-11)
 - **THE BOUNDARY: the flown reach and the verdicts gate 1-1 ONLY** (`reach.ts judgedOnArcs`). 5-7, 5-9, Worlds 6-8 and the old
@@ -18,9 +41,7 @@ not merged: E0 ships with C1's 1-1 re-lay in ONE PR (ADR-001), never alone. E0b 
 - Raised gaps were not flown: on 1-1 a landing more than 20 px up keeps the closed-form envelope capped by the band (`gapFor`), and
   validateStage adds flown links for level jumps only (`opts.arcs`). Name it if you change it.
 
-Rewritten at the end of R-165.62 (A2: help after put-backs in 1-1), branch `t-engine-help` built on `t-engine-putback`@41c2e248 (A1,
-R-165.86). Neither is merged: A1 and A2 ship together on test link A (Matt, 11-09) after the Critic, the story keeper and the promote.
-Before them: the 0.9.5 porter's run (branch `engine-core`, merged through PR #63 and #64).
+(A1 and A2 rulings below, from their own runs; before them: the 0.9.5 porter's run, merged through PR #63 and #64.)
 
 ## 0. Rulings to keep (R-165.86, the lead, 11-09)
 - **No fall in 1-1 costs a life, on Easy or Normal.** It is stage data: the 1-1 brief's `softFalls` (types.ts `GraphBrief`; w1.ts

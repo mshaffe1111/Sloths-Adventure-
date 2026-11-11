@@ -10,6 +10,9 @@ Run: `npx tsx tools/inspect/tierBots.ts --stage 1-1 --tiers child,middle,expert 
 **The pin (enforced).** `tierBots.test.ts` runs in CLAUDE.md's checks and in CI (`.github/workflows/gates.yml`, job `rolled`). Any change to
 1-1, the engine or the bots that moves a run fails it: re-run the calibration (the command above, all tiers, both settings, variants 1-40),
 check the table, and recommit `calibration-main.jsonl` in the same change.
+**11-11, INT-1-1 (C1's re-lay, A1, the help):** recommitted on the re-laid 1-1; the runs the bots were calibrated on (0.9.5's 1-1) are kept as
+`calibration-0.9.5.jsonl`. On the new layout the table no longer matches the testers' profiles, by design (no life lost in 1-1; put-backs a
+run 0.05-2.05 against the testers' 1.5-3.8): the bots stand as calibrated on 0.9.5 until a play window on the new 1-1 re-measures them.
 
 ## Mapping: every field, its value, its source
 
