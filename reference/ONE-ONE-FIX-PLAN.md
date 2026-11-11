@@ -98,3 +98,6 @@ A2's help grows a stair (faces 60 px or less, treads 80) under a rise only where
 
 ## Matt's call 11-11 8:13 AM ET: made things in World 1
 The inventory (t-art-catalog-a@34146615) found 15 made things in World 1. Matt: swap the 3 plank ledges, the sawn wide stump (w1-stump-wide) and the trail post for natural pieces (C2, at finishing; the planks' footprints are kept by C1). World 1's gate, the 2 puzzle doors and the 6 keepsake pickups STAY as built story and puzzle items.
+
+## Matt's call 11-11 9:44 AM ET: the other 11 made things in World 1
+Swap the jungle sign, the rope and the rope post for natural pieces; smooth the sawn tops of the climb-top perch and the climb trunk; KEEP the hollow log, the wood stump, the toucan's stump and the fallen log (they read as natural), and KEEP the checkpoint flags as a game marker like the gate. Applied in the art pass (C2 for 1-1; each World 1 stage when it is finished). Sheet: t-art-catalog-a@17827423 master-sheets/w1-made-11.jpg.
