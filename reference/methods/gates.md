@@ -14,8 +14,9 @@ Last proven: 2026-11-01, kaizen-gates (built clipcheck, playerText.test, knownch
 | 3 | `npx vite build` | build errors, any asset over 4 MiB | about 10 s |
 | 3b | `node tools/perf/chunkcheck.mjs` (after the build) | a JS chunk over 3,994,304 B, 200 KB under Workbox's 4 MiB precache limit: the main script grows with every stage, and a file over the limit fails the build and offline play. Prints each chunk's size and spare. React, react-dom and scheduler sit in a static 'vendor' chunk (vite.config.ts manualChunks; R-165.103, 2026-11-11: main 3,944,491 B, vendor 218,749 B). Make room with more static manualChunks, never a dynamic import of anything a stage needs. `CHUNKCHECK_BUDGET=<bytes>` to try a budget | seconds / gates job |
 | 4 | `node tools/perf/artcheck.mjs` | an image over 4096 px on a side | seconds |
-| 5 | `node tools/perf/knowncheck.mjs` | a known-defect list that GREW (clipknown, playerText.known, limits.json, artUse.allow) compared with main | seconds |
+| 5 | `node tools/perf/knowncheck.mjs` | a known-defect list that GREW (clipknown, playerText.known, limits.json, artUse.allow, generality.known) compared with main | seconds |
 | 5b | `node tools/roadmapcheck.mjs` | open work with no R-id on reference/ROADMAP.md: a defect left for roadmap / next week / later, a known or allow list (and each clipknown group, each playerText.known key), a NEXT.md; a done item whose PR or commit is not in the history; a reused id | seconds / in the gates job (needs fetch-depth 0) |
+| 5c | `npx tsx tools/engine/generalitycheck.ts` | engine code that names one stage (R-165.123, D43): a stage id or a world's prefix in a string, a rule keyed to a world or stage number (`worldIndex === 9`, a `switch`, `[3, 4].includes(world)`), a seed number (`seed === 4106`, `layoutSeed: 77`, `setLayoutVariant(31)`), an x position of 1,000 px or more. Engine code = the core files and every .ts under src/game/gen2/, minus world data, seed lists, per-stage data and tests (the tool lists each exemption with its reason). Read as tokens: comments and Dot's words never trip it | about 1 s / gates.yml |
 | 6 | `node tools/perf/clipcheck.mjs` | menu text that overflows or is cut off, tap targets under 44 px, tap targets inside the phone's insets, on every menu screen and pop-up, 412x915 and 915x412, fresh/old/finished saves; and the testers' link (`?ctest=1`) on the fresh save: front page, "I'm done" badge, end questions and sent screen, with a planted 26 px button that must be caught every run ("testers: the planted 26 px button was NOT caught" means the small-tap rule itself broke; added 2026-11-06, tester-page) | 270-290 s here / 179 s in CI (gates job about 4.5 min with setup) |
 | 6b | `node tools/perf/kbdcheck.mjs` | the testers' page (#ctest): with a phone keyboard taking 30/40/50% upright (412x915) and 50/60% sideways (915x412), each text field (name, looked wrong, note), focused and after three typed lines, lies wholly in the visible part with its count, 16 px or more above the keyboard; a planted failure (keep-in-view off) must go red (added 2026-11-06, tester-page) | about 3 min |
 | 7 | `node tools/perf/drawcheck.mjs` | per-frame canvas work over `limits.json` (gradients, shadows, blends, readbacks, full-screen layers, shrunk sheets) | about 6 min / own CI job, about 6.5 min with setup |
@@ -34,6 +35,7 @@ In CI (`.github/workflows/deploy.yml`): the test shards and `gates.yml` (artchec
   - "differ only in a number or name" means the line repeats with only the world, stage, number or number word changed. Write each line for its item.
 - **knowncheck**: `✗ <file>: N entries ADDED` lists them. Remove them and fix the defect; a known list never grows.
 - **roadmapcheck**: each `✗` names the orphan (a defect D#, a list file, a clipknown group, a NEXT.md) or the bad proof. Add the R-item (or cite the source on the right one) in reference/ROADMAP.md; never delete the source to get green. Method: reference/methods/roadmap.md.
+- **generalitycheck**: `✗ NEW <kind>: <file>:<line>  <code>` is engine code naming one stage: move the fact into world data, the stage brief or a per-stage script, never into the known list. `✗ FIXED, still listed` means a known literal is gone or fewer: lower its `count` (or delete the entry) in `tools/engine/generality.known.json`. `--list` prints every hit with its line. A false positive (a name that is not a place) is renamed in the code, not listed.
 - **drawcheck**: see PERFORMANCE-RULES §8.1. Each breach names the call sites (file:line).
 
 ## Known lists: shrink-only (LAWS.md law 5)
@@ -46,6 +48,7 @@ The lists:
 - `src/game/playerText.known.json` (`key`, `kind`, `owner`).
 - `tools/perf/limits.json` (`art.knownOver4096`, `blends.allowlist`).
 - `src/game/artUse.allow.json`.
+- `tools/engine/generality.known.json` (`file`, `kind`, `code`, `count`, `why`, `owner`): one entry per literal's code in a file, counted; knowncheck sees each counted occurrence as its own id.
 
 When you fix a known defect, delete its entry in the same commit, or the gate fails.
 

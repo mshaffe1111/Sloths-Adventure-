@@ -1,0 +1,221 @@
+{
+ "about": "The generality gate's known debt (tools/engine/generalitycheck.ts, R-165.123, D43): each place engine code named one stage, world, seed or x position when the gate was built (2026-11-11, on release-0.9.6 @06bbd29f). Shrink-only (LAWS.md law 5): the gate fails when a counted literal no longer shows up (lower its count or delete the entry) and tools/perf/knowncheck.mjs fails when an entry or a count is added. Each moves into world data, the stage brief or a per-stage script (ENGINE-PLAN.md, the lead's review point 3; GAME-MAP A1/A2).",
+ "known": [
+  {
+   "file": "src/game/engine.ts",
+   "kind": "stage-id",
+   "code": "config.id === '1-1'",
+   "count": 1,
+   "why": "the help ladder runs only on 1-1 (audit A-16; INT-1-1): a stage brief flag",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/engine.ts",
+   "kind": "world-key",
+   "code": "this.currentStage.config.worldIndex === 9",
+   "count": 1,
+   "why": "World 9's geyser lifts a glide (ventLift; audit A-16): a hazard kind in world data",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/engine.ts",
+   "kind": "world-key",
+   "code": "this.currentStage.config.worldIndex === 1",
+   "count": 1,
+   "why": "the splash for a pit only in World 1 (audit A-16): the water art's own flag",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/engine.ts",
+   "kind": "world-key",
+   "code": "this.currentStage.config.worldIndex === 10",
+   "count": 1,
+   "why": "the final guardian's victory line by world number: the stage's goal data",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/engine.ts",
+   "kind": "world-key",
+   "code": "world === 1",
+   "count": 1,
+   "why": "World 1's creek drawn over a pit (drawW1Creek): the world's pit art in world data",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/engine.ts",
+   "kind": "world-key",
+   "code": "this.currentStage.config.worldIndex === 8",
+   "count": 3,
+   "why": "World 8: roosts drawn, the darkness light, bats' sweep art (3 places): the world's kit",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/engine.ts",
+   "kind": "world-key",
+   "code": "this.currentStage.config.worldIndex === 3",
+   "count": 4,
+   "why": "World 3's grotto: darkness and the watcher's voice and hiding rule (5 places; audit A-16): the world's kit",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/engine.ts",
+   "kind": "world-key",
+   "code": "this.currentStage.config.worldIndex === 4",
+   "count": 2,
+   "why": "World 4's cliffs and the Sovereign's watch art (2 places; audit A-16): the world's kit",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/game.ts",
+   "kind": "stage-id",
+   "code": "'5-7':",
+   "count": 1,
+   "why": "gen2's stage registry names 5-7's kit: each world file should register its own stages",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/game.ts",
+   "kind": "stage-id",
+   "code": "'5-9':",
+   "count": 1,
+   "why": "gen2's stage registry names 5-9's kit and kid runs: the world file's registration",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/game.ts",
+   "kind": "stage-id",
+   "code": "id.startsWith('8-'",
+   "count": 1,
+   "why": "World 8's void pits are not water: the pit kind belongs in the world manifest",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/nodeCode.ts",
+   "kind": "world-key",
+   "code": "rules.mini === 1",
+   "count": 1,
+   "why": "V13, every world's first stage has no chase: a structural rule (may stay; the lead decides) that belongs in the stage rules data",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/nodeCode.ts",
+   "kind": "world-key",
+   "code": "rules.mini !== 9",
+   "count": 1,
+   "why": "V13, a boss preview only at X-9: a structural rule (may stay; the lead decides) that belongs in the stage rules data",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/nodeCode.ts",
+   "kind": "world-key",
+   "code": "rules.mini !== 6",
+   "count": 1,
+   "why": "V13, a change of pace only at X-6: a structural rule (may stay; the lead decides) that belongs in the stage rules data",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/pipeline.ts",
+   "kind": "world-key",
+   "code": "budget.world === 9",
+   "count": 2,
+   "why": "World 9: a wall's ledge rule and the bob foot (2 places): the world manifest",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/pipeline.ts",
+   "kind": "world-key",
+   "code": "budget.world !== 8",
+   "count": 2,
+   "why": "World 8's void pits are not wet (2 places): the pit kind in the world manifest",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/pipeline.ts",
+   "kind": "world-key",
+   "code": "world !== 8",
+   "count": 1,
+   "why": "World 8's drop look (void-dark): the pit art in the world manifest",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/pipeline.ts",
+   "kind": "world-key",
+   "code": "world === 1",
+   "count": 2,
+   "why": "World 1's marked fall pits and water look (2 places): the world's pit rules in the manifest",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/promises11.ts",
+   "kind": "stage-id",
+   "code": "stages: ['1-1'",
+   "count": 2,
+   "why": "1-1's player promises registered in gen2's machinery (2 entries): the stage brief should carry them",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/promises11.ts",
+   "kind": "stage-id",
+   "code": "stageId: '1-1'",
+   "count": 1,
+   "why": "promiseBreaches11 judges as 1-1: a promise check for any stage's brief",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/reach.ts",
+   "kind": "stage-id",
+   "code": "scope: 'normal-1-1'",
+   "count": 1,
+   "why": "the flown-reach table has one Normal scope, 1-1's (R-165.61): a reach scope per brief",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/reach.ts",
+   "kind": "stage-id",
+   "code": "stageId === '1-1'",
+   "count": 2,
+   "why": "judgedOnArcs and the reach scope only for 1-1 (2 places): the stage brief says how it is judged",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/reach.ts",
+   "kind": "stage-id",
+   "code": "? 'normal-1-1'",
+   "count": 1,
+   "why": "the reach scope named for 1-1",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/reach.ts",
+   "kind": "stage-id",
+   "code": "'easy-any': 'normal-1-1'",
+   "count": 1,
+   "why": "Easy falls back to 1-1's Normal scope",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/verdicts.ts",
+   "kind": "stage-id",
+   "code": "scopeOf('1-1'",
+   "count": 1,
+   "why": "the verdicts read 1-1's reach scope for every stage",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/verdicts.types.ts",
+   "kind": "stage-id",
+   "code": "ReachScope = 'normal-1-1'",
+   "count": 1,
+   "why": "the reach scope type names 1-1",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  },
+  {
+   "file": "src/game/gen2/verdicts.types.ts",
+   "kind": "stage-id",
+   "code": "stageId: '1-1'",
+   "count": 1,
+   "why": "FirstRunLayout's type is 1-1's only",
+   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
+  }
+ ]
+}

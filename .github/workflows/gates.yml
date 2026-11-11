@@ -31,6 +31,8 @@ jobs:
       - run: npx vite build
       - run: node tools/perf/chunkcheck.mjs
       - run: node tools/perf/knowncheck.mjs
+      # engine code never names one stage, world, seed or x position (R-165.123, D43): today's debt is its shrink-only known list
+      - run: npx tsx tools/engine/generalitycheck.ts
       # open work in the repo (defect log, known lists, NEXT.md files) must have an R-id on reference/ROADMAP.md; done items need a real
       # PR or commit (needs the full history above)
       - run: node tools/roadmapcheck.mjs

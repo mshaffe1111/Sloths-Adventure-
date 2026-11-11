@@ -21,6 +21,8 @@ const LISTS = [
   { file: 'tools/perf/clipknown.json', ids: (j) => j.known.map((k) => (k.kind === 'small' || k.kind === 'inset' ? `${k.kind}|${k.sel}` : `${k.kind}|${k.sel}|${k.text.replace(/\d+/g, '#').slice(0, 40)}`)) },
   { file: 'src/game/playerText.known.json', ids: (j) => j.known.map((k) => k.key) },
   { file: 'tools/perf/limits.json', ids: (j) => [...(j.art?.knownOver4096 ?? []).map((f) => `art>4096|${f}`), ...(j.blends?.allowlist ?? []).map((a) => `blend|${a.site}|${a.mode}`)] },
+  // (the generality gate's debt, tools/engine/generalitycheck.ts: one id per counted literal, so a raised count is an added id)
+  { file: 'tools/engine/generality.known.json', ids: (j) => j.known.flatMap((e) => Array.from({ length: e.count }, (_, i) => `${e.file}|${e.kind}|${e.code}#${i + 1}`)) },
   { file: 'src/game/artUse.allow.json', ids: (j) => (Array.isArray(j) ? j : Object.keys(j)).map((x) => (typeof x === 'string' ? x : x.id ?? JSON.stringify(x))) },
 ];
 
