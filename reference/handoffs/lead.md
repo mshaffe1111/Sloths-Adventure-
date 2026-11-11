@@ -47,7 +47,7 @@ is, Matt's direction, the first day), then this note, then STATE.md (the live le
 | tier bots count hearts (by the 1-2 Critic) | - | t-critic-bots-hearts@dabd303a | done, not merged; 1-2 needs it |
 Finished today and safe to leave: INT-1-1 builder session_01FhBbYL8QEP4FuhgBgpyLKS and Critic session_01FhBbYPHx3ipm9ReFRHpyP4
 (handoffs/critic.md new); C1 builder session_01FhBbYKuMAy8KTe8bM5g9Tk and Critic session_01FhBbYNCMfYX89MSQeUvy8K; audits A/B/C.
-Do NOT start the 1-2 builders until the new lead has the engine plan approved: 1-2's engine items are general engine work and belong
+1-2 ENGINE builder: the outgoing lead starts it (Opus xhigh) once the follow-up round passes (its frozen base); it is general engine work (Matt: engine first). 1-2 CONTENT waits for the new lead's engine plan; 1-2's engine items belong
 in the sprint (NEW-LEAD-START.md §3).
 
 ## The audits (11-11, a ready fix list)
