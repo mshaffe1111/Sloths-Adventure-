@@ -37,8 +37,8 @@
   },
   {
    "role": "Engine",
-   "task": "stage safety checks (E0a): built; they refuse today's 1-1 by design (ships with the re-lay); Critic checking the rules",
-   "status": "reported"
+   "task": "stage safety checks (E0a): Critic found 3 rules too strict; attempt 2 fixing",
+   "status": "working"
   },
   {
    "role": "Engine",
