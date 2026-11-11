@@ -33,6 +33,21 @@ export const STEP_LINE = 'Ooh, look! A step. Up you go.';
 export const OFFER_LINE = "Want a little step? I won't tell anyone.";
 export const REASK_LINE = "Still want that step? It's yours.";
 
+/** every line the ladder says (Dot's guide shows these as struggle help: helpGuideLine) */
+export const HELP_LINES: ReadonlySet<string> = new Set([...Object.values(MOVE_LINES).flatMap((m) => [m.touch, m.pad]), STEP_LINE]);
+
+/**
+ * How Dot's guide shows a line the engine sent (DotGuide.tsx engineLine): undefined when it is not one of the ladder's; null when it is
+ * but the setting is Quiet (no line; the step still grows and the offer still shows, their own pictures); else the line, as struggle
+ * help that her tip rules don't judge again (the ladder is the one place that decides help: a move already taught this stage is the
+ * point, not a repeat)
+ */
+export function helpGuideLine(text: string, help: 'teach' | 'reminders' | 'quiet', ms?: number): { key: string; text: string; kind: 'struggle'; who: 'Dot'; source: 'struggle'; ms?: number } | null | undefined {
+  if (!HELP_LINES.has(text)) return undefined;
+  if (help === 'quiet') return null;
+  return { key: `help:${text}`, text, kind: 'struggle', who: 'Dot', source: 'struggle', ms };
+}
+
 export interface Piece {
   k: string;
   x0: number;

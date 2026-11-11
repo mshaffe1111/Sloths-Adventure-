@@ -14,6 +14,7 @@ import { recorder } from './playRecorder.ts';
 import { InputEngine } from './inputEngine.ts';
 import { PadInput } from './padControl.ts';
 import { MOVE_LINES, STEP_LINE, padFullJump } from './helpLadder.ts';
+import { dotHelp, setDotHelp } from './dotGuideHelp.ts';
 import type { Platform } from './types.ts';
 
 const SEED = 3747;
@@ -240,4 +241,22 @@ test('1-1 Normal, seed 3747: a yes at 12 grows the steps, the piece is then pass
   assert.deepEqual(helps(again), []);
   again.done();
   f.done();
+});
+
+test('1-1 on Quiet (Dot\'s help setting): no line from her, but Easy\'s steps still grow at 8 and Normal\'s offer still shows at 12', () => {
+  setDotHelp('quiet');
+  try {
+    assert.equal(dotHelp(), 'quiet');
+    const ez = fly('easy');
+    for (let n = 1; n <= 8; n++) putBack(ez);
+    assert.ok(ez.e.helpState().grown.length >= 3, 'Easy: the steps grew');
+    ez.done();
+    const nm = fly('normal');
+    for (let n = 1; n <= 12; n++) putBack(nm);
+    assert.equal(nm.asked.length, 1, 'Normal: the offer (its pictures) shows');
+    nm.asked[0].answer(false);
+    nm.done();
+  } finally {
+    setDotHelp('reminders');
+  }
 });
