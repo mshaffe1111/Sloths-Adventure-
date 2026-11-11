@@ -1,0 +1,2 @@
+q-bare (six bare n): 120 builds of 120, laid on 50; worst quiet stretch touching it: min 8.7 median 9.2 max 11.1 s; over 4 s on 50 of 50
+q-hops (six N: each step down has a hop stump): 120 builds of 120, laid on 41; worst quiet stretch touching it: min 0 median 2.1 max 4.1 s; over 4 s on 1 of 41

@@ -1,7 +1,7 @@
 # TASK 1-2 (R-165.11: build stage 1-2, The Petal Trail, on gen2, the way 1-1 was re-laid)   to: Content
 # model: the content tier (tools/team/models.json on the lead's branch)   effort: high   due: see "Time"; a safe-keeping push at least hourly
-Written by the Designer, 2026-11-11 4:46 PM ET; attempt 2 after the packet Critic's 14 lines (t-critic-1-2-packet@51fe547a) and the lead's nine
-rulings of 11-11. Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
+Written by the Designer, 2026-11-11 5:03 PM ET; attempt 3: after the packet Critic's 14 lines (t-critic-1-2-packet@51fe547a), the lead's
+rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
 
 ## First, before any tool call
 `git fetch origin ccr-ca657d3c-n09zty t-design-1-2 t-designer-reach t-engine-inventory art-director` and the head the lead names.
@@ -49,35 +49,45 @@ lives (R-165.53); in 1-2 thorns cost a heart.
   `uses` the double with no teach of them in the stage (pipeline.ts:589-591, :1254).
 - PROVED on this brief in the real pipeline, both settings, 120 seeds a graph, stand-ins for the unbuilt sections
   (`FLOWN=1 npx tsx reference/specs/sims/supply12.ts 120`; out/supply12-flown.txt): every roll builds (0 throws of 720), no section is
-  never laid, and the pool runs short on 2, 6 and 3 rolls of 120 (graphs A, B, C). What it does NOT prove: heights and reach.
+  never laid, the pool runs short on 2, 6 and 3 rolls of 120 (graphs A, B, C), and every test cell has two sections. What it does NOT prove: heights and reach.
   Today, before Engine's push 2, the same run throws on most seeds (out/supply12-today.txt): see "Phases".
 
-## The sections (51 serve 1-2: 13 reused, 13 own versions, 25 new)
+## The sections (53 serve 1-2: 11 reused, 17 own versions, 25 new)
 Rules: (1) A section 1-1 lays is REUSED only as it is: its `feel` gains or loses a stage name and nothing else changes. (2) Anything
 that needs another number, a thorn hollow or other words is 1-2's OWN section (id ending `-12`, `feel: ['1-2']`), the original left
 byte for byte. (3) Every own and new section ends within 110 px of its start height unless its job is U or D: 1-2 is level, so a
-lift is paid back inside the section (the `n` steps in the rhythms below). (4) No own or new section carries a `hint.1-1.*`,
+lift is paid back inside the section, by steps down that each carry a hop: the new letter `N` (below). A bare `n` holds no jump
+and no pickup, and the seed list refuses a quiet stretch over 4 s (seedList.ts:22): NEVER two bare `n` in a row in an own or new
+rhythm, and a bare `n` only where the next beat is a jump or a mushroom. (4) No own or new section carries a `hint.1-1.*`,
 `coach.*`, squirrel or bootprint socket. (5) Petals sit LOW and on the main road. (6) Every own and new id is added to `JOBS`,
 `CONTENT` and `TERRAIN` (w1.ts:1415-1462). Supply by job and type, as rolled: notes §8.
 
 **Tag edits on existing sections (the only edits to them):** `'1-2'` comes OFF w1-meadow (it is also an arrival, w1.ts:1418: it
 opened 23 of 63 rolls with no `hint.1-2.follow`), OFF w1-knot-bank (it carries `hint.1-1.bank`) and OFF w1-log-road (floating).
-`'1-2'` goes ON (7): w1-stair-run #53 (M/U c), w1-bank-run #54 (M/U c), w1-zigzag-run #55 (M/U c), w1-stump-descent #24 (D/P g),
-w1-stair-test-back (X c), w1-bank-stair-test-back (X c), w1-stair-gap-twist #57 (W c).
+`'1-2'` goes ON (5): w1-stair-run #53 (M/U c), w1-bank-run #54 (M/U c), w1-zigzag-run #55 (M/U c), w1-stump-descent #24 (D/P g),
+w1-stair-gap-twist #57 (W c). NOT the two test-backs (w1-stair-test-back, w1-bank-stair-test-back): they end in four bare steps
+down, 6.2 to 9.4 s of quiet on 78 of 78 rolls that lay them (the Critic's quiet11.ts), which is why no 1-1 list holds them.
 **Reused with `'1-2'` already on (6):** w1-stump-stile (P g), w1-stone-zigzag (P g), w1-hollow-twoway (F g), w1-dropdown-stair (D c),
 w1-floor-dash (F/M g), w1-bank-stair-fork (F c).
 
-**1-2's own versions (13).** Rhythms are `BEATS` letters (w1.ts:971-1033); `n` is a step down.
+**1-2's own versions (17).** Rhythms are `BEATS` letters (w1.ts:971-1033). `N` is NEW and 1-2's: a bank one step down (62-78 px),
+300-360 px wide, a 50-56 px hop stump at its middle, a petal on the stump. Flown in the kit against the quiet line
+(`FLOWN=1 npx tsx reference/specs/sims/quiet12.ts 120`): six `N` in a row, worst quiet stretch median 2.1 s, over 4 s on 1 roll of
+41; six bare `n`, 8.7 to 11.1 s on 50 of 50.
 | New id | From | Job, type | Rhythms (each version) and what differs |
 |---|---|---|---|
 | w1-knot-bank-12 | #13 | P g | #13's two versions; no `hint.1-1.bank`; petals on the mound's top |
 | w1-mushroom-fork-12 | #36 | F b | `gFork` as #36 a and b; the high road's last piece holds a 3-bloom cache (a `pickup` socket), no `find` |
 | w1-root-stair-fork-12 | #48 (parked) | F c | low road a stair of stumps; high road logs, its first 106-115 px over the low stump (one jump climbs it); a 3-bloom cache at its end |
-| w1-two-lifts-12 | #66 | X b | `w H B n n n B n n n`, `w B n n n H B n n n`: lift, down, lift, down |
-| w1-bounce-wall-12 | #67 | C b | `w H B D n n n n n`, `w B w D n n n n n` |
-| w1-mushroom-log-12 | #64 | C g | `w H V n n n`, `w V n n n H` |
-| w1-drop-bounce-12 | #58 | W b | `w h L m D n n`: off a log down onto a floor mushroom, up, and back down |
-| w1-dip-bounce-12 | #60 | W b | `w h n m D n`, `w j n m D n`: down into a root dip, bounce out |
+| w1-two-lifts-12 | #66 | X b | `w H B N N N B N N N`, `w B N N N H B N N N`: lift, down, lift, down |
+| w1-one-lift-12 | #66 | X b | `w H H B N N N`, `w H B w N N N`: one lift after two hop walls |
+| w1-stair-test-12 | w1-stair-test-back | X c | `w H c D c D N N N N N N`: #40's stair, then six steps down that each carry a hop |
+| w1-bank-wall-12 | w1-bank-stair-test-back | X c | `w H D w D c c N N N N N N` |
+| w1-wide-dip-12 | #33 | X g | Normal `w h t d w h`: a practice gap, then the 253-256 px test gap, both over soft dips (no thorns); Easy's twin `w h a a w h` |
+| w1-bounce-wall-12 | #67 | C b | `w H B D N N N N N`, `w B w D N N N N N` |
+| w1-mushroom-log-12 | #64 | C g | `w H V N N N`, `w V N N N H` |
+| w1-drop-bounce-12 | #58 | W b | `w h L m D N N`: off a log down onto a floor mushroom, up, and back down |
+| w1-dip-bounce-12 | #60 | W b | `w h n m D N`, `w j n m D N`: one step down into a root dip (the mushroom is the next beat), bounce out |
 | w1-two-answers-12 | #28 | W g | #28's soft dip (NO thorns), its second answer a cap pillar standing in the dip in place of the perched mushroom; Normal 253-256 with a practice gap first, Easy's twin a single hop |
 | w1-log-walk-12 | #26 | R | the mossy seat in the rain: ferns, leaf litter |
 | w1-root-meadow-12 | w1-meadow | R only | the meadow's two versions as a rest (jobs `['rest']`), a flag, no arrival |
@@ -95,21 +105,21 @@ lays in band today: reference/specs/sims/chainlay12.ts). Each section has 2-3 ve
 | N5 | w1-cap-hop | P b | one floor mushroom (edge 20-30 px before the lip) over a thorn dip 110-135 px wide on Normal, 90-110 on Easy, three times, hops between; the bounce alone crosses 148-158 from there (sims/out/normal-1-2-bdist.txt); a plain jump also clears it (practice, not a block) |
 | N6 | w1-cap-run | M and P, b | `ch(3)`, two hops, `ch(3)` at a run; Easy the same on wider pillars |
 | N7 | w1-root-hops | P g | big roots as hop walls (`r H r H`, `H r j H`) |
-| N8 | w1-root-steps | P c | a stair of root steps up and back (`w h c c c n n n`, `w c h c n c n n`) |
+| N8 | w1-root-steps | P c | a stair of root steps up and back (`w h c c c N N N`, `w c h c N c N N`) |
 | N9 | w1-root-run | M g | `w r H r j H r`, `w H j r H j`: no dead time over 2.5 s |
 | N10 | w1-thorn-leap | X g (the jump) | three thorn dips of rising width, each from a landing 154 px or wider: Normal 100, 115, 130 px lip to lip; Easy 80, 90, 100. A no-jump bot fails it. NO double gap over thorns anywhere (a double flick lands 253-256 px on about 70% of tries, bands.md §2: too low to cost a heart) |
-| N11 | w1-stair-lift | C c | `w H c c B n n n n n`, `w H c B c n n n n n`: steps, a lift, back down |
-| N12 | w1-cap-lift | C b | `ch(2)`, then `w B n n n`: off the chain and straight into a lift |
+| N11 | w1-stair-lift | C c | `w H c c B N N N N N`, `w H c B c N N N N N`: steps, a lift, back down |
+| N12 | w1-cap-lift | C b | `ch(2)`, then `w B N N N`: off the chain and straight into a lift |
 | N13 | w1-cap-steps-down | D b | `ch(3)` stepping DOWN (each cap 24-30 px lower, S 216-224), out onto a bank one step lower; Easy the same on wider pillars |
-| N14 | w1-under-roots-fork | F g | LOW: down two steps and under the high road's long fallen log, petals low on the bank's face, quiet. HIGH: the log, reached by a stump stair, a 3-bloom cache at its far end |
+| N14 | w1-under-roots-fork | F g | LOW: down two steps (`N N`) and under the high road's long fallen log, petals low on the bank's face, quiet. HIGH: the log, reached by a stump stair, a 3-bloom cache at its far end |
 | N15 | w1-thorn-fork | F b | HIGH: `ch(3)` over a thorn hollow, a 3-bloom cache on its exit ledge; LOW: steps down and a walk round through a root dip, slower and safe |
 | N16 | w1-root-ledge-fork | F c | LOW: a stair of root steps up and down. HIGH: three logs over it, the first 106-115 px over a low step, a 3-bloom cache at the end |
 | N17 | w1-log-shelter | R | a dry bank under a wide fallen log lying across two banks overhead; a flag, a Dot spot |
 | N18 | w1-petal-bank | R | a long mossy bank, petals low on its face, one 50 px stump |
 | N19 | w1-hollow-log-rest | R | a walk through a hollow log lying on the floor (`hollow`, the art's own height: w1NewArt.ts `hollowLogSize`), dry inside |
-| N20 | w1-note-hollow | H (required; `phases: ['sho', 'ten']`) | the quiet low road: two steps down (`n n`), a long floor with the `find` socket at its middle (Meeca's note, the Keeper's Bell) and a decor socket for the hibiscus beside it, two steps up (`c c`); no hard input |
+| N20 | w1-note-hollow | H (required; `phases: ['sho', 'ten']`) | the quiet low road: two steps down (`N N`), a floor 400-460 px with one 50 px stump, the `find` socket at its middle (Meeca's note, the Keeper's Bell) and a decor socket for the hibiscus beside it, two steps up (`c c`); easy hops only |
 | N21 | w1-thorn-chain | S b | the signature, level: `ch(4)` / `ch(5)`, a petal over every cap; Easy `ch(3)` |
-| N22 | w1-thorn-chain-rise | S b | `ch(4)`: up, up, level, level (steps written 24-30), out onto a bank up to 60 px over the last pillar, then two steps down; Easy `ch(3)` |
+| N22 | w1-thorn-chain-rise | S b | `ch(4)`: up, up, level, level (steps written 24-30), out onto a bank up to 60 px over the last pillar, then `N`; Easy `ch(3)` |
 | N23 | w1-thorn-chain-isles | S b | `ch(3)`, a mossy stump island 300 px wide (a breath; 3 petals on it, it is on the road), `ch(3)`; Easy `ch(2)`, island, `ch(2)` |
 | N24 | w1-low-bark-arrival | E | a calm walk of a rest's length (520 px or more) on a root bank to the exit totem; the clue's decor socket low on the bank before the door (versions short / long) |
 | N25 | w1-root-bridge-out | E | a calm walk of a rest's length along a fallen log to the totem |
@@ -128,13 +138,14 @@ Both exits are walk-ons of a rest's length, so either may follow S (V5); no othe
 | Hugging Face | NONE is needed to build. For the lead's list, only if Engine's still fails the bar: P1 a thorn-bed strip that tiles. Story props with no painted piece (their sockets stay empty and are NAMED, never stood in for): P2 the iron-collared snake cameo, P3 a hibiscus bloom, P4 a root arch to walk under. Prompts: notes §5. Do not launch jobs. |
 
 ## Petals, bonus blooms and the find (real numbers)
-- The quota: 87.5% of the PETALS laid on Normal, 65% on Easy, set after the build (goals.ts:21, :28, :51, :106-130); gen2 lays
+- The quota: 87.5% of the PETALS laid on Normal, 65% on Easy, set after the build (goals.ts:21, :28, :57, :106-130); gen2 lays
   1.5 times the goal at least and trims to 2.2 times (72 for 1-2's goal of 33; pipeline.ts:292, stageGenerator.ts capHarvest). So a
   player may miss only 12.5% of them: 6 of 50, 9 of 72. With a spare of 2, petals off the natural road could number 4 to 7 a roll.
   Three forks with a 3-petal cache each are already 9: caches CANNOT be petals.
 - So off the road pays in BONUS BLOOMS (RULED by the lead, 11-11 4:47 PM ET: "exploring always pays"): a `fruit` pickup counts toward the goal when gathered and is never counted in the quota
-  (engine.ts:3002-3003, :3073; goals.ts:51 counts flowers and leaves only). Engine's item 6 makes the pipeline lay a `fruit` for a
-  pickup socket on a piece that is NOT `main`, on a harvest stage. You lay ordinary `pickup` sockets and keep high roads and
+  (engine.ts:3009-3010, :3080; goals.ts:57 counts flowers and leaves only). Engine's item 6 makes the pipeline lay a `fruit` for a
+  pickup socket on a piece that is NOT `main`, on a stage whose brief says `offRoad: 'fruit'` (World 1's 1-2 only: 8-2 is a
+  gen2 harvest too and must not move). You add that field to `briefs['1-2']` in phase 2, once Engine's type has it. You lay ordinary `pickup` sockets and keep high roads and
   off-path pieces `main: false`; there is nothing to flip later.
 - Numbers, each roll: PETALS only on the main road: one over every cap, one over every thorn dip, 1-2 on each low-road beat, 3 on
   N23's island; 50 to 72 in all after the engine's trim. BLOOMS: 3 at the end of every fork's high road (5 forks of yours, plus
@@ -174,7 +185,7 @@ more than 20 s at N4 on any listed seed. Testers do not get 1-2 until the thorn 
    (levelCheck.ts:132-134), so every section with a D, B, V, d or X beat is swapped out as unreachable. Build and judge those
    sections with `FLOWN=1` in your own copy of the probe; they roll for real after Engine's push 2. Deliver: the first still.
 2. **After Engine's push 2** (the reach scope, the double counted, the node code reading `lessons`, the thorn hollow, the note, the
-   blooms, `KITS['1-2']`): rebase; turn `THORN_12`'s hollows from `soft` to `thorn`; raw builds clean; then the seed list, built by
+   blooms, `KITS['1-2']`; push 1, the 1-1 fork ends, is the t-engine-11-followup round's): rebase; turn `THORN_12`'s hollows from `soft` to `thorn`; raw builds clean; then the seed list, built by
    the tool on raw builds (it calls `buildGen2Stage`, not the game's routing), on R-165.112's head.
 3. **After Engine's push 3** (routing, the old 1-2 deleted, help on N4): the tier bots, stills, clips, every gate, the report.
 
@@ -213,9 +224,9 @@ The thorn floor's look goes to Matt on Engine's still. Keep building while they 
 - No atlas is re-packed.
 
 ## Definition of done (the Critic checks each; the phase each can first be met in is in brackets)
-1. [1] The kit rows, the three graphs, the tag edits and all 38 own and new sections entered; the report lists the 51 as reused /
+1. [1] The kit rows, the three graphs, the tag edits and all 42 own and new sections entered; the report lists the 53 as reused /
    own / new with w1.ts lines. A w1.stage12.test check: no section in 1-2's pool holds a `hint.1-1.*`, `coach.*`, squirrel or
-   bootprint socket, or a `tip` whose id has no row; none of yours adds a made thing.
+   bootprint socket, or a `tip` whose id has no row; none of yours adds a made thing; no own or new version lays two bare `n` in a row.
 2. [1 alone, 2 on rolls] Bands: every laid jump inside bands.md §2; every chain inside chain.md §3, measured cap centre to cap
    centre on the LAID pieces and printed (the tempo stretches a written step). The proofs of chain.md §4. No double gap on Easy.
 3. [2] Thorns: every hollow per the table on every listed seed; the thorn lesson's `show` piece comes before the first hollow that
@@ -229,12 +240,15 @@ The thorn floor's look goes to Matt on Engine's still. Keep building while they 
    tools/engine/stage.ts rolls raw seeds for 1-1 only, :326-333): over the listed seeds, pieces distinctness 0.45 or more (the bar
    is 0.237, `VARIETY_BARS` :125; gen2 1-1 measured 0.524), every roll's inner variety 0.50 or more (bar 0.36), code distinctness
    0.80 or more, no 9-piece stretch more than twice. Each graph and each signature on 15% or more of the list; every one of the
-   51 sections on 3 listed seeds or more (name any that is not, and why).
+   53 sections on 3 listed seeds or more (name any that is not, and why).
 6. [2] The seed list, with its yield (the lead's ruling on audit B-02; CLAUDE.md "Variety": never a list dug out by rerolling).
    Before the list: over fresh seeds 1-300 on each setting, print for each graph how many roll clean and, for the rest, how many
    each refusing rule refused. FLOOR: 1 clean in 10 on each graph, both settings clean. Under the floor: fix the section the top
    rule names and measure again; a graph that cannot reach the floor is dropped and named in the report (two graphs at least must
-   remain). Then `npx tsx tools/engine/seedlist.ts 1-2 --count 120 --from 1 --to 3000` (4 workers: `--worker i/4 --part F`, then
+   remain). Know before you start: 1-1 itself rolls clean on 6 of 600 fresh builds (the Critic, attempt 2), five times under
+   this floor, and part of that is the engine's own rules (the deal's V11 cap, the quiet line at joins). Where 1-2 sits under the
+   floor for a cause in a rule and not in a section, that is a PUSHBACK naming the rule and its count (it joins R-165.120); the
+   list is never dug deeper to make up for it. Then `npx tsx tools/engine/seedlist.ts 1-2 --count 120 --from 1 --to 3000` (4 workers: `--worker i/4 --part F`, then
    `--merge`), its tries and its time printed; `npx tsx tools/engine/seedlist.ts 1-2 --check` PASS, 100 seeds or more, 0 refused.
 7. [3] The tier bots, 40 variants a tier a setting (`npx tsx tools/inspect/tierBots.ts --stage 1-2 --tiers child,middle,expert
    --seeds 1-40 --setting both`; calibrated on 1-1's testers only: say so; the expert plays Normal only). Must show: 0 rescues for
@@ -259,9 +273,9 @@ The thorn floor's look goes to Matt on Engine's still. Keep building while they 
 ## Time (from measured history, D25)
 C1, the 1-1 re-lay: 3 h 49 m to its first report and 6 h 04 m to pass, re-laying about 40 existing sections and authoring none
 (read-in 10 min, layout 2 h, three list builds of 35-40 min, bots 30 min, stills and clips 1.5 h, report 20 min; C1 REPORT). This
-build AUTHORS 38 sections and waits twice on Engine. No history exists for authoring: the estimate is a range. Phase 1: 4 to 6 h
-(38 sections at 6-10 min each, the probe, the first still). Phase 2: 2 to 3 h (the yield, list builds, fixes). Phase 3: 2.5 to
-3.5 h (bots, stills and clips, gates, report). Working time 8.5 to 12.5 h to the first report, waits not counted; a second round
+build AUTHORS 42 sections and waits twice on Engine. No history exists for authoring: the estimate is a range. Phase 1: 4.5 to 7 h
+(42 sections at 6-10 min each, the probe, the first still). Phase 2: 2 to 3 h (the yield, list builds, fixes). Phase 3: 2.5 to
+3.5 h (bots, stills and clips, gates, report). Working time 9 to 13.5 h to the first report, waits not counted; a second round
 about 2 h more, as C1's was.
 
 ## Return
@@ -269,4 +283,5 @@ Branch t-content-1-2 from the named head, pushed (`git ls-remote` equals HEAD) a
 lead (the session id on line 1 of reference/handoffs/lead.md) at the end of each phase, 8 lines or fewer. A blocker or a wrong
 frozen input: PUSHBACK.md on the branch and one message, then stop.
 ## Attempt
-2 (attempt 1 REJECTED by the packet Critic at f60e6503, 14 lines; each is answered in DESIGN-1-2-notes.md §9)
+3 (attempt 1 REJECTED at f60e6503, 14 lines; attempt 2 at 35364c97: all 14 closed, 1 new line, the quiet line; each is answered
+in DESIGN-1-2-notes.md §9)

@@ -1,4 +1,4 @@
-# Designer handoff (rewritten 2026-11-11 4:46 PM ET by the Designer of the 1-2 packets, R-165.11, after their first Critic round; before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07)
+# Designer handoff (rewritten 2026-11-11 5:03 PM ET by the Designer of the 1-2 packets, R-165.11, after their second Critic round; before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07)
 
 Read first, in order:
 - reference/LAWS.md;
@@ -87,8 +87,9 @@ Every ruling below cites the file and section where it's written in full.
 15. **1-2 (11-11, the packets, attempt 2):** harvest, level, quiet end, branching lots, deal ground 35 / bounce 35 / climb 30 and NO
     floating (World 1's window puts floating in the last third, where 1-2's graphs hold F, C, X and W); one hazard lesson (thorns)
     and no new move; ONE signature, the bounce chain over a thorn hollow, in three sections that are 1-2's alone; the note hollow
-    is the required H and carries `phases: ['sho', 'ten']` (a required section is fitted by phase). Three harvest graphs. 51
-    sections: 13 reused, 13 own, 25 new; every own and new one level within 110 px unless U or D.
+    is the required H and carries `phases: ['sho', 'ten']` (a required section is fitted by phase). Three harvest graphs. 53
+    sections: 11 reused, 17 own, 25 new; every own and new one level within 110 px unless U or D, paid back by `N` steps (a
+    step down with its own hop: a bare `n` is quiet time, and the seed list refuses over 4 s; flown, sims/quiet12.ts).
 16. **The chain's bands (chain.md §3, flown):** cap centre to cap centre 205-220 level, 195-210 a step up of 24-36 (lay 198-206),
     215-225 a step down (lay 216-224); pillars wider than the cap (Normal 110-130, Easy 150-170) so a near miss lands on wood;
     Normal 2-5 caps, Easy 2-3. A chain is S, M, P, D or part of a C or F, never an X: the pillars alone are a stepping-stone road.
@@ -106,11 +107,12 @@ Every ruling below cites the file and section where it's written in full.
 ## 4. Open items (none of these is finished; check each before assuming)
 
 - **From the 1-2 packets (11-11):**
-  - attempt 2 of both packets is with the packet Critic (attempt 1: CONTENT 14 lines, ENGINE 6; each answered in
+  - attempt 3 of both packets is with the packet Critic (attempt 1: CONTENT 14 lines, ENGINE 6; attempt 2: 1 and 3; each answered in
     DESIGN-1-2-notes.md §9); the lead's rulings are all in notes §3, none open (bonus blooms; the ladder grows the lesson's own
     fallen log at the first chain, else the line alone; `EARLY_DOUBLE` gains '1-2');
-  - Engine work 1-2 stands on: ENGINE-1-2-routing.md, 8 items in 3 pushes (item 0 the 1-1 high-road ends; then the seed tool, the
-    thorn hollow, the reach scope, the note, the double counted, the blooms; routing and help last);
+  - Engine work 1-2 stands on: ENGINE-1-2-routing.md (item 0, the 1-1 high-road ends, is the t-engine-11-followup round's; then
+    the seed tool, the thorn hollow, the reach scope, the note, the double counted on a gen2-built stage, the blooms by a brief
+    field; routing and help last);
   - thin supply cells (one section each) are named in notes §8: the builder's yield count will show the first to go short;
   - help.md §5 (counting failures through a lost life, one system with assist.ts) is still unwritten;
   - NOT flown: a chain cap more than 66 px over the last or 36 px under it, a bounce plus air jump across a dip (#63's shape), a
@@ -157,6 +159,9 @@ Every ruling below cites the file and section where it's written in full.
 - **The node code's V3 knows a move only from a T in the stage** (nodeCode.ts:138-141), not from `lessons`.
 - **`w1World()` hands out the same section objects every call:** a probe that edits tags copies each section first.
 - **A probe on another brief proves nothing about the packet's** (the Critic's line 1 on attempt 1).
+- **A rhythm's steps down are quiet time.** Check any run-out against the quiet line (QUIET_MAX 4 s) before it goes in a packet.
+- **A rule keyed on a stage id hits every build on that id** (`#ctest` lives on 1-2's); one keyed on an objective hits every
+  stage with it (8-2 is a gen2 harvest). Key on the built stage or its brief.
 - **A socket is not a pickup (11-11).** gen2 fills a `find` only in the stage's required section; a fork's `find` socket stays empty and
   blocks the off-path petal. Read `collectibles` on a built roll (sims/finds11.ts) before saying a spot holds something.
 - **The early-stage help is a ramp by stage number** (physics.ts `easeAssist`): numbers flown on 1-1 are not another stage's until

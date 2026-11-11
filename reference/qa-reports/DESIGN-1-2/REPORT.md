@@ -1,4 +1,4 @@
-# Designer report: the 1-2 packets (R-165.11), attempt 2, 2026-11-11 4:46 PM ET, branch t-design-1-2, cites at t-int-1-1@53bd446a
+# Designer report: the 1-2 packets (R-165.11), attempt 3, 2026-11-11 5:03 PM ET, branch t-design-1-2, cites at t-int-1-1@53bd446a
 **Method used:** reference/methods/dispatch-packet.md; C1's packet as the shape; the packet Critic's method update applied (the
 probe runs the packet's OWN brief and prints each job's dealt types against the sections that answer them).
 **Lessons applied:** D19 (the built stage, not sockets), D25 (time from C1's measured history, as a range), D32 (tool flags from
@@ -6,12 +6,13 @@ arg parsing), D37 (every engine claim run: supply12, chainlay12, finds11), D40 (
 ## 1. Done-items
 | Asked | Where | Evidence |
 |---|---|---|
-| Every Critic line fixed (CONTENT 14, ENGINE 6) | DESIGN-1-2-notes.md §9, line by line | both packets rewritten as attempt 2 |
+| Every Critic line fixed (attempt 1: CONTENT 14, ENGINE 6; attempt 2: CONTENT 1, ENGINE 3) | DESIGN-1-2-notes.md §9, line by line | both packets at attempt 3 |
+| The quiet-line cure flown before it was written in | `FLOWN=1 npx tsx reference/specs/sims/quiet12.ts 120` | six bare steps down 8.7-11.1 s on 50 of 50; six `N` median 2.1 s, over 4 s on 1 of 41 |
 | The lead's nine rulings | notes §3 | in the packets |
-| The deal re-probed on the packet's own brief, real pipeline | `FLOWN=1 npx tsx reference/specs/sims/supply12.ts 120` | 720 of 720 rolls build, 0 throws; pool short on 2 / 6 / 3 rolls of 120 (graphs A / B / C); no section never laid; sims/out/supply12-flown.txt |
+| The deal re-probed on the packet's own brief, real pipeline | `FLOWN=1 npx tsx reference/specs/sims/supply12.ts 120` | 720 of 720 rolls build, 0 throws; pool short on 2 / 6 / 3 rolls of 120 (graphs A / B / C); none of the 53 never laid; every test cell holds two; sims/out/supply12-flown.txt |
 | The same on today's engine, for the record | `npx tsx reference/specs/sims/supply12.ts 60` | most seeds throw or swap: sims/out/supply12-today.txt |
-| Stage brief, graphs, sections, thorny floor, petals, Easy, bots, stills, gates, done-items, what is shared | CONTENT-1-2-relay.md | 51 sections: 13 reused, 13 own, 25 new; 10 done-items by phase |
-| The Engine packet | ENGINE-1-2-routing.md | 8 items in 3 pushes, each with file:line, a done-test and its gates |
+| Stage brief, graphs, sections, thorny floor, petals, Easy, bots, stills, gates, done-items, what is shared | CONTENT-1-2-relay.md | 53 sections: 11 reused, 17 own, 25 new; 10 done-items by phase |
+| The Engine packet | ENGINE-1-2-routing.md | items 1-7 in two pushes (item 0 is the follow-up round's), each with file:line, a done-test and its gates |
 ## 2. Polish check
 No screens (packets). Tables checked for broken code spans; times from `date`; every new cite read at 53bd446a.
 ## 3. Pushback (on my own attempt 1, and on the engine as found)
@@ -31,9 +32,10 @@ No screens (packets). Tables checked for broken code spans; times from `date`; e
   bounce combine to 1-1 or the graph is dropped and named. It belongs with R-165.120 (the yield).
 - **DESIGNER help.md §5** (failures counted through a lost life, one system with assist.ts) before 1-2 reaches testers.
 ## 5. Unresolved
-- Nothing is open with the lead: the three calls attempt 2 left open were accepted 11-11 4:47 PM ET (notes §3). Attempt 2 is
-  with the packet Critic.
-- Thin supply cells are named in notes §8: eight job-and-type cells hold one section each.
+- With the lead, to see: ruling 3 is met more narrowly than ruled (the double counts on a gen2-built stage, `EARLY_DOUBLE` not
+  widened), so the testers' course and the old 1-2 do not move; and 1-1's own fresh-seed yield (6 of 600) is five times under the
+  floor asked of 1-2 (done-item 6 now makes a rule-caused shortfall a PUSHBACK). Attempt 3 is with the packet Critic.
+- Thin supply cells are named in notes §8: eight job-and-type cells hold one section each (the three test cells hold two).
 - supply12 proves tags and counts with stand-ins, not heights: the builder's raw builds are the proof of reach.
 - Not run by me: the tier bots or stage.ts on a 1-2 that does not build yet. The thorn bed has not been drawn.
 - roadmapcheck fails in my container on commits from branches not fetched here; I added no roadmap row.
@@ -49,4 +51,5 @@ No screens (packets). Tables checked for broken code spans; times from `date`; e
 reference/handoffs/designer.md rewritten in this commit.
 ## Benchmark (the Designer's part)
 Attempt 1: about 3:28 PM to 3:51 PM ET (packet), 3:53 to 3:59 PM (Engine packet). Critic's audit back 4:25 PM. Attempt 2: 4:26 PM
-to 2026-11-11 4:46 PM ET. One review round so far. What would have saved the round: running the packet's own brief before writing the pool.
+to 4:47 PM. The Critic's second audit back 4:57 PM. Attempt 3: to 2026-11-11 5:03 PM ET. Two review rounds. What would have saved the
+first: running the packet's own brief before writing the pool; the second: checking each run-out against the quiet line.
