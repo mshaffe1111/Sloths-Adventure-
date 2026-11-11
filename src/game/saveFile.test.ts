@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildSave, parseSave, applySave, resetProgress, isSaveKey, checksum, saveFileName, SAVE_FORMAT, type Store } from './saveFile.ts';
+import { buildSave, parseSave, applySave, resetProgress, isSaveKey, checksum, saveFileName, SAVE_FORMAT, MAX_ENTRY_CHARS, type Store } from './saveFile.ts';
 
 function memStore(init: Record<string, string> = {}): Store & { m: Map<string, string> } {
   const m = new Map(Object.entries(init));
@@ -111,9 +111,9 @@ test('a save with every trophy earned still loads (the Trophy Room record is far
   const r = parseSave(JSON.stringify(buildSave(s)));
   assert.ok(r.ok, r.ok ? '' : r.reason);
   if (r.ok) assert.equal(r.save.data['sloth_badges'], record);
-  // a stage result is still held to the small limit
+  // an entry over the one entry limit is still refused (R-165.117 made it one limit for every key, saveRoundTrip.test.ts)
   const bad = buildSave(s);
-  bad.data['sloth_lvl_1-1'] = JSON.stringify({ completed: true, junk: 'x'.repeat(500) });
+  bad.data['sloth_lvl_1-1'] = JSON.stringify({ completed: true, junk: 'x'.repeat(MAX_ENTRY_CHARS) });
   bad.checksum = checksum(bad.data);
   assert.equal(parseSave(JSON.stringify(bad)).ok, false);
 });

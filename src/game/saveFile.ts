@@ -15,15 +15,15 @@ export const SAVE_FORMAT = 'sloths-rainforest-adventures-save';
 export const SAVE_VERSION = 1;
 /** a real save is a few KB; anything much bigger is not one of ours */
 export const MAX_SAVE_BYTES = 200_000;
-/** one stage result or flag is tiny; the Trophy Room record grows with every trophy (about 30 characters each), so it gets more room */
-const MAX_ENTRY_CHARS = 400;
-const MAX_BADGE_ENTRY_CHARS = 12_000;
-/** how a stage was played, for Pokey's journal (playRecords.ts): its first clear with a few find and medal ids */
-const MAX_PLAY_ENTRY_CHARS = 1_000;
-const entryLimit = (k: string) => (k === 'sloth_badges' ? MAX_BADGE_ENTRY_CHARS : k.startsWith('sloth_play_') ? MAX_PLAY_ENTRY_CHARS : MAX_ENTRY_CHARS);
+/**
+ * one limit for every entry, far over the biggest the game writes (the Trophy Room, about 4 KB with everything earned):
+ * saveRoundTrip.test.ts fills every key through its writer at its largest and keeps each under half of this. R-165.117: per-key
+ * guesses (400 characters) refused the game's own file once 5-M was cleared or 34 things were found.
+ */
+export const MAX_ENTRY_CHARS = 16_000;
 
 /** the entries that make up a game */
-const ALLOWED: RegExp[] = [
+export const ALLOWED: RegExp[] = [
   /^sloth_lvl_(\d{1,2}|S)-(\d{1,2}|[DM])$/, // per-stage result (and the extra stages, extraStages.ts: Dot's flight 4-D, Meeca's 5-M)
   /^sloth_play_(\d{1,2}|S)-(\d{1,2}|[DM])$/, // how a stage was played, for Pokey's journal (playRecords.ts; older games drop it unread)
   /^sloth_layout_(\d{1,2}|S)-(\d{1,2}|[DM])$/, // the layout a stage was first played with (it stays the same)
@@ -149,7 +149,7 @@ export function parseSave(text: string): ParseResult {
   const data: Record<string, string> = {};
   for (const [k, v] of Object.entries(o.data)) {
     if (!isSaveKey(k)) continue; // silently drop anything that is not ours
-    if (typeof v !== 'string' || v.length > entryLimit(k)) return { ok: false, reason: 'The save contains damaged entries.' };
+    if (typeof v !== 'string' || v.length > MAX_ENTRY_CHARS) return { ok: false, reason: 'The save contains damaged entries.' };
     data[k] = v;
   }
   // the checksum covers what was written, so compare against the original data only if nothing was dropped
