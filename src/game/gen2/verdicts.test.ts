@@ -262,17 +262,17 @@ import { buildGen2Stage } from './pipeline.ts';
 import { unreachablePickups } from '../petalPass.ts';
 
 const overlaps = (gs: Array<[number, number]>, x0: number, x1: number) => gs.filter(([a, b]) => a < x1 && b > x0);
-test('floorless: a slot a solid piece spans edge to edge at lip level, or one a lower piece floors to under his body (32 px), is no fall (seeds 476, 323 Normal)', () => {
+test('floorless (the lead\'s ruling, 11-11): a slot is closed only by a solid piece at its lip level (top within 10 px, or one plugging the lip) across its width with no floor under it to pass in by; seed 172\'s deck is a real hole, seed 476\'s stone plugs its slot', () => {
   const b = (seed: number) => buildGen2Stage({ config: c11, kit: w1World(), seed, difficulty: 'normal' });
-  assert.deepEqual(overlaps(floorlessGaps(b(476)), 22458, 22518), [], 'seed 476 x22458..22518: stone 122 spans it');
-  assert.deepEqual(overlaps(floorlessGaps(b(323)), 27200, 27273), [], 'seed 323 x27200..27273: branch 128 floors it to 23 px');
-  // (seed 172 x30784..31835, which the lead asked to stay refused, is covered edge to edge by 146 (y906), branch 147 and log 148 (y838):
-  // no opening at all, so this rule clears it too. PUSHBACK to the lead with the geometry; not asserted either way until ruled)
-  // (planted: the same two shapes, and a plain 60 px slot that stays a fall)
-  const span = [P(1, 0, G, 1000), P(2, 1060, G, 1000), { ...P(3, 990, G - 70, 80), height: 120 }];
-  assert.deepEqual(floorlessGaps({ platforms: span }), []);
-  const floored = [P(1, 0, G, 1000), P(2, 1073, G, 1000), { ...P(3, 900, G + 123, 150), height: 24 }];
-  assert.deepEqual(floorlessGaps({ platforms: floored }), [], '73 px slot floored to 23 px');
+  assert.deepEqual(overlaps(floorlessGaps(b(476)), 22458, 22518), [], 'seed 476 x22458..22518: stone 122 (811-931) plugs the 882 lip');
+  assert.ok(overlaps(floorlessGaps(b(172)), 30784, 31835).length > 0, 'seed 172 x30784..31835: off block 146 (906) he goes under the 838 deck: a real hole');
+  // (seed 323 x27200..27273: branch 128's top 1005 is 22 px under one lip, 46 over the other: by the ruling it does not close the slot, a fall)
+  assert.ok(overlaps(floorlessGaps(b(323)), 27200, 27273).length > 0, 'seed 323: by the ruling, a fall');
+  // (planted: a piece at lip level closes the slot to 23 px; the same piece with a lower floor beside it under the slot does not)
+  const atLip = [P(1, 0, G, 1000), P(2, 1073, G, 1000), { ...P(3, 900, G + 4, 150), height: 24 }];
+  assert.deepEqual(floorlessGaps({ platforms: atLip }), [], 'closed at lip level to 23 px');
+  // (the deck case is asserted on seed 172 itself: a planted copy is merged into the ground by w1Pits and finds no slot at all)
+  assert.deepEqual(floorlessGaps({ platforms: [P(1, 0, G, 1000), P(2, 1060, G, 1000), { ...P(3, 990, G - 70, 80), height: 120 }] }), [], 'a plug across the lip');
   assert.equal(floorlessGaps({ platforms: [P(1, 0, G, 1000), P(2, 1060, G, 1000)] }).length, 1, 'a bare 60 px slot is a fall');
 });
 

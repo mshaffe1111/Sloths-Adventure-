@@ -24,19 +24,21 @@ interface Built { platforms: Platform[]; heartFalls?: Zone[]; waterY?: number; c
 export const BODY_W = { px: 32, source: 'the Critic, E0a attempt 2 (seed 323 Normal x27200..27273)' } as const;
 
 /**
- * World 1's floorless slots he can really fall into (w1Pits 'fall' gaps, R-165.61 attempt 3): not a slot a solid piece spans edge to
- * edge across the lips' level (a stone standing in it), and not one the pieces at or under the upper lip floor to an opening under BODY_W
+ * World 1's floorless slots he can really fall into (w1Pits 'fall' gaps; the lead's ruling, 11-11, on the Critic's flight). A slot is
+ * closed only where a solid piece lies AT its lip level: its top within 10 px of a lip (the slot's two edge tops), or plugging it (its top
+ * at or above a lip and its foot below it). A piece he can pass under is no closure: one over a lower floor inside the slot (seed 172:
+ * off block 146, top 906, he walks under the 838 deck). The slot is a fall when the widest part left open is BODY_W or wider.
  */
 export function realFalls(platforms: readonly Platform[]): ReturnType<typeof findW1Pits> {
   return findW1Pits(platforms).filter((q) => {
     if (q.kind !== 'fall') return false;
     const solid = platforms.filter((p) => p.type === 'solid' && !p.broken && p.x < q.x1 && p.x + p.width > q.x0);
-    if (solid.some((p) => p.x <= q.x0 + 1 && p.x + p.width >= q.x1 - 1 && p.y <= q.top + 1 && p.y + p.height >= q.top - 1)) return false;
-    // (the widest opening left between the pieces at or under the upper lip: a falling body meets them before the slot; w1Pits' `top`
-    // is the LOWER lip, so a branch between the two lips, seed 323 Normal's 128, is found from the upper one)
     const edge = platforms.filter((p) => p.type === 'solid' && (Math.abs(p.x + p.width - q.x0) <= 2 || Math.abs(p.x - q.x1) <= 2)).map((p) => p.y);
-    const upper = Math.min(q.top, ...edge);
-    const cov = solid.filter((p) => p.y >= upper - 1).map((p) => [Math.max(q.x0, p.x), Math.min(q.x1, p.x + p.width)] as const).sort((a, b) => a[0] - b[0]);
+    const lips = [q.top, ...edge];
+    const atLip = (p: Platform) => lips.some((L) => Math.abs(p.y - L) <= 10 || (p.y <= L + 10 && p.y + p.height >= L));
+    // (a floor inside the slot more than 10 px under a piece lets him in under it)
+    const under = (p: Platform) => solid.some((f) => f !== p && f.y > p.y + 10 && f.x <= q.x1 && f.x + f.width >= q.x0);
+    const cov = solid.filter((p) => atLip(p) && !under(p)).map((p) => [Math.max(q.x0, p.x), Math.min(q.x1, p.x + p.width)] as const).sort((a, b) => a[0] - b[0]);
     let at = q.x0, open = 0;
     for (const [a, b] of cov) { open = Math.max(open, a - at); at = Math.max(at, b); }
     open = Math.max(open, q.x1 - at);
