@@ -1,4 +1,4 @@
-# Designer handoff (rewritten 2026-11-11 3:49 PM ET by the Designer of the 1-2 packet, R-165.11; before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07)
+# Designer handoff (rewritten 2026-11-11 4:46 PM ET by the Designer of the 1-2 packets, R-165.11, after their first Critic round; before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07)
 
 Read first, in order:
 - reference/LAWS.md;
@@ -21,7 +21,7 @@ Every ruling below cites the file and section where it's written in full.
 | Piece labels and the floating rules (platforms may float, rocks never do, earth waits on Matt: use it from the floor up) | `reference/engine/LABELS.md` |
 | 1-1's art audit (code-drawn pieces against the painted kit) and its stills | `reference/engine/W1-ART-AUDIT.md`, `reference/engine/art-audit/` |
 | 1-1's designer brief, fitted to gen2's fields | `reference/engine/briefs/1-1.designer.md` (never on a cold builder's branch) |
-| 1-2's packet (brief, graphs, 44 sections, the thorny floor, done-items) and its notes | `reference/packets/2026-11-11/CONTENT-1-2-relay.md`, `DESIGN-1-2-notes.md` (branch t-design-1-2) |
+| 1-2's packets (Content: brief, graphs, 51 sections, the thorny floor, done-items by phase; Engine: 8 items in 3 pushes) and their notes | `reference/packets/2026-11-11/CONTENT-1-2-relay.md`, `ENGINE-1-2-routing.md`, `DESIGN-1-2-notes.md` (branch t-design-1-2) |
 | 1-2's old gap list and the secret-as-fork idea (11-06; no longer sealed: Matt's 11-11 benchmark is a full packet; superseded line by line in the notes §6) | `reference/engine/1-2-DESIGNER-NOTES.md`, `BRIEF-1-2.md` |
 | The entered data (the porter's) | engine-core `src/game/gen2/worlds/w1.ts`: sections, JOBS, CONTENT, TERRAIN, VERSION_JOBS, the `easy` twins, W1_KIT (owns, decor, required, graphs) |
 | **The flown numbers (11-09):** reach, bands, touch, help, the flight sim and its saved runs, the Engine packet | `reference/specs/` on t-designer-reach (reach.md, bands.md, touch.md, help.md, sims/flight.ts, sims/out/, packets/ENGINE-flight-test.md) |
@@ -84,29 +84,37 @@ Every ruling below cites the file and section where it's written in full.
 13. **The reward (H) is structural** (outside the deal). The seed perch's failure on seed 102948 was the engine's corridor check, not the deal (my first diagnosis was wrong; NODES §7.1 is corrected).
 14. **W1 `owns` and `not` (Round 8):** 1-1 and 1-2 each own their words; 1-1's signatures stay 1-1-only. (The 11-06 "a COLD helper builds
     1-2, don't pre-build it" is gone: Matt's 11-11 benchmark is a full packet.)
-15. **1-2 (11-11, the packet):** harvest, level, quiet end, branching lots, deal ground 30 / bounce 35 / climb 25 / floating 10; one
-    hazard lesson (thorns) and no new move; ONE signature, the bounce chain over a thorn hollow (Matt's W1 plan), in three sections
-    that are 1-2's alone; the note hollow is the required H. Three harvest graphs, valid by the engine's checker (probe12.ts).
+15. **1-2 (11-11, the packets, attempt 2):** harvest, level, quiet end, branching lots, deal ground 35 / bounce 35 / climb 30 and NO
+    floating (World 1's window puts floating in the last third, where 1-2's graphs hold F, C, X and W); one hazard lesson (thorns)
+    and no new move; ONE signature, the bounce chain over a thorn hollow, in three sections that are 1-2's alone; the note hollow
+    is the required H and carries `phases: ['sho', 'ten']` (a required section is fitted by phase). Three harvest graphs. 51
+    sections: 13 reused, 13 own, 25 new; every own and new one level within 110 px unless U or D.
 16. **The chain's bands (chain.md §3, flown):** cap centre to cap centre 205-220 level, 195-210 a step up of 24-36 (lay 198-206),
-    215-225 a step down (lay 216-224); pillars wider than the cap (Normal 110-130, Easy 150-170) so a near miss lands on wood; 3-5
-    caps Normal, 3 Easy, 2 in the stage's first chain. A chain is S, M or P, never an X: the pillars alone are a stepping-stone
-    road, so the bounce is not "required" by the block rule.
-17. **Thorns (11-11):** only in hollows under chains and the named pieces, 150-170 px deep, never under a double gap (a double flick lands it about 70%), in the first 1,300 px or under a
-    low road; Normal a heart and a set-back before the mushroom, Easy the set-back only (the lead may overrule: notes §3.2).
-    Painted clumps from the inventory, 56 px tall; nothing code-drawn.
-18. **A reused section is touched only by adding a stage to its `feel`.** Anything else is the new stage's own section. Off-path
-    rewards are judged on the BUILT stage, never on sockets (the fork-end find, notes §4).
+    215-225 a step down (lay 216-224); pillars wider than the cap (Normal 110-130, Easy 150-170) so a near miss lands on wood;
+    Normal 2-5 caps, Easy 2-3. A chain is S, M, P, D or part of a C or F, never an X: the pillars alone are a stepping-stone road.
+17. **Thorns (the lead, 11-11):** only in hollows under chains and the named pieces, 150-170 px deep, never under a double gap (a
+    double flick lands it about 70%), in the first 1,300 px or under a low road; Normal a heart and a set-back, Easy the set-back
+    only; the set-back is to the last ledge that is not a pillar. Engine draws the bed from painted clumps chosen by width; its
+    still is Matt's hold point.
+18. **A reused section is touched only in its `feel`.** Anything else is the new stage's own section. Off-path rewards are judged
+    on the BUILT stage, never on sockets.
+19. **A harvest stage pays off the road in bonus blooms, not petals** (my pick, the lead's call still open): the quota is 87.5% of
+    all petals, so 4 to 7 a roll may sit off the low road; a `fruit` counts toward the goal and is not in the quota.
+20. **A packet's pool is proved by rolling the packet's own brief** in the real pipeline, twice: on today's engine and with the
+    engine items it waits on stood in (sims/supply12.ts, `FLOWN=1`). The supply table by job and type goes in the notes.
 
 ## 4. Open items (none of these is finished; check each before assuming)
 
-- **From the 1-2 packet (11-11):**
-  - the lead's rulings on the six calls are in DESIGN-1-2-notes.md §3;
-  - Engine work 1-2 stands on: reference/packets/2026-11-11/ENGINE-1-2-routing.md (item 0 the 1-1 high-road ends, then the thorn
-    hollow, the verdict scope, the note as the find, routing last); the lead ruled a separate Engine packet, Easy thorns cost no
-    heart, the thorn line is a socket only; neither packet has been through its Critic;
-  - help.md §5 (counting failures through a lost life, one system with assist.ts) is still unwritten, and 1-2 has no help until it passes;
+- **From the 1-2 packets (11-11):**
+  - attempt 2 of both packets is with the packet Critic (attempt 1: CONTENT 14 lines, ENGINE 6; each answered in
+    DESIGN-1-2-notes.md §9); the lead's rulings are in notes §3, with three calls still open (bonus blooms; what the ladder grows
+    at a chain; `EARLY_DOUBLE` and the old 1-2 between pushes);
+  - Engine work 1-2 stands on: ENGINE-1-2-routing.md, 8 items in 3 pushes (item 0 the 1-1 high-road ends; then the seed tool, the
+    thorn hollow, the reach scope, the note, the double counted, the blooms; routing and help last);
+  - thin supply cells (one section each) are named in notes §8: the builder's yield count will show the first to go short;
+  - help.md §5 (counting failures through a lost life, one system with assist.ts) is still unwritten;
   - NOT flown: a chain cap more than 66 px over the last or 36 px under it, a bounce plus air jump across a dip (#63's shape), a
-    moving cap. 1-2's Normal doubles are 1 px under 1-1's (chain.md §1); fly again from about 1-5 as the early-stage help fades;
+    moving cap. 1-2's Normal doubles climb 1 px under 1-1's and its gaps are the same (chain.md §1); fly again from about 1-5;
   - flight.ts on t-design-1-2 is t-designer-reach's (at e97542b4) plus `FLIGHT_STAGE` and `chain`: when both branches merge, keep this one;
   - the chain's bands come from two pilots, no child: the first 1-2 play window is the judge.
 - **From the reach flight (11-09), in order:**
@@ -144,6 +152,11 @@ Every ruling below cites the file and section where it's written in full.
 
 ## 5. Traps (each of these happened)
 
+- **The level check counts no double on 1-2 to 1-5** (levelCheck.ts:132-134): a stage moved to gen2 before 1-6 needs `EARLY_DOUBLE`,
+  or every double block reads as unreachable and its section is swapped out with no reason printed.
+- **The node code's V3 knows a move only from a T in the stage** (nodeCode.ts:138-141), not from `lessons`.
+- **`w1World()` hands out the same section objects every call:** a probe that edits tags copies each section first.
+- **A probe on another brief proves nothing about the packet's** (the Critic's line 1 on attempt 1).
 - **A socket is not a pickup (11-11).** gen2 fills a `find` only in the stage's required section; a fork's `find` socket stays empty and
   blocks the off-path petal. Read `collectibles` on a built roll (sims/finds11.ts) before saying a spot holds something.
 - **The early-stage help is a ramp by stage number** (physics.ts `easeAssist`): numbers flown on 1-1 are not another stage's until

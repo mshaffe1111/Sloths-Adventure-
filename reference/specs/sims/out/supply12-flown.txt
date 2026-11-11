@@ -1,0 +1,93 @@
+FLOWN=1: judged on the flown arcs, as after Engine item 2
+== harvest-12-A normal: 120 seeds: built 120, throws 0, rolls with a pool-short 2, structurally clean 0, clean but for V3 118; sections a roll 14-16
+     15  node code: V3 at token #: Xb2< uses the double before its teach
+     13  node code: V3 at token #: Xc2< uses the double before its teach
+     12  node code: V3 at token #: Xc2_< uses the double before its teach
+     11  node code: V3 at token #: Cg2< uses the double before its teach
+     11  node code: V3 at token #: Cg2> uses the double before its teach
+     11  node code: V3 at token #: Cc2< uses the double before its teach
+     10  node code: V3 at token #: Cb2> uses the double before its teach
+      9  node code: V3 at token #: Cg2_< uses the double before its teach
+   job+type tokens laid: A:120 Cb:29 Cc:41 Cg:50 E:120 F[P|Pb]:91 F[P|Pc]:157 F[P|Pg]:174 H:120 Pb:6 Pc:12 Pg:102 R:422 Sb:120 Tb:120 Xb:45 Xc:49 Xg:26
+== harvest-12-A easy: 120 seeds: built 120, throws 0, rolls with a pool-short 2, structurally clean 0, clean but for V3 118; sections a roll 14-16
+     15  node code: V3 at token #: Xb2< uses the double before its teach
+     13  node code: V3 at token #: Xc2< uses the double before its teach
+     12  node code: V3 at token #: Xc2_< uses the double before its teach
+     11  node code: V3 at token #: Cg2< uses the double before its teach
+     11  node code: V3 at token #: Cg2> uses the double before its teach
+     11  node code: V3 at token #: Cc2< uses the double before its teach
+     10  node code: V3 at token #: Cb2> uses the double before its teach
+      9  node code: V3 at token #: Cg2_< uses the double before its teach
+   job+type tokens laid: A:120 Cb:29 Cc:41 Cg:50 E:120 F[P|Pb]:91 F[P|Pc]:157 F[P|Pg]:174 H:120 Pb:6 Pc:12 Pg:102 R:422 Sb:120 Tb:120 Xb:45 Xc:49 Xg:26
+== harvest-12-B normal: 120 seeds: built 120, throws 0, rolls with a pool-short 6, structurally clean 28, clean but for V3 114; sections a roll 16-17
+     13  node code: V3 at token #: Xb2> uses the double before its teach
+     13  node code: V3 at token #: Wg2> uses the double before its teach
+     12  node code: V3 at token #: Pc2> uses the double before its teach
+     11  node code: V3 at token #: Xc2> uses the double before its teach
+     11  node code: V3 at token #: Pc2< uses the double before its teach
+     11  node code: V3 at token #: Xb2< uses the double before its teach
+      9  node code: V3 at token #: Xc2^< uses the double before its teach
+      8  node code: V3 at token #: Xc2< uses the double before its teach
+   job+type tokens laid: A:120 Db:42 Dc:32 Dg:46 E:120 F[P|Pb]:79 F[P|Pc]:153 F[P|Pg]:190 H:120 Pb:47 Pc:45 Pg:28 R:480 Sb:120 Tb:120 Wb:40 Wc:40 Wg:40 Xb:38 Xc:41 Xg:41
+== harvest-12-B easy: 120 seeds: built 120, throws 0, rolls with a pool-short 6, structurally clean 28, clean but for V3 114; sections a roll 16-17
+     13  node code: V3 at token #: Xb2> uses the double before its teach
+     13  node code: V3 at token #: Wg2> uses the double before its teach
+     12  node code: V3 at token #: Pc2> uses the double before its teach
+     11  node code: V3 at token #: Xc2> uses the double before its teach
+     11  node code: V3 at token #: Pc2< uses the double before its teach
+     11  node code: V3 at token #: Xb2< uses the double before its teach
+      9  node code: V3 at token #: Xc2^< uses the double before its teach
+      8  node code: V3 at token #: Xc2< uses the double before its teach
+   job+type tokens laid: A:120 Db:42 Dc:32 Dg:46 E:120 F[P|Pb]:79 F[P|Pc]:153 F[P|Pg]:190 H:120 Pb:47 Pc:45 Pg:28 R:480 Sb:120 Tb:120 Wb:40 Wc:40 Wg:40 Xb:38 Xc:41 Xg:41
+== harvest-12-C normal: 120 seeds: built 120, throws 0, rolls with a pool-short 3, structurally clean 0, clean but for V3 117; sections a roll 15-16
+     19  node code: V3 at token #: Cg2< uses the double before its teach
+     19  node code: V3 at token #: Pc2> uses the double before its teach
+     18  node code: V3 at token #: Xc2< uses the double before its teach
+     17  node code: V3 at token #: Cg2> uses the double before its teach
+     15  node code: V3 at token #: Xc2> uses the double before its teach
+     14  node code: V3 at token #: Xb2< uses the double before its teach
+     11  node code: V3 at token #: Cg2^> uses the double before its teach
+     10  node code: V3 at token #: Cg2_< uses the double before its teach
+   job+type tokens laid: A:120 Cb:24 Cc:23 Cg:73 Db:35 Dc:45 Dg:40 E:120 F[P|Pb]:107 F[P|Pc]:156 F[P|Pg]:159 H:120 Mc:38 Mg:82 Pb:38 Pc:50 Pg:32 R:240 Sb:120 Tb:120 Xb:37 Xc:60 Xg:23
+== harvest-12-C easy: 120 seeds: built 120, throws 0, rolls with a pool-short 3, structurally clean 0, clean but for V3 117; sections a roll 15-16
+     19  node code: V3 at token #: Cg2< uses the double before its teach
+     19  node code: V3 at token #: Pc2> uses the double before its teach
+     18  node code: V3 at token #: Xc2< uses the double before its teach
+     17  node code: V3 at token #: Cg2> uses the double before its teach
+     15  node code: V3 at token #: Xc2> uses the double before its teach
+     14  node code: V3 at token #: Xb2< uses the double before its teach
+     11  node code: V3 at token #: Cg2^> uses the double before its teach
+     10  node code: V3 at token #: Cg2_< uses the double before its teach
+   job+type tokens laid: A:120 Cb:24 Cc:23 Cg:73 Db:35 Dc:45 Dg:40 E:120 F[P|Pb]:107 F[P|Pc]:156 F[P|Pg]:159 H:120 Mc:38 Mg:82 Pb:38 Pc:50 Pg:32 R:240 Sb:120 Tb:120 Xb:37 Xc:60 Xg:23
+pool 51; never laid: none
+laid, fewest first: stump-stile:4 knot-bank-12:14 zigzag-run:18 stair-run:28 drop-bounce-12:28 bank-run:30 cap-lift:40 dip-bounce-12:52 bounce-wall-12:66 floor-dash:80 stair-gap-twist:80 two-answers-12:80
+supply by job/type:
+   arrive/structural      3  rain-path, root-walk, rain-banks
+   choice-reward/ground   1  hollow-twoway
+   climb/climb            3  stair-run, bank-run, zigzag-run
+   combine/bounce         2  bounce-wall-12, cap-lift
+   combine/climb          1  stair-lift
+   combine/ground         1  mushroom-log-12
+   descent/bounce         1  cap-steps-down
+   descent/climb          1  dropdown-stair
+   descent/ground         1  stump-descent
+   exit/structural        2  low-bark-arrival, root-bridge-out
+   flow/bounce            1  cap-run
+   flow/climb             3  stair-run, bank-run, zigzag-run
+   flow/ground            2  floor-dash, root-run
+   fork/bounce            2  mushroom-fork-12, thorn-fork
+   fork/climb             3  bank-stair-fork, root-stair-fork-12, root-ledge-fork
+   fork/ground            3  hollow-twoway, floor-dash, under-roots-fork
+   practise/bounce        2  cap-hop, cap-run
+   practise/climb         1  root-steps
+   practise/ground        5  stump-stile, stone-zigzag, stump-descent, knot-bank-12, root-hops
+   rest/structural        7  log-walk-12, root-meadow-12, fern-bank-12, clearing-12, log-shelter, petal-bank, hollow-log-rest
+   reward/structural      1  note-hollow
+   signature/bounce       3  thorn-chain, thorn-chain-rise, thorn-chain-isles
+   teach/bounce           1  thorn-hollow-teach
+   test/bounce            1  two-lifts-12
+   test/climb             2  stair-test-back, bank-stair-test-back
+   test/ground            1  thorn-leap
+   twist/bounce           2  drop-bounce-12, dip-bounce-12
+   twist/climb            1  stair-gap-twist
+   twist/ground           1  two-answers-12
