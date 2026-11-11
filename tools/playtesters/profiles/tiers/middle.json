@@ -9,7 +9,7 @@
  ],
  "runs": 44,
  "thin": false,
- "thinRule": "thin: a tier under 10 runs, a player under 5 runs: sample, do not trust its tails",
+ "thinRule": "thin: a tier under 10 runs; a player under 5 gen2 runs or with touchPlacedShare under 0.8: sample, do not trust its tails",
  "note": "pooled over runs; perPlayer keeps one player from counting as many",
  "all": {
   "normal": {
@@ -885,7 +885,15 @@
      "p75": 719,
      "p90": 1033
     },
-    "reversalShare": 0.0,
+    "reversalShare": 0.211,
+    "reversalGapMs": {
+     "n": 992,
+     "p10": 33,
+     "p25": 50,
+     "p50": 363,
+     "p75": 688,
+     "p90": 1080
+    },
     "dragToMovePx": {
      "n": 4694,
      "p10": 17,
@@ -1659,7 +1667,15 @@
      "p75": 615,
      "p90": 863
     },
-    "reversalShare": 0.002,
+    "reversalShare": 0.205,
+    "reversalGapMs": {
+     "n": 490,
+     "p10": 32,
+     "p25": 46,
+     "p50": 117,
+     "p75": 529,
+     "p90": 836
+    },
     "dragToMovePx": {
      "n": 2394,
      "p10": 17,
@@ -2212,7 +2228,15 @@
     "p75": 635,
     "p90": 869
    },
-   "reversalShare": 0.0,
+   "reversalShare": 0.299,
+   "reversalGapMs": {
+    "n": 210,
+    "p10": 33,
+    "p25": 50,
+    "p50": 334,
+    "p75": 592,
+    "p90": 938
+   },
    "dragToMovePx": {
     "n": 703,
     "p10": 16,
@@ -3191,7 +3215,15 @@
     "p75": 694,
     "p90": 983
    },
-   "reversalShare": 0.001,
+   "reversalShare": 0.199,
+   "reversalGapMs": {
+    "n": 1272,
+    "p10": 33,
+    "p25": 49,
+    "p50": 310,
+    "p75": 633,
+    "p90": 1010
+   },
    "dragToMovePx": {
     "n": 6385,
     "p10": 17,
@@ -3248,6 +3280,7 @@
  },
  "touch": {
   "unplacedStrokes": 1,
+  "touchPlacedShare": 1.0,
   "landscape": {
    "strokes": 1183,
    "minutes": 219.0,
@@ -3275,11 +3308,11 @@
    },
    "flickPxPerMs": {
     "n": 418,
-    "p10": 0.4,
-    "p25": 0.7,
-    "p50": 1.1,
-    "p75": 1.8,
-    "p90": 2.3
+    "p10": 0.443,
+    "p25": 0.676,
+    "p50": 1.093,
+    "p75": 1.79,
+    "p90": 2.301
    },
    "flickMs": {
     "n": 418,
@@ -3307,19 +3340,19 @@
    },
    "touchStartX": {
     "n": 1183,
-    "p10": 0.5,
-    "p25": 0.5,
-    "p50": 0.6,
-    "p75": 0.7,
-    "p90": 0.7
+    "p10": 0.493,
+    "p25": 0.531,
+    "p50": 0.571,
+    "p75": 0.655,
+    "p90": 0.72
    },
    "touchStartY": {
     "n": 1183,
-    "p10": 0.7,
-    "p25": 0.7,
-    "p50": 0.8,
-    "p75": 0.8,
-    "p90": 0.8
+    "p10": 0.678,
+    "p25": 0.732,
+    "p50": 0.764,
+    "p75": 0.796,
+    "p90": 0.822
    },
    "leftHalfShare": 0.119,
    "twoFingerShare": 0.0,
@@ -3384,11 +3417,11 @@
    },
    "flickPxPerMs": {
     "n": 2632,
-    "p10": 0.5,
-    "p25": 0.8,
-    "p50": 1.0,
-    "p75": 1.5,
-    "p90": 2.2
+    "p10": 0.526,
+    "p25": 0.764,
+    "p50": 1.044,
+    "p75": 1.476,
+    "p90": 2.185
    },
    "flickMs": {
     "n": 2632,
@@ -3416,19 +3449,19 @@
    },
    "touchStartX": {
     "n": 6046,
-    "p10": 0.3,
-    "p25": 0.4,
-    "p50": 0.5,
-    "p75": 0.5,
-    "p90": 0.6
+    "p10": 0.341,
+    "p25": 0.405,
+    "p50": 0.475,
+    "p75": 0.537,
+    "p90": 0.609
    },
    "touchStartY": {
     "n": 6046,
-    "p10": 0.6,
-    "p25": 0.7,
+    "p10": 0.62,
+    "p25": 0.657,
     "p50": 0.7,
-    "p75": 0.8,
-    "p90": 0.8
+    "p75": 0.761,
+    "p90": 0.816
    },
    "leftHalfShare": 0.602,
    "twoFingerShare": 0.001,
@@ -3501,7 +3534,15 @@
    "p75": 685,
    "p90": 983
   },
-  "reversalShare": 0.001,
+  "reversalShare": 0.209,
+  "reversalGapMs": {
+   "n": 1482,
+   "p10": 33,
+   "p25": 49,
+   "p50": 315,
+   "p75": 629,
+   "p90": 997
+  },
   "dragToMovePx": {
    "n": 7088,
    "p10": 17,

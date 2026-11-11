@@ -5,8 +5,14 @@
  "sessions": 1,
  "gen2Runs": 1,
  "thin": true,
+ "thinWhy": [
+  "gen2 runs under 5",
+  "touchPlacedShare under 0.8"
+ ],
+ "touchPlacedShare": 0.0,
  "touch": {
   "unplacedStrokes": 59,
+  "touchPlacedShare": 0.0,
   "landscape": {
    "strokes": 0,
    "minutes": 0.0,
@@ -87,7 +93,15 @@
    "p75": 366,
    "p90": 949
   },
-  "reversalShare": 0.0,
+  "reversalShare": 0.035,
+  "reversalGapMs": {
+   "n": 2,
+   "p10": 50,
+   "p25": 50,
+   "p50": 1002,
+   "p75": 1002,
+   "p90": 1002
+  },
   "dragToMovePx": {
    "n": 57,
    "p10": 17,
@@ -253,7 +267,15 @@
      "p75": 366,
      "p90": 949
     },
-    "reversalShare": 0.0,
+    "reversalShare": 0.035,
+    "reversalGapMs": {
+     "n": 2,
+     "p10": 50,
+     "p25": 50,
+     "p50": 1002,
+     "p75": 1002,
+     "p90": 1002
+    },
     "dragToMovePx": {
      "n": 57,
      "p10": 17,
@@ -418,7 +440,15 @@
      "p75": 366,
      "p90": 949
     },
-    "reversalShare": 0.0,
+    "reversalShare": 0.035,
+    "reversalGapMs": {
+     "n": 2,
+     "p10": 50,
+     "p25": 50,
+     "p50": 1002,
+     "p75": 1002,
+     "p90": 1002
+    },
     "dragToMovePx": {
      "n": 57,
      "p10": 17,

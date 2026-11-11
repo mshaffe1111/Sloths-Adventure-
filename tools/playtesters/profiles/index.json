@@ -1,6 +1,6 @@
 {
  "rule": "child: median finish >= 380 s on any setting, or >= 20 put-backs a run on Easy; expert: median finish <= 190 s and <= 1.0 lives + put-backs a run; middle: everyone else with a finished gen2 1-1 run; unrated: no finished run",
- "thinRule": "thin: a tier under 10 runs, a player under 5 runs",
+ "thinRule": "thin: a tier under 10 runs; a player under 5 gen2 runs or with touchPlacedShare under 0.8",
  "layoutList": "e03e9c8c",
  "groundCheck": "98922 of 98923 ground lines sit on a rebuilt platform top (same y, x within 60 px of its ends)",
  "tiers": {
@@ -46,7 +46,9 @@
    "sessions": 63,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 0.985
   },
   "P2": {
    "side": "before",
@@ -54,7 +56,9 @@
    "sessions": 14,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 0.999
   },
   "P3": {
    "side": "before",
@@ -62,7 +66,9 @@
    "sessions": 7,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 0.967
   },
   "P4": {
    "side": "before",
@@ -70,7 +76,9 @@
    "sessions": 6,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 0.999
   },
   "P5": {
    "side": "before",
@@ -78,7 +86,9 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 0.868
   },
   "P6": {
    "side": "before",
@@ -86,7 +96,9 @@
    "sessions": 10,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 1.0
   },
   "P7": {
    "side": "before",
@@ -94,7 +106,9 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 1.0
   },
   "P8": {
    "side": "other",
@@ -102,7 +116,11 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": true,
+   "thinWhy": [
+    "touchPlacedShare under 0.8"
+   ],
+   "touchPlacedShare": 0.0
   },
   "P9": {
    "side": "before",
@@ -110,7 +128,11 @@
    "sessions": 2,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": true,
+   "thinWhy": [
+    "touchPlacedShare under 0.8"
+   ],
+   "touchPlacedShare": 0.447
   },
   "P10": {
    "side": "before",
@@ -118,7 +140,11 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": true,
+   "thinWhy": [
+    "touchPlacedShare under 0.8"
+   ],
+   "touchPlacedShare": 0.0
   },
   "P11": {
    "side": "before",
@@ -126,7 +152,11 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": true,
+   "thinWhy": [
+    "touchPlacedShare under 0.8"
+   ],
+   "touchPlacedShare": 0.012
   },
   "P12": {
    "side": "before",
@@ -134,7 +164,9 @@
    "sessions": 5,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 0.998
   },
   "P13": {
    "side": "before",
@@ -142,7 +174,11 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": true,
+   "thinWhy": [
+    "touchPlacedShare under 0.8"
+   ],
+   "touchPlacedShare": 0.283
   },
   "P14": {
    "side": "before",
@@ -150,7 +186,9 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 1.0
   },
   "P15": {
    "side": "before",
@@ -158,7 +196,9 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 1.0
   },
   "P16": {
    "side": "before",
@@ -166,7 +206,9 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 1.0
   },
   "P17": {
    "side": "before",
@@ -174,7 +216,11 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": true,
+   "thinWhy": [
+    "touchPlacedShare under 0.8"
+   ],
+   "touchPlacedShare": 0.078
   },
   "P18": {
    "side": "before",
@@ -182,7 +228,9 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 1.0
   },
   "P19": {
    "side": "before",
@@ -190,7 +238,11 @@
    "sessions": 2,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": true,
+   "thinWhy": [
+    "touchPlacedShare under 0.8"
+   ],
+   "touchPlacedShare": 0.044
   },
   "P20": {
    "side": "before",
@@ -198,7 +250,9 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 1.0
   },
   "P21": {
    "side": "before",
@@ -206,7 +260,9 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 1.0
   },
   "P22": {
    "side": "before",
@@ -214,7 +270,9 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 1.0
   },
   "P23": {
    "side": "before",
@@ -222,7 +280,9 @@
    "sessions": 1,
    "gen2Runs": 0,
    "runs": 0,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 1.0
   },
   "P24": {
    "side": "since",
@@ -230,7 +290,9 @@
    "sessions": 16,
    "gen2Runs": 41,
    "runs": 41,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 1.0
   },
   "P25": {
    "side": "since",
@@ -238,7 +300,9 @@
    "sessions": 11,
    "gen2Runs": 25,
    "runs": 25,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 1.0
   },
   "P26": {
    "side": "since",
@@ -246,7 +310,11 @@
    "sessions": 3,
    "gen2Runs": 4,
    "runs": 4,
-   "thin": true
+   "thin": true,
+   "thinWhy": [
+    "gen2 runs under 5"
+   ],
+   "touchPlacedShare": 1.0
   },
   "P27": {
    "side": "since",
@@ -254,7 +322,11 @@
    "sessions": 1,
    "gen2Runs": 1,
    "runs": 1,
-   "thin": true
+   "thin": true,
+   "thinWhy": [
+    "gen2 runs under 5"
+   ],
+   "touchPlacedShare": 1.0
   },
   "P28": {
    "side": "since",
@@ -262,7 +334,9 @@
    "sessions": 3,
    "gen2Runs": 11,
    "runs": 11,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 0.999
   },
   "P29": {
    "side": "since",
@@ -270,7 +344,9 @@
    "sessions": 4,
    "gen2Runs": 6,
    "runs": 6,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 1.0
   },
   "P30": {
    "side": "since",
@@ -278,7 +354,9 @@
    "sessions": 2,
    "gen2Runs": 7,
    "runs": 7,
-   "thin": false
+   "thin": false,
+   "thinWhy": [],
+   "touchPlacedShare": 0.87
   },
   "P31": {
    "side": "since",
@@ -286,7 +364,11 @@
    "sessions": 1,
    "gen2Runs": 2,
    "runs": 2,
-   "thin": true
+   "thin": true,
+   "thinWhy": [
+    "gen2 runs under 5"
+   ],
+   "touchPlacedShare": 1.0
   },
   "P32": {
    "side": "since",
@@ -294,7 +376,11 @@
    "sessions": 1,
    "gen2Runs": 1,
    "runs": 1,
-   "thin": true
+   "thin": true,
+   "thinWhy": [
+    "gen2 runs under 5"
+   ],
+   "touchPlacedShare": 1.0
   },
   "P33": {
    "side": "since",
@@ -302,7 +388,12 @@
    "sessions": 1,
    "gen2Runs": 1,
    "runs": 1,
-   "thin": true
+   "thin": true,
+   "thinWhy": [
+    "gen2 runs under 5",
+    "touchPlacedShare under 0.8"
+   ],
+   "touchPlacedShare": 0.0
   }
  }
 }

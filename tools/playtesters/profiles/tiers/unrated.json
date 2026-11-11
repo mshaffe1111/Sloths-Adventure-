@@ -6,7 +6,7 @@
  ],
  "runs": 1,
  "thin": true,
- "thinRule": "thin: a tier under 10 runs, a player under 5 runs: sample, do not trust its tails",
+ "thinRule": "thin: a tier under 10 runs; a player under 5 gen2 runs or with touchPlacedShare under 0.8: sample, do not trust its tails",
  "note": "pooled over runs; perPlayer keeps one player from counting as many",
  "all": {
   "normal": {
@@ -152,7 +152,15 @@
      "p75": 366,
      "p90": 949
     },
-    "reversalShare": 0.0,
+    "reversalShare": 0.035,
+    "reversalGapMs": {
+     "n": 2,
+     "p10": 50,
+     "p25": 50,
+     "p50": 1002,
+     "p75": 1002,
+     "p90": 1002
+    },
     "dragToMovePx": {
      "n": 57,
      "p10": 17,
@@ -318,7 +326,15 @@
     "p75": 366,
     "p90": 949
    },
-   "reversalShare": 0.0,
+   "reversalShare": 0.035,
+   "reversalGapMs": {
+    "n": 2,
+    "p10": 50,
+    "p25": 50,
+    "p50": 1002,
+    "p75": 1002,
+    "p90": 1002
+   },
    "dragToMovePx": {
     "n": 57,
     "p10": 17,
@@ -351,6 +367,7 @@
  },
  "touch": {
   "unplacedStrokes": 59,
+  "touchPlacedShare": 0.0,
   "landscape": {
    "strokes": 0,
    "minutes": 0.0,
@@ -431,7 +448,15 @@
    "p75": 366,
    "p90": 949
   },
-  "reversalShare": 0.0,
+  "reversalShare": 0.035,
+  "reversalGapMs": {
+   "n": 2,
+   "p10": 50,
+   "p25": 50,
+   "p50": 1002,
+   "p75": 1002,
+   "p90": 1002
+  },
   "dragToMovePx": {
    "n": 57,
    "p10": 17,

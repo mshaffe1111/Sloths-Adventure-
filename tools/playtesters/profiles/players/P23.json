@@ -4,9 +4,12 @@
  "tier": null,
  "sessions": 1,
  "gen2Runs": 0,
- "thin": true,
+ "thin": false,
+ "thinWhy": [],
+ "touchPlacedShare": 1.0,
  "touch": {
   "unplacedStrokes": 0,
+  "touchPlacedShare": 1.0,
   "portrait": {
    "strokes": 33,
    "minutes": 0.0,
@@ -45,19 +48,19 @@
    "jumpFlickOffVerticalDeg": null,
    "touchStartX": {
     "n": 33,
-    "p10": 0.4,
-    "p25": 0.4,
-    "p50": 0.5,
-    "p75": 0.6,
-    "p90": 0.7
+    "p10": 0.351,
+    "p25": 0.399,
+    "p50": 0.517,
+    "p75": 0.618,
+    "p90": 0.728
    },
    "touchStartY": {
     "n": 33,
-    "p10": 0.5,
-    "p25": 0.6,
-    "p50": 0.8,
-    "p75": 0.8,
-    "p90": 0.9
+    "p10": 0.518,
+    "p25": 0.581,
+    "p50": 0.765,
+    "p75": 0.826,
+    "p90": 0.868
    },
    "leftHalfShare": 0.485,
    "twoFingerShare": 0.0,
@@ -129,7 +132,15 @@
    "p75": 906,
    "p90": 1348
   },
-  "reversalShare": 0.0,
+  "reversalShare": 0.462,
+  "reversalGapMs": {
+   "n": 24,
+   "p10": 50,
+   "p25": 84,
+   "p50": 366,
+   "p75": 635,
+   "p90": 865
+  },
   "dragToMovePx": {
    "n": 52,
    "p10": 17,

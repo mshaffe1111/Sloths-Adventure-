@@ -5,8 +5,13 @@
  "sessions": 1,
  "gen2Runs": 0,
  "thin": true,
+ "thinWhy": [
+  "touchPlacedShare under 0.8"
+ ],
+ "touchPlacedShare": 0.0,
  "touch": {
   "unplacedStrokes": 0,
+  "touchPlacedShare": 0.0,
   "portrait": {
    "strokes": 0,
    "minutes": 0.0,
@@ -42,6 +47,7 @@
   "moveHoldMs": null,
   "moveGapMs": null,
   "reversalShare": 0.0,
+  "reversalGapMs": null,
   "dragToMovePx": null,
   "standStillMs": null,
   "duckMs": null,

@@ -598,15 +598,16 @@ JAB_CANCEL_MS = 100  # touchGestures.ts:91 TUNING.jabCancelMs: a punch taken bac
 MISREAD_MS = 600  # an UNCANCELLED punch followed by a jump press within this, among the next 5 intents
 COYOTE_MAX_MS = 400  # an air press this soon after walking off a ledge (no jump in between) is a late (coyote) press
 LIP_LOOK_PX = 300  # a ground press counts as aimed at the lip when the walkable edge ahead is this close
-THIN_TIER, THIN_PLAYER = 10, 5  # under this many gen2 runs a tier or a player is marked thin
+THIN_TIER, THIN_PLAYER, PLACED_MIN = 10, 5, 0.8  # under this many gen2 runs a tier or a player is marked thin
 HALF_BODY = 22  # Pokey is 44 px wide and p.x is his middle: he stays on the ground until his middle is about 22 px past the edge
 
 
-def dist(xs):
+def dist(xs, digits=1):
+    """nearest-rank percentiles; digits=3 for shares (0..1) and px/ms, where 0.1 would lose up to 40 px of thumb placement"""
     xs = sorted(x for x in xs if x is not None)
     if not xs:
         return None
-    q = lambda f: round(xs[min(len(xs) - 1, int(len(xs) * f))], 1)
+    q = lambda f: round(xs[min(len(xs) - 1, int(len(xs) * f))], digits)
     return {'n': len(xs), 'p10': q(0.1), 'p25': q(0.25), 'p50': q(0.5), 'p75': q(0.75), 'p90': q(0.9)}
 
 
@@ -841,7 +842,9 @@ def touch_numbers(sessions_of_player):
     play = C()
     secs = 0.0
     for s_ in sessions_of_player:
-        wh = screen_of((s_.get('device') or '').split(';')[1] if ';' in (s_.get('device') or '') else '') or (400, 800)
+        # the size at the start: the device line's, else the session's first `start` / `screen` line; none known: its strokes stay unplaced
+        wh = screen_of((s_.get('device') or '').split(';')[1] if ';' in (s_.get('device') or '') else '') or next(
+            (screen_of(str(m[3])) for m in s_['m'] if m[0] == 'e' and m[2] in ('start', 'screen') and screen_of(str(m[3]))), None)
         live, last_up, t_or, t0, t1 = {}, None, None, None, None
         for m in s_['m']:
             k, t = m[0], m[1]
@@ -854,7 +857,8 @@ def touch_numbers(sessions_of_player):
             if k == 'e' and m[2] in ('start', 'screen'):
                 n_ = screen_of(str(m[3]))
                 if n_ and n_ != wh:
-                    acc[orient(wh)]['ms'] += max(0, t - t_or)
+                    if wh:
+                        acc[orient(wh)]['ms'] += max(0, t - t_or)
                     t_or, wh = t, n_
                 if m[2] == 'start':
                     play['starts'] += 1
@@ -863,6 +867,8 @@ def touch_numbers(sessions_of_player):
                     play[m[2]] += 1
             elif k == 'i':
                 play['i:' + str(m[2])] += 1
+            elif k == 'd' and wh is None:
+                unplaced += 1
             elif k == 'd':
                 o = acc[orient(wh)]
                 if last_up is not None and not live:
@@ -892,8 +898,10 @@ def touch_numbers(sessions_of_player):
                 last_up = t
         if t0 is not None:
             secs += (t1 - t0) / 1000
-            acc[orient(wh)]['ms'] += max(0, t1 - (t_or or t1))
-    out = {'unplacedStrokes': unplaced}
+            if wh:
+                acc[orient(wh)]['ms'] += max(0, t1 - (t_or or t1))
+    placed = sum(len(a['strokes']) for a in acc.values())
+    out = {'unplacedStrokes': unplaced, 'touchPlacedShare': round(placed / max(1, placed + unplaced), 3)}
     for o, a in sorted(acc.items()):
         kinds, tap, hold, fl, fls, flm, drag, wob, sx, sy = C(), [], [], [], [], [], [], [], [], []
         for f in a['strokes']:
@@ -926,9 +934,9 @@ def touch_numbers(sessions_of_player):
         n_ = max(1, len(a['strokes']))
         out[o] = {'strokes': len(a['strokes']), 'minutes': round(a['ms'] / 60000, 1),
                   'mix': {k: round(v / n_, 3) for k, v in kinds.items()}, 'tapMs': dist(tap), 'holdMs': dist(hold),
-                  'flickPx': dist(fl), 'flickPxPerMs': dist([round(v, 3) for v in fls]), 'flickMs': dist(flm), 'dragMs': dist(drag),
-                  'jumpFlickOffVerticalDeg': dist(wob), 'touchStartX': dist([round(v, 3) for v in sx]),
-                  'touchStartY': dist([round(v, 3) for v in sy]), 'leftHalfShare': round(sum(v < 0.5 for v in sx) / n_, 3),
+                  'flickPx': dist(fl), 'flickPxPerMs': dist(fls, 3), 'flickMs': dist(flm), 'dragMs': dist(drag),
+                  'jumpFlickOffVerticalDeg': dist(wob), 'touchStartX': dist(sx, 3),
+                  'touchStartY': dist(sy, 3), 'leftHalfShare': round(sum(v < 0.5 for v in sx) / n_, 3),
                   'twoFingerShare': round(a['two'] / max(1, a['downs']), 3), 'touchSizePx': dist(a['sizes']),
                   'gapBetweenTouchesMs': dist(a['gaps']), 'screenWidthPx': dist(a['W']), 'screenHeightPx': dist(a['H'])}
     mins = max(secs / 60, 0.01)
@@ -941,9 +949,9 @@ def touch_numbers(sessions_of_player):
 
 def steering_of(r):
     """steer spells, stops, ducks and climbs in one run (the game's steering is digital: move left / right / none)"""
-    o = {'moveHoldMs': [], 'moveGapMs': [], 'reversals': 0, 'moves': 0, 'dragToMovePx': [], 'standStillMs': [], 'duckMs': [],
+    o = {'moveHoldMs': [], 'moveGapMs': [], 'reversals': 0, 'reversalGapMs': [], 'moves': 0, 'dragToMovePx': [], 'standStillMs': [], 'duckMs': [],
          'climbMs': [], 'climbSpeed': []}
-    cur, since = None, None
+    cur, since, last_dir, let_go = None, None, None, None
     fingers, last_f = {}, None
     still_at, duck_at, climb_at = None, None, None
     for m in r['m']:
@@ -958,10 +966,17 @@ def steering_of(r):
             d_ = str(m[3]) if len(m) > 3 else 'none'
             if cur is not None and since is not None:
                 (o['moveHoldMs'] if cur != 'none' else o['moveGapMs']).append(t - since)
+            if d_ == 'none' and cur in ('left', 'right'):
+                last_dir, let_go = cur, t
             if d_ != 'none':
                 o['moves'] += 1
+                # a reversal: left -> (none) -> right, or straight across; its gap is the time with no direction held
                 if cur in ('left', 'right') and d_ != cur:
                     o['reversals'] += 1
+                    o['reversalGapMs'].append(0)
+                elif cur == 'none' and last_dir and d_ != last_dir:
+                    o['reversals'] += 1
+                    o['reversalGapMs'].append(t - let_go)
                 if last_f in fingers:
                     o['dragToMovePx'].append(abs(fingers[last_f][1] - fingers[last_f][0]))
             cur, since = d_, t
@@ -999,7 +1014,7 @@ def steering_pool(runs_):
         mv += o['moves']
         rv += o['reversals']
     return {'moveHoldMs': dist(S_['moveHoldMs']), 'moveGapMs': dist(S_['moveGapMs']),
-            'reversalShare': round(rv / max(1, mv), 3), 'dragToMovePx': dist(S_['dragToMovePx']),
+            'reversalShare': round(rv / max(1, mv), 3), 'reversalGapMs': dist(S_['reversalGapMs']), 'dragToMovePx': dist(S_['dragToMovePx']),
             'standStillMs': dist(S_['standStillMs']), 'duckMs': dist(S_['duckMs']), 'climbMs': dist(S_['climbMs']),
             'climbSpeedPxPerS': dist([v for v in S_['climbSpeed'] if v > 0])}
 
@@ -1041,8 +1056,11 @@ def profiles(sessions, runs, pseud, outdir):
         side = C(session_side(s_) for s_ in ss).most_common(1)[0][0]
         fs = facts.get(pid, [])
         tier = tier_of(fs) if fs else None
-        doc = {'player': pid, 'side': side, 'tier': tier, 'sessions': len(ss), 'gen2Runs': len(fs), 'thin': len(fs) < THIN_PLAYER,
-               'touch': touch_numbers(ss),
+        tn = touch_numbers(ss)
+        thin_why = [w for w, bad in ((f'gen2 runs under {THIN_PLAYER}', bool(fs) and len(fs) < THIN_PLAYER),
+                                     (f'touchPlacedShare under {PLACED_MIN}', tn['touchPlacedShare'] < PLACED_MIN)) if bad]
+        doc = {'player': pid, 'side': side, 'tier': tier, 'sessions': len(ss), 'gen2Runs': len(fs), 'thin': bool(thin_why),
+               'thinWhy': thin_why, 'touchPlacedShare': tn['touchPlacedShare'], 'touch': tn,
                # every stage they played (the old stages have the vines: 1-1 has no climbing)
                'steeringAllStages': steering_pool([{'steer': steering_of({'m': s_['m']})} for s_ in ss])}
         # how their touch changed: one snapshot per session of 50+ strokes, oldest first (profile.py's 'curve', no session ids)
@@ -1066,13 +1084,13 @@ def profiles(sessions, runs, pseud, outdir):
             doc['survey'] = dict(surveys.get(pid, {}))
         json.dump(doc, open(os.path.join(outdir, 'players', f'{pid}.json'), 'w'), indent=1)
         index[pid] = {'side': side, 'tier': tier, 'sessions': len(ss), 'gen2Runs': len(fs), 'runs': len(fs),
-                      'thin': bool(fs) and len(fs) < THIN_PLAYER}
+                      'thin': bool(thin_why), 'thinWhy': thin_why, 'touchPlacedShare': tn['touchPlacedShare']}
     for tier, pids in tiers.items():
         fs = [f for p in pids for f in facts[p]]
         firsts = [facts[p][0] for p in pids]
         laters = [f for p in pids for f in facts[p][1:]]
         doc = {'tier': tier, 'rule': TIER_RULE, 'players': pids, 'runs': len(fs), 'thin': len(fs) < THIN_TIER,
-               'thinRule': f'thin: a tier under {THIN_TIER} runs, a player under {THIN_PLAYER} runs: sample, do not trust its tails', 'note': 'pooled over runs; perPlayer keeps one player from '
+               'thinRule': f'thin: a tier under {THIN_TIER} runs; a player under {THIN_PLAYER} gen2 runs or with touchPlacedShare under {PLACED_MIN}: sample, do not trust its tails', 'note': 'pooled over runs; perPlayer keeps one player from '
                'counting as many', 'all': {mode: pool([f for f in fs if f['mode'] == mode]) for mode in ('normal', 'easy')
                                            if any(f['mode'] == mode for f in fs)},
                'firstRun': pool(firsts), 'laterRuns': pool(laters) if laters else None,
@@ -1086,7 +1104,7 @@ def profiles(sessions, runs, pseud, outdir):
                                                    for s_ in by_player_sessions[p]])}
         json.dump(doc, open(os.path.join(outdir, 'tiers', f'{tier}.json'), 'w'), indent=1)
         print(f'  tier {tier:6}: {len(pids)} players {pids}, {len(fs)} runs')
-    json.dump({'rule': TIER_RULE, 'thinRule': f'thin: a tier under {THIN_TIER} runs, a player under {THIN_PLAYER} runs',
+    json.dump({'rule': TIER_RULE, 'thinRule': f'thin: a tier under {THIN_TIER} runs; a player under {THIN_PLAYER} gen2 runs or with touchPlacedShare under {PLACED_MIN}',
                'layoutList': lst, 'groundCheck': ground_check, 'tiers': {t: {'players': p_, 'runs': sum(len(facts[x]) for x in p_),
                                                                             'thin': sum(len(facts[x]) for x in p_) < THIN_TIER}
                                                                          for t, p_ in tiers.items()},

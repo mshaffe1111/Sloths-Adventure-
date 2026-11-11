@@ -11,15 +11,23 @@ report.py refuses the lip measures if the runs' `list` differs.
 
 ## Files
 - `index.json`: the tier rule, the thin rule, the layout list version, `groundCheck` (below), per tier its players, `runs` and
-  `thin`, and per player its side (before / since / other 0.9.5), tier, sessions, `runs` (gen2 1-1 runs) and `thin`.
+  `thin`, and per player its side (before / since / other 0.9.5), tier, sessions, `gen2Runs` and `runs` (both: the gen2 1-1 runs),
+  `thin`, `thinWhy` and `touchPlacedShare`. `thinRule` (here and in each tier file) states the thin rule in words.
 - `players/P<n>.json`: one player. `touch`, `touchCurve` and `steeringAllStages` for everyone (all sessions, every stage). `gen2_1_1` and `survey` only for
   the 10 players with gen2 1-1 runs (P24 to P33, all since 0.9.5).
 - `tiers/<child|middle|expert|unrated>.json`: the gen2 1-1 players pooled by tier. `all` is per setting. `firstRun` is each player's first run,
   and `laterRuns` is the rest. `perPlayer` holds each player's medians, so one player's many runs don't read as many players. `touch` and
   `steeringAllStages` cover the tier's players over every stage. `runs` and `thin` are machine-readable.
 
-**Thin** (`"thin": true`): a tier with under 10 gen2 runs, or a player with under 5. Sample from it, but don't trust its tails. The child
-tier is thin (6 runs: P26 4, P27 1, P32 1), and so is unrated P33 (1).
+**Thin** (`"thin": true`, reason in `thinWhy`): a tier with under 10 gen2 runs; a player with under 5 gen2 runs, or with
+`touchPlacedShare` under 0.8 (their touch numbers rest on few placed strokes). Sample from it, but don't trust its tails. The child tier is thin
+(6 runs: P26 4, P27 1, P32 1). Thin players: P26, P27, P31, P32 (runs); P8, P9, P10, P11, P13, P17, P19 (placement); P33 (both).
+`touchPlacedShare`: placed strokes ÷ all strokes. A stroke is unplaced when no logged screen size fits it (none in the device line or
+any `start`/`screen` line, or it falls outside both orientations of the size in force). It is counted, never placed on a guessed size.
+P30 is 0.87 and P5 0.868: kept, but noted.
+
+**perPlayer** (tier files): `runs` (gen2 1-1 runs), `finishMedianS` (median finish, s; null with no finish), `jumpHoldMsP50` (median
+jump press hold, ms), `groundPressToLipPxP50` (median press distance before the lip, px).
 
 ## Tiers (from play, never asked)
 child: median finish >= 380 s on any setting, or >= 20 put-backs a run on Easy. expert: median finish <= 190 s and <= 1.0 lives + put-backs
@@ -28,7 +36,8 @@ Result: expert P24, P30 (48 runs). middle P25, P28, P29, P31 (44). child P26, P2
 carries most of its put-backs). unrated P33 (1 unfinished run). The 22 "before" players have touch numbers only (they played the older stages).
 
 ## Distributions
-Every distribution is `{n, p10, p25, p50, p75, p90}`, nearest-rank. A bot samples from them. Small `n` (under about 20) is a hint, not a law.
+Every distribution is `{n, p10, p25, p50, p75, p90}`, nearest-rank, rounded to 0.1. Shares (touchStartX/Y) and flickPxPerMs keep 3
+decimals (0.1 of a screen would be up to 40 px). A bot samples from them. Small `n` (under about 20) is a hint, not a law.
 
 ## gen2_1_1 fields (per setting, firstRun, laterRuns, and tiers)
 | Field | What it is | How it was computed |
@@ -80,7 +89,7 @@ the same stroke numbers: how a player's touch changed.
 |---|---|---|
 | moveHoldMs | ms | how long one direction is held (a move to the next move intent) |
 | moveGapMs | ms | how long steering is let go (`none`) before the next move: the stop-start rhythm on the thumb |
-| reversalShare | share | direct left-to-right switches per move (about 0: testers let go first) |
+| reversalShare, reversalGapMs | share; ms | moves that go the other way from the last direction held, straight across or after letting go (left -> none -> right), per move; and the time with no direction held between them (0 when straight across). Later runs: child 0.03, middle 0.20, expert 0.32 |
 | dragToMovePx | CSS px | the steering finger's sideways travel from touch-down when the move fires: the drag that becomes a run (about 17-25 px; speed is then the run speed, there is no partial speed) |
 | standStillMs | ms | Pokey standing still on the ground (|vx| < 10) for 100 ms or more, before moving again: the stop-start rhythm in the world |
 | duckMs | ms | a duck held (`i duck 1` to `i duck 0`) |

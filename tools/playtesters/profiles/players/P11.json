@@ -5,8 +5,13 @@
  "sessions": 1,
  "gen2Runs": 0,
  "thin": true,
+ "thinWhy": [
+  "touchPlacedShare under 0.8"
+ ],
+ "touchPlacedShare": 0.012,
  "touch": {
   "unplacedStrokes": 166,
+  "touchPlacedShare": 0.012,
   "portrait": {
    "strokes": 2,
    "minutes": 0.0,
@@ -25,11 +30,11 @@
    },
    "flickPxPerMs": {
     "n": 2,
-    "p10": 0.6,
-    "p25": 0.6,
-    "p50": 1.1,
-    "p75": 1.1,
-    "p90": 1.1
+    "p10": 0.567,
+    "p25": 0.567,
+    "p50": 1.106,
+    "p75": 1.106,
+    "p90": 1.106
    },
    "flickMs": {
     "n": 2,
@@ -50,19 +55,19 @@
    },
    "touchStartX": {
     "n": 2,
-    "p10": 0.7,
-    "p25": 0.7,
-    "p50": 0.7,
-    "p75": 0.7,
-    "p90": 0.7
+    "p10": 0.699,
+    "p25": 0.699,
+    "p50": 0.731,
+    "p75": 0.731,
+    "p90": 0.731
    },
    "touchStartY": {
     "n": 2,
-    "p10": 1.0,
-    "p25": 1.0,
-    "p50": 1.0,
-    "p75": 1.0,
-    "p90": 1.0
+    "p10": 0.985,
+    "p25": 0.985,
+    "p50": 0.988,
+    "p75": 0.988,
+    "p90": 0.988
    },
    "leftHalfShare": 0.0,
    "twoFingerShare": 0.946,
@@ -135,7 +140,15 @@
    "p75": 517,
    "p90": 867
   },
-  "reversalShare": 0.0,
+  "reversalShare": 0.727,
+  "reversalGapMs": {
+   "n": 24,
+   "p10": 33,
+   "p25": 34,
+   "p50": 67,
+   "p75": 217,
+   "p90": 517
+  },
   "dragToMovePx": {
    "n": 33,
    "p10": 6,

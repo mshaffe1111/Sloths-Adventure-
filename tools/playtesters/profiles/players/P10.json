@@ -5,8 +5,13 @@
  "sessions": 1,
  "gen2Runs": 0,
  "thin": true,
+ "thinWhy": [
+  "touchPlacedShare under 0.8"
+ ],
+ "touchPlacedShare": 0.0,
  "touch": {
   "unplacedStrokes": 22,
+  "touchPlacedShare": 0.0,
   "portrait": {
    "strokes": 0,
    "minutes": 0.0,
@@ -68,7 +73,15 @@
    "p75": 900,
    "p90": 1100
   },
-  "reversalShare": 0.0,
+  "reversalShare": 0.294,
+  "reversalGapMs": {
+   "n": 5,
+   "p10": 17,
+   "p25": 33,
+   "p50": 333,
+   "p75": 668,
+   "p90": 1100
+  },
   "dragToMovePx": {
    "n": 17,
    "p10": 18,

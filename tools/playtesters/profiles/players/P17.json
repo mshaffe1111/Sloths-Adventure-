@@ -5,8 +5,13 @@
  "sessions": 1,
  "gen2Runs": 0,
  "thin": true,
+ "thinWhy": [
+  "touchPlacedShare under 0.8"
+ ],
+ "touchPlacedShare": 0.078,
  "touch": {
   "unplacedStrokes": 83,
+  "touchPlacedShare": 0.078,
   "landscape": {
    "strokes": 7,
    "minutes": 0.0,
@@ -29,19 +34,19 @@
    "jumpFlickOffVerticalDeg": null,
    "touchStartX": {
     "n": 7,
-    "p10": 0.3,
-    "p25": 0.4,
-    "p50": 0.4,
+    "p10": 0.342,
+    "p25": 0.365,
+    "p50": 0.37,
     "p75": 0.4,
-    "p90": 0.4
+    "p90": 0.426
    },
    "touchStartY": {
     "n": 7,
-    "p10": 0.9,
-    "p25": 0.9,
-    "p50": 0.9,
-    "p75": 1.0,
-    "p90": 1.0
+    "p10": 0.886,
+    "p25": 0.912,
+    "p50": 0.938,
+    "p75": 0.955,
+    "p90": 0.967
    },
    "leftHalfShare": 1.0,
    "twoFingerShare": 0.0,
@@ -133,7 +138,15 @@
    "p75": 1184,
    "p90": 2539
   },
-  "reversalShare": 0.0,
+  "reversalShare": 0.314,
+  "reversalGapMs": {
+   "n": 22,
+   "p10": 34,
+   "p25": 266,
+   "p50": 566,
+   "p75": 899,
+   "p90": 1859
+  },
   "dragToMovePx": {
    "n": 70,
    "p10": 17,
