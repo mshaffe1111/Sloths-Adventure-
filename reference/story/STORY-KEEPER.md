@@ -158,7 +158,19 @@ Petals are pressed flat at the soldiers' MARCHING height, low; they're the trail
 
 ## 6. Open story threads (decide or fix; for Matt as R-165.55)
 
-1. **Meeca's parents:** never mentioned. Leave it unspoken, or give it one line? (VOICE "Still open").
+1. **Meeca's parents: RULED by the story keeper, 11-11 (Matt: "the story writer needs to figure out Mika's parents").**
+   - Canon: her mother was Grandma and Grandpa's only daughter; she and Meeca's father were travelers, as her parents had been. When
+     Meeca was three weeks old they left her with Grandma and Grandpa for one last trip down the river road, meaning to be home by the
+     festival. A dry-season flood took the road, and they never came home. Nobody was late and nobody was to blame: "only weather."
+   - Meeca doesn't remember them; Grandma and Grandpa were simply home. It was the first time someone went and didn't come back,
+     which is why she keeps everything gentle "so nobody else would go" (Cast Bible).
+   - Why: it fits the albums ("Two Travelers" W4, "Where They Went" W5, then "Our Girl" W7 opens with her at three weeks old, "Grandpa
+     has not put her down since"). It gives her a reason for her fear of people leaving. And it adds NO lateness: Pokey stays "the one
+     person with a real reason to blame lateness" (Cast Bible), so Dot's secret and the General's argument are untouched.
+   - What the game says: nearly nothing. The story stays Grandma and Grandpa's. ONE change: the back of the W7 "Our Girl" picnic photo
+     (finds.ts:214) becomes "Our girl, till her mother and father are home." It works whoever the painted photo shows, and adults will
+     feel it. No new scene, no Dot line, no stage change.
+   - Written into the Cast Bible (doc rev 44), under Meeca.
 2. **Two food mentions left for Matt:** "She took a sandwich" (the eagle, W4) and "Bring snacks" (Meeca's last note, a callback to Dot
    going for snacks) (STORY-REWRITE:1910, :1866).
 3. **The Cast Bible: FIXED 11-08 (doc rev 43)** to match VOICE: Dot is she everywhere; Grandpa sat by her chair for a year, then one morning
