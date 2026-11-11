@@ -4,6 +4,33 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
+Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
+proven plan; Play is never blocked).
+
+## 0d. Rulings and facts to keep (R-165.112, 11-11)
+- **A list is never in the main script.** `gen2/proven/seeds-<stage>.ts` (GENERATED) holds the list; `gen2/provenIndex.ts` (GENERATED)
+  holds, a stage, its count, its version (`listVersion`, the hash a run's `list` stamp carries) and `load: () => import(...)`. The
+  build makes each list a chunk (`assets/seeds-1-1-*.js`) that the service worker precaches (the `js` glob). Main: 3,956,182 B with 200
+  seeds and with 355 (it was 3,981,833 with the 200 inside it). `seedListChunk.test.ts` walks the static imports from `src/main.tsx`
+  and fails if any reaches a list file. Never import a list file by name.
+- **Who loads it:** `loadSeedList(id)` (never rejects; one fetch at a time; a file that is not the one the index names is refused).
+  The game asks at the card (`buildAhead.ts scheduleAhead`), at `App.tsx startLevel`, and WAITS in `launchEngine`
+  (`seedListSettled`, beside `readyToStart`): at most `SEED_LIST_WAIT_MS` 3 s, once a stage; after a failed or stalled load later
+  starts go straight in. Under Node a reader reads the file on the spot (`loadNow`, createRequire): tests and tools need no import.
+  A test that must see the page's side plants a source: `plantSeedListSource` (seedListLoad.test.ts).
+- **The stand-in.** With the list not in memory, 1-1 builds `standIn('1-1')`: FIRST_RUN_11 (seed 4106, firstRun11.ts, now in the main
+  script) by its own plan, so Play never searches, never waits on the network and never plays an unproven layout. The play keeps it
+  (`playSeed` pinned in `play11Seed`); the device's shuffled order is not touched. A stage that gets a list later needs its own
+  stand-in in `STAND_INS`, or a not-loaded list falls to `provenGen2Stage` (the search).
+- **Play pressed before the list is in:** `newPlay11` returns null and owes the draw; `play11Seed` makes it at the build.
+  `peekPlay11` returns null until the list is in.
+- **The order of a list is its identity.** Layout variant N is the list's N-th seed (first run 4106 = variant 11, Rolls A/B/C, the
+  bots' calibration on variants 1-40). To ADD seeds: `seedlist --merge <file> --in-order`, the old seeds first, in place. 1-1 now:
+  355 seeds = the 200 in place + 155 after them (reference/qa-reports/R-165.112/list-build.json holds the sweep).
+- **Chromium keeps a failed module fetch for the page's life** (measured: 1 request for 3 asks). So after a failed list load the
+  session plays the stand-in until the app is opened again, although `loadSeedList` asks each time. A real in-session retry needs a
+  fetch()ed JSON list (and its own precache glob): a packet, not done.
 
 ## 0c. Rulings and facts to keep (INT-1-1, 11-11)
 - **The help promises only what gets him through** (the lead's ruling): `engine.canGrowAt(piece)` = something grows AND
@@ -99,10 +126,10 @@ A2 (ADR-001). Sections 0a-0b below are still true.
 | Rises with no room for a whole stair grow nothing (228 Easy / 253 Normal over 138 seeds' pieces) | Open: the lead's call (planks?) | REPORT.md |
 | The harness's `died` in 1-1 on Normal | OPEN. RealPlay notes a fall through its loseLife stub; in 1-1 a fall is now a set-back on both settings (as it always was on Easy), so `died` stays false there. Tools that read it on 1-1 (realReach, plainWalk, firsttimer, tools/validate/play.ts) see a set-back, not a death. RealPlay should note set-backs too (realPlay.ts was not mine to write) | REPORT.md Suggestions |
 | The set-back under a rise lands on the low catch branch when he touched it on the way down (the last ledge he stood on) | As Easy has always done; from it he steps back up to the take-off log. Watch it in the A2 work | engine.ts softAt |
-| Main JS chunk headroom (R-165.103, 11-11): React, react-dom and scheduler in a static 'vendor' chunk; `tools/perf/chunkcheck.mjs` holds every JS chunk to 3,994,304 B (gates job, after a build) | In review on t-engine-chunks: main 3,944,491 B (49,813 B under the gate; t-engine-e0a's +15 KB fits). OPEN: cold stage start measured +298 ms median at CPU x4 against main (title +117 ms); no cause found (the profiles are canvas-native work, same code). buildcheck alone: this branch 1 PASS / 3 FAIL (p95 129-166 ms), main 3 PASS (123-146 ms, max 159); it runs the dev server, which manualChunks should not touch, unproven. Next room, if needed: more static manualChunks (gen2/seeds.ts 219 KB, story + journal 150 KB), never a dynamic import a stage needs | vite.config.ts `build.rollupOptions.output.manualChunks` |
+| Main JS chunk headroom (R-165.103, R-165.112): React, react-dom and scheduler in a static 'vendor' chunk; each proven seed list in its own lazy chunk; `tools/perf/chunkcheck.mjs` holds every JS chunk to 3,994,304 B | On t-engine-seedchunks: main 3,956,182 B (38,122 B under the gate), whatever the lists hold. What grows main now is code and inline data, not seeds. OPEN: gen2/seeds.ts (the curated rolls, 244 KB of source, imported by gen2/game.ts) is still in main: the same move would free it (reference/qa-reports/0.9.5/lazy-seeds.py is the old, now stale, contingency) | reference/qa-reports/R-165.112/ |
 | Branch share of thin landings at most 30% a roll (the designer's Round 11) | OPEN. 0.9.5 shipped without it by the lead's ruling (A), because Matt played the same mix on 11-05. The 138 listed rolls read median 48%, worst 65% (branch / solids 30 px tall or less, both settings). `floorRoll.catchStyles ['log','branch']` is NOT in the w1 kit. On seeds 1-40 it alone left 15 of 22 rolls over by that count. The planner counts pieces up to 60 px; agree ONE measure first | R-165.46 |
 | **1-1 after E0a: every roll is refused until C1's re-lay** | The 138 listed seeds are all refused (band.out, block.lesser-passes, teach.double-no-gap-after on every one; see REPORT.md). Play's 1-1 throws on this branch alone: never merge E0 without C1 | R-165.72 |
-| 1-1's proven list: 138 seeds (stale under E0a); the target is 300 (`SEED_LIST_TARGET`), tonight's floor was 100 (`SEED_LIST_MIN`) | OPEN. The yield is about 0.36%, so 300 needs about 85,000 tries: about 1.5 h on 4 workers. Or raise the yield. Then put SEED_LIST_MIN back to 300 | R-165.47 |
+| 1-1's proven list: 355 seeds (11-11, R-165.112; over the 300 target `SEED_LIST_TARGET`); the floor `SEED_LIST_MIN` is still 100 | OPEN: put SEED_LIST_MIN back to 300 (the Designer's number, the lead's call). More seeds cost nothing in main now: sweep past 90000 and add them `--in-order`. The suite's whole-list tests (helpLadderSweep, w1.relay) grow with the list: sample them before the list reaches thousands | R-165.47 |
 | Soft floors under the 6 floorless spots | Not in 0.9.5 (the planner's; the lead's ruling: next week). The list filter (`floorlessGaps`) keeps unmarked floorless rolls out meanwhile, and it stays in permanently | gen2/promises11.ts |
 | The double TEST band 205-228 px and Easy's twin versions | Held. Every double gap is laid in the TEACH band 195-203 (`DOUBLE_TEACH`), because a level double reaches 204 px on some budgets. The test band waits on per-version Easy twins (rise 110-114 px) | w1.ts `DOUBLE_TEACH`/`DOUBLE_TEST` |
 | funcheck findings that held 0.9.5 from going live | Logged by the lead after the merge | R-165.48-.51 |
@@ -124,7 +151,7 @@ gapPx/blocks, `stage.ts --roll` fail-closed). Read it for the open findings at i
 - `src/game/gen2/seedList.ts`:
   - `buildPlayStage` replays a proven plan, else falls back to `provenGen2Stage`;
   - also holds `provenSeeds`, `provenSeedFor`, `seedListBreaches` (what `--check` runs), `packPlan`, `SEED_LIST_MIN`, `SEED_LIST_TARGET`, `QUIET_MAX` (4 s, binding).
-- `src/game/gen2/provenSeeds.ts`: GENERATED, never edit by hand. Each seed with its packed plan, quiet and outro.
+- `src/game/gen2/proven/seeds-<stage>.ts` and `src/game/gen2/provenIndex.ts`: GENERATED (tools/engine/seedlist.ts through seedlistFile.ts), never edit by hand. The list file: each seed with its packed plan, quiet and outro. The index: count, version, loader (section 0d).
 - `src/game/testlink1_1.ts`:
   - `pick11()` returns 'play' | 'old' | 'A' | 'B' | 'C';
   - `newPlay11` / `peekPlay11` / `play11Seed` / `clearPlay11`;
@@ -206,10 +233,11 @@ gapPx/blocks, `stage.ts --roll` fail-closed). Read it for the open findings at i
    Check the seed and the build in the output, not the exit code.
 2. **Seeds proven on old code don't stay proven.** Any change to the kit, pipeline, Dot or flags can break listed seeds (the Dot fix dropped 2 of 100 through the flag check). Run `seedlist --check` after every merge that touches gen2, and re-pin Rolls A/B/C. Roll B's 110867 silently broke V19.
 3. **A post-pipeline pass that can throw needs a matching filter in the list builder.** Play calls `w1Finish`; the builder doesn't. I added `dresses()` to the builder and to `--check` so no listed seed can throw in Play. Do the same for any new finish step.
-4. **The yield is tiny (about 0.35%).** The default cap (`count x 200` seeds) can't reach 100 at that yield. Use `--from/--to` and workers, and budget the time before promising a count.
+4. **The yield is tiny (about 0.4%).** The default cap (`count x 200` seeds) can't reach 100 at that yield. Use `--from/--to` and workers, and budget the time before promising a count. Measured 11-11 on INT-1-1's code: seeds 1-90000 on 4 workers (`--worker i/4 --count 100000 --from 1 --to 90001 --part pN.json`), 381 kept, 2,660 s a worker with the suite running beside it (45 min).
+4a. **The relay test's (b) and (c) are NOT in the list builder** (w1.relay.test.ts: room for help at every rise, put-backs before the need). 26 of the 381 swept seeds fail them and were left out by hand, as C1 left out 25: run the relay test on a candidate list (print every bad line, not its first 10), drop the seeds it names, `--merge --in-order` the rest. Until those two are a filter in the builder (a packet: they live in a test file), every list build repeats this.
 5. **Measures need one definition before they're a bar.** The branch share read 48% my way and 24% the planner's way (30 px vs 60 px pieces, and catchStyles on or off). Settle the measure in the spec before anyone filters on it.
 6. **Recorded facts in tests go stale when a dependency re-measures.** goalsEasy.test held 5-9's old kid runs after the planner re-measured them; firstTimerBot.test holds the live record. Update a recorded fact with its source commit. Never loosen the assertion (law 22).
-7. **Merges with the planner's branch.** We both added `gapPx` to softGap/gDoubleGaps; keep the side with the default (`DOUBLE_TEACH`). `provenSeeds.ts` always conflicts: take yours, then re-merge or rebuild.
+7. **Merges with the planner's branch.** We both added `gapPx` to softGap/gDoubleGaps; keep the side with the default (`DOUBLE_TEACH`). `proven/seeds-1-1.ts` and `provenIndex.ts` always conflict: take yours (both files together), then re-merge or rebuild.
 8. **Things I wrongly assumed:**
    - `isGen2Stage(1-1)` broke Easy's soft-on; tests read gen2 from the built stage (`!!stage.gen2`) instead.
    - roofedDrop must run on gen2-built stages only (4-9 stays as main).
