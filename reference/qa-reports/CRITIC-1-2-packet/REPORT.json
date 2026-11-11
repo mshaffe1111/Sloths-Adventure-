@@ -10,7 +10,7 @@
  "status": "REJECT",
  "verdicts": {
   "CONTENT-1-2-relay.md": "REJECT",
-  "ENGINE-1-2-routing.md": "REJECT"
+  "ENGINE-1-2-routing.md": "REJECT (item 0 alone: PASS once WRITE gains firstRun11.ts and calibration-main.jsonl)"
  },
  "violations": [
   {
@@ -50,7 +50,7 @@
    "file": "pipeline.ts",
    "line": "pipeline.ts:2684-2685",
    "rule": "tips",
-   "evidence": "a `tip` socket whose id has no row fails the roll; CONTENT:146-148 lays three such (roots, under, the thorn line, which has no id); N3 is in every roll",
+   "evidence": "a `tip` socket whose id has no row fails the roll; CONTENT:149-151 lays three such (roots, under, the thorn line, which has no id); N3 is in every roll",
    "fix": "name the id; lay none as `tip` until the row exists (keep section, piece and t in one constant and the report)."
   },
   {
@@ -88,7 +88,7 @@
    "n": 8,
    "item": "show first",
    "file": "CONTENT",
-   "line": "CONTENT:173-176; ENGINE:82-87,:97-98",
+   "line": "CONTENT:176-179; ENGINE:82-87,:97-98",
    "rule": "show first",
    "evidence": "the clumps are loose PNGs and the bed's drawing is Engine's: at 2 h Content has a leaf-bed soft pit; both packets claim Matt's still",
    "fix": "one owner (Engine's still); Content's first still is the chain's layout, for the lead."
@@ -118,7 +118,7 @@
    "n": 11,
    "item": "order and time",
    "file": "CONTENT",
-   "line": "CONTENT:2,:143-147; ENGINE:23-27; seedList.ts:67; seedlist.ts:23",
+   "line": "CONTENT:2,:143-148; ENGINE:23-27; seedList.ts:67; seedlist.ts:23",
    "rule": "order and time",
    "evidence": "routing before the list throws, the list is \"after routing\", and `KITS` is in item 4; \"about 8 h\" has no source (D25: C1's 3 h 49 m re-laid existing sections; this authors 28) and counts no wait",
    "fix": "`KITS['1-2']` in Engine's first push, list on raw builds, then routing; done-items in three phases, waits timed apart."
@@ -128,10 +128,30 @@
    "n": 12,
    "item": "left to guess",
    "file": "CONTENT",
-   "line": "CONTENT:82-99,:109",
+   "line": "CONTENT:82-99,:109,:131",
    "rule": "left to guess",
    "evidence": "\"first-run seed\" (the lock is 1-1's); N18 \"only after an R\" (E follows S in all three graphs; no such rule in types.ts); where `hint.1-2.highlow` lies; what stands for a root arch (N3 b, N9, N11: none painted); the pillar's art (props-atlas#stump is 127 px at scale, the pillar 150-170; pickCut stops at 140); clumps at 56 px are 90-144 wide, so \"three or more a hollow\" cannot fit N4's and N8's 80-135 px dips; N16 Easy `ch(2)` against chain.md \u00a73 \"else 3\".",
    "fix": "in the evidence, item by item"
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 13,
+   "item": "seed yield",
+   "file": "CONTENT",
+   "line": "CONTENT:202-204; tools/engine/seedlist.ts:93,:107",
+   "rule": "seed yield",
+   "evidence": "the lead's B-02 (1-1: 0 clean of 60 fresh seeds) is not planned for: no search budget, no count of which rules refuse, no floor; my rolls give 8 of 175 with no pool-short before any verdict, and a list dug out of 20,000 tries is the \"scrapes past by rerolling\" Matt ruled out (CLAUDE.md \"Variety\")",
+   "fix": "done-item 6 gains: fresh-seed yield per graph and per refusing rule printed; a floor (say 1 clean in 10 on each graph) or a PUSHBACK naming the rule; the search's `--to` and its time stated."
+  },
+  {
+   "packet": "CONTENT-1-2-relay.md",
+   "n": 14,
+   "item": "help",
+   "file": "CONTENT",
+   "line": "CONTENT:152; ENGINE:135; notes \u00a73.6",
+   "rule": "help",
+   "evidence": "the lead's B-01: no ladder in 1-2 and the thorn line has no words, so a player who stops at N3's first chain gets nothing",
+   "fix": "the call is the lead's and is recorded; add its test (child bot, Easy, N3: no stall over 20 s) and hold testers until the line has words."
   },
   {
    "packet": "ENGINE-1-2-routing.md",
@@ -182,6 +202,16 @@
    "rule": "also",
    "evidence": "a wordless tip must be made legal or forbidden (CONTENT 4); the clump rule by hollow width (CONTENT 12); the still's owner (CONTENT 8); made things (CONTENT 6); \"about 8 h\" has no source.",
    "fix": "in the evidence, item by item"
+  },
+  {
+   "packet": "ENGINE-1-2-routing.md",
+   "n": 6,
+   "item": "WRITE, item 0",
+   "file": "ENGINE",
+   "line": "ENGINE:39-42,:59-63",
+   "rule": "WRITE, item 0",
+   "evidence": "its own gates re-record src/game/gen2/firstRun11.ts and recommit reference/qa-reports/R-165.59/calibration-main.jsonl; neither is in WRITE, so the builder must stop at its last step",
+   "fix": "add the two files."
   }
  ],
  "holds": [
