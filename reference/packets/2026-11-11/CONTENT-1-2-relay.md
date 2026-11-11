@@ -1,7 +1,7 @@
 # TASK 1-2 (R-165.11: build stage 1-2, The Petal Trail, on gen2, the way 1-1 was re-laid)   to: Content
 # model: the content tier (tools/team/models.json on the lead's branch)   effort: high   due: see "Time"; a safe-keeping push at least hourly
 Written by the Designer, 2026-11-11 5:03 PM ET; attempt 3: after the packet Critic's 14 lines (t-critic-1-2-packet@51fe547a), the lead's
-rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Attempt 4, 5:05 PM ET: the lead's rulings of 4:58 PM ET applied exactly. Attempt 5, 2026-11-11 5:24 PM ET: the lead's ruling of 5:10 PM ET on the Critic's one attempt-3 line (the hop step, @5d73c0da); 2026-11-11 5:30 PM ET: three data rows named for D43 ("Phases" 2, "Help"). Attempt 6, 2026-11-11 5:32 PM ET: the Critic's two attempt-5 lines (@fee80d5c; the lead 5:31 PM ET): rule 7, never mirrored, and one quiet row as printed. Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
+rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Attempt 4, 5:05 PM ET: the lead's rulings of 4:58 PM ET applied exactly. Attempt 5, 2026-11-11 5:24 PM ET: the lead's ruling of 5:10 PM ET on the Critic's one attempt-3 line (the hop step, @5d73c0da); 2026-11-11 5:30 PM ET: three data rows named for D43 ("Phases" 2, "Help"). Attempt 6, 2026-11-11 5:32 PM ET: the Critic's two attempt-5 lines (@fee80d5c; the lead 5:31 PM ET): rule 7, never mirrored, and one quiet row as printed; 2026-11-11 5:35 PM ET: the story keeper's must through the lead (5:33 PM ET), petals LOW on the bark and none up in the chain (rule 5, N21, done-item 4), and `THORN_12` (named, defined nowhere) written out. Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
 
 ## First, before any tool call
 `git fetch origin ccr-ca657d3c-n09zty t-design-1-2 t-designer-reach t-engine-inventory art-director` and the head the lead names.
@@ -66,7 +66,12 @@ never one as a section's last piece, never one straight before `B`, `V`, `D`, `m
 and no pickup, and the seed list refuses a quiet stretch over 4 s (seedList.ts:22): never more than 2 bare `n` in a row (the
 lead's rule, 11-11), and the rhythms below hold a stricter line: no two in a row, and a bare `n` only where the next beat is a
 jump or a mushroom. (4) No own or new section carries a `hint.1-1.*`,
-`coach.*`, squirrel or bootprint socket. (5) Petals sit LOW and on the main road. (6) Every own and new id is added to `JOBS`,
+`coach.*`, squirrel or bootprint socket. (5) PETALS SIT LOW, ON BARK (reference/engine/BRIEF-1-2.md:21, a "must": "petals LOW on bark and branches the whole way"; the
+story keeper through the lead, 11-11 5:33 PM ET): every petal is a `pickup` socket on a piece of the main road at the kit's
+34 px (`petals()`, w1.ts:113). NONE over a cap, a pillar, a gap, a dip or a hollow; none in a jump's or a bounce's arc. At a
+chain or a thorn dip the petals are on the ledge before it and the bank after it, and on N23's island. The pipeline lays an arc
+of 3 petals 70-120 px up over about 7 gaps in 10 by itself (pipeline.ts:2178-2185): Engine's item 6 turns that off where the
+brief says `petals: 'low'`, which you set on `briefs['1-2']` in phase 2. (6) Every own and new id is added to `JOBS`,
 `CONTENT` and `TERRAIN` (w1.ts:1415-1462). Supply by job and type, as rolled: notes §8. (7) NEVER MIRRORED (the Critic's
 attempt-5 line, the lead 11-11 5:31 PM ET): the pipeline flips a section on about half its lays (pipeline.ts:1445-1450) and
 `section()` makes every section mirrorable (w1.ts:332); flipped, a drop is a 130-140 px rise and a chain's floor mushroom is at
@@ -140,7 +145,7 @@ lays in band today: reference/specs/sims/chainlay12.ts). Each section has 2-3 ve
 | N18 | w1-petal-bank | R | a long mossy bank, petals low on its face, one 50 px stump |
 | N19 | w1-hollow-log-rest | R | a walk through a hollow log lying on the floor (`hollow`, the art's own height: w1NewArt.ts `hollowLogSize`), dry inside |
 | N20 | w1-note-hollow | H (required; `phases: ['sho', 'ten']`) | the quiet low road: a hop wall and one drop (`H J`), a floor 400-460 px with one 50 px stump (the next beat: its near face within 230 px of the drop), the `find` socket at its middle (Meeca's note, the Keeper's Bell) and a decor socket for the hibiscus beside it, two steps up (`c c`); easy hops only |
-| N21 | w1-thorn-chain | S b | the signature, level: `ch(4)` / `ch(5)`, a petal over every cap; Easy `ch(3)` |
+| N21 | w1-thorn-chain | S b | the signature, level: `ch(4)` / `ch(5)`; NO petal over the caps: 2 low on the entry ledge, 2 low on the exit bank; Easy `ch(3)` |
 | N22 | w1-thorn-chain-rise | S b | `ch(4)`: up, up, level, level (steps written 24-30), out onto a bank up to 60 px over the last pillar, then `N`; Easy `ch(3)` |
 | N23 | w1-thorn-chain-isles | S b | `ch(3)`, a mossy stump island 300 px wide (a breath; 3 petals on it, it is on the road), `ch(3)`; Easy `ch(2)`, island, `ch(2)` |
 | N24 | w1-low-bark-arrival | E | a calm walk of a rest's length (520 px or more) on a root bank to the exit totem; the clue's decor socket low on the bank before the door (versions short / long) |
@@ -169,8 +174,8 @@ Both exits are walk-ons of a rest's length, so either may follow S (V5); no othe
   pickup socket on a piece that is NOT `main`, on a stage whose brief says `offRoad: 'fruit'` (World 1's 1-2 only: 8-2 is a
   gen2 harvest too and must not move). You add that field to `briefs['1-2']` in phase 2, once Engine's type has it. You lay ordinary `pickup` sockets and keep high roads and
   off-path pieces `main: false`; there is nothing to flip later.
-- Numbers, each roll: PETALS only on the main road: one over every cap, one over every thorn dip, 1-2 on each low-road beat, 3 on
-  N23's island; 50 to 72 in all after the engine's trim. BLOOMS: 3 at the end of every fork's high road (5 forks of yours, plus
+- Numbers, each roll: PETALS only on the main road and LOW (rule 5): 2 on the ledge before and 2 on the bank after every chain and every
+  thorn dip, none over a cap, a dip or a gap; 1-2 on each low-road beat; 3 on N23's island; 50 to 72 in all after the engine's trim. BLOOMS: 3 at the end of every fork's high road (5 forks of yours, plus
   the reused ones once the follow-up round's fork-end fix, R-165.115, lands); 1 on every other off-path landing (`offPathFilled`, w1.ts:1500); 4 on one bough over
   a cap in N21 (one extra bounce reaches it). About 15 to 25 blooms a roll.
 - RULE, on every listed seed and both settings, read on the BUILT stage: a run that takes every LOW road and no off-path piece
@@ -207,7 +212,7 @@ more than 20 s at N4 on any listed seed. Testers do not get 1-2 until the thorn 
    (levelCheck.ts:132-134), so every section with a D, B, V, d or X beat is swapped out as unreachable. Build and judge those
    sections with `FLOWN=1` in your own copy of the probe; they roll for real after Engine's push 2. Deliver: the first still.
 2. **After Engine's push 2** (the reach scope, the double counted, the node code reading `lessons`, the thorn hollow, the note, the
-   blooms, 1-2's row in the listed-stage table; push 1, the 1-1 fork ends, is the t-engine-11-followup round's): rebase; enter World 1's `hurtFloor` row in the manifest (`{ lesson: 'thorns', art: 'w1-thorn', depth: [150, 170], clearStart: 1300 }`), `help: 'marked'` on `briefs['1-2']` and `help: { grows: 'show' }` on N4's first-chain piece (Engine's items 2 and 7 read them: D43, nothing in engine code names 1-2); turn `THORN_12`'s hollows from `soft` to `hurt: true`; raw builds clean; then the seed list, built by
+   blooms, 1-2's row in the listed-stage table; push 1, the 1-1 fork ends, is the t-engine-11-followup round's): rebase; enter World 1's `hurtFloor` row in the manifest (`{ lesson: 'thorns', art: 'w1-thorn', depth: [150, 170], clearStart: 1300 }`), `help: 'marked'` on `briefs['1-2']` and `help: { grows: 'show' }` on N4's first-chain piece (Engine's items 2 and 7 read them: D43, nothing in engine code names 1-2); set `petals: 'low'` on `briefs['1-2']` (rule 5; Engine's item 6); turn every thorn hollow (the sections of "The thorny floor", Where) from `soft` to `hurt: true`; raw builds clean; then the seed list, built by
    the tool on raw builds (it calls `buildGen2Stage`, not the game's routing), on R-165.112's head.
 3. **After Engine's push 3** (routing, the old 1-2 deleted, help on N4): the tier bots, stills, clips, every gate, the report.
 
@@ -263,7 +268,11 @@ The thorn floor's look goes to Matt on Engine's still. Keep building while they 
    can hurt; a put-back lands on a ledge that is not a pillar, short of its mushroom (RealPlay falls from the entry ledge, from each
    pillar and past the last cap, the put-back x printed); Normal loses exactly one heart a fall and Easy none, with the REAL
    `loseLife` and `heartFall` (RealPlay stubs loseLife, realPlay.ts:144: say how, one run pasted, D37).
-4. [2, the blooms after item 6] Petals, blooms and the find, per that section: the low-road rule's smallest spare; no bare
+4. [2, the blooms and the arcs after item 6] PETALS LOW (rule 5), a w1.stage12.test check on the BUILT stage, every listed seed,
+   both settings: every petal (a `flower` or `leaf`, what the quota counts) has a main-road piece straight under it with its top
+   20 to 50 px below the petal, and none is over a gap, a hollow or a pillar; breaches printed by section, 0. Before item 6 the
+   engine's arcs breach it: named, not fixed. A breach from a reused section is a PUSHBACK (its tag comes off), never an edit to
+   it. Then petals, blooms and the find, per that section: the low-road rule's smallest spare; no bare
    off-path landing on the built stage; the note on N20's socket on every listed seed; the sealed exit on a short run with Dot's
    line (a still each way).
 5. [2] Variety, comfortably past the bars, by a check YOU write in w1.stage12.test.ts on `stageVariety` (src/game/stageVariety.ts;

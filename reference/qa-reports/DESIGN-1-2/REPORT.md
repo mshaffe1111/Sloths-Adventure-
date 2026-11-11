@@ -1,4 +1,4 @@
-# Designer report: the 1-2 packets (R-165.11), attempt 6, 2026-11-11 5:32 PM ET, branch t-design-1-2, cites at t-int-1-1@53bd446a
+# Designer report: the 1-2 packets (R-165.11), attempt 6, 2026-11-11 5:35 PM ET, branch t-design-1-2, cites at t-int-1-1@53bd446a
 **Method used:** reference/methods/dispatch-packet.md; C1's packet as the shape; the packet Critic's method update applied (the
 probe runs the packet's OWN brief and prints each job's dealt types against the sections that answer them).
 **Lessons applied:** D19 (the built stage, not sockets), D25 (time from C1's measured history, as a range), D32 (tool flags from
@@ -24,8 +24,7 @@ No screens (packets). Tables checked for broken code spans; times from `date`; e
    (11 of the pool). It is Engine item 5, beside the Critic's V3 line.
 2. **Caches cannot be petals on a harvest stage.** The quota is 87.5% of all petals laid: 4 to 7 petals a roll may sit off the low
    road, and three fork ends are 9. The game already has the answer: a `fruit` pickup counts toward the goal and is not in the
-   quota (engine.ts:3002, :3073; goals.ts:51). Engine item 6 lays one for every off-road pickup on a harvest stage. ACCEPTED by the
-   lead, 11-11 4:47 PM ET.
+   quota (engine.ts:3009-3010, :3080; goals.ts:57). Engine item 6 lays one for every off-road pickup where the brief asks. ACCEPTED 4:47 PM ET.
 3. **A required section is fitted by its phases, a reward node by nothing else** (pipeline.ts:1348): attempt 1's note hollow would
    have fitted no node. It now carries `phases: ['sho', 'ten']`.
 4. **Attempt 1's probe ran another brief** (the Critic's line 1 is right). probe12.ts is kept and labelled as what it was.
@@ -35,11 +34,12 @@ No screens (packets). Tables checked for broken code spans; times from `date`; e
   bounce combine to 1-1 or the graph is dropped and named. It belongs with R-165.120 (the yield).
 - **DESIGNER help.md §5** (failures counted through a lost life, one system with assist.ts) before 1-2 reaches testers.
 ## 5. Unresolved
-- Nothing is open with the lead (4:58 and 5:10 PM ET rulings applied). CONTENT attempt 6 (the Critic's two attempt-5 lines: 32 sections named never mirrored, with a test; one quiet row corrected to
-  the full run's print) and ENGINE attempt 5 (D43) are with the packet Critic.
+- Both packets are with the packet Critic: CONTENT attempt 6 (32 sections never mirrored, one quiet row corrected, petals low), ENGINE attempt 5 (D43, three wording fixes).
 - The ruling's `Y`, `F` and a drop are no beat to the inspector (flown): each is laid between two beats, never last. The first
   mix I flew (`J N J Y`, a jump-down drop) broke the quiet line on 23 of 51 rolls and is not in the packet.
-- Thin supply cells are named in notes §8: eight job-and-type cells hold one section each (the three test cells hold two).
+- Petals LOW on the bark (BRIEF-1-2 "must", the story keeper 5:33 PM ET): my "a petal over every cap" was wrong, and the pipeline
+  hangs a 3-petal arc over most gaps by itself (pipeline.ts:2178-2185): CONTENT rule 5 and done-item 4, ENGINE item 6 (`petals: 'low'`).
+- Thin supply cells: notes §8 (eight job-and-type cells hold one section each; the three test cells hold two).
 - supply12 proves tags and counts with stand-ins, not heights: the builder's raw builds are the proof of reach.
 - Not run by me: the tier bots or stage.ts on a 1-2 that does not build yet. The thorn bed has not been drawn.
 - roadmapcheck fails in my container on commits from branches not fetched here; I added no roadmap row.
@@ -56,5 +56,5 @@ reference/handoffs/designer.md rewritten in this commit.
 ## Benchmark (the Designer's part)
 Attempt 1: about 3:28 PM to 3:51 PM ET (packet), 3:53 to 3:59 PM (Engine packet). Critic's audit back 4:25 PM. Attempt 2: 4:26 PM
 to 4:47 PM. The Critic's second audit back 4:57 PM. Attempt 3: to 5:03 PM, attempt 4 to 5:05 PM. The third audit back 5:10 PM. Attempt 5: to 5:24 PM (D43 to 5:30). The fourth audit back 5:31 PM. Attempt 6: to 2026-11-11 5:32 PM ET.
-Four review rounds. What would have saved the first: running the packet's own brief before writing the pool; the second:
-checking each run-out against the quiet line; the third: counting each new beat per roll; the fourth: asking what each section is mirrored.
+Four review rounds. What would have saved each: 1 running the packet's own brief before writing the pool; 2 checking each run-out
+against the quiet line; 3 counting each new beat per roll; 4 asking what each section is mirrored. The brief's "must" list, line by line, would have caught the petals.

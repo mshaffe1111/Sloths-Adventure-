@@ -24,9 +24,14 @@ never raise the quota.
 - What is 1-2's alone is a ROW: in World 1's data (w1.ts), in the listed-stage table (item 1), in the reach table (item 3).
 - Each item ends with **Any stage** (what the next stage needs: rows only) and how that is proven. The fixture for those proofs
   is test-only: stage 1-3's config given World 1's kit, a 3-seed stub list and stub rows INSIDE the test (nothing shipped names it).
+  HOW a test adds its rows: the three tables are read through one small function each (the listed-stage table, the reach
+  table, `provenSeedFor`'s lists) that takes an optional extra-rows argument or a test-only `with...Rows(rows, fn)` wrapper that
+  restores the table when `fn` returns; no test writes a shipped file. The fixture's 3 seeds need only BUILD on both settings:
+  they are not held to the seed list's clean bar (that bar is 1-2's list's, Content's).
 - The check, printed in REPORT.md after each push: `grep -rn "'1-2'" src/game src/components tools/engine --include=*.ts
   --include=*.tsx`. Every hit is a data row (worlds/, the two tables, provenSeeds.ts, finds, story and Dot data), the testers'
-  course (`CTEST_STAGE_ID`), or a test. A hit that is a branch in engine code fails the item. Beside it, every `'1-1'` branch you
+  course (`CTEST_STAGE_ID`), or a test. Allowed BY NAME until item 7 deletes the old 1-2: the old builder's four
+  `plan === '1-2'` branches (protoStage.ts:1496, :1514, :1664, :5330). Any other hit that is a branch in engine code fails the item. Beside it, every `'1-1'` branch you
   touched, as before and after.
 
 ## Why it matters
@@ -60,7 +65,7 @@ never raise the quota.
 
 ## Files
 - WRITE: src/game/gen2/listed.ts (NEW: the listed-stage table, item 1), pipeline.ts, reach.ts, verdicts.ts, verdicts.types.ts,
-  promises11.ts, nodeCode.ts, types.ts (the `hurt` place flag, the manifest's `hurtFloor` row, the brief's `offRoad` and `help`
+  promises11.ts, nodeCode.ts, types.ts (the `hurt` place flag, the manifest's `hurtFloor` row, the brief's `offRoad`, `petals` and `help`
   fields, a piece's `help` mark and the built stage's taught-before field, nothing else); src/game/engine.ts, types.ts
   (`Platform.pit` gains `'hurt'`), levelCheck.ts and easyMode.ts (how `doubleAllowed` is asked, item 5; `EARLY_DOUBLE` itself is NOT widened), w1Pits.ts, stagePreload.ts (the bed's
   files), helpLadder.ts (item 7 only), stageGenerator.ts, testlink1_1.ts, buildAhead.ts; src/components/WorldMap.tsx;
@@ -136,7 +141,8 @@ never raise the quota.
 - **Any stage:** a world lays a hurt floor with a manifest row, `hurt` on its places and a painter. Proof: a test with a STUB kit
   that is not World 1's (its own `hurtFloor` row with another lesson name and depth, one section with a `hurt` gap): the roll
   lays the floor at that depth, RealPlay loses a heart on Normal and none on Easy, `hazard.untaught` reads that lesson name, and
-  the same kit with the row removed fails by name. The grep shows no "thorn" in pipeline.ts, verdicts.ts, promises11.ts or engine.ts.
+  the same kit with the row removed fails by name. The grep shows no NEW "thorn" in pipeline.ts, verdicts.ts, promises11.ts or
+  engine.ts (engine.ts holds 23 today, World 3's vines: the count before and after, printed).
 - Gates: lockall against your base: nothing differs (no shipped stage lays a hurt place yet); drawcheck (limits unchanged,
   tools/perf/limits.json), artcheck, `npx vite build` (no asset over 4 MiB) and chunkcheck.
 - **The still is yours and it is Matt's hold point** (CLAUDE.md "Show first"; the lead, 11-11): one hollow with a 3-cap chain,
@@ -202,7 +208,7 @@ never raise the quota.
   <file.json>` prints "0 of 16 builds differ" and exits 0 (exit 1 on any difference). lockall: NOTHING differs (the old 1-2
   included); the full suite.
 
-**6. Off the road pays in bonus blooms on any stage whose brief asks (1-2's does). (Push 2; RULED by the lead, 11-11 4:47 PM ET: "exploring always pays")**
+**6. Off the road pays in bonus blooms, and petals stay low, on any stage whose brief asks (1-2's does). (Push 2; RULED by the lead, 11-11 4:47 PM ET: "exploring always pays")**
 - A harvest's quota is 87.5% of the PETALS laid (goals.ts:21, :57: flowers and leaves), so a petal off the natural road costs a
   player who stays on it; with 3-4 forks a roll there is room for 4 to 7 (CONTENT packet "Petals"). A `fruit` pickup already
   counts toward the goal when gathered and is never in the quota (engine.ts:3009-3010, :3080).
@@ -213,8 +219,14 @@ never raise the quota.
   The engine's harvest top-up and trim (pipeline.ts:292, :2187-2196; stageGenerator.ts capHarvest) count and move petals only.
 - Done-tests: a raw 1-2 build: every pickup over a non-main piece is a `fruit`; the quota (`withGoals`) equals 87.5% of the
   flowers on main pieces; a RealPlay run that gathers a bloom sees the goal count rise by one. 1-1 unchanged.
-- **Any stage:** a brief field, no id and no objective. Proof: the fixture stage with `offRoad: 'fruit'` on its stub brief lays
-  fruit off the road, and without the field lays what it lays today.
+- PETALS LOW (reference/engine/BRIEF-1-2.md:21, a "must"; the story keeper through the lead, 11-11 5:33 PM ET): the pipeline lays
+  an arc of 3 petals 70-120 px up over about 7 gaps in 10 that are 90 px or wider (pipeline.ts:2178-2185), so on a chain or a
+  thorn dip petals would hang in the bounce. A second brief field, `petals?: 'low'`: where a brief sets it, no arc is laid over
+  any gap; pickups come only from `pickup` sockets (at their `dn`) and the harvest top-up, which is low already (:2193, 34 px
+  over a main piece 200 px or wider). Content sets it on `briefs['1-2']`. Done-test: a raw 1-2 build, 6 seeds, both settings: no
+  `flower` is over a gap or more than 50 px over the piece under it; the laid count still reaches the harvest's (`quota.lay`).
+- **Any stage:** two brief fields, no id and no objective. Proof: the fixture stage with `offRoad: 'fruit'` and `petals: 'low'`
+  on its stub brief lays fruit off the road and no arc, and without the fields lays what it lays today.
 - Gates: lockall: nothing differs, 8-2 named in the output as unchanged. A still of a bloom beside a petal in 1-2, both ways: they must not look alike (the `fruit`
   draws as a classic bloom, the petal as Meeca's painted petal, vectorArt.ts:1087-1092); if they do, name it for the art pass.
 
@@ -274,5 +286,6 @@ PUSHBACK.md and one message, then stop.
 ## Attempt
 5 (attempt 1 REJECTED at f60e6503, 6 lines; attempt 2 at 35364c97: all 6 closed, 3 new lines; attempt 3 at 89005905 met them;
 attempt 4 at 7ed328b6 applied the lead's rulings of 4:58 PM ET, item 0 struck, and PASSED with two notes, written in at 3864e805;
-attempt 5 applies the lead's standing rule D43: each item for any stage from data, proven on 1-2, with its "Any stage" proof.
+attempt 5 at 65d31898 applied the lead's standing rule D43: each item for any stage from data, proven on 1-2, with its "Any stage"
+proof; the Critic: sound, three wording fixes, written in 2026-11-11 5:35 PM ET with the story keeper's must (item 6: petals low by a brief field).
 Each line is answered in DESIGN-1-2-notes.md §9)
