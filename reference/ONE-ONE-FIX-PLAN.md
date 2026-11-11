@@ -78,3 +78,9 @@ Test link A ships A1 and A2 together ("A"), so the put-back loop never ships wit
   money allows; if not, Matt is told plainly before the test link goes out.
 - After A1 every pit in 1-1 is harmless but looks the same as a deadly one elsewhere. The Architect's "lethal vs soft" visibility
   work (R-165.61) and the re-lay (B1) must make the two look different.
+
+## The lead's ruling on ADR-001's scope (11-11)
+ADR-001 §3 freezes an "easy-any" scope for the verdicts. For E0a the lead narrows it to 1-1 only: the verdicts gate 1-1's rolls;
+every other stage keeps today's closed-form checks and reports the verdicts as notJudged, until each world is flown and moved on
+purpose. Reason: only 1-1's reach has been flown (reach.md) and only 1-1 is being re-laid; judging other worlds by numbers flown on
+1-1 would move stages nobody has looked at. The Architect's ADR-001 gets this note when its branch merges.

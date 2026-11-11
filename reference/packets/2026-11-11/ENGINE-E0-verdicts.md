@@ -26,11 +26,14 @@ On 11-07 the old check reported no fall in 1-1 cost a life while the testers los
 - Only 1-1 may move, proved this way: in a worktree of origin/main, `npx tsx tools/engine/lockall.ts --layouts 16 --out
   tools/engine/lockall-main-<ver>.json` BEFORE your first change (the 0.9.4 lock is stale for 1-1, and A1 already moves 1-1), then on
   your branch `npx tsx tools/engine/lockall.ts --check tools/engine/lockall-main-<ver>.json --intended 1-1`. About 5 min each.
+  Other stages' built `gen2` object (5-7, 5-9, W6-W8) gains `verdicts` and `drops`, which lockall hashes (lockall.ts:27): so
+  tools/engine/lockall.ts is in WRITE, to hash `gen2` without `verdicts` and `drops`; a stage's `gen2` may differ only in those two
+  fields, and the lock report names it (the packet Critic's option (a)).
 - verdicts.types.ts is not on t-engine-putback: first `git checkout origin/t-r165-61-verdicts -- src/game/gen2/verdicts.types.ts`
   (c4687177), byte-identical.
 - The first-run picker (testlink1_1.ts, gen2Roll11's branch, saveFile.ts, firstRun11.ts) is NOT in this packet (E0b).
 ## Files
-- WRITE (PACKETS.md's E0 list, minus the picker): NEW reach.ts, verdicts.ts, verdicts.test.ts; src/game/gen2/verdicts.types.ts (the
+- WRITE (PACKETS.md's E0 list, minus the picker, plus tools/engine/lockall.ts as above): NEW reach.ts, verdicts.ts, verdicts.test.ts; src/game/gen2/verdicts.types.ts (the
   checkout above); pipeline.ts; types.ts; promises11.ts; seedList.ts; levelCheck.ts; physics.ts comments; provenSeeds.ts; the new
   lockall record; tools/engine/seedlist.ts; tools/engine/rulers.ts; reference/handoffs/engine-core.md (added to E0's list by the lead,
   11-11). C1 builds on E0a's branch (the one integration branch PACKETS.md:14 names). Fix A2 runs at the same time on t-engine-help and touches engine.ts, padControl.ts,
