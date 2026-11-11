@@ -34,3 +34,14 @@ stage that hasn't landed its first. The best of these start in 1-2 or later worl
 | 13 | Mirage platforms and scent ribbons | Breaks the first art rule: what looks standable must be standable (roles/CONTENT.md). Scent trails as a guide may come back in World 3. |
 | 4 | Time moves only when Pokey moves | As a whole-game mode it removes the skill the game teaches; stuck children are served by the help ladder (R-165.62). Could return as one puzzle-room type under R-165.96. |
 | 16 | Shrink and grow | Every reach number, verdict and band changes with his size; too costly before launch. Parked with R-165.97 for later. |
+
+## The second part, ideas 24-30 (sent minutes later)
+| # | Idea | Where | The lead's read |
+|---|---|---|---|
+| 24 | Heartbeat: stillness calms him; below 50 BPM enemies slow to half for 8 s | folded into R-165.94 (stillness as his strength) | The calm-slows-the-world part is the same story beat as the algae camouflage. The heart-rate meter and stamina drain are cut: another HUD gauge on a phone screen, and the help ladder already serves stuck kids. Watch for bush-spam if bushes cluster. |
+| 25 | Rodeo: ride a charging tapir, anteater or caiman | parked in R-165.97 | A mount system with new animation art for each animal; a big build after launch. |
+| 26 | Tethered escape with Meeca: one anchors, the other swings | parked in R-165.96 (Meeca puzzles); story keeper to see it | A fine fit for a Meeca stage (5-M exists); two-body physics is heavy. |
+| 27 | Mimic forest: predators that look exactly like bushes, shown only at checkpoints | parked in R-165.97 WITH a rule | As written it breaks "danger must look like danger" (roles/CONTENT.md). Only with a tell a player can always see (a blink, a twitch) and never in World 1. |
+| 28 | Draft the next section: a totem offers two cards, the next chunk builds in front of him | NEW R-165.98, Important | Uses what the generator already does (sections, and 1-1 already has a two-answers section); lets a player pick the kind of challenge. Needs every section to start and end at a set height. |
+| 29 | Pollinator bloom: dead forest blooms where he walks; the exit opens at 85% | folded into R-153 (other stage types) | A great look, but it needs a dead-wood art set (a Hugging Face picture list for Matt). |
+| 30 | Shrinking safe zone in a four-tree arena | folded into R-153 (other stage types) | A non-linear arena type; the zone moves at 60% of his speed at most. |
