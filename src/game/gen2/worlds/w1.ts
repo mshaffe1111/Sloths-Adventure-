@@ -403,7 +403,7 @@ const twistHighLeaps = section({
 const finishHopBounce = section({
   id: 'w1-hop-bounce', floor: 'hop', name: 'bounce walls', phases: ['sho', 'ketsu'], difficulty: 4, needs: ['jump'], teaches: 'bounce',
   versions: [{ id: 'walls', groups: [gRest([150, 210]), gBounceWall(), gBounceWall(), gLogHop()] }, { id: 'wall-leap', groups: [gRest([150, 210]), gBounceWall(), gLogHop(), gBounceWall(), gDip()] }],
-  feel: [], parked: 'C1: out of 1-1 (fewer bounce pieces): its cliff 225-240 is a lip the bounce alone nearly clears', not: NOT_11, rating: 4,
+  feel: ['1-3'], not: NOT_11, rating: 4, // (C1: out of 1-1: fewer bounce pieces; its cliff 225-240 a lip the bounce alone nearly clears)
   source: "w1Sections '1-1' finish 'hopBounce' (on main 306-311): bounceWall, then bounceWall + run 60-90 + logHop, or bounceWall + leap",
 });
 const finishBounceRun = section({
@@ -601,7 +601,7 @@ const twinBounce = section({
     pieces.push({ ...floor(`${k}o`, [300, 360]), place: { kind: 'jump', after: top, dy: [rise + 90, rise + 110], share: [0.25, 0.35] } });
     return { pieces, sockets, last: `${k}o` };
   }, gStile([40, 76, 40])] }))),
-  feel: [], parked: 'C1: out of 1-1 (fewer bounce pieces): its perched lips (110-130) a single climbs', not: NOT_11, rating: 4,
+  feel: ['1-5'], not: NOT_11, rating: 4, // (C1: out of 1-1: its perched lips (110-130) a single climbs; fewer bounce pieces)
   source: 'W1-NEW-SECTIONS #6: two (or three) perched mushrooms, each a step higher, then down by stair or drop; the pair on one beat (LEDGER-11-02:33)',
 });
 /** #7 */
