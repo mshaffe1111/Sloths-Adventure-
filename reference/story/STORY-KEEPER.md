@@ -268,3 +268,32 @@ branch carries the rejected 11-04 World 1 rebuild in src/, so NEVER build or rel
 - The teach line plays once only. Dot is silent through set-backs except at these points, and each piece starts its count fresh.
 - Lead's spec: reference/specs/help-lines.md on ccr-ca657d3c-n09zty (0ba1f511). The keeper reviews the BUILT lines and pictures (stills
   from the Engine member) as a done-item of ENGINE-R-165.62-A2.
+
+## 10. Calls, 11-11 evening (5:32 PM ET)
+
+**A2 help stills: OK on attempt 2** (t-engine-help@324cd3cc). The NO picture is now a solo forward leap (the arms-up pose read as a
+cheer). The YES picture is the same mossy rock step that grows in play. Dot's bubble clears 8 s after a line, and always when the
+offer opens. Nothing plays after a no.
+
+**GAME-MAP draft (t-design-game-map, reference/plans/GAME-MAP.md), the story read sent to the lead:**
+1. 3-7 "Dot's pollen glow trail": NO. Dot can't remember the ferns (STORY-REWRITE:387-395), and a trail from her is a pointer. Use the
+   script's own clue instead: crouch beside a fern and the right one rustles.
+2. 5-1 "don't stop": YES, on four conditions.
+   - He goes DROWSY: he yawns and starts to sit (:679, :820). A tap wakes him. It costs seconds, never a heart.
+   - It only ever punishes stopping. A creep counts as moving: "Slow is not stopped, dear" (:642). No slow, late or hurry wording.
+   - The timer pauses while Dot talks, at rest points and at flags.
+   - Easy gets a longer timer. The teach is the carved "POKEY. DON'T SIT. M." and Dot's line "Rules. Don't sit."
+3. **Engine, before the freeze:** the help ladder (A11) needs "a speaker per world: Dot, or silent". Dot is gone from halfway through
+   World 6 until she is back in World 8, and Flicker never speaks in play (GAP-MAP:51). Through that stretch, help steps grow without a
+   line.
+4. 3-6's firefly jar becomes World 3's own light (a fungus cap or a glowworm light). Flicker at 6-6 is the first firefly. 8-4's jar is
+   fine because it releases the fireflies. The jar in 8-7 refills at flowers, never by catching fireflies.
+5. 5-6: running LEFT is right, because Meeca ran back toward home. Extra carved marks from her are new story and go to Matt. They are
+   not notes (W5's note is in 5-2). Use scratched petals with at most one word-mark, and the words come to me.
+6. Lured hunters (6-5, 8-8, 9-6) are chased off, tossed or blown away. They are never eaten or burned (the no-remains ruling).
+
+Still to come to me: Dot's 1-2 thorn line (an empty slot in the re-lay); the words of the note in Under the Ruins (SECRET-LEVELS); 1-2's
+re-lay packet (the petals stay LOW on the bark, BRIEF-1-2).
+
+**A new lead is coming** (Matt's decision, relayed by the lead at 5:29 PM ET). Brief it from this file when it messages, then route
+everything to it.
