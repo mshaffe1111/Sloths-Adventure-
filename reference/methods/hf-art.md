@@ -4,7 +4,9 @@ far+sky pictures in about 3 hours, for about $12 of GPU. Owner of the last updat
 
 ## When to use it
 Any painted art for the game: backdrops, props, stills. Painted art is required for anything that changes a major part of the look
-(STAGE-RULES §4). Never hand Matt a Gemini prompt.
+(STAGE-RULES §4). Hugging Face FIRST (Matt, 11-11 3:48 AM ET: "You can use Hugging Face whenever you need to. That's the lead's job to
+determine what's needed. I prefer doing that before I go to Gemini"): the lead decides each job (no picture list waits on Matt any more);
+prompts for Matt's own Gemini sheets only where Hugging Face can't do it. Budget: $72 total, no top-ups, about $15 kept in reserve.
 
 ## Steps
 
