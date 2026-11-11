@@ -32,8 +32,8 @@
  "team": [
   {
    "role": "Engine",
-   "task": "fix A2: Critic found steps make mushroom pieces harder; attempt 3 (stairs) building",
-   "status": "working"
+   "task": "fix A2 attempt 3 (stairs) built; Critic re-checking",
+   "status": "reported"
   },
   {
    "role": "Engine",

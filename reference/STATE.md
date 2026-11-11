@@ -175,6 +175,11 @@
   (double jump engine.ts:2211, bounce :4897), suite 777/780/911 all 0 fail, self-test planted-red. Merge note: report.py conflicts with
   t-w11-analyst in 3 places; whoever merges second ports the `use` branch and MOVES block by hand (analyst's report.py counts `move`
   only). After A2 merges: LOG_EVENTS.md `use` row; CI to run report.py --self-test. Not merged: rides with the release PR.
+- 11-11 5:46 AM ET: A2 attempt 3 in (t-engine-help@2ad78d57): stairs on the ground (faces <= 60, treads 80, top 160), mushrooms as
+  road, sweep red on 324cd3cc (4,369 breaches) and green now, chain-back s7 and hop-bounce s1 pass with plain jumps after the steps, suite
+  2512/0. Lead looked at the 08 stills: Pokey on the stair, nothing in the air. Lead ruling on the 228 Easy / 253 Normal rises with no room
+  for a stair: no planks now; the C1 re-lay lays only rises a stair fits or a plain jump clears (add to the C1 packet); Dot must never
+  promise a step that cannot grow (sent to the Critic as a REJECT condition). Delta re-audit sent to session_01FhBbYLqBBBn59SLSAARu26.
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,

@@ -90,3 +90,7 @@ The 11-06 rule (no made things in the home forest: rope, planks, sawn or carved 
 all art (Content applied it to all four cut sets). Today's 1-1 cut atlas (w1-cut.webp) draws 5 planks. They stay until the re-lay; the
 re-lay (B1, C1) replaces each with a natural piece of the same footprint (a flat-topped fallen log or a cut stump from Matt's batches),
 and the C1 packet names it as a done-item.
+
+
+## Lead ruling 11-11 5:46 AM ET (A2 attempt 3, for the C1 re-lay packet)
+A2's help grows a stair (faces 60 px or less, treads 80) under a rise only where there is room; 228 Easy / 253 Normal rises on today's 1-1 have no room, so nothing grows there. No planks are added for them. The C1 re-lay lays only rises that a stair fits or a plain single jump clears, so every rise in the new 1-1 can be helped. C1's packet carries this as a done-item checked by A2's sweep.
