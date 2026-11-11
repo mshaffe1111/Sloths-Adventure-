@@ -498,8 +498,9 @@ async function walk(browser, base, save, size, devBase) {
     await page.waitForFunction(() => typeof window.__engine === 'function' && !!window.__engine()?.helpState?.().on, null, { timeout: 30000 });
     await settle(4000);
     for (let n = 0; n < 16 && !(await page.locator('.ho-scrim').count()); n++) {
-      // (dropped under the middle of the stage's second piece: the fall's x is the piece it counts at; A1 sets him back where he stood)
-      await page.evaluate(() => { const e = window.__engine(); const p = e.player; const pc = e.currentStage.meta.pieces[1]; p.x = (pc.x0 + pc.x1) / 2; p.y = e.currentStage.config.levelHeight + 140; p.vy = 300; p.grounded = false; });
+      // (dropped under the middle of the first piece where a step can be offered (the engine's canGrowAt: re-pinned on the re-laid 1-1,
+      // INT-1-1; the second piece offered nothing there): the fall's x is the piece it counts at; A1 sets him back where he stood)
+      await page.evaluate(() => { const e = window.__engine(); const p = e.player; const pc = e.currentStage.meta.pieces.find((q) => e.canGrowAt(q) && (q.x1 - q.x0) > 400); p.x = (pc.x0 + pc.x1) / 2; p.y = e.currentStage.config.levelHeight + 140; p.vy = 300; p.grounded = false; });
       await page.waitForFunction(() => { const e = window.__engine(); return !!document.querySelector('.ho-scrim') || (e.player.grounded && e.player.y < e.currentStage.config.levelHeight); }, null, { timeout: 8000 });
       await settle(700);
     }
