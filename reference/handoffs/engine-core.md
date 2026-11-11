@@ -5,6 +5,22 @@ on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engi
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
 
+## 0d. Lane EN-G, guards (t-engine-guards, 11-11): the loop, saves, the generality gate
+- **The loop (R-165.116):** engine.ts `loop()` keeps `acc`, real time not yet played, and plays it in whole 1/30 s steps (at most 3 a
+  frame; past that the rest is dropped). A frame within 0.5 ms of 33.3 ms is exactly one step and its hair is let go (so a 59.94 Hz
+  screen never slips a frame). `lastRenderTime` is the time of the last frame that ran; the governor, the recorder and the perf log see
+  that true gap. Every step is exactly 1/30 s, the same as realPlay's `DT`, so the bots and the browser now play the same physics.
+  Proof: `src/game/frameLoop.test.ts` (48-144 Hz, struggling phones, one late frame, a stall). Still open: audit A-05 (the camera's
+  11 px rise cap is per update, so a 67 ms frame lifts 22 px; the camera owner's fix) and A-06 (a paused stage redraws every frame).
+- **Saves (R-165.117):** saveFile.ts has ONE entry limit, `MAX_ENTRY_CHARS` 16,000. `src/game/saveFill.ts` (a test kit, never imported
+  by the game) fills every save key through its real writer at its largest; `saveRoundTrip.test.ts` round-trips it and fails when a
+  save key has no filler, an entry passes half the limit, or the file passes 60% of `MAX_SAVE_BYTES`. A new save key: add its filler.
+  0.9.5's own saves are `src/game/fixtures/save-0.9.5-*.json` (made by `tools/save/oldSaves.ts` in a worktree of that release).
+- **The generality gate (R-165.123):** `npx tsx tools/engine/generalitycheck.ts` (`--list` shows every hit). Engine scope and every
+  exemption, with its reason, are at the top of the tool. Its debt is `tools/engine/generality.known.json`: shrink-only both ways. When
+  you move a literal into world data or a brief, lower that entry's `count` in the same commit, or the gate fails. Never add to the list:
+  put the fact in world data. A new non-test .ts under src/game/gen2/ (outside worlds/) is engine code from its first commit.
+
 ## 0c. Rulings and facts to keep (INT-1-1, 11-11)
 - **The help promises only what gets him through** (the lead's ruling): `engine.canGrowAt(piece)` = something grows AND
   `stepPlan(...).unsolved === 0`. HelpLadder's canGrow is that call (Easy's step at 8, Normal's offer at 12, the re-ask). The pieces where

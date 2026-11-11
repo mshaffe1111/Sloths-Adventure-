@@ -1,0 +1,46 @@
+// (kept as .txt; run from the repo with Playwright) node loopcheck.mjs <port> <outDir>: the real game in Chromium, 1-2, upright and sideways; measures the live loop for 6 s at full
+// speed and 6 s with the CPU slowed 4x: frames a second, game seconds per real second, every step's size. Screenshots each run.
+import { createRequire } from 'node:module';
+const require = createRequire('/home/user/Sloths-Adventure-/package.json');
+const { chromium } = require('playwright');
+const [port, out] = process.argv.slice(2);
+const b = await chromium.launch();
+const res = [];
+for (const [name, vp] of [['up', { width: 390, height: 844 }], ['side', { width: 844, height: 390 }]]) {
+  const p = await b.newPage({ viewport: vp, deviceScaleFactor: 1 });
+  const errs = [];
+  p.on('pageerror', (e) => { if (!/AudioParam/.test(e.message)) errs.push(e.message); });
+  await p.goto(`http://127.0.0.1:${port}/?nodemo=1&lessons=off`);
+  await p.waitForFunction(() => typeof window.__play === 'function');
+  await p.waitForTimeout(1500);
+  await p.evaluate(() => window.__play('1-2'));
+  await p.waitForTimeout(3000);
+  for (let i = 0; i < 6; i++) { const g = p.getByText('Got it!'); if (await g.count()) { await g.first().click().catch(() => {}); await p.waitForTimeout(300); } else break; }
+  await p.waitForTimeout(1500);
+  const cdp = await p.context().newCDPSession(p);
+  for (const slow of [1, 4]) {
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: slow });
+    await p.waitForTimeout(1000);
+    const r = await p.evaluate(async () => {
+      const e = typeof window.__engine === 'function' ? window.__engine() : window.__engine;
+      const upd = e.update.bind(e);
+      const ren = e.render.bind(e);
+      const dts = [];
+      let frames = 0;
+      e.update = (dt) => { dts.push(dt); return upd(dt); };
+      e.render = () => { frames++; return ren(); };
+      const g0 = e.gameTime, t0 = performance.now();
+      await new Promise((r) => setTimeout(r, 6000));
+      const g1 = e.gameTime, t1 = performance.now();
+      e.update = upd; e.render = ren;
+      const real = (t1 - t0) / 1000;
+      return { paused: e.isPaused, running: e.isRunning, fps: frames / real, speed: (g1 - g0) / real, steps: dts.length, sizes: [...new Set(dts.map((d) => d.toFixed(6)))], quality: e.quality, speedScale: e.speedScale };
+    });
+    await p.screenshot({ path: `${out}/loop-${name}-cpu${slow}.png` });
+    res.push({ view: name, cpu: `${slow}x`, ...r, errs: errs.length });
+  }
+  await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+  await p.close();
+}
+await b.close();
+for (const r of res) console.log(JSON.stringify(r));
