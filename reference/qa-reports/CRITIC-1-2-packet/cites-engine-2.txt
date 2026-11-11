@@ -1,0 +1,72 @@
+src/game/engine.ts|7462|7492|private heartFall
+src/game/engine.ts|2570|2570|heartFall|softFall
+src/game/engine.ts|2511|2518|softAt
+src/game/engine.ts|849|849|help ladder|HelpLadder
+src/game/engine.ts|844|844|softOn|softFallStage
+src/game/gen2/seedList.ts|67|67|provenSeedFor|throw
+src/game/gen2/worlds/w1.ts|1118|1118|find\(
+src/game/gen2/worlds/w1.ts|1504|1504|role === 'find'
+src/game/gen2/worlds/w1.ts|1517|1527|function w1Finish
+src/game/gen2/worlds/w1.ts|1583|1583|throw
+src/game/gen2/worlds/w1.ts|64|65|pit: 'soft'
+src/game/gen2/worlds/w8.ts|183|183|heartFalls
+src/game/gen2/pipeline.ts|2120|2129|seedHome
+src/game/gen2/pipeline.ts|2129|2129|type: 'seed'
+src/game/gen2/pipeline.ts|1210|1210|pitUnder
+src/game/gen2/pipeline.ts|1550|1557|heartFalls
+src/game/gen2/pipeline.ts|2706|2730|dropsOf
+src/game/gen2/pipeline.ts|2753|2753|notJudged
+src/game/gen2/verdicts.types.ts|43|58|soft|lethal
+src/game/gen2/verdicts.types.ts|18|18|ReachScope
+src/game/gen2/verdicts.types.ts|34|34|kind
+src/game/gen2/verdicts.ts|120|120|look-lies
+src/game/gen2/verdicts.ts|87|87|scopeOf\('1-1'
+src/game/gen2/types.ts|250|251|kind: 'jump'|kind: 'pit'|kind: 'double'
+src/game/types.ts|335|335|pit\?
+src/game/stageGenerator.ts|94|96|heartFalls
+src/game/stageGenerator.ts|2896|2904|risky
+src/game/stageGenerator.ts|2960|2960|addFinds|find
+src/game/stageGenerator.ts|3031|3085|addFinds
+src/game/stageGenerator.ts|2851|2851|1-1|buildAhead|ahead
+src/game/stageGenerator.ts|2871|2871|gen2Roll11
+src/game/stageGenerator.ts|2889|2893|w1World
+src/game/stageGenerator.ts|3099|3101|builtOnGen2
+src/game/stageGenerator.ts|23|23|CTEST_STAGE_ID
+src/game/stageGenerator.ts|2862|2862|CTEST_STAGE_ID|ctest
+src/game/w1Pits.ts|52|56|soft|leaf
+src/game/w1Pits.ts|148|155|leaf|bed
+src/game/protoArt.ts|1217|1217|pit|Pits
+src/game/stagePreload.ts|70|70|w1|pit|cut
+src/game/stagePreload.ts|198|198|w1|pit|cut
+src/game/gen2/promises11.ts|93|110|floor.unmarked|double
+src/game/gen2/reach.ts|83|83|judgedOnArcs
+src/game/gen2/reach.ts|86|89|scopeOf
+src/game/gen2/reach.ts|97|97|scopeFor
+src/game/finds.ts|356|356|findForStage
+src/game/testlink1_1.ts|62|76|drawNext|newPlay11|play11Seed
+src/game/buildAhead.ts|14|14|1-1
+src/components/WorldMap.tsx|350|350|1-1
+tools/engine/seedlist.ts|23|23|KITS
+tools/engine/seedlist.ts|35|35|quirrel
+tools/engine/seedlist.ts|38|48|refus|verdict
+src/game/protoStage.ts|70|70|'1-2'
+src/game/protoStage.ts|506|506|CATCH_UPS|1-2
+src/game/w1Sections.ts|334|334|'1-2'
+src/game/gen2/worlds/w1.test.ts|117|117|socket|offPath|find
+tools/inspect/tierBots.ts|6|6|1-1|seed
+src/game/realPlay.ts|144|144|loseLife
+src/game/levelCheck.ts|132|134|EARLY_DOUBLE
+src/game/easyMode.ts|107|107|doubleAllowed
+src/game/gen2/nodeCode.ts|138|141|V3
+src/game/gen2/pipeline.ts|654|661|checkCode
+src/game/engine.ts|3002|3003|fruit
+src/game/engine.ts|3073|3073|fruit
+src/game/gen2/pipeline.ts|2097|2106|pickup
+src/game/gen2/pipeline.ts|2187|2196|quota.lay
+src/game/vectorArt.ts|1087|1092|fruit|bloom
+src/game/helpLadder.ts|31|31|bounce
+src/game/helpLadder.ts|35|35|STEP_CUT
+tools/engine/seedlist.ts|11|11|buildGen2Stage
+tools/engine/seedlist.ts|34|34|buildGen2Stage
+src/game/gen2/pipeline.ts|2684|2685|unsaid
+src/game/w1CutArt.ts|69|84|plank

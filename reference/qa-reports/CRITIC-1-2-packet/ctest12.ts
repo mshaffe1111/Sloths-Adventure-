@@ -1,0 +1,12 @@
+import '../../../src/game/headlessDom.ts';
+import { buildProtoStage } from '../../../src/game/protoStage.ts';
+import { EARLY_DOUBLE } from '../../../src/game/levelCheck.ts';
+import { generateAllLevels } from '../../../src/game/worldsData.ts';
+import { createHash } from 'node:crypto';
+const cfg = generateAllLevels().find((c: any) => c.id === '1-2')!;
+const sig = (st: any) => createHash('sha1').update(JSON.stringify([st.platforms, st.collectibles, st.enemies, st.checkpoints])).digest('hex').slice(0, 10);
+const run = (mode: string | undefined) => [1, 2, 3, 4, 5, 6, 7, 8].flatMap((seed) => [false, true].map((easy) => { try { return sig(mode ? (buildProtoStage as any)(cfg, seed, mode, easy) : (buildProtoStage as any)(cfg, seed, undefined, easy)); } catch (e) { return 'T:' + String(e).slice(0, 40); } }));
+const a = run('ctest');
+(EARLY_DOUBLE as Set<string>).add('1-2');
+const b = run('ctest');
+console.log('ctest course, 8 seeds x 2 settings, with EARLY_DOUBLE + 1-2:', a.filter((x, i) => x !== b[i]).length, 'of', a.length, 'differ', a.some((x) => x.startsWith('T:')) ? '(throws: ' + a.find((x) => x.startsWith('T:')) + ')' : '');

@@ -1,0 +1,37 @@
+tools/inspect/tierBots.ts|18|22|expert: \{ normal
+src/game/gen2/worlds/w1.ts|49|49|floating: \[0.67
+src/game/gen2/pipeline.ts|1348|1348|reward
+src/game/gen2/pipeline.ts|1254|1254|const taught
+src/game/gen2/pipeline.ts|460|460|required
+src/game/gen2/pipeline.ts|589|591|lessons
+src/game/gen2/worlds/w1.ts|1418|1418|'w1-meadow': \['rest', 'arrive'\]
+src/game/gen2/worlds/w1.ts|971|1033|const BEATS
+src/game/gen2/worlds/w1.ts|1415|1462|const JOBS
+src/game/engine.ts|7462|7462|private heartFall
+src/game/stageGenerator.ts|2896|2904|risky
+src/game/gen2/worlds/w1.ts|1517|1527|function w1Finish
+src/game/goals.ts|51|51|flower|leaf
+src/game/engine.ts|3002|3003|fruit
+src/game/engine.ts|3073|3073|fruit
+src/game/gen2/pipeline.ts|292|292|harvest
+src/game/finds.ts|356|356|findForStage
+src/game/gen2/pipeline.ts|2129|2129|type: 'seed'
+src/game/gen2/worlds/w1.ts|1500|1500|function offPathFilled
+src/game/gen2/worlds/w1.test.ts|117|117|socket|find
+src/game/dotLinesData.ts|120|120|hint.1-2.follow
+src/game/dotLinesData.ts|121|121|hint.1-2.highlow
+src/game/dotLinesData.ts|148|148|way.1-2
+src/game/dotLinesData.ts|71|72|lock.sealed
+src/game/gen2/pipeline.ts|2684|2685|unsaid
+src/game/helpLadder.ts|31|31|bounce
+src/game/levelCheck.ts|132|134|EARLY_DOUBLE
+src/game/w1CutArt.ts|69|84|plank
+src/game/w1CutArt.ts|105|105|pickCut|kind
+src/game/gen2/worlds/w1.ts|1522|1522|pickCut
+tools/engine/stage.ts|326|333|1-1
+src/game/stageVariety.ts|125|125|VARIETY_BARS
+src/game/realPlay.ts|144|144|loseLife
+src/game/stageGenerator.ts|23|23|CTEST_STAGE_ID
+src/game/stageGenerator.ts|2862|2862|CTEST|ctest
+src/game/stageBackdrops.ts|22|22|2: 'w1rain'
+reference/STAGE-RULES.md|68|68|at least 2 minutes
