@@ -13,7 +13,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { FT_ADULT, FT_KID, type FirstTimer, type Q5 } from './firsttimer.ts';
+import { firstTimer, FT_ADULT, FT_KID, type FirstTimer, type Q5 } from './firsttimer.ts';
+import { setDifficulty } from '../../src/game/difficulty.ts';
 import { BOTS, calibrate, loadProfile, runTier, type Calibration, type Setting, type Tier, type TierRun } from './tierBots.ts';
 
 const tiersDir = path.join(import.meta.dirname, '../playtesters/profiles/tiers');
@@ -96,7 +97,35 @@ test('three variants a tier and setting replay exactly as committed', () => {
     for (const v of [1, 2, 3]) {
       const want = runs.find((r) => r.tier === c.tier && r.setting === c.setting && r.variant === v);
       assert.ok(want, `${c.tier} ${c.setting} variant ${v} committed`);
-      assert.deepEqual(runTier(c.tier, c.setting, v), want, `${c.tier} ${c.setting} variant ${v}`);
+      // (hearts joined the run record on 11-11, after these lines were committed: a line that has no hearts field is compared on every
+      //  field it has, and the run must then show no heart lost, in the run or in any piece (1-1 has nothing that takes one). A line
+      //  committed with the fields is compared whole)
+      const got = runTier(c.tier, c.setting, v);
+      if ('hearts' in want) assert.deepEqual(got, want, `${c.tier} ${c.setting} variant ${v}`);
+      else {
+        const { hearts, heartFalls, pieces, ...rest } = got;
+        assert.deepEqual({ ...rest, pieces: pieces.map(({ hearts: _h, ...p }) => p) }, want, `${c.tier} ${c.setting} variant ${v}`);
+        assert.deepEqual([hearts, heartFalls, pieces.reduce((n, p) => n + p.hearts, 0)], [0, 0, 0], `${c.tier} ${c.setting} variant ${v}: a heart lost on 1-1`);
+      }
     }
   }
+});
+
+// (the Critic, 11-11, for 1-2's thorn floor: a fall that costs a heart is taken inside engine.ts heartFall, never through damagePlayer,
+//  so the bot's harms did not see it. World 8's swings on Normal are the only such falls in the game today: proved there)
+test('a fall that costs a heart is counted, in the run and in the piece it happened in', () => {
+  setDifficulty('normal');
+  const ft = firstTimer('8-2', 1, BOTS.middle.normal!, { cap: 1200 });
+  const hits = ft.harms.filter((h) => h.kind === 'hit').length;
+  assert.ok(ft.heartFallXs.length >= 1, `8-2 variant 1, middle on Normal: no heart fall seen (${ft.end}); pick a run that has one, or the count is not proved`);
+  assert.equal(ft.gameOvers, 0, 'no game over in the run, so the engine\'s tally covers all of it');
+  assert.equal(hits + ft.heartFallXs.length, ft.heartsLost, 'hits + heart falls = the engine\'s own tally of hearts lost');
+  const r = runTier('middle', 'normal', 1, '8-2');
+  assert.equal(r.heartFalls, ft.heartFallXs.length, 'the tier run carries the same heart falls');
+  assert.equal(r.hearts, ft.heartsLost, 'and the same hearts');
+  assert.equal(r.pieces.reduce((n, p) => n + p.hearts, 0), r.hearts, 'every heart lost lies in a piece he entered');
+  for (const p of r.pieces.filter((q) => q.hearts)) assert.match(p.id, /^w8/, `${p.id}: a World 8 piece`);
+  // (Easy's zones are soft: the same falls are put-backs there, never hearts)
+  const easy = runTier('middle', 'easy', 1, '8-2');
+  assert.equal(easy.heartFalls, 0, 'Easy: a fall at the same places takes no heart');
 });

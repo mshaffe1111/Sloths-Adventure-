@@ -31,10 +31,14 @@ export interface TierRun {
   finishSeconds: number | null;
   lives: number;
   putbacks: number;
+  /** hearts lost in the run: `heartFalls` (a fall that cost a heart and set him back: a thorn floor, World 8's swings on Normal) plus
+   *  every hit that took one (a foe, a hazard). A fall that takes his last heart is a heart here and a life in `lives` */
+  hearts: number;
+  heartFalls: number;
   rescues: number;
   secondPressMs: number[];
-  /** the pieces he entered, in order, and in each the lives and put-backs (soft falls) it cost him */
-  pieces: Array<{ id: string; lives: number; putbacks: number; seconds: number }>;
+  /** the pieces he entered, in order, and in each the lives, put-backs (soft falls) and hearts it cost him */
+  pieces: Array<{ id: string; lives: number; putbacks: number; hearts: number; seconds: number }>;
   stuck: Array<{ x: number; t: number; piece: string | null; what: string; rescued: boolean }>;
 }
 
@@ -59,22 +63,26 @@ export function runTier(tier: Tier, setting: Setting, variant: number, stage = '
   const r = firstTimer(stage, variant, who, { cap: 1200 });
   const maxX = r.maxX ?? r.x;
   const entered = pieces.filter((p) => p.x0 <= maxX || r.end === 'shrine');
-  const tally = entered.map((p) => ({ id: p.id, lives: 0, putbacks: 0, seconds: 0 }));
+  const tally = entered.map((p) => ({ id: p.id, lives: 0, putbacks: 0, hearts: 0, seconds: 0 }));
   // (seconds in each piece: his place every 0.5 s, as the profiles' pieces.<id>.seconds count time in a section's slice)
   for (const x of r.xTrace ?? []) {
     const row = tally.find((q) => q.id === pieceAt(pieces, x));
     if (row) row.seconds += 0.5;
   }
-  const add = (x: number, k: 'lives' | 'putbacks') => {
+  const add = (x: number, k: 'lives' | 'putbacks' | 'hearts') => {
     const id = pieceAt(pieces, x);
     const row = tally.find((q) => q.id === id);
     if (row) row[k]++;
   };
   for (const h of r.harms) if (h.kind === 'life') add(h.x, 'lives');
   for (const x of r.softFallXs ?? []) add(x, 'putbacks');
+  const hits = r.harms.filter((h) => h.kind === 'hit');
+  for (const h of hits) add(h.x, 'hearts');
+  for (const x of r.heartFallXs ?? []) add(x, 'hearts');
   return {
     tier, setting, stage, variant, end: r.end, finishSeconds: r.end === 'shrine' ? r.time : null,
-    lives: r.harms.filter((h) => h.kind === 'life').length, putbacks: r.softFalls ?? 0, rescues: r.rescues, secondPressMs: r.secondPressMs ?? [],
+    lives: r.harms.filter((h) => h.kind === 'life').length, putbacks: r.softFalls ?? 0,
+    hearts: hits.length + (r.heartFallXs ?? []).length, heartFalls: (r.heartFallXs ?? []).length, rescues: r.rescues, secondPressMs: r.secondPressMs ?? [],
     pieces: tally, stuck: r.stuck.map((s) => ({ x: s.x, t: s.t, piece: pieceAt(pieces, s.x), what: s.what, rescued: s.rescued })),
   };
 }

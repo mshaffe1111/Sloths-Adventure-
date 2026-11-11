@@ -592,6 +592,10 @@ export interface FTRun {
   /** where each rescue picked him up and where each soft fall set him back (x): a gate that limits a move reads these inside a node */
   rescueXs: number[];
   softFallXs: number[];
+  /** where each fall that cost a heart took it (x): engine.ts heartFall, not soft */
+  heartFallXs: number[];
+  /** the engine's own tally of hearts lost when the run ended (engine.ts statHeartsLost: hits and heart falls since the stage last began) */
+  heartsLost: number;
   dot: DotReport;
   flags: Flag[];
   /** every jump he tried (left out of the report: the gates are worked out from them) */
@@ -777,6 +781,8 @@ export class FirstTimerRun {
   readonly harms: Harm[] = [];
   /** Easy's soft falls on land (engine.ts softFall, LV-4): no life, but a setback like one (three at a spot is a loop, and he is put past) */
   readonly softFalls: Array<{ t: number; x: number; y: number }> = [];
+  /** falls that cost a heart and set him back (engine.ts heartFall, not soft: World 8's swings on Normal, a thorn floor): where he was when it took the heart */
+  readonly heartFalls: Array<{ t: number; x: number; y: number }> = [];
   readonly stuck: StuckSpot[] = [];
   readonly puzzles: Array<{ id: string; x: number; t: number }> = [];
   private view = emptyGuideView();
@@ -951,6 +957,18 @@ export class FirstTimerRun {
         if (!this.rescue()) this.end = 'stranded';
       }
     };
+    // (a fall that costs a heart never goes through damagePlayer: the engine takes it inside heartFall. Counted by the engine's own
+    //  tally, so a soft zone, which heartFall hands on to softFall, is a put-back and never a heart)
+    if (typeof proto.heartFall === 'function') {
+      e.heartFall = () => {
+        const p = this.sim.p;
+        const at = { t: this.sim.t, x: p.x, y: p.y };
+        const lost = e.statHeartsLost;
+        const fell = proto.heartFall.call(e);
+        if (e.statHeartsLost > lost) this.heartFalls.push(at);
+        return fell;
+      };
+    }
     if (typeof proto.softFall === 'function') {
       e.softFall = () => {
         const p = this.sim.p;
@@ -2156,6 +2174,8 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     rescues: run.rescues,
     rescueXs: run.rescueXs,
     softFallXs: run.softFalls.map((f) => Math.round(f.x)),
+    heartFallXs: run.heartFalls.map((f) => Math.round(f.x)),
+    heartsLost: run.e.statHeartsLost ?? 0,
     dot,
     flags: [],
     tries: run.tries,

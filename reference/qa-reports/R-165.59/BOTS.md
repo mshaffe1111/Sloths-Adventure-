@@ -179,3 +179,17 @@ The 9.4 s stand at middle v3 (x 24316, w1-log-stair-test) was not the pit rule. 
 rescued): 164e4cf8 50 stops in 30 of 40 runs (46 at an open drop); now 2 stops in 2 runs (v2 w1-root-stair-fork, v16
 w1-twin-mushroom-fork). Stills of the v16 stop: `middle-v16-stuck-sideways.jpg`, `-upright.jpg` (x 20873, 9.6 s, a mossy block in a
 144 px dip under a ledge with a mushroom, the floor mushroom ahead). The attempt-1 stills of the v3 stand are kept: `middle-v3-stuck-*.jpg`.
+
+## Hearts in a tier run (the Critic, 2026-11-11 5:02 PM ET; for 1-2's thorn floor, CONTENT-1-2-relay.md done-item 7)
+A run line now carries `hearts` (every heart lost: hits plus heart falls), `heartFalls` (falls that cost a heart and set him back:
+engine.ts `heartFall`, not soft) and, in each piece, `hearts`. A fall that takes his last heart is a heart AND a life. On Easy the same
+falls are soft: they count as `putbacks`, never hearts. Why it was missing: the engine takes that heart inside `heartFall`, not through
+`damagePlayer`, which is the only place the bot's harms looked (tools/inspect/firsttimer.ts).
+- Proof (tierBots.test.ts, "a fall that costs a heart is counted"): 8-2 variant 1, middle on Normal, the only kind of heart fall in the
+  game today (World 8's swings): hits + heart falls = the engine's own tally (`statHeartsLost`), every heart lies in a piece he entered,
+  and Easy on the same variant takes none. With the hook taken out the test fails by name.
+- The committed 1-1 lines (calibration-main.jsonl) were made before the fields existed: the replay compares every field they have and
+  requires 0 hearts on 1-1. The next recalibration (any 1-1 change) writes the fields in, and those lines are then compared whole.
+- Not yet proved on a thorn floor: none exists until ENGINE-1-2 item 2. If its Easy set-back does not go through `softFall`, Easy's
+  thorn falls will not show as put-backs: that item's builder checks one run with `--stage 1-2 --setting easy`.
+- Seen on the way, not judged: 8-3 variant 1 (middle, Normal) 8 heart falls, 3 hits, 3 lives; 8-1 variants 1 and 2 lose 16 and 23 lives.
