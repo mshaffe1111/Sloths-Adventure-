@@ -10,6 +10,7 @@
  */
 import { headlessCanvas } from './headlessDom.ts';
 import { GameEngine } from './engine.ts';
+import { helpLineOnScreen } from './helpLadder.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { EXTRA_STAGES } from './extraStages.ts';
 import { KIT_STAGE_ID, kitStageConfig } from './kitStage.ts';
@@ -137,6 +138,8 @@ export class RealPlay {
     e.guide = (text: string, seconds: number) => {
       this.said.push({ text, x: e.player.x, y: e.player.y, t: e.gameTime });
       guide(text, seconds);
+      // (no bubble here: a help ladder line counts as on screen at once, helpLadder.ts helpLineOnScreen; DotGuide.tsx reports it in play)
+      helpLineOnScreen(text);
     };
     e.loseLife = () => {
       this.died = true;

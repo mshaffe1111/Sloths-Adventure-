@@ -24,7 +24,7 @@ import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
 import { maxGap, softFallStage } from './gen2/pipeline.ts';
-import { HelpLadder, LINE_UP_S, moveLine, pieceMoveLaid, setHelpLadder, stepPlan, stepsFor, STEP_CUT, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
+import { HelpLadder, LINE_UP_S, LINE_WAIT_S, takeHelpOnScreen, moveLine, pieceMoveLaid, setHelpLadder, stepPlan, stepsFor, STEP_CUT, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
 import { pickCut } from './w1CutArt.ts';
 import { difficulty, easeInShare, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
@@ -1464,6 +1464,10 @@ export class GameEngine {
   private update(dt: number) {
     // (the help offer is up: nothing moves until it is answered)
     if (this.helpAsking) return;
+    if (this.helpLine && !this.helpLine.shown && takeHelpOnScreen() === this.helpLine.text) {
+      this.helpLine.shown = true;
+      this.helpLine.until = this.gameTime + LINE_UP_S;
+    }
     if (this.helpLine && this.gameTime >= this.helpLine.until) this.helpLineDown();
     if (this.helpDue && this.irisOpen <= 0 && this.player.grounded) {
       const a = this.helpDue;
@@ -5082,11 +5086,13 @@ export class GameEngine {
   }
 
   /** the ladder's line up in her bubble, and when it comes down (game time) */
-  private helpLine: { text: string; until: number } | null = null;
+  private helpLine: { text: string; until: number; shown: boolean } | null = null;
   private helpSay(text: string, seconds: number) {
     this.helpLineDown();
+    // (an older line's on-screen report is stale: this one counts from its own)
+    takeHelpOnScreen();
     this.guide(text, seconds);
-    this.helpLine = { text, until: this.gameTime + LINE_UP_S };
+    this.helpLine = { text, until: this.gameTime + LINE_WAIT_S, shown: false };
   }
   /** takes the ladder's line down (DotGuide passedLine): after its time, and always when the offer opens */
   private helpLineDown() {

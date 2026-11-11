@@ -12,7 +12,7 @@ import { countedText, GuideQueue, isUrgent, noteSaid, roomMaySay, readMs, showFo
 import { MoveWatch, StruggleWatch, inDanger, type DeathCause, type StruggleHelp } from '../../game/dotGuideWatch.ts';
 import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markMoveDone, markSkillSeen, markSkipOffered, movesDone, offersSkip, seenSkills, skipTapCounts, skipTips, type DotHelp } from '../../game/dotGuideHelp.ts';
 import { recorder } from '../../game/playRecorder.ts';
-import { helpGuideLine, pushHelpLine } from '../../game/helpLadder.ts';
+import { HELP_LINES, helpGuideLine, helpLineOnScreen, pushHelpLine } from '../../game/helpLadder.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuidePlatform, type GuideView } from '../../game/dotGuideView.ts';
 import {
   aheadRect,
@@ -320,6 +320,12 @@ class GuideRun {
 
   /** the engine says he is past the spot an engine line was about (StageHint.passX): that line goes, done or not */
   passedLine(text: string): void {
+    // (1-1's help ladder: its line is keyed by its own words, and goes at once: her clock stands still while he blinks, so a "passed"
+    // that waited for its minimum time held it up, and the step line behind it, for good: INT-1-1 in the browser)
+    if (HELP_LINES.has(text)) {
+      this.queue.clear((q) => q.key === `engine:${text}`, this.clock, true);
+      return;
+    }
     const l = engineGuideLine(text, this.stageId, { dot: this.dot });
     if (l) this.queue.clear((q) => q.key === l.key, this.clock);
   }
@@ -1160,6 +1166,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         bubIn = toggle(bub, 'in', true, bubIn);
         // (its reading time counts from now, not from when it left the queue: DOT-7)
         run.queue.onScreen(run.clock);
+        // (1-1's help ladder: its line's 8 s count from now, helpLadder.ts helpLineOnScreen)
+        helpLineOnScreen(cur.line.text);
         // and Dot chirps as her bubble opens, once per line (SN-7, Polish A2's sound)
         if (cur.line.who === 'Dot' && run.chirpN !== cur.n) {
           run.chirpN = cur.n;

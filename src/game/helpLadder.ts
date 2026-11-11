@@ -35,6 +35,22 @@ export const STEP_LINE = 'Ooh, look! A step. Up you go.';
 export const STEP_CUT = 'w1-boulder-grey-moss';
 /** a ladder line is taken down this long (s of play) after it is said: her own clock holds while he blinks after each set-back */
 export const LINE_UP_S = 8;
+/** a ladder line never put on screen in this long (game seconds; Quiet, or her bubble busy) is taken down all the same */
+export const LINE_WAIT_S = 30;
+/**
+ * Her bubble tells the engine when a ladder line is first on screen (DotGuide.tsx, where the queue's onScreen is called; RealPlay at once):
+ * the line's LINE_UP_S count from then, not from when the engine sent it (INT-1-1, the Critic's find: the 8 s ran out unseen)
+ */
+let onScreenText: string | null = null;
+export function helpLineOnScreen(text: string): void {
+  if (HELP_LINES.has(text)) onScreenText = text;
+}
+/** the ladder line reported on screen since the last call, or null (the engine reads it each frame) */
+export function takeHelpOnScreen(): string | null {
+  const t = onScreenText;
+  onScreenText = null;
+  return t;
+}
 export const OFFER_LINE = "Want a little step? I won't tell anyone.";
 export const REASK_LINE = "Still want that step? It's yours.";
 
@@ -47,20 +63,23 @@ export const HELP_LINES: ReadonlySet<string> = new Set([...Object.values(MOVE_LI
  * help that her tip rules don't judge again (the ladder is the one place that decides help: a move already taught this stage is the
  * point, not a repeat)
  */
-export function helpGuideLine(text: string, help: 'teach' | 'reminders' | 'quiet', ms?: number): { key: string; text: string; kind: 'struggle'; who: 'Dot'; source: 'struggle'; soon: true; ms?: number } | null | undefined {
+export function helpGuideLine(text: string, help: 'teach' | 'reminders' | 'quiet', ms?: number): { key: string; text: string; kind: 'struggle'; who: 'Dot'; source: 'struggle'; soon: true; anyway: true; ms?: number } | null | undefined {
   if (!HELP_LINES.has(text)) return undefined;
   if (help === 'quiet') return null;
   // (`soon`: due now, so neither Tips' 30 s gap nor its busy count holds it back; a fall in progress still does)
   // (keyed as any engine line is, `engine:<words>`: the engine's "passed" for it, DotGuide passedLine, takes it down)
-  return { key: `engine:${text}`, text, kind: 'struggle', who: 'Dot', source: 'struggle', soon: true, ms };
+  // (`anyway`: it starts while he blinks after a set-back or is in the air: a player set back every 2 s is always one or the other)
+  return { key: `engine:${text}`, text, kind: 'struggle', who: 'Dot', source: 'struggle', soon: true, anyway: true, ms };
 }
 
 /**
  * Puts a ladder line in Dot's queue (DotGuide.tsx engineLine): the stage's own move tips, up or waiting, give way first (the ladder's line
  * is the better one now, about the same move; the stage's double tip stayed up until the double was done, holding the help behind it)
  */
-export function pushHelpLine<L extends { kind: string; source?: string }>(q: { clear(f: (l: L) => boolean, now: number): void; push(l: L, now: number): void }, line: L, now: number): void {
-  q.clear((l) => l.kind === 'teach' && l.source === 'engine', now);
+export function pushHelpLine<L extends { kind: string; source?: string }>(q: { clear(f: (l: L) => boolean, now: number, at?: boolean): void; push(l: L, now: number): void }, line: L, now: number): void {
+  // (at once, not after its minimum time: her clock stands still while he blinks, so a set-back every 2 s held the stage's own tip up for
+  // good and the ladder's line behind it, INT-1-1 in the browser)
+  q.clear((l) => l.kind === 'teach' && l.source === 'engine', now, true);
   q.push(line, now);
 }
 

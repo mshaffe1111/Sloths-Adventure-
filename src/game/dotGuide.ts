@@ -87,6 +87,9 @@ export interface GuideLine {
   said?: string;
   /** a first-time hazard about to hit: it does not wait out the gap between lines (it never cuts in over a line, as a warning does) */
   soon?: boolean;
+  /** starts even while he is in danger (blinking after a set-back, in the air): 1-1's help ladder line, about the move he keeps missing,
+   *  said while he is set back again and again (INT-1-1, the Critic's find: at a set-back every 2 s it never started) */
+  anyway?: boolean;
   /** one of the control test's lines (dotLines.ts): the test itself, said whatever the help setting has heard before */
   ctest?: boolean;
   /** where it came from: an engine line can be taken down by the engine ("the moment has passed") */
@@ -504,10 +507,11 @@ export class GuideQueue {
     }
     const b = this.best(now, env);
     if (!b) return null;
-    const gap = b.line.kind === 'story' && !b.line.scene ? GUIDE.storyGapMs : isUrgent(b.line) ? 0 : GUIDE.breathMs;
+    // (an `anyway` line skips the breath too: her clock stands still while he blinks, so at a set-back every 2 s the breath never passed)
+    const gap = b.line.kind === 'story' && !b.line.scene ? GUIDE.storyGapMs : isUrgent(b.line) || b.line.anyway ? 0 : GUIDE.breathMs;
     if (now - this.endedAt < gap) return null;
     if (env.hold) return null;
-    if (env.danger && !isUrgent(b.line)) return null;
+    if (env.danger && !isUrgent(b.line) && !b.line.anyway) return null;
     if (this.calm && !isUrgent(b.line)) {
       // (calm) nothing in the stage's first seconds; then the gaps between lines
       if (now < CALM.startMs) return null;

@@ -42,13 +42,22 @@ function fly(setting: 'easy' | 'normal', seed = SEED) {
     events.push(`${what} ${detail ?? ''}`.trim());
     return was.call(this, what, detail);
   } as typeof recorder.event;
+  // (the engine's own loseLife, not RealPlay's stub (realPlay.ts): every flight here ends asserting no life was lost, D37)
+  delete (r.e as unknown as { loseLife?: unknown }).loseLife;
+  const lives0 = (r.e as unknown as { lives: number }).lives;
   const asked: Array<{ reask: boolean; cut?: string; answer: (yes: boolean) => void }> = [];
   e.helpAsk = (o, answer) => asked.push({ ...o, answer });
   const piece = e.currentStage.meta.pieces.find((q) => q.k === PIECE)!;
   assert.ok(piece, `seed ${seed} lays ${PIECE}`);
   // (the take-off log: the piece's first log; walking off its right end drops him into the first rising gap)
   const logs = r.platforms.filter((p) => p.type === 'solid' && p.style === 'log' && p.width >= 300 && p.x >= piece.x0 - 2 && p.x + p.width <= piece.x1 + 2).sort((a, b) => a.x - b.x);
-  return { r, e, events, asked, piece, logs, done: () => { recorder.event = was; setDifficulty('normal'); e.stop(); } };
+  return { r, e, events, asked, piece, logs, done: () => {
+    recorder.event = was; setDifficulty('normal');
+    const lives = (r.e as unknown as { lives: number }).lives;
+    e.stop();
+    assert.ok(!events.some((v) => v.startsWith('lostLife')), 'no lostLife over the flight (the real loseLife)');
+    assert.equal(lives, lives0, 'lives unchanged');
+  } };
 }
 type Flight = ReturnType<typeof fly>;
 

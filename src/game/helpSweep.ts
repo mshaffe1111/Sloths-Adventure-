@@ -117,6 +117,8 @@ export function plainThrough(seed: number, k: string, setting: 'easy' | 'normal'
   setDifficulty(setting);
   const r = withPlaySeed(seed, () => new RealPlay('1-1', 1));
   const e = r.e as unknown as Eng;
+  // (the engine's own loseLife, not RealPlay's stub: a lost life fails the flight below, D37)
+  delete (r.e as unknown as { loseLife?: unknown }).loseLife;
   try {
     return plainRun(r, e, k, grow);
   } finally {
@@ -160,6 +162,7 @@ export function plainRun(r: RealPlay, e: Eng, k: string, grow: boolean): { ok: b
       r.frame({ right: true, jump: hold > 0, press });
       if (hold > 0) hold--;
       if (r.p.isDoubleJumping && !airPress) return { ok: false, why: `a second jump at x ${Math.round(r.p.x)}`, grown: e.helpState().grown.length };
+      if (events.includes('lostLife')) return { ok: false, why: `lost a life at x ${Math.round(r.p.x)}`, grown: e.helpState().grown.length };
       if (events.includes('softFall')) return { ok: false, why: `fell at x ${Math.round(r.p.x)}`, grown: e.helpState().grown.length };
       if (r.p.grounded && r.p.x >= piece.x1 + 20) return { ok: true, why: '', grown: e.helpState().grown.length };
     }
