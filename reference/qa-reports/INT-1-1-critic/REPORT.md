@@ -20,7 +20,7 @@ Named, not counted: the seed fruit is 4-6 px under the plate at the bounce's top
 
 ## Gates on 8cf55b8f, run by me in a detached worktree
 - PASS so far: tsc; vite build; chunkcheck (main 3,981,834 B, 12,470 spare); artcheck; knowncheck; roadmapcheck; todo markers 3 = main's 3.
-- RUNNING at the time of the verdict (3:10 PM ET): the full suite (3 shards), lockall, the help sweep --fly, c1judge, seedlist 1-1
+- RUNNING at the time of the verdict (3:08 PM ET): the full suite (3 shards), lockall, the help sweep --fly, c1judge, seedlist 1-1
   --check, tierBots.test, buildcheck, drawcheck, clipcheck, kbdcheck. This section is rewritten when they end; a red one goes to the lead at once.
 - On 996d0c63 (the first head), all run by me: suite 2,550 pass / 0 fail / 2 old todos; seedlist PASS (200, 0 refused); lockall
   101/102, only 1-1; drawcheck PASS; clipcheck PASS (83 known, list unchanged from main); kbdcheck PASS; tierBots.test 7/7;
