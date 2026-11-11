@@ -181,11 +181,11 @@ def phash(im):
 # ---------------------------------------------------------------- per-atlas rules (read from the code that draws each sheet)
 K = lambda **k: k
 RULE = {
-    'w1-cut': K(src='w1-cut atlas (art-director manifest gemini-2026-11-05)', layer='platform', mat='mossrock', draw='src/game/w1CutArt.ts:134 drawCutArt',
-                slot='landing platforms solid moss_stone (pickCut stone: h 30-140, w<=260; stump: h>90 and w<150) w1CutArt.ts:109-111', fl='grounded',
+    'w1-cut': K(src='w1-cut atlas (art-director manifest gemini-2026-11-05)', layer='platform', mat='mossrock', draw='src/game/w1CutArt.ts:120 drawCutArt',
+                slot='landing platforms solid moss_stone (pickCut stone: h 30-140, w<=260; stump: h>90 and w<150) w1CutArt.ts:105-106', fl='grounded',
                 used=['1-1'], note='gen2 1-1 only (Platform.cut, gen2/worlds/w1.ts w1Finish)'),
-    'w1-new': K(src='w1-new atlas (W1-4 art rounds, cut 2026-11-01)', layer='decor near', mat='wood', draw='src/game/w1NewArt.ts:125 drawW1Dress (one blit, behind Pokey)',
-                slot='proto.mixDress (1-1 start: the squirrels) w1NewArt.ts:125', fl='grounded'),
+    'w1-new': K(src='w1-new atlas (W1-4 art rounds, cut 2026-11-01)', layer='decor near', mat='wood', draw='src/game/w1NewArt.ts:104 drawW1Dress (one blit, behind Pokey)',
+                slot='proto.mixDress (1-1 start: the squirrels) w1NewArt.ts:104', fl='grounded'),
     'w2-new': K(src='w2-new atlas (W1-4 art rounds, cut 2026-11-01)', layer='decor near', mat='made_wood', own=2, draw='none: no code loads w2-new.webp (not in the build)',
                 slot='new slot: World 2 river props (no loader)', fl='grounded'),
     'w3-new': K(src='w3-new atlas (W1-4 art rounds, cut 2026-11-01)', layer='decor near', mat='glowstone', own=3, draw='none: no code loads w3-new.webp (not in the build)',
@@ -196,10 +196,10 @@ RULE = {
                slot='kit:1 (protoArt.ts kitUrl:93; every World 1 stage, and the borrowed liana)', fl='may float'),
     'proto2': K(src='World 1 second sheet (proto/props2-atlas)', layer='decor near', mat='forest_plant', own=1, draw='src/game/protoArt.ts:106 PROTO2_URL (blit2)',
                 slot='props2: proto.bushes / proto.hollows / proto.trunks (stageSheets.ts STAGE_DRAWS)', fl='grounded'),
-    'proto3': K(src='World 1 chase sheet (proto/props3-atlas)', layer='danger look', mat='wood', own=1, draw='src/game/protoArt.ts:186 (props3, the chase branch)',
-                slot='platforms solid chase / chaseTip (flowerReach.ts:65)', fl='may float'),
-    'crown': K(src='World 1 crown (proto/crown.webp)', layer='platform', mat='wood', own=1, draw='src/game/protoArt.ts:222 (one blit)',
-               slot='platforms solid crown (flowerReach.ts:65)', fl='may float'),
+    'proto3': K(src='World 1 chase sheet (proto/props3-atlas)', layer='danger look', mat='wood', own=1, draw='src/game/protoArt.ts:193 drawChaseSection (props3, the falling branch of 1-8)',
+                slot='platforms solid chase / chaseTip (protoStage.ts:6779, 1-8\'s long branch)', fl='may float'),
+    'crown': K(src='World 1 crown (proto/crown.webp)', layer='platform', mat='wood', own=1, draw='src/game/protoArt.ts:218 drawCrownArt (one blit)',
+               slot='platforms solid crown (protoStage.ts:6800)', fl='may float'),
     'kit2': K(src='World 2 kit (kits/w2.webp, Matt\'s per-world prop sheet)', layer='platform', mat='made_wood', own=2, draw='src/game/protoArt.ts:259 blit (part of kits/w2)',
               slot='kit:2 (protoArt.ts kitUrl:93)', fl='may float'),
     'kit3': K(src='World 3 kit (kits/w3.webp)', layer='platform', mat='glowstone', own=3, draw='src/game/protoArt.ts:259 blit (part of kits/w3)',
@@ -217,25 +217,25 @@ RULE = {
     'w4falls': K(src='World 4 waterfall set (w4/falls.webp, HF)', layer='decor mid', mat='water_fall', own=4, draw='src/game/w4FallsArt.ts:132-258 (part of w4/falls)',
                  slot='falls43 / fallZones (W4_FALL_STAGES)', fl='water'),
     'dressnew1': K(src='World 1 new dressing (props/dressnew-w1.webp, hf-props 2026-10-31)', layer='decor near', mat='forest_plant', own=1,
-                   draw='src/game/dressArt.ts:70 drawDress (part of dressnew-w1)', slot='proto.dress (artDress.ts:232 dressSets)', fl='grounded'),
+                   draw='src/game/dressArt.ts:68 drawDress (part of dressnew-w1)', slot='proto.dress (artDress.ts:232 dressSets)', fl='grounded'),
     'dressnew2': K(src='World 2 new dressing (props/dressnew-w2.webp, hf-props 2026-10-31)', layer='decor near', mat='made_wood', own=2,
-                   draw='src/game/dressArt.ts:70 drawDress (part of dressnew-w2)', slot='proto.dress (artDress.ts:232 dressSets)', fl='grounded'),
+                   draw='src/game/dressArt.ts:68 drawDress (part of dressnew-w2)', slot='proto.dress (artDress.ts:232 dressSets)', fl='grounded'),
     'dressnew3': K(src='World 3 new dressing (props/dressnew-w3.webp, hf-props 2026-10-31)', layer='decor near', mat='cave', own=3,
-                   draw='src/game/dressArt.ts:70 drawDress (part of dressnew-w3)', slot='proto.dress (artDress.ts:232 dressSets)', fl='grounded'),
+                   draw='src/game/dressArt.ts:68 drawDress (part of dressnew-w3)', slot='proto.dress (artDress.ts:232 dressSets)', fl='grounded'),
     'dressnew4': K(src='World 4 new dressing (props/dressnew-w4.webp, hf-props 2026-10-31)', layer='decor near', mat='highland', own=4,
-                   draw='src/game/dressArt.ts:70 drawDress (part of dressnew-w4)', slot='proto.dress (artDress.ts:232 dressSets)', fl='grounded'),
+                   draw='src/game/dressArt.ts:68 drawDress (part of dressnew-w4)', slot='proto.dress (artDress.ts:232 dressSets)', fl='grounded'),
     'dress': K(src='first dressing sheet (props/dress.webp, hf-art-ground 2026-10-29)', layer='decor near', mat='forest_plant',
-               draw='src/game/dressArt.ts:70 drawDress (part of dress.webp)', slot='dress (artDress.ts:232 dressSets)', fl='grounded'),
+               draw='src/game/dressArt.ts:68 drawDress (part of dress.webp)', slot='dress (artDress.ts:232 dressSets)', fl='grounded'),
     'stageart': K(src='every-stage pieces (props/stage-art.webp, hf-art-stage 2026-10-29)', layer='ui', mat='stage_ui',
-                  draw='src/game/stageArt.ts:96 (part of stage-art; the flag baked once :184)', slot='checkpoints / collectibles / Thorn Gate / nest nets (stageArt.ts)', fl='grounded'),
+                  draw='src/game/stageArt.ts:96 (part of stage-art; the flag baked once :184)', slot='checkpoints (drawCheckpointArt stageArt.ts:141) / heart and power-up collectibles (drawPickupArt :224) / Thorn Gate (:240) / story fern (:251) / story bell (:271) / nest net (drawNetArt :293)', fl='grounded'),
     'bounce': K(src='bounce plants (props/bounce.webp, HF 2026-10-29)', layer='soft landing', mat='forest_plant', draw='src/game/bounceArt.ts:69 drawBounce (baked per variant)',
-                slot='platforms bouncy (catalog-map: W1 w1mix.ts:167, W3/W4 protoStage.ts:1302)', fl='grounded'),
+                slot='platforms bouncy (W1 mixer/w1mix.ts:175 mushroom; hand-built protoStage.ts:1157/1175/1283/1355/1409/1498/1542/1572; stageGenerator.ts:808/1199/2478/2616/2995; mixer/post.ts:96)', fl='grounded'),
     'watersigns': K(src='water warning signs (props/water-signs.webp)', layer='danger look', mat='made_wood', draw='src/game/waterSign.ts:40 drawWaterSign (one blit)',
                     slot='waterSigns (a gen2 stage\'s water and every stage\'s first water)', fl='grounded'),
     'puzzlekit': K(src='puzzle kit (props/puzzle-kit.webp)', layer='decor near', mat='made_wood', draw='src/game/puzzleArt.ts:47 drawKitArt (part of puzzle-kit)',
                    slot='puzzle rooms: proto.kitDecor + puzzleKit.ts pieces (kit-pieces sheet)', fl='grounded'),
     'ropekit': K(src='rope kit (props/rope-kit.webp)', layer='platform', mat='made_wood', draw='src/game/ropeArt.ts:141 drawRopes (tile slices along the rope)',
-                 slot='ropes (shimmy ropes, catalog-map climbable ropes)', fl='hangs'),
+                 slot='ropes: shimmy ropes, drawn by drawRopes (ropeArt.ts:141, called at engine.ts:6240)', fl='hangs'),
     'dotprops': K(src='Dot\'s flight props (props/dot-props.webp)', layer='decor near', mat='dot_flight', draw='src/game/dotFlightArt.ts:139 drawPiece (part of dot-props)',
                   slot='4-D Dot\'s flight set + W5 web patches (zoneArt.ts)', fl='hangs'),
     'dotbridges': K(src='Dot\'s flight far bridges (props/dot-bridges.webp)', layer='backdrop', mat='dot_flight', draw='src/game/dotFlightArt.ts:269 drawDotBackdrop',
@@ -263,7 +263,7 @@ RULE['w1-mud-splash'] = K(src='World 1 mud splash (HF)', layer='danger look', ma
 RULE['w1-drop'] = K(src='World 1 painted drop (pits)', layer='danger look', mat='soil', own=1, draw='src/game/w1Pits.ts:315 (tiled 256)', slot='platform pit=drop (pit-art:1)', fl='n/a')
 RULE['w1-lip'] = K(src='World 1 pit lip (pits)', layer='danger look', mat='soil', own=1, draw='src/game/w1Pits.ts:420 (84 wide)', slot='platform pit=drop lip (pit-art:1)', fl='grounded')
 RULE['w1-bed'] = K(src='World 1 pit bed (pits)', layer='soft landing', mat='forest_plant', own=1, draw='src/game/w1Pits.ts:355 (220 tile)', slot='pit floor soft landing (w1Pits.ts SOFT_FLOOR)', fl='grounded')
-RULE['w1-bootprint'] = K(src='1-1 clue (HF from W1 bank art)', layer='decor near', mat='forest_plant', own=1, draw='src/game/w1NewArt.ts:73 drawW1Clue (110x28)', slot='proto.mixDress bootprint (1-1)', fl='flush decal')
+RULE['w1-bootprint'] = K(src='1-1 clue (HF from W1 bank art)', layer='decor near', mat='forest_plant', own=1, draw='src/game/w1NewArt.ts:63 drawW1Clue (110x28)', slot='proto.mixDress bootprint (1-1)', fl='flush decal')
 
 # ---------------------------------------------------------------- per-name overrides: kind, layer, material, made, slot key, footing source
 def classify(r):
@@ -545,7 +545,31 @@ def classify(r):
                      'w1-bed': 'pit bed (leaf landing)', 'w1-bootprint': 'soldier bootprint clue (decal)'}[a]
         if a == 'w1-bed':
             o['stand'] = True
+    if (a, n) in MADE_BY_EYE:
+        o['made'] = 'y'
+        if o['mat'] in ('wood', 'forest_plant', 'mossrock', 'stage_ui', 'water_fall'):
+            o['mat'] = 'made_wood'
     return o
+
+
+# what is made, judged by eye on the contact sheets (attempt 2): sawn ends or tops with rings, carved or forged posts, nailed boards,
+# twisted rope, woven netting, lashed poles. A made thing is never World 1 (Matt, 11-11).
+MADE_BY_EYE = {
+    ('watersigns', 'sign-jungle'): 'nailed plank sign', ('watersigns', 'sign-jungle-rattle'): 'nailed plank sign',
+    ('stageart', 'flagUnlit'): 'forged checkpoint post', ('stageart', 'flagLit'): 'forged checkpoint post',
+    ('stageart', 'netWhole'): 'woven rope net on pegs', ('stageart', 'netTorn'): 'woven rope net on pegs',
+    ('ropekit', 'post'): 'lashed, carved post', ('ropekit', 'tile'): 'twisted rope',
+    ('dressnew1', 'w1FallenLog'): 'sawn end with rings', ('dressnew1', 'w1WoodStump'): 'sawn top with rings',
+    ('dressnew1', 'w1Toucan'): 'perched on a sawn stump with rings',
+    ('proto', 'perch'): 'sawn trunk top', ('proto', 'trunk'): 'sawn top',
+    ('w1-new', 'log-moss-shut'): 'flat sawn end faces', ('w1-new', 'hollowlog-plain'): 'flat sawn end faces',
+    ('puzzlekit', 'acornTree'): 'sawn trunk top', ('puzzlekit', 'tradeStump'): 'sawn stump top',
+    ('kit2', 'trunk'): 'cut bamboo pole',
+    ('w2props', 'logLong'): 'sawn ends with rings', ('w2props', 'logShort'): 'sawn end with rings', ('dress', 'w2Log'): 'sawn end with rings',
+    ('dressnew2', 'w2Driftwood'): 'driftwood lashed with rope',
+    ('w4props', 'poolLog'): 'sawn end with rings', ('w4props', 'ribbonLog'): 'sawn ends tied with a ribbon', ('w4props', 'logJam'): 'sawn ends with rings',
+    ('w4props', 'brokenLog'): 'log wrapped in ribbon',
+}
 
 
 # ---------------------------------------------------------------- drawn size at play scale (world px: WORLD_VIEW_H 540, engine.ts:221)
@@ -557,9 +581,9 @@ def on_screen(r, o):
         span = max(1, f['fx1'] - f['fx0'])
         if f['kind'] == 'log':
             k = 360 / span  # PLANK_MAX 360 (w1CutArt.ts:80)
-            return fw * k, fh * k, 'stand span = plank part <=360 (w1CutArt.ts:80)'
+            return fw * k, fh * k, 'stand span = plank part <=360 (w1CutArt.ts:87 PLANK_MAX)'
         k = 260 / span  # pickCut's widest stone 260 (w1CutArt.ts:110)
-        return fw * k, fh * k, 'stand span = platform <=260 (w1CutArt.ts:110)'
+        return fw * k, fh * k, 'stand span = platform <=260 (w1CutArt.ts:106)'
     if a.startswith('dressnew') or a == 'dress':
         return f['units'], f['units'] * fh / fw, 'units (dressArt.ts:62 dressSize)'
     if a in ('plants',):
@@ -642,8 +666,8 @@ def on_screen(r, o):
             hh = {'squirrel': 62, 'root-gate': 120, 'knot': 70, 'acorn-slope': 80, 'log-hide': 90}
             h = next((v for k2, v in hh.items() if n.startswith(k2)), 70)
             if n.startswith('hollowlog'):
-                return 380 * 1.06, 380 * 1.06 * fh / fw, 'hollow log 310-380 wide x1.06 (w1NewArt.ts:142)'
-            return h * fw / fh, h, 'DRESS_H (w1NewArt.ts:101)'
+                return 380 * 1.06, 380 * 1.06 * fh / fw, 'hollow log 310-380 wide x1.06 (w1NewArt.ts:129 hollowLogSize)'
+            return h * fw / fh, h, 'DRESS_H (w1NewArt.ts:71)'
         if a == 'w4falls' and n.startswith('fall'):
             return 160, 160 * fh / fw, 'falls body ~160 wide (w4FallsArt.ts:132)'
         s = 220 if big > 500 else (130 if big > 250 else 70)
@@ -684,7 +708,7 @@ def main():
         foot = 'none (decor)'
         if a == 'w1-cut':
             walk = (f['fy'], f['fx0'], f['fx1'], measure_footing(im)[3] if measure_footing(im) else '')
-            foot = f"code: fy {f['fy']} fx0 {f['fx0']} fx1 {f['fx1']} (w1-cut.json; drawn by cutBox w1CutArt.ts:45: footing on the platform top, stand span = width, sunk 3)"
+            foot = f"code: fy {f['fy']} fx0 {f['fx0']} fx1 {f['fx1']} (w1-cut.json; drawn by cutBox w1CutArt.ts:40: footing on the platform top, stand span = width, sunk 3)"
         elif a.startswith('ground') and n.startswith('lip'):
             g = MISC_G[a]
             walk = (round(g['surf'] * f['h'], 1), 0, f['w'], 0.0)
@@ -820,7 +844,7 @@ def main():
         rulecheck = 'W1 rule check: a made thing in a World 1 stage today (Matt 11-11: made things never W1; lead\'s call: keep, re-paint natural, or move)' if o['made'] == 'y' and 1 in used_w else ''
         status = 'in game' if ((used_st or puzzle_rooms) and not unused) else ('ready (packed, never drawn: no draw site / no loader)' if not used_st else 'in game')
         if a == 'w1-cut':
-            status = 'in game' if n in LAID else 'in game (packed in 1-1\'s atlas, not laid: w1CutArt.ts:66 LAID)'
+            status = 'in game' if n in LAID else 'in game (packed in 1-1\'s atlas, not laid: w1CutArt.ts:69 LAID)'
         if a in ('w2-new', 'w3-new', 'w4-new'):
             status = 'ready (not in the build: no code loads the sheet)'
         if fixes:
@@ -844,7 +868,7 @@ def main():
                 slot += ' ; perch at a climb top (drawPerchArt protoArt.ts:537)'
         if a == 'w1-cut':
             slot = (('pickCut kind ' + f['kind'] + ('; LAID as ' + LAID[n] if n in LAID else '; not in LAID')) + ' ; ' +
-                    ('landing platforms solid log h<50 (pickCut log, w1CutArt.ts:108; plank parts <=360 :80)' if f['kind'] == 'log' else rule['slot']))
+                    ('landing platforms solid log h<50 (pickCut log, w1CutArt.ts:105; plank parts <=360 :87)' if f['kind'] == 'log' else rule['slot']))
         draw = rule['draw']
         if a in ('w2-new', 'w3-new', 'w4-new'):
             draw = 'none today (sheet not loaded); would be one blit of an atlas part'
@@ -868,7 +892,7 @@ def main():
 LAID = {'w1-rock-slabs-low': 'stone', 'w1-rock-slabs-stacked': 'stone', 'w1-rock-slabs-stacked-big': 'stone', 'w1-rock-block-big': 'stone',
         'w1-rock-root-block': 'stone', 'w1-rock-roots': 'stone', 'w1-rock-boulder-moss': 'boulder', 'w1-rock-boulder-moss-big': 'boulder',
         'w1-boulder-grey-moss': 'boulder', 'w1-boulder-grey-moss-b': 'boulder', 'w1-stump-wide': 'stump', 'w1-plank-ledge-a': 'plank',
-        'w1-plank-ledge-b': 'plank', 'w1-plank-ledge-c': 'plank'}  # (w1CutArt.ts:66-81, copied by the test below: check_laid)
+        'w1-plank-ledge-b': 'plank', 'w1-plank-ledge-c': 'plank'}  # (w1CutArt.ts:69-84, copied by the test below: check_laid)
 MISC_G = {}
 # what the art director saw on the contact sheets (2026-11-11), beyond the automatic checks
 LOOKED = {
