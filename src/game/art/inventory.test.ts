@@ -200,6 +200,23 @@ test('scale: pokey_scale is drawn height / Pokey drawn standing height; out-of-s
   console.log(`  out of scale: ${ALL.filter((r) => r.scale_ok === false).length} rows (W1 file ${W(1).rows.filter((r) => r.scale_ok === false).length}); Pokey ${units.toFixed(1)} units`);
 });
 
+test('tiled or stretched pieces are not judged by one tile: W1\'s trunk and liana stay in byWorld', () => {
+  // (Critic 11-11: a trunk or liana tiled up, a moss strip, a rope post sized to its rope had been marked out of scale by one tile)
+  for (const id of ['props-atlas#trunk', 'props-atlas#liana', 'rope-kit#post', 'game/kits/w8#mossStrip']) {
+    const r = inv.byId(id)!;
+    assert.equal(r.scale_ok, null, `${id} gets no verdict`);
+    assert.match(CSV.find((x) => x.id === id)!.scale_basis, /tiled: no verdict/);
+  }
+  const ids = (q: Parameters<Inventory['byWorld']>[1]) => new Set(W(1).byWorld(1, q).map((r) => r.id));
+  assert.ok(ids({}).has('props-atlas#liana'), 'the liana: a default World 1 query');
+  // (the trunk's sawn top makes it a made thing, Matt's call on the catalog's table: it comes back with includeMade, never held out by scale)
+  assert.ok(ids({ includeMade: true }).has('props-atlas#trunk'), 'the trunk: with includeMade');
+  assert.ok(!ids({}).has('props-atlas#trunk'), 'the trunk stays out of a default W1 query only as a made thing');
+  // every tiled row: no verdict
+  const tiled = CSV.filter((r) => /tiled: no verdict/.test(r.scale_basis));
+  assert.ok(tiled.length > 20 && tiled.every((r) => r.scale_ok === ''), `${tiled.length} tiled rows`);
+});
+
 test('loadInventory loads one file once and gives its rows', async () => {
   const a = await loadInventory(1);
   assert.equal(a, await loadInventory(1));

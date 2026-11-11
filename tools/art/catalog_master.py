@@ -624,6 +624,9 @@ SCALE_RANGE = {
     'decor near': (0.2, 2.0),
     'backdrop': None, 'climb': None, 'danger look': None, 'decor mid': None,
 }
+# tiled or stretched: drawn as many tiles or stretched to a length the stage sets (a trunk or liana tiled up, a moss strip along a
+# platform top, a rope post sized to its rope, a band along the bottom), so one tile's height is no verdict on its scale (Critic 11-11)
+TILED = re.compile(r'tiled|\(tile|stretch(?!\s*<=)|drawRopes|band along', re.I)
 TERRAIN = re.compile(r'ground|bank|soil|wall|floor|cliff|\blip|PIT_WATER|set piece|step set', re.I)
 
 
@@ -658,6 +661,8 @@ def add_scale(rows):
         r['pokey_scale'] = f'{sc:.2f}'
         rng = SCALE_RANGE[lay]
         if rng is None: continue
+        if TILED.search(' '.join((r.get('on_screen_px') or '', r.get('engine_slot') or ''))):
+            r['scale_basis'] = basis + ' (tiled: no verdict)'; continue
         if lay in ('platform', 'soft landing', 'step') and TERRAIN.search(' '.join((r.get('engine_slot') or '', r.get('kind') or '', r.get('id') or ''))):
             r['scale_basis'] = basis + ' (terrain: no cap)'; continue
         lo, hi = rng
@@ -746,16 +751,18 @@ def write_md(rows, counts, dup, bad, missing, conflicts=()):
     w1g = [r for r in rows if (r.get('status') or '').lower().startswith('in game') and r.get('layer') in SCALE_RANGE and in_w1(r)]
     out = sorted((r for r in w1g if r.get('scale_ok') == 'n'), key=lambda r: -float(r['pokey_scale']))
     fitted = [r for r in w1g if r.get('scale_basis') == 'fitted']
+    tiled = [r for r in w1g if 'tiled' in (r.get('scale_basis') or '')]
     L += [f'### In-game World 1 pieces out of scale (R-165.107: drawn height / Pokey standing {pu:.1f} units, heroSprite.ts:30,32)', '',
           'Ranges (catalog_master.py SCALE_RANGE): step 0.5-1.0; platform and soft landing no taller than 1.0; terrain (ground, '
-          'banks, soil, walls, set pieces laid one platform a ledge) exempt; decor near 0.2-2.0; backdrop, climb, danger look and decor mid: no range set. Pokey is 89.1 units drawn '
+          'banks, soil, walls, set pieces laid one platform a ledge) exempt; decor near 0.2-2.0; backdrop, climb, danger look and decor mid: no range set; tiled or stretched pieces (trunks, lianas, moss strips, rope posts) get no verdict. Pokey is 89.1 units drawn '
           '(the 48 in older notes is his collider, engine.ts:954). Columns pokey_scale, scale_ok, scale_basis in the csv.', '',
           '| id | layer | pokey_scale | range | on screen | used in |', '|---|---|---|---|---|---|']
     for r in out:
         lo, hi = SCALE_RANGE[r['layer']]
         L.append(f"| {r['id']} | {r['layer']} | {r['pokey_scale']} | {f'{lo}-{hi}' if lo is not None else f'up to {hi}'} | {(r.get('on_screen_px') or '')[:40]} | {(r.get('used_in') or '')[:40]} |")
     L += ['', f"Not judged: {len(fitted)} in-game W1 pieces drawn to fit their platform (w1CutArt.ts cutBox:40-53; their size is the platform's, "
-          f"the generator's numbers): {', '.join(r['id'] for r in fitted)}.", '']
+          f"the generator's numbers): {', '.join(r['id'] for r in fitted)}.", '',
+          f"Not judged, tiled or stretched (one tile is no verdict): {', '.join(r['id'] for r in tiled) or 'none'}.", '']
     if conflicts:
         def ruling(r):
             i = r['id']
