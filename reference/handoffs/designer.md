@@ -1,8 +1,14 @@
-# Designer handoff (written 2026-11-07 6:57 PM ET, the last job of the designer session; for the role agents of the 6-role model, reference/TEAM.md)
+# Designer handoff (rewritten 2026-11-11 5:29 PM ET by the Designer of the game map, R-165.111 step 2, from the 1-2 Designer's 5:03 PM version; before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07)
+
+**A new lead is coming (Matt's decision, the old lead 11-11 5:29 PM ET):** report ONLY to the new lead once it messages you with its session id.
 
 Read first, in order:
 - reference/LAWS.md;
 - this file;
+- reference/plans/GAME-MAP.md (the whole-game plan, a DRAFT with Matt; branch t-design-game-map) and reference/methods/game-map.md;
+- reference/specs/reach.md and bands.md (the flown reach and the bands; they outrank any older gap or rise number; on branch
+  t-designer-reach until it merges) and reference/specs/chain.md (the bounce chain, flown for 1-2);
+- reference/packets/2026-11-11/CONTENT-1-2-relay.md and DESIGN-1-2-notes.md (1-2's packet and its proofs);
 - reference/engine/NODES.md §8 (the node code and its key);
 - reference/engine/W1-NEW-SECTIONS.md (every round).
 
@@ -18,8 +24,13 @@ Every ruling below cites the file and section where it's written in full.
 | Piece labels and the floating rules (platforms may float, rocks never do, earth waits on Matt: use it from the floor up) | `reference/engine/LABELS.md` |
 | 1-1's art audit (code-drawn pieces against the painted kit) and its stills | `reference/engine/W1-ART-AUDIT.md`, `reference/engine/art-audit/` |
 | 1-1's designer brief, fitted to gen2's fields | `reference/engine/briefs/1-1.designer.md` (never on a cold builder's branch) |
-| **SEALED:** 1-2's gap list and the secret-as-fork idea | `reference/engine/1-2-DESIGNER-NOTES.md`. Keep it off the cold 1-2 builder's branch; it's for comparing afterwards |
+| 1-2's packets (Content: brief, graphs, 51 sections, the thorny floor, done-items by phase; Engine: 8 items in 3 pushes) and their notes | `reference/packets/2026-11-11/CONTENT-1-2-relay.md`, `ENGINE-1-2-routing.md`, `DESIGN-1-2-notes.md` (branch t-design-1-2) |
+| 1-2's old gap list and the secret-as-fork idea (11-06; no longer sealed: Matt's 11-11 benchmark is a full packet; superseded line by line in the notes §6) | `reference/engine/1-2-DESIGNER-NOTES.md`, `BRIEF-1-2.md` |
 | The entered data (the porter's) | engine-core `src/game/gen2/worlds/w1.ts`: sections, JOBS, CONTENT, TERRAIN, VERSION_JOBS, the `easy` twins, W1_KIT (owns, decor, required, graphs) |
+| **The flown numbers (11-09):** reach, bands, touch, help, the flight sim and its saved runs, the Engine packet | `reference/specs/` on t-designer-reach (reach.md, bands.md, touch.md, help.md, sims/flight.ts, sims/out/, packets/ENGINE-flight-test.md) |
+| **The bounce chain (11-11):** flown on 1-2, its bands, the worked lay, the 1-2 build probe, the fork-end check | `reference/specs/chain.md`, `sims/flight.ts` (mode `chain`, `FLIGHT_STAGE`), `sims/chainlay12.ts`, `sims/probe12.ts`, `sims/finds11.ts`, `sims/out/` (branch t-design-1-2) |
+| **The game map (11-11):** all 10 worlds (move ladder, world rules, 9 stages each, hidden stages, guardians), the engine build order, hours, risks, the engine sprint list (§10, then freeze), 8 questions for Matt | `reference/plans/GAME-MAP.md`, method `reference/methods/game-map.md` (branch t-design-game-map) |
+| The engine's real abilities and the stage kit the map is built on | `reference/architecture/CAPABILITY.md` (t-architect-capability), `ADR-003-stage-kit.md` (t-architect-stagekit) |
 | The designer's own working notes | `reference/engine/DESIGNER-NOTES.md` |
 
 ## 2. The section pool (World 1, gen2)
@@ -41,11 +52,19 @@ Every ruling below cites the file and section where it's written in full.
 ## 3. The rulings to keep (the ones most likely to be undone by mistake)
 
 1. **Blocks (NODES §8.7, B1-B7):** every teach's check and every test needs its move. Nothing walks round it: not the floor road, a catch, a fork road, a join step, or the pit's own climb-out step. A pit in front of a block is back-only (backPit).
-2. **Double gaps in PIXELS (W1-NEW-SECTIONS, Round 7 on):**
-   - Normal: TEACH 195-205 px, TEST 205-228 px, with the teach's far bank ≥ 3.5 body widths.
-   - **Easy: no double gaps.** Every double block is a rise twin of **110-114 px** (inside Easy's 113.9 clamp).
-   - The physics: a single reaches 175 px (reachJump) plus 21 px of landing forgiveness (LAND_HALF). So share 0.70 (about 182 px) does NOT block. Never set a gap by share.
-3. **The bounce teach:** a mushroom on the FLOOR, the lip 200-220 px. Taught by the lesson card `lesson.bounce`, never also a Dot line (no repeated tips).
+2. **The double, in PIXELS (changed 11-09 on the flown reach, reference/specs/bands.md §2-§3; the PM's word in packet R-165.60):**
+   - **The double TEACH is a RISE on both settings:** Easy 128-132 px, Normal 136-140 px onto a block face (thin lip: 122-128 / 128-134).
+     One jump climbs 123 px (block) and never more; a double flick climbs it on 100% of tries.
+   - **A double GAP is a Normal TEST only: 252-262 px** (the widest flown single is 246; blocks keep 5 px over it) (far bank ≥ 3.5 body widths, as before). No gap teach. **Easy: no double gaps.**
+   - The physics, flown in the real engine (reach.md): a single's apex is 97.8 px, not 107.8; one jump crosses 244 px at best
+     (246 on Easy), 213-223 from the last ground frame. The old "175 px (reachJump) plus 21 px", TEACH 195-205, TEST 205-228 and
+     Easy twins 110-114 are all WRONG: one jump clears every one of them. Never set a gap by share, and never from reachJump.
+   - Not in the game until the Engine packet lifts two clamps (Easy double rise 113.9, Normal double gap 229.8) and Content enters the bands.
+3. **The bounce teach (changed 11-09, bands.md §4):** a mushroom on the FLOOR, its edge 20-60 px from the face, the lip **232-246 px**
+   over the floor; the check is the bounce plus ONE air jump (any press 0.2-0.73 s after the cap). The old 200-220 lip is climbed by
+   a plain double (it climbs 214). "A bounce alone clears it and a double does not" has only 216-221 px, 2 px spare: not usable.
+   **Open with the lead:** whether the lesson may ask for the air jump (REPORT.md pushback); the other way is a 190-205 lip that
+   teaches but does not block. Taught by the lesson card `lesson.bounce`, never also a Dot line (no repeated tips).
 4. **Teach order is jump, double, bounce.** Teach lines go on each T's ENTRY piece. **T sections are never mirrored**, because mirroring flipped #8's order.
 5. **The log chain #44 version a is `d d b d`** (a mushroom seated on the third log). That's the 1-6 neighbour fix (distance 0.275, the last alike pair of 64). Don't make it four doubles again.
 6. **Height (Round 12):**
@@ -61,18 +80,73 @@ Every ruling below cites the file and section where it's written in full.
    - the goal is exempt.
    - The `h` rock stays **34-46 px** (solid with the route walls; measured better). ≥ 50 px is for walls only.
 9. **V18 (climb):** judged from the FIRST climb step to the SUMMIT; the approach and the run-out are outside. A hop between climb steps is the level gap jump `a`. Mounds (knot-bank, mound-log) are `ground`, not climb.
-10. **Floating (Matt, 11-06):** walked-on boughs, logs and planks may float with NO support (add none). Rocks, stones, pads and props never float. **Earth** waits on Matt's open A/B question (the "can it float?" ratings); until he answers, use earth from the floor up only (art-director.md §4).
+10. **What may float (Matt, 11-07, R-165.54; STAGE-RULES.md "What may float" is the rule, copied here):** may float: floating earth
+    islands, earth ledges, walkable logs and planks that read as platforms. Attached (to a trunk, post, root or rope): boughs,
+    branches, vines, ropes. Grounded, never floating: rocks, stump-steps, bushes, ferns, decoration, hide spots, caves. (The 11-06
+    wording here, "boughs may float with no support" and "earth waits on Matt", was wrong on both counts and is gone.)
 11. **Branch share:** among thin landings, ≤ 30% on EVERY roll and no thin look over 38%, plus ground > branch on the whole stage. The levers: rungs alternate bough and log, catches and the perch become logs, and joins take the next section's entry kind (the planner).
 12. **Hearts follow risk (V21).** 1-1 has 0.
 13. **The reward (H) is structural** (outside the deal). The seed perch's failure on seed 102948 was the engine's corridor check, not the deal (my first diagnosis was wrong; NODES §7.1 is corrected).
-14. **W1 `owns` and `not` (Round 8):** 1-1 and 1-2 each own their words; the signatures stay 1-1-only. 1-2's pool is 8 shared floor sections, by design: a COLD helper builds 1-2. Don't pre-build it.
+14. **W1 `owns` and `not` (Round 8):** 1-1 and 1-2 each own their words; 1-1's signatures stay 1-1-only. (The 11-06 "a COLD helper builds
+    1-2, don't pre-build it" is gone: Matt's 11-11 benchmark is a full packet.)
+15. **1-2 (11-11, the packets, attempt 2):** harvest, level, quiet end, branching lots, deal ground 35 / bounce 35 / climb 30 and NO
+    floating (World 1's window puts floating in the last third, where 1-2's graphs hold F, C, X and W); one hazard lesson (thorns)
+    and no new move; ONE signature, the bounce chain over a thorn hollow, in three sections that are 1-2's alone; the note hollow
+    is the required H and carries `phases: ['sho', 'ten']` (a required section is fitted by phase). Three harvest graphs. 53
+    sections: 11 reused, 17 own, 25 new; every own and new one level within 110 px unless U or D, paid back by `N` steps (a
+    step down with its own hop: a bare `n` is quiet time, and the seed list refuses over 4 s; flown, sims/quiet12.ts).
+16. **The chain's bands (chain.md §3, flown):** cap centre to cap centre 205-220 level, 195-210 a step up of 24-36 (lay 198-206),
+    215-225 a step down (lay 216-224); pillars wider than the cap (Normal 110-130, Easy 150-170) so a near miss lands on wood;
+    Normal 2-5 caps, Easy 2-3. A chain is S, M, P, D or part of a C or F, never an X: the pillars alone are a stepping-stone road.
+17. **Thorns (the lead, 11-11):** only in hollows under chains and the named pieces, 150-170 px deep, never under a double gap (a
+    double flick lands it about 70%), in the first 1,300 px or under a low road; Normal a heart and a set-back, Easy the set-back
+    only; the set-back is to the last ledge that is not a pillar. Engine draws the bed from painted clumps chosen by width; its
+    still is Matt's hold point.
+18. **A reused section is touched only in its `feel`.** Anything else is the new stage's own section. Off-path rewards are judged
+    on the BUILT stage, never on sockets.
+19. **A harvest stage pays off the road in bonus blooms, not petals** (ruled by the lead, 11-11): the quota is 87.5% of
+    all petals, so 4 to 7 a roll may sit off the low road; a `fruit` counts toward the goal and is not in the quota.
+20. **A packet's pool is proved by rolling the packet's own brief** in the real pipeline, twice: on today's engine and with the
+    engine items it waits on stood in (sims/supply12.ts, `FLOWN=1`). The supply table by job and type goes in the notes.
 
 ## 4. Open items (none of these is finished; check each before assuming)
 
+- **The game map (11-11, R-165.111 step 2):**
+  - it is a DRAFT with Matt; nothing is built from it until he answers §8's eight questions (1-8 lanes or chase; hanging in W3 or
+    W1; followers then the vine; how much of W2-10 to re-lay; W5 "don't stop"; where the card pick starts; lay W1 during the sprint
+    or after; cut the one-or-two-stage pieces). After each answer: edit the worlds it touches, re-run §3's ladder and freshness
+    tables, re-total §6 and §10 (method file "Updating the map");
+  - the likely next ask (the new lead may make it): turn §10 into the engine plan (packets per line, each "works for any stage,
+    proven on N", D43) and each world's section into a world packet;
+  - not checked: World 9 and 10 enemies (built by the old generator); the art "missing" lists are my reading, for Content to confirm
+    against the catalog (t-engine-inventory); hidden-stage ideas, "don't stop", hours marked G and the end date are judgement;
+  - the map's base was the old lead's branch at 2e06602e; reconcile with main and the new lead's branch before building on it.
+- **From the 1-2 packets (11-11):**
+  - attempt 4 of both packets is with the packet Critic (the yield floor is 1 clean in 50 for now, the lead 11-11; R-165.120 raises it)
+  - earlier rounds: (attempt 1: CONTENT 14 lines, ENGINE 6; attempt 2: 1 and 3; each answered in
+    DESIGN-1-2-notes.md §9); the lead's rulings are all in notes §3, none open (bonus blooms; the ladder grows the lesson's own
+    fallen log at the first chain, else the line alone; the double counts on the gen2-BUILT 1-2 only, `EARLY_DOUBLE` not
+    widened, so `#ctest` on 1-2's id does not move; item 0 struck from the Engine packet: the t-engine-11-followup round's);
+  - Engine work 1-2 stands on: ENGINE-1-2-routing.md (item 0, the 1-1 high-road ends, is the t-engine-11-followup round's; then
+    the seed tool, the thorn hollow, the reach scope, the note, the double counted on a gen2-built stage, the blooms by a brief
+    field; routing and help last);
+  - thin supply cells (one section each) are named in notes §8: the builder's yield count will show the first to go short;
+  - help.md §5 (counting failures through a lost life, one system with assist.ts) is still unwritten;
+  - NOT flown: a chain cap more than 66 px over the last or 36 px under it, a bounce plus air jump across a dip (#63's shape), a
+    moving cap. 1-2's Normal doubles climb 1 px under 1-1's and its gaps are the same (chain.md §1); fly again from about 1-5;
+  - flight.ts on t-design-1-2 is t-designer-reach's (at e97542b4) plus `FLIGHT_STAGE` and `chain`: when both branches merge, keep this one;
+  - the chain's bands come from two pilots, no child: the first 1-2 play window is the judge.
+- **From the reach flight (11-09), in order:**
+  - the lead rules on the bounce teach (bands.md §4) and on help.md (a proposal: its thresholds are benchmarks, not tester data);
+  - the Engine packet `reference/specs/packets/ENGINE-flight-test.md` (the permanent flight test, the ruler, the two clamps);
+  - then a Content packet enters bands.md §5 in w1.ts and rebuilds the seed list and pins;
+  - the Pad coach line and the Easy tap (touch.md §3): a tapped Pad jump is a 61.7 px hop;
+  - NOT flown: Normal from stage 25 (no early-stage help: second jump 540, stand 11.4 px), a gap onto a raised bank,
+    a raised mushroom. Fly them before ruling on them.
 - **With engine-core and the porter, to enter or verify:**
   - Round 11 (the branch swaps), plus the per-roll thin-branch report on 16 seeds, both settings;
   - Round 12's rising versions;
-  - the Easy twins at 110-114;
+  - the Easy twins: now 128-132 (bands.md), not 110-114;
   - `gapPx` bands on #8, #33 and #34;
   - #44 `d d b d`;
   - mound-log retagged ground, and #53-#55 with the `practise` job;
@@ -87,16 +161,35 @@ Every ruling below cites the file and section where it's written in full.
   - the 5 worst quiet stretches once FR9/FR10 are in (quiet median was 6.5 s, worst 13 s).
 - **Matt or the lead:**
   - Matt's answer on the art swap (W1-ART-AUDIT §5);
-  - earth chunks floating (A/B);
   - the art director's INTEGRATE-1-1.md still lists earth ledges as "may float" (corrected by Matt's rule; the source note is to be fixed);
   - the red spiky bromeliads and the backdrop logs (art director flags).
 - **Not checked live yet:** `lesson.bounce` firing on a fresh-save gen2 roll (engine-core's QA commit 8cba3b067 began it).
 - **On file:**
   - `w1-rope-gap` for 1-5's move to gen2 (the mixer's rope and punch are known failures carried there);
   - stage15's seed clause is to be REWRITTEN to the glint promise, not deleted.
-- **Parked to next week:** re-shoot the bootprint on 1-1's end bank; W1 rot wood and side-branch art; render-stone fixes. 1-2 stays parked until 1-1 passes and Matt plays it.
+- **Parked:** re-shoot the bootprint on 1-1's end bank; W1 rot wood and side-branch art; render-stone fixes.
 
 ## 5. Traps (each of these happened)
+
+- **The level check counts no double on 1-2 to 1-5** (levelCheck.ts:132-134): a stage moved to gen2 before 1-6 needs `EARLY_DOUBLE`,
+  or every double block reads as unreachable and its section is swapped out with no reason printed.
+- **The node code's V3 knows a move only from a T in the stage** (nodeCode.ts:138-141), not from `lessons`.
+- **`w1World()` hands out the same section objects every call:** a probe that edits tags copies each section first.
+- **A probe on another brief proves nothing about the packet's** (the Critic's line 1 on attempt 1).
+- **A rhythm's steps down are quiet time.** Check any run-out against the quiet line (QUIET_MAX 4 s) before it goes in a packet.
+- **A rule keyed on a stage id hits every build on that id** (`#ctest` lives on 1-2's); one keyed on an objective hits every
+  stage with it (8-2 is a gen2 harvest). Key on the built stage or its brief.
+- **A socket is not a pickup (11-11).** gen2 fills a `find` only in the stage's required section; a fork's `find` socket stays empty and
+  blocks the off-path petal. Read `collectibles` on a built roll (sims/finds11.ts) before saying a spot holds something.
+- **The early-stage help is a ramp by stage number** (physics.ts `easeAssist`): numbers flown on 1-1 are not another stage's until
+  flown there (`FLIGHT_STAGE=<id>`). On 1-2 they moved 1 px; that was luck of the ramp, not a rule.
+- **Easy widens a `landing` piece on its near side:** a spacing that must be exact (a chain's S) is laid on pieces with no `landing` flag.
+- **A build can be probed with no routing:** `buildGen2Stage({ config, kit, seed, difficulty })` with the brief added to the kit in
+  memory (sims/probe12.ts). Do this before writing a packet that says what the engine will do with a stage.
+- **Apex is not reach (11-09).** The engine lifts him 26 px onto a block's lip and 20 px onto any top under his falling feet, and a
+  late press rides 6 coyote frames. A band set from an apex or from reachJump is wrong by 15-70 px. Fly it: `npx tsx reference/specs/sims/flight.ts normal all`.
+- **realPlay's FakeInput has no minimum hold:** a one-frame `press` is a 29.6 px hop no player can make. Put the game's InputEngine on `r.e.input` (flight.ts Rig).
+- **A share is a share of tries, not of players.** Say which tries.
 
 - **Times:** never type them; insert them from `TZ=America/New_York date`. UTC and ET get mixed in messages (a 7:44 that was 6:34).
 - **Backticks in heredocs:** an unquoted heredoc turns each backtick into backslash-backtick. After every file write, run a sed that replaces backslash-backtick with a plain backtick, then grep the file to confirm there are 0 left.
