@@ -29,6 +29,8 @@ Before them: the 0.9.5 porter's run (branch `engine-core`, merged through PR #63
 - **Dot's ladder lines are struggle help that is due now** (`helpGuideLine`: kind struggle, `soon`), queued by DotGuide.tsx engineLine
   through `pushHelpLine`, which first clears the stage's own engine teach tips. On Help and Tips; never on Quiet (the step and the offer
   still happen there). Her tip rules dropped them before (a move already taught; Tips' 30 s gap).
+- **One step sprite** (`STEP_CUT`, the mossy rock), and the offer's YES picture draws it (the story keeper). A ladder line comes down
+  8 s of play after it is said (`LINE_UP_S`; her clock holds while he blinks) and as the offer opens; nothing is said after a no.
 - **The offer pauses the stage** (`helpAsking`: update() returns, resume() keeps it still) and waits until the set-back's iris is open
   and he stands (`helpDue`): asked over the closed iris, the stage behind it was black. Back and Escape are a no (HelpOffer bindBack).
 - In 1-1 StuckWatch never speaks ("Too tall" breaks story guard 1) and "No soft moss up here!" is marked heard at load (it comes from

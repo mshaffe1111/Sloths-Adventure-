@@ -1,0 +1,152 @@
+{
+ "easy-port-line3": true,
+ "easy-port-line8": true,
+ "easy-port-line8-at-shot": "Ooh, look! A step. Up you go.",
+ "easy-port-step-cut": "w1-boulder-grey-moss,w1-boulder-grey-moss,w1-boulder-grey-moss,w1-plank-ledge-a",
+ "easy-port": {
+  "cb": [
+   "1.5 onGuide Flick up again in the air to jump twice",
+   "3.1 putBack",
+   "4.3 putBack",
+   "5.6 putBack",
+   "6.1 onGuide Jump, then flick up again in the air!",
+   "10.1 putBack",
+   "11.3 putBack",
+   "12.6 putBack",
+   "13.8 putBack",
+   "14.2 onGuide Jump, then flick up again in the air!",
+   "15 putBack",
+   "15.5 onGuide Ooh, look! A step. Up you go."
+  ],
+  "said": [
+   "Flick up again midair to jump twice.",
+   "Jump, then flick up again in the air!",
+   "Ooh, look! A step. Up you go."
+  ],
+  "flickUp": 0,
+  "events": {
+   "asking": null,
+   "paused": false,
+   "on": true
+  }
+ },
+ "easy-land-line3": true,
+ "easy-land-line8": true,
+ "easy-land-line8-at-shot": "Ooh, look! A step. Up you go.",
+ "easy-land-step-cut": "w1-boulder-grey-moss,w1-boulder-grey-moss,w1-boulder-grey-moss,w1-plank-ledge-a",
+ "easy-land": {
+  "cb": [
+   "2.6 onGuide Flick up again in the air to jump twice",
+   "4.6 putBack",
+   "5.9 putBack",
+   "7.3 putBack",
+   "7.8 onGuide Jump, then flick up again in the air!",
+   "11.3 putBack",
+   "12.7 putBack",
+   "14 putBack",
+   "15.3 putBack",
+   "15.8 onGuide Jump, then flick up again in the air!",
+   "16.7 putBack",
+   "17.2 onGuide Ooh, look! A step. Up you go."
+  ],
+  "said": [
+   "Flick up again midair to jump twice.",
+   "Jump, then flick up again in the air!",
+   "Ooh, look! A step. Up you go."
+  ],
+  "flickUp": 0,
+  "events": {
+   "asking": null,
+   "paused": false,
+   "on": true
+  }
+ },
+ "normal-port-line3": true,
+ "normal-port-bubble-at-offer": "",
+ "normal-port-bubble-after-no": "",
+ "normal-port-back": {
+  "held": {
+   "paused": true,
+   "still": true
+  },
+  "gone": {
+   "offer": false,
+   "pauseMenu": false,
+   "asking": false,
+   "grown": 0
+  }
+ },
+ "normal-port": {
+  "cb": [
+   "2.5 onGuide Flick up again in the air to jump twice",
+   "4.5 putBack",
+   "6 putBack",
+   "7.5 putBack",
+   "8.1 onGuide Jump, then flick up again in the air!",
+   "11.4 putBack",
+   "12.9 putBack",
+   "14.2 putBack",
+   "15.6 putBack",
+   "16.1 onGuide Jump, then flick up again in the air!",
+   "17.1 putBack",
+   "18.7 putBack",
+   "20.1 putBack",
+   "21.6 putBack",
+   "23.1 putBack"
+  ],
+  "said": [
+   "Flick up again midair to jump twice.",
+   "Jump, then flick up again in the air!"
+  ],
+  "flickUp": 0,
+  "events": {
+   "asking": null,
+   "paused": false,
+   "on": true
+  }
+ },
+ "normal-land-line3": true,
+ "normal-land-bubble-at-offer": "",
+ "normal-land-bubble-after-no": "",
+ "normal-land-back": {
+  "held": {
+   "paused": true,
+   "still": true
+  },
+  "gone": {
+   "offer": false,
+   "pauseMenu": false,
+   "asking": false,
+   "grown": 0
+  }
+ },
+ "normal-land": {
+  "cb": [
+   "2.3 onGuide Flick up again in the air to jump twice",
+   "4 putBack",
+   "5.3 putBack",
+   "6.5 putBack",
+   "7.1 onGuide Jump, then flick up again in the air!",
+   "11.1 putBack",
+   "12.3 putBack",
+   "13.6 putBack",
+   "14.8 putBack",
+   "15.2 onGuide Jump, then flick up again in the air!",
+   "16.1 putBack",
+   "17.4 putBack",
+   "18.7 putBack",
+   "19.9 putBack",
+   "21.2 putBack"
+  ],
+  "said": [
+   "Flick up again midair to jump twice.",
+   "Jump, then flick up again in the air!"
+  ],
+  "flickUp": 0,
+  "events": {
+   "asking": null,
+   "paused": false,
+   "on": true
+  }
+ }
+}

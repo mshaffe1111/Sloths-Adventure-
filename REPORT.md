@@ -1,4 +1,4 @@
-# REPORT: R-165.62 (A2, help after put-backs in 1-1), Engine, attempt 1. Branch t-engine-help from t-engine-putback@41c2e248
+# REPORT: R-165.62 (A2, help after put-backs in 1-1), Engine, attempt 2 (the story keeper's review). Branch t-engine-help from t-engine-putback@41c2e248
 
 ## Method used
 Test-first: the schedule with a planted off-by-one red; real-engine flights with real put-backs (seed 3747, w1-log-chain-rise); browser
@@ -29,15 +29,18 @@ D37 (every claim run); A1's trap 9 (RealPlay's loseLife stub); frozen inputs mea
    stone), the two 12-offer stills (the line + YES Pokey on the stone that grows / NO jump pose).
 7. reference/handoffs/engine-core.md rewritten (header, §0b rulings, §1 open, §2 where the ladder lives, traps 15-18).
 
-## 2. Polish check
-- The offer over a black stage (asked under the set-back's closed iris): fixed, now asked once the iris is open and he stands.
-- Her bubble showed none of the ladder's lines: fixed (struggle help, `soon`, takes the stage's own move tip's place).
-- Upright step still, first take: Pokey dropped to the log below; replaced by on-step (he stands on the stone).
-- Rough, named: NO's `jump_up` pose (arms up) reads a little like a cheer. Upright, the offer's line wraps to two lines (fits).
-- Risk, named: in a browser run with lessons on, a first-time "gap" lesson (a teleport artifact) took the bubble and the step line
-  never came back. With lessons off (a real player at the chain has had them) both lines show. A lesson landing in the same second
-  can still drop it.
-
+## 2. Polish check (attempt 2: the story keeper's four, each fixed and seen on screen)
+- NO read as a cheer: now the standard hero's `apex`, mid-leap, arms reaching (jump_up only if the standard hero is off).
+- YES showed a stump, but the mossy rock grows: every grown step is now one sprite (`STEP_CUT` w1-boulder-grey-moss) and YES draws
+  that same rock (the picture's cut came from a different platform id before). Test: offer cut === every step's cut.
+- The 3-put-back line sat ~13 s, under the offer and after Back (her clock holds while he blinks after each set-back): the engine now
+  takes a ladder line down 8 s of play after it is said, and the moment the offer opens. Tests: helpLadder11 (down at 8 s; taken down
+  as the offer opens, red without it; nothing said after a no), helpLadderGuide (passed clears it). Browser: bubble "" at the offer
+  and after the no, both orientations (stills.json).
+- easy-*-08-step: Pokey now stands on the grown rock in both orientations. The old `line8 false` was the lessons-on run, where a
+  first-time gap lesson (a teleport artifact) took the bubble; it lived in stills-normal.json beside the lessons-off stills-easy.json.
+  Now one lessons-off run, one stills.json: line3 and line8 true on all four.
+- Earlier, fixed: the offer over the set-back's closed iris (black stage); her bubble dropping the ladder's lines.
 ## 3. Pushback
 PUSHBACK.md (accepted). Frozen inputs that were wrong: "No soft moss" in gen2 1-1 comes from w1.ts's hint.1-1.noMoss sockets, not
 mixer:76 (the engine marks it heard in 1-1; the mixer line is also gone). The coach has no Pokey pose: NO is the hero's jump_up.
@@ -49,12 +52,9 @@ save at the coach's first gap x6): said at most once, from the touch coach's jum
   in onBackSwipe as androidBack does. Done when a browser history.back() on the offer answers no.
 - roadmapcheck can't run here ("shallow clone, proofs cannot be checked"); CI runs it with fetch-depth 0. knowncheck PASS.
 - dotGuide.ts: a struggle line cut by a first-time lesson is not re-queued. Done when a test shows it comes back.
-
-## 5. Unresolved: the NO picture's pose (above) waits on the story keeper's word.
+## 5. Unresolved: the story keeper's look at attempt 2's stills.
 - Found and fixed on the way: importing w1.ts's section tables into the engine pushed the main chunk to 4.48 MB (over the 4 MiB rule);
   the move a piece needs is now read from the piece as laid (pieceMoveLaid, tested).
-
 ## 6. Method update (methods/stage-fix.md): "A Dot line is done when it is in her bubble (`.dg-bub-body`) in the browser, on Help and Tips."
-
 ## 7. Turnover note: reference/handoffs/engine-core.md rewritten (commit 132134b2).
-## Full suite, 3 shards on 5f767a44 (code final): 810 + 849 + 842 = 2501 pass, 0 fail (one standing TODO: 4-3); seedlist 1-1 PASS.
+## Full suite, 3 shards on 5f767a44 (attempt 1): 810 + 849 + 842 = 2501 pass, 0 fail (one standing TODO: 4-3); seedlist 1-1 PASS. Attempt 2: helpLadder*, HelpOffer tests 22/22, clipcheck PASS.
