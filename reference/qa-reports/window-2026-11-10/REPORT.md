@@ -52,9 +52,7 @@ reference/handoffs/analyst.md was created in this commit (first analyst).
 - Tiers come from play: expert P24, P30; middle P25, P28, P29, P31; child P26, P27, P32 (6 runs: thin); unrated P33.
 - Correction to #3: the true misread count is 154 of 700 punches (9 of 10 players), not 481. The old rule counted jump RELEASES and the jab rule's
   designed take-backs. The ranking is unchanged.
-**Nothing in the sheet is needed after this commit, except:** (1) stroke-by-stroke finger paths, if a bot must replay exact
-strokes rather than sample the distributions (none does today); (2) survey free text (`note`), never read by rule, if Matt wants it;
-(3) the before-0.9.5 players' per-stage lives and section times on the old stages (only their touch numbers are kept; those stages
-were replaced); (4) the name to P-number join, which is never in the repo. Once the sheet goes, the four personas in ../personas/
-can't be rebuilt from it by name (profile.py reads names); their numbers are already in the repo.
-
+**Nothing in the sheet is needed after this commit (attempt 6), except:** (1) stroke-by-stroke paths, if a bot must replay exact
+strokes instead of sampling (none does); (2) survey free text, never read; (3) old-stage lives and section times before 0.9.5 (touch,
+steering and climbs are kept); (4) the name to P join, never in the repo; (5) 1,431 of 53,815 strokes that fit no logged screen size
+(counted, not placed); (6) climb timing for the 1-1 tiers, which never existed (1-1 has no vines). Personas can't be rebuilt by name.

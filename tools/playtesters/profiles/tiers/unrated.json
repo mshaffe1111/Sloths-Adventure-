@@ -4,6 +4,9 @@
  "players": [
   "P33"
  ],
+ "runs": 1,
+ "thin": true,
+ "thinRule": "thin: a tier under 10 runs, a player under 5 runs: sample, do not trust its tails",
  "note": "pooled over runs; perPlayer keeps one player from counting as many",
  "all": {
   "normal": {
@@ -131,6 +134,44 @@
      "p75": 8.5,
      "p90": 8.5
     }
+   },
+   "steering": {
+    "moveHoldMs": {
+     "n": 57,
+     "p10": 67,
+     "p25": 84,
+     "p50": 101,
+     "p75": 184,
+     "p90": 482
+    },
+    "moveGapMs": {
+     "n": 56,
+     "p10": 133,
+     "p25": 167,
+     "p50": 234,
+     "p75": 366,
+     "p90": 949
+    },
+    "reversalShare": 0.0,
+    "dragToMovePx": {
+     "n": 57,
+     "p10": 17,
+     "p25": 19,
+     "p50": 23,
+     "p75": 27,
+     "p90": 36
+    },
+    "standStillMs": {
+     "n": 16,
+     "p10": 116,
+     "p25": 135,
+     "p50": 235,
+     "p75": 768,
+     "p90": 1102
+    },
+    "duckMs": null,
+    "climbMs": null,
+    "climbSpeedPxPerS": null
    }
   }
  },
@@ -259,6 +300,44 @@
     "p75": 8.5,
     "p90": 8.5
    }
+  },
+  "steering": {
+   "moveHoldMs": {
+    "n": 57,
+    "p10": 67,
+    "p25": 84,
+    "p50": 101,
+    "p75": 184,
+    "p90": 482
+   },
+   "moveGapMs": {
+    "n": 56,
+    "p10": 133,
+    "p25": 167,
+    "p50": 234,
+    "p75": 366,
+    "p90": 949
+   },
+   "reversalShare": 0.0,
+   "dragToMovePx": {
+    "n": 57,
+    "p10": 17,
+    "p25": 19,
+    "p50": 23,
+    "p75": 27,
+    "p90": 36
+   },
+   "standStillMs": {
+    "n": 16,
+    "p10": 116,
+    "p25": 135,
+    "p50": 235,
+    "p75": 768,
+    "p90": 1102
+   },
+   "duckMs": null,
+   "climbMs": null,
+   "climbSpeedPxPerS": null
   }
  },
  "laterRuns": null,
@@ -271,82 +350,106 @@
   }
  },
  "touch": {
-  "sessions": 1,
-  "minutesPlayed": 0.8,
-  "strokes": 59,
-  "mix": {
-   "drag": 0.169,
-   "flick": 0.831
+  "unplacedStrokes": 59,
+  "landscape": {
+   "strokes": 0,
+   "minutes": 0.0,
+   "mix": {},
+   "tapMs": null,
+   "holdMs": null,
+   "flickPx": null,
+   "flickPxPerMs": null,
+   "flickMs": null,
+   "dragMs": null,
+   "jumpFlickOffVerticalDeg": null,
+   "touchStartX": null,
+   "touchStartY": null,
+   "leftHalfShare": 0.0,
+   "twoFingerShare": 0.0,
+   "touchSizePx": {
+    "n": 59,
+    "p10": 12,
+    "p25": 12,
+    "p50": 12,
+    "p75": 24,
+    "p90": 24
+   },
+   "gapBetweenTouchesMs": null,
+   "screenWidthPx": null,
+   "screenHeightPx": null
   },
-  "tapMs": null,
-  "holdMs": null,
-  "flickPx": {
-   "p10": 95.189,
-   "p50": 142.524,
-   "p90": 171.843
+  "portrait": {
+   "strokes": 0,
+   "minutes": 0.0,
+   "mix": {},
+   "tapMs": null,
+   "holdMs": null,
+   "flickPx": null,
+   "flickPxPerMs": null,
+   "flickMs": null,
+   "dragMs": null,
+   "jumpFlickOffVerticalDeg": null,
+   "touchStartX": null,
+   "touchStartY": null,
+   "leftHalfShare": 0.0,
+   "twoFingerShare": 0.0,
+   "touchSizePx": null,
+   "gapBetweenTouchesMs": null,
+   "screenWidthPx": null,
+   "screenHeightPx": null
   },
-  "flickPxPerMs": {
-   "p10": 0.708,
-   "p50": 1.005,
-   "p90": 1.565
+  "play": {
+   "minutes": 0.8,
+   "starts": 1,
+   "finishes": 0,
+   "quits": 0,
+   "stuckHelp": 0,
+   "hurtPerMinute": 0.0,
+   "livesLostPerMinute": 0.0,
+   "intentsPerMinute": {
+    "duck": 85.5,
+    "jump": 67.0,
+    "jumpUp": 152.5,
+    "move": 149.9
+   }
+  }
+ },
+ "steeringAllStages": {
+  "moveHoldMs": {
+   "n": 57,
+   "p10": 67,
+   "p25": 84,
+   "p50": 101,
+   "p75": 184,
+   "p90": 482
   },
-  "flickMs": {
-   "p10": 96,
-   "p50": 130,
-   "p90": 212
+  "moveGapMs": {
+   "n": 56,
+   "p10": 133,
+   "p25": 167,
+   "p50": 234,
+   "p75": 366,
+   "p90": 949
   },
-  "dragMs": {
-   "p10": 429,
-   "p50": 988,
-   "p90": 3280
-  },
-  "jumpFlickOffVerticalDeg": {
-   "p10": 40.732,
-   "p50": 41.082,
-   "p90": 43.132
-  },
-  "jumpHoldMs": {
+  "reversalShare": 0.0,
+  "dragToMovePx": {
+   "n": 57,
    "p10": 17,
-   "p50": 51,
-   "p90": 135
+   "p25": 19,
+   "p50": 23,
+   "p75": 27,
+   "p90": 36
   },
-  "gapBetweenTouchesMs": {
-   "p10": 120,
-   "p50": 196,
-   "p90": 721
+  "standStillMs": {
+   "n": 16,
+   "p10": 116,
+   "p25": 135,
+   "p50": 235,
+   "p75": 768,
+   "p90": 1102
   },
-  "touchStartX": {
-   "p10": 0.455,
-   "p50": 0.555,
-   "p90": 0.622
-  },
-  "touchStartY": {
-   "p10": 0.661,
-   "p50": 0.776,
-   "p90": 0.838
-  },
-  "leftHalfShare": 0.237,
-  "twoFingerShare": 0.0,
-  "touchSizePx": {
-   "p10": 12,
-   "p50": 12,
-   "p90": 24
-  },
-  "perMinute": {
-   "duck": 85.5,
-   "jumpUp": 152.5,
-   "move": 149.9,
-   "jump": 67.0
-  },
-  "hurtPerMinute": 0.0,
-  "livesLostPerMinute": 0.0,
-  "secondsPerSection": {
-   "p10": 8.464,
-   "p50": 10.767,
-   "p90": 10.767
-  },
-  "quits": 0,
-  "finishes": 0,
-  "stuckHelp": 0
+  "duckMs": null,
+  "climbMs": null,
+  "climbSpeedPxPerS": null
  }
 }

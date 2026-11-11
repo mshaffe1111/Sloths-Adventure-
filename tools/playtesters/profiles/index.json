@@ -1,204 +1,308 @@
 {
  "rule": "child: median finish >= 380 s on any setting, or >= 20 put-backs a run on Easy; expert: median finish <= 190 s and <= 1.0 lives + put-backs a run; middle: everyone else with a finished gen2 1-1 run; unrated: no finished run",
+ "thinRule": "thin: a tier under 10 runs, a player under 5 runs",
  "layoutList": "e03e9c8c",
+ "groundCheck": "98922 of 98923 ground lines sit on a rebuilt platform top (same y, x within 60 px of its ends)",
+ "tiers": {
+  "expert": {
+   "players": [
+    "P24",
+    "P30"
+   ],
+   "runs": 48,
+   "thin": false
+  },
+  "middle": {
+   "players": [
+    "P25",
+    "P28",
+    "P29",
+    "P31"
+   ],
+   "runs": 44,
+   "thin": false
+  },
+  "child": {
+   "players": [
+    "P26",
+    "P27",
+    "P32"
+   ],
+   "runs": 6,
+   "thin": true
+  },
+  "unrated": {
+   "players": [
+    "P33"
+   ],
+   "runs": 1,
+   "thin": true
+  }
+ },
  "players": {
   "P1": {
    "side": "before",
    "tier": null,
    "sessions": 63,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P2": {
    "side": "before",
    "tier": null,
    "sessions": 14,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P3": {
    "side": "before",
    "tier": null,
    "sessions": 7,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P4": {
    "side": "before",
    "tier": null,
    "sessions": 6,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P5": {
    "side": "before",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P6": {
    "side": "before",
    "tier": null,
    "sessions": 10,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P7": {
    "side": "before",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P8": {
    "side": "other",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P9": {
    "side": "before",
    "tier": null,
    "sessions": 2,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P10": {
    "side": "before",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P11": {
    "side": "before",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P12": {
    "side": "before",
    "tier": null,
    "sessions": 5,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P13": {
    "side": "before",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P14": {
    "side": "before",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P15": {
    "side": "before",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P16": {
    "side": "before",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P17": {
    "side": "before",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P18": {
    "side": "before",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P19": {
    "side": "before",
    "tier": null,
    "sessions": 2,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P20": {
    "side": "before",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P21": {
    "side": "before",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P22": {
    "side": "before",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P23": {
    "side": "before",
    "tier": null,
    "sessions": 1,
-   "gen2Runs": 0
+   "gen2Runs": 0,
+   "runs": 0,
+   "thin": false
   },
   "P24": {
    "side": "since",
    "tier": "expert",
    "sessions": 16,
-   "gen2Runs": 41
+   "gen2Runs": 41,
+   "runs": 41,
+   "thin": false
   },
   "P25": {
    "side": "since",
    "tier": "middle",
    "sessions": 11,
-   "gen2Runs": 25
+   "gen2Runs": 25,
+   "runs": 25,
+   "thin": false
   },
   "P26": {
    "side": "since",
    "tier": "child",
    "sessions": 3,
-   "gen2Runs": 4
+   "gen2Runs": 4,
+   "runs": 4,
+   "thin": true
   },
   "P27": {
    "side": "since",
    "tier": "child",
    "sessions": 1,
-   "gen2Runs": 1
+   "gen2Runs": 1,
+   "runs": 1,
+   "thin": true
   },
   "P28": {
    "side": "since",
    "tier": "middle",
    "sessions": 3,
-   "gen2Runs": 11
+   "gen2Runs": 11,
+   "runs": 11,
+   "thin": false
   },
   "P29": {
    "side": "since",
    "tier": "middle",
    "sessions": 4,
-   "gen2Runs": 6
+   "gen2Runs": 6,
+   "runs": 6,
+   "thin": false
   },
   "P30": {
    "side": "since",
    "tier": "expert",
    "sessions": 2,
-   "gen2Runs": 7
+   "gen2Runs": 7,
+   "runs": 7,
+   "thin": false
   },
   "P31": {
    "side": "since",
    "tier": "middle",
    "sessions": 1,
-   "gen2Runs": 2
+   "gen2Runs": 2,
+   "runs": 2,
+   "thin": true
   },
   "P32": {
    "side": "since",
    "tier": "child",
    "sessions": 1,
-   "gen2Runs": 1
+   "gen2Runs": 1,
+   "runs": 1,
+   "thin": true
   },
   "P33": {
    "side": "since",
    "tier": "unrated",
    "sessions": 1,
-   "gen2Runs": 1
+   "gen2Runs": 1,
+   "runs": 1,
+   "thin": true
   }
  }
 }
