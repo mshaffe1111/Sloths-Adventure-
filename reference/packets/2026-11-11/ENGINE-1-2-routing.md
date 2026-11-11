@@ -24,14 +24,17 @@ never raise the quota.
 - What is 1-2's alone is a ROW: in World 1's data (w1.ts), in the listed-stage table (item 1), in the reach table (item 3).
 - Each item ends with **Any stage** (what the next stage needs: rows only) and how that is proven. The fixture for those proofs
   is test-only: stage 1-3's config given World 1's kit, a 3-seed stub list and stub rows INSIDE the test (nothing shipped names it).
-  HOW a test adds its rows: the three tables are read through one small function each (the listed-stage table, the reach
-  table, `provenSeedFor`'s lists) that takes an optional extra-rows argument or a test-only `with...Rows(rows, fn)` wrapper that
-  restores the table when `fn` returns; no test writes a shipped file. The fixture's 3 seeds need only BUILD on both settings:
-  they are not held to the seed list's clean bar (that bar is 1-2's list's, Content's).
+  HOW a test adds its row: ONE exported function, test-only by name (`withTestStage(rows, fn)` or the like, in listed.ts), adds
+  the fixture's row to the listed-stage table, the reach table and the seed lists (`provenSeedFor`), runs `fn` and restores all
+  three; no test writes a shipped file and nothing in the game calls it (a test proves that by grep). The fixture's 3 seeds need
+  only BUILD on both settings: they are not held to the seed list's clean bar (1-1 rolls clean on 2% of fresh seeds: that is a
+  search, and it is Content's, on 1-2's list).
 - The check, printed in REPORT.md after each push: `grep -rn "'1-2'" src/game src/components tools/engine --include=*.ts
   --include=*.tsx`. Every hit is a data row (worlds/, the two tables, provenSeeds.ts, finds, story and Dot data), the testers'
-  course (`CTEST_STAGE_ID`), or a test. Allowed BY NAME until item 7 deletes the old 1-2: the old builder's four
-  `plan === '1-2'` branches (protoStage.ts:1496, :1514, :1664, :5330). Any other hit that is a branch in engine code fails the item. Beside it, every `'1-1'` branch you
+  course (`CTEST_STAGE_ID`), or a test. Allowed BY NAME until item 7 deletes them: the old builder's four
+  `plan === '1-2'` branches (protoStage.ts:1496, :1514, :1664, :5330), which are not in push 2's WRITE. The testers' course keeps
+  nothing of them: it is built with the plan 'ctest' (stageGenerator.ts:2862; protoStage.ts:2437), under which all four are
+  false. Any other hit that is a branch in engine code fails the item. Beside it, every `'1-1'` branch you
   touched, as before and after.
 
 ## Why it matters
@@ -141,8 +144,8 @@ never raise the quota.
 - **Any stage:** a world lays a hurt floor with a manifest row, `hurt` on its places and a painter. Proof: a test with a STUB kit
   that is not World 1's (its own `hurtFloor` row with another lesson name and depth, one section with a `hurt` gap): the roll
   lays the floor at that depth, RealPlay loses a heart on Normal and none on Easy, `hazard.untaught` reads that lesson name, and
-  the same kit with the row removed fails by name. The grep shows no NEW "thorn" in pipeline.ts, verdicts.ts, promises11.ts or
-  engine.ts (engine.ts holds 23 today, World 3's vines: the count before and after, printed).
+  the same kit with the row removed fails by name. The grep for "thorn": no NEW one in engine.ts (23 today, World 3's
+  vines: the count unchanged, printed before and after); none in the other three (pipeline.ts, verdicts.ts, promises11.ts: 0 today).
 - Gates: lockall against your base: nothing differs (no shipped stage lays a hurt place yet); drawcheck (limits unchanged,
   tools/perf/limits.json), artcheck, `npx vite build` (no asset over 4 MiB) and chunkcheck.
 - **The still is yours and it is Matt's hold point** (CLAUDE.md "Show first"; the lead, 11-11): one hollow with a 3-cap chain,
@@ -287,5 +290,6 @@ PUSHBACK.md and one message, then stop.
 5 (attempt 1 REJECTED at f60e6503, 6 lines; attempt 2 at 35364c97: all 6 closed, 3 new lines; attempt 3 at 89005905 met them;
 attempt 4 at 7ed328b6 applied the lead's rulings of 4:58 PM ET, item 0 struck, and PASSED with two notes, written in at 3864e805;
 attempt 5 at 65d31898 applied the lead's standing rule D43: each item for any stage from data, proven on 1-2, with its "Any stage"
-proof; the Critic: sound, three wording fixes, written in 2026-11-11 5:35 PM ET with the story keeper's must (item 6: petals low by a brief field).
+proof; the Critic: sound, three wording fixes, written in 2026-11-11 5:35 PM ET with the story keeper's must (item 6: petals low by a brief
+field), and made exact to the Critic's words 2026-11-11 5:36 PM ET (the lead, 5:34 PM ET).
 Each line is answered in DESIGN-1-2-notes.md §9)

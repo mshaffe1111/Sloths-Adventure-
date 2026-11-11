@@ -110,7 +110,8 @@ Every ruling below cites the file and section where it's written in full.
 ## 4. Open items (none of these is finished; check each before assuming)
 
 - **From the 1-2 packets (11-11):**
-  - both packets are with the packet Critic: CONTENT attempt 6 (the mixed way down; 32 sections named never mirrored); ENGINE attempt 5 (it had PASSED at 7ed328b6)
+  - CONTENT attempt 6 PASSED the packet Critic at 3507c3a2 (the mixed way down; 32 sections named never mirrored); petals low
+    (rule 5, done-item 4, ENGINE item 6's `petals: 'low'`) was added after that PASS and is with the Critic, as is ENGINE attempt 5 (it had PASSED at 7ed328b6)
     rewritten for the lead's standing rule D43, 11-11: every engine item for ANY stage from data (a listed-stage table, a
     `hurt` place flag with the world's `hurtFloor` row, a judged-stage table, brief fields), proven on 1-2, never a stage id
     in engine code. Write every future engine packet that way from the first draft (the yield floor is 1 clean in 50 for now, the lead 11-11; R-165.120 raises it)

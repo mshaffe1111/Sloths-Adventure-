@@ -34,7 +34,7 @@ No screens (packets). Tables checked for broken code spans; times from `date`; e
   bounce combine to 1-1 or the graph is dropped and named. It belongs with R-165.120 (the yield).
 - **DESIGNER help.md §5** (failures counted through a lost life, one system with assist.ts) before 1-2 reaches testers.
 ## 5. Unresolved
-- Both packets are with the packet Critic: CONTENT attempt 6 (32 sections never mirrored, one quiet row corrected, petals low), ENGINE attempt 5 (D43, three wording fixes).
+- CONTENT attempt 6 PASSED at 3507c3a2 (two builder notes, both in); since then petals low (rule 5, done-item 4). ENGINE attempt 5 (D43, three wording fixes) is with the Critic.
 - The ruling's `Y`, `F` and a drop are no beat to the inspector (flown): each is laid between two beats, never last. The first
   mix I flew (`J N J Y`, a jump-down drop) broke the quiet line on 23 of 51 rolls and is not in the packet.
 - Petals LOW on the bark (BRIEF-1-2 "must", the story keeper 5:33 PM ET): my "a petal over every cap" was wrong, and the pipeline

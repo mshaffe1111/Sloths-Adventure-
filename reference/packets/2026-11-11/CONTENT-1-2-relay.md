@@ -1,7 +1,7 @@
 # TASK 1-2 (R-165.11: build stage 1-2, The Petal Trail, on gen2, the way 1-1 was re-laid)   to: Content
 # model: the content tier (tools/team/models.json on the lead's branch)   effort: high   due: see "Time"; a safe-keeping push at least hourly
 Written by the Designer, 2026-11-11 5:03 PM ET; attempt 3: after the packet Critic's 14 lines (t-critic-1-2-packet@51fe547a), the lead's
-rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Attempt 4, 5:05 PM ET: the lead's rulings of 4:58 PM ET applied exactly. Attempt 5, 2026-11-11 5:24 PM ET: the lead's ruling of 5:10 PM ET on the Critic's one attempt-3 line (the hop step, @5d73c0da); 2026-11-11 5:30 PM ET: three data rows named for D43 ("Phases" 2, "Help"). Attempt 6, 2026-11-11 5:32 PM ET: the Critic's two attempt-5 lines (@fee80d5c; the lead 5:31 PM ET): rule 7, never mirrored, and one quiet row as printed; 2026-11-11 5:35 PM ET: the story keeper's must through the lead (5:33 PM ET), petals LOW on the bark and none up in the chain (rule 5, N21, done-item 4), and `THORN_12` (named, defined nowhere) written out. Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
+rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Attempt 4, 5:05 PM ET: the lead's rulings of 4:58 PM ET applied exactly. Attempt 5, 2026-11-11 5:24 PM ET: the lead's ruling of 5:10 PM ET on the Critic's one attempt-3 line (the hop step, @5d73c0da); 2026-11-11 5:30 PM ET: three data rows named for D43 ("Phases" 2, "Help"). Attempt 6, 2026-11-11 5:32 PM ET: the Critic's two attempt-5 lines (@fee80d5c; the lead 5:31 PM ET): rule 7, never mirrored, and one quiet row as printed; 2026-11-11 5:35 PM ET: the story keeper's must through the lead (5:33 PM ET), petals LOW on the bark and none up in the chain (rule 5, N21, done-item 4), and `THORN_12` defined in phase 1; the bloom rule's expected failure is phase 1 only (the Critic's two notes on its PASS of attempt 6 at 3507c3a2). Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
 
 ## First, before any tool call
 `git fetch origin ccr-ca657d3c-n09zty t-design-1-2 t-designer-reach t-engine-inventory art-director` and the head the lead names.
@@ -181,7 +181,8 @@ Both exits are walk-ons of a rest's length, so either may follow S (V5); no othe
 - RULE, on every listed seed and both settings, read on the BUILT stage: a run that takes every LOW road and no off-path piece
   gathers the quota with 2 or more to spare; print the smallest spare. And every off-path landing of an own or new section has a
   pickup over it (a w1.stage12.test check that reads `collectibles` against `platforms`; D19: w1.test.ts:117 counts sockets).
-- Until item 6 lands those pickups are petals and the rule will fail: that failure is expected in phases 1 and 2 and is named, not fixed.
+- Until item 6 lands those pickups are petals and the rule will fail: that failure is expected in phase 1 only (item 6 comes with
+  Engine's push 2; from then `offRoad: 'fruit'` is on the brief) and is named, not fixed.
 - The find: World 1's NOTE is 1-2's (`findForStage(1, 2)` is `w1_note`, finds.ts:356). It stands on N20's `find` socket on every listed
   seed (Engine's item 4; today the socket would get a golden seed, pipeline.ts:2129, and the note a hashed spot elsewhere).
 - The report's table: for the report seed, every off-path spot, its x and what it holds.
@@ -206,13 +207,14 @@ alone. So N4's first hollow is laid with clear air at lip height from lip to lip
 more than 20 s at N4 on any listed seed. Testers do not get 1-2 until the thorn line has words (the lead's hold).
 
 ## Phases (what you can do when; Engine's packet has the same order)
-1. **Now, on today's engine.** Lay sections and prove each alone with `layLocal` (as chainlay12.ts does) and with raw builds
+1. **Now, on today's engine.** Every thorn hollow's place (the sections of "The thorny floor", Where) is written through ONE
+   constant, `THORN_12` (today `{ soft: true }`), so phase 2 turns them all in one line. Lay sections and prove each alone with `layLocal` (as chainlay12.ts does) and with raw builds
    (`buildGen2Stage`, as supply12.ts does with your real sections in place of its stand-ins). Known and expected today: 1-2 is not on
    the flown reach, so a 253-256 px gap throws ("past the double's reach 230 px") and the level check counts no double on 1-2
    (levelCheck.ts:132-134), so every section with a D, B, V, d or X beat is swapped out as unreachable. Build and judge those
    sections with `FLOWN=1` in your own copy of the probe; they roll for real after Engine's push 2. Deliver: the first still.
 2. **After Engine's push 2** (the reach scope, the double counted, the node code reading `lessons`, the thorn hollow, the note, the
-   blooms, 1-2's row in the listed-stage table; push 1, the 1-1 fork ends, is the t-engine-11-followup round's): rebase; enter World 1's `hurtFloor` row in the manifest (`{ lesson: 'thorns', art: 'w1-thorn', depth: [150, 170], clearStart: 1300 }`), `help: 'marked'` on `briefs['1-2']` and `help: { grows: 'show' }` on N4's first-chain piece (Engine's items 2 and 7 read them: D43, nothing in engine code names 1-2); set `petals: 'low'` on `briefs['1-2']` (rule 5; Engine's item 6); turn every thorn hollow (the sections of "The thorny floor", Where) from `soft` to `hurt: true`; raw builds clean; then the seed list, built by
+   blooms, 1-2's row in the listed-stage table; push 1, the 1-1 fork ends, is the t-engine-11-followup round's): rebase; enter World 1's `hurtFloor` row in the manifest (`{ lesson: 'thorns', art: 'w1-thorn', depth: [150, 170], clearStart: 1300 }`), `help: 'marked'` on `briefs['1-2']` and `help: { grows: 'show' }` on N4's first-chain piece (Engine's items 2 and 7 read them: D43, nothing in engine code names 1-2); set `petals: 'low'` on `briefs['1-2']` (rule 5; Engine's item 6); turn `THORN_12`'s hollows from `soft` to `hurt: true`; raw builds clean; then the seed list, built by
    the tool on raw builds (it calls `buildGen2Stage`, not the game's routing), on R-165.112's head.
 3. **After Engine's push 3** (routing, the old 1-2 deleted, help on N4): the tier bots, stills, clips, every gate, the report.
 
