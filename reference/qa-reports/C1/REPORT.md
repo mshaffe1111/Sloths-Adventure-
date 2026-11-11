@@ -1,8 +1,7 @@
 # C1 report (R-165.72: 1-1 re-laid to the flown reach), Content, attempt 2 (the Critic's polish, scope and report findings). t-content-c1 on E0a d2748131 (E0 commits first)
 **Method used:** a probe of every verdict by section over 200-600 raw builds a pass, both settings; fix by section; then the list, the Engine
 member's relay test (a/b/c) and c1judge on the real list; seeds failing (b)/(c) left off the list. Root REPORT.md is E0a's: this is C1's.
-**Lessons applied:** D37 (lives by the real loseLife: c1judge wraps GameEngine.prototype.loseLife), D39 (help room over every listed seed,
-both settings, tallest case named), D40 (rebased each time E0a moved; checks taken from their owners, mine taken off the branch).
+**Lessons applied:** D37 (lives by the real loseLife, c1judge), D39 (help room over every listed seed, tallest named), D40 (rebased as E0a moved).
 ## 1. Done-items
 1. Met. Rows below; bounce: 25 → 12 sections in 1-1, 77 → 32 mushrooms; double-asking sections 41 → 18.
 2. Met. Every version with a 253-256 gap has an `easy` twin (single hops). `seedlist --check` PASS, 200 seeds, 0 refused, both settings.
@@ -50,13 +49,12 @@ skills, layoutMemory, glideStages, stageQuality, flowerReach, stage11gen2:46 (it
 ## 6. Polish check (Matt's bar; every still and the clips looked at)
 Pass: rises read as faces off flat ground; practice gap shows its floor, the test gap open; mushrooms glow at the face's foot; fork high roads
 carry petals; chains over catch logs; no earth floats, no hole under a log. Clips: the middle tier bot's own run (runTier, 1-1 variant 11,
-recorded per frame in Node) played back in the real game at 30 fps, 130 s, each setting and orientation: CLIPRESULT. Named, not mine to fix:
+recorded per frame in Node) played back in the real game at 30 fps, 130 s, each setting and orientation (clips/*.mp4): Pokey in every frame, Dot's double line at the teach, past the lift by 75 s; looked at. Named, not mine to fix:
 (e) seed perch, sideways x29700 (polish/n-normal-L11-x29700-sideways.jpg): on the seed bough a petal draws under the progress bar and
 Pokey's raised hands touch the bar (camera margin, the integration's); upright frames show half a screen of ground under him (camera);
 white mushroom-shaped DRESSING beside real mushrooms (C2); thin logs drawn as sawn planks, the near strip smeared under canopy (C2).
 ## 7. Off-path spots (R-165.108): 114 off-path pieces over every 1-1 version, 0 empty (w1.test, red at 31 before). First run (4106, N):
 mushroom-fork-dip 13485-16550 high road 1 petal, 1 petal, a find; bank-stair-fork 21732-24779 1 petal, a find; canopy-rungs-level 24879-27754
 low logs 2+2 petals; seed-perch 28946-31857 the seed; canopy-rungs 31954-34668 2+2 petals; sunlit-log 34786-35978 2 petals.
-## Benchmark
-TIMELINE.md. Read-in ~10 min; layout ~2 h; list builds 3 x 35-40 min; bots/relay ~30 min; stills, clips ~45 min; report 20 min.
-Slowed by: E0a's head moving twice (lists rebuilt), 35 min per list build, no clip pilot. Would save: a per-section verdict probe, a 4-worker seedlist script, an in-browser bot.
+## Benchmark (TIMELINE.md): read-in ~10 min, layout ~2 h, list builds 3 x 35-40 min, bots/relay ~30 min, stills and clips ~1.5 h (2 attempts),
+report 20 min. Slowed by E0a's head moving twice, 35 min per list build, no clip tool. Would save: a verdict probe, a 4-worker seedlist, a bot-trace clip tool.

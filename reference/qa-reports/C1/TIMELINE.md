@@ -11,3 +11,4 @@
 - 08:55 lead named E0a d2748131 (attempt 6): rebased; list build 2 runs on attempt-5 code, re-checked on d2748131 after
 - 09:41 final list 327 PASS; relay (b) 0/0, (c) 0/0; judge PASS but expert N put-backs 0.68 v 0.6; first run 4106 locked; off-path petals; rolls re-picked; gates next
 - 10:51 gates done (drawcheck, buildcheck, knowncheck, roadmapcheck PASS; suite 23 named), list cut to 200 for the chunk, stills+clips, REPORT written; report sent
+- 12:33 attempt 2: (a) parked 17, fallen-trunk-13 restored; (b) items 4-5 on 200; (c) 108 section stills; (d) 4 two-minute bot-replay clips; (e) named
