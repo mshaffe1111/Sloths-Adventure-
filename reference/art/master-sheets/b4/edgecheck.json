@@ -1,0 +1,762 @@
+{
+"icons/about.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/ascent.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/back.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/bramble.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/cage.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/cards.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/carving.webp": {
+"fill": 1.0,
+"white_edge": 0.004
+},
+"icons/checkmark.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/close.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/clubs.webp": {
+"fill": 1.0,
+"white_edge": 0.003
+},
+"icons/compass.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/crown.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/expand.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/fern.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/flower.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/gear.webp": {
+"fill": 1.0,
+"white_edge": 0.011
+},
+"icons/glide.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/heart.webp": {
+"fill": 1.0,
+"white_edge": 0.025
+},
+"icons/heartEmpty.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/home.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/howto.webp": {
+"fill": 1.0,
+"white_edge": 0.007
+},
+"icons/idol.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/journal.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/key.webp": {
+"fill": 1.0,
+"white_edge": 0.008
+},
+"icons/leaf.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/liana.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/lock.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/map.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/medal.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/paw.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/petal.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/play.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/pouch.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/restart.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/save.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/scenes.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/seed.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/shake.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/shield.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/shimmy.webp": {
+"fill": 1.0,
+"white_edge": 0.004
+},
+"icons/shrink.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/sound.webp": {
+"fill": 1.0,
+"white_edge": 0.009
+},
+"icons/sparkle.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/sprint.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/spyglass.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/star.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/story.webp": {
+"fill": 1.0,
+"white_edge": 0.027
+},
+"icons/thornHeart.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"icons/trophy.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"pickups/bell.webp": {
+"fill": 1.0,
+"white_edge": 0.007
+},
+"pickups/locket.webp": {
+"fill": 1.0,
+"white_edge": 0.006
+},
+"pickups/petal.webp": {
+"fill": 1.0,
+"white_edge": 0.008
+},
+"pickups/rattle.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"pickups/ribbon.webp": {
+"fill": 1.0,
+"white_edge": 0.027
+},
+"pickups/scroll.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"pickups/teddy.webp": {
+"fill": 1.0,
+"white_edge": 0.009
+},
+"ui/card.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"ui/chip-off.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"ui/chip-on.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"ui/leaf-token.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"ui/satchel.webp": {
+"fill": 1.0,
+"white_edge": 0.053
+},
+"ui/sign-big.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"ui/slider-empty.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"ui/slider-fill.webp": {
+"fill": 0.99,
+"white_edge": 0.0
+},
+"ui/slider-knob.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"ui/slider-track.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"ui/token.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"ui/trails.webp": {
+"fill": 0.9,
+"white_edge": 0.0
+},
+"ui/ui-kit.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"title/log.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"title/slab.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"hero/title-idle.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"enemies/goldsnake-anim.webp": {
+"fill": 1.0,
+"white_edge": 0.003
+},
+"enemies/goldsnake-head.webp": {
+"fill": 0.95,
+"white_edge": 0.004
+},
+"enemies/goldsnake-sleep.webp": {
+"fill": 0.93,
+"white_edge": 0.019
+},
+"enemies/goldsnake-wake.webp": {
+"fill": 0.93,
+"white_edge": 0.027
+},
+"enemies/boa-atlas.webp": {
+"fill": 0.97,
+"white_edge": 0.002
+},
+"enemies/caiman-atlas.webp": {
+"fill": 0.9,
+"white_edge": 0.002
+},
+"enemies/croc-atlas.webp": {
+"fill": 0.96,
+"white_edge": 0.012
+},
+"enemies/drake-atlas.webp": {
+"fill": 0.95,
+"white_edge": 0.013
+},
+"enemies/eagle-atlas.webp": {
+"fill": 0.96,
+"white_edge": 0.122
+},
+"enemies/frog-atlas.webp": {
+"fill": 0.96,
+"white_edge": 0.001
+},
+"enemies/golem-atlas.webp": {
+"fill": 0.99,
+"white_edge": 0.033
+},
+"enemies/guard-atlas.webp": {
+"fill": 1.0,
+"white_edge": 0.002
+},
+"enemies/harpy-atlas.webp": {
+"fill": 0.94,
+"white_edge": 0.011
+},
+"enemies/ironclaw-atlas.webp": {
+"fill": 1.0,
+"white_edge": 0.17
+},
+"enemies/jaguar-atlas.webp": {
+"fill": 0.99,
+"white_edge": 0.003
+},
+"enemies/monarch-atlas.webp": {
+"fill": 0.88,
+"white_edge": 0.001
+},
+"enemies/ocelot-atlas.webp": {
+"fill": 0.99,
+"white_edge": 0.002
+},
+"enemies/prowler-atlas.webp": {
+"fill": 0.96,
+"white_edge": 0.006
+},
+"enemies/queen-atlas.webp": {
+"fill": 0.97,
+"white_edge": 0.02
+},
+"enemies/reaver-atlas.webp": {
+"fill": 0.92,
+"white_edge": 0.0
+},
+"enemies/snake-atlas.webp": {
+"fill": 0.96,
+"white_edge": 0.194
+},
+"enemies/snake2-atlas.webp": {
+"fill": 0.49,
+"white_edge": 0.015
+},
+"enemies/sovereign-atlas.webp": {
+"fill": 0.99,
+"white_edge": 0.004
+},
+"enemies/spider-atlas.webp": {
+"fill": 0.93,
+"white_edge": 0.002
+},
+"enemies/tayra-atlas.webp": {
+"fill": 1.0,
+"white_edge": 0.002
+},
+"enemies/thornbark-atlas.webp": {
+"fill": 1.0,
+"white_edge": 0.001
+},
+"enemies/turtle-atlas.webp": {
+"fill": 0.98,
+"white_edge": 0.006
+},
+"enemies/venom-atlas.webp": {
+"fill": 1.0,
+"white_edge": 0.003
+},
+"enemies/venom2-atlas.webp": {
+"fill": 0.93,
+"white_edge": 0.003
+},
+"enemies/boa-anim.webp": {
+"fill": 0.94,
+"white_edge": 0.001
+},
+"enemies/croc-anim.webp": {
+"fill": 1.0,
+"white_edge": 0.006
+},
+"enemies/dangler-anim.webp": {
+"fill": 1.0,
+"white_edge": 0.118
+},
+"enemies/dozer-anim.webp": {
+"fill": 1.0,
+"white_edge": 0.002
+},
+"enemies/eagle-anim.webp": {
+"fill": 1.0,
+"white_edge": 0.038
+},
+"enemies/guard-anim.webp": {
+"fill": 0.98,
+"white_edge": 0.0
+},
+"enemies/jaguar-anim.webp": {
+"fill": 1.0,
+"white_edge": 0.006
+},
+"enemies/mantis-anim.webp": {
+"fill": 1.0,
+"white_edge": 0.02
+},
+"enemies/ocelot-anim.webp": {
+"fill": 0.99,
+"white_edge": 0.001
+},
+"enemies/pell-anim.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"enemies/prowler-anim.webp": {
+"fill": 1.0,
+"white_edge": 0.001
+},
+"enemies/queen-anim.webp": {
+"fill": 1.0,
+"white_edge": 0.01
+},
+"enemies/seamstress-anim.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"enemies/soldier-anim.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"enemies/spider-anim.webp": {
+"fill": 1.0,
+"white_edge": 0.002
+},
+"enemies/turtle-anim.webp": {
+"fill": 0.99,
+"white_edge": 0.006
+},
+"enemies/butler-poses.webp": {
+"fill": 1.0,
+"white_edge": 0.042
+},
+"enemies/dangler-poses.webp": {
+"fill": 1.0,
+"white_edge": 0.089
+},
+"enemies/dozer-poses.webp": {
+"fill": 1.0,
+"white_edge": 0.001
+},
+"enemies/mantis-poses.webp": {
+"fill": 1.0,
+"white_edge": 0.136
+},
+"enemies/seamstress-poses.webp": {
+"fill": 1.0,
+"white_edge": 0.046
+},
+"characters/cels-0.webp": {
+"fill": 0.97,
+"white_edge": 0.07
+},
+"characters/cels-1.webp": {
+"fill": 0.98,
+"white_edge": 0.063
+},
+"characters/cels-2.webp": {
+"fill": 0.95,
+"white_edge": 0.029
+},
+"characters/cels-3.webp": {
+"fill": 1.0,
+"white_edge": 0.052
+},
+"characters/cels-4.webp": {
+"fill": 0.99,
+"white_edge": 0.111
+},
+"characters/cels-5.webp": {
+"fill": 0.99,
+"white_edge": 0.127
+},
+"characters/cels-6.webp": {
+"fill": 0.99,
+"white_edge": 0.145
+},
+"characters/dot-atlas.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"characters/dot-perch-atlas.webp": {
+"fill": 0.98,
+"white_edge": 0.002
+},
+"characters/flicker-anim.webp": {
+"fill": 1.0,
+"white_edge": 0.023
+},
+"characters/meeca-blanket.webp": {
+"fill": 1.0,
+"white_edge": 0.004
+},
+"characters/meeca-carve.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"characters/meeca-standard.webp": {
+"fill": 1.0,
+"white_edge": 0.003
+},
+"hero/hero-atlas.webp": {
+"fill": 0.98,
+"white_edge": 0.0
+},
+"hero/hero-rope.webp": {
+"fill": 1.0,
+"white_edge": 0.014
+},
+"hero/hero-standard.webp": {
+"fill": 0.99,
+"white_edge": 0.066
+},
+"hero/hero-story.webp": {
+"fill": 0.99,
+"white_edge": 0.005
+},
+"hero/hero-studies.webp": {
+"fill": 0.96,
+"white_edge": 0.012
+},
+"hero/hero-vine.webp": {
+"fill": 1.0,
+"white_edge": 0.03
+},
+"hero/journal-poses.webp": {
+"fill": 0.97,
+"white_edge": 0.011
+},
+"hero/pokey-swim.webp": {
+"fill": 0.99,
+"white_edge": 0.1
+},
+"hero/clips/belly-scratch.webp": {
+"fill": 1.0,
+"white_edge": 0.109
+},
+"hero/clips/cheer.webp": {
+"fill": 1.0,
+"white_edge": 0.202
+},
+"hero/clips/doze.webp": {
+"fill": 0.99,
+"white_edge": 0.13
+},
+"hero/clips/hurt.webp": {
+"fill": 0.99,
+"white_edge": 0.165
+},
+"hero/clips/idle-yawn.webp": {
+"fill": 0.99,
+"white_edge": 0.122
+},
+"hero/clips/look-around.webp": {
+"fill": 1.0,
+"white_edge": 0.175
+},
+"hero/clips/move-climb.webp": {
+"fill": 0.98,
+"white_edge": 0.085
+},
+"hero/clips/move-cross.webp": {
+"fill": 0.82,
+"white_edge": 0.002
+},
+"hero/clips/move-hook.webp": {
+"fill": 0.82,
+"white_edge": 0.001
+},
+"hero/clips/move-jab.webp": {
+"fill": 0.95,
+"white_edge": 0.087
+},
+"hero/clips/move-kick.webp": {
+"fill": 0.99,
+"white_edge": 0.005
+},
+"hero/clips/move-kick2.webp": {
+"fill": 0.98,
+"white_edge": 0.005
+},
+"hero/clips/move-mega.webp": {
+"fill": 0.98,
+"white_edge": 0.007
+},
+"hero/clips/move-run.webp": {
+"fill": 0.99,
+"white_edge": 0.002
+},
+"hero/clips/move-walk.webp": {
+"fill": 0.97,
+"white_edge": 0.02
+},
+"hero/clips/push.webp": {
+"fill": 1.0,
+"white_edge": 0.194
+},
+"hero/clips/step-back.webp": {
+"fill": 0.99,
+"white_edge": 0.031
+},
+"hero/clips/teeter.webp": {
+"fill": 0.99,
+"white_edge": 0.031
+},
+"hero/clips/wave.webp": {
+"fill": 1.0,
+"white_edge": 0.122
+},
+"bosses/boss-1010.webp": {
+"fill": 1.0,
+"white_edge": 0.001
+},
+"bosses/boss-910.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"bosses/boss-atk.webp": {
+"fill": 0.96,
+"white_edge": 0.002
+},
+"bosses/boss-fx.webp": {
+"fill": 0.98,
+"white_edge": 0.005
+},
+"flora/birds-atlas.webp": {
+"fill": 0.99,
+"white_edge": 0.014
+},
+"flora/butterflies-atlas.webp": {
+"fill": 0.98,
+"white_edge": 0.002
+},
+"w8/pokey-jar.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"story/hd/dot-0.webp": {
+"fill": 0.98,
+"white_edge": 0.033
+},
+"story/hd/guard-0.webp": {
+"fill": 0.98,
+"white_edge": 0.047
+},
+"story/hd/guard-1.webp": {
+"fill": 0.98,
+"white_edge": 0.104
+},
+"story/hd/guard-2.webp": {
+"fill": 0.97,
+"white_edge": 0.12
+},
+"story/hd/meeca-0.webp": {
+"fill": 0.98,
+"white_edge": 0.011
+},
+"story/hd/meeca-1.webp": {
+"fill": 0.99,
+"white_edge": 0.017
+},
+"story/hd/meeca-2.webp": {
+"fill": 0.93,
+"white_edge": 0.026
+},
+"story/hd/pokey-0.webp": {
+"fill": 0.98,
+"white_edge": 0.018
+},
+"story/hd/pokey-1.webp": {
+"fill": 0.98,
+"white_edge": 0.007
+},
+"story/hd/pokey-2.webp": {
+"fill": 0.97,
+"white_edge": 0.011
+},
+"story/hd/pokey-3.webp": {
+"fill": 0.98,
+"white_edge": 0.004
+},
+"story/hd/pokeyface-0.webp": {
+"fill": 0.97,
+"white_edge": 0.01
+},
+"story/hd/pokeyface-1.webp": {
+"fill": 0.96,
+"white_edge": 0.007
+},
+"story/drake/drake-bowed.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"story/drake/drake-cup.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"story/drake/drake-sit.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"story/drake/tea-cup0.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"story/drake/tea-cup1.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"story/drake/tea-mugbig.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"story/drake/tea-pot.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+},
+"story/drake/tea-pottin.webp": {
+"fill": 1.0,
+"white_edge": 0.0
+}
+}
