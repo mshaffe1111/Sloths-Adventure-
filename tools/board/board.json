@@ -61,12 +61,7 @@
       "key": "matt",
       "name": "Needs Matt",
       "hint": "one question at a time, in this order",
-      "cards": [
-        {
-          "id": "R-165.55",
-          "title": "Story questions: Meeca's parents handed to the story keeper (11-11); the skulls and the two food lines go to it too"
-        }
-      ]
+      "cards": []
     },
     {
       "key": "todo",
@@ -164,6 +159,14 @@
           "id": "R-165.69",
           "title": "Tester names: clean the files now (R-165.68); rewrite the old history once before launch (Matt chose A)",
           "waits": "launch prep, when nothing is in flight"
+        },
+        {
+          "id": "R-165.101",
+          "title": "World 7 photo caption: \"Our girl, till her mother and father are home.\""
+        },
+        {
+          "id": "R-165.102",
+          "title": "No skulls or bones as remains: World 9's dressing changes; signs may warn"
         }
       ]
     },
@@ -243,6 +246,10 @@
       "name": "Done",
       "hint": "merged to main this sprint",
       "cards": [
+        {
+          "id": "R-165.55",
+          "title": "All open story questions ruled by the story keeper: Meeca's parents, the skulls, the food lines"
+        },
         {
           "id": "R-165.56",
           "title": "The team's documents merged to main (PR #67, #68)"
