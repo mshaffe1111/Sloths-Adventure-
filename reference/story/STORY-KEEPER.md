@@ -325,3 +325,13 @@ available for questions.
 - Engine dispatch is held until the release is live.
 - My story calls are binding inputs to the engine plan.
 - It asked for nothing more from me unless something is wrong.
+
+**Stillness as Pokey's signature move (the new lead asked at 6:46 PM ET; MAP-REVISIONS.md §1 on ccr-702d3c49-i33jeq): YES, on four
+guards.**
+- It is worded as still, calm or steady, never slow or wait.
+- He is still to stay safe, never to put off a rescue. W6's "I'm not waiting" is his flaw; keep that beat.
+- World 10's mastery ends on the ending's LET-GO with one hand, never on a freeze.
+- 1-7 teaches it as the same lesson as the bush hide, not a second twist. Dot's line comes to me.
+- **W5's "don't stop" stays.** The sanctuary turns his strength into the trap, which completes the arc. Drowsiness only builds when he is
+  idle with no threat near; a hiding freeze never counts. In W5, freezing doesn't hide him (the spiders feel touch). PR #69 (0.9.6) is
+  open for Matt.
