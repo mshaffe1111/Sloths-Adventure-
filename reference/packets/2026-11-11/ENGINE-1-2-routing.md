@@ -217,11 +217,11 @@ never raise the quota.
   counts toward the goal when gathered and is never in the quota (engine.ts:3009-3010, :3080).
 - Rule, keyed on the stage's BRIEF, never on its objective (8-2 is a gen2 harvest too, gen2/game.ts `GEN2_STAGES`, and must not
   move): a new field on `GraphBrief` (gen2/types.ts:534-550), `offRoad?: 'fruit'`. Where a stage's brief sets it, a `pickup`
-  socket on a piece that is not `main` lays `fruit`, not `flower` (pipeline.ts:2097-2106), and the fork-end cache the follow-up round's
+  socket on a piece marked `main: false` lays `fruit`, not `flower` (a stump carries NO flag, w1.ts:158, and its petal stays a petal) (pipeline.ts:2097-2106), and the fork-end cache the follow-up round's
   fix lays does the same there. Content sets it on `briefs['1-2']` only. On every other stage, as today (1-1's caches are petals; 8-2 untouched).
   The engine's harvest top-up and trim (pipeline.ts:292, :2187-2196; stageGenerator.ts capHarvest) count and move petals only.
-- Done-tests: a raw 1-2 build: every pickup over a non-main piece is a `fruit`; the quota (`withGoals`) equals 87.5% of the
-  flowers on main pieces; a RealPlay run that gathers a bloom sees the goal count rise by one. 1-1 unchanged.
+- Done-tests: a raw 1-2 build: every pickup over a piece marked `main: false` is a `fruit`, and none over any other piece is; the
+  quota (`withGoals`) equals 87.5% of the flowers, all of which stand on the road; a RealPlay run that gathers a bloom sees the goal count rise by one. 1-1 unchanged.
 - PETALS LOW (reference/engine/BRIEF-1-2.md:21, a "must"; the story keeper through the lead, 11-11 5:33 PM ET): the pipeline lays
   an arc of 3 petals 70-120 px up over about 7 gaps in 10 that are 90 px or wider (pipeline.ts:2178-2185), so on a chain or a
   thorn dip petals would hang in the bounce. A second brief field, `petals?: 'low'`: where a brief sets it, no arc is laid over
@@ -303,5 +303,5 @@ PUSHBACK.md and one message, then stop.
 attempt 4 at 7ed328b6 applied the lead's rulings of 4:58 PM ET, item 0 struck, and PASSED with two notes, written in at 3864e805;
 attempt 5 at 65d31898 applied the lead's standing rule D43: each item for any stage from data, proven on 1-2, with its "Any stage"
 proof; the Critic: sound, three wording fixes, written in 2026-11-11 5:35 PM ET with the story keeper's must (item 6: petals low by a brief
-field), and made exact to the Critic's words 2026-11-11 5:36 PM ET (the lead, 5:34 PM ET); 2026-11-11 5:38 PM ET: item 6's bloom sprite (the story keeper).
+field), and made exact to the Critic's words 2026-11-11 5:36 PM ET (the lead, 5:34 PM ET); 2026-11-11 5:38 PM ET: item 6's bloom sprite (the story keeper); 2026-11-11 5:39 PM ET: the Critic's last line (attempt 7): "a piece marked `main: false`".
 Each line is answered in DESIGN-1-2-notes.md §9)

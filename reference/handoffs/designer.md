@@ -177,6 +177,8 @@ Every ruling below cites the file and section where it's written in full.
   chain, a mushroom before a lip, a drop, widths in order, a tip on its `in`) is named not mirrorable in the packet, with a test.
 - **A story brief's "must" lines are checked one by one against the packet AND the engine's own habits (11-11).** I wrote petals
   over every cap against "petals LOW on bark"; and the pipeline hangs a 3-petal arc over most gaps by itself (pipeline.ts:2178-2185).
+- **"Not `main`" is not "`main: false`" (11-11):** only a bank or floor is `main: true`; a stump has NO flag (w1.ts:158) and holds
+  road petals. Off the road is "marked `main: false`"; the road is "any piece not marked `main: false`".
 - **Paste a probe's row from the run the packet names**, never from a run of that one row alone: quiet12's rows moved with run order.
 - **Any way DOWN is silent unless it carries a hop (11-11).** The kit's `Y` and `F`, a drop across a soft gap and a walk-off are
   no beat to the inspector (tools/inspect/route.ts:266). And a new beat is counted per ROLL before it is written into many
