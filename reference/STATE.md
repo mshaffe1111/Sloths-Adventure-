@@ -128,6 +128,7 @@
     words. The analyst (same session, attempt 3) asked at 2:09 AM ET for the delta read of the closed window.
   - The A2 packet PASSED 11-11 2:23 AM ET after two rounds (Critic session_01FhBbYN9fhELggd71AFucQv; its last line applied as written,
     no re-audit needed by its word): steps under every rise over 60 px, height = rise - 60, run 24/24 Easy and 16/24 Normal.
+  - WORKING: the Engine member on A2, Opus high, created 2:23 AM ET, due 6:30 AM ET, branch t-engine-help from t-engine-putback.
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,

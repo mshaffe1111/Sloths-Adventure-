@@ -42,8 +42,8 @@
     },
     {
       "role": "Engine",
-      "task": "fix A1 passed; A2 on Wednesday",
-      "status": "reported"
+      "task": "fix A2, help after put-backs (Opus, high)",
+      "status": "working"
     },
     {
       "role": "Designer",
@@ -82,11 +82,6 @@
       "name": "To do",
       "hint": "in the order it will be picked up",
       "cards": [
-        {
-          "id": "R-165.62",
-          "title": "Fix A2: help after repeated put-backs (by itself on Easy, offered on Normal)",
-          "waits": "a Critic passing its packet (Dot's words are in)"
-        },
         {
           "id": "R-165.87",
           "title": "Fix A3: a tap meant as a jump is a jump (all 9 testers' taps were misread)",
@@ -180,7 +175,12 @@
       "name": "Doing",
       "hint": "being built now; at most 3 at once",
       "limit": 3,
-      "cards": []
+      "cards": [
+        {
+          "id": "R-165.62",
+          "title": "Fix A2: help after repeated put-backs, being built"
+        }
+      ]
     },
     {
       "key": "checking",
