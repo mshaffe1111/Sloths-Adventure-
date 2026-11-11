@@ -239,7 +239,7 @@
  },
  "audited": {
   "branch": "t-design-1-2",
-  "head": "d9267c6b",
+  "head": "ab6cd4dd",
   "cites_at": "t-int-1-1@53bd446a"
  },
  "status": "PASS",
@@ -403,10 +403,7 @@
   ],
   "closed_in_attempt8": true
  },
- "notes_engine": [
-  "item 6: the bloom at 0.45 of Pokey against the inventory 0.36 for f76: show and say in the still",
-  "the golden allamanda is also plain World 1 decor: name it if both show in 1-2"
- ],
+ "notes_engine": [],
  "not_proved": [
   "heights, reach and look of the 42 unbuilt sections",
   "seed yield on real pieces",
