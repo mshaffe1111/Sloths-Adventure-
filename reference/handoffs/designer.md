@@ -1,4 +1,4 @@
-# Designer handoff (rewritten 2026-11-11 5:32 PM ET by the Designer of the 1-2 packets, R-165.11, after their fourth Critic round; before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07)
+# Designer handoff (rewritten 2026-11-11 5:41 PM ET by the Designer of the 1-2 packets, R-165.11, after both PASSED the packet Critic (eight rounds); before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07)
 
 Read first, in order:
 - reference/LAWS.md;
@@ -113,11 +113,17 @@ Every ruling below cites the file and section where it's written in full.
 ## 4. Open items (none of these is finished; check each before assuming)
 
 - **From the 1-2 packets (11-11):**
-  - CONTENT attempt 6 PASSED the packet Critic at 3507c3a2 (the mixed way down; 32 sections named never mirrored); petals low
-    (rule 5, done-item 4, ENGINE item 6's `petals: 'low'`) was added after that PASS and is with the Critic, as is ENGINE attempt 5 (it had PASSED at 7ed328b6)
-    rewritten for the lead's standing rule D43, 11-11: every engine item for ANY stage from data (a listed-stage table, a
-    `hurt` place flag with the world's `hurtFloor` row, a judged-stage table, brief fields), proven on 1-2, never a stage id
-    in engine code. Write every future engine packet that way from the first draft (the yield floor is 1 clean in 50 for now, the lead 11-11; R-165.120 raises it)
+  - BOTH PACKETS PASSED the packet Critic at t-design-1-2@d9267c6b (t-critic-1-2-packet@65523e00, REPORT-attempt8.md; eight
+    rounds). After that head only the Critic's two builder notes on ENGINE item 6 went in (the bloom at 32 px, the allamanda as
+    decor); a PASS names its head, so the Critic reads that diff. Nothing is open with the lead. Next is the lead's: name the
+    heads and dispatch Engine (push 2 first: Content's phase 2 waits on it) and Content. The ENGINE packet is written for ANY
+    stage from data (the lead's standing rule D43, 11-11): a listed-stage table, a `hurt` place flag with the world's
+    `hurtFloor` row, a judged-stage table, brief fields (`offRoad`, `petals`, `bloomSprite`, `help`), never a stage id in engine
+    code. Write every future engine packet that way from the first draft
+    (the yield floor is 1 clean in 50 for now, the lead 11-11; R-165.120 raises it);
+  - NOT proved by any packet audit: the heights, reach and look of the 42 sections that do not exist yet; the seed yield on real
+    pieces; the thorn bed's and the bloom's look; how a child plays a chain. Those are the build audits', the stills' and the
+    first play window's;
   - earlier rounds: (attempt 1: CONTENT 14 lines, ENGINE 6; attempt 2: 1 and 3; attempt 3: 1 and two notes; each answered in
     DESIGN-1-2-notes.md §9); the lead's rulings are all in notes §3, none open (bonus blooms; the ladder grows the lesson's own
     fallen log at the first chain, else the line alone; the double counts on the gen2-BUILT 1-2 only, `EARLY_DOUBLE` not

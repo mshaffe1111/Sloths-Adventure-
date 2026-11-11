@@ -1,4 +1,4 @@
-# Designer report: the 1-2 packets (R-165.11), attempt 6, 2026-11-11 5:35 PM ET, branch t-design-1-2, cites at t-int-1-1@53bd446a
+# Designer report: the 1-2 packets (R-165.11), PASSED at attempt 8, last edit 2026-11-11 5:41 PM ET, branch t-design-1-2, cites at t-int-1-1@53bd446a
 **Method used:** reference/methods/dispatch-packet.md; C1's packet as the shape; the packet Critic's method update applied (the
 probe runs the packet's OWN brief and prints each job's dealt types against the sections that answer them).
 **Lessons applied:** D19 (the built stage, not sockets), D25 (time from C1's measured history, as a range), D32 (tool flags from
@@ -34,7 +34,7 @@ No screens (packets). Tables checked for broken code spans; times from `date`; e
   bounce combine to 1-1 or the graph is dropped and named. It belongs with R-165.120 (the yield).
 - **DESIGNER help.md §5** (failures counted through a lost life, one system with assist.ts) before 1-2 reaches testers.
 ## 5. Unresolved
-- The Critic's last line (attempt 7: "a piece marked `main: false`", a stump has no flag) is in both packets; the head is with the Critic.
+- BOTH PACKETS PASSED the packet Critic at d9267c6b (its REPORT-attempt8.md); its two builder notes on ENGINE item 6 written in after (a diff for it to read).
 - The ruling's `Y`, `F` and a drop are no beat to the inspector (flown): each is laid between two beats, never last. The first
   mix I flew (`J N J Y`, a jump-down drop) broke the quiet line on 23 of 51 rolls and is not in the packet.
 - Petals LOW on the bark (BRIEF-1-2 "must", the story keeper 5:33 PM ET): my "a petal over every cap" was wrong, and the pipeline
