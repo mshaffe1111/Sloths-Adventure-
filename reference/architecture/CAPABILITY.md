@@ -2,15 +2,10 @@
 
 Read-only audit of origin/main plus t-engine-e0a, t-engine-help, t-engine-inventory and t-bots-tiers (fetched 11-11). Every line below
 was read in the code (D37). "E0a:" and "help:" mark lines on those branches. Hours are guesses with no history behind them.
-
 ## Headline
-- **Frogger lanes: PARTLY.** Timed hazards and drifting logs you ride exist. Nothing that hurts moves *across* the path yet: 8-12 h.
-- **Descents: PARTLY.** 4-7 is a hand-built descent the engine already tracks. The generator cannot lay one: about 6-10 h to make it a kit.
-- **Climbs: YES** (18 ascent stages; hand-built or the old generator). gen2 throws on them.
-- **Puzzles: YES** (the puzzle kit: lever, plate, gate, lift, seesaw, sluice, bell; 9 test rooms, rooms in Worlds 2-8). Timed switches: NO, 4-6 h.
-- **Right-to-left: NO** for a whole stage. The exit clamp would pin him at the shrine: 6-10 h.
-- **Card pick at run time (R-165.98): NO.** The plumbing is half there: 12-20 h, high risk.
-
+- **Frogger lanes: PARTLY.** Timed hazards and drifting logs you ride exist. Nothing that hurts moves *across* the path yet: 8-12 h. **Descents: PARTLY.** 4-7 is a hand-built descent the engine already tracks. The generator cannot lay one: about 6-10 h to make it a kit.
+- **Climbs: YES** (17 ascent stages; hand-built or the old generator). gen2 throws on them. **Puzzles: YES** (the puzzle kit: lever, plate, gate, lift, seesaw, sluice, bell; 9 test rooms, rooms in Worlds 2-8). Timed switches: NO, 4-6 h.
+- **Right-to-left: NO** for a whole stage. The exit clamp would pin him at the shrine: 6-10 h. **Card pick at run time (R-165.98): NO.** The plumbing is half there: 12-20 h, high risk.
 ## 1. Can do today
 | Capability | Verdict | Proof (file:line) and stages | Missing, hours, risk |
 |---|---|---|---|
@@ -32,7 +27,6 @@ was read in the code (D37). "E0a:" and "help:" mark lines on those branches. Hou
 | Secret rooms | PARTLY | One hard-coded gate: 7-7 to S-1 (secret.ts:8; `addSecrets` in stageGenerator.ts). Hidden finds behind ferns (finds.ts). | No general hidden-room piece. "Under the Ruins" is only planned (SECRET-LEVELS.md). 16-30 h, mostly art. |
 | Card pick at run time (R-165.98) | NO | buildAhead.ts:14 builds a whole 1-1 stage ahead at idle, not one section. `layLocal` lays one section by itself (pipeline.ts:775). help: the help ladder adds platforms during play and clears them when the stage ends (help: engine.ts:5109-5124, :1237). | Ports at a fixed height (today `exitDy` varies), adding a section to a live stage (platforms, enemies, art warmed, culling), judging each card, and a progress bar that can't use a fixed `levelWidth`. Cheaper: build all three candidates when the stage is built and slide the chosen one into place. 12-20 h, high risk. |
 | Hand-built pieces reused | YES within a world, PARTLY across worlds | A hand-built section (`SectionTemplate` with `room`, `maxPerStage`, `feel`; gen2/types.ts:383-422) is laid wherever a stage's plan picks it. Puzzle rooms are built this way (w6Rooms, w7Rooms, w8Rooms; w8Rooms.ts:37 reuses 6-7's numbers). Pieces are drawn by shape (`PieceShape`, gen2/types.ts:201), not by picture. | No shared library across worlds: every section lives in one world's kit. A cross-world library that picks art by the inventory's `engine_slot`: 4-8 h, low risk. Worlds 2-4 stages are whole-stage code, not reusable pieces. |
-
 ### Separate engines or one core with modes? Recommendation: one core, pluggable modes
 - The engine already plugs in three special modes. DotRun, SlideRun and LanternRun take over input, camera and drawing while hearts,
   lives and the result stay in the core, through a host interface (dotFlightRun.ts:1-5, w7SlideRun.ts:1-7; engine.ts:611-614, 672-673,
@@ -46,7 +40,6 @@ was read in the code (D37). "E0a:" and "help:" mark lines on those branches. Hou
   run-left become modes, and so do swim, lanes, rescue and auto-scroll.
 - Cost: the types (Architect) 3-4 h. Moving direction plus the three existing runs onto it (Engine) 10-16 h. Medium risk: it touches
   the hot loop, so drawcheck and lockall must stay flat.
-
 ## 2. Gaps in what we are building now
 | Work | 1-1-only? | Proof | Change that makes it general (file, hours) |
 |---|---|---|---|
@@ -61,7 +54,6 @@ was read in the code (D37). "E0a:" and "help:" mark lines on those branches. Hou
 **What C1 does that other stage types would redo:** nothing in its files (w1.ts, w1.test.ts, firstRun11.ts, provenSeeds.ts, the seed
 lists). One trap: if C1 re-lays a section that 1-2, 1-3 or 1-5 share to 1-1's bands, those stages inherit 1-1's numbers. C1 should give
 1-1 its own versions of shared sections (`feel: ['1-1']`), not tighten the shared ones.
-
 ## 3. The stage kit: mission x direction x mechanic, smallest set, in order
 1. **Types first (Architect, 3-4 h, now, parallel with C1).** New file `src/game/stageKit.types.ts`: `StageMode` (section 1),
    `Travel = 'right' | 'left' | 'up' | 'down'`, `Mission` (today's ObjectiveType plus `bring-home`), and `StageBrief { mission, travel,
@@ -81,7 +73,6 @@ lists). One trap: if C1 re-lays a section that 1-2, 1-3 or 1-5 share to 1-1's ba
 
 Steps 1 and 5 never touch C1's files and can start now. Steps 2-4 touch engine.ts, pipeline.ts, reach.ts and verdicts.ts, so they wait
 for E0a and A2 to merge (D40). Total to a working kit (steps 1-4): about 25-35 h. Each mechanic after that: 4-12 h.
-
 ## 4. The outside analysis of Matt's 30 ideas, checked (reference/ideas/MATT-30-IDEAS-ARCHITECTURE-2026-11-11.md)
 **Its pattern** (a stage = a layout profile + a timing clock + a rule change) **fits, with two corrections.** The layout profile is
 gen2's mission graph plus its sections, but it only runs right today (section 1). There is **no shared clock**: each rhythm keeps its own
@@ -113,3 +104,16 @@ with Canvas 2D, not PixiJS (no pixi in package.json; the WebGL move, R-3.1, is n
 | 26 | Vine-leash escort | NO | Section 1, tethers. | 12-20 h |
 | 28 | Card pick | NO | Section 1. | 12-20 h, high |
 | 30 | Shrinking safe zone | PARTLY | 6-8's rising tide is one (risingTide.ts); the arena shell is free (stageGenerator.ts:2592). | 4-6 h |
+## 5. Matt's 30 arcade-era ideas (ideas/MATT-80S-ARCADE-IDEAS-2026-11-11.md), grouped by shared building block
+Our own rainforest versions only. Layers are ADR-003's: layout, clock, rule (mutator), mission, or one-off. Hours are for the shared block, then each idea.
+| Block (layer) | Ideas | Today | Hours |
+|---|---|---|---|
+| Things on a beat (clock + `beat-solid`) | 3 mud crust, 4 snap-jaw stones, 11 bark that opens and closes, 23 timed stone doors, 25 orchids that cycle | PARTLY: zones with period, warn and on (zones.ts:22), thorn-vine rhythm (thornVine.ts:13), crumble and regrow. No platform turns solid on a beat. | 4-6 h, then 1-3 h each plus art; 25 also needs high-jump and dizzy power-ups (powerUps.ts:5 has speed, invincible, magnet): 3-5 h |
+| Things that roll or drop at him (clock + `crosser`) | 1 fruit knocks climbers, 5 two-height rollers, 7 fruit down a climb with alcoves | PARTLY: timed drops fall straight down only (rockfall.ts:35). | 8-12 h, shared with Frogger lanes |
+| Drop a thing on predators (mechanic) | 8 shake the vine, 12 cut the tendril, 28 boulder on a leaf bridge | PARTLY: knots tie and untie (w4Kit.ts:66, puzzleKit.ts:110). Nothing that falls hurts an animal. | 6-10 h |
+| Rides up (layout + mechanic) | 6 bubbles, 9 seed-fluff shaft, 13 overhead current, 26 vine elevator, 27 waterfall climb | PARTLY: lifts (lift.ts), World 4 updrafts (w4Play.ts:84), drifting logs, wind zones. Throwing exists in the kit (puzzleKit.ts:17). | A steerable rising ride: 4-8 h; 26's throwing: 3-5 h; 27's ceilings broken from below need breakable blocks: 4-6 h |
+| Pursuers and tricked predators (rule) | 14 hole becomes a bridge, 17 bump from below and flip, 30 a predator that copies his path | NO. Predators patrol and walk to a lure (predatorAI.ts:361); stomping (fight.ts). Nothing copies his path, and no blow comes from below. | 30: 8-12 h; 14: 8-12 h; 17: 4-6 h |
+| Meters and soft failure (rule) | 10 a safe fall puts him back, 24 a drowsiness meter, 21 a tunnel that goes dark | 10 YES (A1 `softFallStage`, E0a: pipeline.ts:1092). 24 and 21 PARTLY: 8-4's jar meter and light ring (lantern.ts:1-8), and a 'dark' zone (zones.ts:20). | 24: 4-6 h (the general meter); 21: 3-5 h |
+| Route and mission puzzles (mission + kit wires) | 15 step painting, 16 a pickup changes the layout, 23 colour keys | PARTLY: gates wired all/any/not (puzzlePlay.ts:1216); goal shares (goals.ts:19). | 15: 3-5 h (the same as the pollinator, #29 in §4); 16 and 23: a pickup that sets a wire, 3-5 h |
+| Layouts | 2 over and under, 19 a river with a long dive | 2 PARTLY: gen2 already rolls a fork into two roads (pipeline.ts:458), both side-on. 19 PARTLY: the dive is 40 px for 3 s (swim.ts). | 2: an under-tunnel kit 4-8 h plus art; 19: 3-5 h |
+| One-offs for special stages | 18 a drum stuns everything, 20 sap bubbles, 22 a grapple to the underside, 29 a hidden gust warp | 18 and 29 PARTLY (one stun at a time; the secret gate in secret.ts). 20 NO. 22 NO: it needs hanging (R-160.1). | 18: 3-5 h; 20: 6-10 h; 22: 10-16 h; 29: 6-10 h |
