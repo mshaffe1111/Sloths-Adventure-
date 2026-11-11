@@ -6,7 +6,8 @@
     "11-11 1:36 PM Matt: reviewers (critics) on Fable too",
     "11-11 Matt: tiers from Sonnet to Fable by importance; this table and its gate",
     "11-11 4:36 PM Matt: \"We will need to start using Opus again for all models\": every tier on Opus 5.5 (Fable period over; engine on Opus always high)",
-    "11-11 4:37 PM Matt: \"U will need to make the efforts based on work\": the lead picks effort per task inside each tier's range; xhigh allowed for the hardest critical work (merge reviews, core engine); max still asks Matt"
+    "11-11 4:37 PM Matt: \"U will need to make the efforts based on work\": the lead picks effort per task inside each tier's range; xhigh allowed for the hardest critical work (merge reviews, core engine); max still asks Matt",
+    "11-11 4:40 PM Matt: \"For now use engine work on xhigh\": engine and integration roles on Opus 5.5 xhigh only"
   ],
   "tiers": {
     "critical": {
@@ -16,6 +17,13 @@
         "xhigh"
       ],
       "what": "anything that ships or judges what ships: engine, stage and mechanic builds, integration, reviewers, architecture; xhigh for merge/release reviews and core-engine fixes, high otherwise"
+    },
+    "engine": {
+      "model": "claude-opus-5-5",
+      "effort": [
+        "xhigh"
+      ],
+      "what": "engine and integration work (Matt 11-11: 'For now use engine work on xhigh')"
     },
     "core": {
       "model": "claude-opus-5-5",
@@ -42,10 +50,10 @@
     }
   },
   "roles": {
-    "engine": "critical",
+    "engine": "engine",
     "content": "critical",
     "designer": "critical",
-    "integration": "critical",
+    "integration": "engine",
     "critic": "critical",
     "architect": "critical",
     "art": "core",
