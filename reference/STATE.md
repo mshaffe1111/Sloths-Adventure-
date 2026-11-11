@@ -45,7 +45,8 @@
   Easy player's 37-minute run with 152 put-backs and no help ever fired; the 11-07 "impossible" numbers were report maths, not the
   recorder. Pushback: top speed 520 not 430; the sheet's Arrived column is Pacific time. Cost $4.03.
 - PASSED 11-09 9:01 PM ET: the analyst's window report, t-w11-analyst@469db5d1 (Critic session_01FhBbYNirV1y3h5X1zqZd7m; the missing
-  life was w1-last-step-up). Not merged: it rides to main with the release PR. The delta read at the window's close is attempt 3.
+  life was w1-last-step-up). Not merged: it rides to main with the release PR. The delta to the close (attempts 3-4, 11-11) PASSED at
+  t-w11-analyst@d43ac71d: 40 new rows, 4 runs, 0 lives; window total 99 runs, 36 Normal lives, misread 481 of 700; top 10 unchanged.
 - PASSED 11-09 9:12 PM ET: the Designer's reach spec (R-165.60), t-designer-reach@030a4093, three attempts. The Critic
   (session_01FhBbYL3Mdff38pvPYDhgkv) re-flew it with its own script: single apex 97.8 px, climbs 123, level gap 246; double apex 189,
   climbs 214, gap 396-400 flicked and 409-411 held; bounce climbs 223; one jump crosses the 203 and 228 px lesson gaps; reachJump
