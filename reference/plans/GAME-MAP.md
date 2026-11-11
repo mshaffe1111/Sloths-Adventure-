@@ -108,7 +108,7 @@ recipe** (STAGE-RULES §0b.6 already forbids neighbours sharing a tempo and a ca
 
 | World | Enemies (built) | New enemy behaviour in this plan | The world's big set piece |
 |---|---|---|---|
-| 1 | snakes, the boa, eagles (stagePlan.ts 1-3, 1-7, 1-9); marching army ants exist as a type (types.ts:50) | snakes knocked off by traps; the eagle's shadow; ants and nuts crossing in lanes; a boa that copies you | 1-8 The Long Branch |
+| 1 | snakes, the boa, eagles (stagePlan.ts 1-3, 1-7, 1-9); marching army ants exist as a type (types.ts:49) | snakes knocked off by traps; the eagle's shadow; ants and nuts crossing in lanes; a boa that copies you | 1-8 The Long Branch |
 | 2 | snapping turtles (the river snappers, types.ts:41), caiman, frogs | snap-jaw stones on a beat; animals that follow you home | 2-7's out and back |
 | 3 | prowlers (stagePlan.ts 3-3) | prowlers that come to noise; sleeping thorn vines that wake | 3-1's trip down into the dark |
 | 4 | eagles, capuchin guards (4-9) | the Sovereign's shadow; guards the wind blows off | 4-7 The Long Drop; 4-D Dot's Flight |
