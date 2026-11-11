@@ -32,6 +32,9 @@ Cut from the engine: anything only one or two stages use (GAME-MAP marks these C
 - I re-measure after the first three packets land and give Matt the real rate.
 
 ## Risks
+- **Code size (found 11-11 6:10 PM ET):** the main JS chunk is about 3.96 MB against the 4 MiB cap: about 37 KB spare after R-165.112. About 210 h
+  of engine work will not fit. A code-split job (each world's data and the old special runs loaded when needed) joins the next round,
+  before the World 1 and 2 pieces. Until then every lane reports its bytes.
 - Three lanes in one engine: engine.ts and pipeline.ts are shared. Each lane merges the newest passed lane before its next packet.
 - gen2's yield (2 clean stages in 120 fresh seeds, R-165.120) may be the long pole: it is a Lane 2 item and is measured first.
 - The release in flight (0.9.6) is the base; the lanes merge main after it lands.
