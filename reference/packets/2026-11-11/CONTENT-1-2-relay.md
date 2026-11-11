@@ -1,7 +1,7 @@
 # TASK 1-2 (R-165.11: build stage 1-2, The Petal Trail, on gen2, the way 1-1 was re-laid)   to: Content
 # model: the content tier (tools/team/models.json on the lead's branch)   effort: high   due: see "Time"; a safe-keeping push at least hourly
 Written by the Designer, 2026-11-11 5:03 PM ET; attempt 3: after the packet Critic's 14 lines (t-critic-1-2-packet@51fe547a), the lead's
-rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Attempt 4, 5:05 PM ET: the lead's rulings of 4:58 PM ET applied exactly. Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
+rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Attempt 4, 5:05 PM ET: the lead's rulings of 4:58 PM ET applied exactly. Attempt 5, 2026-11-11 5:24 PM ET: the lead's ruling of 5:10 PM ET on the Critic's one attempt-3 line (the hop step, @5d73c0da). Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
 
 ## First, before any tool call
 `git fetch origin ccr-ca657d3c-n09zty t-design-1-2 t-designer-reach t-engine-inventory art-director` and the head the lead names.
@@ -56,7 +56,13 @@ lives (R-165.53); in 1-2 thorns cost a heart.
 Rules: (1) A section 1-1 lays is REUSED only as it is: its `feel` gains or loses a stage name and nothing else changes. (2) Anything
 that needs another number, a thorn hollow or other words is 1-2's OWN section (id ending `-12`, `feel: ['1-2']`), the original left
 byte for byte. (3) Every own and new section ends within 110 px of its start height unless its job is U or D: 1-2 is level, so a
-lift is paid back inside the section, by steps down that each carry a hop: the new letter `N` (below). A bare `n` holds no jump
+lift is paid back inside the section. THE WAY DOWN (the lead's ruling, 11-11 5:10 PM ET, on STAGE-RULES.md:23-24: no beat repeated
+to fill time): the hop step `N` (below) is never written more than 3 times in a row and a roll holds 6 at most. The rhythms below
+hold a stricter line: no two `N` side by side, 2 at most in a section. A way down alternates a drop (`J`, below) or the kit's jump
+down a step (`Y`, w1.ts:1007) with a hop step, or sets a drop between two steps up. The inspector reads `J`, `Y` and the kit's `F`
+(w1.ts:1021) as NO beat (flown, notes §1: a way down by a walk-off or over a soft gap is a `drop`, tools/inspect/route.ts:266,
+and beats.ts:113-123 counts none), so: never two of them side by side,
+never one as a section's last piece, never one straight before `B`, `V`, `D`, `m`, `L` or `w` (long floors). A bare `n` holds no jump
 and no pickup, and the seed list refuses a quiet stretch over 4 s (seedList.ts:22): never more than 2 bare `n` in a row (the
 lead's rule, 11-11), and the rhythms below hold a stricter line: no two in a row, and a bare `n` only where the next beat is a
 jump or a mushroom. (4) No own or new section carries a `hint.1-1.*`,
@@ -71,23 +77,29 @@ down, 6.2 to 9.4 s of quiet on 78 of 78 rolls that lay them (the Critic's quiet1
 **Reused with `'1-2'` already on (6):** w1-stump-stile (P g), w1-stone-zigzag (P g), w1-hollow-twoway (F g), w1-dropdown-stair (D c),
 w1-floor-dash (F/M g), w1-bank-stair-fork (F c).
 
-**1-2's own versions (17).** Rhythms are `BEATS` letters (w1.ts:971-1033). `N` is NEW and 1-2's: a bank one step down (62-78 px),
-300-360 px wide, a 50-56 px hop stump at its middle, a petal on the stump. Flown in the kit against the quiet line
-(`FLOWN=1 npx tsx reference/specs/sims/quiet12.ts 120`): six `N` in a row, worst quiet stretch median 2.1 s, over 4 s on 1 roll of
-41; six bare `n`, 8.7 to 11.1 s on 50 of 50.
+**1-2's own versions (17).** Rhythms are `BEATS` letters (w1.ts:971-1033). Two letters are NEW and 1-2's.
+`N`, the hop step: a bank one step down (62-78 px), 300-360 px wide, a 50-56 px hop stump at its middle, a petal on the stump.
+`J`, the drop: a ledge 130-140 px lower and 180-220 px wide, placed by `walk` with no gap (he walks off the lip and lands on it;
+a double climbs back up, 207 px or more against it, chain.md §1), one petal on it. One drop pays back two steps.
+Flown in the kit against the quiet line (`FLOWN=1 npx tsx reference/specs/sims/quiet12.ts 120`, saved in sims/out/quiet12.txt),
+worst quiet stretch over 4 s: `J N J N` on 0 rolls of 52 (3.7 s at most); a drop between two steps up (`J N c J c N`) 0 of 50; a
+drop after a hop wall (`J N H J N`) 0 of 46; `J N Y N` 1 of 47 (4.3 s). What fails, so no rhythm holds it: a silent piece last
+(`J N J Y` 23 of 51, `N J N J` 1 of 48), two silent pieces side by side (`N J Y J` 48 of 53), a drop across a gap (read as no beat
+and 100 px longer), six bare `n` (50 of 50). Hop steps a roll as written (`npx tsx reference/specs/sims/ncount12.ts 120`, the MOST
+of each section's versions): median 4 / 2 / 4 on graphs A / B / C, 6 at most, 0 of 360 rolls over 6 (attempt 4: 13 / 9 / 13, up to 19).
 | New id | From | Job, type | Rhythms (each version) and what differs |
 |---|---|---|---|
 | w1-knot-bank-12 | #13 | P g | #13's two versions; no `hint.1-1.bank`; petals on the mound's top |
 | w1-mushroom-fork-12 | #36 | F b | `gFork` as #36 a and b; the high road's last piece holds a 3-bloom cache (a `pickup` socket), no `find` |
 | w1-root-stair-fork-12 | #48 (parked) | F c | low road a stair of stumps; high road logs, its first 106-115 px over the low stump (one jump climbs it); a 3-bloom cache at its end |
-| w1-two-lifts-12 | #66 | X b | `w H B N N N B N N N`, `w B N N N H B N N N`: lift, down, lift, down |
-| w1-one-lift-12 | #66 | X b | `w H H B N N N`, `w H B w N N N`: one lift after two hop walls |
-| w1-stair-test-12 | w1-stair-test-back | X c | `w H c D c D N N N N N N`: #40's stair, then six steps down that each carry a hop |
-| w1-bank-wall-12 | w1-bank-stair-test-back | X c | `w H D w D c c N N N N N N` |
+| w1-two-lifts-12 | #66 | X b | `w H B J N B J N`, `w B J N H B J N`: lift, a drop and a hop step, lift, a drop and a hop step |
+| w1-one-lift-12 | #66 | X b | `w H H B J N`, `w H w H B J N`: one lift after two hop walls (side by side / a walk between) |
+| w1-stair-test-12 | w1-stair-test-back | X c | `w H c D c D J N J N`: #40's stair, then two drops with a hop step after each (flown: 0 of 52 over the quiet line) |
+| w1-bank-wall-12 | w1-bank-stair-test-back | X c | `w H D w D c c J N J N` |
 | w1-wide-dip-12 | #33 | X g | Normal `w h t d w h`: a practice gap, then the 253-256 px test gap, both over soft dips (no thorns); Easy's twin `w h a a w h` |
-| w1-bounce-wall-12 | #67 | C b | `w H B D N N N N N`, `w B w D N N N N N` |
-| w1-mushroom-log-12 | #64 | C g | `w H V N N N`, `w V N N N H` |
-| w1-drop-bounce-12 | #58 | W b | `w h L m D N N`: off a log down onto a floor mushroom, up, and back down |
+| w1-bounce-wall-12 | #67 | C b | `w H B D J N J N`, `w B w D J N Y N` (the one `Y`: a jump down a step between two hop steps) |
+| w1-mushroom-log-12 | #64 | C g | `w H V J N`, `w V J N H`: off the log by a drop |
+| w1-drop-bounce-12 | #58 | W b | `w h L m D N`: off a log down onto a floor mushroom, up, and one hop step back (it ends 59-78 px up) |
 | w1-dip-bounce-12 | #60 | W b | `w h n m D N`, `w j n m D N`: one step down into a root dip (the mushroom is the next beat), bounce out |
 | w1-two-answers-12 | #28 | W g | #28's soft dip (NO thorns), its second answer a cap pillar standing in the dip in place of the perched mushroom; Normal 253-256 with a practice gap first, Easy's twin a single hop |
 | w1-log-walk-12 | #26 | R | the mossy seat in the rain: ferns, leaf litter |
@@ -106,19 +118,19 @@ lays in band today: reference/specs/sims/chainlay12.ts). Each section has 2-3 ve
 | N5 | w1-cap-hop | P b | one floor mushroom (edge 20-30 px before the lip) over a thorn dip 110-135 px wide on Normal, 90-110 on Easy, three times, hops between; the bounce alone crosses 148-158 from there (sims/out/normal-1-2-bdist.txt); a plain jump also clears it (practice, not a block) |
 | N6 | w1-cap-run | M and P, b | `ch(3)`, two hops, `ch(3)` at a run; Easy the same on wider pillars |
 | N7 | w1-root-hops | P g | big roots as hop walls (`r H r H`, `H r j H`) |
-| N8 | w1-root-steps | P c | a stair of root steps up and back (`w h c c c N N N`, `w c h c N c N N`) |
+| N8 | w1-root-steps | P c | a stair of root steps up and back (`w h c c J c`, `w c J c h c`: a drop set between two steps up; it ends 46-104 px up, no `N`) |
 | N9 | w1-root-run | M g | `w r H r j H r`, `w H j r H j`: no dead time over 2.5 s |
 | N10 | w1-thorn-leap | X g (the jump) | three thorn dips of rising width, each from a landing 154 px or wider: Normal 100, 115, 130 px lip to lip; Easy 80, 90, 100. A no-jump bot fails it. NO double gap over thorns anywhere (a double flick lands 253-256 px on about 70% of tries, bands.md §2: too low to cost a heart) |
-| N11 | w1-stair-lift | C c | `w H c c B N N N N N`, `w H c B c N N N N N`: steps, a lift, back down |
-| N12 | w1-cap-lift | C b | `ch(2)`, then `w B N N N`: off the chain and straight into a lift |
+| N11 | w1-stair-lift | C c | `w H c J c B J N`, `w H J c c B J N`: steps with a drop in them, a lift, a drop and a hop step back |
+| N12 | w1-cap-lift | C b | `ch(2)`, then `w B J N`: off the chain and straight into a lift, a drop and a hop step back |
 | N13 | w1-cap-steps-down | D b | `ch(3)` stepping DOWN (each cap 24-30 px lower, S 216-224), out onto a bank one step lower; Easy the same on wider pillars |
-| N14 | w1-under-roots-fork | F g | LOW: down two steps (`N N`) and under the high road's long fallen log, petals low on the bank's face, quiet. HIGH: the log, reached by a stump stair, a 3-bloom cache at its far end |
+| N14 | w1-under-roots-fork | F g | LOW: down a drop and a hop step (`J N`) and under the high road's long fallen log, petals low on the bank's face, quiet. HIGH: the log, reached by a stump stair, a 3-bloom cache at its far end |
 | N15 | w1-thorn-fork | F b | HIGH: `ch(3)` over a thorn hollow, a 3-bloom cache on its exit ledge; LOW: steps down and a walk round through a root dip, slower and safe |
 | N16 | w1-root-ledge-fork | F c | LOW: a stair of root steps up and down. HIGH: three logs over it, the first 106-115 px over a low step, a 3-bloom cache at the end |
 | N17 | w1-log-shelter | R | a dry bank under a wide fallen log lying across two banks overhead; a flag, a Dot spot |
 | N18 | w1-petal-bank | R | a long mossy bank, petals low on its face, one 50 px stump |
 | N19 | w1-hollow-log-rest | R | a walk through a hollow log lying on the floor (`hollow`, the art's own height: w1NewArt.ts `hollowLogSize`), dry inside |
-| N20 | w1-note-hollow | H (required; `phases: ['sho', 'ten']`) | the quiet low road: two steps down (`N N`), a floor 400-460 px with one 50 px stump, the `find` socket at its middle (Meeca's note, the Keeper's Bell) and a decor socket for the hibiscus beside it, two steps up (`c c`); easy hops only |
+| N20 | w1-note-hollow | H (required; `phases: ['sho', 'ten']`) | the quiet low road: a hop wall and one drop (`H J`), a floor 400-460 px with one 50 px stump (the next beat: its near face within 230 px of the drop), the `find` socket at its middle (Meeca's note, the Keeper's Bell) and a decor socket for the hibiscus beside it, two steps up (`c c`); easy hops only |
 | N21 | w1-thorn-chain | S b | the signature, level: `ch(4)` / `ch(5)`, a petal over every cap; Easy `ch(3)` |
 | N22 | w1-thorn-chain-rise | S b | `ch(4)`: up, up, level, level (steps written 24-30), out onto a bank up to 60 px over the last pillar, then `N`; Easy `ch(3)` |
 | N23 | w1-thorn-chain-isles | S b | `ch(3)`, a mossy stump island 300 px wide (a breath; 3 petals on it, it is on the road), `ch(3)`; Easy `ch(2)`, island, `ch(2)` |
@@ -227,9 +239,12 @@ The thorn floor's look goes to Matt on Engine's still. Keep building while they 
 ## Definition of done (the Critic checks each; the phase each can first be met in is in brackets)
 1. [1] The kit rows, the three graphs, the tag edits and all 42 own and new sections entered; the report lists the 53 as reused /
    own / new with w1.ts lines. A w1.stage12.test check: no section in 1-2's pool holds a `hint.1-1.*`, `coach.*`, squirrel or
-   bootprint socket, or a `tip` whose id has no row; none of yours adds a made thing; no own or new version lays two bare `n` in a row.
+   bootprint socket, or a `tip` whose id has no row; none of yours adds a made thing; no own or new version lays two bare `n` in a row, two `N` side by side, two of `J` / `Y` / `F`
+   side by side or one of them as its last piece; and THE CEILING (the lead, 11-11 5:10 PM ET): no roll holds more than 6 `N`,
+   counted on the LAID pieces of every roll the yield run builds, all three graphs (as written:
+   `npx tsx reference/specs/sims/ncount12.ts 120`, 0 of 360 over 6; exit 1 on a breach).
 2b. [1] The quiet line, per section (the lead, 11-11 4:58 PM ET): every own and new section, laid in the kit as
-   reference/specs/sims/quiet12.ts lays its two (your copy, your real sections, `FLOWN=1` until Engine's push 2), has a worst
+   reference/specs/sims/quiet12.ts lays its probes (your copy, your real sections, `FLOWN=1` until Engine's push 2), has a worst
    quiet stretch touching it of 4 s or less on 9 rolls in 10 that lay it; the table printed, one row a section. The same run on
    each of the 11 reused sections, reported (a reused one over the line is named, and comes out of 1-2's pool by its tag).
 2. [1 alone, 2 on rolls] Bands: every laid jump inside bands.md §2; every chain inside chain.md §3, measured cap centre to cap
@@ -286,6 +301,7 @@ Branch t-content-1-2 from the named head, pushed (`git ls-remote` equals HEAD) a
 lead (the session id on line 1 of reference/handoffs/lead.md) at the end of each phase, 8 lines or fewer. A blocker or a wrong
 frozen input: PUSHBACK.md on the branch and one message, then stop.
 ## Attempt
-4 (attempt 1 REJECTED at f60e6503, 14 lines; attempt 2 at 35364c97: all 14 closed, 1 new line, the quiet line; attempt 3 at
-89005905 met it; attempt 4 applies the lead's rulings of 4:58 PM ET exactly: the yield floor 1 in 50, a quiet test per section.
+5 (attempt 1 REJECTED at f60e6503, 14 lines; attempt 2 at 35364c97: all 14 closed, 1 new line, the quiet line; attempt 3 at
+89005905 met it; attempt 4 at 7ed328b6 applied the lead's rulings of 4:58 PM ET: the yield floor 1 in 50, a quiet test per section;
+1 line left, the hop step written 3-6 times in a row; attempt 5 applies the lead's ruling of 5:10 PM ET: a mixed way down, flown.
 Each line is answered in DESIGN-1-2-notes.md §9)
