@@ -186,6 +186,10 @@
   a search leftover, not 1-1. stageGenerator.ts:2904 drops far-bank flowers past 240-262 px gaps (no arcs): added to attempt 2.
   FOR THE C1 PACKET: Easy lays Normal's plan, so Normal's 252-262 test gap makes Easy refuse every seed unless Easy gets its own
   variant; C1 must lay per setting. Main chunk with E0a 4,179,500 B (14.8 KB spare): R-165.103 before E0b/C1.
+- 11-11 6:05 AM ET: lead's gates on t-engine-help@2ad78d57 (worktree): tsc, vite (main chunk 4,172,693 B; no file over 4 MiB), artcheck,
+  knowncheck, roadmapcheck, drawcheck (355 s), clipcheck (83 known, none new), kbdcheck, seedlist 1-1 (138) all PASS. buildcheck alone:
+  FAIL 162 ms, then PASS 140 and 149 (Normal p95, budget 150): sits on the line on this machine, as main and A1 do (Critics' runs).
+  Flaky near its budget: watch in CI; if CI fails it, that is a real slowdown to find, not to re-run past.
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,
