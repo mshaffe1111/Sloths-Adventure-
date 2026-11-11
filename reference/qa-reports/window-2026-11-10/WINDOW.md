@@ -1,5 +1,21 @@
 # Play window ending Tue 11-10: gen2 1-1, live 0.9.5 (R-165.77)
 
+## Delta to the close (attempt 3, pulled Wed 11-11 2:09 AM ET; the window is CLOSED)
+- **Added:** sheet rows 4553-4592: 40 rows, 0 unread, 3 sessions, 3 players, 4 runs. All are on the since side (build 181d284, list
+  e03e9c8c). Before: 0 rows. Other: 0 rows. Last row 11-10 5:31 PM ET. All 3 sessions start at part 1, so none continues an earlier session.
+  Command: `python3 -I tools/playtesters/report.py <folder of the new rows> --delta "11/9/2026 19:25:00"`.
+- **Runs:** Normal: 2 runs from 2 players; 1 finished in 214 s, and 1 was left mid-stage in `w1-dip-double-teach` (seed 15079, ONE).
+  Easy: 2 runs from 1 player, both finished (180 and 187 s).
+- **0 lives lost and 0 stuck.** No top-10 finding rose or fell. #1-2 and #4 (raised pits) and #5 and #7-10 got no new hits.
+  - #3 (tap read as punch): +6 of 7 punches followed by a jump, from 2 of 3 players.
+  - #6 (Easy `w1-double-teach` put-backs): +2 from 1 player (seed 4364).
+  - New, ONE player: a mid-stage leave at `w1-dip-double-teach` (score 5).
+  - Window totals for the 1-1 runs: 99 runs, 36 Normal lives (all raised pits).
+- **Can't tell from the new rows alone:** whether these 3 players are new or returning. The delta's P-numbers are local to it (P1-P3),
+  and joining codes would need the full sheet again.
+- **Nothing new in 1-1:** 0 glitches. The Easy landscape run held fps median 23.4 (min 14.8, sd 9.7 ms; ONE device), the same pattern as
+  §4. The Easy first run never showed the double line (1 of 1, ONE). 0 skipOffer, 0 stuckHelp.
+
 **Pulled Mon 11-09 8:39 PM ET. The window is still OPEN.** The last row arrived 11-09 7:25 PM ET. All 4,549 rows were read (sheet rows
 2-4552) and every data cell decoded (0 unread). This is attempt 1. The close is a delta (attempt 2).
 **Rerun (one command):** export Sessions!A2:H to JSON files in a scratch folder outside the repo, then

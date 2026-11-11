@@ -1,9 +1,8 @@
-# Turnover note: the data analyst (rewritten at the end of every task; last: W11-ANALYST attempt 2, the Critic's V1/V2 fixes)
+# Turnover note: the data analyst (rewritten at the end of every task; last: W11-ANALYST attempt 3, the delta to the close)
 
 ## Open
-- The play window ending Tue 11-10 (gen2 1-1, live 0.9.5) was read up to the 11-09 8:39 PM ET pull (last row 7:25 PM ET).
-  Attempt 2 is the delta at the close: rerun report.py on a fresh full pull, then compare against
-  reference/qa-reports/window-2026-11-10/WINDOW.md.
+- The 11-10 window is CLOSED and fully read: attempt 1 (rows 2-4552) plus the attempt-3 delta (rows 4553-4592, pulled 11-11 2:09 AM
+  ET). Next window: rerun on a full pull; a delta pull of only new rows works when every new session starts at part 1 (check it).
 - Not built yet in report.py: fps and launch by device model, and the touch-style skill signals (LOG_EVENTS "Skill from play").
 
 ## Where things live
