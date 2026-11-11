@@ -47,8 +47,8 @@
     },
     {
       "role": "Content",
-      "task": "art fixes and world tags for all four sets",
-      "status": "working"
+      "task": "all three art batches cut and tagged: passed",
+      "status": "reported"
     },
     {
       "role": "Story keeper",
@@ -188,7 +188,7 @@
       "cards": [
         {
           "id": "R-165.85",
-          "title": "Your 15 sheets: 54 pieces cut and catalogued, PASSED; placing comes with the re-lay"
+          "title": "All your art cut and world-tagged (3 batches, 162 pieces): PASSED; placing comes with the re-lay"
         },
         {
           "id": "R-165.61",
