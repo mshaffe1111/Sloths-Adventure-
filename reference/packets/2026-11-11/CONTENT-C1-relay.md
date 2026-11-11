@@ -17,7 +17,8 @@ replaces). The re-lay is the fix; the help system rides on it.
 - DISPATCH ORDER (Matt's standing rule, 11-11: no patching what is being replaced; fix and polish only when ready to finalize): this
   packet goes out only after E0a and the tier bots have PASSED. Base: the passed t-engine-e0a head the lead names (E0 and C1 ship in ONE
   PR, E0 commits first). A verdict you think is wrong is a PUSHBACK with a drawn case, never a work-around.
-- reference/specs/ is READ-ONLY at the t-designer-reach head the lead names (§5 corrected for thin pieces: bands.md:20). A band you
+- reference/specs/ is READ-ONLY at t-designer-reach@e97542b4 (§5 corrected 11-11: D bank Easy 128-132 / Normal 136-140; THIN limbs E,
+  the rungs 616-617, 725, 752, 827, 853, 1113-1294 at Easy 122-128 / Normal 128-134, flown in sims/out/*-tshare.txt). A band you
   can't meet is a PUSHBACK, not a new number.
 - Help is NOT built here. Dot's help (A2's ladder) goes onto the finished 1-1 in its own packet. C1 only lays room for it, to A2's stair
   geometry, frozen for C1: faces 60 px or less, treads 80 px, the top tread 160 px (TOP_W), the top within 60 px below the lip, resting
