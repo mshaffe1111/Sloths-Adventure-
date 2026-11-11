@@ -57,8 +57,8 @@
   },
   {
    "role": "Critic",
-   "task": "tier bots: Critic found 3 stuck spots (bot limits) and report fixes; attempt 2",
-   "status": "working"
+   "task": "tier bots PASSED (match real testers; baseline for the new 1-1 made)",
+   "status": "reported"
   },
   {
    "role": "Engine",
