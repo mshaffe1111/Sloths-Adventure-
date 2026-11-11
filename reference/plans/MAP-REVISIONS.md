@@ -14,8 +14,16 @@ fit... I'm going to take your word." Sources read in full: GAME-MAP.md §1-3, §
   mastered in **World 10's hold-on rule** (freeze on the lightning flash), so the last world asks for the first world's lesson at its hardest.
 - **Engine cost:** none new beyond pieces already on the list, moved earlier: B8 one meter (stillness), B10 noise, B11 gaze sweeps.
   They become World 1 pieces.
-- **Open with the story keeper:** whether World 5's "don't stop" rule fights this arc (it punishes stopping while the game's spine
-  rewards stillness). Asked 11-11 6:45 PM ET; its answer decides World 5's third rule.
+- **The story keeper (11-11 6:35 PM ET): YES, "the strongest idea yet for the arc"** (real sloths survive by stillness; the General's
+  bargain was "no more waiting, no more late", so stillness-is-not-lateness is the game's argument in play). Its four guards bind:
+  a. Words: "still", "calm", "steady"; never "slow" or "wait" (Grandma: "Slow is not stopped, dear").
+  b. He is still to stay safe, never to put off saving someone; keep stillness out of World 6's rescue moments (his flaw beat there stays).
+  c. The ending is LETTING GO: World 10's hold-on mastery ends the General's fight with Pokey letting go of one hand and holding it out;
+     a freeze is never the final beat.
+  d. 1-7 teaches it as the SAME lesson as the bush hide ("in the bush, hold still"), not a second twist. Dot's line comes from the story keeper.
+- **World 5 keeps "don't stop"** (story keeper: it completes the arc: the sanctuary is where his strength becomes the trap). Fair rules:
+  drowsiness builds only when no threat is near and he is idling (a freeze to hide never counts); in World 5 freezing does not hide him
+  (the spiders sense touch; 5-2's cover moves with the breeze), shown once by Meeca's carving and Dot's "Rules. Don't sit."
 
 ## 2. A "look" per stage (new): style for little cost
 - The brief gets a `look` field: day, dawn mist, sunset silhouette (archetype #20), rain, night glow. One colour-grade and light layer
@@ -39,7 +47,7 @@ fit... I'm going to take your word." Sources read in full: GAME-MAP.md §1-3, §
 | Q2 | (a) Hanging under is taught in World 3 | World 1 already teaches eight moves; World 3 needs a new verb |
 | Q3 | (a) Followers in World 2, the vine leash in World 5 | cheaper, safe, and the vine becomes World 5's upgrade |
 | Q4 | (b) Re-lay Worlds 2-5; check Worlds 6-10 against the map, re-lay only stages missing their twist | Matt found 1-5 "run and jump"; 6-8 are newer |
-| Q5 | Waits on the story keeper (section 1) | it may fight the stillness arc |
+| Q5 | (a) Yes, with the story keeper's four conditions plus its two fairness rules (section 1) | it completes the stillness arc |
 | Q6 | (a) The card road starts in World 10's hidden stage | riskiest piece; needs every world's bricks |
 | Q7 | (a) Lay each world while the engine builds the next world's pieces | already the plan |
 | Q8 | (a) The cheap way for C1-C8; the card road after the World 1-2 pieces | 55 h saved; every stage keeps its twist |
