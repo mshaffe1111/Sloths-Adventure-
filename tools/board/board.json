@@ -1,7 +1,7 @@
 {
  "note": "The lead's Kanban board (Matt picked it 11-09, R-165.75). Plain titles are the lead's; owner, hours and state are read from reference/ROADMAP.md by build.py. A card sits in one column; move it by moving its line.",
  "goal": "All 10 worlds and their bosses passed by Matt on the phone, the story start to finish, then the Play Store app.",
- "sprint": "This sprint: re-lay stage 1-1 to the real jump numbers (rules first, then the re-lay, then Dot's help on top). Test link now: fix A1 (no fall costs a life).",
+ "sprint": "Today: the new 1-1, re-laid to the real jump numbers, on Matt's test link (timed as the new-helper benchmark). Help and art go on once it's laid.",
  "path": [
   {
    "name": "Team built",
@@ -66,8 +66,8 @@
    "status": "working"
   },
   {
-   "role": "Critic",
-   "task": "checking the 1-1 re-lay plan (C1); the re-lay starts after the stage rules (E0a) pass",
+   "role": "Content",
+   "task": "re-laying stage 1-1 (C1), timed as the first measure of a new helper building a level",
    "status": "working"
   }
  ],
