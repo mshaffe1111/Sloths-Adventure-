@@ -270,6 +270,12 @@ export const STEP_W = 80;
 /** the top tread of a stair, where the ground allows (a run-up before the last jump) */
 export const TOP_W = 160;
 export const PAD_W = 60;
+/**
+ * a pad leaves this much open at each side of its gap (the lead's ruling 11-11, INT-1-1 PUSHBACK 1): the pad is gap - 2 x PAD_EDGE wide,
+ * PAD_W at the least, so a full plain jump from anywhere up to the lip lands on it (a 60 px pad was overshot from the lip: seed 3868
+ * w1-two-answers); 154 px on the 254 px double test
+ */
+export const PAD_EDGE = 50;
 
 /** a mushroom on the lower stretch this close before a face gives that rise (px): no stair there */
 export const BOUNCE_NEAR = 200;
@@ -279,7 +285,7 @@ export const BOUNCE_ALONE = (0.8 * PHYS.bounceV * PHYS.bounceV) / (2 * PHYS.grav
  * What grows at a piece (the lead's ruling 11-11, after the Critic's find): along its walking surface (skyline), every rise over
  * STEP_LEFT gets a STAIR at its foot: rocks standing on the lower stretch (each on the ground, never floating), every face STEP_LEFT or
  * less, every tread at least STEP_W wide, the top tread within STEP_LEFT under the lip. A gap the last plain jump still can't clear
- * (`plainGap(dyUp)` for the climb left) gets a PAD_W plank at its middle (planks may float: Matt, 11-06), no more than STEP_LEFT under
+ * (`plainGap(dyUp)` for the climb left) gets a plank at its middle, PAD_EDGE short of each side (planks may float: Matt, 11-06), no more than STEP_LEFT under
  * the far side, with a stair up to it if the near side is lower still. A rise a mushroom gives grows nothing.
  */
 /** rises a stair had no room for, since the last read (the sweep test reports them) */
@@ -389,7 +395,8 @@ export function stepPlan(piece: Piece, solids: readonly Box[], plainGap: (dyUp: 
     const need = gap > 1 ? gap > plainGap(rise) : plainGap(rise) < 0;
     if (gap > 1 && gap > plainGap(Math.min(rise, STEP_LEFT))) {
       const padY = Math.min(Math.max(a.y, b.y), b.y + STEP_LEFT);
-      const pad: Box = { x: Math.round(a.x1 + gap / 2 - PAD_W / 2), y: padY, width: PAD_W, height: 24, plank: true };
+      const pw = Math.max(PAD_W, Math.round(gap - 2 * PAD_EDGE));
+      const pad: Box = { x: Math.round(a.x1 + gap / 2 - pw / 2), y: padY, width: pw, height: 24, plank: true };
       if (out.some((o) => pad.x < o.x + o.width - 0.5 && o.x < pad.x + pad.width - 0.5 && pad.y < o.y + o.height - 0.5 && o.y < pad.y + pad.height - 0.5)) {
         if (need) unsolved++;
         continue;

@@ -569,9 +569,7 @@
    "w1-bank-stair-fork           a part only, no room (rise 111, rise 164)": 1
   },
   "breaches": [],
-  "flights": [
-   "seed 3868 w1-two-answers: fell at x 25661 (4 grown)"
-  ],
+  "flights": [],
   "promise": [],
   "flown": 1874
  }

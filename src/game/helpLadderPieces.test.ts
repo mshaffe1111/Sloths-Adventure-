@@ -9,7 +9,9 @@ import assert from 'node:assert/strict';
 import './headlessDom.ts';
 import { plainThrough } from './helpSweep.ts';
 
-for (const [seed, k, setting] of [[769, 'w1-mushroom-bank-teach', 'easy'], [4106, 'w1-dip-double-teach', 'normal']] as const) {
+// (and 3868 Normal w1-two-answers: a bounce sets him down at the test gap's lip, and his jump from there overshot the old 60 px pad; the
+// pad is now the gap less 100, the lead's ruling 11-11)
+for (const [seed, k, setting] of [[769, 'w1-mushroom-bank-teach', 'easy'], [4106, 'w1-dip-double-teach', 'normal'], [3868, 'w1-two-answers', 'normal']] as const) {
   test(`seed ${seed} ${setting}, ${k}: plain jumps fail it as laid; after the steps grow, they pass the whole piece`, (t) => {
     const before = plainThrough(seed, k, setting, false);
     const after = plainThrough(seed, k, setting, true);

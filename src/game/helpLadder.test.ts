@@ -123,8 +123,8 @@ test('the steps come from the piece as laid: a rock under every rise over 60 px 
   const rocks = steps.filter((b) => !b.plank).sort((a, b) => a.x - b.x), planks = steps.filter((b) => b.plank);
   // three rises of 114: one rock each at the end of the lower log, its top 57 under the next log (two 57 px faces), TOP_W wide
   assert.deepEqual(rocks.map((s) => [s.x, s.y, s.width, s.height]), [[28985, 655, 160, 57], [29520, 541, 160, 57], [30073, 427, 160, 57]]);
-  // the 202 px level gap: a plank at its middle
-  assert.deepEqual(planks.map((s) => [s.x, s.y, s.width]), [[30860, 374, 60]]);
+  // the 202 px level gap: a plank at its middle, 50 px short of each side (the lead's ruling 11-11: gap - 100; it was 60 px wide)
+  assert.deepEqual(planks.map((s) => [s.x, s.y, s.width]), [[30839, 374, 102]]);
   assert.equal(stepsFor(piece, solids, () => 1000).filter((b) => b.plank).length, 0, 'no plank when a plain jump clears the gap');
 });
 

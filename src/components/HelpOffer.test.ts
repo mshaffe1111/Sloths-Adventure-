@@ -40,3 +40,10 @@ test('Back is a no: the back stack\'s top handler answers no, once; letting go t
   assert.equal(backStack.size(), n0, 'off the stack');
   assert.deepEqual(calls, ['add', 'remove'], 'Escape is caught while it is up, and let go after');
 });
+
+test("the NO card's Pokey is a real mid-leap from the standard atlas, not the arms-out apex (a T-pose on the card: the lead, 11-11)", async () => {
+  const { NO_POSE } = await import('./HelpOffer.tsx');
+  const { STD_FRAMES } = await import('../game/heroStandardData.ts');
+  assert.notEqual(NO_POSE, 'apex');
+  assert.ok(STD_FRAMES[NO_POSE as keyof typeof STD_FRAMES], `${NO_POSE} is in the standard atlas`);
+});

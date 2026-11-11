@@ -440,7 +440,6 @@ pieces where nothing grows: 792 (no room: 510); by piece and why:
      1  w1-mushroom-fork-dip         a part only, no room (rise 166, rise 111)
      1  w1-bank-stair-fork           a part only, no room (rise 111, rise 164)
   (plus 282 piece-seeds where plain jumps already pass: nothing needed)
-plain-jump flights after the steps: 1874 flown, 1 failed; promised but nothing grew: 0
-  seed 3868 w1-two-answers: fell at x 25661 (4 grown)
+plain-jump flights after the steps: 1874 flown, 0 failed; promised but nothing grew: 0
 
-FAIL 1
+PASS
