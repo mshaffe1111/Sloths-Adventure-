@@ -5062,9 +5062,19 @@ export class GameEngine {
 
   /** the move a piece needs, from the piece as laid (helpLadder.ts pieceMoveLaid) */
   private pieceMove(piece: Piece) {
+    const road = this.roadBoxes();
+    return pieceMoveLaid(piece, road, road.filter((q) => q.bouncy), this.plainGap());
+  }
+  /** the stage's standing pieces as the step code reads them: solid and bouncy, each with its mushroom and catch marks */
+  private roadBoxes() {
+    return this.platforms
+      .filter((q) => (q.type === 'solid' || q.type === 'bouncy') && !q.broken && !q.push && !q.chase && !q.hollow && !this.grown.includes(q))
+      .map((q) => ({ x: q.x, y: q.y, width: q.width, height: q.height, bouncy: q.type === 'bouncy', catch: !!q.catch }));
+  }
+  /** the widest gap a plain single jump makes for a rise (gen2's jump envelope at the stage's own margin) */
+  private plainGap() {
     const margin = (this.currentStage as { gen2?: { budget?: { margin?: number } } }).gen2?.budget?.margin ?? (isEasy() ? 0.65 : 0.82);
-    const solids = this.platforms.filter((q) => q.type === 'solid' && !q.broken && !q.push && !q.chase && !q.hollow && !this.grown.includes(q));
-    return pieceMoveLaid(piece, solids, this.platforms.filter((q) => q.type === 'bouncy'), (dyUp) => maxGap(dyUp, false, margin));
+    return (dyUp: number) => maxGap(dyUp, false, margin);
   }
 
   /** the ladder's line up in her bubble, and when it comes down (game time) */
@@ -5083,16 +5093,14 @@ export class GameEngine {
 
   /** the boxes the ladder would grow at a piece, from the piece as laid (helpLadder.ts stepsFor) */
   private stepBoxes(piece: Piece) {
-    const margin = (this.currentStage as { gen2?: { budget?: { margin?: number } } }).gen2?.budget?.margin ?? (isEasy() ? 0.65 : 0.82);
-    const solids = this.platforms.filter((q) => q.type === 'solid' && !q.broken && !q.push && !q.chase && !q.hollow && !this.grown.includes(q));
-    return stepsFor(piece, solids, (dyUp) => maxGap(dyUp, false, margin));
+    return stepsFor(piece, this.roadBoxes(), this.plainGap());
   }
 
   /** a grown piece: a step stands on its log as a World 1 stone, a pad floats as a plank (w1CutArt.ts pickCut: art already in the atlas) */
-  private stepPlatform(b: { x: number; y: number; width: number; height: number }, id: number): Platform {
-    const pf: Platform = { id, x: b.x, y: b.y, width: b.width, height: b.height, type: 'solid', style: b.height > 30 ? 'moss_stone' : 'log', ownLook: true };
+  private stepPlatform(b: { x: number; y: number; width: number; height: number; plank?: boolean }, id: number): Platform {
+    const pf: Platform = { id, x: b.x, y: b.y, width: b.width, height: b.height, type: 'solid', style: b.plank ? 'log' : 'moss_stone', ownLook: true };
     // (a step is always the one mossy rock, so the offer's YES picture is exactly what grows; a pad is a plank)
-    const cut = b.height > 30 ? STEP_CUT : pickCut(pf);
+    const cut = b.plank ? pickCut(pf) : STEP_CUT;
     if (cut) pf.cut = cut;
     return pf;
   }

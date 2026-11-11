@@ -14,6 +14,7 @@
  * beyond, or the stage ending; NOT by a put-back, a pause, time, a refused offer or a step already given. Each rung fires once a piece.
  * The words are the story keeper's (reference/specs/help-lines.md), word for word.
  */
+import { PHYS } from './physics.ts';
 
 export type Setting = 'easy' | 'normal';
 export type Rung = 'move' | 'pad' | 'step' | 'offer' | 'reask';
@@ -198,29 +199,51 @@ export function pieceMove(needs: readonly string[] | undefined): Move {
   if (needs?.includes('double')) return 'double';
   return 'single';
 }
-/**
- * what the piece asks of him, read from the piece as laid (no section tables: importing them pulled the stage data into the main chunk):
- * a mushroom in it is the bounce; a join on its road no single jump makes (`singleGap(dyUp)` under the gap, or -1: too high) is the
- * double; else a long single jump
- */
+/** the move a piece needs, read from its walking surface (skyline): a mushroom in it is the bounce; a join a single jump can't make is the double */
 export function pieceMoveLaid(piece: Piece, solids: readonly Box[], mushrooms: readonly Box[], singleGap: (dyUp: number) => number): Move {
   if (mushrooms.some((m) => m.x + m.width > piece.x0 && m.x < piece.x1)) return 'bounce';
-  const run = roadOf(piece, solids);
-  for (let i = 0; i + 1 < run.length; i++) {
-    const a = run[i], b = run[i + 1];
-    const g = singleGap(a.y - b.y);
-    if (b.x - (a.x + a.width) > g) return 'double';
+  const segs = skyline(piece, solids);
+  for (let i = 0; i + 1 < segs.length; i++) {
+    const a = segs[i], b = segs[i + 1];
+    const rise = a.y - b.y;
+    if (b.x0 > a.x1 + 1 ? b.x0 - a.x1 > singleGap(rise) : rise > 0 && singleGap(rise) < 0) return 'double';
   }
   return 'single';
 }
-/** a piece's road: its standing pieces under no other, with the road piece on either side of it */
-function roadOf(piece: Piece, solids: readonly Box[]): Box[] {
-  const under = (a: Box) => solids.some((b) => b !== a && b.y < a.y && b.x < a.x + a.width && b.x + b.width > a.x);
-  const road = solids.filter((a) => a.width >= 40 && !under(a)).sort((a, b) => a.x - b.x);
-  const inside = road.filter((a) => a.x + a.width > piece.x0 && a.x < piece.x1);
-  if (!inside.length) return [];
-  const i0 = road.indexOf(inside[0]), i1 = road.indexOf(inside[inside.length - 1]);
-  return road.slice(Math.max(0, i0 - 1), Math.min(road.length, i1 + 2));
+
+/** one stretch of the walking surface: the top a foot stands on from x0 to x1, and the piece it is */
+export interface Seg {
+  x0: number;
+  x1: number;
+  y: number;
+  /** the bottom of the piece whose top it is (a stump reaches the ground; a floating log does not) */
+  bottom: number;
+  bouncy: boolean;
+}
+/**
+ * A piece's walking surface, read from the piece as laid (the Critic's find, 11-11: a guess that dropped any ground under a higher
+ * piece made fake gaps and walls). The road is every solid or bouncy piece that is not a catch (the builder marks those: a fall's
+ * floor) and not wholly under a higher piece floating over it (a log laid under a log). Its surface at each x is the highest road top
+ * there: ground with a stone resting on it is ground, then the stone. Runs from the road piece before the piece to the one after it.
+ */
+export function skyline(piece: Piece, solids: readonly Box[]): Seg[] {
+  const hidden = (a: Box) => solids.some((b) => b !== a && !b.catch && b.y + b.height < a.y - 2 && b.x <= a.x + 1 && b.x + b.width >= a.x + a.width - 1);
+  const road = solids.filter((a) => !a.catch && a.width >= 24 && !hidden(a));
+  const lo = piece.x0 - 400, hi = piece.x1 + 400;
+  const near = road.filter((a) => a.x + a.width > lo && a.x < hi);
+  const xs = [...new Set(near.flatMap((a) => [a.x, a.x + a.width]))].filter((x) => x >= lo && x <= hi).sort((a, b) => a - b);
+  const out: Seg[] = [];
+  for (let k = 0; k + 1 < xs.length; k++) {
+    const m = (xs[k] + xs[k + 1]) / 2;
+    let top: Box | null = null;
+    for (const a of near) if (m > a.x && m < a.x + a.width && (!top || a.y < top.y)) top = a;
+    if (!top) continue;
+    const last = out[out.length - 1];
+    const bottom = top.y + top.height;
+    if (last && Math.abs(last.x1 - xs[k]) < 0.5 && last.y === top.y && last.bottom === bottom && last.bouncy === !!top.bouncy) last.x1 = xs[k + 1];
+    else out.push({ x0: xs[k], x1: xs[k + 1], y: top.y, bottom, bouncy: !!top.bouncy });
+  }
+  return out;
 }
 export function moveLine(m: Move, mode: 'screen' | 'pad' | 'keys'): string {
   return mode === 'screen' ? MOVE_LINES[m].touch : MOVE_LINES[m].pad;
@@ -232,40 +255,109 @@ export interface Box {
   y: number;
   width: number;
   height: number;
+  /** a mushroom: it gives the rise itself, so no stair grows where it does */
+  bouncy?: boolean;
+  /** the builder's catch under a gap (a fall's floor): not road */
+  catch?: boolean;
+  /** a grown plank in a gap (it may float); every other grown box is a rock that stands */
+  plank?: boolean;
 }
 /** the climb a step leaves (px): a plain jump clears it (the lead's ruling 11-11) */
 export const STEP_LEFT = 60;
 export const STEP_W = 80;
+/** the top tread of a stair, where the ground allows (a run-up before the last jump) */
+export const TOP_W = 160;
 export const PAD_W = 60;
 
+/** a mushroom on the lower stretch this close before a face gives that rise (px): no stair there */
+export const BOUNCE_NEAR = 200;
+/** how high a mushroom's bounce alone carries him over its cap, with a margin (px): 80% of bounceV^2 / 2g (about 145) */
+export const BOUNCE_ALONE = (0.8 * PHYS.bounceV * PHYS.bounceV) / (2 * PHYS.gravUp);
 /**
- * The steps for a piece, from the piece as laid (never a constant): its road is its standing pieces that are under no other (a catch
- * branch under a log is not road), with the road piece on either side of it; between each two in turn, a rise taller than STEP_LEFT gets
- * a step at the foot of the rise (its top STEP_LEFT under the next one), and a gap wider than `plainGap(dyUp)` a PAD_W pad at its middle
- * (no higher than STEP_LEFT under the far side, with a step under it if the near side is lower still).
+ * What grows at a piece (the lead's ruling 11-11, after the Critic's find): along its walking surface (skyline), every rise over
+ * STEP_LEFT gets a STAIR at its foot: rocks standing on the lower stretch (each on the ground, never floating), every face STEP_LEFT or
+ * less, every tread at least STEP_W wide, the top tread within STEP_LEFT under the lip. A gap the last plain jump still can't clear
+ * (`plainGap(dyUp)` for the climb left) gets a PAD_W plank at its middle (planks may float: Matt, 11-06), no more than STEP_LEFT under
+ * the far side, with a stair up to it if the near side is lower still. A rise a mushroom gives grows nothing.
  */
+/** rises a stair had no room for, since the last read (the sweep test reports them) */
+let stairsLeftOut = 0;
+export function takeStairsLeftOut(): number {
+  const n = stairsLeftOut;
+  stairsLeftOut = 0;
+  return n;
+}
 export function stepsFor(piece: Piece, solids: readonly Box[], plainGap: (dyUp: number) => number): Box[] {
-  const run = roadOf(piece, solids);
+  const segs = skyline(piece, solids);
+  const mushrooms = solids.filter((m) => m.bouncy);
   const out: Box[] = [];
-  const stepOn = (a: Box, topY: number) => {
-    const h = a.y - topY;
-    if (h <= 0) return;
-    const w = Math.min(STEP_W, a.width);
-    out.push({ x: a.x + a.width - w, y: topY, width: w, height: h });
+  /**
+   * a stair up to `lipY`, ending at x `face`, built leftwards from the lip: each rock's top is STEP_LEFT under the tread to its right;
+   * its foot is the lowest surface under it (a rock as wide as a tread may take in a narrow stump: it stands on the ground beside it,
+   * the stump inside it, never over air); it stops as soon as the surface under it is within STEP_LEFT of the tread above
+   */
+  const stair = (a: Seg, face: number, lipY: number) => {
+    if (a.y - lipY <= STEP_LEFT || a.bouncy) return;
+    // (a mushroom just before the face whose bounce alone reaches the lip gives the rise: nothing grows; one that needs a second jump
+    // after it does not, and the stair grows over it)
+    if (mushrooms.some((m) => m.x + m.width > face - BOUNCE_NEAR && m.x < face && m.y + m.height >= a.y - 2 && m.y - lipY <= BOUNCE_ALONE)) return;
+    if (!build(a, face, lipY, TOP_W) && !build(a, face, lipY, STEP_W)) stairsLeftOut++;
   };
-  for (let i = 0; i + 1 < run.length; i++) {
-    const a = run[i], b = run[i + 1];
+  /** lays one stair (the top tread `topW` wide where it fits); false, laying nothing, when the ground has no room for all of it */
+  const build = (a: Seg, face: number, lipY: number, topW: number): boolean => {
+    // (first where the rocks go: STEP_W treads leftwards, each on the lowest surface under it, until the surface is within reach)
+    const rocks: Array<{ x: number; w: number; foot: number }> = [];
+    let cur = lipY, x = face, endY = NaN;
+    for (let guard = 0; guard < 12; guard++) {
+      const s0 = segs.find((q) => q.x0 < x - 0.5 && q.x1 >= x - 0.5);
+      if (s0 && s0.y - cur <= STEP_LEFT) {
+        endY = s0.y;
+        break;
+      }
+      // (the top tread is as wide as TOP_W where the ground allows: he lands on it and runs before the last jump)
+      let x0 = x - (rocks.length ? STEP_W : topW);
+      const fits = (from: number) => {
+        const under = segs.filter((q) => q.x1 > from + 0.5 && q.x0 < x - 0.5);
+        let covered = x;
+        for (const q of [...under].sort((p, r) => r.x1 - p.x1)) if (q.x1 >= covered - 0.5) covered = Math.min(covered, q.x0);
+        return covered <= from + 0.5 && !under.some((q) => q.y < Math.max(...under.map((u) => u.y)) - 2 && q.bottom < Math.max(...under.map((u) => u.y)) - 2) ? under : null;
+      };
+      let under = s0 ? fits(x0) : null;
+      if (!under && !rocks.length && s0) {
+        x0 = x - STEP_W;
+        under = fits(x0);
+      }
+      if (!under) break; // (air, or a floating log, under the next tread: the stair starts here)
+      const foot = Math.max(...under.map((q) => q.y));
+      rocks.push({ x: x0, w: x - x0, foot });
+      cur += STEP_LEFT;
+      x = x0;
+    }
+    if (!rocks.length) return false;
+    // (then their tops, spread evenly from the surface the stair starts on up to the lip: no sliver, no tall last face)
+    if (Number.isNaN(endY)) endY = rocks[rocks.length - 1].foot;
+    // (the stair would start on ground already within reach of the lip: a dip between two shelves, crossed by a jump; nothing grows)
+    if (endY - lipY <= STEP_LEFT) return true;
+    const rise = (endY - lipY) / (rocks.length + 1);
+    // (no room for a whole stair, the ground under it too short: nothing grows here, never a wall; counted, stairsLeftOut)
+    if (rise > STEP_LEFT + 0.5) return false;
+    rocks.forEach((r, k) => {
+      const top = Math.round(lipY + (k + 1) * rise);
+      if (r.foot - top > 0) out.push({ x: Math.round(r.x), y: top, width: Math.round(r.w), height: Math.round(r.foot - top) });
+    });
+    return true;
+  };
+  for (let i = 0; i + 1 < segs.length; i++) {
+    const a = segs[i], b = segs[i + 1];
     // (only the joins that touch the piece: the one into it, those inside it, the one out of it)
-    if (a.x + a.width < piece.x0 - 1 && b.x + b.width < piece.x0) continue;
-    if (a.x > piece.x1 + 1) continue;
-    const gap = b.x - (a.x + a.width);
+    if (b.x1 < piece.x0 || a.x0 > piece.x1) continue;
+    const gap = b.x0 - a.x1;
     const rise = a.y - b.y;
-    if (gap > plainGap(rise)) {
+    if (gap > 1 && gap > plainGap(Math.min(rise, STEP_LEFT))) {
       const padY = Math.min(Math.max(a.y, b.y), b.y + STEP_LEFT);
-      const pad = { x: Math.round(a.x + a.width + gap / 2 - PAD_W / 2), y: padY, width: PAD_W, height: Math.max(24, Math.max(a.y, b.y) + 24 - padY) };
-      out.push(pad);
-      if (a.y - padY > STEP_LEFT) stepOn(a, padY + STEP_LEFT);
-    } else if (rise > STEP_LEFT) stepOn(a, b.y + STEP_LEFT);
+      out.push({ x: Math.round(a.x1 + gap / 2 - PAD_W / 2), y: padY, width: PAD_W, height: 24, plank: true });
+      stair(a, a.x1, padY);
+    } else stair(a, a.x1, b.y);
   }
   return out;
 }

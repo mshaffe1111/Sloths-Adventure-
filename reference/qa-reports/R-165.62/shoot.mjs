@@ -65,7 +65,7 @@ for (const setting of ['easy', 'normal']) for (const o of [{ id: 'port', viewpor
   await sleep(1200);
   if (setting === 'easy') {
     // (he stands on the first grown step: the step itself under him, the log he is set back on in view)
-    await page.evaluate(() => { const e = window.__engine(); const g = e.helpState().grown.find((q) => q.height > 30); Object.assign(e.player, { x: g.x + g.width / 2, y: g.y, vx: 0, vy: 0 }); });
+    await page.evaluate(() => { const e = window.__engine(); const g = e.helpState().grown.find((q) => q.style === 'moss_stone'); Object.assign(e.player, { x: g.x + g.width / 2, y: g.y, vx: 0, vy: 0 }); });
     report[`${tag}-line8`] = await waitBub('A step. Up you go');
     await sleep(900);
     report[`${tag}-line8-at-shot`] = await page.evaluate(() => window.__bub);

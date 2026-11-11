@@ -160,7 +160,7 @@ test('1-1 Easy, seed 3747, w1-log-chain-rise: the line at 3, the full pad jump a
   assert.equal(f.r.said.filter((s) => s.text === STEP_LINE).length, 1, 'Dot: the step line');
   const grown = e.helpState().grown;
   assert.ok(grown.length >= 3, `steps grown: ${grown.length}`);
-  assert.ok(grown.filter((g) => g.height > 30).every((g) => g.cut === STEP_CUT), 'every step is the one mossy rock (the YES picture)');
+  assert.ok(grown.filter((g) => g.style === 'moss_stone').every((g) => g.cut === STEP_CUT), 'every step is the one mossy rock (the YES picture)');
   // the move line came down after its time (her own clock holds while he blinks after each set-back)
   const ml = f.r.said.find((x) => x.text === MOVE_LINES.double.touch || x.text === MOVE_LINES.double.pad)!;
   const mlDown = f.r.passed.find((x) => x.text === ml.text);

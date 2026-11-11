@@ -3,7 +3,7 @@
 // the thresholds planted off by one (4/6/9/13) fail.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HelpLadder, RUNGS, stepsFor, pieceMoveLaid, padFullJump, setHelpLadder, pieceMove, moveLine, MOVE_LINES, STEP_LINE, OFFER_LINE, REASK_LINE, type Rungs, type Box } from './helpLadder.ts';
+import { HelpLadder, RUNGS, stepsFor, pieceMoveLaid, BOUNCE_ALONE, padFullJump, setHelpLadder, pieceMove, moveLine, MOVE_LINES, STEP_LINE, OFFER_LINE, REASK_LINE, type Rungs, type Box } from './helpLadder.ts';
 
 const PIECES = [
   { k: 'a', x0: 0, x1: 1000 },
@@ -110,23 +110,50 @@ test('Dot\'s words are help-lines.md\'s, and break neither story guard (no slow,
   for (const s of all) assert.ok(!/\b(slow|late|hurry|too)\b/i.test(s), s);
 });
 
-test('the steps come from the piece as laid: a step under every rise over 60 px (leaving 60), a pad in every gap wider than a plain jump', () => {
-  // seed 3747's Easy chain as laid, and its catch branches (under the logs: not road)
+test('the steps come from the piece as laid: a rock under every rise over 60 px (leaving 60), a plank in a gap too wide for the last jump', () => {
+  // seed 3747's Easy chain as laid, with its catch branches marked as the builder marks them
   const solids: Box[] = [
     { x: 28573, y: 772, width: 92, height: 120 }, { x: 28665, y: 712, width: 480, height: 24 }, { x: 28798, y: 850, width: 231, height: 24 },
-    { x: 29115, y: 802, width: 151, height: 24 }, { x: 29216, y: 598, width: 464, height: 24 }, { x: 29650, y: 688, width: 143, height: 24 },
-    { x: 29743, y: 484, width: 490, height: 24 }, { x: 30203, y: 574, width: 146, height: 24 }, { x: 30299, y: 370, width: 490, height: 24 },
-    { x: 30759, y: 464, width: 282, height: 24 }, { x: 30991, y: 374, width: 474, height: 24 }, { x: 31465, y: 443, width: 88, height: 120 },
+    { x: 29115, y: 802, width: 151, height: 24, catch: true }, { x: 29216, y: 598, width: 464, height: 24 }, { x: 29650, y: 688, width: 143, height: 24, catch: true },
+    { x: 29743, y: 484, width: 490, height: 24 }, { x: 30203, y: 574, width: 146, height: 24, catch: true }, { x: 30299, y: 370, width: 490, height: 24 },
+    { x: 30759, y: 464, width: 282, height: 24, catch: true }, { x: 30991, y: 374, width: 474, height: 24 }, { x: 31465, y: 443, width: 88, height: 120 },
   ];
   const piece = { k: 'w1-log-chain-rise', x0: 28665, x1: 31465 };
   const steps = stepsFor(piece, solids, () => 150);
-  // three rises of 114: a step 54 tall at the end of each lower log, its top 60 under the next; the 202 px level gap: a pad at its middle
-  assert.deepEqual(steps.map((s) => [s.x, s.y, s.width, s.height]), [
-    [29065, 658, 80, 54], [29600, 544, 80, 54], [30153, 430, 80, 54], [30860, 374, 60, 24],
-  ]);
-  for (const s of steps.slice(0, 3)) assert.equal(s.y - (s.y - 60), 60);
-  // (no gap wider than a plain jump: no pad)
-  assert.equal(stepsFor(piece, solids, () => 1000).length, 3);
+  const rocks = steps.filter((b) => !b.plank), planks = steps.filter((b) => b.plank);
+  // three rises of 114: one rock each at the end of the lower log, its top 57 under the next log (two 57 px faces), TOP_W wide
+  assert.deepEqual(rocks.map((s) => [s.x, s.y, s.width, s.height]), [[28985, 655, 160, 57], [29520, 541, 160, 57], [30073, 427, 160, 57]]);
+  // the 202 px level gap: a plank at its middle
+  assert.deepEqual(planks.map((s) => [s.x, s.y, s.width]), [[30860, 374, 60]]);
+  assert.equal(stepsFor(piece, solids, () => 1000).filter((b) => b.plank).length, 0, 'no plank when a plain jump clears the gap');
+});
+
+test('a rise over 120 px is a stair: rocks standing on the ground, every face 60 px or less, the top tread within 60 under the lip', () => {
+  const ground = { x: 0, y: 800, width: 600, height: 400 }, ledge = { x: 600, y: 590, width: 300, height: 610 };
+  const steps = stepsFor({ k: 'p', x0: 0, x1: 900 }, [ground, ledge], () => 150);
+  assert.equal(steps.length, 3, JSON.stringify(steps));
+  const tops = [800, ...steps.map((b) => b.y).sort((a, b) => b - a), 590];
+  for (let i = 1; i < tops.length; i++) assert.ok(tops[i - 1] - tops[i] <= 60, `face ${tops[i - 1] - tops[i]}`);
+  for (const b of steps) assert.equal(b.y + b.height, 800, 'stands on the ground');
+  assert.ok(steps.every((b) => b.width >= 60));
+});
+
+test('a rock never takes in a floating log; ground with a stump resting on it is ground', () => {
+  // a log floating over the ground in front of the ledge: no room for a stair under it, so nothing grows
+  const ground = { x: 0, y: 800, width: 600, height: 400 }, log = { x: 300, y: 700, width: 290, height: 24 }, ledge = { x: 600, y: 590, width: 300, height: 610 };
+  assert.ok(stepsFor({ k: 'p', x0: 0, x1: 900 }, [ground, log, ledge], () => 150).every((b) => b.x + b.width <= 300 || b.y + b.height <= 700), 'nothing under the log');
+  // a stump on the ground: the ground stays road (the Critic's find: a dropped floor made a fake gap and a wall)
+  const stump = { x: 200, y: 760, width: 60, height: 40 };
+  const steps = stepsFor({ k: 'p', x0: 0, x1: 900 }, [ground, stump, { x: 600, y: 700, width: 300, height: 500 }], () => 150);
+  assert.equal(steps.filter((b) => b.plank).length, 0, 'no fake gap');
+  assert.ok(steps.every((b) => b.height <= 100 && b.y + b.height === 800));
+});
+
+test('a mushroom whose bounce alone reaches the lip gives the rise: nothing grows; one that needs a second jump after it gets a stair', () => {
+  const ground = { x: 0, y: 800, width: 600, height: 400 }, cap = { x: 450, y: 770, width: 70, height: 30, bouncy: true };
+  const low = { x: 600, y: 680, width: 300, height: 520 }, high = { x: 600, y: 560, width: 300, height: 640 };
+  assert.equal(stepsFor({ k: 'p', x0: 0, x1: 900 }, [ground, cap, low], () => 150).length, 0, `a ${770 - 680} px lift over the cap`);
+  assert.ok(stepsFor({ k: 'p', x0: 0, x1: 900 }, [ground, cap, high], () => 150).length >= 3, `a ${770 - 560} px lift over the cap (BOUNCE_ALONE ${Math.round(BOUNCE_ALONE)})`);
 });
 
 test('the move a piece needs, from the piece as laid: a mushroom is the bounce, a join no single jump makes is the double, else a single', () => {
