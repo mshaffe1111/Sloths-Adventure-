@@ -41,7 +41,7 @@ is, Matt's direction, the first day), then this note, then STATE.md (the live le
 | 1-1 follow-up round: R-165.115, .119, .122 (Opus xhigh) | session_01FhBbYLVQnNER5KWRX5LQrf | t-engine-11-followup | building; frozen base t-int-1-1@874f11f6; needs a Critic when it reports |
 | R-165.112 seed lists in their own chunk (Fable, finishing) | session_01FhBbYKLJaSijKJGsXKEZNB | t-engine-seedchunks (afbf2397c, rebasing) | done-items 7/7; told to rebase on 874f11f6 |
 | its Critic (Opus high) | session_01FhBbYMct2YXASz55Nd3jbZ | t-critic-seedchunks | auditing |
-| 1-2 packets (Designer, Fable) | session_01FhBbYKCku6yT7xx6DqGHwZ | t-design-1-2 (3864e805) | attempt 4 with the Critic; ENGINE passed at 7ed328b6; D43 rewrite ("works for any stage, proven on 1-2") asked 5:24 PM |
+| 1-2 packets (Designer, Fable) | session_01FhBbYKCku6yT7xx6DqGHwZ | t-design-1-2 (3864e805) | CONTENT PASSED at 3507c3a2; ENGINE (D43 rewrite) in its last wording delta; builders not started (new lead sequences them) |
 | 1-2 packet Critic (Fable) | session_01FhBbYMm5Pn1AdekqjM9JL8 | t-critic-1-2-packet | delta on the Designer's head |
 | Game map (Opus) | session_01FhBbYPFoKfvK2jTHjNBYPr | t-design-game-map | done (draft) |
 | tier bots count hearts (by the 1-2 Critic) | - | t-critic-bots-hearts@dabd303a | done, not merged; 1-2 needs it |
