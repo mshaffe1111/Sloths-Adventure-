@@ -13,7 +13,21 @@ def col(st):
     return (200, 40, 40) if st.startswith('needs fix') else (40, 160, 60) if st == 'in game' else (220, 160, 30) if st.startswith('ships') else (60, 110, 210)
 cache = {}
 groups = {}
+# creature and boss atlases are listed frame by frame in the table; the sheets show the first frame of each clip
+_clip = set()
+def keep(r):
+    m = re.match(r'game/w6to10/(creatures|bosses)/([^#]+)#', r['id'])
+    if not m:
+        return True
+    c = re.search(r'\(clip ([^;,]+)', r['kind'])
+    key = (m.group(2), c.group(1) if c else r['id'])
+    if key in _clip:
+        return False
+    _clip.add(key)
+    return True
 for r in R:
+    if not keep(r):
+        continue
     groups.setdefault((int(r['world_best']), r['layer']), []).append(r)
 out = []
 for (w, lay), rs in sorted(groups.items()):

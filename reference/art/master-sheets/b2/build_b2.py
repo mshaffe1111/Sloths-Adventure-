@@ -4,8 +4,8 @@ gates, pit water, water strips, the W5-W10 dress frames, faces810, meeca-night, 
 one row per atlas frame (the atlas's own frame list: its .json or the src/game *Data.ts that draws it), one row per animation clip
 (a move of a creature or boss sheet: frames inherit everything, the row says how many), one row per single image.
 
-Run from the repo root:  python3 reference/art/master-sheets/b2/build_b2.py <frames.json> <meeca.json>
-(frames.json/meeca.json: the dump of the src/game data modules, made by dump.mts / dump2.mts beside this file with npx tsx.)
+Run from the repo root:  python3 reference/art/master-sheets/b2/build_b2.py <frames.json> <meeca.json> <anim.json>
+(frames.json/meeca.json/anim.json: the dump of the src/game data modules, made by dump.mts / dump2.mts / dump3.mts beside this file with npx tsx.)
 Writes reference/art/catalog-game-B2.csv. Reads only; changes nothing under src/.
 
 Units: on_screen_px is the piece's longest side as drawn in world units at play scale (the world view is 540 units tall,
@@ -620,7 +620,9 @@ for f in sorted(os.listdir(A + 'w6to10/story')):
     add(p, '', W, H, kind=f'story picture {f[:-5]}', layer='ui', fam='story', home=6 if 'raft' in f or 'gorge' in f else 8, slot='story picture (new slot: story screens; storyHd.ts reads story/hd only)',
         footing='none', on=720, used='')
 
-# 5l. creature and boss clip sheets (w6to10/creatures, w6to10/bosses): one row per clip (move), its frames inherit it
+# 5l. creature and boss clip sheets (w6to10/creatures, w6to10/bosses): one row per atlas frame, from the frame list the game draws from
+# (fruitbatAnimData.ts, sentryAnimData.ts) where there is one, else the sheet's own .json; each row names the clip(s) it plays in
+ANIM = json.load(open(sys.argv[3])) if len(sys.argv) > 3 else {}
 CREATURE = {'beetle': (9, 'enemy'), 'capuchin': (7, 'character'), 'crab': (6, 'enemy'), 'fruitbat': (8, 'enemy'), 'fruitbat-fly': (8, 'enemy'), 'fruitbat-w8': (8, 'enemy'),
             'howler': (7, 'character'), 'lavalizard': (9, 'enemy'), 'owl': (8, 'character'), 'piranha': (6, 'enemy'), 'sentry': (7, 'enemy'), 'soldier': (10, 'enemy'),
             'drake': (9, 'enemy'), 'golem': (7, 'enemy'), 'ironclaw': (10, 'enemy'), 'monarch': (8, 'enemy'), 'reaver': (6, 'enemy'), 'thornbark': (10, 'enemy')}
@@ -630,34 +632,32 @@ for sub in ('creatures', 'bosses'):
             continue
         nm = jf[:-5]
         d = json.load(open(A + f'w6to10/{sub}/{jf}'))
-        sheets = [s['file'] if isinstance(s, dict) else s for s in d['sheets']]
+        sheets = [s_['file'] if isinstance(s_, dict) else s_ for s_ in d['sheets']]
+        frames, seq, lst = d['frames'], d.get('seq', {}), f'{nm}.json'
+        if nm in ANIM:
+            frames, seq, lst = ANIM[nm]['frames'], ANIM[nm]['seq'], ANIM[nm]['ref']
         home, lay = CREATURE.get(nm, (8, 'enemy'))
-        seq = d.get('seq', {})
-        parts = []
-        for mv, frames in seq.items():
-            by = {}
-            for k in frames:
-                if k in d['frames']:
-                    by.setdefault(d['frames'][k].get('s', 0), []).append(k)
-            for si, fr in sorted(by.items()):
-                parts.append((mv + (f'@s{si}' if len(by) > 1 else ''), fr, si))
-        for mv, frames, si in parts:
-            p = A + f'w6to10/{sub}/' + sheets[si]
-            ws = [d['frames'][k]['w'] for k in frames if k in d['frames']]
-            hs = [d['frames'][k]['h'] for k in frames if k in d['frames']]
-            tot = sum(d['frames'][k]['w'] * d['frames'][k]['h'] for k in frames if k in d['frames'])
+        clips = {}
+        for mv, ks in seq.items():
+            for k in ks:
+                clips.setdefault(k, []).append(mv)
+        code = {'sentry': 'sentrySprite.ts:15 (7-5 Stone Sentries)', 'fruitbat': 'fruitbatAnimData.ts:4', 'fruitbat-fly': 'fruitbatAnimData.ts:9'}.get(nm, 'new slot: no sprite code reads it')
+        on = 260 if sub == 'bosses' else 90
+        for fn, f in frames.items():
+            p = A + f'w6to10/{sub}/' + sheets[f.get('s', 0)]
+            W, H = f['w'], f['h']
             shipref = ships(p)
-            code = {'sentry': 'sentrySprite.ts:15 (7-5 Stone Sentries)', 'fruitbat': 'fruitbatAnimData.ts:4', 'fruitbat-fly': 'fruitbatAnimData.ts:9'}.get(nm, 'new slot: no sprite code reads it')
-            W, H = max(ws), max(hs)
-            on = {'bosses': 260}.get(sub, 90)
-            kn = kb(p) * tot / max(1, img(p).size[0] * img(p).size[1])
+            kn = area_kb(p, W, H)
             ship = min(max(W, H), 2 * on)
-            f0 = d['frames'][frames[0]]
-            RECT[f'game/w6to10/{sub}/{nm}#{mv}'] = [p, f0['x'], f0['y'], f0['w'], f0['h']]
-            rows.append({'id': f'game/w6to10/{sub}/{nm}#{mv}', 'source': 'game:B2', 'file': f'{p}#{nm}.{mv}', 'kind': f'{nm} clip "{mv}" ({len(frames)} frames, 8 fps)',
+            mvs = clips.get(fn, [])
+            fid = f'game/w6to10/{sub}/{nm}#{fn}'
+            RECT[fid] = [p, f['x'], f['y'], W, H]
+            rows.append({'id': fid, 'source': 'game:B2', 'file': f'{p}#{fn}',
+                         'kind': f'{nm} frame {fn} (clip {", ".join(mvs) if mvs else "none: in the atlas, in no clip"}; frame list {lst})',
                          'w': W, 'h': H, 'walk_y': '', 'walk_x0': '', 'walk_x1': '', 'flat': '', 'float_class': 'flies' if re.search('bat|owl|monarch|fly', nm) else 'grounded',
-                         'world_best': str(home), 'worlds': f'{home} its own creature' + ('' if sub == 'bosses' else ''), 'no_fit': '; '.join(f'{w} not where it lives' for w in range(1, 11) if w != home),
-                         'made_thing': 'n', 'engine_slot': ('enemy sprite ' if lay == 'enemy' else 'animal sprite ') + code, 'footing': d.get('anchor', 'ax, ay per frame') if isinstance(d.get('anchor'), str) else 'ax, ay per frame',
+                         'world_best': str(home), 'worlds': f'{home} its own creature (where it lives in the story)', 'no_fit': '; '.join(f'{w} not where it lives' for w in range(1, 11) if w != home),
+                         'made_thing': 'n', 'engine_slot': ('enemy sprite ' if lay == 'enemy' else 'animal sprite ') + code,
+                         'footing': f'anchor ax {f.get("ax")}, ay {f.get("ay")} (' + (d.get('anchor') if isinstance(d.get('anchor'), str) and d.get('anchor') != 'meta' else 'the feet') + ')',
                          'layer': lay, 'on_screen_px': on, 'ship_px': ship, 'file_kb_now': round(kn, 1), 'file_kb_ship': round(kn * (ship / max(W, H)) ** 2, 1),
                          'draw_cost': f'1 blit a frame, part of clip sheet {os.path.basename(p)}', 'used_in': code if shipref else 'none (not imported)',
                          'status': 'in game' if shipref else 'ready (in src/assets, not imported: does not ship)'})
@@ -712,6 +712,7 @@ LOOK = [
     (r'w5-props#(armchair)', dict(layer='danger look', engine_slot='W5 soft chair that tugs him (w5Kit.ts:117 Chair, :139 chairPull): a lure, comfy on purpose'), None),
     (r'w5-props#(wrapped|teaTable|doilyStool|fernStump)', dict(layer='decor near', footing='foot = frame bottom', walk_y='', walk_x0='', walk_x1='', flat=''), None),
     (r'w5-props#silkSheet', dict(layer='danger look', engine_slot='W5 silk sheet: lingering in front wraps him faster (w5Kit.ts:39)'), None),
+    (r'#(fill|fills\d|fill-b)$', dict(layer='decor mid', footing='none: a soil fill tile (the body under a bank top), nothing stands on it', walk_y='', walk_x0='', walk_x1='', flat='', float_class='grounded (fill)'), None),
     (r'w10b#(crate|hanging-iron)', dict(layer='platform', footing='scan'), None),
     (r'(w\d+)#(end|ends\d)$', dict(kind='ground bank end (the soil edge where a bank stops)'), None),
 ]
