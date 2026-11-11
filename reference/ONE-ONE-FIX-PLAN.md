@@ -8,7 +8,7 @@ depends on them). Every fix has a roadmap number. Money: $75 at most before Matt
 ## What the players showed
 1. Every life lost on Normal was a pit under a raised piece: 7 of 8 players; w1-log-chain-rise 10 lives, w1-mushroom-chain-back 8,
    w1-log-chain 6. Practice does not cure it: the most-practised player still loses about 1 life per 2-3 runs.
-2. Taps are read as punches: 1-1 has nothing to punch, yet 475 of 693 punches were followed by a jump within 0.6 s, 9 of 9 players.
+2. Taps are read as punches: 1-1 has nothing to punch, yet 154 of 700 punches were followed by a jump within 0.6 s, 9 of 10 players (corrected 11-11 from 475; D38).
 3. No help exists for a player set back again and again: one Easy player was set back 152 times in one piece over 22.5 minutes
    (ONE player; the pattern is the child-bot's). stuckHelp watches walls only (engine.ts:4524).
 4. Put-backs cluster at the double-jump gaps (canopy-rungs-level, dip-double-teach, double-teach) on both settings.
