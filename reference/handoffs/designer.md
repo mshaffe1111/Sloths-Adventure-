@@ -100,8 +100,10 @@ Every ruling below cites the file and section where it's written in full.
 ## 4. Open items (none of these is finished; check each before assuming)
 
 - **From the 1-2 packet (11-11):**
-  - the packet has not been through its Critic; the lead's six calls are in DESIGN-1-2-notes.md §3;
-  - Engine work 1-2 stands on (packet §E): routing, the verdicts' scope, the thorn hollow as a typed drop, the note as 1-2's find;
+  - the lead's rulings on the six calls are in DESIGN-1-2-notes.md §3;
+  - Engine work 1-2 stands on: reference/packets/2026-11-11/ENGINE-1-2-routing.md (item 0 the 1-1 high-road ends, then the thorn
+    hollow, the verdict scope, the note as the find, routing last); the lead ruled a separate Engine packet, Easy thorns cost no
+    heart, the thorn line is a socket only; neither packet has been through its Critic;
   - help.md §5 (counting failures through a lost life, one system with assist.ts) is still unwritten, and 1-2 has no help until it passes;
   - NOT flown: a chain cap more than 66 px over the last or 36 px under it, a bounce plus air jump across a dip (#63's shape), a
     moving cap. 1-2's Normal doubles are 1 px under 1-1's (chain.md §1); fly again from about 1-5 as the early-stage help fades;

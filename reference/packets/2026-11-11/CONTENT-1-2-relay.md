@@ -81,7 +81,7 @@ that lays in band today: reference/specs/sims/chainlay12.ts). Each has 2-3 versi
 |---|---|---|---|
 | N1 | w1-rain-path | A | flat banks, very low roots (`w w r w`, `w r w r`); no ground end and no thorn in the first 1,300 px; `hint.1-2.follow` at its start; the snake cameo's decor socket, out of reach |
 | N2 | w1-root-walk | A | over two wide roots and a fallen log (`w r l w`, `w l r r`) |
-| N3 | w1-thorn-hollow-teach | T (`teaches: 'thorns'`), b | a flag; a fallen log bridging a thorn hollow edge to edge (he walks over, cannot fall in); Dot's thorn line at the bridge; then the FIRST chain: floor mushroom + 2 pillars 150-170 wide on both settings; a rest with a heart (Normal). Never mirrored. Versions: bridge first / a root arch first |
+| N3 | w1-thorn-hollow-teach | T (`teaches: 'thorns'`), b | a flag; a fallen log bridging a thorn hollow edge to edge (he walks over, cannot fall in); Dot's thorn line at the bridge; then the FIRST chain: floor mushroom + 2 pillars 150-170 wide on both settings; a rest with a flag. Never mirrored. Versions: bridge first / a root arch first |
 | N4 | w1-cap-hop | P b | one floor mushroom (edge 20-30 px before the lip) over a thorn dip 110-135 px wide on Normal, 90-110 on Easy, three times, hops between (`h` beats); the bounce alone crosses 148-158 from there (sims/out/normal-1-2-bdist.txt) and a plain jump also clears it (practice, not a block) |
 | N5 | w1-cap-run | M b | `ch(3)`, two hops, `ch(3)` at a run; Easy the same with wider pillars |
 | N6 | w1-root-hops | P g | big roots as hop walls and low arches (`r H r H`, `H r j H`) |
@@ -105,7 +105,7 @@ S is `maxPerStage: 1` and unique in the game: 1-1's log chain and mushroom chain
 | Where | Only under N3's first chain, N4, N5, N8, N10's high road and N14-N16. Never under a double gap, in the first 1,300 px, under a fork's low road, under a rest or within 300 px before a flag. |
 | Shape | A hollow: its floor 150-170 px under the lower lip; a bed of thorns 50-60 px tall on it, so thorn tips stay 90 px or more under the lip (a fall hurts, a walk past never does). Pillars are tall stumps standing on the hollow's floor, up through the thorns; nothing floats. |
 | What hurts | Touching the bed. NORMAL: one heart, the hurt blink and sound, set back on the ledge he left, before the floor mushroom (never past it); his last heart is a life lost (the engine's `heartFall`, engine.ts:7438-7460). EASY: the same set-back and blink, no heart lost (Easy's standing rule: a fall off land keeps hearts and lives, engine.ts:720-726). |
-| Hearts | Normal: one heart pickup on the first rest after each thorn section, at most 3 a roll (V21: hearts follow risk). Easy: none. |
+| Hearts | You lay none. The engine already puts a heart by every second flag on a stage where a fall costs a heart (stageGenerator.ts:2896-2904), so Normal gets them and Easy, where thorns cost none, does not (V21: hearts follow risk). Your part: a flag on the rest before and the rest after every thorn section, so a heart is never far from a hollow. Print the hearts and their x for the first-run seed. |
 | How it is shown | Painted art only, from the inventory (origin/t-engine-inventory: src/game/art/inventory/w1.json, layer `danger look`; files on origin/art-director reference/art/cut/): w1-thorn-row 379x235, w1-thorn-bramble-long 522x203, w1-thorn-pile 448x207, w1-thorn-bramble-a 391x194, w1-thorn-bramble-b 325x162, w1-thorn-mound 375x219, w1-thorn-tangle-flat 316x158 (all "ready", none placed yet). Drawn 56 px tall (`pokey_scale` 0.63 x Pokey's drawn 89.1 units, D41). Three or more different clumps in every hollow, no clump twice in a row, each overlapping the next by 15-25% so no bare floor shows, some flipped. The hollow's walls are the bank art. Pillars: the stump art (inventory `step` layer; props-atlas#stump is in game, HF1-stump-tall is ready and unused); caps: bounce#cap-w1. |
 | Typed and judged | Every hollow is a typed drop that ends in a heart and a set-back and looks like thorns; it must never be drawn as moss floor or as water (`drop.look-lies`). This type and its drawing are Engine's (§E). |
 | Hugging Face | NONE is needed to build: the seven thorn clumps above are painted and unused (two more, w1-thorn-ball and w1-thorn-tangle-big, are taller: for a hollow's ends). Named for the lead to take to Matt, one list, only if the first hollow's still fails the bar (§Show first): P1 a thorn-bed strip that tiles, 2048x384. Story props with no painted piece today (their sockets stay empty and are NAMED in the report, never stood in for): P2 the iron-collared snake cameo, P3 a hibiscus bloom, P4 a World 1 root arch big enough to walk under (the inventory's w1-hide-root-arch is 345x180, decor size). Prompts: notes §5. Do not launch jobs. |
@@ -140,9 +140,12 @@ landing on its near side, which would move S). Thorns cost no heart. No hearts l
 - Base: the passed t-int-1-1 head the lead names (camera and Dot timing may still move; neither touches layout). Rebase when named.
 - Numbers: bands.md §2 at t-designer-reach (flown on 1-2: singles the same, doubles 1 px lower than on 1-1; no lesser move gained a pixel, so every block keeps its 5 px: chain.md §1)
   and chain.md §3. A band you can't meet is a PUSHBACK, never a new number.
-- Engine work this build stands on (§E) is NOT yours. Until the lead names its head: lay every thorn hollow as a `soft` pit, keep
-  the list of them in one constant (`THORN_12`), and prove layout with raw builds (`buildGen2Stage`, as probe12.ts does). The seed
-  list waits for R-165.112's head (the lists leave the main chunk; it had 14 KB of room at C1's head).
+- Engine work this build stands on is NOT yours: reference/packets/2026-11-11/ENGINE-1-2-routing.md (§E below is its outline).
+  The order: Engine lands the thorn hollow, the verdict scope and the note first, and the lead names that head; you rebase and
+  turn your hollows from soft to thorn; when your raw builds are clean the lead names YOUR head to Engine, who routes 1-2 and
+  deletes the old one; then the seed list is built. Until the first head: lay every thorn hollow as a `soft` pit, keep the list
+  of them in one constant (`THORN_12`), and prove layout with raw builds (`buildGen2Stage`, as probe12.ts does). The seed list
+  also waits for R-165.112's head (the lists leave the main chunk; it had 14 KB of room at C1's head).
 - Words: only rows that exist in dotLinesData.ts (`hint.1-2.follow` :120, `hint.1-2.highlow` :121, `way.1-2` :148, `lock.sealed`).
   `hint.1-2.roots` and `hint.1-2.under` come with R-165.45; the thorn line is new and the story keeper's. Lay a `tip` socket for
   each with its id and leave the words to them. Never type a new line.
@@ -197,8 +200,8 @@ sees it before every hollow is dressed. If the answer is "not yet", the HF strip
    gen2 neighbour: no 20-second stretch alike on more than 1 roll in 5 (STAGE-RULES §2 "Sameness, for now"). The tool is
    tools/engine/stage.ts (the stage id is its first argument); prove every flag against its arg parsing before trusting a run (D32).
 6. Verdicts and seeds (after §E's head): `npx tsx tools/engine/seedlist.ts 1-2 --check` PASS on both settings, 100 seeds or more,
-   0 refusals by name; the lock per "What is shared"; the old 1-2 path deleted (w1Sections.ts '1-2', protoStage.ts `HAND_STAGES['1-2']`
-   and `CATCH_UPS` for 1-2) with a grep that shows nothing else read them; `#ctest` unchanged.
+   0 refusals by name; the lock per "What is shared"; `#ctest` unchanged. (Deleting the old 1-2 path is Engine's, in its item 4:
+   those files are not in your WRITE.)
 7. Played by the tier bots, 40 variants a tier a setting (`npx tsx tools/inspect/tierBots.ts --stage 1-2 --tiers child,middle,expert
    --seeds 1-40 --setting both`; they are calibrated on 1-1's testers only: say so). Must show: 0 rescues for middle and expert;
    expert minimum 140 s or more on each setting; the quota met on a plain run by middle on Normal (38 of 40 or more) and by child
@@ -219,7 +222,7 @@ sees it before every hollow is dressed. If the answer is "not yet", the HF strip
    (ET times from `date`: start, read-in, first build, show-first sent, layout done, verdicts green, bots, stills, report, every
    PUSHBACK), TURNOVER.md rewritten.
 
-## §E What Engine must land (not in your WRITE; the lead dispatches it; facts read at t-int-1-1@5dafe73b)
+## §E What Engine must land (an outline; the packet is ENGINE-1-2-routing.md, which wins where they differ; not in your WRITE)
 - E-a Route 1-2 to gen2: stageGenerator.ts:2871 (`gen2Roll11`), :2873, :2889-2893, :3099-3101 (`builtOnGen2`); testlink1_1.ts:62, :72,
   :76 (the seed pick takes a stage); buildAhead.ts:14; WorldMap.tsx:350; App.tsx:761; tools/engine/seedlist.ts:23 (`KITS`), :35, :38.
 - E-b Judge 1-2 on the flown arcs: reach.ts:83-97 (`judgedOnArcs`, `scopeOf`; Normal 1-2 reads the Normal 1-1 rows: chain.md §1),

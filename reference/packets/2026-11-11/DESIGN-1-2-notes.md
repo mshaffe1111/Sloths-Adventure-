@@ -37,7 +37,8 @@ reproduces) and the `chain` mode.
   `--setting` (:168-171); era.ts `--worlds`, `--stages`, `--rolls` (:76-86; not run on a gen2 World 1 stage by me: the builder proves it).
 
 ## 3. Calls for the lead (the packet builds either way; each has my pick)
-1. **Who does §E.** My pick: an Engine packet in parallel, on its own branch, while Content lays sections against raw builds
+1. **Who does §E.** RULED 11-11 (the lead): a separate Engine packet, ENGINE-1-2-routing.md, with the 1-1 fix as its item 0; calls 2,
+   3 and 5 accepted as written; call 4: Matt ships tonight's link with it named, fixed right after. What I had put: My pick: an Engine packet in parallel, on its own branch, while Content lays sections against raw builds
    (probe12 shows that works today). Routing lives in the files INT-1-1 is finishing (stageGenerator.ts, testlink1_1.ts): one owner
    there, not two (D40). The other way (one builder with those lines in its WRITE) is faster to dispatch and breaks the walls.
 2. **Easy and thorns.** My pick, written into the packet: Easy sets him back with the blink and sound and takes no heart (Easy's
@@ -62,7 +63,10 @@ normal seed 1025 w1-bank-stair-fork: thin piece x 11562-11795 y 662 holds nothin
 normal seed 1025 w1-mushroom-fork: thin piece x 17435-17635 y 564 holds nothing
 normal seed 1136 w1-bank-stair-fork: thin piece x 13629-13846 y 786 holds nothing
 ```
-(the same five on Easy). 4106, 1025 and 1136 are Matt's test-link seeds A, B and C. C1's REPORT §7 lists "a find" at those spots
+(the same five on Easy). Over all 200 listed seeds and both settings (`finds11.ts --all`, sims/out/finds11-all.txt): 610 fork
+sections laid, 540 bare end pieces on the three `gFork` forks (w1-mushroom-fork 180, w1-bank-stair-fork 196, w1-mushroom-fork-dip
+164), plus 14 thin pieces in w1-hollow-twoway not yet told apart from the engine's catch pieces. 4106, 1025 and 1136 are Matt's
+test-link seeds A, B and C. C1's REPORT §7 lists "a find" at those spots
 and w1.test counts sockets, not what the roll lays (LESSONS D19: a gate must call the same code the screen calls). R-165.108,
 Matt 11-11: "things that are worth value all over the place". Rule kept for 1-2: off-path spots are judged on the built stage.
 

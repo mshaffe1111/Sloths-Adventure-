@@ -22,6 +22,14 @@ Flown on Normal, 1-2 beside 1-1 (`flight.ts normal apex`, `rise`, `bdist`, with 
 | Bounce alone: apex, climbs | 197.6, 223 / 217 | the same | 0 |
 | Bounce + air jump: climbs block / thin | 317 / 309 | 316 / 307 | 1-2 px lower |
 | Bounce alone, level gap (mushroom at the lip) | 179 | 178 | 1 px |
+| Widest level gap, block far side: from 70 px before the lip / last ground frame / any timing | single hold 137 / 223 / 244; flick 128 / 213 / 239; Pad tap 77 / 163 / 184; double hold 292 / 379 / 409; flick 283 / 370 / 396; tap,tap 191 / 278 / 299 | the same, every figure | 0 |
+
+(`FLIGHT_STAGE=1-2 npx tsx reference/specs/sims/flight.ts normal dist`, and `ddist`; sims/out/normal-1-2-dist.txt, -ddist.txt.)
+
+**Rows for src/game/gen2/reach.ts, scope Normal 1-2** (climb block / thin, then the three gap figures; the gap figures are the Normal 1-1
+rows', the single hold's "any timing" kept at the 246 reach.ts designs to): single-hold 123 / 117; single-flick 123 / 116; single-tap 87 / 81; double-hold 213 / 207; double-flick 211 / 205;
+double-tap-tap 150 / 143; bounce 223 / 217, gap 178; bounce-air 316 / 307, gap 340. Source for each: this table and
+sims/out/normal-1-2-rise.txt, -bdist.txt.
 
 Cause: the second jump's help is 0.958 of 1-1's on stage 2 (`easeAssist(2)`). No lesser move gained a pixel, so every block keeps its
 5 px, and the taught moves lost 1-2 px against margins of 70 px or more. So **bands.md §2 holds on 1-2 as written**, both settings

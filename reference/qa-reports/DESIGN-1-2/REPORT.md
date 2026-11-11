@@ -32,12 +32,10 @@ Tables checked for broken code spans; times pasted from `date`.
 4. **The old brief's story source (story-briefs/1-2.md) is on none of the branches I read** (the lead's, t-int-1-1, engine-spec,
    engine-core): its line cites could not be re-read. The packet takes the story from BRIEF-1-2.md and the code.
 ## 4. Suggestions (ready packets)
-- **ENGINE-1-2-open:** the packet's §E, a-d, as written there (files and lines named). Done when `seedlist 1-2 --check` runs, a
-  thorn hollow costs one heart on Normal and none on Easy in a RealPlay test with the real `heartFall`, `drop.look-lies` covers the
-  thorn look, and lockall shows only 1-2 moved.
-- **CONTENT or INT fix, 1-1:** `offPathFilled` (w1.ts:1504) treats a `find` socket outside the required section as empty, so the
-  end of every `gFork` high road gets its petal; w1.test's off-path check reads `collectibles` on built rolls (sims/finds11.ts is
-  the red test today: 5 empty ends on seeds 4106, 1025, 1136, each setting). 1-1's list is re-proven after it.
+- **WRITTEN on the lead's word (11-11): reference/packets/2026-11-11/ENGINE-1-2-routing.md.** Item 0 the 1-1 high-road ends (red
+  check `npx tsx reference/specs/sims/finds11.ts --all`: 540 bare ends on the 200 listed seeds, both settings); 1 the thorn hollow
+  (typed, laid, hurt, drawn); 2 the verdict scope with 1-2's own flown rows (chain.md §1); 3 the note as the find; 4 routing and
+  the old 1-2 deleted, last. Each with file:line at t-int-1-1@fa5ad9d1, a done-test and its gates.
 - **DESIGNER help.md §5** before 1-2 reaches testers: 1-2 has thorns and no help for a stuck child.
 ## 5. Unresolved
 - The packet has not been audited cold (D34: its Critic comes next). The six calls for the lead: notes §3.
