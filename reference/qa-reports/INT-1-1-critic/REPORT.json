@@ -1,0 +1,40 @@
+{
+  "task": "INT-1-1",
+  "audited": "t-int-1-1@8cf55b8f (first run on 996d0c63; 1decad29 was superseded before it was flown)",
+  "status": "REJECT",
+  "violations": [
+    {
+      "file": "src/components/dot/DotGuide.tsx",
+      "line": 1277,
+      "rule": "help-lines.md §2 (one line as the step grows) and §4 (silent between rungs); helpLadder.ts:3 (the ladder is the ONE place that decides help in 1-1); STAGE-RULES §5b item 9",
+      "evidence": "8cf55b8f, browser, Easy, seed 982 w1-log-chain-rise, real walk-offs then standing still: 'Ooh, look! A step. Up you go.' is on screen 14.2 s after the engine sends it (upright, a set-back every 1.7 s), 14.0 and 12.6 s in two more runs; sideways at a 4 s pace the stuck helper says 'This way, Pokey! Try over here.' (dotGuideWatch.ts:146, help.stuck15) 2.5 s after the steps grow and the step line comes 7.8 s after. In the +1 s still Dot is flying in from the bottom edge and has not landed at +10 s. head-8cf55b8f/proof-step-*.json and .png, wait-walk.json",
+      "fix": "the stuck helper says nothing in 1-1 while the ladder is on; the ladder's line gets a perch it can land on at once; prove with proof.mjs LINE='A step' standing still (and wait.mjs), both ways"
+    },
+    {
+      "file": "src/game/engine.ts",
+      "line": 5677,
+      "rule": "STAGE-RULES §5b item 10 (motion is smooth: no snapping); PERFORMANCE-RULES (silky smooth); packet item 7 asked for the margin or the petal's height at that log",
+      "evidence": "per engine frame, sideways 915x412, seed 4106 (cam.mjs; before = 7dff5800): the bounce by the seed-perch log moves the view 39-42 px in ONE frame on 8cf55b8f (before: 10.8 at most); a double jump on flat ground 24 then 32 px in two frames (before: 8.7 at most), on any stage, since the code (5677, 5694) is not 1-1's. His drawn top clears the plate by -2 to 14 px, not the report's 22 (a 20 ms poll missed the frame). head-8cf55b8f/cam.json, before-cam.json",
+      "fix": "ease it (cap the view's step per frame near the old 11 px) or lift only that log's top margin; a per-frame trace before and after on 1-1 and one other world"
+    },
+    {
+      "file": "reference/qa-reports/INT-1-1/REPORT.md",
+      "line": 9,
+      "rule": "roles/README rules 7 and 10; LESSONS D29 (gates on the exact head)",
+      "evidence": "the report's suite (2,550 on b575da9), chunk bytes (3,981,614) and c1judge (HEAD 967376d5) are not 8cf55b8f's; line 11 and 24 say '22 px clear'; reference/handoffs/engine-core.md was not rewritten for the delta (no PAD_EDGE, `anyway`, LINE_WAIT_S or NO_POSE in it)",
+      "fix": "restate every number on the final head; rewrite engine-core.md §0c"
+    }
+  ],
+  "named_not_counted": [
+    "the seed fruit's top is 4-6 px under the HUD plate at the bounce's top (item d): the builder named it; the lead's call",
+    "rotation with the offer up was not flown (Playwright cannot rotate a phone context here)",
+    "every number is headless Chromium at 412x915 and 915x412, not a phone"
+  ],
+  "fixed_during_audit": [
+    "Dot's move line at 3 was never shown at a set-back every 2 s or less (996d0c63): fixed on 8cf55b8f, up 0.1 s after it is sent at every pace, both settings",
+    "help flights now run on the real loseLife and fail on a lostLife (helpLadder11.test.ts:46, helpSweep.ts:121)",
+    "the pad is gap - 100 (PAD_EDGE 50); the NO card is the mid-leap `rise`; t-content-c1@0fc0835a merged"
+  ],
+  "tests_added": ["src/game/helpLadderCadence.test.ts (red on 996d0c63, green on 8cf55b8f; the builder took it in and added the step line's)"],
+  "gates_on_8cf55b8f": "see REPORT.md"
+}
