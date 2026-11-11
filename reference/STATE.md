@@ -156,6 +156,10 @@
   for the "Flick up" repeat. Everything else in A2 checked fine (rungs flown with the real loseLife, Dot's lines word for word, suite
   2501/0, main chunk 4,171,195 B: only 23 KB under the 4 MiB limit, the next import breaks it). Defect D39 logged (the lead's ruling).
 - 11-11 4:47 AM ET: E1 DONE (t-engine-e1@7a4793b, 3/3, gates read alone); Critic session_01FhBbYMh5nZyXY5SEPjcVMg on AUDIT-ENGINE-E1.md.
+- 11-11 4:55 AM ET: HF LIST 1 REJECT (Critic session_01FhBbYNLAiTv8NfA3ccsCcL; it had sat 28 min on an HF Jobs approval, lead stopped
+  it: Critics never launch HF jobs): wrapfix.py cross-fades alpha (see-through ghosts at the wrap, worst P-03-b), stump-medium reads as a
+  lid. Passed: sizes, wrap RGB, pinkscan, spend $2.04, dist unchanged (185,432,195 B). Stairs not usable, palisade far-background only:
+  both to list 2. Attempt 2 sent to Content.
 - SPENT against the $75, read 11-09 9:33 PM ET (get_session cost_usd): the lead's own turns since 8:36 PM $22.90 ($59.58 lifetime
   less $36.68); Designer $12.77; afternoon Critics $8.50; Engine $8.32; analyst $5.39; delta Critic $3.43; Designer's Critic $2.23;
   analyst's Critic $1.55; the two-minute Opus Engine $0.42. TOTAL $65.51, with the Engine's Critic (session_01FhBbYMPMRnQdGzTReh4x3v,

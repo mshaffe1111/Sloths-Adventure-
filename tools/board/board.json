@@ -47,8 +47,8 @@
   },
   {
    "role": "Content",
-   "task": "Hugging Face picture list 1: 18 pieces, $2.04 of $6.50; Critic checking",
-   "status": "reported"
+   "task": "HF list 1: Critic found see-through smears at strip joins and a lid-like stump; attempt 2 fixing",
+   "status": "working"
   },
   {
    "role": "Story keeper",
