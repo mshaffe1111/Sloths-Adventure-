@@ -110,8 +110,10 @@ Every ruling below cites the file and section where it's written in full.
 ## 4. Open items (none of these is finished; check each before assuming)
 
 - **From the 1-2 packets (11-11):**
-  - the ENGINE packet PASSED the packet Critic (7ed328b6, two notes since written in); CONTENT attempt 5 (the mixed way down)
-    is with the Critic (the yield floor is 1 clean in 50 for now, the lead 11-11; R-165.120 raises it)
+  - both packets at attempt 5 are with the packet Critic: CONTENT for the mixed way down; ENGINE (it had PASSED at 7ed328b6)
+    rewritten for the lead's standing rule D43, 11-11: every engine item for ANY stage from data (a listed-stage table, a
+    `hurt` place flag with the world's `hurtFloor` row, a judged-stage table, brief fields), proven on 1-2, never a stage id
+    in engine code. Write every future engine packet that way from the first draft (the yield floor is 1 clean in 50 for now, the lead 11-11; R-165.120 raises it)
   - earlier rounds: (attempt 1: CONTENT 14 lines, ENGINE 6; attempt 2: 1 and 3; attempt 3: 1 and two notes; each answered in
     DESIGN-1-2-notes.md §9); the lead's rulings are all in notes §3, none open (bonus blooms; the ladder grows the lesson's own
     fallen log at the first chain, else the line alone; the double counts on the gen2-BUILT 1-2 only, `EARLY_DOUBLE` not

@@ -1,7 +1,7 @@
 # TASK 1-2 (R-165.11: build stage 1-2, The Petal Trail, on gen2, the way 1-1 was re-laid)   to: Content
 # model: the content tier (tools/team/models.json on the lead's branch)   effort: high   due: see "Time"; a safe-keeping push at least hourly
 Written by the Designer, 2026-11-11 5:03 PM ET; attempt 3: after the packet Critic's 14 lines (t-critic-1-2-packet@51fe547a), the lead's
-rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Attempt 4, 5:05 PM ET: the lead's rulings of 4:58 PM ET applied exactly. Attempt 5, 2026-11-11 5:24 PM ET: the lead's ruling of 5:10 PM ET on the Critic's one attempt-3 line (the hop step, @5d73c0da). Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
+rulings of 11-11, and the Critic's one attempt-2 line (the quiet line; @79f8e8b0). Attempt 4, 5:05 PM ET: the lead's rulings of 4:58 PM ET applied exactly. Attempt 5, 2026-11-11 5:24 PM ET: the lead's ruling of 5:10 PM ET on the Critic's one attempt-3 line (the hop step, @5d73c0da); 2026-11-11 5:30 PM ET: three data rows named for D43 ("Phases" 2, "Help"). Cites read at t-int-1-1@53bd446a. Proofs and every run: `reference/packets/2026-11-11/DESIGN-1-2-notes.md`.
 
 ## First, before any tool call
 `git fetch origin ccr-ca657d3c-n09zty t-design-1-2 t-designer-reach t-engine-inventory art-director` and the head the lead names.
@@ -185,8 +185,8 @@ in N4, N12 and either side of N23's island), pillars 150-170 wide against Normal
 flag: Easy widens a landing on its near side, which would move S). Thorns cost no heart. D rises at Easy's 128-132.
 
 ## Help (the lead's ruling, 11-11)
-The help ladder runs in 1-2 at N4's first chain only, on R-165.119's fixed ladder (it counts tries, not only falls); Engine turns it
-on (its item 7). Its line for a bounce piece already has words (helpLadder.ts:31). What it grows there (RULED, 11-11 4:47 PM ET):
+The help ladder runs in 1-2 at N4's first chain only, on R-165.119's fixed ladder (it counts tries, not only falls); Engine's
+item 7 makes the ladder read data, and YOUR rows turn it on: `help: 'marked'` on the brief, `help: { grows: 'show' }` on that piece. Its line for a bounce piece already has words (helpLadder.ts:31). What it grows there (RULED, 11-11 4:47 PM ET):
 the lesson's own fallen log laid across the hollow, natural and to Pokey's scale; if Engine cannot build that piece, the line
 alone. So N4's first hollow is laid with clear air at lip height from lip to lip (no bough or decor across it). Your test: the child bot on Easy never stalls
 more than 20 s at N4 on any listed seed. Testers do not get 1-2 until the thorn line has words (the lead's hold).
@@ -198,7 +198,7 @@ more than 20 s at N4 on any listed seed. Testers do not get 1-2 until the thorn 
    (levelCheck.ts:132-134), so every section with a D, B, V, d or X beat is swapped out as unreachable. Build and judge those
    sections with `FLOWN=1` in your own copy of the probe; they roll for real after Engine's push 2. Deliver: the first still.
 2. **After Engine's push 2** (the reach scope, the double counted, the node code reading `lessons`, the thorn hollow, the note, the
-   blooms, `KITS['1-2']`; push 1, the 1-1 fork ends, is the t-engine-11-followup round's): rebase; turn `THORN_12`'s hollows from `soft` to `thorn`; raw builds clean; then the seed list, built by
+   blooms, 1-2's row in the listed-stage table; push 1, the 1-1 fork ends, is the t-engine-11-followup round's): rebase; enter World 1's `hurtFloor` row in the manifest (`{ lesson: 'thorns', art: 'w1-thorn', depth: [150, 170], clearStart: 1300 }`), `help: 'marked'` on `briefs['1-2']` and `help: { grows: 'show' }` on N4's first-chain piece (Engine's items 2 and 7 read them: D43, nothing in engine code names 1-2); turn `THORN_12`'s hollows from `soft` to `hurt: true`; raw builds clean; then the seed list, built by
    the tool on raw builds (it calls `buildGen2Stage`, not the game's routing), on R-165.112's head.
 3. **After Engine's push 3** (routing, the old 1-2 deleted, help on N4): the tier bots, stills, clips, every gate, the report.
 
