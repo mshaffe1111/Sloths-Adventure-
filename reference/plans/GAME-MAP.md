@@ -14,6 +14,10 @@ stands still: you ride logs and pads that carry you, read traffic in the river l
 go out and things are asleep: you see only by glowworms, noise wakes the thorns, and Pokey learns to hang upside down from the roof.
 Every world after that adds one new move and at least two new rules of its world, and brings the old ones back harder.
 
+**The engine gets built once, then frozen** (section 10): one sprint of about 295 h (12-15 days of the team running, freeze around 11-23
+to 11-26, **my judgement**), after which every level is a plan plus laying, never new engine code. Laying the 86 generated stages is the
+long part (about 700 h, section 6).
+
 ---
 
 ## 1. The big picture: one ladder to hold in your head
@@ -419,10 +423,13 @@ story. **New rules:** lightning on a beat; gusts that tear you off unless you ho
 
 ---
 
-## 5. Engine build order: one world ahead (hours from CAPABILITY.md; mine marked)
+## 5. Engine build order, by world (hours from CAPABILITY.md; mine marked)
 
-The rule (CLAUDE.md, D40): foundations first, then the thing, then polish. **Each world's new pieces are built while the world before it
-is being laid**, and a piece that a planned job will replace waits.
+The rule (CLAUDE.md, D40): foundations first, then the thing, then polish. Matt, 11-11: "The plan was always to get the engine done and
+then things can be expedited." So the engine is ONE sprint (the full list is section 10) and then it is frozen. The phases below are the
+order that sprint builds things in, world by world, so World 1's laying can start as soon as the foundation and World 1's own pieces
+pass, while the sprint carries on with World 2's and later pieces. No piece is built twice, and a piece that a planned job will replace
+waits.
 
 | Phase | While this is laid | Engine builds (hours) | Running total |
 |---|---|---|---|
@@ -467,7 +474,7 @@ the first stage with a new piece goes slower. C1 laid on a finished brick pool, 
 | 8 | 16 | 8 x 8 + 8-4 kept x 4 = 68 | 16 | 3 | 8 | 3 | **114** |
 | 9 | 9 | 72 | 16 | 3 | 8 | 3 | **111** |
 | 10 | 22 | 72 | 16 | 3 | 8 | 3 | **124** |
-| **All** | **about 340** | **about 700** | **160** | **30** | **80** | **30** | **about 1,340 helper-hours** (range about 950-1,750) |
+| **All** | **about 340** (section 10 re-counts it line by line: 295-350) | **about 700** | **160** | **30** | **80** | **30** | **about 1,340 helper-hours** (range about 950-1,750) |
 
 **Plainly: this is a lot of work.** About half of it is laying stages, not engine. With the team running about five helpers at once
 (one Engine one world ahead, two builders laying, Content on art, the Critic), a world is roughly **25-30 hours of wall-clock time**, and
@@ -547,6 +554,17 @@ Puzzle rooms are hand-made bricks inside generated stages (STAGE-RULES §3: two 
    - (b) A few totems in normal stages from World 3 on.
    - (c) After launch.
 
+7. **The engine sprint (section 10): lay World 1 while it finishes, or wait for all of it?**
+   - (a) **Build the sprint in world order and start laying World 1 about day 4-5, once the spine and World 1's pieces pass; freeze when
+     the last line passes. Recommended:** the same engine and the same freeze, but levels start about a week sooner, and nothing laid
+     early is on a piece that changes later (World 1 only uses World 1's lines).
+   - (b) The whole sprint first, then lay everything.
+8. **The one-or-two-stage pieces (section 10, part C): cut them or build them?**
+   - (a) **Take the cheap way for C1-C8 and move the pick-a-card road (C9) after the freeze as its own job. Recommended:** saves about
+     55 h of engine for pieces only one or two stages use, and every stage still gets its twist.
+   - (b) Build them all in the sprint (about 65 h).
+   - (c) Go line by line.
+
 ---
 
 ## 9. Sources, and what I could not back
@@ -566,3 +584,106 @@ Puzzle rooms are hand-made bricks inside generated stages (STAGE-RULES §3: two 
 - **My judgement, not backed by a file:** every hidden stage's idea except Zipline Canopy, Under the Ruins and the Sunken Hollow; the
   "don't stop" rule; the glow trail; the two-parts-of-the-recipe neighbour rule; hours marked "mine"; the hours for hidden stages,
   guardian ports, art and review; the wall-clock estimate; "at most two builders a world".
+
+---
+
+## 10. The engine sprint list: build all of this once, then the engine is FROZEN
+
+Matt, 11-11: "it doesn't sound like we're ever going to stop building the engine." The answer is this list. It is every engine piece and
+rule that the 113 stages in this map need. When the last line passes, **the engine is frozen: bug fixes only**, and every level after
+that is a brief (the plan) plus laying (gen2 and its bricks), never new engine code. The trade, said out loud (D43): levels start later
+than if we built each one as we go, but nothing is hard-coded to one stage and nothing gets built twice.
+
+**Two rules for every line** (D43, R-165.123):
+- **"Works for any stage, proven on N":** each line's done-list names the stages it is proven on, at least two stages from different
+  worlds or directions (or every stage that uses it, if fewer). A piece proven on one stage only is not done.
+- **No stage id, seed or x position in engine code** (only in world data). The generality gate (line A1) fails the build if one appears.
+
+Hours: from CAPABILITY.md where it gives them (marked C), from the 1-2 engine packet where it gives them (marked P), else **a guess
+with a range** (marked G). "Lane" is who can run it at the same time as the others. "Used by" counts the stages in this map that need it:
+**anything only one or two stages use is marked CUT? and has a cheaper way named.**
+
+### A. Making the engine general (today much of gen2 works for 1-1 only, CAPABILITY §2)
+
+| # | Piece | What it makes general | Hours | Needs first | Lane | Used by | Proven on |
+|---|---|---|---|---|---|---|---|
+| A1 | Generality gate (R-165.123) | fails on a stage id, seed or x literal in engine code; known debt only shrinks | 2-4 (roadmap) | nothing | Engine 1 | all | a planted literal fails it; CI runs it |
+| A2 | Stage kit types (ADR-003) | one brief per stage: mission x travel x clock x rules x moves | done (t-architect-stagekit) | merge | | all | its tsc refusal test |
+| A3 | Travel as a mode (kit step 2) | right, left, up, down for the exit, checkpoints, progress, help "past", bots | 6-10 C | E0a and A2 merged | Engine 1 | all | 1-1 (right), 4-7 (down), a climb (up), a left stage |
+| A4 | Old special runs onto the one engine | Dot's flight, the slide, the lantern run, the chase, the tide become modes | 10-16 C | A3 | Engine 1 | 4-D, 7-4, 8-4, 1-8, 6-8 + 3 hidden | each of the five plays as before (lockall) |
+| A5 | Jump checks by brief (kit step 3) | reach judged by physics and setting, not "1-1"; new kinds: drop, climb, vine, swim, ride | 6-8 C | E0a merged | Architect, then Engine 2 | all | 1-1 unchanged + 1-2 + a climb |
+| A6 | Every move's arcs flown | drop, swing, glide, swim (fling and the vine leash with their pieces) | 8-16 C (2-4 a move) | nothing | Designer | all | each arc against the real engine at 30 fps |
+| A7 | gen2 lays every direction (kit step 4) | flow up, down and left from the brief | 8-12 C | A3 | Engine 1 | 27 generated up, down and left stages | an up, a down and a left stage, 50 rolls each |
+| A8 | Any stage routed through gen2 | the seed-list tool, the first-run lock and routing take any stage id, not a list of two | 4-8 G (1-2's routing alone was 3-5 P) | A5 | Engine 2 | all 86 | 1-2 and one stage of another world |
+| A9 | Generator yield (R-165.120) | fresh-seed clean rate measured per stage, the refusing rules named, raised to a target | 4-8 (roadmap) | A5 | Designer + Engine 2 | all 86 | 1-1 and 1-2 above the target |
+| A10 | Falls and hearts for every stage | soft, deadly and heart-cost falls (1-2's thorn hollow), each with its own look from the world kit; hearts follow risk by world band | 6-10 G (1-2's one fall end was about 4-6 P) | A5 | Engine 2 | all | a soft, a deadly and a thorn fall in two worlds |
+| A11 | Help ladder for any stage | turned on from the brief; "past" read from travel; its step art by world from the inventory | 4-6 C | A3 | Engine 3 | all | 1-1 + a climb + a World 2 stage |
+| A12 | Bots for any stage | seeds per stage, progress by travel | 3-5 C | A3 | Engine 3 | all | the first-timer bot on a climb and a left stage |
+| A13 | One brick library across worlds | bricks picked by the inventory's engine slot; inventory layers for push, break, switch, moving, crosser | 5-10 C | nothing | Engine 3 | all | one brick laid in two worlds' art |
+| A14 | One clock | every timer (zones, rocks, thorn vines, sluices, lifts) reads one clock with a warning phase; Easy never faster | 4-6 G | A2 | Engine 3 | 40+ | the rocks and the tide on the one clock, unchanged |
+| A15 | Rewards everywhere | the off-road reward count (R-165.108), golden cacao and guarana, the hidden-stage unlock (R-165.109) | 5-9 (roadmap) | nothing | Engine 3 | all + 10 hidden | two worlds, a hidden stage opened |
+| A16 | Goal kinds | "bring N home" and the goal clock | 7-11 C | A2 | Engine 3 | 2-3, 2-8, 4-8, 5-3, 5-5, 7-7 | 2-3 and 5-3 |
+| | | **Part A total** | **about 110 h** | | | | |
+
+### B. Shared moves and mechanics (each is a brick with its fairness check, its help step and its art slot)
+
+| # | Piece | Hours | Needs first | Used by | Proven on |
+|---|---|---|---|---|---|
+| B1 | Crumble and regrow, times per piece | 1-2 C | nothing | 1-4, 7-1, 7-2, 7-6, 9-3, 9-7 + more | 1-4 and 7-1 |
+| B2 | Drop traps (shake a vine, cut a tendril, knock a stone onto a predator) | 6-10 C | A13 | 1-3, 2-5, 3-3, 7-5, 9-6 | 1-3 and 3-3 |
+| B3 | Crossers and lanes (things crossing on a beat; ride lanes) | 8-12 C | A14 | 1-8 (or 2-x), 2-1, 2-4, 2-9 + more | a branch lane and a river lane |
+| B4 | Moving platforms in gen2 (side, up-down, point to point) | 4-8 C | A5 | most of World 2 on (STAGE-RULES §0.4) | 2-1 and 2-6 |
+| B5 | Things on a beat (sinking pads, snap-jaw stones, lit-only branches, crust floors) | 4-6 C, then 1-3 each | A14 | 2-2, 2-5, 8-2, 9-7 | 2-2 and 9-7 |
+| B6 | Followers that come home with you | 10-16 C | A3 | 2-3, 2-8, 4-8 (+ moths) | 2-3 and 4-8 |
+| B7 | The vine leash and tie-off posts (changes reach) | 12-20 C | B6, A5 | 5-5, 5-8, 5-9, 8-8, 10-7 | 5-5 and 8-8 |
+| B8 | One meter (light, heat, stillness, the jar) | 4-6 C | nothing | World 3, 5, 8, 9 stages | 8-4 unchanged + a World 9 heat stage |
+| B9 | The dark, read fairly (every gap lit at least 1 s ahead, STAGE-RULES §4) | 3-5 G | B8 | World 3, 6-6, World 8 | 3-1 and 8-1 |
+| B10 | Noise: loud landings, sleepers that wake | 5-9 C+G | nothing | 1-7, 3-2, 3-5, 3-9, 9-4 (5-7 built) | 1-7 and 3-5 |
+| B11 | Shadow and gaze sweeps | 2-4 C | B10 | 1-7, 4-5, 9-4 | 1-7 and 4-5 |
+| B12 | Hanging under (R-160.1; needs the hold decided, R-165.81) | 10-16 C | A5, A6 | 3-2 on, about 10 stages | 3-2 and 10-6 |
+| B13 | Swing and fling (let go at the top) | 4-8 G | A6 | 1-6 (swing), 8-3, 8-5, 8-9, 9-3, 10-6 | 1-6 and 8-3 |
+| B14 | Water anywhere, currents | 6-8 C | A5 | 2-x (pits stay water), World 6, 10-7 | 6-3 and 10-7 |
+| B15 | Diving under (deep) | 10-20 C, high risk | B14 | 6-7, 6-9, the Sunken Hollow | 6-7 and the Sunken Hollow |
+| B16 | Rising water and lava in gen2 | 3-5 C | A7 | 2-8, 6-8, 9-2 | 2-8 and 9-2 |
+| B17 | Wind, updrafts, falling rocks as bricks | 4-8 G | A14 | World 4, World 10 | 4-2 and 10-3 |
+| B18 | Breaking stone (blocks, pillars, ceilings) | 8-12 C | A13 | 7-5, 7-8, 9-6, 10-7 + rooms | 7-5 and 9-6 |
+| B19 | Food chain (predator chases predator) | 6-10 C | A13 | 3-3, 6-5, 8-8, 9-6 | 6-5 and 8-8 |
+| B20 | Two roads, over and under | 4-8 C | A7 | 1-5, 6-1 + any fork | 1-5 and 6-1 |
+| B21 | The hold rule (R-2.7, R-146.5) | 6 (roadmap) | the hold decided | 10-3, 10-4, 10-8, the General | 10-3 and the General |
+| B22 | Don't stop (stillness) | 2-4 G | B8 | 5-1, 5-2 | 5-1 and 5-2 |
+| B23 | Glide arcs and vent lift as bricks | 3-6 G | A6 | World 4, 8-6, 9-5 | 4-2 and 9-5 |
+| | **Part B total (keep list)** | **about 175 h** | | | |
+
+### C. Used by one or two stages: candidates to CUT or simplify (Matt decides; question 8)
+
+| # | Piece | Hours | Used by | The cheaper way |
+|---|---|---|---|---|
+| C1 | A pursuer that copies Pokey's path | 4-12 C | 1-9 only | 1-9's boa uses drop traps and the lure (B2, B19) instead |
+| C2 | The zipline | 4-6 C | World 1's hidden stage only | the rope (built) at a slope, with the slide's camera (A4) |
+| C3 | Out and back where the stage CHANGES on the way back | 6-10 C | 2-7 only | 2-7 runs back left on the same stage (A3 is enough) |
+| C4 | A true auto-scroll camera | 4-6 C | The Rapids, Up the Vent | rising water or the chase pushes from behind (A4, B16) |
+| C5 | A steerable rising ride | 4-8 C | Up the Falls, Up the Vent | the vent lift that exists (glide.ts), in a tall shaft |
+| C6 | A find that changes the room | 3-6 C | 7-3 only | the puzzle kit's gates wired all/any (built) |
+| C7 | Counting stepped-on platforms (the bloom) | 3-5 C | The Wilted Garden only | a harvest of bloom-flowers (built goal) |
+| C8 | Moths that act | 6-10 C | The Moth Lights only | moths as followers (B6) that carry a light (B8): 1-3 h |
+| C9 | The pick-a-card road (R-165.98) | 12-20 C, high risk | Pokey's Own Road only | keep, but last, after the freeze line, as its own job (Matt wants it, 11-11) |
+| | **C1-C8 the cheap way, C9 moved after the freeze** | **about 9 h instead of about 65 h** | | |
+
+### The total, the order and a realistic end date
+
+- **Total: about 295 h with the cuts (A 110 + B 175 + the cheap ways 9), about 350 h with every C line built in full** (range about
+  250-450 h). It is the same work as sections 5 and 6, re-counted line by line with the generality pieces added; use this number.
+- **What runs at the same time** (ADR-003: mechanic pieces never touch the kit's files): **Engine 1** the spine A1, A3, A7, A4 (serial,
+  about 30-50 h); **Engine 2** the checks A5, A8, A9, A10 (serial, about 20-35 h); **Engine 3** A11-A16, then B lines in world order;
+  **Designer** A6 and each piece's brief; **Critic** proves each line on its N stages. B lines can also run on Engine 1 and 2 once their
+  spines are done. The only hard waits: A3 and A5 need E0a and A2 merged first (ADR-003).
+- **Critical path:** E0a and A2 merge, then A3, A7, A4 (about 30-50 h of one helper), with A5 to A10 beside it. Everything in part B
+  hangs off A3, A5, A13 or A14.
+- **Realistic end date (my judgement):** three Engine helpers at about 12 hours a day each is about 36 helper-hours a day; with Critic
+  rounds and merge waits counted as a third of that lost (1-1's C1 spent about 2 h 15 m of its 6 h 04 m after its first report, in review
+  rounds and fixes, STATE.md 11-11), about 24 useful hours a day. 295-350 h is then **12 to 15 days** of the team running. Started 11-12,
+  **the freeze lands around 11-23 to 11-26**;
+  allow to the end of November for the misses we cannot see yet. World 1's laying can start about day 4-5, once the spine and World 1's
+  own pieces (B1, B2, B10, B11, B13, B20) have passed.
+- **Then the freeze:** a new idea after the freeze waits for the next game, or for a planned "engine window" Matt opens on purpose.
+  Laying the 86 generated stages (about 700 h, section 6) is the long part, and it runs on a frozen engine.
