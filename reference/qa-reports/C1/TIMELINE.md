@@ -6,3 +6,4 @@
 - 07:20 (`date`) first full lay pass in (bands entered; chains single; 5 bounce sections out of 1-1); probe 8/120 clean, band.out/lesser gone but two-answers
 - 07:35 layout frozen for the list; seedlist build started (4 workers, 1..90000)
 - 07:38 E0a moved to attempt 5 (96dd2fd9, not yet named): list build on cf0b7752 stopped, branch rebased onto 96dd2fd9 to build the list on the newest rules; lead's notes read (judge tools come from t-content-c1-tests; progress stills hourly)
+- 07:55 relay test (b)/(c) findings fixed in the layout (edges, fork roads, perch); full list build restarted
