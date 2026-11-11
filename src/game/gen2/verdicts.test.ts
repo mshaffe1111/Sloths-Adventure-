@@ -262,12 +262,13 @@ import { buildGen2Stage } from './pipeline.ts';
 import { unreachablePickups } from '../petalPass.ts';
 
 const overlaps = (gs: Array<[number, number]>, x0: number, x1: number) => gs.filter(([a, b]) => a < x1 && b > x0);
-test('floorless (the lead\'s ruling, 11-11): a slot is closed only by a solid piece at its lip level (top within 10 px, or one plugging the lip) across its width with no floor under it to pass in by; seed 172\'s deck is a real hole, seed 476\'s stone plugs its slot', () => {
+test('floorless (the lead\'s ruling, 11-11): a slot is closed only by a solid piece at its lip level (top within 10 px, or one plugging the lip) across its width with no floor under it to pass in by; seed 172\'s deck is a real hole, seed 476\'s stone plugs its slot, seed 323\'s 23 px opening is no drop', () => {
   const b = (seed: number) => buildGen2Stage({ config: c11, kit: w1World(), seed, difficulty: 'normal' });
   assert.deepEqual(overlaps(floorlessGaps(b(476)), 22458, 22518), [], 'seed 476 x22458..22518: stone 122 (811-931) plugs the 882 lip');
   assert.ok(overlaps(floorlessGaps(b(172)), 30784, 31835).length > 0, 'seed 172 x30784..31835: off block 146 (906) he goes under the 838 deck: a real hole');
-  // (seed 323 x27200..27273: branch 128's top 1005 is 22 px under one lip, 46 over the other: by the ruling it does not close the slot, a fall)
-  assert.ok(overlaps(floorlessGaps(b(323)), 27200, 27273).length > 0, 'seed 323: by the ruling, a fall');
+  // (seed 323 x27200..27273: branch 128 (top 1005) leaves a 23 px opening to log 127; an opening under his body width is no drop: the
+  // lead's second line on the ruling, 11-11)
+  assert.deepEqual(overlaps(floorlessGaps(b(323)), 27200, 27273), [], 'seed 323: a 23 px opening, not a fall');
   // (planted: a piece at lip level closes the slot to 23 px; the same piece with a lower floor beside it under the slot does not)
   const atLip = [P(1, 0, G, 1000), P(2, 1073, G, 1000), { ...P(3, 900, G + 4, 150), height: 24 }];
   assert.deepEqual(floorlessGaps({ platforms: atLip }), [], 'closed at lip level to 23 px');

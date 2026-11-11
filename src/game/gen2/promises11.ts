@@ -24,21 +24,20 @@ interface Built { platforms: Platform[]; heartFalls?: Zone[]; waterY?: number; c
 export const BODY_W = { px: 32, source: 'the Critic, E0a attempt 2 (seed 323 Normal x27200..27273)' } as const;
 
 /**
- * World 1's floorless slots he can really fall into (w1Pits 'fall' gaps; the lead's ruling, 11-11, on the Critic's flight). A slot is
- * closed only where a solid piece lies AT its lip level: its top within 10 px of a lip (the slot's two edge tops), or plugging it (its top
- * at or above a lip and its foot below it). A piece he can pass under is no closure: one over a lower floor inside the slot (seed 172:
- * off block 146, top 906, he walks under the 838 deck). The slot is a fall when the widest part left open is BODY_W or wider.
+ * World 1's floorless slots he can really fall into (w1Pits 'fall' gaps; the lead's ruling, 11-11, on the Critic's flight). A piece over
+ * the slot closes the part it covers unless he can get under it: its top more than 10 px above the slot's upper lip (he walks under it
+ * from the lip), or a floor inside the slot more than 10 px under it (seed 172: off block 146, top 906, he walks under the 838 deck). A
+ * piece at lip level (top within 10 px) or plugging it closes it. Then the widest part left open: under BODY_W, his body cannot drop
+ * through, no fall (seed 323: branch 128 leaves 23 px); BODY_W or wider, a fall.
  */
 export function realFalls(platforms: readonly Platform[]): ReturnType<typeof findW1Pits> {
   return findW1Pits(platforms).filter((q) => {
     if (q.kind !== 'fall') return false;
     const solid = platforms.filter((p) => p.type === 'solid' && !p.broken && p.x < q.x1 && p.x + p.width > q.x0);
     const edge = platforms.filter((p) => p.type === 'solid' && (Math.abs(p.x + p.width - q.x0) <= 2 || Math.abs(p.x - q.x1) <= 2)).map((p) => p.y);
-    const lips = [q.top, ...edge];
-    const atLip = (p: Platform) => lips.some((L) => Math.abs(p.y - L) <= 10 || (p.y <= L + 10 && p.y + p.height >= L));
-    // (a floor inside the slot more than 10 px under a piece lets him in under it)
-    const under = (p: Platform) => solid.some((f) => f !== p && f.y > p.y + 10 && f.x <= q.x1 && f.x + f.width >= q.x0);
-    const cov = solid.filter((p) => atLip(p) && !under(p)).map((p) => [Math.max(q.x0, p.x), Math.min(q.x1, p.x + p.width)] as const).sort((a, b) => a[0] - b[0]);
+    const upper = Math.min(q.top, ...edge);
+    const passUnder = (p: Platform) => p.y < upper - 10 || solid.some((f) => f !== p && f.y > p.y + 10);
+    const cov = solid.filter((p) => !passUnder(p)).map((p) => [Math.max(q.x0, p.x), Math.min(q.x1, p.x + p.width)] as const).sort((a, b) => a[0] - b[0]);
     let at = q.x0, open = 0;
     for (const [a, b] of cov) { open = Math.max(open, a - at); at = Math.max(at, b); }
     open = Math.max(open, q.x1 - at);
