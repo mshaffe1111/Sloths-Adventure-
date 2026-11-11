@@ -307,3 +307,7 @@ methods/release.md plus its gaps. The player-text check of 874f11f6: the A2 help
 asked for before the PR: the pad coach (CoachOverlay pad.jump) still says "Tap it again in the air for a double jump", while Dot's pad
 help says "hold Jump again in the air". That is two channels saying two things. Land R-165.57's text in the candidate. Still to come to
 me: the whatsNew entry, and any other changed player string, before the PR.
+**0.9.6 What's New: approved at 5:44 PM ET with 2 word changes.** Line 2 becomes "Play it again and the paths change, so each run is a new
+one." (the first-ever run is fixed, FIRST_RUN_11; 200 proven layouts can repeat; 1-1 is a run, not a climb). Line 3 becomes "Stuck on a
+jump? Dot can help with a little step up." (the help covers all three jump kinds). The title, lines 1 and 4, R-165.57's coach text and
+the A2 lines are approved as sent.
