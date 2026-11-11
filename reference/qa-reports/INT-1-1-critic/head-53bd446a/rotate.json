@@ -1,0 +1,248 @@
+{
+ "port": {
+  "errs": [],
+  "before": {
+   "w": 412,
+   "h": 915,
+   "card": [
+    16,
+    349,
+    380,
+    217
+   ],
+   "yes": [
+    78,
+    427,
+    120,
+    120
+   ],
+   "no": [
+    214,
+    427,
+    120,
+    120
+   ],
+   "say": [
+    33,
+    366,
+    346,
+    49
+   ],
+   "asking": true,
+   "paused": true,
+   "canvas": [
+    0,
+    0,
+    412,
+    915
+   ]
+  },
+  "turned": {
+   "w": 915,
+   "h": 412,
+   "card": [
+    198,
+    128,
+    520,
+    156
+   ],
+   "yes": [
+    445,
+    145,
+    120,
+    120
+   ],
+   "no": [
+    581,
+    145,
+    120,
+    120
+   ],
+   "say": [
+    215,
+    180,
+    218,
+    49
+   ],
+   "asking": true,
+   "paused": true,
+   "canvas": [
+    0,
+    0,
+    915,
+    412
+   ]
+  },
+  "ok": {
+   "cardInside": true,
+   "yesInside": true,
+   "noInside": true,
+   "stillAsking": true
+  },
+  "back": {
+   "w": 412,
+   "h": 915,
+   "card": [
+    16,
+    349,
+    380,
+    217
+   ],
+   "yes": [
+    78,
+    427,
+    120,
+    120
+   ],
+   "no": [
+    214,
+    427,
+    120,
+    120
+   ],
+   "say": [
+    33,
+    366,
+    346,
+    49
+   ],
+   "asking": true,
+   "paused": true,
+   "canvas": [
+    0,
+    0,
+    412,
+    915
+   ]
+  },
+  "afterNo": {
+   "asking": false,
+   "paused": false,
+   "offer": false,
+   "pm": false
+  }
+ },
+ "land": {
+  "errs": [],
+  "before": {
+   "w": 915,
+   "h": 412,
+   "card": [
+    198,
+    128,
+    520,
+    156
+   ],
+   "yes": [
+    445,
+    145,
+    120,
+    120
+   ],
+   "no": [
+    581,
+    145,
+    120,
+    120
+   ],
+   "say": [
+    215,
+    180,
+    218,
+    49
+   ],
+   "asking": true,
+   "paused": true,
+   "canvas": [
+    0,
+    0,
+    915,
+    412
+   ]
+  },
+  "turned": {
+   "w": 412,
+   "h": 915,
+   "card": [
+    16,
+    349,
+    380,
+    217
+   ],
+   "yes": [
+    78,
+    427,
+    120,
+    120
+   ],
+   "no": [
+    214,
+    427,
+    120,
+    120
+   ],
+   "say": [
+    33,
+    366,
+    346,
+    49
+   ],
+   "asking": true,
+   "paused": true,
+   "canvas": [
+    0,
+    0,
+    412,
+    915
+   ]
+  },
+  "ok": {
+   "cardInside": true,
+   "yesInside": true,
+   "noInside": true,
+   "stillAsking": true
+  },
+  "back": {
+   "w": 915,
+   "h": 412,
+   "card": [
+    198,
+    128,
+    520,
+    156
+   ],
+   "yes": [
+    445,
+    145,
+    120,
+    120
+   ],
+   "no": [
+    581,
+    145,
+    120,
+    120
+   ],
+   "say": [
+    215,
+    180,
+    218,
+    49
+   ],
+   "asking": true,
+   "paused": true,
+   "canvas": [
+    0,
+    0,
+    915,
+    412
+   ]
+  },
+  "afterNo": {
+   "asking": false,
+   "paused": false,
+   "offer": false,
+   "pm": false
+  }
+ }
+}

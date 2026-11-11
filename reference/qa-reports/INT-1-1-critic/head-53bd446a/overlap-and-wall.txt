@@ -1,0 +1,7 @@
+node overlap.mjs 5305 <setting> <way> <line> on 53bd446a (seed 982 w1-log-chain-rise):
+easy land A.step: rocksOnScreen 3, bubble on a grown step median 0 max 0 (43 settled samples)
+easy port A.step: rocksOnScreen 2, bubble on a grown step 0
+normal land / port Run.first: bubble on Pokey 0
+
+node wall.mjs <port> <setting> (he is at the w1-double-teach wall, rise 132-137 px, 40 s, no set-back; MODE= jump | stand | walk):
+8cf55b8f and fa5ad9d1, Easy and Normal, all three: Dot says nothing; no ladder count. The same before and after the stuck helper was quieted.

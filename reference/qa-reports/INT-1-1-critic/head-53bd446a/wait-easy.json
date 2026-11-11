@@ -1,0 +1,146 @@
+{
+ "easy-easy-W0": {
+  "cycle": 1.64,
+  "sentAt": [
+   [
+    14.4,
+    "Run first, t",
+    ""
+   ],
+   [
+    22.7,
+    "Run first, t",
+    "true"
+   ],
+   [
+    22.7,
+    "Ooh, look! A",
+    ""
+   ],
+   [
+    31.5,
+    "Ooh, look! A",
+    "true"
+   ]
+  ],
+  "moveLine": [
+   14.5,
+   8.2
+  ],
+  "stepLine": [
+   22.7,
+   6.6
+  ],
+  "all": [
+   "14.5 Run first, then flick up and forward!",
+   "22.7 Ooh, look! A step. Up you go."
+  ],
+  "backs": [
+   11.2,
+   12.8,
+   14.4,
+   16.1,
+   17.8,
+   19.4,
+   21.1,
+   22.7
+  ],
+  "offerUp": false
+ },
+ "easy-easy-W600": {
+  "cycle": 2.06,
+  "sentAt": [
+   [
+    13.8,
+    "Run first, t",
+    ""
+   ],
+   [
+    22.6,
+    "Run first, t",
+    "true"
+   ],
+   [
+    24.1,
+    "Ooh, look! A",
+    ""
+   ],
+   [
+    32.9,
+    "Ooh, look! A",
+    "true"
+   ]
+  ],
+  "moveLine": [
+   13.9,
+   9.1
+  ],
+  "stepLine": [
+   24.2,
+   6.5
+  ],
+  "all": [
+   "13.9 Run first, then flick up and forward!",
+   "24.2 Ooh, look! A step. Up you go."
+  ],
+  "backs": [
+   9.7,
+   11.7,
+   13.8,
+   16,
+   18,
+   20,
+   22.1,
+   24.1
+  ],
+  "offerUp": false
+ },
+ "easy-easy-W2000": {
+  "cycle": 3.87,
+  "sentAt": [
+   [
+    18,
+    "Run first, t",
+    ""
+   ],
+   [
+    26.8,
+    "Run first, t",
+    "true"
+   ],
+   [
+    37.3,
+    "Ooh, look! A",
+    ""
+   ],
+   [
+    46.1,
+    "Ooh, look! A",
+    "true"
+   ]
+  ],
+  "moveLine": [
+   18,
+   9.3
+  ],
+  "stepLine": [
+   37.5,
+   6.4
+  ],
+  "all": [
+   "18 Run first, then flick up and forward!",
+   "37.5 Ooh, look! A step. Up you go."
+  ],
+  "backs": [
+   10.2,
+   14.1,
+   18,
+   21.9,
+   25.8,
+   29.6,
+   33.5,
+   37.3
+  ],
+  "offerUp": false
+ }
+}
