@@ -667,3 +667,5 @@ lines); Matt sees them in the release.
 - 2026-11-12 6:46 PM ET, Matt: improvising is fine ("talking squirrels... sloths that run, jump, punch, kick") but "keep it where it makes
   sense. A banana and other things make more sense to me." The nature check's test is "does it make sense there to a player" (bananas yes,
   pears no); written into TEAM.md's bar.
+- 2026-11-12 6:47 PM ET, Matt: "we could also use multiple [fruit] just to keep it spruced up a little bit." R-165.169 (fruit variety:
+  several rainforest fruits as pickups/dressing; inventory first, then HF for missing art; after 0.9.7).
