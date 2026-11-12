@@ -512,3 +512,8 @@ lines); Matt sees them in the release.
   shared draw causes fixed with planted tests (WebP edge bleed hairlines every 600 units, the floor lip under raised banks = R-165.146,
   1-1's dip-pocket soil baked, the low-log band = backdrop rows stretched over the chasm, now a soft fade to dark). R-165.129 stays open
   only for a PAINTED chasm depth (a later Hugging Face call). Retired.
+- 2026-11-12 1:20 PM ET: PROOF-1 delta on t-int-2@91af3475: all 5 violations FIXED and re-proven by the Critic; REJECT on one: NOT_IN_CI
+  (ciTests.test.ts:19) can grow (law 5: a known list must be shrink-only with an owner). Fix to INT-2: NOT_IN_CI into knowncheck's LISTS,
+  owner R-165.143; plus R-165.152 (plugin guard hole) and R-165.153 (roster.ts logic under a data exemption: the lead's 12:00 ruling was
+  too broad). PROOF-1 kept for a one-item re-check. Still unproven for 0.9.7: the guardian fight to its end without a harness; 30 fps on
+  a real phone (Matt).
