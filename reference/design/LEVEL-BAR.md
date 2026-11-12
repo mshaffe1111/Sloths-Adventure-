@@ -88,3 +88,13 @@ is with ART-W1). D11 2, D12 1 (a rope he cannot use yet is the last thing he pas
 24 rolls are the arc on both settings; no seed list yet), E14 1 (the bots finish it; the first-timer bots miss the first vine;
 flown rows not marked judged). **Not shippable to main yet: one 0 (the painted traps). To Matt's test link tonight: yes, said as
 a stand-in.**
+
+## Scoring 1-3 on F13's final head (a090d7d3, 11-12 evening, honest)
+A1 2, A2 2, A3 2, A4 2 (its own pieces and now its own sky: the repainted sunrise). B5 1 (P13's bots, 40 seeds, c925d4e6; no roll
+moved from b39cd468 to the final head: medians 135.8-149.3 s on every tier, none under 2:05; but the kid bot strands on 7 of 40 Normal seeds at the
+finale's awake bare-log snake, 11-12 of 13: P13 calls it a bot limit, not yet confirmed), B6 1 (the game's own flags and hearts), B7 2.
+C8 2, C9 1 (sideways the first sapling's crown tucks behind the goal sign's end: ART-W1's named spot; nothing that matters is
+behind it), C10 2 (every trap piece and the way out's vine and trees are painted). D11 2, D12 1 (by ruling: a vine he cannot use yet
+is the last thing he passes). E13 2 (P13's seed list of 100, `seedlist 1-3 --check`), E14 1 (every gate green on the exact head
+but one: yield.test's 1-1 floor, red on t-int-2 itself; the lock: only 1-3 moved). **No 0. Three (must) lines at 1 (B5, C9, E14),
+each named with its owner: not shippable to main by this bar's own rule yet; to Matt's test link: yes.**
