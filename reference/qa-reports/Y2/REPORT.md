@@ -34,9 +34,10 @@ high-walk-up 1; every one a petal row on a log) or an idle mushroom (drop-bounce
 2. No verdict, threshold, band, flight table or STAGE-RULES number changed: `git diff 91af3475 --stat -- verdicts*.ts reach.ts
    promises11.ts landings.ts landFlights.data.ts physics.ts STAGE-RULES.md yield.test.ts` = landings.ts +60, 0 lines removed (the new
    function only). PASS
-3. `seedlist.ts 1-1 --check`: PASS (258 seeds, verdicts refuse 0, first run no drift). No list re-recorded. PASS
+3. `seedlist.ts 1-1 --check`: PASS (258 seeds, verdicts refuse 0, first run no drift), run twice, the second on an untouched tree.
+   No list re-recorded. PASS
 4. tsc PASS; generalitycheck PASS (27 literals, 27 known); knowncheck PASS; artcheck PASS; roadmapcheck PASS (after unshallow);
-   tools tests (library, seedlist, yield, travelBots) 17/0; gen2 + worlds suite: SEE BELOW. Lock (16 layouts x both settings, base
+   tools tests (library, seedlist, yield, travelBots) 17/0; gen2 + worlds suite 488/488 (28 min). Lock (16 layouts x both settings, base
    91af3475 recorded fresh): 102/102 stages unchanged.
 5. 1-3: t-w1-creatures (7d9efa0d) is NOT on the base. There 1-3 has no `judged` row (stageTable `'1-3': { kit: 'w1' }`), so it gets one
    search and the repair never runs on it: its yield cannot move from this change. Not measured.
