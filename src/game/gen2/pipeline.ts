@@ -1454,6 +1454,11 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   let catches = 0;
   const catchUnder = (x0: number, x1: number, lowerLip: number) => {
     if (!FR?.catchDrop || x1 - x0 < 20) return;
+    // (nor where a piece of the stage already catches under the gap's middle, its top past the lower lip by no more than a catch's drop
+    // and 60 px: a second bough over it covered it, and a petal log out past a chain's start log, R-165.124, lay under a bough that took
+    // the walk off the start log first)
+    const mid = (x0 + x1) / 2, reach = lowerLip + FR.catchDrop + 60;
+    if (platforms.some((q) => q.type !== 'bouncy' && q.x <= mid && q.x + q.width >= mid && q.y > lowerLip && q.y <= reach)) return;
     const styles = FR.catchStyles?.length ? FR.catchStyles : (['branch'] as const);
     const c = mk(x0 - 30, lowerLip + FR.catchDrop, x1 - x0 + 80, 'branch', 24, styles[catches++ % styles.length]);
     (c as Platform & { catch?: boolean }).catch = true;

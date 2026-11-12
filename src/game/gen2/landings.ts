@@ -114,6 +114,7 @@ function first(evs: readonly Ev[], x: number): Ev | null {
 export type CleanWay = { how: 'walked-on' | 'walk-off' | Flight; from: LandPiece; window?: number };
 
 const JUMPS: readonly Flight[] = ['jump', 'double', 'jump-up', 'double-up'];
+const SINGLES: readonly Flight[] = ['jump', 'jump-up'];
 const BOUNCES: readonly Flight[] = ['bounce', 'bounce-air', 'bounce-up', 'bounce-air-up'];
 
 /**
@@ -124,6 +125,7 @@ export class Landings {
   private readonly byX: LandPiece[];
   private readonly walks = new Map<LandPiece, Array<{ piece: LandPiece | null; mid: number }>>();
   private readonly wins = new Map<LandPiece, Map<LandPiece, number>>();
+  private readonly singles = new Map<LandPiece, Map<LandPiece, number>>();
   constructor(readonly pieces: readonly LandPiece[], readonly setting: Difficulty) {
     this.byX = pieces.filter((p) => !p.broken).slice().sort((a, b) => a.x - b.x);
   }
@@ -146,17 +148,18 @@ export class Landings {
     return w;
   }
   /** the widest take-off window (px) from S, over every jump (a ledge) or bounce (a cap) and both ways, per piece landed on first */
-  windows(S: LandPiece): Map<LandPiece, number> {
-    let m = this.wins.get(S);
+  windows(S: LandPiece, single = false): Map<LandPiece, number> {
+    const cache = single ? this.singles : this.wins;
+    let m = cache.get(S);
     if (!m) {
       m = new Map();
       const near = this.near(S.x, S.x + S.width), F = LAND_FLIGHTS[this.setting];
       const bounce = S.type === 'bouncy';
       const a = bounce ? S.x - 12 : S.x - LAND_SIDE.px, b = bounce ? S.x + S.width + 12 : S.x + S.width + LAND_SIDE.px;
-      for (const how of bounce ? BOUNCES : JUMPS) for (const dir of [1, -1] as const) {
+      for (const how of bounce ? BOUNCES : single ? SINGLES : JUMPS) for (const dir of [1, -1] as const) {
         for (const [P, w] of windowsOf(events(F[how], S.y, dir, near, S), a, b)) if (w > (m.get(P) ?? 0)) m.set(P, w);
       }
-      this.wins.set(S, m);
+      cache.set(S, m);
     }
     return m;
   }
@@ -234,7 +237,8 @@ export function deadZones(pieces: readonly LandPiece[], pickups: readonly LandPi
 /**
  * R-165.126, the bounce part: a mushroom with a purpose. Its bounce (alone or with the air jump, either way) lands, first and with
  * JUMP_WINDOW to spare, somewhere worth going: a top at least WALL_H over the floor it stands on (a higher road), a piece a find sits
- * on, or another mushroom that has a purpose (a chain). Else the bounce goes nowhere a walk does not: a mushroom laid for nothing.
+ * on, a piece no walk off and no single jump from that floor reaches (the bounce is needed: across a gap, a shortcut), or another
+ * mushroom that has a purpose (a chain). Else the bounce goes nowhere a walk does not: a mushroom laid for nothing.
  */
 export function purposelessBounces(pieces: readonly LandPiece[], pickups: readonly LandPickup[], setting: Difficulty): LandPiece[] {
   const caps = pieces.filter((p) => p.type === 'bouncy' && !p.broken);
@@ -249,7 +253,10 @@ export function purposelessBounces(pieces: readonly LandPiece[], pickups: readon
   for (const m of caps) {
     const fl = floorOf(m);
     const base = fl ? fl.y : m.y + m.height;
-    if ([...lands.get(m)!].some((T) => T.type !== 'bouncy' && (base - T.y >= WALL_H || finds.has(T)))) worth.add(m);
+    // (needed: a piece neither a walk off nor a single jump from its floor reaches, e.g. across a gap past one jump, the other answer to a
+    // double: two answers' perched mushroom)
+    const needed = (T: LandPiece) => !!fl && T !== fl && !L.walk(fl).some((w) => w.piece === T) && (L.windows(fl, true).get(T) ?? 0) < JUMP_WINDOW.px;
+    if ([...lands.get(m)!].some((T) => T.type !== 'bouncy' && (base - T.y >= WALL_H || finds.has(T) || needed(T)))) worth.add(m);
   }
   // (a chain: a cap whose bounce lands on a cap with a purpose has one; to a fixed point)
   for (let grew = true; grew;) {

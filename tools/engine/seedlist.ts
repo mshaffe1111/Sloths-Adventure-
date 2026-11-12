@@ -6,6 +6,8 @@
 // length printed so a run-out that grows into a padded walk shows.
 //   npx tsx tools/engine/seedlist.ts 1-1 [--count 300]     write the list
 //   npx tsx tools/engine/seedlist.ts 1-1 --check            every listed seed still clean on both settings; at least SEED_LIST_MIN; exit 1 if not
+//   npx tsx tools/engine/seedlist.ts 1-1 --merge c.json --in-order --part p.json   (one of N in parallel: each seed of c laid and filtered)
+//   npx tsx tools/engine/seedlist.ts 1-1 --combine p0.json,p1.json,order.json       the list from those parts, in order's order
 import fs from 'node:fs';
 import '../../src/game/headlessDom.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
@@ -88,12 +90,28 @@ function dresses(...sts: Array<ReturnType<typeof buildGen2Stage>>): boolean {
 }
 
 
+// (--combine a.json,b.json,... ORDER.json: the list from --merge parts, in ORDER's order (a JSON seed array), no seed laid again: each part
+// holds what its --merge proved per seed (the same filters as a write); a seed of ORDER no part kept is left out, by name)
+if (process.argv.includes('--combine')) {
+  const files = arg('--combine', '').split(',');
+  const order = JSON.parse(fs.readFileSync(files.pop()!, 'utf8')) as number[];
+  const got = new Map<number, { quiet: number; outro: number; replay: Parameters<typeof packPlan>[0] }>();
+  for (const f of files) { const P = JSON.parse(fs.readFileSync(f, 'utf8')) as { seeds: number[]; quiet: number[]; outro: number[]; replays: Array<Parameters<typeof packPlan>[0]> }; P.seeds.forEach((sd, i) => got.set(sd, { quiet: P.quiet[i], outro: P.outro[i], replay: P.replays[i] })); }
+  const L = { dict: [] as string[], seeds: [] as number[], plans: [] as string[], quiet: [] as number[], outro: [] as number[] };
+  const left: number[] = [];
+  for (const sd of order) { const g = got.get(sd); if (!g) { left.push(sd); continue; } L.seeds.push(sd); L.quiet.push(g.quiet); L.outro.push(g.outro); L.plans.push(packPlan(g.replay, L.dict)); }
+  const bytes = writeSeedList(id, L);
+  console.log(`seedlist ${id}: combined ${L.seeds.length} of ${order.length} ordered seeds (${bytes} bytes); left out (no part kept them): ${left.length}${left.length ? ` (${left.slice(0, 40).join(', ')}${left.length > 40 ? ', ...' : ''})` : ''}`);
+  process.exit(0);
+}
 const want = Number(arg('--count', String(SEED_LIST_MIN)));
 // (--quiet-max S: the quiet line BINDS, the lead 11-06: a seed is kept only when its longest quiet stretch, the outro excluded, is S s or
 // less; the count of tries it took is printed)
 const quietMax = Number(arg('--quiet-max', String(QUIET_MAX)));
 let quietOut = 0;
 const seeds: number[] = [], quiet: number[] = [], outro: number[] = [], plans: string[] = [], dict: string[] = [];
+// (each kept seed's proven plan unpacked, for a --part file: --combine writes the list from the parts without laying a seed again)
+const replays: unknown[] = [];
 let tried = 0;
 // (the yield is seen, the lead's ruling on audit B-02: each fresh seed's graph and the lines that refused it, counted by yield.ts)
 const rolls: Array<{ graph: string; refused: string[] }> = [];
@@ -133,10 +151,13 @@ for (const seed of tries) { // (1-1's promises and the quiet line keep few rolls
   if (q.quiet > quietMax) { quietOut++; refuse(n, ['the quiet line']); continue; }
   refuse(n, []);
   seeds.push(seed); quiet.push(q.quiet); outro.push(q.outro);
-  plans.push(packPlan({ seed: n.gen2.seed, rerolls: n.gen2.rerolls, plan: n.gen2.plan, foes: [...keptFoes(n)] }, dict));
+  const replay = { seed: n.gen2.seed, rerolls: n.gen2.rerolls, plan: n.gen2.plan, foes: [...keptFoes(n)] };
+  plans.push(packPlan(replay, dict));
+  replays.push(replay);
 }
 if (part) {
-  fs.writeFileSync(part, JSON.stringify(seeds));
+  // (with --merge, the part carries what each kept seed proved, for --combine; a sweep's part stays the seed list step 3 orders)
+  fs.writeFileSync(part, JSON.stringify(only ? { seeds, quiet, outro, replays } : seeds));
   console.log(`seedlist ${id} worker ${worker}: ${seeds.length} kept of ${tried} tried, ${((Date.now() - t0) / 1000).toFixed(0)} s -> ${part}`);
   if (!only && rolls.length) console.log(searchYield(rolls).join('\n'));
   process.exit(0);

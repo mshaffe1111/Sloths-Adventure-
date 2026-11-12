@@ -484,6 +484,14 @@ const times = (n: number, g: G): G => (k, after) => {
 };
 /** a low log off the route under a canopy piece, its petals at marching height (the ruling: petals low on low logs, never a petal road in
  *  the boughs); its top 136-144 px under the bough's: 110 px+ head room (Round 4 FR2, FR5: the mid road) */
+/**
+ * Where a petal low log goes under a chain's 460-520 px start log (R-165.124, Matt 11-06 and 11-11: the dead-zone log): its left end about
+ * 30 px inside the start log's far end, so it reaches out past it, where a plain walk off that end lands (a 136-144 px drop carries him
+ * about 100 px out; landings.ts proves it on the flown walk). At share 0.2-0.3 it lay wholly under the start log: the walk off fell short of
+ * it and a full jump came down on the start log above it, so only a mid-air correction reached its petals. Its gap under the chain's first
+ * jump is a catch for a short jump.
+ */
+const LOW_LOG_OUT: R2 = [0.93, 0.95];
 const lowLog = (key: string, over: string, at: R2): W1Piece => limb(key, { kind: 'over', on: over, at, dy: [136, 144] }, [180, 220], 'log', false);
 /** the exit totem's socket on the end log (the ruling: an `objective` socket; main's stageGenerator.ts:2136 gen.item('exit_totem')) */
 const totem = (on: string): Socket => ({ id: 'exit-totem', role: 'objective', on, t: 0.85, allow: ['exit_totem'] });
@@ -1213,12 +1221,12 @@ const dippingBoughsTwist = section({
 const logChain = section({
   id: 'w1-log-chain', name: 'the log chain', phases: ['ketsu'], difficulty: 6, needs: ['jump'], exitDy: -148, ports: ['ledge', 'ledge'], window: BOUGH_WINDOW, maxPerStage: 1,
   versions: [
-    { id: 'a', groups: [(k) => { const ps = [limb(`${k}a`, { kind: 'start' }, [460, 520], 'log'), lowLog(`${k}lo`, `${k}a`, [0.2, 0.3])];
+    { id: 'a', groups: [(k) => { const ps = [limb(`${k}a`, { kind: 'start' }, [460, 520], 'log'), lowLog(`${k}lo`, `${k}a`, LOW_LOG_OUT)];
       // (C1, R-165.72: the chain inside the single band (bands.md §2), a catch bough under every gap (the engine's, floorRoll.catchDrop): two steps up, two level)
       const dys: R2[] = [HOP_UP, HOP_UP, [-4, 4], [-4, 4]]; let prev = `${k}a`;
       dys.forEach((dy, j) => { const key = `${k}c${j}`; ps.push(limb(key, { kind: 'jump', after: prev, dy, share: dy[0] < -50 ? [0.4, 0.5] : [0.5, 0.6] }, [400, 460], 'log')); prev = key; });
       return { pieces: ps, sockets: [petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2), dot(`${k}nomoss`, `${k}a`, 0.7, 'hint.1-1.noMoss')], last: prev }; }] },
-    { id: 'b', groups: [(k) => { const ps = [limb(`${k}a`, { kind: 'start' }, [460, 520], 'log'), lowLog(`${k}lo`, `${k}a`, [0.2, 0.3])];
+    { id: 'b', groups: [(k) => { const ps = [limb(`${k}a`, { kind: 'start' }, [460, 520], 'log'), lowLog(`${k}lo`, `${k}a`, LOW_LOG_OUT)];
       const steps: Array<['double' | 'jump', R2, R2, R2]> = [['jump', HOP_UP, [0.4, 0.5], [400, 460]], ['jump', [48, 52], [0.5, 0.6], [400, 460]], ['jump', HOP_UP, [0.4, 0.5], [400, 460]], ['jump', [-52, -48], [0.4, 0.5], [560, 640]]];
       let prev = `${k}a`; steps.forEach(([kind, dy, share, w], j) => { const key = `${k}c${j}`; ps.push(limb(key, { kind, after: prev, dy, share }, w, 'log')); prev = key; });
       return { pieces: ps, sockets: [petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2), dot(`${k}nomoss`, `${k}a`, 0.7, 'hint.1-1.noMoss')], last: prev }; }] },
@@ -1384,7 +1392,7 @@ const canopyWeaveRise = section({
 });
 const logChainRise = section({
   id: 'w1-log-chain-rise', name: 'the log chain, rising', phases: ['ketsu'], difficulty: 6, needs: ['jump'], exitDy: -370, ports: ['ledge', 'ledge'], window: BOUGH_WINDOW, maxPerStage: 1,
-  versions: [{ id: 'rise', groups: [(k) => { const ps = [limb(`${k}a`, { kind: 'start' }, [460, 520], 'log'), lowLog(`${k}lo`, `${k}a`, [0.2, 0.3])];
+  versions: [{ id: 'rise', groups: [(k) => { const ps = [limb(`${k}a`, { kind: 'start' }, [460, 520], 'log'), lowLog(`${k}lo`, `${k}a`, LOW_LOG_OUT)];
     // (C1, R-165.72: the chain the testers lost most lives in, now inside the single band: five steps up, then a level log; every gap a
     //  soft pit with its floor and a step out, so a miss is a short fall and a climb back)
     const dys: R2[] = [HOP_UP, HOP_UP, HOP_UP, HOP_UP, HOP_UP, [-4, 4]]; let prev = `${k}a`;
