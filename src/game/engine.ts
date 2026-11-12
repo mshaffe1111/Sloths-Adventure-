@@ -2246,19 +2246,7 @@ export class GameEngine {
 
         if (this.input.state.jumpPressed) {
           if (p.grounded || this.coyoteTimer > 0) {
-            p.vy = -PHYS.jumpV * drowsyJump(this.drowsy) * this.dragJump;
-            p.grounded = false;
-            p.jumpsLeft = 1;
-            p.isDoubleJumping = false;
-            p.somersaultAngle = 0;
-            this.coyoteTimer = 0;
-            this.jumpBufferTimer = 0;
-            this.input.state.jumpPressed = false;
-            p.squashX = 0.82;
-            p.squashY = 1.28;
-            this.takeOff(false);
-            sound.playJump();
-            this.spawnJumpDust(p.x, p.y);
+            this.groundJump();
           } else if (p.jumpsLeft > 0 && !p.climbing) {
             p.vy = secondJumpV(p.vy, PHYS.doubleV * (1 + ASSIST.doubleJump * assist) * (this.flightClear ? 1 : drowsyJump(this.drowsy)) * this.dragJump);
             p.jumpsLeft = 0;
@@ -2473,17 +2461,26 @@ export class GameEngine {
         p.isDoubleJumping = false;
         p.somersaultAngle = 0;
 
-        // Jump Buffering: If jump was tapped just before landing, instantly jump!
-        if (this.jumpBufferTimer > 0) {
+        // what the landing does to the floor, jump or no jump (audit A-04: a jump pressed just before landing used to skip these, so a
+        // crumbling platform landed on that way never started to crumble)
+        if (plat.type === 'fragile') {
+          if (plat.fragileTimer === undefined) {
+            plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
+            // a boss's cracking ledge: Dot says so the first time he stands on one
+            if (plat.crackFrom !== undefined && this.bossDef?.crackTip) this.bossCtx?.guide?.('crack', this.bossDef.crackTip);
+            if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
+              this.zoneHinted.crumble = true;
+              // (the crumble is taught by its lesson, in Dot's bubble)
+            }
+          }
+        }
+        // Bouncy mushroom: it always throws him (a jump pressed just before landing on it is used up by the bounce, never a weaker jump)
+        if (plat.type === 'bouncy') {
           this.jumpBufferTimer = 0;
-          p.vy = -PHYS.jumpV;
-          p.grounded = false;
-          p.jumpsLeft = 1;
-          p.squashX = 0.82;
-          p.squashY = 1.28;
-          this.takeOff(false);
-          sound.playJump();
-          this.spawnJumpDust(p.x, p.y);
+          this.bounceOff();
+        } else if (this.jumpBufferTimer > 0) {
+          // Jump Buffering: a jump tapped just before landing leaves now, the same jump as one pressed standing here (webs, spores)
+          this.groundJump();
         } else {
           // Squash on landing: a hop settles lightly, a long drop flattens him more
           if (p.squashY > 0.9) {
@@ -2493,22 +2490,6 @@ export class GameEngine {
           }
           // the dust he kicks up as he lands (none for a step down that hardly falls)
           if (landV > 260) this.spawnJumpDust(p.x, p.y, landV);
-
-          // Bouncy mushroom interaction
-          if (plat.type === 'bouncy') this.bounceOff();
-
-          // Fragile branch interaction
-          if (plat.type === 'fragile') {
-            if (plat.fragileTimer === undefined) {
-              plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
-              // a boss's cracking ledge: Dot says so the first time he stands on one
-              if (plat.crackFrom !== undefined && this.bossDef?.crackTip) this.bossCtx?.guide?.('crack', this.bossDef.crackTip);
-              if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
-                this.zoneHinted.crumble = true;
-                // (the crumble is taught by its lesson, in Dot's bubble)
-              }
-            }
-          }
         }
       }
 
@@ -6151,6 +6132,28 @@ export class GameEngine {
     if (p.x > r - EDGE.inset && !carriesOn(r + 2)) return r - EDGE.inset - p.x;
     if (p.x < plat.x + EDGE.inset && !carriesOn(plat.x - 2)) return plat.x + EDGE.inset - p.x;
     return 0;
+  }
+
+  /** The one ground take-off: a press on the ground or in coyote time, and a press buffered before landing (audit A-04: the buffered
+   *  path had its own copy that left at the full jump, ignoring a web's drag and a spore cloud's drowsiness). */
+  private groundJump() {
+    const p = this.player;
+    // (the fog decides at the take-off, as the run code does for a press on the ground: a buffered jump leaves on the landing frame,
+    // before that code sees him grounded, so without this it kept the awake flag of the flight that brought him down)
+    if (p.grounded) this.flightClear = this.drowsy <= 0;
+    p.vy = -PHYS.jumpV * drowsyJump(this.drowsy) * this.dragJump;
+    p.grounded = false;
+    p.jumpsLeft = 1;
+    p.isDoubleJumping = false;
+    p.somersaultAngle = 0;
+    this.coyoteTimer = 0;
+    this.jumpBufferTimer = 0;
+    this.input.state.jumpPressed = false;
+    p.squashX = 0.82;
+    p.squashY = 1.28;
+    this.takeOff(false);
+    sound.playJump();
+    this.spawnJumpDust(p.x, p.y);
   }
 
   private takeOff(second: boolean) {
