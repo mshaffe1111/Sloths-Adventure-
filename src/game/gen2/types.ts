@@ -270,7 +270,10 @@ export type PlaceRule =
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
   | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
   | { kind: 'climb'; on: string; at: Range; h: Range }
-  | { kind: 'rope'; after: string; gap: Range; soft?: boolean };
+  | { kind: 'rope'; after: string; gap: Range; soft?: boolean;
+      /** the rope is a try-it, never the way (a stage laid before the Shimmy skill is his, or a second road): its pit is soft with the
+       *  plain steps out the far side, so he can always walk down and through, and the rope is hung `required: false` */
+      free?: boolean };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */

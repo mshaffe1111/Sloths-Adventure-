@@ -81,6 +81,10 @@ test('the first snake of the stage is asleep on both settings, under the lesson 
     assert.equal(r.firstAsleep, true, `${name}: the first snake, at x ${r.snakes[0]?.x}, is awake`);
     const lesson = r.traps.find((t) => t.section === 'w1-13-lesson');
     assert.ok(lesson?.snake?.asleep && lesson.snake.x === r.snakes[0].x && lesson.load === 'hive' && lesson.kind === 'vine', `${name}: ${JSON.stringify(lesson)}`);
+    // a sleeper lies right under its load (the middle of its patch), on both settings: from the vine the whole of it is on an upright
+    // screen. (Seated by the kit's spawn hook; the builder's fill follows it, or Easy reads the sleeper as dropped and lays none)
+    for (const t of r.traps) if (t.snake?.asleep) assert.equal(t.snake.x, t.loadX, `${name}: a sleeper ${Math.abs(t.snake.x - t.loadX)} px from its load's line (${t.section})`);
+    assert.ok(r.traps.filter((t) => t.snake?.asleep).length >= 2, `${name}: the lesson's and the gallery's sleepers`);
   });
 });
 
@@ -149,6 +153,25 @@ test("Dot's trap line is a TEACH line, and she says it three seconds of walking 
     assert.ok(first.x - hint.x <= 1100, `seed ${seed} ${d}: and not a screen and more early (${Math.round(first.x - hint.x)} px)`);
     // nothing can hurt him between her line and the vine: no animal stands before the first trap's own
     assert.equal(st.enemies.filter((e: Any) => e.x < first.x).length, 0, `seed ${seed} ${d}: an animal before the first vine`);
+  }
+});
+
+test('the way out: one rope before the totem, a try-it and never the way; its hollow is one hop deep, so he can walk through it and back', () => {
+  // (clearing 1-3 TEACHES Shimmy Rope: on a first visit he cannot grab it. A required rope would strand him; so would a deep hollow
+  //  with steps out the far side only, in a purge: the adult bot arrived owing four snakes, dropped in, and could not go back)
+  for (const d of ['normal', 'easy'] as const) for (const seed of SEEDS) {
+    const st: Any = buildGen2Stage({ config: generateAllLevels().find((l) => l.id === STAGE_13 && !l.secret)! as Any, kit: w1World() as Any, seed, difficulty: d });
+    assert.equal(st.ropes.length, 1, `seed ${seed} ${d}: ${st.ropes.length} ropes`);
+    const r = st.ropes[0];
+    assert.equal(r.required, false, `seed ${seed} ${d}: the rope is required`);
+    assert.ok(r.x1 < st.exitTotemX && st.exitTotemX - r.x1 < 1400, `seed ${seed} ${d}: it is the last thing before the totem (${Math.round(st.exitTotemX - r.x1)} px)`);
+    assert.ok(st.enemies.every((e: Any) => e.x < r.x0), `seed ${seed} ${d}: no animal at or past the rope`);
+    // the hollow under it: one floor, wall to wall, a hop under the two lips and no deeper; nothing else down there
+    const under = st.platforms.filter((p: Any) => p.x >= r.x0 && p.x + p.width <= r.x1 && p.y > r.g0);
+    assert.equal(under.length, 1, `seed ${seed} ${d}: ${under.length} pieces in the hollow (a floor and no steps)`);
+    const depth = under[0].y - r.g0;
+    assert.ok(depth >= 40 && depth <= 80, `seed ${seed} ${d}: the hollow is ${Math.round(depth)} px deep (one hop: 40-80)`);
+    assert.equal(r.g0, r.g1, `seed ${seed} ${d}: its two lips are level`);
   }
 });
 

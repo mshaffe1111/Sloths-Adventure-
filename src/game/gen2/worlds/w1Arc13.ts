@@ -49,10 +49,17 @@ const led = (key: string, after: string | null, w: R2, dy: R2 = [0, 0]): Section
 const UP: R2 = [-56, -50], DOWN: R2 = [50, 56];
 /** the level's one jump that matters (Normal's finale): a gap of 90-110 px, level, the drop under it soft */
 const HOP: R2 = [90, 110];
-/** a fallen branch across the road: a step up onto it (50-56 px) and a step down off it, its two ends the snake's world. Its own
- *  piece, off the `main` list (the lay stands no flag on it and tops no second animal up onto it) and no `landing` (Easy would widen
- *  it by its landing pad, and the sockets would slide along it) */
-const log = (key: string, after: string, w: R2, dy: R2 = UP): SectionPiece => ({ key, shape: 'bank', w, place: { kind: 'walk', after, dy }, style: 'log', main: false });
+/** the ground a fallen log lies on: a bank level with the ledge before it, off the `main` list (the lay stands no flag on it and tops
+ *  no second animal up onto it) and no `landing` (Easy would widen it by its landing pad, and the sockets would slide along it) */
+const bed = (key: string, after: string, w: R2, dy: R2 = [0, 0]): SectionPiece => ({ key, shape: 'bank', w, place: { kind: 'walk', after, dy }, style: 'moss_stone', main: false });
+/** THE BRANCH: a painted fallen log lying on its bed from end to end (World 1's log, as on w1-log-walk), `h` px thick. The snake, its
+ *  patrol and its load are the LOG's (their sockets are on it); he hops up onto it and steps down off its far end. Until 11-12 the
+ *  "branch" was a step of soil: in a stage called Branch Snakes nothing on screen was a branch. Off the `main` list, said so: a block
+ *  ON a piece is main unless told (pipeline layLocal), and a flag stood on the log emptied its snake's socket */
+const fallen = (key: string, on: string, h: R2): SectionPiece => ({ key, shape: 'block', w: [900, 900], place: { kind: 'on', on, at: [0, 0], h }, style: 'log', main: false });
+/** a trapped snake's log is LOW (its load hangs TRAP_HANG over the log's top, and 150 px over his feet is behind the goal sign on a
+ *  sideways phone: stills, 11-12); a bare one is a full step, the snake plain to see from the ledge before */
+const LOW: R2 = [24, 26], HIGH: R2 = [50, 56];
 /** a ledge no animal can be laid on (under 248 px), and a short one under a flag's pad (pipeline FLAG_SPAN.pad 160): a flag keeps
  *  every animal 224 px off (patchFor), and one at the end of a wide ledge beside a branch emptied the snake's socket, so the load
  *  hung over nothing (measured: 86 of 404 traps on Normal before the short ledges stood either side of every branch) */
@@ -60,7 +67,7 @@ const LEDGE: R2 = [230, 240], NARROW: R2 = [150, 155];
 /** a trapped snake's branch: its patch 122 px (the branch less the lay's 24 px at each end), one width so every px below holds */
 const SHORT: R2 = [170, 170];
 /** a bare branch (no trap: the punch off its end, or the vault): the awake snake's own 200 px and more; Easy's is wider */
-const LONG: R2 = [350, 370], WIDE: R2 = [400, 420];
+const LONG: R2 = [360, 360], WIDE: R2 = [410, 410];
 /** on a trapped branch: the load's line 24 px in (the patch's near end), the snake's socket 122 px on, at the patch's far end
  *  (a socket outside its piece's patch is left empty, pipeline patchFor; an animal under 120 px from a prop is not laid) */
 const LOAD_T = 0.142, SNAKE_T = 0.857;
@@ -72,27 +79,25 @@ const low = (id: string, on: string, t: R2 | number, count = 2): Socket => ({ id
 type Load = 'trap-hive' | 'trap-stone';
 interface Unit { asleep?: boolean; load?: Load | null; perch?: boolean; wide?: boolean; easy?: Socket['easy']; /** a HOP before this branch's ledge: a real jump in 1-1's taught band over a soft drop (a miss is a short walk back, never a life) */ hop?: boolean; /** the branch level with its ledges (the lesson: the first hive is clear of the goal sign on a sideways phone) */ level?: boolean }
 /**
- * One snake's branch, after the piece `after`: a short ledge `<k>g`, the branch `<k>L` a step up, a short ledge `<k>d` a step down.
- * With a `load`: the handle on `<k>g`, the load and a short-patch snake on the branch. `perch`: `<k>g` is the step up (the vine is
- * up on a perch), the branch a step down from it and `<k>d` a step lower still, so the branch keeps its far end; the piece after
- * steps back up (`rise`). No load: a long branch and the awake snake's full patrol.
+ * One snake's branch, after the piece `after`: a short ledge `<k>g`, the bed `<k>B` level with it, the fallen LOG `<k>L` lying on the
+ * bed end to end, and a short ledge `<k>d` after. With a `load`: the handle on `<k>g`, the load and a short-patch snake on a LOW
+ * log. `perch`: `<k>g` is a step UP (the vine is up on a perch) and the bed a step back down. No load: a long log a full step high,
+ * and the awake snake's whole patrol along it.
  */
 function core(k: string, after: string, o: Unit = {}): { pieces: SectionPiece[]; sockets: Socket[]; last: string; rise: boolean } {
-  const g = `${k}g`, L = `${k}L`, d = `${k}d`;
+  const g = `${k}g`, B = `${k}B`, L = `${k}L`, d = `${k}d`;
   const perch = !!(o.perch && o.load);
   const flat: R2 = [0, 0];
-  // (a TRAPPED branch lies level with the ledge its handle is on: a branch a step up lifted its load behind the goal sign on a
-  // sideways phone (stills, the gallery, 11-12). A bare branch keeps its step up; a perch's branch is a step below its vine)
-  const lvl = o.level ?? (!!o.load && !perch);
   const first: SectionPiece = o.hop ? { key: g, shape: 'bank', w: NARROW, place: { kind: 'jump', after, dy: flat, gapPx: HOP, soft: true }, style: 'moss_stone', main: true } : led(g, after, NARROW, perch ? UP : flat);
-  const pieces: SectionPiece[] = [first, log(L, g, o.load ? SHORT : o.wide ? WIDE : LONG, lvl ? flat : perch ? DOWN : UP), led(d, L, NARROW, lvl ? flat : DOWN)];
+  // (the bed is level with the ledge before the unit (a perch's vine ledge is the step up, its bed back down); the log `L` lies on it)
+  const pieces: SectionPiece[] = [first, bed(B, g, o.load ? SHORT : o.wide ? WIDE : LONG, perch ? DOWN : flat), fallen(L, B, o.load ? LOW : HIGH), led(d, B, NARROW)];
   const sockets: Socket[] = [];
   if (o.load) {
     sockets.push({ id: `${k}h`, role: 'source', on: g, t: HANDLE_T, dn: 0 });
     sockets.push({ id: `${k}r`, role: 'receptor', on: L, t: LOAD_T, dn: 0, link: `${k}h`, allow: [o.load] });
     sockets.push({ id: `${k}e`, role: 'enemy', on: L, t: SNAKE_T, dn: 0, allow: [o.asleep ? 'snake-trapped-asleep' : 'snake-trapped'], easy: o.easy ?? 'stay' });
   } else sockets.push({ id: `${k}e`, role: 'enemy', on: L, t: 0.5, dn: 0, allow: [o.asleep ? 'snake-asleep' : 'snake'], easy: o.easy ?? (o.asleep ? 'keep' : 'soften') });
-  return { pieces, sockets, last: d, rise: perch };
+  return { pieces, sockets, last: d, rise: false };
 }
 /** branches in a row, a ledge before each and the ledge out */
 function row(us: Unit[]): { pieces: SectionPiece[]; sockets: Socket[] } {
@@ -177,7 +182,7 @@ export const ARC_13: SectionTemplate[] = [
   // 0 of 40 rolls). Her line is at the flag; then a root to hop, petals over it, and a flat ledge; then the vine, 820 px and more on.
   // On an upright phone the hive comes into view as he finishes reading, the vine a step later: she calls it, and it arrives
   brick({ id: 'w1-13-lesson', name: 'the lesson: the vine, the hive and a sleeping snake', jobs: ['teach'], difficulty: 2, teaches: 'traps', versions: [(() => {
-    const c = core('t', 'd', { load: 'trap-hive', asleep: true, level: true });
+    const c = core('t', 'd', { load: 'trap-hive', asleep: true });
     const pieces: SectionPiece[] = [led('a', null, LEDGE), led('b', 'a', LEDGE, UP), led('c', 'b', LEDGE, DOWN), led('d', 'c', LEDGE), ...c.pieces, led('z', c.last, LEDGE)];
     const sockets: Socket[] = [{ id: 'flag', role: 'flag', on: 'a', t: 0.5 }, { id: 'tip', role: 'tip', on: 'a', t: 0.4, allow: ['traps'] }, { id: 'tip2', role: 'tip', on: 'd', t: 0.5, allow: ['traps.then'] }, ...c.sockets, low('pa', 'a', [0.3, 0.6]), low('pb', 'b', [0.3, 0.7]), low('pc', 'c', [0.3, 0.7]), low('pz', 'z', [0.4, 0.6], 1)];
     return { id: 'asleep-under-the-hive', lay: breath({ pieces, sockets }, 4, true) };
@@ -216,11 +221,14 @@ export const ARC_13: SectionTemplate[] = [
   ] }),
 ];
 
-/** the way out: a calm walk on a root bank to the totem, on the ground (World 1's own exits are all up in the canopy) */
+/** the way out: a calm walk on a root bank to the totem, on the ground (World 1's own exits are all up in the canopy).
+ *  Before the totem, a short ROPE over a mossy hollow (the lead's ruling, 11-12, the way old 1-3 ended): clearing 1-3 teaches Shimmy
+ *  Rope, so on a first visit he walks down through the hollow and out, and the rope is there to try the day he comes back. It is
+ *  `free`: never the way, on either setting */
 export const EXIT_13: SectionTemplate = {
   id: 'w1-13-low-arrival', name: 'a calm walk on a root bank to the totem', feel: [STAGE_13], archetypes: 'any', phases: ['goal'], difficulty: 1, needs: ['walk'], jobs: ['exit'], content: 'structural', terrain: 'floor-stones',
   pieces: [{ key: 'in', shape: 'bank', w: [300, 340], place: { kind: 'start' }, style: 'moss_stone', main: true, landing: true }],
-  subBlocks: [{ id: 'body', versions: [[520, 560], [620, 680]].map((w, j) => ({ id: j ? 'long' : 'short', pieces: [{ key: 'out', shape: 'bank' as const, w: w as R2, place: { kind: 'walk' as const, after: 'in', dy: [0, 0] as R2 }, style: 'moss_stone' as const, main: true, landing: true }], sockets: [{ id: 'exit-totem', role: 'objective' as const, on: 'out', t: 0.85, allow: ['exit_totem'] }] })) }],
+  subBlocks: [{ id: 'body', versions: [[520, 560], [620, 680]].map((w, j) => ({ id: j ? 'long' : 'short', pieces: [{ key: 'out', shape: 'bank' as const, w: w as R2, place: { kind: 'rope' as const, after: 'in', gap: [460, 480] as R2, free: true }, style: 'moss_stone' as const, main: true, landing: true }], sockets: [{ id: 'exit-totem', role: 'objective' as const, on: 'out', t: 0.85, allow: ['exit_totem'] }] })) }],
   entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
 } as SectionTemplate;
 
