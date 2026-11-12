@@ -531,3 +531,7 @@ lines); Matt sees them in the release.
   catches 8 shapes, one left: a dynamic import's .then returning the packaged plugin, noted on the row). PROOF-1 retired. The integration
   t-int-2@1480e843 now holds: engine, P11, F12, AF, RF, PIT, inventory, E1, w11-analyst, ADR/reach/1-2 docs, PROOF-1 fixes; red only
   yield.test.ts (Y2).
+- 2026-11-12 1:43 PM ET, Matt: continuous improvement for level building ("it shouldn't just stop with Fable... if we're building 1-4 and
+  it found a better way, that should go to everybody afterwards... building rules that really are the most important things to our
+  level designers"). R-165.154; CLAUDE.md rule added; reference/methods/level.md (Fable writing v1 now: Building rules first);
+  reference/design/LEVEL-LOG.md started (hours and cost per level); every level packet: read level.md first, report "Learned".
