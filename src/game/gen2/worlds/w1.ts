@@ -19,6 +19,8 @@ import { hollowLogSize, w1DressFacing, w1DressWidth } from '../../w1NewArt.ts';
 import { pickCut, W1_CUT } from '../../w1CutArt.ts';
 import type { Platform } from '../../types.ts';
 import { SPRINT_GRAPHS } from '../graphs.ts';
+import { BRIEF_13, LINES_13, PURGE_13, SECTIONS_13, STAGE_13 } from './w1Arc13.ts';
+import { W1_CAST_CREATURES, W1_TRAP_PAIRS, W1_TRAP_PROPS, armedTraps } from './w1Cast.ts';
 
 /**
  * World 1's manifest rows for its floor (the planner's correction, 11-05 4:19 PM: gen2's own ground IS the floor). `ground` is the
@@ -1525,7 +1527,7 @@ export const W1_PHASES: readonly Phase[] = ['start', 'ki', 'sho', 'rest', 'ten',
 /** what World 1 does to a built gen2 stage (GEN2_STAGES `finish`; the test link's picker calls it too): every piece keeps its own kind,
  *  never re-labelled for variety (W1-ART-AUDIT §3.1, Matt's approval 11-05: the leaf ledge, the frond strip and the stone drawn as a log came
  *  from that swap, not from w1.ts). A finished stage is returned for chaining */
-export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean; cut?: string } & Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' | 'style' | 'type'>> }>(st: T): T {
+export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean; cut?: string } & Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' | 'style' | 'type'>> }>(st: T, squirrels = true): T {
   for (const p of st.platforms) p.ownLook = true;
   // (the art swap, W1-ART-AUDIT §3.2-3.5: each stone, stump and thin log drawn as one of the art director's cut pieces, w1CutArt.ts)
   // (a stone or stump stands on the ground: only where a solid piece meets its foot, so a pit's step drawn as a rock never ends in the air,
@@ -1533,7 +1535,8 @@ export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean; cut?:
   const onGround = (p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>) => st.platforms.some((q) => q !== p && q.type === 'solid' && Math.abs(q.y - (p.y + p.height)) <= 6 && q.x <= p.x + p.width / 2 && q.x + q.width >= p.x + p.width / 2);
   for (const p of st.platforms) if (p.type === 'solid') { const c = pickCut(p); if (c && (W1_CUT[c].kind === 'log' || onGround(p))) p.cut = c; }
   // (a built roll only: a toy stage of bare platforms, w1CutArt.test's, has no spawn or sections to dress)
-  if ((st as { gen2?: unknown }).gen2) w1Squirrels(st as never);
+  // (the squirrels who came to watch him leave are a stage's own dressing: its stage-table row says so, stageTable.ts `squirrels`)
+  if (squirrels && (st as { gen2?: unknown }).gen2) w1Squirrels(st as never);
   return st;
 }
 
@@ -1604,12 +1607,25 @@ export function w1World(): WorldKit {
   const manifest: WorldManifest = {
     world: 1, name: 'The Home Forest', moves: ['double'],
     ground: W1_KIT.ground, pit: W1_KIT.pit, pitDepth: W1_KIT.pitDepth, pitPainter: W1_KIT.pitPainter, floorRoll: W1_KIT.floorRoll, rollRanges: W1_KIT.rollRanges,
-    graphs: W1_KIT.graphs, corridor: W1_KIT.corridor, themeShare: W1_KIT.themeShare, required: W1_KIT.required,
-    creatures: [], props: [], pairs: [], decor: [], flowers: ['orchid', 'hibiscus'], sections: [...W1_SECTIONS], handBuilt: [],
+    // (1-3 Branch Snakes, w1Arc13.ts: its one designed graph and its brief, beside the sprint graphs and 1-1's brief; a stage rolls
+    // only the graphs of its own archetype and reads only its own brief)
+    graphs: { ...W1_KIT.graphs, list: [...W1_KIT.graphs.list, ...Object.entries(PURGE_13).map(([id, code]) => ({ id, archetype: 'purge' as const, code }))], briefs: { ...W1_KIT.graphs.briefs, [STAGE_13]: BRIEF_13 } },
+    corridor: W1_KIT.corridor, themeShare: W1_KIT.themeShare, required: W1_KIT.required,
+    // (World 1's cast rows and drop-trap pairs, w1Cast.ts: laid only where a section holds a socket for one, so by 1-3's bricks alone)
+    creatures: W1_CAST_CREATURES, props: W1_TRAP_PROPS, pairs: W1_TRAP_PAIRS, decor: [], flowers: ['orchid', 'hibiscus'],
+    // (1-3's pool is its own, LEVEL-BAR A3: its beats, its arrival, its rests and its exit, each tagged for it alone; no World 1
+    // library section is in it. A tag only says which stages' pools hold a section, stagePool: no other stage's pool changes)
+    sections: [...W1_SECTIONS.map((t) => (t.feel.includes(STAGE_13) ? { ...t, feel: t.feel.filter((f) => f !== STAGE_13) } : t)), ...SECTIONS_13],
+    handBuilt: [],
     // (Dot's lines by their text id: the words a hint carries are the line's old text, which dotLines.ts swaps for the new look's words
     // where it is said; without these the pipeline put the raw id on screen, the red team's RT-ENGINE #1: "hint.1-1.double")
-    tips: W1_TIPS,
+    tips: { ...W1_TIPS, ...LINES_13 },
+    // (the first trap's line is a TEACH line: Dot waits for a clear moment, keeps it up its reading time, and no stock lesson cuts it;
+    // so are its second half, the lesson's "it only gives him a fright", and the first branch with no vine (the first appearance of
+    // beating a snake without one): on Normal's default Tips they were hidden, P13's find, the lead 11-12)
+    teachTips: ['traps', 'traps.then', 'bare'],
   };
-  return { manifest };
+  // (the traps are armed by the animal that stays under them: the kit's own emitters and spawn hook, w1Cast.ts armedTraps)
+  return { manifest, ...armedTraps() };
 }
 

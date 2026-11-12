@@ -1,0 +1,29 @@
+ART-W1 trap pieces (2026-11-12, branch t-w1-art; GPU cap $6). Each job: tools/art/hfdrake/storygpu.py (unchanged) + the spec, fetched
+from GitHub raw at 6e2c41d1; plain magenta at strength 1.0, style model 0.8, 26 steps. Bucket mshaffe111/w5-xfer under w1traps/<tag>/out/.
+rtx-pro-6000 ~$2.75/h. Times UTC.
+r1a   6af5f0ca0f431c4f7b55e12e  17:00Z  hiveHang, hiveDown, stoneHang, stoneDown x seeds 5,17,29 (12 takes)
+r1b   6af5f0f05f2f1b7284b85271  17:01Z  handleSet, handleSprung, tendrilSet, tendrilCut x seeds 5,17,29 (12 takes)
+r1c   6af5f0f35f2f1b7284b85278  17:01Z  anchor, vineLink, leafClump x seeds 5,17,29 (9 takes)
+     RESULTS r1 (all done by 17:06Z, ~14 GPU-min, ~$0.64): keepers-to-show hiveHang x3, stoneHang 17/29, handleSet 29, tendrilSet 29/5,
+     anchor 29. Thrown: hiveDown (painted broken open: story keeper wants it whole), tendrilCut (a cross), leafClump (a whole tree),
+     vineLink (a bough painted over it). Cause: the hf-props negatives "tree branch, ceiling, hanging scenery" were left out, so the
+     style model painted a bough, a pool and rain round most pieces. Round 2 puts them back (not for the anchor) and adds water/rain.
+r2a   6af5f4a60f431c4f7b55ee08  17:17Z  hiveDown (whole), hiveHang, stoneDown x seeds 41,53,67,79 (12), spec at f70d72e5
+r2b   6af5f4ed0f431c4f7b55eeab  17:18Z  tendrilCut, leafClump, vineLink x seeds 41,53,67,79 (12)
+r2c   6af5f4f00f431c4f7b55eec4  17:18Z  stoneHang, handleSprung, handleSet, anchor x seeds 41,53,67 (12)
+     RESULTS r2 (done ~17:24Z, ~14 GPU-min, ~$0.64): the isolation negatives did NOT stop the bough/pool (the style model paints them
+     anyway); every landed hive still broken open. Usable: hiveHang 67, stoneHang 41, handleSet 67, handleSprung 41/67, tendrilCut
+     67/79, anchor 53, vineLink 53/79, leafClump 41/67. Fix: per-take crop boxes (cuts.py), keyed on each take's own drifted key.
+r3    6af5f99e0f431c4f7b55fb69  17:38Z  img2img from paste-ups (cuts.py starts): hiveDown x2 starts, stoneDown x2, anchor with crown
+                                         room; s0.42/0.55 x seeds 7,31 (20 takes), spec at 0fdeaefa
+RUNNING TOTAL r1+r2: ~28 GPU-min, ~$1.28 of the $6 cap.
+     RESULTS r3 (done ~17:46Z, ~7 GPU-min, ~$0.32): landed hive WHOLE at s0.42 (both starts), landed stone clean (both). The anchor
+     with crown room still came back too long in the arm (2.4:1) for the trap. Kept: hiveDown 67-s42-7 / 29-s42-7, stoneDown
+     17-s42-31 / 41-s42-7.
+r3b   6af5fc0c5f2f1b7284b87040  17:49Z  anchor at the trap's shape: anchorArch, anchorArm x seeds 5,17,41,53 (8), spec at 2bd135ef
+     RESULTS r3b (done 17:53Z, ~4.5 GPU-min, ~$0.21): anchorArm 41 (level arm, whole crown) and anchorArch 5 (bent-over sapling) kept.
+TOTAL r1-r3b: ~42 GPU-min, ~$1.93 of the $6 cap (estimate from GPU minutes).
+r4    6af612d15f2f1b7284b8a794  19:26Z  (ART-W1B) rootSet, rootCut x seeds 5,17,29,41 + vineLong x 5,17,29 (11 takes), spec at 377fdaca
+     RESULTS r4 (19:26-19:29:47Z, ~3.6 GPU-min, ~$0.17): kept rootSet-5 (vine knotted to a root on a mound) and rootCut-17 (a snapped
+     living root arching from the earth, the knot and curl on it; the broken end is a natural break, no saw cut). vineLong all out
+     (sloths, scenery); the shimmy uses the shipped vine 'link' and the r3b anchorArm-41 tree ('trunk') instead.

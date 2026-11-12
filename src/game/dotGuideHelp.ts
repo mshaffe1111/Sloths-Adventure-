@@ -103,7 +103,7 @@ export function knownMoveTip(l: Pick<GuideLine, 'kind' | 'move' | 'thing' | 'sou
 }
 
 /** the skill that says a Tips line has been taught (seen once, it is not said again on Tips) */
-type TipsLine = Pick<GuideLine, 'kind'> & Partial<Pick<GuideLine, 'skill' | 'mech' | 'step' | 'key' | 'move' | 'thing' | 'source'>>;
+type TipsLine = Pick<GuideLine, 'kind'> & Partial<Pick<GuideLine, 'skill' | 'mech' | 'step' | 'key' | 'move' | 'thing' | 'source' | 'stageTeach'>>;
 export function tipsSkill(l: TipsLine): string | undefined {
   if (l.mech) return `mech:${l.mech}`;
   return l.skill;
@@ -118,6 +118,9 @@ export function helpAllows(l: TipsLine, help: DotHelp, seen: ReadonlySet<string>
   if (l.kind === 'story') return storyOn && (l.source === 'story' || help === 'teach');
   if (l.kind === 'must') return true;
   if (help === 'quiet') return false;
+  // (a stage's own teach line, StageHint.teach: the lesson of its beat, on Tips (Normal's default) as on Help; the engine says it once a
+  // stage on a device. It was dropped on Tips as chatter, so Normal never taught 1-3's trap: D12 on the real page, 11-12)
+  if (l.stageTeach) return true;
   // (the shrine opening: the other half of why an exit is locked, on Tips too)
   if (l.key === 'goal:done') return true;
   // (a puzzle's move itself is only ever for Help, and only after struggle)

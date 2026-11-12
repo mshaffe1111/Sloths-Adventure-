@@ -18,7 +18,9 @@ export const FAR_BY_STAGE: Record<number, Record<number, string>> = {
   // Each world still follows its story light: its early mood first, its late mood last.)
   // (1-6: w1b, the world's own far and sky with a second painted middle strip, so 1-4 and 1-6 don't show the same three trees)
   // (1-1: w1sun2, its own sunrise repainted with no orchids and a clean join (art-1-1-sunrise-2, 11-05: the old w1sunrise far's
-  // orchids, its middle strip's cut trunk); 1-3 keeps w1sunrise until its own stills check, the lead 11-05)
+  // orchids, its middle strip's cut trunk). 1-3 plays w1sunrise, its far REPAINTED (ART-W1B, 11-12; the lead passed it): its edge
+  // orchids had met where the strip wraps and stood behind 1-3's route as one big white shape (F13's stills); the repaint has no
+  // orchids, log or branch, and its join is as smooth as any two columns (1.69 vs 0.69; the old far 12.9: tools/art/sky13/seam.py)
   1: { 1: 'w1sun2', 2: 'w1rain', 3: 'w1sunrise', 5: 'w1rain', 6: 'w1b', 7: 'w1kapok', 8: 'w1rain', 9: 'w1kapok' },
   2: { 1: 'w2mist', 3: 'w2mist', 4: 'w2rapids', 6: 'w2rapids', 7: 'w2evening', 8: 'w2rapids', 9: 'w2evening' },
   3: { 2: 'w3crystal', 4: 'w3sinkhole', 5: 'w3crystal', 6: 'w3sinkhole', 7: 'w3cavern', 8: 'w3crystal', 9: 'w3cavern' },

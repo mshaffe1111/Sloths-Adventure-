@@ -1,0 +1,54 @@
+{
+ "tag": "sky13-S",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "flowers, orchids, blossoms, petals, white flowers, white shapes, foreground, branch in front, fallen log, log, close-up leaves, close-up plants, rain, rain streaks, falling drops, vignette, frame, border, panel, seam, split, text, letters, watermark, people, animal, bird, sloth, face, creature, character, blurry, photo, 3d render",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/614a4b5262d6dc781e80ac8dc15793e3f8b18755/reference/qa-reports/ART-W1B/sky/",
+ "items": [
+  {
+   "name": "seam13-s45-7",
+   "start": "seam-band.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: sunrise over a deep rainforest valley: tall emergent rainforest trees with umbrella crowns and palms standing on the near ridges, layered ridges of green canopy and soft blue-green hills fading into the valley, a low warm sun just above the far hills, a gold and pink sunrise sky with soft pink clouds, morning mist in the valley, the bottom of the picture a dark band of rounded treetops, rich saturated sunrise colour, deep green shadows, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "flowers, orchids, blossoms, petals, white flowers, white shapes, foreground, branch in front, fallen log, log, close-up leaves, close-up plants, rain, rain streaks, falling drops, vignette, frame, border, panel, seam, split, text, letters, watermark, people, animal, bird, sloth, face, creature, character, blurry, photo, 3d render",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 1024,
+   "h": 1296
+  },
+  {
+   "name": "seam13-s45-23",
+   "start": "seam-band.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: sunrise over a deep rainforest valley: tall emergent rainforest trees with umbrella crowns and palms standing on the near ridges, layered ridges of green canopy and soft blue-green hills fading into the valley, a low warm sun just above the far hills, a gold and pink sunrise sky with soft pink clouds, morning mist in the valley, the bottom of the picture a dark band of rounded treetops, rich saturated sunrise colour, deep green shadows, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "flowers, orchids, blossoms, petals, white flowers, white shapes, foreground, branch in front, fallen log, log, close-up leaves, close-up plants, rain, rain streaks, falling drops, vignette, frame, border, panel, seam, split, text, letters, watermark, people, animal, bird, sloth, face, creature, character, blurry, photo, 3d render",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 1024,
+   "h": 1296
+  },
+  {
+   "name": "seam13-s55-7",
+   "start": "seam-band.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: sunrise over a deep rainforest valley: tall emergent rainforest trees with umbrella crowns and palms standing on the near ridges, layered ridges of green canopy and soft blue-green hills fading into the valley, a low warm sun just above the far hills, a gold and pink sunrise sky with soft pink clouds, morning mist in the valley, the bottom of the picture a dark band of rounded treetops, rich saturated sunrise colour, deep green shadows, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "flowers, orchids, blossoms, petals, white flowers, white shapes, foreground, branch in front, fallen log, log, close-up leaves, close-up plants, rain, rain streaks, falling drops, vignette, frame, border, panel, seam, split, text, letters, watermark, people, animal, bird, sloth, face, creature, character, blurry, photo, 3d render",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1296
+  },
+  {
+   "name": "seam13-s55-23",
+   "start": "seam-band.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: sunrise over a deep rainforest valley: tall emergent rainforest trees with umbrella crowns and palms standing on the near ridges, layered ridges of green canopy and soft blue-green hills fading into the valley, a low warm sun just above the far hills, a gold and pink sunrise sky with soft pink clouds, morning mist in the valley, the bottom of the picture a dark band of rounded treetops, rich saturated sunrise colour, deep green shadows, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "flowers, orchids, blossoms, petals, white flowers, white shapes, foreground, branch in front, fallen log, log, close-up leaves, close-up plants, rain, rain streaks, falling drops, vignette, frame, border, panel, seam, split, text, letters, watermark, people, animal, bird, sloth, face, creature, character, blurry, photo, 3d render",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1024,
+   "h": 1296
+  }
+ ]
+}

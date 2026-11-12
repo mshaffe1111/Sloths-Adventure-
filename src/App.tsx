@@ -872,9 +872,9 @@ export default function App() {
             if (!slowTipShown()) setSlowTip(slowTipText(navigator.userAgent));
           },
           // (the last few ride along: two lines in one frame are both said, DotGuide.tsx GuideFeed)
-          onGuide: (text, seconds, passed) =>
+          onGuide: (text, seconds, passed, o) =>
             setGuideLine((g) => {
-              const line = { text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}) };
+              const line = { text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}), ...(o?.teach ? { teach: true as const } : {}) };
               return { ...line, recent: [...(g?.recent ?? []).slice(-5), line] };
             }),
           onStageStats: (s) => {
@@ -1075,6 +1075,7 @@ export default function App() {
 
   // the new HUD (beta) flies a pickup from Pokey into its counter
   const heroPoint = useCallback(() => engineRef.current?.heroScreenPoint() ?? null, []);
+  const goalCreature = useCallback(() => engineRef.current?.goalCreature(), []);
 
   const pauseGame = () => {
     recorder.event('pause');
@@ -1493,6 +1494,7 @@ export default function App() {
             powerUpTimer={powerUpTimer}
             lives={lives}
             heroPoint={heroPoint}
+            goalCreature={goalCreature}
             runKey={runId}
           />
           <PerfReadout stageId={activeLevel.id} />

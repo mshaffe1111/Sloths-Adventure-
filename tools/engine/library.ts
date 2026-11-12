@@ -164,7 +164,7 @@ export function config12(o: LibOpts = {}) {
 export function poolReport(o: LibOpts = {}) {
   const M = kitLib12(o).manifest, ID = stageIdOf(o), pool = new Set(stagePool(M, ID).map((t) => t.id));
   const deal = M.graphs!.briefs[ID].deal ?? {};
-  const out = M.sections.filter((t) => !pool.has(t.id)).map((t) => ({ id: t.id, why: t.parked ? 'parked' : t.content && t.content !== 'structural' && !(t.content in deal) ? `no ${t.content} in the deal` : `refused: ${(t.feel ?? []).filter((f) => REFUSE_12.includes(f)).join(' ')}` }));
+  const out = M.sections.filter((t) => !pool.has(t.id)).map((t) => ({ id: t.id, why: t.parked ? 'parked' : t.own && !(t.feel ?? []).includes(ID) ? `own: ${(t.feel ?? []).join(' ')}'s own piece` : t.content && t.content !== 'structural' && !(t.content in deal) ? `no ${t.content} in the deal` : `refused: ${(t.feel ?? []).filter((f) => REFUSE_12.includes(f)).join(' ')}` }));
   return { pool: [...pool], out };
 }
 export const tidy = (e: string) => e.replace(/-?\d+(\.\d+)?/g, '#').replace(/n#/g, 'n#').slice(0, 150);

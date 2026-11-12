@@ -48,8 +48,11 @@ export const SPECIAL_CASTS: Record<string, readonly Kind[]> = { '8-4': ['moths']
  * his own landing, and that never pulls a hunter's eye off him (core.ts `hear`). World 1: stomp 1-1, punch and drop traps 1-3, kick 1-5, stillness 1-7, the food
  * chain 1-9.
  */
-export const TAUGHT: Record<Way | 'noise' | 'bell', number> = {
+export const TAUGHT: Record<Way | 'noise' | 'bell' | 'landing', number> = {
   stomp: 1, punch: 1, kick: 1, trap: 1, still: 1, lure: 1,
+  // (`landing`: his own hard landing waking a sleeper, "quiet feet": World 2's lesson (the sleeping caiman). Before that world no
+  // landing makes a noise event at all, so nothing in World 1 wakes to a mechanic nobody has taught: the lead, 11-12)
+  landing: 2,
   bell: 2, noise: 3, drum: 3, wind: 4, dew: 5, break: 7, push: 7, light: 8, geyser: 9,
 };
 

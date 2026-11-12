@@ -68,7 +68,27 @@ function words(world: number, type: string): { verb: string; one: string; many: 
   return null;
 }
 
-export function goalInfo(cfg: Cfg, dotStage = false): GoalInfo {
+/**
+ * What the goal sign shows (R-165.155): the progress TO the goal, stopping at it. A goal can be smaller than what a stage holds (1-3:
+ * every trapped snake, the bare-branch ones optional), and clears past it count nowhere visible: "11/10" reads as a bug. A count goal
+ * only (target over 0); anything else is shown as it is.
+ */
+export const goalShown = (cur: number, target: number): number => (target > 0 ? Math.min(cur, target) : cur);
+
+/** a creature's word on the card, by its id (the stage's data: engine.ts goalCreature): one, or the plural ("harpy" -> "harpies") */
+export function creatureNoun(id: string, n: number): string {
+  const one = id.replace(/_/g, ' ');
+  if (n === 1) return one;
+  if (/[^aeiou]y$/.test(one)) return `${one.slice(0, -1)}ies`;
+  if (/(s|x|ch|sh)$/.test(one)) return `${one}es`;
+  return `${one}s`;
+}
+
+/**
+ * `creature`: the stage's own animal (engine.ts goalCreature), for a purge's card, the story keeper's line (the lead, 11-12): "This
+ * stage: send 13 snakes on their way" / "to open the shrine." ("send 1 boa on its way"). Before the stage has said which, "animals"
+ */
+export function goalInfo(cfg: Cfg, dotStage = false, creature?: string): GoalInfo {
   const type = cfg.objectiveType;
   const w = cfg.worldIndex;
   if (cfg.id === MEECA_STAGE_ID) {
@@ -94,7 +114,9 @@ export function goalInfo(cfg: Cfg, dotStage = false): GoalInfo {
     return { kind: 'none', line: '', sub: '', icon, slotIcon: () => icon, noun: '' };
   }
   const n = cfg.targetCount;
-  const line = `This stage: ${g.verb} ${n} ${n === 1 ? g.one : g.many}`;
+  const purge = type === 'purge';
+  const noun = purge ? creatureNoun(creature ?? 'animal', n) : n === 1 ? g.one : g.many;
+  const line = purge ? `This stage: send ${n} ${noun} on ${n === 1 ? 'its' : 'their'} way` : `This stage: ${g.verb} ${n} ${noun}`;
   let icon: GoalIcon;
   let slotIcon: (i: number) => GoalIcon;
   if (type === 'harvest') {
@@ -115,5 +137,5 @@ export function goalInfo(cfg: Cfg, dotStage = false): GoalInfo {
     slotIcon = () => icon;
   }
   // (a beat-the-animals stage too: 1-9's and 2-5's counters showed no sense of how much stage was left, QA 2026-10-28)
-  return { kind: 'count', line, sub: 'to open the shrine', icon, slotIcon, noun: g.many, far: type === 'harvest' || type === 'rescue' || type === 'purge' || type === 'gauntlet' };
+  return { kind: 'count', line, sub: purge ? 'to open the shrine.' : 'to open the shrine', icon, slotIcon, noun: purge ? noun : g.many, far: type === 'harvest' || type === 'rescue' || type === 'purge' || type === 'gauntlet' };
 }

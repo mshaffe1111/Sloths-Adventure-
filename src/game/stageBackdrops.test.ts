@@ -2,6 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { createHash } from 'node:crypto';
 import { FAR_BY_STAGE, FAR_ONLY, stageBackdropStem } from './stageBackdrops.ts';
 import { backdropStem } from './paintedBackdrops.ts';
 
@@ -48,4 +49,13 @@ test('backdrops: each new far strip is there at the far layers\' height (1302, n
     // its world's middle and near strips are the ones it borrows
     assert.ok(fs.existsSync(new URL(`../assets/backdrops/w${/^w(\d+)/.exec(stem)![1]}-mid.webp`, import.meta.url)));
   }
+});
+
+test("1-3 plays its own sunrise again, on the far strip REPAINTED without the edge orchids that met where it wraps (F13's stills, 11-12: one big white shape behind 1-3's route)", () => {
+  // (the repaint is ART-W1B's, passed by the lead: no orchids, log or branch; its wrap join 1.69 against 0.69 between any two columns,
+  //  the old far's 12.9, measured by tools/art/sky13/seam.py. This pins THAT file: the orchid strip cannot come back unseen; a new
+  //  repaint changes the pin with its own join measure. No image decoder is in the game's tests, so the join is measured there)
+  assert.equal(stageBackdropStem('1-3'), 'w1sunrise');
+  const buf = fs.readFileSync(new URL('../assets/backdrops/w1sunrise-far.webp', import.meta.url));
+  assert.equal(createHash('sha256').update(buf).digest('hex').slice(0, 16), '1ee64942f0d2301d', 'w1sunrise-far.webp is not the repaint the lead passed');
 });

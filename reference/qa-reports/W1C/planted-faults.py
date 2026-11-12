@@ -9,8 +9,9 @@ M=[
  ("engine.ts","a blow never reaches a trap's handle","    const sprung = this.cast?.strike(box);","    const sprung = null as null | { x: number; y: number; kind: string };"),
  ("engine.ts","a stomp on a cast animal goes to the old fight","      if (e.kit) {\n        // a cast animal: the kit says what a stomp does","      if (false) {\n        // a cast animal: the kit says what a stomp does"),
  ("engine.ts","the strike never hurts","        this.damagePlayer(1, k.e.x);\n        break;\n      }\n    }\n    // an animal that left for good","        break;\n      }\n    }\n    // an animal that left for good"),
- ("engine.ts","a chased-off animal is not counted","    for (const e of r.cleared) {\n      p.enemiesDefeated++;","    for (const e of r.cleared) {"),
+ ("engine.ts","a chased-off animal is not counted","      }\n      p.enemiesDefeated++;\n      if (!e.minion && e.type !== 'boss'","      }\n      if (!e.minion && e.type !== 'boss'"),
  ("engine.ts","a respawn leaves the cast hunting","    this.cast?.calm(this.easy);\n",""),
+ ("castPlay.ts","a landing is heard before its world teaches it","    this.loud = TAUGHT.landing <= world;","    this.loud = true;"),
  ("castPlay.ts","his landing is never heard","      const n = landingNoise(hero.x, hero.y, t, fell);","      const n = null as Sound | null;"),
  ("castPlay.ts","every landing is loud","    const fell = stepFall(this.fall, hero);","    const fell = stepFall(this.fall, hero) === null ? null : 999;"),
  ("castPlay.ts","stillness is never stepped","    stepStill(this.still, hero, dt, set);\n",""),
@@ -36,9 +37,27 @@ M=[
  ("dropTrap.ts","no creak before it lets go","if (s.phase === 'loose' && s.t >= TRAP.warn) {","if (s.phase === 'loose') {"),
  ("dropTrap.ts","the load never lands","    if (s.y >= s.post.landY) {","    if (false) {"),
  ("dropTrap.ts","a trap reaches another branch far below","Math.abs(x - p.loadX) <= TRAP.scare && Math.abs(y - p.landY) <= TRAP.tall;","Math.abs(x - p.loadX) <= TRAP.scare;"),
+ # 11-12 afternoon: the lesson's teach line, Easy's traps, the rope before the totem, the logs (each held by library13.test.ts)
+ ("gen2/pipeline.ts","Easy's count cut takes a trap's own snake (easy 'stay' ignored)","      if (!kept.has(f) || f.stay) continue;","      if (!kept.has(f)) continue;"),
+ ("gen2/pipeline.ts","a re-seated animal's fill stays behind (Easy reads the sleeper as dropped)","    if (R(f.e.x) !== f.fill.x) f.fill.x = R(f.e.x);\n",""),
+ ("gen2/pipeline.ts","a free rope is hung required","g0: l.y, g1: r.y, required: !lp.ropeFree,","g0: l.y, g1: r.y, required: true,"),
+ ("gen2/pipeline.ts","a free rope's hollow is a deep one-way pit","pitSteps(x0, x1, lipY, farY, shallow ? Math.min(hop, PIT.wade) : depthNow, hop);","pitSteps(x0, x1, lipY, farY, depthNow, hop);"),
+ ("gen2/pipeline.ts","a free rope's hollow is a full held jump deep","shallow ? Math.min(hop, PIT.wade) : depthNow","shallow ? hop : depthNow"),
+ ("gen2/worlds/w1.ts","the trap line is not a teach line","    teachTips: ['traps'],\n",""),
+ ("gen2/worlds/w1Arc13.ts","Dot speaks at the vine, too late to read","{ id: 'tip', role: 'tip', on: 'a', t: 0.4, allow: ['traps'] }","{ id: 'tip', role: 'tip', on: 'd', t: 0.9, allow: ['traps'] }"),
+ ("gen2/worlds/w1Arc13.ts","a flag may stand on a snake's log (its socket is emptied)","place: { kind: 'on', on, at, h }, style: 'log', main: false });","place: { kind: 'on', on, at, h }, style: 'log' });"),
+ ("gen2/worlds/w1Arc13.ts","a trap's own snake is cut on Easy","easy: o.easy ?? 'stay' });","easy: o.easy ?? 'soften' });"),
+ ("gen2/worlds/w1Arc13.ts","the rope before the totem is the only way","gap: [460, 480] as R2, free: true, look: 'vine' as const }","gap: [460, 480] as R2, look: 'vine' as const }"),
+ ("gen2/worlds/w1Cast.ts","a sleeper lies right under its load (the hive comes down on it)","    if (e.asleep) e.x = Math.round(t0.x < mid ? e.patrolMinX : e.patrolMaxX);","    if (e.asleep) e.x = Math.round(mid);"),
+ ("gen2/worlds/w1Arc13.ts","a trapped log so long its snake paces off an upright screen","const SHORT: R2 = [153, 153];","const SHORT: R2 = [175, 175];"),
+ ("gen2/worlds/w1Cast.ts","a sleeper's load hangs over its coil's edge","loadX: Math.round(mid + (e.asleep ? (t0.x < mid ? 10 : -10) : 0)) });","loadX: Math.round(mid) });"),
+ ("gen2/pipeline.ts","a shifted stage leaves its rope's ends behind","for (const r of ropes) { r.y += down; r.g0 += down; r.g1 += down; }","for (const r of ropes) r.y += down;"),
+ ("gen2/pipeline.ts","a stage picked by need takes a designed level's own pieces","!t.parked && !(t.own && !t.feel?.includes(stageId)) && ","!t.parked && "),
+ ("gen2/worlds/w1Arc13.ts","a World 1 rest is dealt into 1-3 again","link({ id: 'w1-13-root-hump'","link({ id: 'w1-meadow'"),
 ]
 ok=0; bad=[]
-for f,name,a,b in (M if len(sys.argv)<2 else [m for m in M if sys.argv[1] in m[1]]):
+import os
+for f,name,a,b in ([m for m in M if not (os.environ.get('SKIP_GEN2') and m[0].startswith('gen2/'))] if len(sys.argv)<2 else [m for m in M if sys.argv[1] in m[1]]):
   P='src/game/'+f; orig=open(P).read()
   if a not in orig: bad.append((name,'PATTERN MISSING')); print("MISSING ",name); continue
   try:

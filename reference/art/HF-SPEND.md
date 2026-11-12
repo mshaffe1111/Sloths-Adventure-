@@ -32,3 +32,17 @@ Balance: **$63.53**. The lead decides every job; each one is logged here with wh
 
 | When | Job | Decided by | Cost | What it bought |
 |---|---|---|---|---|
+| 12:00 PM | ART-W1 r1a 6af5f0ca (hive/stone x3 seeds, 12 takes), ~5.5 min | lead (ART-W1 packet, $6 cap) | ~$0.25 | hanging hive + slung stone shapes; every take had a bough/pool painted round it |
+| 12:01 PM | ART-W1 r1b 6af5f0f0 (handles/tendril, 12 takes), ~4 min | lead (packet) | ~$0.18 | knotted vine handle, tendril-to-peg |
+| 12:01 PM | ART-W1 r1c 6af5f0f3 (anchor/link/clump, 9 takes), ~4 min | lead (packet) | ~$0.18 | anchor bough (too long), link vine shape |
+| 12:17 PM | ART-W1 r2a 6af5f4a6 (hive landed/hanging, stone landed, 12 takes), ~6.5 min | lead (packet) | ~$0.30 | hanging hive 67; every landed hive broken open (not used) |
+| 12:18 PM | ART-W1 r2b 6af5f4ed (tendril cut, clump, link, 12 takes), ~4.5 min | lead (packet) | ~$0.21 | tendril stake, link vine, clump candidates |
+| 12:18 PM | ART-W1 r2c 6af5f4f0 (stone hanging, sprung, handle, anchor, 12 takes), ~6 min | lead (packet) | ~$0.28 | sprung vine, stone 41, handle 67 |
+| 12:38 PM | ART-W1 r3 6af5f99e (img2img from paste-ups, 20 takes), ~7 min | lead (packet) | ~$0.32 | landed stone x2; landed hive x8 takes (~$0.13) made AFTER the lead's 12:31 hive hold, which reached me at 12:50: not used, Matt's sheet replaces them |
+| 12:49 PM | ART-W1 r3b 6af5fc0c (anchor at the trap's shape, 8 takes), ~4.5 min | lead (packet) | ~$0.21 | anchorArm 41, anchorArch 5 |
+ART-W1 total: ~42 GPU-min, **~$1.93** of its $6 cap (rtx-pro-6000 ~$2.75/h, from job start to its last file in the bucket). Contact sheet: reference/qa-reports/ART-W1/contact-sheet-1.jpg on t-w1-art.
+| 2:22 PM | ART-W1B sky13-F 6af611f1 (1-3 sunrise far img2img from the cleaned old far, 4 takes), ~4.5 min | lead (ART-W1B packet, $6 cap) | ~$0.21 | s70-23: no orchids, log or branch (s60s kept the start's grey boxes) |
+| 2:26 PM | ART-W1B r4 6af612d1 (root-hoop anchor set/cut, long liana, 11 takes), ~3.6 min | lead (packet) | ~$0.17 | rootSet-5 (tendril knotted to a living root), rootCut-17 (snapped living root); the long liana takes all painted sloths/scenery: not used |
+| 2:45 PM | ART-W1B sky13-hdF 6af61765 (native pass round the circle), ~2 min | lead (packet) | ~$0.09 | the far at 2160 px; its join still 7.7 (the take's ends painted apart) |
+| 3:28 PM | ART-W1B sky13-S 6af62170 (the 1024 px band round the join repainted whole, 4 takes), ~3 min | lead (packet) | ~$0.14 | s55-7: join 1.69 vs 0.69 between any two columns, no visible join |
+ART-W1B total: ~13 GPU-min, **~$0.61** of its $6 cap (estimates from GPU minutes).

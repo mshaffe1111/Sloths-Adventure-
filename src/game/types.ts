@@ -445,6 +445,9 @@ export interface Rope {
   g1: number;
   /** true when the stage cannot be finished without it (only ever in stages where everyone has the skill) */
   required: boolean;
+  /** how it is drawn (only the drawing; it is the same rope to hang on): 'vine', a painted vine tied to the arms of two living trees
+   *  (World 1, where nothing is made: castArt.ts vineTile and drawTrunk); unset, World 2's twisted rope between posts (ropeArt.ts) */
+  look?: 'vine';
 }
 
 export interface Collectible {

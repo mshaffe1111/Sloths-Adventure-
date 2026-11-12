@@ -3,7 +3,7 @@
  * between the engine and the pure kit: when a stage's brief names a cast (`proto.cast`, castPlay.types.ts), every animal of a named
  * kind is stepped HERE on the fixed step, never by predatorAI.ts, with
  *   - Pokey's stillness (stillness.ts) and the cover he stands in,
- *   - the noise of his landings (heroNoise.ts: a hard one wakes sleepers, a soft one makes no event),
+ *   - the noise of his landings (heroNoise.ts: a hard one wakes sleepers, a soft one makes no event), from the world that teaches it,
  *   - the stage's drop traps (dropTrap.ts), which beat what they come down beside by the kit's 'trap' way.
  * A blow, a stomp or a trap is tried on the kit (`beat`); what it does is the animal's data. Nothing here is a stage's: no ids, no
  * seeds, no positions. Pure but for the animals it writes back to (the fields the art already reads); no canvas, no sounds.
@@ -13,6 +13,7 @@ import { TRAP, handleBox, newTrap, scares, shake, stepTrap, type TrapState } fro
 import { landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
 import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, newPredator, stepPredator, tellOf } from './predators/core.ts';
 import { castDef } from './predators/registry.ts';
+import { TAUGHT } from './predators/roster.ts';
 import type { Box, PredatorDef, PredatorState, Prey, Scene, Way } from './predators/types.ts';
 import { STILLNESS, inCover, isStill, newStill, stepStill, type Cover } from './stillness.ts';
 import type { Enemy, Platform } from './types.ts';
@@ -69,6 +70,8 @@ export class CastPlay {
   private still = newStill();
   private fall = newFall();
   private readonly covers: readonly Cover[];
+  /** his landings are heard here: only from the world that teaches it (the move ladder) */
+  private readonly loud: boolean;
   private readonly out: CastStep = { noticed: [], told: [], struck: [], hurts: [], cleared: [], fell: [], landed: null, woke: 0 };
   private readonly prey: Prey = { x: 0, y: 0, facing: 1, still: false, covered: false };
   private readonly scene: Scene = { t: 0, dt: 0, hero: this.prey, easy: false };
@@ -79,6 +82,7 @@ export class CastPlay {
    */
   constructor(data: CastData, enemies: Enemy[], platforms: readonly Platform[], world: number, covers: readonly Cover[] = []) {
     this.covers = covers;
+    this.loud = TAUGHT.landing <= world;
     this.traps = data.traps.filter((p) => Number.isFinite(p.x) && Number.isFinite(p.loadX)).map(newTrap);
     for (const e of enemies) {
       const def = data.kinds.includes(e.type) ? castDef(e.type, world) : undefined;
@@ -112,9 +116,10 @@ export class CastPlay {
     prey.still = isStill(this.still, set);
     prey.covered = inCover(this.covers, hero);
 
-    // his landing: how far he fell says how far it carries; a soft one makes no noise at all
+    // his landing: how far he fell says how far it carries; a soft one makes no noise at all, and none does before the world that
+    // teaches quiet feet (roster.ts TAUGHT.landing)
     const fell = stepFall(this.fall, hero);
-    if (fell !== null) {
+    if (fell !== null && this.loud) {
       const n = landingNoise(hero.x, hero.y, t, fell);
       if (n) {
         o.landed = n;

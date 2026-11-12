@@ -94,7 +94,7 @@ test("World 1: a cleared stage's next roll is kept away from the last one (no se
   // a fixed stream of rolls, so the test is the same every time
   let a = 7;
   const roll = () => (a = (a * 48271) % 2147483647) % 1_000_000 + 1;
-  for (const id of ['1-1', '1-2', '1-3', '1-5', '1-6', '1-7', '1-9']) {
+  for (const id of ['1-1', '1-2', '1-5', '1-6', '1-7', '1-9']) {
     for (let round = 0; round < 12; round++) {
       const before = layoutForEntry(lv(id), mem, roll, false)!;
       assert.equal(layoutForEntry(lv(id), mem, roll, false), before, `${id}: a retry keeps the roll`);
@@ -105,6 +105,21 @@ test("World 1: a cleared stage's next roll is kept away from the last one (no se
       assert.ok(w1RollDistance(id as '1-1', before, next) >= AWAY.min, `${id}: ${JSON.stringify(w1Pick(id as '1-1', before))} then ${JSON.stringify(w1Pick(id as '1-1', next))}`);
       forgetLayout(id, mem);
     }
+  }
+});
+
+test('a World 1 stage with no section table (rolled from its kit) rolls fresh after a clear: nothing is looked up in a table it does not have', () => {
+  // (1-3 moved to World 1's kit on 2026-11-12, and its second visit threw here: its id still read as a section-table stage)
+  const mem = Object.assign(memory(), { removeItem(this: Map<string, string>, k: string) { this.delete(k); } });
+  let a = 7;
+  const roll = () => (a = (a * 48271) % 2147483647) % 1_000_000 + 1;
+  for (let round = 0; round < 6; round++) {
+    const before = layoutForEntry(lv('1-3'), mem, roll, false)!;
+    assert.equal(layoutForEntry(lv('1-3'), mem, roll, false), before, 'a retry keeps the roll');
+    forgetLayout('1-3', mem);
+    assert.equal(savedLayout('1-3', mem), null, 'the next visit rolls fresh');
+    assert.notEqual(layoutForEntry(lv('1-3'), mem, roll, false), before, 'and it is another roll');
+    forgetLayout('1-3', mem);
   }
 });
 

@@ -1,0 +1,313 @@
+{
+ "note": "ART-W1 trap pieces r3 (img2img from paste-ups), 2026-11-12",
+ "q": 92,
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/adb152235dfccf8b50f51467d48cda3ee50b0395/reference/prop-sheets/qa-notes/w1traps/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "hiveDown-down-hiveHang-67-s42-7",
+   "start": "down-hiveHang-67.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a wild papery bees' nest lying tipped over on its side, completely whole and intact and closed, rounded teardrop with soft wavy bands of honey, amber and warm cream, one small dark round doorway, a short vine stem, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.42,
+   "seed": 7,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "hiveDown-down-hiveHang-67-s42-31",
+   "start": "down-hiveHang-67.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a wild papery bees' nest lying tipped over on its side, completely whole and intact and closed, rounded teardrop with soft wavy bands of honey, amber and warm cream, one small dark round doorway, a short vine stem, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.42,
+   "seed": 31,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "hiveDown-down-hiveHang-67-s55-7",
+   "start": "down-hiveHang-67.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a wild papery bees' nest lying tipped over on its side, completely whole and intact and closed, rounded teardrop with soft wavy bands of honey, amber and warm cream, one small dark round doorway, a short vine stem, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 7,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "hiveDown-down-hiveHang-67-s55-31",
+   "start": "down-hiveHang-67.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a wild papery bees' nest lying tipped over on its side, completely whole and intact and closed, rounded teardrop with soft wavy bands of honey, amber and warm cream, one small dark round doorway, a short vine stem, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 31,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "hiveDown-down-hiveHang-29-s42-7",
+   "start": "down-hiveHang-29.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a wild papery bees' nest lying tipped over on its side, completely whole and intact and closed, rounded teardrop with soft wavy bands of honey, amber and warm cream, one small dark round doorway, a short vine stem, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.42,
+   "seed": 7,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "hiveDown-down-hiveHang-29-s42-31",
+   "start": "down-hiveHang-29.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a wild papery bees' nest lying tipped over on its side, completely whole and intact and closed, rounded teardrop with soft wavy bands of honey, amber and warm cream, one small dark round doorway, a short vine stem, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.42,
+   "seed": 31,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "hiveDown-down-hiveHang-29-s55-7",
+   "start": "down-hiveHang-29.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a wild papery bees' nest lying tipped over on its side, completely whole and intact and closed, rounded teardrop with soft wavy bands of honey, amber and warm cream, one small dark round doorway, a short vine stem, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 7,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "hiveDown-down-hiveHang-29-s55-31",
+   "start": "down-hiveHang-29.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a wild papery bees' nest lying tipped over on its side, completely whole and intact and closed, rounded teardrop with soft wavy bands of honey, amber and warm cream, one small dark round doorway, a short vine stem, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 31,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "stoneDown-down-stoneHang-17-s42-7",
+   "start": "down-stoneHang-17.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a round heavy grey river stone with a soft cap of green moss, resting, a slack sling of green vine still wrapped loosely round it, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.42,
+   "seed": 7,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "stoneDown-down-stoneHang-17-s42-31",
+   "start": "down-stoneHang-17.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a round heavy grey river stone with a soft cap of green moss, resting, a slack sling of green vine still wrapped loosely round it, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.42,
+   "seed": 31,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "stoneDown-down-stoneHang-17-s55-7",
+   "start": "down-stoneHang-17.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a round heavy grey river stone with a soft cap of green moss, resting, a slack sling of green vine still wrapped loosely round it, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 7,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "stoneDown-down-stoneHang-17-s55-31",
+   "start": "down-stoneHang-17.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a round heavy grey river stone with a soft cap of green moss, resting, a slack sling of green vine still wrapped loosely round it, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 31,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "stoneDown-down-stoneHang-41-s42-7",
+   "start": "down-stoneHang-41.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a round heavy grey river stone with a soft cap of green moss, resting, a slack sling of green vine still wrapped loosely round it, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.42,
+   "seed": 7,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "stoneDown-down-stoneHang-41-s42-31",
+   "start": "down-stoneHang-41.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a round heavy grey river stone with a soft cap of green moss, resting, a slack sling of green vine still wrapped loosely round it, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.42,
+   "seed": 31,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "stoneDown-down-stoneHang-41-s55-7",
+   "start": "down-stoneHang-41.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a round heavy grey river stone with a soft cap of green moss, resting, a slack sling of green vine still wrapped loosely round it, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 7,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "stoneDown-down-stoneHang-41-s55-31",
+   "start": "down-stoneHang-41.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a round heavy grey river stone with a soft cap of green moss, resting, a slack sling of green vine still wrapped loosely round it, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 31,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt, tree branch, bough, tree trunk, ceiling, hanging scenery, leaves above it"
+  },
+  {
+   "name": "anchor-tall-anchor-53-s42-7",
+   "start": "tall-anchor-53.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a slender leaning young rainforest tree with mossy warm brown bark, one long branch arm reaching out level to the right with a clump of broad leaves at its tip, its own small rounded leafy crown whole inside the picture, nothing cut flat at the top, the trunk cut off clean at the bottom, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.42,
+   "seed": 7,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt"
+  },
+  {
+   "name": "anchor-tall-anchor-53-s42-31",
+   "start": "tall-anchor-53.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a slender leaning young rainforest tree with mossy warm brown bark, one long branch arm reaching out level to the right with a clump of broad leaves at its tip, its own small rounded leafy crown whole inside the picture, nothing cut flat at the top, the trunk cut off clean at the bottom, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.42,
+   "seed": 31,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt"
+  },
+  {
+   "name": "anchor-tall-anchor-53-s55-7",
+   "start": "tall-anchor-53.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a slender leaning young rainforest tree with mossy warm brown bark, one long branch arm reaching out level to the right with a clump of broad leaves at its tip, its own small rounded leafy crown whole inside the picture, nothing cut flat at the top, the trunk cut off clean at the bottom, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 7,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt"
+  },
+  {
+   "name": "anchor-tall-anchor-53-s55-31",
+   "start": "tall-anchor-53.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a slender leaning young rainforest tree with mossy warm brown bark, one long branch arm reaching out level to the right with a clump of broad leaves at its tip, its own small rounded leafy crown whole inside the picture, nothing cut flat at the top, the trunk cut off clean at the bottom, one single object on its own, for a sunny rainforest canopy trail, warm bark browns, mossy yellow-greens, honey and amber. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 31,
+   "steps": 30,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, platform under it, display stand, ground patch, puddle, shadow under it, background trees, sky, pink on the object, magenta on the object, sloth, face, eyes, creature, animal, insect swarm, wasp, water, rain, light rays, sun beams, grass, moss ground, earth, dirt"
+  }
+ ]
+}

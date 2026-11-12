@@ -11,7 +11,9 @@ import type { LevelConfig } from '../../src/game/types.ts';
 /** the longest quiet stretch on Normal before the goal section's entry (the outro excluded), where its middle lies, and the outro's px */
 export function quietOf(cfg: LevelConfig, st: Gen2Stage): { quiet: number; outro: number; x: number } {
   const goal = st.gen2.sections.filter((q) => q.phase === 'goal').pop();
-  const R = pickRoute(cfg.objectiveType, withGoals(st as never) as never);
+  // (on a copy: withGoals writes the goal numbers onto the stage it is given, and a stage the list's search measured then differed from
+  // its own replay on a purge stage, easyGoal/normalGoal/easyToday: seedlist 1-3 --check, P13 11-12)
+  const R = pickRoute(cfg.objectiveType, withGoals({ ...st } as never) as never);
   const dn = deadTime(R.used.br.beats, R.used.br.total, NORMAL_GAP, R.used.samples);
   const gx = goal ? goal.x0 : Infinity;
   let worst = 0, x = 0;

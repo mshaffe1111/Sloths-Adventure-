@@ -17,6 +17,11 @@ const n12 = (move: ReachMove, climb: [number, number], n: [number, number, numbe
   { move, scope: 'normal-1-2', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
 ];
 
+/** a Normal row of 1-3's own scope (P13, 11-12) */
+const n13 = (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
+  { move, scope: 'normal-1-3', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
+];
+
 /** every flown row: reach.md §2 ("Normal 1-1 and Easy are the same unless two figures are given"), then 1-2's Normal (chain.md §1) */
 export const FLOWN_ROWS: readonly FlownArc[] = [
   // (N any 246, not the table's 244: the same row's "the Critic's finer flight found 246 on Normal too: design to 246")
@@ -41,5 +46,19 @@ export const FLOWN_ROWS: readonly FlownArc[] = [
   ...n12('double-tap-tap', [150, 143], [191, 278, 299], 'chain.md §1 "double-tap-tap 150 / 143"'),
   ...n12('bounce', [223, 217], [178, 178, 178], 'chain.md §1 "bounce 223 / 217, gap 178"'),
   ...n12('bounce-air', [316, 307], [340, 340, 340], 'chain.md §1 "bounce-air 316 / 307, gap 340"'),
+  // 1-3 on Normal (P13, 11-12): flown on stage 1-3 on t-w1-creatures + t-12-fly, `FLIGHT_STAGE=1-3 npx tsx reference/specs/sims/flight.ts
+  // normal <rise|dist|ddist|bdist|chain>` (reference/qa-reports/P13/fly/). Its help is easeAssist(3): every row the block column's figure,
+  // as 1-2's are. Against 1-2: the doubles and the bounce + air jump climb 1 px less, the from-70 gaps of the flick, the doubles and the
+  // single hold 1 px less, the double flick's any 1 px less, the bounce + air jump's gap 335 (5 less). The single hold's any is the
+  // flown 244, not 1-1's "design to 246" (no finer flight of 1-3 has been made: the measured figure, never a looser one).
+  // Easy on 1-3 flies exactly as easy-any (every table identical to 1-2's Easy).
+  ...n13('single-hold', [123, 117], [137, 223, 244], 'chain.md §1 "1-3: single-hold 123 / 117, gap 137 / 223 / 244"'),
+  ...n13('single-flick', [123, 116], [127, 213, 239], 'chain.md §1 "1-3: single-flick 123 / 116, gap 127 / 213 / 239"'),
+  ...n13('single-tap', [87, 81], [77, 163, 184], 'chain.md §1 "1-3: single-tap 87 / 81, gap 77 / 163 / 184"'),
+  ...n13('double-hold', [213, 206], [291, 379, 409], 'chain.md §1 "1-3: double-hold 213 / 206, gap 291 / 379 / 409"'),
+  ...n13('double-flick', [211, 204], [282, 370, 395], 'chain.md §1 "1-3: double-flick 211 / 204, gap 282 / 370 / 395"'),
+  ...n13('double-tap-tap', [149, 143], [190, 278, 299], 'chain.md §1 "1-3: double-tap-tap 149 / 143, gap 190 / 278 / 299"'),
+  ...n13('bounce', [223, 217], [178, 178, 178], 'chain.md §1 "1-3: bounce 223 / 217, gap 178"'),
+  ...n13('bounce-air', [315, 306], [335, 335, 335], 'chain.md §1 "1-3: bounce-air 315 / 306, gap 335"'),
 ];
 

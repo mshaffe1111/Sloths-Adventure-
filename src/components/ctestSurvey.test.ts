@@ -124,3 +124,11 @@ test('a key typed into a text box is the text, never the game (the notes ate P, 
   const inp = (await import('node:fs')).readFileSync(new URL('../game/inputEngine.ts', import.meta.url), 'utf8');
   assert.match(inp, /private handleKeyDown = \(e: KeyboardEvent\) => \{[\s\S]{0,300}TEXTAREA[\s\S]{0,80}return;/);
 });
+
+test("1-3's chips are the story keeper's words (11-12 1:40 PM, and the two snakes on a log's, 2:10 PM), each beat once", () => {
+  const want: Record<string, string> = {
+    'w1-13-lesson': 'the first hive', 'w1-13-again': 'the snake on watch', 'w1-13-stone-stair': 'the stone on the steps', 'w1-13-other-way': 'the branches with no vine',
+    'w1-13-perch': 'the high branch', 'w1-13-gallery': 'three traps in a row', 'w1-13-two-snakes': 'the two snakes on a log', 'w1-13-finale': 'the last two snakes',
+  };
+  for (const [id, words] of Object.entries(want)) assert.equal(STRETCH_WORDS[id], words, id);
+});

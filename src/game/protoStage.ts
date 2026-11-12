@@ -66,8 +66,8 @@ import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, t
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4' | '8-4';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4' | '8-4';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
 // 5-5 Caught in Silk (w5Stages.ts): the cocoons and the pouch scene
 HAND_STAGES['5-5'] = '5-5';
 // 7-4 The Way Down (Matt, 2026-10-29: not a climb; the floor crumbles into a slide seen from behind: w7Slide.ts)
@@ -111,6 +111,12 @@ export interface StageHint {
    * (said the first time that stage is played)
    */
   firstOf?: string;
+  /**
+   * a stage's own TEACH line (its first trap, a new creature's way): Dot says it as a teach line, which waits for a clear moment (up
+   * to TEACH_WAIT_MS) rather than being old news after a few seconds, stays its full reading time, and is never cut by a stock lesson
+   * (dotLines.ts engineGuideLine `teach`). The stage's data says so; the engine names no stage
+   */
+  teach?: true;
 }
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }
@@ -343,8 +349,6 @@ export const NEST_GOAL_48 = 8;
 /** 4-8's falls: how far onto the shelf the water lands (the boulder's last stretch), and how far above the shelf it pours from */
 const FALL_LIP = 60;
 const FALL_HEAD = 280;
-/** 1-3 Branch Snakes asks for 16 snakes, not 10: the stage holds about 25, so the punching it teaches is most of the way through */
-export const SNAKE_GOAL_13 = 16;
 
 /** the stage's length target: a quick, sure player (Matt) needs at least this long (s) */
 export const EXPERT_SECONDS = 140;
@@ -1776,44 +1780,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     pieces.push({ k: 'snakes', x0, x1: x });
   }
 
-  if (plan === '1-3') {
-    // 1-3 Branch Snakes: punching. One snake asleep on a wide branch to learn on, then snakes on narrow branches (punch or hop),
-    // then a snake guarding a rope: clearing the stage teaches Shimmy Rope, and a short rope near the end is there to try it on.
-    // (Rebuilt 2026-10-28: the walks between the snakes hold rocks to hop and dips, the stumps stay low, no tall double jumps.)
-    beat('Learn: the sleeping snake', () => {
-      rest(R.r(420, 470));
-      // (stumps and a rock before the first snake: the first-timer bot walked into it 2.5 s in, before Dot's tip, on every roll; nothing
-      // can hurt in the first five seconds, 2026-10-28)
-      lowStumps();
-      busy(1, ['log'], R.r(200, 240));
-      const wx = x + 120;
-      branch(wx, wx + 420, G - 90);
-      snake(wx + 260, G - 90, 60, true);
-      row(wx + 40, wx + 160, G - 124, 2, 'orchid');
-      hint(wx - 80, 'Hop up beside the sleeping snake and tap to punch it', 'Hop up beside the sleeping snake and press Punch', 'Hop up beside the sleeping snake and press J to punch');
-      run(R.r(600, 640));
-      expert += 3;
-      // (then two more snakes, awake now, in this roll's rhythm: w1Sections.ts)
-      section('start');
-      flag();
-    });
-    beat('Test: snakes on the branches', () => {
-      hint(x + 60, 'Punch the snakes or hop over them', 'Punch the snakes or hop over them', 'Punch the snakes or hop over them');
-      section('develop');
-      flag();
-    });
-    beat('Twist: the rope guard', () => {
-      hint(x + 60, 'A snake guards the rope', 'A snake guards the rope', 'A snake guards the rope');
-      section('twist');
-      flag();
-    });
-    beat('Finish', () => {
-      section('finish');
-      // the short rope to try the new move on (it needs the skill this stage teaches, so it is a reason to come back)
-      ropeGap(false, true, true);
-      homeRun();
-    });
-  }
 
   /** petals arcing over soft gaps only a double jump crosses: the top of each arc is higher than one jump reaches */
   function doubleArcs(tight = false) {
@@ -5329,7 +5295,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
   cid = heartsAtFlags(C, checkpoints, cid);
   // the puzzle rooms' own platforms (a seesaw's two ends, a gate's door): added once, here, so the game and the check see the same ground
   const kit: KitExtras | undefined = ROOMS.length ? { rooms: ROOMS } : undefined;

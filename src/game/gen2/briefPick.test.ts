@@ -25,9 +25,12 @@ test('`pick`: the whole library less what is parked and what the deal holds no t
   const pool = stagePool(withBrief({ pick: {} }), '1-1'), got = new Set(ids(pool));
   const parked = M0.sections.filter((t) => t.parked), deal = M0.graphs!.briefs['1-1'].deal!;
   assert.ok(parked.length >= 3 && parked.every((t) => !got.has(t.id)), 'a parked section is in a pool picked by need');
-  // (sections another stage's list held are in: the stage ids in `feel` are not read)
-  const others = M0.sections.filter((t) => !t.parked && t.feel && !t.feel.includes('1-1') && (!t.content || t.content === 'structural' || t.content in deal));
+  // (sections another stage's list held are in: the stage ids in `feel` are not read; but a stage's OWN pieces (`own`, W1C 11-12: 1-3's
+  //  designed arc) are in no other stage's pool, a pick by need included)
+  const others = M0.sections.filter((t) => !t.parked && !t.own && t.feel && !t.feel.includes('1-1') && (!t.content || t.content === 'structural' || t.content in deal));
   assert.ok(others.length >= 3 && others.every((t) => got.has(t.id)), `${others.filter((t) => !got.has(t.id)).map((t) => t.id)} left out by a stage id`);
+  const own = M0.sections.filter((t) => t.own);
+  assert.ok(own.length >= 3 && own.every((t) => !got.has(t.id)), `${own.filter((t) => got.has(t.id)).map((t) => t.id)}: a stage's own piece picked by need`);
   // (a type the deal does not hold is out: 1-1's deal has no rope)
   assert.ok(M0.sections.some((t) => t.content === 'rope') && pool.every((t) => t.content !== 'rope'));
   // (a deal without floating takes every floating section out, and nothing else)

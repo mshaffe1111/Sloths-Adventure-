@@ -1,5 +1,5 @@
 /**
- * predators/registry — the kinds a stage's cast may name, as each plays in a world (ways.ts `inWorld`, over roster.ts's casts: a way to beat an animal is
+ * predators/registry — the kinds a stage's cast may name, as each plays in a world (ways.ts `inWorld`: a way to beat an animal is
  * only there once its move is taught). World 1's three today; a world adds its own when it is laid (casts.ts holds the first drafts,
  * kept out of here so the game does not carry animals no stage can name yet).
  */

@@ -1,0 +1,11 @@
+proven: 130 of 130 seeds (every bot passes, none under 120 s) -> /tmp/claude-0/pd-1-130.json
+castBots 1-3, seeds 1-130
+kid    normal PASS 130/130; time median 139.3 s (min 134); hits 12 lives 0 (foe:snake 12); cleared trap 1552, stomp 141, punch 4, kick 1; told of traps 130/130; first trap sprung 130/130; traps sprung 1422/1560; turned back 49; left 512
+kid    easy   PASS 130/130; time median 136.3 s (min 133.3); hits 0 lives 0 (none); cleared trap 1538, stomp 35, kick 1; told of traps 130/130; first trap sprung 129/130; traps sprung 1408/1560; turned back 0; left 376
+adult  normal PASS 130/130; time median 144.5 s (min 139); hits 39 lives 0 (foe:snake 39); cleared trap 1560, punch 86, stomp 428, kick 2; told of traps 130/130; first trap sprung 130/130; traps sprung 1430/1560; turned back 0; left 134
+adult  easy   PASS 130/130; time median 142.3 s (min 136.1); hits 16 lives 0 (foe:snake 16); cleared trap 1561, stomp 250, punch 43; told of traps 130/130; first trap sprung 130/130; traps sprung 1431/1560; turned back 0; left 96
+child  normal PASS 130/130; time median 451.3 s (min 400); hits 77 lives 0 (foe:snake 77); cleared trap 1570, punch 234, stomp 208, kick 3; told of traps 130/130; first trap sprung 130/130; traps sprung 1441/1560; turned back 0; left 195
+child  easy   PASS 130/130; time median 309.2 s (min 274); hits 20 lives 0 (foe:snake 20); cleared trap 1549, punch 102, stomp 215; told of traps 130/130; first trap sprung 130/130; traps sprung 1426/1560; turned back 0; left 84
+middle normal PASS 130/130; time median 233 s (min 216.5); hits 37 lives 0 (foe:snake 37); cleared trap 1552, stomp 311, punch 179, kick 2; told of traps 130/130; first trap sprung 130/130; traps sprung 1425/1560; turned back 0; left 166
+middle easy   PASS 130/130; time median 209.4 s (min 194.7); hits 10 lives 0 (foe:snake 10); cleared trap 1546, stomp 246, punch 68, kick 1; told of traps 130/130; first trap sprung 130/130; traps sprung 1422/1560; turned back 0; left 89
+expert normal PASS 130/130; time median 197.9 s (min 184); hits 38 lives 0 (foe:snake 38); cleared trap 1545, stomp 379, punch 104, kick 2; told of traps 130/130; first trap sprung 130/130; traps sprung 1421/1560; turned back 0; left 180
