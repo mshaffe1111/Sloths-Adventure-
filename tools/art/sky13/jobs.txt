@@ -4,3 +4,5 @@ sky13-F 6af611f10f431c4f7b5639bb  1-3 far img2img from start-far13 (orchids/log/
 sky13-hdF 6af617655f2f1b7284b8ac45 native pass of far13-s70-23 round the strip as a circle (seamless wrap)  started 19:45Z
   sky13-hdF done 19:47Z (~2 GPU-min, ~$0.09): wrap seam 7.7 vs 0.85 between columns (the img2img take's ends painted apart).
 sky13-S  6af621705f2f1b7284b8b62b  the 1024-wide band round the join repainted whole (seam.py), s45/s55 x 7/23  started 20:28Z
+  sky13-S done ~20:31Z (ALL_DONE 111 s; ~3 GPU-min billed est., ~$0.14). Kept s55-7: join 1.69 vs 0.69 between any two columns (was 7.7; old far 12.9), no visible join. s45 takes kept the start's seam.
+  TOTAL sky13 ~10 GPU-min, ~$0.45 (estimates from GPU minutes).
