@@ -157,7 +157,10 @@ test("the story keeper's lines, verbatim, said where the design says: the lesson
   assert.equal(tips['hint.1-2.up'], 'The petals go up');
   each((st, d, s) => {
     const said = (id: string) => st.gen2.fills.filter((f: Any) => f.role === 'tip' && f.what === id);
-    assert.equal(said('roots').length, 0, `${d} seed ${s}: Dot promises something by the roots over an empty floor`);
+    // (the roots line, said once at the twist now that Meeca's note lies on its floor: noteFaults below)
+    const roots = said('roots'), tw = secOf(st, 'w1-12-hollow');
+    assert.equal(roots.length, 1, `${d} seed ${s}: "roots" said ${roots.length} times`);
+    assert.ok(roots[0].x >= tw.x0 && roots[0].x <= tw.x1, `${d} seed ${s}: "roots" outside the twist`);
     assert.equal(said('hint.1-2.up').length, 0, `${d} seed ${s}: the cut "The petals go up" laid on the stair`);
     for (const [id, beat] of [['thorns', 'w1-12-lesson'], ['thorns.then', 'w1-12-lesson']] as const) {
       const f = said(id);
@@ -189,6 +192,33 @@ test("Dot's thorn lines are 1-2's TEACH lines on every roll, both settings (the 
 test('PLANTED: with the thorn lines left out of teachTips they are laid as ordinary hints, and that is caught', () => {
   const st = plant((k) => ({ ...k, manifest: { ...k.manifest, teachTips: (k.manifest.teachTips ?? []).filter((m) => !m.startsWith('thorns')) } }))(1, 'normal');
   assert.deepEqual(teachOf(st), { thorns: 'hint', 'thorns.then': 'hint' });
+});
+
+/** where Meeca's note stands on a roll (proto.findSpot, the twist's findSpot socket; addFinds puts it there): on the twist's hollow floor,
+ *  clear of its root and low against it, 16-120 px past the root's right face ("Down in the hollow, low against a root.") */
+function noteFaults(st: Any, d: string): string[] {
+  const spot = st.proto?.findSpot;
+  if (!spot) return [`${d}: no find spot`];
+  const sec = secOf(st, 'w1-12-hollow');
+  const solids = st.platforms.filter((p: Any) => p.type === 'solid' && !p.broken && p.x < sec.x1 && p.x + p.width > sec.x0);
+  const floor = [...solids].sort((a: Any, b: Any) => b.y - a.y)[0];
+  const root = solids.find((p: Any) => p !== floor && Math.abs(p.y + p.height - floor.y) <= 2 && p.x > floor.x && p.x + p.width < floor.x + floor.width);
+  const out: string[] = [];
+  if (Math.abs(spot.b - floor.y) > 1 || spot.x < floor.x || spot.x > floor.x + floor.width) out.push(`${d}: the note at x ${spot.x} is not on the hollow floor ${Math.round(floor.x)}..${Math.round(floor.x + floor.width)}`);
+  if (!root) out.push(`${d}: no root on the hollow floor`);
+  else if (spot.x < root.x + root.width + 16 || spot.x > root.x + root.width + 120) out.push(`${d}: the note at x ${spot.x}, the root's right face at ${Math.round(root.x + root.width)}`);
+  return out;
+}
+
+test("Meeca's note lies in the twist's hollow, low against its root, on every roll, both settings (the find's spot: FX's findSpot)", () => {
+  each((st, d, s) => assert.deepEqual(noteFaults(st, d), [], `${d} seed ${s}`));
+});
+
+test('PLANTED: the twist without its findSpot has no note spot, and that is caught', () => {
+  const strip = (t: Any) => ({ ...t, subBlocks: t.subBlocks.map((b: Any) => ({ ...b, versions: b.versions.map((v: Any) => ({ ...v, sockets: v.sockets.filter((q: Any) => q.role !== 'findSpot') })) })) });
+  const st = plant((k) => ({ ...k, manifest: { ...k.manifest, sections: k.manifest.sections.map((t) => (t.id === 'w1-12-hollow' ? strip(t) : t)) } }))(1, 'normal');
+  assert.deepEqual(noteFaults(build(1, 'normal'), 'normal'), []);
+  assert.deepEqual(noteFaults(st, 'normal'), ['normal: no find spot']);
 });
 
 test('the length: at least 2 minutes for a quick player on every roll, under 4 for a first-timer (the time model)', () => {
