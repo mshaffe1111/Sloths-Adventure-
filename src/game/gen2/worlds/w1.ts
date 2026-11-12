@@ -1594,7 +1594,7 @@ export const W1_TIPS: Record<string, string> = Object.fromEntries(DOT_LINES.map(
 export function w1World(): WorldKit {
   const manifest: WorldManifest = {
     world: 1, name: 'The Home Forest', moves: ['double'],
-    ground: W1_KIT.ground, pit: W1_KIT.pit, pitDepth: W1_KIT.pitDepth, floorRoll: W1_KIT.floorRoll, rollRanges: W1_KIT.rollRanges,
+    ground: W1_KIT.ground, pit: W1_KIT.pit, pitDepth: W1_KIT.pitDepth, pitPainter: W1_KIT.pitPainter, floorRoll: W1_KIT.floorRoll, rollRanges: W1_KIT.rollRanges,
     graphs: W1_KIT.graphs, corridor: W1_KIT.corridor, themeShare: W1_KIT.themeShare, required: W1_KIT.required,
     creatures: [], props: [], pairs: [], decor: [], flowers: ['orchid', 'hibiscus'], sections: [...W1_SECTIONS], handBuilt: [],
     // (Dot's lines by their text id: the words a hint carries are the line's old text, which dotLines.ts swaps for the new look's words
