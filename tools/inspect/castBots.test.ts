@@ -14,7 +14,7 @@ const Y = 500;
 const plat = (id: number, x: number, width: number): Platform => ({ id, x, y: Y, width, height: 400, type: 'solid' } as Platform);
 const TRAP = { id: 1, kind: 'vine' as const, load: 'hive' as const, x: 560, y: Y, loadX: 820, loadY: Y - 210, landY: Y };
 
-function arena(o: { told: boolean; snake: boolean; from?: 'left' | 'right' }): { run: FirstTimerRun; e: any; snake: Enemy | null } { // eslint-disable-line @typescript-eslint/no-explicit-any
+function arena(o: { told: boolean; snake: boolean; from?: 'left' | 'right'; at?: number }): { run: FirstTimerRun; e: any; snake: Enemy | null } { // eslint-disable-line @typescript-eslint/no-explicit-any
   freshPhone('normal');
   setDifficulty('normal');
   Math.random = rng(7);
@@ -38,7 +38,7 @@ function arena(o: { told: boolean; snake: boolean; from?: 'left' | 'right' }): {
   e.proto.cast = { kinds: ['snake'], traps: [{ ...TRAP }] };
   e.proto.hints = [];
   e.startCast();
-  (run as any).sim.stand(right ? 250 : 1400, Y); // eslint-disable-line @typescript-eslint/no-explicit-any
+  (run as any).sim.stand(o.at ?? (right ? 250 : 1400), Y); // eslint-disable-line @typescript-eslint/no-explicit-any
   e.player.hp = e.player.maxHp;
   if (o.told) (run as any).learned.add('trap'); // eslint-disable-line @typescript-eslint/no-explicit-any
   return { run, e, snake };
@@ -71,4 +71,13 @@ test('coming the other way along the branch he meets the animal before the handl
   run.play();
   // (he deals with the snake by the walk's own punch or hop; never a walk past it to reach the vine)
   assert.notEqual(e.cast.members[0].s.beatenBy, 'trap');
+});
+
+test('his thumb carried him past the handle he meant to punch: he walks back to it and springs it (W1C\'s trace, 1-3 seed 1)', () => {
+  // (he picked this trap, then ran on 60 px past where he stands to punch it: the goal is kept, so he turns back for it)
+  const { run, e, snake } = arena({ told: true, snake: true, at: 600 });
+  (run as any).trapGoal = e.cast.traps[0].post; // eslint-disable-line @typescript-eslint/no-explicit-any
+  run.play();
+  assert.notEqual(e.cast.traps[0].phase, 'set', 'he went back and sprang it');
+  assert.equal(snake!.kit!.beatenBy, 'trap');
 });

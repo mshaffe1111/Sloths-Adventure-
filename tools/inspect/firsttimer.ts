@@ -801,6 +801,8 @@ export class FirstTimerRun {
   private punchAt: number | null = null;
   /** a drop trap he has just hit: he stands until it is down (castPlan) */
   private trapWait: { post: TrapPost; until: number } | null = null;
+  /** the drop trap he means to use (castPlan): kept until it is sprung, so he walks back to it when his thumb carries him past */
+  private trapGoal: TrapPost | null = null;
   /** the shrine sealed with the goal short, and Dot has said why: he turns back for an animal he passed, as a player told so does
    *  (`id` the animal, `best` the nearest he has come to it, `since` when he turned, `more` when he last came nearer: 20 s
    *  with no nearer and he gives it up); `turnBacks` how often */
@@ -1740,29 +1742,46 @@ export class FirstTimerRun {
       if (t < this.trapWait.until && tr && tr.phase !== 'down') return {};
       this.trapWait = null;
     }
-    if (!this.learned.has('trap') || !p.grounded || p.climbing) return null;
-    const mid = p.x + p.width / 2;
-    for (const tr of c.traps) {
-      if (tr.phase !== 'set') continue;
-      const h = tr.post;
-      // (on the ground he stands on, ahead of him, or just behind his middle: he went a step past it)
-      if (Math.abs(h.y - p.y) > 24) continue;
-      const ahead = (h.x - mid) * fdir;
-      if (ahead < -40 || ahead > 260) continue;
-      // (armed: an animal of the cast not yet cleared under its load, BEYOND the handle: he meets the handle first, the safe way. Coming
-      // back along the branch, he meets the animal first, and the walk's own punch or hop is his)
-      if (!c.members.some((m) => !m.cleared && scares(h, m.s.x, m.s.y) && (m.s.x - h.x) * fdir > 0)) continue;
-      // (he stands with his middle this far before the handle, facing it: the punch's reach, castEngine.test.ts)
-      const stand = h.x - fdir * 28;
-      const off = stand - mid;
-      if (Math.abs(off) > 6) return off > 0 ? { right: true } : { left: true };
-      if ((p.facing >= 0 ? 1 : -1) !== fdir) return fdir > 0 ? { right: true } : { left: true };
-      this.punchAt = t + this.who.hesitate;
-      this.swapGap = between(this.r, this.who.swap);
-      this.trapWait = { post: h, until: this.punchAt + 2.5 };
-      return {};
+    if (!this.learned.has('trap') || !p.grounded || p.climbing) {
+      this.trapGoal = null;
+      return null;
     }
-    return null;
+    const mid = p.x + p.width / 2;
+    // (armed: an animal of the cast not yet cleared under its load, on the far side of the handle from him: he meets the handle first,
+    // the safe way. Coming back along the branch, he meets the animal first, and the walk's own punch or hop is his)
+    const armed = (h: TrapPost, from: number) => c.members.some((m) => !m.cleared && scares(h, m.s.x, m.s.y) && (m.s.x - h.x) * (h.x - from) > 0);
+    // (a trap he has picked stays his goal until it is sprung or no longer worth it: his thumb carries him on 200 px and more after he
+    // means to stop (W1C's trace, 1-3 adult Easy seed 1), and he turns back for the vine he was just told to punch, as a player does)
+    let goal = this.trapGoal ? c.traps.find((q) => q.post === this.trapGoal && q.phase === 'set') : undefined;
+    if (goal && (Math.abs(goal.post.y - p.y) > 24 || Math.abs(goal.post.x - mid) > 420 || !armed(goal.post, goal.post.x - Math.sign(goal.post.loadX - goal.post.x)))) goal = undefined;
+    if (!goal) {
+      this.trapGoal = null;
+      goal = c.traps.find((tr) => {
+        if (tr.phase !== 'set') return false;
+        const h = tr.post;
+        // (on the ground he stands on, ahead of him, or just behind his middle: he went a step past it)
+        if (Math.abs(h.y - p.y) > 24) return false;
+        const ahead = (h.x - mid) * fdir;
+        return ahead >= -40 && ahead <= 260 && armed(h, mid);
+      });
+      if (!goal) return null;
+      this.trapGoal = goal.post;
+    }
+    const h = goal.post;
+    // (he stands with his middle this far before the handle, on the side away from the load, facing it: the punch's reach,
+    // castEngine.test.ts)
+    const toLoad: -1 | 1 = h.loadX >= h.x ? 1 : -1;
+    const stand = h.x - toLoad * 28;
+    const off = stand - mid;
+    if (Math.abs(off) > 6) return off > 0 ? { right: true } : { left: true };
+    // (stopped: the thumb is off; he waits for himself to stand still before he turns and punches)
+    if (Math.abs(p.vx) > 20) return {};
+    if ((p.facing >= 0 ? 1 : -1) !== toLoad) return toLoad > 0 ? { right: true } : { left: true };
+    this.punchAt = t + this.who.hesitate;
+    this.swapGap = between(this.r, this.who.swap);
+    this.trapWait = { post: h, until: this.punchAt + 2.5 };
+    this.trapGoal = null;
+    return {};
   }
 
   /** a tier bot under a wall `face` px tall, over his double (about 185 px), with a bounce mushroom just behind him: he hops back onto it
