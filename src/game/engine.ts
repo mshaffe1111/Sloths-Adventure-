@@ -522,7 +522,8 @@ export class GameEngine {
    * screen and frame rate, and the same whether he is on it or not. It runs with the game (stops for a pause, slows with slow motion).
    */
   private vineClock = 0;
-  private lastPausedRender = 0;
+  /** paused, the stage has been drawn once, still: the loop leaves the canvas alone until play resumes or it must be drawn again (A-06) */
+  private stillDrawn = false;
   /**
    * Automatic quality: 0 = full, 1 = lighter resolution, 2 = lightest. Only ever steps down, and only when the
    * screen genuinely cannot keep up (the simulation itself never changes).
@@ -1018,7 +1019,11 @@ export class GameEngine {
   }
 
   private onContextLost = () => recorder.glitch('contextlost', `x${Math.round(this.player?.x ?? 0)} q${this.quality} ${this.canvas.width}x${this.canvas.height}`);
-  private onContextRestored = () => recorder.glitch('contextrestored', `x${Math.round(this.player?.x ?? 0)}`);
+  private onContextRestored = () => {
+    // (the restored canvas is blank: a paused stage is drawn once more)
+    this.stillDrawn = false;
+    recorder.glitch('contextrestored', `x${Math.round(this.player?.x ?? 0)}`);
+  };
 
   private handleResize = () => {
     this.resizeCanvas();
@@ -1063,6 +1068,8 @@ export class GameEngine {
   }
 
   public resizeCanvas() {
+    // (a new size clears the canvas: a paused stage is drawn once more)
+    this.stillDrawn = false;
     const dpr = this.renderDpr();
     const rect = this.canvas.getBoundingClientRect();
     const w = rect.width || window.innerWidth;
@@ -1207,6 +1214,8 @@ export class GameEngine {
       this.pauseHeld = air ? { jump: this.gameTime - this.heldJumpAt < HELD_RECENT, dir: this.gameTime - this.heldDirAt < HELD_RECENT ? this.heldDir : 0 } : null;
     }
     this.isPaused = true;
+    // (a shake under way stops here: it is drawn from the wall clock and only dies away in play, so it shook the still behind the menu)
+    this.camera.trauma = 0;
     if (this.helpAsking) this.outerPause = true;
   }
 
@@ -1326,6 +1335,9 @@ export class GameEngine {
         }
       }
       if (!this.isPaused && this.hitstopTimer <= 0 && recorder.on) this.watchGlitches(now);
+      // paused (the menu, a find's note, the help offer): the stage is drawn once, still, and then left alone until play resumes or it must
+      // be drawn again (a resize, a restored canvas). PERFORMANCE-RULES §3.5; audit A-06: it was redrawn every frame behind the menu
+      if (this.isPaused && this.stillDrawn && !this.resizeDue) return;
 
       // (a quality step from the last frame: the canvas takes its new size now, then this frame draws it)
       if (this.resizeDue) {
@@ -1334,6 +1346,7 @@ export class GameEngine {
       }
       const r0 = timed ? performance.now() : 0;
       this.render();
+      this.stillDrawn = this.isPaused;
       const tDraw = timed ? performance.now() - r0 : 0;
       if (pl) pl.record(elapsed, tUpd, tDraw, now, () => this.perfInfo());
       if (recorder.on) this.recordFrames(elapsed, now);
