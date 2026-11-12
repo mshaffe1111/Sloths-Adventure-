@@ -561,7 +561,7 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
  * wobble (never a ruler-straight cut). A moss floor (`moss`) is the World 1 kit's moss strip. `view`: only what is on screen.
  */
 export function drawBankArt(
-  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
+  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean; lipless?: boolean; shadeFrom?: number }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
   high?: { foot: number; runTop: number; left: boolean; right: boolean },
 ): boolean {
   if (!protoArtReady()) return false;
@@ -615,7 +615,10 @@ export function drawBankArt(
   }
   // (its darkening with depth is the bank's own: from about where the middle of the view is when he stands on it to full dark where the
   // bottom of that view is, so the soil looks the same however the view is placed and can be painted once: groundChunks)
-  drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, p.y + DEPTH_BELOW * depthView, p.y - DEPTH_ABOVE * depthView, true, groundDepth ?? undefined);
+  // (`shadeFrom`: a hollow's hurt floor darkens from its lower lip's top, as its banks' soil does: from its own top it stood as a lighter
+  // block under the thorns, the lead 11-12)
+  const sy = open.shadeFrom ?? p.y;
+  drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, sy + DEPTH_BELOW * depthView, sy - DEPTH_ABOVE * depthView, true, groundDepth ?? undefined);
   // (World 7, inside the soil's outline: a bank other than a high ledge with Matt's painted roots and statues set into its soil,
   // w7FaceArt.ts)
   if (w === 7 && view && high === undefined) drawW7Face(ctx, p, bottom, view);
@@ -635,14 +638,18 @@ export function drawBankArt(
   }
   // the top lip, under the end pieces' own lip corners (`bare`: a pit's low step, too narrow for the end pieces, which are wider than it
   // and see-through below their rims: its soil keeps the end's wobbling face and the lip runs to its ends)
+  // (`lipless`: a hollow's hurt floor, the bottom of a hole: its grass lip stood under the thorns as a lit slab with a straight foot,
+  // the lead 11-12. Its soil runs on under the hollow's rounded floor, w1Pits.ts)
   const la = open.left && !open.bare ? p.x + 30 : p.x - 1;
   const lb = open.right && !open.bare ? p.x + p.width - 30 : p.x + p.width + 1;
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(la, p.y - 120, lb - la, 260);
-  ctx.clip();
-  drawLip(ctx, w, la, lb, p.y, view);
-  ctx.restore();
+  if (!open.lipless) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(la, p.y - 120, lb - la, 260);
+    ctx.clip();
+    drawLip(ctx, w, la, lb, p.y, view);
+    ctx.restore();
+  }
   const end = (right: boolean, step?: number) => {
     const x = right ? p.x + p.width : p.x;
     // (only an end on screen: a long bank's far end is thousands of units off)
@@ -1009,6 +1016,9 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
   const pits = new Map<string, { x0: number; x1: number; top: number; pieces: Platform[] }>();
   for (const p of banks) {
     if (!vis(p)) continue;
+    // (a hollow's hurt floor, gen2 pit 'hurt': its hole is painted whole by World 1's pit painter, w1Pits.ts. This shade's straight sides
+    // stood under its thorns as a blue-grey box, the lead 11-12)
+    if (p.pit === 'hurt') continue;
     const L = tall.filter((q) => q.y <= p.y - 60 && q.x + q.width <= p.x + p.width + 2 && q.x + q.width >= p.x - 300).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
     const R = tall.filter((q) => q.y <= p.y - 60 && q.x >= p.x - 2 && q.x <= p.x + p.width + 300).sort((a, b) => a.x - b.x)[0];
     if (!L || !R) continue;
@@ -1073,7 +1083,8 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     // its torn lips and its thorn bed are drawn over it by World 1's pit painter, w1Pits.ts. Open, its end's face was cut back under the
     // end piece down to the floor and the pit showed a box-shaped cave there and a grey-green sliver, EN-W's Roughs 1-3, 11-11)
     const overHollow = (side: 'l' | 'r') => sideOverHollow(p, banks, side);
-    drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks) }, false, view.y1 ?? 0, view, wall || undefined);
+    const lips = p.pit === 'hurt' ? banks.filter((q) => q !== p && q.y < p.y && (Math.abs(q.x + q.width - p.x) < 2 || Math.abs(p.x + p.width - q.x) < 2)).map((q) => q.y) : [];
+    drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined }, false, view.y1 ?? 0, view, wall || undefined);
   }
   shadeUpTo(-Infinity);
 }
