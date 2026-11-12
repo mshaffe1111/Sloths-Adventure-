@@ -167,10 +167,8 @@ export class Conductor {
       }
       this.ctx = ctx;
       ctx.onstatechange = this.announce;
-      // the recorded sounds load in the background; until they are ready the effects use their synthesized layers
+      // the sampled layers of the few synthesized effects (sfx.ts) load in the background; until they arrive those play their synthesized layers alone
       void import('./sampleLoader.ts').then((m) => m.loadSamples(this.core as AudioCore)).catch(() => {});
-      // the recorded effect set: decoded at once, the frequent moves first, so the first jump already has its sound
-      void import('./sfxRecLoader.ts').then((m) => m.loadRec(this.core as AudioCore)).catch(() => {});
       // the orchestra the game's stingers and cues play on (the music no longer needs it: it is recorded)
       this.warmEffects();
       // the recorded music: its manifest and files' addresses, then whatever piece was asked for in the meantime
@@ -194,9 +192,25 @@ export class Conductor {
     }
     this.applyRunState(fromTap);
     this.announce();
+    this.loadRecorded();
     // anything asked for before audio was allowed
     if (this.core && this.loops && !this.loops.playing && this.wantTheme) this.startTheme(this.wantTheme, this.wantOpts, true);
     if (this.core && this.wantAmbient && this.amb && !this.amb.type) this.amb.start(this.wantAmbient);
+  }
+
+  /**
+   * the recorded effect set (most of the game's effects: sfxRec.ts has no stand-in for them): decoded at once, the frequent moves first, so
+   * the first jump already has its sound. A load that failed is tried again on the next tap (sfxRecLoader.ts forgets it, and says so once)
+   */
+  private recJob: Promise<void> | null = null;
+  private loadRecorded() {
+    const core = this.core;
+    if (!core || this.recJob) return;
+    this.recJob = import('./sfxRecLoader.ts')
+      .then((m) => m.loadRec(core))
+      .catch(() => {
+        if (this.core === core) this.recJob = null;
+      });
   }
 
   private stingsWarm = false;
