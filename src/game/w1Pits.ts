@@ -443,6 +443,8 @@ export const HOLLOW_FOOT = 16;
 export const HOLLOW_FACE_LIFT = 38;
 /** the end piece is drawn this narrow at a hollow's wall (its face's swings scaled with it), so its face fits the bounds and is never cut */
 export const HOLLOW_FACE_SCALE = 0.6;
+/** the rows (px) a wall's picture is moved in, each onto the wall's line at its middle */
+const HOLLOW_ROW = 3;
 /** how far into its bank a wall's painted face is shown (px), fading out into the bank's soil over the inner half */
 export const HOLLOW_BAND = 28;
 const faceX = (pts: ReadonlyArray<[number, number]>, y: number) => {
@@ -454,21 +456,95 @@ const faceX = (pts: ReadonlyArray<[number, number]>, y: number) => {
   }
   return pts[pts.length - 1][0];
 };
-const faceCache = new WeakMap<object, { l: Array<[number, number]> | null; r: Array<[number, number]> | null }>();
-const facesOf = (g: PitGap) => {
-  let f = faceCache.get(g);
-  if (!f) {
-    const [yl, yr] = g.walls ?? [g.top, g.top], foot = (g.floor ?? g.top + 150) + HOLLOW_FOOT + 40;
-    const sc = (x: number, pts: Array<[number, number]>) => pts.map(([px, py]): [number, number] => [x + (px - x) * HOLLOW_FACE_SCALE, py]);
-    faceCache.set(g, (f = { l: g.lipL ? sc(g.x0, endFace(1, g.x0, yl, foot, true)) : null, r: g.lipR ? sc(g.x1, endFace(1, g.x1, yr - HOLLOW_FACE_LIFT, foot, false)) : null }));
+/**
+ * how far up its piece the right wall's face is drawn: HOLLOW_FACE_LIFT, and as much again as the right lip lies under the left, so the two
+ * faces are never at the same height of the piece (a step down of HOLLOW_FACE_LIFT drew one mirrored picture, 1-2's dip: RF3)
+ */
+export const hollowFaceLift = (g: Pick<PitGap, 'top' | 'walls'>) => {
+  const [yl, yr] = g.walls ?? [g.top, g.top];
+  return HOLLOW_FACE_LIFT + Math.max(0, yr - yl);
+};
+/** where a wall's painted face may lie above the hollow's top (a taller bank's side over the lower lip): out past its bank's closed side
+ *  (protoArt.ts sideOverHollow: its soil ends in a straight cut there), so the face is the edge seen against the air, never that cut */
+export const HOLLOW_PROUD: readonly [number, number] = [-HOLLOW_JUT + 0.5, -1];
+/** where it may lie inside the hollow: HOLLOW_JUT into it to HOLLOW_BACK into its bank, never held on either bound */
+export const HOLLOW_IN: readonly [number, number] = [-HOLLOW_JUT + 0.5, HOLLOW_BACK - 0.5];
+/** over this many px each side of the hollow's top a taller wall's face goes from the one fit to the other */
+const HOLLOW_BLEND = 16;
+/** the span (px) a wall face's slow drift is taken over: what is narrowed to fit; its swings within it are kept */
+const HOLLOW_DRIFT = 61;
+interface WallLine { top: number; line: Float32Array; face: Float32Array }
+const wallCache = new WeakMap<object, { l: WallLine | null; r: WallLine | null }>();
+/**
+ * a wall's line, one value a px from its own lip's top down to past the foot: its bank's painted end face (drawn HOLLOW_FACE_SCALE
+ * narrow), fitted between the bounds by moving and narrowing it (one straight-line fit over each part, so the face keeps its shape), never
+ * by holding it on a bound: a held face ran as a straight cut (1-2's stair, RF3). `face` is the picture's own face at each px: the bake
+ * draws each row of the picture moved by line - face, so its painted edge is the line
+ */
+function wallLine(g: PitGap, right: boolean): WallLine | null {
+  if (!(right ? g.lipR : g.lipL)) return null;
+  const [yl, yr] = g.walls ?? [g.top, g.top];
+  const top = Math.floor(right ? yr : yl), foot = (g.floor ?? g.top + 150) + HOLLOW_FOOT, edge = right ? g.x1 : g.x0, d = right ? 1 : -1;
+  const pts = endFace(1, edge, right ? yr - hollowFaceLift(g) : yl, foot + 40, !right).map(([px, py]): [number, number] => [edge + (px - edge) * HOLLOW_FACE_SCALE, py]);
+  const n = Math.ceil(foot + 2 - top) + 1;
+  const face = new Float32Array(n), u = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    face[i] = faceX(pts, top + i);
+    u[i] = d * (face[i] - edge);
   }
+  // (each part's fit: the face's slow drift (its mean over HOLLOW_DRIFT px) moved and narrowed into the part's bounds, its own swings on it
+  // kept at their size (narrowed only past a third of the bounds), so the wall keeps the painted face's shape: the part above the hollow's
+  // top (a taller bank's side) into HOLLOW_PROUD, the part in it into HOLLOW_IN)
+  const base = new Float32Array(n), R = HOLLOW_DRIFT >> 1;
+  for (let i = 0; i < n; i++) {
+    let t = 0;
+    for (let j = i - R; j <= i + R; j++) t += u[Math.max(0, Math.min(n - 1, j))];
+    base[i] = t / (2 * R + 1);
+  }
+  const fit = (i0: number, i1: number, [lo, hi]: readonly [number, number]) => {
+    let a = Infinity, b = -Infinity, amp = 0;
+    let fits = true;
+    // (judged down to the floor's top: under it the wall rounds into the floor and the thorns stand over it)
+    for (let i = Math.max(0, i0); i < Math.min(n, i1, Math.ceil((g.floor ?? g.top + 150) - top) + 1); i++) {
+      a = Math.min(a, base[i]); b = Math.max(b, base[i]); amp = Math.max(amp, Math.abs(u[i] - base[i]));
+      fits &&= u[i] > lo && u[i] < hi;
+    }
+    // (a face that fits as it is stays as it is)
+    if (fits) return (i: number) => u[i];
+    if (a > b) return (i: number) => u[i];
+    const kd = Math.min(1, (hi - lo) / 3 / Math.max(amp, 1e-6)), l2 = lo + kd * amp, h2 = hi - kd * amp;
+    const k = b - a > h2 - l2 ? (h2 - l2) / (b - a) : 1;
+    const shift = k * a < l2 ? l2 - k * a : k * b > h2 ? h2 - k * b : 0;
+    return (i: number) => Math.max(lo, Math.min(hi, k * base[i] + shift + kd * (u[i] - base[i])));
+  };
+  const split = Math.round(g.top - top);
+  const inside = fit(split, n, HOLLOW_IN), above = split > 0 ? fit(0, split, HOLLOW_PROUD) : inside;
+  const line = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    // (the blend runs in under the top: above it nothing may carry the face back behind the bank's cut)
+    const t = split > 0 ? Math.min(1, Math.max(0, (i - split) / (2 * HOLLOW_BLEND))) : 1, s = t * t * (3 - 2 * t);
+    const v = i < split ? above(i) : Math.max(HOLLOW_IN[0], Math.min(HOLLOW_IN[1], above(i) * (1 - s) + inside(i) * s));
+    line[i] = edge + d * v;
+  }
+  return { top, line, face };
+}
+const linesOf = (g: PitGap) => {
+  let f = wallCache.get(g);
+  if (!f) wallCache.set(g, (f = { l: wallLine(g, false), r: wallLine(g, true) }));
   return f;
 };
-/** a hollow's wall at height y: [left x, right x] (world px): its banks' end faces, inside the bounds, rounded into its floor */
+const lineAt = (w: WallLine, y: number, of: 'line' | 'face' = 'line') => {
+  const a = w[of], i = Math.max(0, Math.min(a.length - 1, y - w.top)), i0 = Math.floor(i), i1 = Math.min(a.length - 1, i0 + 1);
+  return a[i0] + (a[i1] - a[i0]) * (i - i0);
+};
+/**
+ * a hollow's wall at height y: [left x, right x] (world px): its banks' end faces fitted inside the bounds, rounded into its floor. Above
+ * the hollow's top only a taller bank's wall has a line (its side over the lower lip); the other side is its lip's own end there
+ */
 export const hollowWalls = (g: PitGap, y: number): [number, number] => {
-  const f = facesOf(g);
-  let a = f.l ? Math.max(g.x0 - HOLLOW_BACK, Math.min(g.x0 + HOLLOW_JUT, faceX(f.l, y))) : g.x0;
-  let b = f.r ? Math.min(g.x1 + HOLLOW_BACK, Math.max(g.x1 - HOLLOW_JUT, faceX(f.r, y))) : g.x1;
+  const f = linesOf(g);
+  let a = f.l ? lineAt(f.l, y) : g.x0;
+  let b = f.r ? lineAt(f.r, y) : g.x1;
   const foot = (g.floor ?? g.top + 150) + HOLLOW_FOOT, r = Math.max(4, Math.min(40, (b - a) / 2 - 2));
   if (y > foot - r) {
     const d = Math.min(r, y - (foot - r)), inset = r - Math.sqrt(Math.max(0, r * r - d * d));
@@ -476,6 +552,11 @@ export const hollowWalls = (g: PitGap, y: number): [number, number] => {
     b -= inset;
   }
   return [a, b];
+};
+/** how far the wall's painted picture is moved at height y so its face lies on the wall's line (0 where the face fits as it is) */
+export const hollowWallShift = (g: PitGap, side: 0 | 1, y: number) => {
+  const w = linesOf(g)[side ? 'r' : 'l'];
+  return w ? lineAt(w, y) - lineAt(w, y, 'face') : 0;
 };
 /** everything a hollow paints darker than its banks' soil lies in this span (world x): its widest walls */
 export const hollowSpan = (g: PitGap): [number, number] => {
@@ -616,10 +697,17 @@ function bakeHollow(g: PitGap, drop: HTMLImageElement): { c: HTMLCanvasElement; 
   const ys: number[] = [];
   for (let y = g.top; y < foot; y += 3) ys.push(y);
   ys.push(foot);
+  // (the back runs on under a wall that stands out into the hollow, to its bank's cut: the painted face's own edge is soft and lies a px or
+  // two inside its line, and with nothing under it the sky showed through there as a light sliver, RF3)
+  const under = (y: number): [number, number] => {
+    const [a, b] = hollowWalls(g, y), k = Math.min(1, Math.max(0, (foot - 40 - y) / 20));
+    // (and eases off above the floor's rounding, which keeps its shape)
+    return [g.lipL ? a - k * Math.max(0, a - (g.x0 - 1)) : a, g.lipR ? b + k * Math.max(0, g.x1 + 1 - b) : b];
+  };
   const outline = (ctx: CanvasRenderingContext2D) => {
     ctx.beginPath();
-    ys.forEach((y, i) => (i ? ctx.lineTo : ctx.moveTo).call(ctx, hollowWalls(g, y)[0] - X0, y - Y0));
-    for (let i = ys.length - 1; i >= 0; i--) ctx.lineTo(hollowWalls(g, ys[i])[1] - X0, ys[i] - Y0);
+    ys.forEach((y, i) => (i ? ctx.lineTo : ctx.moveTo).call(ctx, under(y)[0] - X0, y - Y0));
+    for (let i = ys.length - 1; i >= 0; i--) ctx.lineTo(under(ys[i])[1] - X0, ys[i] - Y0);
     ctx.closePath();
   };
   // ── its back ──
@@ -666,25 +754,29 @@ function bakeHollow(g: PitGap, drop: HTMLImageElement): { c: HTMLCanvasElement; 
   k.restore();
   tk.clearRect(0, 0, W, H);
   // ── its walls ──
-  tk.save();
-  tk.translate(-X0, -Y0);
-  // (each drawn HOLLOW_FACE_SCALE narrow about its bank's end, as its face is in hollowWalls)
+  // (each drawn HOLLOW_FACE_SCALE narrow about its bank's end, as its face is in hollowWalls, then moved row by row onto the wall's line
+  // (hollowWallShift): its painted edge is the wall, at every height, with nothing held straight on a bound)
   const end = (x: number, y: number, right: boolean) => {
-    tk.save();
-    tk.translate(x, 0);
-    tk.scale(right ? HOLLOW_FACE_SCALE : -HOLLOW_FACE_SCALE, 1);
-    tk.drawImage(pc.end, -PIECE_AT[0], y - PIECE_AT[1]);
-    tk.restore();
+    mk.save();
+    mk.translate(x - X0, -Y0);
+    mk.scale(right ? HOLLOW_FACE_SCALE : -HOLLOW_FACE_SCALE, 1);
+    mk.drawImage(pc.end, -PIECE_AT[0], y - PIECE_AT[1]);
+    mk.restore();
   };
-  if (g.lipL) end(g.x0, yl, true);
-  if (g.lipR) end(g.x1, yr - HOLLOW_FACE_LIFT, false);
-  tk.restore();
+  for (const [side, on, top] of [[0, g.lipL, yl], [1, g.lipR, yr]] as const) {
+    if (!on) continue;
+    mk.clearRect(0, 0, W, H);
+    if (side === 0) end(g.x0, yl, true);
+    else end(g.x1, yr - hollowFaceLift(g), false);
+    for (let y = Math.floor(top); y < Y1; y += HOLLOW_ROW) tk.drawImage(m, 0, y - Y0, W, HOLLOW_ROW, hollowWallShift(g, side, y + HOLLOW_ROW / 2), y - Y0, W, HOLLOW_ROW);
+  }
+  mk.clearRect(0, 0, W, H);
   // (shown from just under each bank's own top (its torn lip covers the corner) down to the floor, HOLLOW_BAND into the bank, fading
   // into its soil over the band's inner half; a side with no bank of earth has no painted wall)
   for (const [side, on, top] of [[0, g.lipL, yl], [1, g.lipR, yr]] as const) {
     if (!on) continue;
     const d = side === 0 ? -1 : 1, y0 = Math.floor(top + 4);
-    const mx = along(side, -HOLLOW_BAND, mk, y0, (y) => hollowWalls(g, Math.max(y, g.top))[side]);
+    const mx = along(side, -HOLLOW_BAND, mk, y0, (y) => hollowWalls(g, y)[side]);
     // (the band's polygon: from the wall's own line HOLLOW_BAND into the bank; it fades into the soil from its mean line)
     const hg = mk.createLinearGradient(mx + d * HOLLOW_BAND - X0, 0, mx + d * HOLLOW_BAND * 0.3 - X0, 0);
     hg.addColorStop(0, 'rgba(0,0,0,0)');
@@ -707,8 +799,10 @@ function bakeHollow(g: PitGap, drop: HTMLImageElement): { c: HTMLCanvasElement; 
   tk.drawImage(m, 0, 0);
   // (shaded toward the bottom: the walls fall into the hole's dark)
   tk.globalCompositeOperation = 'source-atop';
-  const sv = tk.createLinearGradient(0, g.top - Y0, 0, foot - Y0);
-  sv.addColorStop(0, 'rgba(10,7,5,0.22)');
+  // (a taller bank's side above the hollow's top stands in the open, lit as its soil: it darkens from its own top to the hollow's)
+  const hi = Math.min(yl, yr), sv = tk.createLinearGradient(0, hi - Y0, 0, foot - Y0);
+  if (hi < g.top - 1) sv.addColorStop(0, 'rgba(10,7,5,0)');
+  sv.addColorStop((g.top - hi) / (foot - hi), 'rgba(10,7,5,0.22)');
   sv.addColorStop(1, 'rgba(10,7,5,0.66)');
   tk.fillStyle = sv;
   tk.fillRect(0, 0, W, H);
