@@ -67,3 +67,9 @@ offended!" stays as written.
 - "There's something down by the roots..." (hint.1-2.roots, approved 11-05) goes back in at the twist, the thorn-free hollow. Its
   label is "the note": BRIEF-1-2's "must" puts Meeca's note by the pink bell LOW and in plain sight, so the hollow holds the note
   (once the bell art exists, R-165.42), not petals alone.
+
+## 1-3 additions (2:12 PM ET)
+- New chip, for "two snakes, one hive": **the two snakes on a log**
+- The mission line changes, because on Normal the goal is every trap and the bare-branch snakes are optional, so "Clear the branches"
+  over-promises. New: **"Shake every vine, and off the snakes glide."** This supersedes "Clear the branches. Shake a vine and the snakes
+  glide off."
