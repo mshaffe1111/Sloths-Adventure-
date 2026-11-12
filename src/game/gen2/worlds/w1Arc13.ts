@@ -37,11 +37,11 @@ export const TRAP_LINE = LINES_13.traps;
 // ───────────────────────────── the drop-trap twist bricks (1-3's own) ─────────────────────────────
 /**
  * THE PHONE'S NUMBERS (w1Cast.ts's header, measured on stills of a roll): from its handle a trap's hung load is 140-190 px on, over
- * the middle of its snake's 122 px patch, so the vine, the load and the whole patch are on an upright phone's screen; the handle's
- * socket is 85-130 px before the load's (the near end of the patch); no ledge beside a handle is long enough for another animal to
+ * the middle of its snake's 105 px patch, so the vine, the load and the whole patch are on an upright phone's screen; the handle's
+ * socket is 85-130 px before the load's (at the log's near end); no ledge beside a handle is long enough for another animal to
  * be laid or topped up on (every one under 248 px: a patrol's 200 plus the lay's 24 px margins).
  * The lay keeps an animal 120 px from any prop (pipeline ANY_APART), its own trap's load socket included: so the load's SOCKET sits
- * at the patch's near end and the snake's at its far end, and `armedTraps` hangs the load over the patch's middle.
+ * at the log's near end and the snake's at the patch's far end, and `armedTraps` hangs the load over the patch's middle.
  */
 /** a ledge he walks or steps onto: no `landing` (Easy widens a landing by 48 px, EASY_LANDING: every px here is the phone's, and a
  *  ledge 48 px longer is one an animal can be topped up on, beside a handle; measured, Easy's first cut hung no pair at all) */
@@ -56,24 +56,28 @@ const bed = (key: string, after: string, w: R2, dy: R2 = [0, 0]): SectionPiece =
  *  patrol and its load are the LOG's (their sockets are on it); he hops up onto it and steps down off its far end. Until 11-12 the
  *  "branch" was a step of soil: in a stage called Branch Snakes nothing on screen was a branch. Off the `main` list, said so: a block
  *  ON a piece is main unless told (pipeline layLocal), and a flag stood on the log emptied its snake's socket */
-const fallen = (key: string, on: string, h: R2): SectionPiece => ({ key, shape: 'block', w: [900, 900], place: { kind: 'on', on, at: [0, 0], h }, style: 'log', main: false });
-/** a trapped snake's log is LOW (its load hangs TRAP_HANG over the log's top, and 150 px over his feet is behind the goal sign on a
- *  sideways phone: stills, 11-12); a bare one is a full step, the snake plain to see from the ledge before */
-const LOW: R2 = [24, 26], HIGH: R2 = [50, 56];
+const fallen = (key: string, on: string, h: R2, w: R2 = [900, 900], at: R2 = [0, 0]): SectionPiece => ({ key, shape: 'block', w, place: { kind: 'on', on, at, h }, style: 'log', main: false });
+/** every log is LOW, 24-26 px thick: World 1 paints a block that thin as its fallen log (grey bark, moss), and one a full step
+ *  thick (50-56 px) as a bright green hedge block, which is no log and not this stage's look (stills, 11-12). It also keeps a
+ *  trap's load, hung TRAP_HANG over the log's top, under the goal sign on a sideways phone (150 px over his feet is behind it) */
+const LOW: R2 = [24, 26];
 /** a ledge no animal can be laid on (under 248 px), and a short one under a flag's pad (pipeline FLAG_SPAN.pad 160): a flag keeps
  *  every animal 224 px off (patchFor), and one at the end of a wide ledge beside a branch emptied the snake's socket, so the load
  *  hung over nothing (measured: 86 of 404 traps on Normal before the short ledges stood either side of every branch) */
 const LEDGE: R2 = [230, 240], NARROW: R2 = [150, 155];
-/** a trapped snake's branch: its patch 122 px (the branch less the lay's 24 px at each end), one width so every px below holds */
-const SHORT: R2 = [170, 170];
+/** a trapped snake's log: its patch 105 px (the log less the lay's 24 px at each end), one width so every px below holds. Short on
+ *  purpose: the patch's far end is 213-215 px from the vine, so an awake snake pacing to it is still whole on an upright phone's
+ *  screen from where he stands to shake the vine (at 170 px its head was cut at the screen's edge: stills, 11-12) */
+const SHORT: R2 = [153, 153];
 /** a bare branch (no trap: the punch off its end, or the vault): the awake snake's own 200 px and more; Easy's is wider */
 const LONG: R2 = [360, 360], WIDE: R2 = [410, 410];
-/** on a trapped branch: the load's line 24 px in (the patch's near end), the snake's socket 122 px on, at the patch's far end
- *  (a socket outside its piece's patch is left empty, pipeline patchFor; an animal under 120 px from a prop is not laid) */
-const LOAD_T = 0.142, SNAKE_T = 0.857;
-/** the handle on the short ledge before the branch: 84-86 px before the branch, so 108-110 px before its load's socket (the pair's
- *  85-130), which is the nearest the snake can come (it strikes within 105), and 169-171 px before the middle of the snake's patch,
- *  where the load is hung (w1Cast.ts armedTraps) */
+/** on a trapped log: the load's SOCKET 3 px in, the snake's 127 px in, near the patch's far end: 124 px apart (an animal under 120
+ *  px from a prop is not laid, pipeline ANY_APART; a socket outside its piece's patch is left empty, patchFor). The load is HUNG
+ *  over the patch's middle all the same (w1Cast.ts armedTraps) */
+const LOAD_T = 0.02, SNAKE_T = 0.83;
+/** the handle on the short ledge before the log: 84-86 px before the log, so 87-89 px before its load's socket (the pair's 85-130),
+ *  108-110 px before the patch's near end, which is the nearest the snake can come (it strikes within 105), and 160-163 px before
+ *  the middle of the snake's patch, where the load is hung */
 const HANDLE_T = 0.443;
 const low = (id: string, on: string, t: R2 | number, count = 2): Socket => ({ id, role: 'pickup', on, t, dn: 34, count, span: 120 });
 type Load = 'trap-hive' | 'trap-stone';
@@ -90,7 +94,7 @@ function core(k: string, after: string, o: Unit = {}): { pieces: SectionPiece[];
   const flat: R2 = [0, 0];
   const first: SectionPiece = o.hop ? { key: g, shape: 'bank', w: NARROW, place: { kind: 'jump', after, dy: flat, gapPx: HOP, soft: true }, style: 'moss_stone', main: true } : led(g, after, NARROW, perch ? UP : flat);
   // (the bed is level with the ledge before the unit (a perch's vine ledge is the step up, its bed back down); the log `L` lies on it)
-  const pieces: SectionPiece[] = [first, bed(B, g, o.load ? SHORT : o.wide ? WIDE : LONG, perch ? DOWN : flat), fallen(L, B, o.load ? LOW : HIGH), led(d, B, NARROW)];
+  const pieces: SectionPiece[] = [first, bed(B, g, o.load ? SHORT : o.wide ? WIDE : LONG, perch ? DOWN : flat), fallen(L, B, LOW), led(d, B, NARROW)];
   const sockets: Socket[] = [];
   if (o.load) {
     sockets.push({ id: `${k}h`, role: 'source', on: g, t: HANDLE_T, dn: 0 });
@@ -232,8 +236,47 @@ export const EXIT_13: SectionTemplate = {
   entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
 } as SectionTemplate;
 
-/** World 1's quiet sections 1-3 walks between its beats: its arrivals and its rests on the ground (w1.ts tags each for the stage) */
-export const QUIET_13 = ['w1-meadow', 'w1-forest-edge', 'w1-morning-path', 'w1-home-banks', 'w1-fern-bank', 'w1-clearing', 'w1-log-walk'] as const;
+// ───────────────────────────── 1-3's own quiet: its arrival and its rests ─────────────────────────────
+/**
+ * The walk in and the breaths between the beats are 1-3's OWN pieces (Matt: variety comes from more pieces; funcheck read 1-3 as
+ * "an earlier stage", 57% alike to 1-1, while its links were World 1's meadow, forest edge and fern bank): root banks and fallen logs
+ * with no snake on them, a log to walk along, two to hop, a dip between roots. Nothing in them can hurt. No World 1 library section
+ * is in 1-3's pool any more (w1.ts takes its tag off every one).
+ */
+const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V[] }): SectionTemplate => ({
+  ...brick({ id: o.id, name: o.name, jobs: [o.job], difficulty: 1, versions: o.versions }),
+  phases: [o.job === 'arrive' ? 'start' : 'rest'], content: 'structural', uses: [], terrain: 'floor-stones', ...(o.job === 'arrive' ? { maxPerStage: 1 } : {}),
+} as SectionTemplate);
+/** a quiet bank (a rest's or the arrival's): long, level or a small root step (24-40 px), a flag's ground */
+const bank = (key: string, after: string | null, w: R2, dy: R2 = [0, 0]): SectionPiece => led(key, after, w, dy);
+export const QUIET_OWN_13: SectionTemplate[] = [
+  // [A] the walk in: root banks in the evening light, a low log to hop, petals low. Nothing here can hurt
+  link({ id: 'w1-13-root-arrival', name: 'the walk in along the root banks', job: 'arrive', versions: [
+    { id: 'low-log', lay: { pieces: [bank('a', null, [640, 700]), bank('b', 'a', [660, 720]), fallen('f', 'b', LOW, [220, 260], [0.45, 0.55]), bank('z', 'b', [260, 300])], sockets: [low('pa', 'a', [0.55, 0.75]), low('pf', 'f', 0.5), low('pz', 'z', [0.4, 0.6], 1)] } },
+    { id: 'root-steps', lay: { pieces: [bank('a', null, [640, 700]), bank('b', 'a', [440, 480], [-30, -24]), bank('c', 'b', [440, 480], [24, 30]), bank('z', 'c', [260, 300])], sockets: [low('pa', 'a', [0.55, 0.75]), low('pb', 'b', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)] } },
+  ] }),
+  // [R] a rest: one long fallen log to walk along, petals in a row on top (380-400 px: World 1 paints a longer log as two pieces
+  //  end to end, with a seam where they meet)
+  link({ id: 'w1-13-long-log', name: 'a rest: along the long fallen log', job: 'rest', versions: [[0.2, 0.3], [0.5, 0.6]].map((at, j) => ({
+    id: j ? 'log-late' : 'log-early',
+    lay: { pieces: [bank('a', null, [960, 1040]), fallen('f', 'a', LOW, [380, 400], at as R2), bank('z', 'a', [260, 300])], sockets: [{ ...low('pf', 'f', [0.4, 0.6], 3), span: 220 }, low('pz', 'z', [0.4, 0.6], 1)] },
+  })) }),
+  // [R] a rest: two short logs to hop, one after the other
+  link({ id: 'w1-13-twin-logs', name: 'a rest: two fallen logs to hop', job: 'rest', versions: ([[[200, 240], [300, 340]], [[300, 340], [200, 240]]] as R2[][]).map((w, j) => ({
+    id: j ? 'long-short' : 'short-long',
+    lay: { pieces: [bank('a', null, [1000, 1100]), fallen('f', 'a', LOW, w[0], [0.12, 0.18]), fallen('g', 'a', LOW, w[1], [0.72, 0.8]), bank('z', 'a', [260, 300])], sockets: [low('pf', 'f', 0.5), low('pg', 'g', 0.5), low('pz', 'z', [0.4, 0.6], 1)] },
+  })) }),
+  // [R] a rest: a dip between two roots, a low log lying in it
+  link({ id: 'w1-13-root-dip', name: 'a rest: the dip between the roots', job: 'rest', versions: [[30, 40], [44, 50]].map((d, j) => ({
+    id: j ? 'deep' : 'shallow',
+    lay: { pieces: [bank('a', null, [420, 480]), bank('m', 'a', [420, 480], d as R2), fallen('f', 'm', LOW, [200, 240], [0.4, 0.6]), bank('b', 'm', [420, 480], [-d[1], -d[0]] as R2), bank('z', 'b', [260, 300])], sockets: [low('pf', 'f', 0.5), low('pb', 'b', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)] },
+  })) }),
+  // [R] a rest: up over the hump of a great root and down again, a log leaning at its foot
+  link({ id: 'w1-13-root-hump', name: 'a rest: over the hump of a root', job: 'rest', versions: [[30, 40], [44, 50]].map((d, j) => ({
+    id: j ? 'tall' : 'low',
+    lay: { pieces: [bank('a', null, [460, 520]), fallen('f', 'a', LOW, [200, 240], [0.5, 0.7]), bank('m', 'a', [380, 440], [-d[1], -d[0]] as R2), bank('b', 'm', [420, 480], d as R2), bank('z', 'b', [260, 300])], sockets: [low('pf', 'f', 0.5), { ...low('pm', 'm', [0.3, 0.7], 3), span: 200 }, low('pz', 'z', [0.4, 0.6], 1)] },
+  })) }),
+];
 
 /** every section that is 1-3's own */
-export const SECTIONS_13: SectionTemplate[] = [...ARC_13, EXIT_13];
+export const SECTIONS_13: SectionTemplate[] = [...ARC_13, ...QUIET_OWN_13, EXIT_13];

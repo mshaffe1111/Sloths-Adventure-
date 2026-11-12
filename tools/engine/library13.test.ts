@@ -9,7 +9,7 @@ import { NEW_STOOD_IN } from './library.ts';
 import { buildGen2Stage, missionGraph, planBudget, stagePool } from '../../src/game/gen2/pipeline.ts';
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 import { W1_KIT, W1_SECTIONS, w1World } from '../../src/game/gen2/worlds/w1.ts';
-import { EXIT_13, QUIET_13, STAGE_13 } from '../../src/game/gen2/worlds/w1Arc13.ts';
+import { EXIT_13, QUIET_OWN_13, STAGE_13 } from '../../src/game/gen2/worlds/w1Arc13.ts';
 import { STAGE_PLAN } from '../../src/game/stagePlan.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
 const w1BriefOf11 = () => W1_KIT.graphs.briefs['1-1'];
@@ -23,11 +23,17 @@ const SEEDS = [1, 2, 3, 4, 5, 6];
 const rolls: Record<'normal' | 'easy', Roll13[]> = { normal: SEEDS.map((s) => roll(s, 'normal', O)), easy: SEEDS.map((s) => roll(s, 'easy', O)) };
 const each = (f: (r: Roll13, name: string) => void) => { for (const d of ['normal', 'easy'] as const) rolls[d].forEach((r, i) => f(r, `seed ${SEEDS[i]} ${d}`)); };
 
-test("in World 1's SHIPPED kit 1-3's pool is its own arc: its seven beats, its ground exit, and of the library only the quiet between; 1-1's pool is as it was", () => {
+test("in World 1's SHIPPED kit 1-3's pool is its own, every piece: its seven beats, its arrival, its four rests and its exit, and nothing of World 1's library; 1-1's pool is as it was", () => {
   const M = w1World().manifest;
   const pool13 = stagePool(M, STAGE_13).map((t) => t.id).sort();
-  assert.deepEqual(pool13, [...TWISTS.map((t) => t.id), EXIT_13.id, ...QUIET_13].sort());
-  for (const t of stagePool(M, STAGE_13).filter((q) => (QUIET_13 as readonly string[]).includes(q.id))) assert.ok(t.jobs!.every((j) => ['arrive', 'rest', 'exit'].includes(j)), `${t.id} is not a quiet section: it would bring another level's lesson into this one (LEVEL-BAR A3)`);
+  assert.deepEqual(pool13, [...TWISTS.map((t) => t.id), EXIT_13.id, ...QUIET_OWN_13.map((t) => t.id)].sort());
+  // (funcheck read 1-3 as "an earlier stage" while its links were World 1's meadow and fern bank: none is in its pool, and no stage
+  //  but 1-3 has one of 1-3's)
+  assert.equal(stagePool(M, STAGE_13).filter((t) => W1_SECTIONS.some((q) => q.id === t.id)).length, 0, "a World 1 library section is in 1-3's pool");
+  assert.ok(pool13.every((id) => id.startsWith('w1-13-')));
+  assert.deepEqual(QUIET_OWN_13.map((t) => `${t.id}:${t.jobs!.join('/')}:${t.phases.join('/')}`), ['w1-13-root-arrival:arrive:start', 'w1-13-long-log:rest:rest', 'w1-13-twin-logs:rest:rest', 'w1-13-root-dip:rest:rest', 'w1-13-root-hump:rest:rest'], 'one arrival, and a rest of its own for each of the four breaths');
+  // nothing in a quiet piece can hurt: it holds no animal socket and no trap, only petals
+  for (const t of QUIET_OWN_13) for (const v of t.subBlocks![0].versions) assert.ok(v.sockets!.every((k) => k.role === 'pickup'), `${t.id}/${v.id}: a quiet piece holds more than petals`);
   assert.deepEqual(TWISTS.map((t) => `${t.id}:${t.jobs!.join('/')}`), ['w1-13-lesson:teach', 'w1-13-again:practise', 'w1-13-stone-stair:flow', 'w1-13-other-way:test', 'w1-13-perch:twist', 'w1-13-gallery:signature', 'w1-13-finale:combine'], 'one brick a beat, one job a brick');
   // (1-1: the same sections as World 1's own table, each unchanged but for its tag list; none of 1-3's among them)
   const own = new Map(W1_SECTIONS.map((t) => [t.id, t]));
@@ -81,9 +87,14 @@ test('the first snake of the stage is asleep on both settings, under the lesson 
     assert.equal(r.firstAsleep, true, `${name}: the first snake, at x ${r.snakes[0]?.x}, is awake`);
     const lesson = r.traps.find((t) => t.section === 'w1-13-lesson');
     assert.ok(lesson?.snake?.asleep && lesson.snake.x === r.snakes[0].x && lesson.load === 'hive' && lesson.kind === 'vine', `${name}: ${JSON.stringify(lesson)}`);
-    // a sleeper lies right under its load (the middle of its patch), on both settings: from the vine the whole of it is on an upright
-    // screen. (Seated by the kit's spawn hook; the builder's fill follows it, or Easy reads the sleeper as dropped and lays none)
-    for (const t of r.traps) if (t.snake?.asleep) assert.equal(t.snake.x, t.loadX, `${name}: a sleeper ${Math.abs(t.snake.x - t.loadX)} px from its load's line (${t.section})`);
+    // a sleeper lies at the end of its patch nearest the vine, on both settings: its load comes down a coil's width BESIDE it, never
+    // on it (nobody is hurt), and from the vine the whole of it is on an upright screen. (Seated by the kit's spawn hook; the
+    // builder's fill follows it, or Easy reads the sleeper as dropped and lays none)
+    for (const t of r.traps) if (t.snake?.asleep) {
+      const off = t.loadX - t.snake.x;
+      assert.ok(off >= 55 && off <= 70, `${name}: a sleeper ${off} px before its load's line (55-70: the load lands beside it) (${t.section})`);
+      assert.ok(t.snake.x - t.x >= 105, `${name}: a sleeper ${t.snake.x - t.x} px from its vine (105 or more: outside its strike)`);
+    }
     assert.ok(r.traps.filter((t) => t.snake?.asleep).length >= 2, `${name}: the lesson's and the gallery's sleepers`);
   });
 });
@@ -96,6 +107,11 @@ test("every trap has its handle and a snake under it, at the phone's numbers", (
       assert.ok(Number.isFinite(t.x) && Number.isFinite(t.y), `${name}: trap ${t.id} has no handle`);
       assert.ok(t.snake && Math.abs(t.snake.x - t.loadX) <= UNDER, `${name}: trap ${t.id} at x ${t.loadX} hangs over nothing`);
       assert.ok(t.snake.patrol[0] <= t.loadX && t.snake.patrol[1] >= t.loadX, `${name}: trap ${t.id}'s load is off its snake's patrol ${t.snake.patrol}`);
+      // (C8, a must: from where he stands to shake the vine an upright phone shows 270 px past the handle; a snake is 36 px either
+      //  side of its middle, so the far end of its patrol is no more than 230 px from the vine and the snake is whole on screen
+      //  wherever it paces. At 232 px its head was cut at the screen's edge)
+      const far = Math.max(Math.abs(t.snake.patrol[0] - t.x), Math.abs(t.snake.patrol[1] - t.x));
+      assert.ok(far <= 230, `${name}: trap ${t.id}: its snake paces ${Math.round(far)} px from the vine (230 or less: whole on an upright screen)`);
     }
     for (const d of r.reach) assert.ok(d >= 140 && d <= 190, `${name}: a handle ${d} px from its hung load (140-190)`);
     for (const d of r.clear) assert.ok(d >= 105, `${name}: a handle ${d} px from a snake's patrol (its strike is 105)`);
