@@ -17,3 +17,9 @@ r2c   6af5f4f00f431c4f7b55eec4  17:18Z  stoneHang, handleSprung, handleSet, anch
 r3    6af5f99e0f431c4f7b55fb69  17:38Z  img2img from paste-ups (cuts.py starts): hiveDown x2 starts, stoneDown x2, anchor with crown
                                          room; s0.42/0.55 x seeds 7,31 (20 takes), spec at 0fdeaefa
 RUNNING TOTAL r1+r2: ~28 GPU-min, ~$1.28 of the $6 cap.
+     RESULTS r3 (done ~17:46Z, ~7 GPU-min, ~$0.32): landed hive WHOLE at s0.42 (both starts), landed stone clean (both). The anchor
+     with crown room still came back too long in the arm (2.4:1) for the trap. Kept: hiveDown 67-s42-7 / 29-s42-7, stoneDown
+     17-s42-31 / 41-s42-7.
+r3b   6af5fc0c5f2f1b7284b87040  17:49Z  anchor at the trap's shape: anchorArch, anchorArm x seeds 5,17,41,53 (8), spec at 2bd135ef
+     RESULTS r3b (done 17:53Z, ~4.5 GPU-min, ~$0.21): anchorArm 41 (level arm, whole crown) and anchorArch 5 (bent-over sapling) kept.
+TOTAL r1-r3b: ~42 GPU-min, ~$1.93 of the $6 cap (estimate from GPU minutes).
