@@ -50,7 +50,7 @@ import type { StageStats } from './badges.ts';
 import { loadCosmetic } from './badgeStore.ts';
 import { setHeroCoat, setJarHero } from './heroSprite.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
-import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
+import { coachTaught, coachWanted, firstJumpSpot, TouchCoach, type CoachStep } from './touchCoach.ts';
 import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
@@ -1174,12 +1174,13 @@ export class GameEngine {
     this.flagTried = true;
     if (back) this.startAtFlag(back);
     if (coachWanted(cfg.id, cfg.secret)) {
-      this.coach = new TouchCoach(controlStyle(), (st) => this.callbacks.onCoach?.(st), markCoachDone);
-      markCoachDone(); // once per device: leaving halfway does not bring it back
+      // (taught once its jump line has been shown, the DOT-1 rule: dotSay.ts keep; or here, once he has made the jump. Not at the start:
+      // a first 1-1 left in its first seconds was never coached, audit C-07)
+      this.coach = new TouchCoach(controlStyle(), (st) => this.callbacks.onCoach?.(st), coachTaught);
       this.coach.setCourse(this.player.x, firstJumpSpot(this.platforms, this.player.x, this.player.y));
-      // the coach is already teaching the jump over the first gap, so the gap card would only say it twice
-      markLessonSeen('gap');
+      // the coach is already teaching the jump over the first gap, so the gap card would only say it twice: not this run
       this.lessonSeen = lessonsSeen();
+      this.lessonSeen.add('gap');
     }
     sound.setTempo(1); // a boss fight that was enraged must not restart at the enraged speed
     sound.playLevelStart();
