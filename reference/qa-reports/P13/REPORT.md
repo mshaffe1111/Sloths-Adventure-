@@ -35,6 +35,8 @@ RECORDED (100 seeds, first seed 1, the lead's advance OK). Still open on F13's s
 7. **Stills** (P13/stills/adult-n-1-1-3-L1-*, the REAL game on c925d4e6, layout 1 Normal, the adult first-timer's own run, each
    moment in the run's state: ft-moments.ts + ft-stills.mjs): first snake, trap0 SET, mid-fall, after, first punch-glide, the
    gallery, the end; upright and sideways. **R-165.155** (the lead's): the goal sign stops at its goal (goalShown, 13/13 not 16/13).
+   **Purge goal card** (the lead's): "This stage: send 13 snakes on their way" / "to open the shrine." (1: "send 1 boa on its way"),
+   the creature from the stage's data (engine goalCreature); purgeCard.test; the card measured on 1-3: no overflow (P13/card/).
 
 ## Polish check (P13/stills, a contact sheet of all 14 looked at)
 - trap0 set: the hive over the sleeping snake, the vine at his hand, both orientations; mid-fall: the load on its way, Dot's "Off he
@@ -46,7 +48,7 @@ RECORDED (100 seeds, first seed 1, the lead's advance OK). Still open on F13's s
 tsc clean; gen2+worlds 483 pass, 1 red: yield.test.ts:62 (1-1 yield 11 of 30, floor 12), red on F13's c925d4e6 alone too: F13's. Full
 src/game earlier on W1C 219502e1: red only w1Pits.test.ts:58 (W1C's own head too: F13's). seedlist 1-3 --check PASS 100, 1-1 PASS 258;
 generality PASS; tierBots 7/7; castBots.test 6/6; my tests (dotTeach, castMoments, wayside, teachTips, judgedTable, goalShown) green;
-lock 16 layouts 101/102 unchanged, 1-3 intended (W1C 219502e1); vite build, chunkcheck, artcheck, knowncheck PASS (earlier head). Not run
+lock 16 layouts 101/102 unchanged, 1-3 intended (W1C 219502e1); vite build, chunkcheck, artcheck, knowncheck PASS (final head). Not run
 on the final head: drawcheck, clipcheck, kbdcheck, buildcheck, roadmapcheck (shallow clone); F13 owns 1-3's final-head gates.
 
 ## Method update
