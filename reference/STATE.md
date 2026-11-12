@@ -563,3 +563,9 @@ lines); Matt sees them in the release.
 - 2026-11-12 2:39 PM ET, Matt: "Is there any way that we can make 1-3 our test link then? Something a little bit different that people can
   play?" -> chose "1-3 only": the testers' link (#ctest) plays 1-3 instead of 1-1, shipped with 0.9.7 after Matt plays 1-3 tonight
   (R-165.157). Includes R-165.151 (delete the old control course) and the collector sheet's stage column.
+- 2026-11-12 2:42 PM ET, Matt: tester data: "we can actually delete all the data since we already have all the information we needed to
+  create the bots". He chose "Archive copy, then clear". DONE: Drive copy "Sloths control tests ARCHIVE 2026-11-12 (1-1 runs, bot
+  source)" (id 1JrJZp7jDVoD2eamtJ4jBz7GgbmvjNdKBFt_vSRlvT5w), verified (Sessions 4,670 rows, last rows match the original). TO DO AT
+  0.9.7 (when testers switch to 1-3, R-165.157): clear the original sheet's Sessions rows 2+ (keep the header) in "Sloths control tests"
+  (id 1JnINRwlPz-tM1fLXRz6DRajKHD05RxYRRiEau4eDGtk). Drive reports canEdit=false on the original for this connection: if the clear is
+  refused, Matt clears it himself (select rows 2+, delete).

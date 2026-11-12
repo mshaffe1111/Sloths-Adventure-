@@ -70,6 +70,8 @@ shimmy vine longer, goal = trap count, gates, stills); P13 (bots, 1-3 seed list 
 session_01FhBbYL2J8WMSCxDNyH7jt7); P12S (1-2 plumbing + gen2 lays the existing w1_note find); ART-W1B (session_01FhBbYKTygXnUZ3ts1re6dE,
 t-w1-art2: second sapling, hive A, natural tendril anchor, vine-wrapped stone, shimmy vine pieces, Meeca's leaf note, w1sunrise-far repaint);
 Y2 (yield); INT-2 idle. W1C (Fable, $108) and ART-W1 ($17) retired. 1-3 rulings: hearts = game's rule; goal = every trap; no made things.
+0.9.7 RELEASE TO-DOS (Matt 11-12 afternoon): testers' link plays 1-3 only (R-165.157, P12S or tomorrow's helper); at release, clear
+"Sloths control tests" Sessions rows 2+ (archive copy made and verified; see STATE.md); ask Matt the R-165.125 sound question first.
 NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes + t-pit-polish + t-audit-fixes (+ t-12-fly), renumber the
   duplicate R-165.129, full gate; (2) PROOF-1 re-audits only the delta; (3) ask Matt ONE question: ship the R-165.125 sound levels or hold
   (D47), then 0.9.7 on his word (PR, he merges, check deploy + APK); (4) 1-2 and 1-3 to Matt's test link by Fri 11-13 (1-3 by Fable/W1C,
