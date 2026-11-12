@@ -48,6 +48,8 @@ M=[
  ("gen2/worlds/w1Arc13.ts","a trap's own snake is cut on Easy","easy: o.easy ?? 'stay' });","easy: o.easy ?? 'soften' });"),
  ("gen2/worlds/w1Arc13.ts","the rope before the totem is the only way","gap: [460, 480] as R2, free: true }","gap: [460, 480] as R2 }"),
  ("gen2/worlds/w1Cast.ts","a sleeper lies right under its load (the hive comes down on it)","    if (e.asleep) e.x = Math.round(t0.x < mid ? e.patrolMinX : e.patrolMaxX);","    if (e.asleep) e.x = Math.round(mid);"),
+ ("gen2/worlds/w1Arc13.ts","a trapped log so long its snake paces off an upright screen","const SHORT: R2 = [153, 153];","const SHORT: R2 = [175, 175];"),
+ ("gen2/worlds/w1Cast.ts","a sleeper's load hangs over its coil's edge","loadX: Math.round(mid + (e.asleep ? (t0.x < mid ? 10 : -10) : 0)) });","loadX: Math.round(mid) });"),
  ("gen2/worlds/w1Arc13.ts","a World 1 rest is dealt into 1-3 again","link({ id: 'w1-13-root-hump'","link({ id: 'w1-meadow'"),
 ]
 ok=0; bad=[]

@@ -27,12 +27,12 @@ const SNAKES: CreatureDef[] = [
   { id: 'snake', enemy: 'snake', threat: 2, terrain: 'ledge', minGround: 200, w: 38, h: 22, hp: 1, footY: 14, tags: ['cast', 'topup'] },
   { id: 'snake-asleep', enemy: 'snake', threat: 1, terrain: 'ledge', minGround: 200, w: 38, h: 22, hp: 1, footY: 14, extra: { asleep: true }, easyFirst: true, tags: ['sleeper'] },
 ];
-/** and the same two on a SHORT patch (120 px), the snake under a trap: it stays under its load and on an upright phone's screen.
+/** and the same two on a SHORT patch (100 px and more; 1-3's is 105), the snake under a trap: it stays under its load and on an upright phone's screen.
  *  A snake under its own trap costs a beat's threat 1, awake or asleep: he has the tool for it right there, so it is less of a
  *  threat than a bare one (2). That is what lets Normal's later beats hold awake snakes (the lead, 11-12: Normal runs hotter) */
 export const W1_CAST_CREATURES: CreatureDef[] = SNAKES.flatMap((c) => [
   c,
-  { ...c, id: c.id === 'snake' ? 'snake-trapped' : 'snake-trapped-asleep', threat: 1, minGround: 120, tags: [...(c.tags ?? []).filter((t) => t !== 'topup'), 'trapped'] },
+  { ...c, id: c.id === 'snake' ? 'snake-trapped' : 'snake-trapped-asleep', threat: 1, minGround: 100, tags: [...(c.tags ?? []).filter((t) => t !== 'topup'), 'trapped'] },
 ]);
 
 export const W1_TRAP_PROPS: PropDef[] = [
@@ -96,7 +96,9 @@ export function armedTraps(kinds: readonly string[] = ['snake']): { emit: Record
     if (k < 0) return;
     const live = (out.proto.cast ??= { kinds: [], traps: [], said: W1_CAST_SAID }).traps;
     const t0 = hold.splice(k, 1)[0];
-    live.push({ ...t0, id: live.length + 1, loadX: Math.round(mid) });
+    // (over a sleeper the load hangs 10 px past the patch's middle, away from the vine: the sleeper lies at the patch's near end, 52 px
+    //  before the middle, and a coil and a hive side by side want 60)
+    live.push({ ...t0, id: live.length + 1, loadX: Math.round(mid + (e.asleep ? (t0.x < mid ? 10 : -10) : 0)) });
     // (a SLEEPER lies at the end of its patch NEAREST the vine, so its load, hung over the patch's middle, comes down a coil's width
     //  BESIDE it and never on it (nobody is hurt, D11; right under the load, the glide still showed the stone on the snake). The lay
     //  had stood it at the far end (it keeps an animal 120 px from any prop's socket), half off an upright phone's screen from the

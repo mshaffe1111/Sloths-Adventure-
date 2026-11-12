@@ -37,11 +37,11 @@ export const TRAP_LINE = LINES_13.traps;
 // ───────────────────────────── the drop-trap twist bricks (1-3's own) ─────────────────────────────
 /**
  * THE PHONE'S NUMBERS (w1Cast.ts's header, measured on stills of a roll): from its handle a trap's hung load is 140-190 px on, over
- * the middle of its snake's 122 px patch, so the vine, the load and the whole patch are on an upright phone's screen; the handle's
- * socket is 85-130 px before the load's (the near end of the patch); no ledge beside a handle is long enough for another animal to
+ * the middle of its snake's 105 px patch, so the vine, the load and the whole patch are on an upright phone's screen; the handle's
+ * socket is 85-130 px before the load's (at the log's near end); no ledge beside a handle is long enough for another animal to
  * be laid or topped up on (every one under 248 px: a patrol's 200 plus the lay's 24 px margins).
  * The lay keeps an animal 120 px from any prop (pipeline ANY_APART), its own trap's load socket included: so the load's SOCKET sits
- * at the patch's near end and the snake's at its far end, and `armedTraps` hangs the load over the patch's middle.
+ * at the log's near end and the snake's at the patch's far end, and `armedTraps` hangs the load over the patch's middle.
  */
 /** a ledge he walks or steps onto: no `landing` (Easy widens a landing by 48 px, EASY_LANDING: every px here is the phone's, and a
  *  ledge 48 px longer is one an animal can be topped up on, beside a handle; measured, Easy's first cut hung no pair at all) */
@@ -65,16 +65,19 @@ const LOW: R2 = [24, 26];
  *  every animal 224 px off (patchFor), and one at the end of a wide ledge beside a branch emptied the snake's socket, so the load
  *  hung over nothing (measured: 86 of 404 traps on Normal before the short ledges stood either side of every branch) */
 const LEDGE: R2 = [230, 240], NARROW: R2 = [150, 155];
-/** a trapped snake's branch: its patch 122 px (the branch less the lay's 24 px at each end), one width so every px below holds */
-const SHORT: R2 = [170, 170];
+/** a trapped snake's log: its patch 105 px (the log less the lay's 24 px at each end), one width so every px below holds. Short on
+ *  purpose: the patch's far end is 213-215 px from the vine, so an awake snake pacing to it is still whole on an upright phone's
+ *  screen from where he stands to shake the vine (at 170 px its head was cut at the screen's edge: stills, 11-12) */
+const SHORT: R2 = [153, 153];
 /** a bare branch (no trap: the punch off its end, or the vault): the awake snake's own 200 px and more; Easy's is wider */
 const LONG: R2 = [360, 360], WIDE: R2 = [410, 410];
-/** on a trapped branch: the load's line 24 px in (the patch's near end), the snake's socket 122 px on, at the patch's far end
- *  (a socket outside its piece's patch is left empty, pipeline patchFor; an animal under 120 px from a prop is not laid) */
-const LOAD_T = 0.142, SNAKE_T = 0.857;
-/** the handle on the short ledge before the branch: 84-86 px before the branch, so 108-110 px before its load's socket (the pair's
- *  85-130), which is the nearest the snake can come (it strikes within 105), and 169-171 px before the middle of the snake's patch,
- *  where the load is hung (w1Cast.ts armedTraps) */
+/** on a trapped log: the load's SOCKET 3 px in, the snake's 127 px in, near the patch's far end: 124 px apart (an animal under 120
+ *  px from a prop is not laid, pipeline ANY_APART; a socket outside its piece's patch is left empty, patchFor). The load is HUNG
+ *  over the patch's middle all the same (w1Cast.ts armedTraps) */
+const LOAD_T = 0.02, SNAKE_T = 0.83;
+/** the handle on the short ledge before the log: 84-86 px before the log, so 87-89 px before its load's socket (the pair's 85-130),
+ *  108-110 px before the patch's near end, which is the nearest the snake can come (it strikes within 105), and 160-163 px before
+ *  the middle of the snake's patch, where the load is hung */
 const HANDLE_T = 0.443;
 const low = (id: string, on: string, t: R2 | number, count = 2): Socket => ({ id, role: 'pickup', on, t, dn: 34, count, span: 120 });
 type Load = 'trap-hive' | 'trap-stone';
@@ -252,10 +255,11 @@ export const QUIET_OWN_13: SectionTemplate[] = [
     { id: 'low-log', lay: { pieces: [bank('a', null, [640, 700]), bank('b', 'a', [660, 720]), fallen('f', 'b', LOW, [220, 260], [0.45, 0.55]), bank('z', 'b', [260, 300])], sockets: [low('pa', 'a', [0.55, 0.75]), low('pf', 'f', 0.5), low('pz', 'z', [0.4, 0.6], 1)] } },
     { id: 'root-steps', lay: { pieces: [bank('a', null, [640, 700]), bank('b', 'a', [440, 480], [-30, -24]), bank('c', 'b', [440, 480], [24, 30]), bank('z', 'c', [260, 300])], sockets: [low('pa', 'a', [0.55, 0.75]), low('pb', 'b', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)] } },
   ] }),
-  // [R] a rest: one long fallen log to walk along, petals in a row on top
+  // [R] a rest: one long fallen log to walk along, petals in a row on top (380-400 px: World 1 paints a longer log as two pieces
+  //  end to end, with a seam where they meet)
   link({ id: 'w1-13-long-log', name: 'a rest: along the long fallen log', job: 'rest', versions: [[0.2, 0.3], [0.5, 0.6]].map((at, j) => ({
     id: j ? 'log-late' : 'log-early',
-    lay: { pieces: [bank('a', null, [960, 1040]), fallen('f', 'a', LOW, [520, 600], at as R2), bank('z', 'a', [260, 300])], sockets: [{ ...low('pf', 'f', [0.3, 0.7], 3), span: 260 }, low('pz', 'z', [0.4, 0.6], 1)] },
+    lay: { pieces: [bank('a', null, [960, 1040]), fallen('f', 'a', LOW, [380, 400], at as R2), bank('z', 'a', [260, 300])], sockets: [{ ...low('pf', 'f', [0.4, 0.6], 3), span: 220 }, low('pz', 'z', [0.4, 0.6], 1)] },
   })) }),
   // [R] a rest: two short logs to hop, one after the other
   link({ id: 'w1-13-twin-logs', name: 'a rest: two fallen logs to hop', job: 'rest', versions: ([[[200, 240], [300, 340]], [[300, 340], [200, 240]]] as R2[][]).map((w, j) => ({

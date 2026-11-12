@@ -107,6 +107,11 @@ test("every trap has its handle and a snake under it, at the phone's numbers", (
       assert.ok(Number.isFinite(t.x) && Number.isFinite(t.y), `${name}: trap ${t.id} has no handle`);
       assert.ok(t.snake && Math.abs(t.snake.x - t.loadX) <= UNDER, `${name}: trap ${t.id} at x ${t.loadX} hangs over nothing`);
       assert.ok(t.snake.patrol[0] <= t.loadX && t.snake.patrol[1] >= t.loadX, `${name}: trap ${t.id}'s load is off its snake's patrol ${t.snake.patrol}`);
+      // (C8, a must: from where he stands to shake the vine an upright phone shows 270 px past the handle; a snake is 36 px either
+      //  side of its middle, so the far end of its patrol is no more than 230 px from the vine and the snake is whole on screen
+      //  wherever it paces. At 232 px its head was cut at the screen's edge)
+      const far = Math.max(Math.abs(t.snake.patrol[0] - t.x), Math.abs(t.snake.patrol[1] - t.x));
+      assert.ok(far <= 230, `${name}: trap ${t.id}: its snake paces ${Math.round(far)} px from the vine (230 or less: whole on an upright screen)`);
     }
     for (const d of r.reach) assert.ok(d >= 140 && d <= 190, `${name}: a handle ${d} px from its hung load (140-190)`);
     for (const d of r.clear) assert.ok(d >= 105, `${name}: a handle ${d} px from a snake's patrol (its strike is 105)`);
