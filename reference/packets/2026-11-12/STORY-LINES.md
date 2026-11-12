@@ -347,3 +347,20 @@ one-page OUR STORY, exactly as written in the FINAL layout section above. Waitin
   word, the release stillness ships. (The story already carries it: the Prowler is outwaited, storyBosses.ts.)
 - **NOT claimed:** "creatures you outwit, never hurt" across the game. The old stages still have defeat clips and stomps until each
   world gets the predator kit, so for now that claim is made only through the 1-3 trap line. It widens as worlds are re-laid.
+
+**"What's ours", revised again (Matt, 4:05 PM ET: "Gameplay and story tied"). This supersedes the draft above:**
+> **What's ours**
+> Pokey, Meeca, Dot, and everyone they meet along the way.
+> Their story, from the first petal to the last letter, and the journal Pokey keeps.
+> Ten rainforest worlds, with art made for this game in its own style.
+> Levels that grow out of the story: you follow the petals Meeca dropped, even across the thorns.
+> Traps made from the forest itself: punch a vine, a hive drops, and the snake glides off unhurt.
+> Dot, who helps when you're stuck, and never tells.
+> World 1's new stages change each time you play, every layout checked to be fair before you see it.
+
+- The petals line is merged into the story-tied line. "Win by being kind" is shown, not claimed: the trap line right after it does
+  that, and stays true while the older stages still have stomps.
+- "World 1's new stages" means ONLY the proven-list gen2 stages in 0.9.7. The lead confirms which ones. If only 1-1 is on the proven
+  list, the line becomes "The first stage changes each time you play, every layout checked to be fair before you see it."
+- The other gates stand: the petals/thorns line needs the new 1-2 in 0.9.7, and the trap line needs the new 1-3. Stillness returns
+  when 1-7 ships.
