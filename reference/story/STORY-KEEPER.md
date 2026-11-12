@@ -381,3 +381,11 @@ guards.**
 - 2-3 ways to beat each creature.
 
 I review its sheet when the lead sends it (about 10 PM ET).
+**PREDATORS.md @191e2098 (t-engine-predators; EN-P, session_01FhBbYK8drdbySFkib7VkUv): story PASS with 4 changes (9:45 PM ET).**
+1. The W8 mimic BUSH becomes a blinking log or night bloom: bushes stay safe in every world (Dot's bush, 1-7).
+2. The W5 butler: Pokey never eats the cake (the Queen: "you didn't eat the cake"; Dot: "Don't eat anything"). The smell or steam makes
+   him drowsy. The built w5Play.ts touchesCake is flagged for the W5 re-lay.
+3. The W8 owl is an ally that never guides, points or speaks. The Monarch is a giant bat (bossDefs.ts:2451).
+4. W6 piranhas nip and scatter: no frenzy, no bones.
+Small notes: the 1-3 hive's buzz chases the snake off with no stings shown; the spider-dozing dew and the Pokey-waking drip look
+different.
