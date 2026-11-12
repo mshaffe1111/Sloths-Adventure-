@@ -222,3 +222,10 @@ or "It started as a little project, just for fun. It still is, just a lot bigger
 - the closing line "It's still a little project, just for fun. It just got bigger."
 
 Waiting: "Inspired by" (Matt's list of games) and the music line (Matt).
+
+**FINAL About opening (3:44 PM ET; only the first line changes, with Matt's added fact; everything else as approved):**
+
+> **How Sloths began**
+> It started as a little project, just for fun, because my wife thinks sloths are cute and wanted a sloth game.
+> Pokey (Pocono, really) and Meeca are named after two of our cats, who did everything together. A little of how they act is theirs, too.
+> Then it kept growing. **Our story ›**
