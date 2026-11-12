@@ -285,3 +285,38 @@ Matt's okay before it is built.
 - The slot words: {creatures} is the PLURAL animal name (snakes, prowlers, hunters). For a count of 1, use the singular: "send 1 boa on
   its way". "on their way" fits every exit (gliding, sulking off, giving up, chased off), so one line serves the whole game.
 - "beat" and "predators" never appear on a card: no one is beaten, and they are animals, not foes.
+
+## FINAL layout (Matt's ruling, 3:58 PM ET): the About screen, plus two pages. This supersedes every earlier About/Our story draft
+**ABOUT screen:**
+
+> **What's ours**
+> Pokey, Meeca, Dot, and everyone they meet along the way.
+> Their story, from the first petal to the last letter, and the journal Pokey keeps.
+> Ten rainforest worlds, and every level in them.
+> A hero whose stillness is his strength.
+> Art made for this game, in its own style.
+>
+> **Our story ›**
+> **Inspired by ›**
+
+**OUR STORY page (one page, start to finish):**
+
+> **Our story**
+> My wife thinks sloths are cute. One day she said she'd like a sloth game, so I started making one, just for fun.
+> Pokey (Pocono, really) and Meeca are named after two of our cats, who did everything together. A little of how they act is theirs, too.
+> The first version was one sloth, some branches and a row of buttons. Then Pokey needed a reason to keep going.
+> So we gave him one: Meeca, carried off to the north, and a trail of petals she dropped so he could follow.
+> The story was written, then rewritten world by world, until every voice sounded like itself. Dot never stops talking. The General
+> never says "I".
+> Ten worlds grew around it, each with its own guardian, and each with something new for Pokey to learn.
+> The very first stage has been rebuilt from the ground up more than once, until the jumps felt right.
+> [the then-and-now pair]
+> *Then: six buttons and a lot of instructions. Now: the same sloth, and a lot more rainforest.*
+> Levels are played on real phones, upright and sideways, and by testers, little ones included.
+> It's still a little project, just for fun. It just got bigger.
+
+No line is said twice. "Just for fun" appears only as the bookend: the first line and the last. ("Sloths began as..." became "The first
+version was...", so the page doesn't start twice.)
+
+**INSPIRED BY page:** the tribute intro, one line per game Matt names, and the not-affiliated line (drafted above; it waits for Matt's
+list).
