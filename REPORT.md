@@ -1,15 +1,17 @@
-# EN-F report: engine-audit fixes, game-wide first, and R-165.125. t-engine-fixes on t-engine-guards @b3e8db15, HEAD e2a1c380 (code)
+# EN-F report: engine-audit fixes, game-wide first, and R-165.125. t-engine-fixes on t-engine-guards @b3e8db15, HEAD 16065562 (code)
 **Method:** each finding's audit test (or a new one) into src/, red on b3e8db15, root fix, green; one commit per finding. Four
 sub-helpers in worktrees (saves, help, audio, things); a Critic read every helper commit (9 items sent back and redone) and then the
 owner's (found A-07b, A-12b: fixed). Method file: reference/methods/audit-fix.md. Main JS 3,982,859 -> 3,973,349 B at e80cf630 (e2a1c380: see Checks).
 
-## R-165.125 (Matt: too loud, effects most; the bars do little until nearly off) FIXED e2a1c380
+## R-165.125 (Matt: too loud, effects most, music a little; the bars do little until nearly off) FIXED e2a1c380 + 16065562
 - Cause, measured through the real chain: the bars were linear gain AND sat before the master compressor (-18 dB, ratio 3.5): the
-  old effects bar at 50% cut 3.9 dB of loudness, at 25% 9 dB. Now each tenth of a bar is 4 dB (0 = off), the louder bar is applied
-  after the dynamics: 50% cuts 16.8 dB, both bars at 50% exactly 20 dB. Limiter added (-1.5 dB): the recorded effects peak at
-  +2.0 dBTP; through the chain the loudest peak is now -0.1 dBFS. Effects default 100% -> 80% (-8 dB): they sat 1-3 dB over the
-  music's loudest moments (-10.2 vs about -11 LUFS momentary, +2.1 dB bus), now about 5 under. Saved bar positions are kept (quieter
-  on the new curve below the top). Numbers and script: reference/qa-reports/R-165.125/. Matt judges by ear; nothing re-recorded.
+  old effects bar at 50% cut 3.9 dB of loudness, at 25% 9 dB. Now each tenth of a bar is 4 dB (0 = off) and the louder bar is applied
+  after the dynamics: 50% cuts 16.8 dB, both bars at 50% exactly 20 dB. Limiter added (-1.5 dB): the recorded effects alone peak at
+  +2.0 dBTP; through the chain the loudest peak is now -0.1 dBFS.
+- New-game defaults, through the game's AudioCore: effects bar 100% -> 80% (-8 dB): peak -0.1 -> -4.2 dBFS, RMS -16.2 -> -22.6 dB
+  (-6.4 dB; at the top they sat 1-3 dB over the music's loudest moments, now about 5 under). Music bar 100% -> 90% (-4 dB): peak
+  -0.5 -> -4.5 dBFS, RMS -10.6 -> -14.6 dB (-4.0 dB). Saved bar positions are kept (quieter on the new curve below the top).
+  Numbers and scripts: reference/qa-reports/R-165.125/. Matt judges by ear on his phone; nothing re-recorded.
 
 ## 1. Controls and physics (owner)
 - A-04 FIXED fb8af5f3: one take-off for press, coyote and buffered jumps (webs, spores, crumble timer, mushroom kept).
