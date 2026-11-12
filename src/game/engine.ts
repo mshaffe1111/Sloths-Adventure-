@@ -6295,6 +6295,16 @@ export class GameEngine {
   }
 
   /** what Dot's guide needs to see, filled into `out` in place (nothing is allocated: it runs every frame) */
+  /** the stage's own animal, for its goal card (hud/goalInfo.ts): its cast's first kind, else the kind most of its animals are (no
+   *  guardian, no minion); undefined with none */
+  public goalCreature(): string | undefined {
+    const k = this.proto?.cast?.kinds?.[0];
+    if (k) return k;
+    const n = new Map<string, number>();
+    for (const e of this.enemies) if (!e.minion && e.type !== 'boss') n.set(e.type, (n.get(e.type) ?? 0) + 1);
+    return [...n].sort((a, b) => b[1] - a[1])[0]?.[0];
+  }
+
   public guideView(out: GuideView): GuideView {
     const p = this.player;
     const cam = this.camera;
