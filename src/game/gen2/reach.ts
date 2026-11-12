@@ -9,27 +9,12 @@
 import type { Difficulty } from '../difficulty.ts';
 import type { Band, BandTable, FlownArc, ReachMove, ReachScope, SectionKind } from './verdicts.types.ts';
 import { STAGE_TABLE } from './worlds/stageTable.ts';
+import { FLOWN_ROWS } from './worlds/flownArcs.ts';
 
-// ───────────────────────── reach.md §2: the flown arcs, per scope ─────────────────────────
+// ───────────────────────── the flown arcs, per scope: world data (worlds/flownArcs.ts) ─────────────────────────
 
-const row = (move: ReachMove, climb: [number, number], n: [number, number, number], e: [number, number, number], source: string): FlownArc[] => [
-  { move, scope: 'normal-1-1', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
-  { move, scope: 'easy-any', climb: { block: climb[0], thin: climb[1] }, gap: { from70: e[0], lastGround: e[1], any: e[2] }, source },
-];
-
-/** every row of reach.md §2 ("Normal 1-1 and Easy are the same unless two figures are given") */
-export const FLOWN_ARCS: readonly FlownArc[] = [
-  // (N any 246, not the table's 244: the same row's "the Critic's finer flight found 246 on Normal too: design to 246")
-  ...row('single-hold', [123, 117], [137, 223, 246], [141, 227, 246], 'reach.md §2 "Single, hold" (N any: "design to 246")'),
-  ...row('single-flick', [123, 117], [128, 213, 239], [132, 217, 243], 'reach.md §2 "Single, flick"'),
-  ...row('single-tap', [87, 81], [77, 163, 184], [77, 163, 184], 'reach.md §2 "Single, Pad tap" (one figure: the same on Easy)'),
-  ...row('double-hold', [214, 208], [292, 379, 409], [296, 383, 411], 'reach.md §2 "Double, hold"'),
-  ...row('double-flick', [212, 206], [283, 370, 396], [287, 374, 400], 'reach.md §2 "Double, flick"'),
-  ...row('double-tap-tap', [150, 144], [191, 278, 299], [195, 282, 299], 'reach.md §2 "Double, Pad tap,tap"'),
-  // (the bounce's gap is one figure, mushroom at the lip, for every take-off column)
-  ...row('bounce', [223, 217], [179, 179, 179], [183, 183, 183], 'reach.md §2 "Bounce (floor mushroom, cap 30 px up)"'),
-  ...row('bounce-air', [317, 309], [340, 340, 340], [340, 340, 340], 'reach.md §2 "Bounce + air jump"'),
-];
+/** every flown row, each scope's (reach.md §2 for 1-1 and Easy, chain.md §1 for 1-2): world data, since a scope names its stage */
+export const FLOWN_ARCS: readonly FlownArc[] = FLOWN_ROWS;
 
 /** the apex of his feet over the floor (reach.md §2's first column), for the headroom a move needs */
 export const APEX: Readonly<Record<ReachMove, { px: number; source: string }>> = {

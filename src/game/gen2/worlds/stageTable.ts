@@ -31,7 +31,7 @@ export interface StageRow {
 export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   // (1-1's stand-in is its fixed first run, firstRun11.ts, locked by `seedlist 1-1 --check`; seedList.test.ts holds it to the list's entry)
   '1-1': { kit: 'w1', squirrels: true, firstRun: true, pick: true, judged: 'normal-1-1', standIn: { seed: FIRST_RUN_11.seed, rerolls: FIRST_RUN_11.rerolls, plan: FIRST_RUN_11.plan, foes: FIRST_RUN_11.foes ?? [] } },
-  '1-2': { kit: 'w1' },
+  '1-2': { kit: 'w1', judged: 'normal-1-2' },
 };
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */

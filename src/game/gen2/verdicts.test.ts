@@ -54,7 +54,8 @@ test('ALL_VERDICTS is the union, in order, read off verdicts.types.ts', () => {
   const src = fs.readFileSync(new URL('./verdicts.types.ts', import.meta.url), 'utf8');
   const union = [...src.slice(src.indexOf('export type VerdictName'), src.indexOf('export interface Measure')).matchAll(/\| '([a-z0-9.-]+)'/g)].map((m) => m[1]);
   assert.deepEqual([...ALL_VERDICTS], union);
-  assert.equal(union.length, 17);
+  // (18: chain.mount, R-165.138, F12)
+  assert.equal(union.length, 18);
 });
 
 test('arc.single-gap-over: Easy 140 px is past a flick from 70 px (132); Normal 150 past the 143 band rule', (t) => {
@@ -126,6 +127,14 @@ test("hazard.untaught: a hurt drop before the end of its lesson's showing piece 
     assert.deepEqual(names(roll(s, at(1000))), [], `${s}: shown first, the roll is clean`);
   }
 });
+test('chain.mount: a chain\'s first cap on a tall stem (160 px over its bank) needs more than a plain hop (R-165.138); 30 px up is a walk-on', (t) => {
+  const b = builtClean();
+  const cap = (y: number): Platform => ({ id: 9, x: 700, y, width: 70, height: 30, type: 'bouncy' });
+  for (const s of ['normal', 'easy'] as const) {
+    planted('chain.mount', s, { built: { ...b, platforms: [...b.platforms, cap(G - 160)] } }, t);
+    assert.deepEqual(names(roll(s, { built: { ...b, platforms: [...b.platforms, cap(G - 30)] } })), [], `${s}: a walk-on cap`);
+  }
+});
 test('first-run.drift: the fixed layout built against its recorded lock', (t) => {
   const layout = { seed: 7, lock: { normal: 'aaa', easy: 'bbb' } };
   assert.deepEqual(firstRunVerdicts(layout, { normal: 'aaa', easy: 'bbb' }), []);
@@ -137,8 +146,8 @@ test('every name that can fail in a flown scope has a planted roll above (the un
   const src = fs.readFileSync(new URL(import.meta.url), 'utf8');
   for (const n of ALL_VERDICTS.filter((x) => x !== 'reach.unflown')) assert.ok(src.includes(`planted('${n}'`) || (n === 'first-run.drift' && src.includes('firstRunVerdicts(layout')), n);
 });
-test('reach.unflown cannot fail inside a flown scope: an unflown scope (Normal past 1-1) states it, with the arc names, in notJudged', () => {
-  const v = judgeRoll({ stageId: '1-2', setting: 'normal', policy: 'per-gap', drops: [], asks: [ask('single-gap', 400)], routeGaps: [] } as Judged11, []);
+test('reach.unflown cannot fail inside a flown scope: an unflown scope (Normal on a stage never flown) states it, with the arc names, in notJudged', () => {
+  const v = judgeRoll({ stageId: '1-4', setting: 'normal', policy: 'per-gap', drops: [], asks: [ask('single-gap', 400)], routeGaps: [] } as Judged11, []);
   assert.equal(v.accepted, true, 'a 400 px gap is not judged where nothing was flown');
   for (const n of ['reach.unflown', ...ARC_VERDICTS]) assert.ok(v.notJudged.includes(n as VerdictName), n);
   for (const s of ['normal', 'easy'] as const) assert.ok(!roll(s, { asks: [ask('single-gap', 400)] }).notJudged.includes('reach.unflown'), `1-1 ${s}: flown`);
@@ -149,7 +158,7 @@ test('the verdict path holds no closed-form figure: reach.ts and verdicts.ts nam
     const code = fs.readFileSync(new URL(f, import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, '');
     assert.doesNotMatch(code, /reachJump|reachBounce|JUMP_RISE|DOUBLE_RISE|BOUNCE_REACH|TAKEOFF_SLACK|physics/, f);
   }
-  for (const a of FLOWN_ARCS) assert.match(a.source, /^reach\.md §2 "/, a.move);
+  for (const a of FLOWN_ARCS) assert.match(a.source, /^(reach\.md §2|chain\.md §1) "/, a.move);
   // (1-1: the band, never maxGap's 229.8 / 203.6 or riseLimit's 143.7 / 113.9)
   const b = (difficulty: Difficulty) => ({ id: '1-1', margin: difficulty === 'easy' ? 0.65 : 0.82, riseShare: difficulty === 'easy' ? 0.84 : 1, difficulty });
   assert.equal(gapFor(0, true, b('normal')), 262);
@@ -266,7 +275,7 @@ test('1-1\'s finish reach (stageGenerator finishReach): the far bank of a 256 px
     fixPickups({ platforms: st.platforms, vines: [], ropes: [], glide: false, onRoute: new Set(ids) } as never, items);
     assert.deepEqual([items[0].x, items[0].y], [1200, G - 40], `${d}: the flower stays`);
   }
-  assert.ok(!finishReach({ ...st, config: { ...c11, id: '1-2' } } as GeneratedStage, 'normal').includes(2), 'outside 1-1: the closed form, as before');
+  assert.ok(!finishReach({ ...st, config: { ...c11, id: '1-4' } } as GeneratedStage, 'normal').includes(2), 'outside the judged table: the closed form, as before');
 });
 
 // ───────────────────────── attempt 3: floorless false positives and the petal pass's reach (each planted red first) ─────────────────────────
@@ -311,7 +320,7 @@ test('the petal pass on 1-1 judges reach with the flown arcs: a flower past a 25
       spawnX: 100, spawnY: G, exitTotemX: 450, exitTotemY: G, gen2: { budget: { difficulty: d } },
     } as unknown as GeneratedStage;
     assert.deepEqual([...unreachablePickups(st)], [], `${d}: the flower past the gap is reachable`);
-    assert.deepEqual([...unreachablePickups({ ...st, config: { ...c11, id: '1-2' } } as GeneratedStage)], [7], `${d}: 1-2, closed form, as before`);
+    assert.deepEqual([...unreachablePickups({ ...st, config: { ...c11, id: '1-4' } } as GeneratedStage)], [7], `${d}: 1-4 (never flown), closed form, as before`);
   }
 });
 

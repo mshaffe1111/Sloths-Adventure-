@@ -1,0 +1,25 @@
+diff --git a/src/game/stageGenerator.ts b/src/game/stageGenerator.ts
+index 7860b87c..6b6e4186 100644
+--- a/src/game/stageGenerator.ts
++++ b/src/game/stageGenerator.ts
+@@ -1,3 +1,5 @@
++import { kitLib12 } from '../../tools/engine/lib12page.ts';
++import { buildGen2Stage } from './gen2/pipeline.ts';
+ import { specFor } from './mixer/stages.ts';
+ import { petalPass } from './petalPass.ts';
+ import { w4Normal } from './w4Normal.ts';
+@@ -2850,6 +2852,14 @@ export function buildAhead(config: LevelConfig, seed: number, difficulty: Diffic
+ export const aheadKeys = (): string[] => [...ahead.keys()];
+ 
+ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
++  // (F12 STILLS ONLY, a local worktree hook, never committed: ?lib12=<seed> plays the piece library's 1-2 roll as 1-2)
++  const lib12 = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('lib12') : null;
++  if (lib12 && config.id === '1-2') {
++    const st = buildGen2Stage({ config, kit: kitLib12(), seed: Number(lib12), difficulty }) as GeneratedStage;
++    if ((st as any).gen2.errors.length) console.warn('lib12 errors', (st as any).gen2.errors);
++    (window as any).__lib12 = st;
++    return finishStage(st, finishReach(st, difficulty));
++  }
+   if (config.id === '1-1' && !config.secret && pick11() === 'play' && ahead.size) {
+     const k = aheadKey('1-1', play11Seed(layoutVariant ?? 1), difficulty);
+     const got = ahead.get(k);
