@@ -472,6 +472,9 @@ export class GameEngine {
 
   // --- boss fight (rules in bossAI.ts / bossDefs.ts) ---
   private hazards: BossHazard[] = [];
+  /** the hazards a guardian's phase change laid for the rest of the fight (the flood, the storm, the lava), each with a copy of itself as
+   *  it was laid: a lost life keeps them, and they come in again from the fences, warned, as they did when the phase began */
+  private arenaHazards = new Map<BossHazard, BossHazard>();
   private bossDef: BossDef | null = null;
   private bossCtx: BossCtx | null = null;
   private bossIntro = false;
@@ -872,6 +875,7 @@ export class GameEngine {
     // hunters may chase past their own patch, but only along ground that is really there
     assignTerritories(this.enemies, this.platforms, (e) => e.y + (isPredator(e.type) ? FEET[e.type] : 0));
     this.boss = this.currentStage.boss;
+    this.arenaHazards.clear();
     if (this.boss) this.bossDef = bossDefForLevel(config);
     this.skyPillars = this.bossDef?.pillars && this.currentStage.arena ? makePillars(this.currentStage.arena.left) : null;
     setSovereignPillars(this.skyPillars);
@@ -3790,7 +3794,9 @@ export class GameEngine {
     }
 
     if (b.phase !== prevPhase) {
+      const laid = this.hazards.length;
       def.onPhase?.(b.phase, b, c);
+      for (const h of this.hazards.slice(laid)) this.arenaHazards.set(h, { ...h });
       sound.playBossRoar(this.currentStage.config.worldIndex);
       const line = def.guide?.[b.phase as 2 | 3];
       if (line) {
@@ -5444,7 +5450,19 @@ export class GameEngine {
     const p = this.player;
     // the rising rivers go back down: he comes back to water at its starting level
     this.floodAt.clear();
+    // (the attacks in the air go, but what a phase did to the arena stays, the boss still in that phase: it comes in again, warned, so
+    // he is never put back inside it)
+    const arena: BossHazard[] = [];
+    for (const h of this.hazards) {
+      const laid = this.arenaHazards.get(h);
+      if (!laid) continue;
+      const again = { ...laid };
+      this.arenaHazards.delete(h);
+      this.arenaHazards.set(again, laid);
+      arena.push(again);
+    }
     this.hazards.length = 0;
+    this.hazards.push(...arena);
     this.slowTimer = 0;
     this.drowsy = 0;
     this.flightClear = false;
