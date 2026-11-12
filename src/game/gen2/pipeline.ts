@@ -2302,20 +2302,20 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const seedHome = laid.sections.find((q) => reqIds.has(q.template) && q.sockets.some((k) => k.socket.role === 'find'))?.uid;
   let lastFlagT = 0;
   let t = 0;
+  // (R-165.156 is fixed on the rolled pass below; this section pass, Worlds 5-8, 1-2 and 1-3, still takes a spot a mushroom or stone may
+  // stand on: its own packet, with the curated seeds re-curated, the lead 11-12)
   const flagSpot = (s: PlacedSection): { x: number; piece: Platform } | null => {
     const lastX = checkpoints.at(-1)?.x ?? SPAWN_X;
-    // (R-165.156: never in a piece standing on its ground, a mushroom, a root, a stone: standsOnFlag)
-    const ok = (x: number, piece: Platform | undefined): piece is Platform => !!piece && x - piece.x > 30 && piece.x + piece.width - x > 30 && x > lastX + 600 && !flagInZone(laid.zones, x, piece.y) && !standsOnFlag(laid.platforms, piece, x);
+    const ok = (x: number, piece: Platform | undefined): piece is Platform => !!piece && x - piece.x > 30 && piece.x + piece.width - x > 30 && x > lastX + 600 && !flagInZone(laid.zones, x, piece.y);
     const flagSock = s.sockets.find((k) => k.socket.role === 'flag');
     if (flagSock && ok(flagSock.x, flagSock.piece)) return { x: flagSock.x, piece: flagSock.piece };
     const exitPiece = s.pieces.find((p) => p.platform.y === s.exit.y && p.platform.x + p.platform.width >= s.exit.x - 1)?.platform;
     if (ok(s.exit.x - 80, exitPiece)) return { x: s.exit.x - 80, piece: exitPiece };
     // (else the rightmost wide main piece of the section, near its end, outside a room)
     if (s.room) return null;
-    // (its furthest run clear of what stands on it, flagRuns: the piece's own end when nothing does)
     for (const p of [...s.pieces].filter((q) => q.main && q.platform.width >= FLAG_SPAN.pad).sort((a, b) => b.platform.x - a.platform.x)) {
-      const runs = flagRuns(laid.platforms, p.platform, p.platform.x + FLAG_SPAN.pad / 2, p.platform.x + p.platform.width - FLAG_SPAN.pad / 2);
-      for (let r = runs.length - 1; r >= 0; r--) if (ok(runs[r][1], p.platform)) return { x: runs[r][1], piece: p.platform };
+      const x = p.platform.x + p.platform.width - FLAG_SPAN.pad / 2;
+      if (ok(x, p.platform)) return { x, piece: p.platform };
     }
     return null;
   };
@@ -2345,12 +2345,9 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       for (const q of sec.pieces) {
         const pl = q.platform;
         if (!q.main || pl.width < FLAG_SPAN.pad) continue;
-        // (R-165.156: on a run of it clear of what stands on it, flagRuns)
-        for (const [a, b] of flagRuns(laid.platforms, pl, pl.x + 30, pl.x + pl.width - FLAG_SPAN.pad / 2)) {
-          const x = Math.min(b, to);
-          if (x < a || x < from + 600 || flagInZone(laid.zones, x, pl.y)) continue;
-          if (!best || x > best.x) best = { x, y: pl.y };
-        }
+        const x = Math.min(pl.x + pl.width - FLAG_SPAN.pad / 2, to);
+        if (x < pl.x + 30 || x < from + 600 || flagInZone(laid.zones, x, pl.y)) continue;
+        if (!best || x > best.x) best = { x, y: pl.y };
       }
     }
     if (!best) break;
