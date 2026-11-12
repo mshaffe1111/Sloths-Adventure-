@@ -58,6 +58,7 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 | Props and sprite sheets (cutting, atlases, art-use) | `hf-props.md` | to write; source: tools/art/hfbatch, prop-sheets | next props helper |
 | Fixing a drawing fault in shared render code (trace the call, fix it once for every stage, the whole-picture check, stills both ways) | `render-fix.md` | written 11-05 (engine-render, R-164.6/7/8) | next render helper |
 | Building, extending and shipping a stage's proven seed list (the sweep on 4 workers, old seeds kept in place, the relay drop-outs, the chunk and offline proofs) | `seed-list.md` | written 11-11 (Engine, R-165.112) | next Engine member who rebuilds a list |
+| Making a level (designed before it is built: the one idea, the arc as data, rolls, tests with planted faults, real-game stills, bots, gates, the Learned table) | `level.md` | written 11-12 (W1C, after 1-3; D12's Learned row after 1-2) | every level builder |
 | A creature on the predator kit (the sheet, the cast, a worked example first, data, planted faults) | `predator-kit.md` | written 11-11 (EN-P) | whoever adds or changes an animal |
 | Keeping the roadmap (numbering, sizing, closing with proof, the release sweep, roadmapcheck) | `roadmap.md` | written 11-01 (roadmap-keeper) | roadmap-keeper |
 - `release.md`: shipping a release (the live site, the APK, both test links, the deploy checks), from 0.9.5.
