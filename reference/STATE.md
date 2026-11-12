@@ -659,3 +659,8 @@ lines); Matt sees them in the release.
   for a 6:17 commit); all corrected from commit times; messages to D12/story keeper carried the wrong clock. Root cause: hand-typed
   times in heredocs. Countermeasure: every ledger line stamped by `date` inside the writing command; gate ordered R-165.168. D14 DONE
   (t-14-design@1b88b431): reference/design/1-4.md, 60 lines, to judge now.
+- 2026-11-12 6:46 PM ET: 1-4's design PASSED the lead's look (D14, t-14-design@1b88b431, reference/design/1-4.md). Why two vines: pods fall on
+  a beat (a clock); one vine + a hollow is the sure way, the pair (one liana draped over a bough, no new button) the quick way, required
+  once at the crown. Without the pair: singles get two hollows, 10-15 s longer. Build waits on 8 engine pieces in order (D40): ascent lay
+  (L), flags/clock along the climb, climb camera; pods, hollows/rot, pod trap; the level on singles; the pair; polish. The pair can be
+  prototyped ALONE for Matt's feel test. D14 retired (.57); idea round .57. Story keeper's nature check on 1-4 sent.
