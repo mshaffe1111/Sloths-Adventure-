@@ -1224,12 +1224,20 @@ export class GameEngine {
     if (this.helpAsking) this.outerPause = true;
   }
 
+  /** the presses latched while the world was held are dropped as play is handed back (the ghost press, audit A's input slice) */
+  private dropPresses() {
+    this.jumpBufferTimer = 0;
+    (this.input as { dropPresses?: () => void }).dropPresses?.();
+  }
+
   public resume() {
     const was = this.isPaused;
     this.outerPause = false;
     // (Normal's help offer is up: the stage stays still until it is answered, whatever else let go of the pause)
     if (this.helpAsking) return;
     this.isPaused = false;
+    // (a press made while the menu held the world is not played now)
+    if (was) this.dropPresses();
     this.lastTime = performance.now();
     this.lastRenderTime = this.lastTime;
     this.acc = 0;
@@ -5310,6 +5318,8 @@ export class GameEngine {
     this.kit?.onRespawn();
     this.inputGrace = 0.35;
     this.graceMoves = this.input.moves;
+    // a press made while he was going down is not played at the flag (inputEngine.ts dropPresses)
+    this.dropPresses();
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
     this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * FRAME.across);
     this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * fr.feetAt);

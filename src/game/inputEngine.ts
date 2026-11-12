@@ -554,6 +554,23 @@ export class InputEngine {
     this.state.layerSwitchPressed = false;
   }
 
+  /**
+   * Forget the presses latched and not yet used (a jump, a punch, a kick, a mega punch). The engine calls it as it hands play back after
+   * holding the world (the respawn after the life-lost beat, a resume): the latches only run down in update(), which the held world does
+   * not call, so a flick made while he was going down jumped him at the flag 0.6 s later (audit A, input slice: the ghost press).
+   * What the thumb is holding (a direction, a held jump) is not a press and stays.
+   */
+  public dropPresses() {
+    this.state.jumpPressed = false;
+    this.state.punchPressed = false;
+    this.state.kickPressed = false;
+    this.state.megaPunchPressed = false;
+    this.jumpBufferTimer = 0;
+    this.punchBufferTimer = 0;
+    this.kickBufferTimer = 0;
+    this.megaBufferTimer = 0;
+  }
+
   /** a buzz, when the Vibration setting is on (haptics.ts) */
   public triggerHaptic(durationMs = 15) {
     vibrate(durationMs);
