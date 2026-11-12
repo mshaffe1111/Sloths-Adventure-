@@ -82,6 +82,9 @@ export interface StageStats {
   /** the difficulty the stage was played on, and whether Dot's help was set to Quiet */
   difficulty?: 'easy' | 'normal';
   quiet?: boolean;
+  /** the same run's earlier report, already filed (its Game Over, before a Continue): every figure above is the whole run, so the
+   * lifetime records add only what came after it, and the journal does not count the run twice */
+  prior?: Omit<StageStats, 'prior'>;
 }
 
 export interface BadgeCounters {
@@ -467,10 +470,21 @@ export function evaluate(c: EvalContext): string[] {
   return out;
 }
 
+/** the report's figures that add up over a run (the lifetime counters sum them) */
+type AddedFigure =
+  | 'stomps' | 'glideSec' | 'shimmySec' | 'floraCollected' | 'timeSec' | 'swings' | 'punches' | 'kicks' | 'freed' | 'cakesAvoided'
+  | 'orchidPetals' | 'silkShed' | 'livesLost';
+
 /** fold a finished stage into the store (counters, journal) */
 export function recordStage(store: BadgeStore, s: StageStats): BadgeStore {
+  // what this report adds: the whole run, less what its earlier report (a Game Over before a Continue) already filed
+  const was = s.prior;
+  const more = (k: AddedFigure) => Math.max(0, (s[k] || 0) - (was?.[k] || 0));
   const kills = { ...store.kills };
-  for (const [k, n] of Object.entries(s.kills)) kills[k] = (kills[k] ?? 0) + n;
+  for (const [k, n] of Object.entries(s.kills)) {
+    const add = n - (was?.kills[k] ?? 0);
+    if (add > 0) kills[k] = (kills[k] ?? 0) + add;
+  }
   // (and the road cards a cleared stage meets: they are stage actors, which the engine does not count as seen, journalMet.ts)
   const seen = Array.from(new Set([...store.seen, ...s.seen, ...(s.win && s.id ? roadCardsIn(s.id) : [])]));
   const c = store.counters;
@@ -484,26 +498,26 @@ export function recordStage(store: BadgeStore, s: StageStats): BadgeStore {
     seen,
     quiet,
     counters: {
-      stomps: c.stomps + s.stomps,
+      stomps: c.stomps + more('stomps'),
       bestCombo: Math.max(c.bestCombo, s.maxCombo),
-      glide: c.glide + (s.glideSec ?? 0),
-      shimmy: c.shimmy + (s.shimmySec ?? 0),
-      flora: c.flora + s.floraCollected,
+      glide: c.glide + more('glideSec'),
+      shimmy: c.shimmy + more('shimmySec'),
+      flora: c.flora + more('floraCollected'),
       streak,
       bestStreak: Math.max(c.bestStreak, streak),
       // (a stage left running for hours counts two at most)
-      playSec: c.playSec + Math.min(7200, Math.max(0, s.timeSec || 0)),
-      swings: c.swings + (s.swings ?? 0),
-      punches: c.punches + (s.punches ?? 0),
-      kicks: c.kicks + (s.kicks ?? 0),
-      freed: c.freed + (s.freed ?? 0),
-      cakesAvoided: c.cakesAvoided + (s.cakesAvoided ?? 0),
-      orchidPetals: c.orchidPetals + (s.orchidPetals ?? 0),
-      silkShed: c.silkShed + (s.silkShed ?? 0),
+      playSec: c.playSec + Math.min(7200, more('timeSec')),
+      swings: c.swings + more('swings'),
+      punches: c.punches + more('punches'),
+      kicks: c.kicks + more('kicks'),
+      freed: c.freed + more('freed'),
+      cakesAvoided: c.cakesAvoided + more('cakesAvoided'),
+      orchidPetals: c.orchidPetals + more('orchidPetals'),
+      silkShed: c.silkShed + more('silkShed'),
       noHitClears: c.noHitClears + (s.win && s.heartsLost === 0 && s.livesLost === 0 ? 1 : 0),
       finished: end ? 1 : c.finished,
       finishedNormal: end && s.difficulty !== 'easy' ? 1 : c.finishedNormal,
-      falls: c.falls + Math.max(0, s.livesLost || 0),
+      falls: c.falls + more('livesLost'),
     },
   };
 }

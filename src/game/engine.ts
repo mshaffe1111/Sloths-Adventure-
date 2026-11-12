@@ -3234,7 +3234,7 @@ export class GameEngine {
         this.statLivesLost
       );
 
-      this.callbacks.onStageStats?.(this.buildStats(true, stars));
+      this.report(true, stars);
       // a find still waiting for a safe moment is handed over now, so it is never lost
       for (const fid of this.findsWaiting.splice(0)) this.callbacks.onFind?.(fid);
       recorder.event('finish', Math.round(p.cheerAt ?? this.gameTime));
@@ -4488,6 +4488,18 @@ export class GameEngine {
     return this.buildStats(false, 0);
   }
 
+  /** this run's last report to the app (a Game Over that a Continue may follow): every later report of the run carries it as
+   * `prior`, so the lifetime records take each part of one run once (audit C things-1) */
+  private filed: StageStats | null = null;
+
+  /** the run ended (a win, or the last life): tell the app */
+  private report(win: boolean, stars: number) {
+    const s = this.buildStats(win, stars);
+    const { prior: _was, ...filed } = s;
+    this.filed = filed;
+    this.callbacks.onStageStats?.(s);
+  }
+
   private buildStats(win: boolean, stars: number): StageStats {
     let floraTotal = 0;
     let floraCollected = 0;
@@ -4524,6 +4536,7 @@ export class GameEngine {
       quiet: dotHelp() === 'quiet',
       kills: { ...this.statKills },
       seen: Array.from(this.statSeen),
+      ...(this.filed ? { prior: this.filed } : {}),
     };
   }
 
@@ -5029,7 +5042,7 @@ export class GameEngine {
     this.down = null;
     this.player.downed = false;
     if (d.last) {
-      this.callbacks.onStageStats?.(this.buildStats(false, 0));
+      this.report(false, 0);
       this.callbacks.onDefeat(this.runScore);
       return;
     }
@@ -6954,7 +6967,7 @@ export class GameEngine {
         this.isGameOver = true;
         const p = this.player;
         const stars = calculateLevelStars(this.gameTime, 0, p.hp / p.maxHp, 1, this.statLivesLost);
-        this.callbacks.onStageStats?.(this.buildStats(true, stars));
+        this.report(true, stars);
         recorder.event('finish', Math.round(this.gameTime));
         this.callbacks.onVictory(stars, Math.round(this.gameTime), this.runScore);
       },
@@ -7167,7 +7180,7 @@ export class GameEngine {
         this.isGameOver = true;
         const p = this.player;
         const stars = calculateLevelStars(this.gameTime, 0, p.hp / p.maxHp, 1, this.statLivesLost);
-        this.callbacks.onStageStats?.(this.buildStats(true, stars));
+        this.report(true, stars);
         this.callbacks.onVictory(stars, Math.round(this.gameTime), this.runScore);
       },
     });

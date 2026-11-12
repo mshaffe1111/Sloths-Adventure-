@@ -78,10 +78,10 @@ export function parsePlayRecord(raw: string | null): PlayRecord | null {
   }
 }
 
-/** fold one run into the stage's record */
+/** fold one run into the stage's record (a report that continues an earlier one of the same run, `prior`, is not another play) */
 export function withRun(prev: PlayRecord | null, s: StageStats, extra: { finds: string[]; medals: string[]; now: number }): PlayRecord {
   const r: PlayRecord = prev ? { ...prev } : { v: 1, n: 0, w: 0 };
-  r.n += 1;
+  if (!s.prior) r.n += 1;
   if (!s.win) return r;
   r.w += 1;
   const t = Math.round(s.timeSec);
