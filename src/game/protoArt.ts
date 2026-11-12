@@ -1086,7 +1086,50 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     const lips = p.pit === 'hurt' ? banks.filter((q) => q !== p && q.y < p.y && (Math.abs(q.x + q.width - p.x) < 2 || Math.abs(p.x + p.width - q.x) < 2)).map((q) => q.y) : [];
     drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined }, false, view.y1 ?? 0, view, wall || undefined);
   }
+  // the floor's lip runs on under a short raised bank (stepFootLips), over the foot of its end pieces, cut clean at the floor's top
+  for (const f of stepFootLips(banks)) {
+    if (f.x1 < view.x0 - 80 || f.x0 > view.x1 + 80) continue;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(f.x0, f.y - 120, f.x1 - f.x0, 260);
+    // (and 2 units on past each end from the floor's top down, where the lip is solid: the run's soil comes a unit out over each floor's
+    // lip there, and a clip edge at the end alone left a dark hairline down the band)
+    ctx.rect(f.x0 - 2, f.y - 1, f.x1 - f.x0 + 4, 141);
+    ctx.clip();
+    drawLip(ctx, kitWorld, f.x0 - 2, f.x1 + 2, f.y, view);
+    ctx.restore();
+  }
   shadeUpTo(-Infinity);
+}
+
+/**
+ * Where a floor's lip runs on under a short raised bank (R-165.146): a run of touching banks standing less than SHORT_STEP above a floor,
+ * with the floor at the same height on both sides. The run's end pieces are cut clean at the floor's top for the floor's lip to cover
+ * (drawBankArt), but each floor's lip stopped at its own end, so under the run its moss band was missing: a bare soil box with straight
+ * sides and a straight foot along the floor's lip line (W1C's 1-3 stills, the lead 11-12). Drawn after the banks, over the run's foot.
+ * (Only between two floors: a run that ends at a drop or a wall has its own painted end there.)
+ */
+export function stepFootLips(banks: readonly Platform[]): Array<{ x0: number; x1: number; y: number }> {
+  const out: Array<{ x0: number; x1: number; y: number }> = [];
+  const floorish = (q: Platform) => !q.soil && q.pit !== 'hurt';
+  const nextTo = (q: Platform) => banks.filter((o) => o !== q && floorish(o) && Math.abs(o.x - (q.x + q.width)) < 2);
+  for (const a of banks) {
+    if (!floorish(a)) continue;
+    let at = a, n = 0;
+    for (;;) {
+      const nx = nextTo(at);
+      const up = nx.find((o) => o.y < a.y - 2 && o.y > a.y - SHORT_STEP);
+      if (up && !nx.some((o) => o.y <= a.y + 2 && o !== up)) {
+        at = up;
+        if (++n > 40) break;
+        continue;
+      }
+      const b = nx.find((o) => Math.abs(o.y - a.y) < 2);
+      if (n > 0 && b) out.push({ x0: a.x + a.width, x1: b.x, y: a.y });
+      break;
+    }
+  }
+  return out;
 }
 
 // ───────────────────────────── the ground, painted once ─────────────────────────────
