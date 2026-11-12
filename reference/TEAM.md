@@ -61,6 +61,11 @@ artifact on a branch.
     - Every packet that touches story, characters, Dot, player-facing words, a stage's theme or a cutscene names the story keeper's
       review as a done-item, and the PM gets that review before the Critic's PASS counts.
     - Every release's player text is reviewed by it before the PR.
+    - **Nature check before each level (Matt, 11-12 6:36 PM ET: "let the story designer do the research before each level just to make
+      sure"; R-165.164).** Before a level's design is judged, the story keeper researches every plant, fruit and animal the level (its
+      design doc, idea lists, cast, dressing and words) puts in front of the player and confirms each is real to where that world is set
+      (World 1: Central/South American lowland rainforest). Anything wrong (a pear, a flying squirrel) is named with a true swap. The
+      level's design doc carries the result as a short "Nature check" section; the lead does not judge a design without it.
     - It gets the release notes and the STATE.md decisions after each release, so its knowledge stays current.
   - **The role is never replaced. Only if its session itself ends** does the lead start a successor at once. Its first job: read STORY-KEEPER.md and the
     story folder, then rewrite the bible as its turnover note. The lead tells Matt. The role never lapses.

@@ -642,3 +642,6 @@ lines); Matt sees them in the release.
   1-1's first coach line ("Run, then <flick> to jump the gap") because 1-1 was never played. Tonight's test-link judging MUST open 1-3 and
   1-2 on a fresh save and judge what Dot says first (a wrong-place coach line is a named rough spot or a fix); the 1-3-only testers'
   link (R-165.157) needs its own first-play coaching plan tomorrow.
+- 2026-11-12 6:47 PM ET, Matt (6:36): "let the story designer do the research before each level just to make sure." R-165.164 is now a
+  standing duty: the story keeper's nature check before each level's design is judged (TEAM.md, story keeper "Integrated every time");
+  the design doc carries a "Nature check" section; level.md step 0 gets the line when level.md lands. First use: 1-4 (D14's doc).
