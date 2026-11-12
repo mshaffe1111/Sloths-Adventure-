@@ -10,7 +10,7 @@ not right), ROTTING BOUGHS (crumbling footing), FRUIT DOWN THE TRUNK (falling ha
 dropped down the column knocks climbers off). Matt's rules that bind it: reference/STAGE-RULES.md (at least 2 minutes; the first
 appearance of a mechanic is taught; straight up/down on a vine always climbs; crumbling platforms may be required once taught, whole
 again on respawn; Dot explains any locked exit) and World 1 has no made things (no rope, planks, saw cuts).
-Read for the bar and the house style (skim, don't study): reference/design/1-3.md and reference/design/1-2.md on origin/t-int-2 (two
+Read for the bar and the house style (skim, don't study): reference/design/1-3.md on origin/t-int-2 and reference/design/1-2.md on origin/t-12-design (two
 designed levels: one idea grown beat by beat), reference/design/LEVEL-BAR.md and reference/methods/level.md on origin/t-int-2, World 1's
 creatures (reference/design/PREDATORS.md on origin/t-int-2: the snake glides off, the boa, the eagle; Pokey wins by being clever and
 kind, never by hurting anyone), the story (reference/story/STORY-KEEPER.md; Meeca's petal trail; Dot).
