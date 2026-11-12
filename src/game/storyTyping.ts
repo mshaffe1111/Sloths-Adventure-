@@ -21,3 +21,9 @@ export function typeSchedule(text: string, ms = 26): number[] {
   }
   return at;
 }
+
+/** how many letters are typed: the count belongs to the picture and page it was typed on, so a new picture (or page) starts at 0 on its
+ *  first render, before any effect runs (StoryPlayer: the voice never says a letter of a line that is not on screen yet) */
+export function shownFor(at: { idx: number; page: number; n: number }, idx: number, page: number): number {
+  return at.idx === idx && at.page === page ? at.n : 0;
+}

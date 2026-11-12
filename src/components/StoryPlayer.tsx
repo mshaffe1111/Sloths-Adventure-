@@ -9,7 +9,7 @@ import { withWorldPlate } from '../game/plateData.ts';
 import { drawStoryScene, preloadSceneCards, preloadScenePhotos, preloadScenePlates, releaseStoryArt, SCENE_H, warmStoryCast } from '../game/storyArt.ts';
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
-import { typeSchedule } from '../game/storyTyping.ts';
+import { shownFor, typeSchedule } from '../game/storyTyping.ts';
 import { directScene } from '../game/storyDirect.ts';
 import { Plaque } from './KitParts.tsx';
 import { type IconName } from './icons/index.tsx';
@@ -116,7 +116,6 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   useEffect(() => {
     sound.warmVoices(new Set(panels.map((p) => p.speaker)));
   }, [panels]);
-  const [shown, setShown] = useState(0);
   const panel = panels[idx];
   // how each picture is delivered: its entrance, the beat before the words, the pace, pages, camera, voice and music (storyDirect.ts)
   const dirs = useMemo(() => directScene(panels), [panels]);
@@ -125,6 +124,9 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   // (which page, of which picture: a new picture starts on its first page without waiting for an effect)
   const [pageAt, setPageAt] = useState({ idx: 0, n: 0 });
   const page = pageAt.idx === idx ? pageAt.n : 0;
+  // how many letters are typed, of which picture and page: derived the same way, so a new picture never shows (or speaks) the last one's count
+  const [shownAt, setShownAt] = useState({ idx: 0, page: 0, n: 0 });
+  const shown = shownFor(shownAt, idx, page);
   const text = dir.pages[Math.min(page, dir.pages.length - 1)] ?? panel.text;
   const lastPage = page >= dir.pages.length - 1;
   const prevChapter = idx > 0 ? panels[idx - 1].chapter : null;
@@ -144,7 +146,6 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   // typewriter (time-based so a slow frame never stalls the text); waits for the title card, then the picture's beat (a later page
   // follows at once)
   useEffect(() => {
-    setShown(0);
     if (cardUp) return;
     const start = performance.now() + (page === 0 ? dir.beat : 120);
     const when = typeSchedule(text, dir.typeMs);
@@ -153,7 +154,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const tick = (now: number) => {
       while (k < when.length && when[k] <= now - start) k++;
       const n = k;
-      setShown((prev) => (prev === n ? prev : Math.max(prev, n)));
+      setShownAt((prev) => (shownFor(prev, idx, page) >= n ? prev : { idx, page, n }));
       if (n < text.length) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -386,7 +387,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     }
     if (!done) {
       skipped.current = true;
-      setShown(text.length);
+      setShownAt({ idx, page, n: text.length });
       return;
     }
     if (performance.now() - doneAt.current < 350) return;
