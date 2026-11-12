@@ -219,7 +219,12 @@ test("a hollow has two painted walls, World 1's own bank end face (not one mirro
     for (const g of hs) {
       const [yl, yr] = g.walls!, w = g.x1 - g.x0, floor = g.floor!, foot = floor + W.HOLLOW_FOOT;
       const S = W.HOLLOW_FACE_SCALE, sc = (x: number, pts: Array<[number, number]>) => pts.map(([px, py]): [number, number] => [x + (px - x) * S, py]);
-      const fl = sc(g.x0, endFace(1, g.x0, yl, foot + 40, true)), fr = sc(g.x1, endFace(1, g.x1, yr - W.HOLLOW_FACE_LIFT, foot + 40, false));
+      const fl = sc(g.x0, endFace(1, g.x0, yl, foot + 40, true)), fr = sc(g.x1, endFace(1, g.x1, yr - W.hollowFaceLift(g), foot + 40, false));
+      // (a face that fits between the bounds all the way down is the wall as it is; one that does not is fitted, and the bake moves its
+      // picture onto the fitted line, hollowWallShift: RF3, hollowWalls.test.ts)
+      const fits = (pts: Array<[number, number]>, edge: number, d: number) => { for (let y = g.top; y <= floor; y++) { const u = d * (at(pts, y) - edge); if (u <= -W.HOLLOW_JUT + 0.5 || u >= W.HOLLOW_BACK - 0.5) return false; } return true; };
+      // (a taller bank's wall is fitted to stand out past its cut above the hollow's top, and blends to its face under it)
+      const fitsL = yl >= g.top && fits(fl, g.x0, -1), fitsR = yr >= g.top && fits(fr, g.x1, 1);
       let differ = 0, widest = 0;
       for (let y = g.top; y <= floor - 24; y += 4) {
         const [a, b] = W.hollowWalls(g, y);
@@ -227,8 +232,8 @@ test("a hollow has two painted walls, World 1's own bank end face (not one mirro
         const where = `seed ${seed} x ${Math.round(g.x0)} y ${y}: walls ${a.toFixed(1)}..${b.toFixed(1)}`;
         assert.ok(a <= g.x0 + W.HOLLOW_JUT + 0.01 && a >= g.x0 - W.HOLLOW_BACK - 0.01 && b >= g.x1 - W.HOLLOW_JUT - 0.01 && b <= g.x1 + W.HOLLOW_BACK + 0.01, where);
         // (each wall is its bank's own painted end face, where that face lies inside the bounds)
-        if (g.lipL) assert.ok(Math.abs(a - Math.max(g.x0 - W.HOLLOW_BACK, Math.min(g.x0 + W.HOLLOW_JUT, at(fl, y)))) < 0.6, `${where}: the left wall is not its bank's end face`);
-        if (g.lipR) assert.ok(Math.abs(b - Math.min(g.x1 + W.HOLLOW_BACK, Math.max(g.x1 - W.HOLLOW_JUT, at(fr, y)))) < 0.6, `${where}: the right wall is not its bank's end face`);
+        if (g.lipL && fitsL && y < foot - 44) assert.ok(Math.abs(a - at(fl, y)) < 0.6, `${where}: the left wall is not its bank's end face`);
+        if (g.lipR && fitsR && y < foot - 44) assert.ok(Math.abs(b - at(fr, y)) < 0.6, `${where}: the right wall is not its bank's end face`);
         assert.ok(b - a >= w * 0.6, `${where}: the hole narrows to ${Math.round(b - a)} of ${Math.round(w)} px`);
         // (a wall held on a bound runs as a straight cut line: the face must fit, never be clamped)
         if (g.lipL) assert.ok(a < g.x0 + W.HOLLOW_JUT - 0.01 && a > g.x0 - W.HOLLOW_BACK + 0.01, `${where}: the left wall is held on a bound (a straight cut)`);
