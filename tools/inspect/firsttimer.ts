@@ -802,8 +802,9 @@ export class FirstTimerRun {
   /** a drop trap he has just hit: he stands until it is down (castPlan) */
   private trapWait: { post: TrapPost; until: number } | null = null;
   /** the shrine sealed with the goal short, and Dot has said why: he turns back for an animal he passed, as a player told so does
-   *  (`id` the animal, `best` the nearest he has come to it, `since` when he turned); `turnBacks` how often */
-  private hunt: { id: number; best: number; since: number } | null = null;
+   *  (`id` the animal, `best` the nearest he has come to it, `since` when he turned, `more` when he last came nearer: 20 s
+   *  with no nearer and he gives it up); `turnBacks` how often */
+  private hunt: { id: number; best: number; since: number; more: number } | null = null;
   turnBacks = 0;
   private huntMore = false;
   /** back from a turn: the nearest he has come to the shrine since (his walk back to it is progress, not a stuck spot) */
@@ -2075,13 +2076,14 @@ export class FirstTimerRun {
     this.huntMore = false;
     if (this.hunt) {
       const m = (e.enemies as Array<{ id: number; x: number; y: number; defeated?: boolean; kit?: { leaving?: unknown } }>).find((q) => q.id === this.hunt!.id);
-      if (!m || m.defeated || m.kit?.leaving || t - this.hunt.since > 90) {
+      if (!m || m.defeated || m.kit?.leaving || t - this.hunt.more > 20) {
         this.hunt = null;
         this.home = Infinity;
       } else {
         const d = Math.abs(m.x - p.x) + Math.abs(m.y - p.y);
         if (d < this.hunt.best - 2) {
           this.hunt.best = d;
+          this.hunt.more = t;
           this.huntMore = true;
         }
       }
@@ -2101,7 +2103,7 @@ export class FirstTimerRun {
           .filter((q) => !q.defeated && !q.kit?.leaving && q.type !== 'boss')
           .sort((a, b) => Math.abs(a.x - p.x) + Math.abs(a.y - p.y) - (Math.abs(b.x - p.x) + Math.abs(b.y - p.y)));
         if (left.length) {
-          this.hunt = { id: left[0].id, best: Infinity, since: t };
+          this.hunt = { id: left[0].id, best: Infinity, since: t, more: t };
           this.turnBacks++;
         }
       }
