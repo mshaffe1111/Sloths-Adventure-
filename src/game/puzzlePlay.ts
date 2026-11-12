@@ -787,6 +787,15 @@ export class KitPlay {
   private yawnAt = -1;
   private yawnRoom: RoomRun | null = null;
 
+  /**
+   * a shut room gate's door or the wall standing on it: not a face a second jump climbs. The engine's wall helper ("jump twice") reads
+   * only the 118 px door and stays quiet here; the room's own lines explain a locked exit (audit P-03)
+   */
+  shutGate(q: Platform): boolean {
+    for (const r of this.rooms) for (const g of r.gates) if (!g.open && (g.door === q || g.wall === q)) return true;
+    return false;
+  }
+
   /** a room's line for a moment, the first time it comes (`again`: every time, though only once in a row; `help`: stuck help, KitHost.help) */
   private told(room: RoomRun, key: keyof NonNullable<RoomSpec['tips']>, h: KitHost, seconds: number, again = false, help = false) {
     const line = room.spec.tips?.[key];

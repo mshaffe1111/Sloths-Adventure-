@@ -4710,6 +4710,8 @@ export class GameEngine {
       if (q.type !== 'solid' || q.broken) continue;
       const near = f > 0 ? q.x - p.x : p.x - (q.x + q.width);
       if (near < 0 || near > 90) continue;
+      // (a shut room gate: no second jump climbs it, its wall stands on the door; the room's own lines speak there, P-03)
+      if (this.kit?.shutGate(q)) continue;
       if (q.y < p.y - lo && q.y > p.y - hi && q.y + q.height >= p.y - 12) return true;
     }
     return false;
