@@ -1,7 +1,7 @@
 // (f) Android Back, through the REAL native path: a fake androidBridge + Capacitor's own native-bridge.js (as the Android WebView injects
 // it), so App.tsx registers its 'backButton' listener exactly as on a phone; Back is fired as the native side fires it (fromNative).
 import fs from 'node:fs';
-import { chromium, seedDone, IDS, click, sleep, HEAD, MAIN, here, PROBE } from './rtlib.mjs';
+import { chromium, seedDone, IDS, click, sleep, HEAD, MAIN, here, PROBE, playFromMap } from './rtlib.mjs';
 const which = process.argv[2] ?? 'head';
 const url = which === 'main' ? MAIN : HEAD;
 const bridge = fs.readFileSync(`${here}/native-bridge.js`, 'utf8');
@@ -36,6 +36,7 @@ const state = () => page.evaluate(() => {
   return [vis('.ttl-leaf') && 'title', vis('.wm-head') && 'map', vis('.ui-saveload') && 'saveload', vis('.st-tab') && 'settings', vis('.sh-tab') && 'satchel',
     vis('.pm-scrim') && 'pause-menu', e && e.isRunning && (e.isPaused ? 'stage(paused)' : 'stage(running)'), vis('[role=dialog]') && 'dialog:' + (document.querySelector('[role=dialog]')?.getAttribute('aria-label') ?? '?')].filter(Boolean).join('+') || document.body.innerText.slice(0, 40).replace(/\s+/g, ' ');
 });
+async function step(l){ rows.push('  step: '+l+' ['+(await state())+']'); }
 async function back(label) {
   const before = await state();
   await page.evaluate(() => window.__back());
@@ -54,10 +55,8 @@ try {
   await click(page, '.ttl-leaf >> nth=0'); await page.locator('.wm-head').waitFor(); await sleep(600);
   await click(page, '.wm-name'); await back('worlds pop-up');
   await back('map');
-  await click(page, '.ttl-leaf >> nth=0'); await page.locator('.wm-head').waitFor(); await sleep(600);
-  for (let i = 0; i < 4; i++) await click(page, '.wm-arrow[aria-label="Next world"]');
-  await click(page, '.map-node[aria-label^="Stage 5-2:"]'); await click(page, '.wm-play');
-  for (let i = 0; i < 40 && !(await page.evaluate(() => !!window.__probeEngine?.()?.isRunning)); i++) await sleep(500);
+  await step('before play'); await click(page, '.ttl-leaf >> nth=0'); await sleep(1500); await step('after play tap'); await page.locator('.wm-head').waitFor(); await sleep(600);
+  await playFromMap(page, '5-2');
   await sleep(2500);
   await back('stage playing');
   await back('pause menu');
@@ -66,6 +65,7 @@ try {
   await back('after losing every life (game over)');
   await sleep(800);
   rows.push('end state: ' + (await state()));
+  rows.push('bridge calls: ' + JSON.stringify(await page.evaluate(() => [...new Set(window.__calls)])));
 } catch (e) { rows.push('STOPPED: ' + e.message.split('\n')[0]); }
 console.log(rows.join('\n'));
 console.log('page errors', errors.length, errors.slice(0, 3));
