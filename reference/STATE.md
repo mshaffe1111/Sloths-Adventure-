@@ -617,3 +617,4 @@ lines); Matt sees them in the release.
   (session_01FhBbYNU1GCTEwYjyMCC2Kr, t-ideas-14-b), C = Opus MAX (session_01FhBbYMuNxrPmKojME9JJhj, t-ideas-14-c). The letter->effort
   map stays with the lead; the designer gets the lists unlabelled and says which ideas it used and why. Then a designer (Opus max)
   writes reference/design/1-4.md; the build waits for the two-vine climb engine piece.
+- 2026-11-12 6:10 PM ET: INT-2 merged t-fx (357c0e74); FX's rolled-pass flag rule also moved 1-3's flags/petals/dress (platforms, enemies, cast unchanged; seedlist 1-3 PASS 100). Lead: accept (a) as the same defect fix; Step 3 adds a dry run of 1-3's proven filter (bots, defaults) to confirm the 100 seeds.
