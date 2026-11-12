@@ -32,9 +32,8 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   // (1-1's stand-in is its fixed first run, firstRun11.ts, locked by `seedlist 1-1 --check`; seedList.test.ts holds it to the list's entry)
   '1-1': { kit: 'w1', squirrels: true, firstRun: true, pick: true, judged: 'normal-1-1', standIn: { seed: FIRST_RUN_11.seed, rerolls: FIRST_RUN_11.rerolls, plan: FIRST_RUN_11.plan, foes: FIRST_RUN_11.foes ?? [] } },
   '1-2': { kit: 'w1', judged: 'normal-1-2' },
-  // (1-3 Branch Snakes: the designed arc, w1Arc13.ts. Not judged yet: P13 marks it. W1C tried `judged: 'normal-1-3'` on 11-12: 24 of 24
-  //  rolls clean on both settings under 1-3's own flown rows; judgedTable.test.ts pins this table, so the mark and that test go together)
-  '1-3': { kit: 'w1' },
+  // (1-3 Branch Snakes: the designed arc, w1Arc13.ts; judged on its own flown rows, flownArcs.ts normal-1-3, P13 11-12. Its seed list is owed)
+  '1-3': { kit: 'w1', judged: 'normal-1-3' },
 };
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */

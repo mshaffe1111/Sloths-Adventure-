@@ -801,6 +801,10 @@ export class FirstTimerRun {
   private punchAt: number | null = null;
   /** a drop trap he has just hit: he stands until it is down (castPlan) */
   private trapWait: { post: TrapPost; until: number } | null = null;
+  /** the drop trap he means to use (castPlan): kept until it is sprung, so he walks back to it when his thumb carries him past */
+  private trapGoal: TrapPost | null = null;
+  /** (a first-timer past the handle: backing off for a run-up at it) */
+  private trapRunUp = false;
   /** the shrine sealed with the goal short, and Dot has said why: he turns back for an animal he passed, as a player told so does
    *  (`id` the animal, `best` the nearest he has come to it, `since` when he turned, `more` when he last came nearer: 20 s
    *  with no nearer and he gives it up); `turnBacks` how often */
@@ -1625,7 +1629,11 @@ export class FirstTimerRun {
     // trunk's lastY did in round 5: every 0.3 s of walking was a "stop", so he hopped along flat ground and took off ~110 px before a
     // ledge's end instead of edgeAim's 22-44. The frame's own movement, moveX, is what it means)
     const moved = Math.abs(this.moveX);
-    this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing && t >= this.gapUntil && !(who.holdQ && t - this.backAt < 1) ? this.blockedT + DT : 0;
+    // (on a stage that names a cast, a tier bot's thumb lifting for a moment (rhythm, gapQ) holds the count, never starts it over: against
+    // a log's face his short pushes between lifts each fell under stopReact, so he stood at it until rescued, P13 11-12, 1-3's logs. Not
+    // elsewhere: 1-1's tier runs are calibrated to the testers as they are, tierBots.test)
+    const lifted = t < this.gapUntil, holdCount = lifted && !!e.cast && moved < 0.8;
+    this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing && !lifted && !(who.holdQ && t - this.backAt < 1) ? this.blockedT + DT : holdCount ? this.blockedT : 0;
     if (this.blockedT >= who.stopReact) {
       this.blockedT = 0;
       const face = this.faceAhead(fdir, 30);
@@ -1740,29 +1748,74 @@ export class FirstTimerRun {
       if (t < this.trapWait.until && tr && tr.phase !== 'down') return {};
       this.trapWait = null;
     }
-    if (!this.learned.has('trap') || !p.grounded || p.climbing) return null;
-    const mid = p.x + p.width / 2;
-    for (const tr of c.traps) {
-      if (tr.phase !== 'set') continue;
-      const h = tr.post;
-      // (on the ground he stands on, ahead of him, or just behind his middle: he went a step past it)
-      if (Math.abs(h.y - p.y) > 24) continue;
-      const ahead = (h.x - mid) * fdir;
-      if (ahead < -40 || ahead > 260) continue;
-      // (armed: an animal of the cast not yet cleared under its load, BEYOND the handle: he meets the handle first, the safe way. Coming
-      // back along the branch, he meets the animal first, and the walk's own punch or hop is his)
-      if (!c.members.some((m) => !m.cleared && scares(h, m.s.x, m.s.y) && (m.s.x - h.x) * fdir > 0)) continue;
-      // (he stands with his middle this far before the handle, facing it: the punch's reach, castEngine.test.ts)
-      const stand = h.x - fdir * 28;
-      const off = stand - mid;
-      if (Math.abs(off) > 6) return off > 0 ? { right: true } : { left: true };
-      if ((p.facing >= 0 ? 1 : -1) !== fdir) return fdir > 0 ? { right: true } : { left: true };
-      this.punchAt = t + this.who.hesitate;
-      this.swapGap = between(this.r, this.who.swap);
-      this.trapWait = { post: h, until: this.punchAt + 2.5 };
-      return {};
+    if (!this.learned.has('trap') || !p.grounded || p.climbing) {
+      this.trapGoal = null;
+      return null;
     }
-    return null;
+    const mid = p.x + p.width / 2;
+    // (armed: an animal of the cast not yet cleared under its load, on the far side of the handle from him: he meets the handle first,
+    // the safe way. Coming back along the branch, he meets the animal first, and the walk's own punch or hop is his)
+    const armed = (h: TrapPost, from: number) => c.members.some((m) => !m.cleared && scares(h, m.s.x, m.s.y) && (m.s.x - h.x) * (h.x - from) > 0);
+    // (a trap he has picked stays his goal until it is sprung or no longer worth it: his thumb carries him on 200 px and more after he
+    // means to stop (W1C's trace, 1-3 adult Easy seed 1), and he turns back for the vine he was just told to punch, as a player does)
+    let goal = this.trapGoal ? c.traps.find((q) => q.post === this.trapGoal && q.phase === 'set') : undefined;
+    if (goal && (Math.abs(goal.post.y - p.y) > 24 || Math.abs(goal.post.x - mid) > 420 || !armed(goal.post, goal.post.x - Math.sign(goal.post.loadX - goal.post.x)))) goal = undefined;
+    if (!goal) {
+      this.trapGoal = null;
+      goal = c.traps.find((tr) => {
+        if (tr.phase !== 'set') return false;
+        const h = tr.post;
+        // (on the ground he stands on, ahead of him, or just behind his middle: he went a step past it)
+        if (Math.abs(h.y - p.y) > 24) return false;
+        const ahead = (h.x - mid) * fdir;
+        return ahead >= -40 && ahead <= 260 && armed(h, mid);
+      });
+      if (!goal) return null;
+      this.trapGoal = goal.post;
+    }
+    const h = goal.post;
+    // (he punches from anywhere in the blow's reach of the handle, on the side away from the load, facing it: measured in the real
+    // engine, a punch springs the vine from 10 px past it to 85 px short of it (P13 11-12); he aims for -4 to 80. A point to stand on was too fine for a
+    // first-timer's thumb, which runs him to full speed at every nudge: he rocked either side of it until rescued, 1-3 kid seed 6)
+    const toLoad: -1 | 1 = h.loadX >= h.x ? 1 : -1;
+    const short = (h.x - p.x) * toLoad;
+    const toward: Pad = toLoad > 0 ? { right: true } : { left: true }, away: Pad = toLoad > 0 ? { left: true } : { right: true };
+    // (the first-timers' thumbs, KID and ADULT, never let go once held, thumbify R-165.59: they cannot stop at a spot, so they punch on
+    // the move, the tap timed by their own hesitation to land mid-reach; past the handle, they back off a run-up and come again)
+    if (!this.who.holdQ) {
+      if (this.trapRunUp) {
+        if (short < 170) return away;
+        this.trapRunUp = false;
+      }
+      if (short < -4) {
+        this.trapRunUp = true;
+        return away;
+      }
+      const coming = p.vx * toLoad;
+      if (coming > 100 && short <= 40 + coming * this.who.hesitate) {
+        this.punchAt = t + this.who.hesitate;
+        this.swapGap = between(this.r, this.who.swap);
+        this.trapWait = { post: h, until: this.punchAt + 1.5 };
+        return toward;
+      }
+      return toward;
+    }
+    // (a tier bot's thumb lets go: far off he runs at it; within 150 px of the reach he taps, one press from a standstill, then lets the
+    // slide stop him and looks again)
+    const off = short > 80 ? short - 80 : short < -4 ? short + 4 : 0;
+    if (off !== 0) {
+      const go = (off > 0) === (toLoad > 0) ? { right: true } : { left: true };
+      if (Math.abs(off) > 150) return go;
+      return Math.abs(p.vx) > 20 ? {} : go;
+    }
+    // (stopped: the thumb is off; he waits for himself to stand still before he turns and punches)
+    if (Math.abs(p.vx) > 20) return {};
+    if ((p.facing >= 0 ? 1 : -1) !== toLoad) return toLoad > 0 ? { right: true } : { left: true };
+    this.punchAt = t + this.who.hesitate;
+    this.swapGap = between(this.r, this.who.swap);
+    this.trapWait = { post: h, until: this.punchAt + 2.5 };
+    this.trapGoal = null;
+    return {};
   }
 
   /** a tier bot under a wall `face` px tall, over his double (about 185 px), with a bounce mushroom just behind him: he hops back onto it
@@ -2079,7 +2132,7 @@ export class FirstTimerRun {
       this.respawned();
     }
     // the sealed shrine: once Dot has said why (a 'must' line: "It's sealed. Defeat ... first."), he turns back for the nearest animal
-    // still out (a purge: any stage, by its own goal and animals); with none to find, or after 12 turns, he stands a moment and gives up
+    // still out (a purge on a stage that names a cast, by its own goal and animals); with none to find, or after 12 turns, he stands a moment and gives up
     this.huntMore = false;
     if (this.hunt) {
       const m = (e.enemies as Array<{ id: number; x: number; y: number; defeated?: boolean; kit?: { leaving?: unknown } }>).find((q) => q.id === this.hunt!.id);
@@ -2105,7 +2158,9 @@ export class FirstTimerRun {
     if (this.sealed()) {
       this.home = null;
       const told = this.dot.shown.some((q) => q.kind === 'must' && t - q.t0 < 12);
-      if (!this.hunt && told && this.turnBacks < 12 && this.goal && this.goal.got < this.goal.need) {
+      // (only on a stage whose data names a cast, castPlay.ts: elsewhere the bot's runs are measurements that set game numbers, 5-9's
+      // Easy goal from the kid's runs, firstTimerBot.test.ts, and stay as they were measured)
+      if (!this.hunt && told && e.cast && this.turnBacks < 12 && this.goal && this.goal.got < this.goal.need) {
         const left = (e.enemies as Array<{ id: number; x: number; y: number; defeated?: boolean; type: string; kit?: { leaving?: unknown } }>)
           .filter((q) => !q.defeated && !q.kit?.leaving && q.type !== 'boss')
           .sort((a, b) => Math.abs(a.x - p.x) + Math.abs(a.y - p.y) - (Math.abs(b.x - p.x) + Math.abs(b.y - p.y)));

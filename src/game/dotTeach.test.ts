@@ -47,7 +47,8 @@ test('a teach line stays its full reading time: the stock lesson that comes 2 s 
 test('a teach line comes as soon as the line up is done (a breath), not after Tips\' 30 s gap: it belongs to the beat just ahead', () => {
   // (the "Tips" setting, the default: only a first-time hazard about to hit, a first move or a new thing's first line skip its gap)
   const q = new GuideQueue(true, TIPS_GAP_MS);
-  const first: GuideLine = { key: 'first', text: 'A flag! Fall, and you start again here.', kind: 'info', who: 'Dot', source: 'lesson' };
+  // (a line it may not cut: a lesson's teach line, up its reading time; Tips holds anything else 30 s after it)
+  const first: GuideLine = { key: 'first', text: 'Slide your thumb up to climb.', kind: 'teach', who: 'Dot', source: 'lesson' };
   const tip = engineGuideLine(TIP, '9-9', { dot: true, teach: true })!;
   let at = -1;
   for (let t = CALM.startMs; t <= 60000 && at < 0; t += 100) {
@@ -57,6 +58,22 @@ test('a teach line comes as soon as the line up is done (a breath), not after Ti
   }
   const firstEnd = CALM.startMs + readMs(first.text);
   assert.ok(at >= firstEnd && at - firstEnd < 2000, `said at ${at} ms: a breath after the line up ends (${firstEnd}), not ${CALM.startMs + TIPS_GAP_MS}`);
+});
+
+test('a stage teach line comes in over a stock information line (the flag\'s card) once that has had its minimum time', () => {
+  for (const teach of [true, false]) {
+    const q = new GuideQueue(true, TIPS_GAP_MS);
+    const flag: GuideLine = { key: 'lesson:checkpoint', text: 'A flag! Fall, and you start again here.', kind: 'info', who: 'Dot', source: 'lesson' };
+    const tip = engineGuideLine(TIP, '9-9', { dot: true, teach })!;
+    let at = -1;
+    for (let t = CALM.startMs; t <= 30000 && at < 0; t += 100) {
+      if (t === CALM.startMs) q.push(flag, t);
+      if (t === CALM.startMs + 500) q.push(tip, t);
+      if (q.tick(t, env())?.line.key === tip.key) at = t;
+    }
+    if (teach) assert.ok(at >= 0 && at - CALM.startMs <= 1600, `the teach line at ${at - CALM.startMs} ms after the card: in at its minimum time`);
+    else assert.ok(at < 0 || at - CALM.startMs >= readMs(flag.text), 'a plain line waits the card out (or is dropped)');
+  }
 });
 
 test('a teach line waits through a long line already up, where a plain line would be dropped as old news', () => {

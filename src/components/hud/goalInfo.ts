@@ -68,6 +68,13 @@ function words(world: number, type: string): { verb: string; one: string; many: 
   return null;
 }
 
+/**
+ * What the goal sign shows (R-165.155): the progress TO the goal, stopping at it. A goal can be smaller than what a stage holds (1-3:
+ * every trapped snake, the bare-branch ones optional), and clears past it count nowhere visible: "11/10" reads as a bug. A count goal
+ * only (target over 0); anything else is shown as it is.
+ */
+export const goalShown = (cur: number, target: number): number => (target > 0 ? Math.min(cur, target) : cur);
+
 export function goalInfo(cfg: Cfg, dotStage = false): GoalInfo {
   const type = cfg.objectiveType;
   const w = cfg.worldIndex;
