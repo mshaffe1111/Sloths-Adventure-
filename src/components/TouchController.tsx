@@ -107,9 +107,9 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, w
   // switching away mid-touch: the recogniser forgets its fingers too
   useEffect(() => {
     inputEngine.onFocusLost = () => G.cancelAll();
-    // the game dropped every held input (a new stage): forget the fingers too, or a thumb still on the glass would think it was steering
-    // while nothing moved, and the next slide the same way did nothing (the recogniser only speaks when its direction changes)
-    inputEngine.onCleared = () => G.cancelAll();
+    // the game dropped every held input (a new stage): the recogniser forgets what its fingers said, not the fingers, so a thumb still on
+    // the glass steers again on its next move (it only speaks when its direction changes; touchGestures.ts restate)
+    inputEngine.onCleared = () => G.restate();
     return () => {
       inputEngine.onFocusLost = null;
       inputEngine.onCleared = null;

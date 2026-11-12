@@ -65,8 +65,11 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
   // nothing may stay held when the pad goes away (pause, stage over) or the page loses focus
   useEffect(() => {
     inputEngine.onFocusLost = releaseAll;
+    // (a new stage dropped every held input: the pad says its push again on its next report, padControl.ts restate)
+    inputEngine.onCleared = () => P.restate();
     return () => {
       inputEngine.onFocusLost = null;
+      inputEngine.onCleared = null;
       releaseAll();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
