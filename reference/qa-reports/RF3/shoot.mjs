@@ -28,7 +28,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     }
     if (cr.length === 4) for (let i = 0; i < 12; i++) {
       await p.evaluate(([E, cr]) => { const e = eval(E); const [a, b, c, d] = cr.map(Number);
-        e.camera.x = (a + c) / 2 - e.camera.viewportWidth / 2; e.camera.y = (b + d) / 2 - e.camera.viewportHeight / 2; e.clearGuide?.(); e.render(); }, [E, cr]);
+        e.camera.x = (a + c) / 2 - e.camera.viewportWidth / 2; e.camera.y = (b + d) / 2 - e.camera.viewportHeight / 2; e.clearGuide?.(); e.player.invincibleTimer = 0; e.render(); }, [E, cr]);
       await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
     }
     if (process.env.HIDEUI) await p.addStyleTag({ content: 'body{visibility:hidden} canvas{visibility:visible}' });
