@@ -126,7 +126,8 @@ export class CastPlay {
     for (const tr of this.traps) {
       if (!stepTrap(tr, dt)) continue;
       o.fell.push(tr.post);
-      for (const m of this.members) if (scares(tr.post, m.s.x, m.s.y)) beat(m.def, m.s, 'trap', t, tr.post.loadX);
+      // (chased off must read as fleeing: it leaves AWAY from him, whichever side of the load it stood, never past him)
+      for (const m of this.members) if (scares(tr.post, m.s.x, m.s.y)) beat(m.def, m.s, 'trap', t, hero.x);
     }
 
     const sc = this.scene;

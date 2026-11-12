@@ -137,6 +137,21 @@ test('the trap on a snake: he shakes the vine from the ledge, out of its reach; 
   }
 });
 
+test('chased off reads as fleeing: whichever side of the hive the snake stood, it glides AWAY from him, never past him', () => {
+  for (const sx of [470, 520, 560, 600, 650]) {
+    const s = snake({ x: sx, asleep: true }), c = cast([s], [trap()]);
+    c.strike(handleBox(trap()));
+    const xs: number[] = [];
+    play(c, 3, () => { if (s.glide !== undefined && !s.defeated) xs.push(s.x); return hero({ x: 300 }); });
+    assert.ok(xs.length > 20 && xs.every((x, i) => i === 0 || x >= xs[i - 1]) && xs[xs.length - 1] > sx + 150, `from ${sx} (the hive is at 560, he is at 300) it goes right, away from him`);
+  }
+  const s = snake({ x: 520, asleep: true }), c = cast([s], [trap()]);
+  c.strike(handleBox(trap()));
+  const xs: number[] = [];
+  play(c, 3, () => { if (s.glide !== undefined && !s.defeated) xs.push(s.x); return hero({ x: 800, y: 700 }); });
+  assert.ok(xs[xs.length - 1] < 520 - 150, 'and with him on the far side, it goes left');
+});
+
 test('a trap only clears what is under it: a snake further along the branch stays', () => {
   const near = snake({ x: 560 }), far = snake({ id: 501, x: 560 + TRAP.scare + 60, patrolMinX: 700, patrolMaxX: 900 });
   const c = new CastPlay({ kinds: ['snake'], traps: [trap()] }, [near, far], [ledge, { ...branch, width: 600 } as Platform], 1);
