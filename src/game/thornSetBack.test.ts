@@ -44,19 +44,21 @@ function dropInto(s: RealPlay, z: Zone, noLedge = false): { fell: boolean; heart
   p.x = safe.x + 60; p.y = safe.y; p.vx = 0; p.vy = 0;
   for (let i = 0; i < 10; i++) s.frame();
   if (noLedge) e.softAt = null;
-  const hp = p.hp;
+  // (a heart is counted where the engine counts it, heartFall's statHeartsLost: a heart picked up on the ledge he is put back on would
+  // hide it from his hp, as her island's heart did on INT-2's head)
+  const hp = p.hp, lost = e.statHeartsLost ?? 0;
   p.x = (z.x0 + z.x1) / 2; p.y = z.y! - 140; p.vx = 0; p.vy = 0; p.grounded = false;
   const inside = () => p.x > z.x0 && p.x < z.x1;
   let fell = false;
   for (let i = 0; i < 75 && !fell; i++) {
     s.frame();
     // (the fall: his feet at the hurt line inside the zone, a heart gone, or put back out of it)
-    if (p.hp < hp || !inside() || p.y >= z.y! - 1) fell = true;
+    if (p.hp < hp || (e.statHeartsLost ?? 0) > lost || !inside() || p.y >= z.y! - 1) fell = true;
     if (p.grounded && inside() && p.y < z.y! - 20) break; // caught on a lip or a cap, above the thorns
   }
   for (let i = 0; i < 45; i++) s.frame();
   const on = p.grounded ? s.platforms.find((q) => q.id === e.standingOnId) ?? null : null;
-  return { fell, heart: p.hp < hp, backOn: on && on.pit !== 'hurt' && !inside() ? on : null };
+  return { fell, heart: (e.statHeartsLost ?? 0) > lost, backOn: on && on.pit !== 'hurt' && !inside() ? on : null };
 }
 
 test('every hurt floor is taught first: its stage\'s teach line lies 800 px or more before the first one, both settings', () => {
