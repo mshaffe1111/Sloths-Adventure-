@@ -97,3 +97,14 @@ the safe way (no rewrite): a WebGL lane beside level laying, from 11-12, on Opus
 3. R-3.3 the ground as textures; R-3.4 Pokey and creatures as atlases; R-3.5 props and particles batched. Each lands only with its
    measured gain, upright and sideways, and the stage lock unchanged. R-3.12 (sheets over 4096 px) before the atlases.
 Roadmap hours (no history): about 13 h for stages 0-4 (range 13-25 h).
+
+## Size: the plan (Matt, 11-11 8:50 PM ET: "biggest first... we're running pretty fat... for the Google Play Store")
+Live site 177 MB (images 113, video 54, sound 5.5, code 4); APK 188 MB. Biggest first, working down (AS-1 ranks every file).
+1. Quick wins (AS-1, from 11-11): resize what is stored bigger than it is drawn; compress video (VP9, never AV1) and art (WebP) at
+   the setting Matt picks from side-by-side stills.
+2. Animation: frame-by-frame painted sheets (1.3-2.7 MB each) are the largest single kind; fewer frames, trimmed empty space, or
+   skeletal animation (one painted creature cut into parts) where it saves the most. Show first.
+3. Story video to in-engine scenes (painted stills with motion) where it reads as well.
+4. WebGL's GPU texture formats (KTX2/Basis) with the WebGL lane: smaller downloads and far less phone memory.
+5. Google Play Asset Delivery: each world's art downloaded when the player gets there; the first install stays small. Verify Play's
+   base-download limit against 188 MB first.
