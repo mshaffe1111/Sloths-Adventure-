@@ -5,6 +5,33 @@ on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engi
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
 
+## 0d. The generator's yield (EN-Y, R-165.120, 11-11): what the next engineer on gen2's search must know
+- **Measure with the probe, never by eye:** `npx tsx tools/engine/yield.ts 1-1 --par 4` (200 fresh seeds a setting, about 60 s; `--from`
+  for another range, `--min 50` to fail under 50%, `--json` for each seed's rules). Fresh means above the list's highest seed (61616).
+  11-11: Normal 56% / Easy 54% on 50001-50200, 57% / 53% on 70001-70200 (was 9% / 2%). Tune on one range, report the other.
+- **The table shows a never-clean seed's FIRST refused roll** (what it always returned), so its rule counts lag the search. To see what
+  the later rolls died of, read `gen2.repairs` on the refused stage: each later try adds "roll k, try n: <line>".
+- **Where each piece is (pipeline.ts):** `rollUnmet` (the after-rules, with the slot each names), the accept point in `buildRolled`
+  (search for "R-165.120: a rolled graph's plan is taken only"), `windowFix` (V19b from the gate's numbers), `supplyDeal` + `unfilled`
+  + `poolFits` (the deal and the lay against the pool), `leftShort` and `overspent` inside `layStage` (look-ahead, pacing).
+- **The proof no proven seed moved is by construction, then by the gate.** Everything in the accept point runs only where the old
+  search would have returned a refused roll. `supplyDeal` and the pool look-ahead run on the first roll too: they act only when the
+  pool cannot fill the stage, which a proven roll never had. `seedlist.ts 1-1 --check` is the gate; run it after ANY change here.
+- **TRAP, the replay:** Play and the list rebuild a stage from its stored plan (template, mirror, versions, salt, join kind, node).
+  Anything a repair changes that the plan does not store makes a stage the list can never replay. Pacing first steered the step's
+  direction; that would have failed every new seed's replay. It now changes only the join's KIND. yield.test.ts holds this twice (a
+  paced lay laid again from its plan; a repaired clean roll through packPlan). Keep any new steering to what PlanSlot stores.
+- **TRAP, the deal's stream:** the deal's tries share one rng; filtering a candidate list changes how many numbers it draws and moves
+  every later try. `supplyDeal` runs AFTER the tries, on its own stream (rngFor(seed, 71)), for that reason.
+- **Clean is not listable.** seedlist.ts also holds the quiet line (4 s) and the squirrels, outside the generator: 13 of 200 fresh
+  seeds list (was 0). 40 of 43 clean seeds fail only the quiet line. That is the next wall, and it needs the quiet line inside `src`.
+- **What still refuses (50001-50200, Normal):** V19b 60, floor.unmarked 58 (a seam's catch bough under a thin first piece lets him walk
+  off under it: quiet-arrival, log-chain, high-walk), signature short of sections or of rise 47, climb 27 (the corridor's top: the
+  stage spends its 900 px of rise before the climb node). sprint-A lays clean 15 in 18; sprint-B 4 in 13, sprint-D 5 in 15.
+- **Next, in order of what it buys:** the quiet line in the search; pacing from the first roll (moves proven seeds: the lead's call,
+  at a list rebuild); the window read where the gate reads it (67% of x, the highest piece there) instead of by slot; the deal
+  weighing height (a test dealt climb beside a climb node cannot fit the corridor).
+
 ## 0c. Rulings and facts to keep (INT-1-1, 11-11)
 - **The help promises only what gets him through** (the lead's ruling): `engine.canGrowAt(piece)` = something grows AND
   `stepPlan(...).unsolved === 0`. HelpLadder's canGrow is that call (Easy's step at 8, Normal's offer at 12, the re-ask). The pieces where
