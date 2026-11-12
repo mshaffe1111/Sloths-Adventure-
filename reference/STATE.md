@@ -619,3 +619,11 @@ lines); Matt sees them in the release.
   writes reference/design/1-4.md; the build waits for the two-vine climb engine piece.
 - 2026-11-12 6:10 PM ET: INT-2 merged t-fx (357c0e74); FX's rolled-pass flag rule also moved 1-3's flags/petals/dress (platforms, enemies, cast unchanged; seedlist 1-3 PASS 100). Lead: accept (a) as the same defect fix; Step 3 adds a dry run of 1-3's proven filter (bots, defaults) to confirm the 100 seeds.
 - 2026-11-12 6:12 PM ET: 1-3 lesson ruling: the card stays at the flag (~3 s before the vine, so every tier reads it); the story keeper rewrites line 1 to be true without the hive in view; one two-line card; F13's stop line 7:45 PM. R-165.162 = the real fix (Dot or the camera shows the named thing as she speaks).
+- 2026-11-12 6:17 PM ET: the 1-4 idea round done. A (Opus HIGH) $0.61, ~3 min: the wind's beat, pair = arms on one/feet on the other, the boa
+  hanging as a fake vine (doesn't sway), pod-fluff sunset. B (XHIGH) $1.13, ~4 min: the pair taught as the ANSWER after the problem is
+  felt, fast lane vs safe lane, a snake climbs after him, "a slow sloth finding his own way to be quick". C (MAX) $2.83, ~10 min: the
+  pair as one liana draped over a bough (reads natural), "the drop decides", squirrels harvesting pods, Shimmy Rope reused, and
+  CODE-CHECKED facts: gen2 lays an ascent flat (pipeline.ts:416 TODO: vertical laying is engine work before 1-4), the journal's squirrel
+  lift is a made thing (story keeper must rewrite), Pokey's halfway line, the Notch find. D14 (Opus max, session_01FhBbYNCZq3F5dwGa6TUPi9,
+  t-14-design, packet D14.md) designs 1-4 from the three, design only; build waits for the engine pieces + Matt's feel test. Idea
+  helpers retired.
