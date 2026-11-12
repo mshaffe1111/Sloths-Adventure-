@@ -164,3 +164,10 @@ OUT = against a rule we keep, with the reason. Worlds: 1 Canopy, 2 River, 3 Grot
 variety without adding engine work. The new things worth naming: twin-vine climbs and fruit down the trunk inside the hollow kapok
 (1-4); rolling nuts at two heights (1-8); the drum as World 3's one loud tool; fruit that wakes drowsy Pokey (World 5); creatures you
 ride (World 2, World 6); the rising-lava arena for guardians.
+
+## 7. Matt's picks (11-11 7:57 PM ET): "I like the card idea. I like the Frogger idea... older retro games... a lot of things that we can build already with our engine with just some tweaks"
+- **The card road moves up:** a time-boxed prototype (one day) right after the World 1 laying pipeline works: a totem in **1-5 Where She
+  Walked** offers two cards and the next stretch is laid from the pick. If it plays well it spreads to every world (a totem per world,
+  then World 10's hidden stage built around it); if not, it stays in World 10's hidden stage. Replaces Q6's "World 10 first".
+- **Frogger lanes:** World 2's headline (B3); 1-8 gets a first taste with rolling nuts at two heights.
+- **Retro sources:** the arcade list is the best mine for tweaks on pieces we already build; every one is our own rainforest version.
