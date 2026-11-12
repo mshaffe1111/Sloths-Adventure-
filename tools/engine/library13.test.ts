@@ -286,3 +286,19 @@ test('the shipped kit rolls 1-3 under its own id: the same arc, clean on both se
     assert.equal(r.plan[r.plan.length - 1], EXIT_13.id);
   }
 });
+
+test("the seed list's quiet line holds on the game's own roll: nowhere on 1-3 are 4 s or more with nothing to do (Normal, seeds 1-6)", async () => {
+  // (P13 and F13, 11-12: the stair's way down and every rest were 4-11 s of plain walking (a step down and a 25 px log are no hop),
+  //  so no seed could be listed. Each piece now has a root hop near both ends and every few hundred px, and ends level)
+  await import('../../src/game/headlessDom.ts');
+  const { RealPlay } = await import('../../src/game/realPlay.ts');
+  const { setDifficulty } = await import('../../src/game/difficulty.ts');
+  const { quietOf } = await import('./listRules.ts');
+  const { QUIET_MAX } = await import('../../src/game/gen2/seedList.ts');
+  setDifficulty('normal');
+  for (const seed of SEEDS) {
+    const st = new RealPlay(STAGE_13, seed).stage as Any;
+    const q = quietOf(st.config, st);
+    assert.ok(q.quiet <= QUIET_MAX, `seed ${seed}: ${q.quiet} s with nothing to do at x ${Math.round(q.x)} (the list's line: ${QUIET_MAX} s)`);
+  }
+});
