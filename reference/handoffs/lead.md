@@ -61,7 +61,8 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
   original, dark images exempt, a check page for Matt. Retire both when they report (verify ls-remote first).
   EN-S (Fable, session_01FhBbYNeneV7CJUH3PDMtKm, t-engine-split on main, stop 12:15 AM): seedchunks merged first, D45 fix in gates.yml,
   a bundle breakdown, each world / old generator / special runs / bosses / story as their own chunks behind one loading seam; offline proven.
-- Nobody is running. Start only on Matt's word.
+- RUNNING (11-12 7:31 AM): INT-E (Opus xhigh, session_01FhBbYKdwDhw2Lnrf4pNT11, t-int-engine, stop 10:45 AM) and SWEEP-M (Opus high,
+  session_01FhBbYP8NqBFrKgsVLn3iG3, t-sweep-matt, stop 9:30 AM). Effort rule (Matt 7:30 AM): xhigh only when needed, max if needed.
 - Everyone else retired tonight, branches verified. Next helpers start fresh from their role card + this note + a packet.
 
 ## How the team runs now (learned tonight; keep)
