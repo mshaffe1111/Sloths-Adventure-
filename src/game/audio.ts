@@ -18,6 +18,7 @@ import type { CueName } from '../audio/cues.ts';
 import { PUZZLE_KIND } from '../audio/sfxGame.ts';
 import { WORLD_SURFACE } from '../audio/sfxRec.ts';
 import { holdScene, sceneForPanel, sceneForScreen, type Held, type PanelInfo } from '../audio/scenes.ts';
+import { wantAudioFocus } from './audioFocus.ts';
 
 type PredatorKind = 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra';
 
@@ -38,8 +39,17 @@ class SoundEngine {
       // get the audio ready now, so the first tap only has to switch it on (and so it just plays where the browser allows sound without a tap)
       window.setTimeout(() => this.c.unlock(), 0);
       // a key press wakes the sound too, but it is not a press on the "Sound" chip, so only touches and clicks count as `fromTap`
-      for (const ev of ['pointerdown', 'touchend', 'keydown', 'click'] as const) window.addEventListener(ev, () => this.c.unlock(ev !== 'keydown'), { capture: true, passive: true });
+      for (const ev of ['pointerdown', 'touchend', 'keydown', 'click'] as const) window.addEventListener(ev, () => this.onInput(ev !== 'keydown'), { capture: true, passive: true });
+      // the Android app holds the audio focus only while the game has sound (a muted game leaves the player's own music playing)
+      this.focus(!this.c.muted);
     }
+  }
+  /** Android's audio focus wanted (sound on) or let go (muted): audioFocus.ts */
+  private focus: (on: boolean) => void = wantAudioFocus;
+  private onInput(fromTap: boolean) {
+    this.c.unlock(fromTap);
+    // Android sends nothing after a permanent loss of the focus (another app's music started): the player's next touch asks again
+    if (this.away.has('focus') && !this.c.muted) this.focus(true);
   }
 
   // ------------------------------------------------------------------ settings
@@ -50,6 +60,7 @@ class SoundEngine {
     // a tap that only woke the sound up is not also a press on "Sound": otherwise the first tap on it would mute the game
     if (performance.now() - this.c.wokeAt < 700) return this.c.muted;
     this.c.setMuted(!this.c.muted);
+    this.focus(!this.c.muted);
     return this.c.muted;
   }
   /** sound is wanted but still waiting for a first tap */
