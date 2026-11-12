@@ -2515,7 +2515,14 @@ export class GameEngine {
         // back: from there the way on can be out of reach, and he walked straight off it again, the red team's F10 on gen2 1-1 Roll A Easy)
         const prev = this.softAt;
         const fellOnto = !!prev && g && g.y > prev.y + 100 && g.width < 400 && !(prev.x >= g.x && prev.x <= g.x + g.width);
-        if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60 && !fellOnto && g.pit !== 'hurt') this.softAt = { x: Math.max(g.x + 30, Math.min(g.x + g.width - 30, p.x)), y: g.y, x0: g.x, x1: g.x + g.width };
+        if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60 && !fellOnto && g.pit !== 'hurt') {
+          // (a stage with hurt floors: a pillar, a piece with a mushroom on it and hurt floor on both sides, is never the put-back spot, and
+          // on a ledge with a mushroom he is put back short of it, never inside the cap, which would throw him at once)
+          const hs = this.currentStage.heartFalls, r = g.x + g.width;
+          const cap = hs?.some((z) => z.y !== undefined) ? this.platforms.find((q) => q.type === 'bouncy' && q.x < r && q.x + q.width > g.x && Math.abs(q.y + q.height - g.y) < 30) : undefined;
+          const [a, b] = !cap ? [g.x, r] : cap.x - g.x >= 60 ? [g.x, cap.x] : [cap.x + cap.width, r];
+          if (!cap || !(hs!.some((z) => z.y !== undefined && Math.abs(z.x1 - g.x) < 3) && hs!.some((z) => z.y !== undefined && Math.abs(z.x0 - r) < 3))) this.softAt = { x: Math.max(a + 30, Math.min(b - 30, p.x)), y: g.y, x0: a, x1: b };
+        }
         // (standing past a piece the help ladder counts resets it: one compare, helpLadder.ts stood)
         if (g && this.help) this.help.stood(p.x);
       }

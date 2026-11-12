@@ -192,6 +192,64 @@ test('the floor itself is never where he is put back, and standing on it is the 
   assert.ok(r.e.softAt.y < z.y! - 50, 'the ground he is put back on is the ledge, not the floor');
 });
 
+/** plant a pillar with a mushroom on it in the middle of the hollow (hurt floor on both sides: the one zone becomes two) */
+function plantPillar(r: RealPlay, z: Zone, lipY: number): { x: number; width: number } {
+  const mid = Math.round((z.x0 + z.x1) / 2), id = Math.max(...r.platforms.map((p) => p.id)) + 1;
+  const pillar = { id, x: mid - 45, y: lipY, width: 90, height: z.y! - lipY + 40, type: 'solid' as const, style: 'moss_stone' as const };
+  r.platforms.push(pillar as never, { id: id + 1, x: mid - 15, y: lipY - 30, width: 30, height: 30, type: 'bouncy', style: 'moss_stone' } as never);
+  const zones = r.stage.heartFalls as Zone[];
+  zones.splice(zones.indexOf(z), 1, { ...z, x1: mid - 45 }, { ...z, x0: mid + 45 });
+  return pillar;
+}
+
+test('the put-back: a pillar (a mushroom on it, hurt floor on both sides) is never the put-back spot; the last ledge that is not one is', () => {
+  const r = play('normal');
+  r.safe = false;
+  const z = hollows(r.stage as unknown as Gen2Stage)[0];
+  const at = standBefore(r, z);
+  const pillar = plantPillar(r, z, at.y);
+  const ledge = { ...r.e.softAt };
+  // (he stands on the pillar's left shoulder, clear of the cap, for 10 frames)
+  r.p.x = pillar.x + 6;
+  r.p.y = at.y;
+  r.p.vx = 0;
+  r.p.vy = 0;
+  for (let i = 0; i < 10; i++) r.frame();
+  assert.ok(r.p.grounded && Math.abs(r.p.y - at.y) < 2 && r.p.x >= pillar.x && r.p.x <= pillar.x + pillar.width, `standing on the pillar (${Math.round(r.p.x)}, ${Math.round(r.p.y)})`);
+  assert.deepEqual({ x: r.e.softAt.x, y: r.e.softAt.y }, { x: ledge.x, y: ledge.y }, 'the put-back spot is still the entry ledge');
+  // (a fall into the second half of the hollow, past the pillar: back to the entry ledge, not onto the pillar)
+  r.p.hp = 3;
+  const [, second] = hollows(r.stage as unknown as Gen2Stage);
+  fallIn(r, second);
+  assert.equal(r.p.hp, 2);
+  assert.ok(r.p.x <= z.x0, `put back on the entry ledge (x ${Math.round(r.p.x)}), not on the pillar at ${pillar.x}`);
+  console.log(`  put-back from past the pillar at ${pillar.x}: x ${Math.round(r.p.x)} (the ledge ends at ${z.x0})`);
+});
+
+test('the put-back: on a ledge with a mushroom he is put back short of the mushroom, never inside the cap', () => {
+  for (const setting of ['normal', 'easy'] as const) {
+    const r = play(setting);
+    r.safe = false;
+    const z = hollows(r.stage as unknown as Gen2Stage)[0];
+    const at = standBefore(r, z);
+    // (a mushroom 70 px back from the ledge's end; he stands between it and the edge, where the plain rule would put him back)
+    const cap = { id: Math.max(...r.platforms.map((p) => p.id)) + 1, x: z.x0 - 70, y: at.y - 30, width: 30, height: 30, type: 'bouncy', style: 'moss_stone' };
+    r.platforms.push(cap as never);
+    r.p.x = z.x0 - 14;
+    r.p.y = at.y;
+    r.p.vx = 0;
+    r.p.vy = 0;
+    for (let i = 0; i < 10; i++) r.frame();
+    assert.ok(r.p.grounded && r.p.x > cap.x + cap.width, `${setting}: standing past the mushroom (${Math.round(r.p.x)})`);
+    assert.ok(r.e.softAt.x <= cap.x - 30, `${setting}: the put-back spot ${Math.round(r.e.softAt.x)} is short of the mushroom at ${cap.x}`);
+    r.p.hp = 3;
+    fallIn(r, z);
+    assert.ok(r.p.x <= cap.x - 30, `${setting}: put back at ${Math.round(r.p.x)}, short of the mushroom at ${cap.x}`);
+    for (let i = 0; i < 60; i++) r.frame();
+    assert.ok(r.p.grounded && Math.abs(r.p.y - at.y) < 2 && r.p.x < cap.x, `${setting}: he stands where he was put, not thrown by the cap (${Math.round(r.p.x)}, ${Math.round(r.p.y)})`);
+  }
+});
+
 test('general by data: no engine line says what the floor IS (the grep, counted against the base)', () => {
   const count = (f: string) => fs.readFileSync(f, 'utf8').split('\n').filter((l) => /thorn/i.test(l)).length;
   assert.equal(count('src/game/gen2/pipeline.ts'), 0);
