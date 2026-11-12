@@ -2,10 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generateAllLevels } from './worldsData.ts';
 import { generateStage } from './stageGenerator.ts';
+import { listedStage } from './gen2/listed.ts';
 import { validateStage, jumpOK, easyHoldCheck } from './levelCheck.ts';
 import { buildProtoStage, HAND_STAGES } from './protoStage.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
-import { easyStage } from './easyMode.ts';
+import { costsHere, easyStage } from './easyMode.ts';
 import { isGen2Stage } from './gen2/game.ts';
 
 const levels = generateAllLevels().filter((l) => !l.secret);
@@ -70,12 +71,29 @@ test('easy: fewer animals, a goal that still can be met, and a heart at every fl
       assert.ok(e.config.targetCount <= e.enemies.length && e.config.targetCount <= cfg.targetCount, `${cfg.id}: goal ${e.config.targetCount} of ${e.enemies.length}`);
     }
     const heartAt = (cp: { x: number; y: number }) => e.collectibles.some((c) => (c.type === 'heart' || c.type === 'super_heart') && Math.abs(c.x - cp.x) < 260 && Math.abs(c.y - cp.y) < 260);
-    // (H1, hearts follow risk (Matt 11-05, "a heart only after real risk"; the lead 11-06: gen2 only): gen2 1-1, where nothing costs
-    // anything, has no heart at its flags; every other stage keeps one at each)
-    const h1 = cfg.id === '1-1' && !!(e as { gen2?: unknown }).gen2 && !e.enemies.length && e.waterY === undefined;
+    // (H1, hearts follow risk (Matt 11-05, "a heart only after real risk"; the lead 11-06: gen2 only; the lead 11-12, P12S: by the rule,
+    // never by a stage's name): a listed gen2 stage where nothing costs anything on this setting (gen2 1-1; 1-2 on Easy, its thorn
+    // hollows soft) has no heart at its flags; every other stage keeps one at each. The planted case below proves it both ways)
+    const h1 = !!listedStage(cfg.id) && !!(e as { gen2?: unknown }).gen2 && !costsHere(e);
     for (const cp of e.checkpoints ?? []) assert.equal(heartAt(cp), !h1, `${cfg.id}: ${h1 ? 'no heart (H1)' : 'heart'} at the flag at ${cp.x}`);
   }
   assert.ok(after < before * 0.7, `animals ${before} -> ${after}`);
+});
+
+test('H1 both ways, planted: a listed stage with nothing that costs on Easy has no flag hearts; give the same build one real cost and every flag gets its heart', () => {
+  const cfg = levels.find((l) => !!listedStage(l.id) && costsHere(generateStage(l, 'normal')) && !costsHere(generateStage(l, 'easy')));
+  assert.ok(cfg, 'a listed stage that costs on Normal and nothing on Easy (1-2: its thorn hollows soft on Easy)');
+  const heartAt = (st: ReturnType<typeof easyStage>, cp: { x: number; y: number }) => st.collectibles.some((c) => (c.type === 'heart' || c.type === 'super_heart') && Math.abs(c.x - cp.x) < 260 && Math.abs(c.y - cp.y) < 260);
+  const calm = easyStage(generateStage(cfg, 'easy'));
+  assert.ok((calm.checkpoints ?? []).length > 2);
+  assert.deepEqual((calm.checkpoints ?? []).filter((cp) => heartAt(calm, cp)).map((cp) => cp.x), [], `${cfg.id} Easy: nothing costs, so no flag heart`);
+  // (the planted cost: one hurt hollow made a real fall, as Normal's are)
+  const st = generateStage(cfg, 'easy') as ReturnType<typeof generateStage> & { heartFalls?: Array<{ soft?: boolean }> };
+  assert.ok(st.heartFalls?.length, 'the fixture has hurt hollows');
+  st.heartFalls![0].soft = false;
+  const hurt = easyStage(st);
+  assert.ok(costsHere(hurt));
+  for (const cp of hurt.checkpoints ?? []) assert.ok(heartAt(hurt, cp), `${cfg.id} Easy with a real cost: a heart at the flag at ${cp.x}`);
 });
 
 test('easy: a far jump over a drop gets a stone each side of it can reach with a single jump', () => {

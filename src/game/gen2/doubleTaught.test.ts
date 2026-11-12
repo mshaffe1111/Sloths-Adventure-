@@ -48,15 +48,25 @@ test("the lay's link reach reads it: 1-2 with the fact links what 1-6 links, wit
   assert.equal(jumpLinkGap(0, 1, 2), jumpLinkGap(0, 1, 2, false));
 });
 
-test("1-2 built from World 1's sections, its own id and 1-1's lessons: the stage carries the fact, the level check passes with it and refuses the same stage without it", () => {
+/** a level double gap planted in a built stage: its totem's bank, and everything at or past it, moved `gap` px on from the bank before
+ *  it (1-2's designed arc lays no double gap of its own: chain.md §1, no double over thorns, and none on its banks) */
+function doubleGapAtExit<T extends { exitTotemX: number; platforms: Array<{ x: number; y: number; width: number; type: string }>; collectibles: Array<{ x: number }>; checkpoints?: Array<{ x: number }> }>(st: T, gap: number): T {
+  const out = st.platforms.filter((q) => q.type === 'solid' && q.x <= st.exitTotemX && q.x + q.width >= st.exitTotemX).sort((a, b) => a.y - b.y)[0];
+  const on = (x: number) => (x >= out.x - 1 ? x + gap : x);
+  return { ...st, exitTotemX: st.exitTotemX + gap, platforms: st.platforms.map((q) => ({ ...q, x: on(q.x) })), collectibles: st.collectibles.map((c) => ({ ...c, x: on(c.x) })), checkpoints: (st.checkpoints ?? []).map((c) => ({ ...c, x: on(c.x) })) };
+}
+
+test("1-2 (its designed arc) with its own id and 1-1's lessons carries the fact and passes the level check; a level double gap planted in it passes with the fact and is refused without it", () => {
   let needs = 0;
   for (const seed of [2, 3, 6, 7]) for (const difficulty of ['normal', 'easy'] as const) {
     const st = buildGen2Stage({ config: config12({}) as never, kit: kitLib12({}), seed, difficulty });
     const at = `seed ${seed} ${difficulty}`;
     assert.equal(st.config.doubleTaught, true, `${at}: the built stage does not carry the lesson`);
     assert.deepEqual(validateStage(st, { rooms: false }).errors, [], at);
-    const { doubleTaught: _d, ...bare } = st.config;
-    if (validateStage({ ...st, config: bare }, { rooms: false }).errors.length) needs++;
+    const planted = doubleGapAtExit(st, 200);
+    assert.deepEqual(validateStage(planted, { rooms: false }).errors, [], `${at}: the planted double gap, with the fact`);
+    const { doubleTaught: _d, ...bare } = planted.config;
+    if (validateStage({ ...planted, config: bare }, { rooms: false }).errors.length) needs++;
   }
-  assert.equal(needs, 8, 'a roll did not need the double: the refusal without the lesson was not tried on it');
+  assert.equal(needs, 8, 'a planted double gap was crossed without the lesson: the refusal without it was not tried');
 });

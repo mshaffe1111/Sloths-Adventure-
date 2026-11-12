@@ -134,6 +134,20 @@ test("a drop's dark follows its banks' own painted faces all the way down, and i
   assert.ok(leans > 20, `the faces lean in ${leans} rows`);
 });
 
+/** ground standing in a painted drop: any footing inside its walls that rises over its lower lip, but a hollow's own hurt floor */
+const standsIn = (ps: readonly Platform[], g: { x0: number; x1: number; top: number; kind: string }) =>
+  ps.some((q) => !q.broken && q.type !== 'fragile' && q.type !== 'bouncy' && q.type !== 'drift' && q.type !== 'moving' && !(g.kind === 'hurt' && q.pit === 'hurt') && q.x < g.x1 - 4 && q.x + q.width > g.x0 + 4 && q.y + q.height > g.top + 4);
+
+test('PLANTED: a hollow\'s own hurt floor is its bottom, not ground in it; a block standing in that hollow is still caught', () => {
+  const ps = new RealPlay('1-2', 1).platforms;
+  const hs = findW1Pits(ps).filter((q) => q.kind === 'hurt');
+  assert.ok(hs.length >= 10, `${hs.length} hollows`);
+  for (const g of hs) assert.equal(standsIn(ps, g), false, `x ${Math.round(g.x0)}`);
+  const g = hs[0];
+  const block = { id: 990001, x: g.x0 + 10, y: g.floor! - 60, width: 30, height: 60, type: 'solid', style: 'moss_stone' } as Platform;
+  assert.equal(standsIn([...ps, block], g), true, 'a block standing in the hollow');
+});
+
 test("World 1, 16 layouts: every painted drop has a bank of earth at both sides and nothing standing in it; only the mixer's stages mark drops (engine-core)", () => {
   for (const id of ['1-2', '1-3', '1-5', '1-9']) {
     for (let s = 1; s <= 16; s++) {
@@ -141,7 +155,8 @@ test("World 1, 16 layouts: every painted drop has a bank of earth at both sides 
       for (const g of findW1Pits(ps)) {
         if (!g.walls) continue;
         for (const x of [g.x0, g.x1]) assert.ok(ps.some((q) => paintedBank(q) && (Math.abs(q.x + q.width - x) < 3 || Math.abs(q.x - x) < 3)), `${id} layout ${s}: the drop at ${Math.round(g.x0)} has no bank at ${Math.round(x)}`);
-        assert.ok(!ps.some((q) => !q.broken && q.type !== 'fragile' && q.type !== 'bouncy' && q.type !== 'drift' && q.type !== 'moving' && q.x < g.x1 - 4 && q.x + q.width > g.x0 + 4 && q.y + q.height > g.top + 4), `${id} layout ${s}: ground stands in the drop at ${Math.round(g.x0)}`);
+        // (a hollow's own hurt floor is its bottom, not ground standing in it: a set-back floor, the lead's ruling 11-12; anything else is)
+        assert.ok(!standsIn(ps, g), `${id} layout ${s}: ground stands in the drop at ${Math.round(g.x0)}`);
       }
     }
   }

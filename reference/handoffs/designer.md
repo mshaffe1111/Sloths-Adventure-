@@ -1,4 +1,4 @@
-# Designer handoff (rewritten 2026-11-11 5:41 PM ET by the Designer of the 1-2 packets, R-165.11, after both PASSED the packet Critic (eight rounds); before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07)
+# Designer handoff (rewritten 2026-11-11 5:41 PM ET by the Designer of the 1-2 packets, R-165.11, after both PASSED the packet Critic (eight rounds); the 1-2 rows rewritten 2026-11-12 by D12, the designer-builder of 1-2 (its designed arc); before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07; for the role agents of the 6-role model, reference/TEAM.md)
 
 Read first, in order:
 - reference/LAWS.md;
@@ -7,7 +7,8 @@ Read first, in order:
   t-designer-reach until it merges) and reference/specs/chain.md (the bounce chain, flown for 1-2);
 - reference/packets/2026-11-11/CONTENT-1-2-relay.md and DESIGN-1-2-notes.md (1-2's packet and its proofs);
 - reference/engine/NODES.md §8 (the node code and its key);
-- reference/engine/W1-NEW-SECTIONS.md (every round).
+- reference/engine/W1-NEW-SECTIONS.md (every round);
+- a LEVEL's builder: reference/methods/level.md (on t-w1-creatures), reference/design/LEVEL-BAR.md, then the level's own design doc.
 
 Every ruling below cites the file and section where it's written in full.
 
@@ -21,8 +22,9 @@ Every ruling below cites the file and section where it's written in full.
 | Piece labels and the floating rules (platforms may float, rocks never do, earth waits on Matt: use it from the floor up) | `reference/engine/LABELS.md` |
 | 1-1's art audit (code-drawn pieces against the painted kit) and its stills | `reference/engine/W1-ART-AUDIT.md`, `reference/engine/art-audit/` |
 | 1-1's designer brief, fitted to gen2's fields | `reference/engine/briefs/1-1.designer.md` (never on a cold builder's branch) |
-| 1-2's packets (Content: brief, graphs, 51 sections, the thorny floor, done-items by phase; Engine: 8 items in 3 pushes) and their notes | `reference/packets/2026-11-11/CONTENT-1-2-relay.md`, `ENGINE-1-2-routing.md`, `DESIGN-1-2-notes.md` (branch t-design-1-2) |
-| 1-2's old gap list and the secret-as-fork idea (11-06; no longer sealed: Matt's 11-11 benchmark is a full packet; superseded line by line in the notes §6) | `reference/engine/1-2-DESIGNER-NOTES.md`, `BRIEF-1-2.md` |
+| 1-2 The Petal Trail, DESIGNED (one idea, the arc beat by beat, its rules as checks) | `reference/design/1-2.md`; its rows `src/game/gen2/worlds/w1Arc12.ts`; held by `tools/engine/library.test.ts`; proof `reference/qa-reports/D12/` (the old sealed `1-2-DESIGNER-NOTES.md` is history now) |
+| (history: the old rolled 1-2, replaced 11-12 by the designed arc above) 1-2's packets (Content: brief, graphs, 51 sections, the thorny floor, done-items by phase; Engine: 8 items in 3 pushes) and their notes | `reference/packets/2026-11-11/CONTENT-1-2-relay.md`, `ENGINE-1-2-routing.md`, `DESIGN-1-2-notes.md` (branch t-design-1-2) |
+| (history: the old rolled 1-2, replaced 11-12 by the designed arc above) 1-2's old gap list and the secret-as-fork idea (11-06; no longer sealed: Matt's 11-11 benchmark is a full packet; superseded line by line in the notes §6) | `reference/engine/1-2-DESIGNER-NOTES.md`, `BRIEF-1-2.md` |
 | The entered data (the porter's) | engine-core `src/game/gen2/worlds/w1.ts`: sections, JOBS, CONTENT, TERRAIN, VERSION_JOBS, the `easy` twins, W1_KIT (owns, decor, required, graphs) |
 | **The flown numbers (11-09):** reach, bands, touch, help, the flight sim and its saved runs, the Engine packet | `reference/specs/` on t-designer-reach (reach.md, bands.md, touch.md, help.md, sims/flight.ts, sims/out/, packets/ENGINE-flight-test.md) |
 | **The bounce chain (11-11):** flown on 1-2, its bands, the worked lay, the 1-2 build probe, the fork-end check | `reference/specs/chain.md`, `sims/flight.ts` (mode `chain`, `FLIGHT_STAGE`), `sims/chainlay12.ts`, `sims/probe12.ts`, `sims/finds11.ts`, `sims/out/` (branch t-design-1-2) |
@@ -84,7 +86,7 @@ Every ruling below cites the file and section where it's written in full.
 13. **The reward (H) is structural** (outside the deal). The seed perch's failure on seed 102948 was the engine's corridor check, not the deal (my first diagnosis was wrong; NODES §7.1 is corrected).
 14. **W1 `owns` and `not` (Round 8):** 1-1 and 1-2 each own their words; 1-1's signatures stay 1-1-only. (The 11-06 "a COLD helper builds
     1-2, don't pre-build it" is gone: Matt's 11-11 benchmark is a full packet.)
-15. **1-2 (11-11, the packets, attempt 2):** harvest, level, quiet end, branching lots, deal ground 35 / bounce 35 / climb 30 and NO
+15. **(History: REPLACED 11-12 by the designed arc, ruling 21.) 1-2 (11-11, the packets, attempt 2):** harvest, level, quiet end, branching lots, deal ground 35 / bounce 35 / climb 30 and NO
     floating (World 1's window puts floating in the last third, where 1-2's graphs hold F, C, X and W); one hazard lesson (thorns)
     and no new move; ONE signature, the bounce chain over a thorn hollow, in three sections that are 1-2's alone; the note hollow
     is the required H and carries `phases: ['sho', 'ten']` (a required section is fitted by phase). Three harvest graphs. 53
@@ -96,6 +98,8 @@ Every ruling below cites the file and section where it's written in full.
 16. **The chain's bands (chain.md §3, flown):** cap centre to cap centre 205-220 level, 195-210 a step up of 24-36 (lay 198-206),
     215-225 a step down (lay 216-224); pillars wider than the cap (Normal 110-130, Easy 150-170) so a near miss lands on wood;
     Normal 2-5 caps, Easy 2-3. A chain is S, M, P, D or part of a C or F, never an X: the pillars alone are a stepping-stone road.
+    (11-12, D12 measured it on 1-2: any bed the generator lays, at most 114 px level, is one a full jump clears; so 1-2 makes the
+    caps the road instead, ruling 23.)
 17. **Thorns (the lead, 11-11):** only in hollows under chains and the named pieces, 150-170 px deep, never under a double gap (a
     double flick lands it about 70%), in the first 1,300 px or under a low road; Normal a heart and a set-back, Easy the set-back
     only; the set-back is to the last ledge that is not a pillar. Engine draws the bed from painted clumps chosen by width; its
@@ -109,6 +113,9 @@ Every ruling below cites the file and section where it's written in full.
     its piece, never a petal, never the hibiscus.
 20. **A packet's pool is proved by rolling the packet's own brief** in the real pipeline, twice: on today's engine and with the
     engine items it waits on stood in (sims/supply12.ts, `FLOWN=1`). The supply table by job and type goes in the notes.
+21. **1-2's pool is its OWN (11-12, D12, the lead's PASS):** seven beat bricks, its arrival, five rests and its exit (`SECTIONS_12`); no World 1 library section is dealt into it.
+22. **1-2's petals lie where a first-timer WALKS (11-12, D12, measured):** the harvest goal is 88% of what the game lays, and the calibrated tier bots jump 150-250 px before a root or step and land as far past it. A petal goes past a landing and short of a take-off, or one on top of a root; never on a ledge he hops onto. Measure with the bots before moving a petal (0 sealed doors in 32 runs at 138c3b36).
+23. **1-2's stumps and caps:** Easy's 160 px stumps on both settings in the lesson and again (the bite taught before the test, the lead 11-12); Normal's 110 from the petals going up on, chain.md's narrowest, with each step at the top of its band, so the pit between pillars is 102-110 px (chain.md 75-110) and a miss falls in and costs (the lead 11-12: 49-66 px hollows caught him on the lip; the stair's 160 px caps were out of scale with Pokey, R-165.107). **The caps are the road (the lead's ruling A, 11-12):** on Normal from the petals going up on, each cap over the thorns is as wide as its stump, so no bare wood is left beside it and the mushrooms are his only footing over a thorn bed (Matt's purpose rule); the lesson and again keep their wood, and Easy keeps its 70 px caps and wood (the forgiving miss). Held by library.test.ts (a planted 70 px cap is caught).
 
 ## 4. Open items (none of these is finished; check each before assuming)
 
@@ -169,6 +176,7 @@ Every ruling below cites the file and section where it's written in full.
   - `w1-rope-gap` for 1-5's move to gen2 (the mixer's rope and punch are known failures carried there);
   - stage15's seed clause is to be REWRITTEN to the glint promise, not deleted.
 - **Parked:** re-shoot the bootprint on 1-1's end bank; W1 rot wood and side-branch art; render-stone fixes.
+- **1-2, open (11-12):** its two thorn lines are the kit's `teachTips` and Dot says both on Normal and Easy since P13's Tips fix (0e779b47, merged; stills 1a and 1c). Main's "The petals go up" is CUT in the new look, so the stair has no line. The thorn bed is a SET-BACK hurt floor, not a dip or a landing (the lead 11-12): plainWalk 'dips', w1Pits #13 and stageQuality read it so, and thornSetBack.test.ts holds every hurt floor taught first, really fallen into and setting him back safely (D12, d4d296fc). w1Pits #17 is the hollow painter, RF3's (a tall wall in a narrow hollow is cut straight; a 38 px step down makes mirrored walls). The note: t-12-note after INT-2. The rolled-flag pass stands flags on floor mushrooms and roots (R-165.156, P12S). Meeca's note (the Keeper's Bell, finds.ts w1_note) goes to the twist's hollow by P12S's find-spot mark, and only then does Dot say "There's something down by the roots...".
 
 ## 5. Traps (each of these happened)
 
@@ -216,3 +224,6 @@ Every ruling below cites the file and section where it's written in full.
   - 1-1's three newer Dot lines (bank, high, noMoss) live on engine-core, not main;
   - `ctest.bounce` is the testers' course, and the same words are protoStage's bounceWall hint.
 - **Measured data beats my rule:** the `h` rock at 50-60 made the quiet line worse. Change the rule and say so.
+- **A tip in a brick is not a line on the screen** (1-2, 11-12): placed 1,000 px before the lesson, it was still never shown (coach lines and Dot's 30 s spacing). Walk the real page from the start and read the card, every lesson line, before calling it taught.
+- **A brick's flag socket does nothing on a rolled stage:** the rolled-flag pass lays every flag by Matt's rule. Design flags as that rule, not as sockets.
+- **The time model counts 1.5 s a mushroom** (stageTime.ts TIME.bounceExtra): a chain-heavy level reads about 40 s longer than it plays.

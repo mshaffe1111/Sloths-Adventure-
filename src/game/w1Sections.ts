@@ -21,7 +21,7 @@
 import { CooldownQueue, ShuffleBag, type Rng } from './gen2/variety.ts';
 
 /** World 1's stages with section versions (1-6 is the 'proto' plan; 1-10, the boss lair, has one designed layout) */
-export type W1Stage = '1-1' | '1-2' | '1-4' | '1-5' | '1-6' | '1-7' | '1-8' | '1-9';
+export type W1Stage = '1-1' | '1-4' | '1-5' | '1-6' | '1-7' | '1-8' | '1-9';
 export type Slot = 'start' | 'develop' | 'twist' | 'finish';
 const SLOTS: readonly Slot[] = ['start', 'develop', 'twist', 'finish'];
 
@@ -179,7 +179,8 @@ export function w1RollDistance(stage: W1Stage, a: number, b: number): number {
   return all ? diff / all : 1;
 }
 
-/** a stage built from this file's section tables (a World 1 stage the generator rolls from its kit has none, and is not one) */
+/** a World 1 stage built from section versions: one with a row here (a stage rolled on gen2, 1-2 and 1-3 from 11-12, has none: its
+ *  picks are its gen2 roll's; the old /^1-[1-9]$/ test sent them to w1Pick, which threw on the missing row, layoutMemory awayFrom) */
 export const isW1Stage = (id: string): id is W1Stage => Object.hasOwn(SECTIONS, id);
 
 /** build this roll's version of a section (the section's tip, if any, is the caller's: it comes first in every version) */
@@ -326,55 +327,6 @@ const SECTIONS: Record<W1Stage, Table> = {
           (k) => POOL.stones(k),
           (k) => k.busy(3, ['log', 'dip']),
           (k) => { k.lowStumps(); k.pillars(k.R.pick([[50, 80, 60, 70], [60, 70, 50, 80]]), [0.55, 0.68], false, true); },
-        ]),
-      },
-    ],
-  },
-  // 1-2 The Petal Trail: the petals show the way, up and down. Every roll climbs the stairs to the hidden shelf (World 1's note waits
-  // there); the rest is the roll's rhythm: stairs and stones, bounces up to the branches, or the trail swapping high and low.
-  '1-2': {
-    rhythms: ['stairs', 'bounce', 'mix'],
-    start: [
-      { id: 'stumps', beat: 'stairs', build: (k) => k.lowStumps() },
-      { id: 'perch', beat: 'bounce', build: (k) => { k.petalPerch(); k.petalPerch(); } },
-      { id: 'perchStumps', beat: 'mix', build: (k) => { k.lowStumps(); k.petalPerch(); } },
-    ],
-    develop: [
-      { id: 'stairs', beat: 'stairs', pool: 'stones', build: (k) => { k.trailUp(false); POOL.stones(k); k.trailUp(true); } },
-      { id: 'tree', beat: 'bounce', pool: 'bounces', build: (k) => { k.petalClimb(); k.highLeaps(3, false, true); k.trailUp(true); } },
-      { id: 'climb', beat: 'mix', build: (k) => { k.petalClimb(); k.trailUp(true); k.bounceWall(true, false); k.petalPerch(); } },
-    ],
-    twist: [
-      { id: 'split', beat: 'mix', build: (k) => k.splitTrail() },
-      {
-        // high on the branches over the ground, low over the dips, high again
-        id: 'highLow', beat: 'bounce', build: (k) => { k.highLeaps(3, false, true); k.busy(2, ['dip']); k.highLeaps(4, false); k.busy(1, ['dip']); },
-      },
-      {
-        // low along the stones, up the stairs, low again
-        id: 'stairsLow', beat: 'stairs', pool: 'hopDip', build: (k) => { POOL.hopDip(k); k.trailUp(false); k.lowStumps(); k.busy(2, ['dip', 'log']); },
-      },
-    ],
-    finish: [
-      {
-        id: 'swap', beat: 'mix', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => k.splitTrail(),
-          (k) => k.bounceWall(true, false),
-          (k) => { k.bounceWall(true, false); k.petalPerch(); },
-        ]),
-      },
-      {
-        id: 'bounces', beat: 'bounce', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => k.petalClimb(),
-          (k) => k.highLeaps(k.R.i(3, 5), false, true),
-          (k) => { k.bounceWall(true); k.petalPerch(); },
-        ]),
-      },
-      {
-        id: 'stairs', beat: 'stairs', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => k.trailUp(false),
-          (k) => POOL.stones(k),
-          (k) => { k.lowStumps(); k.dipArc(); k.busy(2, ['log', 'dip']); },
         ]),
       },
     ],
