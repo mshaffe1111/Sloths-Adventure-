@@ -203,3 +203,14 @@ reads true, because it names the characters, not the cats.
 - 1-1 was rebuilt more than once: the 11-04 rebuild, gen2 1-1 in 0.9.5, and the re-lay in 0.9.6.
 - The phone checks are clipcheck, upright and sideways. The testers, including a child tester, are on the #ctest survey (HANDOFF).
 - It names no dates or counts I can't verify, and it doesn't mention AI or the cats having passed.
+
+**"Our story": the then-and-now pair, plus the lead's truth fix (3:40 PM ET).**
+- Caption under the pair (Matt's first-attempt shot, and 1-3 today):
+  **"Then: six buttons and a lot of instructions. Now: the same sloth, and a lot more rainforest."**
+  This is true of the shot: it has LEFT, RIGHT, DUCK, PUNCH, KICK and JUMP buttons, plus a line of instructions and a "[W / UP] CLIMB
+  TREE" hint. There are no left/right words, so it reads stacked or side by side.
+- Line 5 becomes: "Levels are played on real phones, upright and sideways, and by testers, little ones included."
+
+The page in order: line 1 (Pokey's reason), line 2 (the rewrite), line 3 (ten worlds), line 4 (the first stage rebuilt), THE PAIR with
+its caption, line 5 (as fixed), then the closing line (Matt's choice: "It's still a little project, just for fun. It just got bigger."
+or "It started as a little project, just for fun. It still is, just a lot bigger, and made with a lot of care.").
