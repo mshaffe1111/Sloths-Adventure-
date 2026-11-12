@@ -277,3 +277,11 @@ Matt's okay before it is built.
 - The pair sits right after the rebuilt-first-stage line, so the picture proves the sentence before it.
 - The closing is Matt's pick, unchanged.
 - No spoilers: nothing about who the General is, Dot's secret or the ending. No AI. No mention of the cats having passed.
+
+## The stage card's goal line for a purge goal, the kind way (all stages; 3:52 PM ET)
+- Replaces "This stage: beat {count} predators to open the shrine":
+  **"This stage: send {count} {creatures} on their way to open the shrine."**
+  1-3 on Normal reads: "This stage: send 13 snakes on their way to open the shrine."
+- The slot words: {creatures} is the PLURAL animal name (snakes, prowlers, hunters). For a count of 1, use the singular: "send 1 boa on
+  its way". "on their way" fits every exit (gliding, sulking off, giving up, chased off), so one line serves the whole game.
+- "beat" and "predators" never appear on a card: no one is beaten, and they are animals, not foes.
