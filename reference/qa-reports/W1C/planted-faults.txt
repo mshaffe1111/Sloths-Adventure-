@@ -1,4 +1,4 @@
-SURVIVED  the engine never starts the cast
+CAUGHT  the engine never starts the cast  (# fail 1)
 CAUGHT  the old AI also steps a cast animal  (# fail 1)
 CAUGHT  a punch on a cast animal goes to the old fight  (# fail 1)
 CAUGHT  a blow never reaches a trap's handle  (# fail 1)
@@ -8,7 +8,7 @@ CAUGHT  a chased-off animal is not counted  (# fail 2)
 CAUGHT  a respawn leaves the cast hunting  (# fail 1)
 CAUGHT  his landing is never heard  (# fail 2)
 CAUGHT  every landing is loud  (# fail 2)
-SURVIVED  stillness is never stepped
+CAUGHT  stillness is never stepped  (# fail 1)
 CAUGHT  a trap chases off the whole cast  (# fail 1)
 CAUGHT  a landed trap does nothing  (# fail 5)
 CAUGHT  cleared twice  (# fail 6)
@@ -21,4 +21,4 @@ CAUGHT  a trap can be sprung twice  (# fail 1)
 CAUGHT  no creak before it lets go  (# fail 1)
 CAUGHT  the load never lands  (# fail 6)
 CAUGHT  a trap reaches another branch far below  (# fail 1)
-21/23 planted faults caught [('the engine never starts the cast', 'SURVIVED'), ('stillness is never stepped', 'SURVIVED')]
+23/23 planted faults caught []

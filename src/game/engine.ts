@@ -107,7 +107,7 @@ import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOW
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
-import { CastPlay } from './castPlay.ts';
+import { CastPlay, type CastHero } from './castPlay.ts';
 import { drawTraps } from './castArt.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
 import { drawKitDecor } from './puzzleArt.ts';
@@ -620,6 +620,7 @@ export class GameEngine {
    */
   /** the stage's cast on the creature kit and its drop traps, when its brief names a cast (castPlay.ts); null on every other stage */
   private cast: CastPlay | null = null;
+  private readonly castHero: CastHero = { x: 0, y: 0, vx: 0, vy: 0, facing: 1, grounded: false, holding: false };
   private stepHelp = false;
   /** the stage's puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): things to carry and throw, plates, gates, levers, lifts, beetles */
   private kit: KitPlay | null = null;
@@ -4402,7 +4403,16 @@ export class GameEngine {
   private stepCast(dt: number) {
     const c = this.cast!;
     const p = this.player;
-    const r = c.step({ x: p.x, y: p.y, vx: p.vx, vy: p.vy, facing: p.facing, grounded: p.grounded, holding: !!(p.climbing || p.isVineSwinging) }, dt, this.gameTime, this.easy);
+    // (one record, written each step: nothing is made per frame)
+    const h = this.castHero;
+    h.x = p.x;
+    h.y = p.y;
+    h.vx = p.vx;
+    h.vy = p.vy;
+    h.facing = p.facing;
+    h.grounded = p.grounded;
+    h.holding = !!(p.climbing || p.isVineSwinging);
+    const r = c.step(h, dt, this.gameTime, this.easy);
     // (the cues the old animals give: a '?' when it notices him, a '!' and its call when its tell begins)
     for (const e of r.noticed) this.addFloatingText('?', e.x, e.y - 34, '#fde047');
     for (const e of r.told) {
@@ -4410,13 +4420,13 @@ export class GameEngine {
       this.addFloatingText('!', e.x, e.y - 34, '#f97316');
     }
     for (const e of r.struck) sound.playPredator(castCall(e.type), 1);
-    for (const h of r.hurts) {
-      if (this.debugBoxes) this.dbgHurt.push(h.box);
-      if (this.gameTime < (this.harmlessUntil.get(h.e.id) ?? -1)) continue;
+    for (const k of r.hurts) {
+      if (this.debugBoxes) this.dbgHurt.push(k.box);
+      if (this.gameTime < (this.harmlessUntil.get(k.e.id) ?? -1)) continue;
       // it ran onto a blow already thrown at it: the blow wins, never a trade
-      if (this.ranOntoBlow(h.e)) continue;
-      if (checkAABBCollision(...this.pBox(), h.box.x, h.box.y, h.box.w, h.box.h)) {
-        this.damagePlayer(1, h.e.x);
+      if (this.ranOntoBlow(k.e)) continue;
+      if (checkAABBCollision(...this.pBox(), k.box.x, k.box.y, k.box.w, k.box.h)) {
+        this.damagePlayer(1, k.e.x);
         break;
       }
     }

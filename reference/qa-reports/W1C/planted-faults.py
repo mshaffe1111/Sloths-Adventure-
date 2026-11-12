@@ -8,7 +8,7 @@ M=[
  ("engine.ts","a punch on a cast animal goes to the old fight","    if (e.kit) {\n      this.castBlow(e, m, box, hr, a);\n      return;\n    }\n",""),
  ("engine.ts","a blow never reaches a trap's handle","    const sprung = this.cast?.strike(box);","    const sprung = null as null | { x: number; y: number; kind: string };"),
  ("engine.ts","a stomp on a cast animal goes to the old fight","      if (e.kit) {\n        // a cast animal: the kit says what a stomp does","      if (false) {\n        // a cast animal: the kit says what a stomp does"),
- ("engine.ts","the strike never hurts","        this.damagePlayer(1, h.e.x);\n        break;\n      }\n    }\n    // an animal that left for good","        break;\n      }\n    }\n    // an animal that left for good"),
+ ("engine.ts","the strike never hurts","        this.damagePlayer(1, k.e.x);\n        break;\n      }\n    }\n    // an animal that left for good","        break;\n      }\n    }\n    // an animal that left for good"),
  ("engine.ts","a chased-off animal is not counted","    for (const e of r.cleared) {\n      p.enemiesDefeated++;","    for (const e of r.cleared) {"),
  ("engine.ts","a respawn leaves the cast hunting","    this.cast?.calm(this.easy);\n",""),
  ("castPlay.ts","his landing is never heard","      const n = landingNoise(hero.x, hero.y, t, fell);","      const n = null as Sound | null;"),
