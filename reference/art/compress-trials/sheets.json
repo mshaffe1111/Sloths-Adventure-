@@ -1,0 +1,262 @@
+[
+ {
+  "sheet": "src/assets/enemies/queen-anim.webp",
+  "data": "src/game/queenAnimData.ts",
+  "bytes": 2814618,
+  "w": 2048,
+  "h": 8172,
+  "frames": 184,
+  "frame_w": [
+   290,
+   369,
+   431
+  ],
+  "frame_h": [
+   150,
+   203,
+   357
+  ],
+  "clips": 14,
+  "listed": 184,
+  "unused": 0,
+  "repeats": 0,
+  "packing": 0.88,
+  "opaque_in_frames": 0.52,
+  "near_dups": 0,
+  "bytes_per_frame": 15297
+ },
+ {
+  "sheet": "src/assets/enemies/prowler-anim.webp",
+  "data": "src/game/prowlerAnimData.ts",
+  "bytes": 2112730,
+  "w": 4096,
+  "h": 2951,
+  "frames": 172,
+  "frame_w": [
+   224,
+   385,
+   483
+  ],
+  "frame_h": [
+   111,
+   176,
+   276
+  ],
+  "clips": 13,
+  "listed": 172,
+  "unused": 0,
+  "repeats": 0,
+  "packing": 0.93,
+  "opaque_in_frames": 0.47,
+  "near_dups": 0,
+  "bytes_per_frame": 12283
+ },
+ {
+  "sheet": "src/assets/enemies/soldier-anim.webp",
+  "data": "src/game/soldierAnimData.ts",
+  "bytes": 2053904,
+  "w": 2048,
+  "h": 5721,
+  "frames": 179,
+  "frame_w": [
+   151,
+   211,
+   238
+  ],
+  "frame_h": [
+   290,
+   299,
+   306
+  ],
+  "clips": 10,
+  "listed": 179,
+  "unused": 0,
+  "repeats": 0,
+  "packing": 0.94,
+  "opaque_in_frames": 0.63,
+  "near_dups": 0,
+  "bytes_per_frame": 11474
+ },
+ {
+  "sheet": "src/assets/enemies/croc-anim.webp",
+  "data": "src/game/crocAnimData.ts",
+  "bytes": 1966454,
+  "w": 4096,
+  "h": 2056,
+  "frames": 117,
+  "frame_w": [
+   195,
+   360,
+   485
+  ],
+  "frame_h": [
+   106,
+   150,
+   268
+  ],
+  "clips": 13,
+  "listed": 142,
+  "unused": 0,
+  "repeats": 25,
+  "packing": 0.77,
+  "opaque_in_frames": 0.52,
+  "near_dups": 0,
+  "bytes_per_frame": 16807
+ },
+ {
+  "sheet": "src/assets/enemies/seamstress-anim.webp",
+  "data": "src/game/seamstressAnimData.ts",
+  "bytes": 1929524,
+  "w": 2048,
+  "h": 6664,
+  "frames": 100,
+  "frame_w": [
+   294,
+   341,
+   533
+  ],
+  "frame_h": [
+   280,
+   326,
+   436
+  ],
+  "clips": 4,
+  "listed": 100,
+  "unused": 0,
+  "repeats": 0,
+  "packing": 0.89,
+  "opaque_in_frames": 0.56,
+  "near_dups": 10,
+  "bytes_per_frame": 19295
+ },
+ {
+  "sheet": "src/assets/characters/flicker-anim.webp",
+  "data": "src/game/flickerAnimData.ts",
+  "bytes": 1848728,
+  "w": 2048,
+  "h": 2544,
+  "frames": 307,
+  "frame_w": [
+   87,
+   131,
+   187
+  ],
+  "frame_h": [
+   75,
+   108,
+   150
+  ],
+  "clips": 13,
+  "listed": 307,
+  "unused": 0,
+  "repeats": 0,
+  "packing": 0.82,
+  "opaque_in_frames": 0.61,
+  "near_dups": 0,
+  "bytes_per_frame": 6022
+ },
+ {
+  "sheet": "src/assets/enemies/goldsnake-anim.webp",
+  "data": "src/game/goldsnakeAnimData.ts",
+  "bytes": 1551996,
+  "w": 2048,
+  "h": 2578,
+  "frames": 155,
+  "frame_w": [
+   124,
+   174,
+   359
+  ],
+  "frame_h": [
+   56,
+   147,
+   175
+  ],
+  "clips": 9,
+  "listed": 156,
+  "unused": 0,
+  "repeats": 1,
+  "packing": 0.91,
+  "opaque_in_frames": 0.45,
+  "near_dups": 0,
+  "bytes_per_frame": 10013
+ },
+ {
+  "sheet": "src/assets/enemies/jaguar-anim.webp",
+  "data": "src/game/jaguarAnimData.ts",
+  "bytes": 1329424,
+  "w": 2048,
+  "h": 2554,
+  "frames": 70,
+  "frame_w": [
+   317,
+   378,
+   416
+  ],
+  "frame_h": [
+   123,
+   180,
+   268
+  ],
+  "clips": 6,
+  "listed": 70,
+  "unused": 0,
+  "repeats": 0,
+  "packing": 0.87,
+  "opaque_in_frames": 0.5,
+  "near_dups": 0,
+  "bytes_per_frame": 18992
+ },
+ {
+  "sheet": "src/assets/enemies/pell-anim.webp",
+  "data": "src/game/pellAnimData.ts",
+  "bytes": 1303076,
+  "w": 2048,
+  "h": 3512,
+  "frames": 122,
+  "frame_w": [
+   137,
+   206,
+   239
+  ],
+  "frame_h": [
+   237,
+   277,
+   285
+  ],
+  "clips": 7,
+  "listed": 122,
+  "unused": 0,
+  "repeats": 0,
+  "packing": 0.89,
+  "opaque_in_frames": 0.59,
+  "near_dups": 0,
+  "bytes_per_frame": 10681
+ },
+ {
+  "sheet": "src/assets/enemies/eagle-anim.webp",
+  "data": "src/game/eagleAnimData.ts",
+  "bytes": 1089134,
+  "w": 2048,
+  "h": 2545,
+  "frames": 52,
+  "frame_w": [
+   251,
+   318,
+   433
+  ],
+  "frame_h": [
+   113,
+   252,
+   468
+  ],
+  "clips": 4,
+  "listed": 52,
+  "unused": 0,
+  "repeats": 0,
+  "packing": 0.83,
+  "opaque_in_frames": 0.45,
+  "near_dups": 0,
+  "bytes_per_frame": 20945
+ }
+]

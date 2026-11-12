@@ -22,6 +22,8 @@ outdir = None
 
 
 def factor(r):
+    if os.environ.get('NO_RESIZE'):
+        return 1.0
     s = r.get('drawn_scale') or 0
     if not r.get('seen') or s <= 0 or s >= 0.5:
         return 1.0
@@ -65,7 +67,7 @@ if __name__ == '__main__':
     rows = [r for r in json.load(open(inv)) if r['dist'].endswith('.webp')]
     n = len(rows) if mode == 'all' else int(mode)
     jobs = [(r, i < 20, outdir) for i, r in enumerate(rows[:n])]
-    with Pool(3) as pool:
+    with Pool(int(os.environ.get('PROCS', '3'))) as pool:
         out = pool.map(one, jobs, chunksize=1)
     json.dump(out, open(os.path.join(outdir, 'trial.json'), 'w'), indent=1)
     tot = sum(r['bytes'] for r in out)
