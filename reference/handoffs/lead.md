@@ -23,6 +23,27 @@ Running (all report to the lead, session_01FhBbYP63h7cCX8DyW69stq; story keeper 
   re-audit of AF + INT-2.
 MATT 11:23 AM: 1-3 FIRST on his test link TONIGHT by ~9 PM, shown as it really is (stand-ins named); 1-2 rides along only if it passes.
 P11 retired 11:21 AM; F12 retired 11:29 AM (t-12-fly@ed329f74, 1-2 118/120 clean both settings, chain.mount = R-165.138, R-165.140 = Dot card; $14.72). INT-2 packet: reference/packets/2026-11-12/INT-2.md (t-int-2), session_01FhBbYJyqGNbY6jh1mWA5WW, Opus high, started 11:24 AM, stop 4:30 PM.
+11:45 AM: the lead judged W1C's 1-3 stills (d80abcba): PASSES as gameplay; stand-in contraption art NOT at the bar (green poles =
+umbrellas, stone = grey egg, plain hive, handle not "punch me"); soil seam in trap1 upright; Dot's knockout line on a trap -> story keeper ruling.
+ART-W1 (Opus high, session_01FhBbYMpG8Whyc8dYXFUYBR, t-w1-art from t-w1-creatures, packet reference/packets/2026-11-12/ART-W1-TRAPS.md,
+GPU cap $6, stop 4:30 PM): paints handle, anchor, vine, hive, stone on Hugging Face; contact sheet to the lead before cutting.
+11:55 AM: W1C 1-3 laid 99% on 1-1's judged rows, NOT flown by bots (no bot knows the vine handle; no 1-3 JUDGED rows). At 1:15 the lead
+writes P13 (Opus high, from W1C's head): fly 1-3 with the bots both settings (completable), bots learn the trap handle (general), 1-3's
+own JUDGED rows + the real 120-roll number, 1-3 seed list, funcheck, 2-min length, first-appearance taught; stop ~4:30 PM.
+Tonight's chain: P13 + ART-W1 (4:30) -> INT-2 merges W1C, P13, ART-W1 (~5:30) -> full gate (~6:30) -> stills to Matt (~6:30-7) -> test link ~9 PM.
+R-165.141 (Matt: snake always glides away) with W1C. No noise teach in 1-3 (map); noise must not wake creatures untaught.
+12:00 PM: AF retired (t-audit-fixes@98149355, all 5 fixed, $9.72). INT-2 step 1 = t-int-2@168b9309; now merging t-12-fly + t-audit-fixes
++ the lead branch. yield.test.ts:62 RED (11/30, floor 12) from P11's verdicts -> Y2 packet (reference/packets/2026-11-12/Y2-YIELD.md)
+starts from INT-2's next head; then PROOF-1 delta re-audit (AF + INT-2).
+12:07 PM: RF2 (Opus high, session_01FhBbYNAQ6YJ6gEcgAWgz5k, t-render-2 from t-int-2@168b9309, packet RF2.md, stop 3:30): R-165.146 soil
+seam + R-165.129's open part. W1C 133f542d: R-165.141 done, trap Dot line done. P13 MUST also move "excuse me" from 1-3's halfway
+wayside (wayside.ts:67, DotGuide.tsx:1321 by stage id) to the first punch-glide moment, before tonight's test link.
+12:05 PM: GL0 retired (t-webgl-0@fdaa5333, REPORT 37 lines): stick + Stage 0 in; R-3.3 copy layer NOT kept (slower); frame = GPU fill
+(backdrop strips ~half); next WebGL step (Opus): re-take phone numbers with the fixed gpuprof, then SHOW the backdrop on WebGL under a
+see-through 2D canvas (blend effects move first). Full tests/drawcheck/clipcheck etc NOT run on it; not in tonight's merge.
+R-165.142 (gameCanvas willReadFrequently fix) lives on t-webgl-0: decide whether INT-2 takes it for 0.9.7.
+12:10 PM (Matt 12:07): FABLE (W1C) DESIGNS AND BUILDS 1-3 (no 12:30 stop): reference/design/1-3.md + LEVEL-BAR.md draft by 1 PM, then builds.
+P13 (Opus high, session_01FhBbYLQMBLSzszj1sXmkwV, t-13-proof from t-w1-creatures, packet P13.md, stop 4:30): plumbing only beside it.
 NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes + t-pit-polish + t-audit-fixes (+ t-12-fly), renumber the
   duplicate R-165.129, full gate; (2) PROOF-1 re-audits only the delta; (3) ask Matt ONE question: ship the R-165.125 sound levels or hold
   (D47), then 0.9.7 on his word (PR, he merges, check deploy + APK); (4) 1-2 and 1-3 to Matt's test link by Fri 11-13 (1-3 by Fable/W1C,
@@ -31,6 +52,7 @@ NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes
 Rules learned today: judge every still before Matt sees it; re-judge when a helper replaces its stills; "as good or better", never
 pixel-identical (STAGE-RULES §5b); Matt-reported items tagged on ROADMAP the same turn; effort: xhigh only when needed, max when needed.
 Check-in trigger: re-arm send_later every 30 min while anyone works.
+FABLE 88% at 12:01 PM (resets Wed 11-18 2 AM ET; Matt may reset earlier when his normal limit, 75% at 12:03, hits 95-99%; the reserve goes to the golden 1-3 pass after his notes on tonight): GL0 stopped 12:03, W1C stops 12:30; no Fable after that unless the lead names a packet.
 Matt 11:20 AM: this lead leads him through the 1-3 build at least (do not rotate the lead before 1-3 is on the test link). HF $63.53 is the FINAL budget for now.
 
 ## Matt's direction (11-11 evening, his words)

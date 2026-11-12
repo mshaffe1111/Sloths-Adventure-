@@ -473,3 +473,30 @@ lines); Matt sees them in the release.
   from that list; INT-2 (Opus high, packet reference/packets/2026-11-12/INT-2.md) merges everything onto t-int-2; key stills to Matt
   about 5-6 PM (show first); test link about 9 PM. P11 retired 11:21 AM (t-11-pass@36a4ef1c verified). Duplicate R-165.129: the lead's
   (Matt's thorn bed) keeps it; t-int-engine's "eight tool-side tests red" becomes R-165.139 in INT-2.
+- 2026-11-12 11:40 AM ET, Matt (asked "What happens if the user fights the snake", then "Never gets to run away", then chose in the
+  lead's question): "Snake always glides away": however Pokey beats the snake (punch, jump, trap, kick) it flattens and glides to a
+  lower tree, gone for good; no knock-offs, no coming back. R-165.141, to W1C. The lead's call inside it: a punch mid-branch still
+  pushes it back (risk stays, so the trap keeps its value); the ending is always the glide. Other creatures (boa, eagle): not decided;
+  the story keeper is asked for the in-character view before Matt is asked.
+- 2026-11-12 11:45 AM ET, the story keeper's view for the boa/eagle question (to Matt when they are built): every creature leaves on
+  its own legs or wings, never hurt; "bested" = outwitted or outwaited, not beaten up. Snake: glides off (R-165.141). Boa: can be fairly
+  bested (lured off its ledge by a drop trap, lands in soft leaves, slithers off grumpy; or mistakes a still Pokey for a branch and gives
+  up). Eagle: never bested by force; two empty passes over a still Pokey, then it flies off to hunt elsewhere.
+- 2026-11-12 11:58 AM ET: AF done (t-audit-fixes@98149355): PROOF-1's 5 violations fixed test-first; story keeper's 3 save lines in;
+  Stage Cleared fits 13 phone sizes. Lead calls: roster.ts EXEMPT from the generality gate as world data (it names 8-4's moth cast; its
+  home should move to world data later); R-165.143 (17 tests not in CI), .144 (Cleared card overlaps at 640x360), .145 (Game Over
+  scrolls 13 px at 360x640). R-165.142 reserved for GL0's gameCanvas fix. Y2 packet written (yield floor red after P11's verdicts).
+- 2026-11-12 12:01 PM ET, Matt: "Fable model is at 88pct". The weekly limit resets Wed 11-18 2:00 AM ET (rate-limit resetsAt). It ran
+  about 8 points an hour with two Fable sessions. The lead's call: GL0 stops now (REPORT from what it has; Opus does its final tables,
+  gates and step 3); W1C's stop moves to 12:30 PM (gates finish, report, turnover; P13 on Opus takes 1-3's proof). After that NO Fable
+  until the lead names a packet worth it; keep the rest as a reserve to Wednesday.
+- 2026-11-12 12:03 PM ET, Matt: "I may have a fable reset later. Im currently at 75 for normal weekly limit, but will be using a reset
+  at 95 to 99 percent. That most likely will reset fable too." The lead's plan: keep today's Fable stops (W1C 12:30, GL0 done); the
+  Fable reserve goes to the GOLDEN 1-3 polish pass + LEVEL-BAR.md AFTER Matt plays tonight's 1-3 and gives his notes, ideally after the
+  reset. Every helper counts toward Matt's normal weekly limit (75% now): short sessions, no idle helpers.
+- 2026-11-12 12:07 PM ET, Matt: "I was hoping on having fable more involved with 1-3 from the start. Make it design and build. It would
+  just be polishing an opus level." The lead reversed its 12:30 stop: W1C (Fable) owns 1-3's DESIGN and BUILD to tonight's test link:
+  reference/design/1-3.md (the level's arc: teach, build-up, hive gallery, twist, finale; pacing; hearts/checkpoints by risk) and the
+  first LEVEL-BAR.md draft by 1 PM, then builds to it, pushing every 30 min. P13 (Opus high, session_01FhBbYLQMBLSzszj1sXmkwV,
+  t-13-proof) does only the plumbing beside it (bots + trap handle, flown rows, seed list, the "excuse me" moment), merging W1C's heads,
+  never touching the design. If Fable runs out before Matt's reset, Opus builds from 1-3.md.
