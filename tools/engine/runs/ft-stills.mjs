@@ -12,7 +12,8 @@ fs.mkdirSync(out, { recursive: true });
 const b = await chromium.launch();
 const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
 for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
-  const p = await (await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2 })).newPage();
+  // (reduced motion: the HUD's goal count is set at once, not after its flying icon lands, so a still shows the run's count)
+  const p = await (await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2, reducedMotion: 'reduce' })).newPage();
   p.on('pageerror', (e) => console.log('ERR', e.message));
   for (const m of moments) {
     await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
@@ -25,7 +26,8 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
       const e = eval(E);
       e.isPaused = true;
       for (const q of e.enemies) if (m.gone.includes(q.id)) q.defeated = true;
-      (e.cast?.traps ?? []).forEach((t, i) => { if (m.down.includes(i)) Object.assign(t, { phase: 'down', y: t.post.landY, vy: 0, t: 9 }); });
+      // (each trap as the run had it: set, mid-fall at its height, or down)
+      (e.cast?.traps ?? []).forEach((t, i) => { const s = m.traps?.[i]; if (s) Object.assign(t, { phase: s.phase, y: s.y, t: s.t, vy: 0 }); else if (m.down.includes(i)) Object.assign(t, { phase: 'down', y: t.post.landY, vy: 0, t: 9 }); });
       Object.assign(e.player, { x: m.x, y: m.y, vx: 0, vy: 0, grounded: true, hanging: false, climbing: false, facing: m.facing, hp: m.hp, enemiesDefeated: m.n, invincibleTimer: 9 });
       for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
       for (let i = 0; i < 30; i++) e.update(1 / 30);
@@ -40,7 +42,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
       e.render();
       return { x: Math.round(e.player.x), y: Math.round(e.player.y), n: e.player.enemiesDefeated, out: e.enemies.filter((q) => !q.defeated).length };
     }, [m, E]);
-    await p.waitForTimeout(400);
+    await p.waitForTimeout(900);
     const f = path.join(out, `${prefix}-${id}-L${layout}-${moments.indexOf(m) + 1}-${m.name}-${tag}.jpg`);
     await p.screenshot({ path: f, type: 'jpeg', quality: 78 });
     console.log('wrote', f, JSON.stringify({ t: m.t, ...note }));
