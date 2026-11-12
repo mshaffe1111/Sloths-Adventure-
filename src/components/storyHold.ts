@@ -17,6 +17,16 @@ export const LETGO = {
   afterBreakMs: 1600,
 };
 
+/**
+ * whether a touch on the played picture is the hands' (kept from the page, so it taps nothing) or a button's. The thumbs are counted
+ * either way; a touch that starts on a button (Skip, Back) goes on to it. Audit C saves #5: every touch was kept, so on the finale's
+ * picture no button could be tapped and a player who could not do the hold had no way out but a reload.
+ */
+export function keepTouchFromPage(target: unknown): boolean {
+  const el = target as { closest?: (sel: string) => unknown } | null;
+  return !(el && typeof el.closest === 'function' && el.closest('button'));
+}
+
 /** where the scene goes when the number of thumbs down changes */
 export function holdStep(phase: HoldPhase, thumbs: number): { phase: HoldPhase } {
   if (phase === 'reach') return { phase: thumbs === 1 ? 'reach' : thumbs >= 2 ? 'held' : 'grip' };

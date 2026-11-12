@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { StoryPanel } from '../game/story.ts';
 import { isEasy } from '../game/difficulty.ts';
-import { holdStep, LETGO, thunderShake, type HoldPhase } from './storyHold.ts';
+import { holdStep, LETGO, thunderShake, type HoldPhase, keepTouchFromPage } from './storyHold.ts';
 import { noticed } from '../game/storyNotice.ts';
 import { loadFinds } from '../game/finds.ts';
 import { loadBadgeStore } from '../game/badgeStore.ts';
@@ -257,8 +257,8 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const el = rootRef.current;
     if (!el || !hold) return;
     const count = (e: TouchEvent) => {
-      // (the thumbs are the hands: no tap goes through to the Next button or the picture while they are down)
-      if (e.cancelable) e.preventDefault();
+      // (the thumbs are the hands: no tap goes through to the picture while they are down; Skip and Back still take theirs)
+      if (e.cancelable && keepTouchFromPage(e.target)) e.preventDefault();
       setThumbs(e.touches.length);
     };
     const opts = { passive: false } as const;
