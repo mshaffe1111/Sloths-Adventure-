@@ -179,7 +179,8 @@ export function w1RollDistance(stage: W1Stage, a: number, b: number): number {
   return all ? diff / all : 1;
 }
 
-export const isW1Stage = (id: string): id is W1Stage => /^1-[1-9]$/.test(id);
+/** a stage built from this file's section tables (a World 1 stage the generator rolls from its kit has none, and is not one) */
+export const isW1Stage = (id: string): id is W1Stage => Object.hasOwn(SECTIONS, id);
 
 /** build this roll's version of a section (the section's tip, if any, is the caller's: it comes first in every version) */
 export function w1Section(k: W1Kit, stage: W1Stage, slot: Slot, seed: number): string {

@@ -2338,7 +2338,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
 
   // creatures
   const creatureBag = new ShuffleBag<CreatureDef>(rng, M.creatures);
-  const foes: Array<RoutePiece & { e: Enemy; fill: FilledSocket; sec: PlacedSection }> = [];
+  const foes: Array<RoutePiece & { e: Enemy; fill: FilledSocket; sec: PlacedSection; /** its socket says `easy: 'stay'`: Easy's count cut passes it by */ stay?: true }> = [];
 
   for (const [si, sec] of laid.sections.entries()) {
     // (Normal's threat on both difficulties, so the sockets roll alike; Easy's 60% is a count cut after the spacing, below. Props with
@@ -2399,9 +2399,9 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         threat -= c.threat;
         // (nothing stands in a zone: levelCheck)
         if (foeInZone(sink.zones, pf.at, k.piece.y - (c.footY ?? c.h / 2))) continue;
-        const e = makeEnemy(c, pf.at, k.piece.y, pf.patch, sink.nextEnemyId(), easy && s.easy === 'soften');
+        const e = makeEnemy(c, pf.at, k.piece.y, pf.patch, sink.nextEnemyId(), easy && (s.easy === 'soften' || s.easy === 'stay'));
         const fill: FilledSocket = { section: sec.uid, socket: s.id, role: 'enemy', what: c.id, x: pf.at, y: k.y };
-        foes.push({ x: pf.at, kind: c.id, e, fill, sec });
+        foes.push({ x: pf.at, kind: c.id, e, fill, sec, ...(s.easy === 'stay' ? { stay: true } : {}) });
       } else if (s.role === 'pickup') {
         if (!want) continue;
         const n = s.count ?? 1;
@@ -2460,7 +2460,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   if (easy) {
     const seen = new Map<string, number>();
     for (const f of foes) {
-      if (!kept.has(f)) continue;
+      // (a socket that says `stay` is neither cut nor counted: the rest of its kind is cut as if it were not there)
+      if (!kept.has(f) || f.stay) continue;
       const k = seen.get(f.kind) ?? 0;
       seen.set(f.kind, k + 1);
       if (k > 0 && Math.floor(k * budget.enemyShare) === Math.floor((k - 1) * budget.enemyShare)) kept.delete(f);

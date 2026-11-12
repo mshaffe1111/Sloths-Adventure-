@@ -335,8 +335,10 @@ export interface Socket {
   maxThreat?: number;
   /** a socket the roll may leave empty (0..1 chance of filling); required sockets have none */
   chance?: number;
-  /** on Easy: keep it, drop it, or keep it softened (a slower creature, a longer tell) */
-  easy?: 'keep' | 'drop' | 'soften';
+  /** on Easy: keep it, drop it, or keep it softened (a slower creature, a longer tell). All three still answer to Easy's count cut
+   *  (the first of a kind stays, then 60% of the rest). `stay`: softened, and the count cut never takes it: the animal a piece is
+   *  built round (a trap's own snake), without which that piece of the stage is empty on Easy */
+  easy?: 'keep' | 'drop' | 'soften' | 'stay';
   /** only filled in these phases (a twist socket that sleeps in a Ki section) */
   phases?: Phase[];
   /** pickups: how many in a row and over what span (px) */
