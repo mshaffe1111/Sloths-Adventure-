@@ -676,3 +676,8 @@ lines); Matt sees them in the release.
   Sunday. I waved from below."; the pods flag (Dot) "Hear it creak? Duck in a hollow till it drops!"; journal 1-4 "Climbed the kapok
   between falling pods. From the top you can see where they took her."
 - 2026-11-12 6:48 PM ET: story keeper re-judged on Matt's test: W5's orchid mantis STAYS (R-165.167 withdrawn); the snake rename stands.
+- 2026-11-12 6:51 PM ET, Matt: tonight after the test link, "we finalize 1.5 also, and we do what we did last night... start building the
+  engine pieces... Maybe get a Fable model to run it" (Matt ~96%, a reset coming should bring Fable back). R-165.170. Lead's read: 1.5 =
+  level 1-5's design. Plan: after the link, 1-5 idea round (Opus xhigh + Opus max + Fable) -> designer; 1-4's engine pieces from the
+  final integration head in D40 order, Fable on the ascent lay; the pair's feel-test room alone; R-165.163 buildcheck fix (blocks 0.9.7)
+  on Opus overnight too.
