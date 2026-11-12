@@ -43,7 +43,7 @@ each existing level with the moves the engine already has (time one level first)
 | Story keeper (permanent) | session_019iachLiuwNTAZUBSJWUmR3 | - | release checklist; all player text |
 | Release clerk 0.9.6 | session_01FhBbYNQH2E77sZaoHs9zNm | release-0.9.6 | last 4 gates; then EnK5; retire after live |
 | EN-Y (retired 9:08 PM, $55.80) | - | t-engine-yield@729f249d | DONE: clean 57/55%, listable 33%; travel mode; any listed stage; hurt floor (not drawn) + GraphBrief.pits; builtOnArcs trap fixed; pickups-by-brief designed for Opus (REPORT.md) |
-| EN-C one clock for every timer (A14), Fable high, hard stop 9:35 PM ET | session_01FhBbYN3rCdHxz3aZnyRFhn | t-engine-clock (on t-engine-yield@347d50fa) | started 8:30 PM (Matt: one more hour of Fable) |
+| EN-C (retired 9:16 PM, $12.48) | - | t-engine-clock@fd94c3f6 | DONE: one clock (every timer moved, bit-identical), beatBrick, clockaudit, stillness + watcher contract, noise + sleepers + drum, rides + carrying + sinking pad; all pure, 0 bytes shipped, lock 102/102 |
 | EN-F fix the known audit findings A + C, game-wide first (Opus xhigh), hard stop 1:00 AM ET | session_01FhBbYN4KUG5VQtHUYKEicm | t-engine-fixes (on t-engine-guards@b3e8db15) | started 8:40 PM |
 | EN-L the piece library: pickups by brief, sections by need, bricks across worlds, 1-2 proof (Fable high), hard stop 10:40 PM ET | session_01FhBbYLNw7A3EGoxH1QwEjR | t-engine-library (on t-engine-yield@729f249d) | started 9:10 PM |
 | EN-G (retired 6:48 PM) | - | t-engine-guards@b3e8db15 | DONE 4/4: .116, .117, the generality gate (27 entries, 38 literals known); waits for the integration review |
