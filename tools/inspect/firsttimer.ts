@@ -33,6 +33,8 @@ import { MODES, along, reached } from '../../src/game/stageModes.ts';
 import type { StageMode } from '../../src/game/stageKit.types.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
 import { GuideQueue, type GuideLine, type MoveId, type TopicId } from '../../src/game/dotGuide.ts';
+import { DotSay } from '../../src/game/dotSay.ts';
+import { dotHelp, movesDone, seenSkills } from '../../src/game/dotGuideHelp.ts';
 import { engineGuideLine } from '../../src/game/dotLines.ts';
 import { lessonDotLine, type LessonId } from '../../src/game/lessons.ts';
 import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../src/game/dotGuideWatch.ts';
@@ -399,12 +401,17 @@ class DotShadow {
   private alive = { x: 0, y: 0, foe: false, falling: false };
   private restart = true;
   private prevJR = 0;
-  constructor(readonly stageId: string) {
+  /** Dot's setting as the game applies it (DotSay.allows, the phone's default: Tips on Normal, Help on Easy), when the run asks for it */
+  private sayer: DotSay | null = null;
+  constructor(readonly stageId: string, setting = false) {
     const w = Number(stageId.split('-')[0]);
     this.queue = new GuideQueue(w >= 1 && w <= 4 && !/-D$/.test(stageId));
+    if (setting) this.sayer = new DotSay(this.queue, dotHelp(), seenSkills(), movesDone());
   }
   private say(l: GuideLine | null | undefined) {
-    if (l) this.queue.push(l, this.clock);
+    if (!l) return;
+    if (this.sayer) this.sayer.say(l, this.clock);
+    else this.queue.push(l, this.clock);
   }
   engine(text: string, seconds: number, passed: boolean | undefined, o?: { teach?: true }) {
     if (passed) {
@@ -766,6 +773,9 @@ export interface RunOptions {
   portrait?: boolean;
   /** which run of several (a different thumb on the same layout) */
   trial?: number;
+  /** Dot says only what the phone's default setting lets through (Tips on Normal, Help on Easy: DotSay.allows), as the game does.
+   *  Off by default: the tier bots are calibrated to the testers without it (tierBots.test) */
+  dotSetting?: boolean;
 }
 
 /** a fresh phone: no lessons, tips or settings from the last run (a first-timer's own lessons carry over within one pass) */
@@ -947,7 +957,7 @@ export class FirstTimerRun {
     const c = e.canvas;
     c.getBoundingClientRect = () => ({ width: vw, height: vh, left: 0, top: 0 });
     e.resizeCanvas();
-    this.dot = new DotShadow(id);
+    this.dot = new DotShadow(id, !!opts.dotSetting);
     e.callbacks.onGuide = (text: string, s: number, passed?: boolean, o?: { teach?: true }) => this.dot.engine(text, s, passed, o);
     e.callbacks.onLesson = (lid: LessonId) => this.dot.lesson(lid, !!(this.sim.p.climbing || this.sim.p.isVineSwinging || this.sim.p.hanging));
     e.callbacks.onProgressUpdate = (cur: number, target: number) => {

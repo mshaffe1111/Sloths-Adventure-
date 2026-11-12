@@ -1075,6 +1075,7 @@ export default function App() {
 
   // the new HUD (beta) flies a pickup from Pokey into its counter
   const heroPoint = useCallback(() => engineRef.current?.heroScreenPoint() ?? null, []);
+  const goalCreature = useCallback(() => engineRef.current?.goalCreature(), []);
 
   const pauseGame = () => {
     recorder.event('pause');
@@ -1493,6 +1494,7 @@ export default function App() {
             powerUpTimer={powerUpTimer}
             lives={lives}
             heroPoint={heroPoint}
+            goalCreature={goalCreature}
             runKey={runId}
           />
           <PerfReadout stageId={activeLevel.id} />

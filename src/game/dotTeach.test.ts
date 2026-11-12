@@ -107,3 +107,13 @@ test('the stock foe lesson leaves an animal under a set drop trap to the stage\'
   set.phase = 'down';
   assert.equal(pickLesson(scene(820, true), new Set()), 'foe', 'a trap already sprung covers nothing');
 });
+
+test('a stage teach line passes Dot\'s setting on Tips (Normal\'s default) and Help; Quiet stays quiet (D12, 11-12)', async () => {
+  const { helpAllows } = await import('./dotGuideHelp.ts');
+  const tip = engineGuideLine(TIP, '9-9', { dot: true, teach: true })!;
+  const plain = engineGuideLine(TIP, '9-9', { dot: true })!;
+  assert.equal(helpAllows(tip, 'reminders', new Set()), true, 'Tips: said');
+  assert.equal(helpAllows(tip, 'teach', new Set()), true, 'Help: said');
+  assert.equal(helpAllows(tip, 'quiet', new Set()), false, 'Quiet: not');
+  assert.equal(helpAllows(plain, 'reminders', new Set()), false, 'the same words as a plain stage line stay chatter on Tips');
+});

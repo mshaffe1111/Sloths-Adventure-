@@ -31,7 +31,8 @@ export interface CastRun {
 
 export function castRun(bot: string, setting: Setting, stage: string, seed: number): CastRun {
   const who = CAST_BOTS[bot][setting]!;
-  const r = firstTimer(stage, seed, who, { cap: 1200 });
+  // (Dot as the phone's default setting lets her speak: Tips on Normal, Help on Easy)
+  const r = firstTimer(stage, seed, who, { cap: 1200, dotSetting: true });
   const hitBy: Record<string, number> = {};
   for (const h of r.harms) hitBy[h.cause] = (hitBy[h.cause] ?? 0) + 1;
   const goalFull = !r.goal || r.goal.got >= r.goal.need;
