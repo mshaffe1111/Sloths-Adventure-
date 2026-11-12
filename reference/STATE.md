@@ -681,3 +681,6 @@ lines); Matt sees them in the release.
   level 1-5's design. Plan: after the link, 1-5 idea round (Opus xhigh + Opus max + Fable) -> designer; 1-4's engine pieces from the
   final integration head in D40 order, Fable on the ascent lay; the pair's feel-test room alone; R-165.163 buildcheck fix (blocks 0.9.7)
   on Opus overnight too.
+- 2026-11-12 6:56 PM ET: INT-2 at t-int-2@d68930d4 (t-12-design 864314c1, t-render-3 + D12's note 6d2cb506 clean; w1Pits #17 green; lock
+  1-2 only, intended). Waiting on F13's final delta (asked for 7:20 PM, sha straight to INT-2), then Step 3. INT-2 measuring buildcheck
+  on the old heads meanwhile.
