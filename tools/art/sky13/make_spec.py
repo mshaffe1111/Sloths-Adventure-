@@ -38,6 +38,15 @@ if __name__ == '__main__':
                            'strength': st, 'seed': sd, 'w': 2048, 'h': 1232} for st in (0.6, 0.7) for sd in (7, 23)]}
         (H / 'spec-F13.json').write_text(json.dumps(spec, indent=1))
         print(json.dumps(args('spec-F13.json', sha, 'w6to10/img2imggpu.py', 'sky13-F')))
+    elif mode == 'seam':
+        # the native pass keeps a seam only as clean as its input: the img2img take's two ends were painted apart (seam 7.7 vs 0.85
+        # between any two columns). seam.py cuts the 1024-wide band round the join (rolled to the middle) and repaints it whole
+        spec = {'tag': 'sky13-S', 'loras': {'style': LORA + [1.0]}, 'neg': NEG,
+                'base': REPO.format(c=sha) + 'reference/qa-reports/ART-W1B/sky/',
+                'items': [{'name': f'seam13-s{round(st * 100)}-{sd}', 'start': 'seam-band.webp', 'prompt': FAR, 'neg': NEG,
+                           'strength': st, 'seed': sd, 'w': 1024, 'h': 1296} for st in (0.45, 0.55) for sd in (7, 23)]}
+        (H / 'spec-S13.json').write_text(json.dumps(spec, indent=1))
+        print(json.dumps(args('spec-S13.json', sha, 'w6to10/img2imggpu.py', 'sky13-S')))
     else:
         name = sys.argv[3]
         spec = {'tag': 'sky13-hdF', 'loras': {'style': LORA + [0.8]}, 'tw': 1024, 'neg': NEG,
