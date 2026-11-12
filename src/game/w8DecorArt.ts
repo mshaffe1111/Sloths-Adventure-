@@ -154,6 +154,16 @@ export function drawW8Decor(ctx: CanvasRenderingContext2D, set: W8DecorSet, plat
  * stalk down from under the leaf to bottomY (darkening as it goes), 'cap' the leaf again over the painted ground. False until w8b loads.
  */
 const LEAF = { top: 140, rim: 200, pole: { x: 177, y: 216, w: 26 }, span: 1.2 } as const;
+/** the leaf's box on platform p (world px, drawW8BounceLeaf's sizes: the leaf from its top to its rim); null until w8b loads */
+export function w8LeafBox(p: Platform): { cx: number; cy: number; rx: number; ry: number } | null {
+  loadW8Decor();
+  if (!ready.has('w8b')) return null;
+  const f = W8B['bouncy-leaf'];
+  const k = (p.width * LEAF.span) / f.w;
+  const y0 = p.y - LEAF.top * k;
+  const half = (LEAF.rim * k) / 2;
+  return { cx: p.x + p.width / 2, cy: y0 + half, rx: (f.w * k) / 2, ry: half };
+}
 export function drawW8BounceLeaf(ctx: CanvasRenderingContext2D, p: Platform, time: number, part: 'plant' | 'cap', bottomY: number): boolean {
   loadW8Decor();
   if (!ready.has('w8b')) return false;

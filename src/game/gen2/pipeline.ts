@@ -2361,7 +2361,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           // the move watch). An id the kit has no words for is never shown: the roll fails by name, the red team 11-05, RT-PLAYER F1,
           // where "hint.1-1.double" itself was on screen)
           const text = tipWords(M.tips, m);
-          if (text) hints.push({ x: k.x, text, pad: text, keys: text });
+          if (text) hints.push({ x: k.x, text, pad: text, keys: text, ...(M.teachTips?.includes(m) ? { teach: true as const } : {}) });
           fills.push({ section: sec.uid, socket: s.id, role: 'tip', what: m, x: k.x, y: k.y, ...(text ? {} : { unsaid: true }) });
         }
       } else if (s.role === 'receptor') {
