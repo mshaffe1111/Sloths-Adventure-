@@ -473,3 +473,8 @@ lines); Matt sees them in the release.
   from that list; INT-2 (Opus high, packet reference/packets/2026-11-12/INT-2.md) merges everything onto t-int-2; key stills to Matt
   about 5-6 PM (show first); test link about 9 PM. P11 retired 11:21 AM (t-11-pass@36a4ef1c verified). Duplicate R-165.129: the lead's
   (Matt's thorn bed) keeps it; t-int-engine's "eight tool-side tests red" becomes R-165.139 in INT-2.
+- 2026-11-12 11:40 AM ET, Matt (asked "What happens if the user fights the snake", then "Never gets to run away", then chose in the
+  lead's question): "Snake always glides away": however Pokey beats the snake (punch, jump, trap, kick) it flattens and glides to a
+  lower tree, gone for good; no knock-offs, no coming back. R-165.141, to W1C. The lead's call inside it: a punch mid-branch still
+  pushes it back (risk stays, so the trap keeps its value); the ending is always the glide. Other creatures (boa, eagle): not decided;
+  the story keeper is asked for the in-character view before Matt is asked.
