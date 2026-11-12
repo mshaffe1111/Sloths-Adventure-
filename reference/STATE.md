@@ -634,3 +634,7 @@ lines); Matt sees them in the release.
   the big gliders are Asian). Lead proposed the story keeper checks each level's plants/animals; waits on Matt. Check-in 6:29: INT-2 merged
   t-12-design (864314c1) + W1C report (90a54102), merging D12's t-12-note (f887735e); F13's lesson card still PASSED the lead's look
   (keeper's two lines, one card, Skip, both ways, nothing covered); D12 asked for one still of the note in its hollow before 7 PM.
+- 2026-11-12 6:41 PM ET: D12's t-12-note PASSED the lead's look (stills 8a/8b both ways: the Keeper's Bell on the hollow floor past the root,
+  roots line back). D12's last head t-12-design@f887735e (cc0def2a + its turnover note); INT-2 merges it. Ruled: the coati + flowering bush
+  on the twist's far bank are World 1 dressing (w1Coati), not cast: intended. Nit R-165.165 (find text "against a root" beside a stone
+  ledge) for the story keeper tomorrow. D12 done; retire after ls-remote shows f887735e.
