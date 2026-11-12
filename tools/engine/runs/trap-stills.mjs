@@ -46,6 +46,8 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   }, [+idx, E]);
   if (before.error) { console.log('FAIL', before.error); bad++; await p.context().close(); continue; }
   await shot('1-before', before);
+  // (ONLY=before: the one frame, for a beat that only needs to be seen as he meets it)
+  if (process.env.ONLY === 'before') { await p.context().close(); continue; }
   // THE TRAP: his own punch (the real input), stepped until the load is about half-way down
   const fall = await p.evaluate(([i, E]) => {
     const e = eval(E);
