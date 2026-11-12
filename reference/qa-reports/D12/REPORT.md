@@ -1,4 +1,4 @@
-# D12: 1-2 The Petal Trail, designed and built. `t-12-design` from origin/t-12-ship. Started 1:40 PM ET; finished 5:47 PM ET. No PR.
+# D12: 1-2 The Petal Trail, designed and built. `t-12-design` from origin/t-12-ship. Started 1:40 PM ET; finished 5:52 PM ET (gates and report 5:47, the final stills 5:52). No PR.
 **EXACT NEXT STEP:** INT-2 merges this branch and FX's final head into t-int-2. Then I cut ONE small branch, t-12-note, from that head:
 a `findSpot` socket on the twist's hollow floor 'hf' at t 0.6 (by its root), the roots line back on the lip bank 'a', and a test (the
 find on that floor every roll, both settings; the line said once). RF3 fixes the hollow painter (w1Pits #17, the one red left); FX takes
