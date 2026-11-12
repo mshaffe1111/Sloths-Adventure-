@@ -104,11 +104,38 @@ export const NEW_STOOD_IN: SectionTemplate[] = [
     subBlocks: [{ id: 'body', versions: [[520, 560], [620, 680]].map((w, j) => ({ id: j ? 'long' : 'short', pieces: [{ key: 'out', shape: 'bank' as const, w: w as R2, place: { kind: 'walk' as const, after: 'in', dy: [0, 0] as R2 }, style: 'moss_stone' as const, main: true, landing: true }], sockets: [{ id: 'exit-totem', role: 'objective' as const, on: 'out', t: 0.85, allow: ['exit_totem'] }] })) }],
     entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate,
 ];
+/** THE WAY DOWN, the one brick World 1's library lacks for any LEVEL stage (measured, `--heights`: of the pool's 140 versions 44 rise,
+ *  88 are level and 8 fall: it was cut for a stage that climbs). The packet's own letters: `J` the drop, a ledge 130-140 px lower he
+ *  walks off the lip onto; `N` the hop step, a bank one step down with a 50-56 px stump at its middle and a petal on the stump. Never
+ *  two silent pieces side by side, never one last (the packet's quiet-line sims): `J N` and `J N J N`. No content type: it serves a
+ *  node of any type, where the level lean (pipeline LEVEL_SWING) asks for the way back */
+function wayDown(n: number): { pieces: SectionPiece[]; sockets: SectionTemplate['sockets'] } {
+  const ps: SectionPiece[] = [{ key: 'a', shape: 'bank', w: [240, 280], place: { kind: 'start' }, style: 'moss_stone', main: true, landing: true }];
+  const socks: SectionTemplate['sockets'] = [];
+  let prev = 'a';
+  for (let j = 0; j < n; j++) {
+    ps.push({ key: `j${j}`, shape: 'bank', w: [180, 220], place: { kind: 'walk', after: prev, dy: [130, 140] }, style: 'moss_stone', main: true, landing: true });
+    ps.push({ key: `n${j}`, shape: 'bank', w: [300, 360], place: { kind: 'walk', after: `j${j}`, dy: [62, 78] }, style: 'moss_stone', main: true, landing: true });
+    ps.push({ key: `s${j}`, shape: 'block', w: [130, 170], place: { kind: 'on', on: `n${j}`, at: [0.45, 0.55], h: [50, 56] }, style: 'moss_stone', landing: true });
+    socks.push({ id: `pj${j}`, role: 'pickup', on: `j${j}`, t: 0.5, dn: 34 }, { id: `ps${j}`, role: 'pickup', on: `s${j}`, t: 0.5, dn: 34 });
+    prev = `n${j}`;
+  }
+  return { pieces: ps, sockets: socks };
+}
+export const WAY_DOWN: SectionTemplate[] = ['a', 'b', 'c'].map((x) => {
+  const v = (n: number) => { const g = wayDown(n), z = g.pieces.filter((p) => p.place.kind !== 'on').at(-1)!.key, f = (k: string) => (k === 'a' ? 'in' : k === z ? 'out' : k); return { id: n === 1 ? 'drop-step' : 'two-drops', pieces: g.pieces.slice(1).map((p) => ({ ...p, key: f(p.key), place: Object.fromEntries(Object.entries(p.place).map(([q, w]) => [q, (q === 'after' || q === 'on') && typeof w === 'string' ? f(w) : w])) as SectionPiece['place'] })), sockets: g.sockets.map((k) => ({ ...k, on: f(k.on) })) }; };
+  return { id: `lib-way-down-${x}`, name: 'the way down: a drop and a hop step', archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], difficulty: 3, needs: ['jump'], jobs: ['practise', 'flow', 'descent', 'combine', 'twist', 'test'], terrain: 'mounds',
+    pieces: [{ key: 'in', shape: 'bank', w: [240, 280], place: { kind: 'start' }, style: 'moss_stone', main: true, landing: true }], subBlocks: [{ id: 'body', versions: [v(1), v(2)] }],
+    entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 205, sockets: [], mirrorable: false } as SectionTemplate;
+});
 /** the refusals that are the ENGINE's open items, not a section's: the thorn bed is not painted yet (EN-Y report, B item 2 "drawn") */
 export const ENGINE_OPEN = /the heart drop at x .* is drawn as pit-floor-art/;
 
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
-export interface LibOpts { flown?: boolean; pits?: boolean; twists?: boolean; only?: string }
+/** `min`: only the six twist bricks a roll cannot do without (the teach, the two signatures, the run, the steps down and up) */
+export interface LibOpts { flown?: boolean; pits?: boolean; twists?: boolean; only?: string; min?: boolean; down?: boolean }
+export const MIN_OUT = ['lib-cap-hop', 'lib-cap-test'];
+export const twistsOf = (o: LibOpts = {}) => (o.twists === false ? [] : TWISTS.filter((t) => !o.min || !MIN_OUT.includes(t.id)));
 /** the stage id the kit's rows are filed under (`flown`: the flown stage's, as supply12.ts does) */
 export const stageIdOf = (o: LibOpts = {}) => (o.flown ? '1-1' : '1-2');
 /** World 1's kit with 1-2's brief, graphs, lessons and thorn row, its sections World 1's own untouched plus the twist bricks */
@@ -117,7 +144,7 @@ export function kitLib12(o: LibOpts = {}): WorldKit {
   const brief = { ...BRIEF_12, ...(o.pits === false ? { pits: undefined } : {}) };
   const list = [...(o.flown ? [] : M.graphs.list), ...Object.entries(HARVEST_12).filter(([id]) => !o.only || id === o.only).map(([id, code]) => ({ id, archetype: 'harvest', code }))];
   return { ...k, manifest: { ...M,
-    sections: [...M.sections.map((t: SectionTemplate) => (CANOPY.includes(t.id) ? { ...t, feel: ['canopy'] } : t)), ...(o.twists === false ? [] : [...TWISTS, ...NEW_STOOD_IN])],
+    sections: [...M.sections.map((t: SectionTemplate) => (CANOPY.includes(t.id) ? { ...t, feel: ['canopy'] } : t)), ...(o.twists === false ? [] : [...twistsOf(o), ...NEW_STOOD_IN, ...(o.down === false ? [] : WAY_DOWN)])],
     hurtFloor: THORN_ROW,
     lessons: o.flown ? { jump: '0-9', double: '0-9', bounce: '0-9' } : { jump: '1-1', double: '1-1', bounce: '1-1' },
     required: {},
@@ -137,22 +164,25 @@ export function poolReport(o: LibOpts = {}) {
   return { pool: [...pool], out };
 }
 export const tidy = (e: string) => e.replace(/-?\d+(\.\d+)?/g, '#').replace(/n#/g, 'n#').slice(0, 150);
-export function roll(seed: number, difficulty: 'normal' | 'easy', o: LibOpts = {}): { errors: string[]; plan: string[]; graph?: string; thrown?: string; fruit: number; flowers: number; hollows: number } {
+export function roll(seed: number, difficulty: 'normal' | 'easy', o: LibOpts = {}): { errors: string[]; plan: string[]; graph?: string; thrown?: string; fruit: number; flowers: number; hollows: number; climb?: number; span?: number; said: string[] } {
   try {
     const st: Any = buildGen2Stage({ config: config12(o) as Any, kit: kitLib12(o), seed, difficulty });
-    return { errors: st.gen2.errors ?? [], plan: (st.gen2.plan ?? []).map((p: Any) => p.template), graph: st.gen2.graph?.id ?? st.gen2.graphId, fruit: st.collectibles.filter((c: Any) => c.type === 'fruit').length, flowers: st.collectibles.filter((c: Any) => c.type === 'flower').length, hollows: st.platforms.filter((p: Any) => p.pit === 'hurt').length };
-  } catch (e) { return { errors: [], plan: [], thrown: String((e as Error).message), fruit: 0, flowers: 0, hollows: 0 }; }
+    // (the route's height: the top of the widest solid piece under each section's ends; climb = how far the end stands over the start)
+    const topAt = (x: number) => Math.min(...st.platforms.filter((p: Any) => p.type === 'solid' && p.pit !== 'hurt' && p.x <= x && p.x + p.width >= x).map((p: Any) => p.y));
+    const ys = (st.gen2.sections ?? []).flatMap((q: Any) => [topAt(q.x0 + 12), topAt(q.x1 - 12)]).filter((y: number) => Number.isFinite(y));
+    return { said: (st.gen2.fills ?? []).filter((f: Any) => f.role === 'tip' || f.role === 'decor').map((f: Any) => String(f.what)), climb: Math.round(ys[0] - ys[ys.length - 1]), span: Math.round(Math.max(...ys) - Math.min(...ys)), errors: st.gen2.errors ?? [], plan: (st.gen2.plan ?? []).map((p: Any) => p.template), graph: st.gen2.graph?.id ?? st.gen2.graphId, fruit: st.collectibles.filter((c: Any) => c.type === 'fruit').length, flowers: st.collectibles.filter((c: Any) => c.type === 'flower').length, hollows: st.platforms.filter((p: Any) => p.pit === 'hurt').length };
+  } catch (e) { return { said: [], errors: [], plan: [], thrown: String((e as Error).message), fruit: 0, flowers: 0, hollows: 0 }; }
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const arg = (n: string, d: number) => { const i = process.argv.indexOf(n); return i > 0 ? Number(process.argv[i + 1]) : d; };
   const has = (n: string) => process.argv.includes(n);
   const N = arg('--seeds', 120), from = arg('--from', 1), par = arg('--par', 1);
-  const o: LibOpts = { flown: has('--flown'), pits: !has('--no-pits'), twists: !has('--no-twists') };
+  const o: LibOpts = { flown: has('--flown'), pits: !has('--no-pits'), twists: !has('--no-twists'), min: has('--min'), down: !has('--no-down') };
   if (has('--json')) {
     for (let s = from; s < from + N; s++) for (const d of ['normal', 'easy'] as const) console.log(JSON.stringify({ seed: s, d, ...roll(s, d, o) }));
   } else {
-    const flags = ['--flown', '--no-pits', '--no-twists'].filter(has);
+    const flags = ['--flown', '--no-pits', '--no-twists', '--min', '--no-down'].filter(has);
     const per = Math.ceil(N / par);
     const rows: Any[] = [];
     if (par > 1) {
@@ -164,7 +194,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
       })));
     } else for (let s = from; s < from + N; s++) for (const d of ['normal', 'easy'] as const) rows.push({ seed: s, d, ...roll(s, d, o) });
     const pr = poolReport(o), M = kitLib12(o).manifest, byId = new Map(M.sections.map((t) => [t.id, t]));
-    console.log(`1-2 by need${o.flown ? ' (FLOWN: filed under the flown stage)' : ''}: pool ${pr.pool.length} of ${M.sections.length} (World 1's ${M.sections.filter((t) => t.id.startsWith('w1-')).length} + ${TWISTS.length} twist bricks + ${NEW_STOOD_IN.length} new stood in); out: ${pr.out.map((q) => `${q.id.replace('w1-', '')} (${q.why})`).join(', ') || 'none'}`);
+    console.log(`1-2 by need${o.flown ? ' (FLOWN: filed under the flown stage)' : ''}: pool ${pr.pool.length} of ${M.sections.length} (World 1's ${M.sections.filter((t) => t.id.startsWith('w1-')).length} + ${twistsOf(o).length} twist bricks + ${NEW_STOOD_IN.length} new stood in + ${o.down === false ? 0 : WAY_DOWN.length} uses of the way-down brick); out: ${pr.out.map((q) => `${q.id.replace('w1-', '')} (${q.why})`).join(', ') || 'none'}`);
     const sup = new Map<string, string[]>();
     for (const id of pr.pool) { const t = byId.get(id)!; for (const j of t.jobs ?? ['(phases)']) { const k = `${j}/${t.content ?? '-'}`; sup.set(k, [...(sup.get(k) ?? []), id.replace('w1-', '')]); } }
     console.log('supply by job/type:'); for (const [k, v] of [...sup].sort()) console.log(`   ${k.padEnd(26)} ${String(v.length).padStart(2)}  ${v.join(', ')}`);
@@ -176,12 +206,14 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
       console.log(`== ${d}: clean but for the thorn bed's draw (the engine's open item): ${butDraw.length} of ${R.length} (${Math.round((100 * butDraw.length) / Math.max(1, R.length))}%)`);
       for (const r of R) for (const e of new Set<string>((r.thrown ? ['THROW ' + r.thrown] : r.errors.filter((q: string) => !ENGINE_OPEN.test(q))).map(tidy))) kinds.set(e, (kinds.get(e) ?? 0) + 1);
       for (const r of R) for (const t of r.plan) used.set(t, (used.get(t) ?? 0) + 1);
-      const avg = (f: (r: Any) => number) => (clean.length ? Math.round((clean.reduce((s, r) => s + f(r), 0) / clean.length) * 10) / 10 : 0);
-      console.log(`== ${d}: ${R.length} rolls (seeds ${from}-${from + N - 1}): CLEAN ${clean.length} (${Math.round((100 * clean.length) / Math.max(1, R.length))}%), thrown ${R.filter((r) => r.thrown).length}; a clean roll: ${avg((r) => r.plan.length)} sections, ${avg((r) => r.plan.filter((t: string) => t.startsWith('lib-')).length)} of them twist bricks, ${avg((r) => r.hollows)} hollows, ${avg((r) => r.flowers)} petals, ${avg((r) => r.fruit)} blooms`);
+      const avg = (f: (r: Any) => number) => (butDraw.length ? Math.round((butDraw.reduce((s, r) => s + f(r), 0) / butDraw.length) * 10) / 10 : 0);
+      console.log(`== ${d}: ${R.length} rolls (seeds ${from}-${from + N - 1}): CLEAN ${clean.length} (${Math.round((100 * clean.length) / Math.max(1, R.length))}%), thrown ${R.filter((r) => r.thrown).length}, pool short ${R.filter((r) => r.errors.some((e: string) => /pool short|fits no node|no section/.test(e))).length}; a roll clean but for the draw: ${avg((r) => r.plan.length)} sections, ${avg((r) => r.plan.filter((t: string) => t.startsWith('lib-')).length)} of them twist bricks, ${avg((r) => r.hollows)} hollows, ${avg((r) => r.flowers)} petals, ${avg((r) => r.fruit)} blooms`);
+      const ok = butDraw.filter((r) => r.climb !== undefined), med = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)] ?? 0;
+      console.log(`   the route's height on those rolls: the end stands ${med(ok.map((r) => r.climb))} px over the start (median; ${Math.min(...ok.map((r) => r.climb))} to ${Math.max(...ok.map((r) => r.climb))}), highest to lowest ${med(ok.map((r) => r.span))} px (median; most ${Math.max(...ok.map((r) => r.span))})`);
       for (const [k, v] of [...kinds].sort((a, b) => b[1] - a[1]).slice(0, 14)) console.log(`   ${String(v).padStart(4)}  ${k}`);
     }
     const lib = pr.pool.filter((id) => id.startsWith('w1-'));
     console.log(`World 1 sections laid at least once: ${lib.filter((id) => used.get(id)).length} of ${lib.length}; never laid: ${lib.filter((id) => !used.get(id)).map((s) => s.replace('w1-', '')).join(', ') || 'none'}`);
-    console.log(`twist bricks laid: ${TWISTS.map((t) => `${t.id}:${used.get(t.id) ?? 0}`).join(' ')}`);
+    console.log(`twist bricks laid: ${[...twistsOf(o), ...WAY_DOWN].map((t) => `${t.id}:${used.get(t.id) ?? 0}`).join(' ')}`);
   }
 }

@@ -1613,6 +1613,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       : (budget.band[0] + (budget.band[1] - budget.band[0]) * n.tension - budget.band[0]) / (budget.band[1] - budget.band[0]);
     const room = M.corridor;
     const lean = cur.y < room.top + room.soft ? 1 : cur.y > room.bottom - room.soft ? -1 : 0;
+    const home = M.graphs?.briefs?.[budget.id]?.trend !== 'level' || Math.abs(cur.y - M.ground.y) <= LEVEL_SWING ? 0 : Math.sign(M.ground.y - cur.y);
     const weight = (t: SectionTemplate) => {
       let w = (t.weight ?? 1) * Math.exp(-Math.abs(t.difficulty / 10 - want) * 4);
       if (n.want?.some((tag) => t.sockets.some((s) => s.allow?.includes(tag)) || t.name.includes(tag))) w *= 3;
@@ -1622,6 +1623,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (endY < room.top || endY > room.bottom) return 0;
       const ed = exitDyOf(t);
       if (lean !== 0) w *= Math.sign(ed) === lean ? 3 : ed === 0 ? 1 : 0.3;
+      // (a level stage, GraphBrief.trend: the route swings round the height it began at. Past LEVEL_SWING px from it the way back is
+      // weighed up, and a section that would carry it further off is never the pick while one that would not fits the slot)
+      if (home !== 0) { if (Math.sign(ed) === -home && cands.some((c) => Math.sign(exitDyOf(c)) !== -home)) return 0; if (Math.sign(ed) === home) w *= 4; }
       // (World 1's floor families: the roll's hop family weighs its hop and jump sections; a world without floorRoll never sees it)
       if (FR && t.floor) w *= t.floor === 'hop' ? 0.1 + 1.9 * fam : 0.1 + 1.9 * (1 - fam);
       // (a rolled node's height and terrain dials: its own way up or down, and its terrain family, weighed up)
@@ -1730,8 +1734,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       let dy = 0;
       const lim1 = riseCap(false, 1, budget);
       if (join === 'step') {
-        // (up or down by a hop, leaning back toward the corridor's middle)
-        const middle = (M.corridor.top + M.corridor.bottom) / 2;
+        // (up or down by a hop, leaning back toward the corridor's middle; on a level stage, GraphBrief.trend, toward the height it began at)
+        const middle = M.graphs?.briefs?.[budget.id]?.trend === 'level' ? M.ground.y : (M.corridor.top + M.corridor.bottom) / 2;
         const dir = cur.y + L.exit.y > middle ? -1 : 1;
         dy = dir * (20 + j * (lim1 * 0.8 - 20));
       } else if (join === 'pit' || join === 'jump') {
@@ -2949,6 +2953,8 @@ export function tipWords(tips: Readonly<Record<string, string>> | undefined, id:
   return tips?.[id];
 }
 
+/** a level stage's swing (GraphBrief.trend 'level'): how far the route may stand from its starting height before the pick leans back */
+const LEVEL_SWING = 110;
 /** a stage's pool: its world's sections whose `feel` names the stage (or is unset) and whose `not` names nothing the stage owns */
 export function stagePool(M: WorldManifest, stageId: string): SectionTemplate[] {
   const owns = new Set(M.owns?.[stageId] ?? []);
