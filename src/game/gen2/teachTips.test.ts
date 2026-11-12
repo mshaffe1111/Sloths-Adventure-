@@ -17,9 +17,11 @@ const hintsOf = (teachTips?: string[]) => {
 test('a tip the kit lists in teachTips is laid as a teach line; with none listed, no hint is', () => {
   const words = kitLib13().manifest.tips!.traps;
   assert.ok(words, 'the kit has a trap tip');
-  const plain = hintsOf();
+  // (World 1's kit lists `traps` itself since W1C's 7d9efa0d: the plain case is the kit with the list emptied)
+  const plain = hintsOf([]);
   assert.ok(plain.some((h) => h.text === words), 'the trap tip is laid');
   assert.ok(plain.every((h) => !h.teach), 'none is a teach line unless the kit says so');
   const taught = hintsOf(['traps']);
   assert.deepEqual(taught.filter((h) => h.teach).map((h) => h.text), [words], 'the trap tip, and only it, is a teach line');
+  assert.deepEqual(hintsOf().filter((h) => h.teach).map((h) => h.text), [words], "World 1's kit as shipped: the trap tip is its teach line");
 });

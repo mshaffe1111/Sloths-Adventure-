@@ -152,6 +152,25 @@ test("Dot's trap line is a TEACH line, and she says it three seconds of walking 
   }
 });
 
+test('the way out: one rope before the totem, a try-it and never the way; its hollow is one hop deep, so he can walk through it and back', () => {
+  // (clearing 1-3 TEACHES Shimmy Rope: on a first visit he cannot grab it. A required rope would strand him; so would a deep hollow
+  //  with steps out the far side only, in a purge: the adult bot arrived owing four snakes, dropped in, and could not go back)
+  for (const d of ['normal', 'easy'] as const) for (const seed of SEEDS) {
+    const st: Any = buildGen2Stage({ config: generateAllLevels().find((l) => l.id === STAGE_13 && !l.secret)! as Any, kit: w1World() as Any, seed, difficulty: d });
+    assert.equal(st.ropes.length, 1, `seed ${seed} ${d}: ${st.ropes.length} ropes`);
+    const r = st.ropes[0];
+    assert.equal(r.required, false, `seed ${seed} ${d}: the rope is required`);
+    assert.ok(r.x1 < st.exitTotemX && st.exitTotemX - r.x1 < 1400, `seed ${seed} ${d}: it is the last thing before the totem (${Math.round(st.exitTotemX - r.x1)} px)`);
+    assert.ok(st.enemies.every((e: Any) => e.x < r.x0), `seed ${seed} ${d}: no animal at or past the rope`);
+    // the hollow under it: one floor, wall to wall, a hop under the two lips and no deeper; nothing else down there
+    const under = st.platforms.filter((p: Any) => p.x >= r.x0 && p.x + p.width <= r.x1 && p.y > r.g0);
+    assert.equal(under.length, 1, `seed ${seed} ${d}: ${under.length} pieces in the hollow (a floor and no steps)`);
+    const depth = under[0].y - r.g0;
+    assert.ok(depth >= 40 && depth <= 80, `seed ${seed} ${d}: the hollow is ${Math.round(depth)} px deep (one hop: 40-80)`);
+    assert.equal(r.g0, r.g1, `seed ${seed} ${d}: its two lips are level`);
+  }
+});
+
 test('the plain-view rule is the builder\'s own: a pickup laid in front of a hung load refuses the roll by name', () => {
   // (the same roll with one petal planted under its first trap's load, built again through the real builder)
   const kit = kitLib13(O);
