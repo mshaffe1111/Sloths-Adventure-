@@ -230,7 +230,7 @@ export const QUIET_12: SectionTemplate[] = [
   ] }),
   // [R] the dry dip between the roots: down a little, a root in it, up again
   link({ id: 'w1-12-root-dip', name: 'a rest: the dry dip between the roots', job: 'rest', versions: [
-    { id: 'dip', lay: { pieces: [led('a', null, [300, 340]), hump('ar', 'a', [0.2, 0.26], [40, 46]), led('m', 'a', [460, 520], [36, 44]), hump('r', 'm', [0.5, 0.56], [40, 46]), led('b', 'm', [240, 260], [-44, -36]), led('z', 'b', [280, 300])], sockets: [low('par', 'ar', 0.5, 1), low('pr', 'r', 0.5, 1), low('pb', 'b', [0.6, 0.75], 1), low('pz', 'z', [0.35, 0.65])] } },
+    { id: 'dip', lay: { pieces: [led('a', null, [300, 340]), hump('ar', 'a', [0.42, 0.48], [40, 46]), led('m', 'a', [460, 520], [36, 44]), hump('r', 'm', [0.5, 0.56], [40, 46]), led('b', 'm', [240, 260], [-44, -36]), led('z', 'b', [280, 300])], sockets: [low('par', 'ar', 0.5, 1), low('pr', 'r', 0.5, 1), low('pb', 'b', [0.6, 0.75], 1), low('pz', 'z', [0.35, 0.65])] } },
   ] }),
   // [R] mossy stones to hop on one long bank
   link({ id: 'w1-12-stones', name: 'a rest: mossy stones to hop', job: 'rest', versions: [
