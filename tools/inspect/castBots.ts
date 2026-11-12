@@ -12,6 +12,8 @@ import { spawn } from 'node:child_process';
 import { firstTimer, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_KID, FT_MIDDLE, FT_MIDDLE_EASY, type FirstTimer, type FTRun } from './firsttimer.ts';
 
 type Setting = 'easy' | 'normal';
+/** STAGE-RULES §1: every stage takes at least 2 minutes for a quick player, on every roll */
+const MIN_SECONDS = 120;
 /** the bots, each on the settings it plays (the tier bots as tierBots.ts BOTS; the first-timer on both) */
 export const CAST_BOTS: Record<string, Partial<Record<Setting, FirstTimer>>> = {
   kid: { normal: { ...FT_KID, setting: 'normal' }, easy: { ...FT_KID, setting: 'easy' } },
@@ -72,6 +74,18 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.met
       ch.stdout.on('data', (b) => (buf += b));
       ch.on('close', () => { for (const l of buf.split('\n')) if (l.startsWith('{')) rows.push(JSON.parse(l)); res(); });
     })));
+  }
+  // (--proven <file>: the seeds every bot played to the shrine, the goal full, no rescue, on every setting asked, and none under STAGE-RULES'
+  // 2 minutes: the candidates for a stage's proven-seed list, tools/engine/seedlist.ts --merge <file>)
+  const proven = arg('--proven');
+  if (proven && !process.argv.includes('--json')) {
+    const ok = seeds.filter((sd) => { const R = rows.filter((r) => r.seed === sd); return R.length > 0 && R.every((r) => r.pass && r.time >= MIN_SECONDS); });
+    (await import('node:fs')).writeFileSync(proven, JSON.stringify(ok));
+    console.log(`proven: ${ok.length} of ${seeds.length} seeds (every bot passes, none under ${MIN_SECONDS} s) -> ${proven}`);
+    for (const sd of seeds.filter((x) => !ok.includes(x))) {
+      const why = rows.filter((r) => r.seed === sd && !(r.pass && r.time >= MIN_SECONDS)).map((r) => `${r.bot} ${r.setting} ${r.pass ? `${r.time} s` : r.error ? 'error' : `${r.end}${r.rescues ? ` rescued x${r.rescues}` : ''}`}`);
+      console.log(`   seed ${sd} out: ${why.join('; ')}`);
+    }
   }
   if (!process.argv.includes('--json')) {
     console.log(`castBots ${stage}, seeds ${arg('--seeds') ?? '1-20'}`);
