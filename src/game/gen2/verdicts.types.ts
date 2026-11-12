@@ -96,6 +96,7 @@ export type VerdictName =
   | 'drop.look-lies' //           a drop drawn with another kind's look (lethal painted as ground, soft painted as water, a hurt floor as either)
   | 'drop.untyped' //             a gap on the route the builder laid with no Drop record (every fall must be stated, never inferred)
   | 'hazard.untaught' //          a hurt drop before the end of its lesson's showing piece, or within the row's clearStart of the spawn
+  | 'chain.mount' //              a chain's first bounce cap needs more than a plain hop from the ground before it (R-165.138, promises11 mountVerdicts)
   // the lessons (promises11)
   | 'teach.double-no-gap-after' // no gap only the double crosses after the double's teach (Normal only; Easy has no double gap)
   | 'teach.double-gap-unsafe' //  that gap has nothing under it
