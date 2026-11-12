@@ -302,3 +302,21 @@ test("the seed list's quiet line holds on the game's own roll: nowhere on 1-3 ar
     assert.ok(q.quiet <= QUIET_MAX, `seed ${seed}: ${q.quiet} s with nothing to do at x ${Math.round(q.x)} (the list's line: ${QUIET_MAX} s)`);
   }
 });
+
+test("every quiet piece of 1-3's own keeps a root hop near both ends and every few hundred px (the quiet line, by the pieces themselves)", () => {
+  // (the roll test above sees the worst stretch of six seeds; this holds every version of every rest and the arrival, whatever lies
+  //  next to it: before its first hop up and from its last hop up to its end at most 520 px each, so two pieces joined stay under
+  //  4 s, and at most 1,100 px between two hops (4 s at a walk: the seed list's line, QUIET_MAX). A step down and a log lying on a bank
+  //  are walked, not hopped. (World 1's FR10 asks 850 px inside a section: the arrival's root-steps is 960, named in F13's report)
+  const UPS = (p: Any) => p.shape !== 'block' && Array.isArray(p.place?.dy) && p.place.dy[1] < -40;
+  for (const t of QUIET_OWN_13) for (const v of t.subBlocks![0].versions) {
+    const ps = [t.pieces[0], ...v.pieces].filter((p: Any) => p.shape !== 'block');
+    const w = (p: Any) => (Array.isArray(p.w) ? p.w[1] : p.w) as number;
+    const ups = ps.map((p, i) => (UPS(p) ? i : -1)).filter((i) => i >= 0);
+    assert.ok(ups.length >= 1, `${t.id}/${v.id}: no hop at all`);
+    const run = (a: number, b: number) => ps.slice(a, b).reduce((s, p) => s + w(p), 0);
+    assert.ok(run(0, ups[0]) <= 520, `${t.id}/${v.id}: ${run(0, ups[0])} px before its first hop`);
+    assert.ok(run(ups[ups.length - 1], ps.length) <= 520, `${t.id}/${v.id}: ${run(ups[ups.length - 1], ps.length)} px from its last hop to its end`);
+    for (let k = 1; k < ups.length; k++) assert.ok(run(ups[k - 1], ups[k]) <= 1100, `${t.id}/${v.id}: ${run(ups[k - 1], ups[k])} px between two hops`);
+  }
+});
