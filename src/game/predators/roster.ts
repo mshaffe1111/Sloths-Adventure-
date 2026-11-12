@@ -13,14 +13,17 @@ export const HABIT = {
   spider: 'seek', seamstress: 'guard', butler: 'patrol', dangler: 'drop', mantis: 'ambush',
   tayra: 'charge', frog: 'patrol', crab: 'guard', piranha: 'seek',
   sentry: 'guard', beetle: 'patrol',
-  harpy: 'seek', bats: 'sweep', mimicBush: 'guard', moths: 'seek',
+  harpy: 'seek', bats: 'sweep', blinkingLog: 'guard', moths: 'seek',
   gaze: 'sweep', lavaLizard: 'patrol',
   soldier: 'guard',
 } as const satisfies Record<string, Habit>;
 
 export type Kind = keyof typeof HABIT;
 
-/** each world's cast. Moths are 8-4's own cast (the Lantern Run), never beside the night harpy */
+/**
+ * each world's cast (Matt approved a cast per world, 11-11 9:42 PM ET). Moths are 8-4's own cast (the Lantern Run), never beside the
+ * night harpy. W8's mimic is a log that blinks, never a bush: bushes are the safe place in every world (the story keeper)
+ */
 export const CASTS: Record<number, readonly Kind[]> = {
   1: ['snake', 'eagle', 'boa'],
   2: ['turtle', 'riverGuard', 'caiman', 'snake'],
@@ -29,7 +32,7 @@ export const CASTS: Record<number, readonly Kind[]> = {
   5: ['spider', 'seamstress', 'butler', 'dangler', 'mantis'],
   6: ['caiman', 'tayra', 'frog', 'crab', 'piranha'],
   7: ['sentry', 'boa', 'ocelot', 'beetle'],
-  8: ['harpy', 'jaguar', 'bats', 'mimicBush', 'boa'],
+  8: ['harpy', 'jaguar', 'bats', 'blinkingLog', 'boa'],
   9: ['gaze', 'tayra', 'jaguar', 'harpy', 'lavaLizard'],
   10: ['soldier', 'ocelot'],
 };

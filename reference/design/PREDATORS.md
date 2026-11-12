@@ -5,7 +5,9 @@ you just don't have to stomp on them"; "predators are huge in this game, let the
 
 Scope (the lead, 9:19 and 9:23 PM ET, from Matt): EVERY creature that can hurt, block or chase Pokey, each started from what the real
 animal does and given a twist that fits its world ("I would love to see from a creative standpoint how Fable handles it"), plus the
-creatures we own art for and do not use (§7). The story keeper's background (9:19 PM ET) is folded in: ordinary creatures are not evil
+creatures we own art for and do not use (§7). The story keeper reviewed this sheet at 9:36 PM ET: PASS on story with four changes, all applied here (the mimic is a blinking log,
+never a bush; nobody eats in the sanctuary; the owl is a presence that never guides; piranhas nip and scatter). Matt, 9:42 PM ET, via
+the lead: a unique cast per world is approved as §2's table. The story keeper's background (9:19 PM ET) is folded in: ordinary creatures are not evil
 and wear no collar: they are hungry, sleepy, nosy, or guarding a nest, and most cannot believe a sloth is what came.
 
 Sources read: `reference/plans/WORLD-MAP.html` and `MAP-REVISIONS.md` §1, §6, §8 (origin/ccr-702d3c49-i33jeq), ROADMAP R-159.1 and
@@ -54,12 +56,12 @@ speeds and tells are the same on Easy. Three tells today are under the 0.5 s flo
 | Eaglets | W4: 4-6 nests | A head pops up 1.2 s; moving near the nest while they look blows him back 520 px/s for 0.45 s; never a heart (eaglet.ts:25-35) |
 | Moths | W8: 8-4 Lantern Run | Drawn to the jar from 380 px at 85 px/s; each touch takes 0.3 of the light; a punch scatters them (lantern.ts, w8LanternRun.ts:142) |
 | Seamstress | W5: 5-4 | He lingers 0.5 s, she looks up 0.8 s, her lace slows him; the full wrap costs a heart (w5Play.ts:381) |
-| Butler | W5: 5-2 | Walks a tray of cake; walk into it and he eats and gets sleepy, no heart (w5Play.ts:401) |
+| Butler | W5: 5-2 | Walks a tray of cake; walk into it and he eats and gets sleepy, no heart (w5Play.ts:401 `touchesCake`). **Against canon** (he never eats in the sanctuary): flagged for World 5's re-lay, see §2 |
 | Poison Dart Frog (again) | W6, W7 | The one creature with no tell today |
 
 Not creatures (the clock's pieces, outside this sheet): spore mushrooms, teapots, closing orchids, humming threads, web patches.
 Not in play at all: `ant_hazard` (a type with no spawner), wasps, bees, fish outside the 2-10 guardian flood, owls (owl.ts is a plant).
-Not creatures today: owls, mimic bushes, the Drake's gaze and soldiers (planned on the map). Art we own with no stage: §7.
+Not creatures today: owls, the blinking log, the Drake's gaze and soldiers (planned on the map). Art we own with no stage: §7.
 
 ## 2. One personality each: the real animal, then our twist
 
@@ -85,9 +87,9 @@ world. Times are Normal's. *Italics* = a number that changes from today's code.
 | Fruit bats (the roost) | **sweep** | Roost by the hundred; one startled bat sets off the lot | One creature made of many. A ripple of wings runs along the roost on a beat; cross while they settle. They shoo, they do not bite (8-1) | a flutter runs through the roost 2.0 s |
 | Moths | **seek** (the light) | Fly to light and circle it | They want the jar, not him. They drink its light; a punch scatters them, and darkness loses them | wing dust in the dark before they arrive |
 | Eaglets | **patrol** (on the clock) | Nestlings pop up at every sound | A head pops up to look. Move while it looks and the squawk blows him back; never a heart | one head rises 1.2 s |
-| Seamstress / Butler (W5) | **guard** / **patrol** | (ours) the Queen's household | She stitches whoever lingers at her seam; he offers cake that makes him sleepy. Polite, and a trap | she looks up 0.8 s; he lifts the tray |
+| Seamstress / Butler (W5) | **guard** / **patrol** | (ours) the Queen's household | She stitches whoever lingers at her seam; the sweet smell off his tray makes Pokey drowsy (he NEVER eats here: the Queen's "Nobody has ever not eaten the cake"). Polite, and a trap | she looks up 0.8 s; he lifts the tray |
 | Capuchin thief / lookout / guard | **stalk** / **ambush** / **guard** | Clever, loud, steal food, post lookouts | Thief sneaks a petal and teases; lookout stares, then calls the eagle; guard paces a ledge. Never hurt him | as built (capuchin.ts) |
-| Mimic bush (W8, new) | **guard** | (ours) | A bush that blinks. No mimic without the blink | blinks twice, rustles 0.8 s; snap; open 1.0 s |
+| Blinking log (W8, new) | **guard** | (ours) potoos and nightjars pass for dead wood all day | A fallen "log" that blinks. Never a bush: bushes are the safe place in every world (1-7). No mimic without the blink | blinks twice, creaks 0.8 s; snap; open 1.0 s |
 | The Drake's gaze (9-4) | **sweep** (remembers) | (the guardian's eye, not a body) | "Visitor." then "Intruder." The first time, stillness hides him; once seen, only shade does | the glow turns before the beam; the stage clock |
 | Soldier (W10) | **guard** | (the General's wall guard) | Holds the wall and blocks | spear lifts |
 
@@ -103,7 +105,7 @@ they feel alike. Each world gets a cast of three to five, one habit each (held b
 | 5 Orchid Sanctuary | spider (seek), seamstress (guard), butler (patrol); new from §7: dangler (drop), orchid mantis (ambush) | the mantis |
 | 6 Deep Mangrove | caiman (sweep), tayra (charge), frog (patrol); new from §7: crab (guard), piranha (seek) | the tayra and the caiman |
 | 7 Ancient Ruins | stone sentry (guard), boa (ambush), ocelot (stalk); new from §7: beetle (patrol) | the sentry |
-| 8 Twilight Treetops | night harpy (seek), jaguar (drop), bats (sweep), mimic bush (guard), a dozing boa (ambush); moths in 8-4 only | the night harpy |
+| 8 Twilight Treetops | night harpy (seek), jaguar (drop), bats (sweep), blinking log (guard), a dozing boa (ambush); moths in 8-4 only; the owl is nobody's hunter but theirs | the night harpy |
 | 9 Volcanic Jungle | the gaze (sweep), tayra (charge), jaguar (drop), night harpy (seek); lava lizard (patrol) when it has art | the gaze |
 | 10 Stormy Highlands | soldier (guard), ocelot (stalk), and one of each earlier habit in 10-7 and 10-9 | every lesson at once |
 
@@ -117,28 +119,28 @@ Ends: **stunned** (dazed for the seconds, then carries on), **gives up** (loses 
 
 | Animal | Way 1 | Way 2 | Way 3 | More |
 |---|---|---|---|---|
-| Golden Tree Snake | **punch** (1-3): stunned 2 s, knocked off its branch end | drop trap (shake its vine, drop the hive): chased off, it glides away | stomp: gives up 5 s (he vaults it) | kick: chased off |
+| Golden Tree Snake | **punch** (1-3): stunned 2 s, knocked off its branch end | drop trap (shake its vine, drop the hive: the BUZZ chases it, no stings shown): chased off, it glides away | stomp: gives up 5 s (he vaults it) | kick: chased off |
 | Boa Constrictor | **drop trap** (1-9): chased off, grumpy | lure: lead the eagle's shadow over it (it fears the eagle): chased off | go still: he is a branch, it gives up 4 s | punch while its head is out (open): stunned 2.5 s |
 | Harpy Eagle | **go still in a bush** (1-7): 2 empty passes and it gives up 8 s | noise lure: its shadow goes to the noise 4.5 s | W4: behind a waterfall counts as cover | cannot be hit |
 | Snapping Turtle | **kick** (2-5): the shell slides away, chased off, and bowls over what it meets | stomp: stunned 1.8 s (it pulls in) | noise lure: it goes to look 4.5 s, back turned | punch from behind (open): stunned |
-| River King's guard | **kick** breaks the block: stunned 2 s | the bell (noise lure): it goes to look 4.5 s | stomp: stunned 1.1 s | |
+| River King's guard | **kick** breaks the block: stunned 2 s | the bell (noise lure): it goes to look 4.5 s | a drifting log bumped into its raft (push): stunned 3 s | cannot be stomped or punched (a guard never can) |
 | Spectacled Caiman | **go still** (6-2): the ripple passes, gives up 5 s | punch while its jaws are shut (open): stunned 2.5 s | sap bubble (trap): stunned 4 s | W2: quiet feet and it never wakes |
 | Ocelot | **go still** (3-2): it loses him, gives up 5 s | noise-lure it under the loose stalactite (trap, 3-3): chased off | the drum (3-5): stunned 3 s | face it (it crawls); punch: stunned 1.5 s |
 | Jaguar | **the stalactite** (trap, 3-3): chased off | the drum: stunned 3 s | punch while it is winded (open): stunned 2 s | W8 light: gives up 6 s; W9 its drop lands on a geyser: chased off |
 | Tayra | **lure its charge** to the caiman's water (6-5; it fears the caiman): chased off | stomp over the dash: stunned 2 s | kick: stunned 2 s, bowled back | W9: its line ends on a geyser: chased off |
 | Night Harpy | **light** (8-8: the owl's light, the jar): gives up 6 s | noise-lure it under the owl (it fears the owl): chased off | go still: no sound, it loses him 5 s | the drum: stunned 3 s; punch while dizzy (open) |
 | Poison Dart Frog | **stomp** between hops: gives up 6 s (it hops off) | kick: chased off (it bounces away) | go still: it settles, gives up 4 s | |
-| Jumping Spider | **stomp in the pause**: gives up 5 s | punch in the pause (open): stunned 2 s | pluck a far thread (noise lure): it goes there 4.5 s | a cold dew drip: dozes off |
+| Jumping Spider | **stomp in the pause**: gives up 5 s | punch in the pause (open): stunned 2 s | pluck a far thread (noise lure): it goes there 4.5 s | a cold dew drip (W5's own tool): dozes off |
 | Thorn vine | **go still** while it looks (3-5): it sleeps again | the drum: stunned 3 s | break (a dropped stone): chased off, it curls away | |
 | Stone sentry | **break** the cracked pillar beside it (7-2): chased off (eyes dark, it steps back into its niche) | push a block into it (7-8): stunned 6 s | noise lure: it turns its head 4.5 s | cannot be punched or stomped |
 | Fruit bats | **go still** as the ripple passes (8-1) | light: they settle, gives up 6 s | | never hit |
 | Moths | **punch** scatters them: gives up 3 s | cover the jar (go dark): they lose it | | |
 | Eaglets | **go still** while the head is up | cover | | never hit, never hurt |
-| Seamstress / Butler | keep moving (her tell calls off) / hop the tray | a dew drip: dozes off | | never hit |
+| Seamstress / Butler | keep moving (her tell calls off) / hop the tray, or pass upwind of it | a cold dew drip on THEM: dozes off (not the leaf drip that wakes Pokey: the two look different) | | never hit |
 | Capuchins | thief: punch, it drops the petal and runs; lookout: fruit lures it 6 s, or cover | guard: **wind** blows it off its ledge 1.8 s or down 5 s (4-9) | | never hurt him |
-| Mimic bush | **light** shows it: gives up 6 s | punch after it snaps (open): stunned 3 s | | |
+| Blinking log | **light** shows it: gives up 6 s | punch after it snaps (open): stunned 3 s | | |
 | Drake's gaze | **go still** (first sight only), then shade | cover | | a world rule, not a body |
-| Soldier | break, lure, push, the moat (10-7: every world's trick) | | | |
+| Soldier | break, lure, push, the moat (10-7: every world's trick): stunned or gives up, never down for good | | | |
 
 The triangle (R-159.1) inside this: the **stomp** vaults (a short stun or a give-up, never the strongest answer), the **punch** stuns
 but mostly needs the open moment after a miss, the **kick** bowls an animal away and breaks a block. The world's own tool (the trap,
@@ -175,7 +177,7 @@ The habits, by how many cast places each fills (§2's casts):
 | # | Habit | Places | Parameters | Who |
 |---|---|---|---|---|
 | 1 | sweep | 7 | the stretch, eye speed, `warn`, `onBeat`, `callsOff`, `giveUp` in passes, `seesStill`, `remembers` | eagle (W1, W4), caiman (W2, W6), grotto eyes, bats, the gaze |
-| 2 | guard | 7 | `blocks`, reach, no stomp or punch on its list | River King's guard, guard capuchin, seamstress, crab, sentry, mimic bush, soldier |
+| 2 | guard | 7 | `blocks`, reach, no stomp or punch on its list | River King's guard, guard capuchin, seamstress, crab, sentry, blinking log, soldier |
 | 3 | patrol | 7 | its beat, `shy`, `onBeat` | snake (W1, W2), eaglets, butler, frog, beetle, lava lizard |
 | 4 | seek | 6 | `hears` (seconds it looks), hunt speed, asleep or pacing | turtle, spider, piranha, night harpy (W8, W9), moths |
 | 5 | ambush | 6 | sight both ways, long `act.reach`, long `recover`, `onBeat` | boa (W1, W7, W8), thorn vine, lookout, mantis |
@@ -209,9 +211,9 @@ nothing imports is never loaded. Clip names are from each sheet's data; nobody h
 | Dozer | `enemies/dozer-anim.webp`, `-poses.webp`: idle, attack, hurt, no walk | W3 or W5 | A sleeper that never walks: a **guard** asleep across the path. Noise wakes it, it swats, it dozes off again. Quiet feet, stillness, or the drum. (A cake-eating dozer already plays a puzzle part in Meeca's stage, meecaQA.test.ts:83) |
 | Beetle | `w6to10/creatures/beetle-anim-0/1.webp`: idle, walk, attack, hurt, defeat (125 frames) | W7 | Dung beetles roll a ball in a straight line by starlight. A **patrol** kind that rolls a giant seed along its beat: the seed blocks him, pushes him, and is a ride if he hops on. Lure it and it rolls the seed where a push puzzle needs it |
 | Crab | `w6to10/creatures/crab-anim.webp`: idle, walk, attack, hurt, defeat (78) | W6 | Mangrove crabs wave one big claw and bolt down their holes when the tide comes. A **guard** of a root gap whose tell is the real wave. The tide beats it (it hides while the water is up), a kick flips it, a noise turns it |
-| Piranha | `w6to10/creatures/piranha-anim.webp`: idle, attack, hurt, defeat (53) | W6 | Drawn to splashing. A **seek** kind under water: a hard landing in water is a noise and the shoal goes to it; calm strokes pass. Throw the splash elsewhere, or lead them to the caiman's stretch (they fear it) |
+| Piranha | `w6to10/creatures/piranha-anim.webp`: idle, attack, hurt, defeat (53) | W6 | Drawn to splashing. A **seek** kind under water: a hard landing in water is a noise and the shoal goes to it; calm strokes pass. They NIP and scatter: a bite is a heart and a push away, never a feeding swarm, a frenzy or bones. Throw the splash elsewhere, or lead them to the caiman's stretch (they fear it) |
 | Fruit bat, sleeping | `w6to10/creatures/fruitbat-w8-anim.webp`: doze, sleep (25) | W8 | Not a new creature: the roost's asleep and stirring states, which today are a drawn "z" (batArt.ts:6) |
-| Owl | `owl-anim.webp`: one clip (defeat) | W8 | The night hunters' own hunter and Pokey's ally: its light is what 8-8 lures them into. Needs perch and wing clips first |
+| Owl | `owl-anim.webp`: one clip (defeat) | W8 | The creature the night hunters fear: its light is what 8-8 lures them into. A presence, not a helper: it never guides, points or speaks, and it looks nothing like the Night-Wing Monarch (a giant bat). Needs perch and wing clips first |
 | Howler | `howler-anim.webp`: one clip | W4 or W3 | The loudest animal in the forest. Not a hunter: a NOISE on the clock. Its howl wakes every sleeper in earshot, so you cross before it. Needs a howl clip |
 | Lava lizard | `lavalizard-anim.webp`: one clip | W9 | Real ones do push-ups as a warning. A **patrol** kind that shuttles between hot rock and shade; the push-ups are its tell. Needs walk and tell clips |
 | Soldier, second batch | `w6to10/creatures/soldier-anim-0/1.webp`: attack a/b, hurt a/b, down a/b (150) | W10 | Ready for the **guard**: two attacks give it two tells |
