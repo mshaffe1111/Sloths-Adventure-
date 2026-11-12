@@ -700,6 +700,9 @@ export interface Gen2Meta {
   brief?: GraphBrief;
   /** the stage's brief says no fall costs a life (GraphBrief.softFalls): what the engine reads (pipeline.ts softFallStage) */
   softFalls?: true;
+  /** a stage that lays a hurt floor (WorldManifest.hurtFloor): its row's lesson and clearStart, and `shown`, the END x of the lesson's
+   *  showing piece (the piece keyed `show` in the laid section whose `teaches` is the lesson) when one is laid: `hazard.untaught` reads it */
+  hurt?: { lesson: string; clearStart: number; shown?: number };
   /** each node as laid, for the gates that read the built stage (V18's nodePieces.ts, the stills spots): its token, the x-range its
    *  sections cover, its first block's landing x (NODES.md §8.7) when it has one, and a twist's two answers (B5) */
   nodes?: Array<{ token: string; x0: number; x1: number; block?: number; moves?: Array<'double' | 'bounce'> }>;

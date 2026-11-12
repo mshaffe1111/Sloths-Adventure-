@@ -2715,6 +2715,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     ...(laid.rise ? { rise: laid.rise } : {}),
     // (the stage's own brief, never the world's: 1-1 alone, R-165.86)
     ...(req.kit.manifest.graphs?.briefs?.[budget.id]?.softFalls ? { softFalls: true as const } : {}),
+    ...hurtMeta(laid, req.kit.manifest),
     sections: laid.sections.map(({ uid, template, node, phase, tension, mirrored, x0, x1, seconds }) => ({ uid, template, node, phase, tension, mirrored, x0, x1, seconds })),
     fills: filled.fills,
     ...(laid.theme ? { theme: laid.theme } : {}),
@@ -2924,6 +2925,14 @@ export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loos
   // (R-165.61: a refused roll's verdicts, by name: `errors` derived from the RollVerdict, each line once, Normal's then Easy's)
   for (const d of ['normal', 'easy'] as const) for (const l of verdictLines(g.verdicts?.[d])) if (!st.gen2.errors.includes(l)) st.gen2.errors.push(l);
   return st.gen2.errors;
+}
+
+/** a stage that lays a hurt floor carries its row's lesson and clearStart, and where the lesson's showing piece ends (Gen2Meta.hurt) */
+function hurtMeta(laid: Laid, M: WorldManifest): Pick<Gen2Stage['gen2'], 'hurt'> {
+  const H = M.hurtFloor;
+  if (!H || !laid.heartFalls.some((z) => z.y !== undefined)) return {};
+  const show = laid.sections.find((s) => M.sections.find((t) => t.id === s.template)?.teaches === H.lesson)?.pieces.find((p) => p.key === 'show')?.platform;
+  return { hurt: { lesson: H.lesson, clearStart: H.clearStart, ...(show ? { shown: R(show.x + show.width) } : {}) } };
 }
 
 /**

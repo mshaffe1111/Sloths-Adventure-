@@ -8,7 +8,9 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import '../headlessDom.ts';
 import { buildGen2Stage, dropsOf } from './pipeline.ts';
-import { dropVerdicts } from './verdicts.ts';
+import { dropVerdicts, judgeRoll } from './verdicts.ts';
+import type { Judged11 } from './verdicts.ts';
+import { PROMISES_11 } from './promises11.ts';
 import { GEN2_STAGES } from './game.ts';
 import { w5Kit } from './worlds/w5.ts';
 import { generateAllLevels } from '../worldsData.ts';
@@ -98,6 +100,40 @@ test('drop.look-lies covers all three ways: a soft look, a lethal look and the h
   assert.deepEqual(lies({ ...at, ends: life, look: 'ground', warn }), ['the lethal drop at x 100..300 is drawn as ground']);
   assert.deepEqual(lies({ ...at, ends: soft, look: 'pit-floor-art' }), []);
   assert.deepEqual(lies({ ...at, ends: life, look: 'water-art', warn }), []);
+});
+
+test("hazard.untaught (planted): no hurt drop starts before the END of the lesson's showing piece, none within the row's clearStart of the spawn; the lesson's own chain after `show` passes", () => {
+  const heart = (x0: number, x1: number) => ({ x0, x1, lipY: 500, ends: { kind: 'heart', to: 'take-off' }, look: 'hurt-art' });
+  const judge = (drops: unknown[], hurt: unknown, spawnX = 100) => {
+    const built = { platforms: [], config: { levelHeight: 2000 }, spawnX, gen2: { nodes: [], hurt } };
+    const v = judgeRoll({ stageId: '1-1', setting: 'normal', policy: 'per-gap', drops, asks: [], routeGaps: [], built } as unknown as Judged11, PROMISES_11);
+    return v.accepted ? [] : v.failed.map((f) => `${f.name}: ${f.line}`);
+  };
+  const row = { lesson: 'spikes', clearStart: 900, shown: 2000 };
+  assert.deepEqual(judge([heart(2000, 2200), heart(2600, 2800)], row), [], "the lesson's own chain, right after `show`, and every one after it");
+  assert.deepEqual(judge([heart(1500, 1700), heart(2000, 2200)], row), ["hazard.untaught: a hurt drop at x 1500..1700 before the 'spikes' lesson has shown it (its showing piece ends at x 2000)"]);
+  assert.deepEqual(judge([heart(1500, 1700)], { lesson: 'spikes', clearStart: 900 }), ["hazard.untaught: a hurt drop at x 1500..1700 before the 'spikes' lesson has shown it (no showing piece is laid)"]);
+  assert.deepEqual(judge([heart(600, 800)], { lesson: 'spikes', clearStart: 900, shown: 300 }), ['hazard.untaught: a hurt drop at x 600..800 within 900 px of the spawn (x 100)']);
+  assert.deepEqual(judge([heart(1000, 1200)], { lesson: 'spikes', clearStart: 900, shown: 300 }), [], '900 px from the spawn: clear');
+  assert.deepEqual(judge([], row), []);
+  assert.deepEqual(judge([{ x0: 400, x1: 600, lipY: 500, ends: { kind: 'putback', to: 'take-off' }, look: 'pit-floor-art' }], row), [], 'a soft pit is no hazard');
+});
+
+test("hazard.untaught reads the world's own lesson name off the built stage: the stub roll carries its row, and its showing piece's end once a section teaches the lesson", () => {
+  const st = build('normal');
+  assert.deepEqual(st.gen2.hurt, { lesson: ROW.lesson, clearStart: ROW.clearStart }, 'no section of the stub teaches the lesson: no showing piece');
+  const lines = PROMISES_11.find((p) => p.id === 'hazard.untaught')!.judge({ stageId: STAGE, setting: 'normal', policy: 'per-gap', drops: dropsOf(st), asks: [], built: st } as never).map((v) => v.line);
+  assert.equal(lines.length, hollows(st).length, 'every hollow is untaught');
+  assert.match(lines[0], /before the 'spikes' lesson has shown it \(no showing piece is laid\)/);
+  // (the same kit, each section that holds a hurt place now teaching the lesson, its take-off bank keyed `show`)
+  const k = stubKit();
+  const teach = (s: (typeof k.manifest.sections)[number]) => (s.pieces.some((p) => (p.place as { hurt?: boolean }).hurt) ? { ...(JSON.parse(JSON.stringify(s).replaceAll('"near"', '"show"')) as typeof s), teaches: ROW.lesson } : s);
+  const taught = build('normal', { ...k, manifest: { ...k.manifest, sections: k.manifest.sections.map(teach) } });
+  const first = hollows(taught)[0];
+  assert.equal(taught.gen2.hurt?.shown, first.x0, "the showing piece ends where the lesson's own hollow begins");
+  const after = PROMISES_11.find((p) => p.id === 'hazard.untaught')!.judge({ stageId: STAGE, setting: 'normal', policy: 'per-gap', drops: dropsOf(taught), asks: [], built: taught } as never);
+  assert.deepEqual(after.map((v) => v.line).filter((l) => /lesson/.test(l)), [], 'taught: no hollow comes before its showing piece');
+  assert.equal(build('normal', w5Kit(7)).gen2.hurt, undefined, 'a stage with no hurt floor carries nothing');
 });
 
 /** the real engine on the stub kit's stage: the game's own builder with the stage's kit swapped for the stub (a test seam, restored) */

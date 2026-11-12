@@ -54,7 +54,7 @@ test('ALL_VERDICTS is the union, in order, read off verdicts.types.ts', () => {
   const src = fs.readFileSync(new URL('./verdicts.types.ts', import.meta.url), 'utf8');
   const union = [...src.slice(src.indexOf('export type VerdictName'), src.indexOf('export interface Measure')).matchAll(/\| '([a-z0-9.-]+)'/g)].map((m) => m[1]);
   assert.deepEqual([...ALL_VERDICTS], union);
-  assert.equal(union.length, 16);
+  assert.equal(union.length, 17);
 });
 
 test('arc.single-gap-over: Easy 140 px is past a flick from 70 px (132); Normal 150 past the 143 band rule', (t) => {
@@ -115,6 +115,16 @@ test('teach.double-no-gap-after and teach.double-gap-unsafe (Normal only, by the
   planted('teach.double-gap-unsafe', 'normal', { built: { ...b, platforms: [P(1, 0, G, 1000), P(2, 1260, G, 1000)] }, routeGaps: [], drops: [] }, t);
   const easy = roll('easy', { built: { ...b, platforms: [P(1, 0, G, 1000), P(2, 1200, G, 1000), P(3, 1000, G + 200, 200)] } });
   assert.ok(!names(easy).includes('teach.double-no-gap-after') && easy.notJudged.includes('teach.double-no-gap-after'), 'Easy: stated, not judged');
+});
+test("hazard.untaught: a hurt drop before the end of its lesson's showing piece (both settings); after it, clean (the whole rule: hurtFloor.test.ts)", (t) => {
+  // (the gap at 1000..1260 as a hollow with a hurt floor, a heart drop with its own look; packet E12 item 2)
+  const hollow = { x0: 1000, x1: 1260, lipY: G, ends: { kind: 'heart', to: 'take-off' }, look: 'hurt-art' } as unknown as Drop;
+  const b = builtClean();
+  const at = (shown: number) => ({ drops: [hollow], built: { ...b, spawnX: 0, gen2: { ...b.gen2, hurt: { lesson: 'spikes', clearStart: 900, shown } } } });
+  for (const s of ['normal', 'easy'] as const) {
+    planted('hazard.untaught', s, at(1100), t);
+    assert.deepEqual(names(roll(s, at(1000))), [], `${s}: shown first, the roll is clean`);
+  }
 });
 test('first-run.drift: the fixed layout built against its recorded lock', (t) => {
   const layout = { seed: 7, lock: { normal: 'aaa', easy: 'bbb' } };
