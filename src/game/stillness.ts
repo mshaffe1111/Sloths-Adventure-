@@ -11,7 +11,7 @@
  */
 
 export interface StillSetting {
-  /** under this speed he is not moving (px/s): the same line the thorn vines draw (thornVine.ts VINE.still) */
+  /** at or under this speed he is not moving (px/s): the same line the thorn vines draw (thornVine.ts VINE.still; stillness.test.ts holds the two together) */
   speed: number;
   /** how long he must hold still before he is hidden (s): the time the tell takes to come all the way in */
   calmIn: number;
@@ -40,7 +40,7 @@ export const newStill = (): StillState => ({ held: 0 });
 
 /** is he moving on this frame? In the air, always; on a vine, when he climbs; on the ground, at a walk or more */
 export const moving = (p: StillBody, set: StillSetting): boolean =>
-  p.holding ? Math.abs(p.vy) >= set.speed : !p.grounded || Math.abs(p.vx) >= set.speed;
+  p.holding ? Math.abs(p.vy) > set.speed : !p.grounded || Math.abs(p.vx) > set.speed;
 
 /** one fixed step: the hold grows while he is still and is gone the frame he moves */
 export function stepStill(s: StillState, p: StillBody, dt: number, set: StillSetting): StillState {

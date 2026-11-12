@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { STILLNESS, calm, inCover, isStill, newStill, stepStill, watcherSees, type StillBody, type Watcher } from './stillness.ts';
+import { STILLNESS, calm, inCover, isStill, moving, newStill, stepStill, watcherSees, type StillBody, type Watcher } from './stillness.ts';
+import { VINE, vineSees, type ThornVine } from './thornVine.ts';
 import { WATCH, hidden, newWatch, shadowX, stepWatch, type Bush, type WatchZone } from './watcher.ts';
 
 const DT = 1 / 30;
@@ -18,9 +19,9 @@ test('he is still on the ground under the threshold, after the calm-in, and any 
   assert.equal(isStill(s, N), true);
   assert.equal(calm(s, N), 1);
   // a creep under the threshold keeps it (a thumb resting on the pad); a real step breaks it on that frame
-  stepStill(s, body({ vx: N.speed - 1 }), DT, N);
+  stepStill(s, body({ vx: N.speed }), DT, N);
   assert.equal(isStill(s, N), true);
-  stepStill(s, body({ vx: -N.speed }), DT, N);
+  stepStill(s, body({ vx: -N.speed - 1 }), DT, N);
   assert.deepEqual([isStill(s, N), calm(s, N)], [false, 0]);
 });
 
@@ -67,6 +68,15 @@ test('cover is the same place the bush hide already uses, standing or hanging', 
     assert.equal(inCover(bushes, { x, y: 380, grounded: false, holding: true }), hidden(bushes, { x, y: 380, grounded: false, ducking: false, hanging: true }), `hanging at ${x}`);
   }
   assert.equal(inCover(bushes, { x: 680, y: 640, grounded: false, holding: false }), false, 'jumping through a bush is not in it');
+});
+
+test('one line for "moving": it is the thorn vines\' line, so a vine can read this state later with nothing changed', () => {
+  assert.equal(N.speed, VINE.still);
+  // a vine that never sleeps, him standing in its reach: it sees him exactly when stillness calls him moving
+  const vine: ThornVine = { x: 500, top: 0, bud: 300, reach: 200, sleep: 0, stir: 0, look: 1, offset: 0, awake: true };
+  for (const grounded of [true, false]) for (let vx = -60; vx <= 60; vx += 0.5) {
+    assert.equal(moving(body({ vx, grounded }), N), vineSees(vine, 0.5, { x: 520, y: 380, vx, grounded }), `vx ${vx}, grounded ${grounded}`);
+  }
 });
 
 // ── the example (test-side): 1-7's eagle shadow, read through the contract. A watched stretch with two bushes; the eagle comes on
