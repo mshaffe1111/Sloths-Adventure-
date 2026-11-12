@@ -21,6 +21,7 @@ import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11 } from './verdicts.ts';
 import { PROMISES_11, realFalls } from './promises11.ts';
+import { repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
 import { DOUBLE_RISE, JUMP_RISE, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, TAKEOFF_SLACK, TIMED, WALL_H } from '../physics.ts';
@@ -2981,6 +2982,22 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
   if (stray) return { ok: false, swap: Number(stray.uid.slice(1)) - 1, why: `its exit at y ${stray.y} is outside the corridor` };
   const walked = blockBreaches(b.laid, st.platforms, judgedOnArcs(budget.id) ? { setting: budget.difficulty, stageId: budget.id } : undefined);
   if (walked.length) return { ok: false, swap: Number(walked[0].uid.slice(1)) - 1, why: `the block is walked round: ${walked[0].why}` };
+  // (Y2, R-165.120: a judged stage's idle mushrooms are taken up and its dead-zone petals moved to a piece a clean flight reaches, inside
+  // their own section, BEFORE the level check reads them: the generator stops laying what landing.dead-zone and bounce.no-purpose refuse,
+  // instead of the search swapping sections for them. A build with neither changes nothing; a replay runs this same step)
+  if (judgedOnArcs(budget.id)) {
+    // (a petal row moves inside its own section, never in or out of a room)
+    const within = (x: number): readonly [number, number] | undefined => {
+      const q = b.laid.sections.find((s) => x >= s.x0 && x <= s.x1);
+      return q && !q.room ? [q.x0, q.x1] : undefined;
+    };
+    const fix = repairLandings(st.platforms, st.collectibles, budget.difficulty, within);
+    if (fix.caps.length) {
+      st.platforms = st.platforms.filter((p) => !fix.caps.includes(p));
+      repairs.push({ kind: 'stretch', note: `landings: ${fix.caps.length} mushroom(s) with no purpose taken up (x ${fix.caps.map((p) => R(p.x)).join(', ')})` });
+    }
+    if (fix.moved) repairs.push({ kind: 'stretch', note: `landings: ${fix.moved} petal(s) moved off a dead zone` });
+  }
   for (let it = 0; it < 8; it++) {
     const res = checkStage(st, budget);
     if (res.ok) {

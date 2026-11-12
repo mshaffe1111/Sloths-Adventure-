@@ -265,3 +265,63 @@ export function purposelessBounces(pieces: readonly LandPiece[], pickups: readon
   }
   return caps.filter((m) => !worth.has(m)).sort((a, b) => a.x - b.x);
 }
+
+/** a pickup moved off a dead zone keeps this far inside its new piece's ends (the petal lines' own 20 px, pipeline.ts) */
+const PICKUP_INSET = 20;
+/** two pickups closer than this are one (pipeline.ts flower(): a pickup within 40 px of another is not laid) */
+const PICKUP_APART = 40;
+/** the pickups the repair moves: petals, blooms and leaves (a find or a heart keeps its place, each placed by its own rule) */
+const MOVABLE = new Set(['flower', 'fruit', 'leaf']);
+
+/**
+ * Y2 (R-165.120 after R-165.124/.126): the repair INSIDE a roll, so the generator stops laying what the two rules refuse instead of the
+ * search swapping sections for them. On one setting's built pieces:
+ *   1. every mushroom with no purpose (purposelessBounces) is taken up, again until none is left (a cap's purpose can hang on another's);
+ *   2. every petal, bloom or leaf on a dead zone (deadZones) moves, its row together, to the nearest piece a clean flight reaches, `within`
+ *      its own stretch (the section it was laid in), its height over the top and its spacing kept, nothing of it within PICKUP_APART of
+ *      another pickup, and the new piece the one it stands on (pickupPiece). A row with no such piece stays, and the verdict refuses it.
+ * The pickups are moved in place; the caps to take up are returned. A roll with neither changes nothing.
+ */
+export function repairLandings(
+  pieces: readonly LandPiece[], pickups: LandPickup[], setting: Difficulty, within: (x: number) => readonly [number, number] | undefined,
+): { caps: LandPiece[]; moved: number } {
+  const caps: LandPiece[] = [];
+  let ps = pieces.slice();
+  for (let k = 0; k < 4; k++) {
+    const idle = purposelessBounces(ps, pickups, setting);
+    if (!idle.length) break;
+    caps.push(...idle);
+    ps = ps.filter((p) => !idle.includes(p));
+  }
+  const dead = deadZones(ps, pickups, setting);
+  if (!dead.length) return { caps, moved: 0 };
+  const L = new Landings(ps, setting);
+  let moved = 0;
+  for (const T of dead) {
+    const row = pickups.filter((c) => COLLECTED.has(c.type) && pickupPiece(c, ps) === T);
+    if (!row.length || row.some((c) => !MOVABLE.has(c.type))) continue;
+    const xs = row.map((c) => c.x), cx = (Math.min(...xs) + Math.max(...xs)) / 2, bounds = within(cx);
+    if (!bounds) continue;
+    const others = pickups.filter((c) => !row.includes(c));
+    let best: { cost: number; spots: Array<{ x: number; y: number }> } | undefined;
+    for (const P of ps) {
+      if (P === T || !standable(P) || P.x + P.width < bounds[0] || P.x > bounds[1]) continue;
+      const lo = Math.max(P.x, bounds[0]) + PICKUP_INSET, hi = Math.min(P.x + P.width, bounds[1]) - PICKUP_INSET;
+      if (hi < lo) continue;
+      // (the row's spacing kept, squeezed to fit the top; its middle as near the old one as the top allows)
+      const span = Math.min(Math.max(...xs) - Math.min(...xs), hi - lo), mid = Math.max(lo + span / 2, Math.min(hi - span / 2, cx));
+      const k0 = Math.max(...xs) - Math.min(...xs);
+      const spots = row.map((c) => ({ x: Math.round(mid + (k0 ? ((c.x - cx) / k0) * span : 0)), y: Math.round(P.y - (T.y - c.y)) }));
+      const cost = Math.abs(mid - cx) + Math.abs(P.y - T.y);
+      if (best && cost >= best.cost) continue;
+      if (spots.some((s) => others.some((o) => Math.hypot(o.x - s.x, o.y - s.y) < PICKUP_APART))) continue;
+      if (spots.some((s) => pickupPiece({ ...s, type: row[0].type }, ps) !== P)) continue;
+      if (!L.cleanWay(P)) continue;
+      best = { cost, spots };
+    }
+    if (!best) continue;
+    row.forEach((c, i) => { c.x = best!.spots[i].x; c.y = best!.spots[i].y; });
+    moved += row.length;
+  }
+  return { caps, moved };
+}
