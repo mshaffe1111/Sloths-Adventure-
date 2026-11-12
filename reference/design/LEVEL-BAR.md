@@ -72,6 +72,7 @@ is scored 0 (missing), 1 (there, rough), 2 (at the bar), with the proof named. *
 | A designed pair split by the lay's gaps (any two animals 120 px apart): the far snake pushed off an upright screen | the two snakes on a log, on stills | `Socket.group` (variety.ts poissonPlace): a group keeps no gap among its own pieces, every other gap kept; `variety.test` planted |
 | A rule for one sleeper (its load 10 px off the middle) breaking a pair: the load landing on the second coil | numbers from the real roll, then stills | `armedTraps` re-centres a load a second sleeper shares; `library13.test` "the load between coils, 50 px or more from each" (planted) |
 | A sky strip's edge art meeting where it wraps: two half orchids made one white "ghost" behind the route | the lead, on P13's stills; found by a draw-call probe | `stageBackdrops.test`: no stage on w1sunrise until it is repainted. NOT a general check yet: a strip's two edges are not compared |
+| A designed level quiet for 4-11 s at a time: rests of long flat banks, 24-40 px steps and 25 px logs (walked, never hopped), a stair's way down | P13's seed-list dry run (QUIET_MAX 4 s) | `library13.test` holds the list's quiet line on the game's own roll (planted: the old stair, 10.5 s) |
 
 ## Scoring 1-3 as it stands today (t-w1-creatures, 11-12 afternoon, honest)
 A1 2, A2 2 (one graph, one piece a beat, held on every seed), A3 2 (every piece is its own: no library section in its pool),
