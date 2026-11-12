@@ -77,3 +77,23 @@ Branch `t-engine-clock`, base `origin/t-engine-yield` @347d50fa. No PR. Nothing 
   stage's play, so it is a design call plus a 1-1-style recalibration, not a refactor.
 - **Next step:** the engine keeps one `StillState`, steps it beside `gameTime += dt`, and 1-7's `sees` (watcher.ts) reads
   `watcherSees({ seesStill: true }, ...)`; then thorn vines read `moving` (already proven the same line).
+
+## NOISE (the lead's second follow-on, 9:09 PM ET; GAME-MAP B10)
+- **`src/game/heroNoise.ts`** (pure, 87 lines; not imported by the game yet, so 0 bytes shipped: main JS still 3,995,403).
+  - Noise events from data (`LOUD`): a landing carries further the higher he fell (180 px, plus 0.9 px a px fallen past the soft
+    line, capped at 560); a fall of 200 px or less is silent; a punch 240 px, a break 420, the drum 620. `stepFall` measures the fall
+    from the top of his arc; catching a vine ends it with no landing, and a later drop is measured from where he held.
+  - The sleeper contract (`Listener`, `hears`, `sound`): a sleeper inside the radius wakes. It carries the way the puzzle kit's
+    noise does (noise.ts: `r` along the stage, `NOISE.hearY` up and down).
+  - The drum: every predator already awake in its radius is stunned for 3 s from the beat (`stunned`); a later beat never shortens it.
+- **Proof (`heroNoise.test.ts`, 8 tests written first):** the soft line is held above a double jump's rise from physics.ts, so
+  nothing he does on flat ground is loud; standing still for 10 s, a hop and a double jump leave a sleeper beside him asleep. The
+  3-5 example: a hop under a thorn vine wakes none; a 560 px drop beside them wakes the two in reach and not the far one; the same
+  drop caught on a liana wakes none. The drum example: two prowlers in its radius are stunned for exactly the set time, one outside
+  is not. Four mutations tried (no soft line, vine catch ignored, any noise stuns, radius ignored): each fails 1 to 4 tests.
+- **Checks:** tsc clean; stage lock 102 of 102 unchanged; 36 tests in the clock, brick, stillness and noise files pass.
+- **Open for the lead:** (a) the drum WAKES a sleeper in its radius and does not stun it (loud is loud, so the drum is a choice);
+  say if it should stun everything instead. (b) Walking makes no noise, as specified. (c) The puzzle kit's noise.ts (a thrown
+  stone, a bell: watchers turn to it) is left as it is; the two can share one event list when this is wired.
+- **Next step:** the engine keeps one `FallState` beside the stillness state, makes a `Sound` on a hard landing, a punch and a
+  break, and hands it to each stage's listeners with `sound`; thorn vines become the first `Listener`.
