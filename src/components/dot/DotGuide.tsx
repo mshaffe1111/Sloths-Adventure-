@@ -1328,6 +1328,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           shownH: run.H,
           fernOpen: hidesFern(run.world, run.mini) && !loadFinds().includes(findForStage(run.world, run.mini)?.id ?? ''),
           shownF: run.F,
+          moments: v.moments,
         });
         if (due && !q.has(storyKey(due.flag))) {
           if (due.flag === 'H') run.hurtAt = -1;

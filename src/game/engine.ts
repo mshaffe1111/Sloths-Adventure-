@@ -622,6 +622,9 @@ export class GameEngine {
   /** the stage's cast on the creature kit and its drop traps, when its brief names a cast (castPlay.ts); null on every other stage */
   private cast: CastPlay | null = null;
   private readonly castHero: CastHero = { x: 0, y: 0, vx: 0, vy: 0, facing: 1, grounded: false, holding: false };
+  /** the moments of play this stage run has had, each named once, in order (a story line can wait on one: wayside.ts StageWay.on).
+   *  'cast:<way>': the first animal of the stage's cast that way sent off (a punch, a kick, a stomp, a trap). Emptied at the stage's start */
+  readonly moments: string[] = [];
   private stepHelp = false;
   /** the stage's puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): things to carry and throw, plates, gates, levers, lifts, beetles */
   private kit: KitPlay | null = null;
@@ -970,6 +973,7 @@ export class GameEngine {
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
+    this.moments.length = 0;
     this.startCast();
     // (every world, the generated stages too, Gemini G4: not Meeca's stage, the boss arenas or Dot's flight)
     this.stepHelp = !!this.w5 || (!this.proto?.meeca && !this.currentStage.arena && !this.currentStage.dot);
@@ -4436,6 +4440,7 @@ export class GameEngine {
       // Dot's line for the first of its kind (the stage's own words, castPlay.types.ts `said`): once, the first time a trap sends
       // one off, and once the first time a punch does; never again, in any stage (the first-of memory the hints use)
       const way = e.kit?.beatenBy;
+      if (way && !this.moments.includes(`cast:${way}`)) this.moments.push(`cast:${way}`);
       const line = way === 'trap' || way === 'punch' ? this.proto?.cast?.said?.[way] : undefined;
       if (line && !tipHeard(FIRST_OF_STAGE, `cast:${way}`)) {
         markTipHeard(FIRST_OF_STAGE, `cast:${way}`);
@@ -6333,6 +6338,7 @@ export class GameEngine {
     out.bushes = this.proto?.bushes ?? out.bushes;
     out.w5 = this.w5?.guideThings ?? NO_W5_THINGS;
     out.kit = this.kit?.guideThings ?? NO_W5_THINGS;
+    out.moments = this.moments;
     out.popups = this.floatingTexts;
     // (a boss's open weak spot, for Dot to keep her bubble off: copied into the view, no new object)
     const bs = this.boss;
