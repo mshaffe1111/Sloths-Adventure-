@@ -82,3 +82,21 @@ test("a stage that TEACHES the hurt floor's lesson lays no hollow by brief befor
   }
   assert.ok(seen >= 6, `only ${seen} hollows after the lesson over 12 stages (${after} gaps stand after it)`);
 });
+
+test("pits 'lesson': hollows only under the sections that teach or use the hurt floor's lesson (a brick says what it asks; the rest keep their soft pits)", () => {
+  const ROW = { lesson: 'bounce', art: 'w1-thorn', depth: [150, 170] as [number, number], clearStart: 1300 };
+  const pool = stagePool(M0, '1-1'), asks = new Set(pool.filter((t) => t.teaches === ROW.lesson || t.uses?.includes(ROW.lesson)).map((t) => t.id));
+  const kitOf = (pits: GraphBrief['pits']) => ({ ...w1World(), manifest: withBrief({ pits }, { sections: pool, hurtFloor: ROW }) }) as WorldKit;
+  let some = 0, all = 0;
+  for (const seed of provenSeeds('1-1').slice(0, 12)) {
+    const lay = (k: WorldKit) => { const budget = planBudget(cfg, k.manifest, 'normal'), r = provenPlan('1-1', seed)!; return layStage(budget, missionGraph(budget, k.manifest, seed), k, r.seed, { plan: r.plan }); };
+    const L = lay(kitOf('lesson'));
+    for (const h of L.platforms.filter((p) => p.pit === 'hurt')) {
+      some++;
+      const sec = L.sections.find((s) => h.x >= s.x0 - 1 && h.x + h.width <= s.x1 + 1);
+      assert.ok(sec && asks.has(sec.template), `seed ${seed}: a hollow at x ${h.x} in ${sec?.template}, which neither teaches nor uses the lesson`);
+    }
+    all += lay(kitOf('hurt')).platforms.filter((p) => p.pit === 'hurt').length;
+  }
+  assert.ok(some >= 4 && some < all, `${some} hollows by lesson, ${all} under every pit`);
+});

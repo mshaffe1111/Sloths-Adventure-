@@ -572,8 +572,10 @@ export interface GraphBrief {
   /** the stage's pits are HOLLOWS (the lead 11-11 8:30 PM: the hazard under a gap is the brief's, applied by the lay, so a stage
    *  needs no re-cut copy of a section to change it): every pit place its sections lay, past the hurt floor's `clearStart` from the
    *  spawn, gets the world's hurt floor (WorldManifest.hurtFloor) as a place marked `hurt` does. Seams, water, glide and block
-   *  gaps stay as they are */
-  pits?: 'hurt';
+   *  gaps stay as they are.
+   *  `lesson`: only under the sections that teach or use the hurt floor's lesson (a chain brick `uses` it: the thorns lie under the
+   *  chains, and every other section keeps its soft pits) */
+  pits?: 'hurt' | 'lesson';
   /** the stage's pool is picked by NEED, not by a list of stages (the lead 11-11: a section is a brick, never one stage's): every
    *  section of the world that is not parked, whose content type the stage's deal holds (or that is structural, or names none) and
    *  that serves nothing the stage must never hold (`not`). A section's `feel` is then never read as the stages it serves: it only

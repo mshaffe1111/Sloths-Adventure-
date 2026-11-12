@@ -27,7 +27,7 @@ export const REFUSE_12 = ['hint.1-1', 'coach.', 'squirrel', 'bootprint', 'canopy
 /** 1-2's brief, all of it data: the packet's row plus the three things the lay now applies */
 export const BRIEF_12: GraphBrief = {
   ends: 'quiet', trend: 'level', branching: 'lots', teaches: ['thorns'], deal: { ground: 35, bounce: 35, climb: 30 },
-  pits: 'hurt', petals: 'low', offRoad: 'fruit', pick: { refuse: REFUSE_12 },
+  pits: 'lesson', petals: 'low', offRoad: 'fruit', pick: { refuse: REFUSE_12 },
 } as GraphBrief;
 /** 1-2's corridor under the floor line (a kit row, data): World 1's is 80 px, cut for a stage that climbs; a level stage must be able to step down */
 export const ROOM_12 = 320;
@@ -135,7 +135,7 @@ export const ENGINE_OPEN = /the heart drop at x .* is drawn as pit-floor-art/;
 
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 /** `min`: only the six twist bricks a roll cannot do without (the teach, the two signatures, the run, the steps down and up) */
-export interface LibOpts { flown?: boolean; pits?: boolean; twists?: boolean; only?: string; min?: boolean; down?: boolean; room?: number }
+export interface LibOpts { flown?: boolean; pits?: boolean; twists?: boolean; only?: string; min?: boolean; down?: boolean; room?: number; allPits?: boolean }
 export const MIN_OUT = ['lib-cap-hop', 'lib-cap-test'];
 export const twistsOf = (o: LibOpts = {}) => (o.twists === false ? [] : TWISTS.filter((t) => !o.min || !MIN_OUT.includes(t.id)));
 /** the stage id the kit's rows are filed under (`flown`: the flown stage's, as supply12.ts does) */
@@ -143,7 +143,7 @@ export const stageIdOf = (o: LibOpts = {}) => (o.flown ? '1-1' : '1-2');
 /** World 1's kit with 1-2's brief, graphs, lessons and thorn row, its sections World 1's own untouched plus the twist bricks */
 export function kitLib12(o: LibOpts = {}): WorldKit {
   const k = w1World(), M = k.manifest as Any, ID = stageIdOf(o);
-  const brief = { ...BRIEF_12, ...(o.pits === false ? { pits: undefined } : {}) };
+  const brief = { ...BRIEF_12, ...(o.pits === false ? { pits: undefined } : o.allPits ? { pits: 'hurt' as const } : {}) };
   const list = [...(o.flown ? [] : M.graphs.list), ...Object.entries(HARVEST_12).filter(([id]) => !o.only || id === o.only).map(([id, code]) => ({ id, archetype: 'harvest', code }))];
   return { ...k, manifest: { ...M,
     sections: [...M.sections.map((t: SectionTemplate) => (CANOPY.includes(t.id) ? { ...t, feel: ['canopy'] } : t)), ...(o.twists === false ? [] : [...twistsOf(o), ...NEW_STOOD_IN, ...(o.down === false ? [] : WAY_DOWN)])],
@@ -182,11 +182,11 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const arg = (n: string, d: number) => { const i = process.argv.indexOf(n); return i > 0 ? Number(process.argv[i + 1]) : d; };
   const has = (n: string) => process.argv.includes(n);
   const N = arg('--seeds', 120), from = arg('--from', 1), par = arg('--par', 1);
-  const o: LibOpts = { flown: has('--flown'), pits: !has('--no-pits'), twists: !has('--no-twists'), min: has('--min'), down: !has('--no-down'), room: arg('--room', 320) };
+  const o: LibOpts = { flown: has('--flown'), pits: !has('--no-pits'), twists: !has('--no-twists'), min: has('--min'), down: !has('--no-down'), allPits: has('--all-pits'), room: arg('--room', 320) };
   if (has('--json')) {
     for (let s = from; s < from + N; s++) for (const d of ['normal', 'easy'] as const) console.log(JSON.stringify({ seed: s, d, ...roll(s, d, o) }));
   } else {
-    const flags = [...['--flown', '--no-pits', '--no-twists', '--min', '--no-down'].filter(has), ...(has('--room') ? ['--room', String(arg('--room', 320))] : [])];
+    const flags = [...['--flown', '--no-pits', '--no-twists', '--min', '--no-down', '--all-pits'].filter(has), ...(has('--room') ? ['--room', String(arg('--room', 320))] : [])];
     const per = Math.ceil(N / par);
     const rows: Any[] = [];
     if (par > 1) {

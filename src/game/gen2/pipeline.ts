@@ -1817,7 +1817,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
         gaps.push(g0);
         // (or by the stage's brief, GraphBrief.pits: every section pit past the row's clearStart, with no mark on the section)
-        const byBrief = M.graphs?.briefs?.[budget.id]?.pits === 'hurt' && !!g.pit && !g.water && !g.putBack && !g.back && g0.x0 >= Math.max(SPAWN_X + (M.hurtFloor?.clearStart ?? 0), hurtFrom);
+        const bp = M.graphs?.briefs?.[budget.id]?.pits, byBrief = (bp === 'hurt' || (bp === 'lesson' && !!M.hurtFloor && (tpl.teaches === M.hurtFloor.lesson || !!tpl.uses?.includes(M.hurtFloor.lesson)))) && !!g.pit && !g.water && !g.putBack && !g.back && g0.x0 >= Math.max(SPAWN_X + (M.hurtFloor?.clearStart ?? 0), hurtFrom);
         if (g.hurt || byBrief) {
           // (a hollow, a place marked `hurt`: the world's hurt floor, ONE marked piece at its row's depth under the lower lip, wall to wall,
           // no steps out, the banks either side reaching down to it; the zone over it, lip to lip, carries the floor's top as its hurt line.
