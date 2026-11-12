@@ -50,6 +50,10 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
 ## The team
 - Story keeper (permanent): session_019iachLiuwNTAZUBSJWUmR3. Owns story, Dot, player text; reviewed the map, the swaps, the creatures.
   Its approved lines for coming packets: reference/packets/2026-11-12/STORY-LINES.md.
+- RUNNING since 11:03 PM: EN-W (Fable, session_01FhBbYLceMpXDYKrR93Htkd, t-engine-wire on t-engine-predators, stop 12:05 AM): merge
+  library in, paint the thorn bed, count 1-2's double, the real 120-roll 1-2 number, then the clock on the fixed step. AS-2 (Opus,
+  session_01FhBbYMEeJcQCZAxBMhq2GW, t-assets-art82, stop 12:15 AM): Matt's art setting applied + every image measured against its
+  original, dark images exempt, a check page for Matt. Retire both when they report (verify ls-remote first).
 - Running: EN-F (above) to 1:00 AM; retire it when it reports (verify ls-remote first).
 - Everyone else retired tonight, branches verified. Next helpers start fresh from their role card + this note + a packet.
 
