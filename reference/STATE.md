@@ -569,3 +569,6 @@ lines); Matt sees them in the release.
   0.9.7 (when testers switch to 1-3, R-165.157): clear the original sheet's Sessions rows 2+ (keep the header) in "Sloths control tests"
   (id 1JnINRwlPz-tM1fLXRz6DRajKHD05RxYRRiEau4eDGtk). Drive reports canEdit=false on the original for this connection: if the clear is
   refused, Matt clears it himself (select rows 2+, delete).
+- 2026-11-12 2:43 PM ET, Matt: "we're going to have to accept not everybody's going to be able to finish every level and just make some
+  concessions there. If 3 out of 40, that's a really good percentage." Ruling: a skill fail rate like this is accepted (difficulty);
+  a SOFTLOCK (a state with no way to clear a needed snake except restarting) is still a blocker. P13 confirms the 3 kid strands are skill.
