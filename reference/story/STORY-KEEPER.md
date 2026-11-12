@@ -369,3 +369,15 @@ guards.**
   hold still, the way Dot hid from the soldiers."; 3-2 "Something is watching. Stay up in the roots and keep quiet."; 1-8 "Race the long
   branch before it gives way."
 - Fix: w5_keepsake "...Slow down." becomes "...Look closely." (no "slow" in player text).
+
+**Creature story brief (Matt's request through the new lead, 9:19 PM ET):** sent DIRECTLY to the creature builder
+(session_01FhBbYK8drdbySFkib7VkUv, Fable) at about 9:25 PM ET. It covers:
+- Pokey and his flaw, and the stillness and let-go theme.
+- The Iron Pact collars: only the guardians wear them; ordinary creatures are not evil.
+- Who is with Pokey, and each world's feel.
+- Every guardian's voice, and the creatures with story weight. The Prowler is OUTWAITED, which is canon stillness. The W5 spiders sense
+  touch. The Drake's gaze remembers.
+- The hard rules: nothing eaten, carried off, burned or killed; tells before bites; no skulls; Dot never points; no slow/late/hurry.
+- 2-3 ways to beat each creature.
+
+I review its sheet when the lead sends it (about 10 PM ET).
