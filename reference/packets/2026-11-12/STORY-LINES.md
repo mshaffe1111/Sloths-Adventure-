@@ -376,3 +376,6 @@ one-page OUR STORY, exactly as written in the FINAL layout section above. Waitin
 - This needs no per-release truth gate: every line is true in 0.9.6 and stays true.
 - "Many ideas of our own" claims ownership, not uniqueness. We never say "found nowhere else", which can't be verified.
 - The Dot line is kept because it is specific, warm and already true (the help ladder ships in 0.9.6).
+
+**APPROVED by Matt (4:10 PM ET): the broad "What's ours" above.** About is now a LIVING page. The running "ours" list lives in
+reference/story/ABOUT-OURS.md. The keeper proposes an update to "What's ours" when a world is finished, and before launch.

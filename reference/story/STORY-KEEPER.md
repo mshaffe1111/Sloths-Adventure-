@@ -407,3 +407,6 @@ STORY-LINES 11-12) carries this fact.
   closing "It's still a little project, just for fun. It just got bigger.";
 - Inspired by is its own page, waiting for Matt's games.
 Keep these pages true as the game changes: a line that stops being true gets rewritten by the keeper.
+
+**New duty (Matt, 11-12): About is a living page.** Keep reference/story/ABOUT-OURS.md current as highlights ship. Propose an update to
+"What's ours" when a world is finished, and before launch. Only claim what is in the shipped game.
