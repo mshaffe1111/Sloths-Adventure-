@@ -53,7 +53,7 @@ test('the thorn bed lies only under the chain beats: never in the twist, the arr
   });
 });
 
-test("every chain inside chain.md §3's bands: cap to cap by the step, stumps 120 | 160 (the lesson, again and up 160 on both), caps per chain 2-5 | 2-3", () => {
+test("every chain inside chain.md §3's bands: cap to cap by the step, stumps 120 | 160 (the lesson and again 160 on both), caps per chain 2-5 | 2-3", () => {
   const band = (dy: number) => (dy > 45 ? [185, 200] : dy > 6 ? [195, 210] : dy < -6 ? [215, 225] : [205, 220]);
   each((st, d, s) => {
     // (a chain's caps are the ones on stumps, 200 px or narrower; a floor mushroom stands on its bank, the entry, chain.md §2 f)
@@ -69,7 +69,7 @@ test("every chain inside chain.md §3's bands: cap to cap by the step, stumps 12
       assert.ok(S >= lo && S <= hi, `${d} seed ${s}: caps ${Math.round(S)} px apart at x ${Math.round(a.x)} (step ${Math.round(dy)}: ${lo}-${hi})`);
     }
     for (const sec of st.gen2.sections.filter((q: Any) => q.template.startsWith('w1-12-'))) {
-      const wide = d === 'easy' || ['w1-12-lesson', 'w1-12-again', 'w1-12-up'].includes(sec.template);
+      const wide = d === 'easy' || ['w1-12-lesson', 'w1-12-again'].includes(sec.template);
       for (const c of caps.filter((p: Any) => p.x > sec.x0 && p.x < sec.x1)) assert.equal(Math.round(under(c).width), wide ? 160 : 120, `${d} seed ${s}: ${sec.template}'s stump at x ${Math.round(c.x)}`);
     }
   });

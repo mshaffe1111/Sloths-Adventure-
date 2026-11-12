@@ -57,9 +57,9 @@ const hump = (key: string, on: string, at: R2, h: R2 = [50, 56]): SectionPiece =
 /** chain.md §3, cap centre to cap centre by the step (+ up), laid inside each band: level 205-220, up 24-36 198-206, up 54-66 185-200
  *  (laid 188-196), down 24-36 216-224 */
 const sOf = (st: number): R2 => (st > 45 ? [188, 196] : st > 6 ? [198, 206] : st < -6 ? [216, 224] : [208, 216]);
-/** stumps under the caps: Normal's 120 (chain.md 110-130), Easy's 160 (150-170). The lesson, again and the petals-go-up lay Easy's
- *  160 on Normal too (the lead, 11-12: the bite is taught before it is tested; chain.md §2 d: the clean band does not move with the
- *  width, only what a miss costs) */
+/** stumps under the caps: Normal's 120 (chain.md 110-130), Easy's 160 (150-170). The lesson and again lay Easy's 160 on Normal too
+ *  (the lead, 11-12: the bite is taught before it is tested; chain.md §2 d: the clean band does not move with the width, only what a
+ *  miss costs); the petals going up is Normal's 120 from 11-12 (its caps are their stump's width, and 160 px caps were out of scale) */
 const N = 120, E = 160;
 /** a cap the width of its stump: from the petals going up on, Normal (the lead's ruling A, 11-12) lays each cap over the thorns as
  *  wide as the stump it stands on, so no bare wood is left beside it and the caps are his only footing over a thorn bed: the mushrooms
@@ -159,13 +159,15 @@ export const BEATS_12: SectionTemplate[] = [
   // [U] the petals go up: caps each 54-66 px over the last onto a high bank level with the last stump (+180 | +120), a root on it, two
   // root steps back down (no line: main's "The petals go up" is cut in the new look)
   brick({ id: 'w1-12-up', name: 'the petals go up: a stair of caps', jobs: ['climb'], content: 'climb', difficulty: 4, thorns: true, versions: [(() => {
-    const mk = (n: number, cw: number): Lay => {
-      const c = chain('k', null, Array(n).fill(60), E, FLOOR, cw);
+    const mk = (n: number, pw: number, cw: number): Lay => {
+      const c = chain('k', null, Array(n).fill(60), pw, FLOOR, cw);
       const h = n * 60, half: R2 = [Math.round(h / 2) - 4, Math.round(h / 2) + 4];
       return { pieces: [...c.pieces, out('z', c.last, [420, 480]), hump('zr', 'z', [0.66, 0.72], [40, 46]), led('d0', 'z', [240, 260], half), led('d1', 'd0', [240, 260], half)],
         sockets: [low('pa', 'kf', [0.15, 0.4]), low('pz', 'z', [0.4, 0.5]), low('pd0', 'd0', [0.72, 0.84], 1), low('pd1', 'd1', [0.6, 0.78])] };
     };
-    return { id: 'stair', lay: breath(mk(3, capOf(E, false)), 2), easy: breath(mk(2, capOf(E, true)), 2) };
+    // (Normal's 120 px stumps, each cap their width: 160 px caps read as giant mushrooms beside the floor one and Pokey, R-165.107, the
+    // lead 11-12; Easy keeps 160 with its wood)
+    return { id: 'stair', lay: breath(mk(3, N, capOf(N, false)), 2), easy: breath(mk(2, E, capOf(E, true)), 2) };
   })()] }),
   // [X] the long chain, the TEST: four caps on Normal's narrow stumps, dipping 27 px and rising, no wood to stop on | three on wide
   brick({ id: 'w1-12-long', name: 'the long chain: no wood to stop on', jobs: ['test'], content: 'bounce', difficulty: 6, thorns: true, versions: [{ id: 'wave', lay: breath(chainLay([-27, 0, 27, 0], N, capOf(N, false)), 2), easy: breath(chainLay([-27, 0, 27], E, capOf(E, true)), 2) }] }),
