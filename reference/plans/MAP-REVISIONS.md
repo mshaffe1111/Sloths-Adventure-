@@ -182,4 +182,12 @@ ride (World 2, World 6); the rising-lava arena for guardians.
 - Stillness never in a World 6 rescue or follower moment; in World 7 the help steps grow without words.
 - stagePlan lines to update with the twists (the story keeper writes the final words): 1-3, 1-7, 3-2, 1-8.
 - Each world's emotional beat is on the map (reference/plans/WORLD-MAP.html).
-- Pending: the story keeper's yes/no on the four order swaps (W5, W6, W7, W9).
+- **The four order swaps, APPROVED by the story keeper (8:05 PM ET), confirmed by the lead (8:10 PM ET)** so each world teaches its new
+  move by about stage 3:
+  - W5: 5-3 Caught in Silk and 5-5 Closing Orchids swap; the halfway pouch scene stays at slot 5; the tally marks travel with Caught in Silk.
+  - W6: swimming taught in 6-2 Flat Water, first in a still, empty pool, then the ripple water; Dot teaches it before she leaves at 6-6;
+    the dive stays in 6-7.
+  - W7: 7-2 Stone Sentries and 7-5 Brown Vines swap; Meeca's World 7 note stays at slot 2; its finds hint is rewritten by the story keeper.
+  - W9: 9-2 Vent Riding and 9-5 Rising Heat swap; Dot's leaf line moves with Vent Riding; the note stays at slot 2; the story keeper
+    writes a new 9-5 line and the W9 hint.
+  - stagePlan.ts is reordered when each world is laid (data, by the builder), with the story keeper's lines.

@@ -107,7 +107,7 @@ section{margin-top:28px}
   </nav>
 
   <section id="v-worlds">
-    <div class="sec-h"><h2>Worlds, in play order</h2><p>Arrows: → right · ← left · ↑ up · ↓ down · ⇄ out and back. Dashed tiles: a move proposed by the lead, pending the story keeper.</p></div>
+    <div class="sec-h"><h2>Worlds, in play order</h2><p>Arrows: → right · ← left · ↑ up · ↓ down · ⇄ out and back. Dashed tiles: stages the lead moved so each world teaches its new move by about stage 3 (story keeper approved).</p></div>
     <div id="worlds"></div>
   </section>
 
@@ -210,7 +210,7 @@ const W=[
  {n:"Orchid Sanctuary",beat:'Temptation: the loveliest place is a trap; Meeca fought back here for one night; the Queen is lonely.',with:'Dot',act:"Act II",move:"Lead on a vine",tempo:"Hurry",
   rules:["The clock: orchids close","Silk that hums: touch a thread and spiders come","Don't stop: idle with no threat near and he gets drowsy; a cold dew drip wakes him (no eating in the sanctuary)"],
   hidden:"The Wilted Garden: blooms open where you step (plus Meeca's stage, built)",boss:"Tarantula Queen",
-  flag:"<b>Lead's proposal, pending the story keeper:</b> the vine leash arrives at 5-5, too late for the world to build on it. Swap 5-3 and 5-5 so it is taught third.",
+  flag:"<b>Reordered (story keeper approved 11-11):</b> the vine leash arrives at 5-5, too late for the world to build on it. Swap 5-3 and 5-5 so it is taught third. The halfway pouch scene stays at slot 5.",
   s:[["5-1","The Loveliest Place","sprint","→","Don't stop: he gets drowsy and sits; a tap or a cold dew drip wakes him",["drowsy"],"don't stop"],
      ["5-2","Don't Sit","stealth","→","Keep moving and stay hidden: cover moves with the breeze; here, freezing doesn't hide him",["drowsy","still"]],
      ["5-3","Caught in Silk","rescue","→","The vine leash: freed creatures tie on; tie off to a post",["leash","follow"],"lead on a vine",0,1],
@@ -223,9 +223,9 @@ const W=[
  {n:"Deep Mangrove",beat:'Loss: impatience costs a night, Dot leaves, and a small new light arrives (Flicker).',with:'Dot to 6-5, then Flicker (silent) from 6-6',act:"Act II",move:"Swim and dive",tempo:"Patience: wait for the tide",
   rules:["The tide raises and lowers the whole stage","Water is a place, not a pit","Food chain: lure hunters to what hunts them"],
   hidden:"The Sunken Hollow: dive to find it",boss:"Marsh Reaver",
-  flag:"<b>Lead's proposal, pending the story keeper:</b> swimming arrives at 6-7 of 9. Teach swimming in 6-2 (cross the flat water and watch the ripples) and keep the deep dive for 6-7's root well.",
+  flag:"<b>Reordered (story keeper approved 11-11):</b> swimming arrives at 6-7 of 9. Swimming is now taught in 6-2, in a still, empty pool first, before Dot leaves at 6-6. The deep dive stays in 6-7.",
   s:[["6-1","The Root Maze","vine_runner","→","High roots to swing, low roots to hang under",["swing","hang"]],
-     ["6-2","Flat Water","stealth","→","Swim across; ripples show what swims below, so cross when it's far",["water","still"],"swim",0,1],
+     ["6-2","Flat Water","stealth","→","Learn to swim in a still pool with Dot; then ripples show what swims below, so cross when it's far",["water","still"],"swim",0,1],
      ["6-3","Root to Root","vine_runner","→","The tide changes which roots you can reach",["swing","clock","water"],"the tide"],
      ["6-4","Low Tide","sprint","→","The tide comes in behind you",["water","clock"]],
      ["6-5","The Spear","purge","→","Lure the hunters to the caiman's water; never eaten",["lure","water"],"food chain"],
@@ -236,7 +236,7 @@ const W=[
  {n:"Ancient Ruins",beat:'Alone: silence, ten chairs and an eleventh; the photograph shows who the General is.',with:'Flicker (silent): Pokey is alone; help steps grow without words',act:"Act II",move:"Break and push: the punch breaks cracked stone",tempo:"Hurry",
   rules:["Floors fall away","The temple is a machine: switches, timed doors, a find that changes the room","Alone: no Dot"],
   hidden:"Under the Ruins (plus Thornbark, built)",boss:"Stone Idol Golem",
-  flag:"<b>Lead's proposal, pending the story keeper:</b> breaking stone arrives at 7-5. Swap 7-2 and 7-5 so it's taught second.",
+  flag:"<b>Reordered (story keeper approved 11-11):</b> breaking stone arrives at 7-5. Swap 7-2 and 7-5 so it's taught second.",
   s:[["7-1","The Open Door","sprint","→","Cracked tiles fall if you stand still",["crumble"],"falling floors"],
      ["7-2","Stone Sentries","purge","→","Sentries can't be punched: break the cracked pillar onto them",["break"],"punch breaks stone",0,1],
      ["7-3","Ten Chairs","relic_hunt","→","Each relic turns a chair and opens the courtyard",["machine"],"the temple machine"],
@@ -261,7 +261,7 @@ const W=[
  {n:"Volcanic Jungle",beat:"Resolve: Dot's slip, a lonely Drake, Pell wants to be found; the night before the mountain.",with:'Dot',act:"Act III",move:"Hot-air ride: open the leaf over a vent",tempo:"Hurry",
   rules:["Heat: hot rock warms you; shade cools you","Lava","The Drake's gaze sweeps and remembers you"],
   hidden:"Up the Vent: a long ride up a vent shaft",boss:"Magma Drake",
-  flag:"<b>Lead's proposal, pending the story keeper:</b> the vent ride arrives at 9-5. Swap 9-2 and 9-5: ride the vents early, and the rising lava later becomes an escape on them.",
+  flag:"<b>Reordered (story keeper approved 11-11):</b> the vent ride arrives at 9-5. Swap 9-2 and 9-5: ride the vents early, and the rising lava later becomes an escape on them.",
   s:[["9-1","Pepper Air","sprint","→","Heat: stand on hot rock and you warm; shade cools",["heat"],"heat"],
      ["9-2","Vent Riding","sprint","↑","Open the leaf over vents and rise",["dir","ride","glide"],"hot-air ride",0,1],
      ["9-3","Ember Canopy","vine_runner","→","Vines smoulder and drop after you fling off",["fling","crumble"]],
@@ -303,7 +303,7 @@ const max=Math.max(...Object.values(count));
 document.getElementById("pieces").innerHTML=Object.entries(count).sort((a,b)=>b[1]-a[1]).map(([k,n])=>{const p=PIECES[k],st=STATUS[p.s];return `<div class="piece"><div class="nm">${p.n}<small>${p.d} · ${st.label}</small></div><div class="bar"><i style="width:${(n/max*100).toFixed(1)}%;background:var(${st.c})"></i></div><div class="n">${n}</div></div>`}).join("");
 // ladder
 const firstAt=[1,1,2,1,3,2,2,3,2,3];
-document.getElementById("ladder").innerHTML=W.map((w,i)=>{const late={4:5,5:7,6:5,8:5}[i];return `<div class="rung${late?" late":""}"><div class="w">World ${i+1}</div><div class="mv">${w.move.split(":")[0]}</div><div class="at">${late?`Was taught at stage ${late}; proposed: stage ${firstAt[i]}`:`Taught at stage ${firstAt[i]}`}</div></div>`}).join("");
+document.getElementById("ladder").innerHTML=W.map((w,i)=>{const late={4:5,5:7,6:5,8:5}[i];return `<div class="rung${late?" late":""}"><div class="w">World ${i+1}</div><div class="mv">${w.move.split(":")[0]}</div><div class="at">${late?`Taught at stage ${firstAt[i]} (moved up from stage ${late})`:`Taught at stage ${firstAt[i]}`}</div></div>`}).join("");
 // order
 const ORDER=[
  ["Release 0.9.6: the new 1-1","Live 11-11 7:19 PM ET."],
