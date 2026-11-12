@@ -45,6 +45,7 @@ each existing level with the moves the engine already has (time one level first)
 | EN-Y (retired 9:08 PM, $55.80) | - | t-engine-yield@729f249d | DONE: clean 57/55%, listable 33%; travel mode; any listed stage; hurt floor (not drawn) + GraphBrief.pits; builtOnArcs trap fixed; pickups-by-brief designed for Opus (REPORT.md) |
 | EN-C one clock for every timer (A14), Fable high, hard stop 9:35 PM ET | session_01FhBbYN3rCdHxz3aZnyRFhn | t-engine-clock (on t-engine-yield@347d50fa) | started 8:30 PM (Matt: one more hour of Fable) |
 | EN-F fix the known audit findings A + C, game-wide first (Opus xhigh), hard stop 1:00 AM ET | session_01FhBbYN4KUG5VQtHUYKEicm | t-engine-fixes (on t-engine-guards@b3e8db15) | started 8:40 PM |
+| EN-L the piece library: pickups by brief, sections by need, bricks across worlds, 1-2 proof (Fable high), hard stop 10:40 PM ET | session_01FhBbYLNw7A3EGoxH1QwEjR | t-engine-library (on t-engine-yield@729f249d) | started 9:10 PM |
 | EN-G (retired 6:48 PM) | - | t-engine-guards@b3e8db15 | DONE 4/4: .116, .117, the generality gate (27 entries, 38 literals known); waits for the integration review |
 | 1-1 follow-up | session_01FhBbYLVQnNER5KWRX5LQrf | t-engine-11-followup@f24af141+ | told to push and end; retire |
 Parked, saved, not merged: t-engine-seedchunks@889302163 (R-165.112; its Critic saw roadmapcheck failing on the head: fix at merge),
