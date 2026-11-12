@@ -8,6 +8,7 @@ import { loadBadgeStore } from '../game/badgeStore.ts';
 import { withWorldPlate } from '../game/plateData.ts';
 import { drawStoryScene, preloadSceneCards, preloadScenePhotos, preloadScenePlates, releaseStoryArt, SCENE_H, warmStoryCast } from '../game/storyArt.ts';
 import { sound } from '../game/audio.ts';
+import { buzz } from '../game/haptics.ts';
 import { stingDue } from '../audio/scenes.ts';
 import { shownFor, typeSchedule } from '../game/storyTyping.ts';
 import { directScene } from '../game/storyDirect.ts';
@@ -287,11 +288,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     if (phase === 'reach') {
       const boom = window.setTimeout(() => {
         sound.storySting('blow');
-        try {
-          navigator.vibrate?.(140);
-        } catch {
-          /* no vibration here */
-        }
+        buzz('thunder');
       }, LETGO.breakMs);
       const done = window.setTimeout(() => setIdx((i) => Math.min(panels.length - 1, i + 1)), LETGO.breakMs + LETGO.afterBreakMs);
       return () => {
