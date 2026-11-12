@@ -86,3 +86,14 @@ have it go back through 1-1... decide what we're doing with 1-2... it could take
 4. **Tokens down, quality up:** quality moves from AI reviewers (tokens) to the machine checks every stage already runs (bots, fairness
    verdicts, the stage lock: compute, not tokens) plus Matt playing the test link plus the lead looking at stills. One reviewer sweep a
    day. Full gates once per release. Short sessions. Fable only on the hardest engine problem of the day.
+
+## WebGL joins the plan (Matt, 11-11 7:52 PM ET; the lead reversed its "not now")
+Matt: low-end phones drop to about 20 fps (the test data the bots came from); "the WebGL change was going to get pieced in as the game
+was being built." ROADMAP R-3: the APK runs under 20 fps; Play ranks on frame rate. So it is a launch problem, and R-3's staged plan is
+the safe way (no rewrite): a WebGL lane beside level laying, from 11-12, on Opus:
+1. R-150.4 / R-150.1 the measuring stick first (real frame numbers, so each stage proves its gain).
+2. R-3.1 Stage 0: PixiJS v8 pinned, one WebGL 2 canvas under the 2D canvas, the 30 fps loop driving both, context loss handled.
+   **Loaded as its own chunk on demand, never in the main JS file** (the main file is at its limit, D45).
+3. R-3.3 the ground as textures; R-3.4 Pokey and creatures as atlases; R-3.5 props and particles batched. Each lands only with its
+   measured gain, upright and sideways, and the stage lock unchanged. R-3.12 (sheets over 4096 px) before the atlases.
+Roadmap hours (no history): about 13 h for stages 0-4 (range 13-25 h).
