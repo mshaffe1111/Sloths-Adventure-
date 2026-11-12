@@ -185,6 +185,7 @@ import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
+import { bounceAuraBox } from './bounceArt.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { gpuProfOn, profBegin, profEnd, profMark } from './gpuProf.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
@@ -6572,13 +6573,16 @@ export class GameEngine {
     if (this.proto?.bankWall)
       drawEarthWall(ctx, this.proto.bankWall, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
 
-    // the bounce mushrooms wear the gold rim too (they sit in the scenery's colours)
+    // the bounce mushrooms wear the gold rim too (they sit in the scenery's colours): about the painted cap itself, and none while the
+    // cap is not in (a rim over nothing read as an empty pickup ring, F12: bounceArt.ts bounceAuraBox)
     for (const pl of this.platforms) {
       if (pl.type !== 'bouncy' || pl.broken) continue;
       if (pl.x + pl.width < this.camera.x - 60 || pl.x > this.camera.x + this.camera.viewportWidth + 60) continue;
+      const box = bounceAuraBox(pl, world.id);
+      if (!box) continue;
       ctx.save();
-      ctx.translate(pl.x + pl.width / 2, pl.y + 2);
-      drawAura(ctx, 'take', world.id, pl.width * 0.55, 30, this.gameTime, pl.x * 0.013);
+      ctx.translate(box.cx, box.cy);
+      drawAura(ctx, 'take', world.id, box.rx, box.ry, this.gameTime, pl.x * 0.013);
       ctx.restore();
     }
 
