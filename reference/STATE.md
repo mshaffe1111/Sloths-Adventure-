@@ -628,30 +628,34 @@ lines); Matt sees them in the release.
   t-14-design, packet D14.md) designs 1-4 from the three, design only; build waits for the engine pieces + Matt's feel test. Idea
   helpers retired.
 - 2026-11-12 6:19 PM ET: RF3 DONE and retired (t-render-3@18afc7b0: hollow painter fitted walls + 38 px mirror fix; lock unchanged). R-165.163 buildcheck red (1-1 build p95 > 150 ms budget) blocks 0.9.7; INT-2 measures which merge caused it.
-- 2026-11-12 6:37 PM ET, Matt: "Do tropical rainforests have pears?" then "we have squirrels in there... Maybe flying squirrels." R-165.164
+- 2026-11-12 6:33 PM ET, Matt: "Do tropical rainforests have pears?" then "we have squirrels in there... Maybe flying squirrels." R-165.164
   (nature check). Facts: pears are temperate, not rainforest; World 1's tree squirrels are real (red-tailed and variegated squirrels live
   beside sloths in Central America); flying squirrels are NOT in the lowland rainforest (a few in Mexico/Honduras mountain pine forest;
   the big gliders are Asian). Lead proposed the story keeper checks each level's plants/animals; waits on Matt. Check-in 6:29: INT-2 merged
   t-12-design (864314c1) + W1C report (90a54102), merging D12's t-12-note (f887735e); F13's lesson card still PASSED the lead's look
   (keeper's two lines, one card, Skip, both ways, nothing covered); D12 asked for one still of the note in its hollow before 7 PM.
-- 2026-11-12 6:41 PM ET: D12's t-12-note PASSED the lead's look (stills 8a/8b both ways: the Keeper's Bell on the hollow floor past the root,
+- 2026-11-12 6:35 PM ET: D12's t-12-note PASSED the lead's look (stills 8a/8b both ways: the Keeper's Bell on the hollow floor past the root,
   roots line back). D12's last head t-12-design@f887735e (cc0def2a + its turnover note); INT-2 merges it. Ruled: the coati + flowering bush
   on the twist's far bank are World 1 dressing (w1Coati), not cast: intended. Nit R-165.165 (find text "against a root" beside a stone
   ledge) for the story keeper tomorrow. D12 done; retire after ls-remote shows f887735e.
-- 2026-11-12 6:44 PM ET: D12's last head t-12-design@6d2cb506 (defaults stills of the note; PASS). Seen in it: on a FRESH save, 1-2 shows
+- 2026-11-12 6:36 PM ET: D12's last head t-12-design@6d2cb506 (defaults stills of the note; PASS). Seen in it: on a FRESH save, 1-2 shows
   1-1's first coach line ("Run, then <flick> to jump the gap") because 1-1 was never played. Tonight's test-link judging MUST open 1-3 and
   1-2 on a fresh save and judge what Dot says first (a wrong-place coach line is a named rough spot or a fix); the 1-3-only testers'
   link (R-165.157) needs its own first-play coaching plan tomorrow.
-- 2026-11-12 6:47 PM ET, Matt (6:36): "let the story designer do the research before each level just to make sure." R-165.164 is now a
+- 2026-11-12 6:37 PM ET, Matt (6:36): "let the story designer do the research before each level just to make sure." R-165.164 is now a
   standing duty: the story keeper's nature check before each level's design is judged (TEAM.md, story keeper "Integrated every time");
   the design doc carries a "Nature check" section; level.md step 0 gets the line when level.md lands. First use: 1-4 (D14's doc).
-- 2026-11-12 6:49 PM ET: D12 retired (archived after ls-remote t-12-design@6d2cb506). D12's whole session cost $86.18 (LEVEL-LOG 1-2 row).
-- 2026-11-12 6:52 PM ET: the story keeper's first nature check (on what's built): World 1's gliding golden snake is Asian (Chrysopelea);
+- 2026-11-12 6:37 PM ET: D12 retired (archived after ls-remote t-12-design@6d2cb506). D12's whole session cost $86.18 (LEVEL-LOG 1-2 row).
+- 2026-11-12 6:38 PM ET: the story keeper's first nature check (on what's built): World 1's gliding golden snake is Asian (Chrysopelea);
   true swap = the parrot snake (green; mouth-wide warning; drops to a lower branch and slips away) -> R-165.166, Matt's call (asked now;
   conflicts with his R-165.141 "glides"); W5's orchid mantis is Asian -> dead-leaf mantis, R-165.167 (later); its "Inspired by" line
   corrected. Rest of the built cast checks out Neotropical. Tonight's link ships the glide as is, named.
-- 2026-11-12 6:59 PM ET, Matt on R-165.166: asked whether a yellow rainforest snake exists (yes: the eyelash viper's golden form, coiled on
+- 2026-11-12 6:44 PM ET, Matt on R-165.166: asked whether a yellow rainforest snake exists (yes: the eyelash viper's golden form, coiled on
   branches like ours), then ruled: "keep it the way that it is... As long as we have a yellow snake and there's a yellow snake that exists,
   I say we just change the name... It's a video game." RENAME only (story keeper picks the name, every player-facing mention), the look and
   the glide stay (R-165.141/.148 unchanged). The nature check's bar, written in TEAM.md: the kind and look must be real to the place;
   behaviour may be storybook.
+- 2026-11-12 6:45 PM ET: D30 REPEAT, owned: the lead's STATE lines 6:35-6:44 PM were typed up to 15 min ahead (and D14's packet said 6:25
+  for a 6:17 commit); all corrected from commit times; messages to D12/story keeper carried the wrong clock. Root cause: hand-typed
+  times in heredocs. Countermeasure: every ledger line stamped by `date` inside the writing command; gate ordered R-165.168. D14 DONE
+  (t-14-design@1b88b431): reference/design/1-4.md, 60 lines, to judge now.

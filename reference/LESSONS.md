@@ -51,7 +51,7 @@ that do the best job get the follow-on work.
 - Show first: any big look change goes to Matt as stills or a mock-up before it is built.
 - Know which link is which before telling anyone where to play: the testers play the LIVE site + #ctest; Matt's Claude page (EnK5) is his alone and doesn't record. (D28)
 - No PR until every gate is green on the exact head; after any proven-seed-list rebuild, run every test that pins a roll or a seed. (D29)
-- A time in a file or report is pasted from `date` in the same step, never typed, for helpers as well as the lead. (D30)
+- A time in a file or report is pasted from `date` in the same step, never typed, for helpers as well as the lead. (D30) REPEAT 11-12 6:35-6:45 PM ET: the lead typed ledger and message times up to 15 min ahead (and a packet 8 min ahead, D14 caught it). Countermeasure: the lead writes every ledger line through a command that stamps `$(TZ=America/New_York date +"%-I:%M %p")` itself (no hand-typed clock in a heredoc), and a gate is ordered (R-165.168: a STATE/handoff/packet line stamped later than its own commit fails).
 - Run a new gate the way CI runs it (`CI=1 FORCE_COLOR=1`) before the PR; a gate that reads tool output strips colour codes. (D31)
 - A command in a role card, method or brief is proven against the tool's arg parsing or a dry run, and the whole document goes to a fresh Critic cold before anyone uses it. (D32)
 - Before pushing to a branch with a PR, read the PR's state. Once a PR is open, never amend or force-push its branch; after a merge, changes go on a new branch from main. (D33)

@@ -66,7 +66,7 @@ artifact on a branch.
       design doc, idea lists, cast, dressing and words) puts in front of the player and confirms each is real to where that world is set
       (World 1: Central/South American lowland rainforest). Anything wrong (a pear, a flying squirrel) is named with a true swap. The
       level's design doc carries the result as a short "Nature check" section; the lead does not judge a design without it.
-      The bar (Matt, 11-12 6:58 PM ET: "It's not going to be used for science... It's good enough. It's a video game."): the KIND of
+      The bar (Matt, 11-12 6:44 PM ET: "It's not going to be used for science... It's good enough. It's a video game."): the KIND of
       plant or animal and its look must really exist there (a real yellow rainforest snake, yes; a pear, no); how it behaves may be a
       storybook touch (the snake still glides). Flag a wrong species or fruit; don't flag a playful behaviour.
     - It gets the release notes and the STATE.md decisions after each release, so its knowledge stays current.
