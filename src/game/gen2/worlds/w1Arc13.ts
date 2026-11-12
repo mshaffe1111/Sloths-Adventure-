@@ -99,10 +99,12 @@ function row(us: Unit[]): { pieces: SectionPiece[]; sockets: Socket[] } {
   const pieces: SectionPiece[] = [], sockets: Socket[] = [];
   let prev: string | null = null, rise = false;
   us.forEach((u, j) => {
-    const a = `u${j}a`;
+    // (keys are joined with +, never a template with a letter each side of the number: tools/art/artuse.mjs reads a template as a
+    //  pattern of art names, and u..p hid a real unused frame)
+    const k = `u${j}`, a = k + 'a';
     pieces.push(led(a, prev, LEDGE, rise ? UP : [0, 0]));
-    sockets.push(low(`u${j}p`, a, [0.3, 0.6]));
-    const c = core(`u${j}`, a, u);
+    sockets.push(low(k + 'p', a, [0.3, 0.6]));
+    const c = core(k, a, u);
     pieces.push(...c.pieces); sockets.push(...c.sockets); prev = c.last; rise = c.rise;
   });
   pieces.push(led('z', prev, LEDGE, rise ? UP : [0, 0]));
@@ -170,33 +172,33 @@ const said = (v: V, id: string): V => {
 export const ARC_13: SectionTemplate[] = [
   // [T] beat 1, the lesson: ledges no animal can be laid on, a flag, Dot's line, the vine on the short ledge, then the branch, LEVEL
   // with it, where the first snake of the stage SLEEPS under the first hive on both settings
-  brick({ id: 'lib-13-lesson', name: 'the lesson: the vine, the hive and a sleeping snake', jobs: ['teach'], difficulty: 2, teaches: 'traps', versions: [(() => {
+  brick({ id: 'w1-13-lesson', name: 'the lesson: the vine, the hive and a sleeping snake', jobs: ['teach'], difficulty: 2, teaches: 'traps', versions: [(() => {
     const c = core('t', 'b', { load: 'trap-hive', asleep: true, level: true });
     const pieces: SectionPiece[] = [led('a', null, LEDGE), led('b', 'a', LEDGE), ...c.pieces, led('z', c.last, LEDGE)];
     const sockets: Socket[] = [{ id: 'flag', role: 'flag', on: 'a', t: 0.5 }, { id: 'tip', role: 'tip', on: 'a', t: 0.6, allow: ['traps'] }, { id: 'tip2', role: 'tip', on: 'b', t: 0.2, allow: ['traps.then'] }, ...c.sockets, low('pa', 'a', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)];
     return { id: 'asleep-under-the-hive', lay: breath({ pieces, sockets }, 4, true) };
   })()] }),
   // [P] beat 2, again, awake: one branch, a snake pacing under a hive
-  brick({ id: 'lib-13-again', name: 'again, awake: a snake pacing under a hive', jobs: ['practise'], difficulty: 3, versions: [{ id: 'awake-hive', lay: breath(row([HIVE]), 4, true) }] }),
+  brick({ id: 'w1-13-again', name: 'again, awake: a snake pacing under a hive', jobs: ['practise'], difficulty: 3, versions: [{ id: 'awake-hive', lay: breath(row([HIVE]), 4, true) }] }),
   // [M] beat 3, the stone: a root stair, and at its top a snake under a stone held by a tendril tied at his feet (the second handle)
-  brick({ id: 'lib-13-stone-stair', name: 'the stone on the root stair', jobs: ['flow'], content: 'climb', difficulty: 4, versions: [
+  brick({ id: 'w1-13-stone-stair', name: 'the stone on the root stair', jobs: ['flow'], content: 'climb', difficulty: 4, versions: [
     { id: 'three-steps-stone', lay: breath(stair(3, STONE), 2), easy: breath(stair(2, STONE), 4) }, { id: 'two-steps-stone', lay: breath(stair(2, STONE), 4) },
   ] }),
   // [X] beat 5, the other way: two long bare branches and no trap. The first snake sleeps at its post (a free punch, or a vault);
   // the second backs away down its branch and is punched off the end. Easy: wider branches, and its second snake softened
-  brick({ id: 'lib-13-other-way', name: 'the other way: bare branches, no trap', jobs: ['test'], content: 'hazard', difficulty: 5, versions: [
+  brick({ id: 'w1-13-other-way', name: 'the other way: bare branches, no trap', jobs: ['test'], content: 'hazard', difficulty: 5, versions: [
     // (three: asleep, awake, asleep. The node's threat, 0.9 of the stage's, pays for exactly these)
     said(roomy('asleep-awake-asleep', [{ ...BARE, asleep: true }, BARE, { ...BARE, asleep: true }]), 'bare'),
   ] }),
   // [W] beat 7, the twist: the vine hangs on a perch, a step up BEFORE the branch: he reads the room, steps up, shakes it, comes down
-  brick({ id: 'lib-13-perch', name: 'the twist: the vine up on a perch', jobs: ['twist'], content: 'climb', difficulty: 5, versions: [
+  brick({ id: 'w1-13-perch', name: 'the twist: the vine up on a perch', jobs: ['twist'], content: 'climb', difficulty: 5, versions: [
     // (and after it a calm one, asleep under the other load: the node's threat pays for an awake snake and a sleeper)
     // (Normal runs hotter from here on, the lead 11-12: both snakes awake; Easy keeps the second asleep)
     { id: 'perch-hive', lay: breath(row([{ ...HIVE, perch: true }, STONE]), 2, true), easy: breath(row([{ ...HIVE, perch: true }, { ...STONE, asleep: true }]), 2, true) },
     { id: 'perch-stone', lay: breath(row([{ ...STONE, perch: true }, HIVE]), 2, true), easy: breath(row([{ ...STONE, perch: true }, { ...HIVE, asleep: true }]), 2, true) },
   ] }),
   // [S] beat 9, the gallery: three branches, three traps (the snakes awake, asleep, asleep: the section's threat pays for all three)
-  brick({ id: 'lib-13-gallery', name: 'the snake gallery: hive, stone, hive', jobs: ['signature'], difficulty: 7, maxPerStage: 1, versions: [
+  brick({ id: 'w1-13-gallery', name: 'the snake gallery: hive, stone, hive', jobs: ['signature'], difficulty: 7, maxPerStage: 1, versions: [
     // (Normal: awake, asleep, awake, only the middle one sleeps; Easy: awake, asleep, asleep)
     { id: 'hive-stone-hive', lay: breath(row([HIVE, { ...STONE, asleep: true }, HIVE]), 4, true), easy: breath(row([HIVE, { ...STONE, asleep: true }, { ...HIVE, asleep: true }]), 4, true) },
     { id: 'stone-hive-stone', lay: breath(row([STONE, { ...HIVE, asleep: true }, STONE]), 4, true), easy: breath(row([STONE, { ...HIVE, asleep: true }, { ...STONE, asleep: true }]), 4, true) },
@@ -204,7 +206,7 @@ export const ARC_13: SectionTemplate[] = [
   // [C] beat 11, the finale: a trapped branch, an awake snake under its load; then at once a bare one, whose snake sleeps at its post
   // until he walks up (it wakes drowsy, backs down its branch, and is his to punch off the end or vault): everything learned, in one
   // breath. (The node's threat, 0.75 of the stage's, pays for one awake snake and one sleeper, not two awake)
-  brick({ id: 'lib-13-finale', name: 'the finale: a trap, then his own hands', jobs: ['combine'], content: 'hazard', difficulty: 6, versions: [
+  brick({ id: 'w1-13-finale', name: 'the finale: a trap, then his own hands', jobs: ['combine'], content: 'hazard', difficulty: 6, versions: [
     // (Normal: both awake, and a HOP between the two branches, the level's one jump that matters. Easy: flat, the bare snake asleep)
     finale('trap-then-bare', HIVE), finale('stone-then-bare', STONE),
   ] }),
