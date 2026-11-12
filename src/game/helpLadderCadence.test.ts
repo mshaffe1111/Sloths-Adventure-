@@ -5,7 +5,7 @@
 // in danger). He blinks 1.2 s after every set-back (engine.ts softFall: invincibleTimer 1.2), and blinking IS danger
 // (dotGuideWatch.ts:90 `if (v.hurt) return true`), as is over 0.3 s in the air. A player who tries again at once (he holds right, or
 // runs and jumps again: a set-back every 1.7-2.2 s) is blinking or in the air the whole time: the line never starts and the engine
-// takes it down unseen. In the browser (reference/qa-reports/INT-1-1-critic/: wait-walk.json, wait-jump.json, proof-*.png; seed 12522,
+// takes it down unseen. In the browser (reference/qa-reports/INT-1-1-critic/: wait-walk.json, wait-jump.json, proof-*.png; seed 982,
 // both settings, upright and sideways): never shown at a set-back every 2.0 s or less; shown only when he stands about 1.2 s or more
 // after each set-back. This flies the real engine at 30 fps (RealPlay, blinking as in play: `safe` off) on the real queue.
 import test from 'node:test';
@@ -19,7 +19,7 @@ import { engineGuideLine } from './dotLines.ts';
 import { DANGER } from './dotGuideWatch.ts';
 import { helpGuideLine, pushHelpLine, HELP_LINES, MOVE_LINES, RUNGS, STEP_LINE } from './helpLadder.ts';
 
-const SEED = 12522;
+const SEED = 982;
 const PIECE = 'w1-log-chain-rise';
 type Piece = { k: string; x0: number; x1: number };
 type Eng = { currentStage: { meta: { pieces: Piece[] } }; help: { count(k: string): number }; helpAsk: (o: unknown, answer: (yes: boolean) => void) => void; stop(): void };

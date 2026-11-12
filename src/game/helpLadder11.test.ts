@@ -1,4 +1,4 @@
-// The help ladder flown on 1-1 in the real engine at 30 fps (R-165.62 done-item 2; re-pinned to the re-laid 1-1, INT-1-1: seed 12522, a
+// The help ladder flown on 1-1 in the real engine at 30 fps (R-165.62 done-item 2; re-pinned to the re-laid 1-1, INT-1-1: seed 982, a
 // listed seed, whose w1-log-chain-rise drops him into a pit off its first log on both settings; s3747 is no longer a listed seed): every
 // put-back a real walk off a log into the gap (RealPlay; A1's soft fall sets him back). Easy: Dot's move line at 3, a pad tap is a full
 // jump at 5 (the hop read before and after), the steps grow at 8 and he passes the WHOLE piece to its exit with plain jumps only.
@@ -18,7 +18,7 @@ import { MOVE_LINES, STEP_LINE, STEP_CUT, LINE_UP_S, padFullJump } from './helpL
 import { dotHelp, setDotHelp } from './dotGuideHelp.ts';
 import type { Platform } from './types.ts';
 
-const SEED = 12522;
+const SEED = 982;
 const PIECE = 'w1-log-chain-rise';
 type Piece = { k: string; x0: number; x1: number };
 type Eng = {
