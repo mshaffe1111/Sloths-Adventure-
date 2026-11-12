@@ -109,7 +109,7 @@ import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { CastPlay, type CastHero } from './castPlay.ts';
 import { scares } from './dropTrap.ts';
-import { drawTraps } from './castArt.ts';
+import { drawTraps, warmTrapArt } from './castArt.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
 import { drawKitDecor } from './puzzleArt.ts';
 import { drawDress } from './dressArt.ts';
@@ -4406,6 +4406,8 @@ export class GameEngine {
   private startCast() {
     const world = this.currentStage.config.worldIndex;
     this.cast = this.proto?.cast ? new CastPlay(this.proto.cast, this.enemies, this.platforms, world, this.proto.bushes ?? []) : null;
+    // (its painted trap pieces load with the stage, so the first frame has them: castArt.ts)
+    if (this.cast?.traps.length) warmTrapArt();
   }
 
   /**
@@ -6928,7 +6930,7 @@ export class GameEngine {
     }
 
     // the stage's drop traps (castArt.ts): behind the animals they hang over
-    if (this.cast?.traps.length) drawTraps(ctx, this.cast.traps, this.gameTime, (x, y) => this.onScreen(x, y, 500));
+    if (this.cast?.traps.length) drawTraps(ctx, this.cast.traps, this.gameTime, (x, y) => this.onScreen(x, y, 500), this.platforms);
 
     // Render Enemies
     this.enemies.forEach((enemy) => {
