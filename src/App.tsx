@@ -58,7 +58,7 @@ import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts
 import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { READY_MS, readyBuiltStage } from './game/stageReady.ts';
-import { releasesStage, resumeAction, startLoaded, storyBefore } from './components/screenFlow.ts';
+import { keepAwake, releasesStage, resumeAction, startLoaded, storyBefore } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
 import { keepScreenOn, nativeApp } from './game/appShell.ts';
 import { ConfirmDialog } from './components/nav/Nav.tsx';
@@ -358,6 +358,8 @@ export default function App() {
     });
   };
   const [reading, setReading] = useState<string | null>(null);
+  /** 1-1's help offer holds the stage (engine.ts onHelpOffer): the phone may sleep behind it */
+  const [helpOffer, setHelpOffer] = useState(false);
   /** the find on screen was the last of the 30 */
   const [readingCompletes, setReadingCompletes] = useState(false);
   /** true while a stage is paused because a find was just picked up (so closing the reader resumes it) */
@@ -567,10 +569,11 @@ export default function App() {
     else if (screen === 'title' && !document.querySelector('.pm-scrim, .ui-scrim, .nv-scrim')) setAskLeave(true);
     else esc();
   };
-  // the Android app keeps the screen on only while a stage is played; a menu, the map or a story lets the phone sleep (KeepAwakePlugin.java)
+  // the Android app keeps the screen on only while a stage is played; a menu, the map, a story, a find's reader or the help offer lets
+  // the phone sleep (KeepAwakePlugin.java; screenFlow.ts keepAwake)
   useEffect(() => {
-    keepScreenOn(screen === 'playing');
-  }, [screen]);
+    keepScreenOn(keepAwake(screen, { reading: !!reading, offer: helpOffer }));
+  }, [screen, reading, helpOffer]);
   const androidAway = useRef<() => void>(() => {});
   androidAway.current = () => {
     if (screen === 'playing') pauseGame();
@@ -820,6 +823,7 @@ export default function App() {
 
     setCoachStep(null);
     setLesson(null);
+    setHelpOffer(false);
     // (a new stage starts with no boss: the last fight's name and bar must not show for a frame: UI-7)
     setBossInfo(null);
     setRunId((n) => n + 1);
@@ -889,6 +893,7 @@ export default function App() {
           onCinematic: (on) => setCinematic(on),
           onCoach: (st) => setCoachStep(st),
           onLesson: (id) => setLesson((l) => ({ id, n: (l?.n ?? 0) + 1 })),
+          onHelpOffer: (on) => setHelpOffer(on),
           onFind: (id) => {
             // a new note, book or keepsake: keep it, pause the stage and show it. One already in the Library just gives its line of text.
             const known = loadFinds();

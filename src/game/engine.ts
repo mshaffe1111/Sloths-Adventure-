@@ -275,6 +275,8 @@ export interface GameEngineCallbacks {
   onCoach?: (step: CoachStep) => void;
   /** a first-time lesson is due: Dot says it as one of her lines, in play (DotGuide.tsx; the stage does not stop for it) */
   onLesson?: (id: LessonId) => void;
+  /** 1-1's help offer holds the stage (true) or has let go of it (false): the app lets the phone sleep behind it */
+  onHelpOffer?: (up: boolean) => void;
   onBossUpdate?: (info: { name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string; entering?: boolean } | null) => void;
   /** Meeca's stage: its title card or its ending is up (the HUD steps aside), or not */
   onCinematic?: (on: boolean) => void;
@@ -1276,6 +1278,7 @@ export class GameEngine {
     // (and its card, if it is up or still loading: nothing else takes it off the page)
     this.helpCardDown?.();
     this.helpCardDown = null;
+    if (this.helpAsking) this.callbacks.onHelpOffer?.(false);
     this.helpAsking = null;
     this.helpDue = null;
     this.helpLine = null;
@@ -5225,6 +5228,7 @@ export class GameEngine {
     this.outerPause = false;
     this.isPaused = true;
     recorder.event('helpOffer', `shown ${a.piece.k} ${a.count}`);
+    this.callbacks.onHelpOffer?.(true);
     this.helpAsk({ reask: a.rung === 'reask', cut }, (yes) => this.answerHelp(yes));
   }
 
@@ -5233,6 +5237,7 @@ export class GameEngine {
     const h = this.helpAsking;
     if (!h || !this.help) return;
     this.helpAsking = null;
+    this.callbacks.onHelpOffer?.(false);
     recorder.event('helpOffer', `${yes ? 'yes' : 'no'} ${h.k} ${h.count}`);
     if (this.help.answer(h.k, yes)) {
       const piece = this.currentStage.meta!.pieces!.find((q) => q.k === h.k)!;

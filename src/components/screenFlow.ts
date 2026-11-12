@@ -75,3 +75,12 @@ export function storyBefore(
   if (lvl.objectiveType === 'boss_lair') return 'boss_intro';
   return null;
 }
+
+/**
+ * Whether the Android app keeps the screen on (appShell.ts keepScreenOn): only while a stage is really played. A find's reader and 1-1's
+ * help offer hold the stage with the screen still 'playing', and a phone put down on a card must sleep (PLAY-STORE-RULES §4/§6.5;
+ * audit C-12)
+ */
+export function keepAwake(screen: GameScreen, held: { reading: boolean; offer: boolean }): boolean {
+  return screen === 'playing' && !held.reading && !held.offer;
+}
