@@ -7,6 +7,9 @@ in w1.ts, then the re-fly and the seed list (item 6), which waits for the lead's
    child 56/60 N, 59/60 E. Fails by cause: 5 child rescues, every one a bot quirk on a shipped World 1 section (below), 1 child Easy
    stranded (seed 49). No softlock, no unwinnable roll: every bot that walked past a snake turned back for it once Dot said why.
    reference/qa-reports/P13/castBots-real-1-60.txt. Test-side 1-40 runs before and with the teach line: castBots-1-40-*.txt.
+   **Kid tier, separately** (seeds 1-30, castBots-real-kid-1-30.txt): Normal 24/30, Easy 29/30. Causes: 5 rescues at 50-54 px steps
+   and drops near x 27,400-27,900 and a stump (R-165.150, a real game defect: the engine lets him into a block under 50 px), and
+   stalls "a snake near" (1 N stranded seed 3 at 9/10, 1 E stranded seed 15). The kid springs 85/270 traps, never trap0.
 2. **Bots know a trap** (firsttimer.ts castPlan, from `e.cast` only): told by Dot (a line naming the vine/tendril and a blow), he walks
    to a handle whose load hangs over an uncleared animal beyond it, punches, waits for the load. castBots.test.ts (planted on 2-2):
    springs an armed trap with no hit (red without castPlan), passes a trap over nothing, never uses one he was not told of. Also: he
@@ -26,8 +29,10 @@ in w1.ts, then the re-fly and the seed list (item 6), which waits for the lead's
    tip is 232 px before trap0's handle, read after he passes it (first trap sprung: child 39/40, middle 19, expert 13, adult 0, kid 0):
    W1C's placement. Landing noise: W1C's TAUGHT.landing = World 2 (nothing wakes in 1-3). funcheck: 1-3 adds ONE breach (test-side:
    Easy "looks like an earlier stage" 8 layouts vs 6); the other 11 breaches are on the base without 1-3 (P13/funcheck-*.txt).
-6. **Seed list**: NOT recorded. seedlist.ts is general already; candidates = castBots --proven (every bot, both settings, no rescue,
-   none under 2 min): 47 of 60 today (13 out: 9 adult Easy under 2 min, 4 child). First listed seed would be 1. Waits for W1C + OK.
+6. **Seed list**: NOT recorded (waits for W1C's trap0 placement + Easy length, then the lead's OK). seedlist.ts is general already.
+   Filter: 1-1's own (seedlist.ts: clean on both settings, verdicts accepted, quiet line <= 4 s) PLUS the bots, fed by --merge:
+   castBots --proven = adult, child, middle, expert each to the shrine, goal full, no rescue, both settings, none under 2 min (item 6
+   says rolls that pass 1-5; the kid is reported apart, R-165.150). 47 of 60 today (9 adult Easy under 2 min, 4 child). First seed 1.
 7. **Stills** (P13/stills/, ft-stills.mjs: the run's own state at each moment, test-side roll seed 1 N with the teach preview): first
    snake, first trap, first punch-glide, gallery, end; upright and sideways. To be re-shot on the final head.
 
@@ -40,8 +45,11 @@ in w1.ts, then the re-fly and the seed list (item 6), which waits for the lead's
   the log behind (engine.ts 2431 `height < 50` is no wall). Shipped World 1 behaviour, not 1-3's; the child bot's rescues come from it.
 
 ## Gates (final head: see the last commit's message for the run)
-tsc clean; gen2+worlds 442/442 after the table pin; touched tests green; generality PASS (27 known); tierBots 7/7.
-seedlist 1-1 --check / lock 16 layouts (intended 1-3) / full src/game suite / fast gates: RUNNING (filled in below at the stop).
+tsc clean; gen2+worlds 442/442 after the table pin; full src/game/*.test.ts: 4 red, the SAME 4 red on origin/t-w1-creatures (sent to
+W1C: cameraLead.test.ts x3, its 1-3 snake fixture; artUse.test.ts:20 reaverAtlasData#ultprep off the allow list); mine (5-9 kid runs)
+fixed. seedlist 1-1 --check PASS 355; lock 16 layouts: 101/102 unchanged, 1-3 intended; generality PASS (27 known); tierBots 7/7;
+castBots.test 4/4; vite build, chunkcheck, artcheck, knowncheck PASS. Not run: drawcheck, clipcheck, kbdcheck, buildcheck (no
+drawing or menu touched); roadmapcheck (shallow clone).
 
 ## Method update
 Worked: fly the bots on the real roll before trusting a teach (the 1.5 s tip was only visible in the bot's Dot). Failed: my first

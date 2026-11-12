@@ -1,0 +1,7 @@
+castBots 1-3, seeds 1-30
+kid    normal PASS 24/30; time median 754.6 s (min 491.8); hits 157 lives 6 (foe:snake 163); cleared stomp 85, punch 117, trap 85, kick 12; told of traps 30/30; first trap sprung 0/30; traps sprung 85/270; turned back 227; left 91
+        fail 4: shrine rescued x1  (seeds 15,20,13,29)
+        fail 1: stranded goal 9/10  (seeds 3)
+        fail 1: shrine rescued x2  (seeds 19)
+kid    easy   PASS 29/30; time median 441.5 s (min 276.4); hits 59 lives 1 (foe:snake 60); cleared punch 64, stomp 46, trap 33, kick 3; told of traps 27/30; first trap sprung 0/30; traps sprung 33/150; turned back 117; left 94
+        fail 1: stranded goal 1/5  (seeds 15)
