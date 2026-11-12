@@ -29,6 +29,10 @@ test('a kind is refused unless it is fair: a real tell, two ways or more and nev
   bad({ habit: 'guard', beatenBy: { punch: { ends: 'stunned', seconds: 2 }, break: { ends: 'chasedOff' } }, first: 'break' }, 'guard');
   bad({ habit: 'sweep' }, 'warn');
   bad({ fears: ['eagle'] }, 'lure');
+  // the noise lure is a way too: a kind that goes to look at a noise needs only one more
+  assert.deepEqual(checkPredator(base({ hears: 4.5, beatenBy: { still: { ends: 'flees', seconds: 8 } }, first: 'still' })), []);
+  bad({ beatenBy: { still: { ends: 'flees', seconds: 8 } }, first: 'still' }, 'two ways');
+  bad({ hears: 4.5, beatenBy: { stomp: { ends: 'flees', seconds: 3 } }, first: 'stomp' }, 'only the stomp');
   assert.equal(TELL_MIN, 0.5, "R-159.1's 0.5 s warning");
 });
 

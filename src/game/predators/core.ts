@@ -51,7 +51,8 @@ export function checkPredator(def: PredatorDef): string[] {
   const real = (n: number) => Number.isFinite(n) && n > 0;
   if (!(def.tell >= TELL_MIN) || !Number.isFinite(def.tell)) say(`its tell is ${def.tell} s; no tell is under ${TELL_MIN} s`);
   const ways = Object.keys(def.beatenBy) as Way[];
-  if (ways.length < 2) say('it needs two ways or more to beat it');
+  // the noise lure (`hears`) is a way too, but it never stands in for a way that ends the fight
+  if (ways.length + (def.hears ? 1 : 0) < 2) say('it needs two ways or more to beat it');
   if (ways.every((w) => w === 'stomp')) say('it is beaten by only the stomp');
   if (!def.beatenBy[def.first]) say(`the first way its world teaches (${def.first}) is not on its list`);
   for (const w of ways) {
@@ -171,7 +172,8 @@ export function hear(def: PredatorDef, s: PredatorState, n: Sound): 'woke' | 'st
     return 'woke';
   }
   if (r.stunned) return 'stunned';
-  if (def.hears === undefined || !reaches(n, s)) return null;
+  // a sweeper listens where its eye is (its shadow is what a noise pulls away)
+  if (def.hears === undefined || !reaches(n, def.habit === 'sweep' ? { x: s.eyeX, y: n.y } : s)) return null;
   if (def.habit === 'sweep' ? s.phase !== 'hunt' : s.phase !== 'rest' && s.phase !== 'hunt') return null;
   s.drawn = true;
   s.goalX = n.x;
@@ -393,8 +395,13 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
       const hidden = !watcherSees({ seesStill: def.sight.seesStill || (def.sight.remembers && s.knows) }, true, hero.still, hero.covered);
       if (def.callsOff && (sweep ? hidden : !saw)) {
         // he went unseen before the tell ended: it calls the act off
-        ev.lostHim = true;
         s.lost = 0;
+        // an animal at its post that reared at a sloth who then went still: that is stillness beating it, there and then
+        if (!sweep && posted(def) && hero.still && beat(def, s, 'still', sc.t)) {
+          ev.beaten = 'still';
+          break;
+        }
+        ev.lostHim = true;
         enter(s, sweep || (!posted(def) && (def.speed.hunt > 0 || def.shy !== undefined)) ? 'hunt' : 'rest');
         break;
       }
