@@ -1,0 +1,374 @@
+[
+ {
+  "key": "night-sky",
+  "src": "src/assets/backdrops/w10-far.webp",
+  "title": "Night sky gradient | World 10 far layer (storm clouds, a lightning glow): where banding shows first. The sky layers themselves are already about q83, so q82 leaves them as they are.",
+  "w": 2194,
+  "h": 1302,
+  "drawn_scale": 10.02,
+  "factor": 1.0,
+  "q_est": 91,
+  "crop": [
+   0,
+   900,
+   300
+  ],
+  "phone_scale": 1.0,
+  "versions": [
+   {
+    "name": "original",
+    "file": "original",
+    "bytes": 114078,
+    "note": "as shipped",
+    "psnr": 99.0,
+    "worst_block": 0.0,
+    "w": 2194,
+    "h": 1302
+   },
+   {
+    "name": "q90",
+    "file": "original",
+    "bytes": 114078,
+    "note": "kept as is (already about q91)",
+    "psnr": 99.0,
+    "worst_block": 0.0,
+    "w": 2194,
+    "h": 1302
+   },
+   {
+    "name": "q82",
+    "file": "q82",
+    "bytes": 61660,
+    "note": "WebP q82",
+    "psnr": 48.13,
+    "worst_block": 4.2,
+    "w": 2194,
+    "h": 1302
+   },
+   {
+    "name": "q75",
+    "file": "q75",
+    "bytes": 47964,
+    "note": "WebP q75",
+    "psnr": 46.8,
+    "worst_block": 5.7,
+    "w": 2194,
+    "h": 1302
+   }
+  ],
+  "phone_px": [
+   720,
+   720
+  ]
+ },
+ {
+  "key": "fur-sheet",
+  "src": "src/assets/enemies/jaguar-anim.webp",
+  "title": "Fur-heavy animation sheet | The jaguar: where smeared fur shows first.",
+  "w": 2048,
+  "h": 2554,
+  "drawn_scale": 0.479,
+  "factor": 1.0,
+  "q_est": 81,
+  "crop": [
+   1600,
+   1100,
+   300
+  ],
+  "phone_scale": 0.479,
+  "versions": [
+   {
+    "name": "original",
+    "file": "original",
+    "bytes": 1329424,
+    "note": "as shipped",
+    "psnr": 99.0,
+    "worst_block": 0.0,
+    "w": 2048,
+    "h": 2554
+   },
+   {
+    "name": "q90",
+    "file": "original",
+    "bytes": 1329424,
+    "note": "kept as is (already about q81)",
+    "psnr": 99.0,
+    "worst_block": 0.0,
+    "w": 2048,
+    "h": 2554
+   },
+   {
+    "name": "q82",
+    "file": "original",
+    "bytes": 1329424,
+    "note": "kept as is (already about q81)",
+    "psnr": 99.0,
+    "worst_block": 0.0,
+    "w": 2048,
+    "h": 2554
+   },
+   {
+    "name": "q75",
+    "file": "q75",
+    "bytes": 1188108,
+    "note": "WebP q75",
+    "psnr": 31.43,
+    "worst_block": 10.9,
+    "w": 2048,
+    "h": 2554
+   }
+  ],
+  "phone_px": [
+   720,
+   720
+  ]
+ },
+ {
+  "key": "backdrop",
+  "src": "src/assets/backdrops/w2-near.webp",
+  "title": "Backdrop | World 2 near layer, the biggest backdrop.",
+  "w": 3416,
+  "h": 1736,
+  "drawn_scale": 7.274,
+  "factor": 1.0,
+  "q_est": 94,
+  "crop": [
+   2500,
+   1100,
+   300
+  ],
+  "phone_scale": 1.0,
+  "versions": [
+   {
+    "name": "original",
+    "file": "original",
+    "bytes": 470748,
+    "note": "as shipped",
+    "psnr": 99.0,
+    "worst_block": 0.0,
+    "w": 3416,
+    "h": 1736
+   },
+   {
+    "name": "q90",
+    "file": "q90",
+    "bytes": 377680,
+    "note": "WebP q90",
+    "psnr": 42.44,
+    "worst_block": 4.2,
+    "w": 3416,
+    "h": 1736
+   },
+   {
+    "name": "q82",
+    "file": "q82",
+    "bytes": 308662,
+    "note": "WebP q82",
+    "psnr": 39.25,
+    "worst_block": 7.6,
+    "w": 3416,
+    "h": 1736
+   },
+   {
+    "name": "q75",
+    "file": "q75",
+    "bytes": 271218,
+    "note": "WebP q75",
+    "psnr": 35.28,
+    "worst_block": 12.0,
+    "w": 3416,
+    "h": 1736
+   }
+  ],
+  "phone_px": [
+   720,
+   720
+  ]
+ },
+ {
+  "key": "story-frame",
+  "src": "src/assets/story/hd/pokey-1.webp",
+  "title": "Story picture | Pokey, story HD. It stands in for a story video frame: the game ships no video.",
+  "w": 1998,
+  "h": 1718,
+  "drawn_scale": 1.012,
+  "factor": 1.0,
+  "q_est": 89,
+  "crop": [
+   1100,
+   900,
+   300
+  ],
+  "phone_scale": 1.0,
+  "versions": [
+   {
+    "name": "original",
+    "file": "original",
+    "bytes": 597856,
+    "note": "as shipped",
+    "psnr": 99.0,
+    "worst_block": 0.0,
+    "w": 1998,
+    "h": 1718
+   },
+   {
+    "name": "q90",
+    "file": "original",
+    "bytes": 597856,
+    "note": "kept as is (already about q89)",
+    "psnr": 99.0,
+    "worst_block": 0.0,
+    "w": 1998,
+    "h": 1718
+   },
+   {
+    "name": "q82",
+    "file": "q82",
+    "bytes": 472544,
+    "note": "WebP q82",
+    "psnr": 38.13,
+    "worst_block": 6.5,
+    "w": 1998,
+    "h": 1718
+   },
+   {
+    "name": "q75",
+    "file": "q75",
+    "bytes": 408030,
+    "note": "WebP q75",
+    "psnr": 35.94,
+    "worst_block": 8.2,
+    "w": 1998,
+    "h": 1718
+   }
+  ],
+  "phone_px": [
+   720,
+   720
+  ]
+ },
+ {
+  "key": "pokey-sheet",
+  "src": "src/assets/hero/hero-standard.webp",
+  "title": "Pokey's sheet | hero-standard: dark outlines, where ringing shows first.",
+  "w": 1536,
+  "h": 1918,
+  "drawn_scale": 1.133,
+  "factor": 1.0,
+  "q_est": 79,
+  "crop": [
+   0,
+   0,
+   300
+  ],
+  "phone_scale": 1.0,
+  "versions": [
+   {
+    "name": "original",
+    "file": "original",
+    "bytes": 535262,
+    "note": "as shipped",
+    "psnr": 99.0,
+    "worst_block": 0.0,
+    "w": 1536,
+    "h": 1918
+   },
+   {
+    "name": "q90",
+    "file": "original",
+    "bytes": 535262,
+    "note": "kept as is (already about q79)",
+    "psnr": 99.0,
+    "worst_block": 0.0,
+    "w": 1536,
+    "h": 1918
+   },
+   {
+    "name": "q82",
+    "file": "original",
+    "bytes": 535262,
+    "note": "kept as is (already about q79)",
+    "psnr": 99.0,
+    "worst_block": 0.0,
+    "w": 1536,
+    "h": 1918
+   },
+   {
+    "name": "q75",
+    "file": "q75",
+    "bytes": 487754,
+    "note": "WebP q75",
+    "psnr": 37.49,
+    "worst_block": 7.1,
+    "w": 1536,
+    "h": 1918
+   }
+  ],
+  "phone_px": [
+   720,
+   720
+  ]
+ },
+ {
+  "key": "ui-icon",
+  "src": "src/assets/icons/gear.webp",
+  "title": "UI icon | The gear: small, flat colour and hard edges.",
+  "w": 192,
+  "h": 192,
+  "drawn_scale": 0.812,
+  "factor": 1.0,
+  "q_est": 91,
+  "crop": [
+   0,
+   0,
+   191
+  ],
+  "phone_scale": 0.812,
+  "versions": [
+   {
+    "name": "original",
+    "file": "original",
+    "bytes": 14918,
+    "note": "as shipped",
+    "psnr": 99.0,
+    "worst_block": 0.0,
+    "w": 192,
+    "h": 192
+   },
+   {
+    "name": "q90",
+    "file": "original",
+    "bytes": 14918,
+    "note": "kept as is (already about q91)",
+    "psnr": 99.0,
+    "worst_block": 0.0,
+    "w": 192,
+    "h": 192
+   },
+   {
+    "name": "q82",
+    "file": "q82",
+    "bytes": 11646,
+    "note": "WebP q82",
+    "psnr": 34.94,
+    "worst_block": 7.8,
+    "w": 192,
+    "h": 192
+   },
+   {
+    "name": "q75",
+    "file": "q75",
+    "bytes": 9812,
+    "note": "WebP q75",
+    "psnr": 32.77,
+    "worst_block": 11.0,
+    "w": 192,
+    "h": 192
+   }
+  ],
+  "phone_px": [
+   156,
+   156
+  ]
+ }
+]

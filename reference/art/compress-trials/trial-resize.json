@@ -1,0 +1,93 @@
+[
+ {
+  "src": "src/assets/enemies/venom-atlas.webp",
+  "bytes": 296638,
+  "factor": 0.5,
+  "w": 512,
+  "h": 482,
+  "q_est": 90,
+  "out": {
+   "90": 128672,
+   "82": 110378,
+   "75": 99566
+  }
+ },
+ {
+  "src": "src/assets/w1to4art/w1-new.webp",
+  "bytes": 293670,
+  "factor": 0.75,
+  "w": 1497,
+  "h": 694,
+  "q_est": 90,
+  "out": {
+   "90": 223322,
+   "82": 177202,
+   "75": 153070
+  }
+ },
+ {
+  "src": "src/assets/enemies/croc-atlas.webp",
+  "bytes": 192066,
+  "factor": 0.5,
+  "w": 512,
+  "h": 373,
+  "q_est": 90,
+  "out": {
+   "90": 102788,
+   "82": 87098,
+   "75": 77474
+  }
+ },
+ {
+  "src": "src/assets/enemies/prowler-atlas.webp",
+  "bytes": 80426,
+  "factor": 0.5,
+  "w": 512,
+  "h": 219,
+  "q_est": 89,
+  "out": {
+   "90": 53364,
+   "82": 44572,
+   "75": 39454
+  }
+ },
+ {
+  "src": "src/assets/characters/dot-perch-atlas.webp",
+  "bytes": 69864,
+  "factor": 0.5,
+  "w": 396,
+  "h": 210,
+  "q_est": 90,
+  "out": {
+   "90": 29594,
+   "82": 24680,
+   "75": 21614
+  }
+ },
+ {
+  "src": "src/assets/characters/dot-atlas.webp",
+  "bytes": 69508,
+  "factor": 0.75,
+  "w": 384,
+  "h": 383,
+  "q_est": 79,
+  "out": {
+   "90": 72800,
+   "82": 61866,
+   "75": 55184
+  }
+ },
+ {
+  "src": "src/assets/props/w1-bootprint.webp",
+  "bytes": 15976,
+  "factor": 0.75,
+  "w": 330,
+  "h": 84,
+  "q_est": 90,
+  "out": {
+   "90": 11272,
+   "82": 8882,
+   "75": 7724
+  }
+ }
+]

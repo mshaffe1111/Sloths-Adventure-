@@ -1,0 +1,7116 @@
+[
+ {
+  "ssim": 0.966604424059726,
+  "psnr": 36.65221054336392,
+  "tile_ssim": 0.9295813645105321,
+  "tile_xy": [
+   608,
+   224
+  ],
+  "dark_share": 0.3924968995452666,
+  "dark_psnr": 36.91709919302855,
+  "dark_tile_psnr": 37.16161883045857,
+  "dark_tile_xy": [
+   768,
+   128
+  ],
+  "ssimu2": 84.59781473214812,
+  "src": "src/assets/enemies/monarch-atlas.webp",
+  "w": 1024,
+  "h": 326,
+  "orig_bytes": 50950,
+  "q82_bytes": 38594,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9696386106668893,
+  "psnr": 35.319411907538615,
+  "tile_ssim": 0.928516112202869,
+  "tile_xy": [
+   672,
+   256
+  ],
+  "dark_share": 0.31396440546814547,
+  "dark_psnr": 36.20802752200131,
+  "dark_tile_psnr": 35.18008694993575,
+  "dark_tile_xy": [
+   672,
+   256
+  ],
+  "ssimu2": 82.86566594869632,
+  "src": "src/assets/enemies/drake-atlas.webp",
+  "w": 1024,
+  "h": 545,
+  "orig_bytes": 111928,
+  "q82_bytes": 85004,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98, dark tile < 36.5 dB"
+ },
+ {
+  "ssim": 0.9705065447277699,
+  "psnr": 36.057235706857306,
+  "tile_ssim": 0.9417044796635755,
+  "tile_xy": [
+   1312,
+   224
+  ],
+  "dark_share": 0.1003906438389197,
+  "dark_psnr": 35.787265553395976,
+  "dark_tile_psnr": 36.418668574760716,
+  "dark_tile_xy": [
+   512,
+   96
+  ],
+  "ssimu2": 82.37538079807486,
+  "src": "src/assets/w7/crumble.webp",
+  "w": 2048,
+  "h": 296,
+  "orig_bytes": 67876,
+  "q82_bytes": 39618,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98, dark tile < 36.5 dB"
+ },
+ {
+  "ssim": 0.9718191486899929,
+  "psnr": 36.15976964512196,
+  "tile_ssim": 0.93813147246952,
+  "tile_xy": [
+   672,
+   96
+  ],
+  "dark_share": 0.13118044487720637,
+  "dark_psnr": 38.99989413514588,
+  "dark_tile_psnr": 41.21684799284965,
+  "dark_tile_xy": [
+   128,
+   192
+  ],
+  "ssimu2": 79.09118205373836,
+  "src": "src/assets/w6to10/gemini/w6-hides-arches.webp",
+  "w": 2048,
+  "h": 228,
+  "orig_bytes": 95458,
+  "q82_bytes": 71718,
+  "smooth_dark": 0.014,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9732103115062745,
+  "psnr": 37.768791204839836,
+  "tile_ssim": 0.9238968722799968,
+  "tile_xy": [
+   640,
+   64
+  ],
+  "dark_share": 0.09650743042835136,
+  "dark_psnr": 35.555095509510544,
+  "dark_tile_psnr": 44.852020257796816,
+  "dark_tile_xy": [
+   1440,
+   352
+  ],
+  "ssimu2": 79.40187304271414,
+  "src": "src/assets/w6to10/props-made/w6var.webp",
+  "w": 2048,
+  "h": 812,
+  "orig_bytes": 104348,
+  "q82_bytes": 77934,
+  "smooth_dark": 0.012,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9741424347401899,
+  "psnr": 34.50334639507352,
+  "tile_ssim": 0.920592917837497,
+  "tile_xy": [
+   1632,
+   0
+  ],
+  "dark_share": 0.13013231421124197,
+  "dark_psnr": 35.345392381686786,
+  "dark_tile_psnr": 35.84473074084637,
+  "dark_tile_xy": [
+   1568,
+   0
+  ],
+  "ssimu2": 76.68614775000611,
+  "src": "src/assets/w7slide/flume-props.webp",
+  "w": 1996,
+  "h": 254,
+  "orig_bytes": 146822,
+  "q82_bytes": 112712,
+  "smooth_dark": 0.005,
+  "flag": "SSIM < 0.98, PSNR < 35 dB, dark tile < 36.5 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9741450160714821,
+  "psnr": 36.089114576345,
+  "tile_ssim": 0.9483981307942243,
+  "tile_xy": [
+   224,
+   64
+  ],
+  "dark_share": 0.313926287882726,
+  "dark_psnr": 36.63710676037068,
+  "ssimu2": 85.80866719574465,
+  "src": "src/assets/enemies/reaver-atlas.webp",
+  "w": 1024,
+  "h": 469,
+  "orig_bytes": 54164,
+  "q82_bytes": 42842,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9748057356582998,
+  "psnr": 39.91975973084901,
+  "tile_ssim": 0.9588989893027903,
+  "tile_xy": [
+   704,
+   96
+  ],
+  "dark_share": 0.11064757097018128,
+  "dark_psnr": 40.13905823406205,
+  "dark_tile_psnr": 41.79201039424794,
+  "dark_tile_xy": [
+   480,
+   288
+  ],
+  "ssimu2": 80.9514070272368,
+  "src": "src/assets/proto/crown.webp",
+  "w": 1200,
+  "h": 577,
+  "orig_bytes": 107690,
+  "q82_bytes": 82362,
+  "smooth_dark": 0.003,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.975770941572943,
+  "psnr": 39.18678646713458,
+  "tile_ssim": 0.948236175529479,
+  "tile_xy": [
+   128,
+   480
+  ],
+  "dark_share": 0.17552079639187085,
+  "dark_psnr": 39.53164152929916,
+  "dark_tile_psnr": 37.27847787964781,
+  "dark_tile_xy": [
+   96,
+   320
+  ],
+  "ssimu2": 78.74558262680813,
+  "src": "src/assets/props/gates/w3.webp",
+  "w": 996,
+  "h": 640,
+  "orig_bytes": 99938,
+  "q82_bytes": 72824,
+  "smooth_dark": 0.003,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9761603539686434,
+  "psnr": 36.153313002791755,
+  "tile_ssim": 0.9174568832591327,
+  "tile_xy": [
+   352,
+   1120
+  ],
+  "dark_share": 0.2611723260926674,
+  "dark_psnr": 37.161781979243365,
+  "dark_tile_psnr": 36.02167011869233,
+  "dark_tile_xy": [
+   32,
+   160
+  ],
+  "ssimu2": 76.00158019276714,
+  "src": "src/assets/w7slide/flume-cave.webp",
+  "w": 2037,
+  "h": 1408,
+  "orig_bytes": 285794,
+  "q82_bytes": 200396,
+  "smooth_dark": 0.092,
+  "flag": "SSIM < 0.98, dark tile < 36.5 dB, smooth dark area, dark tile as bad as the black picture, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9764835210400068,
+  "psnr": 36.99861644113047,
+  "tile_ssim": 0.9454458670880302,
+  "tile_xy": [
+   288,
+   704
+  ],
+  "dark_share": 0.11906400550584996,
+  "dark_psnr": 35.27200481645145,
+  "dark_tile_psnr": 40.62343278176151,
+  "dark_tile_xy": [
+   192,
+   640
+  ],
+  "ssimu2": 80.97798768286748,
+  "src": "src/assets/w6to10/props-made/w8c.webp",
+  "w": 2048,
+  "h": 965,
+  "orig_bytes": 134918,
+  "q82_bytes": 105592,
+  "smooth_dark": 0.019,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9769211906745834,
+  "psnr": 38.953038262705576,
+  "tile_ssim": 0.950389368294034,
+  "tile_xy": [
+   544,
+   32
+  ],
+  "dark_share": 0.09038453658554757,
+  "dark_psnr": 38.67138554137049,
+  "ssimu2": 83.92152507209553,
+  "src": "src/assets/w6to10/props-made/w6balt.webp",
+  "w": 2048,
+  "h": 608,
+  "orig_bytes": 67110,
+  "q82_bytes": 52184,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9772598784313455,
+  "psnr": 38.25265288058695,
+  "tile_ssim": 0.9547355004592847,
+  "tile_xy": [
+   0,
+   128
+  ],
+  "dark_share": 0.23739536296564576,
+  "dark_psnr": 40.80443902991863,
+  "dark_tile_psnr": 42.00976953071518,
+  "dark_tile_xy": [
+   1280,
+   192
+  ],
+  "ssimu2": 83.47470472298929,
+  "src": "src/assets/w6to10/gemini/w8a-puzzle.webp",
+  "w": 2048,
+  "h": 256,
+  "orig_bytes": 43208,
+  "q82_bytes": 32610,
+  "smooth_dark": 0.054,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9775287307464591,
+  "psnr": 35.57365943071302,
+  "tile_ssim": 0.9498521698049841,
+  "tile_xy": [
+   800,
+   64
+  ],
+  "dark_share": 0.46710368364590077,
+  "dark_psnr": 36.37397609114208,
+  "dark_tile_psnr": 34.81257870200834,
+  "dark_tile_xy": [
+   640,
+   128
+  ],
+  "ssimu2": 83.95737010282778,
+  "src": "src/assets/enemies/croc-atlas.webp",
+  "w": 1024,
+  "h": 746,
+  "orig_bytes": 192066,
+  "q82_bytes": 149220,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98, dark tile < 36.5 dB"
+ },
+ {
+  "ssim": 0.9779460458871951,
+  "psnr": 38.93708210318779,
+  "tile_ssim": 0.9533046673530062,
+  "tile_xy": [
+   608,
+   768
+  ],
+  "dark_share": 0.07252693176269531,
+  "dark_psnr": 37.28149112641936,
+  "ssimu2": 79.10869389380288,
+  "src": "src/assets/w7slide/chute-wall-roots.webp",
+  "w": 1024,
+  "h": 1024,
+  "orig_bytes": 184930,
+  "q82_bytes": 119158,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.977991388640319,
+  "psnr": 37.83433631773025,
+  "tile_ssim": 0.9375456127710149,
+  "tile_xy": [
+   320,
+   32
+  ],
+  "dark_share": 0.17298477866613976,
+  "dark_psnr": 35.77583324834076,
+  "dark_tile_psnr": 38.027885869919636,
+  "dark_tile_xy": [
+   544,
+   96
+  ],
+  "ssimu2": 80.72638909971803,
+  "src": "src/assets/w6to10/props-made/w8roost-b.webp",
+  "w": 2048,
+  "h": 567,
+  "orig_bytes": 63892,
+  "q82_bytes": 49128,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9781142198786296,
+  "psnr": 40.29505539313186,
+  "tile_ssim": 0.953621180197424,
+  "tile_xy": [
+   768,
+   224
+  ],
+  "dark_share": 0.1396723510464123,
+  "dark_psnr": 40.243134770146554,
+  "dark_tile_psnr": 38.23046684575253,
+  "dark_tile_xy": [
+   1920,
+   576
+  ],
+  "ssimu2": 76.5194059760166,
+  "src": "src/assets/w7slide/chamber.webp",
+  "w": 2048,
+  "h": 878,
+  "orig_bytes": 234764,
+  "q82_bytes": 147228,
+  "smooth_dark": 0.018,
+  "flag": "SSIM < 0.98, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9782911247176687,
+  "psnr": 37.02409946603193,
+  "tile_ssim": 0.9526595877998523,
+  "tile_xy": [
+   160,
+   96
+  ],
+  "dark_share": 0.028564019707577843,
+  "dark_psnr": 36.800538144726325,
+  "ssimu2": 84.17812443487074,
+  "src": "src/assets/proto/props3-atlas.webp",
+  "w": 1024,
+  "h": 400,
+  "orig_bytes": 49500,
+  "q82_bytes": 35742,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9784730480382315,
+  "psnr": 36.1209011753897,
+  "tile_ssim": 0.9431830949211256,
+  "tile_xy": [
+   1120,
+   320
+  ],
+  "dark_share": 0.259623493475879,
+  "dark_psnr": 35.68788615178914,
+  "dark_tile_psnr": 40.97965748708334,
+  "dark_tile_xy": [
+   1504,
+   128
+  ],
+  "ssimu2": 82.25918084585388,
+  "src": "src/assets/w6to10/props-made/w7c-b.webp",
+  "w": 2048,
+  "h": 830,
+  "orig_bytes": 129786,
+  "q82_bytes": 97534,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9784865041438633,
+  "psnr": 37.73216713043264,
+  "tile_ssim": 0.9168132816176185,
+  "tile_xy": [
+   1024,
+   928
+  ],
+  "dark_share": 0.33783739506436383,
+  "dark_psnr": 39.05666184692815,
+  "dark_tile_psnr": 35.551020811097295,
+  "dark_tile_xy": [
+   1024,
+   704
+  ],
+  "ssimu2": 82.0061535482165,
+  "src": "src/assets/characters/cels-2.webp",
+  "w": 1780,
+  "h": 1616,
+  "orig_bytes": 355594,
+  "q82_bytes": 273944,
+  "smooth_dark": 0.012,
+  "flag": "SSIM < 0.98, dark tile < 36.5 dB"
+ },
+ {
+  "ssim": 0.9787379161797245,
+  "psnr": 37.36751115801079,
+  "tile_ssim": 0.9527872289641846,
+  "tile_xy": [
+   1024,
+   96
+  ],
+  "dark_share": 0.09541233732610722,
+  "dark_psnr": 39.217417647057516,
+  "dark_tile_psnr": 41.77060703094981,
+  "dark_tile_xy": [
+   608,
+   160
+  ],
+  "ssimu2": 83.17249539030631,
+  "src": "src/assets/w1to4art/w1-cut.webp",
+  "w": 2048,
+  "h": 591,
+  "orig_bytes": 235906,
+  "q82_bytes": 197206,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9789293086717786,
+  "psnr": 36.052649623078224,
+  "tile_ssim": 0.9591040094546786,
+  "tile_xy": [
+   384,
+   320
+  ],
+  "dark_share": 0.095928155934279,
+  "dark_psnr": 38.82564143471639,
+  "ssimu2": 84.26323590151263,
+  "src": "src/assets/characters/dot-perch-atlas.webp",
+  "w": 792,
+  "h": 420,
+  "orig_bytes": 69864,
+  "q82_bytes": 54260,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9789346822542953,
+  "psnr": 38.20538849355246,
+  "tile_ssim": 0.9666945869243311,
+  "tile_xy": [
+   256,
+   128
+  ],
+  "dark_share": 0.17729176361098184,
+  "dark_psnr": 41.110017680236915,
+  "dark_tile_psnr": 41.49637423241499,
+  "dark_tile_xy": [
+   128,
+   192
+  ],
+  "ssimu2": 81.8350553881119,
+  "src": "src/assets/flora/heartbloom-epic.webp",
+  "w": 484,
+  "h": 228,
+  "orig_bytes": 22876,
+  "q82_bytes": 15022,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9790635016624523,
+  "psnr": 35.294886849059125,
+  "tile_ssim": 0.9707367483645869,
+  "tile_xy": [
+   32,
+   0
+  ],
+  "dark_share": 0.06811640550047969,
+  "dark_psnr": 41.81845079338147,
+  "ssimu2": 63.49948105437987,
+  "src": "src/assets/pickups/petal.webp",
+  "w": 87,
+  "h": 96,
+  "orig_bytes": 5376,
+  "q82_bytes": 4246,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9790742123312729,
+  "psnr": 37.96270914488407,
+  "tile_ssim": 0.9560529615112181,
+  "tile_xy": [
+   416,
+   512
+  ],
+  "dark_share": 0.09385333914838881,
+  "dark_psnr": 39.60900682344272,
+  "dark_tile_psnr": 38.82854631402679,
+  "dark_tile_xy": [
+   256,
+   256
+  ],
+  "ssimu2": 80.62795336919571,
+  "src": "src/assets/proto/props2-atlas.webp",
+  "w": 1024,
+  "h": 598,
+  "orig_bytes": 92310,
+  "q82_bytes": 65072,
+  "smooth_dark": 0.025,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.97912574125555,
+  "psnr": 37.26327889389671,
+  "tile_ssim": 0.9432245016036285,
+  "tile_xy": [
+   1248,
+   704
+  ],
+  "dark_share": 0.29958446204139777,
+  "dark_psnr": 37.740922810356004,
+  "dark_tile_psnr": 35.96209476500451,
+  "dark_tile_xy": [
+   1920,
+   640
+  ],
+  "ssimu2": 77.18199017359126,
+  "src": "src/assets/kits/w8.webp",
+  "w": 2048,
+  "h": 1066,
+  "orig_bytes": 192010,
+  "q82_bytes": 166440,
+  "smooth_dark": 0.019,
+  "flag": "SSIM < 0.98, dark tile < 36.5 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9791429302859234,
+  "psnr": 37.682512775531436,
+  "tile_ssim": 0.927811297539468,
+  "tile_xy": [
+   256,
+   96
+  ],
+  "dark_share": 0.23736810767398708,
+  "dark_psnr": 37.318982330707854,
+  "dark_tile_psnr": 39.00674196615717,
+  "dark_tile_xy": [
+   1760,
+   288
+  ],
+  "ssimu2": 81.81351922488975,
+  "src": "src/assets/w6to10/props-made/w8roost.webp",
+  "w": 2048,
+  "h": 582,
+  "orig_bytes": 68468,
+  "q82_bytes": 52028,
+  "smooth_dark": 0.044,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9797987824285335,
+  "psnr": 36.89593797042823,
+  "tile_ssim": 0.9691578109044524,
+  "tile_xy": [
+   0,
+   96
+  ],
+  "dark_share": 0.4549526270456503,
+  "dark_psnr": 39.663223060953975,
+  "dark_tile_psnr": 41.13378690355857,
+  "dark_tile_xy": [
+   64,
+   128
+  ],
+  "ssimu2": 80.68455869613378,
+  "src": "src/assets/icons/heart.webp",
+  "w": 160,
+  "h": 160,
+  "orig_bytes": 8470,
+  "q82_bytes": 6714,
+  "smooth_dark": 0.015,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9798271943619853,
+  "psnr": 34.97688721781992,
+  "tile_ssim": 0.9507843581506408,
+  "tile_xy": [
+   288,
+   224
+  ],
+  "dark_share": 0.19251231527093596,
+  "dark_psnr": 36.298069424922225,
+  "ssimu2": 83.72598331404286,
+  "src": "src/assets/flora/birds-atlas.webp",
+  "w": 1024,
+  "h": 551,
+  "orig_bytes": 129172,
+  "q82_bytes": 101390,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98, PSNR < 35 dB"
+ },
+ {
+  "ssim": 0.9799018381277027,
+  "psnr": 35.0600951857952,
+  "tile_ssim": 0.9704380766648467,
+  "tile_xy": [
+   0,
+   64
+  ],
+  "dark_share": 0.36846534132744296,
+  "dark_psnr": 37.76967411465765,
+  "dark_tile_psnr": 38.825418698032465,
+  "dark_tile_xy": [
+   0,
+   64
+  ],
+  "ssimu2": 78.7678498280999,
+  "src": "src/assets/icons/home.webp",
+  "w": 120,
+  "h": 120,
+  "orig_bytes": 5976,
+  "q82_bytes": 4536,
+  "smooth_dark": 0.0,
+  "flag": "SSIM < 0.98"
+ },
+ {
+  "ssim": 0.9800631647149023,
+  "psnr": 38.60933815708223,
+  "tile_ssim": 0.9698486826526984,
+  "tile_xy": [
+   288,
+   160
+  ],
+  "dark_share": 0.3945532883505406,
+  "dark_psnr": 41.97079035627833,
+  "dark_tile_psnr": 39.21992823548392,
+  "dark_tile_xy": [
+   96,
+   160
+  ],
+  "ssimu2": 83.64241384911304,
+  "src": "src/assets/flora/heartbloom-bloom.webp",
+  "w": 345,
+  "h": 239,
+  "orig_bytes": 18048,
+  "q82_bytes": 12038,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9801069303323549,
+  "psnr": 37.349278586069744,
+  "tile_ssim": 0.9523647058658181,
+  "tile_xy": [
+   480,
+   256
+  ],
+  "dark_share": 0.1473182519426126,
+  "dark_psnr": 37.33682327948591,
+  "dark_tile_psnr": 38.32666633614056,
+  "dark_tile_xy": [
+   960,
+   416
+  ],
+  "ssimu2": 84.49165096505422,
+  "src": "src/assets/w7slide/obstacles.webp",
+  "w": 2048,
+  "h": 902,
+  "orig_bytes": 137262,
+  "q82_bytes": 88462,
+  "smooth_dark": 0.023,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9801191280771602,
+  "psnr": 37.35475404439724,
+  "tile_ssim": 0.9432089475983086,
+  "tile_xy": [
+   768,
+   288
+  ],
+  "dark_share": 0.1074281564477643,
+  "dark_psnr": 34.736887995997286,
+  "dark_tile_psnr": 41.40557065131452,
+  "dark_tile_xy": [
+   800,
+   480
+  ],
+  "ssimu2": 77.18479506482933,
+  "src": "src/assets/w8/lantern.webp",
+  "w": 1111,
+  "h": 900,
+  "orig_bytes": 82986,
+  "q82_bytes": 62882,
+  "smooth_dark": 0.003,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9802620131343646,
+  "psnr": 39.59929385253466,
+  "tile_ssim": 0.9650368225291304,
+  "tile_xy": [
+   992,
+   1504
+  ],
+  "dark_share": 0.40739992949656806,
+  "dark_psnr": 40.80634147350061,
+  "dark_tile_psnr": 38.71210108697143,
+  "dark_tile_xy": [
+   1120,
+   1440
+  ],
+  "ssimu2": 85.20286967384696,
+  "src": "src/assets/story/hd/guard-1.webp",
+  "w": 1862,
+  "h": 1790,
+  "orig_bytes": 529922,
+  "q82_bytes": 440800,
+  "smooth_dark": 0.006,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9804008589096248,
+  "psnr": 40.023273939108115,
+  "tile_ssim": 0.9397734285977678,
+  "tile_xy": [
+   64,
+   576
+  ],
+  "dark_share": 0.07474992060971737,
+  "dark_psnr": 39.612931098977285,
+  "ssimu2": 77.59561910793943,
+  "src": "src/assets/props/gates/w2.webp",
+  "w": 999,
+  "h": 640,
+  "orig_bytes": 88404,
+  "q82_bytes": 61876,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9805460047756015,
+  "psnr": 36.89460419057426,
+  "tile_ssim": 0.9593366038201733,
+  "tile_xy": [
+   1920,
+   256
+  ],
+  "dark_share": 0.21711853494527505,
+  "dark_psnr": 38.322408341593516,
+  "ssimu2": 84.52803652685226,
+  "src": "src/assets/w7/vine-anchors.webp",
+  "w": 2048,
+  "h": 527,
+  "orig_bytes": 119768,
+  "q82_bytes": 92420,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9806275665406493,
+  "psnr": 40.7189123923419,
+  "tile_ssim": 0.9635306549217065,
+  "tile_xy": [
+   1120,
+   160
+  ],
+  "dark_share": 0.47573422288234984,
+  "dark_psnr": 41.78331930206867,
+  "dark_tile_psnr": 37.615788262200844,
+  "dark_tile_xy": [
+   1504,
+   224
+  ],
+  "ssimu2": 78.41737043509859,
+  "src": "src/assets/story/ground/w1.webp",
+  "w": 1600,
+  "h": 400,
+  "orig_bytes": 66532,
+  "q82_bytes": 50320,
+  "smooth_dark": 0.067,
+  "flag": "smooth dark area, dark tile as bad as the black picture, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9808649104491912,
+  "psnr": 37.36033694224884,
+  "tile_ssim": 0.9687892499720322,
+  "tile_xy": [
+   416,
+   96
+  ],
+  "dark_share": 0.025587680927486752,
+  "dark_psnr": 38.50276721481555,
+  "ssimu2": 78.154046538502,
+  "src": "src/assets/props/pits/w1-bed.webp",
+  "w": 512,
+  "h": 175,
+  "orig_bytes": 31858,
+  "q82_bytes": 26638,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9810217991657348,
+  "psnr": 39.13752028575452,
+  "tile_ssim": 0.9372263675123765,
+  "tile_xy": [
+   192,
+   192
+  ],
+  "dark_share": 0.1671292109721746,
+  "dark_psnr": 40.16810558827564,
+  "dark_tile_psnr": 38.42658946224282,
+  "dark_tile_xy": [
+   320,
+   352
+  ],
+  "ssimu2": 79.33276557767624,
+  "src": "src/assets/props/gates/w1.webp",
+  "w": 1010,
+  "h": 640,
+  "orig_bytes": 99952,
+  "q82_bytes": 70928,
+  "smooth_dark": 0.003,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9810403007731343,
+  "psnr": 39.76638706369276,
+  "tile_ssim": 0.9430445973422442,
+  "tile_xy": [
+   864,
+   32
+  ],
+  "dark_share": 0.26369552774259847,
+  "dark_psnr": 40.895710765917684,
+  "dark_tile_psnr": 39.40917232112695,
+  "dark_tile_xy": [
+   512,
+   576
+  ],
+  "ssimu2": 80.64169469859185,
+  "src": "src/assets/props/gates/w8.webp",
+  "w": 974,
+  "h": 640,
+  "orig_bytes": 92870,
+  "q82_bytes": 69814,
+  "smooth_dark": 0.015,
+  "flag": ""
+ },
+ {
+  "ssim": 0.981097475278361,
+  "psnr": 40.23747428591822,
+  "tile_ssim": 0.9425222134946646,
+  "tile_xy": [
+   160,
+   672
+  ],
+  "dark_share": 0.08528423309326172,
+  "dark_psnr": 39.28513250990563,
+  "dark_tile_psnr": 38.47588887084243,
+  "dark_tile_xy": [
+   928,
+   384
+  ],
+  "ssimu2": 78.10369596173928,
+  "src": "src/assets/w7slide/chute-far-dark.webp",
+  "w": 1024,
+  "h": 1024,
+  "orig_bytes": 112002,
+  "q82_bytes": 72064,
+  "smooth_dark": 0.024,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9812648906222681,
+  "psnr": 39.357809466790236,
+  "tile_ssim": 0.9450550525214956,
+  "tile_xy": [
+   1120,
+   160
+  ],
+  "dark_share": 0.16476122315404426,
+  "dark_psnr": 38.10781714946852,
+  "dark_tile_psnr": 36.85625058146548,
+  "dark_tile_xy": [
+   736,
+   832
+  ],
+  "ssimu2": 83.15906368717334,
+  "src": "src/assets/w6to10/props-made/w8var.webp",
+  "w": 2048,
+  "h": 866,
+  "orig_bytes": 94768,
+  "q82_bytes": 70630,
+  "smooth_dark": 0.006,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9816193423044915,
+  "psnr": 36.29101732349157,
+  "tile_ssim": 0.949752496082196,
+  "tile_xy": [
+   128,
+   1440
+  ],
+  "dark_share": 0.3523488981435307,
+  "dark_psnr": 38.12000261123196,
+  "dark_tile_psnr": 35.91776013151044,
+  "dark_tile_xy": [
+   448,
+   896
+  ],
+  "ssimu2": 80.9394791861973,
+  "src": "src/assets/props/dressnew-w6.webp",
+  "w": 989,
+  "h": 1613,
+  "orig_bytes": 363648,
+  "q82_bytes": 319718,
+  "smooth_dark": 0.007,
+  "flag": "dark tile < 36.5 dB"
+ },
+ {
+  "ssim": 0.9816282706452417,
+  "psnr": 41.17571908892963,
+  "tile_ssim": 0.9616701313137108,
+  "tile_xy": [
+   704,
+   64
+  ],
+  "dark_share": 0.3494727928321678,
+  "dark_psnr": 44.528654180489696,
+  "dark_tile_psnr": 40.637923326801484,
+  "dark_tile_xy": [
+   64,
+   256
+  ],
+  "ssimu2": 75.82186078885996,
+  "src": "src/assets/story/plates/council.webp",
+  "w": 1024,
+  "h": 572,
+  "orig_bytes": 63406,
+  "q82_bytes": 50634,
+  "smooth_dark": 0.07,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9817154911319327,
+  "psnr": 35.76475070175237,
+  "tile_ssim": 0.9405519147058048,
+  "tile_xy": [
+   640,
+   1056
+  ],
+  "dark_share": 0.18158477318277683,
+  "dark_psnr": 37.82756938772978,
+  "dark_tile_psnr": 35.65340819135541,
+  "dark_tile_xy": [
+   416,
+   320
+  ],
+  "ssimu2": 82.02696623818925,
+  "src": "src/assets/props/dressnew-w4.webp",
+  "w": 1021,
+  "h": 1830,
+  "orig_bytes": 338096,
+  "q82_bytes": 297186,
+  "smooth_dark": 0.0,
+  "flag": "dark tile < 36.5 dB"
+ },
+ {
+  "ssim": 0.9818307682260338,
+  "psnr": 36.15760296524905,
+  "tile_ssim": 0.9501638090047667,
+  "tile_xy": [
+   960,
+   160
+  ],
+  "dark_share": 0.14759481240528202,
+  "dark_psnr": 33.93976792380988,
+  "ssimu2": 82.24952771805442,
+  "src": "src/assets/w6to10/props-made/w7c.webp",
+  "w": 2048,
+  "h": 875,
+  "orig_bytes": 128734,
+  "q82_bytes": 101120,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9818344660785151,
+  "psnr": 38.72559217707599,
+  "tile_ssim": 0.948361923026489,
+  "tile_xy": [
+   640,
+   64
+  ],
+  "dark_share": 0.09003577806750222,
+  "dark_psnr": 38.12981163734161,
+  "dark_tile_psnr": 36.73063120926889,
+  "dark_tile_xy": [
+   960,
+   608
+  ],
+  "ssimu2": 79.98735451944879,
+  "src": "src/assets/props/gates/w7.webp",
+  "w": 998,
+  "h": 640,
+  "orig_bytes": 107334,
+  "q82_bytes": 78078,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9818519494760247,
+  "psnr": 35.95056375234006,
+  "tile_ssim": 0.9614980952647085,
+  "tile_xy": [
+   192,
+   32
+  ],
+  "dark_share": 0.3308912035940062,
+  "dark_psnr": 36.48281169935097,
+  "dark_tile_psnr": 36.08919417206386,
+  "dark_tile_xy": [
+   480,
+   256
+  ],
+  "ssimu2": 85.17139209205666,
+  "src": "src/assets/enemies/sovereign-atlas.webp",
+  "w": 1024,
+  "h": 574,
+  "orig_bytes": 119868,
+  "q82_bytes": 102482,
+  "smooth_dark": 0.0,
+  "flag": "dark tile < 36.5 dB"
+ },
+ {
+  "ssim": 0.981930167867579,
+  "psnr": 39.59648073743777,
+  "tile_ssim": 0.9494583768838795,
+  "tile_xy": [
+   96,
+   576
+  ],
+  "dark_share": 0.20952989851932693,
+  "dark_psnr": 40.04976072413632,
+  "dark_tile_psnr": 37.78038096622002,
+  "dark_tile_xy": [
+   224,
+   160
+  ],
+  "ssimu2": 81.75253299799377,
+  "src": "src/assets/props/gates/w6.webp",
+  "w": 1000,
+  "h": 640,
+  "orig_bytes": 97238,
+  "q82_bytes": 70116,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9819706107416315,
+  "psnr": 40.192433930328136,
+  "tile_ssim": 0.9471857737348485,
+  "tile_xy": [
+   64,
+   736
+  ],
+  "dark_share": 0.05502891540527344,
+  "dark_psnr": 38.14291990908844,
+  "dark_tile_psnr": 39.599950658025776,
+  "dark_tile_xy": [
+   992,
+   160
+  ],
+  "ssimu2": 77.70854023113546,
+  "src": "src/assets/w7slide/chute-end-light.webp",
+  "w": 1024,
+  "h": 1024,
+  "orig_bytes": 119142,
+  "q82_bytes": 79604,
+  "smooth_dark": 0.021,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.982041256550786,
+  "psnr": 33.01647961262613,
+  "tile_ssim": 0.9523331504517194,
+  "tile_xy": [
+   128,
+   96
+  ],
+  "dark_share": 0.2351978962033044,
+  "dark_psnr": 36.28252744812664,
+  "ssimu2": 82.54060735084184,
+  "src": "src/assets/enemies/spider-atlas.webp",
+  "w": 1024,
+  "h": 290,
+  "orig_bytes": 88696,
+  "q82_bytes": 67986,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB"
+ },
+ {
+  "ssim": 0.9822512662673079,
+  "psnr": 38.33790979370731,
+  "tile_ssim": 0.9589278123390553,
+  "tile_xy": [
+   160,
+   1536
+  ],
+  "dark_share": 0.19527223156638274,
+  "dark_psnr": 39.08327529772427,
+  "dark_tile_psnr": 42.353875324226806,
+  "dark_tile_xy": [
+   1536,
+   1120
+  ],
+  "ssimu2": 85.2426123254975,
+  "src": "src/assets/w6/ledges.webp",
+  "w": 2048,
+  "h": 1735,
+  "orig_bytes": 364478,
+  "q82_bytes": 293770,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9823081913877956,
+  "psnr": 37.00944543865643,
+  "tile_ssim": 0.9686232970240092,
+  "tile_xy": [
+   384,
+   0
+  ],
+  "dark_share": 0.20911301930808557,
+  "dark_psnr": 39.44876910345818,
+  "ssimu2": 82.05275433214712,
+  "src": "src/assets/props/w4-grit.webp",
+  "w": 1024,
+  "h": 146,
+  "orig_bytes": 56224,
+  "q82_bytes": 43192,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9823886019248248,
+  "psnr": 38.048776786638776,
+  "tile_ssim": 0.9560024282704458,
+  "tile_xy": [
+   1248,
+   96
+  ],
+  "dark_share": 0.2515080740536882,
+  "dark_psnr": 38.60490675788631,
+  "dark_tile_psnr": 38.05924068057823,
+  "dark_tile_xy": [
+   1440,
+   96
+  ],
+  "ssimu2": 81.7567186909437,
+  "src": "src/assets/w6to10/props-made/w6d.webp",
+  "w": 2048,
+  "h": 555,
+  "orig_bytes": 134980,
+  "q82_bytes": 102128,
+  "smooth_dark": 0.048,
+  "flag": ""
+ },
+ {
+  "ssim": 0.982426331445911,
+  "psnr": 35.41627202280468,
+  "tile_ssim": 0.976881980782936,
+  "tile_xy": [
+   32,
+   32
+  ],
+  "dark_share": 0.1853468075333027,
+  "dark_psnr": 39.14253186502586,
+  "ssimu2": 62.93529033308071,
+  "src": "src/assets/pickups/ribbon.webp",
+  "w": 91,
+  "h": 96,
+  "orig_bytes": 5192,
+  "q82_bytes": 4346,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9825358772608175,
+  "psnr": 34.81818241906899,
+  "tile_ssim": 0.9518585980832612,
+  "tile_xy": [
+   256,
+   416
+  ],
+  "dark_share": 0.18819354684601236,
+  "dark_psnr": 36.54594110119576,
+  "ssimu2": 83.8790809100354,
+  "src": "src/assets/enemies/venom-atlas.webp",
+  "w": 1024,
+  "h": 964,
+  "orig_bytes": 296638,
+  "q82_bytes": 244504,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB"
+ },
+ {
+  "ssim": 0.982576127331834,
+  "psnr": 40.509019680025666,
+  "tile_ssim": 0.9532803464864941,
+  "tile_xy": [
+   896,
+   1152
+  ],
+  "dark_share": 0.25291772800342416,
+  "dark_psnr": 39.81946994937707,
+  "dark_tile_psnr": 37.67595867816778,
+  "dark_tile_xy": [
+   416,
+   1184
+  ],
+  "ssimu2": 81.97256207393396,
+  "src": "src/assets/backdrops/w8sunset-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 169754,
+  "q82_bytes": 140602,
+  "smooth_dark": 0.023,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9826568125084814,
+  "psnr": 38.68602502278683,
+  "tile_ssim": 0.9463555990019394,
+  "tile_xy": [
+   1088,
+   96
+  ],
+  "dark_share": 0.44324055959180864,
+  "dark_psnr": 39.22448638923918,
+  "dark_tile_psnr": 33.91758567497135,
+  "dark_tile_xy": [
+   96,
+   608
+  ],
+  "ssimu2": 79.53585127199261,
+  "src": "src/assets/kits/w9.webp",
+  "w": 2048,
+  "h": 1068,
+  "orig_bytes": 148138,
+  "q82_bytes": 128082,
+  "smooth_dark": 0.099,
+  "flag": "dark tile < 36.5 dB, smooth dark area, dark tile as bad as the black picture"
+ },
+ {
+  "ssim": 0.9827869363813078,
+  "psnr": 35.154398219370336,
+  "tile_ssim": 0.9606455862711982,
+  "tile_xy": [
+   768,
+   64
+  ],
+  "dark_share": 0.07653704964552514,
+  "dark_psnr": 35.80380096577824,
+  "ssimu2": 84.86692733464142,
+  "src": "src/assets/hero/hero-studies.webp",
+  "w": 1024,
+  "h": 547,
+  "orig_bytes": 135116,
+  "q82_bytes": 94102,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9828409947294549,
+  "psnr": 40.96247869796314,
+  "tile_ssim": 0.9487225727007216,
+  "tile_xy": [
+   576,
+   544
+  ],
+  "dark_share": 0.2178744427358478,
+  "dark_psnr": 40.982268805142624,
+  "dark_tile_psnr": 38.20671718844522,
+  "dark_tile_xy": [
+   576,
+   544
+  ],
+  "ssimu2": 80.23081801432475,
+  "src": "src/assets/props/gates/w10.webp",
+  "w": 1002,
+  "h": 640,
+  "orig_bytes": 79324,
+  "q82_bytes": 56944,
+  "smooth_dark": 0.012,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9828538870620188,
+  "psnr": 35.068898410719505,
+  "tile_ssim": 0.9664413680988547,
+  "tile_xy": [
+   128,
+   128
+  ],
+  "dark_share": 0.3370646248595564,
+  "dark_psnr": 37.53474638192323,
+  "ssimu2": 78.68006037281302,
+  "src": "src/assets/icons/gear.webp",
+  "w": 192,
+  "h": 192,
+  "orig_bytes": 14918,
+  "q82_bytes": 11646,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9828768837674857,
+  "psnr": 36.81825876351723,
+  "tile_ssim": 0.9537556674269192,
+  "tile_xy": [
+   544,
+   96
+  ],
+  "dark_share": 0.03504506112251272,
+  "dark_psnr": 40.96120419537766,
+  "ssimu2": 84.51216219663094,
+  "src": "src/assets/flora/leaves-atlas.webp",
+  "w": 1024,
+  "h": 269,
+  "orig_bytes": 74398,
+  "q82_bytes": 60946,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9829241596304168,
+  "psnr": 41.085943134484744,
+  "tile_ssim": 0.9566878969102265,
+  "tile_xy": [
+   2560,
+   1280
+  ],
+  "dark_share": 0.109016980860797,
+  "dark_psnr": 38.27353243474734,
+  "dark_tile_psnr": 37.810936088460906,
+  "dark_tile_xy": [
+   1312,
+   1696
+  ],
+  "ssimu2": 80.26344322970225,
+  "src": "src/assets/backdrops/w1kapok-near.webp",
+  "w": 2850,
+  "h": 1736,
+  "orig_bytes": 200912,
+  "q82_bytes": 151572,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.983114334724765,
+  "psnr": 33.362868350946265,
+  "tile_ssim": 0.9777654105264161,
+  "tile_xy": [
+   32,
+   32
+  ],
+  "dark_share": 0.3843019515333476,
+  "dark_psnr": 37.46301609502275,
+  "ssimu2": 37.328316853864266,
+  "src": "src/assets/icons/clubs.webp",
+  "w": 96,
+  "h": 96,
+  "orig_bytes": 5094,
+  "q82_bytes": 4198,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.983116825111253,
+  "psnr": 41.193769298102396,
+  "tile_ssim": 0.9552606484102915,
+  "tile_xy": [
+   2048,
+   1120
+  ],
+  "dark_share": 0.43198147452747526,
+  "dark_psnr": 41.28473097536158,
+  "dark_tile_psnr": 38.06664031305322,
+  "dark_tile_xy": [
+   2112,
+   1408
+  ],
+  "ssimu2": 78.27087113929426,
+  "src": "src/assets/backdrops/w7dusk-near.webp",
+  "w": 2850,
+  "h": 1736,
+  "orig_bytes": 165054,
+  "q82_bytes": 126992,
+  "smooth_dark": 0.053,
+  "flag": "smooth dark area, dark tile as bad as the black picture, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.983164588101115,
+  "psnr": 39.99961371147494,
+  "tile_ssim": 0.9653239270846469,
+  "tile_xy": [
+   1600,
+   960
+  ],
+  "dark_share": 0.4122359407974535,
+  "dark_psnr": 40.71941761425598,
+  "dark_tile_psnr": 38.43533420040729,
+  "dark_tile_xy": [
+   640,
+   960
+  ],
+  "ssimu2": 86.81354362026265,
+  "src": "src/assets/story/hd/guard-2.webp",
+  "w": 1818,
+  "h": 1290,
+  "orig_bytes": 433238,
+  "q82_bytes": 373206,
+  "smooth_dark": 0.006,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9831851136145731,
+  "psnr": 36.58133604218427,
+  "tile_ssim": 0.9672108825535205,
+  "tile_xy": [
+   864,
+   128
+  ],
+  "dark_share": 0.015934864372008205,
+  "ssimu2": 84.78577881083216,
+  "src": "src/assets/hero/hero-rope.webp",
+  "w": 1337,
+  "h": 224,
+  "orig_bytes": 79564,
+  "q82_bytes": 57432,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9832723641111658,
+  "psnr": 36.56233907243714,
+  "tile_ssim": 0.938697585819606,
+  "tile_xy": [
+   1728,
+   608
+  ],
+  "dark_share": 0.09669413657143719,
+  "dark_psnr": 39.16981097674983,
+  "dark_tile_psnr": 40.757348560863335,
+  "dark_tile_xy": [
+   352,
+   736
+  ],
+  "ssimu2": 79.11026415837074,
+  "src": "src/assets/props/puzzle-kit.webp",
+  "w": 2048,
+  "h": 939,
+  "orig_bytes": 603304,
+  "q82_bytes": 547256,
+  "smooth_dark": 0.004,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9833335059096052,
+  "psnr": 35.15287935597974,
+  "tile_ssim": 0.9750341472817509,
+  "tile_xy": [
+   0,
+   32
+  ],
+  "dark_share": 0.47923875432525953,
+  "dark_psnr": 38.53577140398413,
+  "dark_tile_psnr": 39.268826418600554,
+  "dark_tile_xy": [
+   0,
+   32
+  ],
+  "ssimu2": 57.842548313211765,
+  "src": "src/assets/icons/save.webp",
+  "w": 96,
+  "h": 96,
+  "orig_bytes": 4836,
+  "q82_bytes": 3814,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.98367962461067,
+  "psnr": 38.154455902546815,
+  "tile_ssim": 0.9649530471754492,
+  "tile_xy": [
+   1344,
+   768
+  ],
+  "dark_share": 0.06264578975317056,
+  "dark_psnr": 41.08425070846269,
+  "ssimu2": 84.14261547005286,
+  "src": "src/assets/story/hd/dot-0.webp",
+  "w": 2021,
+  "h": 1472,
+  "orig_bytes": 582302,
+  "q82_bytes": 498784,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9837738335369864,
+  "psnr": 37.22572017855163,
+  "tile_ssim": 0.9462750133893498,
+  "tile_xy": [
+   224,
+   736
+  ],
+  "dark_share": 0.19048185949273364,
+  "dark_psnr": 36.075202317831945,
+  "dark_tile_psnr": 39.243665219410744,
+  "dark_tile_xy": [
+   160,
+   256
+  ],
+  "ssimu2": 82.16810140043575,
+  "src": "src/assets/w6to10/props-made/w6c.webp",
+  "w": 2048,
+  "h": 834,
+  "orig_bytes": 119986,
+  "q82_bytes": 97308,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9837772071667439,
+  "psnr": 41.21209741919844,
+  "tile_ssim": 0.9655805686316573,
+  "tile_xy": [
+   352,
+   352
+  ],
+  "dark_share": 0.008075714111328125,
+  "ssimu2": 76.64971229734917,
+  "src": "src/assets/w7slide/chute-wall-glyph.webp",
+  "w": 1024,
+  "h": 1024,
+  "orig_bytes": 101750,
+  "q82_bytes": 66586,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.983787850163837,
+  "psnr": 37.479070536261055,
+  "tile_ssim": 0.9618511823436194,
+  "tile_xy": [
+   32,
+   320
+  ],
+  "dark_share": 0.1064597858450613,
+  "dark_psnr": 40.46108951527847,
+  "ssimu2": 83.87697986094956,
+  "src": "src/assets/w7/chairs-ring.webp",
+  "w": 1600,
+  "h": 405,
+  "orig_bytes": 124272,
+  "q82_bytes": 97044,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9838334116350611,
+  "psnr": 38.31678049610322,
+  "tile_ssim": 0.9510805804502177,
+  "tile_xy": [
+   864,
+   1568
+  ],
+  "dark_share": 0.34884849909092036,
+  "dark_psnr": 39.320354188041904,
+  "dark_tile_psnr": 36.01482266248602,
+  "dark_tile_xy": [
+   1056,
+   768
+  ],
+  "ssimu2": 82.3246489312102,
+  "src": "src/assets/characters/cels-1.webp",
+  "w": 1859,
+  "h": 1945,
+  "orig_bytes": 448576,
+  "q82_bytes": 352988,
+  "smooth_dark": 0.016,
+  "flag": "dark tile < 36.5 dB"
+ },
+ {
+  "ssim": 0.9838694058841011,
+  "psnr": 37.212908474145316,
+  "tile_ssim": 0.976698487696985,
+  "tile_xy": [
+   96,
+   32
+  ],
+  "dark_share": 0.29573868170452733,
+  "dark_psnr": 39.250429964801434,
+  "ssimu2": 78.14824157062782,
+  "src": "src/assets/ui/leaf-token.webp",
+  "w": 160,
+  "h": 146,
+  "orig_bytes": 7412,
+  "q82_bytes": 5648,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9838724507332905,
+  "psnr": 38.47338003001998,
+  "tile_ssim": 0.9687705610692559,
+  "tile_xy": [
+   96,
+   32
+  ],
+  "dark_share": 0.07892541778122933,
+  "dark_psnr": 38.13437485036969,
+  "ssimu2": 64.05562916928523,
+  "src": "src/assets/title/slab.webp",
+  "w": 440,
+  "h": 103,
+  "orig_bytes": 9670,
+  "q82_bytes": 7146,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9839324976090704,
+  "psnr": 41.79769888982669,
+  "tile_ssim": 0.9292847241175431,
+  "tile_xy": [
+   1824,
+   704
+  ],
+  "dark_share": 0.1564164106502816,
+  "dark_psnr": 41.18091674914906,
+  "dark_tile_psnr": 37.48991192800614,
+  "dark_tile_xy": [
+   1856,
+   1024
+  ],
+  "ssimu2": 72.0671935144887,
+  "src": "src/assets/backdrops/w10dusk-far.webp",
+  "w": 2640,
+  "h": 1302,
+  "orig_bytes": 257314,
+  "q82_bytes": 138502,
+  "smooth_dark": 0.072,
+  "flag": "smooth dark area, dark tile as bad as the black picture, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9840031601637138,
+  "psnr": 35.464539011366185,
+  "tile_ssim": 0.9152904490185854,
+  "tile_xy": [
+   640,
+   1376
+  ],
+  "dark_share": 0.13779494652026492,
+  "dark_psnr": 36.47826420720621,
+  "dark_tile_psnr": 37.87593188551427,
+  "dark_tile_xy": [
+   128,
+   480
+  ],
+  "ssimu2": 80.60841954975612,
+  "src": "src/assets/props/dressnew-w5.webp",
+  "w": 990,
+  "h": 1602,
+  "orig_bytes": 608816,
+  "q82_bytes": 538928,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9840873383942706,
+  "psnr": 38.392414742966984,
+  "tile_ssim": 0.9808291841639926,
+  "tile_xy": [
+   32,
+   0
+  ],
+  "dark_share": 0.33184319119669875,
+  "dark_psnr": 40.13743961948865,
+  "ssimu2": 84.79148469261213,
+  "src": "src/assets/ui/slider-knob.webp",
+  "w": 120,
+  "h": 119,
+  "orig_bytes": 4108,
+  "q82_bytes": 3174,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9842530396842883,
+  "psnr": 34.74170286024672,
+  "tile_ssim": 0.9712247235784223,
+  "tile_xy": [
+   128,
+   128
+  ],
+  "dark_share": 0.2619844428364689,
+  "dark_psnr": 36.71253670748578,
+  "dark_tile_psnr": 37.664924924840776,
+  "dark_tile_xy": [
+   160,
+   96
+  ],
+  "ssimu2": 76.75603369397967,
+  "src": "src/assets/icons/story.webp",
+  "w": 192,
+  "h": 192,
+  "orig_bytes": 14320,
+  "q82_bytes": 11112,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9842538011196249,
+  "psnr": 37.969989642103904,
+  "tile_ssim": 0.947621982026053,
+  "tile_xy": [
+   64,
+   576
+  ],
+  "dark_share": 0.1639938156169252,
+  "dark_psnr": 38.98186314778841,
+  "dark_tile_psnr": 37.36936937843715,
+  "dark_tile_xy": [
+   1088,
+   640
+  ],
+  "ssimu2": 81.36528274514649,
+  "src": "src/assets/w1to4art/w1-new.webp",
+  "w": 1996,
+  "h": 925,
+  "orig_bytes": 293670,
+  "q82_bytes": 226918,
+  "smooth_dark": 0.013,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9842740439162685,
+  "psnr": 40.198275657646576,
+  "tile_ssim": 0.9595126197199718,
+  "tile_xy": [
+   448,
+   544
+  ],
+  "dark_share": 0.43415758691563566,
+  "dark_psnr": 42.19936498601541,
+  "dark_tile_psnr": 37.41082278730357,
+  "dark_tile_xy": [
+   224,
+   256
+  ],
+  "ssimu2": 80.05274291588042,
+  "src": "src/assets/props/gates/w9.webp",
+  "w": 991,
+  "h": 640,
+  "orig_bytes": 73526,
+  "q82_bytes": 52018,
+  "smooth_dark": 0.073,
+  "flag": "smooth dark area, dark tile as bad as the black picture"
+ },
+ {
+  "ssim": 0.9844448882028873,
+  "psnr": 35.24527361270561,
+  "tile_ssim": 0.9734026026065956,
+  "tile_xy": [
+   768,
+   320
+  ],
+  "dark_share": 0.16751969302643704,
+  "dark_psnr": 36.463979957853056,
+  "ssimu2": 84.92471742331573,
+  "src": "src/assets/enemies/caiman-atlas.webp",
+  "w": 1024,
+  "h": 479,
+  "orig_bytes": 100356,
+  "q82_bytes": 76510,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9844502024085992,
+  "psnr": 40.91935561581881,
+  "tile_ssim": 0.9703361239006127,
+  "tile_xy": [
+   1568,
+   160
+  ],
+  "dark_share": 0.39970368890664537,
+  "dark_psnr": 41.99819745384478,
+  "dark_tile_psnr": 39.22779043320102,
+  "dark_tile_xy": [
+   480,
+   352
+  ],
+  "ssimu2": 81.84482855197496,
+  "src": "src/assets/story/ground/w4.webp",
+  "w": 1600,
+  "h": 400,
+  "orig_bytes": 70432,
+  "q82_bytes": 58172,
+  "smooth_dark": 0.039,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9845185860269545,
+  "psnr": 39.97253210018546,
+  "tile_ssim": 0.9702647422621413,
+  "tile_xy": [
+   800,
+   256
+  ],
+  "dark_share": 0.059179763269101494,
+  "dark_psnr": 41.140903462733206,
+  "ssimu2": 84.33548360498104,
+  "src": "src/assets/story/ground/w5.webp",
+  "w": 1600,
+  "h": 400,
+  "orig_bytes": 78410,
+  "q82_bytes": 65168,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9846163117532694,
+  "psnr": 37.73584664383587,
+  "tile_ssim": 0.9585988741702229,
+  "tile_xy": [
+   480,
+   32
+  ],
+  "dark_share": 0.22009115522620173,
+  "dark_psnr": 37.372009551249235,
+  "dark_tile_psnr": 38.78793900323225,
+  "dark_tile_xy": [
+   128,
+   704
+  ],
+  "ssimu2": 84.27537305095056,
+  "src": "src/assets/w6to10/props-made/w8c-b.webp",
+  "w": 2048,
+  "h": 882,
+  "orig_bytes": 116714,
+  "q82_bytes": 88900,
+  "smooth_dark": 0.007,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9848424712760296,
+  "psnr": 40.98089683658729,
+  "tile_ssim": 0.9488498749736116,
+  "tile_xy": [
+   640,
+   896
+  ],
+  "dark_share": 0.2031999849146262,
+  "dark_psnr": 39.941734823972276,
+  "dark_tile_psnr": 37.90236391021501,
+  "dark_tile_xy": [
+   1056,
+   896
+  ],
+  "ssimu2": 83.01519987528278,
+  "src": "src/assets/kits/w10.webp",
+  "w": 2048,
+  "h": 1147,
+  "orig_bytes": 172222,
+  "q82_bytes": 144590,
+  "smooth_dark": 0.004,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9848693180490035,
+  "psnr": 40.99335652306805,
+  "tile_ssim": 0.9616189792504812,
+  "tile_xy": [
+   1984,
+   1120
+  ],
+  "dark_share": 0.18456988139733366,
+  "dark_psnr": 38.77637441291191,
+  "dark_tile_psnr": 38.418055321477084,
+  "dark_tile_xy": [
+   1184,
+   1152
+  ],
+  "ssimu2": 82.81832843434375,
+  "src": "src/assets/backdrops/w10storm-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 77474,
+  "q82_bytes": 62544,
+  "smooth_dark": 0.006,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9849690569752498,
+  "psnr": 36.40604034574424,
+  "tile_ssim": 0.9692310179758141,
+  "tile_xy": [
+   32,
+   32
+  ],
+  "dark_share": 0.11847555923777962,
+  "dark_psnr": 39.326392750246455,
+  "ssimu2": 65.6257848633443,
+  "src": "src/assets/pickups/bell.webp",
+  "w": 78,
+  "h": 96,
+  "orig_bytes": 4540,
+  "q82_bytes": 3726,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9850933279688343,
+  "psnr": 35.21098601151578,
+  "tile_ssim": 0.973986864307012,
+  "tile_xy": [
+   0,
+   64
+  ],
+  "dark_share": 0.2674690348212199,
+  "dark_psnr": 37.91808510010157,
+  "ssimu2": 53.403563858040435,
+  "src": "src/assets/icons/paw.webp",
+  "w": 104,
+  "h": 104,
+  "orig_bytes": 5254,
+  "q82_bytes": 4024,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9853730896271395,
+  "psnr": 41.32190083111257,
+  "tile_ssim": 0.959092626516054,
+  "tile_xy": [
+   352,
+   1440
+  ],
+  "dark_share": 0.16093753141980888,
+  "dark_psnr": 39.57071226261749,
+  "dark_tile_psnr": 39.23842102075453,
+  "dark_tile_xy": [
+   1024,
+   1408
+  ],
+  "ssimu2": 81.12115459585387,
+  "src": "src/assets/backdrops/w7dawn-near.webp",
+  "w": 2850,
+  "h": 1736,
+  "orig_bytes": 176920,
+  "q82_bytes": 137624,
+  "smooth_dark": 0.005,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9853985998911726,
+  "psnr": 40.45635448077334,
+  "tile_ssim": 0.9556445412071769,
+  "tile_xy": [
+   1376,
+   1152
+  ],
+  "dark_share": 0.027090376040091384,
+  "dark_psnr": 38.98733528040255,
+  "ssimu2": 84.16855414154969,
+  "src": "src/assets/backdrops/w7court-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 156554,
+  "q82_bytes": 130344,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9854083025637833,
+  "psnr": 37.35258062509033,
+  "tile_ssim": 0.971229573205411,
+  "tile_xy": [
+   32,
+   160
+  ],
+  "dark_share": 0.15064651394825193,
+  "dark_psnr": 36.84831084697376,
+  "ssimu2": 84.99860432183598,
+  "src": "src/assets/enemies/goldsnake-sleep.webp",
+  "w": 392,
+  "h": 328,
+  "orig_bytes": 29706,
+  "q82_bytes": 20284,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9854109760303089,
+  "psnr": 41.71433354885188,
+  "tile_ssim": 0.9567928765305684,
+  "tile_xy": [
+   2496,
+   1248
+  ],
+  "dark_share": 0.34145992676216236,
+  "dark_psnr": 41.27308704884099,
+  "dark_tile_psnr": 37.85061257459306,
+  "dark_tile_xy": [
+   2080,
+   1600
+  ],
+  "ssimu2": 81.23325452014586,
+  "src": "src/assets/backdrops/w4mist-near.webp",
+  "w": 2902,
+  "h": 1736,
+  "orig_bytes": 168904,
+  "q82_bytes": 134968,
+  "smooth_dark": 0.06,
+  "flag": "smooth dark area, dark tile as bad as the black picture"
+ },
+ {
+  "ssim": 0.9855233732730069,
+  "psnr": 35.40065589692456,
+  "tile_ssim": 0.9783529142139734,
+  "tile_xy": [
+   96,
+   96
+  ],
+  "dark_share": 0.35599556340631805,
+  "dark_psnr": 37.89331781812687,
+  "dark_tile_psnr": 37.138411869599715,
+  "dark_tile_xy": [
+   64,
+   0
+  ],
+  "ssimu2": 80.82008192737459,
+  "src": "src/assets/icons/howto.webp",
+  "w": 192,
+  "h": 192,
+  "orig_bytes": 15760,
+  "q82_bytes": 12370,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9855462382649157,
+  "psnr": 38.99562803315311,
+  "tile_ssim": 0.9481842925297604,
+  "tile_xy": [
+   224,
+   608
+  ],
+  "dark_share": 0.24348220309714974,
+  "dark_psnr": 39.07516565374745,
+  "dark_tile_psnr": 36.03788247509616,
+  "dark_tile_xy": [
+   608,
+   1312
+  ],
+  "ssimu2": 82.68533296991377,
+  "src": "src/assets/characters/cels-3.webp",
+  "w": 1942,
+  "h": 1982,
+  "orig_bytes": 580844,
+  "q82_bytes": 455818,
+  "smooth_dark": 0.013,
+  "flag": "dark tile < 36.5 dB"
+ },
+ {
+  "ssim": 0.985574285079957,
+  "psnr": 42.65063303486844,
+  "tile_ssim": 0.9487858767873766,
+  "tile_xy": [
+   2688,
+   1440
+  ],
+  "dark_share": 0.031702776871557696,
+  "dark_psnr": 39.64532211732926,
+  "ssimu2": 81.78019532032951,
+  "src": "src/assets/backdrops/w4storm-near.webp",
+  "w": 2902,
+  "h": 1736,
+  "orig_bytes": 137462,
+  "q82_bytes": 111622,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9855829908511956,
+  "psnr": 39.698865185618224,
+  "tile_ssim": 0.9376577624027641,
+  "tile_xy": [
+   576,
+   288
+  ],
+  "dark_share": 0.042204539556666004,
+  "dark_psnr": 38.16841528078226,
+  "dark_tile_psnr": 44.09777022784505,
+  "dark_tile_xy": [
+   640,
+   160
+  ],
+  "ssimu2": 83.28735351815693,
+  "src": "src/assets/kits/w5.webp",
+  "w": 2048,
+  "h": 783,
+  "orig_bytes": 146206,
+  "q82_bytes": 113550,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9855871655940364,
+  "psnr": 41.869738288509424,
+  "tile_ssim": 0.9630805531797537,
+  "tile_xy": [
+   192,
+   1184
+  ],
+  "dark_share": 0.5064160031073995,
+  "dark_psnr": 42.65358411408076,
+  "dark_tile_psnr": 37.79665113186863,
+  "dark_tile_xy": [
+   1440,
+   736
+  ],
+  "ssimu2": 82.13880807989885,
+  "src": "src/assets/backdrops/w2evening-mid.webp",
+  "w": 2076,
+  "h": 1302,
+  "orig_bytes": 216114,
+  "q82_bytes": 189780,
+  "smooth_dark": 0.098,
+  "flag": "smooth dark area, dark tile as bad as the black picture"
+ },
+ {
+  "ssim": 0.9857216153807296,
+  "psnr": 37.18766046630747,
+  "tile_ssim": 0.9733845659313299,
+  "tile_xy": [
+   160,
+   96
+  ],
+  "dark_share": 0.16812644318815193,
+  "dark_psnr": 37.254657762371,
+  "dark_tile_psnr": 40.07313784701989,
+  "dark_tile_xy": [
+   224,
+   128
+  ],
+  "ssimu2": 84.91525584988472,
+  "src": "src/assets/enemies/goldsnake-wake.webp",
+  "w": 392,
+  "h": 328,
+  "orig_bytes": 31884,
+  "q82_bytes": 21834,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9857929007876484,
+  "psnr": 34.97862093367403,
+  "tile_ssim": 0.9657468249112726,
+  "tile_xy": [
+   32,
+   32
+  ],
+  "dark_share": 0.40595719498964394,
+  "dark_psnr": 38.2159145344021,
+  "ssimu2": 41.601787696420686,
+  "src": "src/assets/icons/scenes.webp",
+  "w": 104,
+  "h": 104,
+  "orig_bytes": 5546,
+  "q82_bytes": 4170,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9858012250687043,
+  "psnr": 37.487441189259265,
+  "tile_ssim": 0.9646336205875747,
+  "tile_xy": [
+   480,
+   384
+  ],
+  "dark_share": 0.12975705287672684,
+  "dark_psnr": 39.07167624340839,
+  "ssimu2": 84.66412728650077,
+  "src": "src/assets/props/gates/w5.webp",
+  "w": 631,
+  "h": 640,
+  "orig_bytes": 67156,
+  "q82_bytes": 52596,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9858663161265553,
+  "psnr": 41.59761658439691,
+  "tile_ssim": 0.9610694053217135,
+  "tile_xy": [
+   1984,
+   768
+  ],
+  "dark_share": 0.1224381341448346,
+  "dark_psnr": 41.48471725437764,
+  "dark_tile_psnr": 39.87792784478464,
+  "dark_tile_xy": [
+   416,
+   1024
+  ],
+  "ssimu2": 83.85616913336276,
+  "src": "src/assets/backdrops/w2mist-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 152968,
+  "q82_bytes": 134018,
+  "smooth_dark": 0.007,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9860186524461835,
+  "psnr": 35.148387748828746,
+  "tile_ssim": 0.9748337111489038,
+  "tile_xy": [
+   96,
+   96
+  ],
+  "dark_share": 0.20857884749825228,
+  "dark_psnr": 37.09296458094768,
+  "ssimu2": 77.52210287464281,
+  "src": "src/assets/icons/map.webp",
+  "w": 192,
+  "h": 192,
+  "orig_bytes": 12412,
+  "q82_bytes": 9778,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9860640174050335,
+  "psnr": 34.36755212572581,
+  "tile_ssim": 0.9591650385268953,
+  "tile_xy": [
+   160,
+   320
+  ],
+  "dark_share": 0.1626898232577165,
+  "dark_psnr": 36.85016290976901,
+  "ssimu2": 83.68672374019127,
+  "src": "src/assets/flora/butterflies-atlas.webp",
+  "w": 512,
+  "h": 473,
+  "orig_bytes": 86636,
+  "q82_bytes": 67142,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB"
+ },
+ {
+  "ssim": 0.9861466921852109,
+  "psnr": 38.5139793061953,
+  "tile_ssim": 0.9663174839648763,
+  "tile_xy": [
+   64,
+   192
+  ],
+  "dark_share": 0.021004868081014483,
+  "dark_psnr": 54.33584346461189,
+  "ssimu2": 84.69295713643841,
+  "src": "src/assets/story/finds/notch.webp",
+  "w": 190,
+  "h": 768,
+  "orig_bytes": 23996,
+  "q82_bytes": 19734,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9861537671589127,
+  "psnr": 34.84154165247392,
+  "tile_ssim": 0.9757968306413375,
+  "tile_xy": [
+   96,
+   128
+  ],
+  "dark_share": 0.0072249006405441215,
+  "ssimu2": 84.79260869219087,
+  "src": "src/assets/enemies/snake2-atlas.webp",
+  "w": 2048,
+  "h": 179,
+  "orig_bytes": 42090,
+  "q82_bytes": 32836,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB"
+ },
+ {
+  "ssim": 0.9861915752766075,
+  "psnr": 37.3375494338628,
+  "tile_ssim": 0.9727047646261077,
+  "tile_xy": [
+   224,
+   64
+  ],
+  "dark_share": 0.05318297562750091,
+  "dark_psnr": 38.189138161676,
+  "ssimu2": 85.1283595415569,
+  "src": "src/assets/flora/heartbloom-ultimate.webp",
+  "w": 377,
+  "h": 230,
+  "orig_bytes": 21898,
+  "q82_bytes": 14694,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9862039627047071,
+  "psnr": 42.41600790139236,
+  "tile_ssim": 0.9631822011955113,
+  "tile_xy": [
+   544,
+   576
+  ],
+  "dark_share": 0.42856988304067206,
+  "dark_psnr": 42.08691256118687,
+  "dark_tile_psnr": 39.103669746847295,
+  "dark_tile_xy": [
+   1792,
+   672
+  ],
+  "ssimu2": 82.24510704969798,
+  "src": "src/assets/backdrops/w7-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 127080,
+  "q82_bytes": 109432,
+  "smooth_dark": 0.042,
+  "flag": ""
+ },
+ {
+  "ssim": 0.986258678749086,
+  "psnr": 40.99805449766134,
+  "tile_ssim": 0.9713794307257344,
+  "tile_xy": [
+   64,
+   128
+  ],
+  "dark_share": 0.34080522154773607,
+  "dark_psnr": 42.85284729878448,
+  "dark_tile_psnr": 38.45160843193711,
+  "dark_tile_xy": [
+   64,
+   224
+  ],
+  "ssimu2": 82.3981119857012,
+  "src": "src/assets/story/ground/w2.webp",
+  "w": 1600,
+  "h": 400,
+  "orig_bytes": 89394,
+  "q82_bytes": 73764,
+  "smooth_dark": 0.046,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9862658137818928,
+  "psnr": 38.444173870190056,
+  "tile_ssim": 0.9637095050536179,
+  "tile_xy": [
+   384,
+   224
+  ],
+  "dark_share": 0.35224956572345234,
+  "dark_psnr": 39.46028828637593,
+  "dark_tile_psnr": 35.86669172312099,
+  "dark_tile_xy": [
+   544,
+   1632
+  ],
+  "ssimu2": 83.53357373444749,
+  "src": "src/assets/characters/cels-0.webp",
+  "w": 1432,
+  "h": 2037,
+  "orig_bytes": 417580,
+  "q82_bytes": 333444,
+  "smooth_dark": 0.021,
+  "flag": "dark tile < 36.5 dB"
+ },
+ {
+  "ssim": 0.986286581017385,
+  "psnr": 37.07523493232188,
+  "tile_ssim": 0.9669410392148605,
+  "tile_xy": [
+   160,
+   896
+  ],
+  "dark_share": 0.1450888146550615,
+  "dark_psnr": 38.625896321894636,
+  "dark_tile_psnr": 38.82264209129682,
+  "dark_tile_xy": [
+   832,
+   1088
+  ],
+  "ssimu2": 83.86580732219215,
+  "src": "src/assets/props/dressnew-w3.webp",
+  "w": 1011,
+  "h": 1727,
+  "orig_bytes": 322020,
+  "q82_bytes": 271584,
+  "smooth_dark": 0.003,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9862950522039239,
+  "psnr": 37.363365953054185,
+  "tile_ssim": 0.9608147217488426,
+  "tile_xy": [
+   416,
+   192
+  ],
+  "dark_share": 0.015955514922288878,
+  "ssimu2": 82.9810032850067,
+  "src": "src/assets/props/water-signs.webp",
+  "w": 678,
+  "h": 232,
+  "orig_bytes": 40286,
+  "q82_bytes": 31870,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9864246790297522,
+  "psnr": 34.96429083910785,
+  "tile_ssim": 0.9808546631878815,
+  "tile_xy": [
+   32,
+   64
+  ],
+  "dark_share": 0.21140450348290946,
+  "dark_psnr": 37.62616563874226,
+  "ssimu2": 41.19200893433248,
+  "src": "src/assets/icons/leaf.webp",
+  "w": 96,
+  "h": 96,
+  "orig_bytes": 4582,
+  "q82_bytes": 3650,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9864485942778278,
+  "psnr": 35.78969471491939,
+  "tile_ssim": 0.9518715408494688,
+  "tile_xy": [
+   128,
+   1120
+  ],
+  "dark_share": 0.24277681856499964,
+  "dark_psnr": 39.69912929638571,
+  "dark_tile_psnr": 38.40694327201993,
+  "dark_tile_xy": [
+   320,
+   1984
+  ],
+  "ssimu2": 84.00937794547914,
+  "src": "src/assets/props/dressnew-w1.webp",
+  "w": 969,
+  "h": 2217,
+  "orig_bytes": 548342,
+  "q82_bytes": 476858,
+  "smooth_dark": 0.003,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9864798750141103,
+  "psnr": 41.363713572884954,
+  "tile_ssim": 0.9480311336272154,
+  "tile_xy": [
+   1504,
+   960
+  ],
+  "dark_share": 0.07775482830410704,
+  "dark_psnr": 40.71061748496561,
+  "dark_tile_psnr": 48.96654622731785,
+  "dark_tile_xy": [
+   1920,
+   1152
+  ],
+  "ssimu2": 82.61425628839885,
+  "src": "src/assets/backdrops/w9dawn-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 112528,
+  "q82_bytes": 91408,
+  "smooth_dark": 0.011,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9864829072082956,
+  "psnr": 37.62267403894632,
+  "tile_ssim": 0.94523146692944,
+  "tile_xy": [
+   160,
+   1088
+  ],
+  "dark_share": 0.269691685781788,
+  "dark_psnr": 40.99024483690589,
+  "dark_tile_psnr": 36.819143187379254,
+  "dark_tile_xy": [
+   128,
+   1536
+  ],
+  "ssimu2": 83.61560628401949,
+  "src": "src/assets/props/dress.webp",
+  "w": 1024,
+  "h": 2385,
+  "orig_bytes": 687868,
+  "q82_bytes": 601092,
+  "smooth_dark": 0.01,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9865174860296483,
+  "psnr": 36.7532998904382,
+  "tile_ssim": 0.9618764859118066,
+  "tile_xy": [
+   96,
+   1088
+  ],
+  "dark_share": 0.19965854278436812,
+  "dark_psnr": 38.714477087340796,
+  "dark_tile_psnr": 38.42718385711245,
+  "dark_tile_xy": [
+   704,
+   608
+  ],
+  "ssimu2": 82.9997243584713,
+  "src": "src/assets/props/dressnew-w7.webp",
+  "w": 1021,
+  "h": 1793,
+  "orig_bytes": 347606,
+  "q82_bytes": 298036,
+  "smooth_dark": 0.001,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9865214104827327,
+  "psnr": 42.27840191798809,
+  "tile_ssim": 0.9579497612930119,
+  "tile_xy": [
+   576,
+   1248
+  ],
+  "dark_share": 0.2693899574388911,
+  "dark_psnr": 42.75181026869725,
+  "dark_tile_psnr": 37.816421277834536,
+  "dark_tile_xy": [
+   832,
+   928
+  ],
+  "ssimu2": 81.90278848649129,
+  "src": "src/assets/backdrops/w1-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 190370,
+  "q82_bytes": 171278,
+  "smooth_dark": 0.073,
+  "flag": "smooth dark area, dark tile as bad as the black picture"
+ },
+ {
+  "ssim": 0.9866606628028711,
+  "psnr": 42.3597737526474,
+  "tile_ssim": 0.9294253533875345,
+  "tile_xy": [
+   1952,
+   864
+  ],
+  "dark_share": 0.13556038495554626,
+  "dark_psnr": 43.25493894000769,
+  "dark_tile_psnr": 38.17474699824586,
+  "dark_tile_xy": [
+   2592,
+   1088
+  ],
+  "ssimu2": 74.0260724595658,
+  "src": "src/assets/backdrops/w8sunset-far.webp",
+  "w": 2640,
+  "h": 1302,
+  "orig_bytes": 223738,
+  "q82_bytes": 109564,
+  "smooth_dark": 0.074,
+  "flag": "smooth dark area, dark tile as bad as the black picture, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9866636482179134,
+  "psnr": 40.897221766505325,
+  "tile_ssim": 0.8661083487774408,
+  "tile_xy": [
+   448,
+   320
+  ],
+  "dark_share": 0.034679455848810686,
+  "dark_psnr": 37.16379301515822,
+  "dark_tile_psnr": 36.16562972982739,
+  "dark_tile_xy": [
+   128,
+   1024
+  ],
+  "ssimu2": 78.22158037672487,
+  "src": "src/assets/backdrops/w4terraces-far.webp",
+  "w": 2640,
+  "h": 1302,
+  "orig_bytes": 369222,
+  "q82_bytes": 204992,
+  "smooth_dark": 0.004,
+  "flag": "worst tile SSIM < 0.90, dark tile < 36.5 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9866751062613222,
+  "psnr": 39.49046141780515,
+  "tile_ssim": 0.961198260645379,
+  "tile_xy": [
+   384,
+   576
+  ],
+  "dark_share": 0.09510588216261688,
+  "dark_psnr": 38.52861904734841,
+  "ssimu2": 80.49707118037895,
+  "src": "src/assets/props/gates/w4.webp",
+  "w": 989,
+  "h": 640,
+  "orig_bytes": 99180,
+  "q82_bytes": 72740,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9868575328777696,
+  "psnr": 35.91266715557721,
+  "tile_ssim": 0.97581427126402,
+  "tile_xy": [
+   32,
+   96
+  ],
+  "dark_share": 0.2918711046280334,
+  "dark_psnr": 38.22895409955895,
+  "dark_tile_psnr": 38.19030402613799,
+  "dark_tile_xy": [
+   128,
+   64
+  ],
+  "ssimu2": 80.69052114147618,
+  "src": "src/assets/ui/satchel.webp",
+  "w": 192,
+  "h": 192,
+  "orig_bytes": 14340,
+  "q82_bytes": 12028,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9868913920574586,
+  "psnr": 35.86543151803758,
+  "tile_ssim": 0.9783875366938434,
+  "tile_xy": [
+   160,
+   128
+  ],
+  "dark_share": 0.26711874401120367,
+  "dark_psnr": 37.373270773918065,
+  "ssimu2": 78.18834741770257,
+  "src": "src/assets/icons/sound.webp",
+  "w": 192,
+  "h": 192,
+  "orig_bytes": 14390,
+  "q82_bytes": 10986,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9869330351665271,
+  "psnr": 38.689601919313056,
+  "tile_ssim": 0.9671197749693319,
+  "tile_xy": [
+   608,
+   1440
+  ],
+  "dark_share": 0.12698335688712284,
+  "dark_psnr": 38.80946351012518,
+  "dark_tile_psnr": 41.39559372986416,
+  "dark_tile_xy": [
+   32,
+   1536
+  ],
+  "ssimu2": 80.59964568774721,
+  "src": "src/assets/proto/props-atlas.webp",
+  "w": 2048,
+  "h": 1782,
+  "orig_bytes": 424186,
+  "q82_bytes": 332854,
+  "smooth_dark": 0.014,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9871479976086401,
+  "psnr": 37.32791608335972,
+  "tile_ssim": 0.9571435502155733,
+  "tile_xy": [
+   320,
+   640
+  ],
+  "dark_share": 0.37734560473511336,
+  "dark_psnr": 39.26646891940593,
+  "dark_tile_psnr": 36.84042735378711,
+  "dark_tile_xy": [
+   384,
+   576
+  ],
+  "ssimu2": 86.08534376303811,
+  "src": "src/assets/enemies/journal-cards.webp",
+  "w": 1608,
+  "h": 900,
+  "orig_bytes": 255094,
+  "q82_bytes": 234560,
+  "smooth_dark": 0.011,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9871585131397894,
+  "psnr": 37.971878212567304,
+  "tile_ssim": 0.9679381977998933,
+  "tile_xy": [
+   96,
+   224
+  ],
+  "dark_share": 0.22739867283389653,
+  "dark_psnr": 37.90758987033366,
+  "ssimu2": 86.06776836431145,
+  "src": "src/assets/w6to10/props-made/w8b.webp",
+  "w": 2048,
+  "h": 714,
+  "orig_bytes": 90400,
+  "q82_bytes": 73232,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9871868116699236,
+  "psnr": 42.184069580038894,
+  "tile_ssim": 0.9436300455374794,
+  "tile_xy": [
+   1952,
+   1088
+  ],
+  "dark_share": 0.16497957687473816,
+  "dark_psnr": 42.29329766740929,
+  "dark_tile_psnr": 39.03844330551907,
+  "dark_tile_xy": [
+   320,
+   1056
+  ],
+  "ssimu2": 77.1050257634355,
+  "src": "src/assets/backdrops/w9dawn-far.webp",
+  "w": 2640,
+  "h": 1302,
+  "orig_bytes": 256566,
+  "q82_bytes": 138806,
+  "smooth_dark": 0.041,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9872215981183776,
+  "psnr": 39.03551530120565,
+  "tile_ssim": 0.9775153947302418,
+  "tile_xy": [
+   352,
+   32
+  ],
+  "dark_share": 0.19055537495936586,
+  "dark_psnr": 41.24040598667382,
+  "dark_tile_psnr": 40.60141173482939,
+  "dark_tile_xy": [
+   32,
+   32
+  ],
+  "ssimu2": 82.73923124384228,
+  "src": "src/assets/title/log.webp",
+  "w": 475,
+  "h": 217,
+  "orig_bytes": 15068,
+  "q82_bytes": 10740,
+  "smooth_dark": 0.045,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9873157849196965,
+  "psnr": 42.74943979875961,
+  "tile_ssim": 0.9685113544842029,
+  "tile_xy": [
+   3488,
+   1024
+  ],
+  "dark_share": 0.2474807835717153,
+  "dark_psnr": 43.54180213101944,
+  "dark_tile_psnr": 41.184012540497854,
+  "dark_tile_xy": [
+   2528,
+   1664
+  ],
+  "ssimu2": 82.73595328702835,
+  "src": "src/assets/backdrops/w1c-near.webp",
+  "w": 3637,
+  "h": 1736,
+  "orig_bytes": 362970,
+  "q82_bytes": 202412,
+  "smooth_dark": 0.055,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9873595011965854,
+  "psnr": 41.258704645601824,
+  "tile_ssim": 0.9302982488334547,
+  "tile_xy": [
+   832,
+   896
+  ],
+  "dark_share": 0.07832734022250151,
+  "dark_psnr": 39.94350994253922,
+  "dark_tile_psnr": 37.790789539838855,
+  "dark_tile_xy": [
+   128,
+   1056
+  ],
+  "ssimu2": 77.39582911795345,
+  "src": "src/assets/backdrops/w5twi2-far.webp",
+  "w": 2640,
+  "h": 1302,
+  "orig_bytes": 310686,
+  "q82_bytes": 176618,
+  "smooth_dark": 0.025,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9873668273065281,
+  "psnr": 41.175860949426294,
+  "tile_ssim": 0.9728662614465002,
+  "tile_xy": [
+   1696,
+   352
+  ],
+  "dark_share": 0.057941562786548044,
+  "dark_psnr": 40.20578830516772,
+  "ssimu2": 84.42076043539498,
+  "src": "src/assets/w7slide/pokey-slide-stills.webp",
+  "w": 2048,
+  "h": 512,
+  "orig_bytes": 96496,
+  "q82_bytes": 67444,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9874491688963981,
+  "psnr": 42.18046146886286,
+  "tile_ssim": 0.962641338331143,
+  "tile_xy": [
+   416,
+   672
+  ],
+  "dark_share": 0.37999229752375796,
+  "dark_psnr": 42.52144518027543,
+  "dark_tile_psnr": 39.198381297696,
+  "dark_tile_xy": [
+   1632,
+   1088
+  ],
+  "ssimu2": 80.6011066688868,
+  "src": "src/assets/backdrops/w6-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 208888,
+  "q82_bytes": 185220,
+  "smooth_dark": 0.083,
+  "flag": "smooth dark area, dark tile as bad as the black picture"
+ },
+ {
+  "ssim": 0.987619021669603,
+  "psnr": 35.0469276346268,
+  "tile_ssim": 0.978552264863419,
+  "tile_xy": [
+   128,
+   128
+  ],
+  "dark_share": 0.24039716896859753,
+  "dark_psnr": 36.62119507078518,
+  "ssimu2": 75.75713657165844,
+  "src": "src/assets/icons/shimmy.webp",
+  "w": 192,
+  "h": 192,
+  "orig_bytes": 15886,
+  "q82_bytes": 12454,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9876281220389216,
+  "psnr": 43.27078246611178,
+  "tile_ssim": 0.9695276139631697,
+  "tile_xy": [
+   448,
+   512
+  ],
+  "dark_share": 0.0,
+  "ssimu2": 77.5375334553448,
+  "src": "src/assets/w7slide/chute-floor-1groove.webp",
+  "w": 1024,
+  "h": 1024,
+  "orig_bytes": 54138,
+  "q82_bytes": 33204,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.987755928739558,
+  "psnr": 38.40445589250655,
+  "tile_ssim": 0.9612278179564332,
+  "tile_xy": [
+   256,
+   1536
+  ],
+  "dark_share": 0.10790981023189529,
+  "dark_psnr": 36.98528108551576,
+  "dark_tile_psnr": 42.16183176988474,
+  "dark_tile_xy": [
+   1280,
+   256
+  ],
+  "ssimu2": 82.6246346665587,
+  "src": "src/assets/enemies/venom2-atlas.webp",
+  "w": 2048,
+  "h": 1775,
+  "orig_bytes": 317498,
+  "q82_bytes": 245830,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.987804112898443,
+  "psnr": 33.40003672988219,
+  "tile_ssim": 0.9649676666622122,
+  "tile_xy": [
+   352,
+   160
+  ],
+  "dark_share": 0.27936399526911093,
+  "dark_psnr": 35.82241435411546,
+  "ssimu2": 84.49279187701308,
+  "src": "src/assets/enemies/frog-atlas.webp",
+  "w": 1024,
+  "h": 328,
+  "orig_bytes": 77222,
+  "q82_bytes": 58530,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB"
+ },
+ {
+  "ssim": 0.9878067322702533,
+  "psnr": 44.06762885276742,
+  "tile_ssim": 0.961089556491365,
+  "tile_xy": [
+   320,
+   544
+  ],
+  "dark_share": 0.08083057403564453,
+  "dark_psnr": 41.68037907662108,
+  "dark_tile_psnr": 41.23602834819599,
+  "dark_tile_xy": [
+   192,
+   256
+  ],
+  "ssimu2": 75.64437220671859,
+  "src": "src/assets/w7slide/chute-ceiling.webp",
+  "w": 1024,
+  "h": 1024,
+  "orig_bytes": 48716,
+  "q82_bytes": 28994,
+  "smooth_dark": 0.005,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9878618505824485,
+  "psnr": 40.98162048379477,
+  "tile_ssim": 0.9681736812014543,
+  "tile_xy": [
+   1632,
+   960
+  ],
+  "dark_share": 0.018009287300625884,
+  "ssimu2": 84.43321419833204,
+  "src": "src/assets/backdrops/w5twi1-mid.webp",
+  "w": 2394,
+  "h": 1302,
+  "orig_bytes": 373554,
+  "q82_bytes": 284712,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9878820971473206,
+  "psnr": 34.006715034676276,
+  "tile_ssim": 0.9729998653678166,
+  "tile_xy": [
+   1248,
+   128
+  ],
+  "dark_share": 0.027823527219882998,
+  "dark_psnr": 35.97158623127687,
+  "ssimu2": 85.58954203706588,
+  "src": "src/assets/enemies/snake-atlas.webp",
+  "w": 2048,
+  "h": 378,
+  "orig_bytes": 206008,
+  "q82_bytes": 163200,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB"
+ },
+ {
+  "ssim": 0.9881192318826656,
+  "psnr": 42.502822081731836,
+  "tile_ssim": 0.9544430110533494,
+  "tile_xy": [
+   672,
+   768
+  ],
+  "dark_share": 0.22548129477554635,
+  "dark_psnr": 41.42650362046677,
+  "dark_tile_psnr": 38.93354806050206,
+  "dark_tile_xy": [
+   800,
+   736
+  ],
+  "ssimu2": 83.1567769374663,
+  "src": "src/assets/backdrops/w1c-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 141514,
+  "q82_bytes": 126762,
+  "smooth_dark": 0.061,
+  "flag": "smooth dark area, dark tile as bad as the black picture"
+ },
+ {
+  "ssim": 0.9881828791092422,
+  "psnr": 43.66869723541445,
+  "tile_ssim": 0.9661098816423023,
+  "tile_xy": [
+   192,
+   512
+  ],
+  "dark_share": 0.0,
+  "ssimu2": 77.9274500817299,
+  "src": "src/assets/w7slide/chute-floor-3lane.webp",
+  "w": 1024,
+  "h": 1024,
+  "orig_bytes": 49590,
+  "q82_bytes": 30642,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9881992858341139,
+  "psnr": 37.79494444731517,
+  "tile_ssim": 0.9749821081717494,
+  "tile_xy": [
+   64,
+   192
+  ],
+  "dark_share": 0.05541994076721233,
+  "dark_psnr": 37.321838499820416,
+  "ssimu2": 85.69294138424443,
+  "src": "src/assets/story/hd/pokey-3.webp",
+  "w": 1630,
+  "h": 512,
+  "orig_bytes": 107936,
+  "q82_bytes": 82854,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9882481636568428,
+  "psnr": 38.55758541527253,
+  "tile_ssim": 0.9722035818527124,
+  "tile_xy": [
+   1056,
+   736
+  ],
+  "dark_share": 0.03204691040285872,
+  "dark_psnr": 37.18283673369952,
+  "ssimu2": 84.81834124146702,
+  "src": "src/assets/story/hd/pokey-2.webp",
+  "w": 2008,
+  "h": 1988,
+  "orig_bytes": 596406,
+  "q82_bytes": 465926,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9882510526965229,
+  "psnr": 36.38563470884553,
+  "tile_ssim": 0.9804427339565581,
+  "tile_xy": [
+   320,
+   64
+  ],
+  "dark_share": 0.23129958024957106,
+  "dark_psnr": 39.12859808033599,
+  "ssimu2": 86.21217510248951,
+  "src": "src/assets/enemies/boa-atlas.webp",
+  "w": 1024,
+  "h": 368,
+  "orig_bytes": 83334,
+  "q82_bytes": 65732,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.98825521298185,
+  "psnr": 40.74152960705436,
+  "tile_ssim": 0.96766950998257,
+  "tile_xy": [
+   768,
+   0
+  ],
+  "dark_share": 0.06438455359509969,
+  "dark_psnr": 39.66528147933844,
+  "dark_tile_psnr": 41.72577323284584,
+  "dark_tile_xy": [
+   736,
+   0
+  ],
+  "ssimu2": 83.92769965535348,
+  "src": "src/assets/kits/w3.webp",
+  "w": 2048,
+  "h": 1229,
+  "orig_bytes": 222736,
+  "q82_bytes": 195020,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9883059463381243,
+  "psnr": 36.41476182533887,
+  "tile_ssim": 0.9811636850327785,
+  "tile_xy": [
+   192,
+   192
+  ],
+  "dark_share": 0.2282053053329649,
+  "dark_psnr": 39.28790326950535,
+  "ssimu2": 84.54337339411572,
+  "src": "src/assets/w6to10/props-made/w8glowcaps.webp",
+  "w": 300,
+  "h": 248,
+  "orig_bytes": 14426,
+  "q82_bytes": 10902,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9883078987210826,
+  "psnr": 37.95580544292579,
+  "tile_ssim": 0.9670517219923445,
+  "tile_xy": [
+   608,
+   2016
+  ],
+  "dark_share": 0.13192944227677614,
+  "dark_psnr": 39.91608616272821,
+  "dark_tile_psnr": 41.97721765779596,
+  "dark_tile_xy": [
+   1280,
+   288
+  ],
+  "ssimu2": 86.43723869190147,
+  "src": "src/assets/characters/flicker-anim.webp",
+  "w": 2048,
+  "h": 2544,
+  "orig_bytes": 1848728,
+  "q82_bytes": 1625132,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9883390100319712,
+  "psnr": 42.93131855616974,
+  "tile_ssim": 0.9662146909257944,
+  "tile_xy": [
+   1056,
+   1248
+  ],
+  "dark_share": 0.34000908186721934,
+  "dark_psnr": 43.344138589331244,
+  "dark_tile_psnr": 40.011736517820786,
+  "dark_tile_xy": [
+   832,
+   1248
+  ],
+  "ssimu2": 84.96223776239431,
+  "src": "src/assets/backdrops/w9ash-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 94478,
+  "q82_bytes": 79872,
+  "smooth_dark": 0.099,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9883520686913749,
+  "psnr": 42.35190253940533,
+  "tile_ssim": 0.9629896526887674,
+  "tile_xy": [
+   1728,
+   800
+  ],
+  "dark_share": 0.1372092013888889,
+  "dark_psnr": 42.982502574055076,
+  "dark_tile_psnr": 40.83146622237953,
+  "dark_tile_xy": [
+   1728,
+   800
+  ],
+  "ssimu2": 81.31534311925228,
+  "src": "src/assets/story/cards/stone-golem.webp",
+  "w": 1920,
+  "h": 1080,
+  "orig_bytes": 215150,
+  "q82_bytes": 195584,
+  "smooth_dark": 0.027,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9883601337261191,
+  "psnr": 38.20428284379024,
+  "tile_ssim": 0.9541564685648063,
+  "tile_xy": [
+   1504,
+   6560
+  ],
+  "dark_share": 0.46532479185019104,
+  "dark_psnr": 40.83463578790475,
+  "dark_tile_psnr": 36.62184555106803,
+  "dark_tile_xy": [
+   1120,
+   4288
+  ],
+  "ssimu2": 83.74135326991703,
+  "src": "src/assets/enemies/seamstress-anim.webp",
+  "w": 2048,
+  "h": 6664,
+  "orig_bytes": 1929524,
+  "q82_bytes": 1633018,
+  "smooth_dark": 0.012,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9884034731499362,
+  "psnr": 34.70618934164007,
+  "tile_ssim": 0.9787235888983271,
+  "tile_xy": [
+   128,
+   96
+  ],
+  "dark_share": 0.19500206242265916,
+  "dark_psnr": 36.687073335670696,
+  "ssimu2": 71.98346089731784,
+  "src": "src/assets/icons/glide.webp",
+  "w": 192,
+  "h": 192,
+  "orig_bytes": 15140,
+  "q82_bytes": 11432,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9884267827773522,
+  "psnr": 42.57180102237653,
+  "tile_ssim": 0.9745455965915937,
+  "tile_xy": [
+   448,
+   960
+  ],
+  "dark_share": 0.18924767184864746,
+  "dark_psnr": 41.99781238844595,
+  "dark_tile_psnr": 41.028225976134905,
+  "dark_tile_xy": [
+   1440,
+   608
+  ],
+  "ssimu2": 84.26160629996839,
+  "src": "src/assets/backdrops/w6dawn-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 203154,
+  "q82_bytes": 184004,
+  "smooth_dark": 0.014,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9884329787453283,
+  "psnr": 42.890288757800796,
+  "tile_ssim": 0.9657037715147583,
+  "tile_xy": [
+   1312,
+   1152
+  ],
+  "dark_share": 0.11633537679002229,
+  "dark_psnr": 44.70292194350171,
+  "ssimu2": 83.85329471132151,
+  "src": "src/assets/backdrops/w1rain-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 155376,
+  "q82_bytes": 134130,
+  "smooth_dark": 0.037,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9884692617877394,
+  "psnr": 34.583613608165415,
+  "tile_ssim": 0.9678702529938324,
+  "tile_xy": [
+   672,
+   608
+  ],
+  "dark_share": 0.20017520669401803,
+  "dark_psnr": 35.94316185544274,
+  "dark_tile_psnr": 36.338077597524,
+  "dark_tile_xy": [
+   672,
+   608
+  ],
+  "ssimu2": 84.19945337645181,
+  "src": "src/assets/enemies/golem-atlas.webp",
+  "w": 1024,
+  "h": 796,
+  "orig_bytes": 222584,
+  "q82_bytes": 175980,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, dark tile < 36.5 dB"
+ },
+ {
+  "ssim": 0.9885034074188511,
+  "psnr": 38.052945650082506,
+  "tile_ssim": 0.9772558032548417,
+  "tile_xy": [
+   96,
+   128
+  ],
+  "dark_share": 0.1668329295520403,
+  "dark_psnr": 38.69306460608081,
+  "ssimu2": 83.59205167942399,
+  "src": "src/assets/ui/token.webp",
+  "w": 160,
+  "h": 162,
+  "orig_bytes": 6344,
+  "q82_bytes": 4924,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9885157056493032,
+  "psnr": 37.31666799702528,
+  "tile_ssim": 0.9690193629879684,
+  "tile_xy": [
+   832,
+   800
+  ],
+  "dark_share": 0.136181297342927,
+  "dark_psnr": 37.29752258344776,
+  "ssimu2": 84.15894718719593,
+  "src": "src/assets/characters/cels-5.webp",
+  "w": 2038,
+  "h": 1860,
+  "orig_bytes": 894412,
+  "q82_bytes": 704572,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9885723380001088,
+  "psnr": 42.10392834511143,
+  "tile_ssim": 0.9684619792267682,
+  "tile_xy": [
+   1120,
+   1248
+  ],
+  "dark_share": 0.08387987813724068,
+  "dark_psnr": 39.99816802494085,
+  "ssimu2": 84.121329593733,
+  "src": "src/assets/backdrops/w4storm-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 132446,
+  "q82_bytes": 115376,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9885777730365827,
+  "psnr": 36.88340385643266,
+  "tile_ssim": 0.9667509906622274,
+  "tile_xy": [
+   1568,
+   1376
+  ],
+  "dark_share": 0.13565567396109743,
+  "dark_psnr": 36.69002158314018,
+  "ssimu2": 82.96135057129925,
+  "src": "src/assets/characters/cels-4.webp",
+  "w": 2044,
+  "h": 2016,
+  "orig_bytes": 963348,
+  "q82_bytes": 760190,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9885885114102771,
+  "psnr": 41.44036292649552,
+  "tile_ssim": 0.9667452549623522,
+  "tile_xy": [
+   1792,
+   1536
+  ],
+  "dark_share": 0.4454643431546484,
+  "dark_psnr": 42.384057997938804,
+  "dark_tile_psnr": 39.08372278283771,
+  "dark_tile_xy": [
+   2528,
+   1504
+  ],
+  "ssimu2": 81.7107055448617,
+  "src": "src/assets/backdrops/w2evening-near.webp",
+  "w": 2902,
+  "h": 1736,
+  "orig_bytes": 223014,
+  "q82_bytes": 179194,
+  "smooth_dark": 0.075,
+  "flag": "smooth dark area, dark tile as bad as the black picture"
+ },
+ {
+  "ssim": 0.9886308703829487,
+  "psnr": 38.4370660288009,
+  "tile_ssim": 0.9795382901816673,
+  "tile_xy": [
+   256,
+   32
+  ],
+  "dark_share": 0.10660646536857618,
+  "dark_psnr": 40.619569710124935,
+  "ssimu2": 76.71282992833105,
+  "src": "src/assets/w6to10/props-made/w8fungus.webp",
+  "w": 604,
+  "h": 164,
+  "orig_bytes": 15444,
+  "q82_bytes": 11500,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9886544659539126,
+  "psnr": 34.456223020245176,
+  "tile_ssim": 0.9864347753690714,
+  "tile_xy": [
+   32,
+   32
+  ],
+  "dark_share": 0.29552590266875983,
+  "dark_psnr": 37.11768644857629,
+  "ssimu2": 27.42985970425987,
+  "src": "src/assets/icons/pouch.webp",
+  "w": 84,
+  "h": 84,
+  "orig_bytes": 4918,
+  "q82_bytes": 4036,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9886609866827146,
+  "psnr": 42.66582278133623,
+  "tile_ssim": 0.9484335624768951,
+  "tile_xy": [
+   1952,
+   1088
+  ],
+  "dark_share": 0.10952962807801518,
+  "dark_psnr": 42.47455376584418,
+  "dark_tile_psnr": 39.04149575109281,
+  "dark_tile_xy": [
+   2432,
+   480
+  ],
+  "ssimu2": 76.49150189221217,
+  "src": "src/assets/backdrops/w10after-far.webp",
+  "w": 2640,
+  "h": 1302,
+  "orig_bytes": 233312,
+  "q82_bytes": 122746,
+  "smooth_dark": 0.05,
+  "flag": "smooth dark area, dark tile as bad as the black picture, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9886638726460829,
+  "psnr": 42.85552654550797,
+  "tile_ssim": 0.9629471748662616,
+  "tile_xy": [
+   1024,
+   1472
+  ],
+  "dark_share": 0.1157298388747152,
+  "dark_psnr": 45.92432099668983,
+  "dark_tile_psnr": 45.92676863180934,
+  "dark_tile_xy": [
+   1728,
+   1664
+  ],
+  "ssimu2": 80.58779620928135,
+  "src": "src/assets/backdrops/w7court-near.webp",
+  "w": 2902,
+  "h": 1736,
+  "orig_bytes": 173804,
+  "q82_bytes": 139290,
+  "smooth_dark": 0.052,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9886910192745889,
+  "psnr": 37.47250382759202,
+  "tile_ssim": 0.9725204719869671,
+  "tile_xy": [
+   256,
+   160
+  ],
+  "dark_share": 0.16257597550225028,
+  "dark_psnr": 38.780718033259944,
+  "dark_tile_psnr": 39.892542014861625,
+  "dark_tile_xy": [
+   192,
+   160
+  ],
+  "ssimu2": 84.32982771269151,
+  "src": "src/assets/enemies/goldsnake-head.webp",
+  "w": 392,
+  "h": 328,
+  "orig_bytes": 31522,
+  "q82_bytes": 24110,
+  "smooth_dark": 0.003,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9887569002378397,
+  "psnr": 42.715502098267734,
+  "tile_ssim": 0.9776985725459301,
+  "tile_xy": [
+   608,
+   448
+  ],
+  "dark_share": 0.08188141812518149,
+  "dark_psnr": 42.61663877677384,
+  "dark_tile_psnr": 45.227664889406334,
+  "dark_tile_xy": [
+   704,
+   384
+  ],
+  "ssimu2": 83.06889482068917,
+  "src": "src/assets/story/castle7.webp",
+  "w": 828,
+  "h": 732,
+  "orig_bytes": 51062,
+  "q82_bytes": 44400,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9887587118644392,
+  "psnr": 42.82072933926897,
+  "tile_ssim": 0.9606635924545074,
+  "tile_xy": [
+   1952,
+   32
+  ],
+  "dark_share": 0.04744410514831543,
+  "dark_psnr": 40.06030479298123,
+  "ssimu2": 79.27340936928462,
+  "src": "src/assets/w7/temple-run.webp",
+  "w": 2048,
+  "h": 2048,
+  "orig_bytes": 272358,
+  "q82_bytes": 196522,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9888273682398484,
+  "psnr": 37.61827322981206,
+  "tile_ssim": 0.9760519300951047,
+  "tile_xy": [
+   544,
+   128
+  ],
+  "dark_share": 0.05150100949922219,
+  "dark_psnr": 42.4082232322457,
+  "ssimu2": 82.07446066418146,
+  "src": "src/assets/w8/pokey-jar.webp",
+  "w": 889,
+  "h": 206,
+  "orig_bytes": 61988,
+  "q82_bytes": 48582,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.988846681135476,
+  "psnr": 37.61134961637967,
+  "tile_ssim": 0.9793256326097586,
+  "tile_xy": [
+   96,
+   256
+  ],
+  "dark_share": 0.1143740340030912,
+  "dark_psnr": 38.15845201712185,
+  "ssimu2": 84.06100802569065,
+  "src": "src/assets/hero/title-idle.webp",
+  "w": 180,
+  "h": 303,
+  "orig_bytes": 18000,
+  "q82_bytes": 13344,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9888481624293827,
+  "psnr": 41.13220310630535,
+  "tile_ssim": 0.963915859486009,
+  "tile_xy": [
+   544,
+   1408
+  ],
+  "dark_share": 0.12755681071850783,
+  "dark_psnr": 40.92540319054063,
+  "dark_tile_psnr": 41.354245526528814,
+  "dark_tile_xy": [
+   1344,
+   1696
+  ],
+  "ssimu2": 81.85902610847536,
+  "src": "src/assets/backdrops/w2mist-near.webp",
+  "w": 2902,
+  "h": 1736,
+  "orig_bytes": 234648,
+  "q82_bytes": 186354,
+  "smooth_dark": 0.019,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9888613379885138,
+  "psnr": 39.06628578576751,
+  "tile_ssim": 0.9819293471496312,
+  "tile_xy": [
+   32,
+   96
+  ],
+  "dark_share": 0.25053453068206116,
+  "dark_psnr": 39.043679856272,
+  "ssimu2": 87.83387137928324,
+  "src": "src/assets/ui/ui-kit.webp",
+  "w": 284,
+  "h": 136,
+  "orig_bytes": 8596,
+  "q82_bytes": 7300,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9888763274955785,
+  "psnr": 37.14123409929695,
+  "tile_ssim": 0.9647527349369521,
+  "tile_xy": [
+   192,
+   160
+  ],
+  "dark_share": 0.26686874118979526,
+  "dark_psnr": 40.83371907986832,
+  "dark_tile_psnr": 40.70424401696268,
+  "dark_tile_xy": [
+   640,
+   192
+  ],
+  "ssimu2": 83.08703826242368,
+  "src": "src/assets/ui/trails.webp",
+  "w": 1024,
+  "h": 283,
+  "orig_bytes": 73604,
+  "q82_bytes": 63762,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9889307569745401,
+  "psnr": 42.80482457606368,
+  "tile_ssim": 0.9563430550912407,
+  "tile_xy": [
+   416,
+   672
+  ],
+  "dark_share": 0.18668290277757027,
+  "dark_psnr": 43.09719654434309,
+  "dark_tile_psnr": 37.892426864985296,
+  "dark_tile_xy": [
+   384,
+   1088
+  ],
+  "ssimu2": 77.88494743464864,
+  "src": "src/assets/backdrops/w9ash-far.webp",
+  "w": 2159,
+  "h": 1302,
+  "orig_bytes": 175106,
+  "q82_bytes": 127206,
+  "smooth_dark": 0.055,
+  "flag": "smooth dark area, dark tile as bad as the black picture, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9889419652525763,
+  "psnr": 37.253165044408014,
+  "tile_ssim": 0.9509918328301661,
+  "tile_xy": [
+   64,
+   416
+  ],
+  "dark_share": 0.13138523161414287,
+  "dark_psnr": 39.55185582572726,
+  "dark_tile_psnr": 39.03581854482358,
+  "dark_tile_xy": [
+   64,
+   1024
+  ],
+  "ssimu2": 82.57724336731414,
+  "src": "src/assets/props/w5-props.webp",
+  "w": 2048,
+  "h": 1710,
+  "orig_bytes": 916828,
+  "q82_bytes": 752694,
+  "smooth_dark": 0.001,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9889447511690085,
+  "psnr": 38.61947911144374,
+  "tile_ssim": 0.973419144826624,
+  "tile_xy": [
+   160,
+   1568
+  ],
+  "dark_share": 0.038668871804040765,
+  "dark_psnr": 38.3914573966675,
+  "ssimu2": 85.44430703856318,
+  "src": "src/assets/story/hd/pokey-1.webp",
+  "w": 1998,
+  "h": 1718,
+  "orig_bytes": 597856,
+  "q82_bytes": 472544,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9890052793244882,
+  "psnr": 43.04791855851941,
+  "tile_ssim": 0.9690516016525983,
+  "tile_xy": [
+   448,
+   1408
+  ],
+  "dark_share": 0.12584694116693834,
+  "dark_psnr": 42.3415437211589,
+  "dark_tile_psnr": 42.40261965711384,
+  "dark_tile_xy": [
+   704,
+   1600
+  ],
+  "ssimu2": 82.43055473270672,
+  "src": "src/assets/backdrops/w10night-near.webp",
+  "w": 2902,
+  "h": 1736,
+  "orig_bytes": 89404,
+  "q82_bytes": 72040,
+  "smooth_dark": 0.018,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9890390207007204,
+  "psnr": 39.0053977818721,
+  "tile_ssim": 0.9150198656813393,
+  "tile_xy": [
+   160,
+   1120
+  ],
+  "dark_share": 0.16654288191625702,
+  "dark_psnr": 40.448507125422466,
+  "dark_tile_psnr": 37.597219608720565,
+  "dark_tile_xy": [
+   1184,
+   704
+  ],
+  "ssimu2": 81.54919202090431,
+  "src": "src/assets/bosses/boss-fx.webp",
+  "w": 2048,
+  "h": 2003,
+  "orig_bytes": 578808,
+  "q82_bytes": 507044,
+  "smooth_dark": 0.018,
+  "flag": ""
+ },
+ {
+  "ssim": 0.989058555397442,
+  "psnr": 38.80650117308275,
+  "tile_ssim": 0.9740413127720017,
+  "tile_xy": [
+   512,
+   736
+  ],
+  "dark_share": 0.036979962149422396,
+  "dark_psnr": 38.24170615708055,
+  "ssimu2": 85.33663267829857,
+  "src": "src/assets/story/hd/pokey-0.webp",
+  "w": 1922,
+  "h": 1798,
+  "orig_bytes": 554210,
+  "q82_bytes": 441618,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9890683440511252,
+  "psnr": 36.286944032947474,
+  "tile_ssim": 0.9697770385386424,
+  "tile_xy": [
+   800,
+   224
+  ],
+  "dark_share": 0.26741361319635965,
+  "dark_psnr": 39.339018806525694,
+  "dark_tile_psnr": 37.89854716276549,
+  "dark_tile_xy": [
+   288,
+   544
+  ],
+  "ssimu2": 85.26454507651393,
+  "src": "src/assets/props/stage-art.webp",
+  "w": 1024,
+  "h": 1003,
+  "orig_bytes": 230428,
+  "q82_bytes": 185396,
+  "smooth_dark": 0.004,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9890903465340848,
+  "psnr": 41.94775004848499,
+  "tile_ssim": 0.9641818322676003,
+  "tile_xy": [
+   2400,
+   1696
+  ],
+  "dark_share": 0.3488878469256017,
+  "dark_psnr": 42.15077691077294,
+  "dark_tile_psnr": 38.52725758816891,
+  "dark_tile_xy": [
+   736,
+   1568
+  ],
+  "ssimu2": 82.33363232351952,
+  "src": "src/assets/backdrops/w10gale-near.webp",
+  "w": 2902,
+  "h": 1736,
+  "orig_bytes": 103174,
+  "q82_bytes": 80060,
+  "smooth_dark": 0.093,
+  "flag": "smooth dark area, dark tile as bad as the black picture"
+ },
+ {
+  "ssim": 0.989103567301875,
+  "psnr": 37.0684593164347,
+  "tile_ssim": 0.968117111007923,
+  "tile_xy": [
+   1568,
+   352
+  ],
+  "dark_share": 0.2904606742526453,
+  "dark_psnr": 40.53592742541526,
+  "dark_tile_psnr": 37.957140143784976,
+  "dark_tile_xy": [
+   1376,
+   544
+  ],
+  "ssimu2": 85.49562128764089,
+  "src": "src/assets/bosses/boss-atk.webp",
+  "w": 2048,
+  "h": 660,
+  "orig_bytes": 293746,
+  "q82_bytes": 240898,
+  "smooth_dark": 0.001,
+  "flag": ""
+ },
+ {
+  "ssim": 0.98911299297285,
+  "psnr": 37.516256345974064,
+  "tile_ssim": 0.9717675059980734,
+  "tile_xy": [
+   1024,
+   64
+  ],
+  "dark_share": 0.20883748777490785,
+  "dark_psnr": 38.07413883080513,
+  "ssimu2": 85.06472241951816,
+  "src": "src/assets/story/hd/meeca-2.webp",
+  "w": 1882,
+  "h": 800,
+  "orig_bytes": 276410,
+  "q82_bytes": 221362,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9891144582226676,
+  "psnr": 41.94432559892355,
+  "tile_ssim": 0.9712878349221037,
+  "tile_xy": [
+   416,
+   1632
+  ],
+  "dark_share": 0.1023963326862998,
+  "dark_psnr": 40.125341902228875,
+  "dark_tile_psnr": 41.18519503869604,
+  "dark_tile_xy": [
+   576,
+   1632
+  ],
+  "ssimu2": 83.05436996451307,
+  "src": "src/assets/backdrops/w4terraces-near.webp",
+  "w": 2902,
+  "h": 1736,
+  "orig_bytes": 137154,
+  "q82_bytes": 113236,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9891261582218793,
+  "psnr": 38.067101504079844,
+  "tile_ssim": 0.9708245499636925,
+  "tile_xy": [
+   736,
+   224
+  ],
+  "dark_share": 0.07349818716991545,
+  "dark_psnr": 37.771220549802436,
+  "ssimu2": 85.14585909065714,
+  "src": "src/assets/hero/hero-vine.webp",
+  "w": 1454,
+  "h": 431,
+  "orig_bytes": 111534,
+  "q82_bytes": 90202,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9891276439409238,
+  "psnr": 37.226282115114444,
+  "tile_ssim": 0.968594961504283,
+  "tile_xy": [
+   96,
+   1824
+  ],
+  "dark_share": 0.12846926947751058,
+  "dark_psnr": 37.674334230911654,
+  "ssimu2": 84.69168495878255,
+  "src": "src/assets/characters/cels-6.webp",
+  "w": 2010,
+  "h": 1920,
+  "orig_bytes": 944304,
+  "q82_bytes": 752866,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9891278646996287,
+  "psnr": 39.56956340017577,
+  "tile_ssim": 0.9754188223711703,
+  "tile_xy": [
+   1024,
+   0
+  ],
+  "dark_share": 0.34962357419533135,
+  "dark_psnr": 42.156481074871266,
+  "dark_tile_psnr": 42.72491218463351,
+  "dark_tile_xy": [
+   32,
+   352
+  ],
+  "ssimu2": 87.05012262285784,
+  "src": "src/assets/lairs/fg-croc.webp",
+  "w": 2048,
+  "h": 570,
+  "orig_bytes": 183560,
+  "q82_bytes": 172916,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.989145283030227,
+  "psnr": 39.16340276436514,
+  "tile_ssim": 0.9764748963495877,
+  "tile_xy": [
+   1344,
+   64
+  ],
+  "dark_share": 0.032186823086851044,
+  "dark_psnr": 42.27437211891615,
+  "ssimu2": 85.61722297014174,
+  "src": "src/assets/props/bounce.webp",
+  "w": 3520,
+  "h": 256,
+  "orig_bytes": 104774,
+  "q82_bytes": 88166,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9892003874274481,
+  "psnr": 39.99835293583657,
+  "tile_ssim": 0.9740382293197364,
+  "tile_xy": [
+   1664,
+   1024
+  ],
+  "dark_share": 0.27261195586289605,
+  "dark_psnr": 41.418973275617375,
+  "dark_tile_psnr": 39.90746612158179,
+  "dark_tile_xy": [
+   1728,
+   224
+  ],
+  "ssimu2": 84.73793571767925,
+  "src": "src/assets/kits/w6.webp",
+  "w": 2048,
+  "h": 1363,
+  "orig_bytes": 238260,
+  "q82_bytes": 210046,
+  "smooth_dark": 0.018,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9892118881194106,
+  "psnr": 42.274208123103335,
+  "tile_ssim": 0.9133418430551037,
+  "tile_xy": [
+   512,
+   672
+  ],
+  "dark_share": 0.011590269049946469,
+  "ssimu2": 77.08255452763537,
+  "src": "src/assets/backdrops/w5dusk1-far.webp",
+  "w": 2640,
+  "h": 1302,
+  "orig_bytes": 249694,
+  "q82_bytes": 133824,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.989221582043961,
+  "psnr": 40.871364397495846,
+  "tile_ssim": 0.9682087977782261,
+  "tile_xy": [
+   96,
+   32
+  ],
+  "dark_share": 0.017384452901041056,
+  "ssimu2": 84.6047196592137,
+  "src": "src/assets/props/pits/w1-lip.webp",
+  "w": 256,
+  "h": 475,
+  "orig_bytes": 20984,
+  "q82_bytes": 17606,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9892299443917052,
+  "psnr": 39.74328886465484,
+  "tile_ssim": 0.9678966391263899,
+  "tile_xy": [
+   0,
+   672
+  ],
+  "dark_share": 0.07511752498571499,
+  "dark_psnr": 39.05379229716101,
+  "ssimu2": 83.16192713713374,
+  "src": "src/assets/kits/w2.webp",
+  "w": 2048,
+  "h": 1255,
+  "orig_bytes": 258144,
+  "q82_bytes": 220876,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9892462161758467,
+  "psnr": 37.83315656152807,
+  "tile_ssim": 0.970555223296038,
+  "tile_xy": [
+   1248,
+   1088
+  ],
+  "dark_share": 0.18262628146473095,
+  "dark_psnr": 38.10233321692515,
+  "dark_tile_psnr": 37.08189480913556,
+  "dark_tile_xy": [
+   864,
+   1408
+  ],
+  "ssimu2": 84.67922548779768,
+  "src": "src/assets/story/hd/meeca-1.webp",
+  "w": 2032,
+  "h": 1766,
+  "orig_bytes": 758148,
+  "q82_bytes": 595244,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9893055278305583,
+  "psnr": 35.95621375503542,
+  "tile_ssim": 0.972045695257458,
+  "tile_xy": [
+   672,
+   1184
+  ],
+  "dark_share": 0.22533246403154072,
+  "dark_psnr": 38.034614334211554,
+  "dark_tile_psnr": 36.81076653834383,
+  "dark_tile_xy": [
+   128,
+   352
+  ],
+  "ssimu2": 84.24771414640291,
+  "src": "src/assets/medals/medals.webp",
+  "w": 1536,
+  "h": 1268,
+  "orig_bytes": 466976,
+  "q82_bytes": 389292,
+  "smooth_dark": 0.014,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9893552901709799,
+  "psnr": 44.93112855688959,
+  "tile_ssim": 0.9711798655404776,
+  "tile_xy": [
+   1600,
+   928
+  ],
+  "dark_share": 0.03189898322610294,
+  "dark_psnr": 45.33632195002015,
+  "dark_tile_psnr": 43.207275271713776,
+  "dark_tile_xy": [
+   0,
+   2432
+  ],
+  "ssimu2": 81.32234855734424,
+  "src": "src/assets/story/plates/w2-day.webp",
+  "w": 2560,
+  "h": 2720,
+  "orig_bytes": 301868,
+  "q82_bytes": 243476,
+  "smooth_dark": 0.005,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9893987646060125,
+  "psnr": 43.162192355948896,
+  "tile_ssim": 0.9667066611249883,
+  "tile_xy": [
+   1152,
+   1216
+  ],
+  "dark_share": 0.11415991706128242,
+  "dark_psnr": 41.7622607529724,
+  "dark_tile_psnr": 43.1081097682441,
+  "dark_tile_xy": [
+   96,
+   1472
+  ],
+  "ssimu2": 81.61832245012225,
+  "src": "src/assets/backdrops/w1rain-near.webp",
+  "w": 2902,
+  "h": 1736,
+  "orig_bytes": 171150,
+  "q82_bytes": 143490,
+  "smooth_dark": 0.017,
+  "flag": ""
+ },
+ {
+  "ssim": 0.989405669624168,
+  "psnr": 41.91580260826235,
+  "tile_ssim": 0.9726104416375123,
+  "tile_xy": [
+   1728,
+   1184
+  ],
+  "dark_share": 0.1561703416566553,
+  "dark_psnr": 41.50582879079537,
+  "dark_tile_psnr": 42.47480027708044,
+  "dark_tile_xy": [
+   800,
+   1248
+  ],
+  "ssimu2": 83.63348149749152,
+  "src": "src/assets/backdrops/w8night-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 159278,
+  "q82_bytes": 130126,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9894102581013703,
+  "psnr": 40.63801969790504,
+  "tile_ssim": 0.9641931367626986,
+  "tile_xy": [
+   640,
+   768
+  ],
+  "dark_share": 0.07952211999627948,
+  "dark_psnr": 38.31514417443836,
+  "dark_tile_psnr": 40.58994808775072,
+  "dark_tile_xy": [
+   1152,
+   352
+  ],
+  "ssimu2": 83.91035976637392,
+  "src": "src/assets/kits/w4.webp",
+  "w": 2048,
+  "h": 1349,
+  "orig_bytes": 177586,
+  "q82_bytes": 152570,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9894535063371523,
+  "psnr": 41.69486721430965,
+  "tile_ssim": 0.9665134295237606,
+  "tile_xy": [
+   1280,
+   1664
+  ],
+  "dark_share": 0.14848623487274665,
+  "dark_psnr": 39.66707397526716,
+  "dark_tile_psnr": 38.42724623051473,
+  "dark_tile_xy": [
+   704,
+   1696
+  ],
+  "ssimu2": 80.58345542289881,
+  "src": "src/assets/backdrops/w6dawn-near.webp",
+  "w": 2902,
+  "h": 1736,
+  "orig_bytes": 149672,
+  "q82_bytes": 122148,
+  "smooth_dark": 0.003,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9894908851953345,
+  "psnr": 41.96548355400192,
+  "tile_ssim": 0.9660343581398818,
+  "tile_xy": [
+   1056,
+   832
+  ],
+  "dark_share": 0.09495718299433033,
+  "dark_psnr": 40.033719670588894,
+  "dark_tile_psnr": 40.78066325010782,
+  "dark_tile_xy": [
+   448,
+   1248
+  ],
+  "ssimu2": 82.13891631500144,
+  "src": "src/assets/backdrops/w5night-mid.webp",
+  "w": 2394,
+  "h": 1302,
+  "orig_bytes": 299908,
+  "q82_bytes": 237884,
+  "smooth_dark": 0.022,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9895419820603387,
+  "psnr": 35.29414009522936,
+  "tile_ssim": 0.9795280267936948,
+  "tile_xy": [
+   32,
+   32
+  ],
+  "dark_share": 0.1481145757795504,
+  "dark_psnr": 39.18816411586374,
+  "ssimu2": 56.309545459742424,
+  "src": "src/assets/pickups/scroll.webp",
+  "w": 96,
+  "h": 90,
+  "orig_bytes": 5206,
+  "q82_bytes": 4174,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9895654825178314,
+  "psnr": 40.37715472464478,
+  "tile_ssim": 0.9717942833039555,
+  "tile_xy": [
+   1728,
+   768
+  ],
+  "dark_share": 0.09381867506674002,
+  "dark_psnr": 39.28813458809243,
+  "dark_tile_psnr": 42.06238783883181,
+  "dark_tile_xy": [
+   320,
+   1088
+  ],
+  "ssimu2": 84.79917225651462,
+  "src": "src/assets/backdrops/w5gold2-mid.webp",
+  "w": 2454,
+  "h": 1302,
+  "orig_bytes": 401372,
+  "q82_bytes": 284274,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9895829955257646,
+  "psnr": 45.45978481195153,
+  "tile_ssim": 0.9707829005327127,
+  "tile_xy": [
+   128,
+   640
+  ],
+  "dark_share": 0.09292595358455882,
+  "dark_psnr": 48.278301844834516,
+  "dark_tile_psnr": 44.771804483541686,
+  "dark_tile_xy": [
+   64,
+   2560
+  ],
+  "ssimu2": 80.92632442203734,
+  "src": "src/assets/story/plates/w1-day.webp",
+  "w": 2560,
+  "h": 2720,
+  "orig_bytes": 275916,
+  "q82_bytes": 222302,
+  "smooth_dark": 0.054,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9897363452558132,
+  "psnr": 40.13622248372775,
+  "tile_ssim": 0.9723295178191511,
+  "tile_xy": [
+   1600,
+   448
+  ],
+  "dark_share": 0.03428859243733746,
+  "dark_psnr": 37.97959660680089,
+  "dark_tile_psnr": 39.47959699947972,
+  "dark_tile_xy": [
+   1696,
+   800
+  ],
+  "ssimu2": 84.59876812553955,
+  "src": "src/assets/story/hd/pokeyface-1.webp",
+  "w": 1932,
+  "h": 1100,
+  "orig_bytes": 222388,
+  "q82_bytes": 170606,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9897547901756337,
+  "psnr": 46.09012915084274,
+  "tile_ssim": 0.9685798977481415,
+  "tile_xy": [
+   32,
+   2592
+  ],
+  "dark_share": 0.07065759995404412,
+  "dark_psnr": 45.754371910086846,
+  "dark_tile_psnr": 41.21648014655448,
+  "dark_tile_xy": [
+   1248,
+   2624
+  ],
+  "ssimu2": 76.46878858038684,
+  "src": "src/assets/story/plates/w4-day.webp",
+  "w": 2560,
+  "h": 2720,
+  "orig_bytes": 245572,
+  "q82_bytes": 182790,
+  "smooth_dark": 0.03,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9897940635496181,
+  "psnr": 34.143882377689884,
+  "tile_ssim": 0.9880039547524443,
+  "tile_xy": [
+   32,
+   32
+  ],
+  "dark_share": 0.3474698795180723,
+  "dark_psnr": 37.86116303365904,
+  "ssimu2": 51.61657007712871,
+  "src": "src/assets/icons/shrink.webp",
+  "w": 80,
+  "h": 80,
+  "orig_bytes": 4384,
+  "q82_bytes": 3604,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9898047700911368,
+  "psnr": 45.11299479427486,
+  "tile_ssim": 0.9762256981609094,
+  "tile_xy": [
+   480,
+   192
+  ],
+  "dark_share": 0.033037670600036956,
+  "dark_psnr": 44.46816722332798,
+  "dark_tile_psnr": 45.31759025509136,
+  "dark_tile_xy": [
+   544,
+   320
+  ],
+  "ssimu2": 81.36257669031572,
+  "src": "src/assets/story/castle6.webp",
+  "w": 828,
+  "h": 732,
+  "orig_bytes": 26912,
+  "q82_bytes": 22490,
+  "smooth_dark": 0.003,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9898343829833752,
+  "psnr": 39.50633932674371,
+  "tile_ssim": 0.9675809282119251,
+  "tile_xy": [
+   512,
+   224
+  ],
+  "dark_share": 0.12670171448444437,
+  "dark_psnr": 39.16716165102102,
+  "dark_tile_psnr": 39.46767802291803,
+  "dark_tile_xy": [
+   1280,
+   320
+  ],
+  "ssimu2": 84.19328159447643,
+  "src": "src/assets/kits/w7.webp",
+  "w": 2048,
+  "h": 1114,
+  "orig_bytes": 198772,
+  "q82_bytes": 174442,
+  "smooth_dark": 0.002,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9898379102352116,
+  "psnr": 43.269582616861015,
+  "tile_ssim": 0.9662790916527194,
+  "tile_xy": [
+   320,
+   768
+  ],
+  "dark_share": 0.024290069016835305,
+  "dark_psnr": 40.165075092889296,
+  "ssimu2": 84.47696185040917,
+  "src": "src/assets/backdrops/w4terraces-mid.webp",
+  "w": 2076,
+  "h": 1302,
+  "orig_bytes": 140554,
+  "q82_bytes": 115350,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.989848747516227,
+  "psnr": 37.83104469403081,
+  "tile_ssim": 0.9708579011465021,
+  "tile_xy": [
+   1152,
+   736
+  ],
+  "dark_share": 0.18013245033112582,
+  "dark_psnr": 39.09598941304325,
+  "dark_tile_psnr": 39.28601845167327,
+  "dark_tile_xy": [
+   1184,
+   1120
+  ],
+  "ssimu2": 85.10401902840276,
+  "src": "src/assets/props/w4-props.webp",
+  "w": 2048,
+  "h": 1433,
+  "orig_bytes": 725716,
+  "q82_bytes": 655588,
+  "smooth_dark": 0.003,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9898629819694739,
+  "psnr": 42.912956656843775,
+  "tile_ssim": 0.9690205062291545,
+  "tile_xy": [
+   2624,
+   1408
+  ],
+  "dark_share": 0.101861664148873,
+  "dark_psnr": 40.881765833678294,
+  "dark_tile_psnr": 41.88765040211722,
+  "dark_tile_xy": [
+   672,
+   1504
+  ],
+  "ssimu2": 83.69392907912247,
+  "src": "src/assets/backdrops/w1sun2-near.webp",
+  "w": 2850,
+  "h": 1736,
+  "orig_bytes": 144488,
+  "q82_bytes": 110482,
+  "smooth_dark": 0.005,
+  "flag": ""
+ },
+ {
+  "ssim": 0.989871792713944,
+  "psnr": 41.30528806645272,
+  "tile_ssim": 0.9648830358263202,
+  "tile_xy": [
+   128,
+   1184
+  ],
+  "dark_share": 0.16070864470459814,
+  "dark_psnr": 40.71788633454098,
+  "dark_tile_psnr": 39.900364078900445,
+  "dark_tile_xy": [
+   704,
+   1408
+  ],
+  "ssimu2": 81.5033749691273,
+  "src": "src/assets/backdrops/w5dusk1-near.webp",
+  "w": 3520,
+  "h": 1736,
+  "orig_bytes": 283428,
+  "q82_bytes": 182386,
+  "smooth_dark": 0.041,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9898883127009361,
+  "psnr": 44.698844238295976,
+  "tile_ssim": 0.9734806034217006,
+  "tile_xy": [
+   1504,
+   512
+  ],
+  "dark_share": 0.017278550091911763,
+  "ssimu2": 82.63818983630532,
+  "src": "src/assets/story/plates/w5-day.webp",
+  "w": 2560,
+  "h": 2720,
+  "orig_bytes": 312874,
+  "q82_bytes": 257734,
+  "smooth_dark": 0.006,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9898998524755781,
+  "psnr": 42.307268379962736,
+  "tile_ssim": 0.9728064657667551,
+  "tile_xy": [
+   544,
+   1152
+  ],
+  "dark_share": 0.21475357187348923,
+  "dark_psnr": 41.464152920218645,
+  "dark_tile_psnr": 40.84799583505793,
+  "dark_tile_xy": [
+   0,
+   1248
+  ],
+  "ssimu2": 85.17776174294269,
+  "src": "src/assets/backdrops/w1b-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 153050,
+  "q82_bytes": 138568,
+  "smooth_dark": 0.045,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9899286216748683,
+  "psnr": 41.66268623947218,
+  "tile_ssim": 0.9722045509521449,
+  "tile_xy": [
+   352,
+   1152
+  ],
+  "dark_share": 0.05898130746449337,
+  "dark_psnr": 41.28263845867694,
+  "dark_tile_psnr": 41.36144371515552,
+  "dark_tile_xy": [
+   1728,
+   1120
+  ],
+  "ssimu2": 82.59671759475094,
+  "src": "src/assets/backdrops/w5dusk1-mid.webp",
+  "w": 2394,
+  "h": 1302,
+  "orig_bytes": 315882,
+  "q82_bytes": 237490,
+  "smooth_dark": 0.009,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9899550422199724,
+  "psnr": 41.87402484641215,
+  "tile_ssim": 0.9540991868770526,
+  "tile_xy": [
+   448,
+   448
+  ],
+  "dark_share": 0.13737319977440085,
+  "dark_psnr": 39.721096376000744,
+  "dark_tile_psnr": 36.61232316086412,
+  "dark_tile_xy": [
+   128,
+   1152
+  ],
+  "ssimu2": 82.16088924743207,
+  "src": "src/assets/backdrops/w4-mid.webp",
+  "w": 2442,
+  "h": 1302,
+  "orig_bytes": 279896,
+  "q82_bytes": 164704,
+  "smooth_dark": 0.027,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9899818155557608,
+  "psnr": 45.52109891986988,
+  "tile_ssim": 0.9775682852594003,
+  "tile_xy": [
+   704,
+   2528
+  ],
+  "dark_share": 0.023051614200367648,
+  "dark_psnr": 47.79859627542326,
+  "dark_tile_psnr": 44.81039396602999,
+  "dark_tile_xy": [
+   32,
+   2688
+  ],
+  "ssimu2": 78.23176522002521,
+  "src": "src/assets/story/plates/w1-dusk.webp",
+  "w": 2560,
+  "h": 2720,
+  "orig_bytes": 264556,
+  "q82_bytes": 194892,
+  "smooth_dark": 0.015,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9900430035365877,
+  "psnr": 35.672909314298025,
+  "tile_ssim": 0.9595213267140617,
+  "tile_xy": [
+   576,
+   1152
+  ],
+  "dark_share": 0.12160666592184959,
+  "dark_psnr": 36.21814932832383,
+  "ssimu2": 83.60897670245372,
+  "src": "src/assets/hero/clips/wave.webp",
+  "w": 1448,
+  "h": 1428,
+  "orig_bytes": 576352,
+  "q82_bytes": 511022,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9900453761906338,
+  "psnr": 37.781451191999935,
+  "tile_ssim": 0.9846726695767692,
+  "tile_xy": [
+   320,
+   64
+  ],
+  "dark_share": 0.06393065529622981,
+  "dark_psnr": 38.3105810324879,
+  "ssimu2": 83.38734259078942,
+  "src": "src/assets/story/finds/snail.webp",
+  "w": 512,
+  "h": 131,
+  "orig_bytes": 18644,
+  "q82_bytes": 14928,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9900472062086452,
+  "psnr": 42.479865099072434,
+  "tile_ssim": 0.9757674084859147,
+  "tile_xy": [
+   1376,
+   1152
+  ],
+  "dark_share": 0.09383152508593375,
+  "dark_psnr": 40.87112344517348,
+  "dark_tile_psnr": 43.52069714484451,
+  "dark_tile_xy": [
+   864,
+   960
+  ],
+  "ssimu2": 86.15948822346492,
+  "src": "src/assets/backdrops/w1kapok-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 122102,
+  "q82_bytes": 108792,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9902208738366256,
+  "psnr": 41.04024067707378,
+  "tile_ssim": 0.9016416450534666,
+  "tile_xy": [
+   224,
+   800
+  ],
+  "dark_share": 0.15799327499383625,
+  "dark_psnr": 38.58277241982893,
+  "dark_tile_psnr": 36.70754983323925,
+  "dark_tile_xy": [
+   224,
+   576
+  ],
+  "ssimu2": 81.28691221712869,
+  "src": "src/assets/backdrops/w2-near.webp",
+  "w": 3416,
+  "h": 1736,
+  "orig_bytes": 470748,
+  "q82_bytes": 308662,
+  "smooth_dark": 0.008,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9902254885090979,
+  "psnr": 42.502044472883505,
+  "tile_ssim": 0.9414457875087525,
+  "tile_xy": [
+   800,
+   384
+  ],
+  "dark_share": 0.0023614602243634502,
+  "ssimu2": 78.96612607155849,
+  "src": "src/assets/backdrops/w5gold2-far.webp",
+  "w": 2640,
+  "h": 1302,
+  "orig_bytes": 240588,
+  "q82_bytes": 128788,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9902258773681077,
+  "psnr": 43.434296881663826,
+  "tile_ssim": 0.9711386427057389,
+  "tile_xy": [
+   608,
+   384
+  ],
+  "dark_share": 0.09815343520220589,
+  "dark_psnr": 43.3352715442497,
+  "dark_tile_psnr": 41.556200395151095,
+  "dark_tile_xy": [
+   160,
+   2208
+  ],
+  "ssimu2": 78.81997919385628,
+  "src": "src/assets/story/plates/ruins.webp",
+  "w": 2560,
+  "h": 2720,
+  "orig_bytes": 476484,
+  "q82_bytes": 437328,
+  "smooth_dark": 0.013,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9902270944525717,
+  "psnr": 34.192020420187774,
+  "tile_ssim": 0.9734383400726496,
+  "tile_xy": [
+   416,
+   640
+  ],
+  "dark_share": 0.13879715718650404,
+  "dark_psnr": 38.63050006790669,
+  "ssimu2": 84.34208092423806,
+  "src": "src/assets/enemies/jaguar-atlas.webp",
+  "w": 1024,
+  "h": 831,
+  "orig_bytes": 308416,
+  "q82_bytes": 244802,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB"
+ },
+ {
+  "ssim": 0.9902364112398385,
+  "psnr": 41.670224709788556,
+  "tile_ssim": 0.9666711655623621,
+  "tile_xy": [
+   1824,
+   1152
+  ],
+  "dark_share": 0.032788271135275764,
+  "dark_psnr": 38.32934936521936,
+  "ssimu2": 85.20293801678261,
+  "src": "src/assets/backdrops/w5twi2-mid.webp",
+  "w": 2542,
+  "h": 1302,
+  "orig_bytes": 376674,
+  "q82_bytes": 293244,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9902584654801991,
+  "psnr": 40.334184528762464,
+  "tile_ssim": 0.9542446988807562,
+  "tile_xy": [
+   160,
+   1120
+  ],
+  "dark_share": 0.14987782054157722,
+  "dark_psnr": 39.318483093826224,
+  "dark_tile_psnr": 37.5540485161141,
+  "dark_tile_xy": [
+   480,
+   800
+  ],
+  "ssimu2": 83.67774167744959,
+  "src": "src/assets/hud/hud-atlas.webp",
+  "w": 1024,
+  "h": 1264,
+  "orig_bytes": 196014,
+  "q82_bytes": 150894,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9902675373287149,
+  "psnr": 41.69661747413886,
+  "tile_ssim": 0.9734297156486178,
+  "tile_xy": [
+   3328,
+   1248
+  ],
+  "dark_share": 0.1007592916219243,
+  "dark_psnr": 42.19607233149911,
+  "dark_tile_psnr": 41.34729419310315,
+  "dark_tile_xy": [
+   960,
+   1696
+  ],
+  "ssimu2": 85.2984969042016,
+  "src": "src/assets/backdrops/w5gold2-near.webp",
+  "w": 3520,
+  "h": 1736,
+  "orig_bytes": 382694,
+  "q82_bytes": 238000,
+  "smooth_dark": 0.024,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9903318797680036,
+  "psnr": 42.31799472246734,
+  "tile_ssim": 0.9746153192103311,
+  "tile_xy": [
+   576,
+   64
+  ],
+  "dark_share": 0.06680245535714285,
+  "dark_psnr": 43.09200088021847,
+  "ssimu2": 82.59082911406236,
+  "src": "src/assets/enemies/venom-body.webp",
+  "w": 1280,
+  "h": 280,
+  "orig_bytes": 24666,
+  "q82_bytes": 15028,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9903542762152622,
+  "psnr": 41.26782426560911,
+  "tile_ssim": 0.9755040678569433,
+  "tile_xy": [
+   1024,
+   448
+  ],
+  "dark_share": 0.014395980061955943,
+  "ssimu2": 85.52121353870173,
+  "src": "src/assets/story/hd/pokeyface-0.webp",
+  "w": 1804,
+  "h": 1804,
+  "orig_bytes": 308622,
+  "q82_bytes": 236842,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9903941663639633,
+  "psnr": 41.45038906689435,
+  "tile_ssim": 0.9757174662537442,
+  "tile_xy": [
+   160,
+   1344
+  ],
+  "dark_share": 0.07513402506438246,
+  "dark_psnr": 39.6062691398945,
+  "dark_tile_psnr": 44.06737018527927,
+  "dark_tile_xy": [
+   0,
+   1632
+  ],
+  "ssimu2": 83.11412958416558,
+  "src": "src/assets/backdrops/w5-near.webp",
+  "w": 3520,
+  "h": 1736,
+  "orig_bytes": 327400,
+  "q82_bytes": 201352,
+  "smooth_dark": 0.002,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9904076242900253,
+  "psnr": 35.893960297990894,
+  "tile_ssim": 0.9800950352647327,
+  "tile_xy": [
+   2336,
+   384
+  ],
+  "dark_share": 0.14390835337438007,
+  "dark_psnr": 37.35772940565301,
+  "ssimu2": 86.72760116708194,
+  "src": "src/assets/hero/pokey-swim.webp",
+  "w": 2920,
+  "h": 747,
+  "orig_bytes": 309504,
+  "q82_bytes": 250492,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9904252583174654,
+  "psnr": 43.12808586972548,
+  "tile_ssim": 0.9782571565575835,
+  "tile_xy": [
+   1440,
+   1056
+  ],
+  "dark_share": 0.24039751990737712,
+  "dark_psnr": 45.29603995465693,
+  "dark_tile_psnr": 43.94879155911962,
+  "dark_tile_xy": [
+   608,
+   1152
+  ],
+  "ssimu2": 84.76936680529803,
+  "src": "src/assets/backdrops/w10dusk-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 96798,
+  "q82_bytes": 79100,
+  "smooth_dark": 0.096,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9904314757670459,
+  "psnr": 38.31792491337494,
+  "tile_ssim": 0.9810290649692357,
+  "tile_xy": [
+   1344,
+   864
+  ],
+  "dark_share": 0.18248811124791203,
+  "dark_psnr": 38.47369318253991,
+  "ssimu2": 85.53312763299672,
+  "src": "src/assets/story/hd/meeca-0.webp",
+  "w": 2036,
+  "h": 1888,
+  "orig_bytes": 743638,
+  "q82_bytes": 601444,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9905149388268478,
+  "psnr": 41.16651262414642,
+  "tile_ssim": 0.9694182502960951,
+  "tile_xy": [
+   1504,
+   544
+  ],
+  "dark_share": 0.06917144255513981,
+  "dark_psnr": 38.81378230995148,
+  "dark_tile_psnr": 41.93391388414025,
+  "dark_tile_xy": [
+   224,
+   1248
+  ],
+  "ssimu2": 85.0222497537279,
+  "src": "src/assets/backdrops/w2-mid.webp",
+  "w": 2640,
+  "h": 1302,
+  "orig_bytes": 422622,
+  "q82_bytes": 251498,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9905315007736105,
+  "psnr": 42.620016415637146,
+  "tile_ssim": 0.9708651200735591,
+  "tile_xy": [
+   256,
+   1376
+  ],
+  "dark_share": 0.2112599672911847,
+  "dark_psnr": 43.424515095375476,
+  "dark_tile_psnr": 40.19907384651353,
+  "dark_tile_xy": [
+   448,
+   1632
+  ],
+  "ssimu2": 82.43787281503286,
+  "src": "src/assets/backdrops/w9dawn-near.webp",
+  "w": 2850,
+  "h": 1736,
+  "orig_bytes": 111408,
+  "q82_bytes": 85874,
+  "smooth_dark": 0.069,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9905661722851028,
+  "psnr": 46.6084537096443,
+  "tile_ssim": 0.9753157683418708,
+  "tile_xy": [
+   2272,
+   1312
+  ],
+  "dark_share": 0.010698673023897059,
+  "ssimu2": 79.46666362399397,
+  "src": "src/assets/story/plates/w6-dusk.webp",
+  "w": 2560,
+  "h": 2720,
+  "orig_bytes": 198796,
+  "q82_bytes": 141858,
+  "smooth_dark": 0.009,
+  "flag": ""
+ },
+ {
+  "ssim": 0.99058054966892,
+  "psnr": 40.72600567675757,
+  "tile_ssim": 0.9760589702860172,
+  "tile_xy": [
+   96,
+   0
+  ],
+  "dark_share": 0.1544309550534717,
+  "dark_psnr": 40.0566549623527,
+  "ssimu2": 85.28062484161408,
+  "src": "src/assets/ui/sign-big.webp",
+  "w": 700,
+  "h": 361,
+  "orig_bytes": 22722,
+  "q82_bytes": 17300,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9906063031660649,
+  "psnr": 37.0481107354711,
+  "tile_ssim": 0.9754860758014963,
+  "tile_xy": [
+   32,
+   1952
+  ],
+  "dark_share": 0.21858838190389618,
+  "dark_psnr": 39.35667456060073,
+  "dark_tile_psnr": 41.561082905377006,
+  "dark_tile_xy": [
+   384,
+   1248
+  ],
+  "ssimu2": 84.60724548642901,
+  "src": "src/assets/props/dressnew-w2.webp",
+  "w": 975,
+  "h": 2183,
+  "orig_bytes": 532494,
+  "q82_bytes": 470530,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9906244038191113,
+  "psnr": 42.632642291998835,
+  "tile_ssim": 0.973224669922913,
+  "tile_xy": [
+   448,
+   1088
+  ],
+  "dark_share": 0.296630598046092,
+  "dark_psnr": 41.89776642193489,
+  "dark_tile_psnr": 39.32467895180376,
+  "dark_tile_xy": [
+   32,
+   1184
+  ],
+  "ssimu2": 79.4142954812673,
+  "src": "src/assets/backdrops/w1-near.webp",
+  "w": 3214,
+  "h": 1736,
+  "orig_bytes": 299868,
+  "q82_bytes": 188956,
+  "smooth_dark": 0.046,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9906642885846979,
+  "psnr": 43.0642977577391,
+  "tile_ssim": 0.9731690836822668,
+  "tile_xy": [
+   2048,
+   1056
+  ],
+  "dark_share": 0.024905047039104254,
+  "dark_psnr": 41.68014941847727,
+  "ssimu2": 86.1114991968485,
+  "src": "src/assets/backdrops/w10night-mid.webp",
+  "w": 2113,
+  "h": 1302,
+  "orig_bytes": 69046,
+  "q82_bytes": 58570,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9906867724649182,
+  "psnr": 42.71390535777597,
+  "tile_ssim": 0.9830191945977595,
+  "tile_xy": [
+   384,
+   256
+  ],
+  "dark_share": 0.0363783680994783,
+  "dark_psnr": 40.03379310118475,
+  "ssimu2": 82.74529448640352,
+  "src": "src/assets/items/seeds.webp",
+  "w": 534,
+  "h": 453,
+  "orig_bytes": 19678,
+  "q82_bytes": 17870,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9906944913821595,
+  "psnr": 40.569658711418555,
+  "tile_ssim": 0.9797946850135946,
+  "tile_xy": [
+   128,
+   64
+  ],
+  "dark_share": 0.006208323752586802,
+  "ssimu2": 87.69990831417365,
+  "src": "src/assets/props/w6-calm-water.webp",
+  "w": 228,
+  "h": 296,
+  "orig_bytes": 9926,
+  "q82_bytes": 8758,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9907545136381001,
+  "psnr": 43.3378446201164,
+  "tile_ssim": 0.9496581924788572,
+  "tile_xy": [
+   1856,
+   576
+  ],
+  "dark_share": 0.07170000698226504,
+  "dark_psnr": 41.24613532627385,
+  "dark_tile_psnr": 38.115729431324496,
+  "dark_tile_xy": [
+   1632,
+   1216
+  ],
+  "ssimu2": 77.60109260669296,
+  "src": "src/assets/backdrops/w1b-far.webp",
+  "w": 2640,
+  "h": 1302,
+  "orig_bytes": 201508,
+  "q82_bytes": 108932,
+  "smooth_dark": 0.035,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9908136546589709,
+  "psnr": 33.25111680307629,
+  "tile_ssim": 0.9894254061920006,
+  "tile_xy": [
+   32,
+   0
+  ],
+  "dark_share": 0.45253863134657835,
+  "dark_psnr": 37.68034719476401,
+  "ssimu2": 54.445809158586854,
+  "src": "src/assets/icons/sparkle.webp",
+  "w": 80,
+  "h": 80,
+  "orig_bytes": 4104,
+  "q82_bytes": 3382,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9908621576439443,
+  "psnr": 36.090610147750525,
+  "tile_ssim": 0.9768851683308738,
+  "tile_xy": [
+   320,
+   704
+  ],
+  "dark_share": 0.2570038841599471,
+  "dark_psnr": 38.80815979154193,
+  "dark_tile_psnr": 37.5694352148888,
+  "dark_tile_xy": [
+   576,
+   768
+  ],
+  "ssimu2": 86.51505427779043,
+  "src": "src/assets/props/dot-props.webp",
+  "w": 2048,
+  "h": 935,
+  "orig_bytes": 404064,
+  "q82_bytes": 362246,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9909496346107927,
+  "psnr": 34.43835872122619,
+  "tile_ssim": 0.9768096930735016,
+  "tile_xy": [
+   96,
+   96
+  ],
+  "dark_share": 0.25098160197442226,
+  "dark_psnr": 39.73226066559025,
+  "ssimu2": 76.6957210200645,
+  "src": "src/assets/flora/petals.webp",
+  "w": 512,
+  "h": 171,
+  "orig_bytes": 38140,
+  "q82_bytes": 30364,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9910197544111945,
+  "psnr": 33.25397755628663,
+  "tile_ssim": 0.983498999109348,
+  "tile_xy": [
+   32,
+   64
+  ],
+  "dark_share": 0.36502493765586036,
+  "dark_psnr": 37.40345363908692,
+  "ssimu2": 48.5607875616277,
+  "src": "src/assets/icons/trophy.webp",
+  "w": 96,
+  "h": 96,
+  "orig_bytes": 5760,
+  "q82_bytes": 4684,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.991242136686219,
+  "psnr": 34.015242410524934,
+  "tile_ssim": 0.988393845364409,
+  "tile_xy": [
+   32,
+   32
+  ],
+  "dark_share": 0.31598539120663016,
+  "dark_psnr": 37.125756410268345,
+  "ssimu2": 78.297615316313,
+  "src": "src/assets/icons/compass.webp",
+  "w": 144,
+  "h": 144,
+  "orig_bytes": 10112,
+  "q82_bytes": 8046,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9913159035566957,
+  "psnr": 41.90403329071164,
+  "tile_ssim": 0.9787593608352138,
+  "tile_xy": [
+   160,
+   352
+  ],
+  "dark_share": 0.08870162297128589,
+  "dark_psnr": 40.354921178888276,
+  "ssimu2": 83.38301683788234,
+  "src": "src/assets/items/teddy.webp",
+  "w": 534,
+  "h": 450,
+  "orig_bytes": 24168,
+  "q82_bytes": 21424,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9913225589173498,
+  "psnr": 39.128920295387545,
+  "tile_ssim": 0.9681004128445995,
+  "tile_xy": [
+   512,
+   928
+  ],
+  "dark_share": 0.09329065638540193,
+  "dark_psnr": 37.044071279411675,
+  "dark_tile_psnr": 41.801605030940756,
+  "dark_tile_xy": [
+   736,
+   576
+  ],
+  "ssimu2": 84.50335353896152,
+  "src": "src/assets/w7slide/flume-pokey.webp",
+  "w": 1933,
+  "h": 1550,
+  "orig_bytes": 259036,
+  "q82_bytes": 213682,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9913437570280721,
+  "psnr": 40.81477669352584,
+  "tile_ssim": 0.9732615511208853,
+  "tile_xy": [
+   1760,
+   992
+  ],
+  "dark_share": 0.09864044627155327,
+  "dark_psnr": 39.77940436863515,
+  "dark_tile_psnr": 43.56674996762831,
+  "dark_tile_xy": [
+   128,
+   832
+  ],
+  "ssimu2": 85.50095452796991,
+  "src": "src/assets/backdrops/w5dusk2-mid.webp",
+  "w": 2475,
+  "h": 1302,
+  "orig_bytes": 378614,
+  "q82_bytes": 289556,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9913491170818305,
+  "psnr": 42.61325283662076,
+  "tile_ssim": 0.9670070171171506,
+  "tile_xy": [
+   832,
+   1024
+  ],
+  "dark_share": 0.12228950508321185,
+  "dark_psnr": 42.04322396001147,
+  "dark_tile_psnr": 39.85900239223672,
+  "dark_tile_xy": [
+   1568,
+   1248
+  ],
+  "ssimu2": 77.4508800428821,
+  "src": "src/assets/backdrops/w10storm-far.webp",
+  "w": 2159,
+  "h": 1302,
+  "orig_bytes": 187208,
+  "q82_bytes": 137450,
+  "smooth_dark": 0.041,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9913837201560707,
+  "psnr": 39.030633191212075,
+  "tile_ssim": 0.9820919061740178,
+  "tile_xy": [
+   480,
+   512
+  ],
+  "dark_share": 0.14507789880049635,
+  "dark_psnr": 49.37679036899833,
+  "dark_tile_psnr": 51.1732672769331,
+  "dark_tile_xy": [
+   256,
+   352
+  ],
+  "ssimu2": 88.06377889680674,
+  "src": "src/assets/hero/journal-poses.webp",
+  "w": 600,
+  "h": 600,
+  "orig_bytes": 68156,
+  "q82_bytes": 60702,
+  "smooth_dark": 0.03,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9914081447153881,
+  "psnr": 42.89249518050159,
+  "tile_ssim": 0.9796949158385171,
+  "tile_xy": [
+   192,
+   352
+  ],
+  "dark_share": 0.09893675951418343,
+  "dark_psnr": 41.22082169714968,
+  "dark_tile_psnr": 40.1664684699152,
+  "dark_tile_xy": [
+   224,
+   64
+  ],
+  "ssimu2": 82.70218016653271,
+  "src": "src/assets/items/token.webp",
+  "w": 534,
+  "h": 453,
+  "orig_bytes": 16974,
+  "q82_bytes": 14892,
+  "smooth_dark": 0.001,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9914091993752818,
+  "psnr": 38.30433071110807,
+  "tile_ssim": 0.9644218911353544,
+  "tile_xy": [
+   320,
+   800
+  ],
+  "dark_share": 0.1244810147727242,
+  "dark_psnr": 38.29838179665657,
+  "ssimu2": 85.40195343381833,
+  "src": "src/assets/hero/hero-atlas.webp",
+  "w": 2048,
+  "h": 1243,
+  "orig_bytes": 453730,
+  "q82_bytes": 424920,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.991454225069559,
+  "psnr": 42.453209204912156,
+  "tile_ssim": 0.9696965167617471,
+  "tile_xy": [
+   1760,
+   1600
+  ],
+  "dark_share": 0.10614370405382931,
+  "dark_psnr": 40.56388964067668,
+  "dark_tile_psnr": 41.82761686275602,
+  "dark_tile_xy": [
+   3200,
+   1600
+  ],
+  "ssimu2": 85.70639922356159,
+  "src": "src/assets/backdrops/w5twi1-near.webp",
+  "w": 3520,
+  "h": 1736,
+  "orig_bytes": 298080,
+  "q82_bytes": 202462,
+  "smooth_dark": 0.005,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9914547634856435,
+  "psnr": 37.56135953926103,
+  "tile_ssim": 0.9846442864693316,
+  "tile_xy": [
+   320,
+   96
+  ],
+  "dark_share": 0.03629861929020448,
+  "dark_psnr": 37.94639803202189,
+  "ssimu2": 88.5160492231798,
+  "src": "src/assets/hero/clips/move-kick.webp",
+  "w": 1624,
+  "h": 410,
+  "orig_bytes": 82240,
+  "q82_bytes": 73554,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.991458279722007,
+  "psnr": 44.57954304385943,
+  "tile_ssim": 0.9755485174078181,
+  "tile_xy": [
+   2208,
+   320
+  ],
+  "dark_share": 0.09143166934742647,
+  "dark_psnr": 46.67459750271209,
+  "dark_tile_psnr": 43.22045027165754,
+  "dark_tile_xy": [
+   2176,
+   2368
+  ],
+  "ssimu2": 81.40569294040274,
+  "src": "src/assets/story/plates/village.webp",
+  "w": 2560,
+  "h": 2720,
+  "orig_bytes": 369670,
+  "q82_bytes": 327924,
+  "smooth_dark": 0.027,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9915035627451653,
+  "psnr": 38.02008593069228,
+  "tile_ssim": 0.9878604285091459,
+  "tile_xy": [
+   64,
+   32
+  ],
+  "dark_share": 0.09719325998897438,
+  "dark_psnr": 39.12126164008246,
+  "ssimu2": 60.6660272890948,
+  "src": "src/assets/w6to10/props-made/w7-plates.webp",
+  "w": 708,
+  "h": 86,
+  "orig_bytes": 13890,
+  "q82_bytes": 10580,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9915304354713954,
+  "psnr": 42.572486829068325,
+  "tile_ssim": 0.981011519132112,
+  "tile_xy": [
+   96,
+   192
+  ],
+  "dark_share": 0.02011652101539742,
+  "dark_psnr": 39.583630576542404,
+  "ssimu2": 84.14333486742365,
+  "src": "src/assets/items/petal.webp",
+  "w": 534,
+  "h": 450,
+  "orig_bytes": 22380,
+  "q82_bytes": 20096,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9915539433224537,
+  "psnr": 42.5217792982182,
+  "tile_ssim": 0.9814797680202062,
+  "tile_xy": [
+   192,
+   256
+  ],
+  "dark_share": 0.05096278658299642,
+  "dark_psnr": 40.32172331435737,
+  "ssimu2": 84.26588263080063,
+  "src": "src/assets/items/scroll.webp",
+  "w": 534,
+  "h": 453,
+  "orig_bytes": 22228,
+  "q82_bytes": 20188,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9915803769259144,
+  "psnr": 34.93085966309194,
+  "tile_ssim": 0.989600729902251,
+  "tile_xy": [
+   32,
+   32
+  ],
+  "dark_share": 0.15616990113511534,
+  "dark_psnr": 38.49268250479879,
+  "ssimu2": 45.85470478315729,
+  "src": "src/assets/pickups/teddy.webp",
+  "w": 78,
+  "h": 96,
+  "orig_bytes": 6464,
+  "q82_bytes": 5434,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9915959442698136,
+  "psnr": 41.98762030510311,
+  "tile_ssim": 0.9750550250595674,
+  "tile_xy": [
+   1312,
+   352
+  ],
+  "dark_share": 0.01792830457214019,
+  "ssimu2": 81.02788385645955,
+  "src": "src/assets/backdrops/w5gold2-sky.webp",
+  "w": 2640,
+  "h": 513,
+  "orig_bytes": 131128,
+  "q82_bytes": 110314,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9916564166668528,
+  "psnr": 39.828079395139476,
+  "tile_ssim": 0.9693687083350523,
+  "tile_xy": [
+   416,
+   320
+  ],
+  "dark_share": 0.12479681066907132,
+  "dark_psnr": 37.54447469631165,
+  "ssimu2": 84.57275254182213,
+  "src": "src/assets/props/w5-sway.webp",
+  "w": 488,
+  "h": 728,
+  "orig_bytes": 51358,
+  "q82_bytes": 43544,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9916966004348085,
+  "psnr": 43.708421375340706,
+  "tile_ssim": 0.9779098206413372,
+  "tile_xy": [
+   32,
+   96
+  ],
+  "dark_share": 0.040705747246437336,
+  "dark_psnr": 45.50869013418819,
+  "ssimu2": 86.96483628324887,
+  "src": "src/assets/props/pitwater/w5.webp",
+  "w": 1024,
+  "h": 516,
+  "orig_bytes": 23824,
+  "q82_bytes": 20664,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9917037941261037,
+  "psnr": 37.24950280369174,
+  "tile_ssim": 0.9833830773028488,
+  "tile_xy": [
+   1440,
+   64
+  ],
+  "dark_share": 0.0369730651248605,
+  "dark_psnr": 37.95371733088175,
+  "ssimu2": 88.44708153996108,
+  "src": "src/assets/hero/clips/move-kick2.webp",
+  "w": 1992,
+  "h": 440,
+  "orig_bytes": 107804,
+  "q82_bytes": 96652,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9917516482933968,
+  "psnr": 42.7209358968311,
+  "tile_ssim": 0.9695063343412855,
+  "tile_xy": [
+   736,
+   864
+  ],
+  "dark_share": 0.15117476851851852,
+  "dark_psnr": 42.67314512138832,
+  "dark_tile_psnr": 40.92840976008537,
+  "dark_tile_xy": [
+   1056,
+   1024
+  ],
+  "ssimu2": 81.43823530700786,
+  "src": "src/assets/story/cards/squirrels.webp",
+  "w": 1920,
+  "h": 1080,
+  "orig_bytes": 186238,
+  "q82_bytes": 165780,
+  "smooth_dark": 0.017,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9917636621801887,
+  "psnr": 35.47632569030378,
+  "tile_ssim": 0.9875269490064347,
+  "tile_xy": [
+   64,
+   32
+  ],
+  "dark_share": 0.12551619213214518,
+  "dark_psnr": 37.87328112292411,
+  "ssimu2": 48.425047511310055,
+  "src": "src/assets/icons/journal.webp",
+  "w": 104,
+  "h": 104,
+  "orig_bytes": 6420,
+  "q82_bytes": 5124,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9918777044871401,
+  "psnr": 38.282838476126244,
+  "tile_ssim": 0.9826295508818566,
+  "tile_xy": [
+   64,
+   160
+  ],
+  "dark_share": 0.05262081398780392,
+  "dark_psnr": 37.4946905301188,
+  "ssimu2": 87.4141975394833,
+  "src": "src/assets/hero/clips/move-climb.webp",
+  "w": 1160,
+  "h": 813,
+  "orig_bytes": 185092,
+  "q82_bytes": 167064,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9918830324963623,
+  "psnr": 44.672011751676344,
+  "tile_ssim": 0.9597513665464148,
+  "tile_xy": [
+   320,
+   1024
+  ],
+  "dark_share": 0.20981965067986574,
+  "dark_psnr": 44.84668713455129,
+  "dark_tile_psnr": 40.835577612947944,
+  "dark_tile_xy": [
+   992,
+   32
+  ],
+  "ssimu2": 80.28980069838363,
+  "src": "src/assets/backdrops/w7-far.webp",
+  "w": 2160,
+  "h": 1302,
+  "orig_bytes": 148458,
+  "q82_bytes": 129522,
+  "smooth_dark": 0.06,
+  "flag": ""
+ },
+ {
+  "ssim": 0.99188879563976,
+  "psnr": 39.634871280312616,
+  "tile_ssim": 0.981589908683325,
+  "tile_xy": [
+   800,
+   448
+  ],
+  "dark_share": 0.19018251904367575,
+  "dark_psnr": 39.541451735938594,
+  "ssimu2": 85.19934348198483,
+  "src": "src/assets/enemies/turtle-atlas.webp",
+  "w": 1024,
+  "h": 774,
+  "orig_bytes": 173722,
+  "q82_bytes": 163296,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.991919655312995,
+  "psnr": 34.071870913725725,
+  "tile_ssim": 0.9815858337682973,
+  "tile_xy": [
+   0,
+   448
+  ],
+  "dark_share": 0.3732931631431301,
+  "dark_psnr": 37.68805009103316,
+  "dark_tile_psnr": 39.262017037644355,
+  "dark_tile_xy": [
+   0,
+   448
+  ],
+  "ssimu2": 85.63117089958244,
+  "src": "src/assets/enemies/ocelot-atlas.webp",
+  "w": 1024,
+  "h": 656,
+  "orig_bytes": 184828,
+  "q82_bytes": 148040,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB"
+ },
+ {
+  "ssim": 0.9919550225849173,
+  "psnr": 42.941250431686655,
+  "tile_ssim": 0.9768924445458836,
+  "tile_xy": [
+   384,
+   160
+  ],
+  "dark_share": 0.04200166458593425,
+  "dark_psnr": 39.321417120891866,
+  "ssimu2": 83.50560796634599,
+  "src": "src/assets/items/ribbon.webp",
+  "w": 534,
+  "h": 450,
+  "orig_bytes": 18330,
+  "q82_bytes": 16136,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9919632624990696,
+  "psnr": 44.70927202062762,
+  "tile_ssim": 0.9738531616124573,
+  "tile_xy": [
+   192,
+   672
+  ],
+  "dark_share": 0.027129612464140942,
+  "dark_psnr": 43.36545613825413,
+  "ssimu2": 82.42965111777309,
+  "src": "src/assets/props/w6-water.webp",
+  "w": 1024,
+  "h": 754,
+  "orig_bytes": 46064,
+  "q82_bytes": 38546,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.991970118038739,
+  "psnr": 37.627063232890706,
+  "tile_ssim": 0.979918029235796,
+  "tile_xy": [
+   2560,
+   352
+  ],
+  "dark_share": 0.036389853472326227,
+  "dark_psnr": 37.80563568120751,
+  "ssimu2": 87.90573379579544,
+  "src": "src/assets/hero/clips/move-mega.webp",
+  "w": 2816,
+  "h": 416,
+  "orig_bytes": 166072,
+  "q82_bytes": 149484,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9920276477509145,
+  "psnr": 38.289837207425144,
+  "tile_ssim": 0.987136455479236,
+  "tile_xy": [
+   1056,
+   160
+  ],
+  "dark_share": 0.022681697161955474,
+  "dark_psnr": 38.34050513897444,
+  "ssimu2": 88.39640837438445,
+  "src": "src/assets/hero/clips/teeter.webp",
+  "w": 1536,
+  "h": 402,
+  "orig_bytes": 83314,
+  "q82_bytes": 74762,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9920462563953819,
+  "psnr": 44.03873556291746,
+  "tile_ssim": 0.9652689657929786,
+  "tile_xy": [
+   96,
+   1216
+  ],
+  "dark_share": 0.12179964696063846,
+  "dark_psnr": 42.91622656865673,
+  "dark_tile_psnr": 39.42096405762357,
+  "dark_tile_xy": [
+   1024,
+   1152
+  ],
+  "ssimu2": 80.60001066445535,
+  "src": "src/assets/backdrops/w1rain-far.webp",
+  "w": 2159,
+  "h": 1302,
+  "orig_bytes": 185222,
+  "q82_bytes": 156214,
+  "smooth_dark": 0.027,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9920982576118166,
+  "psnr": 40.999382716668215,
+  "tile_ssim": 0.9658431040832028,
+  "tile_xy": [
+   928,
+   192
+  ],
+  "dark_share": 0.0,
+  "ssimu2": 80.53957989970101,
+  "src": "src/assets/backdrops/w4terraces-sky.webp",
+  "w": 2640,
+  "h": 513,
+  "orig_bytes": 106030,
+  "q82_bytes": 83204,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.992188027778412,
+  "psnr": 43.200389182269994,
+  "tile_ssim": 0.9755173904516218,
+  "tile_xy": [
+   1056,
+   1440
+  ],
+  "dark_share": 0.23777219159971977,
+  "dark_psnr": 43.82421419979277,
+  "dark_tile_psnr": 40.22834889308345,
+  "dark_tile_xy": [
+   800,
+   1600
+  ],
+  "ssimu2": 84.99226783573259,
+  "src": "src/assets/backdrops/w5dusk2-near.webp",
+  "w": 3520,
+  "h": 1736,
+  "orig_bytes": 254430,
+  "q82_bytes": 159830,
+  "smooth_dark": 0.086,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9921943342122128,
+  "psnr": 43.22175642130459,
+  "tile_ssim": 0.9445688323123059,
+  "tile_xy": [
+   544,
+   1152
+  ],
+  "dark_share": 0.10222520908004779,
+  "dark_psnr": 43.07756010827029,
+  "dark_tile_psnr": 39.73266038516748,
+  "dark_tile_xy": [
+   160,
+   1184
+  ],
+  "ssimu2": 81.90793434548178,
+  "src": "src/assets/backdrops/w1kapok-far.webp",
+  "w": 2160,
+  "h": 1302,
+  "orig_bytes": 197632,
+  "q82_bytes": 164476,
+  "smooth_dark": 0.027,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9922025072660449,
+  "psnr": 43.63871394972027,
+  "tile_ssim": 0.9654744570071478,
+  "tile_xy": [
+   960,
+   1664
+  ],
+  "dark_share": 0.2889988220629942,
+  "dark_psnr": 43.678543452063614,
+  "dark_tile_psnr": 39.152946541990104,
+  "dark_tile_xy": [
+   960,
+   1664
+  ],
+  "ssimu2": 82.62010353046145,
+  "src": "src/assets/backdrops/w4-near.webp",
+  "w": 3256,
+  "h": 1736,
+  "orig_bytes": 256098,
+  "q82_bytes": 165560,
+  "smooth_dark": 0.045,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9922116164573876,
+  "psnr": 42.06258716738658,
+  "tile_ssim": 0.9779147350277084,
+  "tile_xy": [
+   160,
+   192
+  ],
+  "dark_share": 0.06562574927036569,
+  "dark_psnr": 40.21766047990694,
+  "ssimu2": 83.43000335886046,
+  "src": "src/assets/items/stopwatch.webp",
+  "w": 534,
+  "h": 453,
+  "orig_bytes": 23486,
+  "q82_bytes": 20988,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9922422289876177,
+  "psnr": 37.43561410110999,
+  "tile_ssim": 0.9836609630336757,
+  "tile_xy": [
+   736,
+   256
+  ],
+  "dark_share": 0.035779189625343474,
+  "dark_psnr": 37.78169724130324,
+  "ssimu2": 86.47131140970583,
+  "src": "src/assets/hero/clips/move-run.webp",
+  "w": 1144,
+  "h": 426,
+  "orig_bytes": 118152,
+  "q82_bytes": 104692,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9922480750290733,
+  "psnr": 43.33060152936498,
+  "tile_ssim": 0.9454692409855999,
+  "tile_xy": [
+   2080,
+   640
+  ],
+  "dark_share": 0.008029895731508635,
+  "ssimu2": 77.91579157410055,
+  "src": "src/assets/backdrops/w2-far.webp",
+  "w": 2640,
+  "h": 1302,
+  "orig_bytes": 206364,
+  "q82_bytes": 113284,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9922589447123377,
+  "psnr": 43.31260758164228,
+  "tile_ssim": 0.9392743358208184,
+  "tile_xy": [
+   1472,
+   896
+  ],
+  "dark_share": 0.008282420984033888,
+  "ssimu2": 79.97808271396934,
+  "src": "src/assets/backdrops/w5-far.webp",
+  "w": 2640,
+  "h": 1302,
+  "orig_bytes": 202240,
+  "q82_bytes": 107554,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.992264891469785,
+  "psnr": 42.865294666411984,
+  "tile_ssim": 0.969620239703527,
+  "tile_xy": [
+   2720,
+   1664
+  ],
+  "dark_share": 0.09566350730447838,
+  "dark_psnr": 41.62830969884631,
+  "dark_tile_psnr": 41.873369064535204,
+  "dark_tile_xy": [
+   3136,
+   1536
+  ],
+  "ssimu2": 85.69312088144405,
+  "src": "src/assets/backdrops/w5twi2-near.webp",
+  "w": 3520,
+  "h": 1736,
+  "orig_bytes": 307450,
+  "q82_bytes": 212392,
+  "smooth_dark": 0.018,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9922876150247467,
+  "psnr": 38.61184741863977,
+  "tile_ssim": 0.9850016514329589,
+  "tile_xy": [
+   64,
+   352
+  ],
+  "dark_share": 0.021026075347922512,
+  "dark_psnr": 38.09833799516464,
+  "ssimu2": 87.71307262776686,
+  "src": "src/assets/hero/clips/step-back.webp",
+  "w": 1640,
+  "h": 410,
+  "orig_bytes": 148396,
+  "q82_bytes": 134956,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9922962419954128,
+  "psnr": 34.720687886463566,
+  "tile_ssim": 0.9946142493220231,
+  "tile_xy": [
+   0,
+   0
+  ],
+  "dark_share": 0.3482786228983187,
+  "dark_psnr": 38.949243821390645,
+  "ssimu2": 66.18298144008409,
+  "src": "src/assets/icons/expand.webp",
+  "w": 80,
+  "h": 80,
+  "orig_bytes": 4244,
+  "q82_bytes": 3440,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9923219929014254,
+  "psnr": 43.654621561577116,
+  "tile_ssim": 0.9793852172430443,
+  "tile_xy": [
+   320,
+   256
+  ],
+  "dark_share": 0.09469950641168738,
+  "dark_psnr": 42.69518290636092,
+  "dark_tile_psnr": 42.6101302473124,
+  "dark_tile_xy": [
+   384,
+   384
+  ],
+  "ssimu2": 83.30480305905297,
+  "src": "src/assets/items/bell.webp",
+  "w": 534,
+  "h": 453,
+  "orig_bytes": 14294,
+  "q82_bytes": 12648,
+  "smooth_dark": 0.006,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9923321527749348,
+  "psnr": 37.38849864450551,
+  "tile_ssim": 0.9822333426943641,
+  "tile_xy": [
+   1376,
+   160
+  ],
+  "dark_share": 0.08419573095950061,
+  "dark_psnr": 37.62347679185636,
+  "ssimu2": 88.65067996047935,
+  "src": "src/assets/hero/clips/move-jab.webp",
+  "w": 1800,
+  "h": 418,
+  "orig_bytes": 83614,
+  "q82_bytes": 76764,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9924900005463159,
+  "psnr": 38.30786254318041,
+  "tile_ssim": 0.9856989536415142,
+  "tile_xy": [
+   320,
+   160
+  ],
+  "dark_share": 0.04407401458990203,
+  "dark_psnr": 37.94862666445466,
+  "ssimu2": 85.87466266945339,
+  "src": "src/assets/hero/clips/move-hook.webp",
+  "w": 1888,
+  "h": 206,
+  "orig_bytes": 55306,
+  "q82_bytes": 49996,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9925747050645317,
+  "psnr": 36.62888040993388,
+  "tile_ssim": 0.9827206555298273,
+  "tile_xy": [
+   288,
+   288
+  ],
+  "dark_share": 0.12769755234206875,
+  "dark_psnr": 37.672199236339736,
+  "ssimu2": 86.37941829442956,
+  "src": "src/assets/hero/clips/push.webp",
+  "w": 1912,
+  "h": 1176,
+  "orig_bytes": 451272,
+  "q82_bytes": 404760,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9926263746063498,
+  "psnr": 33.152419847875656,
+  "tile_ssim": 0.9836250772983106,
+  "tile_xy": [
+   64,
+   0
+  ],
+  "dark_share": 0.3075187198687045,
+  "dark_psnr": 36.34594025488084,
+  "ssimu2": 71.2785022239903,
+  "src": "src/assets/icons/cards.webp",
+  "w": 124,
+  "h": 124,
+  "orig_bytes": 8848,
+  "q82_bytes": 7080,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.992747703145467,
+  "psnr": 43.98385975846128,
+  "tile_ssim": 0.9353652975172614,
+  "tile_xy": [
+   1792,
+   352
+  ],
+  "dark_share": 0.014191162779872457,
+  "ssimu2": 76.93877203189331,
+  "src": "src/assets/backdrops/w4-far.webp",
+  "w": 2640,
+  "h": 1302,
+  "orig_bytes": 177544,
+  "q82_bytes": 101626,
+  "smooth_dark": 0.002,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9928041973990169,
+  "psnr": 36.871175291620254,
+  "tile_ssim": 0.9871349512335317,
+  "tile_xy": [
+   160,
+   768
+  ],
+  "dark_share": 0.10566584661815603,
+  "dark_psnr": 38.45168526596825,
+  "ssimu2": 86.26048552020521,
+  "src": "src/assets/hero/clips/belly-scratch.webp",
+  "w": 1160,
+  "h": 1428,
+  "orig_bytes": 444224,
+  "q82_bytes": 393056,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9928630280984193,
+  "psnr": 41.86850147092727,
+  "tile_ssim": 0.970224528834631,
+  "tile_xy": [
+   1472,
+   64
+  ],
+  "dark_share": 0.047681729950131584,
+  "dark_psnr": 38.30536829578107,
+  "ssimu2": 87.1354767621123,
+  "src": "src/assets/w4/falls.webp",
+  "w": 2048,
+  "h": 1384,
+  "orig_bytes": 355142,
+  "q82_bytes": 303114,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9928710383414071,
+  "psnr": 38.33417200654654,
+  "tile_ssim": 0.9812707250539631,
+  "tile_xy": [
+   640,
+   64
+  ],
+  "dark_share": 0.14567027083840564,
+  "dark_psnr": 41.42721917280034,
+  "dark_tile_psnr": 41.38325775422415,
+  "dark_tile_xy": [
+   1152,
+   384
+  ],
+  "ssimu2": 86.1055936589942,
+  "src": "src/assets/props/meeca-night.webp",
+  "w": 2048,
+  "h": 793,
+  "orig_bytes": 464044,
+  "q82_bytes": 429828,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9928807308394609,
+  "psnr": 36.66025216616464,
+  "tile_ssim": 0.9819959721589828,
+  "tile_xy": [
+   0,
+   64
+  ],
+  "dark_share": 0.3323150774601789,
+  "dark_psnr": 41.974094040915546,
+  "ssimu2": 68.52641051713697,
+  "src": "src/assets/pickups/locket.webp",
+  "w": 82,
+  "h": 96,
+  "orig_bytes": 6896,
+  "q82_bytes": 5906,
+  "smooth_dark": 0.0,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9928836571069911,
+  "psnr": 37.8582383959013,
+  "tile_ssim": 0.9865803110106275,
+  "tile_xy": [
+   1216,
+   160
+  ],
+  "dark_share": 0.042190906259732174,
+  "dark_psnr": 38.120630099707604,
+  "ssimu2": 83.4812892785767,
+  "src": "src/assets/hero/clips/move-cross.webp",
+  "w": 1848,
+  "h": 205,
+  "orig_bytes": 65190,
+  "q82_bytes": 58354,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9929646322221686,
+  "psnr": 45.46221208507977,
+  "tile_ssim": 0.9720025446776905,
+  "tile_xy": [
+   320,
+   576
+  ],
+  "dark_share": 0.039847740930506026,
+  "dark_psnr": 45.48981339909835,
+  "dark_tile_psnr": 52.25315199742309,
+  "dark_tile_xy": [
+   928,
+   512
+  ],
+  "ssimu2": 82.83281520484604,
+  "src": "src/assets/props/w10-water.webp",
+  "w": 1024,
+  "h": 754,
+  "orig_bytes": 43226,
+  "q82_bytes": 37908,
+  "smooth_dark": 0.021,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9929662023493174,
+  "psnr": 38.518829780755695,
+  "tile_ssim": 0.9869265532576021,
+  "tile_xy": [
+   1088,
+   160
+  ],
+  "dark_share": 0.04594240837696335,
+  "dark_psnr": 38.80907948855845,
+  "ssimu2": 88.38246583548954,
+  "src": "src/assets/hero/clips/move-walk.webp",
+  "w": 1184,
+  "h": 651,
+  "orig_bytes": 129744,
+  "q82_bytes": 119096,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9930098743434911,
+  "psnr": 42.63794745313029,
+  "tile_ssim": 0.9734011749742518,
+  "tile_xy": [
+   416,
+   0
+  ],
+  "dark_share": 0.05546047572984101,
+  "dark_psnr": 39.95118031112702,
+  "dark_tile_psnr": 45.18590536006801,
+  "dark_tile_xy": [
+   320,
+   128
+  ],
+  "ssimu2": 83.48309860345282,
+  "src": "src/assets/items/medal.webp",
+  "w": 534,
+  "h": 453,
+  "orig_bytes": 19002,
+  "q82_bytes": 16840,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9930122490541204,
+  "psnr": 38.87638643340756,
+  "tile_ssim": 0.985703928930754,
+  "tile_xy": [
+   416,
+   96
+  ],
+  "dark_share": 0.17787985865724382,
+  "dark_psnr": 38.51873032401991,
+  "ssimu2": 85.12424683766451,
+  "src": "src/assets/characters/meeca-blanket.webp",
+  "w": 469,
+  "h": 410,
+  "orig_bytes": 31564,
+  "q82_bytes": 28226,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9930685266020407,
+  "psnr": 42.37469920848079,
+  "tile_ssim": 0.9773934280272514,
+  "tile_xy": [
+   480,
+   0
+  ],
+  "dark_share": 0.06199204636588371,
+  "dark_psnr": 39.74045233370838,
+  "ssimu2": 83.79634906664938,
+  "src": "src/assets/items/key.webp",
+  "w": 534,
+  "h": 453,
+  "orig_bytes": 19910,
+  "q82_bytes": 17494,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9931459220371144,
+  "psnr": 39.13505660546118,
+  "tile_ssim": 0.9692102927938214,
+  "tile_xy": [
+   2848,
+   320
+  ],
+  "dark_share": 0.0827973336451877,
+  "dark_psnr": 37.35780455610807,
+  "ssimu2": 84.37167928425777,
+  "src": "src/assets/title/clip-pokey-idle.webp",
+  "w": 3864,
+  "h": 906,
+  "orig_bytes": 701032,
+  "q82_bytes": 661936,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9931985766451966,
+  "psnr": 36.912093001500935,
+  "tile_ssim": 0.9865142738992901,
+  "tile_xy": [
+   1568,
+   576
+  ],
+  "dark_share": 0.11232369064739996,
+  "dark_psnr": 37.997159350637816,
+  "dark_tile_psnr": 41.20246729920575,
+  "dark_tile_xy": [
+   1600,
+   256
+  ],
+  "ssimu2": 87.23979313243196,
+  "src": "src/assets/hero/clips/idle-yawn.webp",
+  "w": 1728,
+  "h": 1470,
+  "orig_bytes": 545236,
+  "q82_bytes": 487728,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9932578660015017,
+  "psnr": 46.41616234243047,
+  "tile_ssim": 0.9749090373997786,
+  "tile_xy": [
+   1088,
+   928
+  ],
+  "dark_share": 0.007817957261029412,
+  "ssimu2": 84.77927046399903,
+  "src": "src/assets/story/plates/w5-dusk.webp",
+  "w": 2560,
+  "h": 2720,
+  "orig_bytes": 190690,
+  "q82_bytes": 155320,
+  "smooth_dark": 0.007,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9933135626725251,
+  "psnr": 37.15052993148072,
+  "tile_ssim": 0.9862005835706766,
+  "tile_xy": [
+   1120,
+   576
+  ],
+  "dark_share": 0.10596431660206926,
+  "dark_psnr": 37.98788489885136,
+  "ssimu2": 86.4692187799227,
+  "src": "src/assets/hero/clips/look-around.webp",
+  "w": 1200,
+  "h": 1442,
+  "orig_bytes": 516274,
+  "q82_bytes": 460448,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9933174184669789,
+  "psnr": 43.739968174589556,
+  "tile_ssim": 0.9786348020564637,
+  "tile_xy": [
+   416,
+   64
+  ],
+  "dark_share": 0.04379941739492301,
+  "dark_psnr": 40.47747145964246,
+  "ssimu2": 84.120874086754,
+  "src": "src/assets/items/rattle.webp",
+  "w": 534,
+  "h": 450,
+  "orig_bytes": 14458,
+  "q82_bytes": 12728,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9934755378683644,
+  "psnr": 36.74242634009458,
+  "tile_ssim": 0.9840215441235249,
+  "tile_xy": [
+   96,
+   608
+  ],
+  "dark_share": 0.12216678499653134,
+  "dark_psnr": 37.63325475680863,
+  "ssimu2": 87.01211988237928,
+  "src": "src/assets/hero/clips/cheer.webp",
+  "w": 1744,
+  "h": 860,
+  "orig_bytes": 377742,
+  "q82_bytes": 342376,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9934779645733931,
+  "psnr": 37.783137578725764,
+  "tile_ssim": 0.9857199124551727,
+  "tile_xy": [
+   0,
+   0
+  ],
+  "dark_share": 0.23155873883186887,
+  "dark_psnr": 41.16181530840179,
+  "ssimu2": 85.38248816881016,
+  "src": "src/assets/props/rope-kit.webp",
+  "w": 146,
+  "h": 352,
+  "orig_bytes": 6006,
+  "q82_bytes": 4884,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9935242002531807,
+  "psnr": 42.42368778756946,
+  "tile_ssim": 0.9616119248215221,
+  "tile_xy": [
+   128,
+   768
+  ],
+  "dark_share": 0.04339744533830804,
+  "dark_psnr": 38.911918777715826,
+  "dark_tile_psnr": 46.107810125260016,
+  "dark_tile_xy": [
+   320,
+   0
+  ],
+  "ssimu2": 77.8138206898194,
+  "src": "src/assets/backdrops/w10night-far.webp",
+  "w": 2159,
+  "h": 1302,
+  "orig_bytes": 173040,
+  "q82_bytes": 124922,
+  "smooth_dark": 0.014,
+  "flag": "SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9936052274800075,
+  "psnr": 37.393379973850436,
+  "tile_ssim": 0.9885784822871237,
+  "tile_xy": [
+   32,
+   448
+  ],
+  "dark_share": 0.13088263458009938,
+  "dark_psnr": 38.78313653887935,
+  "ssimu2": 86.48069619127824,
+  "src": "src/assets/hero/clips/doze.webp",
+  "w": 904,
+  "h": 924,
+  "orig_bytes": 274134,
+  "q82_bytes": 247314,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9936273774629001,
+  "psnr": 43.89011953983154,
+  "tile_ssim": 0.9709621129339755,
+  "tile_xy": [
+   256,
+   992
+  ],
+  "dark_share": 0.18009543721909313,
+  "dark_psnr": 45.48508235741566,
+  "dark_tile_psnr": 39.43201031842946,
+  "dark_tile_xy": [
+   512,
+   480
+  ],
+  "ssimu2": 81.6899364399825,
+  "src": "src/assets/backdrops/w2mist-far.webp",
+  "w": 2160,
+  "h": 1302,
+  "orig_bytes": 138488,
+  "q82_bytes": 114332,
+  "smooth_dark": 0.094,
+  "flag": "smooth dark area, dark tile as bad as the black picture"
+ },
+ {
+  "ssim": 0.9936429216990174,
+  "psnr": 36.8678070258648,
+  "tile_ssim": 0.9855912267808901,
+  "tile_xy": [
+   448,
+   160
+  ],
+  "dark_share": 0.19120932023878298,
+  "dark_psnr": 39.7750061496756,
+  "ssimu2": 88.3424796019799,
+  "src": "src/assets/lairs/fg-sov.webp",
+  "w": 2048,
+  "h": 239,
+  "orig_bytes": 67834,
+  "q82_bytes": 62874,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9936664903968434,
+  "psnr": 44.364707685780544,
+  "tile_ssim": 0.9713913866563012,
+  "tile_xy": [
+   1280,
+   128
+  ],
+  "dark_share": 0.02205576438319908,
+  "dark_psnr": 38.35405993559426,
+  "ssimu2": 80.58467987755992,
+  "src": "src/assets/backdrops/w10storm-sky.webp",
+  "w": 2159,
+  "h": 513,
+  "orig_bytes": 64224,
+  "q82_bytes": 55354,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9936877566565839,
+  "psnr": 41.890851097080066,
+  "tile_ssim": 0.9830746237332367,
+  "tile_xy": [
+   320,
+   64
+  ],
+  "dark_share": 0.06336450298054584,
+  "dark_psnr": 38.8761462712685,
+  "ssimu2": 84.58011548888142,
+  "src": "src/assets/items/locket.webp",
+  "w": 534,
+  "h": 453,
+  "orig_bytes": 26880,
+  "q82_bytes": 24476,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9937263683588735,
+  "psnr": 37.34841211956378,
+  "tile_ssim": 0.9872639197311718,
+  "tile_xy": [
+   896,
+   384
+  ],
+  "dark_share": 0.09192882797972336,
+  "dark_psnr": 37.69928675144922,
+  "ssimu2": 86.91663272319474,
+  "src": "src/assets/hero/clips/hurt.webp",
+  "w": 1312,
+  "h": 1230,
+  "orig_bytes": 434208,
+  "q82_bytes": 392102,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.993731816524467,
+  "psnr": 32.57652194365856,
+  "tile_ssim": 0.990178245799525,
+  "tile_xy": [
+   32,
+   0
+  ],
+  "dark_share": 0.22665520206362855,
+  "dark_psnr": 37.52175540590316,
+  "ssimu2": 52.08523432685734,
+  "src": "src/assets/icons/medal.webp",
+  "w": 104,
+  "h": 104,
+  "orig_bytes": 5330,
+  "q82_bytes": 4296,
+  "smooth_dark": 0.0,
+  "flag": "PSNR < 35 dB, SSIMULACRA2 < 78.5"
+ },
+ {
+  "ssim": 0.9938841793071733,
+  "psnr": 43.94964880538077,
+  "tile_ssim": 0.9806378739930357,
+  "tile_xy": [
+   1312,
+   128
+  ],
+  "dark_share": 0.06779553526128869,
+  "dark_psnr": 41.22759854628842,
+  "dark_tile_psnr": 41.71020871715767,
+  "dark_tile_xy": [
+   544,
+   32
+  ],
+  "ssimu2": 82.51426068776567,
+  "src": "src/assets/backdrops/w1kapok-sky.webp",
+  "w": 2160,
+  "h": 513,
+  "orig_bytes": 77890,
+  "q82_bytes": 66628,
+  "smooth_dark": 0.011,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9941313800324519,
+  "psnr": 46.138206247610604,
+  "tile_ssim": 0.9729761731807733,
+  "tile_xy": [
+   352,
+   1664
+  ],
+  "dark_share": 0.017707232306985295,
+  "ssimu2": 81.4335858593197,
+  "src": "src/assets/story/plates/raft.webp",
+  "w": 2560,
+  "h": 2720,
+  "orig_bytes": 211378,
+  "q82_bytes": 176802,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9945402862526895,
+  "psnr": 45.34932178245125,
+  "tile_ssim": 0.9639065330312415,
+  "tile_xy": [
+   480,
+   1248
+  ],
+  "dark_share": 0.18241274108209593,
+  "dark_psnr": 45.44008508470021,
+  "dark_tile_psnr": 40.72966097525448,
+  "dark_tile_xy": [
+   192,
+   1120
+  ],
+  "ssimu2": 82.16763100501109,
+  "src": "src/assets/backdrops/w6dawn-far.webp",
+  "w": 2160,
+  "h": 1302,
+  "orig_bytes": 122496,
+  "q82_bytes": 104390,
+  "smooth_dark": 0.061,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9945518495556898,
+  "psnr": 46.023394049138766,
+  "tile_ssim": 0.9774948383185861,
+  "tile_xy": [
+   544,
+   928
+  ],
+  "dark_share": 0.25866236547277693,
+  "dark_psnr": 47.13007517071765,
+  "dark_tile_psnr": 40.640733085305804,
+  "dark_tile_xy": [
+   128,
+   192
+  ],
+  "ssimu2": 86.45383104379076,
+  "src": "src/assets/props/faces810.webp",
+  "w": 1930,
+  "h": 972,
+  "orig_bytes": 112430,
+  "q82_bytes": 99170,
+  "smooth_dark": 0.074,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9952707424260964,
+  "psnr": 45.394842051297005,
+  "tile_ssim": 0.9754805108558392,
+  "tile_xy": [
+   608,
+   512
+  ],
+  "dark_share": 0.03457757001466104,
+  "dark_psnr": 41.633863443821284,
+  "ssimu2": 85.2681592972829,
+  "src": "src/assets/ui/card.webp",
+  "w": 640,
+  "h": 668,
+  "orig_bytes": 10472,
+  "q82_bytes": 8512,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9953875238114748,
+  "psnr": 38.41092010026656,
+  "tile_ssim": 0.9888579366966723,
+  "tile_xy": [
+   544,
+   96
+  ],
+  "dark_share": 0.20776167884771551,
+  "dark_psnr": 38.82518472228104,
+  "ssimu2": 86.19593129673835,
+  "src": "src/assets/characters/meeca-carve.webp",
+  "w": 965,
+  "h": 412,
+  "orig_bytes": 98232,
+  "q82_bytes": 92476,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9955663460141375,
+  "psnr": 44.75703374478893,
+  "tile_ssim": 0.981689563206356,
+  "tile_xy": [
+   1568,
+   544
+  ],
+  "dark_share": 0.059485211407397605,
+  "dark_psnr": 41.539055237197296,
+  "dark_tile_psnr": 41.77370793336989,
+  "dark_tile_xy": [
+   96,
+   1024
+  ],
+  "ssimu2": 82.18252658755935,
+  "src": "src/assets/backdrops/w4storm-far.webp",
+  "w": 2159,
+  "h": 1302,
+  "orig_bytes": 158342,
+  "q82_bytes": 135432,
+  "smooth_dark": 0.013,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9956610035843371,
+  "psnr": 45.371141516623474,
+  "tile_ssim": 0.9694931043979342,
+  "tile_xy": [
+   896,
+   64
+  ],
+  "dark_share": 0.13096868884540117,
+  "dark_psnr": 42.712158567110244,
+  "dark_tile_psnr": 38.87427283563932,
+  "dark_tile_xy": [
+   736,
+   160
+  ],
+  "ssimu2": 80.58519680901279,
+  "src": "src/assets/backdrops/w3sinkhole-sky.webp",
+  "w": 2160,
+  "h": 513,
+  "orig_bytes": 40434,
+  "q82_bytes": 33522,
+  "smooth_dark": 0.037,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9969894667703181,
+  "psnr": 47.619513836664595,
+  "tile_ssim": 0.9774813486480954,
+  "tile_xy": [
+   1760,
+   352
+  ],
+  "dark_share": 0.0027863156911993574,
+  "ssimu2": 85.18824465915377,
+  "src": "src/assets/backdrops/w1rain-sky.webp",
+  "w": 2159,
+  "h": 513,
+  "orig_bytes": 40802,
+  "q82_bytes": 35428,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9974252933688962,
+  "psnr": 36.17328431494703,
+  "tile_ssim": 0.9639244420408156,
+  "tile_xy": [
+   32,
+   2016
+  ],
+  "dark_share": 0.16358153901359174,
+  "dark_psnr": 40.38057508149744,
+  "dark_tile_psnr": 42.265171983974966,
+  "dark_tile_xy": [
+   448,
+   192
+  ],
+  "ssimu2": 85.41424451640417,
+  "src": "src/assets/enemies/goldsnake-anim.webp",
+  "w": 2048,
+  "h": 2578,
+  "orig_bytes": 1551996,
+  "q82_bytes": 1533594,
+  "smooth_dark": 0.0,
+  "flag": ""
+ },
+ {
+  "ssim": 0.9975140907345637,
+  "psnr": 48.09163929869249,
+  "tile_ssim": 0.9510603299237251,
+  "tile_xy": [
+   832,
+   448
+  ],
+  "dark_share": 0.05502826701456839,
+  "dark_psnr": 46.249572854198526,
+  "dark_tile_psnr": 41.04032657124321,
+  "dark_tile_xy": [
+   928,
+   416
+  ],
+  "ssimu2": 85.40204631148113,
+  "src": "src/assets/backdrops/w7dusk-sky.webp",
+  "w": 2160,
+  "h": 513,
+  "orig_bytes": 24888,
+  "q82_bytes": 21652,
+  "smooth_dark": 0.014,
+  "flag": ""
+ }
+]
