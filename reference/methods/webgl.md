@@ -92,7 +92,8 @@ list (chunkcheck checks it), and start a stage offline.
   - On a software 2D canvas the copy is a readback: 4 ms -> 41 ms. The timed copy catches it under the title card and falls back.
   - The look was close but not identical: 0.4% to 1.8% of pixels differ, nearly all by 1 or 2 of 255, up to 9 of 255 along the
     squares' seams (the 2D stamps antialias each square's edge and let a hair of backdrop through; WebGL does not).
-  - **Why it cannot win:** a 2D canvas on the GPU already draws a baked canvas as a texture. Routing the same pixels through a second
+  - **Why it is unlikely to win on a phone either (reasoned, measured only on SwiftShader, never on a phone):** a 2D canvas on the
+    GPU already draws a baked canvas as a texture. Routing the same pixels through a second
     canvas and copying them back adds work and removes none. The same holds for every "copy layer" (the backdrop, stage 1, was the same
     design). **A WebGL layer pays only when it is SHOWN, not copied**: whole layers from the bottom up on the WebGL canvas with the 2D
     canvas see-through above them, which needs every `lighter`/`screen`/`multiply` effect drawn over those layers moved first (the

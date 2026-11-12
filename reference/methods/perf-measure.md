@@ -56,8 +56,9 @@ same container.
    - It proves itself every page: a planted 5 ms must land in its own layer, and the first reading taken again at the end must be
      unchanged (the pipeline did not move under it). A page that fails either fails the run.
    - `--ab`: two snippets (dev-only hooks on `window`) measured back to back at every spot in ONE page; rows A, B and B - A.
-   - `--stills-only [--root <worktree>]` saves the canvas's own pixels at every spot, and `--diff <png dir A> <png dir B>` compares two
-     builds' stills pixel by pixel (the fake clock and seeded dice make two page loads land on the same frame).
+   - `--stills-only [--root <worktree>]` and `--diff <png dir A> <png dir B>` exist but DO NOT WORK YET as a two-build look proof: the
+     first try (base against branch, draw code unchanged) differed on 15 of 15 stills (the camera and the clock-driven pieces did
+     not land on the same frame across two page loads, fake clock and seeded dice or not). Compare inside one page (--ab) until fixed.
    - `--table <layerstick.json>` prints a saved run again (a run stopped early keeps every page it finished).
 
 ## The bar (what "done" looks like)
