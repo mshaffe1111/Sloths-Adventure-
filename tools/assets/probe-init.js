@@ -2,11 +2,12 @@
 // largest scale it is ever drawn at, in DEVICE pixels per stored pixel, following canvases drawn into other canvases up to the screen.
 (() => {
   window.__eng = () => (typeof window.__engine === 'function' ? window.__engine() : window.__engine) || null;
-  const P = (window.__probe = { src: new Map(), edges: new Map(), dom: new Map(), fetched: new Map(), phase: 'boot' });
+  const P = (window.__probe = { src: new Map(), edges: new Map(), dom: new Map(), fetched: new Map(), phase: 'boot', sizes: {}, life: Math.random().toString(36).slice(2) });
   const tag = new WeakMap(); // image/bitmap/blob -> url
   let nextId = 1;
   const cid = new WeakMap();
-  const idOf = (c) => { let i = cid.get(c); if (!i) { i = nextId++; cid.set(c, i); } return i; };
+  // a canvas is a new identity whenever its size changes (pooled canvases are reused for different jobs)
+  const idOf = (c) => { let i = cid.get(c); if (!i || i.w !== c.width || i.h !== c.height) { i = { id: nextId++, w: c.width, h: c.height }; cid.set(c, i); P.sizes[i.id] = [c.width, c.height]; } return i.id; };
   const canvases = new Map(); // id -> WeakRef(canvas)
   const ob = Response.prototype.blob;
   Response.prototype.blob = async function () { const b = await ob.call(this); try { tag.set(b, this.url); } catch {} return b; };
@@ -14,7 +15,7 @@
   window.createImageBitmap = async function (s, ...a) {
     const bm = await cib.call(this, s, ...a);
     const u = tag.get(s) || (s && s.src) || (s && tag.get(s));
-    if (u) tag.set(bm, u); else if (s && cid.has(s)) tag.set(bm, 'canvas:' + cid.get(s));
+    if (u) tag.set(bm, u); else if (s && cid.has(s)) tag.set(bm, 'canvas:' + idOf(s));
     return bm;
   };
   const of = window.fetch;
@@ -64,7 +65,7 @@
     const out = {};
     for (const [id, ref] of canvases) {
       const c = ref.deref();
-      if (c && c instanceof HTMLCanvasElement && c.isConnected) {
+      if (c && c instanceof HTMLCanvasElement && c.isConnected && cid.get(c) && cid.get(c).id === id) {
         const r = c.getBoundingClientRect();
         if (r.width > 0 && c.width > 0) out[id] = Math.max((r.width * devicePixelRatio) / c.width, (r.height * devicePixelRatio) / c.height);
       }
@@ -113,6 +114,10 @@
     }
     const dom = {};
     for (const [u, r] of P.dom) dom[u] = r;
-    return { canvas: out, dom, fetched: Object.fromEntries(P.fetched) };
+    const raw = {};
+    for (const [u, r] of P.src) raw[u] = Object.fromEntries(r.at);
+    const edges = {};
+    for (const [c, e] of P.edges) edges[c] = Object.fromEntries(e);
+    return { life: P.life, canvas: out, dom, fetched: Object.fromEntries(P.fetched), raw, edges, screens: sf, sizes: P.sizes };
   };
 })();

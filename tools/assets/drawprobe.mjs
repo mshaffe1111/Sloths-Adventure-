@@ -40,43 +40,52 @@ await ctx.addInitScript({ path: path.join(here, 'probe-init.js') });
 const page = await ctx.newPage();
 page.on('crash', () => console.log('PAGE CRASH'));
 page.on('close', () => console.log('PAGE CLOSE'));
+const ev = (fn, arg) => page.evaluate(fn, arg).catch(() => null);
+// (the dev server can reload the page, e.g. after it optimises a dependency: wait for the hooks again before each step)
+const ready = async () => { for (let t = 0; t < 120 && !(await ev(() => typeof window.__play === 'function' && typeof window.__story === 'function' && !!window.__probe).catch(() => false)); t++) await sleep(1000); };
+// every result is kept per page life (a reload starts a new life: its canvas ids are its own)
+const lives = new Map();
+const snap = async () => { const r = await ev(() => window.__probe && window.__probe.result()).catch(() => null); if (r) lives.set(r.life, r); };
 const log = (...a) => console.log(`[${orientArg}]`, ...a);
 await page.goto(`http://127.0.0.1:${port}/?lessons=off`, { timeout: 300000 });
-for (let t = 0; t < 300 && !(await page.evaluate(() => typeof window.__play === 'function')); t++) await sleep(1000);
+for (let t = 0; t < 300 && !(await ev(() => typeof window.__play === 'function')); t++) await sleep(1000);
 // the title screen: the startup phase
-for (let i = 0; i < 8; i++) { await sleep(1000); await page.evaluate(() => window.__probe.scanDom()); }
-const startup = await page.evaluate(() => [...window.__probe.fetched.keys()]);
+for (let i = 0; i < 8; i++) { await sleep(1000); await ev(() => window.__probe.scanDom()); }
+const startup = await ev(() => [...window.__probe.fetched.keys()]);
 log('title done');
-await page.evaluate(() => (window.__probe.phase = 'story'));
+await ev(() => (window.__probe.phase = 'story'));
 for (const [id, scr] of STORY) {
-  await page.evaluate(([i, s]) => window.__story(i, s), [id, scr]);
-  for (let i = 0; i < 6; i++) { await sleep(700); await page.evaluate(() => window.__probe.scanDom()); }
+  await ready();
+  await ev(([i, s]) => window.__story(i, s), [id, scr]);
+  for (let i = 0; i < 6; i++) { await sleep(700); await ev(() => window.__probe.scanDom()).catch(() => {}); }
+  await snap();
 }
 log('story done');
-await page.evaluate(() => (window.__probe.phase = 'stage'));
+await ev(() => (window.__probe.phase = 'stage'));
 for (const id of STAGES) {
-  await page.evaluate((i) => window.__play(i), id);
-  for (let i = 0; i < 20 && !(await page.evaluate(() => !!(window.__eng()))); i++) await sleep(500);
+  await ready();
+  await ev((i) => window.__play(i), id);
+  for (let i = 0; i < 20 && !(await ev(() => !!(window.__eng()))); i++) await sleep(500);
   await sleep(2500);
   // pin Pokey at 6 spots along the stage
-  const spots = await page.evaluate(() => {
+  const spots = await ev(() => {
     const e = window.__eng(); const st = e && e.currentStage;
     if (!st) return [];
     const pl = (st.platforms || []).filter((p) => p.type === 'solid' && p.width >= 60).sort((a, b) => a.x - b.x);
     return [0, 0.2, 0.4, 0.6, 0.8, 1].map((f) => pl[Math.round(f * (pl.length - 1))]).filter(Boolean).map((p) => ({ x: p.x + p.width / 2, y: p.y }));
   });
   for (const s of spots) {
-    await page.evaluate((s) => { const e = window.__eng(); if (e && e.player) { e.player.x = s.x; e.player.y = s.y - 60; e.player.vx = 0; e.player.vy = 0; } }, s);
+    await ev((s) => { const e = window.__eng(); if (e && e.player) { e.player.x = s.x; e.player.y = s.y - 60; e.player.vx = 0; e.player.vy = 0; } }, s);
     await sleep(900);
-    await page.evaluate(() => window.__probe.scanDom());
+    await ev(() => window.__probe.scanDom());
   }
+  await snap();
   log(id, spots.length, 'spots');
 }
-const res = await page.evaluate(() => window.__probe.result());
-res.startup = startup;
-res.orient = orientArg;
-fs.writeFileSync(outFile, JSON.stringify(res, null, 1));
-log('wrote', outFile, Object.keys(res.canvas).length, 'canvas images,', Object.keys(res.dom).length, 'dom images');
+await snap();
+const res = { orient: orientArg, startup, lives: [...lives.values()] };
+fs.writeFileSync(outFile, JSON.stringify(res));
+log('wrote', outFile, res.lives.length, 'page lives');
 await browser.close();
 vite.kill();
 process.exit(0);

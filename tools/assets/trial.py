@@ -15,6 +15,8 @@ from multiprocessing import Pool
 from PIL import Image
 
 QS = (90, 82, 75)
+# libwebp effort: 6 is what a ship encode would use; 4 is ~10x faster and 1-7% bigger (a conservative projection)
+METHOD = int(os.environ.get('WEBP_METHOD', '6'))
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
 outdir = None
 
@@ -49,7 +51,7 @@ def one(args):
             res['out'][q] = r['bytes']
             continue
         o = os.path.join(outdir, 'files', f"{r['src'].replace('/', '__')}.q{q}.webp")
-        im2.save(o, 'WEBP', quality=q, method=6, alpha_quality=100)
+        im2.save(o, 'WEBP', quality=q, method=METHOD, alpha_quality=100)
         res['out'][q] = min(os.path.getsize(o), r['bytes']) if f == 1.0 else os.path.getsize(o)
         if not keep:
             os.remove(o)

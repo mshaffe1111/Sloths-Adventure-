@@ -47,6 +47,8 @@ for f in sorted(os.listdir(wavdir)):
         # (ffmpeg drops the decoder's pre-skip, so the decode lines up with the source sample for sample)
         n = min(len(ref), len(y))
         Y = spec(y[:n]); Rn = R[:len(Y)]
+        # (a downmix to one channel can change the level: match the level first, so only the codec's error is counted)
+        Y = Y * float((Y * Rn).sum() / max(1e-12, (Y * Y).sum()))
         e = np.abs(Y - Rn)
         bands = {}
         for lo, hi in ((0, 4000), (4000, 8000), (8000, 12000), (12000, 20000)):

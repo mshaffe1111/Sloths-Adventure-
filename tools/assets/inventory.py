@@ -41,17 +41,38 @@ def webm_info(p):
     return dict(streams=[(x['codec_type'], x['codec_name'], x.get('channels'), x.get('width'), x.get('height')) for x in s],
                 dur=float(f['duration']), kbps=round(int(f['bit_rate']) / 1000))
 
-# probe: the largest scale per src path (dev server urls are /src/assets/...)
-scale, startup, domsz = defaultdict(float), set(), {}
+# probe: the largest scale per src path (dev server urls are /src/assets/...), walking canvas -> canvas -> screen chains per page life
+key = lambda u: unquote(urlparse(u).path).lstrip('/')
+scale, startup, domsz, via = defaultdict(float), set(), {}, {}
 for pr in probes:
-    for u, r in pr['canvas'].items():
-        k = unquote(urlparse(u).path).lstrip('/')
-        scale[k] = max(scale[k], r['scale'])
-    for u, r in pr['dom'].items():
-        k = unquote(urlparse(u).path).lstrip('/')
-        domsz[k] = max(domsz.get(k, (0, 0)), (r['w'], r['h']), key=lambda t: t[0] * t[1])
     for u in pr.get('startup', []):
-        startup.add(unquote(urlparse(u).path).lstrip('/'))
+        startup.add(key(u))
+    for life in pr['lives']:
+        scr = {int(k): v for k, v in life['screens'].items()}
+        edges = {int(k): {int(t): m for t, m in e.items()} for k, e in life['edges'].items()}
+        memo = {}
+
+        def reach(c, depth=0):
+            if c in memo:
+                return memo[c]
+            memo[c] = 0.0  # (a cycle counts as nothing)
+            v = scr.get(c, 0.0)
+            if depth < 6:
+                for t, m in edges.get(c, {}).items():
+                    v = max(v, m * reach(t, depth + 1))
+            memo[c] = v
+            return v
+
+        for u, at in life['raw'].items():
+            k = key(u)
+            for c, kk in at.items():
+                v = kk * reach(int(c))
+                if v > scale[k]:
+                    scale[k] = v
+                    via[k] = (int(c) in scr, round(kk, 3), round(reach(int(c)), 3))
+        for u, r in life['dom'].items():
+            k = key(u)
+            domsz[k] = max(domsz.get(k, (0, 0)), (r['w'], r['h']), key=lambda t: t[0] * t[1])
 
 rows = []
 for d, _, fs in os.walk(dist):
@@ -69,6 +90,7 @@ for d, _, fs in os.walk(dist):
                 sc = max(sc, min(dw / r['w'], dh / r['h']))  # a DOM box: at least "contain"
             r['drawn_scale'] = round(sc, 3)
             r['seen'] = s in scale or s in domsz
+            r['via'] = via.get(s)
         else:
             r.update(webm_info(p))
         r['startup'] = s in startup
