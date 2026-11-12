@@ -1086,6 +1086,28 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     const lips = p.pit === 'hurt' ? banks.filter((q) => q !== p && q.y < p.y && (Math.abs(q.x + q.width - p.x) < 2 || Math.abs(p.x + p.width - q.x) < 2)).map((q) => q.y) : [];
     drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined }, false, view.y1 ?? 0, view, wall || undefined);
   }
+  // (gen2 World 1's dip pockets, over the banks: painted soil edge to edge under their lip, so a pocket reads as a soil hollow, not a
+  // grey window; isPocket needs ownLook, which only gen2 World 1 sets, so every other stage draws as before)
+  // (painted here, into the ground's squares, its darkening laid from the ground line as its banks' is: drawn live over the squares,
+  // laid from the view, it stood as a lighter box with straight sides between 1-1's earth pillars, and moved with the camera: R-165.129)
+  for (const p of banks) {
+    if (!vis(p) || !isPocket(p, banks)) continue;
+    const bottom = Math.max(p.y + p.height, (view.y1 ?? 0) + 40);
+    ctx.save();
+    ctx.beginPath();
+    // (under its lip the soil runs on under the banks' end faces either side, which curve in and left the backdrop showing below them)
+    ctx.rect(p.x - 2, p.y + 6, p.width + 4, 14);
+    ctx.rect(p.x - POCKET_SIDE, p.y + 20, p.width + 2 * POCKET_SIDE, bottom - p.y - 20);
+    ctx.clip();
+    drawSoil(ctx, kitWorld, p.x - POCKET_SIDE, p.x + p.width + POCKET_SIDE, p.y + 6, bottom, view.y1 ?? 0, view.y0, true, groundDepth ?? undefined);
+    ctx.restore();
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(p.x - 1, p.y - 120, p.width + 2, 260);
+    ctx.clip();
+    drawLip(ctx, kitWorld, p.x - 1, p.x + p.width + 1, p.y, view);
+    ctx.restore();
+  }
   // the floor's lip runs on under a short raised bank (stepFootLips), over the foot of its end pieces, cut clean at the floor's top
   for (const f of stepFootLips(banks)) {
     if (f.x1 < view.x0 - 80 || f.x0 > view.x1 + 80) continue;
@@ -1276,26 +1298,6 @@ export function drawProtoScene(
   // World 1's pits (R-6.38): the drop under the ground (its shade, floors and steps draw over it), the lips and leaf bed over it
   if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'under');
   if (!drawGroundChunks(ctx, platforms, banks, view)) drawGround(ctx, platforms, banks, view);
-  // (gen2 World 1's dip pockets, over the ground: painted soil edge to edge under their lip, so a pocket reads as a soil hollow, not a
-  // grey window; isPocket needs ownLook, which only gen2 World 1 sets, so every other stage draws as before)
-  for (const p of banks) {
-    if (!vis(p) || !isPocket(p, banks)) continue;
-    const bottom = Math.max(p.y + p.height, (view.y1 ?? 0) + 40);
-    ctx.save();
-    ctx.beginPath();
-    // (under its lip the soil runs on under the banks' end faces either side, which curve in and left the backdrop showing below them)
-    ctx.rect(p.x - 2, p.y + 6, p.width + 4, 14);
-    ctx.rect(p.x - POCKET_SIDE, p.y + 20, p.width + 2 * POCKET_SIDE, bottom - p.y - 20);
-    ctx.clip();
-    drawSoil(ctx, kitWorld, p.x - POCKET_SIDE, p.x + p.width + POCKET_SIDE, p.y + 6, bottom, view.y1 ?? 0, view.y0);
-    ctx.restore();
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(p.x - 1, p.y - 120, p.width + 2, 260);
-    ctx.clip();
-    drawLip(ctx, kitWorld, p.x - 1, p.x + p.width + 1, p.y, view);
-    ctx.restore();
-  }
   if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'over', drawChaseBroken);
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;

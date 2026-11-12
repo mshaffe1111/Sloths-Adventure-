@@ -94,3 +94,79 @@ test("a backdrop strip's foot (below its painted bottom, over a chasm) is its bo
     doc.createElement = was;
   }
 });
+
+test("a dip pocket's soil (gen2 World 1) is painted into the ground's squares with its banks, never live over them: live, laid from the view, it stood as a lighter box between 1-1's earth pillars (R-165.129)", async () => {
+  const G = globalThis as unknown as Record<string, unknown>;
+  const doc = G.document as { createElement: unknown };
+  const wasImage = G.Image, wasCreate = doc.createElement;
+  const sheets: object[] = [];
+  // (pictures that load at once, and canvases whose 2D context records each picture drawn into it)
+  G.Image = class {
+    onload: (() => void) | null = null;
+    width = 2048;
+    height = 2944;
+    naturalWidth = 2048;
+    naturalHeight = 2944;
+    complete = true;
+    set src(u: string) { if (u.includes('/ground/')) sheets.push(this); setTimeout(() => this.onload?.(), 0); }
+    decode() { return Promise.resolve(); }
+  };
+  type Rec = { into: string; src: unknown; a: number[] };
+  const recs: Rec[] = [];
+  const ctx2d = (name: string, cv: object) => {
+    let m = { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
+    const stack: Array<typeof m> = [];
+    const g: Record<string, unknown> = {
+      canvas: cv, globalAlpha: 1, globalCompositeOperation: 'source-over', fillStyle: '', strokeStyle: '', imageSmoothingEnabled: true, imageSmoothingQuality: 'high', lineWidth: 1,
+      drawImage: (src: unknown, ...a: number[]) => void recs.push({ into: name, src, a }),
+      getTransform: () => ({ ...m }),
+      setTransform: (a: number, b: number, c: number, d: number, e: number, f: number) => void (m = { a, b, c, d, e, f }),
+      translate: (x: number, y: number) => void (m = { ...m, e: m.e + m.a * x, f: m.f + m.d * y }),
+      scale: (x: number, y: number) => void (m = { ...m, a: m.a * x, d: m.d * y }),
+      save: () => void stack.push({ ...m }),
+      restore: () => void (m = stack.pop() ?? m),
+      createLinearGradient: () => ({ addColorStop: () => {} }),
+      createRadialGradient: () => ({ addColorStop: () => {} }),
+      createPattern: () => ({}),
+      getImageData: () => ({ data: new Uint8ClampedArray(4) }),
+      measureText: () => ({ width: 10 }),
+    };
+    return new Proxy(g, { get: (t, k) => (k in t ? t[k as string] : () => {}), set: (t, k, v) => ((t[k as string] = v), true) });
+  };
+  let n = 0;
+  doc.createElement = () => {
+    const cv: Record<string, unknown> = { width: 0, height: 0, style: {} };
+    const c = ctx2d(`square${n++}`, cv);
+    cv.getContext = () => c;
+    return cv;
+  };
+  try {
+    const { drawProtoScene, protoArtReady, setKitWorld } = await import('./protoArt.ts');
+    const { warmGround } = await import('./groundPaint.ts');
+    setKitWorld(1);
+    warmGround(1);
+    protoArtReady();
+    for (let i = 0; i < 20 && !(protoArtReady() && warmGround(1)); i++) await new Promise((r) => setTimeout(r, 5));
+    assert.ok(protoArtReady() && warmGround(1), 'the stubbed sheets loaded');
+    // (1-1's case: an 82-wide pocket 68 down between two earth pillars, the floor below)
+    const plats = [
+      P(9819, 10210, 1390, { height: 445 }),
+      P(10210, 10540, 1145, { height: 690 }),
+      P(10540, 10622, 1213, { height: 120, ownLook: true } as Partial<Platform>),
+      P(10622, 10971, 1145, { height: 690 }),
+    ];
+    const main = ctx2d('main', { width: 800, height: 450 }) as unknown as CanvasRenderingContext2D;
+    main.setTransform(2, 0, 0, 2, -10240 * 2, -1280 * 2);
+    const view = { x0: 10240, x1: 10495, y0: 1280, y1: 1535 };
+    const st = { brokeAt: new Map(), movedAt: new Map() };
+    for (let i = 0; i < 4; i++) drawProtoScene(main, plats, [], [], 0, view, st);
+    const fill = GROUND_FRAMES[1].fills;
+    const soil = (r: Rec) => sheets.includes(r.src as object) && r.a.length === 8 && fill.some((f) => r.a[0] >= f.x && r.a[0] < f.x + f.w && r.a[1] >= f.y && r.a[1] < f.y + f.h);
+    assert.ok(recs.some((r) => r.into !== 'main' && soil(r)), 'the ground squares were painted with soil');
+    const live = recs.filter((r) => r.into === 'main' && soil(r));
+    assert.equal(live.length, 0, `${live.length} soil tiles drawn live over the ground's squares (the pocket's: laid from the view, a lighter box)`);
+  } finally {
+    G.Image = wasImage;
+    doc.createElement = wasCreate;
+  }
+});
