@@ -1,0 +1,1 @@
+head-play1-1-side-insets: end=cleared helps=2 331s rescues=6 deaths=0 jumps=74 pageErrors=0 consoleErrors=0
