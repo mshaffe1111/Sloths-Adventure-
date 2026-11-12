@@ -1,6 +1,6 @@
 # EN-P: every predator gets a personality, and two or three ways to beat it
 
-Branch `t-engine-predators`, base `origin/t-engine-clock` @fd94c3f6. No PR. Polish check: no screen, word, sound or stage changed. Written 9:55 PM ET, Nov 11. Nothing
+Branch `t-engine-predators`, base `origin/t-engine-clock` @fd94c3f6. No PR. Polish check: no screen, word, sound or stage changed. Written 10:30 PM ET, Nov 11. Nothing
 the game ships changed, so there is nothing to shoot; the tell poses World 1's cast needs are in PREDATORS.md §6.
 
 ## Part 1: the design, `reference/design/PREDATORS.md` (335 lines: over the brief's 300 because the lead added §8, §9 and a column; story keeper: PASS with 4 changes, all applied)
@@ -15,7 +15,7 @@ the game ships changed, so there is nothing to shoot; the tell poses World 1's c
   hunters are drawn at half Pokey's height; the boa is smaller than the tree snake); the 10 guardians are 1.5-3.2x Pokey today.
   **§9 throw to lure**: the arc, the pickups and the landing noise already exist in the puzzle kit (file:line); what it still needs.
 
-## Part 2: the kit, `src/game/predators/` (pure, 1,013 lines; tests 1,186 lines; not imported by the game)
+## Part 2: the kit, `src/game/predators/` (pure, 1,015 lines; tests 1,210 lines; not imported by the game)
 `types.ts` (an animal as data: `PredatorDef`; a stage's `Post`; the state, which is a heroNoise `Listener`; 13 ways, 4 ends), `core.ts`
 (the one machine: rest, hunt, TELL, act, recover; `stepPredator`, `beat`, `hear`, `foodChain`, `hurt`, `blocks`, `checkPredator`),
 `world1.ts` (snake, boa, eagle), `casts.ts` (ten later animals, first-draft numbers from today's code: turtle, River King's guard,
