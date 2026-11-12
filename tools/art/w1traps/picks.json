@@ -1,0 +1,74 @@
+{
+ "sapling": {
+  "source": "cuts/anchorArch-5.png",
+  "units": 260,
+  "axis": "h",
+  "why": "the anchor: a bent sapling, the load hangs under its crown"
+ },
+ "clump": {
+  "source": "cuts/leafClump-41.png",
+  "units": 78,
+  "axis": "w",
+  "why": "the bough end the handle hangs from, its stick toward the sapling"
+ },
+ "link": {
+  "source": "cuts/vineLink-79.png",
+  "units": 170,
+  "axis": "w",
+  "why": "the vine from the handle over to the load"
+ },
+ "handle": {
+  "source": "cuts/handleSet-29.png",
+  "units": 30,
+  "axis": "w",
+  "why": "the vine handle, set: a knotted loop at his raised hand"
+ },
+ "sprung": {
+  "source": "cuts/handleSprung-41.png",
+  "units": 46,
+  "axis": "h",
+  "why": "the vine handle, sprung: a limp snapped end"
+ },
+ "tendril": {
+  "source": "cuts/tendrilSet-5.png",
+  "units": 24,
+  "axis": "w",
+  "why": "the tendril handle, set: taut to its stake"
+ },
+ "stake": {
+  "source": "cuts/tendrilCut-67.png",
+  "units": 40,
+  "axis": "h",
+  "why": "the tendril handle, cut: the stake and its curl"
+ },
+ "stoneHang": {
+  "source": "cuts/stoneHang-41.png",
+  "units": 50,
+  "axis": "w",
+  "why": "the stone in its net, hanging"
+ },
+ "stoneDown": {
+  "source": "r3cut/stoneDown-down-stoneHang-41-s42-7.png",
+  "units": 50,
+  "axis": "w",
+  "why": "the same stone landed, net slack"
+ },
+ "hiveHang": {
+  "source": "hive-sheet.jpg (18, 20, 330, 335)",
+  "units": 52,
+  "axis": "h",
+  "why": "Matt, 11-12: frame 1, the hive hanging"
+ },
+ "hiveDown": {
+  "source": "hive-sheet.jpg (360, 20, 668, 335)",
+  "units": 52,
+  "axis": "h",
+  "why": "Matt, 11-12: frame 2, landed with one crack, whole"
+ },
+ "bee": {
+  "source": "hive-sheet.jpg (204, 58, 234, 86)",
+  "units": 5,
+  "axis": "w",
+  "why": "Matt, 11-12: one bee from frame 1, for the buzz"
+ }
+}
