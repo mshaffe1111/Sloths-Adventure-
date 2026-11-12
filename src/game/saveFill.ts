@@ -23,6 +23,7 @@ import { DIFFICULTY_KEY, EASE_KEY, EASE_STAGES } from './difficulty.ts';
 import { recordCake } from './w5Kit.ts';
 import { MEECA_WARNINGS } from './meecaLines.ts';
 import { markCarvingsDone, recordCarving } from './meecaCarved.ts';
+import { markSeedFound } from './protoStage.ts';
 import type { Store } from './saveFile.ts';
 import { FIRST_NOTE_KEY, STORY_LETTERS, storyKey, type StoryFlag } from './storyFlags.ts';
 
@@ -104,16 +105,14 @@ export function fillFinishedGame(mem: Store & Storage) {
       const m = /^(\d{1,2})-(\d{1,2})$/.exec(id);
       if (m) for (const f of ['L', 'H', 'F'] as const) markShown(+m[1], +m[2], f, mem);
       if (/^5-\d{1,2}$/.test(id)) recordCake(id, mem);
+      // protoStage.ts: a stage's golden seeds, each by its find id (the longest) or 'seed'
+      for (const n of ['seed', ...findIds.slice(0, 3)]) markSeedFound(id, n);
     }
     // App.tsx: every story flag of storyFlags.ts (world intro, halfway scene, the first note, every guardian's card and intro, the gate)
     for (let w = 1; w <= 11; w++) for (const f of STORY_FLAGS) if (f !== 'firstNote') mem.setItem(storyKey(f, w), '1');
     mem.setItem(FIRST_NOTE_KEY, '1');
     markGateFound();
     markThornHeart();
-    // conductor.ts: the volumes as String(number), the mute as String(boolean)
-    mem.setItem('sloth_music_vol', String(0.30000000000000004));
-    mem.setItem('sloth_sfx_vol', String(0.30000000000000004));
-    mem.setItem('sloth_game_muted', 'false');
     // the Trophy Room: every trophy, every creature knocked out and seen, every stage cleared on Quiet, every counter at its top
     const counters = Object.fromEntries(Object.keys(emptyCounters()).map((k) => [k, 9_999_999]));
     saveBadgeStore({

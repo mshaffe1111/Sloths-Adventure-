@@ -31,3 +31,9 @@ test('a load that fails half-way leaves the game that was on the phone', () => {
   assert.throws(() => applySave(phone, file)); // SaveLoadDialog.tsx:121 then says "Could not write the save into this browser."
   assert.equal(phone.getItem('sloth_lvl_2-5'), lvl(3), 'the old game was deleted before the new one was safely written');
 });
+test("loading a save that carries no sound settings keeps this phone's mute", () => {
+  const file = buildSave(mapStore({ 'sloth_lvl_1-1': lvl(2) }));
+  const phone = mapStore({ sloth_game_muted: 'true', sloth_music_vol: '0.2' });
+  applySave(phone, file);
+  assert.equal(phone.getItem('sloth_game_muted'), 'true', "the phone's mute was deleted by the load (it comes back loud at the next launch)");
+});

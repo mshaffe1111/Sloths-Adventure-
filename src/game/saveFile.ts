@@ -1,7 +1,7 @@
 /**
  * saveFile — export and import of a whole game as one small file.
  *
- * Progress lives in the browser's storage (stars, cleared stages, seen stories, the secret, volume). The file is
+ * Progress lives in the browser's storage (stars, cleared stages, seen stories, the secret, the golden seeds). The file is
  * a plain JSON copy of exactly those entries plus a version and a checksum, so a damaged or hand-edited file is
  * refused rather than half-loaded. Only entries whose names are on the allow-list are ever read or written.
  *
@@ -24,6 +24,14 @@ export const MAX_SAVE_BYTES = 200_000;
  */
 export const MAX_ENTRY_CHARS = 16_000;
 
+/**
+ * Every key the game keeps in storage is one of three kinds (audit C saves #8: the lists were kept by hand and new keys landed on
+ * none, so a New Game left them and a file never carried them; storageKeys.test.ts fails on a key in src that is on no list):
+ *  - a game entry (ALLOWED): part of the adventure: a save file carries it, a New Game clears it;
+ *  - this adventure on this phone (ON_THIS_PHONE): a New Game clears it, a save file does not carry it;
+ *  - the device's own (everything else: controls, sound, help shown once per device, tester and debug switches): neither.
+ */
+
 /** the entries that make up a game */
 export const ALLOWED: RegExp[] = [
   /^sloth_lvl_(\d{1,2}|S)-(\d{1,2}|[DM])$/, // per-stage result (and the extra stages, extraStages.ts: Dot's flight 4-D, Meeca's 5-M)
@@ -33,9 +41,7 @@ export const ALLOWED: RegExp[] = [
   /^sloth_way_\d{1,2}-\d{1,2}$/, // which in-stage asides have been heard (so a new game hears them again; the on/off switch is a device setting, not here)
   /^sloth_secret_gate$/,
   /^sloth_thorn_heart$/,
-  /^sloth_music_vol$/,
-  /^sloth_sfx_vol$/,
-  /^sloth_game_muted$/,
+  /^sloth_seed_(\d{1,2}|S)-(\d{1,2}|[DM])_\w{1,24}$/, // the golden seeds found, per stage (protoStage.ts: a secret again in a new game)
   /^sloth_badges$/, // the Trophy Room
   /^sloth_finds$/, // the notes, books and keepsakes found
   /^sloth_memories$/, // the flashbacks seen
@@ -44,12 +50,22 @@ export const ALLOWED: RegExp[] = [
   /^sloth_ease_in$/, // the stages played since a switch from Easy to Normal, while Easy's help fades out (difficulty.ts, LV-7)
   /^sloth_w5_cakes$/, // whether any cake was eaten in World 5 (w5Kit.ts: the Queen's line, and the badge for eating none)
   /^sloth_w5_carved$/, // what Meeca carved in her stage, and where (meecaCarved.ts: 5-6 shows it to Pokey)
-  // sloth_coach_done, sloth_hint_v3 and sloth_howto_seen are NOT here on purpose: a help message is shown once per device. Dot's memory
-  // (her tips, the lessons, what she has taught: dotMemory.ts) is not in the file either, but a New Game clears it, so a new adventure
-  // is taught again (Matt, 2026-10-29: tips once per save)
+  // sloth_coach_done, sloth_hint_v3 and sloth_howto_seen are NOT here on purpose: a help message is shown once per device. The sound
+  // settings belong to the device too: a loaded file does not change this phone's mute or volumes (they were in the file up to 0.9.6;
+  // an old file's are dropped as it is read)
 ];
 
+/**
+ * this adventure on this phone: a New Game clears these, a save file does not carry them. Dot's memory (her tips, the lessons, what she
+ * has taught: dotMemory.ts), so a new adventure is taught again (Matt, 2026-10-29: tips once per save), and her help setting (a new save
+ * starts on Help for Easy and Tips for Normal, dotGuideHelp.ts dotHelp); the stage a killed run comes back at (flagResume.ts); the
+ * journal pages looked at and announced (movesJournal.ts: a new adventure's pages are new again)
+ */
+export const ON_THIS_PHONE: RegExp[] = [DOT_MEMORY, /^sloth_dot_help$/, /^sloth_flag_resume$/, /^sloth_journal_(told|looked)$/];
+
 export const isSaveKey = (k: string) => ALLOWED.some((re) => re.test(k));
+/** a key a New Game clears: a game entry, or this adventure on this phone */
+export const isAdventureKey = (k: string) => isSaveKey(k) || ON_THIS_PHONE.some((re) => re.test(k));
 
 export interface SaveFile {
   format: typeof SAVE_FORMAT;
@@ -218,16 +234,12 @@ export function saveFileName(now = new Date()): string {
   return `sloths-save-${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}.json`;
 }
 
-/** the settings that belong to the device, not to an adventure: a new game keeps them */
-const KEEP_ON_NEW_GAME = /^sloth_(music_vol|sfx_vol|game_muted)$/;
-
 /**
  * Start over: forget every stage result, the stories seen and the secret, but keep the sound settings.
  * With `skipStory` every world's story beat is marked as seen, so the game goes straight to play.
  */
 export function resetProgress(store: Store, opts: { skipStory?: boolean } = {}) {
-  // (and Dot's help setting: a new save starts on Help for Easy and Tips for Normal, dotGuideHelp.ts dotHelp)
-  for (const k of store.keys()) if ((isSaveKey(k) && !KEEP_ON_NEW_GAME.test(k)) || DOT_MEMORY.test(k) || k === 'sloth_dot_help') store.removeItem(k);
+  for (const k of store.keys()) if (isAdventureKey(k)) store.removeItem(k);
   forgetDotSession();
   reloadDifficulty();
   if (opts.skipStory) {
