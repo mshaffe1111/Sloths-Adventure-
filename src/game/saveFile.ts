@@ -10,10 +10,11 @@
  */
 import { reloadDifficulty } from './difficulty.ts';
 import { DOT_MEMORY, forgetDotSession } from './dotMemory.ts';
-import { FIRST_NOTE_KEY, STORY_KEY, midStoryKey, worldStoryKey } from './storyFlags.ts';
+import { FIRST_NOTE_KEY, STORY_KEY, midStoryKey, moveV1GateFlags, worldStoryKey } from './storyFlags.ts';
 
 export const SAVE_FORMAT = 'sloths-rainforest-adventures-save';
-export const SAVE_VERSION = 1;
+/** 2: the gate scene has its own story flag (storyFlags.ts C-01); a version-1 file's flags are moved as it is read */
+export const SAVE_VERSION = 2;
 /** a real save is a few KB; anything much bigger is not one of ours */
 export const MAX_SAVE_BYTES = 200_000;
 /**
@@ -161,6 +162,7 @@ export function parseSave(text: string): ParseResult {
   if (typeof o.checksum !== 'string' || (o.checksum !== checksum(data) && o.checksum !== checksum(o.data as Record<string, string>))) {
     return { ok: false, reason: 'The save is damaged or was edited (its checksum does not match).' };
   }
+  if (o.version < 2) moveV1GateFlags({ getItem: (k) => data[k] ?? null, setItem: (k, v) => void (data[k] = v), removeItem: (k) => void delete data[k] });
   // stage results must be well-formed
   for (const [k, v] of Object.entries(data)) {
     if (k.startsWith('sloth_lvl_')) {
@@ -172,7 +174,7 @@ export function parseSave(text: string): ParseResult {
       }
     }
   }
-  return { ok: true, save: { format: SAVE_FORMAT, version: o.version, savedAt: typeof o.savedAt === 'string' ? o.savedAt : '', summary: summarize(data), data, checksum: checksum(data) } };
+  return { ok: true, save: { format: SAVE_FORMAT, version: SAVE_VERSION, savedAt: typeof o.savedAt === 'string' ? o.savedAt : '', summary: summarize(data), data, checksum: checksum(data) } };
 }
 
 /** replace the current game with the one in the save */
