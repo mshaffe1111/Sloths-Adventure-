@@ -81,3 +81,30 @@ test('his thumb carried him past the handle he meant to punch: he walks back to 
   assert.notEqual(e.cast.traps[0].phase, 'set', 'he went back and sprang it');
   assert.equal(snake!.kit!.beatenBy, 'trap');
 });
+
+test('(behaviour check, not a planted test: the stall needs the real roll, A/B in REPORT) a tier bot at a bank\'s 51 px face on a cast stage hops it', async () => {
+  const { FT_CHILD } = await import('./firsttimer.ts');
+  let rescued = 0;
+  for (let k = 1; k <= 12; k++) {
+  freshPhone('normal');
+  setDifficulty('normal');
+  Math.random = rng(k);
+  const pts = Array.from({ length: 33 }, (_, i) => ({ x: 250 + i * 40, y: Y }));
+  const run = new FirstTimerRun('2-2', 1, FT_CHILD, { route: pts, cap: 30 });
+  const e = (run as any).e; // eslint-disable-line @typescript-eslint/no-explicit-any
+  e.platforms.length = 0;
+  // (1-3 seed 3 at x 3968: a bank, then the next bank 51 px up, its face a wall: no floor runs on under the step)
+  e.platforms.push(plat(9001, 0, 520), { id: 9004, x: 520, y: Y - 51, width: 1500, height: 451, type: 'solid', style: 'moss_stone' } as Platform);
+  e.enemies.length = 0;
+  e.vines.length = 0;
+  e.collectibles.length = 0;
+  e.hazards.length = 0;
+  e.proto.cast = { kinds: ['snake'], traps: [] };
+  e.proto.hints = [];
+  e.startCast();
+  (run as any).sim.stand(250, Y); // eslint-disable-line @typescript-eslint/no-explicit-any
+  run.play();
+  rescued += run.rescues;
+  }
+  assert.equal(rescued, 0, 'no rescue at the face, over 12 thumbs');
+});

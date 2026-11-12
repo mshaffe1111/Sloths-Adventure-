@@ -1629,7 +1629,11 @@ export class FirstTimerRun {
     // trunk's lastY did in round 5: every 0.3 s of walking was a "stop", so he hopped along flat ground and took off ~110 px before a
     // ledge's end instead of edgeAim's 22-44. The frame's own movement, moveX, is what it means)
     const moved = Math.abs(this.moveX);
-    this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing && t >= this.gapUntil && !(who.holdQ && t - this.backAt < 1) ? this.blockedT + DT : 0;
+    // (on a stage that names a cast, a tier bot's thumb lifting for a moment (rhythm, gapQ) holds the count, never starts it over: against
+    // a log's face his short pushes between lifts each fell under stopReact, so he stood at it until rescued, P13 11-12, 1-3's logs. Not
+    // elsewhere: 1-1's tier runs are calibrated to the testers as they are, tierBots.test)
+    const lifted = t < this.gapUntil, holdCount = lifted && !!e.cast && moved < 0.8;
+    this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing && !lifted && !(who.holdQ && t - this.backAt < 1) ? this.blockedT + DT : holdCount ? this.blockedT : 0;
     if (this.blockedT >= who.stopReact) {
       this.blockedT = 0;
       const face = this.faceAhead(fdir, 30);
