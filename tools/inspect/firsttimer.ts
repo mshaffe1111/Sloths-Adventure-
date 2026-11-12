@@ -43,6 +43,8 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
 import { reachJump, reachJumpHeld, TIMED, vineAmp } from '../../src/game/physics.ts';
 import type { Platform } from '../../src/game/types.ts';
+import { scares } from '../../src/game/dropTrap.ts';
+import type { TrapPost } from '../../src/game/castPlay.types.ts';
 import { findRoute } from './route.ts';
 import { buildRoll } from './eraRoll.ts';
 import { STAGE_SECONDS } from '../../src/game/protoStage.ts';
@@ -404,7 +406,7 @@ class DotShadow {
   private say(l: GuideLine | null | undefined) {
     if (l) this.queue.push(l, this.clock);
   }
-  engine(text: string, seconds: number, passed: boolean | undefined) {
+  engine(text: string, seconds: number, passed: boolean | undefined, o?: { teach?: true }) {
     if (passed) {
       const l = engineGuideLine(text, this.stageId, { dot: true });
       if (l) this.queue.clear((q) => q.key === l.key, this.clock);
@@ -414,7 +416,7 @@ class DotShadow {
       this.queue.clear((l) => l.source === 'engine' && l.kind === 'danger', this.clock);
       return;
     }
-    this.say(engineGuideLine(text, this.stageId, { dot: true, ms: seconds * 1000 }));
+    this.say(engineGuideLine(text, this.stageId, { dot: true, ms: seconds * 1000, teach: !!o?.teach }));
   }
   lesson(id: LessonId, holding: boolean) {
     this.say(lessonDotLine(id, 'screen', holding));
@@ -609,6 +611,11 @@ export interface FTRun {
   secondPressMs?: number[];
   /** the furthest right he got (px) */
   maxX?: number;
+  /** times he turned back from a sealed shrine for an animal he passed (a purge, Dot having said why) */
+  turnBacks?: number;
+  /** a stage whose data names a cast (castPlay.ts): its animals, how each one he cleared went (the kit's way: punch, kick, stomp,
+   *  trap), those left, and its drop traps, how many he sprung (castTally) */
+  cast?: CastTally;
   /** the furthest on he got along the stage's travel (px: x in a run, y in a climb or a way down, stageModes.ts): which pieces he entered */
   far?: number;
   /** where he was every 0.5 s of play (px): the seconds he spent in each piece */
@@ -792,6 +799,16 @@ export class FirstTimerRun {
   /** a press he has decided on, and when the thumb gets there */
   private pending: { at: number; dir: -1 | 0 | 1; kind: 'single' | 'double'; off: boolean } | null = null;
   private punchAt: number | null = null;
+  /** a drop trap he has just hit: he stands until it is down (castPlan) */
+  private trapWait: { post: TrapPost; until: number } | null = null;
+  /** the shrine sealed with the goal short, and Dot has said why: he turns back for an animal he passed, as a player told so does
+   *  (`id` the animal, `best` the nearest he has come to it, `since` when he turned, `more` when he last came nearer: 20 s
+   *  with no nearer and he gives it up); `turnBacks` how often */
+  private hunt: { id: number; best: number; since: number; more: number } | null = null;
+  turnBacks = 0;
+  private huntMore = false;
+  /** back from a turn: the nearest he has come to the shrine since (his walk back to it is progress, not a stuck spot) */
+  private home: number | null = null;
   private swapGap = 0.15;
   private lastPress = -1;
   private lastSteer: -1 | 0 | 1 = 0;
@@ -874,6 +891,12 @@ export class FirstTimerRun {
   private goal: { got: number; need: number } | null = null;
   private sealedT = 0;
   private learned = new Set<string>();
+  /** what he has been told (takeIn), for the report */
+  knows(what: string): boolean {
+    return this.learned.has(what);
+  }
+  /** where he started (the report's "first" trap is the nearest to it) */
+  start = { x: 0 };
   // ── a tier bot's own state (R-165.59; KID and ADULT never touch it) ──
   /** how he takes the next edge: where he presses (px before the lip), and run / late (walk off, then press) / stand (stop, then press) */
   private edge: { aim: number; how: 'run' | 'late' | 'stand'; stand: number; late: number; read?: boolean } | null = null;
@@ -909,6 +932,7 @@ export class FirstTimerRun {
   constructor(readonly id: string, readonly seed: number, readonly who: FirstTimer, readonly opts: RunOptions = {}) {
     this.r = rng(seed * 7919 + (opts.trial ?? 0) * 104723 + salt(who, 1, 2));
     this.sim = new RealPlay(id, seed);
+    this.start = { x: this.sim.p.x };
     this.mode = MODES[this.sim.stage.config.travel ?? 'right'];
     this.sim.safe = false;
     const e = (this.e = this.sim.e as Eng);
@@ -920,7 +944,7 @@ export class FirstTimerRun {
     c.getBoundingClientRect = () => ({ width: vw, height: vh, left: 0, top: 0 });
     e.resizeCanvas();
     this.dot = new DotShadow(id);
-    e.callbacks.onGuide = (text: string, s: number, passed?: boolean) => this.dot.engine(text, s, passed);
+    e.callbacks.onGuide = (text: string, s: number, passed?: boolean, o?: { teach?: true }) => this.dot.engine(text, s, passed, o);
     e.callbacks.onLesson = (lid: LessonId) => this.dot.lesson(lid, !!(this.sim.p.climbing || this.sim.p.isVineSwinging || this.sim.p.hanging));
     e.callbacks.onProgressUpdate = (cur: number, target: number) => {
       this.goal = { got: cur, need: target };
@@ -1240,6 +1264,8 @@ export class FirstTimerRun {
       if (/\b(hide|bush|fern)\b/.test(t) && /\b(down|slide|hold|duck|into|inside|behind)\b/.test(t)) this.learned.add('hide');
       if (/\b(punch|tap)\b/.test(t)) this.learned.add('punch');
       if (/\bkick\b/.test(t)) this.learned.add('kick');
+      // (a drop trap, castPlay.ts: told to shake its vine or cut its tendril, or to punch or hit one)
+      if (/\b(vine|tendril)s?\b/.test(t) && /\b(shake|cut|punch|hit|pull)\b/.test(t)) this.learned.add('trap');
       if (/\b(glide|leaf)\b/.test(t)) this.learned.add('glide');
       // (World 8's glide line, "Jump twice, then hold to glide": the second jump first, then the glide, at a gap one jump does not cross)
       if (/\bjump twice\b/.test(t)) this.learned.add('double');
@@ -1291,6 +1317,9 @@ export class FirstTimerRun {
         if (who.holdQ && this.dropOff) dir = this.dropOff.dir;
       }
     }
+    // (turned back for an animal he passed: its way, not the route's)
+    const prey = this.hunt ? (e.enemies as Array<{ id: number; x: number }>).find((m) => m.id === this.hunt!.id) : undefined;
+    if (prey) dir = prey.x > p.x + 16 ? 1 : prey.x < p.x - 16 ? -1 : prey.x >= p.x ? 1 : -1;
     if (dir !== 0) this.way = dir;
     const fdir: -1 | 1 = dir === 0 ? (p.facing >= 0 ? 1 : -1) : dir;
     const side = (d: -1 | 0 | 1): Pad => (d > 0 ? { right: true } : d < 0 ? { left: true } : {});
@@ -1574,6 +1603,11 @@ export class FirstTimerRun {
         }
       }
     }
+    // a stage's cast (castPlay.ts, any stage by its data): a drop trap whose load hangs over an animal ahead, once he has been told of it
+    if (this.punchAt === null) {
+      const c = this.castPlan(fdir);
+      if (c) return c;
+    }
     // (getting ready to punch: a moment's hesitation, then the tap, never right on top of a jump press)
     if (this.punchAt !== null) {
       if (t < this.punchAt || t - this.lastPress < this.swapGap) return {};
@@ -1689,6 +1723,46 @@ export class FirstTimerRun {
       }
     }
     return side(dir);
+  }
+
+  /**
+   * A drop trap (dropTrap.ts) on his way, once told of traps: its handle ahead on the ground he stands on and its load over an animal of
+   * the cast not yet cleared (the trap is the safe way: the handle stands outside the animal's strike). He walks to the handle, a
+   * moment's hesitation, punches it, and stands until the load is down. A trap over nothing he passes; an animal with no trap over it
+   * is the walk's own business (a punch or a hop, intend). Nothing here names a stage, a kind or an x: all of it is the stage's data.
+   */
+  private castPlan(fdir: -1 | 1): Pad | null {
+    const c = this.e.cast as { traps: Array<{ post: TrapPost; phase: string }>; members: Array<{ cleared: boolean; s: { x: number; y: number } }> } | null;
+    if (!c) return null;
+    const p = this.sim.p, t = this.t;
+    if (this.trapWait) {
+      const tr = c.traps.find((q) => q.post === this.trapWait!.post);
+      if (t < this.trapWait.until && tr && tr.phase !== 'down') return {};
+      this.trapWait = null;
+    }
+    if (!this.learned.has('trap') || !p.grounded || p.climbing) return null;
+    const mid = p.x + p.width / 2;
+    for (const tr of c.traps) {
+      if (tr.phase !== 'set') continue;
+      const h = tr.post;
+      // (on the ground he stands on, ahead of him, or just behind his middle: he went a step past it)
+      if (Math.abs(h.y - p.y) > 24) continue;
+      const ahead = (h.x - mid) * fdir;
+      if (ahead < -40 || ahead > 260) continue;
+      // (armed: an animal of the cast not yet cleared under its load, BEYOND the handle: he meets the handle first, the safe way. Coming
+      // back along the branch, he meets the animal first, and the walk's own punch or hop is his)
+      if (!c.members.some((m) => !m.cleared && scares(h, m.s.x, m.s.y) && (m.s.x - h.x) * fdir > 0)) continue;
+      // (he stands with his middle this far before the handle, facing it: the punch's reach, castEngine.test.ts)
+      const stand = h.x - fdir * 28;
+      const off = stand - mid;
+      if (Math.abs(off) > 6) return off > 0 ? { right: true } : { left: true };
+      if ((p.facing >= 0 ? 1 : -1) !== fdir) return fdir > 0 ? { right: true } : { left: true };
+      this.punchAt = t + this.who.hesitate;
+      this.swapGap = between(this.r, this.who.swap);
+      this.trapWait = { post: h, until: this.punchAt + 2.5 };
+      return {};
+    }
+    return null;
   }
 
   /** a tier bot under a wall `face` px tall, over his double (about 185 px), with a bounce mushroom just behind him: he hops back onto it
@@ -1973,7 +2047,7 @@ export class FirstTimerRun {
       }
     } else this.offRoute = 0;
     // stuck: no progress for 8 s (not while standing at a puzzle)
-    if (more || this.puzzleWait || this.stillSpot) {
+    if (more || this.huntMore || this.puzzleWait || this.stillSpot) {
       if (this.stuckOpen && this.noProg >= 8) this.stuckOpen.dur = +this.noProg.toFixed(1);
       this.stuckOpen = null;
       this.noProg = 0;
@@ -2004,8 +2078,44 @@ export class FirstTimerRun {
       e.continueFromCheckpoint();
       this.respawned();
     }
-    // the sealed shrine: he stands at it a moment and gives up (the run ends there)
-    if (this.sealed()) this.sealedT += DT;
+    // the sealed shrine: once Dot has said why (a 'must' line: "It's sealed. Defeat ... first."), he turns back for the nearest animal
+    // still out (a purge: any stage, by its own goal and animals); with none to find, or after 12 turns, he stands a moment and gives up
+    this.huntMore = false;
+    if (this.hunt) {
+      const m = (e.enemies as Array<{ id: number; x: number; y: number; defeated?: boolean; kit?: { leaving?: unknown } }>).find((q) => q.id === this.hunt!.id);
+      if (!m || m.defeated || m.kit?.leaving || t - this.hunt.more > 20) {
+        this.hunt = null;
+        this.home = Infinity;
+      } else {
+        const d = Math.abs(m.x - p.x) + Math.abs(m.y - p.y);
+        if (d < this.hunt.best - 2) {
+          this.hunt.best = d;
+          this.hunt.more = t;
+          this.huntMore = true;
+        }
+      }
+    }
+    if (this.home !== null && !this.hunt) {
+      const d = Math.abs((this.sim.stage as { exitTotemX: number }).exitTotemX - p.x);
+      if (d < this.home - 2) {
+        this.home = d;
+        this.huntMore = true;
+      }
+    }
+    if (this.sealed()) {
+      this.home = null;
+      const told = this.dot.shown.some((q) => q.kind === 'must' && t - q.t0 < 12);
+      if (!this.hunt && told && this.turnBacks < 12 && this.goal && this.goal.got < this.goal.need) {
+        const left = (e.enemies as Array<{ id: number; x: number; y: number; defeated?: boolean; type: string; kit?: { leaving?: unknown } }>)
+          .filter((q) => !q.defeated && !q.kit?.leaving && q.type !== 'boss')
+          .sort((a, b) => Math.abs(a.x - p.x) + Math.abs(a.y - p.y) - (Math.abs(b.x - p.x) + Math.abs(b.y - p.y)));
+        if (left.length) {
+          this.hunt = { id: left[0].id, best: Infinity, since: t, more: t };
+          this.turnBacks++;
+        }
+      }
+      if (!this.hunt) this.sealedT += DT;
+    }
     if (p.grounded) this.ground = { x: p.x, y: p.y };
     if (p.x > this.maxX) this.maxX = p.x;
     const on = along(this.mode, p);
@@ -2174,10 +2284,24 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     backtrack: { route: run.routeRatio, bot: run.end === 'shrine' && run.direct > 0 && run.rescues === 0 ? +(run.walked / run.direct).toFixed(2) : null },
     frames: run.frames,
     ...(who.holdQ ? { secondPressMs: run.secondPressMs, maxX: Math.round(run.maxX), far: Math.round(run.farOn), xTrace: run.xTrace } : {}),
+    ...(run.sim.e.cast ? { cast: castTally({ cast: run.sim.e.cast, player0: run.start }, run.knows('trap')) } : {}),
+    ...(run.turnBacks ? { turnBacks: run.turnBacks } : {}),
     ms: Date.now() - t0,
   };
   out.flags = flagsFor(out);
   return out;
+}
+
+export interface CastTally { animals: number; cleared: Record<string, number>; left: number; traps: number; sprung: number; firstSprung: boolean; told: boolean }
+/** the cast at the run's end, from the engine's own state (any stage that names a cast: no stage, kind or way is named here) */
+/** (`told`: he learned the trap from Dot; `firstSprung`: the trap he comes to first, the nearest to the stage's start, is sprung) */
+export function castTally(e: { cast: { members: Array<{ cleared: boolean; s: { beatenBy?: string | null } }>; traps: Array<{ phase: string; post: { x: number } }> }; player0?: { x: number } }, told = false): CastTally {
+  const c = e.cast;
+  const cleared: Record<string, number> = {};
+  for (const m of c.members) if (m.cleared) cleared[m.s.beatenBy ?? '?'] = (cleared[m.s.beatenBy ?? '?'] ?? 0) + 1;
+  const x0 = e.player0?.x ?? 0;
+  const first = [...c.traps].sort((a, b) => Math.abs(a.post.x - x0) - Math.abs(b.post.x - x0))[0];
+  return { animals: c.members.length, cleared, left: c.members.filter((m) => !m.cleared).length, traps: c.traps.length, sprung: c.traps.filter((t) => t.phase !== 'set').length, firstSprung: !!first && first.phase !== 'set', told };
 }
 
 /** what the run says needs looking at, worst first; each names the rule it breaks (RULES, from reference/STAGE-RULES.md) */

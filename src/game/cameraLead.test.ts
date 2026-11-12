@@ -5,6 +5,10 @@
  * The real engine and its real camera (realPlay.ts, with updateCamera put back), on a flat floor in a stage 900 high (1-3's height,
  * which sets how much of the world a tall phone shows), running right at full speed at one of 1-3's snakes. The warning is the time
  * from the first frame a fair part of the snake is in view to the frame it hurts him.
+ *
+ * Two snakes are measured (W1C, 2026-11-12). 1-3's own are the creature kit's now (castPlay.ts): one rears, then strikes where he
+ * WAS, so a full run is never bitten; its warning ends the frame its strike begins, the first moment it could hurt anyone (earlier
+ * than a bite: the stricter clock). The old snake (predatorAI.ts), which other stages still field, is measured as before, to its bite.
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -24,23 +28,34 @@ function setup(w: number, h: number) {
   e.updateCamera = (GameEngine.prototype as unknown as Record<string, () => void>).updateCamera.bind(e);
   const snake0 = e.enemies.find((q: { type: string }) => q.type === 'snake');
   assert.ok(snake0, '1-3 has no snake');
+  const cast = e.proto?.cast;
+  assert.ok(cast?.kinds.includes('snake'), "1-3's snakes are not its cast's");
   r.bare([{ id: 1, x: 0, y: FLOOR, width: 8000, height: 200, type: 'solid' } as never]);
   e.currentStage.config = { ...e.currentStage.config, levelHeight: 900 };
   e.viewCssW = w;
   e.viewCssH = h;
   e.introT = 99;
   e.applyZoom();
-  return { r, e, snake0 };
+  return { r, e, snake0, cast };
 }
 
 /** seconds the snake is on screen before it bites, and where Pokey sits across the screen (fraction of its width) as it does */
-function warning(w: number, h: number): { secs: number; heroAt: number; vw: number } {
-  const { r, e, snake0 } = setup(w, h);
+type Which = 'kit' | 'old';
+const BOTH: readonly Which[] = ['kit', 'old'];
+function warning(w: number, h: number, which: Which): { secs: number; heroAt: number; vw: number } {
+  const { r, e, snake0, cast } = setup(w, h);
   // (the hunting ground the engine worked out for 1-3's own first snake is not this one's: it gets its own, on this floor)
-  const { huntMinX: _h0, huntMaxX: _h1, edgeMinX: _e0, edgeMaxX: _e1, ...base } = snake0;
+  const { huntMinX: _h0, huntMaxX: _h1, edgeMinX: _e0, edgeMaxX: _e1, kit: _k, ...base } = snake0;
   const snake = { ...base, asleep: false, x: 1500, y: FLOOR - snake0.height, patrolMinX: 1400, patrolMaxX: 1700, facing: -1, defeated: false };
   e.enemies = [snake];
   assignTerritories(e.enemies, e.platforms, (q: { y: number; height: number }) => q.y + q.height);
+  if (which === 'kit') {
+    // the engine's own start hands this snake, on this floor, to the stage's cast (its traps stay with the stage that was swapped out)
+    e.proto = { cast: { ...cast, traps: [] } };
+    e.startCast();
+    assert.ok(snake.kit, "1-3's cast did not take the snake");
+  } else e.cast = null;
+  e.proto = null;
   r.safe = false;
   r.stand(200, FLOOR);
   r.p.invincibleTimer = 0;
@@ -52,34 +67,36 @@ function warning(w: number, h: number): { secs: number; heroAt: number; vw: numb
     r.frame({ right: true });
     const cx: number = e.camera.x;
     if (seen < 0 && Math.min(snake.x + snake.width, cx + vw) - Math.max(snake.x, cx) >= SEEN) seen = r.t;
-    if (r.p.hp < hp0) {
+    if (r.p.hp < hp0 || (which === 'kit' && snake.state === 'strike')) {
       assert.ok(seen >= 0, `${w}x${h}: bitten by a snake that was never on screen`);
       assert.ok(Math.abs(r.p.vx) > 0 || r.p.x > 1000, 'he never got going');
       return { secs: r.t - seen, heroAt: (r.p.x - cx) / vw, vw };
     }
   }
-  throw new Error(`${w}x${h}: the snake never bit (the test proves nothing)`);
+  throw new Error(`${w}x${h} ${which}: the snake never bit (the test proves nothing)`);
 }
 
 test('upright on 320, 360 and 400 px phones a snake ahead is on screen 0.8 s or more before it bites at a full run', () => {
   const rows: string[] = [];
   for (const w of [320, 360, 400]) {
     // short and tall: a tall phone shows less width (the view never shows more height than the stage has)
-    for (const h of [640, 782, 850]) {
-      const { secs, heroAt, vw } = warning(w, h);
-      rows.push(`${w}x${h} (${Math.round(vw)} px of world): ${secs.toFixed(2)} s, Pokey ${Math.round(heroAt * 100)}% across`);
+    for (const h of [640, 782, 850]) for (const which of BOTH) {
+      const { secs, heroAt, vw } = warning(w, h, which);
+      rows.push(`${w}x${h} ${which} (${Math.round(vw)} px of world): ${secs.toFixed(2)} s, Pokey ${Math.round(heroAt * 100)}% across`);
       // (whole frames: 0.8 s is 24 of them; one frame's rounding is allowed for)
-      assert.ok(secs >= 0.8 - 1 / 30 + 1e-6, `${w}x${h}: only ${secs.toFixed(2)} s of warning\n${rows.join('\n')}`);
+      assert.ok(secs >= 0.8 - 1 / 30 + 1e-6, `${w}x${h} ${which}: only ${secs.toFixed(2)} s of warning\n${rows.join('\n')}`);
       // and he is never shoved against the edge behind him
-      assert.ok(heroAt >= RUN.back - 0.02, `${w}x${h}: Pokey is ${Math.round(heroAt * 100)}% across, too near the edge behind him`);
+      assert.ok(heroAt >= RUN.back - 0.02, `${w}x${h} ${which}: Pokey is ${Math.round(heroAt * 100)}% across, too near the edge behind him`);
     }
   }
 });
 
 test('sideways nothing changes: the view already shows well over a second ahead, and takes no extra lead', () => {
   for (const [w, h] of [[844, 390], [740, 360], [568, 320], [1280, 720]]) {
-    const { secs } = warning(w, h);
-    assert.ok(secs > 1.5, `${w}x${h}: ${secs.toFixed(2)} s`);
+    for (const which of BOTH) {
+      const { secs } = warning(w, h, which);
+      assert.ok(secs > 1.5, `${w}x${h} ${which}: ${secs.toFixed(2)} s`);
+    }
     const { e } = setup(w, h);
     assert.equal(runLead(e.camera.viewportWidth), 0, `${w}x${h} takes a run lead`);
   }
@@ -162,8 +179,10 @@ test('upright on a narrow phone he keeps room behind him, standing and at a run,
       const s = standing(w, h, facing);
       assert.ok(s.across >= stand, `${w}x${h} facing ${facing}: standing ${Math.round(s.across * 100)}% from the edge behind him`);
     }
-    const { heroAt } = warning(w, h);
-    assert.ok(heroAt >= run, `${w}x${h}: at a run ${Math.round(heroAt * 100)}% from the edge behind him`);
+    for (const which of BOTH) {
+      const { heroAt } = warning(w, h, which);
+      assert.ok(heroAt >= run, `${w}x${h} ${which}: at a run ${Math.round(heroAt * 100)}% from the edge behind him`);
+    }
   }
 });
 

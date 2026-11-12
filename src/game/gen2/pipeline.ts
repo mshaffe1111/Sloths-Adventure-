@@ -933,6 +933,8 @@ interface LocalPiece {
   hang?: { kind: 'liana' | 'vine'; swing?: LianaSwing; from?: string; window?: number; gap?: [number, number] };
   /** a ledge a rope crosses to (place `rope`): the piece the rope hangs from */
   ropeFrom?: string;
+  /** that rope is a try-it, never the way (place `rope` with `free`) */
+  ropeFree?: true;
 }
 interface LocalGap {
   x0: number;
@@ -953,6 +955,10 @@ interface LocalGap {
   putBack?: boolean;
   /** a place marked `hurt`: the world's hurt floor under it (WorldManifest.hurtFloor), no pit and no steps */
   hurt?: boolean;
+  /** a free rope's hollow (place `rope` with `free`): its floor one hop under the lips, wall to wall, no steps: he walks down and
+   *  through and can come back the same way (a deep pit with steps out the far side is one-way, and before a purge's shrine that
+   *  strands whoever still owes an animal behind him) */
+  shallow?: boolean;
 }
 /** a section laid out in its own space: its entry anchor at (0, 0) */
 /** the reach a laid jump asks (verdicts.ts RouteAsk before it is classified): local, then world, px; `yTake` the floor he leaves (a
@@ -1134,7 +1140,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const gap = Math.max(ROPE_MIN_GAP + 90, roll(rng, pl.gap));
       x = a.x + a.w + gap;
       y = a.y;
-      gaps.push({ x0: a.x + a.w, x1: x, y: a.y, lo: Math.max(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.soft ? { soft: true } : {}) });
+      // (`free`: the rope is a try-it, never the way: a soft pit with the plain steps out the far side, to walk down and through)
+      gaps.push({ x0: a.x + a.w, x1: x, y: a.y, lo: Math.max(a.y, y), pit: true, ...(pl.free ? { soft: true, shallow: true } : { back: { lips: [a.y, y] as [number, number] }, ...(pl.soft ? { soft: true } : {}) }) });
     } else if (pl.kind === 'swing') {
       // a liana past `after`'s end, swinging by itself (its numbers rolled here, from the slot's stream: the same on Easy)
       const a = ref(pl.after);
@@ -1228,7 +1235,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on',
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}) } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -1479,7 +1486,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       (c as Platform & { catch?: boolean }).catch = true;
     }
   };
-  const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false) => {
+  const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false, shallow = false) => {
     if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
     const hop = riseCap(false, 1, budget) * PIT.hop;
     // (the banks either side of the pit reach down past its floor: a glide's back pit climbs in steps and on low ground its floor lay under
@@ -1498,7 +1505,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
       return;
     }
-    const out = pitSteps(x0, x1, lipY, farY, depthNow, hop);
+    const out = pitSteps(x0, x1, lipY, farY, shallow ? Math.min(hop, PIT.wade) : depthNow, hop);
     deepen(out.floor);
     mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
     for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
@@ -1896,7 +1903,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         if (!lp.ropeFrom) continue;
         const p1 = pieceOf(lp.ropeFrom), p2 = pieceOf(lp.key);
         const [l, r] = p1.x < p2.x ? [p1, p2] : [p2, p1];
-        ropes.push({ id: ropes.length + 1, x0: R(l.x + l.width - ROPE_OVERLAP), x1: R(r.x + ROPE_OVERLAP), y: R(Math.min(l.y, r.y) - ROPE_RISE), g0: l.y, g1: r.y, required: true });
+        ropes.push({ id: ropes.length + 1, x0: R(l.x + l.width - ROPE_OVERLAP), x1: R(r.x + ROPE_OVERLAP), y: R(Math.min(l.y, r.y) - ROPE_RISE), g0: l.y, g1: r.y, required: !lp.ropeFree });
         placed.beats.push({ x: l.x + l.width, letter: 'V' });
       }
       const entryP = pieceOf(L.entry.piece);
@@ -1930,7 +1937,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           // glide) costs a heart and sets him back on the ledge he left, no pit under it; Easy's stay soft pits, the dark's stay soft)
           if (g.back && M.heartFalls && budget.pit !== 'soft' && !g.soft) heartFalls.push({ x0: R(g0.x0), x1: R(g0.x1) });
           else if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true, g.soft);
-          else pitUnder(g0.x0, g0.x1, g0.y, g0.y, false, g.soft);
+          else pitUnder(g0.x0, g0.x1, g0.y, g0.y, false, g.soft, g.shallow);
           placed.seam.push(...platforms.slice(before));
         } else if (!g.water && FR?.catchDrop) {
           const before = platforms.length;
@@ -2079,7 +2086,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (a puzzle room is anchored to its platforms by id, puzzleKit Anchor: it moves with them)
       for (const p of platforms) p.y += down;
       for (const v of new Set([...vines, ...sections.flatMap((q) => q.vines.map((e) => e.vine))])) { v.topY += down; v.bottomY += down; }
-      for (const r of ropes) r.y += down;
+      // (a rope's two ends, the tops of the ledges it is hung between, move with it: left behind, they read 34 px over the ledges on a
+      //  roll the shift moved, and whatever asks where a rope's ledge is (the level check, the engine's own jump from it) was wrong)
+      for (const r of ropes) { r.y += down; r.g0 += down; r.g1 += down; }
       for (const g of gaps) g.y += down;
       for (const k of asks) { k.yTake += down; k.yLand += down; }
       for (const z of zones) { z.top += down; z.bottom += down; z.baseY += down; for (const l of z.lights ?? []) l.y += down; }
@@ -2126,7 +2135,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
  * stands at least `face` px more than a double jump over the floor (the engine's hoist over a lip is 26 px), so a fall never walks
  * or jumps out forward to the perch: the swing stays the way over.
  */
-export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60, face: 40 } as const;
+/** `wade`: a hollow he is meant to walk THROUGH and back (a free rope's): its floor at most this far under its lips, a TAP's climb
+ *  (a tap rises 81-87 px), so nobody who has not learned to hold a jump is kept in it */
+export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60, face: 40, wade: 60 } as const;
 
 /**
  * Where a soft pit's floor and its steps go, for a gap [x0, x1] between a near lip at `lipY` and a far lip at `farY` (world y, down):
@@ -2414,7 +2425,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
 
   // creatures
   const creatureBag = new ShuffleBag<CreatureDef>(rng, M.creatures);
-  const foes: Array<RoutePiece & { e: Enemy; fill: FilledSocket; sec: PlacedSection }> = [];
+  const foes: Array<RoutePiece & { e: Enemy; fill: FilledSocket; sec: PlacedSection; /** its socket says `easy: 'stay'`: Easy's count cut passes it by */ stay?: true }> = [];
 
   for (const [si, sec] of laid.sections.entries()) {
     // (Normal's threat on both difficulties, so the sockets roll alike; Easy's 60% is a count cut after the spacing, below. Props with
@@ -2437,7 +2448,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           // the move watch). An id the kit has no words for is never shown: the roll fails by name, the red team 11-05, RT-PLAYER F1,
           // where "hint.1-1.double" itself was on screen)
           const text = tipWords(M.tips, m);
-          if (text) hints.push({ x: k.x, text, pad: text, keys: text });
+          if (text) hints.push({ x: k.x, text, pad: text, keys: text, ...(M.teachTips?.includes(m) ? { teach: true as const } : {}) });
           fills.push({ section: sec.uid, socket: s.id, role: 'tip', what: m, x: k.x, y: k.y, ...(text ? {} : { unsaid: true }) });
         }
       } else if (s.role === 'receptor') {
@@ -2475,9 +2486,9 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         threat -= c.threat;
         // (nothing stands in a zone: levelCheck)
         if (foeInZone(sink.zones, pf.at, k.piece.y - (c.footY ?? c.h / 2))) continue;
-        const e = makeEnemy(c, pf.at, k.piece.y, pf.patch, sink.nextEnemyId(), easy && s.easy === 'soften');
+        const e = makeEnemy(c, pf.at, k.piece.y, pf.patch, sink.nextEnemyId(), easy && (s.easy === 'soften' || s.easy === 'stay'));
         const fill: FilledSocket = { section: sec.uid, socket: s.id, role: 'enemy', what: c.id, x: pf.at, y: k.y };
-        foes.push({ x: pf.at, kind: c.id, e, fill, sec });
+        foes.push({ x: pf.at, kind: c.id, e, fill, sec, ...(s.easy === 'stay' ? { stay: true } : {}) });
       } else if (s.role === 'pickup') {
         if (!want) continue;
         const n = s.count ?? 1;
@@ -2536,7 +2547,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   if (easy) {
     const seen = new Map<string, number>();
     for (const f of foes) {
-      if (!kept.has(f)) continue;
+      // (a socket that says `stay` is neither cut nor counted: the rest of its kind is cut as if it were not there)
+      if (!kept.has(f) || f.stay) continue;
       const k = seen.get(f.kind) ?? 0;
       seen.set(f.kind, k + 1);
       if (k > 0 && Math.floor(k * budget.enemyShare) === Math.floor((k - 1) * budget.enemyShare)) kept.delete(f);
@@ -2550,6 +2562,9 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     fills.push(f.fill);
     f.sec.beats.push({ x: f.x, letter: 'C' });
     kit.spawn?.(f.e, byCreature.get(f.kind)!, sink);
+    // (a kit's spawn hook may seat its animal elsewhere on its own patch (World 1: a sleeper under its trap's load): the fill follows
+    //  it, or keptFoes, which finds an animal by its fill's x, reads it as dropped and Easy lays none there)
+    if (R(f.e.x) !== f.fill.x) f.fill.x = R(f.e.x);
   }
   const topped = topUpFoes(laid, budget, kit, seed, sink, safe, openX, [...foes.filter((f) => kept.has(f)), ...props]);
   fills.push(...topped);
@@ -3075,7 +3090,7 @@ export function stagePool(M: WorldManifest, stageId: string): SectionTemplate[] 
   // what the stage refuses; `feel` names no stage there)
   const brief = M.graphs?.briefs?.[stageId], pick = brief?.pick, deal = brief?.deal ?? M.graphs?.mix;
   const fits = (t: SectionTemplate) => (pick
-    ? !t.parked && !t.feel?.some((f) => pick.refuse?.includes(f)) && (!t.content || t.content === 'structural' || !deal || t.content in deal)
+    ? !t.parked && !(t.own && !t.feel?.includes(stageId)) && !t.feel?.some((f) => pick.refuse?.includes(f)) && (!t.content || t.content === 'structural' || !deal || t.content in deal)
     : !t.feel || t.feel.includes(stageId));
   return M.sections.filter((t) => fits(t) && !(t.not ?? []).some((x) => owns.has(x)));
 }

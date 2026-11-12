@@ -1,8 +1,11 @@
 # World 1 drop traps: the picture list (W1C, 2026-11-12). FOR MATT'S APPROVAL, nothing made yet
 
 **What it is for.** 1-3 Branch Snakes: Pokey shakes a vine (or cuts a tendril) and a hive (or a stone) drops beside a snake, which
-glides away. The traps run in the engine today with **code-drawn stand-ins** (`src/game/castArt.ts`): they read, they are not painted.
-Stills of the stand-ins on a real 1-3 roll: `reference/qa-reports/W1C/stills/roll-seed1-1-3-L1-trap2-*.jpg`.
+glides away. **Since 11-12 afternoon every snake is on a painted fallen LOG** (World 1's block log, 24-26 px thick, 170 px long under
+a trap) lying on level ground: the load lands on the log's top, 24-26 px above the ground the handle stands on. A SLEEPING snake
+lies at the end of the log nearest the vine, the load coming down a coil's width beyond it. The traps run in the engine today with **code-drawn stand-ins** (`src/game/castArt.ts`): they read, they are not painted.
+Stills of the stand-ins in the real game (1-3, layout 1): `reference/qa-reports/W1C/stills/game-1-3-L1-trap0-*.jpg` (the lesson: before,
+the trap, the glide, after) and `trap3`, `trap5`, `trap8` the same; `trap1/2/4/6/7-1-before`.
 
 **How they would be made.** Hugging Face only (`reference/methods/hf-art.md`), never a Gemini prompt. **Matt approves every picture
 before any spend.** Budget: $72 left in total, no top-ups, about $15 kept in reserve (`reference/art/HF-SPEND.md` holds the log). No
@@ -22,8 +25,8 @@ swarm chasing anyone).
 | 6 | **The leaf clump** (what the vine hangs from, x2) | about 70 wide x 30 tall | under his width | one frame | See 5. Nothing may run off the top of the screen (the lead's ruling, 11-12): the clump is the top of the trap |
 
 ## Where each piece is drawn today, its layer, its footing and its states (for the painted piece to drop in)
-All in `src/game/castArt.ts` (head 0baa8fcf; ART-W1 is told before any of these boxes or lines move). The engine calls
-`drawTraps` from `src/game/engine.ts:6905`, in the stage's own space, **behind the animals and in front of the ground and its
+All in `src/game/castArt.ts` (castArt.ts itself unchanged since 0baa8fcf; ART-W1 is told before any of these boxes or lines move). The engine calls
+`drawTraps` from `src/game/engine.ts:6931`, in the stage's own space, **behind the animals and in front of the ground and its
 dressing** (pickups, the animals and Pokey draw over it). A trap's numbers come from its `TrapPost` (`src/game/castPlay.types.ts`):
 `x, y` = the handle's foot on the ground he stands on; `loadX` = the load's line; `landY` = the ground it comes down on;
 `loadY` = `landY - 100` (`gen2/worlds/w1Cast.ts:22` TRAP_HANG), the load's BOTTOM while it hangs. `top` = `loadY - 68`: the line the
@@ -47,6 +50,7 @@ link runs along and the clumps sit on. The trap's states (`dropTrap.ts` TrapPhas
 **Six pictures, eleven frames.** The snake needs none: it uses today's Golden Tree Snake clips (its glide away is the prowl clip,
 lifted, stretched and faded: a painted "flattened glide" frame would be a seventh picture if Matt wants it).
 
-**Rules the pictures must keep (measured on phone stills, W1C):** the load hangs 100 px over its ground and no higher, or a sideways
-phone hides it behind the goal sign; from the handle the load is 140-190 px along, so both are on an upright phone's screen; no
+**Rules the pictures must keep (measured on phone stills, W1C):** the load hangs 100 px over its log and no higher, or a sideways
+phone hides it behind the goal sign; the trap's TOP (the leaf clumps and the link) is today 68 px over the hung load's foot and
+brushes the sign's lower rim sideways: the painted trap's highest point should be about 170 px over the handle's ground or less; from the handle the load is 140-190 px along, so both are on an upright phone's screen; no
 pickup is laid on the handle's ledge or under the load (the trap is in plain view before it can be used).

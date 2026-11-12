@@ -26,7 +26,8 @@ test('every lesson card the game can show opens a journal page', () => {
 
 test('every tip a page waits for is one the game really says', () => {
   // (the stage builders' hints: protoStage.ts, and the mixer's stage specs, whose node lines are the hints it lays: mixer/stages.ts)
-  const proto = readFileSync(new URL('./protoStage.ts', import.meta.url), 'utf8') + readFileSync(new URL('./mixer/stages.ts', import.meta.url), 'utf8');
+  // (and a generated stage's own lines, which live with its world's kit: 1-3's, gen2/worlds/w1Arc13.ts)
+  const proto = ['./protoStage.ts', './mixer/stages.ts', './gen2/worlds/w1Arc13.ts'].map((f) => readFileSync(new URL(f, import.meta.url), 'utf8')).join('\n');
   const engine = readFileSync(new URL('./engine.ts', import.meta.url), 'utf8');
   for (const p of PAGES) {
     for (const [, id] of p.open.tip ?? []) {

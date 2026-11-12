@@ -24,7 +24,8 @@
 import { findForStage } from './finds.ts';
 import { ctestEnabled } from './playRecorder.ts';
 
-export type WayAt = 'start' | 'half' | 'near';
+/** where a stage's line is due: at the start, halfway, near the exit, or `on` a moment of play its data names (StageWay.on) */
+export type WayAt = 'start' | 'half' | 'near' | 'on';
 /** which line of a stage: L its scripted line, H the aside after the first fall, F the hint that a Hush Fern is hiding something here */
 export type WayFlag = 'L' | 'H' | 'F';
 export type WayWho = 'Dot' | 'Pokey' | 'Petal' | 'Flicker';
@@ -36,6 +37,9 @@ interface StageWay extends WayLine {
   at: WayAt;
   /** an exchange: said after this line, one bubble each, in turn */
   more?: WayLine[];
+  /** `at: 'on'`: the moment of play the line waits for, as the engine names it (GuideView.moments, e.g. 'cast:punch': the first animal
+   *  of the stage's cast a punch sends off). It is said then, wherever he is, and never if the moment never comes */
+  on?: string;
 }
 interface HurtWay extends WayLine {
   /** the stages (1-9) of the world this line suits; unset = all of them */
@@ -51,6 +55,8 @@ const dot = (at: WayAt, text: string): StageWay => ({ at, who: 'Dot', text });
 const pokey = (at: WayAt, text: string): StageWay => ({ at, who: 'Pokey', text });
 const petal = (at: WayAt, text: string): StageWay => ({ at, who: 'Petal', text });
 const flicker = (at: WayAt, text: string): StageWay => ({ at, who: 'Flicker', text });
+/** Dot's line on a moment of play (StageWay.on) */
+const dotOn = (on: string, text: string): StageWay => ({ at: 'on', on, who: 'Dot', text });
 /** a stage line and the replies that follow it */
 const talk = (first: StageWay, ...more: [WayWho, string][]): StageWay => ({ ...first, more: more.map(([who, text]) => ({ who, text })) });
 const hDot = (text: string, from?: number, to?: number): HurtWay => ({ who: 'Dot', text, from, to });
@@ -64,7 +70,8 @@ export const WAYSIDE: Record<number, WorldWay> = {
   1: {
     stages: {
       2: dot('start', 'She said don\'t stop to smell the flowers. She never said anything about picking up her petals.'),
-      3: dot('half', 'You said "excuse me" just before that punch. I heard it. So did he.'),
+      // (on the first punch that sends a snake gliding off, never by place: halfway it could land just after a trap, P13 11-12)
+      3: dotOn('cast:punch', 'You said "excuse me" just before that punch. I heard it. So did he.'),
       5: petal('start', 'These petals are fresher. She came this way not long ago.'),
       6: pokey('half', 'Meeca used to cross these twice before I\'d finished one. She\'d wait at the end with a snack.'),
       // (the bush the stage is named for: Meeca's 1-2 note says she saw her in it; the tea pays it off, "Was it a nice bush?")
@@ -271,7 +278,7 @@ export function waysideApplies(level: { worldIndex: number; miniIndex: number; s
   return !!WAYSIDE[level.worldIndex];
 }
 
-export function stageLine(world: number, mini: number): (WayLine & { at: WayAt; more?: WayLine[] }) | undefined {
+export function stageLine(world: number, mini: number): (WayLine & { at: WayAt; more?: WayLine[]; on?: string }) | undefined {
   return WAYSIDE[world]?.stages[mini];
 }
 
@@ -346,6 +353,8 @@ export interface WayProbe {
   /** this stage hides a fern that has not been found yet, and its hint has not been given */
   fernOpen?: boolean;
   shownF?: boolean;
+  /** the moments of play this stage run has had (GuideView.moments): a line `on` one waits for it */
+  moments?: readonly string[];
 }
 
 /** which line (if any) is due right now. A fall is answered first; the scripted line waits its turn. */
@@ -361,7 +370,8 @@ export function dueLine(p: WayProbe): { flag: WayFlag; line: WayLine & { more?: 
   }
   const s = stageLine(p.world, p.mini);
   if (s && !p.shownL) {
-    const ready = s.at === 'start' ? p.playedMs >= START_AFTER_MS : s.at === 'half' ? p.ratio >= HALF_AT : p.ratio >= NEAR_AT;
+    const ready = s.at === 'on' ? !!s.on && !!p.moments?.includes(s.on)
+      : s.at === 'start' ? p.playedMs >= START_AFTER_MS : s.at === 'half' ? p.ratio >= HALF_AT : p.ratio >= NEAR_AT;
     if (ready) return { flag: 'L', line: { who: s.who, text: s.text, ...(s.more ? { more: s.more } : {}) } };
   }
   return null;

@@ -19,7 +19,7 @@ import { hollowLogSize, w1DressFacing, w1DressWidth } from '../../w1NewArt.ts';
 import { pickCut, W1_CUT } from '../../w1CutArt.ts';
 import type { Platform } from '../../types.ts';
 import { SPRINT_GRAPHS } from '../graphs.ts';
-import { BRIEF_13, LINES_13, PURGE_13, QUIET_13, SECTIONS_13, STAGE_13 } from './w1Arc13.ts';
+import { BRIEF_13, LINES_13, PURGE_13, SECTIONS_13, STAGE_13 } from './w1Arc13.ts';
 import { W1_CAST_CREATURES, W1_TRAP_PAIRS, W1_TRAP_PROPS, armedTraps } from './w1Cast.ts';
 
 /**
@@ -1613,16 +1613,15 @@ export function w1World(): WorldKit {
     corridor: W1_KIT.corridor, themeShare: W1_KIT.themeShare, required: W1_KIT.required,
     // (World 1's cast rows and drop-trap pairs, w1Cast.ts: laid only where a section holds a socket for one, so by 1-3's bricks alone)
     creatures: W1_CAST_CREATURES, props: W1_TRAP_PROPS, pairs: W1_TRAP_PAIRS, decor: [], flowers: ['orchid', 'hibiscus'],
-    // (1-3's pool is its own, LEVEL-BAR A3: its sections, tagged for it alone, and of World 1's library exactly the quiet ones it
-    // walks between its beats. A tag only says which stages' pools hold a section, stagePool: no other stage's pool changes)
-    sections: [...W1_SECTIONS.map((t) => {
-      const quiet = (QUIET_13 as readonly string[]).includes(t.id), tagged = t.feel.includes(STAGE_13);
-      return quiet === tagged ? t : { ...t, feel: quiet ? [...t.feel, STAGE_13] : t.feel.filter((f) => f !== STAGE_13) };
-    }), ...SECTIONS_13],
+    // (1-3's pool is its own, LEVEL-BAR A3: its beats, its arrival, its rests and its exit, each tagged for it alone; no World 1
+    // library section is in it. A tag only says which stages' pools hold a section, stagePool: no other stage's pool changes)
+    sections: [...W1_SECTIONS.map((t) => (t.feel.includes(STAGE_13) ? { ...t, feel: t.feel.filter((f) => f !== STAGE_13) } : t)), ...SECTIONS_13],
     handBuilt: [],
     // (Dot's lines by their text id: the words a hint carries are the line's old text, which dotLines.ts swaps for the new look's words
     // where it is said; without these the pipeline put the raw id on screen, the red team's RT-ENGINE #1: "hint.1-1.double")
     tips: { ...W1_TIPS, ...LINES_13 },
+    // (the first trap's line is a TEACH line: Dot waits for a clear moment, keeps it up its reading time, and no stock lesson cuts it)
+    teachTips: ['traps'],
   };
   // (the traps are armed by the animal that stays under them: the kit's own emitters and spawn hook, w1Cast.ts armedTraps)
   return { manifest, ...armedTraps() };

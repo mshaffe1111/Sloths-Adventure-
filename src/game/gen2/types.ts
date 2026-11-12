@@ -204,6 +204,9 @@ export interface WorldManifest {
   lessons?: Record<string, string>;
   /** mechanic -> Dot's line for a 'tip' socket (under 10 words; a new line is marked "(new, needs Matt's approval)" until he says yes) */
   tips?: Record<string, string>;
+  /** the tips (by mechanic, as `tips`) that are a stage's own TEACH line: Dot waits for a clear moment and keeps it up its reading
+   *  time, and no stock lesson cuts it (protoStage.ts StageHint.teach) */
+  teachTips?: readonly string[];
 }
 
 // ───────────────────────────── a section ─────────────────────────────
@@ -267,7 +270,10 @@ export type PlaceRule =
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
   | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
   | { kind: 'climb'; on: string; at: Range; h: Range }
-  | { kind: 'rope'; after: string; gap: Range; soft?: boolean };
+  | { kind: 'rope'; after: string; gap: Range; soft?: boolean;
+      /** the rope is a try-it, never the way (a stage laid before the Shimmy skill is his, or a second road): its pit is soft with the
+       *  plain steps out the far side, so he can always walk down and through, and the rope is hung `required: false` */
+      free?: boolean };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */
@@ -332,8 +338,10 @@ export interface Socket {
   maxThreat?: number;
   /** a socket the roll may leave empty (0..1 chance of filling); required sockets have none */
   chance?: number;
-  /** on Easy: keep it, drop it, or keep it softened (a slower creature, a longer tell) */
-  easy?: 'keep' | 'drop' | 'soften';
+  /** on Easy: keep it, drop it, or keep it softened (a slower creature, a longer tell). All three still answer to Easy's count cut
+   *  (the first of a kind stays, then 60% of the rest). `stay`: softened, and the count cut never takes it: the animal a piece is
+   *  built round (a trap's own snake), without which that piece of the stage is empty on Easy */
+  easy?: 'keep' | 'drop' | 'soften' | 'stay';
   /** only filled in these phases (a twist socket that sleeps in a Ki section) */
   phases?: Phase[];
   /** pickups: how many in a row and over what span (px) */
@@ -410,6 +418,10 @@ export interface SectionTemplate {
   not?: readonly string[];
   /** out of every pool, and why (a stage picked by need, GraphBrief.pick, has no stage list to leave it off) */
   parked?: string;
+  /** a DESIGNED stage's own piece (a beat of its arc, its arrival, a rest, its exit): in the pools of the stages its `feel` names and
+   *  no other, a stage picked by need (GraphBrief.pick, which reads no `feel`) included. Without it another stage's pick took a
+   *  level's beat for a link (1-3's exit, with its rope and hollow, dealt into a test-side 1-2) */
+  own?: true;
   phases: Phase[];
   /** 1 (gentle) .. 10 (hard): picked when the node's tension, scaled into the stage's band, is near it */
   difficulty: number;
