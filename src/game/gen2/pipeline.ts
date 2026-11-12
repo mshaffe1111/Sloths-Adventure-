@@ -21,6 +21,7 @@ import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11 } from './verdicts.ts';
 import { PROMISES_11, realFalls } from './promises11.ts';
+import { repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
 import { DOUBLE_RISE, JUMP_RISE, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, TAKEOFF_SLACK, TIMED, WALL_H } from '../physics.ts';
@@ -2973,7 +2974,7 @@ type Verdict = { ok: true; thin?: boolean } | { ok: false; swap?: number; reroll
  *   a purge's or gauntlet's animals short of its goal: a longer stage (the caller adds a section);
  *   anything else (another quota short): a whole re-roll.
  */
-export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[], tried: Set<string>): Verdict {
+export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[], tried: Set<string>, landings = true): Verdict {
   const st = b.stage;
   // (a rolled graph's teach or test whose block can be walked round is swapped: the place rule comes before the level check)
   // (and one whose laid exit left the corridor: the way on is lost past it, whichever section comes next)
@@ -2981,6 +2982,22 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
   if (stray) return { ok: false, swap: Number(stray.uid.slice(1)) - 1, why: `its exit at y ${stray.y} is outside the corridor` };
   const walked = blockBreaches(b.laid, st.platforms, judgedOnArcs(budget.id) ? { setting: budget.difficulty, stageId: budget.id } : undefined);
   if (walked.length) return { ok: false, swap: Number(walked[0].uid.slice(1)) - 1, why: `the block is walked round: ${walked[0].why}` };
+  // (Y2, R-165.120: a judged stage's idle mushrooms are taken up and its dead-zone petals moved to a piece a clean flight reaches, inside
+  // their own section, BEFORE the level check reads them: the generator stops laying what landing.dead-zone and bounce.no-purpose refuse,
+  // instead of the search swapping sections for them. A build with neither changes nothing; a replay runs this same step)
+  if (landings && judgedOnArcs(budget.id)) {
+    // (a petal row moves inside its own section, never in or out of a room)
+    const within = (x: number): readonly [number, number] | undefined => {
+      const q = b.laid.sections.find((s) => x >= s.x0 && x <= s.x1);
+      return q && !q.room ? [q.x0, q.x1] : undefined;
+    };
+    const fix = repairLandings(st.platforms, st.collectibles, budget.difficulty, within);
+    if (fix.caps.length) {
+      st.platforms = st.platforms.filter((p) => !fix.caps.includes(p));
+      repairs.push({ kind: 'stretch', note: `landings: ${fix.caps.length} mushroom(s) with no purpose taken up (x ${fix.caps.map((p) => R(p.x)).join(', ')})` });
+    }
+    if (fix.moved) repairs.push({ kind: 'stretch', note: `landings: ${fix.moved} petal(s) moved off a dead zone` });
+  }
   for (let it = 0; it < 8; it++) {
     const res = checkStage(st, budget);
     if (res.ok) {
@@ -3330,185 +3347,204 @@ function buildRolled(req: BuildRequest): Gen2Stage {
   const easyBudget = planBudget(req.config, M, 'easy');
   const byId = new Map(M.sections.map((t) => [t.id, t]));
   const required = new Set((M.required?.[req.config.id] ?? []).map((r) => r.section));
-  for (let rr = 0; rr <= maxRerolls; rr++) {
-    const seed = rr === 0 ? req.seed : req.seed * 1009 + rr * 7919;
-    const repairs: Repair[] = [];
-    const bans = new Map<number, Set<string>>([[-1, new Set([...failedAt].filter(([, n]) => n >= 2).map(([t]) => t))]]);
-    const tried = new Set<string>();
-    // The first build chooses everything; after it the plan is kept, and each change is local: a swap re-chooses one slot, and the
-    // length loop adds one freshly chosen section just before the shrine's node (growPlan) or takes the last one off (trimPlan). So
-    // the stage converges instead of re-picking everything after a changed node (it used to swing between two plans either side of
-    // the window). Once it has grown it never trims (the floors are the rule, the ceiling is not); once it has trimmed, a grow would
-    // undo it, so it goes back to the last stage that met the floors instead.
-    let plan: PlanSlot[] | undefined;
-    let open = new Set<number>();
-    let grew = false;
-    let lastMeeting: Gen2Stage | null = null;
-    let swapped = false;
-    const lift = new Map<number, number>();
-    for (let it = 0; it < 24; it++) {
-      let b: Built;
-      try {
-        b = assemble(req, budget, graph, seed, { bans, recent: req.recent, usedVersions: req.usedVersions, plan, open, lift, pace: !!refused });
-      } catch (e) {
-        // (a slot the after-rules' swaps left with no section: this roll's repairs are spent, and the stage is rolled again; a build
-        // that throws with no such swap behind it throws as it always did)
-        if (!swapped) throw e;
-        repairs.push({ kind: 'reroll', note: `no section left for a swapped slot: ${(e as Error).message}` });
-        break;
-      }
-      let v = checkAndRepair(b, budget, repairs, tried);
-      const st = b.stage;
-      // (Easy is Normal's stage, the red team 11-05, RT-ENGINE #4: a plan is taken only when Easy lays it cleanly too. An Easy-only breach
-      // (its kinder pads widening a take-off into a block's reach, seed 124) bans that section at that slot for both settings)
-      let eb: Built | undefined;
-      if (v.ok) {
-        eb = assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st));
-        const ev = checkAndRepair(eb, easyBudget, [], new Set());
-        if (!ev.ok) v = { ...ev, why: `on Easy: ${ev.why ?? 'its check fails'}` };
-      }
-      st.gen2.rerolls = rr;
-      st.gen2.repairs = [...repairs];
-      /** the section at slot `k` is banned there and the slot chosen fresh, the rest of the plan kept */
-      const swapOut = (k: number, why: string | undefined, here = false) => {
-        const tpl = b.laid.plan[k].template;
-        const set = bans.get(k) ?? new Set<string>();
-        set.add(tpl);
-        bans.set(k, set);
-        // (a section that failed at two slots is kept out of the whole stage: it is the section, not the seam, and the curation
-        // report names it for its author; `here`, a rule judged on the built stage, bans it at its slot only: such a rule reads the
-        // section among its neighbours, the join and the ground line, so the same section may stand cleanly elsewhere)
-        if (!here) failedAt.set(tpl, (failedAt.get(tpl) ?? 0) + 1);
-        if (failedAt.get(tpl)! >= 2) bans.set(-1, new Set([...(bans.get(-1) ?? []), tpl]));
-        repairs.push({ kind: 'swap', section: `s${k + 1}`, note: `${tpl} swapped out${why ? `: ${why}` : ''}` });
-        plan = b.laid.plan;
-        open = new Set([k]);
-        // (audit fix 3, a rolled graph's stage: a swapped-out section that taught a move takes its lesson with it, so every later slot
-        // that uses the move is chosen fresh too, under the uses rule, and nothing is laid before it is taught)
-        const lost = graph.id ? byId.get(tpl)?.teaches : undefined;
-        if (lost) plan.forEach((p, i) => { if (i > k && byId.get(p.template)?.uses?.includes(lost)) open.add(i); });
-      };
-      const grow = (note: string) => {
-        if (lastMeeting) return false;
-        const g = growPlan(b.laid.plan, graph, byId);
-        plan = g.plan;
-        open = new Set([g.open]);
-        grew = true;
-        repairs.push({ kind: 'length', note });
-        return true;
-      };
-      if (!v.ok) {
-        st.gen2.errors = checkStage(st, budget).errors;
-        if (!st.gen2.errors.length && v.why) st.gen2.errors = [v.why];
-        if (!best) best = st;
-        // (a trim that broke it: the stage before the trim passed)
-        if (lastMeeting) return lastMeeting;
-        // (the goal's animals need room: one more section; the goal itself stays as designed)
-        if (v.short && grow("room for the goal's animals: one more section")) continue;
-        // (a required section is never swapped out: the whole roll goes instead)
-        if (v.swap !== undefined && b.laid.plan[v.swap] && required.has(b.laid.plan[v.swap].template)) {
-          repairs.push({ kind: 'reroll', note: `${b.laid.plan[v.swap].template} is required here and failed: rolled again` });
-          break;
-        }
-        // (a section whose laid exit left the corridor is first re-laid at its slot with its other versions, one by one: the version
-        // took it out, not the section (1-1 seed 5 under Round 10: the level 'short' of quiet-arrival fit where its 'step' did not, and
-        // banning the template threw "no section fits the goal"). Only with every version tried is it swapped out as before)
-        if (v.swap !== undefined && b.laid.plan[v.swap] && /outside the corridor/.test(v.why ?? '')) {
-          const slot = b.laid.plan[v.swap];
-          const t = byId.get(slot.template);
-          const key = `${v.swap}:${slot.template}`;
-          const triedV = versionTries.get(key) ?? new Set([JSON.stringify(slot.versions ?? {})]);
-          const next = t ? versionCombos(t).find((c) => !triedV.has(JSON.stringify(c))) : undefined;
-          if (next) {
-            triedV.add(JSON.stringify(next));
-            versionTries.set(key, triedV);
-            repairs.push({ kind: 'swap', section: `s${v.swap + 1}`, note: `${slot.template} re-laid with versions ${Object.values(next).join(', ')}: ${v.why}` });
-            plan = b.laid.plan.map((p, k) => (k === v.swap ? { ...p, versions: next } : p));
-            open = new Set();
-            continue;
-          }
-        }
-        if (v.swap !== undefined && b.laid.plan[v.swap]) {
-          swapOut(v.swap, v.why);
-          continue;
-        }
-        break;
-      }
-      if (v.thin) {
-        if (grow('room for 2 animals over the goal: one more section')) continue;
-        return lastMeeting!;
-      }
-      // the clock (§1: at least 2 minutes for a quick player, every roll): the time model, typical and fast, and Easy's quick player
-      // on the same plan (Easy has fewer animals, so it runs shorter)
-      const typical = gen2Model(st, MODEL_TYPICAL);
-      const fast = gen2Model(st, MODEL_FAST);
-      const easyFast = gen2Model(assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st)).stage, MODEL_FAST);
-      st.gen2.modelled = { typical: Math.round(typical * 10) / 10, fast: Math.round(fast * 10) / 10 };
-      const short = typical < budget.seconds.target || fast < budget.seconds.fastFloor || easyFast < easyBudget.seconds.fastFloor;
-      // (a rolled graph's stage has no ceiling, the red team's RT-ENGINE #7; Matt: "at least 2:00, no cap": its length is its section
-      // count, held to the floors only. The ceiling, target x 1.1 (153 s for 1-1, under its own floor's typical), trimmed every roll
-      // toward the floor and shipped the rest "long". The curated stages keep their window)
-      const over = !graph.id && typical > budget.seconds.max;
-      const clock = `typical ${typical.toFixed(0)} s, fast ${fast.toFixed(0)} s, Easy fast ${easyFast.toFixed(0)} s`;
-      if (short) {
-        if (grow(`one more section (${clock})`)) continue;
-        // (it had trimmed past the floors: back to the last stage that met them)
-        return lastMeeting!;
-      }
-      if (over && !grew) {
-        const t = trimPlan(b.laid.plan, graph, byId, required);
-        if (t) {
-          lastMeeting = st;
-          plan = t;
-          open = new Set();
-          repairs.push({ kind: 'length', note: `one section fewer (${clock})` });
-          continue;
-        }
-      }
-      // (R-165.120: a rolled graph's plan is taken only when nothing would refuse the roll afterwards, on either setting: the rules judged
-      // on the built stage (rollUnmet) are the search's own now. One that names a place swaps the section there, as a failed check does;
-      // the rest roll the stage again. A roll with nothing to answer returns here exactly as it always did)
-      if (graph.id && eb) {
-        let unmet = [...rollUnmet(st, req).map((u) => ({ ...u, of: b })), ...rollUnmet(eb.stage, easyReq).map((u) => ({ ...u, of: eb! }))];
-        // (the caller's own rules, asked last: of a roll nothing of the pipeline's refuses)
-        const pipes = unmet.length > 0;
-        if (!pipes && req.also) unmet = [...req.also(st, 'normal').map((u) => ({ ...u, of: b })), ...req.also(eb.stage, 'easy').map((u) => ({ ...u, of: eb! }))];
-        if (unmet.length) {
-          if (refused) refused.gen2.repairs.push({ kind: 'reroll', note: `roll ${rr}, try ${it + 1}: ${unmet[0].line}` });
-          refused ??= st;
-          // (each rule's own repair: V19b by its numbers (windowFix), a rule that names a place by a swap there; a required section
-          // is never swapped. One rule with no repair and the stage is rolled again: a swap would not answer it)
-          const fixes = unmet.map((u) => {
-            if (/^V19b/.test(u.line)) return windowFix(u.of, b.laid.plan, graph, M, budget, required);
-            // (a late rise that ended short, V19: its slot is asked for what it lacked, by the lay's own numbers)
-            const short = u.slot !== undefined && /the late rise ended/.test(u.line) ? u.of.laid.rise?.find((q) => q.node === b.laid.plan[u.slot!]?.node) : undefined;
-            if (short && !required.has(b.laid.plan[u.slot!].template)) {
-              const q = u.of.laid.sections[u.slot!];
-              return { slot: u.slot!, lift: Math.round(q.exit.y - q.entry.y - (short.exitY - (short.to - 20)) - 10) };
-            }
-            return u.slot !== undefined && b.laid.plan[u.slot] && !required.has(b.laid.plan[u.slot].template) ? { slot: u.slot } : undefined;
-          });
-          const k = fixes.every((f) => f) ? 0 : -1;
-          if (k >= 0) {
-            const f = fixes[k]!;
-            if (f.lift !== undefined) lift.set(f.slot, f.lift);
-            // (a caller's rule that names a section counts against the section, as a failed check does: twice, and it is out of the
-            // stage's later rolls too; the pipeline's own after-rules read the seam and ban it at its slot only)
-            swapOut(f.slot, unmet[k].line, pipes);
-            swapped = true;
-            continue;
-          }
-          repairs.push({ kind: 'reroll', note: `refused after its check: ${unmet[fixes.findIndex((f) => !f)].line}` });
-          break;
-        }
-      }
-      if (over) st.gen2.repairs.push({ kind: 'length', note: `ships long: no shorter meets the floors and the goal (${clock}, ceiling ${budget.seconds.max.toFixed(0)} s)` });
-      return st;
+  // (Y2, R-165.120: the search runs as it always did first, the landing repair off (checkAndRepair `landings`), so every seed it laid
+  // cleanly before lays the same stage now: the proven list's seeds do not move. Only a seed with no clean roll that way is searched
+  // again, on fresh rolls, with the repair on: idle mushrooms taken up and dead-zone petals moved inside a roll, instead of the swaps
+  // and re-rolls those two verdicts cost. Its plan replays with the repair on, as every replay runs it. A stage the verdicts do not
+  // judge has one search: the repair does nothing there)
+  const phases = judgedOnArcs(budget.id) ? [false, true] : [true];
+  let firstRefused: Gen2Stage | null = null;
+  for (const [pi, landings] of phases.entries()) {
+    if (pi) {
+      firstRefused = refused ?? best;
+      refused = null;
+      best = null;
+      failedAt.clear();
+      versionTries.clear();
     }
-    if (lastMeeting) return lastMeeting;
-    repairs.push({ kind: 'reroll', note: `roll ${rr} failed` });
+    for (let rr = 0; rr <= maxRerolls; rr++) {
+      // (the second search's rolls are fresh ones, past the first's: its roll 0 is the stage's roll maxRerolls + 1)
+      const roll = rr + pi * (maxRerolls + 1);
+      const seed = roll === 0 ? req.seed : req.seed * 1009 + roll * 7919;
+      const repairs: Repair[] = [];
+      const bans = new Map<number, Set<string>>([[-1, new Set([...failedAt].filter(([, n]) => n >= 2).map(([t]) => t))]]);
+      const tried = new Set<string>();
+      // The first build chooses everything; after it the plan is kept, and each change is local: a swap re-chooses one slot, and the
+      // length loop adds one freshly chosen section just before the shrine's node (growPlan) or takes the last one off (trimPlan). So
+      // the stage converges instead of re-picking everything after a changed node (it used to swing between two plans either side of
+      // the window). Once it has grown it never trims (the floors are the rule, the ceiling is not); once it has trimmed, a grow would
+      // undo it, so it goes back to the last stage that met the floors instead.
+      let plan: PlanSlot[] | undefined;
+      let open = new Set<number>();
+      let grew = false;
+      let lastMeeting: Gen2Stage | null = null;
+      let swapped = false;
+      const lift = new Map<number, number>();
+      for (let it = 0; it < 24; it++) {
+        let b: Built;
+        try {
+          b = assemble(req, budget, graph, seed, { bans, recent: req.recent, usedVersions: req.usedVersions, plan, open, lift, pace: !!refused });
+        } catch (e) {
+          // (a slot the after-rules' swaps left with no section: this roll's repairs are spent, and the stage is rolled again; a build
+          // that throws with no such swap behind it throws as it always did)
+          if (!swapped) throw e;
+          repairs.push({ kind: 'reroll', note: `no section left for a swapped slot: ${(e as Error).message}` });
+          break;
+        }
+        let v = checkAndRepair(b, budget, repairs, tried, landings);
+        const st = b.stage;
+        // (Easy is Normal's stage, the red team 11-05, RT-ENGINE #4: a plan is taken only when Easy lays it cleanly too. An Easy-only breach
+        // (its kinder pads widening a take-off into a block's reach, seed 124) bans that section at that slot for both settings)
+        let eb: Built | undefined;
+        if (v.ok) {
+          eb = assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st));
+          const ev = checkAndRepair(eb, easyBudget, [], new Set(), landings);
+          if (!ev.ok) v = { ...ev, why: `on Easy: ${ev.why ?? 'its check fails'}` };
+        }
+        st.gen2.rerolls = roll;
+        st.gen2.repairs = [...repairs];
+        /** the section at slot `k` is banned there and the slot chosen fresh, the rest of the plan kept */
+        const swapOut = (k: number, why: string | undefined, here = false) => {
+          const tpl = b.laid.plan[k].template;
+          const set = bans.get(k) ?? new Set<string>();
+          set.add(tpl);
+          bans.set(k, set);
+          // (a section that failed at two slots is kept out of the whole stage: it is the section, not the seam, and the curation
+          // report names it for its author; `here`, a rule judged on the built stage, bans it at its slot only: such a rule reads the
+          // section among its neighbours, the join and the ground line, so the same section may stand cleanly elsewhere)
+          if (!here) failedAt.set(tpl, (failedAt.get(tpl) ?? 0) + 1);
+          if (failedAt.get(tpl)! >= 2) bans.set(-1, new Set([...(bans.get(-1) ?? []), tpl]));
+          repairs.push({ kind: 'swap', section: `s${k + 1}`, note: `${tpl} swapped out${why ? `: ${why}` : ''}` });
+          plan = b.laid.plan;
+          open = new Set([k]);
+          // (audit fix 3, a rolled graph's stage: a swapped-out section that taught a move takes its lesson with it, so every later slot
+          // that uses the move is chosen fresh too, under the uses rule, and nothing is laid before it is taught)
+          const lost = graph.id ? byId.get(tpl)?.teaches : undefined;
+          if (lost) plan.forEach((p, i) => { if (i > k && byId.get(p.template)?.uses?.includes(lost)) open.add(i); });
+        };
+        const grow = (note: string) => {
+          if (lastMeeting) return false;
+          const g = growPlan(b.laid.plan, graph, byId);
+          plan = g.plan;
+          open = new Set([g.open]);
+          grew = true;
+          repairs.push({ kind: 'length', note });
+          return true;
+        };
+        if (!v.ok) {
+          st.gen2.errors = checkStage(st, budget).errors;
+          if (!st.gen2.errors.length && v.why) st.gen2.errors = [v.why];
+          if (!best) best = st;
+          // (a trim that broke it: the stage before the trim passed)
+          if (lastMeeting) return lastMeeting;
+          // (the goal's animals need room: one more section; the goal itself stays as designed)
+          if (v.short && grow("room for the goal's animals: one more section")) continue;
+          // (a required section is never swapped out: the whole roll goes instead)
+          if (v.swap !== undefined && b.laid.plan[v.swap] && required.has(b.laid.plan[v.swap].template)) {
+            repairs.push({ kind: 'reroll', note: `${b.laid.plan[v.swap].template} is required here and failed: rolled again` });
+            break;
+          }
+          // (a section whose laid exit left the corridor is first re-laid at its slot with its other versions, one by one: the version
+          // took it out, not the section (1-1 seed 5 under Round 10: the level 'short' of quiet-arrival fit where its 'step' did not, and
+          // banning the template threw "no section fits the goal"). Only with every version tried is it swapped out as before)
+          if (v.swap !== undefined && b.laid.plan[v.swap] && /outside the corridor/.test(v.why ?? '')) {
+            const slot = b.laid.plan[v.swap];
+            const t = byId.get(slot.template);
+            const key = `${v.swap}:${slot.template}`;
+            const triedV = versionTries.get(key) ?? new Set([JSON.stringify(slot.versions ?? {})]);
+            const next = t ? versionCombos(t).find((c) => !triedV.has(JSON.stringify(c))) : undefined;
+            if (next) {
+              triedV.add(JSON.stringify(next));
+              versionTries.set(key, triedV);
+              repairs.push({ kind: 'swap', section: `s${v.swap + 1}`, note: `${slot.template} re-laid with versions ${Object.values(next).join(', ')}: ${v.why}` });
+              plan = b.laid.plan.map((p, k) => (k === v.swap ? { ...p, versions: next } : p));
+              open = new Set();
+              continue;
+            }
+          }
+          if (v.swap !== undefined && b.laid.plan[v.swap]) {
+            swapOut(v.swap, v.why);
+            continue;
+          }
+          break;
+        }
+        if (v.thin) {
+          if (grow('room for 2 animals over the goal: one more section')) continue;
+          return lastMeeting!;
+        }
+        // the clock (§1: at least 2 minutes for a quick player, every roll): the time model, typical and fast, and Easy's quick player
+        // on the same plan (Easy has fewer animals, so it runs shorter)
+        const typical = gen2Model(st, MODEL_TYPICAL);
+        const fast = gen2Model(st, MODEL_FAST);
+        const easyFast = gen2Model(assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st)).stage, MODEL_FAST);
+        st.gen2.modelled = { typical: Math.round(typical * 10) / 10, fast: Math.round(fast * 10) / 10 };
+        const short = typical < budget.seconds.target || fast < budget.seconds.fastFloor || easyFast < easyBudget.seconds.fastFloor;
+        // (a rolled graph's stage has no ceiling, the red team's RT-ENGINE #7; Matt: "at least 2:00, no cap": its length is its section
+        // count, held to the floors only. The ceiling, target x 1.1 (153 s for 1-1, under its own floor's typical), trimmed every roll
+        // toward the floor and shipped the rest "long". The curated stages keep their window)
+        const over = !graph.id && typical > budget.seconds.max;
+        const clock = `typical ${typical.toFixed(0)} s, fast ${fast.toFixed(0)} s, Easy fast ${easyFast.toFixed(0)} s`;
+        if (short) {
+          if (grow(`one more section (${clock})`)) continue;
+          // (it had trimmed past the floors: back to the last stage that met them)
+          return lastMeeting!;
+        }
+        if (over && !grew) {
+          const t = trimPlan(b.laid.plan, graph, byId, required);
+          if (t) {
+            lastMeeting = st;
+            plan = t;
+            open = new Set();
+            repairs.push({ kind: 'length', note: `one section fewer (${clock})` });
+            continue;
+          }
+        }
+        // (R-165.120: a rolled graph's plan is taken only when nothing would refuse the roll afterwards, on either setting: the rules judged
+        // on the built stage (rollUnmet) are the search's own now. One that names a place swaps the section there, as a failed check does;
+        // the rest roll the stage again. A roll with nothing to answer returns here exactly as it always did)
+        if (graph.id && eb) {
+          let unmet = [...rollUnmet(st, req).map((u) => ({ ...u, of: b })), ...rollUnmet(eb.stage, easyReq).map((u) => ({ ...u, of: eb! }))];
+          // (the caller's own rules, asked last: of a roll nothing of the pipeline's refuses)
+          const pipes = unmet.length > 0;
+          if (!pipes && req.also) unmet = [...req.also(st, 'normal').map((u) => ({ ...u, of: b })), ...req.also(eb.stage, 'easy').map((u) => ({ ...u, of: eb! }))];
+          if (unmet.length) {
+            if (refused) refused.gen2.repairs.push({ kind: 'reroll', note: `roll ${roll}, try ${it + 1}: ${unmet[0].line}` });
+            refused ??= st;
+            // (each rule's own repair: V19b by its numbers (windowFix), a rule that names a place by a swap there; a required section
+            // is never swapped. One rule with no repair and the stage is rolled again: a swap would not answer it)
+            const fixes = unmet.map((u) => {
+              if (/^V19b/.test(u.line)) return windowFix(u.of, b.laid.plan, graph, M, budget, required);
+              // (a late rise that ended short, V19: its slot is asked for what it lacked, by the lay's own numbers)
+              const short = u.slot !== undefined && /the late rise ended/.test(u.line) ? u.of.laid.rise?.find((q) => q.node === b.laid.plan[u.slot!]?.node) : undefined;
+              if (short && !required.has(b.laid.plan[u.slot!].template)) {
+                const q = u.of.laid.sections[u.slot!];
+                return { slot: u.slot!, lift: Math.round(q.exit.y - q.entry.y - (short.exitY - (short.to - 20)) - 10) };
+              }
+              return u.slot !== undefined && b.laid.plan[u.slot] && !required.has(b.laid.plan[u.slot].template) ? { slot: u.slot } : undefined;
+            });
+            const k = fixes.every((f) => f) ? 0 : -1;
+            if (k >= 0) {
+              const f = fixes[k]!;
+              if (f.lift !== undefined) lift.set(f.slot, f.lift);
+              // (a caller's rule that names a section counts against the section, as a failed check does: twice, and it is out of the
+              // stage's later rolls too; the pipeline's own after-rules read the seam and ban it at its slot only)
+              swapOut(f.slot, unmet[k].line, pipes);
+              swapped = true;
+              continue;
+            }
+            repairs.push({ kind: 'reroll', note: `refused after its check: ${unmet[fixes.findIndex((f) => !f)].line}` });
+            break;
+          }
+        }
+        if (over) st.gen2.repairs.push({ kind: 'length', note: `ships long: no shorter meets the floors and the goal (${clock}, ceiling ${budget.seconds.max.toFixed(0)} s)` });
+        return st;
+      }
+      if (lastMeeting) return lastMeeting;
+      repairs.push({ kind: 'reroll', note: `roll ${roll} failed` });
+    }
   }
-  return refused ?? best!;
+  // (no clean roll either way: the first search's refused roll, as before)
+  return firstRefused ?? refused ?? best!;
 }
 
 /** the plan with one more slot, chosen fresh (its index is returned as `open`), at the end of the node before the shrine's */

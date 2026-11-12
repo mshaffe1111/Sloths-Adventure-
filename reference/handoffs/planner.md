@@ -83,3 +83,9 @@ gap or a rise (gapPx guards, riseLimit, the designer's bands 195-205 / 205-228, 
 11. **Easy's reach is smaller**: a Normal pixel band can be past it (195-205 is refused on Easy). gapPx throws by name; do not clamp.
 12. **Shell heredocs**: quote them (`<<'EOF'`) or backticks in Markdown run as commands.
 13. **Times**: every time in a message comes from `TZ=America/New_York date` run just before it.
+14. **Two searches on a judged stage (Y2, 11-12).** `buildRolled` searches first exactly as before, with the landing repair OFF
+    (`checkAndRepair(..., landings)`), so every seed the old search laid cleanly lays the same stage and the proven list never moves. Only a
+    seed with no clean roll is searched again, on fresh rolls (`maxRerolls + 1` on), with the repair ON (`landings.ts repairLandings`: idle
+    mushrooms taken up, dead-zone petal rows moved to a clean piece in their section). Every replay and Easy lay runs the repair ON; on a
+    first-search stage it is a no-op (its verdicts were clean). Changing the repair moves only second-search seeds; changing anything the
+    first search reads still moves the list (trap 4).
