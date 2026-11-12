@@ -229,3 +229,51 @@ Waiting: "Inspired by" (Matt's list of games) and the music line (Matt).
 > It started as a little project, just for fun, because my wife thinks sloths are cute and wanted a sloth game.
 > Pokey (Pocono, really) and Meeca are named after two of our cats, who did everything together. A little of how they act is theirs, too.
 > Then it kept growing. **Our story ›**
+
+## About and Our story: the keeper's polished pass (Matt, 3:47 PM ET: "do this justice... with the same thought and time as the story")
+Same facts as the approved drafts; only the writing is reworked. Every line keeps its truth source (see the truth checks above). For
+Matt's okay before it is built.
+
+**About (one phone screen):**
+
+> **How Sloths began**
+> My wife thinks sloths are cute. One day she said she'd like a sloth game, so I started making one, just for fun.
+> Pokey (Pocono, really) and Meeca are named after two of our cats, who did everything together. A little of how they act is theirs, too.
+> It kept growing. **Our story ›**
+>
+> **What's ours**
+> Pokey, Meeca, Dot, and everyone they meet along the way.
+> Their story, from the first petal to the last letter, and the journal Pokey keeps.
+> Ten rainforest worlds, and every level in them.
+> A hero whose stillness is his strength.
+> Art made for this game, in its own style.
+>
+> **Inspired by** (waits for Matt's games)
+
+**Our story (a short scroll):**
+
+> **Our story**
+> Sloths began as one sloth, some branches and a row of buttons. Then Pokey needed a reason to keep going.
+> So we gave him one: Meeca, carried off to the north, and a trail of petals she dropped so he could follow.
+> The story was written, then rewritten world by world, until every voice sounded like itself. Dot never stops talking. The General
+> never says "I".
+> Ten worlds grew around it, each with its own guardian, and each with something new for Pokey to learn.
+> The very first stage has been rebuilt from the ground up more than once, until the jumps felt right.
+> [the then-and-now pair]
+> *Then: six buttons and a lot of instructions. Now: the same sloth, and a lot more rainforest.*
+> Levels are played on real phones, upright and sideways, and by testers, little ones included.
+> It's still a little project, just for fun. It just got bigger.
+
+**What changed, and why:**
+- The opening leads with the person, not the project: "My wife thinks sloths are cute." It is the warmest true sentence we have, and it
+  lands first.
+- "One day she said... so I started making one" tells it as a small moment, the way it happened.
+- "It kept growing" now hands straight into the page.
+- Our story opens on the small beginning ("one sloth, some branches and a row of buttons"), which sets up the then-and-now pair later.
+- The beginning then turns on the game's own theme: "Pokey needed a reason to keep going."
+- "A trail of petals she dropped so he could follow" carries Meeca's care, which is the heart of World 1, without spoiling anything.
+- Dot and the General are each one short sentence: one dry smile, the narrator's rule.
+- "Something new for Pokey to learn" says what the worlds DO, not only how many there are.
+- The pair sits right after the rebuilt-first-stage line, so the picture proves the sentence before it.
+- The closing is Matt's pick, unchanged.
+- No spoilers: nothing about who the General is, Dot's secret or the ending. No AI. No mention of the cats having passed.
