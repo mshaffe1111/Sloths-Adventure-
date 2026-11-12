@@ -3048,6 +3048,8 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   const st = buildRolled(req);
   applyVerdicts(st, req);
   st.gen2.errors = rollErrors(st.gen2);
+  // (the caller's own rules, BuildRequest.also: their lines with the rest, each once)
+  for (const u of req.also?.(st, req.difficulty) ?? []) if (!st.gen2.errors.includes(u.line)) st.gen2.errors.push(u.line);
   return st;
 }
 
@@ -3096,7 +3098,10 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     const R = req.replay?.foes ? req.replay : undefined;
     const n = R ? undefined : buildRolled({ ...req, difficulty: 'normal' });
     // (Normal's verdicts too, folded: Easy carries every error Normal has, the flags' and the window's with the rest)
-    if (n) { applyVerdicts(n, { ...req, difficulty: 'normal' }); n.gen2.errors = rollErrors(n.gen2); }
+    if (n) {
+      applyVerdicts(n, { ...req, difficulty: 'normal' });
+      n.gen2.errors = [...rollErrors(n.gen2), ...(req.also?.(n, 'normal') ?? []).map((u) => u.line)];
+    }
     const repairs: Repair[] = [...(n?.gen2.repairs ?? [])];
     // (and only the animals Normal kept: Easy's are a subset of Normal's)
     const b = R
@@ -3273,7 +3278,10 @@ function buildRolled(req: BuildRequest): Gen2Stage {
       // on the built stage (rollUnmet) are the search's own now. One that names a place swaps the section there, as a failed check does;
       // the rest roll the stage again. A roll with nothing to answer returns here exactly as it always did)
       if (graph.id && eb) {
-        const unmet = [...rollUnmet(st, req).map((u) => ({ ...u, of: b })), ...rollUnmet(eb.stage, easyReq).map((u) => ({ ...u, of: eb! }))];
+        let unmet = [...rollUnmet(st, req).map((u) => ({ ...u, of: b })), ...rollUnmet(eb.stage, easyReq).map((u) => ({ ...u, of: eb! }))];
+        // (the caller's own rules, asked last: of a roll nothing of the pipeline's refuses)
+        const pipes = unmet.length > 0;
+        if (!pipes && req.also) unmet = [...req.also(st, 'normal').map((u) => ({ ...u, of: b })), ...req.also(eb.stage, 'easy').map((u) => ({ ...u, of: eb! }))];
         if (unmet.length) {
           if (refused) refused.gen2.repairs.push({ kind: 'reroll', note: `roll ${rr}, try ${it + 1}: ${unmet[0].line}` });
           refused ??= st;
@@ -3287,7 +3295,9 @@ function buildRolled(req: BuildRequest): Gen2Stage {
           if (k >= 0) {
             const f = fixes[k]!;
             if (f.lift !== undefined) lift.set(f.slot, f.lift);
-            swapOut(f.slot, unmet[k].line, true);
+            // (a caller's rule that names a section counts against the section, as a failed check does: twice, and it is out of the
+            // stage's later rolls too; the pipeline's own after-rules read the seam and ban it at its slot only)
+            swapOut(f.slot, unmet[k].line, pipes);
             swapped = true;
             continue;
           }

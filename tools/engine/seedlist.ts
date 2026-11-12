@@ -13,14 +13,12 @@ import { w1Finish } from '../../src/game/gen2/worlds/w1.ts';
 import { listedStage } from '../../src/game/gen2/listed.ts';
 import { judgedOnArcs } from '../../src/game/gen2/reach.ts';
 import { searchYield } from './yield.ts';
+import { quietJudge, quietOf as quietAt } from './listRules.ts';
 import { packPlan, provenSeeds, QUIET_MAX, seedListBreaches, SEED_LIST_MIN, stageParts } from '../../src/game/gen2/seedList.ts';
 import { firstRunVerdicts } from '../../src/game/gen2/verdicts.ts';
 import type { FirstRunLayout } from '../../src/game/gen2/verdicts.types.ts';
 import { createHash } from 'node:crypto';
 import { PROVEN_SEEDS } from '../../src/game/gen2/provenSeeds.ts';
-import { withGoals } from '../../src/game/goals.ts';
-import { pickRoute } from '../inspect/eraRoll.ts';
-import { deadTime, NORMAL_GAP } from '../inspect/analyze.ts';
 
 const id = process.argv[2];
 const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
@@ -30,12 +28,16 @@ if (!row) { console.error(`seedlist: no listed stage "${id}" (src/game/gen2/list
 const kit = row.kit;
 const cfg = generateAllLevels().find((l) => l.id === id)!;
 
+// (the quiet line is the search's own rule here, R-165.120: a roll over it is repaired or rolled again, never only thrown away; the
+// list's check asks the same search, so a seed's replay is still its search)
+const also = quietJudge(cfg);
+const quietOf = (st: ReturnType<typeof buildGen2Stage>) => quietAt(cfg, st);
 if (process.argv.includes('--check')) {
   const L = PROVEN_SEEDS[id];
-  const b = seedListBreaches(cfg, kit, provenSeeds(id), SEED_LIST_MIN, L ? { dict: L.dict, plans: L.plans } : undefined);
+  const b = seedListBreaches(cfg, kit, provenSeeds(id), SEED_LIST_MIN, L ? { dict: L.dict, plans: L.plans } : undefined, also);
   // (the quiet line BINDS, the lead 11-06: every listed seed's longest quiet stretch on Normal, the outro excluded, at most QUIET_MAX s)
-  for (const seed of provenSeeds(id)) { const q = quietOf(buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty: 'normal' })).quiet; if (q > QUIET_MAX) b.push(`${id} seed ${seed}: ${q} s quiet, over the line ${QUIET_MAX} s (the outro excluded)`); }
-  if (row.squirrels) for (const seed of provenSeeds(id)) if (!dresses(...(['normal', 'easy'] as const).map((difficulty) => buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty })))) b.push(`${id} seed ${seed}: too few squirrels find a spot (w1Finish)`);
+  for (const seed of provenSeeds(id)) { const q = quietOf(buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty: 'normal', also })).quiet; if (q > QUIET_MAX) b.push(`${id} seed ${seed}: ${q} s quiet, over the line ${QUIET_MAX} s (the outro excluded)`); }
+  if (row.squirrels) for (const seed of provenSeeds(id)) if (!dresses(...(['normal', 'easy'] as const).map((difficulty) => buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty, also })))) b.push(`${id} seed ${seed}: too few squirrels find a spot (w1Finish)`);
   if (L && L.plans.length !== L.seeds.length) b.push(`${id}: ${L.seeds.length} seeds but ${L.plans.length} plans`);
   // (R-165.61: how many listed seeds the verdicts refuse, by name, on either setting; and the fixed first run against its lock, ADR-002)
   if (judgedOnArcs(id)) {
@@ -43,7 +45,7 @@ if (process.argv.includes('--check')) {
     let refused = 0;
     for (const seed of provenSeeds(id)) {
       const n = new Set<string>();
-      for (const difficulty of ['normal', 'easy'] as const) { const v = buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty }).gen2.verdicts?.[difficulty]; if (v && !v.accepted) for (const f of v.failed) n.add(f.name); }
+      for (const difficulty of ['normal', 'easy'] as const) { const v = buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty, also }).gen2.verdicts?.[difficulty]; if (v && !v.accepted) for (const f of v.failed) n.add(f.name); }
       if (n.size) refused++;
       for (const x of n) by.set(x, (by.get(x) ?? 0) + 1);
     }
@@ -77,21 +79,6 @@ function dresses(...sts: Array<ReturnType<typeof buildGen2Stage>>): boolean {
   try { for (const st of sts) w1Finish(st as never); return true; } catch { return false; }
 }
 
-/** the quiet line, reported: the longest quiet stretch on Normal before the goal section's entry (the outro excluded), and the outro's px */
-function quietOf(st: ReturnType<typeof buildGen2Stage>): { quiet: number; outro: number } {
-  const goal = (st.gen2.sections as Array<{ phase: string; x0: number; x1: number }>).filter((q) => q.phase === 'goal').pop();
-  const R = pickRoute(cfg.objectiveType, withGoals(st as never) as never);
-  const dn = deadTime(R.used.br.beats, R.used.br.total, NORMAL_GAP, R.used.samples);
-  const gx = goal ? goal.x0 : Infinity;
-  let worst = 0;
-  for (const d of dn.list) {
-    const lo = Math.min(d.x0, d.x1), hi = Math.max(d.x0, d.x1);
-    if (lo >= gx) continue;
-    const share = hi > gx ? (gx - lo) / Math.max(1, hi - lo) : 1;
-    worst = Math.max(worst, d.counted * share);
-  }
-  return { quiet: Math.round(worst * 10) / 10, outro: goal ? Math.round(goal.x1 - goal.x0) : 0 };
-}
 
 const want = Number(arg('--count', String(SEED_LIST_MIN)));
 // (--quiet-max S: the quiet line BINDS, the lead 11-06: a seed is kept only when its longest quiet stretch, the outro excluded, is S s or
@@ -105,7 +92,7 @@ const rolls: Array<{ graph: string; refused: string[] }> = [];
 const refuse = (st: ReturnType<typeof buildGen2Stage>, lines: string[]) => { rolls.push({ graph: st.gen2.graph.id ?? 'spine', refused: lines }); };
 // (a roll that THROWS, e.g. a listed stage whose world has no sections for it yet, is a refused seed by name, never the tool's crash)
 const lay = (seed: number, difficulty: 'normal' | 'easy') => {
-  try { return buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty }); } catch (err) { rolls.push({ graph: '(none: the build threw)', refused: [`THREW: ${(err as Error).message}`] }); return null; }
+  try { return buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty, also }); } catch (err) { rolls.push({ graph: '(none: the build threw)', refused: [`THREW: ${(err as Error).message}`] }); return null; }
 };
 const t0 = Date.now();
 // (parallel builds, the lead 11-06: --worker i/n tries only seeds where seed % n === i, keeps --count / n of them and writes them to

@@ -735,6 +735,13 @@ export interface BuildRequest {
   difficulty: Difficulty;
   /** whole-stage re-rolls allowed after local repair fails (LEVEL_ATTEMPTS' role) */
   maxRerolls?: number;
+  /**
+   * Rules the caller holds a roll to beyond the pipeline's own (R-165.120: the seed list's quiet line, judged on a bot's route by
+   * tools/engine/listRules.ts, which the game never ships). The search asks them last, of a roll nothing else refuses, and repairs
+   * for them as for its own: a line that names a slot swaps the section there, the rest roll again. A roll they still refuse
+   * carries their lines in gen2.errors. Whoever lists a seed under them must check and replay it under them too.
+   */
+  also?: (st: Gen2Stage, difficulty: Difficulty) => ReadonlyArray<{ line: string; slot?: number }>;
   /** the section ids the stage before this one shipped (its curated roll): kept out while others are left (C4, across stages) */
   recent?: string[];
   /** the sub-block versions (versionKey) the world's earlier stages shipped: each waits until the others have had their turn (C4) */
