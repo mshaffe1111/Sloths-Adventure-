@@ -27,6 +27,11 @@ P11 retired 11:21 AM; F12 retired 11:29 AM (t-12-fly@ed329f74, 1-2 118/120 clean
 umbrellas, stone = grey egg, plain hive, handle not "punch me"); soil seam in trap1 upright; Dot's knockout line on a trap -> story keeper ruling.
 ART-W1 (Opus high, session_01FhBbYMpG8Whyc8dYXFUYBR, t-w1-art from t-w1-creatures, packet reference/packets/2026-11-12/ART-W1-TRAPS.md,
 GPU cap $6, stop 4:30 PM): paints handle, anchor, vine, hive, stone on Hugging Face; contact sheet to the lead before cutting.
+11:55 AM: W1C 1-3 laid 99% on 1-1's judged rows, NOT flown by bots (no bot knows the vine handle; no 1-3 JUDGED rows). At 1:15 the lead
+writes P13 (Opus high, from W1C's head): fly 1-3 with the bots both settings (completable), bots learn the trap handle (general), 1-3's
+own JUDGED rows + the real 120-roll number, 1-3 seed list, funcheck, 2-min length, first-appearance taught; stop ~4:30 PM.
+Tonight's chain: P13 + ART-W1 (4:30) -> INT-2 merges W1C, P13, ART-W1 (~5:30) -> full gate (~6:30) -> stills to Matt (~6:30-7) -> test link ~9 PM.
+R-165.141 (Matt: snake always glides away) with W1C. No noise teach in 1-3 (map); noise must not wake creatures untaught.
 NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes + t-pit-polish + t-audit-fixes (+ t-12-fly), renumber the
   duplicate R-165.129, full gate; (2) PROOF-1 re-audits only the delta; (3) ask Matt ONE question: ship the R-165.125 sound levels or hold
   (D47), then 0.9.7 on his word (PR, he merges, check deploy + APK); (4) 1-2 and 1-3 to Matt's test link by Fri 11-13 (1-3 by Fable/W1C,
