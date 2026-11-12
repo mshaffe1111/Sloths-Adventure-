@@ -65,6 +65,11 @@ course leftover, after tonight. Lead session 375k context, $85 at 1:24 PM.
 F13 (Opus MAX, session_01FhBbYLor45ufvfpo74eKDv, t-13-finish): reads now; TELL IT when W1C stops, then it finishes 1-3 from W1C's last head.
 P13 + P12S = plumbing only. Packet D12-F13.md. Merge order tonight: t-yield-2, t-render-2, t-13-finish (holds W1C+P13), t-13-proof,
 t-w1-art2 (ART-W1B, replaces t-w1-art), then t-12-design (+t-12-ship) if 1-2 passes the lead's look.
+2:26 PM ET RUNNING: F13 (Opus max, session_01FhBbYLor45ufvfpo74eKDv, t-13-finish: 1-3 finish from W1C's FINAL head d03487f7; H beat,
+shimmy vine longer, goal = trap count, gates, stills); P13 (bots, 1-3 seed list on F13's final head with lead OK); D12 (Opus max, 1-2 build,
+session_01FhBbYL2J8WMSCxDNyH7jt7); P12S (1-2 plumbing + gen2 lays the existing w1_note find); ART-W1B (session_01FhBbYKTygXnUZ3ts1re6dE,
+t-w1-art2: second sapling, hive A, natural tendril anchor, vine-wrapped stone, shimmy vine pieces, Meeca's leaf note, w1sunrise-far repaint);
+Y2 (yield); INT-2 idle. W1C (Fable, $108) and ART-W1 ($17) retired. 1-3 rulings: hearts = game's rule; goal = every trap; no made things.
 NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes + t-pit-polish + t-audit-fixes (+ t-12-fly), renumber the
   duplicate R-165.129, full gate; (2) PROOF-1 re-audits only the delta; (3) ask Matt ONE question: ship the R-165.125 sound levels or hold
   (D47), then 0.9.7 on his word (PR, he merges, check deploy + APK); (4) 1-2 and 1-3 to Matt's test link by Fri 11-13 (1-3 by Fable/W1C,
