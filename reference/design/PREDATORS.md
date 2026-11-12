@@ -168,7 +168,8 @@ Shared by every kind (built once, `src/game/predators/core.ts`):
   `seesStill` kinds see a still sloth in the open).
 - **Hearing**: a predator is a heroNoise `Listener`: a noise wakes a sleeper, the drum stuns the awake, a kind with `hears` goes to
   look and notices nobody while it does (the noise lure).
-- **Being beaten, as data**: `beatenBy` maps each way to stunned / gives up (flees) / dozes off / chased off, with "open" windows.
+- **Being beaten, as data**: `beatenBy` maps each way to stunned / gives up (flees) / dozes off / chased off; a way can need the
+  "open" moment (recovering, stunned, asleep, paused between bursts) or need to come from behind (the turtle's shell).
 - **The food chain**: `fears` names the kinds it runs from; one of those awake and near chases it off. Nobody is caught.
 - **Easy**: three multipliers and `normalOnly` posts.
 
@@ -176,16 +177,16 @@ The habits, by how many cast places each fills (§2's casts):
 
 | # | Habit | Places | Parameters | Who |
 |---|---|---|---|---|
-| 1 | sweep | 7 | the stretch, eye speed, `warn`, `onBeat`, `callsOff`, `giveUp` in passes, `seesStill`, `remembers` | eagle (W1, W4), caiman (W2, W6), grotto eyes, bats, the gaze |
+| 1 | sweep | 7 | the stretch, eye speed, `warn`, `onBeat`, `callsOff`, `giveUp` in passes, `seesStill`, `remembers`, `rides` (its body is its eye) | eagle (W1, W4), caiman (W2, W6), grotto eyes, bats, the gaze |
 | 2 | guard | 7 | `blocks`, reach, no stomp or punch on its list | River King's guard, guard capuchin, seamstress, crab, sentry, blinking log, soldier |
 | 3 | patrol | 7 | its beat, `shy`, `onBeat` | snake (W1, W2), eaglets, butler, frog, beetle, lava lizard |
-| 4 | seek | 6 | `hears` (seconds it looks), hunt speed, asleep or pacing | turtle, spider, piranha, night harpy (W8, W9), moths |
+| 4 | seek | 6 | `hears` (seconds it looks), hunt speed, asleep or pacing, `gait` (bursts and pauses) | turtle, spider, piranha, night harpy (W8, W9), moths |
 | 5 | ambush | 6 | sight both ways, long `act.reach`, long `recover`, `onBeat` | boa (W1, W7, W8), thorn vine, lookout, mantis |
 | 6 | stalk | 5 | hunt speed, `watched` (speed while he faces it), `engage`, `giveUp`, `hears` | ocelot (W3, W7, W10), thief |
 | 7 | drop | 4 | the column under it, `act.aim: 'below'`, climb-back speed | jaguar (W3, W8, W9), dangler |
 | 8 | charge | 2 | long `engage`, `act.speed`, runs to the end of its ground | tayra (W6, W9) |
 
-Build order tonight is World 1's three first (patrol, sweep, ambush: World 1 is laid first), then the rest in the order above. The
+Built 11-11 (all eight, on one machine, `core.ts`): World 1's three as data (`world1.ts`) and ten later animals (`casts.ts`). The
 existing modules stay the source of today's shipped play (watcher.ts, predatorAI.ts, capuchin.ts); the kit replaces them one animal at
 a time when its world is laid (new replaces old, no switches), each with its own QA.
 
