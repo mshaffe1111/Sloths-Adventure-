@@ -11,6 +11,7 @@ M=[
  ("engine.ts","the strike never hurts","        this.damagePlayer(1, k.e.x);\n        break;\n      }\n    }\n    // an animal that left for good","        break;\n      }\n    }\n    // an animal that left for good"),
  ("engine.ts","a chased-off animal is not counted","    for (const e of r.cleared) {\n      p.enemiesDefeated++;","    for (const e of r.cleared) {"),
  ("engine.ts","a respawn leaves the cast hunting","    this.cast?.calm(this.easy);\n",""),
+ ("castPlay.ts","a landing is heard before its world teaches it","    this.loud = TAUGHT.landing <= world;","    this.loud = true;"),
  ("castPlay.ts","his landing is never heard","      const n = landingNoise(hero.x, hero.y, t, fell);","      const n = null as Sound | null;"),
  ("castPlay.ts","every landing is loud","    const fell = stepFall(this.fall, hero);","    const fell = stepFall(this.fall, hero) === null ? null : 999;"),
  ("castPlay.ts","stillness is never stepped","    stepStill(this.still, hero, dt, set);\n",""),
@@ -38,7 +39,8 @@ M=[
  ("dropTrap.ts","a trap reaches another branch far below","Math.abs(x - p.loadX) <= TRAP.scare && Math.abs(y - p.landY) <= TRAP.tall;","Math.abs(x - p.loadX) <= TRAP.scare;"),
 ]
 ok=0; bad=[]
-for f,name,a,b in (M if len(sys.argv)<2 else [m for m in M if sys.argv[1] in m[1]]):
+import os
+for f,name,a,b in ([m for m in M if not (os.environ.get('SKIP_GEN2') and m[0].startswith('gen2/'))] if len(sys.argv)<2 else [m for m in M if sys.argv[1] in m[1]]):
   P='src/game/'+f; orig=open(P).read()
   if a not in orig: bad.append((name,'PATTERN MISSING')); print("MISSING ",name); continue
   try:

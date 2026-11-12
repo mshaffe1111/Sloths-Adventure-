@@ -14,8 +14,8 @@ const Y = 500;
 const plat = (id: number, x: number, width: number, y = Y): Platform => ({ id, x, y, width, height: 40, type: 'solid' } as Platform);
 const TRAPS = [{ id: 1, kind: 'vine' as const, load: 'hive' as const, x: 560, y: Y, loadX: 820, loadY: Y - 210, landY: Y }];
 /** a real engine on a World 1 stage, its stage swapped for the arena, its cast started by the engine's own start */
-function arena(o: { difficulty?: 'normal' | 'easy'; snake?: Partial<Enemy>; traps?: boolean } = {}): { e: Eng; input: ReturnType<typeof makeEngine>['input']; snake: Enemy; ledge: Platform; branch: Platform } {
-  const { e, input } = makeEngine('1-3', o.difficulty ?? 'normal');
+function arena(o: { difficulty?: 'normal' | 'easy'; snake?: Partial<Enemy>; traps?: boolean; stage?: string } = {}): { e: Eng; input: ReturnType<typeof makeEngine>['input']; snake: Enemy; ledge: Platform; branch: Platform } {
+  const { e, input } = makeEngine(o.stage ?? '1-3', o.difficulty ?? 'normal');
   const ledge = plat(9001, 200, 420), branch = plat(9002, 640, 360);
   e.platforms.length = 0;
   e.platforms.push(ledge, branch);
@@ -27,6 +27,7 @@ function arena(o: { difficulty?: 'normal' | 'easy'; snake?: Partial<Enemy>; trap
   e.enemies.push(snake);
   e.vines.length = 0;
   e.collectibles.length = 0;
+  e.proto ??= { hints: [], covers: [], beats: [] };
   e.proto.cast = { kinds: ['snake'], traps: o.traps === false ? [] : TRAPS.map((t) => ({ ...t })) };
   e.startCast();
   e.checkpoint = { x: 260, y: Y };
@@ -168,16 +169,17 @@ test("Dot's line for the first trap is the stage's own data, said once: on the f
   assert.deepEqual([s2.defeated, said.filter((t) => t === LINE).length], [true, 1], 'the second trap clears its snake and she says nothing');
 });
 
-test('landing noise, in the real engine: a hard landing beside a sleeper wakes it; a jump\'s landing does not', () => {
-  const drop = (from: number) => {
-    const { e, snake } = arena({ snake: { asleep: true }, traps: false });
+test('landing noise, in the real engine: where it is taught (World 2) a hard landing beside a sleeper wakes it and a jump\'s does not; in World 1 nothing wakes to it', () => {
+  const drop = (from: number, stage: string) => {
+    const { e, snake } = arena({ snake: { asleep: true }, traps: false, stage });
     Object.assign(e.player, { x: 600, y: Y - from, vx: 0, vy: 0, grounded: false, jumpsLeft: 0 });
     for (let i = 0; i < 90 && !(e.player.grounded && i > 3); i++) step(e, 1);
     step(e, 2);
     return { landed: e.player.grounded, asleep: snake.kit!.asleep };
   };
-  assert.deepEqual(drop(LOUD.landing.soft + 120), { landed: true, asleep: false }, 'a long drop 220 px from it: it wakes');
-  assert.deepEqual(drop(LOUD.landing.soft - 60), { landed: true, asleep: true }, 'a short one: silent');
+  assert.deepEqual(drop(LOUD.landing.soft + 120, '2-1'), { landed: true, asleep: false }, 'World 2, a long drop 220 px from it: it wakes');
+  assert.deepEqual(drop(LOUD.landing.soft - 60, '2-1'), { landed: true, asleep: true }, 'a short one: silent');
+  assert.deepEqual(drop(LOUD.landing.soft + 120, '1-3'), { landed: true, asleep: true }, 'World 1 teaches traps, not quiet feet: the same long drop wakes nothing');
 });
 
 test('back at a flag in the real engine: the snake that was rearing at him stands down', () => {

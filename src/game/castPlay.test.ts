@@ -7,6 +7,7 @@ import type { CastData, TrapPost } from './castPlay.types.ts';
 import { TRAP, handleBox, newTrap, scares, shake, stepTrap, trapFaults } from './dropTrap.ts';
 import { LOUD } from './heroNoise.ts';
 import { GONE_AFTER, TELL_MIN, touches } from './predators/core.ts';
+import { TAUGHT } from './predators/roster.ts';
 import { SNAKE } from './predators/world1.ts';
 import type { Enemy, Platform } from './types.ts';
 
@@ -197,18 +198,21 @@ test('a trap is in plain view and worth using, or the stage is refused: its hand
 
 // ───────────────────────────── his noise ─────────────────────────────
 
-test('landing noise: a hard landing near a sleeper wakes it; a soft one, or a hard one far off, does not', () => {
-  const fallFrom = (px: number, x: number) => {
-    const z = snake({ asleep: true }), c = cast([z]);
+test('landing noise, where the ladder has taught it (World 2 on): a hard landing near a sleeper wakes it; a soft one, or a hard one far off, does not', () => {
+  const fallFrom = (px: number, x: number, world = 2) => {
+    const z = snake({ asleep: true }), c = new CastPlay({ kinds: ['snake'], traps: [] }, [z], [ledge, branch, lower], world);
     const r = play(c, 1.2, (t) => (t < 0.5 ? hero({ x, y: 400 - px, grounded: false, vy: 300 }) : hero({ x, y: 400 })));
     return { asleep: !!z.kit!.asleep, landed: r.landed, woke: r.woke };
   };
   assert.deepEqual(fallFrom(LOUD.landing.soft + 80, 370), { asleep: false, landed: 1, woke: 1 }, 'a long drop onto the ledge beside it (230 px off; it carries 252): it wakes');
   assert.deepEqual(fallFrom(LOUD.landing.soft - 20, 370), { asleep: true, landed: 0, woke: 0 }, 'a jump\'s landing is silent');
   assert.deepEqual(fallFrom(LOUD.landing.soft + 80, 300), { asleep: true, landed: 1, woke: 0 }, 'the same hard landing 300 px off: out of earshot, heard by nobody');
-  const z = snake({ asleep: true }), c = cast([z]);
+  const z = snake({ asleep: true }), c = new CastPlay({ kinds: ['snake'], traps: [] }, [z], [ledge, branch, lower], 2);
   play(c, 1.2, (t) => (t < 0.5 ? hero({ x: 300, y: 100, grounded: false, holding: true }) : hero({ x: 300, y: 400 })));
   assert.equal(z.kit!.asleep, true, 'let go of a vine just above the ground: measured from where he held');
+  // THE LADDER (the lead, 11-12): nothing wakes to a noise before its world teaches noise. World 1 teaches drop traps, not quiet feet
+  assert.equal(TAUGHT.landing, 2, 'quiet feet are World 2\'s lesson');
+  assert.deepEqual(fallFrom(LOUD.landing.soft + 80, 370, 1), { asleep: true, landed: 0, woke: 0 }, 'World 1: the same hard landing beside a sleeper makes no noise event at all: it sleeps on');
 });
 
 test('back at a flag: whatever was after him stands down with a full beat before it may tell again; what is gone stays gone', () => {
