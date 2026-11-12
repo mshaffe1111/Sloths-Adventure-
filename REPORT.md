@@ -49,9 +49,9 @@ sections lays 720 of 720 rolls with no throw, 117 of 120 a graph structurally cl
   jump under the same `pits` rule, each with a briefPits case. (c) `hazard.untaught` needs a showing piece: one small "see the
   thorns" section per world, the only authored brick the hazard needs. (d) `feel` as an exclusion list (stagePool).
 ## Gates on the head
-PASS: tsc; seedlist 1-1 --check (200 seeds, after every step); **stage lock 102 of 102 unchanged** against main (`lockall --layouts
-2`; its first run caught 1-1's graph record hashing differently by field order alone: fixed, tested); gen2+worlds 371 of 371 on
-the merged head, and every test file touched since (builtOnArcs, briefPits, hurtFloor, nodeCode, verdicts, petals: all pass).
+PASS on the final head: tsc; seedlist 1-1 --check (200 seeds, after every step); **stage lock 102 of 102 unchanged** against main
+(`lockall --layouts 2`; its first run caught 1-1's graph record hashing differently by field order alone: fixed, tested);
+**gen2+worlds 377 of 377; the core suite (src/audio, src/game, src/components, tool tests, tierBots) 2,251 pass, 0 fail, 2 todo.**
 FAIL: chunkcheck (above). Not run: drawcheck, clipcheck, the suite outside gen2, stills (nothing new ships: Play draws the list).
 ## Exact next step
 1. Land R-165.112, re-run chunkcheck. 2. Decide pushback 2 (park the two test-backs, rebuild 1-1's list under `also`). 3. B's item
