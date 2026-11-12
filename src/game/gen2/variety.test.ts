@@ -170,3 +170,18 @@ test('poissonPlace reports a barren stretch it cannot fill', () => {
 function below(rng: () => number, n: number) {
   return Math.floor(rng() * n);
 }
+
+test('poissonPlace keeps no gap between two pieces of one designed group, and every gap to any other piece (F13, 1-3\'s two snakes on a log)', () => {
+  const rng = stream(1).f;
+  const opts = { rng, minGap: { snake: 420 }, minGapAny: 120, maxGap: Infinity };
+  // a trap's handle laid first (fixed), then two snakes of one kind 6 px apart on its log
+  const fixed: RoutePiece[] = [{ x: 0, kind: 'trap-vine', group: 's1/two' }];
+  const pair: RoutePiece[] = [{ x: 121, kind: 'snake', group: 's1/two' }, { x: 127, kind: 'snake', group: 's1/two' }];
+  assert.deepEqual(poissonPlace(pair, { ...opts, fixed }).placed.slice(1).map((p) => p.x), [121, 127], 'a designed group stands as laid');
+  // (planted: the same two with no group are split by the lay's gaps, as every animal is)
+  const loose = pair.map(({ group: _g, ...p }) => p);
+  assert.deepEqual(poissonPlace(loose, { ...opts, fixed: [{ x: 0, kind: 'trap-vine' }] }).placed.slice(1).map((p) => p.x), [121], 'no group: the gaps hold');
+  // a piece of another group, or of none, keeps every gap to the group's pieces
+  const other: RoutePiece[] = [...pair, { x: 200, kind: 'snake', group: 's2/two' }, { x: 230, kind: 'frog' }];
+  assert.deepEqual(poissonPlace(other, { ...opts, fixed }).placed.slice(1).map((p) => p.x), [121, 127], 'outsiders keep their gaps to a group');
+});

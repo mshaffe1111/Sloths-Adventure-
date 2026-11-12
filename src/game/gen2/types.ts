@@ -347,6 +347,10 @@ export interface Socket {
   /** pickups: how many in a row and over what span (px) */
   count?: number;
   span?: number;
+  /** a DESIGNED GROUP (variety.ts poissonPlace): the sockets of one section that name the same group (a trap and the animals it is
+   *  laid for) are placed where the designer put them: the lay's gaps (any two 120 px apart, two of a kind 420) are not kept between
+   *  them, and every gap to any other piece is kept as ever. The trap rules (dropTrap.ts trapFaults) still judge what is laid */
+  group?: string;
 }
 
 /** one sub-block: its versions (each its own pieces and sockets); every version must leave the same piece keys the rest refers to */
@@ -659,7 +663,7 @@ export interface PlacedSection {
   /** the sockets resolved to world points (filled in pass 4) */
   sockets: Array<{ socket: Socket; x: number; y: number; piece: Platform }>;
   room?: RoomSpec;
-  beats: Array<{ x: number; letter: SectionBeat['letter'] }>;
+  beats: Array<{ x: number; letter: SectionBeat['letter']; /** a designed group's key (Socket.group): its own animals keep no gap to it */ group?: string }>;
   /** the seconds the time model expects (the walk plus extraSeconds) */
   seconds: number;
 }

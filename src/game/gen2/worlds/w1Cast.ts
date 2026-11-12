@@ -95,7 +95,12 @@ export function armedTraps(kinds: readonly string[] = ['snake']): { emit: Record
     if (!kinds.includes(e.type)) return;
     const hold = of(out).proto.cast?.traps ?? [], top = e.y + (c.footY ?? c.h / 2), mid = (e.patrolMinX + e.patrolMaxX) / 2;
     const k = hold.findIndex((t) => Number.isFinite(t.x) && Math.abs(t.loadX - e.x) <= TRAP_UNDER && Math.abs(t.landY - top) <= 6 && Math.abs(mid - t.x) >= TRAP_REACH[0] && Math.abs(mid - t.x) <= TRAP_REACH[1]);
-    if (k < 0) return;
+    if (k < 0) {
+      // (a second SLEEPER on the very patch an armed load hangs over (1-3's two snakes on a log, a designed pair): the two coils lie at
+      //  the patch's two ends, so the load hangs over its middle, between them, not the 10 px a lone sleeper's load moves off the vine)
+      if (e.asleep) for (const t of out.proto.cast?.traps ?? []) if (Math.abs(t.landY - top) <= 6 && t.loadX > e.patrolMinX && t.loadX < e.patrolMaxX) t.loadX = Math.round(mid);
+      return;
+    }
     const live = (out.proto.cast ??= { kinds: [], traps: [], said: W1_CAST_SAID }).traps;
     const t0 = hold.splice(k, 1)[0];
     // (over a sleeper the load hangs 10 px past the patch's middle, away from the vine: the sleeper lies at the patch's near end, 52 px
