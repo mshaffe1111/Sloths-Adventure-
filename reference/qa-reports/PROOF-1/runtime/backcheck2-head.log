@@ -1,0 +1,11 @@
+head native path: {"native":true,"cb":"93673675","calls":["App.addListener:backButton","App.addListener:pause","App.addListener:resume"]}
+  story opened: PROLOGUE · THE SLOWEST MORNING SKIP INTR | PROLOGUE · THE SLOWEST MORNING SKIP INTRO PROLOGUE The Slowest Morning TAP TO CONTINUE
+story from title: [PROLOGUE · THE SLOWEST MORNING SKIP INTR] -> Back -> [title]
+  then: 
+STOPPED: locator.waitFor: Timeout 15000ms exceeded.
+page errors 4 [
+  '"AudioFocus.then()" is not implemented on android',
+  '"KeepAwake.then()" is not implemented on android',
+  '"AudioFocus.then()" is not implemented on android',
+  '"KeepAwake.then()" is not implemented on android'
+]

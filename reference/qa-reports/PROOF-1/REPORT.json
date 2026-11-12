@@ -1,0 +1,66 @@
+{
+ "status": "REJECT",
+ "head": "d0276817",
+ "base": "585ef376 (0.9.6)",
+ "violations": [
+  {
+   "file": "src/game/audioFocus.ts",
+   "line": 12,
+   "rule": "a live fix must work on the phone (EN-F audio #1 marked fixed); PLAY-STORE-RULES \u00a74 audio focus",
+   "evidence": "the AudioFocus plugin proxy is returned from a .then(); Capacitor 8.6.0's registerPlugin proxy (node_modules/@capacitor/core/dist/index.js:158-170) has no case for 'then', so the promise calls a native 'then', never settles, and want() never reaches Android; page error '\"AudioFocus.then()\" is not implemented on android' (runtime/backcheck-head.log); runtime/capThen.test.ts fails 2 of 3, its control passes. Same pattern pre-existing on 0.9.6 at src/game/appShell.ts:34 (KeepAwake)."
+  },
+  {
+   "file": "src/index.css",
+   "line": 510,
+   "rule": "done means polished; nothing cut off or inside the phone's insets, sideways (LAWS 1-2, STAGE-RULES \u00a75b)",
+   "evidence": "f59e72e0c raised .clr-btn2 from 32 to 44 px under @media (max-height: 400px): at 844x390 with a 21 px home bar the Stage Cleared card grows 368 -> 384 px and its Previous / Play again / World map row is cut off at the bottom, 15 px into the home-bar inset; main 0.9.6 fits (play/sheets/cmp-cleared-side-insets.jpg, play/logs/head-play1-1-side-insets.json). clipcheck only opens this card at 915x412, so it cannot see it."
+  },
+  {
+   "file": "src/components/SaveLoadDialog.tsx",
+   "line": 157,
+   "rule": "player text must be true (LAWS 6)",
+   "evidence": "tells the player the save file holds 'your sound settings'; src/game/saveFile.ts:55-56 no longer writes them (EN-F saves#8); runtime/saveCopy.test.ts fails."
+  },
+  {
+   "file": "tools/engine/generalitycheck.ts",
+   "line": 28,
+   "rule": "the generality gate must fail on a stage literal in engine code (R-165.123)",
+   "evidence": "ENGINE_FILES/ENGINE_DIRS omit this merge's new engine modules: a stage id planted in src/game/clock.ts, stageModes.ts, ride.ts, stillness.ts, noise.ts, heroNoise.ts or saveFile.ts exits 0 (plant/plant-generality.log); inside its scope 7 of 7 plants fail as they should. None of those files holds a literal today."
+  },
+  {
+   "file": ".github/workflows/deploy.yml",
+   "line": 35,
+   "rule": "every gate runs, every time (LAWS 5): a test that is never run guards nothing",
+   "evidence": "4 test files this merge added (tools/engine/library.test.ts, seedlist.test.ts, yield.test.ts, tools/inspect/travelBots.test.ts) are outside the CLAUDE.md/CI suite glob and no workflow runs them; they pass here (logs/outofglob-head.log, 17 tests)."
+  }
+ ],
+ "tests_added": [
+  "reference/qa-reports/PROOF-1/runtime/capThen.test.ts",
+  "reference/qa-reports/PROOF-1/runtime/saveCopy.test.ts",
+  "reference/qa-reports/PROOF-1/runtime/w4RockBurst.test.ts",
+  "reference/qa-reports/PROOF-1/plant/plant-generality.sh",
+  "reference/qa-reports/PROOF-1/plant/plant-chunk.log (the chunk plants, run inline)",
+  "reference/qa-reports/PROOF-1/bots/ftcompare.ts",
+  "reference/qa-reports/PROOF-1/bots/ftfull.ts",
+  "reference/qa-reports/PROOF-1/runtime/backcheck2.mjs",
+  "reference/qa-reports/PROOF-1/startup/startup.cjs",
+  "reference/qa-reports/PROOF-1/runtime/synthloop.mjs",
+  "reference/qa-reports/PROOF-1/runtime/framecheck.mjs",
+  "reference/qa-reports/PROOF-1/runtime/clockdiff.ts",
+  "reference/qa-reports/PROOF-1/runtime/savetrip.ts",
+  "reference/qa-reports/PROOF-1/runtime/offlinecheck.mjs",
+  "reference/qa-reports/PROOF-1/runtime/soundcheck.mjs",
+  "reference/qa-reports/PROOF-1/runtime/backcheck.mjs",
+  "reference/qa-reports/PROOF-1/fairness/briefcheck.ts",
+  "reference/qa-reports/PROOF-1/fairness/longdrop.ts",
+  "reference/qa-reports/PROOF-1/play/play11.mjs",
+  "reference/qa-reports/PROOF-1/play/menus.mjs"
+ ],
+ "not_proven": [
+  "30 fps drawn at CPU x4 (26.9 fps at load 5.5; container never quiet)",
+  "Android Back on a guardian card and the victory card",
+  "a boss fight to its end; stages past ~10 s other than 1-1; Easy in the browser",
+  "clipcheck run 1 page error 'Cannot read properties of null (reading classList)' at load ~20: not reproduced, source not found",
+  "the core suite in one sitting (two parts; every file ran, 0 failed)"
+ ]
+}
