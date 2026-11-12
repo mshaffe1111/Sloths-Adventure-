@@ -3,7 +3,8 @@
 // the load instead (nothing floats).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { TRUNK_TIE, layoutTrap, trunkScale } from './castArt.ts';
+import { TRUNK_TIE, layoutTrap, trunkScale, vineTileFrom } from './castArt.ts';
+import { tintedTile } from './ropeArt.ts';
 import { ROPE_RISE } from './rope.ts';
 import { W1_TRAP_FRAMES, W1_TRAP_MEASURES } from './w1TrapsData.ts';
 import type { Platform } from './types.ts';
@@ -68,4 +69,50 @@ test("a vine's tree (Rope.look 'vine'): its arm holds the vine at the tie, its f
   }
   // (the tie is on the arm's bark, inside the leaves: short of the arm's furthest leaf, and the frame reaches on past it)
   assert.ok(TRUNK_TIE.x < W1_TRAP_MEASURES.trunk.armTip[0] && TRUNK_TIE.fore > 0 && TRUNK_TIE.back + TRUNK_TIE.fore === T.w);
+});
+
+/** a canvas that records its bakes; `lose()` makes it report a 2D context loss (canvasLost.ts asks isContextLost) */
+function bakeable(made: unknown[]) {
+  let lost = false;
+  const cv = {
+    width: 0, height: 0,
+    getContext: () => ({ isContextLost: () => lost, translate() {}, rotate() {}, drawImage() {}, fillRect() {}, set globalCompositeOperation(_v: string) {}, set fillStyle(_v: string) {} }),
+    addEventListener() {},
+    lose() { lost = true; },
+  };
+  made.push(cv);
+  return cv;
+}
+
+test("the vine's tile and the tinted rope tile are baked again when the phone takes their canvas back (LESSONS D6: a lost copy draws nothing)", () => {
+  const made: Array<ReturnType<typeof bakeable>> = [];
+  const make = () => bakeable(made) as unknown as HTMLCanvasElement;
+  const cache: { cv: HTMLCanvasElement | null } = { cv: null };
+  const sheet = {} as CanvasImageSource;
+  const a = vineTileFrom(sheet, cache, make);
+  assert.ok(a, 'baked');
+  assert.equal(made.length, 1, 'baked once');
+  assert.equal(vineTileFrom(sheet, cache, make), a, 'kept while it holds its picture');
+  made[0].lose();
+  const b = vineTileFrom(sheet, cache, make);
+  assert.ok(b && b !== a, 'a new copy after the loss');
+  assert.equal(made.length, 2, 'baked again after the loss');
+  // (its pair in ropeArt.ts: the lairs' tinted ropes)
+  const g = globalThis as { document?: unknown };
+  const doc = g.document;
+  const made2: Array<ReturnType<typeof bakeable>> = [];
+  g.document = { createElement: () => bakeable(made2) };
+  try {
+    const im = {} as HTMLImageElement;
+    const t1 = tintedTile(im, '#7f7');
+    assert.ok(t1);
+    assert.equal(made2.length, 1);
+    assert.equal(tintedTile(im, '#7f7'), t1);
+    made2[0].lose();
+    const t2 = tintedTile(im, '#7f7');
+    assert.ok(t2 && t2 !== t1, 'a new tinted copy after the loss');
+    assert.equal(made2.length, 2, 'the tinted tile baked again after the loss');
+  } finally {
+    g.document = doc;
+  }
 });

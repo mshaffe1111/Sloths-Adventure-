@@ -15,6 +15,8 @@ M=[
  ("gen2/worlds/w1Arc13.ts","the way out's rope is drawn as World 2's rope between posts again","free: true, look: 'vine' as const }","free: true }"),
  ("gen2/pipeline.ts","the builder drops a rope's look","...(lp.ropeLook ? { look: lp.ropeLook } : {})",""),
  ("gen2/worlds/w1Arc13.ts","the way out's near bank is too short for its tree (the foot hangs over the hollow)","pieces: [{ key: 'in', shape: 'bank', w: [300, 340], place: { kind: 'start' }","pieces: [{ key: 'in', shape: 'bank', w: [200, 220], place: { kind: 'start' }"),
+ ("castArt.ts","the vine's tile is never baked again after the phone takes its canvas back","  if (cache.cv && canvasLost(cache.cv, 'w1 vine tile')) cache.cv = null;\n",""),
+ ("ropeArt.ts","the tinted rope tile is never baked again after the phone takes its canvas back","  if (c && canvasLost(c, 'tinted rope tile')) {","  if (false && c && canvasLost(c, 'tinted rope tile')) {"),
  ("castArt.ts","the trees grow half again with the vine's height (the foot sinks under the bank)","Math.max(0.05, (ground - y) / (W1_TRAP_MEASURES.trunk.foot[1] - TRUNK_TIE.y))","Math.max(0.05, 1.5 * (ground - y) / (W1_TRAP_MEASURES.trunk.foot[1] - TRUNK_TIE.y))"),
 ]
 ok=0; bad=[]
@@ -23,7 +25,7 @@ for f,name,a,b in (M if len(sys.argv)<2 else [m for m in M if sys.argv[1] in m[1
   if a not in orig: bad.append((name,'PATTERN MISSING')); print("MISSING ",name); continue
   try:
     open(P,'w').write(orig.replace(a,b,1))
-    tests = "src/game/gen2/variety.test.ts tools/engine/library13.test.ts" if f=="gen2/variety.ts" else "src/game/castArt.test.ts tools/engine/library13.test.ts" if f=="castArt.ts" else "tools/engine/library13.test.ts"
+    tests = "src/game/gen2/variety.test.ts tools/engine/library13.test.ts" if f=="gen2/variety.ts" else "src/game/castArt.test.ts tools/engine/library13.test.ts" if f in ("castArt.ts","ropeArt.ts") else "tools/engine/library13.test.ts"
     r=subprocess.run(f"npx tsx --test {tests} 2>&1 | grep -E '^# fail'",shell=True,capture_output=True,text=True)
     fails=r.stdout.strip()
     if fails and fails!='# fail 0': ok+=1; print(f"CAUGHT  {name}  ({fails})")

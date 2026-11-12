@@ -20,6 +20,7 @@ import type { Platform } from './types.ts';
 import { groundUnder } from './polish.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { drawSheet } from './sheetBake.ts';
+import { canvasLost } from './canvasLost.ts';
 import { W1_TRAPS_URL, W1_TRAP_FRAMES, W1_TRAP_MEASURES, type W1TrapPiece } from './w1TrapsData.ts';
 
 let img: HTMLImageElement | null = null;
@@ -248,25 +249,32 @@ function link(ctx: CanvasRenderingContext2D, ax: number, ay: number, bx: number,
  *  cut of the run, the one whose first rows differ least from the rows a turn on), so it repeats along a rope with no seam to see. The
  *  vine is 24 px thick there, its middle at column 53.4 */
 const VINE_RUN = { x: 26, w: 56, y: 98, h: 96, mid: 53.4, thick: 24 } as const;
-let vineCanvas: HTMLCanvasElement | null = null;
-/** the vine as a tile lying left to right (the run turned a quarter, made once the sheet is in), for ropeArt.ts's slices; null till then */
+/**
+ * The run turned a quarter to lie left to right (its top to the tile's left end, its left edge to the tile's foot), baked from the sheet
+ * into `cache` once, and baked AGAIN when the phone has taken that canvas back (canvasLost.ts, LESSONS D6: drawn from a lost copy, the
+ * vine would be nothing for the rest of the stage). `make` gives the canvas (a test gives its own).
+ */
+export function vineTileFrom(sheet: CanvasImageSource, cache: { cv: HTMLCanvasElement | null }, make: () => HTMLCanvasElement): HTMLCanvasElement | null {
+  if (cache.cv && canvasLost(cache.cv, 'w1 vine tile')) cache.cv = null;
+  if (cache.cv) return cache.cv;
+  const f = W1_TRAP_FRAMES.handle;
+  const c = make();
+  c.width = VINE_RUN.h;
+  c.height = VINE_RUN.w;
+  const g = c.getContext('2d');
+  if (!g) return null;
+  g.translate(0, VINE_RUN.w);
+  g.rotate(-Math.PI / 2);
+  g.drawImage(sheet, f.x + VINE_RUN.x, f.y + VINE_RUN.y, VINE_RUN.w, VINE_RUN.h, 0, 0, VINE_RUN.w, VINE_RUN.h);
+  cache.cv = c;
+  return c;
+}
+const vineCache: { cv: HTMLCanvasElement | null } = { cv: null };
+/** the vine as a tile lying left to right, for ropeArt.ts's slices; null until the sheet is in */
 export function vineTile(): { src: CanvasImageSource; tile: { x: number; y: number; w: number; h: number; mid: number; thick: number } } | null {
-  if (!warmTrapArt() || !img) return null;
-  if (!vineCanvas) {
-    if (typeof document === 'undefined') return null;
-    const f = W1_TRAP_FRAMES.handle;
-    const c = document.createElement('canvas');
-    c.width = VINE_RUN.h;
-    c.height = VINE_RUN.w;
-    const g = c.getContext('2d');
-    if (!g) return null;
-    // (a quarter turn back: the run's top to the tile's left end, its left edge to the tile's foot)
-    g.translate(0, VINE_RUN.w);
-    g.rotate(-Math.PI / 2);
-    g.drawImage(img, f.x + VINE_RUN.x, f.y + VINE_RUN.y, VINE_RUN.w, VINE_RUN.h, 0, 0, VINE_RUN.w, VINE_RUN.h);
-    vineCanvas = c;
-  }
-  return { src: vineCanvas, tile: { x: 0, y: 0, w: VINE_RUN.h, h: VINE_RUN.w, mid: VINE_RUN.w - (VINE_RUN.mid - VINE_RUN.x), thick: VINE_RUN.thick } };
+  if (!warmTrapArt() || !img || typeof document === 'undefined') return null;
+  const cv = vineTileFrom(img, vineCache, () => document.createElement('canvas'));
+  return cv ? { src: cv, tile: { x: 0, y: 0, w: VINE_RUN.h, h: VINE_RUN.w, mid: VINE_RUN.w - (VINE_RUN.mid - VINE_RUN.x), thick: VINE_RUN.thick } } : null;
 }
 
 /** where the vine is tied on the trunk's level arm (its frame's px): the branch's end, inside its leaves, so the leaves fall over the

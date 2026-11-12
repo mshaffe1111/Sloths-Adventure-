@@ -3,6 +3,7 @@ import { ropeYAt } from './rope.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { ROPE_KIT } from './ropeKitData.ts';
 import { TRUNK_TIE, drawTrunk, trunkScale, vineTile } from './castArt.ts';
+import { canvasLost } from './canvasLost.ts';
 
 /**
  * Draws shimmy ropes in painted art (Matt, 2026-10-28: the stroked rope with its dashed twist and the gradient posts with yellow
@@ -210,10 +211,15 @@ export function drawRopes(
   }
 }
 
-/** the rope's tile re-coloured once per tint (multiplied by `tint`, its own alpha kept): silk, glowing vine, jungle liana */
+/** the rope's tile re-coloured once per tint (multiplied by `tint`, its own alpha kept): silk, glowing vine, jungle liana. Baked again
+ *  when the phone has taken that canvas back (canvasLost.ts, LESSONS D6; the vine tile's pair, castArt.ts vineTileFrom) */
 const tinted = new Map<string, HTMLCanvasElement>();
-function tintedTile(im: HTMLImageElement, tint: string): HTMLCanvasElement | null {
+export function tintedTile(im: HTMLImageElement, tint: string): HTMLCanvasElement | null {
   let c = tinted.get(tint);
+  if (c && canvasLost(c, 'tinted rope tile')) {
+    tinted.delete(tint);
+    c = undefined;
+  }
   if (c) return c;
   if (typeof document === 'undefined') return null;
   const t = ROPE_KIT.tile;
