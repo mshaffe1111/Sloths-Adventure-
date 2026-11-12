@@ -123,8 +123,9 @@ class SoundEngine {
     this.held = h.held;
     const s = h.scene;
     this.c.setScene(s.id, { intensity: s.intensity });
-    // the storm belongs to the storm panels only: the quiet scenes after it must not keep the thunder
-    this.c.setAmbient(panel.chapter.toUpperCase().startsWith('THE STORM') ? 'thunderstorm' : 'gentle_breeze');
+    // the storm belongs to the storm pictures only (the picture's own mood, never its chapter's title): the quiet scenes after it must
+    // not keep the thunder
+    this.c.setAmbient(panel.scene.mood === 'storm' ? 'thunderstorm' : 'gentle_breeze');
     this.c.warmStoryStings();
   }
   /** the story's hand on the music under a picture: keep, under (half), silence, swell (storyDirect.ts) */
