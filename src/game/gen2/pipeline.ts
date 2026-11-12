@@ -814,6 +814,8 @@ function realisedCode(graph: MissionGraph, laid: Laid, M: WorldManifest, budget:
     teaches: graph.nodes.filter((n) => n.job === 'teach').length,
     needsFork: !!brief && brief.branching !== 'none',
     mini: budget.stage,
+    // (V3, packet E12 item 5: a move the world's `lessons` say an earlier stage taught is taught)
+    known: Object.entries(M.lessons ?? {}).filter(([, st]) => stageOrder(st) < stageOrder(budget.id)).map(([m]) => m),
     ...(brief ? { trend: brief.trend } : {}),
     ...(M.graphs?.windows ? { windows: Object.fromEntries(Object.entries(M.graphs.windows).map(([t, w]) => [CONTENT_LETTER[t], w!])) } : {}),
     ...(graph.deal ? { deal: Object.fromEntries(Object.entries(graph.deal).map(([t, k]) => [CONTENT_LETTER[t], k!])) } : {}),
