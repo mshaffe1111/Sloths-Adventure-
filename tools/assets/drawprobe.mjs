@@ -66,6 +66,8 @@ for (const id of STAGES) {
   await ready();
   await ev((i) => window.__play(i), id);
   for (let i = 0; i < 20 && !(await ev(() => !!(window.__eng()))); i++) await sleep(500);
+  // the picture stays at full quality (the frame governor would lower the render resolution on this busy machine: run.mjs does the same)
+  await ev(() => { const e = window.__eng(); if (e && e.gov) { e.gov.takeUp = () => false; e.gov.feed = () => false; } });
   await sleep(2500);
   // pin Pokey at 6 spots along the stage
   const spots = await ev(() => {

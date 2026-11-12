@@ -17,6 +17,8 @@ from PIL import Image
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
 dist, out = sys.argv[1], sys.argv[2]
 probes = [json.load(open(p)) for p in sys.argv[3:]]
+# the probe's phone is 3x; the game's backing is capped at 2x, so a full-quality game canvas shows at 1.5x
+QUAL_DPR = 1.5
 
 h = lambda p: hashlib.md5(open(p, 'rb').read()).hexdigest()
 src = {}
@@ -50,7 +52,8 @@ for pr in probes:
     for life in pr['lives']:
         # a canvas stretched by the browser (factor > 1: the game caps its backing at 2x) shows no more detail than its own pixels,
         # so a screen counts at most 1; a canvas still at the default 300x150 (not yet sized) is left out
-        scr = {int(k): min(1.0, v) for k, v in life['screens'].items() if life['sizes'].get(k) != [300, 150]}
+        # (a canvas the frame governor shrank, factor over dpr/2, counts as if at the game's full 2x backing: QUAL_DPR = 1.5 on 3x)
+        scr = {int(k): (min(1.0, v) if v <= QUAL_DPR else v / QUAL_DPR) for k, v in life['screens'].items() if life['sizes'].get(k) != [300, 150]}
         edges = {int(k): {int(t): m for t, m in e.items()} for k, e in life['edges'].items()}
         memo = {}
 

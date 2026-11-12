@@ -27,8 +27,8 @@ def factor(r):
     s = r.get('drawn_scale') or 0
     if not r.get('seen') or s <= 0 or s >= 0.5:
         return 1.0
-    need = 2 * s
-    return 0.5 if need <= 0.5 else 0.75
+    need = 2 * s  # keep at least 2x the largest drawn size
+    return 0.5 if need <= 0.5 else 0.75 if need <= 0.75 else 1.0
 
 
 def resized(im, f):
