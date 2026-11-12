@@ -90,7 +90,11 @@ while (Date.now() - t0 < LIMIT) {
   if (await ho.count() && await ho.isVisible().catch(() => false)) { await lift(); const st = await state(); log.helps.push({ t: Date.now() - t0, x: Math.round(st.x ?? -1) }); await shot(`help-offer-x${Math.round(st.x ?? 0)}`); const b = await ho.boundingBox(); await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2); await sleep(800); bestAt = Date.now(); continue; }
   const s = await state();
   if (s.done) { log.end = 'cleared'; break; }
-  if (s.none) { await sleep(500); continue; }
+  if (s.none) {
+    // the stage is over when the engine is gone and a story or card is up: shoot what a player sees, skipping the story like a player
+    if (log.track.length && (await page.locator('.sp-skip, button:has-text("Skip"), .clr-card').count())) { log.end = 'cleared'; break; }
+    await sleep(500); continue;
+  }
   if (lastLives != null && s.lives < lastLives) log.deaths++;
   lastLives = s.lives;
   if (s.x > lastShotX + 5000) { lastShotX = s.x; await shot(`x${Math.round(s.x)}`); }
@@ -127,6 +131,14 @@ while (Date.now() - t0 < LIMIT) {
 await lift();
 await sleep(2500);
 await shot(log.end === 'cleared' ? 'END-cleared' : 'END-timeout');
+log.endAt = Math.round((Date.now() - t0) / 1000);
+for (let i = 0; i < 8 && log.end === 'cleared'; i++) {
+  const k = page.locator('.sp-skip, button:has-text("Skip")').first();
+  if (await k.count() && await k.isVisible().catch(() => false)) { await shot(`after-${i}-story`); await k.evaluate((e) => e.click()); await sleep(2500); continue; }
+  await sleep(2000);
+  await shot(`after-${i}`);
+  if (await page.locator('.clr-card').count()) { await sleep(2500); await shot('stage-cleared-card'); break; }
+}
 await sleep(2500);
 await shot('END-after');
 log.exit = (await state()); delete log.exit.cps;
