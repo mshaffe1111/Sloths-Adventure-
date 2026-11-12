@@ -8,7 +8,9 @@ import { CAST_13, LINES_13, MISSION_13, TWISTS, REFUSE_13, UNDER, config13, kitL
 import { NEW_STOOD_IN } from './library.ts';
 import { buildGen2Stage, missionGraph, planBudget, stagePool } from '../../src/game/gen2/pipeline.ts';
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
-import { w1World } from '../../src/game/gen2/worlds/w1.ts';
+import { W1_KIT, W1_SECTIONS, w1World } from '../../src/game/gen2/worlds/w1.ts';
+import { EXIT_13, QUIET_13, STAGE_13 } from '../../src/game/gen2/worlds/w1Arc13.ts';
+const w1BriefOf11 = () => W1_KIT.graphs.briefs['1-1'];
 import { W1_CAST_CREATURES, W1_CAST_SAID, W1_TRAP_PAIRS } from '../../src/game/gen2/worlds/w1Cast.ts';
 
 const O = { flown: true };
@@ -17,18 +19,19 @@ const SEEDS = [1, 2, 3, 4, 5, 6];
 const rolls: Record<'normal' | 'easy', Roll13[]> = { normal: SEEDS.map((s) => roll(s, 'normal', O)), easy: SEEDS.map((s) => roll(s, 'easy', O)) };
 const each = (f: (r: Roll13, name: string) => void) => { for (const d of ['normal', 'easy'] as const) rolls[d].forEach((r, i) => f(r, `seed ${SEEDS[i]} ${d}`)); };
 
-test("1-1's and 1-2's kits are untouched, and 1-3's pool is its own arc: its seven beats, and of World 1's library only the quiet between them", () => {
-  const W = w1World().manifest, M = kitLib13(O).manifest, own = new Map(W.sections.map((t) => [t.id, t]));
-  assert.equal(W.creatures.length, 0);
-  assert.equal(W.pairs.length, 0, 'World 1 gained a pair');
-  for (const t of M.sections.filter((q) => own.has(q.id))) {
-    const { feel: _f, ...mine } = t, { feel: _g, ...theirs } = own.get(t.id)!;
-    assert.deepEqual(mine, theirs, `${t.id}: a World 1 section was changed`);
-    assert.ok(t.jobs!.every((j) => ['arrive', 'rest', 'exit'].includes(j)), `${t.id} is not a quiet section: it would bring another level's lesson into this one (LEVEL-BAR A3)`);
-  }
+test("in World 1's SHIPPED kit 1-3's pool is its own arc: its seven beats, its ground exit, and of the library only the quiet between; 1-1's pool is as it was", () => {
+  const M = w1World().manifest;
+  const pool13 = stagePool(M, STAGE_13).map((t) => t.id).sort();
+  assert.deepEqual(pool13, [...TWISTS.map((t) => t.id), EXIT_13.id, ...QUIET_13].sort());
+  for (const t of stagePool(M, STAGE_13).filter((q) => (QUIET_13 as readonly string[]).includes(q.id))) assert.ok(t.jobs!.every((j) => ['arrive', 'rest', 'exit'].includes(j)), `${t.id} is not a quiet section: it would bring another level's lesson into this one (LEVEL-BAR A3)`);
   assert.deepEqual(TWISTS.map((t) => `${t.id}:${t.jobs!.join('/')}`), ['lib-13-lesson:teach', 'lib-13-again:practise', 'lib-13-stone-stair:flow', 'lib-13-other-way:test', 'lib-13-perch:twist', 'lib-13-gallery:signature', 'lib-13-finale:combine'], 'one brick a beat, one job a brick');
-  assert.equal(M.sections.length - M.sections.filter((q) => own.has(q.id)).length, TWISTS.length + NEW_STOOD_IN.length);
-  assert.deepEqual(poolReport(O).out.filter((q) => q.why === 'refused: '), [], 'a section is out with no reason named');
+  // (1-1: the same sections as World 1's own table, each unchanged but for its tag list; none of 1-3's among them)
+  const own = new Map(W1_SECTIONS.map((t) => [t.id, t]));
+  const pool11 = stagePool(M, '1-1');
+  assert.deepEqual(pool11.map((t) => t.id), W1_SECTIONS.filter((t) => t.feel.includes('1-1')).map((t) => t.id));
+  for (const t of pool11) { const { feel: _f, ...mine } = t, { feel: _g, ...theirs } = own.get(t.id)!; assert.deepEqual(mine, theirs, `${t.id}: a World 1 section was changed`); }
+  assert.deepEqual(M.graphs!.list.filter((g) => g.archetype !== 'purge').map((g) => g.id), ['sprint-A', 'sprint-B', 'sprint-C', 'sprint-D'], "1-1's graphs");
+  assert.deepEqual(M.graphs!.briefs['1-1'], w1BriefOf11(), "1-1's brief");
 });
 
 test("the cast rows are w1Cast.ts's, plus the short-patch rows and the top-up tag; a pair's sockets stand 85-130 px apart", () => {
@@ -138,4 +141,15 @@ test('Normal runs hotter and asks for one real jump; Easy is the same level, fla
     for (const id of TWISTS.map((t) => t.id).filter((t) => t !== 'lib-13-finale')) assert.deepEqual(gaps(n, sec(n, id)), [], `seed ${seed}: ${id} is level on Normal`);
     void all;
   });
+});
+
+test('the shipped kit rolls 1-3 under its own id: the same arc, clean on both settings (not yet the verdicts\' clean: it has no flown rows of its own)', () => {
+  for (const seed of SEEDS) for (const d of ['normal', 'easy'] as const) {
+    const r = roll(seed, d, {});
+    assert.equal(r.thrown, undefined, `seed ${seed} ${d}: ${r.thrown}`);
+    assert.deepEqual(r.errors, [], `seed ${seed} ${d}`);
+    assert.deepEqual(r.plan.filter((t) => t.startsWith('lib-13-')).map((t) => t.slice(7)), ['lesson', 'again', 'stone-stair', 'other-way', 'perch', 'gallery', 'finale'], `seed ${seed} ${d}`);
+    assert.equal(r.plan.length, 13, `seed ${seed} ${d}`);
+    assert.equal(r.plan[r.plan.length - 1], EXIT_13.id);
+  }
 });

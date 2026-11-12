@@ -1,8 +1,8 @@
 // The creature kit in the REAL engine (engineCoreHarness.ts: nothing that decides an outcome is replaced). A stage whose data names
 // a cast is run by the kit (castPlay.ts); a stage that names none plays as it always has. The arena here is planted into a real
-// engine: a safe ledge, a branch with one Golden Tree Snake, a hive hung over it and its vine on the ledge.
+// engine: a safe ledge, a branch with one Golden Tree Snake, a hive hung over it and its vine on the ledge. 1-3 itself, as the
+// game builds it from World 1's kit, is held at the top.
 import { DT, makeEngine, standOn, step, type Eng } from './engineCoreHarness.ts';
-import { GameEngine } from './engine.ts';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { handleBox } from './dropTrap.ts';
@@ -41,29 +41,26 @@ const walkTo = (e: Eng, input: { state: { right: boolean; left: boolean } }, x: 
 };
 const punch = (e: Eng, input: { state: { punchPressed: boolean } }, n = 14) => { input.state.punchPressed = true; step(e, 1); input.state.punchPressed = false; step(e, n); };
 
-test('no shipped stage changes: a stage that names no cast has none, and its snakes are still predatorAI\'s', () => {
-  const { e } = makeEngine('1-3');
+test('a stage that names no cast has none: its animals are still predatorAI\'s', () => {
+  // (1-9 The Boa's Branches: hand-built, snakes and a boa, no cast named)
+  const { e } = makeEngine('1-9');
   assert.equal(e.cast, null);
   step(e, 30);
-  assert.ok(e.enemies.length > 0 && e.enemies.every((q: Enemy) => q.kit === undefined), 'not one of 1-3\'s animals has kit state');
+  assert.ok(e.enemies.length > 0 && e.enemies.every((q: Enemy) => q.kit === undefined), 'not one of its animals has kit state');
 });
 
-test('the engine starts the cast itself, at the stage\'s start, from the stage\'s own data', () => {
-  // (no shipped stage names a cast yet, so the data is put on the stage the moment before the engine's own start reads it)
-  const P = GameEngine.prototype as unknown as { startCast: (this: Eng) => void };
-  const real = P.startCast;
-  P.startCast = function (this: Eng) { if (this.proto) this.proto.cast = { kinds: ['snake'], traps: [] }; real.call(this); };
-  try {
-    const { e } = makeEngine('1-3');
+test('1-3 Branch Snakes, as the game builds it: the engine starts its cast itself, from the stage\'s own data, on both settings', () => {
+  for (const difficulty of ['normal', 'easy'] as const) {
+    const { e } = makeEngine('1-3', difficulty);
     const snakes = e.enemies.filter((q: Enemy) => q.type === 'snake');
-    assert.ok(e.cast && snakes.length > 0 && snakes.every((q: Enemy) => q.kit), 'every snake of the stage is the kit\'s, with no call from the test');
+    assert.ok(e.cast && snakes.length >= 8 && snakes.every((q: Enemy) => q.kit), `${difficulty}: every snake of the stage is the kit's, with no call from the test`);
     assert.equal(e.cast.members.length, snakes.length);
-    const before = snakes.map((q: Enemy) => q.hp);
+    assert.ok(e.cast.traps.length >= 5, `${difficulty}: its drop traps are armed (${e.cast.traps.length})`);
+    assert.equal(e.proto.cast.said.trap, 'Off he glides, not a scratch, just very offended!');
+    assert.ok(e.currentStage.config.targetCount <= snakes.length, `${difficulty}: the goal (${e.currentStage.config.targetCount}) can be met by the ${snakes.length} snakes laid`);
     step(e, 60);
-    assert.deepEqual(snakes.map((q: Enemy) => q.hp), before);
     assert.ok(snakes.every((q: Enemy) => ['sleep', 'patrol', 'alert', 'rear', 'strike', 'recover'].includes(q.state ?? '')), 'and each shows the kit\'s state');
-  } finally {
-    P.startCast = real;
+    assert.equal([...snakes].sort((a: Enemy, b: Enemy) => a.x - b.x)[0].kit!.asleep, true, `${difficulty}: the first snake of the stage sleeps`);
   }
 });
 
