@@ -1,6 +1,6 @@
 import { buzz } from './haptics.ts';
 import { nativeApp } from './appShell.ts';
-import { clearFlag, flagFor, saveFlag } from './flagResume.ts';
+import { clearFlag, flagFor, saveFlag, type HeldRun } from './flagResume.ts';
 import { SlowWatch } from './slowTip.ts';
 import { drawW7Chairs } from './w7ChairsArt.ts';
 import { drawW8Decor, type W8DecorSet } from './w8DecorArt.ts';
@@ -2610,7 +2610,7 @@ export class GameEngine {
           if (further) {
             this.checkpoint = { x: cp.x, y: cp.y };
             // the Android app keeps it, so a run cut off by the phone comes back here (flagResume.ts)
-            if (nativeApp()) saveFlag(this.currentStage.config.id, cp.x, cp.y);
+            if (nativeApp()) saveFlag(this.currentStage.config.id, cp.x, cp.y, this.heldRun());
           }
           this.addFloatingText('CHECKPOINT!', cp.x, cp.y - 90, '#fde047');
           this.spawnSparkBurst(cp.x, cp.y - 40, '#fde047');
@@ -4494,6 +4494,8 @@ export class GameEngine {
 
   /** the run ended (a win, or the last life): tell the app */
   private report(win: boolean, stars: number) {
+    // a stage won is over: no flag to come back to, even if the phone closes the app under the stage-cleared card
+    if (win) clearFlag();
     const s = this.buildStats(win, stars);
     const { prior: _was, ...filed } = s;
     this.filed = filed;
@@ -5317,8 +5319,66 @@ export class GameEngine {
   }
 
   private flagTried = false;
+
+  /** what this run holds now, kept with a flag on the Android app (flagResume.ts) so a run the phone cut off comes back whole */
+  private heldRun(): HeldRun {
+    const p = this.player;
+    const where = <T>(list: T[], f: (t: T) => boolean) => list.flatMap((t, i) => (f(t) ? [i] : []));
+    return {
+      t: this.gameTime,
+      lives: this.lives,
+      score: this.runScore,
+      // (a find is kept by the save itself, App.tsx onFind: one not kept yet stays in the stage to be found again)
+      got: where(this.collectibles, (c) => c.collected && c.type !== 'find'),
+      beat: where(this.enemies, (e) => e.defeated),
+      n: {
+        fruits: p.fruitsCollected, beaten: p.enemiesDefeated, relics: p.relicsFound, freed: p.crittersRescued,
+        livesLost: this.statLivesLost, heartsLost: this.statHeartsLost, stomps: this.statStomps, chain: this.statMaxStompChain,
+        combo: this.statMaxCombo, glide: this.statGlideSec, shimmy: this.statShimmySec, swings: this.statSwings, punches: this.statPunches,
+        kicks: this.statKicks,
+      },
+      kills: { ...this.statKills },
+      seen: Array.from(this.statSeen),
+    };
+  }
+
+  /** put a held run back (startAtFlag): the stage was built fresh, so its pickups and animals are matched by their place in it */
+  private restoreRun(h: HeldRun) {
+    const p = this.player;
+    for (const i of h.got) if (this.collectibles[i]) this.collectibles[i].collected = true;
+    for (const i of h.beat) {
+      const e = this.enemies[i];
+      if (!e) continue;
+      // beaten on that run: gone, with no knock-out to play again
+      e.defeated = true;
+      e.koLife = 0;
+      e.koTimer = 1;
+    }
+    const n = (k: string) => h.n[k] ?? 0;
+    p.fruitsCollected = n('fruits');
+    p.enemiesDefeated = n('beaten');
+    p.relicsFound = n('relics');
+    p.crittersRescued = n('freed');
+    this.statLivesLost = n('livesLost');
+    this.statHeartsLost = n('heartsLost');
+    this.statStomps = n('stomps');
+    this.statMaxStompChain = n('chain');
+    this.statMaxCombo = n('combo');
+    this.statGlideSec = n('glide');
+    this.statShimmySec = n('shimmy');
+    this.statSwings = n('swings');
+    this.statPunches = n('punches');
+    this.statKicks = n('kicks');
+    this.statKills = { ...h.kills };
+    for (const k of h.seen) this.statSeen.add(k);
+    this.gameTime = h.t;
+    this.runScore = h.score;
+    this.lives = Math.max(1, Math.min(this.maxLives, h.lives));
+    this.callbacks.onLivesChange?.(this.lives, this.maxLives);
+  }
+
   /** start the stage at a flag from a run the phone cut off: the flags up to it count as reached, and he appears there as after a fall */
-  private startAtFlag(at: { x: number; y: number }) {
+  private startAtFlag(at: { x: number; y: number; run: HeldRun }) {
     const cps = this.currentStage.checkpoints ?? [];
     const flag = cps.find((cp) => Math.abs(cp.x - at.x) < 2 && Math.abs(cp.y - at.y) < 2);
     if (!flag) return; // the stage changed since (a new build): start at the beginning
@@ -5326,6 +5386,8 @@ export class GameEngine {
     const descent = !!this.proto?.w4?.descent;
     for (const cp of cps) if (ascent ? cp.y >= flag.y : descent ? cp.y <= flag.y : cp.x <= flag.x) cp.reached = true;
     this.checkpoint = { x: flag.x, y: flag.y };
+    // the run as it was at the flag: what he had picked up, beaten and freed, the clock, the lives and every count the report reads
+    this.restoreRun(at.run);
     // (Meeca's stage: the trunks behind the flag were cut on that run)
     this.mc?.resumeAt(flag.x);
     this.respawnAtCheckpoint('pit');
