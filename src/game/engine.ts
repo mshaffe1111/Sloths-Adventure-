@@ -8411,6 +8411,11 @@ export class GameEngine {
         markTipHeard(id, key);
         this.guide(tipText(text), seconds);
       },
+      // (stuck help answers the moment: said whenever the room's watch calls it, on every run, not kept as a heard tip)
+      help: (key, text, seconds) => {
+        if (this.mc) return this.mc.kitLine(key, text, seconds);
+        this.guide(tipText(text), seconds);
+      },
       float: (text, x, y, color) => this.addFloatingText(text, x, y, color),
       passTip: (text) => this.callbacks.onGuide?.(text, 0, true),
       freeCage: (c) => this.freeCritter(c),

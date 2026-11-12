@@ -57,6 +57,12 @@ export interface KitHost {
   easy: boolean;
   /** a Dot line, once per stage (`key` remembers it); Meeca's stage says it as her thought, or in the speaker's bubble */
   tip(key: string, text: TipLine, seconds: number): void;
+  /**
+   * a line that answers the moment (the stuck help: her nudge, then the move): said whenever it applies, on every run, never kept in the
+   * once-per-stage memory (tipMemory.ts: a player stuck in the same room on a later run got no help, audit P-05). A host without it says
+   * it as a tip.
+   */
+  help?(key: string, text: TipLine, seconds: number): void;
   /** which way his thumb steers now (-1, 0, 1): a trap chair counts the wiggles */
   steer?: number;
   /**
@@ -776,13 +782,15 @@ export class KitPlay {
   private yawnAt = -1;
   private yawnRoom: RoomRun | null = null;
 
-  /** a room's line for a moment, the first time it comes (`again`: every time, though only once in a row) */
-  private told(room: RoomRun, key: keyof NonNullable<RoomSpec['tips']>, h: KitHost, seconds: number, again = false) {
+  /** a room's line for a moment, the first time it comes (`again`: every time, though only once in a row; `help`: stuck help, KitHost.help) */
+  private told(room: RoomRun, key: keyof NonNullable<RoomSpec['tips']>, h: KitHost, seconds: number, again = false, help = false) {
     const line = room.spec.tips?.[key];
     if (!line) return;
     if (room.told.has(key) && !again) return;
     room.told.add(key);
-    h.tip(`kit:${room.spec.id}:${key}${again ? `:${room.cups}` : ''}`, line, seconds);
+    const k = `kit:${room.spec.id}:${key}${again ? `:${room.cups}` : ''}`;
+    if (help && h.help) h.help(k, line, seconds);
+    else h.tip(k, line, seconds);
   }
 
   private pickUp(room: RoomRun, ri: number, ii: number, h: KitHost) {
@@ -1280,7 +1288,7 @@ export class KitPlay {
         // Dot's next step (DOT-2): the first time a nudge that points at the piece, the next time the move (her help setting decides
         // whether the move is said: Help only)
         room.helped++;
-        this.told(room, room.helped === 1 ? 'nudge' : 'move', h, 4);
+        this.told(room, room.helped === 1 ? 'nudge' : 'move', h, 4, false, true);
         room.calm = 0;
         room.turns = 0;
         room.fails = 0;
