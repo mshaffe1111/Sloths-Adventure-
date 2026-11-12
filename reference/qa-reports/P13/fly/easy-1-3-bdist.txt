@@ -1,0 +1,6 @@
+
+[bdist] easy: widest level gap crossed off a floor mushroom whose right edge is d px before the lip (block far side)
+                         d    bounce alone   +air jump (best moment)
+                         0    183.0    340.0
+                        20    163.0    320.0
+                        40    143.0    300.0

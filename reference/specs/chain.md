@@ -31,6 +31,13 @@ rows', the single hold's "any timing" kept at the 246 reach.ts designs to): sing
 double-tap-tap 150 / 143; bounce 223 / 217, gap 178; bounce-air 316 / 307, gap 340. Source for each: this table and
 sims/out/normal-1-2-rise.txt, -bdist.txt.
 
+**Rows for src/game/gen2/reach.ts, scope Normal 1-3** (P13, 11-12: flown on stage 1-3, `FLIGHT_STAGE=1-3`, both settings, tables in
+reference/qa-reports/P13/fly/; climb block / thin, then from-70 / last ground / any, each the block column; the single hold's any is
+the flown 244, not 246, since no finer flight of 1-3 was made): 1-3: single-hold 123 / 117, gap 137 / 223 / 244; 1-3: single-flick
+123 / 116, gap 127 / 213 / 239; 1-3: single-tap 87 / 81, gap 77 / 163 / 184; 1-3: double-hold 213 / 206, gap 291 / 379 / 409; 1-3:
+double-flick 211 / 204, gap 282 / 370 / 395; 1-3: double-tap-tap 149 / 143, gap 190 / 278 / 299; 1-3: bounce 223 / 217, gap 178; 1-3:
+bounce-air 315 / 306, gap 335. Easy on 1-3 is easy-any (every Easy table identical to 1-2's). Against 1-2, nothing gained a pixel.
+
 Cause: the second jump's help is 0.958 of 1-1's on stage 2 (`easeAssist(2)`). No lesser move gained a pixel, so every block keeps its
 5 px, and the taught moves lost 1-2 px against margins of 70 px or more. So **bands.md §2 holds on 1-2 as written**, both settings
 (Easy's help is full on every stage). It must be flown again from about 1-5 on. One figure does move with it: a double flick lands
