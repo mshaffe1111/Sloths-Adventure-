@@ -5186,6 +5186,7 @@ export class GameEngine {
     p.y = at.y;
     p.vx = 0;
     p.vy = 0;
+    this.crumbledWhole();
     this.airDrive = newAirDrive();
     p.grounded = false;
     p.climbing = false;
@@ -5205,6 +5206,22 @@ export class GameEngine {
     this.camAnchorY = NaN;
     if (this.help) this.helpPutBack(fellX);
     return true;
+  }
+
+  /**
+   * Every crumbling platform is whole again (Matt, 2026-11-02: one may be required anywhere, pits included, "a required one is whole
+   * again when he respawns"). Called by every set-back: a lost life (respawnAtCheckpoint) and a fall that costs no life (softFall, which
+   * heartFall and lanternSetBack go through). Audit A-03: only the lost life did it, so after a soft fall a required plank stayed gone
+   * for 30-35 s and until it was off screen (regrow.ts), and from the ledge he was set back on it could be in view for good.
+   */
+  private crumbledWhole() {
+    for (const pl of this.platforms) {
+      if (pl.type === 'fragile') {
+        pl.broken = false;
+        pl.fragileTimer = undefined;
+        pl.regrowAt = undefined;
+      }
+    }
   }
 
   private flagTried = false;
@@ -5239,20 +5256,13 @@ export class GameEngine {
     this.bossGust = 0;
     this.dragSpeed = 1;
     this.dragJump = 1;
-    // planks that crumbled since the checkpoint come back, or a respawn could leave a gap nobody can cross
     this.lanternRun?.restart();
     // 6-8: the tide starts again under his flag, waiting a moment (risingTide.ts)
     if (this.tide) {
       restartTide(this.tide, this.proto!.tide!, this.tideSet, this.checkpoint.y);
       this.currentStage.waterY = this.tide.y;
     }
-    for (const pl of this.platforms) {
-      if (pl.type === 'fragile') {
-        pl.broken = false;
-        pl.fragileTimer = undefined;
-        pl.regrowAt = undefined;
-      }
-    }
+    this.crumbledWhole();
     // every animal loses its lock on him: whatever got him goes back to its business (it re-notices if he is still in range)
     for (const e of this.enemies) e.alertT = 0;
     p.hp = p.maxHp;
