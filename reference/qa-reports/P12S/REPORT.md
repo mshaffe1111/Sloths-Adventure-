@@ -52,7 +52,6 @@ engine's heart-fall set-back needs a take-off ledge, so whether a hollow is a di
 (the old-builder drop rules read the hollows as 4 floorless gaps and 'ground stands in the drop': the hurt floor inside the hollow).
 Not run: drawcheck, clipcheck, kbdcheck, tierBots.test (no draw, menu or 1-1 code changed; slow gates outside the packet's list).
 **Full suite on 69d2f455: 3049 tests, 3035 pass, 12 fail (8 same on base, the 4 above), 2 todo.**
-
 ## Method used / Lessons applied / Method update
 - Method: seed-list.md (sweep only), the lock first. Lessons: D15 (0 harms checked by a planted fall), D19 (real-page stills), D29
   (whole suite), D40 (sweep stopped when D12 was named), D43 (no stage id in engine code: the kit row is world data).
