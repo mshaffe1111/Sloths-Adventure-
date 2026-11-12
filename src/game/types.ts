@@ -332,7 +332,9 @@ export interface Platform {
   soil?: boolean;
   /** World 1: a floorless gap beside this bank is a painted drop, a fall, not water (w1Pits.ts: a builder sets it on either bank; the mixer
    *  marks every bank) */
-  pit?: 'drop';
+  /** `'hurt'` (gen2): this piece is a hollow's hurt floor (WorldManifest.hurtFloor); the world's painter draws it, the engine never sets
+   *  him back on it */
+  pit?: 'drop' | 'hurt';
   /** a catch a builder lays under a gap (the mixer's 'catch' piece): a fall's floor, left with a hop */
   catch?: boolean;
   /** drawn as its own kind, never given another look for variety (platformPlan.ts planThin): a world whose painted kit draws its pieces,

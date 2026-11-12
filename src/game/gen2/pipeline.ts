@@ -856,6 +856,8 @@ interface LocalGap {
   back?: { lips: [number, number] };
   /** a level block gap: no pit and no stair under it; a fall sets him back on the take-off ledge, soft (Laid.heartFalls, `soft`) */
   putBack?: boolean;
+  /** a place marked `hurt`: the world's hurt floor under it (WorldManifest.hurtFloor), no pit and no steps */
+  hurt?: boolean;
 }
 /** a section laid out in its own space: its entry anchor at (0, 0) */
 /** the reach a laid jump asks (verdicts.ts RouteAsk before it is classified): local, then world, px; `yTake` the floor he leaves (a
@@ -1027,7 +1029,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       // a fall there puts him back on the take-off ledge instead, soft, no life lost (a soft heart-fall zone), on both settings)
       const putBack = !!pc.block && !pl.water && dy >= -20;
       const back = (glide || pc.block) && !pl.water && !putBack ? { back: { lips: [a.y, y] as [number, number] } } : {};
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back, ...(putBack ? { putBack } : {}) });
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back, ...(putBack ? { putBack } : {}), ...(pl.hurt ? { hurt: true } : {}) });
       // (the reach this jump asks: verdicts.ts classifies and judges it on 1-1, ADR-001; a glide is no flown move)
       if (!glide) asks.push({ x0: a.x + a.w, x1: x, yTake: cap !== undefined ? ref(pc.from!).y + CAP_UP.px : a.y, yLand: y, move: cap !== undefined ? 'bounce' : dbl || pc.block === 'double' ? 'double' : 'single', block: pc.block, thin: thinLaid(pc, w), key: pc.key });
     } else if (pl.kind === 'rope') {
@@ -1184,8 +1186,9 @@ export interface Laid {
   asks?: Array<LocalAsk & { section: string }>;
   /** the zones the sections lay (a tide, darkness) */
   zones: Zone[];
-  /** the gaps a fall into costs a heart, not a life (WorldManifest.heartFalls: World 8 Normal's swings and glides), no pit under them */
-  heartFalls: Array<{ x0: number; x1: number; soft?: boolean }>;
+  /** the gaps a fall into costs a heart, not a life (WorldManifest.heartFalls: World 8 Normal's swings and glides), no pit under them;
+   *  `y`: a hollow's hurt line, its hurt floor's top (WorldManifest.hurtFloor) */
+  heartFalls: Array<{ x0: number; x1: number; soft?: boolean; y?: number }>;
   spawn: { x: number; y: number; piece: Platform };
   exit: { x: number; y: number; piece: Platform };
   /** the lianas and climbing vines the sections hang */
@@ -1760,7 +1763,18 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       for (const g of L.gaps) {
         const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
         gaps.push(g0);
-        if (g.putBack) {
+        if (g.hurt) {
+          // (a hollow, a place marked `hurt`: the world's hurt floor, ONE marked piece at its row's depth under the lower lip, wall to wall,
+          // no steps out, the banks either side reaching down to it; the zone over it, lip to lip, carries the floor's top as its hurt line.
+          // Normal: a heart. Easy: soft. The depth is picked off the gap's x, so the roll's stream is the same with or without the mark)
+          const H = M.hurtFloor;
+          if (!H) throw new Error(`gen2 ${budget.id}: section ${tpl.id} lays a hurt place and the world's manifest has no hurtFloor row`);
+          const before = platforms.length, x0 = R(g0.x0), x1 = R(g0.x1), floor = R(oy + g.lo + H.depth[0] + (x0 % (H.depth[1] - H.depth[0] + 1)));
+          for (const q of platforms) if ((Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
+          mk(x0, floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone').pit = 'hurt';
+          heartFalls.push({ x0, x1, y: floor, ...(budget.difficulty === 'easy' ? { soft: true } : {}) });
+          placed.seam.push(...platforms.slice(before));
+        } else if (g.putBack) {
           // (a level block gap: nothing under it; a fall is set back on the take-off ledge, nothing lost: the engine's heart fall, soft)
           heartFalls.push({ x0: R(g0.x0), x1: R(g0.x1), soft: true });
         } else if (g.pit && !g.water) {
@@ -2931,6 +2945,12 @@ export function dropsOf(st: Gen2Stage): Drop[] {
     const ground = st.platforms.find((p) => p.type !== 'bouncy' && p.x <= mid && p.x + p.width >= mid && p.y > f.y && p.y < death);
     const zone = zones.find((z) => z.soft && mid >= z.x0 && mid <= z.x1);
     const at = { x0: f.x0, x1: f.x1, lipY: f.y };
+    // (a hollow's hurt floor: a heart fall, on both settings (Easy waives the heart, never the look). Its look is the hurt look only where
+    // the world's painter draws it; until then it is what is drawn there today, and drop.look-lies refuses it by name)
+    if (ground?.pit === 'hurt') {
+      const drawn = world === 1 && findW1Pits(st.platforms).some((q) => (q.kind as string) === 'hurt' && q.x0 < f.x1 && q.x1 > f.x0);
+      return { ...at, ends: { kind: 'heart', to: 'take-off' }, look: drawn ? 'hurt-art' : world === 1 ? 'pit-floor-art' : 'ground' } as unknown as Drop;
+    }
     if (ground) return { ...at, ends: { kind: 'floor', y: R(ground.y) }, look: 'ground' };
     if (f.kind === 'water' || (f.kind === 'void' && !st.gen2.softFalls)) {
       const h = hints.find((q) => q.x <= f.x0 && q.x >= f.x0 - 2 * WATER_WARN.lead && (q.passX ?? Infinity) >= f.x1);

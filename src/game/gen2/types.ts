@@ -180,6 +180,11 @@ export interface WorldManifest {
   /** on Normal a fall at a swing or a glide (a gap under a liana, a glide gap) costs a heart, not a life, and sets him back on the ledge he
    *  left (World 8, Matt 2026-10-31: "hurt, then cost a life"); no pit is laid under them. Easy's stay soft pits */
   heartFalls?: boolean;
+  /** the world's hurt floor, laid under every place marked `hurt` (a roll that lays one with no row fails by name): a fall onto it costs
+   *  a heart on Normal and sets him back (Easy: the set-back, no heart). `lesson`: the section `teaches` id that shows it first; `art`: the
+   *  painted family the world's painter draws it with; `depth`: px under the gap's lower lip [min, max]; `clearStart`: no hollow this
+   *  near the spawn, px */
+  hurtFloor?: { lesson: string; art: string; depth: [number, number]; clearStart: number };
   /** the stages of the world gen2 must never build (the signature stage, the guardian's lair) */
   handBuilt: string[];
   /**
@@ -247,8 +252,9 @@ export type PlaceRule =
   | { kind: 'walk'; after: string; dy?: Range }
   /** `gapPx` (the designer's pixel bands, 11-06: a double's TEACH 195-205, its TEST 205-230): the gap laid in this band exactly, in place of
    *  `share`, never scaled by the roll's tempo or the jump's reach; a band past the reach fails the section by name */
-  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean }
-  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean }
+  /** `hurt` (a jump, double or pit place): the gap is a HOLLOW with the world's hurt floor under it (WorldManifest.hurtFloor), no steps out */
+  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean; hurt?: boolean }
+  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean; hurt?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }

@@ -10,7 +10,7 @@ import type { Difficulty } from '../difficulty.ts';
 import type { Platform } from '../types.ts';
 import { APEX, arc, BAND_SOURCE, BANDS, BLOCK_H, BODY_H, lesserArcs, linkArcs, scopeOf, SPARE, TAKEOFF } from './reach.ts';
 import type {
-  Drop, FirstRunLayout, JudgedStage, LethalLook, Measure, PromiseRegistry, ReachMove, RollVerdict, SectionKind, SoftLook, Verdict, VerdictName,
+  Drop, FirstRunLayout, HurtLook, JudgedStage, LethalLook, Measure, PromiseRegistry, ReachMove, RollVerdict, SectionKind, SoftLook, Verdict, VerdictName,
 } from './verdicts.types.ts';
 
 /** every name, in the union's order (the test checks this list against verdicts.types.ts, so a new name can't be missed here) */
@@ -120,6 +120,8 @@ export function askVerdicts(q: JudgedStage['asks'][number], setting: Difficulty)
 const SOFT_LOOKS: readonly string[] = ['ground', 'pit-floor-art'] satisfies readonly SoftLook[];
 const LETHAL_LOOKS: readonly string[] = ['water-art', 'void-dark'] satisfies readonly LethalLook[];
 const isLethal = (d: Drop): boolean => d.ends.kind === 'life';
+/** each kind of end and the looks that are true of it: a soft look, a lethal look and the hurt look never stand in for one another */
+const LOOKS: Record<string, readonly string[]> = { lethal: LETHAL_LOOKS, soft: SOFT_LOOKS, heart: ['hurt-art'] satisfies readonly HurtLook[] };
 
 /** the drops' verdicts: a lethal drop on a no-lethal stage, a lethal drop unwarned, a drop drawn with the other kind's look */
 export function dropVerdicts(st: Pick<JudgedStage, 'setting' | 'policy' | 'drops'>): Verdict[] {
@@ -129,7 +131,8 @@ export function dropVerdicts(st: Pick<JudgedStage, 'setting' | 'policy' | 'drops
     if (isLethal(d) && st.policy === 'no-lethal') out.push({ name: 'drop.lethal-in-no-lethal', setting: st.setting, at, line: `a fall into ${(d.ends as { cause: string }).cause} costs a life at x ${at.x0}..${at.x1} on a no-lethal stage` });
     const w = (d as { warn?: { dotLine?: string; sign?: boolean } }).warn;
     if (isLethal(d) && (!w || !w.dotLine || w.sign !== true)) out.push({ name: 'drop.unwarned', setting: st.setting, at, line: `the lethal drop at x ${at.x0}..${at.x1} has ${!w || !w.dotLine ? "no Dot line" : 'no sign'}` });
-    if (isLethal(d) ? SOFT_LOOKS.includes(d.look) : LETHAL_LOOKS.includes(d.look)) out.push({ name: 'drop.look-lies', setting: st.setting, at, line: `the ${isLethal(d) ? 'lethal' : 'soft'} drop at x ${at.x0}..${at.x1} is drawn as ${d.look}` });
+    const end = isLethal(d) ? 'lethal' : d.ends.kind === 'heart' ? 'heart' : 'soft';
+    if (!LOOKS[end].includes(d.look)) out.push({ name: 'drop.look-lies', setting: st.setting, at, line: `the ${end} drop at x ${at.x0}..${at.x1} is drawn as ${d.look}` });
   }
   return out;
 }
