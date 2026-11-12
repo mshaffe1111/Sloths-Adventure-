@@ -500,3 +500,8 @@ lines); Matt sees them in the release.
   first LEVEL-BAR.md draft by 1 PM, then builds to it, pushing every 30 min. P13 (Opus high, session_01FhBbYLQMBLSzszj1sXmkwV,
   t-13-proof) does only the plumbing beside it (bots + trap handle, flown rows, seed list, the "excuse me" moment), merging W1C's heads,
   never touching the design. If Fable runs out before Matt's reset, Opus builds from 1-3.md.
+- 2026-11-12 12:29-12:34 PM ET, Matt sent his own painted hive sheet (6 frames, magenta key: intact -> aftermath), saved at
+  reference/art/matt/2026-11-12-hive-break-sheet.jpg; "It doesn't have to be used. That's up to you." The lead's call: frame 1 = the
+  hanging hive, frame 2 (one crack) = the landed hive, which stays whole (the story keeper's ruling holds); one bee cropped as a sprite
+  for 3-5 code-drawn bees that circle the snake (the reason it glides off) and drift away, never near Pokey. ART-W1 stops painting a
+  hive on Hugging Face (saves GPU) and cuts Matt's.
