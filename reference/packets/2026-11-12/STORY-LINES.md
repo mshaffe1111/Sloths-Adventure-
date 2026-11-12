@@ -38,3 +38,14 @@ is never bested by force: after two empty passes it flies off.
 "Clear the branches. Shake a vine and the snakes glide off."
 Each line is taught once and is then silent (one tip, one channel). The first-trap reaction "Off he glides, not a scratch, just very
 offended!" stays as written.
+
+## 1-3 testers' survey chips (ctestStretches.ts; 1:40 PM ET). Lower case, "the ...", like 1-1's chips
+| W1C working name | Chip label |
+|---|---|
+| the first hive | the first hive |
+| the watching snake | the snake on watch |
+| the stone on the stair | the stone on the steps |
+| the bare branches | the branches with no vine |
+| the high perch | the high branch |
+| three traps in a row | three traps in a row |
+| the last two snakes | the last two snakes |
