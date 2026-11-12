@@ -14,8 +14,9 @@ import type { PlanSlot } from './types.ts';
 /** a move as the player really makes it (reach.md §1: hold, flick, the Pad's tap). The builder judges with the flick, never the hold */
 export type ReachMove = 'single-flick' | 'single-hold' | 'single-tap' | 'double-flick' | 'double-hold' | 'double-tap-tap' | 'bounce' | 'bounce-air';
 
-/** where a flown row holds (reach.md scope): 1-1 on Normal, any stage on Easy; Normal from stage 25 was not flown and has no row */
-export type ReachScope = 'normal-1-1' | 'easy-any';
+/** where a flown row holds (reach.md scope): one stage's flight on Normal (`normal-<its id>`, worlds/flownArcs.ts), any stage on Easy;
+ *  a stage never flown on Normal has no row */
+export type ReachScope = `normal-${string}` | 'easy-any';
 
 /** one row of reach.md §2, per setting: every figure flown, px. A stage outside every scope has no arc and its roll fails `reach.unflown` */
 export interface FlownArc {
