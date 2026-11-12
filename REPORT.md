@@ -60,7 +60,7 @@ Branch `t-engine-clock`, base `origin/t-engine-yield` @347d50fa. No PR. Nothing 
 3. The rising tide's held clock, then move it behind a frozen-oracle test like the others.
 
 ## STILLNESS (the lead's follow-on, 9:03 PM ET; MAP-REVISIONS §1 and §8)
-- **`src/game/stillness.ts`** (pure, 90 lines; not imported by the game yet, so 0 bytes shipped: main JS still 3,995,403).
+- **`src/game/stillness.ts`** (pure, 87 lines; not imported by the game yet, so 0 bytes shipped: main JS still 3,995,403).
   - The state: `stepStill` / `isStill` / `calm`. Still = on the ground at or under 25 px/s, or holding a vine without climbing (a
     liana's swing may carry him); never in the air. It takes `calmIn` to come in (Normal 0.5 s, Easy 0.35 s, in `STILLNESS`) and is
     gone the frame he moves. `calm` 0..1 is the tell the art lane will draw. No art, no player words.
