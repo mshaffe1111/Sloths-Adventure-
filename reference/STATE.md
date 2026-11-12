@@ -505,3 +505,6 @@ lines); Matt sees them in the release.
   hanging hive, frame 2 (one crack) = the landed hive, which stays whole (the story keeper's ruling holds); one bee cropped as a sprite
   for 3-5 code-drawn bees that circle the snake (the reason it glides off) and drift away, never near Pokey. ART-W1 stops painting a
   hive on Hugging Face (saves GPU) and cuts Matt's.
+- 2026-11-12 12:55 PM ET: W1C built 1-3 to its design (20c735fc): 480/480 rolls clean, the same 13 beats, 198 s. The lead chose (B):
+  Matt plays the REAL game tonight, 1-3 moved into World 1's shipped kit (hand-built 1-3 deleted), never a page-hack preview. Normal
+  runs hotter (awake snakes from beat 6 on, by data). R-165.148 (painted snake glide pose), R-165.149 (camera lead upright) named.
