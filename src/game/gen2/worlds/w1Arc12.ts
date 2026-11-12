@@ -92,14 +92,14 @@ const join = (...ls: Lay[]): Lay => ({ pieces: ls.flatMap((l) => l.pieces), sock
 const breath = (l: Lay, n: number): Lay => {
   const pieces = [...l.pieces], sockets = [...l.sockets];
   const last = () => pieces.filter((p) => p.place.kind !== 'on').at(-1)!.key;
-  for (let j = 0; j < n; j++) { const k = `y${j}`; pieces.push(led(k, last(), LEDGE, j % 2 ? DOWN : UP)); sockets.push(low(`p${k}`, k, [0.3, 0.7])); }
-  if (n % 2) { pieces.push(led('yz', last(), LEDGE, DOWN)); sockets.push(low('pyz', 'yz', [0.3, 0.7])); }
+  for (let j = 0; j < n; j++) { const k = `y${j}`; pieces.push(led(k, last(), LEDGE, j % 2 ? DOWN : UP)); if (j % 2) sockets.push(low(`p${k}`, k, [0.45, 0.7])); }
+  if (n % 2) { pieces.push(led('yz', last(), LEDGE, DOWN)); sockets.push(low('pyz', 'yz', [0.45, 0.7])); }
   return { pieces, sockets };
 };
 /** a chain beat's lay: the chain, its bank out, petals low on the floor bank and the bank out (never over a cap or a stump he bounces past) */
 const chainLay = (steps: number[], pw: number, outW: R2 = [320, 380]): Lay => {
   const c = chain('k', null, steps, pw);
-  return { pieces: [...c.pieces, out('z', c.last, outW)], sockets: [low('pa', 'kf', [0.2, 0.5]), low('pz', 'z', [0.4, 0.7])] };
+  return { pieces: [...c.pieces, out('z', c.last, outW)], sockets: [low('pa', 'kf', [0.2, 0.5]), low('pz', 'z', [0.55, 0.8])] };
 };
 /**
  * The hollow where no thorns grow (the twist): two root steps down (80-90 px each, walk-offs that land with margin), its floor (a
@@ -107,14 +107,14 @@ const chainLay = (steps: number[], pw: number, outW: R2 = [320, 380]): Lay => {
  * from the cap: chain.md §1), a floor mushroom that lifts him out, 1-1's lift. No gap anywhere: nothing to fall into, nothing lost.
  * Meeca's note goes low on this floor, 100-150 px before the mushroom, once it is painted and a find kind lays it (the lead, 11-12)
  */
-function hollow(k: string, after: string, floorW: R2): Lay {
+function hollow(k: string, after: string, floorW: R2, long = true): Lay {
   const s = `${k}s`, f = `${k}f`, r = `${k}r`, m = `${k}m`, b = `${k}b`, w = (floorW[0] + floorW[1]) / 2;
   return {
-    pieces: [led(s, after, [200, 230], [80, 90]), led(f, s, floorW, [80, 90]),
-      { key: r, shape: 'block', w: [120, 150], place: { kind: 'on', on: f, at: [0.2, 0.26], h: [50, 56] }, style: 'moss_stone', landing: true },
+    pieces: [led(s, after, [150, 170], [80, 90]), led(f, s, floorW, [80, 90]),
+      { key: r, shape: 'block', w: [120, 150], place: { kind: 'on', on: f, at: [0.48, 0.53], h: [50, 56] }, style: 'moss_stone', landing: true },
       { key: m, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on: f, at: [1 - 45 / (w - 70), 1 - 30 / (w - 70)], h: [30, 30] } },
       led(b, f, [400, 440], [-180, -170])],
-    sockets: [low(`p${k}s`, s, 0.5, 1), low(`p${k}f`, f, [0.1, 0.16]), low(`p${k}r`, r, 0.5, 1), low(`p${k}g`, f, [0.56, 0.66]), low(`p${k}b`, b, [0.4, 0.7])],
+    sockets: [low(`p${k}s`, s, [0.7, 0.8], 1), ...(long ? [low(`p${k}f`, f, [0.15, 0.22]), low(`p${k}g`, f, [0.8, 0.84])] : []), low(`p${k}r`, r, 0.5, 1), low(`p${k}b`, b, [0.78, 0.86])],
   };
 }
 
@@ -141,7 +141,7 @@ export const BEATS_12: SectionTemplate[] = [
   brick({ id: 'w1-12-lesson', name: 'the lesson: the thorns, then two caps on wide stumps', jobs: ['teach'], content: 'hazard', difficulty: 3, teaches: 'thorns', versions: [(() => {
     const c = chain('k', 'show', [0, 0], E, [440, 480]);
     const lay: Lay = { pieces: [led('a', null, [460, 500]), hump('ar', 'a', [0.8, 0.86]), led('show', 'a', [260, 280], UP), ...c.pieces, out('z', c.last, [460, 520])],
-      sockets: [tip('a', 'thorns', 0.25), tip('show', 'thorns.then', 0.5), low('par', 'ar', 0.5, 1), low('ps', 'show', [0.3, 0.7]), low('pz', 'z', [0.3, 0.6])] };
+      sockets: [tip('a', 'thorns', 0.25), tip('show', 'thorns.then', 0.5), low('pa', 'a', [0.5, 0.6]), low('ps', 'show', [0.66, 0.78]), low('pz', 'z', [0.55, 0.8])] };
     return { id: 'two-wide', lay: breath(lay, 2) };
   })()] }),
   // [P] again: three caps, still on wide stumps (the lesson's safety kept until the test) | two
@@ -153,7 +153,7 @@ export const BEATS_12: SectionTemplate[] = [
       const c = chain('k', null, Array(n).fill(60), E);
       const h = n * 60, half: R2 = [Math.round(h / 2) - 4, Math.round(h / 2) + 4];
       return { pieces: [...c.pieces, out('z', c.last, [420, 480]), hump('zr', 'z', [0.66, 0.72], [40, 46]), led('d0', 'z', [240, 260], half), led('d1', 'd0', [240, 260], half)],
-        sockets: [tip('kf', UP_LINE, 0.2), low('pa', 'kf', [0.15, 0.4]), low('pz', 'z', [0.15, 0.5]), low('pzr', 'zr', 0.5, 1), low('pd0', 'd0', 0.5, 1), low('pd1', 'd1', [0.4, 0.6])] };
+        sockets: [tip('kf', UP_LINE, 0.2), low('pa', 'kf', [0.15, 0.4]), low('pz', 'z', [0.4, 0.5]), low('pd0', 'd0', [0.72, 0.84], 1), low('pd1', 'd1', [0.6, 0.78])] };
     };
     return { id: 'stair', lay: breath(mk(3), 2), easy: breath(mk(2), 2) };
   })()] }),
@@ -163,20 +163,20 @@ export const BEATS_12: SectionTemplate[] = [
   // out. Dot's "There's something down by the roots..." is said here only once Meeca's note (the Keeper's Bell, finds.ts w1_note) is
   // laid on this floor by a find-spot mark (P12S's, the lead 11-12): she never promises something over an empty floor
   brick({ id: 'w1-12-hollow', name: 'the twist: the hollow where no thorns grow', jobs: ['twist'], content: 'ground', difficulty: 4, versions: [(() => {
-    const lip: Lay = { pieces: [led('a', null, [340, 380]), hump('ar', 'a', [0.3, 0.36])], sockets: [low('par', 'ar', 0.5, 1)] };
+    const lip: Lay = { pieces: [led('a', null, [340, 380]), hump('ar', 'a', [0.62, 0.68])], sockets: [low('par', 'ar', 0.5, 1)] };
     return { id: 'down-and-up', lay: breath(join(lip, hollow('h', 'a', [860, 920])), 2) };
   })()] }),
   // [S] the long crossing, the signature: four caps, HER ISLAND (a root bank in the thorns, a petal row, its own floor mushroom), four
   // caps | two, island, two, island, two (chain.md: Easy two either side of an island)
   brick({ id: 'w1-12-crossing', name: 'the long crossing by her island', jobs: ['signature'], content: 'bounce', difficulty: 7, thorns: true, maxPerStage: 1, versions: [(() => {
     const mk = (runs: number, n: number, pw: number): Lay => {
-      const pieces: SectionPiece[] = [], sockets: Socket[] = [low('pa', 'c0f', [0.2, 0.5])];
+      const pieces: SectionPiece[] = [], sockets: Socket[] = [];
       let prev: string | null = null;
       for (let i = 0; i < runs; i++) {
         const c = chain(`c${i}`, prev, Array(n).fill(0), pw);
-        pieces.push(...c.pieces);
-        if (i < runs - 1) { const y = `i${i}`; pieces.push(out(y, c.last, [300, 340])); sockets.push({ ...low(`p${y}`, y, [0.2, 0.8], 3), span: 240 }); prev = y; }
-        else { pieces.push(out('z', c.last, [420, 480])); sockets.push({ ...low('pz', 'z', [0.2, 0.8], 3), span: 240 }); }
+        pieces.push(...c.pieces); sockets.push(low(`pf${i}`, `c${i}f`, [0.2, 0.45]));
+        if (i < runs - 1) { const y = `i${i}`; pieces.push(out(y, c.last, [300, 340])); sockets.push({ ...low(`p${y}`, y, [0.62, 0.72], 3), span: 180 }); prev = y; }
+        else { pieces.push(out('z', c.last, [420, 480])); sockets.push({ ...low('pz', 'z', [0.62, 0.72], 3), span: 180 }); }
       }
       return { pieces, sockets };
     };
@@ -186,11 +186,11 @@ export const BEATS_12: SectionTemplate[] = [
   brick({ id: 'w1-12-finale', name: 'the finale: over, down, up', jobs: ['combine'], content: 'climb', difficulty: 6, thorns: true, versions: [(() => {
     const mk = (n: number, rise: number, pw: number): Lay => {
       const c1 = chain('k', null, Array(n).fill(0), pw);
-      const h = hollow('h', 'b', [560, 620]);
+      const h = hollow('h', 'b', [560, 620], false);
       const c2 = chain('q', 'hb', Array(rise).fill(27), pw);
       const up = rise * 27;
       return { pieces: [...c1.pieces, out('b', c1.last, [320, 360]), ...h.pieces, ...c2.pieces, out('t', c2.last, [380, 420]), led('z', 't', [300, 340], [up - 3, up + 3])],
-        sockets: [low('pa', 'kf', [0.2, 0.5]), low('pb', 'b', [0.3, 0.7]), ...h.sockets, { ...low('pt', 't', [0.2, 0.8], 3), span: 240 }, low('pz', 'z', [0.4, 0.6], 1)] };
+        sockets: [low('pa', 'kf', [0.2, 0.5]), low('pb', 'b', [0.6, 0.75]), ...h.sockets, low('pq', 'qf', [0.2, 0.45]), { ...low('pt', 't', [0.62, 0.72], 3), span: 160 }, low('pz', 'z', [0.6, 0.7], 1)] };
     };
     return { id: 'over-down-up', lay: mk(3, 2, N), easy: mk(2, 2, E) };
   })()] }),
@@ -206,28 +206,28 @@ const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V
 export const QUIET_12: SectionTemplate[] = [
   // [A] the walk in: a long root bank, three roots across it, petals low. Nothing here can hurt (the thorns' clearStart is 1,300 px)
   link({ id: 'w1-12-arrival', name: 'the walk in along the root banks, in the rain', job: 'arrive', versions: [
-    { id: 'roots', lay: { pieces: [led('a', null, [1300, 1380]), hump('r0', 'a', [0.3, 0.34], [40, 46]), hump('r1', 'a', [0.58, 0.62]), hump('r2', 'a', [0.86, 0.9], [40, 46]), led('z', 'a', [260, 300])], sockets: [low('pa', 'a', [0.12, 0.2]), low('pr0', 'r0', 0.5, 1), low('pr1', 'r1', 0.5, 1), low('pr2', 'r2', 0.5, 1), low('pz', 'z', [0.4, 0.6], 1)] } },
+    { id: 'roots', lay: { pieces: [led('a', null, [1300, 1380]), hump('r0', 'a', [0.3, 0.34], [40, 46]), hump('r1', 'a', [0.58, 0.62]), hump('r2', 'a', [0.86, 0.9], [40, 46]), led('z', 'a', [260, 300])], sockets: [low('pa', 'a', [0.12, 0.18]), low('pr0', 'r0', 0.5, 1), low('pr1', 'r1', 0.5, 1), low('pr2', 'r2', 0.5, 1), low('pz', 'z', [0.5, 0.7])] } },
   ] }),
   // [R] mossy root steps, up and down twice, a root at the end
   link({ id: 'w1-12-root-steps', name: 'a rest: mossy root steps up and down', job: 'rest', versions: [
-    { id: 'steps', lay: { pieces: [led('a', null, [300, 340]), led('b', 'a', LEDGE, UP), led('c', 'b', LEDGE, DOWN), led('d', 'c', LEDGE, UP), led('e', 'd', LEDGE, DOWN), led('z', 'e', [220, 240]), hump('zr', 'z', [0.4, 0.5], [40, 46])], sockets: [low('pb', 'b', 0.5), low('pc', 'c', 0.5), low('pd', 'd', 0.5), low('pe', 'e', 0.5), low('pzr', 'zr', 0.5, 1)] } },
+    { id: 'steps', lay: { pieces: [led('a', null, [300, 340]), led('b', 'a', LEDGE, UP), led('c', 'b', LEDGE, DOWN), led('d', 'c', LEDGE, UP), led('z', 'd', [300, 320], DOWN)], sockets: [low('pa', 'a', [0.3, 0.5]), low('pc', 'c', [0.45, 0.7]), low('pz', 'z', [0.4, 0.66])] } },
   ] }),
   // [R] over the roots: three across one long bank
   link({ id: 'w1-12-root-hump', name: 'a rest: over the roots', job: 'rest', versions: [
-    { id: 'three-roots', lay: { pieces: [led('a', null, [1000, 1080]), hump('r', 'a', [0.12, 0.16], [40, 46]), hump('s', 'a', [0.48, 0.54]), hump('t', 'a', [0.84, 0.88], [40, 46]), led('z', 'a', [200, 220])], sockets: [low('pr', 'r', 0.5, 1), low('ps', 's', 0.5, 1), low('pt', 't', 0.5, 1), low('pa', 'a', [0.64, 0.72]), low('pz', 'z', 0.5, 1)] } },
+    { id: 'three-roots', lay: { pieces: [led('a', null, [1000, 1080]), hump('r', 'a', [0.1, 0.14], [40, 46]), hump('s', 'a', [0.44, 0.5]), hump('t', 'a', [0.78, 0.82], [40, 46]), led('z', 'a', [260, 280])], sockets: [low('pr', 'r', 0.5, 1), low('ps', 's', 0.5, 1), low('pt', 't', 0.5, 1), low('pz', 'z', [0.35, 0.65])] } },
   ] }),
   // [R] the dry dip between the roots: down a little, a root in it, up again
   link({ id: 'w1-12-root-dip', name: 'a rest: the dry dip between the roots', job: 'rest', versions: [
-    { id: 'dip', lay: { pieces: [led('a', null, [300, 340]), hump('ar', 'a', [0.2, 0.26], [40, 46]), led('m', 'a', [460, 520], [36, 44]), hump('r', 'm', [0.5, 0.56], [40, 46]), led('b', 'm', [300, 340], [-44, -36]), led('z', 'b', [220, 240]), hump('zr', 'z', [0.4, 0.5], [40, 46])], sockets: [low('par', 'ar', 0.5, 1), low('pr', 'r', 0.5, 1), low('pb', 'b', [0.3, 0.7]), low('pzr', 'zr', 0.5, 1)] } },
+    { id: 'dip', lay: { pieces: [led('a', null, [300, 340]), hump('ar', 'a', [0.2, 0.26], [40, 46]), led('m', 'a', [460, 520], [36, 44]), hump('r', 'm', [0.5, 0.56], [40, 46]), led('b', 'm', [240, 260], [-44, -36]), led('z', 'b', [280, 300])], sockets: [low('par', 'ar', 0.5, 1), low('pr', 'r', 0.5, 1), low('pb', 'b', [0.6, 0.75], 1), low('pz', 'z', [0.35, 0.65])] } },
   ] }),
   // [R] mossy stones to hop on one long bank
   link({ id: 'w1-12-stones', name: 'a rest: mossy stones to hop', job: 'rest', versions: [
-    { id: 'stones', lay: { pieces: [led('a', null, [1100, 1180]), hump('s0', 'a', [0.12, 0.15], [34, 40]), hump('s1', 'a', [0.5, 0.54], [44, 50]), hump('s2', 'a', [0.86, 0.9], [34, 40]), led('z', 'a', [200, 220])], sockets: [low('ps0', 's0', 0.5, 1), low('ps1', 's1', 0.5, 1), low('ps2', 's2', 0.5, 1), low('pa', 'a', [0.66, 0.74]), low('pz', 'z', 0.5, 1)] } },
+    { id: 'stones', lay: { pieces: [led('a', null, [1100, 1180]), hump('s0', 'a', [0.12, 0.15], [34, 40]), hump('s1', 'a', [0.46, 0.5], [44, 50]), hump('s2', 'a', [0.78, 0.82], [34, 40]), led('z', 'a', [260, 280])], sockets: [low('ps0', 's0', 0.5, 1), low('ps1', 's1', 0.5, 1), low('ps2', 's2', 0.5, 1), low('pz', 'z', [0.35, 0.65])] } },
   ] }),
   // [R] through World 1's painted hollow log (walk through it, or hop up for the petals on its back), a root either side
   link({ id: 'w1-12-hollow-log', name: 'a rest: through the hollow log', job: 'rest', versions: [(() => {
     const hh = hollowLogSize('moss', 300).height;
-    return { id: 'log', lay: { pieces: [led('a', null, [1060, 1120]), hump('r0', 'a', [0.06, 0.1], [40, 46]), { key: 'H', shape: 'hollow', w: [300, 300], place: { kind: 'on', on: 'a', at: [0.4, 0.42], h: [hh, hh] }, landing: true } as SectionPiece, hump('r1', 'a', [0.86, 0.9]), led('z', 'a', [200, 220])], sockets: [low('pr0', 'r0', 0.5, 1), low('pH', 'H', [0.3, 0.7]), low('pr1', 'r1', 0.5, 1), low('pz', 'z', 0.5, 1)] } };
+    return { id: 'log', lay: { pieces: [led('a', null, [1060, 1120]), hump('r0', 'a', [0.06, 0.1], [40, 46]), { key: 'H', shape: 'hollow', w: [300, 300], place: { kind: 'on', on: 'a', at: [0.4, 0.42], h: [hh, hh] }, landing: true } as SectionPiece, hump('r1', 'a', [0.78, 0.82]), led('z', 'a', [260, 280])], sockets: [low('pr0', 'r0', 0.5, 1), low('pa', 'a', [0.31, 0.35]), low('pr1', 'r1', 0.5, 1), low('pz', 'z', [0.35, 0.65])] } };
   })()] }),
 ];
 /** the way out: a calm walk on a root bank to the totem, the last petal low on the bark (the story: "where you would not have to look up") */
