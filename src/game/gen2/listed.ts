@@ -6,6 +6,7 @@
 import { hasSeedList, plantSeedList } from './seedList.ts';
 import { STAGE_TABLE } from './worlds/stageTable.ts';
 import { w1World } from './worlds/w1.ts';
+import { kitLib12 } from './worlds/w1Arc12.ts';
 import { JUDGED } from './reach.ts';
 import type { WorldKit } from './types.ts';
 import type { ReachScope } from './verdicts.types.ts';
@@ -21,8 +22,8 @@ export interface ListedStage {
   pick?: true;
 }
 
-/** the world kits a row names (worlds/stageTable.ts `kit`) */
-const KITS: Record<string, () => WorldKit> = { w1: w1World };
+/** the world kits a row names (worlds/stageTable.ts `kit`); 'w1-12' is World 1's with 1-2's manifest-wide rows over it (w1Arc12.ts) */
+const KITS: Record<string, () => WorldKit> = { w1: w1World, 'w1-12': () => kitLib12() };
 
 /** the rows, from the ONE stage table (worlds/stageTable.ts, world data): each stage's kit and its own flags */
 export const LISTED: Record<string, ListedStage> = Object.fromEntries(Object.entries(STAGE_TABLE).map(([id, r]) => [id, {

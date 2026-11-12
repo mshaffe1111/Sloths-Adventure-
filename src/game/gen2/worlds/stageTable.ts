@@ -14,8 +14,9 @@ import type { ReachScope } from '../verdicts.types.ts';
 import { FIRST_RUN_11 } from '../firstRun11.ts';
 
 export interface StageRow {
-  /** the world kit the stage is rolled from, by name (listed.ts KITS) */
-  kit: 'w1';
+  /** the world kit the stage is rolled from, by name (listed.ts KITS): a world's own, or a world's kit with one stage's rows over it
+   *  where they are manifest-wide (1-2's corridor room, thorn row and lessons: w1Arc12.ts kitLib12) */
+  kit: 'w1' | 'w1-12';
   /** its finish dresses squirrels (a roll where too few find a spot is never listed) */
   squirrels?: true;
   /** it has a fixed first run, held to its lock */
@@ -31,7 +32,8 @@ export interface StageRow {
 export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   // (1-1's stand-in is its fixed first run, firstRun11.ts, locked by `seedlist 1-1 --check`; seedList.test.ts holds it to the list's entry)
   '1-1': { kit: 'w1', squirrels: true, firstRun: true, pick: true, judged: 'normal-1-1', standIn: { seed: FIRST_RUN_11.seed, rerolls: FIRST_RUN_11.rerolls, plan: FIRST_RUN_11.plan, foes: FIRST_RUN_11.foes ?? [] } },
-  '1-2': { kit: 'w1', judged: 'normal-1-2' },
+  // (1-2 The Petal Trail: the piece library's roll F12 judged, w1Arc12.ts; the game rolls it, the hand-built 1-2 is deleted)
+  '1-2': { kit: 'w1-12', judged: 'normal-1-2' },
   // (1-3 Branch Snakes: the designed arc, w1Arc13.ts. Not judged yet: its flown rows and its seed list are owed)
   '1-3': { kit: 'w1' },
 };
