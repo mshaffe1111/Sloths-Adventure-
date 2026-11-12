@@ -396,3 +396,7 @@ different.
   travels.)
 - :122 becomes "Could not save it on this device." (the APK has no browser)
 - the load note ends "...with this save." (the same text shows for a pasted code)
+
+**CANON (Matt, 11-12): Pokey's full name is Pocono**, after Matt's cat. Pokey and Meeca are named for two of Matt's cats, who did
+everything together, and a little of how they act comes from them. Never mention the cats having passed. The About opening (in
+STORY-LINES 11-12) carries this fact.

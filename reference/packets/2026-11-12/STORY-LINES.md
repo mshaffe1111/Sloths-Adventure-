@@ -158,3 +158,18 @@ my wife and me"), exactly as drafted. Still open:
 
 The line uses the game's spelling, Meeca ("Mika" was speech-to-text). If the cat's own name was spelled differently, the line still
 reads true, because it names the characters, not the cats.
+
+**FINAL opening (3:34 PM ET; APPROVED, pending Matt's look):**
+
+> **How Sloths began**
+> Sloths started as a conversation between my wife and me: what would a game about a sloth be like?
+> Pokey (Pocono, really) and Meeca are named after two of our cats, who did everything together. A little of how they act is theirs, too.
+>
+> **What's ours**
+> Pokey, Meeca, Dot and everyone they meet.
+> Their story, from the first petal to the last letter, and Pokey's journal.
+> Ten rainforest worlds, and every level in them.
+> A hero whose stillness is his strength.
+> The art, made for this game in its own style.
+
+"two of our cats" replaces "two cats we had" so it doesn't touch on the cats having passed (Matt: "we don't have to get into that").
