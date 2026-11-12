@@ -27,6 +27,8 @@ M=[
  ("dive called off by running", "if (def.callsOff && (sweep ? hidden : !saw)) {", "if (def.callsOff && !(sweep ? sees(def, s, hero) : saw)) {"),
  ("a guard can be punched (check)", "if (def.habit === 'guard' && (def.beatenBy.stomp || def.beatenBy.punch))", "if (false)"),
  ("noise lure ignores its ground", "        const g = clamp(s.goalX, s.minX, s.maxX);\n        const walk", "        const g = s.goalX;\n        const walk"),
+ ("a punch never knocks it off its branch end", "if (dir && (nx < s.minX || nx > s.maxX)) {", "if (false) {"),
+ ("a punch shoves it toward him", "(fromX < s.x ? 1 : -1) : 0;", "(fromX < s.x ? -1 : 1) : 0;"),
  ("behind works from the front", "if (o.when === 'behind' && !(fromX !== undefined && (fromX - s.x) * s.facing < 0)) return false;", ""),
  ("no pause in the gait", "      if (paused(def, s)) v = 0;", ""),
  ("the pause is not open", "|| s.phase === 'stunned' || paused(def, s);", "|| s.phase === 'stunned';"),

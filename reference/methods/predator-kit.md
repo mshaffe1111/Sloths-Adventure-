@@ -1,5 +1,5 @@
 # Method: a creature on the predator kit (a new animal, or changing one)
-Last proven: 2026-11-11, t-engine-predators, 13 animals as data on one machine (EN-P). Owner of the last update: EN-P.
+Last proven: 2026-11-12, t-w1-creatures, the snake and drop traps in the real engine (W1C); 11-11, 13 animals as data (EN-P). Owner of the last update: W1C.
 ## When to use it
 Any creature that can hurt, block or chase Pokey. Design: `reference/design/PREDATORS.md`. Code: `src/game/predators/`.
 ## Steps
@@ -20,7 +20,27 @@ Any creature that can hurt, block or chase Pokey. Design: `reference/design/PRED
 `npx tsc --noEmit -p .`; `npx tsx --test src/game/predator*.test.ts`; the planted faults; the stage lock recorded at the base and
 checked after (`tools/engine/lockall.ts --layouts 2`); `npx tsx tools/engine/seedlist.ts 1-1 --check`; `npx vite build` and the main
 JS bytes against the base. When an animal is wired into a stage, the whole gate list applies and it is judged on the phone.
+## Wiring a cast into a stage (W1C, 11-12: the snake and drop traps run in the real engine)
+1. **The stage names its cast in its BRIEF** (`GraphBrief.cast: ['snake']`); the pipeline writes `proto.cast = { kinds, traps }` on
+   the built stage (`castOf`), and only then. The engine's `startCast()` hands every animal of a named kind to `castPlay.ts`
+   (`CastPlay`): the kit steps it; `predatorAI.ts` never does (`if (e.kit) continue`). No cast named: nothing changes (the lock).
+2. **A new kind a cast may name** goes in `predators/registry.ts` (as it plays in that world, `inWorld`) and needs a `CreatureDef`
+   row in its world's cast file (`gen2/worlds/w1Cast.ts`; a sleeper is its own row with `extra: { asleep: true }`).
+3. **A drop trap is a prop PAIR** (the load is the receptor on the animal's ground, the handle the source; both sockets `dn: 0`):
+   `W1_TRAP_PAIRS`, 150-190 px apart. `W1_TRAP_EMIT` writes `proto.cast.traps`. The machine is `dropTrap.ts`; the art `castArt.ts`.
+4. **Proof in the real engine:** `castEngine.test.ts` (engineCoreHarness; the arena is planted, the cast started by the engine's own
+   start) and `castPlay.test.ts` (no engine), then `python3 reference/qa-reports/W1C/planted-faults.py`: every fault CAUGHT.
+5. **On the phone:** `tools/engine/runs/trap-stills.mjs <port> <out> <prefix> <stage> <layout> [trap]` (needs
+   `PW=/opt/node-tools/node_modules/playwright/index.mjs` here): before, the trap, the glide, after, upright and sideways. It only
+   writes a still when the engine says the thing it is named for is true on that frame.
 ## Pitfalls we already paid for
+- 11-12: a handle 230 px from its load put the hive half off an upright phone and the snake out of sight. An upright phone shows
+  about 425 px of stage with him a third of the way in: 190 px is the most a handle may stand from its load.
+- 11-12: in the page a raw `input.state.punchPressed = true` is cleared before the engine reads it; a tool punches with
+  `input.triggerTouchPunch()`. (The engine test's PlainInput takes the raw flag.)
+- 11-12: the first 8 real-engine tests passed and 2 of 23 planted faults SURVIVED (the test started the cast itself; the snake does
+  not read stillness). A wiring test must let the engine's own start do the wiring, and each input the kit takes needs an animal
+  that reads it (the boa for stillness).
 - 11-11: tests under `src/game/predators/` are NOT run by the repo's test command (it lists folders, not subfolders). Kit tests live
   at `src/game/predator*.test.ts`.
 - 11-11: a test that imports helpers from another test file runs that file's tests twice. Shared helpers go in `fixtures.ts`.

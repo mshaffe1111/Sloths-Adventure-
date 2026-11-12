@@ -28,6 +28,7 @@ import { skillGuaranteedAt } from '../skills.ts';
 import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
+import { trapFaults } from '../dropTrap.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
@@ -687,6 +688,13 @@ function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, 
       if (c && c !== 'structural') fixed.set(i, c);
     }
   }
+  // (a designed graph, GraphBrief.dealExact: a node whose job ONE type of section alone serves in this stage's pool is that type.
+  // The roll has nothing to choose there, and a type dealt at random would be one the node's only section cannot fill)
+  if (brief.dealExact) for (const { n, i } of slots) {
+    if (fixed.has(i)) continue;
+    const served = new Set(M.sections.filter((t) => t.jobs?.includes(n.job!) && t.content && t.content !== 'structural').map((t) => t.content as ContentType));
+    if (served.size === 1) fixed.set(i, [...served][0]);
+  }
   const types = [...new Set([...(Object.keys(shares) as ContentType[]).filter((t) => (shares[t] ?? 0) > 0), ...fixed.values()])];
   const sum = types.reduce((a, t) => a + (shares[t] ?? 0), 0);
   // (largest remainder, then the jitter: one node moved from one type to another on half the seeds)
@@ -702,7 +710,9 @@ function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, 
     deal.set(most, deal.get(most)! - 1);
     deal.set(t, deal.get(t)! + 1);
   }
-  if (types.length > 1 && r() < 0.5) {
+  // (a designed graph, GraphBrief.dealExact: no jitter. The `&&` keeps every other stage's stream as it was: `r()` is drawn exactly
+  // where it always was, and never for a brief that asks for its deal exact)
+  if (types.length > 1 && !brief.dealExact && r() < 0.5) {
     const from = types.filter((t) => deal.get(t)! > fixedN(t)), to = types.filter((t) => (shares[t] ?? 0) > 0);
     const a = from[Math.floor(r() * from.length)], b = to[Math.floor(r() * to.length)];
     if (a && b && a !== b) { deal.set(a, deal.get(a)! - 1); deal.set(b, deal.get(b)! + 1); }
@@ -2742,6 +2752,11 @@ function topUpFoes(
   return out;
 }
 
+/** the cast record a built stage carries: only when its brief names a cast (nothing is written on any other stage) */
+function castOf(kinds: readonly string[] | undefined, proto: ProtoExtras): { cast?: NonNullable<ProtoExtras['cast']> } {
+  return kinds?.length ? { cast: { ...proto.cast, kinds: [...kinds], traps: proto.cast?.traps ?? [] } } : {};
+}
+
 function makeEnemy(c: CreatureDef, x: number, top: number, patch: [number, number], id: number, soften: boolean): Enemy {
   return {
     id,
@@ -2895,7 +2910,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     ...(sink.zones.length ? { zones: sink.zones } : {}),
     ...(laid.heartFalls.length ? { heartFalls: laid.heartFalls } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
-    proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}),
+    // (a brief that names a cast: the kinds the kit runs, with whatever drop traps the stage's props laid, castPlay.types.ts)
+    proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}, castOf(req.kit.manifest.graphs?.briefs?.[budget.id]?.cast, proto)),
     meta: { attempt: seed, chunks: laid.sections.map((s) => s.template), width: laid.width, pieces: laid.sections.map((s) => ({ k: s.template, x0: R(s.x0), x1: R(s.x1), beat: s.phase })) },
     gen2: meta,
   };
@@ -3239,6 +3255,9 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   const st = buildRolled(req);
   applyVerdicts(st, req);
   st.gen2.errors = rollErrors(st.gen2);
+  // (a stage that names a cast: every drop trap is in plain view and worth using, or the roll is refused by name, dropTrap.ts)
+  const traps = st.proto.cast?.traps;
+  if (traps?.length) st.gen2.errors.push(...trapFaults(traps, st.collectibles.filter((c) => c.type === 'flower' || c.type === 'fruit'), st.enemies));
   // (the caller's own rules, BuildRequest.also: their lines with the rest, each once)
   for (const u of req.also?.(st, req.difficulty) ?? []) if (!st.gen2.errors.includes(u.line)) st.gen2.errors.push(u.line);
   return st;

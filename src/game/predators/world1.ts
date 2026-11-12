@@ -12,7 +12,9 @@ const EASY = { tell: 1.3, cool: 1.5, speed: 0.85 } as const;
 
 /**
  * The Golden Tree Snake: it gives ground. It backs along its branch and strikes only when he crowds it or it runs out of branch.
- * The real one is the "flying snake": chased off, it flattens and glides to a lower tree.
+ * The real one is the "flying snake": chased off, it flattens and glides to a lower tree. EVERY way of beating it ends so (Matt,
+ * 11-12): a punch at its branch end, a stomp, a kick, a drop trap. Only a punch mid-branch is not an ending: it shoves it along
+ * its branch and dazes it, and it is still his to deal with (which is what keeps the trap worth using).
  */
 export const SNAKE: PredatorDef = {
   kind: 'snake',
@@ -30,9 +32,11 @@ export const SNAKE: PredatorDef = {
   giveUp: 1.5,
   easy: EASY,
   beatenBy: {
-    punch: { ends: 'stunned', seconds: 2 },
+    // 70 px: a third of a short branch, so a snake he has crowded to the end goes off in one punch and one mid-branch in two or three
+    punch: { ends: 'stunned', seconds: 2, knock: 70 },
     trap: { ends: 'chasedOff' },
-    stomp: { ends: 'flees', seconds: 5 },
+    // (Matt, 11-12, R-165.141: however he beats it, it ends the same kind way, the glide, gone for good. A stomp was 'flees 5 s')
+    stomp: { ends: 'chasedOff' },
     kick: { ends: 'chasedOff' },
   },
   first: 'punch',

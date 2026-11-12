@@ -8,7 +8,8 @@ import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './pro
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { pick11, play11Seed, roll11Seed, withPlaySeed } from './testlink1_1.ts';
 import { builtOnArcs, linkArcs } from './gen2/reach.ts';
-import { buildPlayStage } from './gen2/seedList.ts';
+import { buildPlayStage, provenSeedFor, seedListReady } from './gen2/seedList.ts';
+import { listedStage, type ListedStage } from './gen2/listed.ts';
 import { w1Finish, w1World } from './gen2/worlds/w1.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
 import { dipWayOut } from './dipWayOut.ts';
@@ -2889,10 +2890,16 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // the new generator's stages (gen2/game.ts: 5-7 and 5-9): one of the curated rolls, then the shared passes below; and the test link's
   // 1-1 picker's gen2 rolls (testlink1_1.ts: QA builds only, World 1's kit gen2/worlds/w1.ts w1World, the roll's seed)
   const roll11 = gen2Roll11 ? pick11() : null;
-  if (isGen2Stage(config) || roll11) {
+  // (a LISTED stage that has no hand-built plan left is rolled from its world's kit, gen2/listed.ts: its listed seed's proven plan
+  // replayed when its list is in, else its stand-in, else the search from the layout's number. New replaces old: the stage's
+  // hand-built builder is deleted when its row is added)
+  const listed = listedRoll(config);
+  if (isGen2Stage(config) || roll11 || listed) {
     const seed11 = roll11 === 'A' || roll11 === 'B' || roll11 === 'C' ? roll11Seed(roll11) : play11Seed(layoutVariant ?? 1);
     // (Play: the listed seed's proven plan replayed, the planner's buildPlayStage, ~100 ms at CPU x4; a roll the same way)
-    const stage = roll11 ? w1Finish(buildPlayStage(config, w1World(), seed11, difficulty)) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
+    const stage = listed
+      ? w1Finish(buildPlayStage(config, listed.kit(), seedListReady(config.id) ? provenSeedFor(config.id, layoutVariant ?? 1) : layoutVariant ?? 1, difficulty), !!listed.squirrels)
+      : roll11 ? w1Finish(buildPlayStage(config, w1World(), seed11, difficulty)) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
     // (Easy's own goal for the stage, as the first-timer kid bot measured it: easyStage sets it, withGoals leaves it)
     const easyGoal = GEN2_STAGES[config.id]?.easyGoal;
     if (difficulty === 'easy' && easyGoal !== undefined) stage.easyGoal = Math.min(easyGoal, stage.enemies.length);
@@ -3099,5 +3106,9 @@ export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
  * the rest (1-1: gen2/rolledFlags, forks11, the quiet line, the standing kinds).
  */
 export function builtOnGen2(config: Pick<LevelConfig, 'id' | 'secret'>): boolean {
-  return isGen2Stage(config) || (config.id === '1-1' && !config.secret);
+  return isGen2Stage(config) || (config.id === '1-1' && !config.secret) || !!listedRoll(config);
+}
+/** a listed stage (gen2/listed.ts) with no hand-built plan: the game rolls it from its world's kit. Its row, or undefined */
+export function listedRoll(config: Pick<LevelConfig, 'id' | 'secret'>): ListedStage | undefined {
+  return config.secret || HAND_STAGES[config.id] ? undefined : listedStage(config.id);
 }
