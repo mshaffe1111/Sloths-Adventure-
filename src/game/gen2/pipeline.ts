@@ -28,6 +28,7 @@ import { skillGuaranteedAt } from '../skills.ts';
 import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
+import { trapFaults } from '../dropTrap.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
@@ -3169,6 +3170,9 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   const st = buildRolled(req);
   applyVerdicts(st, req);
   st.gen2.errors = rollErrors(st.gen2);
+  // (a stage that names a cast: every drop trap is in plain view and worth using, or the roll is refused by name, dropTrap.ts)
+  const traps = st.proto.cast?.traps;
+  if (traps?.length) st.gen2.errors.push(...trapFaults(traps, st.collectibles.filter((c) => c.type === 'flower' || c.type === 'fruit'), st.enemies));
   // (the caller's own rules, BuildRequest.also: their lines with the rest, each once)
   for (const u of req.also?.(st, req.difficulty) ?? []) if (!st.gen2.errors.includes(u.line)) st.gen2.errors.push(u.line);
   return st;

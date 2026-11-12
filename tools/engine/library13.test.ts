@@ -4,9 +4,10 @@
 //   npx tsx --test tools/engine/library13.test.ts          (about half a minute)
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CAST_13, TRAP_LINE, TWISTS, REFUSE_13, UNDER, kitLib13, poolReport, roll, stageIdOf, type Roll13 } from './library13.ts';
+import { CAST_13, TRAP_LINE, TWISTS, REFUSE_13, UNDER, config13, kitLib13, poolReport, roll, stageIdOf, type Roll13 } from './library13.ts';
 import { NEW_STOOD_IN, WAY_DOWN } from './library.ts';
-import { stagePool } from '../../src/game/gen2/pipeline.ts';
+import { buildGen2Stage, stagePool } from '../../src/game/gen2/pipeline.ts';
+type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 import { w1World } from '../../src/game/gen2/worlds/w1.ts';
 import { W1_CAST_CREATURES, W1_TRAP_PAIRS } from '../../src/game/gen2/worlds/w1Cast.ts';
 
@@ -86,4 +87,14 @@ test('arming: with w1Cast.ts\'s emitters alone Easy hangs loads over branches it
   assert.ok(raw.reduce((n, r) => n + r.noSnake, 0) > 0, 'the raw emitters left no load over nothing on these seeds: the reason for arming is gone, look again');
   assert.equal(rolls.easy.reduce((n, r) => n + r.noSnake + r.noHandle, 0), 0);
   raw.forEach((r, i) => assert.equal(r.traps.length - r.noSnake, rolls.easy[i].traps.length, `seed ${SEEDS[i]}: arming changed more than the empty loads`));
+});
+
+test('the plain-view rule is the builder\'s own: a pickup laid in front of a hung load refuses the roll by name', () => {
+  // (the same roll with one petal planted under its first trap's load, built again through the real builder)
+  const kit = kitLib13(O);
+  const k2 = { ...kit, emit: { ...kit.emit, 'trap-hive': (f: Any, p: Any, out: Any) => { kit.emit!['trap-hive'](f, p, out); out.collectibles.push({ id: 99000 + out.collectibles.length, type: 'flower', x: f.x + 60, y: f.y - 34, collected: false, bobPhase: 0 }); } } };
+  const st: Any = buildGen2Stage({ config: config13(O) as Any, kit: k2 as Any, seed: SEEDS[0], difficulty: 'normal' });
+  assert.ok(st.gen2.errors.some((e: string) => e.startsWith('trap.hidden')), st.gen2.errors.join(' | '));
+  const clean: Any = buildGen2Stage({ config: config13(O) as Any, kit: kit as Any, seed: SEEDS[0], difficulty: 'normal' });
+  assert.deepEqual(clean.gen2.errors.filter((e: string) => e.startsWith('trap.')), [], 'and the roll as laid has no trap fault');
 });

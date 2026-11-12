@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { CastPlay, groundUnder, type CastHero } from './castPlay.ts';
 import type { CastData, TrapPost } from './castPlay.types.ts';
-import { TRAP, handleBox, newTrap, scares, shake, stepTrap } from './dropTrap.ts';
+import { TRAP, handleBox, newTrap, scares, shake, stepTrap, trapFaults } from './dropTrap.ts';
 import { LOUD } from './heroNoise.ts';
 import { GONE_AFTER, TELL_MIN, touches } from './predators/core.ts';
 import { SNAKE } from './predators/world1.ts';
@@ -177,6 +177,22 @@ test('his stillness reaches the cast: a boa rears at a moving sloth and strikes;
   };
   assert.deepEqual(walkIn(false), { told: true, hit: true, still: false }, 'he keeps moving in its reach: struck');
   assert.deepEqual(walkIn(true), { told: true, hit: false, still: true }, 'he holds still when it rears: he is a branch, and it never strikes');
+});
+
+test('a trap is in plain view and worth using, or the stage is refused: its handle, its animal, its reach, and no pickup in front of it', () => {
+  const beast = [{ x: 600, y: 386, patrolMinX: 500, patrolMaxX: 620 }];
+  const ok = trap({ x: 400, loadX: 560, loadY: 300 });
+  assert.deepEqual(trapFaults([ok], [], beast), []);
+  assert.deepEqual(trapFaults([ok], [{ x: 300, y: 366 }, { x: 700, y: 366 }, { x: 560, y: 150 }], beast), [], 'pickups before the handle, past the branch and high over the load are fine');
+  const said = (f: string[]) => f.map((l) => l.replace(/^trap\.([a-z-]+).*/, '$1'));
+  assert.deepEqual(said(trapFaults([{ ...ok, x: NaN }], [], beast)), ['no-handle']);
+  assert.deepEqual(said(trapFaults([ok], [], [])), ['over-nothing'], 'a load over an empty branch is no trap');
+  assert.deepEqual(said(trapFaults([ok], [], [{ ...beast[0], y: 700 }])), ['over-nothing'], 'an animal on another branch far below is not under it');
+  assert.deepEqual(said(trapFaults([{ ...ok, x: 330 }], [], beast)), ['reach'], '230 px from its load: off an upright phone');
+  assert.deepEqual(said(trapFaults([{ ...ok, x: 450 }], [], beast)), ['reach'], '110 px: he would stand in its reach');
+  assert.deepEqual(said(trapFaults([ok], [{ x: 575, y: 366 }], beast)), ['hidden'], 'a petal under the load hides the hive behind its glow');
+  assert.deepEqual(said(trapFaults([ok], [{ x: 560, y: 270 }], beast)), ['hidden'], 'and one in front of the hanging load');
+  assert.deepEqual(said(trapFaults([ok], [{ x: 410, y: 330 }], beast)), ['hidden'], 'and one on the handle');
 });
 
 // ───────────────────────────── his noise ─────────────────────────────

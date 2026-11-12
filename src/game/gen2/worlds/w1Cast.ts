@@ -13,6 +13,7 @@
  * phone shows about 150 px over his head under the HUD, so a load hangs 100 px over its ground, no higher.
  */
 import type { TrapPost } from '../../castPlay.types.ts';
+import { TRAP } from '../../dropTrap.ts';
 import type { Enemy } from '../../types.ts';
 import type { CreatureDef, PropDef, PropEmitter, PropPair, StageSink } from '../types.ts';
 
@@ -66,8 +67,8 @@ export const W1_TRAP_EMIT: Record<string, PropEmitter> = {
 
 /** how near its load's socket an animal must stand, on the ground the load lands on, for the trap to be its own (px) */
 export const TRAP_UNDER = 150;
-/** the hung load's distance from its handle (px): under the least, he would stand in the animal's reach; over the most, off an upright phone */
-export const TRAP_REACH: readonly [number, number] = [140, 190];
+/** the hung load's distance from its handle (px): the trap machine's own rule (dropTrap.ts TRAP.reach) */
+export const TRAP_REACH: readonly [number, number] = TRAP.reach;
 
 /**
  * The kit hooks that ARM the traps (a WorldKit's `emit` and `spawn`): the props' emitters above write to a waiting list, and `spawn`,

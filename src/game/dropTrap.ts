@@ -17,6 +17,11 @@ export const TRAP = {
   /** it falls at this (px/s²), and no faster than `maxV` */
   g: 1500,
   maxV: 900,
+  /** the hung load's distance from its handle (px): under the least he would stand in the animal's reach; over the most the load is
+   *  off an upright phone's screen from the handle (about 425 px of stage across, him a third of the way in: measured on stills) */
+  reach: [140, 190],
+  /** a pickup this near the load's line or the handle's (px), at their height, stands in front of the trap: its glow hides the prop */
+  clear: 50,
   /** an animal on its ground within this far (px) of where it comes down is chased off (wider than a snake's 105 px strike) */
   scare: 170,
   /** and no more than this far above or below the ground it lands on (px) */
@@ -70,3 +75,30 @@ export function stepTrap(s: TrapState, dt: number): boolean {
 
 /** is an animal standing at (x, y) chased off by this trap coming down? */
 export const scares = (p: TrapPost, x: number, y: number): boolean => Math.abs(x - p.loadX) <= TRAP.scare && Math.abs(y - p.landY) <= TRAP.tall;
+
+/**
+ * What is wrong with a stage's traps, in words (none: they may be laid). A trap must be in plain view before it can be used, and worth
+ * using: it has its handle; an animal's patch runs under its load, on the ground it lands on; the load is TRAP.reach from the handle;
+ * and no pickup stands in front of the load (from its top down to its ground) or on the handle. `animals`: as the stage holds them
+ * (y their middle). A stage's builder asks this for every stage that names a cast (gen2/pipeline.ts)
+ */
+export function trapFaults(
+  traps: readonly TrapPost[], pickups: ReadonlyArray<{ x: number; y: number }>,
+  animals: ReadonlyArray<{ x: number; y: number; patrolMinX: number; patrolMaxX: number }>,
+): string[] {
+  const bad: string[] = [];
+  for (const p of traps) {
+    if (!Number.isFinite(p.x) || !Number.isFinite(p.loadX)) {
+      bad.push(`trap.no-handle: the load at x ${Math.round(p.loadX)} has no handle`);
+      continue;
+    }
+    const at = `the trap at x ${Math.round(p.x)}`;
+    if (!animals.some((a) => a.patrolMinX <= p.loadX && a.patrolMaxX >= p.loadX && Math.abs(a.y - p.landY) <= TRAP.tall)) bad.push(`trap.over-nothing: ${at} hangs its load over no animal's ground`);
+    const d = Math.abs(p.loadX - p.x);
+    if (d < TRAP.reach[0] || d > TRAP.reach[1]) bad.push(`trap.reach: ${at} has its load ${Math.round(d)} px from its handle (${TRAP.reach[0]}-${TRAP.reach[1]})`);
+    const hid = pickups.find((c) =>
+      (Math.abs(c.x - p.loadX) <= TRAP.clear && c.y >= p.loadY - 80 && c.y <= p.landY) || (Math.abs(c.x - p.x) <= TRAP.clear && c.y >= p.y - TRAP.handle.high - 20 && c.y <= p.y));
+    if (hid) bad.push(`trap.hidden: ${at} has a pickup at x ${Math.round(hid.x)} in front of it`);
+  }
+  return bad;
+}

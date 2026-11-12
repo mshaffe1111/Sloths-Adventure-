@@ -1,5 +1,5 @@
 # W1C: planted faults for the cast's wiring (castPlay.ts, dropTrap.ts, engine.ts). Every fault must be CAUGHT by
-# src/game/castPlay.test.ts or src/game/castEngine.test.ts; a survivor means a test is missing.
+# src/game/castPlay.test.ts, src/game/castEngine.test.ts or tools/engine/library13.test.ts; a survivor means a test is missing.
 #   python3 reference/qa-reports/W1C/planted-faults.py [name-part]
 import subprocess, sys
 M=[
@@ -23,6 +23,10 @@ M=[
  ("castPlay.ts","a gone animal stays in the stage","    if (s.phase === 'gone' && !e.defeated) {","    if (false) {"),
  ("castPlay.ts","the glide never moves it","      e.y += GLIDE.drop * u * u - GLIDE.lift * Math.sin(Math.PI * Math.min(1, u * 2));\n",""),
  ("castPlay.ts","calm leaves it mid-tell","      s.phase = 'rest';\n      s.t = 0;\n      s.drawn = false;",""),
+ ("dropTrap.ts","a pickup in front of the load passes","    if (hid) bad.push(","    if (false) bad.push("),
+ ("dropTrap.ts","a load over an empty branch passes","Math.abs(a.y - p.landY) <= TRAP.tall)) bad.push(","Math.abs(a.y - p.landY) <= TRAP.tall) && false) bad.push("),
+ ("dropTrap.ts","a load off the phone's screen passes","    if (d < TRAP.reach[0] || d > TRAP.reach[1]) bad.push(","    if (d < TRAP.reach[0]) bad.push("),
+ ("gen2/pipeline.ts","the builder never asks the trap rule","  if (traps?.length) st.gen2.errors.push(","  if (false) st.gen2.errors.push("),
  ("dropTrap.ts","a trap can be sprung twice","  if (s.phase !== 'set') return false;\n",""),
  ("dropTrap.ts","no creak before it lets go","if (s.phase === 'loose' && s.t >= TRAP.warn) {","if (s.phase === 'loose') {"),
  ("dropTrap.ts","the load never lands","    if (s.y >= s.post.landY) {","    if (false) {"),
@@ -34,7 +38,9 @@ for f,name,a,b in (M if len(sys.argv)<2 else [m for m in M if sys.argv[1] in m[1
   if a not in orig: bad.append((name,'PATTERN MISSING')); print("MISSING ",name); continue
   try:
     open(P,'w').write(orig.replace(a,b,1))
-    r=subprocess.run("npx tsx --test src/game/castPlay.test.ts src/game/castEngine.test.ts 2>&1 | grep -E '^# fail'",shell=True,capture_output=True,text=True)
+    # (the builder's own rule is held by the lay's test; everything else by the two cast tests, which are quick)
+    tests = "tools/engine/library13.test.ts" if f.startswith("gen2/") else "src/game/castPlay.test.ts src/game/castEngine.test.ts"
+    r=subprocess.run(f"npx tsx --test {tests} 2>&1 | grep -E '^# fail'",shell=True,capture_output=True,text=True)
     fails=r.stdout.strip()
     if fails and fails!='# fail 0': ok+=1; print(f"CAUGHT  {name}  ({fails})")
     else: bad.append((name,'SURVIVED')); print(f"SURVIVED  {name}")
