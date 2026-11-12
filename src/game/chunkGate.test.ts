@@ -42,7 +42,7 @@ test('the plan is layered: a made-up graph, with a planted breach (planted)', ()
   const layers: [string, RegExp, string?][] = [['data', /Data\.ts$/], ['w9-parts', /\/w9[A-Z]/, 'parts'], ['hub', /\/hub\.ts$/], ['w9', /\/w9[A-Z]/], ['boss', /\/boss[A-Z]/]];
   const lo = new Map(layers.map(([n], i) => [n, i]));
   // (the hub of this made-up game)
-  const plan: Map<string, string> = buildPlan(files, imports, layers, ['src/game/hub.ts']);
+  const plan = (buildPlan as unknown as (...a: unknown[]) => Map<string, string>)(files, imports, layers, ['src/game/hub.ts']);
   assert.deepEqual(Object.fromEntries(plan), { 'src/game/xData.ts': 'data', 'src/game/w9Parts.ts': 'w9-parts', 'src/game/hub.ts': 'hub', 'src/game/w9Play.ts': 'w9' });
   // the engine, the app, and bossPlay (it imports the engine) are the main script, though bossPlay matches a layer
   for (const f of ['src/main.tsx', 'src/App.tsx', 'src/game/engine.ts', 'src/game/bossPlay.ts']) assert.equal(plan.has(f), false, f);
