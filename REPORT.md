@@ -1,64 +1,63 @@
-# W1C: World 1's creatures and traps in the real engine, and 1-3 designed and built. `t-w1-creatures` from t-int-engine @d0276817, 2026-11-12 ET
+# W1C: World 1's creatures and traps in the real engine, and 1-3 designed, built and in the game. `t-w1-creatures`, 2026-11-12 ET
 No PR (the lead's brief). INT-E's report is at reference/qa-reports/INT-E/REPORT.md. Times are pasted from `date`.
 
 ## EXACT NEXT STEP (kept current at every push; a builder can carry on from here with nothing lost)
-1. **Read first:** `reference/design/1-3.md` (the level as designed, and at its foot what is built and what is not yet) and
-   `reference/design/LEVEL-BAR.md` (1-3 scored: two 0s left, the painted traps and a bot with its own flown rows).
-2. **See it:** `git worktree add --detach <wt> HEAD`, link node_modules, `python3 tools/engine/runs/page13.py <wt>`, `npx vite` there;
-   stills with `tools/engine/runs/trap-stills.mjs` (predator-kit.md has the lines). Never run page13.py on the work checkout.
-3. **Mine, next (W1C):** move 1-3 from `tools/engine/library13.ts` into World 1's shipped kit so the real game builds it: the seven
-   beat bricks into a `gen2/worlds/w1Arc13.ts`, `BRIEF_13` + `PURGE_13` into `W1_KIT.graphs`; in `w1World()` `creatures:
-   W1_CAST_CREATURES, props: W1_TRAP_PROPS, pairs: W1_TRAP_PAIRS` and `armedTraps()` spread into the kit; a row in `stageTable.ts`;
-   hand-built 1-3 deleted (new replaces old). It needs P13's flown rows and seed list first: until then it rolls on 1-1's rows.
-4. **P13's (not mine):** bots that punch a set handle; 1-3's own JUDGED rows; its seed list; "excuse me" moved from the halfway mark
-   (wayside.ts:67, DotGuide.tsx:1321) to the first PUNCH glide (put its words in `W1_CAST_SAID.punch`: the engine already says it once).
-5. **Then:** flags and hearts by the design's table (today the generator's and the game's own passes); the first-trap line comes
-   through the TIP banner ("Skip tips") and is remembered by `first-of` once shown; re-roll under t-11-pass (all of this ran on the
-   BASE); the painted traps (`reference/art/W1-TRAPS-LIST.md`, with ART-W1) replace `castArt.ts`'s stand-ins.
+1. **Read first:** `reference/design/1-3.md` (the level as designed and built, its rules, and what is not at the bar) and
+   `reference/design/LEVEL-BAR.md` (1-3 scored; "Found while making 1-3").
+2. **See it:** it is the real stage now. `npx vite --port 5199`, then
+   `PW=/opt/node-tools/node_modules/playwright/index.mjs node tools/engine/runs/trap-stills.mjs 5199 <out> game 1-3 1 <trap 0-8>` and
+   `tools/engine/runs/stills-at.mjs 5199 <out> game 1-3 1 <x>:low`. Bots: `npx tsx tools/inspect/castBots.ts --stage 1-3 --seeds 1-6`.
+3. **NEVER check out ec0a4712..7d9efa0d** (they carry a tracked `node_modules` symlink, my mistake: it replaces the real folder with
+   a link to itself; `rm node_modules && bun install --frozen-lockfile` mends it). 8e8ba364 and later are clean.
+4. **Owed by P13:** the first-timer bots' stop at a trap handle (they decide at the vine and walk on about 220 px; trace sent);
+   1-3's `judged: 'normal-1-3'` in `stageTable.ts` and its seed list; "excuse me" on the first punch-glide (`W1_CAST_SAID.punch`).
+5. **Owed by the lead / Matt:** the story keeper's eye on the survey chip names (ctestStretches.ts, 7 phrases); a moves-journal
+   page for drop traps (new player words); the ruling-1 engine change (a socket names its own Easy kind) so Easy's own sleepers show.
+6. **Owed by ART-W1:** the painted traps (`reference/art/W1-TRAPS-LIST.md`); told at 1:53 PM what moved under them.
+7. **Re-roll under t-11-pass** when the lead says it has passed (all of this ran on t-int-engine @d0276817 + P13's t-13-proof).
 
-## What was built (each rule from a planted failing test)
-- **The kit in the engine, by data.** A brief names its cast (`GraphBrief.cast`) -> `proto.cast` -> the engine's `startCast()` ->
-  `castPlay.ts` steps those animals on the fixed step with his stillness, cover and (from World 2 on, by the move ladder) his landing
-  noise; `predatorAI.ts` never does. No cast named: nothing changes.
-- **The snake** (Matt, R-165.141): shy, rears 0.5 s (0.65 s Easy) before it strikes. EVERY ending is the glide, gone for good,
-  counted for the purge: a punch at its branch end, a stomp, a kick, a trap. A punch mid-branch only shoves it 70 px and dazes it.
-- **Drop traps as bricks** (`dropTrap.ts`; a prop pair in `w1Cast.ts`): a vine or a tendril, a hive or a stone; 0.3 s of creak, the
-  fall, every cast animal on that ground within 170 px glides off, away from him. Armed by the snake that stays; the load hung over
-  the middle of its patch. The builder refuses a trap with no handle, over nothing, not 140-190 px from its handle, or behind a pickup.
-- **Dot** (story keeper): "Off he glides, not a scratch, just very offended!" once, on the first trap; never for a punch.
-- **1-3, designed and built** (`library13.ts`): ONE graph `A T P M R X R W R S R C E`, one brick a beat (lesson, again, the stone
-  stair, the other way, the perch, the gallery, the finale), World 1's library only the quiet between. `GraphBrief.dealExact`: a
-  designed graph's deal has no jitter and a node takes its only brick's type (acts only for a brief that sets it).
+## What was built today (each rule from a planted failing test)
+- **The kit in the engine, by data.** A brief names its cast -> `proto.cast` -> the engine's `startCast()` -> `castPlay.ts` steps
+  those animals with his stillness, cover and (from World 2 on) landing noise. No cast named: nothing changes.
+- **The snake** (Matt, R-165.141): shy, rears 0.5 s before it strikes where he WAS (a full run is never bitten). Every ending is
+  the glide: a punch at its log's end, a stomp, a kick, a trap. A punch mid-log shoves it 70 px and dazes it.
+- **Drop traps as bricks**: a vine or a tendril, a hive or a stone; 0.3 s of creak, the fall, every cast animal on that ground within
+  170 px glides off, away from him. The builder refuses a trap with no handle, over nothing, out of reach, or behind a pickup.
+- **1-3 is in World 1's SHIPPED kit** (`w1Arc13.ts`); hand-built 1-3, its section table and its test are deleted. ONE graph
+  `A T P M R X R W R S R C E`, one piece a beat, EVERY piece its own (7 beats, an arrival, 4 rests, an exit): none of World 1's library.
+- **This afternoon:** Dot's trap line is a TEACH line said 800-1,100 px before the first vine; Easy keeps every trap (new
+  `Socket.easy 'stay'`); a rope before the totem that is never the way (new place option `free`: its hollow one hop deep); every
+  snake on a real painted LOG, a sleeper right under its load; 1-3's own arrival and rests; the keeper's mission line in stagePlan.
+- **Engine changes, all general and data-driven (no stage id):** `GraphBrief.cast`, `GraphBrief.dealExact`, `Socket.easy 'stay'`,
+  rope place `free`, a spawn hook's re-seated animal carries its fill, `isW1Stage` asks the section tables.
 
-## Numbers (final code; times ET)
+## Numbers (head named in the last push; times ET)
 | what | result |
 |---|---|
-| 1-3 rolls, flown, seeds 1-120 and 50001-50120 | **CLEAN 480 of 480** (Normal and Easy, both ranges), 0 thrown; every roll the same 13 beats in order |
-| a roll | Normal 13 snakes (7 asleep), 9 traps; Easy 8 (4 asleep), 5 traps; 198 s typical (193-202), 155 s fast (the time model) |
-| tests | castPlay 15, castEngine 10 (real engine), library13 9, the kit 78: all pass |
-| planted faults | the wiring 34 of 34 caught, the kit 40 of 40 (12:17 PM) |
-| lock, 16 layouts vs 0.9.6 | **102 of 102 unchanged** (12:35 PM, after the last builder change) |
-| seedlist 1-1 --check / gen2 + worlds | PASS 355 seeds (12:28 PM) / 431 of 431 (12:38 PM) |
-| drawcheck | PASS 293 s (12:11 PM); nothing that draws changed after it |
-| tsc / generality / artcheck / knowncheck / chunkcheck | clean / PASS 29 of 29 / PASS / PASS / PASS on this head: main JS 665,829 B (base 662,675: +3,154, the engine's glue); the kit, castPlay, castArt, dropTrap in `stagekit` (741,546 B); w1Cast.ts in no built file yet |
-Not run: the whole `src/game/*.test.ts` suite (25 min), clipcheck, kbdcheck, buildcheck, tierBots, roadmapcheck (shallow clone);
-artcheck and knowncheck last ran at f742ccf0 (no art and no known-list file has changed since).
+| 1-3 rolls, shipped kit, seeds 1-24 | **CLEAN 24 of 24** on Normal and on Easy, 0 thrown; every roll the same 13 beats in order |
+| a roll | Normal 13 snakes (4 asleep), 9 traps, 203 s typical / 159 s fast. Easy 11 snakes (3 asleep), 9 traps, 197 s / 155 s |
+| bots (P13's castBots), seeds 1-6, aa98fbc3 | every tier PASS 6 of 6 on both settings. First trap sprung: child 6+6, middle 6+6, expert 6; adult 1+2, kid 0+0 (the bot's stop, P13). Fastest run: adult Easy 126.2 s, adult Normal 131.8 s: no tier under 2:00 |
+| funcheck, 1-3 | "looks like an earlier stage" 0 of 16 layouts (was 6), "looks like the stage before" 0 (was 16), padding 0 (16), repeat 0 (11). "Nothing bites" 16 (known 13): it counts what a missed jump costs; this level's risk is the strike |
+| whole suite on 26f72b31 (the move) | 2987 tests, 8 red, all from the move, all fixed at cause (2 were real bugs: a second visit to a cleared 1-3 threw; the journal's Sleeping snakes page waited on a deleted line) |
+| lock, 16 layouts vs 0.9.6, aef439d1 | **101 of 102 unchanged; only 1-3 changed** (intended: it is the new stage) |
+| gates on the FINAL head | see "Gates on the final head" below |
 
-## Polish check (the designed arc, seed 1 Normal, real page: reference/qa-reports/W1C/stills/arc-seed1-*, upright and sideways)
-- **Looked at, reads:** the lesson sideways (trap0-1-before: vine, link, hive and the sleeping snake all clear of the goal sign);
-  the perch upright (trap3-1-before: he is up at the tendril, the stone over the snake a step below); the gallery sideways
-  (trap5-1-before: clear of the sign since the branches were laid level); a bare branch upright (bare-x11640).
-- **Found on these stills and fixed:** the gallery's stone behind the goal sign (trapped branches now level); bare stills that
-  showed no snake (my placement; re-shot from on the branch).
-- **NOT at the bar:** the trap art is a STAND-IN (the lead: clumps like lamp posts, a grey egg, a plain hive, a handle that says
-  "punch me" only by its ring). On an upright phone a bare branch's snake is at the screen's edge until he is on the branch. A
-  snake punched awake shows its waking head while dazed. No trap sound of its own. Seven of 13 snakes asleep on Normal is the
-  threat budget's doing: it may play too gently.
-- **Not looked at yet:** of the 48 stills I have judged 5; the rest (again, the stone stair, the finale, every "after") are unjudged.
-- **Unverified:** nothing was PLAYED flag to totem by hand or by a bot; hearts were not seen on this stage; old saves not looked at.
+## Gates on the final head
+GATES_PLACEHOLDER
+
+## Polish check (the real game, stage 1-3, layout 1, Normal: reference/qa-reports/W1C/stills/, upright and sideways)
+POLISH_PLACEHOLDER
+
+## Mistakes of mine today, and the standard each one changed
+- **A tracked `node_modules` symlink** (ec0a4712..7d9efa0d): I worked in a second worktree with a linked node_modules and committed
+  with `git add -A`. `.gitignore` now ignores the name as a folder or a link; I commit by path in a side worktree, or not at all.
+- **Pushed 5e6873b5 with three red tests** (Easy had lost its sleepers): I ran the test and committed in one command without
+  reading the result. Fixed at 87069d9d eleven minutes later. I read the test's count before `git commit`, not after.
+- **A flag on a snake's log, a green hedge for a log, a one-way hollow before a purge's shrine:** each found by rolling, by a
+  still and by a bot BEFORE the push, and each now a test or a planted fault (LEVEL-BAR "Found while making 1-3").
 
 ## Method update
-`reference/methods/predator-kit.md`: "Wiring a cast into a stage" and 3 pitfalls. New today: a level is DESIGNED first
-(`reference/design/<stage>.md`, scored on LEVEL-BAR.md), then built as one graph with one brick a beat. What failed and why: the
-first lay dropped trap bricks into World 1's rolled sections (119 of 120 "clean", and not a level); and a `node:` tool script is
-outside tsc, so a stale name in library13.ts's print crashed two background runs before I saw it. Run the tool once after an edit.
+`reference/methods/predator-kit.md`: wiring a cast, and today's pitfalls (a block ON a piece is `main` unless told; World 1 paints
+a thin block as a log and a thick one as a hedge; a spawn hook that moves its animal must carry the fill; Easy takes Normal's kinds).
+A level is DESIGNED first (`reference/design/<stage>.md`, scored on LEVEL-BAR.md), then built as one graph with one piece a beat,
+then PLAYED by the bots and LOOKED AT on stills before anyone is told it is done.

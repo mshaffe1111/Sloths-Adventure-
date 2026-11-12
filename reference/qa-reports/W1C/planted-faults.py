@@ -37,6 +37,18 @@ M=[
  ("dropTrap.ts","no creak before it lets go","if (s.phase === 'loose' && s.t >= TRAP.warn) {","if (s.phase === 'loose') {"),
  ("dropTrap.ts","the load never lands","    if (s.y >= s.post.landY) {","    if (false) {"),
  ("dropTrap.ts","a trap reaches another branch far below","Math.abs(x - p.loadX) <= TRAP.scare && Math.abs(y - p.landY) <= TRAP.tall;","Math.abs(x - p.loadX) <= TRAP.scare;"),
+ # 11-12 afternoon: the lesson's teach line, Easy's traps, the rope before the totem, the logs (each held by library13.test.ts)
+ ("gen2/pipeline.ts","Easy's count cut takes a trap's own snake (easy 'stay' ignored)","      if (!kept.has(f) || f.stay) continue;","      if (!kept.has(f)) continue;"),
+ ("gen2/pipeline.ts","a re-seated animal's fill stays behind (Easy reads the sleeper as dropped)","    if (R(f.e.x) !== f.fill.x) f.fill.x = R(f.e.x);\n",""),
+ ("gen2/pipeline.ts","a free rope is hung required","g0: l.y, g1: r.y, required: !lp.ropeFree });","g0: l.y, g1: r.y, required: true });"),
+ ("gen2/pipeline.ts","a free rope's hollow is a deep one-way pit","pitSteps(x0, x1, lipY, farY, shallow ? hop : depthNow, hop);","pitSteps(x0, x1, lipY, farY, depthNow, hop);"),
+ ("gen2/worlds/w1.ts","the trap line is not a teach line","    teachTips: ['traps'],\n",""),
+ ("gen2/worlds/w1Arc13.ts","Dot speaks at the vine, too late to read","{ id: 'tip', role: 'tip', on: 'a', t: 0.4, allow: ['traps'] }","{ id: 'tip', role: 'tip', on: 'd', t: 0.9, allow: ['traps'] }"),
+ ("gen2/worlds/w1Arc13.ts","a flag may stand on a snake's log (its socket is emptied)","place: { kind: 'on', on, at, h }, style: 'log', main: false });","place: { kind: 'on', on, at, h }, style: 'log' });"),
+ ("gen2/worlds/w1Arc13.ts","a trap's own snake is cut on Easy","easy: o.easy ?? 'stay' });","easy: o.easy ?? 'soften' });"),
+ ("gen2/worlds/w1Arc13.ts","the rope before the totem is the only way","gap: [460, 480] as R2, free: true }","gap: [460, 480] as R2 }"),
+ ("gen2/worlds/w1Cast.ts","a sleeper lies right under its load (the hive comes down on it)","    if (e.asleep) e.x = Math.round(t0.x < mid ? e.patrolMinX : e.patrolMaxX);","    if (e.asleep) e.x = Math.round(mid);"),
+ ("gen2/worlds/w1Arc13.ts","a World 1 rest is dealt into 1-3 again","link({ id: 'w1-13-root-hump'","link({ id: 'w1-meadow'"),
 ]
 ok=0; bad=[]
 import os
