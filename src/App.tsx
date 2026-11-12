@@ -596,8 +596,8 @@ export default function App() {
       if (gone) add.forEach((h) => void h.remove());
       else subs.push(...add);
     });
-    // (sent by MainActivity.java: 'lost' when a call rings, an alarm sounds or another app plays; 'duck' when another app speaks for a
-    // moment, like directions; 'back' when the sound is ours again)
+    // (sent by AudioFocusPlugin.java: 'lost' when a call rings, an alarm sounds, another app plays or a request is refused; 'duck' when
+    // another app speaks for a moment, like directions; 'back' when the sound is ours again)
     const onFocus = (e: Event) => {
       const state = (e as Event & { state?: string }).state;
       sound.appHidden(state === 'lost', 'focus');
