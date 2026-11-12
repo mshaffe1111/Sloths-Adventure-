@@ -19,6 +19,7 @@ export function judge(input) {
   if (!input.effort) return { ok: false, why: `no effort set (Opus defaults to medium); ${want}` };
   if (T.never.effort.includes(input.effort)) return { ok: false, why: `effort ${input.effort} is never used (Matt 11-09); ${want}` };
   if (T.never.askMatt.includes(input.effort)) return { ok: false, why: `effort ${input.effort} needs Matt's yes first (one question, with the reason); ${want}` };
+  if (input.effort === 'max') return { ok: true, why: `${want}; max allowed when needed, the lead states why in the brief (Matt 11-12 7:30 AM)` };
   if (!tier.effort.includes(input.effort)) return { ok: false, why: `effort ${input.effort} is wrong; ${want}` };
   return { ok: true, why: want };
 }
@@ -31,14 +32,17 @@ if (arg === '--table') {
     [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'xhigh' }, true],
     [{ tags: ['sloths-team', 'engine'], model: 'claude-fable-5-2', effort: 'high' }, false],
     [{ tags: ['sloths-team', 'engine-fable'], model: 'claude-fable-5-2', effort: 'high' }, true],
-    [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'high' }, false],
+    [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'high' }, true],
     [{ tags: ['sloths-team', 'engine'], model: 'claude-fable-5-2', effort: 'xhigh' }, false],
     [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'medium' }, false],
     [{ tags: ['sloths-team', 'critic'], model: 'claude-opus-5-5' }, false],
     [{ tags: ['sloths-team', 'art'], model: 'claude-opus-5-5', effort: 'medium' }, false],
     [{ tags: ['sloths-team', 'docs'], model: 'claude-opus-5-5', effort: 'medium' }, true],
     [{ tags: ['sloths-team', 'runner'], model: 'claude-opus-5-5', effort: 'high' }, true],
-    [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'max' }, false],
+    [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'max' }, true],
+    [{ tags: ['sloths-team', 'integration'], model: 'claude-opus-5-5', effort: 'high' }, true],
+    [{ tags: ['sloths-team', 'integration'], model: 'claude-opus-5-5', effort: 'xhigh' }, true],
+    [{ tags: ['sloths-team', 'engine'], model: 'claude-fable-5-2', effort: 'max' }, false],
     [{ tags: ['sloths-team', 'engine'], model: 'claude-opus-5-5', effort: 'low' }, false],
     [{ tags: ['engine'], model: 'claude-opus-5-5', effort: 'high' }, false],
     [{ tags: ['sloths-team', 'engine', 'critic'], model: 'claude-opus-5-5', effort: 'high' }, false],
