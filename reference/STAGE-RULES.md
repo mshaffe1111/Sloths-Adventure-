@@ -239,6 +239,8 @@ test link, the QA testers or a release until the lead has re-run them, on more t
 
 ## 5b. The polish bar (Matt, 2026-10-29: "it's not just getting it done, but it should have polish")
 
+- **A replacement keeps the look "as good or better" (Matt, 2026-11-12 10:47 AM ET: "only keep if it looks as good or better than what we have now... if it did look better, we shouldn't reject it").** When new tech or a new method replaces how something is drawn or laid (WebGL, compression, a new painter), the pass mark is: as good as today or better, judged by eye on a phone, upright and sideways, by the lead and then Matt. Never "pixel-identical": a pixel compare is used to FIND every difference, never to reject an improvement. Any difference is shown side by side and named plainly.
+
 Working is the floor, not the finish. Before any report, the helper reviews its own upright (390x844) and sideways (844x390) screenshots
 and a short video, at phone size, against every line below, and writes a **Polish check** in the report: each item, pass or fixed, with
 the screenshot that shows it. The lead checks it again before Matt sees anything. Compare against the best of the game (Matt's Gemini
