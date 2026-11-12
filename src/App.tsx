@@ -65,8 +65,8 @@ import { bootDone } from './game/boot.ts';
 import { keepScreenOn, nativeApp } from './game/appShell.ts';
 import { ConfirmDialog } from './components/nav/Nav.tsx';
 import { ScreenVeil, STAGE_LIVE_EVENT } from './components/ScreenVeil.tsx';
+import { FIRST_NOTE_KEY, bossIntroKey, gateStoryKey, guardianCardKey, midStoryKey, worldStoryKey } from './game/storyFlags.ts';
 
-const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
   try {
     return localStorage.getItem(worldStoryKey(w)) === '1';
@@ -83,7 +83,6 @@ function markWorldStorySeen(w: number) {
  * World 1's arrival scene (Dot's return and Meeca's first note) plays once, after stage 1-1 is first cleared:
  * a new player plays straight after the prologue, and the note arrives as the reward for the first stage.
  */
-const FIRST_NOTE_KEY = 'sloth_story_n1';
 function hasSeenFirstNote(): boolean {
   try {
     return localStorage.getItem(FIRST_NOTE_KEY) === '1';
@@ -97,7 +96,6 @@ function markFirstNoteSeen() {
   } catch {}
 }
 /** the scene halfway through a world (after its 5th stage) plays once */
-const midStoryKey = (w: number) => `sloth_story_m${w}`;
 function hasSeenMidStory(w: number): boolean {
   try {
     return localStorage.getItem(midStoryKey(w)) === '1';
@@ -106,7 +104,6 @@ function hasSeenMidStory(w: number): boolean {
   }
 }
 /** a guardian's card comes after its scene the first time only, in each save (UI-5; key 11 is Thornbark) */
-const guardianCardKey = (lvl: LevelConfig) => `sloth_story_g${lvl.secret ? 11 : lvl.worldIndex}`;
 function hasSeenGuardianCard(lvl: LevelConfig): boolean {
   try {
     return localStorage.getItem(guardianCardKey(lvl)) === '1';
@@ -125,7 +122,6 @@ function markMidStorySeen(w: number) {
   } catch {}
 }
 /** a guardian's intro has been seen (a long one is shortened on the retries: storyBosses.ts RETRY_INTRO_LINES) */
-const bossIntroKey = (w: number) => `sloth_story_b${w}`;
 function hasSeenBossIntro(w: number): boolean {
   try {
     return localStorage.getItem(bossIntroKey(w)) === '1';
@@ -139,7 +135,6 @@ function markBossIntroSeen(w: number) {
   } catch {}
 }
 /** the scene at the guardian's door, after a world's ninth stage (World 10's gate), plays once */
-const gateStoryKey = (w: number) => `sloth_story_g${w}`;
 function hasSeenGateStory(w: number): boolean {
   try {
     return localStorage.getItem(gateStoryKey(w)) === '1';

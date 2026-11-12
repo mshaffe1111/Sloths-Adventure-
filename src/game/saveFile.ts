@@ -10,6 +10,7 @@
  */
 import { reloadDifficulty } from './difficulty.ts';
 import { DOT_MEMORY, forgetDotSession } from './dotMemory.ts';
+import { FIRST_NOTE_KEY, STORY_KEY, midStoryKey, worldStoryKey } from './storyFlags.ts';
 
 export const SAVE_FORMAT = 'sloths-rainforest-adventures-save';
 export const SAVE_VERSION = 1;
@@ -27,7 +28,7 @@ export const ALLOWED: RegExp[] = [
   /^sloth_lvl_(\d{1,2}|S)-(\d{1,2}|[DM])$/, // per-stage result (and the extra stages, extraStages.ts: Dot's flight 4-D, Meeca's 5-M)
   /^sloth_play_(\d{1,2}|S)-(\d{1,2}|[DM])$/, // how a stage was played, for Pokey's journal (playRecords.ts; older games drop it unread)
   /^sloth_layout_(\d{1,2}|S)-(\d{1,2}|[DM])$/, // the layout a stage was first played with (it stays the same)
-  /^sloth_story_[wmng]\d{1,2}$/, // world intro seen (w), the scene halfway through the world (m), World 1's first note after 1-1 (n), a guardian's card (g, 11 = Thornbark)
+  STORY_KEY, // every "seen once" story flag (storyFlags.ts STORY_LETTERS: built there, so a new flag cannot be left off)
   /^sloth_way_\d{1,2}-\d{1,2}$/, // which in-stage asides have been heard (so a new game hears them again; the on/off switch is a device setting, not here)
   /^sloth_secret_gate$/,
   /^sloth_thorn_heart$/,
@@ -200,9 +201,9 @@ export function resetProgress(store: Store, opts: { skipStory?: boolean } = {}) 
   reloadDifficulty();
   if (opts.skipStory) {
     for (let w = 1; w <= 10; w++) {
-      store.setItem(`sloth_story_w${w}`, '1');
-      store.setItem(`sloth_story_m${w}`, '1');
+      store.setItem(worldStoryKey(w), '1');
+      store.setItem(midStoryKey(w), '1');
     }
-    store.setItem('sloth_story_n1', '1');
+    store.setItem(FIRST_NOTE_KEY, '1');
   }
 }

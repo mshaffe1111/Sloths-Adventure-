@@ -24,6 +24,9 @@ import { recordCake } from './w5Kit.ts';
 import { MEECA_WARNINGS } from './meecaLines.ts';
 import { markCarvingsDone, recordCarving } from './meecaCarved.ts';
 import type { Store } from './saveFile.ts';
+import { FIRST_NOTE_KEY, STORY_LETTERS, storyKey, type StoryFlag } from './storyFlags.ts';
+
+const STORY_FLAGS = Object.keys(STORY_LETTERS) as StoryFlag[];
 
 /** a Map-backed storage that is both the saveFile Store and a browser Storage */
 export function memStorage(init: Record<string, string> = {}): Store & Storage & { m: Map<string, string> } {
@@ -102,9 +105,9 @@ export function fillFinishedGame(mem: Store & Storage) {
       if (m) for (const f of ['L', 'H', 'F'] as const) markShown(+m[1], +m[2], f, mem);
       if (/^5-\d{1,2}$/.test(id)) recordCake(id, mem);
     }
-    // App.tsx: every story flag (world intro, halfway scene, the first note, every guardian's card)
-    for (let w = 1; w <= 11; w++) for (const k of ['w', 'm', 'g']) mem.setItem(`sloth_story_${k}${w}`, '1');
-    mem.setItem('sloth_story_n1', '1');
+    // App.tsx: every story flag of storyFlags.ts (world intro, halfway scene, the first note, every guardian's card and intro, the gate)
+    for (let w = 1; w <= 11; w++) for (const f of STORY_FLAGS) if (f !== 'firstNote') mem.setItem(storyKey(f, w), '1');
+    mem.setItem(FIRST_NOTE_KEY, '1');
     markGateFound();
     markThornHeart();
     // conductor.ts: the volumes as String(number), the mute as String(boolean)
