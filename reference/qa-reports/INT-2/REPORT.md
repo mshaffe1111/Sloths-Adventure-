@@ -24,13 +24,20 @@
    PASS carried there by the Critic; kept HEAD's flight.ts; designer.md the 11-11 rewrite). Left out, never passed: t-designer-reach
    e97542b4 (bands.md section 5 thin rows, after the pass). Table: PASSED-NOT-MERGED.md.
 
+9. Evening: t-yield-2@a5bff66c (Y2) -> d9563016: no conflict. t-render-2@a5d166c5 (RF2) -> 1dd7e3bb: carries W1C@133f542d (20 W1C
+   commits, all ancestors of t-13-finish, so kept: reverting them would make the t-13-finish merge drop them). Conflict: INT-E
+   REPORT (kept R-165.139). Settled: W1C's predators/registry.ts imported inWorld from roster.ts (moved by 3cfb5469) -> ways.ts.
+   aa453eba: gates.yml runs W1C's tools/engine/library13.test.ts (ciTests refused it unrun; t-13-finish's line is a superset).
+
 ## Checks (last run on each head)
 | Check | Result |
 |---|---|
 | tsc | PASS (cd7efcbf) |
 | roadmapcheck (full history), knowncheck, generalitycheck | PASS (cd7efcbf; generality 36 files, 27 literals, 27 known) |
-| seedlist 1-1 --check | PASS on every head: 258, 0 refused (chain.mount refuses 0) |
-| stage lock vs d0276817's | 101/102, only 1-1 (intended) on 1bde88e8, fcfb1138, e57e8dda, 2ff4f8ce, cd7efcbf |
+| seedlist 1-1 --check | PASS on every head (last aa453eba): 258, 0 refused |
+| yield.test.ts | 9/9 after Y2 (d9563016, aa453eba); node_modules guard empty on every merge |
+| aa453eba touched tests | groundSeams, castPlay, castEngine, predator*, generality, ciTests, library13: 166/166; generality 37 files PASS; knowncheck, roadmapcheck PASS |
+| stage lock vs d0276817's | 101/102, only 1-1 (intended) on 1bde88e8, fcfb1138, e57e8dda, 2ff4f8ce, cd7efcbf, d9563016, aa453eba |
 | gen2 + worlds suite | 480/481 on 2ff4f8ce: only src/game/gen2/yield.test.ts:62, 11 of 30 (P11's; 9/9 on d0276817; Y2's). Full suite: Step 3 |
 | touched tests | verdicts 31/31; AF's 14/14; art 9/9; ciTests, capPlugins, generality, predator*, playRecorder, recorderMoments green |
 | build (deploy base) + chunkcheck | PASS (cd7efcbf): main index 662,504 B unchanged; stagekit +21 B (E1); catalog never in the shipped build |
@@ -41,6 +48,5 @@ Waiting on the lead's word: t-yield-2, t-render-2, t-13-proof, t-w1-art (append 
 and run the catalog check), then every CLAUDE.md check once and the test-link build (not published).
 
 ## Left
-- The yield-floor red (11 of 30): Y2's. INT-2 does not touch yield.test.ts.
 - The lead's ROADMAP rows keep landing as "N-M h (a guess)": roadmapcheck refuses that form (R-12).
 - knowncheck judges ciTests.known.json against main; until it reaches main it is a "new list" there (as every list was).
