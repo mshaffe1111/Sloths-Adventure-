@@ -1,0 +1,5 @@
+seedlist 1-1: the verdicts refuse 0 of 200 listed seeds
+seedlist 1-1: PASS (200 seeds, each clean on both settings)
+## CI=1 FORCE_COLOR=1
+seedlist 1-1: the verdicts refuse 0 of 200 listed seeds
+seedlist 1-1: PASS (200 seeds, each clean on both settings)

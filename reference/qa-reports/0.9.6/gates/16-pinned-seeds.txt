@@ -1,0 +1,49 @@
+src/game/buildAhead.test.ts src/game/gen2/seedList.test.ts src/game/gen2/stage11gen2.test.ts src/game/pitPocket.test.ts src/game/rollEnv.test.ts src/game/w1CutArt.test.ts 
+# Subtest: the next play draws the seed built ahead and gets that very stage, once; a play on another setting builds afresh (planted)
+ok 1 - the next play draws the seed built ahead and gets that very stage, once; a play on another setting builds afresh (planted)
+# Subtest: 1-1's Play: no proven entry repeats until the whole list has been played on this device, and the order survives a restart of the game
+ok 2 - 1-1's Play: no proven entry repeats until the whole list has been played on this device, and the order survives a restart of the game
+# Subtest: the checker names a short list, a repeat, and a seed that fails its build
+ok 3 - the checker names a short list, a repeat, and a seed that fails its build
+# Subtest: 1-1's list: at least SEED_LIST_MIN distinct seeds; 12 of them, spread through it, build cleanly on both settings
+ok 4 - 1-1's list: at least SEED_LIST_MIN distinct seeds; 12 of them, spread through it, build cleanly on both settings
+# Subtest: a play's draw always lands on the list, any number
+ok 5 - a play's draw always lands on the list, any number
+# Subtest: a listed seed's replay is its full search's stage; a tampered plan is named stale; Play's build is clean
+ok 6 - a listed seed's replay is its full search's stage; a tampered plan is named stale; Play's build is clean
+# Subtest: gen2 1-1: nothing can cost a life: under every x from the start to the exit there is a piece to land on above the death line
+ok 7 - gen2 1-1: nothing can cost a life: under every x from the start to the exit there is a piece to land on above the death line
+# Subtest: gen2 1-1 in the real engine: running into the first mushroom bounces him up and on along the path
+ok 8 - gen2 1-1 in the real engine: running into the first mushroom bounces him up and on along the path
+# Subtest: gen2 1-1: right after the double is taught, a gap only the second jump crosses (a miss lands him on safe ground under it)
+ok 9 - gen2 1-1: right after the double is taught, a gap only the second jump crosses (a miss lands him on safe ground under it)
+# Subtest: gen2 1-1: every dip is left with single flicks (no double or perfect jump needed)
+ok 10 - gen2 1-1: every dip is left with single flicks (no double or perfect jump needed)
+# Subtest: gen2 1-1, a fresh save: walking in from the left, the bounce lesson comes before he reaches the first mushroom (lesson.bounce; planted: no lesson pick FAILS)
+ok 11 - gen2 1-1, a fresh save: walking in from the left, the bounce lesson comes before he reaches the first mushroom (lesson.bounce; planted: no lesson pick FAILS)
+# Subtest: the double-gap safety reading: a soft zone over the gap is safe; a bare gap with nothing under it and no zone is not (planted)
+ok 12 - the double-gap safety reading: a soft zone over the gap is safe; a bare gap with nothing under it and no zone is not (planted)
+# Subtest: gen2 1-1 Roll B's dip pockets are found, each narrow and closed in by higher banks
+ok 13 - gen2 1-1 Roll B's dip pockets are found, each narrow and closed in by higher banks
+# Subtest: no stage the old generator builds (Worlds 1 to 4) has a pocket: their ground draws exactly as before
+ok 14 - no stage the old generator builds (Worlds 1 to 4) has a pocket: their ground draws exactly as before
+# Subtest: the dump child builds the picked roll and reports its seed; without the pick (planted) it reports no roll and another seed, a FAIL for stage.ts
+ok 15 - the dump child builds the picked roll and reports its seed; without the pick (planted) it reports no roll and another seed, a FAIL for stage.ts
+# Subtest: an unknown roll is refused, never a silent fallback to the mixer
+ok 16 - an unknown roll is refused, never a silent fallback to the mixer
+# Subtest: a cut stone stands its whole width on the platform (stand span = width), its footing on top, sunk to 3 px into the ground; a plank spans its platform
+ok 17 - a cut stone stands its whole width on the platform (stand span = width), its footing on top, sunk to 3 px into the ground; a plank spans its platform
+# Subtest: every gen2 1-1 roll lays at least 6 kinds of cut piece, and the round and grey boulders are laid
+ok 18 - every gen2 1-1 roll lays at least 6 kinds of cut piece, and the round and grey boulders are laid
+# Subtest: a long plank (the end log, 686 px) is laid as plank pieces end to end, none longer than PLANK_MAX, and it has its piece
+ok 19 - a long plank (the end log, 686 px) is laid as plank pieces end to end, none longer than PLANK_MAX, and it has its piece
+# Subtest: gen2 1-1 draws several cut kinds; a stone over air keeps no cut piece (planted)
+ok 20 - gen2 1-1 draws several cut kinds; a stone over air keeps no cut piece (planted)
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13708.646575
