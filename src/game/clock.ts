@@ -82,6 +82,17 @@ export function beatOf(def: ClockDef, easy = false): Beat {
 }
 
 const WALK: CycleRead = { index: 0, into: 0, at: 0 };
+const QW = [0, 0];
+
+/**
+ * The shape the first timers share (rocks, zones, thorn vines): a quiet stretch, a warning, then the rest of the cycle (index 2). Each
+ * keeps its own lengths and its own period. Returns the one shared read: take what you need from it before the next read.
+ */
+export function quietWarnRest(t: number, offset: number, period: number, quiet: number, warn: number): CycleRead {
+  QW[0] = quiet;
+  QW[1] = warn;
+  return cycleRead(t, offset, period, QW, 2, WALK);
+}
 
 /** read a ready clock at game time t. `shift` staggers one lane or piece (seconds on Normal; stretched with the clock on Easy) */
 export function beatAt(b: Beat, t: number, shift = 0): ClockRead {
