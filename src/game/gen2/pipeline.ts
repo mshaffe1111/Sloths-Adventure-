@@ -1538,6 +1538,26 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     }
     return Math.max(0, M.corridor.top - (entryY() + exitDyOf(c) - (riseAfter[i] ?? 0)));
   };
+  // (and the late rise's debt: a late descent is followed by a node that must end higher than it began (V19). Whatever is taken
+  // here, a section must be left for that node that climbs back what the descent falls, with room for the joins between: the fall of
+  // the descent chosen here, or of the one laid, or the least any descent would fall. With none left, the px it would lack)
+  const lateRises = graph.nodes.flatMap((q, k) => {
+    const r = q.job === 'descent' ? graph.nodes.slice(k + 1).find((x) => x.job !== 'rest' && x.job !== 'exit' && x.job !== 'reward') : undefined;
+    return r?.mustRise ? [{ d: q, r }] : [];
+  });
+  const riseDebt = (c: SectionTemplate, n: MissionNode, i: number): number => {
+    let debt = 0;
+    for (const { d, r } of lateRises) {
+      const at = graph.nodes.indexOf(n);
+      if (n === r || at > graph.nodes.indexOf(r)) continue;
+      const free = (t: SectionTemplate) => t !== c && maxPer(t) - (used.get(t.id) ?? 0) - ahead(t.id, i) > 0 && !opt.bans?.get(-1)?.has(t.id);
+      const falls = M.sections.filter((t) => free(t) && staticFits(t, d, i)).map(exitDyOf);
+      const fall = n === d ? exitDyOf(c) : at > graph.nodes.indexOf(d) ? cur.y - (descentY ?? cur.y) : falls.length ? Math.min(...falls) : 0;
+      const need = Math.max(0, fall) + 60;
+      if (!M.sections.some((t) => free(t) && staticFits(t, r, i + 2) && -exitDyOf(t) >= need)) debt += need;
+    }
+    return debt;
+  };
   let lastLoose = '';
   // (the slot's place in its node, for the cadence: a hard node ramps through its sections, then its last one cools)
   let inNode = { k: 0, of: 0 };
@@ -1625,7 +1645,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     // among those that keep the pool whole; with none, the pick stands and the roll fails by name, as before)
     // (and, pacing the climb: nor unless it spends rise the later nodes must make (`overspent`); the pool first, then the pace)
     const left = lookAhead ? leftShort(n, i) : undefined;
-    const cost = (c: SectionTemplate): [number, number] => [left ? left(c) : 0, paced ? overspent(c, i) : 0];
+    const cost = (c: SectionTemplate): [number, number] => [left ? left(c) : 0, paced ? overspent(c, i) + riseDebt(c, n, i) : 0];
     const less = (a: [number, number], b: [number, number]) => a[0] < b[0] || (a[0] === b[0] && a[1] < b[1]);
     let least = cost(t);
     if (!least[0] && !least[1]) return t;
@@ -3303,6 +3323,12 @@ function buildRolled(req: BuildRequest): Gen2Stage {
           // is never swapped. One rule with no repair and the stage is rolled again: a swap would not answer it)
           const fixes = unmet.map((u) => {
             if (/^V19b/.test(u.line)) return windowFix(u.of, b.laid.plan, graph, M, budget, required);
+            // (a late rise that ended short, V19: its slot is asked for what it lacked, by the lay's own numbers)
+            const short = u.slot !== undefined && /the late rise ended/.test(u.line) ? u.of.laid.rise?.find((q) => q.node === b.laid.plan[u.slot!]?.node) : undefined;
+            if (short && !required.has(b.laid.plan[u.slot!].template)) {
+              const q = u.of.laid.sections[u.slot!];
+              return { slot: u.slot!, lift: Math.round(q.exit.y - q.entry.y - (short.exitY - (short.to - 20)) - 10) };
+            }
             return u.slot !== undefined && b.laid.plan[u.slot] && !required.has(b.laid.plan[u.slot].template) ? { slot: u.slot } : undefined;
           });
           const k = fixes.every((f) => f) ? 0 : -1;
