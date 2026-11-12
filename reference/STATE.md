@@ -611,3 +611,9 @@ lines); Matt sees them in the release.
   Fable as one when available), each a SHORT idea list (10 bullets max, a few minutes); the level designer gets all lists, designs the
   level, and names in its design doc which ideas it used and why (so we learn which lens helps); the lead judges the design doc as today;
   Matt sees a one-minute summary before the build. Starts with 1-4 (the two-vine climb needs its engine piece first).
+- 2026-11-12 6:07 PM ET, Matt: test the idea round now on 1-4 with three efforts, then a designer picks/combines; when Fable is back, the next
+  round uses Opus xhigh + Opus max + Fable and designs TWO levels at once. Started: IDEAS-1-4 (packet reference/packets/2026-11-12/
+  IDEAS-1-4.md, same brief for all): A = Opus HIGH (session_01FhBbYJsZyoxcenxTxhZwmc, t-ideas-14-a), B = Opus XHIGH
+  (session_01FhBbYNU1GCTEwYjyMCC2Kr, t-ideas-14-b), C = Opus MAX (session_01FhBbYMuNxrPmKojME9JJhj, t-ideas-14-c). The letter->effort
+  map stays with the lead; the designer gets the lists unlabelled and says which ideas it used and why. Then a designer (Opus max)
+  writes reference/design/1-4.md; the build waits for the two-vine climb engine piece.
