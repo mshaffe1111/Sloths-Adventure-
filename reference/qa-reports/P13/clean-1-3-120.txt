@@ -1,0 +1,3 @@
+1-3 as the game rolls it (judged on its flown rows), seeds 1-120
+normal: CLEAN 120 of 120 (100%); judged 120; thrown 0
+easy: CLEAN 120 of 120 (100%); judged 120; thrown 0
