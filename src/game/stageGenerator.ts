@@ -2949,7 +2949,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
 /** the platforms a gen2 stage's pickups are placed against (finishStage: trails, finds, fixPickups): on 1-1 the level jumps the flown
  *  arcs cross too (R-165.61, gen2/reach.ts linkArcs), so a pickup past a 240-262 px gap is not moved back; every other stage as before */
 export function finishReach(stage: GeneratedStage, difficulty: Difficulty): number[] {
-  return validateStage(stage, { rooms: false, ...(judgedOnArcs(stage.config.id) ? { arcs: linkArcs(difficulty) } : {}) }).reachableIds;
+  return validateStage(stage, { rooms: false, ...(judgedOnArcs(stage.config.id) ? { arcs: linkArcs(difficulty, stage.config.id) } : {}) }).reachableIds;
 }
 
 function finishStage<T extends GeneratedStage>(stage: T, reachableIds: number[]): T {

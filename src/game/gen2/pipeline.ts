@@ -142,7 +142,7 @@ export const riseLimit = (dbl: boolean, share: number): number => share * (dbl ?
  */
 export function gapFor(dyUp: number, dbl: boolean, budget: Pick<StageBudget, 'id' | 'margin' | 'difficulty'>): number {
   if (!judgedOnArcs(budget.id)) return maxGap(dyUp, dbl, budget.margin);
-  const env = gapEnvelope(dbl, budget.difficulty);
+  const env = gapEnvelope(dbl, budget.difficulty, budget.id);
   return dyUp > 20 ? Math.min(maxGap(dyUp, dbl, budget.margin), env) : env;
 }
 /** is a laid piece's lip thin (under reach.md's 50 px block)? read off the shape as layStage builds it (`mk`): a bank stands to the
@@ -2761,12 +2761,12 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
   const cfg = st.config;
   const held = budget.quota.check === cfg.targetCount ? st : { ...st, config: { ...cfg, targetCount: budget.quota.check } };
   // (1-1 links level jumps by the flown arcs too, R-165.61; every other stage exactly as before)
-  const res = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty) }) : validateStage(held);
+  const res = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)
   if (!st.platforms.some((p) => p.type === 'fragile')) return res;
   const bareSt = { ...held, platforms: held.platforms.filter((p) => p.type !== 'fragile') };
-  const bare = judgedOnArcs(budget.id) ? validateStage(bareSt, { arcs: linkArcs(budget.difficulty) }) : validateStage(bareSt);
+  const bare = judgedOnArcs(budget.id) ? validateStage(bareSt, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(bareSt);
   const need = bare.errors.filter((e) => !/^(flower|leaf|heart) #/.test(e)).map((e) => `crumbling tiles needed: ${e}`);
   return need.length ? { ...res, ok: false, errors: [...res.errors, ...need] } : res;
 }
@@ -2779,11 +2779,11 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
  * double from anything (the stump under the mushroom included), with 15 px to spare: only the bounce lands it. The mushroom itself is
  * never a take-off (no one stands on one). Each breach names the section, so the check swaps it.
  */
-export function blockBreaches(laid: Laid, platforms: readonly Platform[], arcsOf?: Difficulty): Array<{ uid: string; why: string }> {
+export function blockBreaches(laid: Laid, platforms: readonly Platform[], arcsOf?: { setting: Difficulty; stageId: string }): Array<{ uid: string; why: string }> {
   const out: Array<{ uid: string; why: string }> = [];
   // (1-1, R-165.61: the lesser move at its best, flown, with bands.md's 5 px spare: one jump's climb and its any-timing gap for a 'double'
   // block; for a 'bounce' block the plain double, held. Every other stage: the closed form below, as before)
-  const L = arcsOf ? lesserArcs(arcsOf) : undefined;
+  const L = arcsOf ? lesserArcs(arcsOf.setting, arcsOf.stageId) : undefined;
   for (const b of laid.blocks ?? []) {
     const to = b.landing, dbl = b.kind === 'bounce', spare = dbl ? 15 : 20;
     for (const from of platforms) {
@@ -2827,7 +2827,7 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
   // (and one whose laid exit left the corridor: the way on is lost past it, whichever section comes next)
   const stray = b.laid.strays?.[0];
   if (stray) return { ok: false, swap: Number(stray.uid.slice(1)) - 1, why: `its exit at y ${stray.y} is outside the corridor` };
-  const walked = blockBreaches(b.laid, st.platforms, judgedOnArcs(budget.id) ? budget.difficulty : undefined);
+  const walked = blockBreaches(b.laid, st.platforms, judgedOnArcs(budget.id) ? { setting: budget.difficulty, stageId: budget.id } : undefined);
   if (walked.length) return { ok: false, swap: Number(walked[0].uid.slice(1)) - 1, why: `the block is walked round: ${walked[0].why}` };
   for (let it = 0; it < 8; it++) {
     const res = checkStage(st, budget);
@@ -2870,7 +2870,7 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
       if (!tried.has(key) && seam?.from && seam.to && reach.has(seam.from.id) && !reach.has(seam.to.id)) {
         tried.add(key);
         const stone: Platform = { id: Math.max(...st.platforms.map((p) => p.id).filter((i) => i < 900000)) + 1, x: R((seam.x0 + seam.x1) / 2 - 42), y: R((seam.from.y + seam.to.y) / 2), width: 84, height: 22, type: 'solid', style: 'moss_stone' };
-        const la = judgedOnArcs(budget.id) ? linkArcs(budget.difficulty) : undefined;
+        const la = judgedOnArcs(budget.id) ? linkArcs(budget.difficulty, budget.id) : undefined;
         if (jumpOK(seam.from, stone, false, la).ok && jumpOK(stone, seam.to, false, la).ok) {
           st.platforms.push(stone);
           repairs.push({ kind: 'stone', section: sec.uid, note: `a stone in the seam before ${sec.template}` });

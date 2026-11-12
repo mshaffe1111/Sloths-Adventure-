@@ -19,7 +19,7 @@ const reachesExit = (errors: readonly string[]) => !errors.some((e) => /^exit pl
  *  as stageGenerator finishReach: gen2/reach.ts linkArcs, the stage's own setting); every other stage as before */
 const reachOpts = (stage: GeneratedStage): CheckOptions => ({
   rooms: false,
-  ...(judgedOnArcs(stage.config.id) ? { arcs: linkArcs((stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty ?? 'normal') } : {}),
+  ...(judgedOnArcs(stage.config.id) ? { arcs: linkArcs((stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty ?? 'normal', stage.config.id) } : {}),
 });
 
 /**

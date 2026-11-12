@@ -8,7 +8,7 @@
  */
 import type { Difficulty } from '../difficulty.ts';
 import type { Platform } from '../types.ts';
-import { APEX, arc, BAND_SOURCE, BANDS, BLOCK_H, BODY_H, lesserArcs, linkArcs, scopeOf, SPARE, TAKEOFF } from './reach.ts';
+import { APEX, arc, BAND_SOURCE, BANDS, BLOCK_H, BODY_H, lesserArcs, linkArcs, scopeFor, scopeOf, SPARE, TAKEOFF } from './reach.ts';
 import type {
   Drop, FirstRunLayout, HurtLook, JudgedStage, LethalLook, Measure, PromiseRegistry, ReachMove, RollVerdict, SectionKind, SoftLook, Verdict, VerdictName,
 } from './verdicts.types.ts';
@@ -74,8 +74,8 @@ export function headroomOf(a: Pick<RouteAsk, 'x0' | 'x1' | 'yTake' | 'yLand'>, p
   return low === -Infinity ? 9999 : R(a.yTake - low);
 }
 
-/** one ask's verdicts (a JudgedStage `asks` row), on the setting's flown arcs and bands */
-export function askVerdicts(q: JudgedStage['asks'][number], setting: Difficulty): Verdict[] {
+/** one ask's verdicts (a JudgedStage `asks` row), on the bands and the judged stage's own flown arcs on the setting */
+export function askVerdicts(q: JudgedStage['asks'][number], setting: Difficulty, stageId: string): Verdict[] {
   const out: Verdict[] = [];
   const at = { x0: R(q.x0), x1: R(q.x1), section: q.section };
   const v = (name: VerdictName, line: string, measure?: Measure) => out.push({ name, setting, at, ...(measure ? { measure } : {}), line });
@@ -84,8 +84,8 @@ export function askVerdicts(q: JudgedStage['asks'][number], setting: Difficulty)
   if (band === 'none') v('band.out', `${where}: ${setting} has no ${q.kind} (band 'none')`, meas(q.figure, 0, true, BAND_SOURCE[q.kind]));
   else if (q.figure > band.hi) v('band.out', `${where}: ${R(q.figure)} px, over the band's ${band.hi}`, meas(q.figure, band.hi, true, BAND_SOURCE[q.kind]));
   else if (q.figure < band.lo) v('band.out', `${where}: ${R(q.figure)} px, under the band's ${band.lo}`, meas(q.figure, band.lo, false, BAND_SOURCE[q.kind]));
-  const scope = scopeOf('1-1', setting)!;
-  const link = linkArcs(setting), lesser = lesserArcs(setting);
+  const scope = scopeFor(setting, stageId);
+  const link = linkArcs(setting, stageId), lesser = lesserArcs(setting, stageId);
   const thin = q.kind === 'double-teach-rise-thin';
   if (q.kind === 'single-gap' && q.figure > link.single.gap) {
     v('arc.single-gap-over', `${where}: ${R(q.figure)} px, past a flick's ${link.single.gap}`, meas(q.figure, link.single.gap, true, setting === 'normal' ? BAND_SOURCE['single-gap'] + ' (a flick from 55 px)' : arc('single-flick', scope).source + ' from 70 px'));
@@ -165,7 +165,7 @@ export interface Judged11 extends JudgedStage { routeGaps: ReadonlyArray<readonl
 export function judgeRoll(st: Judged11, promises: PromiseRegistry = []): RollVerdict {
   const failed: Verdict[] = [];
   const notJudged: VerdictName[] = ['first-run.drift'];
-  if (scopeOf(st.stageId, st.setting)) for (const q of st.asks) failed.push(...askVerdicts(q, st.setting));
+  if (scopeOf(st.stageId, st.setting)) for (const q of st.asks) failed.push(...askVerdicts(q, st.setting, st.stageId));
   else notJudged.push('reach.unflown', ...ARC_VERDICTS);
   failed.push(...dropVerdicts(st), ...untypedVerdicts(st, st.routeGaps));
   for (const p of promises) {

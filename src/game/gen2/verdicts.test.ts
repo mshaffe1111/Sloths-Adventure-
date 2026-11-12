@@ -22,7 +22,7 @@ const P = (id: number, x: number, y: number, width: number, height = 300): Platf
 /** a clean 1-1 built stage: one floor, a teach node, and after it a 260 px gap with ground 200 px under it (only the double crosses) */
 const builtClean = () => ({
   platforms: [P(1, 0, G, 1000), P(2, 1260, G, 1000), P(3, 1000, G + 200, 260)],
-  config: { levelHeight: 2000 }, gen2: { nodes: [{ token: 'Tg2>', x0: 0 }] },
+  config: { levelHeight: 2000 }, gen2: { nodes: [{ token: 'Tg2>', x0: 0 }], brief: { teaches: ['double'] } }, // (its brief teaches the double, as 1-1's: the double's promises run by the brief)
 });
 type Ask = JudgedStage['asks'][number];
 const ask = (kind: SectionKind, figure: number, over: Partial<Ask> = {}): Ask =>
@@ -148,7 +148,7 @@ test('the verdict path holds no closed-form figure: reach.ts and verdicts.ts nam
   assert.equal(riseCap(true, 0.95, b('easy')), 132);
   assert.equal(riseCap(true, 0.95, b('easy'), true), 128);
   assert.equal(riseCap(false, 0.9, b('normal')), 80);
-  assert.equal(gapEnvelope(true, 'easy'), 287, 'Easy has no double gap band: the flick from 70 px; band.out refuses it');
+  assert.equal(gapEnvelope(true, 'easy', '1-1'), 287, 'Easy has no double gap band: the flick from 70 px; band.out refuses it');
   assert.equal(riseEnvelope(true, 'normal'), (BANDS['double-teach-rise'].normal as { hi: number }).hi);
   // (outside 1-1: the closed form, exactly)
   for (const dy of [-120, -40, 0, 30, 90]) for (const dbl of [false, true]) {
@@ -158,9 +158,9 @@ test('the verdict path holds no closed-form figure: reach.ts and verdicts.ts nam
   // (levelCheck's jumpOK with the arcs: a 240 px level gap one jump at its best crosses, which the closed form says it can't)
   const a = P(1, 0, G, 300), c = P(2, 540, G, 300);
   assert.equal(jumpOK(a, c, false).ok, false);
-  assert.equal(jumpOK(a, c, false, lesserArcs('normal')).ok, true);
-  assert.equal(jumpOK(a, P(2, 600, G, 300), true, linkArcs('normal')).ok, false, 'a 300 px gap: past the double flick from 70 px, 283');
-  assert.equal(jumpOK(a, P(2, 560, G, 300), true, linkArcs('normal')).ok, true, 'a 260 px gap: the double flick crosses');
+  assert.equal(jumpOK(a, c, false, lesserArcs('normal', '1-1')).ok, true);
+  assert.equal(jumpOK(a, P(2, 600, G, 300), true, linkArcs('normal', '1-1')).ok, false, 'a 300 px gap: past the double flick from 70 px, 283');
+  assert.equal(jumpOK(a, P(2, 560, G, 300), true, linkArcs('normal', '1-1')).ok, true, 'a 260 px gap: the double flick crosses');
 });
 
 // (main's 0.9.5 build of these, layout 1, hashed on origin/main@181d2846 before E0's first change: platforms, falls, errors and plan;

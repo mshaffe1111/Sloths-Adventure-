@@ -383,7 +383,7 @@ function cutSpans(spans: Array<[number, number]>, x0: number, x1: number): Array
 export function validateAsJudged(stage: GeneratedStage, opts: CheckOptions = {}): CheckResult {
   if (!judgedOnArcs(stage.config.id)) return validateStage(stage, opts);
   const d = (stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty ?? 'normal';
-  return validateStage(stage, { ...opts, arcs: opts.arcs ?? linkArcs(d) });
+  return validateStage(stage, { ...opts, arcs: opts.arcs ?? linkArcs(d, stage.config.id) });
 }
 
 export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): CheckResult {
