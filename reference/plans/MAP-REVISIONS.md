@@ -160,7 +160,7 @@ OUT = against a rule we keep, with the reason. Worlds: 1 Canopy, 2 River, 3 Grot
 | 23 | Wash away thorns | IN: World 6, the tide clears a path (B16) |
 | 24 | Ziplines | IN: World 1's hidden stage (C2 cheap way) |
 
-**Tally: 61 IN (1 already done), 15 PARK, 8 OUT.** Every IN rides on a piece the engine is already building, so the ideas add
+**Tally: 65 IN (1 of them already shipped), 11 PARK, 8 OUT.** Every IN rides on a piece the engine is already building, so the ideas add
 variety without adding engine work. The new things worth naming: twin-vine climbs and fruit down the trunk inside the hollow kapok
 (1-4); rolling nuts at two heights (1-8); the drum as World 3's one loud tool; fruit that wakes drowsy Pokey (World 5); creatures you
 ride (World 2, World 6); the rising-lava arena for guardians.
