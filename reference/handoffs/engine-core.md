@@ -8,6 +8,21 @@ Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, r
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
+## 0g. World 1's ground seams (RF2, t-render-2, 11-12): what the next engineer on the painted ground must know
+- **Soil fills are sampled FILL_INSET (3) sheet px in from every edge** (groundPaint.ts fillSrc). The ground sheets are lossy WebP: fills
+  2-3 of every world sit on the lip strip and their last 3 rows are dark (World 1: 60 -> 36), and Worlds 6/9 bleed at side edges. Drawn
+  edge to edge every 600 units, that was a hairline along every soil row (1-1's pillars at y 1200, 1-3's floor line at 600). Never
+  sample a packed piece to its frame's edge; measure the edge rows (RF2 REPORT has the numbers per world) before trusting "periodic".
+- **The floor's lip at a raised bank:** under a short step (< SHORT_STEP, 60) between two floors the floor's lip is drawn AFTER the run
+  (stepFootLips), covering the end pieces' clean cut; beside any higher bank it runs LIP_UNDER (60) on under it, drawn BEFORE it
+  (lipUnder), so only the gap where the end face curves back in shows it. Without them: a bare box with straight sides at every step.
+- **1-1's dip pockets are painted in drawGround (baked squares) with groundDepth**, not live in drawProtoScene: live, laid from the view,
+  they were a lighter box between the earth pillars that moved with the camera. Anything drawn live over the squares must use the
+  ground's darkening, or be baked with it.
+- **Backdrop strips over a chasm** end in stripFoot (scenery.ts): the bottom edge averaged to 48 columns, darker downward. Stretching
+  the strip's last rows (the old way) made hard vertical streaks across the bottom quarter of an upright screen.
+- Finding a drawer: tools in RF2's REPORT ("Method update"): a per-pixel trace of every draw into the ground squares beats guessing.
+
 ## 0d. Rulings and facts to keep (R-165.112, 11-11)
 - **A list is never in the main script.** `gen2/proven/seeds-<stage>.ts` (GENERATED) holds the list; `gen2/provenIndex.ts` (GENERATED)
   holds, a stage, its count, its version (`listVersion`, the hash a run's `list` stamp carries) and `load: () => import(...)`. The

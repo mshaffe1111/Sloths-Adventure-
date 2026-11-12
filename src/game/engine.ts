@@ -107,6 +107,8 @@ import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOW
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
+import { CastPlay, type CastHero } from './castPlay.ts';
+import { drawTraps } from './castArt.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
 import { drawKitDecor } from './puzzleArt.ts';
 import { drawDress } from './dressArt.ts';
@@ -289,6 +291,9 @@ export interface GameEngineCallbacks {
 
 /** a footstep sound on every this-many footfalls of his run frames (2026-10-30; until then one every 52 px, unsynced) */
 export const STEP_EVERY = 2;
+/** the call a cast animal gives at its tell (the tree snake has no call of its own: it hisses like the boa, as it always has) */
+const castCall = (type: Enemy['type']): Parameters<typeof sound.playPredator>[0] => (type === 'snake' ? 'boa' : type) as Parameters<typeof sound.playPredator>[0];
+
 /** World 5's low steps for the stuck-helper (px above his feet: a face one jump climbs), and how long the stillness waits after it speaks */
 export const STEP_FACE = { min: 30, max: 100 } as const;
 /**
@@ -614,6 +619,9 @@ export class GameEngine {
    * dead at 1-7's and 1-9's waist-high steps and dips, and only an up-and-over flick got out; reference/STAGE-RULES.md: rules learned
    * in one world apply to every world). Not Meeca's stage (its own helper's), the boss arenas or Dot's flight.
    */
+  /** the stage's cast on the creature kit and its drop traps, when its brief names a cast (castPlay.ts); null on every other stage */
+  private cast: CastPlay | null = null;
+  private readonly castHero: CastHero = { x: 0, y: 0, vx: 0, vy: 0, facing: 1, grounded: false, holding: false };
   private stepHelp = false;
   /** the stage's puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): things to carry and throw, plates, gates, levers, lifts, beetles */
   private kit: KitPlay | null = null;
@@ -962,6 +970,7 @@ export class GameEngine {
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
+    this.startCast();
     // (every world, the generated stages too, Gemini G4: not Meeca's stage, the boss arenas or Dot's flight)
     this.stepHelp = !!this.w5 || (!this.proto?.meeca && !this.currentStage.arena && !this.currentStage.dot);
     // (Meeca's stage: her night look, and Easy's stuck watch without a clock, Matt's research rule)
@@ -2714,6 +2723,8 @@ export class GameEngine {
     this.watchForStuck();
 
     // --- Enemy Behavior & AI ---
+    // (a stage that names a cast: those animals are the creature kit's, stepped here with his stillness and his noise)
+    if (this.cast) this.stepCast(dt);
     for (const e of this.enemies) {
       if (e.defeated) {
         this.updateKo(e, dt);
@@ -2721,6 +2732,7 @@ export class GameEngine {
       }
 
       if (e.hitFlashTimer > 0) e.hitFlashTimer -= dt;
+      if (e.kit) continue;
       // a hit animal flinches, slides back and may stand dazed (no moves, no damage) for a moment
       if (this.reactToHits(e, dt)) continue;
 
@@ -2896,7 +2908,7 @@ export class GameEngine {
       }
     }
     separateHunters(this.enemies, dt);
-    for (const e of this.enemies) if (!e.defeated && isPredator(e.type)) keepOnLedge(e);
+    for (const e of this.enemies) if (!e.defeated && !e.kit && isPredator(e.type)) keepOnLedge(e);
 
     // --- Boss fight ---
     if (this.boss && this.bossDef && !this.boss.defeated) this.updateBoss(dt);
@@ -4225,6 +4237,16 @@ export class GameEngine {
       this.hitEnemy(e, m, box, hr, a);
     }
 
+    // a blow on a drop trap's handle lets its load go (castPlay.ts): shake the vine, cut the tendril
+    const sprung = this.cast?.strike(box);
+    if (sprung) {
+      a.connected = true;
+      this.hitstopTimer = Math.max(this.hitstopTimer, 0.04);
+      sound.playWhoosh();
+      this.spawnDebrisBurst(sprung.x, sprung.y - 70, '#65a30d');
+      recorder.event('trap', sprung.kind);
+    }
+
     const b = this.boss;
     if (b && !b.defeated && !a.hits.has(-1)) {
       const hr = hurtRect(b);
@@ -4282,6 +4304,10 @@ export class GameEngine {
   private hitEnemy(e: Enemy, m: MoveSpec, box: Rect, hr: Rect, a: NonNullable<GameEngine['atk']>) {
     const p = this.player;
     const dir: 1 | -1 = m.kind === 'mega' ? (e.x >= p.x ? 1 : -1) : p.facing;
+    if (e.kit) {
+      this.castBlow(e, m, box, hr, a);
+      return;
+    }
     // a river snapper hides from a blow to its face; its shell can be kicked away (predatorAI.ts turtleGuard)
     if (e.type === 'turtle') {
       const g = turtleGuard(e, p.x, m.kind === 'kick');
@@ -4363,6 +4389,101 @@ export class GameEngine {
     if (res.interrupt && isPredator(e.type)) staggerPredator(e);
     const label = res.armored ? 'TOUGH!' : wasCommitted ? 'STOPPED!' : this.comboCount >= 3 ? `${this.comboCount} HITS!` : 'HIT!';
     this.addFloatingText(label, e.x, e.y - 24, res.armored ? '#cbd5e1' : '#fef08a');
+  }
+
+  /** the stage's cast from its own data, at every stage start: the kit takes the animals the brief names (castPlay.ts); none named, none taken */
+  private startCast() {
+    const world = this.currentStage.config.worldIndex;
+    this.cast = this.proto?.cast ? new CastPlay(this.proto.cast, this.enemies, this.platforms, world, this.proto.bushes ?? []) : null;
+  }
+
+  /**
+   * One fixed step of the stage's cast (castPlay.ts): the kit moves every cast animal, with Pokey as stillness reads him and the
+   * noise of his landings; this turns what happened into the sounds, the cues, the hurt and the count
+   */
+  private stepCast(dt: number) {
+    const c = this.cast!;
+    const p = this.player;
+    // (one record, written each step: nothing is made per frame)
+    const h = this.castHero;
+    h.x = p.x;
+    h.y = p.y;
+    h.vx = p.vx;
+    h.vy = p.vy;
+    h.facing = p.facing;
+    h.grounded = p.grounded;
+    h.holding = !!(p.climbing || p.isVineSwinging);
+    const r = c.step(h, dt, this.gameTime, this.easy);
+    // (the cues the old animals give: a '?' when it notices him, a '!' and its call when its tell begins)
+    for (const e of r.noticed) this.addFloatingText('?', e.x, e.y - 34, '#fde047');
+    for (const e of r.told) {
+      sound.playPredator(castCall(e.type), 0);
+      this.addFloatingText('!', e.x, e.y - 34, '#f97316');
+    }
+    for (const e of r.struck) sound.playPredator(castCall(e.type), 1);
+    for (const k of r.hurts) {
+      if (this.debugBoxes) this.dbgHurt.push(k.box);
+      if (this.gameTime < (this.harmlessUntil.get(k.e.id) ?? -1)) continue;
+      // it ran onto a blow already thrown at it: the blow wins, never a trade
+      if (this.ranOntoBlow(k.e)) continue;
+      if (checkAABBCollision(...this.pBox(), k.box.x, k.box.y, k.box.w, k.box.h)) {
+        this.damagePlayer(1, k.e.x);
+        break;
+      }
+    }
+    // an animal that left for good (knocked off its branch, chased off by a trap) counts as one beaten: a purge's goal
+    for (const e of r.cleared) {
+      // Dot's line for the first of its kind (the stage's own words, castPlay.types.ts `said`): once, the first time a trap sends
+      // one off, and once the first time a punch does; never again, in any stage (the first-of memory the hints use)
+      const way = e.kit?.beatenBy;
+      const line = way === 'trap' || way === 'punch' ? this.proto?.cast?.said?.[way] : undefined;
+      if (line && !tipHeard(FIRST_OF_STAGE, `cast:${way}`)) {
+        markTipHeard(FIRST_OF_STAGE, `cast:${way}`);
+        this.guide(line, 4);
+      }
+      p.enemiesDefeated++;
+      if (!e.minion && e.type !== 'boss' && e.type !== 'ant_hazard') this.statKills[e.type] = (this.statKills[e.type] ?? 0) + 1;
+      recorder.event('chasedOff', e.type);
+      sound.playWhoosh();
+    }
+    for (const t of r.fell) {
+      this.camera.trauma = Math.min(1, this.camera.trauma + 0.2);
+      sound.playHitImpact(true, 'generic');
+      this.spawnDebrisBurst(t.loadX, t.landY - 8, t.load === 'hive' ? '#fbbf24' : '#a8a29e');
+    }
+    if (r.landed) recorder.event('landing', String(Math.round(r.landed.r)));
+  }
+
+  /** a punch or a kick on a cast animal: the kit says whether it works and how it ends; this is the blow's weight */
+  private castBlow(e: Enemy, m: MoveSpec, box: Rect, hr: Rect, a: NonNullable<GameEngine['atk']>) {
+    const p = this.player;
+    const kick = m.kind === 'kick';
+    const worked = this.cast!.beat(e, kick ? 'kick' : 'punch', this.gameTime, p.x);
+    a.connected = true;
+    const cp = contactPoint(box, hr);
+    if (kick) this.statKicks++;
+    else this.statPunches++;
+    this.hitstopTimer = Math.max(this.hitstopTimer, m.hitstop);
+    if (!worked) {
+      // not a way that works on it now: the blow glances off, as off a shell
+      sound.playHitImpact(false, 'armor');
+      this.spawnSparkBurst(cp.x, cp.y, '#e2e8f0');
+      return;
+    }
+    e.hitFlashTimer = 0.12;
+    this.camera.trauma = Math.min(1, this.camera.trauma + m.shake);
+    sound.playHitImpact(m.heavy, materialFor(e.type));
+    if (kick) this.spawnKickHitBurst(cp.x, cp.y);
+    else this.spawnClawHitSparks(cp.x, cp.y, m.heavy);
+    this.comboCount++;
+    this.comboResetTimer = 2.0;
+    // a kick from the air bounces him off the animal, ready to go again
+    if (m.id === 'airKick') {
+      p.vy = -420;
+      p.jumpsLeft = Math.max(p.jumpsLeft, 1);
+      p.isDoubleJumping = false;
+      this.launched = true;
+    }
   }
 
   private hitBoss(b: BossEntity, m: MoveSpec, box: Rect, hr: Rect) {
@@ -4783,6 +4904,18 @@ export class GameEngine {
         sound.playHitImpact(false, 'armor');
         this.spawnSparkBurst(p.x, head.y, '#cbd5e1');
         this.addFloatingText('ARMORED!', e.x, head.y - 14, '#cbd5e1');
+        return;
+      }
+      if (e.kit) {
+        // a cast animal: the kit says what a stomp does to it (the tree snake: he vaults it, and it leaves him be a while)
+        this.cast?.beat(e, 'stomp', this.gameTime, p.x);
+        p.vy = this.input.state.jumpHeld ? -620 : -460;
+        this.statStomps++;
+        this.hitstopTimer = Math.max(this.hitstopTimer, 0.06);
+        this.camera.trauma = Math.min(1, this.camera.trauma + 0.18);
+        sound.playHitImpact(false, materialFor(e.type));
+        this.spawnDebrisBurst(p.x, head.y, '#fde68a');
+        this.stompGrace = 0.5;
         return;
       }
       const dir: 1 | -1 = p.vx >= 0 ? 1 : -1;
@@ -5530,6 +5663,8 @@ export class GameEngine {
     // World 5: no silk, sleep or stillness carried over to the flag (w5Play.ts calm, "a respawn": only the bot harness called it, so
     // a player back at a flag within 260 px of where he fell was wrapped every ~6 s before he had touched the screen, audit C)
     this.w5?.calm();
+    // the cast: his stillness and his fall start over, and whatever was after him stands down (castPlay.ts)
+    this.cast?.calm(this.easy);
     this.inputGrace = 0.35;
     this.graceMoves = this.input.moves;
     // a press made while he was going down is not played at the flag (inputEngine.ts dropPresses)
@@ -6778,11 +6913,15 @@ export class GameEngine {
       }
     }
 
+    // the stage's drop traps (castArt.ts): behind the animals they hang over
+    if (this.cast?.traps.length) drawTraps(ctx, this.cast.traps, this.gameTime, (x, y) => this.onScreen(x, y, 500));
+
     // Render Enemies
     this.enemies.forEach((enemy) => {
       if (enemy.defeated && enemy.koTimer > (enemy.koLife ?? 0)) return;
       if (!this.onScreen(enemy.x, enemy.y, 400)) return;
-      if (!enemy.defeated) {
+      // (a cast animal gliding off for good wears no rim: it can no longer hurt)
+      if (!enemy.defeated && enemy.glide === undefined) {
         // the ember rim (see readable.ts): everything that can hurt you wears it
         ctx.save();
         ctx.translate(enemy.x, enemy.y);
@@ -6824,7 +6963,17 @@ export class GameEngine {
           drawHazardEntity(ctx, enemy, this.gameTime);
         }
       };
-      this.drawWithReaction(ctx, enemy, draw);
+      if (enemy.glide !== undefined) {
+        // gliding off: it flattens out and thins away as it goes (castPlay.ts GLIDE)
+        ctx.save();
+        ctx.globalAlpha *= Math.max(0, 1 - enemy.glide * enemy.glide);
+        ctx.translate(enemy.x, enemy.y);
+        ctx.rotate(enemy.facing * 0.35 * enemy.glide);
+        ctx.scale(1 + 0.25 * enemy.glide, 1 - 0.3 * enemy.glide);
+        ctx.translate(-enemy.x, -enemy.y);
+        this.drawWithReaction(ctx, enemy, draw);
+        ctx.restore();
+      } else this.drawWithReaction(ctx, enemy, draw);
     });
 
     // Render Boss
