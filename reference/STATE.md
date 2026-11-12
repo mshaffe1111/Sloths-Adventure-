@@ -578,3 +578,4 @@ lines); Matt sees them in the release.
   seeds). Retired.
 - 2026-11-12 3:13 PM ET, Matt: add "Inspired by" games at the end of Settings > About the game (R-165.158). Asking Matt for the list.
 - 2026-11-12 3:15 PM ET, Matt on R-165.158: use OUR list (the games our design docs draw on for the levels, big and little); purpose also: "keep people from thinking it's just AI slop and that real thought went behind this". The story keeper compiles the list from reference/ideas + MAP-REVISIONS + GAME-MAP and drafts the section; Matt sees the draft before it's built.
+- 2026-11-12 3:18 PM ET, Matt on R-165.158: add the original side before "Inspired by": it began as a conversation between Matt and his wife about making a sloth game; what's original (characters, story, worlds, levels, art made for this game); a tribute, but original. Story keeper drafting; every claim true; no names without Matt.
