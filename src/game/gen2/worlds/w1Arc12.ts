@@ -28,7 +28,7 @@ export const BRIEF_12: GraphBrief = {
 } as GraphBrief;
 /** the story keeper's lines for 1-2, verbatim (the lead, 11-12 2:14 PM; STORY-LINES.md on origin/ccr-0d59a91c-oy3imz): the lesson's
  *  two, said at its first flag one after the other (the second teaches hands-off mid-chain without naming a button), and the twist's,
- *  approved 11-05 for 1-2 (R-165.45 released for it by the lead 11-12), held until the note lies in the hollow (no socket says it yet).
+ *  approved 11-05 for 1-2 (R-165.45 released for it by the lead 11-12), said at the twist's lip now that the note lies in the hollow.
  *  The stair has no line: main's "The petals go up" (dotLinesData.ts hint.1-2.up) is CUT in the new look (its new text null), so the
  *  game never says it (dotLines.ts engineGuideLine); a line there comes from the story keeper through the lead */
 export const LINES_12 = {
@@ -177,8 +177,12 @@ export const BEATS_12: SectionTemplate[] = [
   // out. Dot's "There's something down by the roots..." is said here only once Meeca's note (the Keeper's Bell, finds.ts w1_note) is
   // laid on this floor by a find-spot mark (P12S's, the lead 11-12): she never promises something over an empty floor
   brick({ id: 'w1-12-hollow', name: 'the twist: the hollow where no thorns grow', jobs: ['twist'], content: 'ground', difficulty: 4, versions: [(() => {
-    const lip: Lay = { pieces: [led('a', null, [340, 380]), hump('ar', 'a', [0.62, 0.68])], sockets: [low('par', 'ar', 0.5, 1)] };
-    return { id: 'down-and-up', lay: breath(join(lip, hollow('h', 'a', [860, 920])), 2) };
+    // (Dot's "There's something down by the roots..." as he reaches the lip, and Meeca's note, the Keeper's Bell (finds.ts w1_note:
+    // "Down in the hollow, low against a root."), on the hollow's floor just past its root's right face: t 0.66 of the floor is 10-50 px
+    // past the root on every roll (its right edge is at most 558 px in), short of the far petal and the lift. FX's findSpot, ProtoExtras)
+    const lip: Lay = { pieces: [led('a', null, [340, 380]), hump('ar', 'a', [0.62, 0.68])], sockets: [tip('a', 'roots', 0.2), low('par', 'ar', 0.5, 1)] };
+    const note: Lay = { pieces: [], sockets: [{ id: 'note', role: 'findSpot', on: 'hf', t: 0.66 }] };
+    return { id: 'down-and-up', lay: breath(join(lip, hollow('h', 'a', [860, 920]), note), 2) };
   })()] }),
   // [S] the long crossing, the signature: four caps, HER ISLAND (a root bank in the thorns, a petal row, its own floor mushroom), four
   // caps | two, island, two, island, two (chain.md: Easy two either side of an island)
