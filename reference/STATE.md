@@ -669,3 +669,9 @@ lines); Matt sees them in the release.
   pears no); written into TEAM.md's bar.
 - 2026-11-12 6:47 PM ET, Matt: "we could also use multiple [fruit] just to keep it spruced up a little bit." R-165.169 (fruit variety:
   several rainforest fruits as pickups/dressing; inventory first, then HF for missing art; after 0.9.7).
+- 2026-11-12 6:47 PM ET: story keeper: the snake's new name is "Golden Eyelash Viper" (the real golden "oropel" eyelash viper, Costa Rica
+  to Ecuador; its eye scales read as the art's little horns); 3 player-facing mentions (journal.ts:27, creatureLore.ts:9, the journal's
+  plural), tomorrow, R-165.166. 1-4's nature check PASSES (kapok, lianas, bracket fungus, knot-holes, red-tailed squirrels as a cameo
+  only, mist, highlands; pods on a beat = storybook, allowed). Owed words written in STORY-LINES.md: halfway "Meeca climbs this every
+  Sunday. I waved from below."; the pods flag (Dot) "Hear it creak? Duck in a hollow till it drops!"; journal 1-4 "Climbed the kapok
+  between falling pods. From the top you can see where they took her."
