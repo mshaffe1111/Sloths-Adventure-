@@ -75,6 +75,41 @@ test("every chain inside chain.md §3's bands: cap to cap by the step, stumps 12
   });
 });
 
+/** the bare wood beside each cap on a stump, by beat: Normal from the petals going up on lays NONE (the caps are his only footing over the
+ *  thorns: the lead's ruling A, 11-12; any bed the generator lays is one a full jump clears, so purpose comes from cap-only footing); the
+ *  lesson and again on both settings, and Easy everywhere, keep 20 px or more each side (the gentle lesson, the forgiving miss) */
+const capOnly = new Set(['w1-12-up', 'w1-12-long', 'w1-12-crossing', 'w1-12-finale']);
+function woodFaults(st: Any, d: string): string[] {
+  const out: string[] = [];
+  const under = (c: Any) => st.platforms.find((p: Any) => p.type !== 'bouncy' && Math.abs(p.y - (c.y + c.height)) <= 2 && p.x <= c.x + 0.5 && p.x + p.width >= c.x + c.width - 0.5);
+  let seen = 0;
+  for (const sec of st.gen2.sections.filter((q: Any) => q.template.startsWith('w1-12-'))) {
+    for (const c of st.platforms.filter((p: Any) => p.type === 'bouncy' && p.x > sec.x0 && p.x < sec.x1)) {
+      const u = under(c);
+      if (!u || u.width > 200) continue; // a floor mushroom on its bank (the walk-on), not a cap over thorns
+      seen++;
+      const left = c.x - u.x, right = u.x + u.width - (c.x + c.width);
+      const none = d === 'normal' && capOnly.has(sec.template);
+      if (none ? Math.max(left, right) > 0.5 : Math.min(left, right) < 20) out.push(`${sec.template} at x ${Math.round(c.x)}: wood ${Math.round(left)} | ${Math.round(right)} px beside a ${Math.round(c.width)} px cap on a ${Math.round(u.width)} px stump`);
+    }
+  }
+  if (seen < (d === 'easy' ? 18 : 22)) out.push(`only ${seen} caps on stumps (the check would be empty)`);
+  return out;
+}
+
+test("the caps are his only footing over the thorns from the petals going up on, Normal (each cap its stump's width); the lesson, again and Easy keep their wood", () => {
+  each((st, d, s) => assert.deepEqual(woodFaults(st, d), [], `${d} seed ${s}`));
+});
+
+test('PLANTED: a 70 px cap left on a 120 px stump in the long chain (Normal) is bare wood a plain jump could use, and is caught', () => {
+  const st = build(1, 'normal');
+  const sec = secOf(st, 'w1-12-long');
+  const cap = st.platforms.filter((p: Any) => p.type === 'bouncy' && p.x > sec.x0 && p.x < sec.x1).sort((a: Any, b: Any) => a.x - b.x)[2];
+  const planted = { ...st, platforms: st.platforms.map((p: Any) => (p === cap ? { ...p, x: p.x + (p.width - 70) / 2, width: 70 } : p)) };
+  assert.deepEqual(woodFaults(st, 'normal'), []);
+  assert.equal(woodFaults(planted, 'normal').length, 1, woodFaults(planted, 'normal').join('; '));
+});
+
 test('petals low on bark the whole way: no petal arc over a gap, every petal within 110 px over a standable top', () => {
   each((st, d, s) => {
     const tops = st.platforms.filter((p: Any) => p.type !== 'bouncy' && !p.broken);

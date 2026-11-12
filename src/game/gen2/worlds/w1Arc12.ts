@@ -58,6 +58,13 @@ const sOf = (st: number): R2 => (st > 45 ? [188, 196] : st > 6 ? [198, 206] : st
  *  160 on Normal too (the lead, 11-12: the bite is taught before it is tested; chain.md §2 d: the clean band does not move with the
  *  width, only what a miss costs) */
 const N = 120, E = 160;
+/** a cap the width of its stump: from the petals going up on, Normal (the lead's ruling A, 11-12) lays each cap over the thorns as
+ *  wide as the stump it stands on, so no bare wood is left beside it and the caps are his only footing over a thorn bed: the mushrooms
+ *  ARE the way across (Matt's purpose rule), not a stair of stumps a full jump could take. Every number stays (chain.md's stumps, the
+ *  cap-to-cap S): any bed the generator lays (at most 114 px level, pipeline.ts) is one a full jump clears, so a chain's purpose comes
+ *  from cap-only footing, never from bed width. Easy keeps the 70 px cap and its wood beside it: the forgiving miss */
+const CAP = 70;
+const capOf = (pw: number, easy: boolean): number => (easy ? CAP : pw);
 /** a chain's floor bank: short, so the walk to its mushroom stays under the quiet line (4 s) */
 const FLOOR: R2 = [300, 340];
 /**
@@ -65,7 +72,7 @@ const FLOOR: R2 = [300, 340];
  * hollow, a cap on each; `steps` each cap over the one before (px, + up). The gaps are soft section pits: the brief's `pits` puts the
  * thorn bed under them (this section `uses` thorns). Every first cap is a walk-on, 30 px tall (chain.mount)
  */
-function chain(k: string, after: string | null, steps: number[], pw: number, floorW: R2 = FLOOR): { pieces: SectionPiece[]; last: string } {
+function chain(k: string, after: string | null, steps: number[], pw: number, floorW: R2 = FLOOR, cw = CAP): { pieces: SectionPiece[]; last: string } {
   const f = k + 'f', w = (floorW[0] + floorW[1]) / 2;
   const ps: SectionPiece[] = [
     { key: f, shape: 'bank', w: floorW, place: after ? { kind: 'walk', after } : { kind: 'start' }, style: 'moss_stone', main: true, landing: true },
@@ -77,7 +84,7 @@ function chain(k: string, after: string | null, steps: number[], pw: number, flo
     const gap: R2 = j === 0 ? [S[0] - pw / 2 - 70, S[1] - pw / 2 - 70] : [S[0] - pw, S[1] - pw];
     const dy: R2 = Math.abs(st) > 6 ? [-st - 3, -st + 3] : [0, 0];
     ps.push({ key: k + 'p' + j, shape: 'bank', w: [pw, pw], place: { kind: 'jump', after: prev, dy, gapPx: gap, soft: true }, style: 'moss_stone', main: true });
-    ps.push({ key: k + 'c' + j, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on: k + 'p' + j, at: [0.5, 0.5], h: [30, 30] } });
+    ps.push({ key: k + 'c' + j, shape: 'bouncy', w: [cw, cw], place: { kind: 'on', on: k + 'p' + j, at: [0.5, 0.5], h: [30, 30] } });
     prev = k + 'p' + j;
   });
   return { pieces: ps, last: prev };
@@ -97,8 +104,8 @@ const breath = (l: Lay, n: number): Lay => {
   return { pieces, sockets };
 };
 /** a chain beat's lay: the chain, its bank out, petals low on the floor bank and the bank out (never over a cap or a stump he bounces past) */
-const chainLay = (steps: number[], pw: number, outW: R2 = [320, 380]): Lay => {
-  const c = chain('k', null, steps, pw);
+const chainLay = (steps: number[], pw: number, cw = CAP, outW: R2 = [320, 380]): Lay => {
+  const c = chain('k', null, steps, pw, FLOOR, cw);
   return { pieces: [...c.pieces, out('z', c.last, outW)], sockets: [low('pa', 'kf', [0.2, 0.5]), low('pz', 'z', [0.55, 0.8])] };
 };
 /**
@@ -149,16 +156,16 @@ export const BEATS_12: SectionTemplate[] = [
   // [U] the petals go up: caps each 54-66 px over the last onto a high bank level with the last stump (+180 | +120), a root on it, two
   // root steps back down. Dot: "The petals go up" (main's row, by its id)
   brick({ id: 'w1-12-up', name: 'the petals go up: a stair of caps', jobs: ['climb'], content: 'climb', difficulty: 4, thorns: true, versions: [(() => {
-    const mk = (n: number): Lay => {
-      const c = chain('k', null, Array(n).fill(60), E);
+    const mk = (n: number, cw: number): Lay => {
+      const c = chain('k', null, Array(n).fill(60), E, FLOOR, cw);
       const h = n * 60, half: R2 = [Math.round(h / 2) - 4, Math.round(h / 2) + 4];
       return { pieces: [...c.pieces, out('z', c.last, [420, 480]), hump('zr', 'z', [0.66, 0.72], [40, 46]), led('d0', 'z', [240, 260], half), led('d1', 'd0', [240, 260], half)],
         sockets: [tip('kf', UP_LINE, 0.2), low('pa', 'kf', [0.15, 0.4]), low('pz', 'z', [0.4, 0.5]), low('pd0', 'd0', [0.72, 0.84], 1), low('pd1', 'd1', [0.6, 0.78])] };
     };
-    return { id: 'stair', lay: breath(mk(3), 2), easy: breath(mk(2), 2) };
+    return { id: 'stair', lay: breath(mk(3, capOf(E, false)), 2), easy: breath(mk(2, capOf(E, true)), 2) };
   })()] }),
   // [X] the long chain, the TEST: four caps on Normal's narrow stumps, dipping 27 px and rising, no wood to stop on | three on wide
-  brick({ id: 'w1-12-long', name: 'the long chain: no wood to stop on', jobs: ['test'], content: 'bounce', difficulty: 6, thorns: true, versions: [{ id: 'wave', lay: breath(chainLay([-27, 0, 27, 0], N), 2), easy: breath(chainLay([-27, 0, 27], E), 2) }] }),
+  brick({ id: 'w1-12-long', name: 'the long chain: no wood to stop on', jobs: ['test'], content: 'bounce', difficulty: 6, thorns: true, versions: [{ id: 'wave', lay: breath(chainLay([-27, 0, 27, 0], N, capOf(N, false)), 2), easy: breath(chainLay([-27, 0, 27], E, capOf(E, true)), 2) }] }),
   // [W] the twist: a hollow like the others but no mushroom at its lip and no thorns on its floor: her petals down there, 1-1's lift
   // out. Dot's "There's something down by the roots..." is said here only once Meeca's note (the Keeper's Bell, finds.ts w1_note) is
   // laid on this floor by a find-spot mark (P12S's, the lead 11-12): she never promises something over an empty floor
@@ -169,30 +176,30 @@ export const BEATS_12: SectionTemplate[] = [
   // [S] the long crossing, the signature: four caps, HER ISLAND (a root bank in the thorns, a petal row, its own floor mushroom), four
   // caps | two, island, two, island, two (chain.md: Easy two either side of an island)
   brick({ id: 'w1-12-crossing', name: 'the long crossing by her island', jobs: ['signature'], content: 'bounce', difficulty: 7, thorns: true, maxPerStage: 1, versions: [(() => {
-    const mk = (runs: number, n: number, pw: number): Lay => {
+    const mk = (runs: number, n: number, pw: number, cw: number): Lay => {
       const pieces: SectionPiece[] = [], sockets: Socket[] = [];
       let prev: string | null = null;
       for (let i = 0; i < runs; i++) {
-        const c = chain('c' + i, prev, Array(n).fill(0), pw);
+        const c = chain('c' + i, prev, Array(n).fill(0), pw, FLOOR, cw);
         pieces.push(...c.pieces); sockets.push(low('pf' + i, 'c' + i + 'f', [0.2, 0.45]));
         if (i < runs - 1) { const y = 'i' + i; pieces.push(out(y, c.last, [300, 340])); sockets.push({ ...low('p' + y, y, [0.62, 0.72], 3), span: 180 }); prev = y; }
         else { pieces.push(out('z', c.last, [420, 480])); sockets.push({ ...low('pz', 'z', [0.62, 0.72], 3), span: 180 }); }
       }
       return { pieces, sockets };
     };
-    return { id: 'island', lay: breath(mk(2, 4, N), 2), easy: mk(3, 2, E) };
+    return { id: 'island', lay: breath(mk(2, 4, N, capOf(N, false)), 2), easy: mk(3, 2, E, capOf(E, true)) };
   })()] }),
   // [C] the finale: caps over thorns, a bank, a no-thorn hollow and its lift, caps rising 27 px each to a high bank, a step down
   brick({ id: 'w1-12-finale', name: 'the finale: over, down, up', jobs: ['combine'], content: 'climb', difficulty: 6, thorns: true, versions: [(() => {
-    const mk = (n: number, rise: number, pw: number): Lay => {
-      const c1 = chain('k', null, Array(n).fill(0), pw);
+    const mk = (n: number, rise: number, pw: number, cw: number): Lay => {
+      const c1 = chain('k', null, Array(n).fill(0), pw, FLOOR, cw);
       const h = hollow('h', 'b', [560, 620], false);
-      const c2 = chain('q', 'hb', Array(rise).fill(27), pw);
+      const c2 = chain('q', 'hb', Array(rise).fill(27), pw, FLOOR, cw);
       const up = rise * 27;
       return { pieces: [...c1.pieces, out('b', c1.last, [320, 360]), ...h.pieces, ...c2.pieces, out('t', c2.last, [380, 420]), led('z', 't', [300, 340], [up - 3, up + 3])],
         sockets: [low('pa', 'kf', [0.2, 0.5]), low('pb', 'b', [0.6, 0.75]), ...h.sockets, low('pq', 'qf', [0.2, 0.45]), { ...low('pt', 't', [0.62, 0.72], 3), span: 160 }, low('pz', 'z', [0.6, 0.7], 1)] };
     };
-    return { id: 'over-down-up', lay: mk(3, 2, N), easy: mk(2, 2, E) };
+    return { id: 'over-down-up', lay: mk(3, 2, N, capOf(N, false)), easy: mk(2, 2, E, capOf(E, true)) };
   })()] }),
 ];
 
