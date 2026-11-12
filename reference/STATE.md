@@ -628,3 +628,9 @@ lines); Matt sees them in the release.
   t-14-design, packet D14.md) designs 1-4 from the three, design only; build waits for the engine pieces + Matt's feel test. Idea
   helpers retired.
 - 2026-11-12 6:19 PM ET: RF3 DONE and retired (t-render-3@18afc7b0: hollow painter fitted walls + 38 px mirror fix; lock unchanged). R-165.163 buildcheck red (1-1 build p95 > 150 ms budget) blocks 0.9.7; INT-2 measures which merge caused it.
+- 2026-11-12 6:37 PM ET, Matt: "Do tropical rainforests have pears?" then "we have squirrels in there... Maybe flying squirrels." R-165.164
+  (nature check). Facts: pears are temperate, not rainforest; World 1's tree squirrels are real (red-tailed and variegated squirrels live
+  beside sloths in Central America); flying squirrels are NOT in the lowland rainforest (a few in Mexico/Honduras mountain pine forest;
+  the big gliders are Asian). Lead proposed the story keeper checks each level's plants/animals; waits on Matt. Check-in 6:29: INT-2 merged
+  t-12-design (864314c1) + W1C report (90a54102), merging D12's t-12-note (f887735e); F13's lesson card still PASSED the lead's look
+  (keeper's two lines, one card, Skip, both ways, nothing covered); D12 asked for one still of the note in its hollow before 7 PM.
