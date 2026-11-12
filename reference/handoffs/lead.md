@@ -79,6 +79,9 @@ Tonight's merge order: t-13-finish, t-13-proof, t-w1-art2, t-fx, then t-12-desig
 D12 (1-2: thorns cost on Normal done; set-back test model; gates; then t-12-note from the integration head), FX (flags root fix
 everywhere; 1-1 list re-record APPROVED; W5-8 proof; then find spot), RF3 (hollow painter), INT-2 waiting. Retired today: P11, F12, AF,
 GL0, W1C(Fable), ART-W1, RF2, PROOF-1, Y2, P12S, ART-W1B, P13. About pages APPROVED (STORY-LINES.md). Usage ~91%.
+6:03 PM ET: FX + D12 DONE (1-2 passed; 4 h 12 m). INT-2 merging t-fx@e085120c then t-12-design@489ae984, then D12's t-12-note,
+RF3's final (passed), F13's final (lesson card + Skip); then Step 3 + test-link build; the lead judges and publishes EnK5. Pitch round per
+level agreed with Matt (STATE 6:00 PM). Matt's wife plays 1-2 vs 1-3 blind tonight.
 NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes + t-pit-polish + t-audit-fixes (+ t-12-fly), renumber the
   duplicate R-165.129, full gate; (2) PROOF-1 re-audits only the delta; (3) ask Matt ONE question: ship the R-165.125 sound levels or hold
   (D47), then 0.9.7 on his word (PR, he merges, check deploy + APK); (4) 1-2 and 1-3 to Matt's test link by Fri 11-13 (1-3 by Fable/W1C,
