@@ -9,7 +9,7 @@ import { NEW_STOOD_IN, WAY_DOWN } from './library.ts';
 import { buildGen2Stage, stagePool } from '../../src/game/gen2/pipeline.ts';
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 import { w1World } from '../../src/game/gen2/worlds/w1.ts';
-import { W1_CAST_CREATURES, W1_TRAP_PAIRS } from '../../src/game/gen2/worlds/w1Cast.ts';
+import { W1_CAST_CREATURES, W1_CAST_SAID, W1_TRAP_PAIRS } from '../../src/game/gen2/worlds/w1Cast.ts';
 
 const O = { flown: true };
 /** pinned: these seeds roll clean on both settings (120 of them were measured, 11-12: 119 clean a setting) */
@@ -50,6 +50,10 @@ test('a clean roll on both settings: no throw, no error, the lesson and a signat
 
 test("the stage carries its cast: proto.cast.kinds is ['snake'], and Dot says the story keeper's line once", () => {
   assert.equal(kitLib13(O).manifest.tips!.traps, TRAP_LINE);
+  // (her line for the first trap sprung rides on the built stage, from World 1's own data: the builder keeps it with the cast)
+  const built: Any = buildGen2Stage({ config: config13(O) as Any, kit: kitLib13(O) as Any, seed: SEEDS[0], difficulty: 'normal' });
+  assert.deepEqual(built.proto.cast.said, W1_CAST_SAID);
+  assert.equal(W1_CAST_SAID.trap, 'Off he glides, not a scratch, just very offended!', "the story keeper's words, verbatim");
   each((r, name) => {
     assert.deepEqual(r.kinds, ['snake'], name);
     assert.deepEqual(r.said.filter((m) => m === 'traps'), ['traps'], name);

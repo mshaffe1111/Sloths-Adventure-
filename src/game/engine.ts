@@ -4432,6 +4432,14 @@ export class GameEngine {
     }
     // an animal that left for good (knocked off its branch, chased off by a trap) counts as one beaten: a purge's goal
     for (const e of r.cleared) {
+      // Dot's line for the first of its kind (the stage's own words, castPlay.types.ts `said`): once, the first time a trap sends
+      // one off, and once the first time a punch does; never again, in any stage (the first-of memory the hints use)
+      const way = e.kit?.beatenBy;
+      const line = way === 'trap' || way === 'punch' ? this.proto?.cast?.said?.[way] : undefined;
+      if (line && !tipHeard(FIRST_OF_STAGE, `cast:${way}`)) {
+        markTipHeard(FIRST_OF_STAGE, `cast:${way}`);
+        this.guide(line, 4);
+      }
       p.enemiesDefeated++;
       if (!e.minion && e.type !== 'boss' && e.type !== 'ant_hazard') this.statKills[e.type] = (this.statKills[e.type] ?? 0) + 1;
       recorder.event('chasedOff', e.type);

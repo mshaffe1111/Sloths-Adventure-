@@ -2669,7 +2669,7 @@ function topUpFoes(
 
 /** the cast record a built stage carries: only when its brief names a cast (nothing is written on any other stage) */
 function castOf(kinds: readonly string[] | undefined, proto: ProtoExtras): { cast?: NonNullable<ProtoExtras['cast']> } {
-  return kinds?.length ? { cast: { kinds: [...kinds], traps: proto.cast?.traps ?? [] } } : {};
+  return kinds?.length ? { cast: { ...proto.cast, kinds: [...kinds], traps: proto.cast?.traps ?? [] } } : {};
 }
 
 function makeEnemy(c: CreatureDef, x: number, top: number, patch: [number, number], id: number, soften: boolean): Enemy {

@@ -92,11 +92,11 @@ test('punch: shoved along its branch and dazed; at the branch end it is knocked 
   assert.deepEqual([r2.cleared, r2.hit, m.defeated, m.x], [0, 0, false, 570], 'mid-branch: shoved 70 px and dazed, he stands beside it unhurt');
 });
 
-test('stomp: he vaults it. It goes home and leaves him be for 5 s, and is not cleared', () => {
+test('stomp: he vaults it, and it glides off for good like every other ending (Matt, 11-12): cleared once, he is not hurt', () => {
   const s = snake(), c = cast([s]);
-  assert.equal(c.beat(s, 'stomp', 0, 600), true);
+  assert.equal(c.beat(s, 'stomp', 0, 560), true);
   const r = play(c, 4.8, () => hero({ x: 580, vx: 60 }));
-  assert.deepEqual([r.hit, r.told, r.cleared, s.defeated], [0, 0, 0, false]);
+  assert.deepEqual([r.hit, r.told, r.cleared, s.defeated], [0, 0, 1, true]);
 });
 
 test('the glide: a chased-off snake lifts, then goes out and down, fading (glide 0..1), and never back', () => {

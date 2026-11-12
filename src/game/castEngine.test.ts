@@ -119,16 +119,53 @@ test('the drop trap, in the real engine: a punch on the vine from the ledge, the
   }
 });
 
-test('stomp, in the real engine: he lands on it and vaults; it is not beaten for the count, and it leaves him be', () => {
+test('stomp, in the real engine: he lands on it and vaults; it glides off for good and counts, as every ending does (Matt, 11-12)', () => {
   const { e, snake } = arena({ traps: false });
   const hp = e.player.hp;
   Object.assign(e.player, { x: snake.x, y: Y - 90, vx: 0, vy: 200, grounded: false });
   let up = false;
   for (let i = 0; i < 30 && !up; i++) { e.player.x = snake.x; step(e, 1); up = e.player.vy < -300; }
   assert.ok(up, 'he bounces off it');
-  assert.equal(snake.kit!.phase, 'flee', 'it gives up and goes home');
-  step(e, 40);
-  assert.deepEqual([snake.defeated, e.player.enemiesDefeated, e.player.hp], [false, 0, hp]);
+  assert.ok(snake.kit!.leaving, 'it is gliding off');
+  step(e, 60);
+  assert.deepEqual([snake.defeated, e.player.enemiesDefeated, e.player.hp], [true, 1, hp]);
+});
+
+test("Dot's line for the first trap is the stage's own data, said once: on the first snake a TRAP sends gliding, never for a punch", () => {
+  const LINE = 'the story keeper\'s words, as the stage carries them';
+  const far = (x: number): Partial<Enemy> => ({ id: 9501, x, patrolMinX: x - 20, patrolMaxX: x + 20 });
+  // a punch clears one first: silence (the trap's line is not a knockout's)
+  const a = arena({ snake: { x: 975, asleep: true }, traps: false });
+  a.e.proto.cast.said = { trap: LINE };
+  walkTo(a.e, a.input, 930);
+  a.e.player.facing = 1;
+  punch(a.e, a.input);
+  step(a.e, 60);
+  assert.equal(a.e.player.enemiesDefeated, 1);
+  assert.notEqual(a.e.stageHint?.text, LINE, 'a punch never says the trap\'s line');
+  // a trap clears one: she says it, once
+  const b = arena({ snake: { patrolMinX: 760, patrolMaxX: 880 } });
+  b.e.proto.cast.said = { trap: LINE };
+  const said: string[] = [];
+  const guide = b.e.guide.bind(b.e);
+  b.e.guide = (t: string, s: number) => { said.push(t); guide(t, s); };
+  walkTo(b.e, b.input, handleBox(TRAPS[0]).x - 26);
+  b.e.player.facing = 1;
+  punch(b.e, b.input, 4);
+  step(b.e, 70);
+  assert.deepEqual([b.e.player.enemiesDefeated, said.filter((t) => t === LINE).length], [1, 1], 'said as the first trapped snake glides away');
+  // a second trap in the same stage: silent
+  const s2 = { ...b.snake, ...far(1500), defeated: false, kit: undefined, glide: undefined, koTimer: 0 } as Enemy;
+  b.e.platforms.push(plat(9003, 1200, 500));
+  b.e.enemies.push(s2);
+  b.e.proto.cast.traps.push({ id: 2, kind: 'tendril', load: 'stone', x: 1340, y: Y, loadX: 1500, loadY: Y - 100, landY: Y });
+  b.e.startCast();
+  b.e.proto.cast.said = { trap: LINE };
+  standOn(b.e, b.e.platforms[2], 1310);
+  b.e.player.facing = 1;
+  punch(b.e, b.input, 4);
+  step(b.e, 70);
+  assert.deepEqual([s2.defeated, said.filter((t) => t === LINE).length], [true, 1], 'the second trap clears its snake and she says nothing');
 });
 
 test('landing noise, in the real engine: a hard landing beside a sleeper wakes it; a jump\'s landing does not', () => {
