@@ -48,9 +48,9 @@ survived their first run and each showed a missing test, now written. Three more
   FAILS at the base and here by the same 1,070 B (limit 3,994,304), as EN-C's report already said.
 - artcheck PASS, knowncheck PASS.
 - `npx tsx tools/engine/seedlist.ts 1-1 --check`: PASS (200 seeds, each clean on both settings).
-- Full tests: the one-command run was STOPPED by this session's 30-minute limit on background work after **2,357 tests passed, 0
-  failed** (the machine was also running the stage lock and 38 fault runs). The part it had not reported (game tests s to z, components,
-  the generator tests) is re-running alone: FULLTESTS_REST (as of 10:13 PM ET). The kit's own tests and heroNoise's ran on the final commit: green.
+- Full tests, in two runs because this session stops background work at 30 minutes: run 1 (every file in the command, in order)
+  was stopped after **2,357 passed, 0 failed**; run 2 (what run 1 had not reported: game tests s to z, components, the generator
+  tests; on the final code, 10:37 PM ET) **1,298 passed, 0 failed**, 2 todo (both already on the base: 4-3's boulder wall check).
 - buildcheck: PASS on a quiet machine (Normal p95 149 ms of 150; the base, run right after, 123 ms). It FAILED once earlier while
   the stage lock and the tests were running beside it. The kit is not in the build path; this gate is one noisy run from its limit.
 - roadmapcheck: cannot be judged in this clone (6 proofs name commits on branches it does not have); ROADMAP.md and tools/ untouched.
