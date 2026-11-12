@@ -97,3 +97,39 @@ test("knowncheck counts this list's entries, so an added literal or a raised cou
   assert.equal(ids.length, known.reduce((a, e) => a + e.count, 0));
   assert.equal(new Set(ids).size, ids.length);
 });
+
+// PROOF-1 violation 4: the engine modules the t-int-engine merge added (the stage clock and its modes, riding, stillness, noise, the
+// hero's noise, the save file, the predator kit) were outside the gate, so a stage id planted in any of them passed. Each is engine
+// code every stage runs on; a planted stage id in any of them must now fail the gate.
+const NEW_ENGINE = [
+  'src/game/clock.ts', 'src/game/stageModes.ts', 'src/game/ride.ts', 'src/game/stillness.ts', 'src/game/noise.ts', 'src/game/heroNoise.ts',
+  'src/game/saveFile.ts', 'src/game/predators/core.ts', 'src/game/predators/types.ts',
+  'src/game/predators/world1.ts', 'src/game/predators/casts.ts', 'src/game/predators/fixtures.ts',
+];
+for (const f of NEW_ENGINE) {
+  test(`a stage id planted in ${f} fails the gate`, () => {
+    assert.ok(scope().files.includes(f), `${f} is not in the gate's engine code`);
+    const src = fs.readFileSync(path.join(ROOT, f), 'utf8');
+    const hits = [...today().filter((h) => h.file !== f), ...scan(`${src}\nexport const PLANT = (id: string) => id === '3-4';\n`, f)];
+    const { fresh } = judge(hits, known);
+    assert.equal(fresh.length, 1, `planted in ${f}: ${fresh.map((h) => h.code).join(' | ') || 'nothing'}`);
+    assert.equal(fresh[0].kind, 'stage-id');
+  });
+}
+test("the predator roster is world data (each world's cast), exempt by name with its reason, not silently skipped", () => {
+  assert.ok(scope().exempt.some(([f, why]) => f === 'src/game/predators/roster.ts' && /world data/.test(why)));
+});
+test('every listed engine file and folder is in the tree (a renamed one would leave the gate blind)', () => {
+  assert.deepEqual(scope().missing, []);
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'generality-'));
+  assert.ok(scope(tmp).missing.includes('src/game/clock.ts'));
+  fs.rmSync(tmp, { recursive: true });
+});
+test('a new file in src/game/predators/ is checked from its first commit', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'generality-'));
+  const f = 'src/game/predators/newHabit.ts';
+  fs.mkdirSync(path.dirname(path.join(tmp, f)), { recursive: true });
+  fs.writeFileSync(path.join(tmp, f), "export const S = '9-1';\n");
+  assert.ok(scope(tmp).files.includes(f));
+  fs.rmSync(tmp, { recursive: true });
+});
