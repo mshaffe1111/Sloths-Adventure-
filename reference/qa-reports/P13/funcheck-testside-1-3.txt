@@ -1,0 +1,86 @@
+✗ worse: 1-1 normal "dead walk" on 16 layouts, known 14 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. 4 s of walking with nothing to do at x 140
+✗ worse: 1-1 normal "pacing" on 13 layouts, known 8 (1,3,5,6,7,8,9,11,12,13,14,15,16); e.g. never tight: no burst (8 moves within 14 s on normal, research §2) and no 5 s window over about one move a second
+✗ worse: 1-1 normal "nothing bites" on 16 layouts, known 4 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. 91% of the beats after the first 30 s cost nothing when missed (0 cost a setback, 3 a life)
+✗ worse: 1-2 normal "nothing new" on 16 layouts, known 10 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. no move or pairing an earlier World 1 stage didn't already ask (17 new 3-move runs of old moves)
+✗ worse: 1-9 normal "repeat" on 15 layouts, known 12 (1,2,3,4,5,6,7,8,9,10,12,13,14,15,16); e.g. the same four moves "FFjF" 4 times at x 6068
+✗ worse: 1-9 normal "nothing new" on 16 layouts, known 15 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. no move or pairing an earlier World 1 stage didn't already ask (26 new 3-move runs of old moves)
+✗ worse: 1-1 easy "dead walk" on 16 layouts, known 14 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. 4.2 s of walking with nothing to do at x 140
+✗ worse: 1-1 easy "pacing" on 12 layouts, known 2 (1,3,5,6,8,9,11,12,13,14,15,16); e.g. no gentle intro: the first 15 s already ask for more than 0.8 moves a second
+✗ worse: 1-1 easy "nothing bites" on 16 layouts, known 4 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. 87% of the beats after the first 30 s cost nothing when missed (4 cost a setback, 0 a life)
+✗ worse: 1-2 easy "nothing new" on 14 layouts, known 10 (1,2,3,5,6,8,9,10,11,12,13,14,15,16); e.g. no move or pairing an earlier World 1 stage didn't already ask (14 new 3-move runs of old moves)
+✗ worse: 1-9 easy "nothing new" on 16 layouts, known 13 (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16); e.g. no move or pairing an earlier World 1 stage didn't already ask (27 new 3-move runs of old moves)
+✗ worse: 1-3 easy "looks like an earlier stage" on 8 layouts, known 6 (4,5,6,9,10,12,14,16); e.g. 57% alike in its pieces and art to 1-1 (at most 55%)
+✗ new: 1-6 easy "repeat" on 1 of 16 layouts (5); e.g. the same four moves "VVVj" 4 times at x 1781
+✗ better, lower the entry: 1-6 normal "dead walk" on 15 layouts, known 16 (funknown.json: set layouts to 15)
+✗ better, lower the entry: 1-7 normal "looks like an earlier stage" on 14 layouts, known 15 (funknown.json: set layouts to 14)
+✗ better, lower the entry: 1-9 normal "nothing bites" on 15 layouts, known 16 (funknown.json: set layouts to 15)
+✗ better, lower the entry: 1-6 easy "dead walk" on 15 layouts, known 16 (funknown.json: set layouts to 15)
+✗ better, lower the entry: 1-7 easy "looks like an earlier stage" on 14 layouts, known 15 (funknown.json: set layouts to 14)
+✗ better, lower the entry: 1-1 normal "repeat" on 12 layouts, known 16 (funknown.json: set layouts to 12)
+✗ better, lower the entry: 1-3 normal "nothing bites" on 6 layouts, known 13 (funknown.json: set layouts to 6)
+✗ better, lower the entry: 1-9 normal "looks like an earlier stage" on 15 layouts, known 16 (funknown.json: set layouts to 15)
+✗ better, lower the entry: 1-1 easy "repeat" on 13 layouts, known 16 (funknown.json: set layouts to 13)
+✗ better, lower the entry: 1-9 easy "looks like an earlier stage" on 15 layouts, known 16 (funknown.json: set layouts to 15)
+✗ better, lower the entry: 1-6 normal "looks like an earlier stage" on 8 layouts, known 13 (funknown.json: set layouts to 8)
+✗ better, lower the entry: 1-9 normal "dead walk" on 12 layouts, known 15 (funknown.json: set layouts to 12)
+✗ better, lower the entry: 1-6 easy "looks like an earlier stage" on 8 layouts, known 13 (funknown.json: set layouts to 8)
+✗ better, lower the entry: 1-3 normal "looks like an earlier stage" on 5 layouts, known 6 (funknown.json: set layouts to 5)
+✗ better, lower the entry: 1-5 normal "like an earlier stage" on 1 layouts, known 3 (funknown.json: set layouts to 1)
+✗ better, lower the entry: 1-5 easy "like an earlier stage" on 1 layouts, known 3 (funknown.json: set layouts to 1)
+✗ gone, delete the entry: 1-1 easy "padding" (known on 16 layouts, now none)
+✗ gone, delete the entry: 1-1 easy "template repeat" (known on 16 layouts, now none)
+✗ gone, delete the entry: 1-1 normal "padding" (known on 16 layouts, now none)
+✗ gone, delete the entry: 1-1 normal "template repeat" (known on 16 layouts, now none)
+✗ gone, delete the entry: 1-2 easy "like the stage before" (known on 3 layouts, now none)
+✗ gone, delete the entry: 1-2 easy "looks like the stage before" (known on 15 layouts, now none)
+✗ gone, delete the entry: 1-2 normal "like the stage before" (known on 3 layouts, now none)
+✗ gone, delete the entry: 1-2 normal "looks like the stage before" (known on 15 layouts, now none)
+✗ gone, delete the entry: 1-3 easy "looks like the stage before" (known on 16 layouts, now none)
+✗ gone, delete the entry: 1-3 easy "nothing bites" (known on 13 layouts, now none)
+✗ gone, delete the entry: 1-3 easy "padding" (known on 16 layouts, now none)
+✗ gone, delete the entry: 1-3 easy "repeat" (known on 1 layouts, now none)
+✗ gone, delete the entry: 1-3 normal "looks like the stage before" (known on 16 layouts, now none)
+✗ gone, delete the entry: 1-3 normal "padding" (known on 16 layouts, now none)
+✗ gone, delete the entry: 1-3 normal "repeat" (known on 11 layouts, now none)
+✗ gone, delete the entry: 1-4 easy "looks like the stage before" (known on 6 layouts, now none)
+✗ gone, delete the entry: 1-4 normal "looks like the stage before" (known on 6 layouts, now none)
+✗ gone, delete the entry: 1-6 normal "like the stage before" (known on 1 layouts, now none)
+✗ gone, delete the entry: 1-7 easy "like an earlier stage" (known on 2 layouts, now none)
+✗ gone, delete the entry: 1-7 normal "like an earlier stage" (known on 2 layouts, now none)
+the truer rules gate: 1-1, 1-4; the rest on the old rules, the truer count beside:
+  (truer rule) 1-2 easy "nothing bites": gated on the old rule at 16 layouts, 12 by the truer rule
+  (truer rule) 1-2 easy "pacing": gated on the old rule at 16 layouts, 5 by the truer rule
+  (truer rule) 1-2 easy "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-2 normal "nothing bites": gated on the old rule at 16 layouts, 12 by the truer rule
+  (truer rule) 1-2 normal "pacing": gated on the old rule at 16 layouts, 9 by the truer rule
+  (truer rule) 1-2 normal "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-3 easy "map like the stage before": gated on the old rule at 0 layouts, 8 by the truer rule
+  (truer rule) 1-3 normal "map like the stage before": gated on the old rule at 0 layouts, 8 by the truer rule
+  (truer rule) 1-5 easy "nothing bites": gated on the old rule at 16 layouts, 12 by the truer rule
+  (truer rule) 1-5 easy "pacing": gated on the old rule at 16 layouts, 0 by the truer rule
+  (truer rule) 1-5 easy "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-5 normal "nothing bites": gated on the old rule at 16 layouts, 12 by the truer rule
+  (truer rule) 1-5 normal "pacing": gated on the old rule at 16 layouts, 0 by the truer rule
+  (truer rule) 1-5 normal "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-6 easy "map like the stage before": gated on the old rule at 0 layouts, 1 by the truer rule
+  (truer rule) 1-6 easy "nothing bites": gated on the old rule at 1 layouts, 0 by the truer rule
+  (truer rule) 1-6 easy "pacing": gated on the old rule at 16 layouts, 0 by the truer rule
+  (truer rule) 1-6 easy "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-6 normal "map like the stage before": gated on the old rule at 0 layouts, 1 by the truer rule
+  (truer rule) 1-6 normal "nothing bites": gated on the old rule at 1 layouts, 0 by the truer rule
+  (truer rule) 1-6 normal "pacing": gated on the old rule at 16 layouts, 4 by the truer rule
+  (truer rule) 1-6 normal "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-7 easy "nothing bites": gated on the old rule at 16 layouts, 11 by the truer rule
+  (truer rule) 1-7 easy "pacing": gated on the old rule at 16 layouts, 1 by the truer rule
+  (truer rule) 1-7 easy "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-7 normal "map like the stage before": gated on the old rule at 0 layouts, 1 by the truer rule
+  (truer rule) 1-7 normal "nothing bites": gated on the old rule at 16 layouts, 11 by the truer rule
+  (truer rule) 1-7 normal "pacing": gated on the old rule at 16 layouts, 11 by the truer rule
+  (truer rule) 1-7 normal "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-9 easy "nothing bites": gated on the old rule at 16 layouts, 7 by the truer rule
+  (truer rule) 1-9 easy "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-9 normal "nothing bites": gated on the old rule at 15 layouts, 4 by the truer rule
+  (truer rule) 1-9 normal "pacing": gated on the old rule at 16 layouts, 12 by the truer rule
+  (truer rule) 1-9 normal "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+FAIL (13 worse or new, 36 to lower or delete; 144 known, 1872 stage-layout flags; 47 s)
+EXIT 1

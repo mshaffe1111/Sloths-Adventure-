@@ -406,7 +406,7 @@ class DotShadow {
   private say(l: GuideLine | null | undefined) {
     if (l) this.queue.push(l, this.clock);
   }
-  engine(text: string, seconds: number, passed: boolean | undefined) {
+  engine(text: string, seconds: number, passed: boolean | undefined, o?: { teach?: true }) {
     if (passed) {
       const l = engineGuideLine(text, this.stageId, { dot: true });
       if (l) this.queue.clear((q) => q.key === l.key, this.clock);
@@ -416,7 +416,7 @@ class DotShadow {
       this.queue.clear((l) => l.source === 'engine' && l.kind === 'danger', this.clock);
       return;
     }
-    this.say(engineGuideLine(text, this.stageId, { dot: true, ms: seconds * 1000 }));
+    this.say(engineGuideLine(text, this.stageId, { dot: true, ms: seconds * 1000, teach: !!o?.teach }));
   }
   lesson(id: LessonId, holding: boolean) {
     this.say(lessonDotLine(id, 'screen', holding));
@@ -937,7 +937,7 @@ export class FirstTimerRun {
     c.getBoundingClientRect = () => ({ width: vw, height: vh, left: 0, top: 0 });
     e.resizeCanvas();
     this.dot = new DotShadow(id);
-    e.callbacks.onGuide = (text: string, s: number, passed?: boolean) => this.dot.engine(text, s, passed);
+    e.callbacks.onGuide = (text: string, s: number, passed?: boolean, o?: { teach?: true }) => this.dot.engine(text, s, passed, o);
     e.callbacks.onLesson = (lid: LessonId) => this.dot.lesson(lid, !!(this.sim.p.climbing || this.sim.p.isVineSwinging || this.sim.p.hanging));
     e.callbacks.onProgressUpdate = (cur: number, target: number) => {
       this.goal = { got: cur, need: target };

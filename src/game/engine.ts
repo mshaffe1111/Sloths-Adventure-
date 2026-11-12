@@ -108,6 +108,7 @@ import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { CastPlay, type CastHero } from './castPlay.ts';
+import { scares } from './dropTrap.ts';
 import { drawTraps } from './castArt.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
 import { drawKitDecor } from './puzzleArt.ts';
@@ -269,7 +270,8 @@ export interface GameEngineCallbacks {
   /** the picture is at its lightest and still under 10 frames a second for a while: the app may show the one-time tip (slowTip.ts) */
   onSlowDevice?: () => void;
   /** a guiding line (a stage tip, the goal, a reminder, the sealed door): the app has Dot say it (Wayside.tsx) */
-  onGuide?: (text: string, seconds: number, passed?: boolean) => void;
+  /** `o.teach`: the stage's own teach line (StageHint.teach): Dot waits for a clear moment and keeps it up its reading time */
+  onGuide?: (text: string, seconds: number, passed?: boolean, o?: { teach?: true }) => void;
   onBossEncounter?: (boss: BossEntity) => void;
   /** Pokey stepped through the hidden Thorn Gate */
   onSecret?: () => void;
@@ -420,6 +422,9 @@ const CAM_RISE_STEP = 11;
  *  third of them: an error every other or every third frame ends it within about 2 s; one in four frames or rarer never does */
 const FAIL_WINDOW = 60;
 const FAIL_LIMIT = 20;
+
+/** what the engine hands Dot with a stage's own teach line (StageHint.teach) */
+const TEACH_LINE = { teach: true } as const;
 
 export class GameEngine {
   private canvas: HTMLCanvasElement;
@@ -625,6 +630,8 @@ export class GameEngine {
   /** the moments of play this stage run has had, each named once, in order (a story line can wait on one: wayside.ts StageWay.on).
    *  'cast:<way>': the first animal of the stage's cast that way sent off (a punch, a kick, a stomp, a trap). Emptied at the stage's start */
   readonly moments: string[] = [];
+  /** an animal a set drop trap of the stage's cast would chase off: the trap's own teach line is its lesson (lessons.ts ownTeach) */
+  private readonly underTrap = (e: { x: number; y: number }): boolean => !!this.cast?.traps.some((tr) => tr.phase === 'set' && scares(tr.post, e.x, e.y));
   private stepHelp = false;
   /** the stage's puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): things to carry and throw, plates, gates, levers, lifts, beetles */
   private kit: KitPlay | null = null;
@@ -2974,7 +2981,7 @@ export class GameEngine {
         if (h.firstOf) markTipHeard(FIRST_OF_STAGE, h.firstOf);
         const mode = lessonInputMode();
         const said = mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text;
-        this.guide(said, 3.6);
+        this.guide(said, 3.6, h.teach ? TEACH_LINE : undefined);
         if (h.passX !== undefined) this.passTips.push({ x: h.passX, text: said });
       }
       // a move tip about one spot goes once he is on the ground past it, done or not (StageHint.passX)
@@ -6259,6 +6266,7 @@ export class GameEngine {
         hp: p.hp,
         maxHp: p.maxHp,
         rooms: this.kit?.roomSpans,
+        ownTeach: this.cast?.traps.length ? this.underTrap : undefined,
       },
       seen,
     );
@@ -8820,14 +8828,14 @@ export class GameEngine {
   }
 
   /** a guiding line: kept as the stage hint (one at a time), and handed to the app for Dot to say */
-  private guide(text: string, seconds: number) {
+  private guide(text: string, seconds: number, o?: { teach?: true }) {
     // (the recorder's `dot` moment is logged when she has shown it, takeShown)
     // (the tips just marked sent are kept on the phone once this line has been shown: tipMemory.ts)
     bindSent(text);
     this.stageHint = { text, life: seconds };
     this.bossGuideUp = false;
     this.guideN++;
-    this.callbacks.onGuide?.(text, seconds);
+    this.callbacks.onGuide?.(text, seconds, undefined, o);
   }
 
   /** take Dot's line down now (an empty line clears it: Wayside.tsx) */

@@ -88,3 +88,26 @@ test('a trap is its own moment, never the punch\'s: the trap line stays the stag
   assert.equal(excuseMe(e), undefined, 'the punch on the vine is not a punch on a snake');
   assert.ok(said.includes('TRAP LINE'));
 });
+
+test('a stage hint its data marks `teach` reaches Dot as the stage\'s own teach line (onGuide o.teach); a plain hint does not', () => {
+  const { e, input } = arena({ x: 975, asleep: true }, true);
+  const got: Array<[string, boolean]> = [];
+  e.callbacks.onGuide = (text: string, _s: number, _p?: boolean, o?: { teach?: true }) => { if (text) got.push([text, !!o?.teach]); };
+  e.proto.hints = [
+    { x: 300, text: 'P13 plain hint words', pad: 'P13 plain hint words', keys: 'P13 plain hint words' },
+    { x: 420, text: 'P13 teach hint words', pad: 'P13 teach hint words', keys: 'P13 teach hint words', teach: true },
+  ];
+  walkTo(e, input, 480);
+  assert.deepEqual(got.filter(([t]) => t.startsWith('P13')), [['P13 plain hint words', false], ['P13 teach hint words', true]]);
+});
+
+test('the engine fires no stock foe lesson at a snake under a set drop trap; with the trap gone, it does', () => {
+  for (const traps of [true, false]) {
+    const { e, input } = arena({ x: 820, asleep: true, patrolMinX: 760, patrolMaxX: 880 }, traps);
+    const lessons: string[] = [];
+    e.callbacks.onLesson = (id: string) => lessons.push(id);
+    walkTo(e, input, 600);
+    step(e, 60);
+    assert.equal(lessons.includes('foe'), !traps, traps ? 'under the hive: the trap tip\'s, not the punch lesson\'s' : 'a bare snake: the punch lesson');
+  }
+});

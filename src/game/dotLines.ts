@@ -186,7 +186,9 @@ export const isThingTip = (id: string): boolean => W5_THING_TIPS.has(id);
  * comes from those words (a warning, the locked exit, a tip and the move that closes it), and what is said is Matt's approved line for
  * it. Null: a cut line, not said. (Here, not in the component, so the tests queue exactly what the game does.)
  */
-export function engineGuideLine(text: string, stageId: string, o: { boss?: boolean; flight?: boolean; dot?: boolean; ms?: number } = {}): GuideLine | null {
+/** how long a stage's own teach line (StageHint.teach) may wait for a clear moment: it is the lesson for its beat, never old news */
+export const TEACH_WAIT_MS = 60000;
+export function engineGuideLine(text: string, stageId: string, o: { boss?: boolean; flight?: boolean; dot?: boolean; ms?: number; teach?: boolean } = {}): GuideLine | null {
   const sw = swapLine(text, stageId);
   if (sw && sw.text === null) return null;
   // (a puzzle's later step, the move itself, is never said as he walks up: only after struggle there, dotTips.ts)
@@ -204,6 +206,9 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
     // (only a move row asks for a move: a thing's tip that names the thing and its rule, never the move, is read and goes)
     move = k === 'move' ? c.move ?? gestureMove(sw.line.gesture, topic) : undefined;
   }
+  // (a stage's own teach line, its data says so: taught, not passing information. It waits its turn and stays its reading time; a
+  // stock lesson never cuts in over a teach line, GuideQueue.cutsIn)
+  if (o.teach && kind !== 'must' && kind !== 'danger') kind = 'teach';
   // Dot's own flight: she is the one flying, so her tips are read, not watched for
   if (o.flight && kind !== 'must') {
     kind = 'info';
@@ -257,6 +262,7 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
     // (a puzzle's first line belongs to the puzzle, not to a spot he runs past: it may wait its turn while he is there; the room takes
     // it down when he leaves, puzzlePlay.ts passTip)
     ...(step ? { step, ...(step === 'name' ? { waitMs: PUZZLE_NAME_WAIT_MS, soon: true } : {}) } : {}),
+    ...(o.teach && kind === 'teach' && !step ? { waitMs: TEACH_WAIT_MS } : {}),
     // (the control test's lines are the test itself: each is said, every run, and none is dropped for a move he made before it came.
     // Seed 7920 said nothing for 24 s: "Run to the flowers" and "Turn around" went because he was already running at 2.5 s)
     // (only while the control test runs: a stage's own words can match a test row, "Flick up onto the mushroom to bounce" in 1-3)
