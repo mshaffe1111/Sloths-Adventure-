@@ -20,3 +20,9 @@ It makes no promise about sound, volume or mute.
   1-3's story aside, GAP-MAP). It must never fire for a trap.
 - The hive or stone fits World 1 and Pokey: a fright, not harm. The hive lands WHOLE and buzzes; no swarm, no stings shown; the bees
   are not hurt either. The snake flattens and glides to a lower tree (PREDATORS.md §2).
+
+**Update (Matt, R-165.141, 11:42 AM ET):** every way of beating the Golden Tree Snake ends with it flattening and gliding to a lower tree,
+gone for good. Dot's "excuse me" line plays on the FIRST PUNCH that sends a snake gliding. The first-trap line above stays as written.
+**Keeper's view on World 1's other creatures (for Matt, when they are built):** each leaves on its own, never hurt. "Bested" means
+outwitted or outwaited. The boa is lured off its ledge, lands in leaves and slithers off grumpy, or gives up on a still Pokey. The eagle
+is never bested by force: after two empty passes it flies off.
