@@ -596,3 +596,4 @@ lines); Matt sees them in the release.
   t-int-2, packet FX.md, stop 6:30): flags off mushrooms (R-165.156) + find spot; the ctest switch (R-165.157/.151) moves to tomorrow.
   P12S finding to D12: 1-2's thorns NEVER cost (hollows 49-66 px, Pokey 44 px caught on the lip; 0 harms in 144 runs): D12 must make a
   miss fall in on Normal within the 114 px limit, or say what blocks it.
+- 2026-11-12 3:51 PM ET: ART-W1B DONE and retired (t-w1-art2@8448584d; ~$0.61 GPU): traps painted and wired, sky repainted (join 1.69 vs old 12.9), shimmy pieces (trunk + link) to F13. Found: 1-3 sideways at x ~26036 draws 8.53 screens vs 7.5 (pre-existing in W1C's lay; drawcheck never played 1-3): F13 fixes it under 7.5 and adds 1-3/1-2 to drawcheck (LESSONS D51). F13 also does the sky flip (copy the new file over w1sunrise-far.webp).
