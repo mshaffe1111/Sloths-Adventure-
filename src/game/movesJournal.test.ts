@@ -3,6 +3,10 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { CHAPTERS, PAGES, isOpen, takeNewlyOpened, isNew, markLooked, type Progress } from './movesJournal.ts';
 import { LESSONS } from './lessons.ts';
+import './headlessDom.ts';
+import { buildGen2Stage } from './gen2/pipeline.ts';
+import { w1World } from './gen2/worlds/w1.ts';
+import { generateAllLevels } from './worldsData.ts';
 
 const none: Progress = { lessons: new Set(), tipHeard: () => false, cleared: () => false, skills: new Set(), finds: [] };
 
@@ -29,9 +33,14 @@ test('every tip a page waits for is one the game really says', () => {
   // (and a generated stage's own lines, which live with its world's kit: 1-3's, gen2/worlds/w1Arc13.ts)
   const proto = ['./protoStage.ts', './mixer/stages.ts', './gen2/worlds/w1Arc13.ts'].map((f) => readFileSync(new URL(f, import.meta.url), 'utf8')).join('\n');
   const engine = readFileSync(new URL('./engine.ts', import.meta.url), 'utf8');
+  // (1-3 is generated: its tips are what its build lays, on both settings. Read from its source, a page waited for 1-3's old first line
+  //  alone after the lesson became one card, and the test still passed: F13 11-12, D19)
+  const cfg13 = generateAllLevels().find((l) => l.id === '1-3' && !l.secret)!;
+  const said13 = new Set((['normal', 'easy'] as const).flatMap((difficulty) => (buildGen2Stage({ config: cfg13, kit: w1World(), seed: 1, difficulty }) as unknown as { proto: { hints: Array<{ text: string }> } }).proto.hints.map((h) => h.text)));
   for (const p of PAGES) {
-    for (const [, id] of p.open.tip ?? []) {
-      if (id.startsWith('tip:')) assert.ok(proto.includes(`'${id.slice(4)}'`), `${p.id}: the stage hint "${id.slice(4)}" exists`);
+    for (const [stage, id] of p.open.tip ?? []) {
+      if (id.startsWith('tip:') && stage === '1-3') assert.ok(said13.has(id.slice(4)), `${p.id}: 1-3 as built says "${id.slice(4)}"`);
+      else if (id.startsWith('tip:')) assert.ok(proto.includes(`'${id.slice(4)}'`), `${p.id}: the stage hint "${id.slice(4)}" exists`);
       else assert.ok(engine.includes(`'${id.split(':')[0]}:`) || engine.includes(`'${id}'`), `${p.id}: the engine says ${id}`);
     }
   }

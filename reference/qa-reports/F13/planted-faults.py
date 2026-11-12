@@ -19,6 +19,7 @@ M=[
  ("ropeArt.ts","the tinted rope tile is never baked again after the phone takes its canvas back","  if (c && canvasLost(c, 'tinted rope tile')) {","  if (false && c && canvasLost(c, 'tinted rope tile')) {"),
  ("gen2/worlds/w1.ts","1-3's first branch with no vine says its line as chatter (hidden on Normal's Tips)","teachTips: ['traps', 'bare'],","teachTips: ['traps'],"),
  ("gen2/worlds/w1Arc13.ts","the lesson's second line is a tip of its own again (lost if he walks straight on to the handle)","{ id: 'tip2', role: 'tip', on: 'd', t: 0.5, allow: [] /*","{ id: 'tip2', role: 'tip', on: 'd', t: 0.5, allow: ['traps.then'] /*"),
+ ("movesJournal.ts","the sleeping-snakes page waits for a line 1-3 no longer says (the lesson's old first line alone)","tip('1-3', \"Snake napping under a hive ahead! Punch the vine! Don't worry, it only gives him a fright.\")","tip('1-3', 'See that hive? Punch the vine, down it comes!')"),
  ("castArt.ts","the trees grow half again with the vine's height (the foot sinks under the bank)","Math.max(0.05, (ground - y) / (W1_TRAP_MEASURES.trunk.foot[1] - TRUNK_TIE.y))","Math.max(0.05, 1.5 * (ground - y) / (W1_TRAP_MEASURES.trunk.foot[1] - TRUNK_TIE.y))"),
 ]
 ok=0; bad=[]
@@ -27,7 +28,7 @@ for f,name,a,b in (M if len(sys.argv)<2 else [m for m in M if sys.argv[1] in m[1
   if a not in orig: bad.append((name,'PATTERN MISSING')); print("MISSING ",name); continue
   try:
     open(P,'w').write(orig.replace(a,b,1))
-    tests = "src/game/gen2/variety.test.ts tools/engine/library13.test.ts" if f=="gen2/variety.ts" else "src/game/castArt.test.ts tools/engine/library13.test.ts" if f in ("castArt.ts","ropeArt.ts") else "src/game/gen2/teachTips.test.ts tools/engine/library13.test.ts" if f=="gen2/worlds/w1.ts" else "tools/engine/library13.test.ts"
+    tests = "src/game/movesJournal.test.ts" if f=="movesJournal.ts" else "src/game/gen2/variety.test.ts tools/engine/library13.test.ts" if f=="gen2/variety.ts" else "src/game/castArt.test.ts tools/engine/library13.test.ts" if f in ("castArt.ts","ropeArt.ts") else "src/game/gen2/teachTips.test.ts tools/engine/library13.test.ts" if f=="gen2/worlds/w1.ts" else "tools/engine/library13.test.ts"
     r=subprocess.run(f"npx tsx --test {tests} 2>&1 | grep -E '^# fail'",shell=True,capture_output=True,text=True)
     fails=r.stdout.strip()
     if fails and fails!='# fail 0': ok+=1; print(f"CAUGHT  {name}  ({fails})")

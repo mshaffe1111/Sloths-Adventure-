@@ -28,7 +28,7 @@ test('a tip the kit lists in teachTips is laid as a teach line; with none listed
 test("World 1's kit as shipped: 1-3's teaching cards are teach lines, the lesson ONE card with both of the keeper's lines, then the first branch with no vine, on both settings", () => {
   const T = kitLib13().manifest.tips!;
   // (the lesson's two lines on one card, so the second can never be lost behind the first: the lead, 11-12)
-  assert.equal(T.traps, `${T['traps.then'] ? "See that hive? Punch the vine, down it comes! " + T['traps.then'] : ''}`);
+  assert.equal(T.traps, "Snake napping under a hive ahead! Punch the vine! Don't worry, it only gives him a fright.", "the keeper's card, verbatim");
   const want = [T.traps, T.bare];
   for (const difficulty of ['normal', 'easy'] as const) {
     const st = buildGen2Stage({ config: config13() as never, kit: kitLib13(), seed: 1, difficulty }) as unknown as { proto: { hints: Array<{ text: string; teach?: true }> } };

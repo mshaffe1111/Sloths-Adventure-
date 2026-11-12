@@ -76,9 +76,11 @@ test('every roll is the designed level, on both settings: no throw, no error, th
 });
 
 test("the stage carries its cast: proto.cast.kinds is ['snake'], and Dot says the story keeper's line once", () => {
-  assert.deepEqual(LINES_13, { traps: 'See that hive? Punch the vine, down it comes!', 'traps.then': "Don't worry, it only gives him a fright.", bare: 'No vine? Walk him to the end of his branch.' }, "the story keeper's words, verbatim");
+  assert.deepEqual(LINES_13, { traps: 'Snake napping under a hive ahead! Punch the vine!', 'traps.then': "Don't worry, it only gives him a fright.", bare: 'No vine? Walk him to the end of his branch.' }, "the story keeper's words, verbatim");
   // (the kit says the keeper's words: the lesson as ONE card, its two lines together, the lead 11-12; the bare branch's as it is)
   assert.equal(kitLib13(O).manifest.tips!.traps, `${LINES_13.traps} ${LINES_13['traps.then']}`);
+  // (the card's exact words, the keeper's: what a player reads at the lesson's flag, where the hive is not on screen yet)
+  assert.equal(kitLib13(O).manifest.tips!.traps, "Snake napping under a hive ahead! Punch the vine! Don't worry, it only gives him a fright.");
   assert.equal(kitLib13(O).manifest.tips!.bare, LINES_13.bare);
   assert.equal(MISSION_13, 'Shake every vine, and off the snakes glide.');
   // (and it is the line the game shows for the stage: stagePlan.ts holds its own copy, menu code that imports no stage kit)

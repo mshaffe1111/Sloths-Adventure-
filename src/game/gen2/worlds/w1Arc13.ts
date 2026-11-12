@@ -27,14 +27,15 @@ export const BRIEF_13: GraphBrief = {
 /** the story keeper's lines for 1-3, verbatim (the lead, 11-12 12:50 PM; reference/packets/2026-11-12/STORY-LINES.md): the only
  *  player words this file holds. The lesson's two (said at the lesson's flag, one after the other) and the bare branch's one */
 export const LINES_13 = {
-  traps: 'See that hive? Punch the vine, down it comes!',
+  traps: 'Snake napping under a hive ahead! Punch the vine!',
   'traps.then': "Don't worry, it only gives him a fright.",
   bare: 'No vine? Walk him to the end of his branch.',
 } as const;
 /** the stage's MISSION line (the keeper's; it replaces the withdrawn "Knock the snakes off the branches..."): stagePlan's, when 1-3 ships */
 export const MISSION_13 = 'Shake every vine, and off the snakes glide.';
 /** the lesson as ONE card: the keeper's two lesson lines, together, so the second can never be lost behind the first (the lead,
- *  11-12 5:02 PM: said as two tips, the second was not said if he walked straight on to the handle). The same words, no new ones */
+ *  11-12 5:02 PM: said as two tips, the second was not said if he walked straight on to the handle). Said at the lesson's flag, where
+ *  the hive is not on screen yet, so its first line says what is AHEAD (the keeper's rewrite, 6:12 PM; it was "See that hive?") */
 export const LESSON_CARD_13 = `${LINES_13.traps} ${LINES_13['traps.then']}`;
 export const TRAP_LINE = LINES_13.traps;
 // ───────────────────────────── the drop-trap twist bricks (1-3's own) ─────────────────────────────
