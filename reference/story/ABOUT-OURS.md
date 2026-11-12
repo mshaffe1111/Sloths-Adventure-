@@ -32,3 +32,5 @@ highlight is added only when it will stay true.
 - A hidden stage in every world.
 - The pick-a-card road.
 - The guardians' new fights.
+
+Note (11-12): the "Inspired by" real-rainforest line now names only animals true to the setting: sloth, harpy eagle, poison frog.

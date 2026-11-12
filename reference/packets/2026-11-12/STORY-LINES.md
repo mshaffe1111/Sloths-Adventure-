@@ -383,3 +383,17 @@ reference/story/ABOUT-OURS.md. The keeper proposes an update to "What's ours" wh
 **1-3 teach, line 1 rewritten (6:13 PM ET).** The card shows about 3 s before the vine, and the hive is not yet on screen. Line 1 is now
 **"Snake napping under a hive ahead! Punch the vine!"** (it supersedes "See that hive? Punch the vine, down it comes!"). Line 2 is
 unchanged: "Don't worry, it only gives him a fright." Both lines share one card.
+
+## Nature check (R-165.164, new standing duty; first pass on what's already built, 6:55 PM ET)
+- **Golden Tree Snake + gliding: NOT TRUE to World 1.** Gliding snakes (Chrysopelea) live only in South/Southeast Asia. True swap: the
+  **parrot snake** (Leptophis ahaetulla), green, Central/South American lowlands. Its tell is the real gaping-mouth display, and its exit
+  is to drop to a lower branch and slip away. This needs Matt's call against R-165.141. If he picks the swap:
+  - Dot's first trap: "Off he drops, not a scratch, just very offended!"
+  - Journal 1-3: "Punched a vine and a hive dropped beside the snake. He dropped to a lower branch. Very dignified."
+- **Orchid mantis (W5): NOT TRUE** (Southeast Asian). Swap: the dead-leaf mantis (Acanthops), which poses as a dry leaf.
+- **"Inspired by", "The real rainforest" line, corrected:** "a sloth who stays safe by staying still, a harpy eagle that watches for
+  movement, and a frog whose colours are its warning." This supersedes the glide/orchid-mantis wording.
+- **Checked TRUE (Neotropical):** boa, harpy eagle, spectacled caiman, ocelot, jaguar, tayra, capuchins, poison dart frogs, howler
+  monkeys, piranhas, tapir, fruit bats, hummingbirds, kapok (Ceiba pentandra), red-tailed and variegated squirrels.
+- Queued for tomorrow: the 1-4 journal's squirrel lift (made up; rewrite), and R-165.165 (the Keeper's Bell "against a root" beside a
+  stone ledge).
