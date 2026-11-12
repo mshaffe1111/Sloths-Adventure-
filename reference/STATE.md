@@ -508,3 +508,7 @@ lines); Matt sees them in the release.
 - 2026-11-12 12:55 PM ET: W1C built 1-3 to its design (20c735fc): 480/480 rolls clean, the same 13 beats, 198 s. The lead chose (B):
   Matt plays the REAL game tonight, 1-3 moved into World 1's shipped kit (hand-built 1-3 deleted), never a page-hack preview. Normal
   runs hotter (awake snakes from beat 6 on, by data). R-165.148 (painted snake glide pose), R-165.149 (camera lead upright) named.
+- 2026-11-12 1:15 PM ET: RF2 PASSED the lead's look (t-render-2@a5d166c5; before/after sheets reference/qa-reports/RF2/stills/): four
+  shared draw causes fixed with planted tests (WebP edge bleed hairlines every 600 units, the floor lip under raised banks = R-165.146,
+  1-1's dip-pocket soil baked, the low-log band = backdrop rows stretched over the chasm, now a soft fade to dark). R-165.129 stays open
+  only for a PAINTED chasm depth (a later Hugging Face call). Retired.
