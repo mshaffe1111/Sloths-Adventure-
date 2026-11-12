@@ -335,3 +335,23 @@ guards.**
 - **W5's "don't stop" stays.** The sanctuary turns his strength into the trap, which completes the arc. Drowsiness only builds when he is
   idle with no threat near; a hiding freeze never counts. In W5, freezing doesn't hide him (the spiders feel touch). PR #69 (0.9.6) is
   open for Matt.
+
+**Map order review for the new lead (8:01 PM ET request; sent about 8:15 PM ET).**
+- Who is with him, which is also A11's help speaker:
+  - Dot: 1-1 to 6-5, 8-1 to 9-9, and 10-6 to 10-9.
+  - Flicker, silent: 6-6 to 7-9, and 10-1 to 10-5.
+- Flags:
+  - W5 "fruit wakes him" breaks Dot's "Don't eat anything": use a dew drip or a carving.
+  - The 1-5 card totem becomes the squirrels' signs.
+  - W2's ridden caimans are SLEEPING ones.
+  - 1-4's fruit falls naturally; thrown fruit belongs to W4's capuchins.
+  - 1-9's boa is chased off, never carried off.
+  - No stillness in W6 rescue moments.
+  - 8-4 is Lantern Run (GAP-MAP's "Bat Roosts" is stale).
+- stagePlan lines to change (words final from me):
+  - 1-3 "Knock the snakes off the branches. Punch, or shake the vine."
+  - 1-7 "...Get under the leaves and hold still, the way Dot hid from the soldiers."
+  - 3-2 "Something is watching. Stay up in the roots and keep quiet."
+  - 1-8 "Race the long branch before it gives way." (optional)
+- A one-line emotional beat for each world was sent for the visual map: purpose, patience, memory, cost, temptation, loss, alone,
+  reunion, resolve, holding on then letting go.
