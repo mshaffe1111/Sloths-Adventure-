@@ -379,3 +379,7 @@ one-page OUR STORY, exactly as written in the FINAL layout section above. Waitin
 
 **APPROVED by Matt (4:10 PM ET): the broad "What's ours" above.** About is now a LIVING page. The running "ours" list lives in
 reference/story/ABOUT-OURS.md. The keeper proposes an update to "What's ours" when a world is finished, and before launch.
+
+**1-3 teach, line 1 rewritten (6:13 PM ET).** The card shows about 3 s before the vine, and the hive is not yet on screen. Line 1 is now
+**"Snake napping under a hive ahead! Punch the vine!"** (it supersedes "See that hive? Punch the vine, down it comes!"). Line 2 is
+unchanged: "Don't worry, it only gives him a fright." Both lines share one card.
