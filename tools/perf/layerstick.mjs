@@ -1,7 +1,7 @@
 /**
  * The measuring stick (R-150.4 / R-150.1, GL0 2026-11-12): where a frame's draw time goes, layer by layer, on a slowed-down CPU.
  *
- *   node tools/perf/layerstick.mjs <out dir> [stages=1-1,3-2,8-1] [port|land] [--ab "<js A>" "<js B>"] [--rates 1,4,6] [--spots 4]
+ *   node tools/perf/layerstick.mjs <out dir> [stages=1-1,3-2,8-1] [port|land] [--pipeline sw|gpu] [--ab "<js A>" "<js B>"] [--rates 1,4,6] [--spots 4]
  *
  * For each stage, upright (400x880) and sideways (880x400) at deviceScaleFactor 3 (the game draws q0 = 2x), Pokey is pinned at evenly
  * spaced standing spots (the perf harness's own spots, run.mjs) and the SAME frozen spot is drawn FRAMES times per reading by the
@@ -12,14 +12,17 @@
  *   flush  each layer ends with a one-pixel read, so its raster is inside its time (ranks layers; the read's own cost is printed).
  * A reading is the median of FRAMES frames at a spot; a row is the mean of its spots' medians.
  *
- * It PROVES ITSELF every run: a planted 5 ms busy wait inside 'ground' must show up in 'ground' (+5 ms, within 1.5) and in no other
- * layer (under 1 ms), or the run fails. src/game/layerClock.test.ts proves the arithmetic and that the marks sit where the names say.
+ * It PROVES ITSELF every run: a planted 5 ms busy wait inside 'far' must show up in 'far' (+5 ms, within 1) and in no other layer
+ * (under 1.5 ms), or the run fails. src/game/layerClock.test.ts proves the arithmetic and that the marks sit where the names say.
  *
  * --ab: two snippets run in the page (A then B) before each reading at every spot, so two ways of drawing are measured back to back
  * in ONE page on the SAME frozen frame (two page loads never land on the same frame: webgl.md). Rows come out as A, B and B - A.
  *
- * It starts its own dev server (the tool reaches the layer clock as a module: nothing is added to window or to a player's build).
- * This container has no phone GPU (SwiftShader): the numbers rank layers and prove a before/after here; they are not phone numbers.
+ * It starts its own dev server (the layer clock is reached through the dev-only window.__stick: nothing is added to a player's build).
+ * Never edit a source file while it runs: the dev server reloads the page being measured.
+ * --pipeline: 'sw' (default) is headless Chromium as it comes: the 2D canvas is drawn by software inside the renderer. 'gpu' sends the
+ * 2D canvas through the GPU process, as a phone does (the run fails if Chromium does not report it so); the "GPU" is still SwiftShader.
+ * This container has no phone GPU: the numbers rank layers and prove a before/after here; they are not phone numbers.
  * Writes <out>/layerstick.json, <out>/layerstick.md and a still per spot (<out>/stills/).
  */
 import { spawn } from 'node:child_process';
@@ -40,6 +43,10 @@ const ab = opt('--ab', 2);
 const RATES = (opt('--rates')?.[0] || '1,4,6').split(',').map(Number);
 const SPOTS = Number(opt('--spots')?.[0] || 4);
 const FRAMES = Number(opt('--frames')?.[0] || 20);
+// which way Chromium draws a 2D canvas: 'sw' in the renderer by software (headless Chromium's own default), or 'gpu' through the GPU
+// process as a phone does (here on SwiftShader, a software GPU): the game's canvas and a WebGL canvas then live side by side on it
+const PIPE = opt('--pipeline')?.[0] || 'sw';
+const GPU_ARGS = ['--ignore-gpu-blocklist', '--enable-gpu-rasterization', '--enable-accelerated-2d-canvas', '--use-angle=swiftshader'];
 const [outDir, stagesArg, orientArg] = argv;
 if (!outDir) { console.error('usage: node tools/perf/layerstick.mjs <out dir> [stages] [port|land] [--ab "<js A>" "<js B>"]'); process.exit(2); }
 const STAGES = (stagesArg && stagesArg !== '-' ? stagesArg : '1-1,3-2,8-1').split(',');
@@ -47,6 +54,8 @@ const ORIENTS = [{ id: 'port', viewport: { width: 400, height: 880 } }, { id: 'l
 const VARIANTS = ab ? [{ id: 'A', js: ab[0] }, { id: 'B', js: ab[1] }] : [{ id: 'now', js: '' }];
 const LAYERS = ['sky', 'far', 'mid', 'ground', 'props', 'creatures', 'pokey', 'front', 'hud'];
 const PLANT_MS = 5;
+// (a quiet layer: where the 2D canvas is drawn by software, a busy layer's own reading moves by a millisecond or more between runs)
+const PLANT_IN = 'far';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const log = (...a) => console.log(`[stick ${new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour12: false })} ET]`, ...a);
@@ -84,6 +93,11 @@ async function playOne(browser, base, stage, orient) {
   const page = await ctx.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message.slice(0, 200)));
+  // (a page that fails is closed, never left running under the next one's measurement)
+  try { return await measure(ctx, page, errors, base, stage, orient); } catch (err) { await ctx.close().catch(() => {}); throw err; }
+}
+
+async function measure(ctx, page, errors, base, stage, orient) {
   const cdp = await ctx.newCDPSession(page);
   const T0 = Date.UTC(2026, 9, 30, 12);
   await page.clock.install({ time: T0 });
@@ -104,8 +118,8 @@ async function playOne(browser, base, stage, orient) {
     const e = window.__perf.engine();
     if (!e) return { error: 'no engine' };
     const S = window.__perf;
-    // (the game's own module instance: the dev server serves one copy of it to the game and to this import)
-    window.__stick = await import('/src/game/layerClock.ts');
+    // (the game's own clock, on the dev-only window.__stick, App.tsx: importing the module here can hand back a second copy of it)
+    if (!window.__stick) return { error: 'no window.__stick (a dev server build is needed)' };
     window.__stick.stick.now = S.realNow;
     const R = Object.getPrototypeOf(e).render;
     e.render = function () {
@@ -124,10 +138,19 @@ async function playOne(browser, base, stage, orient) {
     const vertical = Math.max(...ys) - Math.min(...ys) > (Math.max(...xs) - Math.min(...xs)) * 0.8;
     const sorted = [...plats].sort((a, b) => (vertical ? b.y - a.y : a.x - b.x));
     const spots = [];
-    for (let i = 0; i < n; i++) {
+    // (one spot is the platform nearest a creature, so 'creatures' is never read off empty screens: three evenly spaced spots came out
+    // with no creature in view on all of 1-1, 3-2 and 8-1, the first baseline, 2026-11-12)
+    const foes = (e.enemies || []).filter((f) => !f.defeated);
+    const foe = foes[foes.length >> 1];
+    const even = foe ? n - 1 : n;
+    for (let i = 0; i < even; i++) {
       // (inside the stage: the first and last platforms are the spawn and the goal, where half the view is the stage's end wall)
-      const p = sorted[Math.min(sorted.length - 1, Math.round(((i + 0.5) * (sorted.length - 1)) / n))];
-      if (p) spots.push({ x: Math.round(p.x + p.width / 2), y: p.y });
+      const p = sorted[Math.min(sorted.length - 1, Math.round(((i + 0.5) * (sorted.length - 1)) / even))];
+      if (p) spots.push({ x: Math.round(p.x + p.width / 2), y: p.y, what: 'even' });
+    }
+    if (foe) {
+      const near = [...plats].sort((a, b) => Math.hypot(a.x + a.width / 2 - foe.x, a.y - foe.y) - Math.hypot(b.x + b.width / 2 - foe.x, b.y - foe.y))[0];
+      if (near) spots.push({ x: Math.round(Math.min(near.x + near.width - 30, Math.max(near.x + 30, foe.x - 140))), y: near.y, what: `creature (${foe.type})` });
     }
     const gl = document.createElement('canvas').getContext('webgl2');
     const dbg = gl && gl.getExtension('WEBGL_debug_renderer_info');
@@ -148,15 +171,16 @@ async function playOne(browser, base, stage, orient) {
     for (let k = 0; k < 4; k++) { await page.clock.runFor(500); await sleep(150); }
     const state = await page.evaluate(() => {
       const e = window.__perf.engine();
-      return { quality: e.quality, canvas: `${e.canvas.width}x${e.canvas.height}`, cam: [Math.round(e.camera.x), Math.round(e.camera.y)] };
+      const inView = (e.enemies || []).filter((f) => !f.defeated && f.x > e.camera.x && f.x < e.camera.x + e.camera.viewportWidth && f.y > e.camera.y && f.y < e.camera.y + e.camera.viewportHeight).length;
+      return { quality: e.quality, canvas: `${e.canvas.width}x${e.canvas.height}`, cam: [Math.round(e.camera.x), Math.round(e.camera.y)], creaturesInView: inView };
     });
     // the stick proves itself, once a page: a planted 5 ms in 'ground' lands in 'ground' and nowhere else
     if (si === 0) {
       const a = await read(page, 'cpu');
-      const b = await read(page, 'cpu', { ground: PLANT_MS });
+      const b = await read(page, 'cpu', { [PLANT_IN]: PLANT_MS });
       const moved = Object.fromEntries(LAYERS.map((l) => [l, +(b.layers[l] - a.layers[l]).toFixed(2)]));
-      const others = Math.max(...LAYERS.filter((l) => l !== 'ground').map((l) => Math.abs(moved[l])));
-      plantCheck = { planted: PLANT_MS, moved, ok: Math.abs(moved.ground - PLANT_MS) <= 1.5 && others < 1 };
+      const others = Math.max(...LAYERS.filter((l) => l !== PLANT_IN).map((l) => Math.abs(moved[l])));
+      plantCheck = { planted: PLANT_MS, in: PLANT_IN, moved, ok: Math.abs(moved[PLANT_IN] - PLANT_MS) <= 1 && others < 1.5 };
     }
     for (const v of VARIANTS) {
       await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
@@ -164,9 +188,9 @@ async function playOne(browser, base, stage, orient) {
         await page.evaluate(v.js);
         for (let k = 0; k < 3; k++) { await page.clock.runFor(300); await sleep(100); }
       }
-      const still = path.join(outDir, 'stills', `${stage}-${orient.id}-spot${si}${ab ? '-' + v.id : ''}.png`);
+      const still = path.join(outDir, 'stills', `${stage}-${orient.id}-spot${si}${ab ? '-' + v.id : ''}.jpg`);
       fs.mkdirSync(path.dirname(still), { recursive: true });
-      await page.screenshot({ path: still }).catch(() => {});
+      await page.screenshot({ path: still, type: 'jpeg', quality: 85 }).catch(() => {});
       for (const rate of RATES) {
         await cdp.send('Emulation.setCPUThrottlingRate', { rate });
         const cpu = await read(page, 'cpu');
@@ -219,8 +243,11 @@ function table(results) {
 const port = await freePort();
 const vite = await startVite(port);
 const base = `http://127.0.0.1:${port}`;
-log('dev server on', port, '| stages', STAGES.join(','), '| rates', RATES.join(','), '|', SPOTS, 'spots x', FRAMES, 'frames', ab ? '| A/B' : '');
-const browser = await chromium.launch({ args: ['--enable-unsafe-swiftshader'] });
+log('dev server on', port, '| pipeline', PIPE, '| stages', STAGES.join(','), '| rates', RATES.join(','), '|', SPOTS, 'spots x', FRAMES, 'frames', ab ? '| A/B' : '');
+const browser = await chromium.launch({ args: ['--enable-unsafe-swiftshader', ...(PIPE === 'gpu' ? GPU_ARGS : [])] });
+// (what Chromium itself says about its 2D canvas: 'enabled' is on the GPU process, 'unavailable_software' is software in the renderer)
+const canvas2d = await (await browser.newBrowserCDPSession()).send('SystemInfo.getInfo').then((i) => i.gpu?.featureStatus?.['2d_canvas'] || '?', () => '?');
+if ((PIPE === 'gpu') !== (canvas2d === 'enabled')) { console.error(`layer stick: asked for the ${PIPE} pipeline but Chromium reports its 2D canvas as ${canvas2d}`); await browser.close(); process.exit(1); }
 {
   // (a first page that only loads the game: a fresh dev server optimizes its dependencies on the first load and reloads the page)
   const page = await browser.newPage();
@@ -241,18 +268,20 @@ try {
     if (!r.plantCheck?.ok) bad++;
     if (r.errors.length) bad++;
     log(stage, orient.id, `${((Date.now() - t) / 1000).toFixed(0)}s`, `${r.info.spots.length} spots`, r.info.own ? '(a stage with its own screen: no layers)' : '',
-      `| planted ${PLANT_MS} ms in ground: ${r.plantCheck?.ok ? 'PASS' : 'FAIL'} ${JSON.stringify(r.plantCheck?.moved)}`, r.errors.length ? `| page errors: ${r.errors.slice(0, 2).join(' / ')}` : '');
+      `| planted ${PLANT_MS} ms in ${PLANT_IN}: ${r.plantCheck?.ok ? 'PASS' : 'FAIL'} ${JSON.stringify(r.plantCheck?.moved)}`, r.errors.length ? `| page errors: ${r.errors.slice(0, 2).join(' / ')}` : '');
     fs.mkdirSync(outDir, { recursive: true });
-    fs.writeFileSync(path.join(outDir, 'layerstick.json'), JSON.stringify({ rates: RATES, frames: FRAMES, variants: VARIANTS, results }, null, 1));
+    fs.writeFileSync(path.join(outDir, 'layerstick.json'), JSON.stringify({ pipeline: PIPE, canvas2d, rates: RATES, frames: FRAMES, variants: VARIANTS, results }, null, 1));
   }
 } finally {
   await browser.close();
   try { process.kill(-vite.pid); } catch { /* */ }
 }
 const gpu = results.find((r) => r.info)?.info.gpu;
-const md = `# Layer stick\n\n${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })} ET. Chromium (headless), graphics: ${gpu}. q0 (2x), ${SPOTS} spots a stage, median of ${FRAMES} frames a spot, mean of the spots.\n` +
+const md = `# Layer stick\n\n${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })} ET. Chromium (headless), 2D canvas ${canvas2d === 'enabled' ? 'on the GPU process (as on a phone)' : 'drawn by software in the renderer'}, graphics: ${gpu}. q0 (2x), ${SPOTS} spots a stage, median of ${FRAMES} frames a spot, mean of the spots.\n` +
   (ab ? `\nA: \`${ab[0]}\`\nB: \`${ab[1]}\`\n` : '') + table(results) +
-  `\n\nThe stick's own proof (a planted ${PLANT_MS} ms inside 'ground'): ${results.map((r) => `${r.stage} ${r.orient} ${r.error ? 'FAILED' : r.plantCheck?.ok ? 'PASS' : 'FAIL'}`).join(', ')}.\n`;
+  `\n\nSpots: ${results.filter((r) => r.info).map((r) => `${r.stage} ${r.orient} ${r.info.spots.map((p) => `x ${p.x} (${p.what}, ${p.creaturesInView ?? '?'} creatures in view)`).join('; ')}`).join(' | ')}.\n` +
+  (canvas2d === 'enabled' ? '' : `\nReading the cpu table on this pipeline: a software 2D canvas rasters when the browser decides to (in the middle of whichever layer fills its buffer), so a single layer's cpu time can hold another layer's raster. Read layers off the flush table; the cpu table's total is sound.\n`) +
+  `\n\nThe stick's own proof (a planted ${PLANT_MS} ms inside '${PLANT_IN}'): ${results.map((r) => `${r.stage} ${r.orient} ${r.error ? 'FAILED' : r.plantCheck?.ok ? 'PASS' : 'FAIL'}`).join(', ')}.\n`;
 fs.writeFileSync(path.join(outDir, 'layerstick.md'), md);
 console.log(md);
 if (bad) { console.error(`layer stick: ${bad} run(s) failed (a page error, a stage that did not open, or the planted cost landed in the wrong layer)`); process.exit(1); }

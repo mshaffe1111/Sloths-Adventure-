@@ -51,6 +51,7 @@ let stageWorld = 1;
 /** `art: 'plain'`: the bare kapok (trunkPlain), so neighbouring trees never share one trunk picture and vine wrap (the mixer's 1-5, S-4) */
 import { fitTrunks, type DecoTrunk } from './trunkFit.ts';
 import { stickSpanBegin, stickSpanEnd } from './layerClock.ts';
+import { groundBegin, groundFlush, groundForget, groundPush } from './gpuGround.ts';
 export { fitTrunks };
 type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' };
 let decoTrunks: ReadonlyArray<DecoTrunk> = [];
@@ -1100,7 +1101,10 @@ interface GroundChunks {
 let chunks: GroundChunks | null = null;
 
 const freeTile = (cv: HTMLCanvasElement | null | undefined) => {
-  if (cv) cv.width = cv.height = 0;
+  if (!cv) return;
+  // (its GPU texture goes with it: gpuGround.ts)
+  groundForget(cv);
+  cv.width = cv.height = 0;
 };
 /** let go of the painted ground (a new stage, or the art released when play leaves a world) */
 export function releaseGroundChunks() {
@@ -1141,6 +1145,8 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], 
         continue;
       }
       if (!c.tiles.has(k)) c.order.push(k);
+      // (a square painted again, the phone took its canvas back: the old one's GPU texture goes)
+      else groundForget(c.tiles.get(k) ?? null);
       c.tiles.set(k, paintTile(platforms, banks, cx, cy, scale));
     }
   // (the oldest squares out of view go once too many are kept)
@@ -1165,6 +1171,16 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], 
   if (missing) return false;
   const px = CHUNK * scale;
   const pad = CHUNK_PAD * scale;
+  // the squares as GPU textures, drawn in one pass and copied in (gpuGround.ts, R-3.3), wherever the WebGL layer is running and its
+  // copy is quick; anywhere else, and on any frame it cannot, they are stamped here as they always were
+  if (groundBegin(ctx.canvas)) {
+    for (let cy = cy0; cy <= cy1; cy++)
+      for (let cx = cx0; cx <= cx1; cx++) {
+        const cv = c.tiles.get(cx + ',' + cy);
+        if (cv) groundPush(cv, pad, pad, px, px, m.e + cx * CHUNK * scale, m.f + cy * CHUNK * scale, px, px);
+      }
+    if (groundFlush(ctx)) return true;
+  }
   for (let cy = cy0; cy <= cy1; cy++)
     for (let cx = cx0; cx <= cx1; cx++) {
       const cv = c.tiles.get(cx + ',' + cy);

@@ -135,7 +135,7 @@ export function stickMedians(frames: readonly StickFrame[]): { layers: Record<St
   return { layers, spans, total: med(frames.map((f) => f.total)), n: frames.length };
 }
 
-/** the game's one clock (the tool reaches it through the dev server's module: nothing on window, nothing in a player's build) */
+/** the game's one clock (the tool reaches it through the dev-only window.__stick, App.tsx: nothing in a player's build) */
 export const stick = new LayerClock();
 const read = (ctx: CanvasRenderingContext2D) => () => void ctx.getImageData(0, 0, 1, 1);
 
