@@ -16,11 +16,9 @@ import { forgetLayout, layoutForEntry } from './game/layoutMemory.ts';
 import { learnedSkills, newlyLearned, type SkillDef, type SkillId } from './game/skills.ts';
 import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
-import { LessonCard } from './components/LessonCard.tsx';
 import { Wayside } from './components/Wayside.tsx';
-import type { GuideFeed } from './components/dot/DotGuide.tsx';
+import type { GuideFeed, LessonFeed } from './components/dot/DotGuide.tsx';
 import { MeecaWords } from './components/MeecaWords.tsx';
-import type { LessonId } from './game/lessons.ts';
 import { controlStyle, subscribeControls, type ControlStyle } from './game/controlPrefs.ts';
 import type { CoachStep } from './game/touchCoach.ts';
 import { ControlSwitch } from './components/ControlSwitch.tsx';
@@ -303,8 +301,8 @@ export default function App() {
   const meecaEngine = useCallback(() => engineRef.current, []);
   // the first-stage lesson (see game/touchCoach.ts): which step is showing, and for which kind of touch controls
   const [coachStep, setCoachStep] = useState<CoachStep>(null);
-  // a first-time lesson card (the stage has paused itself; see game/lessons.ts)
-  const [lessonId, setLessonId] = useState<LessonId | null>(null);
+  // a first-time lesson, for Dot to say in play (game/lessons.ts): numbered, as her lines are, so each is said once
+  const [lesson, setLesson] = useState<LessonFeed | null>(null);
   // counts every start of a stage, so the in-stage story lines begin fresh on a retry
   const [runId, setRunId] = useState(0);
   const [coachStyle, setCoachStyle] = useState<ControlStyle>(() => controlStyle());
@@ -821,7 +819,7 @@ export default function App() {
     enterWideMode();
 
     setCoachStep(null);
-    setLessonId(null);
+    setLesson(null);
     // (a new stage starts with no boss: the last fight's name and bar must not show for a frame: UI-7)
     setBossInfo(null);
     setRunId((n) => n + 1);
@@ -890,7 +888,7 @@ export default function App() {
           onBossUpdate: (info) => setBossInfo((prev) => info ?? (prev ? { ...prev, hp: 0, entering: false } : null)),
           onCinematic: (on) => setCinematic(on),
           onCoach: (st) => setCoachStep(st),
-          onLesson: (id) => setLessonId(id),
+          onLesson: (id) => setLesson((l) => ({ id, n: (l?.n ?? 0) + 1 })),
           onFind: (id) => {
             // a new note, book or keepsake: keep it, pause the stage and show it. One already in the Library just gives its line of text.
             const known = loadFinds();
@@ -1077,8 +1075,8 @@ export default function App() {
     sound.playPause(false);
     setScreen('playing');
     pausedRef.current = false;
-    // a lesson card or a just-found note is still up: the stage stays still behind it, and closing it carries on
-    if (lessonId || (reading && pausedForFind.current)) return;
+    // a just-found note is still up: the stage stays still behind it, and closing it carries on
+    if (reading && pausedForFind.current) return;
     engineRef.current?.resume();
   };
 
@@ -1485,25 +1483,13 @@ export default function App() {
           {activeLevel.id !== MEECA_STAGE_ID && <Wayside
             key={`${activeLevel.id}-${runId}`}
             level={activeLevel}
-            active={screen === 'playing' && !coachStep && !lessonId && !reading}
+            active={screen === 'playing' && !coachStep && !reading}
             ratio={distanceRatio}
             hp={hp}
             guide={guideLine}
             // Dot's guide: it reads the stage itself and takes the coach and lessons as her lines
-            dot={{ engine: () => engineRef.current, playing: screen === 'playing' && !reading, coachStep, coachStyle, lessonId, count: { cur: currentCount, target: targetCount } }}
+            dot={{ engine: () => engineRef.current, playing: screen === 'playing' && !reading, coachStep, coachStyle, lesson, count: { cur: currentCount, target: targetCount } }}
           />}
-          {screen === 'playing' && lessonId && (
-            <LessonCard
-              id={lessonId}
-              onClose={() => {
-                setLessonId(null);
-                // no clearing of the controls here: a thumb lifted while the card was up has already let go of what it held, and one
-                // still on the glass keeps doing what it was (clearing it left the recogniser thinking it steered while nothing moved,
-                // so the next touch did nothing; and it dropped a held jump in mid-air)
-                engineRef.current?.lessonClosed();
-              }}
-            />
-          )}
           {inputEngineRef.current && (
             <ControlSwitch inputEngine={inputEngineRef.current} world={activeLevel.worldIndex} />
           )}

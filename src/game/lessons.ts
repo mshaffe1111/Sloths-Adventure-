@@ -1,9 +1,9 @@
 /**
- * lessons — the first time each new thing shows up, the game stops and explains it, once.
+ * lessons — the first time each new thing shows up, Dot explains it, once.
  *
- * A lesson is a card with Pokey's face, a title, and a few "do this, get that" lines for the way this player is controlling the game (touch
+ * A lesson is a few "do this, get that" lines for the way this player is controlling the game (touch
  * screen, thumb pad, or keyboard). The engine spots the first foe, the first climbable trunk, the first swinging vine and so on ahead of the hero
- * (`pickLesson`), pauses, and the app shows the card (components/LessonCard.tsx). A lesson counts as shown once Dot's line for it has been
+ * (`pickLesson`), and Dot says it as one of her lines, in play (components/dot/DotGuide.tsx; no card, no pause). A lesson counts as shown once Dot's line for it has been
  * up its minimum time (dotSay.ts), and a New Game clears what has been shown (dotMemory.ts), so it teaches it all again. `?lessons=off` skips them, `?lessons=all` shows every one again (for trying them out).
  */
 import { controlStyle } from './controlPrefs.ts';

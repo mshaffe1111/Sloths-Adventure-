@@ -75,6 +75,11 @@ export interface GuideFeed {
   passed?: boolean;
   recent?: ReadonlyArray<{ text: string; ms: number; n: number; passed?: boolean }>;
 }
+/** a first-time lesson from the engine (App.tsx onLesson), numbered so each is said once, as the engine's lines are */
+export interface LessonFeed {
+  id: LessonId;
+  n: number;
+}
 export interface DotGuideProps {
   level: LevelConfig;
   engine: () => GameEngine | null;
@@ -85,7 +90,7 @@ export interface DotGuideProps {
   guide?: GuideFeed | null;
   coachStep?: CoachStep;
   coachStyle?: ControlStyle;
-  lessonId?: LessonId | null;
+  lesson?: LessonFeed | null;
   /** the goal's count (for Dot's "That's all of them!") */
   count?: { cur: number; target: number };
 }
@@ -204,6 +209,8 @@ class GuideRun {
   prevJumpRun = 0;
   // lines from the engine
   lastGuide: number;
+  /** the last lesson said (its feed number: one already said when she is put back on screen is not said again) */
+  lastLesson = 0;
   // the line on screen and Dot
   show: Showing | null = null;
   plan: Plan | null = null;
@@ -394,8 +401,12 @@ const MOVE_IDS: MoveId[] = ['run', 'jump', 'double', 'grab', 'climb', 'leap', 'g
 const QUOTA = new Set(['harvest', 'relic_hunt', 'purge', 'gauntlet', 'rescue']);
 
 export const DotGuide: React.FC<DotGuideProps> = (props) => {
-  const { level, guide, coachStep, lessonId } = props;
-  const [run] = useState(() => new GuideRun(level, guide?.n ?? 0));
+  const { level, guide, coachStep, lesson } = props;
+  const [run] = useState(() => {
+    const r = new GuideRun(level, guide?.n ?? 0);
+    r.lastLesson = lesson?.n ?? 0;
+    return r;
+  });
   // (dev only: the guide's state, for the placement shooter tools/dotbox/shoot.mjs)
   if (import.meta.env.DEV && typeof window !== 'undefined') (window as unknown as { __dotRun?: unknown }).__dotRun = run;
   // (the dev build lets the screenshot tools look inside: window.__dotGuide())
@@ -490,10 +501,12 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
   // a first-time lesson: one of Dot's lines, or Pokey's while she is away (the engine did not stop for it)
   useEffect(() => {
     // (already on the vine or the trunk: the lesson starts after its "grab it" step)
-    const l = lessonId ? lessonDotLine(lessonId, undefined, run.view.swinging || run.view.climbing || run.view.hanging) : undefined;
+    if (!lesson || lesson.n <= run.lastLesson) return;
+    run.lastLesson = lesson.n;
+    const l = lessonDotLine(lesson.id, undefined, run.view.swinging || run.view.climbing || run.view.hanging);
     // (Dot's while she is with him; his own thought while she is away, World 7 above all)
     if (l) run.say(lessonSaidBy(l, run.dot));
-  }, [lessonId, run]);
+  }, [lesson?.n, run]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // the first-stage coach: each step is a line that stays until its move is done; a step that moves on takes its line down
   useEffect(() => {

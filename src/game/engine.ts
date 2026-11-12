@@ -273,7 +273,7 @@ export interface GameEngineCallbacks {
   /** the boss bar: sent only when something on it changes */
   /** the first-stage lesson moved to a new step (or ended): the app shows or clears the hint */
   onCoach?: (step: CoachStep) => void;
-  /** a first-time lesson is due: the stage has paused itself, and the app shows the card (then calls lessonClosed) */
+  /** a first-time lesson is due: Dot says it as one of her lines, in play (DotGuide.tsx; the stage does not stop for it) */
   onLesson?: (id: LessonId) => void;
   onBossUpdate?: (info: { name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string; entering?: boolean } | null) => void;
   /** Meeca's stage: its title card or its ending is up (the HUD steps aside), or not */
@@ -698,8 +698,7 @@ export class GameEngine {
   /** the first-stage lesson for a new touch player (see touchCoach.ts), when there is one */
   private coach: TouchCoach | null = null;
   private coachWasGrounded = true;
-  /** first-time lessons: one open at a time, and a breather after each */
-  private lessonOpen = false;
+  /** first-time lessons: a breather after each */
   private lessonQuietUntil = 0;
   /** when the last lesson (or find) was shown or closed: the swing's lesson needs only a second's breather after it */
   private lessonAt = -1e9;
@@ -5900,7 +5899,7 @@ export class GameEngine {
   /** look for the first of something new ahead of the hero a few times a second; when one is there, stop and let the app explain it */
   private lessonTick() {
     // (Meeca's stage has no Dot and no lesson cards: her own thoughts teach it, meecaPlay.ts)
-    if (this.lessonOpen || this.isGameOver || this.mc) return;
+    if (this.isGameOver || this.mc) return;
     if ((this.lessonFrame = (this.lessonFrame + 1) % 6) !== 0) return;
     // a find picked up a moment ago: its reader opens as soon as stopping is safe (before any lesson), and a lesson leaves it a breather
     if (this.findsWaiting.length) {
@@ -6083,15 +6082,6 @@ export class GameEngine {
       foeDy,
       hazard,
     });
-  }
-
-  /** the app has closed a lesson card: carry on, and leave a few seconds before the next one */
-  public lessonClosed() {
-    if (!this.lessonOpen) return;
-    this.lessonOpen = false;
-    this.lessonQuietUntil = this.gameTime + 4;
-    this.lessonAt = this.gameTime;
-    this.resume();
   }
 
   /** the touch jump help in force: only for the Screen gestures (the keyboard, a pad and the on-screen Pad keep their own exact feel) */
