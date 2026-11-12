@@ -44,6 +44,10 @@ see-through 2D canvas (blend effects move first). Full tests/drawcheck/clipcheck
 R-165.142 (gameCanvas willReadFrequently fix) lives on t-webgl-0: decide whether INT-2 takes it for 0.9.7.
 12:10 PM (Matt 12:07): FABLE (W1C) DESIGNS AND BUILDS 1-3 (no 12:30 stop): reference/design/1-3.md + LEVEL-BAR.md draft by 1 PM, then builds.
 P13 (Opus high, session_01FhBbYLQMBLSzszj1sXmkwV, t-13-proof from t-w1-creatures, packet P13.md, stop 4:30): plumbing only beside it.
+12:52 PM: t-int-2@91af3475 = engine + P11 + render + pit + F12 + AF + lead docs (only yield red). Y2 (session_01FhBbYM4174oEe1R2ocGwwk,
+t-yield-2, stop 3:30) started from it. PROOF-1 re-auditing the delta on it (stop 2:15). INT-2 WAITS for the lead's word (~4:30-5:30):
+merge t-yield-2, t-render-2, t-13-proof (carries W1C's 1-3 moved into World 1's kit), t-w1-art; then full gate + test-link build.
+W1C (Fable): 1-3 built to design (480/480), now moving into the shipped kit (hand-built 1-3 deleted); Normal hotter; finale hop gap.
 NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes + t-pit-polish + t-audit-fixes (+ t-12-fly), renumber the
   duplicate R-165.129, full gate; (2) PROOF-1 re-audits only the delta; (3) ask Matt ONE question: ship the R-165.125 sound levels or hold
   (D47), then 0.9.7 on his word (PR, he merges, check deploy + APK); (4) 1-2 and 1-3 to Matt's test link by Fri 11-13 (1-3 by Fable/W1C,
