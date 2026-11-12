@@ -123,3 +123,21 @@ Rules for building it:
 > **The real rainforest**: a sloth who stays safe by staying still, a snake that glides from tree to tree, and a mantis dressed as an
 > orchid.
 > Sloths Rainforest Adventures is not affiliated with or endorsed by these games or their makers.
+
+## About the game: "How Sloths began" and "What's ours", BEFORE "Inspired by" (R-165.158; DRAFT for Matt, 3:28 PM ET)
+
+> **How Sloths began**
+> Sloths started as a conversation between my wife and me: what would a game about a sloth be like?
+>
+> **What's ours**
+> Pokey, Meeca, Dot and everyone they meet.
+> Their story, from the first petal to the last letter, and Pokey's journal.
+> Ten rainforest worlds, and every level in them.
+> A hero whose stillness is his strength.
+> The art, made for this game in its own style.
+
+- If the About screen should not speak in Matt's own voice, the first line becomes: "Sloths started as a conversation between a
+  husband and wife: what would a game about a sloth be like?"
+- Every claim is true as written. It names no one beyond "my wife". It says nothing about how the art was made, and nothing about the
+  music, whose origin I have not checked. If the music was made for the game, Matt can add "The music, too."
+- The "Inspired by" tribute follows unchanged.
