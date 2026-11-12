@@ -389,3 +389,10 @@ I review its sheet when the lead sends it (about 10 PM ET).
 4. W6 piranhas nip and scatter: no frenzy, no bones.
 Small notes: the 1-3 hive's buzz chases the snake off with no stings shown; the spider-dozing dew and the Pokey-waking drip look
 different.
+
+**11-12 10:57 AM ET, the save dialog's words (the lead asked):**
+- :157 becomes "Saves every stage result, the stories you have seen and the things you have found into one small file. You can load it
+  later, or on another device." (If finds no longer travel, it becomes "...the stories you have seen and the secret...". Sound no longer
+  travels.)
+- :122 becomes "Could not save it on this device." (the APK has no browser)
+- the load note ends "...with this save." (the same text shows for a pasted code)
