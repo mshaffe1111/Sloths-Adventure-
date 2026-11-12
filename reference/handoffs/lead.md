@@ -39,6 +39,9 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
    main script 655 KB), then guards -> fixes, yield, clock, library, predators, wire (t-engine-wire: library + thorn bed + 1-2's double + clock on the fixed step; 1-2 98% clean on flown rows); PLUS from the parked t-engine-11-followup only the R-165.122 part of commit 2a988785
    (it is mixed with 1-1 items and a list rebuild: take only the hop-rock walls and their verdict, not the list rebuild) (hop rocks walked through: a generator rule, not 1-1 polish: every counted obstacle must block, or it is scenery and
    funcheck does not count it; Matt 11:22 PM); resolve conflicts; fix gates.yml so chunkcheck builds with BASE_PATH (D45); run the FULL gate once (CLAUDE.md Checks).
+1a. **The 1-1 pass (Matt's two live 1-1 reports, one list rebuild):** R-165.122 hop rocks (code from 2a988785, proven by INT-E) +
+   R-165.124 the dead-zone verdict with Matt's seeds 21537, 15406, 15458 as planted failures; then rebuild 1-1's seed list once, re-pick
+   the first run, recalibrate; Matt sees the new 1-1 on his test link before any release.
 1b. **Stranded Matt-reported fixes** (Opus high, after INT-E): R-164.1, .6, .7, .8 (commits 57898c82, 9b384389 on old branches
    engine-render/engine-runs, pre-gen2: never merge those branches): reproduce each on t-int-engine; port only the fix, with a test.
    R-164.6/.8 are the pit-wall seams Matt saw on 11-11. Register: reference/qa-reports/MATT-REPORTED.md (27 open).
