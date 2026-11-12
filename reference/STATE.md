@@ -675,3 +675,4 @@ lines); Matt sees them in the release.
   only, mist, highlands; pods on a beat = storybook, allowed). Owed words written in STORY-LINES.md: halfway "Meeca climbs this every
   Sunday. I waved from below."; the pods flag (Dot) "Hear it creak? Duck in a hollow till it drops!"; journal 1-4 "Climbed the kapok
   between falling pods. From the top you can see where they took her."
+- 2026-11-12 6:48 PM ET: story keeper re-judged on Matt's test: W5's orchid mantis STAYS (R-165.167 withdrawn); the snake rename stands.
