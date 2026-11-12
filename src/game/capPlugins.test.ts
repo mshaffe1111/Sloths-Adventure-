@@ -66,8 +66,38 @@ test('wantAudioFocus reaches AudioFocusPlugin.java, both ways', async () => {
   assert.ok(await reached('AudioFocus.want:{"on":false}'), `native calls: ${JSON.stringify(calls)}`);
 });
 
-// The countermeasure spread: no game file hands a registered plugin to a promise (a `.then` or an async function returning it). A plugin
-// is held in a wrapper object, or used inside the callback that registered it.
+// The countermeasure spread: no game file hands a registered plugin to a promise (a `.then` callback or an async function returning it,
+// or an async arrow whose body is the call). A plugin is held in a wrapper object, or used inside the callback that registered it.
+// (PROOF-1's delta planted `async function f() { const { registerPlugin } = await import(...); return registerPlugin(...) }` and the old
+// regex, stopping at the destructuring's `}`, let it pass. R-165.152. The rule is now the shape of the call itself, wherever it sits:
+// a registerPlugin call, plain or as `m.registerPlugin`, that a `return` or an arrow hands out bare is refused, in sync code too, since
+// any caller may put it in a promise. Held in a wrapper object (`({ plugin: registerPlugin(...) })`) or in a variable, it passes.)
+const BARE = /(?:\breturn\b|=>)\s*(?:await\s+)?(?:\(\s*)*(?:[\w$]+\s*\.\s*)?registerPlugin\s*(?:<[^>()]*>)?\s*\(/g;
+export function barePluginReturns(src: string): number[] {
+  return [...src.matchAll(BARE)].map((m) => src.slice(0, m.index).split('\n').length);
+}
+
+test('the bare-plugin reader: every shape that hands a promise the bare plugin is caught; the wrapper is not (R-165.152)', () => {
+  const bad = [
+    "async function f() { const { registerPlugin } = await import('@capacitor/core'); return registerPlugin<X>('X'); }",
+    "async function f() { return registerPlugin('X') }",
+    "const f = async () => registerPlugin<X>('X');",
+    "const f = async () => { const m = await import('@capacitor/core'); return m.registerPlugin('X'); };",
+    "p = import('@capacitor/core').then(({ registerPlugin }) => registerPlugin<X>('X'));",
+    "p = import('@capacitor/core').then((m) => m.registerPlugin('X'));",
+    "p = import('@capacitor/core').then(function (m) { return m.registerPlugin('X'); });",
+    "class A { async get() { const { registerPlugin } = await import('@capacitor/core'); return registerPlugin('X') as X; } }",
+  ];
+  for (const b of bad) assert.equal(barePluginReturns(b).length, 1, `missed: ${b}`);
+  const good = [
+    "p = import('@capacitor/core').then(({ registerPlugin }) => ({ plugin: registerPlugin<X>('X') }));",
+    "async function f() { const { registerPlugin } = await import('@capacitor/core'); return { plugin: registerPlugin('X') }; }",
+    "async function f() { const { registerPlugin } = await import('@capacitor/core'); const p = registerPlugin<X>('X'); await p.set({ on: true }); }",
+    "const p = registerPlugin<X>('X'); export const plugin = { p };",
+  ];
+  for (const g2 of good) assert.deepEqual(barePluginReturns(g2), [], `flagged: ${g2}`);
+});
+
 test('no source file resolves a promise to a bare Capacitor plugin', () => {
   const root = path.join(path.dirname(new URL(import.meta.url).pathname), '..');
   const bad: string[] = [];
@@ -77,8 +107,7 @@ test('no source file resolves a promise to a bare Capacitor plugin', () => {
       if (statSync(p).isDirectory()) walk(p);
       else if (/\.tsx?$/.test(n) && !/\.test\.tsx?$/.test(n)) {
         const src = readFileSync(p, 'utf8');
-        // `.then(... => registerPlugin<...>(...))` with no wrapper object, or `return registerPlugin(` inside an async function
-        if (/\.then\(\s*\([^)]*\)\s*=>\s*registerPlugin\b/.test(src) || /async[^{]*\{[^}]*return\s+registerPlugin\b/.test(src)) bad.push(path.relative(root, p));
+        if (src.includes('registerPlugin')) for (const line of barePluginReturns(src)) bad.push(`${path.relative(root, p)}:${line}`);
       }
     }
   };
