@@ -269,8 +269,10 @@ export interface GameEngineCallbacks {
   onBossEncounter?: (boss: BossEntity) => void;
   /** Pokey stepped through the hidden Thorn Gate */
   onSecret?: () => void;
-  /** Pokey picked up a note, book or keepsake (see finds.ts); the app shows it */
+  /** Pokey picked up a note, book or keepsake (see finds.ts): sent at the touch, the app keeps it */
   onFind?: (findId: string) => void;
+  /** a find picked up a moment ago can be shown now (he is safe to stop, or the stage is won): the app opens its reader */
+  onFindShow?: (findId: string) => void;
   /** the boss bar: sent only when something on it changes */
   /** the first-stage lesson moved to a new step (or ended): the app shows or clears the hint */
   onCoach?: (step: CoachStep) => void;
@@ -1204,8 +1206,11 @@ export class GameEngine {
     sound.playRelicFound();
     this.spawnSparkBurst(c.x, c.y, '#fde68a');
     this.addFloatingText(`FOUND: ${FIND_BY_ID[c.findId ?? '']?.title ?? 'a find'}`, c.x, c.y - 34, '#fde68a');
-    // the app stops the stage to show it: that waits until he is standing or holding on, like a lesson card (lessonTick)
-    if (c.findId) this.findsWaiting.push(c.findId);
+    if (!c.findId) return;
+    // the app keeps it now, however the run then ends (shown as found is found); it stops the stage to show it only once he is
+    // standing or holding on, like a lesson card (lessonTick -> onFindShow)
+    this.callbacks.onFind?.(c.findId);
+    this.findsWaiting.push(c.findId);
   }
 
   /** where Pokey's middle is on the screen, in CSS px (the new HUD flies a pickup from here to its counter); null before the first frame */
@@ -3244,8 +3249,8 @@ export class GameEngine {
       );
 
       this.report(true, stars);
-      // a find still waiting for a safe moment is handed over now, so it is never lost
-      for (const fid of this.findsWaiting.splice(0)) this.callbacks.onFind?.(fid);
+      // a find still waiting for a safe moment is shown now (it was kept at the touch)
+      for (const fid of this.findsWaiting.splice(0)) this.callbacks.onFindShow?.(fid);
       recorder.event('finish', Math.round(p.cheerAt ?? this.gameTime));
       this.callbacks.onVictory(stars, Math.round(p.cheerAt ?? this.gameTime), this.runScore);
     }
@@ -5338,8 +5343,8 @@ export class GameEngine {
       t: this.gameTime,
       lives: this.lives,
       score: this.runScore,
-      // (a find is kept by the save itself, App.tsx onFind: one not kept yet stays in the stage to be found again)
-      got: where(this.collectibles, (c) => c.collected && c.type !== 'find'),
+      // (a find is kept by the app at the touch, App.tsx onFind, so one picked up stays picked up)
+      got: where(this.collectibles, (c) => c.collected),
       beat: where(this.enemies, (e) => e.defeated),
       n: {
         fruits: p.fruitsCollected, beaten: p.enemiesDefeated, relics: p.relicsFound, freed: p.crittersRescued,
@@ -5990,7 +5995,7 @@ export class GameEngine {
       const fid = this.findsWaiting.shift()!;
       this.lessonQuietUntil = Math.max(this.lessonQuietUntil, this.gameTime + 3);
       this.lessonAt = this.gameTime;
-      this.callbacks.onFind?.(fid);
+      this.callbacks.onFindShow?.(fid);
       return;
     }
     if (this.gameTime < 2.5) return;

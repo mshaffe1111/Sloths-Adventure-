@@ -364,6 +364,8 @@ export default function App() {
   const [readingCompletes, setReadingCompletes] = useState(false);
   /** true while a stage is paused because a find was just picked up (so closing the reader resumes it) */
   const pausedForFind = useRef(false);
+  /** finds kept in play whose reader has not opened yet (each: is it the last of the 30) */
+  const findsToShow = useRef(new Map<string, boolean>());
   const closeReader = () => {
     setReading(null);
     setReadingCompletes(false);
@@ -895,16 +897,23 @@ export default function App() {
           onLesson: (id) => setLesson((l) => ({ id, n: (l?.n ?? 0) + 1 })),
           onHelpOffer: (on) => setHelpOffer(on),
           onFind: (id) => {
-            // a new note, book or keepsake: keep it, pause the stage and show it. One already in the Library just gives its line of text.
+            // a new note, book or keepsake: kept at the touch, however the run then ends. One already in the Library just gives its line
+            // of text. (Its reader opens when stopping is safe: onFindShow. The snail has none.)
             const known = loadFinds();
             if (known.includes(id) || !FIND_BY_ID[id]) return;
             const next = withFind(known, id);
             saveFinds(next);
             setFoundIds(next);
-            if (FIND_BY_ID[id].kind === 'snail') return;
+            if (FIND_BY_ID[id].kind !== 'snail') findsToShow.current.set(id, allFound(next));
+          },
+          onFindShow: (id) => {
+            // pause the stage and show a find just kept
+            const completes = findsToShow.current.get(id);
+            if (completes === undefined) return;
+            findsToShow.current.delete(id);
             engineRef.current?.pause();
             pausedForFind.current = true;
-            setReadingCompletes(allFound(next));
+            setReadingCompletes(completes);
             setReading(id);
           },
           onSecret: () => {
