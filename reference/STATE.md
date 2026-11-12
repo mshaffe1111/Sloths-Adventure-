@@ -559,3 +559,4 @@ lines); Matt sees them in the release.
   rule (6; W1C's evidence: the child bot takes 4+ hits); Normal goal = 9 (every trap: Pokey doesn't have to fight); funcheck "nothing
   bites" 16 accepted (risk is the strike); the shimmy ROPE (posts + rope) breaks World 1's no-made-things rule -> a vine between two
   living trunks (ART-W1B pieces, F13 wires). F13 keeps "one shake, two snakes" only if the 2:00 margin needs it.
+- 2026-11-12 2:23 PM ET, Matt: "Fables at 98". W1C told to stop now (priority now) and push its final head; F13 (Opus max) started its finish from t-int-2 + W1C's newest head.
