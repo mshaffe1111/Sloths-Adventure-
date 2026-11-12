@@ -30,15 +30,25 @@
      there with step 1's R-165.139 renames; the root file is gone.
    - promises11.ts imports and verdicts.ts ALL_VERDICTS: union (P11's landing.dead-zone, bounce.no-purpose + F12's chain.mount,
      in verdicts.types.ts order). verdicts.test.ts: both new tests kept; the union count 19 / 18 -> 20.
-   - **Settled across branches:** F12's chain.mount test's clean control (one walk-on cap on flat ground) asserted `[]`; P11's
-     bounce.no-purpose refuses that cap, so it read `['bounce.no-purpose']`. The control now asserts no `chain.mount` only
-     (P11's own pattern). F12 / the lead: confirm, or give the cap a purpose in the fixture.
+   - **Settled across branches** (b8c05d91, the lead's call): F12's chain.mount clean control (one walk-on cap on flat ground,
+     no verdicts) got P11's bounce.no-purpose. The cap now sits past the gap with a block 210 px up beside it (a real purpose); the
+     control still asserts NO verdicts. (A raised solid before the gap hides it from doubleGap's walk: teach.double-no-gap-after.)
    - ROADMAP: F12's R-165.129 (eight tool tests) is identical to R-165.139, dropped; R-165.140 kept.
    Checks on fcfb1138: tsc PASS; roadmapcheck PASS; seedlist 1-1 --check PASS (chain.mount refuses 0 of 258); lock 101/102,
    only 1-1; gen2 + worlds 465/466 (the same yield-floor red, 11 of 30); bounceAura, petalDraw, w1Pits, cameraBounce, seeThrough 25/25.
 
+6. t-audit-fixes@98149355 (AF) -> 5ccbd6c9: no conflict.
+7. ccr-702d3c49-i33jeq@26e4f859 -> e57e8dda: ROADMAP only. R-165.138 differed only in its time (kept the R-12 form); kept
+   .139/.140 and the lead's .141, .143-.146. roadmapcheck then failed on .141/.143/.146 "1-2 h (a guess)": written as
+   "1.5 h (no history: a range, 1-2 h)"; BUILD-PLAN 752.25 -> 758.25. roster.ts: the lead exempts it; generalitycheck PASS as is.
+   Checks on e57e8dda: tsc PASS; roadmapcheck PASS; generalitycheck PASS (27 literals, 27 known); seedlist 1-1 --check PASS (0 of
+   258 refused); lock 101/102, only 1-1; gen2 + worlds **480/481: only the yield floor, 11 of 30** (unchanged by F12 and AF; Y2's);
+   AF's tests (saveLoadWords, capPlugins, ciTests, saveLoadApply, saveLoadAtomic) 14/14; clipcheck PASS (83 known, 314 s).
+   t-w1-creatures NOT merged (not cleared: comes later with t-13-proof and t-w1-art).
+
 ## Step 3
-Waiting on the lead's messages.
+Waiting on the lead's word (after W1C / P13 / ART-W1).
 
 ## Left
-- The yield-floor red above (P11 / the lead decides: fix the yield or re-judge the floor; INT-2 does not touch it).
+- The yield-floor red (11 of 30): Y2's, from this head. INT-2 does not touch yield.test.ts.
+- The lead's ROADMAP rows keep landing as "N-M h (a guess)": roadmapcheck refuses that form (R-12).
