@@ -418,3 +418,31 @@ Every player-facing mention to change:
 be storybook. The glide stays.
 **W5 orchid mantis, re-judged on that bar:** for tomorrow. The question is whether a real Neotropical mantis looks like a flower. The
 dead-leaf mantis (Acanthops) is the known fallback.
+
+## 1-4 Up the Kapok: nature check and story words (design doc t-14-design@1b88b431; 7:10 PM ET)
+**Nature check: PASS** (the bar: kind and look real; behaviour may be storybook)
+| Thing | Verdict |
+|---|---|
+| Kapok (Ceiba pentandra): buttress roots, emergent crown, seed pods, fluff drifting on the wind | REAL, Neotropical. Whole pods falling on a beat and bursting is storybook behaviour, which is allowed. |
+| A hollow trunk to climb inside | the kind is real (hollow giant trees). Fine. |
+| Rotting boughs with bracket fungus | REAL (tropical polypores) |
+| Lianas, one draped over a bough | REAL, and very rainforest |
+| Knot-hole hollows | REAL |
+| The snake | REAL once renamed: the Golden Eyelash Viper (R-165.166) dozes on branches, true to life |
+| Squirrels on a pod pile | REAL kind (red-tailed squirrel); eating the seeds is storybook enough |
+| The Hush Fern | REAL kind (fern); the name is ours |
+| Morning mist at the roots, the Highlands far north | REAL (lowland mist; Central American highlands) |
+
+**Story notes:**
+- The squirrels at the crown are a callback CAMEO, not a beat. 1-1 owns the squirrels (STORY-KEEPER §5): they stare, and nothing more.
+- "Never slow" is guarded in the doc. The petals stay low with none up the tree, as BRIEF requires. The twist's "glides off, very
+  offended" matches 1-3. Dot's first-trap line does NOT replay here (taught once, in 1-3).
+
+**The owed words:**
+| Where | Speaker | Final words |
+|---|---|---|
+| beat 6, the halfway flag (STORY-KEEPER §5's "Meeca climbs this every Sunday") | Pokey | Meeca climbs this every Sunday. I waved from below. |
+| beat 4, the pods flag (Dot, once, on Normal's Tips) | Dot | Hear it creak? Duck in a hollow till it drops! |
+| the journal, 1-4 (pokeyJournal.ts:51; replaces the squirrel lift, a made thing) | Pokey | Climbed the kapok between falling pods. From the top you can see where they took her. |
+
+The journal line is a real moment, so the joke doesn't come (VOICE: Pokey). It pays off the view north.
