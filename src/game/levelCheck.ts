@@ -383,7 +383,7 @@ function cutSpans(spans: Array<[number, number]>, x0: number, x1: number): Array
 export function validateAsJudged(stage: GeneratedStage, opts: CheckOptions = {}): CheckResult {
   if (!judgedOnArcs(stage.config.id)) return validateStage(stage, opts);
   const d = (stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty ?? 'normal';
-  return validateStage(stage, { ...opts, arcs: opts.arcs ?? linkArcs(d) });
+  return validateStage(stage, { ...opts, arcs: opts.arcs ?? linkArcs(d, stage.config.id) });
 }
 
 export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): CheckResult {
@@ -425,7 +425,8 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
     for (const w of opts.walls ?? []) pouring.push({ id: -1, x: w.x, width: w.width, top: w.top, bottom: w.bottom });
     plats = [];
     for (const p0 of stage.platforms) {
-      if (p0.broken) continue;
+      // (a hollow's hurt floor, gen2 WorldManifest.hurtFloor, is never stood on: he is set back the moment he touches it)
+      if (p0.broken || p0.pit === 'hurt') continue;
       const p = rolledTo.has(p0.id) ? { ...p0, x: rolledTo.get(p0.id)! } : p0;
       // a lift (2-7) is one stop the player reaches at its top and at its bottom: two copies under one id, so riding it joins them
       if (p.lift) { plats.push({ ...p, y: p.lift.top }, { ...p, y: p.lift.bottom }); continue; }

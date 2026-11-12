@@ -2526,10 +2526,20 @@ export class GameEngine {
         // back: from there the way on can be out of reach, and he walked straight off it again, the red team's F10 on gen2 1-1 Roll A Easy)
         const prev = this.softAt;
         const fellOnto = !!prev && g && g.y > prev.y + 100 && g.width < 400 && !(prev.x >= g.x && prev.x <= g.x + g.width);
-        if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60 && !fellOnto) this.softAt = { x: Math.max(g.x + 30, Math.min(g.x + g.width - 30, p.x)), y: g.y, x0: g.x, x1: g.x + g.width };
+        if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60 && !fellOnto && g.pit !== 'hurt') {
+          // (a stage with hurt floors: a pillar, a piece with a mushroom on it and hurt floor on both sides, is never the put-back spot, and
+          // on a ledge with a mushroom he is put back short of it, never inside the cap, which would throw him at once)
+          const hs = this.currentStage.heartFalls, r = g.x + g.width;
+          const cap = hs?.some((z) => z.y !== undefined) ? this.platforms.find((q) => q.type === 'bouncy' && q.x < r && q.x + q.width > g.x && Math.abs(q.y + q.height - g.y) < 30) : undefined;
+          const [a, b] = !cap ? [g.x, r] : cap.x - g.x >= 60 ? [g.x, cap.x] : [cap.x + cap.width, r];
+          if (!cap || !(hs!.some((z) => z.y !== undefined && Math.abs(z.x1 - g.x) < 3) && hs!.some((z) => z.y !== undefined && Math.abs(z.x0 - r) < 3))) this.softAt = { x: Math.max(a + 30, Math.min(b - 30, p.x)), y: g.y, x0: a, x1: b };
+        }
         // (standing past a piece the help ladder counts resets it: one compare, helpLadder.ts stood)
         if (g && this.help) this.help.stood(p);
       }
+      // (a hollow's hurt floor, gen2: a heart-fall zone with a hurt line `y`; his feet reaching it inside the zone is the fall)
+      const hz = this.isGameOver ? undefined : this.currentStage.heartFalls?.find((z) => z.y !== undefined && p.x > z.x0 && p.x < z.x1 && p.y >= z.y - 1);
+      if (hz) this.heartFall(hz);
       // (the water a stage draws, proto.water: a splash where he goes in, once, then the stage's own fall)
       const zone = this.proto?.water?.find((z) => p.x > z.x0 && p.x < z.x1);
       if (zone && this.splashedIn !== zone && !p.grounded && p.vy >= 0 && p.y > zone.y + 4 && p.y < zone.y + 120) {
@@ -7456,13 +7466,13 @@ export class GameEngine {
    * life, and sets him back on the ledge he left (the last still ground he stood on), hurt and blinking; his last heart is a life lost as
    * any fall. False when he did not fall at one
    */
-  private heartFall(): boolean {
+  private heartFall(at?: NonNullable<GeneratedStage['heartFalls']>[number]): boolean {
     const zs = this.currentStage.heartFalls;
     const p = this.player;
     const cx = p.x + p.width / 2;
     // (the gap he fell at, or the one he jumped for from the ledge before it: a glide carries him on past the gap's end as he sinks)
     const from = this.softAt?.x ?? -Infinity;
-    const z = this.softAt ? zs?.find((h) => (cx > h.x0 - 160 && cx < h.x1 + 160) || (from > h.x0 - 420 && from <= h.x0 + 20 && cx > h.x0 - 160)) : undefined;
+    const z = at ?? (!this.softAt ? undefined : zs?.find((h) => (cx > h.x0 - 160 && cx < h.x1 + 160) || (from > h.x0 - 420 && from <= h.x0 + 20 && cx > h.x0 - 160)));
     if (!z || !this.softAt) return false;
     // (a soft zone, gen2's level double-gap blocks: the planner's spec, the lead's ruling A, 11-06): back to the take-off as Easy's soft
     // falls do, the F10 back-off from the edge kept; no heart, no hurt, no blink
@@ -7471,6 +7481,11 @@ export class GameEngine {
       this.softOn = true;
       this.softFall();
       this.softOn = was;
+      // (a hurt floor on Easy: the same set-back with the hurt sound and blink, no heart)
+      if (z.y !== undefined) {
+        sound.playPlayerHurt();
+        p.invincibleTimer = Math.max(p.invincibleTimer, 1.6);
+      }
       return true;
     }
     const hp = p.hp - 1;

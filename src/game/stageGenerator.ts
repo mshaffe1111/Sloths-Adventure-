@@ -93,7 +93,9 @@ export interface GeneratedStage {
   zones?: import('./zones.ts').Zone[];
   /** World 8 Normal's swing and glide gaps (gen2 heartFalls): a fall there costs a heart and sets him back on the ledge he left; a
    *  `soft` one (a level block gap, World 1's double gaps) sets him back with nothing lost */
-  heartFalls?: Array<{ x0: number; x1: number; soft?: boolean }>;
+  /** `y` (a hollow with a hurt floor, gen2 WorldManifest.hurtFloor): the floor's top, the hurt line; his feet reaching it inside the zone is
+   *  the fall (a heart; on a `soft` zone, Easy's, the set-back with the hurt sound and blink and no heart) */
+  heartFalls?: Array<{ x0: number; x1: number; soft?: boolean; y?: number }>;
   /** the two-lane forks of the stage (see LaneFork): each lane is checked on its own by the validator and timed on its own by stageTime.ts */
   lanes?: LaneFork[];
   /**
@@ -2947,7 +2949,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
 /** the platforms a gen2 stage's pickups are placed against (finishStage: trails, finds, fixPickups): on 1-1 the level jumps the flown
  *  arcs cross too (R-165.61, gen2/reach.ts linkArcs), so a pickup past a 240-262 px gap is not moved back; every other stage as before */
 export function finishReach(stage: GeneratedStage, difficulty: Difficulty): number[] {
-  return validateStage(stage, { rooms: false, ...(judgedOnArcs(stage.config.id) ? { arcs: linkArcs(difficulty) } : {}) }).reachableIds;
+  return validateStage(stage, { rooms: false, ...(judgedOnArcs(stage.config.id) ? { arcs: linkArcs(difficulty, stage.config.id) } : {}) }).reachableIds;
 }
 
 function finishStage<T extends GeneratedStage>(stage: T, reachableIds: number[]): T {

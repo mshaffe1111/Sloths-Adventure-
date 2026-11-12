@@ -18,7 +18,8 @@ test('the double after its teach: a gap only the double crosses with a soft zone
   // (R-165.61: "only the double crosses" on the flown arcs, reach.ts: one jump at its best crosses 246, a double flick 283 from 70 px;
   // the old closed-form 200 px gap is now a gap one jump crosses)
   const ps = [P(1, 0, 600, 500), P(2, 760, 600, 500)];
-  const base = { config: { levelHeight: 2000 }, gen2: { nodes: [{ token: 'Tg2>', x0: 0 }] } };
+  // (a stage whose brief teaches the double, as 1-1's does: the double's promises run where the brief says so, packet E12 item 3)
+  const base = { config: { levelHeight: 2000 }, gen2: { nodes: [{ token: 'Tg2>', x0: 0 }], brief: { teaches: ['double'] } } };
   assert.deepEqual(promiseBreaches11({ ...base, platforms: ps, heartFalls: [{ x0: 500, x1: 760, soft: true }] }), []);
   assert.match(promiseBreaches11({ ...base, platforms: [P(1, 0, 600, 500), P(2, 700, 600, 500)], heartFalls: [{ x0: 500, x1: 700, soft: true }] }).join(';'), /no gap only the second jump/, '200 px: one jump crosses it');
   assert.deepEqual(promiseBreaches11({ ...base, platforms: [P(1, 0, 600, 500), P(2, 700, 600, 500)] }, 'easy').filter((b) => /second jump|double gap/.test(b)), [], 'Easy: the double promises are not judged (registry settings)');
