@@ -64,6 +64,7 @@ import { bootDone } from './game/boot.ts';
 import { keepScreenOn, nativeApp } from './game/appShell.ts';
 import { ConfirmDialog } from './components/nav/Nav.tsx';
 import { ScreenVeil, STAGE_LIVE_EVENT } from './components/ScreenVeil.tsx';
+import { drawGpuFrame, gpuFallback, gpuLive, gpuProbe, gpuSizes, gpuStats, setGpuCanvas } from './game/gpuLayer.ts';
 import { FIRST_NOTE_KEY, bossIntroKey, gateStoryKey, guardianCardKey, midStoryKey, worldStoryKey } from './game/storyFlags.ts';
 
 function hasSeenWorldStory(w: number): boolean {
@@ -290,6 +291,8 @@ export default function App() {
 
   // Canvas and Engine refs
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  // the GPU layer's canvas, under the game's (gpuLayer.ts, GPU-RENDERER-PLAN stage 0)
+  const gpuCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const engineRef = useRef<GameEngine | null>(null);
   /** the short wait before a new engine is built (launchEngine): a second start inside it cancels the first, so two engines never run */
   const launchTimer = useRef(0);
@@ -704,6 +707,8 @@ export default function App() {
   // made, which replaced this function with an engine object, so a script's __engine() threw after a Play again)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __engine?: () => unknown }).__engine = () => engineRef.current;
+    // (and the GPU layer, for its checks: tools/qa/gpuLayer.cjs)
+    (window as unknown as { __gpu?: unknown }).__gpu = { stats: gpuStats, live: gpuLive, probe: gpuProbe, fallback: gpuFallback, sizes: gpuSizes, frame: drawGpuFrame };
   }
 
   // dev only: lose every life at once (to test Game Over and Continue)
@@ -816,6 +821,8 @@ export default function App() {
   };
 
   const launchEngine = useCallback((lvl: LevelConfig) => {
+    // (the GPU layer's canvas, for when something is first put on it: nothing is started here, gpuLayer.ts)
+    setGpuCanvas(gpuCanvasRef.current);
     enterWorld(lvl.worldIndex);
     clearTimeout(launchTimer.current);
     if (engineRef.current) {
@@ -1143,11 +1150,21 @@ export default function App() {
       }}
     >
       {/* Isolated Canvas Container */}
-      <div className="absolute inset-0 w-full h-full">
+      <div className="absolute inset-0 w-full h-full isolate">
+        {/* (the game's canvas stays the first canvas in the page: the checks and tools pick it that way) */}
         <canvas
           ref={canvasRef}
-          className="w-full h-full block"
+          className="relative z-[1] w-full h-full block"
           style={{ touchAction: 'none' }}
+        />
+        {/* the GPU layer, UNDER the game's canvas (z-0 below its z-1, inside this box only): hidden unless it has something of its
+            own to show (gpuLayer.ts) */}
+        <canvas
+          ref={gpuCanvasRef}
+          data-gpu-layer=""
+          className="absolute inset-0 z-0 w-full h-full block pointer-events-none"
+          style={{ visibility: 'hidden' }}
+          aria-hidden="true"
         />
       </div>
 

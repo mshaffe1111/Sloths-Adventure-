@@ -57,6 +57,7 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 | Cutscene art and clips | `hf-cutscenes.md` | to write; source: tools/art/hfstory, the hf-cutscenes branch notes | next cutscene helper |
 | Props and sprite sheets (cutting, atlases, art-use) | `hf-props.md` | to write; source: tools/art/hfbatch, prop-sheets | next props helper |
 | Fixing a drawing fault in shared render code (trace the call, fix it once for every stage, the whole-picture check, stills both ways) | `render-fix.md` | written 11-05 (engine-render, R-164.6/7/8) | next render helper |
+| Moving drawing to the GPU layer (PixiJS on WebGL 2: the layer, the fallback, Pixi as a late file, the look and layer checks, the pitfalls) | `webgl.md` | written 11-04 (warmup-5m), ported 11-12 (t-webgl-0, R-3.1 stage 0) | next WebGL stage |
 | Building, extending and shipping a stage's proven seed list (the sweep on 4 workers, old seeds kept in place, the relay drop-outs, the chunk and offline proofs) | `seed-list.md` | written 11-11 (Engine, R-165.112) | next Engine member who rebuilds a list |
 | A creature on the predator kit (the sheet, the cast, a worked example first, data, planted faults) | `predator-kit.md` | written 11-11 (EN-P) | whoever adds or changes an animal |
 | Keeping the roadmap (numbering, sizing, closing with proof, the release sweep, roadmapcheck) | `roadmap.md` | written 11-01 (roadmap-keeper) | roadmap-keeper |
