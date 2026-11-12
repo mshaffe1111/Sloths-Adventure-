@@ -28,6 +28,9 @@
    commits, all ancestors of t-13-finish, so kept: reverting them would make the t-13-finish merge drop them). Conflict: INT-E
    REPORT (kept R-165.139). Settled: W1C's predators/registry.ts imported inWorld from roster.ts (moved by 3cfb5469) -> ways.ts.
    aa453eba: gates.yml runs W1C's tools/engine/library13.test.ts (ciTests refused it unrun; t-13-finish's line is a superset).
+10. t-13-finish@3a7e8a6c (W1C's 1-3, P13, ART-W1B, F13) -> ba380381: gates.yml and predators/registry.ts conflicted with INT-2's
+   own stopgaps; took t-13-finish's (supersets: castBots added, registry already on ways.ts). gen2 + worlds 492/492; seedlist 1-1
+   258 PASS, 1-3 100 PASS; lock vs the pre-merge head aa453eba: 101/102, only 1-3 moved (1-1 unchanged); guard empty.
 
 ## Checks (last run on each head)
 | Check | Result |
