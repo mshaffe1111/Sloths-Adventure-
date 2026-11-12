@@ -29,8 +29,13 @@ same game size: `hive-matt-vs-A.jpg`. Contact sheet the lead picked from: `conta
    matches World 1's inked cartoon props. Matt's reads WORSE (hive-matt-vs-A.jpg). The lead's call.
 7. Bees: 9 units so they read; still small. Seen in the glide still.
 
-## Gates (on 67401aa5 + the bee resize)
-GATES_PLACEHOLDER
+## Gates (on 4333f6d7)
+- tsc PASS. castArt.test.ts 2/2. Full suite: 2979 pass, 8 fail, 2 todo; all 8 fail the same on untouched origin/t-w1-creatures
+  26f72b31 (ctestSurvey, artUse #ultprep, cameraLead x3, layoutMemory, movesJournal, pitPocket): W1C's in-progress 1-3 change, not this.
+- vite build (BASE_PATH) PASS; chunkcheck PASS; artcheck PASS; drawcheck PASS (374 s); generalitycheck PASS; knowncheck PASS;
+  buildcheck PASS; seedlist 1-1 --check PASS (355). roadmapcheck FAIL here only because this clone is shallow ("proofs cannot be checked").
+- 1-3 (not in drawcheck's set), perf harness vs the base: every limit met; trap art adds 5-6 drawImage calls a frame. Sideways
+  drawImageScreens at the sapling's spot 7.46 vs base 7.35, limit 7.5: PASS with 0.04 spare. ROUGH, named: tight.
 
 ## Spend
 8 Hugging Face jobs, ~42 GPU-min, ~$1.93 of the $6 cap (HF-SPEND.md 11-12 table; tools/art/w1traps/jobs.txt). My miss: 8 landed-hive
