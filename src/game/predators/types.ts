@@ -7,7 +7,7 @@
  *
  * Only 'act' can hurt, and 'act' is only ever entered from a tell that ran its full length (core.ts `stepPredator`, one place).
  * Being beaten is data too: each way that works on a kind names how it ends, and it always ends with the animal stunned, fleeing
- * home or chased off. Nothing here is eaten, carried off or killed.
+ * home, dozing off or chased off. Nothing here is eaten, carried off or killed.
  *
  * Built on the one clock (clock.ts), stillness (stillness.ts `watcherSees`) and noise (heroNoise.ts: a predator IS a `Listener`).
  * Pure: no canvas, no engine, no stage ids, no rolls.
@@ -31,22 +31,32 @@ export type Way = 'stomp' | 'punch' | 'kick' | 'trap' | 'lure' | 'still' | 'drum
 
 /**
  * How being beaten ends. `stunned`: it sits dazed for `seconds`, then carries on. `flees`: it gives up and goes home for `seconds`.
- * `chasedOff`: it runs off the stage and stays away. `when: 'open'`: the way only works while it is recovering, stunned or asleep
+ * `dozes`: it falls asleep where it is (a noise can wake it again). `chasedOff`: it leaves the stage on its own legs and stays away. `when: 'open'`: the way only works while it is recovering, stunned or asleep
  * (its head is out, its back is turned); otherwise the way works any time.
  */
 export type Outcome =
   | { ends: 'stunned'; seconds: number; when?: 'any' | 'open' }
   | { ends: 'flees'; seconds: number; when?: 'any' | 'open' }
+  | { ends: 'dozes'; when?: 'any' | 'open' }
   | { ends: 'chasedOff'; when?: 'any' | 'open' };
 
 export interface PredatorDef {
   /** the animal, by the name the game already has for it */
   kind: string;
   habit: Habit;
-  /** what it sees: a box round its eye, further ahead than behind. `seesStill`: holding still in the open does not hide him from it */
-  sight: { ahead: number; behind: number; tall: number; seesStill?: boolean };
-  /** it goes to a noise it hears and looks around there this long (s). Absent: a noise only wakes it */
+  /**
+   * what it sees: a box round its eye, further ahead than behind. `seesStill`: holding still in the open does not hide him from it.
+   * `remembers`: stillness in the open hides him only until it has seen him once (the Drake's gaze)
+   */
+  sight: { ahead: number; behind: number; tall: number; seesStill?: boolean; remembers?: boolean };
+  /**
+   * the noise lure: it goes to a noise it hears and looks around there this long (s), noticing nobody. Absent: a noise only wakes it
+   */
   hears?: number;
+  /** asleep, it wakes when he MOVES within this far of it (px). Absent: only a noise wakes it. A still sloth never wakes anything */
+  wakeAt?: number;
+  /** a sweeper: seconds its eye shows at the end of its stretch before it starts across (the screech, the shadow at the edge) */
+  warn?: number;
   /** px/s at rest (its beat, or its eye for a sweeper) and on the hunt. Hunt 0: it never comes after him */
   speed: { rest: number; hunt: number };
   /** it gives ground at this speed while he is in sight and out of reach (the shy snake), until it has nowhere left to go */
@@ -59,7 +69,10 @@ export interface PredatorDef {
   tell: number;
   /** a tell he can call off: if it no longer sees him when the tell ends, it does not act */
   callsOff?: boolean;
-  /** tells and acts with a stage clock: the tell starts on the clock's 'warn', the act on its 'on' */
+  /**
+   * keeps a stage clock: its tell starts only on the clock's 'warn' and its act only on the clock's 'on' (a sweeper: its pass is
+   * called on the 'warn' and its eye starts across on the 'on')
+   */
   onBeat?: boolean;
   /**
    * the act. `aim`: 'ahead' runs or strikes along the ground the way it faces; 'below' comes straight down; 'him' flies to where he
@@ -116,8 +129,13 @@ export interface PredatorState extends Listener {
   aimY: number;
   /** where it is heading on the hunt: him, or a noise */
   goalX: number;
-  /** it is following a noise, not him */
+  /** it is following a noise, not him, and has looked at the spot for `look` seconds */
   drawn: boolean;
+  look: number;
+  /** it has seen him once (a kind that `remembers`) */
+  knows: boolean;
+  /** chased off: it is on its way out of the stage */
+  leaving: boolean;
   /** seconds hunting without seeing him; a sweeper: passes that found nobody */
   lost: number;
   /** seconds before it may tell again */
@@ -156,6 +174,8 @@ export interface Box { x: number; y: number; w: number; h: number }
 
 /** what happened on a step, for the sounds, the art and the guide */
 export interface PredatorEvents {
+  /** it just noticed him, or a sweeper's pass was just called (the first, far cue) */
+  notice?: boolean;
   /** the tell just began (the cue the player learns) */
   tell?: boolean;
   /** the act just began */
