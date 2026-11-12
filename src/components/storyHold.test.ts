@@ -57,7 +57,10 @@ test('the General argues in full once; a retry gets his first line, Pokey\'s ans
 test('on the played picture a touch that starts on Skip or Back reaches it; the rest are the hands (audit C saves #5)', () => {
   /** an element whose nearest button ancestor is `button` (or none) */
   const el = (inButton: boolean) => ({ closest: (sel: string) => (sel === 'button' && inButton ? {} : null) });
-  assert.equal(keepTouchFromPage(el(true)), false, 'a thumb on Skip (or the arrow inside it) taps Skip');
-  assert.equal(keepTouchFromPage(el(false)), true, 'a thumb on the picture is a hand: it taps nothing');
-  assert.equal(keepTouchFromPage(null), true);
+  assert.equal(keepTouchFromPage(el(true), 1), false, 'a thumb on Skip (or the arrow inside it), alone, taps Skip');
+  assert.equal(keepTouchFromPage(el(false), 1), true, 'a thumb on the picture is a hand: it taps nothing');
+  assert.equal(keepTouchFromPage(null, 1), true);
+  // (the quality check: a thumb resting on Skip while the other holds the picture is a hand; lifting it, as the scene asks, must not
+  // skip the finale's let-go, on any browser)
+  assert.equal(keepTouchFromPage(el(true), 2), true, 'with two thumbs down, the one on Skip is a hand too');
 });

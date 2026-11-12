@@ -260,7 +260,9 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     if (!el || !hold) return;
     const count = (e: TouchEvent) => {
       // (the thumbs are the hands: no tap goes through to the picture while they are down; Skip and Back still take theirs)
-      if (e.cancelable && keepTouchFromPage(e.target)) e.preventDefault();
+      // (the fingers on the glass for this event: a lifted one is no longer in e.touches)
+      const fingers = e.touches.length + (e.type === 'touchend' || e.type === 'touchcancel' ? e.changedTouches.length : 0);
+      if (e.cancelable && keepTouchFromPage(e.target, fingers)) e.preventDefault();
       setThumbs(e.touches.length);
     };
     const opts = { passive: false } as const;

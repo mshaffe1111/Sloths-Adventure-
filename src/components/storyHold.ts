@@ -22,7 +22,9 @@ export const LETGO = {
  * either way; a touch that starts on a button (Skip, Back) goes on to it. Audit C saves #5: every touch was kept, so on the finale's
  * picture no button could be tapped and a player who could not do the hold had no way out but a reload.
  */
-export function keepTouchFromPage(target: unknown): boolean {
+export function keepTouchFromPage(target: unknown, fingers: number): boolean {
+  // (only a lone finger taps a button: with two down, a thumb resting on Skip is holding on, and lifting it is the scene's own move)
+  if (fingers > 1) return true;
   const el = target as { closest?: (sel: string) => unknown } | null;
   return !(el && typeof el.closest === 'function' && el.closest('button'));
 }
