@@ -48,3 +48,13 @@ export function releasesStage(screen: GameScreen, hold: StageHold): boolean {
 export function resumeAction(hasEngine: boolean, released: boolean): 'resume' | 'restart' {
   return !hasEngine && released ? 'restart' : 'resume';
 }
+
+/**
+ * A stage has finished loading (App.tsx launchEngine's go): start it, held still when the pause menu came up while it loaded (Android
+ * Back, a locked phone, a call: the stage is built seconds after the tap, so pausing then found no engine to pause). Audit C saves #2:
+ * it used to start live under the menu, its clock, a chase or a guardian playing on against a Pokey nobody steered.
+ */
+export function startLoaded(engine: { start(): void; pause(): void }, pausedMeanwhile: boolean) {
+  if (pausedMeanwhile) engine.pause();
+  engine.start();
+}

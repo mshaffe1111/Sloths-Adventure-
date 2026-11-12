@@ -60,7 +60,7 @@ import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts
 import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { READY_MS, readyBuiltStage } from './game/stageReady.ts';
-import { releasesStage, resumeAction } from './components/screenFlow.ts';
+import { releasesStage, resumeAction, startLoaded } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
 import { keepScreenOn, nativeApp } from './game/appShell.ts';
 import { ConfirmDialog } from './components/nav/Nav.tsx';
@@ -292,6 +292,8 @@ export default function App() {
   const launchTimer = useRef(0);
   /** counts launches: a launch still waiting for its sheets is dropped when another starts or a menu comes up meanwhile */
   const launchSeq = useRef(0);
+  // the pause menu is up (set by pauseGame, cleared by Resume and by each launch): a stage that finishes loading meanwhile starts paused
+  const pausedRef = useRef(false);
   /** a stage is being played right now (stagePreload.ts then draws nothing on the canvas) */
   const inPlay = useCallback(() => !!engineRef.current?.inPlay(), []);
   const meecaEngine = useCallback(() => engineRef.current, []);
@@ -833,6 +835,7 @@ export default function App() {
     setGuideLine(null);
     setDistanceRatio(0);
     setScreen('playing');
+    pausedRef.current = false;
     stageReleased.current = false;
 
     // the stage's picture sheets, loaded and decoded behind the menu (stagePreload.ts): what is still on its way gets a moment more,
@@ -979,7 +982,7 @@ export default function App() {
           if (seq !== launchSeq.current || engineRef.current !== engine) return;
           const now = performance.now(), ms = (a: number, b: number) => Math.round(b - a);
           recorder.event('launch', `${lvl.id} sheets ${ms(launchAt, at.ready)} timer ${ms(at.ready, at.timer)} build ${ms(at.timer, at.built)} ready ${ms(at.built, now)} total ${ms(launchAt, now)}`);
-          engine.start();
+          startLoaded(engine, pausedRef.current);
           // (the screen's iris opens once the stage is drawing: ScreenVeil.tsx)
           window.dispatchEvent(new Event(STAGE_LIVE_EVENT));
         };
@@ -1058,6 +1061,7 @@ export default function App() {
 
   const pauseGame = () => {
     recorder.event('pause');
+    pausedRef.current = true;
     engineRef.current?.pause();
     sound.playPause(true);
     setScreen('paused');
@@ -1072,6 +1076,7 @@ export default function App() {
     }
     sound.playPause(false);
     setScreen('playing');
+    pausedRef.current = false;
     // a lesson card or a just-found note is still up: the stage stays still behind it, and closing it carries on
     if (lessonId || (reading && pausedForFind.current)) return;
     engineRef.current?.resume();
