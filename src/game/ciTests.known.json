@@ -1,0 +1,73 @@
+{
+  "_note": "Test files no CI workflow runs (src/game/ciTests.test.ts). Shrink-only: tools/perf/knowncheck.mjs fails on any added entry; ciTests.test.ts fails on an entry CI now runs or that is gone. Owner: R-165.143.",
+  "known": [
+    {
+      "file": "src/game/mixer/codeVariety.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "src/game/mixer/nodePieces.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "src/game/mixer/propSupport.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "src/game/mixer/stillSpots.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "src/game/mixer/stumps.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "src/game/mixer/support.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "tools/engine/rulers.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "tools/inspect/analyze.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "tools/inspect/bands.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "tools/inspect/c1judge.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "tools/inspect/dotRooms.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "tools/inspect/firsttimer.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "tools/inspect/lookalike.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "tools/inspect/pacing.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "tools/inspect/routeWalls.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "tools/validate/validate.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    },
+    {
+      "file": "tools/validate/world1.test.ts",
+      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
+    }
+  ]
+}

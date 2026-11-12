@@ -16,7 +16,7 @@
  * frame for the gaps in view, behind the platforms (protoArt.ts drawProtoScene, after the ground). Nothing here touches the HUD.
  */
 import { trackAtlas } from './atlasLoader.ts';
-import { endFace } from './groundPaint.ts';
+import { drawEnd, drawLip, endFace } from './groundPaint.ts';
 import type { Platform } from './types.ts';
 
 const URL_OF = {
@@ -244,11 +244,14 @@ export function setW1PitWater(zones: ReadonlyArray<{ x0: number; x1: number; y: 
 /** does the stage's drawn water lie across x0..x1 (any of it): the ground's pit shade is not drawn over water (protoArt.ts drawGround) */
 export const waterAcross = (x0: number, x1: number) => pitWater.some((z) => z.x0 < x1 && z.x1 > x0);
 export const inWater = (g: PitGap) => pitWater.some((z) => z.x0 <= g.x0 + 4 && z.x1 >= g.x1 - 4 && z.y <= g.top + DROP_DARK);
-const cache = new WeakMap<readonly Platform[], { gaps: PitGap[]; bottom: number }>();
+const cache = new WeakMap<readonly Platform[], { gaps: PitGap[]; bottom: number; hurt: boolean }>();
 /** the stage's pits, and how far down its pieces reach (a drop is baked to there and a little more: below it the camera never looks) */
 const pitsOf = (platforms: readonly Platform[]) => {
   let v = cache.get(platforms);
-  if (!v) cache.set(platforms, (v = { gaps: findW1Pits(platforms), bottom: Math.max(0, ...platforms.map((q) => q.y + q.height)) + DROP_BELOW }));
+  if (!v) {
+    const gaps = findW1Pits(platforms);
+    cache.set(platforms, (v = { gaps, bottom: Math.max(0, ...platforms.map((q) => q.y + q.height)) + DROP_BELOW, hurt: gaps.some((g) => g.kind === 'hurt') }));
+  }
   return v;
 };
 /** a drop is baked this far under the stage's lowest piece */
@@ -341,7 +344,7 @@ export const TORN = 16;
 /** 1-8: how far under the branch its gap is fully dark (px) */
 export const HIGH_DARK = 170;
 
-interface Baked { under: HTMLCanvasElement | null; over: HTMLCanvasElement | null; x: number; y: number; ox: number; oy: number; drop?: ReturnType<typeof bakeDrop> }
+interface Baked { under: HTMLCanvasElement | null; over: HTMLCanvasElement | null; x: number; y: number; ox: number; oy: number; drop?: ReturnType<typeof bakeDrop>; hollow?: { c: HTMLCanvasElement; x: number; y: number } }
 const baked = new WeakMap<PitGap, Baked>();
 
 /** a soft pit's inside, baked once: the drop and its shade, under a torn top line that fades the backdrop into the dark */
@@ -415,59 +418,303 @@ function bakeBed(g: PitGap, bed: HTMLImageElement): HTMLCanvasElement | null {
   return c;
 }
 
-/** the thorn bed's size in world px: each bramble's width (its height follows its picture), how far its foot sinks under the floor's top,
- *  and how far under that top the pit's dark runs (the hurt floor's own slab is never seen: the bed and the dark cover it) */
-export const THORN_BED = { long: 210, low: 170, sink: 34, dark: 64, pad: 24 } as const;
+/** the thorn bed's size in world px: each bramble's width (its height follows its picture) and how far its foot sinks under the floor's
+ *  top (the hurt floor's own slab is never seen: the hollow's inside runs HOLLOW_FOOT under its top and the bed stands over that) */
+export const THORN_BED = { long: 210, low: 170, sink: 34 } as const;
+/**
+ * a hollow's torn lips, scaled to its width: each hangs LIP_IN of its own width into the pit, so over a hollow narrower than two full
+ * lips (84 px each) they met and read as one column of roots, not a hole (EN-W's Rough 1, Matt's 11-11). Each now hangs in at most
+ * HOLLOW_LIP_SHARE of the hollow's width, and never shrinks below HOLLOW_LIP_MIN wide
+ */
+export const LIP_IN = 0.38;
+export const HOLLOW_LIP_SHARE = 0.25;
+export const HOLLOW_LIP_MIN = 30;
+export const hollowLipWidth = (g: Pick<PitGap, 'x0' | 'x1'>) => Math.max(HOLLOW_LIP_MIN, Math.min(PIT_SIZE.lipW, ((g.x1 - g.x0) * HOLLOW_LIP_SHARE) / LIP_IN));
+/**
+ * A hollow is a hole in the ground with two walls (the lead 11-12: its inside read as a soft dark rectangle pasted on the dirt). Each
+ * wall is its bank's own painted end face (groundPaint.ts endFace: the line drawBankArt cuts an open bank end to, World 1's end piece),
+ * the right one set HOLLOW_FACE_LIFT up its piece, so the two sides are not one mirrored picture. A wall stands at most HOLLOW_JUT into
+ * the hollow (Pokey falls through what he sees) and goes back at most HOLLOW_BACK into its bank, and both round into the floor over
+ * HOLLOW_FOOT under the hurt floor's top, so the hole has a bottom and no corners
+ */
+export const HOLLOW_JUT = 8;
+export const HOLLOW_BACK = 24;
+export const HOLLOW_FOOT = 16;
+export const HOLLOW_FACE_LIFT = 38;
+/** the end piece is drawn this narrow at a hollow's wall (its face's swings scaled with it), so its face fits the bounds and is never cut */
+export const HOLLOW_FACE_SCALE = 0.6;
+/** how far into its bank a wall's painted face is shown (px), fading out into the bank's soil over the inner half */
+export const HOLLOW_BAND = 28;
+const faceX = (pts: ReadonlyArray<[number, number]>, y: number) => {
+  for (let i = 1; i < pts.length; i++) {
+    if (pts[i][1] >= y) {
+      const [x0, y0] = pts[i - 1], [x1, y1] = pts[i];
+      return y1 === y0 ? x1 : x0 + ((x1 - x0) * (y - y0)) / (y1 - y0);
+    }
+  }
+  return pts[pts.length - 1][0];
+};
+const faceCache = new WeakMap<object, { l: Array<[number, number]> | null; r: Array<[number, number]> | null }>();
+const facesOf = (g: PitGap) => {
+  let f = faceCache.get(g);
+  if (!f) {
+    const [yl, yr] = g.walls ?? [g.top, g.top], foot = (g.floor ?? g.top + 150) + HOLLOW_FOOT + 40;
+    const sc = (x: number, pts: Array<[number, number]>) => pts.map(([px, py]): [number, number] => [x + (px - x) * HOLLOW_FACE_SCALE, py]);
+    faceCache.set(g, (f = { l: g.lipL ? sc(g.x0, endFace(1, g.x0, yl, foot, true)) : null, r: g.lipR ? sc(g.x1, endFace(1, g.x1, yr - HOLLOW_FACE_LIFT, foot, false)) : null }));
+  }
+  return f;
+};
+/** a hollow's wall at height y: [left x, right x] (world px): its banks' end faces, inside the bounds, rounded into its floor */
+export const hollowWalls = (g: PitGap, y: number): [number, number] => {
+  const f = facesOf(g);
+  let a = f.l ? Math.max(g.x0 - HOLLOW_BACK, Math.min(g.x0 + HOLLOW_JUT, faceX(f.l, y))) : g.x0;
+  let b = f.r ? Math.min(g.x1 + HOLLOW_BACK, Math.max(g.x1 - HOLLOW_JUT, faceX(f.r, y))) : g.x1;
+  const foot = (g.floor ?? g.top + 150) + HOLLOW_FOOT, r = Math.max(4, Math.min(40, (b - a) / 2 - 2));
+  if (y > foot - r) {
+    const d = Math.min(r, y - (foot - r)), inset = r - Math.sqrt(Math.max(0, r * r - d * d));
+    a += inset;
+    b -= inset;
+  }
+  return [a, b];
+};
+/** everything a hollow paints darker than its banks' soil lies in this span (world x): its widest walls */
+export const hollowSpan = (g: PitGap): [number, number] => {
+  let a = Infinity, b = -Infinity;
+  for (let y = g.top; y <= (g.floor ?? g.top + 150) + HOLLOW_FOOT; y += 2) {
+    const [l, r] = hollowWalls(g, y);
+    a = Math.min(a, l);
+    b = Math.max(b, r);
+  }
+  return [a, b];
+};
+/**
+ * is bank p's side next to a hollow's hurt floor (a lower piece gen2 marks pit 'hurt' meeting it)? The ground painter closes that side
+ * (protoArt.ts drawGround): the hollow's inside is drawn over it here
+ */
+export const sideOverHollow = (p: Platform, banks: readonly Platform[], side: 'l' | 'r') => banks.some((q) => q !== p && q.pit === 'hurt' && q.y > p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2));
+/** the lip picture with its foot faded out, for a hollow (baked once): its column's flat foot hung in the pit's dark as a hard line */
+let fadedLip: HTMLCanvasElement | null | undefined;
+function lipFaded(lip: HTMLImageElement): HTMLCanvasElement | HTMLImageElement {
+  if (fadedLip === undefined) {
+    fadedLip = canvas(lip.width, lip.height);
+    const k = fadedLip?.getContext('2d');
+    if (fadedLip && k) {
+      k.drawImage(lip, 0, 0);
+      k.globalCompositeOperation = 'destination-out';
+      const f = k.createLinearGradient(0, lip.height * 0.55, 0, lip.height);
+      f.addColorStop(0, 'rgba(0,0,0,0)');
+      f.addColorStop(1, 'rgba(0,0,0,1)');
+      k.fillStyle = f;
+      k.fillRect(0, lip.height * 0.55, lip.width, lip.height * 0.45);
+    }
+  }
+  return fadedLip ?? lip;
+}
+/** the painted brambles lifted off the dark they lie in (EN-W's Rough 4: brown thorns on dark earth were hard to see on a phone) */
+export const THORN_LIFT = 'brightness(1.5) contrast(1.12) saturate(1.15)';
+/** the thorn bed's brambles span (world x): between the hollow's walls at the floor's top, never past them */
+export const thornBedSpan = (g: PitGap): [number, number] => {
+  const [a, b] = hollowWalls(g, (g.floor ?? g.top + 150) - 10), [s0, s1] = hollowSpan(g);
+  return [Math.max(a, s0), Math.min(b, s1)];
+};
+/** the two brambles with THORN_LIFT applied, made once (a canvas filter per hollow cost milliseconds on its first frame) */
+let lifted: { long: HTMLCanvasElement | HTMLImageElement; low: HTMLCanvasElement | HTMLImageElement } | undefined;
+const liftOnce = (im: HTMLImageElement): HTMLCanvasElement | HTMLImageElement => {
+  const c = canvas(im.width, im.height), k = c?.getContext('2d');
+  if (!c || !k) return im;
+  k.filter = THORN_LIFT;
+  k.drawImage(im, 0, 0);
+  k.filter = 'none';
+  return c;
+};
 /**
  * a hollow's thorn bed, baked once: the two painted brambles side by side along the whole floor, overlapping, wall to wall (it hurts
- * anywhere, so no bare floor shows), their feet a little under the floor's top
+ * anywhere, so no bare floor shows), their feet sunk into the floor and fading into it. No dark of their own: the hollow's inside is
+ * darkest at its floor (bakeHollow), and the old shade under them read as a square patch (the lead 11-12)
  */
-function bakeThorns(g: PitGap, long: HTMLImageElement, low: HTMLImageElement): HTMLCanvasElement | null {
-  const P = THORN_BED.pad, W = g.x1 - g.x0 + 2 * P;
+function bakeThorns(g: PitGap, longPic: HTMLImageElement, lowPic: HTMLImageElement): HTMLCanvasElement | null {
+  lifted ??= { long: liftOnce(longPic), low: liftOnce(lowPic) };
+  const { long, low } = lifted;
+  const [S0, S1] = hollowSpan(g), X0 = Math.floor(S0), W = Math.ceil(S1 - X0) + 2;
   const tall = Math.ceil((THORN_BED.long * 1.1 * long.height) / long.width) + 8;
-  const H = tall - THORN_BED.sink + THORN_BED.dark;
+  const H = tall;
   const c = canvas(W, H);
   const k = c?.getContext('2d');
   if (!c || !k) return null;
-  // (the pit's dark over the hurt floor's slab and its end faces (`pad` past each wall), coming in above its top and going out under
-  // it: no slab, no box. The brambles themselves stay between the walls)
-  const foot = tall - THORN_BED.sink;
-  const v = k.createLinearGradient(0, foot - 26, 0, H);
-  v.addColorStop(0, 'rgba(10,7,5,0)');
-  v.addColorStop(0.28, 'rgba(10,7,5,0.96)');
-  v.addColorStop(0.72, 'rgba(10,7,5,0.96)');
-  v.addColorStop(1, 'rgba(10,7,5,0)');
-  k.fillStyle = v;
-  k.fillRect(0, foot - 26, W, H - (foot - 26));
-  // (past each wall the dark thins to nothing: a shade on the banks' feet, never a box wider than the pit)
-  k.globalCompositeOperation = 'destination-out';
-  for (const [xa, xb] of [[0, P], [W, W - P]] as const) {
-    const hz = k.createLinearGradient(xa, 0, xb, 0);
-    hz.addColorStop(0, 'rgba(0,0,0,1)');
-    hz.addColorStop(1, 'rgba(0,0,0,0)');
-    k.fillStyle = hz;
-    k.fillRect(Math.min(xa, xb), 0, P, H);
-  }
-  k.globalCompositeOperation = 'source-over';
+  // (the canvas's foot is THORN_BED.sink under the floor's top; the brambles stand between the hollow's own walls)
+  const oy = (g.floor ?? 0) + THORN_BED.sink - H, ox = X0;
+  k.save();
   k.beginPath();
-  k.rect(P, 0, W - 2 * P, H);
+  for (let y = 0; y <= H; y += 4) (y ? k.lineTo : k.moveTo).call(k, hollowWalls(g, Math.min(y + oy, (g.floor ?? 0) - 10))[0] - ox, y);
+  for (let y = H - (H % 4); y >= 0; y -= 4) k.lineTo(hollowWalls(g, Math.min(y + oy, (g.floor ?? 0) - 10))[1] - ox, y);
+  k.closePath();
   k.clip();
-  let x = P - 16 - hash(g.x0) * 30;
+  const [s0, s1] = thornBedSpan(g);
+  let x = s0 - ox - 16 - hash(g.x0) * 30;
   let n = 0;
-  while (x < W - P) {
+  while (x < s1 - ox) {
     const im = n % 2 === 0 ? long : low;
     const sc = 0.9 + 0.2 * hash(g.x0 + n * 3.1);
     const bw = (n % 2 === 0 ? THORN_BED.long : THORN_BED.low) * sc, bh = (bw * im.height) / im.width;
     const flip = hash(g.x0 + n * 7.3) > 0.5;
     k.save();
-    k.translate(x + (flip ? bw : 0), tall - bh);
+    k.translate(x + (flip ? bw : 0), H - bh);
     k.scale(flip ? -1 : 1, 1);
     k.drawImage(im, 0, 0, bw, bh);
     k.restore();
     x += bw * (0.58 + 0.12 * hash(g.x0 + n * 5.7));
     n++;
   }
+  k.restore();
+  // (their feet go into the floor: faded out over the sunk part, never a cut line)
+  k.globalCompositeOperation = 'destination-out';
+  const f = k.createLinearGradient(0, H - THORN_BED.sink - 6, 0, H);
+  f.addColorStop(0, 'rgba(0,0,0,0)');
+  f.addColorStop(1, 'rgba(0,0,0,1)');
+  k.fillStyle = f;
+  k.fillRect(0, H - THORN_BED.sink - 6, W, THORN_BED.sink + 6);
+  k.globalCompositeOperation = 'source-over';
   return c;
+}
+
+/**
+ * World 1's bank end piece and grass lip (groundPaint.ts drawEnd, drawLip) and the pit's drop picture, each copied once into a small canvas
+ * of its own: read from the 2048 px ground sheet into every hollow's small bake canvas they cost about 2 ms a hollow on its first frame.
+ * The end piece is a right end with its walking line at (PIECE_AT[0], PIECE_AT[1]); the lip's walking line is at PIECE_AT[1]
+ */
+const PIECE_AT = [300, 40] as const;
+let pieces: { end: HTMLCanvasElement; lip: HTMLCanvasElement; drop: HTMLCanvasElement } | undefined;
+function hollowPieces(drop: HTMLImageElement) {
+  if (pieces) return pieces;
+  const end = canvas(420, 360), lip = canvas(700, 160), dc = canvas(drop.width, drop.height);
+  const ek = end?.getContext('2d'), lk = lip?.getContext('2d'), dk = dc?.getContext('2d');
+  if (!end || !lip || !dc || !ek || !lk || !dk) return undefined;
+  if (!drawEnd(ek, 1, PIECE_AT[0], PIECE_AT[1], true) || !drawLip(lk, 1, 0, 700, PIECE_AT[1])) return undefined;
+  dk.drawImage(drop, 0, 0);
+  return (pieces = { end, lip, drop: dc });
+}
+
+/**
+ * a hollow, baked once and drawn over the ground (its banks' sides over it are closed: protoArt.ts drawGround overHollow):
+ *   - its back: the pit's drop picture (dark earth and roots) between its walls, from its far grass rim (World 1's ground lip, dimmed)
+ *     down to its rounded floor, going darker with depth and in the walls' shadow, so it is a hole, not a patch;
+ *   - its two walls: World 1's bank end piece (groundPaint.ts drawEnd) at each bank's end face, shown HOLLOW_BAND into the bank and
+ *     fading into its soil, shaded toward the bottom.
+ * Returns the canvas and its world top-left; null while the ground's sheet is not in (tried again next frame)
+ */
+function bakeHollow(g: PitGap, drop: HTMLImageElement): { c: HTMLCanvasElement; x: number; y: number } | null {
+  const [yl, yr] = g.walls ?? [g.top, g.top];
+  const floor = g.floor ?? g.top + 150, foot = floor + HOLLOW_FOOT;
+  const X0 = Math.floor(g.x0 - HOLLOW_BACK - HOLLOW_BAND), X1 = Math.ceil(g.x1 + HOLLOW_BACK + HOLLOW_BAND);
+  const Y0 = Math.floor(Math.min(yl, yr) - 40), Y1 = Math.ceil(foot + 2);
+  const W = X1 - X0, H = Y1 - Y0;
+  const pc = hollowPieces(drop);
+  if (!pc) return null;
+  const c = canvas(W, H), t = canvas(W, H), m = canvas(W, H);
+  const k = c?.getContext('2d'), tk = t?.getContext('2d'), mk = m?.getContext('2d');
+  if (!c || !t || !m || !k || !tk || !mk) return null;
+  const ys: number[] = [];
+  for (let y = g.top; y < foot; y += 3) ys.push(y);
+  ys.push(foot);
+  const outline = (ctx: CanvasRenderingContext2D) => {
+    ctx.beginPath();
+    ys.forEach((y, i) => (i ? ctx.lineTo : ctx.moveTo).call(ctx, hollowWalls(g, y)[0] - X0, y - Y0));
+    for (let i = ys.length - 1; i >= 0; i--) ctx.lineTo(hollowWalls(g, ys[i])[1] - X0, ys[i] - Y0);
+    ctx.closePath();
+  };
+  // ── its back ──
+  k.save();
+  outline(k);
+  k.clip();
+  const tw = PIT_SIZE.dropTile, th = (tw * drop.height) / drop.width;
+  for (let x = Math.floor(X0 / tw) * tw; x < X1; x += tw) for (let y = g.top - 8; y < Y1; y += th) k.drawImage(pc.drop, x - X0, y - Y0, tw, th);
+  // (darker with depth, softly: a hole's back gets less light the further down it is)
+  const v = k.createLinearGradient(0, g.top - Y0, 0, foot - Y0);
+  v.addColorStop(0, 'rgba(12,8,6,0.38)');
+  v.addColorStop(0.55, 'rgba(10,7,5,0.66)');
+  v.addColorStop(1, 'rgba(8,5,4,0.86)');
+  k.fillStyle = v;
+  k.fillRect(0, g.top - Y0, W, foot - g.top);
+  // (each wall casts its shade on the back, following the wall: a band along it, one gradient from its mean line)
+  const along = (side: 0 | 1, depth: number, ctx: CanvasRenderingContext2D, y0: number, at: (y: number) => number) => {
+    const rows: number[] = [];
+    for (let y = y0; y < foot; y += 3) rows.push(y);
+    rows.push(foot);
+    const d = side === 0 ? 1 : -1;
+    ctx.beginPath();
+    rows.forEach((y, i) => (i ? ctx.lineTo : ctx.moveTo).call(ctx, at(y) - X0, y - Y0));
+    for (let i = rows.length - 1; i >= 0; i--) ctx.lineTo(at(rows[i]) + d * depth - X0, rows[i] - Y0);
+    ctx.closePath();
+    return rows.reduce((m, y) => m + at(y), 0) / rows.length;
+  };
+  for (const side of [0, 1] as const) {
+    const sw = Math.min(18, (g.x1 - g.x0) / 3), d = side === 0 ? 1 : -1;
+    const mx = along(side, sw, k, g.top, (y) => hollowWalls(g, y)[side]);
+    const hg = k.createLinearGradient(mx - X0 - d * 4, 0, mx + d * sw - X0, 0);
+    hg.addColorStop(0, 'rgba(6,4,3,0.6)');
+    hg.addColorStop(1, 'rgba(6,4,3,0)');
+    k.fillStyle = hg;
+    k.fill();
+  }
+  // (its far rim: World 1's own grass lip across the opening, dimmed, so the eye reads the ground going on behind the hole)
+  tk.drawImage(pc.lip, g.x0 - 40 - Math.floor(hash(g.x0) * 300) - X0, g.top + 4 - PIECE_AT[1] - Y0);
+  tk.globalCompositeOperation = 'source-atop';
+  tk.fillStyle = 'rgba(14,16,10,0.5)';
+  tk.fillRect(0, 0, W, H);
+  tk.globalCompositeOperation = 'source-over';
+  k.drawImage(t, 0, 0);
+  k.restore();
+  tk.clearRect(0, 0, W, H);
+  // ── its walls ──
+  tk.save();
+  tk.translate(-X0, -Y0);
+  // (each drawn HOLLOW_FACE_SCALE narrow about its bank's end, as its face is in hollowWalls)
+  const end = (x: number, y: number, right: boolean) => {
+    tk.save();
+    tk.translate(x, 0);
+    tk.scale(right ? HOLLOW_FACE_SCALE : -HOLLOW_FACE_SCALE, 1);
+    tk.drawImage(pc.end, -PIECE_AT[0], y - PIECE_AT[1]);
+    tk.restore();
+  };
+  if (g.lipL) end(g.x0, yl, true);
+  if (g.lipR) end(g.x1, yr - HOLLOW_FACE_LIFT, false);
+  tk.restore();
+  // (shown from just under each bank's own top (its torn lip covers the corner) down to the floor, HOLLOW_BAND into the bank, fading
+  // into its soil over the band's inner half; a side with no bank of earth has no painted wall)
+  for (const [side, on, top] of [[0, g.lipL, yl], [1, g.lipR, yr]] as const) {
+    if (!on) continue;
+    const d = side === 0 ? -1 : 1, y0 = Math.floor(top + 4);
+    const mx = along(side, -HOLLOW_BAND, mk, y0, (y) => hollowWalls(g, Math.max(y, g.top))[side]);
+    // (the band's polygon: from the wall's own line HOLLOW_BAND into the bank; it fades into the soil from its mean line)
+    const hg = mk.createLinearGradient(mx + d * HOLLOW_BAND - X0, 0, mx + d * HOLLOW_BAND * 0.3 - X0, 0);
+    hg.addColorStop(0, 'rgba(0,0,0,0)');
+    hg.addColorStop(1, 'rgba(0,0,0,1)');
+    mk.fillStyle = hg;
+    mk.fill();
+    // (in under its torn lip at the top, out into the floor at the foot)
+    mk.globalCompositeOperation = 'destination-out';
+    const vg = mk.createLinearGradient(0, y0 - Y0, 0, foot - Y0);
+    const span = Math.max(1, foot - y0);
+    vg.addColorStop(0, 'rgba(0,0,0,1)');
+    vg.addColorStop(Math.min(0.5, 10 / span), 'rgba(0,0,0,0)');
+    vg.addColorStop(Math.max(0.5, 1 - 10 / span), 'rgba(0,0,0,0)');
+    vg.addColorStop(1, 'rgba(0,0,0,1)');
+    mk.fillStyle = vg;
+    mk.fillRect(mx + Math.min(0, d * HOLLOW_BAND) - X0 - 30, y0 - Y0, HOLLOW_BAND + 60, foot - y0);
+    mk.globalCompositeOperation = 'source-over';
+  }
+  tk.globalCompositeOperation = 'destination-in';
+  tk.drawImage(m, 0, 0);
+  // (shaded toward the bottom: the walls fall into the hole's dark)
+  tk.globalCompositeOperation = 'source-atop';
+  const sv = tk.createLinearGradient(0, g.top - Y0, 0, foot - Y0);
+  sv.addColorStop(0, 'rgba(10,7,5,0.22)');
+  sv.addColorStop(1, 'rgba(10,7,5,0.66)');
+  tk.fillStyle = sv;
+  tk.fillRect(0, 0, W, H);
+  tk.globalCompositeOperation = 'source-over';
+  k.drawImage(t, 0, 0);
+  return { c, x: X0, y: Y0 };
 }
 
 /** 1-8's gap, baked once: the foliage behind it going dark into black under the branch, its sides uneven, no band of haze */
@@ -530,7 +777,35 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
     for (const [sx, sy, sw, sh, soil] of g.steps ?? []) if (!soil) ctx.rect(sx + sw, sy - 2, -sw, sh + 4);
     ctx.clip('evenodd');
   };
-  const { gaps, bottom: stageBottom } = pitsOf(platforms);
+  const { gaps, bottom: stageBottom, hurt } = pitsOf(platforms);
+  // (a stage with a hollow starts its thorn pictures loading on its first frame, not when the first hollow comes into view: until they
+  // were in, the hollow showed its bare hurt-floor slab, a grey-green box, EN-W's "not wired")
+  if (hurt) w1ThornsReady();
+  // (a hollow's two bakes cost a few ms on a phone: the stage's hollows are baked one a frame from its first frames, the nearest first,
+  // so each is ready long before it comes into view and no frame of play bakes more than one; one in view and not yet baked is baked
+  // at once, PERFORMANCE-RULES §1)
+  const bakeHurt = (g: PitGap, h: Baked) => {
+    if (!h.hollow) h.hollow = bakeHollow(g, pic('drop')!) ?? undefined;
+    if (!h.over) {
+      h.ox = Math.floor(hollowSpan(g)[0]);
+      h.over = bakeThorns(g, pic('thornLong')!, pic('thornLow')!);
+    }
+  };
+  if (hurt && layer === 'over' && w1ThornsReady()) {
+    const mid = (view.x0 + view.x1) / 2;
+    let next: PitGap | undefined;
+    for (const g of gaps) {
+      if (g.kind !== 'hurt' || g.floor === undefined || inWater(g)) continue;
+      const h = baked.get(g);
+      if (h?.hollow && h.over) continue;
+      if (!next || Math.abs(g.x0 - mid) < Math.abs(next.x0 - mid)) next = g;
+    }
+    if (next) {
+      let h = baked.get(next);
+      if (!h) baked.set(next, (h = { under: null, over: null, x: 0, y: 0, ox: 0, oy: 0 }));
+      bakeHurt(next, h);
+    }
+  }
   for (const g of gaps) {
     if (g.x1 < view.x0 - 100 || g.x0 > view.x1 + 100) continue;
     // (a drop the stage's water fills is the water's: engine.ts draws it)
@@ -541,22 +816,21 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
       if (g.floor === undefined || !w1ThornsReady()) continue;
       let h = baked.get(g);
       if (!h) baked.set(g, (h = { under: null, over: null, x: 0, y: 0, ox: 0, oy: 0 }));
-      if (layer === 'under') {
-        h.under ??= bakeSoft(g, drop);
-        if (h.under) ctx.drawImage(h.under, g.x0, g.top);
-        continue;
-      }
+      if (layer === 'under') continue;
+      bakeHurt(g, h);
+      if (h.hollow) ctx.drawImage(h.hollow.c, h.hollow.x, h.hollow.y);
       const [yl, yr] = g.walls ?? [g.top, g.top];
-      if (g.lipL) ctx.drawImage(lip, g.x0 - lw * 0.62, yl - 12, lw, lh);
+      // (its torn lips scaled to it: two full lips met over a narrow hollow and read as a column of roots, hollowLipWidth)
+      const hw = hollowLipWidth(g), hh = (hw * lip.height) / lip.width, out = 1 - LIP_IN, hl = lipFaded(lip);
+      if (g.lipL) ctx.drawImage(hl, g.x0 - hw * out, yl - 12 * (hw / lw), hw, hh);
       if (g.lipR) {
         ctx.save();
-        ctx.translate(g.x1 + lw * 0.62, yr - 12);
+        ctx.translate(g.x1 + hw * out, yr - 12 * (hw / lw));
         ctx.scale(-1, 1);
-        ctx.drawImage(lip, 0, 0, lw, lh);
+        ctx.drawImage(hl, 0, 0, hw, hh);
         ctx.restore();
       }
-      h.over ??= bakeThorns(g, pic('thornLong')!, pic('thornLow')!);
-      if (h.over) ctx.drawImage(h.over, g.x0 - THORN_BED.pad, g.floor + THORN_BED.dark - h.over.height);
+      if (h.over) ctx.drawImage(h.over, h.ox, g.floor + THORN_BED.sink - h.over.height);
       continue;
     }
     // (engine-core, 11-05: only a drop a builder marks, pit: 'drop', is painted here; on main only the mixer's stages mark any. The

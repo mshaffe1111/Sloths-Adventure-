@@ -10,3 +10,25 @@ was left in total on 11-06; every job is logged here; the token never goes in co
 | 2026-11-06 9:45-9:55 AM | 1-1 near strip repaint: near11-N img2img 8 takes (6aede8020e0338d1bb817d84, ~5.3 min) + near11-hd native pass 2 takes (6aede9b60e0338d1bb81815b, ~2.5 min), rtx-pro-6000 ~$2.75/h | lead 9:35 AM, cap $1 | ~$0.36 (estimate from GPU minutes) | kept A (w1sun3-nearA-s62-23), backup B; reference/art/near11/ |
 
 Running total today: ~$0.36. Left: about $70 - $0.36; $15 reserve untouched.
+
+## Picture list 1 (R-165.100, Content; the lead's decision 11-11, packet reference/packets/2026-11-11/CONTENT-HF-LIST1.md; cap $6.50)
+Logged before launch (start/end in UTC; ET to Matt). Spec and starts: tools/art/hflist1/. rtx-pro-6000 at about $2.75/h.
+
+| Job | What | Takes | Est. before | Job id | Start (UTC) | End (UTC) | Minutes | Cost |
+|---|---|---|---|---|---|---|---|---|
+| hfl1-A | item 1: P-08-c, P-08-d, P-10-a, P-10-d at 2000 px, s52/s60 x 2 seeds | 16 | ~$0.85 | 6af42dc6ab34849891adf054 | 2026-11-11 08:56:38 | 09:10:29 | 13.8 | $0.63 |
+| hfl1-B | item 1: P-11-a, P-11-c, P-11-d at 2000 px, s52/s60 x 2 seeds | 12 | ~$0.65 | 6af42de69737d9a9e092b8ac | 2026-11-11 08:57:10 | 09:06:57 | 9.8 | $0.45 |
+| hfl1-C | item 2: 4 ground strips, square ends, s52/s60 x 2 seeds | 16 | ~$0.55 | 6af42deaab34849891adf05e | 2026-11-11 08:57:14 | 09:04:12 | 7.0 | $0.32 |
+| hfl1-D | item 3: 3 natural stumps s60/s68 x 2; item 4: 4 side-on slabs s62/s68 x 2 | 28 | ~$0.90 | 6af42ded9737d9a9e092b8ae | 2026-11-11 08:57:17 | 09:09:06 | 11.8 | $0.54 |
+| hfl1-hd | item 2: circular native pass on the 4 picked strips | 4 | ~$0.50 | 6af4317dab34849891adf3bb | 2026-11-11 09:12:30 | 09:14:32 | 2.0 | $0.09 |
+
+List 1 total: 44.5 GPU minutes, **$2.04** (cap $6.50; minutes are job creation to its last output, so an upper bound). 76 takes: 72 img2img + 4 native-pass strips. $15 reserve untouched.
+
+## 2026-11-12
+Matt, 11:20 AM ET: "treat this as final budget" ($63.53; he may add more later, unknown). Plan every job against it; ~$10 reserve.
+: Matt hands Hugging Face to the lead
+Matt, 11:17 AM ET: "Hugging Face is 100 up to you. Get what you need when you need. Balance is 63.53. You can use it however."
+Balance: **$63.53**. The lead decides every job; each one is logged here with what it bought; about $10 kept in reserve.
+
+| When | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|

@@ -87,6 +87,17 @@ as somebody gets through World 5 and on... not supposed to be where it's going t
   speaks only for a first-time mechanic, creature or hazard (once per save), the water warning, a locked exit, and real struggle (two deaths
   in one spot, two failed tries); at least 30 s between non-urgent lines. Puzzle rooms never give the answer on entry; nudges escalate only
   on struggle. No code-drawn highlight boxes, rings or arrows: to point, Dot flies to the actual object.
+- **No dead-zone landings (Matt, 2026-11-11 11:19 PM ET, from a play test of the live 1-1 (0.9.6, gen2): "if I jump from a ledge, I can get either to a
+  platform or I can comfortably fall onto it, but it can't be in the in-between").** Every landing, and every pickup's platform, is
+  reachable by (a) a plain walk-off fall that lands with margin, or (b) a full jump that lands with margin with no ceiling (a log or
+  ledge above) cutting its arc. A landing reachable only by a mid-air correction (run at just the right speed, or start falling and then
+  jump) is refused. Pickups (petals) go only where one of those two clean paths reaches.
+- **Every piece has a purpose where it is laid (Matt, 2026-11-11 11:28 PM ET: "if you don't need to jump or have a mushroom, then we
+  shouldn't lay them around... The pieces should make sense to where we're laying them. And that goes for getting hearts back and
+  checkpoints").** A bounce mushroom is laid only where a bounce is needed or leads somewhere worth going (a higher road, a find, a
+  shortcut); anything else is scenery that must not look bounceable. Hearts go just after a stretch that costs hearts or just before one,
+  by the stretch's risk, never at random. Checkpoints go just before the hard parts (respawn within about 2 s of the hard part, §0b.8),
+  spaced by difficulty, not by distance alone.
 
 ## 1b. The game gets harder as it goes (Matt, 2026-10-28)
 
@@ -227,6 +238,8 @@ test link, the QA testers or a release until the lead has re-run them, on more t
    lets you place Pokey in a room). Then the test link (HANDOFF §6), then the QA testers.
 
 ## 5b. The polish bar (Matt, 2026-10-29: "it's not just getting it done, but it should have polish")
+
+- **A replacement keeps the look "as good or better" (Matt, 2026-11-12 10:47 AM ET: "only keep if it looks as good or better than what we have now... if it did look better, we shouldn't reject it").** When new tech or a new method replaces how something is drawn or laid (WebGL, compression, a new painter), the pass mark is: as good as today or better, judged by eye on a phone, upright and sideways, by the lead and then Matt. Never "pixel-identical": a pixel compare is used to FIND every difference, never to reject an improvement. Any difference is shown side by side and named plainly.
 
 Working is the floor, not the finish. Before any report, the helper reviews its own upright (390x844) and sideways (844x390) screenshots
 and a short video, at phone size, against every line below, and writes a **Polish check** in the report: each item, pass or fixed, with
@@ -561,7 +574,12 @@ plan); never ship the rough version as finished.
   line (holding up runs on past the shelf into the next one). The stage's tests check both, and play every root and hop in the real
   engine. The first-timer bot doesn't climb back out of a catch, so on climbs (4-1 too) it runs out its 6 minutes: read its lives a minute
   and its stuck spots, not whether it finished.
-- **Ledges in the air: nothing floats** (6-8 v4, the lead's review, 2026-10-29). A stump, root arch or den (and any slab on spreading
+- **What may float (Matt, 2026-11-07, received by 10:21 PM ET; R-165.54; this ruling wins over the 10-29 lead rule below where they differ):**
+  "If it looks like it can be a platform, it can float. If it looks like it's a skinny little object, like a branch or a rope or vine, it needs to be attached to something. If it's a rock or something that should be fastened to the ground that you're just jumping on and off of, or is just used as decoration, it doesn't float."
+  By the art catalog's kinds (art-raw-2026-11-07 cut/CATALOG.md), the lead's reading: may float: floating earth islands, earth ledges,
+  walkable logs and planks that read as platforms. Attached (to a trunk, post, root or rope): boughs, branches, vines, ropes. Grounded,
+  never floating: rocks, stump-steps, bushes, ferns, decoration, hide spots, caves.
+- **Ledges in the air: nothing floats** (6-8 v4, the lead's review, 2026-10-29; for platforms, superseded by Matt's 11-07 ruling above). A stump, root arch or den (and any slab on spreading
   roots) grows out of the ground: hung in mid-air it looks wrong, however varied the pieces. It goes only where its own roots stand on
   the ledge under it or it stands on stilt posts (two, never one balanced pole); every stretch of a plank or log is held by a climbing
   root, a post, a brace to a trunk or a rope. Don't run a post from every plank down to the water: about 90 poles a stage read as a

@@ -100,6 +100,9 @@ export type VerdictName =
   // the lessons (promises11)
   | 'teach.double-no-gap-after' // no gap only the double crosses after the double's teach (Normal only; Easy has no double gap)
   | 'teach.double-gap-unsafe' //  that gap has nothing under it
+  // the pieces where they are laid (landings.ts: R-165.124, R-165.126)
+  | 'landing.dead-zone' //        a pickup's piece or a laid landing no plain flight reaches (walk-off, full jump, bounce, with margin, the arc uncut)
+  | 'bounce.no-purpose' //        a mushroom whose bounce lands nowhere worth going (no higher road, no find, no mushroom that has one)
   // the first run (ADR-002)
   | 'first-run.drift'; //         the fixed first layout no longer builds identically to its recorded parts
 

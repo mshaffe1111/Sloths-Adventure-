@@ -1,0 +1,9 @@
+== 1-1, the real kit, 120 seeds (the same count, for scale)
+throws 0 of 120 sections per roll 12 - 15
+graphs [rolled, structurally clean] [["sprint-D",[35,32]],["sprint-C",[35,16]],["sprint-A",[22,14]],["sprint-B",[28,0]]]
+40 pool short at slot # (n# signature: no section for the job left)
+32 node code: V11 at token 8: 4 of 8 content nodes are 'g' (cap 3)
+30 node code: V11 at token 8: 'g' on two neighbouring content nodes
+28 pool short at slot # (n# combine: no bounce section left)
+28 pool short at slot # (n# signature: no rising section (V19) left)
+22 node code: V11 at token 9: 4 of 8 content nodes are 'g' (cap 3)

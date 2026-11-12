@@ -1,0 +1,17 @@
+harvest-12-A  "A T P F R M X R F C R S E"  valid (V1-V21 as the parser checks a bare graph)
+harvest-12-B  "A T F P R U D_ F R X R W R S E"  valid (V1-V21 as the parser checks a bare graph)
+harvest-12-C  "A T M F R C X R D_ F P S E"  valid (V1-V21 as the parser checks a bare graph)
+
+config 1-2: objective harvest, targetCount 33, world 1, mini 2
+normal seed 1: THROWS gen2 1-2: no section fits node n5 (rest): the pool is spent (1 that fit are laid already, slot 5)
+normal seed 2: THROWS gen2 1-2: no section fits node n5 (rest): the pool is spent (1 that fit are laid already, slot 5)
+normal seed 3: THROWS gen2 1-2: no section fits node n5 (rest): the pool is spent (1 that fit are laid already, slot 5)
+normal seed 4: THROWS gen2 1-2: no section fits node n5 (rest): the pool is spent (1 that fit are laid already, slot 5)
+normal seed 5: THROWS gen2 1-2: no section fits node n5 (rest): the pool is spent (1 that fit are laid already, slot 5)
+normal seed 6: THROWS gen2 1-2: no section fits node n5 (rest): the pool is spent (1 that fit are laid already, slot 5)
+easy seed 1: THROWS gen2 1-2: no section fits node n6 (rest): the pool is spent (1 that fit are laid already, slot 6)
+easy seed 2: THROWS gen2 1-2: no section fits node n5 (rest): the pool is spent (1 that fit are laid already, slot 5)
+easy seed 3: THROWS gen2 1-2: no section fits node n5 (rest): the pool is spent (1 that fit are laid already, slot 5)
+easy seed 4: THROWS gen2 1-2: no section fits node n5 (rest): the pool is spent (1 that fit are laid already, slot 5)
+easy seed 5: THROWS gen2 1-2: no section fits node n5 (rest): the pool is spent (1 that fit are laid already, slot 5)
+easy seed 6: THROWS gen2 1-2: no section fits node n5 (rest): the pool is spent (1 that fit are laid already, slot 5)

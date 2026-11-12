@@ -27,10 +27,12 @@ export function nativeApp(): boolean {
 }
 
 type KeepAwake = { set(o: { on: boolean }): Promise<void> };
-let keepAwakePlugin: Promise<KeepAwake> | null = null;
+// (held in a wrapper, never as the promise's value: a Capacitor plugin is a Proxy that answers every property, `then` too, so a promise
+// resolving to the bare plugin calls its missing native `then` and never settles; capPlugins.test.ts, PROOF-1 violation 1)
+let keepAwakePlugin: Promise<{ plugin: KeepAwake }> | null = null;
 /** the Android app: keep the screen on (a stage in play) or let it sleep as usual (anything else); KeepAwakePlugin.java */
 export function keepScreenOn(on: boolean) {
   if (!nativeApp()) return;
-  keepAwakePlugin ??= import('@capacitor/core').then(({ registerPlugin }) => registerPlugin<KeepAwake>('KeepAwake'));
-  void keepAwakePlugin.then((p) => p.set({ on })).catch(() => {});
+  keepAwakePlugin ??= import('@capacitor/core').then(({ registerPlugin }) => ({ plugin: registerPlugin<KeepAwake>('KeepAwake') }));
+  void keepAwakePlugin.then(({ plugin }) => plugin.set({ on })).catch(() => {});
 }

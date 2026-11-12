@@ -1,0 +1,52 @@
+src/game/stageBackdrops.ts|22|22|2: 'w1rain'
+src/game/dotLinesData.ts|71|72|lock.sealed
+src/game/dotLinesData.ts|120|120|hint.1-2.follow
+src/game/dotLinesData.ts|121|121|hint.1-2.highlow
+src/game/dotLinesData.ts|148|148|way.1-2
+reference/STAGE-RULES.md|68|68|at least 2 minutes
+src/game/gen2/pipeline.ts|460|460|required
+src/game/gen2/pipeline.ts|589|591|lessons
+src/game/gen2/pipeline.ts|414|419|archetype
+src/game/gen2/pipeline.ts|432|436|teaches
+src/game/gen2/pipeline.ts|292|292|harvest.*1\.5
+src/game/gen2/pipeline.ts|1894|1894|seedHome
+src/game/gen2/worlds/w1.ts|1415|1462|const JOBS
+src/game/gen2/worlds/w1.ts|1481|1481|function teachLines
+src/game/engine.ts|7438|7460|private heartFall
+src/game/engine.ts|720|726|soft falls
+src/game/engine.ts|843|843|HelpLadder
+src/game/goals.ts|21|21|0\.875
+src/game/goals.ts|28|28|EASY_SHARE = 0\.65
+src/game/goals.ts|106|130|withGoals
+src/game/finds.ts|2|4|NOTE
+src/game/stageVariety.ts|125|125|VARIETY_BARS
+src/game/stageVariety.ts|115|115|0\.524
+src/game/stageGenerator.ts|2893|2893|w1World
+src/game/stageGenerator.ts|23|23|CTEST_STAGE_ID
+src/game/stageGenerator.ts|2862|2862|CTEST|ctest
+src/game/stagePlan.ts|35|35|Petal Trail
+src/game/protoStage.ts|70|70|'1-2'
+src/game/w1Sections.ts|334|334|'1-2'
+src/game/realPlay.ts|144|144|loseLife
+src/game/testlink1_1.ts|62|62|seed|draw
+src/game/buildAhead.ts|14|14|1-1
+src/components/WorldMap.tsx|350|350|1-1
+src/App.tsx|761|761|1-1
+tools/engine/seedlist.ts|23|23|KITS
+tools/inspect/tierBots.ts|6|6|seed|1-1
+tools/inspect/tierBots.ts|168|171|--stage|--tiers|--seeds|--setting
+tools/engine/lockall.ts|14|44|--layouts|--intended
+src/game/gen2/reach.ts|83|97|judgedOnArcs
+src/game/gen2/verdicts.ts|87|87|scopeOf
+src/game/gen2/verdicts.types.ts|18|18|ReachScope
+src/game/gen2/verdicts.types.ts|43|58|soft|lethal
+src/game/gen2/promises11.ts|93|110|double
+src/game/stageClue.ts|17|17|.
+tools/engine/stage.ts|1|40|argv
+tools/art/kitaudit/shoot.mjs|1|60|argv
+tools/team/models.json|1|40|content
+reference/qa-reports/C1/TURNOVER.md|1|5|.
+reference/engine/NODES.md|1|400|8\.3
+reference/engine/BRIEF-1-2.md|1|5|.
+reference/methods/dispatch-packet.md|1|5|.
+tools/engine/era.ts|76|86|--worlds|--stages|--rolls

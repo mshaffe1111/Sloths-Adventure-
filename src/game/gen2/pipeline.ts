@@ -18,12 +18,12 @@ import { rollLook } from '../artRoll.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
 import { doubleAllowed, jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
 import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
-import { bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
+import { BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11 } from './verdicts.ts';
 import { PROMISES_11, realFalls } from './promises11.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
-import { DOUBLE_RISE, JUMP_RISE, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, TAKEOFF_SLACK, TIMED } from '../physics.ts';
+import { DOUBLE_RISE, JUMP_RISE, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, TAKEOFF_SLACK, TIMED, WALL_H } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
 import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
@@ -153,6 +153,64 @@ export const thinLaid = (pc: Pick<SectionPiece, 'shape' | 'h'>, w: number): bool
 /** the highest rise a piece is laid to: on 1-1 the band's top (reach.ts riseEnvelope); elsewhere `k` of riseLimit, as before */
 export const riseCap = (dbl: boolean, k: number, budget: Pick<StageBudget, 'id' | 'riseShare' | 'difficulty'>, thin = false): number =>
   judgedOnArcs(budget.id) ? riseEnvelope(dbl, budget.difficulty, thin) : riseLimit(dbl, budget.riseShare) * k;
+
+/** a hop rock rolled under the engine's wall is laid in the wall's first HOP_SPREAD px, by its roll's share of its range (the Designer's
+ *  FR9 / FR9b low stumps, 50-56: "every hop stump a wall, 50 px or more") */
+export const HOP_SPREAD = 6;
+/** how far before a hop's face a piece he reaches it from may end, and how far over or under its top, to be the way he comes to it level
+ *  or from above (a step down a stair, the stumps of a descent): no climb to judge there */
+const ARRIVE = { dx: 60, over: 100, under: 20 } as const;
+
+/**
+ * A hop rock on 1-1 (R-165.122; ENGINE-AUDIT-B B-04, B-05): an `on` block he lands on (a stump, a rock, a log across the floor), laid by
+ * one rule instead of each section's numbers:
+ *   - a wall (B-04): never under WALL_H, the engine's side wall (physics.ts), so a plain walk is stopped by it, never passes through it;
+ *   - its climb judged (B-05): from where he really climbs it (the highest lower surface before its face that a single reaches at that
+ *     rise, the floor it stands on included), an ask the verdicts judge like every laid jump. A rock he comes to level or from above (a
+ *     descent's stumps) asks no climb;
+ *   - its climb kept in the band: a hop's rise over that take-off is clamped to the setting's single-rise band. A rock whose range
+ *     starts in Normal's double-teach rise band over its take-off is a double obstacle (the fallen trunk, 137-140: "too tall for one
+ *     jump"): it keeps the double's clamp and is judged as a double.
+ * Posts under a log (not landings), mushrooms and hollow logs are not hop rocks, nor a perch (a stump with a mushroom on it: the Designer's
+ * FR9b perch exception keeps it under 50 px, w1.ts `perch`). Every other stage lays as before (THE BOUNDARY).
+ */
+function hopLay(pc: SectionPiece, range: Range, rolled: number, h0: number, x: number, a: LocalPiece, out: readonly LocalPiece[], budget: StageBudget): { h: number; ask?: LocalAsk } {
+  if (!pc.landing) return { h: h0 };
+  let h = h0;
+  if (h < WALL_H) {
+    const [lo, hi] = typeof range === 'number' ? [range, range] : range;
+    h = WALL_H + (hi > lo ? (Math.min(hi, Math.max(lo, rolled)) - lo) / (hi - lo) : 0) * HOP_SPREAD;
+  }
+  const walk = (q: LocalPiece) => !q.hang && !q.crumble && q.shape !== 'bouncy' && q.w > 0 && (q.landing || q.main) && q.x < x;
+  const top = a.y - h;
+  if (out.some((q) => walk(q) && q !== a && q.x + q.w >= x - ARRIVE.dx && q.y <= top + ARRIVE.under && q.y >= top - ARRIVE.over)) return { h };
+  const dblOK = budget.moves.includes('double');
+  // (the take-off: the least climb among the lower surfaces a single reaches the face from)
+  const takeOff = (t: number) => {
+    let best: LocalPiece | undefined;
+    for (const q of out) {
+      if (!walk(q) || q.y <= t + 0.5) continue;
+      const rise = q.y - t, gap = Math.max(0, x - (q.x + q.w));
+      if (gap > 0 && gap > gapFor(rise, false, budget)) continue;
+      if (!best || q.y < best.y || (q.y === best.y && q.x + q.w > best.x + best.w)) best = q;
+    }
+    return best;
+  };
+  const take = takeOff(top);
+  if (!take) return { h };
+  // (a double obstacle by its data: even the low end of its range over this take-off stands in Normal's double-teach rise band, as the
+  // fallen trunk's 137-140 does. Between the single band and that, no move is built for it: a hop, clamped into the single band, as a
+  // stile's 100 px step 137 px past the step before it, too far for a single at that rise, is)
+  const lowRise = take.y - (a.y - Math.max(typeof range === 'number' ? range : range[0], WALL_H));
+  const dblLo = (BANDS['double-teach-rise'].normal as { lo: number }).lo;
+  const dbl = !!pc.block || (dblOK && lowRise >= dblLo);
+  if (!dbl) {
+    const cap = riseCap(false, 1, budget);
+    if (take.y - top > cap) h = a.y - (take.y - cap);
+  }
+  const yLand = a.y - h;
+  return { h, ask: { x0: Math.min(take.x + take.w, x), x1: x, yTake: take.y, yLand, move: dbl ? (pc.block === 'bounce' ? 'bounce' : 'double') : 'single', ...(pc.block ? { block: pc.block } : {}), thin: false, key: pc.key } };
+}
 
 // ───────────────────────────── the liana's reach ─────────────────────────────
 
@@ -1150,9 +1208,16 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       hang = { kind: 'vine' };
     } else if (pl.kind === 'on') {
       const a = ref(pl.on);
-      h = Math.min(roll(rng, pl.h), riseCap(dblOK, 0.95, budget));
+      const rolled = roll(rng, pl.h);
+      h = Math.min(rolled, riseCap(dblOK, 0.95, budget));
       w = Math.min(w, a.w);
       x = a.x + roll(rng, pl.at) * (a.w - w);
+      // (R-165.122, 1-1 only (judgedOnArcs, the boundary): a hop rock is a wall and its climb is judged; hopLay below)
+      if (judgedOnArcs(budget.id) && pc.shape === 'block' && !all.some((q) => q.shape === 'bouncy' && q.place.kind === 'on' && q.place.on === pc.key)) {
+        const hop = hopLay(pc, pl.h, rolled, h, x, a, out, budget);
+        h = hop.h;
+        if (hop.ask) asks.push(hop.ask);
+      }
       y = a.y - h;
     } else if (pl.kind === 'over') {
       const a = ref(pl.on);
@@ -1406,9 +1471,20 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   let catches = 0;
   const catchUnder = (x0: number, x1: number, lowerLip: number) => {
     if (!FR?.catchDrop || x1 - x0 < 20) return;
+    // (and only where no piece of the stage already catches: a piece under the gap, its top past the lower lip by no more than a catch's
+    // drop and 60 px, keeps its part; the bough goes under the rest, each part wider than his body. A bough over such a piece covered it:
+    // a chain's petal low log out past its start log, R-165.124, lay under a bough that took the walk off the start log first)
     const styles = FR.catchStyles?.length ? FR.catchStyles : (['branch'] as const);
-    const c = mk(x0 - 30, lowerLip + FR.catchDrop, x1 - x0 + 80, 'branch', 24, styles[catches++ % styles.length]);
-    (c as Platform & { catch?: boolean }).catch = true;
+    const reach = lowerLip + FR.catchDrop + 60;
+    const own = platforms.filter((q) => q.type !== 'bouncy' && q.x < x1 && q.x + q.width > x0 && q.y > lowerLip && q.y <= reach).sort((a, b) => a.x - b.x);
+    const parts: Array<[number, number]> = [];
+    let at = x0 - 30;
+    for (const q of own) { if (q.x > at) parts.push([at, q.x]); at = Math.max(at, q.x + q.width); }
+    if (x1 + 50 > at) parts.push([at, x1 + 50]);
+    for (const [a, b] of own.length ? parts.filter(([a, b]) => b - a >= 32) : parts) {
+      const c = mk(a, lowerLip + FR.catchDrop, b - a, 'branch', 24, styles[catches++ % styles.length]);
+      (c as Platform & { catch?: boolean }).catch = true;
+    }
   };
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false, shallow = false) => {
     if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;

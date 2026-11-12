@@ -28,7 +28,7 @@ const lvl = (stars: number) => JSON.stringify({ completed: true, stars, highScor
 test('a load that fails half-way leaves the game that was on the phone', () => {
   const file = buildSave(mapStore({ 'sloth_lvl_1-1': lvl(1), 'sloth_lvl_1-2': lvl(1), 'sloth_lvl_1-3': lvl(1) }));
   const phone = mapStore({ 'sloth_lvl_1-1': lvl(3), 'sloth_lvl_1-2': lvl(3), 'sloth_lvl_2-5': lvl(3), sloth_badges: '{"v":1}' }, 1);
-  assert.throws(() => applySave(phone, file)); // SaveLoadDialog.tsx:121 then says "Could not write the save into this browser."
+  assert.throws(() => applySave(phone, file)); // SaveLoadDialog.tsx:122 then says "Could not save it on this device."
   assert.equal(phone.getItem('sloth_lvl_2-5'), lvl(3), 'the old game was deleted before the new one was safely written');
 });
 test("loading a save that carries no sound settings keeps this phone's mute", () => {

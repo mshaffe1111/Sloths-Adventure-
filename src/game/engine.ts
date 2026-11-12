@@ -57,7 +57,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
+import { ASSIST, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, WALL_H, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, HANG_PICK, ROPE_FROM, ROPE_GRAB, ROPE_SLIDE, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
@@ -2435,7 +2435,7 @@ export class GameEngine {
         const half = 19;
         const prevX = p.x - (p.vx + this.windV + this.bossShove + this.bossGust) * dt;
         for (const plat of this.platforms) {
-          if (plat.broken || plat.type !== 'solid' || plat.height < 50) continue;
+          if (plat.broken || plat.type !== 'solid' || plat.height < WALL_H) continue;
           // (not when he stands on it or above its top, nor when he is wholly under it: a boulder up on a shelf, World 4, is no wall to him
           // on the ground under the shelf, and he cannot push it from below)
           if (!blockBeside(p.y, p.height, plat)) continue;
@@ -2553,7 +2553,7 @@ export class GameEngine {
         if (p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y) return true;
         // Meeca's stage: a thin log (no face to hoist up, LIP_CATCH) caught at the top of a jump with her feet just under its top and her
         // middle over it. QA 2026-10-31, the blind tester sideways: "level with the top of the log, then dropped through it", twice
-        return !!this.mc && plat.height < 50 && plat.type === 'solid' && !p.climbing && p.vy >= -LIP_CATCH.v && playerFeet > plat.y && playerFeet <= plat.y + LIP_CATCH.px && p.x > plat.x + LIP_CATCH.inside && p.x < plat.x + plat.width - LIP_CATCH.inside;
+        return !!this.mc && plat.height < WALL_H && plat.type === 'solid' && !p.climbing && p.vy >= -LIP_CATCH.v && playerFeet > plat.y && playerFeet <= plat.y + LIP_CATCH.px && p.x > plat.x + LIP_CATCH.inside && p.x < plat.x + plat.width - LIP_CATCH.inside;
       });
       // two at the same height (a basket flush on the path at its bottom stop): the one under his middle, a moving one first (lift.ts),
       // so a lift never rises without him
@@ -6617,7 +6617,7 @@ export class GameEngine {
   private faceBeside(dir: -1 | 1): boolean {
     const p = this.player;
     for (const q of this.platforms) {
-      if (q.type !== 'solid' || q.broken || q.height < 50) continue;
+      if (q.type !== 'solid' || q.broken || q.height < WALL_H) continue;
       const near = dir > 0 ? q.x - (p.x + 19) : p.x - 19 - (q.x + q.width);
       if (near < -2 || near > FACE_NEAR) continue;
       const rise = p.y - q.y;
@@ -6630,7 +6630,7 @@ export class GameEngine {
   private stepAt(dir: -1 | 1): boolean {
     const p = this.player;
     for (const q of this.platforms) {
-      if (q.type !== 'solid' || q.broken || q.height < 50) continue;
+      if (q.type !== 'solid' || q.broken || q.height < WALL_H) continue;
       const near = dir > 0 ? q.x - (p.x + 19) : p.x - 19 - (q.x + q.width);
       if (near < -2 || near > STEP_UP.near) continue;
       const rise = p.y - q.y;

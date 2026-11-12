@@ -29,11 +29,11 @@ Final code head **f8f467f5** (this report and the ROADMAP row after it). Each me
 | vite build | 0 | 4 | 08:37 | no asset over 4 MiB |
 | chunkcheck | 0 | 0 | 08:37 | **main 662,675 B, 3,331,629 spare**; 40 JS files, 22 at the start, no loop |
 | artcheck / knowncheck | 0 / 0 | 0 | 08:37 | PASS / PASS (generality list new on main: 29) |
-| roadmapcheck (full history) | 0 | 2 | 08:38 | PASS; again PASS after the R-165.129 row |
+| roadmapcheck (full history) | 0 | 2 | 08:38 | PASS; again PASS after the R-165.139 row |
 | generality | 0 | 0 | 08:38 | PASS, 29 literals, 29 known |
 | lockall --check vs 0.9.6 | 0 | 545 | 08:47 | **102/102 unchanged** |
 | core suite (CLAUDE.md glob) | 0 | 1531 | 09:03 | 2,965 tests: 2,963 pass, **0 fail**, 2 todo (known) |
-| tools + mixer tests | 1 | 41 | 09:04 | 144: 135 pass, 8 fail **same on main** (R-165.129), 1 skipped |
+| tools + mixer tests | 1 | 41 | 09:04 | 144: 135 pass, 8 fail **same on main** (R-165.139), 1 skipped |
 | tierBots | 0 | 16 | 09:04 | 7/7 |
 | funcheck | 1 | 39 | 09:04 | FAIL, **identical to main** (every flag and count; 12 worse/new, 26 to lower) |
 | seedlist 1-1 --check | 0 | 203 | 09:07 | PASS, 355 seeds |
@@ -43,7 +43,7 @@ Final code head **f8f467f5** (this report and the ROADMAP row after it). Each me
 | buildcheck | 2 | 121 | 09:19 | could not start its page in 120 s right after kbdcheck; **alone at once: PASS** p95 89 / 83 ms |
 Run 1 (3616dfd9) found the three defects fixed above. Its drawcheck lost 2-6 to a reload when I edited w1.ts under its dev server.
 **Open, next session:** buildcheck fails to start in sequence after kbdcheck (twice, both runs; alone it passes in 5 s, twice): the tool's
-cold dev server, not the game, but unproven. **Same on main (R-165.129):** mixer/stumps.test 'a log on a stump is thin...'; validate.test
+cold dev server, not the game, but unproven. **Same on main (R-165.139):** mixer/stumps.test 'a log on a stump is thin...'; validate.test
 route x3 and beats; world1.test 'everything feels the same', 'nothing bites, the truer rule', 'padding' (main run: --test-concurrency=1).
 
 ## For the 1-1 track: R-165.122 (hop rocks) is commit 9d9ebc94 on this branch (reverted by 3616dfd9)

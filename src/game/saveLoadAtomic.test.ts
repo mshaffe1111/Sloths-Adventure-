@@ -3,7 +3,7 @@
  *
  * PROVES (fails today): applySave first removes every game entry on the phone and then writes the file's entries one setItem at a
  * time. When a write throws part-way (the storage is full: QuotaExceededError; or the WebView's storage is blocked), the dialog
- * catches it and says "Could not write the save into this browser." (SaveLoadDialog.tsx:121), but by then the game that WAS on the
+ * catches it and says "Could not save it on this device." (SaveLoadDialog.tsx:122), but by then the game that WAS on the
  * phone has been erased and only part of the file is in. The screen still shows the old game (React state is not re-read on this
  * path: onLoaded is not called), so the player sees nothing wrong until the next start: old progress gone, a few stages of the file.
  *
@@ -37,7 +37,7 @@ test('a Load that fails part-way leaves the game on the phone as it was', () => 
       phone.m.set(k, v);
     },
   };
-  assert.throws(() => applySave(full, file.save), 'set-up: the Load failed (SaveLoadDialog shows "Could not write the save")');
+  assert.throws(() => applySave(full, file.save), 'set-up: the Load failed (SaveLoadDialog shows "Could not save it on this device")');
   assert.deepEqual(
     { stagesOnPhone: [...phone.m.keys()].filter((k) => k.startsWith('sloth_lvl_')).length },
     { stagesOnPhone: before.size },

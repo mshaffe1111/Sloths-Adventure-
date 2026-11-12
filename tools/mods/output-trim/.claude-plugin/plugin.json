@@ -1,0 +1,1 @@
+{ "name": "output-trim", "version": "0.1.0", "description": "Caps oversized tool results in the lead session: keeps the head and tail, saves the full text to a scratch file and names it." }
