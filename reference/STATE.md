@@ -638,3 +638,7 @@ lines); Matt sees them in the release.
   roots line back). D12's last head t-12-design@f887735e (cc0def2a + its turnover note); INT-2 merges it. Ruled: the coati + flowering bush
   on the twist's far bank are World 1 dressing (w1Coati), not cast: intended. Nit R-165.165 (find text "against a root" beside a stone
   ledge) for the story keeper tomorrow. D12 done; retire after ls-remote shows f887735e.
+- 2026-11-12 6:44 PM ET: D12's last head t-12-design@6d2cb506 (defaults stills of the note; PASS). Seen in it: on a FRESH save, 1-2 shows
+  1-1's first coach line ("Run, then <flick> to jump the gap") because 1-1 was never played. Tonight's test-link judging MUST open 1-3 and
+  1-2 on a fresh save and judge what Dot says first (a wrong-place coach line is a named rough spot or a fix); the 1-3-only testers'
+  link (R-165.157) needs its own first-play coaching plan tomorrow.
