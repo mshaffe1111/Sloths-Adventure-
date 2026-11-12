@@ -4,7 +4,7 @@ Matt, 11-11 9:14-9:16 PM ET: "give them unique personalities, so each predator p
 you just don't have to stomp on them"; "predators are huge in this game, let the best engine build it."
 
 Scope (the lead, 9:19 and 9:23 PM ET, from Matt): EVERY creature that can hurt, block or chase Pokey, each started from what the real
-animal does and given a twist that fits its world ("I would love to see from a creative standpoint how Fable handles it"), plus the
+animal does and given a creative twist that fits its world (Matt asked for the design to be bold here), plus the
 creatures we own art for and do not use (§7). The story keeper reviewed this sheet at 9:36 PM ET: PASS on story with four changes, all applied here (the mimic is a blinking log,
 never a bush; nobody eats in the sanctuary; the owl is a presence that never guides; piranhas nip and scatter). Matt, 9:42 PM ET, via
 the lead: a unique cast per world is approved as §2's table. The story keeper's background (9:19 PM ET) is folded in: ordinary creatures are not evil
@@ -94,7 +94,7 @@ world. Times are Normal's. *Italics* = a number that changes from today's code.
 | Soldier (W10) | **guard** | (the General's wall guard) | Holds the wall and blocks | spear lifts |
 
 **The casts.** Today Worlds 6, 7 and 8 share one list of six animals (gen2/worlds/w6.ts:108-117, w7.ts:82-88, w8.ts:81-91), which is why
-they feel alike. Each world gets a cast of three to five, one habit each (held by `roster.test.ts`), and its own star:
+they feel alike. Each world gets a cast of three to five, one habit each (held by `src/game/predatorRoster.test.ts`), and its own star:
 
 | World | Cast (habit) | The star |
 |---|---|---|
@@ -200,7 +200,7 @@ a time when its world is laid (new replaces old, no switches), each with its own
 ## 6. What this needs from other lanes
 
 - **Art** (a Hugging Face list for Matt, not in this task): a tell pose per animal where today's is a red ring ("!"): snake rear exists;
-  boa head-back, ocelot crouch, tayra stand-up exist as states; new: caiman ripples and eyes, jaguar on a shelf, frog flash, mimic blink,
+  boa head-back, ocelot crouch, tayra stand-up exist as states; new: caiman ripples and eyes, jaguar on a shelf, frog flash, the log that blinks,
   and a "gives up / slinks home" and a "dazed" pose for each. No animal needs a hurt or defeated-for-good pose.
 - **Words**: none here. Journal lines change when a personality ships (the story keeper writes them).
 - **Planned pieces this leans on**: drop traps (B2), food chain and lures (B19), breaking and pushing (B18). The kit takes each as a

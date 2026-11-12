@@ -1,26 +1,27 @@
 # EN-P: every predator gets a personality, and two or three ways to beat it
 
-Branch `t-engine-predators`, base `origin/t-engine-clock` @fd94c3f6. No PR. Written 9:55 PM ET, Nov 11. Nothing the game ships changed and nothing
-on screen changed, so there are no screenshots to judge (Polish check, below).
+Branch `t-engine-predators`, base `origin/t-engine-clock` @fd94c3f6. No PR. Polish check: no screen, word, sound or stage changed. Written 9:55 PM ET, Nov 11. Nothing
+the game ships changed, so there is nothing to shoot; the tell poses World 1's cast needs are in PREDATORS.md §6.
 
-## Part 1: the design, `reference/design/PREDATORS.md` (295 lines; story keeper: PASS with 4 changes, all applied)
-- **§1 the roster today**, file:line: every creature that hurts, blocks or chases (the 12 fighting animals, the eagle's watch, thorn
-  vines, bats, moths, eaglets, the seamstress and butler, capuchins). Code facts: there is no combat triangle yet (a kick differs
-  from a punch only on the turtle); three tells are under 0.5 s (snake 0.38, ocelot 0.38, tayra 0.42); the frog has no tell at all.
-- **§2 one personality each**: the real animal, then our twist, its tell and rhythm; and **a cast per world** (Matt approved, 9:42 PM
-  ET): today Worlds 6, 7 and 8 share one list of six animals. No two animals in a cast share a habit (a test holds it).
+## Part 1: the design, `reference/design/PREDATORS.md` (335 lines: over the brief's 300 because the lead added §8, §9 and a column; story keeper: PASS with 4 changes, all applied)
+- **§1 the roster today**, file:line: every creature that hurts, blocks or chases. Code facts: no combat triangle yet (a kick differs
+  from a punch only on the turtle); three tells are under 0.5 s (snake 0.38, ocelot 0.38, tayra 0.42); the frog has no tell.
+- **§2 one personality each**: the real animal, our twist, its tell and rhythm; **a cast per world** (Matt approved, 9:42 PM ET:
+  today Worlds 6, 7 and 8 share one list of six animals). No two animals in a cast share a habit (a test holds it).
 - **§3 ways to beat each**, never only the stomp; ends are stunned, gives up, dozes off or chased off, never eaten or killed.
-- **§4 Easy** (tell x1.3, beat x1.5, speed x0.85, fewer). **§5 the kit**: 8 habits on one machine. **§7 creatures we own and do not
+- **The move ladder** (the lead, 9:56 PM ET): a way is only there once its world has
+  taught the move, so in World 1 the eagle is stillness and cover only. **§4 Easy** (tell x1.3, beat x1.5, speed x0.85, fewer). **§5 the kit**: 8 habits on one machine. **§7 creatures we own and do not
   use**: five can join now (dangler, orchid mantis, crab, piranha, beetle). **§8 size against Pokey**: 7 creatures flagged (the big
   hunters are drawn at half Pokey's height; the boa is smaller than the tree snake); the 10 guardians are 1.5-3.2x Pokey today.
+  **§9 throw to lure**: the arc, the pickups and the landing noise already exist in the puzzle kit (file:line); what it still needs.
 
-## Part 2: the kit, `src/game/predators/` (pure, 974 lines; tests 1,079 lines; not imported by the game)
+## Part 2: the kit, `src/game/predators/` (pure, 1,013 lines; tests 1,186 lines; not imported by the game)
 `types.ts` (an animal as data: `PredatorDef`; a stage's `Post`; the state, which is a heroNoise `Listener`; 13 ways, 4 ends), `core.ts`
 (the one machine: rest, hunt, TELL, act, recover; `stepPredator`, `beat`, `hear`, `foodChain`, `hurt`, `blocks`, `checkPredator`),
 `world1.ts` (snake, boa, eagle), `casts.ts` (ten later animals, first-draft numbers from today's code: turtle, River King's guard,
 caiman, ocelot, jaguar, tayra, night harpy, frog, spider, sentry), `roster.ts` (habits and casts), `fixtures.ts` (test helpers).
 
-The rules, each with its proof (`npx tsx --test src/game/predator*.test.ts`: 61 kit tests, all green):
+The rules, each with its proof (`npx tsx --test src/game/predator*.test.ts`: 67 kit tests, all green):
 1. **The tell always comes first.** One door into the phase that hurts, only from a full tell (never under 0.5 s; longer on Easy).
    Proof: asserted on every step of every test, plus a fuzz over all 8 habits that must reach the act more than 60 times.
 2. **Being beaten is data and never cruel.** Each way names its end; "open" ways need the moment after a miss; the turtle's punch
@@ -31,10 +32,13 @@ The rules, each with its proof (`npx tsx --test src/game/predator*.test.ts`: 61 
 5. **The food chain**: lead the eagle's shadow over the boa, or a tayra's line to the caiman's water, and it is chased off.
 6. **Easy is never harder**; `checkPredator` refuses one way, only the stomp, a short tell, a punchable guard, a harder Easy.
    A clocked kind (the frog) tells on the stage clock's warn and acts on its on.
-7. **The top three, worked through** (`predatorWorld1.test.ts`, 14 tests): snake, eagle, boa: the tell, the attack, each way to beat it.
+7. **The move ladder** (`roster.ts` `TAUGHT`, `inWorld`): every cast is laid through it; a test fails when a way appears before its
+   move, or an animal is left with one way (World 1's eagle is the one named exception). **Throw to lure**: only a thrown noise
+   (`heroNoise.thrownNoise`) lures; his own landing brings a hunter looking with its eyes open and blinds nothing.
+8. **The top three, worked through** (`predatorWorld1.test.ts`, 15 tests): snake, eagle, boa: the tell, the attack, each way to beat it.
 
-**The tests bite**: 35 faults planted in `core.ts` one at a time, **35 caught** (`reference/qa-reports/EN-P/planted-faults.txt`); two
-survived their first run and each showed a missing test, now written.
+**The tests bite**: 37 faults planted in `core.ts` one at a time, **37 caught** (`reference/qa-reports/EN-P/planted-faults.txt`); three
+survived their first run and each showed a missing test, now written. Three more planted in `roster.ts` `inWorld`: caught.
 
 ## Checks (run on this branch; times ET)
 - `npx tsc --noEmit -p .`: clean.
@@ -49,13 +53,11 @@ survived their first run and each showed a missing test, now written.
 - **Not run: drawcheck, clipcheck, kbdcheck, tierBots.** Nothing drawn, no screen and no stage changed (the lock and the byte count
   show it). They run when an animal is wired in.
 
-## Polish check
-No screen, word, sound or stage changed, so there is nothing to shoot. The tell poses World 1's cast needs are in PREDATORS.md §6.
-
 ## What is left
 - **Not built**: a clocked "looking" window (thorn vine, eaglets); two-part acts (the night harpy's slide then shock); the kicked
   shell bowling others over; the eagle's harmless first pass. Capuchins, moths and the seamstress stay on their own modules.
 - **Not wired.** The engine still runs predatorAI.ts and watcher.ts. Numbers in `casts.ts` are first drafts.
+- **Throw to lure outside the puzzle rooms** (PREDATORS.md §9): pickup spots in a stage brief, and the no-spare-gesture cost.
 - **For Matt** (the 9:53 PM note): the size proposals; guardians need new art to be "huge" (8 of 10 are already drawn larger than
   their sheets); no guardian fight is in drawcheck's scenarios. The butler's cake (w5Play.ts:401) is against canon: flagged, not changed.
 
