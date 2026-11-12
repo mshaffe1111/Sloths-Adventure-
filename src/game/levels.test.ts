@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generateAllLevels } from './worldsData.ts';
 import { buildStage, generateStage, setLayoutVariant } from './stageGenerator.ts';
-import { validateStage } from './levelCheck.ts';
+import { validateAsJudged, validateStage } from './levelCheck.ts';
 import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { isGen2Stage } from './gen2/game.ts';
 import { builtOnGen2 } from './stageGenerator.ts';
@@ -13,7 +13,8 @@ const levels = generateAllLevels();
 test('every shipped level passes the reachability validator', () => {
   for (const l of levels) {
     const stage = generateStage(l);
-    const res = validateStage(stage);
+    // (as the game judges it: 1-1 on its flown arcs, levelCheck.ts validateAsJudged; changed, INT-1-1: the re-lay's 253-256 px double test)
+    const res = validateAsJudged(stage);
     assert.equal(res.ok, true, `${l.id} (${l.objectiveType}): ${res.errors.slice(0, 3).join('; ')}`);
   }
 });
@@ -125,7 +126,7 @@ test('random layout variants are always beatable, and the same variant gives the
       const a = JSON.stringify(generateStage(l).platforms);
       const stage = generateStage(l);
       assert.equal(JSON.stringify(stage.platforms), a, `${l.id} variant ${variant} not repeatable`);
-      const res = validateStage(stage);
+      const res = validateAsJudged(stage); // (1-1 on its flown arcs: INT-1-1)
       assert.equal(res.ok, true, `${l.id} variant ${variant}: ${res.errors.slice(0, 3).join('; ')}`);
     }
   }

@@ -10,9 +10,11 @@ import '../../src/game/headlessDom.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
 import { buildGen2Stage, keptFoes } from '../../src/game/gen2/pipeline.ts';
 import { w1Finish, w1World } from '../../src/game/gen2/worlds/w1.ts';
-import { packPlan, provenSeeds, QUIET_MAX, seedListBreaches, SEED_LIST_MIN } from '../../src/game/gen2/seedList.ts';
+import { packPlan, provenSeeds, QUIET_MAX, seedListBreaches, SEED_LIST_MIN, stageParts } from '../../src/game/gen2/seedList.ts';
+import { firstRunVerdicts } from '../../src/game/gen2/verdicts.ts';
+import type { FirstRunLayout } from '../../src/game/gen2/verdicts.types.ts';
+import { createHash } from 'node:crypto';
 import { PROVEN_SEEDS } from '../../src/game/gen2/provenSeeds.ts';
-import { floorlessGaps, promiseBreaches11 } from '../../src/game/gen2/promises11.ts';
 import { withGoals } from '../../src/game/goals.ts';
 import { pickRoute } from '../inspect/eraRoll.ts';
 import { deadTime, NORMAL_GAP } from '../inspect/analyze.ts';
@@ -32,8 +34,39 @@ if (process.argv.includes('--check')) {
   for (const seed of provenSeeds(id)) { const q = quietOf(buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty: 'normal' })).quiet; if (q > QUIET_MAX) b.push(`${id} seed ${seed}: ${q} s quiet, over the line ${QUIET_MAX} s (the outro excluded)`); }
   if (id === '1-1') for (const seed of provenSeeds(id)) if (!dresses(...(['normal', 'easy'] as const).map((difficulty) => buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty })))) b.push(`${id} seed ${seed}: too few squirrels find a spot (w1Finish)`);
   if (L && L.plans.length !== L.seeds.length) b.push(`${id}: ${L.seeds.length} seeds but ${L.plans.length} plans`);
+  // (R-165.61: how many listed seeds the verdicts refuse, by name, on either setting; and the fixed first run against its lock, ADR-002)
+  if (id === '1-1') {
+    const by = new Map<string, number>();
+    let refused = 0;
+    for (const seed of provenSeeds(id)) {
+      const n = new Set<string>();
+      for (const difficulty of ['normal', 'easy'] as const) { const v = buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty }).gen2.verdicts?.[difficulty]; if (v && !v.accepted) for (const f of v.failed) n.add(f.name); }
+      if (n.size) refused++;
+      for (const x of n) by.set(x, (by.get(x) ?? 0) + 1);
+    }
+    console.log(`seedlist ${id}: the verdicts refuse ${refused} of ${provenSeeds(id).length} listed seeds${by.size ? `; seeds refused by each name: ${[...by].sort((a, c) => c[1] - a[1]).map(([k, c]) => `${k} ${c}`).join(', ')}` : ''}`);
+    b.push(...await firstRunBreaches());
+  }
   console.log(b.length ? `seedlist ${id}: FAIL\n  ${b.slice(0, 20).join('\n  ')}` : `seedlist ${id}: PASS (${provenSeeds(id).length} seeds, each clean on both settings)`);
   process.exit(b.length ? 1 : 0);
+}
+
+/** the fixed first run of 1-1 (ADR-002; src/game/gen2/firstRun11.ts, C1's file): its layout built on both settings against its lock
+ *  (seedList.ts stageParts, hashed), each drift by name (verdicts.ts firstRunVerdicts); none until the file exists */
+async function firstRunBreaches(): Promise<string[]> {
+  const file = new URL('../../src/game/gen2/firstRun11.ts', import.meta.url);
+  if (!fs.existsSync(file)) { console.log(`seedlist ${id}: no first-run layout yet (src/game/gen2/firstRun11.ts, C1): first-run.drift not judged`); return []; }
+  const mod = (await import(file.href)) as { FIRST_RUN_11?: FirstRunLayout };
+  const L = mod.FIRST_RUN_11;
+  if (!L) return [`${id}: firstRun11.ts exports no FIRST_RUN_11`];
+  const built: Partial<Record<'normal' | 'easy', string>> = {};
+  for (const difficulty of ['normal', 'easy'] as const) {
+    const st = buildGen2Stage({ config: cfg, kit: kit(), seed: L.seed, difficulty, replay: { seed: L.seed, plan: L.plan, rerolls: L.rerolls, foes: L.foes } });
+    built[difficulty] = createHash('sha256').update(JSON.stringify(stageParts(st))).digest('hex').slice(0, 16);
+    const v = st.gen2.verdicts?.[difficulty];
+    if (v && !v.accepted) return [`${id} first run (seed ${L.seed}) ${difficulty}: verdict ${v.failed[0].name}: ${v.failed[0].line}`];
+  }
+  return firstRunVerdicts(L, built).map((v) => `${id} ${v.name}: ${v.line}`);
 }
 
 /** both settings' builds take their squirrels (w1Finish throws when fewer than SQUIRREL_MIN find a clear spot; it only dresses and marks the cut art, so the build is used as it is after) */
@@ -79,8 +112,9 @@ for (const seed of tries) { // (1-1's promises and the quiet line keep few rolls
   if (n.gen2.errors?.length) continue;
   const e = buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty: 'easy' });
   if (e.gen2.errors?.length) continue;
-  // (1-1's player promises, the lead 11-06: no unmarked floorless gap on either setting, the double needed right after its teach on Normal)
-  if (id === '1-1' && (promiseBreaches11(n as never).length || floorlessGaps(e as never).length)) continue;
+  // (1-1's player promises, the lead 11-06, and every verdict, R-165.61: judged by the pipeline on each setting, PROMISES_11 among them,
+  // so a refused roll already carries them in gen2.errors above; read here by name, never by a substring)
+  if ([n, e].some((s, i) => s.gen2.verdicts?.[i ? 'easy' : 'normal']?.accepted === false)) continue;
   // (1-1's squirrels, the lead 11-06: Play finishes the roll with w1Finish, which throws when too few find a spot; such a roll is never listed)
   if (id === '1-1' && !dresses(n, e)) continue;
   const q = quietOf(n);

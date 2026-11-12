@@ -97,6 +97,19 @@ export default defineConfig(() => {
         },
       }),
     ],
+    build: {
+      rollupOptions: {
+        output: {
+          // React lives in its own 'vendor' file so the game's main script keeps room under the 4 MiB cache limit above (R-165.103;
+          // tools/perf/chunkcheck.mjs holds the main script to 3,994,304 B). It is a static split: index.html preloads it and the
+          // service worker precaches it, so nothing loads late and the game still plays offline.
+          manualChunks(id: string) {
+            if (/[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id)) return 'vendor';
+            return undefined;
+          },
+        },
+      },
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

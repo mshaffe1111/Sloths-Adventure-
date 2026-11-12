@@ -103,3 +103,4 @@ The bot's self-test (step 0), the CLAUDE.md checks (tsc, the full test globs in 
 - `tools/inspect/botBaseline.ts --worlds 1-10 [--stages ...] [--who kid,adult] [--detail]`: one JSON line a first-timer run (end, goal,
   lives, rescues; with `--detail` every stuck spot with what was in front of him, where each life was lost, and the run's flags). All 10
   worlds, seeds 1-3, both settings: about 35 min on 4 processes (bot-fix).
+- A special case kept from an old layout is switched off and flown over the whole list (both settings) before it is kept; the A/B table is the proof (INT-1-1, reference/qa-reports/INT-1-1/ab/).

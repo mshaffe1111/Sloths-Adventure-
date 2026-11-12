@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { missionOf, skillsFrom, skillGuaranteedAt, newlyLearned, SKILLS } from './skills.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { generateStage, setLayoutVariant } from './stageGenerator.ts';
-import { validateStage } from './levelCheck.ts';
+import { validateAsJudged, validateStage } from './levelCheck.ts';
 
 test('missionOf puts stages in game order', () => {
   assert.equal(missionOf('1-1'), 1);
@@ -43,7 +43,7 @@ test('no stage needs a rope before the skill is guaranteed, and every stage stay
         ropes++;
         if (!skillGuaranteedAt('shimmy', at)) assert.ok(!r.required, `${lvl.id} v${variant}: rope required before the skill is taught`);
       }
-      const res = validateStage(stage);
+      const res = validateAsJudged(stage); // (1-1 on its flown arcs: INT-1-1)
       assert.equal(res.ok, true, `${lvl.id} v${variant}: ${res.errors.slice(0, 3).join('; ')}`);
     }
   }

@@ -7,6 +7,7 @@
  * fallback until the new HUD registers its own: the band under the top HUD, and never the bottom corners (the thumbs).
  */
 import type { TopicId } from './dotGuide.ts';
+import { grownSteps } from './helpLadder.ts';
 import { toScreenX, toScreenY, type GuideView } from './dotGuideView.ts';
 
 export interface Rect {
@@ -505,6 +506,20 @@ export function hoverSpot(v: GuideView): { x: number; y: number } {
  * he lands. Her bubble keeps off them (QA, v189: in 1-3 it covered the mossy block he had to jump to, for 6 s). Not the ground he
  * stands on.
  */
+/**
+ * 1-1's grown steps on screen (helpLadder.ts grownSteps), each with the air over it where he stands: her bubble never covers them, the
+ * step line least of all (the Critic, INT-1-1: "Ooh, look! A step." sat over half the step it names, sideways)
+ */
+export function grownRects(v: GuideView, out: Rect[]): Rect[] {
+  const z = v.zoom;
+  for (const b of grownSteps()) {
+    const x0 = toScreenX(v, b.x), x1 = toScreenX(v, b.x + b.width);
+    if (x1 < 0 || x0 > v.cssW) continue;
+    out.push({ x0: x0 - 10, y0: toScreenY(v, b.y) - 56 * z, x1: x1 + 10, y1: toScreenY(v, b.y + b.height) + 8 });
+  }
+  return out;
+}
+
 export function landingRects(v: GuideView, out: Rect[]): Rect[] {
   const z = v.zoom;
   const front = v.facing > 0 ? v.px + v.pw : v.px;

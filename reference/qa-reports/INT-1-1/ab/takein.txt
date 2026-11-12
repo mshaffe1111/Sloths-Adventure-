@@ -1,0 +1,23 @@
+== takein
+  197  needs help | keep pass(3) | drop FAIL(0)   e.g. easy 769 w1-mushroom-bank-teach drop: stopped at x 10407 y 1298; easy 982 w1-mushroom-bank-teach drop: stopped at x 10123 y 869; easy 1025 w1-mushroom-bank-teach drop: stopped at x 9441 y 919; easy 1136 w1-mushroom-bank-teach drop: stopped at x 12040 y 1020
+  254  needs help | keep pass(4) | drop FAIL(0)   e.g. easy 1700 w1-mushroom-bank-teach drop: stopped at x 12132 y 1112; easy 1753 w1-mushroom-log drop: stopped at x 21563 y 808; easy 1901 w1-mushroom-bank-teach drop: stopped at x 12131 y 985; easy 2328 w1-mushroom-bank-teach drop: stopped at x 9850 y 1294
+   13  needs help | keep pass(4) | drop FAIL(1)   e.g. normal 1700 w1-mushroom-log drop: stopped at x 21219 y 790; normal 11674 w1-mushroom-lift drop: stopped at x 10301 y 1179; normal 16178 w1-mushroom-log drop: stopped at x 19048 y 1082; normal 18644 w1-mushroom-lift drop: stopped at x 10219 y 1004
+    1  needs help | keep pass(5) | drop FAIL(0)   e.g. normal 49808 w1-mushroom-log drop: stopped at x 21112 y 894
+    9  needs help | keep pass(5) | drop FAIL(1)   e.g. normal 5114 w1-mushroom-log drop: stopped at x 18798 y 791; normal 24120 w1-mushroom-log drop: stopped at x 19111 y 989; normal 27329 w1-mushroom-bank-teach drop: stopped at x 11023 y 1146; normal 30194 w1-mushroom-log drop: stopped at x 18326 y 844
+    2  needs help | keep pass(5) | drop FAIL(2)   e.g. easy 20985 w1-bounce-wall drop: stopped at x 20878 y 833; normal 20985 w1-bounce-wall drop: stopped at x 19415 y 868
+    2  needs help | keep pass(6) | drop FAIL(2)   e.g. easy 4728 w1-bounce-wall drop: stopped at x 18806 y 784; normal 4728 w1-bounce-wall drop: stopped at x 17460 y 937
+    4  needs help | keep pass(7) | drop pass(6)   e.g. normal 14582 w1-stair-test; normal 27394 w1-stair-test; normal 27496 w1-stair-test; normal 28729 w1-stair-test
+   11  needs nothing | keep pass(0) | drop pass(1)   e.g. easy 1700 w1-mushroom-fork-dip; easy 5033 w1-mushroom-fork; easy 5114 w1-mushroom-fork-dip; easy 6393 w1-mushroom-fork-dip
+    8  needs nothing | keep pass(0) | drop pass(2)   e.g. easy 21752 w1-mushroom-fork-dip; easy 27252 w1-mushroom-fork-dip; easy 40872 w1-mushroom-fork-dip; easy 50841 w1-mushroom-fork-dip
+    2  needs nothing | keep pass(1) | drop pass(0)   e.g. normal 20985 w1-canopy-drop; normal 22634 w1-bough-descent
+    1  needs nothing | keep pass(2) | drop pass(0)   e.g. normal 45554 w1-cache-stones
+    2  needs nothing | keep pass(2) | drop pass(3)   e.g. normal 22634 w1-mushroom-fork-dip; normal 30774 w1-mushroom-fork-dip
+    1  needs nothing | keep pass(3) | drop pass(0)   e.g. easy 14582 w1-cache-stones
+    3  needs nothing | keep pass(3) | drop pass(2)   e.g. normal 1025 w1-leap-stones; normal 18896 w1-seed-perch; normal 33825 w1-seed-perch
+   48  needs nothing | keep pass(4) | drop pass(0)   e.g. easy 9168 w1-cache-stones; easy 9652 w1-cache-stones; easy 13761 w1-cache-stones; easy 20533 w1-cache-stones
+    2  needs nothing | keep pass(5) | drop pass(0)   e.g. normal 24105 w1-seed-perch; normal 40872 w1-seed-perch
+   33  needs nothing | keep pass(5) | drop pass(1)   e.g. normal 1025 w1-seed-perch; normal 1136 w1-seed-perch; normal 1700 w1-seed-perch; normal 3868 w1-seed-perch
+   37  needs nothing | keep pass(6) | drop pass(2)   e.g. normal 982 w1-seed-perch; normal 4106 w1-seed-perch; normal 4442 w1-seed-perch; normal 5088 w1-seed-perch
+    1  needs nothing | keep pass(6) | drop pass(5)   e.g. normal 24741 w1-leap-stones
+    1  needs nothing | keep pass(7) | drop pass(2)   e.g. normal 43770 w1-seed-perch
+    7  needs nothing | keep pass(7) | drop pass(3)   e.g. normal 9448 w1-seed-perch; normal 12522 w1-seed-perch; normal 14552 w1-seed-perch; normal 24432 w1-seed-perch

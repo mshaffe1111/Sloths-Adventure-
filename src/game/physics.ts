@@ -129,9 +129,19 @@ export function secondJumpV(vy: number, v2: number): number {
   return vy < 0 ? -Math.hypot(vy, v2) : -v2;
 }
 
-/** Maximum rise of a single full jump (px). */
+/**
+ * Maximum rise of a single full jump (px).
+ * CLOSED-FORM BALLISTICS, not the flown reach (R-165.61): reference/specs/reach.md §4 measured it against the
+ * real 30 fps engine; 1-1 is judged on src/game/gen2/reach.ts instead. Every other stage still reads this value; do not change it.
+ * (Flown: apex 97.8, 10 lower; the highest top climbed 123 block / 117 thin, reach.md §2.)
+ */
 export const JUMP_RISE = apex(PHYS.jumpV, PHYS.gravUp); // ~108
-/** Maximum rise of jump + double jump at apex (px). */
+/**
+ * Maximum rise of jump + double jump at apex (px).
+ * CLOSED-FORM BALLISTICS, not the flown reach (R-165.61): reference/specs/reach.md §4 measured it against the
+ * real 30 fps engine; 1-1 is judged on src/game/gen2/reach.ts instead. Every other stage still reads this value; do not change it.
+ * (Flown on 1-1 and Easy: apex 189.0 hold / 187.0 flick; climbs 214 / 212, reach.md §2.)
+ */
 export const DOUBLE_RISE = JUMP_RISE + apex(PHYS.doubleV, PHYS.gravUp); // ~185
 /** Airtime of a full single jump landing at the same height (s). */
 export const JUMP_AIRTIME = PHYS.jumpV / PHYS.gravUp + Math.sqrt((2 * JUMP_RISE) / PHYS.gravDown);
@@ -165,10 +175,12 @@ export const SIM_DTS = [1 / 30, 1 / 60] as const;
  * How far BEFORE the edge a player may have to take off for any required jump, at the very least (px). A gap that needs the
  * jump to start within a few pixels of the edge is a gap players fall into; every gap the generator builds or the validator
  * accepts leaves at least this much room.
+ * R-165.61: closed-form slack, not flown. On 1-1 the take-off rule is bands.md §1 (70 px Easy, 55 px Normal: gen2/reach.ts TAKEOFF).
  */
 export const TAKEOFF_SLACK = 70;
 
-/** Player half-width used for landing on platforms (0.48 * 44). */
+/** Player half-width used for landing on platforms (0.48 * 44). R-165.61: closed form; the engine lands him within 23.8 px (Normal) /
+ *  27.8 px (Easy) of an edge when falling onto it, 15.8 standing (reach.md §3). Other stages read this value: unchanged. */
 export const LAND_HALF = 21;
 
 export interface AirBody {
@@ -348,6 +360,8 @@ export const reachGlide = (dy: number, dbl: boolean) => reachMinGlide(dy, PHYS.j
 export const reachBounceGlide = (dy: number, dbl: boolean) => reachMinGlide(dy, PHYS.bounceV, dbl);
 
 /** Max horizontal gap for a normal jump / double jump / mushroom bounce. dy > 0 = target is higher. */
+// (R-165.61: closed-form ballistics, not the flown reach: reach.md §4 found reachJump(0) 33-69 px short for the single and 57-98 for
+// the double. 1-1 reads src/game/gen2/reach.ts; every other stage reads this, unchanged)
 export const reachJump = (dy: number, dbl: boolean) => reachMin(dy, PHYS.jumpV, PHYS.maxRun, dbl);
 export const reachBounce = (dy: number, dbl: boolean) => reachMin(dy, PHYS.bounceV, PHYS.maxRun, dbl);
 /**

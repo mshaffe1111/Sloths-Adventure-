@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { generateAllLevels } from './worldsData.ts';
 import { generateStage } from './stageGenerator.ts';
-import { validateStage } from './levelCheck.ts';
+import { validateAsJudged, validateStage } from './levelCheck.ts';
 import { reachGlide, reachJump } from './physics.ts';
 import { GLIDE, glideLift, glideStep, newGlide } from './glide.ts';
 import { ventLift, type Zone } from './zones.ts';
@@ -28,7 +28,8 @@ test('4-7 The Long Drop and 8-6 Glide by Moonlight cannot be finished without th
 test('no stage before 4-7 needs the leaf', () => {
   for (const l of levels.filter((x) => (x.worldIndex - 1) * 10 + x.miniIndex < 37 && x.objectiveType !== 'boss_lair')) {
     const s = generateStage(l);
-    assert.equal(validateStage(s).ok, true, l.id);
+    // (as the game judges it: 1-1 on its flown arcs, levelCheck.ts validateAsJudged; changed, INT-1-1)
+    assert.equal(validateAsJudged(s).ok, true, l.id);
   }
 });
 

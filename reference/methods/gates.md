@@ -12,6 +12,7 @@ Last proven: 2026-11-01, kaizen-gates (built clipcheck, playerText.test, knownch
 | 1 | `npx tsc --noEmit -p .` | type errors | about 2 min / in publish |
 | 2 | `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts` | every unit test, including `artUse.test.ts` (art made but never drawn) and `playerText.test.ts` (repeated, look-alike or filler player text; a journal page that repeats a line) | over 25 min in this container (run it in the background) / 6 shards side by side |
 | 3 | `npx vite build` | build errors, any asset over 4 MiB | about 10 s |
+| 3b | `node tools/perf/chunkcheck.mjs` (after the build) | a JS chunk over 3,994,304 B, 200 KB under Workbox's 4 MiB precache limit: the main script grows with every stage, and a file over the limit fails the build and offline play. Prints each chunk's size and spare. React, react-dom and scheduler sit in a static 'vendor' chunk (vite.config.ts manualChunks; R-165.103, 2026-11-11: main 3,944,491 B, vendor 218,749 B). Make room with more static manualChunks, never a dynamic import of anything a stage needs. `CHUNKCHECK_BUDGET=<bytes>` to try a budget | seconds / gates job |
 | 4 | `node tools/perf/artcheck.mjs` | an image over 4096 px on a side | seconds |
 | 5 | `node tools/perf/knowncheck.mjs` | a known-defect list that GREW (clipknown, playerText.known, limits.json, artUse.allow) compared with main | seconds |
 | 5b | `node tools/roadmapcheck.mjs` | open work with no R-id on reference/ROADMAP.md: a defect left for roadmap / next week / later, a known or allow list (and each clipknown group, each playerText.known key), a NEXT.md; a done item whose PR or commit is not in the history; a reused id | seconds / in the gates job (needs fetch-depth 0) |
@@ -21,7 +22,7 @@ Last proven: 2026-11-01, kaizen-gates (built clipcheck, playerText.test, knownch
 | 8 | `npx tsx tools/engine/seedlist.ts 1-1 --check` | a rolled stage's proven-seed list gone stale: a listed seed that no longer lays cleanly on Normal or Easy, or whose replayed plan is not its full search's stage (every part the lock hashes); a list under 300 or with a repeat. Rebuild with `npx tsx tools/engine/seedlist.ts 1-1` | about 1 min here / `rolled` CI job |
 | 9 | `node tools/perf/buildcheck.mjs` | the stage-start build too slow for a phone: 1-1 built as Play does (a proven seed's plan replayed), Chromium at CPU x4, p95 over 150 ms on Normal or Easy (2026-11-06: 105 / 136 ms) | about 3 min here / `rolled` CI job |
 
-In CI (`.github/workflows/deploy.yml`): the test shards and `gates.yml` (artcheck, knowncheck and clipcheck on one runner; drawcheck on its own runner) run side by side. `publish` needs all of them, so a failing gate blocks the live site.
+In CI (`.github/workflows/deploy.yml`): the test shards and `gates.yml` (artcheck, the build and chunkcheck, knowncheck and clipcheck on one runner; drawcheck on its own runner) run side by side. `publish` needs all of them, so a failing gate blocks the live site.
 
 ## Reading a breach
 - **clipcheck**: each line is `✗ <kind> <selector> "<text>" (<detail>)`, then where it was seen: `<screen> @ <up|side>/<fresh|old|done>`.

@@ -11,7 +11,8 @@ export const COACH_TEXT: Record<ControlStyle, Record<Exclude<CoachStep, null>, {
   },
   pad: {
     run: { title: 'Push the pad to run', sub: 'Press anywhere on the pad side of the screen and push sideways.', glyph: 'run' },
-    jump: { title: 'Press Jump', sub: 'Tap the Jump button to leap. Tap it again in the air for a double jump.', glyph: 'tap' },
-    nice: { title: 'Nice jump!', sub: 'Hold Jump a little longer to go higher.', glyph: 'tap' },
+    // (R-165.57: the pad's lines say what Dot's do: a held second Jump reaches 189 px, a tap-tap only 124 (helpLadder.ts MOVE_LINES.double.pad))
+    jump: { title: 'Press Jump', sub: 'Tap the Jump button to leap.', glyph: 'tap' },
+    nice: { title: 'Nice jump!', sub: 'In the air, hold Jump again for a double jump.', glyph: 'tap' },
   },
 };

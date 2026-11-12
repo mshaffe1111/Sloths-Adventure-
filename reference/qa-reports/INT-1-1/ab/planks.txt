@@ -1,0 +1,9 @@
+== planks
+    1  needs help | keep FAIL(4) | drop FAIL(2)   e.g. normal 3868 w1-two-answers drop: fell at x 24531 keep: fell at x 25661
+    1  needs help | keep pass(2) | drop FAIL(0)   e.g. normal 23893 w1-two-answers drop: fell at x 24171
+   82  needs help | keep pass(3) | drop FAIL(2)   e.g. normal 769 w1-dip-double-teach drop: fell at x 6070; normal 982 w1-double-teach drop: fell at x 6267; normal 1700 w1-dip-double-teach drop: fell at x 7591; normal 4106 w1-dip-double-teach drop: fell at x 6213
+   23  needs help | keep pass(4) | drop FAIL(3)   e.g. normal 1025 w1-dip-double-teach drop: fell at x 5615; normal 5542 w1-dip-double-teach drop: fell at x 6466; normal 5597 w1-double-teach drop: fell at x 6748; normal 6393 w1-dip-double-teach drop: fell at x 5970
+   64  needs help | keep pass(5) | drop FAIL(4)   e.g. normal 1753 w1-dip-double-teach drop: fell at x 6297; normal 2328 w1-dip-double-teach drop: fell at x 5576; normal 3038 w1-double-teach drop: fell at x 7344; normal 3868 w1-dip-double-teach drop: fell at x 7501
+   21  needs help | keep pass(6) | drop FAIL(5)   e.g. normal 1901 w1-double-teach drop: fell at x 7891; normal 5114 w1-double-teach drop: fell at x 6832; normal 6792 w1-double-teach drop: fell at x 7669; normal 9013 w1-double-teach drop: fell at x 6789
+   15  needs help | keep pass(7) | drop FAIL(6)   e.g. normal 1136 w1-bank-double-teach drop: fell at x 7407; normal 15965 w1-bank-double-teach drop: fell at x 5644; normal 17946 w1-bank-double-teach drop: fell at x 6508; normal 20104 w1-bank-double-teach drop: fell at x 7516
+    3  needs help | keep pass(8) | drop FAIL(7)   e.g. normal 22849 w1-bank-double-teach drop: fell at x 6417; normal 25701 w1-bank-double-teach drop: fell at x 6657; normal 36697 w1-bank-double-teach drop: fell at x 7601

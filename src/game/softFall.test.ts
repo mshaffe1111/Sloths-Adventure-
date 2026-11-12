@@ -49,6 +49,9 @@ for (const soft of [true, false]) {
     e.platforms.splice(0, e.platforms.length, ledge, bank);
     e.enemies.splice(0, e.enemies.length);
     e.currentStage.heartFalls = [{ x0: 800, x1: 1100, ...(soft ? { soft: true } : {}) }];
+    // (the toy is a plain Normal stage, not 1-1: 1-1's own brief makes every fall soft on both settings, R-165.86, and under that a
+    // zone's own rule could not be told apart. The last line still proves a zone's set-back leaves the stage's rule as it found it)
+    e.softOn = false;
     e.softAt = null;
     r.stand(600, ledge.y);
     for (let i = 0; i < 10; i++) r.frame({});

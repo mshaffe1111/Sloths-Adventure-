@@ -11,6 +11,7 @@
  *
  * Coordinates: x grows right, y grows DOWN (the engine's). "dy" in a template is screen dy: negative is up.
  */
+import type { Drop, RollVerdict } from './verdicts.types.ts';
 import type { Difficulty } from '../difficulty.ts';
 import type { Anchor, PieceSpec, RoomSpec } from '../puzzleKit.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
@@ -542,6 +543,10 @@ export interface GraphBrief {
   /** the end stands higher than the route where the bough window begins (V19b, 1-1's story promise: "up in the high branches"): the
    *  node that climbs late (after a late descent, or with none the signature) ends above the window's start too */
   endHigh?: boolean;
+  /** no fall in this stage costs a life, on Easy or Normal (1-1, where the controls are learned: the lead's ruling R-165.53, R-165.86):
+   *  a fall past the bottom anywhere that is not water sets him back on the ledge he left, nothing lost (Gen2Meta.softFalls; the
+   *  engine's softOn). The stage's gaps and soft zones are laid exactly as without it */
+  softFalls?: boolean;
 }
 /** a content type (NODES.md §7.2): what fills a content node; `structural` sections (arrive, rest, exit) sit outside the mix */
 export type ContentType = 'ground' | 'floating' | 'climb' | 'bounce' | 'rope' | 'crumble' | 'water' | 'hazard' | 'puzzle';
@@ -687,6 +692,8 @@ export interface Gen2Meta {
   flagMiss?: string[];
   /** the brief the rolled graph was rolled under (manifest graphs.briefs) */
   brief?: GraphBrief;
+  /** the stage's brief says no fall costs a life (GraphBrief.softFalls): what the engine reads (pipeline.ts softFallStage) */
+  softFalls?: true;
   /** each node as laid, for the gates that read the built stage (V18's nodePieces.ts, the stills spots): its token, the x-range its
    *  sections cover, its first block's landing x (NODES.md §8.7) when it has one, and a twist's two answers (B5) */
   nodes?: Array<{ token: string; x0: number; x1: number; block?: number; moves?: Array<'double' | 'bounce'> }>;
@@ -708,6 +715,12 @@ export interface Gen2Meta {
   barren: Array<[number, number]>;
   /** the route's gaps and what a fall into each one ends in (soft: a climb out; water or void: a life; a section's `water` gap is water) */
   falls?: Array<{ x0: number; x1: number; y: number; kind: PitKind }>;
+  /** the roll's verdicts by setting (R-165.61, ADR-001; pipeline applyVerdicts): the build's own setting, and on an Easy build Normal's
+   *  too (Easy lays Normal's plan). 1-1 is judged; every other stage carries every name as `notJudged` (THE BOUNDARY, packet E0a).
+   *  `errors` stays, and carries each failed verdict's line (rollErrors) */
+  verdicts?: Partial<Record<Difficulty, RollVerdict>>;
+  /** every fall on the route as a Drop: what it ends in and how its bottom is drawn (ADR-001 decision 6; from `falls`, which stays) */
+  drops?: Drop[];
 }
 
 /** the result: the stage the engine plays (GeneratedStage, with the hand-built stages' proto extras), and what gen2 built */

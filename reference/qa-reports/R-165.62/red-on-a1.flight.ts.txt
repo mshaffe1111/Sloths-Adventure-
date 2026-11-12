@@ -1,0 +1,28 @@
+// The red for done-item 2 (R-165.62): the same real put-backs on A1 alone (t-engine-putback@41c2e248): 12 at seed 3747's
+// w1-log-chain-rise on each setting, every recorder event counted. Run from a worktree of 41c2e248, copied to src/game/.
+import test from 'node:test';
+import './headlessDom.ts';
+import { RealPlay } from './realPlay.ts';
+import { setDifficulty } from './difficulty.ts';
+import { withPlaySeed } from './testlink1_1.ts';
+import { recorder } from './playRecorder.ts';
+test('A1 alone: 12 put-backs at the chain, help events counted', () => {
+  for (const set of ['easy', 'normal'] as const) {
+    setDifficulty(set);
+    const r = withPlaySeed(3747, () => new RealPlay('1-1', 1));
+    const ev: string[] = [];
+    const was = recorder.event;
+    recorder.event = function (this: typeof recorder, w: string, d?: string | number) { ev.push(`${w} ${d ?? ''}`); return was.call(this, w, d); } as typeof recorder.event;
+    const piece = (r.e as unknown as { currentStage: { meta: { pieces: Array<{ k: string; x0: number; x1: number }> } } }).currentStage.meta.pieces.find((q) => q.k === 'w1-log-chain-rise')!;
+    const log = r.platforms.filter((p) => p.type === 'solid' && p.style === 'log' && p.width >= 300 && p.x >= piece.x0 - 2).sort((a, b) => a.x - b.x)[0];
+    for (let k = 0; k < 12; k++) {
+      const n = ev.filter((v) => v.startsWith('softFall')).length;
+      r.stand(log.x + log.width - 40, log.y);
+      for (let i = 0; i < 6; i++) r.frame({});
+      for (let i = 0; i < 240 && ev.filter((v) => v.startsWith('softFall')).length === n; i++) r.frame({ right: i < 45 });
+      for (let i = 0; i < 10; i++) r.frame({});
+    }
+    recorder.event = was;
+    console.log(`${set}: put-backs ${ev.filter((v) => v.startsWith('softFall')).length}, help events ${ev.filter((v) => v.startsWith('help')).length}, Dot said: ${JSON.stringify(r.said.map((s) => s.text))}`);
+  }
+});

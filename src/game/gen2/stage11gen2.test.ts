@@ -6,6 +6,9 @@ import assert from 'node:assert/strict';
 import '../headlessDom.ts';
 import { RealPlay } from '../realPlay.ts';
 import { jumpOK } from '../levelCheck.ts';
+// (the double teach's gap as the verdict reads it, on the flown arcs: changed, INT-1-1: this file's own closed-form copy read the re-lay's
+// 253-256 px test gap as past a double's reach)
+import { doubleGap } from './promises11.ts';
 import { setDifficulty } from '../difficulty.ts';
 import { asQaBuildForTest } from '../playRecorder.ts';
 import { setPick11 } from '../testlink1_1.ts';
@@ -42,23 +45,6 @@ test('gen2 1-1 in the real engine: running into the first mushroom bounces him u
   }
 });
 
-/** the double teach's gap: from the double teach node on, the first gap within 1,500 px a plain jump can't cross and a double can */
-function doubleGap(platforms: Platform[], tip: number, death: number, soft: ReadonlyArray<{ x0: number; x1: number; soft?: boolean }> = []): { a: Platform; b: Platform; safe: boolean } | undefined {
-  const way: Platform[] = [];
-  for (const p of platforms.filter((q) => q.type === 'solid' && q.x + q.width > tip).sort((a, b) => a.x - b.x)) {
-    if (way.length && p.y > way[way.length - 1].y + 80) continue;
-    way.push(p);
-  }
-  for (let i = 0; i + 1 < way.length; i++) {
-    const [a, b] = [way[i], way[i + 1]];
-    if (b.x - (a.x + a.width) < 40 || b.x > tip + 1500) continue;
-    if (jumpOK(a, b, false).ok || !jumpOK(a, b, true).ok) continue;
-    const mid = (a.x + a.width + b.x) / 2;
-    // (safe: ground under the gap, or a soft heartFalls zone over it, where a miss puts him back on the take-off: the lead's ruling A)
-    return { a, b, safe: soft.some((z) => z.soft && mid >= z.x0 && mid <= z.x1) || platforms.some((p) => p !== a && p !== b && p.x <= mid && p.x + p.width >= mid && p.y > Math.max(a.y, b.y) && p.y < death) };
-  }
-  return undefined;
-}
 
 test('gen2 1-1: right after the double is taught, a gap only the second jump crosses (a miss lands him on safe ground under it)', () => {
   const bad: string[] = [];
@@ -66,7 +52,7 @@ test('gen2 1-1: right after the double is taught, a gap only the second jump cro
     const sim = roll(r), st = sim.stage as typeof sim.stage & { gen2?: { nodes?: Array<{ token: string; x0: number }> } };
     const teach = (st.gen2?.nodes ?? []).find((n) => /^T\w*2/.test(n.token));
     if (!teach) { bad.push(`Roll ${r}: no double teach node`); continue; }
-    const g = doubleGap(sim.platforms, teach.x0, st.waterY ?? st.config.levelHeight, st.heartFalls ?? []);
+    const g = doubleGap(sim.platforms, teach.x0, st.waterY ?? st.config.levelHeight, st.heartFalls ?? [], 'normal');
     if (!g) bad.push(`Roll ${r}: no gap only the second jump crosses within 1,500 px of the teach (x ${Math.round(teach.x0)})`);
     else if (!g.safe) bad.push(`Roll ${r}: nothing under the double gap at ${Math.round(g.a.x + g.a.width)}`);
   }
@@ -188,7 +174,9 @@ test('gen2 1-1, a fresh save: walking in from the left, the bounce lesson comes 
 
 test('the double-gap safety reading: a soft zone over the gap is safe; a bare gap with nothing under it and no zone is not (planted)', () => {
   const P = (id: number, x: number, y: number, width: number): Platform => ({ id, x, y, width, height: 300, type: 'solid', style: 'moss_stone' });
-  const ps = [P(1, 0, 600, 500), P(2, 700, 600, 500)];
-  assert.equal(doubleGap(ps, 0, 2000, [{ x0: 500, x1: 700, soft: true }])?.safe, true);
-  assert.equal(doubleGap(ps, 0, 2000, [])?.safe, false);
+  // (a 255 px level gap, the re-lay's test band: on the flown arcs one jump never crosses it and a double does; changed, INT-1-1: 200 px
+  // was past one jump only on the closed form)
+  const ps = [P(1, 0, 600, 500), P(2, 755, 600, 500)];
+  assert.equal(doubleGap(ps, 0, 2000, [{ x0: 500, x1: 755, soft: true }], 'normal')?.safe, true);
+  assert.equal(doubleGap(ps, 0, 2000, [], 'normal')?.safe, false);
 });

@@ -1,0 +1,42 @@
+{
+ "info": {
+  "coach": true,
+  "spot": 734,
+  "x": 140,
+  "input": "keys"
+ },
+ "coachDone": true,
+ "flickUp": 1,
+ "back": {
+  "offer": false,
+  "pauseMenu": false,
+  "asking": false,
+  "paused": false
+ },
+ "said": [
+  [
+   2.5,
+   "Flick up and forward to jump."
+  ],
+  [
+   10.7,
+   "Flick up again midair to jump twice."
+  ],
+  [
+   18.8,
+   "Jump, then flick up again in the air!"
+  ]
+ ],
+ "cb": [
+  "1.1 onCoach run",
+  "1.5 onCoach null",
+  "2 onCoach jump",
+  "2.6 onLesson fruit",
+  "3.1 onCoach nice",
+  "5.3 onCoach null",
+  "10.7 onGuide Flick up again in the air to jump twice",
+  "16.7 onGuide Jump, then flick up again in the air!",
+  "24.7 onGuide Jump, then flick up again in the air!"
+ ],
+ "input": "gesture"
+}

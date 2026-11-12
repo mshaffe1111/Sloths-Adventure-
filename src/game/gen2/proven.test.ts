@@ -27,8 +27,8 @@ test("a seed whose build fails is never played: the game's road plays a clean se
 });
 
 test('a clean seed is played as asked', () => {
-  // (Roll A, 79191: clean on both)
-  const n = provenGen2Stage({ config: c, kit: w1World(), seed: 79191, difficulty: 'normal' });
+  // (Roll A, 4106 since the re-lay (testlink1_1.json, C1): clean on both. Changed, INT-1-1: the old Roll A, 79191, no longer lays on the re-lay)
+  const n = provenGen2Stage({ config: c, kit: w1World(), seed: 4106, difficulty: 'normal' });
   assert.equal(n.gen2.proven, undefined, 'the walk moved off a clean seed');
   assert.deepEqual(n.gen2.errors ?? [], []);
 });

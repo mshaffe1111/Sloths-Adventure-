@@ -1,0 +1,10 @@
+chunkcheck: budget 3,994,304 B a chunk, 19 JS files
+  ok     3,982,950 B       11,354 spare  assets/index-B8rvdqx9.js
+  ok       218,749 B    3,775,555 spare  assets/vendor-FrbPb9NH.js
+  ok        56,642 B    3,937,662 spare  sw.js
+  ok        39,488 B    3,954,816 spare  assets/orchLoader-NVNCUpRJ.js
+  ok        28,555 B    3,965,749 spare  assets/musicFiles-B8OAUkeF.js
+  ok        15,112 B    3,979,192 spare  workbox-9c191d2f.js
+  ok         8,498 B    3,985,806 spare  assets/web-bMSfTPja.js
+  ok         7,785 B    3,986,519 spare  assets/dist-DjKWiKsS.js
+chunkcheck: PASS

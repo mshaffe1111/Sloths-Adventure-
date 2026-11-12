@@ -6,20 +6,23 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../headlessDom.ts';
-import { buildGen2Stage } from './pipeline.ts';
 import { w1World } from './worlds/w1.ts';
+import { buildPlayStage } from './seedList.ts';
+import { PROVEN_SEEDS } from './provenSeeds.ts';
 import { generateAllLevels } from '../worldsData.ts';
 
-test('gen2 1-1: one to three forks, apart, not in the opening or the final approach (24 seeds, both settings)', () => {
+// (changed, INT-1-1: judged on the first 24 LISTED seeds, as Play builds them, not raw rolls: on the re-lay only 8 of 24 raw builds were
+// clean, under the 12 this needs; a raw roll that is refused is never played)
+test('gen2 1-1: one to three forks, apart, not in the opening or the final approach (24 listed seeds, both settings)', () => {
   const c = generateAllLevels().find((l) => l.id === '1-1')!;
   const kit = w1World();
   const forkIds = new Set(kit.manifest.sections.filter((t) => t.jobs?.includes('fork')).map((t) => t.id));
   assert.ok(forkIds.size >= 2, `${forkIds.size} fork sections in the kit`);
   const bad: string[] = [];
   let judged = 0;
-  for (let seed = 1; seed <= 24; seed++) for (const difficulty of ['normal', 'easy'] as const) {
-    const st = buildGen2Stage({ config: c, kit, seed, difficulty });
-    if (st.gen2.errors?.length) continue;
+  for (const seed of PROVEN_SEEDS['1-1'].seeds.slice(0, 24)) for (const difficulty of ['normal', 'easy'] as const) {
+    const st = buildPlayStage(c, kit, seed, difficulty);
+    assert.deepEqual(st.gen2.errors ?? [], [], `listed seed ${seed} ${difficulty} builds cleanly`);
     judged++;
     const at = `seed ${seed} ${difficulty}`;
     const forks = st.gen2.sections.filter((s) => forkIds.has(s.template)).sort((a, b) => a.x0 - b.x0);
@@ -32,6 +35,6 @@ test('gen2 1-1: one to three forks, apart, not in the opening or the final appro
       prev = f.x1;
     }
   }
-  assert.ok(judged >= 12, `${judged} clean builds judged`);
+  assert.equal(judged, 48, `${judged} builds judged`);
   assert.deepEqual(bad.slice(0, 10), []);
 });

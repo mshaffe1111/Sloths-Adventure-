@@ -1,0 +1,6 @@
+{"port":"5190","setting":"easy","o":"land","RE":"A.step","samples":53,"settled":41,"dotOnHero":{"median":0,"max":0},"bubOnHero":0,"rocksOnScreen":3,"bubOnRock":{"median":0,"max":0}}
+{"port":"5190","setting":"easy","o":"port","RE":"A.step","samples":61,"settled":47,"dotOnHero":{"median":0,"max":0},"bubOnHero":0,"rocksOnScreen":2,"bubOnRock":{"median":0,"max":0}}
+{"port":"5190","setting":"normal","o":"port","RE":"Run.first","samples":57,"settled":46,"dotOnHero":{"median":0,"max":0},"bubOnHero":0,"rocksOnScreen":0,"bubOnRock":{"median":0,"max":0}}
+{"port":"5190","setting":"normal","o":"land","RE":"Run.first","samples":58,"settled":46,"dotOnHero":{"median":0,"max":0},"bubOnHero":0,"rocksOnScreen":0,"bubOnRock":{"median":0,"max":0}}
+{"port":"5190","setting":"easy","o":"land","RE":"Run.first","samples":76,"settled":60,"dotOnHero":{"median":0,"max":0},"bubOnHero":0,"rocksOnScreen":0,"bubOnRock":{"median":0,"max":0}}
+{"port":"5190","setting":"easy","o":"port","RE":"Run.first","samples":76,"settled":60,"dotOnHero":{"median":0,"max":0},"bubOnHero":0,"rocksOnScreen":0,"bubOnRock":{"median":0,"max":0}}

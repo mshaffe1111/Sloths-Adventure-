@@ -7,6 +7,7 @@ import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { pick11, play11Seed, roll11Seed, withPlaySeed } from './testlink1_1.ts';
+import { judgedOnArcs, linkArcs } from './gen2/reach.ts';
 import { buildPlayStage } from './gen2/seedList.ts';
 import { w1Finish, w1World } from './gen2/worlds/w1.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
@@ -2901,7 +2902,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
     // (H1 is for the unshipped gen2 1-1 only, the lead 11-06: the live gen2 worlds keep their hearts as they are)
     if (risky || GEN2_STAGES[config.id]) [...(stage.checkpoints ?? [])].sort((a, b) => a.x - b.x).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
-    const done = finishStage(stage, validateStage(stage, { rooms: false }).reachableIds);
+    const done = finishStage(stage, finishReach(stage, difficulty));
     // (World 5's dressing sets, once the pickups are all placed, so none is covered: artDress.ts dressSets)
     addDress(done as Parameters<typeof addDress>[0], layoutVariant ?? 1);
     return done;
@@ -2943,6 +2944,12 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
 }
 
 /** the passes every generated stage gets after its layout is checked (the old generator's and gen2's alike) */
+/** the platforms a gen2 stage's pickups are placed against (finishStage: trails, finds, fixPickups): on 1-1 the level jumps the flown
+ *  arcs cross too (R-165.61, gen2/reach.ts linkArcs), so a pickup past a 240-262 px gap is not moved back; every other stage as before */
+export function finishReach(stage: GeneratedStage, difficulty: Difficulty): number[] {
+  return validateStage(stage, { rooms: false, ...(judgedOnArcs(stage.config.id) ? { arcs: linkArcs(difficulty) } : {}) }).reachableIds;
+}
+
 function finishStage<T extends GeneratedStage>(stage: T, reachableIds: number[]): T {
   const config = stage.config;
   addSecrets(stage);

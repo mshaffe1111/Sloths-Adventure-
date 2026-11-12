@@ -23,6 +23,9 @@ import { W5_STEP_HELP, W5_STEP_HELP_KEYS, W5_STEP_HELP_PAD } from './w5Lines.ts'
 import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
+import { maxGap, softFallStage } from './gen2/pipeline.ts';
+import { HelpLadder, setGrownSteps, LINE_UP_S, LINE_WAIT_S, takeHelpOnScreen, moveLine, pieceMoveLaid, setHelpLadder, stepPlan, stepsFor, STEP_CUT, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
+import { pickCut } from './w1CutArt.ts';
 import { difficulty, easeInShare, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
@@ -51,7 +54,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, DOUBLE_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
+import { ASSIST, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, HANG_PICK, ROPE_FROM, ROPE_GRAB, ROPE_SLIDE, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
@@ -396,6 +399,10 @@ function debrisLook(color: string): 'star' | 'leaf' | 'grit' | 'earth' {
   return 'earth';
 }
 
+/** the most the view moves up in one frame while it keeps a bouncing or double-jumping hero under the HUD (px of world; the eased view's
+ *  old worst step was 10.8, INT-1-1) */
+const CAM_RISE_STEP = 11;
+
 export class GameEngine {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
@@ -564,6 +571,8 @@ export class GameEngine {
   private vineLashed = false;
   /** the height the camera keeps level with, and its eased look-ahead (cameraFollow.ts) */
   private camAnchorY = NaN;
+  /** the view was lifted for a bounce (updateCamera's `lift`): its way back down is held to CAM_RISE_STEP a frame too */
+  private camLifted = false;
   private camLookX: number = CAM.lookAhead;
   /** the way the view looks (his facing, held through a swing), and the facing he caught the swinging vine with */
   private camFacing = 1;
@@ -830,10 +839,15 @@ export class GameEngine {
     // (a gen2 stage, gen2/game.ts, is laid for Easy by its own pipeline: the difficulty goes in with the build)
     this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config, 'easy'))) : withGoals(generateStage(config, 'normal'));
     // (gen2 lays real soft pits on Easy; a boss's arena and 1-8's chase keep their own rules)
-    this.softOn = isEasy() && !isGen2Stage(config) && config.objectiveType !== 'boss_lair' && !this.currentStage.arena;
+    // (a stage whose brief says no fall costs a life has them on both settings, from its own data: 1-1, gen2/pipeline.ts softFallStage.
+    // 1-1 is not in GEN2_STAGES, so isGen2Stage('1-1') is false and Easy had them there before the brief said so)
+    this.softOn = softFallStage(this.currentStage) || (isEasy() && !isGen2Stage(config) && config.objectiveType !== 'boss_lair' && !this.currentStage.arena);
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
+    // (the help ladder, helpLadder.ts: 1-1 only, its pieces as laid; off on every other stage until help.md §5 has passed)
+    this.help = config.id === '1-1' && softFallStage(this.currentStage) && this.currentStage.meta?.pieces?.length ? new HelpLadder(isEasy() ? 'easy' : 'normal', this.currentStage.meta.pieces, undefined, (pc) => this.canGrowAt(pc)) : null;
+    setHelpLadder(this.help);
     // each liana's own swing: its size (neighbours' swings never meet) and its place in the swing (physics.ts swingSetup)
     swingSetup(this.vines);
     this.ropes = this.currentStage.ropes ?? [];
@@ -896,6 +910,9 @@ export class GameEngine {
     // frame it arrives, not when he meets it (sheetWarm.ts: QA's 'blank wait' lines and the freezes after a sheet)
     this.arrivals = new ArrivalWarm(warmStageSheets({ enemies: this.enemies, vines: this.vines, proto: this.proto, ropes: this.ropes }));
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
+    // (1-1: since R-165.86 every fall there is soft, so Dot's "No soft moss up here!" (gen2 w1.ts's hint.1-1.noMoss socket) is false: never
+    // said, R-165.62. Marked heard, not taken out of the stage the next roll reads)
+    if (this.help && this.proto) for (const h of this.proto.hints) if (h.text === 'No soft moss up here!') h.shown = true;
     if (this.currentStage.waterHint) this.currentStage.waterHint.shown = false;
     this.passTips = [];
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
@@ -1190,10 +1207,14 @@ export class GameEngine {
       this.pauseHeld = air ? { jump: this.gameTime - this.heldJumpAt < HELD_RECENT, dir: this.gameTime - this.heldDirAt < HELD_RECENT ? this.heldDir : 0 } : null;
     }
     this.isPaused = true;
+    if (this.helpAsking) this.outerPause = true;
   }
 
   public resume() {
     const was = this.isPaused;
+    this.outerPause = false;
+    // (Normal's help offer is up: the stage stays still until it is answered, whatever else let go of the pause)
+    if (this.helpAsking) return;
     this.isPaused = false;
     this.lastTime = performance.now();
     this.lastRenderTime = this.lastTime;
@@ -1218,6 +1239,20 @@ export class GameEngine {
   public stop() {
     // the stage ended the normal way (cleared, restarted, left): nothing to come back to
     clearFlag();
+    // (the help ladder's counts and its grown steps go with the stage)
+    if (this.grown.length) {
+      const gone = (q: Platform) => !this.grown.includes(q);
+      this.platforms = this.platforms.filter(gone);
+      this.drawPlats = this.drawPlats.filter(gone);
+      this.paintedPlats = this.paintedPlats.filter(gone);
+      this.grown = [];
+    }
+    this.help?.end();
+    this.helpAsking = null;
+    this.helpDue = null;
+    this.helpLine = null;
+    setHelpLadder(null);
+    setGrownSteps([]);
     // (the banner goes back to its usual place for whatever comes next)
     if (typeof document !== 'undefined') {
       delete document.documentElement.dataset.wayLow;
@@ -1434,6 +1469,19 @@ export class GameEngine {
    * Main Physics & Simulation Tick (30 FPS)
    */
   private update(dt: number) {
+    // (the help offer is up: nothing moves until it is answered)
+    if (this.helpAsking) return;
+    if (this.helpLine && !this.helpLine.shown && takeHelpOnScreen() === this.helpLine.text) {
+      this.helpLine.shown = true;
+      this.helpLine.until = this.gameTime + LINE_UP_S;
+    }
+    if (this.helpLine && this.gameTime >= this.helpLine.until) this.helpLineDown();
+    if (this.helpDue && this.irisOpen <= 0 && this.player.grounded) {
+      const a = this.helpDue;
+      this.helpDue = null;
+      this.askHelp(a);
+      return;
+    }
     // a life lost: the world holds for the beat (AN-1; in update, so the bots that play the engine directly have it too)
     if (this.down) {
       this.stepDown(dt);
@@ -2468,6 +2516,8 @@ export class GameEngine {
         const prev = this.softAt;
         const fellOnto = !!prev && g && g.y > prev.y + 100 && g.width < 400 && !(prev.x >= g.x && prev.x <= g.x + g.width);
         if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60 && !fellOnto) this.softAt = { x: Math.max(g.x + 30, Math.min(g.x + g.width - 30, p.x)), y: g.y, x0: g.x, x1: g.x + g.width };
+        // (standing past a piece the help ladder counts resets it: one compare, helpLadder.ts stood)
+        if (g && this.help) this.help.stood(p.x);
       }
       // (the water a stage draws, proto.water: a splash where he goes in, once, then the stage's own fall)
       const zone = this.proto?.water?.find((z) => p.x > z.x0 && p.x < z.x1);
@@ -4541,7 +4591,8 @@ export class GameEngine {
     if (this.boss && !this.boss.defeated && (this.entrance || this.entranceDone)) return;
     if (p.grounded) this.wallWasAhead = this.wallAhead();
     const air = !p.grounded && !p.climbing && !p.isVineSwinging;
-    if (this.stuck.tick({ grounded: !air, x: p.x, y: p.y, doubleJumping: !!p.isDoubleJumping, wallAhead: this.wallWasAhead })) {
+    // (in 1-1 the help ladder's line at 3 replaces it: its "Too tall" breaks the story's first guard, help-lines.md)
+    if (this.stuck.tick({ grounded: !air, x: p.x, y: p.y, doubleJumping: !!p.isDoubleJumping, wallAhead: this.wallWasAhead }) && !this.help) {
       this.guide(stuckLine(lessonInputMode()), 6);
       // (in World 5 the stillness waits while she says it: her help is read, not the silk's warning over it)
       this.w5?.holdStill(STUCK_HOLD);
@@ -4989,12 +5040,152 @@ export class GameEngine {
     return true;
   }
 
+  // ───────────────────────────── the help ladder (R-165.62, helpLadder.ts) ─────────────────────────────
+  /** 1-1's help ladder (null on every other stage) */
+  private help: HelpLadder | null = null;
+  /** the steps the ladder grew this run (cleared with the stage: never in the stage's own platform list) */
+  private grown: Platform[] = [];
+  /** Normal's offer, due once the set-back's iris has opened and he stands (asked over the closed iris, the stage behind was black) */
+  private helpDue: HelpAct | null = null;
+  /** Normal's offer is up: the stage holds still until it is answered */
+  private helpAsking: { k: string; count: number; cut?: string } | null = null;
+  /** the stage was paused from outside (the menu) while the offer was up: answering it does not start play under the menu */
+  private outerPause = false;
+  /** how the offer is put on screen (HelpOffer.tsx, loaded only when first asked); the tests answer it themselves */
+  helpAsk: (o: { reask: boolean; cut?: string }, answer: (yes: boolean) => void) => void = (o, answer) => {
+    void import('../components/HelpOffer.tsx').then((m) => m.showHelpOffer(o, answer));
+  };
+
+  /** a put-back in 1-1: the ladder counts it, and whatever rung it reaches happens now */
+  private helpPutBack(x: number) {
+    const help = this.help!;
+    const s = help.setting === 'easy' ? 'E' : 'N';
+    for (const a of help.putBack(x)) {
+      recorder.event('help', `${a.rung} ${a.piece.k} ${a.count} ${s}`);
+      if (a.rung === 'move') this.helpSay(moveLine(this.pieceMove(a.piece), lessonInputMode()), 6);
+      else if (a.rung === 'step') {
+        this.growSteps(a.piece);
+        this.helpSay(STEP_LINE, 5);
+      } else if (a.rung === 'offer' || a.rung === 'reask') this.helpDue = a;
+      // ('pad': quiet, padControl reads helpLadder.padFullJump)
+    }
+  }
+
+  /** the move a piece needs, from the piece as laid (helpLadder.ts pieceMoveLaid) */
+  private pieceMove(piece: Piece) {
+    const road = this.roadBoxes();
+    return pieceMoveLaid(piece, road, road.filter((q) => q.bouncy), this.plainGap());
+  }
+  /**
+   * the stage's standing pieces as the step code reads them: solid and bouncy, each with its mushroom and catch marks. A hollow log is
+   * road like any log (INT-1-1): gen2 lays its platform the art's full height (pipeline.ts, hollowLogSize), so its inside does not let
+   * him through today, and a step promised past it got him nowhere (w1-hollow-twoway on Normal, 18 of 200 listed seeds)
+   */
+  private roadBoxes() {
+    return this.platforms
+      .filter((q) => (q.type === 'solid' || q.type === 'bouncy') && !q.broken && !q.push && !q.chase && !this.grown.includes(q))
+      .map((q) => ({ x: q.x, y: q.y, width: q.width, height: q.height, bouncy: q.type === 'bouncy', catch: !!q.catch }));
+  }
+  /** the widest gap a plain single jump makes for a rise (gen2's jump envelope at the stage's own margin) */
+  private plainGap() {
+    const margin = (this.currentStage as { gen2?: { budget?: { margin?: number } } }).gen2?.budget?.margin ?? (isEasy() ? 0.65 : 0.82);
+    return (dyUp: number) => maxGap(dyUp, false, margin);
+  }
+
+  /** the ladder's line up in her bubble, and when it comes down (game time) */
+  private helpLine: { text: string; until: number; shown: boolean } | null = null;
+  private helpSay(text: string, seconds: number) {
+    this.helpLineDown();
+    // (an older line's on-screen report is stale: this one counts from its own)
+    takeHelpOnScreen();
+    this.guide(text, seconds);
+    this.helpLine = { text, until: this.gameTime + LINE_WAIT_S, shown: false };
+  }
+  /** takes the ladder's line down (DotGuide passedLine): after its time, and always when the offer opens */
+  private helpLineDown() {
+    if (!this.helpLine) return;
+    this.callbacks.onGuide?.(this.helpLine.text, 0, true);
+    this.helpLine = null;
+  }
+
+  /** the boxes the ladder would grow at a piece, from the piece as laid (helpLadder.ts stepsFor) */
+  private stepBoxes(piece: Piece) {
+    return stepsFor(piece, this.roadBoxes(), this.plainGap());
+  }
+  /** whether the ladder may promise a step at a piece: something grows, and after it every join there is a plain jump (stepPlan) */
+  private canGrowAt(piece: Piece) {
+    const p = stepPlan(piece, this.roadBoxes(), this.plainGap());
+    return p.boxes.length > 0 && p.unsolved === 0;
+  }
+
+  /** a grown piece: a step stands on its log as a World 1 stone, a pad floats as a plank (w1CutArt.ts pickCut: art already in the atlas) */
+  private stepPlatform(b: { x: number; y: number; width: number; height: number; plank?: boolean }, id: number): Platform {
+    const pf: Platform = { id, x: b.x, y: b.y, width: b.width, height: b.height, type: 'solid', style: b.plank ? 'log' : 'moss_stone', ownLook: true };
+    // (a step is always the one mossy rock, so the offer's YES picture is exactly what grows; a pad is a plank)
+    const cut = b.plank ? pickCut(pf) : STEP_CUT;
+    if (cut) pf.cut = cut;
+    return pf;
+  }
+
+  /** grows a piece's steps (each one addStep) */
+  private growSteps(piece: Piece) {
+    let id = 1 + this.platforms.reduce((m, q) => Math.max(m, q.id), 0);
+    for (const b of this.stepBoxes(piece)) this.addStep(this.stepPlatform(b, id++));
+    setGrownSteps(this.grown);
+  }
+
+  /**
+   * the one way a step joins the stage: into the platforms he stands on AND the list it is drawn from (a cut piece is drawn by
+   * protoArt's painted pass over this.platforms; anything else by terrain from drawPlats/paintedPlats). Each list is copied, never pushed
+   * into: `platforms` starts as the stage object's own array, which a restart or a later roll reads.
+   */
+  public addStep(pf: Platform) {
+    const was = this.platforms;
+    this.platforms = [...was, pf];
+    this.drawPlats = this.drawPlats === was ? this.platforms : [...this.drawPlats, pf];
+    if (!paintedPlatforms([pf]).has(pf.id)) this.paintedPlats = [...this.paintedPlats, pf];
+    this.grown.push(pf);
+  }
+
+  /** Normal's offer (or its one re-ask): the stage holds still and the offer is shown; its answer comes to answerHelp */
+  private askHelp(a: HelpAct) {
+    const cut = STEP_CUT;
+    // (her bubble is clear while the offer is up, and stays clear after a no)
+    this.helpLineDown();
+    this.helpAsking = { k: a.piece.k, count: a.count, cut };
+    this.outerPause = false;
+    this.isPaused = true;
+    recorder.event('helpOffer', `shown ${a.piece.k} ${a.count}`);
+    this.helpAsk({ reask: a.rung === 'reask', cut }, (yes) => this.answerHelp(yes));
+  }
+
+  /** the offer answered (Back is a no): a yes grows the steps; play goes on unless the menu is up */
+  public answerHelp(yes: boolean) {
+    const h = this.helpAsking;
+    if (!h || !this.help) return;
+    this.helpAsking = null;
+    recorder.event('helpOffer', `${yes ? 'yes' : 'no'} ${h.k} ${h.count}`);
+    if (this.help.answer(h.k, yes)) {
+      const piece = this.currentStage.meta!.pieces!.find((q) => q.k === h.k)!;
+      recorder.event('help', `step ${h.k} ${h.count} N`);
+      this.growSteps(piece);
+    }
+    if (!this.outerPause) this.resume();
+  }
+
+  /** what the help ladder has done this run (the tests and the stills read it) */
+  public helpState() {
+    return { asking: this.helpAsking, grown: this.grown.slice(), paused: this.isPaused, on: !!this.help };
+  }
+
   /** Easy's soft fall on land (softOn): back on the last still ground he stood on, nothing lost. False when it does not apply */
   private softFall(): boolean {
     const at = this.softAt;
     if (!this.softOn || !at) return false;
     const p = this.player;
     recorder.event('softFall', Math.round(p.x));
+    // (the x he fell at: the piece he was trying to reach, for the help ladder once he is back on his ledge)
+    const fellX = p.x;
     sound.playWhoosh();
     // (set back clear of the edge he left by, 150 px or half the ledge: at the edge itself a held direction walked him straight off
     // again, 9 set-backs in 12 s on gen2 1-1 Roll A Easy, the red team's F10)
@@ -5024,6 +5215,7 @@ export class GameEngine {
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
     this.camAnchorY = NaN;
+    if (this.help) this.helpPutBack(fellX);
     return true;
   }
 
@@ -5486,11 +5678,20 @@ export class GameEngine {
     // his head stays under the HUD along the top, whatever the view wanted (cameraFollow.ts HUD_BAND): measured from the ground he
     // stands on (in the air, the height the camera keeps level with), so a hop does not drag the view up after him
     const band = (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom;
-    const refY = p.grounded || !Number.isFinite(this.camAnchorY) ? p.y : this.camAnchorY;
+    // (in the air: up to a plain jump's rise over that height, the view stays where it is (a hop never drags it); past it (a mushroom's
+    // bounce, a double) the height it keeps him under the HUD by comes up at three times his own climb, and is his own height from one and
+    // a half jumps' rise up (a bounce tops out higher, about 180): bouncing up beside 1-1's high seed-perch log his hands and the petals
+    // over it went under the HUD (INT-1-1, seed 4106 x29700 sideways). Continuous: at one jump's rise it is the height he left)
+    // (the height he will top out at, from his climb now: the view starts toward it on the bounce's first frame, so at no more than
+    // CAM_RISE_STEP a frame it is there by the top, INT-1-1 delta 2: read from where he is, it started too late to ease)
+    const topY = !p.grounded && p.vy < 0 ? p.y - (p.vy * p.vy) / (2 * PHYS.gravUp) : p.y;
+    const lift = !p.grounded && Number.isFinite(this.camAnchorY) && topY + JUMP_RISE < this.camAnchorY;
+    const refY = p.grounded || !Number.isFinite(this.camAnchorY) ? p.y : Math.min(this.camAnchorY, Math.max(topY, 3 * topY + 3 * JUMP_RISE - 2 * this.camAnchorY));
     this.camera.targetY = Math.min(this.camera.targetY, underHud(refY, band));
 
     // Smooth damp camera
     const smoothFactor = Math.min(1, dt * RUN.follow);
+    const y0 = this.camera.y;
     this.camera.x += (this.camera.targetX - this.camera.x) * smoothFactor;
     this.camera.y += (this.camera.targetY - this.camera.y) * smoothFactor;
     // the easing never loses him off the side: the aim keeps him in the view, but on a narrow view the eased camera trailed a quick swing
@@ -5501,6 +5702,16 @@ export class GameEngine {
     this.camera.x = kept + (this.camera.x - kept) * teaK;
     // (standing, never even for a moment while the view eases)
     if (p.grounded) this.camera.y = Math.min(this.camera.y, underHud(p.y, band));
+    // (and rising past a plain jump's height, toward the same hold, but never more than CAM_RISE_STEP a frame: the eased view trailed a
+    // bounce by 50 px and more, and a hold applied at once moved the view 44-72 px in one frame, a snap (the Critic, INT-1-1); the old
+    // worst step was 10.8. It acts only once he is a jump's rise over the height he left, where refY is that height)
+    else if (lift) this.camera.y = Math.max(Math.min(this.camera.y, underHud(refY, band)), y0 - CAM_RISE_STEP);
+    // (and back down after it the same way: the eased return from a lifted view stepped 15 px a frame)
+    if (lift) this.camLifted = true;
+    else if (this.camLifted) {
+      if (this.camera.y > y0 + CAM_RISE_STEP) this.camera.y = y0 + CAM_RISE_STEP;
+      if (Math.abs(this.camera.y - this.camera.targetY) < 1 || this.camera.y <= y0) this.camLifted = false;
+    }
 
     // Clamp camera within stage bounds
     this.camera.x = Math.max(0, Math.min(this.currentStage.config.levelWidth - vw, this.camera.x));

@@ -8,7 +8,6 @@
  */
 import { buildGen2Stage, provenGen2Stage } from './pipeline.ts';
 import { PROVEN_SEEDS } from './provenSeeds.ts';
-import { promiseBreaches11 } from './promises11.ts';
 import type { BuildRequest, Gen2Stage, PlanSlot, WorldKit } from './types.ts';
 import type { LevelConfig } from '../types.ts';
 import type { Difficulty } from '../difficulty.ts';
@@ -111,10 +110,12 @@ export function seedListBreaches(config: LevelConfig, kit: () => WorldKit, seeds
   seeds.forEach((seed, i) => {
     for (const difficulty of ['normal', 'easy'] as const) {
       const full = buildGen2Stage({ config, kit: kit(), seed, difficulty });
+      // (R-165.61: the roll's verdict on this setting, by name: 1-1's arcs, drops and its promises, judged by the pipeline from ONE registry,
+      // promises11.ts PROMISES_11, whose `settings` say where each applies; no substring filter. A refused verdict is in `errors` too)
+      const v = full.gen2.verdicts?.[difficulty];
+      if (v && !v.accepted) { out.push(`${config.id} seed ${seed} ${difficulty}: verdict ${v.failed[0].name}: ${v.failed[0].line}`); continue; }
       const errs = full.gen2.errors ?? [];
       if (errs.length) { out.push(`${config.id} seed ${seed} ${difficulty}: ${errs[0]}`); continue; }
-      // (1-1's player promises: a roll that breaks one is never proven, promises11.ts)
-      if (config.id === '1-1') { const pb = promiseBreaches11(full as never).filter((b) => difficulty === 'normal' || !b.includes('double')); if (pb.length) { out.push(`${config.id} seed ${seed} ${difficulty}: ${pb[0]}`); continue; } }
       if (!plans) continue;
       const rep = buildGen2Stage({ config, kit: kit(), seed, difficulty, replay: unpackPlan(plans.plans[i], plans.dict) });
       const a = stageParts(full), b = stageParts(rep);
