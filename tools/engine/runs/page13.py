@@ -20,9 +20,16 @@ lib('library.ts', 'lib12.ts'); lib('library13.ts', 'lib13.ts')
 p = wt / 'src/game/stageGenerator.ts'
 s = p.read_text()
 if 'lib13.ts' not in s:
-    a = "export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {\n"
-    assert a in s
-    s = s.replace(a, a + "  // PAGE13 (never committed): 1-3 as the test-side roll\n  if (config.id === '1-3' && !config.secret) return w1Finish(buildGen2Stage({ config: config13({ flown: true }) as never, kit: kitLib13({ flown: true }), seed: (globalThis as { __SEED13?: number }).__SEED13 ?? 1, difficulty }) as never) as GeneratedStage;\n", 1)
+    # 1-3 goes down the GEN2 road, so the game's own finishing passes run on it (a heart by every second flag, finishStage, the
+    # dressing): hand-built 1-3 is skipped, and the gen2 branch builds it from library13 on the seed in window.__SEED13
+    def rep(a, b):
+        global s
+        assert s.count(a) == 1, a[:70]
+        s = s.replace(a, b)
+    rep("if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled() && !gen2Roll11) {", "if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled() && !gen2Roll11 && config.id !== '1-3') {")
+    rep("  if (isGen2Stage(config) || roll11) {", "  const page13 = config.id === '1-3' && !config.secret; // PAGE13 (never committed)\n  if (isGen2Stage(config) || roll11 || page13) {")
+    rep("    const stage = roll11 ? w1Finish(buildPlayStage(config, w1World(), seed11, difficulty)) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);",
+        "    const stage = page13 ? w1Finish(buildGen2Stage({ config: config13({ flown: true }) as never, kit: kitLib13({ flown: true }), seed: (globalThis as { __SEED13?: number }).__SEED13 ?? 1, difficulty }) as never) : roll11 ? w1Finish(buildPlayStage(config, w1World(), seed11, difficulty)) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);")
     s = "import { config13, kitLib13 } from './gen2/lib13.ts';\nimport { buildGen2Stage } from './gen2/pipeline.ts';\n" + s
     p.write_text(s)
-print('page13: the worktree at', wt, 'builds 1-3 from library13 (flown)')
+print('page13: the worktree at', wt, 'builds 1-3 from library13 (flown), through the game\'s own gen2 finishing passes')
