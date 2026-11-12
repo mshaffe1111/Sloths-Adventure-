@@ -50,6 +50,23 @@ A2 (ADR-001). Sections 0a-0b below are still true.
   at a list rebuild); the window read where the gate reads it (67% of x, the highest piece there) instead of by slot; the deal
   weighing height (a test dealt climb beside a climb node cannot fit the corridor).
 
+## 0e. The piece library (EN-L, 11-11): a stage's brief, not its sections, says what it is
+- **Four things are the brief's now, applied by the lay (gen2/types.ts GraphBrief; nothing shipped sets them yet):** `pits` ('hurt': a
+  hollow under every section pit; 'lesson': only under sections that teach or use the hurt floor's lesson), `petals: 'low'` and
+  `offRoad: 'fruit'` (fillSockets), `trend: 'level'` (a seam's step and the pick lean to the start height, pipeline LEVEL_SWING), and
+  `pick` (stagePool: the whole library by need; `feel` only excludes through `pick.refuse`, which also empties a socket whose
+  `allow` starts with a refused name). Tests: briefPits, briefPickups, briefPick (gen2/), each on 1-1's OWN sections and proven plans.
+- **The proof is a tool, run it before and after any change here:** `npx tsx tools/engine/library.ts --seeds 120 --par 3 --flown`
+  (1-2's brief from World 1's sections plus the chain bricks; 11-11: 61% / 56% clean but for the unpainted thorn bed, 0 throws).
+  `library-where.ts <from> <n> [regex]` names the section behind each refusal: read it before guessing.
+- **TRAP, the corridor's middle:** a step join leans to the middle of `manifest.corridor`. World 1's sits 410 px over its floor, so any
+  World 1 stage that is not `level` climbs at every seam whatever its sections do. A level stage also needs room UNDER the floor
+  line (World 1 has 80 px): a per-stage corridor row is not built; the tool overrides it test-side (ROOM_12).
+- **TRAP, a height complaint:** print each laid section's entry and exit height first (two guesses cost 15 minutes here).
+- **One brick, two worlds (A13):** `SectionPiece.slot` + `WorldManifest.slots` (gen2/brickSlots.ts helpers, test-only). Nothing draws
+  `PlacedPiece.art` yet; boughs and mushrooms have no inventory key. The inventory files came unchanged from t-engine-inventory.
+- **Still welded:** World 1's `feel` lists hold stage ids until 1-1's brief takes `pick` and its list is rebuilt.
+
 ## 0c. Rulings and facts to keep (INT-1-1, 11-11)
 - **The help promises only what gets him through** (the lead's ruling): `engine.canGrowAt(piece)` = something grows AND
   `stepPlan(...).unsolved === 0`. HelpLadder's canGrow is that call (Easy's step at 8, Normal's offer at 12, the re-ask). The pieces where
