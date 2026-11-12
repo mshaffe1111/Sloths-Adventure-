@@ -1,0 +1,18 @@
+== harvest-12-A 
+rolls: {"built":30,"floating":28,"poolShort":29,"v3":30,"cleanButV":1} (floating = a roll with "no floating section left
+throws 30 of 60 sections per roll 14 - 14
+== harvest-12-A NOARR=1
+rolls: {"built":56,"floating":52,"poolShort":55,"v3":56,"cleanButV":1} (floating = a roll with "no floating section left
+throws 4 of 60 sections per roll 14 - 16
+== harvest-12-B 
+rolls: {"built":2,"floating":2,"poolShort":2,"v3":2,"cleanButV":0} (floating = a roll with "no floating section left"; p
+throws 58 of 60 sections per roll 16 - 16
+== harvest-12-B NOARR=1
+rolls: {"built":59,"floating":57,"poolShort":59,"v3":54,"cleanButV":0} (floating = a roll with "no floating section left
+throws 1 of 60 sections per roll 16 - 17
+== harvest-12-C 
+rolls: {"built":60,"floating":29,"poolShort":53,"v3":60,"cleanButV":7} (floating = a roll with "no floating section left
+throws 0 of 60 sections per roll 15 - 16
+== harvest-12-C NOARR=1
+rolls: {"built":60,"floating":29,"poolShort":53,"v3":60,"cleanButV":7} (floating = a roll with "no floating section left
+throws 0 of 60 sections per roll 15 - 16
