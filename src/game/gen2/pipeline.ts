@@ -2666,6 +2666,11 @@ function topUpFoes(
   return out;
 }
 
+/** the cast record a built stage carries: only when its brief names a cast (nothing is written on any other stage) */
+function castOf(kinds: readonly string[] | undefined, proto: ProtoExtras): { cast?: NonNullable<ProtoExtras['cast']> } {
+  return kinds?.length ? { cast: { kinds: [...kinds], traps: proto.cast?.traps ?? [] } } : {};
+}
+
 function makeEnemy(c: CreatureDef, x: number, top: number, patch: [number, number], id: number, soften: boolean): Enemy {
   return {
     id,
@@ -2819,7 +2824,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     ...(sink.zones.length ? { zones: sink.zones } : {}),
     ...(laid.heartFalls.length ? { heartFalls: laid.heartFalls } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
-    proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}),
+    // (a brief that names a cast: the kinds the kit runs, with whatever drop traps the stage's props laid, castPlay.types.ts)
+    proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}, castOf(req.kit.manifest.graphs?.briefs?.[budget.id]?.cast, proto)),
     meta: { attempt: seed, chunks: laid.sections.map((s) => s.template), width: laid.width, pieces: laid.sections.map((s) => ({ k: s.template, x0: R(s.x0), x1: R(s.x1), beat: s.phase })) },
     gen2: meta,
   };

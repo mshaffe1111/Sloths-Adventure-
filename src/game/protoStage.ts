@@ -123,6 +123,8 @@ export const waterArt = (kind: WaterKind | undefined): 'pit' | 'calm' => (kind =
 export interface ProtoExtras {
   hints: StageHint[];
   covers: LeafCover[];
+  /** the stage's cast and drop traps, when its brief names a cast (castPlay.types.ts): the kit runs these animals, not predatorAI.ts */
+  cast?: import('./castPlay.types.ts').CastData;
   /** the beats, for the blueprint and the tests: [x0, x1, name] */
   beats: Array<[number, number, string]>;
   /** pickups the last pass had to move to where he can get them (flowerReach.ts): a hand-built stage should need none */

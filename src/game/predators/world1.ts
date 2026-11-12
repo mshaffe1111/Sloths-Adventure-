@@ -30,7 +30,8 @@ export const SNAKE: PredatorDef = {
   giveUp: 1.5,
   easy: EASY,
   beatenBy: {
-    punch: { ends: 'stunned', seconds: 2 },
+    // 70 px: a third of a short branch, so a snake he has crowded to the end goes off in one punch and one mid-branch in two or three
+    punch: { ends: 'stunned', seconds: 2, knock: 70 },
     trap: { ends: 'chasedOff' },
     stomp: { ends: 'flees', seconds: 5 },
     kick: { ends: 'chasedOff' },

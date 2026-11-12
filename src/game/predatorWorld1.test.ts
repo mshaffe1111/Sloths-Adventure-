@@ -60,6 +60,26 @@ test('snake, way 1 (taught first, 1-3): a punch stuns it for 2 s, any time, and 
   assert.equal(beat(SNAKE, z, 'punch', 3), true);
 });
 
+test('snake, way 1, the branch end: a punch shoves it 70 px along its branch; one that has backed to the end is knocked off and glides away', () => {
+  const mid = newPredator(SNAKE, branch({ x: 560 }));
+  assert.equal(beat(SNAKE, mid, 'punch', 0, 520), true);
+  assert.deepEqual([mid.phase, mid.x, mid.leaving], ['stunned', 630, false], 'mid-branch it is shoved away from him and sits dazed');
+  assert.equal(beat(SNAKE, mid, 'punch', 0.5, 590), true);
+  assert.deepEqual([mid.phase, mid.x, mid.leaving], ['stunned', 700, false], 'the second shoves it to the very end of its branch');
+  assert.equal(beat(SNAKE, mid, 'punch', 1, 660), true, 'the third has no branch left to shove it along');
+  assert.deepEqual([mid.phase, mid.leaving, mid.facing], ['flee', true, 1], 'off the end, away from him');
+  run(SNAKE, mid, GONE_AFTER + 0.1, () => prey({ x: 660 }), { t0: 1 });
+  assert.equal(mid.phase, 'gone', 'it glides off and stays away');
+  const end = newPredator(SNAKE, branch());
+  run(SNAKE, end, 2.4, (t) => prey({ x: 380 + 70 * t }));
+  assert.ok(end.x > 630 && end.phase === 'hunt', 'shy: it has been backing along its branch, away from him');
+  assert.equal(beat(SNAKE, end, 'punch', 2.4, end.x - 40), true);
+  assert.equal(end.leaving, true, 'one punch at the branch end knocks it off');
+  const noSide = newPredator(SNAKE, branch({ x: 690 }));
+  assert.equal(beat(SNAKE, noSide, 'punch', 0), true);
+  assert.deepEqual([noSide.phase, noSide.x], ['stunned', 690], 'a blow from nowhere (no side given) only stuns');
+});
+
 test('snake, way 2: a drop trap chases it off for the rest of the stage (it glides away); way 3: a stomp sends it home for 5 s', () => {
   const s = newPredator(SNAKE, branch());
   assert.equal(beat(SNAKE, s, 'trap', 0, 560), true);

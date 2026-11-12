@@ -590,6 +590,10 @@ export interface GraphBrief {
    *  socket whose `allow` starts with one (another stage's Dot line, its prop) stays empty, so a shape never brings another stage's
    *  words with it. What a section needs, uses and teaches is judged at each node, as everywhere */
   pick?: { refuse?: readonly string[] };
+  /** the stage's CAST, by kind (predators/registry.ts; reference/design/PREDATORS.md): every animal of one of these kinds the stage
+   *  lays is run by the creature kit (castPlay.ts) with Pokey's stillness and noise, and the stage's drop traps work on it. Absent:
+   *  the stage's animals play as they always have */
+  cast?: readonly string[];
 }
 /** a content type (NODES.md §7.2): what fills a content node; `structural` sections (arrive, rest, exit) sit outside the mix */
 export type ContentType = 'ground' | 'floating' | 'climb' | 'bounce' | 'rope' | 'crumble' | 'water' | 'hazard' | 'puzzle';

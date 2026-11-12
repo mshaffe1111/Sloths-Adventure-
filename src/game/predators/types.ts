@@ -37,7 +37,7 @@ export type Way = 'stomp' | 'punch' | 'kick' | 'trap' | 'lure' | 'still' | 'drum
  */
 export type When = 'any' | 'open' | 'behind';
 export type Outcome =
-  | { ends: 'stunned'; seconds: number; when?: When }
+  | { ends: 'stunned'; seconds: number; when?: When; /** the blow also shoves it this far (px) along its ground, away from where it came from; shoved past the end of its ground it is off it, and leaves as a chased-off animal does (the tree snake knocked off its branch end) */ knock?: number }
   | { ends: 'flees'; seconds: number; when?: When }
   | { ends: 'dozes'; when?: When }
   | { ends: 'chasedOff'; when?: When };
