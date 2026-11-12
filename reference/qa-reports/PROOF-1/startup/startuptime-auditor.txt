@@ -1,0 +1,3 @@
+main   cold: title 9599 ms (fcp 376) [9629 8397 9599]   warm: title 8901 ms (fcp 424) [9490 8901 8396]
+split  cold: title 9035 ms (fcp 440) [8934 9773 9035]   warm: title 8231 ms (fcp 404) [8231 7782 8804]
+split - main: cold -565 ms, warm -670 ms (4x CPU slow-down, medians of 3)

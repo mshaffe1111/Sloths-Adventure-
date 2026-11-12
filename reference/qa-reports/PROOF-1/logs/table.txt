@@ -24,3 +24,5 @@ drawcheck|0|521|10:01:08|node tools/perf/drawcheck.mjs
 clipcheck|2|676|10:12:24|node tools/perf/clipcheck.mjs
 core-suite|killed|3600|10:30:00|full CLAUDE.md glob, concurrency 3: stopped at the 60-min background limit; 2613 ok, 0 not ok reported through file 323/455 (src/game/w4Puzzles.test.ts); files 323-455 rerun as core-suite-rest
 clipcheck-run2|0|431|10:38:00|node tools/perf/clipcheck.mjs
+kbdcheck-seq2|0|138|10:46:45|node tools/perf/kbdcheck.mjs
+buildcheck-seq2-after-clip-kbd|0|6|10:46:51|node tools/perf/buildcheck.mjs
