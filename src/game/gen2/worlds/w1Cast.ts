@@ -95,9 +95,12 @@ export function armedTraps(kinds: readonly string[] = ['snake']): { emit: Record
     const k = hold.findIndex((t) => Number.isFinite(t.x) && Math.abs(t.loadX - e.x) <= TRAP_UNDER && Math.abs(t.landY - top) <= 6 && Math.abs(mid - t.x) >= TRAP_REACH[0] && Math.abs(mid - t.x) <= TRAP_REACH[1]);
     if (k < 0) return;
     const live = (out.proto.cast ??= { kinds: [], traps: [], said: W1_CAST_SAID }).traps;
-    live.push({ ...hold.splice(k, 1)[0], id: live.length + 1, loadX: Math.round(mid) });
-    // (a SLEEPER lies right under its load, in the middle of its patch: the lay stood it 61 px on, at the patch's far end (it keeps an
-    //  animal 120 px from any prop's socket), half off an upright phone's screen from the vine. One awake paces the whole patch)
-    if (e.asleep) e.x = Math.round(mid);
+    const t0 = hold.splice(k, 1)[0];
+    live.push({ ...t0, id: live.length + 1, loadX: Math.round(mid) });
+    // (a SLEEPER lies at the end of its patch NEAREST the vine, so its load, hung over the patch's middle, comes down a coil's width
+    //  BESIDE it and never on it (nobody is hurt, D11; right under the load, the glide still showed the stone on the snake). The lay
+    //  had stood it at the far end (it keeps an animal 120 px from any prop's socket), half off an upright phone's screen from the
+    //  vine. One awake paces the whole patch)
+    if (e.asleep) e.x = Math.round(t0.x < mid ? e.patrolMinX : e.patrolMaxX);
   } };
 }
