@@ -1,76 +1,58 @@
-# EN-P: every predator gets a personality, and two or three ways to beat it
+# EN-W report, Engine, 2026-11-11 (written 11:36 PM ET). Branch `t-engine-wire` (base t-engine-predators@9bd5cee6 + t-engine-library@cac3a859). No PR.
+Tonight's pieces connected on the 1-2 path. Nothing the game ships moved: stage lock 102/102, seedlist 1-1 PASS, on the final code.
 
-Branch `t-engine-predators`, base `origin/t-engine-clock` @fd94c3f6. No PR. Polish check: no screen, word, sound or stage changed. Written 10:30 PM ET, Nov 11. Nothing
-the game ships changed, so there is nothing to shoot; the tell poses World 1's cast needs are in PREDATORS.md §6.
+## THE REAL NUMBER (step 4), 120 rolls, seeds 1-120, `npx tsx tools/engine/library.ts --seeds 120 --par 3`
+| | Normal | Easy | judged by |
+|---|---|---|---|
+| WITHOUT `--flown` (1-2 as 1-2): no errors | **61 (51%)** | **61 (51%)** | the level check and node code ONLY: **not the verdicts** |
+| WITHOUT `--flown`: THROWN | 59 (49%) | 59 (49%) | |
+| WITH `--flown` (filed under 1-1): strictly CLEAN | **118 (98%)** | **118 (98%)** | everything: verdicts and flown arcs |
+**Read this before quoting 51%.** It is not the same kind of number as the 98%. Two facts, both checked in the code:
+- **What throws the 49%: one cause.** 1-2 has no flown reach rows (`reach.ts` JUDGED holds 1-1 only), so `gapFor` uses the unflown double's
+  reach, 230 px, and three of World 1's own sections ask 253-256 px: w1-leap-stones 49, w1-two-answers 9, w1-second-jump 1.
+- **The 51% that build are not judged by the verdicts.** `pipeline.ts:3081`: a stage with no JUDGED row carries `NOT_JUDGED_ALL`
+  (THE BOUNDARY, packet E0a). `drop.look-lies`, `band.out`, `floor.unmarked` never ran on them.
+- **So the honest headline is the flown one: 118 of 120 strictly clean (98%), both settings; was 0% strict and 61% / 56% "but for the
+  thorn bed".** The two refused: one pool short (descent/climb has one section), one roll with a single-rise 93 px over its band of 80.
+- **Why 61% became 98%, checked by A/B** (the finder switched off by an env line, since removed; same 120 seeds): with every hollow
+  refused, the generator's own search dead-ended on any plan holding one and handed back its last try. With the hollow true, it swaps
+  the failing section (plans differ in 45 of 109 A/B rolls; seed 2: w1-ledges out, w1-mound-log in). No rule was loosened.
+- **What 1-2 still needs to drop the flown stand-in:** its own JUDGED row, which by reach.ts means FLYING 1-2. That is data and a
+  decision at the boundary, not engine code; I did not add a row.
 
-## Part 1: the design, `reference/design/PREDATORS.md` (335 lines: over the brief's 300 because the lead added §8, §9 and a column; story keeper: PASS with 4 changes, all applied)
-- **§1 the roster today**, file:line: every creature that hurts, blocks or chases. Code facts: no combat triangle yet (a kick differs
-  from a punch only on the turtle); three tells are under 0.5 s (snake 0.38, ocelot 0.38, tayra 0.42); the frog has no tell.
-- **§2 one personality each**: the real animal, our twist, its tell and rhythm; **a cast per world** (Matt approved, 9:42 PM ET:
-  today Worlds 6, 7 and 8 share one list of six animals). No two animals in a cast share a habit (a test holds it).
-- **§3 ways to beat each**, never only the stomp; ends are stunned, gives up, dozes off or chased off, never eaten or killed.
-- **The move ladder** (the lead, 9:56 PM ET): a way is only there once its world has
-  taught the move (the bell World 2, thrown noise World 3), so in World 1 the eagle is stillness and cover only. **§4 Easy** (tell x1.3, beat x1.5, speed x0.85, fewer). **§5 the kit**: 8 habits on one machine. **§7 creatures we own and do not
-  use**: five can join now (dangler, orchid mantis, crab, piranha, beetle). **§8 size against Pokey**: 7 creatures flagged (the big
-  hunters are drawn at half Pokey's height; the boa is smaller than the tree snake); the 10 guardians are 1.5-3.2x Pokey today.
-  **§9 throw to lure**: the arc, the pickups and the landing noise already exist in the puzzle kit (file:line); what it still needs.
+## Each step's proof
+1. **Merge of t-engine-library**: one conflict (REPORT.md). tsc clean; gen2 + worlds 398 of 398 on the merge; seedlist PASS; lock 102/102.
+2. **The thorn bed drawn** (`src/game/w1Pits.ts`): `findW1Pits` reports `kind: 'hurt'` off the piece gen2 marks `pit: 'hurt'` (its floor,
+   both lips, any height); `drawW1Pits` paints the pit's dark and the art director's cut brambles (catalog rows w1-thorn-bramble-long and
+   -bramble-b, from origin/art-director reference/art/cut, now `src/assets/props/pits/w1-thorn-{long,low}.webp`, 26 + 15 KB; no new art).
+   Planted test red then green (`briefPits.test.ts`: every hollow on 12 rolls found, none on a stage without). The level check accepts a
+   hollow (the flown rolls pass `validateStage`). **Stills** (a test build: the library's 1-2 kit built in the real page, flown rows):
+   `reference/qa-reports/EN-W/thorn-bed-1-1-L2-x{26180,27930}-{upright,sideways}.jpg`.
+3. **1-2's double counted by the built stage** (a helper in its own worktree, commit 189fba4): `planBudget` sets `doubleTaught` from the
+   world's `lessons` (an EARLIER stage only, and only where the old rule does not already count it); the built config carries it;
+   `doubleAllowed`, `validateStage`, easyMode, `jumpLinkGap` and the inspector read it. No stage id. Planted test 0 of 5 then 5 of 5;
+   with the flag taken off the same eight 1-2 builds are refused. World 1 ships no `lessons` row: no shipped config gains the field.
+5. **The one clock on the fixed step** (`engine.ts`, +5 -1 lines): the engine holds a `StageClock`, steps it where `gameTime += dt` was,
+   and `gameTime` is its time. `engineClock.test.ts`: 900 steps of the real engine, `Object.is` each step against the plain sum; red
+   before. No stage declares a clock, so nothing reads a beat yet.
 
-## Part 2: the kit, `src/game/predators/` (pure, 1,015 lines; tests 1,210 lines; not imported by the game)
-`types.ts` (an animal as data: `PredatorDef`; a stage's `Post`; the state, which is a heroNoise `Listener`; 13 ways, 4 ends), `core.ts`
-(the one machine: rest, hunt, TELL, act, recover; `stepPredator`, `beat`, `hear`, `foodChain`, `hurt`, `blocks`, `checkPredator`),
-`world1.ts` (snake, boa, eagle), `casts.ts` (ten later animals, first-draft numbers from today's code: turtle, River King's guard,
-caiman, ocelot, jaguar, tayra, night harpy, frog, spider, sentry), `roster.ts` (habits and casts), `fixtures.ts` (test helpers).
+## Polish check (I looked at the four stills, upright and sideways): PAINTED, NOT YET POLISHED
+- Good: real painted thorns stand in the pit's dark, wall to wall; the hurt floor's mossy slab no longer shows under them.
+- **Rough 1:** a hollow under about 70 px wide (the chain bricks' are 50-60) reads as a COLUMN OF ROOTS, not a hole: the two banks'
+  painted end faces meet across it (the ground painter, not w1Pits). Thorns show only at its foot. This is the worst one.
+- **Rough 2:** the slab's left end face still peeks as a small grey-green box at the bed's left foot.
+- **Rough 3:** the dark at the bed's foot is a soft rectangle a little wider than the pit. **Rough 4:** brown thorns on dark earth are
+  low contrast on a phone; the family's lighter pieces (tangle-flat, mound) would read better.
+- Not wired: the two pictures load on the first frame that shows a hollow, not in the stage preload (stageSheets is keyed by stage id).
+- The catalog (CATALOG-MASTER.csv) still files both rows under origin/art-director; not regenerated.
 
-The rules, each with its proof (`npx tsx --test src/game/predator*.test.ts`: 68 kit tests, all green):
-1. **The tell always comes first.** One door into the phase that hurts, only from a full tell (never under 0.5 s; longer on Easy).
-   Proof: asserted on every step of every test, plus a fuzz over all 8 habits that must reach the act more than 60 times.
-2. **Being beaten is data and never cruel.** Each way names its end; "open" ways need the moment after a miss; the turtle's punch
-   must come from behind. A way not on the list changes nothing.
-3. **Stillness** is stillness.ts `watcherSees`. A hunter that loses a still sloth gives up; running off is not a win. The boa
-   rears, he goes still, it settles back (a 0.2 s reaction fits inside its 0.8 s rear on both settings).
-4. **Noise** is heroNoise: it wakes a sleeper, the drum stuns, a kind that `hears` goes to look and notices nobody.
-5. **The food chain**: lead the eagle's shadow over the boa, or a tayra's line to the caiman's water, and it is chased off.
-6. **Easy is never harder**; `checkPredator` refuses one way, only the stomp, a short tell, a punchable guard, a harder Easy.
-   A clocked kind (the frog) tells on the stage clock's warn and acts on its on.
-7. **The move ladder** (`roster.ts` `TAUGHT`, `inWorld`): every cast is laid through it; a test fails when a way appears before its
-   move, or an animal is left with one way (World 1's eagle is the one named exception). **Throw to lure**: only a noise made where he is not
-   (`thrownNoise` from World 3, `bellNoise` from World 2: the lead's ruling, 10:06 PM ET) lures; his own landing brings a hunter looking with its eyes open and blinds nothing.
-8. **The top three, worked through** (`predatorWorld1.test.ts`, 15 tests): snake, eagle, boa: the tell, the attack, each way to beat it.
+## Checks on the final code (times ET)
+- tsc clean. Stage lock **102/102** (`lockall --layouts 2`, base recorded at 9bd5cee6). `seedlist 1-1 --check` PASS (200 seeds).
+- artcheck PASS, knowncheck PASS. **Main JS 4,000,463 B; base 3,995,402 B: +5,061 B** (the library merge about 1,470, the painter,
+  the clock, the double). **chunkcheck FAILS by 6,159 B** (it failed at the base by 1,098 B; this branch makes it worse).
+- gen2 + worlds + library + the new tests on the final code, the core suite, drawcheck, buildcheck: see the last lines below.
+- NOT run: clipcheck, kbdcheck, tierBots, roadmapcheck (shallow clone).
 
-**The tests bite**: 38 faults planted in `core.ts` one at a time, **38 caught** (`reference/qa-reports/EN-P/planted-faults.txt`); three
-survived their first run and each showed a missing test, now written. Three more planted in `roster.ts` `inWorld`: caught.
-
-## Checks (run on this branch; times ET)
-- `npx tsc --noEmit -p .`: clean.
-- Stage lock, recorded at the base in its own worktree, checked on the final commit: **102/102 stages unchanged** (`lockall --layouts 2`,
-  both settings).
-- Main JS: **3,995,374 B at the base and 3,995,374 B here (+0)**; no kit code is in the bundle. Not from this branch: chunkcheck
-  FAILS at the base and here by the same 1,070 B (limit 3,994,304), as EN-C's report already said.
-- artcheck PASS, knowncheck PASS.
-- `npx tsx tools/engine/seedlist.ts 1-1 --check`: PASS (200 seeds, each clean on both settings).
-- Full tests, in two runs because this session stops background work at 30 minutes: run 1 (every file in the command, in order)
-  was stopped after **2,357 passed, 0 failed**; run 2 (what run 1 had not reported: game tests s to z, components, the generator
-  tests; on the final code, 10:37 PM ET) **1,298 passed, 0 failed**, 2 todo (both already on the base: 4-3's boulder wall check).
-- buildcheck: PASS on a quiet machine (Normal p95 149 ms of 150; the base, run right after, 123 ms). It FAILED once earlier while
-  the stage lock and the tests were running beside it. The kit is not in the build path; this gate is one noisy run from its limit.
-- roadmapcheck: cannot be judged in this clone (6 proofs name commits on branches it does not have); ROADMAP.md and tools/ untouched.
-- **Not run: drawcheck, clipcheck, kbdcheck, tierBots.** Nothing drawn, no screen and no stage changed (the lock and the byte count
-  show it). They run when an animal is wired in.
-
-## What is left
-- **Not built**: a clocked "looking" window (thorn vine, eaglets); two-part acts (the night harpy's slide then shock); the kicked
-  shell bowling others over; the eagle's harmless first pass. Capuchins, moths and the seamstress stay on their own modules.
-- **Not wired.** The engine still runs predatorAI.ts and watcher.ts. Numbers in `casts.ts` are first drafts.
-- **Throw to lure outside the puzzle rooms** (PREDATORS.md §9): pickup spots in a stage brief, and the no-spare-gesture cost.
-- **For Matt** (the 9:53 PM note): the size proposals; guardians need new art to be "huge" (8 of 10 are already drawn larger than
-  their sheets); no guardian fight is in drawcheck's scenarios. The butler's cake (w5Play.ts:401) is against canon: flagged, not changed.
-
-## The exact next step
-Wire World 1's snake behind 1-3's laying (not the shipped 1-3): the stage hands `newPredator(SNAKE, post)` its branch ends, the
-engine calls `stepPredator` on the fixed step with Pokey from stillness.ts, reads `hurt`, and calls `beat` from the punch, the stomp
-and the drop trap (B2). Then the eagle replaces watcher.ts in 1-7's laying and the boa in 1-9. Method: `reference/methods/predator-kit.md`.
-
-## Method update
-New: `reference/methods/predator-kit.md` (no method existed). Worked: the worked example before the data; one `run` helper that
-asserts the gate everywhere; a planted fault for every rule (green tests alone missed two). Failed: a dive aimed where he was (he
-outran it); tests in a subfolder (the test command does not reach them); "at its post" judged by speed alone (a charger walked home).
+## What's left, in order
+1. Fly 1-2 (its JUDGED row): then the unflown number is the judged one. 2. The ground painter's end faces over a narrow hollow, and
+Roughs 2-4. 3. Preload and catalog rows for the two pictures. 4. Bytes: the main chunk is 6,159 B over its limit.

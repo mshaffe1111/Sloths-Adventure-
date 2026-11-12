@@ -67,6 +67,22 @@ A2 (ADR-001). Sections 0a-0b below are still true.
   `PlacedPiece.art` yet; boughs and mushrooms have no inventory key. The inventory files came unchanged from t-engine-inventory.
 - **Still welded:** World 1's `feel` lists hold stage ids until 1-1's brief takes `pick` and its list is rebuilt.
 
+## 0f. Tonight's pieces wired on the 1-2 path (EN-W, 11-11 late): what the next engineer must know
+- **The thorn bed is found and painted** (`w1Pits.ts`: `findW1Pits` kind `'hurt'`, read off the piece gen2 marks `pit: 'hurt'`;
+  `drawW1Pits` paints the pit's dark and the two cut brambles, `src/assets/props/pits/w1-thorn-*.webp`). So `drop.look-lies` passes on
+  World 1, and the search stops dead-ending on every plan that holds a hollow: 1-2 on flown rows went 0% strict to 118 of 120.
+- **1-2's double is counted by the built stage** (`LevelConfig.doubleTaught`, set by `planBudget` from the world's `lessons`, an
+  earlier stage only; `doubleAllowed` reads it). No shipped config carries it.
+- **Read before quoting an unflown number:** a stage with no JUDGED row (reach.ts) lays to the unflown reach (230 px double; three
+  World 1 sections ask 253-256 and THROW) and carries `NOT_JUDGED_ALL` (pipeline applyVerdicts): its "clean" is not the verdicts'.
+  1-2 needs its own flown rows before `library.ts` without `--flown` means what `--flown` means.
+- **The engine steps one `StageClock`** where `gameTime += dt` was; `gameTime` is its time (`engineClock.test.ts`). No stage declares
+  a clock yet: serve `ModeHost.clock(id)` from `this.clock.read(id)` when a brief carries `clocks`.
+- **Look, not done:** a hollow under about 70 px wide reads as a column of roots (the banks' end faces meet over it, the ground
+  painter); the slab's left end face peeks; the pictures are not in the stage preload. REPORT.md "Polish check" has all of it.
+- **To see a hollow in the real page:** a worktree, `tools/engine/library.ts` copied into `src/game/gen2/` without its main block, and
+  `stageGenerator.ts` building 1-1 from `kitLib12({ flown: true })`; then `tools/engine/runs/stills-at.mjs` (layout 2, x 26180, 27930).
+
 ## 0c. Rulings and facts to keep (INT-1-1, 11-11)
 - **The help promises only what gets him through** (the lead's ruling): `engine.canGrowAt(piece)` = something grows AND
   `stepPlan(...).unsolved === 0`. HelpLadder's canGrow is that call (Easy's step at 8, Normal's offer at 12, the re-ask). The pieces where
