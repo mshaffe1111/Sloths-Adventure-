@@ -24,7 +24,7 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
   |---|---|---|---|
   | t-engine-seedchunks@889302163 | t-int-1-1 | R-165.112 seed lists out of the main chunk (makes room). Its Critic saw roadmapcheck failing on the head: fix at merge | Fable (old team) |
   | t-engine-guards@b3e8db15 | release-0.9.6 | R-165.116 frame loop, R-165.117 saves, the generality gate (38 literals known, shrink-only) | Opus |
-  | t-engine-fixes@4c7f76e0+ | t-engine-guards | EN-F: the 11-11 audits' known findings, game-wide first, one commit each (running to 1:00 AM ET) | Opus, session_01FhBbYN4KUG5VQtHUYKEicm |
+  | t-engine-fixes@f85a8729 | t-engine-guards | EN-F DONE: the audits' known findings fixed (full suite 2,765/0), R-165.125 sound (sliders, limiter, lower defaults: Matt to judge by ear); parked items in its REPORT.md | Opus, retired |
   | t-engine-yield@729f249d | release-0.9.6 | generator clean 9%->57%; listable 33%; travel as a mode (stage kit types merged); any listed stage by data; hurt floor (not drawn); builtOnArcs; GraphBrief.pits | Fable |
   | t-engine-clock@fd94c3f6 | t-engine-yield | the one clock (every timer moved bit-identical), beatBrick, clockaudit; stillness + watchers; noise + sleepers + drum; rides | Fable |
   | t-engine-library@cac3a859 | t-engine-yield | pickups by brief; sections picked by need; one brick in two worlds; 1-2 needs 11 new sections (was 42), 61/56% clean but for the unpainted thorn bed | Fable |
@@ -61,7 +61,7 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
   original, dark images exempt, a check page for Matt. Retire both when they report (verify ls-remote first).
   EN-S (Fable, session_01FhBbYNeneV7CJUH3PDMtKm, t-engine-split on main, stop 12:15 AM): seedchunks merged first, D45 fix in gates.yml,
   a bundle breakdown, each world / old generator / special runs / bosses / story as their own chunks behind one loading seam; offline proven.
-- Running: EN-F (above) to 1:00 AM; retire it when it reports (verify ls-remote first).
+- Nobody is running. Start only on Matt's word.
 - Everyone else retired tonight, branches verified. Next helpers start fresh from their role card + this note + a packet.
 
 ## How the team runs now (learned tonight; keep)
