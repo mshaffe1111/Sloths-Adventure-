@@ -177,6 +177,7 @@ if (save === 'fresh') {
       await intoStage(id, false);
       await sleep(5000);
       await shot(`${id}-start`);
+      if (process.env.BURST) for (let b = 1; b <= 5; b++) { await sleep(1500); await shot(`${id}-t${b}`); }
       await steerRight();
       await sleep(2000);
       await flickUp();
@@ -186,6 +187,8 @@ if (save === 'fresh') {
       await tap('.vh-menu');
       await sleep(900);
       await shot(`${id}-pause`);
+      log.pauseText = log.pauseText || {};
+      log.pauseText[id] = (await page.locator('.pm-card').first().innerText()).replace(/\s+/g, ' ').slice(0, 400);
       // quit to the map from the pause menu
       const q = page.locator('.pm-card button:has-text("Map"), .pm-card button:has-text("Quit"), .pm-card button:has-text("Leave")').first();
       await q.evaluate((e) => e.click());

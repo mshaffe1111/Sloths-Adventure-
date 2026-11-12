@@ -1,0 +1,1 @@
+head-play1-1-side: end=cleared helps=1 296s rescues=6 deaths=0 jumps=64 pageErrors=0 consoleErrors=0

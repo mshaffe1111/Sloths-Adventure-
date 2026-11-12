@@ -22,3 +22,4 @@ lock-record-main|0|1655|09:57:48|main-wt lockall --layouts 16 --out
 lock-record-head|0|1677|09:58:10|head lockall --layouts 16 --out
 drawcheck|0|521|10:01:08|node tools/perf/drawcheck.mjs
 clipcheck|2|676|10:12:24|node tools/perf/clipcheck.mjs
+core-suite|killed|3600|10:30:00|full CLAUDE.md glob, concurrency 3: stopped at the 60-min background limit; 2613 ok, 0 not ok reported through file 323/455 (src/game/w4Puzzles.test.ts); files 323-455 rerun as core-suite-rest

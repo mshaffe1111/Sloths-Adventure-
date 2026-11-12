@@ -12,7 +12,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const { chromium } = createRequire(import.meta.url)('playwright');
 const [base, tag, viewId, stageId = '1-1'] = process.argv.slice(2);
 const vp = { up: { width: 390, height: 844 }, side: { width: 844, height: 390 } }[viewId];
-const name = `${tag}-play${stageId}-${viewId}`;
+const name = `${tag}-play${stageId}-${viewId}${process.env.INSETS ? '-insets' : ''}`;
 const shotsDir = path.join(here, 'shots'); fs.mkdirSync(shotsDir, { recursive: true });
 const log = { name, errors: [], console: [], rescues: [], helps: [], jumps: 0, deaths: 0, track: [], end: null };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -22,6 +22,8 @@ const ctx = await browser.newContext({ viewport: vp, deviceScaleFactor: 1, hasTo
 await ctx.route(/script\.google\.com/, (r) => r.abort());
 const page = await ctx.newPage();
 const cdp = await ctx.newCDPSession(page);
+// (INSETS=1: a real phone's safe areas, clipcheck's sideways numbers: 48 px each side, 21 px bottom)
+if (process.env.INSETS) await cdp.send('Emulation.setSafeAreaInsetsOverride', { insets: viewId === 'side' ? { top: 0, bottom: 21, left: 48, right: 48 } : { top: 48, bottom: 24, left: 0, right: 0 } });
 page.on('pageerror', (e) => log.errors.push(e.message));
 page.on('console', (m) => { if (m.type() === 'error') log.console.push(m.text().slice(0, 300)); });
 const shot = async (what) => { const f = path.join(shotsDir, `${name}-${String(++n).padStart(2, '0')}-${what}.png`); await page.screenshot({ path: f }); return f; };
@@ -137,7 +139,16 @@ for (let i = 0; i < 8 && log.end === 'cleared'; i++) {
   if (await k.count() && await k.isVisible().catch(() => false)) { await shot(`after-${i}-story`); await k.evaluate((e) => e.click()); await sleep(2500); continue; }
   await sleep(2000);
   await shot(`after-${i}`);
-  if (await page.locator('.clr-card').count()) { await sleep(2500); await shot('stage-cleared-card'); break; }
+  if (await page.locator('.clr-card').count()) {
+    await sleep(2500); await shot('stage-cleared-card');
+    log.card = await page.evaluate(() => {
+      const r = (el) => { const b = el.getBoundingClientRect(); return [Math.round(b.left), Math.round(b.top), Math.round(b.width), Math.round(b.height)]; };
+      const c = document.querySelector('.clr-card'); const scr = document.querySelector('.clr-scrim');
+      const sc = [...c.querySelectorAll('*'), c].filter((e) => e.scrollHeight > e.clientHeight + 2 && /auto|scroll/.test(getComputedStyle(e).overflowY)).map((e) => [e.className.slice(0, 40), e.scrollHeight, e.clientHeight]);
+      return { scrim: scr ? [scr.scrollHeight, scr.clientHeight, getComputedStyle(scr).paddingBottom] : null, vh: innerHeight, vw: innerWidth, card: r(c), cardOverflowY: getComputedStyle(c).overflowY, scrollers: sc, buttons: [...c.querySelectorAll('button')].map((b) => [b.innerText.replace(/\s+/g, ' ').trim().slice(0, 20), ...r(b)]) };
+    });
+    break;
+  }
 }
 await sleep(2500);
 await shot('END-after');
