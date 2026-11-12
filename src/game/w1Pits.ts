@@ -415,27 +415,52 @@ function bakeBed(g: PitGap, bed: HTMLImageElement): HTMLCanvasElement | null {
   return c;
 }
 
-/** the thorn bed's size in world px: each bramble's width (its height follows its picture) and how far its foot sinks under the floor's top */
-export const THORN_BED = { long: 190, low: 150, sink: 12 } as const;
+/** the thorn bed's size in world px: each bramble's width (its height follows its picture), how far its foot sinks under the floor's top,
+ *  and how far under that top the pit's dark runs (the hurt floor's own slab is never seen: the bed and the dark cover it) */
+export const THORN_BED = { long: 210, low: 170, sink: 34, dark: 64, pad: 24 } as const;
 /**
  * a hollow's thorn bed, baked once: the two painted brambles side by side along the whole floor, overlapping, wall to wall (it hurts
  * anywhere, so no bare floor shows), their feet a little under the floor's top
  */
 function bakeThorns(g: PitGap, long: HTMLImageElement, low: HTMLImageElement): HTMLCanvasElement | null {
-  const W = g.x1 - g.x0 + 12;
-  const H = Math.ceil((THORN_BED.long * 1.1 * long.height) / long.width) + 8;
+  const P = THORN_BED.pad, W = g.x1 - g.x0 + 2 * P;
+  const tall = Math.ceil((THORN_BED.long * 1.1 * long.height) / long.width) + 8;
+  const H = tall - THORN_BED.sink + THORN_BED.dark;
   const c = canvas(W, H);
   const k = c?.getContext('2d');
   if (!c || !k) return null;
-  let x = -10 - hash(g.x0) * 30;
+  // (the pit's dark over the hurt floor's slab and its end faces (`pad` past each wall), coming in above its top and going out under
+  // it: no slab, no box. The brambles themselves stay between the walls)
+  const foot = tall - THORN_BED.sink;
+  const v = k.createLinearGradient(0, foot - 26, 0, H);
+  v.addColorStop(0, 'rgba(10,7,5,0)');
+  v.addColorStop(0.28, 'rgba(10,7,5,0.96)');
+  v.addColorStop(0.72, 'rgba(10,7,5,0.96)');
+  v.addColorStop(1, 'rgba(10,7,5,0)');
+  k.fillStyle = v;
+  k.fillRect(0, foot - 26, W, H - (foot - 26));
+  // (past each wall the dark thins to nothing: a shade on the banks' feet, never a box wider than the pit)
+  k.globalCompositeOperation = 'destination-out';
+  for (const [xa, xb] of [[0, P], [W, W - P]] as const) {
+    const hz = k.createLinearGradient(xa, 0, xb, 0);
+    hz.addColorStop(0, 'rgba(0,0,0,1)');
+    hz.addColorStop(1, 'rgba(0,0,0,0)');
+    k.fillStyle = hz;
+    k.fillRect(Math.min(xa, xb), 0, P, H);
+  }
+  k.globalCompositeOperation = 'source-over';
+  k.beginPath();
+  k.rect(P, 0, W - 2 * P, H);
+  k.clip();
+  let x = P - 16 - hash(g.x0) * 30;
   let n = 0;
-  while (x < W) {
+  while (x < W - P) {
     const im = n % 2 === 0 ? long : low;
     const sc = 0.9 + 0.2 * hash(g.x0 + n * 3.1);
     const bw = (n % 2 === 0 ? THORN_BED.long : THORN_BED.low) * sc, bh = (bw * im.height) / im.width;
     const flip = hash(g.x0 + n * 7.3) > 0.5;
     k.save();
-    k.translate(x + (flip ? bw : 0), H - bh);
+    k.translate(x + (flip ? bw : 0), tall - bh);
     k.scale(flip ? -1 : 1, 1);
     k.drawImage(im, 0, 0, bw, bh);
     k.restore();
@@ -531,14 +556,7 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
         ctx.restore();
       }
       h.over ??= bakeThorns(g, pic('thornLong')!, pic('thornLow')!);
-      if (h.over) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(g.x0 - 2, g.floor - h.over.height - 4, g.x1 - g.x0 + 4, h.over.height + 4 + THORN_BED.sink + 4);
-        ctx.clip();
-        ctx.drawImage(h.over, g.x0 - 6, g.floor + THORN_BED.sink - h.over.height);
-        ctx.restore();
-      }
+      if (h.over) ctx.drawImage(h.over, g.x0 - THORN_BED.pad, g.floor + THORN_BED.dark - h.over.height);
       continue;
     }
     // (engine-core, 11-05: only a drop a builder marks, pit: 'drop', is painted here; on main only the mixer's stages mark any. The
