@@ -141,3 +141,8 @@ Rules for building it:
 - Every claim is true as written. It names no one beyond "my wife". It says nothing about how the art was made, and nothing about the
   music, whose origin I have not checked. If the music was made for the game, Matt can add "The music, too."
 - The "Inspired by" tribute follows unchanged.
+
+**APPROVED by Matt (relayed by the lead, 3:30 PM ET):** the About opening ("How Sloths began" and "What's ours"), in HIS voice ("between
+my wife and me"), exactly as drafted. Still open:
+- The music line stays out until Matt says.
+- The "Inspired by" list waits for the games Matt names. The tribute intro and its lines are drafted above.
