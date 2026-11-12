@@ -179,7 +179,9 @@ export function w1RollDistance(stage: W1Stage, a: number, b: number): number {
   return all ? diff / all : 1;
 }
 
-export const isW1Stage = (id: string): id is W1Stage => /^1-[1-9]$/.test(id);
+/** a World 1 stage built from section versions: one with a row here (a stage rolled on gen2, 1-2 and 1-3 from 11-12, has none: its
+ *  picks are its gen2 roll's; the old /^1-[1-9]$/ test sent them to w1Pick, which threw on the missing row, layoutMemory awayFrom) */
+export const isW1Stage = (id: string): id is W1Stage => Object.hasOwn(SECTIONS, id);
 
 /** build this roll's version of a section (the section's tip, if any, is the caller's: it comes first in every version) */
 export function w1Section(k: W1Kit, stage: W1Stage, slot: Slot, seed: number): string {

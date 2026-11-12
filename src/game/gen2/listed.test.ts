@@ -16,7 +16,11 @@ test('the table: a row per listed stage, its kit and what is that stage\'s alone
   const a = listedStage('1-1'), b = listedStage('1-2');
   assert.ok(a && b, 'both World 1 rows are entered');
   assert.equal(a.kit, w1World);
-  assert.equal(b.kit, w1World);
+  // (1-2 rolls from World 1's kit with its own manifest-wide rows over it, w1Arc12.ts kitLib12, the stage table's kit 'w1-12': P12S)
+  const k12 = b.kit().manifest;
+  assert.equal(k12.world, 1, "1-2's kit is World 1's");
+  assert.ok(k12.graphs?.briefs['1-2'] && k12.hurtFloor, "with 1-2's brief and its thorn row");
+  assert.equal(w1World().manifest.graphs?.briefs['1-2'], undefined, "World 1's own kit carries none of 1-2's rows");
   assert.deepEqual([a.squirrels, a.firstRun, a.pick], [true, true, true], "1-1's own: squirrels, the fixed first run, the test link's picker");
   assert.deepEqual([b.squirrels, b.firstRun, b.pick], [undefined, undefined, undefined], '1-2 has none of them');
   assert.equal(listedStage(FIX), undefined, 'a stage with no row is not listed');
