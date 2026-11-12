@@ -5483,6 +5483,14 @@ export class GameEngine {
     this.graceMoves = this.input.moves;
     // a press made while he was going down is not played at the flag (inputEngine.ts dropPresses)
     this.dropPresses();
+    // nor anything under way when he went down (the beat froze it): a half-thrown or queued attack, its combo, the coyote time of the
+    // ground he lost (audit A-14; realPlay.ts place() cleared these for the bots only)
+    this.atk = null;
+    this.atkQueue = null;
+    this.chainTimer = 0;
+    this.kickChain = 0;
+    this.coyoteTimer = 0;
+    this.launched = false;
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
     this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * FRAME.across);
     this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * fr.feetAt);
