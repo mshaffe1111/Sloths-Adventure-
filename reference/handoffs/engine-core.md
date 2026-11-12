@@ -15,8 +15,11 @@ A2 (ADR-001). Sections 0a-0b below are still true.
   platforms whole. `loseLife` and `chaseCaught` do nothing once the run is over (the engine keeps stepping under the Game Over card).
 - **Presses never outlive a held world:** `InputEngine.dropPresses()` (latched jump, punch, kick, mega; never a held direction) runs at
   the respawn, on resume and at a guardian entrance's end. realPlay.ts and bossPlay.ts inputs have the same method: keep them in step.
+  The reverse holds too: a stage-start clearAll() makes the recogniser and the Pad `restate()` (forget what was said, keep the fingers),
+  so a thumb held under the title card steers on its next move. A flag before the chase start gives the fresh chase (chase.ts
+  restartAt, A-07b).
 - **Paused = one still frame (A-06):** `stillDrawn`; the loop draws once and stops until resume, a resize or a restored context; pause()
-  settles the shake. **Failed frames (A-12):** a leaky count (FAIL_LIMIT 20, FAIL_FORGIVE 0.05), not a run in a row.
+  settles the shake. **Failed frames (A-12):** the stage ends once 20 of the last 60 frames failed (a ring), never on a rarer error.
 - **The camera's rise cap is a rate (A-05):** 11 px per 1/30 s step = 330 px/s at every frame rate. Never cap it per drawn frame:
   planted, that put his head 70 px under the HUD at 15 fps (cameraBounce.test.ts guards it).
 - **Test kit:** `src/game/engineCoreHarness.ts` (the audit's real-engine harness: makeEngine, standOn, step).
