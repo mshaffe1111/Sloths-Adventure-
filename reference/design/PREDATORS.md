@@ -221,3 +221,74 @@ nothing imports is never loaded. Clip names are from each sheet's data; nobody h
 
 So five new animals (dangler, mantis, crab, piranha, beetle) can join their casts on art we already have, each taking a habit its
 world's cast is missing; four more need a few clips. Every one still gets Matt's picture approval before it ships.
+
+## 8. Size against Pokey (measurement and proposal only; no art or code changed)
+
+Pokey is drawn **89.1 units** tall: `HERO_UNITS 66 x HERO_SPRITE_SCALE 1.35` (heroSprite.ts:30, :32). Creatures draw in the same world pass
+(engine.ts:6256), so these compare directly. Measured 11-11 from each sheet's frame size x its draw scale (file:line in the "from"
+column). A three-toed sloth is about 60 cm, so 1 cm is about 1.5 units; "true" is the real animal at that rate. **FLAG** = today is
+more than 25% off the proposal. H x L in units.
+
+| Creature | Drawn today H x L (x Pokey's height) | From | The real animal, and "true" at Pokey's scale | Proposed H x L | |
+|---|---|---|---|---|---|
+| Golden Tree Snake | 62 x 106-119 (0.70) | goldsnakeAnimData x 0.4 (goldSnake.ts:288) | 1.0-1.3 m long: 150-190 long | 62 x 130: as is, a touch longer | ok |
+| Boa Constrictor | 38-48 x 103-109 (0.48) | boaAtlasData x 0.4 (boaSprite.ts:26) | 2-3 m, heavy: 300-450 long | 62 x 190. Today the boa is SMALLER than the tree snake | **FLAG** |
+| Harpy Eagle | 73-137 x 101-112 wingspan (calm pass drawn at x0.38, dive x1: engine.ts:7840) | eagleAnimData x 0.44/1.5 (eagleSprite.ts:25) | body 1 m, wings 2 m: 300 across | wings 230 across in the dive: it should loom | **FLAG** |
+| Snapping Turtle | 43 x 61 (0.48) | turtleAnimData x 0.262 (turtleArt.ts:175) | shell 40-80 cm: 60-120 | 46 x 70 | ok |
+| River King's guard | 73 x 40 (0.82) | guardAnimData x 0.272 (guardArt.ts:40) | (a turtle standing) | 84 x 46: it should look him in the eye | ok |
+| Spectacled Caiman | 39 x 132 (0.44) | caimanAtlasData x 0.58 (caimanSprite.ts:21) | 1.4-2.5 m: 210-370 long | 52 x 210: a back he can walk across (2-6) | **FLAG** |
+| Ocelot | 44 x 104 (0.49) | ocelotAnimData x 0.40/1.5 (ocelotSprite.ts:28) | body 0.7-1 m, shoulder 45 cm: 62 x 115 | 52 x 115 | ok |
+| Jaguar | 60 x 122 (0.67) | jaguarAnimData x 0.48/1.5 (jaguarSprite.ts:28) | body 1.1-1.85 m, shoulder 70 cm: 105 x 165-275 | 86 x 175: Pokey's height at the shoulder | **FLAG** |
+| Tayra | 35 x 85 (0.39) | tayraAtlasData x 0.33 (tayraSprite.ts:21) | body 60-70 cm: 36 x 95 | 36 x 90: true already | ok |
+| Night Harpy | 45-70 x 60 (0.5-0.78) | harpyAtlasData x 0.42 (harpySprite.ts:21) | (ours) | 95 x 80: a bruiser that shakes the ground stands over him | **FLAG** |
+| Poison Dart Frog | 32 x 44 (0.36) | frogAtlasData x 0.38 (frogSprite.ts:20) | 2-5 cm: 3-7 units, unreadable | 34 x 46: stylised 6x; its colour does the work | ok |
+| Jumping Spider | 38 x 58-66 (0.43) | spiderAnimData x 0.46/1.6 (w5Creatures.ts:28) | 1-2 cm (the Queen's household is fairy-tale scale) | 42 x 68 | ok |
+| Stone sentry | 96 x 56 (1.08) | sentryAnimData x 96/381 (sentrySprite.ts:19) | (a statue) | 135 x 78: a doorway that hits back towers | **FLAG** |
+| Fruit bat | hanging 71-90 x 71-127; flying 84 x 148-178 (0.8-1.0) | fruitbatAnimData x 0.33, x 0.4 (batArt.ts:28) | wings 30-50 cm here: 45-75 across | hanging 55; flying 110 across: more bats, each smaller, reads as one roost | **FLAG** |
+| Moth | 31-35 x 53-60 (0.37) | 166x96 x 0.32-0.36 (w8LanternRun.ts:317) | the big ones are 25-30 cm: 40 | as is | ok |
+| Capuchin | 53-87 x 70 (0.6-0.97) | width fixed 70 (w4Play.ts:1426) | body 35-55 cm: 55-80 | as is | ok |
+| Seamstress / Butler | 124 x 117 / 104 x 102 (1.39 / 1.17) | w5Kit.ts:529; w5Creatures.ts:90 | (ours) | as is | ok |
+| Thorn vine | 270 x 247 (3.0) | THORN_H 270 (w3Art.ts:202) | (a plant) | as is | ok |
+| Eaglets in the nest | 174 x 150, nest and chicks one piece | w4Nests.ts:80 | chicks 30-50 cm | as is | ok |
+| Soldier | 91-96 x 62-73 (1.05) | soldierAnimData x 0.5/1.6 (meecaArt.ts:730) | (the General's guard) | 105 x 75 | ok |
+| *Unused:* Dangler | idle frame 274-283 x 286-288 px (UP 1.6) | danglerAnimData | an orb spider on its line | 60 x 60: overhead, it must read against leaves | new |
+| *Unused:* Orchid Mantis | idle frame 337-342 x 267 px | mantisAnimData | 6 cm; it must pass for a bloom | the height of the W5 bloom it poses as (measure that art first), about 80 | new |
+| *Unused:* Crab | idle frame 328-336 x 296-307 px | crab.json | shell 5-10 cm: 8-15 | 46 x 52: small but readable, the claw a third of it | new |
+| *Unused:* Piranha | idle frame 334-373 x 292-298 px | piranha.json | 15-35 cm: 25-50 | 30 x 36 each, a shoal of five to seven | new |
+| *Unused:* Beetle | idle frame 361-421 x 204-232 px | beetle.json | 8-17 cm: 12-25 | 40 x 70, with a seed as tall as Pokey (90) to ride | new |
+
+Seven flags. The pattern: the big hunters are drawn at half Pokey's height or less (boa 0.48, caiman 0.44, jaguar 0.67), so nothing in
+a stage looks like it could hunt a sloth. The crab and the piranha would be drawn at about 0.15 and 0.1 of their sheets: bake them at
+game size (the draw budget counts draws shrunk over 2.5x: `shrunkOver2_5x` 32, tools/perf/limits.json).
+
+**The ten guardians** (Matt, 9:42 PM ET: "huge... much, much, much larger than Pokey"). Drawn = frame x `spec.k x def.scale`
+(paintedBoss.ts:150; Venom Fang is a rig, venomRig.ts:18). Headroom = sheet px per drawn unit: under 1 means the art is already stretched.
+
+| Guardian | Drawn today H x L (x Pokey) | Headroom today | Proposed H x L (x Pokey) | Headroom then | Needs |
+|---|---|---|---|---|---|
+| 1 Venom Fang | coil 204 x 306; raised head top about 345 (3.9) | 2.94 | head top 445, coil 265 x 400 (5.0) | 2.3 | nothing new: the only one with art to spare. `climbTop` 270 rises with him (bossDefs.ts:220) |
+| 2 Crocus Rex | 163-228 x 460-479 (1.8-2.6) | 0.78 | 270 x 600 (3.0): long and low | 0.6 | new art; arena 1400 to about 1700 |
+| 3 Shadow Prowler | 178 x 425 (2.0) | 0.92 | 270 x 640 (3.0) | 0.6 | new art; arena 1500 to about 1800 |
+| 4 Sky Sovereign | 182-231 x 272-362 (2.0-2.6) | 0.51 | 330 x 620 wingspan (3.7) | 0.3 | new art at 2-3x; the air camera (`frameAir`) |
+| 5 Tarantula Queen | 190 x 337-399 (2.2) | 1.01 | 310 x 600 (3.5) | 0.65 | new art |
+| 6 Marsh Reaver | 249 x 381 (2.8) | 0.44 | 360 x 550 (4.0) | 0.3 (0.38 with the unused reaver sheet) | new art |
+| 7 Stone Idol Golem | 236 x 271 (2.65) | 0.48 | 450 x 500 (5.0): an idol fills its hall | 0.25 (0.4 with the unused golem sheet, which is over 4096 px) | new art; the level's top (560 units above the floor) |
+| 8 Night-Wing Monarch | 138-198 x 330-420 (1.5-2.2) | 0.52 | 300 x 640 wingspan (3.4) | 0.3 | new art |
+| 9 Magma Drake | 264 x 474 (2.96) | 0.39 | 400 x 720 (4.5): the biggest animal in the game | 0.26 | new art; arena 1400 to about 1900; portrait cannot show all of him |
+| 10 General Iron-Claw | 282 x 370 (3.17) | 0.69 | 360 x 470 (4.0): he looms, and the hand he is offered still reads | 0.55 (0.68 with the unused ironclaw sheets, over 4096 px) | new art |
+
+What a bigger guardian needs, measured:
+- **The room.** Every arena has its floor 560 units under the top of the level (stageGenerator.ts:2599-2607; level height 900,
+  worldsData.ts:348), and the HUD covers the top 19% of the screen (bossCamera.ts:7). So 5x Pokey (446 units) is the most that fits
+  with any air over its head; "filling most of the screen's height" needs taller levels. Longer bodies need 300-500 more arena width.
+- **The camera.** Landscape shows 540 units of height (engine.ts:224), more as the fight camera zooms out (to x0.4, bossCamera.ts).
+  The limit is Pokey: on an 844 x 390 phone he is 64 px tall, and 26 px at the widest zoom. To keep him at 40 px the zoom stops at
+  about x0.62, where a 446-unit guardian is 200 px of the 390: half the screen. Portrait shows at most 720 units of width (bossCamera.ts),
+  so a 600-720 long guardian and Pokey do not both fit: raise that cap, or let part of the beast be off screen (it reads as huge).
+- **The art.** Eight of the ten are already drawn larger than their sheets (headroom under 1). At these sizes they would be 2 to 4
+  times stretched, and soft. Venom Fang alone can grow tonight's art. The unused sheets in `src/assets/w6to10/bosses/` are only 1.25x
+  bigger and four are over the 4096 px limit (artcheck.mjs:18), so "huge" is a Hugging Face picture list for Matt ($72 left).
+- **The draw budget.** A guardian twice as tall and long covers four times the pixels: the Drake goes from 0.2 to about 0.46 of a
+  landscape screen. The limit is 7.5 screens of drawn images a frame, worst today 7.22 (limits.json), and **no guardian fight is among
+  drawcheck's seven scenarios**, so today nothing would catch a guardian that breaks it: add one fight as a scenario first. The glow
+  some guardians use is a shadow blur (paintedBoss.ts:146), which the main-canvas limit sets at 0.
