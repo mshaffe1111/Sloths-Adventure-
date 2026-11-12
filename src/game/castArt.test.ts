@@ -12,7 +12,7 @@ const ground = (x: number, width: number, y: number, id = 1): Platform => ({ id,
 const post = (o: Partial<TrapPost>): TrapPost => ({ id: 0, kind: 'vine', load: 'hive', x: 300, y: 1000, loadX: 470, loadY: 900, landY: 1000, ...o });
 
 let boughs = 0;
-test('on one long ground the sapling stands, under 225 units tall (the goal sign, sideways), its trunk clear of the handle, the load hung at its height', () => {
+test('on one long ground the sapling stands, under 265 units tall, its trunk clear of the handle, the load hung at its height', () => {
   for (const [hx, lx] of [[300, 440], [300, 470], [300, 490], [700, 520], [700, 560]]) {
     for (const load of ['hive', 'stone'] as const) {
       const p = post({ x: hx, loadX: lx, load });
@@ -20,7 +20,7 @@ test('on one long ground the sapling stands, under 225 units tall (the goal sign
       assert.ok(lay.sap, `a sapling for handle ${hx}, load ${lx}`);
       const s = lay.sap!;
       assert.equal(s.y, 1000, 'its foot on the ground');
-      assert.ok(s.k * W1_TRAP_FRAMES.sapling.h <= 225 + 1e-6, 'no taller than a sideways phone shows');
+      assert.ok(s.k * W1_TRAP_FRAMES.sapling.h <= 265 + 1e-6, 'no taller than a sideways phone shows');
       const half = (W1_TRAP_MEASURES.sapling.footW * s.k) / 2;
       assert.ok(Math.abs(s.x - hx) >= half + 22, 'the root flare off the handle');
       const tall = load === 'hive' ? W1_TRAP_FRAMES.hiveHang.h * 0.25 : (W1_TRAP_FRAMES.stoneHang.h * 50) / W1_TRAP_FRAMES.stoneHang.w;
@@ -33,7 +33,8 @@ test('on one long ground the sapling stands, under 225 units tall (the goal sign
       }
     }
   }
-  assert.ok(boughs >= 6, `the handle's bough grows from the sapling in most cases (${boughs} of 10)`);
+  // (the rest stand beyond the load: there the vine runs from the crown down as the handle, no bough end: castArt.ts drawTraps)
+  assert.ok(boughs >= 4, `the handle's bough grows from the sapling where its trunk is on the handle's side (${boughs} of 10)`);
 });
 
 test('the foot never stands over a gap: with no ground where it would go, a bough end holds the load', () => {

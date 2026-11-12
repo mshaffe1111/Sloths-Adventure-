@@ -52,9 +52,10 @@ const SAP_F = W1_TRAP_FRAMES.sapling;
 const SAP_COLW = SAP_F.w / SAP.under.length;
 /** the crown's underside columns the load may hang from (the drooping tip, under the leaves) */
 const CROWN_COLS = [17, 18, 19, 20, 21];
-/** the tallest the sapling may stand (units): sideways, the goal sign's bottom is about 230 over the ground (measured on 1-3 stills),
- *  and the crown stays under it */
-const SAP_MAX_TALL = 225;
+/** the tallest the sapling may stand (units). Sideways the goal sign's bottom is about 230 over the handle's ground (1-3 stills), and
+ *  since 1-3's snakes lie on logs (W1C aa98fbc3) the hung hive's own top is about 177 over it, so no crown that holds it fits under
+ *  the sign: 265 lets the crown tuck partly behind the sign's end (the lead's call, 11-12, between this and floating bough ends) */
+const SAP_MAX_TALL = 265;
 const CLUMP = W1_TRAP_MEASURES.clump;
 const CLUMP_F = W1_TRAP_FRAMES.clump;
 /** the clump column the handle hangs from: the middle of the frond's underside */
@@ -105,7 +106,7 @@ export function layoutTrap(p: TrapPost, platforms: readonly Platform[]): TrapLay
         if (hangY > top || hangY < top - 70) continue;
         // the trunk's root flare keeps clear of the handle's hit box
         if (Math.abs(fx - p.x) < half + TRAP.handle.w / 2) continue;
-        const score = Math.abs(hangY - (top - 14)) + (s === dir ? 0 : 30) + k * 20;
+        const score = Math.abs(hangY - (top - 14)) + (s === dir ? 0 : 400) + k * 20;
         if (!best || score < best.score) best = { score, lay: { dir, hy, hangX: p.loadX, hangY, sap: { x: fx, y: g, k, flip: s < 0 }, bough: null } };
       }
     }
@@ -268,8 +269,12 @@ export function drawTraps(ctx: CanvasRenderingContext2D, traps: readonly TrapSta
       ctx.translate(lay.bough.x, lay.bough.y);
       piece(ctx, 'clump', CLUMP.stick[0], CLUMP.stick[1], lay.bough.k, lay.bough.flip);
       ctx.restore();
-    } else clump(ctx, p.x, lay.hy, lay.dir);
-    if (!lay.sap) clump(ctx, lay.hangX, lay.hangY, -lay.dir);
+    } else if (!lay.sap) {
+      clump(ctx, p.x, lay.hy, lay.dir);
+      clump(ctx, lay.hangX, lay.hangY, -lay.dir);
+    }
+    // (a sapling beyond the load and no bark on the handle's side: no bough end, the vine runs from the crown and hangs down as the
+    // handle, one vine, so nothing hangs in the air)
 
     // the load: hanging on a short strand from the crown, falling, or landed where it fell
     const hang = loadOf(p);

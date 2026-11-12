@@ -1,6 +1,6 @@
 # ART-W1: World 1's painted drop-trap pieces for 1-3 (2026-11-12, branch t-w1-art)
 
-**Status:** wired in and shot in the real page. Base: origin/t-w1-creatures 26f72b31, merged in. Draw-only change: no trap box, timing
+**Status:** wired in and shot in the real page; one layout decision is the lead's (below). Base: origin/t-w1-creatures aa98fbc3 (snakes on logs), merged in. Draw-only change: no trap box, timing
 or lay moved (dropTrap.ts, castPlay.ts and w1Cast.ts untouched).
 
 ## What shipped
@@ -10,8 +10,10 @@ or lay moved (dropTrap.ts, castPlay.ts and w1Cast.ts untouched).
   and Matt's bee (4 code-flown: out of the crack, round the animal, then away from Pokey, gone by 4 s). Code keeps only the handle's ring.
 - `layoutTrap` (tested, `src/game/castArt.test.ts`): the sapling's foot is set on real ground (the stage's platforms, passed to
   drawTraps as a draw-only argument), no taller than 225 units (sideways the goal sign's bottom is about 230 over the ground), the
-  load hung from its crown at W1C's height, the root flare off the handle's hit box. The handle's bough end grows from the sapling's
-  bark facing the handle. Where no sapling fits, a second bough end holds the load (W1C's stand-in layout, painted).
+  load hung from its crown at W1C's height, the root flare off the handle's hit box, its trunk on the handle's side when one fits
+  (then the handle's bough end grows from its bark). Where no sapling fits, two bough ends (W1C's stand-in layout, painted).
+- On aa98fbc3 (snakes on logs, load 25 higher) no sapling fits the handle's side (it would be 360-420 units tall): all three traps
+  get the sapling BEYOND the log, arching back, up to 265 units tall (225 found nothing), crown partly behind the sign's right end.
 - `engine.ts`: the trap sheet starts loading as a stage with traps is built (warmTrapArt); the platforms are passed to drawTraps.
 - Catalog rows in CATALOG-MASTER's exact format: `reference/art/catalog-rows-w1traps.csv` (12 rows; the lead routes the merge).
 
@@ -24,7 +26,10 @@ same game size: `hive-matt-vs-A.jpg`. Contact sheet the lead picked from: `conta
 2. Nothing floats: the sapling stands on the ledge; the handle's bough end grows from its bark; the load hangs from its crown. PASS.
 3. Reads as "punch me": the knotted loop sits at his raised hand, ringed. PASS (trap0-1-before-sideways).
 4. Edges: no dark rim, no key fringe on dark or light (erode + hard re-cut + defringe). PASS (pieces-on-dark-and-light.jpg).
-5. Sideways framing: the crown sits just under the goal sign, touching its bottom edge in two of three traps. ROUGH, named.
+5. Sideways framing (aa98fbc3): the crown tucks partly behind the goal sign's right end; the hive's own top is ~177 over the
+   handle's ground, so nothing that holds it can sit under the sign (W1C's 170). ROUGH, named: stills-sheet-aa98fbc3.jpg.
+5b. The vine runs from the crown over to above the handle and turns down into it: that corner hangs on nothing. FAILS "nothing
+   floats". The lead's call (Open, below).
 6. Matt's hive at phone size: reads as a small brown cocoon, low against the bark and the forest; hive A reads as a hive at once and
    matches World 1's inked cartoon props. Matt's reads WORSE (hive-matt-vs-A.jpg). The lead's call.
 7. Bees: 9 units so they read; still small. Seen in the glide still.
@@ -52,6 +57,9 @@ takes (~$0.13) in round 3 after the lead's 12:31 hold, which reached me at 12:50
   soft dark halo survives defringe: re-cut alpha at a hard threshold, fill only pinholes, then defringe (pack.py clean).
 
 ## Open, for the lead
+- The handle's side on 1-3's new ground (pick one): (a) a second sapling, mirrored and smaller, behind the handle, its crown over the
+  handle (two trees framing the trap; same tree twice, so better with the other arch take, r3b anchorArch-41, cut free); (b) the painted
+  bough end at the corner (it floats, as W1C's stand-in did); (c) W1C lowers the hang (gameplay numbers, not mine).
 - Made thing: the tendril's stake is cut wood (Matt 11-11: no made things in World 1); W1C's list asked for a peg. Rows flag it.
 - The hive: Matt's (as ruled) or hive A, by the side-by-side above.
 - Not done: drawcheck has no 1-3 scenario; 1-3 measured separately (above).
