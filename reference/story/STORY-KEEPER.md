@@ -362,3 +362,10 @@ guards.**
 - W9 9-2/9-5: Dot's "Leaf up... I didn't raise you" moves with Vent Riding to 9-2. I owe a 9-5 Rising Heat line (the 9-3 to 9-5 gap)
   and the w9_note hint rewrite (finds.ts:448).
 - I write these three once the lead confirms the swaps.
+**Final words sent at 8:12 PM ET (for the packets):**
+- Hints: w7_note "Stone Sentries: a pink bell, before the first guard."; w9_note "Vent Riding. Before the first vent, look low."
+- 9-5 Rising Heat wayside: Pokey "It's only weather." / Dot "It's LAVA." (pays off "It was only weather"). way.9-5 moves to 9-2.
+- stagePlan: 1-3 "Knock the snakes off the branches. Punch, or shake the vine."; 1-7 "Eagles are watching. Get under the leaves and
+  hold still, the way Dot hid from the soldiers."; 3-2 "Something is watching. Stay up in the roots and keep quiet."; 1-8 "Race the long
+  branch before it gives way."
+- Fix: w5_keepsake "...Slow down." becomes "...Look closely." (no "slow" in player text).
