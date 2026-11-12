@@ -23,10 +23,15 @@
   (the lay). No painted art needed.
 
 ## Checks (final code)
-GATES_PLACEHOLDER
+PASS: tsc; suite in 3 shards 3085 pass, 1 red = stageQuality "generating a stage is quick" under 3-shard load (alone 21/21); hollow
+tests 17/17; vite build + chunkcheck; artcheck; drawcheck standard PASS (372 s) and 1-2,1-3 PASS on the branch (115 s) and on the D12 merge
+(117 s, w1Pits in frame); clipcheck PASS (83 known); knowncheck; generality; roadmapcheck; kbdcheck; seedlist 1-1 (258); engine tools
+17/17; tierBots 7/7; **lock --layouts 2 vs t-int-2: 102/102 unchanged** (drawing only). **buildcheck FAIL, same on the base** (t-int-2:
+p95 507 ms vs 510 here; budget 150): not this change, needs an owner. D12 merge + this fix: w1Pits 16/17, the red "ground stands in the
+drop at 3583" (1-2 L1) is red without the fix too (D12's lay); its "held on a bound" red is gone.
 
 ## Method used / Lessons applied / Method update
 - render-fix.md 1-8. Lessons: judge the real screen at 2x zoom (D1, found the sliver); a test that fails on the base (render-fix 6); every
-  object asked "why there" (D16); check the fact in code (D7: hollows exist only on 1-2).
+  object asked "why there" (D16); check the fact on the page (D7: no thorn hollow on 1-1, 1-3, 1-4, 1-5 layouts 1-4).
 - Method update (proposed): step 3b, **dump the baked canvas** on magenta (`dump.mjs`, the bake map exposed in the scratch tree): it showed
   the square strip in one look after three still crops did not. `shoot.mjs` (stills-at plus a world-rect crop, camera centred on it).
