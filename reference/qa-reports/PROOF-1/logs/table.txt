@@ -21,3 +21,4 @@ funcheck-main|1|142|09:52:27|main-wt funcheck
 lock-record-main|0|1655|09:57:48|main-wt lockall --layouts 16 --out
 lock-record-head|0|1677|09:58:10|head lockall --layouts 16 --out
 drawcheck|0|521|10:01:08|node tools/perf/drawcheck.mjs
+clipcheck|2|676|10:12:24|node tools/perf/clipcheck.mjs

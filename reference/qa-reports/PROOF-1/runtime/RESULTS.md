@@ -13,7 +13,8 @@ head :8801, main :8802. The engine is reached in the SHIPPED bundle through Reac
   CPU x4 (the container never fell under load 6 before the deadline).
 - Live runs logged a frame error on head 4-1 (1 in run 1, 1+3 in run 2): w4Grit.ts:285 W4_PEBBLES[(k*5+cycle)%len] with cycle -1 (sinceWarn's
   idle branch, w4Grit.ts:163, in a drop's first cycle) -> undefined -> piece() reads f.w (w4Grit.ts:50); that frame's draw is lost.
-  rocks41.ts: the same drops on main and head (4-1 layouts 0-5: 0-3 drops each, t 0.0-2.9 s): PRE-EXISTING on 0.9.6, not a regression.
+  w4RockBurst.test.ts calls the REAL drawRockFx on 4-1's real drops: 9 drops throw on layouts 0,1,2,4,5 (t 0.00-2.90 s), the SAME 9 on
+  0.9.6 (run in a 585ef376 worktree): PRE-EXISTING, not a regression; each throw loses that frame's draw after the back layer.
 ## (b) saves
 - 0.9.5 fixtures regenerated from tag v0.9.5-37 with saveFill@3e9c47779: byte-identical to src/game/fixtures (genuine).
 - savetrip.ts (head code): 0.9.5 mid / after-5M, 0.9.6 finished (453 entries) / 34 finds, head finished (880) / 34 finds: every file
@@ -32,7 +33,7 @@ head :8801, main :8802. The engine is reached in the SHIPPED bundle through Reac
   whose moves are rolled from Math.random (bossAI.ts:103): with Math.random seeded the same on both sides the 10 bosses and 4-D are
   identical for 600 steps (clockcompare-seeded.log).
 ## (d) offline: offlinecheck.mjs: SW precaches 1,039 entries (every JS file); offline, a stage of every world (1-1, 2-3 ... 10-3) runs:
-  0 failed requests, 0 page errors; stills shots/offline-head-*.png.
+  0 failed requests, 0 page errors; stills shots/offline-head-*.jpg.
 ## (e) sound: soundcheck.mjs (the real bars, a real tap): defaults music 0.9 / effects 0.8 (main 1 / 1); out gain -4.00 dB at 90%, -8.00
   at 80%, -19.99 at 50%, -29.99 at 25%, -36.00 at 10% (curve: 4 dB a tenth); limiter: a square wave +18 dB over full scale into the
   effects bus peaks at -0.19 dBFS after the limiter (under full scale, 0.19 dB to spare).
