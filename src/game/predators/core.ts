@@ -389,7 +389,9 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
 
     case 'tell': {
       if (s.t < tellOf(def, easy) || !on('on')) break;
-      if (def.callsOff && !(sweep ? sees(def, s, hero) : saw)) {
+      // a sweeper that has found him is called off only by hiding (its dive follows him: running does not lose it)
+      const hidden = !watcherSees({ seesStill: def.sight.seesStill || (def.sight.remembers && s.knows) }, true, hero.still, hero.covered);
+      if (def.callsOff && (sweep ? hidden : !saw)) {
         // he went unseen before the tell ended: it calls the act off
         ev.lostHim = true;
         s.lost = 0;
@@ -412,12 +414,17 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
           s.x = nx;
         }
       } else {
+        // 'below' comes down where he WAS when the tell began; 'him' follows him (only hiding before the tell ends stops it)
+        if (a.aim === 'him') {
+          s.aimX = hero.x;
+          s.aimY = hero.y;
+        }
         const step = a.speed * k * dt;
         const gap = Math.hypot(s.aimX - s.x, s.aimY - s.y);
-        if (gap <= step) {
+        if (gap < 0.5) done = true; // it arrived on the step before: that frame hurt, this one ends it
+        else if (gap <= step) {
           s.x = s.aimX;
           s.y = s.aimY;
-          done = true;
         } else {
           s.x += ((s.aimX - s.x) / gap) * step;
           s.y += ((s.aimY - s.y) / gap) * step;

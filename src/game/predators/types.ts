@@ -75,8 +75,8 @@ export interface PredatorDef {
    */
   onBeat?: boolean;
   /**
-   * the act. `aim`: 'ahead' runs or strikes along the ground the way it faces; 'below' comes straight down; 'him' flies to where he
-   * was when the tell began. `speed` px/s for `seconds` at most; `reach` x `tall`: the box in front of it (or round it, in the air)
+   * the act. `aim`: 'ahead' runs or strikes along the ground the way it faces; 'below' comes straight down to where he was when the
+   * tell began (move on and it misses); 'him' follows him (a sweeper's dive: only hiding before the tell ends stops it). `speed` px/s for `seconds` at most; `reach` x `tall`: the box in front of it (or round it, in the air)
    * that hurts while it acts
    */
   act: { aim: 'ahead' | 'below' | 'him'; seconds: number; speed: number; reach: number; tall: number };
@@ -124,7 +124,7 @@ export interface PredatorState extends Listener {
   maxX: number;
   /** a sweeper's eye (its shadow, its gaze): where it looks from. Everything else looks from its body */
   eyeX: number;
-  /** where the act is going: set when the tell begins and not changed after (so a dodge is a dodge) */
+  /** where the act is going: set when the tell begins and not changed after, so a dodge is a dodge (but an act that aims 'him' follows him) */
   aimX: number;
   aimY: number;
   /** where it is heading on the hunt: him, or a noise */
