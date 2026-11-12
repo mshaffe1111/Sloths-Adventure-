@@ -50,7 +50,7 @@ merge t-yield-2, t-render-2, t-13-proof (carries W1C's 1-3 moved into World 1's 
 W1C (Fable): 1-3 built to design (480/480), now moving into the shipped kit (hand-built 1-3 deleted); Normal hotter; finale hop gap.
 1:08 PM: ART-W1 contact sheet judged (handle B/B, tendril A/A, anchor B sapling carries the whole trap, vine A, no leaf clump, stone B/B, hive =
 Matt's frames 1-2); $1.93 of $6 spent. OPEN: the master catalog (reference/art/CATALOG-MASTER.csv, tools/art/catalog_master.py) lives only on
-t-engine-inventory, NOT in t-int-2: find its status (passed? by whom?) and route it into an integration; ART-W1 writes its rows to
+t-engine-inventory@621a3d2b (PASSED 11-11, never integrated): INT-2 merging it now (1:12 PM); ART-W1 writes its rows to
 reference/art/catalog-rows-w1traps.csv meanwhile.
 NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes + t-pit-polish + t-audit-fixes (+ t-12-fly), renumber the
   duplicate R-165.129, full gate; (2) PROOF-1 re-audits only the delta; (3) ask Matt ONE question: ship the R-165.125 sound levels or hold
