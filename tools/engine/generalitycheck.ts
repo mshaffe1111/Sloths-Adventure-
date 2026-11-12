@@ -44,9 +44,13 @@ export const EXEMPT: Array<[string | RegExp, string]> = [
   ['src/game/gen2/proven/', "seed list: each stage's proven seeds, one file a stage (written by tools/engine/seedlist.ts; R-165.112 moved them out of provenSeeds.ts)"],
   ['src/game/gen2/provenIndex.ts', 'seed list: the index of the proven seed lists (written by tools/engine/seedlist.ts with each list)'],
   ['src/game/gen2/firstRun11.ts', "per-stage data: 1-1's one fixed first run (ADR-002), a seed and its plan"],
-  ['src/game/predators/roster.ts', "world data: each world's cast, and the one stage with a cast of its own (8-4's moths)"],
+  ['src/game/predators/roster.ts', "world data: each world's cast, and the one stage with a cast of its own (8-4's moths); tables only (DATA_ONLY)"],
   [/Harness\.ts$/, 'test harnesses for one world (w6Harness, w7Harness, w8Harness)'],
 ];
+
+/** exempt world-data files that must stay data only: an exemption covers tables, never a rule that reads them (a function, arrow or
+ *  class here fails the gate; the rule goes in engine code under the gate, as inWorld went to predators/ways.ts; R-165.153) */
+export const DATA_ONLY = ['src/game/predators/roster.ts'];
 
 export const STAGE_ID = /^(\d{1,2}|S)-(\d{1,2}|[A-Z])$/;
 /** a stage id inside a longer name ('normal-1-1', 'w5:5-7'), or a world's prefix ('5-', as in id.startsWith('5-')) */
@@ -226,6 +230,11 @@ function numAt(ts: Tok[], k: number): { v: number; a: number; b: number } | null
   return null;
 }
 
+/** the logic in a data-only file: each `function`, `class` or `=>`, with its line (comments and strings are not code) */
+export function logicIn(src: string): Array<{ line: number; code: string }> {
+  return tokenize(src).filter((t) => (t.t === 'id' && (t.v === 'function' || t.v === 'class')) || (t.t === 'p' && t.v === '=>')).map((t) => ({ line: t.line, code: t.v }));
+}
+
 /** every place this file's code names one stage */
 export function scan(src: string, file: string): Hit[] {
   const ts = tokenize(src);
@@ -388,7 +397,9 @@ function main() {
   for (const h of fresh) console.log(`✗ NEW ${h.kind}: ${h.file}:${h.line}  ${h.code}  (${WHY[h.kind]}: put it in world data or a per-stage script)`);
   for (const s of stale) console.log(`✗ FIXED, still listed: ${s.entry.file}  ${s.entry.kind}  ${s.entry.code}  known ${s.entry.count}, found ${s.found}: lower its count in ${KNOWN_FILE}`);
   for (const m of missing) console.log(`✗ GONE: ${m} is listed as engine code but is not in the tree: fix ENGINE_FILES / ENGINE_DIRS`);
-  const ok = !fresh.length && !stale.length && !missing.length;
+  const logic = DATA_ONLY.flatMap((f) => (fs.existsSync(path.join(ROOT, f)) ? logicIn(fs.readFileSync(path.join(ROOT, f), 'utf8')).map((l) => ({ f, ...l })) : [{ f, line: 0, code: 'missing' }]));
+  for (const l of logic) console.log(`✗ LOGIC IN DATA: ${l.f}:${l.line}  ${l.code}  (its exemption covers data only: move the rule into engine code under the gate)`);
+  const ok = !fresh.length && !stale.length && !missing.length && !logic.length;
   console.log(ok ? 'PASS' : 'FAIL');
   return ok ? 0 : 1;
 }

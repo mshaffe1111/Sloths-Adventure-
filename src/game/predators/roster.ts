@@ -1,9 +1,10 @@
 /**
- * predators/roster — who has which habit, and each world's cast (reference/design/PREDATORS.md §2). Data only. The rule it is held
+ * predators/roster — who has which habit, and each world's cast (reference/design/PREDATORS.md §2). Data only: no functions
+ * (generality.test.ts holds it to that; the rule that reads it, inWorld, is engine code in ways.ts, under the generality gate). The rule it is held
  * to (predatorRoster.test.ts): an animal has one habit everywhere, and no two animals in one world's cast share a habit.
  * Kinds are the game's own ids where it has one (types.ts EnemyType); the rest are named for what they are.
  */
-import type { Habit, PredatorDef, Way } from './types.ts';
+import type { Habit, Way } from './types.ts';
 
 export const HABIT = {
   snake: 'patrol', boa: 'ambush', eagle: 'sweep',
@@ -54,19 +55,3 @@ export const TAUGHT: Record<Way | 'noise' | 'bell', number> = {
 
 /** who else is about in a world that a cast animal may fear (not hunters of Pokey, so not in a cast) */
 export const ALLIES: Record<number, readonly string[]> = { 8: ['owl'] };
-
-/**
- * An animal as it plays in one world: the ways that world has not been taught yet are taken off its list, the food chain is off it
- * when nothing it fears lives there, and it answers no lure before the first one (the bell) is taught. The same object back when
- * nothing changes. A stage lays its cast through this, so a way can never appear before its move (predatorRoster.test.ts).
- */
-export function inWorld(def: PredatorDef, world: number): PredatorDef {
-  const about: readonly string[] = [...(CASTS[world] ?? []), ...(ALLIES[world] ?? [])];
-  const keep = (w: Way): boolean => TAUGHT[w] <= world && (w !== 'lure' || !def.fears || def.fears.some((k) => about.includes(k)));
-  const ways = Object.keys(def.beatenBy) as Way[];
-  const deaf = def.hears !== undefined && TAUGHT.bell > world;
-  if (ways.every(keep) && !deaf) return def;
-  const beatenBy: PredatorDef['beatenBy'] = {};
-  for (const w of ways) if (keep(w)) Object.assign(beatenBy, { [w]: def.beatenBy[w] });
-  return { ...def, beatenBy, hears: deaf ? undefined : def.hears };
-}

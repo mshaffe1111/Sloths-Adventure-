@@ -6,7 +6,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { bellNoise, landingNoise, thrownNoise } from './heroNoise.ts';
 import { NOISE } from './noise.ts';
-import { inWorld } from './predators/roster.ts';
+import { inWorld } from './predators/ways.ts';
 import { beat, blocks, checkPredator, foodChain, hear, hurt, newPredator, touches } from './predators/core.ts';
 import { DT, firstT, post, prey, run } from './predators/fixtures.ts';
 import { CAIMAN, CASTS_AFTER_1, FROG, HARPY, JAGUAR, OCELOT, RIVER_GUARD, SENTRY, SPIDER, TAYRA, TURTLE } from './predators/casts.ts';
