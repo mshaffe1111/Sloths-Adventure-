@@ -187,6 +187,7 @@ import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { gpuProfOn, profBegin, profEnd, profMark } from './gpuProf.ts';
+import { stickBegin, stickEnd, stickMark } from './layerClock.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 import { dotHelp, seenSkills } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
@@ -6507,6 +6508,7 @@ export class GameEngine {
     const dpr = this.renderDpr();
     const world = WORLDS_DATA[this.currentStage.config.worldIndex - 1] || WORLDS_DATA[0];
     profBegin(ctx);
+    stickBegin(ctx);
     // (a sheet of this stage's that has just arrived: drawn once into the corner, under this frame)
     this.arrivals.frame(ctx);
 
@@ -6518,11 +6520,13 @@ export class GameEngine {
     if (this.dotRun) {
       this.renderDot(ctx, dpr);
       ctx.restore();
+      stickEnd(false);
       return;
     }
     if (this.slideRun?.sliding) {
       this.slideRun.draw(ctx, this.viewCssW, this.viewCssH, dpr);
       ctx.restore();
+      stickEnd(false);
       return;
     }
 
@@ -6558,6 +6562,7 @@ export class GameEngine {
     }
 
     profMark(ctx, 'bg');
+    stickMark(ctx, 'mid');
     // 2. Render In-World Game Elements with Camera Transform
     ctx.save();
     // (snapped to whole device pixels: whole CSS pixels moved the world in steps of three on a phone while he moved smoothly)
@@ -6626,6 +6631,7 @@ export class GameEngine {
     // the bounce plants' caps and their cue over the painted ground, so one at a bank's end is never hidden under its lip
     if (!(ownScene && lair)) drawBounceCaps(ctx, world.id, this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats), this.camera, this.gameTime);
     profMark(ctx, 'ground');
+    stickMark(ctx, 'ground');
     // World 1's new painted dressing a stage lays (proto.mixDress: 1-1's squirrels), standing on the ground behind Pokey (w1NewArt.ts)
     // (1-1's clue, the bootprint, lies flush in the end log's moss: its own picture, drawW1Clue, only where a stage reports its place)
     for (const d of this.proto?.mixDress ?? []) if (this.onScreen(d.x, d.b - 40, 160)) { if (d.n === CLUE_NAME) drawW1Clue(ctx, d.x, d.b); else drawW1Dress(ctx, d.n, d.x, d.b, d.flip); }
@@ -6764,6 +6770,7 @@ export class GameEngine {
     }
 
     profMark(ctx, 'decor');
+    stickMark(ctx, 'props');
     // polish prototype: this stage's lighting rig (null when the switch is off)
     const rig: Rig | null = polishEnabled() && polishTier() < 2 ? rigFor(lookFor(world.id), world.id, getSceneSeed()) : null;
     if (rig) {
@@ -6838,6 +6845,7 @@ export class GameEngine {
     }
 
     profMark(ctx, 'enemies');
+    stickMark(ctx, 'creatures');
     // Leaf Glide: he floats on a small leaf under his feet (it spreads when the glide starts and is gone after he lands)
     // (never once he stands or holds on: the frame he landed used to still draw it open under his feet)
     const gl = this.player;
@@ -6896,6 +6904,7 @@ export class GameEngine {
     this.drawCalmWater(ctx, true);
     heroClipsLive(false);
     profMark(ctx, 'hero');
+    stickMark(ctx, 'pokey');
     // (fallen into a drawn water zone: under its top, he is under the water)
     if (this.proto?.water) this.drawZoneOver(ctx);
     // (inside a hollow log, walking through it low: the log over him, half see-through, so he reads as in it: w1NewArt.ts)
@@ -6968,6 +6977,7 @@ export class GameEngine {
 
     if (this.tide?.on) this.drawTideFront(ctx);
     profMark(ctx, 'front');
+    stickMark(ctx, 'front');
     ctx.restore(); // end world transform
     if (this.chase) this.drawChaseEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
     if (this.proto?.watch) this.drawWatchEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
@@ -7100,6 +7110,8 @@ export class GameEngine {
 
     ctx.restore(); // end DPR transform
     profMark(ctx, 'overlay');
+    stickMark(ctx, 'hud');
+    stickEnd();
     profEnd(this.player.x, (what, detail) => recorder.event(what, detail));
   }
 

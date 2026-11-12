@@ -50,6 +50,7 @@ let stageWorld = 1;
 /** trunks drawn behind a stage's boughs that are scenery, not climbs (1-1's canopy: no bough floats with nothing holding it) */
 /** `art: 'plain'`: the bare kapok (trunkPlain), so neighbouring trees never share one trunk picture and vine wrap (the mixer's 1-5, S-4) */
 import { fitTrunks, type DecoTrunk } from './trunkFit.ts';
+import { stickSpanBegin, stickSpanEnd } from './layerClock.ts';
 export { fitTrunks };
 type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' };
 let decoTrunks: ReadonlyArray<DecoTrunk> = [];
@@ -1215,7 +1216,11 @@ export function drawProtoScene(
   const banks = platforms.filter(paintedBank);
   // World 1's pits (R-6.38): the drop under the ground (its shade, floors and steps draw over it), the lips and leaf bed over it
   if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'under');
-  if (!drawGroundChunks(ctx, platforms, banks, view)) drawGround(ctx, platforms, banks, view);
+  // (the measuring stick, layerClock.ts: the baked squares' stamps alone, as the span 'squares' inside 'ground')
+  stickSpanBegin('squares');
+  const stamped = drawGroundChunks(ctx, platforms, banks, view);
+  stickSpanEnd(ctx, 'squares');
+  if (!stamped) drawGround(ctx, platforms, banks, view);
   // (gen2 World 1's dip pockets, over the ground: painted soil edge to edge under their lip, so a pocket reads as a soil hollow, not a
   // grey window; isPocket needs ownLook, which only gen2 World 1 sets, so every other stage draws as before)
   for (const p of banks) {

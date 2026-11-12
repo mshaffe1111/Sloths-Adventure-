@@ -20,6 +20,7 @@ import { isRich } from './rainforest.ts';
 import { backdropStage, canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted, FADE_IN_MS, type PaintedSet } from './paintedBackdrops.ts';
 import { w5Mood, type W5Mood } from './w5Backdrop.ts';
 import { paintBiomeMid } from './biomes.ts';
+import { stickMark } from './layerClock.ts';
 import { hasKit, paintNearPlant, paintFrontClump, paintFrontHang } from './envKit.ts';
 import { polishEnabled, polishTier, pskip, rigFor, polishBack, polishFront, swayWeight, swayAmount, gustAt, type LayerName, type Rig } from './polish.ts';
 import {
@@ -1847,6 +1848,11 @@ const grown = (world: number, part: keyof typeof STRIP_FIT, s: number) => s * (S
  * twins (polish report VI-4). A far strip with its painted sky `above` has it drawn above when there is room (upright), as wide as
  * the strip and at the same scale: its bottom SKY_OVERLAP of the strip's height lies over the strip's top and fades into it. */
 function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0, above: Layer | null = null, fitS = s) {
+  stampStrip(ctx, img, part, par, camX, vw, vh, s, yOff, above, fitS);
+  // (the measuring stick, layerClock.ts: the far strip, with its painted sky, counts to 'far'; the middle and near strips to 'mid')
+  stickMark(ctx, part === 'far' ? 'far' : 'mid');
+}
+function stampStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff: number, above: Layer | null, fitS: number) {
   const pl = stripTop(part, vh, s, yOff);
   const dh = pl.dh;
   const iw = layerWpx(img);
@@ -2219,6 +2225,7 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
     renderSky(ctx, world, vw, vh, time, camX);
     ctx.restore();
   }
+  stickMark(ctx, 'sky');
   // the polish pass (prototype, off by default): per-stage layer shifts/flips, wind, mist and light shafts
   const rig = polishEnabled() && polishTier() < 2 ? rigFor(look, world, getSceneSeed()) : null;
   const to = (layer: LayerName): TileOpt | undefined => (rig ? { layer, rig, time, sway: !lite && polishTier() < 1 } : undefined);
