@@ -188,6 +188,7 @@ import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { gpuProfOn, profBegin, profEnd, profMark } from './gpuProf.ts';
 import { stickBegin, stickEnd, stickMark } from './layerClock.ts';
+import { gameCtxOpts } from './gameCanvas.ts';
 import { drawGpuFrame, resizeGpuLayer } from './gpuLayer.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 import { dotHelp, seenSkills } from './dotGuideHelp.ts';
@@ -853,7 +854,7 @@ export class GameEngine {
   ) {
     this.canvas = canvas;
     // (the per-layer timing reads one pixel back each layer: told outright, the canvas stays on the GPU through it: gpuProf.ts)
-    const ctx = canvas.getContext('2d', gpuProfOn() ? { alpha: false, willReadFrequently: false } : { alpha: false });
+    const ctx = canvas.getContext('2d', gameCtxOpts());
     if (!ctx) throw new Error('Could not get Canvas2D context');
     this.ctx = ctx;
     this.input = input;

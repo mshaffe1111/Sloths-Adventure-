@@ -9,6 +9,7 @@
  * Memory (atlasLoader.ts): preloading a stage in another world counts as entering that world, so the last world's sheets are let go
  * first and two worlds' sheets are never held at once; only the one stage's sheets are asked for.
  */
+import { gameCtxOpts } from './gameCanvas.ts';
 import { CRUMBLE_ART_URL, crumbleArtReady } from './crumbleArt.ts';
 import { W7_FACE_URLS, w7FaceReady } from './w7FaceArt.ts';
 import { w810FaceReady } from './w810FaceArt.ts';
@@ -300,7 +301,8 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
   // strips of a stage played up in the trees, which used to load on first use and pop in a second time)
   void backdropReady(cfg.worldIndex, cfg.id, stageUsesCanopy(cfg));
   const t0 = performance.now();
-  const ctx = canvas?.getContext('2d', { alpha: false }) ?? null;
+  // (the settings every first getContext on the game canvas must share: gameCanvas.ts)
+  const ctx = canvas?.getContext('2d', gameCtxOpts()) ?? null;
   const done = Promise.all([whenSheetsReady(urls, ms), Promise.race([plainDone, new Promise<void>((r) => setTimeout(r, ms))])]).then(([n]) => {
     const drawn = live() || !ctx ? 0 : warmSheets(urls, ctx) + warmPlain(plains, ctx);
     perfNote(`preloaded ${cfg.id}: ${n}/${urls.length} sheets ready, ${drawn} drawn once, ${Math.round(performance.now() - t0)} ms`);

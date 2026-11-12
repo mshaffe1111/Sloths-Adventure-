@@ -14,6 +14,7 @@
  * Then each is drawn once (a few pixels, 1:1, as atlasLoader.ts warmSheets does), and one more frame is drawn so the creatures on screen
  * bake their clips at the size they are really drawn (creatureAnim.ts).
  */
+import { gameCtxOpts } from './gameCanvas.ts';
 import { pendingSheets, unwarmedSheets, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { drawPaintedCardBoss } from './bossArt.ts';
 import { stampSceneryFits, warmScenery } from './scenery.ts';
@@ -78,7 +79,8 @@ export async function readyBuiltStage(
   // (the GPU layer starts now, alongside the sheets' loads, so its start-up, Pixi's file and set-up, overlaps the loading instead of
   // adding to it: the ground's squares are drawn on it, gpuGround.ts, R-3.3. No WebGL 2: it resolves false and nothing changes)
   const gpu = mountGpuLayer();
-  const ctx = canvas?.getContext('2d', { alpha: false }) ?? null;
+  // (the settings every first getContext on the game canvas must share: gameCanvas.ts)
+  const ctx = canvas?.getContext('2d', gameCtxOpts()) ?? null;
   const stage = engine.builtStage();
   const keys = builtStageKeys(stage);
   const urls = start(keys);

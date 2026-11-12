@@ -133,6 +133,32 @@ test('the planted cost lands in the layer it names', () => {
   for (const l of STICK_LAYERS) if (l !== 'ground') assert.ok(f.layers[l] < 2, `${l} ${f.layers[l]}`);
 });
 
+test('PLANTED: a layer marked twice in a frame gets the planted cost once, and again the next frame', () => {
+  const c = new LayerClock();
+  c.mode = 'cpu';
+  c.plant = { far: 4 };
+  for (let f = 0; f < 2; f++) {
+    c.begin();
+    c.mark('far'); c.mark('mid'); c.mark('far');
+    c.end();
+  }
+  for (const f of c.take()) assert.ok(f.layers.far >= 4 && f.layers.far < 7, `far ${f.layers.far}`);
+});
+
+test('PLANTED: every first getContext on the game canvas shares one set of settings, so the timings never read a canvas moved off the GPU', () => {
+  // (the mistake this guards: the engine alone said willReadFrequently: false, and a preload that asked for the context first, without
+  // it, won: the canvas was moved off the GPU by the first pixel reads and every number after was of another pipeline)
+  for (const f of ['engine.ts', 'stagePreload.ts', 'stageReady.ts']) {
+    const src = fs.readFileSync(path.join(here, f), 'utf8');
+    assert.match(src, /getContext\('2d', gameCtxOpts\(\)\)/, f);
+    assert.ok(!/canvas\??\.getContext\('2d', \{ alpha: false/.test(src), `${f} asks for the game canvas's context with its own settings`);
+  }
+  const opts = fs.readFileSync(path.join(here, 'gameCanvas.ts'), 'utf8');
+  assert.match(opts, /gpuProfOn\(\) \|\| stickAsked\(\) \? \{ alpha: false, willReadFrequently: false \} : \{ alpha: false \}/);
+  const clock = fs.readFileSync(path.join(here, 'layerClock.ts'), 'utf8');
+  assert.match(clock, /export function stickAsked\(\): boolean \{[\s\S]{0,80}import\.meta\.env\?\.DEV &&/);
+});
+
 test('medians: one slow frame does not move a layer, and a span missing from a frame counts as 0', () => {
   const mk = (g: number, sq?: number): StickFrame => ({ layers: { sky: 0, far: 0, mid: 0, ground: g, props: 0, creatures: 0, pokey: 0, front: 0, hud: 0 }, spans: (sq === undefined ? {} : { squares: sq }) as Record<string, number>, total: g, flushes: 0 });
   const m = stickMedians([mk(2, 1), mk(3, 1), mk(90), mk(2, 1), mk(3, 1)]);

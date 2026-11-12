@@ -51,6 +51,7 @@ export class LayerClock {
   private t = 0;
   private t0 = 0;
   private open = new Map<string, number>();
+  private planted = new Set<StickLayer>();
 
   /** the time source (the tool hands in the real clock: under its harness the page's own clock is a fake one that only moves when told) */
   constructor(public now: () => number = () => performance.now()) {}
@@ -60,6 +61,7 @@ export class LayerClock {
     if (this.mode === 'off') return;
     this.cur = { layers: zero(), spans: {}, total: 0, flushes: 0 };
     this.open.clear();
+    this.planted.clear();
     if (this.mode === 'flush' && flush) {
       flush();
       this.cur.flushes++;
@@ -71,8 +73,12 @@ export class LayerClock {
   mark(layer: StickLayer, flush?: () => void) {
     const c = this.cur;
     if (!c) return;
-    const w = this.plant[layer];
-    if (w) for (const until = this.now() + w; this.now() < until; ) { /* the planted cost */ }
+    // (once a frame: a layer marked twice, the far strip and its stand-in, would be planted twice)
+    const w = this.planted.has(layer) ? 0 : this.plant[layer];
+    if (w) {
+      this.planted.add(layer);
+      for (const until = this.now() + w; this.now() < until; ) { /* the planted cost */ }
+    }
     if (this.mode === 'flush' && flush) {
       flush();
       c.flushes++;
@@ -133,6 +139,20 @@ export function stickMedians(frames: readonly StickFrame[]): { layers: Record<St
   // (a span missing from a frame was not drawn that frame: it counts as 0, not as absent)
   for (const k of names) spans[k] = med(frames.map((f) => f.spans[k] ?? 0));
   return { layers, spans, total: med(frames.map((f) => f.total)), n: frames.length };
+}
+
+/**
+ * Whether the page was opened for the stick (`stick=1` in the address, the dev server only: never in a player's build). The engine
+ * then makes its 2D context with `willReadFrequently: false` said outright (engine.ts, as it does for gpuProf): without it Chrome moves
+ * a canvas that is read back a few times OFF the GPU for good, and every flush reading after the first would time a different
+ * pipeline from the one a phone runs (found the hard way, GL0 2026-11-12: the first GPU-pipeline numbers were all of a demoted canvas).
+ */
+export function stickAsked(): boolean {
+  try {
+    return !!import.meta.env?.DEV && typeof location !== 'undefined' && /[?&#]stick=1\b/.test(location.search + location.hash);
+  } catch {
+    return false;
+  }
 }
 
 /** the game's one clock (the tool reaches it through the dev-only window.__stick, App.tsx: nothing in a player's build) */

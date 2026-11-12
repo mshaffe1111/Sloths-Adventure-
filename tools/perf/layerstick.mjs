@@ -102,7 +102,8 @@ async function measure(ctx, page, errors, base, stage, orient) {
   const T0 = Date.UTC(2026, 9, 30, 12);
   await page.clock.install({ time: T0 });
   await page.clock.pauseAt(T0 + 1000);
-  await page.goto(`${base}/?layout=1&lessons=off`, { timeout: 180000 });
+  // (stick=1: the game keeps its canvas on the GPU through the stick's pixel reads, layerClock.ts stickAsked)
+  await page.goto(`${base}/?layout=1&lessons=off&stick=1`, { timeout: 180000 });
   for (let t0 = Date.now(); Date.now() - t0 < 300000; ) {
     await page.clock.runFor(200);
     if (await page.evaluate(() => typeof window.__play === 'function')) break;
@@ -208,8 +209,17 @@ async function measure(ctx, page, errors, base, stage, orient) {
     Object.assign(info.spots[si], state);
   }
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+  // the pipeline did not change under the stick: the last spot's first reading (x1, cpu, the first way of drawing) taken again at the
+  // very end must still be what it was (a canvas Chrome moved off the GPU mid-run reads many times slower from then on)
+  const last = rows.filter((r) => r.spot === info.spots.length - 1 && r.rate === RATES[0] && r.variant === VARIANTS[0].id)[0];
+  if (VARIANTS[0].js) { await page.evaluate(VARIANTS[0].js); for (let k = 0; k < 3; k++) { await page.clock.runFor(300); await sleep(100); } }
+  await cdp.send('Emulation.setCPUThrottlingRate', { rate: RATES[0] });
+  const again = await read(page, 'cpu');
+  await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+  const drift = { first: +last.cpu.total.toFixed(2), again: +again.total.toFixed(2) };
+  drift.ok = drift.again <= Math.max(drift.first * 2, drift.first + 3);
   await ctx.close();
-  return { stage, orient: orient.id, info, plantCheck, rows, errors };
+  return { stage, orient: orient.id, info, plantCheck, drift, rows, errors };
 }
 
 // ---- the table -------------------------------------------------------------------------------------------------------------------
@@ -266,9 +276,10 @@ try {
     results.push(r);
     if (r.error) { bad++; log(stage, orient.id, 'FAILED', r.error); continue; }
     if (!r.plantCheck?.ok) bad++;
+    if (!r.drift?.ok) bad++;
     if (r.errors.length) bad++;
     log(stage, orient.id, `${((Date.now() - t) / 1000).toFixed(0)}s`, `${r.info.spots.length} spots`, r.info.own ? '(a stage with its own screen: no layers)' : '',
-      `| planted ${PLANT_MS} ms in ${PLANT_IN}: ${r.plantCheck?.ok ? 'PASS' : 'FAIL'} ${JSON.stringify(r.plantCheck?.moved)}`, r.errors.length ? `| page errors: ${r.errors.slice(0, 2).join(' / ')}` : '');
+      `| planted ${PLANT_MS} ms in ${PLANT_IN}: ${r.plantCheck?.ok ? 'PASS' : 'FAIL'} ${JSON.stringify(r.plantCheck?.moved)}`, `| same pipeline at the end: ${r.drift?.ok ? 'PASS' : 'FAIL'} (cpu total ${r.drift?.first} then ${r.drift?.again})`, r.errors.length ? `| page errors: ${r.errors.slice(0, 2).join(' / ')}` : '');
     fs.mkdirSync(outDir, { recursive: true });
     fs.writeFileSync(path.join(outDir, 'layerstick.json'), JSON.stringify({ pipeline: PIPE, canvas2d, rates: RATES, frames: FRAMES, variants: VARIANTS, results }, null, 1));
   }
@@ -281,7 +292,8 @@ const md = `# Layer stick\n\n${new Date().toLocaleString('en-US', { timeZone: 'A
   (ab ? `\nA: \`${ab[0]}\`\nB: \`${ab[1]}\`\n` : '') + table(results) +
   `\n\nSpots: ${results.filter((r) => r.info).map((r) => `${r.stage} ${r.orient} ${r.info.spots.map((p) => `x ${p.x} (${p.what}, ${p.creaturesInView ?? '?'} creatures in view)`).join('; ')}`).join(' | ')}.\n` +
   (canvas2d === 'enabled' ? '' : `\nReading the cpu table on this pipeline: a software 2D canvas rasters when the browser decides to (in the middle of whichever layer fills its buffer), so a single layer's cpu time can hold another layer's raster. Read layers off the flush table; the cpu table's total is sound.\n`) +
+  `\n\nThe same pipeline from first reading to last (the last spot's first cpu total, read again at the end): ${results.map((r) => `${r.stage} ${r.orient} ${r.error ? 'FAILED' : `${r.drift?.ok ? 'PASS' : 'FAIL'} ${r.drift?.first} then ${r.drift?.again}`}`).join(', ')}.` +
   `\n\nThe stick's own proof (a planted ${PLANT_MS} ms inside '${PLANT_IN}'): ${results.map((r) => `${r.stage} ${r.orient} ${r.error ? 'FAILED' : r.plantCheck?.ok ? 'PASS' : 'FAIL'}`).join(', ')}.\n`;
 fs.writeFileSync(path.join(outDir, 'layerstick.md'), md);
 console.log(md);
-if (bad) { console.error(`layer stick: ${bad} run(s) failed (a page error, a stage that did not open, or the planted cost landed in the wrong layer)`); process.exit(1); }
+if (bad) { console.error(`layer stick: ${bad} run(s) failed (a page error, a stage that did not open, the planted cost landed in the wrong layer, or the pipeline changed mid-run)`); process.exit(1); }
