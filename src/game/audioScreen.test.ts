@@ -87,3 +87,40 @@ test('the Game Over card does not release the defeat sting\'s duck (the sting is
   const level = duck.at(104);
   assert.ok(level < 0.2, `3 s into a 12 s sting the music is still ducked (it is at ${level.toFixed(2)} of full)`);
 });
+
+test('a stage paused under the satchel (opened from the pause menu) stays paused for the sound: no low-health heartbeat', () => {
+  const { ctx, c } = wire();
+  let beats = 0;
+  const was = SFX.heartbeat;
+  SFX.heartbeat = () => {
+    beats++;
+  };
+  try {
+    sound.screen('playing', 1, false, '1-3');
+    sound.setLowHealth(true); // engine.ts updateSound: last life, last heart
+    ctx.currentTime = 10;
+    sound.screen('paused', 1, false, '1-3');
+    c.tick();
+    assert.equal(beats, 0, 'no heartbeat under the pause menu');
+    // Pause menu -> Satchel: the engine is only paused (screenFlow.ts stageHeld), nothing has told the sound otherwise
+    ctx.currentTime = 12;
+    sound.screen('satchel', 1, false, '1-3');
+    c.tick();
+    assert.equal(beats, 0, 'no heartbeat in the satchel over a paused stage');
+  } finally {
+    SFX.heartbeat = was;
+    sound.setLowHealth(false);
+  }
+});
+
+test('back from the satchel, the pause menu still plays the stage\'s own tune (SN-6), not the satchel\'s loop', () => {
+  wire();
+  sound.screen('playing', 1, false, '1-3', 3, 7, 'sprint');
+  const stage = sound.debug().scene;
+  assert.ok(stage && stage !== 'menu', `the stage's piece: ${stage}`);
+  sound.screen('paused', 1, false, '1-3', 3, 7, 'sprint');
+  assert.equal(sound.debug().scene, stage, 'the stage tune goes on under the pause menu');
+  sound.screen('satchel', 1, false, '1-3', 3, 7, 'sprint'); // Pause menu -> Satchel
+  sound.screen('paused', 1, false, '1-3', 3, 7, 'sprint'); // Back
+  assert.equal(sound.debug().scene, stage, 'and still does after a look in the satchel');
+});

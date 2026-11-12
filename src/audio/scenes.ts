@@ -192,7 +192,7 @@ export function sceneForScreen(screen: string, world: number, isBoss: boolean, l
       return { id: `map-${Math.max(1, Math.min(10, world || 1))}`, intensity: 0.5 };
     case 'paused':
       // the stage's own tune goes on under the pause menu, quieter and muffled (conductor.ts setPaused): it used to switch to the World
-      // 1 tune (SN-6). null: keep what is playing
+      // 1 tune (SN-6). null here: game/audio.ts screen() asks for the stage's piece itself (what is playing may be the satchel's loop)
       return null;
     case 'playing':
     {

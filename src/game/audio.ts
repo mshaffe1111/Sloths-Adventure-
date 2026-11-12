@@ -104,10 +104,17 @@ class SoundEngine {
     const stage = screen === 'playing' || screen === 'paused' ? levelId : '';
     if (stage !== this.stateStage) this.c.setMusicState(CALM);
     this.stateStage = stage;
-    const s = sceneForScreen(screen, world, isBoss, levelId, mini, salt, objective);
+    // (the pause menu plays the stage's own piece, muffled: SN-6. Asked for again, not "kept", so a look in the satchel from the pause menu
+    // does not leave the satchel's loop playing under it)
+    const s = sceneForScreen(screen === 'paused' ? 'playing' : screen, world, isBoss, levelId, mini, salt, objective);
     if (s) this.c.setScene(s.id, { intensity: s.intensity, seed: s.seed, tempo: s.tempo, form: s.form });
     this.c.setPaused(screen === 'paused');
+    this.inPlay = screen === 'playing';
+    this.c.setLowHealth(this.lowHealth && this.inPlay);
   }
+  /** the stage is being played (not paused, nor under a view opened from the pause menu): the low-health heartbeat beats only then */
+  private inPlay = false;
+  private lowHealth = false;
   private stateStage = '';
   /** the story piece being held (see scenes.ts holdScene); cleared when any other music is chosen */
   private held: Held | null = null;
@@ -136,7 +143,8 @@ class SoundEngine {
     this.c.setTempo(scale);
   }
   setLowHealth(on: boolean) {
-    this.c.setLowHealth(on);
+    this.lowHealth = on;
+    this.c.setLowHealth(on && this.inPlay);
   }
   /** what is happening, for the music to follow (see audio/adaptive.ts): danger 0..1, dark 0..1, exit 0..1, puzzle 0..1, boss phase, mood */
   setMusicState(s: Partial<MusicState>) {
