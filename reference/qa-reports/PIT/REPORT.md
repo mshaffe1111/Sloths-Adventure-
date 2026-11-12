@@ -1,4 +1,4 @@
-# PIT report: the thorn hollow looks like a real pit (2026-11-12, written 9:55 AM ET)
+# PIT report: the thorn hollow looks like a real pit (2026-11-12, written 9:58 AM ET)
 Branch `t-pit-polish` (base t-render-fixes@b8e98fac). No PR. Stills here: 2x, upright 412x915, sideways 915x412, 30 rendered frames each. The stage is the library's 1-2 kit (flown rows, seed 1), laid into the real page. Before = b8e98fac, after = this branch, same scene seed. Spots: x3500, x34250 (RF's spots) and x3850 (three close hollows, 49-66 px wide on 150-160 px banks). Files: `hollow-{before,after,compare}-x{3500,34250,3850}-{upright,sideways}.jpg`.
 
 ## What changed (w1Pits.ts, protoArt.ts)
@@ -11,7 +11,7 @@ Branch `t-pit-polish` (base t-render-fixes@b8e98fac). No PR. Stills here: 2x, up
   2. The hurt floor's own grass lip showed as a slab under the thorns. It is now lipless.
 - **No new art:** only the end piece, the lip, the drop and the w1-thorn pictures.
 - **Cost:** the steady draw is 4-5 drawImage per hollow (about 0.02 ms for three, desktop). Baking is about 2.5 ms per hollow on desktop, so bakes are spread to one hollow per frame from the stage's first frame, nearest first. The thorn lift filter and the ground-sheet reads now happen once per stage.
-- **Tools:** `stills-at.mjs` now renders 30 frames (it showed false soil boxes). New: `hollowStills.mjs` and `hollowKit.ts`.
+- **Tools:** `stills-at.mjs` now renders 30 frames (it showed false soil boxes) and clears the flash before every render. Checked on 1-5 L1 x2750: no boxes. New: `hollowStills.mjs` (now in stillsTools.test's list) and `hollowKit.ts`.
 
 ## Polish check (I looked at every still, upright and sideways)
 - Each hollow reads as a hole: torn lips, painted earth walls with roots, a dark back that deepens downward, and thorns on a rounded floor. No rectangle, no square patch, no slab, no blue box.
@@ -28,7 +28,8 @@ Branch `t-pit-polish` (base t-render-fixes@b8e98fac). No PR. Stills here: 2x, up
   - Lock 102/102 unchanged (`lockall --layouts 2` against b8e98fac).
   - seedlist 1-1 PASS (355). drawcheck PASS (412 s, 9:48).
   - generality and knowncheck PASS.
-- **Not finished:** clipcheck: see the last line. The full standard suite was started at 9:22 and was still running at 9:55, with 0 failures so far.
+  - clipcheck PASS (83 known, 410 s, 9:55).
+- **Suite:** the full standard suite (started 9:22, still running at 9:58) caught one failure, mine: stillsTools.test. My 30-frame loop rendered without clearing the flash. Fixed and passing. No other failure so far.
 - **Not covered:**
   - No shipped stage lays a hollow, so drawcheck does not exercise this code.
   - Frame times in this container swung from 1 to 22 ms on the same scene, so I give call counts, not phone milliseconds.

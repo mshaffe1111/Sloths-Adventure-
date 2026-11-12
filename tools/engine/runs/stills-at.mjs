@@ -41,7 +41,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
       for (let i = 0; i < 60; i++) e.update(1 / 30);
     }, [x, pick, E]);
     for (let i = 0; i < 30; i++) {
-      await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.render(); }, E);
+      await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.player.invincibleTimer = 0; e.render(); }, E);
       await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
     }
     // (safe while the frames settle, then not: a still never shows him flashing see-through, the lead 11-05)

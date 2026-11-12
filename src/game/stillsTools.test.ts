@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 // The stills a review is judged on never show Pokey flashing see-through (the lead, 11-05: a still from engine-runs' tool, drawn with his
 // invincibility flash on, read as dressing covering him). Each tool may keep him safe while its frames settle, but clears the flash
 // right before the frame it draws.
-const TOOLS = ['tools/engine/runs/stills-at.mjs', 'tools/validate/stills.mjs', 'tools/validate/chaseshot.mjs'];
+const TOOLS = ['tools/engine/runs/stills-at.mjs', 'tools/engine/runs/hollowStills.mjs', 'tools/validate/stills.mjs', 'tools/validate/chaseshot.mjs'];
 
 test('every review stills tool clears the invincibility flash right before it renders', () => {
   for (const f of TOOLS) {

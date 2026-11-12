@@ -48,7 +48,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     }, [x, E]);
     // (30 rendered frames, one per animation frame: the ground paints its squares a few per frame)
     for (let i = 0; i < 30; i++) {
-      await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.render(); }, E);
+      await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.player.invincibleTimer = 0; e.render(); }, E);
       await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
     }
     await p.evaluate((E) => { const e = eval(E); e.player.invincibleTimer = 0; e.render(); }, E);
