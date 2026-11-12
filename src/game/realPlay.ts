@@ -62,6 +62,16 @@ class FakeInput {
   jumpBuffer = 0;
   punchBuffer = 0;
   kickBuffer = 0;
+  /** as InputEngine.dropPresses: the engine drops a press latched while it held the world (a respawn, a resume, an entrance's end) */
+  dropPresses() {
+    this.state.jumpPressed = false;
+    this.state.punchPressed = false;
+    this.state.kickPressed = false;
+    this.state.megaPunchPressed = false;
+    this.jumpBuffer = 0;
+    this.punchBuffer = 0;
+    this.kickBuffer = 0;
+  }
   update(dt: number) {
     if (this.jumpBuffer > 0) {
       this.jumpBuffer -= dt;

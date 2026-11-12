@@ -3714,6 +3714,8 @@ export class GameEngine {
       if (en.tea) b.x = this.teaHome();
       this.entrance = null;
       this.entranceDone = true;
+      // (a tap made to skip the entrance is not played on the fight's first frame, seconds later)
+      this.dropPresses();
       b.ai.intro = undefined;
       const start = def.guide?.start;
       if (start && !tipHeard(this.currentStage.config.id, 'boss:start')) {
