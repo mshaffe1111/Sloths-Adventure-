@@ -10,10 +10,14 @@ import { buildGen2Stage, missionGraph, planBudget, stagePool } from '../../src/g
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 import { W1_KIT, W1_SECTIONS, w1World } from '../../src/game/gen2/worlds/w1.ts';
 import { EXIT_13, QUIET_13, STAGE_13 } from '../../src/game/gen2/worlds/w1Arc13.ts';
+import { STAGE_PLAN } from '../../src/game/stagePlan.ts';
+import { generateAllLevels } from '../../src/game/worldsData.ts';
 const w1BriefOf11 = () => W1_KIT.graphs.briefs['1-1'];
-import { W1_CAST_CREATURES, W1_CAST_SAID, W1_TRAP_PAIRS } from '../../src/game/gen2/worlds/w1Cast.ts';
+import { W1_CAST_CREATURES, W1_CAST_SAID, W1_TRAP_EMIT, W1_TRAP_PAIRS, armedTraps } from '../../src/game/gen2/worlds/w1Cast.ts';
 
 const O = { flown: true };
+/** the seven beat bricks' ids */
+const ARC_IDS = new Set(TWISTS.map((t) => t.id));
 /** pinned: these seeds roll clean on both settings (120 of them were measured, 11-12: 119 clean a setting) */
 const SEEDS = [1, 2, 3, 4, 5, 6];
 const rolls: Record<'normal' | 'easy', Roll13[]> = { normal: SEEDS.map((s) => roll(s, 'normal', O)), easy: SEEDS.map((s) => roll(s, 'easy', O)) };
@@ -46,9 +50,9 @@ test('every roll is the designed level, on both settings: no throw, no error, th
     assert.equal(r.thrown, undefined, `${name}: ${r.thrown}`);
     assert.deepEqual(r.errors, [], name);
     // EVERY roll is the designed level (reference/design/1-3.md; LEVEL-BAR E13): the same thirteen beats in the same order
-    const beat = (t: string) => (t.startsWith('w1-13-') ? t.slice(7) : TWISTS.length && /^w1-|^new-/.test(t) ? 'quiet' : t);
+    const beat = (t: string) => (ARC_IDS.has(t) ? t.slice('w1-13-'.length) : /^w1-|^new-/.test(t) ? 'quiet' : t);
     assert.deepEqual(r.plan.map(beat), ['quiet', 'lesson', 'again', 'stone-stair', 'quiet', 'other-way', 'quiet', 'perch', 'quiet', 'gallery', 'quiet', 'finale', 'quiet'], name);
-    assert.ok(r.snakes.length >= (name.endsWith('easy') ? 8 : 12), `${name}: ${r.snakes.length} snakes`);
+    assert.ok(r.snakes.length >= (name.endsWith('easy') ? 10 : 12), `${name}: ${r.snakes.length} snakes`);
     assert.ok(r.seconds! >= 120 && r.fast! >= 120, `${name}: ${r.seconds} s typical, ${r.fast} s fast (a stage takes 2 minutes)`);
   });
 });
@@ -57,6 +61,9 @@ test("the stage carries its cast: proto.cast.kinds is ['snake'], and Dot says th
   assert.deepEqual(LINES_13, { traps: 'See that hive? Punch the vine, down it comes!', 'traps.then': "Don't worry, it only gives him a fright.", bare: 'No vine? Walk him to the end of his branch.' }, "the story keeper's words, verbatim");
   for (const [id, words] of Object.entries(LINES_13)) assert.equal(kitLib13(O).manifest.tips![id], words);
   assert.equal(MISSION_13, 'Clear the branches. Shake a vine and the snakes glide off.');
+  // (and it is the line the game shows for the stage: stagePlan.ts holds its own copy, menu code that imports no stage kit)
+  assert.equal(STAGE_PLAN[1][2].name, 'Branch Snakes');
+  assert.equal(STAGE_PLAN[1][2].desc, MISSION_13, "the stage plan's mission line is the keeper's");
   // (her line for the first trap sprung rides on the built stage, from World 1's own data: the builder keeps it with the cast)
   const built: Any = buildGen2Stage({ config: config13(O) as Any, kit: kitLib13(O) as Any, seed: SEEDS[0], difficulty: 'normal' });
   assert.deepEqual(built.proto.cast.said, W1_CAST_SAID);
@@ -94,11 +101,55 @@ test("every trap has its handle and a snake under it, at the phone's numbers", (
   assert.ok(rolls.normal.every((r) => r.traps.some((t) => t.snake && !t.snake.asleep)), 'a Normal roll with no trap over an awake snake');
 });
 
-test('arming: with w1Cast.ts\'s emitters alone Easy hangs loads over branches its 60% cut emptied; armed, such a load is no trap', () => {
-  const raw = SEEDS.map((s) => roll(s, 'easy', { ...O, rawTraps: true }));
-  assert.ok(raw.reduce((n, r) => n + r.noSnake, 0) > 0, 'the raw emitters left no load over nothing on these seeds: the reason for arming is gone, look again');
-  assert.equal(rolls.easy.reduce((n, r) => n + r.noSnake + r.noHandle, 0), 0);
-  raw.forEach((r, i) => assert.equal(r.traps.length - r.noSnake, rolls.easy[i].traps.length, `seed ${SEEDS[i]}: arming changed more than the empty loads`));
+test('arming: a load is a trap only when an animal of the cast stands under it; the trap is hung over the middle of that animal\'s patch', () => {
+  // (the hooks themselves, on a bare sink: Easy's count cut once emptied four of 1-3's nine trapped branches and the raw emitters hung
+  //  a hive over each; since the trap's own snake stays on Easy (Socket.easy 'stay') no roll shows it, so the rule is held here)
+  const snake = W1_CAST_CREATURES.find((c) => c.id === 'snake-trapped')!;
+  const lay = (animalAt: number | null, kind = 'snake') => {
+    const { emit, spawn } = armedTraps();
+    const out: Any = { proto: {} };
+    emit['trap-hive']({ x: 1110, y: 500 } as Any, {} as Any, out);
+    emit['trap-vine']({ x: 1000, y: 500 } as Any, {} as Any, out);
+    if (animalAt !== null) spawn({ type: kind, x: animalAt, y: 500 - (snake.footY ?? snake.h / 2), patrolMinX: 1110, patrolMaxX: 1232 } as Any, snake, out);
+    return (out.proto.cast?.traps ?? []) as Array<{ x: number; loadX: number; load: string; kind: string }>;
+  };
+  assert.deepEqual(lay(null), [], 'a load over an empty branch is no trap');
+  assert.deepEqual(lay(1232, 'squirrel'), [], 'nor is one over an animal that is not of the cast');
+  const [t] = lay(1232);
+  assert.ok(t, 'the snake under the load arms it');
+  assert.equal(t.x, 1000);
+  assert.equal(t.loadX, 1171, 'hung over the middle of its patch, not at the load socket');
+  // (raw, the same lay hangs the hive whether or not anything is under it)
+  const raw: Any = { proto: {} };
+  W1_TRAP_EMIT['trap-hive']({ x: 1110, y: 500 } as Any, {} as Any, raw);
+  W1_TRAP_EMIT['trap-vine']({ x: 1000, y: 500 } as Any, {} as Any, raw);
+  assert.equal(raw.proto.cast.traps.length, 1);
+  // and on the rolls: every load hung is armed, on both settings
+  each((r, name) => assert.equal(r.noSnake + r.noHandle, 0, name));
+});
+
+test('Easy keeps every trap: the snake under a load stays on Easy, softened (Socket.easy stay), and Easy is still never the harder', () => {
+  SEEDS.forEach((seed, i) => {
+    const n = rolls.normal[i], e = rolls.easy[i];
+    assert.equal(e.traps.length, n.traps.length, `seed ${seed}: Easy ${e.traps.length} traps, Normal ${n.traps.length}`);
+    assert.ok(e.traps.length >= 9, `seed ${seed}: ${e.traps.length} traps`);
+    assert.ok(e.snakes.length < n.snakes.length, `seed ${seed}: Easy ${e.snakes.length} snakes, Normal ${n.snakes.length}: the bare ones are still cut`);
+  });
+});
+
+test("Dot's trap line is a TEACH line, and she says it three seconds of walking before the first vine, on both settings", () => {
+  // (P13's bots, 11-12: said 232 px before the handle, a first-timer walking 265 px a second had passed the vine before he had read it)
+  for (const d of ['normal', 'easy'] as const) for (const seed of SEEDS) {
+    const st: Any = buildGen2Stage({ config: generateAllLevels().find((l) => l.id === STAGE_13 && !l.secret)! as Any, kit: w1World() as Any, seed, difficulty: d });
+    const hint = st.proto.hints.find((h: Any) => h.text === LINES_13.traps);
+    assert.ok(hint, `seed ${seed} ${d}: the lesson's line is laid`);
+    assert.equal(hint.teach, true, `seed ${seed} ${d}: a teach line (WorldManifest.teachTips)`);
+    const first = [...st.proto.cast.traps].sort((a: Any, b: Any) => a.x - b.x)[0];
+    assert.ok(first.x - hint.x >= 800, `seed ${seed} ${d}: her line is ${Math.round(first.x - hint.x)} px before the first vine (800 and more: 3 s at a walk)`);
+    assert.ok(first.x - hint.x <= 1100, `seed ${seed} ${d}: and not a screen and more early (${Math.round(first.x - hint.x)} px)`);
+    // nothing can hurt him between her line and the vine: no animal stands before the first trap's own
+    assert.equal(st.enemies.filter((e: Any) => e.x < first.x).length, 0, `seed ${seed} ${d}: an animal before the first vine`);
+  }
 });
 
 test('the plain-view rule is the builder\'s own: a pickup laid in front of a hung load refuses the roll by name', () => {
@@ -148,7 +199,7 @@ test('the shipped kit rolls 1-3 under its own id: the same arc, clean on both se
     const r = roll(seed, d, {});
     assert.equal(r.thrown, undefined, `seed ${seed} ${d}: ${r.thrown}`);
     assert.deepEqual(r.errors, [], `seed ${seed} ${d}`);
-    assert.deepEqual(r.plan.filter((t) => t.startsWith('w1-13-')).map((t) => t.slice(7)), ['lesson', 'again', 'stone-stair', 'other-way', 'perch', 'gallery', 'finale'], `seed ${seed} ${d}`);
+    assert.deepEqual(r.plan.filter((t) => ARC_IDS.has(t)).map((t) => t.slice('w1-13-'.length)), ['lesson', 'again', 'stone-stair', 'other-way', 'perch', 'gallery', 'finale'], `seed ${seed} ${d}`);
     assert.equal(r.plan.length, 13, `seed ${seed} ${d}`);
     assert.equal(r.plan[r.plan.length - 1], EXIT_13.id);
   }

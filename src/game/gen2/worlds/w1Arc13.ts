@@ -90,7 +90,7 @@ function core(k: string, after: string, o: Unit = {}): { pieces: SectionPiece[];
   if (o.load) {
     sockets.push({ id: `${k}h`, role: 'source', on: g, t: HANDLE_T, dn: 0 });
     sockets.push({ id: `${k}r`, role: 'receptor', on: L, t: LOAD_T, dn: 0, link: `${k}h`, allow: [o.load] });
-    sockets.push({ id: `${k}e`, role: 'enemy', on: L, t: SNAKE_T, dn: 0, allow: [o.asleep ? 'snake-trapped-asleep' : 'snake-trapped'], easy: o.easy ?? (o.asleep ? 'keep' : 'soften') });
+    sockets.push({ id: `${k}e`, role: 'enemy', on: L, t: SNAKE_T, dn: 0, allow: [o.asleep ? 'snake-trapped-asleep' : 'snake-trapped'], easy: o.easy ?? 'stay' });
   } else sockets.push({ id: `${k}e`, role: 'enemy', on: L, t: 0.5, dn: 0, allow: [o.asleep ? 'snake-asleep' : 'snake'], easy: o.easy ?? (o.asleep ? 'keep' : 'soften') });
   return { pieces, sockets, last: d, rise: perch };
 }
@@ -171,11 +171,15 @@ const said = (v: V, id: string): V => {
 /** THE ARC'S BRICKS (reference/design/1-3.md), one job each: the graph's letter in brackets */
 export const ARC_13: SectionTemplate[] = [
   // [T] beat 1, the lesson: ledges no animal can be laid on, a flag, Dot's line, the vine on the short ledge, then the branch, LEVEL
-  // with it, where the first snake of the stage SLEEPS under the first hive on both settings
+  // with it, where the first snake of the stage SLEEPS under the first hive on both settings.
+  // DOT SPEAKS THREE SECONDS OF WALKING BEFORE THE VINE (P13's bots, 11-12: with her line 232 px before the handle a first-timer,
+  // who walks 265 px a second and reads as he walks, was past the vine before he had read it: adult and kid sprang the first trap on
+  // 0 of 40 rolls). Her line is at the flag; then a root to hop, petals over it, and a flat ledge; then the vine, 820 px and more on.
+  // On an upright phone the hive comes into view as he finishes reading, the vine a step later: she calls it, and it arrives
   brick({ id: 'w1-13-lesson', name: 'the lesson: the vine, the hive and a sleeping snake', jobs: ['teach'], difficulty: 2, teaches: 'traps', versions: [(() => {
-    const c = core('t', 'b', { load: 'trap-hive', asleep: true, level: true });
-    const pieces: SectionPiece[] = [led('a', null, LEDGE), led('b', 'a', LEDGE), ...c.pieces, led('z', c.last, LEDGE)];
-    const sockets: Socket[] = [{ id: 'flag', role: 'flag', on: 'a', t: 0.5 }, { id: 'tip', role: 'tip', on: 'a', t: 0.6, allow: ['traps'] }, { id: 'tip2', role: 'tip', on: 'b', t: 0.2, allow: ['traps.then'] }, ...c.sockets, low('pa', 'a', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)];
+    const c = core('t', 'd', { load: 'trap-hive', asleep: true, level: true });
+    const pieces: SectionPiece[] = [led('a', null, LEDGE), led('b', 'a', LEDGE, UP), led('c', 'b', LEDGE, DOWN), led('d', 'c', LEDGE), ...c.pieces, led('z', c.last, LEDGE)];
+    const sockets: Socket[] = [{ id: 'flag', role: 'flag', on: 'a', t: 0.5 }, { id: 'tip', role: 'tip', on: 'a', t: 0.4, allow: ['traps'] }, { id: 'tip2', role: 'tip', on: 'd', t: 0.5, allow: ['traps.then'] }, ...c.sockets, low('pa', 'a', [0.3, 0.6]), low('pb', 'b', [0.3, 0.7]), low('pc', 'c', [0.3, 0.7]), low('pz', 'z', [0.4, 0.6], 1)];
     return { id: 'asleep-under-the-hive', lay: breath({ pieces, sockets }, 4, true) };
   })()] }),
   // [P] beat 2, again, awake: one branch, a snake pacing under a hive
