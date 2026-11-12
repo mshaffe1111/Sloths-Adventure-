@@ -72,6 +72,8 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
   session_01FhBbYMY35Ak6jDnbB6WZAi, t-12-fly, stop 12:45). Done today: SWEEP-M, INT-E (green), RF, PIT (passed the lead's look).
   FABLE (10:43 AM, stop 1:15 PM): W1C (session_01FhBbYM1aFUg186wiXKD1bx, t-w1-creatures: creatures + drop traps live, 1-3 laid)
   and GL0 (session_01FhBbYMMBxNi4RVq9QZKCJF, t-webgl-0: measuring stick, PixiJS chunk, ground on WebGL).
+  AFTER W1C (~1:15 PM): a fresh Fable session makes 1-3 the GOLDEN LEVEL + writes reference/design/LEVEL-BAR.md (Matt 10:51 AM);
+  Matt approves it; Opus levels are scored against it.
   NEXT: INT-2 = t-int-engine + t-11-pass + t-render-fixes + t-pit-polish, full gate, audit delta; then 0.9.7 on Matt's word
   (ask him first about the R-165.125 sound levels, D47).
 - Everyone else retired tonight, branches verified. Next helpers start fresh from their role card + this note + a packet.
