@@ -151,6 +151,16 @@ export function beat(def: PredatorDef, s: PredatorState, way: Way, t: number, fr
   s.lost = 0;
   s.look = 0;
   if (o.ends === 'stunned') {
+    // a blow that shoves: along its ground it sits dazed where it stops; past the end of its ground it is knocked off, and leaves
+    const dir = o.knock && fromX !== undefined && fromX !== s.x ? (fromX < s.x ? 1 : -1) : 0;
+    const nx = s.x + dir * (o.knock ?? 0);
+    if (dir && (nx < s.minX || nx > s.maxX)) {
+      s.leaving = true;
+      s.facing = dir as 1 | -1;
+      enter(s, 'flee');
+      return true;
+    }
+    s.x = nx;
     s.stunUntil = Math.max(s.stunUntil, t + o.seconds);
     enter(s, 'stunned');
   } else if (o.ends === 'flees') {

@@ -211,6 +211,10 @@ export interface Enemy {
   recoil?: number;
   recoilDir?: 1 | -1;
   koLanded?: boolean;
+  /** an animal of a stage's cast: its creature-kit state (castPlay.ts). The kit steps it, never predatorAI.ts */
+  kit?: import('./predators/types.ts').PredatorState;
+  /** a cast animal leaving for good, 0..1 through its glide away (castPlay.ts): the art fades and flattens it */
+  glide?: number;
   /** a snake that starts asleep (protoStage.ts 1-3): it lies still until Pokey comes close, so the first one is a free punch */
   asleep?: boolean;
   /** seconds left of the drowsy moment just after it woke (the waking head shows) */
