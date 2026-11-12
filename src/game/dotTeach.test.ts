@@ -4,7 +4,7 @@
 // snake under the first hive), or held back until it was old news: most first-timer bots never saw it. No stage id here.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { GuideQueue, CALM, readMs, type GuideLine, type TickEnv } from './dotGuide.ts';
+import { GuideQueue, CALM, TIPS_GAP_MS, readMs, type GuideLine, type TickEnv } from './dotGuide.ts';
 import { TEACH_WAIT_MS, engineGuideLine } from './dotLines.ts';
 import { lessonDotLine, pickLesson, type LessonScene } from './lessons.ts';
 import { scares } from './dropTrap.ts';
@@ -30,6 +30,7 @@ test('the data makes it a teach line that may wait a minute for a clear moment; 
   const t = engineGuideLine(TIP, '9-9', { dot: true, ms: 3600, teach: true })!;
   assert.equal(t.kind, 'teach');
   assert.equal(t.waitMs, TEACH_WAIT_MS);
+  assert.equal(t.soon, true, 'it skips the calm gap: it belongs to the beat just ahead');
   const i = engineGuideLine(TIP, '9-9', { dot: true, ms: 3600 })!;
   assert.equal(i.kind, 'info');
 });
@@ -41,6 +42,21 @@ test('a teach line stays its full reading time: the stock lesson that comes 2 s 
   assert.ok(teach.lastIndexOf(key) < teach.indexOf(lessonDotLine('foe', 'screen', false)!.key), 'the stock lesson after it');
   // (the planted contrast: the same words as a plain line are cut by the lesson once up its 1.5 s minimum)
   assert.ok(upFor(run(false), key) < readMs(TIP), 'a plain line is cut short: the defect');
+});
+
+test('a teach line comes as soon as the line up is done (a breath), not after Tips\' 30 s gap: it belongs to the beat just ahead', () => {
+  // (the "Tips" setting, the default: only a first-time hazard about to hit, a first move or a new thing's first line skip its gap)
+  const q = new GuideQueue(true, TIPS_GAP_MS);
+  const first: GuideLine = { key: 'first', text: 'A flag! Fall, and you start again here.', kind: 'info', who: 'Dot', source: 'lesson' };
+  const tip = engineGuideLine(TIP, '9-9', { dot: true, teach: true })!;
+  let at = -1;
+  for (let t = CALM.startMs; t <= 60000 && at < 0; t += 100) {
+    if (t === CALM.startMs) q.push(first, t);
+    if (t === CALM.startMs + 500) q.push(tip, t);
+    if (q.tick(t, env())?.line.key === tip.key) at = t;
+  }
+  const firstEnd = CALM.startMs + readMs(first.text);
+  assert.ok(at >= firstEnd && at - firstEnd < 2000, `said at ${at} ms: a breath after the line up ends (${firstEnd}), not ${CALM.startMs + TIPS_GAP_MS}`);
 });
 
 test('a teach line waits through a long line already up, where a plain line would be dropped as old news', () => {

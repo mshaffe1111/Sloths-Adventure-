@@ -891,6 +891,12 @@ export class FirstTimerRun {
   private goal: { got: number; need: number } | null = null;
   private sealedT = 0;
   private learned = new Set<string>();
+  /** what he has been told (takeIn), for the report */
+  knows(what: string): boolean {
+    return this.learned.has(what);
+  }
+  /** where he started (the report's "first" trap is the nearest to it) */
+  start = { x: 0 };
   // ── a tier bot's own state (R-165.59; KID and ADULT never touch it) ──
   /** how he takes the next edge: where he presses (px before the lip), and run / late (walk off, then press) / stand (stop, then press) */
   private edge: { aim: number; how: 'run' | 'late' | 'stand'; stand: number; late: number; read?: boolean } | null = null;
@@ -926,6 +932,7 @@ export class FirstTimerRun {
   constructor(readonly id: string, readonly seed: number, readonly who: FirstTimer, readonly opts: RunOptions = {}) {
     this.r = rng(seed * 7919 + (opts.trial ?? 0) * 104723 + salt(who, 1, 2));
     this.sim = new RealPlay(id, seed);
+    this.start = { x: this.sim.p.x };
     this.mode = MODES[this.sim.stage.config.travel ?? 'right'];
     this.sim.safe = false;
     const e = (this.e = this.sim.e as Eng);
@@ -2277,7 +2284,7 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     backtrack: { route: run.routeRatio, bot: run.end === 'shrine' && run.direct > 0 && run.rescues === 0 ? +(run.walked / run.direct).toFixed(2) : null },
     frames: run.frames,
     ...(who.holdQ ? { secondPressMs: run.secondPressMs, maxX: Math.round(run.maxX), far: Math.round(run.farOn), xTrace: run.xTrace } : {}),
-    ...(run.sim.e.cast ? { cast: castTally(run.sim.e as never) } : {}),
+    ...(run.sim.e.cast ? { cast: castTally({ cast: run.sim.e.cast, player0: run.start }, run.knows('trap')) } : {}),
     ...(run.turnBacks ? { turnBacks: run.turnBacks } : {}),
     ms: Date.now() - t0,
   };
@@ -2285,13 +2292,16 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
   return out;
 }
 
-export interface CastTally { animals: number; cleared: Record<string, number>; left: number; traps: number; sprung: number }
+export interface CastTally { animals: number; cleared: Record<string, number>; left: number; traps: number; sprung: number; firstSprung: boolean; told: boolean }
 /** the cast at the run's end, from the engine's own state (any stage that names a cast: no stage, kind or way is named here) */
-export function castTally(e: { cast: { members: Array<{ cleared: boolean; s: { beatenBy?: string | null } }>; traps: Array<{ phase: string }> } }): CastTally {
+/** (`told`: he learned the trap from Dot; `firstSprung`: the trap he comes to first, the nearest to the stage's start, is sprung) */
+export function castTally(e: { cast: { members: Array<{ cleared: boolean; s: { beatenBy?: string | null } }>; traps: Array<{ phase: string; post: { x: number } }> }; player0?: { x: number } }, told = false): CastTally {
   const c = e.cast;
   const cleared: Record<string, number> = {};
   for (const m of c.members) if (m.cleared) cleared[m.s.beatenBy ?? '?'] = (cleared[m.s.beatenBy ?? '?'] ?? 0) + 1;
-  return { animals: c.members.length, cleared, left: c.members.filter((m) => !m.cleared).length, traps: c.traps.length, sprung: c.traps.filter((t) => t.phase !== 'set').length };
+  const x0 = e.player0?.x ?? 0;
+  const first = [...c.traps].sort((a, b) => Math.abs(a.post.x - x0) - Math.abs(b.post.x - x0))[0];
+  return { animals: c.members.length, cleared, left: c.members.filter((m) => !m.cleared).length, traps: c.traps.length, sprung: c.traps.filter((t) => t.phase !== 'set').length, firstSprung: !!first && first.phase !== 'set', told };
 }
 
 /** what the run says needs looking at, worst first; each names the rule it breaks (RULES, from reference/STAGE-RULES.md) */
