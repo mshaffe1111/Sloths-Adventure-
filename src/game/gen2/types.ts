@@ -321,6 +321,7 @@ export type SocketRole =
   | 'receptor'   // the receptor half (names its source in `link`)
   | 'objective'  // the stage's goal item (cage / relic / cocoon): filled from the mission graph's quota
   | 'find'       // a hidden find off the main line (World 1's golden seed: rulebook §4 rule 12), filled once a stage, by the first one met
+  | 'findSpot'   // where the stage's find stands (finds.ts: Meeca's note, a keepsake; stageGenerator addFinds), once a stage, by the first one met
   | 'flag'       // a checkpoint (rests carry one)
   | 'tip'        // Dot's line about this section's mechanic (the first time it appears: the teaching rule)
   | 'decor';     // scenery only, from the world's decor set

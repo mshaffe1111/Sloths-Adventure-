@@ -62,6 +62,10 @@ gap or a rise (gapPx guards, riseLimit, the designer's bands 195-205 / 205-228, 
   ['log', 'branch'], the verdict, branchShare.test). Waits on the designer ruling what height is "thin": mine counts 60 px or less
   (median 24%, worst 29% with catchStyles), engine-core's 30 px or less (median 38%). Switch the filter, re-measure, report the yield.
 
+- **Flags off pieces, the rest** (R-165.156, FX 11-12, reference/qa-reports/FX/REPORT.md): the rolled pass uses flagRuns/standsOnFlag
+  (pipeline.ts); the SECTION pass (flagSpot, span split) and easyMode capFlagSpans do not yet, and the footprint clears the stand box,
+  not W1's drawn rock bulge (cutBox). Moving section-pass flags re-lays 15 curated W6-8 seeds: re-curate with them.
+
 ## 4. Traps (each one cost time on 11-06)
 
 1. **Never edit files while a check runs on them.** The suite, lock and seed list read the tree; a mid-run edit spoils the result. Use a

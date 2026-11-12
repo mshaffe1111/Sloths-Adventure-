@@ -3044,6 +3044,14 @@ export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
   if (!find) return;
   // (the snail is out in the open, like a note: he is just touched)
   const hidden = find.kind !== 'note' && find.kind !== 'snail';
+  const cids = stage.collectibles.map((c) => c.id);
+  const put = (x: number, top: number) => stage.collectibles.push({ id: (cids.length ? Math.max(...cids) : 0) + 1, type: 'find', x, y: top - 26, collected: false, bobPhase: 0, findId: find.id, hidden });
+  // (a stage whose brick marks the find's spot, gen2's 'findSpot' socket, ProtoExtras.findSpot: there, every roll)
+  const spot = (stage as { proto?: { findSpot?: { x: number; b: number } } }).proto?.findSpot;
+  if (spot) {
+    put(spot.x, spot.b);
+    return;
+  }
   // (the reach only: levelCheck CheckOptions.rooms)
   const reach = new Set(reachableIds ?? validateStage(stage, { rooms: false }).reachableIds);
   const cpts = stage.checkpoints ?? [];
@@ -3086,17 +3094,7 @@ export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
     : cands.filter((c) => c.p.y >= ys[Math.floor(ys.length / 2)]);
   pool.sort((m, n) => m.p.id - n.p.id || m.x - n.x);
   const pick = pool[hash32(`${cfg.id}:${find.id}`) % pool.length];
-  const cids = stage.collectibles.map((c) => c.id);
-  stage.collectibles.push({
-    id: (cids.length ? Math.max(...cids) : 0) + 1,
-    type: 'find',
-    x: pick.x,
-    y: pick.p.y - 26,
-    collected: false,
-    bobPhase: 0,
-    findId: find.id,
-    hidden,
-  });
+  put(pick.x, pick.p.y);
 }
 
 /**
