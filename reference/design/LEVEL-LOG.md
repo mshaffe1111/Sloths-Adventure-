@@ -6,4 +6,4 @@ The point: each level should cost less than the one before it at the same bar (L
 | Level | Designed by | Built by | Started | Passed | Hours | Cost | Bar score | Learned (rule added or changed) |
 |---|---|---|---|---|---|---|---|---|
 | 1-3 | Fable (W1C) | W1C, then F13 (Opus max); plumbing P13 | 11-12 10:43 AM | | | | | first version of level.md and LEVEL-BAR.md |
-| 1-2 | D12 (Opus max) | D12; plumbing P12S (Opus high), FX (find spot) | 11-12 1:40 PM | 11-12 5:52 PM | 4 h 12 m (design + build + gates) | TBD (model spend to sum at the retro) | TBD | the design doc first, then build; caps-only footing (any generator-legal bed is jumpable); thorns as set-back hurt floors |
+| 1-2 | D12 (Opus max) | D12; plumbing P12S (Opus high), FX (find spot) | 11-12 1:40 PM | 11-12 5:52 PM | 4 h 12 m (design + build + gates) | D12 session $86.18 (1:38-6:36 PM incl. the note + stills; get_session at archive); P12S + FX shares to add at the retro | TBD | the design doc first, then build; caps-only footing (any generator-legal bed is jumpable); thorns as set-back hurt floors |

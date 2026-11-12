@@ -645,3 +645,4 @@ lines); Matt sees them in the release.
 - 2026-11-12 6:47 PM ET, Matt (6:36): "let the story designer do the research before each level just to make sure." R-165.164 is now a
   standing duty: the story keeper's nature check before each level's design is judged (TEAM.md, story keeper "Integrated every time");
   the design doc carries a "Nature check" section; level.md step 0 gets the line when level.md lands. First use: 1-4 (D14's doc).
+- 2026-11-12 6:49 PM ET: D12 retired (archived after ls-remote t-12-design@6d2cb506). D12's whole session cost $86.18 (LEVEL-LOG 1-2 row).
