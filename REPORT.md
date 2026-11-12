@@ -58,3 +58,22 @@ Branch `t-engine-clock`, base `origin/t-engine-yield` @347d50fa. No PR. Nothing 
    on the line that does `gameTime += dt` (engine.ts 1503), and serve `ModeHost.clock(id)` from `read(id)`.
 2. First B5 piece: a real snap-jaw stone = `BeatBrick` + art + `brickFair` in the builder with the crossing time as `safe`.
 3. The rising tide's held clock, then move it behind a frozen-oracle test like the others.
+
+## STILLNESS (the lead's follow-on, 9:03 PM ET; MAP-REVISIONS §1 and §8)
+- **`src/game/stillness.ts`** (pure, 90 lines; not imported by the game yet, so 0 bytes shipped: main JS still 3,995,403).
+  - The state: `stepStill` / `isStill` / `calm`. Still = on the ground at or under 25 px/s, or holding a vine without climbing (a
+    liana's swing may carry him); never in the air. It takes `calmIn` to come in (Normal 0.5 s, Easy 0.35 s, in `STILLNESS`) and is
+    gone the frame he moves. `calm` 0..1 is the tell the art lane will draw. No art, no player words.
+  - The watcher contract: `watcherSees(watcher, inSight, still, covered)`. Movement in sight is always seen, in cover too; still in
+    cover is unseen; still in the open is seen only by a watcher marked `seesStill`. `inCover` is the same place the bush hide uses.
+- **Proof (`stillness.test.ts`, 9 tests written first):** the state's rules; Easy never harder; the contract's truth table; `inCover`
+  agrees with watcher.ts `hidden` across a sweep; "moving" is the thorn vines' own line (`vineSees`) at every speed tried. The 1-7
+  example runs watcher.ts's real rhythm and shadow: running between bushes he is spotted; frozen in the bush with calm fully in
+  before the sweep, two passes cross him unseen; fidgeting in the bush or frozen in the open, the eagle sees him; a movement-only
+  hunter loses him in that same open spot. Mutations tried (cover ignored, airborne counts, no calm-in): each fails 2 or 3 tests.
+- **Checks:** tsc clean; stage lock 102 of 102 unchanged; 34 tests in the clock, brick, stillness and watcher files pass.
+- **Open for the lead:** (a) World 5's spiders are `seesStill`, so a still Pokey in cover is still unseen by them; if touch must beat
+  cover too it needs one more flag. (b) 1-7 today hides him by ducking in a bush with no calm-in; wiring this in changes that
+  stage's play, so it is a design call plus a 1-1-style recalibration, not a refactor.
+- **Next step:** the engine keeps one `StillState`, steps it beside `gameTime += dt`, and 1-7's `sees` (watcher.ts) reads
+  `watcherSees({ seesStill: true }, ...)`; then thorn vines read `moving` (already proven the same line).
