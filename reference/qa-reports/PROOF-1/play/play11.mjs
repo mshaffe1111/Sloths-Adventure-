@@ -14,7 +14,7 @@ const [base, tag, viewId, stageId = '1-1'] = process.argv.slice(2);
 const vp = { up: { width: 390, height: 844 }, side: { width: 844, height: 390 } }[viewId];
 const name = `${tag}-play${stageId}-${viewId}`;
 const shotsDir = path.join(here, 'shots'); fs.mkdirSync(shotsDir, { recursive: true });
-const log = { name, errors: [], console: [], rescues: [], jumps: 0, deaths: 0, track: [], end: null };
+const log = { name, errors: [], console: [], rescues: [], helps: [], jumps: 0, deaths: 0, track: [], end: null };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let n = 0;
 const browser = await chromium.launch();
@@ -63,7 +63,7 @@ const state = () => page.evaluate((src) => {
   const done = !!document.querySelector('.clr-card, .clr-medals, [class*="victory"]') || /Stage cleared|Stage Clear|cleared!/i.test(document.body.innerText);
   if (!e || !e.player) return { done, none: true };
   const s = e.currentStage;
-  return { done, x: e.player.x, y: e.player.y, lives: e.lives, exit: s?.exitTotemX, cps: (s?.checkpoints || []).map((c) => [c.x, c.y]), running: e.isRunning, paused: e.isPaused };
+  return { done, exitY: s?.exitTotemY, x: e.player.x, y: e.player.y, lives: e.lives, exit: s?.exitTotemX, cps: (s?.checkpoints || []).map((c) => [c.x, c.y]), running: e.isRunning, paused: e.isPaused };
 }, `(${ENGINE.toString()})`);
 
 const t0 = Date.now();
@@ -85,6 +85,9 @@ while (Date.now() - t0 < LIMIT) {
   // a card or tip that asks for a tap
   const ok = page.locator('button:has-text("Got it"), button:has-text("OK"), button:has-text("Okay"), button:has-text("Continue")').first();
   if (await ok.count() && await ok.isVisible().catch(() => false)) { await lift(); await shot('card'); await ok.evaluate((e) => e.click()); await sleep(600); continue; }
+  // Dot's help offer (HelpOffer.tsx: the game waits for an answer): a stuck player takes the step
+  const ho = page.locator('.ho-yes').first();
+  if (await ho.count() && await ho.isVisible().catch(() => false)) { await lift(); const st = await state(); log.helps.push({ t: Date.now() - t0, x: Math.round(st.x ?? -1) }); await shot(`help-offer-x${Math.round(st.x ?? 0)}`); const b = await ho.boundingBox(); await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2); await sleep(800); bestAt = Date.now(); continue; }
   const s = await state();
   if (s.done) { log.end = 'cleared'; break; }
   if (s.none) { await sleep(500); continue; }
@@ -102,7 +105,7 @@ while (Date.now() - t0 < LIMIT) {
     const next = s.cps.filter(([x]) => x > s.x + 60).sort((a, b) => a[0] - b[0])[0];
     await page.evaluate(([src, nx]) => {
       const e = (0, eval)(src)(); const p = e.player;
-      if (nx) { e.checkpoint = { x: nx[0], y: nx[1] }; p.x = nx[0]; p.y = nx[1]; } else { p.x = Math.max(p.x, e.currentStage.exitTotemX - 300); p.y = e.currentStage.exitTotemY - 60; }
+      if (nx) { e.checkpoint = { x: nx[0], y: nx[1] }; p.x = nx[0]; p.y = nx[1]; } else { p.x = e.currentStage.exitTotemX - 60; p.y = e.currentStage.exitTotemY - 80; }
       p.vx = 0; p.vy = 0;
     }, [`(${ENGINE.toString()})`, next]);
     log.rescues.push({ t: Date.now() - t0, from: Math.round(s.x), to: next ? Math.round(next[0]) : 'exit' });
@@ -126,9 +129,10 @@ await sleep(2500);
 await shot(log.end === 'cleared' ? 'END-cleared' : 'END-timeout');
 await sleep(2500);
 await shot('END-after');
+log.exit = (await state()); delete log.exit.cps;
 log.seconds = Math.round((Date.now() - t0) / 1000);
 fs.writeFileSync(path.join(here, 'logs', `${name}.json`), JSON.stringify(log, null, 1));
-console.log(`${name}: end=${log.end} ${log.seconds}s rescues=${log.rescues.length} deaths=${log.deaths} jumps=${log.jumps} pageErrors=${log.errors.length} consoleErrors=${log.console.length}`);
+console.log(`${name}: end=${log.end} helps=${log.helps.length} ${log.seconds}s rescues=${log.rescues.length} deaths=${log.deaths} jumps=${log.jumps} pageErrors=${log.errors.length} consoleErrors=${log.console.length}`);
 for (const e of log.errors) console.log('  PAGEERROR', e.slice(0, 200));
 for (const e of log.console) console.log('  CONSOLE', e.slice(0, 200));
 await browser.close();

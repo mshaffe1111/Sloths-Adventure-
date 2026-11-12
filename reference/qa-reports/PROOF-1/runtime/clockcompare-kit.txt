@@ -1,0 +1,1 @@
+{"stages": 24, "t_diff": 0, "fields_cmp": 915}
