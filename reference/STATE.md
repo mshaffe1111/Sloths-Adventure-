@@ -664,3 +664,6 @@ lines); Matt sees them in the release.
   once at the crown. Without the pair: singles get two hollows, 10-15 s longer. Build waits on 8 engine pieces in order (D40): ascent lay
   (L), flags/clock along the climb, climb camera; pods, hollows/rot, pod trap; the level on singles; the pair; polish. The pair can be
   prototyped ALONE for Matt's feel test. D14 retired (.57); idea round .57. Story keeper's nature check on 1-4 sent.
+- 2026-11-12 6:46 PM ET, Matt: improvising is fine ("talking squirrels... sloths that run, jump, punch, kick") but "keep it where it makes
+  sense. A banana and other things make more sense to me." The nature check's test is "does it make sense there to a player" (bananas yes,
+  pears no); written into TEAM.md's bar.

@@ -69,6 +69,9 @@ artifact on a branch.
       The bar (Matt, 11-12 6:44 PM ET: "It's not going to be used for science... It's good enough. It's a video game."): the KIND of
       plant or animal and its look must really exist there (a real yellow rainforest snake, yes; a pear, no); how it behaves may be a
       storybook touch (the snake still glides). Flag a wrong species or fruit; don't flag a playful behaviour.
+      Matt, 11-12 6:46 PM ET: "we have talking squirrels... sloths that run, jump, punch, kick. So I think we're okay with improvising at
+      times. But... keep it where it makes sense. A banana and other things make more sense to me." So the test is "does it make sense
+      there to a player": bananas, mangoes and other fruit people picture in a rainforest are fine (they grow there today); a pear isn't.
     - It gets the release notes and the STATE.md decisions after each release, so its knowledge stays current.
   - **The role is never replaced. Only if its session itself ends** does the lead start a successor at once. Its first job: read STORY-KEEPER.md and the
     story folder, then rewrite the bible as its turnover note. The lead tells Matt. The role never lapses.
