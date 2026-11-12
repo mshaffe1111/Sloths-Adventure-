@@ -256,7 +256,8 @@ export interface GameEngineCallbacks {
   ) => void;
   onVictory: (stars: number, timeSec: number, score: number) => void;
   onDefeat: (score: number) => void;
-  /** the stage ended (won or lost): what happened, for the Trophy Room. Sent just before onVictory / onDefeat. */
+  /** the stage ended (won or lost): what happened, for the Trophy Room. Sent just before onVictory / onDefeat, and on stop() when the
+   * stage is left with the run under way (marked `left`). */
   onStageStats?: (stats: StageStats) => void;
   onLivesChange?: (lives: number, maxLives: number) => void;
   /** the game loop failed over and over: the app should leave the stage */
@@ -1263,6 +1264,9 @@ export class GameEngine {
   private graceMoves = -1;
 
   public stop() {
+    // left with the run under way (the pause menu's exits, Restart; also in the last life's beat, before its Game Over report): what
+    // it did is filed, so a medal that popped in play is kept. A run that already ended was filed then; a stopped engine is not again.
+    if (this.isRunning && (!this.isGameOver || this.down?.last)) this.report(false, 0, true);
     // the stage ended the normal way (cleared, restarted, left): nothing to come back to
     clearFlag();
     // (the help ladder's counts and its grown steps go with the stage)
@@ -4492,11 +4496,12 @@ export class GameEngine {
    * `prior`, so the lifetime records take each part of one run once (audit C things-1) */
   private filed: StageStats | null = null;
 
-  /** the run ended (a win, or the last life): tell the app */
-  private report(win: boolean, stars: number) {
+  /** the run ended (a win, the last life, or the stage left with the run under way: `left`): tell the app */
+  private report(win: boolean, stars: number, left = false) {
     // a stage won is over: no flag to come back to, even if the phone closes the app under the stage-cleared card
     if (win) clearFlag();
     const s = this.buildStats(win, stars);
+    if (left) s.left = true;
     const { prior: _was, ...filed } = s;
     this.filed = filed;
     this.callbacks.onStageStats?.(s);

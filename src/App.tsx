@@ -387,7 +387,8 @@ export default function App() {
   useEffect(() => {
     // after a stage ends (the result is saved by now), or when the saved game changes: hand out whatever is newly earned
     const stats = pendingStats.current;
-    if (stats && screen !== 'victory' && screen !== 'game_over' && screen !== 'boss_defeat') return;
+    // (a stage left with its run under way is filed on the screen it was left for)
+    if (stats && !stats.left && screen !== 'victory' && screen !== 'game_over' && screen !== 'boss_defeat') return;
     pendingStats.current = null;
     const base = stats ? recordStage(badgeStore, stats) : badgeStore;
     const r = award(base, { levels: allLevels, gateFound: secretFound, thornHeart, finds: foundIds, stage: stats ?? undefined, cakeFree: !anyCakeEaten() }, Date.now());
@@ -395,8 +396,8 @@ export default function App() {
     if (!changed) return;
     setBadgeStore(r.store);
     saveBadgeStore(r.store);
-    // the journal's record of how this stage went (its first clear is kept as it happened)
-    if (stats?.id) {
+    // the journal's record of how this stage went (its first clear is kept as it happened; a stage left unfinished is not a play)
+    if (stats?.id && !stats.left) {
       const [w, m] = stats.id.split('-').map(Number);
       const here = ALL_FINDS.filter((f) => f.world === w && findStage(w, f.kind) === m && foundIds.includes(f.id)).map((f) => f.id);
       const rec = withRun(playRecords[stats.id] ?? null, stats, { finds: here, medals: r.fresh.map((b) => b.id), now: Date.now() });
@@ -871,7 +872,7 @@ export default function App() {
             }),
           onStageStats: (s) => {
             pendingStats.current = s;
-            setLastStats(s);
+            if (!s.left) setLastStats(s);
           },
           onProgressUpdate: (current, target, curScore, curHp, distRatio, curPowerUp, curPowerTimer) => {
             setCurrentCount(current);

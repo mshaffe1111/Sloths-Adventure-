@@ -85,6 +85,8 @@ export interface StageStats {
   /** the same run's earlier report, already filed (its Game Over, before a Continue): every figure above is the whole run, so the
    * lifetime records add only what came after it, and the journal does not count the run twice */
   prior?: Omit<StageStats, 'prior'>;
+  /** the stage was left with the run under way (the pause menu's exits, Restart): its counts are filed, the streak is not touched */
+  left?: boolean;
 }
 
 export interface BadgeCounters {
@@ -488,8 +490,8 @@ export function recordStage(store: BadgeStore, s: StageStats): BadgeStore {
   // (and the road cards a cleared stage meets: they are stage actors, which the engine does not count as seen, journalMet.ts)
   const seen = Array.from(new Set([...store.seen, ...s.seen, ...(s.win && s.id ? roadCardsIn(s.id) : [])]));
   const c = store.counters;
-  // a clean clear (won, no life lost) extends the streak; anything else ends it
-  const streak = s.win && s.livesLost === 0 ? c.streak + 1 : 0;
+  // a clean clear (won, no life lost) extends the streak; anything else but a stage left unfinished ends it
+  const streak = s.left ? c.streak : s.win && s.livesLost === 0 ? c.streak + 1 : 0;
   const end = s.win && s.id === '10-10';
   const quiet = s.win && s.quiet && s.id && !store.quiet.includes(s.id) ? [...store.quiet, s.id] : store.quiet;
   return {
