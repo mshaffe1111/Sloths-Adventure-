@@ -1,0 +1,60 @@
+<title>Sloths Art Check</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap">
+<style>
+/* layout: one column of case studies; each case has a setting switcher that swaps every picture in place (flip to compare) */
+:root{--bg:#f3f5f1;--panel:#ffffff;--fg:#1d241d;--muted:#5d6a5c;--line:#d5dbd2;--accent:#2f6b3a;--warn:#9a5b00;--ok:#2f6b3a;
+--display:'Fraunces',Georgia,serif;--body:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141914;--panel:#1c231c;--fg:#e6ece4;--muted:#9aa898;--line:#2f3a2f;--accent:#8fd19b;--warn:#e7b25a;--ok:#8fd19b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141914;--panel:#1c231c;--fg:#e6ece4;--muted:#9aa898;--line:#2f3a2f;--accent:#8fd19b;--warn:#e7b25a;--ok:#8fd19b;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+main{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2{font-family:var(--display);font-weight:600;text-wrap:balance;margin:0}
+h1{font-size:2rem;line-height:1.15}h2{font-size:1.35rem}
+p{margin:0;max-width:68ch}.muted{color:var(--muted)}
+.lede{display:flex;flex-direction:column;gap:10px}
+.case,.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:600 13px var(--body);border:1px solid var(--line);background:transparent;color:var(--fg);border-radius:999px;padding:8px 14px;min-height:40px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--panel)}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.views{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+figure img{display:block;width:100%;height:auto;border-radius:6px;background:#2c3b2c;image-rendering:auto}
+figure.px img{image-rendering:pixelated}
+figcaption{font-size:12px;color:var(--muted)}
+.stat{font:13px var(--mono);font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:13px;width:100%}
+th,td{text-align:right;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:600;color:var(--muted);font-size:12px;letter-spacing:.03em;text-transform:uppercase}
+.pick{color:var(--ok);font-weight:700}
+audio{width:100%}
+.clips{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+td:first-child{white-space:normal;overflow-wrap:anywhere}
+summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+.verdict{font:600 15px var(--body);border-left:4px solid var(--ok);padding:8px 12px;background:var(--panel)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}
+.kpi b{display:block;font:600 1.5rem var(--display)}.kpi span{font-size:12px;color:var(--muted)}
+</style>
+<main>
+<section class="lede"><h1>Did q82 lose anything?</h1>
+<p>Task AS-2, branch t-assets-art82. Your rule: every picture stored above about q83 goes to q82, except the dark ones, which stay exactly as shipped. I re-encoded %NRE% pictures and measured every one against its original, pixel by pixel, on the parts you can see.</p>
+<p class="verdict">%VERDICT%</p></section>
+<section class="kpis"><div class="kpi"><b>%SAVED% MB</b><span>smaller (art only)</span></div><div class="kpi"><b>%APP% MB</b><span>app estimate (today %APP0% MB)</span></div>
+<div class="kpi"><b>%NRE%</b><span>re-encoded at q82</span></div><div class="kpi"><b>%NDARK%</b><span>dark, kept as shipped</span></div><div class="kpi"><b>%NFLAG%</b><span>flagged by a score, kept as shipped</span></div><div class="kpi"><b>%WORST%</b><span>worst SSIM (1.0 = identical)</span></div></section>
+<section class="panel"><h2>The black picture</h2><p>%BLACK%</p></section>
+<section class="panel"><h2>How I checked</h2><p>%HOW%</p></section>
+<p class="muted">The 8 pictures that changed most, worst first. Tap Original and q82 to flip both views in place.</p>
+%CASES%
+<section class="panel"><h2>Flagged by a score and kept as shipped</h2><details><summary>Show all %NFLAG%</summary><div class="tw"><table><thead><tr><th>Picture</th><th>SSIM</th><th>Worst tile</th><th>PSNR</th><th>Dark tile</th><th>Why</th></tr></thead><tbody>%FLAGGED%</tbody></table></div></details></section>
+<section class="panel"><h2>Dark pictures kept exactly as shipped</h2><p class="muted">Dark means half or more of the visible picture is near black (luma under 48 of 255), or a tenth or more of it is smooth dark area (flat 16 px blocks under 48 with almost no texture), which is what broke in the black picture.</p><details><summary>Show all %NDARK%</summary><div class="tw"><table><thead><tr><th>Picture</th><th>Near black</th><th>Smooth dark</th><th>Size</th></tr></thead><tbody>%DARK%</tbody></table></div></details></section>
+</main>
+<script>
+document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.k,v=b.dataset.v;
+document.querySelectorAll(`.seg button[data-k="${k}"]`).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+document.querySelectorAll(`img[data-k="${k}"]`).forEach(i=>{i.src=`${k}.${v}.${i.dataset.kind}.png`})}));
+</script>
