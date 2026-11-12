@@ -42,13 +42,17 @@ survived their first run and each showed a missing test, now written. Three more
 
 ## Checks (run on this branch; times ET)
 - `npx tsc --noEmit -p .`: clean.
-- Stage lock, recorded at the base in its own worktree, checked here: **102/102 stages unchanged** (`lockall --layouts 2`, both settings).
+- Stage lock, recorded at the base in its own worktree, checked on the final commit: **102/102 stages unchanged** (`lockall --layouts 2`,
+  both settings).
 - Main JS: **3,995,374 B at the base and 3,995,374 B here (+0)**; no kit code is in the bundle. Not from this branch: chunkcheck
   FAILS at the base and here by the same 1,070 B (limit 3,994,304), as EN-C's report already said.
 - artcheck PASS, knowncheck PASS.
 - `npx tsx tools/engine/seedlist.ts 1-1 --check`: PASS (200 seeds, each clean on both settings).
-- FULLTESTS_LINE
-- BUILDCHECK_LINE
+- Full tests: the one-command run was STOPPED by this session's 30-minute limit on background work after **2,357 tests passed, 0
+  failed** (the machine was also running the stage lock and 38 fault runs). The part it had not reported (game tests s to z, components,
+  the generator tests) is re-running alone: FULLTESTS_REST (as of 10:13 PM ET). The kit's own tests and heroNoise's ran on the final commit: green.
+- buildcheck: PASS on a quiet machine (Normal p95 149 ms of 150; the base, run right after, 123 ms). It FAILED once earlier while
+  the stage lock and the tests were running beside it. The kit is not in the build path; this gate is one noisy run from its limit.
 - roadmapcheck: cannot be judged in this clone (6 proofs name commits on branches it does not have); ROADMAP.md and tools/ untouched.
 - **Not run: drawcheck, clipcheck, kbdcheck, tierBots.** Nothing drawn, no screen and no stage changed (the lock and the byte count
   show it). They run when an animal is wired in.
