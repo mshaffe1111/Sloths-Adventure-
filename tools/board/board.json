@@ -1,0 +1,314 @@
+{
+ "note": "The lead's Kanban board (Matt picked it 11-09, R-165.75). Plain titles are the lead's; owner, hours and state are read from reference/ROADMAP.md by build.py. A card sits in one column; move it by moving its line.",
+ "goal": "All 10 worlds and their bosses passed by Matt on the phone, the story start to finish, then the Play Store app.",
+ "sprint": "Today: the new 1-1, re-laid to the real jump numbers, on Matt's test link (timed as the new-helper benchmark). Help and art go on once it's laid.",
+ "path": [
+  {
+   "name": "Team built",
+   "state": "now",
+   "sub": "roles, packets, audits"
+  },
+  {
+   "name": "1-1 rebuilt",
+   "state": "next",
+   "sub": "real reach, no lethal drops"
+  },
+  {
+   "name": "World 1 passed",
+   "state": "later",
+   "sub": "Matt plays it on the phone"
+  },
+  {
+   "name": "Worlds 2 to 10",
+   "state": "later",
+   "sub": "bosses and story"
+  },
+  {
+   "name": "Play Store",
+   "state": "later",
+   "sub": "the app ships"
+  }
+ ],
+ "team": [
+  {
+   "role": "Engine",
+   "task": "fix A2 STOPPED (Matt 11-11): help system kept, rides on the re-laid 1-1",
+   "status": "reported"
+  },
+  {
+   "role": "Engine",
+   "task": "stage safety checks (E0a) attempt 2 built; Critic re-checking (one refusal still unexplained)",
+   "status": "reported"
+  },
+  {
+   "role": "Engine",
+   "task": "the recorder counts every move (E1): PASSED; rides with the release",
+   "status": "reported"
+  },
+  {
+   "role": "Content",
+   "task": "Hugging Face picture list 1: PASSED, 16 pieces, $2.04; stairs and medium stump wait for list 2",
+   "status": "reported"
+  },
+  {
+   "role": "Story keeper",
+   "task": "reviews Dot's built help lines",
+   "status": "on call"
+  },
+  {
+   "role": "Critic",
+   "task": "tier bots PASSED (match real testers; baseline for the new 1-1 made)",
+   "status": "reported"
+  },
+  {
+   "role": "Engine",
+   "task": "making room in the main code file (vendor split, R-165.103)",
+   "status": "working"
+  },
+  {
+   "role": "Content",
+   "task": "re-laying stage 1-1 (C1), timed as the first measure of a new helper building a level",
+   "status": "working"
+  },
+  {
+   "role": "Engine",
+   "task": "writing the re-lay checks in parallel (due 9:30 AM)",
+   "status": "working"
+  },
+  {
+   "role": "Content",
+   "task": "art director A: new cut pieces + the master merge (the inventory, R-165.104)",
+   "status": "working"
+  },
+  {
+   "role": "Content",
+   "task": "art director B1: Worlds 1-4 + the 1-1 atlas (the inventory, R-165.104)",
+   "status": "working"
+  },
+  {
+   "role": "Content",
+   "task": "art director B2: Worlds 5-10 (the inventory, R-165.104)",
+   "status": "working"
+  },
+  {
+   "role": "Content",
+   "task": "art director B3: every backdrop (the inventory, R-165.104)",
+   "status": "working"
+  },
+  {
+   "role": "Content",
+   "task": "art director B4: characters, enemies, UI, story (the inventory, R-165.104)",
+   "status": "working"
+  }
+ ],
+ "columns": [
+  {
+   "key": "matt",
+   "name": "Needs Matt",
+   "hint": "one question at a time, in this order",
+   "cards": []
+  },
+  {
+   "key": "todo",
+   "name": "To do",
+   "hint": "in the order it will be picked up",
+   "cards": [
+    {
+     "id": "R-165.104",
+     "title": "The art inventory: every piece labelled (ten worlds, how the engine uses it) and readable by the engine"
+    },
+    {
+     "id": "R-165.103",
+     "title": "Make room in the game's main code file (only 8 KB left under the 4 MB limit) before the 1-1 re-lay merges",
+     "waits": "A2 and E0a passing"
+    },
+    {
+     "id": "R-165.99",
+     "title": "The app size budget: 173 MB of Google Play's 200 MB used today"
+    },
+    {
+     "id": "R-165.87",
+     "title": "Fix A3: a tap meant as a jump is a jump (all 9 testers' taps were misread)",
+     "waits": "the Designer's touch rule"
+    },
+    {
+     "id": "R-165.72",
+     "title": "Content re-lays 1-1: no lethal drops, a fixed first run, lessons that fit the real reach",
+     "waits": "the Architect, then Wednesday",
+     "includes": [
+      "R-165.52",
+      "R-165.53",
+      "R-165.54"
+     ]
+    },
+    {
+     "id": "R-165.65",
+     "title": "Frame budget down to 8 ms, with a gate that measures it"
+    },
+    {
+     "id": "R-165.68",
+     "title": "Take tester first names out of the files on main"
+    },
+    {
+     "id": "R-165.59",
+     "title": "Tester bots: inputs saved and passed; the sheet is safe to purge. Bots packet written 5:26 AM, checked before building",
+     "waits": "the bots built from the saved inputs (the sheet is no longer needed)"
+    },
+    {
+     "id": "R-165.57",
+     "title": "Pad coach line settled: \"In the air, hold Jump again for a double jump.\""
+    },
+    {
+     "id": "R-165.63",
+     "title": "Gate: parked tests can't pile up quietly"
+    },
+    {
+     "id": "R-165.64",
+     "title": "Gate: the fun check's known list can only shrink"
+    },
+    {
+     "id": "R-165.70",
+     "title": "Rule finder: every dated ruling on a topic, before a plan changes"
+    },
+    {
+     "id": "R-165.73",
+     "title": "Guard: a commit can't silently miss the remote"
+    },
+    {
+     "id": "R-165.81",
+     "title": "Your idea: the mega punch earns its place (puzzle breaks and finds) or the hold goes to another move",
+     "waits": "the Designer, decided with power jumps"
+    },
+    {
+     "id": "R-165.82",
+     "title": "Your idea: power jumps on a fast air swipe, stronger on the double jump",
+     "waits": "proof the swipe isn't misread as a double jump"
+    },
+    {
+     "id": "R-165.83",
+     "title": "Your idea: a streak power-up for beating predators without getting hurt"
+    },
+    {
+     "id": "R-165.78",
+     "title": "Your idea: tall stages that go down and go up in the mountains, patience over speed"
+    },
+    {
+     "id": "R-165.79",
+     "title": "Your idea: stages built only around hanging",
+     "waits": "the hanging move itself (R-160.1)"
+    },
+    {
+     "id": "R-165.80",
+     "title": "Your idea: diving, and swim-and-dive special stages"
+    },
+    {
+     "id": "R-165.88",
+     "title": "Check why one player never saw the double-jump hint"
+    },
+    {
+     "id": "R-165.89",
+     "title": "Small glitches from the window, each with its seed"
+    },
+    {
+     "id": "R-165.69",
+     "title": "Tester names: clean the files now (R-165.68); rewrite the old history once before launch (Matt chose A)",
+     "waits": "launch prep, when nothing is in flight"
+    },
+    {
+     "id": "R-165.101",
+     "title": "World 7 photo caption: \"Our girl, till her mother and father are home.\""
+    },
+    {
+     "id": "R-165.102",
+     "title": "No skulls or bones as remains: World 9's dressing changes; signs may warn"
+    }
+   ]
+  },
+  {
+   "key": "doing",
+   "name": "Doing",
+   "hint": "being built now; at most 3 at once",
+   "limit": 4,
+   "cards": [
+    {
+     "id": "R-165.58",
+     "title": "The recorder counts every double jump and bounce (E1), being built"
+    }
+   ]
+  },
+  {
+   "key": "checking",
+   "name": "Checking",
+   "hint": "built; a Critic is checking it, or it passed and waits for the release",
+   "cards": [
+    {
+     "id": "R-165.62",
+     "title": "Fix A2, help after put-backs: built (7 of 7, suite 2,501 green); a Critic and the story keeper are checking"
+    },
+    {
+     "id": "R-165.85",
+     "title": "All your art cut and world-tagged (3 batches, 162 pieces): PASSED; placing comes with the re-lay"
+    },
+    {
+     "id": "R-165.61",
+     "title": "Architect's safety report PASSED; its build for 1-1 (E0a) running now"
+    },
+    {
+     "id": "R-165.86",
+     "title": "Fix A1, no fall in 1-1 costs a life: PASSED (3,812 flights, 0 lives lost), waits for the release"
+    },
+    {
+     "id": "R-165.77",
+     "title": "Tester data read and the 1-1 fix plan: PASSED, waits for the release"
+    },
+    {
+     "id": "R-165.60",
+     "title": "Designer's real jump numbers: PASSED, waits for the release"
+    },
+    {
+     "id": "R-165.66",
+     "title": "The team's role cards and first task packets"
+    },
+    {
+     "id": "R-165.71",
+     "title": "Who the game is for, carried into every card: Normal for 12 and up, Easy for kids"
+    },
+    {
+     "id": "R-165.74",
+     "title": "Every member is its own session on Fable 5.2"
+    },
+    {
+     "id": "R-165.67",
+     "title": "The build plan's estimate redone from today's roadmap"
+    },
+    {
+     "id": "R-165.76",
+     "title": "Team members now run on Opus"
+    },
+    {
+     "id": "R-165.84",
+     "title": "Your order: data first, then the 1-1 plan, then the changes; the coder on Fable 5.2 at medium"
+    },
+    {
+     "id": "R-165.75",
+     "title": "This board, kept current at every decision and release"
+    }
+   ]
+  },
+  {
+   "key": "done",
+   "name": "Done",
+   "hint": "merged to main this sprint",
+   "cards": [
+    {
+     "id": "R-165.55",
+     "title": "All open story questions ruled by the story keeper: Meeca's parents, the skulls, the food lines"
+    },
+    {
+     "id": "R-165.56",
+     "title": "The team's documents merged to main (PR #67, #68)"
+    }
+   ]
+  }
+ ]
+}

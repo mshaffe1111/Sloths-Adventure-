@@ -1,3 +1,5 @@
+**Every art piece gets a world fit (Matt, 11-11 3:11 AM ET, a standing rule for all art going forward): "you need to determine where they work the best. Some of these may work in multiple worlds... That's universal for all art going forward."** Every cut piece, from any batch, is tagged with every world it fits, best first, each with a one-line reason by material and mood, and each catalogue carries a "By world" section. Batches already cut without it are re-tagged.
+
 # Method: a kit audit (art director)
 
 Use it to measure every world's art against one checklist (first run: reference/art/KIT-AUDIT.md, 2026-11-06).

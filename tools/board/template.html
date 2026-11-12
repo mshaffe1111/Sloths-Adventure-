@@ -1,0 +1,69 @@
+<title>Sloths Sprint Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: where we're going (a path) on top, who is working, then five lanes; lanes stack on a phone and sit side by side on a wide screen. */
+:root{--bg:#eef3ee;--panel:#f9fbf8;--ink:#14231b;--soft:#51635a;--line:#cfdbd2;--accent:#0f6b52;
+--matt:#a25a00;--matt-bg:#fbeed6;--todo:#3f5a76;--todo-bg:#e3ecf5;--doing:#0f6b52;--doing-bg:#d9f0e6;--check:#6a3fa0;--check-bg:#ece3f7;--done:#55665c;--done-bg:#e3e9e4;
+--display:"Bricolage Grotesque","Trebuchet MS",sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1713;--panel:#17221c;--ink:#e6efe8;--soft:#9db0a4;--line:#2b3a31;--accent:#5fd0aa;
+--matt:#f2b45c;--matt-bg:#3a2a10;--todo:#9dbde0;--todo-bg:#1b2836;--doing:#5fd0aa;--doing-bg:#12332a;--check:#c3a3ee;--check-bg:#2a1f3c;--done:#9db0a4;--done-bg:#1f2b24;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1713;--panel:#17221c;--ink:#e6efe8;--soft:#9db0a4;--line:#2b3a31;--accent:#5fd0aa;
+--matt:#f2b45c;--matt-bg:#3a2a10;--todo:#9dbde0;--todo-bg:#1b2836;--doing:#5fd0aa;--doing-bg:#12332a;--check:#c3a3ee;--check-bg:#2a1f3c;--done:#9db0a4;--done-bg:#1f2b24;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 var(--body)}
+.wrap{max-width:1280px;margin:0 auto;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:22px}
+h1{font:700 1.9rem/1.1 var(--display);margin:0;text-wrap:balance}
+.stamp{font:500 .78rem var(--mono);color:var(--soft);margin:6px 0 0}
+.goal{margin:10px 0 0;max-width:62ch;color:var(--soft)}.goal b{color:var(--ink)}
+h3{font:700 .78rem var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--soft);margin:0 0 10px}
+.path{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0}
+.path li{position:relative;padding:22px 8px 0 0;min-width:0}
+.path li::before{content:"";position:absolute;left:0;right:0;top:7px;height:3px;background:var(--line)}
+.path .dot{position:absolute;left:0;top:0;width:17px;height:17px;border-radius:50%;background:var(--bg);border:3px solid var(--line);box-sizing:border-box}
+.path .s-now::before{background:linear-gradient(90deg,var(--accent) 45%,var(--line) 45%)}
+.path .s-now .dot{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 5px var(--doing-bg)}
+.path b{display:block;font:700 .95rem/1.2 var(--display)}.path small{display:block;color:var(--soft);font-size:.8rem;line-height:1.25;margin-top:2px}
+.path .s-later b{color:var(--soft)}
+.team{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px 18px}
+.team li{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline;padding:8px 0;border-top:1px solid var(--line);min-width:0}
+.team b{font-family:var(--display)}.team span{color:var(--soft);font-size:.9rem;min-width:0}
+.team em{font:500 .72rem var(--mono);font-style:normal;padding:2px 7px;border-radius:99px;background:var(--done-bg);color:var(--done);white-space:nowrap}
+.team .st-working{background:var(--doing-bg);color:var(--doing)}.team .st-stopped{background:var(--matt-bg);color:var(--matt)}.team .st-reported{background:var(--check-bg);color:var(--check)}.team .st-waiting{background:var(--todo-bg);color:var(--todo)}.team .st-next{background:var(--todo-bg);color:var(--todo)}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+.tab{flex:1 1 0;min-width:0;text-decoration:none;color:var(--k);background:var(--kb);border-radius:10px;padding:8px 7px;font-weight:700;font-size:.7rem;display:flex;flex-direction:column;line-height:1.2}
+.tab b{font:700 1.5rem/1 var(--display);font-variant-numeric:tabular-nums}
+.tab:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.k-matt{--k:var(--matt);--kb:var(--matt-bg)}.k-todo{--k:var(--todo);--kb:var(--todo-bg)}.k-doing{--k:var(--doing);--kb:var(--doing-bg)}.k-checking{--k:var(--check);--kb:var(--check-bg)}.k-done{--k:var(--done);--kb:var(--done-bg)}
+.board{display:grid;grid-template-columns:minmax(0,1fr);gap:26px}
+.col{min-width:0;scroll-margin-top:12px}
+.col header{display:flex;align-items:baseline;justify-content:space-between;border-bottom:3px solid var(--k);padding-bottom:6px}
+.col h2{font:700 1.2rem var(--display);margin:0;color:var(--k)}
+.col .n{font:500 .85rem var(--mono);color:var(--k)}
+.hint{margin:6px 0 10px;color:var(--soft);font-size:.85rem}
+.col ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.rid{font:500 .74rem var(--mono);color:var(--k)}
+.ord{font:700 .74rem var(--mono);color:var(--k);background:var(--kb);border-radius:99px;min-width:1.6em;text-align:center;padding:1px 5px}
+.t{margin:4px 0 8px;line-height:1.35}
+.meta{display:flex;flex-wrap:wrap;gap:6px;font-size:.78rem}
+.who{background:var(--kb);color:var(--k);font-weight:700;border-radius:5px;padding:1px 7px}
+.hrs{font-family:var(--mono);color:var(--soft);padding:1px 0}
+.waits{margin:8px 0 0;font-size:.8rem;color:var(--soft);border-top:1px dashed var(--line);padding-top:6px}
+.empty{color:var(--soft);font-size:.9rem;padding:10px 0}
+.foot{color:var(--soft);font-size:.82rem;max-width:70ch}
+@media (max-width:560px){.path{grid-template-columns:1fr;gap:0}.path li{padding:0 0 14px 28px}.path li::before{left:7px;right:auto;top:0;bottom:0;width:3px;height:auto}.path .s-now::before{background:linear-gradient(180deg,var(--accent) 45%,var(--line) 45%)}.path li:last-child::before{display:none}}
+@media (min-width:1000px){.board{grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;align-items:start}.tabs{display:none}}
+</style>
+<div class="wrap">
+<header>
+<h1>Sloths Sprint Board</h1>
+<p class="stamp">Updated {{STAMP}}</p>
+<p class="goal"><b>Where we're going:</b> {{GOAL}}<br><b>{{SPRINT}}</b></p>
+</header>
+<section><h3>The road</h3><ol class="path">{{PATH}}</ol></section>
+<section><h3>Who's on it now</h3><ul class="team">{{TEAM}}</ul></section>
+<nav class="tabs" aria-label="Jump to a lane">{{TABS}}</nav>
+<main class="board">{{COLS}}</main>
+<p class="foot">Each card is one numbered item on the roadmap. A card moves right only when the step before it is finished: built work goes to Checking, and only a Critic's pass moves it to Done. Hours are helper running time, mostly first guesses.</p>
+</div>

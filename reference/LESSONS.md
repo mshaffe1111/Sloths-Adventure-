@@ -1,4 +1,4 @@
-# Lessons we already paid for (printed with the laws at every session start and after every memory compression)
+# Lessons we already paid for (read in full once at the start of every task; the session-start printout names this file)
 
 **Lead: start at reference/handoffs/lead.md and reference/roles/PM.md. The live ledger is reference/STATE.md; STATUS.md is the old diary.**
 
@@ -45,7 +45,7 @@ that do the best job get the follow-on work.
 - Player-facing words are written per item, in the character's voice. No filler, no repeats on a page, no apology for missing data. (D1, law 6)
 
 **Art and money**
-- Hugging Face has $72 left, total, no top-ups. Matt approves every picture list, one at a time, before any spend.
+- Hugging Face: $65.55 left (Matt, 11-07), no top-ups, keep about $15 in reserve. Matt approves every picture list, one at a time, before any spend.
 - Judge art against the absolute floor (floor.py in hf-backdrops.md), not against a weak "before". (backdrops, Nov 1)
 - Never Gemini prompts; Hugging Face only.
 - Show first: any big look change goes to Matt as stills or a mock-up before it is built.
@@ -55,3 +55,17 @@ that do the best job get the follow-on work.
 - Run a new gate the way CI runs it (`CI=1 FORCE_COLOR=1`) before the PR; a gate that reads tool output strips colour codes. (D31)
 - A command in a role card, method or brief is proven against the tool's arg parsing or a dry run, and the whole document goes to a fresh Critic cold before anyone uses it. (D32)
 - Before pushing to a branch with a PR, read the PR's state. Once a PR is open, never amend or force-push its branch; after a merge, changes go on a new branch from main. (D33)
+- Every fact in a plan or review cites file:line, checked when it's written; before changing a plan, grep the rules that govern it and cite them. (D34)
+- A lead's plan change cites the governing file:line in its roadmap row and waits for the cold Critic's PASS before anyone acts on it; a check is never loosened to make a document pass. (D35)
+- Read-only members use `git show` or their own worktree, never `git checkout` in a shared tree; before a commit `git status -sb` names the branch, and after a push `git ls-remote` equals HEAD. (D36)
+- A packet that says how the engine treats a stage is proved with one pasted run of that stage; a "lives unchanged" done-item names the real loseLife (RealPlay stubs it), and an audit runs every behaviour claim. (D37)
+- A rule that counts recorder events names the code line that emits each event and what it records, and is run on a hand-built list with a release and a take-back in it. (D38)
+- A help or assist that changes the stage is flown over every seed and both settings with plain jumps after it is applied; the packet names its tallest case and the number it gives. (D39)
+- Before a packet goes out, name what it is built on and whether a planned job replaces that this sprint; if so, build it after. Two REJECTs in a row: stop and ask whether it patches something about to be replaced. (D40)
+- Pokey's drawn height is 89.1 units (heroSprite.ts:30,32), not 48 (his collider): size art against the drawn height, read from the code. (D41)
+- Every time Matt sees comes from a command, never from converting UTC in your head: November is EST (UTC-5), not EDT. The UserPromptSubmit hook prints the ET time each turn. (D42)
+- Engine work is done for every stage, never one: a packet's done-list says 'works for any stage, proven on N', and no stage id, seed or x literal lives in engine code (world data only). When Matt asks for a level fast and the engine first, name the trade out loud. (D43)
+- SCOPE decides where tokens go (Matt 11-11 5:47 PM ET: "I don't mind using tokens, but I want to use them in the best ways"). Rigor and the strongest model go to what everything reuses: the core engine, built correctly once, including the parts we already know we will need. A feature one level uses (1-1's help ladder) gets good-enough now and polish later, never rounds of back and forth. Review depth matches reuse and risk: don't audit what doesn't need auditing. Budgets and a daily spend report so Matt sees what the tokens bought. (D44)
+- A size gate measures the exact file that ships: chunkcheck measured a build without deploy's BASE_PATH, so 0.9.6 shipped 254 B over its own budget while the PR said 11,354 B spare. Every gate builds the way deploy.yml builds. Countermeasure: gates.yml and the release gate build with BASE_PATH=/Sloths-Adventure-/ before chunkcheck (next integration packet); the next release lands the seed-list split (t-engine-seedchunks) first to make room. (D45)
+- A landing must be reachable by a plain walk-off fall or a full jump, each with margin and no ceiling in the arc; never only by a mid-air correction (the dead zone). Petals go only where a clean path reaches. Countermeasure: STAGE-RULES §1 rule; gen2's verdicts must refuse it, proven by a test from Matt's case. (D46)
+- A defect Matt reported is written down the same turn and never lost. Matt reported the dead-zone petal log in 1-1 (a petal log reachable only by a mid-air correction) to the last lead and it was in the testers' data, yet it appears in no record and shipped in 0.9.6; a near-identical rule existed only for one stage (R-6.29, 4-7's petal arcs) and was never made a generator check. Countermeasures: every Matt report gets an R-id the same turn, tagged 'reported by Matt' (LAWS 21); a one-stage rule that describes a general flaw becomes a gen2 verdict for every stage; the release checklist lists every open Matt-reported item at the top and the lead asks Matt directly, one plain question, before the PR (a PR line is not asking); a sweep of the testers' data and past reports lists every open Matt-reported issue before new work. Also shipped as a named rough spot without asking him: R-165.122, hop rocks walked through. (D47)

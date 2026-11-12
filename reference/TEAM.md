@@ -17,9 +17,9 @@ artifact on a branch.
 |---|---|---|---|---|
 | 1 | Project Manager / Orchestrator | the lead (this session) | the state ledger (reference/STATE.md), the task graph, the packets, release candidates and PRs (Matt merges), Matt's links | writes game code or invents mechanics. Emergency exception: a one-line fix to unblock a live deploy, logged as a defect. |
 | 2 | Systems & Mechanics Designer | fresh agent per task (high) | specs/: the numbers. Jump, double, bounce and glide reach from the 30 fps simulation; gap and rise bands per setting; coyote and buffer windows; the Easy curve; help thresholds; petal arcs; touch thresholds | writes code |
-| 3 | Lead Architect | fresh agent per task (high) | interfaces, types, the section and verdict schemas, perf budgets (Matt 11-06 "build for 60", which the lead set as 8 ms at 60-for-30; the gate says 12 ms until PERFORMANCE-RULES §1 changes, ARCHITECT.md), ARCHITECTURE notes, the list of files a task may touch | writes method bodies or gameplay |
-| 4 | Engine Engineer | fresh agent per task (high) | src/game engine, physics, input, camera, the renderer (the WebGL move), the gen2 pipeline code | changes interfaces or game rules |
-| 5 | Content & Asset Specialist | fresh agent per task (high) | section data (w1 kit), seed lists, art cutting and the manifest, the backdrop layers, the testers' page copy | touches engine loops or physics |
+| 3 | Lead Architect | fresh agent per task (high) | interfaces, types, the section and verdict schemas, perf budgets (Matt 11-06 "build for 60": our update plus draw at 8 ms or less, GPU-RENDERER-PLAN.md:52-59; PERFORMANCE-RULES §1's text still reads 12 ms until R-165.65 changes it and adds a frame-time gate with a planted test; no gate measures frame time today), ARCHITECTURE notes, the list of files a task may touch | writes method bodies or gameplay |
+| 4 | Engine Engineer | fresh agent per task (medium or high, on Opus 5.5: Matt 11-09, R-165.84) | src/game engine, physics, input, camera, the renderer (the WebGL move), the gen2 pipeline code | changes interfaces or game rules |
+| 5 | Content & Asset Specialist | fresh agent per task (high, on Opus) | section data (w1 kit), seed lists, art cutting and the manifest, the backdrop layers, the testers' page copy | touches engine loops or physics |
 | 6 | Adversarial Critic & QA | fresh agent per task (high; max for a release gate) | tests, headless checks (traversal with the real 30 fps reach, bots), the gates, defect reports | fixes production code. It only writes failing tests and a PASS/REJECT report |
 
 7. **Matt talks only to the PM** (Matt, 11-07: "I will only talk to you. You run their efforts and run them. This will be 100 percent
@@ -36,9 +36,9 @@ artifact on a branch.
    work without asking. What still goes to Matt: merges and releases (LAWS 13), Hugging Face spending and picture lists, the decisions
    in STATE.md "waiting on Matt", story and taste calls through the story keeper, and anything that changes his rules.
 11. **The lead rotates, and the previous lead stays as the backup** until the next rotation (roles/PM.md §8, "The backup lead").
-   **The lead rotates** (Matt, 11-07: clear the lead "so you don't start making bad decisions and become biased"): after every release
-   or every week, whichever comes first, at a quiet seam. The procedure is reference/roles/PM.md §8; the first handover was 11-07 evening
-   (Matt moved it up), with the new lead's first work on Wednesday 11-11 after the weekly reset.
+   **The lead rotates** (Matt, 11-07: clear the lead "so you don't start making bad decisions and become biased"). Matt decides when (11-07: "I'll tell you when
+   it's time to retire"); the lead flags each trigger to him at once (roles/PM.md §8). The procedure is reference/roles/PM.md §8; the first handover was 11-07 evening
+   (Matt moved it up), with the new lead's first team work on Monday 11-09 (Matt moved the start up from Wednesday 11-11).
 12. **Health check, remake and takeover** (Matt, 11-07: "how to check if somebody needs to be replaced and remade, and how to ensure
    that he's able to take over with potentially a team that's in place"): the roster, the drift signs, the three-fact test, the
    remake and taking over a running team are in reference/roles/PM.md §9.
@@ -67,8 +67,26 @@ artifact on a branch.
 - **Story keeper (the old lead, session_019iachLiuwNTAZUBSJWUmR3): the ONLY long-lived session kept** (Matt, 11-07: "Too much story
   knowledge"). It owns the story, characters, Dot's voice and the lessons of past releases. The PM asks it before any story, dialogue
   or taste call, and it reviews player text. It's not a builder and not a node in the graph.
-  Its bible: reference/story/STORY-KEEPER.md (on branch `studio` since 11-07; on main once studio merges). It lists 10 open story threads.
+  Its bible: reference/story/STORY-KEEPER.md (on branch `studio` since 11-07; on main once studio merges). It listed 10 open story threads on 11-07; where each stands: ROADMAP R-165.55.
   Never build from ccr-0d59a91c-oy3imz (it carries the rejected 11-04 src/).
+
+## Cost rules (Matt, 11-11 6:06 PM ET: "we need to bring the cost down... It's your team. You run the team the way you think is best")
+Where today's money went (session records, 11-11): the two 1-2 packets cost about $98 across 8 rounds (Designer $62, Critic $36) for one
+level's paperwork; sessions ran to 360k-635k tokens of context, and every turn re-reads the whole context, so a long session costs more
+per step the longer it lives. These rules replace any older rule they contradict.
+1. **Review by risk, not by habit.** A cold Critic, one round, on engine pieces and on a release. A second round re-checks only the
+   failing items (a delta), never the whole task. No Critic on packets: the lead reads the packet. No Critic on a stage laid from proven
+   pieces: its bots and gates are the check; the lead looks at its stills.
+2. **The auditor sweeps; it does not gate.** One audit pass about once a day (or after a batch of merges) over what merged, looking for
+   bugs across the engine. Its findings become a fix list the lead triages: global ones first, one-stage ones parked for that stage's finalize.
+3. **Short sessions.** One packet per session. Retire a member when its packet is done or its context passes about 40%, not 70%. A new
+   member starts from its role card, turnover note and packet.
+4. **Gates where they pay.** A builder runs tsc, the tests for what it touched and the fast gates. The full suite and the slow browser
+   gates (drawcheck, clipcheck, lockall) run once per integration and per release, by one runner, not by every builder and Critic.
+5. **Effort.** Engine builders: Fable 5.2 high (Matt 11-11). Everyone else: Opus 5.5 high, medium for following steps; xhigh only for
+   a release review. No rounds of polish on one-stage features before that stage's finalize (D44).
+6. **Small packets with a stop line.** Each packet names its budget in hours; past it, the builder stops and reports what is left.
+7. **The lead reports spend daily** to Matt: cost per session (get_session usage) against what it bought.
 
 ## The rules (the PM enforces them)
 1. **Packets, never chat history.** Each task: the objective; frozen inputs (spec numbers, interface); allowed files (read / write);
@@ -83,7 +101,11 @@ artifact on a branch.
    - Try 2: a delta packet with the exact failure.
    - Try 3: a FRESH builder with the task plus "approaches that failed, don't use them".
    - Then stop: an architecture deadlock goes to the Architect, an unclear requirement goes to Matt as a 3-bullet question.
-5. **Effort is set for real** (the Agent tool; Matt, 11-07: "medium for light work, high for more effort, max only when needed... the
+5d. **The lead never touches code (Matt, 11-11 5:47 PM ET: "the lead never touches code. That's the rule. Once the lead touches code, it crosses the line.").** No game code, tools, scripts or hooks by the lead: a helper writes them, a Critic checks them. The lead picks the team's size and brings in helpers as the plan needs ("the lead can pick if we need to bring more people in"). The outgoing lead crossed this line on 11-11 (tools/team/modelgate.mjs, tools/session/now-et.mjs, .claude/settings.json hooks): those stand, but a helper owns any change to them.
+5c. **Model gate (Matt, 11-11: "make sure from sonnet to fable we have the right engine and efforts based on importance").** tools/team/models.json is the table (tier by importance: critical Fable 5.2 high; core Opus 5.5 high; support Opus 5.5 high/medium; mechanical Sonnet 5.5 high, fixed-recipe jobs with a checker after them). Every create_session carries `sloths-team` plus exactly one role tag; the PreToolUse hook tools/team/modelgate.mjs refuses any helper whose model or effort does not match its role's tier, and any low, xhigh or max effort (xhigh/max need Matt's yes). `node tools/team/modelgate.mjs --table` prints it. Rows change only on Matt's word, dated in _changes.
+5b. **ENDED 11-11 4:36 PM ET (Matt: "We will need to start using Opus again for all models"): every tier is back on Opus 5.5 (tools/team/models.json); engine work on Opus at effort high. Fable helpers already mid-task finish their current step; every new step goes to Opus.** Was: TEMPORARY MODEL RULE (Matt, 11-11 ~1:35 PM ET): "So i have tokens to use with a reset. For now put engine and gameplay work on fable 5.2... Will monitor an tell you when to go back"; then: "On opus keep engine work on high to avoid issues".** Until Matt says go back: every NEW engine or gameplay helper (Engine, Content/Designer stage and mechanic work) is created with model claude-fable-5-2. Critics too (Matt, 11-11 1:36 PM ET: "Reviewers on Fable too"); Art and PM stay on Opus 5.5. Fable SCOPE (Matt, 11-11 3:57 PM ET: "make sure the fables are only doing the gen 2 engine and not the whole game. wont have the tokens for that"): Fable helpers work only on gen2 (stages, the gen2 engine and its Critics); whole-game work waits for Opus. Fable effort: high (the model guide: start at high; xhigh only where a gain is measured). Whenever engine work runs on Opus, its effort is high (never medium). A helper already mid-task keeps its model (switching loses its context).
+5a. **STANDING RULE for every lead (Matt, 11-09 10:35 PM ET): "Lets make sure all helpers have the appropriate opus levels (high or medium) based on needs. If you think max would help ask me and I will approve or deny. This is a standing rule for all leads going forward. Cant afford shoddy work being cheap."** Every member runs on Opus (claude-opus-5-5) at effort high or medium, by what the task needs; never low to save money. Max only with Matt's yes, asked as one question with the reason. This replaces the 10-28 and 11-07 effort lines (low for written steps; max the lead's call).
+5. **Effort is set per task** (since 11-09 every member is its own session on Opus, Matt's word that evening ("Keep others now on opus", R-165.76; the lead stays where Matt runs it; UPDATE (Matt, 11-09 9:05 PM ET: "Move everything to opium 5.5", read as Opus 5.5): then at 9:07 PM ET "Other than engine work.. stays fable for now": every member is on "claude-opus-5-5" EXCEPT engine work (the Engine member), which stays on "claude-fable-5-2" at effort medium; the Fable lines for the Designer, the Architect and other code-writing members are withdrawn. LATEST (Matt, 11-09 evening: "Use opus 5.5 medium and high going forward based model needs"): every member, the Engine included, on "claude-opus-5-5", effort medium or high by the task.); create_session has no effort setting, so the packet's `effort:` line carries it; Matt, 11-07: "medium for light work, high for more effort, max only when needed... the
    consultant on max", and the lead sets the levels; this replaces the 10-28 "never max unless Matt asks"): designer, architect, engine, content and critic high; the critic max for releases; the
    consultant max; low or medium only for following written steps.
 6. **The stage-building order** (from the consultant's root cause):
@@ -98,7 +120,7 @@ The long-lived helpers below hold history but drift with compression; they're re
 it stays as the story keeper. Their branches and notes stay as
 references for packets. engine-core / Core Engine Developer, engine-planner, engine-designer, art-director, Tester Data, release-clerk:
 finish anything in flight, write a hand-off note to reference/handoffs/<role>.md (what's open, where things live, traps), then stop.
-New work goes to fresh role agents via packets from Wednesday 11-11, under the fresh lead.
+New work goes to fresh role members via packets from Monday 11-09 (first planned for Wednesday 11-11), under the fresh lead.
 
 ## Traps (kept)
 - Cloud sessions: permission_mode "auto", never acceptEdits. A helper that says "pushed": check `git ls-remote`.

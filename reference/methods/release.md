@@ -95,3 +95,11 @@ Matt, 2026-11-06, after 0.9.5: "Make sure that you note going forward how to do 
   The Critic builds this into a gate.
 - funknown.json joins knowncheck's LISTS.
 - PR body template: reference/qa-reports/0.9.5/PR-BODY.md.
+
+## Added 11-11 from the story keeper (session_019iachLiuwNTAZUBSJWUmR3; what the steps above miss)
+- **Player text is the story keeper's gate, before the PR:** send it the whatsNew entry and every player string changed from main.
+  (0.9.6: it caught the coach saying "tap again" for a double while Dot said "hold": R-165.57 landed in the candidate.)
+- **Live check without a real tester session:** curl the live index; its main JS hash must equal the candidate's dist and the title must
+  show the new version. Then open `?fresh=1#ctest` in Playwright with script.google.com ROUTED and BLOCKED, so no row reaches the
+  testers' sheet; start a run upright and sideways; no page errors.
+- **After the release:** send the story keeper the release notes; tick Matt's handoff doc; done items name the PR; the 15-minute retro.
