@@ -70,6 +70,8 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
 - RUNNING (11-12 10:15 AM): PROOF-1 (Critic xhigh, session_01FhBbYMYtRUNd5ze6kU5rsW, t-proof-audit, stop 11:45); P11 (high,
   session_01FhBbYNA2XQgbQQrcxjr5GS, t-11-pass, stills PASSED by the lead, gates running, stop 11:30); F12 (high,
   session_01FhBbYMY35Ak6jDnbB6WZAi, t-12-fly, stop 12:45). Done today: SWEEP-M, INT-E (green), RF, PIT (passed the lead's look).
+  FABLE (10:43 AM, stop 1:15 PM): W1C (session_01FhBbYM1aFUg186wiXKD1bx, t-w1-creatures: creatures + drop traps live, 1-3 laid)
+  and GL0 (session_01FhBbYMMBxNi4RVq9QZKCJF, t-webgl-0: measuring stick, PixiJS chunk, ground on WebGL).
   NEXT: INT-2 = t-int-engine + t-11-pass + t-render-fixes + t-pit-polish, full gate, audit delta; then 0.9.7 on Matt's word
   (ask him first about the R-165.125 sound levels, D47).
 - Everyone else retired tonight, branches verified. Next helpers start fresh from their role card + this note + a packet.
