@@ -1,0 +1,24 @@
+{
+  "name": "head-fresh-side",
+  "base": "http://127.0.0.1:8801/Sloths-Adventure-/",
+  "steps": [
+    "title",
+    "after-play-tap",
+    "who-is-exploring",
+    "map-fresh",
+    "map-1-1-picked",
+    "1-1-before-2",
+    "1-1-fresh-start",
+    "1-1-fresh-playing",
+    "pause-fresh",
+    "satchel-Finds",
+    "satchel-Trophies",
+    "satchel-Journal",
+    "satchel-Scenes",
+    "satchel-Creatures"
+  ],
+  "errors": [],
+  "console": [],
+  "misses": [],
+  "seconds": 93
+}

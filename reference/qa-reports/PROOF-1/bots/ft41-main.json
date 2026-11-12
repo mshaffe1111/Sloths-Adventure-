@@ -1,0 +1,1615 @@
+{
+ "who": "ADULT",
+ "setting": "normal",
+ "seed": 1,
+ "end": "shrine",
+ "time": 357,
+ "x": 1577,
+ "progress": 0.999,
+ "goal": {
+  "got": 0,
+  "need": 1
+ },
+ "holdOn": {
+  "hit": null,
+  "life": null
+ },
+ "opening": [],
+ "harms": [
+  {
+   "kind": "hit",
+   "t": 20.8,
+   "x": 2890,
+   "y": 6180,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 91.5,
+   "x": 2600,
+   "y": 6507,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 95.9,
+   "x": 2890,
+   "y": 6122,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 102,
+   "x": 2397,
+   "y": 5624,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "life",
+   "t": 121.8,
+   "x": 2634,
+   "y": 6229,
+   "cause": "rock",
+   "onScreen": null
+  },
+  {
+   "kind": "hit",
+   "t": 121.8,
+   "x": 2634,
+   "y": 6229,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 152.8,
+   "x": 2322,
+   "y": 3076,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 157.2,
+   "x": 2470,
+   "y": 2871,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 166,
+   "x": 2470,
+   "y": 2871,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 179.3,
+   "x": 2470,
+   "y": 2937,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "life",
+   "t": 197.1,
+   "x": 2470,
+   "y": 3032,
+   "cause": "rock",
+   "onScreen": null
+  },
+  {
+   "kind": "hit",
+   "t": 197.1,
+   "x": 2470,
+   "y": 3032,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 203.6,
+   "x": 1101,
+   "y": 2402,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 210.3,
+   "x": 1519,
+   "y": 3267,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 213.6,
+   "x": 2336,
+   "y": 3076,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 223.4,
+   "x": 2470,
+   "y": 2981,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "life",
+   "t": 232.2,
+   "x": 2470,
+   "y": 2981,
+   "cause": "rock",
+   "onScreen": null
+  },
+  {
+   "kind": "hit",
+   "t": 232.2,
+   "x": 2470,
+   "y": 2981,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 245.2,
+   "x": 2470,
+   "y": 2819,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 250,
+   "x": 2470,
+   "y": 3069,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 254,
+   "x": 2470,
+   "y": 2834,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 255.4,
+   "x": 2323,
+   "y": 3076,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "life",
+   "t": 262.8,
+   "x": 2470,
+   "y": 2863,
+   "cause": "rock",
+   "onScreen": null
+  },
+  {
+   "kind": "hit",
+   "t": 262.8,
+   "x": 1281,
+   "y": 2425,
+   "cause": "rock",
+   "onScreen": true,
+   "hiding": false
+  }
+ ],
+ "perMin": {
+  "hits": 3.36,
+  "lives": 0.67
+ },
+ "softFalls": 0,
+ "gameOvers": 1,
+ "firstHarm": [
+  {
+   "cause": "rock",
+   "t": 20.8,
+   "x": 2890,
+   "kind": "hit",
+   "tip": null,
+   "ok": false
+  }
+ ],
+ "stuck": [
+  {
+   "x": 2362,
+   "y": 5556,
+   "t": 30.4,
+   "dur": 0,
+   "what": "fell back down from here 3 times",
+   "step": null,
+   "dip": null,
+   "puzzle": false,
+   "rescued": true
+  },
+  {
+   "x": 1956,
+   "y": 5465,
+   "t": 31.7,
+   "dur": 20,
+   "what": "the puzzle \"knot-pulley\", in a dip 266 px deep, the way on is 120 px up",
+   "step": null,
+   "dip": 266,
+   "puzzle": true,
+   "rescued": true
+  },
+  {
+   "x": 2825,
+   "y": 4644,
+   "t": 56.4,
+   "dur": 20,
+   "what": "the puzzle \"knot-pulley\", a drop of 295 px ahead",
+   "step": null,
+   "dip": null,
+   "puzzle": true,
+   "rescued": true
+  },
+  {
+   "x": 1579,
+   "y": 4240,
+   "t": 104.8,
+   "dur": 0,
+   "what": "fell back down from here 3 times",
+   "step": null,
+   "dip": null,
+   "puzzle": false,
+   "rescued": true
+  },
+  {
+   "x": 820,
+   "y": 3937,
+   "t": 137.4,
+   "dur": 0,
+   "what": "fell back down from here 3 times",
+   "step": null,
+   "dip": null,
+   "puzzle": false,
+   "rescued": true
+  },
+  {
+   "x": 2470,
+   "y": 2764,
+   "t": 152.2,
+   "dur": 20,
+   "what": "the puzzle \"knot-pulley\", a drop of 312 px ahead, a trunk beside him, on a trunk",
+   "step": null,
+   "dip": null,
+   "puzzle": true,
+   "rescued": true
+  },
+  {
+   "x": 1563,
+   "y": 2425,
+   "t": 202.1,
+   "dur": 0,
+   "what": "fell back down from here 3 times",
+   "step": null,
+   "dip": null,
+   "puzzle": false,
+   "rescued": true
+  },
+  {
+   "x": 2434,
+   "y": 3076,
+   "t": 216,
+   "dur": 16.1,
+   "what": "lost a life going on from here",
+   "step": null,
+   "dip": null,
+   "puzzle": false,
+   "rescued": false
+  },
+  {
+   "x": 2434,
+   "y": 3076,
+   "t": 246,
+   "dur": 16.8,
+   "what": "lost a life going on from here",
+   "step": null,
+   "dip": null,
+   "puzzle": false,
+   "rescued": false
+  },
+  {
+   "x": 871,
+   "y": 2084,
+   "t": 265.7,
+   "dur": 0,
+   "what": "fell back down from here 3 times",
+   "step": null,
+   "dip": null,
+   "puzzle": false,
+   "rescued": true
+  },
+  {
+   "x": 2597,
+   "y": 1046,
+   "t": 307.9,
+   "dur": 20,
+   "what": "the puzzle \"knot-pulley\", a drop of 296 px ahead",
+   "step": null,
+   "dip": null,
+   "puzzle": true,
+   "rescued": true
+  },
+  {
+   "x": 1332,
+   "y": 400,
+   "t": 356.5,
+   "dur": 0,
+   "what": "fell back down from here 3 times",
+   "step": null,
+   "dip": null,
+   "puzzle": false,
+   "rescued": true
+  }
+ ],
+ "loops": [
+  {
+   "x": 2432,
+   "y": 3076,
+   "n": 3,
+   "doubles": 0,
+   "deaths": 3,
+   "what": "lost a life going on from here",
+   "step": null,
+   "dip": null,
+   "puzzle": false
+  },
+  {
+   "x": 1000,
+   "y": 400,
+   "n": 4,
+   "doubles": 3,
+   "deaths": 0,
+   "what": "a trunk beside him, the way on is 364 px up",
+   "step": null,
+   "dip": null,
+   "puzzle": false
+  }
+ ],
+ "stops": {
+  "n": 0,
+  "firstJumpFailed": 0,
+  "heights": []
+ },
+ "puzzles": [
+  {
+   "id": "knot-pulley-0",
+   "x": 2153,
+   "t": 51.7
+  }
+ ],
+ "rescues": 11,
+ "rescueXs": [
+  2174,
+  1971,
+  2853,
+  2392,
+  877,
+  2470,
+  1905,
+  2470,
+  695,
+  2468,
+  1147
+ ],
+ "softFallXs": [],
+ "dot": {
+  "heard": 12,
+  "lines": [
+   {
+    "t": 2.6,
+    "dur": 1.5,
+    "text": "Slide your thumb up to climb.",
+    "kind": "teach",
+    "source": "lesson"
+   },
+   {
+    "t": 13.8,
+    "dur": 4.5,
+    "text": "Slide your thumb to creep along.",
+    "kind": "teach",
+    "source": "lesson"
+   },
+   {
+    "t": 20.8,
+    "dur": 6.2,
+    "text": "Ouch! Lift your thumb before the shadow.",
+    "kind": "danger",
+    "source": "engine"
+   },
+   {
+    "t": 33.8,
+    "dur": 4.5,
+    "text": "This way, Pokey! Try over here.",
+    "kind": "struggle",
+    "source": "struggle"
+   },
+   {
+    "t": 54.8,
+    "dur": 1.5,
+    "text": "I knotted us a pulley!",
+    "kind": "teach",
+    "source": "engine"
+   },
+   {
+    "t": 65,
+    "dur": 1.5,
+    "text": "That basket looks empty.",
+    "kind": "struggle",
+    "source": "engine"
+   },
+   {
+    "t": 75.4,
+    "dur": 4.5,
+    "text": "This way, Pokey! Try over here.",
+    "kind": "struggle",
+    "source": "struggle"
+   },
+   {
+    "t": 84.4,
+    "dur": 1.5,
+    "text": "Flick up just before the edge.",
+    "kind": "teach",
+    "source": "lesson"
+   },
+   {
+    "t": 118.8,
+    "dur": 6.5,
+    "text": "Hurt? Grab a heart to heal.",
+    "kind": "info",
+    "source": "lesson"
+   },
+   {
+    "t": 234.2,
+    "dur": 5.5,
+    "text": "That spot again. Slow down and look first.",
+    "kind": "struggle",
+    "source": "struggle"
+   },
+   {
+    "t": 281.7,
+    "dur": 4.5,
+    "text": "A long way across. Keep sliding",
+    "kind": "teach",
+    "source": "engine"
+   },
+   {
+    "t": 341.8,
+    "dur": 5,
+    "text": "Reach the shrine to finish the stage.",
+    "kind": "info",
+    "source": "lesson"
+   }
+  ],
+  "repeats": [
+   {
+    "text": "This way, Pokey! Try over here.",
+    "n": 2,
+    "at": [
+     33.8,
+     75.4
+    ]
+   }
+  ],
+  "quick": [
+   {
+    "t": 84.4,
+    "gap": 9,
+    "text": "Flick up just before the edge.",
+    "after": "This way, Pokey! Try over here."
+   }
+  ],
+  "long": [],
+  "reteach": [
+   {
+    "t": 2.6,
+    "text": "Slide your thumb up to climb."
+   },
+   {
+    "t": 84.4,
+    "text": "Flick up just before the edge."
+   }
+  ],
+  "wordy": []
+ },
+ "flags": [
+  {
+   "sev": 66,
+   "kind": "loop",
+   "rule": "wayOn",
+   "x": 1000,
+   "t": null,
+   "what": "fell back into the same spot 4 times (3 double jumps tried): a trunk beside him, the way on is 364 px up"
+  },
+  {
+   "sev": 62,
+   "kind": "before-tip",
+   "rule": "opening",
+   "x": 2890,
+   "t": 20.8,
+   "what": "rock hits him at 20.8 s; no tip of Dot teaches it"
+  },
+  {
+   "sev": 62,
+   "kind": "loop",
+   "rule": "wayOn",
+   "x": 2432,
+   "t": null,
+   "what": "lost 3 lives at the same spot (0 double jumps tried): lost a life going on from here"
+  },
+  {
+   "sev": 52.4,
+   "kind": "stuck",
+   "rule": "wayOn",
+   "x": 2434,
+   "t": 246,
+   "what": "no progress for 17 s: lost a life going on from here"
+  },
+  {
+   "sev": 52.05,
+   "kind": "stuck",
+   "rule": "wayOn",
+   "x": 2434,
+   "t": 216,
+   "what": "no progress for 16 s: lost a life going on from here"
+  },
+  {
+   "sev": 50.06,
+   "kind": "harm-rate",
+   "rule": "outcome",
+   "x": null,
+   "t": null,
+   "what": "20 hits and 4 lives lost in 357 s (3.36 hits, 0.67 lives a minute), 1 game overs"
+  },
+  {
+   "sev": 44,
+   "kind": "stuck",
+   "rule": "wayOn",
+   "x": 2362,
+   "t": 30.4,
+   "what": "no progress for 0 s: fell back down from here 3 times (the bot was put further on)"
+  },
+  {
+   "sev": 44,
+   "kind": "stuck",
+   "rule": "wayOn",
+   "x": 1579,
+   "t": 104.8,
+   "what": "no progress for 0 s: fell back down from here 3 times (the bot was put further on)"
+  },
+  {
+   "sev": 44,
+   "kind": "stuck",
+   "rule": "wayOn",
+   "x": 820,
+   "t": 137.4,
+   "what": "no progress for 0 s: fell back down from here 3 times (the bot was put further on)"
+  },
+  {
+   "sev": 44,
+   "kind": "stuck",
+   "rule": "wayOn",
+   "x": 1563,
+   "t": 202.1,
+   "what": "no progress for 0 s: fell back down from here 3 times (the bot was put further on)"
+  },
+  {
+   "sev": 44,
+   "kind": "stuck",
+   "rule": "wayOn",
+   "x": 871,
+   "t": 265.7,
+   "what": "no progress for 0 s: fell back down from here 3 times (the bot was put further on)"
+  },
+  {
+   "sev": 44,
+   "kind": "stuck",
+   "rule": "wayOn",
+   "x": 1332,
+   "t": 356.5,
+   "what": "no progress for 0 s: fell back down from here 3 times (the bot was put further on)"
+  },
+  {
+   "sev": 24,
+   "kind": "dot-repeat",
+   "rule": "dot",
+   "x": null,
+   "t": 75.4,
+   "what": "\"This way, Pokey! Try over here.\" said 2 times (at 33.8, 75.4 s)"
+  },
+  {
+   "sev": 24,
+   "kind": "dot-reteach",
+   "rule": "dot",
+   "x": null,
+   "t": 2.6,
+   "what": "\"Slide your thumb up to climb.\" teaches a move he had already done"
+  },
+  {
+   "sev": 24,
+   "kind": "dot-reteach",
+   "rule": "dot",
+   "x": null,
+   "t": 84.4,
+   "what": "\"Flick up just before the edge.\" teaches a move he had already done"
+  },
+  {
+   "sev": 15,
+   "kind": "dot-quick",
+   "rule": "dot",
+   "x": null,
+   "t": 84.4,
+   "what": "1 of her 12 lines start under 10 s after the one before (first at 84.4 s: \"Flick up just before the edge.\", 9 s after \"This way, Pokey! Try over here.\")"
+  }
+ ],
+ "tries": [
+  {
+   "x": 1133.322222222222,
+   "y": 6934,
+   "dir": 1,
+   "t0": 5.6999999999999895,
+   "t1": 6.199999999999988,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 4,
+    "x": 1272.9333333333332,
+    "y": 6886
+   },
+   "hold": 0.1736187516283876
+  },
+  {
+   "x": 1521.3444444444442,
+   "y": 6886,
+   "dir": 1,
+   "t0": 7.0999999999999845,
+   "t1": 7.5666666666666496,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 5,
+    "x": 1650.2999999999997,
+    "y": 6838
+   },
+   "hold": 0.16208727680816987
+  },
+  {
+   "x": 2766.28888888889,
+   "y": 6147,
+   "dir": 1,
+   "t0": 16.83333333333333,
+   "t1": 17.133333333333344,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "hold": 0.1619733102949498
+  },
+  {
+   "x": 2732.1444444444433,
+   "y": 6147,
+   "dir": 1,
+   "t0": 18.733333333333423,
+   "t1": 19.466666666666793,
+   "kind": "single",
+   "ok": false,
+   "hurt": false,
+   "running": true,
+   "hold": 0.19454673758284574
+  },
+  {
+   "x": 2734.4555555555535,
+   "y": 6147,
+   "dir": 1,
+   "t0": 22.766666666666957,
+   "t1": 23.233333333333647,
+   "kind": "double",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "hold": 0.5776601375739409
+  },
+  {
+   "x": 2869.7444444444445,
+   "y": 5959,
+   "dir": -1,
+   "t0": 23.900000000000347,
+   "t1": 24.433333333333707,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 11,
+    "x": 2722.366666666665,
+    "y": 5913
+   },
+   "hold": 0.170024426523062
+  },
+  {
+   "x": 2621.3333333333303,
+   "y": 5913,
+   "dir": -1,
+   "t0": 24.80000000000039,
+   "t1": 25.0000000000004,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 12,
+    "x": 2566.066666666663,
+    "y": 5866
+   },
+   "hold": 0.06666666666666667
+  },
+  {
+   "x": 2119.0333333333315,
+   "y": 5509,
+   "dir": -1,
+   "t0": 31.13333333333404,
+   "t1": 31.700000000000735,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 15,
+    "x": 1962.7333333333306,
+    "y": 5465
+   },
+   "hold": 0.2279425879593169
+  },
+  {
+   "x": 2444.52222222222,
+   "y": 4604,
+   "dir": -1,
+   "t0": 77.23333333333152,
+   "t1": 77.79999999999815,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 22,
+    "x": 2288.222222222218,
+    "y": 4569
+   },
+   "hold": 0.2345269980957964
+  },
+  {
+   "x": 2085.577777777771,
+   "y": 4569,
+   "dir": -1,
+   "t0": 78.53333333333144,
+   "t1": 79.13333333333141,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 23,
+    "x": 1919.7777777777708,
+    "y": 4545
+   },
+   "hold": 0.20834165918571393
+  },
+  {
+   "x": 1560.7333333333338,
+   "y": 6886,
+   "dir": 1,
+   "t0": 84.46666666666444,
+   "t1": 84.99999999999774,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 5,
+    "x": 1705.933333333334,
+    "y": 6838
+   },
+   "hold": 0.21524615071551706
+  },
+  {
+   "x": 2705.5,
+   "y": 6147,
+   "dir": 1,
+   "t0": 93.83333333333057,
+   "t1": 94.56666666666386,
+   "kind": "single",
+   "ok": false,
+   "hurt": false,
+   "running": false,
+   "hold": 0.2621241017850977
+  },
+  {
+   "x": 2752.62222222222,
+   "y": 6147,
+   "dir": 1,
+   "t0": 97.76666666666368,
+   "t1": 98.13333333333033,
+   "kind": "double",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "hold": 0.4762933927251719
+  },
+  {
+   "x": 2879.2444444444445,
+   "y": 5959,
+   "dir": -1,
+   "t0": 98.83333333333029,
+   "t1": 99.36666666666359,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 11,
+    "x": 2732.4444444444425,
+    "y": 5913
+   },
+   "hold": 0.18833581357380486
+  },
+  {
+   "x": 2631.411111111108,
+   "y": 5913,
+   "dir": -1,
+   "t0": 99.73333333333024,
+   "t1": 100.26666666666354,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 12,
+    "x": 2484.0333333333283,
+    "y": 5866
+   },
+   "hold": 0.21867426952737523
+  },
+  {
+   "x": 1120.2555555555557,
+   "y": 6934,
+   "dir": 1,
+   "t0": 111.76666666666289,
+   "t1": 112.29999999999619,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 4,
+    "x": 1267.6333333333334,
+    "y": 6886
+   },
+   "hold": 0.24766524526633765
+  },
+  {
+   "x": 1516.6222222222223,
+   "y": 6886,
+   "dir": 1,
+   "t0": 113.19999999999614,
+   "t1": 113.69999999999611,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 5,
+    "x": 1654.5,
+    "y": 6838
+   },
+   "hold": 0.1966041823386848
+  },
+  {
+   "x": 514.6503267973857,
+   "y": 3937,
+   "dir": -1,
+   "t0": 138.3666666666614,
+   "t1": 138.83333333332803,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 28,
+    "x": 385.11699346405237,
+    "y": 3896
+   },
+   "hold": 0.15584580439900114
+  },
+  {
+   "x": 409.9,
+   "y": 3596,
+   "dir": 1,
+   "t0": 141.73333333332786,
+   "t1": 142.23333333332783,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 30,
+    "x": 547.7777777777777,
+    "y": 3545
+   },
+   "hold": 0.18798453891949288
+  },
+  {
+   "x": 778.3444444444443,
+   "y": 3545,
+   "dir": 1,
+   "t0": 143.06666666666112,
+   "t1": 143.63333333332776,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 31,
+    "x": 934.6444444444443,
+    "y": 3505
+   },
+   "hold": 0.20443023471794158
+  },
+  {
+   "x": 1183.6333333333332,
+   "y": 3505,
+   "dir": 1,
+   "t0": 144.5333333333277,
+   "t1": 145.09999999999434,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 32,
+    "x": 1339.9333333333332,
+    "y": 3472
+   },
+   "hold": 0.23779265860555282
+  },
+  {
+   "x": 1793.2444444444443,
+   "y": 3189,
+   "dir": 1,
+   "t0": 147.86666666666085,
+   "t1": 148.36666666666082,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 34,
+    "x": 1931.6999999999998,
+    "y": 3135
+   },
+   "hold": 0.18284819712080483
+  },
+  {
+   "x": 2161.6888888888902,
+   "y": 3135,
+   "dir": 1,
+   "t0": 149.1999999999941,
+   "t1": 149.69999999999408,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 35,
+    "x": 2299.56666666667,
+    "y": 3076
+   },
+   "hold": 0.17703182696807726
+  },
+  {
+   "x": 1673.688888888889,
+   "y": 3189,
+   "dir": 1,
+   "t0": 175.8999999999926,
+   "t1": 176.3333333333259,
+   "kind": "single",
+   "ok": false,
+   "hurt": false,
+   "running": true,
+   "hold": 0.06666666666666667
+  },
+  {
+   "x": 1857.9111111111113,
+   "y": 3197.3333333333335,
+   "dir": 1,
+   "t0": 176.56666666665922,
+   "t1": 177.03333333332586,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 34,
+    "x": 1986.8666666666668,
+    "y": 3135
+   },
+   "hold": 0.1745688907996511
+  },
+  {
+   "x": 2152.666666666668,
+   "y": 3135,
+   "dir": 1,
+   "t0": 177.63333333332582,
+   "t1": 178.1333333333258,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 35,
+    "x": 2291.122222222225,
+    "y": 3076
+   },
+   "hold": 0.18600923856937196
+  },
+  {
+   "x": 1679.677777777778,
+   "y": 3189,
+   "dir": 1,
+   "t0": 191.09999999999172,
+   "t1": 192.06666666665834,
+   "kind": "double",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 34,
+    "x": 1944.6888888888889,
+    "y": 3135
+   },
+   "hold": 0.5841191727970885
+  },
+  {
+   "x": 2167.5555555555566,
+   "y": 3135,
+   "dir": 1,
+   "t0": 192.93333333332495,
+   "t1": 193.2999999999916,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 35,
+    "x": 2269.166666666669,
+    "y": 3076
+   },
+   "hold": 0.12062721012757606
+  },
+  {
+   "x": 1664.7666666666669,
+   "y": 3189,
+   "dir": 1,
+   "t0": 201.19999999999115,
+   "t1": 202.06666666665777,
+   "kind": "double",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 34,
+    "x": 1905.4111111111113,
+    "y": 3135
+   },
+   "hold": 0.41255681605126693
+  },
+  {
+   "x": 1275.8666666666666,
+   "y": 2425,
+   "dir": -1,
+   "t0": 202.93333333332438,
+   "t1": 203.43333333332436,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 40,
+    "x": 1137.9888888888888,
+    "y": 2402
+   },
+   "hold": 0.15669307779359143
+  },
+  {
+   "x": 1188.6444444444444,
+   "y": 3505,
+   "dir": 1,
+   "t0": 208.26666666665741,
+   "t1": 208.7666666666574,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 32,
+    "x": 1327.1,
+    "y": 3472
+   },
+   "hold": 0.15660664710912292
+  },
+  {
+   "x": 1811.6666666666665,
+   "y": 3189,
+   "dir": 1,
+   "t0": 211.66666666665722,
+   "t1": 212.09999999999053,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 34,
+    "x": 1930.5444444444443,
+    "y": 3135
+   },
+   "hold": 0.15261783392286804
+  },
+  {
+   "x": 2151.611111111112,
+   "y": 3135,
+   "dir": 1,
+   "t0": 212.89999999999048,
+   "t1": 213.3333333333238,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 35,
+    "x": 2271.644444444447,
+    "y": 3076
+   },
+   "hold": 0.15533633101385863
+  },
+  {
+   "x": 1465.611111111111,
+   "y": 2425,
+   "dir": -1,
+   "t0": 232.5333333333227,
+   "t1": 233.13333333332267,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 39,
+    "x": 1304.7888888888888,
+    "y": 2425
+   },
+   "hold": 0.18034892369829225
+  },
+  {
+   "x": 1240.0222222222221,
+   "y": 2427.777777777778,
+   "dir": -1,
+   "t0": 233.366666666656,
+   "t1": 233.93333333332262,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 40,
+    "x": 1083.7222222222222,
+    "y": 2402
+   },
+   "hold": 0.18136016883688483
+  },
+  {
+   "x": 1171.688888888889,
+   "y": 3505,
+   "dir": 1,
+   "t0": 238.29999999998904,
+   "t1": 238.73333333332235,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 32,
+    "x": 1291.7222222222224,
+    "y": 3472
+   },
+   "hold": 0.13041187492023787
+  },
+  {
+   "x": 1793.2444444444443,
+   "y": 3189,
+   "dir": 1,
+   "t0": 241.66666666665552,
+   "t1": 242.1666666666555,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 34,
+    "x": 1931.6999999999998,
+    "y": 3135
+   },
+   "hold": 0.1930779340533876
+  },
+  {
+   "x": 2161.6888888888902,
+   "y": 3135,
+   "dir": 1,
+   "t0": 242.99999999998877,
+   "t1": 243.43333333332208,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 35,
+    "x": 2281.722222222225,
+    "y": 3076
+   },
+   "hold": 0.15592467606440627
+  },
+  {
+   "x": 1280.5,
+   "y": 2425,
+   "dir": -1,
+   "t0": 262.76666666666006,
+   "t1": 263.5666666666607,
+   "kind": "single",
+   "ok": false,
+   "hurt": false,
+   "running": false,
+   "hold": 0.24996631726667762
+  },
+  {
+   "x": 1141.177777777778,
+   "y": 2590,
+   "dir": -1,
+   "t0": 264.09999999999445,
+   "t1": 265.7333333333291,
+   "kind": "single",
+   "ok": false,
+   "hurt": false,
+   "running": false,
+   "hold": 0.22392382511104197
+  },
+  {
+   "x": 614.2888888888889,
+   "y": 2084,
+   "dir": -1,
+   "t0": 266.3666666666629,
+   "t1": 266.8666666666633,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 43,
+    "x": 475.83333333333337,
+    "y": 2031
+   },
+   "hold": 0.19196783354450062
+  },
+  {
+   "x": 536.7444444444443,
+   "y": 1753,
+   "dir": 1,
+   "t0": 269.799999999999,
+   "t1": 270.33333333333275,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 45,
+    "x": 684.122222222222,
+    "y": 1709
+   },
+   "hold": 0.1833871488919005
+  },
+  {
+   "x": 886.7666666666664,
+   "y": 1709,
+   "dir": 1,
+   "t0": 271.06666666666666,
+   "t1": 271.66666666666714,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 46,
+    "x": 1052.5666666666664,
+    "y": 1687
+   },
+   "hold": 0.24691131920787074
+  },
+  {
+   "x": 1319.3999999999996,
+   "y": 1687,
+   "dir": 1,
+   "t0": 272.6333333333346,
+   "t1": 273.16666666666833,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 47,
+    "x": 1466.7777777777774,
+    "y": 1634
+   },
+   "hold": 0.2001610973351941
+  },
+  {
+   "x": 2604.7444444444445,
+   "y": 1046,
+   "dir": -1,
+   "t0": 285.0666666666778,
+   "t1": 285.2333333333446,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "hold": 0.06666666666666667
+  },
+  {
+   "x": 1319.9555555555557,
+   "y": 1687,
+   "dir": 1,
+   "t0": 298.06666666668815,
+   "t1": 298.5333333333552,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 47,
+    "x": 1448.9111111111113,
+    "y": 1634
+   },
+   "hold": 0.16168174909597055
+  },
+  {
+   "x": 879.2222222222224,
+   "y": 744,
+   "dir": -1,
+   "t0": 331.43333333338137,
+   "t1": 331.9666666667151,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 54,
+    "x": 731.8444444444447,
+    "y": 700
+   },
+   "hold": 0.19451053633565188
+  },
+  {
+   "x": 1000.2444444444443,
+   "y": 400,
+   "dir": 1,
+   "t0": 334.4666666667171,
+   "t1": 335.4666666667179,
+   "kind": "single",
+   "ok": false,
+   "hurt": false,
+   "running": true,
+   "hold": 0.19831565340991822
+  },
+  {
+   "x": 1262.866666666666,
+   "y": 764,
+   "dir": -1,
+   "t0": 336.00000000005167,
+   "t1": 336.5666666667188,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 53,
+    "x": 1105.9888888888884,
+    "y": 744
+   },
+   "hold": 0.18145726664546127
+  },
+  {
+   "x": 894.4222222222218,
+   "y": 744,
+   "dir": -1,
+   "t0": 337.33333333338607,
+   "t1": 337.7333333333864,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 54,
+    "x": 783.8888888888885,
+    "y": 700
+   },
+   "hold": 0.13275751561188953
+  },
+  {
+   "x": 1009.7444444444443,
+   "y": 400,
+   "dir": 1,
+   "t0": 340.200000000055,
+   "t1": 341.5333333333894,
+   "kind": "double",
+   "ok": false,
+   "hurt": false,
+   "running": true,
+   "hold": 0.4667944505730168
+  },
+  {
+   "x": 1331.0999999999995,
+   "y": 764,
+   "dir": -1,
+   "t0": 341.9333333333897,
+   "t1": 342.50000000005684,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 53,
+    "x": 1174.2222222222217,
+    "y": 744
+   },
+   "hold": 0.1854191486319938
+  },
+  {
+   "x": 883.5555555555552,
+   "y": 744,
+   "dir": -1,
+   "t0": 343.9333333333913,
+   "t1": 344.50000000005844,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 54,
+    "x": 727.833333333333,
+    "y": 700
+   },
+   "hold": 0.21332701296152345
+  },
+  {
+   "x": 1000.2444444444443,
+   "y": 400,
+   "dir": 1,
+   "t0": 346.9333333333937,
+   "t1": 348.1000000000613,
+   "kind": "double",
+   "ok": false,
+   "hurt": false,
+   "running": true,
+   "hold": 0.3537988541910211
+  },
+  {
+   "x": 1236.9777777777774,
+   "y": 764,
+   "dir": -1,
+   "t0": 349.6666666667292,
+   "t1": 350.23333333339633,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 53,
+    "x": 1081.2555555555552,
+    "y": 744
+   },
+   "hold": 0.19905866610743136
+  },
+  {
+   "x": 897.0333333333331,
+   "y": 744,
+   "dir": -1,
+   "t0": 350.9000000000635,
+   "t1": 351.46666666673065,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 54,
+    "x": 740.7333333333331,
+    "y": 700
+   },
+   "hold": 0.2220049676375762
+  },
+  {
+   "x": 991.3222222222221,
+   "y": 400,
+   "dir": 1,
+   "t0": 354.000000000066,
+   "t1": 355.30000000006703,
+   "kind": "double",
+   "ok": false,
+   "hurt": false,
+   "running": true,
+   "hold": 0.4772738881701608
+  },
+  {
+   "x": 1312.0999999999995,
+   "y": 764,
+   "dir": -1,
+   "t0": 355.666666666734,
+   "t1": 356.26666666673447,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 53,
+    "x": 1146.2999999999995,
+    "y": 744
+   },
+   "hold": 0.2160967547985567
+  }
+ ],
+ "noRoute": false,
+ "turns": {
+  "n": 189,
+  "lag": 21.6
+ },
+ "backtrack": {
+  "route": 3.19,
+  "bot": null
+ },
+ "frames": 10801
+}

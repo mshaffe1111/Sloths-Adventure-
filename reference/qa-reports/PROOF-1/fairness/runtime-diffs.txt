@@ -1,0 +1,275 @@
+=== src/game/inputEngine.ts
+-export const pressKeep = (): number => (isEasy() ? FORGIVE.easy.buffer : FORGIVE.normal.buffer) + 1 / 30;
++export const pressKeep = (easy: boolean): number => (easy ? FORGIVE.easy.buffer : FORGIVE.normal.buffer) + 1 / 30;
++  public easy: boolean = isEasy();
+-        this.jumpBufferTimer = pressKeep();
++        this.jumpBufferTimer = pressKeep(this.easy);
+-    this.touchHold = this.touchHoldMin + pressKeep();
++    this.touchHold = this.touchHoldMin + pressKeep(this.easy);
+-    this.jumpBufferTimer = pressKeep();
++    this.jumpBufferTimer = pressKeep(this.easy);
+-            this.jumpBufferTimer = pressKeep();
++            this.jumpBufferTimer = pressKeep(this.easy);
++  public dropPresses() {
++    this.state.jumpPressed = false;
++    this.state.punchPressed = false;
++    this.state.kickPressed = false;
++    this.state.megaPunchPressed = false;
++    this.jumpBufferTimer = 0;
++    this.punchBufferTimer = 0;
++    this.kickBufferTimer = 0;
++    this.megaBufferTimer = 0;
++  }
++
+=== src/game/touchGestures.ts
++  restate() {
++    this.flickClimbUntil = NaN;
++    this.climbDir = 0;
++    this.heldDir = 'none';
++    this.duckOn = false;
++  }
++
+=== src/game/padControl.ts
++  restate() {
++    this.move = 'none';
++    this.duck = false;
++    this.climb = 0;
++  }
++
+=== src/game/chase.ts
++  if (flagX < plan.start) {
++    Object.assign(s, newChase(plan));
++    return;
++  }
+-  s.active = flagX >= plan.start;
++  s.active = true;
+=== src/game/eaglet.ts
++import { cycle3 } from './clock.ts';
++
+-  const c = (((t + n.offset) % n.every) + n.every) % n.every;
+-  if (c < sleep) return { phase: 'sleep', u: c / sleep };
+-  if (c < sleep + NEST.stir) return { phase: 'stir', u: (c - sleep) / NEST.stir };
+-  return { phase: 'look', u: (c - sleep - NEST.stir) / NEST.look };
++  const k = cycle3(t, n.offset, n.every, sleep, NEST.stir);
++  return k.i === 0 ? { phase: 'sleep', u: k.s / sleep } : k.i === 1 ? { phase: 'stir', u: k.s / NEST.stir } : { phase: 'look', u: k.s / NEST.look };
+=== src/game/rockfall.ts
++import { cycle3 } from './clock.ts';
++
+-  const c = (((t + r.offset) % r.every) + r.every) % r.every;
+-  if (c < warnAt) return { phase: 'idle', u: c / Math.max(0.01, warnAt), y: r.top };
+-  if (c < warnAt + r.warn) return { phase: 'warn', u: (c - warnAt) / r.warn, y: r.top };
+-  const f = c - warnAt - r.warn;
++  const k = cycle3(t, r.offset, r.every, warnAt, r.warn);
++  if (k.i === 0) return { phase: 'idle', u: k.s / Math.max(0.01, warnAt), y: r.top };
++  if (k.i === 1) return { phase: 'warn', u: k.s / r.warn, y: r.top };
++  const f = k.s;
+=== src/game/regrow.ts
+=== src/game/waterfalls.ts
++import { cycle3 } from './clock.ts';
++
+-  const T = s.pour + s.ease + s.quiet;
+-  const c = (((t + s.offset) % T) + T) % T;
+-  if (c < s.pour) return Math.min(1, c / 0.4); // (it roars back in over the first 0.4 s)
+-  if (c < s.pour + s.ease) return 1 - (c - s.pour) / s.ease;
+-  return 0;
++  const k = cycle3(t, s.offset, s.pour + s.ease + s.quiet, s.pour, s.ease);
++  if (k.i === 0) return Math.min(1, k.s / 0.4); // (it roars back in over the first 0.4 s)
++  return k.i === 1 ? 1 - k.s / s.ease : 0;
+=== src/game/river.ts
++import { cyclePos } from './clock.ts';
++
+-  const u = (((t + d.offset) % T) + T) % T;
++  const u = cyclePos(t, d.offset, T);
+-  return ((((t + d.offset) % T) + T) % T) / T;
++  return cyclePos(t, d.offset, T) / T;
+=== src/game/thornVine.ts
++import { cycle3 } from './clock.ts';
++
+-  const T = vinePeriod(v);
+-  const c = (((t + v.offset) % T) + T) % T;
+-  if (c < v.sleep) return { phase: 'sleep', u: c / v.sleep };
+-  if (c < v.sleep + v.stir) return { phase: 'stir', u: (c - v.sleep) / v.stir };
+-  return { phase: 'look', u: (c - v.sleep - v.stir) / v.look };
++  const k = cycle3(t, v.offset, vinePeriod(v), v.sleep, v.stir);
++  return k.i === 0 ? { phase: 'sleep', u: k.s / v.sleep } : k.i === 1 ? { phase: 'stir', u: k.s / v.stir } : { phase: 'look', u: k.s / v.look };
+=== src/game/zones.ts
++import { cycle3 } from './clock.ts';
++
+-  const s = (((t + z.offset) % z.period) + z.period) % z.period;
+-  if (s < idle) return { phase: 'idle', u: s / idle, strength: 0, untilActive: z.period - z.active - s };
+-  if (s < idle + z.warn) return { phase: 'warn', u: (s - idle) / z.warn, strength: 0, untilActive: idle + z.warn - s };
+-  const a = s - idle - z.warn;
++  const k = cycle3(t, z.offset, z.period, idle, z.warn);
++  if (k.i === 0) return { phase: 'idle', u: k.c / idle, strength: 0, untilActive: z.period - z.active - k.c };
++  if (k.i === 1) return { phase: 'warn', u: k.s / z.warn, strength: 0, untilActive: idle + z.warn - k.c };
++  const a = k.s;
+=== src/game/lift.ts
++import { cyclePos } from './clock.ts';
++
+-  const u = (((t + l.phase) % T) + T) % T;
++  const u = cyclePos(t, l.phase, T);
+=== src/game/bossHits.ts
+-  if (hits && hits > 0) return Math.max(6, Math.min(40, Math.round(hits)));
++  if (hits && hits > 0) return Math.max(1, Math.min(40, Math.round(hits)));
+=== src/game/bossPlay.ts
++  dropPresses() {
++    this.state.jumpPressed = false;
++    this.state.punchPressed = false;
++    this.jumpBuffer = 0;
++    this.punchBuffer = 0;
++  }
+=== src/game/bossCues.ts
+-export function drawBossOverDark(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, world: number, floor: number, time: number, dark: number, arena?: { left: number; right: number }) {
++export function drawBossOverDark(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, world: number, floor: number, time: number, dark: number, arena?: { left: number; right: number }, openMul = 1) {
+-  drawBossFighter(ctx, { ...b, ai: { ...br, alpha: br.alpha * k } }, def, time, world, floor);
++  drawBossFighter(ctx, { ...b, ai: { ...br, alpha: br.alpha * k } }, def, time, world, floor, openMul);
+=== src/game/bossBot.ts
+-    if (e.defeated || e.id < 9000 || (e.koTimer ?? 0) > 0) continue;
++    if (e.defeated || !e.minion || (e.koTimer ?? 0) > 0) continue;
+=== src/game/w4Play.ts
+=== src/game/w5Kit.ts
++import { cycle3 } from './clock.ts';
+-  const cyc = p.idle + p.warn + p.puff;
+-  const s = (((t + p.offset) % cyc) + cyc) % cyc;
+-  if (s < p.idle) return { phase: 'idle', u: s / p.idle };
+-  if (s < p.idle + p.warn) return { phase: 'warn', u: (s - p.idle) / p.warn };
+-  return { phase: 'puff', u: (s - p.idle - p.warn) / p.puff };
++  const k = cycle3(t, p.offset, p.idle + p.warn + p.puff, p.idle, p.warn);
++  return k.i === 0 ? { phase: 'idle', u: k.s / p.idle } : k.i === 1 ? { phase: 'warn', u: k.s / p.warn } : { phase: 'puff', u: k.s / p.puff };
+-  const s = (((t + o.offset) % o.period) + o.period) % o.period;
+-  if (s < o.open) return { phase: 'open', open: 1, solid: true, picks: true };
+-  if (s < o.open + tell) {
+-    const u = (s - o.open) / tell;
+-    return { phase: 'closing', open: 1 - 0.55 * u, solid: true, picks: true };
+-  }
++  const k = cycle3(t, o.offset, o.period, o.open, tell);
++  if (k.i === 0) return { phase: 'open', open: 1, solid: true, picks: true };
++  if (k.i === 1) return { phase: 'closing', open: 1 - 0.55 * (k.s / tell), solid: true, picks: true };
++  const s = k.c;
+=== src/game/stuckHelper.ts
+-  private told = false;
++  private isTold = false;
+-    if (this.told) return false;
++    if (this.isTold) return false;
+-          this.told = true;
++          this.fails = 0;
++
++  told(): void {
++    this.isTold = true;
++  }
+=== src/game/helpLadder.ts
++import { MODES, travelSpan } from './stageModes.ts';
++import type { Mark, StageMode, TravelSpan } from './stageKit.types.ts';
+-export function helpGuideLine(text: string, help: 'teach' | 'reminders' | 'quiet', ms?: number): { key: string; text: string; kind: 'struggle'; who: 'Dot'; source: 'struggle'; soon: true; anyway: true; ms?: number } | null | unde
++export function helpGuideLine(text: string, help: 'teach' | 'reminders' | 'quiet', ms?: number): { key: string; text: string; kind: 'struggle'; who: 'Dot'; source: 'struggle'; soon: true; anyway: true; said: string; ms?: number }
+-  return { key: `engine:${text}`, text, kind: 'struggle', who: 'Dot', source: 'struggle', soon: true, anyway: true, ms };
++  return { key: `engine:${text}`, text, kind: 'struggle', who: 'Dot', source: 'struggle', soon: true, anyway: true, said: text, ms };
++  again: 'offer' | 'reask' | null;
+-  private beyond = Infinity;
++  private beyond: TravelSpan | null = null;
++    private readonly mode: StageMode = MODES.right,
++  private nearer(b: TravelSpan | null, sp: TravelSpan): TravelSpan {
++    return b && this.mode.past({ x: sp.to, y: sp.to }, b) ? b : sp;
++  }
++
+-    if (!c) this.counts.set(piece.k, (c = { n: 0, fired: new Set(), noAt: -1, noes: 0, asking: false }));
++    if (!c) this.counts.set(piece.k, (c = { n: 0, fired: new Set(), noAt: -1, noes: 0, asking: false, again: null }));
+-    this.beyond = Math.min(this.beyond, piece.x1);
++    this.beyond = this.nearer(this.beyond, travelSpan(this.mode, piece.x0, piece.x1));
+-      if (c.n === this.r.offer && !c.fired.has('step') && this.canGrow(piece)) fire('offer');
++      if (c.again) {
++        const r = c.again;
++        c.again = null;
++        c.fired.delete(r);
++        fire(r);
++      } else if (c.n === this.r.offer && !c.fired.has('step') && this.canGrow(piece)) fire('offer');
+-  stood(x: number): void {
+-    if (x < this.beyond) return;
+-    let least = Infinity;
++  unshown(k: string, rung: 'offer' | 'reask' = 'offer'): void {
++    const c = this.counts.get(k);
++    if (!c || !c.asking) return;
++    c.asking = false;
++    c.again = rung;
++  }
++
++  stood(at: Mark): void {
++    if (!this.beyond || !this.mode.past(at, this.beyond)) return;
++    let least: TravelSpan | null = null;
+-      if (x >= p.x1) {
++      const sp = travelSpan(this.mode, p.x0, p.x1);
++      if (this.mode.past(at, sp)) {
+-      } else if (c.n > 0) least = Math.min(least, p.x1);
++      } else if (c.n > 0) least = this.nearer(least, sp);
+-    this.beyond = Infinity;
++    this.beyond = null;
+=== src/game/petalPass.ts
+-import { judgedOnArcs, linkArcs } from './gen2/reach.ts';
++import { builtOnArcs, linkArcs } from './gen2/reach.ts';
+-  ...(judgedOnArcs(stage.config.id) ? { arcs: linkArcs((stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty ?? 'normal') } : {}),
++  ...(builtOnArcs(stage) ? { arcs: linkArcs((stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty ?? 'normal', stage.config.id) } : {}),
+=== src/game/touchCoach.ts
++import { markLessonSeen } from './lessons.ts';
++export function coachTaught() {
++  markCoachDone();
++  markLessonSeen('gap');
++}
++
+=== src/game/touchRig.ts
+-    inp.onCleared = () => this.g.cancelAll();
++    inp.onCleared = () => this.g.restate();
+=== src/game/dotFlightStage.ts
++import { cyclePos } from './clock.ts';
+-  const c = (((t + g.phase) % g.period) + g.period) % g.period;
++  const c = cyclePos(t, g.phase, g.period);
+=== src/game/haptics.ts
++  thunder: [140],
+=== src/game/lessons.ts
+=== src/game/extraStages.ts
++import { readStageResult } from './stageBest.ts';
+-      const saved = localStorage.getItem(`sloth_lvl_${c.id}`);
+-      const parsed = saved ? JSON.parse(saved) : null;
++      const parsed = readStageResult(localStorage.getItem(`sloth_lvl_${c.id}`));
+-        c.completed = !!parsed.completed;
+-        c.stars = parsed.stars || 0;
+-        c.highScore = parsed.highScore || 0;
+-        c.bestTime = parsed.bestTime || 0;
++        Object.assign(c, parsed);
+=== src/game/puzzlePlay.ts
++  help?(key: string, text: TipLine, seconds: number): void;
++  tried: boolean;
++  private readonly logHome: Map<Platform, { x: number; y: number }>;
++    this.logHome = new Map(platforms.filter((p) => p.push).map((p) => [p, { x: p.x, y: p.y }]));
+-          knocked: new Set(), flipped: new Set(), wait: 0, basket: -1, spin: 0, home, fromSource: !!src, thrown: false, trader: ti,
++          knocked: new Set(), flipped: new Set(), wait: 0, basket: -1, spin: 0, home, fromSource: !!src, thrown: false, tried: false, trader: ti,
+-      room.resets.forEach((r) => consider(r.x, r.y, () => this.resetRoom(room, h, platforms)));
++      room.resets.forEach((r) => consider(r.x, r.y, () => this.resetRoom(room, h)));
+-  private told(room: RoomRun, key: keyof NonNullable<RoomSpec['tips']>, h: KitHost, seconds: number, again = false) {
++  shutGate(q: Platform): boolean {
++    for (const r of this.rooms) for (const g of r.gates) if (!g.open && (g.door === q || g.wall === q)) return true;
++    return false;
++  }
++
++  private told(room: RoomRun, key: keyof NonNullable<RoomSpec['tips']>, h: KitHost, seconds: number, again = false, help = false) {
+-    h.tip(`kit:${room.spec.id}:${key}${again ? `:${room.cups}` : ''}`, line, seconds);
++    const k = `kit:${room.spec.id}:${key}${again ? `:${room.cups}` : ''}`;
++    if (help && h.help) h.help(k, line, seconds);
++    else h.tip(k, line, seconds);
++      g.tried = false;
++    it.tried = true;
++    it.tried = true;
+-  private resetRoom(room: RoomRun, h: KitHost, platforms: readonly Platform[]) {
+-    void platforms;
++  private resetRoom(room: RoomRun, h: KitHost) {
++    for (const [lg, at] of this.logHome) {
++      if (lg.broken || lg.push!.min > room.box.x1 || lg.push!.max < room.box.x0) continue;
++      lg.x = at.x;
++      lg.y = at.y;
++    }
++    it.tried = false;
+-              landedQuiet = true;
++              if (it.tried) landedQuiet = true;
++            it.tried = false;
++            it.tried = false;
+-        this.told(room, room.helped === 1 ? 'nudge' : 'move', h, 4);
++        this.told(room, room.helped === 1 ? 'nudge' : 'move', h, 4, false, true);

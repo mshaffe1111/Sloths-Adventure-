@@ -1,0 +1,13 @@
+main-done-side: 9 shots, 0 page errors, 0 console errors, 12 misses, 125s
+  MISS stage-1-10: page.screenshot: Target page, context or browser has been closed
+  MISS stage-2-4: locator.count: Target page, context or browser has been closed
+  MISS stage-3-5: locator.count: Target page, context or browser has been closed
+  MISS stage-4-1: locator.count: Target page, context or browser has been closed
+  MISS stage-5-6: locator.count: Target page, context or browser has been closed
+  MISS stage-5-M: locator.count: Target page, context or browser has been closed
+  MISS stage-6-2: locator.count: Target page, context or browser has been closed
+  MISS stage-7-1: locator.count: Target page, context or browser has been closed
+  MISS stage-8-3: locator.count: Target page, context or browser has been closed
+  MISS stage-9-4: locator.count: Target page, context or browser has been closed
+  MISS stage-10-5: locator.count: Target page, context or browser has been closed
+  MISS satchel: page.goto: Target page, context or browser has been closed

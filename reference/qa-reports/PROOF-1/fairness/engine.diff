@@ -1,0 +1,803 @@
+diff --git a/src/game/engine.ts b/src/game/engine.ts
+index bdb0bc173..34a3713f1 100644
+--- a/src/game/engine.ts
++++ b/src/game/engine.ts
+@@ -3 +3 @@ import { nativeApp } from './appShell.ts';
+-import { clearFlag, flagFor, saveFlag } from './flagResume.ts';
++import { clearFlag, flagFor, saveFlag, type HeldRun } from './flagResume.ts';
+@@ -21,0 +22 @@ import { StuckWatch, stuckLine } from './stuckHelper.ts';
++import { takeGuideShown } from './guideShown.ts';
+@@ -26,0 +28,2 @@ import { maxGap, softFallStage } from './gen2/pipeline.ts';
++import { MODES, type TravelMode } from './stageModes.ts';
++import type { Mark } from './stageKit.types.ts';
+@@ -29 +32 @@ import { pickCut } from './w1CutArt.ts';
+-import { difficulty, easeInShare, isEasy } from './difficulty.ts';
++import { easeInShare, isEasy } from './difficulty.ts';
+@@ -52 +55 @@ import { generateStage, GeneratedStage } from './stageGenerator.ts';
+-import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
++import { coachTaught, coachWanted, firstJumpSpot, TouchCoach, type CoachStep } from './touchCoach.ts';
+@@ -94,0 +98 @@ import { paintedBank, setW1PitWater } from './w1Pits.ts';
++import { stageClock, type StageClock } from './clock.ts';
+@@ -148,2 +151,0 @@ import {
+-  ascentProgress,
+-  SHRINE_STOP,
+@@ -258 +260,2 @@ export interface GameEngineCallbacks {
+-  /** the stage ended (won or lost): what happened, for the Trophy Room. Sent just before onVictory / onDefeat. */
++  /** the stage ended (won or lost): what happened, for the Trophy Room. Sent just before onVictory / onDefeat, and on stop() when the
++   * stage is left with the run under way (marked `left`). */
+@@ -270 +273 @@ export interface GameEngineCallbacks {
+-  /** Pokey picked up a note, book or keepsake (see finds.ts); the app shows it */
++  /** Pokey picked up a note, book or keepsake (see finds.ts): sent at the touch, the app keeps it */
+@@ -271,0 +275,2 @@ export interface GameEngineCallbacks {
++  /** a find picked up a moment ago can be shown now (he is safe to stop, or the stage is won): the app opens its reader */
++  onFindShow?: (findId: string) => void;
+@@ -275 +280 @@ export interface GameEngineCallbacks {
+-  /** a first-time lesson is due: the stage has paused itself, and the app shows the card (then calls lessonClosed) */
++  /** a first-time lesson is due: Dot says it as one of her lines, in play (DotGuide.tsx; the stage does not stop for it) */
+@@ -276,0 +282,2 @@ export interface GameEngineCallbacks {
++  /** 1-1's help offer holds the stage (true) or has let go of it (false): the app lets the phone sleep behind it */
++  onHelpOffer?: (up: boolean) => void;
+@@ -405,0 +413,5 @@ const CAM_RISE_STEP = 11;
++/** the loop's failed frames (audit A-12): the stage ends (onFatal) once FAIL_LIMIT of the last FAIL_WINDOW frames (2 s) have failed, a
++ *  third of them: an error every other or every third frame ends it within about 2 s; one in four frames or rarer never does */
++const FAIL_WINDOW = 60;
++const FAIL_LIMIT = 20;
++
+@@ -463,0 +476,3 @@ export class GameEngine {
++  /** the hazards a guardian's phase change laid for the rest of the fight (the flood, the storm, the lava), each with a copy of itself as
++   *  it was laid: a lost life keeps them, and they come in again from the fences, warned, as they did when the phase began */
++  private arenaHazards = new Map<BossHazard, BossHazard>();
+@@ -514,0 +530 @@ export class GameEngine {
++  /** when the last frame that ran (updated and drew) began: every frame's true gap is measured from it */
+@@ -517,3 +533 @@ export class GameEngine {
+-  /** the longest slice the simulation takes in one go (frames longer than this are cut into equal parts) */
+-  private readonly STEP = 1 / 60;
+-  /** seconds of real time not yet simulated */
++  /** real time (ms) not yet played, carried to the next frame: the game is stepped only in whole 1/30 s steps (loop) */
+@@ -526 +540,2 @@ export class GameEngine {
+-  private lastPausedRender = 0;
++  /** paused, the stage has been drawn once, still: the loop leaves the canvas alone until play resumes or it must be drawn again (A-06) */
++  private stillDrawn = false;
+@@ -536 +551,5 @@ export class GameEngine {
+-  private gameTime: number = 0;
++  /** the stage's one clock (clock.ts), stepped on the fixed step. `gameTime` is its time, read and written through it, so every timer
++   *  reads the one clock and a harness that places game time (realPlay.ts `t`, tools/perf/frozen.mjs) places the clock */
++  private clock: StageClock = stageClock([], false);
++  private get gameTime(): number { return this.clock.time(); }
++  private set gameTime(t: number) { this.clock.seek(t); }
+@@ -695,2 +714 @@ export class GameEngine {
+-  /** first-time lessons: one open at a time, and a breather after each */
+-  private lessonOpen = false;
++  /** first-time lessons: a breather after each */
+@@ -724,2 +742,9 @@ export class GameEngine {
+-  /** Easy's kinder drifting logs (river.ts DRIFT_CATCH, LV-5), read once as the stage starts */
+-  private readonly easyLogs: boolean = isEasy();
++  /** the stage is played on Easy: read once as it is built, so the pause menu's switch waits for the next stage ("It starts from the
++   * next stage", menuParts.tsx) and the report, the boss's tells, the assist and the drifting logs (LV-5) all follow the build */
++  private readonly easy: boolean = isEasy();
++  /** how much longer a guardian's openings last on this run's mode: the fight and the weak point's closing flicker read this one */
++  private get openMul(): number {
++    return this.easy && this.bossDef?.openCue ? EASY_OPEN_MUL : 1;
++  }
++  /** Dot's help was set to Quiet when the stage was built and at every return from the menu (Quiet Wings counts only such a run) */
++  private quietRun: boolean = dotHelp() === 'quiet';
+@@ -773,2 +798,15 @@ export class GameEngine {
+-  /** a climbing stage: the highest his feet have been (smallest y), so its progress bar only ever goes up */
+-  private bestClimbY = Infinity;
++  /** which way this stage travels (stageModes.ts, from config.travel): the exit wall, which flag is further on, the progress bar */
++  private mode: TravelMode = MODES.right;
++  /** the mode's inputs, set once a stage (travelStart): the side walls, the start, the exit (for the bar: the level's end when there is no shrine), the best place so far */
++  private walls = { minX: 20, maxX: 20 };
++  private startAt: Mark = { x: 0, y: 0 };
++  private exitAt: Mark = { x: 0, y: 0 };
++  private bestAt: Mark = { x: 0, y: 0 };
++  private travelStart() {
++    const st = this.currentStage;
++    this.mode = MODES[st.config.travel ?? 'right'];
++    this.startAt = { x: st.spawnX, y: st.spawnY };
++    this.bestAt = { ...this.startAt };
++    this.exitAt = { x: st.exitTotemX || st.config.levelWidth, y: st.exitTotemY };
++    this.walls = this.mode.bounds({ levelWidth: st.config.levelWidth, exit: { x: st.exitTotemX, y: st.exitTotemY }, spawn: this.startAt });
++  }
+@@ -819,0 +858,2 @@ export class GameEngine {
++    // (the input outlives each stage: its jump buffer follows this run's mode, not the menu's, inputEngine.ts pressKeep)
++    input.easy = this.easy;
+@@ -834,0 +875,2 @@ export class GameEngine {
++    // (and Dot's "shown" reports for the last stage's lines are not this one's, guideShown.ts)
++    takeGuideShown();
+@@ -837,2 +879,2 @@ export class GameEngine {
+-    setTimedSwing(isEasy());
+-    this.forgive = isEasy() ? FORGIVE.easy : FORGIVE.normal;
++    setTimedSwing(this.easy);
++    this.forgive = this.easy ? FORGIVE.easy : FORGIVE.normal;
+@@ -840 +882 @@ export class GameEngine {
+-    this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config, 'easy'))) : withGoals(generateStage(config, 'normal'));
++    this.currentStage = this.easy ? easyStage(withGoals(generateStage(config, 'easy'))) : withGoals(generateStage(config, 'normal'));
+@@ -844 +886 @@ export class GameEngine {
+-    this.softOn = softFallStage(this.currentStage) || (isEasy() && !isGen2Stage(config) && config.objectiveType !== 'boss_lair' && !this.currentStage.arena);
++    this.softOn = softFallStage(this.currentStage) || (this.easy && !isGen2Stage(config) && config.objectiveType !== 'boss_lair' && !this.currentStage.arena);
+@@ -849 +891 @@ export class GameEngine {
+-    this.help = config.id === '1-1' && softFallStage(this.currentStage) && this.currentStage.meta?.pieces?.length ? new HelpLadder(isEasy() ? 'easy' : 'normal', this.currentStage.meta.pieces, undefined, (pc) => this.canGrowAt(pc)) : null;
++    this.help = config.id === '1-1' && softFallStage(this.currentStage) && this.currentStage.meta?.pieces?.length ? new HelpLadder(this.easy ? 'easy' : 'normal', this.currentStage.meta.pieces, undefined, (pc) => this.canGrowAt(pc), MODES[config.travel ?? 'right']) : null;
+@@ -859,0 +902 @@ export class GameEngine {
++    this.arenaHazards.clear();
+@@ -864 +907 @@ export class GameEngine {
+-    if (this.boss && this.bossDef?.hits && isEasy()) {
++    if (this.boss && this.bossDef?.hits && this.easy) {
+@@ -878 +921 @@ export class GameEngine {
+-    if (g2seed !== undefined) recorder.event('gen2', `${this.currentStage.config.id} seed ${g2seed} ${isEasy() ? 'easy' : 'normal'}`);
++    if (g2seed !== undefined) recorder.event('gen2', `${this.currentStage.config.id} seed ${g2seed} ${this.easy ? 'easy' : 'normal'}`);
+@@ -889 +932 @@ export class GameEngine {
+-    this.lanternRun = this.proto?.lantern ? new LanternRun(this.proto.lantern, isEasy()) : null;
++    this.lanternRun = this.proto?.lantern ? new LanternRun(this.proto.lantern, this.easy) : null;
+@@ -896 +939 @@ export class GameEngine {
+-    this.tideSet = isEasy() ? TIDE.easy : TIDE.normal;
++    this.tideSet = this.easy ? TIDE.easy : TIDE.normal;
+@@ -962 +1005 @@ export class GameEngine {
+-    this.bestDropY = -Infinity;
++    this.travelStart();
+@@ -1022 +1065,5 @@ export class GameEngine {
+-  private onContextRestored = () => recorder.glitch('contextrestored', `x${Math.round(this.player?.x ?? 0)}`);
++  private onContextRestored = () => {
++    // (the restored canvas is blank: a paused stage is drawn once more)
++    this.stillDrawn = false;
++    recorder.glitch('contextrestored', `x${Math.round(this.player?.x ?? 0)}`);
++  };
+@@ -1066,0 +1114,2 @@ export class GameEngine {
++    // (a new size clears the canvas: a paused stage is drawn once more)
++    this.stillDrawn = false;
+@@ -1153,0 +1203 @@ export class GameEngine {
++    this.acc = 0;
+@@ -1162,2 +1212,3 @@ export class GameEngine {
+-      this.coach = new TouchCoach(controlStyle(), (st) => this.callbacks.onCoach?.(st), markCoachDone);
+-      markCoachDone(); // once per device: leaving halfway does not bring it back
++      // (taught once its jump line has been shown, the DOT-1 rule: dotSay.ts keep; or here, once he has made the jump. Not at the start:
++      // a first 1-1 left in its first seconds was never coached, audit C-07)
++      this.coach = new TouchCoach(controlStyle(), (st) => this.callbacks.onCoach?.(st), coachTaught);
+@@ -1165,2 +1216 @@ export class GameEngine {
+-      // the coach is already teaching the jump over the first gap, so the gap card would only say it twice
+-      markLessonSeen('gap');
++      // the coach is already teaching the jump over the first gap, so the gap card would only say it twice: not this run
+@@ -1167,0 +1218 @@ export class GameEngine {
++      this.lessonSeen.add('gap');
+@@ -1169,2 +1220,3 @@ export class GameEngine {
+-    sound.setTempo(1); // a boss fight that was enraged must not restart at the enraged speed
+-    sound.playLevelStart();
++    // (started under the pause menu, the stage having loaded after a pause: the start sound waits for the Resume)
++    if (this.isPaused) this.startSoundDue = true;
++    else sound.playLevelStart();
+@@ -1172,0 +1225 @@ export class GameEngine {
++  private startSoundDue = false;
+@@ -1187,2 +1240,5 @@ export class GameEngine {
+-    // the app stops the stage to show it: that waits until he is standing or holding on, like a lesson card (lessonTick)
+-    if (c.findId) this.findsWaiting.push(c.findId);
++    if (!c.findId) return;
++    // the app keeps it now, however the run then ends (shown as found is found); it stops the stage to show it only once he is
++    // standing or holding on, like a lesson card (lessonTick -> onFindShow)
++    this.callbacks.onFind?.(c.findId);
++    this.findsWaiting.push(c.findId);
+@@ -1209,0 +1266,2 @@ export class GameEngine {
++    // (a shake under way stops here: it is drawn from the wall clock and only dies away in play, so it shook the still behind the menu)
++    this.camera.trauma = 0;
+@@ -1212,0 +1271,6 @@ export class GameEngine {
++  /** the presses latched while the world was held are dropped as play is handed back (the ghost press, audit A's input slice) */
++  private dropPresses() {
++    this.jumpBufferTimer = 0;
++    (this.input as { dropPresses?: () => void }).dropPresses?.();
++  }
++
+@@ -1215,0 +1280,2 @@ export class GameEngine {
++    // (Dot's help can be changed only in the menu: a run is Quiet only if it was Quiet all the way)
++    if (dotHelp() !== 'quiet') this.quietRun = false;
+@@ -1218,0 +1285,6 @@ export class GameEngine {
++    // (a press made while the menu held the world is not played now)
++    if (was) this.dropPresses();
++    if (this.startSoundDue) {
++      this.startSoundDue = false;
++      sound.playLevelStart();
++    }
+@@ -1239,0 +1312,3 @@ export class GameEngine {
++    // left with the run under way (the pause menu's exits, Restart; also in the last life's beat, before its Game Over report): what
++    // it did is filed, so a medal that popped in play is kept. A run that already ended was filed then; a stopped engine is not again.
++    if (this.isRunning && (!this.isGameOver || this.down?.last)) this.report(false, 0, true);
+@@ -1250,0 +1326,4 @@ export class GameEngine {
++    // (and its card, if it is up or still loading: nothing else takes it off the page)
++    this.helpCardDown?.();
++    this.helpCardDown = null;
++    if (this.helpAsking) this.callbacks.onHelpOffer?.(false);
+@@ -1284,0 +1364,6 @@ export class GameEngine {
++    // The game is played in whole steps of exactly 1/30 s (PERFORMANCE-RULES.md §3.2), from an account of real time not yet played
++    // (`acc`), so the game keeps real time on any screen and any frame rate (R-165.116: the old phase line counted a late frame's
++    // remainder twice, and one dropped refresh left a 30 fps phone playing at 1.5x). A frame runs only when a step is due: a vsync a
++    // hair early (33.2 ms) still counts (the 2 ms), and what is left over carries, which also keeps 75 and 48 Hz screens near 30 fps.
++    // A frame on time (within 0.5 ms: a 59.94 or 60.06 Hz screen) is one step and its hair is let go, so the rhythm never slips a
++    // frame just to keep the account.
+@@ -1286,11 +1371,12 @@ export class GameEngine {
+-    // a vsync that lands a hair early (33.2 ms) still counts, or every fourth frame would be skipped and run at 50 ms
+-    if (elapsed < this.frameIntervalMs - 2) {
+-      return;
+-    }
+-    this.lastRenderTime = elapsed < this.frameIntervalMs + 2 ? now : now - (elapsed % this.frameIntervalMs);
+-
+-    // a frame that came late is played in up to three steps, so the game keeps real time: one long step capped at 0.05 s made Pokey
+-    // truly slower whenever a phone dropped under 20 fps (a Pixel's 100-170 ms stalls felt "sluggish"; PERFORMANCE-RULES.md §3.2).
+-    // Each step stays at most 0.05 s, as before, so nothing can pass through anything; at a steady 30 fps it is one step, as before.
+-    const steps = elapsed < this.frameIntervalMs * 1.5 ? 1 : Math.min(3, Math.round(elapsed / this.frameIntervalMs));
+-    const dt = Math.min(elapsed / steps / 1000, 0.05);
++    let due = 1;
++    if (Math.abs(elapsed - this.frameIntervalMs) > 0.5) {
++      const owed = this.acc + elapsed;
++      if (owed < this.frameIntervalMs - 2) return;
++      due = Math.floor((owed + 2) / this.frameIntervalMs);
++      this.acc = owed - due * this.frameIntervalMs;
++    }
++    this.lastRenderTime = now;
++    // a late frame catches up in up to three steps, so a slow phone does not play slow; past three the rest is dropped (a stall is
++    // not played back in a burst), and every step is the same small size, so nothing can pass through anything
++    const steps = Math.min(3, due);
++    const dt = 1 / 30;
+@@ -1321,0 +1408,3 @@ export class GameEngine {
++      // paused (the menu, a find's note, the help offer): the stage is drawn once, still, and then left alone until play resumes or it must
++      // be drawn again (a resize, a restored canvas). PERFORMANCE-RULES §3.5; audit A-06: it was redrawn every frame behind the menu
++      if (this.isPaused && this.stillDrawn && !this.resizeDue) return;
+@@ -1329,0 +1419 @@ export class GameEngine {
++      this.stillDrawn = this.isPaused;
+@@ -1350 +1440 @@ export class GameEngine {
+-      this.failStreak = 0;
++      this.frameFailed(false);
+@@ -1352,2 +1442,4 @@ export class GameEngine {
+-      // one bad frame must not freeze the game; a frame that fails over and over ends the stage cleanly
+-      console.error('frame error', err);
++      // one bad frame must not freeze the game; frames that keep failing end the stage cleanly. Counted over the last two seconds, not
++      // a run in a row (audit A-12: any good frame reset the old count, so an error every other frame never ended the stage, each
++      // failed frame half-applied, and printed every time)
++      if (this.failCount < 3) console.error('frame error', err);
+@@ -1355 +1447 @@ export class GameEngine {
+-      if (++this.failStreak >= 20) {
++      if (this.frameFailed(true)) {
+@@ -1361 +1453,11 @@ export class GameEngine {
+-  private failStreak = 0;
++  /** the last FAIL_WINDOW frames, 1 where it failed (a ring), and how many of them failed */
++  private failRing = new Uint8Array(FAIL_WINDOW);
++  private failAt = 0;
++  private failCount = 0;
++  /** note one frame's outcome: true once FAIL_LIMIT of the last FAIL_WINDOW frames failed */
++  private frameFailed(failed: boolean): boolean {
++    this.failCount += (failed ? 1 : 0) - this.failRing[this.failAt];
++    this.failRing[this.failAt] = failed ? 1 : 0;
++    this.failAt = (this.failAt + 1) % FAIL_WINDOW;
++    return this.failCount >= FAIL_LIMIT;
++  }
+@@ -1478,0 +1581 @@ export class GameEngine {
++    this.takeShown();
+@@ -1490 +1593 @@ export class GameEngine {
+-    this.gameTime += dt;
++    this.clock.step(dt);
+@@ -2242,13 +2345 @@ export class GameEngine {
+-            p.vy = -PHYS.jumpV * drowsyJump(this.drowsy) * this.dragJump;
+-            p.grounded = false;
+-            p.jumpsLeft = 1;
+-            p.isDoubleJumping = false;
+-            p.somersaultAngle = 0;
+-            this.coyoteTimer = 0;
+-            this.jumpBufferTimer = 0;
+-            this.input.state.jumpPressed = false;
+-            p.squashX = 0.82;
+-            p.squashY = 1.28;
+-            this.takeOff(false);
+-            sound.playJump();
+-            this.spawnJumpDust(p.x, p.y);
++            this.groundJump();
+@@ -2316,4 +2407,2 @@ export class GameEngine {
+-      const maxX = this.currentStage.exitTotemX > 0 && this.currentStage.config.objectiveType !== 'ascent'
+-        ? this.currentStage.exitTotemX + SHRINE_STOP
+-        : this.currentStage.config.levelWidth - 20;
+-      p.x = Math.max(20, Math.min(maxX, p.x));
++      // (the walls are the travel mode's: a run stops just past its shrine, a climb at the level's sides, stageModes.ts bounds)
++      p.x = Math.max(this.walls.minX, Math.min(this.walls.maxX, p.x));
+@@ -2429 +2518 @@ export class GameEngine {
+-        const side = plat.type === 'drift' ? DRIFT_CATCH.side + (this.easyLogs ? DRIFT_CATCH.easySide : 0) : 0.26 + ASSIST.landSide * assist;
++        const side = plat.type === 'drift' ? DRIFT_CATCH.side + (this.easy ? DRIFT_CATCH.easySide : 0) : 0.26 + ASSIST.landSide * assist;
+@@ -2435 +2524 @@ export class GameEngine {
+-          if ((plat.type === 'drift' && !this.easyLogs) || !(playerPrevFeet < plat.y - 2)) return false;
++          if ((plat.type === 'drift' && !this.easy) || !(playerPrevFeet < plat.y - 2)) return false;
+@@ -2451 +2540 @@ export class GameEngine {
+-      if (plat && (plat.type !== 'drift' || this.easyLogs)) {
++      if (plat && (plat.type !== 'drift' || this.easy)) {
+@@ -2469,2 +2558,15 @@ export class GameEngine {
+-        // Jump Buffering: If jump was tapped just before landing, instantly jump!
+-        if (this.jumpBufferTimer > 0) {
++        // what the landing does to the floor, jump or no jump (audit A-04: a jump pressed just before landing used to skip these, so a
++        // crumbling platform landed on that way never started to crumble)
++        if (plat.type === 'fragile') {
++          if (plat.fragileTimer === undefined) {
++            plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
++            // a boss's cracking ledge: Dot says so the first time he stands on one
++            if (plat.crackFrom !== undefined && this.bossDef?.crackTip) this.bossCtx?.guide?.('crack', this.bossDef.crackTip);
++            if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
++              this.zoneHinted.crumble = true;
++              // (the crumble is taught by its lesson, in Dot's bubble)
++            }
++          }
++        }
++        // Bouncy mushroom: it always throws him (a jump pressed just before landing on it is used up by the bounce, never a weaker jump)
++        if (plat.type === 'bouncy') {
+@@ -2472,8 +2574,4 @@ export class GameEngine {
+-          p.vy = -PHYS.jumpV;
+-          p.grounded = false;
+-          p.jumpsLeft = 1;
+-          p.squashX = 0.82;
+-          p.squashY = 1.28;
+-          this.takeOff(false);
+-          sound.playJump();
+-          this.spawnJumpDust(p.x, p.y);
++          this.bounceOff();
++        } else if (this.jumpBufferTimer > 0) {
++          // Jump Buffering: a jump tapped just before landing leaves now, the same jump as one pressed standing here (webs, spores)
++          this.groundJump();
+@@ -2489,16 +2586,0 @@ export class GameEngine {
+-
+-          // Bouncy mushroom interaction
+-          if (plat.type === 'bouncy') this.bounceOff();
+-
+-          // Fragile branch interaction
+-          if (plat.type === 'fragile') {
+-            if (plat.fragileTimer === undefined) {
+-              plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
+-              // a boss's cracking ledge: Dot says so the first time he stands on one
+-              if (plat.crackFrom !== undefined && this.bossDef?.crackTip) this.bossCtx?.guide?.('crack', this.bossDef.crackTip);
+-              if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
+-                this.zoneHinted.crumble = true;
+-                // (the crumble is taught by its lesson, in Dot's bubble)
+-              }
+-            }
+-          }
+@@ -2518 +2600,8 @@ export class GameEngine {
+-        if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60 && !fellOnto) this.softAt = { x: Math.max(g.x + 30, Math.min(g.x + g.width - 30, p.x)), y: g.y, x0: g.x, x1: g.x + g.width };
++        if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60 && !fellOnto && g.pit !== 'hurt') {
++          // (a stage with hurt floors: a pillar, a piece with a mushroom on it and hurt floor on both sides, is never the put-back spot, and
++          // on a ledge with a mushroom he is put back short of it, never inside the cap, which would throw him at once)
++          const hs = this.currentStage.heartFalls, r = g.x + g.width;
++          const cap = hs?.some((z) => z.y !== undefined) ? this.platforms.find((q) => q.type === 'bouncy' && q.x < r && q.x + q.width > g.x && Math.abs(q.y + q.height - g.y) < 30) : undefined;
++          const [a, b] = !cap ? [g.x, r] : cap.x - g.x >= 60 ? [g.x, cap.x] : [cap.x + cap.width, r];
++          if (!cap || !(hs!.some((z) => z.y !== undefined && Math.abs(z.x1 - g.x) < 3) && hs!.some((z) => z.y !== undefined && Math.abs(z.x0 - r) < 3))) this.softAt = { x: Math.max(a + 30, Math.min(b - 30, p.x)), y: g.y, x0: a, x1: b };
++        }
+@@ -2520 +2609 @@ export class GameEngine {
+-        if (g && this.help) this.help.stood(p.x);
++        if (g && this.help) this.help.stood(p);
+@@ -2521,0 +2611,3 @@ export class GameEngine {
++      // (a hollow's hurt floor, gen2: a heart-fall zone with a hurt line `y`; his feet reaching it inside the zone is the fall)
++      const hz = this.isGameOver ? undefined : this.currentStage.heartFalls?.find((z) => z.y !== undefined && p.x > z.x0 && p.x < z.x1 && p.y >= z.y - 1);
++      if (hz) this.heartFall(hz);
+@@ -2582,2 +2674 @@ export class GameEngine {
+-          const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : this.proto?.w4?.descent ? cp.y > this.checkpoint.y : cp.x > this.checkpoint.x;
+-          if (further) {
++          if (this.mode.further(cp, this.checkpoint)) {
+@@ -2586 +2677 @@ export class GameEngine {
+-            if (nativeApp()) saveFlag(this.currentStage.config.id, cp.x, cp.y);
++            if (nativeApp()) saveFlag(this.currentStage.config.id, cp.x, cp.y, this.heldRun());
+@@ -2915,0 +3007,3 @@ export class GameEngine {
++          // the run ends here, neither won nor lost: it is filed as a stage left (what popped on the way is kept), before the app
++          // moves on to the Hollow
++          this.report(false, 0, true);
+@@ -3210,3 +3304,3 @@ export class GameEngine {
+-      this.callbacks.onStageStats?.(this.buildStats(true, stars));
+-      // a find still waiting for a safe moment is handed over now, so it is never lost
+-      for (const fid of this.findsWaiting.splice(0)) this.callbacks.onFind?.(fid);
++      this.report(true, stars);
++      // a find still waiting for a safe moment is shown now (it was kept at the touch)
++      for (const fid of this.findsWaiting.splice(0)) this.callbacks.onFindShow?.(fid);
+@@ -3270,15 +3364,5 @@ export class GameEngine {
+-    let distanceRatio: number;
+-    if (objType === 'ascent') {
+-      this.bestClimbY = Math.min(this.bestClimbY, p.y);
+-      distanceRatio = ascentProgress(this.currentStage.spawnY, this.currentStage.exitTotemY, this.bestClimbY);
+-    } else if (this.proto?.w4?.descent) {
+-      // down the cliff, back and forth (4-7): how far down he has got (left or right says nothing about how far on he is)
+-      this.bestDropY = Math.max(this.bestDropY, p.grounded ? p.y : -Infinity);
+-      const span = Math.max(1, this.currentStage.exitTotemY - this.currentStage.spawnY);
+-      distanceRatio = Math.max(0, Math.min(1, (this.bestDropY - this.currentStage.spawnY) / span));
+-    } else if (this.mc) {
+-      distanceRatio = this.mc.ratio();
+-    } else {
+-      const totalDist = Math.max(1, (this.currentStage.exitTotemX || this.currentStage.config.levelWidth) - 140);
+-      const distTraveled = Math.max(0, p.x - 140);
+-      distanceRatio = Math.min(1.0, distTraveled / totalDist);
++    // (the travel mode's: a climb's best height, a way down's lowest ledge stood on, a run's x; stageModes.ts)
++    if (p.grounded || this.mode.air) {
++      const b = this.mode.best(this.bestAt, p);
++      this.bestAt.x = b.x;
++      this.bestAt.y = b.y;
+@@ -3285,0 +3370 @@ export class GameEngine {
++    const distanceRatio = this.mc ? this.mc.ratio() : this.mode.progress(this.startAt, this.exitAt, this.bestAt);
+@@ -3478 +3563 @@ export class GameEngine {
+-            isAttacking: false, animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
++            isAttacking: false, animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, minion: true,
+@@ -3483,2 +3568,2 @@ export class GameEngine {
+-        tellMul: isEasy() ? 1.3 : 1,
+-        openMul: isEasy() && this.bossDef?.openCue ? EASY_OPEN_MUL : 1,
++        tellMul: this.easy ? 1.3 : 1,
++        openMul: this.openMul,
+@@ -3519 +3604 @@ export class GameEngine {
+-    for (const e of this.enemies) if (e.id >= 9000 && !e.defeated) alive++;
++    for (const e of this.enemies) if (e.minion && !e.defeated) alive++;
+@@ -3600 +3685 @@ export class GameEngine {
+-      animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
++      animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, minion: true,
+@@ -3675,0 +3761,2 @@ export class GameEngine {
++      // (a tap made to skip the entrance is not played on the fight's first frame, seconds later)
++      this.dropPresses();
+@@ -3734,0 +3822 @@ export class GameEngine {
++      const laid = this.hazards.length;
+@@ -3735,0 +3824 @@ export class GameEngine {
++      for (const h of this.hazards.slice(laid)) this.arenaHazards.set(h, { ...h });
+@@ -3744,6 +3832,0 @@ export class GameEngine {
+-        sound.setTempo(b.phase === 3 ? 1.08 : 1.04);
+-      } else if (b.phase === 3) {
+-        // (a new phase is heard, in the music's tempo, and seen on the bar's gold notch: no words over the boss, AN-3)
+-        sound.setTempo(1.08);
+-      } else {
+-        sound.setTempo(1.04);
+@@ -4455 +4538 @@ export class GameEngine {
+-    for (const e of this.enemies) if (!e.defeated && e.id >= 9000) this.knockOut(e, e.x >= b.x ? 1 : -1, 'FREE!');
++    for (const e of this.enemies) if (!e.defeated && e.minion) this.knockOut(e, e.x >= b.x ? 1 : -1, 'FREE!');
+@@ -4469,0 +4553,15 @@ export class GameEngine {
++  /** this run's last report to the app (a Game Over that a Continue may follow): every later report of the run carries it as
++   * `prior`, so the lifetime records take each part of one run once (audit C things-1) */
++  private filed: StageStats | null = null;
++
++  /** the run ended (a win, the last life, or the stage left with the run under way: `left`): tell the app */
++  private report(win: boolean, stars: number, left = false) {
++    // a stage won is over: no flag to come back to, even if the phone closes the app under the stage-cleared card
++    if (win) clearFlag();
++    const s = this.buildStats(win, stars);
++    if (left) s.left = true;
++    const { prior: _was, ...filed } = s;
++    this.filed = filed;
++    this.callbacks.onStageStats?.(s);
++  }
++
+@@ -4502,2 +4600,2 @@ export class GameEngine {
+-      difficulty: difficulty(),
+-      quiet: dotHelp() === 'quiet',
++      difficulty: this.easy ? 'easy' : 'normal',
++      quiet: this.quietRun && dotHelp() === 'quiet',
+@@ -4505,0 +4604 @@ export class GameEngine {
++      ...(this.filed ? { prior: this.filed } : {}),
+@@ -4512 +4611 @@ export class GameEngine {
+-    if (e.id < 9000 && e.type !== 'boss' && e.type !== 'ant_hazard') this.statKills[e.type] = (this.statKills[e.type] ?? 0) + 1;
++    if (!e.minion && e.type !== 'boss' && e.type !== 'ant_hazard') this.statKills[e.type] = (this.statKills[e.type] ?? 0) + 1;
+@@ -4596,4 +4695 @@ export class GameEngine {
+-      this.guide(stuckLine(lessonInputMode()), 6);
+-      // (in World 5 the stillness waits while she says it: her help is read, not the silk's warning over it)
+-      this.w5?.holdStill(STUCK_HOLD);
+-      recorder.event('stuckHelp', Math.round(p.x));
++      this.stuckSay(this.stuck, stuckLine(lessonInputMode()), 'stuckHelp');
+@@ -4605,3 +4701 @@ export class GameEngine {
+-        this.guide(mode === 'pad' ? W5_STEP_HELP_PAD : mode === 'keys' ? W5_STEP_HELP_KEYS : W5_STEP_HELP, 6);
+-        this.w5.holdStill(STUCK_HOLD);
+-        recorder.event('stuckStepHelp', Math.round(p.x));
++        this.stuckSay(this.stuckStep, mode === 'pad' ? W5_STEP_HELP_PAD : mode === 'keys' ? W5_STEP_HELP_KEYS : W5_STEP_HELP, 'stuckStepHelp');
+@@ -4610,0 +4705,24 @@ export class GameEngine {
++  /** a stuck helper's line, sent and not yet shown: it is given (told, held, logged) only once Dot reports it shown (guideShown.ts) */
++  private stuckSent: Array<{ watch: StuckWatch; text: string; ev: 'stuckHelp' | 'stuckStepHelp'; x: number }> = [];
++  private stuckSay(watch: StuckWatch, text: string, ev: 'stuckHelp' | 'stuckStepHelp') {
++    this.guide(text, 6);
++    this.stuckSent = this.stuckSent.filter((s) => s.watch !== watch);
++    this.stuckSent.push({ watch, text, ev, x: Math.round(this.player.x) });
++  }
++  /**
++   * the engine lines Dot has shown since the last frame (guideShown.ts, audit C-03): the recorder's `dot` moment is logged for each, and
++   * a stuck helper's line is given now: its watch is told (not again this stage), and in World 5 the stillness waits while she says it
++   * (her help is read, not the silk's warning over it)
++   */
++  private takeShown() {
++    for (const text of takeGuideShown()) {
++      // (which of Dot's lines was really shown, for the testers' "did Dot's tips help?": recorderLabels.ts)
++      if (recorder.on) recorder.event('dot', dotLogId(text, this.currentStage.config.id));
++      const i = this.stuckSent.findIndex((s) => s.text === text);
++      if (i < 0) continue;
++      const s = this.stuckSent.splice(i, 1)[0];
++      s.watch.told();
++      this.w5?.holdStill(STUCK_HOLD);
++      recorder.event(s.ev, s.x);
++    }
++  }
+@@ -4619,0 +4738,2 @@ export class GameEngine {
++      // (a shut room gate: no second jump climbs it, its wall stands on the door; the room's own lines speak there, P-03)
++      if (this.kit?.shutGate(q)) continue;
+@@ -4961 +5081,2 @@ export class GameEngine {
+-    if (this.down) return;
++    // (one beat at a time, and none once the run is over: under the Game Over card the engine keeps stepping, for Continue)
++    if (this.down || this.isGameOver) return;
+@@ -4991 +5112 @@ export class GameEngine {
+-      this.callbacks.onStageStats?.(this.buildStats(false, 0));
++      this.report(false, 0);
+@@ -5051 +5172 @@ export class GameEngine {
+-  private helpAsking: { k: string; count: number; cut?: string } | null = null;
++  private helpAsking: { k: string; count: number; cut?: string; rung?: 'offer' | 'reask' } | null = null;
+@@ -5054 +5175,9 @@ export class GameEngine {
+-  /** how the offer is put on screen (HelpOffer.tsx, loaded only when first asked); the tests answer it themselves */
++  /** the offer's card (HelpOffer.tsx), loaded only when first asked (the tests plant a loader that fails) */
++  loadHelpOffer = () => import('../components/HelpOffer.tsx');
++  /** takes the offer's card down unanswered (stop(): a quit, or onFatal, under it), or stops one still loading from going up */
++  private helpCardDown: (() => void) | null = null;
++  /**
++   * how the offer is put on screen; the tests answer it themselves. A card that fails to load lets go of the stage (it is held while the
++   * offer is up, and the pause menu's Resume cannot let go of it: audit C-10, a failed chunk froze it with no card), and is no answer:
++   * it is logged as a failed offer and asked again at the next put-back (helpUnshown; C-10b)
++   */
+@@ -5056 +5185,18 @@ export class GameEngine {
+-    void import('../components/HelpOffer.tsx').then((m) => m.showHelpOffer(o, answer));
++    let gone = false;
++    this.helpCardDown = () => {
++      gone = true;
++    };
++    this.loadHelpOffer().then(
++      (m) => {
++        if (gone) return;
++        this.helpCardDown = m.showHelpOffer(o, (yes) => {
++          this.helpCardDown = null;
++          answer(yes);
++        });
++      },
++      () => {
++        if (gone) return;
++        this.helpCardDown = null;
++        this.helpUnshown();
++      },
++    );
+@@ -5091 +5237 @@ export class GameEngine {
+-    const margin = (this.currentStage as { gen2?: { budget?: { margin?: number } } }).gen2?.budget?.margin ?? (isEasy() ? 0.65 : 0.82);
++    const margin = (this.currentStage as { gen2?: { budget?: { margin?: number } } }).gen2?.budget?.margin ?? (this.easy ? 0.65 : 0.82);
+@@ -5155 +5301 @@ export class GameEngine {
+-    this.helpAsking = { k: a.piece.k, count: a.count, cut };
++    this.helpAsking = { k: a.piece.k, count: a.count, cut, rung: a.rung === 'reask' ? 'reask' : 'offer' };
+@@ -5158,0 +5305 @@ export class GameEngine {
++    this.callbacks.onHelpOffer?.(true);
+@@ -5166,0 +5314 @@ export class GameEngine {
++    this.callbacks.onHelpOffer?.(false);
+@@ -5175,0 +5324,11 @@ export class GameEngine {
++  /** the offer's card could not be put on screen: play goes on, and no answer is counted for him (the ladder asks again; C-10b) */
++  private helpUnshown() {
++    const h = this.helpAsking;
++    if (!h || !this.help) return;
++    this.helpAsking = null;
++    this.callbacks.onHelpOffer?.(false);
++    recorder.event('helpOffer', `fail ${h.k} ${h.count}`);
++    this.help.unshown(h.k, h.rung);
++    if (!this.outerPause) this.resume();
++  }
++
+@@ -5200,0 +5360 @@ export class GameEngine {
++    this.crumbledWhole();
+@@ -5221,0 +5382,16 @@ export class GameEngine {
++  /**
++   * Every crumbling platform is whole again (Matt, 2026-11-02: one may be required anywhere, pits included, "a required one is whole
++   * again when he respawns"). Called by every set-back: a lost life (respawnAtCheckpoint) and a fall that costs no life (softFall, which
++   * heartFall and lanternSetBack go through). Audit A-03: only the lost life did it, so after a soft fall a required plank stayed gone
++   * for 30-35 s and until it was off screen (regrow.ts), and from the ledge he was set back on it could be in view for good.
++   */
++  private crumbledWhole() {
++    for (const pl of this.platforms) {
++      if (pl.type === 'fragile') {
++        pl.broken = false;
++        pl.fragileTimer = undefined;
++        pl.regrowAt = undefined;
++      }
++    }
++  }
++
+@@ -5222,0 +5399,58 @@ export class GameEngine {
++
++  /** what this run holds now, kept with a flag on the Android app (flagResume.ts) so a run the phone cut off comes back whole */
++  private heldRun(): HeldRun {
++    const p = this.player;
++    const where = <T>(list: T[], f: (t: T) => boolean) => list.flatMap((t, i) => (f(t) ? [i] : []));
++    return {
++      t: this.gameTime,
++      lives: this.lives,
++      score: this.runScore,
++      // (a find is kept by the app at the touch, App.tsx onFind, so one picked up stays picked up)
++      got: where(this.collectibles, (c) => c.collected),
++      beat: where(this.enemies, (e) => e.defeated),
++      n: {
++        fruits: p.fruitsCollected, beaten: p.enemiesDefeated, relics: p.relicsFound, freed: p.crittersRescued,
++        livesLost: this.statLivesLost, heartsLost: this.statHeartsLost, stomps: this.statStomps, chain: this.statMaxStompChain,
++        combo: this.statMaxCombo, glide: this.statGlideSec, shimmy: this.statShimmySec, swings: this.statSwings, punches: this.statPunches,
++        kicks: this.statKicks,
++      },
++      kills: { ...this.statKills },
++      seen: Array.from(this.statSeen),
++    };
++  }
++
++  /** put a held run back (startAtFlag): the stage was built fresh, so its pickups and animals are matched by their place in it */
++  private restoreRun(h: HeldRun) {
++    const p = this.player;
++    for (const i of h.got) if (this.collectibles[i]) this.collectibles[i].collected = true;
++    for (const i of h.beat) {
++      const e = this.enemies[i];
++      if (!e) continue;
++      // beaten on that run: gone, with no knock-out to play again
++      e.defeated = true;
++      e.koLife = 0;
++      e.koTimer = 1;
++    }
++    const n = (k: string) => h.n[k] ?? 0;
++    p.fruitsCollected = n('fruits');
++    p.enemiesDefeated = n('beaten');
++    p.relicsFound = n('relics');
++    p.crittersRescued = n('freed');
++    this.statLivesLost = n('livesLost');
++    this.statHeartsLost = n('heartsLost');
++    this.statStomps = n('stomps');
++    this.statMaxStompChain = n('chain');
++    this.statMaxCombo = n('combo');
++    this.statGlideSec = n('glide');
++    this.statShimmySec = n('shimmy');
++    this.statSwings = n('swings');
++    this.statPunches = n('punches');
++    this.statKicks = n('kicks');
++    this.statKills = { ...h.kills };
++    for (const k of h.seen) this.statSeen.add(k);
++    this.gameTime = h.t;
++    this.runScore = h.score;
++    this.lives = Math.max(1, Math.min(this.maxLives, h.lives));
++    this.callbacks.onLivesChange?.(this.lives, this.maxLives);
++  }
++
+@@ -5224 +5458 @@ export class GameEngine {
+-  private startAtFlag(at: { x: number; y: number }) {
++  private startAtFlag(at: { x: number; y: number; run: HeldRun }) {
+@@ -5228,3 +5462 @@ export class GameEngine {
+-    const ascent = this.currentStage.config.objectiveType === 'ascent';
+-    const descent = !!this.proto?.w4?.descent;
+-    for (const cp of cps) if (ascent ? cp.y >= flag.y : descent ? cp.y <= flag.y : cp.x <= flag.x) cp.reached = true;
++    for (const cp of cps) if (!this.mode.further(cp, flag)) cp.reached = true;
+@@ -5231,0 +5464,2 @@ export class GameEngine {
++    // the run as it was at the flag: what he had picked up, beaten and freed, the clock, the lives and every count the report reads
++    this.restoreRun(at.run);
+@@ -5243,0 +5478,11 @@ export class GameEngine {
++    // (the attacks in the air go, but what a phase did to the arena stays, the boss still in that phase: it comes in again, warned, so
++    // he is never put back inside it)
++    const arena: BossHazard[] = [];
++    for (const h of this.hazards) {
++      const laid = this.arenaHazards.get(h);
++      if (!laid) continue;
++      const again = { ...laid };
++      this.arenaHazards.delete(h);
++      this.arenaHazards.set(again, laid);
++      arena.push(again);
++    }
+@@ -5244,0 +5490 @@ export class GameEngine {
++    this.hazards.push(...arena);
+@@ -5254 +5499,0 @@ export class GameEngine {
+-    // planks that crumbled since the checkpoint come back, or a respawn could leave a gap nobody can cross
+@@ -5255,0 +5501,2 @@ export class GameEngine {
++    // the collapsing branch's chase waits behind his flag (chase.ts)
++    if (this.chase) this.restartChase();
+@@ -5261,7 +5508 @@ export class GameEngine {
+-    for (const pl of this.platforms) {
+-      if (pl.type === 'fragile') {
+-        pl.broken = false;
+-        pl.fragileTimer = undefined;
+-        pl.regrowAt = undefined;
+-      }
+-    }
++    this.crumbledWhole();
+@@ -5287,0 +5529,3 @@ export class GameEngine {
++    // World 5: no silk, sleep or stillness carried over to the flag (w5Play.ts calm, "a respawn": only the bot harness called it, so
++    // a player back at a flag within 260 px of where he fell was wrapped every ~6 s before he had touched the screen, audit C)
++    this.w5?.calm();
+@@ -5289,0 +5534,10 @@ export class GameEngine {
++    // a press made while he was going down is not played at the flag (inputEngine.ts dropPresses)
++    this.dropPresses();
++    // nor anything under way when he went down (the beat froze it): a half-thrown or queued attack, its combo, the coyote time of the
++    // ground he lost (audit A-14; realPlay.ts place() cleared these for the bots only)
++    this.atk = null;
++    this.atkQueue = null;
++    this.chainTimer = 0;
++    this.kickChain = 0;
++    this.coyoteTimer = 0;
++    this.launched = false;
+@@ -5726,2 +5979,0 @@ export class GameEngine {
+-  /** a stage down a cliff (w4.descent): the lowest ledge he has stood on, for its progress bar */
+-  private bestDropY = -Infinity;
+@@ -5819 +6071 @@ export class GameEngine {
+-    if (this.lessonOpen || this.isGameOver || this.mc) return;
++    if (this.isGameOver || this.mc) return;
+@@ -5827 +6079 @@ export class GameEngine {
+-      this.callbacks.onFind?.(fid);
++      this.callbacks.onFindShow?.(fid);
+@@ -6004,9 +6255,0 @@ export class GameEngine {
+-  /** the app has closed a lesson card: carry on, and leave a few seconds before the next one */
+-  public lessonClosed() {
+-    if (!this.lessonOpen) return;
+-    this.lessonOpen = false;
+-    this.lessonQuietUntil = this.gameTime + 4;
+-    this.lessonAt = this.gameTime;
+-    this.resume();
+-  }
+-
+@@ -6148,0 +6392,22 @@ export class GameEngine {
++  /** The one ground take-off: a press on the ground or in coyote time, and a press buffered before landing (audit A-04: the buffered
++   *  path had its own copy that left at the full jump, ignoring a web's drag and a spore cloud's drowsiness). */
++  private groundJump() {
++    const p = this.player;
++    // (the fog decides at the take-off, as the run code does for a press on the ground: a buffered jump leaves on the landing frame,
++    // before that code sees him grounded, so without this it kept the awake flag of the flight that brought him down)
++    if (p.grounded) this.flightClear = this.drowsy <= 0;
++    p.vy = -PHYS.jumpV * drowsyJump(this.drowsy) * this.dragJump;
++    p.grounded = false;
++    p.jumpsLeft = 1;
++    p.isDoubleJumping = false;
++    p.somersaultAngle = 0;
++    this.coyoteTimer = 0;
++    this.jumpBufferTimer = 0;
++    this.input.state.jumpPressed = false;
++    p.squashX = 0.82;
++    p.squashY = 1.28;
++    this.takeOff(false);
++    sound.playJump();
++    this.spawnJumpDust(p.x, p.y);
++  }
++
+@@ -6231 +6496 @@ export class GameEngine {
+-    if (isEasy()) return 1;
++    if (this.easy) return 1;
+@@ -6569 +6834 @@ export class GameEngine {
+-      drawBossFighter(ctx, this.boss, this.bossDef, this.gameTime, this.currentStage.config.worldIndex, floor);
++      drawBossFighter(ctx, this.boss, this.bossDef, this.gameTime, this.currentStage.config.worldIndex, floor, this.openMul);
+@@ -6717 +6982 @@ export class GameEngine {
+-      drawBossOverDark(ctx, this.boss, this.bossDef, this.currentStage.config.worldIndex, this.currentStage.arena?.floor ?? 560, this.gameTime, (1 - prowlerGlow()) / (1 - 0.16), this.currentStage.arena ?? undefined);
++      drawBossOverDark(ctx, this.boss, this.bossDef, this.currentStage.config.worldIndex, this.currentStage.arena?.floor ?? 560, this.gameTime, (1 - prowlerGlow()) / (1 - 0.16), this.currentStage.arena ?? undefined, this.openMul);
+@@ -6863 +7128 @@ export class GameEngine {
+-        this.callbacks.onStageStats?.(this.buildStats(true, stars));
++        this.report(true, stars);
+@@ -7006 +7271 @@ export class GameEngine {
+-      easy: isEasy(),
++      easy: this.easy,
+@@ -7076 +7341 @@ export class GameEngine {
+-        this.callbacks.onStageStats?.(this.buildStats(true, stars));
++        this.report(true, stars);
+@@ -7462 +7727 @@ export class GameEngine {
+-  private heartFall(): boolean {
++  private heartFall(at?: NonNullable<GeneratedStage['heartFalls']>[number]): boolean {
+@@ -7468 +7733 @@ export class GameEngine {
+-    const z = this.softAt ? zs?.find((h) => (cx > h.x0 - 160 && cx < h.x1 + 160) || (from > h.x0 - 420 && from <= h.x0 + 20 && cx > h.x0 - 160)) : undefined;
++    const z = at ?? (!this.softAt ? undefined : zs?.find((h) => (cx > h.x0 - 160 && cx < h.x1 + 160) || (from > h.x0 - 420 && from <= h.x0 + 20 && cx > h.x0 - 160)));
+@@ -7476,0 +7742,5 @@ export class GameEngine {
++      // (a hurt floor on Easy: the same set-back with the hurt sound and blink, no heart)
++      if (z.y !== undefined) {
++        sound.playPlayerHurt();
++        p.invincibleTimer = Math.max(p.invincibleTimer, 1.6);
++      }
+@@ -7597 +7867 @@ export class GameEngine {
+-  /** caught on the long branch: one heart, back at the flag with the branch whole again from there, the collapse waiting a moment */
++  /** caught on the long branch: one heart, back at the flag (respawnAtCheckpoint puts the branch and the collapse back) */
+@@ -7598,0 +7869,2 @@ export class GameEngine {
++    // (never under the Game Over card: the engine keeps stepping there, and the collapse caught the body again and again, audit C)
++    if (this.isGameOver) return;
+@@ -7608,0 +7881,8 @@ export class GameEngine {
++  }
++
++  /**
++   * The chase (chase.ts) waits behind the flag he is back at, the branch whole from there. Part of every way back to a flag
++   * (respawnAtCheckpoint): a life lost to anything else on the branch (an animal) used to leave the collapse past his flag, so the next
++   * frame it "caught" him, took a heart and respawned him a second time (audit A-07).
++   */
++  private restartChase() {
+@@ -8154 +8434 @@ export class GameEngine {
+-      easy: isEasy(),
++      easy: this.easy,
+@@ -8161,0 +8442,5 @@ export class GameEngine {
++      // (stuck help answers the moment: said whenever the room's watch calls it, on every run, not kept as a heard tip)
++      help: (key, text, seconds) => {
++        if (this.mc) return this.mc.kitLine(key, text, seconds);
++        this.guide(tipText(text), seconds);
++      },
+@@ -8380,2 +8665 @@ export class GameEngine {
+-    // (which of Dot's lines was really shown, for the testers' "did Dot's tips help?": recorderLabels.ts)
+-    if (recorder.on && text) recorder.event('dot', dotLogId(text, this.currentStage.config.id));
++    // (the recorder's `dot` moment is logged when she has shown it, takeShown)

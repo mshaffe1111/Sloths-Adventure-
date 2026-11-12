@@ -1,0 +1,15 @@
+import { chromium, newPage, seedDone, IDS, toMap, playFromMap, gameTime, sleep, HEAD, MAIN, here } from './rtlib.mjs';
+const url = process.argv[2] === 'main' ? MAIN : HEAD;
+const browser = await chromium.launch();
+const { page, errors, failed } = await newPage(browser);
+await page.goto(url);
+await page.evaluate(seedDone, IDS);
+await page.reload();
+await toMap(page);
+const ok = await playFromMap(page, process.argv[3] ?? '4-1');
+console.log('engine running', ok);
+await sleep(1500);
+console.log(await gameTime(page));
+await page.screenshot({ path: `${here}/shots/smoke-${process.argv[2]}-${process.argv[3] ?? '4-1'}.png` });
+console.log('errors', errors, 'failed', failed.length);
+await browser.close();

@@ -1,0 +1,32 @@
+{
+  "name": "main-done-side",
+  "base": "http://127.0.0.1:8802/Sloths-Adventure-/",
+  "steps": [
+    "title",
+    "map",
+    "map-1-3-picked",
+    "1-3-start",
+    "1-3-playing",
+    "1-3-pause",
+    "map-1-10-picked",
+    "1-10-before-0",
+    "1-10-card-1"
+  ],
+  "errors": [],
+  "console": [],
+  "misses": [
+    "stage-1-10: page.screenshot: Target page, context or browser has been closed",
+    "stage-2-4: locator.count: Target page, context or browser has been closed",
+    "stage-3-5: locator.count: Target page, context or browser has been closed",
+    "stage-4-1: locator.count: Target page, context or browser has been closed",
+    "stage-5-6: locator.count: Target page, context or browser has been closed",
+    "stage-5-M: locator.count: Target page, context or browser has been closed",
+    "stage-6-2: locator.count: Target page, context or browser has been closed",
+    "stage-7-1: locator.count: Target page, context or browser has been closed",
+    "stage-8-3: locator.count: Target page, context or browser has been closed",
+    "stage-9-4: locator.count: Target page, context or browser has been closed",
+    "stage-10-5: locator.count: Target page, context or browser has been closed",
+    "satchel: page.goto: Target page, context or browser has been closed"
+  ],
+  "seconds": 125
+}

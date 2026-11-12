@@ -1,0 +1,1553 @@
+{
+ "who": "ADULT",
+ "setting": "normal",
+ "seed": 1,
+ "end": "shrine",
+ "time": 191.5,
+ "x": 27319,
+ "progress": 0.999,
+ "goal": {
+  "got": 0,
+  "need": 1
+ },
+ "holdOn": {
+  "hit": null,
+  "life": null
+ },
+ "opening": [],
+ "harms": [
+  {
+   "kind": "life",
+   "t": 37.6,
+   "x": 5053,
+   "y": 769,
+   "cause": "water",
+   "onScreen": null
+  },
+  {
+   "kind": "life",
+   "t": 43.2,
+   "x": 5053,
+   "y": 769,
+   "cause": "water",
+   "onScreen": null
+  },
+  {
+   "kind": "hit",
+   "t": 71.5,
+   "x": 6495,
+   "y": 649,
+   "cause": "foe:harpy",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 77.4,
+   "x": 7831,
+   "y": 529,
+   "cause": "foe:eagle",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 80.7,
+   "x": 8751,
+   "y": 580,
+   "cause": "foe:eagle",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "life",
+   "t": 87.9,
+   "x": 10415,
+   "y": 774,
+   "cause": "water",
+   "onScreen": null
+  },
+  {
+   "kind": "life",
+   "t": 89.6,
+   "x": 10337,
+   "y": 777,
+   "cause": "water",
+   "onScreen": null
+  },
+  {
+   "kind": "hit",
+   "t": 96.2,
+   "x": 11437,
+   "y": 580,
+   "cause": "foe:snake",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 124.7,
+   "x": 14238,
+   "y": 580,
+   "cause": "foe:caiman",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 138.6,
+   "x": 17817,
+   "y": 534,
+   "cause": "foe:eagle",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "life",
+   "t": 170.6,
+   "x": 24840,
+   "y": 772,
+   "cause": "water",
+   "onScreen": null
+  },
+  {
+   "kind": "life",
+   "t": 176.2,
+   "x": 24840,
+   "y": 772,
+   "cause": "water",
+   "onScreen": null
+  },
+  {
+   "kind": "life",
+   "t": 181.1,
+   "x": 24840,
+   "y": 772,
+   "cause": "water",
+   "onScreen": null
+  },
+  {
+   "kind": "hit",
+   "t": 185.3,
+   "x": 25828,
+   "y": 580,
+   "cause": "foe:snake",
+   "onScreen": true,
+   "hiding": false
+  },
+  {
+   "kind": "hit",
+   "t": 188.3,
+   "x": 26629,
+   "y": 580,
+   "cause": "foe:tayra",
+   "onScreen": true,
+   "hiding": false
+  }
+ ],
+ "perMin": {
+  "hits": 2.51,
+  "lives": 2.19
+ },
+ "softFalls": 0,
+ "gameOvers": 2,
+ "firstHarm": [
+  {
+   "cause": "water",
+   "t": 37.6,
+   "x": 5053,
+   "kind": "life",
+   "tip": {
+    "t": 4.6,
+    "text": "Flick up just before the edge."
+   },
+   "ok": true
+  },
+  {
+   "cause": "foe:harpy",
+   "t": 71.5,
+   "x": 6495,
+   "kind": "hit",
+   "tip": {
+    "t": 29.1,
+    "text": "Tap to punch it when it's close."
+   },
+   "ok": true
+  },
+  {
+   "cause": "foe:eagle",
+   "t": 77.4,
+   "x": 7831,
+   "kind": "hit",
+   "tip": {
+    "t": 29.1,
+    "text": "Tap to punch it when it's close."
+   },
+   "ok": true
+  },
+  {
+   "cause": "foe:snake",
+   "t": 96.2,
+   "x": 11437,
+   "kind": "hit",
+   "tip": {
+    "t": 29.1,
+    "text": "Tap to punch it when it's close."
+   },
+   "ok": true
+  },
+  {
+   "cause": "foe:caiman",
+   "t": 124.7,
+   "x": 14238,
+   "kind": "hit",
+   "tip": {
+    "t": 29.1,
+    "text": "Tap to punch it when it's close."
+   },
+   "ok": true
+  },
+  {
+   "cause": "foe:tayra",
+   "t": 188.3,
+   "x": 26629,
+   "kind": "hit",
+   "tip": {
+    "t": 29.1,
+    "text": "Tap to punch it when it's close."
+   },
+   "ok": true
+  }
+ ],
+ "stuck": [
+  {
+   "x": 1643,
+   "y": 580,
+   "t": 5.3,
+   "dur": 20,
+   "what": "the way on is 72 px up",
+   "step": null,
+   "dip": null,
+   "puzzle": false,
+   "rescued": true
+  },
+  {
+   "x": 5268,
+   "y": 580,
+   "t": 48.8,
+   "dur": 20,
+   "what": "the way on is 77 px up",
+   "step": null,
+   "dip": null,
+   "puzzle": false,
+   "rescued": true
+  },
+  {
+   "x": 11960,
+   "y": 580,
+   "t": 98.1,
+   "dur": 20,
+   "what": "the way on is 76 px up",
+   "step": null,
+   "dip": null,
+   "puzzle": false,
+   "rescued": true
+  }
+ ],
+ "loops": [
+  {
+   "x": 4964,
+   "y": 522,
+   "n": 2,
+   "doubles": 0,
+   "deaths": 2,
+   "what": "drowned going on from here",
+   "step": null,
+   "dip": null,
+   "puzzle": false
+  },
+  {
+   "x": 24755,
+   "y": 525,
+   "n": 3,
+   "doubles": 0,
+   "deaths": 3,
+   "what": "drowned going on from here",
+   "step": null,
+   "dip": null,
+   "puzzle": false
+  }
+ ],
+ "stops": {
+  "n": 2,
+  "firstJumpFailed": 0,
+  "heights": []
+ },
+ "puzzles": [],
+ "rescues": 4,
+ "rescueXs": [
+  1667,
+  5271,
+  11983,
+  24840
+ ],
+ "softFallXs": [],
+ "dot": {
+  "heard": 12,
+  "lines": [
+   {
+    "t": 4.6,
+    "dur": 20,
+    "text": "Flick up just before the edge.",
+    "kind": "teach",
+    "source": "lesson"
+   },
+   {
+    "t": 25.3,
+    "dur": 1.5,
+    "text": "Flick up just before the edge.",
+    "kind": "teach",
+    "source": "lesson"
+   },
+   {
+    "t": 29.1,
+    "dur": 22.5,
+    "text": "Tap to punch it when it's close.",
+    "kind": "teach",
+    "source": "lesson"
+   },
+   {
+    "t": 52.1,
+    "dur": 19.3,
+    "text": "Tap to punch it when it's close.",
+    "kind": "teach",
+    "source": "lesson"
+   },
+   {
+    "t": 73.3,
+    "dur": 8.9,
+    "text": "Big ones take several hits. Step back when it rears.",
+    "kind": "info",
+    "source": "lesson"
+   },
+   {
+    "t": 82.8,
+    "dur": 8.5,
+    "text": "Flick up by the post to grab on.",
+    "kind": "teach",
+    "source": "lesson"
+   },
+   {
+    "t": 92.2,
+    "dur": 21.2,
+    "text": "Slide down to duck under its dive.",
+    "kind": "teach",
+    "source": "lesson"
+   },
+   {
+    "t": 114,
+    "dur": 7.6,
+    "text": "Slide down to duck under its dive.",
+    "kind": "teach",
+    "source": "lesson"
+   },
+   {
+    "t": 123.3,
+    "dur": 6.2,
+    "text": "Slide down to duck under its dive.",
+    "kind": "teach",
+    "source": "lesson"
+   },
+   {
+    "t": 130.2,
+    "dur": 24.7,
+    "text": "Slide down to duck under its dive.",
+    "kind": "teach",
+    "source": "lesson"
+   },
+   {
+    "t": 178.2,
+    "dur": 6.2,
+    "text": "Flick up a little before the edge.",
+    "kind": "struggle",
+    "source": "struggle"
+   },
+   {
+    "t": 190.8,
+    "dur": null,
+    "text": "Reach the shrine to finish the stage.",
+    "kind": "info",
+    "source": "lesson"
+   }
+  ],
+  "repeats": [
+   {
+    "text": "Flick up just before the edge.",
+    "n": 2,
+    "at": [
+     4.6,
+     25.3
+    ]
+   },
+   {
+    "text": "Tap to punch it when it's close.",
+    "n": 2,
+    "at": [
+     29.1,
+     52.1
+    ]
+   },
+   {
+    "text": "Slide down to duck under its dive.",
+    "n": 4,
+    "at": [
+     92.2,
+     114,
+     123.3,
+     130.2
+    ]
+   }
+  ],
+  "quick": [
+   {
+    "t": 29.1,
+    "gap": 3.8,
+    "text": "Tap to punch it when it's close.",
+    "after": "Flick up just before the edge."
+   },
+   {
+    "t": 82.8,
+    "gap": 9.6,
+    "text": "Flick up by the post to grab on.",
+    "after": "Big ones take several hits. Step back when it rears."
+   },
+   {
+    "t": 92.2,
+    "gap": 9.3,
+    "text": "Slide down to duck under its dive.",
+    "after": "Flick up by the post to grab on."
+   },
+   {
+    "t": 123.3,
+    "gap": 9.3,
+    "text": "Slide down to duck under its dive.",
+    "after": "Slide down to duck under its dive."
+   },
+   {
+    "t": 130.2,
+    "gap": 6.9,
+    "text": "Slide down to duck under its dive.",
+    "after": "Slide down to duck under its dive."
+   }
+  ],
+  "long": [
+   {
+    "t": 4.6,
+    "dur": 20,
+    "text": "Flick up just before the edge.",
+    "outOfReach": null
+   },
+   {
+    "t": 29.1,
+    "dur": 22.5,
+    "text": "Tap to punch it when it's close.",
+    "outOfReach": true
+   },
+   {
+    "t": 92.2,
+    "dur": 21.2,
+    "text": "Slide down to duck under its dive.",
+    "outOfReach": true
+   },
+   {
+    "t": 130.2,
+    "dur": 24.7,
+    "text": "Slide down to duck under its dive.",
+    "outOfReach": false
+   }
+  ],
+  "reteach": [
+   {
+    "t": 82.8,
+    "text": "Flick up by the post to grab on."
+   }
+  ],
+  "wordy": []
+ },
+ "flags": [
+  {
+   "sev": 62,
+   "kind": "loop",
+   "rule": "wayOn",
+   "x": 24755,
+   "t": null,
+   "what": "lost 3 lives at the same spot (0 double jumps tried): drowned going on from here"
+  },
+  {
+   "sev": 58,
+   "kind": "loop",
+   "rule": "wayOn",
+   "x": 4964,
+   "t": null,
+   "what": "lost 2 lives at the same spot (0 double jumps tried): drowned going on from here"
+  },
+  {
+   "sev": 55,
+   "kind": "harm-rate",
+   "rule": "outcome",
+   "x": null,
+   "t": null,
+   "what": "8 hits and 7 lives lost in 192 s (2.51 hits, 2.19 lives a minute), 2 game overs"
+  },
+  {
+   "sev": 54,
+   "kind": "stuck",
+   "rule": "wayOn",
+   "x": 1643,
+   "t": 5.3,
+   "what": "no progress for 20 s: the way on is 72 px up (the bot was put further on)"
+  },
+  {
+   "sev": 54,
+   "kind": "stuck",
+   "rule": "wayOn",
+   "x": 5268,
+   "t": 48.8,
+   "what": "no progress for 20 s: the way on is 77 px up (the bot was put further on)"
+  },
+  {
+   "sev": 54,
+   "kind": "stuck",
+   "rule": "wayOn",
+   "x": 11960,
+   "t": 98.1,
+   "what": "no progress for 20 s: the way on is 76 px up (the bot was put further on)"
+  },
+  {
+   "sev": 36,
+   "kind": "dot-long",
+   "rule": "dot",
+   "x": null,
+   "t": 29.1,
+   "what": "\"Tap to punch it when it's close.\" up 23 s with its thing out of reach"
+  },
+  {
+   "sev": 36,
+   "kind": "dot-long",
+   "rule": "dot",
+   "x": null,
+   "t": 92.2,
+   "what": "\"Slide down to duck under its dive.\" up 21 s with its thing out of reach"
+  },
+  {
+   "sev": 28,
+   "kind": "dot-long",
+   "rule": "dot",
+   "x": null,
+   "t": 4.6,
+   "what": "\"Flick up just before the edge.\" up 20 s"
+  },
+  {
+   "sev": 28,
+   "kind": "dot-long",
+   "rule": "dot",
+   "x": null,
+   "t": 130.2,
+   "what": "\"Slide down to duck under its dive.\" up 25 s"
+  },
+  {
+   "sev": 28,
+   "kind": "dot-repeat",
+   "rule": "dot",
+   "x": null,
+   "t": 114,
+   "what": "\"Slide down to duck under its dive.\" said 4 times (at 92.2, 114, 123.3, 130.2 s)"
+  },
+  {
+   "sev": 24,
+   "kind": "dot-repeat",
+   "rule": "dot",
+   "x": null,
+   "t": 25.3,
+   "what": "\"Flick up just before the edge.\" said 2 times (at 4.6, 25.3 s)"
+  },
+  {
+   "sev": 24,
+   "kind": "dot-repeat",
+   "rule": "dot",
+   "x": null,
+   "t": 52.1,
+   "what": "\"Tap to punch it when it's close.\" said 2 times (at 29.1, 52.1 s)"
+  },
+  {
+   "sev": 24,
+   "kind": "dot-reteach",
+   "rule": "dot",
+   "x": null,
+   "t": 82.8,
+   "what": "\"Flick up by the post to grab on.\" teaches a move he had already done"
+  },
+  {
+   "sev": 19,
+   "kind": "dot-quick",
+   "rule": "dot",
+   "x": null,
+   "t": 29.1,
+   "what": "5 of her 12 lines start under 10 s after the one before (first at 29.1 s: \"Tap to punch it when it's close.\", 3.8 s after \"Flick up just before the edge.\")"
+  }
+ ],
+ "tries": [
+  {
+   "x": 2260.1023138465753,
+   "y": 577,
+   "dir": 1,
+   "t0": 25.700000000000436,
+   "t1": 26.166666666667126,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 6,
+    "x": 2389.0578694021324,
+    "y": 527
+   },
+   "hold": 0.14651012878673997
+  },
+  {
+   "x": 2453.8245360687997,
+   "y": 543.6666666666667,
+   "dir": 1,
+   "t0": 26.40000000000047,
+   "t1": 27.0000000000005,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 7,
+    "x": 2621.3578694021344,
+    "y": 554
+   },
+   "hold": 0.1902598549807132
+  },
+  {
+   "x": 2624.729678987225,
+   "y": 554,
+   "dir": 1,
+   "t0": 27.166666666667176,
+   "t1": 27.766666666667206,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 9,
+    "x": 2751.2852345427805,
+    "y": 580
+   },
+   "hold": 0.14888622589301082
+  },
+  {
+   "x": 4261.9074567650205,
+   "y": 580,
+   "dir": 1,
+   "t0": 33.23333333333401,
+   "t1": 33.800000000000644,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 15,
+    "x": 4419.363012320578,
+    "y": 547
+   },
+   "hold": 0.21750948470879683
+  },
+  {
+   "x": 4444.363012320578,
+   "y": 547,
+   "dir": 1,
+   "t0": 34.40000000000061,
+   "t1": 35.000000000000576,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 16,
+    "x": 4610.16301232058,
+    "y": 550
+   },
+   "hold": 0.18467335078896951
+  },
+  {
+   "x": 4656.5074567650245,
+   "y": 552.7777777777778,
+   "dir": 1,
+   "t0": 35.16666666666723,
+   "t1": 35.666666666667204,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 17,
+    "x": 4792.65190120947,
+    "y": 543
+   },
+   "hold": 0.11897170972016285
+  },
+  {
+   "x": 4798.374123431692,
+   "y": 543,
+   "dir": 1,
+   "t0": 36.03333333333385,
+   "t1": 36.633333333333816,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 18,
+    "x": 4938.729678987248,
+    "y": 522
+   },
+   "hold": 0.2200813170533673
+  },
+  {
+   "x": 4068.6529304094815,
+   "y": 580,
+   "dir": 1,
+   "t0": 37.86666666666708,
+   "t1": 38.200000000000394,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 13,
+    "x": 4136.212930409482,
+    "y": 498.35210534418
+   },
+   "hold": 0.15990515321539672
+  },
+  {
+   "x": 4233.746263742816,
+   "y": 498.35210534418,
+   "dir": 1,
+   "t0": 39.03333333333368,
+   "t1": 39.73333333333364,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 15,
+    "x": 4427.468485965041,
+    "y": 547
+   },
+   "hold": 0.20611947299268915
+  },
+  {
+   "x": 4473.235152631708,
+   "y": 555.3333333333334,
+   "dir": 1,
+   "t0": 39.9000000000003,
+   "t1": 40.50000000000026,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 16,
+    "x": 4640.190708187265,
+    "y": 550
+   },
+   "hold": 0.2870737896941331
+  },
+  {
+   "x": 4647.857374853932,
+   "y": 550,
+   "dir": 1,
+   "t0": 40.63333333333359,
+   "t1": 41.233333333333555,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 17,
+    "x": 4792.190708187267,
+    "y": 543
+   },
+   "hold": 0.19826708141995317
+  },
+  {
+   "x": 4780.357374853933,
+   "y": 543,
+   "dir": 1,
+   "t0": 41.80000000000019,
+   "t1": 42.400000000000155,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 18,
+    "x": 4946.7351526317125,
+    "y": 522
+   },
+   "hold": 0.20038193874044766
+  },
+  {
+   "x": 4068.6529304094815,
+   "y": 580,
+   "dir": 1,
+   "t0": 43.50000000000009,
+   "t1": 43.83333333333341,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 13,
+    "x": 4136.212930409482,
+    "y": 498.35210534418
+   },
+   "hold": 0.1458194986026061
+  },
+  {
+   "x": 4265.1684859650395,
+   "y": 498.35210534418,
+   "dir": 1,
+   "t0": 44.30000000000005,
+   "t1": 44.966666666666676,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 15,
+    "x": 4433.790708187264,
+    "y": 547
+   },
+   "hold": 0.17045136241313744
+  },
+  {
+   "x": 4442.45737485393,
+   "y": 547,
+   "dir": 1,
+   "t0": 45.49999999999998,
+   "t1": 46.133333333333276,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 16,
+    "x": 4617.501819298376,
+    "y": 550
+   },
+   "hold": 0.21851273421910578
+  },
+  {
+   "x": 4622.2795970761545,
+   "y": 550,
+   "dir": 1,
+   "t0": 46.566666666666585,
+   "t1": 46.99999999999989,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 17,
+    "x": 4728.357374853933,
+    "y": 543
+   },
+   "hold": 0.06666666666666667
+  },
+  {
+   "x": 4829.390708187268,
+   "y": 551.3333333333334,
+   "dir": 1,
+   "t0": 47.36666666666654,
+   "t1": 48.399999999999814,
+   "kind": "double",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 20,
+    "x": 5114.646263742827,
+    "y": 580
+   },
+   "hold": 0.5677578852325574
+  },
+  {
+   "x": 6966.81851198135,
+   "y": 649.3590973112732,
+   "dir": 1,
+   "t0": 73.63333333333172,
+   "t1": 74.09999999999836,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 31,
+    "x": 7074.571934512299,
+    "y": 580
+   },
+   "hold": 0.17384409676510457
+  },
+  {
+   "x": 9164.783045623386,
+   "y": 580,
+   "dir": 1,
+   "t0": 82.23333333333123,
+   "t1": 82.8333333333312,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 37,
+    "x": 9330.58304562338,
+    "y": 572
+   },
+   "hold": 0.1701026514477672
+  },
+  {
+   "x": 9367.427490067823,
+   "y": 572,
+   "dir": 1,
+   "t0": 82.96666666666452,
+   "t1": 83.49999999999783,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 38,
+    "x": 9514.227490067817,
+    "y": 528
+   },
+   "hold": 0.16710384158081992
+  },
+  {
+   "x": 9526.516378956705,
+   "y": 528,
+   "dir": 1,
+   "t0": 84.06666666666446,
+   "t1": 84.66666666666443,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 39,
+    "x": 9691.483045623365,
+    "y": 535
+   },
+   "hold": 0.17764397989982442
+  },
+  {
+   "x": 9695.105267845587,
+   "y": 535,
+   "dir": 1,
+   "t0": 85.13333333333107,
+   "t1": 85.7999999999977,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 41,
+    "x": 9825.049712290027,
+    "y": 580
+   },
+   "hold": 0.21424986121590267
+  },
+  {
+   "x": 10193.494156734458,
+   "y": 580,
+   "dir": 1,
+   "t0": 87.13333333333095,
+   "t1": 87.9333333333309,
+   "kind": "single",
+   "ok": false,
+   "hurt": true,
+   "running": true,
+   "hold": 0.1929820855375404
+  },
+  {
+   "x": 10013.934837315575,
+   "y": 580,
+   "dir": 1,
+   "t0": 88.26666666666422,
+   "t1": 88.73333333333086,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 40,
+    "x": 10107.034837315572,
+    "y": 498.8592168679461
+   },
+   "hold": 0.24197562366284675
+  },
+  {
+   "x": 10016.823726204464,
+   "y": 580,
+   "dir": 1,
+   "t0": 89.9333333333308,
+   "t1": 90.3666666666641,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 40,
+    "x": 10131.879281760015,
+    "y": 498.8592168679461
+   },
+   "hold": 0.19526867254197586
+  },
+  {
+   "x": 10494.348114154735,
+   "y": 569.3010631910342,
+   "dir": 1,
+   "t0": 92.56666666666398,
+   "t1": 93.2333333333306,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 44,
+    "x": 10729.136299321264,
+    "y": 580
+   },
+   "hold": 0.17551901684211918
+  },
+  {
+   "x": 12638.33708259981,
+   "y": 559.9309173561633,
+   "dir": 1,
+   "t0": 118.63333333332916,
+   "t1": 119.0999999999958,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 48,
+    "x": 12767.29263815536,
+    "y": 519.1325358264148
+   },
+   "hold": 0.15513546181404658
+  },
+  {
+   "x": 12827.981527044247,
+   "y": 519.1325358264148,
+   "dir": 1,
+   "t0": 119.6333333333291,
+   "t1": 120.29999999999573,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 49,
+    "x": 13012.203749266462,
+    "y": 563.1965738460422
+   },
+   "hold": 0.20642550364529294
+  },
+  {
+   "x": 13085.892638155348,
+   "y": 571.5299071793755,
+   "dir": 1,
+   "t0": 120.56666666666239,
+   "t1": 121.19999999999568,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 53,
+    "x": 13261.192638155342,
+    "y": 580
+   },
+   "hold": 0.2322888956474225
+  },
+  {
+   "x": 16895.320415933038,
+   "y": 658.8620439493097,
+   "dir": 1,
+   "t0": 134.63333333332827,
+   "t1": 134.9999999999949,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 59,
+    "x": 16964.45688393417,
+    "y": 580
+   },
+   "hold": 0.13517582560944794
+  },
+  {
+   "x": 17692.42355060088,
+   "y": 580,
+   "dir": 1,
+   "t0": 137.6333333333281,
+   "t1": 138.1666666666614,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 60,
+    "x": 17810.239811244395,
+    "y": 534.0710733640008
+   },
+   "hold": 0.27453976207439423
+  },
+  {
+   "x": 17855.17314457773,
+   "y": 534.0710733640008,
+   "dir": 1,
+   "t0": 138.83333333332803,
+   "t1": 139.49999999999466,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 61,
+    "x": 18011.649141686477,
+    "y": 580
+   },
+   "hold": 0.19761677559295057
+  },
+  {
+   "x": 18008.760252797587,
+   "y": 580,
+   "dir": 1,
+   "t0": 139.9666666666613,
+   "t1": 140.43333333332794,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 62,
+    "x": 18094.671363908707,
+    "y": 516.25750987418
+   },
+   "hold": 0.1912705842337702
+  },
+  {
+   "x": 22003.48649157104,
+   "y": 650.5749221304432,
+   "dir": 1,
+   "t0": 158.66666666666023,
+   "t1": 159.13333333332687,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 82,
+    "x": 22133.597602682155,
+    "y": 580
+   },
+   "hold": 0.19628466662323568
+  },
+  {
+   "x": 22833.444599247956,
+   "y": 580,
+   "dir": 1,
+   "t0": 162.0333333333267,
+   "t1": 162.53333333332668,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 78,
+    "x": 22936.62237702574,
+    "y": 532.2265101950616
+   },
+   "hold": 0.1791346374260748
+  },
+  {
+   "x": 22952.955710359074,
+   "y": 535.0042879728394,
+   "dir": 1,
+   "t0": 162.73333333332667,
+   "t1": 163.33333333332664,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 79,
+    "x": 23117.131058119656,
+    "y": 527.1590136629529
+   },
+   "hold": 0.1977016881775201
+  },
+  {
+   "x": 23199.742169230773,
+   "y": 527.1590136629529,
+   "dir": 1,
+   "t0": 163.63333333332662,
+   "t1": 164.23333333332658,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 80,
+    "x": 23365.542169230783,
+    "y": 538.1680418802425
+   },
+   "hold": 0.19780324065843
+  },
+  {
+   "x": 23467.1532803419,
+   "y": 546.5013752135759,
+   "dir": 1,
+   "t0": 164.59999999999323,
+   "t1": 165.23333333332653,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 82,
+    "x": 23641.875502564133,
+    "y": 580
+   },
+   "hold": 0.18236834987715753
+  },
+  {
+   "x": 23946.131058119707,
+   "y": 580,
+   "dir": 1,
+   "t0": 166.33333333332646,
+   "t1": 166.93333333332643,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 83,
+    "x": 24111.35328034194,
+    "y": 557.8002616539598
+   },
+   "hold": 0.20982865860873584
+  },
+  {
+   "x": 24126.53105811972,
+   "y": 557.8002616539598,
+   "dir": 1,
+   "t0": 167.36666666665974,
+   "t1": 167.89999999999304,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 84,
+    "x": 24273.65328034195,
+    "y": 511.409895750694
+   },
+   "hold": 0.2840920397683187
+  },
+  {
+   "x": 24393.108835897514,
+   "y": 519.7432290840273,
+   "dir": 1,
+   "t0": 168.33333333332635,
+   "t1": 168.99999999999298,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 85,
+    "x": 24576.175502564194,
+    "y": 565.3885265700519
+   },
+   "hold": 0.2393588951882878
+  },
+  {
+   "x": 24582.686613675305,
+   "y": 565.3885265700519,
+   "dir": 1,
+   "t0": 169.1333333333263,
+   "t1": 169.69999999999294,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 86,
+    "x": 24725.03105811976,
+    "y": 525.2460965523496
+   },
+   "hold": 0.20505049634549907
+  },
+  {
+   "x": 23770.872669741828,
+   "y": 580,
+   "dir": 1,
+   "t0": 170.99999999999287,
+   "t1": 171.43333333332617,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 81,
+    "x": 23885.92822529739,
+    "y": 505.4664806104265
+   },
+   "hold": 0.1946793187099059
+  },
+  {
+   "x": 23938.850447519617,
+   "y": 505.4664806104265,
+   "dir": 1,
+   "t0": 171.93333333332615,
+   "t1": 172.6333333333261,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 83,
+    "x": 24131.994891964074,
+    "y": 557.8002616539598
+   },
+   "hold": 0.21831741424709913
+  },
+  {
+   "x": 24205.683780852967,
+   "y": 566.1335949872931,
+   "dir": 1,
+   "t0": 172.89999999999276,
+   "t1": 173.39999999999273,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 84,
+    "x": 24342.4060030752,
+    "y": 511.409895750694
+   },
+   "hold": 0.19111877836921437
+  },
+  {
+   "x": 24348.91711418631,
+   "y": 511.409895750694,
+   "dir": 1,
+   "t0": 173.73333333332604,
+   "t1": 174.39999999999267,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 85,
+    "x": 24528.161558630767,
+    "y": 565.3885265700519
+   },
+   "hold": 0.19283737499609083
+  },
+  {
+   "x": 24537.56155863077,
+   "y": 565.3885265700519,
+   "dir": 1,
+   "t0": 174.8666666666593,
+   "t1": 175.43333333332595,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 86,
+    "x": 24667.839336408557,
+    "y": 525.2460965523496
+   },
+   "hold": 0.24163125795638654
+  },
+  {
+   "x": 23767.983780852937,
+   "y": 580,
+   "dir": 1,
+   "t0": 176.46666666665922,
+   "t1": 176.8666666666592,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 81,
+    "x": 23851.583780852943,
+    "y": 505.4664806104265
+   },
+   "hold": 0.16165223602822576
+  },
+  {
+   "x": 23940.49489196406,
+   "y": 505.4664806104265,
+   "dir": 1,
+   "t0": 177.1999999999925,
+   "t1": 177.8333333333258,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 83,
+    "x": 24114.90600307518,
+    "y": 557.8002616539598
+   },
+   "hold": 0.1489611349050699
+  },
+  {
+   "x": 24212.428225297404,
+   "y": 566.1335949872931,
+   "dir": 1,
+   "t0": 178.19999999999246,
+   "t1": 178.63333333332577,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 84,
+    "x": 24332.461558630745,
+    "y": 511.409895750694
+   },
+   "hold": 0.1620008076689136
+  },
+  {
+   "x": 24387.728225297415,
+   "y": 519.7432290840273,
+   "dir": 1,
+   "t0": 178.83333333332575,
+   "t1": 179.49999999999238,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 85,
+    "x": 24570.794891964095,
+    "y": 565.3885265700519
+   },
+   "hold": 0.22726758701534205
+  },
+  {
+   "x": 24575.93933640854,
+   "y": 565.3885265700519,
+   "dir": 1,
+   "t0": 179.53333333332571,
+   "t1": 180.09999999999235,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 86,
+    "x": 24724.26155863077,
+    "y": 525.2460965523496
+   },
+   "hold": 0.2558957593008531
+  },
+  {
+   "x": 24927.8822760202,
+   "y": 580,
+   "dir": 1,
+   "t0": 181.06666666665896,
+   "t1": 181.59999999999226,
+   "kind": "single",
+   "ok": false,
+   "hurt": false,
+   "running": false,
+   "hold": 0.18988521116692472
+  },
+  {
+   "x": 25320.930196372312,
+   "y": 580,
+   "dir": 1,
+   "t0": 183.26666666665884,
+   "t1": 183.7666666666588,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 89,
+    "x": 25414.030196372318,
+    "y": 518
+   },
+   "hold": 0.21511987311583403
+  },
+  {
+   "x": 26829.027418594615,
+   "y": 580,
+   "dir": 1,
+   "t0": 189.23333333332516,
+   "t1": 189.76666666665847,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": true,
+   "land": {
+    "id": 96,
+    "x": 26978.13852970573,
+    "y": 523.202499056235
+   },
+   "hold": 0.21462156505647592
+  },
+  {
+   "x": 26986.264554706853,
+   "y": 523.202499056235,
+   "dir": 1,
+   "t0": 190.16666666665844,
+   "t1": 190.73333333332508,
+   "kind": "single",
+   "ok": true,
+   "hurt": false,
+   "running": false,
+   "land": {
+    "id": 97,
+    "x": 27116.208999151306,
+    "y": 494.80374858435243
+   },
+   "hold": 0.2059920095786167
+  }
+ ],
+ "noRoute": false,
+ "turns": {
+  "n": 281,
+  "lag": 29.8
+ },
+ "backtrack": {
+  "route": 1.06,
+  "bot": null
+ },
+ "frames": 5905
+}
