@@ -60,11 +60,23 @@ try {
   await sleep(2500);
   await back('stage playing');
   await back('pause menu');
-  await page.evaluate(() => { const e = window.__probeEngine(); for (let i = 0; i < 12 && e.lives > 0; i++) e.loseLife('pit'); });
-  await sleep(3500);
+  for (let i = 0; i < 8; i++) { const left = await page.evaluate(() => { const e = window.__probeEngine(); e.loseLife('pit'); return e.lives; }); await sleep(3500); if (left <= 0) break; }
+  await sleep(1500);
   await back('after losing every life (game over)');
   await sleep(800);
+  await back('game over card again');
   rows.push('end state: ' + (await state()));
+  // a world's arrival story (World 6's flag cleared) and a guardian's first card (6-10)
+  await page.evaluate(() => localStorage.removeItem('sloth_story_w6'));
+  await page.goto(page.url()); await page.locator('.ttl-leaf').first().waitFor({ timeout: 30000 }); await sleep(1200);
+  await click(page, '.ttl-leaf >> nth=0'); await page.locator('.wm-head').waitFor(); await sleep(600);
+  for (let i = 0; i < 12; i++) { const t = (await page.locator('.wm-prog-w').first().innerText()).trim(); const cur = Number(t.match(/World (\d+)/)[1]); if (cur === 6) break; await click(page, `.wm-arrow[aria-label="${cur < 6 ? 'Next' : 'Previous'} world"]`); }
+  await click(page, '.map-node[aria-label^="Stage 6-10:"]'); await click(page, '.wm-play'); await sleep(2500);
+  await back('world 6 story or guardian scene');
+  await sleep(1500);
+  await back('next screen after that');
+  await sleep(1500);
+  rows.push('then: ' + (await state()) + ' | ' + (await page.evaluate(() => document.body.innerText.slice(0, 80).replace(/\s+/g, ' '))));
   rows.push('bridge calls: ' + JSON.stringify(await page.evaluate(() => [...new Set(window.__calls)])));
 } catch (e) { rows.push('STOPPED: ' + e.message.split('\n')[0]); }
 console.log(rows.join('\n'));

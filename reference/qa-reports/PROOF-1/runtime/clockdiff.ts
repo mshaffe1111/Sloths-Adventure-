@@ -6,6 +6,10 @@ import { writeFileSync } from 'node:fs';
 const repo = process.argv[2];
 const outFile = process.argv[3];
 const FRAMES = Number(process.argv[4] ?? 600);
+// SEEDRAND=1: Math.random made the same seeded sequence on both sides, per stage (the bosses roll their moves: bossAI.ts seed)
+let rs = 0;
+const seedRand = (n: number) => { rs = n >>> 0; };
+if (process.env.SEEDRAND) Math.random = () => { rs = (rs + 0x6d2b79f5) >>> 0; let t = rs; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
 const rp = await import(`${repo}/src/game/realPlay.ts`);
 const wd = await import(`${repo}/src/game/worldsData.ts`);
 const SKIP = new Set(['player', 'camera', 'particles', 'input', 'canvas', 'ctx', 'callbacks', 'floatingTexts', 'said', 'passed', 'perf', 'recorderState', 'stage', 'currentStage', 'level', 'config', 'clock']);
@@ -13,7 +17,10 @@ const ids: string[] = wd.generateAllLevels().map((l: any) => l.id);
 const only = process.env.STAGES?.split(',');
 const res: Record<string, { err?: string; frames?: Record<string, string>[] }> = {};
 const seen = new WeakSet();
+// IGNORE: field names left out (names that only one side has: a renamed or new flag); a repo's own path is cut from strings
+const IGNORE = new Set((process.env.IGNORE ?? '').split(',').filter(Boolean));
 function ser(v: any, d = 0): any {
+  if (typeof v === 'string') return v.split(repo).join('<repo>');
   if (v === null || typeof v !== 'object') return typeof v === 'function' ? undefined : v;
   if (d > 5) return '…';
   if (v instanceof HTMLCanvasElementLike()) return undefined;
@@ -21,7 +28,7 @@ function ser(v: any, d = 0): any {
   if (v instanceof Map) return [...v.entries()].map(([k, x]) => [k, ser(x, d + 1)]);
   if (v instanceof Set) return [...v.values()].map((x) => ser(x, d + 1));
   const o: any = {};
-  for (const k of Object.keys(v).sort()) { const x = v[k]; if (typeof x === 'function') continue; if (x && typeof x === 'object' && (x.getContext || x.drawImage || x.naturalWidth !== undefined)) continue; o[k] = ser(x, d + 1); }
+  for (const k of Object.keys(v).sort()) { if (IGNORE.has(k)) continue; const x = v[k]; if (typeof x === 'function') continue; if (x && typeof x === 'object' && (x.getContext || x.drawImage || x.naturalWidth !== undefined)) continue; o[k] = ser(x, d + 1); }
   return o;
 }
 function HTMLCanvasElementLike(): any { return (globalThis as any).HTMLCanvasElement ?? class {}; }
@@ -29,6 +36,7 @@ const h = (s: string) => createHash('sha1').update(s).digest('hex').slice(0, 16)
 for (const id of ids) {
   if (only && !only.includes(id)) continue;
   try {
+    seedRand(12345);
     const r = new rp.RealPlay(id, 1);
     const e = r.e;
     const keys = Object.keys(e).filter((k) => !SKIP.has(k) && e[k] && typeof e[k] === 'object' && !(e[k].getContext) && !ArrayBuffer.isView(e[k]));
