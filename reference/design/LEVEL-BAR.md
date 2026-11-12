@@ -41,8 +41,10 @@ is scored 0 (missing), 1 (there, rough), 2 (at the bar), with the proof named. *
 14. **(must) Every gate is green on the exact head**, the stage lock shows no other stage moved, and a bot has finished it on both
    settings. Proof: the gate table in REPORT.md.
 
-## Scoring 1-3 as it stands today (head of t-w1-creatures, honest)
-A1 2, A2 1 (the beats exist as bricks, the ORDER is rolled, not designed), A3 0 (World 1's bounce and gap sections are dealt between
-the snake beats), A4 1. B5 1 (the time model only, no bot), B6 0 (hearts and flags are the generator's, not the table's), B7 2.
-C8 1 (traps fit; the gallery not checked beat by beat), C9 1 (the snake's tail at the edge; the vine's top behind the sign sideways),
-C10 0 (stand-in trap art; the list is with ART-W1). D11 2, D12 1. E13 0, E14 0 (no bot, no seed list). **Not shippable yet: four 0s.**
+## Scoring 1-3 as it stands today (head of t-w1-creatures after the designed arc, honest)
+A1 2, A2 2 (one graph, one brick a beat: every roll lays the arc in order, held by a test), A3 2 (World 1's library gives only
+arrivals, rests and exits; no bounce or gap section is dealt in), A4 1. B5 1 (198 s on the time model; no bot yet), B6 1 (flags are
+the generator's, about 11; hearts not yet seen on it), B7 2. C8 1 (every trap fits one upright screen and is clear of the sign
+sideways; a bare branch's snake is at the edge until he is on the branch), C9 1 (the same), C10 0 (stand-in trap art; the list is
+with ART-W1). D11 2, D12 1. E13 1 (480 of 480 rolls are the arc, but there is no seed list yet), E14 0 (no bot; flown rows are
+1-1's). **Not shippable yet: two 0s (the painted traps, a bot and its own flown rows), both in hand with ART-W1 and P13.**
