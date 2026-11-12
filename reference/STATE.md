@@ -618,3 +618,4 @@ lines); Matt sees them in the release.
   map stays with the lead; the designer gets the lists unlabelled and says which ideas it used and why. Then a designer (Opus max)
   writes reference/design/1-4.md; the build waits for the two-vine climb engine piece.
 - 2026-11-12 6:10 PM ET: INT-2 merged t-fx (357c0e74); FX's rolled-pass flag rule also moved 1-3's flags/petals/dress (platforms, enemies, cast unchanged; seedlist 1-3 PASS 100). Lead: accept (a) as the same defect fix; Step 3 adds a dry run of 1-3's proven filter (bots, defaults) to confirm the 100 seeds.
+- 2026-11-12 6:12 PM ET: 1-3 lesson ruling: the card stays at the flag (~3 s before the vine, so every tier reads it); the story keeper rewrites line 1 to be true without the hive in view; one two-line card; F13's stop line 7:45 PM. R-165.162 = the real fix (Dot or the camera shows the named thing as she speaks).
