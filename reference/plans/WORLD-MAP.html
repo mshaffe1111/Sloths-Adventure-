@@ -94,6 +94,7 @@ section{margin-top:28px}
 .it{font-weight:700;font-size:15px;margin:2px 0 4px}
 .insp{font-size:13px;font-style:italic;color:var(--muted)}
 .wh{font-size:13px;margin-top:4px}
+.beat-l{margin:2px 0 0;padding-left:18px}
 [hidden]{display:none!important}
 @media (max-width:560px){
   .world-top{grid-template-columns:1fr}
@@ -112,6 +113,7 @@ section{margin-top:28px}
     <button role="tab" data-view="worlds" aria-selected="true">Worlds</button>
     <button role="tab" data-view="pieces" aria-selected="false">What the engine needs</button>
     <button role="tab" data-view="ladder" aria-selected="false">Move ladder</button>
+    <button role="tab" data-view="creatures" aria-selected="false">Creatures</button>
     <button role="tab" data-view="ideas" aria-selected="false">Your ideas</button>
     <button role="tab" data-view="order" aria-selected="false">Build order</button>
   </nav>
@@ -130,6 +132,11 @@ section{margin-top:28px}
   <section id="v-ladder" hidden>
     <div class="sec-h"><h2>The move ladder</h2><p>One new move a world. A world should teach it by its third stage so the rest of the world can build on it.</p></div>
     <div class="ladder" id="ladder"></div>
+  </section>
+
+  <section id="v-creatures" hidden>
+    <div class="sec-h"><h2>Creatures: who they are and how you beat them</h2><p>Designed by Fable on 11-11 from the real animals, with the story keeper's background. Every creature warns before it can hurt, and every way to beat one ends with it chased off, fleeing, stunned or dozing: never eaten. Story keeper review in progress.</p></div>
+    <div id="creatures"></div>
   </section>
 
   <section id="v-ideas" hidden>
@@ -425,9 +432,42 @@ const IDEAS=[
 const ideaEl=document.getElementById("ideas");
 ideaEl.innerHTML=IDEAS.map(([g,rows])=>`<h3 class="ig">${g}</h3><div class="ideas">${rows.map(r=>`<div class="idea v-${r[3]}"><div class="ih"><span class="in">${r[0]}</span><span class="vd">${r[3]==="IN"?"In":r[3]==="PARK"?"Parked":r[3]==="DONE"?"Done":"Out"}</span></div><div class="it">${r[1]}</div><div class="insp">Echoes: ${r[2]}</div><div class="wh">${r[4]}</div></div>`).join("")}</div>`).join("");
 
+
+const CREAT=[
+ ["Golden Tree Snake","W1, W2","Patrol, shy","The real \"flying snake\": it flattens its body and glides between trees.","It gives ground, backing along its branch, and strikes only when it runs out of branch or you crowd it. Beaten, it flattens and glides off to a lower tree. Nobody is hurt.","Rears and sways, with a hiss.",["Punch: knocked off its branch end","Drop trap: shake its vine or drop the hive, and it glides away","Stomp: he vaults it","Kick: chased off"]],
+ ["Boa Constrictor","W1 star, W7, W8","Ambush","Senses warmth and movement; a sloth's body runs cool.","It strikes only at movement. To a boa, a still sloth is a cool, mossy branch: red light, green light at arm's length.","Head draws back, tongue flicks, leaves rattle.",["Drop trap (1-9): chased off, grumpy","Lead the eagle's shadow over it (it fears the eagle)","Go still: it gives up","Punch its head while it's stretched out after a miss"]],
+ ["Harpy Eagle","W1, W4","Sweep","The real hunter of sloths: it watches the canopy for movement.","The shadow. It is never on the ground. It crosses its stretch and takes only what it sees.","A screech, then the shadow waits at the edge before it crosses.",["Go still in a bush: two empty passes and it gives up","Make a noise elsewhere: the shadow goes to look","Behind a waterfall counts as cover (W4)"]],
+ ["Snapping Turtle","W2 star","Seek","Sits still with its mouth open, wiggling its tongue as bait. All shell.","Nosy and grumpy. It goes to look at any noise, and from the front it is just a shell.","Neck pulls back, with a click.",["Kick: the shell slides away and bowls over what it meets","Stomp: it pulls in","Make a noise: it turns its back to look","Punch it from behind"]],
+ ["Spectacled Caiman","W2 (asleep), W6 star","Sweep, in water","Floats like a log, feels ripples through its jaw, eyes shine at night.","The ripple. Asleep it IS a log you cross on quiet feet. Awake, it swims its stretch and snaps at whatever stirs the water.","Ripples gather and two eyes rise.",["Go still: the ripple passes","Punch while its jaws are shut","Trap it in a sap bubble","W2: quiet feet and it never wakes"]],
+ ["Ocelot","W3 star, W7, W10","Stalk","A night stalker that freezes when its prey looks round.","Like the ghosts in Mario: it creeps while your back is turned, crawls when you face it, loses you when you're still, and comes to noise.","Crouch and a twitching tail, with a soft chirr.",["Go still: it loses you","Lure it under the loose stalactite (3-3)","The drum stuns it","Face it, then punch"]],
+ ["Jaguar","W3, W8, W9","Drop","Ambushes from above, dropping from a bough.","It waits on a shelf and comes down where you WERE when it growled, then has to climb all the way back, grumbling.","Eyes shine, pebbles fall, a growl.",["The stalactite trap","The drum","Punch while it's winded","W8 light; W9 its drop lands on a geyser"]],
+ ["Tayra","W6 star, W9","Charge","A tireless runner that guards its fruit stash.","It runs its line to the very end, every time, and can't turn until it skids. You choose where the line ends.","It stands up tall and chitters.",["Lure its charge into the caiman's water (6-5)","Stomp over the dash","Kick: bowled back","W9: its line ends on a geyser"]],
+ ["Night Harpy","W8 star, W9","Seek","Hunts by ear in the dark.","It hunts by sound and hates light.","",["Light: the owl's light or the jar","Lure it under the owl (it fears the owl)","Go still: no sound, it loses you","The drum, then punch while it's dizzy"]],
+ ["Thorn Vine","W3","Ambush, on the clock","(ours) A sensitive plant, like touch-me-nots that fold when brushed.","A sleeper with one eye. It stirs, looks, sleeps, and lashes only at what moves while it looks.","An eye opens during the stir.",["Go still while it looks","The drum","Drop a stone on it: it curls away"]],
+ ["Stone Sentry","W7 star","Guard","(ours) A temple statue.","A doorway that hits back. It can't be hit; it strikes only what comes within reach, and turns its head to noise.","Eyes glow, stone grinds.",["Break the cracked pillar onto it","Push a block into it","Make a noise: it turns its head","Can't be punched or stomped"]],
+ ["Fruit Bats","W8","Sweep","Roost by the hundred; one startled bat sets off the lot.","One creature made of many. A ripple of wings runs along the roost on a beat; cross while they settle. They shoo, they never bite.","A flutter runs through the roost.",["Go still as the ripple passes","Light settles them"]],
+ ["Capuchins","W4 star","Thief, lookout, guard","Clever, loud, steal food, post lookouts.","The thief sneaks a petal and teases; the lookout stares, then calls the eagle; the guard paces a ledge. They never hurt Pokey.","",["Thief: punch, it drops the petal and runs","Lookout: lure it with fruit, or take cover","Guard: the wind blows it off its ledge (4-9)"]],
+ ["Mimic Bush","W8, new","Guard","(ours)","A bush that blinks. There is never a mimic without the blink.","Blinks twice and rustles.",["Light shows it","Punch after it snaps"]],
+ ["The Drake's Gaze","W9 star","Sweep, remembers","(the guardian's eye, not a body)","\"Visitor.\" then \"Intruder.\" The first time, stillness hides you; once it has seen you, only shade does.","The glow turns before the beam.",["Go still (the first time only)","Shade","Cover"]],
+];
+const NEWC=[
+ ["Dangler","W5","A spider on a line, the way real orb spiders drop. It bobs on the clock, comes down when a thread hums, and climbs back: a yo-yo gate."],
+ ["Orchid Mantis","W5 star","Has a disguise pose: the flower that is the trap. The real orchid mantis looks exactly like a bloom."],
+ ["Crab","W6","Mangrove crabs wave one big claw and bolt down their holes when the tide comes. It guards a root gap; the tide beats it, a kick flips it."],
+ ["Piranha","W6","Drawn to splashing. A hard landing in water calls the shoal; calm strokes pass. Throw a splash elsewhere, or lead them to the caiman."],
+ ["Beetle","W7","Dung beetles roll their ball in a straight line by starlight. It rolls a giant seed along its beat: the seed blocks you, pushes you, and is a ride if you hop on."],
+];
+const CASTS=[["1 Emerald Canopy","snake, eagle, boa","the boa"],["2 Sunlit Riverbank","turtle, River King's guard, sleeping caiman, snake","the turtle"],["3 Mossy Grotto","ocelot, jaguar, thorn vine, grotto eyes","the ocelot"],["4 Mist Cascades","eagle, capuchin thief, lookout, guard, eaglets","the capuchins"],["5 Orchid Sanctuary","spider, seamstress, butler, dangler, orchid mantis","the mantis"],["6 Deep Mangrove","caiman, tayra, frog, crab, piranha","the tayra and the caiman"],["7 Ancient Ruins","stone sentry, boa, ocelot, beetle","the sentry"],["8 Twilight Treetops","night harpy, jaguar, bats, mimic bush, a dozing boa","the night harpy"],["9 Volcanic Jungle","the Drake's gaze, tayra, jaguar, night harpy","the gaze"],["10 Stormy Highlands","soldier, ocelot, and one of each earlier habit","every lesson at once"]];
+document.getElementById("creatures").innerHTML=
+ `<div class="flag"><b>Fable's big recommendation, for you to decide:</b> today Worlds 6, 7 and 8 share one list of six animals, which is part of why they feel alike. Give each world its own cast of 3 to 5 animals, one habit each, and a star. Five of the new ones use art we already own.</div>`+
+ `<h3 class="ig">Each world's cast (proposed)</h3><div class="ideas">${CASTS.map(c=>`<div class="idea v-IN"><div class="ih"><span>World ${c[0]}</span></div><div class="it">${c[1]}</div><div class="wh">Star: ${c[2]}</div></div>`).join("")}</div>`+
+ `<h3 class="ig">The creatures</h3><div class="ideas">${CREAT.map(c=>`<div class="idea v-IN"><div class="ih"><span>${c[1]}</span><span class="vd">${c[2]}</span></div><div class="it">${c[0]}</div><div class="insp">The real animal: ${c[3]}</div><div class="wh"><b>In our game:</b> ${c[4]}</div>${c[5]?`<div class="wh"><b>Warning:</b> ${c[5]}</div>`:""}<div class="wh"><b>Ways to beat it:</b><ul class="beat-l">${c[6].map(x=>`<li>${x}</li>`).join("")}</ul></div></div>`).join("")}</div>`+
+ `<h3 class="ig">New creatures on art we already own</h3><div class="ideas">${NEWC.map(c=>`<div class="idea v-PARK"><div class="ih"><span>${c[1]}</span><span class="vd">Art owned</span></div><div class="it">${c[0]}</div><div class="wh">${c[2]}</div></div>`).join("")}</div>`+
+ `<p class="lede">Four more (the owl, the howler monkey, a lava lizard, sleeping bats) need a few animation clips first. Every new creature still gets your picture approval before it ships.</p>`;
+
 // tabs
 document.querySelectorAll("nav.tabs button").forEach(b=>b.addEventListener("click",()=>{
   document.querySelectorAll("nav.tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
-  ["worlds","pieces","ladder","ideas","order"].forEach(v=>document.getElementById("v-"+v).hidden=v!==b.dataset.view);
+  ["worlds","pieces","ladder","creatures","ideas","order"].forEach(v=>document.getElementById("v-"+v).hidden=v!==b.dataset.view);
 }));
 </script>
