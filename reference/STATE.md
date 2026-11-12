@@ -627,3 +627,4 @@ lines); Matt sees them in the release.
   lift is a made thing (story keeper must rewrite), Pokey's halfway line, the Notch find. D14 (Opus max, session_01FhBbYNCZq3F5dwGa6TUPi9,
   t-14-design, packet D14.md) designs 1-4 from the three, design only; build waits for the engine pieces + Matt's feel test. Idea
   helpers retired.
+- 2026-11-12 6:19 PM ET: RF3 DONE and retired (t-render-3@18afc7b0: hollow painter fitted walls + 38 px mirror fix; lock unchanged). R-165.163 buildcheck red (1-1 build p95 > 150 ms budget) blocks 0.9.7; INT-2 measures which merge caused it.
