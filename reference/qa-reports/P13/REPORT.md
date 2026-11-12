@@ -13,7 +13,11 @@ RECORDED (100 seeds, first seed 1, the lead's advance OK). Still open on F13's s
    reach (-10..85 px): KID/ADULT on the move (their thumbs never let go, R-165.59), tiers by taps. On a cast stage: he turns back
    from a sealed shrine once Dot says why; a tier's thumb lift holds his stopped count at a log face (child N 9/16 -> 16/16, A/B).
    On a cast stage he hops up to an animal on a low log rather than punch it from below. castBots.test.ts 6/6 (5 planted). tierBots.test 7/7 and firstTimerBot.test: 1-1 and 5-9
-   unchanged. **The bar: every tier told of traps AND springs trap0 on 130/130, Normal and Easy** (middle Normal 129/130).
+   unchanged. **The bar: every tier told of traps AND springs trap0 on 130/130, Normal and Easy**, heard
+   through the game's own setting filter at the phone's default (DotSay.allows: Tips on Normal, Help on Easy). Earlier counts ran with
+   no filter: D12 found the teach line dropped on Tips (helpAllows); fixed (a stage teach line passes Tips and Help; planted). A/B,
+   seeds 1-10: Normal told 0/10 every tier without the fix, 10/10 with. Real page, defaults (P13/page-teach-lines-defaults.txt): the
+   trap line shows on Normal and Easy; 1-3's two plain lines and 1-2's are not teach-marked, so Tips hides them (data: teachTips).
 3. **Flown rows**: FLIGHT_STAGE=1-3, both settings (P13/fly/): Easy identical to easy-any; Normal 0-5 px under 1-2's. 8
    `normal-1-3` rows (flownArcs.ts, sourced chain.md §1; single hold's any the flown 244). Row `judged: 'normal-1-3'`. **Real 1-3:
    120/120 clean Normal and Easy, seeds 1-120 and 50001-50120, 240/240 judged, 0 thrown** (clean.ts, any listed stage).
@@ -34,9 +38,8 @@ RECORDED (100 seeds, first seed 1, the lead's advance OK). Still open on F13's s
    lead): Normal 13 with 12 traps (the two-snakes vine), Easy 10 with 12 traps: not the trap count the lead asked for.
 7. **Stills** (P13/stills/adult-n-1-1-3-L1-*, the REAL game on c925d4e6, layout 1 Normal, the adult first-timer's own run, each
    moment in the run's state: ft-moments.ts + ft-stills.mjs): first snake, trap0 SET, mid-fall, after, first punch-glide, the
-   gallery, the end; upright and sideways. **R-165.155** (the lead's): the goal sign stops at its goal (goalShown, 13/13 not 16/13).
-   **Purge goal card** (the lead's): "This stage: send 13 snakes on their way" / "to open the shrine." (1: "send 1 boa on its way"),
-   the creature from the stage's data (engine goalCreature); purgeCard.test; the card measured on 1-3: no overflow (P13/card/).
+   gallery, the end; upright and sideways. **R-165.155**: the goal sign stops at its goal (goalShown). **Purge card**: "This stage:
+   send 13 snakes on their way" / "to open the shrine." (1: "its way"), creature from data (engine goalCreature); purgeCard.test.
 
 ## Polish check (P13/stills, a contact sheet of all 14 looked at)
 - trap0 set: the hive over the sleeping snake, the vine at his hand, both orientations; mid-fall: the load on its way, Dot's "Off he
@@ -44,15 +47,14 @@ RECORDED (100 seeds, first seed 1, the lead's advance OK). Still open on F13's s
 - **Named:** upright, trap0's sleeper sits near the right edge (W1C named it); stand-in trap art (ART-W1's); the faint soil line
   (RF2's fix not on this base); the exit vine not painted yet (F13/ART-W1B). R-165.150 (walking into a low log) is a real engine defect.
 
-## Gates (t-13-proof on F13 c925d4e6 + the list)
+## Gates (t-13-proof on F13 c925d4e6 + the list; the card measured on 1-3 upright 412/320 and sideways: no overflow, P13/card/)
 tsc clean; gen2+worlds 483 pass, 1 red: yield.test.ts:62 (1-1 yield 11 of 30, floor 12), red on F13's c925d4e6 alone too: F13's. Full
 src/game earlier on W1C 219502e1: red only w1Pits.test.ts:58 (W1C's own head too: F13's). seedlist 1-3 --check PASS 100, 1-1 PASS 258;
 generality PASS; tierBots 7/7; castBots.test 6/6; my tests (dotTeach, castMoments, wayside, teachTips, judgedTable, goalShown) green;
 lock 16 layouts 101/102 unchanged, 1-3 intended (W1C 219502e1); vite build, chunkcheck, artcheck, knowncheck PASS (final head). Not run
 on the final head: drawcheck, clipcheck, kbdcheck, buildcheck, roadmapcheck (shallow clone); F13 owns 1-3's final-head gates.
-
 ## Method update
-Worked: fly the bots on the real roll before trusting a teach (the 1.5 s tip was only visible in the bot's Dot). Failed: my first
-still script placed Pokey on the stage as built (all snakes, 0/10): stills of a run must carry the run's state (ft-stills.mjs).
-Worked: strand.ts (play on from a stranded run's exact state) settles bot-or-level in one run. Edit for reference/methods/stage-fix.md:
-"a new mechanic: fly every tier, report told-of and first-sprung per tier; a stranded bot: run strand.ts before calling it a softlock".
+Worked: fly every tier on the real roll at the DEFAULT Dot setting (a teach that only shows on Help is no teach), and strand.ts (play
+on from a stranded run's exact state) to settle bot-or-level. Failed: my first bots heard Dot with no setting filter; my first stills
+placed Pokey on the stage as built. Edit for reference/methods/stage-fix.md: "fly every tier at the default setting; told-of and
+first-sprung per tier; strand.ts before calling a strand a softlock".
