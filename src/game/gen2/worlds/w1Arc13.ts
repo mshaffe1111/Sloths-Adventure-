@@ -127,8 +127,11 @@ function stair(n: number, u: Unit): { pieces: SectionPiece[]; sockets: Socket[] 
   for (let j = 0; j < n; j++) { pieces.push(led(`s${j}`, prev, LEDGE, UP)); prev = `s${j}`; }
   const c = core('t', prev, { ...u, perch: false });
   pieces.push(...c.pieces); sockets.push(...c.sockets); prev = c.last;
-  for (let j = 0; j < n; j++) { pieces.push(led(`d${j}`, prev, LEDGE, DOWN)); prev = `d${j}`; }
-  pieces.push(led('z', prev, LEDGE));
+  // (the way down on NARROW steps: a step down is nothing to do, and three LEDGE-wide ones were 4.3 s of it (seedList QUIET_MAX 4 s))
+  for (let j = 0; j < n; j++) { pieces.push(led(`d${j}`, prev, NARROW, DOWN)); prev = `d${j}`; }
+  // (the ledge out hops UP onto a root: the way down is three steps with nothing to do, and the route keeps something to do every
+  //  few seconds (seedList QUIET_MAX 4 s; P13, 11-12: 8-11 s here with a flat ledge out and flat breath after it). breath(.., 'down') follows)
+  pieces.push(led('z', prev, LEDGE, UP));
   sockets.push(low('pz', 'z', [0.4, 0.6], 1));
   return { pieces, sockets };
 }
@@ -154,13 +157,17 @@ const HIVE: Unit = { load: 'trap-hive' }, STONE: Unit = { load: 'trap-stone' }, 
 /** a long root bank after the last branch of a beat that asks for his own hands (X, C): the one kind of ledge in the level a
  *  purge's top-up may stand a bare snake on (300 px and more; every other ledge is under 248) */
 const ROOM: R2 = [300, 340];
-const withRoom = (l: Lay): Lay => { const z = l.pieces[l.pieces.length - 1].key; return { pieces: [...l.pieces, led('zz', z, ROOM)], sockets: [...l.sockets, low('pzz', 'zz', [0.3, 0.7])] }; };
+/** (and a root pair after it, up and down, so the beat's last hop is never more than a few hundred px from its end: the room alone
+ *  left 555 px with nothing to do at every bare-log beat's end, over the seed list's quiet line with the rest after it) */
+const withRoom = (l: Lay): Lay => { const z = l.pieces[l.pieces.length - 1].key; return { pieces: [...l.pieces, led('zz', z, ROOM), led('zu', 'zz', [200, 220], UP), led('zd', 'zu', [200, 220], DOWN)], sockets: [...l.sockets, low('pzz', 'zz', [0.3, 0.7])] }; };
 /** `n` short ledges after a beat's last piece, a petal row on each: the breath INSIDE a beat (a beat is 20 s and more by design; every
  *  ledge is under 248 px, so no animal is ever topped up onto one) */
-const breath = (l: Lay, n: number, hop = false): Lay => {
+const breath = (l: Lay, n: number, hop = false, first: 'up' | 'down' = 'up'): Lay => {
   const pieces = [...l.pieces], sockets = [...l.sockets];
-  // (`hop`: the ledges step up and back down, 50 px at a time, a root to hop over: the route ends level, as it began)
-  for (let j = 0; j < n; j++) { const k = `y${j}`; pieces.push(led(k, pieces[pieces.length - 1].key, LEDGE, hop ? (j % 2 ? DOWN : UP) : [0, 0])); sockets.push(low(`p${k}`, k, [0.3, 0.7])); }
+  // (`hop`: the ledges step up and back down, 50 px at a time, a root to hop over: the route ends level, as it began. `first` 'down':
+  //  after a piece that ends a step up (the stair's ledge out), so an odd count ends level)
+  const [a, b] = first === 'up' ? [UP, DOWN] : [DOWN, UP];
+  for (let j = 0; j < n; j++) { const k = `y${j}`; pieces.push(led(k, pieces[pieces.length - 1].key, LEDGE, hop ? (j % 2 ? b : a) : [0, 0])); sockets.push(low(`p${k}`, k, [0.3, 0.7])); }
   return { pieces, sockets };
 };
 /** a version whose bare branches are wider on Easy, a long bank after it */
@@ -221,7 +228,7 @@ export const ARC_13: SectionTemplate[] = [
   brick({ id: 'w1-13-again', name: 'again, awake: a snake pacing under a hive, then one under a stone', jobs: ['practise'], difficulty: 3, versions: [{ id: 'awake-hive-then-stone', lay: breath(row([HIVE, STONE]), 4, true) }] }),
   // [M] beat 3, the stone: a root stair, and at its top a snake under a stone held by a tendril tied at his feet (the second handle)
   brick({ id: 'w1-13-stone-stair', name: 'the stone on the root stair', jobs: ['flow'], content: 'climb', difficulty: 4, versions: [
-    { id: 'three-steps-stone', lay: breath(stair(3, STONE), 4), easy: breath(stair(2, STONE), 4) }, { id: 'two-steps-stone', lay: breath(stair(2, STONE), 4) },
+    { id: 'three-steps-stone', lay: breath(stair(3, STONE), 7, true, 'down'), easy: breath(stair(2, STONE), 7, true, 'down') }, { id: 'two-steps-stone', lay: breath(stair(2, STONE), 7, true, 'down') },
   ] }),
   // [X] beat 5, the other way: two long bare branches and no trap. The first snake sleeps at its post (a free punch, or a vault);
   // the second backs away down its branch and is punched off the end. Easy: wider branches, and its second snake softened
@@ -279,34 +286,36 @@ const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V
   ...brick({ id: o.id, name: o.name, jobs: [o.job], difficulty: 1, versions: o.versions }),
   phases: [o.job === 'arrive' ? 'start' : 'rest'], content: 'structural', uses: [], terrain: 'floor-stones', ...(o.job === 'arrive' ? { maxPerStage: 1 } : {}),
 } as SectionTemplate);
-/** a quiet bank (a rest's or the arrival's): long, level or a small root step (24-40 px), a flag's ground */
+/** a quiet bank (a rest's or the arrival's): a flag's ground, and a ROOT STEP of World 1's 50-56 px (UP, DOWN) every few hundred px: a
+ *  24-40 px step or a log 25 px thick is walked without a hop, and long banks of them were 4-5 s with nothing to do, over the seed
+ *  list's quiet line (seedList QUIET_MAX 4 s; P13 and F13, 11-12). Each piece ends level, as it began */
 const bank = (key: string, after: string | null, w: R2, dy: R2 = [0, 0]): SectionPiece => led(key, after, w, dy);
 export const QUIET_OWN_13: SectionTemplate[] = [
   // [A] the walk in: root banks in the evening light, a low log to hop, petals low. Nothing here can hurt
   link({ id: 'w1-13-root-arrival', name: 'the walk in along the root banks', job: 'arrive', versions: [
-    { id: 'low-log', lay: { pieces: [bank('a', null, [640, 700]), bank('b', 'a', [660, 720]), fallen('f', 'b', LOW, [220, 260], [0.45, 0.55]), bank('z', 'b', [260, 300])], sockets: [low('pa', 'a', [0.55, 0.75]), low('pf', 'f', 0.5), low('pz', 'z', [0.4, 0.6], 1)] } },
-    { id: 'root-steps', lay: { pieces: [bank('a', null, [640, 700]), bank('b', 'a', [440, 480], [-30, -24]), bank('c', 'b', [440, 480], [24, 30]), bank('z', 'c', [260, 300])], sockets: [low('pa', 'a', [0.55, 0.75]), low('pb', 'b', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)] } },
+    { id: 'low-log', lay: { pieces: [bank('a', null, [330, 360]), bank('b', 'a', [330, 360], UP), bank('c', 'b', [440, 480], DOWN), fallen('f', 'c', LOW, [200, 230], [0.4, 0.6]), bank('d', 'c', [220, 240], UP), bank('z', 'd', [220, 240], DOWN)], sockets: [low('pa', 'a', [0.55, 0.75]), low('pb', 'b', [0.3, 0.7]), low('pf', 'f', 0.5), low('pz', 'z', [0.4, 0.6], 1)] } },
+    { id: 'root-steps', lay: { pieces: [bank('a', null, [330, 360]), bank('b', 'a', [440, 480], UP), bank('c', 'b', [440, 480], DOWN), bank('d', 'c', [220, 240], UP), bank('z', 'd', [220, 240], DOWN)], sockets: [low('pa', 'a', [0.55, 0.75]), low('pb', 'b', [0.3, 0.6]), low('pc', 'c', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)] } },
   ] }),
-  // [R] a rest: one long fallen log to walk along, petals in a row on top (380-400 px: World 1 paints a longer log as two pieces
-  //  end to end, with a seam where they meet)
-  link({ id: 'w1-13-long-log', name: 'a rest: along the long fallen log', job: 'rest', versions: [[0.2, 0.3], [0.5, 0.6]].map((at, j) => ({
+  // [R] a rest: up onto a root bank and along the long fallen log lying on it (380-400 px: World 1 paints a longer log as two pieces
+  //  end to end, with a seam where they meet), down, and one more root
+  link({ id: 'w1-13-long-log', name: 'a rest: along the long fallen log', job: 'rest', versions: [[0.1, 0.2], [0.5, 0.6]].map((at, j) => ({
     id: j ? 'log-late' : 'log-early',
-    lay: { pieces: [bank('a', null, [960, 1040]), fallen('f', 'a', LOW, [380, 400], at as R2), bank('z', 'a', [260, 300])], sockets: [{ ...low('pf', 'f', [0.4, 0.6], 3), span: 220 }, low('pz', 'z', [0.4, 0.6], 1)] },
+    lay: { pieces: [bank('a', null, [240, 260]), bank('b', 'a', [520, 560], UP), fallen('f', 'b', LOW, [380, 400], at as R2), bank('c', 'b', [240, 260], DOWN), bank('d', 'c', [220, 240], UP), bank('z', 'd', [220, 240], DOWN)], sockets: [{ ...low('pf', 'f', [0.4, 0.6], 3), span: 220 }, low('pc', 'c', [0.3, 0.7]), low('pz', 'z', [0.4, 0.6], 1)] },
   })) }),
-  // [R] a rest: two short logs to hop, one after the other
+  // [R] a rest: two fallen logs, one up on a root bank, one in the hollow after it
   link({ id: 'w1-13-twin-logs', name: 'a rest: two fallen logs to hop', job: 'rest', versions: ([[[200, 240], [300, 340]], [[300, 340], [200, 240]]] as R2[][]).map((w, j) => ({
     id: j ? 'long-short' : 'short-long',
-    lay: { pieces: [bank('a', null, [1000, 1100]), fallen('f', 'a', LOW, w[0], [0.12, 0.18]), fallen('g', 'a', LOW, w[1], [0.72, 0.8]), bank('z', 'a', [260, 300])], sockets: [low('pf', 'f', 0.5), low('pg', 'g', 0.5), low('pz', 'z', [0.4, 0.6], 1)] },
+    lay: { pieces: [bank('a', null, [240, 260]), bank('b', 'a', [w[0][1] + 60, w[0][1] + 80] as R2, UP), fallen('f', 'b', LOW, w[0], [0.4, 0.6]), bank('c', 'b', [w[1][1] + 60, w[1][1] + 80] as R2, DOWN), fallen('g', 'c', LOW, w[1], [0.4, 0.6]), bank('d', 'c', [220, 240], UP), bank('z', 'd', [220, 240], DOWN)], sockets: [low('pf', 'f', 0.5), low('pg', 'g', 0.5), low('pz', 'z', [0.4, 0.6], 1)] },
   })) }),
-  // [R] a rest: a dip between two roots, a low log lying in it
-  link({ id: 'w1-13-root-dip', name: 'a rest: the dip between the roots', job: 'rest', versions: [[30, 40], [44, 50]].map((d, j) => ({
-    id: j ? 'deep' : 'shallow',
-    lay: { pieces: [bank('a', null, [420, 480]), bank('m', 'a', [420, 480], d as R2), fallen('f', 'm', LOW, [200, 240], [0.4, 0.6]), bank('b', 'm', [420, 480], [-d[1], -d[0]] as R2), bank('z', 'b', [260, 300])], sockets: [low('pf', 'f', 0.5), low('pb', 'b', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)] },
+  // [R] a rest: the dip between two roots, a low log lying in it
+  link({ id: 'w1-13-root-dip', name: 'a rest: the dip between the roots', job: 'rest', versions: [[580, 620], [640, 680]].map((m, j) => ({
+    id: j ? 'wide' : 'narrow',
+    lay: { pieces: [bank('a', null, [260, 300]), bank('b', 'a', [220, 240], UP), bank('m', 'b', m as R2, DOWN), fallen('f', 'm', LOW, [200, 240], [0.4, 0.6]), bank('c', 'm', [220, 240], UP), bank('z', 'c', [220, 240], DOWN)], sockets: [low('pf', 'f', 0.5), low('pc', 'c', [0.3, 0.7]), low('pz', 'z', [0.4, 0.6], 1)] },
   })) }),
   // [R] a rest: up over the hump of a great root and down again, a log leaning at its foot
-  link({ id: 'w1-13-root-hump', name: 'a rest: over the hump of a root', job: 'rest', versions: [[30, 40], [44, 50]].map((d, j) => ({
-    id: j ? 'tall' : 'low',
-    lay: { pieces: [bank('a', null, [460, 520]), fallen('f', 'a', LOW, [200, 240], [0.5, 0.7]), bank('m', 'a', [380, 440], [-d[1], -d[0]] as R2), bank('b', 'm', [420, 480], d as R2), bank('z', 'b', [260, 300])], sockets: [low('pf', 'f', 0.5), { ...low('pm', 'm', [0.3, 0.7], 3), span: 200 }, low('pz', 'z', [0.4, 0.6], 1)] },
+  link({ id: 'w1-13-root-hump', name: 'a rest: over the hump of a root', job: 'rest', versions: [[420, 460], [480, 520]].map((a, j) => ({
+    id: j ? 'long' : 'short',
+    lay: { pieces: [bank('a', null, a as R2), fallen('f', 'a', LOW, [200, 240], [0.5, 0.7]), bank('m', 'a', [420, 480], UP), bank('b', 'm', [220, 240], DOWN), bank('c', 'b', [220, 240], UP), bank('z', 'c', [220, 240], DOWN)], sockets: [low('pf', 'f', 0.5), { ...low('pm', 'm', [0.3, 0.7], 3), span: 200 }, low('pz', 'z', [0.4, 0.6], 1)] },
   })) }),
 ];
 
