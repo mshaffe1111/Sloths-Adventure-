@@ -1,10 +1,11 @@
-# Designer handoff (written 2026-11-07 6:57 PM ET, the last job of the designer session; for the role agents of the 6-role model, reference/TEAM.md)
+# Designer handoff (written 2026-11-07 6:57 PM ET by the designer session; the 1-2 rows rewritten 2026-11-12 by D12, the designer-builder of 1-2; for the role agents of the 6-role model, reference/TEAM.md)
 
 Read first, in order:
 - reference/LAWS.md;
 - this file;
 - reference/engine/NODES.md §8 (the node code and its key);
-- reference/engine/W1-NEW-SECTIONS.md (every round).
+- reference/engine/W1-NEW-SECTIONS.md (every round);
+- a LEVEL's builder: reference/methods/level.md (on t-w1-creatures), reference/design/LEVEL-BAR.md, then the level's own design doc.
 
 Every ruling below cites the file and section where it's written in full.
 
@@ -18,7 +19,7 @@ Every ruling below cites the file and section where it's written in full.
 | Piece labels and the floating rules (platforms may float, rocks never do, earth waits on Matt: use it from the floor up) | `reference/engine/LABELS.md` |
 | 1-1's art audit (code-drawn pieces against the painted kit) and its stills | `reference/engine/W1-ART-AUDIT.md`, `reference/engine/art-audit/` |
 | 1-1's designer brief, fitted to gen2's fields | `reference/engine/briefs/1-1.designer.md` (never on a cold builder's branch) |
-| **SEALED:** 1-2's gap list and the secret-as-fork idea | `reference/engine/1-2-DESIGNER-NOTES.md`. Keep it off the cold 1-2 builder's branch; it's for comparing afterwards |
+| 1-2 The Petal Trail, DESIGNED (one idea, the arc beat by beat, its rules as checks) | `reference/design/1-2.md`; its rows `src/game/gen2/worlds/w1Arc12.ts`; held by `tools/engine/library.test.ts`; proof `reference/qa-reports/D12/` (the old sealed `1-2-DESIGNER-NOTES.md` is history now) |
 | The entered data (the porter's) | engine-core `src/game/gen2/worlds/w1.ts`: sections, JOBS, CONTENT, TERRAIN, VERSION_JOBS, the `easy` twins, W1_KIT (owns, decor, required, graphs) |
 | The designer's own working notes | `reference/engine/DESIGNER-NOTES.md` |
 
@@ -65,7 +66,9 @@ Every ruling below cites the file and section where it's written in full.
 11. **Branch share:** among thin landings, ≤ 30% on EVERY roll and no thin look over 38%, plus ground > branch on the whole stage. The levers: rungs alternate bough and log, catches and the perch become logs, and joins take the next section's entry kind (the planner).
 12. **Hearts follow risk (V21).** 1-1 has 0.
 13. **The reward (H) is structural** (outside the deal). The seed perch's failure on seed 102948 was the engine's corridor check, not the deal (my first diagnosis was wrong; NODES §7.1 is corrected).
-14. **W1 `owns` and `not` (Round 8):** 1-1 and 1-2 each own their words; the signatures stay 1-1-only. 1-2's pool is 8 shared floor sections, by design: a COLD helper builds 1-2. Don't pre-build it.
+14. **W1 `owns` and `not` (Round 8):** 1-1 and 1-2 each own their words; the signatures stay 1-1-only. **1-2's pool is its OWN (11-12, D12, the lead's PASS):** seven beat bricks, its arrival, five rests and its exit (`SECTIONS_12`); no World 1 library section is dealt into it.
+15. **1-2's petals lie where a first-timer WALKS (11-12, D12, measured):** the harvest goal is 88% of what the game lays, and the calibrated tier bots jump 150-250 px before a root or step and land as far past it. A petal goes past a landing and short of a take-off, or one on top of a root; never on a ledge he hops onto. Measure with the bots before moving a petal (0 sealed doors in 32 runs at 138c3b36).
+16. **1-2's stumps:** Easy's 160 px on both settings in the lesson, again and the rising stair (the bite taught before the test, the lead 11-12); Normal's 120 from the long chain on (chain.md §2 d: the clean band does not move with the width).
 
 ## 4. Open items (none of these is finished; check each before assuming)
 
@@ -94,7 +97,8 @@ Every ruling below cites the file and section where it's written in full.
 - **On file:**
   - `w1-rope-gap` for 1-5's move to gen2 (the mixer's rope and punch are known failures carried there);
   - stage15's seed clause is to be REWRITTEN to the glint promise, not deleted.
-- **Parked to next week:** re-shoot the bootprint on 1-1's end bank; W1 rot wood and side-branch art; render-stone fixes. 1-2 stays parked until 1-1 passes and Matt plays it.
+- **Parked to next week:** re-shoot the bootprint on 1-1's end bank; W1 rot wood and side-branch art; render-stone fixes.
+- **1-2, open (11-12):** its two thorn teach lines never show in the real game until they are listed in the kit's `teachTips` (P13's, on t-w1-creatures; P12S merges it); the rolled-flag pass stands flags on floor mushrooms and roots (R-165.156, P12S); Meeca's note (the Keeper's Bell, finds.ts w1_note) goes to the twist's hollow by P12S's find-spot mark, and only then does Dot say "There's something down by the roots...".
 
 ## 5. Traps (each of these happened)
 
@@ -111,3 +115,6 @@ Every ruling below cites the file and section where it's written in full.
   - 1-1's three newer Dot lines (bank, high, noMoss) live on engine-core, not main;
   - `ctest.bounce` is the testers' course, and the same words are protoStage's bounceWall hint.
 - **Measured data beats my rule:** the `h` rock at 50-60 made the quiet line worse. Change the rule and say so.
+- **A tip in a brick is not a line on the screen** (1-2, 11-12): placed 1,000 px before the lesson, it was still never shown (coach lines and Dot's 30 s spacing). Walk the real page from the start and read the card, every lesson line, before calling it taught.
+- **A brick's flag socket does nothing on a rolled stage:** the rolled-flag pass lays every flag by Matt's rule. Design flags as that rule, not as sockets.
+- **The time model counts 1.5 s a mushroom** (stageTime.ts TIME.bounceExtra): a chain-heavy level reads about 40 s longer than it plays.

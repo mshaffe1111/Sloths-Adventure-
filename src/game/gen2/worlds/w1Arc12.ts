@@ -41,7 +41,7 @@ export const ROOM_12 = 320;
 export const THORN_ROW = { lesson: 'thorns', art: 'w1-thorn', depth: [150, 170] as R2, clearStart: 1300 };
 
 const low = (id: string, on: string, t: R2 | number, count = 2): Socket => ({ id, role: 'pickup', on, t, dn: 34, count, span: 120 });
-const tip = (on: string, id: string, t = 0.4): Socket => ({ id: `say-${id}`, role: 'tip', on, t, allow: [id] });
+const tip = (on: string, id: string, t = 0.4): Socket => ({ id: 'say-' + id, role: 'tip', on, t, allow: [id] });
 /** a bank he walks or steps onto */
 const led = (key: string, after: string | null, w: R2, dy: R2 = [0, 0]): SectionPiece => ({ key, shape: 'bank', w, place: after ? { kind: 'walk', after, dy } : { kind: 'start' }, style: 'moss_stone', main: true, landing: true });
 /** a root step: 50-56 px, past the 26 px hoist, so a hop (an action on the quiet line) */
@@ -66,19 +66,19 @@ const FLOOR: R2 = [300, 340];
  * thorn bed under them (this section `uses` thorns). Every first cap is a walk-on, 30 px tall (chain.mount)
  */
 function chain(k: string, after: string | null, steps: number[], pw: number, floorW: R2 = FLOOR): { pieces: SectionPiece[]; last: string } {
-  const f = `${k}f`, w = (floorW[0] + floorW[1]) / 2;
+  const f = k + 'f', w = (floorW[0] + floorW[1]) / 2;
   const ps: SectionPiece[] = [
     { key: f, shape: 'bank', w: floorW, place: after ? { kind: 'walk', after } : { kind: 'start' }, style: 'moss_stone', main: true, landing: true },
-    { key: `${k}m`, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on: f, at: [1 - 45 / (w - 70), 1 - 30 / (w - 70)], h: [30, 30] } },
+    { key: k + 'm', shape: 'bouncy', w: [70, 70], place: { kind: 'on', on: f, at: [1 - 45 / (w - 70), 1 - 30 / (w - 70)], h: [30, 30] } },
   ];
   let prev = f;
   steps.forEach((st, j) => {
     const S = sOf(st);
     const gap: R2 = j === 0 ? [S[0] - pw / 2 - 70, S[1] - pw / 2 - 70] : [S[0] - pw, S[1] - pw];
     const dy: R2 = Math.abs(st) > 6 ? [-st - 3, -st + 3] : [0, 0];
-    ps.push({ key: `${k}p${j}`, shape: 'bank', w: [pw, pw], place: { kind: 'jump', after: prev, dy, gapPx: gap, soft: true }, style: 'moss_stone', main: true });
-    ps.push({ key: `${k}c${j}`, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on: `${k}p${j}`, at: [0.5, 0.5], h: [30, 30] } });
-    prev = `${k}p${j}`;
+    ps.push({ key: k + 'p' + j, shape: 'bank', w: [pw, pw], place: { kind: 'jump', after: prev, dy, gapPx: gap, soft: true }, style: 'moss_stone', main: true });
+    ps.push({ key: k + 'c' + j, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on: k + 'p' + j, at: [0.5, 0.5], h: [30, 30] } });
+    prev = k + 'p' + j;
   });
   return { pieces: ps, last: prev };
 }
@@ -92,7 +92,7 @@ const join = (...ls: Lay[]): Lay => ({ pieces: ls.flatMap((l) => l.pieces), sock
 const breath = (l: Lay, n: number): Lay => {
   const pieces = [...l.pieces], sockets = [...l.sockets];
   const last = () => pieces.filter((p) => p.place.kind !== 'on').at(-1)!.key;
-  for (let j = 0; j < n; j++) { const k = `y${j}`; pieces.push(led(k, last(), LEDGE, j % 2 ? DOWN : UP)); if (j % 2) sockets.push(low(`p${k}`, k, [0.45, 0.7])); }
+  for (let j = 0; j < n; j++) { const k = 'y' + j; pieces.push(led(k, last(), LEDGE, j % 2 ? DOWN : UP)); if (j % 2) sockets.push(low('p' + k, k, [0.45, 0.7])); }
   if (n % 2) { pieces.push(led('yz', last(), LEDGE, DOWN)); sockets.push(low('pyz', 'yz', [0.45, 0.7])); }
   return { pieces, sockets };
 };
@@ -108,13 +108,13 @@ const chainLay = (steps: number[], pw: number, outW: R2 = [320, 380]): Lay => {
  * Meeca's note goes low on this floor, 100-150 px before the mushroom, once it is painted and a find kind lays it (the lead, 11-12)
  */
 function hollow(k: string, after: string, floorW: R2, long = true): Lay {
-  const s = `${k}s`, f = `${k}f`, r = `${k}r`, m = `${k}m`, b = `${k}b`, w = (floorW[0] + floorW[1]) / 2;
+  const s = k + 's', f = k + 'f', r = k + 'r', m = k + 'm', b = k + 'b', w = (floorW[0] + floorW[1]) / 2;
   return {
     pieces: [led(s, after, [150, 170], [80, 90]), led(f, s, floorW, [80, 90]),
       { key: r, shape: 'block', w: [120, 150], place: { kind: 'on', on: f, at: [0.48, 0.53], h: [50, 56] }, style: 'moss_stone', landing: true },
       { key: m, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on: f, at: [1 - 45 / (w - 70), 1 - 30 / (w - 70)], h: [30, 30] } },
       led(b, f, [400, 440], [-180, -170])],
-    sockets: [low(`p${k}s`, s, [0.7, 0.8], 1), ...(long ? [low(`p${k}f`, f, [0.15, 0.22]), low(`p${k}g`, f, [0.8, 0.84])] : []), low(`p${k}r`, r, 0.5, 1), low(`p${k}b`, b, [0.78, 0.86])],
+    sockets: [low('p' + k + 's', s, [0.7, 0.8], 1), ...(long ? [low('p' + k + 'f', f, [0.15, 0.22]), low('p' + k + 'g', f, [0.8, 0.84])] : []), low('p' + k + 'r', r, 0.5, 1), low('p' + k + 'b', b, [0.78, 0.86])],
   };
 }
 
@@ -125,8 +125,8 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; content: 'bounce'
   const sk = (ps: SectionPiece[], ss: Socket[]) => { const [a, z] = ends(ps); return ss.map((s) => ({ ...s, on: s.on === a ? 'in' : s.on === z ? 'out' : s.on })); };
   const first = ren(o.versions[0].lay.pieces)[0];
   const versions = o.versions.flatMap((v) => [
-    { id: v.id, pieces: ren(v.lay.pieces).slice(1), sockets: sk(v.lay.pieces, v.lay.sockets), ...(v.easy ? { easy: `${v.id}-easy` } : {}) },
-    ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).slice(1), sockets: sk(v.easy.pieces, v.easy.sockets), easyOnly: true }] : []),
+    { id: v.id, pieces: ren(v.lay.pieces).slice(1), sockets: sk(v.lay.pieces, v.lay.sockets), ...(v.easy ? { easy: v.id + '-easy' } : {}) },
+    ...(v.easy ? [{ id: v.id + '-easy', pieces: ren(v.easy.pieces).slice(1), sockets: sk(v.easy.pieces, v.easy.sockets), easyOnly: true }] : []),
   ]);
   const { versions: _v, thorns, ...rest } = o;
   return { ...rest, feel: [STAGE_12], archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? ['bounce'] : thorns ? ['bounce', 'thorns'] : ['bounce'], terrain: 'mounds', pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
@@ -173,9 +173,9 @@ export const BEATS_12: SectionTemplate[] = [
       const pieces: SectionPiece[] = [], sockets: Socket[] = [];
       let prev: string | null = null;
       for (let i = 0; i < runs; i++) {
-        const c = chain(`c${i}`, prev, Array(n).fill(0), pw);
-        pieces.push(...c.pieces); sockets.push(low(`pf${i}`, `c${i}f`, [0.2, 0.45]));
-        if (i < runs - 1) { const y = `i${i}`; pieces.push(out(y, c.last, [300, 340])); sockets.push({ ...low(`p${y}`, y, [0.62, 0.72], 3), span: 180 }); prev = y; }
+        const c = chain('c' + i, prev, Array(n).fill(0), pw);
+        pieces.push(...c.pieces); sockets.push(low('pf' + i, 'c' + i + 'f', [0.2, 0.45]));
+        if (i < runs - 1) { const y = 'i' + i; pieces.push(out(y, c.last, [300, 340])); sockets.push({ ...low('p' + y, y, [0.62, 0.72], 3), span: 180 }); prev = y; }
         else { pieces.push(out('z', c.last, [420, 480])); sockets.push({ ...low('pz', 'z', [0.62, 0.72], 3), span: 180 }); }
       }
       return { pieces, sockets };
