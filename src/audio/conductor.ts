@@ -188,6 +188,7 @@ export class Conductor {
       this.amb.lite = this.lite;
       this.core.lite = this.lite;
       this.applyVolumes(true);
+      if (this.paused) this.applyPause();
       document.addEventListener('visibilitychange', this.onVisibility);
       this.timer = setInterval(this.tick, TICK_MS);
     }
@@ -492,17 +493,25 @@ export class Conductor {
 
   // ------------------------------------------------------------------------------------------- state
 
+  /** the stage is paused (the pause menu, or a view opened from it): the music muffled and quieter, the ambience low. Only a change
+   *  does anything, so a screen change never touches the music's level */
   setPaused(p: boolean) {
+    if (p === this.paused) return;
     this.paused = p;
+    this.applyPause();
+  }
+
+  private applyPause() {
+    const p = this.paused;
     const core = this.core;
     if (!core) return;
     const t = core.ctx.currentTime;
     const open = Math.min(20000, core.ctx.sampleRate / 2 - 100);
     core.musicFilter.frequency.cancelScheduledValues(t);
     core.musicFilter.frequency.setTargetAtTime(p ? 650 : open, t, p ? 0.05 : 0.12);
-    // (the world's tune goes on under the pause menu at 45%, muffled: SN-6)
-    core.musicDuck.gain.cancelScheduledValues(t);
-    core.musicDuck.gain.setTargetAtTime(p ? PAUSED_MUSIC : 1, t, p ? 0.05 : 0.12);
+    // (the world's tune goes on under the pause menu at 45%, muffled: SN-6; on its own gain, never the sting's duck)
+    core.pauseLevel.gain.cancelScheduledValues(t);
+    core.pauseLevel.gain.setTargetAtTime(p ? PAUSED_MUSIC : 1, t, p ? 0.05 : 0.12);
     core.amb.gain.cancelScheduledValues(t);
     core.amb.gain.setTargetAtTime(p ? 0.18 * this.sfxVol : 0.6 * this.sfxVol, t, 0.1);
   }

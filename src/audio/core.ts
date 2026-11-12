@@ -42,6 +42,8 @@ export class AudioCore {
   readonly master: GainNode;
   readonly sfx: GainNode;
   readonly music: GainNode;
+  /** the music under the pause menu (SN-6): on its own, so a pause or a screen change never undoes a sting's duck */
+  readonly pauseLevel: GainNode;
   /** between the music bus and its filter: dips the music under stingers and dialogue */
   readonly musicDuck: GainNode;
   /** after musicDuck: dips the music a few dB under speech (SN-7), on its own so a sting's deeper duck is never undone by a line */
@@ -110,6 +112,7 @@ export class AudioCore {
     // ---- buses
     this.sfx = c.createGain();
     this.music = c.createGain();
+    this.pauseLevel = c.createGain();
     this.musicDuck = c.createGain();
     this.amb = c.createGain();
     this.musicFilter = c.createBiquadFilter();
@@ -128,7 +131,8 @@ export class AudioCore {
     this.sfx.connect(this.master);
     this.speechDuck = c.createGain();
     this.storyLevel = c.createGain();
-    this.music.connect(this.musicDuck);
+    this.music.connect(this.pauseLevel);
+    this.pauseLevel.connect(this.musicDuck);
     this.musicDuck.connect(this.storyLevel);
     this.storyLevel.connect(this.speechDuck);
     this.speechDuck.connect(this.musicFilter);
