@@ -72,7 +72,16 @@ test("the game's own plan: no layer imports the main script or a later layer; th
   // what vite asks: an absolute id, with or without a ?query; React is 'vendor'; a picture is 'art-urls'; the engine is the main script
   assert.equal(chunkOf(path.join(ROOT, 'src/game/gen2/seeds.ts') + '?x=1'), 'rolls');
   assert.equal(chunkOf(path.join(ROOT, 'node_modules/react-dom/index.js')), 'vendor');
-  assert.equal(chunkOf(path.join(ROOT, 'src/assets/icons/about.webp')), 'art-urls');
+  // a picture goes to the bottom file when a start module imports it, and stays with its late file when only a late module does
+  const by = (importer: string) => () => ({ importers: [path.join(ROOT, importer)] });
+  assert.equal(chunkOf(path.join(ROOT, 'src/assets/icons/about.webp'), by('src/components/icons/PaintedIcon.tsx')), 'art-urls');
+  assert.equal(chunkOf(path.join(ROOT, 'src/assets/orch/x.mp3'), by('src/audio/orchLoader.ts')), undefined);
+  // the loaders that were late files before the split are not placed: they stay late (planted: the first plan took all of src/audio)
+  for (const late of ['src/audio/orchLoader.ts', 'src/audio/musicFiles.ts', 'src/audio/sampleLoader.ts', 'src/audio/sfxRecLoader.ts', 'src/audio/voice.ts', 'src/game/gen2/proven/seeds-1-1.ts', 'src/components/HelpOffer.tsx']) {
+    assert.equal(plan.has(late), false, `${late} is loaded late and must not be placed in a start file`);
+    assert.equal((plan as unknown as { start: Set<string> }).start.has(late), false, `${late} is not a start module`);
+  }
+  assert.equal(plan.get('src/audio/composer.ts'), 'audio');
   assert.equal(chunkOf(path.join(ROOT, 'src/game/engine.ts')), undefined);
   assert.equal(chunkOf('\0vite/preload-helper.js'), 'loader');
 });

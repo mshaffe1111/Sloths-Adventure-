@@ -109,7 +109,7 @@ export default defineConfig(() => {
           // them, so nothing loads late and the game still plays offline.
           // (includeDependenciesRecursively off: the plan already names every module's file, and the bundler's own "take the imports
           // along" would move modules between layers and tie the files in a loop)
-          codeSplitting: { includeDependenciesRecursively: false, groups: [{ name: (id: string) => chunkOf(id) ?? null }] },
+          codeSplitting: { includeDependenciesRecursively: false, groups: [{ name: (id: string, ctx: { getModuleInfo: (id: string) => unknown }) => chunkOf(id, (m: string) => ctx.getModuleInfo(m)) ?? null }] },
         },
       },
     },

@@ -26,7 +26,7 @@ Matt, 2026-11-06, after 0.9.5: "Make sure that you note going forward how to do 
 4. **The full gate, on the EXACT head you will PR, every gate by name** (CLAUDE.md "Checks"; D42):
    - tsc;
    - the FULL test suite;
-   - vite build (no asset over 4 MiB);
+   - `BASE_PATH=/Sloths-Adventure-/ npx vite build` (the deploy's build: no asset over 4 MiB), then chunkcheck (it fails any other base);
    - npm run build:store;
    - artcheck;
    - knowncheck;

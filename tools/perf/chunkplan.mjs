@@ -55,7 +55,8 @@ export const LAYERS = [
 ];
 
 /** the top of the game: these, and every module that imports one of them, always stay in the main script */
-export const TOP = ['src/main.tsx', 'src/App.tsx', 'src/game/engine.ts'];
+export const ENTRY = 'src/main.tsx';
+export const TOP = [ENTRY, 'src/App.tsx', 'src/game/engine.ts'];
 
 /** the generators: a 'parts' layer takes no root that imports one of these */
 export const HUBS = ['src/game/protoStage.ts', 'src/game/stageGenerator.ts', 'src/game/gen2/pipeline.ts', 'src/game/gen2/game.ts'];
@@ -86,33 +87,43 @@ function sourceFiles(dir = path.join(ROOT, 'src'), out = []) {
   return out;
 }
 
-/** the plan: module (repo-relative) -> chunk name; a module not in it stays in the main script. `imports`, `layers` and `hubs` are injectable for tests. */
+/** the plan: module (repo-relative) -> chunk name; a module not in it stays where the bundler puts it (the main script, or a late
+ *  file of its own). `imports`, `layers` and `hubs` are injectable for tests. plan.start is the set of modules the page loads at the
+ *  start (everything src/main.tsx reaches by plain imports): only those are ever placed, so a module that was loaded LATE (the music
+ *  and voice loaders behind an import()) stays late. */
 export function buildPlan(files = sourceFiles(), imports = staticImports, layers = LAYERS, hubs = HUBS) {
   const deps = new Map();
   const dep = (f) => { if (!deps.has(f)) deps.set(f, f.startsWith('npm:') || !/\.(tsx?|mjs|js)$/.test(f) ? [] : imports(f)); return deps.get(f); };
-  // the top of the game (the engine, the app shell, and everything that imports them) is the main script: never a layer's root
   const closure = (f) => { const seen = new Set([f]); for (const x of seen) for (const d of dep(x)) if (!d.startsWith('npm:')) seen.add(d); return seen; };
+  const start = closure(ENTRY);
+  // the top of the game (the engine, the app shell, and everything that imports them) is the main script: never a layer's root
   const top = new Set(files.filter((f) => { const c = closure(f); return TOP.some((t) => c.has(t)); }));
-  const plan = new Map();
   const hubby = new Set(files.filter((f) => { const c = closure(f); return hubs.some((h) => c.has(h)); }));
+  const plan = new Map();
   for (const [name, pattern, parts] of layers) {
-    const seen = new Set(files.filter((f) => pattern.test(f) && !plan.has(f) && !top.has(f) && !(parts && hubby.has(f))));
+    const seen = new Set(files.filter((f) => pattern.test(f) && start.has(f) && !plan.has(f) && !top.has(f) && !(parts && hubby.has(f))));
     for (const f of seen) for (const d of dep(f)) if (!d.startsWith('npm:') && !plan.has(d)) seen.add(d);
     for (const f of seen) plan.set(f, name);
   }
+  plan.start = start;
   return plan;
 }
 
 let cached;
-/** vite's manualChunks: the chunk a module id goes in, or undefined for the main script */
-export function chunkOf(id) {
+const rel = (id) => posix(path.relative(ROOT, id.split('?')[0]));
+/** the bundler asks this for every module (vite.config.ts codeSplitting): the file it goes in, or undefined to leave it where the
+ *  bundler puts it. `info(id)` is the bundler's own record of a module (its `importers`), used for pictures and sounds. */
+export function chunkOf(id, info) {
   const clean = id.split('?')[0];
   if (/[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(clean)) return 'vendor';
   // (vite's own helper for a late import(): the layers that ask for a late file use it, so it sits under all of them)
   if (clean.includes('vite/preload-helper')) return 'loader';
   if (!path.isAbsolute(clean)) return undefined;
   cached ??= buildPlan();
-  const rel = posix(path.relative(ROOT, clean));
-  // (a picture, sound or font under src/assets is a one-line module holding its address: it imports nothing)
-  return cached.get(rel) ?? (/^src\/assets\/.*\.(png|webp|svg|jpg|mp3|webm|woff2|json)$/.test(rel) ? 'art-urls' : undefined);
+  const r = rel(clean);
+  if (cached.has(r)) return cached.get(r);
+  // a picture, sound or font under src/assets is a one-line module holding its address; it imports nothing, so it sits at the bottom.
+  // Only one that a START module imports (plainly or by a glob): one that only a late file uses stays with that late file.
+  if (/^src\/assets\//.test(r) && !/\.(tsx?|mjs|js)$/.test(r)) return (info?.(id)?.importers ?? []).some((m) => cached.start.has(rel(m))) ? 'art-urls' : undefined;
+  return undefined;
 }
