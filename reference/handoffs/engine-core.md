@@ -5,6 +5,22 @@ on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engi
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
 
+## 0e. Lane EN-F, the audit fixes (t-engine-fixes, 11-11/12): what the engine core now promises
+- **One take-off (A-04):** engine.ts `groundJump()` is the only ground jump: a press on the ground, in coyote time, or buffered before a
+  landing. It judges the spore fog itself (`flightClear`), and the landing's floor effects (crumble timer, a boss's cracking ledge) run
+  before a buffered jump leaves; a mushroom always bounces and uses a buffered press up. A new jump modifier goes in groundJump, once.
+- **One way back to a flag:** `respawnAtCheckpoint` restarts every run state: the chase (`restartChase`, A-07; the collapse is reused in
+  7-6), the tide, the lantern, World 5's stillness (`w5.calm()`), crumbled platforms (`crumbledWhole`, A-03) and latched presses
+  (`dropPresses`). A new per-run state is reset there. `softFall` (and heartFall / lanternSetBack through it) also makes crumbled
+  platforms whole. `loseLife` and `chaseCaught` do nothing once the run is over (the engine keeps stepping under the Game Over card).
+- **Presses never outlive a held world:** `InputEngine.dropPresses()` (latched jump, punch, kick, mega; never a held direction) runs at
+  the respawn, on resume and at a guardian entrance's end. realPlay.ts and bossPlay.ts inputs have the same method: keep them in step.
+- **Paused = one still frame (A-06):** `stillDrawn`; the loop draws once and stops until resume, a resize or a restored context; pause()
+  settles the shake. **Failed frames (A-12):** a leaky count (FAIL_LIMIT 20, FAIL_FORGIVE 0.05), not a run in a row.
+- **The camera's rise cap is a rate (A-05):** 11 px per 1/30 s step = 330 px/s at every frame rate. Never cap it per drawn frame:
+  planted, that put his head 70 px under the HUD at 15 fps (cameraBounce.test.ts guards it).
+- **Test kit:** `src/game/engineCoreHarness.ts` (the audit's real-engine harness: makeEngine, standOn, step).
+
 ## 0d. Lane EN-G, guards (t-engine-guards, 11-11): the loop, saves, the generality gate
 - **The loop (R-165.116):** engine.ts `loop()` keeps `acc`, real time not yet played, and plays it in whole 1/30 s steps (at most 3 a
   frame; past that the rest is dropped). A frame within 0.5 ms of 33.3 ms is exactly one step and its hair is let go (so a 59.94 Hz
