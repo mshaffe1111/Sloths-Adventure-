@@ -1,0 +1,10 @@
+ART-W1 trap pieces (2026-11-12, branch t-w1-art; GPU cap $6). Each job: tools/art/hfdrake/storygpu.py (unchanged) + the spec, fetched
+from GitHub raw at 6e2c41d1; plain magenta at strength 1.0, style model 0.8, 26 steps. Bucket mshaffe111/w5-xfer under w1traps/<tag>/out/.
+rtx-pro-6000 ~$2.75/h. Times UTC.
+r1a   6af5f0ca0f431c4f7b55e12e  17:00Z  hiveHang, hiveDown, stoneHang, stoneDown x seeds 5,17,29 (12 takes)
+r1b   6af5f0f05f2f1b7284b85271  17:01Z  handleSet, handleSprung, tendrilSet, tendrilCut x seeds 5,17,29 (12 takes)
+r1c   6af5f0f35f2f1b7284b85278  17:01Z  anchor, vineLink, leafClump x seeds 5,17,29 (9 takes)
+     RESULTS r1 (all done by 17:06Z, ~14 GPU-min, ~$0.64): keepers-to-show hiveHang x3, stoneHang 17/29, handleSet 29, tendrilSet 29/5,
+     anchor 29. Thrown: hiveDown (painted broken open: story keeper wants it whole), tendrilCut (a cross), leafClump (a whole tree),
+     vineLink (a bough painted over it). Cause: the hf-props negatives "tree branch, ceiling, hanging scenery" were left out, so the
+     style model painted a bough, a pool and rain round most pieces. Round 2 puts them back (not for the anchor) and adds water/rain.
