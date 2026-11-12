@@ -737,6 +737,10 @@ export class GameEngine {
   /** the stage is played on Easy: read once as it is built, so the pause menu's switch waits for the next stage ("It starts from the
    * next stage", menuParts.tsx) and the report, the boss's tells, the assist and the drifting logs (LV-5) all follow the build */
   private readonly easy: boolean = isEasy();
+  /** how much longer a guardian's openings last on this run's mode: the fight and the weak point's closing flicker read this one */
+  private get openMul(): number {
+    return this.easy && this.bossDef?.openCue ? EASY_OPEN_MUL : 1;
+  }
   /** Dot's help was set to Quiet when the stage was built and at every return from the menu (Quiet Wings counts only such a run) */
   private quietRun: boolean = dotHelp() === 'quiet';
   /**
@@ -833,6 +837,8 @@ export class GameEngine {
     if (!ctx) throw new Error('Could not get Canvas2D context');
     this.ctx = ctx;
     this.input = input;
+    // (the input outlives each stage: its jump buffer follows this run's mode, not the menu's, inputEngine.ts pressKeep)
+    input.easy = this.easy;
     this.callbacks = callbacks;
     const cosmetic = loadCosmetic();
     setHeroCoat(cosmetic.coat);
@@ -3541,7 +3547,7 @@ export class GameEngine {
           sound.playWhoosh();
         },
         tellMul: this.easy ? 1.3 : 1,
-        openMul: this.easy && this.bossDef?.openCue ? EASY_OPEN_MUL : 1,
+        openMul: this.openMul,
         dropHeart: (x) => {
           const a = this.currentStage.arena;
           if (!a) return;
@@ -6810,7 +6816,7 @@ export class GameEngine {
     }
     if (this.boss && (!this.boss.defeated || this.bossDef?.ending) && this.bossDef) {
       const floor = this.currentStage.arena?.floor ?? 560;
-      drawBossFighter(ctx, this.boss, this.bossDef, this.gameTime, this.currentStage.config.worldIndex, floor);
+      drawBossFighter(ctx, this.boss, this.bossDef, this.gameTime, this.currentStage.config.worldIndex, floor, this.openMul);
       drawGroundCues(ctx, this.boss, this.bossDef, floor, this.gameTime, 1, this.currentStage.arena ?? undefined);
       if (this.skyPillars && !this.boss.defeated && this.bossDef.stompSpot) drawBackCue(ctx, this.boss, this.bossDef.stompSpot, floor, this.gameTime);
       if (this.skyPillars && !this.boss.defeated) drawScreechCue(ctx, this.boss, floor, this.gameTime, (this.bossDef.moves.screech?.tell ?? 1) * (this.bossCtx?.tellMul ?? 1));
@@ -6958,7 +6964,7 @@ export class GameEngine {
     if (lair === 'prowler' && this.boss && this.bossDef && !this.boss.defeated && prowlerGlow() < 0.98) {
       ctx.save();
       ctx.translate(-snapCam(this.camera.x, snap) + shakeX, -snapCam(this.camera.y, snap) + shakeY);
-      drawBossOverDark(ctx, this.boss, this.bossDef, this.currentStage.config.worldIndex, this.currentStage.arena?.floor ?? 560, this.gameTime, (1 - prowlerGlow()) / (1 - 0.16), this.currentStage.arena ?? undefined);
+      drawBossOverDark(ctx, this.boss, this.bossDef, this.currentStage.config.worldIndex, this.currentStage.arena?.floor ?? 560, this.gameTime, (1 - prowlerGlow()) / (1 - 0.16), this.currentStage.arena ?? undefined, this.openMul);
       this.drawPopups(ctx);
       ctx.restore();
     }
