@@ -117,30 +117,37 @@ Ends: **stunned** (dazed for the seconds, then carries on), **gives up** (loses 
 **chased off** (leaves for the rest of the stage, on its own legs or wings). "open" = only while it is recovering, stunned or asleep.
 **Bold** = the way its world teaches first. A noise lure is the kit's `hears`: it goes to look and notices nobody while it does.
 
-| Animal | Way 1 | Way 2 | Way 3 | More |
-|---|---|---|---|---|
-| Golden Tree Snake | **punch** (1-3): stunned 2 s, knocked off its branch end | drop trap (shake its vine, drop the hive: the BUZZ chases it, no stings shown): chased off, it glides away | stomp: gives up 5 s (he vaults it) | kick: chased off |
-| Boa Constrictor | **drop trap** (1-9): chased off, grumpy | lure: lead the eagle's shadow over it (it fears the eagle): chased off | go still: he is a branch, it gives up 4 s | punch while its head is out (open): stunned 2.5 s |
-| Harpy Eagle | **go still in a bush** (1-7): 2 empty passes and it gives up 8 s | noise lure: its shadow goes to the noise 4.5 s | W4: behind a waterfall counts as cover | cannot be hit |
-| Snapping Turtle | **kick** (2-5): the shell slides away, chased off, and bowls over what it meets | stomp: stunned 1.8 s (it pulls in) | noise lure: it goes to look 4.5 s, back turned | punch from behind (open): stunned |
-| River King's guard | **kick** breaks the block: stunned 2 s | the bell (noise lure): it goes to look 4.5 s | a drifting log bumped into its raft (push): stunned 3 s | cannot be stomped or punched (a guard never can) |
-| Spectacled Caiman | **go still** (6-2): the ripple passes, gives up 5 s | punch while its jaws are shut (open): stunned 2.5 s | sap bubble (trap): stunned 4 s | W2: quiet feet and it never wakes |
-| Ocelot | **go still** (3-2): it loses him, gives up 5 s | noise-lure it under the loose stalactite (trap, 3-3): chased off | the drum (3-5): stunned 3 s | face it (it crawls); punch: stunned 1.5 s |
-| Jaguar | **the stalactite** (trap, 3-3): chased off | the drum: stunned 3 s | punch while it is winded (open): stunned 2 s | W8 light: gives up 6 s; W9 its drop lands on a geyser: chased off |
-| Tayra | **lure its charge** to the caiman's water (6-5; it fears the caiman): chased off | stomp over the dash: stunned 2 s | kick: stunned 2 s, bowled back | W9: its line ends on a geyser: chased off |
-| Night Harpy | **light** (8-8: the owl's light, the jar): gives up 6 s | noise-lure it under the owl (it fears the owl): chased off | go still: no sound, it loses him 5 s | the drum: stunned 3 s; punch while dizzy (open) |
-| Poison Dart Frog | **stomp** between hops: gives up 6 s (it hops off) | kick: chased off (it bounces away) | go still: it settles, gives up 4 s | |
-| Jumping Spider | **stomp in the pause**: gives up 5 s | punch in the pause (open): stunned 2 s | pluck a far thread (noise lure): it goes there 4.5 s | a cold dew drip (W5's own tool): dozes off |
-| Thorn vine | **go still** while it looks (3-5): it sleeps again | the drum: stunned 3 s | break (a dropped stone): chased off, it curls away | |
-| Stone sentry | **break** the cracked pillar beside it (7-2): chased off (eyes dark, it steps back into its niche) | push a block into it (7-8): stunned 6 s | noise lure: it turns its head 4.5 s | cannot be punched or stomped |
-| Fruit bats | **go still** as the ripple passes (8-1) | light: they settle, gives up 6 s | | never hit |
-| Moths | **punch** scatters them: gives up 3 s | cover the jar (go dark): they lose it | | |
-| Eaglets | **go still** while the head is up | cover | | never hit, never hurt |
-| Seamstress / Butler | keep moving (her tell calls off) / hop the tray, or pass upwind of it | a cold dew drip on THEM: dozes off (not the leaf drip that wakes Pokey: the two look different) | | never hit |
-| Capuchins | thief: punch, it drops the petal and runs; lookout: fruit lures it 6 s, or cover | guard: **wind** blows it off its ledge 1.8 s or down 5 s (4-9) | | never hurt him |
-| Blinking log | **light** shows it: gives up 6 s | punch after it snaps (open): stunned 3 s | | |
-| Drake's gaze | **go still** (first sight only), then shade | cover | | a world rule, not a body |
-| Soldier | break, lure, push, the moat (10-7: every world's trick): stunned or gives up, never down for good | | | |
+**The move ladder (the lead, 9:56 PM ET): a way is only there in a world at or after the world that teaches its move.** World 1:
+stomp 1-1, punch and drop traps 1-3, kick 1-5, stillness 1-7, the food chain 1-9. World 3: the noise lure, throwing, the drum. Wind
+World 4, the dew drip World 5, break and push World 7, light World 8, geysers World 9. In the kit: `roster.ts` `TAUGHT` and
+`inWorld(def, world)`, which every cast is laid through; `predatorRoster.test.ts` fails when a way appears before its move.
+One thing for the lead: today World 2's turtles already walk to the puzzle bell (engine.ts:2749); under the ladder that waits for
+World 3, unless 2-7's bell is where noise is first taught.
+
+| Animal | Way 1 | Way 2 | Way 3 | More | Available from |
+|---|---|---|---|---|---|
+| Golden Tree Snake | **punch** (1-3): stunned 2 s, knocked off its branch end | drop trap (shake its vine, drop the hive: the BUZZ chases it, no stings shown): chased off, it glides away | stomp: gives up 5 s (he vaults it) | kick: chased off | 1-3 punch and trap; stomp from 1-1; kick from 1-5 |
+| Boa Constrictor | **drop trap** (1-9): chased off, grumpy | lure: lead the eagle's shadow over it (it fears the eagle): chased off | go still: he is a branch, it gives up 4 s | punch while its head is out (open): stunned 2.5 s | 1-9: trap (1-3), stillness (1-7), the eagle is in its world |
+| Harpy Eagle | **go still in a bush** (1-7): 2 empty passes and it gives up 8 s | seen in the open: reach a bush and go still before its dive (0.75 s) and it pulls up | from World 3 (so 4-5): a thrown noise pulls its shadow away 4.5 s; W4: behind a waterfall counts as cover | cannot be hit | **W1: stillness and cover only.** The noise lure from World 3, so 4-5 |
+| Snapping Turtle | **kick** (2-5): the shell slides away, chased off, and bowls over what it meets | stomp: stunned 1.8 s (it pulls in) | noise lure: it goes to look 4.5 s, back turned | punch from behind (open): stunned | W2: kick, stomp, punch. The noise lure from World 3: not in World 2 (see below) |
+| River King's guard | **kick** breaks the block: stunned 2 s | from World 3: the noise lure, it goes to look 4.5 s | a river trap (a snap-jaw stone, 2-5's lesson, snaps at its raft): stunned 3 s | cannot be stomped or punched (a guard never can) | W2: kick and the river trap. The noise lure from World 3 |
+| Spectacled Caiman | **go still** (6-2): the ripple passes, gives up 5 s | punch while its jaws are shut (open): stunned 2.5 s | sap bubble (trap): stunned 4 s | W2: quiet feet and it never wakes | W2 (asleep), W6: all three |
+| Ocelot | **go still** (3-2): it loses him, gives up 5 s | noise-lure it under the loose stalactite (trap, 3-3): chased off | the drum (3-5): stunned 3 s | face it (it crawls); punch: stunned 1.5 s | W3: stillness, trap, drum, punch, noise. Light from World 8 |
+| Jaguar | **the stalactite** (trap, 3-3): chased off | the drum: stunned 3 s | punch while it is winded (open): stunned 2 s | W8 light: gives up 6 s; W9 its drop lands on a geyser: chased off | W3: trap, drum, punch. Light from W8, the geyser from W9 |
+| Tayra | **lure its charge** to the caiman's water (6-5; it fears the caiman): chased off | stomp over the dash: stunned 2 s | kick: stunned 2 s, bowled back | W9: its line ends on a geyser: chased off | W6: all three (the caiman is in its world). Geyser W9; no caiman there |
+| Night Harpy | **light** (8-8: the owl's light, the jar): gives up 6 s | noise-lure it under the owl (it fears the owl): chased off | go still: no sound, it loses him 5 s | the drum: stunned 3 s; punch while dizzy (open) | W8: all (the owl is World 8's). W9: no owl, so no lure |
+| Poison Dart Frog | **stomp** between hops: gives up 6 s (it hops off) | kick: chased off (it bounces away) | go still: it settles, gives up 4 s | | W6: all three |
+| Jumping Spider | **stomp in the pause**: gives up 5 s | punch in the pause (open): stunned 2 s | pluck a far thread (noise lure): it goes there 4.5 s | a cold dew drip (W5's own tool): dozes off | W5: all (noise World 3, dew World 5) |
+| Thorn vine | **go still** while it looks (3-5): it sleeps again | the drum: stunned 3 s | drop trap (a loosened stalactite): chased off, it curls away | | W3: all three |
+| Stone sentry | **break** the cracked pillar beside it (7-2): chased off (eyes dark, it steps back into its niche) | push a block into it (7-8): stunned 6 s | noise lure: it turns its head 4.5 s | cannot be punched or stomped | W7: break and push are World 7's own |
+| Fruit bats | **go still** as the ripple passes (8-1) | light: they settle, gives up 6 s | | never hit | W8 |
+| Moths | **punch** scatters them: gives up 3 s | cover the jar (go dark): they lose it | | | 8-4 |
+| Eaglets | **go still** while the head is up | cover | | never hit, never hurt | W4 |
+| Seamstress / Butler | keep moving (her tell calls off) / hop the tray, or pass upwind of it | a cold dew drip on THEM: dozes off (not the leaf drip that wakes Pokey: the two look different) | | never hit | W5 |
+| Capuchins | thief: punch, it drops the petal and runs; lookout: fruit lures it 6 s, or cover | guard: **wind** blows it off its ledge 1.8 s or down 5 s (4-9) | | never hurt him | W4 (wind is World 4's) |
+| Blinking log | **light** shows it: gives up 6 s | punch after it snaps (open): stunned 3 s | | | W8 |
+| Drake's gaze | **go still** (first sight only), then shade | cover | | a world rule, not a body | W9 |
+| Soldier | break, lure, push, the moat (10-7: every world's trick): stunned or gives up, never down for good | | | | W10: everything is taught by then |
 
 The triangle (R-159.1) inside this: the **stomp** vaults (a short stun or a give-up, never the strongest answer), the **punch** stuns
 but mostly needs the open moment after a miss, the **kick** bowls an animal away and breaks a block. The world's own tool (the trap,
