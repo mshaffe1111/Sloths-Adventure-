@@ -576,3 +576,4 @@ lines); Matt sees them in the release.
   yield.test 20/30 green; verdicts unchanged; two searches (old search first, so all 258 proven seeds lay the same; repair only for
   seeds with no clean roll); lock 102/102. Left: seed 50028 (a floorless slot from P11's catch-bough split; fixing it moves proven
   seeds). Retired.
+- 2026-11-12 3:13 PM ET, Matt: add "Inspired by" games at the end of Settings > About the game (R-165.158). Asking Matt for the list.
