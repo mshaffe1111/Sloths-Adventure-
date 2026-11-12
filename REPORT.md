@@ -1,5 +1,5 @@
 # AS-1 report: shrinking the video and art, measured. Branch t-assets-compress from origin/main @585ef376 (live 0.9.6). Nothing under src/ changed.
-**Comparison page:** `reference/art/compress-trials/index.html` (stills, listening clips and data beside it). **Full ranked list:** `reference/art/compress-trials/ranked-assets.csv`. **Inventory:** `inventory.csv` there. **Tools:** `tools/assets/` (inventory, draw-size probe, trials, comparison, projection).
+**Comparison page:** `reference/art/compress-trials/index.html` (stills, listening clips and data beside it), also published privately at https://claude.ai/artifact/5GQEKD7x4ib8SQAcb6i5HN to flip on a phone. **Full ranked list:** `reference/art/compress-trials/ranked-assets.csv`. **Inventory:** `inventory.csv` there. **Tools:** `tools/assets/` (inventory, draw-size probe, trials, comparison, projection).
 
 ## What ships (vite build of 585ef376: 1,020 files, 176.9 MB)
 - **Images 112.8 MB:** 597 lossy WebP, every one with alpha, none animated. They are already compressed: I read each file's quantizer (`vp8q.py`, checked against fresh encodes), and they sit at about q80 (94 files, 22 MB), q85 (232 files, 41 MB), q90 (237 files, 40 MB) and q95 (28 files, 7 MB). The sky layers are about q83; the backdrops' other layers and the story HD pictures are q89 to q95.
