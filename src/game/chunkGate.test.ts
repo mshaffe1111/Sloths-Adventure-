@@ -152,3 +152,64 @@ test('chunkcheck fails a build that is not the one that ships, a start file tied
     fs.rmSync(tmp, { recursive: true, force: true });
   }
 });
+
+test('chunkcheck: Pixi is a late file of its own: never in a start file, never named by the page, always in the offline cache (R-3.1; planted)', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'chunkgate-pixi-'));
+  const BASE = '/Sloths-Adventure-/';
+  const make = (name: string, files: Record<string, string>, opts: { head?: string; sw?: string | null } = {}) => {
+    const dir = path.join(tmp, name);
+    fs.mkdirSync(path.join(dir, 'assets'), { recursive: true });
+    fs.writeFileSync(path.join(dir, 'index.html'), `<html><head><script type="module" crossorigin src="${BASE}assets/index-AAAA1111.js"></script>${opts.head ?? ''}</head></html>`);
+    for (const [f, text] of Object.entries(files)) fs.writeFileSync(path.join(dir, 'assets', f), text);
+    if (opts.sw !== null) fs.writeFileSync(path.join(dir, 'sw.js'), opts.sw ?? `precacheAndRoute([${Object.keys(files).map((f) => `{url:"assets/${f}",revision:null}`).join(',')}])`);
+    return dir;
+  };
+  const run = (dir: string) => {
+    const r = spawnSync(process.execPath, [path.join(ROOT, 'tools/perf/chunkcheck.mjs')], { env: { ...process.env, CHUNKCHECK_DIR: dir, CHUNKCHECK_BASE: BASE }, encoding: 'utf8' });
+    return { code: r.status, out: r.stdout + r.stderr };
+  };
+  // (Pixi's own code is known by the words in its warnings, whatever the file is called)
+  const PIXI = 'export class R{warn(){console.warn("PixiJS Warning: ",1)}}';
+  const good = {
+    'index-AAAA1111.js': 'import{a}from"./kit-BBBB2222.js";const gpu=()=>import("./gpuPixi-CCCC3333.js");console.log(a,gpu);',
+    'kit-BBBB2222.js': 'export const a=1;',
+    'gpuPixi-CCCC3333.js': `${PIXI};const more=()=>import("./browserAll-DDDD4444.js");`,
+    'browserAll-DDDD4444.js': 'import{R}from"./gpuPixi-CCCC3333.js";export const b=R;',
+  };
+  try {
+    // Pixi behind import(), its files in the offline cache: PASS, and the gate says what it found
+    const ok = run(make('ok', good));
+    assert.equal(ok.code, 0, ok.out);
+    assert.match(ok.out, /Pixi: 2 file\(s\), loaded on demand/);
+    assert.match(ok.out, /2 loaded at the start/);
+    // a build that never loads Pixi has nothing to hold: PASS, and it says so
+    const none = run(make('none', { 'index-AAAA1111.js': 'import{a}from"./kit-BBBB2222.js";console.log(a);', 'kit-BBBB2222.js': 'export const a=1;' }));
+    assert.equal(none.code, 0, none.out);
+    assert.match(none.out, /Pixi: not in this build/);
+    // planted: the main script imports the Pixi file plainly
+    const eager = run(make('eager', { ...good, 'index-AAAA1111.js': 'import{a}from"./kit-BBBB2222.js";import{R}from"./gpuPixi-CCCC3333.js";console.log(a,R);' }));
+    assert.equal(eager.code, 1, eager.out);
+    assert.match(eager.out, /Pixi is loaded at the start[\s\S]*gpuPixi-CCCC3333\.js/);
+    // planted: a start file two imports down reaches it
+    const deep = run(make('deep', { ...good, 'kit-BBBB2222.js': 'import"./gpuPixi-CCCC3333.js";export const a=1;' }));
+    assert.equal(deep.code, 1, deep.out);
+    assert.match(deep.out, /Pixi is loaded at the start/);
+    // planted: the bundler folded Pixi's code into a start file under another name
+    const folded = run(make('folded', { 'index-AAAA1111.js': 'import{a}from"./kit-BBBB2222.js";console.log(a);', 'kit-BBBB2222.js': `${PIXI};export const a=1;` }));
+    assert.equal(folded.code, 1, folded.out);
+    assert.match(folded.out, /Pixi is loaded at the start[\s\S]*kit-BBBB2222\.js/);
+    // planted: the page itself asks for the Pixi file (a preload tag)
+    const pre = run(make('preload', good, { head: `<link rel="modulepreload" crossorigin href="${BASE}assets/gpuPixi-CCCC3333.js">` }));
+    assert.equal(pre.code, 1, pre.out);
+    assert.match(pre.out, /index\.html names assets\/gpuPixi-CCCC3333\.js/);
+    // planted: a Pixi file left out of the offline cache (the old globIgnores): a stage started offline would have no GPU layer
+    const uncached = run(make('uncached', good, { sw: 'precacheAndRoute([{url:"assets/index-AAAA1111.js",revision:null},{url:"assets/kit-BBBB2222.js",revision:null},{url:"assets/gpuPixi-CCCC3333.js",revision:null}])' }));
+    assert.equal(uncached.code, 1, uncached.out);
+    assert.match(uncached.out, /not in the offline cache[\s\S]*browserAll-DDDD4444\.js/);
+    const noSw = run(make('nosw', good, { sw: null }));
+    assert.equal(noSw.code, 1, noSw.out);
+    assert.match(noSw.out, /no sw\.js/);
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});

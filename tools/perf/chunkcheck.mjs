@@ -12,6 +12,13 @@
  * It also holds the split's shape (tools/perf/chunkplan.mjs): of the files the page loads at the start (the main script and everything
  * it imports, the whole way down), none may import the main script and none may sit in an import loop. A loop changes the order the
  * game's code runs in; without one, every module runs after the modules it imports, as it did in one file.
+ *
+ * And it holds PixiJS (the GPU layer, R-3.1; src/game/gpuPixi.ts) to a late file of its own. Pixi's files are known by their content
+ * (the words of Pixi's own warnings) and by anything that plainly imports such a file, whatever the bundler names them:
+ *  - none of them may be among the start files (a lean start: Pixi is fetched when the GPU layer is first used, never before);
+ *  - index.html may not name one (no preload tag);
+ *  - every one of them must be in the service worker's precache list (dist/sw.js), so a stage started offline still has it.
+ * A build that never loads Pixi passes, and says so.
  *   BASE_PATH=/Sloths-Adventure-/ npx vite build && node tools/perf/chunkcheck.mjs     (seconds; exit 1 on any breach)
  *   CHUNKCHECK_BUDGET=<bytes> CHUNKCHECK_DIR=<dist> CHUNKCHECK_BASE=<base>   (the budget, 3,994,304; the build folder, dist; the
  *   deploy's base, /Sloths-Adventure-/)
@@ -77,6 +84,30 @@ for (const [f, deps] of graph) if (f !== entry && deps.includes(entry)) shape.pu
   };
   visit(entry, []);
 }
+// Pixi's files: any script holding Pixi's own words, and any script that plainly imports one (its side files hold none of the words)
+const PIXI_MARK = /PixiJS (?:Warning|Deprecation Warning|Error)/;
+const rel = (f) => f.split(path.sep).join('/');
+const pixiFiles = new Set(chunks.map((c) => rel(c.file)).filter((f) => PIXI_MARK.test(fs.readFileSync(path.join(dir, f), 'utf8'))));
+for (let grew = true; grew; ) {
+  grew = false;
+  for (const c of chunks) {
+    const f = rel(c.file);
+    if (!pixiFiles.has(f) && (graph.get(f) ?? importsOf(f)).some((d) => pixiFiles.has(d))) { pixiFiles.add(f); grew = true; }
+  }
+}
+const pixi = [];
+if (pixiFiles.size) {
+  const atStart = [...pixiFiles].filter((f) => graph.has(f));
+  if (atStart.length) pixi.push(`Pixi is loaded at the start (it must be fetched only when the GPU layer is first used: import('./gpuPixi.ts'), src/game/gpuLayer.ts): ${atStart.join(', ')}`);
+  for (const f of pixiFiles) if (html.includes(path.posix.basename(f))) pixi.push(`index.html names ${f} (no preload tag for Pixi: it is not a start file)`);
+  const swFile = path.join(dir, 'sw.js');
+  if (!fs.existsSync(swFile)) pixi.push(`no sw.js in ${dir}: Pixi's files cannot be shown to be in the offline cache`);
+  else {
+    const sw = fs.readFileSync(swFile, 'utf8');
+    const out = [...pixiFiles].filter((f) => !sw.includes(`"${f}"`));
+    if (out.length) pixi.push(`Pixi's file(s) not in the offline cache (sw.js precache list; vite.config.ts workbox globPatterns/globIgnores): ${out.join(', ')}: a stage started offline would have no GPU layer`);
+  }
+}
 chunks.sort((a, b) => b.bytes - a.bytes);
 const over = chunks.filter((c) => c.bytes > BUDGET);
 console.log(`chunkcheck: base ${BASE}, budget ${BUDGET.toLocaleString('en-US')} B a chunk, ${chunks.length} JS files, ${graph.size} loaded at the start`);
@@ -89,6 +120,14 @@ if (over.length) {
 }
 if (shape.length) {
   console.log(`chunkcheck: FAIL: the start files are tied in a loop (tools/perf/chunkplan.mjs: a layer imports only the layers under it):\n  ${shape.join('\n  ')}`);
+  process.exit(1);
+}
+if (pixiFiles.size) {
+  const sized = chunks.filter((c) => pixiFiles.has(rel(c.file)));
+  console.log(`  Pixi: ${sized.length} file(s), loaded on demand, ${sized.reduce((n, c) => n + c.bytes, 0).toLocaleString('en-US')} B: ${sized.map((c) => `${path.posix.basename(rel(c.file))} ${c.bytes.toLocaleString('en-US')}`).join(', ')}`);
+} else console.log('  Pixi: not in this build (nothing in it starts the GPU layer)');
+if (pixi.length) {
+  console.log(`chunkcheck: FAIL: Pixi must be a late file of its own, in the offline cache (R-3.1):\n  ${pixi.join('\n  ')}`);
   process.exit(1);
 }
 console.log('chunkcheck: PASS');
