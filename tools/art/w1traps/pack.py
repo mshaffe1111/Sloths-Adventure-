@@ -112,7 +112,7 @@ sheet = Image.open(SHEET).convert('RGB')
 for n, box, ax, units, why in MATT:
     c = sheet.crop(box)
     pieces[n] = (sized(clean(blobs(key_plum(c), 0.3), erode=1), ax, units), ax, units, why, f'{Path(SHEET).name} {box}')
-pieces['bee'] = (blobs(key_plum(sheet.crop(BEE)), 0.3), 'w', 5, 'Matt, 11-12: one bee from frame 1, for the buzz', f'{Path(SHEET).name} {BEE}')
+pieces['bee'] = (blobs(key_plum(sheet.crop(BEE)), 0.3), 'w', 9, 'Matt, 11-12: one bee from frame 1, for the buzz', f'{Path(SHEET).name} {BEE}')
 
 # shelf-pack into one sheet
 order = sorted(pieces, key=lambda n: -pieces[n][0].height)

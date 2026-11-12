@@ -95,7 +95,7 @@ export const W1_TRAP_FRAMES = {
   "y": 906,
   "w": 14,
   "h": 16,
-  "units": 5,
+  "units": 9,
   "axis": "w"
  }
 } as const;
