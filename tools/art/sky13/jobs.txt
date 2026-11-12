@@ -1,0 +1,2 @@
+sky13 (ART-W1B, 2026-11-12). rtx-pro-6000 ~$2.75/h. Times UTC (ET = UTC-5).
+sky13-F 6af611f10f431c4f7b5639bb  1-3 far img2img from start-far13 (orchids/log/branch out, half-rolled), s60/s70 x seeds 7/23  started 19:22Z

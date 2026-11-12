@@ -170,6 +170,37 @@ if sys.argv[1] in ('r3', 'r3b'):
     (HERE / f'spec-{tag}.json').write_text(json.dumps(spec, indent=1))
     print(tag, len(items), 'takes')
     sys.exit()
+# round 4 (ART-W1B, 2026-11-12): World 1 has no made things, so the tendril's saw-cut stake becomes a living root hoop; and a long
+# liana for 1-3's shimmy span between two living saplings (the made rope and posts out). Grounded pieces: a little earth at the feet only.
+P4 = [
+    ('rootSet', 640, 1536,
+     'a thin taut green creeper vine running straight up, its bottom end tied with a big chunky knot round the top of a gnarled living '
+     'tree root that arches up out of the earth in a low mossy hoop, natural bark all over, no cut wood, no saw cut, no peg, no post',
+     'the root hoop at the very bottom, its two ends dipping into a small mound of dark earth, nothing else'),
+    ('rootCut', 1024, 768,
+     'a gnarled living tree root arching up out of the earth in a low mossy hoop, a chunky knot of green creeper tied round the top '
+     'of the hoop and a short torn end of creeper curling up out of the knot, natural bark all over, no cut wood, no saw cut, no peg',
+     'one single object, its two ends dipping into a small mound of dark earth, nothing else'),
+    ('vineLong', 1536, 512,
+     'one long length of thick twisted green jungle liana stretched nearly straight from left to right with a very slight sag, a '
+     'few small fresh leaves along it, both ends plain', 'one single object floating on its own, nothing above it, nothing around it'),
+]
+R4 = '--r4' in sys.argv
+if R4:
+    sys.argv = [a for a in sys.argv if a != '--r4']
+    tag, sha = sys.argv[1], sys.argv[2]
+    seeds = [int(x) for x in (sys.argv[3] if len(sys.argv) > 3 else '5,17,29,41').split(',')]
+    G = NEG.replace('floor, ground, ', '').replace(', grass, moss ground, earth, dirt', '')
+    items = [{'name': f'{n}-{sd}', 'start': 'plain-mag.png', 'prompt': prompt(d, wh).replace(' no ground,', '') if n != 'vineLong'
+              else prompt(d, wh), 'strength': 1.0, 'seed': sd, 'w': w, 'h': h, 'steps': 26, 'loras': [['style', 0.8]],
+              'neg': (G + ', wooden stake, wooden post, peg, sawn log, stump, cut wood' if n != 'vineLong' else NEG + ISOLATE)}
+             for (n, w, h, d, wh) in P4 for sd in (seeds if n != 'vineLong' else seeds[:3])]
+    spec = {'note': f'ART-W1B trap pieces {tag}, 2026-11-12', 'q': 92,
+            'base': f'{RAW}{sha}/reference/prop-sheets/qa-notes/hf-props/starts/',
+            'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors']}, 'items': items}
+    (HERE / f'spec-{tag}.json').write_text(json.dumps(spec, indent=1))
+    print(tag, len(items), 'takes')
+    sys.exit()
 R2 = '--r2' in sys.argv
 sys.argv = [a for a in sys.argv if a != '--r2']
 tag, sha = sys.argv[1], sys.argv[2]
