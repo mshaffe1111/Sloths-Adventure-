@@ -403,6 +403,11 @@ function debrisLook(color: string): 'star' | 'leaf' | 'grit' | 'earth' {
  *  old worst step was 10.8, INT-1-1) */
 const CAM_RISE_STEP = 11;
 
+/** the loop's failed frames: FAIL_LIMIT of them, each good frame forgiving FAIL_FORGIVE of one, end the stage (audit A-12). Twenty in a row
+ *  ends it as before; one every other frame by about the 42nd frame (1.4 s), every third by about the 66th; one in 21 frames or rarer, never */
+const FAIL_LIMIT = 20;
+const FAIL_FORGIVE = 0.05;
+
 export class GameEngine {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
@@ -1367,18 +1372,22 @@ export class GameEngine {
         this.resizeDue = true;
         perfNote(`steady: stepped up (quality ${this.quality})`);
       }
-      this.failStreak = 0;
+      this.failLoad = Math.max(0, this.failLoad - FAIL_FORGIVE);
     } catch (err) {
-      // one bad frame must not freeze the game; a frame that fails over and over ends the stage cleanly
-      console.error('frame error', err);
+      // one bad frame must not freeze the game; frames that keep failing end the stage cleanly. Counted with a slow leak, not a run in a
+      // row (audit A-12: any good frame reset the old count, so an error every other frame never ended the stage, each failed frame
+      // half-applied): an error every other or every third frame ends it within seconds, a rare one-off never does
+      if (this.failLoad < 3) console.error('frame error', err);
       if (recorder.on) recorder.error(err, 'frame');
-      if (++this.failStreak >= 20) {
+      this.failLoad += 1;
+      if (this.failLoad >= FAIL_LIMIT) {
         this.stop();
         this.callbacks.onFatal?.();
       }
     }
   };
-  private failStreak = 0;
+  /** failed frames, less FAIL_FORGIVE for each good one since: at FAIL_LIMIT the stage ends (onFatal) */
+  private failLoad = 0;
 
   /**
    * the control test: every 5 s, how smooth the picture was (frames a second, the slowest tenth, the worst frame), the picture quality
