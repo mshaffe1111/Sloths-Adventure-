@@ -88,7 +88,10 @@ function core(k: string, after: string, o: Unit = {}): { pieces: SectionPiece[];
   const g = `${k}g`, L = `${k}L`, d = `${k}d`;
   const perch = !!(o.perch && o.load);
   const flat: R2 = [0, 0];
-  const pieces: SectionPiece[] = [led(g, after, NARROW, perch ? UP : flat), log(L, g, o.load ? SHORT : o.wide ? WIDE : LONG, o.level ? flat : perch ? DOWN : UP), led(d, L, NARROW, o.level ? flat : DOWN)];
+  // (a TRAPPED branch lies level with the ledge its handle is on: a branch a step up lifted its load behind the goal sign on a
+  // sideways phone (stills, the gallery, 11-12). A bare branch keeps its step up; a perch's branch is a step below its vine)
+  const lvl = o.level ?? (!!o.load && !perch);
+  const pieces: SectionPiece[] = [led(g, after, NARROW, perch ? UP : flat), log(L, g, o.load ? SHORT : o.wide ? WIDE : LONG, lvl ? flat : perch ? DOWN : UP), led(d, L, NARROW, lvl ? flat : DOWN)];
   const sockets: Socket[] = [];
   if (o.load) {
     sockets.push({ id: `${k}h`, role: 'source', on: g, t: HANDLE_T, dn: 0 });
@@ -311,7 +314,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
       })));
     } else for (let s = from; s < from + N; s++) for (const d of ['normal', 'easy'] as const) rows.push({ seed: s, d, ...roll(s, d, o) });
     const pr = poolReport(o), M = kitLib13(o).manifest, byId = new Map(M.sections.map((t) => [t.id, t]));
-    console.log(`1-3 by need${o.flown ? ' (FLOWN: filed under the flown stage)' : ''}: pool ${pr.pool.length} of ${M.sections.length} (World 1's ${M.sections.filter((t) => t.id.startsWith('w1-')).length} + ${o.twists === false ? 0 : TWISTS.length} drop-trap bricks + ${NEW_STOOD_IN.length} stood in + ${o.down === false ? 0 : WAY_DOWN.length} uses of the way-down brick); out: ${pr.out.map((q) => `${q.id.replace('w1-', '')} (${q.why})`).join(', ') || 'none'}`);
+    console.log(`1-3, the designed arc${o.flown ? ' (FLOWN: filed under the flown stage)' : ''}: pool ${pr.pool.length} of ${M.sections.length} (World 1's quiet sections ${M.sections.filter((t) => t.id.startsWith('w1-')).length} + ${o.twists === false ? 0 : TWISTS.length} beat bricks + ${NEW_STOOD_IN.length} stood in); out: ${pr.out.map((q) => `${q.id.replace('w1-', '')} (${q.why})`).join(', ') || 'none'}`);
     const sup = new Map<string, string[]>();
     for (const id of pr.pool) { const t = byId.get(id)!; for (const j of t.jobs ?? ['(phases)']) { const k = `${j}/${t.content ?? '-'}`; sup.set(k, [...(sup.get(k) ?? []), id.replace('w1-', '')]); } }
     console.log('supply by job/type:'); for (const [k, v] of [...sup].sort()) console.log(`   ${k.padEnd(26)} ${String(v.length).padStart(2)}  ${v.join(', ')}`);
