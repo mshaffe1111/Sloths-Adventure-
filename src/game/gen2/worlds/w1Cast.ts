@@ -27,10 +27,10 @@ export const W1_TRAP_PROPS: PropDef[] = [
 
 /** the handle stands 150 px or more from its load (a snake strikes within 105, and 42 of reach) and never out of sight of it */
 export const W1_TRAP_PAIRS: PropPair[] = [
-  { id: 'vine-hive', source: 'trap-vine', receptor: 'trap-hive', minApart: 150, maxApart: 520 },
-  { id: 'tendril-stone', source: 'trap-tendril', receptor: 'trap-stone', minApart: 150, maxApart: 520 },
-  { id: 'vine-stone', source: 'trap-vine', receptor: 'trap-stone', minApart: 150, maxApart: 520 },
-  { id: 'tendril-hive', source: 'trap-tendril', receptor: 'trap-hive', minApart: 150, maxApart: 520 },
+  { id: 'vine-hive', source: 'trap-vine', receptor: 'trap-hive', minApart: 150, maxApart: 190 },
+  { id: 'tendril-stone', source: 'trap-tendril', receptor: 'trap-stone', minApart: 150, maxApart: 190 },
+  { id: 'vine-stone', source: 'trap-vine', receptor: 'trap-stone', minApart: 150, maxApart: 190 },
+  { id: 'tendril-hive', source: 'trap-tendril', receptor: 'trap-hive', minApart: 150, maxApart: 190 },
 ];
 
 const trapsOf = (out: StageSink): TrapPost[] => (out.proto.cast ??= { kinds: [], traps: [] }).traps;
