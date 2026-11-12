@@ -32,8 +32,10 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
   Parked: t-engine-11-followup@f24af141 (1-1's polish pass, after the engine); t-assets-compress@ffee5acc (waits for Matt's pick).
 
 ## Tomorrow, in this order
-1. **Integration** (Opus xhigh, one builder): merge into one branch off main: seedchunks FIRST (room), then guards -> fixes, yield, clock,
-   library, predators; resolve conflicts; fix gates.yml so chunkcheck builds with BASE_PATH (D45); run the FULL gate once (CLAUDE.md Checks).
+1. **Integration** (Opus xhigh, one builder): merge into one branch off main: seedchunks FIRST (room; or EN-S's t-engine-split if it
+   passed), then guards -> fixes, yield, clock, library, predators, wire; PLUS from the parked t-engine-11-followup only its R-165.122
+   commit(s) (hop rocks walked through: a generator rule, not 1-1 polish: every counted obstacle must block, or it is scenery and
+   funcheck does not count it; Matt 11:22 PM); resolve conflicts; fix gates.yml so chunkcheck builds with BASE_PATH (D45); run the FULL gate once (CLAUDE.md Checks).
 2. **The proof audit** (one cold Critic, Opus xhigh): the merged engine, every gate, the bots: "prove it works" or name where it doesn't.
 3. **Then build on top** (Fable if Matt says, else Opus xhigh; short fresh sessions): paint the thorn bed (World 1 manifest art only);
    count 1-2's double on the built stage (E12 item 5); the real 120-roll 1-2 run (`tools/engine/library.ts --seeds 120`, no --flown);
