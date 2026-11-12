@@ -105,8 +105,9 @@ export function fillFinishedGame(mem: Store & Storage) {
       const m = /^(\d{1,2})-(\d{1,2})$/.exec(id);
       if (m) for (const f of ['L', 'H', 'F'] as const) markShown(+m[1], +m[2], f, mem);
       if (/^5-\d{1,2}$/.test(id)) recordCake(id, mem);
-      // protoStage.ts: a stage's golden seeds, each by its find id (the longest) or 'seed'
-      for (const n of ['seed', ...findIds.slice(0, 3)]) markSeedFound(id, n);
+      // protoStage.ts markSeedFound: a stage's golden seeds, by the find id the stage builders give them (`seed-${seedN}`), or 'seed'
+      // where a seed has none (engine.ts: findId ?? 'seed'); writtenKeys.test.ts takes the real ones from built stages
+      for (const n of ['seed', 'seed-1', 'seed-2', 'seed-3']) markSeedFound(id, n);
     }
     // App.tsx: every story flag of storyFlags.ts (world intro, halfway scene, the first note, every guardian's card and intro, the gate)
     for (let w = 1; w <= 11; w++) for (const f of STORY_FLAGS) if (f !== 'firstNote') mem.setItem(storyKey(f, w), '1');

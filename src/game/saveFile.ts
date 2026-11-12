@@ -43,7 +43,7 @@ export const ALLOWED: RegExp[] = [
   /^sloth_way_\d{1,2}-\d{1,2}$/, // which in-stage asides have been heard (so a new game hears them again; the on/off switch is a device setting, not here)
   /^sloth_secret_gate$/,
   /^sloth_thorn_heart$/,
-  /^sloth_seed_(\d{1,2}|S)-(\d{1,2}|[DM])_\w{1,24}$/, // the golden seeds found, per stage (protoStage.ts: a secret again in a new game)
+  /^sloth_seed_(\d{1,2}|S)-(\d{1,2}|[DM])_[\w-]{1,24}$/, // the golden seeds found, per stage and find id: `seed`, `seed-2` (protoStage.ts markSeedFound; a secret again in a new game; writtenKeys.test.ts)
   /^sloth_badges$/, // the Trophy Room
   /^sloth_finds$/, // the notes, books and keepsakes found
   /^sloth_memories$/, // the flashbacks seen

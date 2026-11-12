@@ -36,7 +36,7 @@ const DEVICE: Record<string, string> = {
 /** a key family the source builds from a prefix (a template or `+`), and one real key of it */
 const FAMILY: Record<string, string> = {
   sloth_lvl_: 'sloth_lvl_3-7', sloth_play_: 'sloth_play_3-7', sloth_layout_: 'sloth_layout_3-7', sloth_story_: 'sloth_story_w3',
-  sloth_way_: 'sloth_way_3-7', sloth_seed_: 'sloth_seed_3-7_seed', sloth_tips_: 'sloth_tips_3-7',
+  sloth_way_: 'sloth_way_3-7', sloth_seed_: 'sloth_seed_1-5_seed-2', sloth_tips_: 'sloth_tips_3-7',
   sloth_: 'sloth_venom', // (paintedBoss.ts: 'sloth_' + a guardian's art switch; usePWAInstall.ts reads every sloth_ key)
 };
 
@@ -85,14 +85,15 @@ const mapStore = (init: Record<string, string>): Store & { m: Map<string, string
 test('a New Game clears what this adventure did on this phone, and keeps the device\'s own', () => {
   const st = mapStore({
     sloth_flag_resume: '{"id":"3-7","x":5000}', sloth_journal_told: '["glide"]', sloth_journal_looked: '["glide"]', sloth_dot_help: 'quiet',
-    'sloth_seed_3-7_seed': '1', sloth_game_muted: 'true', sloth_ctl_style: 'pad', sloth_dot_skip_offered: '1',
+    'sloth_seed_1-5_seed-2': '1', sloth_game_muted: 'true', sloth_ctl_style: 'pad', sloth_dot_skip_offered: '1',
   });
   resetProgress(st);
   assert.deepEqual([...st.m.keys()].sort(), ['sloth_ctl_style', 'sloth_dot_skip_offered', 'sloth_game_muted']);
 });
 
 test('a save file carries the golden seeds, and loading one keeps this phone\'s sound settings even when the file has its own', () => {
-  assert.ok(isSaveKey('sloth_seed_3-7_seed') && isSaveKey('sloth_seed_5-M_w5_keepsake'));
+  // (the seed keys as the game writes them: 1-1's has no find id, 1-5's carry theirs; writtenKeys.test.ts takes them from built stages)
+  assert.ok(isSaveKey('sloth_seed_1-1_seed') && isSaveKey('sloth_seed_1-5_seed-2'));
   // a file from 0.9.6, which carried the sound settings
   const old = { 'sloth_lvl_1-1': '{"completed":true,"stars":2}', 'sloth_seed_1-1_seed': '1', sloth_game_muted: 'false', sloth_music_vol: '0.9' };
   const r2 = parseSave(JSON.stringify({ ...buildSave(mapStore({})), version: 1, data: old, checksum: checksum(old) }));
