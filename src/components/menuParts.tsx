@@ -60,7 +60,7 @@ export const DotHelpSetting: React.FC = () => {
           </small>
           {said.map((s, i) => (
             <small key={i} className="pm-polish-note" style={{ display: 'block', marginTop: 2 }}>
-              {s.who === 'Dot' ? '' : `${s.who === 'Pokey' ? 'Pokey' : 'The petal'}: `}&ldquo;{s.text}&rdquo;
+              {s.who === 'Dot' ? '' : `${s.who === 'Pokey' ? 'Pokey' : s.who === 'Flicker' ? 'Flicker' : 'The petal'}: `}&ldquo;{s.text}&rdquo;
             </small>
           ))}
         </div>

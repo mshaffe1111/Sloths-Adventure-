@@ -566,6 +566,10 @@ let lastLines: { text: string; who: GuideWho }[] = [];
 export function dotSaid(): readonly { text: string; who: GuideWho }[] {
   return lastLines;
 }
+/** a New Game: the last adventure's lines are not this one's (dotMemory.ts forgetDotSession, audit C-09) */
+export function forgetSaid(): void {
+  lastLines = [];
+}
 export function noteSaid(l: GuideLine): void {
   if (l.kind === 'journal') return;
   lastLines = [{ text: l.text, who: l.who }, ...lastLines.filter((s) => s.text !== l.text)].slice(0, GUIDE.historyN);
