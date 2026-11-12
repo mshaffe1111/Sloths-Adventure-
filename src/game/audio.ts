@@ -29,6 +29,12 @@ export function isBackButton(btn: Element): boolean {
   return label.startsWith('back') || label.startsWith('close');
 }
 
+/** the screens a story plays on (StoryPlayer, App.tsx): their music, its level and the ambience are the story's own, picture by picture */
+const STORY_SCREENS: ReadonlySet<string> = new Set(['story_cutscene', 'world_story', 'world_mid', 'world_gate', 'boss_intro', 'boss_defeat', 'ending_story', 'ending_tag', 'memory']);
+export function storyScreen(screen: string): boolean {
+  return STORY_SCREENS.has(screen);
+}
+
 class SoundEngine {
   private readonly c = new Conductor();
 
@@ -98,12 +104,19 @@ class SoundEngine {
   }
   /** music for a non-cutscene screen (cutscenes choose their own, panel by panel) */
   screen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1, salt = 0, objective?: string) {
-    this.held = null;
-    this.c.storyMusic('keep');
     // the stage's state (a dark zone, a danger, a boss phase) belongs to that stage: any other screen, or another stage, starts calm
     const stage = screen === 'playing' || screen === 'paused' ? levelId : '';
     if (stage !== this.stateStage) this.c.setMusicState(CALM);
     this.stateStage = stage;
+    // a story's player owns its music, its level and its ambience while it is up (its first picture's effect runs before this one)
+    if (storyScreen(screen)) {
+      this.c.setPaused(false);
+      this.inPlay = false;
+      this.c.setLowHealth(false);
+      return;
+    }
+    this.held = null;
+    this.c.storyMusic('keep');
     // (the pause menu plays the stage's own piece, muffled: SN-6. Asked for again, not "kept", so a look in the satchel from the pause menu
     // does not leave the satchel's loop playing under it)
     const s = sceneForScreen(screen === 'paused' ? 'playing' : screen, world, isBoss, levelId, mini, salt, objective);

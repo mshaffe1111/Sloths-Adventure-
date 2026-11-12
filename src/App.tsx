@@ -32,7 +32,7 @@ import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
 import { BossIntroCard } from './components/BossCards.tsx';
 import { TAP_GUARD_MS } from './components/GameOverCard.tsx';
-import { sound } from './game/audio.ts';
+import { sound, storyScreen } from './game/audio.ts';
 import { usePWAInstall } from './utils/usePWAInstall.ts';
 import { enterWideMode, leaveWideMode } from './game/wideMode.ts';
 import { FindReader } from './components/FindReader.tsx';
@@ -523,9 +523,8 @@ export default function App() {
     sound.setWorld(w);
     if (screen === 'playing' || screen === 'paused') sound.setAmbient(worldAmbient);
     else if (screen === 'title' || screen === 'world_map') sound.setAmbient('gentle_breeze');
-    else if (screen === 'world_story' || screen === 'world_mid' || screen === 'world_gate' || screen === 'boss_intro' || screen === 'boss_defeat') sound.setAmbient(worldAmbient);
-    else if (screen === 'story_cutscene') sound.setAmbient('gentle_breeze');
-    else sound.setAmbient(null);
+    // (a story's ambience is its own, picture by picture: StoryPlayer)
+    else if (!storyScreen(screen)) sound.setAmbient(null);
   }, [screen, activeLevel, musicSalt]);
 
   // the opening splash waits for the title's pictures; any other first screen (a link straight into a stage) lets it go at once

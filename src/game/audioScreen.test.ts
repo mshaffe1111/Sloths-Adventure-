@@ -124,3 +124,25 @@ test('back from the satchel, the pause menu still plays the stage\'s own tune (S
   sound.screen('paused', 1, false, '1-3', 3, 7, 'sprint'); // Back
   assert.equal(sound.debug().scene, stage, 'and still does after a look in the satchel');
 });
+
+test('a story whose first picture asks for silence keeps it: the screen change that mounted the story does not undo it', () => {
+  const { ctx, story } = wire();
+  ctx.currentTime = 50;
+  // the mount commit of the finale: StoryPlayer's effect runs first (a child's effects run before its parent's) ...
+  sound.storyMusic('silence'); // StoryPlayer.tsx:167, the finale's first line (storyDirect.ts: 'The General lay in the rubble' -> silence)
+  // ... then App.tsx's [screen] effect
+  sound.screen('ending_story', 10, false, '10-10');
+  const level = story.at(55);
+  assert.ok(level < 0.05, `5 s into the silent picture the story's music level is ${level.toFixed(2)} (asked for 0)`);
+});
+
+test('and once the story is over, the next screen puts the music back to full', () => {
+  const { ctx, story } = wire();
+  ctx.currentTime = 50;
+  sound.storyMusic('silence');
+  sound.screen('ending_story', 10, false, '10-10');
+  ctx.currentTime = 60;
+  sound.screen('title', 10, false, '10-10');
+  const level = story.at(70);
+  assert.ok(level > 0.95, `10 s after the title came up the story's music level is ${level.toFixed(2)}`);
+});
