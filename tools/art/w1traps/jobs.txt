@@ -23,3 +23,7 @@ RUNNING TOTAL r1+r2: ~28 GPU-min, ~$1.28 of the $6 cap.
 r3b   6af5fc0c5f2f1b7284b87040  17:49Z  anchor at the trap's shape: anchorArch, anchorArm x seeds 5,17,41,53 (8), spec at 2bd135ef
      RESULTS r3b (done 17:53Z, ~4.5 GPU-min, ~$0.21): anchorArm 41 (level arm, whole crown) and anchorArch 5 (bent-over sapling) kept.
 TOTAL r1-r3b: ~42 GPU-min, ~$1.93 of the $6 cap (estimate from GPU minutes).
+r4    6af612d15f2f1b7284b8a794  19:26Z  (ART-W1B) rootSet, rootCut x seeds 5,17,29,41 + vineLong x 5,17,29 (11 takes), spec at 377fdaca
+     RESULTS r4 (19:26-19:29:47Z, ~3.6 GPU-min, ~$0.17): kept rootSet-5 (vine knotted to a root on a mound) and rootCut-17 (a snapped
+     living root arching from the earth, the knot and curl on it; the broken end is a natural break, no saw cut). vineLong all out
+     (sloths, scenery); the shimmy uses the shipped vine 'link' and the r3b anchorArm-41 tree ('trunk') instead.

@@ -11,7 +11,7 @@ import type { TrapPost } from './castPlay.types.ts';
 const ground = (x: number, width: number, y: number, id = 1): Platform => ({ id, x, y, width, height: 40, type: 'solid' } as Platform);
 const post = (o: Partial<TrapPost>): TrapPost => ({ id: 0, kind: 'vine', load: 'hive', x: 300, y: 1000, loadX: 470, loadY: 900, landY: 1000, ...o });
 
-let boughs = 0;
+let boughs = 0; // (corners held)
 test('on one long ground the sapling stands, under 265 units tall, its trunk clear of the handle, the load hung at its height', () => {
   for (const [hx, lx] of [[300, 440], [300, 470], [300, 490], [700, 520], [700, 560]]) {
     for (const load of ['hive', 'stone'] as const) {
@@ -29,12 +29,20 @@ test('on one long ground the sapling stands, under 265 units tall, its trunk cle
       if (lay.bough) {
         assert.ok(lay.bough.k >= 0.15 && lay.bough.k <= 0.4, 'the bough end at a sane size');
         assert.ok(Math.sign(lay.bough.x - hx) === Math.sign(lx - hx), 'its stick on the bark between the handle and the load');
-        boughs++;
+      } else {
+        // (ART-W1B) beyond the load, the vine's corner over the handle hangs from a second sapling's crown: nothing floats
+        assert.ok(lay.sap2, `a second sapling behind handle ${hx} (load ${lx}, ${load})`);
+        const s2 = lay.sap2!;
+        assert.equal(s2.y, 1000, "the second sapling's foot on the ground");
+        assert.ok(s2.k * W1_TRAP_FRAMES.sapling2.h <= 225 + 1e-6, 'the second sapling no taller than 225');
+        assert.ok(Math.sign(hx - s2.x) === Math.sign(lx - hx), 'it stands behind the handle, away from the load');
+        assert.ok(Math.abs(s2.x - hx) >= (W1_TRAP_MEASURES.sapling2.footW * s2.k) / 2 + 22, 'its root flare off the handle');
+        assert.ok(lay.hy <= p.loadY - 68 + 45 && lay.hy >= p.loadY - 68 - 40, `the corner at the vine line (${p.loadY - 68 - lay.hy})`);
       }
+      boughs++;
     }
   }
-  // (the rest stand beyond the load: there the vine runs from the crown down as the handle, no bough end: castArt.ts drawTraps)
-  assert.ok(boughs >= 4, `the handle's bough grows from the sapling where its trunk is on the handle's side (${boughs} of 10)`);
+  assert.equal(boughs, 10, "every trap's corner over the handle hangs from a bough end or a second sapling's crown");
 });
 
 test('the foot never stands over a gap: with no ground where it would go, a bough end holds the load', () => {

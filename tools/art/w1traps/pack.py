@@ -3,7 +3,7 @@ src/assets/props/w1-traps.webp, and write its frame table and the measures the d
 never hand-edit). Every piece is defringed (tools/art/edges/defringe.py: no dark rim, no key spill) and stored at no more than
 PX atlas px per game unit at its usual size. Review sheet: reference/qa-reports/ART-W1/pieces-on-dark-and-light.jpg.
 
-    python3 -I tools/art/w1traps/pack.py <takes root: cuts/, r3cut/> <Matt's hive sheet .jpg>
+    python3 -I tools/art/w1traps/pack.py <takes root: cuts/, r4cut/> '{"tendril": "<seed>", "stake": ..., "vineLong": ...}'
 """
 import importlib.util, json, sys
 from pathlib import Path
@@ -24,27 +24,31 @@ def _load(name, path):
 hfcut = _load('hfcut', ROOT / 'tools/art/hfprops/cut.py')
 sys.argv, ARGS = sys.argv[:1], sys.argv[1:]
 defr = _load('defr', ROOT / 'tools/art/edges/defringe.py')
-T, SHEET = Path(ARGS[0]), ARGS[1]
+T = Path(ARGS[0])
 PX = 4  # atlas px per game unit (hf-props' rule: sharp at 2x on a phone at the game's zoom)
 POKEY = 89.1
 
+# ART-W1B (2026-11-12): the pieces the lead kept are taken from the shipped atlas byte for byte (KEEP); the new ones are cut from
+# the takes (PIECES). Out: Matt's hive frames (a brown cocoon at phone size: hive A, the lead's call), the stone's knotted net (B:
+# the vines-wrapped stone A instead), the tendril's saw-cut stake (World 1 has no made things: a living root hoop instead).
+KEEP = {'sapling': 'the anchor: a bent sapling, the load hangs under its crown (anchorArch-5)',
+        'clump': 'the bough end the handle hangs from, its stick toward the sapling (leafClump-41)',
+        'link': 'the vine from the handle over to the load (vineLink-79)',
+        'handle': 'the vine handle, set: a knotted loop at his raised hand (handleSet-29)',
+        'sprung': 'the vine handle, sprung: a limp snapped end (handleSprung-41)',
+        'bee': "Matt, 11-12: one bee from his hive sheet's frame 1, for the buzz"}
 # (name, source, axis, game units at its usual size, why it is in the trap)
 PIECES = [
-    ('sapling', 'cuts/anchorArch-5.png', 'h', 260, 'the anchor: a bent sapling, the load hangs under its crown'),
-    ('clump', 'cuts/leafClump-41.png', 'w', 78, 'the bough end the handle hangs from, its stick toward the sapling'),
-    ('link', 'cuts/vineLink-79.png', 'w', 170, 'the vine from the handle over to the load'),
-    ('handle', 'cuts/handleSet-29.png', 'w', 30, 'the vine handle, set: a knotted loop at his raised hand'),
-    ('sprung', 'cuts/handleSprung-41.png', 'h', 46, 'the vine handle, sprung: a limp snapped end'),
-    ('tendril', 'cuts/tendrilSet-5.png', 'w', 24, 'the tendril handle, set: taut to its stake'),
-    ('stake', 'cuts/tendrilCut-67.png', 'h', 40, 'the tendril handle, cut: the stake and its curl'),
-    ('stoneHang', 'cuts/stoneHang-41.png', 'w', 50, 'the stone in its net, hanging'),
-    ('stoneDown', 'r3cut/stoneDown-down-stoneHang-41-s42-7.png', 'w', 50, 'the same stone landed, net slack'),
+    ('sapling2', 'cuts/anchorArch-41.png', 'h', 220, 'the second sapling behind the handle: the vine\'s corner hangs from its crown'),
+    ('tendril', 'r4cut/rootSet-PICK.png', 'w', 30, 'the tendril handle, set: taut, knotted round a living root hoop'),
+    ('stake', 'r4cut/rootCut-PICK.png', 'w', 46, 'the tendril handle, cut: the root hoop and the torn curl of creeper'),
+    ('stoneHang', 'cuts/stoneHang-17.png', 'w', 50, 'the mossy stone with vines wrapped round it, hanging (A)'),
+    ('stoneDown', 'cuts/stoneDown-down-stoneHang-17-s42-31.png', 'w', 50, 'the same stone landed, its vines slack (A)'),
+    ('hiveHang', 'cuts/hiveHang-67.png', 'h', 52, 'hive A: the painted hanging hive with the dark doorway'),
+    ('hiveDown', 'cuts/hiveDown-down-hiveHang-67-s42-7.png', 'w', 56, 'hive A landed on its side, whole'),
+    ('trunk', 'cuts/anchorArm-41.png', 'h', 230, "a living tree for a shimmy vine's end (World 1: no rope, no posts): the vine ties on at its arm"),
 ]
-# Matt's hive sheet (reference/art/matt/2026-11-12-hive-break-sheet.jpg, 3 x 2 cells of about 340 x 330 with a caption strip): frame 1
-# hangs, frame 2 lands (one crack, whole); one bee from frame 1 for the code-drawn buzz
-MATT = [('hiveHang', (18, 20, 330, 335), 'h', 52, 'Matt, 11-12: frame 1, the hive hanging'),
-        ('hiveDown', (360, 20, 668, 335), 'h', 52, 'Matt, 11-12: frame 2, landed with one crack, whole')]
-BEE = (204, 58, 234, 86)  # one bee in frame 1 (sheet px)
+PICK = json.loads(ARGS[1]) if len(ARGS) > 1 else {}
 
 
 def clean(im, erode=2):
@@ -104,15 +108,18 @@ def sized(im, ax, units):
     return im.resize((max(1, round(im.width * k)), max(1, round(im.height * k))), Image.LANCZOS) if k < 1 else im
 
 
+import re
+_ts = (ROOT / 'src/game/w1TrapsData.ts').read_text()
+OLD = json.loads(re.search(r'W1_TRAP_FRAMES = (\{.*?\n\}) as const', _ts, re.S).group(1))
+old_atlas = Image.open(ROOT / 'src/assets/props/w1-traps.webp').convert('RGBA')
 pieces = {}
+for n, why in KEEP.items():
+    f = OLD[n]
+    pieces[n] = (old_atlas.crop((f['x'], f['y'], f['x'] + f['w'], f['y'] + f['h'])), f['axis'], f['units'], why, 'the shipped atlas (ART-W1)')
 for n, src, ax, units, why in PIECES:
+    src = src.replace('PICK', str(PICK.get(n, '')))
     # (the landed stone's img2img painted a soft grey shadow just outside its ink on the right: 6 px off that one)
     pieces[n] = (sized(clean(Image.open(T / src), erode=6 if n == 'stoneDown' else 2), ax, units), ax, units, why, src)
-sheet = Image.open(SHEET).convert('RGB')
-for n, box, ax, units, why in MATT:
-    c = sheet.crop(box)
-    pieces[n] = (sized(clean(blobs(key_plum(c), 0.3), erode=1), ax, units), ax, units, why, f'{Path(SHEET).name} {box}')
-pieces['bee'] = (blobs(key_plum(sheet.crop(BEE)), 0.3), 'w', 9, 'Matt, 11-12: one bee from frame 1, for the buzz', f'{Path(SHEET).name} {BEE}')
 
 # shelf-pack into one sheet
 order = sorted(pieces, key=lambda n: -pieces[n][0].height)
@@ -170,11 +177,21 @@ meta = {
     'clump': {'under': under('clump', 12), 'stick': ends('clump')[0]},
     'link': {'ends': ends('link')},
 }
+sap2 = alpha('sapling2'); s2h, s2w = sap2.shape
+foot2 = np.nonzero(sap2[-6:].any(0))[0]
+tr = alpha('trunk'); th, tw = tr.shape
+trf = np.nonzero(tr[-6:].any(0))[0]
+band = tr[int(th * 0.3):int(th * 0.75)]
+tipx = int(np.nonzero(band.any(0))[0][-1])
+tipy = int(th * 0.3) + float(np.nonzero(band[:, max(0, tipx - 40):tipx + 1].any(1))[0].mean())
+# (the arm's bark where it leaves the trunk: the trunk's right edge at the arm's height, a third of the way out)
+meta['trunk'] = {'foot': [round(float(trf.mean()), 1), th], 'footW': int(trf[-1] - trf[0]), 'armTip': [tipx, round(tipy, 1)]}
+meta['sapling2'] = {'foot': [round(float(foot2.mean()), 1), s2h], 'footW': int(foot2[-1] - foot2[0]), 'under': under('sapling2')}
 frames = {}
 for n, (x0, y0) in pos.items():
     im, ax, units, why, src = pieces[n]
     frames[n] = {'x': x0, 'y': y0, 'w': im.width, 'h': im.height, 'units': units, 'axis': ax}
-ts = ['// generated by python3 -I tools/art/w1traps/pack.py (ART-W1, 2026-11-12): World 1\'s drop-trap pieces in src/assets/props/w1-traps.webp.',
+ts = ['// generated by python3 -I tools/art/w1traps/pack.py (ART-W1, ART-W1B 2026-11-12): World 1\'s drop-trap pieces in src/assets/props/w1-traps.webp.',
       '// Do not edit by hand. units: the size it is drawn at (game units) along `axis` (w or h); measures in the frame\'s own px.',
       "export const W1_TRAPS_URL = new URL('../assets/props/w1-traps.webp', import.meta.url).href;",
       f'export const W1_TRAP_FRAMES = {json.dumps(frames, indent=1)} as const;',
@@ -183,7 +200,7 @@ ts = ['// generated by python3 -I tools/art/w1traps/pack.py (ART-W1, 2026-11-12)
 (ROOT / 'src/game/w1TrapsData.ts').write_text('\n'.join(ts))
 
 # review: every piece on a dark and a light backdrop at 2x game size (fringe shows there), and the provenance list
-rv = ROOT / 'reference/qa-reports/ART-W1'
+rv = ROOT / 'reference/qa-reports/ART-W1B'
 rv.mkdir(parents=True, exist_ok=True)
 cells = []
 for n in sorted(pieces):

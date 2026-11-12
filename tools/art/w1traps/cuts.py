@@ -26,6 +26,12 @@ BOX = {
     'r2/vineLink-53': (0.15, 0.32, 0.85, 0.78), 'r2/vineLink-79': (0.2, 0.3, 0.83, 0.8),
     'r3b/anchorArm-41': (0.04, 0.02, 0.98, 0.9), 'r3b/anchorArch-5': (0.1, 0.05, 0.95, 0.875),
     'r2/leafClump-41': (0.1, 0.12, 0.85, 0.75), 'r2/leafClump-67': (0.08, 0.08, 0.92, 0.6),
+    # ART-W1B: the round-3 landed takes (img2img of paste-ups: clean magenta round them) and the second sapling
+    'r3/hiveDown-down-hiveHang-67-s42-7': (0.03, 0.03, 0.97, 0.97), 'r3/stoneDown-down-stoneHang-17-s42-31': (0.03, 0.03, 0.97, 0.97),
+    'r3b/anchorArch-41': (0.1, 0.05, 0.95, 0.875),
+    # round 4: the living root hoop (no made things in World 1); the snapped root's stump (rootCut-17's right) is left off by the
+    # biggest-blob key, its pool by the box
+    'r4/rootSet-5': (0.12, 0.4, 0.88, 0.918), 'r4/rootSet-17': (0.12, 0.25, 0.88, 0.94), 'r4/rootCut-17': (0.03, 0.05, 0.97, 0.872),
 }
 
 
@@ -69,7 +75,13 @@ if sys.argv[1] == 'starts':
 else:
     T, O = Path(sys.argv[1]), Path(sys.argv[2])
     O.mkdir(parents=True, exist_ok=True)
+    # (paint the model left touching a piece, cleared by hand: fractions of the cut piece; stone A's bough tip at its top right)
+    ERASE = {'r1/stoneHang-17': [(0.74, 0, 1, 0.1)]}
     for k, b in BOX.items():
         p = cut(T / f'{k}.webp', b)
+        for e in ERASE.get(k, []):
+            a = p.getchannel('A')
+            a.paste(0, (round(e[0] * p.width), round(e[1] * p.height), round(e[2] * p.width), round(e[3] * p.height)))
+            p.putalpha(a)
         p.save(O / f"{k.split('/')[1]}.png")
         print(k, p.size)

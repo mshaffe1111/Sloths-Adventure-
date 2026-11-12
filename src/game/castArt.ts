@@ -2,9 +2,12 @@
  * castArt — how a stage's drop traps are drawn (castPlay.ts, dropTrap.ts): World 1's painted trap pieces (ART-W1, 2026-11-12;
  * src/assets/props/w1-traps.webp, w1TrapsData.ts, made by tools/art/w1traps/pack.py). The lead's picks: a bent SAPLING holds the load
  * under its crown, a painted bough end (the CLUMP) holds the handle, one painted VINE runs between them; the vine HANDLE is a knotted
- * loop at his raised hand (a limp snapped end once sprung), the TENDRIL handle runs taut to a stake (the stake and its curl once cut);
- * the stone hangs in its net and lands in it; the hive is Matt's own (his sheet's frame 1 hanging, frame 2 landed: one crack, whole),
- * and a few of his bees buzz out of the crack, circle the animal and drift off, away from Pokey. Code only adds the small touches: the
+ * loop at his raised hand (a limp snapped end once sprung), the TENDRIL handle runs taut, knotted round a living root hoop (the hoop
+ * and the torn curl once cut: World 1 has no made things, no stake); the mossy stone hangs with vines wrapped round it and lands in
+ * them; the hive is painted hive A (hanging with its dark doorway; landed on its side, whole: the lead's pick over Matt's sheet, which
+ * read as a brown cocoon at phone size, ART-W1B), and a few of Matt's bees buzz out, circle the animal and drift off, away from Pokey.
+ * Where the first sapling stands beyond the load, a second, smaller one stands behind the handle and the vine's corner hangs from its
+ * crown (ART-W1B). Code only adds the small touches: the
  * handle's soft "hit me" ring and the bees' flight.
  *
  * Nothing floats: the sapling's foot is set on real ground (the stage's platforms), at a size that keeps its crown under the top of a
@@ -75,6 +78,9 @@ export interface TrapLayout {
   /** the bough end over the handle: its stick's end set on the sapling's bark, or null where the trunk is not on the handle's side
    *  (then it hangs at the vine line as W1C's stand-in did) */
   bough: { x: number; y: number; k: number; flip: boolean } | null;
+  /** the second, smaller sapling behind the handle (ART-W1B): its crown over the handle, the vine's corner hanging from its
+   *  underside at (handle x, hy), so nothing hangs on air; null where the first sapling's bough end already holds that corner */
+  sap2: { x: number; y: number; k: number; flip: boolean } | null;
 }
 
 const loadOf = (p: TrapPost): W1TrapPiece => (p.load === 'hive' ? 'hiveHang' : 'stoneHang');
@@ -107,12 +113,56 @@ export function layoutTrap(p: TrapPost, platforms: readonly Platform[]): TrapLay
         // the trunk's root flare keeps clear of the handle's hit box
         if (Math.abs(fx - p.x) < half + TRAP.handle.w / 2) continue;
         const score = Math.abs(hangY - (top - 14)) + (s === dir ? 0 : 400) + k * 20;
-        if (!best || score < best.score) best = { score, lay: { dir, hy, hangX: p.loadX, hangY, sap: { x: fx, y: g, k, flip: s < 0 }, bough: null } };
+        if (!best || score < best.score) best = { score, lay: { dir, hy, hangX: p.loadX, hangY, sap: { x: fx, y: g, k, flip: s < 0 }, bough: null, sap2: null } };
       }
     }
   }
-  const lay = best?.lay ?? { dir, hy, hangX: p.loadX, hangY: hy, sap: null, bough: null };
-  return lay.sap && (lay.sap.flip ? -1 : 1) === dir ? attach(p, lay) : lay;
+  const lay = best?.lay ?? { dir, hy, hangX: p.loadX, hangY: hy, sap: null, bough: null, sap2: null };
+  if (lay.sap && (lay.sap.flip ? -1 : 1) === dir) {
+    const a = attach(p, lay);
+    if (a.bough) return a;
+  }
+  return lay.sap ? behind(p, lay, platforms) : lay;
+}
+
+const SAP2 = W1_TRAP_MEASURES.sapling2;
+const SAP2_F = W1_TRAP_FRAMES.sapling2;
+const SAP2_COLW = SAP2_F.w / SAP2.under.length;
+/** the second sapling's crown-blob columns: the vine's corner hangs from its underside (the leaves past them droop lower) */
+const SAP2_COLS = [12, 13, 14, 15];
+/** its tallest (units): smaller than the first, and kept low so sideways its crown stays under the goal sign where it can */
+const SAP2_MAX_TALL = 225;
+
+/**
+ * The second sapling (ART-W1B, the lead's option (a)): it stands behind the handle, away from the load, and arches toward it, so the
+ * vine's corner over the handle hangs from the underside of its crown. Its foot on one flat ground, its root flare clear of the
+ * handle; the corner from 40 units over the vine line to 45 under it (the handle's strand drawn that much longer or shorter, never
+ * under 12 units); the shortest tree that fits, then the corner nearest the vine line.
+ * Where none fits, the layout is unchanged (the vine runs from the first crown and hangs down as the handle, as before).
+ */
+function behind(p: TrapPost, lay: TrapLayout, platforms: readonly Platform[]): TrapLayout {
+  const dir = lay.dir;
+  // (the lowest the corner may come: the handle's own painted piece and 12 units of strand still fit above his hand / his feet)
+  const lowest = p.kind === 'vine'
+    ? p.y - TRAP.handle.low - 30 - W1_TRAP_FRAMES.handle.h * unit('handle') - 12
+    : p.y - W1_TRAP_FRAMES.tendril.h * unit('tendril') - 12;
+  let best: { score: number; sap2: NonNullable<TrapLayout['sap2']>; hy: number } | null = null;
+  for (const c of SAP2_COLS) {
+    const colX = (c + 0.5) * SAP2_COLW;
+    for (let k = 0.12; k <= SAP2_MAX_TALL / SAP2_F.h + 1e-9; k += 0.004) {
+      const fx = p.x - dir * k * (colX - SAP2.foot[0]);
+      const half = (SAP2.footW * k) / 2;
+      const g = groundUnder(platforms, fx, p.y - 80, 420);
+      if (g === undefined) continue;
+      if (groundUnder(platforms, fx - half * 0.6, g - 4, 8) !== g || groundUnder(platforms, fx + half * 0.6, g - 4, 8) !== g) continue;
+      const cy = g - k * (SAP2_F.h - SAP2.under[c]);
+      if (cy > Math.min(lay.hy + 45, lowest) || cy < lay.hy - 40) continue;
+      if (Math.abs(fx - p.x) < half + TRAP.handle.w / 2) continue;
+      const score = k * SAP2_F.h + Math.abs(cy - lay.hy) * 0.5;
+      if (!best || score < best.score) best = { score, sap2: { x: fx, y: g, k, flip: dir < 0 }, hy: cy };
+    }
+  }
+  return best ? { ...lay, hy: best.hy, sap2: best.sap2 } : lay;
 }
 
 /** the trunk's bark on the handle's side at world height y (the sapling's measured edge, nearest row that has one) */
@@ -201,7 +251,7 @@ export function drawTraps(ctx: CanvasRenderingContext2D, traps: readonly TrapSta
     const p = tr.post;
     let lay = layouts.get(p);
     if (!lay) layouts.set(p, (lay = layoutTrap(p, platforms)));
-    if (!seen(p.x, p.y) && !seen(p.loadX, p.loadY) && !(lay.sap && seen(lay.sap.x, lay.sap.y))) continue;
+    if (!seen(p.x, p.y) && !seen(p.loadX, p.loadY) && !(lay.sap && seen(lay.sap.x, lay.sap.y)) && !(lay.sap2 && seen(lay.sap2.x, lay.sap2.y))) continue;
     const set = tr.phase === 'set';
     const loose = tr.phase === 'loose';
     const held = set || loose;
@@ -213,6 +263,12 @@ export function drawTraps(ctx: CanvasRenderingContext2D, traps: readonly TrapSta
       ctx.save();
       ctx.translate(lay.sap.x, lay.sap.y);
       piece(ctx, 'sapling', SAP.foot[0], SAP.foot[1], lay.sap.k, lay.sap.flip);
+      ctx.restore();
+    }
+    if (lay.sap2) {
+      ctx.save();
+      ctx.translate(lay.sap2.x, lay.sap2.y);
+      piece(ctx, 'sapling2', SAP2.foot[0], SAP2.foot[1], lay.sap2.k, lay.sap2.flip);
       ctx.restore();
     }
     // the vine from the handle's bough end over to the load, while it holds; once let go, a limp end under each
