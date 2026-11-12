@@ -173,3 +173,33 @@ reads true, because it names the characters, not the cats.
 > The art, made for this game in its own style.
 
 "two of our cats" replaces "two cats we had" so it doesn't touch on the cats having passed (Matt: "we don't have to get into that").
+
+## About: the arc (Matt, 3:36 PM ET: "a little project just for fun... to what it is now"). DRAFT for Matt
+**About screen (one phone screen):**
+
+> **How Sloths began**
+> It started as a little project, just for fun, because my wife said she'd like a sloth game.
+> Pokey (Pocono, really) and Meeca are named after two of our cats, who did everything together. A little of how they act is theirs, too.
+> Then it kept growing. **Our story ›**
+>
+> **What's ours** (as approved)
+> **Inspired by** (waits for Matt's games)
+
+**"Our story" page (a short scroll, linked from About):**
+
+> **Our story**
+> A sloth game needed a reason to keep going, so Pokey got one: Meeca, carried off to the north, and a trail of petals to follow.
+> The story was written, then rewritten world by world, until every voice sounded like itself: Dot who never stops talking, a General
+> who never says "I".
+> Ten worlds grew around it, each with its own guardian, and a journal for Pokey to keep along the way.
+> The very first stage has been rebuilt from the ground up more than once, until the jumps felt right.
+> Every level is played on real phones, upright and sideways, and by testers, little ones included.
+> It's still a little project, just for fun. It just got bigger.
+
+**Truth check, line by line:**
+- The wife's wish is Matt's words. The cats are Matt's, 11-12.
+- The rewrite is reference/STORY-REWRITE.md, all 10 worlds. Dot's and the General's voices are in VOICE.md.
+- Ten guardians are in bossDefs.ts. The journal is pokeyJournal.ts.
+- 1-1 was rebuilt more than once: the 11-04 rebuild, gen2 1-1 in 0.9.5, and the re-lay in 0.9.6.
+- The phone checks are clipcheck, upright and sideways. The testers, including a child tester, are on the #ctest survey (HANDOFF).
+- It names no dates or counts I can't verify, and it doesn't mention AI or the cats having passed.
