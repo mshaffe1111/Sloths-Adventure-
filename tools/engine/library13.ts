@@ -13,7 +13,7 @@ import '../../src/game/headlessDom.ts';
 import { fileURLToPath } from 'node:url';
 import { buildGen2Stage, stagePool } from '../../src/game/gen2/pipeline.ts';
 import { w1World } from '../../src/game/gen2/worlds/w1.ts';
-import { W1_CAST_CREATURES, W1_TRAP_EMIT, W1_TRAP_PAIRS, W1_TRAP_PROPS } from '../../src/game/gen2/worlds/w1Cast.ts';
+import { TRAP_UNDER, W1_CAST_CREATURES, W1_TRAP_EMIT, W1_TRAP_PAIRS, W1_TRAP_PROPS, armedTraps } from '../../src/game/gen2/worlds/w1Cast.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
 import type { CastData } from '../../src/game/castPlay.types.ts';
 import type { CreatureDef, GraphBrief, NodeJob, PropEmitter, SectionPiece, SectionTemplate, Socket, StageSink, WorldKit } from '../../src/game/gen2/types.ts';
@@ -41,31 +41,17 @@ export const BRIEF_13: GraphBrief = {
 export const ROOM_13 = 320;
 /** the story keeper's approved 1-3 line (the lead's brief, 11-12): the only player words this file holds */
 export const TRAP_LINE = 'Knock the snakes off the branches. Punch, or shake the vine.';
-/**
- * 1-3's cast rows: w1Cast.ts's two, plus what the lay needs that they lack (rows added TEST-SIDE, for the lead to move into
- * w1Cast.ts with the bricks):
- *   - `topup` on the awake snake: a purge's top-up lays the creatures tagged so, else every ground creature (pipeline topUpFoes),
- *     which would top a purge up with sleepers;
- *   - `snake-trapped` and `snake-trapped-asleep`: the same snake on a SHORT patch (minGround 120; the awake row's 200 is the bare
- *     branch's and the top-up's). The phone shows about 425 px: a snake under a trap must stay near its load (the lead, 11-12).
- */
-export const CAST_13: CreatureDef[] = W1_CAST_CREATURES.flatMap((c) => [
-  c.id === 'snake' ? { ...c, tags: [...(c.tags ?? []), 'topup'] } : c,
-  { ...c, id: c.id === 'snake' ? 'snake-trapped' : 'snake-trapped-asleep', minGround: 120, tags: [...(c.tags ?? []), 'trapped'] },
-]);
+/** 1-3's cast rows: w1Cast.ts's four (the snake and the sleeper on a 200 px branch, and each on a trap's short patch) */
+export const CAST_13: CreatureDef[] = W1_CAST_CREATURES;
 
 // ───────────────────────────── the drop-trap twist bricks (1-3's own) ─────────────────────────────
 /**
- * THE PHONE'S NUMBERS (the lead's still, 11-12: an upright phone shows about 425 world px, Pokey a third in from the left):
- *   - a trap's handle stands 150-190 px before its load (w1Cast.ts W1_TRAP_PAIRS), so the load is on screen when he is at the handle;
- *   - the snake under a trap walks a SHORT patch, 122 px, all of it within 122 px of the load's line (inside the trap's
- *     170 px scare) and on screen from the handle;
- *   - the handle is 105 px or more from the nearest end of ANY snake's patch (its strike), so no ledge beside a handle is long
- *     enough for an animal to be laid or topped up on (every one under 248 px: a patrol's 200 plus the lay's 24 px margins).
- * WHAT THE LAY WILL NOT DO (pipeline ANY_APART, not a brick's to change): an animal is never laid within 120 px of a mechanism's
- * prop, its own trap's load included, so a patrol CENTRED on the load cannot be laid. The nearest the rules allow, laid here: the
- * load's line at the patch's near end, the snake laid at its far end 122 px on, walking back under the load: from the handle the
- * load is 152-156 px and the far end of the patrol 274-278 px, the least the pair's 150 and the lay's 120 leave (270).
+ * THE PHONE'S NUMBERS (w1Cast.ts's header, measured on stills of a roll): from its handle a trap's hung load is 140-190 px on, over
+ * the middle of its snake's 122 px patch, so the vine, the load and the whole patch are on an upright phone's screen; the handle's
+ * socket is 85-130 px before the load's (the near end of the patch); no ledge beside a handle is long enough for another animal to
+ * be laid or topped up on (every one under 248 px: a patrol's 200 plus the lay's 24 px margins).
+ * The lay keeps an animal 120 px from any prop (pipeline ANY_APART), its own trap's load socket included: so the load's SOCKET sits
+ * at the patch's near end and the snake's at its far end, and `armedTraps` hangs the load over the patch's middle.
  */
 /** a ledge he walks or steps onto: no `landing` (Easy widens a landing by 48 px, EASY_LANDING: every px here is the phone's, and a
  *  ledge 48 px longer is one an animal can be topped up on, beside a handle; measured, Easy's first cut hung no pair at all) */
@@ -86,8 +72,10 @@ const LONG: R2 = [350, 370], WIDE: R2 = [400, 420];
 /** on a trapped branch: the load's line 24 px in (the patch's near end), the snake's socket 122 px on, at the patch's far end
  *  (a socket outside its piece's patch is left empty, pipeline patchFor; an animal under 120 px from a prop is not laid) */
 const LOAD_T = 0.142, SNAKE_T = 0.857;
-/** the handle on the short ledge before the branch: 128-132 px before the branch, so 152-156 px before its load */
-const HANDLE_T = 0.1475;
+/** the handle on the short ledge before the branch: 84-86 px before the branch, so 108-110 px before its load's socket (the pair's
+ *  85-130), which is the nearest the snake can come (it strikes within 105), and 169-171 px before the middle of the snake's patch,
+ *  where the load is hung (w1Cast.ts armedTraps) */
+const HANDLE_T = 0.443;
 const low = (id: string, on: string, t: R2 | number, count = 2): Socket => ({ id, role: 'pickup', on, t, dn: 34, count, span: 120 });
 type Load = 'trap-hive' | 'trap-stone';
 interface Unit { asleep?: boolean; load?: Load | null; perch?: boolean; wide?: boolean; easy?: Socket['easy'] }
@@ -204,29 +192,10 @@ export const TWISTS: SectionTemplate[] = [
   ] }),
 ];
 
-/** how near its load's line a snake must stand, on the ground the load lands on, for the trap to be one (px) */
-export const UNDER = 150;
-/**
- * A trap is ARMED only where a snake stands under it. The lay fills a pair's two props when their sockets are met, before it knows
- * which animals stay: its spacing, a flag's pad and above all Easy's 60% cut then take snakes away, and w1Cast.ts's emitters alone
- * leave the load hanging over an empty branch (measured, `--raw-traps`: 2 of 608 traps on Normal, 243 of 608 on Easy). So the kit's
- * own two hooks do it, no rule touched: the props' emitters (w1Cast.ts's, unchanged) write to a waiting list, and `spawn`, which the
- * lay calls for every animal that STAYS (a socket's or the top-up's), moves a waiting trap into `proto.cast.traps` when a snake
- * stands within UNDER px of its load on its ground. A load whose snake was cut is then no trap at all on that setting.
- */
-export function armedTraps(): Required<Pick<WorldKit, 'emit' | 'spawn'>> {
-  const waiting = new WeakMap<StageSink, { proto: { cast?: CastData } }>();
-  const of = (out: StageSink) => waiting.get(out) ?? (waiting.set(out, { proto: {} }), waiting.get(out)!);
-  const emit = Object.fromEntries(Object.entries(W1_TRAP_EMIT).map(([id, fn]) => [id, ((f, p, out) => fn(f, p, of(out) as unknown as StageSink)) as PropEmitter]));
-  return { emit, spawn: (e, c, out) => {
-    if (e.type !== 'snake') return;
-    const hold = of(out).proto.cast?.traps ?? [], top = e.y + (c.footY ?? c.h / 2);
-    const k = hold.findIndex((t) => Number.isFinite(t.x) && Math.abs(t.loadX - e.x) <= UNDER && Math.abs(t.landY - top) <= 6);
-    if (k < 0) return;
-    const live = (out.proto.cast ??= { kinds: [], traps: [] }).traps;
-    live.push({ ...hold.splice(k, 1)[0], id: live.length + 1 });
-  } };
-}
+/** arming is World 1's own now (w1Cast.ts `armedTraps`: a trap is one only where a snake stays under it, its load hung over the
+ *  middle of that snake's patch) */
+export const UNDER = TRAP_UNDER;
+export { armedTraps };
 
 /** `rawTraps`: w1Cast.ts's emitters alone, every load a trap whether or not a snake stands under it (to measure what arming saves) */
 export interface LibOpts { flown?: boolean; twists?: boolean; only?: string; down?: boolean; room?: number; rawTraps?: boolean }
@@ -347,7 +316,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
         console.log(`   ${name} (${S.length}): sections ${st3(S.map((r) => r.plan.length))}, drop-trap bricks ${st3(S.map((r) => r.plan.filter((t) => t.startsWith('lib-trap') || t.startsWith('lib-snake')).length))}, snakes ${st3(S.map((r) => r.snakes.length))} (asleep ${st3(S.map((r) => r.snakes.filter((q) => q.asleep).length))}), traps ${st3(S.map((r) => r.traps.length))}, modelled seconds typical ${st3(S.filter((r) => r.seconds !== undefined).map((r) => Math.round(r.seconds!)))} fast ${st3(S.filter((r) => r.fast !== undefined).map((r) => Math.round(r.fast!)))}`);
         console.log(`      traps ${S.reduce((s, r) => s + r.traps.length, 0)}${o.rawTraps ? ' (RAW: every load a trap)' : ` armed of ${S.reduce((s, r) => s + r.loads, 0)} loads hung (min a roll ${Math.min(...S.map((r) => r.traps.length))})`}: no handle ${S.reduce((s, r) => s + r.noHandle, 0)}, no snake within 150 px on its ground ${S.reduce((s, r) => s + r.noSnake, 0)} (in ${S.filter((r) => r.noSnake).length} rolls); awake snake under ${S.reduce((s, r) => s + r.traps.filter((t) => t.snake && !t.snake.asleep).length, 0)}, sleeping ${S.reduce((s, r) => s + r.traps.filter((t) => t.snake?.asleep).length, 0)}; first snake asleep in ${S.filter((r) => r.firstAsleep).length} of ${S.length}; cast kinds ['snake'] in ${S.filter((r) => r.kinds.join() === 'snake').length}; rolls with no trap ${S.filter((r) => !r.traps.length).length}`);
         const all = (f: (r: Roll13) => number[]) => { const xs = S.flatMap(f); return xs.length ? `${Math.min(...xs)}-${Math.max(...xs)}` : 'none'; };
-        console.log(`      handle to load ${all((r) => r.reach)} px (the pair's 150-190); handle to the nearest end of any snake's patrol ${all((r) => r.clear)} px (105 or more); a trapped snake's patrol ${all((r) => r.patrolW)} px wide, its far end ${all((r) => r.patrolFar)} px from the load's line`);
+        console.log(`      handle to load ${all((r) => r.reach)} px (140-190: w1Cast.ts TRAP_REACH); handle to the nearest end of any snake's patrol ${all((r) => r.clear)} px (105 or more: its strike); a trapped snake's patrol ${all((r) => r.patrolW)} px wide, its far end ${all((r) => r.patrolFar)} px from the load's line`);
       }
       for (const [k, v] of [...kinds].sort((a, b) => b[1] - a[1]).slice(0, 16)) console.log(`   ${String(v).padStart(4)}  ${k}`);
     }

@@ -30,11 +30,11 @@ test("1-1's and 1-2's kits are untouched: World 1 holds no creature, and its sec
   assert.deepEqual(poolReport(O).out.filter((q) => q.why === 'refused: '), [], 'a section is out with no reason named');
 });
 
-test("the cast rows are w1Cast.ts's, plus the short-patch rows and the top-up tag; a pair's handle stands 150-190 px from its load", () => {
+test("the cast rows are w1Cast.ts's, plus the short-patch rows and the top-up tag; a pair's sockets stand 85-130 px apart", () => {
   for (const c of W1_CAST_CREATURES) { const { tags: _t, ...a } = CAST_13.find((q) => q.id === c.id)!, { tags: _u, ...b } = c; assert.deepEqual(a, b, c.id); }
   assert.deepEqual(CAST_13.filter((c) => c.tags?.includes('topup')).map((c) => c.id), ['snake'], 'only the awake snake tops a purge up');
   assert.ok(CAST_13.every((c) => c.enemy === 'snake'));
-  for (const p of W1_TRAP_PAIRS) assert.deepEqual([p.minApart, p.maxApart], [150, 190], p.id);
+  for (const p of W1_TRAP_PAIRS) assert.deepEqual([p.minApart, p.maxApart], [85, 130], p.id);
 });
 
 test('a clean roll on both settings: no throw, no error, the lesson and a signature gallery in each, a purge laid to its quota', () => {
@@ -73,7 +73,7 @@ test("every trap has its handle and a snake under it, at the phone's numbers", (
       assert.ok(t.snake && Math.abs(t.snake.x - t.loadX) <= UNDER, `${name}: trap ${t.id} at x ${t.loadX} hangs over nothing`);
       assert.ok(t.snake.patrol[0] <= t.loadX && t.snake.patrol[1] >= t.loadX, `${name}: trap ${t.id}'s load is off its snake's patrol ${t.snake.patrol}`);
     }
-    for (const d of r.reach) assert.ok(d >= 150 && d <= 190, `${name}: a handle ${d} px from its load (150-190)`);
+    for (const d of r.reach) assert.ok(d >= 140 && d <= 190, `${name}: a handle ${d} px from its hung load (140-190)`);
     for (const d of r.clear) assert.ok(d >= 105, `${name}: a handle ${d} px from a snake's patrol (its strike is 105)`);
     for (const w of r.patrolW) assert.ok(w >= 100 && w <= 135, `${name}: a trapped snake's patrol is ${w} px`);
     for (const d of r.patrolFar) assert.ok(d <= 170, `${name}: a trapped snake walks ${d} px from its load (the scare is 170)`);

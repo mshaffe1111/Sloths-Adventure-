@@ -3,16 +3,14 @@
  * in plain view all stage long, so its finished look is painted art (STAGE-RULES §4) once its picture list is approved; until then
  * this keeps to few, cheap shapes (PERFORMANCE-RULES §1) in World 1's own greens, browns and honey.
  *
- * What a player must read at a glance: the HANDLE is the thing to hit (it sways and its end glows softly while the trap is set), the
- * cord runs from it up and over to the LOAD, and the load hangs over the animal.
+ * What a player must read at a glance: the HANDLE is the thing to hit (it sways and its end glows softly while the trap is set), ONE
+ * vine runs from it up and over to the LOAD, and the load hangs over the animal. Nothing runs off the top of the screen.
  */
 import { TRAP, type TrapState } from './dropTrap.ts';
 
 const VINE = '#3f7d2c';
 const VINE_DARK = '#27541c';
 const CORD = '#7c5a36';
-/** how far up the cords run, to the canopy out of sight (px) */
-const CANOPY = 700;
 
 function hive(ctx: CanvasRenderingContext2D, x: number, y: number, tilt: number): void {
   // its bottom at (x, y): four stacked bands, widest second from the top
@@ -52,6 +50,32 @@ function stone(ctx: CanvasRenderingContext2D, x: number, y: number, tilt: number
   ctx.restore();
 }
 
+/** a clump of leaves the vine hangs from: what stands in for the bough above, so nothing is tied to thin air and nothing runs off the top of the screen */
+function clump(ctx: CanvasRenderingContext2D, x: number, y: number, k: number): void {
+  ctx.fillStyle = VINE_DARK;
+  for (let i = 0; i < 5; i++) {
+    ctx.beginPath();
+    ctx.ellipse(x + (i - 2) * 11 * k, y - (i % 2 ? 7 : 0) * k, 15 * k, 8 * k, (i - 2) * 0.35, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.fillStyle = VINE;
+  for (let i = 0; i < 3; i++) {
+    ctx.beginPath();
+    ctx.ellipse(x + (i - 1) * 13 * k, y + 3 * k, 10 * k, 5 * k, (i - 1) * 0.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+/** a vine as two strokes (a dark edge, a green heart) along the path already begun */
+function vine(ctx: CanvasRenderingContext2D, w: number): void {
+  ctx.strokeStyle = VINE_DARK;
+  ctx.lineWidth = w;
+  ctx.stroke();
+  ctx.strokeStyle = VINE;
+  ctx.lineWidth = w * 0.5;
+  ctx.stroke();
+}
+
 /** every trap on screen. `seen`: the engine's on-screen test */
 export function drawTraps(ctx: CanvasRenderingContext2D, traps: readonly TrapState[], t: number, seen: (x: number, y: number) => boolean): void {
   for (const tr of traps) {
@@ -59,73 +83,76 @@ export function drawTraps(ctx: CanvasRenderingContext2D, traps: readonly TrapSta
     if (!seen(p.x, p.y) && !seen(p.loadX, p.loadY)) continue;
     const set = tr.phase === 'set';
     const loose = tr.phase === 'loose';
-    const top = p.loadY - 46 - 26; // the bough line the cord runs along, over the load's crown
+    const held = set || loose;
+    // ONE vine: from the leaves over the load it sags across to the leaves over the handle, and hangs down to his hand. The load
+    // hangs from it on a short cord. Short, in plain view, and the link from the thing he hits to the thing that falls is the vine itself
+    const top = p.loadY - 46 - 22;
     // the load's sway: a slow breath while it hangs, a hard shake once it is let go
     const sway = set ? Math.sin(t * 1.7 + p.id) * 0.05 : loose ? Math.sin(tr.t * 46) * 0.16 : 0;
-    const hx = p.x + (set ? Math.sin(t * 2.1 + p.id * 2) * 3 : 0);
-
+    const hx = p.x + (set ? Math.sin(t * 2.1 + p.id * 2) * 3 : loose ? Math.sin(tr.t * 46) * 4 : 0);
+    const mx = (p.x + p.loadX) / 2;
     ctx.lineCap = 'round';
-    // both ends hang from the canopy, out of sight above: nothing here is tied to thin air
-    ctx.strokeStyle = CORD;
-    ctx.lineWidth = 3;
+
+    // the link: taut-ish while it holds the load, slack and swinging free once it has let go
     ctx.beginPath();
-    ctx.moveTo(p.x, top - CANOPY);
-    ctx.lineTo(p.x, top);
-    if (tr.phase === 'set' || loose) {
-      // the cord: from the handle's top it sags across to the load, and holds it
-      ctx.quadraticCurveTo((p.x + p.loadX) / 2, top + 34, p.loadX, top);
+    ctx.moveTo(p.loadX, top);
+    if (held) ctx.quadraticCurveTo(mx, top + 30, p.x, top);
+    else ctx.quadraticCurveTo(p.loadX - (p.loadX - p.x) * 0.2, top + 46, p.loadX - (p.loadX - p.x) * 0.3, top + 70);
+    vine(ctx, 6);
+    if (held) {
+      // the short cord the load hangs by
+      ctx.strokeStyle = CORD;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(p.loadX, top);
       ctx.lineTo(p.loadX, p.loadY - 44);
-      ctx.moveTo(p.loadX, top - CANOPY);
-      ctx.lineTo(p.loadX, top);
+      ctx.stroke();
+      // two leaves on the link, so it reads as the same vine
+      ctx.fillStyle = VINE;
+      for (let i = 1; i <= 2; i++) {
+        ctx.beginPath();
+        ctx.ellipse(p.x + ((p.loadX - p.x) * i) / 3, top + 22 + (i % 2 ? 6 : -2), 9, 4.5, i % 2 ? 0.5 : -0.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
-    ctx.stroke();
     if (p.kind === 'vine') {
-      // a vine hanging to just over his head-height, a leaf tuft at its end
+      // the handle: it hangs to just over his head-height, a leaf tuft at its end
       const end = p.y - TRAP.handle.low - 34;
-      ctx.strokeStyle = VINE_DARK;
-      ctx.lineWidth = 7;
       ctx.beginPath();
       ctx.moveTo(p.x, top);
       ctx.quadraticCurveTo(p.x + (hx - p.x) * 2, (top + end) / 2, hx, end);
-      ctx.stroke();
-      ctx.strokeStyle = VINE;
-      ctx.lineWidth = 3.5;
-      ctx.stroke();
+      vine(ctx, 7);
       ctx.fillStyle = VINE;
       for (let i = 0; i < 3; i++) {
         ctx.beginPath();
         ctx.ellipse(hx + (i - 1) * 9, end + 6 + (i === 1 ? 5 : 0), 9, 5, (i - 1) * 0.6, 0, Math.PI * 2);
         ctx.fill();
       }
-      // a leaf either side on its way down, so it reads as a vine and not a pole
-      for (let i = 0; i < 4; i++) {
-        const ly = top + ((end - top) * (i + 1)) / 5;
+      const n = Math.max(1, Math.floor((end - top) / 45));
+      for (let i = 0; i < n; i++) {
         const side = i % 2 ? 1 : -1;
         ctx.beginPath();
-        ctx.ellipse(p.x + (hx - p.x) * ((i + 1) / 5) + side * 9, ly, 8, 4, side * 0.7, 0, Math.PI * 2);
+        ctx.ellipse(p.x + (hx - p.x) * ((i + 1) / (n + 1)) + side * 9, top + ((end - top) * (i + 1)) / (n + 1), 8, 4, side * 0.7, 0, Math.PI * 2);
         ctx.fill();
       }
       if (set) glow(ctx, hx, end + 6, t, p.id);
     } else {
       // a tendril tied off to a peg at his feet: taut while set, cut and curled once it has gone
-      ctx.strokeStyle = VINE_DARK;
-      ctx.lineWidth = 6;
       ctx.beginPath();
-      if (set || loose) {
+      if (held) {
         ctx.moveTo(p.x, top);
-        ctx.lineTo(hx, p.y - 6);
+        ctx.lineTo(hx, p.y - 8);
       } else {
-        ctx.moveTo(p.x, p.y - 6);
-        ctx.quadraticCurveTo(p.x + 14, p.y - 30, p.x + 4, p.y - 40);
+        ctx.moveTo(p.x, p.y - 8);
+        ctx.quadraticCurveTo(p.x + 16, p.y - 30, p.x + 4, p.y - 44);
       }
-      ctx.stroke();
-      ctx.strokeStyle = VINE;
-      ctx.lineWidth = 3;
-      ctx.stroke();
+      vine(ctx, 6);
       ctx.fillStyle = CORD;
-      ctx.fillRect(p.x - 5, p.y - 12, 10, 12);
-      if (set) glow(ctx, hx, p.y - 52, t, p.id);
+      ctx.fillRect(p.x - 5, p.y - 14, 10, 14);
+      if (set) glow(ctx, hx, p.y - 50, t, p.id);
     }
+    clump(ctx, p.loadX, top - 4, 1);
+    clump(ctx, p.x, top - 4, 0.85);
     // the load: hanging, falling, or lying where it fell (tipped a little)
     const tilt = tr.phase === 'down' ? 0.35 : sway;
     if (p.load === 'hive') hive(ctx, p.loadX, tr.y, tilt);
