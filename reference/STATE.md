@@ -539,3 +539,6 @@ lines); Matt sees them in the release.
   decision. Does that go in or get pushed out?"); the cap is under 30, not 12 ("what we learn on 1-1... is going to be way different
   than what it's going to be when we're on World 8"). CLAUDE.md updated: under 30 general rules + each world's own short section; the
   lead decides every add, replace or removal after each level's retro, on evidence from LEVEL-LOG.
+- 2026-11-12 1:53 PM ET, CORRECTION (F13 caught it, D30): the lead's own clock lines from about 1:37 PM drifted ~30 min AHEAD in
+  messages and in this ledger (entries labelled 1:55-2:36 PM were written between 1:37 and 1:53 PM). Real times come only from the
+  hook's "Now:" line each turn.
