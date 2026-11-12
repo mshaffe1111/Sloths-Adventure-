@@ -8,7 +8,7 @@
  */
 import type { Difficulty } from '../difficulty.ts';
 import type { Platform } from '../types.ts';
-import { APEX, arc, BAND_SOURCE, BANDS, BLOCK_H, BODY_H, lesserArcs, linkArcs, scopeFor, scopeOf, SPARE, TAKEOFF } from './reach.ts';
+import { APEX, arc, BAND_SOURCE, BANDS, BLOCK_H, BODY_H, chainBand, lesserArcs, linkArcs, scopeFor, scopeOf, SPARE, TAKEOFF } from './reach.ts';
 import type {
   Drop, FirstRunLayout, HurtLook, JudgedStage, LethalLook, Measure, PromiseRegistry, ReachMove, RollVerdict, SectionKind, SoftLook, Verdict, VerdictName,
 } from './verdicts.types.ts';
@@ -36,7 +36,7 @@ export interface RouteAsk { x0: number; x1: number; yTake: number; yLand: number
 /** the move each kind is BUILT for (the flick, bands.md §1) and the lesser move it must keep out (a block's) */
 export const TAUGHT: Record<SectionKind, ReachMove> = {
   'single-gap': 'single-flick', 'single-rise': 'single-flick', 'double-teach-rise': 'double-flick', 'double-teach-rise-thin': 'double-flick',
-  'double-test-gap': 'double-flick', 'bounce-teach': 'bounce-air', 'bounce-air-test': 'bounce-air',
+  'double-test-gap': 'double-flick', 'bounce-teach': 'bounce-air', 'bounce-air-test': 'bounce-air', 'chain-hop': 'bounce',
 };
 
 /**
@@ -79,8 +79,9 @@ export function askVerdicts(q: JudgedStage['asks'][number], setting: Difficulty,
   const out: Verdict[] = [];
   const at = { x0: R(q.x0), x1: R(q.x1), section: q.section };
   const v = (name: VerdictName, line: string, measure?: Measure) => out.push({ name, setting, at, ...(measure ? { measure } : {}), line });
-  const band = BANDS[q.kind][setting];
-  const where = `${q.kind} at x ${R(q.x0)} (${q.section})`;
+  // (a chain hop's band goes by the step between its two caps, chain.md §3; every other kind's by the setting)
+  const band = q.kind === 'chain-hop' ? chainBand(q.step ?? 0) : BANDS[q.kind][setting];
+  const where = `${q.kind}${q.step ? `, a step of ${R(q.step)} px,` : ''} at x ${R(q.x0)} (${q.section})`;
   if (band === 'none') v('band.out', `${where}: ${setting} has no ${q.kind} (band 'none')`, meas(q.figure, 0, true, BAND_SOURCE[q.kind]));
   else if (q.figure > band.hi) v('band.out', `${where}: ${R(q.figure)} px, over the band's ${band.hi}`, meas(q.figure, band.hi, true, BAND_SOURCE[q.kind]));
   else if (q.figure < band.lo) v('band.out', `${where}: ${R(q.figure)} px, under the band's ${band.lo}`, meas(q.figure, band.lo, false, BAND_SOURCE[q.kind]));

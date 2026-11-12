@@ -31,7 +31,9 @@ export interface FlownArc {
 
 /** the band a section kind may ask for (bands.md §2), per setting; `none` where the setting has no such section (Easy's double gap) */
 export type Band = { lo: number; hi: number } | 'none';
-export type SectionKind = 'single-gap' | 'single-rise' | 'double-teach-rise' | 'double-teach-rise-thin' | 'double-test-gap' | 'bounce-teach' | 'bounce-air-test';
+/** `chain-hop` (chain.md §3): one mushroom cap to the next, its figure S, cap centre to cap centre; its band goes by the step between the
+ *  two caps (reach.ts CHAIN_BANDS), the same on both settings */
+export type SectionKind = 'single-gap' | 'single-rise' | 'double-teach-rise' | 'double-teach-rise-thin' | 'double-test-gap' | 'bounce-teach' | 'bounce-air-test' | 'chain-hop';
 export type BandTable = Readonly<Record<SectionKind, Readonly<Record<Difficulty, Band>>>>;
 
 // ───────────────────────── drops: what every fall ends in, and how it looks ─────────────────────────
@@ -127,7 +129,8 @@ export interface JudgedStage<P extends FallPolicy = FallPolicy> {
   policy: P;
   drops: StageDrops<P>;
   /** each section that asks for a reach figure: its kind, the figure laid, the move it is built for, and the clear height above it */
-  asks: ReadonlyArray<{ section: string; kind: SectionKind; x0: number; x1: number; figure: number; move: ReachMove; headroom: number }>;
+  /** `step` (a chain hop): the next cap's height over this one, px up (negative: down) */
+  asks: ReadonlyArray<{ section: string; kind: SectionKind; x0: number; x1: number; figure: number; move: ReachMove; headroom: number; step?: number }>;
 }
 
 /**

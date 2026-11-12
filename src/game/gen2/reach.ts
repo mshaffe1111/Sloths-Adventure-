@@ -66,7 +66,19 @@ export const BANDS: BandTable = {
   'double-test-gap': { easy: 'none', normal: b(252, 262) },
   'bounce-teach': { easy: b(232, 246), normal: b(232, 246) },
   'bounce-air-test': { easy: b(236, 250), normal: b(236, 250) },
+  // (its LEVEL row; a stepped hop reads CHAIN_BANDS by its step: chainBand)
+  'chain-hop': { easy: b(205, 220), normal: b(205, 220) },
 };
+/** chain.md §3, cap to cap (S, cap centre to cap centre) by the step between the two caps, px up: the same rows on both settings. A step
+ *  in no row is not laid (between the rows; a cap more than 66 px over the last, or more than 36 px under it) */
+export const CHAIN_BANDS: ReadonlyArray<{ step: readonly [number, number]; s: { lo: number; hi: number }; source: string }> = [
+  { step: [-6, 6], s: { lo: 205, hi: 220 }, source: 'chain.md §3 "Cap to cap, level (±6 px)"' },
+  { step: [24, 36], s: { lo: 195, hi: 210 }, source: 'chain.md §3 "Cap to cap, a step up of 24-36 px"' },
+  { step: [54, 66], s: { lo: 185, hi: 200 }, source: 'chain.md §3 "Cap to cap, a step up of 54-66 px"' },
+  { step: [-36, -24], s: { lo: 215, hi: 225 }, source: 'chain.md §3 "Cap to cap, a step down of 24-36 px"' },
+];
+/** the band a chain hop of this step may ask for; 'none' for a step in no row */
+export const chainBand = (step: number): Band => CHAIN_BANDS.find((r) => step >= r.step[0] && step <= r.step[1])?.s ?? 'none';
 export const BAND_SOURCE: Readonly<Record<SectionKind, string>> = {
   'single-gap': 'bands.md §2 "Single jump, gap"',
   'single-rise': 'bands.md §2 "Single jump, rise"',
@@ -75,6 +87,7 @@ export const BAND_SOURCE: Readonly<Record<SectionKind, string>> = {
   'double-test-gap': 'bands.md §2 "Double gap (Normal only; Easy has none)"',
   'bounce-teach': 'bands.md §2 "Bounce teach, floor mushroom"',
   'bounce-air-test': 'bands.md §2 "Bounce + air jump test (U, V)"',
+  'chain-hop': 'chain.md §3 "Cap to cap"',
 };
 
 // ───────────────────────── lookups ─────────────────────────

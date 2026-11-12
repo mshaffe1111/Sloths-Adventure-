@@ -5,7 +5,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { JUDGED, gapEnvelope, judgedOnArcs, lesserArcs, linkArcs, scopeFor, scopeOf } from './reach.ts';
+import { CHAIN_BANDS, JUDGED, gapEnvelope, judgedOnArcs, lesserArcs, linkArcs, scopeFor, scopeOf } from './reach.ts';
 import { askVerdicts, judgeRoll } from './verdicts.ts';
 import type { Judged11 } from './verdicts.ts';
 import { withTestStage } from './listed.ts';
@@ -90,6 +90,31 @@ test("the promises read the table and the stage's brief, never a stage id: floor
   const src = fs.readFileSync('src/game/gen2/promises11.ts', 'utf8');
   assert.equal((src.match(/['"`]\d-\d['"`]/g) ?? []).filter((_, i, a) => i < a.length).length, 1, "one stage id in promises11.ts: its own direct reader's (promiseBreaches11), none in the registry");
   assert.doesNotMatch(src, /stages: \[/, 'no registry row lists stages');
+});
+
+test('a chain hop is a section kind, judged cap centre to cap centre (S) against chain.md §3 by the step between the two caps; band.out names it (planted)', () => {
+  const hop = (S: number, step = 0) => ({ section: 's1', kind: 'chain-hop' as const, x0: 1000, x1: 1000 + S, figure: S, step, move: 'bounce' as const, headroom: 9999 });
+  for (const setting of ['normal', 'easy'] as const) {
+    const out = (S: number, step = 0) => askVerdicts(hop(S, step), setting, '1-1').map((v) => `${v.name}: ${v.line}`);
+    // (the rows, chain.md §3: level ±6 px S 205-220; up 24-36 S 195-210; up 54-66 S 185-200; down 24-36 S 215-225)
+    for (const [S, step] of [[205, 0], [220, 6], [212, -6], [195, 24], [210, 36], [185, 54], [200, 66], [215, -24], [225, -36]]) assert.deepEqual(out(S, step), [], `${setting}: S ${S} at a step of ${step}`);
+    assert.deepEqual(out(240), ["band.out: chain-hop at x 1000 (s1): 240 px, over the band's 220"], `${setting}: S 240 level`);
+    assert.deepEqual(out(215, 60), ["band.out: chain-hop, a step of 60 px, at x 1000 (s1): 215 px, over the band's 200"], `${setting}: S 215 with a 60 px step`);
+    assert.deepEqual(out(200), ["band.out: chain-hop at x 1000 (s1): 200 px, under the band's 205"]);
+    assert.deepEqual(out(214, -30), ["band.out: chain-hop, a step of -30 px, at x 1000 (s1): 214 px, under the band's 215"]);
+    // (a step in no row is not laid: between the rows, a cap more than 66 px over the last, or more than 36 px under it)
+    for (const step of [15, 45, 80, -15, -50]) assert.deepEqual(out(205, step), [`band.out: chain-hop, a step of ${step} px, at x 1000 (s1): ${setting} has no chain-hop (band 'none')`], `${setting}: a step of ${step}`);
+  }
+  // (judged on any judged stage that lays one; a stage with no table line states it notJudged)
+  const roll = (id: string) => judgeRoll({ stageId: id, setting: 'normal', policy: 'per-gap', drops: [], asks: [hop(240)], routeGaps: [] } as Judged11);
+  assert.equal(roll(FIX).accepted, true);
+  withTestStage({ [FIX]: { kit: w1World, seeds: [1], scope: 'normal-1-1' } }, () => {
+    const v = roll(FIX);
+    assert.ok(!v.accepted && v.failed.length === 1 && v.failed[0].name === 'band.out', JSON.stringify(v));
+  });
+  // (the data rows carry their chain.md source, for the Critic's diff)
+  assert.deepEqual(CHAIN_BANDS.map((r) => [r.step, [r.s.lo, r.s.hi]]), [[[-6, 6], [205, 220]], [[24, 36], [195, 210]], [[54, 66], [185, 200]], [[-36, -24], [215, 225]]]);
+  assert.ok(CHAIN_BANDS.every((r) => /^chain\.md §3 "Cap to cap/.test(r.source)));
 });
 
 test('no stage id in reach.ts or verdicts.ts outside the table', () => {
