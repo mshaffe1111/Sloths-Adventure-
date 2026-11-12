@@ -52,3 +52,23 @@ test("a brief that asks for hollows in a world with no hurt floor row fails by n
   const seed = provenSeeds('1-1').find((s) => hollows(lay(s, kit({ row: true, pits: true }))).length > 0)!;
   assert.throws(() => lay(seed, kit({ pits: true })), /no hurtFloor row/);
 });
+
+test("World 1's painter finds every hollow the lay makes (w1Pits kind 'hurt': its floor the marked piece's top, its lips the banks beside it)", async () => {
+  // (planted: red before w1Pits reported a hurt floor, when a hollow read as a soft pit's leaf bed or as nothing at all)
+  const { findW1Pits } = await import('../w1Pits.ts');
+  let seen = 0;
+  for (const seed of provenSeeds('1-1').slice(0, 12)) {
+    const thorn = lay(seed, kit({ row: true, pits: true }));
+    const found = findW1Pits(thorn.platforms);
+    for (const h of hollows(thorn)) {
+      seen++;
+      const g = found.filter((q) => q.x0 < h.x + h.width && q.x1 > h.x);
+      assert.deepEqual(g.map((q) => [q.kind, q.x0, q.x1, q.floor]), [['hurt', h.x, h.x + h.width, h.y]], `seed ${seed}: the hollow at x ${h.x}`);
+      assert.ok(g[0].top < h.y && g[0].walls!.every((y) => y < h.y), `seed ${seed}: a lip at or under the hurt floor at x ${h.x}`);
+    }
+    // (and nothing else moved: a stage with no hollow is found as before)
+    const plain = lay(seed, kit());
+    assert.ok(findW1Pits(plain.platforms).every((q) => q.kind !== 'hurt'), `seed ${seed}: a hurt pit with no hurt floor`);
+  }
+  assert.ok(seen >= 12, `only ${seen} hollows in 12 rolls`);
+});

@@ -3035,7 +3035,7 @@ export function dropsOf(st: Gen2Stage): Drop[] {
     // (a hollow's hurt floor: a heart fall, on both settings (Easy waives the heart, never the look). Its look is the hurt look only where
     // the world's painter draws it; until then it is what is drawn there today, and drop.look-lies refuses it by name)
     if (ground?.pit === 'hurt') {
-      const drawn = world === 1 && findW1Pits(st.platforms).some((q) => (q.kind as string) === 'hurt' && q.x0 < f.x1 && q.x1 > f.x0);
+      const drawn = world === 1 && findW1Pits(st.platforms).some((q) => q.kind === 'hurt' && q.x0 < f.x1 && q.x1 > f.x0);
       return { ...at, ends: { kind: 'heart', to: 'take-off' }, look: drawn ? 'hurt-art' : world === 1 ? 'pit-floor-art' : 'ground' } as unknown as Drop;
     }
     if (ground) return { ...at, ends: { kind: 'floor', y: R(ground.y) }, look: 'ground' };
