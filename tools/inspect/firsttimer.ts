@@ -1722,6 +1722,9 @@ export class FirstTimerRun {
         const dx = (m.x - p.x) * dir;
         if (dx < 20 || dx > 130 || Math.abs(m.y + 12 - p.y) > 60) continue;
         if (!this.foeSeen.has(m.id)) this.foeSeen.set(m.id, this.r() < who.hopFoe);
+        // (an animal of a stage's cast up on a low log he can walk into, R-165.150: from below his punch only shoves it, so he hops up
+        // onto its log first, as a player standing in the log under it does; 1-3's finale, the kid's strands at c925d4e6)
+        if (m.kit && p.grounded && p.y - (m.y + 14) > 15 && dx < 100) return this.decide(dir, 'single', false, side(dir));
         if (this.learned.has('punch') && dx < 110) {
           this.punchAt = t + who.hesitate;
           this.swapGap = between(this.r, who.swap);
