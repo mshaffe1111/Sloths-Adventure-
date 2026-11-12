@@ -24,19 +24,22 @@ for (const diff of ['easy', 'normal']) {
     await page.goto(`${url}/?lessons=off`);
     await page.waitForFunction(() => typeof window.__play === 'function', null, { timeout: 60000 });
     await page.evaluate(() => window.__play('1-10'));
-    await page.waitForFunction(() => { const e = window.__engine?.(); return !!(e && e.boss); }, null, { timeout: 60000 });
+    await page.waitForFunction(() => { const e = typeof window.__engine === 'function' ? window.__engine() : null; return !!(e && e.boss); }, null, { timeout: 60000 });
     const log = [];
     const snap = (tag) => page.evaluate((tag) => {
-      const e = window.__engine();
+      const e = typeof window.__engine === 'function' ? window.__engine() : null;
+      const scr = document.querySelector('.clr-card.clr-won') ? 'victory card' : document.querySelector('.clr-card.lost') ? 'game over' : document.querySelector('.boss-card') ? 'guardian card' : document.querySelector('.sp-next') ? 'story' : 'stage';
+      if (!e) return `${tag}: no engine; screen ${scr}`;
       const b = e.boss;
-      return `${tag}: boss hp ${b?.hp}/${b?.maxHp} phase ${b?.phase}/${b?.phaseMax} defeated ${b?.defeated}; Pokey hp ${e.player.hp}; game time ${e.gameTime?.toFixed?.(1)}; screen ${document.querySelector('.clr-card.clr-won') ? 'victory card' : document.querySelector('.clr-card.lost') ? 'game over' : 'stage'}`;
+      return `${tag}: boss hp ${b?.hp}/${b?.maxHp} phase ${b?.phase}/${b?.phaseMax} defeated ${b?.defeated}; Pokey hp ${e.player.hp}, lives ${e.lives}; game time ${e.gameTime?.toFixed?.(1)}; screen ${scr}`;
     }, tag);
     log.push(await snap('start'));
     // the fight on its own (a story card or the entrance first: tapped through by the engine's own clock)
     const t0 = Date.now();
     let hurt = 0;
     while (Date.now() - t0 < FIGHT_S * 1000) {
-      hurt += await page.evaluate(() => { const e = window.__engine(); const p = e.player; const lost = p.hp < p.maxHp ? 1 : 0; p.hp = p.maxHp; return lost; });
+      // (hearts and lives topped up: the fight runs its full length; a fall still costs a life and a respawn, which is played as is)
+      hurt += await page.evaluate(() => { const e = typeof window.__engine === 'function' ? window.__engine() : null; if (!e) return 0; const p = e.player; const lost = p.hp < p.maxHp ? 1 : 0; p.hp = p.maxHp; if (typeof e.lives === 'number' && e.lives < 3) e.lives = 3; return lost; });
       await sleep(500);
     }
     log.push(await snap(`after ${FIGHT_S} s of fight (Pokey hurt in ${hurt} of the half-second samples)`));
@@ -49,7 +52,17 @@ for (const diff of ['easy', 'normal']) {
       log.push(await snap(`health set to ${4 - k}/4`));
     }
     await page.evaluate(() => { const e = window.__engine(); const b = e.boss; b.hp = 0; e.startBossDeath(b); });
-    const won = await page.locator('.clr-card.clr-won').first().waitFor({ state: 'visible', timeout: 60000 }).then(() => true, () => false);
+    // (the guardian's defeat plays its story; the player taps Skip, then the card comes up)
+    let won = false;
+    const seen = [];
+    for (let i = 0; i < 60 && !won; i++) {
+      await sleep(1000);
+      won = (await page.locator('.clr-card.clr-won').count()) > 0;
+      if (won) break;
+      const skip = page.locator('.sp-skip').first();
+      if (await skip.count()) { seen.push('story: Skip'); await page.screenshot({ path: `${out}/boss-${diff}-${vid}-story.png` }); await skip.evaluate((e) => e.click()); }
+    }
+    log.push(`after the defeat: ${seen.join(', ') || 'no story'}`);
     await sleep(1500);
     log.push(await snap('after startBossDeath'));
     await page.screenshot({ path: `${out}/boss-${diff}-${vid}-end.png` });
