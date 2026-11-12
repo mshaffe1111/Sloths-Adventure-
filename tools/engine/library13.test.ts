@@ -5,8 +5,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { CAST_13, TRAP_LINE, TWISTS, REFUSE_13, UNDER, config13, kitLib13, poolReport, roll, stageIdOf, type Roll13 } from './library13.ts';
-import { NEW_STOOD_IN, WAY_DOWN } from './library.ts';
-import { buildGen2Stage, stagePool } from '../../src/game/gen2/pipeline.ts';
+import { NEW_STOOD_IN } from './library.ts';
+import { buildGen2Stage, missionGraph, planBudget, stagePool } from '../../src/game/gen2/pipeline.ts';
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 import { w1World } from '../../src/game/gen2/worlds/w1.ts';
 import { W1_CAST_CREATURES, W1_CAST_SAID, W1_TRAP_PAIRS } from '../../src/game/gen2/worlds/w1Cast.ts';
@@ -17,17 +17,17 @@ const SEEDS = [1, 2, 3, 4, 5, 6];
 const rolls: Record<'normal' | 'easy', Roll13[]> = { normal: SEEDS.map((s) => roll(s, 'normal', O)), easy: SEEDS.map((s) => roll(s, 'easy', O)) };
 const each = (f: (r: Roll13, name: string) => void) => { for (const d of ['normal', 'easy'] as const) rolls[d].forEach((r, i) => f(r, `seed ${SEEDS[i]} ${d}`)); };
 
-test("1-1's and 1-2's kits are untouched: World 1 holds no creature, and its sections are its own but for a feel tag", () => {
+test("1-1's and 1-2's kits are untouched, and 1-3's pool is its own arc: its seven beats, and of World 1's library only the quiet between them", () => {
   const W = w1World().manifest, M = kitLib13(O).manifest, own = new Map(W.sections.map((t) => [t.id, t]));
   assert.equal(W.creatures.length, 0);
   assert.equal(W.pairs.length, 0, 'World 1 gained a pair');
-  assert.equal(W.props.some((p) => p.id.startsWith('trap-')), false, 'World 1 gained a trap prop');
   for (const t of M.sections.filter((q) => own.has(q.id))) {
-    const { feel: _f, ...a } = t, { feel: _g, ...b } = own.get(t.id)!;
-    assert.deepEqual(a, b, `${t.id}: a World 1 section was re-cut`);
+    const { feel: _f, ...mine } = t, { feel: _g, ...theirs } = own.get(t.id)!;
+    assert.deepEqual(mine, theirs, `${t.id}: a World 1 section was changed`);
+    assert.ok(t.jobs!.every((j) => ['arrive', 'rest', 'exit'].includes(j)), `${t.id} is not a quiet section: it would bring another level's lesson into this one (LEVEL-BAR A3)`);
   }
-  assert.equal(M.sections.length - own.size, TWISTS.length + NEW_STOOD_IN.length + WAY_DOWN.length);
-  assert.ok(stagePool(M, stageIdOf(O)).filter((t) => own.has(t.id)).length >= 50, "World 1's sections serve by need");
+  assert.deepEqual(TWISTS.map((t) => `${t.id}:${t.jobs!.join('/')}`), ['lib-13-lesson:teach', 'lib-13-again:practise', 'lib-13-stone-stair:flow', 'lib-13-other-way:test', 'lib-13-perch:twist', 'lib-13-gallery:signature', 'lib-13-finale:combine'], 'one brick a beat, one job a brick');
+  assert.equal(M.sections.length - M.sections.filter((q) => own.has(q.id)).length, TWISTS.length + NEW_STOOD_IN.length);
   assert.deepEqual(poolReport(O).out.filter((q) => q.why === 'refused: '), [], 'a section is out with no reason named');
 });
 
@@ -38,11 +38,13 @@ test("the cast rows are w1Cast.ts's, plus the short-patch rows and the top-up ta
   for (const p of W1_TRAP_PAIRS) assert.deepEqual([p.minApart, p.maxApart], [85, 130], p.id);
 });
 
-test('a clean roll on both settings: no throw, no error, the lesson and a signature gallery in each, a purge laid to its quota', () => {
+test('every roll is the designed level, on both settings: no throw, no error, the arc beat for beat, a purge laid to its quota, three minutes', () => {
   each((r, name) => {
     assert.equal(r.thrown, undefined, `${name}: ${r.thrown}`);
     assert.deepEqual(r.errors, [], name);
-    assert.ok(r.plan.includes('lib-trap-teach') && r.plan.some((t) => t.startsWith('lib-trap-gallery')), `${name}: ${r.plan.join(' ')}`);
+    // EVERY roll is the designed level (reference/design/1-3.md; LEVEL-BAR E13): the same thirteen beats in the same order
+    const beat = (t: string) => (t.startsWith('lib-13-') ? t.slice(7) : TWISTS.length && /^w1-|^new-/.test(t) ? 'quiet' : t);
+    assert.deepEqual(r.plan.map(beat), ['quiet', 'lesson', 'again', 'stone-stair', 'quiet', 'other-way', 'quiet', 'perch', 'quiet', 'gallery', 'quiet', 'finale', 'quiet'], name);
     assert.ok(r.snakes.length >= (name.endsWith('easy') ? 8 : 12), `${name}: ${r.snakes.length} snakes`);
     assert.ok(r.seconds! >= 120 && r.fast! >= 120, `${name}: ${r.seconds} s typical, ${r.fast} s fast (a stage takes 2 minutes)`);
   });
@@ -64,7 +66,7 @@ test("the stage carries its cast: proto.cast.kinds is ['snake'], and Dot says th
 test('the first snake of the stage is asleep on both settings, under the lesson hive', () => {
   each((r, name) => {
     assert.equal(r.firstAsleep, true, `${name}: the first snake, at x ${r.snakes[0]?.x}, is awake`);
-    const lesson = r.traps.find((t) => t.section === 'lib-trap-teach');
+    const lesson = r.traps.find((t) => t.section === 'lib-13-lesson');
     assert.ok(lesson?.snake?.asleep && lesson.snake.x === r.snakes[0].x && lesson.load === 'hive' && lesson.kind === 'vine', `${name}: ${JSON.stringify(lesson)}`);
   });
 });
@@ -101,4 +103,15 @@ test('the plain-view rule is the builder\'s own: a pickup laid in front of a hun
   assert.ok(st.gen2.errors.some((e: string) => e.startsWith('trap.hidden')), st.gen2.errors.join(' | '));
   const clean: Any = buildGen2Stage({ config: config13(O) as Any, kit: kit as Any, seed: SEEDS[0], difficulty: 'normal' });
   assert.deepEqual(clean.gen2.errors.filter((e: string) => e.startsWith('trap.')), [], 'and the roll as laid has no trap fault');
+});
+
+test('the arc is dealt the same on every seed: the lesson and its practice on the ground, the stair and the perch a climb, the two no-trap beats a hazard', () => {
+  const kit = kitLib13(O), cfg = config13(O) as Any;
+  const M = { ...kit.manifest, sections: stagePool(kit.manifest, cfg.id) } as Any;
+  const want = 'teach:ground practise:ground flow:climb test:hazard twist:climb combine:hazard';
+  for (let seed = 1; seed <= 40; seed++) {
+    const g = missionGraph(planBudget(cfg, M, 'normal'), M, seed);
+    assert.equal(g.nodes.filter((n) => n.content).map((n) => `${n.job}:${n.content}`).join(' '), want, `seed ${seed}`);
+    assert.deepEqual(g.nodes.map((n) => n.job), ['arrive', 'teach', 'practise', 'flow', 'rest', 'test', 'rest', 'twist', 'rest', 'signature', 'rest', 'combine', 'exit'], `seed ${seed}: the arc's order`);
+  }
 });

@@ -17,24 +17,23 @@ import { TRAP_UNDER, W1_CAST_CREATURES, W1_TRAP_EMIT, W1_TRAP_PAIRS, W1_TRAP_PRO
 import { generateAllLevels } from '../../src/game/worldsData.ts';
 import type { CastData } from '../../src/game/castPlay.types.ts';
 import type { CreatureDef, GraphBrief, NodeJob, PropEmitter, SectionPiece, SectionTemplate, Socket, StageSink, WorldKit } from '../../src/game/gen2/types.ts';
-import { CANOPY, NEW_STOOD_IN, WAY_DOWN, tidy } from './library.ts';
+import { CANOPY, NEW_STOOD_IN, tidy } from './library.ts';
 
 export { tidy };
 type R2 = [number, number];
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-/** 1-3's graphs (a purge's: the teach first, a rest after every test, twist and set piece). Only jobs World 1's library serves in
- *  all three of the deal's types (measured: a combine or a descent dealt the mushrooms or the stairs has no section, `pool short`) */
-export const PURGE_13: Record<string, string> = {
-  'purge-13-A': 'A T P F R M X R F W R S E',
-  'purge-13-B': 'A T M P R X R F P R W R S E',
-  'purge-13-C': 'A T P M R X R F W R P S E',
-};
+/** 1-3's ONE graph: the designed arc (reference/design/1-3.md), beat by beat. Every content job in it is served by exactly one
+ *  brick below, so a roll cannot reorder the level: T the lesson, P again (awake), M the stone on the stair, X the other way (no
+ *  trap), W the perch, S the gallery, C the finale; R the flags between. (V4: the twist after the test; V5: a rest after X, W, S) */
+export const PURGE_13: Record<string, string> = { 'purge-13-arc': 'A T P M R X R W R S R C E' };
 /** what 1-3 never holds: 1-1's lines and its story props, and the canopy sections (library.ts CANOPY: a soft-falls stage's only) */
 export const REFUSE_13 = ['hint.1-1', 'coach.', 'squirrel', 'bootprint', 'canopy'];
 /** 1-3's brief, all of it data: a purge on the ground and the low logs, its cast the snake */
 export const BRIEF_13: GraphBrief = {
-  ends: 'quiet', trend: 'level', branching: 'some', teaches: ['traps'], deal: { ground: 40, bounce: 30, climb: 30 },
+  // (the deal is the arc's own: T and P on the ground, M and W up a step (climb), X and C the snake with no trap (hazard): two of
+  // each, so no type passes V11's 40% and no two neighbours share one but the teach and its practice)
+  ends: 'quiet', trend: 'level', branching: 'none', teaches: ['traps'], deal: { ground: 34, climb: 33, hazard: 33 }, dealExact: true,
   cast: ['snake'], pick: { refuse: REFUSE_13 },
 };
 /** the corridor under the floor line (library.ts ROOM_12: World 1's 80 px was cut for a stage that climbs) */
@@ -78,7 +77,7 @@ const LOAD_T = 0.142, SNAKE_T = 0.857;
 const HANDLE_T = 0.443;
 const low = (id: string, on: string, t: R2 | number, count = 2): Socket => ({ id, role: 'pickup', on, t, dn: 34, count, span: 120 });
 type Load = 'trap-hive' | 'trap-stone';
-interface Unit { asleep?: boolean; load?: Load | null; perch?: boolean; wide?: boolean; easy?: Socket['easy'] }
+interface Unit { asleep?: boolean; load?: Load | null; perch?: boolean; wide?: boolean; easy?: Socket['easy']; /** the branch level with its ledges (the lesson: the first hive is clear of the goal sign on a sideways phone) */ level?: boolean }
 /**
  * One snake's branch, after the piece `after`: a short ledge `<k>g`, the branch `<k>L` a step up, a short ledge `<k>d` a step down.
  * With a `load`: the handle on `<k>g`, the load and a short-patch snake on the branch. `perch`: `<k>g` is the step up (the vine is
@@ -88,7 +87,8 @@ interface Unit { asleep?: boolean; load?: Load | null; perch?: boolean; wide?: b
 function core(k: string, after: string, o: Unit = {}): { pieces: SectionPiece[]; sockets: Socket[]; last: string; rise: boolean } {
   const g = `${k}g`, L = `${k}L`, d = `${k}d`;
   const perch = !!(o.perch && o.load);
-  const pieces: SectionPiece[] = [led(g, after, NARROW, perch ? UP : [0, 0]), log(L, g, o.load ? SHORT : o.wide ? WIDE : LONG, perch ? DOWN : UP), led(d, L, NARROW, DOWN)];
+  const flat: R2 = [0, 0];
+  const pieces: SectionPiece[] = [led(g, after, NARROW, perch ? UP : flat), log(L, g, o.load ? SHORT : o.wide ? WIDE : LONG, o.level ? flat : perch ? DOWN : UP), led(d, L, NARROW, o.level ? flat : DOWN)];
   const sockets: Socket[] = [];
   if (o.load) {
     sockets.push({ id: `${k}h`, role: 'source', on: g, t: HANDLE_T, dn: 0 });
@@ -127,7 +127,7 @@ function stair(n: number, u: Unit): { pieces: SectionPiece[]; sockets: Socket[] 
 type Lay = { pieces: SectionPiece[]; sockets: Socket[] };
 type V = { id: string; lay: Lay; easy?: Lay };
 /** a brick (library.ts `brick`, for the ground and the stairs): its first piece `in`, its last `out`, a version's Easy twin beside it */
-function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content?: 'ground' | 'climb'; teaches?: string; maxPerStage?: number; weight?: number; versions: V[] }): SectionTemplate {
+function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content?: 'ground' | 'climb' | 'hazard'; teaches?: string; maxPerStage?: number; weight?: number; versions: V[] }): SectionTemplate {
   const ren = (ps: SectionPiece[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; const f = (s: string) => (s === a ? 'in' : s === z ? 'out' : s); return ps.map((p) => ({ ...p, key: f(p.key), place: Object.fromEntries(Object.entries(p.place).map(([q, v]) => [q, (q === 'after' || q === 'on') && typeof v === 'string' ? f(v) : v])) as SectionPiece['place'] })); };
   const sk = (ps: SectionPiece[], ss: Socket[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; return ss.map((s) => ({ ...s, on: s.on === a ? 'in' : s.on === z ? 'out' : s.on })); };
   const first = ren(o.versions[0].lay.pieces)[0];
@@ -141,54 +141,60 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
 /** a version; where it holds a bare branch its Easy twin lays that branch wider (a trapped branch is the same on both settings: its
  *  short patch is the phone's, and Easy softens its snake at the socket) */
 const ver = (id: string, us: Unit[]): V => ({ id, lay: row(us), ...(us.some((u) => !u.load) ? { easy: row(us.map((u) => (u.load ? u : { ...u, wide: true }))) } : {}) });
-/** how often the bag holds a snake brick beside World 1's own sections of its job and type (SectionTemplate.weight): the stage is the snakes' */
-const BAG = 3;
 const HIVE: Unit = { load: 'trap-hive' }, STONE: Unit = { load: 'trap-stone' }, BARE: Unit = {};
 
+/** a long root bank after the last branch of a beat that asks for his own hands (X, C): the one kind of ledge in the level a
+ *  purge's top-up may stand a bare snake on (300 px and more; every other ledge is under 248) */
+const ROOM: R2 = [300, 340];
+const withRoom = (l: Lay): Lay => { const z = l.pieces[l.pieces.length - 1].key; return { pieces: [...l.pieces, led('zz', z, ROOM)], sockets: [...l.sockets, low('pzz', 'zz', [0.3, 0.7])] }; };
+/** `n` short ledges after a beat's last piece, a petal row on each: the breath INSIDE a beat (a beat is 20 s and more by design; every
+ *  ledge is under 248 px, so no animal is ever topped up onto one) */
+const breath = (l: Lay, n: number, hop = false): Lay => {
+  const pieces = [...l.pieces], sockets = [...l.sockets];
+  // (`hop`: the ledges step up and back down, 50 px at a time, a root to hop over: the route ends level, as it began)
+  for (let j = 0; j < n; j++) { const k = `y${j}`; pieces.push(led(k, pieces[pieces.length - 1].key, LEDGE, hop ? (j % 2 ? DOWN : UP) : [0, 0])); sockets.push(low(`p${k}`, k, [0.3, 0.7])); }
+  return { pieces, sockets };
+};
+/** a version whose bare branches are wider on Easy, a long bank after it */
+const roomy = (id: string, us: Unit[]): V => ({ id, lay: withRoom(breath(row(us), 4, true)), easy: withRoom(breath(row(us.map((u) => (u.load ? u : { ...u, wide: true }))), 4, true)) });
+
+/** THE ARC'S BRICKS (reference/design/1-3.md), one job each: the graph's letter in brackets */
 export const TWISTS: SectionTemplate[] = [
-  // (T: the lesson. Ledges no animal can be laid on, Dot's line on the first, the vine on the short one, then the branch with the
-  // SLEEPING snake and the hive over it: the first snake of the stage sleeps on both settings)
-  brick({ id: 'lib-trap-teach', name: 'the vine, the hive and a sleeping snake', jobs: ['teach'], difficulty: 2, teaches: 'traps', versions: [(() => {
-    const c = core('t', 'b', { load: 'trap-hive', asleep: true });
+  // [T] beat 1, the lesson: ledges no animal can be laid on, a flag, Dot's line, the vine on the short ledge, then the branch, LEVEL
+  // with it, where the first snake of the stage SLEEPS under the first hive on both settings
+  brick({ id: 'lib-13-lesson', name: 'the lesson: the vine, the hive and a sleeping snake', jobs: ['teach'], difficulty: 2, teaches: 'traps', versions: [(() => {
+    const c = core('t', 'b', { load: 'trap-hive', asleep: true, level: true });
     const pieces: SectionPiece[] = [led('a', null, LEDGE), led('b', 'a', LEDGE), ...c.pieces, led('z', c.last, LEDGE)];
     const sockets: Socket[] = [{ id: 'flag', role: 'flag', on: 'a', t: 0.5 }, { id: 'tip', role: 'tip', on: 'b', t: 0.3, allow: ['traps'] }, ...c.sockets, low('pa', 'a', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)];
-    return { id: 'asleep-under-the-hive', lay: { pieces, sockets } };
+    return { id: 'asleep-under-the-hive', lay: breath({ pieces, sockets }, 4, true) };
   })()] }),
-  // (P / M: one branch, one snake awake, one trap)
-  brick({ id: 'lib-trap-branch', weight: BAG, name: 'a snake on a branch, a hive over it', jobs: ['practise', 'flow'], difficulty: 4, versions: [ver('vine-hive', [HIVE])] }),
-  brick({ id: 'lib-trap-stone', weight: BAG, name: 'a snake on a branch, a stone over it', jobs: ['practise', 'flow'], difficulty: 4, versions: [ver('tendril-stone', [STONE])] }),
-  // (no trap: the punch off the branch end, or the stomp that vaults it)
-  brick({ id: 'lib-snake-vault', weight: BAG, name: 'a snake on a long branch and no trap: the punch or the vault', jobs: ['practise', 'flow', 'twist'], difficulty: 4, versions: [ver('bare-branch', [BARE])] }),
-  // (the handle up on a perch: a step up to it, the branch below)
-  brick({ id: 'lib-trap-perch', weight: BAG, name: 'the vine up on a perch', jobs: ['twist', 'practise', 'flow'], difficulty: 5, versions: [
-    ver('perch-hive', [{ ...HIVE, perch: true }]), ver('perch-stone', [{ ...STONE, perch: true }]),
+  // [P] beat 2, again, awake: one branch, a snake pacing under a hive
+  brick({ id: 'lib-13-again', name: 'again, awake: a snake pacing under a hive', jobs: ['practise'], difficulty: 3, versions: [{ id: 'awake-hive', lay: breath(row([HIVE]), 4, true) }] }),
+  // [M] beat 3, the stone: a root stair, and at its top a snake under a stone held by a tendril tied at his feet (the second handle)
+  brick({ id: 'lib-13-stone-stair', name: 'the stone on the root stair', jobs: ['flow'], content: 'climb', difficulty: 4, versions: [
+    { id: 'three-steps-stone', lay: breath(stair(3, STONE), 2), easy: breath(stair(2, STONE), 4) }, { id: 'two-steps-stone', lay: breath(stair(2, STONE), 4) },
   ] }),
-  // (two branches in a row: the first snake awake, the second asleep, so the section's threat always pays for both)
-  brick({ id: 'lib-trap-two', weight: BAG, name: 'two branches in a row, a trap over each', jobs: ['twist', 'test'], difficulty: 6, versions: [
-    ver('hive-stone', [HIVE, { ...STONE, asleep: true }]), ver('stone-hive', [STONE, { ...HIVE, asleep: true }]),
+  // [X] beat 5, the other way: two long bare branches and no trap. The first snake sleeps at its post (a free punch, or a vault);
+  // the second backs away down its branch and is punched off the end. Easy: wider branches, and its second snake softened
+  brick({ id: 'lib-13-other-way', name: 'the other way: bare branches, no trap', jobs: ['test'], content: 'hazard', difficulty: 5, versions: [
+    // (three: asleep, awake, asleep. The node's threat, 0.9 of the stage's, pays for exactly these)
+    roomy('asleep-awake-asleep', [{ ...BARE, asleep: true }, BARE, { ...BARE, asleep: true }]),
   ] }),
-  // (a trapped branch and a bare one, both snakes awake: a test node's alone, whose threat (0.9 of the stage's) pays for two awake
-  // snakes; in a twist's 0.8 the second socket stayed empty, and where that was the trapped one its load hung over nothing: measured,
-  // 8 of 882 loads on Normal. Easy drops the bare branch's snake)
-  brick({ id: 'lib-trap-test', weight: BAG, name: 'a trapped branch, then a bare one', jobs: ['test'], difficulty: 6, versions: [
-    ver('trap-then-bare', [HIVE, { ...BARE, easy: 'drop' }]), ver('bare-then-trap', [{ ...BARE, easy: 'drop' }, { ...STONE, perch: true }]),
+  // [W] beat 7, the twist: the vine hangs on a perch, a step up BEFORE the branch: he reads the room, steps up, shakes it, comes down
+  brick({ id: 'lib-13-perch', name: 'the twist: the vine up on a perch', jobs: ['twist'], content: 'climb', difficulty: 5, versions: [
+    // (and after it a calm one, asleep under the other load: the node's threat pays for an awake snake and a sleeper)
+    { id: 'perch-hive', lay: breath(row([{ ...HIVE, perch: true }, { ...STONE, asleep: true }]), 2, true) }, { id: 'perch-stone', lay: breath(row([{ ...STONE, perch: true }, { ...HIVE, asleep: true }]), 2, true) },
   ] }),
-  // (the CLIMB bricks: the branch at the top of a root stair, so a node dealt the stairs can hold a snake and its trap too)
-  brick({ id: 'lib-trap-stair', weight: BAG, name: 'a root stair, the snake on the branch at its top', jobs: ['practise', 'flow', 'twist'], content: 'climb', difficulty: 4, versions: [
-    { id: 'two-steps-hive', lay: stair(2, HIVE) }, { id: 'two-steps-stone', lay: stair(2, STONE) },
+  // [S] beat 9, the gallery: three branches, three traps (the snakes awake, asleep, asleep: the section's threat pays for all three)
+  brick({ id: 'lib-13-gallery', name: 'the snake gallery: hive, stone, hive', jobs: ['signature'], difficulty: 7, maxPerStage: 1, versions: [
+    { id: 'hive-stone-hive', lay: breath(row([HIVE, { ...STONE, asleep: true }, { ...HIVE, asleep: true }]), 4, true) },
+    { id: 'stone-hive-stone', lay: breath(row([STONE, { ...HIVE, asleep: true }, { ...STONE, asleep: true }]), 4, true) },
   ] }),
-  brick({ id: 'lib-trap-stair-high', weight: BAG, name: 'a taller root stair, the snake at its top', jobs: ['twist', 'test', 'flow'], content: 'climb', difficulty: 6, versions: [
-    { id: 'three-steps-stone', lay: stair(3, STONE), easy: stair(2, STONE) }, { id: 'three-steps-hive', lay: stair(3, HIVE), easy: stair(2, HIVE) },
-  ] }),
-  // (S: the signature, one a stage: three branches, the snakes awake, asleep, asleep, so the section's threat pays for all three)
-  brick({ id: 'lib-trap-gallery', name: 'the snake gallery: three branches, three traps', jobs: ['signature'], difficulty: 7, maxPerStage: 1, versions: [
-    ver('hive-stone-hive', [HIVE, { ...STONE, asleep: true, perch: true }, { ...HIVE, asleep: true }]),
-  ] }),
-  brick({ id: 'lib-trap-gallery-b', name: 'the snake gallery, the stone first', jobs: ['signature'], difficulty: 7, maxPerStage: 1, versions: [
-    ver('stone-hive-bare', [STONE, { ...HIVE, asleep: true }, { ...BARE, asleep: true }]),
-  ] }),
-  brick({ id: 'lib-trap-gallery-c', name: 'the snake gallery, the perch vines', jobs: ['signature'], difficulty: 7, maxPerStage: 1, versions: [
-    ver('perch-bare-perch', [{ ...HIVE, perch: true }, { ...BARE, asleep: true }, { ...STONE, asleep: true, perch: true }]),
+  // [C] beat 11, the finale: a trapped branch, an awake snake under its load; then at once a bare one, whose snake sleeps at its post
+  // until he walks up (it wakes drowsy, backs down its branch, and is his to punch off the end or vault): everything learned, in one
+  // breath. (The node's threat, 0.75 of the stage's, pays for one awake snake and one sleeper, not two awake)
+  brick({ id: 'lib-13-finale', name: 'the finale: a trap, then his own hands', jobs: ['combine'], content: 'hazard', difficulty: 6, versions: [
+    roomy('trap-then-bare', [HIVE, { ...BARE, asleep: true }]), roomy('stone-then-bare', [STONE, { ...BARE, asleep: true }]),
   ] }),
 ];
 
@@ -197,6 +203,9 @@ export const TWISTS: SectionTemplate[] = [
 export const UNDER = TRAP_UNDER;
 export { armedTraps };
 
+/** a World 1 section that is only quiet: every job it serves is an arrival, a rest or an exit */
+const QUIET = new Set<NodeJob>(['arrive', 'rest', 'exit']);
+export const quiet = (t: SectionTemplate): boolean => !!t.jobs?.length && t.jobs.every((j) => QUIET.has(j));
 /** `rawTraps`: w1Cast.ts's emitters alone, every load a trap whether or not a snake stands under it (to measure what arming saves) */
 export interface LibOpts { flown?: boolean; twists?: boolean; only?: string; down?: boolean; room?: number; rawTraps?: boolean }
 /** the stage id the kit's rows are filed under (`flown`: the flown stage's, as library.ts and the Designer's supply12 do) */
@@ -208,7 +217,9 @@ export function kitLib13(o: LibOpts = {}): WorldKit {
   const list = [...(o.flown ? [] : M.graphs.list), ...Object.entries(PURGE_13).filter(([id]) => !o.only || id === o.only).map(([id, code]) => ({ id, archetype: 'purge', code }))];
   const hooks = o.rawTraps ? { emit: W1_TRAP_EMIT } : armedTraps();
   return { ...k, ...hooks, emit: { ...k.emit, ...hooks.emit }, manifest: { ...M,
-    sections: [...M.sections.map((t: SectionTemplate) => (CANOPY.includes(t.id) ? { ...t, feel: ['canopy'] } : t)), ...(o.twists === false ? [] : [...TWISTS, ...NEW_STOOD_IN, ...(o.down === false ? [] : WAY_DOWN)])],
+    // (the level is its own bricks; World 1's library gives only the quiet between them: its arrivals, rests and exits on the ground.
+    // No section that teaches or tests another level's lesson is dealt into this one: reference/design/LEVEL-BAR.md A3)
+    sections: [...M.sections.filter(quiet).map((t: SectionTemplate) => (CANOPY.includes(t.id) ? { ...t, feel: ['canopy'] } : t)), ...(o.twists === false ? [] : [...TWISTS, ...NEW_STOOD_IN])],
     creatures: CAST_13, props: [...M.props, ...W1_TRAP_PROPS], pairs: [...M.pairs, ...W1_TRAP_PAIRS],
     ...((o.room ?? ROOM_13) ? { corridor: { ...M.corridor, bottom: M.ground.y + (o.room ?? ROOM_13) } } : {}),
     lessons: o.flown ? { jump: '0-9', double: '0-9', bounce: '0-9' } : { jump: '1-1', double: '1-1', bounce: '1-1' },
@@ -313,7 +324,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
       for (const r of R) for (const t of r.plan) used.set(t, (used.get(t) ?? 0) + 1);
       console.log(`== ${d}: ${R.length} rolls (seeds ${from}-${from + N - 1}): CLEAN ${clean.length} (${Math.round((100 * clean.length) / Math.max(1, R.length))}%), thrown ${R.filter((r) => r.thrown).length}, pool short ${R.filter((r) => r.errors.some((e: string) => /pool short|fits no node|no section/.test(e))).length}`);
       for (const [name, S] of [['a clean roll', clean], ['every roll that built', R.filter((r) => !r.thrown)]] as const) {
-        console.log(`   ${name} (${S.length}): sections ${st3(S.map((r) => r.plan.length))}, drop-trap bricks ${st3(S.map((r) => r.plan.filter((t) => t.startsWith('lib-trap') || t.startsWith('lib-snake')).length))}, snakes ${st3(S.map((r) => r.snakes.length))} (asleep ${st3(S.map((r) => r.snakes.filter((q) => q.asleep).length))}), traps ${st3(S.map((r) => r.traps.length))}, modelled seconds typical ${st3(S.filter((r) => r.seconds !== undefined).map((r) => Math.round(r.seconds!)))} fast ${st3(S.filter((r) => r.fast !== undefined).map((r) => Math.round(r.fast!)))}`);
+        console.log(`   ${name} (${S.length}): sections ${st3(S.map((r) => r.plan.length))}, drop-trap bricks ${st3(S.map((r) => r.plan.filter((t) => t.startsWith('lib-13-') || t.startsWith('lib-snake')).length))}, snakes ${st3(S.map((r) => r.snakes.length))} (asleep ${st3(S.map((r) => r.snakes.filter((q) => q.asleep).length))}), traps ${st3(S.map((r) => r.traps.length))}, modelled seconds typical ${st3(S.filter((r) => r.seconds !== undefined).map((r) => Math.round(r.seconds!)))} fast ${st3(S.filter((r) => r.fast !== undefined).map((r) => Math.round(r.fast!)))}`);
         console.log(`      traps ${S.reduce((s, r) => s + r.traps.length, 0)}${o.rawTraps ? ' (RAW: every load a trap)' : ` armed of ${S.reduce((s, r) => s + r.loads, 0)} loads hung (min a roll ${Math.min(...S.map((r) => r.traps.length))})`}: no handle ${S.reduce((s, r) => s + r.noHandle, 0)}, no snake within 150 px on its ground ${S.reduce((s, r) => s + r.noSnake, 0)} (in ${S.filter((r) => r.noSnake).length} rolls); awake snake under ${S.reduce((s, r) => s + r.traps.filter((t) => t.snake && !t.snake.asleep).length, 0)}, sleeping ${S.reduce((s, r) => s + r.traps.filter((t) => t.snake?.asleep).length, 0)}; first snake asleep in ${S.filter((r) => r.firstAsleep).length} of ${S.length}; cast kinds ['snake'] in ${S.filter((r) => r.kinds.join() === 'snake').length}; rolls with no trap ${S.filter((r) => !r.traps.length).length}`);
         const all = (f: (r: Roll13) => number[]) => { const xs = S.flatMap(f); return xs.length ? `${Math.min(...xs)}-${Math.max(...xs)}` : 'none'; };
         console.log(`      handle to load ${all((r) => r.reach)} px (140-190: w1Cast.ts TRAP_REACH); handle to the nearest end of any snake's patrol ${all((r) => r.clear)} px (105 or more: its strike); a trapped snake's patrol ${all((r) => r.patrolW)} px wide, its far end ${all((r) => r.patrolFar)} px from the load's line`);
@@ -322,6 +333,6 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     }
     const lib = pr.pool.filter((id) => id.startsWith('w1-'));
     console.log(`World 1 sections laid at least once: ${lib.filter((id) => used.get(id)).length} of ${lib.length}; never laid: ${lib.filter((id) => !used.get(id)).map((s) => s.replace('w1-', '')).join(', ') || 'none'}`);
-    console.log(`bricks laid: ${[...TWISTS, ...WAY_DOWN, ...NEW_STOOD_IN].map((t) => `${t.id}:${used.get(t.id) ?? 0}`).join(' ')}`);
+    console.log(`bricks laid: ${[...TWISTS, ...NEW_STOOD_IN].map((t) => `${t.id}:${used.get(t.id) ?? 0}`).join(' ')}`);
   }
 }
