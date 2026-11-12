@@ -43,8 +43,8 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
 
 ## Open asks to Matt (one question at a time, your pick first)
 - Fable after tonight: (a) resume tomorrow on wiring (lead's pick), (b) code split, (c) stop for the week. Not answered.
-- Compression: art at q82 for files above q83 + music at 64/56/32 kb/s saves ~26 MB (web 177->150, app 188->162). Page:
-  https://claude.ai/artifact/5GQEKD7x4ib8SQAcb6i5HN (he must look and LISTEN). Nothing changes until he picks.
+- Compression DECIDED 11:00 PM: art at q82 for files above about q83, EXCEPT dark/black images (kept as shipped); music unchanged.
+  About 14-16 MB off (app ~188 -> ~172). Run it 11-12 as a small Opus job from t-assets-compress's tools; show Matt before/after stills.
 - Guardians "huge" needs a Hugging Face picture list (8 of 10 are drawn larger than their sheets already); boss pass, his approval per picture.
 
 ## The team
