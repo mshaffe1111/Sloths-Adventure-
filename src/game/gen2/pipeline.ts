@@ -630,6 +630,13 @@ function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, 
       if (c && c !== 'structural') fixed.set(i, c);
     }
   }
+  // (a designed graph, GraphBrief.dealExact: a node whose job ONE type of section alone serves in this stage's pool is that type.
+  // The roll has nothing to choose there, and a type dealt at random would be one the node's only section cannot fill)
+  if (brief.dealExact) for (const { n, i } of slots) {
+    if (fixed.has(i)) continue;
+    const served = new Set(M.sections.filter((t) => t.jobs?.includes(n.job!) && t.content && t.content !== 'structural').map((t) => t.content as ContentType));
+    if (served.size === 1) fixed.set(i, [...served][0]);
+  }
   const types = [...new Set([...(Object.keys(shares) as ContentType[]).filter((t) => (shares[t] ?? 0) > 0), ...fixed.values()])];
   const sum = types.reduce((a, t) => a + (shares[t] ?? 0), 0);
   // (largest remainder, then the jitter: one node moved from one type to another on half the seeds)
@@ -645,7 +652,9 @@ function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, 
     deal.set(most, deal.get(most)! - 1);
     deal.set(t, deal.get(t)! + 1);
   }
-  if (types.length > 1 && r() < 0.5) {
+  // (a designed graph, GraphBrief.dealExact: no jitter. The `&&` keeps every other stage's stream as it was: `r()` is drawn exactly
+  // where it always was, and never for a brief that asks for its deal exact)
+  if (types.length > 1 && !brief.dealExact && r() < 0.5) {
     const from = types.filter((t) => deal.get(t)! > fixedN(t)), to = types.filter((t) => (shares[t] ?? 0) > 0);
     const a = from[Math.floor(r() * from.length)], b = to[Math.floor(r() * to.length)];
     if (a && b && a !== b) { deal.set(a, deal.get(a)! - 1); deal.set(b, deal.get(b)! + 1); }
@@ -2669,7 +2678,7 @@ function topUpFoes(
 
 /** the cast record a built stage carries: only when its brief names a cast (nothing is written on any other stage) */
 function castOf(kinds: readonly string[] | undefined, proto: ProtoExtras): { cast?: NonNullable<ProtoExtras['cast']> } {
-  return kinds?.length ? { cast: { kinds: [...kinds], traps: proto.cast?.traps ?? [] } } : {};
+  return kinds?.length ? { cast: { ...proto.cast, kinds: [...kinds], traps: proto.cast?.traps ?? [] } } : {};
 }
 
 function makeEnemy(c: CreatureDef, x: number, top: number, patch: [number, number], id: number, soften: boolean): Enemy {

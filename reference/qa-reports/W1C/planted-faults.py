@@ -9,8 +9,9 @@ M=[
  ("engine.ts","a blow never reaches a trap's handle","    const sprung = this.cast?.strike(box);","    const sprung = null as null | { x: number; y: number; kind: string };"),
  ("engine.ts","a stomp on a cast animal goes to the old fight","      if (e.kit) {\n        // a cast animal: the kit says what a stomp does","      if (false) {\n        // a cast animal: the kit says what a stomp does"),
  ("engine.ts","the strike never hurts","        this.damagePlayer(1, k.e.x);\n        break;\n      }\n    }\n    // an animal that left for good","        break;\n      }\n    }\n    // an animal that left for good"),
- ("engine.ts","a chased-off animal is not counted","    for (const e of r.cleared) {\n      p.enemiesDefeated++;","    for (const e of r.cleared) {"),
+ ("engine.ts","a chased-off animal is not counted","      }\n      p.enemiesDefeated++;\n      if (!e.minion && e.type !== 'boss'","      }\n      if (!e.minion && e.type !== 'boss'"),
  ("engine.ts","a respawn leaves the cast hunting","    this.cast?.calm(this.easy);\n",""),
+ ("castPlay.ts","a landing is heard before its world teaches it","    this.loud = TAUGHT.landing <= world;","    this.loud = true;"),
  ("castPlay.ts","his landing is never heard","      const n = landingNoise(hero.x, hero.y, t, fell);","      const n = null as Sound | null;"),
  ("castPlay.ts","every landing is loud","    const fell = stepFall(this.fall, hero);","    const fell = stepFall(this.fall, hero) === null ? null : 999;"),
  ("castPlay.ts","stillness is never stepped","    stepStill(this.still, hero, dt, set);\n",""),
@@ -23,6 +24,11 @@ M=[
  ("castPlay.ts","a gone animal stays in the stage","    if (s.phase === 'gone' && !e.defeated) {","    if (false) {"),
  ("castPlay.ts","the glide never moves it","      e.y += GLIDE.drop * u * u - GLIDE.lift * Math.sin(Math.PI * Math.min(1, u * 2));\n",""),
  ("castPlay.ts","calm leaves it mid-tell","      s.phase = 'rest';\n      s.t = 0;\n      s.drawn = false;",""),
+ ("predators/world1.ts","a stomped snake comes back (not the glide)","    stomp: { ends: 'chasedOff' },","    stomp: { ends: 'flees', seconds: 5 },"),
+ ("engine.ts","the trap's line is said for a punch too","const line = way === 'trap' || way === 'punch' ? this.proto?.cast?.said?.[way] : undefined;","const line = way === 'trap' || way === 'punch' ? this.proto?.cast?.said?.trap : undefined;"),
+ ("engine.ts","the first-trap line is said every time","      if (line && !tipHeard(FIRST_OF_STAGE, `cast:${way}`)) {","      if (line) {"),
+ ("engine.ts","the first-trap line is never said","        this.guide(line, 4);\n      }\n      p.enemiesDefeated++;","      }\n      p.enemiesDefeated++;"),
+ ("gen2/pipeline.ts","the builder drops the cast's lines","{ cast: { ...proto.cast, kinds: [...kinds],","{ cast: { kinds: [...kinds],"),
  ("dropTrap.ts","a pickup in front of the load passes","    if (hid) bad.push(","    if (false) bad.push("),
  ("dropTrap.ts","a load over an empty branch passes","Math.abs(a.y - p.landY) <= TRAP.tall)) bad.push(","Math.abs(a.y - p.landY) <= TRAP.tall) && false) bad.push("),
  ("dropTrap.ts","a load off the phone's screen passes","    if (d < TRAP.reach[0] || d > TRAP.reach[1]) bad.push(","    if (d < TRAP.reach[0]) bad.push("),
@@ -33,7 +39,8 @@ M=[
  ("dropTrap.ts","a trap reaches another branch far below","Math.abs(x - p.loadX) <= TRAP.scare && Math.abs(y - p.landY) <= TRAP.tall;","Math.abs(x - p.loadX) <= TRAP.scare;"),
 ]
 ok=0; bad=[]
-for f,name,a,b in (M if len(sys.argv)<2 else [m for m in M if sys.argv[1] in m[1]]):
+import os
+for f,name,a,b in ([m for m in M if not (os.environ.get('SKIP_GEN2') and m[0].startswith('gen2/'))] if len(sys.argv)<2 else [m for m in M if sys.argv[1] in m[1]]):
   P='src/game/'+f; orig=open(P).read()
   if a not in orig: bad.append((name,'PATTERN MISSING')); print("MISSING ",name); continue
   try:

@@ -26,4 +26,9 @@ export interface CastData {
   /** the kinds this stage's cast names (predators/registry.ts): an animal of one of these kinds is run by the kit */
   kinds: string[];
   traps: TrapPost[];
+  /**
+   * Dot's words for the cast's first moments, as the stage's kit carries them (the story keeper's, never the engine's): `trap`, said
+   * once, the first time a drop trap sends an animal off; `punch`, once, the first time a punch does. Absent: she says nothing
+   */
+  said?: { trap?: string; punch?: string };
 }

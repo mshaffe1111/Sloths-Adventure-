@@ -27,10 +27,12 @@ const SNAKES: CreatureDef[] = [
   { id: 'snake', enemy: 'snake', threat: 2, terrain: 'ledge', minGround: 200, w: 38, h: 22, hp: 1, footY: 14, tags: ['cast', 'topup'] },
   { id: 'snake-asleep', enemy: 'snake', threat: 1, terrain: 'ledge', minGround: 200, w: 38, h: 22, hp: 1, footY: 14, extra: { asleep: true }, easyFirst: true, tags: ['sleeper'] },
 ];
-/** and the same two on a SHORT patch (120 px), the snake under a trap: it stays under its load and on an upright phone's screen */
+/** and the same two on a SHORT patch (120 px), the snake under a trap: it stays under its load and on an upright phone's screen.
+ *  A snake under its own trap costs a beat's threat 1, awake or asleep: he has the tool for it right there, so it is less of a
+ *  threat than a bare one (2). That is what lets Normal's later beats hold awake snakes (the lead, 11-12: Normal runs hotter) */
 export const W1_CAST_CREATURES: CreatureDef[] = SNAKES.flatMap((c) => [
   c,
-  { ...c, id: c.id === 'snake' ? 'snake-trapped' : 'snake-trapped-asleep', minGround: 120, tags: [...(c.tags ?? []).filter((t) => t !== 'topup'), 'trapped'] },
+  { ...c, id: c.id === 'snake' ? 'snake-trapped' : 'snake-trapped-asleep', threat: 1, minGround: 120, tags: [...(c.tags ?? []).filter((t) => t !== 'topup'), 'trapped'] },
 ]);
 
 export const W1_TRAP_PROPS: PropDef[] = [
@@ -65,6 +67,11 @@ export const W1_TRAP_EMIT: Record<string, PropEmitter> = {
   'trap-hive': load('hive'), 'trap-stone': load('stone'), 'trap-vine': handle('vine'), 'trap-tendril': handle('tendril'),
 };
 
+/** Dot's words for World 1's cast (the story keeper's ruling, 11-12, reference/packets/2026-11-12/STORY-LINES.md): once, on the first
+ *  trap sprung in World 1, as the snake glides away. Her line for the first PUNCH that sends one gliding is 1-3's wayside line today
+ *  (wayside.ts, said at the halfway mark): it moves here when the wayside lets a line wait on a moment instead of a place */
+export const W1_CAST_SAID: { trap?: string; punch?: string } = { trap: 'Off he glides, not a scratch, just very offended!' };
+
 /** how near its load's socket an animal must stand, on the ground the load lands on, for the trap to be its own (px) */
 export const TRAP_UNDER = 150;
 /** the hung load's distance from its handle (px): the trap machine's own rule (dropTrap.ts TRAP.reach) */
@@ -87,7 +94,7 @@ export function armedTraps(kinds: readonly string[] = ['snake']): { emit: Record
     const hold = of(out).proto.cast?.traps ?? [], top = e.y + (c.footY ?? c.h / 2), mid = (e.patrolMinX + e.patrolMaxX) / 2;
     const k = hold.findIndex((t) => Number.isFinite(t.x) && Math.abs(t.loadX - e.x) <= TRAP_UNDER && Math.abs(t.landY - top) <= 6 && Math.abs(mid - t.x) >= TRAP_REACH[0] && Math.abs(mid - t.x) <= TRAP_REACH[1]);
     if (k < 0) return;
-    const live = (out.proto.cast ??= { kinds: [], traps: [] }).traps;
+    const live = (out.proto.cast ??= { kinds: [], traps: [], said: W1_CAST_SAID }).traps;
     live.push({ ...hold.splice(k, 1)[0], id: live.length + 1, loadX: Math.round(mid) });
   } };
 }

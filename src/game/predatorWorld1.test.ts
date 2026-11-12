@@ -80,19 +80,29 @@ test('snake, way 1, the branch end: a punch shoves it 70 px along its branch; on
   assert.deepEqual([noSide.phase, noSide.x], ['stunned', 690], 'a blow from nowhere (no side given) only stuns');
 });
 
-test('snake, way 2: a drop trap chases it off for the rest of the stage (it glides away); way 3: a stomp sends it home for 5 s', () => {
-  const s = newPredator(SNAKE, branch());
-  assert.equal(beat(SNAKE, s, 'trap', 0, 560), true);
-  run(SNAKE, s, GONE_AFTER + 0.1, () => prey({ x: 560 }));
-  assert.equal(s.phase, 'gone');
-  const v = newPredator(SNAKE, branch());
-  run(SNAKE, v, 2, crowd(v));
-  assert.equal(beat(SNAKE, v, 'stomp', 2), true);
-  const ev = run(SNAKE, v, 4.8, () => prey({ x: 560 }), { t0: 2 });
-  assert.deepEqual([v.phase, ev.length], ['flee', 0], 'he walks under it for 5 s and it leaves him be');
-  run(SNAKE, v, 0.4, () => prey({ x: -999 }), { t0: 6.8 });
-  assert.equal(v.phase, 'rest', 'then it is back on its branch');
-  assert.equal(beat(SNAKE, newPredator(SNAKE, branch()), 'kick', 0), true, 'and a kick bowls it off');
+test('snake, however he beats it, it ends the same kind way (Matt, 11-12): it flattens and glides to a lower tree, gone for good', () => {
+  // (every ENDING in its data is the glide; a punch mid-branch is not an ending: it only shoves it along and dazes it)
+  for (const [w, o] of Object.entries(SNAKE.beatenBy)) assert.ok(o.ends === 'chasedOff' || (w === 'punch' && o.ends === 'stunned' && o.knock), `${w} ends ${o.ends}`);
+  const gone = (name: string, s: PredatorState, t0: number) => {
+    assert.deepEqual([s.phase, s.leaving], ['flee', true], `${name}: it is on its way out`);
+    run(SNAKE, s, GONE_AFTER + 0.1, () => prey({ x: 560 }), { t0 });
+    assert.equal(s.phase, 'gone', `${name}: gone`);
+    const ev = run(SNAKE, s, 8, () => prey({ x: 600 }), { t0: t0 + 2 });
+    assert.deepEqual([s.phase, ev.length], ['gone', 0], `${name}: and it never comes back, though he stands on its branch`);
+  };
+  const trapped = newPredator(SNAKE, branch());
+  assert.equal(beat(SNAKE, trapped, 'trap', 0, 560), true);
+  gone('a drop trap', trapped, 0);
+  const stomped = newPredator(SNAKE, branch());
+  run(SNAKE, stomped, 2, crowd(stomped));
+  assert.equal(beat(SNAKE, stomped, 'stomp', 2, 560), true);
+  gone('a stomp (he vaults it)', stomped, 2);
+  const kicked = newPredator(SNAKE, branch());
+  assert.equal(beat(SNAKE, kicked, 'kick', 0, 560), true);
+  gone('a kick', kicked, 0);
+  const punched = newPredator(SNAKE, branch({ x: 690 }));
+  assert.equal(beat(SNAKE, punched, 'punch', 0, 650), true);
+  gone('a punch at its branch end', punched, 0);
   assert.equal(beat(SNAKE, newPredator(SNAKE, branch()), 'drum', 0), false, 'no drum in World 1');
 });
 

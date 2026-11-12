@@ -590,6 +590,11 @@ export interface GraphBrief {
    *  socket whose `allow` starts with one (another stage's Dot line, its prop) stays empty, so a shape never brings another stage's
    *  words with it. What a section needs, uses and teaches is judged at each node, as everywhere */
   pick?: { refuse?: readonly string[] };
+  /** a DESIGNED graph (one section a job, in a set order: a level's arc): the deal is the brief's shares to the node, with no node
+   *  moved from one type to another by the roll (the jitter a rolled stage gets on half its seeds, for variety between rolls), and
+   *  a node whose job one type of section alone serves in the stage's pool is dealt that type. A designed level's variety is its
+   *  beats; a type dealt at random is one its single brick a job cannot fill */
+  dealExact?: boolean;
   /** the stage's CAST, by kind (predators/registry.ts; reference/design/PREDATORS.md): every animal of one of these kinds the stage
    *  lays is run by the creature kit (castPlay.ts) with Pokey's stillness and noise, and the stage's drop traps work on it. Absent:
    *  the stage's animals play as they always have */
