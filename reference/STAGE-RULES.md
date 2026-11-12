@@ -92,6 +92,12 @@ as somebody gets through World 5 and on... not supposed to be where it's going t
   reachable by (a) a plain walk-off fall that lands with margin, or (b) a full jump that lands with margin with no ceiling (a log or
   ledge above) cutting its arc. A landing reachable only by a mid-air correction (run at just the right speed, or start falling and then
   jump) is refused. Pickups (petals) go only where one of those two clean paths reaches.
+- **Every piece has a purpose where it is laid (Matt, 2026-11-11 11:28 PM ET: "if you don't need to jump or have a mushroom, then we
+  shouldn't lay them around... The pieces should make sense to where we're laying them. And that goes for getting hearts back and
+  checkpoints").** A bounce mushroom is laid only where a bounce is needed or leads somewhere worth going (a higher road, a find, a
+  shortcut); anything else is scenery that must not look bounceable. Hearts go just after a stretch that costs hearts or just before one,
+  by the stretch's risk, never at random. Checkpoints go just before the hard parts (respawn within about 2 s of the hard part, §0b.8),
+  spaced by difficulty, not by distance alone.
 
 ## 1b. The game gets harder as it goes (Matt, 2026-10-28)
 
