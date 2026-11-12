@@ -397,6 +397,8 @@ export interface SectionTemplate {
   feel?: readonly string[];
   /** what it must never serve: never laid in a stage that owns any of these (manifest.owns) */
   not?: readonly string[];
+  /** out of every pool, and why (a stage picked by need, GraphBrief.pick, has no stage list to leave it off) */
+  parked?: string;
   phases: Phase[];
   /** 1 (gentle) .. 10 (hard): picked when the node's tension, scaled into the stage's band, is near it */
   difficulty: number;
@@ -558,6 +560,13 @@ export interface GraphBrief {
    *  spawn, gets the world's hurt floor (WorldManifest.hurtFloor) as a place marked `hurt` does. Seams, water, glide and block
    *  gaps stay as they are */
   pits?: 'hurt';
+  /** the stage's pool is picked by NEED, not by a list of stages (the lead 11-11: a section is a brick, never one stage's): every
+   *  section of the world that is not parked, whose content type the stage's deal holds (or that is structural, or names none) and
+   *  that serves nothing the stage must never hold (`not`). A section's `feel` is then never read as the stages it serves: it only
+   *  EXCLUDES, against `refuse`. `refuse`: what this stage never holds: a section whose `feel` names one is out of the pool, and a
+   *  socket whose `allow` starts with one (another stage's Dot line, its prop) stays empty, so a shape never brings another stage's
+   *  words with it. What a section needs, uses and teaches is judged at each node, as everywhere */
+  pick?: { refuse?: readonly string[] };
 }
 /** a content type (NODES.md §7.2): what fills a content node; `structural` sections (arrive, rest, exit) sit outside the mix */
 export type ContentType = 'ground' | 'floating' | 'climb' | 'bounce' | 'rope' | 'crumble' | 'water' | 'hazard' | 'puzzle';

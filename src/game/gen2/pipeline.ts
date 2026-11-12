@@ -1350,6 +1350,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const ropes: Rope[] = [];
   const zones: Zone[] = [];
   const heartFalls: Laid['heartFalls'] = [];
+  // (a stage that teaches the hurt floor's lesson lays no hollow by brief before the lesson's showing piece ends: `hazard.untaught` by
+  // construction. The x past which the brief's hollows may lie: nowhere until the teach is laid)
+  let hurtFrom = M.graphs?.briefs?.[budget.id]?.teaches?.includes(M.hurtFloor?.lesson ?? '') ? Infinity : -Infinity;
   // (World 1's floor families, M.floorRoll: the roll's hop family, drawn from its own stream (no other world draws it), sets how deep
   // this slot's soft pits lie; every other world's pits are M.pitDepth as before)
   const FR = M.floorRoll;
@@ -1799,11 +1802,12 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (dx > 0) asks.push({ x0: cur.x, x1: ox, yTake: cur.y, yLand: oy, move: 'single', thin: entryP.height < BLOCK_H.px, key: 'seam', section: placed.uid });
       for (const k of L.asks ?? []) asks.push({ ...k, x0: ox + k.x0, x1: ox + k.x1, yTake: oy + k.yTake, yLand: oy + k.yLand, section: placed.uid });
       if (dx > 0 && join === 'jump') { const before = platforms.length; catchUnder(cur.x, ox, Math.max(cur.y, oy)); placed.seam.push(...platforms.slice(before)); }
+      if (hurtFrom === Infinity && tpl.teaches === M.hurtFloor?.lesson) { const sh = placed.pieces.find((p) => p.key === 'show')?.platform; hurtFrom = sh ? sh.x + sh.width : placed.x1; }
       for (const g of L.gaps) {
         const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
         gaps.push(g0);
         // (or by the stage's brief, GraphBrief.pits: every section pit past the row's clearStart, with no mark on the section)
-        const byBrief = M.graphs?.briefs?.[budget.id]?.pits === 'hurt' && !!g.pit && !g.water && !g.putBack && !g.back && g0.x0 >= SPAWN_X + (M.hurtFloor?.clearStart ?? 0);
+        const byBrief = M.graphs?.briefs?.[budget.id]?.pits === 'hurt' && !!g.pit && !g.water && !g.putBack && !g.back && g0.x0 >= Math.max(SPAWN_X + (M.hurtFloor?.clearStart ?? 0), hurtFrom);
         if (g.hurt || byBrief) {
           // (a hollow, a place marked `hurt`: the world's hurt floor, ONE marked piece at its row's depth under the lower lip, wall to wall,
           // no steps out, the banks either side reaching down to it; the zone over it, lip to lip, carries the floor's top as its hurt line.
@@ -2156,6 +2160,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     C.push({ id: sink.nextCollectibleId(), type: 'flower', botanicalVariant: look, x: R(x), y: R(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
   };
   const tipsSaid = new Set<string>();
+  const refuse = M.graphs?.briefs?.[budget.id]?.pick?.refuse;
   // (lessons from earlier stages need no tip here)
   for (const [m, st] of Object.entries(M.lessons ?? {})) if (stageOrder(st) < stageOrder(budget.id)) tipsSaid.add(m);
 
@@ -2314,6 +2319,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     let objectives = 0;
     for (const [ki, k] of sec.sockets.entries()) {
       const s = k.socket;
+      // (what the stage's brief refuses stays empty, GraphBrief.pick: another stage's line or prop never comes with a shape)
+      if (refuse && s.allow?.some((a) => refuse.some((r) => a.startsWith(r)))) continue;
       // (each socket's chance from its own stream: whatever Easy or Normal did with the sockets before it, it rolls the same)
       const r0 = rngFor(seed, 17, si, ki)();
       const want = (s.chance ?? 1) > r0 && (!s.phases || s.phases.includes(sec.phase));
@@ -2945,7 +2952,13 @@ export function tipWords(tips: Readonly<Record<string, string>> | undefined, id:
 /** a stage's pool: its world's sections whose `feel` names the stage (or is unset) and whose `not` names nothing the stage owns */
 export function stagePool(M: WorldManifest, stageId: string): SectionTemplate[] {
   const owns = new Set(M.owns?.[stageId] ?? []);
-  return M.sections.filter((t) => (!t.feel || t.feel.includes(stageId)) && !(t.not ?? []).some((x) => owns.has(x)));
+  // (a brief that picks by need, GraphBrief.pick: the world's whole library less what is parked, what the deal holds no type for and
+  // what the stage refuses; `feel` names no stage there)
+  const brief = M.graphs?.briefs?.[stageId], pick = brief?.pick, deal = brief?.deal ?? M.graphs?.mix;
+  const fits = (t: SectionTemplate) => (pick
+    ? !t.parked && !t.feel?.some((f) => pick.refuse?.includes(f)) && (!t.content || t.content === 'structural' || !deal || t.content in deal)
+    : !t.feel || t.feel.includes(stageId));
+  return M.sections.filter((t) => fits(t) && !(t.not ?? []).some((x) => owns.has(x)));
 }
 
 /**
