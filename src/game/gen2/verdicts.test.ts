@@ -150,8 +150,10 @@ test('chain.mount: a chain\'s first cap on a tall stem (160 px over its bank) ne
   const cap = (y: number): Platform => ({ id: 9, x: 700, y, width: 70, height: 30, type: 'bouncy' });
   for (const s of ['normal', 'easy'] as const) {
     planted('chain.mount', s, { built: { ...b, platforms: [...b.platforms, cap(G - 160)] } }, t);
-    // (INT-2: P11's bounce.no-purpose refuses this lone cap on flat ground, so the control checks chain.mount only)
-    assert.ok(!names(roll(s, { built: { ...b, platforms: [...b.platforms, cap(G - 30)] } })).includes('chain.mount'), `${s}: a walk-on cap`);
+    // (INT-2: past the double's gap, the walk-on cap bounces him onto a block 210 px up beside it: it has a purpose, so P11's
+    // bounce.no-purpose leaves it be; before the gap a raised block would hide the gap from the double-teach walk)
+    const road = P(4, 1580, G - 210, 120, 210);
+    assert.deepEqual(names(roll(s, { built: { ...b, platforms: [...b.platforms, road, { ...cap(G - 30), x: 1500 }] } })), [], `${s}: a walk-on cap`);
   }
 });
 test('first-run.drift: the fixed layout built against its recorded lock', (t) => {
