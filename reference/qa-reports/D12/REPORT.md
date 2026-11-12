@@ -55,4 +55,6 @@ Walk the real page on Normal (Tips) and Easy (Help) and read Dot's card at each 
 placing him mid-stage fires every line he passed: mark them heard first.
 ## Learned
 | 1-2 | D12 (Opus), 11-12 | Better: the first level checked for PURPOSE after it passed every verdict (its beds could be jumped, its thorns never cost), and fixed | Proposed: 19. Any bed the generator allows (gap at most 114 px level) is one a full jump clears, so a bounce chain's purpose comes from cap-only footing, not bed width. 20. A danger must be able to cost: lay its pits at the widest the spec allows and count the hits per tier. 21. A teach line is proven on the real page under both settings' Dot defaults. 22. Read a line's row first: a cut line is never said. |
+**t-12-note (6:32 PM ET, on INT-2's 90a54102, pushed as t-12-design@1988ce54):** the Keeper's Bell on the twist's hollow floor 16-120 px past
+its root every roll (FX's findSpot, t 0.66), the roots line back on the lip, library.test 21 of 21 (planted: no findSpot, caught), stills `8a/8b-twist-note`.
 Turnover: `reference/handoffs/designer.md`, rulings 21-23 and the open items for 1-2.
