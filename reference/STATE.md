@@ -527,3 +527,7 @@ lines); Matt sees them in the release.
   session_01FhBbYLor45ufvfpo74eKDv, t-13-finish) reads now and finishes 1-3 from W1C's last head when Fable stops (~3 PM). P13 and P12S
   stay the plumbing (bots, seed lists, kit road). Packet: reference/packets/2026-11-12/D12-F13.md. Max reason: the first two levels set
   the bar; the weekly limit resets soon.
+- 2026-11-12 1:41 PM ET: PROOF-1 re-check PASS on t-int-2@1480e843 (NOT_IN_CI shrink-only in knowncheck; R-165.153 done; R-165.152
+  catches 8 shapes, one left: a dynamic import's .then returning the packaged plugin, noted on the row). PROOF-1 retired. The integration
+  t-int-2@1480e843 now holds: engine, P11, F12, AF, RF, PIT, inventory, E1, w11-analyst, ADR/reach/1-2 docs, PROOF-1 fixes; red only
+  yield.test.ts (Y2).
