@@ -572,3 +572,7 @@ lines); Matt sees them in the release.
 - 2026-11-12 2:43 PM ET, Matt: "we're going to have to accept not everybody's going to be able to finish every level and just make some
   concessions there. If 3 out of 40, that's a really good percentage." Ruling: a skill fail rate like this is accepted (difficulty);
   a SOFTLOCK (a state with no way to clear a needed snake except restarting) is still a blocker. P13 confirms the 3 kid strands are skill.
+- 2026-11-12 2:59 PM ET: Y2 DONE and PASSED (t-yield-2@a5bff66c): 1-1 fresh-seed yield 136/136 of 200 (68%; base 88/84, d0276817 113/109);
+  yield.test 20/30 green; verdicts unchanged; two searches (old search first, so all 258 proven seeds lay the same; repair only for
+  seeds with no clean roll); lock 102/102. Left: seed 50028 (a floorless slot from P11's catch-bough split; fixing it moves proven
+  seeds). Retired.
