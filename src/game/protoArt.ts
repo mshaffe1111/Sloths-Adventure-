@@ -561,7 +561,7 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
  * wobble (never a ruler-straight cut). A moss floor (`moss`) is the World 1 kit's moss strip. `view`: only what is on screen.
  */
 export function drawBankArt(
-  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean; lipless?: boolean; shadeFrom?: number }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
+  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean; lipless?: boolean; shadeFrom?: number; underL?: number; underR?: number }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
   high?: { foot: number; runTop: number; left: boolean; right: boolean },
 ): boolean {
   if (!protoArtReady()) return false;
@@ -640,8 +640,10 @@ export function drawBankArt(
   // and see-through below their rims: its soil keeps the end's wobbling face and the lip runs to its ends)
   // (`lipless`: a hollow's hurt floor, the bottom of a hole: its grass lip stood under the thorns as a lit slab with a straight foot,
   // the lead 11-12. Its soil runs on under the hollow's rounded floor, w1Pits.ts)
-  const la = open.left && !open.bare ? p.x + 30 : p.x - 1;
-  const lb = open.right && !open.bare ? p.x + p.width - 30 : p.x + p.width + 1;
+  // (`underL`/`underR`: a higher bank stands on that side, and the lip runs that far on under it, drawn before it: its soil covers the
+  // lip, all but where its end face curves back in above the floor, which showed the backdrop as a box with a straight side, W1C 11-12)
+  const la = open.left && !open.bare ? p.x + 30 : p.x - 1 - (open.underL ?? 0);
+  const lb = open.right && !open.bare ? p.x + p.width - 30 : p.x + p.width + 1 + (open.underR ?? 0);
   if (!open.lipless) {
     ctx.save();
     ctx.beginPath();
@@ -1084,7 +1086,7 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     // end piece down to the floor and the pit showed a box-shaped cave there and a grey-green sliver, EN-W's Roughs 1-3, 11-11)
     const overHollow = (side: 'l' | 'r') => sideOverHollow(p, banks, side);
     const lips = p.pit === 'hurt' ? banks.filter((q) => q !== p && q.y < p.y && (Math.abs(q.x + q.width - p.x) < 2 || Math.abs(p.x + p.width - q.x) < 2)).map((q) => q.y) : [];
-    drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined }, false, view.y1 ?? 0, view, wall || undefined);
+    drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined, underL: lipUnder(p, banks, false), underR: lipUnder(p, banks, true) }, false, view.y1 ?? 0, view, wall || undefined);
   }
   // (gen2 World 1's dip pockets, over the banks: painted soil edge to edge under their lip, so a pocket reads as a soil hollow, not a
   // grey window; isPocket needs ownLook, which only gen2 World 1 sets, so every other stage draws as before)
@@ -1122,6 +1124,15 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     ctx.restore();
   }
   shadeUpTo(-Infinity);
+}
+
+/** how far a floor's lip runs on under a higher bank beside it (world units: past the most a World 1 end face curves back in, 20, at 90 down) */
+export const LIP_UNDER = 60;
+/** how far p's lip runs on under the higher bank on that side (0: none there, or p is a pit's step or a hollow's floor) */
+export function lipUnder(p: Platform, banks: readonly Platform[], right: boolean): number {
+  if (p.soil || p.pit === 'hurt') return 0;
+  const q = banks.find((o) => o !== p && !o.soil && o.pit !== 'hurt' && o.y < p.y - 2 && Math.abs(right ? o.x - (p.x + p.width) : o.x + o.width - p.x) < 2);
+  return q ? Math.min(LIP_UNDER, q.width) : 0;
 }
 
 /**

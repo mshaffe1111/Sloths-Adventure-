@@ -8,7 +8,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { FILL_INSET, fillSrc } from './groundPaint.ts';
 import { GROUND_FRAMES } from './groundAtlasData.ts';
-import { stepFootLips } from './protoArt.ts';
+import { LIP_UNDER, lipUnder, stepFootLips } from './protoArt.ts';
 import { paintedBank } from './w1Pits.ts';
 import { RealPlay } from './realPlay.ts';
 import type { Platform } from './types.ts';
@@ -169,4 +169,15 @@ test("a dip pocket's soil (gen2 World 1) is painted into the ground's squares wi
     G.Image = wasImage;
     doc.createElement = wasCreate;
   }
+});
+
+test("a floor's lip runs LIP_UNDER on under a higher bank beside it, so the bank's end face, curving back in above the floor, never shows the backdrop as a box (W1C's 91-up bank, 1-3's 76-up banks)", () => {
+  const floor = P(0, 500, 580), hi = P(500, 660, 489), lo = P(660, 900, 640);
+  assert.equal(lipUnder(floor, [floor, hi, lo], true), LIP_UNDER);
+  assert.ok(LIP_UNDER >= 40, 'past the most a World 1 end face curves back in near the floor (20)');
+  assert.equal(lipUnder(floor, [floor, hi, lo], false), 0, 'no bank on its left');
+  assert.equal(lipUnder(hi, [floor, hi, lo], true), 0, 'a lower bank is not run under');
+  assert.equal(lipUnder(lo, [floor, hi, lo], false), LIP_UNDER, 'the bank on its left is higher');
+  assert.equal(lipUnder(floor, [floor, P(500, 530, 489)], true), 30, 'never past a narrow bank');
+  assert.equal(lipUnder(P(0, 500, 580, { soil: true }), [P(0, 500, 580, { soil: true }), hi], true), 0, "a pit's low step keeps its own ends");
 });
