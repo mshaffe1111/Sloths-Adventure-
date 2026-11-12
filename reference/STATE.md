@@ -542,3 +542,9 @@ lines); Matt sees them in the release.
 - 2026-11-12 1:53 PM ET, CORRECTION (F13 caught it, D30): the lead's own clock lines from about 1:37 PM drifted ~30 min AHEAD in
   messages and in this ledger (entries labelled 1:55-2:36 PM were written between 1:37 and 1:53 PM). Real times come only from the
   hook's "Now:" line each turn.
+- 2026-11-12 2:06 PM ET: 1-2.md (D12, t-12-design@8adfd01a) PASSED the lead's judgment: "Meeca's petals lie low on bark; across the
+  thorns the only bark is a mushroom's throw apart", 14 beats (lesson, again, petals go up, the long chain, twist: down where no thorns
+  grow, the long crossing with her island, finale), 178 s first-timer, ~145 s fast, Matt's flag/heart rules and three verdicts named.
+  Rulings: build it; the fork left out; "There's something down by the roots..." released from R-165.45 (its hold condition, 1-1 proving
+  the engine, is met) for the twist; the mid-chain jump overshoot must be taught before beat 6 tests it (bots report thorn-hit rate).
+  Dot's thorn line asked of the story keeper. 1-3: F13 adds "one shake, two snakes" (~+8-10 s) for a comfortable 2-minute margin.
