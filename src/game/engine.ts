@@ -1189,9 +1189,12 @@ export class GameEngine {
       this.lessonSeen = lessonsSeen();
       this.lessonSeen.add('gap');
     }
-    sound.playLevelStart();
+    // (started under the pause menu, the stage having loaded after a pause: the start sound waits for the Resume)
+    if (this.isPaused) this.startSoundDue = true;
+    else sound.playLevelStart();
     this.loop(this.lastTime);
   }
+  private startSoundDue = false;
 
   /** a note, book or keepsake is picked up: a burst, a line of text, and the app opens it */
   private collectFind(c: Collectible) {
@@ -1253,6 +1256,10 @@ export class GameEngine {
     this.isPaused = false;
     // (a press made while the menu held the world is not played now)
     if (was) this.dropPresses();
+    if (this.startSoundDue) {
+      this.startSoundDue = false;
+      sound.playLevelStart();
+    }
     this.lastTime = performance.now();
     this.lastRenderTime = this.lastTime;
     this.acc = 0;
