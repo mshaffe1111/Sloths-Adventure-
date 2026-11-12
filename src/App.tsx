@@ -195,8 +195,13 @@ export default function App() {
     };
   }, [allLevels, resumeLevel]);
 
-  // a save file was just loaded: re-read everything the game keeps in storage
-  const onSaveLoaded = useCallback(() => {
+  /**
+   * the game in storage was just replaced (a save file loaded) or cleared (New Game): re-read every state kept from it, and forget the
+   * last game's run. ONE list for both, so a state added later cannot be missed in one of them (audit C saves #3: the journal records
+   * and the flashbacks seen were left out, and the old game's were written back into the new one). appStateReload.test.ts checks
+   * every state App.tsx loads from storage is re-read here.
+   */
+  function reloadGameState(): LevelConfig[] {
     const fresh = generateAllLevels();
     setAllLevels(fresh);
     setActiveLevel(fresh[0]);
@@ -209,7 +214,19 @@ export default function App() {
     setCosmetic(loadCosmetic());
     setFoundIds(loadFinds());
     setSkills(learnedSkills());
+    setPlayRecords(loadPlayRecords());
+    setMemoriesSeen(loadMemories());
     setNewSkills([]);
+    setFreshBadges([]);
+    setLastStats(null);
+    pendingStats.current = null;
+    failsRef.current = {};
+    return fresh;
+  }
+
+  // a save file was just loaded: re-read everything the game keeps in storage
+  const onSaveLoaded = useCallback(() => {
+    reloadGameState();
   }, []);
 
   // where the opening story was started from: the title's Story button returns to the title, a new game goes on to 1-1
@@ -217,19 +234,7 @@ export default function App() {
 
   // New Game: progress has just been cleared from storage; rebuild everything from it and begin at stage 1-1
   const onNewGame = useCallback((skipStory: boolean) => {
-    const fresh = generateAllLevels();
-    setAllLevels(fresh);
-    setActiveLevel(fresh[0]);
-    setSelectedWorldId(1);
-    setSecretFound(gateFound());
-    setThornHeart(hasThornHeart());
-    setHp(maxHearts());
-    setMaxHp(maxHearts());
-    setBadgeStore(loadBadgeStore());
-    setCosmetic(loadCosmetic());
-    setFoundIds(loadFinds());
-    setSkills(learnedSkills());
-    setNewSkills([]);
+    const fresh = reloadGameState();
     if (skipStory) {
       startLevel(fresh[0]);
     } else {
