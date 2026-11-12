@@ -28,9 +28,13 @@ export const KNOWN_FILE = 'tools/engine/generality.known.json';
 export const ENGINE_FILES = [
   'src/game/engine.ts', 'src/game/physics.ts', 'src/game/inputEngine.ts', 'src/game/cameraFollow.ts', 'src/game/cameraReach.ts',
   'src/game/frameGovernor.ts', 'src/game/helpLadder.ts',
+  // (the t-int-engine merge's engine modules, PROOF-1 violation 4: the stage clock and its modes, riding, stillness, noise, the hero's
+  // noise, the save file)
+  'src/game/clock.ts', 'src/game/stageModes.ts', 'src/game/ride.ts', 'src/game/stillness.ts', 'src/game/noise.ts', 'src/game/heroNoise.ts',
+  'src/game/saveFile.ts',
 ];
 /** gen2's machinery: every .ts below these, unless EXEMPT */
-export const ENGINE_DIRS = ['src/game/gen2/'];
+export const ENGINE_DIRS = ['src/game/gen2/', 'src/game/predators/'];
 /** what may name stages, and why */
 export const EXEMPT: Array<[string | RegExp, string]> = [
   [/\.test\.ts$/, 'tests: a test may require any stage'],
@@ -40,6 +44,7 @@ export const EXEMPT: Array<[string | RegExp, string]> = [
   ['src/game/gen2/proven/', "seed list: each stage's proven seeds, one file a stage (written by tools/engine/seedlist.ts; R-165.112 moved them out of provenSeeds.ts)"],
   ['src/game/gen2/provenIndex.ts', 'seed list: the index of the proven seed lists (written by tools/engine/seedlist.ts with each list)'],
   ['src/game/gen2/firstRun11.ts', "per-stage data: 1-1's one fixed first run (ADR-002), a seed and its plan"],
+  ['src/game/predators/roster.ts', "world data: each world's cast, and the one stage with a cast of its own (8-4's moths)"],
   [/Harness\.ts$/, 'test harnesses for one world (w6Harness, w7Harness, w8Harness)'],
 ];
 
@@ -305,7 +310,7 @@ const posix = (p: string) => p.split(path.sep).join('/');
 const exemptWhy = (f: string) => EXEMPT.find(([m]) => (typeof m === 'string' ? (m.endsWith('/') ? f.startsWith(m) : f === m) : m.test(f)))?.[1] ?? null;
 
 /** the engine files to check, and the exempt ones under the engine folders (with why) */
-export function scope(root = ROOT): { files: string[]; exempt: Array<[string, string]> } {
+export function scope(root = ROOT): { files: string[]; exempt: Array<[string, string]>; missing: string[] } {
   const files: string[] = [];
   const exempt: Array<[string, string]> = [];
   const take = (f: string) => {
@@ -313,7 +318,9 @@ export function scope(root = ROOT): { files: string[]; exempt: Array<[string, st
     if (why) exempt.push([f, why]);
     else files.push(f);
   };
-  for (const f of ENGINE_FILES) if (fs.existsSync(path.join(root, f))) take(f);
+  // (an engine file or folder that is gone is named, never skipped quietly: a renamed module would leave the gate blind; main() fails)
+  const missing = [...ENGINE_FILES, ...ENGINE_DIRS].filter((f) => !fs.existsSync(path.join(root, f)));
+  for (const f of ENGINE_FILES) if (!missing.includes(f)) take(f);
   const walk = (d: string) => {
     for (const e of fs.readdirSync(path.join(root, d), { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
       const p = posix(path.join(d, e.name));
@@ -321,8 +328,8 @@ export function scope(root = ROOT): { files: string[]; exempt: Array<[string, st
       else if (/\.ts$/.test(e.name)) take(p);
     }
   };
-  for (const d of ENGINE_DIRS) walk(d);
-  return { files, exempt };
+  for (const d of ENGINE_DIRS) if (!missing.includes(d)) walk(d);
+  return { files, exempt, missing };
 }
 
 export interface Known { file: string; kind: Kind; code: string; count: number; why: string; owner: string }
@@ -358,7 +365,7 @@ const WHY: Record<Kind, string> = {
 
 function main() {
   const args = process.argv.slice(2);
-  const { files, exempt } = scope();
+  const { files, exempt, missing } = scope();
   const hits = files.flatMap((f) => scan(fs.readFileSync(path.join(ROOT, f), 'utf8'), f));
   const knownPath = path.join(ROOT, KNOWN_FILE);
   const doc = fs.existsSync(knownPath) ? JSON.parse(fs.readFileSync(knownPath, 'utf8')) : { known: [] };
@@ -380,7 +387,8 @@ function main() {
   console.log(`generality check: ${files.length} engine files (${exempt.length} exempt under the engine folders), ${hits.length} literals, ${knownIds(known).length} known`);
   for (const h of fresh) console.log(`✗ NEW ${h.kind}: ${h.file}:${h.line}  ${h.code}  (${WHY[h.kind]}: put it in world data or a per-stage script)`);
   for (const s of stale) console.log(`✗ FIXED, still listed: ${s.entry.file}  ${s.entry.kind}  ${s.entry.code}  known ${s.entry.count}, found ${s.found}: lower its count in ${KNOWN_FILE}`);
-  const ok = !fresh.length && !stale.length;
+  for (const m of missing) console.log(`✗ GONE: ${m} is listed as engine code but is not in the tree: fix ENGINE_FILES / ENGINE_DIRS`);
+  const ok = !fresh.length && !stale.length && !missing.length;
   console.log(ok ? 'PASS' : 'FAIL');
   return ok ? 0 : 1;
 }
