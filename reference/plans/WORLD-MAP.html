@@ -47,6 +47,7 @@ section{margin-top:28px}
 .tempo{font-size:13px;color:var(--muted);text-align:right}
 .rules{margin:10px 0 0;padding-left:18px;color:var(--ink);font-size:14px}
 .beat{margin:10px 0 0;font-style:italic;color:var(--muted);font-size:14px}
+.with{margin:6px 0 0;font-size:14px}
 .flag{margin:12px 0 0;background:var(--warn-bg);border-left:4px solid var(--warn);padding:10px 12px;border-radius:8px;font-size:14px}
 .flag b{color:var(--warn)}
 .stages{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:14px}
@@ -95,7 +96,7 @@ section{margin-top:28px}
 
 <div class="wrap">
   <h1>The world map: 113 stages, one engine</h1>
-  <p class="lede">Every stage we will build, in play order, with its twist, the move it teaches, and the engine pieces it uses. The counts underneath show which pieces repeat most, and that is the order the engine builds them in. Drafted by the lead on 11-11; stage names and story beats are the story keeper's.</p>
+  <p class="lede">Every stage we will build, in play order, with its twist, the move it teaches, and the engine pieces it uses. The counts underneath show which pieces repeat most, and that is the order the engine builds them in. Drafted by the lead on 11-11 and checked by the story keeper, who owns stage names, story beats and who travels with Pokey.</p>
   <div class="stats" id="stats"></div>
 
   <nav class="tabs" role="tablist" aria-label="Views">
@@ -158,19 +159,19 @@ const PIECES={
 };
 const DIRT={"↑":"dir","↓":"dir","←":"dir","⇄":"dir","↖":"dir"};
 const W=[
- {n:"Emerald Canopy",act:"Act I · The Trail",move:"The basics: jump, double jump, bounce, punch, climb, swing, hide",tempo:"Classic, one twist per stage",
+ {n:"Emerald Canopy",beat:'Purpose: a scared sloth sets off after her petals and finds he can do this.',with:'Dot',act:"Act I · The Trail",move:"The basics: jump, double jump, bounce, punch, climb, swing, hide",tempo:"Classic, one twist per stage",
   rules:["Branches stand still","One twist per stage, each taught safely","Stillness is taught here: in the bush, hold still"],
   hidden:"Zipline Canopy (a sloped rope ride), opened by the golden guarana in 1-5's root tunnel",boss:"Venom Fang",
   s:[["1-1","Into the Canopy","sprint","→","The basics, re-laid. Live in 0.9.6.",[],"run, jump, double jump, bounce",1],
      ["1-2","The Petal Trail","harvest","→","Bounce chain over a thorn floor",["hurt"]],
      ["1-3","Branch Snakes","purge","→","Drop traps: shake a vine, cut a tendril, drop a hive on the snakes",["trap"],"punch; rope"],
-     ["1-4","Up the Kapok","ascent","↑","The first climb, inside the hollow kapok: rotting boughs, fruit dropped down the trunk, twin vines climb faster",["crumble","clock"],"climb; crumbling"],
-     ["1-5","Where She Walked","harvest","→","Over or under: the risky canopy or the fast root tunnel. The card-road test: a totem offers two cards",["roads"]],
+     ["1-4","Up the Kapok","ascent","↑","The first climb, inside the hollow kapok: rotting boughs, ripe fruit falling down the trunk, twin vines climb faster",["crumble","clock"],"climb; crumbling"],
+     ["1-5","Where She Walked","harvest","→","Over or under: the risky canopy or the fast root tunnel. The card-road test: the squirrels' painted signs, THIS WAY or THAT WAY, pick the next stretch",["roads"]],
      ["1-6","First Lianas","vine_runner","→","The pendulum: build speed, let go at the top",["swing"],"swing"],
      ["1-7","A Very Good Bush","stealth","→","The eagle's shadow: in the bush, hold still; soft landings stay quiet",["still","noise"],"stillness"],
      ["1-8","The Long Branch","sprint","→","The branch collapses behind you; rolling nuts at two heights: jump the low, duck the high",["chase","clock"]],
-     ["1-9","The Boa's Branches","gauntlet","→","Lure the boa with drop traps and the food chain",["trap","lure"]]]},
- {n:"Sunlit Riverbank",act:"Act I",move:"Ride: hop on things that move",tempo:"Hurry: the rides don't wait",
+     ["1-9","The Boa's Branches","gauntlet","→","Drop traps and the food chain chase the boa off (never carried off or eaten)",["trap","lure"]]]},
+ {n:"Sunlit Riverbank",beat:'Patience and company: a village of waiters; he leads the little ones home.',with:'Dot',act:"Act I",move:"Ride: hop on things that move",tempo:"Hurry: the rides don't wait",
   rules:["Nothing stands still: logs, sinking pads, rafts","River lanes going both ways (the Frogger world)","Bring the freed animals home; the first run back to the left"],
   hidden:"The Rapids: a raft ride down white water",boss:"Crocus Rex",
   s:[["2-1","Down to the River","sprint","→","Drifting logs carry you; step off before the reeds",["ride"],"ride"],
@@ -178,11 +179,11 @@ const W=[
      ["2-3","Stuck in the Reeds","rescue","→","Bring them home: freed animals hop behind you",["follow"],"bring them home"],
      ["2-4","Over the Water","vine_runner","→","Let go of the vine onto a moving log",["swing","ride"]],
      ["2-5","River Snappers","purge","→","Snap-jaw stones: safe on three beats, snap on the fourth",["clock","trap"]],
-     ["2-6","Up the Bank Houses","ascent","↑","Lifts ride up and down; ride a caiman's back",["dir","ride"]],
+     ["2-6","Up the Bank Houses","ascent","↑","Lifts ride up and down; cross the backs of sleeping caimans, quietly",["dir","ride","still"]],
      ["2-7","The Mailman's Route","sprint","⇄","Ring the bell, then race back left through a changed river",["dir"]],
      ["2-8","Before the Water Rises","rescue","↑","Free them and bring them up ahead of the rising water",["dir","follow","water"]],
      ["2-9","The River King's Court","gauntlet","→","The full river: lanes of logs both ways, guards on rafts",["ride","clock"]]]},
- {n:"Mossy Grotto",act:"Act I",move:"Hang under roots and branches",tempo:"Patience: slow and quiet",
+ {n:"Mossy Grotto",beat:"Memory in the dark: Grandma's things in the ferns, the bell for coming home; Dot doesn't do dark.",with:'Dot',act:"Act I",move:"Hang under roots and branches",tempo:"Patience: slow and quiet",
   rules:["Dark: you see only near glowworms and fungus","Quiet: noise wakes things; stillness keeps them asleep","The first stage that goes down"],
   hidden:"The Cave Slide: an underground water chute",boss:"Shadow Prowler",
   s:[["3-1","Into the Grotto","sprint","↓","The first stage that goes down; light only from glowworms",["dir","dark"],"dark"],
@@ -194,7 +195,7 @@ const W=[
      ["3-7","Which Fern?","relic_hunt","←","Every fern looks alike; the right one rustles",["dir","dark"]],
      ["3-8","Thorn Vine Swing","vine_runner","→","Thorn vines pulse; swing on the quiet beat",["dark","swing","clock"]],
      ["3-9","The Prowler's Ring","gauntlet","→","Dark, hanging, quiet and prowlers together",["dark","hang","noise"]]]},
- {n:"Mist Cascades",act:"Act II · The Cost",move:"Leaf glide",tempo:"Hurry: keep ahead of the rocks",
+ {n:"Mist Cascades",beat:"The cost: the ledge falls away; fear of falling; Dot's brave flight through the netting.",with:'Dot',act:"Act II · The Cost",move:"Leaf glide",tempo:"Hurry: keep ahead of the rocks",
   rules:["The air moves you: gusts and updrafts","Rocks fall on a beat","Tall stages both ways: climb up, glide down"],
   hidden:"Up the Falls (plus Dot's Flight, built)",boss:"Sky Sovereign",
   s:[["4-1","The Broken Ledge","ascent","↑","The leaf is learned on clearing",["dir","glide"],"glide"],
@@ -206,11 +207,11 @@ const W=[
      ["4-7","The Long Drop","sprint","↓","The hand-built descent; the first drop only the leaf can cross",["dir","glide"]],
      ["4-8","Nests on the Cliff","rescue","↑","Bring them home again, riding updrafts",["dir","follow","wind"],"updrafts"],
      ["4-9","The Aerie","gauntlet","→","Wind blows the guards off their ledges",["wind"]]]},
- {n:"Orchid Sanctuary",act:"Act II",move:"Lead on a vine",tempo:"Hurry",
-  rules:["The clock: orchids close","Silk that hums: touch a thread and spiders come","Don't stop: idle with no threat near and he gets drowsy; fruit wakes him"],
+ {n:"Orchid Sanctuary",beat:'Temptation: the loveliest place is a trap; Meeca fought back here for one night; the Queen is lonely.',with:'Dot',act:"Act II",move:"Lead on a vine",tempo:"Hurry",
+  rules:["The clock: orchids close","Silk that hums: touch a thread and spiders come","Don't stop: idle with no threat near and he gets drowsy; a cold dew drip wakes him (no eating in the sanctuary)"],
   hidden:"The Wilted Garden: blooms open where you step (plus Meeca's stage, built)",boss:"Tarantula Queen",
   flag:"<b>Lead's proposal, pending the story keeper:</b> the vine leash arrives at 5-5, too late for the world to build on it. Swap 5-3 and 5-5 so it is taught third.",
-  s:[["5-1","The Loveliest Place","sprint","→","Don't stop: he gets drowsy and sits; a tap or fruit wakes him",["drowsy"],"don't stop"],
+  s:[["5-1","The Loveliest Place","sprint","→","Don't stop: he gets drowsy and sits; a tap or a cold dew drip wakes him",["drowsy"],"don't stop"],
      ["5-2","Don't Sit","stealth","→","Keep moving and stay hidden: cover moves with the breeze; here, freezing doesn't hide him",["drowsy","still"]],
      ["5-3","Caught in Silk","rescue","→","The vine leash: freed creatures tie on; tie off to a post",["leash","follow"],"lead on a vine",0,1],
      ["5-4","Silk Bridges","vine_runner","→","Sticky webs slow you",["swing"]],
@@ -219,7 +220,7 @@ const W=[
      ["5-7","Don't Touch the Silk","stealth","→","Touch a humming thread and the spiders wake",["still","noise"],"humming silk"],
      ["5-8","Up the Bloom Trees","ascent","↑","The leash on a climb: tie off, climb, untie",["dir","leash"]],
      ["5-9","The Queen's Garden","gauntlet","→","The clock, silk and the leash together",["clock","leash"]]]},
- {n:"Deep Mangrove",act:"Act II",move:"Swim and dive",tempo:"Patience: wait for the tide",
+ {n:"Deep Mangrove",beat:'Loss: impatience costs a night, Dot leaves, and a small new light arrives (Flicker).',with:'Dot to 6-5, then Flicker (silent) from 6-6',act:"Act II",move:"Swim and dive",tempo:"Patience: wait for the tide",
   rules:["The tide raises and lowers the whole stage","Water is a place, not a pit","Food chain: lure hunters to what hunts them"],
   hidden:"The Sunken Hollow: dive to find it",boss:"Marsh Reaver",
   flag:"<b>Lead's proposal, pending the story keeper:</b> swimming arrives at 6-7 of 9. Teach swimming in 6-2 (cross the flat water and watch the ripples) and keep the deep dive for 6-7's root well.",
@@ -232,7 +233,7 @@ const W=[
      ["6-7","Through the Roots","vine_runner","↓","Dive down the root well; rising bubbles lift you",["dir","water","ride"],"dive"],
      ["6-8","Stilt Climb","ascent","↑","The tide rises under you",["dir","water"]],
      ["6-9","Blackwater","gauntlet","→","Swim, swing, tide and hunters together",["water","swing","lure"]]]},
- {n:"Ancient Ruins",act:"Act II",move:"Break and push: the punch breaks cracked stone",tempo:"Hurry",
+ {n:"Ancient Ruins",beat:'Alone: silence, ten chairs and an eleventh; the photograph shows who the General is.',with:'Flicker (silent): Pokey is alone; help steps grow without words',act:"Act II",move:"Break and push: the punch breaks cracked stone",tempo:"Hurry",
   rules:["Floors fall away","The temple is a machine: switches, timed doors, a find that changes the room","Alone: no Dot"],
   hidden:"Under the Ruins (plus Thornbark, built)",boss:"Stone Idol Golem",
   flag:"<b>Lead's proposal, pending the story keeper:</b> breaking stone arrives at 7-5. Swap 7-2 and 7-5 so it's taught second.",
@@ -245,7 +246,7 @@ const W=[
      ["7-7","The Photograph","relic_hunt","→","Timed stone doors and seed-key gates",["clock","machine"],"timed doors"],
      ["7-8","The Upper Temple","ascent","↑","Push blocks into steps; break the ceiling from below",["dir","break"]],
      ["7-9","The Golem's Hall","gauntlet","→","Falling floors, doors and sentries together",["crumble","clock","break"]]]},
- {n:"Twilight Treetops",act:"Act III · The Iron Road",move:"Swing and fling",tempo:"Patience",
+ {n:"Twilight Treetops",beat:'Reunion: Dot comes back; light in the dark; friends together.',with:'Dot is back',act:"Act III · The Iron Road",move:"Swing and fling",tempo:"Patience",
   rules:["Night: you carry your light, the jar","Things are there only when lit","Swing chains with no ground"],
   hidden:"The Moth Lights: lead a swarm that lights the way",boss:"Night-Wing Monarch",
   s:[["8-1","As the Light Goes","sprint","→","Dusk to dark across the stage",["dark"]],
@@ -257,7 +258,7 @@ const W=[
      ["8-7","The Tallest Tree","ascent","↑","Climb with the jar; glowing flowers refill it",["dir","dark"]],
      ["8-8","Night Hunters","purge","→","Lure the hunters into the owl's light; mimic bushes blink first",["lure","dark","still"]],
      ["8-9","Monarch's Wood","gauntlet","→","Dark, fling and lit-only branches",["dark","fling"]]]},
- {n:"Volcanic Jungle",act:"Act III",move:"Hot-air ride: open the leaf over a vent",tempo:"Hurry",
+ {n:"Volcanic Jungle",beat:"Resolve: Dot's slip, a lonely Drake, Pell wants to be found; the night before the mountain.",with:'Dot',act:"Act III",move:"Hot-air ride: open the leaf over a vent",tempo:"Hurry",
   rules:["Heat: hot rock warms you; shade cools you","Lava","The Drake's gaze sweeps and remembers you"],
   hidden:"Up the Vent: a long ride up a vent shaft",boss:"Magma Drake",
   flag:"<b>Lead's proposal, pending the story keeper:</b> the vent ride arrives at 9-5. Swap 9-2 and 9-5: ride the vents early, and the rising lava later becomes an escape on them.",
@@ -270,7 +271,7 @@ const W=[
      ["9-7","Lava Steps","ascent","↑","Crust floors harden and melt on a beat",["dir","clock"],"crust floors"],
      ["9-8","Pell's Thread","relic_hunt","→","Follow the thread up and down through the vents",["ride"]],
      ["9-9","The Drake's Hoard","gauntlet","→","Heat, lava and vents together; the rising-lava arena",["heat","ride"]]]},
- {n:"Stormy Highlands",act:"Act III",move:"Hold on: freeze on the flash",tempo:"Patience",
+ {n:"Stormy Highlands",beat:"Holding on, then letting go: Dot's confession, the storm, and Pokey holds out his hand to the General.",with:'Flicker (silent) 10-1 to 10-5, Dot again from 10-6',act:"Act III",move:"Hold on: freeze on the flash",tempo:"Patience",
   rules:["Lightning on a beat","Thunder gusts tear you off unless you hold","Every move from Worlds 1 to 9, three and four at once"],
   hidden:"Pokey's Own Road: pick a card at each totem",boss:"General Iron-Claw: the fight ends with Pokey letting go of one hand and holding it out",
   s:[["10-1","The Door Made for Him","sprint","→","A quiet stage: a breath before the end",[]],
@@ -294,7 +295,7 @@ W.forEach((w,i)=>{
   const tiles=w.s.map(s=>{
     const tags=new Set(s[5]);if(DIRT[s[3]])tags.add("dir");
     return `<div class="st${s[8]?" moved":""}">${s[7]?'<span class="done">LIVE</span>':""}<div class="id">${s[0]} <span style="font-weight:400">${s[3]}</span></div><div class="nm">${s[1]}</div><div class="meta">${s[2].replace("_"," ")}</div><div class="tw">${s[4]}</div>${s[6]?`<span class="teach">Teaches: ${s[6]}</span>`:""}<div class="tags">${[...tags].map(t=>`<span class="tag">${PIECES[t].n}</span>`).join("")}</div></div>`}).join("");
-  wEl.insertAdjacentHTML("beforeend",`<article class="world" id="w${i+1}"><div class="world-top"><div><div class="act">World ${i+1} · ${w.act}</div><h3>${w.n}</h3><span class="move">New move: ${w.move}</span></div><div class="tempo">${w.tempo}</div></div><ul class="rules">${w.rules.map(r=>`<li>${r}</li>`).join("")}</ul>${w.beat?`<p class="beat">${w.beat}</p>`:""}${w.flag?`<div class="flag">${w.flag}</div>`:""}<div class="stages">${tiles}</div><div class="extras"><div class="extra"><b>Hidden stage</b><br>${w.hidden}</div><div class="extra"><b>Guardian</b><br>${w.boss}</div></div></article>`);
+  wEl.insertAdjacentHTML("beforeend",`<article class="world" id="w${i+1}"><div class="world-top"><div><div class="act">World ${i+1} · ${w.act}</div><h3>${w.n}</h3><span class="move">New move: ${w.move}</span></div><div class="tempo">${w.tempo}</div></div><ul class="rules">${w.rules.map(r=>`<li>${r}</li>`).join("")}</ul>${w.beat?`<p class="beat">${w.beat}</p>`:""}${w.with?`<p class="with"><b>With Pokey:</b> ${w.with}</p>`:""}${w.flag?`<div class="flag">${w.flag}</div>`:""}<div class="stages">${tiles}</div><div class="extras"><div class="extra"><b>Hidden stage</b><br>${w.hidden}</div><div class="extra"><b>Guardian</b><br>${w.boss}</div></div></article>`);
 });
 // pieces
 document.getElementById("legend").innerHTML=Object.values(STATUS).map(s=>`<span><i style="background:var(${s.c})"></i>${s.label}</span>`).join("");

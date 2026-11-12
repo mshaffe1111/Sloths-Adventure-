@@ -171,3 +171,15 @@ ride (World 2, World 6); the rising-lava arena for guardians.
   then World 10's hidden stage built around it); if not, it stays in World 10's hidden stage. Replaces Q6's "World 10 first".
 - **Frogger lanes:** World 2's headline (B3); 1-8 gets a first taste with rolling nuts at two heights.
 - **Retro sources:** the arcade list is the best mine for tweaks on pieces we already build; every one is our own rainforest version.
+
+## 8. The story keeper's order review (11-11 8:01 PM ET), applied
+- Who is with Pokey (also the help ladder's speaker, A11): Dot 1-1 to 6-5, 8-1 to 9-9, 10-6 to 10-9; Flicker (silent) 6-6 to 7-9 and 10-1 to 10-5.
+- World 5: drowsy Pokey is woken by touch (a cold dew drip, or brushing one of Meeca's carvings), never by food (Dot's sanctuary rule "Don't eat anything"). Replaces §6's "fruit wakes him" (80s #24).
+- 1-5's card-road test uses the squirrels' hand-painted signs (THIS WAY / THAT WAY), never floating cards.
+- World 2's ridden caimans are SLEEPING caimans crossed quietly (stillness and noise); never friends of Crocus Rex. Replaces §6's "creatures you ride" for World 2.
+- 1-4: ripe fruit falls naturally; thrown fruit belongs to World 4's capuchins.
+- 1-9 and every food-chain stage: hunters are chased off or flee; never look carried off or eaten.
+- Stillness never in a World 6 rescue or follower moment; in World 7 the help steps grow without words.
+- stagePlan lines to update with the twists (the story keeper writes the final words): 1-3, 1-7, 3-2, 1-8.
+- Each world's emotional beat is on the map (reference/plans/WORLD-MAP.html).
+- Pending: the story keeper's yes/no on the four order swaps (W5, W6, W7, W9).
