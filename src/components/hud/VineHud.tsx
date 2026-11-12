@@ -48,6 +48,8 @@ export interface VineHudProps {
   lives?: number;
   /** where Pokey is on the screen (CSS px): a pickup flies from here into the counter */
   heroPoint?: () => { x: number; y: number } | null;
+  /** the stage's own animal, for a purge's goal card (engine.ts goalCreature) */
+  goalCreature?: () => string | undefined;
   /** a new number each time the stage (re)starts */
   runKey?: number;
 }
@@ -96,8 +98,10 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
   const meeca = levelConfig.id === MEECA_STAGE_ID;
   // (the count the engine sends wins over the stage's planned one: an easier layout can ask for a different number)
   const info = React.useMemo(
-    () => goalInfo({ ...levelConfig, targetCount: targetObjectiveCount || levelConfig.targetCount }, dotStage),
-    [levelConfig, dotStage, targetObjectiveCount],
+    () => goalInfo({ ...levelConfig, targetCount: targetObjectiveCount || levelConfig.targetCount }, dotStage, props.goalCreature?.()),
+    // (the stage's animal: its own data, once the engine has the stage, engine.ts goalCreature)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [levelConfig, dotStage, targetObjectiveCount, props.runKey],
   );
   const target = info.kind === 'count' ? targetObjectiveCount : 0;
   // (App sends 0 until the engine has counted what the stage holds; the plan's number can be wrong, 2-3 planned 3 of 5 cages: the goal
