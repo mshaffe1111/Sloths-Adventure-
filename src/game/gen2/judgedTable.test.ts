@@ -17,7 +17,7 @@ import { provenSeeds } from './seedList.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import type { Platform } from '../types.ts';
 
-const FIX = '1-3';
+const FIX = '1-4';
 /** a planted roll of `stageId` with one single-jump gap of `gap` px */
 const planted = (stageId: string, gap: number): Judged11 =>
   ({ stageId, setting: 'normal', policy: 'per-gap', drops: [], asks: [{ section: 's1', kind: 'single-gap', x0: 400, x1: 400 + gap, figure: gap, move: 'single-flick', headroom: 9999 }], routeGaps: [] }) as Judged11;
