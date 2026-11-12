@@ -1802,7 +1802,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       for (const g of L.gaps) {
         const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
         gaps.push(g0);
-        if (g.hurt) {
+        // (or by the stage's brief, GraphBrief.pits: every section pit past the row's clearStart, with no mark on the section)
+        const byBrief = M.graphs?.briefs?.[budget.id]?.pits === 'hurt' && !!g.pit && !g.water && !g.putBack && !g.back && g0.x0 >= SPAWN_X + (M.hurtFloor?.clearStart ?? 0);
+        if (g.hurt || byBrief) {
           // (a hollow, a place marked `hurt`: the world's hurt floor, ONE marked piece at its row's depth under the lower lip, wall to wall,
           // no steps out, the banks either side reaching down to it; the zone over it, lip to lip, carries the floor's top as its hurt line.
           // Normal: a heart. Easy: soft. The depth is picked off the gap's x, so the roll's stream is the same with or without the mark)
@@ -1975,6 +1977,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       for (const g of gaps) g.y += down;
       for (const k of asks) { k.yTake += down; k.yLand += down; }
       for (const z of zones) { z.top += down; z.bottom += down; z.baseY += down; for (const l of z.lights ?? []) l.y += down; }
+      // (a hollow's hurt line is its floor's top: it moves with the floor (found on 1-1's sections, briefPits.test.ts: the line stood
+      // `down` px over the floor on every rolled stage, which is every World 1 stage))
+      for (const z of heartFalls) if (z.y !== undefined) z.y += down;
       for (const q of sections) {
         q.entry.y += down;
         q.exit.y += down;
