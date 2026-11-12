@@ -32,6 +32,9 @@ writes P13 (Opus high, from W1C's head): fly 1-3 with the bots both settings (co
 own JUDGED rows + the real 120-roll number, 1-3 seed list, funcheck, 2-min length, first-appearance taught; stop ~4:30 PM.
 Tonight's chain: P13 + ART-W1 (4:30) -> INT-2 merges W1C, P13, ART-W1 (~5:30) -> full gate (~6:30) -> stills to Matt (~6:30-7) -> test link ~9 PM.
 R-165.141 (Matt: snake always glides away) with W1C. No noise teach in 1-3 (map); noise must not wake creatures untaught.
+12:00 PM: AF retired (t-audit-fixes@98149355, all 5 fixed, $9.72). INT-2 step 1 = t-int-2@168b9309; now merging t-12-fly + t-audit-fixes
++ the lead branch. yield.test.ts:62 RED (11/30, floor 12) from P11's verdicts -> Y2 packet (reference/packets/2026-11-12/Y2-YIELD.md)
+starts from INT-2's next head; then PROOF-1 delta re-audit (AF + INT-2).
 NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes + t-pit-polish + t-audit-fixes (+ t-12-fly), renumber the
   duplicate R-165.129, full gate; (2) PROOF-1 re-audits only the delta; (3) ask Matt ONE question: ship the R-165.125 sound levels or hold
   (D47), then 0.9.7 on his word (PR, he merges, check deploy + APK); (4) 1-2 and 1-3 to Matt's test link by Fri 11-13 (1-3 by Fable/W1C,
