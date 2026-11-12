@@ -22,7 +22,7 @@ const P = (id: number, x: number, y: number, width: number, height = 300): Platf
 /** a clean 1-1 built stage: one floor, a teach node, and after it a 260 px gap with ground 200 px under it (only the double crosses) */
 const builtClean = () => ({
   platforms: [P(1, 0, G, 1000), P(2, 1260, G, 1000), P(3, 1000, G + 200, 260)],
-  config: { levelHeight: 2000 }, gen2: { nodes: [{ token: 'Tg2>', x0: 0 }] },
+  config: { levelHeight: 2000 }, gen2: { nodes: [{ token: 'Tg2>', x0: 0 }], brief: { teaches: ['double'] } }, // (its brief teaches the double, as 1-1's: the double's promises run by the brief)
 });
 type Ask = JudgedStage['asks'][number];
 const ask = (kind: SectionKind, figure: number, over: Partial<Ask> = {}): Ask =>
@@ -54,7 +54,7 @@ test('ALL_VERDICTS is the union, in order, read off verdicts.types.ts', () => {
   const src = fs.readFileSync(new URL('./verdicts.types.ts', import.meta.url), 'utf8');
   const union = [...src.slice(src.indexOf('export type VerdictName'), src.indexOf('export interface Measure')).matchAll(/\| '([a-z0-9.-]+)'/g)].map((m) => m[1]);
   assert.deepEqual([...ALL_VERDICTS], union);
-  assert.equal(union.length, 16);
+  assert.equal(union.length, 17);
 });
 
 test('arc.single-gap-over: Easy 140 px is past a flick from 70 px (132); Normal 150 past the 143 band rule', (t) => {
@@ -116,6 +116,16 @@ test('teach.double-no-gap-after and teach.double-gap-unsafe (Normal only, by the
   const easy = roll('easy', { built: { ...b, platforms: [P(1, 0, G, 1000), P(2, 1200, G, 1000), P(3, 1000, G + 200, 200)] } });
   assert.ok(!names(easy).includes('teach.double-no-gap-after') && easy.notJudged.includes('teach.double-no-gap-after'), 'Easy: stated, not judged');
 });
+test("hazard.untaught: a hurt drop before the end of its lesson's showing piece (both settings); after it, clean (the whole rule: hurtFloor.test.ts)", (t) => {
+  // (the gap at 1000..1260 as a hollow with a hurt floor, a heart drop with its own look; packet E12 item 2)
+  const hollow = { x0: 1000, x1: 1260, lipY: G, ends: { kind: 'heart', to: 'take-off' }, look: 'hurt-art' } as unknown as Drop;
+  const b = builtClean();
+  const at = (shown: number) => ({ drops: [hollow], built: { ...b, spawnX: 0, gen2: { ...b.gen2, hurt: { lesson: 'spikes', clearStart: 900, shown } } } });
+  for (const s of ['normal', 'easy'] as const) {
+    planted('hazard.untaught', s, at(1100), t);
+    assert.deepEqual(names(roll(s, at(1000))), [], `${s}: shown first, the roll is clean`);
+  }
+});
 test('first-run.drift: the fixed layout built against its recorded lock', (t) => {
   const layout = { seed: 7, lock: { normal: 'aaa', easy: 'bbb' } };
   assert.deepEqual(firstRunVerdicts(layout, { normal: 'aaa', easy: 'bbb' }), []);
@@ -148,7 +158,7 @@ test('the verdict path holds no closed-form figure: reach.ts and verdicts.ts nam
   assert.equal(riseCap(true, 0.95, b('easy')), 132);
   assert.equal(riseCap(true, 0.95, b('easy'), true), 128);
   assert.equal(riseCap(false, 0.9, b('normal')), 80);
-  assert.equal(gapEnvelope(true, 'easy'), 287, 'Easy has no double gap band: the flick from 70 px; band.out refuses it');
+  assert.equal(gapEnvelope(true, 'easy', '1-1'), 287, 'Easy has no double gap band: the flick from 70 px; band.out refuses it');
   assert.equal(riseEnvelope(true, 'normal'), (BANDS['double-teach-rise'].normal as { hi: number }).hi);
   // (outside 1-1: the closed form, exactly)
   for (const dy of [-120, -40, 0, 30, 90]) for (const dbl of [false, true]) {
@@ -158,9 +168,9 @@ test('the verdict path holds no closed-form figure: reach.ts and verdicts.ts nam
   // (levelCheck's jumpOK with the arcs: a 240 px level gap one jump at its best crosses, which the closed form says it can't)
   const a = P(1, 0, G, 300), c = P(2, 540, G, 300);
   assert.equal(jumpOK(a, c, false).ok, false);
-  assert.equal(jumpOK(a, c, false, lesserArcs('normal')).ok, true);
-  assert.equal(jumpOK(a, P(2, 600, G, 300), true, linkArcs('normal')).ok, false, 'a 300 px gap: past the double flick from 70 px, 283');
-  assert.equal(jumpOK(a, P(2, 560, G, 300), true, linkArcs('normal')).ok, true, 'a 260 px gap: the double flick crosses');
+  assert.equal(jumpOK(a, c, false, lesserArcs('normal', '1-1')).ok, true);
+  assert.equal(jumpOK(a, P(2, 600, G, 300), true, linkArcs('normal', '1-1')).ok, false, 'a 300 px gap: past the double flick from 70 px, 283');
+  assert.equal(jumpOK(a, P(2, 560, G, 300), true, linkArcs('normal', '1-1')).ok, true, 'a 260 px gap: the double flick crosses');
 });
 
 // (main's 0.9.5 build of these, layout 1, hashed on origin/main@181d2846 before E0's first change: platforms, falls, errors and plan;
@@ -245,7 +255,10 @@ test('1-1\'s finish reach (stageGenerator finishReach): the far bank of a 256 px
     platforms: [P(1, 0, G, 600), P(2, 856, G, 700)],
     collectibles: [{ id: 1, x: 1200, y: G - 40, type: 'flower', collected: false }],
     spawnX: 100, spawnY: G, exitTotemX: 1450, exitTotemY: G,
+    // (a stage gen2 built carries its gen2 record: the arcs judge a BUILT stage, never an id alone, reach.ts builtOnArcs)
+    gen2: { budget: { difficulty: 'normal' } },
   } as unknown as GeneratedStage;
+  assert.ok(!finishReach({ ...st, gen2: undefined } as unknown as GeneratedStage, 'normal').includes(2), "1-1's id on a stage gen2 did not build: the closed form");
   for (const d of ['normal', 'easy'] as const) {
     const ids = finishReach(st, d);
     assert.ok(ids.includes(2), `${d}: the far bank is reached (${ids})`);

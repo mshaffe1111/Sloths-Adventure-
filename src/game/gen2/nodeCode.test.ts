@@ -54,3 +54,18 @@ test('a string that is not the code fails to read, naming the token', () => {
   assert.throws(() => parseCode('A F[P E'), /unclosed/);
   assert.throws(() => parseCode('A F[P] E'), /two roads/);
 });
+
+test('V3 reads the earlier lessons (packet E12 item 5): a move an earlier stage taught is taught; without it the same code is refused', () => {
+  // (planted: 1-2's shape, a double and a bounce with no teach of them in the stage; red before `known` existed, as every 1-2 roll was)
+  const code = parseCode('A Tb Pg1 R Xc2 R Sb E');
+  const v3 = (known?: string[]) => checkCode(code, known ? { known } : {}).filter((e) => e.startsWith('V3'));
+  assert.equal(v3().length, 1, 'with no earlier lesson the double before its teach is refused');
+  assert.match(v3()[0], /uses the double before its teach/);
+  assert.deepEqual(v3(['double']), []);
+  const bounce = parseCode('A Tg1 Pb R Xg1 R Sb E');
+  const b3 = (known?: string[]) => checkCode(bounce, known ? { known } : {}).filter((e) => e.startsWith('V3'));
+  assert.match(b3()[0], /bounces before the bounce is taught/);
+  assert.deepEqual(b3(['bounce']), []);
+  assert.equal(b3(['double']).length, b3().length, 'the double taught earlier does not teach the bounce');
+  assert.equal(b3().length, 2, 'the practise and the signature both bounce');
+});

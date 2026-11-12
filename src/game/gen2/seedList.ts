@@ -163,6 +163,14 @@ export function plantSeedListSource(stageId: string, src: SeedListSource | null)
   };
 }
 
+/** tests (listed.ts withTestStage): a fixture stage's list put in memory at once, as if loaded (its source planted too, so the stage
+ *  has a list); returns the undo, plantSeedListSource's */
+export function plantSeedList(stageId: string, l: PackedList): () => void {
+  const undo = plantSeedListSource(stageId, () => Promise.resolve({ LIST: l }));
+  lists.set(stageId, l);
+  return undo;
+}
+
 /**
  * Node only (the tests and the tools run the game's code with no page and nothing to fetch): read the stage's list file on the spot.
  * A page never comes here (no Node `process`): there the list arrives by loadSeedList alone. Returns the list, or undefined
@@ -250,13 +258,14 @@ export function stageParts(st: Gen2Stage): Record<string, string> {
  * Every way a stage's seed list breaks the rule, by name: too short, a repeat, a seed that no longer lays cleanly on a setting, or a seed
  * whose replayed plan is not its full search's stage (`plans`: the packed list's plans, checked when given)
  */
-export function seedListBreaches(config: LevelConfig, kit: () => WorldKit, seeds: readonly number[], min = SEED_LIST_MIN, plans?: { dict: readonly string[]; plans: readonly string[] }): string[] {
+export function seedListBreaches(config: LevelConfig, kit: () => WorldKit, seeds: readonly number[], min = SEED_LIST_MIN, plans?: { dict: readonly string[]; plans: readonly string[] }, also?: BuildRequest['also']): string[] {
   const out: string[] = [];
   if (seeds.length < min) out.push(`${config.id}: ${seeds.length} proven seeds, under ${min}`);
   if (new Set(seeds).size !== seeds.length) out.push(`${config.id}: a seed is listed twice`);
   seeds.forEach((seed, i) => {
     for (const difficulty of ['normal', 'easy'] as const) {
-      const full = buildGen2Stage({ config, kit: kit(), seed, difficulty });
+      // (`also`: the rules the list was built under beyond the pipeline's own, so the search here is the search that listed the seed)
+      const full = buildGen2Stage({ config, kit: kit(), seed, difficulty, ...(also ? { also } : {}) });
       // (R-165.61: the roll's verdict on this setting, by name: 1-1's arcs, drops and its promises, judged by the pipeline from ONE registry,
       // promises11.ts PROMISES_11, whose `settings` say where each applies; no substring filter. A refused verdict is in `errors` too)
       const v = full.gen2.verdicts?.[difficulty];

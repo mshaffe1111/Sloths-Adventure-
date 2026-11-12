@@ -80,6 +80,9 @@ export interface LevelConfig {
   worldIndex: number; // 1-10
   miniIndex: number;  // 1-10
   id: string;         // e.g. "1-1"
+  /** (gen2) an earlier stage's lesson taught the double jump, so this stage's checks count it (levelCheck.ts doubleAllowed); set only by
+   *  pipeline.ts planBudget from the world's `lessons`, and only where the old rule (mission 6 on) does not already count it */
+  doubleTaught?: true;
   name: string;
   objectiveType: ObjectiveType;
   targetCount: number;
@@ -94,6 +97,8 @@ export interface LevelConfig {
   bestTime: number;
   /** a hidden bonus level that is not part of the 100 (see secret.ts) */
   secret?: 'thornbark';
+  /** which way the route leads (stageModes.ts); unset is 'right'. The engine reads travel only from here */
+  travel?: import('./stageKit.types.ts').Travel;
 }
 
 export interface PlayerState {
@@ -334,7 +339,9 @@ export interface Platform {
   soil?: boolean;
   /** World 1: a floorless gap beside this bank is a painted drop, a fall, not water (w1Pits.ts: a builder sets it on either bank; the mixer
    *  marks every bank) */
-  pit?: 'drop';
+  /** `'hurt'` (gen2): this piece is a hollow's hurt floor (WorldManifest.hurtFloor); the world's painter draws it, the engine never sets
+   *  him back on it */
+  pit?: 'drop' | 'hurt';
   /** a catch a builder lays under a gap (the mixer's 'catch' piece): a fall's floor, left with a hop */
   catch?: boolean;
   /** drawn as its own kind, never given another look for variety (platformPlan.ts planThin): a world whose painted kit draws its pieces,

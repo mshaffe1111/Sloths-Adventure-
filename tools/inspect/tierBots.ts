@@ -10,7 +10,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { firstTimer, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_MIDDLE, FT_MIDDLE_EASY, type FirstTimer } from './firsttimer.ts';
-import { RealPlay } from '../../src/game/realPlay.ts';
+import { RealPlay, levelConfig } from '../../src/game/realPlay.ts';
+import { MODES, reached, travelSpan } from '../../src/game/stageModes.ts';
+import type { StageMode } from '../../src/game/stageKit.types.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
 
 export type Tier = 'child' | 'middle' | 'expert';
@@ -44,11 +46,18 @@ export function piecesOf(stage: string, variant: number, setting: Setting): Arra
   const st = new RealPlay(stage, variant).stage as { gen2?: { sections?: Array<{ template: string; x0: number; x1: number }> } };
   return (st.gen2?.sections ?? []).map((s) => ({ id: s.template, x0: s.x0, x1: s.x1 }));
 }
-/** the piece at x: the last one starting at or before it (a join between two pieces belongs to the one before) */
-export function pieceAt(pieces: Array<{ id: string; x0: number }>, x: number): string | null {
-  let at: string | null = null;
-  for (const p of pieces) if (p.x0 <= x) at = p.id;
-  return at;
+type PieceSpan = { id: string; x0: number; x1?: number };
+/** where the travel enters a piece: its left end in a run to the right, its right end in a run to the left (stageModes.ts) */
+const entry = (p: PieceSpan, m: StageMode) => travelSpan(m, p.x0, p.x1 ?? p.x0).from;
+/** the piece at `on` (his place along the travel): the last one entered at or before it (a join between two pieces belongs to the later one) */
+export function pieceAt(pieces: PieceSpan[], on: number, m: StageMode = MODES.right): string | null {
+  let at: PieceSpan | null = null;
+  for (const p of pieces) if (reached(m, on, entry(p, m)) && (!at || reached(m, entry(p, m), entry(at, m)))) at = p;
+  return at ? at.id : null;
+}
+/** the pieces he entered, having got as far on as `far` along the travel */
+export function enteredPieces<P extends PieceSpan>(pieces: P[], far: number, m: StageMode = MODES.right): P[] {
+  return pieces.filter((p) => reached(m, far, entry(p, m)));
 }
 
 export function runTier(tier: Tier, setting: Setting, variant: number, stage = '1-1'): TierRun {
@@ -57,16 +66,18 @@ export function runTier(tier: Tier, setting: Setting, variant: number, stage = '
   const pieces = piecesOf(stage, variant, setting);
   // (the child tier's median finish is 444 s, over the first-timer's 360 s cap: a tier run has 20 minutes)
   const r = firstTimer(stage, variant, who, { cap: 1200 });
-  const maxX = r.maxX ?? r.x;
-  const entered = pieces.filter((p) => p.x0 <= maxX || r.end === 'shrine');
+  // (how far on is by the stage's travel; the pieces, his trace and his falls are placed by x, so a climb or a way down has no pieces
+  // to count until gen2 lays them with a span along the travel)
+  const m = MODES[levelConfig(stage).travel ?? 'right'];
+  const entered = r.end === 'shrine' ? pieces : enteredPieces(pieces, r.far ?? r.maxX ?? r.x, m);
   const tally = entered.map((p) => ({ id: p.id, lives: 0, putbacks: 0, seconds: 0 }));
   // (seconds in each piece: his place every 0.5 s, as the profiles' pieces.<id>.seconds count time in a section's slice)
   for (const x of r.xTrace ?? []) {
-    const row = tally.find((q) => q.id === pieceAt(pieces, x));
+    const row = tally.find((q) => q.id === pieceAt(pieces, x, m));
     if (row) row.seconds += 0.5;
   }
   const add = (x: number, k: 'lives' | 'putbacks') => {
-    const id = pieceAt(pieces, x);
+    const id = pieceAt(pieces, x, m);
     const row = tally.find((q) => q.id === id);
     if (row) row[k]++;
   };
@@ -75,7 +86,7 @@ export function runTier(tier: Tier, setting: Setting, variant: number, stage = '
   return {
     tier, setting, stage, variant, end: r.end, finishSeconds: r.end === 'shrine' ? r.time : null,
     lives: r.harms.filter((h) => h.kind === 'life').length, putbacks: r.softFalls ?? 0, rescues: r.rescues, secondPressMs: r.secondPressMs ?? [],
-    pieces: tally, stuck: r.stuck.map((s) => ({ x: s.x, t: s.t, piece: pieceAt(pieces, s.x), what: s.what, rescued: s.rescued })),
+    pieces: tally, stuck: r.stuck.map((s) => ({ x: s.x, t: s.t, piece: pieceAt(pieces, s.x, m), what: s.what, rescued: s.rescued })),
   };
 }
 

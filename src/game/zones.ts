@@ -17,6 +17,8 @@
  * a zone is doing at any moment.
  */
 
+import { cycle3 } from './clock.ts';
+
 export type ZoneKind = 'spore' | 'wind' | 'geyser' | 'bolt' | 'web' | 'tide' | 'dark' | 'crumble';
 
 export interface Zone {
@@ -84,11 +86,12 @@ export const isStatic = (z: Pick<Zone, 'kind'>) => z.kind === 'web' || z.kind ==
 export function zoneState(z: Zone, t: number): ZoneState {
   if (z.shut) return { phase: 'idle', u: 0, strength: 0, untilActive: Infinity };
   if (isStatic(z)) return { phase: 'active', u: 0, strength: 1, untilActive: 0 };
-  const s = (((t + z.offset) % z.period) + z.period) % z.period;
   const idle = idleTime(z);
-  if (s < idle) return { phase: 'idle', u: s / idle, strength: 0, untilActive: z.period - z.active - s };
-  if (s < idle + z.warn) return { phase: 'warn', u: (s - idle) / z.warn, strength: 0, untilActive: idle + z.warn - s };
-  const a = s - idle - z.warn;
+  // the one clock (clock.ts): idle, the warning, then active for the rest of the cycle
+  const k = cycle3(t, z.offset, z.period, idle, z.warn);
+  if (k.i === 0) return { phase: 'idle', u: k.c / idle, strength: 0, untilActive: z.period - z.active - k.c };
+  if (k.i === 1) return { phase: 'warn', u: k.s / z.warn, strength: 0, untilActive: idle + z.warn - k.c };
+  const a = k.s;
   const r = Math.min(ZONE_RAMP, z.active / 3);
   const ramp = Math.min(1, a / r, (z.active - a) / r);
   return { phase: 'active', u: a / z.active, strength: Math.max(0, ramp), untilActive: 0 };

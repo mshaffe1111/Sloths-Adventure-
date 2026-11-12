@@ -18,7 +18,9 @@ import { BODY_H, lesserArcs, linkArcs } from './reach.ts';
 import type { JudgedStage, PromiseDef, PromiseRegistry, Verdict } from './verdicts.types.ts';
 
 type Zone = { x0: number; x1: number; soft?: boolean };
-interface Built { platforms: Platform[]; heartFalls?: Zone[]; waterY?: number; config: { levelHeight: number }; gen2?: { nodes?: Array<{ token: string; x0: number }> } }
+/** the stage `promiseBreaches11` reads as (this file's direct reader is 1-1's own, by name); the REGISTRY names no stage */
+const ONE_ONE = '1-1';
+interface Built { platforms: Platform[]; heartFalls?: Zone[]; waterY?: number; config: { levelHeight: number }; spawnX?: number; gen2?: { nodes?: Array<{ token: string; x0: number }>; brief?: { teaches?: string[] }; hurt?: { lesson: string; clearStart: number; shown?: number } } }
 
 /** the narrowest slot he can fall into (the Critic, E0a attempt 2: seed 323 Normal's 23 px slot is no drop; his body is about 32 px) */
 export const BODY_W = { px: 32, source: 'the Critic, E0a attempt 2 (seed 323 Normal x27200..27273)' } as const;
@@ -55,8 +57,8 @@ export function floorlessGaps(st: Pick<Built, 'platforms' | 'heartFalls'>): Arra
 
 /** from `tip` on, the first gap within 1,500 px one jump at its best can't cross and a double flick can (reach.ts, flown, `setting`);
  *  safe: ground under it or a soft zone over it */
-export function doubleGap(platforms: Platform[], tip: number, death: number, zones: readonly Zone[] = [], setting: Difficulty = 'normal'): { a: Platform; b: Platform; safe: boolean } | undefined {
-  const lesser = lesserArcs(setting), taught = linkArcs(setting);
+export function doubleGap(platforms: Platform[], tip: number, death: number, zones: readonly Zone[] = [], setting: Difficulty, stageId: string): { a: Platform; b: Platform; safe: boolean } | undefined {
+  const lesser = lesserArcs(setting, stageId), taught = linkArcs(setting, stageId);
   const way: Platform[] = [];
   for (const p of platforms.filter((q) => q.type === 'solid' && q.x + q.width > tip).sort((a, b) => a.x - b.x)) {
     if (way.length && p.y > way[way.length - 1].y + 80) continue;
@@ -73,10 +75,10 @@ export function doubleGap(platforms: Platform[], tip: number, death: number, zon
 }
 
 /** the double-teach promise: its breach by name and line, or null when kept */
-export function doubleAfterTeach(st: Built, setting: Difficulty = 'normal'): { id: 'teach.double-no-gap-after' | 'teach.double-gap-unsafe'; line: string; x0: number; x1: number } | null {
+export function doubleAfterTeach(st: Built, setting: Difficulty, stageId: string): { id: 'teach.double-no-gap-after' | 'teach.double-gap-unsafe'; line: string; x0: number; x1: number } | null {
   const teach = (st.gen2?.nodes ?? []).find((n) => /^T\w*2/.test(n.token));
   if (!teach) return { id: 'teach.double-no-gap-after', line: 'no double teach node', x0: 0, x1: 0 };
-  const g = doubleGap(st.platforms, teach.x0, st.waterY ?? st.config.levelHeight, st.heartFalls ?? [], setting);
+  const g = doubleGap(st.platforms, teach.x0, st.waterY ?? st.config.levelHeight, st.heartFalls ?? [], setting, stageId);
   if (!g) return { id: 'teach.double-no-gap-after', line: `no gap only the second jump crosses within 1,500 px of the teach (x ${Math.round(teach.x0)})`, x0: Math.round(teach.x0), x1: Math.round(teach.x0 + 1500) };
   if (!g.safe) return { id: 'teach.double-gap-unsafe', line: `nothing under the double gap at ${Math.round(g.a.x + g.a.width)}`, x0: Math.round(g.a.x + g.a.width), x1: Math.round(g.b.x) };
   return null;
@@ -89,24 +91,42 @@ const builtOf = (st: JudgedStage): Built => {
   if (!b) throw new Error(`promises11: ${st.stageId} ${st.setting} was judged without its built stage`);
   return b;
 };
+// (packet E12 item 3: the double's promises run on a judged stage whose BRIEF teaches the double, GraphBrief.teaches; 1-1's does)
 const teachPromise = (id: 'teach.double-no-gap-after' | 'teach.double-gap-unsafe'): PromiseDef => ({
-  id, stages: ['1-1'], settings: ['normal'],
-  judge: (st) => { const d = doubleAfterTeach(builtOf(st), st.setting); return d && d.id === id ? [{ name: id, setting: st.setting, at: { x0: d.x0, x1: d.x1 }, line: d.line }] : []; },
+  id, stages: 'all', settings: ['normal'],
+  judge: (st) => { const d = builtOf(st).gen2?.brief?.teaches?.includes('double') ? doubleAfterTeach(builtOf(st), st.setting, st.stageId) : null; return d && d.id === id ? [{ name: id, setting: st.setting, at: { x0: d.x0, x1: d.x1 }, line: d.line }] : []; },
 });
 
-/** 1-1's promises, ONE definition for the pipeline's verdicts, the seed list and the tests (ADR-001 decision 8): Easy has no double gap
- *  (bands.md §2), so the double's promises are judged on Normal only, by `settings` */
+/** the judged stages' promises (1-1's first), ONE definition for the pipeline's verdicts, the seed list and the tests (ADR-001 decision
+ *  8): Easy has no double gap (bands.md §2), so the double's promises are judged on Normal only, by `settings`. Every judged stage
+ *  (reach.ts JUDGED: the pipeline judges no other) is held to `floor.unmarked` */
 export const PROMISES_11: PromiseRegistry = [
   {
-    id: 'floor.unmarked', stages: ['1-1'], settings: ['normal', 'easy'],
+    id: 'floor.unmarked', stages: 'all', settings: ['normal', 'easy'],
     judge: (st) => floorlessGaps(builtOf(st)).map(([x0, x1]): Verdict => ({ name: 'floor.unmarked', setting: st.setting, at: { x0: Math.round(x0), x1: Math.round(x1) }, line: `an unmarked floorless gap at x ${Math.round(x0)}..${Math.round(x1)}` })),
   },
   teachPromise('teach.double-no-gap-after'),
   teachPromise('teach.double-gap-unsafe'),
+  {
+    // (packet E12 item 2: a hurt floor is shown before it is asked. On the route no hurt drop starts before the END of its lesson's showing
+    // piece, and none within the row's clearStart of the spawn; the lesson's own first chain comes after `show` and passes)
+    id: 'hazard.untaught', stages: 'all', settings: ['normal', 'easy'],
+    judge: (st) => {
+      const b = builtOf(st), h = b.gen2?.hurt, spawn = b.spawnX ?? 0, out: Verdict[] = [];
+      for (const d of st.drops as ReadonlyArray<{ x0: number; x1: number; ends: { kind: string } }>) {
+        if (d.ends.kind !== 'heart') continue;
+        const near = !!h && d.x0 < spawn + h.clearStart, early = !h || h.shown === undefined || d.x0 < h.shown;
+        if (!near && !early) continue;
+        const at = { x0: Math.round(d.x0), x1: Math.round(d.x1) };
+        out.push({ name: 'hazard.untaught', setting: st.setting, at, line: `a hurt drop at x ${at.x0}..${at.x1} ${near ? `within ${h!.clearStart} px of the spawn (x ${Math.round(spawn)})` : `before the '${h?.lesson}' lesson has shown it (${h?.shown === undefined ? 'no showing piece is laid' : `its showing piece ends at x ${h.shown}`})`}` });
+      }
+      return out;
+    },
+  },
 ];
 
 /** every promise a roll breaks on `setting`, by its line (empty: kept), from the registry: the ones not judged there are skipped */
 export function promiseBreaches11(st: Built, setting: Difficulty = 'normal'): string[] {
-  const js = { stageId: '1-1', setting, policy: 'no-lethal', drops: [], asks: [], built: st } as unknown as JudgedStage;
+  const js = { stageId: ONE_ONE, setting, policy: 'no-lethal', drops: [], asks: [], built: st } as unknown as JudgedStage;
   return PROMISES_11.filter((p) => p.settings.includes(setting)).flatMap((p) => p.judge(js).map((v) => v.line));
 }

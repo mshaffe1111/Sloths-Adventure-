@@ -15,6 +15,8 @@
  * The words are the story keeper's (reference/specs/help-lines.md), word for word.
  */
 import { PHYS } from './physics.ts';
+import { MODES, travelSpan } from './stageModes.ts';
+import type { Mark, StageMode, TravelSpan } from './stageKit.types.ts';
 
 export type Setting = 'easy' | 'normal';
 export type Rung = 'move' | 'pad' | 'step' | 'offer' | 'reask';
@@ -113,8 +115,8 @@ export class HelpLadder {
   private counts = new Map<string, Count>();
   /** the piece the latest put-back counted for, until he stands beyond it (the pad's full jump is for it) */
   private active: Piece | null = null;
-  /** the least x1 of the pieces with a count: standing at or past it resets that piece (one compare a grounded frame) */
-  private beyond = Infinity;
+  /** the far end of the first piece with a count along the travel: standing at or past it resets that piece (one compare a grounded frame) */
+  private beyond: TravelSpan | null = null;
 
   constructor(
     readonly setting: Setting,
@@ -123,7 +125,14 @@ export class HelpLadder {
     private readonly r: Rungs = RUNGS,
     /** whether anything can grow at a piece: where nothing can, Dot never promises a step (no step rung, no offer, no re-ask) */
     private readonly canGrow: (p: Piece) => boolean = () => true,
+    /** which way the stage travels: "past a piece" is past its far end that way (stageModes.ts) */
+    private readonly mode: StageMode = MODES.right,
   ) {}
+
+  /** `sp` unless `b` is a counted stretch he reaches the end of first */
+  private nearer(b: TravelSpan | null, sp: TravelSpan): TravelSpan {
+    return b && this.mode.past({ x: sp.to, y: sp.to }, b) ? b : sp;
+  }
 
   /** the piece at world x (the last one whose span holds it), or null at a seam */
   pieceAt(x: number): Piece | null {
@@ -144,7 +153,7 @@ export class HelpLadder {
     if (!c) this.counts.set(piece.k, (c = { n: 0, fired: new Set(), noAt: -1, noes: 0, asking: false, again: null }));
     c.n++;
     this.active = piece;
-    this.beyond = Math.min(this.beyond, piece.x1);
+    this.beyond = this.nearer(this.beyond, travelSpan(this.mode, piece.x0, piece.x1));
     const out: HelpAct[] = [];
     const fire = (rung: Rung) => {
       if (c!.fired.has(rung)) return;
@@ -193,16 +202,17 @@ export class HelpLadder {
     c.again = rung;
   }
 
-  /** he stands at world x (only called on a grounded frame): past a counted piece, its count resets */
-  stood(x: number): void {
-    if (x < this.beyond) return;
-    let least = Infinity;
+  /** he stands here (only called on a grounded frame): past a counted piece along the travel, its count resets */
+  stood(at: Mark): void {
+    if (!this.beyond || !this.mode.past(at, this.beyond)) return;
+    let least: TravelSpan | null = null;
     for (const [k, c] of this.counts) {
       const p = this.pieces.find((q) => q.k === k)!;
-      if (x >= p.x1) {
+      const sp = travelSpan(this.mode, p.x0, p.x1);
+      if (this.mode.past(at, sp)) {
         c.n = 0;
         if (this.active?.k === k) this.active = null;
-      } else if (c.n > 0) least = Math.min(least, p.x1);
+      } else if (c.n > 0) least = this.nearer(least, sp);
     }
     this.beyond = least;
   }
@@ -217,7 +227,7 @@ export class HelpLadder {
   end(): void {
     this.counts.clear();
     this.active = null;
-    this.beyond = Infinity;
+    this.beyond = null;
   }
 }
 

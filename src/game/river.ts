@@ -10,6 +10,8 @@
  */
 
 /** the motion of one log (stored on its platform) */
+import { cyclePos } from './clock.ts';
+
 export interface DriftInfo {
   /** the river window: a log travels from under one bank to under the other */
   x0: number;
@@ -82,7 +84,7 @@ export const driftCycle = (d: DriftInfo) => (d.x1 - d.x0 + d.width) / d.speed;
 /** where a log's left edge is at game time `t` */
 export function driftX(d: DriftInfo, t: number): number {
   const T = driftCycle(d);
-  const u = (((t + d.offset) % T) + T) % T;
+  const u = cyclePos(t, d.offset, T);
   const travelled = u * d.speed;
   return d.dir === 1 ? d.x0 - d.width + travelled : d.x1 - travelled;
 }
@@ -90,7 +92,7 @@ export function driftX(d: DriftInfo, t: number): number {
 /** how far the log has crossed, 0 (just out from under its bank) to 1 (about to slide under the far one) */
 export function driftProgress(d: DriftInfo, t: number): number {
   const T = driftCycle(d);
-  return ((((t + d.offset) % T) + T) % T) / T;
+  return cyclePos(t, d.offset, T) / T;
 }
 
 /** how the log sits relative to the water: how deep its middle is below the surface */

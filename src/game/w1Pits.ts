@@ -24,8 +24,18 @@ const URL_OF = {
   lip: new URL('../assets/props/pits/w1-lip.webp', import.meta.url).href,
   bed: new URL('../assets/props/pits/w1-bed.webp', import.meta.url).href,
 } as const;
-type Pic = keyof typeof URL_OF;
+/**
+ * the thorn bed's pictures: World 1's hurt floor (gen2 WorldManifest.hurtFloor, art family 'w1-thorn'), the art director's cut brambles
+ * (catalog rows w1-thorn-bramble-long and w1-thorn-bramble-b, slot other/proto.thorns). Loaded only for a stage that lays a hurt floor
+ */
+const THORN_URL = {
+  thornLong: new URL('../assets/props/pits/w1-thorn-long.webp', import.meta.url).href,
+  thornLow: new URL('../assets/props/pits/w1-thorn-low.webp', import.meta.url).href,
+} as const;
+const URL_ALL = { ...URL_OF, ...THORN_URL } as const;
+type Pic = keyof typeof URL_ALL;
 export const W1_PIT_URLS: readonly string[] = Object.values(URL_OF);
+export const W1_THORN_URLS: readonly string[] = Object.values(THORN_URL);
 
 const imgs = new Map<Pic, { img: HTMLImageElement | null; ready: boolean }>();
 function pic(k: Pic): HTMLImageElement | null {
@@ -35,7 +45,7 @@ function pic(k: Pic): HTMLImageElement | null {
     const im = new Image();
     const sh = s;
     sh.img = im;
-    trackAtlas(im, URL_OF[k], () => { sh.ready = true; }, () => { sh.img = null; });
+    trackAtlas(im, URL_ALL[k], () => { sh.ready = true; }, () => { sh.img = null; });
   }
   return s.ready ? s.img : null;
 }
@@ -43,6 +53,12 @@ function pic(k: Pic): HTMLImageElement | null {
 export function w1PitsReady(): boolean {
   let all = true;
   for (const k of Object.keys(URL_OF) as Pic[]) if (!pic(k)) all = false;
+  return all;
+}
+/** start the thorn bed's pictures loading; true once they are in (asked for only by a stage with a hurt floor) */
+export function w1ThornsReady(): boolean {
+  let all = true;
+  for (const k of Object.keys(THORN_URL) as Pic[]) if (!pic(k)) all = false;
   return all;
 }
 
@@ -70,7 +86,7 @@ export const DROP_DARK = 200;
  * drop beside a log, a stone slab or a branch, or with ground standing in it, is open air: nothing is painted there (Matt's stills
  * 0224-0228: a black column hung down through the air under floating logs and slabs, and a dark box stood behind the bank he was on)
  */
-export interface PitGap { x0: number; x1: number; top: number; kind: 'fall' | 'soft'; floor?: number; lipL: boolean; lipR: boolean; steps?: Array<[number, number, number, number, boolean]>; drop?: boolean; walls?: [number, number] }
+export interface PitGap { x0: number; x1: number; top: number; kind: 'fall' | 'soft' | 'hurt'; floor?: number; lipL: boolean; lipR: boolean; steps?: Array<[number, number, number, number, boolean]>; drop?: boolean; walls?: [number, number] }
 
 const floorish = (q: Platform) => !q.broken && q.type !== 'bouncy' && q.type !== 'fragile' && q.type !== 'drift' && q.type !== 'moving';
 /**
@@ -98,6 +114,29 @@ function pitWalls(platforms: readonly Platform[], x0: number, x1: number, top: n
  * 1-8's long branch has no ground: its gaps are the holes between the chase's sections (and the branches beside them), all falls.
  */
 export function findW1Pits(platforms: readonly Platform[]): PitGap[] {
+  const base = findOpenPits(platforms);
+  const hurt = hurtPits(platforms);
+  return hurt.length ? [...base.filter((g) => !hurt.some((h) => h.x0 < g.x1 && h.x1 > g.x0)), ...hurt].sort((a, b) => a.x0 - b.x0) : base;
+}
+/**
+ * a hollow: a gap with the world's hurt floor on its bottom (a piece gen2 marks `pit: 'hurt'`, wall to wall between two banks that reach
+ * down to it). `kind: 'hurt'`, `floor` the hurt floor's top, `walls` the two lips' tops (the left, the right), `top` the LOWER lip: the
+ * pit's dark inside begins there, and the thorn bed lies on the floor. Read off the marked piece, at any height (never the ground line)
+ */
+function hurtPits(platforms: readonly Platform[]): PitGap[] {
+  const out: PitGap[] = [];
+  for (const f of platforms) {
+    if (f.pit !== 'hurt' || f.broken) continue;
+    const x0 = f.x, x1 = f.x + f.width;
+    const lipOf = (edge: (q: Platform) => number) => platforms.filter((q) => q !== f && floorish(q) && Math.abs(edge(q)) < 3 && q.y < f.y && q.y + q.height >= f.y).sort((a, b) => a.y - b.y)[0];
+    const l = lipOf((q) => q.x + q.width - x0), r = lipOf((q) => q.x - x1);
+    if (!l && !r) continue;
+    const yl = (l ?? r)!.y, yr = (r ?? l)!.y;
+    out.push({ x0, x1, top: Math.max(yl, yr), kind: 'hurt', floor: f.y, lipL: !!l && paintedBank(l), lipR: !!r && paintedBank(r), walls: [yl, yr] });
+  }
+  return out;
+}
+function findOpenPits(platforms: readonly Platform[]): PitGap[] {
   const chase = platforms.filter((q) => (q as Platform & { chase?: boolean }).chase && !q.broken);
   if (chase.length) return chaseGaps(platforms, chase);
   const banks = platforms.filter((q) => q.height >= 90 && floorish(q));
@@ -376,6 +415,61 @@ function bakeBed(g: PitGap, bed: HTMLImageElement): HTMLCanvasElement | null {
   return c;
 }
 
+/** the thorn bed's size in world px: each bramble's width (its height follows its picture), how far its foot sinks under the floor's top,
+ *  and how far under that top the pit's dark runs (the hurt floor's own slab is never seen: the bed and the dark cover it) */
+export const THORN_BED = { long: 210, low: 170, sink: 34, dark: 64, pad: 24 } as const;
+/**
+ * a hollow's thorn bed, baked once: the two painted brambles side by side along the whole floor, overlapping, wall to wall (it hurts
+ * anywhere, so no bare floor shows), their feet a little under the floor's top
+ */
+function bakeThorns(g: PitGap, long: HTMLImageElement, low: HTMLImageElement): HTMLCanvasElement | null {
+  const P = THORN_BED.pad, W = g.x1 - g.x0 + 2 * P;
+  const tall = Math.ceil((THORN_BED.long * 1.1 * long.height) / long.width) + 8;
+  const H = tall - THORN_BED.sink + THORN_BED.dark;
+  const c = canvas(W, H);
+  const k = c?.getContext('2d');
+  if (!c || !k) return null;
+  // (the pit's dark over the hurt floor's slab and its end faces (`pad` past each wall), coming in above its top and going out under
+  // it: no slab, no box. The brambles themselves stay between the walls)
+  const foot = tall - THORN_BED.sink;
+  const v = k.createLinearGradient(0, foot - 26, 0, H);
+  v.addColorStop(0, 'rgba(10,7,5,0)');
+  v.addColorStop(0.28, 'rgba(10,7,5,0.96)');
+  v.addColorStop(0.72, 'rgba(10,7,5,0.96)');
+  v.addColorStop(1, 'rgba(10,7,5,0)');
+  k.fillStyle = v;
+  k.fillRect(0, foot - 26, W, H - (foot - 26));
+  // (past each wall the dark thins to nothing: a shade on the banks' feet, never a box wider than the pit)
+  k.globalCompositeOperation = 'destination-out';
+  for (const [xa, xb] of [[0, P], [W, W - P]] as const) {
+    const hz = k.createLinearGradient(xa, 0, xb, 0);
+    hz.addColorStop(0, 'rgba(0,0,0,1)');
+    hz.addColorStop(1, 'rgba(0,0,0,0)');
+    k.fillStyle = hz;
+    k.fillRect(Math.min(xa, xb), 0, P, H);
+  }
+  k.globalCompositeOperation = 'source-over';
+  k.beginPath();
+  k.rect(P, 0, W - 2 * P, H);
+  k.clip();
+  let x = P - 16 - hash(g.x0) * 30;
+  let n = 0;
+  while (x < W - P) {
+    const im = n % 2 === 0 ? long : low;
+    const sc = 0.9 + 0.2 * hash(g.x0 + n * 3.1);
+    const bw = (n % 2 === 0 ? THORN_BED.long : THORN_BED.low) * sc, bh = (bw * im.height) / im.width;
+    const flip = hash(g.x0 + n * 7.3) > 0.5;
+    k.save();
+    k.translate(x + (flip ? bw : 0), tall - bh);
+    k.scale(flip ? -1 : 1, 1);
+    k.drawImage(im, 0, 0, bw, bh);
+    k.restore();
+    x += bw * (0.58 + 0.12 * hash(g.x0 + n * 5.7));
+    n++;
+  }
+  return c;
+}
+
 /** 1-8's gap, baked once: the foliage behind it going dark into black under the branch, its sides uneven, no band of haze */
 const HIGH_SIDE = 44;
 function bakeHigh(g: PitGap): HTMLCanvasElement | null {
@@ -441,6 +535,30 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
     if (g.x1 < view.x0 - 100 || g.x0 > view.x1 + 100) continue;
     // (a drop the stage's water fills is the water's: engine.ts draws it)
     if (inWater(g)) continue;
+    if (g.kind === 'hurt') {
+      // (a hollow: the soft pit's dark inside from its lower lip to the hurt floor, under the ground; over it each bank's torn lip at
+      // its own top and the thorn bed, painted, along the whole floor. Nothing is drawn for it until its pictures are in)
+      if (g.floor === undefined || !w1ThornsReady()) continue;
+      let h = baked.get(g);
+      if (!h) baked.set(g, (h = { under: null, over: null, x: 0, y: 0, ox: 0, oy: 0 }));
+      if (layer === 'under') {
+        h.under ??= bakeSoft(g, drop);
+        if (h.under) ctx.drawImage(h.under, g.x0, g.top);
+        continue;
+      }
+      const [yl, yr] = g.walls ?? [g.top, g.top];
+      if (g.lipL) ctx.drawImage(lip, g.x0 - lw * 0.62, yl - 12, lw, lh);
+      if (g.lipR) {
+        ctx.save();
+        ctx.translate(g.x1 + lw * 0.62, yr - 12);
+        ctx.scale(-1, 1);
+        ctx.drawImage(lip, 0, 0, lw, lh);
+        ctx.restore();
+      }
+      h.over ??= bakeThorns(g, pic('thornLong')!, pic('thornLow')!);
+      if (h.over) ctx.drawImage(h.over, g.x0 - THORN_BED.pad, g.floor + THORN_BED.dark - h.over.height);
+      continue;
+    }
     // (engine-core, 11-05: only a drop a builder marks, pit: 'drop', is painted here; on main only the mixer's stages mark any. The
     // R-6.38 look for the other World 1 stages' soft pits, unmarked falls and 1-8's chase holes is not live: those keep main's painting)
     if (!g.drop) continue;

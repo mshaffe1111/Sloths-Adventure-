@@ -127,9 +127,9 @@ export function maxGap(dyUp: number, dbl: boolean, margin: number): number {
  * (reachGlide), never more than what levelCheck links on that stage (jumpLinkGap, which counts the glide once every player has it), and
  * never less than a double jump's own envelope (a stage before the glide is guaranteed gets a double-jump gap).
  */
-export function glideGap(dyUp: number, budget: Pick<StageBudget, 'margin' | 'world' | 'stage'>): number {
+export function glideGap(dyUp: number, budget: Pick<StageBudget, 'margin' | 'world' | 'stage' | 'doubleTaught'>): number {
   const dbl = maxGap(dyUp, true, budget.margin);
-  const link = jumpLinkGap(dyUp, budget.world, budget.stage) - 4;
+  const link = jumpLinkGap(dyUp, budget.world, budget.stage, budget.doubleTaught) - 4;
   const g = reachGlide(dyUp, true);
   return g < 0 ? dbl : Math.max(dbl, Math.min(budget.margin * g, link));
 }
@@ -142,7 +142,7 @@ export const riseLimit = (dbl: boolean, share: number): number => share * (dbl ?
  */
 export function gapFor(dyUp: number, dbl: boolean, budget: Pick<StageBudget, 'id' | 'margin' | 'difficulty'>): number {
   if (!judgedOnArcs(budget.id)) return maxGap(dyUp, dbl, budget.margin);
-  const env = gapEnvelope(dbl, budget.difficulty);
+  const env = gapEnvelope(dbl, budget.difficulty, budget.id);
   return dyUp > 20 ? Math.min(maxGap(dyUp, dbl, budget.margin), env) : env;
 }
 /** is a laid piece's lip thin (under reach.md's 50 px block)? read off the shape as layStage builds it (`mk`): a bank stands to the
@@ -188,9 +188,9 @@ export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: Lia
  * jump from mission 6, and the leaf glide once every player has it (World 5 on: 457 px on the flat), as levelCheck reckons them (its
  * 0.97 and the take-off slack). -1 when no jump gets that high. A swing's perch lies past it, or the swing is not needed.
  */
-export function jumpLinkGap(dyUp: number, world: number, stage: number): number {
+export function jumpLinkGap(dyUp: number, world: number, stage: number, doubleTaught?: boolean): number {
   const mission = (world - 1) * 10 + stage;
-  let r = doubleAllowed({ worldIndex: world, miniIndex: stage }) ? Math.max(reachJump(dyUp, false), reachJump(dyUp, true)) : reachJump(dyUp, false);
+  let r = doubleAllowed({ worldIndex: world, miniIndex: stage, doubleTaught }) ? Math.max(reachJump(dyUp, false), reachJump(dyUp, true)) : reachJump(dyUp, false);
   if (skillGuaranteedAt('glide', mission)) r = Math.max(r, reachGlide(dyUp, false), reachGlide(dyUp, true));
   return r < 0 ? -1 : r * 0.97 - TAKEOFF_SLACK;
 }
@@ -290,10 +290,16 @@ export function planBudget(config: LevelConfig, manifest: WorldManifest, difficu
   const fights = archetype === 'purge' || archetype === 'gauntlet';
   const check = fights && easy ? Math.max(1, Math.round(goal * 0.6)) : goal;
   const lay = archetype === 'harvest' ? Math.ceil(goal * 1.5) : archetype === 'rescue' || archetype === 'relic_hunt' ? goal + 1 : fights ? check + 2 : goal;
+  // (packet E12 item 5, the built stage's half: the double counts on a stage an EARLIER stage's lesson taught it for, the world's
+  // `lessons` row, as the node code's V3 reads it; carried only where the old rule does not already count it, so no stage that
+  // rule covers gains a field)
+  const dblLesson = manifest.lessons?.double;
+  const doubleTaught = dblLesson !== undefined && stageOrder(dblLesson) < stageOrder(config.id) && !doubleAllowed(config);
   return {
     id: config.id,
     world: config.worldIndex,
     stage: config.miniIndex,
+    ...(doubleTaught ? { doubleTaught: true as const } : {}),
     archetype,
     difficulty,
     D,
@@ -505,9 +511,8 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
   });
   const total = nodes.reduce((s, n) => s + n.share, 0);
   for (const n of nodes) n.share /= total;
-  const deal = dealContent(nodes, M, brief, budget.id, r);
   // (length from the chunk count: a quiet node or a fork one section, the working nodes the rest by share, each at least one, largest
-  // remainder)
+  // remainder. Before the deal, which reads the counts: a node's type must be one the pool can fill for every section it holds)
   if (G.chunkSeconds) {
     // (a quiet node holds one section; so does a fork, whose two roads are one two-road section, one content node, NODES.md §8.2)
     const quiet = (n: MissionNode) => n.role === 'start' || n.role === 'goal' || n.role === 'rest' || n.job === 'fork' || n.job === 'reward';
@@ -521,7 +526,80 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
     for (const k of raw.map((x, k) => [x - Math.floor(x), k] as const).sort((a, b) => b[0] - a[0]).map(([, k]) => k)) if (spare-- > 0) got[k]++;
     for (const n of nodes) n.count = quiet(n) ? 1 : got[work.indexOf(n)];
   }
+  const deal = dealContent(nodes, M, brief, budget, r, seed);
+  // (the count was written after the type until the deal came to read it; a node's record keeps that order of fields, so the
+  // stage lock's fingerprint of a built stage's graph is the one it always was)
+  for (const n of nodes) if (n.count !== undefined) { const c = n.count; delete n.count; n.count = c; }
   return { archetype: budget.archetype, flow: 'right', nodes, id: g.id, ...(deal ? { deal } : {}) };
+}
+
+/**
+ * How many of `slots` (each its candidate section ids) are left with no section when a section serves at most `cap(id)` of them: 0 when
+ * every slot can be filled at once (augmenting paths over the slots; a stage is a dozen slots and a pool under a hundred sections).
+ * R-165.120: the deal and the lay ask this BEFORE they commit, so a scarce section is kept for the node that has nothing else.
+ */
+export function unfilled(slots: ReadonlyArray<readonly string[]>, cap: (id: string) => number): number {
+  const held = new Map<string, number[]>();
+  const fill = (s: number, seen: Set<string>): boolean => {
+    for (const id of slots[s]) {
+      if (seen.has(id)) continue;
+      seen.add(id);
+      const h = held.get(id) ?? [];
+      if (h.length < cap(id)) { h.push(s); held.set(id, h); return true; }
+      for (let k = 0; k < h.length; k++) if (fill(h[k], seen)) { h[k] = s; return true; }
+    }
+    return false;
+  };
+  let miss = 0;
+  slots.forEach((_, s) => { if (!fill(s, new Set())) miss++; });
+  return miss;
+}
+
+/** what the pool's look-ahead reads of a stage: its nodes in order, its length in slots, and each section's way up or down */
+interface PoolView {
+  M: WorldManifest;
+  budget: Pick<StageBudget, 'id' | 'archetype' | 'moves'>;
+  nodes: readonly MissionNode[];
+  /** the stage's slot count, when the graph counts its chunks (a section's `window` is read against it); 0: no window is read */
+  stageLen: number;
+  exitDy: (t: SectionTemplate) => number;
+}
+
+/**
+ * The part of the lay's `fits` that is known before anything is laid: may section `t` fill slot `i` of node `n` by its rule (the job and
+ * the dealt type, a teach node's move, a required section in its reward node, what it needs and uses against the teach nodes before it,
+ * its window, a mustRise node's way up)? Never looser than the rule and never stricter: what the lay alone knows (the corridor, V19's
+ * heights, the bans of a repair) is not read, so a slot this refuses the lay refuses too. Returns a function over the view's sections.
+ */
+function poolFits(V: PoolView): (t: SectionTemplate, n: MissionNode, i: number) => boolean {
+  const { M, budget } = V;
+  const known = new Set(Object.entries(M.lessons ?? {}).filter(([, st]) => stageOrder(st) < stageOrder(budget.id)).map(([m]) => m));
+  const index = new Map(V.nodes.map((n, k) => [n.id, k]));
+  const teachAt = new Map<string, number>();
+  V.nodes.forEach((n, k) => { if (n.job === 'teach' && n.teaches && !teachAt.has(n.teaches)) teachAt.set(n.teaches, k); });
+  const required = new Set((M.required?.[budget.id] ?? []).map((r) => r.section));
+  return (t, n, i) => {
+    const at = index.get(n.id) ?? 0;
+    // (a move the stage teaches is known from its teach node on; one no node here teaches is the lay's to know)
+    const taught = (m: string) => known.has(m) || (teachAt.has(m) ? teachAt.get(m)! < at : true);
+    if (required.has(t.id)) {
+      if (n.job !== 'reward' || !t.phases.includes(n.phase)) return false;
+    } else if (n.job === 'teach') {
+      if (!(n.teaches ? t.teaches === n.teaches : !!t.teaches)) return false;
+      if (n.content && t.content && t.content !== n.content) return false;
+    } else {
+      if (t.teaches && teachAt.has(t.teaches) && !taught(t.teaches)) return false;
+      if (n.content && t.content && t.content !== n.content) return false;
+      if (n.job === 'fork' || n.job === 'reward') { if (!t.jobs?.includes(n.job)) return false; }
+      else if (!(n.job && t.jobs ? t.jobs.includes(n.job) : t.phases.includes(n.phase))) return false;
+    }
+    if (n.mustRise && !required.has(t.id) && V.exitDy(t) >= 0) return false;
+    if (!(t.archetypes === 'any' || t.archetypes.includes(budget.archetype))) return false;
+    if (!(t.needs ?? []).every((m) => budget.moves.includes(m)) || !hangsNeed(t).every((m) => budget.moves.includes(m))) return false;
+    if (!(t.uses ?? []).every((m) => t.teaches === m || taught(m))) return false;
+    if (t.window && V.stageLen && ((i + 0.5) / V.stageLen < t.window[0] || (i + 0.5) / V.stageLen > t.window[1])) return false;
+    return true;
+  };
 }
 
 /** the jobs a content node holds (NODES.md §7.1: structural nodes, and the signature, sit outside the mix) */
@@ -535,7 +613,8 @@ const CONTENT_JOBS: ReadonlySet<NodeJob> = new Set(['teach', 'practise', 'fork',
  * neighbouring content nodes, but a practise after its own teach and a teach after anything) and the windows (V12), the type with the
  * most left first; a few re-deals on the seed keep the one that breaks the fewest. A world with no mix deals nothing.
  */
-function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, stageId: string, r: Rng): Partial<Record<ContentType, number>> | undefined {
+function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, budget: StageBudget, r: Rng, seed: number): Partial<Record<ContentType, number>> | undefined {
+  const stageId = budget.id;
   const shares = brief.deal ?? M.graphs?.mix;
   if (!shares) return undefined;
   const slots = nodes.map((n, i) => ({ n, i })).filter((x) => CONTENT_JOBS.has(x.n.job!));
@@ -616,8 +695,97 @@ function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, 
     for (const [t, k] of left) if (Math.abs(k) > 1) bad++;
     if (bad < bestBad) { best = got; bestBad = bad; }
   }
-  for (const { n, i } of slots) n.content = best!.get(i);
+  // (R-165.120, the pool: a type is dealt to a node only when the stage's pool can fill it. The deal above knows the counts and the
+  // caps but not the sections: it gave a node a type no section of its job has, or two nodes the one section they share, and the lay
+  // then filled the slot past its rule and the roll failed by name ("pool short"). When the pool cannot fill the dealt stage, the
+  // fewest nodes are re-typed (the same caps, neighbours, windows, lessons and deal counts held as above) until it can; a deal the
+  // pool fills is left exactly as dealt)
+  const supplied = supplyDeal(nodes, slots, best!, M, budget, seed, (got) => {
+    let bad = 0;
+    const used = new Map<ContentType, number>();
+    let prev: { n: MissionNode; c: ContentType } | undefined;
+    for (const { n, i } of slots) {
+      const c = got.get(i)!;
+      used.set(c, (used.get(c) ?? 0) + 1);
+      if (!fixed.has(i) && (!inWin(c, i) || !taughtBy(c, i))) bad++;
+      if (prev && !neighbourOK(prev, n, c)) bad++;
+      prev = { n, c };
+    }
+    for (const [, k] of used) if (k > cap) bad += k - cap;
+    for (const t of new Set([...deal.keys(), ...used.keys()])) if (Math.abs((used.get(t) ?? 0) - (deal.get(t) ?? 0)) > 1) bad++;
+    return bad;
+  }, [...new Set([...types, ...fixed.values()])], new Set(fixed.keys()));
+  for (const { n, i } of slots) n.content = supplied.get(i);
   return Object.fromEntries(deal);
+}
+
+/**
+ * The dealt types as the pool can fill them (dealContent's last step). `breaches` counts the deal's own rules a typing breaks; a
+ * re-typing is taken only when it breaks no more of them than the deal did and leaves fewer slots the pool cannot fill (or, with
+ * none short, less climb over the corridor's height): first one node changed, then two (two nodes trading types keeps every count),
+ * then three; among equals the seed chooses (its own stream).
+ */
+function supplyDeal(
+  nodes: MissionNode[], slots: ReadonlyArray<{ n: MissionNode; i: number }>, dealt: ReadonlyMap<number, ContentType>, M: WorldManifest, budget: StageBudget, seed: number,
+  breaches: (got: ReadonlyMap<number, ContentType>) => number, types: readonly ContentType[], fixed: ReadonlySet<number>,
+): ReadonlyMap<number, ContentType> {
+  if (!nodes.every((n) => n.count)) return dealt;
+  const stageLen = nodes.reduce((a, n) => a + n.count!, 0);
+  const fits = poolFits({ M, budget, nodes, stageLen, exitDy: (t) => t.exitDy });
+  const byId = new Map(M.sections.map((t) => [t.id, t]));
+  const maxPer = (id: string) => byId.get(id)?.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity;
+  // (and the climb, R-165.120: the least the dealt stage must rise, each slot taking the section of its rule that climbs least (a
+  // node that must end higher, the least of its rising ones), against the corridor's height from the ground to its top. A deal over
+  // it cannot be laid inside the corridor whatever is chosen: 1-1's fresh seeds, 1 listable in 30 over the line, 22 in 24 just under.
+  // `spare`: two of the corridor's soft bands, the height the joins give back; set so that no proven stage's deal is over the line)
+  const brief = M.graphs?.briefs?.[budget.id];
+  const room = M.ground.y - M.corridor.top + 2 * M.corridor.soft;
+  const short = (got: ReadonlyMap<number, ContentType>): number => {
+    const need: string[][] = [];
+    let i = 0, climb = 0;
+    nodes.forEach((n, k) => {
+      const typed = got.has(k) ? { ...n, content: got.get(k) } : n;
+      for (let c = 0; c < n.count!; c++, i++) {
+        const cands = M.sections.filter((t) => fits(t, typed, i));
+        need.push(cands.map((t) => t.id));
+        const mustClimb = c === 0 && (!!n.mustRise || (!!brief?.endHigh && brief.trend === 'up' && n.job === 'signature'));
+        const dys = cands.map((t) => t.exitDy).filter((d) => !mustClimb || d < 0);
+        if (dys.length) climb += Math.max(0, -Math.max(...dys));
+      }
+    });
+    // (a slot with no section first, by far; then the px of climb over the corridor)
+    return unfilled(need, maxPer) * 1e6 + Math.max(0, climb - room);
+  };
+  const base = short(dealt);
+  if (!base) return dealt;
+  const rules = breaches(dealt);
+  const open = slots.map((q) => q.i).filter((i) => !fixed.has(i));
+  const rng = rngFor(seed, 71);
+  let at = 0;
+  let bestShort = base, found: Array<Map<number, ContentType>> = [];
+  for (let k = 1; k <= 3 && bestShort > 0; k++) {
+    const walk = (from: number, left: number, got: Map<number, ContentType>) => {
+      if (!left) {
+        if (breaches(got) > rules) return;
+        const sh = short(got);
+        // (fewer slots short wins; among equals the fewest nodes changed, so a later round only replaces with strictly fewer)
+        if (sh < bestShort) { bestShort = sh; found = [new Map(got)]; at = k; }
+        else if (sh === bestShort && sh < base && at === k) found.push(new Map(got));
+        return;
+      }
+      for (let a = from; a <= open.length - left; a++) {
+        const was = got.get(open[a])!;
+        for (const t of types) {
+          if (t === was) continue;
+          got.set(open[a], t);
+          walk(a + 1, left - 1, got);
+        }
+        got.set(open[a], was);
+      }
+    };
+    walk(0, k, new Map(dealt));
+  }
+  return found.length ? found[Math.floor(rng() * found.length)] : dealt;
 }
 
 /** a content type's letter in the node code (§8.0) */
@@ -655,6 +823,8 @@ function realisedCode(graph: MissionGraph, laid: Laid, M: WorldManifest, budget:
     teaches: graph.nodes.filter((n) => n.job === 'teach').length,
     needsFork: !!brief && brief.branching !== 'none',
     mini: budget.stage,
+    // (V3, packet E12 item 5: a move the world's `lessons` say an earlier stage taught is taught)
+    known: Object.entries(M.lessons ?? {}).filter(([, st]) => stageOrder(st) < stageOrder(budget.id)).map(([m]) => m),
     ...(brief ? { trend: brief.trend } : {}),
     ...(M.graphs?.windows ? { windows: Object.fromEntries(Object.entries(M.graphs.windows).map(([t, w]) => [CONTENT_LETTER[t], w!])) } : {}),
     ...(graph.deal ? { deal: Object.fromEntries(Object.entries(graph.deal).map(([t, k]) => [CONTENT_LETTER[t], k!])) } : {}),
@@ -683,6 +853,8 @@ interface LocalPiece {
   h: number;
   shape: SectionTemplate['pieces'][number]['shape'];
   style?: Platform['style'];
+  /** a brick's piece: its engine slot (SectionPiece.slot) */
+  slot?: string;
   main: boolean;
   landing: boolean;
   /** an obstacle to hop (an `on` block): a beat */
@@ -711,6 +883,8 @@ interface LocalGap {
   back?: { lips: [number, number] };
   /** a level block gap: no pit and no stair under it; a fall sets him back on the take-off ledge, soft (Laid.heartFalls, `soft`) */
   putBack?: boolean;
+  /** a place marked `hurt`: the world's hurt floor under it (WorldManifest.hurtFloor), no pit and no steps */
+  hurt?: boolean;
 }
 /** a section laid out in its own space: its entry anchor at (0, 0) */
 /** the reach a laid jump asks (verdicts.ts RouteAsk before it is classified): local, then world, px; `yTake` the floor he leaves (a
@@ -882,7 +1056,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       // a fall there puts him back on the take-off ledge instead, soft, no life lost (a soft heart-fall zone), on both settings)
       const putBack = !!pc.block && !pl.water && dy >= -20;
       const back = (glide || pc.block) && !pl.water && !putBack ? { back: { lips: [a.y, y] as [number, number] } } : {};
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back, ...(putBack ? { putBack } : {}) });
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back, ...(putBack ? { putBack } : {}), ...(pl.hurt ? { hurt: true } : {}) });
       // (the reach this jump asks: verdicts.ts classifies and judges it on 1-1, ADR-001; a glide is no flown move)
       if (!glide) asks.push({ x0: a.x + a.w, x1: x, yTake: cap !== undefined ? ref(pc.from!).y + CAP_UP.px : a.y, yLand: y, move: cap !== undefined ? 'bounce' : dbl || pc.block === 'double' ? 'double' : 'single', block: pc.block, thin: thinLaid(pc, w), key: pc.key });
     } else if (pl.kind === 'rope') {
@@ -916,11 +1090,11 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       // (past every jump: from the swing's ledge, and from every step of the soft pit under it, whose climb goes back to that ledge)
       const minFor = (dy: number) => {
         const perchY = a.y + dy;
-        let min = a.x + a.w + jumpLinkGap(-dy, budget.world, budget.stage) + 20;
+        let min = a.x + a.w + jumpLinkGap(-dy, budget.world, budget.stage, budget.doubleTaught) + 20;
         if ((budget.pit === 'soft' || pl.soft) && !pl.water) {
           const pit = backPit(a.x + a.w, a.x + a.w + 4000, a.y, perchY, lo.pitDepth ?? 0, riseCap(false, 1, budget) * PIT.hop);
           for (const st of [{ x: a.x + a.w, top: pit.floor, w: 0 }, ...pit.steps]) {
-            const g = jumpLinkGap(st.top - perchY, budget.world, budget.stage);
+            const g = jumpLinkGap(st.top - perchY, budget.world, budget.stage, budget.doubleTaught);
             if (g >= 0) min = Math.max(min, st.x + st.w + g + 20);
           }
         }
@@ -979,7 +1153,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on',
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -1039,8 +1213,9 @@ export interface Laid {
   asks?: Array<LocalAsk & { section: string }>;
   /** the zones the sections lay (a tide, darkness) */
   zones: Zone[];
-  /** the gaps a fall into costs a heart, not a life (WorldManifest.heartFalls: World 8 Normal's swings and glides), no pit under them */
-  heartFalls: Array<{ x0: number; x1: number; soft?: boolean }>;
+  /** the gaps a fall into costs a heart, not a life (WorldManifest.heartFalls: World 8 Normal's swings and glides), no pit under them;
+   *  `y`: a hollow's hurt line, its hurt floor's top (WorldManifest.hurtFloor) */
+  heartFalls: Array<{ x0: number; x1: number; soft?: boolean; y?: number }>;
   spawn: { x: number; y: number; piece: Platform };
   exit: { x: number; y: number; piece: Platform };
   /** the lianas and climbing vines the sections hang */
@@ -1066,6 +1241,14 @@ export interface LayOptions {
   recent?: readonly string[];
   /** sub-block versions (versionKey) the world's earlier stages used */
   usedVersions?: readonly string[];
+  /** slot -> the most its section's exit may lie under its entry (px, up is negative): a repair that needs the route higher from
+   *  that slot on (V19b: the end above the bough window) asks the slot for a section that climbs at least this much */
+  lift?: ReadonlyMap<number, number>;
+  /** pace the climb (a roll after one the after-rules refused, R-165.120): on an up stage the lay keeps back the rise its later
+   *  nodes must make (a climb, the late rise over the bough window), and its ground joins are steps down or walks before the late
+   *  rise and never a step down after it. It changes only what the plan keeps (the section, the join's kind), so a plan laid again
+   *  is the same stage. Unset, the lay is as it always was */
+  pace?: boolean;
 }
 
 /** the start runway (nothing can hurt in the first seconds) and the shrine's bank */
@@ -1175,6 +1358,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const ropes: Rope[] = [];
   const zones: Zone[] = [];
   const heartFalls: Laid['heartFalls'] = [];
+  // (a stage that teaches the hurt floor's lesson lays no hollow by brief before the lesson's showing piece ends: `hazard.untaught` by
+  // construction. The x past which the brief's hollows may lie: nowhere until the teach is laid)
+  let hurtFrom = M.graphs?.briefs?.[budget.id]?.teaches?.includes(M.hurtFloor?.lesson ?? '') ? Infinity : -Infinity;
   // (World 1's floor families, M.floorRoll: the roll's hop family, drawn from its own stream (no other world draws it), sets how deep
   // this slot's soft pits lie; every other world's pits are M.pitDepth as before)
   const FR = M.floorRoll;
@@ -1328,9 +1514,69 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     (used.get(t.id) ?? 0) + ahead(t.id, i) < (t.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity) &&
     // (the placement window: the slot's place among the stage's chunks, when the graph counts them)
     (!t.window || !chunkTotal || ((i + 0.5) / stageLen >= t.window[0] && (i + 0.5) / stageLen <= t.window[1])) &&
+    (opt.lift?.get(i) === undefined || exitDyOf(t) <= opt.lift.get(i)!) &&
     !opt.bans?.get(i)?.has(t.id) &&
     !opt.bans?.get(-1)?.has(t.id);
 
+  // (R-165.120, the pool's look-ahead, on a rolled graph that counts its chunks: how many of the slots this build has still to choose
+  // would be left with no section if `c` were taken at slot `i` (poolFits: the rule's fixed part; the bans of a repair held too))
+  const lookAhead = !!graph.id && chunkTotal > 0;
+  const staticFits = poolFits({ M, budget, nodes: graph.nodes, stageLen: chunkTotal ? stageLen : 0, exitDy: exitDyOf });
+  const nodeOf = new Map(graph.nodes.map((q) => [q.id, q]));
+  const maxPer = (t: SectionTemplate) => t.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity;
+  const leftShort = (n: MissionNode, i: number): ((c: SectionTemplate) => number) | undefined => {
+    const todo: Array<{ n: MissionNode; i: number }> = [];
+    if (opt.plan) {
+      for (const k of opt.open ?? []) if (k > i && opt.plan[k] && nodeOf.has(opt.plan[k].node)) todo.push({ n: nodeOf.get(opt.plan[k].node)!, i: k });
+    } else {
+      let k = i + 1;
+      for (let c = inNode.k + 1; c < inNode.of; c++) todo.push({ n, i: k++ });
+      for (const q of graph.nodes.slice(graph.nodes.indexOf(n) + 1)) for (let c = 0; c < (q.count ?? 1); c++) todo.push({ n: q, i: k++ });
+    }
+    if (!todo.length) return undefined;
+    const free = (t: SectionTemplate) => maxPer(t) - (used.get(t.id) ?? 0) - ahead(t.id, i);
+    const need = todo.map((q) => M.sections.filter((t) => free(t) > 0 && staticFits(t, q.n, q.i) && !opt.bans?.get(q.i)?.has(t.id) && !opt.bans?.get(-1)?.has(t.id)).map((t) => t.id));
+    return (c) => unfilled(need, (id) => free(byId.get(id)!) - (id === c.id ? 1 : 0));
+  };
+  // (R-165.120, pacing the climb, `opt.pace` on an up stage that counts its chunks: the rise each later slot must make whatever is
+  // chosen there (the least climb among the sections its rule allows; a node that must rise, the least of its rising ones), summed
+  // from the end. A section here overspends by what its exit leaves short of that, under the corridor's top)
+  const paced = !!opt.pace && lookAhead && upStage;
+  let riseAfter: number[] | undefined;
+  const overspent = (c: SectionTemplate, i: number): number => {
+    if (!riseAfter) {
+      const slotNode: MissionNode[] = opt.plan ? opt.plan.map((p) => nodeOf.get(p.node)!) : graph.nodes.flatMap((q) => Array.from({ length: q.count ?? 1 }, () => q));
+      const least = slotNode.map((q, k) => {
+        if (!q) return 0;
+        const first = k === 0 || slotNode[k - 1] !== q;
+        const mustClimb = first && (!!q.mustRise || (endHigh && q.job === 'signature'));
+        const dys = M.sections.filter((t) => staticFits(t, q, k) && !opt.bans?.get(-1)?.has(t.id)).map(exitDyOf).filter((d) => !mustClimb || d < 0);
+        return dys.length ? Math.max(0, -Math.max(...dys)) : 0;
+      });
+      riseAfter = least.map((_, k) => least.slice(k + 1).reduce((a, b) => a + b, 0));
+    }
+    return Math.max(0, M.corridor.top - (entryY() + exitDyOf(c) - (riseAfter[i] ?? 0)));
+  };
+  // (and the late rise's debt: a late descent is followed by a node that must end higher than it began (V19). Whatever is taken
+  // here, a section must be left for that node that climbs back what the descent falls, with room for the joins between: the fall of
+  // the descent chosen here, or of the one laid, or the least any descent would fall. With none left, the px it would lack)
+  const lateRises = graph.nodes.flatMap((q, k) => {
+    const r = q.job === 'descent' ? graph.nodes.slice(k + 1).find((x) => x.job !== 'rest' && x.job !== 'exit' && x.job !== 'reward') : undefined;
+    return r?.mustRise ? [{ d: q, r }] : [];
+  });
+  const riseDebt = (c: SectionTemplate, n: MissionNode, i: number): number => {
+    let debt = 0;
+    for (const { d, r } of lateRises) {
+      const at = graph.nodes.indexOf(n);
+      if (n === r || at > graph.nodes.indexOf(r)) continue;
+      const free = (t: SectionTemplate) => t !== c && maxPer(t) - (used.get(t.id) ?? 0) - ahead(t.id, i) > 0 && !opt.bans?.get(-1)?.has(t.id);
+      const falls = M.sections.filter((t) => free(t) && staticFits(t, d, i)).map(exitDyOf);
+      const fall = n === d ? exitDyOf(c) : at > graph.nodes.indexOf(d) ? cur.y - (descentY ?? cur.y) : falls.length ? Math.min(...falls) : 0;
+      const need = Math.max(0, fall) + 60;
+      if (!M.sections.some((t) => free(t) && staticFits(t, r, i + 2) && -exitDyOf(t) >= need)) debt += need;
+    }
+    return debt;
+  };
   let lastLoose = '';
   // (the slot's place in its node, for the cadence: a hard node ramps through its sections, then its last one cools)
   let inNode = { k: 0, of: 0 };
@@ -1375,6 +1621,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       : (budget.band[0] + (budget.band[1] - budget.band[0]) * n.tension - budget.band[0]) / (budget.band[1] - budget.band[0]);
     const room = M.corridor;
     const lean = cur.y < room.top + room.soft ? 1 : cur.y > room.bottom - room.soft ? -1 : 0;
+    const home = M.graphs?.briefs?.[budget.id]?.trend !== 'level' || Math.abs(cur.y - M.ground.y) <= LEVEL_SWING ? 0 : Math.sign(M.ground.y - cur.y);
     const weight = (t: SectionTemplate) => {
       let w = (t.weight ?? 1) * Math.exp(-Math.abs(t.difficulty / 10 - want) * 4);
       if (n.want?.some((tag) => t.sockets.some((s) => s.allow?.includes(tag)) || t.name.includes(tag))) w *= 3;
@@ -1384,6 +1631,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (endY < room.top || endY > room.bottom) return 0;
       const ed = exitDyOf(t);
       if (lean !== 0) w *= Math.sign(ed) === lean ? 3 : ed === 0 ? 1 : 0.3;
+      // (a level stage, GraphBrief.trend: the route swings round the height it began at. Past LEVEL_SWING px from it the way back is
+      // weighed up, and a section that would carry it further off is never the pick while one that would not fits the slot)
+      if (home !== 0) { if (Math.sign(ed) === -home && cands.some((c) => Math.sign(exitDyOf(c)) !== -home)) return 0; if (Math.sign(ed) === home) w *= 4; }
       // (World 1's floor families: the roll's hop family weighs its hop and jump sections; a world without floorRoll never sees it)
       if (FR && t.floor) w *= t.floor === 'hop' ? 0.1 + 1.9 * fam : 0.1 + 1.9 * (1 - fam);
       // (a rolled node's height and terrain dials: its own way up or down, and its terrain family, weighed up)
@@ -1413,7 +1663,19 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     // decides which few are drawn, so the variety is the bag's)
     if (n.dials) pool.sort((a, b) => Math.abs(a.difficulty / 10 - want) - Math.abs(b.difficulty / 10 - want));
     const t = cool.pick(pool.length ? pool : cands, (c) => c.id) ?? pickWeighted(pickRng, cands, weight)!;
-    return t;
+    // (R-165.120, the pool's look-ahead: the pick stands unless taking it leaves a later slot with no section its rule allows, when
+    // another candidate here would not: the scarce section is kept for the node that has nothing else. The pick's own order decides
+    // among those that keep the pool whole; with none, the pick stands and the roll fails by name, as before)
+    // (and, pacing the climb: nor unless it spends rise the later nodes must make (`overspent`); the pool first, then the pace)
+    const left = lookAhead ? leftShort(n, i) : undefined;
+    const cost = (c: SectionTemplate): [number, number] => [left ? left(c) : 0, paced ? overspent(c, i) + riseDebt(c, n, i) : 0];
+    const less = (a: [number, number], b: [number, number]) => a[0] < b[0] || (a[0] === b[0] && a[1] < b[1]);
+    let least = cost(t);
+    if (!least[0] && !least[1]) return t;
+    const rest = [...pool, ...cands.filter((c) => !pool.includes(c) && weight(c) > 0).sort((a, b) => weight(b) - weight(a))].filter((c) => c !== t);
+    let pick = t;
+    for (const c of rest) { const k = cost(c); if (less(k, least)) { pick = c; least = k; } if (!least[0] && !least[1]) break; }
+    return pick;
   };
 
   for (const n of graph.nodes) {
@@ -1464,14 +1726,24 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         const walkW = n.dials ? (n.dials.tempo === 'hurry' ? 0.6 : 1.5) : 1;
         const r0 = jrng() * (walkW + stepW + pitW2);
         join = fixed ? fixed.join : r0 < walkW ? 'walk' : r0 < walkW + stepW ? 'step' : 'pit';
+        // (pacing the climb: a step leans to the corridor's middle, so under the middle it climbs and over it it comes down. Before
+        // the late rise a step that would climb is laid flat (the climbs ahead need that height) and a walk over the middle is a step
+        // down (it gives height back); after the late rise a step that would come down is laid flat, so the end stays above the bough
+        // window. Only the KIND of join changes, which the plan keeps: a plan laid again is the same stage)
+        if (!fixed && paced && join !== 'pit') {
+          const down = cur.y + L.exit.y <= (M.corridor.top + M.corridor.bottom) / 2;
+          // (a step so taken away is a pit where the node may hold one: the seam keeps its beat, and the quiet line its measure)
+          const flat = join === 'step' && !quiet ? 'pit' : 'walk';
+          join = rise.length ? (down ? flat : join) : down ? 'step' : flat;
+        }
       } else join = fixed ? fixed.join : 'jump';
       const j = jrng();
       let dx = 0;
       let dy = 0;
       const lim1 = riseCap(false, 1, budget);
       if (join === 'step') {
-        // (up or down by a hop, leaning back toward the corridor's middle)
-        const middle = (M.corridor.top + M.corridor.bottom) / 2;
+        // (up or down by a hop, leaning back toward the corridor's middle; on a level stage, GraphBrief.trend, toward the height it began at)
+        const middle = M.graphs?.briefs?.[budget.id]?.trend === 'level' ? M.ground.y : (M.corridor.top + M.corridor.bottom) / 2;
         const dir = cur.y + L.exit.y > middle ? -1 : 1;
         dy = dir * (20 + j * (lim1 * 0.8 - 20));
       } else if (join === 'pit' || join === 'jump') {
@@ -1521,8 +1793,12 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           placed.vines.push({ key: lp.key, vine: v, ...(h.swing ? { swing: h.swing } : {}), ...(h.window !== undefined ? { window: h.window } : {}), ...(h.gap ? { gap: [R(ox + h.gap[0]), R(ox + h.gap[1])] as [number, number] } : {}) });
           continue;
         }
-        const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, lp.style, !!lp.crumble);
-        placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing });
+        // (A13, one brick library across worlds: a piece that names its engine slot takes this world's row for it, its style and one of
+        // its inventory pieces by its own place (no shared stream moves); a world with no row fails the section by name, never a stand-in)
+        const row = lp.slot ? M.slots?.[lp.slot] : undefined;
+        if (lp.slot && !row?.art.length) throw new Error(`gen2 section ${tpl.id}: piece ${lp.key} asks slot "${lp.slot}" and world ${budget.world} has no row for it`);
+        const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, row?.style ?? lp.style, !!lp.crumble);
+        placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing, ...(row ? { slot: lp.slot, art: row.art[Math.floor(rngFor(seed, 83, p.x, p.y)() * row.art.length)] } : {}) });
       }
       const pieceOf = (k: string) => {
         const q = placed.pieces.find((pp) => pp.key === k);
@@ -1542,10 +1818,24 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (dx > 0) asks.push({ x0: cur.x, x1: ox, yTake: cur.y, yLand: oy, move: 'single', thin: entryP.height < BLOCK_H.px, key: 'seam', section: placed.uid });
       for (const k of L.asks ?? []) asks.push({ ...k, x0: ox + k.x0, x1: ox + k.x1, yTake: oy + k.yTake, yLand: oy + k.yLand, section: placed.uid });
       if (dx > 0 && join === 'jump') { const before = platforms.length; catchUnder(cur.x, ox, Math.max(cur.y, oy)); placed.seam.push(...platforms.slice(before)); }
+      if (hurtFrom === Infinity && tpl.teaches === M.hurtFloor?.lesson) { const sh = placed.pieces.find((p) => p.key === 'show')?.platform; hurtFrom = sh ? sh.x + sh.width : placed.x1; }
       for (const g of L.gaps) {
         const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
         gaps.push(g0);
-        if (g.putBack) {
+        // (or by the stage's brief, GraphBrief.pits: every section pit past the row's clearStart, with no mark on the section)
+        const bp = M.graphs?.briefs?.[budget.id]?.pits, byBrief = (bp === 'hurt' || (bp === 'lesson' && !!M.hurtFloor && (tpl.teaches === M.hurtFloor.lesson || !!tpl.uses?.includes(M.hurtFloor.lesson)))) && !!g.pit && !g.water && !g.putBack && !g.back && g0.x0 >= Math.max(SPAWN_X + (M.hurtFloor?.clearStart ?? 0), hurtFrom);
+        if (g.hurt || byBrief) {
+          // (a hollow, a place marked `hurt`: the world's hurt floor, ONE marked piece at its row's depth under the lower lip, wall to wall,
+          // no steps out, the banks either side reaching down to it; the zone over it, lip to lip, carries the floor's top as its hurt line.
+          // Normal: a heart. Easy: soft. The depth is picked off the gap's x, so the roll's stream is the same with or without the mark)
+          const H = M.hurtFloor;
+          if (!H) throw new Error(`gen2 ${budget.id}: section ${tpl.id} lays a hurt place and the world's manifest has no hurtFloor row`);
+          const before = platforms.length, x0 = R(g0.x0), x1 = R(g0.x1), floor = R(oy + g.lo + H.depth[0] + (x0 % (H.depth[1] - H.depth[0] + 1)));
+          for (const q of platforms) if ((Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
+          mk(x0, floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone').pit = 'hurt';
+          heartFalls.push({ x0, x1, y: floor, ...(budget.difficulty === 'easy' ? { soft: true } : {}) });
+          placed.seam.push(...platforms.slice(before));
+        } else if (g.putBack) {
           // (a level block gap: nothing under it; a fall is set back on the take-off ledge, nothing lost: the engine's heart fall, soft)
           heartFalls.push({ x0: R(g0.x0), x1: R(g0.x1), soft: true });
         } else if (g.pit && !g.water) {
@@ -1707,6 +1997,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       for (const g of gaps) g.y += down;
       for (const k of asks) { k.yTake += down; k.yLand += down; }
       for (const z of zones) { z.top += down; z.bottom += down; z.baseY += down; for (const l of z.lights ?? []) l.y += down; }
+      // (a hollow's hurt line is its floor's top: it moves with the floor (found on 1-1's sections, briefPits.test.ts: the line stood
+      // `down` px over the floor on every rolled stage, which is every World 1 stage))
+      for (const z of heartFalls) if (z.y !== undefined) z.y += down;
       for (const q of sections) {
         q.entry.y += down;
         q.exit.y += down;
@@ -1876,13 +2169,16 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const C = sink.collectibles;
   /** a flower's look from a spot (its own, or its row's first: a row or an arc of flowers is one species, stageQuality.test.ts) */
   const lookAt = (x: number, y: number) => M.flowers[Math.floor(rngFor(seed, 29, R(x), R(y))() * M.flowers.length)];
-  const flower = (x: number, y: number, rowLook?: (typeof M.flowers)[number]) => {
+  /** the stage's brief (GraphBrief.petals, .offRoad: what its pickups are and where they may hang is the brief's, not a section's) */
+  const brief = M.graphs?.briefs?.[budget.id];
+  const flower = (x: number, y: number, rowLook?: (typeof M.flowers)[number], type: 'flower' | 'fruit' = 'flower') => {
     if (C.some((c) => Math.hypot(c.x - x, c.y - y) < 40)) return;
     // (its look from its own spot, not the shared stream: a flower skipped for overlapping must not move every roll after it)
     const look = rowLook ?? lookAt(x, y);
-    C.push({ id: sink.nextCollectibleId(), type: 'flower', botanicalVariant: look, x: R(x), y: R(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
+    C.push({ id: sink.nextCollectibleId(), type, botanicalVariant: look, x: R(x), y: R(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
   };
   const tipsSaid = new Set<string>();
+  const refuse = M.graphs?.briefs?.[budget.id]?.pick?.refuse;
   // (lessons from earlier stages need no tip here)
   for (const [m, st] of Object.entries(M.lessons ?? {})) if (stageOrder(st) < stageOrder(budget.id)) tipsSaid.add(m);
 
@@ -2041,6 +2337,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     let objectives = 0;
     for (const [ki, k] of sec.sockets.entries()) {
       const s = k.socket;
+      // (what the stage's brief refuses stays empty, GraphBrief.pick: another stage's line or prop never comes with a shape)
+      if (refuse && s.allow?.some((a) => refuse.some((r) => a.startsWith(r)))) continue;
       // (each socket's chance from its own stream: whatever Easy or Normal did with the sockets before it, it rolls the same)
       const r0 = rngFor(seed, 17, si, ki)();
       const want = (s.chance ?? 1) > r0 && (!s.phases || s.phases.includes(sec.phase));
@@ -2099,11 +2397,13 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         const n = s.count ?? 1;
         const span = Math.min(s.span ?? 0, k.piece.width - 40);
         const rowLook = lookAt(k.x, k.y);
+        // (off the road pays in blooms where the brief says so: a piece the lay placed with `main` false)
+        const what = brief?.offRoad === 'fruit' && sec.pieces.some((p) => p.platform === k.piece && p.main === false) ? 'fruit' : 'flower';
         for (let i = 0; i < n; i++) {
           const x = n === 1 ? k.x : k.x - span / 2 + (span * i) / (n - 1);
-          flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP), rowLook);
+          flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP), rowLook, what);
         }
-        fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what: 'flower', x: k.x, y: k.y });
+        fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what, x: k.x, y: k.y });
       } else if (s.role === 'objective') {
         const wantN = graphObjectives(laid, sec);
         if (objectives >= wantN) continue;
@@ -2177,7 +2477,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // petal arcs over the jumps (half a beat each, E1), and a harvest's top-up to its laid count
   for (const [gi, g] of laid.gaps.entries()) {
     const arc = rngFor(seed, 31, gi)() <= 0.7;
-    if (g.x1 - g.x0 < 90 || !arc) continue;
+    // (GraphBrief.petals 'low': no arc over any gap)
+    if (g.x1 - g.x0 < 90 || !arc || brief?.petals === 'low') continue;
     const arcLook = lookAt(g.x0, g.y);
     for (let i = 0; i < 3; i++) {
       const tt = (i + 0.5) / 3;
@@ -2190,7 +2491,10 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       for (const p of s.pieces) {
         if (flowers() >= budget.quota.lay) break;
         if (!p.main || p.platform.width < 200) continue;
-        for (let x = p.platform.x + 60; x < p.platform.x + p.platform.width - 60 && flowers() < budget.quota.lay; x += 90) flower(x, p.platform.y - FLOWER_UP);
+        // (never inside a piece standing on this one, a stump or a block: levelCheck refuses the petal and a harvest at its laid count
+        // cannot give it up, so the roll failed; with GraphBrief.petals and .offRoad the top-up lays most of a stage's petals)
+        const y = p.platform.y - FLOWER_UP, clear = (x: number) => !laid.platforms.some((q) => x >= q.x && x <= q.x + q.width && y > q.y + 2 && y < q.y + q.height - 2);
+        for (let x = p.platform.x + 60; x < p.platform.x + p.platform.width - 60 && flowers() < budget.quota.lay; x += 90) if (clear(x)) flower(x, y);
       }
     }
   }
@@ -2472,7 +2776,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   const watery = budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water);
   const kills = (y: number) => (watery ? y >= bobLow + 36 : y >= Math.max(req.config.levelHeight, R(bobLow + 120)) + 116);
   const bobFoot = Math.max(bobLow, ...floors.filter((y) => budget.world === 9 || kills(y)).map((y) => y + 30));
-  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(bobFoot + 120)) };
+  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(bobFoot + 120)), ...(budget.doubleTaught ? { doubleTaught: true as const } : {}) };
   const meta: Gen2Meta = {
     seed,
     plan: laid.plan,
@@ -2486,6 +2790,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     ...(laid.rise ? { rise: laid.rise } : {}),
     // (the stage's own brief, never the world's: 1-1 alone, R-165.86)
     ...(req.kit.manifest.graphs?.briefs?.[budget.id]?.softFalls ? { softFalls: true as const } : {}),
+    ...hurtMeta(laid, req.kit.manifest),
     sections: laid.sections.map(({ uid, template, node, phase, tension, mirrored, x0, x1, seconds }) => ({ uid, template, node, phase, tension, mirrored, x0, x1, seconds })),
     fills: filled.fills,
     ...(laid.theme ? { theme: laid.theme } : {}),
@@ -2532,12 +2837,12 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
   const cfg = st.config;
   const held = budget.quota.check === cfg.targetCount ? st : { ...st, config: { ...cfg, targetCount: budget.quota.check } };
   // (1-1 links level jumps by the flown arcs too, R-165.61; every other stage exactly as before)
-  const res = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty) }) : validateStage(held);
+  const res = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)
   if (!st.platforms.some((p) => p.type === 'fragile')) return res;
   const bareSt = { ...held, platforms: held.platforms.filter((p) => p.type !== 'fragile') };
-  const bare = judgedOnArcs(budget.id) ? validateStage(bareSt, { arcs: linkArcs(budget.difficulty) }) : validateStage(bareSt);
+  const bare = judgedOnArcs(budget.id) ? validateStage(bareSt, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(bareSt);
   const need = bare.errors.filter((e) => !/^(flower|leaf|heart) #/.test(e)).map((e) => `crumbling tiles needed: ${e}`);
   return need.length ? { ...res, ok: false, errors: [...res.errors, ...need] } : res;
 }
@@ -2550,11 +2855,11 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
  * double from anything (the stump under the mushroom included), with 15 px to spare: only the bounce lands it. The mushroom itself is
  * never a take-off (no one stands on one). Each breach names the section, so the check swaps it.
  */
-export function blockBreaches(laid: Laid, platforms: readonly Platform[], arcsOf?: Difficulty): Array<{ uid: string; why: string }> {
+export function blockBreaches(laid: Laid, platforms: readonly Platform[], arcsOf?: { setting: Difficulty; stageId: string }): Array<{ uid: string; why: string }> {
   const out: Array<{ uid: string; why: string }> = [];
   // (1-1, R-165.61: the lesser move at its best, flown, with bands.md's 5 px spare: one jump's climb and its any-timing gap for a 'double'
   // block; for a 'bounce' block the plain double, held. Every other stage: the closed form below, as before)
-  const L = arcsOf ? lesserArcs(arcsOf) : undefined;
+  const L = arcsOf ? lesserArcs(arcsOf.setting, arcsOf.stageId) : undefined;
   for (const b of laid.blocks ?? []) {
     const to = b.landing, dbl = b.kind === 'bounce', spare = dbl ? 15 : 20;
     for (const from of platforms) {
@@ -2598,7 +2903,7 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
   // (and one whose laid exit left the corridor: the way on is lost past it, whichever section comes next)
   const stray = b.laid.strays?.[0];
   if (stray) return { ok: false, swap: Number(stray.uid.slice(1)) - 1, why: `its exit at y ${stray.y} is outside the corridor` };
-  const walked = blockBreaches(b.laid, st.platforms, judgedOnArcs(budget.id) ? budget.difficulty : undefined);
+  const walked = blockBreaches(b.laid, st.platforms, judgedOnArcs(budget.id) ? { setting: budget.difficulty, stageId: budget.id } : undefined);
   if (walked.length) return { ok: false, swap: Number(walked[0].uid.slice(1)) - 1, why: `the block is walked round: ${walked[0].why}` };
   for (let it = 0; it < 8; it++) {
     const res = checkStage(st, budget);
@@ -2617,10 +2922,11 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
         fixed = true;
         continue;
       }
-      m = /^(flower|leaf|heart) #(\d+)/.exec(err);
+      m = /^(flower|leaf|fruit|heart) #(\d+)/.exec(err);
       if (m && /out of reach|inside platform|overlap|outside the walkable|past the shrine/.test(err)) {
         const id = Number(m[2]);
-        if (budget.archetype !== 'harvest' || st.collectibles.filter((c) => c.type === 'flower').length > budget.quota.lay) {
+        // (a bloom, GraphBrief.offRoad, is never in a harvest's count: one that cannot stand goes as a petal does outside a harvest)
+        if (m[1] === 'fruit' || budget.archetype !== 'harvest' || st.collectibles.filter((c) => c.type === 'flower').length > budget.quota.lay) {
           st.collectibles = st.collectibles.filter((c) => c.id !== id);
           fixed = true;
           continue;
@@ -2641,7 +2947,7 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
       if (!tried.has(key) && seam?.from && seam.to && reach.has(seam.from.id) && !reach.has(seam.to.id)) {
         tried.add(key);
         const stone: Platform = { id: Math.max(...st.platforms.map((p) => p.id).filter((i) => i < 900000)) + 1, x: R((seam.x0 + seam.x1) / 2 - 42), y: R((seam.from.y + seam.to.y) / 2), width: 84, height: 22, type: 'solid', style: 'moss_stone' };
-        const la = judgedOnArcs(budget.id) ? linkArcs(budget.difficulty) : undefined;
+        const la = judgedOnArcs(budget.id) ? linkArcs(budget.difficulty, budget.id) : undefined;
         if (jumpOK(seam.from, stone, false, la).ok && jumpOK(stone, seam.to, false, la).ok) {
           st.platforms.push(stone);
           repairs.push({ kind: 'stone', section: sec.uid, note: `a stone in the seam before ${sec.template}` });
@@ -2668,10 +2974,18 @@ export function tipWords(tips: Readonly<Record<string, string>> | undefined, id:
   return tips?.[id];
 }
 
+/** a level stage's swing (GraphBrief.trend 'level'): how far the route may stand from its starting height before the pick leans back */
+const LEVEL_SWING = 110;
 /** a stage's pool: its world's sections whose `feel` names the stage (or is unset) and whose `not` names nothing the stage owns */
 export function stagePool(M: WorldManifest, stageId: string): SectionTemplate[] {
   const owns = new Set(M.owns?.[stageId] ?? []);
-  return M.sections.filter((t) => (!t.feel || t.feel.includes(stageId)) && !(t.not ?? []).some((x) => owns.has(x)));
+  // (a brief that picks by need, GraphBrief.pick: the world's whole library less what is parked, what the deal holds no type for and
+  // what the stage refuses; `feel` names no stage there)
+  const brief = M.graphs?.briefs?.[stageId], pick = brief?.pick, deal = brief?.deal ?? M.graphs?.mix;
+  const fits = (t: SectionTemplate) => (pick
+    ? !t.parked && !t.feel?.some((f) => pick.refuse?.includes(f)) && (!t.content || t.content === 'structural' || !deal || t.content in deal)
+    : !t.feel || t.feel.includes(stageId));
+  return M.sections.filter((t) => fits(t) && !(t.not ?? []).some((x) => owns.has(x)));
 }
 
 /**
@@ -2697,6 +3011,14 @@ export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loos
   return st.gen2.errors;
 }
 
+/** a stage that lays a hurt floor carries its row's lesson and clearStart, and where the lesson's showing piece ends (Gen2Meta.hurt) */
+function hurtMeta(laid: Laid, M: WorldManifest): Pick<Gen2Stage['gen2'], 'hurt'> {
+  const H = M.hurtFloor;
+  if (!H || !laid.heartFalls.some((z) => z.y !== undefined)) return {};
+  const show = laid.sections.find((s) => M.sections.find((t) => t.id === s.template)?.teaches === H.lesson)?.pieces.find((p) => p.key === 'show')?.platform;
+  return { hurt: { lesson: H.lesson, clearStart: H.clearStart, ...(show ? { shown: R(show.x + show.width) } : {}) } };
+}
+
 /**
  * Every fall on the route as a Drop (ADR-001 decision 6), read off the built stage: what it ENDS in (the engine's rule: ground under it
  * above the death line, a floor; water, a life; a soft heart-fall zone, set back on the take-off; a void fall a life unless the brief makes
@@ -2716,6 +3038,12 @@ export function dropsOf(st: Gen2Stage): Drop[] {
     const ground = st.platforms.find((p) => p.type !== 'bouncy' && p.x <= mid && p.x + p.width >= mid && p.y > f.y && p.y < death);
     const zone = zones.find((z) => z.soft && mid >= z.x0 && mid <= z.x1);
     const at = { x0: f.x0, x1: f.x1, lipY: f.y };
+    // (a hollow's hurt floor: a heart fall, on both settings (Easy waives the heart, never the look). Its look is the hurt look only where
+    // the world's painter draws it; until then it is what is drawn there today, and drop.look-lies refuses it by name)
+    if (ground?.pit === 'hurt') {
+      const drawn = world === 1 && findW1Pits(st.platforms).some((q) => q.kind === 'hurt' && q.x0 < f.x1 && q.x1 > f.x0);
+      return { ...at, ends: { kind: 'heart', to: 'take-off' }, look: drawn ? 'hurt-art' : world === 1 ? 'pit-floor-art' : 'ground' } as unknown as Drop;
+    }
     if (ground) return { ...at, ends: { kind: 'floor', y: R(ground.y) }, look: 'ground' };
     if (f.kind === 'water' || (f.kind === 'void' && !st.gen2.softFalls)) {
       const h = hints.find((q) => q.x <= f.x0 && q.x >= f.x0 - 2 * WATER_WARN.lead && (q.passX ?? Infinity) >= f.x1);
@@ -2766,6 +3094,65 @@ function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
   }
 }
 
+/**
+ * V19b's repair, from the gate's own numbers on the built stage (storyChecks endAboveWindow: the end against the route's top where the
+ * bough window begins, at WINDOW_AT of the way). The end must come up by what it lacks, 20 px clear. The LAST slot after the window
+ * whose pool holds a section that climbs that much more than the one laid there takes it (`lift`: the most its exit may lie under its
+ * entry): the exit's step up for a small lack, the signature's higher climb for a large one. But first, when the section the window
+ * stands in sets the bar by its own high point (it climbs and comes back down), that section is swapped. With neither, nothing here
+ * repairs it and the stage is rolled again.
+ */
+function windowFix(B: Built, plan: readonly PlanSlot[], graph: MissionGraph, M: WorldManifest, budget: StageBudget, required: ReadonlySet<string>): { slot: number; lift?: number } | undefined {
+  const w = endAboveWindow(B.stage as never);
+  const secs = B.laid.sections;
+  let ws = secs.findIndex((q) => w.windowX >= q.x0 && w.windowX <= q.x1);
+  if (ws < 0) ws = secs.findIndex((q) => q.x0 > w.windowX);
+  if (w.pass || ws < 0 || !Number.isFinite(w.windowY)) return undefined;
+  // (the section the window stands in climbs and comes back down: its high point is the bar, and it is swapped first)
+  if (w.windowY < secs[ws].exit.y - 30 && !required.has(secs[ws].template)) return { slot: ws };
+  const lack = w.endY - w.windowY + 20;
+  const fits = poolFits({ M, budget, nodes: graph.nodes, stageLen: graph.nodes.every((n) => n.count) ? plan.length : 0, exitDy: (t) => t.exitDy });
+  const nodeOf = new Map(graph.nodes.map((n) => [n.id, n]));
+  const laidN = (id: string) => plan.filter((p) => p.template === id).length;
+  for (let k = secs.length - 1; k > ws; k--) {
+    const n = nodeOf.get(secs[k].node);
+    if (!n || required.has(secs[k].template)) continue;
+    const want = Math.round(secs[k].exit.y - secs[k].entry.y - lack);
+    if (M.sections.some((t) => t.id !== secs[k].template && t.exitDy <= want && fits(t, n, k) && laidN(t.id) < (t.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity))) return { slot: k, lift: want };
+  }
+  return undefined;
+}
+
+/** one rule a built roll breaks, and the slot to change for it when the rule names a place (a plan index) */
+export interface Unmet { line: string; slot?: number }
+
+/**
+ * Everything that would refuse a built roll once the search has returned it (rollErrors: a slot filled past its rule, a required section
+ * with no node, a V-rule in the node code, V19b's window, the flags, the verdicts), judged on one setting's build, each with the slot it
+ * names when it names one: a verdict's by where it lies (the section over its middle, or the one a seam's gap joins), a late rise that
+ * ended short by its own slot. The search reads this before it takes a plan (R-165.120: these were judged only after the search had
+ * returned, so no roll was ever repaired or rolled again for them).
+ */
+export function rollUnmet(st: Gen2Stage, req: BuildRequest): Unmet[] {
+  applyVerdicts(st, req);
+  const secs = st.gen2.sections;
+  const slotAt = (x0: number, x1: number): number | undefined => {
+    if (x1 <= 0) return undefined;
+    const mid = (x0 + x1) / 2;
+    const i = secs.findIndex((q) => mid >= q.x0 && mid <= q.x1);
+    if (i >= 0) return i;
+    const next = secs.findIndex((q) => q.x0 > mid);
+    return next >= 0 ? next : undefined;
+  };
+  const failed = st.gen2.verdicts?.[req.difficulty];
+  const at = new Map<string, number | undefined>((failed && !failed.accepted ? failed.failed : []).map((f) => [`verdict ${f.name} (${f.setting}): ${f.line}`, slotAt(f.at.x0, f.at.x1)] as const));
+  return rollErrors(st.gen2).map((line): Unmet => {
+    const rise = /^pool short at slot (\d+) \(.*the late rise ended/.exec(line);
+    const slot = rise ? Number(rise[1]) - 1 : at.get(line);
+    return slot === undefined ? { line } : { line, slot };
+  });
+}
+
 export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   // (the stage's own pool, cut to its tags before anything is chosen: the red team 11-05, 1-2 would have been dealt 1-1's sections)
   const M0 = req.kit.manifest;
@@ -2774,6 +3161,8 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   const st = buildRolled(req);
   applyVerdicts(st, req);
   st.gen2.errors = rollErrors(st.gen2);
+  // (the caller's own rules, BuildRequest.also: their lines with the rest, each once)
+  for (const u of req.also?.(st, req.difficulty) ?? []) if (!st.gen2.errors.includes(u.line)) st.gen2.errors.push(u.line);
   return st;
 }
 
@@ -2808,6 +3197,8 @@ function buildRolled(req: BuildRequest): Gen2Stage {
   const budget = planBudget(req.config, M, req.difficulty);
   const graph = missionGraph(budget, M, req.seed);
   let best: Gen2Stage | null = null;
+  // (the first roll that passed its check and was refused by a rule judged on the built stage: what a seed with no clean roll returns)
+  let refused: Gen2Stage | null = null;
   const maxRerolls = req.maxRerolls ?? 6;
   const failedAt = new Map<string, number>();
   const versionTries = new Map<string, Set<string>>();
@@ -2820,7 +3211,10 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     const R = req.replay?.foes ? req.replay : undefined;
     const n = R ? undefined : buildRolled({ ...req, difficulty: 'normal' });
     // (Normal's verdicts too, folded: Easy carries every error Normal has, the flags' and the window's with the rest)
-    if (n) { applyVerdicts(n, { ...req, difficulty: 'normal' }); n.gen2.errors = rollErrors(n.gen2); }
+    if (n) {
+      applyVerdicts(n, { ...req, difficulty: 'normal' });
+      n.gen2.errors = [...rollErrors(n.gen2), ...(req.also?.(n, 'normal') ?? []).map((u) => u.line)];
+    }
     const repairs: Repair[] = [...(n?.gen2.repairs ?? [])];
     // (and only the animals Normal kept: Easy's are a subset of Normal's)
     const b = R
@@ -2872,18 +3266,50 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     let open = new Set<number>();
     let grew = false;
     let lastMeeting: Gen2Stage | null = null;
+    let swapped = false;
+    const lift = new Map<number, number>();
     for (let it = 0; it < 24; it++) {
-      const b = assemble(req, budget, graph, seed, { bans, recent: req.recent, usedVersions: req.usedVersions, plan, open });
+      let b: Built;
+      try {
+        b = assemble(req, budget, graph, seed, { bans, recent: req.recent, usedVersions: req.usedVersions, plan, open, lift, pace: !!refused });
+      } catch (e) {
+        // (a slot the after-rules' swaps left with no section: this roll's repairs are spent, and the stage is rolled again; a build
+        // that throws with no such swap behind it throws as it always did)
+        if (!swapped) throw e;
+        repairs.push({ kind: 'reroll', note: `no section left for a swapped slot: ${(e as Error).message}` });
+        break;
+      }
       let v = checkAndRepair(b, budget, repairs, tried);
       const st = b.stage;
       // (Easy is Normal's stage, the red team 11-05, RT-ENGINE #4: a plan is taken only when Easy lays it cleanly too. An Easy-only breach
       // (its kinder pads widening a take-off into a block's reach, seed 124) bans that section at that slot for both settings)
+      let eb: Built | undefined;
       if (v.ok) {
-        const ev = checkAndRepair(assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st)), easyBudget, [], new Set());
+        eb = assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st));
+        const ev = checkAndRepair(eb, easyBudget, [], new Set());
         if (!ev.ok) v = { ...ev, why: `on Easy: ${ev.why ?? 'its check fails'}` };
       }
       st.gen2.rerolls = rr;
       st.gen2.repairs = [...repairs];
+      /** the section at slot `k` is banned there and the slot chosen fresh, the rest of the plan kept */
+      const swapOut = (k: number, why: string | undefined, here = false) => {
+        const tpl = b.laid.plan[k].template;
+        const set = bans.get(k) ?? new Set<string>();
+        set.add(tpl);
+        bans.set(k, set);
+        // (a section that failed at two slots is kept out of the whole stage: it is the section, not the seam, and the curation
+        // report names it for its author; `here`, a rule judged on the built stage, bans it at its slot only: such a rule reads the
+        // section among its neighbours, the join and the ground line, so the same section may stand cleanly elsewhere)
+        if (!here) failedAt.set(tpl, (failedAt.get(tpl) ?? 0) + 1);
+        if (failedAt.get(tpl)! >= 2) bans.set(-1, new Set([...(bans.get(-1) ?? []), tpl]));
+        repairs.push({ kind: 'swap', section: `s${k + 1}`, note: `${tpl} swapped out${why ? `: ${why}` : ''}` });
+        plan = b.laid.plan;
+        open = new Set([k]);
+        // (audit fix 3, a rolled graph's stage: a swapped-out section that taught a move takes its lesson with it, so every later slot
+        // that uses the move is chosen fresh too, under the uses rule, and nothing is laid before it is taught)
+        const lost = graph.id ? byId.get(tpl)?.teaches : undefined;
+        if (lost) plan.forEach((p, i) => { if (i > k && byId.get(p.template)?.uses?.includes(lost)) open.add(i); });
+      };
       const grow = (note: string) => {
         if (lastMeeting) return false;
         const g = growPlan(b.laid.plan, graph, byId);
@@ -2925,21 +3351,7 @@ function buildRolled(req: BuildRequest): Gen2Stage {
           }
         }
         if (v.swap !== undefined && b.laid.plan[v.swap]) {
-          const tpl = b.laid.plan[v.swap].template;
-          const set = bans.get(v.swap) ?? new Set<string>();
-          set.add(tpl);
-          bans.set(v.swap, set);
-          // (a section that failed at two slots is kept out of the whole stage: it is the section, not the seam, and the curation
-          // report names it for its author)
-          failedAt.set(tpl, (failedAt.get(tpl) ?? 0) + 1);
-          if (failedAt.get(tpl)! >= 2) bans.set(-1, new Set([...(bans.get(-1) ?? []), tpl]));
-          repairs.push({ kind: 'swap', section: `s${v.swap + 1}`, note: `${tpl} swapped out${v.why ? `: ${v.why}` : ''}` });
-          plan = b.laid.plan;
-          open = new Set([v.swap]);
-          // (audit fix 3, a rolled graph's stage: a swapped-out section that taught a move takes its lesson with it, so every later slot
-          // that uses the move is chosen fresh too, under the uses rule, and nothing is laid before it is taught)
-          const lost = graph.id ? byId.get(tpl)?.teaches : undefined;
-          if (lost) plan.forEach((p, k) => { if (k > v.swap! && byId.get(p.template)?.uses?.includes(lost)) open.add(k); });
+          swapOut(v.swap, v.why);
           continue;
         }
         break;
@@ -2975,13 +3387,50 @@ function buildRolled(req: BuildRequest): Gen2Stage {
           continue;
         }
       }
+      // (R-165.120: a rolled graph's plan is taken only when nothing would refuse the roll afterwards, on either setting: the rules judged
+      // on the built stage (rollUnmet) are the search's own now. One that names a place swaps the section there, as a failed check does;
+      // the rest roll the stage again. A roll with nothing to answer returns here exactly as it always did)
+      if (graph.id && eb) {
+        let unmet = [...rollUnmet(st, req).map((u) => ({ ...u, of: b })), ...rollUnmet(eb.stage, easyReq).map((u) => ({ ...u, of: eb! }))];
+        // (the caller's own rules, asked last: of a roll nothing of the pipeline's refuses)
+        const pipes = unmet.length > 0;
+        if (!pipes && req.also) unmet = [...req.also(st, 'normal').map((u) => ({ ...u, of: b })), ...req.also(eb.stage, 'easy').map((u) => ({ ...u, of: eb! }))];
+        if (unmet.length) {
+          if (refused) refused.gen2.repairs.push({ kind: 'reroll', note: `roll ${rr}, try ${it + 1}: ${unmet[0].line}` });
+          refused ??= st;
+          // (each rule's own repair: V19b by its numbers (windowFix), a rule that names a place by a swap there; a required section
+          // is never swapped. One rule with no repair and the stage is rolled again: a swap would not answer it)
+          const fixes = unmet.map((u) => {
+            if (/^V19b/.test(u.line)) return windowFix(u.of, b.laid.plan, graph, M, budget, required);
+            // (a late rise that ended short, V19: its slot is asked for what it lacked, by the lay's own numbers)
+            const short = u.slot !== undefined && /the late rise ended/.test(u.line) ? u.of.laid.rise?.find((q) => q.node === b.laid.plan[u.slot!]?.node) : undefined;
+            if (short && !required.has(b.laid.plan[u.slot!].template)) {
+              const q = u.of.laid.sections[u.slot!];
+              return { slot: u.slot!, lift: Math.round(q.exit.y - q.entry.y - (short.exitY - (short.to - 20)) - 10) };
+            }
+            return u.slot !== undefined && b.laid.plan[u.slot] && !required.has(b.laid.plan[u.slot].template) ? { slot: u.slot } : undefined;
+          });
+          const k = fixes.every((f) => f) ? 0 : -1;
+          if (k >= 0) {
+            const f = fixes[k]!;
+            if (f.lift !== undefined) lift.set(f.slot, f.lift);
+            // (a caller's rule that names a section counts against the section, as a failed check does: twice, and it is out of the
+            // stage's later rolls too; the pipeline's own after-rules read the seam and ban it at its slot only)
+            swapOut(f.slot, unmet[k].line, pipes);
+            swapped = true;
+            continue;
+          }
+          repairs.push({ kind: 'reroll', note: `refused after its check: ${unmet[fixes.findIndex((f) => !f)].line}` });
+          break;
+        }
+      }
       if (over) st.gen2.repairs.push({ kind: 'length', note: `ships long: no shorter meets the floors and the goal (${clock}, ceiling ${budget.seconds.max.toFixed(0)} s)` });
       return st;
     }
     if (lastMeeting) return lastMeeting;
     repairs.push({ kind: 'reroll', note: `roll ${rr} failed` });
   }
-  return best!;
+  return refused ?? best!;
 }
 
 /** the plan with one more slot, chosen fresh (its index is returned as `open`), at the end of the node before the shrine's */
