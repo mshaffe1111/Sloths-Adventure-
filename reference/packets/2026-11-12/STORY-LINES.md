@@ -397,3 +397,24 @@ unchanged: "Don't worry, it only gives him a fright." Both lines share one card.
   monkeys, piranhas, tapir, fruit bats, hummingbirds, kapok (Ceiba pentandra), red-tailed and variegated squirrels.
 - Queued for tomorrow: the 1-4 journal's squirrel lift (made up; rewrite), and R-165.165 (the Keeper's Bell "against a root" beside a
   stone ledge).
+
+## The snake rename (Matt, R-165.166: rename only; the look and the glide stay). For tomorrow's work
+**New name: Golden Eyelash Viper.** This is the real golden ("oropel") form of the eyelash viper (Bothriechis schlegelii), a yellow
+tree snake of Central American and north-western South American rainforest, Costa Rica to Ecuador. The raised scales over its eyes
+read as lashes or little horns, which matches the art: Matt's "golden horned tree snake" (goldSnake.ts:2).
+
+Every player-facing mention to change:
+| File | Now | Final words |
+|---|---|---|
+| src/game/journal.ts:27 (name) | Golden Tree Snake | Golden Eyelash Viper |
+| src/game/creatureLore.ts:9 | Golden tree snakes sleep in the sun all morning... | Golden eyelash vipers sleep in the sun all morning and are cross about it all afternoon. They rear up and sway to look bigger. Dot says it works on her every time. |
+| the plural used by the journal ("3 golden tree snakes") | golden tree snakes | golden eyelash vipers (it follows the journal name; check how the plural is built) |
+
+- Lines that say only "snake" (Dot's, the stage card, the survey chips, the journal "beside the snake") stay as they are. A viper is a
+  snake, and "snake" reads better in play.
+- Code comments (goldSnake.ts, engine.ts, predatorAI.ts, snakeSprite.ts, types.ts) are not player-facing, so no change is needed.
+
+**The nature-check bar (Matt):** the KIND of plant or animal and its LOOK must really exist in that world's setting; its behaviour may
+be storybook. The glide stays.
+**W5 orchid mantis, re-judged on that bar:** for tomorrow. The question is whether a real Neotropical mantis looks like a flower. The
+dead-leaf mantis (Acanthops) is the known fallback.
