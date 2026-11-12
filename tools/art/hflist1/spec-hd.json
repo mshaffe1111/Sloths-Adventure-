@@ -1,0 +1,65 @@
+{
+ "tag": "hfl1-hd",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "hd-i2-P-01-a-s52-23",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/49ed89b84f9a5617e84d233644b843f6f49964d2/reference/art-incoming/hf-list1/strip-src/i2-P-01-a-s52-23.png",
+   "h": 1206,
+   "prompt": "a strip of brown forest floor soil scattered with fallen leaves, flat top edge, seamless horizontal tile, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.25,
+   "seed": 7,
+   "bg": [
+    255,
+    0,
+    255
+   ]
+  },
+  {
+   "name": "hd-i2-P-03-a-s52-11",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/49ed89b84f9a5617e84d233644b843f6f49964d2/reference/art-incoming/hf-list1/strip-src/i2-P-03-a-s52-11.png",
+   "h": 980,
+   "prompt": "a long strip of jungle ground: dark soil with tangled roots and a thick moss top, flat top edge, seamless horizontal tile, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.25,
+   "seed": 7,
+   "bg": [
+    255,
+    0,
+    255
+   ]
+  },
+  {
+   "name": "hd-i2-P-03-b-s52-23",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/49ed89b84f9a5617e84d233644b843f6f49964d2/reference/art-incoming/hf-list1/strip-src/i2-P-03-b-s52-23.png",
+   "h": 969,
+   "prompt": "a long strip of jungle ground: dark soil with roots, a moss top covered in fallen autumn leaves, flat top edge, seamless horizontal tile, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.25,
+   "seed": 7,
+   "bg": [
+    255,
+    0,
+    255
+   ]
+  },
+  {
+   "name": "hd-i2-P-04-c-s52-11",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/49ed89b84f9a5617e84d233644b843f6f49964d2/reference/art-incoming/hf-list1/strip-src/i2-P-04-c-s52-11.png",
+   "h": 314,
+   "prompt": "a thin long strip of dark jungle soil with fine roots and a moss top edge, seamless horizontal tile, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.25,
+   "seed": 7,
+   "bg": [
+    255,
+    0,
+    255
+   ]
+  }
+ ]
+}
