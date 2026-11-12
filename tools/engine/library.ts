@@ -29,6 +29,8 @@ export const BRIEF_12: GraphBrief = {
   ends: 'quiet', trend: 'level', branching: 'lots', teaches: ['thorns'], deal: { ground: 35, bounce: 35, climb: 30 },
   pits: 'hurt', petals: 'low', offRoad: 'fruit', pick: { refuse: REFUSE_12 },
 } as GraphBrief;
+/** 1-2's corridor under the floor line (a kit row, data): World 1's is 80 px, cut for a stage that climbs; a level stage must be able to step down */
+export const ROOM_12 = 320;
 export const THORN_ROW = { lesson: 'thorns', art: 'w1-thorn', depth: [150, 170] as R2, clearStart: 1300 };
 
 // ───────────────────────────── the chain-hop twist bricks (1-2's own: the bounce chain over the hollow) ─────────────────────────────
@@ -133,7 +135,7 @@ export const ENGINE_OPEN = /the heart drop at x .* is drawn as pit-floor-art/;
 
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 /** `min`: only the six twist bricks a roll cannot do without (the teach, the two signatures, the run, the steps down and up) */
-export interface LibOpts { flown?: boolean; pits?: boolean; twists?: boolean; only?: string; min?: boolean; down?: boolean }
+export interface LibOpts { flown?: boolean; pits?: boolean; twists?: boolean; only?: string; min?: boolean; down?: boolean; room?: number }
 export const MIN_OUT = ['lib-cap-hop', 'lib-cap-test'];
 export const twistsOf = (o: LibOpts = {}) => (o.twists === false ? [] : TWISTS.filter((t) => !o.min || !MIN_OUT.includes(t.id)));
 /** the stage id the kit's rows are filed under (`flown`: the flown stage's, as supply12.ts does) */
@@ -146,6 +148,8 @@ export function kitLib12(o: LibOpts = {}): WorldKit {
   return { ...k, manifest: { ...M,
     sections: [...M.sections.map((t: SectionTemplate) => (CANOPY.includes(t.id) ? { ...t, feel: ['canopy'] } : t)), ...(o.twists === false ? [] : [...twistsOf(o), ...NEW_STOOD_IN, ...(o.down === false ? [] : WAY_DOWN)])],
     hurtFloor: THORN_ROW,
+    // (`room`: px of corridor under the floor line. World 1's is 80: cut for a stage that climbs, so a level one can never step down)
+    ...((o.room ?? ROOM_12) ? { corridor: { ...M.corridor, bottom: M.ground.y + (o.room ?? ROOM_12) } } : {}),
     lessons: o.flown ? { jump: '0-9', double: '0-9', bounce: '0-9' } : { jump: '1-1', double: '1-1', bounce: '1-1' },
     required: {},
     tips: { ...M.tips, thorns: M.tips?.thorns ?? 'THORNS (stand-in id: Dot\'s line is Content\'s)' },
@@ -178,11 +182,11 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const arg = (n: string, d: number) => { const i = process.argv.indexOf(n); return i > 0 ? Number(process.argv[i + 1]) : d; };
   const has = (n: string) => process.argv.includes(n);
   const N = arg('--seeds', 120), from = arg('--from', 1), par = arg('--par', 1);
-  const o: LibOpts = { flown: has('--flown'), pits: !has('--no-pits'), twists: !has('--no-twists'), min: has('--min'), down: !has('--no-down') };
+  const o: LibOpts = { flown: has('--flown'), pits: !has('--no-pits'), twists: !has('--no-twists'), min: has('--min'), down: !has('--no-down'), room: arg('--room', 320) };
   if (has('--json')) {
     for (let s = from; s < from + N; s++) for (const d of ['normal', 'easy'] as const) console.log(JSON.stringify({ seed: s, d, ...roll(s, d, o) }));
   } else {
-    const flags = ['--flown', '--no-pits', '--no-twists', '--min', '--no-down'].filter(has);
+    const flags = [...['--flown', '--no-pits', '--no-twists', '--min', '--no-down'].filter(has), ...(has('--room') ? ['--room', String(arg('--room', 320))] : [])];
     const per = Math.ceil(N / par);
     const rows: Any[] = [];
     if (par > 1) {
