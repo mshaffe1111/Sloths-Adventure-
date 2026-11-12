@@ -283,6 +283,8 @@ export function generateAllLevels(): LevelConfig[] {
       let timeLimit = 0;
       let levelWidth = 3200;
       let levelHeight = 900;
+      // (which way the route leads, for the engine's travel mode, stageModes.ts: the plan's word, and a climb goes up)
+      let travel = spec?.travel;
 
       // Stage length is set from how long a stage should TAKE (stageTime.ts): about 2:15 for a typical stage of World 1 and about 4:00 in World 10.
       const seconds = (type: ObjectiveType) => targetSeconds(world.id, miniIndex, type);
@@ -311,6 +313,7 @@ export function generateAllLevels(): LevelConfig[] {
           targetCount = grownQuota(5 + (world.id - 1), oldSized(4600), levelWidth, 22);
           break;
         case 'ascent':
+          travel ??= 'up';
           targetCount = 1;
           levelWidth = Math.round(3200 * (1 + 0.03 * (world.id - 1)) / 100) * 100;
           levelHeight = Math.max(ASCENT_MIN_H, Math.round((seconds('ascent') * ASCENT_PX_PER_SEC) / 100) * 100);
@@ -387,6 +390,7 @@ export function generateAllLevels(): LevelConfig[] {
         stars,
         highScore,
         bestTime,
+        ...(travel ? { travel } : {}),
       });
     });
   });
