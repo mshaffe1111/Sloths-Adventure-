@@ -27,9 +27,17 @@ jobs:
           node-version: 22
       - run: npm install --no-audit --no-fund --legacy-peer-deps
       - run: node tools/perf/artcheck.mjs
-      # every JS chunk at least 200 KB under Workbox's 4 MiB precache limit (R-165.103; React sits in its own vendor chunk)
+      # every JS chunk at least 200 KB under Workbox's 4 MiB precache limit (R-165.103; tools/perf/chunkplan.mjs splits the game into
+      # layered files). Built AS THE DEPLOY BUILDS (deploy.yml publish: the same BASE_PATH), so the gate measures the files that ship:
+      # the base is written into every picture's address inside the scripts, and a plain build is smaller (LESSONS D45: 0.9.6 shipped
+      # 254 B over while a plain build passed). chunkcheck itself fails a build whose base is not CHUNKCHECK_BASE; src/game/chunkGate.test.ts
+      # holds this step and the deploy's to the same base.
       - run: npx vite build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
       - run: node tools/perf/chunkcheck.mjs
+        env:
+          CHUNKCHECK_BASE: /${{ github.event.repository.name }}/
       - run: node tools/perf/knowncheck.mjs
       # open work in the repo (defect log, known lists, NEXT.md files) must have an R-id on reference/ROADMAP.md; done items need a real
       # PR or commit (needs the full history above)

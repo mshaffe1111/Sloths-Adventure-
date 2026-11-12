@@ -86,15 +86,15 @@ function sourceFiles(dir = path.join(ROOT, 'src'), out = []) {
   return out;
 }
 
-/** the plan: module (repo-relative) -> chunk name; a module not in it stays in the main script. `imports` is injectable for tests. */
-export function buildPlan(files = sourceFiles(), imports = staticImports, layers = LAYERS) {
+/** the plan: module (repo-relative) -> chunk name; a module not in it stays in the main script. `imports`, `layers` and `hubs` are injectable for tests. */
+export function buildPlan(files = sourceFiles(), imports = staticImports, layers = LAYERS, hubs = HUBS) {
   const deps = new Map();
   const dep = (f) => { if (!deps.has(f)) deps.set(f, f.startsWith('npm:') || !/\.(tsx?|mjs|js)$/.test(f) ? [] : imports(f)); return deps.get(f); };
   // the top of the game (the engine, the app shell, and everything that imports them) is the main script: never a layer's root
   const closure = (f) => { const seen = new Set([f]); for (const x of seen) for (const d of dep(x)) if (!d.startsWith('npm:')) seen.add(d); return seen; };
   const top = new Set(files.filter((f) => { const c = closure(f); return TOP.some((t) => c.has(t)); }));
   const plan = new Map();
-  const hubby = new Set(files.filter((f) => { const c = closure(f); return HUBS.some((h) => c.has(h)); }));
+  const hubby = new Set(files.filter((f) => { const c = closure(f); return hubs.some((h) => c.has(h)); }));
   for (const [name, pattern, parts] of layers) {
     const seen = new Set(files.filter((f) => pattern.test(f) && !plan.has(f) && !top.has(f) && !(parts && hubby.has(f))));
     for (const f of seen) for (const d of dep(f)) if (!d.startsWith('npm:') && !plan.has(d)) seen.add(d);

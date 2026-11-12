@@ -24,7 +24,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(here, '..', '..');
 const BUDGET = Number(process.env.CHUNKCHECK_BUDGET ?? 3_994_304);
 const dir = path.resolve(root, process.env.CHUNKCHECK_DIR ?? 'dist');
-const BASE = process.env.CHUNKCHECK_BASE ?? '/Sloths-Adventure-/';
+const BASE = process.env.CHUNKCHECK_BASE || '/Sloths-Adventure-/';
 
 const chunks = [];
 const walk = (d) => {
