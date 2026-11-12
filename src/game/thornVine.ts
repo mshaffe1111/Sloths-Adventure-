@@ -53,7 +53,7 @@ export const vinePeriod = (v: Pick<ThornVine, 'sleep' | 'stir' | 'look'>) => v.s
 export function vinePhase(v: ThornVine, t: number): { phase: VinePhase; u: number } {
   // the one clock (clock.ts): asleep, stirring (the warning), then looking for the rest of the cycle
   const k = cycle3(t, v.offset, vinePeriod(v), v.sleep, v.stir);
-  return k.index === 0 ? { phase: 'sleep', u: k.into / v.sleep } : k.index === 1 ? { phase: 'stir', u: k.into / v.stir } : { phase: 'look', u: k.into / v.look };
+  return k.i === 0 ? { phase: 'sleep', u: k.s / v.sleep } : k.i === 1 ? { phase: 'stir', u: k.s / v.stir } : { phase: 'look', u: k.s / v.look };
 }
 
 /** is he in a vine's reach (beside it, and not far below its bud)? */

@@ -39,9 +39,9 @@ export function rockAt(r: RockDrop, t: number): { phase: RockPhase; u: number; y
   const warnAt = r.every - r.warn - fallT - ROCK.shatter;
   // the one clock (clock.ts): quiet until warnAt, the shadow for `warn`, then the rock is loose for the rest of the cycle
   const k = cycle3(t, r.offset, r.every, warnAt, r.warn);
-  if (k.index === 0) return { phase: 'idle', u: k.into / Math.max(0.01, warnAt), y: r.top };
-  if (k.index === 1) return { phase: 'warn', u: k.into / r.warn, y: r.top };
-  const f = k.into;
+  if (k.i === 0) return { phase: 'idle', u: k.s / Math.max(0.01, warnAt), y: r.top };
+  if (k.i === 1) return { phase: 'warn', u: k.s / r.warn, y: r.top };
+  const f = k.s;
   if (f < fallT) return { phase: 'fall', u: f / fallT, y: r.top + f * ROCK.speed };
   return { phase: 'shatter', u: (f - fallT) / ROCK.shatter, y: r.land };
 }

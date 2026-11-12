@@ -117,12 +117,12 @@ test('the stage clock runs on the fixed step only: a pause holds it, and the sam
 });
 
 test('the walk under every timer: stretches in order, the last one running to the end of the cycle', () => {
-  const out: CycleRead = { index: 0, into: 0, at: 0 };
+  const out: CycleRead = { i: 0, s: 0, c: 0 };
   // a 5 s cycle of 2 + 1 + (what is left)
-  assert.deepEqual({ ...cycleRead(0.5, 0, 5, [2, 1], 2, out) }, { index: 0, into: 0.5, at: 0.5 });
-  assert.deepEqual({ ...cycleRead(2.5, 0, 5, [2, 1], 2, out) }, { index: 1, into: 0.5, at: 2.5 });
-  assert.deepEqual({ ...cycleRead(4.5, 0, 5, [2, 1], 2, out) }, { index: 2, into: 1.5, at: 4.5 });
+  assert.deepEqual({ ...cycleRead(0.5, 0, 5, [2, 1], 2, out) }, { i: 0, s: 0.5, c: 0.5 });
+  assert.deepEqual({ ...cycleRead(2.5, 0, 5, [2, 1], 2, out) }, { i: 1, s: 0.5, c: 2.5 });
+  assert.deepEqual({ ...cycleRead(4.5, 0, 5, [2, 1], 2, out) }, { i: 2, s: 1.5, c: 4.5 });
   // before game time 0 it still reads a real place in the cycle
-  assert.deepEqual({ ...cycleRead(-0.5, 0, 5, [2, 1], 2, out) }, { index: 2, into: 1.5, at: 4.5 });
-  assert.deepEqual({ ...cycleRead(1, 1.5, 5, [2, 1], 2, out) }, { index: 1, into: 0.5, at: 2.5 });
+  assert.deepEqual({ ...cycleRead(-0.5, 0, 5, [2, 1], 2, out) }, { i: 2, s: 1.5, c: 4.5 });
+  assert.deepEqual({ ...cycleRead(1, 1.5, 5, [2, 1], 2, out) }, { i: 1, s: 0.5, c: 2.5 });
 });

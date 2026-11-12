@@ -90,8 +90,8 @@ export function plugged(w: Waterfall, platformX: (id: number) => number | undefi
 export function surgeFlow(s: NonNullable<Waterfall['surge']>, t: number): number {
   // the one clock (clock.ts): pouring, easing down (the warning that it is about to stop), then quiet for the rest of the cycle
   const k = cycle3(t, s.offset, s.pour + s.ease + s.quiet, s.pour, s.ease);
-  if (k.index === 0) return Math.min(1, k.into / 0.4); // (it roars back in over the first 0.4 s)
-  return k.index === 1 ? 1 - k.into / s.ease : 0;
+  if (k.i === 0) return Math.min(1, k.s / 0.4); // (it roars back in over the first 0.4 s)
+  return k.i === 1 ? 1 - k.s / s.ease : 0;
 }
 
 /** the next value of a fall's flow (0 dry .. 1 pouring): it eases toward what its plug and rhythm ask for */

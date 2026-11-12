@@ -89,9 +89,9 @@ export function zoneState(z: Zone, t: number): ZoneState {
   const idle = idleTime(z);
   // the one clock (clock.ts): idle, the warning, then active for the rest of the cycle
   const k = cycle3(t, z.offset, z.period, idle, z.warn);
-  if (k.index === 0) return { phase: 'idle', u: k.at / idle, strength: 0, untilActive: z.period - z.active - k.at };
-  if (k.index === 1) return { phase: 'warn', u: k.into / z.warn, strength: 0, untilActive: idle + z.warn - k.at };
-  const a = k.into;
+  if (k.i === 0) return { phase: 'idle', u: k.c / idle, strength: 0, untilActive: z.period - z.active - k.c };
+  if (k.i === 1) return { phase: 'warn', u: k.s / z.warn, strength: 0, untilActive: idle + z.warn - k.c };
+  const a = k.s;
   const r = Math.min(ZONE_RAMP, z.active / 3);
   const ramp = Math.min(1, a / r, (z.active - a) / r);
   return { phase: 'active', u: a / z.active, strength: Math.max(0, ramp), untilActive: 0 };

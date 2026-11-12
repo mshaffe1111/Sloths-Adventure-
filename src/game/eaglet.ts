@@ -42,7 +42,7 @@ export function nestAt(n: Nest, t: number): { phase: NestPhase; u: number } {
   const sleep = n.every - NEST.stir - NEST.look;
   // the one clock (clock.ts): asleep, stirring (the warning), then looking for the rest of the cycle
   const k = cycle3(t, n.offset, n.every, sleep, NEST.stir);
-  return k.index === 0 ? { phase: 'sleep', u: k.into / sleep } : k.index === 1 ? { phase: 'stir', u: k.into / NEST.stir } : { phase: 'look', u: k.into / NEST.look };
+  return k.i === 0 ? { phase: 'sleep', u: k.s / sleep } : k.i === 1 ? { phase: 'stir', u: k.s / NEST.stir } : { phase: 'look', u: k.s / NEST.look };
 }
 
 /** which look this is (so a look blows him back once at most) */

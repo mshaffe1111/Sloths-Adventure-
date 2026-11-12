@@ -328,7 +328,7 @@ export type PotPhase = 'idle' | 'warn' | 'puff';
 export function potAt(p: Teapot, t: number): { phase: PotPhase; u: number } {
   // the one clock (clock.ts): idle, the warning, then the puff for the rest of the cycle
   const k = cycle3(t, p.offset, p.idle + p.warn + p.puff, p.idle, p.warn);
-  return k.index === 0 ? { phase: 'idle', u: k.into / p.idle } : k.index === 1 ? { phase: 'warn', u: k.into / p.warn } : { phase: 'puff', u: k.into / p.puff };
+  return k.i === 0 ? { phase: 'idle', u: k.s / p.idle } : k.i === 1 ? { phase: 'warn', u: k.s / p.warn } : { phase: 'puff', u: k.s / p.puff };
 }
 
 /** the spout (where the steam comes from) */
@@ -622,9 +622,9 @@ export function orchidAt(o: Orchid, t: number): { phase: OrchidPhase; open: numb
   const tell = ORCHID.tell;
   // the one clock (clock.ts): open, the closing shiver (the warning), then shut and opening share the rest of the cycle
   const k = cycle3(t, o.offset, o.period, o.open, tell);
-  if (k.index === 0) return { phase: 'open', open: 1, solid: true, picks: true };
-  if (k.index === 1) return { phase: 'closing', open: 1 - 0.55 * (k.into / tell), solid: true, picks: true };
-  const s = k.at;
+  if (k.i === 0) return { phase: 'open', open: 1, solid: true, picks: true };
+  if (k.i === 1) return { phase: 'closing', open: 1 - 0.55 * (k.s / tell), solid: true, picks: true };
+  const s = k.c;
   if (s < o.period - tell) return { phase: 'shut', open: 0, solid: false, picks: false };
   const u = (s - (o.period - tell)) / tell;
   return { phase: 'opening', open: u, solid: false, picks: false };

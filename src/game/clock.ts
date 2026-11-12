@@ -16,8 +16,8 @@ import type { ClockDef, ClockId, ClockPhase, ClockState } from './stageKit.types
 
 export type PhaseName = ClockPhase['name'];
 
-/** where a moment falls in a cycle: which stretch, seconds into it, seconds into the cycle */
-export interface CycleRead { index: number; into: number; at: number }
+/** where a moment falls in a cycle: `i` which stretch, `s` seconds into it, `c` seconds into the cycle (short names: every timer ships them) */
+export interface CycleRead { i: number; s: number; c: number }
 
 /** seconds into a cycle of `period` at game time t (a real place in the cycle before time 0 too) */
 export const cyclePos = (t: number, offset: number, period: number): number => (((t + offset) % period) + period) % period;
@@ -37,9 +37,9 @@ export function cycleRead(t: number, offset: number, period: number, seconds: Ar
     if (c < edge) break;
     into -= seconds[i];
   }
-  out.index = i;
-  out.into = into;
-  out.at = c;
+  out.i = i;
+  out.s = into;
+  out.c = c;
   return out;
 }
 
@@ -81,7 +81,7 @@ export function beatOf(def: ClockDef, easy = false): Beat {
   return { id: def.id, period, offset: def.offset * stretch, names: def.phases.map((p) => p.name), seconds, ons, stretch };
 }
 
-const WALK: CycleRead = { index: 0, into: 0, at: 0 };
+const WALK: CycleRead = { i: 0, s: 0, c: 0 };
 const QW = [0, 0];
 
 /**
@@ -99,11 +99,11 @@ export function cycle3(t: number, offset: number, period: number, first: number,
 export function beatAt(b: Beat, t: number, shift = 0): ClockRead {
   const offset = b.offset + shift * b.stretch;
   const w = cycleRead(t, offset, b.period, b.seconds, b.seconds.length - 1, WALK);
-  const phase = b.names[w.index];
+  const phase = b.names[w.i];
   let toOn = phase === 'on' ? 0 : Infinity;
-  if (phase !== 'on') for (const at of b.ons) toOn = Math.min(toOn, at >= w.at ? at - w.at : at + b.period - w.at);
-  const len = b.seconds[w.index];
-  return { phase, u: w.into / len, cycle: Math.floor((t + offset) / b.period), index: w.index, into: w.into, left: len - w.into, toOn };
+  if (phase !== 'on') for (const at of b.ons) toOn = Math.min(toOn, at >= w.c ? at - w.c : at + b.period - w.c);
+  const len = b.seconds[w.i];
+  return { phase, u: w.s / len, cycle: Math.floor((t + offset) / b.period), index: w.i, into: w.s, left: len - w.s, toOn };
 }
 
 /** read a clock straight from its definition (tests, the stage builder's checks; a running stage keeps its beats ready: stageClock) */
