@@ -1,6 +1,6 @@
 # Method: fixing an engine audit's findings (many findings, test-first, with sub-helpers)
-Last proven: 2026-11-11/12, t-engine-fixes (EN-F), 74 commits: 60+ audit findings and leads fixed or ruled out on one branch, every one
-red-then-green, every helper commit read by a Critic. Owner of the last update: EN-F (engine).
+Last proven: 2026-11-11/12, t-engine-fixes (EN-F) to e80cf630, 71 commits: 58 audit findings and leads fixed or ruled out by a red-then-
+green test, 3 more shown fixed by the base, every helper commit read by a Critic. Owner of the last update: EN-F (engine).
 
 ## When to use it
 An audit (or several) has left confirmed findings, most with a proof test outside the suite, and the job is to fix them, not re-audit.
