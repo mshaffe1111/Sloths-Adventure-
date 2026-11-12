@@ -96,5 +96,8 @@ export function armedTraps(kinds: readonly string[] = ['snake']): { emit: Record
     if (k < 0) return;
     const live = (out.proto.cast ??= { kinds: [], traps: [], said: W1_CAST_SAID }).traps;
     live.push({ ...hold.splice(k, 1)[0], id: live.length + 1, loadX: Math.round(mid) });
+    // (a SLEEPER lies right under its load, in the middle of its patch: the lay stood it 61 px on, at the patch's far end (it keeps an
+    //  animal 120 px from any prop's socket), half off an upright phone's screen from the vine. One awake paces the whole patch)
+    if (e.asleep) e.x = Math.round(mid);
   } };
 }
