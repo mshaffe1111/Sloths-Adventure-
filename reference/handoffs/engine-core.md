@@ -41,6 +41,11 @@ A2 (ADR-001). Sections 0a-0b below are still true.
   climb against the corridor plus two soft bands: one band (980) is the natural line and moves two proven deals.
 - **Tonight's helpers on this branch:** B = packet E12 items 1-3 (gen2/listed.ts done; hurt floor laid and hurting, not drawn;
   reach.ts JUDGED table, 1-2's rows not entered). C = EN-T (stageModes.ts; camera lead not wired). REPORT.md has each one's next step.
+- **Late additions (8:30 PM):** `reach.ts builtOnArcs(stage)`: the arcs judge a stage gen2 BUILT, never an id alone (the level
+  check, finishReach and the petal pass ask it; a hand fixture needs a `gen2` record to be flown). `GraphBrief.pits: 'hurt'`: the
+  lay puts the world's hurt floor under every section pit past clearStart (briefPits.test.ts, 1-1's own sections). TRAP it found:
+  anything laid with a y of its own (a zone's line) must move in layStage's shift-down block, or it is wrong on every rolled stage.
+  TRAP the lock found: JSON field ORDER is part of a stage's fingerprint; write new fields where the old ones were written.
 - **Next, in order of what it buys:** park the two test-backs and rebuild the list; more rising signature pieces; pacing from the first roll (moves proven seeds: the lead's call,
   at a list rebuild); the window read where the gate reads it (67% of x, the highest piece there) instead of by slot; the deal
   weighing height (a test dealt climb beside a climb node cannot fit the corridor).

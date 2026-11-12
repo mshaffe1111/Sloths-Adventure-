@@ -31,30 +31,30 @@ A's target (50% clean) is met. **A2's target (50% listable) is NOT met: 33% / 28
 3. **Graphs over the corridor by structure:** sprint-B with its climb node kept needs 1,127 px of climb in a 900 px corridor and
    the 40% cap leaves no legal re-typing (1 listable in 30). sprint-C's late descent needs a signature that climbs back 190-275 px
    and only two sections can. Designer: more rising signature pieces, or re-cut graph B. This is Matt's "more pieces" rule.
-4. **Main chunk: 3,995,019 B, 715 B OVER chunkcheck's limit** (base 3,982,950: A and A2 +7,754, B +3,198, C +1,117). Red until
-   R-165.112 lands, as you ruled.
-5. **Types touched:** `BuildRequest.also` (types.ts, optional) is mine; B added `hurt`, `hurtFloor`, `Platform.pit 'hurt'`; C added
-   `LevelConfig.travel`. The Architect should read all three.
-6. **Proven list held at a price:** pacing runs only after a refusal, and the climb line sits 80 px above its natural place (980)
-   so two proven deals stay. Both go away at a list rebuild.
-7. **buildcheck fails on the untouched base in this container too** (p95 163 ms base, 155 here, limit 150): run it once on CI.
-## Your question: why 42 hand-authored sections, and what would make a stage take hours
-A section today is a shape welded to one stage: its `feel` names stage ids, and its hazard, pickups and heights are baked in. 17
-of the 42 are the SAME shapes re-cut for thorns and petals. Proof it is not the shapes: the Designer's 1-2 probe on the fixed
-generator (stand-ins = copies of real sections) lays 720 of 720 rolls with no throw and 117 of 120 a graph structurally clean.
-To get to hours: (1) the hazard under a gap, the pickup kind and the trend become the BRIEF's, applied by the lay (B's `hurt`
-flag as a brief-level swap), so own versions vanish; (2) sections are picked by what they need and teach, `feel` only excludes;
-(3) each stage adds 5-8 twist bricks for its signature; (4) the list builds itself (33% listable now, was 1 in 300).
-
-## Gates on the merged head
-PASS: tsc; 110 of 110 tests in every file the three streams touched; seedlist 1-1 --check; **the stage lock, 102 of 102 stages
-unchanged** against main (`lockall --layouts 2`; its first run caught 1-1's graph record hashing differently by field order
-alone, fixed and tested). A's code alone: gen2+worlds 350 of 350; the same suite on the merged head: 371 of 371.
+4. **Main chunk 3,995,414 B, 1,110 B OVER chunkcheck** (base 3,982,950; A+A2 +7,750, B +3,200, C +1,100, the rest 400): red until R-165.112.
+5. **Types touched, for the Architect:** `BuildRequest.also`, `GraphBrief.pits`, `CodeRules.known` (mine); `hurt`, `hurtFloor`,
+   `Platform.pit 'hurt'` (B); `LevelConfig.travel` (C). **Proven list held at a price:** pacing only after a refusal, and the
+   climb line 80 px above its natural place (980) so two proven deals stay; both go at a list rebuild.
+6. **buildcheck fails on the untouched base in this container too** (p95 163 ms base, 155 here, limit 150): run it once on CI.
+## Your question (why 42 hand-authored sections) and the fix, STARTED at 8:30 PM on your word
+A section is a shape welded to one stage: `feel` names stage ids, and its hazard, pickups and heights are baked in. 17 of the 42
+are the SAME shapes re-cut for thorns and petals. It is not the shapes: the Designer's 1-2 probe on stand-in copies of real
+sections lays 720 of 720 rolls with no throw, 117 of 120 a graph structurally clean.
+- **DONE, the hazard is the brief's:** `GraphBrief.pits: 'hurt'` and the lay puts the world's hurt floor under every section pit
+  past `clearStart`, no mark on any section. Proof, test-side (briefPits.test.ts): 1-1's OWN sections on 12 proven plans, same plan
+  and pieces, a hollow under their pits. It found a bug in B's floor: the hurt line stayed behind when a rolled stage is moved
+  down whole (every World 1 stage). Fixed.
+- **NEXT for the Opus builder, in order:** (a) pickups by brief = packet E12 item 6 as written (`offRoad`, `petals: 'low'`,
+  `bloomSprite`: three brief fields, its fixture test named there). (b) the seam's pit (`pitUnder` at a 'pit' join) and a `soft`
+  jump under the same `pits` rule, each with a briefPits case. (c) `hazard.untaught` needs a showing piece: one small "see the
+  thorns" section per world, the only authored brick the hazard needs. (d) `feel` as an exclusion list (stagePool).
+## Gates on the head
+PASS: tsc; seedlist 1-1 --check (200 seeds, after every step); **stage lock 102 of 102 unchanged** against main (`lockall --layouts
+2`; its first run caught 1-1's graph record hashing differently by field order alone: fixed, tested); gen2+worlds 371 of 371 on
+the merged head, and every test file touched since (builtOnArcs, briefPits, hurtFloor, nodeCode, verdicts, petals: all pass).
 FAIL: chunkcheck (above). Not run: drawcheck, clipcheck, the suite outside gen2, stills (nothing new ships: Play draws the list).
-
 ## Exact next step
-1. Land R-165.112, re-run chunkcheck. 2. Decide pushback 2 (park the two test-backs, rebuild 1-1's list under `also`). 3. B's
-item 2 "drawn": w1Pits.ts reports a `pit === 'hurt'` floor and paints the manifest's art. 4. B's trap: levelCheck validateFor,
-stageGenerator finishReach and petalPass ask `judgedOnArcs(config.id)`; make them ask the built stage BEFORE 1-2's JUDGED line.
-5. E12 item 5's other half: the double counted by the built stage (five readers of `doubleAllowed`). Its node-code half is DONE
-here (V3 reads `lessons`: the 1-2 probe goes from 0, 13, 0 to 118, 117, 117 structurally clean of 120). Turnover: engine-core.md §0d.
+1. Land R-165.112, re-run chunkcheck. 2. Decide pushback 2 (park the two test-backs, rebuild 1-1's list under `also`). 3. B's item
+2 "drawn": w1Pits.ts reports a `pit === 'hurt'` floor and paints the manifest's art. 4. E12 item 5's other half: the double
+counted by the built stage (five readers of `doubleAllowed`); `builtOnArcs` (reach.ts, DONE: your step-4 trap) is the pattern.
+5. Then 1-2's JUDGED line and rows. Done here for 1-2: V3 reads `lessons` (probe 0/13/0 -> 118/117/117 clean of 120).
