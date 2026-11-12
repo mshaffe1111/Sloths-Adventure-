@@ -364,3 +364,15 @@ one-page OUR STORY, exactly as written in the FINAL layout section above. Waitin
   list, the line becomes "The first stage changes each time you play, every layout checked to be fair before you see it."
 - The other gates stand: the petals/thorns line needs the new 1-2 in 0.9.7, and the trap line needs the new 1-3. Stillness returns
   when 1-7 ships.
+
+**"What's ours", FINAL draft (Matt, 4:08 PM ET: "we can be vague"). This supersedes both drafts above:**
+> **What's ours**
+> Pokey, Meeca, Dot, and everyone they meet along the way.
+> Their story, from the first petal to the last letter, and the journal Pokey keeps.
+> Ten rainforest worlds, with art made for this game in its own style.
+> Gameplay crafted to tell that story the whole way through, and many ideas of our own along the way.
+> Dot, who helps when you're stuck, and never tells.
+
+- This needs no per-release truth gate: every line is true in 0.9.6 and stays true.
+- "Many ideas of our own" claims ownership, not uniqueness. We never say "found nowhere else", which can't be verified.
+- The Dot line is kept because it is specific, warm and already true (the help ladder ships in 0.9.6).
