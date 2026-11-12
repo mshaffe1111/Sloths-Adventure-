@@ -4,6 +4,15 @@ import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import './index.css';
 import { checkForUpdate, markUpdateAvailable } from './game/updates.ts';
 import { armFullscreen } from './game/fullscreen.ts';
+import { browserStore } from './game/saveFile.ts';
+import { moveStoredStoryFlags } from './game/storyFlags.ts';
+
+// a game saved by 0.9.6 or before keeps its story flags in the old shape: move them once, before anything reads them (storyFlags.ts)
+try {
+  moveStoredStoryFlags(browserStore());
+} catch {
+  /* storage blocked: there is nothing to move */
+}
 
 createRoot(document.getElementById('root')!).render(
   <ErrorBoundary>

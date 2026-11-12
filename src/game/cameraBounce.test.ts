@@ -56,3 +56,49 @@ test('1-1 seed 4106 sideways, the bounce by the seed-perch log: no frame moves t
   assert.ok(b.steps.filter((s) => s > 10.9).length >= 5, `the view rose at the cap: ${b.steps.map((s) => s.toFixed(1)).join(' ')}`);
   assert.ok(Math.min(...b.headRoom) > -40, `his head ${(-Math.min(...b.headRoom)).toFixed(0)} px into the band at worst`);
 });
+
+// Audit A-05 (EN-F): "the 11 px cap is per update, so a 67 ms frame lifts 22 px". Since R-165.116 every update is exactly 1/30 s of
+// game time, so the cap is a speed, 330 px a second of play, on every phone. Held to 11 px per DRAWN frame it would climb at half that
+// on a 15 fps phone and his head would go deeper under the HUD on every bounce (above: 31 px into the band at full rate). So the rule is
+// pinned as a rate: played through the engine's own loop with 67 ms frames, the view is the 30 fps view, drawn every other step.
+test('1-1 seed 4106 sideways, the same bounce at 15 fps (67 ms frames, the real loop): 11 px per 1/30 s step, his head no deeper under the HUD', () => {
+  const at30 = bounce();
+  const w = globalThis as unknown as { innerWidth: number; innerHeight: number };
+  const was = [w.innerWidth, w.innerHeight];
+  w.innerWidth = 915;
+  w.innerHeight = 412;
+  setDifficulty('normal');
+  const r = withPlaySeed(4106, () => new RealPlay('1-1', 1));
+  const e = r.e as unknown as Cam & { stop(): void; loop(now: number): void; render(): void; isRunning: boolean; isPaused: boolean; lastRenderTime: number; acc: number };
+  try {
+    e.updateCamera = (GameEngine.prototype as unknown as Cam).updateCamera;
+    e.resizeCanvas();
+    const m = r.platforms.find((p) => p.type === 'bouncy' && p.x > 29500 && p.x < 29700)!;
+    r.stand(m.x - 40, m.y + m.height);
+    for (let i = 0; i < 90; i++) r.frame({});
+    const band = HUD_BAND.land / e.zoom;
+    const perDraw: number[] = [], headRoom: number[] = [];
+    let y = e.camera.y, up = false;
+    e.render = () => {
+      perDraw.push(Math.abs(e.camera.y - y));
+      y = e.camera.y;
+      if (r.p.vy < -300) up = true;
+      if (up) headRoom.push(r.p.y - HERO_HEAD - e.camera.y - band);
+    };
+    r.input.state.right = true;
+    e.isRunning = true;
+    e.isPaused = false;
+    let now = 1000;
+    e.lastRenderTime = now;
+    e.acc = 0;
+    for (let i = 0; i < 30 && !(up && r.p.grounded); i++) e.loop((now += 200 / 3));
+    e.isRunning = false;
+    assert.ok(up, 'he bounced');
+    // two steps a drawn frame: at most two steps' worth of view, never more
+    assert.ok(Math.max(...perDraw) <= 22 + 1e-6, `the view moved ${Math.max(...perDraw).toFixed(1)} px in one 67 ms frame (two 1/30 s steps)`);
+    assert.ok(Math.min(...headRoom) >= Math.min(...at30.headRoom) - 1, `at 15 fps his head went ${(-Math.min(...headRoom)).toFixed(0)} px into the band, at 30 fps ${(-Math.min(...at30.headRoom)).toFixed(0)}`);
+  } finally {
+    e.stop();
+    [w.innerWidth, w.innerHeight] = was;
+  }
+});

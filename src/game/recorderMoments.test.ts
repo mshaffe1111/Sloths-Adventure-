@@ -98,6 +98,10 @@ test("recorder 'dot': the line Dot really says, by its review id (old words or n
   const { log, stop } = listen();
   try {
     (r as unknown as { e: { guide: (t: string, s: number) => void } }).e.guide('Jump the little gaps', 3);
+    // (logged once Dot has shown it, not at the send: guideShown.ts, audit C-03. RealPlay reports it shown at once; the engine reads it
+    // on its next frame)
+    assert.deepEqual(log.filter(([w]) => w === 'dot'), [], 'not at the send');
+    r.frame();
     assert.deepEqual(log.filter(([w]) => w === 'dot'), [['dot', 'hint.1-1.gaps']]);
   } finally {
     stop();

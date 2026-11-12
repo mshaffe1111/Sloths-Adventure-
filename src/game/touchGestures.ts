@@ -792,6 +792,19 @@ export class TouchGestures {
     for (const id of [...this.fingers.keys()]) if (!ids.includes(id)) this.cancelFinger(id, t);
   }
 
+  /**
+   * The game dropped every held input (a new stage: InputEngine.clearAll). The fingers stay, a thumb still on the glass is still that
+   * thumb, but what they had said is forgotten (silently: the input already dropped it), so the steering thumb's next move says its
+   * way again. Forgetting the fingers instead (cancelAll) left a thumb held under the title card dead until it was lifted and put
+   * down again (audit A, input slice: the held thumb at the start).
+   */
+  restate() {
+    this.flickClimbUntil = NaN;
+    this.climbDir = 0;
+    this.heldDir = 'none';
+    this.duckOn = false;
+  }
+
   cancelAll() {
     this.flickClimbUntil = NaN;
     this.setClimb(0);

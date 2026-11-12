@@ -4,12 +4,14 @@
  * a new adventure, or a player who turned tips back on, is taught again (polish report DOT-1).
  */
 import { forgetSent } from './tipMemory.ts';
+import { forgetSaid } from './dotGuide.ts';
 
 export const DOT_MEMORY = /^sloth_(tips_.+|lessons|dot_seen|dot_moves)$/;
 
-/** forget what this session has sent but not yet shown */
+/** forget what this session has sent but not yet shown, and the pause menu's "Dot said" lines (a New Game: saveFile.ts resetProgress) */
 export function forgetDotSession(): void {
   forgetSent();
+  forgetSaid();
 }
 
 /** "Hear Dot's tips again": forget every tip, lesson and thing she has taught on this phone */

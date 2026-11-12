@@ -431,7 +431,7 @@ export class BossBot {
 const nearMinion = (bot: BossBot, range = 130): Rect | null => {
   const p = bot.p;
   for (const e of bot.sim.e.enemies) {
-    if (e.defeated || e.id < 9000 || (e.koTimer ?? 0) > 0) continue;
+    if (e.defeated || !e.minion || (e.koTimer ?? 0) > 0) continue;
     if (Math.abs(e.x - p.x) < range && Math.abs(e.y - p.y) < 60) return { x: e.x - e.width / 2, y: e.y - e.height / 2, w: e.width, h: e.height };
   }
   return null;

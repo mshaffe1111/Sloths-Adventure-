@@ -522,10 +522,12 @@ export function worldReview(
   let fastest: { name: string; t: number } | null = null;
   let flowers: { name: string; f: number; ft: number } | null = null;
   const clean: string[] = [];
+  let recorded = 0;
   for (const l of cleared) {
     stats.stars += l.stars;
     const f = records[l.id]?.first;
     if (!f) continue;
+    recorded++;
     stats.time += f.t;
     stats.falls += f.ll;
     stats.flowers += f.fl;
@@ -534,6 +536,9 @@ export function worldReview(
     if (f.ft > 0 && (!flowers || f.fl / f.ft > flowers.f / flowers.ft)) flowers = { name: l.name, f: f.fl, ft: f.ft };
     if (f.ll === 0 && f.hl === 0) clean.push(l.name);
   }
+  // the time, falls and petal totals stand beside "cleared/total stages": shown only when every cleared stage has its record (a save
+  // from before the records began has some stages without one), or they would be the totals of a few stages read as the world's
+  if (recorded < cleared.length) Object.assign(stats, { time: 0, falls: 0, flowers: 0, flowerTotal: 0 });
   const best: string[] = [];
   if (clean.length) best.push(clean.length === 1 ? `Not a scratch in ${clean[0]}.` : `Not a scratch in ${num(clean.length)} stages.`);
   if (fastest) best.push(`Quickest: ${fastest.name}, in ${fmtTime(fastest.t)}.`);

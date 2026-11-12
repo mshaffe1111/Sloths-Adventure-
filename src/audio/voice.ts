@@ -6,7 +6,7 @@
  * arrived its lines are simply silent. (Loaded on demand by the conductor, like the other recordings: the file lists here are Vite's.)
  */
 import type { AudioCore } from './core.ts';
-import { bytesOf } from './sampleLoader.ts';
+import { bytesOf } from './assetFetch.ts';
 import { decode } from './sfxRecLoader.ts';
 import { bank } from './voiceBank.ts';
 import { cutTakes } from './voiceCut.ts';

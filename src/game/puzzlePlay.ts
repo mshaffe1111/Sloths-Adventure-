@@ -57,6 +57,12 @@ export interface KitHost {
   easy: boolean;
   /** a Dot line, once per stage (`key` remembers it); Meeca's stage says it as her thought, or in the speaker's bubble */
   tip(key: string, text: TipLine, seconds: number): void;
+  /**
+   * a line that answers the moment (the stuck help: her nudge, then the move): said whenever it applies, on every run, never kept in the
+   * once-per-stage memory (tipMemory.ts: a player stuck in the same room on a later run got no help, audit P-05). A host without it says
+   * it as a tip.
+   */
+  help?(key: string, text: TipLine, seconds: number): void;
   /** which way his thumb steers now (-1, 0, 1): a trap chair counts the wiggles */
   steer?: number;
   /**
@@ -115,6 +121,11 @@ interface ItemRun {
   fromSource: boolean;
   /** in flight from a throw (it lands with a noise if it is a noisy thing), not from a set-down or a drop */
   thrown: boolean;
+  /**
+   * in flight from his own hands (a throw or a set-down): its quiet landing is a failed try (STUCK.fails). A fresh one dropping from
+   * its source, a trader's drop or a fall when its ground goes is not his try (audit P-06: one lost throw counted as two)
+   */
+  tried: boolean;
   /** the trader that holds it at the start (an index), or -1 */
   trader: number;
 }
@@ -331,10 +342,13 @@ export class KitPlay {
   /** the world the pieces are drawn for, and the looks the stage's roll picked (artRoll.ts) */
   private readonly look: { world: number; stone: KitArtName };
   private readonly platforms: Platform[];
+  /** where each pushed log lay when the stage was built: a room's reset post puts its logs back there */
+  private readonly logHome: Map<Platform, { x: number; y: number }>;
 
   constructor(kit: KitExtras, platforms: Platform[], world: KitWorld = {}) {
     const byId = new Map(platforms.map((p) => [p.id, p]));
     this.platforms = platforms;
+    this.logHome = new Map(platforms.filter((p) => p.push).map((p) => [p, { x: p.x, y: p.y }]));
     // (the layout roll, as the rooms stand: a retry of the same roll builds them in the same places, a fresh roll moves them)
     const roll = kit.rooms.reduce((s, r) => s + Math.round(anchorAt(r.left, byId)?.x ?? 0), 0);
     const w = world.world ?? 0;
@@ -445,7 +459,7 @@ export class KitPlay {
         const home = { plat, x: a.x, y: a.y };
         room.items.push({
           spec: pc, variant: pc.variant, r: ITEM[pc.variant].r, mode: tr ? 'trader' : 'rest', plat, x: a.x, y: a.y, body: { x: 0, y: 0, vx: 0, vy: 0 }, acc: 0,
-          knocked: new Set(), flipped: new Set(), wait: 0, basket: -1, spin: 0, home, fromSource: !!src, thrown: false, trader: ti,
+          knocked: new Set(), flipped: new Set(), wait: 0, basket: -1, spin: 0, home, fromSource: !!src, thrown: false, tried: false, trader: ti,
         });
       }
       this.rooms.push(room);
@@ -729,7 +743,7 @@ export class KitPlay {
         // (what it wants is the room's nudge, in Dot's bubble: no words floating in the world)
         if (!t.done) consider(t.x, t.y, () => h.float('?', t.x, t.y - 120, '#fde68a'));
       });
-      room.resets.forEach((r) => consider(r.x, r.y, () => this.resetRoom(room, h, platforms)));
+      room.resets.forEach((r) => consider(r.x, r.y, () => this.resetRoom(room, h)));
       // a teapot: a tap by it tips it over (rude), for good
       room.teapots.forEach((tp) => {
         if (!tp.tipped) consider(tp.x, tp.y, () => this.tip(room, tp, h));
@@ -773,13 +787,24 @@ export class KitPlay {
   private yawnAt = -1;
   private yawnRoom: RoomRun | null = null;
 
-  /** a room's line for a moment, the first time it comes (`again`: every time, though only once in a row) */
-  private told(room: RoomRun, key: keyof NonNullable<RoomSpec['tips']>, h: KitHost, seconds: number, again = false) {
+  /**
+   * a shut room gate's door or the wall standing on it: not a face a second jump climbs. The engine's wall helper ("jump twice") reads
+   * only the 118 px door and stays quiet here; the room's own lines explain a locked exit (audit P-03)
+   */
+  shutGate(q: Platform): boolean {
+    for (const r of this.rooms) for (const g of r.gates) if (!g.open && (g.door === q || g.wall === q)) return true;
+    return false;
+  }
+
+  /** a room's line for a moment, the first time it comes (`again`: every time, though only once in a row; `help`: stuck help, KitHost.help) */
+  private told(room: RoomRun, key: keyof NonNullable<RoomSpec['tips']>, h: KitHost, seconds: number, again = false, help = false) {
     const line = room.spec.tips?.[key];
     if (!line) return;
     if (room.told.has(key) && !again) return;
     room.told.add(key);
-    h.tip(`kit:${room.spec.id}:${key}${again ? `:${room.cups}` : ''}`, line, seconds);
+    const k = `kit:${room.spec.id}:${key}${again ? `:${room.cups}` : ''}`;
+    if (help && h.help) h.help(k, line, seconds);
+    else h.tip(k, line, seconds);
   }
 
   private pickUp(room: RoomRun, ri: number, ii: number, h: KitHost) {
@@ -852,6 +877,7 @@ export class KitPlay {
       g.mode = 'fly';
       g.acc = 0;
       g.thrown = false;
+      g.tried = false;
       g.knocked = new Set();
       g.flipped = new Set();
     }
@@ -877,6 +903,7 @@ export class KitPlay {
     // (World 2: thrown up near a hanging cage's counter-basket, it goes into the basket, whichever way he faces)
     if (kind === 'up') aimUp(it.body, this.flightWorld(room, platforms));
     it.thrown = true;
+    it.tried = true;
     it.mode = 'fly';
     it.acc = 0;
     it.knocked = new Set();
@@ -912,6 +939,7 @@ export class KitPlay {
     const x = setDownX(p.x, f, plateXs, reach);
     it.body = { x, y: p.y - 4, vx: 0, vy: 0 };
     it.thrown = false;
+    it.tried = true;
     it.mode = 'fly';
     it.acc = 0;
     it.knocked = new Set();
@@ -919,10 +947,16 @@ export class KitPlay {
     h.sfx('drop');
   }
 
-  /** start the room again: things back where they started, the beetles awake at home, the levers, gates and lifts as they were */
-  private resetRoom(room: RoomRun, h: KitHost, platforms: readonly Platform[]) {
-    void platforms;
+  /** start the room again: things back where they started, the beetles awake at home, the levers, gates and lifts as they were, and
+   *  the logs it is pushed with back where they lay (audit C P-02: a seesaw room's log walked into the wrong way ended flush against
+   *  a bank where nobody could stand to push it back, and the post moved every piece but the log: only leaving the stage got him out) */
+  private resetRoom(room: RoomRun, h: KitHost) {
     if (this.held && this.held.room === room.ri) this.held = null;
+    for (const [lg, at] of this.logHome) {
+      if (lg.broken || lg.push!.min > room.box.x1 || lg.push!.max < room.box.x0) continue;
+      lg.x = at.x;
+      lg.y = at.y;
+    }
     for (const it of room.items) this.home(it);
     for (const b of room.beetles) b.st = { mode: 'idle', x: b.home, plat: b.st.plat, dir: -1, t: 0, food: -1 };
     for (const l of room.levers) l.on = !!l.spec.on;
@@ -953,6 +987,8 @@ export class KitPlay {
 
   /** a lost thing: it comes back to its source a moment later (one with no source is gone until the room starts again) */
   private lose(room: RoomRun, it: ItemRun, h: KitHost) {
+    // (one failed try, counted here: what comes back from its source next is not another)
+    it.tried = false;
     if (it.trader >= 0) {
       // (what a trader dropped comes back by the trader's stump: the trade is never undone)
       this.byTrader(room, it);
@@ -1075,14 +1111,16 @@ export class KitPlay {
               it.x = end.x;
               it.y = byId(end.plat)?.y ?? it.body.y;
               h.sfx('land');
-              landedQuiet = true;
+              if (it.tried) landedQuiet = true;
               // a thrown stone, pebble or acorn lands with a clack the watchers hear (noise.ts)
               if (it.thrown && ITEM[it.variant].noisy) this.noise(it.x, it.y, 'land', h);
             } else this.lose(room, it, h);
             it.thrown = false;
+            it.tried = false;
           } else if (end.kind === 'basket') {
             it.mode = 'basket';
             it.basket = end.idx;
+            it.tried = false;
             h.sfx('drop');
           } else this.lose(room, it, h);
         }
@@ -1271,7 +1309,7 @@ export class KitPlay {
         // Dot's next step (DOT-2): the first time a nudge that points at the piece, the next time the move (her help setting decides
         // whether the move is said: Help only)
         room.helped++;
-        this.told(room, room.helped === 1 ? 'nudge' : 'move', h, 4);
+        this.told(room, room.helped === 1 ? 'nudge' : 'move', h, 4, false, true);
         room.calm = 0;
         room.turns = 0;
         room.fails = 0;

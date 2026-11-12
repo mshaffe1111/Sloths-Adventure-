@@ -12,7 +12,8 @@ import { ClrChips, ClrRibbon, useShortScreen, type ChipSpec } from './ClrParts.t
 import { floraChip, praiseFor, totalKills } from './stageSummary.ts';
 import { ModeChip } from './ModeChip.tsx';
 import { confettiPieces, type ConfettiPiece } from './fx/confetti.ts';
-import { COUNT_MS, COUNT_START_MS, countProgress, countValue, medalsAtMs, starTimes, tickTimes } from './fx/countUp.ts';
+import { COUNT_MS, COUNT_START_MS, countProgress, countValue, medalsAtMs, starTimes } from './fx/countUp.ts';
+import { createCardClock, DONE_MS, type CardClock } from './fx/cardClock.ts';
 import { BadgeMedal } from './BadgeMedal.tsx';
 import { KitPiece } from './icons/index.tsx';
 import type { BadgeDef } from '../game/badges.ts';
@@ -102,59 +103,38 @@ const Confetti: React.FC<{ stars: number }> = React.memo(({ stars }) => {
 });
 
 /**
- * The card's clock (fx/countUp.ts): ms since it opened, ticking each frame until the medals are in, with the sounds on the same
- * timeline (a soft tick while the numbers count, a chime as they land, a ring for each star, the medal chime). skip() jumps to the end.
- * With motion turned down it starts at the end: final numbers, the stars already up.
+ * The card's clock (fx/cardClock.ts): ms since it opened, with the sounds on the same timeline; skip() jumps to the end. With motion
+ * turned down it starts at the end: final numbers, the stars already up. The medals may be known a moment after the card opens
+ * (App.tsx works them out in its own effect): the clock then runs on until their row is in.
  */
-const DONE_MS = 1e6;
 function useCardClock(stars: number, hasMedals: boolean, score: number): { ms: number; skip: () => void } {
   const reduced = React.useMemo(() => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, []);
   const [ms, setMs] = React.useState(reduced ? DONE_MS : 0);
-  const timers = React.useRef<number[]>([]);
-  const raf = React.useRef(0);
-  const clear = React.useCallback(() => {
-    timers.current.forEach((id) => window.clearTimeout(id));
-    timers.current = [];
-    cancelAnimationFrame(raf.current);
-  }, []);
+  const clock = React.useRef<CardClock | null>(null);
   React.useEffect(() => {
-    const end = hasMedals ? medalsAtMs(stars) : Math.max(COUNT_START_MS + COUNT_MS, ...starTimes(stars));
-    const at = (t: number, f: () => void) => timers.current.push(window.setTimeout(f, t));
-    if (reduced) {
-      // (no count to hear: the stars ring together, as the card shows them)
-      if (stars > 0) at(200, () => sound.playStar(stars));
-      if (hasMedals) at(500, () => sound.playShrineUnlocked());
-      return clear;
-    }
-    for (const t of tickTimes(score)) at(t, () => sound.playUiTap());
-    at(COUNT_START_MS + COUNT_MS, () => sound.playUiConfirm());
-    starTimes(stars).forEach((t, i) => at(t, () => sound.playStar(i + 1)));
-    if (hasMedals) at(medalsAtMs(stars), () => sound.playShrineUnlocked());
-    const t0 = performance.now();
-    let last = -1;
-    const step = () => {
-      const now = performance.now() - t0;
-      // (stepped at the game's 30 fps: the card re-draws a few pieces each step, not every display frame)
-      if (now - last >= 33) {
-        last = now;
-        setMs(now);
-      }
-      if (now < end + 50) raf.current = requestAnimationFrame(step);
-      else done.current = true;
-    };
-    raf.current = requestAnimationFrame(step);
-    return clear;
+    const c = createCardClock({
+      stars,
+      score,
+      reduced,
+      host: {
+        now: () => performance.now(),
+        setTimeout: (f, t) => window.setTimeout(f, t),
+        clearTimeout: (id) => window.clearTimeout(id),
+        raf: (f) => requestAnimationFrame(f),
+        cancelRaf: (id) => cancelAnimationFrame(id),
+        setMs,
+      },
+      sounds: { tick: () => sound.playUiTap(), counted: () => sound.playUiConfirm(), star: (n) => sound.playStar(n), medals: () => sound.playShrineUnlocked() },
+    });
+    clock.current = c;
+    return c.dispose;
     // (once, as the card opens)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const done = React.useRef(reduced);
-  const skip = React.useCallback(() => {
-    if (done.current) return;
-    done.current = true;
-    clear();
-    if (stars > 0) sound.playStar(stars);
-    setMs(DONE_MS);
-  }, [clear, stars]);
+  React.useEffect(() => {
+    if (hasMedals) clock.current?.medals();
+  }, [hasMedals]);
+  const skip = React.useCallback(() => clock.current?.skip(), []);
   return { ms, skip };
 }
 

@@ -17,11 +17,9 @@ import { forgetLayout, layoutForEntry } from './game/layoutMemory.ts';
 import { learnedSkills, newlyLearned, type SkillDef, type SkillId } from './game/skills.ts';
 import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
-import { LessonCard } from './components/LessonCard.tsx';
 import { Wayside } from './components/Wayside.tsx';
-import type { GuideFeed } from './components/dot/DotGuide.tsx';
+import type { GuideFeed, LessonFeed } from './components/dot/DotGuide.tsx';
 import { MeecaWords } from './components/MeecaWords.tsx';
-import type { LessonId } from './game/lessons.ts';
 import { controlStyle, subscribeControls, type ControlStyle } from './game/controlPrefs.ts';
 import type { CoachStep } from './game/touchCoach.ts';
 import { ControlSwitch } from './components/ControlSwitch.tsx';
@@ -35,7 +33,7 @@ import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
 import { BossIntroCard } from './components/BossCards.tsx';
 import { TAP_GUARD_MS } from './components/GameOverCard.tsx';
-import { sound } from './game/audio.ts';
+import { sound, storyScreen } from './game/audio.ts';
 import { usePWAInstall } from './utils/usePWAInstall.ts';
 import { enterWideMode, leaveWideMode } from './game/wideMode.ts';
 import { FindReader } from './components/FindReader.tsx';
@@ -61,13 +59,13 @@ import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts
 import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { READY_MS, readyBuiltStage } from './game/stageReady.ts';
-import { releasesStage, resumeAction } from './components/screenFlow.ts';
+import { keepAwake, releasesStage, resumeAction, startLoaded, storyBefore } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
 import { keepScreenOn, nativeApp } from './game/appShell.ts';
 import { ConfirmDialog } from './components/nav/Nav.tsx';
 import { ScreenVeil, STAGE_LIVE_EVENT } from './components/ScreenVeil.tsx';
+import { FIRST_NOTE_KEY, bossIntroKey, gateStoryKey, guardianCardKey, midStoryKey, worldStoryKey } from './game/storyFlags.ts';
 
-const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
   try {
     return localStorage.getItem(worldStoryKey(w)) === '1';
@@ -84,7 +82,6 @@ function markWorldStorySeen(w: number) {
  * World 1's arrival scene (Dot's return and Meeca's first note) plays once, after stage 1-1 is first cleared:
  * a new player plays straight after the prologue, and the note arrives as the reward for the first stage.
  */
-const FIRST_NOTE_KEY = 'sloth_story_n1';
 function hasSeenFirstNote(): boolean {
   try {
     return localStorage.getItem(FIRST_NOTE_KEY) === '1';
@@ -98,7 +95,6 @@ function markFirstNoteSeen() {
   } catch {}
 }
 /** the scene halfway through a world (after its 5th stage) plays once */
-const midStoryKey = (w: number) => `sloth_story_m${w}`;
 function hasSeenMidStory(w: number): boolean {
   try {
     return localStorage.getItem(midStoryKey(w)) === '1';
@@ -107,7 +103,6 @@ function hasSeenMidStory(w: number): boolean {
   }
 }
 /** a guardian's card comes after its scene the first time only, in each save (UI-5; key 11 is Thornbark) */
-const guardianCardKey = (lvl: LevelConfig) => `sloth_story_g${lvl.secret ? 11 : lvl.worldIndex}`;
 function hasSeenGuardianCard(lvl: LevelConfig): boolean {
   try {
     return localStorage.getItem(guardianCardKey(lvl)) === '1';
@@ -126,7 +121,6 @@ function markMidStorySeen(w: number) {
   } catch {}
 }
 /** a guardian's intro has been seen (a long one is shortened on the retries: storyBosses.ts RETRY_INTRO_LINES) */
-const bossIntroKey = (w: number) => `sloth_story_b${w}`;
 function hasSeenBossIntro(w: number): boolean {
   try {
     return localStorage.getItem(bossIntroKey(w)) === '1';
@@ -140,7 +134,6 @@ function markBossIntroSeen(w: number) {
   } catch {}
 }
 /** the scene at the guardian's door, after a world's ninth stage (World 10's gate), plays once */
-const gateStoryKey = (w: number) => `sloth_story_g${w}`;
 function hasSeenGateStory(w: number): boolean {
   try {
     return localStorage.getItem(gateStoryKey(w)) === '1';
@@ -182,7 +175,6 @@ export default function App() {
   const [allLevels, setAllLevels] = useState<LevelConfig[]>(() => generateAllLevels());
   const [activeLevel, setActiveLevel] = useState<LevelConfig>(() => allLevels[0]);
   const [selectedWorldId, setSelectedWorldId] = useState<number>(1);
-  const [showInstallGuide, setShowInstallGuide] = useState<boolean>(false);
 
   // where "Continue" goes: the first unlocked stage that has not been cleared yet (the last stage once all are)
   const resumeLevel = React.useMemo(
@@ -201,8 +193,13 @@ export default function App() {
     };
   }, [allLevels, resumeLevel]);
 
-  // a save file was just loaded: re-read everything the game keeps in storage
-  const onSaveLoaded = useCallback(() => {
+  /**
+   * the game in storage was just replaced (a save file loaded) or cleared (New Game): re-read every state kept from it, and forget the
+   * last game's run. ONE list for both, so a state added later cannot be missed in one of them (audit C saves #3: the journal records
+   * and the flashbacks seen were left out, and the old game's were written back into the new one). appStateReload.test.ts checks
+   * every state App.tsx loads from storage is re-read here.
+   */
+  function reloadGameState(): LevelConfig[] {
     const fresh = generateAllLevels();
     setAllLevels(fresh);
     setActiveLevel(fresh[0]);
@@ -215,7 +212,19 @@ export default function App() {
     setCosmetic(loadCosmetic());
     setFoundIds(loadFinds());
     setSkills(learnedSkills());
+    setPlayRecords(loadPlayRecords());
+    setMemoriesSeen(loadMemories());
     setNewSkills([]);
+    setFreshBadges([]);
+    setLastStats(null);
+    pendingStats.current = null;
+    failsRef.current = {};
+    return fresh;
+  }
+
+  // a save file was just loaded: re-read everything the game keeps in storage
+  const onSaveLoaded = useCallback(() => {
+    reloadGameState();
   }, []);
 
   // where the opening story was started from: the title's Story button returns to the title, a new game goes on to 1-1
@@ -223,19 +232,7 @@ export default function App() {
 
   // New Game: progress has just been cleared from storage; rebuild everything from it and begin at stage 1-1
   const onNewGame = useCallback((skipStory: boolean) => {
-    const fresh = generateAllLevels();
-    setAllLevels(fresh);
-    setActiveLevel(fresh[0]);
-    setSelectedWorldId(1);
-    setSecretFound(gateFound());
-    setThornHeart(hasThornHeart());
-    setHp(maxHearts());
-    setMaxHp(maxHearts());
-    setBadgeStore(loadBadgeStore());
-    setCosmetic(loadCosmetic());
-    setFoundIds(loadFinds());
-    setSkills(learnedSkills());
-    setNewSkills([]);
+    const fresh = reloadGameState();
     if (skipStory) {
       startLevel(fresh[0]);
     } else {
@@ -298,13 +295,15 @@ export default function App() {
   const launchTimer = useRef(0);
   /** counts launches: a launch still waiting for its sheets is dropped when another starts or a menu comes up meanwhile */
   const launchSeq = useRef(0);
+  // the pause menu is up (set by pauseGame, cleared by Resume and by each launch): a stage that finishes loading meanwhile starts paused
+  const pausedRef = useRef(false);
   /** a stage is being played right now (stagePreload.ts then draws nothing on the canvas) */
   const inPlay = useCallback(() => !!engineRef.current?.inPlay(), []);
   const meecaEngine = useCallback(() => engineRef.current, []);
   // the first-stage lesson (see game/touchCoach.ts): which step is showing, and for which kind of touch controls
   const [coachStep, setCoachStep] = useState<CoachStep>(null);
-  // a first-time lesson card (the stage has paused itself; see game/lessons.ts)
-  const [lessonId, setLessonId] = useState<LessonId | null>(null);
+  // a first-time lesson, for Dot to say in play (game/lessons.ts): numbered, as her lines are, so each is said once
+  const [lesson, setLesson] = useState<LessonFeed | null>(null);
   // counts every start of a stage, so the in-stage story lines begin fresh on a retry
   const [runId, setRunId] = useState(0);
   const [coachStyle, setCoachStyle] = useState<ControlStyle>(() => controlStyle());
@@ -360,10 +359,14 @@ export default function App() {
     });
   };
   const [reading, setReading] = useState<string | null>(null);
+  /** 1-1's help offer holds the stage (engine.ts onHelpOffer): the phone may sleep behind it */
+  const [helpOffer, setHelpOffer] = useState(false);
   /** the find on screen was the last of the 30 */
   const [readingCompletes, setReadingCompletes] = useState(false);
   /** true while a stage is paused because a find was just picked up (so closing the reader resumes it) */
   const pausedForFind = useRef(false);
+  /** finds kept in play whose reader has not opened yet (each: is it the last of the 30) */
+  const findsToShow = useRef(new Map<string, boolean>());
   const closeReader = () => {
     setReading(null);
     setReadingCompletes(false);
@@ -387,7 +390,8 @@ export default function App() {
   useEffect(() => {
     // after a stage ends (the result is saved by now), or when the saved game changes: hand out whatever is newly earned
     const stats = pendingStats.current;
-    if (stats && screen !== 'victory' && screen !== 'game_over' && screen !== 'boss_defeat') return;
+    // (a stage left with its run under way is filed on the screen it was left for)
+    if (stats && !stats.left && screen !== 'victory' && screen !== 'game_over' && screen !== 'boss_defeat') return;
     pendingStats.current = null;
     const base = stats ? recordStage(badgeStore, stats) : badgeStore;
     const r = award(base, { levels: allLevels, gateFound: secretFound, thornHeart, finds: foundIds, stage: stats ?? undefined, cakeFree: !anyCakeEaten() }, Date.now());
@@ -395,8 +399,8 @@ export default function App() {
     if (!changed) return;
     setBadgeStore(r.store);
     saveBadgeStore(r.store);
-    // the journal's record of how this stage went (its first clear is kept as it happened)
-    if (stats?.id) {
+    // the journal's record of how this stage went (its first clear is kept as it happened; a stage left unfinished is not a play)
+    if (stats?.id && !stats.left) {
       const [w, m] = stats.id.split('-').map(Number);
       const here = ALL_FINDS.filter((f) => f.world === w && findStage(w, f.kind) === m && foundIds.includes(f.id)).map((f) => f.id);
       const rec = withRun(playRecords[stats.id] ?? null, stats, { finds: here, medals: r.fresh.map((b) => b.id), now: Date.now() });
@@ -523,9 +527,8 @@ export default function App() {
     sound.setWorld(w);
     if (screen === 'playing' || screen === 'paused') sound.setAmbient(worldAmbient);
     else if (screen === 'title' || screen === 'world_map') sound.setAmbient('gentle_breeze');
-    else if (screen === 'world_story' || screen === 'world_mid' || screen === 'world_gate' || screen === 'boss_intro' || screen === 'boss_defeat') sound.setAmbient(worldAmbient);
-    else if (screen === 'story_cutscene') sound.setAmbient('gentle_breeze');
-    else sound.setAmbient(null);
+    // (a story's ambience is its own, picture by picture: StoryPlayer)
+    else if (!storyScreen(screen)) sound.setAmbient(null);
   }, [screen, activeLevel, musicSalt]);
 
   // the opening splash waits for the title's pictures; any other first screen (a link straight into a stage) lets it go at once
@@ -569,10 +572,11 @@ export default function App() {
     else if (screen === 'title' && !document.querySelector('.pm-scrim, .ui-scrim, .nv-scrim')) setAskLeave(true);
     else esc();
   };
-  // the Android app keeps the screen on only while a stage is played; a menu, the map or a story lets the phone sleep (KeepAwakePlugin.java)
+  // the Android app keeps the screen on only while a stage is played; a menu, the map, a story, a find's reader or the help offer lets
+  // the phone sleep (KeepAwakePlugin.java; screenFlow.ts keepAwake)
   useEffect(() => {
-    keepScreenOn(screen === 'playing');
-  }, [screen]);
+    keepScreenOn(keepAwake(screen, { reading: !!reading, offer: helpOffer }));
+  }, [screen, reading, helpOffer]);
   const androidAway = useRef<() => void>(() => {});
   androidAway.current = () => {
     if (screen === 'playing') pauseGame();
@@ -593,8 +597,8 @@ export default function App() {
       if (gone) add.forEach((h) => void h.remove());
       else subs.push(...add);
     });
-    // (sent by MainActivity.java: 'lost' when a call rings, an alarm sounds or another app plays; 'duck' when another app speaks for a
-    // moment, like directions; 'back' when the sound is ours again)
+    // (sent by AudioFocusPlugin.java: 'lost' when a call rings, an alarm sounds, another app plays or a request is refused; 'duck' when
+    // another app speaks for a moment, like directions; 'back' when the sound is ours again)
     const onFocus = (e: Event) => {
       const state = (e as Event & { state?: string }).state;
       sound.appHidden(state === 'lost', 'focus');
@@ -624,14 +628,8 @@ export default function App() {
         handleToggleMute();
         return;
       }
-      if (screen === 'title') {
-        // a dialog (Save & Load, New Game, the Menu) owns the keyboard while it is open
-        if (document.querySelector('.ui-scrim, .pm-scrim, .nv-scrim')) return;
-        if (e.code === 'Space' || e.code === 'Enter') {
-          e.preventDefault();
-          startLevel(resumeLevel);
-        }
-      } else if (screen === 'playing') {
+      // (the title: Space and Enter press its own Play, TitleScreen.tsx, through the how-to and the mode card like a tap)
+      if (screen === 'playing') {
         if (e.code === 'Escape' || e.code === 'KeyP') {
           e.preventDefault();
           pauseGame();
@@ -665,6 +663,8 @@ export default function App() {
   }, [screen, activeLevel, allLevels, resumeLevel, newSkills]);
 
   // Start a specific level
+  /** the game's first stage (the prologue plays before it) */
+  const firstStageId = allLevels[0].id;
   const startLevel = useCallback((lvl: LevelConfig) => {
     // a stage in another world lets the last world's sheets go before this one's story or boss intro loads its own (atlasLoader.ts)
     enterWorld(lvl.worldIndex);
@@ -676,15 +676,14 @@ export default function App() {
     setActiveLevel(lvl);
     setSelectedWorldId(lvl.worldIndex);
 
-    // First visit to a world: play its story beat, then continue
-    if (lvl.miniIndex === 1 && !hasSeenWorldStory(lvl.worldIndex)) {
-      setScreen('world_story');
-    } else if (lvl.objectiveType === 'boss_lair') {
-      // Boss showdown cutscene before the fight
-      setScreen('boss_intro');
-    } else {
-      launchEngine(lvl);
-    }
+    // the story before the stage, by whatever door it was entered (screenFlow.ts storyBefore): the prologue before the game's first
+    // stage (it goes on into that stage), a world's arrival scene on a first visit, a guardian's intro before the fight
+    const before = storyBefore(lvl, { firstStage: lvl.id === firstStageId, worldSeen: hasSeenWorldStory(lvl.worldIndex) });
+    if (before === 'prologue') {
+      setStoryFrom('new');
+      setScreen('story_cutscene');
+    } else if (before) setScreen(before);
+    else launchEngine(lvl);
   }, []);
 
   // dev only: jump straight into any level (for testing and screenshots); `layout` picks a roll (the designed one when left out)
@@ -828,7 +827,8 @@ export default function App() {
     enterWideMode();
 
     setCoachStep(null);
-    setLessonId(null);
+    setLesson(null);
+    setHelpOffer(false);
     // (a new stage starts with no boss: the last fight's name and bar must not show for a frame: UI-7)
     setBossInfo(null);
     setRunId((n) => n + 1);
@@ -841,6 +841,7 @@ export default function App() {
     setGuideLine(null);
     setDistanceRatio(0);
     setScreen('playing');
+    pausedRef.current = false;
     stageReleased.current = false;
 
     // the stage's picture sheets, loaded and decoded behind the menu (stagePreload.ts): what is still on its way gets a moment more,
@@ -878,7 +879,7 @@ export default function App() {
             }),
           onStageStats: (s) => {
             pendingStats.current = s;
-            setLastStats(s);
+            if (!s.left) setLastStats(s);
           },
           onProgressUpdate: (current, target, curScore, curHp, distRatio, curPowerUp, curPowerTimer) => {
             setCurrentCount(current);
@@ -898,18 +899,26 @@ export default function App() {
           onBossUpdate: (info) => setBossInfo((prev) => info ?? (prev ? { ...prev, hp: 0, entering: false } : null)),
           onCinematic: (on) => setCinematic(on),
           onCoach: (st) => setCoachStep(st),
-          onLesson: (id) => setLessonId(id),
+          onLesson: (id) => setLesson((l) => ({ id, n: (l?.n ?? 0) + 1 })),
+          onHelpOffer: (on) => setHelpOffer(on),
           onFind: (id) => {
-            // a new note, book or keepsake: keep it, pause the stage and show it. One already in the Library just gives its line of text.
+            // a new note, book or keepsake: kept at the touch, however the run then ends. One already in the Library just gives its line
+            // of text. (Its reader opens when stopping is safe: onFindShow. The snail has none.)
             const known = loadFinds();
             if (known.includes(id) || !FIND_BY_ID[id]) return;
             const next = withFind(known, id);
             saveFinds(next);
             setFoundIds(next);
-            if (FIND_BY_ID[id].kind === 'snail') return;
+            if (FIND_BY_ID[id].kind !== 'snail') findsToShow.current.set(id, allFound(next));
+          },
+          onFindShow: (id) => {
+            // pause the stage and show a find just kept
+            const completes = findsToShow.current.get(id);
+            if (completes === undefined) return;
+            findsToShow.current.delete(id);
             engineRef.current?.pause();
             pausedForFind.current = true;
-            setReadingCompletes(allFound(next));
+            setReadingCompletes(completes);
             setReading(id);
           },
           onSecret: () => {
@@ -934,7 +943,8 @@ export default function App() {
             }
 
             if (lvl.secret) {
-              // Thornbark beaten: the Thorn Heart, no stage to unlock
+              // Thornbark beaten: the Thorn Heart, no stage to unlock; his result is kept like any stage's (the journal reads its stars)
+              saveLevelProgress(lvl.id, stars, finalScore, timeSec);
               markThornHeart();
               setThornHeart(true);
               setMaxHp(maxHearts());
@@ -989,7 +999,7 @@ export default function App() {
           if (seq !== launchSeq.current || engineRef.current !== engine) return;
           const now = performance.now(), ms = (a: number, b: number) => Math.round(b - a);
           recorder.event('launch', `${lvl.id} sheets ${ms(launchAt, at.ready)} timer ${ms(at.ready, at.timer)} build ${ms(at.timer, at.built)} ready ${ms(at.built, now)} total ${ms(launchAt, now)}`);
-          engine.start();
+          startLoaded(engine, pausedRef.current);
           // (the screen's iris opens once the stage is drawing: ScreenVeil.tsx)
           window.dispatchEvent(new Event(STAGE_LIVE_EVENT));
         };
@@ -1068,6 +1078,7 @@ export default function App() {
 
   const pauseGame = () => {
     recorder.event('pause');
+    pausedRef.current = true;
     engineRef.current?.pause();
     sound.playPause(true);
     setScreen('paused');
@@ -1082,8 +1093,9 @@ export default function App() {
     }
     sound.playPause(false);
     setScreen('playing');
-    // a lesson card or a just-found note is still up: the stage stays still behind it, and closing it carries on
-    if (lessonId || (reading && pausedForFind.current)) return;
+    pausedRef.current = false;
+    // a just-found note is still up: the stage stays still behind it, and closing it carries on
+    if (reading && pausedForFind.current) return;
     engineRef.current?.resume();
   };
 
@@ -1189,13 +1201,8 @@ export default function App() {
       {/* Title Screen View */}
       {screen === 'title' && (
         <TitleScreen
-          onStartGame={() => {
-            // a brand-new player meets the story first
-            if (!resumeInfo && !hasSeenWorldStory(1)) {
-              setStoryFrom('new');
-              setScreen('story_cutscene');
-            } else startLevel(resumeLevel);
-          }}
+          // (a brand-new player meets the story first: startLevel plays the prologue before the first stage)
+          onStartGame={() => startLevel(resumeLevel)}
           resume={resumeInfo}
           onSaveLoaded={onSaveLoaded}
           onUnlockToggled={() => setAllLevels(generateAllLevels())}
@@ -1299,6 +1306,7 @@ export default function App() {
             setBossCard(false);
             launchEngine(activeLevel);
           }}
+          onBack={() => setScreen('world_map')}
         />
       )}
 
@@ -1494,25 +1502,13 @@ export default function App() {
           {activeLevel.id !== MEECA_STAGE_ID && <Wayside
             key={`${activeLevel.id}-${runId}`}
             level={activeLevel}
-            active={screen === 'playing' && !coachStep && !lessonId && !reading}
+            active={screen === 'playing' && !coachStep && !reading}
             ratio={distanceRatio}
             hp={hp}
             guide={guideLine}
             // Dot's guide: it reads the stage itself and takes the coach and lessons as her lines
-            dot={{ engine: () => engineRef.current, playing: screen === 'playing' && !reading, coachStep, coachStyle, lessonId, count: { cur: currentCount, target: targetCount } }}
+            dot={{ engine: () => engineRef.current, playing: screen === 'playing' && !reading, coachStep, coachStyle, lesson, count: { cur: currentCount, target: targetCount } }}
           />}
-          {screen === 'playing' && lessonId && (
-            <LessonCard
-              id={lessonId}
-              onClose={() => {
-                setLessonId(null);
-                // no clearing of the controls here: a thumb lifted while the card was up has already let go of what it held, and one
-                // still on the glass keeps doing what it was (clearing it left the recogniser thinking it steered while nothing moved,
-                // so the next touch did nothing; and it dropped a held jump in mid-air)
-                engineRef.current?.lessonClosed();
-              }}
-            />
-          )}
           {inputEngineRef.current && (
             <ControlSwitch inputEngine={inputEngineRef.current} world={activeLevel.worldIndex} />
           )}
@@ -1575,10 +1571,6 @@ export default function App() {
           onOpenTitle={() => {
             engineRef.current?.stop();
             setScreen('title');
-          }}
-          onViewStory={() => {
-            engineRef.current?.stop();
-            setScreen('story_cutscene');
           }}
         />
       )}

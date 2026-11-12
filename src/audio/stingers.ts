@@ -129,21 +129,6 @@ export const STINGS: Record<string, Sting> = {
       { voice: 'crash', bar: 0, step: 8, vel: 0.8 },
     ],
   },
-
-  /** the whole forest exhales: a short warm resolve (new world reached) */
-  worldReached: {
-    bpm: 96,
-    tonic: 'F4',
-    scale: 'major',
-    chords: ['F', 'C'],
-    chordInst: 'strings',
-    chordGain: 0.6,
-    lines: [
-      { inst: 'bell', gain: 0.7, rev: 0.6, bars: ["1':4 3':4 5':8", "7:4 2':4 1':8"] },
-      { inst: 'harp', gain: 0.7, rev: 0.4, bars: ['1:2 3:2 5:2 1\':2 3\':2 1\':2 5:2 3:2', '5,:2 7,:2 2:2 5:2 7:2 5:2 2:2 7,:2'] },
-    ],
-    hits: [{ voice: 'timpani', bar: 0, step: 0, vel: 0.7 }],
-  },
 };
 
 /**

@@ -10,7 +10,7 @@
 import { AudioCore } from '../../../../src/audio/core.ts';
 import { runFx } from '../../../../src/audio/sfx.ts';
 import { Ambience, type AmbientType } from '../../../../src/audio/ambience.ts';
-import { bytesOf } from '../../../../src/audio/sampleLoader.ts';
+import { bytesOf } from '../../../../src/audio/assetFetch.ts';
 
 const files = import.meta.glob('../../../../src/assets/sfx/*.mp3', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 // the game set exists only on branches that have it (polish-audio): optional

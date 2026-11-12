@@ -2,7 +2,8 @@ import type { WorldInfo, LevelConfig, ObjectiveType } from './types.ts';
 import { testUnlockOn } from './testUnlock.ts';
 import { targetSeconds } from './stageTime.ts';
 import { STAGE_PLAN, stageSpec } from './stagePlan.ts';
-import { withExtraStages } from './extraStages.ts';
+import { EXTRA_STAGES, withExtraStages } from './extraStages.ts';
+import { readStageResult } from './stageBest.ts';
 
 export const WORLDS_DATA: WorldInfo[] = [
   {
@@ -355,13 +356,9 @@ export function generateAllLevels(): LevelConfig[] {
       let bestTime = 0;
 
       try {
-        const saved = localStorage.getItem(`sloth_lvl_${id}`);
+        const saved = readStageResult(localStorage.getItem(`sloth_lvl_${id}`));
         if (saved) {
-          const parsed = JSON.parse(saved);
-          completed = !!parsed.completed;
-          stars = parsed.stars || 0;
-          highScore = parsed.highScore || 0;
-          bestTime = parsed.bestTime || 0;
+          ({ completed, stars, highScore, bestTime } = saved);
           unlocked = true;
         }
         // If prior stage is completed, this one is unlocked
@@ -400,4 +397,18 @@ export function generateAllLevels(): LevelConfig[] {
   }
 
   return all;
+}
+
+/**
+ * the stages the game's totals count (the save summary's stages and stars, The End's expedition score): each world's stages
+ * (stagePlan.ts, and the guardian's lair) and the extra stages. Not the secret stage: its result is kept for the journal, but the
+ * totals read as they did before it was (whether he should count is the lead's call; thornbarkTotals.test.ts)
+ */
+let stageIds: Set<string> | null = null;
+export function realStageIds(): Set<string> {
+  stageIds ??= new Set([
+    ...WORLDS_DATA.flatMap((w) => Array.from({ length: (STAGE_PLAN[w.id] ?? []).length + 1 }, (_, i) => `${w.id}-${i + 1}`)),
+    ...EXTRA_STAGES.map((e) => e.config().id),
+  ]);
+  return stageIds;
 }

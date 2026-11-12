@@ -79,6 +79,7 @@ test("a world's review sums the stages and finds the best moments", () => {
   const recs = {
     '1-1': withRun(null, run({ id: '1-1', livesLost: 0, heartsLost: 0, timeSec: 60 }), { finds: [], medals: [], now: 0 }),
     '1-2': withRun(null, run({ id: '1-2', floraCollected: 40 }), { finds: [], medals: [], now: 0 }),
+    '1-3': withRun(null, run({ id: '1-3', livesLost: 0, floraCollected: 10 }), { finds: [], medals: [], now: 0 }),
   };
   const r = worldReview(1, stages, recs, { teaser: 'A petal.', creatures: ['Snake'], finds: 1, findTotal: 3 });
   assert.equal(r.stats.cleared, 3);
@@ -87,4 +88,17 @@ test("a world's review sums the stages and finds the best moments", () => {
   assert.ok(r.best.some((b) => b.includes('S1')));
   assert.ok(r.best.some((b) => b.includes('Every petal in S2')));
   assert.equal(r.done, false);
+});
+
+test("a world's totals are not shown when some cleared stages have no record (a save older than the records): audit C things-11", () => {
+  const stages = [1, 2, 3].map((m) => ({ id: `1-${m}`, name: `S${m}`, worldIndex: 1, miniIndex: m, completed: true, stars: 3 }));
+  const recs = { '1-2': withRun(null, run({ id: '1-2', floraCollected: 40, timeSec: 250 }), { finds: [], medals: [], now: 0 }) };
+  const r = worldReview(1, stages, recs, { creatures: [], finds: 0, findTotal: 3 });
+  assert.equal(r.stats.cleared, 3);
+  // (JournalBook.tsx shows walking time and falls only when time > 0, petals only when flowerTotal > 0)
+  assert.deepEqual(
+    { time: r.stats.time, falls: r.stats.falls, flowers: r.stats.flowers, flowerTotal: r.stats.flowerTotal },
+    { time: 0, falls: 0, flowers: 0, flowerTotal: 0 },
+    "3/3 stages beside one stage's walking time, falls and petals reads as the world's",
+  );
 });

@@ -139,14 +139,17 @@ for (const f of fs.readdirSync(path.join(root, 'reference/methods'))) {
 
 // ---- 3. known and allow lists
 const listFiles = [];
-(function walk(dir) {
+// (src and tools: a gate's list may live beside its tool, as tools/engine/generality.known.json does, R-165.123)
+function walkLists(dir) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     if (['node_modules', '.git', 'dist'].includes(e.name)) continue;
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) walk(p);
+    if (e.isDirectory()) walkLists(p);
     else if (/\.(known|allow)\.json$/.test(e.name)) listFiles.push(rel(p));
   }
-})(path.join(root, 'src'));
+}
+walkLists(path.join(root, 'src'));
+walkLists(path.join(root, 'tools'));
 listFiles.push('tools/perf/clipknown.json');
 const size = (j) => (Array.isArray(j) ? j.length : Array.isArray(j.known) ? j.known.length : Object.keys(j).length);
 for (const f of listFiles) {

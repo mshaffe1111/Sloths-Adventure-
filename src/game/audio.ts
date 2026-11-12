@@ -10,14 +10,14 @@
  *   voice.ts       the story's voices: each character's babble (voiceLine.ts says when a syllable is due)
  */
 import type { Tone } from '../audio/voiceLine.ts';
-import { Conductor, type SceneOptions } from '../audio/conductor.ts';
+import { Conductor } from '../audio/conductor.ts';
 import type { AmbientType } from '../audio/ambience.ts';
 import { enemyIndex, hitArg, type Material } from '../audio/combat.ts';
 import { CALM, type MusicState } from '../audio/adaptive.ts';
-import type { CueName } from '../audio/cues.ts';
 import { PUZZLE_KIND } from '../audio/sfxGame.ts';
 import { WORLD_SURFACE } from '../audio/sfxRec.ts';
 import { holdScene, sceneForPanel, sceneForScreen, type Held, type PanelInfo } from '../audio/scenes.ts';
+import { wantAudioFocus } from './audioFocus.ts';
 
 type PredatorKind = 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra';
 
@@ -26,6 +26,12 @@ export function isBackButton(btn: Element): boolean {
   if (btn.classList?.contains('ui-x') || btn.classList?.contains('nv-x')) return true;
   const label = (btn.getAttribute?.('aria-label') ?? '').trim().toLowerCase();
   return label.startsWith('back') || label.startsWith('close');
+}
+
+/** the screens a story plays on (StoryPlayer, App.tsx): their music, its level and the ambience are the story's own, picture by picture */
+const STORY_SCREENS: ReadonlySet<string> = new Set(['story_cutscene', 'world_story', 'world_mid', 'world_gate', 'boss_intro', 'boss_defeat', 'ending_story', 'ending_tag', 'memory']);
+export function storyScreen(screen: string): boolean {
+  return STORY_SCREENS.has(screen);
 }
 
 class SoundEngine {
@@ -38,8 +44,17 @@ class SoundEngine {
       // get the audio ready now, so the first tap only has to switch it on (and so it just plays where the browser allows sound without a tap)
       window.setTimeout(() => this.c.unlock(), 0);
       // a key press wakes the sound too, but it is not a press on the "Sound" chip, so only touches and clicks count as `fromTap`
-      for (const ev of ['pointerdown', 'touchend', 'keydown', 'click'] as const) window.addEventListener(ev, () => this.c.unlock(ev !== 'keydown'), { capture: true, passive: true });
+      for (const ev of ['pointerdown', 'touchend', 'keydown', 'click'] as const) window.addEventListener(ev, () => this.onInput(ev !== 'keydown'), { capture: true, passive: true });
+      // the Android app holds the audio focus only while the game has sound (a muted game leaves the player's own music playing)
+      this.focus(!this.c.muted);
     }
+  }
+  /** Android's audio focus wanted (sound on) or let go (muted): audioFocus.ts */
+  private focus: (on: boolean) => void = wantAudioFocus;
+  private onInput(fromTap: boolean) {
+    this.c.unlock(fromTap);
+    // Android sends nothing after a permanent loss of the focus (another app's music started): the player's next touch asks again
+    if (this.away.has('focus') && !this.c.muted) this.focus(true);
   }
 
   // ------------------------------------------------------------------ settings
@@ -50,6 +65,7 @@ class SoundEngine {
     // a tap that only woke the sound up is not also a press on "Sound": otherwise the first tap on it would mute the game
     if (performance.now() - this.c.wokeAt < 700) return this.c.muted;
     this.c.setMuted(!this.c.muted);
+    this.focus(!this.c.muted);
     return this.c.muted;
   }
   /** sound is wanted but still waiting for a first tap */
@@ -81,22 +97,32 @@ class SoundEngine {
   }
 
   // ------------------------------------------------------------------ music
-  scene(id: string | null, opts?: SceneOptions) {
-    this.held = null;
-    this.c.setScene(id, opts);
-  }
   /** music for a non-cutscene screen (cutscenes choose their own, panel by panel) */
   screen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1, salt = 0, objective?: string) {
-    this.held = null;
-    this.c.storyMusic('keep');
     // the stage's state (a dark zone, a danger, a boss phase) belongs to that stage: any other screen, or another stage, starts calm
     const stage = screen === 'playing' || screen === 'paused' ? levelId : '';
     if (stage !== this.stateStage) this.c.setMusicState(CALM);
     this.stateStage = stage;
-    const s = sceneForScreen(screen, world, isBoss, levelId, mini, salt, objective);
+    // a story's player owns its music, its level and its ambience while it is up (its first picture's effect runs before this one)
+    if (storyScreen(screen)) {
+      this.c.setPaused(false);
+      this.inPlay = false;
+      this.c.setLowHealth(false);
+      return;
+    }
+    this.held = null;
+    this.c.storyMusic('keep');
+    // (the pause menu plays the stage's own piece, muffled: SN-6. Asked for again, not "kept", so a look in the satchel from the pause menu
+    // does not leave the satchel's loop playing under it)
+    const s = sceneForScreen(screen === 'paused' ? 'playing' : screen, world, isBoss, levelId, mini, salt, objective);
     if (s) this.c.setScene(s.id, { intensity: s.intensity, seed: s.seed, tempo: s.tempo, form: s.form });
     this.c.setPaused(screen === 'paused');
+    this.inPlay = screen === 'playing';
+    this.c.setLowHealth(this.lowHealth && this.inPlay);
   }
+  /** the stage is being played (not paused, nor under a view opened from the pause menu): the low-health heartbeat beats only then */
+  private inPlay = false;
+  private lowHealth = false;
   private stateStage = '';
   /** the story piece being held (see scenes.ts holdScene); cleared when any other music is chosen */
   private held: Held | null = null;
@@ -105,8 +131,9 @@ class SoundEngine {
     this.held = h.held;
     const s = h.scene;
     this.c.setScene(s.id, { intensity: s.intensity });
-    // the storm belongs to the storm panels only: the quiet scenes after it must not keep the thunder
-    this.c.setAmbient(panel.chapter.toUpperCase().startsWith('THE STORM') ? 'thunderstorm' : 'gentle_breeze');
+    // the storm belongs to the storm pictures only (the picture's own mood, never its chapter's title): the quiet scenes after it must
+    // not keep the thunder
+    this.c.setAmbient(panel.scene.mood === 'storm' ? 'thunderstorm' : 'gentle_breeze');
     this.c.warmStoryStings();
   }
   /** the story's hand on the music under a picture: keep, under (half), silence, swell (storyDirect.ts) */
@@ -120,20 +147,13 @@ class SoundEngine {
   setIntensity(v: number) {
     this.c.setIntensity(v);
   }
-  /** the music's speed, 1 = as written (a boss enraging runs it faster) */
-  setTempo(scale: number) {
-    this.c.setTempo(scale);
-  }
   setLowHealth(on: boolean) {
-    this.c.setLowHealth(on);
+    this.lowHealth = on;
+    this.c.setLowHealth(on && this.inPlay);
   }
   /** what is happening, for the music to follow (see audio/adaptive.ts): danger 0..1, dark 0..1, exit 0..1, puzzle 0..1, boss phase, mood */
   setMusicState(s: Partial<MusicState>) {
     this.c.setMusicState(s);
-  }
-  /** an in-key stinger: 'checkpoint', 'discovery', 'secret', 'lowHealth', 'bossAppear' (see audio/cues.ts) */
-  cue(name: CueName) {
-    this.c.cue(name);
   }
   setAmbient(type: AmbientType | null) {
     this.c.setAmbient(type);
@@ -195,9 +215,6 @@ class SoundEngine {
    *  card lands: SN-5) */
   playExitChime() { this.c.fx('star', 2); }
   playDefeat() { this.c.sting('defeat'); }
-  /** the old engine started and stopped one global ambience; the world now picks its own (see setAmbient) */
-  startAmbient() {}
-  stopAmbient() { this.c.setAmbient(null); }
 
   // ------------------------------------------------------------------ new
   playBossVictory() { this.c.sting('bossVictory'); }

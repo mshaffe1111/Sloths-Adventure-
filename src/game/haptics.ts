@@ -41,6 +41,8 @@ export const HAPTIC = {
   bossSlam: [25, 30, 60],
   checkpoint: [15, 70, 15],
   clear: [30, 60, 30, 60, 90],
+  /** the story's thunder as he lets go (StoryPlayer) */
+  thunder: [140],
 } as const;
 export type HapticKind = keyof typeof HAPTIC;
 
