@@ -17,7 +17,7 @@ import { listedStage } from '../../src/game/gen2/listed.ts';
 import { judgedOnArcs } from '../../src/game/gen2/reach.ts';
 import { searchYield } from './yield.ts';
 import { quietJudge, quietOf as quietAt } from './listRules.ts';
-import { listVersion, loadSeedList, packPlan, provenList, seedListError, provenSeeds, QUIET_MAX, seedListBreaches, SEED_LIST_MIN, stageParts } from '../../src/game/gen2/seedList.ts';
+import { hasSeedList, listVersion, loadSeedList, packPlan, provenList, seedListError, provenSeeds, QUIET_MAX, seedListBreaches, SEED_LIST_MIN, stageParts } from '../../src/game/gen2/seedList.ts';
 import { PROVEN_INDEX } from '../../src/game/gen2/provenIndex.ts';
 import { listFile, writeSeedList } from './seedlistFile.ts';
 import { firstRunVerdicts } from '../../src/game/gen2/verdicts.ts';
@@ -37,9 +37,10 @@ const cfg = generateAllLevels().find((l) => l.id === id)!;
 const also = quietJudge(cfg);
 const quietOf = (st: ReturnType<typeof buildGen2Stage>) => quietAt(cfg, st);
 if (process.argv.includes('--check')) {
-  // (the list is its own file, loaded as the game loads it, seedList.ts loadSeedList: a file that does not load, or is not the one the
-  // index names, fails here by name. Writing a list, below, needs no old list)
-  if (!(await loadSeedList(id))) { console.log(`seedlist ${id}: FAIL\n  the list did not load: ${seedListError(id) ?? 'no list for this stage in provenIndex.ts'}`); process.exit(1); }
+  // (the list is its own file, loaded as the game loads it, seedList.ts loadSeedList: a file the index names that does not load, or is not
+  // the one the index names, fails here by name. A listed stage with no list yet, no line in the index, goes on to the breaches below and
+  // fails there by name: 0 proven seeds. Writing a list, below, needs no old list)
+  if (hasSeedList(id) && !(await loadSeedList(id))) { console.log(`seedlist ${id}: FAIL\n  the list did not load: ${seedListError(id)}`); process.exit(1); }
   const L = provenList(id);
   const b = seedListBreaches(cfg, kit, provenSeeds(id), SEED_LIST_MIN, L ? { dict: L.dict, plans: L.plans } : undefined, also);
   // (the quiet line BINDS, the lead 11-06: every listed seed's longest quiet stretch on Normal, the outro excluded, at most QUIET_MAX s)

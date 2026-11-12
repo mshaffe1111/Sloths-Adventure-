@@ -13,6 +13,7 @@ import type { Judged11 } from './verdicts.ts';
 import { PROMISES_11 } from './promises11.ts';
 import { GEN2_STAGES } from './game.ts';
 import { w5Kit } from './worlds/w5.ts';
+import { w1World } from './worlds/w1.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import { validateStage } from '../levelCheck.ts';
 import { RealPlay } from '../realPlay.ts';
@@ -321,6 +322,11 @@ test('the put-back: on a ledge with a mushroom he is put back short of the mushr
     for (let i = 0; i < 60; i++) r.frame();
     assert.ok(r.p.grounded && Math.abs(r.p.y - at.y) < 2 && r.p.x < cap.x, `${setting}: he stands where he was put, not thrown by the cap (${Math.round(r.p.x)}, ${Math.round(r.p.y)})`);
   }
+});
+
+test("the pit painter is the world's data (INT-E): World 1's kit carries it, so dropsOf draws its thorn bed and pits; a world with none paints nothing", () => {
+  assert.equal(w1World().manifest.pitPainter, 'w1Pits', 'w1World() copies its manifest field by field: the painter must be among them');
+  assert.equal(w5Kit(7).manifest.pitPainter, undefined);
 });
 
 test('general by data: no engine line says what the floor IS (the grep, counted against the base)', () => {
