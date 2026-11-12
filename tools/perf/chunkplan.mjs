@@ -29,7 +29,7 @@ export const LAYERS = [
   // --- sound ---
   ['audio', /^src\/audio\//],
   // --- what every stage is built from ---
-  ['stagekit', /^src\/game\/(terrain|scenery|soil|envPlants|envKit|vectorArt|creatures|predators|levelCheck|life|physics|zones|items|flora|trees)\.ts$/],
+  ['stagekit', /^src\/game\/(terrain|scenery|soil|envPlants|envKit|vectorArt|creatures|predators|levelCheck|life|physics|zones|items|flora|trees|stageModes)\.ts$/],
   // each world's own pieces (sections, ground, art, lines) that do not reach a generator: 'parts' keeps a root out of the layer when it
   // imports one of the HUBS below, so a world's data never drags the generators into its file
   ['world-1-parts', /^src\/game\/(gen2\/worlds\/w1[A-Z.]|w1[A-Z]|mixer\/)/, 'parts'],
