@@ -4,7 +4,7 @@
 //   npx tsx --test tools/engine/library13.test.ts          (about half a minute)
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CAST_13, TRAP_LINE, TWISTS, REFUSE_13, UNDER, config13, kitLib13, poolReport, roll, stageIdOf, type Roll13 } from './library13.ts';
+import { CAST_13, LINES_13, MISSION_13, TWISTS, REFUSE_13, UNDER, config13, kitLib13, poolReport, roll, stageIdOf, type Roll13 } from './library13.ts';
 import { NEW_STOOD_IN } from './library.ts';
 import { buildGen2Stage, missionGraph, planBudget, stagePool } from '../../src/game/gen2/pipeline.ts';
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -51,14 +51,17 @@ test('every roll is the designed level, on both settings: no throw, no error, th
 });
 
 test("the stage carries its cast: proto.cast.kinds is ['snake'], and Dot says the story keeper's line once", () => {
-  assert.equal(kitLib13(O).manifest.tips!.traps, TRAP_LINE);
+  assert.deepEqual(LINES_13, { traps: 'See that hive? Punch the vine, down it comes!', 'traps.then': "Don't worry, it only gives him a fright.", bare: 'No vine? Walk him to the end of his branch.' }, "the story keeper's words, verbatim");
+  for (const [id, words] of Object.entries(LINES_13)) assert.equal(kitLib13(O).manifest.tips![id], words);
+  assert.equal(MISSION_13, 'Clear the branches. Shake a vine and the snakes glide off.');
   // (her line for the first trap sprung rides on the built stage, from World 1's own data: the builder keeps it with the cast)
   const built: Any = buildGen2Stage({ config: config13(O) as Any, kit: kitLib13(O) as Any, seed: SEEDS[0], difficulty: 'normal' });
   assert.deepEqual(built.proto.cast.said, W1_CAST_SAID);
   assert.equal(W1_CAST_SAID.trap, 'Off he glides, not a scratch, just very offended!', "the story keeper's words, verbatim");
   each((r, name) => {
     assert.deepEqual(r.kinds, ['snake'], name);
-    assert.deepEqual(r.said.filter((m) => m === 'traps'), ['traps'], name);
+    // (the keeper's three lines, each once, in the level's order: the lesson's two at its flag, then the bare branch's)
+    assert.deepEqual(r.said.filter((m) => m in LINES_13), ['traps', 'traps.then', 'bare'], name);
     assert.deepEqual(r.said.filter((m) => REFUSE_13.some((x) => m.startsWith(x))), [], `${name}: a line or prop the stage refuses came with a shape`);
   });
 });
@@ -114,4 +117,25 @@ test('the arc is dealt the same on every seed: the lesson and its practice on th
     assert.equal(g.nodes.filter((n) => n.content).map((n) => `${n.job}:${n.content}`).join(' '), want, `seed ${seed}`);
     assert.deepEqual(g.nodes.map((n) => n.job), ['arrive', 'teach', 'practise', 'flow', 'rest', 'test', 'rest', 'twist', 'rest', 'signature', 'rest', 'combine', 'exit'], `seed ${seed}: the arc's order`);
   }
+});
+
+test('Normal runs hotter and asks for one real jump; Easy is the same level, flat and gentler', () => {
+  const awake = (r: Roll13, from: number, to: number) => r.snakes.filter((q) => q.x >= from && q.x < to && !q.asleep).length;
+  SEEDS.forEach((seed, k) => {
+    const n: Any = buildGen2Stage({ config: config13(O) as Any, kit: kitLib13(O) as Any, seed, difficulty: 'normal' });
+    const e: Any = buildGen2Stage({ config: config13(O) as Any, kit: kitLib13(O) as Any, seed, difficulty: 'easy' });
+    const sec = (st: Any, id: string) => st.gen2.sections.find((q: Any) => q.template === id);
+    const rn = rolls.normal[k];
+    assert.equal(rn.snakes.filter((q) => q.asleep).length, 4, `seed ${seed}: Normal's sleepers are the lesson's, the two at the bare branches' ends and the gallery's middle one`);
+    for (const [id, want] of [['lib-13-perch', 2], ['lib-13-gallery', 2], ['lib-13-finale', 2]] as const) { const q = sec(n, id); assert.equal(awake(rn, q.x0, q.x1), want, `seed ${seed}: ${id} holds ${want} awake snakes on Normal`); }
+    // (the one jump that matters: a gap in Normal's finale and nowhere else in the level; none at all on Easy)
+    const gaps = (st: Any, q: Any): number[] => (st.gen2.drops ?? []).filter((d: Any) => d.x0 >= q.x0 && d.x1 <= q.x1).map((d: Any) => Math.round(d.x1 - d.x0));
+    const all = (st: Any): number => (st.gen2.drops ?? []).length;
+    const hops = gaps(n, sec(n, 'lib-13-finale'));
+    assert.ok(hops.length === 1 && hops[0] >= 90 && hops[0] <= 110, `seed ${seed}: one hop of 90-110 px in Normal's finale (${hops.join(' ')})`);
+    assert.deepEqual(gaps(e, sec(e, 'lib-13-finale')), [], `seed ${seed}: Easy's finale is flat`);
+    // (the seams between sections and World 1's own rest banks lay a few soft dips of their own: the level's bricks lay no other)
+    for (const id of TWISTS.map((t) => t.id).filter((t) => t !== 'lib-13-finale')) assert.deepEqual(gaps(n, sec(n, id)), [], `seed ${seed}: ${id} is level on Normal`);
+    void all;
+  });
 });

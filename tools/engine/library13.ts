@@ -38,8 +38,16 @@ export const BRIEF_13: GraphBrief = {
 };
 /** the corridor under the floor line (library.ts ROOM_12: World 1's 80 px was cut for a stage that climbs) */
 export const ROOM_13 = 320;
-/** the story keeper's approved 1-3 line (the lead's brief, 11-12): the only player words this file holds */
-export const TRAP_LINE = 'Knock the snakes off the branches. Punch, or shake the vine.';
+/** the story keeper's lines for 1-3, verbatim (the lead, 11-12 12:50 PM; reference/packets/2026-11-12/STORY-LINES.md): the only
+ *  player words this file holds. The lesson's two (said at the lesson's flag, one after the other) and the bare branch's one */
+export const LINES_13 = {
+  traps: 'See that hive? Punch the vine, down it comes!',
+  'traps.then': "Don't worry, it only gives him a fright.",
+  bare: 'No vine? Walk him to the end of his branch.',
+} as const;
+/** the stage's MISSION line (the keeper's; it replaces the withdrawn "Knock the snakes off the branches..."): stagePlan's, when 1-3 ships */
+export const MISSION_13 = 'Clear the branches. Shake a vine and the snakes glide off.';
+export const TRAP_LINE = LINES_13.traps;
 /** 1-3's cast rows: w1Cast.ts's four (the snake and the sleeper on a 200 px branch, and each on a trap's short patch) */
 export const CAST_13: CreatureDef[] = W1_CAST_CREATURES;
 
@@ -56,6 +64,8 @@ export const CAST_13: CreatureDef[] = W1_CAST_CREATURES;
  *  ledge 48 px longer is one an animal can be topped up on, beside a handle; measured, Easy's first cut hung no pair at all) */
 const led = (key: string, after: string | null, w: R2, dy: R2 = [0, 0]): SectionPiece => ({ key, shape: 'bank', w, place: after ? { kind: 'walk', after, dy } : { kind: 'start' }, style: 'moss_stone', main: true });
 const UP: R2 = [-56, -50], DOWN: R2 = [50, 56];
+/** the level's one jump that matters (Normal's finale): a gap of 90-110 px, level, the drop under it soft */
+const HOP: R2 = [90, 110];
 /** a fallen branch across the road: a step up onto it (50-56 px) and a step down off it, its two ends the snake's world. Its own
  *  piece, off the `main` list (the lay stands no flag on it and tops no second animal up onto it) and no `landing` (Easy would widen
  *  it by its landing pad, and the sockets would slide along it) */
@@ -77,7 +87,7 @@ const LOAD_T = 0.142, SNAKE_T = 0.857;
 const HANDLE_T = 0.443;
 const low = (id: string, on: string, t: R2 | number, count = 2): Socket => ({ id, role: 'pickup', on, t, dn: 34, count, span: 120 });
 type Load = 'trap-hive' | 'trap-stone';
-interface Unit { asleep?: boolean; load?: Load | null; perch?: boolean; wide?: boolean; easy?: Socket['easy']; /** the branch level with its ledges (the lesson: the first hive is clear of the goal sign on a sideways phone) */ level?: boolean }
+interface Unit { asleep?: boolean; load?: Load | null; perch?: boolean; wide?: boolean; easy?: Socket['easy']; /** a HOP before this branch's ledge: a real jump in 1-1's taught band over a soft drop (a miss is a short walk back, never a life) */ hop?: boolean; /** the branch level with its ledges (the lesson: the first hive is clear of the goal sign on a sideways phone) */ level?: boolean }
 /**
  * One snake's branch, after the piece `after`: a short ledge `<k>g`, the branch `<k>L` a step up, a short ledge `<k>d` a step down.
  * With a `load`: the handle on `<k>g`, the load and a short-patch snake on the branch. `perch`: `<k>g` is the step up (the vine is
@@ -91,7 +101,8 @@ function core(k: string, after: string, o: Unit = {}): { pieces: SectionPiece[];
   // (a TRAPPED branch lies level with the ledge its handle is on: a branch a step up lifted its load behind the goal sign on a
   // sideways phone (stills, the gallery, 11-12). A bare branch keeps its step up; a perch's branch is a step below its vine)
   const lvl = o.level ?? (!!o.load && !perch);
-  const pieces: SectionPiece[] = [led(g, after, NARROW, perch ? UP : flat), log(L, g, o.load ? SHORT : o.wide ? WIDE : LONG, lvl ? flat : perch ? DOWN : UP), led(d, L, NARROW, lvl ? flat : DOWN)];
+  const first: SectionPiece = o.hop ? { key: g, shape: 'bank', w: NARROW, place: { kind: 'jump', after, dy: flat, gapPx: HOP, soft: true }, style: 'moss_stone', main: true } : led(g, after, NARROW, perch ? UP : flat);
+  const pieces: SectionPiece[] = [first, log(L, g, o.load ? SHORT : o.wide ? WIDE : LONG, lvl ? flat : perch ? DOWN : UP), led(d, L, NARROW, lvl ? flat : DOWN)];
   const sockets: Socket[] = [];
   if (o.load) {
     sockets.push({ id: `${k}h`, role: 'source', on: g, t: HANDLE_T, dn: 0 });
@@ -161,6 +172,17 @@ const breath = (l: Lay, n: number, hop = false): Lay => {
 /** a version whose bare branches are wider on Easy, a long bank after it */
 const roomy = (id: string, us: Unit[]): V => ({ id, lay: withRoom(breath(row(us), 4, true)), easy: withRoom(breath(row(us.map((u) => (u.load ? u : { ...u, wide: true }))), 4, true)) });
 
+/** the finale's two settings: Normal a trap, a hop, an awake snake on a bare branch; Easy the same flat, its bare snake asleep */
+const finale = (id: string, trap: Unit): V => ({
+  id,
+  lay: withRoom(breath(row([trap, { ...BARE, hop: true }]), 4, true)),
+  easy: withRoom(breath(row([trap, { ...BARE, asleep: true, wide: true }]), 4, true)),
+});
+/** Dot's line `id` on a version's first ledge (both settings) */
+const said = (v: V, id: string): V => {
+  const tip = (l: Lay): Lay => ({ pieces: l.pieces, sockets: [...l.sockets, { id: `say-${id}`, role: 'tip', on: l.pieces[0].key, t: 0.5, allow: [id] }] });
+  return { ...v, lay: tip(v.lay), ...(v.easy ? { easy: tip(v.easy) } : {}) };
+};
 /** THE ARC'S BRICKS (reference/design/1-3.md), one job each: the graph's letter in brackets */
 export const TWISTS: SectionTemplate[] = [
   // [T] beat 1, the lesson: ledges no animal can be laid on, a flag, Dot's line, the vine on the short ledge, then the branch, LEVEL
@@ -168,7 +190,7 @@ export const TWISTS: SectionTemplate[] = [
   brick({ id: 'lib-13-lesson', name: 'the lesson: the vine, the hive and a sleeping snake', jobs: ['teach'], difficulty: 2, teaches: 'traps', versions: [(() => {
     const c = core('t', 'b', { load: 'trap-hive', asleep: true, level: true });
     const pieces: SectionPiece[] = [led('a', null, LEDGE), led('b', 'a', LEDGE), ...c.pieces, led('z', c.last, LEDGE)];
-    const sockets: Socket[] = [{ id: 'flag', role: 'flag', on: 'a', t: 0.5 }, { id: 'tip', role: 'tip', on: 'b', t: 0.3, allow: ['traps'] }, ...c.sockets, low('pa', 'a', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)];
+    const sockets: Socket[] = [{ id: 'flag', role: 'flag', on: 'a', t: 0.5 }, { id: 'tip', role: 'tip', on: 'a', t: 0.6, allow: ['traps'] }, { id: 'tip2', role: 'tip', on: 'b', t: 0.2, allow: ['traps.then'] }, ...c.sockets, low('pa', 'a', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)];
     return { id: 'asleep-under-the-hive', lay: breath({ pieces, sockets }, 4, true) };
   })()] }),
   // [P] beat 2, again, awake: one branch, a snake pacing under a hive
@@ -181,23 +203,27 @@ export const TWISTS: SectionTemplate[] = [
   // the second backs away down its branch and is punched off the end. Easy: wider branches, and its second snake softened
   brick({ id: 'lib-13-other-way', name: 'the other way: bare branches, no trap', jobs: ['test'], content: 'hazard', difficulty: 5, versions: [
     // (three: asleep, awake, asleep. The node's threat, 0.9 of the stage's, pays for exactly these)
-    roomy('asleep-awake-asleep', [{ ...BARE, asleep: true }, BARE, { ...BARE, asleep: true }]),
+    said(roomy('asleep-awake-asleep', [{ ...BARE, asleep: true }, BARE, { ...BARE, asleep: true }]), 'bare'),
   ] }),
   // [W] beat 7, the twist: the vine hangs on a perch, a step up BEFORE the branch: he reads the room, steps up, shakes it, comes down
   brick({ id: 'lib-13-perch', name: 'the twist: the vine up on a perch', jobs: ['twist'], content: 'climb', difficulty: 5, versions: [
     // (and after it a calm one, asleep under the other load: the node's threat pays for an awake snake and a sleeper)
-    { id: 'perch-hive', lay: breath(row([{ ...HIVE, perch: true }, { ...STONE, asleep: true }]), 2, true) }, { id: 'perch-stone', lay: breath(row([{ ...STONE, perch: true }, { ...HIVE, asleep: true }]), 2, true) },
+    // (Normal runs hotter from here on, the lead 11-12: both snakes awake; Easy keeps the second asleep)
+    { id: 'perch-hive', lay: breath(row([{ ...HIVE, perch: true }, STONE]), 2, true), easy: breath(row([{ ...HIVE, perch: true }, { ...STONE, asleep: true }]), 2, true) },
+    { id: 'perch-stone', lay: breath(row([{ ...STONE, perch: true }, HIVE]), 2, true), easy: breath(row([{ ...STONE, perch: true }, { ...HIVE, asleep: true }]), 2, true) },
   ] }),
   // [S] beat 9, the gallery: three branches, three traps (the snakes awake, asleep, asleep: the section's threat pays for all three)
   brick({ id: 'lib-13-gallery', name: 'the snake gallery: hive, stone, hive', jobs: ['signature'], difficulty: 7, maxPerStage: 1, versions: [
-    { id: 'hive-stone-hive', lay: breath(row([HIVE, { ...STONE, asleep: true }, { ...HIVE, asleep: true }]), 4, true) },
-    { id: 'stone-hive-stone', lay: breath(row([STONE, { ...HIVE, asleep: true }, { ...STONE, asleep: true }]), 4, true) },
+    // (Normal: awake, asleep, awake, only the middle one sleeps; Easy: awake, asleep, asleep)
+    { id: 'hive-stone-hive', lay: breath(row([HIVE, { ...STONE, asleep: true }, HIVE]), 4, true), easy: breath(row([HIVE, { ...STONE, asleep: true }, { ...HIVE, asleep: true }]), 4, true) },
+    { id: 'stone-hive-stone', lay: breath(row([STONE, { ...HIVE, asleep: true }, STONE]), 4, true), easy: breath(row([STONE, { ...HIVE, asleep: true }, { ...STONE, asleep: true }]), 4, true) },
   ] }),
   // [C] beat 11, the finale: a trapped branch, an awake snake under its load; then at once a bare one, whose snake sleeps at its post
   // until he walks up (it wakes drowsy, backs down its branch, and is his to punch off the end or vault): everything learned, in one
   // breath. (The node's threat, 0.75 of the stage's, pays for one awake snake and one sleeper, not two awake)
   brick({ id: 'lib-13-finale', name: 'the finale: a trap, then his own hands', jobs: ['combine'], content: 'hazard', difficulty: 6, versions: [
-    roomy('trap-then-bare', [HIVE, { ...BARE, asleep: true }]), roomy('stone-then-bare', [STONE, { ...BARE, asleep: true }]),
+    // (Normal: both awake, and a HOP between the two branches, the level's one jump that matters. Easy: flat, the bare snake asleep)
+    finale('trap-then-bare', HIVE), finale('stone-then-bare', STONE),
   ] }),
 ];
 
@@ -227,7 +253,7 @@ export function kitLib13(o: LibOpts = {}): WorldKit {
     ...((o.room ?? ROOM_13) ? { corridor: { ...M.corridor, bottom: M.ground.y + (o.room ?? ROOM_13) } } : {}),
     lessons: o.flown ? { jump: '0-9', double: '0-9', bounce: '0-9' } : { jump: '1-1', double: '1-1', bounce: '1-1' },
     required: {},
-    tips: { ...M.tips, traps: TRAP_LINE },
+    tips: { ...M.tips, ...LINES_13 },
     graphs: { ...M.graphs, list, briefs: { ...(o.flown ? {} : M.graphs.briefs), [ID]: BRIEF_13 } },
   } } as WorldKit;
 }
