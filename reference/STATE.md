@@ -577,3 +577,4 @@ lines); Matt sees them in the release.
   seeds with no clean roll); lock 102/102. Left: seed 50028 (a floorless slot from P11's catch-bough split; fixing it moves proven
   seeds). Retired.
 - 2026-11-12 3:13 PM ET, Matt: add "Inspired by" games at the end of Settings > About the game (R-165.158). Asking Matt for the list.
+- 2026-11-12 3:15 PM ET, Matt on R-165.158: use OUR list (the games our design docs draw on for the levels, big and little); purpose also: "keep people from thinking it's just AI slop and that real thought went behind this". The story keeper compiles the list from reference/ideas + MAP-REVISIONS + GAME-MAP and drafts the section; Matt sees the draft before it's built.
