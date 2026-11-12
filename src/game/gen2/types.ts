@@ -273,7 +273,9 @@ export type PlaceRule =
   | { kind: 'rope'; after: string; gap: Range; soft?: boolean;
       /** the rope is a try-it, never the way (a stage laid before the Shimmy skill is his, or a second road): its pit is soft with the
        *  plain steps out the far side, so he can always walk down and through, and the rope is hung `required: false` */
-      free?: boolean };
+      free?: boolean;
+      /** how the rope is drawn (Rope.look): 'vine', a painted vine between two living trees; unset, World 2's rope between posts */
+      look?: 'vine' };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */

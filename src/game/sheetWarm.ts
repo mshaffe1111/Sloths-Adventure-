@@ -16,6 +16,8 @@ import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { HERO_VINE_URL, warmHeroVine } from './heroVine.ts';
 import { HERO_ROPE_URL, warmHeroRope } from './heroRope.ts';
 import { ROPE_KIT_URL, warmRopeKit } from './ropeArt.ts';
+import { warmTrapArt } from './castArt.ts';
+import { W1_TRAPS_URL } from './w1TrapsData.ts';
 import { PROTO2_URL, warmProto2 } from './protoArt.ts';
 import { warmSprites } from './spriteSheets.ts';
 
@@ -30,8 +32,8 @@ export function animOf(type: string, royal?: boolean): string {
 export interface StageDraws {
   enemies: ReadonlyArray<{ type: string; royal?: boolean }>;
   vines?: ReadonlyArray<{ vineType?: string; rope?: boolean }>;
-  /** shimmy ropes (Pokey's rope sheet and the painted rope) */
-  ropes?: readonly unknown[];
+  /** shimmy ropes (Pokey's rope sheet and the painted rope; a vine's trees and vine are on World 1's trap sheet: Rope.look) */
+  ropes?: ReadonlyArray<{ look?: string }>;
   proto?: {
     /** the animals a ring drops in (a snake ring, 3-9's prowlers) */
     ring?: { waves: ReadonlyArray<ReadonlyArray<{ kind: string }>> };
@@ -56,11 +58,12 @@ export function stageAnims(st: StageDraws): string[] {
  * the other sheets drawn only in some stages: Pokey hanging from a liana (any swing vine), the second World 1 sheet (bushes, hollows),
  * Pokey on a shimmy rope and the painted rope (any rope)
  */
-export function stageExtras(st: StageDraws): { vine: boolean; props2: boolean; rope: boolean } {
+export function stageExtras(st: StageDraws): { vine: boolean; props2: boolean; rope: boolean; vineRope: boolean } {
   const vine = (st.vines ?? []).some((v) => !v.rope && v.vineType !== 'tree_climb');
   const props2 = !!st.proto?.bushes?.length || !!st.proto?.hollows?.length;
   const rope = !!st.ropes?.length;
-  return { vine, props2, rope };
+  const vineRope = !!st.ropes?.some((r) => r.look === 'vine');
+  return { vine, props2, rope, vineRope };
 }
 
 /** start every sheet the stage can draw loading (its creatures' clips and painted poses, and the extras it needs); their addresses */
@@ -85,6 +88,11 @@ export function warmStageSheets(st: StageDraws): string[] {
     warmHeroRope();
     warmRopeKit();
     urls.push(HERO_ROPE_URL, ROPE_KIT_URL);
+  }
+  // (a rope drawn as a vine between living trees: World 1's trap sheet holds both)
+  if (x.vineRope) {
+    warmTrapArt();
+    urls.push(W1_TRAPS_URL);
   }
   return urls;
 }

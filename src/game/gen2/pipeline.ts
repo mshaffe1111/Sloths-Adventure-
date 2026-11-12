@@ -935,6 +935,8 @@ interface LocalPiece {
   ropeFrom?: string;
   /** that rope is a try-it, never the way (place `rope` with `free`) */
   ropeFree?: true;
+  /** that rope's look (place `rope` with `look`) */
+  ropeLook?: 'vine';
 }
 interface LocalGap {
   x0: number;
@@ -1235,7 +1237,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on',
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}) } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -1903,7 +1905,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         if (!lp.ropeFrom) continue;
         const p1 = pieceOf(lp.ropeFrom), p2 = pieceOf(lp.key);
         const [l, r] = p1.x < p2.x ? [p1, p2] : [p2, p1];
-        ropes.push({ id: ropes.length + 1, x0: R(l.x + l.width - ROPE_OVERLAP), x1: R(r.x + ROPE_OVERLAP), y: R(Math.min(l.y, r.y) - ROPE_RISE), g0: l.y, g1: r.y, required: !lp.ropeFree });
+        ropes.push({ id: ropes.length + 1, x0: R(l.x + l.width - ROPE_OVERLAP), x1: R(r.x + ROPE_OVERLAP), y: R(Math.min(l.y, r.y) - ROPE_RISE), g0: l.y, g1: r.y, required: !lp.ropeFree, ...(lp.ropeLook ? { look: lp.ropeLook } : {}) });
         placed.beats.push({ x: l.x + l.width, letter: 'V' });
       }
       const entryP = pieceOf(L.entry.piece);

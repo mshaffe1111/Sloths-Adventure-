@@ -3,7 +3,8 @@
 // the load instead (nothing floats).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { layoutTrap } from './castArt.ts';
+import { TRUNK_TIE, layoutTrap, trunkScale } from './castArt.ts';
+import { ROPE_RISE } from './rope.ts';
 import { W1_TRAP_FRAMES, W1_TRAP_MEASURES } from './w1TrapsData.ts';
 import type { Platform } from './types.ts';
 import type { TrapPost } from './castPlay.types.ts';
@@ -53,4 +54,18 @@ test('the foot never stands over a gap: with no ground where it would go, a boug
     const on = [ground(260, 60, 1000), ground(440, 60, 1000, 2)].some((g) => s.x - 20 >= g.x - 4 && s.x + 20 <= g.x + g.width + 4);
     assert.ok(on, 'a sapling found is on a ledge');
   } else assert.equal(lay.hangY, lay.hy, 'the bough end holds the load at the vine line');
+});
+
+test("a vine's tree (Rope.look 'vine'): its arm holds the vine at the tie, its foot on the ground, at about its usual size at a rope's height", () => {
+  const T = W1_TRAP_FRAMES.trunk;
+  const usual = T.units / T.h;
+  const y = 400;
+  for (const drop of [ROPE_RISE, ROPE_RISE + 60]) {
+    const k = trunkScale(y, y + drop);
+    // (the frame's tie row lands on the vine, its bottom row on the ground: nothing floats, nothing sinks)
+    assert.equal(Math.round(y + (W1_TRAP_MEASURES.trunk.foot[1] - TRUNK_TIE.y) * k), y + drop);
+    if (drop === ROPE_RISE) assert.ok(Math.abs(k / usual - 1) <= 0.1, `${(k / usual).toFixed(2)} of its usual size over level ground`);
+  }
+  // (the tie is on the arm's bark, inside the leaves: short of the arm's furthest leaf, and the frame reaches on past it)
+  assert.ok(TRUNK_TIE.x < W1_TRAP_MEASURES.trunk.armTip[0] && TRUNK_TIE.fore > 0 && TRUNK_TIE.back + TRUNK_TIE.fore === T.w);
 });

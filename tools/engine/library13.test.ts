@@ -15,6 +15,8 @@ import { generateAllLevels } from '../../src/game/worldsData.ts';
 import { GOAL_SHARE, easyFloor } from '../../src/game/goals.ts';
 const w1BriefOf11 = () => W1_KIT.graphs.briefs['1-1'];
 import { W1_CAST_CREATURES, W1_CAST_SAID, W1_TRAP_EMIT, W1_TRAP_PAIRS, armedTraps } from '../../src/game/gen2/worlds/w1Cast.ts';
+import { TRUNK_TIE, trunkScale } from '../../src/game/castArt.ts';
+import { W1_TRAP_FRAMES, W1_TRAP_MEASURES } from '../../src/game/w1TrapsData.ts';
 
 // (the SHIPPED kit under 1-3's own id. Until 11-12 afternoon these rolls were filed under 1-1's id to borrow its flown rows; 1-3's
 //  pieces are its own now (`own`) and no other id's pool holds them. Its row is not marked `judged` yet (P13's): these rolls lay to
@@ -190,7 +192,7 @@ test("Dot's trap line is a TEACH line, and she says it three seconds of walking 
   }
 });
 
-test('the way out: one rope before the totem, a try-it and never the way; its hollow is one hop deep, so he can walk through it and back', () => {
+test('the way out: one rope before the totem, a try-it and never the way, a vine between two living trees on its banks; its hollow is one hop deep, so he can walk through it and back', () => {
   // (clearing 1-3 TEACHES Shimmy Rope: on a first visit he cannot grab it. A required rope would strand him; so would a deep hollow
   //  with steps out the far side only, in a purge: the adult bot arrived owing four snakes, dropped in, and could not go back)
   for (const d of ['normal', 'easy'] as const) for (const seed of SEEDS) {
@@ -211,6 +213,18 @@ test('the way out: one rope before the totem, a try-it and never the way; its ho
     const lip = (x: number) => st.platforms.filter((p: Any) => p.x <= x && p.x + p.width >= x && p.y < under[0].y).sort((a: Any, b: Any) => b.y - a.y)[0];
     assert.equal(lip(r.x0 + 1)?.y, r.g0, `seed ${seed} ${d}: the rope's near end is not on its ledge's top`);
     assert.equal(lip(r.x1 - 1)?.y, r.g1, `seed ${seed} ${d}: the rope's far end is not on its ledge's top`);
+    // (a vine between two living trees, World 1's look (the lead, 11-12: posts and a rope are a made thing). Nothing floats: each
+    //  tree's whole foot stands on its own bank, at about its usual size, and the far tree stands clear of the totem)
+    assert.equal(r.look, 'vine', `seed ${seed} ${d}: the way out's rope is not drawn as a vine`);
+    const T = W1_TRAP_MEASURES.trunk, usual = W1_TRAP_FRAMES.trunk.units / W1_TRAP_FRAMES.trunk.h;
+    for (const [x, g, reach] of [[r.x0, r.g0, 1], [r.x1, r.g1, -1]] as const) {
+      const k = trunkScale(r.y, g);
+      assert.ok(Math.abs(k / usual - 1) <= 0.1, `seed ${seed} ${d}: a tree at ${(k / usual).toFixed(2)} of its usual size`);
+      const foot = x - reach * (TRUNK_TIE.x - T.foot[0]) * k;
+      const bank = lip(x - reach)!;
+      assert.ok(foot - (T.footW / 2) * k >= bank.x && foot + (T.footW / 2) * k <= bank.x + bank.width, `seed ${seed} ${d}: the tree's foot ${Math.round(foot - (T.footW / 2) * k)}-${Math.round(foot + (T.footW / 2) * k)} is off its bank ${bank.x}-${bank.x + bank.width}`);
+    }
+    assert.ok(st.exitTotemX - (r.x1 + TRUNK_TIE.back * trunkScale(r.y, r.g1)) >= 40, `seed ${seed} ${d}: the far tree stands in front of the totem`);
   }
 });
 

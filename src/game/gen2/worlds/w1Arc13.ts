@@ -267,11 +267,12 @@ export const ARC_13: SectionTemplate[] = [
 /** the way out: a calm walk on a root bank to the totem, on the ground (World 1's own exits are all up in the canopy).
  *  Before the totem, a short ROPE over a mossy hollow (the lead's ruling, 11-12, the way old 1-3 ended): clearing 1-3 teaches Shimmy
  *  Rope, so on a first visit he walks down through the hollow and out, and the rope is there to try the day he comes back. It is
- *  `free`: never the way, on either setting */
+ *  `free`: never the way, on either setting. It is a VINE between two living trees (the lead, 11-12: posts and a rope are a made
+ *  thing, and nothing in World 1 is made): `look: 'vine'` draws ART-W1B's painted trunk at each end and the vine along its sag */
 export const EXIT_13: SectionTemplate = {
   id: 'w1-13-low-arrival', name: 'a calm walk on a root bank to the totem', feel: [STAGE_13], own: true, archetypes: 'any', phases: ['goal'], difficulty: 1, needs: ['walk'], jobs: ['exit'], content: 'structural', terrain: 'floor-stones',
   pieces: [{ key: 'in', shape: 'bank', w: [300, 340], place: { kind: 'start' }, style: 'moss_stone', main: true, landing: true }],
-  subBlocks: [{ id: 'body', versions: [[520, 560], [620, 680]].map((w, j) => ({ id: j ? 'long' : 'short', pieces: [{ key: 'out', shape: 'bank' as const, w: w as R2, place: { kind: 'rope' as const, after: 'in', gap: [460, 480] as R2, free: true }, style: 'moss_stone' as const, main: true, landing: true }], sockets: [{ id: 'exit-totem', role: 'objective' as const, on: 'out', t: 0.85, allow: ['exit_totem'] }] })) }],
+  subBlocks: [{ id: 'body', versions: [[520, 560], [620, 680]].map((w, j) => ({ id: j ? 'long' : 'short', pieces: [{ key: 'out', shape: 'bank' as const, w: w as R2, place: { kind: 'rope' as const, after: 'in', gap: [460, 480] as R2, free: true, look: 'vine' as const }, style: 'moss_stone' as const, main: true, landing: true }], sockets: [{ id: 'exit-totem', role: 'objective' as const, on: 'out', t: 0.85, allow: ['exit_totem'] }] })) }],
   entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
 } as SectionTemplate;
 

@@ -243,6 +243,52 @@ function link(ctx: CanvasRenderingContext2D, ax: number, ay: number, bx: number,
   ctx.restore();
 }
 
+// ─────────── World 1's shimmy vine: a rope whose data says `look: 'vine'` (Rope.look; ropeArt.ts lays it and calls these) ───────────
+/** the handle's straight twisted run (its frame's px): ONE turn of the twist, cut where the turn meets itself (rows 98 to 194: of every
+ *  cut of the run, the one whose first rows differ least from the rows a turn on), so it repeats along a rope with no seam to see. The
+ *  vine is 24 px thick there, its middle at column 53.4 */
+const VINE_RUN = { x: 26, w: 56, y: 98, h: 96, mid: 53.4, thick: 24 } as const;
+let vineCanvas: HTMLCanvasElement | null = null;
+/** the vine as a tile lying left to right (the run turned a quarter, made once the sheet is in), for ropeArt.ts's slices; null till then */
+export function vineTile(): { src: CanvasImageSource; tile: { x: number; y: number; w: number; h: number; mid: number; thick: number } } | null {
+  if (!warmTrapArt() || !img) return null;
+  if (!vineCanvas) {
+    if (typeof document === 'undefined') return null;
+    const f = W1_TRAP_FRAMES.handle;
+    const c = document.createElement('canvas');
+    c.width = VINE_RUN.h;
+    c.height = VINE_RUN.w;
+    const g = c.getContext('2d');
+    if (!g) return null;
+    // (a quarter turn back: the run's top to the tile's left end, its left edge to the tile's foot)
+    g.translate(0, VINE_RUN.w);
+    g.rotate(-Math.PI / 2);
+    g.drawImage(img, f.x + VINE_RUN.x, f.y + VINE_RUN.y, VINE_RUN.w, VINE_RUN.h, 0, 0, VINE_RUN.w, VINE_RUN.h);
+    vineCanvas = c;
+  }
+  return { src: vineCanvas, tile: { x: 0, y: 0, w: VINE_RUN.h, h: VINE_RUN.w, mid: VINE_RUN.w - (VINE_RUN.mid - VINE_RUN.x), thick: VINE_RUN.thick } };
+}
+
+/** where the vine is tied on the trunk's level arm (its frame's px): the branch's end, inside its leaves, so the leaves fall over the
+ *  vine's end (measured on the sheet: the bark's last px at rows 353-377; MEASURES.trunk.armTip is the arm's furthest leaf). How far the
+ *  frame reaches from the tie: back to the trunk's far side, on past the leaves, up to the crown */
+export const TRUNK_TIE = { x: 730, y: 366, back: 730, fore: W1_TRAP_FRAMES.trunk.w - 730, up: 366 } as const;
+/** the trunk's size (units per frame px) for a vine tied at height y over its ground: its foot on the ground, the arm at the tie */
+export const trunkScale = (y: number, ground: number): number => Math.max(0.05, (ground - y) / (W1_TRAP_MEASURES.trunk.foot[1] - TRUNK_TIE.y));
+/**
+ * A living tree standing on `ground`, its level arm holding the vine at (x, y) and reaching into the span: `reach` 1 when the span is to
+ * its right (the rope's left end), -1 mirrored (its right end). At a rope's usual height (ROPE_RISE over level ground) it is drawn at
+ * about its usual size; the foot is always on the ground. False until the sheet is in.
+ */
+export function drawTrunk(ctx: CanvasRenderingContext2D, x: number, y: number, ground: number, reach: 1 | -1): boolean {
+  if (!warmTrapArt() || !img) return false;
+  ctx.save();
+  ctx.translate(x, y);
+  piece(ctx, 'trunk', TRUNK_TIE.x, TRUNK_TIE.y, trunkScale(y, ground), reach < 0);
+  ctx.restore();
+  return true;
+}
+
 /** every trap on screen. `seen`: the engine's on-screen test; `platforms`: where a sapling may stand */
 export function drawTraps(ctx: CanvasRenderingContext2D, traps: readonly TrapState[], t: number, seen: (x: number, y: number) => boolean,
   platforms: readonly Platform[]): void {
