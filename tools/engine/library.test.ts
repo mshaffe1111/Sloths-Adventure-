@@ -85,7 +85,7 @@ test('petals low on bark the whole way: no petal arc over a gap, every petal wit
   });
 });
 
-test("the story keeper's lines, verbatim, said where the design says: the lesson's two, the petals going up (main's row), the roots at the twist", () => {
+test("the story keeper's lines, verbatim, said where the design says: the lesson's two and the petals going up (main's row); the roots line held until the note is in the hollow", () => {
   assert.equal(LINES_12.thorns, 'Ooh, thorns. Don\'t touch those, not even a little.');
   assert.equal(LINES_12['thorns.then'], 'Hop on and let the mushrooms do the jumping!');
   assert.equal(LINES_12.roots, 'There\'s something down by the roots...');
@@ -93,7 +93,8 @@ test("the story keeper's lines, verbatim, said where the design says: the lesson
   assert.equal(tips['hint.1-2.up'], 'The petals go up');
   each((st, d, s) => {
     const said = (id: string) => st.gen2.fills.filter((f: Any) => f.role === 'tip' && f.what === id);
-    for (const [id, beat] of [['thorns', 'w1-12-lesson'], ['thorns.then', 'w1-12-lesson'], ['hint.1-2.up', 'w1-12-up'], ['roots', 'w1-12-hollow']] as const) {
+    assert.equal(said('roots').length, 0, `${d} seed ${s}: Dot promises something by the roots over an empty floor`);
+    for (const [id, beat] of [['thorns', 'w1-12-lesson'], ['thorns.then', 'w1-12-lesson'], ['hint.1-2.up', 'w1-12-up']] as const) {
       const f = said(id);
       assert.equal(f.length, 1, `${d} seed ${s}: "${id}" said ${f.length} times`);
       const sec = secOf(st, beat);
@@ -134,8 +135,8 @@ test('PLANTED: a beat missing from the pool fails the roll by name (the arc cann
 });
 
 test('PLANTED: a line with no words in the kit fails the roll (the tip is never shown)', () => {
-  const st = plant((k) => ({ ...k, manifest: { ...k.manifest, tips: Object.fromEntries(Object.entries(k.manifest.tips!).filter(([id]) => id !== 'roots')) } }))(1, 'normal');
-  assert.ok((st.gen2.errors ?? []).some((e: string) => /roots/.test(e)), JSON.stringify(st.gen2.errors));
+  const st = plant((k) => ({ ...k, manifest: { ...k.manifest, tips: Object.fromEntries(Object.entries(k.manifest.tips!).filter(([id]) => id !== 'thorns.then')) } }))(1, 'normal');
+  assert.ok((st.gen2.errors ?? []).some((e: string) => /thorns\.then/.test(e)), JSON.stringify(st.gen2.errors));
 });
 
 test('PLANTED: a thorn hollow laid in the twist is caught (a chain brick in the hollow beat\'s place)', () => {
