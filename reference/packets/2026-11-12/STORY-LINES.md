@@ -323,3 +323,27 @@ list).
 
 **APPROVED by Matt ("Like it", relayed by the lead at 4:00 PM ET):** the final ABOUT screen ("What's ours" with its two links) and the
 one-page OUR STORY, exactly as written in the FINAL layout section above. Waiting: the "Inspired by" games, and the music line.
+
+## "What's ours", revised with gameplay (Matt, 4:03 PM ET: "a lot of gameplay too"). DRAFT for Matt; for 0.9.7
+> **What's ours**
+> Pokey, Meeca, Dot, and everyone they meet along the way.
+> Their story, from the first petal to the last letter, and the journal Pokey keeps.
+> Ten rainforest worlds, with art made for this game in its own style.
+> Stages that change each time you play, every layout checked to be fair before you see it.
+> Dot, who helps when you're stuck, and never tells.
+> Bounce chains that carry Pokey over the thorns, along Meeca's petals.
+> Traps made from the forest itself: punch a vine, a hive drops, and the snake glides off unhurt.
+
+**Truth gates (each line ships only if true in the 0.9.7 build):**
+- "Stages that change... checked to be fair": TRUE today for 1-1 (200 proven layouts, each clean on both settings, seedlist --check;
+  the first-ever run is one fixed layout, which is still "checked"). It reads as true for the game only if every stage that changes is
+  a proven-list gen2 stage. The old generator's stages also change but are not proven. If 0.9.7 still has old-generator stages, write
+  "Levels that change each time you play, checked to be fair before you see them" only when that is true of them, or limit it to
+  "The first stages change each time you play...". The lead checks which stages are gen2 proven-list in 0.9.7.
+- "Dot, who helps when you're stuck, and never tells": TRUE in 0.9.6 (the help ladder, "I won't tell anyone").
+- "Bounce chains... along Meeca's petals": only if the new 1-2 ships in 0.9.7.
+- "Traps... the snake glides off unhurt": only if the new 1-3 ships in 0.9.7.
+- **Removed for now:** "A hero whose stillness is his strength." Stillness is not in play until 1-7 is laid. It comes back, word for
+  word, the release stillness ships. (The story already carries it: the Prowler is outwaited, storyBosses.ts.)
+- **NOT claimed:** "creatures you outwit, never hurt" across the game. The old stages still have defeat clips and stomps until each
+  world gets the predator kit, so for now that claim is made only through the 1-3 trap line. It widens as worlds are re-laid.
