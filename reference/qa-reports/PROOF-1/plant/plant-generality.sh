@@ -18,7 +18,7 @@ plant world-prefix-help src/game/helpLadder.ts "export const __p5 = (id: string)
 plant newfile-gen2 src/game/gen2/plantNew.ts "export const __p6 = (stageId: string) => stageId === '7-3';"
 plant template-gen2 src/game/gen2/pipeline.ts 'export const __p7 = (w: number) => `${w}-1` === "4-1";'
 # outside ENGINE_FILES/ENGINE_DIRS: new runtime modules this merge made live (expect PASS = blind spot, reported not as a gate failure but as scope)
-for f in src/game/stageModes.ts src/game/clock.ts src/game/ride.ts src/game/stillness.ts src/game/noise.ts src/game/heroNoise.ts src/game/saveFile.ts; do
+for f in src/game/stageModes.ts src/game/clock.ts src/game/ride.ts src/game/stillness.ts src/game/noise.ts src/game/heroNoise.ts src/game/saveFile.ts src/game/predators/core.ts src/game/predators/casts.ts; do
   [ -f $W/$f ] && plant "outside-scope:$(basename $f)" $f "export const __p8 = (stageId: string) => stageId === '1-1';"
 done
 git -C $W checkout -q -- . ; git -C $W clean -qfd src >/dev/null

@@ -1,0 +1,10 @@
+chunkcheck: base /Sloths-Adventure-/, budget 3,994,304 B a chunk, 40 JS files, 22 loaded at the start
+  ok       730,643 B    3,263,661 spare  assets/stagekit-ZVdE0eoe.js
+  ok       702,652 B    3,291,652 spare  assets/oldgen-B9mj98Ne.js
+  ok       662,504 B    3,331,800 spare  assets/index-D5zfBbqC.js
+  ok       289,582 B    3,704,722 spare  assets/story-DrydD-2K.js
+  ok       284,373 B    3,709,931 spare  assets/sheets-B2FrYaB9.js
+  ok       219,517 B    3,774,787 spare  assets/rolls-C3P_nRMy.js
+  ok       218,749 B    3,775,555 spare  assets/vendor-FrbPb9NH.js
+  ok       194,815 B    3,799,489 spare  assets/bosses-OzVMAi7R.js
+chunkcheck: PASS

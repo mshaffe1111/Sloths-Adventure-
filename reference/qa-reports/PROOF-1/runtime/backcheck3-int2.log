@@ -1,0 +1,10 @@
+int2 native path: {"native":true,"cb":"57016777","calls":["KeepAwake.set","App.addListener:backButton","App.addListener:pause","App.addListener:resume"]}
+guardian intro story (1-10, real path): [BOSS · VENOM FANG SKIP TO FIGHT BOSS Ven] -> Back -> [dialog:Venom Fang: guardian fight]
+  then: dialog:Venom Fang: guardian fight | Guardian ahead Stage 1-10 Venom Fang's Lair Dot When the flo
+  +1s: dialog:Venom Fang: guardian fight +boss-card | Guardian ahead Stage 1-10 Venom Fang's Lair Dot Wh
+guardian card (real path): [dialog:Venom Fang: guardian fight] -> Back -> [title+map]
+  then: title+map | boss-card 0 | Start Screen WORLD 1 OF 10 Emerald Canopy 10 of 10 cleared 3
+next back: [title+map] -> Back -> [title]
+  then: title | Version 0.9.6 · Nov 12, 2026 Check for updates Refresh game 
+bridge calls: ["KeepAwake.set","App.addListener:backButton","App.addListener:pause","App.addListener:resume"]
+page errors 0 []

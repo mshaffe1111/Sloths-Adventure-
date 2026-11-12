@@ -1,0 +1,112 @@
+TAP version 13
+# Subtest: the pool is World 1's own sections, untouched but for a feel tag, plus the twist bricks: no section names the stage
+ok 1 - the pool is World 1's own sections, untouched but for a feel tag, plus the twist bricks: no section names the stage
+  ---
+  duration_ms: 2.571543
+  type: 'test'
+  ...
+# Subtest: every roll builds: no throw, no pool short, the teach and a signature chain in each, hollows only after the lesson
+ok 2 - every roll builds: no throw, no pool short, the teach and a signature chain in each, hollows only after the lesson
+  ---
+  duration_ms: 0.336831
+  type: 'test'
+  ...
+# Subtest: at least half the rolls are clean but for the thorn bed's draw (the engine's open item, named: ENGINE_OPEN)
+ok 3 - at least half the rolls are clean but for the thorn bed's draw (the engine's open item, named: ENGINE_OPEN)
+  ---
+  duration_ms: 0.090722
+  type: 'test'
+  ...
+# Subtest: the brief's trend is applied by the lay: a level stage ends near the height it started at
+ok 4 - the brief's trend is applied by the lay: a level stage ends near the height it started at
+  ---
+  duration_ms: 0.102315
+  type: 'test'
+  ...
+# Subtest: what the stage refuses never comes with a shape: no 1-1 line is said, no squirrel sits
+ok 5 - what the stage refuses never comes with a shape: no 1-1 line is said, no squirrel sits
+  ---
+  duration_ms: 0.153789
+  type: 'test'
+  ...
+# Subtest: a listed stage with no list yet fails --check by name, not by a throw (1-2 today)
+ok 6 - a listed stage with no list yet fails --check by name, not by a throw (1-2 today)
+  ---
+  duration_ms: 4336.367775
+  type: 'test'
+  ...
+# Subtest: an id with no row exits 2, by name
+ok 7 - an id with no row exits 2, by name
+  ---
+  duration_ms: 5465.433842
+  type: 'test'
+  ...
+# Subtest: neither tool holds a stage id or a table of its own: both read the listed-stage table
+ok 8 - neither tool holds a stage id or a table of its own: both read the listed-stage table
+  ---
+  duration_ms: 30.419377
+  type: 'test'
+  ...
+# Subtest: searchYield: per graph, seeds tried and kept, and how many each refusing rule refused (a roll once per rule)
+ok 9 - searchYield: per graph, seeds tried and kept, and how many each refusing rule refused (a roll once per rule)
+  ---
+  duration_ms: 25.05488
+  type: 'test'
+  ...
+# Subtest: ruleOf names the rule and drops the numbers: two rolls of one rule are one row
+ok 10 - ruleOf names the rule and drops the numbers: two rolls of one rule are one row
+  ---
+  duration_ms: 1.103543
+  type: 'test'
+  ...
+# Subtest: tally: clean counts empty rolls only; stopped counts a roll once per rule; first counts the first line only
+ok 11 - tally: clean counts empty rolls only; stopped counts a roll once per rule; first counts the first line only
+  ---
+  duration_ms: 9.19416
+  type: 'test'
+  ...
+# Subtest: alone: a rule is counted only on rolls nothing else stops
+ok 12 - alone: a rule is counted only on rolls nothing else stops
+  ---
+  duration_ms: 0.248279
+  type: 'test'
+  ...
+# Subtest: easyOnly: the same rule at other numbers is not Easy's own; a rule only Easy breaks is
+ok 13 - easyOnly: the same rule at other numbers is not Easy's own; a rule only Easy breaks is
+  ---
+  duration_ms: 0.130741
+  type: 'test'
+  ...
+# Subtest: along and reached: the travel axis and its direction
+ok 14 - along and reached: the travel axis and its direction
+  ---
+  duration_ms: 38.972241
+  type: 'test'
+  ...
+# Subtest: the first-timer on an up stage (1-4): his furthest on is the best height, not the furthest right
+ok 15 - the first-timer on an up stage (1-4): his furthest on is the best height, not the furthest right
+  ---
+  duration_ms: 1712.28237
+  type: 'test'
+  ...
+# Subtest: the first-timer on a run (1-1): furthest on is still the furthest right
+ok 16 - the first-timer on a run (1-1): furthest on is still the furthest right
+  ---
+  duration_ms: 1339.656706
+  type: 'test'
+  ...
+# Subtest: the tier bots on a leftward fixture: the pieces he entered and the piece he is in are counted from the right
+ok 17 - the tier bots on a leftward fixture: the pieces he entered and the piece he is in are counted from the right
+  ---
+  duration_ms: 0.661516
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12524.116633

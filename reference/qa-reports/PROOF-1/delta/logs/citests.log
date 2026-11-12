@@ -1,0 +1,25 @@
+.github/workflows/build-apk.yml:50:          STORE_DIST=dist npx tsx --test tools/store/checkStoreBuild.test.ts
+.github/workflows/deploy.yml:35:      - run: npx tsx --test --test-shard=${{ matrix.shard }}/6 src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts
+.github/workflows/gates.yml:93:      - run: npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts
+.github/workflows/gates.yml:99:      - run: npx tsx --test tools/inspect/tierBots.test.ts
+== ciTests.test on 91af3475
+ok 1 - CI's commands run the four tools tests the t-int-engine merge added
+ok 2 - every test file is run by CI, or is on NOT_IN_CI with its reason (which only shrinks)
+ok 3 - the glob reader matches bash without globstar
+# pass 3
+# fail 0
+== plant: a new test file no workflow runs (tools/engine/plantOrphan.test.ts)
+# pass 3
+# fail 0
+== plant: src/game/mixer/plantOrphan.test.ts
+# pass 3
+# fail 0
+== plant staged (git add): tools/engine/plantOrphan.test.ts
+not ok 2 - every test file is run by CI, or is on NOT_IN_CI with its reason (which only shrinks)
+# pass 2
+# fail 1
+== plant: an orphan test AND its NOT_IN_CI entry (does anything stop the list growing?)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+# pass 3
+# fail 0
+PASS

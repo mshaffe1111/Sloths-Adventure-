@@ -1,0 +1,7 @@
+known-list check against 585ef376
+✓ tools/perf/clipknown.json: 44 entries
+✓ src/game/playerText.known.json: 4 entries
+✓ tools/perf/limits.json: 14 entries
+  tools/engine/generality.known.json: new list (27 entries), not on the base yet
+✓ src/game/artUse.allow.json: 210 entries
+PASS

@@ -1,0 +1,17 @@
+== saveLoadWords.test on 91af3475
+# pass 3
+# fail 0
+== plant: the old 'your sound settings' line back
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+not ok 1 - the file line: stages, stories and finds travel in the save file; sound does not, and the words say exactly that
+not ok 2 - the dialog promises no sound setting, volume or mute (the file carries none)
+# pass 1
+# fail 2
+== PROOF-1's own saveCopy.test.ts against this tree
+4:import { test } from 'node:test';
+5:import assert from 'node:assert/strict';
+6:import { readFileSync } from 'node:fs';
+7:import { isSaveKey } from '/home/user/plant-wt/src/game/saveFile.ts';
+9:  const tsx = readFileSync(new URL('/home/user/plant-wt/src/components/SaveLoadDialog.tsx', import.meta.url), 'utf8');
+# pass 1
+# fail 0

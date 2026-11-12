@@ -1,0 +1,36 @@
+{
+ "status": "REJECT",
+ "head": "91af3475 (origin/t-int-2)",
+ "fixed_and_proven": [
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "violations": [
+  {
+   "file": "src/game/ciTests.test.ts",
+   "line": 22,
+   "rule": "LAWS 5: a new gate's known list must only shrink (a test fails when an entry is added) and every entry has a defect-log owner",
+   "evidence": "planting tools/engine/plantOrphan.test.ts (staged) plus a NOT_IN_CI entry for it: ciTests.test.ts 3/3 pass and knowncheck PASS (delta/logs/citests.log); the 17 entries have no R-id (AF REPORT 'no R-id yet')."
+  }
+ ],
+ "holes_not_blocking": [
+  {
+   "file": "src/game/capPlugins.test.ts",
+   "rule": "guard: no promise resolves to a bare Capacitor plugin",
+   "evidence": "an async function returning registerPlugin(...) planted in src/game: 4/4 still pass (delta/logs/plant-cap.log)"
+  },
+  {
+   "file": "tools/engine/generalitycheck.ts",
+   "rule": "exempt only data",
+   "evidence": "src/game/predators/roster.ts exempt as a whole; it holds logic (inWorld, roster.ts:63)"
+  }
+ ],
+ "tests_added": [
+  "reference/qa-reports/PROOF-1/delta/cleared/cardfit.mjs",
+  "reference/qa-reports/PROOF-1/runtime/backcheck3.mjs",
+  "reference/qa-reports/PROOF-1/plant/plant-generality.sh (now plants predators/core, casts)"
+ ]
+}

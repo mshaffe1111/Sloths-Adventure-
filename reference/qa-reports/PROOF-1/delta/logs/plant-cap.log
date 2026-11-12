@@ -1,0 +1,14 @@
+== plant 1: audioFocus.ts back to a bare plugin
+ src/game/audioFocus.ts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+not ok 3 - wantAudioFocus reaches AudioFocusPlugin.java, both ways
+not ok 4 - no source file resolves a promise to a bare Capacitor plugin
+# pass 2
+# fail 2
+== plant 2: a third plugin, resolved bare, in a new file
+not ok 4 - no source file resolves a promise to a bare Capacitor plugin
+# pass 3
+# fail 1
+== plant 3: async function returning the plugin
+# pass 4
+# fail 0
