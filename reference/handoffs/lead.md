@@ -54,6 +54,8 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
   library in, paint the thorn bed, count 1-2's double, the real 120-roll 1-2 number, then the clock on the fixed step. AS-2 (Opus,
   session_01FhBbYMEeJcQCZAxBMhq2GW, t-assets-art82, stop 12:15 AM): Matt's art setting applied + every image measured against its
   original, dark images exempt, a check page for Matt. Retire both when they report (verify ls-remote first).
+  EN-S (Fable, session_01FhBbYNeneV7CJUH3PDMtKm, t-engine-split on main, stop 12:15 AM): seedchunks merged first, D45 fix in gates.yml,
+  a bundle breakdown, each world / old generator / special runs / bosses / story as their own chunks behind one loading seam; offline proven.
 - Running: EN-F (above) to 1:00 AM; retire it when it reports (verify ls-remote first).
 - Everyone else retired tonight, branches verified. Next helpers start fresh from their role card + this note + a packet.
 
