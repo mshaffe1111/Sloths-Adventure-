@@ -1289,6 +1289,7 @@ export default function App() {
             setBossCard(false);
             launchEngine(activeLevel);
           }}
+          onBack={() => setScreen('world_map')}
         />
       )}
 

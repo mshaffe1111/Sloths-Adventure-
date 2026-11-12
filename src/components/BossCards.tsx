@@ -10,6 +10,7 @@ import { crestName } from './icons/crests.ts';
 import { countValue, easeOut } from './fx/countUp.ts';
 import { sound } from '../game/audio.ts';
 import { dotPresent } from '../game/wayside.ts';
+import { useBack } from './nav/useBack.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -54,10 +55,28 @@ export function bossSpeaker(levelConfig: Pick<LevelConfig, 'worldIndex' | 'miniI
  * Before a guardian fight, after its painted scene: the same wooden card as Stage Cleared, with the guardian's painted portrait,
  * its name carved on the plaque, one line from Dot (or from Pokey, where she is away: bossSpeaker), and Let's go.
  */
-export const BossIntroCard: React.FC<{ levelConfig: LevelConfig; onGo: () => void }> = ({ levelConfig, onGo }) => {
+export const BossIntroCard: React.FC<{ levelConfig: LevelConfig; onGo: () => void; onBack: () => void }> = ({ levelConfig, onGo, onBack }) => {
   const key = levelConfig.secret ? 'thornbark' : levelConfig.worldIndex;
   const { who, line } = bossSpeaker(levelConfig);
   const short = typeof window !== 'undefined' && window.innerHeight <= 520;
+  // Back (the phone's button, a back swipe, Escape) leaves for the map, the way every card of a run does (PLAY-STORE-RULES §6.2)
+  useBack(onBack);
+  // the fight starts once, by the button or by Space or Enter (the note under the button promises them)
+  const went = React.useRef(false);
+  const go = React.useCallback(() => {
+    if (went.current) return;
+    went.current = true;
+    onGo();
+  }, [onGo]);
+  React.useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.repeat || (e.code !== 'Space' && e.code !== 'Enter' && e.code !== 'NumpadEnter')) return;
+      e.preventDefault();
+      go();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [go]);
   // the guardian's name lands with a slam (SN-10: the card used to open in silence)
   React.useEffect(() => {
     const id = window.setTimeout(() => sound.playBossSlam(), 250);
@@ -87,7 +106,7 @@ export const BossIntroCard: React.FC<{ levelConfig: LevelConfig; onGo: () => voi
               {line}
             </p>
           </div>
-          <button type="button" className="pm-go" data-start="true" onClick={onGo}>
+          <button type="button" className="pm-go" data-start="true" onClick={go}>
             Let's go!
             <PaintedIcon name="clubs" size={26} />
           </button>
@@ -143,6 +162,8 @@ function useCount(final: number): number {
 
 /** The end of the story: the same wooden card, Pokey and Meeca together, the expedition's total, then the map or the title. */
 export const EndingCard: React.FC<{ onOpenMap: () => void; onOpenTitle: () => void }> = ({ onOpenMap, onOpenTitle }) => {
+  // Back goes to the map, the card's first choice (PLAY-STORE-RULES §6.2)
+  useBack(onOpenMap);
   const total = React.useMemo(() => expeditionScore(), []);
   const shown = useCount(total);
   const h = typeof window !== 'undefined' && window.innerHeight <= 520 ? 120 : 170;
