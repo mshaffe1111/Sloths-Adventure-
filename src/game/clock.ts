@@ -5,8 +5,9 @@
  * same beat. Nothing here reads the wall clock or rolls a number; a stage's offsets come from its brief.
  *
  * Two layers:
- *   - `cycleRead`: the walk under every timer. Rocks (rockfall.ts), zones (zones.ts: spores, wind, tide, geysers, bolts) and thorn
- *     vines (thornVine.ts) read it with their own lengths, and get the numbers they always got, bit for bit (clockMove.test.ts).
+ *   - `cycleRead`: the walk under every timer. Rocks (rockfall.ts), zones (zones.ts: spores, wind, tide, geysers, bolts), thorn vines
+ *     (thornVine.ts), eagle nests, teapots, orchids and surging falls read it with their own lengths through `cycle3`, and get the
+ *     numbers they always got, bit for bit (clockMove.test.ts). Gusts, river logs and lifts take their place in the cycle from `cyclePos`.
  *   - `ClockDef` (stageKit.types.ts) made ready by `beatOf` and read by `beatAt` / `stageClock`: named phases, a warning before anything
  *     that hurts (`checkClock`), an offset to stagger lanes, and Easy stretched, never faster.
  *

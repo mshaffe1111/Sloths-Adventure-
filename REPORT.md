@@ -1,60 +1,60 @@
-# EN-Y report, Engine, 2026-11-11 (stop 9:20 PM ET). Branch t-engine-yield (base release-0.9.6@06bbd29f, main merged)
-Four streams on one branch: A the yield, A2 the quiet line in the search, B any stage by data + hurt floors, C travel as a mode
-(B, C: helpers). No rule, verdict threshold or STAGE-RULES number changed. All 200 proven 1-1 seeds lay the stage they laid before
-(`seedlist 1-1 --check` PASS after every step; nothing re-recorded). No stage id, seed or x literal added to engine code.
-## The numbers (1-1, 200 fresh seeds a range; `npx tsx tools/engine/yield.ts 1-1 --par 4 [--list] [--from N]`)
-| | 0.9.6 | now |
-|---|---|---|
-| CLEAN (no gen2.errors), 50001-50200, Normal / Easy | 9% / 2% | **57% / 55%** |
-| CLEAN, 70001-70200 (held out, never tuned on) | 10% / 3% | **58% / 54%** |
-| LISTABLE (clean + the list's quiet line 4 s + squirrels), 50001-50200 | 0 of 200 | **67 Normal / 65 both (33%)** |
-| LISTABLE, 70001-70200 (held out) | not measured | **55 / 55 (28%)** |
-A's target (50% clean) is met. **A2's target (50% listable) is NOT met: 33% / 28%.** What blocks it is named below.
-## What was built
-- **A (pipeline.ts):** the search judges every refusing rule before it takes a plan (`rollUnmet`) and repairs or re-rolls; the deal
-  knows the pool (`supplyDeal`, `unfilled`, `poolFits`); the lay keeps scarce sections (`leftShort`); V19b is repaired from the gate's
-  numbers (`windowFix`, `lift`); a roll after a refusal paces its climb (`pace`: reserve rise, steer the join's kind).
-- **A2:** `BuildRequest.also`, rules a caller holds a roll to; `tools/engine/listRules.ts` is the quiet line as that rule (tool-side,
-  0 bytes shipped). seedlist.ts builds AND checks under it; `yield.ts --list` measures listable. The deal also weighs the stage's
-  least climb against the corridor; a late descent's rise is reserved; a rise that ended short is lifted by what it lacked.
-- **B (helper, E12):** item 1 DONE (`gen2/listed.ts`, one table; seedlist and yield take any listed stage). Item 2 PARTLY: hurt floor
-  typed, laid and hurting in the real engine (Normal a heart, Easy the blink), `hazard.untaught` verdict; NOT drawn (World 1's
-  painter in w1Pits.ts), no still. Item 3 PARTLY: `reach.ts` JUDGED table, promises name no stage; 1-2's own rows not entered.
-- **C (helper, EN-T):** DONE. `stageModes.ts` (right, left, up, down, stay); travel is data (`LevelConfig.travel`); the engine's exit
-  wall, flags, bar and help ladder ask the mode. Camera lead not wired (it would change every stage's camera).
-## What the numbers hide (pushback, read this)
-1. **Listable is capped by the pool and the graphs, not by the search.** Listable by graph (50001-50200): sprint-A 36 of 55,
-   sprint-B 19 of 51, sprint-C 10 of 51, **sprint-D 0 of 43**. More re-rolls buy nothing (6 vs 14 measured: the same).
-2. **Two sections cap it:** w1-stair-test-back and w1-bank-stair-test-back always break the quiet line, so a test node dealt
-   "climb" has only the two 416 px stairs, which do not fit the corridor. With those two out of 1-1's pool (measured test-side):
-   **93 of 200 listable (46%)**, sprint-D 0 -> 17 of 43. That is Content's data and it needs the list rebuilt: your call.
-3. **Graphs over the corridor by structure:** sprint-B with its climb node kept needs 1,127 px of climb in a 900 px corridor and
-   the 40% cap leaves no legal re-typing (1 listable in 30). sprint-C's late descent needs a signature that climbs back 190-275 px
-   and only two sections can. Designer: more rising signature pieces, or re-cut graph B. This is Matt's "more pieces" rule.
-4. **Main chunk: 3,995,019 B, 715 B OVER chunkcheck's limit** (base 3,982,950: A and A2 +7,754, B +3,198, C +1,117). Red until
-   R-165.112 lands, as you ruled.
-5. **Types touched:** `BuildRequest.also` (types.ts, optional) is mine; B added `hurt`, `hurtFloor`, `Platform.pit 'hurt'`; C added
-   `LevelConfig.travel`. The Architect should read all three.
-6. **Proven list held at a price:** pacing runs only after a refusal, and the climb line sits 80 px above its natural place (980)
-   so two proven deals stay. Both go away at a list rebuild.
-7. **buildcheck fails on the untouched base in this container too** (p95 163 ms base, 155 here, limit 150): run it once on CI.
-## Your question: why 42 hand-authored sections, and what would make a stage take hours
-A section today is a shape welded to one stage: its `feel` names stage ids, and its hazard, pickups and heights are baked in. 17
-of the 42 are the SAME shapes re-cut for thorns and petals. Proof it is not the shapes: the Designer's 1-2 probe on the fixed
-generator (stand-ins = copies of real sections) lays 720 of 720 rolls with no throw and 117 of 120 a graph structurally clean.
-To get to hours: (1) the hazard under a gap, the pickup kind and the trend become the BRIEF's, applied by the lay (B's `hurt`
-flag as a brief-level swap), so own versions vanish; (2) sections are picked by what they need and teach, `feel` only excludes;
-(3) each stage adds 5-8 twist bricks for its signature; (4) the list builds itself (33% listable now, was 1 in 300).
+# EN-C: one clock for every timer (GAME-MAP A14)
 
-## Gates on the merged head
-PASS: tsc; 110 of 110 tests in every file the three streams touched; seedlist 1-1 --check; **the stage lock, 102 of 102 stages
-unchanged** against main (`lockall --layouts 2`; its first run caught 1-1's graph record hashing differently by field order
-alone, fixed and tested). A's code alone: gen2+worlds 350 of 350; the same suite on the merged head: 371 of 371.
-FAIL: chunkcheck (above). Not run: drawcheck, clipcheck, the suite outside gen2, stills (nothing new ships: Play draws the list).
+Branch `t-engine-clock`, base `origin/t-engine-yield` @347d50fa. No PR. Nothing on screen changed, so there are no screenshots to judge.
+## Done, with proof
+1. **`src/game/clock.ts`.** One walk, `cycleRead`, under every timer; `ClockDef` (ADR-003 decision 4) made ready by `beatOf` and read
+   by `beatAt` / `clockAt`; `stageClock(defs, easy)` owns game time (`step(dt)` only: a pause holds it; no wall clock, no random
+   roll). A read gives the phase, seconds into it, seconds left, whole cycles, and seconds to the next 'on'. `checkClock` refuses an
+   'on' not entered from a 'warn', a phase with no length, and `easyStretch` under 1; at run time a stretch under 1 counts as 1, so
+   Easy can never be faster. Easy stretches the offset too, so lanes keep their stagger.
+   Proof: `clock.test.ts`, 8 tests written first (phases in order, warn before on, Easy never shorter, offsets stagger, pause holds,
+   the stage clock's time equals the engine's own `gameTime += dt` sum bit for bit). Mutation tried: letting Easy shrink fails it.
+2. **Timers moved, each proven unchanged.** `clockMove.test.ts` keeps every old function frozen word for word and compares the live
+   one with `Object.is`, about 2 million reads a group: the engine's frame sums (30 and 60 a second), tenths (where phase edges
+   sit), a time before 0, and seeded rolls. Mutation tried: a one-rounding-step change in the walk fails it.
+3. **`src/game/beatBrick.ts`.** The "on a beat" base for B5 pieces: a brick names a clock and says what it does while the clock is on
+   ('bites' or 'gone'); the clock's warning is its tell. `brickFair` is the builder's check (warning long enough to read, every safe
+   spell long enough to cross). Test-side example (`beatBrick.test.ts`): a snap-jaw stone safe on beats 1 to 3, biting on 4, its jaw
+   opening through the warning; four stones a beat apart never bite two at once; a sinking pad. Mutation tried: biting during the
+   warning fails 3 tests.
+4. **`tools/engine/clockaudit.ts`** (test-side): every hazard beat a built stage carries, found by its fields. 102 stages x 2 layouts
+   x 2 settings, 1,334 timers: **0 hurting with no warning, 0 stages where Easy is faster.** Shortest warnings: orchid 0.8 s, teapot
+   0.9, spore 1.0, wind and thorn vine 1.1, nest and bolt 1.2, geyser 1.3, rock 1.4, surge fall 1.5, tide 1.8. Worth knowing: only
+   rocks (3.8 to 4.7 s) and wind (5.4 to 5.6 s) are any slower on Easy today; every other beat is the same on both settings.
 
-## Exact next step
-1. Land R-165.112, re-run chunkcheck. 2. Decide pushback 2 (park the two test-backs, rebuild 1-1's list under `also`). 3. B's
-item 2 "drawn": w1Pits.ts reports a `pit === 'hurt'` floor and paints the manifest's art. 4. B's trap: levelCheck validateFor,
-stageGenerator finishReach and petalPass ask `judgedOnArcs(config.id)`; make them ask the built stage BEFORE 1-2's JUDGED line.
-5. E12 item 5's other half: the double counted by the built stage (five readers of `doubleAllowed`). Its node-code half is DONE
-here (V3 reads `lessons`: the 1-2 probe goes from 0, 13, 0 to 118, 117, 117 structurally clean of 120). Turnover: engine-core.md §0d.
+## Which timers moved (all bit-identical)
+| Timer | Function |
+|---|---|
+| Falling rocks (World 4) | rockfall.ts `rockAt` |
+| Zones: spores, wind, tide troughs (World 6), geysers (9), bolts (10) | zones.ts `zoneState` |
+| Thorn vines (World 3), the awake one too | thornVine.ts `vinePhase` |
+| Eagle nests; teapots and orchids (World 5); surging falls | `nestAt`; `potAt`, `orchidAt`; `surgeFlow` |
+| Dot's gusts, river logs, lifts | `gustState`, `driftX`, `driftProgress`, `liftY`: cycle position from the clock (a lift's four stops stay its own sums) |
+| The reach checker's four copies | realReach.ts `calmFor` reads `cyclePos` |
+
+## Not moved, and why
+- **6-8's rising tide (risingTide.ts `stepTide`).** Its surge beat only runs while the water rises: it stops for the warning, a hold
+  and while he rests on a flag. On game time the surges would land at different moments, a change to play. It needs a clock that
+  can be held; decide with the lead.
+- **The swinging lianas (engine `vineClock`).** Equal to game time in play, but the reach checker and five tests set it by itself to
+  try every swing phase. Merging it means changing those tools first.
+- **River sluices (`RiverZone.flowT`):** a river a puzzle runs keeps its own time on purpose. **World 7 doors, World 2 pads and
+  jaws, World 9 crust:** not in the code yet (B5 pieces; they start on `beatBrick`). One-shot timers that start on an event
+  (crumble regrow, flood rise, drowsy linger) and drawing-only loops were left alone.
+
+## Checks
+- `npx tsc --noEmit -p .`: clean.
+- Stage lock, recorded at 347d50fa before any edit and checked after: **102 of 102 unchanged** (`lockall --layouts 2`, both settings).
+  Against the committed `lockall-main-0.9.5.json` only 1-1 differs, exactly as it does at the base (not from this branch).
+- `npx tsx tools/engine/seedlist.ts 1-1 --check`: PASS, 200 seeds clean on both settings.
+- Tests on the final code: the 3 new files plus every existing test file of a moved timer (rocks, zones, lifts, rivers, falls, Dot's
+  flight, all of Worlds 3, 4 and 5): **459 tests, 0 failed** (2 are those files' own standing TODOs). Not run: the rest of the
+  suite, drawcheck, clipcheck (nothing that draws changed). `roadmapcheck` cannot run here (shallow clone); `knowncheck` passes.
+- Bytes: main JS 3,995,263 at base, **3,995,403 now (+140 B)**; the limit is 3,994,304, so it was 959 over and is 1,099 over. Only
+  `cycleRead`, `cycle3` and `cyclePos` ship; `beatOf`, `stageClock`, `checkClock` and `beatBrick` are not imported by the game yet.
+
+## Left, and the exact next step
+1. Wire `stageClock` into the engine when the StageBrief runtime lands: build it at stage start from `brief.clocks`, call `step(dt)`
+   on the line that does `gameTime += dt` (engine.ts 1503), and serve `ModeHost.clock(id)` from `read(id)`.
+2. First B5 piece: a real snap-jaw stone = `BeatBrick` + art + `brickFair` in the builder with the crossing time as `safe`.
+3. The rising tide's held clock, then move it behind a frozen-oracle test like the others.
