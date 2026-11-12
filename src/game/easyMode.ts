@@ -392,6 +392,26 @@ export function easyWaterLandings(stage: Stage): number {
   return n;
 }
 
+/**
+ * H1's reading of risk (Matt 11-05 12:15 AM, "a heart only after real risk"; the lead's Round 7 ruling): something on this stage, as built
+ * for its setting, costs a heart or a life: a creature, water, a fall that costs (a hurt floor that is not soft), deadly water, a river, a
+ * gen2 pit that is not soft. (Scoped for now: on the live stages this reading missed thorns and hazards and took 12 stages' hearts, so the
+ * every-stage pass needs a full reading of risk first, the lead's to schedule.)
+ */
+export function costsHere(stage: Stage): boolean {
+  const px = stage as Stage & { proto?: { water?: Array<{ kind?: string }> }; heartFalls?: Array<{ soft?: boolean }> };
+  return stage.enemies.length > 0 || stage.waterY !== undefined || !!px.heartFalls?.some((z) => !z.soft) || !!px.proto?.water?.some((z) => z.kind === 'deadly') || (stage.rivers ?? []).length > 0 || ((stage as { gen2?: { budget?: { pit?: string } } }).gen2?.budget?.pit ?? 'soft') !== 'soft';
+}
+/**
+ * H1: whether a stage's flags get Easy's hearts. Not where nothing costs anything (gen2 1-1 had 23 on Easy and no damage), and, until the
+ * lead's ruling on live World 8 (8-1/8-2/8-6's Easy builds with no creature), that only on a gen2 stage not in GEN2_STAGES (the listed
+ * stages, 1-1 and 1-2: the lead 11-12 P12S); a curated gen2 stage (GEN2_STAGES) and every other stage keep a heart at every flag.
+ */
+export function flagHeartsOwed(stage: Stage): boolean {
+  const unshipped = !!stage.gen2 && !GEN2_STAGES[stage.config.id];
+  return costsHere(stage) || !unshipped;
+}
+
 /** Easy's version of a built stage (the stage passed in is changed and returned) */
 export function easyStage(stage: Stage): Stage {
   const kind = stage.config.objectiveType;
@@ -514,16 +534,7 @@ export function easyStage(stage: Stage): Stage {
     cps.sort((a, b) => a.x - b.x);
   }
   // (no hearts on Meeca's stage: nothing there hurts her, and a heart is only picked up when hurt, so Easy's hearts by the flags just
-  // sat there, QA 2026-10-31 "not picked up")
-  // (H1, hearts follow risk, every stage (Matt 11-05 12:15 AM; the lead's Round 7 ruling): nor where nothing costs anything, no creature,
-  // no water, no fall that costs a life (gen2 1-1 had 23 on Easy and no damage); Meeca's stage was the first such case)
-  const px = stage as Stage & { proto?: { meeca?: unknown; water?: Array<{ kind?: string }> }; heartFalls?: Array<{ soft?: boolean }> };
-  const risky = stage.enemies.length > 0 || stage.waterY !== undefined || !!px.heartFalls?.some((z) => !z.soft) || !!px.proto?.water?.some((z) => z.kind === 'deadly') || (stage.rivers ?? []).length > 0 || ((stage as { gen2?: { budget?: { pit?: string } } }).gen2?.budget?.pit ?? 'soft') !== 'soft';
-  // (scoped for now: on the live stages this reading of risk missed thorns and hazards and took 12 stages' hearts, so the every-stage pass
-  // needs a full reading of risk first, the lead's to schedule)
-  // (and, until the lead's ruling on live World 8 (8-1/8-2/8-6's Easy builds with no creature), only on a gen2 stage not yet shipped:
-  // gen2 1-1 as the test link's picker builds it; a shipped gen2 stage (GEN2_STAGES) keeps a heart at every flag, easyMode.test's promise)
-  const unshipped = gen2 && !GEN2_STAGES[stage.config.id];
-  if (!px.proto?.meeca && (risky || !unshipped)) for (const cp of cps) heartBy(stage, cp, next);
+  // sat there, QA 2026-10-31 "not picked up"; H1 by flagHeartsOwed, below)
+  if (!(stage as Stage & { proto?: { meeca?: unknown } }).proto?.meeca && flagHeartsOwed(stage)) for (const cp of cps) heartBy(stage, cp, next);
   return stage;
 }
