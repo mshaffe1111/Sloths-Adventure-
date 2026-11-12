@@ -61,6 +61,10 @@ re-checks that item only. INT-2 also merging the inventory (done) + 5 passed-nev
 reach specs, 1-2 packets). P13: real 1-3 120/120 on own rows; bots no softlock; 1-3 seed list waits for W1C's teach + Easy-length head
 and the lead's OK (filter = 1-1's; 2-min floor for every tier). P12S: CTEST does not use 1-2 (data is 1-1 runs); R-165.151 = old control
 course leftover, after tonight. Lead session 375k context, $85 at 1:24 PM.
+2:02 PM (Matt 1:37): D12 (Opus MAX, session_01FhBbYL2J8WMSCxDNyH7jt7, t-12-design): 1-2 DESIGNED + built (1-2.md to the lead 3:15 PM).
+F13 (Opus MAX, session_01FhBbYLor45ufvfpo74eKDv, t-13-finish): reads now; TELL IT when W1C stops, then it finishes 1-3 from W1C's last head.
+P13 + P12S = plumbing only. Packet D12-F13.md. Merge order tonight: t-yield-2, t-render-2, t-13-finish (holds W1C+P13), t-13-proof,
+t-w1-art, then t-12-design (+t-12-ship) if 1-2 passes the lead's look.
 NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes + t-pit-polish + t-audit-fixes (+ t-12-fly), renumber the
   duplicate R-165.129, full gate; (2) PROOF-1 re-audits only the delta; (3) ask Matt ONE question: ship the R-165.125 sound levels or hold
   (D47), then 0.9.7 on his word (PR, he merges, check deploy + APK); (4) 1-2 and 1-3 to Matt's test link by Fri 11-13 (1-3 by Fable/W1C,

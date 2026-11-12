@@ -521,3 +521,9 @@ lines); Matt sees them in the release.
   4:20 PM. Matt chose "Let Fable stop, reset later": W1C spends what's left on 1-3's own link pieces and the rope (turnover written
   first, pushes every 20 min); Opus (P13) finishes hearts by data, survey chips and the final gates from W1C's head; 1-3 still reaches the
   test link tonight; after Matt's reset (~4:30-5 PM) Fable does the polish pass on his notes. Keep helpers lean until the reset.
+- 2026-11-12 1:37-2:02 PM ET, Matt: "maybe we have Opus Max finish it out. And maybe have Opus Max work on 1.2. That way it'll get to
+  the reset faster." Done: D12 (Opus MAX, session_01FhBbYL2J8WMSCxDNyH7jt7, t-12-design from t-12-ship) designs and builds 1-2 as a
+  designed level like 1-3 (reference/design/1-2.md to the lead by 3:15 PM, judged before building); F13 (Opus MAX,
+  session_01FhBbYLor45ufvfpo74eKDv, t-13-finish) reads now and finishes 1-3 from W1C's last head when Fable stops (~3 PM). P13 and P12S
+  stay the plumbing (bots, seed lists, kit road). Packet: reference/packets/2026-11-12/D12-F13.md. Max reason: the first two levels set
+  the bar; the weekly limit resets soon.
