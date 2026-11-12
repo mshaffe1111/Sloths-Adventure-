@@ -97,8 +97,14 @@ export function drawTraps(ctx: CanvasRenderingContext2D, traps: readonly TrapSta
     ctx.beginPath();
     ctx.moveTo(p.loadX, top);
     if (held) ctx.quadraticCurveTo(mx, top + 30, p.x, top);
-    else ctx.quadraticCurveTo(p.loadX - (p.loadX - p.x) * 0.2, top + 46, p.loadX - (p.loadX - p.x) * 0.3, top + 70);
-    vine(ctx, 6);
+    else {
+      // let go: what is left of it is a short curl hanging under each clump of leaves, never a stiff stick across the sky
+      const dir = p.x < p.loadX ? -1 : 1;
+      ctx.bezierCurveTo(p.loadX, top + 22, p.loadX + dir * 12, top + 30, p.loadX + dir * 7, top + 18);
+      ctx.moveTo(p.x, top);
+      ctx.bezierCurveTo(p.x - dir * 4, top + 14, p.x - dir * 14, top + 20, p.x - dir * 9, top + 10);
+    }
+    vine(ctx, held ? 6 : 5);
     if (held) {
       // the short cord the load hangs by
       ctx.strokeStyle = CORD;
