@@ -19,3 +19,4 @@ funcheck-head|1|135|09:50:05|npx tsx tools/validate/funcheck.ts
 outofglob-main|1|298|09:52:06|main-wt out-of-glob tests (19 old files)
 funcheck-main|1|142|09:52:27|main-wt funcheck
 lock-record-main|0|1655|09:57:48|main-wt lockall --layouts 16 --out
+lock-record-head|0|1677|09:58:10|head lockall --layouts 16 --out
