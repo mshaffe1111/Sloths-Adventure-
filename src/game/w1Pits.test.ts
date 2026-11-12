@@ -164,3 +164,46 @@ test('a floorless gap inside a soft heartFalls zone is a soft pit, not water; on
   const falls = findW1Pits(ps).filter((q) => q.kind === 'fall' && !q.drop && !zones.some((z) => q.x0 >= z.x0 - 4 && q.x1 <= z.x1 + 4));
   assert.deepEqual(falls.map((q) => Math.round(q.x0)), [1400], 'the gap at 1400 has no soft zone over it');
 });
+
+// ── the thorn hollow's look (EN-W's Roughs 1-4, Matt 11-11): the library's 1-2 kit lays the only hollows, on these rolls ──
+const hollowRolls = async () => {
+  const { buildGen2Stage } = await import('./gen2/pipeline.ts');
+  const { config12, kitLib12 } = await import('../../tools/engine/library.ts');
+  const out: Array<{ seed: number; platforms: Platform[] }> = [];
+  for (const seed of [1, 2, 3, 4]) out.push({ seed, platforms: buildGen2Stage({ config: config12({ flown: true }) as never, kit: kitLib12({ flown: true }), seed, difficulty: 'normal' }).platforms });
+  return out;
+};
+
+test("a hollow's torn lips each hang into at most a quarter of it, so over a narrow hollow they never meet as a column of roots (EN-W Rough 1)", async () => {
+  const W = await import('./w1Pits.ts');
+  let n = 0;
+  for (const { seed, platforms } of await hollowRolls()) {
+    for (const g of findW1Pits(platforms).filter((q) => q.kind === 'hurt')) {
+      const w = g.x1 - g.x0, reach = W.LIP_IN * W.hollowLipWidth(g);
+      assert.ok(reach <= w * 0.26, `seed ${seed}: the hollow at ${Math.round(g.x0)} (${Math.round(w)} wide): each lip hangs ${reach.toFixed(1)} px into it`);
+      assert.ok(w - 2 * reach >= w * 0.48, `seed ${seed}: the hollow at ${Math.round(g.x0)} shows ${Math.round(w - 2 * reach)} px of hole between its lips`);
+      n++;
+    }
+  }
+  assert.ok(n >= 20, `${n} hollows checked`);
+});
+
+test("a hollow's walls are uneven, never stand inside it and bite no further than HOLLOW_BITE into its banks; its banks' sides over it are closed (EN-W Roughs 2, 3)", async () => {
+  const W = await import('./w1Pits.ts');
+  for (const { seed, platforms } of await hollowRolls()) {
+    for (const g of findW1Pits(platforms).filter((q) => q.kind === 'hurt')) {
+      const ls: number[] = [];
+      for (let y = g.top; y <= g.floor! + W.THORN_BED.dark; y += 4) {
+        const [a, b] = W.hollowWalls(g, y);
+        assert.ok(a <= g.x0 + 2 && a >= g.x0 - W.HOLLOW_BITE - 2 && b >= g.x1 - 2 && b <= g.x1 + W.HOLLOW_BITE + 2, `seed ${seed} x ${Math.round(g.x0)} y ${y}: walls ${a.toFixed(1)}..${b.toFixed(1)}`);
+        ls.push(a);
+      }
+      assert.ok(Math.max(...ls) - Math.min(...ls) >= 6, `seed ${seed} x ${Math.round(g.x0)}: the left wall is a straight line`);
+      // (the banks either side: their sides over the hurt floor are closed, so the ground never cuts their soil back into a cave there)
+      const banks = platforms.filter(paintedBank);
+      const L = banks.find((q) => Math.abs(q.x + q.width - g.x0) < 3 && q.y < g.floor!), R = banks.find((q) => Math.abs(q.x - g.x1) < 3 && q.y < g.floor!);
+      if (L) assert.ok(W.sideOverHollow(L, banks, 'r'), `seed ${seed}: the bank left of ${Math.round(g.x0)} keeps an open face over the hollow`);
+      if (R) assert.ok(W.sideOverHollow(R, banks, 'l'), `seed ${seed}: the bank right of ${Math.round(g.x0)} keeps an open face over the hollow`);
+    }
+  }
+});
