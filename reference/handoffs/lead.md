@@ -50,7 +50,7 @@ NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes
 Rules learned today: judge every still before Matt sees it; re-judge when a helper replaces its stills; "as good or better", never
 pixel-identical (STAGE-RULES §5b); Matt-reported items tagged on ROADMAP the same turn; effort: xhigh only when needed, max when needed.
 Check-in trigger: re-arm send_later every 30 min while anyone works.
-FABLE 88% at 12:01 PM (resets Wed 11-18 2 AM ET): GL0 stopped 12:03, W1C stops 12:30; no Fable after that unless the lead names a packet.
+FABLE 88% at 12:01 PM (resets Wed 11-18 2 AM ET; Matt may reset earlier when his normal limit, 75% at 12:03, hits 95-99%; the reserve goes to the golden 1-3 pass after his notes on tonight): GL0 stopped 12:03, W1C stops 12:30; no Fable after that unless the lead names a packet.
 Matt 11:20 AM: this lead leads him through the 1-3 build at least (do not rotate the lead before 1-3 is on the test link). HF $63.53 is the FINAL budget for now.
 
 ## Matt's direction (11-11 evening, his words)

@@ -490,3 +490,7 @@ lines); Matt sees them in the release.
   about 8 points an hour with two Fable sessions. The lead's call: GL0 stops now (REPORT from what it has; Opus does its final tables,
   gates and step 3); W1C's stop moves to 12:30 PM (gates finish, report, turnover; P13 on Opus takes 1-3's proof). After that NO Fable
   until the lead names a packet worth it; keep the rest as a reserve to Wednesday.
+- 2026-11-12 12:03 PM ET, Matt: "I may have a fable reset later. Im currently at 75 for normal weekly limit, but will be using a reset
+  at 95 to 99 percent. That most likely will reset fable too." The lead's plan: keep today's Fable stops (W1C 12:30, GL0 done); the
+  Fable reserve goes to the GOLDEN 1-3 polish pass + LEVEL-BAR.md AFTER Matt plays tonight's 1-3 and gives his notes, ideally after the
+  reset. Every helper counts toward Matt's normal weekly limit (75% now): short sessions, no idle helpers.
