@@ -5456,6 +5456,9 @@ export class GameEngine {
     if (respawnTake) sound.playRespawn();
     // what he was carrying goes back to its source
     this.kit?.onRespawn();
+    // World 5: no silk, sleep or stillness carried over to the flag (w5Play.ts calm, "a respawn": only the bot harness called it, so
+    // a player back at a flag within 260 px of where he fell was wrapped every ~6 s before he had touched the screen, audit C)
+    this.w5?.calm();
     this.inputGrace = 0.35;
     this.graceMoves = this.input.moves;
     // a press made while he was going down is not played at the flag (inputEngine.ts dropPresses)
