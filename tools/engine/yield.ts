@@ -11,7 +11,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
-import type { Gen2Stage, WorldKit } from '../../src/game/gen2/types.ts';
+import type { Gen2Stage } from '../../src/game/gen2/types.ts';
 
 /** a refusal line's rule, by name: the part of the line that says WHICH rule refused, never its numbers */
 export function ruleOf(line: string): string {
@@ -63,6 +63,16 @@ export function easyOnly(normal: readonly string[], easy: readonly string[]): st
 
 const pct = (n: number, of: number) => `${of ? Math.round((100 * n) / of) : 0}%`;
 
+/** a list search's yield (tools/engine/seedlist.ts), a line per rolled graph: how many fresh seeds it tried and kept, and how many each
+ *  refusing rule refused (`refused`: the roll's refusing lines, empty when kept; a roll counts once per rule) */
+export function searchYield(rolls: ReadonlyArray<{ graph: string; refused: readonly string[] }>): string[] {
+  const graphs = [...new Set(rolls.map((r) => r.graph))].sort();
+  return graphs.map((g) => {
+    const t = tally(rolls.filter((r) => r.graph === g).map((r) => r.refused));
+    return `  yield, graph ${g}: ${t.clean} kept of ${t.rolls} fresh seeds tried (${pct(t.clean, t.rolls)})${t.rows.length ? `; refused by: ${t.rows.map((r) => `${r.rule} ${r.stopped}`).join(', ')}` : ''}`;
+  });
+}
+
 export function printTable(title: string, t: YieldTable, soleBy: Map<string, number>): string {
   const lines = [`${title}: clean ${t.clean} of ${t.rolls} (${pct(t.clean, t.rolls)})`, '  stopped | first | alone | rule'];
   for (const r of t.rows) lines.push(`  ${String(r.stopped).padStart(7)} | ${String(r.first).padStart(5)} | ${String(soleBy.get(r.rule) ?? 0).padStart(5)} | ${r.rule}`);
@@ -72,14 +82,13 @@ export function printTable(title: string, t: YieldTable, soleBy: Map<string, num
 async function main(): Promise<void> {
   await import('../../src/game/headlessDom.ts');
   const { buildGen2Stage } = await import('../../src/game/gen2/pipeline.ts');
-  const { w1World } = await import('../../src/game/gen2/worlds/w1.ts');
+  const { listedStage } = await import('../../src/game/gen2/listed.ts');
   const { generateAllLevels } = await import('../../src/game/worldsData.ts');
-  // (the rolled kits, as tools/engine/seedlist.ts names them: a per-stage tool's table, not engine code)
-  const KITS: Record<string, () => WorldKit> = { '1-1': w1World };
   const id = process.argv[2];
   const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
-  const kit = KITS[id];
-  if (!kit) { console.error(`yield: no rolled kit for "${id}" (KITS)`); process.exit(2); }
+  // (the ONE listed-stage table, src/game/gen2/listed.ts: this probe takes any stage with a row)
+  const kit = listedStage(id)?.kit;
+  if (!kit) { console.error(`yield: no listed stage "${id}" (src/game/gen2/listed.ts)`); process.exit(2); }
   const config = { ...generateAllLevels().find((l) => l.id === id)!, unlocked: true };
   const from = Number(arg('--from', '50001')), count = Number(arg('--count', '200')), min = Number(arg('--min', '0'));
   const errs = { normal: [] as string[][], easy: [] as string[][], easyOnly: [] as string[][] };
