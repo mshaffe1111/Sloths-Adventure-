@@ -10,3 +10,10 @@ was left in total on 11-06; every job is logged here; the token never goes in co
 | 2026-11-06 9:45-9:55 AM | 1-1 near strip repaint: near11-N img2img 8 takes (6aede8020e0338d1bb817d84, ~5.3 min) + near11-hd native pass 2 takes (6aede9b60e0338d1bb81815b, ~2.5 min), rtx-pro-6000 ~$2.75/h | lead 9:35 AM, cap $1 | ~$0.36 (estimate from GPU minutes) | kept A (w1sun3-nearA-s62-23), backup B; reference/art/near11/ |
 
 Running total today: ~$0.36. Left: about $70 - $0.36; $15 reserve untouched.
+
+## 2026-11-12: Matt hands Hugging Face to the lead
+Matt, 11:17 AM ET: "Hugging Face is 100 up to you. Get what you need when you need. Balance is 63.53. You can use it however."
+Balance: **$63.53**. The lead decides every job; each one is logged here with what it bought; about $10 kept in reserve.
+
+| When | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
