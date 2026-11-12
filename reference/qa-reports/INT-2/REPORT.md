@@ -2,7 +2,7 @@
 
 ## Step 1 merges (each its own merge commit; MERGE, never rebase)
 1. t-11-pass@36a4ef1c -> c3ee9a26: no conflict (P11 already held d0276817).
-2. t-render-fixes@b8e98fac -> merge commit after c3ee9a26: no conflict. t-pit-polish@0e7c3e6b -> next merge: no conflict.
+2. t-render-fixes@b8e98fac -> 70feb2f5, t-pit-polish@0e7c3e6b -> 9130cd03: no conflicts.
 3. ccr-702d3c49-i33jeq@8ac8007b -> 075f8c02: three conflicts, all reference/ docs:
    - reference/methods/README.md: both sides added a list line; kept both (audit-fix.md; board.md + MATT-RELEASE-STEPS.md).
    - reference/BUILD-PLAN.md row (a): same cell on both sides; the lead's side is a superset (it already lists R-165.123); took the lead's.
