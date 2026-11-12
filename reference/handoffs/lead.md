@@ -4,6 +4,32 @@ Read this, then reference/STATE.md (newest at the bottom: every decision tonight
 (the plan, with "THE PLAN AS TOLD TO MATT"), reference/plans/MAP-REVISIONS.md (the map's changes and Matt's 84 ideas judged),
 reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Matt 11-11); it plans, dispatches, checks, decides.
 
+## RIGHT NOW (11-12 11:20 AM ET; written before the lead's memory compression; this block wins over older lines below)
+Running (all report to the lead, session_01FhBbYP63h7cCX8DyW69stq; story keeper session_019iachLiuwNTAZUBSJWUmR3, permanent):
+- P11 1-1 pass (Opus high, session_01FhBbYNA2XQgbQQrcxjr5GS, t-11-pass): dead-zone + bounce-purpose verdicts, hop rocks, list 258,
+  first run 9800; its L18 stills PASSED the lead's look; owes: what the empty ring by the checkpoint flag is (F12 found the mushroom rim
+  bug, likely the same), the x10040 soil-tone patch (one-frame stills tool?), its gates + REPORT. Retire after.
+- F12 1-2 (Opus high, session_01FhBbYMY35Ak6jDnbB6WZAi, t-12-fly): 1-2 flown, 118/120 strictly clean (98%) on its own rows; ring bug fixed;
+  stills judged: chain PASSES as gameplay; owes R-165.138 (tall-stem first cap) verdict confirmation, Dot's card mid-screen (live? log it),
+  checkpoint-on-mushroom named. Stop 12:45 PM.
+- AF audit fixes (Opus high, session_01FhBbYNyuLtE1k1CyxwaB3A, t-audit-fixes): PROOF-1's 5 violations (Capacitor 'then' AudioFocus +
+  KeepAwake; Stage Cleared buttons in the home bar sideways + clipcheck; save-dialog words = the story keeper's lines, sent; generality
+  gate paths; tools tests in CI) + unproven items. Stop 12:45 PM.
+- W1C Fable (session_01FhBbYM1aFUg186wiXKD1bx, t-w1-creatures): creatures wired (snake, drop traps, noise) DONE; now laying 1-3 (Matt wants
+  Fable to make 1-3; if Fable runs out, Opus carries on from its branch); owes the readability fixes (hive hidden behind a petal; snake
+  flees TOWARD Pokey; vine a line) + reference/art/W1-TRAPS-LIST.md. Stop 1:15 PM.
+- GL0 Fable (session_01FhBbYMMBxNi4RVq9QZKCJF, t-webgl-0): cut to the measuring stick + PixiJS Stage 0; step 3 planned for Opus.
+- PROOF-1 Critic (session_01FhBbYMYtRUNd5ze6kU5rsW, t-proof-audit@179cdb8a): verdict REJECT (5 violations, now in AF); KEEP it for the delta
+  re-audit of AF + INT-2.
+NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes + t-pit-polish + t-audit-fixes (+ t-12-fly), renumber the
+  duplicate R-165.129, full gate; (2) PROOF-1 re-audits only the delta; (3) ask Matt ONE question: ship the R-165.125 sound levels or hold
+  (D47), then 0.9.7 on his word (PR, he merges, check deploy + APK); (4) 1-2 and 1-3 to Matt's test link by Fri 11-13 (1-3 by Fable/W1C,
+  1-2 from F12; pits from PIT); (5) HF is the lead's call ($63.53, ~$10 reserve): first job = the W1 trap art from W1-TRAPS-LIST.md;
+  (6) after Matt's Fable reset: the golden 1-3 + reference/design/LEVEL-BAR.md.
+Rules learned today: judge every still before Matt sees it; re-judge when a helper replaces its stills; "as good or better", never
+pixel-identical (STAGE-RULES §5b); Matt-reported items tagged on ROADMAP the same turn; effort: xhigh only when needed, max when needed.
+Check-in trigger: re-arm send_later every 30 min while anyone works.
+
 ## Matt's direction (11-11 evening, his words)
 - "You determine what should be done... The only person on the team that stays is the storyteller... I'm looking for a leader that can lead."
 - "For small decisions, you make it. For big game-wide decisions, I can step in." Push back on him; keep him focused; "no tunnel vision."
