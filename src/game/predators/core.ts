@@ -70,6 +70,8 @@ export function checkPredator(def: PredatorDef): string[] {
   if (def.habit === 'drop' && def.act.aim !== 'below') say("a dropper's act aims 'below'");
   if ((def.habit === 'stalk' || def.habit === 'seek') && !real(def.speed.hunt)) say(`a ${def.habit} kind needs a hunt speed`);
   if (def.habit === 'seek' && !real(def.hears ?? 0)) say('a seek kind needs hears: the seconds it looks at a noise');
+  if (def.gait && !(real(def.gait.go) && real(def.gait.pause))) say('its gait needs go and pause above 0');
+  if (def.rides && def.habit !== 'sweep') say('only a sweeper rides its eye');
   if (def.fears?.length && !def.beatenBy.lure) say('it fears something, so it needs a lure outcome');
   return bad;
 }
@@ -127,7 +129,11 @@ export const blocks = (def: PredatorDef, s: PredatorState): boolean =>
 
 // ───────────────────────────── being beaten ─────────────────────────────
 
-const open = (s: PredatorState): boolean => s.asleep || s.phase === 'recover' || s.phase === 'stunned';
+/** in the pause between two bursts of its gait */
+const paused = (def: PredatorDef, s: PredatorState): boolean =>
+  !!def.gait && s.phase === 'hunt' && s.t % (def.gait.go + def.gait.pause) >= def.gait.go;
+
+const open = (def: PredatorDef, s: PredatorState): boolean => s.asleep || s.phase === 'recover' || s.phase === 'stunned' || paused(def, s);
 
 /**
  * Try a way on it at game time t. True when it worked: the kind lists the way, and an 'open' way found it open. It then ends as the
@@ -137,7 +143,8 @@ const open = (s: PredatorState): boolean => s.asleep || s.phase === 'recover' ||
 export function beat(def: PredatorDef, s: PredatorState, way: Way, t: number, fromX?: number): boolean {
   const o = def.beatenBy[way];
   if (!o || s.phase === 'gone' || s.leaving) return false;
-  if (o.when === 'open' && !open(s)) return false;
+  if (o.when === 'open' && !open(def, s)) return false;
+  if (o.when === 'behind' && !(fromX !== undefined && (fromX - s.x) * s.facing < 0)) return false;
   s.beatenBy = way;
   s.asleep = false;
   s.drawn = false;
@@ -204,7 +211,10 @@ export function foodChain(all: ReadonlyArray<{ def: PredatorDef; s: PredatorStat
 
 // ───────────────────────────── the step ─────────────────────────────
 
-const posted = (def: PredatorDef): boolean => def.habit === 'ambush' || def.habit === 'guard' || def.habit === 'drop' || def.habit === 'sweep';
+/** it has a post it returns to and never hunts from: by habit, or because nothing it does moves it (the frog) */
+const posted = (def: PredatorDef): boolean =>
+  def.habit === 'ambush' || def.habit === 'guard' || def.habit === 'drop' || def.habit === 'sweep' ||
+  (def.speed.rest === 0 && def.speed.hunt === 0 && def.act.speed === 0 && def.shy === undefined);
 
 function startTell(def: PredatorDef, s: PredatorState, hero: Prey, ev: PredatorEvents): void {
   if (def.habit !== 'sweep') s.facing = hero.x >= s.x ? 1 : -1;
@@ -280,14 +290,16 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
   if (saw) s.knows = true;
   const on = (phase: 'warn' | 'on'): boolean => !def.onBeat || sc.beat?.phase === phase;
   const dist = Math.abs(hero.x - s.x);
-  const home = Math.abs(s.x - s.homeX) <= AT && Math.abs(s.y - s.homeY) <= AT;
+  // where its body belongs between acts: its post, or (a sweeper that rides its eye) wherever its eye is
+  const restX = def.rides ? s.eyeX : s.homeX;
+  const home = Math.abs(s.x - restX) <= AT && Math.abs(s.y - s.homeY) <= AT;
   const ready = s.cool <= 0 && (def.act.aim === 'ahead' || home);
   const back = (def.speed.rest || def.act.speed * 0.5) * k * dt;
 
   switch (s.phase) {
     case 'rest': {
       if (posted(def)) {
-        s.x = toward(s.x, s.homeX, back);
+        s.x = toward(s.x, restX, back);
         s.y = toward(s.y, s.homeY, back);
       } else if (def.speed.rest > 0 && s.maxX > s.minX) {
         s.x += s.facing * def.speed.rest * k * dt;
@@ -299,6 +311,7 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
         // the eye waits at the end its next pass starts from; the pass is called when he is in its stretch
         const end = s.facing > 0 ? s.minX : s.maxX;
         s.eyeX = toward(s.eyeX, end, def.speed.rest * 2 * dt);
+        if (def.rides && home) s.x = s.eyeX;
         if (s.eyeX === end && home && s.cool <= 0 && hero.x >= s.minX && hero.x <= s.maxX && on('warn')) {
           enter(s, 'hunt');
           s.saw = false;
@@ -331,10 +344,12 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
           // a noise pulls the eye to it; it circles there and sees nobody
           const g = clamp(s.goalX, s.minX, s.maxX);
           s.eyeX = toward(s.eyeX, g, def.speed.rest * k * dt);
+          if (def.rides) s.x = s.eyeX;
           if (s.eyeX === g && (s.look += dt) >= (def.hears ?? 0)) s.drawn = false;
           break;
         }
         s.eyeX = toward(s.eyeX, far, def.speed.rest * k * dt);
+        if (def.rides) s.x = s.eyeX;
         if (sees(def, s, hero)) {
           s.saw = true;
           s.knows = true;
@@ -348,11 +363,12 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
       }
       if (s.drawn) {
         // the noise lure: go to it along its own ground, look for `hears` seconds, notice nobody
+        // (one that cannot walk turns to the noise and looks from where it stands)
         const g = clamp(s.goalX, s.minX, s.maxX);
-        if (Math.abs(g - s.x) > AT) {
-          s.facing = g >= s.x ? 1 : -1;
-          s.x = toward(s.x, g, (def.speed.hunt || def.speed.rest) * k * dt);
-        } else if ((s.look += dt) >= (def.hears ?? 0)) {
+        const walk = (def.speed.hunt || def.speed.rest) * k * dt;
+        if (Math.abs(s.goalX - s.x) > AT) s.facing = s.goalX >= s.x ? 1 : -1;
+        if (Math.abs(g - s.x) > AT && walk > 0) s.x = toward(s.x, g, walk);
+        else if ((s.look += dt) >= (def.hears ?? 0)) {
           s.drawn = false;
           enter(s, 'rest');
         }
@@ -384,6 +400,7 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
       } else if (Math.abs(s.goalX - s.x) > def.engage * 0.8) {
         v = dir * def.speed.hunt * k * (saw && def.watched !== undefined && hero.facing === -dir ? def.watched : 1);
       }
+      if (paused(def, s)) v = 0;
       s.facing = dir;
       s.x = clamp(s.x + v * dt, s.minX, s.maxX);
       break;

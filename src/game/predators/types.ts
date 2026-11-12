@@ -27,18 +27,20 @@ export type Habit =
   | 'seek'; // asleep or pacing until it hears something; goes to the noise and looks around
 
 /** every way Pokey has to beat one. No kind is beaten only by the stomp (core.ts `checkPredator`) */
-export type Way = 'stomp' | 'punch' | 'kick' | 'trap' | 'lure' | 'still' | 'drum' | 'break' | 'push' | 'light' | 'geyser' | 'wind';
+export type Way = 'stomp' | 'punch' | 'kick' | 'trap' | 'lure' | 'still' | 'drum' | 'break' | 'push' | 'light' | 'geyser' | 'wind' | 'dew';
 
 /**
  * How being beaten ends. `stunned`: it sits dazed for `seconds`, then carries on. `flees`: it gives up and goes home for `seconds`.
  * `dozes`: it falls asleep where it is (a noise can wake it again). `chasedOff`: it leaves the stage on its own legs and stays away. `when: 'open'`: the way only works while it is recovering, stunned or asleep
- * (its head is out, its back is turned); otherwise the way works any time.
+ * (its head is out, it has paused between bursts); `when: 'behind'`: only from its back (the turtle is all shell from the front);
+ * otherwise the way works any time.
  */
+export type When = 'any' | 'open' | 'behind';
 export type Outcome =
-  | { ends: 'stunned'; seconds: number; when?: 'any' | 'open' }
-  | { ends: 'flees'; seconds: number; when?: 'any' | 'open' }
-  | { ends: 'dozes'; when?: 'any' | 'open' }
-  | { ends: 'chasedOff'; when?: 'any' | 'open' };
+  | { ends: 'stunned'; seconds: number; when?: When }
+  | { ends: 'flees'; seconds: number; when?: When }
+  | { ends: 'dozes'; when?: When }
+  | { ends: 'chasedOff'; when?: When };
 
 export interface PredatorDef {
   /** the animal, by the name the game already has for it */
@@ -63,6 +65,10 @@ export interface PredatorDef {
   shy?: number;
   /** a stalker's speed as a fraction while he is facing it (0: it freezes when looked at). Absent: it does not care */
   watched?: number;
+  /** on the hunt it comes in bursts: `go` seconds moving, `pause` seconds stopped, and it is open in the pause (the jumping spider) */
+  gait?: { go: number; pause: number };
+  /** a sweeper whose body IS its eye (the caiman's ripple): it travels with the eye and acts from where the eye is */
+  rides?: boolean;
   /** it starts its tell from this far (px) */
   engage: number;
   /** the tell, seconds on Normal: what the player sees and hears before it can hurt. Never under TELL_MIN */

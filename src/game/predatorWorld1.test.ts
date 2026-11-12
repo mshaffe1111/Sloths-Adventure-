@@ -180,9 +180,11 @@ test("boa, way 2, the food chain: lead the eagle's shadow over it and it is chas
   assert.ok(Math.abs(eagle.eyeX - 600) <= EAGLE.sight.ahead + 320 * DT, 'when the eye was over its bough');
   assert.deepEqual([boa.phase, boa.leaving, boa.beatenBy], ['flee', true, 'lure']);
   assert.equal(eagle.phase, 'hunt', 'the eagle just carries on its pass');
-  // a resting eagle scares nothing
+  // a resting eagle scares nothing, even with its eye parked right over the bough: only a pass that is out counts
   const calm = newPredator(BOA, bough());
-  assert.equal(foodChain([{ def: BOA, s: calm }, { def: EAGLE, s: newPredator(EAGLE, sky()) }], 0), 0);
+  const perched = newPredator(EAGLE, post({ x: 700, y: 40, minX: 600, maxX: 1200 }));
+  assert.deepEqual([perched.eyeX, perched.phase], [600, 'rest']);
+  assert.equal(foodChain([{ def: BOA, s: calm }, { def: EAGLE, s: perched }], 0), 0);
 });
 
 test('boa, way 3: go still while it rears and he is a branch: it settles back for 4 s, and he walks past', () => {
