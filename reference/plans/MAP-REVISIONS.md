@@ -58,3 +58,109 @@ fit... I'm going to take your word." Sources read in full: GAME-MAP.md §1-3, §
 tendril) | 1-4 Up the Kapok: the first climb, rotting boughs, fruit down the trunk | 1-5 Where She Walked: over or under | 1-6 First
 Lianas: the pendulum swing | 1-7 A Very Good Bush: STILLNESS (section 1) | 1-8 The Long Branch: the branch-collapse chase | 1-9 The
 Boa's Branches: the boa is lured with drop traps and the food chain (cut list C1) | guardian as built | hidden: the zipline as a sloped rope.
+
+## 6. Every one of Matt's 84 ideas, judged by the lead (11-11 8:05 PM ET, read in full by the lead, no helper)
+IN = in the game, at the place named, on the piece named (A/B/C = GAME-MAP §10 lines). PARK = after launch or when a stage needs it.
+OUT = against a rule we keep, with the reason. Worlds: 1 Canopy, 2 River, 3 Grotto, 4 Mist, 5 Orchid, 6 Mangrove, 7 Ruins,
+8 Twilight, 9 Volcano, 10 Storm.
+
+**Level ideas (MATT-IDEAS, 30)**
+| # | Idea | Verdict |
+|---|---|---|
+| 1 | Canopy Highway lanes | IN: World 2 river lanes (B3) |
+| 2 | Collected critters trail behind | IN: World 2 followers (B6) |
+| 3 | Territory loops (Qix) | PARK: a new control scheme; a bonus stage after launch |
+| 4 | Time moves only when Pokey moves | PARK: one World 7 puzzle room at most (the temple wakes when you move); the clock can carry it later |
+| 5 | Escort builder with Meeca | PARK: two-character AI; Meeca's 5-M stays as built |
+| 6 | Pinball bonus | OUT before launch: new physics for one stage |
+| 7 | Algae camouflage | IN: the signature move, stillness (section 1) |
+| 8 | Sun and shade body heat | IN: World 9's heat meter (B8): shade cools, sun bakes |
+| 9 | Moth swarm | IN: World 8's Moth Lights, the cheap way (C8) |
+| 10 | Claw-lock pendulum | IN: 1-6 pendulum, then World 8's fling (B13) |
+| 11 | Sink with a stone in a lagoon | IN: World 6 diving (B15), the push block as ballast |
+| 12 | The descent to the forest floor | IN: World 3, the first down stage (A3, A7) |
+| 13 | Mirage platforms | OUT: what looks standable must be standable |
+| 14 | Shadow platforms | IN: World 8's "there only when lit" (B5), shown with a clear tell |
+| 15 | Sound solidifies branches | PARK: a second noise system; World 3 already has noise |
+| 16 | Shrink and grow | OUT before launch: changes every reach number |
+| 17 | Reflection world | IN as a look only: World 6 water reflections (section 2) |
+| 18 | Breathing strangler fig | IN: platforms on a rhythm (B4 + A14), World 5 |
+| 19 | Amber static | PARK: needs a design one-pager before it can be judged |
+| 20 | Slingshot vines | IN: World 8 fling (B13) |
+| 21 | Food chain | IN: Worlds 3, 6, 8, 9 (B19); 1-9's boa too |
+| 22 | Time loop with your past self | OUT before launch: a replay system for one stage |
+| 23 | Wildlife photographer | PARK: as a collectible set later (A15) |
+| 24 | Heartbeat calm | IN: folded into stillness (section 1), no gauge |
+| 25 | Ride a tapir or caiman | IN, the cheap way: a creature as a moving platform with its own art (B4), World 2 caiman backs, World 6 tapir |
+| 26 | Tethered escape with Meeca | OUT before launch: two-body physics |
+| 27 | Mimic forest | IN, limited: World 8 only, every mimic blinks first (danger must look like danger) |
+| 28 | Pick a card road | IN: World 10's hidden stage (C9) |
+| 29 | Pollinator bloom | IN: World 5's Wilted Garden, the cheap way (C7) |
+| 30 | Shrinking safe zone arena | IN: the guardian arena pattern, first in World 9 (rising lava) |
+
+**Arcade-inspired (MATT-80S, 30)**
+| # | Idea | Verdict |
+|---|---|---|
+| 1 | Two vines climb twice as fast | IN: 1-4 Up the Kapok (a climb-speed value on the vine piece) |
+| 2 | Over/under routing | IN: 1-5 (B20) |
+| 3 | Mud pits crust on a clock | IN: World 9 crust floors (B5) |
+| 4 | Snap-jaw stepping stones | IN: World 2 (B5) |
+| 5 | Rolling nuts at two heights | IN: 1-8's chase (jump the low, pass under the high) |
+| 6 | Rising bubbles lift Pokey | IN: World 6 (B4) |
+| 7 | Fruit dropped down a climb | IN: 1-4 (A14 + falling hazards) |
+| 8 | Shake the vine to drop climbers | IN: 1-3 drop traps (B2) |
+| 9 | Seed-fluff ride up a shaft | IN: World 4, the vent lift that exists (C5 cheap way) |
+| 10 | Safe-fall recovery | DONE: 1-1 ships it (0.9.6) |
+| 11 | Bark that opens and closes on a climb | IN: World 4 tall stages (B5) |
+| 12 | Cut a tendril, drop a log or hive | IN: 1-3 (B2) |
+| 13 | Bounce up into a current | IN: World 4 wind (B17) |
+| 14 | Dig a hole, the predator becomes a bridge | PARK: a dig verb; World 7 could take it as a trapdoor drop trap later |
+| 15 | Step painting | IN: same as level idea 29 |
+| 16 | A find changes the layout elsewhere | IN: World 7 (C6 cheap way, gates) |
+| 17 | Bump from below to flip a beetle | PARK: a new verb; the punch covers fighting |
+| 18 | Hollow-log drum stuns predators | IN: World 3, noise used on purpose (B10): the quiet world's one loud tool |
+| 19 | Dive under logs for 4 s | IN: World 6 (B14, B15) |
+| 20 | Sap bubbles to bounce on or trap a predator | IN: World 6, with idea 6 |
+| 21 | Light tunnel goes dark | IN: World 3, glowworms not fireflies (story keeper) (B9) |
+| 22 | Grapple to the underside | IN: World 3 hanging (B12) |
+| 23 | Timed doors, mud currents, colour keys | IN: World 7 |
+| 24 | Drowsiness refilled by a fruit trail | IN: World 5's "don't stop": fruit wakes him |
+| 25 | Orchids that change your powers | OUT as written: power changes move every jump check; one bounce-bloom piece in World 5 instead |
+| 26 | Vine elevator | IN: vertical moving platforms (B4), World 4; the berry throwing is OUT (no projectiles) |
+| 27 | Up-only waterfall, break ceilings from below | IN: World 4's Up the Falls and World 7 ceilings (B18) |
+| 28 | Boulder on a leaf bridge | IN: World 7 (B18 + B2) |
+| 29 | Push a rock the wrong way to find a secret | IN: the secret pattern for hidden-stage entrances in any world (A15) |
+| 30 | A pursuer copies your path | IN, the cheap way: 1-9's boa lured by drop traps (C1) |
+
+**Platformer archetypes (24)**
+| # | Idea | Verdict |
+|---|---|---|
+| 1 | Predator shadow, red light green light | IN: 1-7 with stillness (B11) |
+| 2 | Monsoon gusts | IN: World 4 (B17) |
+| 3 | Flash-flood escape climb | IN: 2-8 and World 6 (B16) |
+| 4 | Bioluminescent night | IN: Worlds 3 and 8, and the night look |
+| 5 | Slippery moss and mudslides | PARK: low friction moves every reach number |
+| 6 | Lily-pad raft auto-scroll | IN: World 2's Rapids, the cheap way (C4) |
+| 7 | Sinking pads | IN: World 2 (B5) |
+| 8 | Push a giant seed | IN: World 7 (B18) |
+| 9 | Bounce chain over a deadly floor | IN: 1-2 |
+| 10 | Rotting boughs | IN: 1-4 (B1) |
+| 11 | Hand-over-hand under a branch | IN: World 3 (B12) |
+| 12 | Pendulum swing | IN: 1-6 |
+| 13 | Leaf parachute and updrafts | IN: World 4 glide (B23) |
+| 14 | Seesaw and counterweight branches | PARK: a new physics object; World 7's machine could take it later |
+| 15 | The hummingbird rides along | PARK for the story keeper: Dot never points the way, so the hummingbird can't steer play |
+| 16 | Inside a hollow kapok | IN: 1-4 climbs inside the kapok (a look and a tall profile) |
+| 17 | Wrap-around stage | OUT before launch: a camera and world change |
+| 18 | Foreground/background swap | OUT before launch: two collision layers |
+| 19 | Totem switch, race back | IN: 2-7 out and back (A3) |
+| 20 | Sunset silhouette | IN: the sunset look (section 2) |
+| 21 | Baby-sloth rescue caravan | IN: World 2 followers (B6) |
+| 22 | Sound stealth | IN: 1-7 and World 3 (B10) |
+| 23 | Wash away thorns | IN: World 6, the tide clears a path (B16) |
+| 24 | Ziplines | IN: World 1's hidden stage (C2 cheap way) |
+
+**Tally: 61 IN (1 already done), 15 PARK, 8 OUT.** Every IN rides on a piece the engine is already building, so the ideas add
+variety without adding engine work. The new things worth naming: twin-vine climbs and fruit down the trunk inside the hollow kapok
+(1-4); rolling nuts at two heights (1-8); the drum as World 3's one loud tool; fruit that wakes drowsy Pokey (World 5); creatures you
+ride (World 2, World 6); the rising-lava arena for guardians.
