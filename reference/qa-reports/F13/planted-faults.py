@@ -17,7 +17,8 @@ M=[
  ("gen2/worlds/w1Arc13.ts","the way out's near bank is too short for its tree (the foot hangs over the hollow)","pieces: [{ key: 'in', shape: 'bank', w: [300, 340], place: { kind: 'start' }","pieces: [{ key: 'in', shape: 'bank', w: [200, 220], place: { kind: 'start' }"),
  ("castArt.ts","the vine's tile is never baked again after the phone takes its canvas back","  if (cache.cv && canvasLost(cache.cv, 'w1 vine tile')) cache.cv = null;\n",""),
  ("ropeArt.ts","the tinted rope tile is never baked again after the phone takes its canvas back","  if (c && canvasLost(c, 'tinted rope tile')) {","  if (false && c && canvasLost(c, 'tinted rope tile')) {"),
- ("gen2/worlds/w1.ts","1-3's first branch with no vine says its line as chatter (hidden on Normal's Tips)","teachTips: ['traps', 'traps.then', 'bare'],","teachTips: ['traps', 'traps.then'],"),
+ ("gen2/worlds/w1.ts","1-3's first branch with no vine says its line as chatter (hidden on Normal's Tips)","teachTips: ['traps', 'bare'],","teachTips: ['traps'],"),
+ ("gen2/worlds/w1Arc13.ts","the lesson's second line is a tip of its own again (lost if he walks straight on to the handle)","{ id: 'tip2', role: 'tip', on: 'd', t: 0.5, allow: [] /*","{ id: 'tip2', role: 'tip', on: 'd', t: 0.5, allow: ['traps.then'] /*"),
  ("castArt.ts","the trees grow half again with the vine's height (the foot sinks under the bank)","Math.max(0.05, (ground - y) / (W1_TRAP_MEASURES.trunk.foot[1] - TRUNK_TIE.y))","Math.max(0.05, 1.5 * (ground - y) / (W1_TRAP_MEASURES.trunk.foot[1] - TRUNK_TIE.y))"),
 ]
 ok=0; bad=[]

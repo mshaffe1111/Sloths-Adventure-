@@ -77,7 +77,9 @@ test('every roll is the designed level, on both settings: no throw, no error, th
 
 test("the stage carries its cast: proto.cast.kinds is ['snake'], and Dot says the story keeper's line once", () => {
   assert.deepEqual(LINES_13, { traps: 'See that hive? Punch the vine, down it comes!', 'traps.then': "Don't worry, it only gives him a fright.", bare: 'No vine? Walk him to the end of his branch.' }, "the story keeper's words, verbatim");
-  for (const [id, words] of Object.entries(LINES_13)) assert.equal(kitLib13(O).manifest.tips![id], words);
+  // (the kit says the keeper's words: the lesson as ONE card, its two lines together, the lead 11-12; the bare branch's as it is)
+  assert.equal(kitLib13(O).manifest.tips!.traps, `${LINES_13.traps} ${LINES_13['traps.then']}`);
+  assert.equal(kitLib13(O).manifest.tips!.bare, LINES_13.bare);
   assert.equal(MISSION_13, 'Shake every vine, and off the snakes glide.');
   // (and it is the line the game shows for the stage: stagePlan.ts holds its own copy, menu code that imports no stage kit)
   assert.equal(STAGE_PLAN[1][2].name, 'Branch Snakes');
@@ -88,8 +90,9 @@ test("the stage carries its cast: proto.cast.kinds is ['snake'], and Dot says th
   assert.equal(W1_CAST_SAID.trap, 'Off he glides, not a scratch, just very offended!', "the story keeper's words, verbatim");
   each((r, name) => {
     assert.deepEqual(r.kinds, ['snake'], name);
-    // (the keeper's three lines, each once, in the level's order: the lesson's two at its flag, then the bare branch's)
-    assert.deepEqual(r.said.filter((m) => m in LINES_13), ['traps', 'traps.then', 'bare'], name);
+    // (the keeper's lines, each once, in the level's order: the lesson's card (both its lines) at its flag, then the bare branch's;
+    //  the lesson's second line is never a tip of its own, where it could be lost when he walks straight on to the handle)
+    assert.deepEqual(r.said.filter((m) => m in LINES_13), ['traps', 'bare'], name);
     assert.deepEqual(r.said.filter((m) => REFUSE_13.some((x) => m.startsWith(x))), [], `${name}: a line or prop the stage refuses came with a shape`);
   });
 });
@@ -181,8 +184,9 @@ test("Dot's trap line is a TEACH line, and she says it three seconds of walking 
   // (P13's bots, 11-12: said 232 px before the handle, a first-timer walking 265 px a second had passed the vine before he had read it)
   for (const d of ['normal', 'easy'] as const) for (const seed of SEEDS) {
     const st: Any = buildGen2Stage({ config: generateAllLevels().find((l) => l.id === STAGE_13 && !l.secret)! as Any, kit: w1World() as Any, seed, difficulty: d });
-    const hint = st.proto.hints.find((h: Any) => h.text === LINES_13.traps);
-    assert.ok(hint, `seed ${seed} ${d}: the lesson's line is laid`);
+    const hint = st.proto.hints.find((h: Any) => h.text === `${LINES_13.traps} ${LINES_13['traps.then']}`);
+    assert.ok(hint, `seed ${seed} ${d}: the lesson's card is laid, both its lines on it`);
+    assert.ok(!st.proto.hints.some((h: Any) => h.text === LINES_13['traps.then']), `seed ${seed} ${d}: the second line is never a tip alone`);
     assert.equal(hint.teach, true, `seed ${seed} ${d}: a teach line (WorldManifest.teachTips)`);
     const first = [...st.proto.cast.traps].sort((a: Any, b: Any) => a.x - b.x)[0];
     assert.ok(first.x - hint.x >= 800, `seed ${seed} ${d}: her line is ${Math.round(first.x - hint.x)} px before the first vine (800 and more: 3 s at a walk)`);

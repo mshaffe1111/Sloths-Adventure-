@@ -19,7 +19,7 @@ import { hollowLogSize, w1DressFacing, w1DressWidth } from '../../w1NewArt.ts';
 import { pickCut, W1_CUT } from '../../w1CutArt.ts';
 import type { Platform } from '../../types.ts';
 import { SPRINT_GRAPHS } from '../graphs.ts';
-import { BRIEF_13, LINES_13, PURGE_13, SECTIONS_13, STAGE_13 } from './w1Arc13.ts';
+import { BRIEF_13, LESSON_CARD_13, LINES_13, PURGE_13, SECTIONS_13, STAGE_13 } from './w1Arc13.ts';
 import { W1_CAST_CREATURES, W1_TRAP_PAIRS, W1_TRAP_PROPS, armedTraps } from './w1Cast.ts';
 
 /**
@@ -1619,11 +1619,12 @@ export function w1World(): WorldKit {
     handBuilt: [],
     // (Dot's lines by their text id: the words a hint carries are the line's old text, which dotLines.ts swaps for the new look's words
     // where it is said; without these the pipeline put the raw id on screen, the red team's RT-ENGINE #1: "hint.1-1.double")
-    tips: { ...W1_TIPS, ...LINES_13 },
+    // (1-3's lesson is one card, the keeper's two lines together: LESSON_CARD_13)
+    tips: { ...W1_TIPS, ...LINES_13, traps: LESSON_CARD_13 },
     // (the first trap's line is a TEACH line: Dot waits for a clear moment, keeps it up its reading time, and no stock lesson cuts it;
     // so are its second half, the lesson's "it only gives him a fright", and the first branch with no vine (the first appearance of
     // beating a snake without one): on Normal's default Tips they were hidden, P13's find, the lead 11-12)
-    teachTips: ['traps', 'traps.then', 'bare'],
+    teachTips: ['traps', 'bare'],
   };
   // (the traps are armed by the animal that stays under them: the kit's own emitters and spawn hook, w1Cast.ts armedTraps)
   return { manifest, ...armedTraps() };

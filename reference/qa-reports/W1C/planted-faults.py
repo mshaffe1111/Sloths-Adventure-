@@ -43,7 +43,7 @@ M=[
  ("gen2/pipeline.ts","a free rope is hung required","g0: l.y, g1: r.y, required: !lp.ropeFree,","g0: l.y, g1: r.y, required: true,"),
  ("gen2/pipeline.ts","a free rope's hollow is a deep one-way pit","pitSteps(x0, x1, lipY, farY, shallow ? Math.min(hop, PIT.wade) : depthNow, hop);","pitSteps(x0, x1, lipY, farY, depthNow, hop);"),
  ("gen2/pipeline.ts","a free rope's hollow is a full held jump deep","shallow ? Math.min(hop, PIT.wade) : depthNow","shallow ? hop : depthNow"),
- ("gen2/worlds/w1.ts","the trap line is not a teach line","    teachTips: ['traps', 'traps.then', 'bare'],","    teachTips: ['traps.then', 'bare'],"),
+ ("gen2/worlds/w1.ts","the trap line is not a teach line","    teachTips: ['traps', 'bare'],","    teachTips: ['bare'],"),
  ("gen2/worlds/w1Arc13.ts","Dot speaks at the vine, too late to read","{ id: 'tip', role: 'tip', on: 'a', t: 0.4, allow: ['traps'] }","{ id: 'tip', role: 'tip', on: 'd', t: 0.9, allow: ['traps'] }"),
  ("gen2/worlds/w1Arc13.ts","a flag may stand on a snake's log (its socket is emptied)","place: { kind: 'on', on, at, h }, style: 'log', main: false });","place: { kind: 'on', on, at, h }, style: 'log' });"),
  ("gen2/worlds/w1Arc13.ts","a trap's own snake is cut on Easy","easy: o.easy ?? 'stay' });","easy: o.easy ?? 'soften' });"),
