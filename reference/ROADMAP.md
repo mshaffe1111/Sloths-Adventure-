@@ -629,6 +629,7 @@ Matt's words and the plan: under R-158. Phase A builds the World 1 part; Phase B
 | R-165.143 | 17 old test files no CI workflow runs (AF, 11-12: ciTests.test.ts fails on any test file no workflow runs; these 17 sit on its shrink-only NOT_IN_CI list) | Day 1: tests that exist but never run in CI can rot silently | NOT_IN_CI empty: each file runs in gates.yml (or is deleted with a reason) | 1-2 h (a guess) | B | S | open | integration | AF REPORT 11-12 |
 | R-165.144 | The Stage Cleared card on 360-tall sideways phones: Dot overlaps a star and "Splendid" a medal (AF, 11-12, named, not fixed) | Day 1: the oldest small phones sideways | nothing overlaps at 640x360 sideways; clipcheck judges overlap there | 1 h (a guess) | B | S | open | menus | AF REPORT 11-12 |
 | R-165.145 | Game Over scrolls 13 px at 360x640 upright (AF, 11-12, named, not fixed) | Day 1: the oldest small phones | Game Over fits unscrolled at 360x640; clipcheck judges it | 0.5 h (a guess) | B | S | open | menus | AF REPORT 11-12 |
+| R-165.146 | World 1's soil seam: a straight horizontal line across the soil at World 1's floor line (y 580) under banks that stand above it (seen by the lead in W1C's 1-3 stills, trap1 upright, 11-12; W1C: nothing in the lay ends there, so it is the ground art drawing the floor line under raised banks) | Day 1: every World 1 stage with raised banks, upright | no seam under any raised bank, upright and sideways, on 1-1, 1-2 and 1-3 stills; a planted test | 1-2 h (a guess) | A | S | open | RF2 (render), 11-12 | the lead 11-12 |
 
 ## Done (archive)
 
