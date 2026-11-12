@@ -111,3 +111,15 @@ Rules for building it:
 - Each line ships only when what it credits is in the shipped game. Today none of the three is built: stillness, gliding snakes and
   World 2's lanes are all still to come. Keep the list as data and add lines as stages land.
 - Titles only: no logos, art or characters.
+
+**Revised to Matt's framing (a tribute; 3:25 PM ET). This supersedes the draft above:**
+
+> **Inspired by**
+> Sloths is our tribute to the classic 2D platformers and the little arcade games that came before it. Every idea we borrowed, we grew
+> into something the rainforest could call its own.
+> **Frogger**: lanes of traffic became a river of drifting logs and dozing caimans in the Sunlit Riverbank.
+> **Super Mario Bros. 3**: creatures you learn by one habit became an ocelot that creeps while you look away, and a boa that mistakes a
+> still sloth for a branch.
+> **The real rainforest**: a sloth who stays safe by staying still, a snake that glides from tree to tree, and a mantis dressed as an
+> orchid.
+> Sloths Rainforest Adventures is not affiliated with or endorsed by these games or their makers.
