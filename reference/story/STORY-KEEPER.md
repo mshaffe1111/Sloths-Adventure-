@@ -400,3 +400,10 @@ different.
 **CANON (Matt, 11-12): Pokey's full name is Pocono**, after Matt's cat. Pokey and Meeca are named for two of Matt's cats, who did
 everything together, and a little of how they act comes from them. Never mention the cats having passed. The About opening (in
 STORY-LINES 11-12) carries this fact.
+
+**11-12 About pages APPROVED by Matt** (final text in reference/packets/2026-11-12/STORY-LINES.md, "FINAL layout"):
+- the About screen is "What's ours" plus two links;
+- Our story is one page: Matt's wife thinks sloths are cute; Pocono and Meeca are named for the cats; the then-and-now pair; the
+  closing "It's still a little project, just for fun. It just got bigger.";
+- Inspired by is its own page, waiting for Matt's games.
+Keep these pages true as the game changes: a line that stops being true gets rewritten by the keeper.

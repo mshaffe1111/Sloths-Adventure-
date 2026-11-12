@@ -320,3 +320,6 @@ version was...", so the page doesn't start twice.)
 
 **INSPIRED BY page:** the tribute intro, one line per game Matt names, and the not-affiliated line (drafted above; it waits for Matt's
 list).
+
+**APPROVED by Matt ("Like it", relayed by the lead at 4:00 PM ET):** the final ABOUT screen ("What's ours" with its two links) and the
+one-page OUR STORY, exactly as written in the FINAL layout section above. Waiting: the "Inspired by" games, and the music line.
