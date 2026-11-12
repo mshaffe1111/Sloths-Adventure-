@@ -37,7 +37,8 @@ export const EXEMPT: Array<[string | RegExp, string]> = [
   ['src/game/gen2/worlds/', "world data: each world's sections, kits, rooms and stage wiring"],
   ['src/game/gen2/toyWorld.ts', "world data: the pipeline tests' toy world (nothing in it is played)"],
   ['src/game/gen2/seeds.ts', 'seed list: the curated layouts (written by tools/gen2/curate.ts)'],
-  ['src/game/gen2/provenSeeds.ts', 'seed list: the proven seeds (written by tools/engine/seedlist.ts)'],
+  ['src/game/gen2/proven/', "seed list: each stage's proven seeds, one file a stage (written by tools/engine/seedlist.ts; R-165.112 moved them out of provenSeeds.ts)"],
+  ['src/game/gen2/provenIndex.ts', 'seed list: the index of the proven seed lists (written by tools/engine/seedlist.ts with each list)'],
   ['src/game/gen2/firstRun11.ts', "per-stage data: 1-1's one fixed first run (ADR-002), a seed and its plan"],
   [/Harness\.ts$/, 'test harnesses for one world (w6Harness, w7Harness, w8Harness)'],
 ];
