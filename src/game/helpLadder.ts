@@ -98,6 +98,8 @@ interface Count {
   noes: number;
   /** the offer is up, waiting for an answer */
   asking: boolean;
+  /** an offer (or re-ask) that could not be shown (its card failed to load): asked again at the next put-back here */
+  again: 'offer' | 'reask' | null;
 }
 
 /** what a put-back asks the engine to do (in order) */
@@ -139,7 +141,7 @@ export class HelpLadder {
     const piece = this.pieceAt(x);
     if (!piece) return [];
     let c = this.counts.get(piece.k);
-    if (!c) this.counts.set(piece.k, (c = { n: 0, fired: new Set(), noAt: -1, noes: 0, asking: false }));
+    if (!c) this.counts.set(piece.k, (c = { n: 0, fired: new Set(), noAt: -1, noes: 0, asking: false, again: null }));
     c.n++;
     this.active = piece;
     this.beyond = Math.min(this.beyond, piece.x1);
@@ -154,7 +156,12 @@ export class HelpLadder {
       if (c.n === this.r.pad) fire('pad');
       if (c.n === this.r.step && this.canGrow(piece)) fire('step');
     } else if (!c.asking) {
-      if (c.n === this.r.offer && !c.fired.has('step') && this.canGrow(piece)) fire('offer');
+      if (c.again) {
+        const r = c.again;
+        c.again = null;
+        c.fired.delete(r);
+        fire(r);
+      } else if (c.n === this.r.offer && !c.fired.has('step') && this.canGrow(piece)) fire('offer');
       else if (c.noes === 1 && c.n === c.noAt + this.r.reaskAfter && this.canGrow(piece)) fire('reask');
       if (out.some((a) => a.rung === 'offer' || a.rung === 'reask')) c.asking = true;
     }
@@ -173,6 +180,17 @@ export class HelpLadder {
     c.noes++;
     c.noAt = c.n;
     return false;
+  }
+
+  /**
+   * Normal's offer (or re-ask) at a piece could not be shown (its card failed to load, engine.ts helpAsk; audit C-10b): it is not an
+   * answer, so nothing is counted (no "no", no re-ask clock); the same question is asked again at his next put-back there
+   */
+  unshown(k: string, rung: 'offer' | 'reask' = 'offer'): void {
+    const c = this.counts.get(k);
+    if (!c || !c.asking) return;
+    c.asking = false;
+    c.again = rung;
   }
 
   /** he stands at world x (only called on a grounded frame): past a counted piece, its count resets */

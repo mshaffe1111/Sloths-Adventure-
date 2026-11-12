@@ -5129,7 +5129,7 @@ export class GameEngine {
   /** Normal's offer, due once the set-back's iris has opened and he stands (asked over the closed iris, the stage behind was black) */
   private helpDue: HelpAct | null = null;
   /** Normal's offer is up: the stage holds still until it is answered */
-  private helpAsking: { k: string; count: number; cut?: string } | null = null;
+  private helpAsking: { k: string; count: number; cut?: string; rung?: 'offer' | 'reask' } | null = null;
   /** the stage was paused from outside (the menu) while the offer was up: answering it does not start play under the menu */
   private outerPause = false;
   /** the offer's card (HelpOffer.tsx), loaded only when first asked (the tests plant a loader that fails) */
@@ -5137,8 +5137,9 @@ export class GameEngine {
   /** takes the offer's card down unanswered (stop(): a quit, or onFatal, under it), or stops one still loading from going up */
   private helpCardDown: (() => void) | null = null;
   /**
-   * how the offer is put on screen; the tests answer it themselves. A card that fails to load is a no, so play goes on: the stage is
-   * held while the offer is up, and the pause menu's Resume cannot let go of it (audit C-10: a failed chunk froze the stage, no card)
+   * how the offer is put on screen; the tests answer it themselves. A card that fails to load lets go of the stage (it is held while the
+   * offer is up, and the pause menu's Resume cannot let go of it: audit C-10, a failed chunk froze it with no card), and is no answer:
+   * it is logged as a failed offer and asked again at the next put-back (helpUnshown; C-10b)
    */
   helpAsk: (o: { reask: boolean; cut?: string }, answer: (yes: boolean) => void) => void = (o, answer) => {
     let gone = false;
@@ -5156,7 +5157,7 @@ export class GameEngine {
       () => {
         if (gone) return;
         this.helpCardDown = null;
-        answer(false);
+        this.helpUnshown();
       },
     );
   };
@@ -5257,7 +5258,7 @@ export class GameEngine {
     const cut = STEP_CUT;
     // (her bubble is clear while the offer is up, and stays clear after a no)
     this.helpLineDown();
-    this.helpAsking = { k: a.piece.k, count: a.count, cut };
+    this.helpAsking = { k: a.piece.k, count: a.count, cut, rung: a.rung === 'reask' ? 'reask' : 'offer' };
     this.outerPause = false;
     this.isPaused = true;
     recorder.event('helpOffer', `shown ${a.piece.k} ${a.count}`);
@@ -5277,6 +5278,17 @@ export class GameEngine {
       recorder.event('help', `step ${h.k} ${h.count} N`);
       this.growSteps(piece);
     }
+    if (!this.outerPause) this.resume();
+  }
+
+  /** the offer's card could not be put on screen: play goes on, and no answer is counted for him (the ladder asks again; C-10b) */
+  private helpUnshown() {
+    const h = this.helpAsking;
+    if (!h || !this.help) return;
+    this.helpAsking = null;
+    this.callbacks.onHelpOffer?.(false);
+    recorder.event('helpOffer', `fail ${h.k} ${h.count}`);
+    this.help.unshown(h.k, h.rung);
     if (!this.outerPause) this.resume();
   }
 
