@@ -58,13 +58,14 @@ export const CAST_13: CreatureDef[] = W1_CAST_CREATURES.flatMap((c) => [
 /**
  * THE PHONE'S NUMBERS (the lead's still, 11-12: an upright phone shows about 425 world px, Pokey a third in from the left):
  *   - a trap's handle stands 150-190 px before its load (w1Cast.ts W1_TRAP_PAIRS), so the load is on screen when he is at the handle;
- *   - the snake under a trap walks a SHORT patch, about 130 px, all of it within 130 px of the load's line (inside the trap's
+ *   - the snake under a trap walks a SHORT patch, 122 px, all of it within 122 px of the load's line (inside the trap's
  *     170 px scare) and on screen from the handle;
  *   - the handle is 105 px or more from the nearest end of ANY snake's patch (its strike), so no ledge beside a handle is long
  *     enough for an animal to be laid or topped up on (every one under 248 px: a patrol's 200 plus the lay's 24 px margins).
  * WHAT THE LAY WILL NOT DO (pipeline ANY_APART, not a brick's to change): an animal is never laid within 120 px of a mechanism's
  * prop, its own trap's load included, so a patrol CENTRED on the load cannot be laid. The nearest the rules allow, laid here: the
- * load's line 4-5 px inside the patch's near end, the snake laid at its far end 123-126 px on, walking back under the load.
+ * load's line at the patch's near end, the snake laid at its far end 122 px on, walking back under the load: from the handle the
+ * load is 152-156 px and the far end of the patrol 274-278 px, the least the pair's 150 and the lay's 120 leave (270).
  */
 /** a ledge he walks or steps onto: no `landing` (Easy widens a landing by 48 px, EASY_LANDING: every px here is the phone's, and a
  *  ledge 48 px longer is one an animal can be topped up on, beside a handle; measured, Easy's first cut hung no pair at all) */
@@ -78,15 +79,15 @@ const log = (key: string, after: string, w: R2, dy: R2 = UP): SectionPiece => ({
  *  every animal 224 px off (patchFor), and one at the end of a wide ledge beside a branch emptied the snake's socket, so the load
  *  hung over nothing (measured: 86 of 404 traps on Normal before the short ledges stood either side of every branch) */
 const LEDGE: R2 = [230, 240], NARROW: R2 = [150, 155];
-/** a trapped snake's branch: its patch 128-132 px (the branch less the lay's 24 px at each end) */
-const SHORT: R2 = [176, 180];
+/** a trapped snake's branch: its patch 122 px (the branch less the lay's 24 px at each end), one width so every px below holds */
+const SHORT: R2 = [170, 170];
 /** a bare branch (no trap: the punch off its end, or the vault): the awake snake's own 200 px and more; Easy's is wider */
 const LONG: R2 = [350, 370], WIDE: R2 = [400, 420];
-/** on a trapped branch: the load's line 28-29 px in (4-5 px inside the patch), the snake's socket 123-126 px on, a step inside
- *  the patch's far end (a socket outside its piece's patch is left empty, pipeline patchFor) */
-const LOAD_T = 0.16, SNAKE_T = 0.86;
-/** the handle on the short ledge before the branch: 20 px in, so 130-135 px before the branch and 159-164 px before its load */
-const HANDLE_T = 0.13;
+/** on a trapped branch: the load's line 24 px in (the patch's near end), the snake's socket 122 px on, at the patch's far end
+ *  (a socket outside its piece's patch is left empty, pipeline patchFor; an animal under 120 px from a prop is not laid) */
+const LOAD_T = 0.142, SNAKE_T = 0.857;
+/** the handle on the short ledge before the branch: 128-132 px before the branch, so 152-156 px before its load */
+const HANDLE_T = 0.1475;
 const low = (id: string, on: string, t: R2 | number, count = 2): Socket => ({ id, role: 'pickup', on, t, dn: 34, count, span: 120 });
 type Load = 'trap-hive' | 'trap-stone';
 interface Unit { asleep?: boolean; load?: Load | null; perch?: boolean; wide?: boolean; easy?: Socket['easy'] }
