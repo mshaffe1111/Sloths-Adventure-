@@ -2416,9 +2416,10 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     fills.push(f);
     if (!what) return;
     const def = M.props.find((p) => p.id === what)!;
-    props.push({ x: k.x, kind: what, fill: f });
+    const group = k.socket.group ? { group: `${sec.uid}/${k.socket.group}` } : {};
+    props.push({ x: k.x, kind: what, fill: f, ...group });
     kit.emit?.[what]?.(f, def, sink);
-    if (def.beat) sec.beats.push({ x: k.x, letter: 'S' });
+    if (def.beat) sec.beats.push({ x: k.x, letter: 'S', ...group });
   };
 
   const propThreat = (id: string) => M.props.find((p) => p.id === id)?.threat ?? 0;
@@ -2488,7 +2489,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         if (foeInZone(sink.zones, pf.at, k.piece.y - (c.footY ?? c.h / 2))) continue;
         const e = makeEnemy(c, pf.at, k.piece.y, pf.patch, sink.nextEnemyId(), easy && (s.easy === 'soften' || s.easy === 'stay'));
         const fill: FilledSocket = { section: sec.uid, socket: s.id, role: 'enemy', what: c.id, x: pf.at, y: k.y };
-        foes.push({ x: pf.at, kind: c.id, e, fill, sec, ...(s.easy === 'stay' ? { stay: true } : {}) });
+        foes.push({ x: pf.at, kind: c.id, e, fill, sec, ...(s.easy === 'stay' ? { stay: true } : {}), ...(s.group ? { group: `${sec.uid}/${s.group}` } : {}) });
       } else if (s.role === 'pickup') {
         if (!want) continue;
         const n = s.count ?? 1;
@@ -2531,7 +2532,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const minGap: Record<string, number> = {};
   for (const c of M.creatures) minGap[c.id] = SAME_CREATURE;
   for (const p of M.props) minGap[p.id] = p.minApart;
-  const beats: RoutePiece[] = laid.sections.flatMap((s) => s.beats.map((b) => ({ x: b.x, kind: `beat:${b.letter}` })));
+  const beats: RoutePiece[] = laid.sections.flatMap((s) => s.beats.map((b) => ({ x: b.x, kind: `beat:${b.letter}`, ...(b.group ? { group: b.group } : {}) })));
   const spaced = poissonPlace<RoutePiece>(foes, {
     rng,
     minGap,

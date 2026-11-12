@@ -111,6 +111,7 @@ export const STRETCH_WORDS: Readonly<Record<string, string | null>> = {
   'w1-13-other-way': 'the branches with no vine',
   'w1-13-perch': 'the high branch',
   'w1-13-gallery': 'three traps in a row',
+  'w1-13-two-snakes': 'the two snakes on a log',
   'w1-13-finale': 'the last two snakes',
   // walking only: never offered
   'w1-forest-edge': null,

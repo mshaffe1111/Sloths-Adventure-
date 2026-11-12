@@ -212,6 +212,8 @@ export class WorldOnce<K> extends CooldownQueue<K> {
 export interface RoutePiece {
   x: number;
   kind: string;
+  /** a designed group's key (Socket.group, one per section): poissonPlace keeps no gap between two pieces of the same group */
+  group?: string;
 }
 
 /** A stretch of route with no interactive piece, from x `from` to x `to`. */
@@ -267,9 +269,11 @@ export function poissonPlace<P extends RoutePiece>(candidates: readonly P[], opt
   const placed: P[] = [...(opt.fixed ?? [])];
   const rejected: P[] = [];
 
-  const fits = (kind: string, x: number) => {
+  const fits = (kind: string, x: number, group?: string) => {
     const same = minGap[kind] ?? 0;
     for (const p of placed) {
+      // (two pieces of one designed group stand where the designer laid them: a trap and the animals it is laid for)
+      if (group !== undefined && p.group === group) continue;
       const d = Math.abs(p.x - x);
       if (d < anyGap) return false;
       if (p.kind === kind && d < same) return false;
@@ -278,7 +282,7 @@ export function poissonPlace<P extends RoutePiece>(candidates: readonly P[], opt
   };
 
   for (const c of candidates) {
-    if (fits(c.kind, c.x)) placed.push(c);
+    if (fits(c.kind, c.x, c.group)) placed.push(c);
     else rejected.push(c);
   }
 

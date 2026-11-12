@@ -19,6 +19,7 @@ import { generateAllLevels } from '../../src/game/worldsData.ts';
 import type { CastData } from '../../src/game/castPlay.types.ts';
 import type { CreatureDef, GraphBrief, NodeJob, PropEmitter, SectionPiece, SectionTemplate, Socket, StageSink, WorldKit } from '../../src/game/gen2/types.ts';
 import { CANOPY, NEW_STOOD_IN, tidy } from './library.ts';
+import { TRAP } from '../../src/game/dropTrap.ts';
 import { ARC_13 as TWISTS, BRIEF_13 as BRIEF_REAL, LINES_13, STAGE_13 } from '../../src/game/gen2/worlds/w1Arc13.ts';
 
 export { tidy };
@@ -77,7 +78,7 @@ export function poolReport(o: LibOpts = {}) {
   return { pool: [...pool], out };
 }
 
-export interface TrapRow { id: number; kind: string; load: string; x: number; y: number; loadX: number; landY: number; snake: { x: number; asleep: boolean; patrol: [number, number] } | null; section?: string }
+export interface TrapRow { id: number; kind: string; load: string; x: number; y: number; loadX: number; landY: number; snake: { x: number; asleep: boolean; patrol: [number, number] } | null; section?: string; /** the snakes its fall sends gliding: on its ground within TRAP.scare of where it lands (dropTrap.ts scares), by x */ under: Array<{ x: number; asleep: boolean }> }
 export interface Roll13 {
   errors: string[]; plan: string[]; graph?: string; thrown?: string; said: string[]; kinds: string[];
   /** every snake by x; the first one's sleep */
@@ -108,7 +109,8 @@ export function roll(seed: number, difficulty: 'normal' | 'easy', o: LibOpts = {
     const secOf = (x: number) => (st.gen2.sections ?? []).find((q: Any) => x >= q.x0 - 2 && x <= q.x1 + 2)?.template;
     const traps: TrapRow[] = ((st.proto?.cast?.traps ?? []) as Any[]).map((t) => {
       const s = snakes.filter((q) => Math.abs(q.x - t.loadX) <= UNDER && Math.abs(q.top - t.landY) <= 6).sort((a, b) => Math.abs(a.x - t.loadX) - Math.abs(b.x - t.loadX))[0];
-      return { id: t.id, kind: t.kind, load: t.load, x: t.x, y: t.y, loadX: t.loadX, landY: t.landY, snake: s ? { x: s.x, asleep: s.asleep, patrol: s.patrol } : null, section: secOf(t.loadX) };
+      const under = snakes.filter((q) => Math.abs(q.x - t.loadX) <= TRAP.scare && Math.abs(q.top - t.landY) <= TRAP.tall).map((q) => ({ x: q.x, asleep: q.asleep }));
+      return { id: t.id, kind: t.kind, load: t.load, x: t.x, y: t.y, loadX: t.loadX, landY: t.landY, snake: s ? { x: s.x, asleep: s.asleep, patrol: s.patrol } : null, section: secOf(t.loadX), under };
     });
     const exitX = st.exitTotemX ?? st.gen2.exitX;
     return {

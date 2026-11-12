@@ -16,7 +16,7 @@ type R2 = [number, number];
 /** 1-3's ONE graph: the designed arc (reference/design/1-3.md), beat by beat. Every content job in it is served by exactly one
  *  brick below, so a roll cannot reorder the level: T the lesson, P again (awake), M the stone on the stair, X the other way (no
  *  trap), W the perch, S the gallery, C the finale; R the flags between. (V4: the twist after the test; V5: a rest after X, W, S) */
-export const PURGE_13: Record<string, string> = { 'purge-13-arc': 'A T P M R X R W R S R C E' };
+export const PURGE_13: Record<string, string> = { 'purge-13-arc': 'A T P M R X R W R S R H C E' };
 /** 1-3's brief, all of it data: a purge on the ground and the low logs, its cast the snake */
 export const BRIEF_13: GraphBrief = {
   // (the deal is the arc's own: T and P on the ground, M and W up a step (climb), X and C the snake with no trap (hazard): two of
@@ -177,6 +177,27 @@ const said = (v: V, id: string): V => {
   const tip = (l: Lay): Lay => ({ pieces: l.pieces, sockets: [...l.sockets, { id: `say-${id}`, role: 'tip', on: l.pieces[0].key, t: 0.5, allow: [id] }] });
   return { ...v, lay: tip(v.lay), ...(v.easy ? { easy: tip(v.easy) } : {}) };
 };
+/** the two-snake log: 152 px, its patch 104 (24 px in at each end). Both snakes' SOCKETS stand 121-127 px in, past the 120 px the
+ *  lay keeps from the hop up onto the log; the trap's arming re-seats the sleeper it is armed by to the patch's near end, and the
+ *  second sleeper, at the far end, has the load hung over the patch's middle (w1Cast.ts armedTraps). So the coils lie 104 px apart
+ *  and the load (60 px wide) lands between them with 3 px to spare each side, 162 px from the handle (TRAP.reach 140-190); the
+ *  nearest a coil lies to the handle is 110 px (a strike's 105) and the far coil 214 px from it: both whole on an upright phone's
+ *  screen from the vine (stills, 11-12: at 222 px the far coil touched the screen's edge) */
+const PAIR_LOG: R2 = [152, 152];
+const NEAR_T = 0.8, FAR_T = 0.835;
+function two(load: Load): Lay {
+  const pieces: SectionPiece[] = [led('a', null, LEDGE), led('g', 'a', NARROW), bed('B', 'g', PAIR_LOG), fallen('L', 'B', LOW), led('d', 'B', NARROW)];
+  const sockets: Socket[] = [
+    low('pa', 'a', [0.3, 0.6]),
+    { id: 'h', role: 'source', on: 'g', t: HANDLE_T, dn: 0, group: 'two' },
+    { id: 'r', role: 'receptor', on: 'L', t: LOAD_T, dn: 0, link: 'h', allow: [load], group: 'two' },
+    { id: 'e1', role: 'enemy', on: 'L', t: NEAR_T, dn: 0, allow: ['snake-trapped-asleep'], easy: 'stay', group: 'two' },
+    { id: 'e2', role: 'enemy', on: 'L', t: FAR_T, dn: 0, allow: ['snake-trapped-asleep'], easy: 'stay', group: 'two' },
+  ];
+  const l = breath({ pieces, sockets }, 4, true);
+  // (a flag on its last ledge: the finale is next, and Matt's rule stands a flag before every hard beat)
+  return { pieces: l.pieces, sockets: [...l.sockets, { id: 'flag', role: 'flag', on: l.pieces[l.pieces.length - 1].key, t: 0.5 }] };
+}
 /** THE ARC'S BRICKS (reference/design/1-3.md), one job each: the graph's letter in brackets */
 export const ARC_13: SectionTemplate[] = [
   // [T] beat 1, the lesson: ledges no animal can be laid on, a flag, Dot's line, the vine on the short ledge, then the branch, LEVEL
@@ -200,7 +221,7 @@ export const ARC_13: SectionTemplate[] = [
   brick({ id: 'w1-13-again', name: 'again, awake: a snake pacing under a hive, then one under a stone', jobs: ['practise'], difficulty: 3, versions: [{ id: 'awake-hive-then-stone', lay: breath(row([HIVE, STONE]), 4, true) }] }),
   // [M] beat 3, the stone: a root stair, and at its top a snake under a stone held by a tendril tied at his feet (the second handle)
   brick({ id: 'w1-13-stone-stair', name: 'the stone on the root stair', jobs: ['flow'], content: 'climb', difficulty: 4, versions: [
-    { id: 'three-steps-stone', lay: breath(stair(3, STONE), 2), easy: breath(stair(2, STONE), 4) }, { id: 'two-steps-stone', lay: breath(stair(2, STONE), 4) },
+    { id: 'three-steps-stone', lay: breath(stair(3, STONE), 4), easy: breath(stair(2, STONE), 4) }, { id: 'two-steps-stone', lay: breath(stair(2, STONE), 4) },
   ] }),
   // [X] beat 5, the other way: two long bare branches and no trap. The first snake sleeps at its post (a free punch, or a vault);
   // the second backs away down its branch and is punched off the end. Easy: wider branches, and its second snake softened
@@ -212,8 +233,8 @@ export const ARC_13: SectionTemplate[] = [
   brick({ id: 'w1-13-perch', name: 'the twist: the vine up on a perch', jobs: ['twist'], content: 'climb', difficulty: 5, versions: [
     // (and after it a calm one, asleep under the other load: the node's threat pays for an awake snake and a sleeper)
     // (Normal runs hotter from here on, the lead 11-12: both snakes awake; Easy keeps the second asleep)
-    { id: 'perch-hive', lay: breath(row([{ ...HIVE, perch: true }, STONE]), 2, true), easy: breath(row([{ ...HIVE, perch: true }, { ...STONE, asleep: true }]), 2, true) },
-    { id: 'perch-stone', lay: breath(row([{ ...STONE, perch: true }, HIVE]), 2, true), easy: breath(row([{ ...STONE, perch: true }, { ...HIVE, asleep: true }]), 2, true) },
+    { id: 'perch-hive', lay: breath(row([{ ...HIVE, perch: true }, STONE]), 4, true), easy: breath(row([{ ...HIVE, perch: true }, { ...STONE, asleep: true }]), 4, true) },
+    { id: 'perch-stone', lay: breath(row([{ ...STONE, perch: true }, HIVE]), 4, true), easy: breath(row([{ ...STONE, perch: true }, { ...HIVE, asleep: true }]), 4, true) },
   ] }),
   // [S] beat 9, the gallery: three branches, three traps (the snakes awake, asleep, asleep: the section's threat pays for all three)
   brick({ id: 'w1-13-gallery', name: 'the snake gallery: hive, stone, hive', jobs: ['signature'], difficulty: 7, maxPerStage: 1, versions: [
@@ -221,6 +242,12 @@ export const ARC_13: SectionTemplate[] = [
     { id: 'hive-stone-hive', lay: breath(row([HIVE, { ...STONE, asleep: true }, HIVE]), 4, true), easy: breath(row([HIVE, { ...STONE, asleep: true }, { ...HIVE, asleep: true }]), 4, true) },
     { id: 'stone-hive-stone', lay: breath(row([STONE, { ...HIVE, asleep: true }, STONE]), 4, true), easy: breath(row([STONE, { ...HIVE, asleep: true }, { ...STONE, asleep: true }]), 4, true) },
   ] }),
+  // [H] beat 11, ONE SHAKE, TWO SNAKES (the lead's OK, 11-12): a short low log, two snakes DOZING on it, one at each end, and ONE
+  // load hung between them; the vine on the ledge before. One punch: the load lands in the gap between them, and both
+  // glide off (TRAP.scare reaches both). The idea paying off big, a breath before the finale. Its pieces are a designed GROUP
+  // (Socket.group): the lay's 120 px gaps would push the far snake off an upright phone's screen from the vine. The same on Easy.
+  // The graph's reward job (H): only this brick fills it, and its snakes are paid from its own tension
+  brick({ id: 'w1-13-two-snakes', name: 'one shake, two snakes', jobs: ['reward'], difficulty: 4, maxPerStage: 1, versions: (['trap-hive', 'trap-stone'] as const).map((load) => ({ id: `two-under-the-${load.slice(5)}`, lay: two(load) })) }),
   // [C] beat 11, the finale: a trapped branch, an awake snake under its load; then at once a bare one, whose snake sleeps at its post
   // until he walks up (it wakes drowsy, backs down its branch, and is his to punch off the end or vault): everything learned, in one
   // breath. (The node's threat, 0.75 of the stage's, pays for one awake snake and one sleeper, not two awake)
