@@ -1,0 +1,4 @@
+main baseline: game 26.752 s over real 19.322 s = ratio 1.3845; drawn 28.5 fps; held samples 0/20; errors 0; per-second ratio min 1.240 max 1.527; load 26.2
+main cpu4: game 24.023 s over real 19.117 s = ratio 1.2566; drawn 18.2 fps; held samples 0/19; errors 0; per-second ratio min 0.976 max 1.526; load 24.7
+main drop45: game 20.914 s over real 19.400 s = ratio 1.0780; drawn 28.7 fps; held samples 0/20; errors 0; per-second ratio min 0.979 max 1.257; load 27.9
+main cpu4+drop45: game 21.649 s over real 18.980 s = ratio 1.1406; drawn 17.2 fps; held samples 0/18; errors 0; per-second ratio min 0.626 max 1.315; load 31.0

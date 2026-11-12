@@ -1,0 +1,32 @@
+roadmap: 309 open, 45 done
+  R-1 Bosses (Matt: "I believe, from 7 through 10 need to be completed"): S6 M5 L3 = 53.5 helper hours
+  R-2 Worlds 9 and 10 stages (Matt: "We still have 9 and 10 to get done, stages"): S4 M5 L4 = 55 helper hours
+  R-3 The WebGL change (GPU drawing) and speed: S9 M4 L0 = 31 helper hours
+  R-4 The story rewrite (one release when all worlds and the ending are built): S6 M6 L2 = 53 helper hours
+  R-5 Tuning (difficulty, fairness, checkpoints): S19 M2 L2 = 54.5 helper hours
+  R-6 Bugs (one item each): S34 M4 L0 = 46 helper hours
+  R-7 The build plan (Matt, 2026-11-01): S1 M0 L0 = 2 helper hours
+  R-10 Tiers: what launch needs (Matt, 2026-11-01): S1 M0 L0 = 1 helper hours
+  R-11 What each item gives (Matt, 2026-11-01): S1 M0 L0 = 2 helper hours
+  R-12 Estimates from measured history (Matt, 2026-11-01): S1 M0 L0 = 2 helper hours
+  R-141 Worlds 1-8 (not bugs, not tuning): S1 M3 L2 = 32 helper hours
+  R-142 Worlds 1-5 onto the new generator (Parking lot: Matt decided 2026-11-01, after launch): S1 M1 L4 = 48 helper hours
+  R-143 Branches stranded since 10-30 (triage each: merge, cherry-pick, or close with a reason): S7 M1 L0 = 9 helper hours
+  R-144 Art: S3 M4 L0 = 20.5 helper hours
+  R-145 Sound and music: S3 M2 L0 = 11 helper hours
+  R-146 Controls and feel (audit Build 4): S4 M2 L0 = 13 helper hours
+  R-147 Play Store: S2 M2 L0 = 9.5 helper hours
+  R-148 Tools and process: S13 M0 L0 = 14.5 helper hours
+  R-150 Stages feel repetitive: all stages and the generators (Matt, 2026-11-02; Day 1): S4 M2 L3 = 78 helper hours
+  R-151 The quality supervisor (Matt, 2026-11-02; Day 1): S1 M0 L0 = 0.5 helper hours
+  R-152 Hazards that matter, mechanics that build (Matt, 2026-11-02; Day 1): S4 M1 L2 = 39.5 helper hours
+  R-153 Stage types: reshape 2-3 stages per world (Matt decided 2026-11-02; Day 1): S0 M0 L1 = 65 helper hours
+  R-154 to R-157 Fun from what we have (Matt, 2026-11-02 evening; STAGE-RULES §0b; GAMEPLAN §7): S1 M1 L2 = 48.5 helper hours
+  R-158 Eagles that bite: the World 1 slice (Matt approved PLAN-TO-80, 2026-11-04): S1 M1 L0 = 5 helper hours
+  R-159 Enemies with jobs: the combat triangle (PLAN-TO-80, 2026-11-04): S0 M0 L2 = 29.5 helper hours
+  R-160 Hanging under branches: Pokey's own move (PLAN-TO-80, 2026-11-04): S0 M1 L1 = 15 helper hours
+  R-161 Bosses: three ways to win (PLAN-TO-80, 2026-11-04): S0 M1 L1 = 34 helper hours
+  R-162 Later (PLAN-TO-80's "Later" list: good ideas, not for launch): S53 M22 L3 = 180.25 helper hours
+  by tier (helper hours, measured, R-12): Day 1 618.5, Important 185.25, Parking lot 145, Matt's call 4
+  all: 952.75 helper hours (Matt's own items and the decisions left out: 27)
+PASS

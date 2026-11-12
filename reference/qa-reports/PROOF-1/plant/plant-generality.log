@@ -1,0 +1,15 @@
+PLANT stage-id-physics | src/game/physics.ts | exit=1 | generality check: 20 engine files (97 exempt under the engine folders), 30 literals, 29 known FAIL 
+PLANT world-key-engine | src/game/engine.ts | exit=1 | generality check: 20 engine files (97 exempt under the engine folders), 30 literals, 29 known FAIL 
+PLANT seed-gen2 | src/game/gen2/pipeline.ts | exit=1 | generality check: 20 engine files (97 exempt under the engine folders), 30 literals, 29 known FAIL 
+PLANT xpos-camera | src/game/cameraFollow.ts | exit=1 | generality check: 20 engine files (97 exempt under the engine folders), 30 literals, 29 known FAIL 
+PLANT world-prefix-help | src/game/helpLadder.ts | exit=1 | generality check: 20 engine files (97 exempt under the engine folders), 30 literals, 29 known FAIL 
+PLANT newfile-gen2 | src/game/gen2/plantNew.ts | exit=1 | generality check: 21 engine files (97 exempt under the engine folders), 30 literals, 29 known FAIL 
+PLANT template-gen2 | src/game/gen2/pipeline.ts | exit=1 | generality check: 20 engine files (97 exempt under the engine folders), 30 literals, 29 known FAIL 
+PLANT outside-scope:stageModes.ts | src/game/stageModes.ts | exit=0 | generality check: 20 engine files (97 exempt under the engine folders), 29 literals, 29 known PASS 
+PLANT outside-scope:clock.ts | src/game/clock.ts | exit=0 | generality check: 20 engine files (97 exempt under the engine folders), 29 literals, 29 known PASS 
+PLANT outside-scope:ride.ts | src/game/ride.ts | exit=0 | generality check: 20 engine files (97 exempt under the engine folders), 29 literals, 29 known PASS 
+PLANT outside-scope:stillness.ts | src/game/stillness.ts | exit=0 | generality check: 20 engine files (97 exempt under the engine folders), 29 literals, 29 known PASS 
+PLANT outside-scope:noise.ts | src/game/noise.ts | exit=0 | generality check: 20 engine files (97 exempt under the engine folders), 29 literals, 29 known PASS 
+PLANT outside-scope:heroNoise.ts | src/game/heroNoise.ts | exit=0 | generality check: 20 engine files (97 exempt under the engine folders), 29 literals, 29 known PASS 
+PLANT outside-scope:saveFile.ts | src/game/saveFile.ts | exit=0 | generality check: 20 engine files (97 exempt under the engine folders), 29 literals, 29 known PASS 
+clean: 1 changes left

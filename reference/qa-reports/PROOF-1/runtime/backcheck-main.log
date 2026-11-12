@@ -1,0 +1,21 @@
+main native path: {"native":true,"cb":"14552516","calls":["App.addListener:backButton","App.addListener:pause","App.addListener:resume"]}
+title: [title] -> Back -> [title+dialog:Leave the game?]
+title leave-question: [title+dialog:Leave the game?] -> Back -> [title]
+settings: [title+settings+pause-menu+dialog:Settings] -> Back -> [title]
+save-load over settings: [title+saveload+settings+pause-menu+dialog:Settings] -> Back -> [title+settings+pause-menu+dialog:Settings]
+settings after save-load: [title+settings+pause-menu+dialog:Settings] -> Back -> [title]
+how to play: [title+dialog:How to Play] -> Back -> [title]
+satchel: [satchel+dialog:Pokey's satchel] -> Back -> [title]
+worlds pop-up: [title+map+dialog:Choose a world] -> Back -> [title+map]
+map: [title+map] -> Back -> [title]
+  step: before play [title]
+  step: after play tap [title+map]
+stage playing: [stage(running)] -> Back -> [settings+pause-menu+stage(paused)+dialog:Paused]
+pause menu: [settings+pause-menu+stage(paused)+dialog:Paused] -> Back -> [stage(running)]
+after losing every life (game over): [stage(running)] -> Back -> [settings+pause-menu+stage(paused)+dialog:Paused]
+end state: settings+pause-menu+stage(paused)+dialog:Paused
+bridge calls: ["App.addListener:backButton","App.addListener:pause","App.addListener:resume"]
+page errors 2 [
+  '"KeepAwake.then()" is not implemented on android',
+  '"KeepAwake.then()" is not implemented on android'
+]

@@ -1,0 +1,15 @@
+main new-game defaults {"music":1,"sfx":1,"muted":false}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.evaluate: TypeError: Cannot read properties of undefined (reading 'gain')
+    at eval (eval at evaluate (:311:30), <anonymous>:1:67)
+    at UtilityScript.evaluate (<anonymous>:313:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+    at core (/home/user/Sloths-Adventure-/reference/qa-reports/PROOF-1/runtime/soundcheck.mjs:28:25)
+    at /home/user/Sloths-Adventure-/reference/qa-reports/PROOF-1/runtime/soundcheck.mjs:36:19 {
+  log: []
+}
+
+Node.js v22.23.4

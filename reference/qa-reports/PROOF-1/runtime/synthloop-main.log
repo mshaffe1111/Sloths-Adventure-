@@ -1,0 +1,12 @@
+main 60Hz                                             game/real 0.9994  (max 0.0333s a frame)
+main 60Hz jitter +-1.5ms                              game/real 1.1539  (max 0.0489s a frame)
+main 59.94Hz                                          game/real 0.9994  (max 0.0334s a frame)
+main 60Hz, 1 of 5 refreshes dropped                   game/real 0.9994  (max 0.0333s a frame)
+main 30Hz, 1 of 4 dropped (66 ms)                     game/real 1.7956  (max 0.1s a frame)
+main 48Hz                                             game/real 1.2500  (max 0.05s a frame)
+main 75Hz                                             game/real 1.1000  (max 0.04s a frame)
+main 120Hz                                            game/real 1.0000  (max 0.0333s a frame)
+main 144Hz                                            game/real 0.9998  (max 0.0347s a frame)
+main slow phone 40-95 ms gaps                         game/real 1.2409  (max 0.1238s a frame)
+main stall 250 ms every 2 s (by design: max 3 steps)  game/real 0.9494  (max 0.15s a frame)
+page errors 0 []

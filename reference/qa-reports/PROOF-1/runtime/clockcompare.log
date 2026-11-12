@@ -1,0 +1,8 @@
+{"stages": 102, "t_diff": 0, "fields_cmp": 3762}
+field stuck: differs on 102 stages, e.g. [('1-1', 0), ('1-10', 0), ('1-2', 0), ('1-3', 0), ('1-4', 0), ('1-5', 0)]
+field stuckStep: differs on 102 stages, e.g. [('1-1', 0), ('1-10', 0), ('1-2', 0), ('1-3', 0), ('1-4', 0), ('1-5', 0)]
+field arrivals: differs on 86 stages, e.g. [('1-10', 0), ('1-3', 0), ('1-4', 0), ('1-5', 0), ('1-6', 0), ('1-7', 0)]
+field kit: differs on 24 stages, e.g. [('1-4', 0), ('1-6', 0), ('1-7', 0), ('2-2', 0), ('2-3', 0), ('2-8', 0)]
+field boss: differs on 10 stages, e.g. [('1-10', 432), ('10-10', 263), ('2-10', 545), ('3-10', 186), ('4-10', 262), ('5-10', 186)]
+field help: differs on 1 stages, e.g. [('1-1', 0)]
+field dotRun: differs on 1 stages, e.g. [('4-D', 21)]

@@ -1,0 +1,10 @@
+head new-game defaults {"music":0.9,"sfx":0.8,"muted":false}
+bar 100%: set m=0.997 s=0.997 -> out -0.11 dB (curve says -0.11), music bus 0.9999, sfx bus 1.2699; ctx running
+bar  90%: set m=0.900 s=0.900 -> out -4.00 dB (curve says -4.00), music bus 1.0000, sfx bus 1.2699; ctx running
+bar  80%: set m=0.800 s=0.800 -> out -8.00 dB (curve says -8.00), music bus 1.0000, sfx bus 1.2700; ctx running
+bar  50%: set m=0.500 s=0.500 -> out -19.99 dB (curve says -20.00), music bus 1.0000, sfx bus 1.2698; ctx running
+bar  25%: set m=0.250 s=0.250 -> out -29.99 dB (curve says -30.00), music bus 1.0000, sfx bus 1.2699; ctx running
+bar  10%: set m=0.100 s=0.100 -> out -36.00 dB (curve says -36.00), music bus 1.0000, sfx bus 1.2699; ctx running
+bar   2%: set m=0.020 s=0.020 -> out -39.20 dB (curve says -39.20), music bus 1.0000, sfx bus 1.2700; ctx running
+head limiter: square wave +18 dB into the effects bus -> peak after the limiter -0.19 dBFS steady, -0.15 dBFS in the first 120 ms (ctx running 44100 Hz; out gain 0.988)
+page errors 0 []

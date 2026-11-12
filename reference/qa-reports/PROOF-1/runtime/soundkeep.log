@@ -1,0 +1,3 @@
+file carries sloth_music_vol=0.30000000000000004 sloth_sfx_vol=0.30000000000000004 sloth_game_muted=false sloth_story_g10=1
+phone after Load sloth_music_vol=0.3 sloth_sfx_vol=0.25 sloth_game_muted=1 sloth_story_g10=null sloth_story_t10=1
+isSaveKey vol false isAdventureKey vol false

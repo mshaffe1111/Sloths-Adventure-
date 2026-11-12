@@ -1,0 +1,8 @@
+== head  load before: 4.55 9.99 12.25  10:41:26
+head baseline: game 19.100 s over real 19.090 s = ratio 1.0005; drawn 30.0 fps; held samples 0/20; errors 0; per-second ratio min 0.995 max 1.026; load 5.2
+head cpu4: game 18.800 s over real 19.606 s = ratio 0.9589; drawn 26.9 fps; held samples 0/20; errors 0; per-second ratio min 0.694 max 1.050; load 5.5
+load after: 5.54 9.14 11.78
+== main  load before: 5.54 9.14 11.78  10:42:40
+main baseline: game 21.331 s over real 19.077 s = ratio 1.1181; drawn 30.0 fps; held samples 0/20; errors 0; per-second ratio min 1.104 max 1.153; load 5.6
+main cpu4: game 23.029 s over real 19.441 s = ratio 1.1846; drawn 27.9 fps; held samples 0/20; errors 0; per-second ratio min 0.995 max 1.454; load 6.0
+load after: 6.02 8.50 11.35

@@ -1,0 +1,12 @@
+head service worker {"active":true,"caches":["workbox-precache-v2-http://127.0.0.1:8801/Sloths-Adventure-/"],"entries":1039}
+1-1: engine running {"run":true,"t":2.83,"plats":179}; failed requests 0 ; page errors 0 
+2-3: engine running {"run":true,"t":3.2,"plats":54}; failed requests 0 ; page errors 0 
+3-3: engine running {"run":true,"t":3.2,"plats":133}; failed requests 0 ; page errors 0 
+4-3: engine running {"run":true,"t":2.23,"plats":96}; failed requests 0 ; page errors 0 
+5-3: engine running {"run":true,"t":2.2,"plats":176}; failed requests 0 ; page errors 0 
+6-3: engine running {"run":true,"t":3.2,"plats":155}; failed requests 0 ; page errors 0 
+7-3: engine running {"run":true,"t":3.17,"plats":158}; failed requests 0 ; page errors 0 
+8-3: engine running {"run":true,"t":3.03,"plats":137}; failed requests 0 ; page errors 0 
+9-3: engine running {"run":true,"t":3.03,"plats":80}; failed requests 0 ; page errors 0 
+10-3: engine running {"run":true,"t":3.03,"plats":117}; failed requests 0 ; page errors 0 
+head offline total: failed requests 0, page errors 0

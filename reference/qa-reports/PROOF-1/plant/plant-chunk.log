@@ -1,0 +1,37 @@
+== C: build WITHOUT the deploy base, then chunkcheck
+build exit 0
+chunkcheck: FAIL: this build's base is '/', the deploy's is '/Sloths-Adventure-/': it is not the build that ships, and its scripts are smaller than the shipped ones (LESSONS D45). Build with: BASE_PATH=/Sloths-Adventure-/ npx vite build
+chunkcheck exit 1
+== real base build
+build exit 0
+clean chunkcheck exit 0
+== B: post-build plant: a start file (stagekit) imports the main script
+chunkcheck: base /Sloths-Adventure-/, budget 3,994,304 B a chunk, 40 JS files, 22 loaded at the start
+chunkcheck: FAIL: the start files are tied in a loop (tools/perf/chunkplan.mjs: a layer imports only the layers under it):
+  assets/stagekit-DCi6IYLg.js imports the main script
+  import loop: assets/index-Da2ayA9R.js -> assets/oldgen-B_RB-_pd.js -> assets/world-1-parts-Cffls66r.js -> assets/stagekit-DCi6IYLg.js -> assets/index-Da2ayA9R.js
+chunkcheck exit 1
+== B2: post-build plant: an import loop between two start files
+chunkcheck: base /Sloths-Adventure-/, budget 3,994,304 B a chunk, 40 JS files, 22 loaded at the start
+chunkcheck: PASS
+chunkcheck exit 0
+== A: source plant: src/game/physics.ts (stagekit root) imports src/App.tsx
+build exit 0
+chunkcheck: base /Sloths-Adventure-/, budget 3,994,304 B a chunk, 40 JS files, 22 loaded at the start
+chunkcheck: PASS
+chunkcheck exit 0
+not ok 2 - the game's own plan: no layer imports the main script or a later layer; the top of the game stays in the main script
+# pass 3
+# fail 1
+== B2 (redo): a true loop: art-urls (imported by stagekit) imports stagekit
+chunkcheck: base /Sloths-Adventure-/, budget 3,994,304 B a chunk, 40 JS files, 22 loaded at the start
+chunkcheck: FAIL: the start files are tied in a loop (tools/perf/chunkplan.mjs: a layer imports only the layers under it):
+  import loop: assets/stagekit-DCi6IYLg.js -> assets/art-urls-Bf3HkBLE.js -> assets/stagekit-DCi6IYLg.js
+chunkcheck exit 1
+== B3: a JS file over the budget (CHUNKCHECK budget is fixed; pad stagekit with 3.4 MB of comment)
+4123746
+chunkcheck: base /Sloths-Adventure-/, budget 3,994,304 B a chunk, 40 JS files, 22 loaded at the start
+  OVER   4,123,746 B     -129,442 spare  assets/stagekit-DCi6IYLg.js
+chunkcheck: FAIL: 1 chunk(s) over 3,994,304 B: assets/stagekit-DCi6IYLg.js
+chunkcheck exit 1
+restored clean exit 0
