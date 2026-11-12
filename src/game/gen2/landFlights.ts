@@ -24,13 +24,14 @@ export type FlightTable = Readonly<Record<Difficulty, Readonly<Record<Flight, Fl
 /** how far each path is flown: deeper than any landing a 1-1 section lays under its take-off */
 export const FLY_DEPTH = 700;
 
-/** fly the four on the real engine for `setting` (a 1-1 RealPlay with its pieces swapped for one bare ledge and one mushroom) */
-export async function flyLandFlights(setting: Difficulty): Promise<Record<Flight, Array<[number, number]>>> {
+/** fly them on the real engine for `setting` on `stageId` (its RealPlay with its pieces swapped for one bare ledge and one mushroom: the
+ *  stage's own help, physics.ts ASSIST, is in every flight) */
+export async function flyLandFlights(setting: Difficulty, stageId: string): Promise<Record<Flight, Array<[number, number]>>> {
   await import('../headlessDom.ts');
   const { RealPlay } = await import('../realPlay.ts');
   const { setDifficulty } = await import('../difficulty.ts');
   setDifficulty(setting);
-  const r = new RealPlay('1-1', 1);
+  const r = new RealPlay(stageId, 1);
   const e = r.e as unknown as { platforms: unknown[]; enemies: unknown[]; vines: unknown[]; ropes?: unknown[]; stop?: () => void };
   const TOP = 300, END = 3000;
   const ledge = { id: 9001, x: 400, y: TOP, width: END - 400, height: 24, type: 'solid' };

@@ -10,7 +10,7 @@ import { setDifficulty } from '../difficulty.ts';
 
 for (const s of ['normal', 'easy'] as const) {
   test(`the flights in landFlights.data.ts are the engine's, flown again (${s})`, async () => {
-    const f = await flyLandFlights(s);
+    const f = await flyLandFlights(s, '1-1');
     setDifficulty('normal');
     for (const k of FLIGHTS) assert.deepEqual(LAND_FLIGHTS[s][k], f[k], `${s} ${k}`);
   });
