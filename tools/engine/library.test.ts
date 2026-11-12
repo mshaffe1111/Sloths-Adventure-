@@ -120,16 +120,18 @@ test('petals low on bark the whole way: no petal arc over a gap, every petal wit
   });
 });
 
-test("the story keeper's lines, verbatim, said where the design says: the lesson's two and the petals going up (main's row); the roots line held until the note is in the hollow", () => {
+test("the story keeper's lines, verbatim, said where the design says: the lesson's two; the roots line held until the note is in the hollow; main's cut \"The petals go up\" never laid", () => {
   assert.equal(LINES_12.thorns, 'Ooh, thorns. Don\'t touch those, not even a little.');
   assert.equal(LINES_12['thorns.then'], 'Hop on and let the mushrooms do the jumping!');
   assert.equal(LINES_12.roots, 'There\'s something down by the roots...');
   const tips = kitLib12().manifest.tips!;
+  // (main's "The petals go up" is cut in the new look: never laid on 1-2, which would put a line on the stair the game drops)
   assert.equal(tips['hint.1-2.up'], 'The petals go up');
   each((st, d, s) => {
     const said = (id: string) => st.gen2.fills.filter((f: Any) => f.role === 'tip' && f.what === id);
     assert.equal(said('roots').length, 0, `${d} seed ${s}: Dot promises something by the roots over an empty floor`);
-    for (const [id, beat] of [['thorns', 'w1-12-lesson'], ['thorns.then', 'w1-12-lesson'], ['hint.1-2.up', 'w1-12-up']] as const) {
+    assert.equal(said('hint.1-2.up').length, 0, `${d} seed ${s}: the cut "The petals go up" laid on the stair`);
+    for (const [id, beat] of [['thorns', 'w1-12-lesson'], ['thorns.then', 'w1-12-lesson']] as const) {
       const f = said(id);
       assert.equal(f.length, 1, `${d} seed ${s}: "${id}" said ${f.length} times`);
       const sec = secOf(st, beat);
@@ -142,10 +144,10 @@ test("the story keeper's lines, verbatim, said where the design says: the lesson
 });
 
 /** the lesson's lines as the stage lays them (proto.hints): each once, and marked a TEACH line (the kit's teachTips), so Dot waits for a
- *  clear moment and no stock lesson or her spacing takes the card; the petals-go-up line stays an ordinary hint */
+ *  clear moment and no stock lesson or her spacing takes the card */
 const teachOf = (st: Any) => {
   const hs: Any[] = st.proto?.hints ?? [];
-  return Object.fromEntries(['thorns', 'thorns.then', 'hint.1-2.up'].map((id) => {
+  return Object.fromEntries(['thorns', 'thorns.then'].map((id) => {
     const text = id in LINES_12 ? (LINES_12 as Any)[id] : kitLib12().manifest.tips![id];
     const h = hs.filter((q) => q.text === text);
     return [id, h.length === 1 ? (h[0].teach ? 'teach' : 'hint') : `said ${h.length} times`];
@@ -153,12 +155,12 @@ const teachOf = (st: Any) => {
 };
 test("Dot's thorn lines are 1-2's TEACH lines on every roll, both settings (the kit's teachTips: the lead's blocker 11-12)", () => {
   assert.deepEqual([...TEACH_12], ['thorns', 'thorns.then']);
-  each((st, d, s) => assert.deepEqual(teachOf(st), { thorns: 'teach', 'thorns.then': 'teach', 'hint.1-2.up': 'hint' }, `${d} seed ${s}`));
+  each((st, d, s) => assert.deepEqual(teachOf(st), { thorns: 'teach', 'thorns.then': 'teach' }, `${d} seed ${s}`));
 });
 
 test('PLANTED: with the thorn lines left out of teachTips they are laid as ordinary hints, and that is caught', () => {
   const st = plant((k) => ({ ...k, manifest: { ...k.manifest, teachTips: (k.manifest.teachTips ?? []).filter((m) => !m.startsWith('thorns')) } }))(1, 'normal');
-  assert.deepEqual(teachOf(st), { thorns: 'hint', 'thorns.then': 'hint', 'hint.1-2.up': 'hint' });
+  assert.deepEqual(teachOf(st), { thorns: 'hint', 'thorns.then': 'hint' });
 });
 
 test('the length: at least 2 minutes for a quick player on every roll, under 4 for a first-timer (the time model)', () => {

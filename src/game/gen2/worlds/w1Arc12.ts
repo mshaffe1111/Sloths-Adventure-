@@ -29,13 +29,13 @@ export const BRIEF_12: GraphBrief = {
 /** the story keeper's lines for 1-2, verbatim (the lead, 11-12 2:14 PM; STORY-LINES.md on origin/ccr-0d59a91c-oy3imz): the lesson's
  *  two, said at its first flag one after the other (the second teaches hands-off mid-chain without naming a button), and the twist's,
  *  approved 11-05 for 1-2 (R-165.45 released for it by the lead 11-12), held until the note lies in the hollow (no socket says it yet).
- *  "The petals go up" is main's own row (dotLinesData.ts hint.1-2.up), said by its id */
+ *  The stair has no line: main's "The petals go up" (dotLinesData.ts hint.1-2.up) is CUT in the new look (its new text null), so the
+ *  game never says it (dotLines.ts engineGuideLine); a line there comes from the story keeper through the lead */
 export const LINES_12 = {
   thorns: 'Ooh, thorns. Don\'t touch those, not even a little.',
   'thorns.then': 'Hop on and let the mushrooms do the jumping!',
   roots: 'There\'s something down by the roots...',
 } as const;
-const UP_LINE = 'hint.1-2.up';
 /** the lesson's two lines are 1-2's own TEACH lines (P13's kit `teachTips`): Dot waits for a clear moment and holds each for its reading
  *  time, and no stock lesson or her 30 s spacing takes the card (before this, a walk-in never showed them: the lead's blocker 11-12) */
 export const TEACH_12 = ['thorns', 'thorns.then'] as const;
@@ -157,13 +157,13 @@ export const BEATS_12: SectionTemplate[] = [
   // [P] again: three caps, still on wide stumps (the lesson's safety kept until the test) | two
   brick({ id: 'w1-12-again', name: 'again: three caps', jobs: ['practise'], content: 'hazard', difficulty: 4, thorns: true, versions: [{ id: 'three', lay: breath(chainLay([0, 0, 0], E), 2), easy: breath(chainLay([0, 0], E), 2) }] }),
   // [U] the petals go up: caps each 54-66 px over the last onto a high bank level with the last stump (+180 | +120), a root on it, two
-  // root steps back down. Dot: "The petals go up" (main's row, by its id)
+  // root steps back down (no line: main's "The petals go up" is cut in the new look)
   brick({ id: 'w1-12-up', name: 'the petals go up: a stair of caps', jobs: ['climb'], content: 'climb', difficulty: 4, thorns: true, versions: [(() => {
     const mk = (n: number, cw: number): Lay => {
       const c = chain('k', null, Array(n).fill(60), E, FLOOR, cw);
       const h = n * 60, half: R2 = [Math.round(h / 2) - 4, Math.round(h / 2) + 4];
       return { pieces: [...c.pieces, out('z', c.last, [420, 480]), hump('zr', 'z', [0.66, 0.72], [40, 46]), led('d0', 'z', [240, 260], half), led('d1', 'd0', [240, 260], half)],
-        sockets: [tip('kf', UP_LINE, 0.2), low('pa', 'kf', [0.15, 0.4]), low('pz', 'z', [0.4, 0.5]), low('pd0', 'd0', [0.72, 0.84], 1), low('pd1', 'd1', [0.6, 0.78])] };
+        sockets: [low('pa', 'kf', [0.15, 0.4]), low('pz', 'z', [0.4, 0.5]), low('pd0', 'd0', [0.72, 0.84], 1), low('pd1', 'd1', [0.6, 0.78])] };
     };
     return { id: 'stair', lay: breath(mk(3, capOf(E, false)), 2), easy: breath(mk(2, capOf(E, true)), 2) };
   })()] }),
