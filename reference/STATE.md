@@ -517,3 +517,7 @@ lines); Matt sees them in the release.
   owner R-165.143; plus R-165.152 (plugin guard hole) and R-165.153 (roster.ts logic under a data exemption: the lead's 12:00 ruling was
   too broad). PROOF-1 kept for a one-item re-check. Still unproven for 0.9.7: the guardian fight to its end without a harness; 30 fps on
   a real phone (Matt).
+- 2026-11-12 1:36-1:52 PM ET, Matt: "Fables at 94 and all models is at 82". Projection: Fable 100% about 3 PM; all-models 95% about
+  4:20 PM. Matt chose "Let Fable stop, reset later": W1C spends what's left on 1-3's own link pieces and the rope (turnover written
+  first, pushes every 20 min); Opus (P13) finishes hearts by data, survey chips and the final gates from W1C's head; 1-3 still reaches the
+  test link tonight; after Matt's reset (~4:30-5 PM) Fable does the polish pass on his notes. Keep helpers lean until the reset.
