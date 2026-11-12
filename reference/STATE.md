@@ -482,3 +482,7 @@ lines); Matt sees them in the release.
   its own legs or wings, never hurt; "bested" = outwitted or outwaited, not beaten up. Snake: glides off (R-165.141). Boa: can be fairly
   bested (lured off its ledge by a drop trap, lands in soft leaves, slithers off grumpy; or mistakes a still Pokey for a branch and gives
   up). Eagle: never bested by force; two empty passes over a still Pokey, then it flies off to hunt elsewhere.
+- 2026-11-12 11:58 AM ET: AF done (t-audit-fixes@98149355): PROOF-1's 5 violations fixed test-first; story keeper's 3 save lines in;
+  Stage Cleared fits 13 phone sizes. Lead calls: roster.ts EXEMPT from the generality gate as world data (it names 8-4's moth cast; its
+  home should move to world data later); R-165.143 (17 tests not in CI), .144 (Cleared card overlaps at 640x360), .145 (Game Over
+  scrolls 13 px at 360x640). R-165.142 reserved for GL0's gameCanvas fix. Y2 packet written (yield floor red after P11's verdicts).
