@@ -170,11 +170,7 @@ export function parseSave(text: string): ParseResult {
     if (typeof v !== 'string' || v.length > MAX_ENTRY_CHARS) return { ok: false, reason: 'The save contains damaged entries.' };
     data[k] = v;
   }
-  // the checksum covers what was written, so compare against the original data only if nothing was dropped
-  const claimed = Object.entries(o.data).filter(([k]) => isSaveKey(k));
-  if (claimed.length !== Object.keys(o.data).length) {
-    /* unknown entries were present; fall through to compare on the kept ones below */
-  }
+  // the checksum covers what was written: the kept entries, or the whole data when the file carried entries that are not ours
   if (typeof o.checksum !== 'string' || (o.checksum !== checksum(data) && o.checksum !== checksum(o.data as Record<string, string>))) {
     return { ok: false, reason: 'The save is damaged or was edited (its checksum does not match).' };
   }

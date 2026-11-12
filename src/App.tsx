@@ -176,7 +176,6 @@ export default function App() {
   const [allLevels, setAllLevels] = useState<LevelConfig[]>(() => generateAllLevels());
   const [activeLevel, setActiveLevel] = useState<LevelConfig>(() => allLevels[0]);
   const [selectedWorldId, setSelectedWorldId] = useState<number>(1);
-  const [showInstallGuide, setShowInstallGuide] = useState<boolean>(false);
 
   // where "Continue" goes: the first unlocked stage that has not been cleared yet (the last stage once all are)
   const resumeLevel = React.useMemo(
@@ -927,7 +926,8 @@ export default function App() {
             }
 
             if (lvl.secret) {
-              // Thornbark beaten: the Thorn Heart, no stage to unlock
+              // Thornbark beaten: the Thorn Heart, no stage to unlock; his result is kept like any stage's (the journal reads its stars)
+              saveLevelProgress(lvl.id, stars, finalScore, timeSec);
               markThornHeart();
               setThornHeart(true);
               setMaxHp(maxHearts());
@@ -1566,10 +1566,6 @@ export default function App() {
           onOpenTitle={() => {
             engineRef.current?.stop();
             setScreen('title');
-          }}
-          onViewStory={() => {
-            engineRef.current?.stop();
-            setScreen('story_cutscene');
           }}
         />
       )}
