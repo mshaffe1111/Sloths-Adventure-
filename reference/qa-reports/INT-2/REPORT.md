@@ -24,7 +24,20 @@
 | `npx tsx tools/engine/seedlist.ts 1-1 --check` | PASS: 258 seeds, 0 refused, each clean on both settings |
 | stage lock (`lockall --layouts 16 --intended 1-1 --check` against d0276817's lock) | PASS: 101/102 unchanged; only 1-1 moved (intended) |
 
-## Step 2 / Step 3
+## Step 2
+5. t-12-fly@ed329f74 (F12) -> fcfb1138 (the lead: merge before step 1's gates; step 1's checks were already run, so re-run):
+   - REPORT.md (root): F12's moved to reference/qa-reports/F12/REPORT.md; INT-E's (F12 had moved it to qa-reports/INT-E/) kept
+     there with step 1's R-165.139 renames; the root file is gone.
+   - promises11.ts imports and verdicts.ts ALL_VERDICTS: union (P11's landing.dead-zone, bounce.no-purpose + F12's chain.mount,
+     in verdicts.types.ts order). verdicts.test.ts: both new tests kept; the union count 19 / 18 -> 20.
+   - **Settled across branches:** F12's chain.mount test's clean control (one walk-on cap on flat ground) asserted `[]`; P11's
+     bounce.no-purpose refuses that cap, so it read `['bounce.no-purpose']`. The control now asserts no `chain.mount` only
+     (P11's own pattern). F12 / the lead: confirm, or give the cap a purpose in the fixture.
+   - ROADMAP: F12's R-165.129 (eight tool tests) is identical to R-165.139, dropped; R-165.140 kept.
+   Checks on fcfb1138: tsc PASS; roadmapcheck PASS; seedlist 1-1 --check PASS (chain.mount refuses 0 of 258); lock 101/102,
+   only 1-1; gen2 + worlds 465/466 (the same yield-floor red, 11 of 30); bounceAura, petalDraw, w1Pits, cameraBounce, seeThrough 25/25.
+
+## Step 3
 Waiting on the lead's messages.
 
 ## Left
