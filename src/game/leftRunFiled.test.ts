@@ -9,7 +9,8 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { run, step } from './saveEngineHarness.ts';
+import { run, standAt, step } from './saveEngineHarness.ts';
+import { SECRET_GATE_LEVEL } from './secret.ts';
 import { emptyStore, recordStage } from './badges.ts';
 
 test('a stage left from the pause menu files what the run did, once', () => {
@@ -68,4 +69,26 @@ test('a Game Over then Continue, then the map: the left part is filed on top of 
   let store = emptyStore();
   for (const x of r.stats) store = recordStage(store, x);
   assert.equal(store.counters.stomps, 10, `10 stomps in the run, ${store.counters.stomps} kept`);
+});
+
+test("7-7's Thorn Gate: the run that steps into it is filed once, as a stage left (things-3b)", () => {
+  const r = run(SECRET_GATE_LEVEL, 4242);
+  const e = r.e;
+  e.isRunning = true;
+  e.statStomps = 12;
+  e.statKills = { snake: 2 };
+  const gate = (e.collectibles as Array<{ type: string; x: number; y: number }>).find((c) => c.type === 'thorn_gate');
+  assert.ok(gate, `set-up: ${SECRET_GATE_LEVEL} has the Thorn Gate`);
+  let secret = 0;
+  e.callbacks.onSecret = () => void secret++;
+  standAt(r, { x: gate.x, y: gate.y + 20 });
+  step(r);
+  assert.equal(secret, 1, 'set-up: he stepped into the gate');
+  // the app then starts the Hollow (App.tsx onSecret -> startLevel -> launchEngine, which stops this engine)
+  e.stop();
+  assert.equal(r.stats.length, 1, `the gate's run was reported once (${r.stats.length} reports)`);
+  assert.equal(r.stats[0].left, true);
+  let store = emptyStore();
+  for (const x of r.stats) store = recordStage(store, x);
+  assert.deepEqual({ stomps: store.counters.stomps, snakes: store.kills.snake }, { stomps: 12, snakes: 2 }, 'what popped on the way to the gate is kept');
 });

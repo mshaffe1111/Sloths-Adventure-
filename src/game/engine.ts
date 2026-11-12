@@ -2979,6 +2979,9 @@ export class GameEngine {
           this.addFloatingText('The thorn gate opens.', c.x, c.y - 30, '#c4b5fd');
           sound.playGate();
           sound.playBossRoar(this.currentStage.config.worldIndex);
+          // the run ends here, neither won nor lost: it is filed as a stage left (what popped on the way is kept), before the app
+          // moves on to the Hollow
+          this.report(false, 0, true);
           this.callbacks.onSecret?.();
         }
         continue;
