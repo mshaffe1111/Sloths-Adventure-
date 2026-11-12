@@ -110,3 +110,18 @@ Contact sheets of every take next to its start, before picking. Then the game sh
 - A creature's defeat in a fight: a boss with no ending fades out from 1.0 s (bossArt.ts drawBossFighter), so any new defeat art must be fully on screen by about 0.6 s. Shoot the fight with the engine paused at set death times (tools/art/crocdefeat/shot-death.mjs); wall-clock shots drift past the end.
 - Defeat cards are shot in the real game for EVERY boss, both ways up (tools/art/crocdefeat/shot-defeats.mjs), never one boss: a layout change for one moves them all.
 - Before reporting, run `node tools/art/icons/checkbase.mjs reference/qa-reports/<job>`: it fails any "after" sheet whose BASE is +wip or older than the code at HEAD (D23, twice).
+
+## Pitfalls added 2026-11-11 (picture list 1, R-165.100)
+- **The circular native pass does not remove a seam the input already has.** striphdgpu.py repaints in wrapped tiles, but at s25 the
+  join keeps the input's mismatch (wrap colour differences of 3.8-16.2 on 2000 px ground strips). Close the wrap after it with
+  `tools/art/hflist1/wrapfix.py` (a cross-fade of the last 160 px into the first), then measure the wrap column (under 6; we got 0.9-2.5).
+- **The alpha rule for a wrap cross-fade: never cross-fade alpha straight.** Blending two different outlines leaves a see-through
+  ghost band above and below the solid strip (the critic measured up to 17 semi-clear px per column against 2-3 mid-strip). Blend RGB
+  only (weighted by each side's alpha). Ramp the alpha from the end's outline to the start's across the zone, so there is no notch
+  where the zone ends (a plain min(end, start) leaves one). Snap everything under 200 to 0 outside the solid band, then give it a
+  1 px anti-aliased rim (blur 0.8) so the edge matches the rest. Check: semi-clear px per column in the fade zone about equal to
+  mid-strip, and a 2x pair on a LIGHT ground.
+- **Pictures under tools/ are git-ignored** (tools/.gitignore): put img2img starts and strip sources in reference/, or the job's raw
+  GitHub fetch 404s.
+- **Repaint in place (s52/s60) keeps the start's angle.** A 3/4 piece stays 3/4; a side view needs a new side-on start at s62/s68.
+

@@ -6,7 +6,8 @@
  *   npx tsx tools/engine/library13.ts [--seeds 120] [--from 1] [--par 4] [--flown] [--json] [--no-twists] [--raw-traps]
  * Prints: the pool by need, supply by job and type, and per setting how many rolls are CLEAN (no gen2.errors) with every refusing
  * line counted; then what a clean roll holds: snakes, traps, a trap with no handle or no snake under it (a defect, counted), whether
- * the first snake is the sleeping one, and the modelled seconds. `--flown`: 1-3's rows filed under the flown stage's id (library.ts,
+ * the first snake is the sleeping one, and the modelled seconds. (`--flown` is RETIRED, 11-12: 1-3's pieces are marked its `own`, so
+ * filed under another stage's id its pool is empty and the roll throws; 1-3 is judged by its own rows now.) `--flown` was: 1-3's rows filed under the flown stage's id (library.ts,
  * engine-core.md 0f): a stage with no JUDGED row lays to the unflown reach and its "clean" is not the verdicts'.
  */
 import '../../src/game/headlessDom.ts';
@@ -18,6 +19,7 @@ import { generateAllLevels } from '../../src/game/worldsData.ts';
 import type { CastData } from '../../src/game/castPlay.types.ts';
 import type { CreatureDef, GraphBrief, NodeJob, PropEmitter, SectionPiece, SectionTemplate, Socket, StageSink, WorldKit } from '../../src/game/gen2/types.ts';
 import { CANOPY, NEW_STOOD_IN, tidy } from './library.ts';
+import { TRAP } from '../../src/game/dropTrap.ts';
 import { ARC_13 as TWISTS, BRIEF_13 as BRIEF_REAL, LINES_13, STAGE_13 } from '../../src/game/gen2/worlds/w1Arc13.ts';
 
 export { tidy };
@@ -76,7 +78,7 @@ export function poolReport(o: LibOpts = {}) {
   return { pool: [...pool], out };
 }
 
-export interface TrapRow { id: number; kind: string; load: string; x: number; y: number; loadX: number; landY: number; snake: { x: number; asleep: boolean; patrol: [number, number] } | null; section?: string }
+export interface TrapRow { id: number; kind: string; load: string; x: number; y: number; loadX: number; landY: number; snake: { x: number; asleep: boolean; patrol: [number, number] } | null; section?: string; /** the snakes its fall sends gliding: on its ground within TRAP.scare of where it lands (dropTrap.ts scares), by x */ under: Array<{ x: number; asleep: boolean }> }
 export interface Roll13 {
   errors: string[]; plan: string[]; graph?: string; thrown?: string; said: string[]; kinds: string[];
   /** every snake by x; the first one's sleep */
@@ -107,7 +109,8 @@ export function roll(seed: number, difficulty: 'normal' | 'easy', o: LibOpts = {
     const secOf = (x: number) => (st.gen2.sections ?? []).find((q: Any) => x >= q.x0 - 2 && x <= q.x1 + 2)?.template;
     const traps: TrapRow[] = ((st.proto?.cast?.traps ?? []) as Any[]).map((t) => {
       const s = snakes.filter((q) => Math.abs(q.x - t.loadX) <= UNDER && Math.abs(q.top - t.landY) <= 6).sort((a, b) => Math.abs(a.x - t.loadX) - Math.abs(b.x - t.loadX))[0];
-      return { id: t.id, kind: t.kind, load: t.load, x: t.x, y: t.y, loadX: t.loadX, landY: t.landY, snake: s ? { x: s.x, asleep: s.asleep, patrol: s.patrol } : null, section: secOf(t.loadX) };
+      const under = snakes.filter((q) => Math.abs(q.x - t.loadX) <= TRAP.scare && Math.abs(q.top - t.landY) <= TRAP.tall).map((q) => ({ x: q.x, asleep: q.asleep }));
+      return { id: t.id, kind: t.kind, load: t.load, x: t.x, y: t.y, loadX: t.loadX, landY: t.landY, snake: s ? { x: s.x, asleep: s.asleep, patrol: s.patrol } : null, section: secOf(t.loadX), under };
     });
     const exitX = st.exitTotemX ?? st.gen2.exitX;
     return {
@@ -159,7 +162,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
       for (const r of R) for (const t of r.plan) used.set(t, (used.get(t) ?? 0) + 1);
       console.log(`== ${d}: ${R.length} rolls (seeds ${from}-${from + N - 1}): CLEAN ${clean.length} (${Math.round((100 * clean.length) / Math.max(1, R.length))}%), thrown ${R.filter((r) => r.thrown).length}, pool short ${R.filter((r) => r.errors.some((e: string) => /pool short|fits no node|no section/.test(e))).length}`);
       for (const [name, S] of [['a clean roll', clean], ['every roll that built', R.filter((r) => !r.thrown)]] as const) {
-        console.log(`   ${name} (${S.length}): sections ${st3(S.map((r) => r.plan.length))}, drop-trap bricks ${st3(S.map((r) => r.plan.filter((t) => t.startsWith('lib-13-') || t.startsWith('lib-snake')).length))}, snakes ${st3(S.map((r) => r.snakes.length))} (asleep ${st3(S.map((r) => r.snakes.filter((q) => q.asleep).length))}), traps ${st3(S.map((r) => r.traps.length))}, modelled seconds typical ${st3(S.filter((r) => r.seconds !== undefined).map((r) => Math.round(r.seconds!)))} fast ${st3(S.filter((r) => r.fast !== undefined).map((r) => Math.round(r.fast!)))}`);
+        console.log(`   ${name} (${S.length}): sections ${st3(S.map((r) => r.plan.length))}, drop-trap bricks ${st3(S.map((r) => r.plan.filter((t) => t.startsWith('w1-13-') || t.startsWith('lib-snake')).length))}, snakes ${st3(S.map((r) => r.snakes.length))} (asleep ${st3(S.map((r) => r.snakes.filter((q) => q.asleep).length))}), traps ${st3(S.map((r) => r.traps.length))}, modelled seconds typical ${st3(S.filter((r) => r.seconds !== undefined).map((r) => Math.round(r.seconds!)))} fast ${st3(S.filter((r) => r.fast !== undefined).map((r) => Math.round(r.fast!)))}`);
         console.log(`      traps ${S.reduce((s, r) => s + r.traps.length, 0)}${o.rawTraps ? ' (RAW: every load a trap)' : ` armed of ${S.reduce((s, r) => s + r.loads, 0)} loads hung (min a roll ${Math.min(...S.map((r) => r.traps.length))})`}: no handle ${S.reduce((s, r) => s + r.noHandle, 0)}, no snake within 150 px on its ground ${S.reduce((s, r) => s + r.noSnake, 0)} (in ${S.filter((r) => r.noSnake).length} rolls); awake snake under ${S.reduce((s, r) => s + r.traps.filter((t) => t.snake && !t.snake.asleep).length, 0)}, sleeping ${S.reduce((s, r) => s + r.traps.filter((t) => t.snake?.asleep).length, 0)}; first snake asleep in ${S.filter((r) => r.firstAsleep).length} of ${S.length}; cast kinds ['snake'] in ${S.filter((r) => r.kinds.join() === 'snake').length}; rolls with no trap ${S.filter((r) => !r.traps.length).length}`);
         const all = (f: (r: Roll13) => number[]) => { const xs = S.flatMap(f); return xs.length ? `${Math.min(...xs)}-${Math.max(...xs)}` : 'none'; };
         console.log(`      handle to load ${all((r) => r.reach)} px (140-190: w1Cast.ts TRAP_REACH); handle to the nearest end of any snake's patrol ${all((r) => r.clear)} px (105 or more: its strike); a trapped snake's patrol ${all((r) => r.patrolW)} px wide, its far end ${all((r) => r.patrolFar)} px from the load's line`);

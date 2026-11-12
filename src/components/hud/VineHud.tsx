@@ -19,7 +19,7 @@ import { DotFace } from '../DotFace.tsx';
 import { BossHud } from '../BossHud.tsx';
 import { bloomUpdate, bloomView, newBloom, nextBloomEdge, showsSlots, type HudValues } from './bloom.ts';
 import { bossRect, centreGeo, centrePlace, counterW, heartsShown, hudGeo, hudMode, hudSafeRect, type Insets } from './hudLayout.ts';
-import { goalInfo } from './goalInfo.ts';
+import { goalInfo, goalShown } from './goalInfo.ts';
 import { clearOfInsets, fallbackSafeArea, setGuideSafeArea } from '../../game/dotGuidePerch.ts';
 import { Bolt, GoalPic, Heart, Leaf, MenuLines, Star, Tick, Vine, vineY } from './hudArt.tsx';
 import { GoalCard } from './GoalCard.tsx';
@@ -133,7 +133,8 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
     const before = lastGoal.current;
     if (currentObjectiveCount === before) return;
     lastGoal.current = currentObjectiveCount;
-    if (currentObjectiveCount < before || info.kind !== 'count' || reducedMotion()) {
+    // (a clear past the goal flies nothing: the sign is already full, R-165.155)
+    if (currentObjectiveCount < before || info.kind !== 'count' || reducedMotion() || (target > 0 && before >= target)) {
       setShownGoal(currentObjectiveCount);
       return;
     }
@@ -176,9 +177,10 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
     anim.oncancel = done;
     // (a safety net: the flight's own end normally comes first; it is not cleared by the next pickup)
     window.setTimeout(done, 700);
-  }, [currentObjectiveCount, info.kind]);
+  }, [currentObjectiveCount, info.kind, target]);
   // (a restart sets the count back at once)
-  const goalNow = currentObjectiveCount < shownGoal ? currentObjectiveCount : shownGoal;
+  // (and never past the goal itself: goalInfo.ts goalShown, R-165.155)
+  const goalNow = goalShown(currentObjectiveCount < shownGoal ? currentObjectiveCount : shownGoal, target);
 
   // --- bloom: what is visible now ---
   const track = React.useRef(newBloom());

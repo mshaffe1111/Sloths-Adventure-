@@ -1,0 +1,19 @@
+# INT-2 plant (11-12, R-165.152): the OLD guard regexes vs the planted shapes (escaped = the old guard missed it)
+ESCAPED async function f() { const { registerPlugin } = await import('@capacitor/core'); return registerPlugin<X>('X'); }
+caught  async function f() { return registerPlugin('X') }
+ESCAPED const f = async () => registerPlugin<X>('X');
+ESCAPED const f = async () => { const m = await import('@capacitor/core'); return m.registerPlugin('X'); };
+caught  p = import('@capacitor/core').then(({ registerPlugin }) => registerPlugin<X>('X'));
+ESCAPED p = import('@capacitor/core').then((m) => m.registerPlugin('X'));
+ESCAPED p = import('@capacitor/core').then(function (m) { return m.registerPlugin('X'); });
+ESCAPED class A { async get() { const { registerPlugin } = await import('@capacitor/core'); return registerPlugin('X') as X; } }
+
+# plant in src/game/audioFocus.ts (PROOF-1's shape), then the source scan:
+not ok 5 - no source file resolves a promise to a bare Capacitor plugin
+    +   'game/audioFocus.ts:17'
+    0: 'game/audioFocus.ts:17'
+# pass 4
+# fail 1
+# plant removed:
+# pass 5
+# fail 0

@@ -1,0 +1,12 @@
+normal seed 4106 w1-mushroom-fork-dip: thin piece x 15043-15277 y 579 holds nothing
+normal seed 4106 w1-bank-stair-fork: thin piece x 23145-23379 y 549 holds nothing
+normal seed 1025 w1-bank-stair-fork: thin piece x 11562-11795 y 662 holds nothing
+normal seed 1025 w1-mushroom-fork: thin piece x 17435-17635 y 564 holds nothing
+normal seed 1136 w1-bank-stair-fork: thin piece x 13629-13846 y 786 holds nothing
+easy seed 4106 w1-mushroom-fork-dip: thin piece x 16145-16427 y 579 holds nothing
+easy seed 4106 w1-bank-stair-fork: thin piece x 24958-25240 y 534 holds nothing
+easy seed 1025 w1-bank-stair-fork: thin piece x 12306-12587 y 573 holds nothing
+easy seed 1025 w1-mushroom-fork: thin piece x 18524-18772 y 394 holds nothing
+easy seed 1136 w1-bank-stair-fork: thin piece x 14585-14850 y 768 holds nothing
+3 seeds x 2 settings: 12 fork sections laid, 10 high-road pieces hold nothing (w1-mushroom-fork-dip 2, w1-bank-stair-fork 6, w1-mushroom-fork 2)
+exit 1

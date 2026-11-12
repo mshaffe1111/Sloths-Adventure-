@@ -27,10 +27,14 @@ JS bytes against the base. When an animal is wired into a stage, the whole gate 
 2. **A new kind a cast may name** goes in `predators/registry.ts` (as it plays in that world, `inWorld`) and needs a `CreatureDef`
    row in its world's cast file (`gen2/worlds/w1Cast.ts`; a sleeper is its own row with `extra: { asleep: true }`).
 3. **A drop trap is a prop PAIR** (the load is the receptor on the animal's ground, the handle the source; both sockets `dn: 0`):
-   `W1_TRAP_PAIRS`, 150-190 px apart. `W1_TRAP_EMIT` writes `proto.cast.traps`. The machine is `dropTrap.ts`; the art `castArt.ts`.
+   `W1_TRAP_PAIRS`, the two SOCKETS 85-130 px apart (the hung load ends 140-190 px from the handle). `armedTraps()` (the kit's `emit`
+   and `spawn`) writes `proto.cast.traps` only for a load an animal of the cast stands under, hangs it over the middle of that
+   animal's patch and seats a sleeper under it. The machine is `dropTrap.ts`; the art `castArt.ts` (a stand-in until painted).
 4. **Proof in the real engine:** `castEngine.test.ts` (engineCoreHarness; the arena is planted, the cast started by the engine's own
    start) and `castPlay.test.ts` (no engine), then `python3 reference/qa-reports/W1C/planted-faults.py`: every fault CAUGHT.
-5. **On the phone:** `tools/engine/runs/trap-stills.mjs <port> <out> <prefix> <stage> <layout> [trap]` (needs
+5. **A whole stage built on it:** 1-3, `gen2/worlds/w1Arc13.ts` (one graph, one piece a beat, all its own; `reference/design/1-3.md`),
+   held by `tools/engine/library13.test.ts`; played by `npx tsx tools/inspect/castBots.ts --stage 1-3 --seeds 1-6` (P13's bots).
+6. **On the phone:** `tools/engine/runs/trap-stills.mjs <port> <out> <prefix> <stage> <layout> [trap]` (needs
    `PW=/opt/node-tools/node_modules/playwright/index.mjs` here): before, the trap, the glide, after, upright and sideways. It only
    writes a still when the engine says the thing it is named for is true on that frame.
 ## Pitfalls we already paid for
@@ -48,7 +52,24 @@ JS bytes against the base. When an animal is wired into a stage, the whole gate 
   fault). Plant the fault for every rule.
 - 11-11: `posted` widened to "anything with no speed" and a charger began walking home after its charge. A rule that classifies by a
   number needs a test for the animal on the other side of the line.
+- 11-12: a kit's `spawn` hook that MOVES its animal (a sleeper seated under its trap's load) made Easy drop that animal with no
+  error: the builder finds what Normal kept by its fill's x (`keptFoes`). The pipeline now carries the fill with the animal; if you
+  write a hook that moves anything, roll BOTH settings and count before you push.
+- 11-12: a block placed ON a piece (`place: { kind: 'on' }`) is `main` unless told: a flag stood on a snake's log and emptied its
+  socket (13 snakes fell to 12 on some seeds). Say `main: false` on anything an animal owns.
+- 11-12: World 1 paints a log-style block 24-26 px thick as its fallen log and one 50-56 px thick as a bright green hedge. Look at
+  each new piece on a still at every size it is laid; a style name is not a picture.
+- 11-12: Easy lays Normal's KIND at each socket and then cuts by count (the first of a kind, then 60%): four of nine trapped logs
+  stood empty on Easy. `Socket.easy 'stay'` keeps the animal a piece is built round (softened), and the cut passes it by.
+- 11-12: a stage that changed builder (hand-built to the kit) passed all its own tests and broke eight others, two of them real
+  game bugs (a crash on the second visit; a journal page waiting on a deleted line). Run the WHOLE suite before anyone plays it.
+- 11-12: Dot's line 232 px before the thing it teaches is read too late at a walk (265 px a second, about 3 s to read). A teach line
+  goes 800 px and more before its thing, nothing that hurts in between, and the kit lists it in `teachTips`.
+- 11-12: never `git add -A` in a side worktree that links `node_modules`: the link was committed and replaced the real folder on
+  checkout. Commit by path there.
 ## Tried and didn't work
+- 11-12: a step-up ledge under the first vine, so the first-timer bots would land and stop at it: they overshot it the same way
+  (they decide to stop AT the handle and walk on about 220 px). The level was not the cause; the trace went to the bots' owner.
 - A sweeper's dive aimed where he was when the tell began: he outran it every time, so the bush lesson meant nothing. The dive
   follows him; only hiding before the tell ends calls it off.
 ## To try

@@ -1,0 +1,122 @@
+{
+ "tag": "hfl1-B",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, cast shadow, sky, scenery behind",
+ "base": "BASE",
+ "items": [
+  {
+   "name": "i1-P-11-a-s52-11",
+   "start": "i1-P-11-a.jpg",
+   "prompt": "a wooden pole scaffold lashed together with rope, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.52,
+   "seed": 11,
+   "w": 2048,
+   "h": 1808
+  },
+  {
+   "name": "i1-P-11-a-s52-23",
+   "start": "i1-P-11-a.jpg",
+   "prompt": "a wooden pole scaffold lashed together with rope, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.52,
+   "seed": 23,
+   "w": 2048,
+   "h": 1808
+  },
+  {
+   "name": "i1-P-11-a-s60-11",
+   "start": "i1-P-11-a.jpg",
+   "prompt": "a wooden pole scaffold lashed together with rope, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.6,
+   "seed": 11,
+   "w": 2048,
+   "h": 1808
+  },
+  {
+   "name": "i1-P-11-a-s60-23",
+   "start": "i1-P-11-a.jpg",
+   "prompt": "a wooden pole scaffold lashed together with rope, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1808
+  },
+  {
+   "name": "i1-P-11-c-s52-11",
+   "start": "i1-P-11-c.jpg",
+   "prompt": "a wooden palisade wall of sharpened stakes lashed with rope, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.52,
+   "seed": 11,
+   "w": 2048,
+   "h": 1952
+  },
+  {
+   "name": "i1-P-11-c-s52-23",
+   "start": "i1-P-11-c.jpg",
+   "prompt": "a wooden palisade wall of sharpened stakes lashed with rope, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.52,
+   "seed": 23,
+   "w": 2048,
+   "h": 1952
+  },
+  {
+   "name": "i1-P-11-c-s60-11",
+   "start": "i1-P-11-c.jpg",
+   "prompt": "a wooden palisade wall of sharpened stakes lashed with rope, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.6,
+   "seed": 11,
+   "w": 2048,
+   "h": 1952
+  },
+  {
+   "name": "i1-P-11-c-s60-23",
+   "start": "i1-P-11-c.jpg",
+   "prompt": "a wooden palisade wall of sharpened stakes lashed with rope, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1952
+  },
+  {
+   "name": "i1-P-11-d-s52-11",
+   "start": "i1-P-11-d.jpg",
+   "prompt": "a wooden plank dock on posts standing in dark blue river water, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.52,
+   "seed": 11,
+   "w": 2048,
+   "h": 800
+  },
+  {
+   "name": "i1-P-11-d-s52-23",
+   "start": "i1-P-11-d.jpg",
+   "prompt": "a wooden plank dock on posts standing in dark blue river water, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.52,
+   "seed": 23,
+   "w": 2048,
+   "h": 800
+  },
+  {
+   "name": "i1-P-11-d-s60-11",
+   "start": "i1-P-11-d.jpg",
+   "prompt": "a wooden plank dock on posts standing in dark blue river water, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.6,
+   "seed": 11,
+   "w": 2048,
+   "h": 800
+  },
+  {
+   "name": "i1-P-11-d-s60-23",
+   "start": "i1-P-11-d.jpg",
+   "prompt": "a wooden plank dock on posts standing in dark blue river water, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 800
+  }
+ ]
+}

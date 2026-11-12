@@ -243,3 +243,7 @@ test('property: for 50 random record sets per world, no page repeats a line (num
     }
   }
 });
+
+test("1-3's line is the story keeper's (11-12): the drop traps, and nobody knocked off anything (R-165.141)", () => {
+  assert.equal(STAGE_LINES['1-3'], 'Punched a vine and a hive dropped beside the snake. He glided off. Nobody told me snakes could fly.');
+});

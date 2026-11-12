@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { KNOWN_FILE, ROOT, judge, knownIds, scan, scope, tokenize, type Known } from '../../../tools/engine/generalitycheck.ts';
+import { DATA_ONLY, KNOWN_FILE, ROOT, judge, logicIn, knownIds, scan, scope, tokenize, type Known } from '../../../tools/engine/generalitycheck.ts';
 
 const known: Known[] = JSON.parse(fs.readFileSync(path.join(ROOT, KNOWN_FILE), 'utf8')).known;
 const today = () => scope().files.flatMap((f) => scan(fs.readFileSync(path.join(ROOT, f), 'utf8'), f));
@@ -118,6 +118,17 @@ for (const f of NEW_ENGINE) {
 }
 test("the predator roster is world data (each world's cast), exempt by name with its reason, not silently skipped", () => {
   assert.ok(scope().exempt.some(([f, why]) => f === 'src/game/predators/roster.ts' && /world data/.test(why)));
+});
+// (R-165.153, PROOF-1's delta: the roster's exemption covered a rule too, inWorld; the rule moved to predators/ways.ts, engine code under
+// the gate, and the exemption now holds only while the file is data: a function, arrow or class in it fails the gate)
+test('the data-only exemptions hold data only: the roster has no logic, a planted one fails, and its rule is engine code under the gate', () => {
+  assert.ok(DATA_ONLY.includes('src/game/predators/roster.ts'));
+  for (const f of DATA_ONLY) assert.deepEqual(logicIn(fs.readFileSync(path.join(ROOT, f), 'utf8')), [], `${f} holds logic`);
+  const roster = fs.readFileSync(path.join(ROOT, 'src/game/predators/roster.ts'), 'utf8');
+  for (const plant of ['export function inWorld(w: number) { return w; }', 'export const inWorld = (w: number) => w;', 'export class Cast {}'])
+    assert.equal(logicIn(`${roster}\n${plant}\n`).length, 1, `missed: ${plant}`);
+  assert.equal(logicIn(`${roster}\n// a comment that says function and => is not logic\n`).length, 0);
+  assert.ok(scope().files.includes('src/game/predators/ways.ts'), 'ways.ts (inWorld) is not in the gate');
 });
 test('every listed engine file and folder is in the tree (a renamed one would leave the gate blind)', () => {
   assert.deepEqual(scope().missing, []);

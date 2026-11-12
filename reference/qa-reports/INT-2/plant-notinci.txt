@@ -1,0 +1,17 @@
+# INT-2 plant (11-12): an orphan test + its NOT_IN_CI entry, on top of 03686053; KNOWN_BASE=HEAD
+$ npx tsx --test src/game/ciTests.test.ts (the entry hides the orphan from the test)
+# pass 3
+# fail 0
+$ KNOWN_BASE=HEAD node tools/perf/knowncheck.mjs
+known-list check against HEAD
+✓ tools/perf/clipknown.json: 44 entries
+✓ src/game/playerText.known.json: 4 entries
+✓ tools/perf/limits.json: 14 entries
+✓ tools/engine/generality.known.json: 27 entries
+✗ src/game/ciTests.known.json: 1 entry ADDED (a known list only shrinks; fix the defect instead):
+    src/game/zzplant/orphan.test.ts
+✓ src/game/artUse.allow.json: 210 entries
+FAIL
+exit 1
+# plant removed:
+PASS

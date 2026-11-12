@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { landingNoise, thrownNoise } from './heroNoise.ts';
-import { inWorld } from './predators/roster.ts';
+import { inWorld } from './predators/ways.ts';
 import { STILLNESS } from './stillness.ts';
 import { GONE_AFTER, beat, checkPredator, foodChain, hear, hurt, newPredator, tellOf, touches } from './predators/core.ts';
 import { DT, firstT, post, prey, run } from './predators/fixtures.ts';

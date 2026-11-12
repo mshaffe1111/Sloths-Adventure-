@@ -1,0 +1,6 @@
+200 seeds x 2 settings: 610 fork sections laid, 554 high-road pieces hold nothing (w1-mushroom-fork 180, w1-bank-stair-fork 196, w1-mushroom-fork-dip 164, w1-hollow-twoway 14)
+
+real	0m5.603s
+user	0m7.927s
+sys	0m0.255s
+exit 1

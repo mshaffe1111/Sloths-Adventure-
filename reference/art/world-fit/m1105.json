@@ -1,0 +1,1868 @@
+{
+ "source": "reference/art-incoming/gemini-2026-11-05",
+ "rule": "Kin, not copies (README 'Using art in other worlds'): a tag like 'W3~darker' means the same shape re-tinted to that world's palette and given its own dressing; a plain tag means the piece fits as painted. Never the same picture in every world.",
+ "pieces": [
+  {
+   "file": "w1-post-tall-vine.png",
+   "sheet": "07-tall-posts-vine-rope.jpg",
+   "item": 1,
+   "size": [
+    369,
+    890
+   ],
+   "job": "climb post / one-piece vertical",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-post-tall-rope.png",
+   "sheet": "07-tall-posts-vine-rope.jpg",
+   "item": 2,
+   "size": [
+    334,
+    876
+   ],
+   "job": "climb post (rope-lashed: made thing)",
+   "worlds": [
+    "W1",
+    "W2"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "hold-w1-totem-carved.png",
+   "sheet": "08-rope-beam-carved-totem.jpg",
+   "item": 1,
+   "size": [
+    175,
+    945
+   ],
+   "job": "carved monkey totem",
+   "worlds": [
+    "W5",
+    "W7"
+   ],
+   "status": "hold",
+   "note": "story call (README batch 2 HOLD)"
+  },
+  {
+   "file": "w1-post-rope-wrapped.png",
+   "sheet": "09-rope-post-carved-pole.jpg",
+   "item": 2,
+   "size": [
+    354,
+    965
+   ],
+   "job": "post / scaffold",
+   "worlds": [
+    "W1",
+    "W2"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "hold-w1-pole-carved.png",
+   "sheet": "09-rope-post-carved-pole.jpg",
+   "item": 1,
+   "size": [
+    154,
+    961
+   ],
+   "job": "carved paw pole",
+   "worlds": [
+    "W5",
+    "W7"
+   ],
+   "status": "hold",
+   "note": "story call"
+  },
+  {
+   "file": "w1-vine-column-a.png",
+   "sheet": "10-vines-ropes-hanging.jpg",
+   "item": 1,
+   "size": [
+    81,
+    263
+   ],
+   "job": "climb vine (small: re-roll or upscale)",
+   "worlds": [
+    "W1",
+    "W6~grey-wet"
+   ],
+   "status": "keep",
+   "note": "sheet 10 is small (~150-200 px a piece): upscale or re-roll before use"
+  },
+  {
+   "file": "w1-vine-column-b.png",
+   "sheet": "10-vines-ropes-hanging.jpg",
+   "item": 2,
+   "size": [
+    91,
+    264
+   ],
+   "job": "climb vine (small)",
+   "worlds": [
+    "W1",
+    "W6~grey-wet"
+   ],
+   "status": "keep",
+   "note": "sheet 10 is small (~150-200 px a piece): upscale or re-roll before use"
+  },
+  {
+   "file": "w1-rope-plain.png",
+   "sheet": "10-vines-ropes-hanging.jpg",
+   "item": 3,
+   "size": [
+    48,
+    260
+   ],
+   "job": "climb rope (small)",
+   "worlds": [
+    "W1",
+    "W2"
+   ],
+   "status": "keep",
+   "note": "sheet 10 is small (~150-200 px a piece): upscale or re-roll before use"
+  },
+  {
+   "file": "w1-rope-thin.png",
+   "sheet": "10-vines-ropes-hanging.jpg",
+   "item": 10,
+   "size": [
+    25,
+    263
+   ],
+   "job": "climb rope (small)",
+   "worlds": [
+    "W1",
+    "W2"
+   ],
+   "status": "keep",
+   "note": "pink cast painted into the strands (not fixable by despill): re-roll"
+  },
+  {
+   "file": "w1-vine-monstera.png",
+   "sheet": "10-vines-ropes-hanging.jpg",
+   "item": 4,
+   "size": [
+    137,
+    262
+   ],
+   "job": "dressing (small)",
+   "worlds": [
+    "W1",
+    "W5"
+   ],
+   "status": "keep",
+   "note": "sheet 10 is small (~150-200 px a piece): upscale or re-roll before use"
+  },
+  {
+   "file": "w1-vine-flowering.png",
+   "sheet": "10-vines-ropes-hanging.jpg",
+   "item": 5,
+   "size": [
+    108,
+    261
+   ],
+   "job": "dressing (small)",
+   "worlds": [
+    "W1",
+    "W5"
+   ],
+   "status": "keep",
+   "note": "sheet 10 is small (~150-200 px a piece): upscale or re-roll before use"
+  },
+  {
+   "file": "w1-vine-fungus.png",
+   "sheet": "10-vines-ropes-hanging.jpg",
+   "item": 6,
+   "size": [
+    88,
+    263
+   ],
+   "job": "dressing (small)",
+   "worlds": [
+    "W1",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": "sheet 10 is small (~150-200 px a piece): upscale or re-roll before use"
+  },
+  {
+   "file": "hold-w1-rope-swing-log.png",
+   "sheet": "10-vines-ropes-hanging.jpg",
+   "item": 8,
+   "size": [
+    205,
+    235
+   ],
+   "job": "rope swing (no swing mechanic)",
+   "worlds": [
+    "W1"
+   ],
+   "status": "hold",
+   "note": "design call"
+  },
+  {
+   "file": "hold-w1-golden-fruit.png",
+   "sheet": "10-vines-ropes-hanging.jpg",
+   "item": 9,
+   "size": [
+    98,
+    249
+   ],
+   "job": "pickup idea",
+   "worlds": [
+    "W1"
+   ],
+   "status": "hold",
+   "note": "design call"
+  },
+  {
+   "file": "w1-bush-monstera.png",
+   "sheet": "11-bushes.jpg",
+   "item": 2,
+   "size": [
+    587,
+    861
+   ],
+   "job": "hide-in-bush",
+   "worlds": [
+    "W1",
+    "W5~orchid",
+    "W6~grey-wet"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-bush-hedge-tall.png",
+   "sheet": "11-bushes.jpg",
+   "item": 1,
+   "size": [
+    307,
+    893
+   ],
+   "job": "hide-in-bush (tall)",
+   "worlds": [
+    "W1",
+    "W5~orchid"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-thorn-vine-column.png",
+   "sheet": "12-thorns.jpg",
+   "item": 1,
+   "size": [
+    150,
+    472
+   ],
+   "job": "hazard (vertical)",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-thorn-tangle-big.png",
+   "sheet": "12-thorns.jpg",
+   "item": 2,
+   "size": [
+    430,
+    271
+   ],
+   "job": "hazard",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-thorn-tangle-flat.png",
+   "sheet": "12-thorns.jpg",
+   "item": 3,
+   "size": [
+    316,
+    158
+   ],
+   "job": "hazard (low)",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-thorn-mound.png",
+   "sheet": "12-thorns.jpg",
+   "item": 4,
+   "size": [
+    375,
+    219
+   ],
+   "job": "hazard",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-thorn-bramble-a.png",
+   "sheet": "12-thorns.jpg",
+   "item": 5,
+   "size": [
+    391,
+    194
+   ],
+   "job": "hazard",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-thorn-bramble-b.png",
+   "sheet": "12-thorns.jpg",
+   "item": 11,
+   "size": [
+    325,
+    162
+   ],
+   "job": "hazard (low)",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-thorn-bramble-long.png",
+   "sheet": "12-thorns.jpg",
+   "item": 12,
+   "size": [
+    522,
+    203
+   ],
+   "job": "hazard (long)",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-thorn-ball.png",
+   "sheet": "12-thorns.jpg",
+   "item": 13,
+   "size": [
+    211,
+    182
+   ],
+   "job": "hazard",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-thorn-hang-a.png",
+   "sheet": "12-thorns.jpg",
+   "item": 7,
+   "size": [
+    58,
+    333
+   ],
+   "job": "hanging hazard",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-thorn-hang-b.png",
+   "sheet": "12-thorns.jpg",
+   "item": 8,
+   "size": [
+    72,
+    427
+   ],
+   "job": "hanging hazard",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-thorn-hang-c.png",
+   "sheet": "12-thorns.jpg",
+   "item": 9,
+   "size": [
+    71,
+    300
+   ],
+   "job": "hanging hazard",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-thorn-hang-swag.png",
+   "sheet": "12-thorns.jpg",
+   "item": 10,
+   "size": [
+    201,
+    183
+   ],
+   "job": "hanging hazard",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-stump-wide.png",
+   "sheet": "13-wide-stump-frames-thorns.jpg",
+   "item": 1,
+   "size": [
+    479,
+    325
+   ],
+   "job": "wide standable stump",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-post-short-rope.png",
+   "sheet": "13-wide-stump-frames-thorns.jpg",
+   "item": 2,
+   "size": [
+    138,
+    320
+   ],
+   "job": "short post",
+   "worlds": [
+    "W1",
+    "W2"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-frame-xbundle-a.png",
+   "sheet": "13-wide-stump-frames-thorns.jpg",
+   "item": 6,
+   "size": [
+    302,
+    304
+   ],
+   "job": "scaffold frame",
+   "worlds": [
+    "W1",
+    "W2"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-vine-curtain.png",
+   "sheet": "13-wide-stump-frames-thorns.jpg",
+   "item": 5,
+   "size": [
+    252,
+    481
+   ],
+   "job": "dressing / hide curtain",
+   "worlds": [
+    "W1",
+    "W6~grey-wet"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-thorn-row.png",
+   "sheet": "13-wide-stump-frames-thorns.jpg",
+   "item": 7,
+   "size": [
+    379,
+    235
+   ],
+   "job": "hazard (long, low)",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-post-stubs.png",
+   "sheet": "14-posts-frames-garlands.jpg",
+   "item": 1,
+   "size": [
+    151,
+    471
+   ],
+   "job": "post with stub steps",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-post-vine-wrapped.png",
+   "sheet": "14-posts-frames-garlands.jpg",
+   "item": 3,
+   "size": [
+    142,
+    469
+   ],
+   "job": "post",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-log-lashed-short.png",
+   "sheet": "14-posts-frames-garlands.jpg",
+   "item": 4,
+   "size": [
+    247,
+    126
+   ],
+   "job": "small log platform",
+   "worlds": [
+    "W2"
+   ],
+   "status": "keep",
+   "note": "rope-lashed (a made thing): W2 only (lead 11-06 11:12 AM ET)"
+  },
+  {
+   "file": "w1-frame-a.png",
+   "sheet": "14-posts-frames-garlands.jpg",
+   "item": 5,
+   "size": [
+    222,
+    246
+   ],
+   "job": "scaffold A-frame",
+   "worlds": [
+    "W1",
+    "W2"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-frame-xbundle-b.png",
+   "sheet": "14-posts-frames-garlands.jpg",
+   "item": 6,
+   "size": [
+    415,
+    229
+   ],
+   "job": "scaffold frame",
+   "worlds": [
+    "W1",
+    "W2"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-thorn-pile.png",
+   "sheet": "14-posts-frames-garlands.jpg",
+   "item": 7,
+   "size": [
+    448,
+    207
+   ],
+   "job": "hazard",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-leaf-monstera-hang.png",
+   "sheet": "14-posts-frames-garlands.jpg",
+   "item": 8,
+   "size": [
+    154,
+    234
+   ],
+   "job": "dressing",
+   "worlds": [
+    "W1",
+    "W5"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-garland-vine.png",
+   "sheet": "14-posts-frames-garlands.jpg",
+   "item": 9,
+   "size": [
+    451,
+    219
+   ],
+   "job": "canopy dressing",
+   "worlds": [
+    "W1",
+    "W5",
+    "W6~grey-wet"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-rock-block-big.png",
+   "sheet": "15-rocks.jpg",
+   "item": 1,
+   "size": [
+    464,
+    343
+   ],
+   "job": "standable rock block",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-rock-boulder-moss.png",
+   "sheet": "15-rocks.jpg",
+   "item": 2,
+   "size": [
+    344,
+    282
+   ],
+   "job": "standable boulder",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-rock-roots.png",
+   "sheet": "15-rocks.jpg",
+   "item": 3,
+   "size": [
+    372,
+    255
+   ],
+   "job": "rock with roots",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-rock-spire.png",
+   "sheet": "15-rocks.jpg",
+   "item": 4,
+   "size": [
+    246,
+    218
+   ],
+   "job": "rock (dressing / small step)",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-rock-arch.png",
+   "sheet": "15-rocks.jpg",
+   "item": 6,
+   "size": [
+    338,
+    289
+   ],
+   "job": "hide-under arch",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-rock-slabs-stacked.png",
+   "sheet": "15-rocks.jpg",
+   "item": 7,
+   "size": [
+    294,
+    250
+   ],
+   "job": "stacked slabs step",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-pebble-a.png",
+   "sheet": "15-rocks.jpg",
+   "item": 8,
+   "size": [
+    91,
+    61
+   ],
+   "job": "dressing",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-pebble-b.png",
+   "sheet": "15-rocks.jpg",
+   "item": 9,
+   "size": [
+    43,
+    26
+   ],
+   "job": "dressing",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-pebble-c.png",
+   "sheet": "15-rocks.jpg",
+   "item": 10,
+   "size": [
+    65,
+    40
+   ],
+   "job": "dressing",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-branch-long-a.png",
+   "sheet": "16-branches.jpg",
+   "item": 1,
+   "size": [
+    484,
+    249
+   ],
+   "job": "DRESSING only (drawn diagonal); flat re-roll on the redo list",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-branch-leafy.png",
+   "sheet": "16-branches.jpg",
+   "item": 2,
+   "size": [
+    456,
+    164
+   ],
+   "job": "DRESSING only (drawn diagonal); flat re-roll on the redo list",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-branch-hanging-vine.png",
+   "sheet": "16-branches.jpg",
+   "item": 3,
+   "size": [
+    471,
+    233
+   ],
+   "job": "branch with hanging vine",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-branch-knotted.png",
+   "sheet": "16-branches.jpg",
+   "item": 4,
+   "size": [
+    462,
+    151
+   ],
+   "job": "DRESSING only (drawn diagonal); flat re-roll on the redo list",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-branch-twig.png",
+   "sheet": "16-branches.jpg",
+   "item": 5,
+   "size": [
+    412,
+    130
+   ],
+   "job": "thin twig (dressing)",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-sticks-bundle.png",
+   "sheet": "16-branches.jpg",
+   "item": 6,
+   "size": [
+    471,
+    199
+   ],
+   "job": "dressing",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-branch-twisted.png",
+   "sheet": "16-branches.jpg",
+   "item": 7,
+   "size": [
+    495,
+    303
+   ],
+   "job": "branch (dressing)",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-sticks-thorny.png",
+   "sheet": "16-branches.jpg",
+   "item": 8,
+   "size": [
+    443,
+    305
+   ],
+   "job": "hazard",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W10~dead-grey"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-hide-boulder-cave.png",
+   "sheet": "17-hiding-spots.jpg",
+   "item": 1,
+   "size": [
+    453,
+    306
+   ],
+   "job": "hide-under cave",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-hide-log-on-stump.png",
+   "sheet": "17-hiding-spots.jpg",
+   "item": 3,
+   "size": [
+    432,
+    232
+   ],
+   "job": "hide-under leaning log",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-hide-rock-arch-low.png",
+   "sheet": "17-hiding-spots.jpg",
+   "item": 4,
+   "size": [
+    492,
+    217
+   ],
+   "job": "hide-under arch",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-hide-slab-overhang.png",
+   "sheet": "17-hiding-spots.jpg",
+   "item": 5,
+   "size": [
+    449,
+    142
+   ],
+   "job": "hide-under overhang",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-rock-slabs-low.png",
+   "sheet": "17-hiding-spots.jpg",
+   "item": 6,
+   "size": [
+    330,
+    168
+   ],
+   "job": "low slab step",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-hide-stump-hollow.png",
+   "sheet": "17-hiding-spots.jpg",
+   "item": 7,
+   "size": [
+    351,
+    320
+   ],
+   "job": "PERCH only (narrow top) + hide spot",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-hide-root-arch.png",
+   "sheet": "17-hiding-spots.jpg",
+   "item": 8,
+   "size": [
+    345,
+    180
+   ],
+   "job": "root arch (1-2 brief)",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W7~temple"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-hide-cave-big.png",
+   "sheet": "18-hollow-log-cave.jpg",
+   "item": 1,
+   "size": [
+    486,
+    434
+   ],
+   "job": "hide / secret door cave",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-rock-root-block.png",
+   "sheet": "19-rocks-big.jpg",
+   "item": 1,
+   "size": [
+    453,
+    405
+   ],
+   "job": "standable root block",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-rock-boulder-moss-big.png",
+   "sheet": "19-rocks-big.jpg",
+   "item": 2,
+   "size": [
+    460,
+    356
+   ],
+   "job": "standable boulder",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-rock-slabs-stacked-big.png",
+   "sheet": "19-rocks-big.jpg",
+   "item": 4,
+   "size": [
+    468,
+    287
+   ],
+   "job": "stacked slabs step",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-hide-stump-hollow-tall.png",
+   "sheet": "20-hollow-stump-tree-rock.jpg",
+   "item": 1,
+   "size": [
+    506,
+    440
+   ],
+   "job": "PERCH only (narrow top) + hide spot",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-trunk-twisted-rock.png",
+   "sheet": "20-hollow-stump-tree-rock.jpg",
+   "item": 3,
+   "size": [
+    366,
+    476
+   ],
+   "job": "set piece: twisted trunk with rock",
+   "worlds": [
+    "W1",
+    "W6~grey-wet"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-wall-earth-A.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 1,
+   "size": [
+    475,
+    907
+   ],
+   "job": "ONE-PIECE WALL (master): measure each ledge top",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": "set piece: each ledge/shelf top line must be measured and become a platform at that height (integration waits on the lead)"
+  },
+  {
+   "file": "w1-wall-cap-tl.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 2,
+   "size": [
+    244,
+    150
+   ],
+   "job": "wall corner cap",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-wall-cap-tr.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 3,
+   "size": [
+    275,
+    214
+   ],
+   "job": "wall corner cap",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-wall-foot-l.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 13,
+   "size": [
+    248,
+    245
+   ],
+   "job": "wall foot corner",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-wall-foot-r.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 14,
+   "size": [
+    248,
+    247
+   ],
+   "job": "wall foot corner",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-roots-hang-a.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 4,
+   "size": [
+    103,
+    126
+   ],
+   "job": "hanging roots",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-roots-hang-b.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 6,
+   "size": [
+    104,
+    146
+   ],
+   "job": "hanging roots",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-ledge-thin.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 9,
+   "size": [
+    147,
+    31
+   ],
+   "job": "floating ledge",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-ledge-earth-a.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 10,
+   "size": [
+    170,
+    58
+   ],
+   "job": "floating earth ledge",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-ledge-earth-long.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 11,
+   "size": [
+    273,
+    58
+   ],
+   "job": "floating earth ledge",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-ledge-earth-small.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 12,
+   "size": [
+    96,
+    65
+   ],
+   "job": "floating earth ledge",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-ledge-earth-b.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 17,
+   "size": [
+    166,
+    89
+   ],
+   "job": "floating earth ledge",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-ground-chunk.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 16,
+   "size": [
+    218,
+    93
+   ],
+   "job": "ground chunk",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-mossrock-a.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 7,
+   "size": [
+    97,
+    58
+   ],
+   "job": "dressing",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-mossrock-b.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 8,
+   "size": [
+    86,
+    48
+   ],
+   "job": "dressing",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-grass-tuft-a.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 15,
+   "size": [
+    93,
+    62
+   ],
+   "job": "dressing",
+   "worlds": [
+    "W1",
+    "W3",
+    "W6",
+    "W8"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w2-lantern-hanging.png",
+   "sheet": "36-earth-wall-kit-A.jpg",
+   "item": 5,
+   "size": [
+    46,
+    97
+   ],
+   "job": "lantern (made thing)",
+   "worlds": [
+    "W2"
+   ],
+   "status": "keep",
+   "note": "village only: not W1"
+  },
+  {
+   "file": "w1-wall-earth-B.png",
+   "sheet": "38-earth-wall-kit-B.jpg",
+   "item": 1,
+   "size": [
+    475,
+    911
+   ],
+   "job": "ONE-PIECE WALL (variant, more roots)",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": "set piece: each ledge/shelf top line must be measured and become a platform at that height (integration waits on the lead)"
+  },
+  {
+   "file": "w1-plank-ledge-a.png",
+   "sheet": "38-earth-wall-kit-B.jpg",
+   "item": 14,
+   "size": [
+    211,
+    27
+   ],
+   "job": "plank ledge",
+   "worlds": [
+    "W1",
+    "W2",
+    "W6~grey-wet"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-plank-ledge-b.png",
+   "sheet": "38-earth-wall-kit-B.jpg",
+   "item": 16,
+   "size": [
+    211,
+    33
+   ],
+   "job": "plank ledge",
+   "worlds": [
+    "W1",
+    "W2",
+    "W6~grey-wet"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-plank-ledge-c.png",
+   "sheet": "38-earth-wall-kit-B.jpg",
+   "item": 18,
+   "size": [
+    214,
+    37
+   ],
+   "job": "plank ledge",
+   "worlds": [
+    "W1",
+    "W2",
+    "W6~grey-wet"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-roots-hang-c.png",
+   "sheet": "38-earth-wall-kit-B.jpg",
+   "item": 11,
+   "size": [
+    91,
+    134
+   ],
+   "job": "hanging roots",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-roots-hang-glow.png",
+   "sheet": "38-earth-wall-kit-B.jpg",
+   "item": 12,
+   "size": [
+    89,
+    129
+   ],
+   "job": "hanging roots with glow",
+   "worlds": [
+    "W1",
+    "W3",
+    "W8"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-wall-earth-C.png",
+   "sheet": "39-earth-wall-kit-C.jpg",
+   "item": 1,
+   "size": [
+    467,
+    910
+   ],
+   "job": "ONE-PIECE WALL (variant C)",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": "set piece: each ledge/shelf top line must be measured and become a platform at that height (integration waits on the lead)"
+  },
+  {
+   "file": "w1-boulder-grey-moss.png",
+   "sheet": "39-earth-wall-kit-C.jpg",
+   "item": 8,
+   "size": [
+    245,
+    160
+   ],
+   "job": "standable boulder",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-ledge-overhang-big.png",
+   "sheet": "39-earth-wall-kit-C.jpg",
+   "item": 1,
+   "size": [
+    312,
+    178
+   ],
+   "job": "big overhang ledge (roots under)",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-trunk-fungus-A.png",
+   "sheet": "41-fungus-trunk-kit-A.jpg",
+   "item": 2,
+   "size": [
+    489,
+    994
+   ],
+   "job": "ONE-PIECE CLIMB TRUNK: measure each shelf top",
+   "worlds": [
+    "W1",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": "set piece: each ledge/shelf top line must be measured and become a platform at that height (integration waits on the lead)"
+  },
+  {
+   "file": "w1-wall-foot-l-41.png",
+   "sheet": "41-fungus-trunk-kit-A.jpg",
+   "item": 2,
+   "size": [
+    247,
+    245
+   ],
+   "job": "wall foot corner",
+   "worlds": [
+    "W1",
+    "W3~darker"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-fungus-shelf-big.png",
+   "sheet": "41-fungus-trunk-kit-A.jpg",
+   "item": 4,
+   "size": [
+    271,
+    121
+   ],
+   "job": "floating fungus shelf",
+   "worlds": [
+    "W1",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-fungus-cluster.png",
+   "sheet": "41-fungus-trunk-kit-A.jpg",
+   "item": 6,
+   "size": [
+    198,
+    126
+   ],
+   "job": "fungus shelf / dressing",
+   "worlds": [
+    "W1",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-stump-forked-a.png",
+   "sheet": "41-fungus-trunk-kit-A.jpg",
+   "item": 11,
+   "size": [
+    162,
+    179
+   ],
+   "job": "forked stump",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-stump-forked-b.png",
+   "sheet": "41-fungus-trunk-kit-A.jpg",
+   "item": 10,
+   "size": [
+    84,
+    162
+   ],
+   "job": "forked stump",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-mossrock-c.png",
+   "sheet": "41-fungus-trunk-kit-A.jpg",
+   "item": 14,
+   "size": [
+    100,
+    61
+   ],
+   "job": "dressing",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-mossrock-d.png",
+   "sheet": "41-fungus-trunk-kit-A.jpg",
+   "item": 15,
+   "size": [
+    89,
+    46
+   ],
+   "job": "dressing",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-trunk-fungus-B.png",
+   "sheet": "42-fungus-trunk-kit-B.jpg",
+   "item": 1,
+   "size": [
+    564,
+    935
+   ],
+   "job": "ONE-PIECE CLIMB TRUNK (spiral steps, best)",
+   "worlds": [
+    "W1",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": "Gemini cropped the crown at the sheet top: needs a canopy above it or a re-roll with headroom set piece: each ledge/shelf top line must be measured and become a platform at that height (integration waits on the lead)"
+  },
+  {
+   "file": "w1-boulder-grey-moss-b.png",
+   "sheet": "42-fungus-trunk-kit-B.jpg",
+   "item": 5,
+   "size": [
+    192,
+    165
+   ],
+   "job": "standable boulder",
+   "worlds": [
+    "W1",
+    "W3~cool-dark",
+    "W4~slate",
+    "W7~sand-stone"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-log-plank-a.png",
+   "sheet": "42-fungus-trunk-kit-B.jpg",
+   "item": 15,
+   "size": [
+    253,
+    77
+   ],
+   "job": "log platform",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-log-plank-b.png",
+   "sheet": "42-fungus-trunk-kit-B.jpg",
+   "item": 18,
+   "size": [
+    241,
+    79
+   ],
+   "job": "log platform",
+   "worlds": [
+    "W1",
+    "W6~grey-wet",
+    "W8~blue-night"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-grass-tuft-b.png",
+   "sheet": "42-fungus-trunk-kit-B.jpg",
+   "item": 7,
+   "size": [
+    129,
+    84
+   ],
+   "job": "dressing",
+   "worlds": [
+    "W1",
+    "W6",
+    "W8"
+   ],
+   "status": "keep",
+   "note": ""
+  },
+  {
+   "file": "w1-grass-tuft-c.png",
+   "sheet": "42-fungus-trunk-kit-B.jpg",
+   "item": 12,
+   "size": [
+    107,
+    77
+   ],
+   "job": "dressing",
+   "worlds": [
+    "W1",
+    "W6",
+    "W8"
+   ],
+   "status": "keep",
+   "note": ""
+  }
+ ]
+}

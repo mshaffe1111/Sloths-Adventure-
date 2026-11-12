@@ -3,7 +3,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { CASTS_AFTER_1, HARPY, JAGUAR, OCELOT, RIVER_GUARD, TAYRA, TURTLE } from './predators/casts.ts';
-import { CASTS, HABIT, SPECIAL_CASTS, TAUGHT, inWorld, type Kind } from './predators/roster.ts';
+import { CASTS, HABIT, SPECIAL_CASTS, TAUGHT, type Kind } from './predators/roster.ts';
+import { inWorld } from './predators/ways.ts';
 import { BOA, EAGLE, SNAKE, WORLD1 } from './predators/world1.ts';
 import type { Habit, Way } from './predators/types.ts';
 

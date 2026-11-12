@@ -3,7 +3,7 @@
  * seedlist, yield and tools/inspect/travelBots, were outside the suite glob and no workflow ran them: a test never run guards nothing,
  * LAWS.md law 5). This reads the real workflow commands (.github/workflows/*.yml, every `tsx --test` line), expands their globs the way
  * the runner's bash does (no globstar: `**` is one folder), and requires each test file to be run by one of them, or to be on
- * NOT_IN_CI with its reason. NOT_IN_CI only shrinks: an entry that CI now runs, or that is gone, fails here until it is taken off.
+ * NOT_IN_CI (ciTests.known.json) with its reason. It only shrinks: knowncheck fails on an added entry, and an entry that CI now runs, or that is gone, fails here until it is taken off.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -13,18 +13,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const OLD_DEBT = 'outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files\' tests fail on main too, PROOF-1 logs/outofglob-main.log)';
 
-/** test files CI does not run, each with why */
+/** test files CI does not run, each with why: ciTests.known.json, shrink-only (knowncheck fails on an added entry; R-165.143) */
 const NOT_IN_CI: Record<string, string> = Object.fromEntries(
-  [
-    'src/game/mixer/codeVariety.test.ts', 'src/game/mixer/nodePieces.test.ts', 'src/game/mixer/propSupport.test.ts', 'src/game/mixer/stillSpots.test.ts',
-    'src/game/mixer/stumps.test.ts', 'src/game/mixer/support.test.ts',
-    'tools/engine/rulers.test.ts',
-    'tools/inspect/analyze.test.ts', 'tools/inspect/bands.test.ts', 'tools/inspect/c1judge.test.ts', 'tools/inspect/dotRooms.test.ts',
-    'tools/inspect/firsttimer.test.ts', 'tools/inspect/lookalike.test.ts', 'tools/inspect/pacing.test.ts', 'tools/inspect/routeWalls.test.ts',
-    'tools/validate/validate.test.ts', 'tools/validate/world1.test.ts',
-  ].map((f) => [f, OLD_DEBT]),
+  (JSON.parse(readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'ciTests.known.json'), 'utf8')).known as Array<{ file: string; why: string }>).map((k) => [k.file, k.why]),
 );
 
 /** the test-file arguments of every `tsx --test` command in the workflows */

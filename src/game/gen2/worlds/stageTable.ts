@@ -34,8 +34,8 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   '1-1': { kit: 'w1', squirrels: true, firstRun: true, pick: true, judged: 'normal-1-1', standIn: { seed: FIRST_RUN_11.seed, rerolls: FIRST_RUN_11.rerolls, plan: FIRST_RUN_11.plan, foes: FIRST_RUN_11.foes ?? [] } },
   // (1-2 The Petal Trail: the piece library's roll F12 judged, w1Arc12.ts; the game rolls it, the hand-built 1-2 is deleted)
   '1-2': { kit: 'w1-12', judged: 'normal-1-2' },
-  // (1-3 Branch Snakes: the designed arc, w1Arc13.ts. Not judged yet: its flown rows and its seed list are owed)
-  '1-3': { kit: 'w1' },
+  // (1-3 Branch Snakes: the designed arc, w1Arc13.ts; judged on its own flown rows, flownArcs.ts normal-1-3, P13 11-12. Its seed list is owed)
+  '1-3': { kit: 'w1', judged: 'normal-1-3' },
 };
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */

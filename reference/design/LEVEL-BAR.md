@@ -58,12 +58,29 @@ is scored 0 (missing), 1 (there, rough), 2 (at the bar), with the proof named. *
 | A one-way-to-win animal: a stomped snake came back after 5 s, a punch only dazed it, so a purge could stall | Matt's direction, then the kit's data | every ending in the snake's data is the glide; the kit test "however he beats it" walks all four ways |
 | A lesson line that never shows: the trap tip queued behind stock lessons (found by P13's bots) | bot runs | P13's TEACH kind of line; this level's data marks its tip as one (owed here) |
 | An engine test that passed while the wiring was missing (8 green tests, 2 of 23 planted faults survived) | planting faults | `reference/qa-reports/W1C/planted-faults.py`: 34 faults, each must be CAUGHT |
+| Dot's lesson said too late to read: her line 232 px before the vine, and a first-timer walks 265 px a second | P13's bots: adult and kid sprang the first trap on 0 of 40 rolls | the line is a TEACH line at the lesson's flag, 800-1,100 px before the first vine; `library13.test` holds the distance and that nothing can hurt before it |
+| Easy with LESS of the level's one idea: its count cut emptied four of nine trapped logs, leaving walks past unarmed vines | counting traps on both settings | `Socket.easy 'stay'`: the animal a piece is built round stays on Easy, softened; test "Easy keeps every trap" |
+| A pit with steps out one side, before a purge's shrine: he arrives owing snakes, drops in, and cannot go back | the adult bot ended "stranded", 6 of 10 | a free rope's hollow is one hop deep (place `rope` with `free`); the test measures the hollow and that no animal stands past it. **General rule for the bar: nothing one-way before the exit of a stage whose exit can seal** |
+| A "branch" that was a step of soil, in a stage called Branch Snakes | my own stills, judged as a player | every snake is on a painted fallen log; nothing checks "the thing the name promises is on screen": a line of this bar (A4) |
+| A flag stood on a snake's log and emptied its socket (a block ON a piece is `main` unless told) | a roll's counts fell from 13 snakes to 12 | the logs say `main: false`; the snake and trap counts are held on every seed; planted |
+| A piece that draws as something else at another size: World 1 paints a log-style block 24 px thick as a log, 50 px thick as a bright green hedge | stills of the first rests | every log is the low one; **no check: a builder must LOOK at each new piece at each size it is laid** |
+| A level whose links were another level's pieces: 57% alike to 1-1 by funcheck | funcheck, P13's run | an arrival and four rests of its own; the pool test refuses any World 1 library section in 1-3's pool |
+| A kit hook that moved an animal after the lay, and Easy silently dropped it (the builder finds an animal by its fill's x) | three red tests, after my own push | the fill follows a re-seated animal (pipeline); planted |
+| A real game crash the move left behind: a second visit to a cleared 1-3 threw (its id still read as a hand-built stage) | the whole suite, not the stage's own tests | `isW1Stage` asks the tables; a test plays six clears. **Rule: after a stage changes builder, the WHOLE suite runs before anyone plays it** |
 | A tool outside tsc crashing in the background (a stale name in a print line) and its run read as "no result yet" | two empty logs | run the tool once in the foreground after every edit to it; a background run's log is checked for an error, not only for a result |
+| A length that read "no tier under 2:00" because the fastest bot was not counted (its copy of the bots sprang no trap) | F13 re-flying 40 seeds on the newest bots: the kid on Easy at 112-116 s | measure EVERY tier, both settings, 40 seeds, on the bot owner's newest bots; `castBots.test` now runs in CI (gates.yml) |
+| A designed pair split by the lay's gaps (any two animals 120 px apart): the far snake pushed off an upright screen | the two snakes on a log, on stills | `Socket.group` (variety.ts poissonPlace): a group keeps no gap among its own pieces, every other gap kept; `variety.test` planted |
+| A rule for one sleeper (its load 10 px off the middle) breaking a pair: the load landing on the second coil | numbers from the real roll, then stills | `armedTraps` re-centres a load a second sleeper shares; `library13.test` "the load between coils, 50 px or more from each" (planted) |
+| A sky strip's edge art meeting where it wraps: two half orchids made one white "ghost" behind the route | the lead, on P13's stills; found by a draw-call probe | `stageBackdrops.test`: no stage on w1sunrise until it is repainted. NOT a general check yet: a strip's two edges are not compared |
 
-## Scoring 1-3 as it stands today (head of t-w1-creatures after the designed arc, honest)
-A1 2, A2 2 (one graph, one brick a beat: every roll lays the arc in order, held by a test), A3 2 (World 1's library gives only
-arrivals, rests and exits; no bounce or gap section is dealt in), A4 1. B5 1 (198 s on the time model; no bot yet), B6 1 (flags are
-the generator's, about 11; hearts not yet seen on it), B7 2. C8 1 (every trap fits one upright screen and is clear of the sign
-sideways; a bare branch's snake is at the edge until he is on the branch), C9 1 (the same), C10 0 (stand-in trap art; the list is
-with ART-W1). D11 2, D12 1. E13 1 (480 of 480 rolls are the arc, but there is no seed list yet), E14 0 (no bot; flown rows are
-1-1's). **Not shippable yet: two 0s (the painted traps, a bot and its own flown rows), both in hand with ART-W1 and P13.**
+## Scoring 1-3 as it stands today (t-w1-creatures, 11-12 afternoon, honest)
+A1 2, A2 2 (one graph, one piece a beat, held on every seed), A3 2 (every piece is its own: no library section in its pool),
+A4 2 (snakes on fallen logs, vines and hives: funcheck reads it as no earlier stage on 16 of 16 layouts). B5 1 (bots: every tier
+finishes and no run is under 2:00 (126 s the fastest); the tester-built tiers take 2.7 to 6.7 minutes, but the KID first-timer takes
+9.6 minutes on Normal and 5.9 on Easy, most of it walking back from a sealed totem for snakes he passed: 6 turn-backs a run), B6 1 (flags and hearts are the game's own rules: 12 and 6; right
+for a child's 4 hits a run, more than my first table), B7 2. C8 2 (from the vine, hive and snake on one upright screen; a
+sleeper right under its load), C9 1 (sideways the trap's leaf clumps brush the goal sign's rim), C10 0 (stand-in trap art; the list
+is with ART-W1). D11 2, D12 1 (a rope he cannot use yet is the last thing he passes: old 1-3's ending, kept by ruling). E13 1 (24 of
+24 rolls are the arc on both settings; no seed list yet), E14 1 (the bots finish it; the first-timer bots miss the first vine;
+flown rows not marked judged). **Not shippable to main yet: one 0 (the painted traps). To Matt's test link tonight: yes, said as
+a stand-in.**

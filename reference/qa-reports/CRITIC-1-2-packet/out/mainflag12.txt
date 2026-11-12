@@ -1,0 +1,2 @@
+pickups written in the 11 reused sections, by the piece they stand on: {"main: true":111,"main: false":38,"main unset":136}
+per section (true/false/unset): stump-stile 6/0/24  stone-zigzag 8/0/18  hollow-twoway 8/0/24  dropdown-stair 6/0/15  floor-dash 12/36/15  stump-descent 13/0/7  bank-stair-fork 10/2/13  stair-run 12/0/5  bank-run 11/0/6  zigzag-run 12/0/4  stair-gap-twist 13/0/5
