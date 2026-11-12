@@ -1,5 +1,4 @@
 # ART-W1: World 1's painted drop-trap pieces for 1-3 (2026-11-12, branch t-w1-art)
-
 **Status:** wired in and shot in the real page; one layout decision is the lead's (below). Base: origin/t-w1-creatures aa98fbc3 (snakes on logs), merged in. Draw-only change: no trap box, timing
 or lay moved (dropTrap.ts, castPlay.ts and w1Cast.ts untouched).
 
