@@ -1,0 +1,40 @@
+const { chromium } = require('playwright');
+const { spawn } = require('child_process');
+const root = process.argv[2];
+(async () => {
+  const srv = spawn('npx', ['vite', '--port', '4401', '--host', '127.0.0.1', '--strictPort'], { cwd: root, stdio: 'ignore', detached: true });
+  await new Promise((r) => setTimeout(r, 9000));
+  const b = await chromium.launch();
+  const page = await b.newPage();
+  await page.goto('http://127.0.0.1:4401/');
+  const res = await page.evaluate(async () => {
+    const { AudioCore, SFX_BUS } = await import('/src/audio/core.ts');
+    const { busLevels, sliderGain } = await import('/src/audio/volumeCurve.ts');
+    const bytes = await (await fetch('/src/assets/sfxrec/__measure.wav')).arrayBuffer();
+    const SR = 44100, SECS = 60;
+    const probe = new OfflineAudioContext(2, SR, SR);
+    const buf = await probe.decodeAudioData(bytes.slice(0));
+    const run = async (mode, v) => {
+      const ctx = new OfflineAudioContext(2, SR * SECS, SR);
+      const core = new AudioCore(ctx, { recorded: true });
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(core.sfx);
+      if (mode === 'old') { core.sfx.gain.value = SFX_BUS * v; core.out.gain.value = 1; }
+      else { const lv = busLevels(1, v); core.sfx.gain.value = SFX_BUS * lv.sfx; core.out.gain.value = lv.out; }
+      src.start(0);
+      const out = await ctx.startRendering();
+      let peak = 0, sum = 0, n = 0;
+      for (let ch = 0; ch < 2; ch++) { const d = out.getChannelData(ch); for (let i = 0; i < d.length; i++) { const a = Math.abs(d[i]); if (a > peak) peak = a; sum += d[i] * d[i]; n++; } }
+      return { peakDb: +(20 * Math.log10(peak)).toFixed(1), rmsDb: +(10 * Math.log10(sum / n)).toFixed(1) };
+    };
+    const rows = [];
+    for (const v of [1, 0.8, 0.5, 0.25]) rows.push({ v, old: await run('old', v), now: await run('new', v), musicAt100: 'yes' });
+    // both sliders down together: the overall level, after the dynamics
+    const both = async (v) => { const ctx = new OfflineAudioContext(2, SR * SECS, SR); const core = new AudioCore(ctx, { recorded: true }); const s = ctx.createBufferSource(); s.buffer = buf; s.connect(core.sfx); const lv = busLevels(v, v); core.sfx.gain.value = SFX_BUS * lv.sfx; core.out.gain.value = lv.out; s.start(0); const o = await ctx.startRendering(); let sum = 0, n = 0; for (let ch = 0; ch < 2; ch++) { const d = o.getChannelData(ch); for (let i = 0; i < d.length; i++) { sum += d[i] * d[i]; n++; } } return +(10 * Math.log10(sum / n)).toFixed(1); };
+    return { rows, bothHalf: await both(0.5), bothFull: await both(1) };
+  });
+  console.log("RESULT " + JSON.stringify(res));
+  await b.close();
+  try { process.kill(-srv.pid); } catch {}
+})();

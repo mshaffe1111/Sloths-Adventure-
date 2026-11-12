@@ -23,6 +23,7 @@ import { Speech, voiceOf, type Tone } from './voiceLine.ts';
 import { playSting, STORY_STING_NAMES, stingDuck, stingVoices } from './stingers.ts';
 import { CALM, type MusicState } from './adaptive.ts';
 import { STINGS } from './stingers.ts';
+import { busLevels, DEFAULT_SFX } from './volumeCurve.ts';
 
 // how far ahead of the audio clock the ambience is scheduled: long enough to ride out a stalled main thread
 // (a level loading, a garbage collection) without it dropping out and then firing in one burst
@@ -109,7 +110,7 @@ export class Conductor {
   private lastHitAt = -10;
 
   musicVol = readNum(KEY_MUSIC, 1);
-  sfxVol = readNum(KEY_SFX, 1);
+  sfxVol = readNum(KEY_SFX, DEFAULT_SFX);
   muted = (() => {
     try {
       return localStorage.getItem(KEY_MUTED) === 'true';
@@ -513,7 +514,8 @@ export class Conductor {
     core.pauseLevel.gain.cancelScheduledValues(t);
     core.pauseLevel.gain.setTargetAtTime(p ? PAUSED_MUSIC : 1, t, p ? 0.05 : 0.12);
     core.amb.gain.cancelScheduledValues(t);
-    core.amb.gain.setTargetAtTime(p ? 0.18 * this.sfxVol : 0.6 * this.sfxVol, t, 0.1);
+    const amb = busLevels(this.musicVol, this.sfxVol).sfx;
+    core.amb.gain.setTargetAtTime(p ? 0.18 * amb : 0.6 * amb, t, 0.1);
   }
 
   setLowHealth(on: boolean) {
@@ -555,14 +557,18 @@ export class Conductor {
       else p.setTargetAtTime(v, t, 0.05);
     };
     set(core.master.gain, this.muted ? 0 : this.ducked ? 0.25 : 1);
-    set(core.music.gain, MUSIC_LEVEL * this.musicVol);
-    set(core.sfx.gain, SFX_BUS * this.sfxVol);
-    set(core.amb.gain, (this.paused ? 0.18 : 0.6) * this.sfxVol);
+    // (the sliders on an even-decibel bar; the louder one is the overall level, set after the dynamics, the other the balance before
+    // them: volumeCurve.ts, R-165.125)
+    const lv = busLevels(this.musicVol, this.sfxVol);
+    set(core.out.gain, lv.out);
+    set(core.music.gain, MUSIC_LEVEL * lv.music);
+    set(core.sfx.gain, SFX_BUS * lv.sfx);
+    set(core.amb.gain, (this.paused ? 0.18 : 0.6) * lv.sfx);
     // the reverb and echo tails follow the same volumes as the dry sound
-    set(core.sends.music.gain, this.musicVol);
-    set(core.musicEchoSend.gain, this.musicVol);
-    set(core.sends.sfx.gain, this.sfxVol);
-    set(core.sends.amb.gain, (this.paused ? 0.3 : 1) * this.sfxVol);
+    set(core.sends.music.gain, lv.music);
+    set(core.musicEchoSend.gain, lv.music);
+    set(core.sends.sfx.gain, lv.sfx);
+    set(core.sends.amb.gain, (this.paused ? 0.3 : 1) * lv.sfx);
   }
 
   /** what is happening right now: used by tests and the debug overlay */

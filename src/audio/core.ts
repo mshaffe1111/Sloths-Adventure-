@@ -40,6 +40,8 @@ export const SFX_BUS = 1.27;
 export class AudioCore {
   readonly ctx: BaseAudioContext;
   readonly master: GainNode;
+  /** the player's overall level, after the compressor, the soft clipper and the limiter, where nothing undoes it (volumeCurve.ts) */
+  readonly out: GainNode;
   readonly sfx: GainNode;
   readonly music: GainNode;
   /** the music under the pause menu (SN-6): on its own, so a pause or a screen change never undoes a sting's duck */
@@ -104,10 +106,21 @@ export class AudioCore {
     air.connect(comp);
     comp.connect(makeup);
     makeup.connect(clip);
-    clip.connect(c.destination);
+    // a safety limiter on everything (R-165.125: nothing reaches full scale; the recorded effects alone peak at +2.0 dBTP), then the
+    // player's overall level
+    const limiter = c.createDynamicsCompressor();
+    limiter.threshold.value = -1.5;
+    limiter.knee.value = 0;
+    limiter.ratio.value = 20;
+    limiter.attack.value = 0.002;
+    limiter.release.value = 0.1;
+    this.out = c.createGain();
+    clip.connect(limiter);
+    limiter.connect(this.out);
+    this.out.connect(c.destination);
     this.meter = c.createAnalyser();
     this.meter.fftSize = 2048;
-    clip.connect(this.meter);
+    limiter.connect(this.meter);
 
     // ---- buses
     this.sfx = c.createGain();
