@@ -219,6 +219,9 @@ const quietBest = (s: BadgeStore) => Math.max(...WORLD_NAMES.map((_, i) => Array
 const count = (n: number, need: number) => ({ have: Math.min(Math.floor(n), need), need });
 const isGuardianStage = (id?: string) => !!id && /^\d{1,2}-10$/.test(id);
 const won = (c: EvalContext) => !!c.stage?.win;
+/** "without taking a hit": no heart lost and no life lost (a fall or the water takes a life, not a heart): one rule for every medal
+ * that says it (Untouchable, Garden Keeper, Untouched Guardian, and Ghost Walk's count) */
+const noHit = (s: Pick<StageStats, 'heartsLost' | 'livesLost'>) => s.heartsLost === 0 && s.livesLost === 0;
 /** the General beaten on Normal: the counter, or the stage that just ended */
 const finishedNormal = (c: EvalContext) => c.store.counters.finishedNormal > 0 || (won(c) && c.stage!.id === '10-10' && c.stage!.difficulty !== 'easy');
 
@@ -381,12 +384,12 @@ export const BADGES: BadgeDef[] = [
     (c) => won(c) && Object.values(c.stage!.kills).reduce((a, b) => a + b, 0) >= 10),
 
   // ── silver: skill ──
-  one('untouchable', 'Untouchable', 'silver', 'feather', 'ghost', 'Clear a stage without taking a single hit', (c) => won(c) && c.stage!.heartsLost === 0),
+  one('untouchable', 'Untouchable', 'silver', 'feather', 'ghost', 'Clear a stage without taking a single hit', (c) => won(c) && noHit(c.stage!)),
   one('ghost_walk', 'Ghost Walk', 'silver', 'feather', 'ghost', 'Clear 10 stages without taking a single hit',
     (c) => c.store.counters.noHitClears >= 10, { progress: (c) => count(c.store.counters.noHitClears, 10) }),
   one('sky_stomper', 'Sky Stomper', 'silver', 'boot', 'boot', 'Stomp 6 enemies without touching the ground', (c) => (c.stage?.maxStompChain ?? 0) >= 6),
   one('garden_keeper', 'Garden Keeper', 'silver', 'flower', 'flower', 'Pick every petal in a stage without being hit',
-    (c) => won(c) && c.stage!.floraTotal >= 5 && c.stage!.floraCollected >= c.stage!.floraTotal && c.stage!.heartsLost === 0),
+    (c) => won(c) && c.stage!.floraTotal >= 5 && c.stage!.floraCollected >= c.stage!.floraTotal && noHit(c.stage!)),
   // (every card in the journal but the guardians: the predators and the ones met on the road, Matt 2026-10-29. Its id stays, so a
   // medal already won for the 11 predators stays won)
   one('naturalist', 'Naturalist', 'silver', 'book', 'book', `Meet all ${JOURNAL_CARDS.length} creatures in the journal`,
@@ -406,7 +409,7 @@ export const BADGES: BadgeDef[] = [
 
   // ── gold: the big ones ──
   one('untouched_guardian', 'Untouched Guardian', 'gold', 'shield', 'boss', 'Beat a world guardian without taking a hit',
-    (c) => won(c) && isGuardianStage(c.stage!.id) && c.stage!.heartsLost === 0),
+    (c) => won(c) && isGuardianStage(c.stage!.id) && noHit(c.stage!)),
   one('thorn_heart', 'Heart of Thorns', 'gold', 'thornheart', 'thornHeart', 'Free Thornbark and earn the Thorn Heart', (c) => c.thornHeart),
   // World 5: "Nobody has ever not eaten the cake." Beat the Tarantula Queen without eating one, in the whole world (w5Kit.ts)
   one('not_one_crumb', 'Not One Crumb', 'gold', 'cake', 'shield', 'Beat the Tarantula Queen without eating a single cake in World 5',
@@ -516,7 +519,7 @@ export function recordStage(store: BadgeStore, s: StageStats): BadgeStore {
       cakesAvoided: c.cakesAvoided + more('cakesAvoided'),
       orchidPetals: c.orchidPetals + more('orchidPetals'),
       silkShed: c.silkShed + more('silkShed'),
-      noHitClears: c.noHitClears + (s.win && s.heartsLost === 0 && s.livesLost === 0 ? 1 : 0),
+      noHitClears: c.noHitClears + (s.win && noHit(s) ? 1 : 0),
       finished: end ? 1 : c.finished,
       finishedNormal: end && s.difficulty !== 'easy' ? 1 : c.finishedNormal,
       falls: c.falls + more('livesLost'),
