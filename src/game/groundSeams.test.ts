@@ -50,7 +50,7 @@ test("a floor's lip runs on under a short raised bank between two floors, and on
 
 test("on 1-3's designed roll, every short raised bank between two floors gets the floor's lip under it", () => {
   const r = new RealPlay('1-3', 1);
-  const banks = r.e.platforms.filter(paintedBank);
+  const banks: Platform[] = (r.e.platforms as Platform[]).filter(paintedBank);
   const lips = stepFootLips(banks);
   let raised = 0;
   for (const p of banks) {
@@ -62,4 +62,35 @@ test("on 1-3's designed roll, every short raised bank between two floors gets th
     assert.ok(lips.some((f) => f.x0 <= p.x + 1 && f.x1 >= p.x + p.width - 1 && Math.abs(f.y - L.y) < 2), `the bank at ${Math.round(p.x)} (${Math.round(L.y - p.y)} up) has no floor lip under it`);
   }
   assert.ok(raised >= 10, `${raised} raised banks found on 1-3`);
+});
+
+test("a backdrop strip's foot (below its painted bottom, over a chasm) is its bottom edge averaged into soft columns and darkened downward, never its last rows stretched into streaks (R-165.129: 1-1's low log)", async () => {
+  const { stripFoot, FOOT_W, FOOT_H, FOOT_DARK } = await import('./scenery.ts');
+  const calls: Array<{ src: unknown; a: number[] }> = [];
+  const stops: string[] = [];
+  const doc = (globalThis as { document: { createElement: unknown } }).document;
+  const was = doc.createElement;
+  doc.createElement = () => {
+    const cv = { width: 0, height: 0, getContext: () => g };
+    const g = {
+      canvas: cv, imageSmoothingEnabled: false, imageSmoothingQuality: 'low', globalCompositeOperation: 'source-over', fillStyle: '',
+      drawImage: (src: unknown, ...a: number[]) => void calls.push({ src: src === cv ? 'self' : 'strip', a }),
+      createLinearGradient: () => ({ addColorStop: (_o: number, c: string) => void stops.push(c) }),
+      fillRect: () => {},
+    };
+    return cv;
+  };
+  try {
+    const strip = {} as CanvasImageSource;
+    const foot = stripFoot(strip, 0, 970, 2000, 30);
+    assert.ok(foot && foot.width === FOOT_W && foot.height === FOOT_H, 'a foot of FOOT_W x FOOT_H');
+    const fromStrip = calls.filter((c) => c.src === 'strip');
+    assert.equal(fromStrip.length, 1, 'the strip is read once');
+    // (its bottom rows, averaged down to FOOT_W columns and one row: no line of it is stretched down the screen)
+    assert.deepEqual(fromStrip[0].a, [0, 970, 2000, 30, 0, 0, FOOT_W, 1]);
+    assert.ok(FOOT_W <= 64, `${FOOT_W} columns: few enough that no painted mark survives as a streak`);
+    assert.ok(stops.some((c) => c.includes(`${FOOT_DARK})`)) && FOOT_DARK >= 0.3, 'darker with depth by the bottom');
+  } finally {
+    doc.createElement = was;
+  }
 });
