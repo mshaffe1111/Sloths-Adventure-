@@ -409,10 +409,10 @@ function debrisLook(color: string): 'star' | 'leaf' | 'grit' | 'earth' {
  *  old worst step was 10.8, INT-1-1) */
 const CAM_RISE_STEP = 11;
 
-/** the loop's failed frames: FAIL_LIMIT of them, each good frame forgiving FAIL_FORGIVE of one, end the stage (audit A-12). Twenty in a row
- *  ends it as before; one every other frame by about the 42nd frame (1.4 s), every third by about the 66th; one in 21 frames or rarer, never */
+/** the loop's failed frames (audit A-12): the stage ends (onFatal) once FAIL_LIMIT of the last FAIL_WINDOW frames (2 s) have failed, a
+ *  third of them: an error every other or every third frame ends it within about 2 s; one in four frames or rarer never does */
+const FAIL_WINDOW = 60;
 const FAIL_LIMIT = 20;
-const FAIL_FORGIVE = 0.05;
 
 export class GameEngine {
   private canvas: HTMLCanvasElement;
@@ -1402,22 +1402,30 @@ export class GameEngine {
         this.resizeDue = true;
         perfNote(`steady: stepped up (quality ${this.quality})`);
       }
-      this.failLoad = Math.max(0, this.failLoad - FAIL_FORGIVE);
+      this.frameFailed(false);
     } catch (err) {
-      // one bad frame must not freeze the game; frames that keep failing end the stage cleanly. Counted with a slow leak, not a run in a
-      // row (audit A-12: any good frame reset the old count, so an error every other frame never ended the stage, each failed frame
-      // half-applied): an error every other or every third frame ends it within seconds, a rare one-off never does
-      if (this.failLoad < 3) console.error('frame error', err);
+      // one bad frame must not freeze the game; frames that keep failing end the stage cleanly. Counted over the last two seconds, not
+      // a run in a row (audit A-12: any good frame reset the old count, so an error every other frame never ended the stage, each
+      // failed frame half-applied, and printed every time)
+      if (this.failCount < 3) console.error('frame error', err);
       if (recorder.on) recorder.error(err, 'frame');
-      this.failLoad += 1;
-      if (this.failLoad >= FAIL_LIMIT) {
+      if (this.frameFailed(true)) {
         this.stop();
         this.callbacks.onFatal?.();
       }
     }
   };
-  /** failed frames, less FAIL_FORGIVE for each good one since: at FAIL_LIMIT the stage ends (onFatal) */
-  private failLoad = 0;
+  /** the last FAIL_WINDOW frames, 1 where it failed (a ring), and how many of them failed */
+  private failRing = new Uint8Array(FAIL_WINDOW);
+  private failAt = 0;
+  private failCount = 0;
+  /** note one frame's outcome: true once FAIL_LIMIT of the last FAIL_WINDOW frames failed */
+  private frameFailed(failed: boolean): boolean {
+    this.failCount += (failed ? 1 : 0) - this.failRing[this.failAt];
+    this.failRing[this.failAt] = failed ? 1 : 0;
+    this.failAt = (this.failAt + 1) % FAIL_WINDOW;
+    return this.failCount >= FAIL_LIMIT;
+  }
 
   /**
    * the control test: every 5 s, how smooth the picture was (frames a second, the slowest tenth, the worst frame), the picture quality
