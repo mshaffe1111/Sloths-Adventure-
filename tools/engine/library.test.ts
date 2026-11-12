@@ -53,7 +53,7 @@ test('the thorn bed lies only under the chain beats: never in the twist, the arr
   });
 });
 
-test("every chain inside chain.md §3's bands: cap to cap by the step, stumps 120 | 160 (the lesson and again 160 on both), caps per chain 2-5 | 2-3", () => {
+test("every chain inside chain.md §3's bands: cap to cap by the step, stumps 110 | 160 (the lesson and again 160 on both), the pit between pillars 75-110 | 35-70, caps per chain 2-5 | 2-3", () => {
   const band = (dy: number) => (dy > 45 ? [185, 200] : dy > 6 ? [195, 210] : dy < -6 ? [215, 225] : [205, 220]);
   each((st, d, s) => {
     // (a chain's caps are the ones on stumps, 200 px or narrower; a floor mushroom stands on its bank, the entry, chain.md §2 f)
@@ -67,10 +67,13 @@ test("every chain inside chain.md §3's bands: cap to cap by the step, stumps 12
       run++;
       const [lo, hi] = band(dy);
       assert.ok(S >= lo && S <= hi, `${d} seed ${s}: caps ${Math.round(S)} px apart at x ${Math.round(a.x)} (step ${Math.round(dy)}: ${lo}-${hi})`);
+      // (the pit between two pillars, by the pillars' width: chain.md §3, 75-110 between 110-130 px pillars, 35-70 between 150-170 px)
+      const ua = under(a), ub = under(b), pit = ub.x - (ua.x + ua.width), [p0, p1] = ua.width >= 150 ? [35, 70] : [75, 110];
+      assert.ok(pit >= p0 - 0.5 && pit <= p1 + 0.5, `${d} seed ${s}: ${Math.round(pit)} px of pit between pillars at x ${Math.round(ua.x + ua.width)} (${p0}-${p1})`);
     }
     for (const sec of st.gen2.sections.filter((q: Any) => q.template.startsWith('w1-12-'))) {
       const wide = d === 'easy' || ['w1-12-lesson', 'w1-12-again'].includes(sec.template);
-      for (const c of caps.filter((p: Any) => p.x > sec.x0 && p.x < sec.x1)) assert.equal(Math.round(under(c).width), wide ? 160 : 120, `${d} seed ${s}: ${sec.template}'s stump at x ${Math.round(c.x)}`);
+      for (const c of caps.filter((p: Any) => p.x > sec.x0 && p.x < sec.x1)) assert.equal(Math.round(under(c).width), wide ? 160 : 110, `${d} seed ${s}: ${sec.template}'s stump at x ${Math.round(c.x)}`);
     }
   });
 });
@@ -101,7 +104,7 @@ test("the caps are his only footing over the thorns from the petals going up on,
   each((st, d, s) => assert.deepEqual(woodFaults(st, d), [], `${d} seed ${s}`));
 });
 
-test('PLANTED: a 70 px cap left on a 120 px stump in the long chain (Normal) is bare wood a plain jump could use, and is caught', () => {
+test('PLANTED: a 70 px cap left on a 110 px stump in the long chain (Normal) is bare wood a plain jump could use, and is caught', () => {
   const st = build(1, 'normal');
   const sec = secOf(st, 'w1-12-long');
   const cap = st.platforms.filter((p: Any) => p.type === 'bouncy' && p.x > sec.x0 && p.x < sec.x1).sort((a: Any, b: Any) => a.x - b.x)[2];

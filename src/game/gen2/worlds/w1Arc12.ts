@@ -54,13 +54,15 @@ const LEDGE: R2 = [230, 240];
 const hump = (key: string, on: string, at: R2, h: R2 = [50, 56]): SectionPiece => ({ key, shape: 'block', w: [130, 170], place: { kind: 'on', on, at, h }, style: 'moss_stone', landing: true });
 
 // ───────────────────────────── the chain (reference/specs/chain.md, flown on 1-2) ─────────────────────────────
-/** chain.md §3, cap centre to cap centre by the step (+ up), laid inside each band: level 205-220, up 24-36 198-206, up 54-66 185-200
- *  (laid 188-196), down 24-36 216-224 */
-const sOf = (st: number): R2 => (st > 45 ? [188, 196] : st > 6 ? [198, 206] : st < -6 ? [216, 224] : [208, 216]);
-/** stumps under the caps: Normal's 120 (chain.md 110-130), Easy's 160 (150-170). The lesson and again lay Easy's 160 on Normal too
+/** chain.md §3, cap centre to cap centre by the step (+ up), laid inside each band and its lay range: level 212-220 (band 205-220), up
+ *  24-36 198-206 (its lay), up 54-66 195-200 (band 185-200), down 24-36 216-220 (lay 216-224). Each at the top of its band, so with
+ *  Normal's 110 px stumps the pit between pillars is as wide as chain.md lets it be (75-110; Easy's 160 px, 35-70): a missed bounce falls
+ *  in and costs on Normal (the lead 11-12, P12S's finding: 49-66 px hollows caught him on the lip, and the thorns never cost) */
+const sOf = (st: number): R2 => (st > 45 ? [195, 200] : st > 6 ? [198, 206] : st < -6 ? [216, 220] : [212, 220]);
+/** stumps under the caps: Normal's 110 (chain.md 110-130, its narrowest: the widest pits), Easy's 160 (150-170). The lesson and again lay Easy's 160 on Normal too
  *  (the lead, 11-12: the bite is taught before it is tested; chain.md §2 d: the clean band does not move with the width, only what a
- *  miss costs); the petals going up is Normal's 120 from 11-12 (its caps are their stump's width, and 160 px caps were out of scale) */
-const N = 120, E = 160;
+ *  miss costs); the petals going up is Normal's 110 from 11-12 (its caps are their stump's width, and 160 px caps were out of scale) */
+const N = 110, E = 160;
 /** a cap the width of its stump: from the petals going up on, Normal (the lead's ruling A, 11-12) lays each cap over the thorns as
  *  wide as the stump it stands on, so no bare wood is left beside it and the caps are his only footing over a thorn bed: the mushrooms
  *  ARE the way across (Matt's purpose rule), not a stair of stumps a full jump could take. Every number stays (chain.md's stumps, the
