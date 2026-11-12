@@ -138,6 +138,27 @@ R3 = [
      'out level to the right with a clump of broad leaves at its tip, its own small rounded leafy crown whole inside the picture, '
      'nothing cut flat at the top, the trunk cut off clean at the bottom'),
 ]
+# round 3b: the anchor at the trap's own shape (its arm about as long as it stands tall: handle to load is 140-190 units, the arm
+# about 190 units up), text to image like round 1, cut by box
+R3B = [
+    ('anchorArch', 1024, 1152, 'a slender young rainforest sapling with mossy warm brown bark growing up from the bottom left, leaning '
+     'and bending over in a high arch to the right, a rounded clump of broad green leaves at its drooping tip on the right, two or '
+     'three leaves along the bend, the trunk cut off clean at the bottom'),
+    ('anchorArm', 1024, 1152, 'a leaning young rainforest tree trunk with mossy warm brown bark on the left, its small rounded leafy '
+     'crown whole at the top, one sturdy branch arm reaching out level to the right from high on the trunk, the arm as long as the '
+     'trunk is tall, a clump of broad leaves at the arm\'s tip, the trunk cut off clean at the bottom'),
+]
+if sys.argv[1] == 'r3b':
+    tag, sha = sys.argv[1], sys.argv[2]
+    items = [{'name': f'{n}-{sd}', 'start': 'plain-mag.png', 'prompt': prompt(d, 'one single object on its own, nothing else'),
+              'strength': 1.0, 'seed': sd, 'w': w, 'h': h, 'steps': 26, 'loras': [['style', 0.8]], 'neg': NEG}
+             for (n, w, h, d) in R3B for sd in (5, 17, 41, 53)]
+    spec = {'note': f'ART-W1 trap pieces {tag}, 2026-11-12', 'q': 92,
+            'base': f'{RAW}{sha}/reference/prop-sheets/qa-notes/hf-props/starts/',
+            'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors']}, 'items': items}
+    (HERE / f'spec-{tag}.json').write_text(json.dumps(spec, indent=1))
+    print(tag, len(items), 'takes')
+    sys.exit()
 if sys.argv[1] in ('r3', 'r3b'):
     tag, sha = sys.argv[1], sys.argv[2]
     items = [{'name': f"{n}-{st.split('.')[0]}-s{round(k * 100)}-{sd}", 'start': st, 'prompt': prompt(d, 'one single object on its own'),
