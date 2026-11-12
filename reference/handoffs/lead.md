@@ -39,6 +39,9 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
    main script 655 KB), then guards -> fixes, yield, clock, library, predators, wire (t-engine-wire: library + thorn bed + 1-2's double + clock on the fixed step; 1-2 98% clean on flown rows); PLUS from the parked t-engine-11-followup only the R-165.122 part of commit 2a988785
    (it is mixed with 1-1 items and a list rebuild: take only the hop-rock walls and their verdict, not the list rebuild) (hop rocks walked through: a generator rule, not 1-1 polish: every counted obstacle must block, or it is scenery and
    funcheck does not count it; Matt 11:22 PM); resolve conflicts; fix gates.yml so chunkcheck builds with BASE_PATH (D45); run the FULL gate once (CLAUDE.md Checks).
+1b. **Stranded Matt-reported fixes** (Opus high, after INT-E): R-164.1, .6, .7, .8 (commits 57898c82, 9b384389 on old branches
+   engine-render/engine-runs, pre-gen2: never merge those branches): reproduce each on t-int-engine; port only the fix, with a test.
+   R-164.6/.8 are the pit-wall seams Matt saw on 11-11. Register: reference/qa-reports/MATT-REPORTED.md (27 open).
 2. **The proof audit** (one cold Critic, Opus xhigh): the merged engine, every gate, the bots: "prove it works" or name where it doesn't.
 3. **Then build on top** (FIRST, Matt's open issues: the dead-zone petal log as a gen2 verdict with the test from his case (R-165.124); the purpose rule as a verdict (R-165.126); the pit-wall art with no seams or boxes; the lead judges stills before Matt sees them. THEN: fly 1-2 and add its JUDGED row = data; fix the narrow-hollow look in the ground painter; then) (Fable if Matt says, else Opus xhigh; short fresh sessions): paint the thorn bed (World 1 manifest art only);
    count 1-2's double on the built stage (E12 item 5); the real 120-roll 1-2 run (`tools/engine/library.ts --seeds 120`, no --flown);
