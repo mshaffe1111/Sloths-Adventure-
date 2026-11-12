@@ -23,5 +23,16 @@ test('a tip the kit lists in teachTips is laid as a teach line; with none listed
   assert.ok(plain.every((h) => !h.teach), 'none is a teach line unless the kit says so');
   const taught = hintsOf(['traps']);
   assert.deepEqual(taught.filter((h) => h.teach).map((h) => h.text), [words], 'the trap tip, and only it, is a teach line');
-  assert.deepEqual(hintsOf().filter((h) => h.teach).map((h) => h.text), [words], "World 1's kit as shipped: the trap tip is its teach line");
+});
+
+test("World 1's kit as shipped: 1-3's three teaching lines are teach lines (the trap, its second half, the first branch with no vine), on both settings", () => {
+  const T = kitLib13().manifest.tips!;
+  const want = [T.traps, T['traps.then'], T.bare];
+  assert.ok(want.every(Boolean), 'the kit has all three lines');
+  for (const difficulty of ['normal', 'easy'] as const) {
+    const st = buildGen2Stage({ config: config13() as never, kit: kitLib13(), seed: 1, difficulty }) as unknown as { proto: { hints: Array<{ text: string; teach?: true }> } };
+    const taught = st.proto.hints.filter((h) => h.teach).map((h) => h.text);
+    for (const w of want) assert.ok(taught.includes(w), `${difficulty}: "${w}" is laid as a teach line (taught: ${JSON.stringify(taught)})`);
+    assert.ok(taught.every((t) => want.includes(t)), `${difficulty}: no other line is a teach line`);
+  }
 });

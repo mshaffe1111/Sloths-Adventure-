@@ -1620,8 +1620,10 @@ export function w1World(): WorldKit {
     // (Dot's lines by their text id: the words a hint carries are the line's old text, which dotLines.ts swaps for the new look's words
     // where it is said; without these the pipeline put the raw id on screen, the red team's RT-ENGINE #1: "hint.1-1.double")
     tips: { ...W1_TIPS, ...LINES_13 },
-    // (the first trap's line is a TEACH line: Dot waits for a clear moment, keeps it up its reading time, and no stock lesson cuts it)
-    teachTips: ['traps'],
+    // (the first trap's line is a TEACH line: Dot waits for a clear moment, keeps it up its reading time, and no stock lesson cuts it;
+    // so are its second half, the lesson's "it only gives him a fright", and the first branch with no vine (the first appearance of
+    // beating a snake without one): on Normal's default Tips they were hidden, P13's find, the lead 11-12)
+    teachTips: ['traps', 'traps.then', 'bare'],
   };
   // (the traps are armed by the animal that stays under them: the kit's own emitters and spawn hook, w1Cast.ts armedTraps)
   return { manifest, ...armedTraps() };
