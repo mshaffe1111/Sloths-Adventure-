@@ -32,7 +32,9 @@ const SNAKES: CreatureDef[] = [
  *  threat than a bare one (2). That is what lets Normal's later beats hold awake snakes (the lead, 11-12: Normal runs hotter) */
 export const W1_CAST_CREATURES: CreatureDef[] = SNAKES.flatMap((c) => [
   c,
-  { ...c, id: c.id === 'snake' ? 'snake-trapped' : 'snake-trapped-asleep', threat: 1, minGround: 100, tags: [...(c.tags ?? []).filter((t) => t !== 'topup'), 'trapped'] },
+  // (ASLEEP under its own trap it is the least threat in the level, half a beat's: a teach beat's budget, 0.3 of the stage's, then
+  //  holds the lesson's sleeper AND the "now you" one after it; at 1 the second log lay empty, its hive unhung)
+  { ...c, id: c.id === 'snake' ? 'snake-trapped' : 'snake-trapped-asleep', threat: c.id === 'snake' ? 1 : 0.5, minGround: 100, tags: [...(c.tags ?? []).filter((t) => t !== 'topup'), 'trapped'] },
 ]);
 
 export const W1_TRAP_PROPS: PropDef[] = [

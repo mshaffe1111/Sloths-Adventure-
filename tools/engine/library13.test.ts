@@ -12,10 +12,14 @@ import { W1_KIT, W1_SECTIONS, w1World } from '../../src/game/gen2/worlds/w1.ts';
 import { EXIT_13, QUIET_OWN_13, STAGE_13 } from '../../src/game/gen2/worlds/w1Arc13.ts';
 import { STAGE_PLAN } from '../../src/game/stagePlan.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
+import { GOAL_SHARE, easyFloor } from '../../src/game/goals.ts';
 const w1BriefOf11 = () => W1_KIT.graphs.briefs['1-1'];
 import { W1_CAST_CREATURES, W1_CAST_SAID, W1_TRAP_EMIT, W1_TRAP_PAIRS, armedTraps } from '../../src/game/gen2/worlds/w1Cast.ts';
 
-const O = { flown: true };
+// (the SHIPPED kit under 1-3's own id. Until 11-12 afternoon these rolls were filed under 1-1's id to borrow its flown rows; 1-3's
+//  pieces are its own now (`own`) and no other id's pool holds them. Its row is not marked `judged` yet (P13's): these rolls lay to
+//  the unflown reach; marked, they are as clean, tried 11-12)
+const O = {};
 /** the seven beat bricks' ids */
 const ARC_IDS = new Set(TWISTS.map((t) => t.id));
 /** pinned: these seeds roll clean on both settings (120 of them were measured, 11-12: 119 clean a setting) */
@@ -31,6 +35,12 @@ test("in World 1's SHIPPED kit 1-3's pool is its own, every piece: its seven bea
   //  but 1-3 has one of 1-3's)
   assert.equal(stagePool(M, STAGE_13).filter((t) => W1_SECTIONS.some((q) => q.id === t.id)).length, 0, "a World 1 library section is in 1-3's pool");
   assert.ok(pool13.every((id) => id.startsWith('w1-13-')));
+  // (and none of 1-3's pieces is in another stage's pool, a stage PICKED BY NEED included: `own`. The test-side 1-2 picks World 1's
+  //  whole library by need, and took 1-3's exit, rope and hollow, for its own: doubleTaught.test went red on it)
+  assert.ok(stagePool(M, STAGE_13).every((t) => t.own), "one of 1-3's pieces is not marked its own");
+  const picked = { ...M, graphs: { ...M.graphs!, briefs: { ...M.graphs!.briefs, '1-2': { ...w1BriefOf11(), pick: {} } } } };
+  assert.deepEqual(stagePool(picked as Any, '1-2').filter((t) => t.id.startsWith('w1-13-')).map((t) => t.id), [], "a stage picked by need holds 1-3's pieces");
+  assert.ok(stagePool(picked as Any, '1-2').length > 40, 'the pick itself still holds the library');
   assert.deepEqual(QUIET_OWN_13.map((t) => `${t.id}:${t.jobs!.join('/')}:${t.phases.join('/')}`), ['w1-13-root-arrival:arrive:start', 'w1-13-long-log:rest:rest', 'w1-13-twin-logs:rest:rest', 'w1-13-root-dip:rest:rest', 'w1-13-root-hump:rest:rest'], 'one arrival, and a rest of its own for each of the four breaths');
   // nothing in a quiet piece can hurt: it holds no animal socket and no trap, only petals
   for (const t of QUIET_OWN_13) for (const v of t.subBlocks![0].versions) assert.ok(v.sockets!.every((k) => k.role === 'pickup'), `${t.id}/${v.id}: a quiet piece holds more than petals`);
@@ -186,9 +196,31 @@ test('the way out: one rope before the totem, a try-it and never the way; its ho
     const under = st.platforms.filter((p: Any) => p.x >= r.x0 && p.x + p.width <= r.x1 && p.y > r.g0);
     assert.equal(under.length, 1, `seed ${seed} ${d}: ${under.length} pieces in the hollow (a floor and no steps)`);
     const depth = under[0].y - r.g0;
-    assert.ok(depth >= 40 && depth <= 80, `seed ${seed} ${d}: the hollow is ${Math.round(depth)} px deep (one hop: 40-80)`);
+    assert.ok(depth >= 40 && depth <= 62, `seed ${seed} ${d}: the hollow is ${Math.round(depth)} px deep (40-62: a tap climbs out of it, PIT.wade)`);
     assert.equal(r.g0, r.g1, `seed ${seed} ${d}: its two lips are level`);
+    // (and the rope knows where its ledges are: its ends are the tops of the two ledges it hangs between, on every roll, a roll the
+    //  builder shifted down to fit under the camera's top included; they were left 34 px up on such a roll)
+    const lip = (x: number) => st.platforms.filter((p: Any) => p.x <= x && p.x + p.width >= x && p.y < under[0].y).sort((a: Any, b: Any) => b.y - a.y)[0];
+    assert.equal(lip(r.x0 + 1)?.y, r.g0, `seed ${seed} ${d}: the rope's near end is not on its ledge's top`);
+    assert.equal(lip(r.x1 - 1)?.y, r.g1, `seed ${seed} ${d}: the rope's far end is not on its ledge's top`);
   }
+});
+
+test('the goal is every trap: Matt\'s share of the animals (three in four) comes to the number of traps on Normal, so a child who shakes every vine never walks back', () => {
+  // (the lead's ruling, 11-12: the level's idea is that he does not have to fight; the bare logs' snakes are his choice. It holds by
+  //  the counts themselves, 11 traps and 4 bare snakes, with no number set for this stage anywhere)
+  SEEDS.forEach((seed, k) => {
+    const n = rolls.normal[k], e = rolls.easy[k];
+    assert.equal(n.traps.length, 11, `seed ${seed}: ${n.traps.length} traps on Normal`);
+    assert.equal(Math.round(n.snakes.length * GOAL_SHARE.defeat), n.traps.length, `seed ${seed}: the goal ${Math.round(n.snakes.length * GOAL_SHARE.defeat)} of ${n.snakes.length} snakes, ${n.traps.length} traps`);
+    // the lesson holds two sleepers under two hives (hers, then his own first try), beat 2 a hive and then a stone on a tendril
+    const at = (id: string) => n.traps.filter((t) => t.section === id).map((t) => `${t.kind}-${t.load}${t.snake?.asleep ? '-asleep' : ''}`);
+    assert.deepEqual(at('w1-13-lesson'), ['vine-hive-asleep', 'vine-hive-asleep'], `seed ${seed}`);
+    assert.deepEqual(at('w1-13-again'), ['vine-hive', 'tendril-stone'], `seed ${seed}`);
+    // Easy: every trap too, and its goal (65% of what it holds) is under its traps
+    assert.equal(e.traps.length, 11, `seed ${seed}: ${e.traps.length} traps on Easy`);
+    assert.ok(easyFloor(e.snakes.length) <= e.traps.length, `seed ${seed}: Easy's goal ${easyFloor(e.snakes.length)} of ${e.snakes.length}`);
+  });
 });
 
 test('the plain-view rule is the builder\'s own: a pickup laid in front of a hung load refuses the roll by name', () => {
@@ -219,7 +251,7 @@ test('Normal runs hotter and asks for one real jump; Easy is the same level, fla
     const e: Any = buildGen2Stage({ config: config13(O) as Any, kit: kitLib13(O) as Any, seed, difficulty: 'easy' });
     const sec = (st: Any, id: string) => st.gen2.sections.find((q: Any) => q.template === id);
     const rn = rolls.normal[k];
-    assert.equal(rn.snakes.filter((q) => q.asleep).length, 4, `seed ${seed}: Normal's sleepers are the lesson's, the two at the bare branches' ends and the gallery's middle one`);
+    assert.equal(rn.snakes.filter((q) => q.asleep).length, 5, `seed ${seed}: Normal's sleepers are the lesson's two (hers, then "now you"), the two at the bare branches' ends and the gallery's middle one`);
     for (const [id, want] of [['w1-13-perch', 2], ['w1-13-gallery', 2], ['w1-13-finale', 2]] as const) { const q = sec(n, id); assert.equal(awake(rn, q.x0, q.x1), want, `seed ${seed}: ${id} holds ${want} awake snakes on Normal`); }
     // (the one jump that matters: a gap in Normal's finale and nowhere else in the level; none at all on Easy)
     const gaps = (st: Any, q: Any): number[] => (st.gen2.drops ?? []).filter((d: Any) => d.x0 >= q.x0 && d.x1 <= q.x1).map((d: Any) => Math.round(d.x1 - d.x0));

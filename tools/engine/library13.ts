@@ -6,7 +6,8 @@
  *   npx tsx tools/engine/library13.ts [--seeds 120] [--from 1] [--par 4] [--flown] [--json] [--no-twists] [--raw-traps]
  * Prints: the pool by need, supply by job and type, and per setting how many rolls are CLEAN (no gen2.errors) with every refusing
  * line counted; then what a clean roll holds: snakes, traps, a trap with no handle or no snake under it (a defect, counted), whether
- * the first snake is the sleeping one, and the modelled seconds. `--flown`: 1-3's rows filed under the flown stage's id (library.ts,
+ * the first snake is the sleeping one, and the modelled seconds. (`--flown` is RETIRED, 11-12: 1-3's pieces are marked its `own`, so
+ * filed under another stage's id its pool is empty and the roll throws; 1-3 is judged by its own rows now.) `--flown` was: 1-3's rows filed under the flown stage's id (library.ts,
  * engine-core.md 0f): a stage with no JUDGED row lays to the unflown reach and its "clean" is not the verdicts'.
  */
 import '../../src/game/headlessDom.ts';

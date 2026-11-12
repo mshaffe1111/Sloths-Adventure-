@@ -1429,7 +1429,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
       return;
     }
-    const out = pitSteps(x0, x1, lipY, farY, shallow ? hop : depthNow, hop);
+    const out = pitSteps(x0, x1, lipY, farY, shallow ? Math.min(hop, PIT.wade) : depthNow, hop);
     deepen(out.floor);
     mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
     for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
@@ -2010,7 +2010,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (a puzzle room is anchored to its platforms by id, puzzleKit Anchor: it moves with them)
       for (const p of platforms) p.y += down;
       for (const v of new Set([...vines, ...sections.flatMap((q) => q.vines.map((e) => e.vine))])) { v.topY += down; v.bottomY += down; }
-      for (const r of ropes) r.y += down;
+      // (a rope's two ends, the tops of the ledges it is hung between, move with it: left behind, they read 34 px over the ledges on a
+      //  roll the shift moved, and whatever asks where a rope's ledge is (the level check, the engine's own jump from it) was wrong)
+      for (const r of ropes) { r.y += down; r.g0 += down; r.g1 += down; }
       for (const g of gaps) g.y += down;
       for (const k of asks) { k.yTake += down; k.yLand += down; }
       for (const z of zones) { z.top += down; z.bottom += down; z.baseY += down; for (const l of z.lights ?? []) l.y += down; }
@@ -2057,7 +2059,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
  * stands at least `face` px more than a double jump over the floor (the engine's hoist over a lip is 26 px), so a fall never walks
  * or jumps out forward to the perch: the swing stays the way over.
  */
-export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60, face: 40 } as const;
+/** `wade`: a hollow he is meant to walk THROUGH and back (a free rope's): its floor at most this far under its lips, a TAP's climb
+ *  (a tap rises 81-87 px), so nobody who has not learned to hold a jump is kept in it */
+export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60, face: 40, wade: 60 } as const;
 
 /**
  * Where a soft pit's floor and its steps go, for a gap [x0, x1] between a near lip at `lipY` and a far lip at `farY` (world y, down):
@@ -3010,7 +3014,7 @@ export function stagePool(M: WorldManifest, stageId: string): SectionTemplate[] 
   // what the stage refuses; `feel` names no stage there)
   const brief = M.graphs?.briefs?.[stageId], pick = brief?.pick, deal = brief?.deal ?? M.graphs?.mix;
   const fits = (t: SectionTemplate) => (pick
-    ? !t.parked && !t.feel?.some((f) => pick.refuse?.includes(f)) && (!t.content || t.content === 'structural' || !deal || t.content in deal)
+    ? !t.parked && !(t.own && !t.feel?.includes(stageId)) && !t.feel?.some((f) => pick.refuse?.includes(f)) && (!t.content || t.content === 'structural' || !deal || t.content in deal)
     : !t.feel || t.feel.includes(stageId));
   return M.sections.filter((t) => fits(t) && !(t.not ?? []).some((x) => owns.has(x)));
 }

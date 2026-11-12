@@ -104,11 +104,12 @@ export const STRETCH_WORDS: Readonly<Record<string, string | null>> = {
   // the rope
   'w1-ropes': 'the rope',
   // 1-3 Branch Snakes: the drop traps and the bare branches (w1Arc13.ts)
+  // (the story keeper's words, 11-12, verbatim: STORY-LINES.md)
   'w1-13-lesson': 'the first hive',
-  'w1-13-again': 'the watching snake',
-  'w1-13-stone-stair': 'the stone on the stair',
-  'w1-13-other-way': 'the bare branches',
-  'w1-13-perch': 'the high perch',
+  'w1-13-again': 'the snake on watch',
+  'w1-13-stone-stair': 'the stone on the steps',
+  'w1-13-other-way': 'the branches with no vine',
+  'w1-13-perch': 'the high branch',
   'w1-13-gallery': 'three traps in a row',
   'w1-13-finale': 'the last two snakes',
   // walking only: never offered

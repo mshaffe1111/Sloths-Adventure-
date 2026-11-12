@@ -418,6 +418,10 @@ export interface SectionTemplate {
   not?: readonly string[];
   /** out of every pool, and why (a stage picked by need, GraphBrief.pick, has no stage list to leave it off) */
   parked?: string;
+  /** a DESIGNED stage's own piece (a beat of its arc, its arrival, a rest, its exit): in the pools of the stages its `feel` names and
+   *  no other, a stage picked by need (GraphBrief.pick, which reads no `feel`) included. Without it another stage's pick took a
+   *  level's beat for a link (1-3's exit, with its rope and hollow, dealt into a test-side 1-2) */
+  own?: true;
   phases: Phase[];
   /** 1 (gentle) .. 10 (hard): picked when the node's tension, scaled into the stage's band, is near it */
   difficulty: number;

@@ -144,7 +144,7 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
     ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).slice(1), sockets: sk(v.easy.pieces, v.easy.sockets), easyOnly: true }] : []),
   ]);
   const { versions: _v, ...rest } = o;
-  return { ...rest, feel: [STAGE_13], archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : ['traps'], content: o.content ?? 'ground', terrain: 'raised-logs', pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
+  return { ...rest, feel: [STAGE_13], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches ? [] : ['traps'], content: o.content ?? 'ground', terrain: 'raised-logs', pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
 }
 /** a version; where it holds a bare branch its Easy twin lays that branch wider (a trapped branch is the same on both settings: its
  *  short patch is the phone's, and Easy softens its snake at the socket) */
@@ -187,12 +187,17 @@ export const ARC_13: SectionTemplate[] = [
   // On an upright phone the hive comes into view as he finishes reading, the vine a step later: she calls it, and it arrives
   brick({ id: 'w1-13-lesson', name: 'the lesson: the vine, the hive and a sleeping snake', jobs: ['teach'], difficulty: 2, teaches: 'traps', versions: [(() => {
     const c = core('t', 'd', { load: 'trap-hive', asleep: true });
-    const pieces: SectionPiece[] = [led('a', null, LEDGE), led('b', 'a', LEDGE, UP), led('c', 'b', LEDGE, DOWN), led('d', 'c', LEDGE), ...c.pieces, led('z', c.last, LEDGE)];
-    const sockets: Socket[] = [{ id: 'flag', role: 'flag', on: 'a', t: 0.5 }, { id: 'tip', role: 'tip', on: 'a', t: 0.4, allow: ['traps'] }, { id: 'tip2', role: 'tip', on: 'd', t: 0.5, allow: ['traps.then'] }, ...c.sockets, low('pa', 'a', [0.3, 0.6]), low('pb', 'b', [0.3, 0.7]), low('pc', 'c', [0.3, 0.7]), low('pz', 'z', [0.4, 0.6], 1)];
+    // ("now you": a second sleeper under a second hive right after the first, with no words: the lesson, then his own first try at
+    //  it while nothing can go wrong. P13's bots, 11-12: the level ran 115-120 s for a first-timer who used every vine; two more
+    //  trapped logs (this one and the stone in beat 2) are about 15 s of the level's own idea, never a longer walk)
+    const c2 = core('n', 'm', { load: 'trap-hive', asleep: true });
+    const pieces: SectionPiece[] = [led('a', null, LEDGE), led('b', 'a', LEDGE, UP), led('c', 'b', LEDGE, DOWN), led('d', 'c', LEDGE), ...c.pieces, led('m', c.last, LEDGE), ...c2.pieces, led('z', c2.last, LEDGE)];
+    const sockets: Socket[] = [{ id: 'flag', role: 'flag', on: 'a', t: 0.5 }, { id: 'tip', role: 'tip', on: 'a', t: 0.4, allow: ['traps'] }, { id: 'tip2', role: 'tip', on: 'd', t: 0.5, allow: ['traps.then'] }, ...c.sockets, ...c2.sockets, low('pa', 'a', [0.3, 0.6]), low('pb', 'b', [0.3, 0.7]), low('pc', 'c', [0.3, 0.7]), low('pm', 'm', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)];
     return { id: 'asleep-under-the-hive', lay: breath({ pieces, sockets }, 4, true) };
   })()] }),
-  // [P] beat 2, again, awake: one branch, a snake pacing under a hive
-  brick({ id: 'w1-13-again', name: 'again, awake: a snake pacing under a hive', jobs: ['practise'], difficulty: 3, versions: [{ id: 'awake-hive', lay: breath(row([HIVE]), 4, true) }] }),
+  // [P] beat 2, again, awake: a snake pacing under a hive; then one under a STONE held by a TENDRIL tied at his feet, the second
+  // handle, met here on the flat before the stair asks for it up high
+  brick({ id: 'w1-13-again', name: 'again, awake: a snake pacing under a hive, then one under a stone', jobs: ['practise'], difficulty: 3, versions: [{ id: 'awake-hive-then-stone', lay: breath(row([HIVE, STONE]), 4, true) }] }),
   // [M] beat 3, the stone: a root stair, and at its top a snake under a stone held by a tendril tied at his feet (the second handle)
   brick({ id: 'w1-13-stone-stair', name: 'the stone on the root stair', jobs: ['flow'], content: 'climb', difficulty: 4, versions: [
     { id: 'three-steps-stone', lay: breath(stair(3, STONE), 2), easy: breath(stair(2, STONE), 4) }, { id: 'two-steps-stone', lay: breath(stair(2, STONE), 4) },
@@ -230,7 +235,7 @@ export const ARC_13: SectionTemplate[] = [
  *  Rope, so on a first visit he walks down through the hollow and out, and the rope is there to try the day he comes back. It is
  *  `free`: never the way, on either setting */
 export const EXIT_13: SectionTemplate = {
-  id: 'w1-13-low-arrival', name: 'a calm walk on a root bank to the totem', feel: [STAGE_13], archetypes: 'any', phases: ['goal'], difficulty: 1, needs: ['walk'], jobs: ['exit'], content: 'structural', terrain: 'floor-stones',
+  id: 'w1-13-low-arrival', name: 'a calm walk on a root bank to the totem', feel: [STAGE_13], own: true, archetypes: 'any', phases: ['goal'], difficulty: 1, needs: ['walk'], jobs: ['exit'], content: 'structural', terrain: 'floor-stones',
   pieces: [{ key: 'in', shape: 'bank', w: [300, 340], place: { kind: 'start' }, style: 'moss_stone', main: true, landing: true }],
   subBlocks: [{ id: 'body', versions: [[520, 560], [620, 680]].map((w, j) => ({ id: j ? 'long' : 'short', pieces: [{ key: 'out', shape: 'bank' as const, w: w as R2, place: { kind: 'rope' as const, after: 'in', gap: [460, 480] as R2, free: true }, style: 'moss_stone' as const, main: true, landing: true }], sockets: [{ id: 'exit-totem', role: 'objective' as const, on: 'out', t: 0.85, allow: ['exit_totem'] }] })) }],
   entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
