@@ -63,6 +63,8 @@ export const W1_KIT = {
   rollRanges: { gap: { min: 0.79, mode: 0.82, max: 0.91, p90: 0.99, centre: 0.65 }, rise: { home: [0.65, 0.69] as [number, number], hilly: [0.81, 0.94] as [number, number], hillyShare: 7 / 32, centre: 0.67 } },
   pit: 'soft' as const,
   pitDepth: 110,
+  /** its pits are painted by w1Pits.ts (the moss floor, the marked drops, the thorn bed): the drop looks the verdicts read (dropsOf) */
+  pitPainter: 'w1Pits' as const,
   /** the planner's 4:27 PM: catch boughs laid 90 px under a canopy gap by the engine (floorRoll.catchDrop, engine-chunks types) */
   floorRoll: { catchDrop: 90, hop: [{ range: [0.43, 0.51] as [number, number], weight: 11 }, { range: [0.74, 0.8] as [number, number], weight: 11 }, { range: [0.99, 1.0] as [number, number], weight: 10 }], shallow: 70, deep: 240, hopRoll: 0.9, jumpRoll: 0.55 },
 };

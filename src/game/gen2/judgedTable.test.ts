@@ -117,10 +117,9 @@ test('a chain hop is a section kind, judged cap centre to cap centre (S) against
   assert.ok(CHAIN_BANDS.every((r) => /^chain\.md §3 "Cap to cap/.test(r.source)));
 });
 
-test('no stage id in reach.ts or verdicts.ts outside the table', () => {
+test('no stage id in reach.ts or verdicts.ts: the table is world data (worlds/stageTable.ts), JUDGED reads its rows', () => {
   const ids = (f: string) => fs.readFileSync(f, 'utf8').split('\n').filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l) && /['"`]\d-\d['"`]/.test(l));
-  const r = ids('src/game/gen2/reach.ts');
-  assert.equal(r.length, 1, r.join('\n'));
-  assert.match(r[0], /^export const JUDGED\b/);
+  assert.deepEqual(ids('src/game/gen2/reach.ts'), []);
   assert.deepEqual(ids('src/game/gen2/verdicts.ts'), []);
+  assert.match(fs.readFileSync('src/game/gen2/reach.ts', 'utf8'), /^export const JUDGED\b.*STAGE_TABLE/m);
 });

@@ -138,27 +138,11 @@
    "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
   },
   {
-   "file": "src/game/gen2/pipeline.ts",
-   "kind": "world-key",
-   "code": "world === 1",
-   "count": 2,
-   "why": "World 1's marked fall pits and water look (2 places): the world's pit rules in the manifest",
-   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
-  },
-  {
    "file": "src/game/gen2/promises11.ts",
    "kind": "stage-id",
-   "code": "stages: ['1-1'",
-   "count": 2,
-   "why": "1-1's player promises registered in gen2's machinery (2 entries): the stage brief should carry them",
-   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
-  },
-  {
-   "file": "src/game/gen2/promises11.ts",
-   "kind": "stage-id",
-   "code": "stageId: '1-1'",
+   "code": "ONE_ONE = '1-1'",
    "count": 1,
-   "why": "promiseBreaches11 judges as 1-1: a promise check for any stage's brief",
+   "why": "1-1's player promises registered in gen2's machinery (2 entries): the stage brief should carry them (INT-E 11-12: the wire's E12 folded the registry's rows into this one const, 3 literals -> 1)",
    "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
   },
   {
@@ -167,38 +151,6 @@
    "code": "scope: 'normal-1-1'",
    "count": 1,
    "why": "the flown-reach table has one Normal scope, 1-1's (R-165.61): a reach scope per brief",
-   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
-  },
-  {
-   "file": "src/game/gen2/reach.ts",
-   "kind": "stage-id",
-   "code": "stageId === '1-1'",
-   "count": 2,
-   "why": "judgedOnArcs and the reach scope only for 1-1 (2 places): the stage brief says how it is judged",
-   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
-  },
-  {
-   "file": "src/game/gen2/reach.ts",
-   "kind": "stage-id",
-   "code": "? 'normal-1-1'",
-   "count": 1,
-   "why": "the reach scope named for 1-1",
-   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
-  },
-  {
-   "file": "src/game/gen2/reach.ts",
-   "kind": "stage-id",
-   "code": "'easy-any': 'normal-1-1'",
-   "count": 1,
-   "why": "Easy falls back to 1-1's Normal scope",
-   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
-  },
-  {
-   "file": "src/game/gen2/verdicts.ts",
-   "kind": "stage-id",
-   "code": "scopeOf('1-1'",
-   "count": 1,
-   "why": "the verdicts read 1-1's reach scope for every stage",
    "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
   },
   {

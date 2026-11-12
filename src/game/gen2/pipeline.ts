@@ -3091,13 +3091,15 @@ function hurtMeta(laid: Laid, M: WorldManifest): Pick<Gen2Stage['gen2'], 'hurt'>
  * floor in a soft zone; water art (World 1 reads a floorless gap as water, w1Pits; World 7's chasm paints dirty water far below); World 8's
  * dark). A lethal drop carries Dot's line and the sign when the stage put them there (proto hints, proto.gen2.waterWarnings).
  */
-export function dropsOf(st: Gen2Stage): Drop[] {
+export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> = {}): Drop[] {
   const zones = st.heartFalls ?? [];
   const extras = (st.proto as { gen2?: { waterWarnings?: Array<{ x: number; y: number }> } }).gen2;
   const signs = extras?.waterWarnings ?? [];
   const hints = ((st.proto as { hints?: Array<{ x: number; text: string; passX?: number }> }).hints ?? []);
   const death = st.waterY ?? st.config.levelHeight;
   const world = st.gen2.budget.world;
+  // (the world's pit painter paints its pit floors, its marked drops and its hurt floors: the manifest's pit rule, never a world number)
+  const painted = pits.pitPainter === 'w1Pits';
   return (st.gen2.falls ?? []).map((f): Drop => {
     const mid = (f.x0 + f.x1) / 2;
     const ground = st.platforms.find((p) => p.type !== 'bouncy' && p.x <= mid && p.x + p.width >= mid && p.y > f.y && p.y < death);
@@ -3106,8 +3108,8 @@ export function dropsOf(st: Gen2Stage): Drop[] {
     // (a hollow's hurt floor: a heart fall, on both settings (Easy waives the heart, never the look). Its look is the hurt look only where
     // the world's painter draws it; until then it is what is drawn there today, and drop.look-lies refuses it by name)
     if (ground?.pit === 'hurt') {
-      const drawn = world === 1 && findW1Pits(st.platforms).some((q) => q.kind === 'hurt' && q.x0 < f.x1 && q.x1 > f.x0);
-      return { ...at, ends: { kind: 'heart', to: 'take-off' }, look: drawn ? 'hurt-art' : world === 1 ? 'pit-floor-art' : 'ground' } as unknown as Drop;
+      const drawn = painted && findW1Pits(st.platforms).some((q) => q.kind === 'hurt' && q.x0 < f.x1 && q.x1 > f.x0);
+      return { ...at, ends: { kind: 'heart', to: 'take-off' }, look: drawn ? 'hurt-art' : painted ? 'pit-floor-art' : 'ground' } as unknown as Drop;
     }
     if (ground) return { ...at, ends: { kind: 'floor', y: R(ground.y) }, look: 'ground' };
     if (f.kind === 'water' || (f.kind === 'void' && !st.gen2.softFalls)) {
@@ -3117,9 +3119,9 @@ export function dropsOf(st: Gen2Stage): Drop[] {
       return { ...at, ends: { kind: 'life', cause: f.kind === 'water' ? 'water' : 'void' }, look: f.kind === 'water' || world !== 8 ? 'water-art' : 'void-dark', ...warn } as Drop;
     }
     if (zone) return { ...at, ends: { kind: 'putback', to: 'take-off' }, look: 'pit-floor-art' };
-    // (a soft fall with nothing drawn under it: World 1 reads it as water, w1Pits, unless the gap is marked as a drop)
-    const marked = world === 1 && findW1Pits(st.platforms).some((q) => q.kind === 'fall' && q.drop && q.x0 < f.x1 && q.x1 > f.x0);
-    return { ...at, ends: { kind: 'putback', to: 'last-still-ground' }, look: world === 1 && !marked ? 'water-art' : 'void-dark' } as unknown as Drop;
+    // (a soft fall with nothing drawn under it: World 1's painter, w1Pits, draws it as water unless the gap is marked as a drop)
+    const marked = painted && findW1Pits(st.platforms).some((q) => q.kind === 'fall' && q.drop && q.x0 < f.x1 && q.x1 > f.x0);
+    return { ...at, ends: { kind: 'putback', to: 'last-still-ground' }, look: painted && !marked ? 'water-art' : 'void-dark' } as unknown as Drop;
   });
 }
 
@@ -3142,7 +3144,7 @@ function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2S
  *  folded by rollErrors; Easy's Normal build gets them too, so a seed is clean on both settings or on neither (proven.test) */
 function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
   // (R-165.61: every fall as a Drop record, and the roll's verdicts on this setting: judged on 1-1, every name notJudged elsewhere)
-  st.gen2.drops = dropsOf(st);
+  st.gen2.drops = dropsOf(st, req.kit.manifest);
   st.gen2.verdicts = { ...st.gen2.verdicts, [req.difficulty]: judgedOnArcs(req.config.id) ? judgeRoll(judged11(st, req.difficulty), PROMISES_11) : NOT_JUDGED_ALL(req.difficulty) };
   // (V19b judged on the built stage by the gate's own definition, storyChecks endAboveWindow: the slot estimate in layStage steers the lay,
   // this is the verdict, so the pipeline and stage.ts never disagree; the lead 12:57 PM, 11-06. A window start over a gap has no height:

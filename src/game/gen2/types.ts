@@ -115,6 +115,10 @@ export interface WorldManifest {
   /** how deep a soft pit's floor lies under its lips at most (px): a pit too narrow for wide steps out is shallower, its floor one
    *  plain hop under the far lip (pipeline pitSteps: every dip has a one-jump way out, every step a tread a thumb can land on) */
   pitDepth: number;
+  /** the world's pit painter, how its falls LOOK (pipeline.ts dropsOf, read by the verdicts' drop.look-lies; INT-E 11-12, the lead: the
+   *  world's pit rules, never a world number): today only World 1's, 'w1Pits' (w1Pits.ts paints a soft pit's floor, a marked fall as a
+   *  drop and a hollow's hurt floor as the thorn bed, hurtFloor.art 'w1-thorn'). Absent, nothing paints a pit floor */
+  pitPainter?: 'w1Pits';
   /**
    * World 1's floor families (the planner's floor road, engine-floorroad 4fd9e992; the designer's floor ruling, WORLD-RULEBOOK 9a22b846):
    * each roll draws a hop family by weight. A hop roll (h >= `hopRoll`) keeps every soft pit's floor `shallow` under its lips and leans

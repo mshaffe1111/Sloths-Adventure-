@@ -18,7 +18,7 @@
  */
 import { buildGen2Stage, provenGen2Stage } from './pipeline.ts';
 import { PROVEN_INDEX } from './provenIndex.ts';
-import { FIRST_RUN_11 } from './firstRun11.ts';
+import { stageRow } from './worlds/stageTable.ts';
 import type { BuildRequest, Gen2Stage, PlanSlot, WorldKit } from './types.ts';
 import type { LevelConfig } from '../types.ts';
 import type { Difficulty } from '../difficulty.ts';
@@ -163,7 +163,7 @@ export function plantSeedListSource(stageId: string, src: SeedListSource | null)
   };
 }
 
-/** tests (listed.ts withTestStage): a fixture stage's list put in memory at once, as if loaded (its source planted too, so the stage
+/** tests (listed.ts, a fixture stage's rows): its list put in memory at once, as if loaded (its source planted too, so the stage
  *  has a list); returns the undo, plantSeedListSource's */
 export function plantSeedList(stageId: string, l: PackedList): () => void {
   const undo = plantSeedListSource(stageId, () => Promise.resolve({ LIST: l }));
@@ -187,13 +187,11 @@ function loadNow(stageId: string): PackedList | undefined {
 }
 
 /**
- * A stage's stand-in: ONE listed seed with its proven plan, kept in the main script, played when the stage's list cannot be had. 1-1's
- * is the fixed first run (firstRun11.ts, locked by `seedlist 1-1 --check`; seedList.test.ts holds it to the list's own entry)
+ * A stage's stand-in: ONE listed seed with its proven plan, kept in the main script, played when the stage's list cannot be had: its
+ * row's `standIn` in the one stage table (worlds/stageTable.ts, world data; a listed stage's is its fixed first run, locked by
+ * `seedlist <stage> --check`; seedList.test.ts holds it to the list's own entry)
  */
-const STAND_INS: Record<string, Replay> = {
-  '1-1': { seed: FIRST_RUN_11.seed, rerolls: FIRST_RUN_11.rerolls, plan: FIRST_RUN_11.plan, foes: FIRST_RUN_11.foes ?? [] },
-};
-export const standIn = (stageId: string): Replay | undefined => STAND_INS[stageId];
+export const standIn = (stageId: string): Replay | undefined => stageRow(stageId)?.standIn;
 
 /**
  * The list of a stage, when it is in memory; undefined for a stage with none, or one whose list is not here (yet). A list nobody has
@@ -224,7 +222,7 @@ export function provenSeedFor(stageId: string, n: number): number {
 /** a listed seed's proven plan; undefined off the list. With the list not in memory (a failed load), the stand-in's own plan */
 export function provenPlan(stageId: string, seed: number): Replay | undefined {
   const L = list(stageId);
-  if (!L) { const s = STAND_INS[stageId]; return s && sources.has(stageId) && s.seed === seed ? s : undefined; }
+  if (!L) { const s = standIn(stageId); return s && sources.has(stageId) && s.seed === seed ? s : undefined; }
   const i = L.seeds.indexOf(seed);
   return i >= 0 ? unpackPlan(L.plans[i], L.dict) : undefined;
 }

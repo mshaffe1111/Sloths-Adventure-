@@ -4,6 +4,7 @@
  * written by tools/engine/seedlist.ts); no tool and no engine line names a stage. DATA, not engine code.
  */
 import { hasSeedList, plantSeedList } from './seedList.ts';
+import { STAGE_TABLE } from './worlds/stageTable.ts';
 import { w1World } from './worlds/w1.ts';
 import { JUDGED } from './reach.ts';
 import type { WorldKit } from './types.ts';
@@ -20,10 +21,16 @@ export interface ListedStage {
   pick?: true;
 }
 
-export const LISTED: Record<string, ListedStage> = {
-  '1-1': { kit: w1World, squirrels: true, firstRun: true, pick: true },
-  '1-2': { kit: w1World },
-};
+/** the world kits a row names (worlds/stageTable.ts `kit`) */
+const KITS: Record<string, () => WorldKit> = { w1: w1World };
+
+/** the rows, from the ONE stage table (worlds/stageTable.ts, world data): each stage's kit and its own flags */
+export const LISTED: Record<string, ListedStage> = Object.fromEntries(Object.entries(STAGE_TABLE).map(([id, r]) => [id, {
+  kit: KITS[r.kit],
+  ...(r.squirrels ? { squirrels: true as const } : {}),
+  ...(r.firstRun ? { firstRun: true as const } : {}),
+  ...(r.pick ? { pick: true as const } : {}),
+}]));
 
 /** a stage's row; undefined when it is not a listed stage */
 export const listedStage = (stageId: string): ListedStage | undefined => (Object.hasOwn(LISTED, stageId) ? LISTED[stageId] : undefined);

@@ -8,6 +8,7 @@
  */
 import type { Difficulty } from '../difficulty.ts';
 import type { Band, BandTable, FlownArc, ReachMove, ReachScope, SectionKind } from './verdicts.types.ts';
+import { STAGE_TABLE } from './worlds/stageTable.ts';
 
 // ───────────────────────── reach.md §2: the flown arcs, per scope ─────────────────────────
 
@@ -94,10 +95,11 @@ export const BAND_SOURCE: Readonly<Record<SectionKind, string>> = {
 
 /**
  * THE TABLE (packet E12 item 3, D43): the stages judged on the flown arcs, each with its Normal scope (its own flown rows above). A stage
- * is judged where it has a row, on both settings; Easy's rows are `easy-any`. DATA: the one line here that names a stage; judging the
- * next stage is flying it, entering its rows and adding its line.
+ * is judged where it has a row, on both settings; Easy's rows are `easy-any`. DATA: read from the one stage table (worlds/stageTable.ts,
+ * a row's `judged`; INT-E), so no line here names a stage; judging the next stage is flying it, entering its rows and giving its row
+ * `judged`. Mutable: a test fixture adds and removes its own line (listed.ts, tests only).
  */
-export const JUDGED: Record<string, ReachScope> = { '1-1': 'normal-1-1' };
+export const JUDGED: Record<string, ReachScope> = Object.fromEntries(Object.entries(STAGE_TABLE).flatMap(([id, r]) => (r.judged ? [[id, r.judged]] : [])));
 
 /** is this stage judged on the flown arcs (THE BOUNDARY: a stage with a JUDGED row, on both settings) */
 export const judgedOnArcs = (stageId: string): boolean => Object.hasOwn(JUDGED, stageId);
