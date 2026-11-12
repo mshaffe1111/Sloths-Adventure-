@@ -82,3 +82,32 @@ offended!" stays as written.
   this, you're already further than they think you'll get... Keep your eyes low. Sorry about the handwriting. I'm writing this
   walking. P.S. If you see Dot, tell her I saw her in that bush. Love, M."). No new words.
 - **The hint changes** (finds.ts:409, which still describes the old layout): **"Down in the hollow, low against a root."**
+
+## Settings > About the game: "Inspired by" (R-165.158; DRAFT for Matt, 3:20 PM ET)
+
+**What the docs actually name** (searched every file in reference/ideas/, MAP-REVISIONS.md, GAME-MAP.md and PREDATORS.md):
+| Game named | Where | What it gave Sloths | In the game? |
+|---|---|---|---|
+| Frogger | MATT-IDEAS #1 (R-165.93); MATT-30 Tier 2 #1; MAP-REVISIONS §7 (Matt 7:57 PM: "I like the Frogger idea") | World 2's river lanes; 1-8's rolling nuts are a first taste | planned (World 2, 1-8) |
+| Super Mario Bros. 3 (Koopas and Boos) | PREDATORS.md §0 rule 1 and the ocelot row | every creature learned by one habit; the ocelot that creeps while your back is turned | planned (the predator kit) |
+| Qix | MATT-IDEAS #3, MATT-30 Tier 3 | territory loops | PARKED, not in the game: leave out |
+| Lemmings | MATT-30 Tier 3 #5 | a walker/escort stage | PARKED, not in the game: leave out |
+
+The platformer-archetype and early-arcade lists (MATT-PLATFORMER-ARCHETYPES, MATT-80S-ARCADE-IDEAS) name NO titles: they are mechanics
+from outside research. So only two games can be credited honestly today. To credit more, Matt names the games he had in mind; nothing
+is guessed.
+
+**Draft section (phone-short):**
+
+> **Inspired by**
+> Sloths was built from a lot of small ideas. These are some of the places they came from.
+> **Frogger**: the river lanes of the Sunlit Riverbank, and the rolling nuts on The Long Branch.
+> **Super Mario Bros. 3**: creatures you learn by what they always do, like the ocelot that creeps while you look away.
+> **The real rainforest**: a sloth who stays safe by staying still, a snake that glides from tree to tree, and a mantis that looks
+> just like an orchid.
+> Sloths Rainforest Adventures is not affiliated with or endorsed by these games or their makers.
+
+Rules for building it:
+- Each line ships only when what it credits is in the shipped game. Today none of the three is built: stillness, gliding snakes and
+  World 2's lanes are all still to come. Keep the list as data and add lines as stages land.
+- Titles only: no logos, art or characters.
