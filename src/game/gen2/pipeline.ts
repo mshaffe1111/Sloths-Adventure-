@@ -1454,14 +1454,20 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   let catches = 0;
   const catchUnder = (x0: number, x1: number, lowerLip: number) => {
     if (!FR?.catchDrop || x1 - x0 < 20) return;
-    // (nor where a piece of the stage already catches under the gap's middle, its top past the lower lip by no more than a catch's drop
-    // and 60 px: a second bough over it covered it, and a petal log out past a chain's start log, R-165.124, lay under a bough that took
-    // the walk off the start log first)
-    const mid = (x0 + x1) / 2, reach = lowerLip + FR.catchDrop + 60;
-    if (platforms.some((q) => q.type !== 'bouncy' && q.x <= mid && q.x + q.width >= mid && q.y > lowerLip && q.y <= reach)) return;
+    // (and only where no piece of the stage already catches: a piece under the gap, its top past the lower lip by no more than a catch's
+    // drop and 60 px, keeps its part; the bough goes under the rest, each part wider than his body. A bough over such a piece covered it:
+    // a chain's petal low log out past its start log, R-165.124, lay under a bough that took the walk off the start log first)
     const styles = FR.catchStyles?.length ? FR.catchStyles : (['branch'] as const);
-    const c = mk(x0 - 30, lowerLip + FR.catchDrop, x1 - x0 + 80, 'branch', 24, styles[catches++ % styles.length]);
-    (c as Platform & { catch?: boolean }).catch = true;
+    const reach = lowerLip + FR.catchDrop + 60;
+    const own = platforms.filter((q) => q.type !== 'bouncy' && q.x < x1 && q.x + q.width > x0 && q.y > lowerLip && q.y <= reach).sort((a, b) => a.x - b.x);
+    const parts: Array<[number, number]> = [];
+    let at = x0 - 30;
+    for (const q of own) { if (q.x > at) parts.push([at, q.x]); at = Math.max(at, q.x + q.width); }
+    if (x1 + 50 > at) parts.push([at, x1 + 50]);
+    for (const [a, b] of own.length ? parts.filter(([a, b]) => b - a >= 32) : parts) {
+      const c = mk(a, lowerLip + FR.catchDrop, b - a, 'branch', 24, styles[catches++ % styles.length]);
+      (c as Platform & { catch?: boolean }).catch = true;
+    }
   };
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false) => {
     if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
