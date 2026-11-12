@@ -355,3 +355,10 @@ guards.**
   - 1-8 "Race the long branch before it gives way." (optional)
 - A one-line emotional beat for each world was sent for the visual map: purpose, patience, memory, cost, temptation, loss, alone,
   reunion, resolve, holding on then letting go.
+**Map order swaps (the new lead asked at 8:08 PM ET): all YES, with fixes.** The visual map: https://claude.ai/artifact/KRT1HT17cy8c7wd1pN87za
+- W5 5-3/5-5: the halfway pouch scene stays at slot 5; the tally marks travel with Caught in Silk.
+- W6 swim in 6-2: Dot teaches it before she leaves. Teach in a still, empty pool at the start, with the ripple water after.
+- W7 7-2/7-5: the note stays at slot 2. I owe the w7_note hint rewrite (finds.ts:438).
+- W9 9-2/9-5: Dot's "Leaf up... I didn't raise you" moves with Vent Riding to 9-2. I owe a 9-5 Rising Heat line (the 9-3 to 9-5 gap)
+  and the w9_note hint rewrite (finds.ts:448).
+- I write these three once the lead confirms the swaps.
