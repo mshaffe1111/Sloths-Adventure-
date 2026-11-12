@@ -1,8 +1,7 @@
 # EN-Y report, Engine, 2026-11-11 (stop 9:20 PM ET). Branch t-engine-yield (base release-0.9.6@06bbd29f, main merged)
-One branch holds four streams: A the yield, A2 the quiet line in the search, B any stage by data + hurt floors (helper), C travel
-as a mode (helper). No rule, verdict threshold or STAGE-RULES number changed. All 200 proven 1-1 seeds lay the stage they laid
-before (`seedlist 1-1 --check` PASS after every step; nothing re-recorded). No stage id, seed or x literal added to engine code.
-
+Four streams on one branch: A the yield, A2 the quiet line in the search, B any stage by data + hurt floors, C travel as a mode
+(B, C: helpers). No rule, verdict threshold or STAGE-RULES number changed. All 200 proven 1-1 seeds lay the stage they laid before
+(`seedlist 1-1 --check` PASS after every step; nothing re-recorded). No stage id, seed or x literal added to engine code.
 ## The numbers (1-1, 200 fresh seeds a range; `npx tsx tools/engine/yield.ts 1-1 --par 4 [--list] [--from N]`)
 | | 0.9.6 | now |
 |---|---|---|
@@ -11,7 +10,6 @@ before (`seedlist 1-1 --check` PASS after every step; nothing re-recorded). No s
 | LISTABLE (clean + the list's quiet line 4 s + squirrels), 50001-50200 | 0 of 200 | **67 Normal / 65 both (33%)** |
 | LISTABLE, 70001-70200 (held out) | not measured | **55 / 55 (28%)** |
 A's target (50% clean) is met. **A2's target (50% listable) is NOT met: 33% / 28%.** What blocks it is named below.
-
 ## What was built
 - **A (pipeline.ts):** the search judges every refusing rule before it takes a plan (`rollUnmet`) and repairs or re-rolls; the deal
   knows the pool (`supplyDeal`, `unfilled`, `poolFits`); the lay keeps scarce sections (`leftShort`); V19b is repaired from the gate's
@@ -24,7 +22,6 @@ A's target (50% clean) is met. **A2's target (50% listable) is NOT met: 33% / 28
   painter in w1Pits.ts), no still. Item 3 PARTLY: `reach.ts` JUDGED table, promises name no stage; 1-2's own rows not entered.
 - **C (helper, EN-T):** DONE. `stageModes.ts` (right, left, up, down, stay); travel is data (`LevelConfig.travel`); the engine's exit
   wall, flags, bar and help ladder ask the mode. Camera lead not wired (it would change every stage's camera).
-
 ## What the numbers hide (pushback, read this)
 1. **Listable is capped by the pool and the graphs, not by the search.** Listable by graph (50001-50200): sprint-A 36 of 55,
    sprint-B 19 of 51, sprint-C 10 of 51, **sprint-D 0 of 43**. More re-rolls buy nothing (6 vs 14 measured: the same).
@@ -41,22 +38,23 @@ A's target (50% clean) is met. **A2's target (50% listable) is NOT met: 33% / 28
 6. **Proven list held at a price:** pacing runs only after a refusal, and the climb line sits 80 px above its natural place (980)
    so two proven deals stay. Both go away at a list rebuild.
 7. **buildcheck fails on the untouched base in this container too** (p95 163 ms base, 155 here, limit 150): run it once on CI.
-
 ## Your question: why 42 hand-authored sections, and what would make a stage take hours
 A section today is a shape welded to one stage: its `feel` names stage ids, and its hazard, pickups and heights are baked in. 17
 of the 42 are the SAME shapes re-cut for thorns and petals. Proof it is not the shapes: the Designer's 1-2 probe on the fixed
-generator (stand-ins = copies of real sections) lays 720 of 720 rolls with no throw, 117 of 120 a graph refused only by V3.
+generator (stand-ins = copies of real sections) lays 720 of 720 rolls with no throw and 117 of 120 a graph structurally clean.
 To get to hours: (1) the hazard under a gap, the pickup kind and the trend become the BRIEF's, applied by the lay (B's `hurt`
 flag as a brief-level swap), so own versions vanish; (2) sections are picked by what they need and teach, `feel` only excludes;
 (3) each stage adds 5-8 twist bricks for its signature; (4) the list builds itself (33% listable now, was 1 in 300).
 
 ## Gates on the merged head
-PASS: tsc; 110 of 110 tests in every file the three streams touched; seedlist 1-1 --check. A's code alone: gen2+worlds 350 of 350.
-LOCK_AND_SUITE_PLACEHOLDER
-FAIL: chunkcheck (above). Not run: drawcheck, clipcheck, the full suite outside gen2, stills (nothing new ships: Play draws the list).
+PASS: tsc; 110 of 110 tests in every file the three streams touched; seedlist 1-1 --check; **the stage lock, 102 of 102 stages
+unchanged** against main (`lockall --layouts 2`; its first run caught 1-1's graph record hashing differently by field order
+alone, fixed and tested). A's code alone: gen2+worlds 350 of 350; the same suite on the merged head: 371 of 371.
+FAIL: chunkcheck (above). Not run: drawcheck, clipcheck, the suite outside gen2, stills (nothing new ships: Play draws the list).
 
 ## Exact next step
-1. Land R-165.112, then re-run chunkcheck. 2. Decide pushback 2 (park the two test-backs, rebuild 1-1's list under `also`).
-3. B's item 2 "drawn": w1Pits.ts reports a `pit === 'hurt'` floor and paints the manifest's art. 4. B's trap: levelCheck
-validateFor, stageGenerator finishReach and petalPass ask `judgedOnArcs(config.id)`; make them ask the built stage BEFORE entering
-1-2's JUDGED line. 5. Node code must read the manifest's `lessons` (V3) or 1-2 lays nothing. Turnover: engine-core.md §0d.
+1. Land R-165.112, re-run chunkcheck. 2. Decide pushback 2 (park the two test-backs, rebuild 1-1's list under `also`). 3. B's
+item 2 "drawn": w1Pits.ts reports a `pit === 'hurt'` floor and paints the manifest's art. 4. B's trap: levelCheck validateFor,
+stageGenerator finishReach and petalPass ask `judgedOnArcs(config.id)`; make them ask the built stage BEFORE 1-2's JUDGED line.
+5. E12 item 5's other half: the double counted by the built stage (five readers of `doubleAllowed`). Its node-code half is DONE
+here (V3 reads `lessons`: the 1-2 probe goes from 0, 13, 0 to 118, 117, 117 structurally clean of 120). Turnover: engine-core.md §0d.

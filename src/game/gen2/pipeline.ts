@@ -521,6 +521,9 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
     for (const n of nodes) n.count = quiet(n) ? 1 : got[work.indexOf(n)];
   }
   const deal = dealContent(nodes, M, brief, budget, r, seed);
+  // (the count was written after the type until the deal came to read it; a node's record keeps that order of fields, so the
+  // stage lock's fingerprint of a built stage's graph is the one it always was)
+  for (const n of nodes) if (n.count !== undefined) { const c = n.count; delete n.count; n.count = c; }
   return { archetype: budget.archetype, flow: 'right', nodes, id: g.id, ...(deal ? { deal } : {}) };
 }
 

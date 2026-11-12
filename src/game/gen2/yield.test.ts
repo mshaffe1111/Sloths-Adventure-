@@ -139,3 +139,12 @@ test("lift: a slot asked to climb takes a section that climbs at least that much
   }
   assert.ok(tried >= 5, `the lift was tried on ${tried} rolls only`);
 });
+
+test("a node's record keeps its fields in the order the stage lock fingerprinted: the count after the type", () => {
+  // (planted, found by lockall on the merged head: the deal came to read the counts, so they were written first, and 1-1's built
+  // graph hashed differently with not one platform moved)
+  const M = kit11().manifest;
+  const n = missionGraph(planBudget(cfg, M, 'normal'), M, 50001).nodes.find((q) => q.content && q.count)!;
+  const keys = Object.keys(n);
+  assert.ok(keys.indexOf('count') > keys.indexOf('content'), keys.join(', '));
+});
