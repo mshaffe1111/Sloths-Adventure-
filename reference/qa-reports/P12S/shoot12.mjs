@@ -2,7 +2,7 @@
  * P12S: stills of the REAL game's 1-2 (the listed road, no hook): the start, the first bounce chain, the thorn floor, the hardest beat
  * (the signature chain), the end; upright 390x844 and sideways 844x390, dsf 1. Dev vite (window.__play / __engine), ?layout=N.
  *   node reference/qa-reports/P12S/shoot12.mjs <outDir> [layout] [port] [easy]
- * Pokey is pinned at each spot (kitaudit/shoot.mjs's render wrapper: camera placement only, the stage is the game's own build).
+ * Pokey is set down just above each spot once (kitaudit/shoot.mjs's render wrapper, one frame) and lands by the game's own physics.
  */
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -19,6 +19,7 @@ const vite = spawn('npx', ['vite', '--port', String(port), '--strictPort', '--ho
 let vout = '';
 vite.stdout.on('data', (d) => (vout += d));
 for (let i = 0; i < 120 && !/Local:|ready in/.test(vout); i++) await sleep(500);
+console.log('vite', /Local:|ready in/.test(vout));
 const browser = await chromium.launch();
 const ORIENTS = [{ id: 'up', viewport: { width: 390, height: 844 } }, { id: 'side', viewport: { width: 844, height: 390 } }];
 const meta = [];
@@ -30,6 +31,7 @@ for (const o of ORIENTS) {
   page.on('pageerror', (e) => console.log('pageerror', e.message.slice(0, 160)));
   await page.goto(`http://127.0.0.1:${port}/?layout=${layout}&lessons=off`, { timeout: 300000 });
   for (let t = Date.now(); Date.now() - t < 300000; ) { if (await page.evaluate(() => typeof window.__play === 'function')) break; await sleep(1000); }
+  console.log(o.id, 'page up', await page.evaluate(() => typeof window.__play));
   await sleep(3000);
   let ok = false;
   for (let tries = 0; tries < 3 && !ok; tries++) {
@@ -54,7 +56,7 @@ for (const o of ORIENTS) {
       ['5-end', standAt(s.exitTotemX - 120)],
     ];
     const R = Object.getPrototypeOf(e).render;
-    e.render = function () { const pin = window.__pin; if (pin && this.player) { const p = this.player; p.x = pin.x; p.y = pin.y - (p.height || 40); p.vx = 0; p.vy = 0; if (this.lives < 5) this.lives = 9; } R.call(this); };
+    e.render = function () { const pin = window.__pin; if (pin && this.player) { window.__pin = null; const p = this.player; p.x = pin.x; p.y = pin.y - (p.height || 40) - 30; p.vx = 0; p.vy = 0; p.grounded = false; if (this.lives < 5) this.lives = 9; } R.call(this); };
     return { seed: g.seed, plan, w: s.config.levelWidth, diff: s.difficulty ?? null, spots: out };
   });
   meta.push({ orient: o.id, seed: spots.seed, plan: spots.plan, w: spots.w });
