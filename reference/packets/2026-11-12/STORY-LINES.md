@@ -73,3 +73,12 @@ offended!" stays as written.
 - The mission line changes, because on Normal the goal is every trap and the bare-branch snakes are optional, so "Clear the branches"
   over-promises. New: **"Shake every vine, and off the snakes glide."** This supersedes "Clear the branches. Shake a vine and the snakes
   glide off."
+
+## 1-2 Meeca's note (2:14 PM ET)
+- **YES, a big folded leaf** fits. It is already `paper: 'leaf'` (finds.ts:54). One fix: it is WRITTEN, not only marked. Her words are
+  scratched into the leaf in shaky letters ("I'm writing this walking"), so paint lines of writing, not symbols. It lies low against a
+  root in the hollow, in plain sight.
+- **When he picks it up it reads the existing w1_note text, unchanged** (finds.ts:57, "The first petal": "Pokey, if you're reading
+  this, you're already further than they think you'll get... Keep your eyes low. Sorry about the handwriting. I'm writing this
+  walking. P.S. If you see Dot, tell her I saw her in that bush. Love, M."). No new words.
+- **The hint changes** (finds.ts:409, which still describes the old layout): **"Down in the hollow, low against a root."**
