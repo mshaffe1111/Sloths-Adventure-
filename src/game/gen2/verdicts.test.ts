@@ -255,7 +255,10 @@ test('1-1\'s finish reach (stageGenerator finishReach): the far bank of a 256 px
     platforms: [P(1, 0, G, 600), P(2, 856, G, 700)],
     collectibles: [{ id: 1, x: 1200, y: G - 40, type: 'flower', collected: false }],
     spawnX: 100, spawnY: G, exitTotemX: 1450, exitTotemY: G,
+    // (a stage gen2 built carries its gen2 record: the arcs judge a BUILT stage, never an id alone, reach.ts builtOnArcs)
+    gen2: { budget: { difficulty: 'normal' } },
   } as unknown as GeneratedStage;
+  assert.ok(!finishReach({ ...st, gen2: undefined } as unknown as GeneratedStage, 'normal').includes(2), "1-1's id on a stage gen2 did not build: the closed form");
   for (const d of ['normal', 'easy'] as const) {
     const ids = finishReach(st, d);
     assert.ok(ids.includes(2), `${d}: the far bank is reached (${ids})`);

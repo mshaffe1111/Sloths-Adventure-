@@ -4,7 +4,7 @@
  */
 import type { GeneratedStage } from './stageGenerator.ts';
 import { validateStage, type CheckOptions } from './levelCheck.ts';
-import { judgedOnArcs, linkArcs } from './gen2/reach.ts';
+import { builtOnArcs, linkArcs } from './gen2/reach.ts';
 import type { Difficulty } from './difficulty.ts';
 import { badPickups } from './flowerReach.ts';
 import { skillHeldAt } from './skills.ts';
@@ -19,7 +19,7 @@ const reachesExit = (errors: readonly string[]) => !errors.some((e) => /^exit pl
  *  as stageGenerator finishReach: gen2/reach.ts linkArcs, the stage's own setting); every other stage as before */
 const reachOpts = (stage: GeneratedStage): CheckOptions => ({
   rooms: false,
-  ...(judgedOnArcs(stage.config.id) ? { arcs: linkArcs((stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty ?? 'normal', stage.config.id) } : {}),
+  ...(builtOnArcs(stage) ? { arcs: linkArcs((stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty ?? 'normal', stage.config.id) } : {}),
 });
 
 /**
