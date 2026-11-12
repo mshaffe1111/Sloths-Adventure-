@@ -46,6 +46,7 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 | Hugging Face art, all kinds (models, starts, img2img settings, seeds, keying, edges, sizes, budget log, getting files back without the token) | `hf-art.md` | written 11-01 (hf-backdrops2) | next HF helper |
 | Painted backdrop strips (far/sky/middle/near, both orientations, FAR_BY_STAGE, floor.py depth floor) | `hf-backdrops.md` | written 11-01 (hf-backdrops2) | next backdrop helper |
 | Building a stage or a world (generator sections, variety, teaching, curation) | `stage-build.md` | the rules are in STAGE-RULES.md; the method (order of work, tools) to write | next stage helper |
+| Designing and building ONE level as a level (one idea grown beat by beat, one graph with one piece a beat, the phone's numbers, the bots, the gates; scored on reference/design/LEVEL-BAR.md) | `level.md` | written 11-12 (W1C, 1-3) | next level builder (1-2, D12) |
 | Fixing an unfair spot (check the ruler first, first-timer bots, real-engine repro, fail-before/pass-after test, stage hashes) | `stage-fix.md` | written 11-01 (w8-rope2 + bot-fix + fix-petals) | next stage-fix helper |
 | A menu screen or pop-up (nav kit, Back, safe areas, save states to shoot, clipcheck) | `menu-screen.md` | written 11-01 (whatsnew) | next menu helper |
 | Player-facing words (Pokey/Dot voice, per-item lines not templates, no repeats, approval) | `player-text.md` | written 11-01 (journal-voice) | next writing job |
