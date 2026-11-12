@@ -2535,6 +2535,11 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         if (sink.proto.mixDress?.some((d) => d.n === 'bootprint')) continue;
         (sink.proto.mixDress ??= []).push({ n: 'bootprint', x: R(k.x), b: k.piece.y });
         fills.push({ section: sec.uid, socket: s.id, role: 'decor', what: 'bootprint', x: k.x, y: k.y });
+      } else if (s.role === 'findSpot') {
+        // (where the stage's find stands, finds.ts: a brick that marks it; the first met holds it, stageGenerator addFinds puts it there)
+        if (!want || sink.proto.findSpot) continue;
+        sink.proto.findSpot = { x: R(k.x), b: k.piece.y };
+        fills.push({ section: sec.uid, socket: s.id, role: 'findSpot', what: 'find', x: k.x, y: k.y });
       } else if (s.role === 'find') {
         // (a hidden find, the golden seed: once a stage, by construction where its section's socket stands (the section is placed by
         // manifest.required, so every roll holds one))

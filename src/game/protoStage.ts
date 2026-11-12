@@ -140,6 +140,9 @@ export interface ProtoExtras {
   /** dressing from World 1's new painted pieces (w1NewArt.ts, the mixer's stage spec `dress`): a frame name, its centre x and the ground
    *  it stands on (1-1: the squirrels who watch him leave); the bootprint clue is its own decal, flush on the piece top at b (w1NewArt.ts drawW1Clue) */
   mixDress?: Array<{ n: string; x: number; b: number; flip?: boolean }>;
+  /** where the stage's find stands (gen2: the first 'findSpot' socket a laid brick carries): x, and the top b of the piece it is on.
+   *  stageGenerator addFinds puts the find there (26 px over b, as on any spot) instead of on a ledge picked by a hash */
+  findSpot?: { x: number; b: number };
   /** drawn water a stage declares (engine.ts drawWaterAndFlags): from x0 to x1, its surface at y, a body to below the ground. Its `kind`
    *  picks its art (the designer, 11-05): 'deadly' (the default) and 'teaching' are the world's painted pit water (World 1's murky creek,
    *  stageArt.ts drawPitWater), 'calm' is the clear swim water (calmWaterArt.ts), only where he swims, from 6-7 on. Lily pads over it draw
