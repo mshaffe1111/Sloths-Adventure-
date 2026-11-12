@@ -2079,7 +2079,7 @@ export class FirstTimerRun {
       this.respawned();
     }
     // the sealed shrine: once Dot has said why (a 'must' line: "It's sealed. Defeat ... first."), he turns back for the nearest animal
-    // still out (a purge: any stage, by its own goal and animals); with none to find, or after 12 turns, he stands a moment and gives up
+    // still out (a purge on a stage that names a cast, by its own goal and animals); with none to find, or after 12 turns, he stands a moment and gives up
     this.huntMore = false;
     if (this.hunt) {
       const m = (e.enemies as Array<{ id: number; x: number; y: number; defeated?: boolean; kit?: { leaving?: unknown } }>).find((q) => q.id === this.hunt!.id);
@@ -2105,7 +2105,9 @@ export class FirstTimerRun {
     if (this.sealed()) {
       this.home = null;
       const told = this.dot.shown.some((q) => q.kind === 'must' && t - q.t0 < 12);
-      if (!this.hunt && told && this.turnBacks < 12 && this.goal && this.goal.got < this.goal.need) {
+      // (only on a stage whose data names a cast, castPlay.ts: elsewhere the bot's runs are measurements that set game numbers, 5-9's
+      // Easy goal from the kid's runs, firstTimerBot.test.ts, and stay as they were measured)
+      if (!this.hunt && told && e.cast && this.turnBacks < 12 && this.goal && this.goal.got < this.goal.need) {
         const left = (e.enemies as Array<{ id: number; x: number; y: number; defeated?: boolean; type: string; kit?: { leaving?: unknown } }>)
           .filter((q) => !q.defeated && !q.kit?.leaving && q.type !== 'boss')
           .sort((a, b) => Math.abs(a.x - p.x) + Math.abs(a.y - p.y) - (Math.abs(b.x - p.x) + Math.abs(b.y - p.y)));
