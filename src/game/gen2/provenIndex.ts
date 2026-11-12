@@ -3,5 +3,5 @@
 // list is its own file under proven/, loaded on its own (R-165.112), so this file's size does not grow with a list.
 import type { PackedList } from './seedList.ts';
 export const PROVEN_INDEX: Record<string, { n: number; version: string; load: () => Promise<{ LIST: PackedList }> }> = {
-  '1-1': { n: 276, version: '68e94613', load: () => import('./proven/seeds-1-1.ts') },
+  '1-1': { n: 258, version: '6bf4a846', load: () => import('./proven/seeds-1-1.ts') },
 };
