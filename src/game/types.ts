@@ -94,6 +94,8 @@ export interface LevelConfig {
   bestTime: number;
   /** a hidden bonus level that is not part of the 100 (see secret.ts) */
   secret?: 'thornbark';
+  /** which way the route leads (stageModes.ts); unset is 'right'. The engine reads travel only from here */
+  travel?: import('./stageKit.types.ts').Travel;
 }
 
 export interface PlayerState {

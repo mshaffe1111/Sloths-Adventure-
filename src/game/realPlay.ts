@@ -119,10 +119,11 @@ export class RealPlay {
   /** keep him from being hurt (default) */
   safe = true;
 
-  constructor(readonly id: string, readonly seed: number) {
+  /** (`cfg`: the stage's config with a test's own change, e.g. a fixture's travel; unset is the game's) */
+  constructor(readonly id: string, readonly seed: number, cfg: LevelConfig = levelConfig(id)) {
     setLayoutVariant(seed);
     const noop = () => {};
-    const e = new GameEngine(headlessCanvas(), levelConfig(id), this.input as never, {
+    const e = new GameEngine(headlessCanvas(), cfg, this.input as never, {
       onProgressUpdate: noop, onVictory: noop, onDefeat: noop, onGameOver: noop,
       // (a line whose moment has passed: noted, so the tests can take it down as Dot's guide does)
       onGuide: (text: string, _s: number, passed?: boolean) => {

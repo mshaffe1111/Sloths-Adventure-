@@ -24,6 +24,8 @@ import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
 import { maxGap, softFallStage } from './gen2/pipeline.ts';
+import { MODES, type TravelMode } from './stageModes.ts';
+import type { Mark } from './stageKit.types.ts';
 import { HelpLadder, setGrownSteps, LINE_UP_S, LINE_WAIT_S, takeHelpOnScreen, moveLine, pieceMoveLaid, setHelpLadder, stepPlan, stepsFor, STEP_CUT, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
 import { pickCut } from './w1CutArt.ts';
 import { difficulty, easeInShare, isEasy } from './difficulty.ts';
@@ -145,8 +147,6 @@ import {
   calculateHitScore,
   atExitDoor,
   atSealedDoor,
-  ascentProgress,
-  SHRINE_STOP,
 } from './rules.ts';
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
@@ -770,8 +770,21 @@ export class GameEngine {
   private dbgStrike: Rect | null = null;
 
   private exitTotemReached: boolean = false;
-  /** a climbing stage: the highest his feet have been (smallest y), so its progress bar only ever goes up */
-  private bestClimbY = Infinity;
+  /** which way this stage travels (stageModes.ts, from config.travel): the exit wall, which flag is further on, the progress bar */
+  private mode: TravelMode = MODES.right;
+  /** the mode's inputs, set once a stage (travelStart): the side walls, the start, the exit (for the bar: the level's end when there is no shrine), the best place so far */
+  private walls = { minX: 20, maxX: 20 };
+  private startAt: Mark = { x: 0, y: 0 };
+  private exitAt: Mark = { x: 0, y: 0 };
+  private bestAt: Mark = { x: 0, y: 0 };
+  private travelStart() {
+    const st = this.currentStage;
+    this.mode = MODES[st.config.travel ?? 'right'];
+    this.startAt = { x: st.spawnX, y: st.spawnY };
+    this.bestAt = { ...this.startAt };
+    this.exitAt = { x: st.exitTotemX || st.config.levelWidth, y: st.exitTotemY };
+    this.walls = this.mode.bounds({ levelWidth: st.config.levelWidth, exit: { x: st.exitTotemX, y: st.exitTotemY }, spawn: this.startAt });
+  }
   private daisyRescued: boolean = false;
   private isGameOver: boolean = false;
   private nearTreeVine: Vine | null = null;
@@ -846,7 +859,7 @@ export class GameEngine {
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
     // (the help ladder, helpLadder.ts: 1-1 only, its pieces as laid; off on every other stage until help.md §5 has passed)
-    this.help = config.id === '1-1' && softFallStage(this.currentStage) && this.currentStage.meta?.pieces?.length ? new HelpLadder(isEasy() ? 'easy' : 'normal', this.currentStage.meta.pieces, undefined, (pc) => this.canGrowAt(pc)) : null;
+    this.help = config.id === '1-1' && softFallStage(this.currentStage) && this.currentStage.meta?.pieces?.length ? new HelpLadder(isEasy() ? 'easy' : 'normal', this.currentStage.meta.pieces, undefined, (pc) => this.canGrowAt(pc), MODES[config.travel ?? 'right']) : null;
     setHelpLadder(this.help);
     // each liana's own swing: its size (neighbours' swings never meet) and its place in the swing (physics.ts swingSetup)
     swingSetup(this.vines);
@@ -959,7 +972,7 @@ export class GameEngine {
     if (this.proto?.slide) this.startSlide(this.proto.slide);
     this.camLedge = null;
     this.camLand = null;
-    this.bestDropY = -Infinity;
+    this.travelStart();
 
     // Initialize Hero Sloth
     this.player = {
@@ -2313,10 +2326,8 @@ export class GameEngine {
       }
 
       // Clamp horizontal level bounds (safely stops player right at the victory shrine altar)
-      const maxX = this.currentStage.exitTotemX > 0 && this.currentStage.config.objectiveType !== 'ascent'
-        ? this.currentStage.exitTotemX + SHRINE_STOP
-        : this.currentStage.config.levelWidth - 20;
-      p.x = Math.max(20, Math.min(maxX, p.x));
+      // (the walls are the travel mode's: a run stops just past its shrine, a climb at the level's sides, stageModes.ts bounds)
+      p.x = Math.max(this.walls.minX, Math.min(this.walls.maxX, p.x));
 
       // --- Solid ground blocks: walls you cannot walk through (Mario-style) ---
       p.pushing = false;
@@ -2517,7 +2528,7 @@ export class GameEngine {
         const fellOnto = !!prev && g && g.y > prev.y + 100 && g.width < 400 && !(prev.x >= g.x && prev.x <= g.x + g.width);
         if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60 && !fellOnto) this.softAt = { x: Math.max(g.x + 30, Math.min(g.x + g.width - 30, p.x)), y: g.y, x0: g.x, x1: g.x + g.width };
         // (standing past a piece the help ladder counts resets it: one compare, helpLadder.ts stood)
-        if (g && this.help) this.help.stood(p.x);
+        if (g && this.help) this.help.stood(p);
       }
       // (the water a stage draws, proto.water: a splash where he goes in, once, then the stage's own fall)
       const zone = this.proto?.water?.find((z) => p.x > z.x0 && p.x < z.x1);
@@ -2579,8 +2590,7 @@ export class GameEngine {
           cp.reached = true;
           recorder.event('checkpoint', Math.round(cp.x));
           // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right, a descent goes down)
-          const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : this.proto?.w4?.descent ? cp.y > this.checkpoint.y : cp.x > this.checkpoint.x;
-          if (further) {
+          if (this.mode.further(cp, this.checkpoint)) {
             this.checkpoint = { x: cp.x, y: cp.y };
             // the Android app keeps it, so a run cut off by the phone comes back here (flagResume.ts)
             if (nativeApp()) saveFlag(this.currentStage.config.id, cp.x, cp.y);
@@ -3267,22 +3277,13 @@ export class GameEngine {
     }
 
     // Calculate progress ratio across the level (a climbing stage counts how high he has got, not how far along: its door is at the top)
-    let distanceRatio: number;
-    if (objType === 'ascent') {
-      this.bestClimbY = Math.min(this.bestClimbY, p.y);
-      distanceRatio = ascentProgress(this.currentStage.spawnY, this.currentStage.exitTotemY, this.bestClimbY);
-    } else if (this.proto?.w4?.descent) {
-      // down the cliff, back and forth (4-7): how far down he has got (left or right says nothing about how far on he is)
-      this.bestDropY = Math.max(this.bestDropY, p.grounded ? p.y : -Infinity);
-      const span = Math.max(1, this.currentStage.exitTotemY - this.currentStage.spawnY);
-      distanceRatio = Math.max(0, Math.min(1, (this.bestDropY - this.currentStage.spawnY) / span));
-    } else if (this.mc) {
-      distanceRatio = this.mc.ratio();
-    } else {
-      const totalDist = Math.max(1, (this.currentStage.exitTotemX || this.currentStage.config.levelWidth) - 140);
-      const distTraveled = Math.max(0, p.x - 140);
-      distanceRatio = Math.min(1.0, distTraveled / totalDist);
+    // (the travel mode's: a climb's best height, a way down's lowest ledge stood on, a run's x; stageModes.ts)
+    if (p.grounded || this.mode.air) {
+      const b = this.mode.best(this.bestAt, p);
+      this.bestAt.x = b.x;
+      this.bestAt.y = b.y;
     }
+    const distanceRatio = this.mc ? this.mc.ratio() : this.mode.progress(this.startAt, this.exitAt, this.bestAt);
 
     // Notify HUD
     this.callbacks.onProgressUpdate(
@@ -5225,9 +5226,7 @@ export class GameEngine {
     const cps = this.currentStage.checkpoints ?? [];
     const flag = cps.find((cp) => Math.abs(cp.x - at.x) < 2 && Math.abs(cp.y - at.y) < 2);
     if (!flag) return; // the stage changed since (a new build): start at the beginning
-    const ascent = this.currentStage.config.objectiveType === 'ascent';
-    const descent = !!this.proto?.w4?.descent;
-    for (const cp of cps) if (ascent ? cp.y >= flag.y : descent ? cp.y <= flag.y : cp.x <= flag.x) cp.reached = true;
+    for (const cp of cps) if (!this.mode.further(cp, flag)) cp.reached = true;
     this.checkpoint = { x: flag.x, y: flag.y };
     // (Meeca's stage: the trunks behind the flag were cut on that run)
     this.mc?.resumeAt(flag.x);
@@ -5723,8 +5722,6 @@ export class GameEngine {
   }
 
   /** the ledge he last stood on, the landing the view is showing, and how long it is kept once he has left the ground (s) */
-  /** a stage down a cliff (w4.descent): the lowest ledge he has stood on, for its progress bar */
-  private bestDropY = -Infinity;
   /** 4-7: the height the mist under the ledges starts at (eased after the ledge he stands on) */
   private abyssLip = NaN;
   private camLedge: Platform | null = null;
