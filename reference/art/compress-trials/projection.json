@@ -1,0 +1,128 @@
+{
+ "rows": [
+  {
+   "name": "Today (0.9.6)",
+   "images": 112.75924873352051,
+   "music": 53.587772369384766,
+   "saved": 0,
+   "web": 176.9,
+   "app": 188.0
+  },
+  {
+   "name": "Art q90, music M1",
+   "images": 110.72570991516113,
+   "music": 43.84378231693655,
+   "saved": 11.777528870807593,
+   "web": 165.1224711291924,
+   "app": 176.2224711291924
+  },
+  {
+   "name": "Art q82, music M1 (pick)",
+   "images": 96.13629531860352,
+   "music": 43.84378231693655,
+   "saved": 26.36694346736521,
+   "web": 150.5330565326348,
+   "app": 161.63305653263478
+  },
+  {
+   "name": "Art q82, music M2",
+   "images": 96.13629531860352,
+   "music": 38.43468099861034,
+   "saved": 31.77604478569142,
+   "web": 145.12395521430858,
+   "app": 156.22395521430857
+  },
+  {
+   "name": "Art q75, music M3",
+   "images": 81.06714248657227,
+   "music": 32.90574626611979,
+   "saved": 52.374132350213216,
+   "web": 124.52586764978679,
+   "app": 135.62586764978678
+  }
+ ],
+ "resized": 7,
+ "resized_bytes_before": 1018148,
+ "resized_bytes_after": {
+  "90": 621812,
+  "82": 514678,
+  "75": 454086
+ },
+ "missing": 0,
+ "music_settings": {
+  "M1": {
+   "kbps": [
+    64,
+    56,
+    32
+   ],
+   "mb": 43.84378231693655
+  },
+  "M2": {
+   "kbps": [
+    56,
+    48,
+    28
+   ],
+   "mb": 38.43468099861034
+  },
+  "M3": {
+   "kbps": [
+    48,
+    40,
+    24
+   ],
+   "mb": 32.90574626611979
+  }
+ },
+ "image_settings": {
+  "90": 110.72570991516113,
+  "82": 96.13629531860352,
+  "75": 81.06714248657227
+ },
+ "headline": "The live game is 176.9 MB: images 112.8 MB (597 WebP), music 53.6 MB (113 .webm, all Opus audio: the game ships no video), sound 5.5 MB, code 4.2 MB. The art is already lossy WebP at about q80 to q95. My pick: re-encode only the files stored above about q83 at q82, and record the music again at 64/56/32 kb/s. Together that saves about 26 MB with no change I can see on a phone.",
+ "note": "Art: every shipped WebP encoded at each setting (libwebp method 6, lossless alpha); a file already at or below a setting is kept as is. 7 small files the game draws at under a quarter of their size are also halved or cut to 75%. Music: measured size ratios from fresh recordings of 10 pieces and one stage's stems, applied to all 113 files. App size assumes the APK shrinks by the same bytes (WebP and Opus don't compress further inside it).",
+ "music_note": "The music is rendered by the game's own synth (tools/music/record.mjs), so a smaller file means recording again at a lower bitrate (one lossy pass), not squeezing today's Opus files. M1 = 64 kb/s for full mixes, 56 for stereo stems, 32 for one-channel stems (today 80 / 64 / 40). Below M1 the 8-12 kHz band, where the shimmer and cymbals live, loses detail fast.",
+ "clips": [
+  {
+   "file": "audio/storyDusk.mix.ref192k.webm",
+   "label": "Story Dusk, full mix, 192 kb/s reference"
+  },
+  {
+   "file": "audio/storyDusk.mix.80k.webm",
+   "label": "Story Dusk, full mix, 80 kb/s (today)"
+  },
+  {
+   "file": "audio/storyDusk.mix.64k.webm",
+   "label": "Story Dusk, full mix, 64 kb/s (M1, pick)"
+  },
+  {
+   "file": "audio/storyDusk.mix.56k.webm",
+   "label": "Story Dusk, full mix, 56 kb/s (M2)"
+  },
+  {
+   "file": "audio/storyDusk.mix.48k.webm",
+   "label": "Story Dusk, full mix, 48 kb/s (M3)"
+  },
+  {
+   "file": "audio/stage-w3.shine.ref128k.webm",
+   "label": "World 3 shimmer stem, 128 kb/s reference"
+  },
+  {
+   "file": "audio/stage-w3.shine.40k.webm",
+   "label": "World 3 shimmer stem, 40 kb/s (today)"
+  },
+  {
+   "file": "audio/stage-w3.shine.32k.webm",
+   "label": "World 3 shimmer stem, 32 kb/s (M1, pick)"
+  },
+  {
+   "file": "audio/stage-w3.shine.28k.webm",
+   "label": "World 3 shimmer stem, 28 kb/s (M2)"
+  },
+  {
+   "file": "audio/stage-w3.shine.24k.webm",
+   "label": "World 3 shimmer stem, 24 kb/s (M3)"
+  }
+ ]
+}

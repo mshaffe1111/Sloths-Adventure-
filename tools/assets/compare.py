@@ -5,7 +5,7 @@
 
 For each case: the original and each trial setting (trial.py: same resize rule, q90/82/75), as lossless PNG crops:
   1:1    a 300 px square of the stored picture (a resized version is scaled back up to the original grid: the pixel-peeping worst case)
-  phone  the whole piece (or a 1080 px wide window of a backdrop) scaled to the largest size the game draws it on a 3x phone
+  phone  a 720 px square window (a phone's width) scaled to the largest size the game draws it on a 3x phone
   diff   |version - original| x 8 at 1:1, to see where the codec spent its error
 Sprites are laid over the game's dark forest green, so halos show. Writes PSNR (over visible pixels) and the worst 8x8 block error.
 """
@@ -17,12 +17,12 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from trial import QS, factor, resized, ROOT  # noqa: E402
 
 CASES = [
-    ('night-sky', 'src/assets/backdrops/w10night-sky.webp', 'smooth', 'A night sky gradient (World 10 night): where banding shows first'),
-    ('fur-sheet', 'src/assets/enemies/jaguar-anim.webp', 'detail', 'A fur-heavy animation sheet (the jaguar): where smeared fur shows first'),
-    ('backdrop', 'src/assets/backdrops/w2-near.webp', 'detail', 'A backdrop (World 2 near layer, the biggest backdrop)'),
-    ('story-frame', 'src/assets/story/hd/meeca-1.webp', 'detail', 'A story picture (Meeca, story HD): stands in for a story video frame, as the game ships no video'),
-    ('pokey-sheet', 'src/assets/hero/hero-standard.webp', 'detail', "Pokey's sheet (hero-standard): outlines, where ringing shows first"),
-    ('ui-icon', 'src/assets/icons/gear.webp', 'detail', 'A UI icon (the gear): small, flat colour and hard edges'),
+    ('night-sky', 'src/assets/backdrops/w10-far.webp', 'smooth', 'Night sky gradient | World 10 far layer (storm clouds, a lightning glow): where banding shows first. The sky layers themselves are already about q83, so q82 leaves them as they are.'),
+    ('fur-sheet', 'src/assets/enemies/jaguar-anim.webp', 'detail', 'Fur-heavy animation sheet | The jaguar: where smeared fur shows first.'),
+    ('backdrop', 'src/assets/backdrops/w2-near.webp', 'detail', 'Backdrop | World 2 near layer, the biggest backdrop.'),
+    ('story-frame', 'src/assets/story/hd/pokey-1.webp', 'detail', 'Story picture | Pokey, story HD. It stands in for a story video frame: the game ships no video.'),
+    ('pokey-sheet', 'src/assets/hero/hero-standard.webp', 'detail', "Pokey's sheet | hero-standard: dark outlines, where ringing shows first."),
+    ('ui-icon', 'src/assets/icons/gear.webp', 'detail', 'UI icon | The gear: small, flat colour and hard edges.'),
 ]
 BG = np.array([0x2c, 0x3b, 0x2c], 'f4')
 
@@ -73,7 +73,7 @@ def main():
         oa, al = flat(orig)
         (x, y), n = pick(oa, al, kind)
         s = r.get('drawn_scale') or 0
-        phone_scale = min(1.0, s) if s > 0 else 1 / 3
+        phone_scale = min(1.0, s) if s > 0 else 1.0  # (not seen by the probe: shown at its stored size, the worst case)
         versions = [('original', orig, r['bytes'], 'as shipped')]
         im2 = resized(orig, f)
         for q in QS:
@@ -92,10 +92,13 @@ def main():
         row = dict(key=key, src=src, title=title, w=orig.width, h=orig.height, drawn_scale=s, factor=f, q_est=r.get('q_est'),
                    crop=[x, y, n], phone_scale=round(phone_scale, 3), versions=[])
         # phone window: a backdrop is far wider than a screen; show a 1080 device-px window around the crop
-        pw = min(orig.width, int(1080 / phone_scale))
-        ph = min(orig.height, int(1600 / phone_scale))
+        pw = min(orig.width, int(720 / phone_scale))
+        ph = min(orig.height, int(720 / phone_scale))
         px = max(0, min(orig.width - pw, x + n // 2 - pw // 2)); py = max(0, min(orig.height - ph, y + n // 2 - ph // 2))
         for name, im, nb, note in versions:
+            if im is orig and name != 'original':  # kept as is: the page shows the original's stills
+                row['versions'].append(dict(name=name, file='original', bytes=nb, note=note, psnr=99.0, worst_block=0.0, w=im.width, h=im.height))
+                continue
             big = im if im.size == orig.size else im.resize(orig.size, Image.BILINEAR)
             va, _ = flat(big)
             ps, blk = metrics(oa[y:y + n, x:x + n], va[y:y + n, x:x + n], al[y:y + n, x:x + n])
@@ -109,7 +112,7 @@ def main():
             ph_im = win.convert('RGBA').resize((tw, th), Image.BILINEAR)
             fa, _ = flat(ph_im)
             Image.fromarray(fa.clip(0, 255).astype('u1')).save(os.path.join(out, f'{key}.{name}.phone.png'), optimize=True)
-            row['versions'].append(dict(name=name, bytes=nb, note=note, psnr=ps, worst_block=blk, w=im.width, h=im.height))
+            row['versions'].append(dict(name=name, file=name, bytes=nb, note=note, psnr=ps, worst_block=blk, w=im.width, h=im.height))
         row['phone_px'] = [tw, th]
         cases.append(row)
         print(key, [(v['name'], v['bytes'], v['psnr'], v['worst_block']) for v in row['versions']], flush=True)

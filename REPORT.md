@@ -1,57 +1,102 @@
-# E0a report (R-165.61: verdicts and flown reach), Engine, attempt 4 (attempts 3, 2 and 1 below, as they stood). Branch t-engine-e0a from t-engine-putback@41c2e248
-**Method used:** test-first on planted rolls. Main's lock recorded before the first change. Every reach and band figure is entered as data with its spec line. The verdicts were then run on the 138 listed seeds and the full suite was diffed against A1's base.
-**Lessons applied:** D37: the behaviour claims are proved with a pasted run (1-1 builds below), not taken from a summary. D36: worktrees for main and the base, own branch checked with `git status -sb`. The pins come from origin/main, never from memory.
+# AS-1 report: shrinking the video and art, measured. Branch t-assets-compress from origin/main @585ef376 (live 0.9.6). Nothing under src/ changed.
+**Comparison page:** `reference/art/compress-trials/index.html` (stills, listening clips and data beside it). **Full ranked list:** `reference/art/compress-trials/ranked-assets.csv`. **Inventory:** `inventory.csv` there. **Tools:** `tools/assets/` (inventory, draw-size probe, trials, comparison, projection).
 
+## What ships (vite build of 585ef376: 1,020 files, 176.9 MB)
+- **Images 112.8 MB:** 597 lossy WebP, every one with alpha, none animated. They are already compressed: I read each file's quantizer (`vp8q.py`, checked against fresh encodes), and they sit at about q80 (94 files, 22 MB), q85 (232 files, 41 MB), q90 (237 files, 40 MB) and q95 (28 files, 7 MB). The sky layers are about q83; the backdrops' other layers and the story HD pictures are q89 to q95.
+- **"Video" 53.6 MB is music:** all 113 .webm are Opus audio (81 stereo, 32 mono, 100 minutes, 32 to 96 kb/s). The game ships no video. The 49 full mixes are 38.6 MB of it.
+- **Sound** 5.5 MB (273 mp3). **Code** 4.2 MB (the main JS chunk alone is 3.9 MB, the biggest single file).
+- **No few giant files:** the top 20 files are 18% of the game, the top 50 are 33%, the top 100 are 49% and the top 200 are 67%. Every saving has to be spread across hundreds of files.
+- **Loading:** every asset is referenced by URL (`import.meta.glob ... ?url`, `new URL`), so nothing is decoded until a screen asks for it. The probe tracked fetch() only, so this report has no per-file load timing.
+- **Over 4096 px (R-3.12):** queen-anim 2048x8172, seamstress-anim 2048x6664, soldier-anim 2048x5721. Prowler and croc are exactly 4096 wide.
+- **Drawn size:** a probe (`drawprobe.mjs`) played 30 stages (each world's 1st, 5th and lair) and 30 story screens, upright and sideways, on a 3x phone at full picture quality, following every canvas drawn into another canvas. 282 images (67.8 MB) were seen. Only **7 small files (1.0 MB)** are stored more than 2x bigger than they are ever drawn. Resizing is not a real lever here.
 
+## Trials and the whole game at each setting (MB)
+| Setting | Images | Music | Saved | Web | App |
+|:--|--:|--:|--:|--:|--:|
+| Today (0.9.6) | 112.8 | 53.6 | 0 | 176.9 | 188.0 |
+| Art q90, music M1 | 110.7 | 43.8 | 11.8 | 165.1 | 176.2 |
+| **Art q82, music M1 (my pick)** | **96.1** | **43.8** | **26.4** | **150.5** | **~161.6** |
+| Art q82, music M2 | 96.1 | 38.4 | 31.8 | 145.1 | ~156.2 |
+| Art q75, music M3 | 81.1 | 32.9 | 52.4 | 124.5 | ~135.6 |
 
+- **Art:** all 597 WebP encoded at q90 / q82 / q75 (libwebp method 6, lossless alpha). A file already at or below a setting stays as it is, because re-encoding it only adds loss. The 7 over-stored files are also cut to 50% or 75%, keeping 2x the largest drawn size. Savings: q90 1.7 MB, q82 16.7 MB (backdrops 7.2, story 2.1, enemies 1.8), q75 31.7 MB.
+- **Music:** re-encoding today's Opus would stack a second loss on the first, so the trial recorded 10 mixes and one stage's stems fresh from the game's synth (`tools/music/record.mjs`) and encoded them at each bitrate. M1 = mix 64 kb/s, stereo stems 56, mono stems 32 (today 80 / 64 / 40); M2 = 56 / 48 / 28; M3 = 48 / 40 / 24. Savings: M1 9.8 MB, M2 15.2 MB, M3 20.7 MB. Below M1 the 8 to 12 kHz band (shimmer, cymbals) loses detail fast: noise there climbs from -13 dB at 80 kb/s to -9 at 56 and -4 at 48 on Story Dusk.
 
-## Attempt 4 (51a7c617): the lead's ruling on what closes a slot
-`realFalls`: a slot is closed only by a solid piece AT its lip level, meaning its top is within 10 px of a lip or it plugs the lip. The piece must also have no lower floor inside the slot that he could step off and walk in under. Red first on ddc10c90 (seed 172 was not refused); it is green now.
-- Seed 172 x30784..31835 is refused: a real hole.
-- Seed 476's stone still plugs its slot.
-- Attempt 5 (96dd2fd9, the lead's second line): an opening under his body (32 px) is no drop whatever covers it, and a piece he can pass under closes nothing. So seed 323 (23 px) is not a fall and seed 172 stays refused. Red first; verdicts tests 30/30 with promises11; lock 101/102. Attempt 6 (7fe80912, the Critic): a piece closes only where he can't pass under it from EITHER lip (underside within 48 px of that lip). Red first on the planted bough. Suite on 7fe80912: 822/68, 775/32, 754/26, all building 1-1. Lock 101/102.
-**Re-run:** seedlist --check refuses 138/138. By name: teach.double-no-gap-after 138, band.out 131, floor.unmarked 109, block.lesser-passes 62, block.spare-thin 52, drop.untyped 31. Lock: 101/102, exit 0. verdicts.test: 28/28. Main chunk: 4,180,585 bytes.
-**Full suite, 3 shards:** 822/68, 775/32 and 754/26 pass/fail. That is 126 failures, all because 1-1 cannot build (123 by its error text; the dump child, the seed-list test and recipes.test build 1-1 too). A1's base has 0.
+## My pick: art q82 + music M1, about 26 MB (15%) off, app about 188 → 162 MB
+I flipped original against each setting on all six hard cases, at 1:1 zoomed 3x and at phone size. At phone size I can't tell q82 from the original anywhere. q75 visibly softens the jaguar's fur hatching at 1:1 and adds 8x8 block edges to the World 10 night sky gradient (+5% edge energy on block borders, no colour shift: an earlier teal cast I saw was my own contrast stretch), so q75 fails the no-visible-loss bar. q90 saves almost nothing, because the files are already near it. On music, M1 keeps the highs, but **I can't listen**: the call is ears-first. The clips on the page (today, M1, M2, M3 and a high-bitrate reference) are there for Matt on headphones and on the phone speaker.
 
-## Attempt 3 (d88d8fcd), superseded by 4
-petalPass.ts `reachOpts` passes linkArcs on 1-1 (:32, :44, :94); red first, a flower past a 256 px gap. Spare-thin rounding is pinned by a test. Its first realFalls was replaced in attempt 4.
+## Risks
+1. **Second generation:** the q82 files are re-encoded from lossy q85 to q95 files. If the original lossless masters exist (the HF starts under tools/art), encoding from them is cleaner and slightly smaller.
+2. **Music is a re-record:** the new files must pass the loop-seam check (`tools/music/seam.py`) and a listen in every place they play, layered stems included. The tier bots and calibration are not affected (no 1-1 gameplay change).
+3. **Probe coverage:** 315 images were never seen (World 5's Meeca stage creatures, the title clips, some story art); those get only the re-encode, never a resize. A drawn size above 1x is a floor, not an exact number (stretched caches). Each of the 7 resizes needs its frame rectangles scaled in the same change.
+4. **App size** assumes the APK shrinks byte for byte (WebP and Opus don't compress further in the zip). Google Play caps an app bundle's base download (about 200 MB, to check before the closed test); 188 MB is close to it, and this buys headroom.
+5. **Found on the way:** `stage-w8.beat.webm` is nearly silent (peak -35 dB, mean -62 dB, 226 KB): a broken stem or a deliberate hush, worth a listen. Some mixes peak above full scale before encoding (signature 1.68, score_mercy 1.63).
 
-## Attempt 2 (the Critic's 3 verdict bugs and the lead's finish reach), f7207710 + this commit
-Each fix had a planted red first (verdicts.test.ts tests 22-25). The reds were run before the fix: Normal bank `134 x16 not in 136-140`, classify `double-teach-rise` where `single-rise` was expected, `the far bank is reached (1)` was false, and the headroom asserts failed. After the fix, verdicts.test.ts is 25/25.
-1. **A bank is a block.** `thinLaid` reads the shape the way layStage builds it: bank is a block; branch 24 and stone 22 are thin; hollow uses its art's height. Normal D now lays 136-140 and Easy 128-132. w1.test's exitDy failure is green with no change to w1.ts.
-2. **headroomOf** counts only solid pieces 50 px or taller, over the 70 px take-off run and the flight, never over the landing. headroom.cuts-arc now refuses 0 seeds (was 39).
-3. **classify(a, inTeach, setting).** A 'double' place that is not a declared double block, and whose figure fits the single band, is now a single section.
-4. **stageGenerator `finishReach`.** 1-1 passes the flown arcs (linkArcs) to validateStage; other stages behave as before. Test: a flower past a 256 px gap stays, on both settings; 1-2 still uses the closed form.
-**Re-run results:**
-- seedlist --check refuses 138/138. By name: teach.double-no-gap-after 138, band.out 131, **floor.unmarked 113 (it did NOT fall away)**, block.lesser-passes 62, block.spare-thin 52, drop.untyped 34. The new floor.unmarked hits are 60 px unmarked gaps in the full search (seed 476 Normal x 22458..22518). Replaying the stored plans gave only 9, so the moved envelope lays new 60 px seams. Cause not found yet: OPEN.
-## 1. Done-items (6): 1, 2, 3, 6 met; 4 met as a measurement (nothing could be re-proven); 5 NOT met (see Pushback)
-1. **Each name planted** (verdicts.test.ts, 21/21 green). There is one red per name, printed as `# red:` in its own test: arc.single-gap-over, arc.single-rise-over, block.lesser-passes, block.spare-thin, block.taught-fails, band.out, headroom.cuts-arc, floor.unmarked, drop.lethal-in-no-lethal, drop.unwarned, drop.look-lies, drop.untyped, teach.double-no-gap-after, teach.double-gap-unsafe, first-run.drift (firstRunVerdicts). A clean twin is accepted on both settings. reach.unflown appears only in the notJudged list of an unflown-scope roll (1-2 Normal), together with the 7 arc names. A test also reads ALL_VERDICTS against the 16-name union in verdicts.types.ts. verdicts.types.ts is byte-identical to c4687177.
-2. **Flown figures on 1-1's path.** reach.ts holds every row of reach.md §2 and bands.md §1-2, each with its `source`. On 1-1 the pipeline reads it through `gapFor` (level double 262 N, not 229.8), `riseCap` (Easy double 132 / thin 128, not 113.9), `bounceLipOverCap`, `blockBreaches(arcsOf)`, and the seam stone's `jumpOK`. checkStage passes `validateStage(…, {arcs})` and promises11 runs `doubleGap` on lesser/link arcs. The test strips comments from verdicts.ts and reach.ts and finds no reachJump, JUMP_RISE, DOUBLE_RISE, BOUNCE_REACH, TAKEOFF_SLACK or physics. It also pins the 1-1 envelope figures.
-3. **Outside 1-1 nothing moved.** `lockall --check lockall-main-0.9.5.json --intended 1-1` gives `101/102 stages unchanged` and exit 0. Only 1-1 changed (intended). The lock names the stages whose gen2 gained verdicts and drops, which are not hashed: 5-7, 5-9, 6-1..6-9 (7 stages), 7-1..7-9 (6), 8-1..8-9 (7). Test: 5-7 and 7-1 on both settings hash equal to origin/main@181d2846 (platforms, falls, errors and plan, plus gen2 less the two fields), and each carries NOT_JUDGED_ALL plus one Drop per fall. `falls` is untouched everywhere.
-4. **Seed list.** `seedlist 1-1 --check` (full search, both settings) prints FAIL, exit 1: "the verdicts refuse **138 of 138** listed seeds". Seeds refused by each name: teach.double-no-gap-after 138, band.out 130, floor.unmarked 112, block.lesser-passes 66, block.spare-thin 52, headroom.cuts-arc 39, drop.untyped 31, drop.look-lies 1. Replaying the stored plans instead also refuses 138/138 (band.out and block.lesser-passes 138). Re-prove: seeds 1-40 kept **0 of 40**, and provenGen2Stage's 24-seed walk finds none either. provenSeeds.ts is NOT rewritten: an empty list moves the same throw into Play. It stays stale, and `--check` FAILS by name until C1. The first-run check is wired (firstRun11.ts, absent: stated).
-5. **tsc clean; vite build passes; artcheck and knowncheck PASS.** **The full suite is RED:** 822/68, 775/32 and 753/27 pass/fail across the 3 shards (127 failures, bc7e1f9a). A1's base on the same shards is 784/807/784 pass, 0 fail, so every failure is E0a's:
-   - 126 come from "1-1 cannot build": the error is `gen2 1-1 (normal): no seed of 24 from 172 builds cleanly … verdict band.out … bounce-teach 212 px, under 232`. These include the CT/climb tests that host toys in RealPlay('1-1'), the dump child, recipes.test, and V19b and the forks ("0 clean rolls").
-   - 1 is w1.test's exitDy row (w1-stair-test/b -416 laid -390, and two stair-test-back rows): the thin rise clamp is now the band's 134 where the authored value is 138. That is C1's data.
-   - gapPx.test was updated to the new rule (the Easy double envelope is the flick, 287; past it the lay refuses by name).
-   - roadmapcheck FAILs on the shallow clone (environment). drawcheck and clipcheck were not run: they build 1-1, which throws.
-6. **Turnover note:** reference/handoffs/engine-core.md is rewritten (§0a rulings, open row, §2 files, traps 15-16).
+## The 10 biggest animation sheets (lead's question: fewer frames or skeletal instead?)
+| sheet | KB | px | frames | frame w x h (median) | clips | packing | see-through in frames | near-duplicates |
+|:--|--:|--:|--:|--:|--:|--:|--:|--:|
+| queen-anim.webp | 2748 | 2048x8172 | 184 | 369x203 | 14 | 88% | 48% | 0 |
+| prowler-anim.webp | 2063 | 4096x2951 | 172 | 385x176 | 13 | 93% | 53% | 0 |
+| soldier-anim.webp | 2005 | 2048x5721 | 179 | 211x299 | 10 | 94% | 37% | 0 |
+| croc-anim.webp | 1920 | 4096x2056 | 117 | 360x150 | 13 | 77% | 48% | 0 (+25 reused) |
+| seamstress-anim.webp | 1884 | 2048x6664 | 100 | 341x326 | 4 | 89% | 44% | 10 |
+| flicker-anim.webp | 1805 | 2048x2544 | 307 | 131x108 | 13 | 82% | 39% | 0 |
+| goldsnake-anim.webp | 1515 | 2048x2578 | 155 | 174x147 | 9 | 91% | 55% | 0 (+1 reused) |
+| jaguar-anim.webp | 1298 | 2048x2554 | 70 | 378x180 | 6 | 87% | 50% | 0 |
+| pell-anim.webp | 1272 | 2048x3512 | 122 | 206x277 | 7 | 89% | 41% | 0 |
+| eagle-anim.webp | 1063 | 2048x2545 | 52 | 318x252 | 4 | 83% | 55% | 0 |
+These 10 sheets are 17.2 MB and 1,458 frames. They are already packed tight (77 to 94% of each sheet is frames), each frame is cropped to its creature (37 to 55% see-through inside a frame is just the silhouette), and almost no frame repeats (10 near-duplicates in the seamstress; the croc already reuses 25). Their clips play at 8 to 16 fps. So compression has little left to take, and the size is the frame count. Halving the frames would roughly halve these 17 MB, but motion at 4 to 8 fps would look choppy against Matt's polish bar. Shortening the longest clips is the gentler cut. Skeletal animation would be far smaller, but it is a re-authoring job with a different (rigged) look, not a compression setting.
 
-## 2. Polish check
-No screen changed and there are no stills: E0a is gate code. The visible effect on this branch is real and bad: **1-1 does not build at all** (the pasted error above). It must never reach a test link or main without C1.
-
-## 3. Pushback (rule 3)
-- **DoD 5 cannot be met while DoD 4 holds.** The frozen bands refuse every roll today's w1.ts can lay. DOUBLE_TEACH gaps of 195-203 are crossed by one jump (246). Bounce lips of 200-220 are climbed by a bounce alone (223). Thin double rungs of 136-140 are over the thin band (128-134). So 1-1 throws and about 125 tests that build Play's 1-1 go red. No honest switch exists (no on/off: "new replaces old"). The full suite can only be green on the E0+C1 integration branch, as ADR-001 says. Ruling asked: move DoD 5 to the integration branch, judged after C1.
-- `Gen2Meta.verdicts` is `Partial<Record<Difficulty, RollVerdict>>` and optional, not the PACKETS.md `Record`. A Normal build never builds Easy, so it cannot hold Easy's verdict without doubling build time. An Easy build carries both.
-
-## 4. Suggestions (ready packets)
-- **C1:** classify reads `move`/`block` and the landing's thickness. A 'double' piece with dy above 50 px is the rise form, and a level one is the double gap (Normal only). A bounce lip in a T-node is the teach (232-246), elsewhere the U/V test (236-250).
-
-## 5. Unresolved
-- Raised gaps were never flown. On 1-1 they keep the closed-form envelope capped by the band, and validateStage adds flown links only for level jumps (20 px or less). A Designer flight of raised gaps would retire that last closed-form use.
-- rulers.ts holds no reach figure (grep), so nothing there changed.
-
-## 6. Method update
-Before attributing failures, run the full suite on the base branch in the same shards, then classify each failure by its error text. Here that showed 126 of 127 share one cause.
-
-## 7. Turnover note
-reference/handoffs/engine-core.md, rewritten this task.
+## Top 50 files by size (running total of the 176.9 MB build)
+| # | KB | running MB (%) | file |
+|--:|--:|--:|:--|
+| 1 | 3890 | 3.8 (2.1%) | built JS: assets/index-CRPGLEz5.js |
+| 2 | 2749 | 6.48 (3.7%) | enemies/queen-anim.webp |
+| 3 | 2063 | 8.5 (4.8%) | enemies/prowler-anim.webp |
+| 4 | 2006 | 10.46 (5.9%) | enemies/soldier-anim.webp |
+| 5 | 1920 | 12.33 (7.0%) | enemies/croc-anim.webp |
+| 6 | 1884 | 14.17 (8.0%) | enemies/seamstress-anim.webp |
+| 7 | 1805 | 15.93 (9.0%) | characters/flicker-anim.webp |
+| 8 | 1516 | 17.41 (9.8%) | enemies/goldsnake-anim.webp |
+| 9 | 1369 | 18.75 (10.6%) | music/storyDusk.mix.webm |
+| 10 | 1298 | 20.02 (11.3%) | enemies/jaguar-anim.webp |
+| 11 | 1273 | 21.26 (12.0%) | enemies/pell-anim.webp |
+| 12 | 1242 | 22.48 (12.7%) | music/world9~c.mix.webm |
+| 13 | 1241 | 23.69 (13.4%) | music/jennifur.mix.webm |
+| 14 | 1236 | 24.9 (14.1%) | music/ending.mix.webm |
+| 15 | 1222 | 26.09 (14.7%) | music/signature.mix.webm |
+| 16 | 1205 | 27.27 (15.4%) | music/score_bloom.mix.webm |
+| 17 | 1202 | 28.44 (16.1%) | title/clip-pair-laugh.webp |
+| 18 | 1198 | 29.61 (16.7%) | music/score_finale.mix.webm |
+| 19 | 1128 | 30.71 (17.4%) | music/map-3.mix.webm |
+| 20 | 1124 | 31.81 (18.0%) | music/score_mercy.mix.webm |
+| 21 | 1070 | 32.85 (18.6%) | sfxrec/takes.mp3 |
+| 22 | 1064 | 33.89 (19.2%) | enemies/eagle-anim.webp |
+| 23 | 1051 | 34.92 (19.7%) | music/storyStorm.mix.webm |
+| 24 | 1050 | 35.95 (20.3%) | music/world3~c.mix.webm |
+| 25 | 1049 | 36.97 (20.9%) | music/world8~c.mix.webm |
+| 26 | 1018 | 37.96 (21.5%) | music/results~c.mix.webm |
+| 27 | 1012 | 38.95 (22.0%) | enemies/ocelot-anim.webp |
+| 28 | 988 | 39.92 (22.6%) | music/world7~c.mix.webm |
+| 29 | 970 | 40.86 (23.1%) | music/map-7.mix.webm |
+| 30 | 941 | 41.78 (23.6%) | characters/cels-4.webp |
+| 31 | 933 | 42.69 (24.1%) | title/clip-pokey-cheer.webp |
+| 32 | 931 | 43.6 (24.7%) | music/score_pokey.mix.webm |
+| 33 | 922 | 44.5 (25.2%) | characters/cels-6.webp |
+| 34 | 895 | 45.38 (25.7%) | props/w5-props.webp |
+| 35 | 873 | 46.23 (26.1%) | characters/cels-5.webp |
+| 36 | 870 | 47.08 (26.6%) | music/world4~c.mix.webm |
+| 37 | 858 | 47.92 (27.1%) | music/map-9.mix.webm |
+| 38 | 834 | 48.73 (27.6%) | music/world6~c.mix.webm |
+| 39 | 825 | 49.54 (28.0%) | w6to10/creatures/sentry-anim-0.webp |
+| 40 | 788 | 50.31 (28.4%) | props/w3-props.webp |
+| 41 | 778 | 51.07 (28.9%) | music/world2~c.mix.webm |
+| 42 | 765 | 51.81 (29.3%) | music/score_dread.mix.webm |
+| 43 | 760 | 52.56 (29.7%) | title/clip-pokey-look.webp |
+| 44 | 759 | 53.3 (30.1%) | enemies/turtle-anim.webp |
+| 45 | 740 | 54.02 (30.5%) | story/hd/meeca-1.webp |
+| 46 | 740 | 54.74 (30.9%) | story/live/council.webp |
+| 47 | 739 | 55.46 (31.4%) | props/w2-props.webp |
+| 48 | 736 | 56.18 (31.8%) | title/clip-meeca-wave.webp |
+| 49 | 726 | 56.89 (32.2%) | story/hd/meeca-0.webp |
+| 50 | 726 | 57.6 (32.6%) | music/world1~c.mix.webm |

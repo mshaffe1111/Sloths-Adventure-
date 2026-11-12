@@ -48,7 +48,7 @@ h = ['<title>Sloths Compression Trials</title>', '<meta name="claude:viewport-fi
      f'<style>{css}</style>', '<main>']
 h.append(f"""<section class="lede"><h1>Shrinking Sloths without a visible loss</h1>
 <p>Task AS-1, measured on the live 0.9.6 build (585ef376). {E(proj['headline'])}</p>
-<p class="muted">Each case: tap a setting to swap every picture in place. Flipping between Original and a setting is the fastest way to see a change. <b>1:1</b> is the stored pixels (a resized file is scaled back up: the worst case). <b>Phone</b> is the largest size the game ever draws it on a sharp (3x) phone, measured by playing 30 stages and the story screens upright and sideways. <b>Error x8</b> shows where the codec changed pixels.</p></section>""")
+<p class="muted">Each case: tap a setting to swap every picture in place. Flipping between Original and a setting is the fastest way to see a change. <b>1:1</b> is the stored pixels (a resized file is scaled back up: the worst case). <b>Phone</b> is a phone-width window at the largest size the game draws it in play (measured by playing 30 stages and 30 story screens, upright and sideways, at full picture quality; never larger than its stored size). <b>Error x8</b> shows where the codec changed pixels.</p></section>""")
 
 # projection table
 rows = ''.join(f"<tr><td>{E(r['name'])}</td><td>{r['images']:.1f}</td><td>{r['music']:.1f}</td><td>{r['saved']:.1f}</td><td>{r['web']:.1f}</td><td>{r['app']:.1f}</td></tr>" for r in proj['rows'])
@@ -60,10 +60,13 @@ for c in cases:
     btn = ''.join(f'<button type="button" id="b-{c["key"]}-{v["name"]}" data-v="{v["name"]}" aria-pressed="{str(i == 0).lower()}">{E(v["name"].replace("original", "Original"))}</button>' for i, v in enumerate(vs))
     stats = {v['name']: f"{kb(v['bytes'])} · {v['w']}x{v['h']} · {E(v['note'])} · PSNR {v['psnr'] if v['psnr'] < 99 else '∞'} dB · worst 8x8 block {v['worst_block']}" for v in vs}
     v0 = vs[0]['name']
+    files = {v['name']: v['file'] for v in vs}
     ds = c['drawn_scale']
-    seen = f"drawn at most {ds:.2f}x its stored size on a 3x phone" if ds else 'not seen by the probe (shown at 1/3 for the phone view)'
-    h.append(f"""<section class="case" data-key="{c['key']}" data-stats='{E(json.dumps(stats))}'>
-<h2>{E(c['title'])}</h2>
+    seen = ('drawn at its stored size or larger in play (not over-stored)' if ds >= 1 else f'drawn at most {ds:.2f}x its stored size in play') if ds else 'not seen in the probe run (phone view at stored size)'
+    head, _, note = c['title'].partition(' | ')
+    h.append(f"""<section class="case" data-key="{c['key']}" data-stats='{E(json.dumps(stats))}' data-files='{E(json.dumps(files))}'>
+<h2>{E(head)}</h2>
+<p>{E(note)}</p>
 <p class="muted stat">{E(c['src'])} · {c['w']}x{c['h']} · shipped at about q{c['q_est']} · {seen}{' · resize to %d%%' % round(c['factor'] * 100) if c['factor'] != 1 else ''}</p>
 <div class="seg" role="group" aria-label="Setting">{btn}</div>
 <p class="stat sel">{stats[v0]}</p>
@@ -91,12 +94,12 @@ h.append(f"""<section class="panel"><h2>Music (the .webm files are music, not vi
 
 h.append("""</main><script>
 document.querySelectorAll('.case').forEach(function (c) {
-  var key = c.dataset.key, stats = JSON.parse(c.dataset.stats), sel = c.querySelector('.sel');
+  var key = c.dataset.key, stats = JSON.parse(c.dataset.stats), files = JSON.parse(c.dataset.files), sel = c.querySelector('.sel');
   c.querySelectorAll('.seg button').forEach(function (b) {
     b.addEventListener('click', function () {
       var v = b.dataset.v;
       c.querySelectorAll('.seg button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-      c.querySelectorAll('img[data-kind]').forEach(function (im) { im.src = key + '.' + v + '.' + im.dataset.kind + '.png'; });
+      c.querySelectorAll('img[data-kind]').forEach(function (im) { im.src = key + '.' + files[v] + '.' + im.dataset.kind + '.png'; });
       sel.textContent = stats[v];
     });
   });
