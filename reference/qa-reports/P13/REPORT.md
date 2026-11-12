@@ -13,7 +13,11 @@ RECORDED (100 seeds, first seed 1, the lead's advance OK). Still open on F13's s
    reach (-10..85 px): KID/ADULT on the move (their thumbs never let go, R-165.59), tiers by taps. On a cast stage: he turns back
    from a sealed shrine once Dot says why; a tier's thumb lift holds his stopped count at a log face (child N 9/16 -> 16/16, A/B).
    On a cast stage he hops up to an animal on a low log rather than punch it from below. castBots.test.ts 6/6 (5 planted). tierBots.test 7/7 and firstTimerBot.test: 1-1 and 5-9
-   unchanged. **The bar: every tier told of traps AND springs trap0 on 130/130, Normal and Easy** (middle Normal 129/130).
+   unchanged. **The bar: every tier told of traps AND springs trap0 on 130/130, Normal and Easy**, heard
+   through the game's own setting filter at the phone's default (DotSay.allows: Tips on Normal, Help on Easy). Earlier counts ran with
+   no filter: D12 found the teach line dropped on Tips (helpAllows); fixed (a stage teach line passes Tips and Help; planted). A/B,
+   seeds 1-10: Normal told 0/10 every tier without the fix, 10/10 with. Real page, defaults (P13/page-teach-lines-defaults.txt): the
+   trap line shows on Normal and Easy; 1-3's two plain lines and 1-2's are not teach-marked, so Tips hides them (data: teachTips).
 3. **Flown rows**: FLIGHT_STAGE=1-3, both settings (P13/fly/): Easy identical to easy-any; Normal 0-5 px under 1-2's. 8
    `normal-1-3` rows (flownArcs.ts, sourced chain.md §1; single hold's any the flown 244). Row `judged: 'normal-1-3'`. **Real 1-3:
    120/120 clean Normal and Easy, seeds 1-120 and 50001-50120, 240/240 judged, 0 thrown** (clean.ts, any listed stage).
