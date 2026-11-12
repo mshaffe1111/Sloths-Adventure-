@@ -123,6 +123,32 @@ if sys.argv[1] == 'args':
                       'name': f'w1traps-{tag}', 'secrets': {'HF_TOKEN': '$HF_TOKEN'},
                       'volumes': ['hf://buckets/mshaffe111/w5-xfer:/out:rw'], 'command': ['bash', '-lc', cmd]}))
     sys.exit()
+# round 3 (img2img from paste-ups, tools/art/w1traps/cuts.py starts): text-only never gave a whole landed hive (every take broken
+# open) and kept painting a pool under the stone; the anchor's crown ran off the top. Run: make_spec.py r3 <commit with the starts>
+R3 = [
+    ('hiveDown', 'down-hiveHang-67.png', 'a wild papery bees\' nest lying tipped over on its side, completely whole and intact and '
+     'closed, rounded teardrop with soft wavy bands of honey, amber and warm cream, one small dark round doorway, a short vine stem'),
+    ('hiveDown', 'down-hiveHang-29.png', 'a wild papery bees\' nest lying tipped over on its side, completely whole and intact and '
+     'closed, rounded teardrop with soft wavy bands of honey, amber and warm cream, one small dark round doorway, a short vine stem'),
+    ('stoneDown', 'down-stoneHang-17.png', 'a round heavy grey river stone with a soft cap of green moss, resting, a slack sling of '
+     'green vine still wrapped loosely round it'),
+    ('stoneDown', 'down-stoneHang-41.png', 'a round heavy grey river stone with a soft cap of green moss, resting, a slack sling of '
+     'green vine still wrapped loosely round it'),
+    ('anchor', 'tall-anchor-53.png', 'a slender leaning young rainforest tree with mossy warm brown bark, one long branch arm reaching '
+     'out level to the right with a clump of broad leaves at its tip, its own small rounded leafy crown whole inside the picture, '
+     'nothing cut flat at the top, the trunk cut off clean at the bottom'),
+]
+if sys.argv[1] in ('r3', 'r3b'):
+    tag, sha = sys.argv[1], sys.argv[2]
+    items = [{'name': f"{n}-{st.split('.')[0]}-s{round(k * 100)}-{sd}", 'start': st, 'prompt': prompt(d, 'one single object on its own'),
+              'strength': k, 'seed': sd, 'steps': 30, 'loras': [['style', 1.0]], 'neg': NEG + ('' if n == 'anchor' else ISOLATE)}
+             for (n, st, d) in R3 for k in (0.42, 0.55) for sd in (7, 31)]
+    spec = {'note': f'ART-W1 trap pieces {tag} (img2img from paste-ups), 2026-11-12', 'q': 92,
+            'base': f'{RAW}{sha}/reference/prop-sheets/qa-notes/w1traps/starts/',
+            'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors']}, 'items': items}
+    (HERE / f'spec-{tag}.json').write_text(json.dumps(spec, indent=1))
+    print(tag, len(items), 'takes')
+    sys.exit()
 R2 = '--r2' in sys.argv
 sys.argv = [a for a in sys.argv if a != '--r2']
 tag, sha = sys.argv[1], sys.argv[2]
@@ -136,3 +162,4 @@ spec = {'note': f'ART-W1 trap pieces {tag}, 2026-11-12', 'q': 92,
         'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors']}, 'items': items}
 (HERE / f'spec-{tag}.json').write_text(json.dumps(spec, indent=1))
 print(tag, len(items), 'takes')
+

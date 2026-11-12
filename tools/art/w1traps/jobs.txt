@@ -8,3 +8,6 @@ r1c   6af5f0f35f2f1b7284b85278  17:01Z  anchor, vineLink, leafClump x seeds 5,17
      anchor 29. Thrown: hiveDown (painted broken open: story keeper wants it whole), tendrilCut (a cross), leafClump (a whole tree),
      vineLink (a bough painted over it). Cause: the hf-props negatives "tree branch, ceiling, hanging scenery" were left out, so the
      style model painted a bough, a pool and rain round most pieces. Round 2 puts them back (not for the anchor) and adds water/rain.
+r2a   6af5f4a60f431c4f7b55ee08  17:17Z  hiveDown (whole), hiveHang, stoneDown x seeds 41,53,67,79 (12), spec at f70d72e5
+r2b   6af5f4ed0f431c4f7b55eeab  17:18Z  tendrilCut, leafClump, vineLink x seeds 41,53,67,79 (12)
+r2c   6af5f4f00f431c4f7b55eec4  17:18Z  stoneHang, handleSprung, handleSet, anchor x seeds 41,53,67 (12)
