@@ -67,9 +67,11 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
   original, dark images exempt, a check page for Matt. Retire both when they report (verify ls-remote first).
   EN-S (Fable, session_01FhBbYNeneV7CJUH3PDMtKm, t-engine-split on main, stop 12:15 AM): seedchunks merged first, D45 fix in gates.yml,
   a bundle breakdown, each world / old generator / special runs / bosses / story as their own chunks behind one loading seam; offline proven.
-- RUNNING (11-12 9:22 AM): PROOF-1 (cold Critic, Opus xhigh, session_01FhBbYMYtRUNd5ze6kU5rsW, t-proof-audit on t-int-engine@d0276817,
-  stop 11:45 AM); P11 (Opus high, session_01FhBbYNA2XQgbQQrcxjr5GS, t-11-pass, stop 11:30 AM); PIT (Opus high,
-  session_01FhBbYKVL3LoNkn91qrFBTb, t-pit-polish on t-render-fixes, stop 10:30 AM). Done today: SWEEP-M, INT-E (green), RF.
+- RUNNING (11-12 10:15 AM): PROOF-1 (Critic xhigh, session_01FhBbYMYtRUNd5ze6kU5rsW, t-proof-audit, stop 11:45); P11 (high,
+  session_01FhBbYNA2XQgbQQrcxjr5GS, t-11-pass, stills PASSED by the lead, gates running, stop 11:30); F12 (high,
+  session_01FhBbYMY35Ak6jDnbB6WZAi, t-12-fly, stop 12:45). Done today: SWEEP-M, INT-E (green), RF, PIT (passed the lead's look).
+  NEXT: INT-2 = t-int-engine + t-11-pass + t-render-fixes + t-pit-polish, full gate, audit delta; then 0.9.7 on Matt's word
+  (ask him first about the R-165.125 sound levels, D47).
 - Everyone else retired tonight, branches verified. Next helpers start fresh from their role card + this note + a packet.
 
 ## How the team runs now (learned tonight; keep)
