@@ -204,6 +204,9 @@ export interface WorldManifest {
   lessons?: Record<string, string>;
   /** mechanic -> Dot's line for a 'tip' socket (under 10 words; a new line is marked "(new, needs Matt's approval)" until he says yes) */
   tips?: Record<string, string>;
+  /** the tips (by mechanic, as `tips`) that are a stage's own TEACH line: Dot waits for a clear moment and keeps it up its reading
+   *  time, and no stock lesson cuts it (protoStage.ts StageHint.teach) */
+  teachTips?: readonly string[];
 }
 
 // ───────────────────────────── a section ─────────────────────────────
