@@ -465,3 +465,11 @@ lines); Matt sees them in the release.
   (2) "I prefer you leading me through the 1-3 build at least. You are doing what i want... That important to me." Ruling: this lead
   session (session_01FhBbYP63h7cCX8DyW69stq) is NOT rotated before 1-3 is on Matt's test link; it stays lean (handover current, short
   reads) so it lasts. If it must end, the next lead picks up from reference/handoffs/lead.md RIGHT NOW block.
+- 2026-11-12 11:22-11:23 AM ET, Matt: "Would it make sense to get me the 1-3 before 1-2? That way the bar is set and i can see where we
+  are. Possibly tonight before 10pm?" and "Rather know where we are than to keep guessing and thinking we are on the right track if we
+  arent." Ruling (the lead agrees): 1-3 FIRST, on Matt's test link tonight by about 9 PM ET, shown as it really is: the lead judges the
+  stills first and names every stand-in or rough spot plainly in the message; 1-2 rides along only if it passes the lead's look and
+  never delays 1-3. Order: W1C (Fable) lays 1-3 + pushes W1-TRAPS-LIST.md first; a Hugging Face painting job for 1-3's trap art starts
+  from that list; INT-2 (Opus high, packet reference/packets/2026-11-12/INT-2.md) merges everything onto t-int-2; key stills to Matt
+  about 5-6 PM (show first); test link about 9 PM. P11 retired 11:21 AM (t-11-pass@36a4ef1c verified). Duplicate R-165.129: the lead's
+  (Matt's thorn bed) keeps it; t-int-engine's "eight tool-side tests red" becomes R-165.139 in INT-2.
