@@ -76,8 +76,9 @@ A2 (ADR-001). Sections 0a-0b below are still true.
 - **Read before quoting an unflown number:** a stage with no JUDGED row (reach.ts) lays to the unflown reach (230 px double; three
   World 1 sections ask 253-256 and THROW) and carries `NOT_JUDGED_ALL` (pipeline applyVerdicts): its "clean" is not the verdicts'.
   1-2 needs its own flown rows before `library.ts` without `--flown` means what `--flown` means.
-- **The engine steps one `StageClock`** where `gameTime += dt` was; `gameTime` is its time (`engineClock.test.ts`). No stage declares
-  a clock yet: serve `ModeHost.clock(id)` from `this.clock.read(id)` when a brief carries `clocks`.
+- **The engine steps one `StageClock`** where `gameTime += dt` was; `gameTime` is a view of it, read AND written through the clock
+  (`engineClock.test.ts`): harnesses place game time (`realPlay.ts` `t`, `tools/perf/frozen.mjs`), so never copy the clock over it. No
+  stage declares a clock yet: serve `ModeHost.clock(id)` from `this.clock.read(id)` when a brief carries `clocks`.
 - **Look, not done:** a hollow under about 70 px wide reads as a column of roots (the banks' end faces meet over it, the ground
   painter); the slab's left end face peeks; the pictures are not in the stage preload. REPORT.md "Polish check" has all of it.
 - **To see a hollow in the real page:** a worktree, `tools/engine/library.ts` copied into `src/game/gen2/` without its main block, and

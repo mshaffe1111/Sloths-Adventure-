@@ -1,4 +1,4 @@
-# EN-W report, Engine, 2026-11-11 (written 11:36 PM ET). Branch `t-engine-wire` (base t-engine-predators@9bd5cee6 + t-engine-library@cac3a859). No PR.
+# EN-W report, Engine, 2026-11-11 (written 11:55 PM ET). Branch `t-engine-wire` (base t-engine-predators@9bd5cee6 + t-engine-library@cac3a859). No PR.
 Tonight's pieces connected on the 1-2 path. Nothing the game ships moved: stage lock 102/102, seedlist 1-1 PASS, on the final code.
 
 ## THE REAL NUMBER (step 4), 120 rolls, seeds 1-120, `npx tsx tools/engine/library.ts --seeds 120 --par 3`
@@ -32,9 +32,12 @@ Tonight's pieces connected on the 1-2 path. Nothing the game ships moved: stage 
    world's `lessons` (an EARLIER stage only, and only where the old rule does not already count it); the built config carries it;
    `doubleAllowed`, `validateStage`, easyMode, `jumpLinkGap` and the inspector read it. No stage id. Planted test 0 of 5 then 5 of 5;
    with the flag taken off the same eight 1-2 builds are refused. World 1 ships no `lessons` row: no shipped config gains the field.
-5. **The one clock on the fixed step** (`engine.ts`, +5 -1 lines): the engine holds a `StageClock`, steps it where `gameTime += dt` was,
-   and `gameTime` is its time. `engineClock.test.ts`: 900 steps of the real engine, `Object.is` each step against the plain sum; red
-   before. No stage declares a clock, so nothing reads a beat yet.
+5. **The one clock on the fixed step** (`engine.ts` +7 -2, `clock.ts` +3): the engine holds a `StageClock`, steps it where
+   `gameTime += dt` was, and `gameTime` is a VIEW of it (read and written through the clock). `engineClock.test.ts`: 900 steps of the
+   real engine, `Object.is` each step against the plain sum. **My first wiring was wrong and the core suite caught it:** it copied the
+   clock over `gameTime` each step, which threw away what harnesses set (`realPlay.ts` `t`, `tools/perf/frozen.mjs`): 5 World 4
+   real-engine tests failed (4-7's rocks, 4-8's guard and chick, 4-6's eaglets, 4-2's chimes). Fixed with a planted test (red on the
+   copying version); those files are green (w4LongDrop, w4Runtime 15 pass and its 1 known TODO). No stage declares a clock yet.
 
 ## Polish check (I looked at the four stills, upright and sideways): PAINTED, NOT YET POLISHED
 - Good: real painted thorns stand in the pit's dark, wall to wall; the hurt floor's mossy slab no longer shows under them.
@@ -46,13 +49,19 @@ Tonight's pieces connected on the 1-2 path. Nothing the game ships moved: stage 
 - Not wired: the two pictures load on the first frame that shows a hollow, not in the stage preload (stageSheets is keyed by stage id).
 - The catalog (CATALOG-MASTER.csv) still files both rows under origin/art-director; not regenerated.
 
-## Checks on the final code (times ET)
+## Checks on the final commit c709e16 (times ET)
 - tsc clean. Stage lock **102/102** (`lockall --layouts 2`, base recorded at 9bd5cee6). `seedlist 1-1 --check` PASS (200 seeds).
-- artcheck PASS, knowncheck PASS. **Main JS 4,000,463 B; base 3,995,402 B: +5,061 B** (the library merge about 1,470, the painter,
-  the clock, the double). **chunkcheck FAILS by 6,159 B** (it failed at the base by 1,098 B; this branch makes it worse).
-- gen2 + worlds + library + the new tests on the final code, the core suite, drawcheck, buildcheck: see the last lines below.
-- NOT run: clipcheck, kbdcheck, tierBots, roadmapcheck (shallow clone).
+- gen2 + worlds + library + the new tests: **425 of 425** (run on 189fba4 + the stills; the two commits after it touch engine.ts,
+  clock.ts and one test only). artcheck PASS, knowncheck PASS. The page loads and plays 1-1 in a browser on the head.
+- **Main JS 4,000,504 B; base 3,995,402 B: +5,102 B** (the library merge about 1,470; the painter, the clock, the double the rest).
+  **chunkcheck FAILS by 6,200 B** (it failed at the base by 1,098 B; this branch makes it worse).
+- **Core suite:** the first full run was on the wrong clock wiring (above). The re-run on c709e16 was still going when this was
+  written (the machine has 4 cores); its result is in the message to the lead, or it says "not finished".
+- **NOT run: drawcheck** (started twice; starved by the suites beside it, then cut for time; the painter draws only where a stage has
+  a hurt floor, and no shipped stage has one), **buildcheck** (one run beside the suites read Easy p95 157 ms, over 150: noisy, not
+  re-run alone), clipcheck, kbdcheck, tierBots, roadmapcheck (shallow clone).
 
 ## What's left, in order
 1. Fly 1-2 (its JUDGED row): then the unflown number is the judged one. 2. The ground painter's end faces over a narrow hollow, and
-Roughs 2-4. 3. Preload and catalog rows for the two pictures. 4. Bytes: the main chunk is 6,159 B over its limit.
+Roughs 2-4. 3. Preload and catalog rows for the two pictures. 4. Bytes: the main chunk is 6,200 B over its limit.
+5. Run alone on a quiet machine: drawcheck, buildcheck, the core suite, tierBots.
