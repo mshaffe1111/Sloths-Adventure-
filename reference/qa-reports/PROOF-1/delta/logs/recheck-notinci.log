@@ -1,0 +1,37 @@
+# PROOF-1 re-check on 1480e843, 13:39 ET
+entries 17
+['?']
+{'file': 'src/game/mixer/codeVariety.test.ts', 'why': "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"}
+list = the 17 old files exactly
+== plant: orphan test (staged) + its entry
+-- ciTests.test:
+# pass 3
+# fail 0
+-- knowncheck, default base (merge-base with origin/main, as on a PR):
+known-list check against 585ef376
+  src/game/ciTests.known.json: new list (18 entries), not on the base yet
+PASS
+exit 0
+-- knowncheck, KNOWN_BASE=1480e843 (the list as committed):
+known-list check against 1480e843
+✗ src/game/ciTests.known.json: 1 entry ADDED (a known list only shrinks; fix the defect instead):
+    tools/zzplant/orphan.test.ts
+FAIL
+exit 1
+-- clean:
+PASS
+== R-165.152: my PROOF-1 plant (async function returning the plugin) + 2 more shapes
+# pass 4
+# fail 1
+# pass 4
+# fail 1
+# pass 5
+# fail 0
+clean:
+# pass 5
+# fail 0
+== R-165.153: roster.ts functions left:
+0
+2: * predators/roster — who has which habit, and each world's cast (reference/design/PREDATORS.md §2). Data only: no functions
+13:export function inWorld(def: PredatorDef, world: number): PredatorDef {
+PASS
