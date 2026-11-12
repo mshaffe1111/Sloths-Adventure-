@@ -650,3 +650,8 @@ lines); Matt sees them in the release.
   true swap = the parrot snake (green; mouth-wide warning; drops to a lower branch and slips away) -> R-165.166, Matt's call (asked now;
   conflicts with his R-165.141 "glides"); W5's orchid mantis is Asian -> dead-leaf mantis, R-165.167 (later); its "Inspired by" line
   corrected. Rest of the built cast checks out Neotropical. Tonight's link ships the glide as is, named.
+- 2026-11-12 6:59 PM ET, Matt on R-165.166: asked whether a yellow rainforest snake exists (yes: the eyelash viper's golden form, coiled on
+  branches like ours), then ruled: "keep it the way that it is... As long as we have a yellow snake and there's a yellow snake that exists,
+  I say we just change the name... It's a video game." RENAME only (story keeper picks the name, every player-facing mention), the look and
+  the glide stay (R-165.141/.148 unchanged). The nature check's bar, written in TEAM.md: the kind and look must be real to the place;
+  behaviour may be storybook.
