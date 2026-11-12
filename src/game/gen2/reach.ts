@@ -102,6 +102,10 @@ export const JUDGED: Record<string, ReachScope> = { '1-1': 'normal-1-1' };
 /** is this stage judged on the flown arcs (THE BOUNDARY: a stage with a JUDGED row, on both settings) */
 export const judgedOnArcs = (stageId: string): boolean => Object.hasOwn(JUDGED, stageId);
 
+/** is this BUILT stage judged on the flown arcs: a stage gen2 built (it carries its gen2 record) whose id has a JUDGED row. A stage
+ *  the old builder laid under such an id (an old layout, the testers' control course) is not: every reader of a built stage asks this */
+export const builtOnArcs = (st: { config: { id: string }; gen2?: unknown }): boolean => !!st.gen2 && judgedOnArcs(st.config.id);
+
 /** where a stage's setting has flown rows (reach.md "Scope"): Normal by its JUDGED row, Easy anywhere; undefined: unflown (`reach.unflown`) */
 export function scopeOf(stageId: string, setting: Difficulty): ReachScope | undefined {
   if (setting === 'easy') return 'easy-any';

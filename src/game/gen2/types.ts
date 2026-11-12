@@ -193,6 +193,9 @@ export interface WorldManifest {
    * trimmed. A required section that fits no node of the stage is an authoring mistake, and the build says so
    */
   required?: Record<string, Array<{ section: string; phase?: Phase }>>;
+  /** this world's row for each engine slot a brick's piece may name (SectionPiece.slot, A13): the style its platform takes here and the
+   *  inventory pieces that may draw it (built from the world's inventory file: gen2/brickSlots.ts worldSlots) */
+  slots?: Readonly<Record<string, { style: NonNullable<Platform['style']>; art: readonly string[] }>>;
   /** mechanic -> the stage that teaches it first (a later stage takes it as known: no tip, and sections that use it are open) */
   lessons?: Record<string, string>;
   /** mechanic -> Dot's line for a 'tip' socket (under 10 words; a new line is marked "(new, needs Matt's approval)" until he says yes) */
@@ -279,6 +282,10 @@ export interface SectionPiece {
   h?: number;
   place: PlaceRule;
   style?: Platform['style'];
+  /** a BRICK's piece (GAME-MAP A13): the inventory's engine slot it fills (art/inventory.ts ArtRow.engine_slot, 'landing/platforms solid
+   *  log'), in place of one world's `style`: the lay takes its look from the world's own row for the slot (WorldManifest.slots), so one
+   *  section lays in every world that has the slot; a world with no row for it fails the section by name */
+  slot?: string;
   /** a landing (a jump lands on it): Easy widens it by EASY_LANDING px on the side the jump comes from */
   landing?: boolean;
   /** part of the main route (what the repair pass may stretch or bridge); a high road's branch is not */
@@ -397,6 +404,8 @@ export interface SectionTemplate {
   feel?: readonly string[];
   /** what it must never serve: never laid in a stage that owns any of these (manifest.owns) */
   not?: readonly string[];
+  /** out of every pool, and why (a stage picked by need, GraphBrief.pick, has no stage list to leave it off) */
+  parked?: string;
   phases: Phase[];
   /** 1 (gentle) .. 10 (hard): picked when the node's tension, scaled into the stage's band, is near it */
   difficulty: number;
@@ -553,6 +562,27 @@ export interface GraphBrief {
    *  a fall past the bottom anywhere that is not water sets him back on the ledge he left, nothing lost (Gen2Meta.softFalls; the
    *  engine's softOn). The stage's gaps and soft zones are laid exactly as without it */
   softFalls?: boolean;
+  /** the stage's petals stay LOW (routing item 6; 1-2's story rule, "petals low on bark the whole way"): no petal arc is laid over
+   *  any gap; pickups come only from the sections' `pickup` sockets, at their `dn`, and a harvest's top-up (low already) */
+  petals?: 'low';
+  /** off the road pays in BLOOMS (routing item 6, the lead 11-11: "exploring always pays"): a `pickup` socket on a piece off the
+   *  road (its placed `main` false: a high road, a side perch; a stump is on the road) lays `fruit`, which counts toward a harvest's
+   *  goal when gathered and is never in its quota. The top-up and the trim count and move petals only */
+  offRoad?: 'fruit';
+  /** the stage's pits are HOLLOWS (the lead 11-11 8:30 PM: the hazard under a gap is the brief's, applied by the lay, so a stage
+   *  needs no re-cut copy of a section to change it): every pit place its sections lay, past the hurt floor's `clearStart` from the
+   *  spawn, gets the world's hurt floor (WorldManifest.hurtFloor) as a place marked `hurt` does. Seams, water, glide and block
+   *  gaps stay as they are.
+   *  `lesson`: only under the sections that teach or use the hurt floor's lesson (a chain brick `uses` it: the thorns lie under the
+   *  chains, and every other section keeps its soft pits) */
+  pits?: 'hurt' | 'lesson';
+  /** the stage's pool is picked by NEED, not by a list of stages (the lead 11-11: a section is a brick, never one stage's): every
+   *  section of the world that is not parked, whose content type the stage's deal holds (or that is structural, or names none) and
+   *  that serves nothing the stage must never hold (`not`). A section's `feel` is then never read as the stages it serves: it only
+   *  EXCLUDES, against `refuse`. `refuse`: what this stage never holds: a section whose `feel` names one is out of the pool, and a
+   *  socket whose `allow` starts with one (another stage's Dot line, its prop) stays empty, so a shape never brings another stage's
+   *  words with it. What a section needs, uses and teaches is judged at each node, as everywhere */
+  pick?: { refuse?: readonly string[] };
 }
 /** a content type (NODES.md §7.2): what fills a content node; `structural` sections (arrive, rest, exit) sit outside the mix */
 export type ContentType = 'ground' | 'floating' | 'climb' | 'bounce' | 'rope' | 'crumble' | 'water' | 'hazard' | 'puzzle';
@@ -575,6 +605,9 @@ export interface PlacedPiece {
   platform: Platform;
   main: boolean;
   landing: boolean;
+  /** a brick's piece: the slot it named, and the piece of this world's row that draws it (an inventory ArtRow.id) */
+  slot?: string;
+  art?: string;
 }
 
 export interface PlacedSection {

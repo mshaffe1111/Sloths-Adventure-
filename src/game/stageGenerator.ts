@@ -7,7 +7,7 @@ import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { pick11, play11Seed, roll11Seed, withPlaySeed } from './testlink1_1.ts';
-import { judgedOnArcs, linkArcs } from './gen2/reach.ts';
+import { builtOnArcs, linkArcs } from './gen2/reach.ts';
 import { buildPlayStage } from './gen2/seedList.ts';
 import { w1Finish, w1World } from './gen2/worlds/w1.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
@@ -2949,7 +2949,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
 /** the platforms a gen2 stage's pickups are placed against (finishStage: trails, finds, fixPickups): on 1-1 the level jumps the flown
  *  arcs cross too (R-165.61, gen2/reach.ts linkArcs), so a pickup past a 240-262 px gap is not moved back; every other stage as before */
 export function finishReach(stage: GeneratedStage, difficulty: Difficulty): number[] {
-  return validateStage(stage, { rooms: false, ...(judgedOnArcs(stage.config.id) ? { arcs: linkArcs(difficulty, stage.config.id) } : {}) }).reachableIds;
+  return validateStage(stage, { rooms: false, ...(builtOnArcs(stage) ? { arcs: linkArcs(difficulty, stage.config.id) } : {}) }).reachableIds;
 }
 
 function finishStage<T extends GeneratedStage>(stage: T, reachableIds: number[]): T {

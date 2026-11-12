@@ -9,7 +9,7 @@
  */
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Difficulty } from './difficulty.ts';
-import { judgedOnArcs, linkArcs } from './gen2/reach.ts';
+import { builtOnArcs, linkArcs } from './gen2/reach.ts';
 import type { Platform, Vine } from './types.ts';
 import { HANG_DROP, ROPE_OVERLAP, ropeYAt } from './rope.ts';
 import { maxRise } from './protoCheck.ts';
@@ -376,12 +376,12 @@ function cutSpans(spans: Array<[number, number]>, x0: number, x1: number): Array
 
 /**
  * validateStage as the game judges the stage (INT-1-1): on 1-1 with the flown arcs of its own setting (gen2/reach.ts linkArcs, the
- * boundary judgedOnArcs; stageGenerator.ts finishReach and the pipeline pass the same), every other stage the closed form, unchanged. The
+ * boundary builtOnArcs: a stage gen2 built, never an id alone; stageGenerator.ts finishReach and the pipeline pass the same), every other stage the closed form, unchanged. The
  * tests that ask "is this shipped stage beatable" ask it this way; validateStage alone on 1-1 reads its 253-256 px double test gaps as
  * past reach (the closed form never flew them)
  */
 export function validateAsJudged(stage: GeneratedStage, opts: CheckOptions = {}): CheckResult {
-  if (!judgedOnArcs(stage.config.id)) return validateStage(stage, opts);
+  if (!builtOnArcs(stage)) return validateStage(stage, opts);
   const d = (stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty ?? 'normal';
   return validateStage(stage, { ...opts, arcs: opts.arcs ?? linkArcs(d, stage.config.id) });
 }

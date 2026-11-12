@@ -847,6 +847,8 @@ interface LocalPiece {
   h: number;
   shape: SectionTemplate['pieces'][number]['shape'];
   style?: Platform['style'];
+  /** a brick's piece: its engine slot (SectionPiece.slot) */
+  slot?: string;
   main: boolean;
   landing: boolean;
   /** an obstacle to hop (an `on` block): a beat */
@@ -1145,7 +1147,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on',
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -1350,6 +1352,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const ropes: Rope[] = [];
   const zones: Zone[] = [];
   const heartFalls: Laid['heartFalls'] = [];
+  // (a stage that teaches the hurt floor's lesson lays no hollow by brief before the lesson's showing piece ends: `hazard.untaught` by
+  // construction. The x past which the brief's hollows may lie: nowhere until the teach is laid)
+  let hurtFrom = M.graphs?.briefs?.[budget.id]?.teaches?.includes(M.hurtFloor?.lesson ?? '') ? Infinity : -Infinity;
   // (World 1's floor families, M.floorRoll: the roll's hop family, drawn from its own stream (no other world draws it), sets how deep
   // this slot's soft pits lie; every other world's pits are M.pitDepth as before)
   const FR = M.floorRoll;
@@ -1610,6 +1615,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       : (budget.band[0] + (budget.band[1] - budget.band[0]) * n.tension - budget.band[0]) / (budget.band[1] - budget.band[0]);
     const room = M.corridor;
     const lean = cur.y < room.top + room.soft ? 1 : cur.y > room.bottom - room.soft ? -1 : 0;
+    const home = M.graphs?.briefs?.[budget.id]?.trend !== 'level' || Math.abs(cur.y - M.ground.y) <= LEVEL_SWING ? 0 : Math.sign(M.ground.y - cur.y);
     const weight = (t: SectionTemplate) => {
       let w = (t.weight ?? 1) * Math.exp(-Math.abs(t.difficulty / 10 - want) * 4);
       if (n.want?.some((tag) => t.sockets.some((s) => s.allow?.includes(tag)) || t.name.includes(tag))) w *= 3;
@@ -1619,6 +1625,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (endY < room.top || endY > room.bottom) return 0;
       const ed = exitDyOf(t);
       if (lean !== 0) w *= Math.sign(ed) === lean ? 3 : ed === 0 ? 1 : 0.3;
+      // (a level stage, GraphBrief.trend: the route swings round the height it began at. Past LEVEL_SWING px from it the way back is
+      // weighed up, and a section that would carry it further off is never the pick while one that would not fits the slot)
+      if (home !== 0) { if (Math.sign(ed) === -home && cands.some((c) => Math.sign(exitDyOf(c)) !== -home)) return 0; if (Math.sign(ed) === home) w *= 4; }
       // (World 1's floor families: the roll's hop family weighs its hop and jump sections; a world without floorRoll never sees it)
       if (FR && t.floor) w *= t.floor === 'hop' ? 0.1 + 1.9 * fam : 0.1 + 1.9 * (1 - fam);
       // (a rolled node's height and terrain dials: its own way up or down, and its terrain family, weighed up)
@@ -1727,8 +1736,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       let dy = 0;
       const lim1 = riseCap(false, 1, budget);
       if (join === 'step') {
-        // (up or down by a hop, leaning back toward the corridor's middle)
-        const middle = (M.corridor.top + M.corridor.bottom) / 2;
+        // (up or down by a hop, leaning back toward the corridor's middle; on a level stage, GraphBrief.trend, toward the height it began at)
+        const middle = M.graphs?.briefs?.[budget.id]?.trend === 'level' ? M.ground.y : (M.corridor.top + M.corridor.bottom) / 2;
         const dir = cur.y + L.exit.y > middle ? -1 : 1;
         dy = dir * (20 + j * (lim1 * 0.8 - 20));
       } else if (join === 'pit' || join === 'jump') {
@@ -1778,8 +1787,12 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           placed.vines.push({ key: lp.key, vine: v, ...(h.swing ? { swing: h.swing } : {}), ...(h.window !== undefined ? { window: h.window } : {}), ...(h.gap ? { gap: [R(ox + h.gap[0]), R(ox + h.gap[1])] as [number, number] } : {}) });
           continue;
         }
-        const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, lp.style, !!lp.crumble);
-        placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing });
+        // (A13, one brick library across worlds: a piece that names its engine slot takes this world's row for it, its style and one of
+        // its inventory pieces by its own place (no shared stream moves); a world with no row fails the section by name, never a stand-in)
+        const row = lp.slot ? M.slots?.[lp.slot] : undefined;
+        if (lp.slot && !row?.art.length) throw new Error(`gen2 section ${tpl.id}: piece ${lp.key} asks slot "${lp.slot}" and world ${budget.world} has no row for it`);
+        const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, row?.style ?? lp.style, !!lp.crumble);
+        placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing, ...(row ? { slot: lp.slot, art: row.art[Math.floor(rngFor(seed, 83, p.x, p.y)() * row.art.length)] } : {}) });
       }
       const pieceOf = (k: string) => {
         const q = placed.pieces.find((pp) => pp.key === k);
@@ -1799,10 +1812,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (dx > 0) asks.push({ x0: cur.x, x1: ox, yTake: cur.y, yLand: oy, move: 'single', thin: entryP.height < BLOCK_H.px, key: 'seam', section: placed.uid });
       for (const k of L.asks ?? []) asks.push({ ...k, x0: ox + k.x0, x1: ox + k.x1, yTake: oy + k.yTake, yLand: oy + k.yLand, section: placed.uid });
       if (dx > 0 && join === 'jump') { const before = platforms.length; catchUnder(cur.x, ox, Math.max(cur.y, oy)); placed.seam.push(...platforms.slice(before)); }
+      if (hurtFrom === Infinity && tpl.teaches === M.hurtFloor?.lesson) { const sh = placed.pieces.find((p) => p.key === 'show')?.platform; hurtFrom = sh ? sh.x + sh.width : placed.x1; }
       for (const g of L.gaps) {
         const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
         gaps.push(g0);
-        if (g.hurt) {
+        // (or by the stage's brief, GraphBrief.pits: every section pit past the row's clearStart, with no mark on the section)
+        const bp = M.graphs?.briefs?.[budget.id]?.pits, byBrief = (bp === 'hurt' || (bp === 'lesson' && !!M.hurtFloor && (tpl.teaches === M.hurtFloor.lesson || !!tpl.uses?.includes(M.hurtFloor.lesson)))) && !!g.pit && !g.water && !g.putBack && !g.back && g0.x0 >= Math.max(SPAWN_X + (M.hurtFloor?.clearStart ?? 0), hurtFrom);
+        if (g.hurt || byBrief) {
           // (a hollow, a place marked `hurt`: the world's hurt floor, ONE marked piece at its row's depth under the lower lip, wall to wall,
           // no steps out, the banks either side reaching down to it; the zone over it, lip to lip, carries the floor's top as its hurt line.
           // Normal: a heart. Easy: soft. The depth is picked off the gap's x, so the roll's stream is the same with or without the mark)
@@ -1975,6 +1991,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       for (const g of gaps) g.y += down;
       for (const k of asks) { k.yTake += down; k.yLand += down; }
       for (const z of zones) { z.top += down; z.bottom += down; z.baseY += down; for (const l of z.lights ?? []) l.y += down; }
+      // (a hollow's hurt line is its floor's top: it moves with the floor (found on 1-1's sections, briefPits.test.ts: the line stood
+      // `down` px over the floor on every rolled stage, which is every World 1 stage))
+      for (const z of heartFalls) if (z.y !== undefined) z.y += down;
       for (const q of sections) {
         q.entry.y += down;
         q.exit.y += down;
@@ -2144,13 +2163,16 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const C = sink.collectibles;
   /** a flower's look from a spot (its own, or its row's first: a row or an arc of flowers is one species, stageQuality.test.ts) */
   const lookAt = (x: number, y: number) => M.flowers[Math.floor(rngFor(seed, 29, R(x), R(y))() * M.flowers.length)];
-  const flower = (x: number, y: number, rowLook?: (typeof M.flowers)[number]) => {
+  /** the stage's brief (GraphBrief.petals, .offRoad: what its pickups are and where they may hang is the brief's, not a section's) */
+  const brief = M.graphs?.briefs?.[budget.id];
+  const flower = (x: number, y: number, rowLook?: (typeof M.flowers)[number], type: 'flower' | 'fruit' = 'flower') => {
     if (C.some((c) => Math.hypot(c.x - x, c.y - y) < 40)) return;
     // (its look from its own spot, not the shared stream: a flower skipped for overlapping must not move every roll after it)
     const look = rowLook ?? lookAt(x, y);
-    C.push({ id: sink.nextCollectibleId(), type: 'flower', botanicalVariant: look, x: R(x), y: R(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
+    C.push({ id: sink.nextCollectibleId(), type, botanicalVariant: look, x: R(x), y: R(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
   };
   const tipsSaid = new Set<string>();
+  const refuse = M.graphs?.briefs?.[budget.id]?.pick?.refuse;
   // (lessons from earlier stages need no tip here)
   for (const [m, st] of Object.entries(M.lessons ?? {})) if (stageOrder(st) < stageOrder(budget.id)) tipsSaid.add(m);
 
@@ -2309,6 +2331,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     let objectives = 0;
     for (const [ki, k] of sec.sockets.entries()) {
       const s = k.socket;
+      // (what the stage's brief refuses stays empty, GraphBrief.pick: another stage's line or prop never comes with a shape)
+      if (refuse && s.allow?.some((a) => refuse.some((r) => a.startsWith(r)))) continue;
       // (each socket's chance from its own stream: whatever Easy or Normal did with the sockets before it, it rolls the same)
       const r0 = rngFor(seed, 17, si, ki)();
       const want = (s.chance ?? 1) > r0 && (!s.phases || s.phases.includes(sec.phase));
@@ -2367,11 +2391,13 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         const n = s.count ?? 1;
         const span = Math.min(s.span ?? 0, k.piece.width - 40);
         const rowLook = lookAt(k.x, k.y);
+        // (off the road pays in blooms where the brief says so: a piece the lay placed with `main` false)
+        const what = brief?.offRoad === 'fruit' && sec.pieces.some((p) => p.platform === k.piece && p.main === false) ? 'fruit' : 'flower';
         for (let i = 0; i < n; i++) {
           const x = n === 1 ? k.x : k.x - span / 2 + (span * i) / (n - 1);
-          flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP), rowLook);
+          flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP), rowLook, what);
         }
-        fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what: 'flower', x: k.x, y: k.y });
+        fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what, x: k.x, y: k.y });
       } else if (s.role === 'objective') {
         const wantN = graphObjectives(laid, sec);
         if (objectives >= wantN) continue;
@@ -2445,7 +2471,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // petal arcs over the jumps (half a beat each, E1), and a harvest's top-up to its laid count
   for (const [gi, g] of laid.gaps.entries()) {
     const arc = rngFor(seed, 31, gi)() <= 0.7;
-    if (g.x1 - g.x0 < 90 || !arc) continue;
+    // (GraphBrief.petals 'low': no arc over any gap)
+    if (g.x1 - g.x0 < 90 || !arc || brief?.petals === 'low') continue;
     const arcLook = lookAt(g.x0, g.y);
     for (let i = 0; i < 3; i++) {
       const tt = (i + 0.5) / 3;
@@ -2458,7 +2485,10 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       for (const p of s.pieces) {
         if (flowers() >= budget.quota.lay) break;
         if (!p.main || p.platform.width < 200) continue;
-        for (let x = p.platform.x + 60; x < p.platform.x + p.platform.width - 60 && flowers() < budget.quota.lay; x += 90) flower(x, p.platform.y - FLOWER_UP);
+        // (never inside a piece standing on this one, a stump or a block: levelCheck refuses the petal and a harvest at its laid count
+        // cannot give it up, so the roll failed; with GraphBrief.petals and .offRoad the top-up lays most of a stage's petals)
+        const y = p.platform.y - FLOWER_UP, clear = (x: number) => !laid.platforms.some((q) => x >= q.x && x <= q.x + q.width && y > q.y + 2 && y < q.y + q.height - 2);
+        for (let x = p.platform.x + 60; x < p.platform.x + p.platform.width - 60 && flowers() < budget.quota.lay; x += 90) if (clear(x)) flower(x, y);
       }
     }
   }
@@ -2886,10 +2916,11 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
         fixed = true;
         continue;
       }
-      m = /^(flower|leaf|heart) #(\d+)/.exec(err);
+      m = /^(flower|leaf|fruit|heart) #(\d+)/.exec(err);
       if (m && /out of reach|inside platform|overlap|outside the walkable|past the shrine/.test(err)) {
         const id = Number(m[2]);
-        if (budget.archetype !== 'harvest' || st.collectibles.filter((c) => c.type === 'flower').length > budget.quota.lay) {
+        // (a bloom, GraphBrief.offRoad, is never in a harvest's count: one that cannot stand goes as a petal does outside a harvest)
+        if (m[1] === 'fruit' || budget.archetype !== 'harvest' || st.collectibles.filter((c) => c.type === 'flower').length > budget.quota.lay) {
           st.collectibles = st.collectibles.filter((c) => c.id !== id);
           fixed = true;
           continue;
@@ -2937,10 +2968,18 @@ export function tipWords(tips: Readonly<Record<string, string>> | undefined, id:
   return tips?.[id];
 }
 
+/** a level stage's swing (GraphBrief.trend 'level'): how far the route may stand from its starting height before the pick leans back */
+const LEVEL_SWING = 110;
 /** a stage's pool: its world's sections whose `feel` names the stage (or is unset) and whose `not` names nothing the stage owns */
 export function stagePool(M: WorldManifest, stageId: string): SectionTemplate[] {
   const owns = new Set(M.owns?.[stageId] ?? []);
-  return M.sections.filter((t) => (!t.feel || t.feel.includes(stageId)) && !(t.not ?? []).some((x) => owns.has(x)));
+  // (a brief that picks by need, GraphBrief.pick: the world's whole library less what is parked, what the deal holds no type for and
+  // what the stage refuses; `feel` names no stage there)
+  const brief = M.graphs?.briefs?.[stageId], pick = brief?.pick, deal = brief?.deal ?? M.graphs?.mix;
+  const fits = (t: SectionTemplate) => (pick
+    ? !t.parked && !t.feel?.some((f) => pick.refuse?.includes(f)) && (!t.content || t.content === 'structural' || !deal || t.content in deal)
+    : !t.feel || t.feel.includes(stageId));
+  return M.sections.filter((t) => fits(t) && !(t.not ?? []).some((x) => owns.has(x)));
 }
 
 /**
