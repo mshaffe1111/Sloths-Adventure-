@@ -23,6 +23,10 @@ Running (all report to the lead, session_01FhBbYP63h7cCX8DyW69stq; story keeper 
   re-audit of AF + INT-2.
 MATT 11:23 AM: 1-3 FIRST on his test link TONIGHT by ~9 PM, shown as it really is (stand-ins named); 1-2 rides along only if it passes.
 P11 retired 11:21 AM; F12 retired 11:29 AM (t-12-fly@ed329f74, 1-2 118/120 clean both settings, chain.mount = R-165.138, R-165.140 = Dot card; $14.72). INT-2 packet: reference/packets/2026-11-12/INT-2.md (t-int-2), session_01FhBbYJyqGNbY6jh1mWA5WW, Opus high, started 11:24 AM, stop 4:30 PM.
+11:45 AM: the lead judged W1C's 1-3 stills (d80abcba): PASSES as gameplay; stand-in contraption art NOT at the bar (green poles =
+umbrellas, stone = grey egg, plain hive, handle not "punch me"); soil seam in trap1 upright; Dot's knockout line on a trap -> story keeper ruling.
+ART-W1 (Opus high, session_01FhBbYMpG8Whyc8dYXFUYBR, t-w1-art from t-w1-creatures, packet reference/packets/2026-11-12/ART-W1-TRAPS.md,
+GPU cap $6, stop 4:30 PM): paints handle, anchor, vine, hive, stone on Hugging Face; contact sheet to the lead before cutting.
 NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes + t-pit-polish + t-audit-fixes (+ t-12-fly), renumber the
   duplicate R-165.129, full gate; (2) PROOF-1 re-audits only the delta; (3) ask Matt ONE question: ship the R-165.125 sound levels or hold
   (D47), then 0.9.7 on his word (PR, he merges, check deploy + APK); (4) 1-2 and 1-3 to Matt's test link by Fri 11-13 (1-3 by Fable/W1C,
