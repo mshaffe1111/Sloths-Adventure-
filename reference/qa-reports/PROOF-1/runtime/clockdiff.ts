@@ -33,11 +33,14 @@ for (const id of ids) {
     const e = r.e;
     const keys = Object.keys(e).filter((k) => !SKIP.has(k) && e[k] && typeof e[k] === 'object' && !(e[k].getContext) && !ArrayBuffer.isView(e[k]));
     const frames: Record<string, string>[] = [];
+    // (every field hashed on the first 30 steps and the last; in between only the fields that moved in those 30, to keep it fast)
+    const hashAll = (ks: string[]) => { const f: Record<string, string> = { t: String(e.gameTime), vc: String(e.vineClock) }; for (const k of ks) { try { const s = JSON.stringify(ser(e[k])); if (s && s !== '[]' && s !== '{}') f[k] = h(s); } catch { /* cyclic or odd: skipped */ } } return f; };
+    let moving: string[] = keys;
     for (let i = 0; i < FRAMES; i++) {
       r.frame({});
-      const f: Record<string, string> = { t: String(e.gameTime), vc: String(e.vineClock) };
-      for (const k of keys) { try { const s = JSON.stringify(ser(e[k])); if (s && s !== '[]' && s !== '{}') f[k] = h(s); } catch { /* cyclic or odd: skipped */ } }
+      const f = hashAll(i < 30 || i === FRAMES - 1 ? keys : moving);
       frames.push(f);
+      if (i === 29) moving = keys.filter((k) => frames.some((g) => g[k] !== frames[0][k]));
     }
     res[id] = { frames };
   } catch (err: any) {
