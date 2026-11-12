@@ -60,7 +60,7 @@ import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts
 import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { READY_MS, readyBuiltStage } from './game/stageReady.ts';
-import { releasesStage, resumeAction, startLoaded } from './components/screenFlow.ts';
+import { releasesStage, resumeAction, startLoaded, storyBefore } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
 import { keepScreenOn, nativeApp } from './game/appShell.ts';
 import { ConfirmDialog } from './components/nav/Nav.tsx';
@@ -625,14 +625,8 @@ export default function App() {
         handleToggleMute();
         return;
       }
-      if (screen === 'title') {
-        // a dialog (Save & Load, New Game, the Menu) owns the keyboard while it is open
-        if (document.querySelector('.ui-scrim, .pm-scrim, .nv-scrim')) return;
-        if (e.code === 'Space' || e.code === 'Enter') {
-          e.preventDefault();
-          startLevel(resumeLevel);
-        }
-      } else if (screen === 'playing') {
+      // (the title: Space and Enter press its own Play, TitleScreen.tsx, through the how-to and the mode card like a tap)
+      if (screen === 'playing') {
         if (e.code === 'Escape' || e.code === 'KeyP') {
           e.preventDefault();
           pauseGame();
@@ -666,6 +660,8 @@ export default function App() {
   }, [screen, activeLevel, allLevels, resumeLevel, newSkills]);
 
   // Start a specific level
+  /** the game's first stage (the prologue plays before it) */
+  const firstStageId = allLevels[0].id;
   const startLevel = useCallback((lvl: LevelConfig) => {
     // a stage in another world lets the last world's sheets go before this one's story or boss intro loads its own (atlasLoader.ts)
     enterWorld(lvl.worldIndex);
@@ -675,15 +671,14 @@ export default function App() {
     setActiveLevel(lvl);
     setSelectedWorldId(lvl.worldIndex);
 
-    // First visit to a world: play its story beat, then continue
-    if (lvl.miniIndex === 1 && !hasSeenWorldStory(lvl.worldIndex)) {
-      setScreen('world_story');
-    } else if (lvl.objectiveType === 'boss_lair') {
-      // Boss showdown cutscene before the fight
-      setScreen('boss_intro');
-    } else {
-      launchEngine(lvl);
-    }
+    // the story before the stage, by whatever door it was entered (screenFlow.ts storyBefore): the prologue before the game's first
+    // stage (it goes on into that stage), a world's arrival scene on a first visit, a guardian's intro before the fight
+    const before = storyBefore(lvl, { firstStage: lvl.id === firstStageId, worldSeen: hasSeenWorldStory(lvl.worldIndex) });
+    if (before === 'prologue') {
+      setStoryFrom('new');
+      setScreen('story_cutscene');
+    } else if (before) setScreen(before);
+    else launchEngine(lvl);
   }, []);
 
   // dev only: jump straight into any level (for testing and screenshots); `layout` picks a roll (the designed one when left out)
@@ -1189,13 +1184,8 @@ export default function App() {
       {/* Title Screen View */}
       {screen === 'title' && (
         <TitleScreen
-          onStartGame={() => {
-            // a brand-new player meets the story first
-            if (!resumeInfo && !hasSeenWorldStory(1)) {
-              setStoryFrom('new');
-              setScreen('story_cutscene');
-            } else startLevel(resumeLevel);
-          }}
+          // (a brand-new player meets the story first: startLevel plays the prologue before the first stage)
+          onStartGame={() => startLevel(resumeLevel)}
           resume={resumeInfo}
           onSaveLoaded={onSaveLoaded}
           onUnlockToggled={() => setAllLevels(generateAllLevels())}

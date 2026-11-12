@@ -58,3 +58,20 @@ export function startLoaded(engine: { start(): void; pause(): void }, pausedMean
   if (pausedMeanwhile) engine.pause();
   engine.start();
 }
+
+/**
+ * What plays before a stage starts, whichever way it was entered (the title's button or keys, the map, a link). The game's first stage
+ * has the prologue before it (who Pokey and Meeca are), and its world's arrival scene comes AFTER it, as the reward for clearing it;
+ * every other world's first stage has that world's arrival scene; a guardian's stage its intro. `worldSeen` is the stage's world flag
+ * (for the first stage, the prologue's). Audit C-05 / saves #9: the map's 1-1 played World 1's after-1-1 scene before it, the prologue
+ * never, and the same scene again after the clear.
+ */
+export function storyBefore(
+  lvl: { miniIndex: number; objectiveType?: string },
+  o: { firstStage: boolean; worldSeen: boolean },
+): 'prologue' | 'world_story' | 'boss_intro' | null {
+  if (o.firstStage) return o.worldSeen ? null : 'prologue';
+  if (lvl.miniIndex === 1 && !o.worldSeen) return 'world_story';
+  if (lvl.objectiveType === 'boss_lair') return 'boss_intro';
+  return null;
+}
