@@ -222,6 +222,9 @@ export function applySave(store: Store, save: SaveFile) {
     throw e;
   }
   for (const k of before.keys()) if (!(k in save.data)) store.removeItem(k);
+  // what the replaced game did on this phone goes with it, as at a New Game (Dot's memory, the run flag, the journal marks)
+  for (const k of store.keys()) if (!isSaveKey(k) && isAdventureKey(k)) store.removeItem(k);
+  forgetDotSession();
   reloadDifficulty();
 }
 
