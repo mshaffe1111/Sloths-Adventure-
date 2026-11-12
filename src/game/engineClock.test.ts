@@ -25,3 +25,16 @@ test("the engine's game time is its stage clock's, bit for bit, and is still the
   }
   assert.ok(sum > 20, `only ${sum} s of game time in 900 steps`);
 });
+
+test('a harness that places game time places the clock, and the next step counts on from there (realPlay.ts `t`)', () => {
+  // (planted: red when the engine copied the clock over `gameTime` each step, which threw away what w4LongDrop.test.ts and
+  // tools/perf/frozen.mjs set: 4-7's rocks were then flown at the wrong moment of their cycle)
+  const sim = new RealPlay('1-1', 1);
+  const e = sim.e;
+  for (let i = 0; i < 30; i++) e.update(1 / 30);
+  sim.t = 123.5;
+  assert.ok(Object.is(e.clock.time(), 123.5) && Object.is(e.gameTime, 123.5), `placed at 123.5, the clock reads ${e.clock.time()}`);
+  e.update(1 / 30);
+  assert.ok(Object.is(e.gameTime, 123.5 + 1 / 30), `one step on from 123.5 reads ${e.gameTime}`);
+  assert.ok(Object.is(e.clock.time(), e.gameTime));
+});

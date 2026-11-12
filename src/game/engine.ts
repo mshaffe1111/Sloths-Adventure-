@@ -534,9 +534,11 @@ export class GameEngine {
   private gov = new FrameGovernor();
 
   private hitstopTimer: number = 0;
-  private gameTime: number = 0;
-  /** the stage's one clock (clock.ts): stepped on the fixed step, and `gameTime` is its time, so every timer reads the one clock */
+  /** the stage's one clock (clock.ts), stepped on the fixed step. `gameTime` is its time, read and written through it, so every timer
+   *  reads the one clock and a harness that places game time (realPlay.ts `t`, tools/perf/frozen.mjs) places the clock */
   private clock: StageClock = stageClock([], false);
+  private get gameTime(): number { return this.clock.time(); }
+  private set gameTime(t: number) { this.clock.seek(t); }
   private standingOnId: number = -1;
   private riverHinted = false;
   /** World 3: how drowsy the spore cloud makes him right now, 0 (awake) to 1 (in the thick of it); it follows the cloud and ends with it. And how strongly the screen shows it */
@@ -1504,7 +1506,6 @@ export class GameEngine {
       return;
     }
     this.clock.step(dt);
-    this.gameTime = this.clock.time();
     this.irisOpen = Math.max(0, this.irisOpen - dt);
     this.vineClock += dt;
     // every liana swings on its own (the climbing vines hang still): it is drawn, and caught, where its swing puts it now

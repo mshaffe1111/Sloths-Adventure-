@@ -133,6 +133,8 @@ export interface StageClock {
   step(dt: number): void;
   /** game time, s */
   time(): number;
+  /** place game time (a test harness or a frozen frame sets the moment; the game itself only steps) */
+  seek(t: number): void;
   read(id: ClockId, shift?: number): ClockRead;
 }
 
@@ -142,6 +144,7 @@ export function stageClock(defs: readonly ClockDef[], easy: boolean): StageClock
   return {
     step: (dt) => { t += dt; },
     time: () => t,
+    seek: (v) => { t = v; },
     read: (id, shift = 0) => {
       const b = beats.get(id);
       if (!b) throw new Error(`no clock named ${id} in this stage`);
