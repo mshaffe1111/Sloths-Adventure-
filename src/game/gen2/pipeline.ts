@@ -2482,6 +2482,9 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     fills.push(f.fill);
     f.sec.beats.push({ x: f.x, letter: 'C' });
     kit.spawn?.(f.e, byCreature.get(f.kind)!, sink);
+    // (a kit's spawn hook may seat its animal elsewhere on its own patch (World 1: a sleeper under its trap's load): the fill follows
+    //  it, or keptFoes, which finds an animal by its fill's x, reads it as dropped and Easy lays none there)
+    if (R(f.e.x) !== f.fill.x) f.fill.x = R(f.e.x);
   }
   const topped = topUpFoes(laid, budget, kit, seed, sink, safe, openX, [...foes.filter((f) => kept.has(f)), ...props]);
   fills.push(...topped);

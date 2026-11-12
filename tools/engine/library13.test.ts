@@ -81,6 +81,10 @@ test('the first snake of the stage is asleep on both settings, under the lesson 
     assert.equal(r.firstAsleep, true, `${name}: the first snake, at x ${r.snakes[0]?.x}, is awake`);
     const lesson = r.traps.find((t) => t.section === 'w1-13-lesson');
     assert.ok(lesson?.snake?.asleep && lesson.snake.x === r.snakes[0].x && lesson.load === 'hive' && lesson.kind === 'vine', `${name}: ${JSON.stringify(lesson)}`);
+    // a sleeper lies right under its load (the middle of its patch), on both settings: from the vine the whole of it is on an upright
+    // screen. (Seated by the kit's spawn hook; the builder's fill follows it, or Easy reads the sleeper as dropped and lays none)
+    for (const t of r.traps) if (t.snake?.asleep) assert.equal(t.snake.x, t.loadX, `${name}: a sleeper ${Math.abs(t.snake.x - t.loadX)} px from its load's line (${t.section})`);
+    assert.ok(r.traps.filter((t) => t.snake?.asleep).length >= 2, `${name}: the lesson's and the gallery's sleepers`);
   });
 });
 
