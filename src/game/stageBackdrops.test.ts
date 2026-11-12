@@ -2,6 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { createHash } from 'node:crypto';
 import { FAR_BY_STAGE, FAR_ONLY, stageBackdropStem } from './stageBackdrops.ts';
 import { backdropStem } from './paintedBackdrops.ts';
 
@@ -32,7 +33,7 @@ test('backdrops: every world alternates three or four painted sets, its early li
 });
 
 test('backdrops: each new far strip is there at the far layers\' height (1302, native resolution: X-16; seamless: VI-4), well under the size limit; and the sinkhole is Matt\'s redo', () => {
-  assert.deepEqual([...FAR_ONLY].sort(), ['w10dusk', 'w10gale', 'w10storm', 'w1b', 'w1kapok', 'w1rain', 'w1sun2', 'w2evening', 'w2mist', 'w2rapids', 'w3cavern', 'w3crystal', 'w3sinkhole', 'w4mist', 'w4storm', 'w4terraces', 'w6dawn', 'w6dusk', 'w6moon', 'w7court', 'w7dawn', 'w7dusk', 'w8dawn', 'w8night', 'w8sunset', 'w9ash', 'w9dawn', 'w9night']);
+  assert.deepEqual([...FAR_ONLY].sort(), ['w10dusk', 'w10gale', 'w10storm', 'w1b', 'w1kapok', 'w1rain', 'w1sun2', 'w1sunrise', 'w2evening', 'w2mist', 'w2rapids', 'w3cavern', 'w3crystal', 'w3sinkhole', 'w4mist', 'w4storm', 'w4terraces', 'w6dawn', 'w6dusk', 'w6moon', 'w7court', 'w7dawn', 'w7dusk', 'w8dawn', 'w8night', 'w8sunset', 'w9ash', 'w9dawn', 'w9night']);
   for (const stem of FAR_ONLY) {
     const f = new URL(`../assets/backdrops/${stem}-far.webp`, import.meta.url);
     const buf = fs.readFileSync(f);
@@ -50,9 +51,11 @@ test('backdrops: each new far strip is there at the far layers\' height (1302, n
   }
 });
 
-test('no stage plays in w1sunrise while its far strip has the edge orchids that meet where it wraps (F13, 11-12: one big white shape behind 1-3\'s route)', () => {
-  // (1-1 left it on 11-05 for w1sun2, repainted with no orchids and a clean join; 1-3 tonight. A repaint of w1sunrise's far without
-  //  them, judged by the lead, is what lets a stage back onto it: change this test with that repaint)
-  assert.deepEqual(Object.entries(FAR_BY_STAGE).flatMap(([w, m]) => Object.entries(m).filter(([, set]) => set === 'w1sunrise').map(([s]) => `${w}-${s}`)), []);
-  assert.equal(stageBackdropStem('1-3'), stageBackdropStem('1-1'), "1-3's sky is 1-1's sunrise tonight");
+test("1-3 plays its own sunrise again, on the far strip REPAINTED without the edge orchids that met where it wraps (F13's stills, 11-12: one big white shape behind 1-3's route)", () => {
+  // (the repaint is ART-W1B's, passed by the lead: no orchids, log or branch; its wrap join 1.69 against 0.69 between any two columns,
+  //  the old far's 12.9, measured by tools/art/sky13/seam.py. This pins THAT file: the orchid strip cannot come back unseen; a new
+  //  repaint changes the pin with its own join measure. No image decoder is in the game's tests, so the join is measured there)
+  assert.equal(stageBackdropStem('1-3'), 'w1sunrise');
+  const buf = fs.readFileSync(new URL('../assets/backdrops/w1sunrise-far.webp', import.meta.url));
+  assert.equal(createHash('sha256').update(buf).digest('hex').slice(0, 16), '1ee64942f0d2301d', 'w1sunrise-far.webp is not the repaint the lead passed');
 });
