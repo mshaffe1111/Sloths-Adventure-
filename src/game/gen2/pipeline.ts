@@ -127,9 +127,9 @@ export function maxGap(dyUp: number, dbl: boolean, margin: number): number {
  * (reachGlide), never more than what levelCheck links on that stage (jumpLinkGap, which counts the glide once every player has it), and
  * never less than a double jump's own envelope (a stage before the glide is guaranteed gets a double-jump gap).
  */
-export function glideGap(dyUp: number, budget: Pick<StageBudget, 'margin' | 'world' | 'stage'>): number {
+export function glideGap(dyUp: number, budget: Pick<StageBudget, 'margin' | 'world' | 'stage' | 'doubleTaught'>): number {
   const dbl = maxGap(dyUp, true, budget.margin);
-  const link = jumpLinkGap(dyUp, budget.world, budget.stage) - 4;
+  const link = jumpLinkGap(dyUp, budget.world, budget.stage, budget.doubleTaught) - 4;
   const g = reachGlide(dyUp, true);
   return g < 0 ? dbl : Math.max(dbl, Math.min(budget.margin * g, link));
 }
@@ -188,9 +188,9 @@ export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: Lia
  * jump from mission 6, and the leaf glide once every player has it (World 5 on: 457 px on the flat), as levelCheck reckons them (its
  * 0.97 and the take-off slack). -1 when no jump gets that high. A swing's perch lies past it, or the swing is not needed.
  */
-export function jumpLinkGap(dyUp: number, world: number, stage: number): number {
+export function jumpLinkGap(dyUp: number, world: number, stage: number, doubleTaught?: boolean): number {
   const mission = (world - 1) * 10 + stage;
-  let r = doubleAllowed({ worldIndex: world, miniIndex: stage }) ? Math.max(reachJump(dyUp, false), reachJump(dyUp, true)) : reachJump(dyUp, false);
+  let r = doubleAllowed({ worldIndex: world, miniIndex: stage, doubleTaught }) ? Math.max(reachJump(dyUp, false), reachJump(dyUp, true)) : reachJump(dyUp, false);
   if (skillGuaranteedAt('glide', mission)) r = Math.max(r, reachGlide(dyUp, false), reachGlide(dyUp, true));
   return r < 0 ? -1 : r * 0.97 - TAKEOFF_SLACK;
 }
@@ -290,10 +290,16 @@ export function planBudget(config: LevelConfig, manifest: WorldManifest, difficu
   const fights = archetype === 'purge' || archetype === 'gauntlet';
   const check = fights && easy ? Math.max(1, Math.round(goal * 0.6)) : goal;
   const lay = archetype === 'harvest' ? Math.ceil(goal * 1.5) : archetype === 'rescue' || archetype === 'relic_hunt' ? goal + 1 : fights ? check + 2 : goal;
+  // (packet E12 item 5, the built stage's half: the double counts on a stage an EARLIER stage's lesson taught it for, the world's
+  // `lessons` row, as the node code's V3 reads it; carried only where the old rule does not already count it, so no stage that
+  // rule covers gains a field)
+  const dblLesson = manifest.lessons?.double;
+  const doubleTaught = dblLesson !== undefined && stageOrder(dblLesson) < stageOrder(config.id) && !doubleAllowed(config);
   return {
     id: config.id,
     world: config.worldIndex,
     stage: config.miniIndex,
+    ...(doubleTaught ? { doubleTaught: true as const } : {}),
     archetype,
     difficulty,
     D,
@@ -1084,11 +1090,11 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       // (past every jump: from the swing's ledge, and from every step of the soft pit under it, whose climb goes back to that ledge)
       const minFor = (dy: number) => {
         const perchY = a.y + dy;
-        let min = a.x + a.w + jumpLinkGap(-dy, budget.world, budget.stage) + 20;
+        let min = a.x + a.w + jumpLinkGap(-dy, budget.world, budget.stage, budget.doubleTaught) + 20;
         if ((budget.pit === 'soft' || pl.soft) && !pl.water) {
           const pit = backPit(a.x + a.w, a.x + a.w + 4000, a.y, perchY, lo.pitDepth ?? 0, riseCap(false, 1, budget) * PIT.hop);
           for (const st of [{ x: a.x + a.w, top: pit.floor, w: 0 }, ...pit.steps]) {
-            const g = jumpLinkGap(st.top - perchY, budget.world, budget.stage);
+            const g = jumpLinkGap(st.top - perchY, budget.world, budget.stage, budget.doubleTaught);
             if (g >= 0) min = Math.max(min, st.x + st.w + g + 20);
           }
         }
@@ -2770,7 +2776,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   const watery = budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water);
   const kills = (y: number) => (watery ? y >= bobLow + 36 : y >= Math.max(req.config.levelHeight, R(bobLow + 120)) + 116);
   const bobFoot = Math.max(bobLow, ...floors.filter((y) => budget.world === 9 || kills(y)).map((y) => y + 30));
-  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(bobFoot + 120)) };
+  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(bobFoot + 120)), ...(budget.doubleTaught ? { doubleTaught: true as const } : {}) };
   const meta: Gen2Meta = {
     seed,
     plan: laid.plan,

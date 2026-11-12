@@ -131,7 +131,9 @@ export function arcGap(arcs: JumpArcs, a: Platform, b: Platform, allowDouble: bo
  */
 export const EARLY_DOUBLE: ReadonlySet<string> = new Set(['1-1']);
 /** the validator's rule for whether a double jump may be counted on a stage: from stage 6 (1-6's practice spot), and EARLY_DOUBLE */
-export const doubleAllowed = (cfg: { worldIndex: number; miniIndex: number }) => (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6 || EARLY_DOUBLE.has(`${cfg.worldIndex}-${cfg.miniIndex}`);
+/** (packet E12 item 5: or on a stage that carries the fact, `doubleTaught`: gen2 sets it where the world's `lessons` say an EARLIER
+ *  stage taught the double, pipeline.ts planBudget; never read off an id) */
+export const doubleAllowed = (cfg: { worldIndex: number; miniIndex: number; doubleTaught?: boolean }) => !!cfg.doubleTaught || (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6 || EARLY_DOUBLE.has(`${cfg.worldIndex}-${cfg.miniIndex}`);
 
 /** Can the player get from platform a to platform b with jumps (and a double jump)? */
 export function jumpOK(a: Platform, b: Platform, allowDouble = true, arcs?: JumpArcs): { ok: boolean; gap: number } {

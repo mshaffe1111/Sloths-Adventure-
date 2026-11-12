@@ -80,6 +80,9 @@ export interface LevelConfig {
   worldIndex: number; // 1-10
   miniIndex: number;  // 1-10
   id: string;         // e.g. "1-1"
+  /** (gen2) an earlier stage's lesson taught the double jump, so this stage's checks count it (levelCheck.ts doubleAllowed); set only by
+   *  pipeline.ts planBudget from the world's `lessons`, and only where the old rule (mission 6 on) does not already count it */
+  doubleTaught?: true;
   name: string;
   objectiveType: ObjectiveType;
   targetCount: number;

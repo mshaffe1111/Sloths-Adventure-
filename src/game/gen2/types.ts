@@ -468,6 +468,9 @@ export interface StageBudget {
   id: string;
   world: number;
   stage: number;
+  /** the world's `lessons` say an EARLIER stage taught the double and the old rule (levelCheck doubleAllowed) does not already count it
+   *  here: the built stage's config carries it, and the lay's link reach reads it (packet E12 item 5) */
+  doubleTaught?: true;
   archetype: Archetype;
   difficulty: Difficulty;
   /** D(world, stage) (F2), inside the world's band (§1b) */
