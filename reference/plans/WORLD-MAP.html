@@ -135,7 +135,7 @@ section{margin-top:28px}
   </section>
 
   <section id="v-creatures" hidden>
-    <div class="sec-h"><h2>Creatures: who they are and how you beat them</h2><p>Designed by Fable on 11-11 from the real animals, with the story keeper's background. Every creature warns before it can hurt, and every way to beat one ends with it chased off, fleeing, stunned or dozing: never eaten. Story keeper review in progress.</p></div>
+    <div class="sec-h"><h2>Creatures: who they are and how you beat them</h2><p>Designed by Fable on 11-11 from the real animals, with the story keeper's background. Every creature warns before it can hurt, and every way to beat one ends with it chased off, fleeing, stunned or dozing: never eaten. Passed by the story keeper with four changes, applied.</p></div>
     <div id="creatures"></div>
   </section>
 
@@ -447,17 +447,17 @@ const CREAT=[
  ["Stone Sentry","W7 star","Guard","(ours) A temple statue.","A doorway that hits back. It can't be hit; it strikes only what comes within reach, and turns its head to noise.","Eyes glow, stone grinds.",["Break the cracked pillar onto it","Push a block into it","Make a noise: it turns its head","Can't be punched or stomped"]],
  ["Fruit Bats","W8","Sweep","Roost by the hundred; one startled bat sets off the lot.","One creature made of many. A ripple of wings runs along the roost on a beat; cross while they settle. They shoo, they never bite.","A flutter runs through the roost.",["Go still as the ripple passes","Light settles them"]],
  ["Capuchins","W4 star","Thief, lookout, guard","Clever, loud, steal food, post lookouts.","The thief sneaks a petal and teases; the lookout stares, then calls the eagle; the guard paces a ledge. They never hurt Pokey.","",["Thief: punch, it drops the petal and runs","Lookout: lure it with fruit, or take cover","Guard: the wind blows it off its ledge (4-9)"]],
- ["Mimic Bush","W8, new","Guard","(ours)","A bush that blinks. There is never a mimic without the blink.","Blinks twice and rustles.",["Light shows it","Punch after it snaps"]],
+ ["Mimic log or night bloom","W8, new","Guard","(ours)","A log or night bloom that blinks. Never a bush: bushes stay safe in every world. There is never a mimic without the blink.","Blinks twice and rustles.",["Light shows it","Punch after it snaps"]],
  ["The Drake's Gaze","W9 star","Sweep, remembers","(the guardian's eye, not a body)","\"Visitor.\" then \"Intruder.\" The first time, stillness hides you; once it has seen you, only shade does.","The glow turns before the beam.",["Go still (the first time only)","Shade","Cover"]],
 ];
 const NEWC=[
  ["Dangler","W5","A spider on a line, the way real orb spiders drop. It bobs on the clock, comes down when a thread hums, and climbs back: a yo-yo gate."],
  ["Orchid Mantis","W5 star","Has a disguise pose: the flower that is the trap. The real orchid mantis looks exactly like a bloom."],
  ["Crab","W6","Mangrove crabs wave one big claw and bolt down their holes when the tide comes. It guards a root gap; the tide beats it, a kick flips it."],
- ["Piranha","W6","Drawn to splashing. A hard landing in water calls the shoal; calm strokes pass. Throw a splash elsewhere, or lead them to the caiman."],
+ ["Piranha","W6","Drawn to splashing. A hard landing in water calls the shoal; calm strokes pass. They nip and scatter. Throw a splash elsewhere, or lead them to the caiman."],
  ["Beetle","W7","Dung beetles roll their ball in a straight line by starlight. It rolls a giant seed along its beat: the seed blocks you, pushes you, and is a ride if you hop on."],
 ];
-const CASTS=[["1 Emerald Canopy","snake, eagle, boa","the boa"],["2 Sunlit Riverbank","turtle, River King's guard, sleeping caiman, snake","the turtle"],["3 Mossy Grotto","ocelot, jaguar, thorn vine, grotto eyes","the ocelot"],["4 Mist Cascades","eagle, capuchin thief, lookout, guard, eaglets","the capuchins"],["5 Orchid Sanctuary","spider, seamstress, butler, dangler, orchid mantis","the mantis"],["6 Deep Mangrove","caiman, tayra, frog, crab, piranha","the tayra and the caiman"],["7 Ancient Ruins","stone sentry, boa, ocelot, beetle","the sentry"],["8 Twilight Treetops","night harpy, jaguar, bats, mimic bush, a dozing boa","the night harpy"],["9 Volcanic Jungle","the Drake's gaze, tayra, jaguar, night harpy","the gaze"],["10 Stormy Highlands","soldier, ocelot, and one of each earlier habit","every lesson at once"]];
+const CASTS=[["1 Emerald Canopy","snake, eagle, boa","the boa"],["2 Sunlit Riverbank","turtle, River King's guard, sleeping caiman, snake","the turtle"],["3 Mossy Grotto","ocelot, jaguar, thorn vine, grotto eyes","the ocelot"],["4 Mist Cascades","eagle, capuchin thief, lookout, guard, eaglets","the capuchins"],["5 Orchid Sanctuary","spider, seamstress, butler, dangler, orchid mantis","the mantis"],["6 Deep Mangrove","caiman, tayra, frog, crab, piranha","the tayra and the caiman"],["7 Ancient Ruins","stone sentry, boa, ocelot, beetle","the sentry"],["8 Twilight Treetops","night harpy, jaguar, bats, mimic log or bloom, a dozing boa","the night harpy"],["9 Volcanic Jungle","the Drake's gaze, tayra, jaguar, night harpy","the gaze"],["10 Stormy Highlands","soldier, ocelot, and one of each earlier habit","every lesson at once"]];
 document.getElementById("creatures").innerHTML=
  `<div class="flag"><b>Fable's big recommendation, for you to decide:</b> today Worlds 6, 7 and 8 share one list of six animals, which is part of why they feel alike. Give each world its own cast of 3 to 5 animals, one habit each, and a star. Five of the new ones use art we already own.</div>`+
  `<h3 class="ig">Each world's cast (proposed)</h3><div class="ideas">${CASTS.map(c=>`<div class="idea v-IN"><div class="ih"><span>World ${c[0]}</span></div><div class="it">${c[1]}</div><div class="wh">Star: ${c[2]}</div></div>`).join("")}</div>`+
