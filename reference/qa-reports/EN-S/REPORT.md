@@ -37,7 +37,7 @@ The biggest file is now `stagekit` 716,861 B (3,277,443 spare). Full lists: `bun
 | buildcheck (stage build, dev server: the split does not touch it) | PASS: normal p95 89 ms, easy p95 67 ms (budget 150) |
 | tierBots.test | PASS 7/7 |
 | start-up (`startuptime.mjs`, built games, CPU x4, medians of 7, `startup.log`) | title on screen: cold 8,494 -> 7,948 ms, warm 7,621 -> 7,585 ms: **not worse**. First paint is later by about 80 ms at x4 (304 -> 380 cold): 21 preload tags ahead of it |
-| offline (`offlineproof.mjs`, the built game under the deploy's base) | **PASS upright and sideways, 44/44 each**: the service worker caches all 37 scripts; offline, a cold start into 1-1, 2-1 ... 10-1: stage drawn, 0 page errors, 0 failed requests, every script answered by the service worker (`stills/`, looked at: 6-1, 8-1, 10-1 are whole stages with art) |
+| offline (`offlineproof.mjs`, the built game under the deploy's base) | **PASS upright and sideways, 44/44 each**: the service worker caches all 36 scripts; offline, a cold start into 1-1, 2-1 ... 10-1: stage drawn, 0 page errors, 0 failed requests, every script answered by the service worker (`stills/`, looked at: 6-1, 8-1, 10-1 are whole stages with art) |
 | Play Store build (`npm run build:store`) | its check passes; a browser smoke on that build: 1-1 and 7-1, upright and sideways, 0 errors |
 
 ## 5. Polish check
