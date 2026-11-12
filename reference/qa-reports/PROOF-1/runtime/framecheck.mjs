@@ -7,7 +7,7 @@ const url = which === 'main' ? MAIN : HEAD;
 const SECS = Number(process.argv[3] ?? 20);
 const browser = await chromium.launch();
 const out = [];
-for (const cond of ['baseline', 'cpu4', 'drop45', 'stall250', 'cpu4+drop45']) {
+for (const cond of (process.env.CONDS ?? 'baseline,cpu4,drop45,stall250,cpu4+drop45').split(',')) {
   const { ctx, page, errors } = await newPage(browser);
   await page.goto(url);
   await page.evaluate(seedDone, IDS);
@@ -37,7 +37,7 @@ for (const cond of ['baseline', 'cpu4', 'drop45', 'stall250', 'cpu4+drop45']) {
   const held = samples.filter((s) => s.p || s.a || s.d || s.h).length;
   const ratio = (b.g - a.g) / ((b.now - a.now) / 1000);
   const fps = (b.r - a.r) / ((b.now - a.now) / 1000);
-  out.push(`${which} ${cond}: game ${(b.g - a.g).toFixed(3)} s over real ${((b.now - a.now) / 1000).toFixed(3)} s = ratio ${ratio.toFixed(4)}; drawn ${fps.toFixed(1)} fps; held samples ${held}/${samples.length}; errors ${errors.length}; load ${os.loadavg()[0].toFixed(1)}`);
+  out.push(`${which} ${cond}: game ${(b.g - a.g).toFixed(3)} s over real ${((b.now - a.now) / 1000).toFixed(3)} s = ratio ${ratio.toFixed(4)}; drawn ${fps.toFixed(1)} fps; held samples ${held}/${samples.length}; errors ${errors.length}${errors.length ? ' ' + JSON.stringify(errors.slice(0, 2)) : ''}; per-second ratio min ${Math.min(...samples.slice(1).map((s, i) => (s.g - samples[i].g) / ((s.now - samples[i].now) / 1000))).toFixed(3)} max ${Math.max(...samples.slice(1).map((s, i) => (s.g - samples[i].g) / ((s.now - samples[i].now) / 1000))).toFixed(3)}; load ${os.loadavg()[0].toFixed(1)}`);
   console.log(out[out.length - 1]);
   await ctx.close();
 }
