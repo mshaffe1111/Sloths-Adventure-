@@ -87,6 +87,11 @@ as somebody gets through World 5 and on... not supposed to be where it's going t
   speaks only for a first-time mechanic, creature or hazard (once per save), the water warning, a locked exit, and real struggle (two deaths
   in one spot, two failed tries); at least 30 s between non-urgent lines. Puzzle rooms never give the answer on entry; nudges escalate only
   on struggle. No code-drawn highlight boxes, rings or arrows: to point, Dot flies to the actual object.
+- **No dead-zone landings (Matt, 2026-11-11 11:19 PM ET, from a play test of the live 1-2: "if I jump from a ledge, I can get either to a
+  platform or I can comfortably fall onto it, but it can't be in the in-between").** Every landing, and every pickup's platform, is
+  reachable by (a) a plain walk-off fall that lands with margin, or (b) a full jump that lands with margin with no ceiling (a log or
+  ledge above) cutting its arc. A landing reachable only by a mid-air correction (run at just the right speed, or start falling and then
+  jump) is refused. Pickups (petals) go only where one of those two clean paths reaches.
 
 ## 1b. The game gets harder as it goes (Matt, 2026-10-28)
 
