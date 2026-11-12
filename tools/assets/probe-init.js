@@ -38,6 +38,8 @@
           if (a.length === 2) { sw = iw; sh = ih; dw = iw; dh = ih; }
           else if (a.length === 4) { sw = iw; sh = ih; dw = a[2]; dh = a[3]; }
           else { sw = a[2]; sh = a[3]; dw = a[6]; dh = a[7]; }
+          // (a decode warm-up draws 4x4 px of a sheet 1:1 into a corner: atlasLoader.ts warmSheets. It says nothing about drawn size)
+          if (Math.abs(sw) <= 4 && Math.abs(sh) <= 4) return d.call(this, img, ...a);
           const m = this.getTransform();
           const k = Math.max(Math.abs(dw * Math.hypot(m.a, m.b)) / Math.max(1, Math.abs(sw)), Math.abs(dh * Math.hypot(m.c, m.d)) / Math.max(1, Math.abs(sh)));
           const tgt = idOf(this.canvas);

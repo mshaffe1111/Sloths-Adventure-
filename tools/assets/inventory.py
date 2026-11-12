@@ -48,7 +48,9 @@ for pr in probes:
     for u in pr.get('startup', []):
         startup.add(key(u))
     for life in pr['lives']:
-        scr = {int(k): v for k, v in life['screens'].items()}
+        # a canvas stretched by the browser (factor > 1: the game caps its backing at 2x) shows no more detail than its own pixels,
+        # so a screen counts at most 1; a canvas still at the default 300x150 (not yet sized) is left out
+        scr = {int(k): min(1.0, v) for k, v in life['screens'].items() if life['sizes'].get(k) != [300, 150]}
         edges = {int(k): {int(t): m for t, m in e.items()} for k, e in life['edges'].items()}
         memo = {}
 
