@@ -103,6 +103,14 @@ export const STRETCH_WORDS: Readonly<Record<string, string | null>> = {
   'w1-canopy-drop': 'the drops back down',
   // the rope
   'w1-ropes': 'the rope',
+  // 1-3 Branch Snakes: the drop traps and the bare branches (w1Arc13.ts)
+  'w1-13-lesson': 'the first hive',
+  'w1-13-again': 'the watching snake',
+  'w1-13-stone-stair': 'the stone on the stair',
+  'w1-13-other-way': 'the bare branches',
+  'w1-13-perch': 'the high perch',
+  'w1-13-gallery': 'three traps in a row',
+  'w1-13-finale': 'the last two snakes',
   // walking only: never offered
   'w1-forest-edge': null,
   'w1-morning-path': null,
@@ -117,6 +125,12 @@ export const STRETCH_WORDS: Readonly<Record<string, string | null>> = {
   'w1-log-walk': null,
   'w1-sunlit-log': null,
   'w1-quiet-arrival': null,
+  'w1-13-low-arrival': null,
+  'w1-13-root-arrival': null,
+  'w1-13-long-log': null,
+  'w1-13-twin-logs': null,
+  'w1-13-root-dip': null,
+  'w1-13-root-hump': null,
 };
 
 /** when the run's stretches are not known (the stage could not say): World 1's main moves */

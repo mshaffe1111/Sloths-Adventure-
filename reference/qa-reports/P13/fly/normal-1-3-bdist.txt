@@ -1,0 +1,6 @@
+
+[bdist] normal: widest level gap crossed off a floor mushroom whose right edge is d px before the lip (block far side)
+                         d    bounce alone   +air jump (best moment)
+                         0    178.0    335.0
+                        20    158.0    315.0
+                        40    138.0    295.0

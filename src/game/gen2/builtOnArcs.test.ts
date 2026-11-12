@@ -16,9 +16,9 @@ import { w1World } from './worlds/w1.ts';
 const level = (id: string) => ({ ...generateAllLevels().find((l) => l.id === id)!, unlocked: true });
 
 test('a stage the old builder laid is judged by the closed form even when its id has a JUDGED row; a gen2-built stage by the arcs', () => {
+  // (F12: 1-2 now has its own JUDGED row and the old builder still lays the shipped 1-2: the case this test planted is the real one)
   const id = '1-2';
-  assert.ok(!Object.hasOwn(JUDGED, id), 'the fixture id already has a row: take another old-builder stage');
-  JUDGED[id] = JUDGED['1-1'];
+  assert.equal(JUDGED[id], 'normal-1-2', '1-2 is judged on its own flown rows');
   try {
     let told = 0;
     for (let v = 1; v <= 6; v++) {
@@ -33,7 +33,7 @@ test('a stage the old builder laid is judged by the closed form even when its id
       assert.deepEqual(validateAsJudged(st, { rooms: false }).reachableIds, closed.reachableIds, `layout ${v}: the level check flew an old-builder stage`);
     }
     assert.ok(told > 0, 'the arcs and the closed form agree on all 6 layouts: the planted case tells nothing (take more layouts)');
-  } finally { delete JUDGED[id]; setLayoutVariant(null); }
+  } finally { setLayoutVariant(null); }
 });
 
 test('1-1 as Play builds it is still judged on its arcs (nothing moves)', () => {

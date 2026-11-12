@@ -35,7 +35,8 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
   1: [
     S('sprint', 'Into the Canopy', 'Run the high branches of the kapok trees and reach the shrine.'),
     S('harvest', 'The Petal Trail', 'Meeca left a trail of petals. Follow it and gather them.'),
-    S('purge', 'Branch Snakes', 'Clear the snakes off the branches with your Claw Punches.'),
+    // (the story keeper's line, 11-12, with the drop traps: it is gen2/worlds/w1Arc13.ts MISSION_13, held equal by library13.test.ts)
+    S('purge', 'Branch Snakes', 'Clear the branches. Shake a vine and the snakes glide off.'),
     S('ascent', 'Up the Kapok', 'Climb the giant kapok to the very top.'),
     S('harvest', 'Where She Walked', 'The petals go on. Gather more.'),
     S('vine_runner', 'First Lianas', 'Swing on the hanging lianas across the gaps in the canopy.'),

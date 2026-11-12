@@ -111,6 +111,12 @@ export interface StageHint {
    * (said the first time that stage is played)
    */
   firstOf?: string;
+  /**
+   * a stage's own TEACH line (its first trap, a new creature's way): Dot says it as a teach line, which waits for a clear moment (up
+   * to TEACH_WAIT_MS) rather than being old news after a few seconds, stays its full reading time, and is never cut by a stock lesson
+   * (dotLines.ts engineGuideLine `teach`). The stage's data says so; the engine names no stage
+   */
+  teach?: true;
 }
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }
