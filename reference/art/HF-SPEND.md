@@ -11,7 +11,9 @@ was left in total on 11-06; every job is logged here; the token never goes in co
 
 Running total today: ~$0.36. Left: about $70 - $0.36; $15 reserve untouched.
 
-## 2026-11-12: Matt hands Hugging Face to the lead
+## 2026-11-12
+Matt, 11:20 AM ET: "treat this as final budget" ($63.53; he may add more later, unknown). Plan every job against it; ~$10 reserve.
+: Matt hands Hugging Face to the lead
 Matt, 11:17 AM ET: "Hugging Face is 100 up to you. Get what you need when you need. Balance is 63.53. You can use it however."
 Balance: **$63.53**. The lead decides every job; each one is logged here with what it bought; about $10 kept in reserve.
 

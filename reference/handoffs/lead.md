@@ -29,6 +29,7 @@ NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes
 Rules learned today: judge every still before Matt sees it; re-judge when a helper replaces its stills; "as good or better", never
 pixel-identical (STAGE-RULES §5b); Matt-reported items tagged on ROADMAP the same turn; effort: xhigh only when needed, max when needed.
 Check-in trigger: re-arm send_later every 30 min while anyone works.
+Matt 11:20 AM: this lead leads him through the 1-3 build at least (do not rotate the lead before 1-3 is on the test link). HF $63.53 is the FINAL budget for now.
 
 ## Matt's direction (11-11 evening, his words)
 - "You determine what should be done... The only person on the team that stays is the storyteller... I'm looking for a leader that can lead."
