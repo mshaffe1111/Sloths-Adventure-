@@ -121,6 +121,11 @@ interface ItemRun {
   fromSource: boolean;
   /** in flight from a throw (it lands with a noise if it is a noisy thing), not from a set-down or a drop */
   thrown: boolean;
+  /**
+   * in flight from his own hands (a throw or a set-down): its quiet landing is a failed try (STUCK.fails). A fresh one dropping from
+   * its source, a trader's drop or a fall when its ground goes is not his try (audit P-06: one lost throw counted as two)
+   */
+  tried: boolean;
   /** the trader that holds it at the start (an index), or -1 */
   trader: number;
 }
@@ -454,7 +459,7 @@ export class KitPlay {
         const home = { plat, x: a.x, y: a.y };
         room.items.push({
           spec: pc, variant: pc.variant, r: ITEM[pc.variant].r, mode: tr ? 'trader' : 'rest', plat, x: a.x, y: a.y, body: { x: 0, y: 0, vx: 0, vy: 0 }, acc: 0,
-          knocked: new Set(), flipped: new Set(), wait: 0, basket: -1, spin: 0, home, fromSource: !!src, thrown: false, trader: ti,
+          knocked: new Set(), flipped: new Set(), wait: 0, basket: -1, spin: 0, home, fromSource: !!src, thrown: false, tried: false, trader: ti,
         });
       }
       this.rooms.push(room);
@@ -863,6 +868,7 @@ export class KitPlay {
       g.mode = 'fly';
       g.acc = 0;
       g.thrown = false;
+      g.tried = false;
       g.knocked = new Set();
       g.flipped = new Set();
     }
@@ -888,6 +894,7 @@ export class KitPlay {
     // (World 2: thrown up near a hanging cage's counter-basket, it goes into the basket, whichever way he faces)
     if (kind === 'up') aimUp(it.body, this.flightWorld(room, platforms));
     it.thrown = true;
+    it.tried = true;
     it.mode = 'fly';
     it.acc = 0;
     it.knocked = new Set();
@@ -923,6 +930,7 @@ export class KitPlay {
     const x = setDownX(p.x, f, plateXs, reach);
     it.body = { x, y: p.y - 4, vx: 0, vy: 0 };
     it.thrown = false;
+    it.tried = true;
     it.mode = 'fly';
     it.acc = 0;
     it.knocked = new Set();
@@ -970,6 +978,8 @@ export class KitPlay {
 
   /** a lost thing: it comes back to its source a moment later (one with no source is gone until the room starts again) */
   private lose(room: RoomRun, it: ItemRun, h: KitHost) {
+    // (one failed try, counted here: what comes back from its source next is not another)
+    it.tried = false;
     if (it.trader >= 0) {
       // (what a trader dropped comes back by the trader's stump: the trade is never undone)
       this.byTrader(room, it);
@@ -1092,14 +1102,16 @@ export class KitPlay {
               it.x = end.x;
               it.y = byId(end.plat)?.y ?? it.body.y;
               h.sfx('land');
-              landedQuiet = true;
+              if (it.tried) landedQuiet = true;
               // a thrown stone, pebble or acorn lands with a clack the watchers hear (noise.ts)
               if (it.thrown && ITEM[it.variant].noisy) this.noise(it.x, it.y, 'land', h);
             } else this.lose(room, it, h);
             it.thrown = false;
+            it.tried = false;
           } else if (end.kind === 'basket') {
             it.mode = 'basket';
             it.basket = end.idx;
+            it.tried = false;
             h.sfx('drop');
           } else this.lose(room, it, h);
         }

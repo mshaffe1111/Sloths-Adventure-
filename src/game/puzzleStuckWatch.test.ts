@@ -14,9 +14,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
-import { KitPlay } from './puzzlePlay.ts';
-import { KIT_STAGE_ID } from './kitStage.ts';
+import { KitPlay, type KitHost } from './puzzlePlay.ts';
+import { buildKitStage, kitStageConfig, KIT_STAGE_ID } from './kitStage.ts';
 import { confirmHeard, forgetSent } from './tipMemory.ts';
+import type { PlayerState } from './types.ts';
 
 const NUDGE = 'Something heavy for the plate?';
 
@@ -49,4 +50,65 @@ test('P-05: stuck in a room again on a later run of the stage, Dot gives her nud
   const kept = localStorage.getItem(`sloth_tips_${KIT_STAGE_ID}`);
   localStorage.removeItem(`sloth_tips_${KIT_STAGE_ID}`);
   assert.ok(retry.said.some((s) => s.text === NUDGE), `the later run: just as stuck, and she said only: ${retry.said.map((s) => s.text).join(' | ') || '(nothing)'} (kept on the phone: ${kept})`);
+});
+
+test('P-06: one thrown thing lost is one failed try, not two: no stuck help yet', () => {
+  const G = 580;
+  const st = buildKitStage(kitStageConfig());
+  const kit = new KitPlay(st.kit!, st.platforms);
+  const room = kit.rooms[0];
+  const acorn = room.items[0];
+  const p = { x: acorn.x - 30, y: G, vx: 0, vy: 0, facing: 1, grounded: true, climbing: false, walkCycle: 0 } as unknown as PlayerState;
+  const tips: string[] = [];
+  const h: KitHost = { t: 0, player: p, standingOn: 1, easy: false, tip: (key) => tips.push(key), float: () => {}, sfx: () => {} };
+  const none = { tap: false, up: false, side: false, sideDir: 0 };
+  const step = (n: number) => {
+    for (let i = 0; i < n; i++) {
+      h.t += 1 / 30;
+      kit.step(1 / 30, h, st.platforms);
+    }
+  };
+  step(2);
+  kit.control({ ...none, tap: true }, h, st.platforms);
+  assert.ok(kit.holding, 'the acorn is in his hands');
+  // at the room's left edge, thrown out of it
+  p.x = room.box.x0 + 30;
+  p.facing = -1;
+  step(1);
+  kit.control({ ...none, side: true, sideDir: -1 }, h, st.platforms);
+  step(30 * 4);
+  assert.equal(acorn.mode, 'rest', 'lost, and a fresh one has dropped from the oak');
+  assert.ok(Math.abs(acorn.x - acorn.home.x) < 2, 'back at its source');
+  assert.deepEqual(tips.filter((k) => /:(nudge|move)$/.test(k)), [], 'one miss brought the stuck help');
+});
+
+test('P-06 (planted the other way): two thrown things lost are two failed tries: the stuck help comes', () => {
+  const G = 580;
+  const st = buildKitStage(kitStageConfig());
+  const kit = new KitPlay(st.kit!, st.platforms);
+  const room = kit.rooms[0];
+  const acorn = room.items[0];
+  const p = { x: acorn.x - 30, y: G, vx: 0, vy: 0, facing: 1, grounded: true, climbing: false, walkCycle: 0 } as unknown as PlayerState;
+  const tips: string[] = [];
+  const h: KitHost = { t: 0, player: p, standingOn: 1, easy: false, tip: (key) => tips.push(key), float: () => {}, sfx: () => {} };
+  const none = { tap: false, up: false, side: false, sideDir: 0 };
+  const step = (n: number) => {
+    for (let i = 0; i < n; i++) {
+      h.t += 1 / 30;
+      kit.step(1 / 30, h, st.platforms);
+    }
+  };
+  for (let throwN = 0; throwN < 2; throwN++) {
+    p.x = acorn.x - 30;
+    p.facing = 1;
+    step(2);
+    kit.control({ ...none, tap: true }, h, st.platforms);
+    assert.ok(kit.holding, `throw ${throwN + 1}: the acorn is in his hands`);
+    p.x = room.box.x0 + 30;
+    p.facing = -1;
+    step(1);
+    kit.control({ ...none, side: true, sideDir: -1 }, h, st.platforms);
+    step(30 * 4);
+  }
+  assert.ok(tips.some((k) => /:nudge$/.test(k)), `two misses bring her nudge: ${tips.join(' | ')}`);
 });
