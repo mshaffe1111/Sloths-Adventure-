@@ -646,3 +646,7 @@ lines); Matt sees them in the release.
   standing duty: the story keeper's nature check before each level's design is judged (TEAM.md, story keeper "Integrated every time");
   the design doc carries a "Nature check" section; level.md step 0 gets the line when level.md lands. First use: 1-4 (D14's doc).
 - 2026-11-12 6:49 PM ET: D12 retired (archived after ls-remote t-12-design@6d2cb506). D12's whole session cost $86.18 (LEVEL-LOG 1-2 row).
+- 2026-11-12 6:52 PM ET: the story keeper's first nature check (on what's built): World 1's gliding golden snake is Asian (Chrysopelea);
+  true swap = the parrot snake (green; mouth-wide warning; drops to a lower branch and slips away) -> R-165.166, Matt's call (asked now;
+  conflicts with his R-165.141 "glides"); W5's orchid mantis is Asian -> dead-leaf mantis, R-165.167 (later); its "Inspired by" line
+  corrected. Rest of the built cast checks out Neotropical. Tonight's link ships the glide as is, named.
