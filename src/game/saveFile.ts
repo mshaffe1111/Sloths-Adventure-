@@ -177,10 +177,39 @@ export function parseSave(text: string): ParseResult {
   return { ok: true, save: { format: SAVE_FORMAT, version: SAVE_VERSION, savedAt: typeof o.savedAt === 'string' ? o.savedAt : '', summary: summarize(data), data, checksum: checksum(data) } };
 }
 
-/** replace the current game with the one in the save */
+/**
+ * replace the current game with the one in the save, all or nothing (PLAY-STORE-RULES §6.8, a full phone): the file's entries are
+ * written over the phone's first, and the phone's own entries the file does not have are removed only once every write has gone in.
+ * When a write throws, what was written is taken back (the added entries first, which frees the room to put back the old values) and
+ * the error goes on to the caller (SaveLoadDialog says it could not load), so the phone keeps the game it had.
+ */
 export function applySave(store: Store, save: SaveFile) {
-  for (const k of store.keys()) if (isSaveKey(k)) store.removeItem(k);
-  for (const [k, v] of Object.entries(save.data)) store.setItem(k, v);
+  const before = new Map<string, string>();
+  for (const k of store.keys()) {
+    if (!isSaveKey(k)) continue;
+    const v = store.getItem(k);
+    if (v !== null) before.set(k, v);
+  }
+  const written: string[] = [];
+  try {
+    for (const [k, v] of Object.entries(save.data)) {
+      written.push(k);
+      store.setItem(k, v);
+    }
+  } catch (e) {
+    for (const k of written) if (!before.has(k)) store.removeItem(k);
+    for (const k of written) {
+      const old = before.get(k);
+      if (old === undefined) continue;
+      try {
+        store.setItem(k, old);
+      } catch {
+        /* the storage takes nothing more: the rest is put back */
+      }
+    }
+    throw e;
+  }
+  for (const k of before.keys()) if (!(k in save.data)) store.removeItem(k);
   reloadDifficulty();
 }
 
