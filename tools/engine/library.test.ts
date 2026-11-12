@@ -53,6 +53,21 @@ test('the thorn bed lies only under the chain beats: never in the twist, the arr
   });
 });
 
+/** the pit between two capped pillars of one chain, by the pillars' width: chain.md §3, 75-110 between 110-130 px pillars, 35-70
+ *  between 150-170 px (Normal lays its 110 px pillars at the top of the band, so a miss falls in and costs) */
+function pitFaults(st: Any, d: string): string[] {
+  const under = (c: Any) => st.platforms.find((p: Any) => p.type !== 'bouncy' && Math.abs(p.y - (c.y + c.height)) <= 2 && p.x <= c.x + 0.5 && p.x + p.width >= c.x + c.width - 0.5);
+  const caps = st.platforms.filter((p: Any) => p.type === 'bouncy' && (under(p)?.width ?? 999) <= 200).sort((a: Any, b: Any) => a.x - b.x);
+  const out: string[] = [];
+  for (let i = 1; i < caps.length; i++) {
+    const a = caps[i - 1], b = caps[i];
+    if (b.x + b.width / 2 - (a.x + a.width / 2) > 270) continue;
+    const ua = under(a), ub = under(b), pit = ub.x - (ua.x + ua.width), [p0, p1] = ua.width >= 150 ? [35, 70] : [75, 110];
+    if (pit < p0 - 0.5 || pit > p1 + 0.5) out.push(`${d}: ${Math.round(pit)} px of pit between pillars at x ${Math.round(ua.x + ua.width)} (${p0}-${p1})`);
+  }
+  return out;
+}
+
 test("every chain inside chain.md §3's bands: cap to cap by the step, stumps 110 | 160 (the lesson and again 160 on both), the pit between pillars 75-110 | 35-70, caps per chain 2-5 | 2-3", () => {
   const band = (dy: number) => (dy > 45 ? [185, 200] : dy > 6 ? [195, 210] : dy < -6 ? [215, 225] : [205, 220]);
   each((st, d, s) => {
@@ -67,10 +82,8 @@ test("every chain inside chain.md §3's bands: cap to cap by the step, stumps 11
       run++;
       const [lo, hi] = band(dy);
       assert.ok(S >= lo && S <= hi, `${d} seed ${s}: caps ${Math.round(S)} px apart at x ${Math.round(a.x)} (step ${Math.round(dy)}: ${lo}-${hi})`);
-      // (the pit between two pillars, by the pillars' width: chain.md §3, 75-110 between 110-130 px pillars, 35-70 between 150-170 px)
-      const ua = under(a), ub = under(b), pit = ub.x - (ua.x + ua.width), [p0, p1] = ua.width >= 150 ? [35, 70] : [75, 110];
-      assert.ok(pit >= p0 - 0.5 && pit <= p1 + 0.5, `${d} seed ${s}: ${Math.round(pit)} px of pit between pillars at x ${Math.round(ua.x + ua.width)} (${p0}-${p1})`);
     }
+    assert.deepEqual(pitFaults(st, d), [], `${d} seed ${s}`);
     for (const sec of st.gen2.sections.filter((q: Any) => q.template.startsWith('w1-12-'))) {
       const wide = d === 'easy' || ['w1-12-lesson', 'w1-12-again'].includes(sec.template);
       for (const c of caps.filter((p: Any) => p.x > sec.x0 && p.x < sec.x1)) assert.equal(Math.round(under(c).width), wide ? 160 : 110, `${d} seed ${s}: ${sec.template}'s stump at x ${Math.round(c.x)}`);
@@ -102,6 +115,18 @@ function woodFaults(st: Any, d: string): string[] {
 
 test("the caps are his only footing over the thorns from the petals going up on, Normal (each cap its stump's width); the lesson, again and Easy keep their wood", () => {
   each((st, d, s) => assert.deepEqual(woodFaults(st, d), [], `${d} seed ${s}`));
+});
+
+test("PLANTED: a pit between pillars out of chain.md's band (Easy's stair, its last pillar slid 12 px in) is caught", () => {
+  const st = build(1, 'easy');
+  assert.deepEqual(pitFaults(st, 'easy'), []);
+  const sec = secOf(st, 'w1-12-up');
+  const bs = st.platforms.filter((p: Any) => p.type === 'bouncy' && p.x > sec.x0 && p.x < sec.x1).sort((a: Any, b: Any) => a.x - b.x);
+  const cap = bs[bs.length - 1];
+  const pillar = st.platforms.find((p: Any) => p.type !== 'bouncy' && Math.abs(p.y - (cap.y + cap.height)) <= 2 && p.x <= cap.x + 0.5 && p.x + p.width >= cap.x + cap.width - 0.5);
+  const planted = { ...st, platforms: st.platforms.map((p: Any) => (p === cap || p === pillar ? { ...p, x: p.x - 12 } : p)) };
+  const f = pitFaults(planted, 'easy');
+  assert.equal(f.length, 1, f.join('; '));
 });
 
 test('PLANTED: a 70 px cap left on a 110 px stump in the long chain (Normal) is bare wood a plain jump could use, and is caught', () => {
