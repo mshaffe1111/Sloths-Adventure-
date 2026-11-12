@@ -126,6 +126,11 @@ export const STRETCH_WORDS: Readonly<Record<string, string | null>> = {
   'w1-sunlit-log': null,
   'w1-quiet-arrival': null,
   'w1-13-low-arrival': null,
+  'w1-13-root-arrival': null,
+  'w1-13-long-log': null,
+  'w1-13-twin-logs': null,
+  'w1-13-root-dip': null,
+  'w1-13-root-hump': null,
 };
 
 /** when the run's stretches are not known (the stage could not say): World 1's main moves */

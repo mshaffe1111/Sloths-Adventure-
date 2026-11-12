@@ -56,10 +56,11 @@ const bed = (key: string, after: string, w: R2, dy: R2 = [0, 0]): SectionPiece =
  *  patrol and its load are the LOG's (their sockets are on it); he hops up onto it and steps down off its far end. Until 11-12 the
  *  "branch" was a step of soil: in a stage called Branch Snakes nothing on screen was a branch. Off the `main` list, said so: a block
  *  ON a piece is main unless told (pipeline layLocal), and a flag stood on the log emptied its snake's socket */
-const fallen = (key: string, on: string, h: R2): SectionPiece => ({ key, shape: 'block', w: [900, 900], place: { kind: 'on', on, at: [0, 0], h }, style: 'log', main: false });
-/** a trapped snake's log is LOW (its load hangs TRAP_HANG over the log's top, and 150 px over his feet is behind the goal sign on a
- *  sideways phone: stills, 11-12); a bare one is a full step, the snake plain to see from the ledge before */
-const LOW: R2 = [24, 26], HIGH: R2 = [50, 56];
+const fallen = (key: string, on: string, h: R2, w: R2 = [900, 900], at: R2 = [0, 0]): SectionPiece => ({ key, shape: 'block', w, place: { kind: 'on', on, at, h }, style: 'log', main: false });
+/** every log is LOW, 24-26 px thick: World 1 paints a block that thin as its fallen log (grey bark, moss), and one a full step
+ *  thick (50-56 px) as a bright green hedge block, which is no log and not this stage's look (stills, 11-12). It also keeps a
+ *  trap's load, hung TRAP_HANG over the log's top, under the goal sign on a sideways phone (150 px over his feet is behind it) */
+const LOW: R2 = [24, 26];
 /** a ledge no animal can be laid on (under 248 px), and a short one under a flag's pad (pipeline FLAG_SPAN.pad 160): a flag keeps
  *  every animal 224 px off (patchFor), and one at the end of a wide ledge beside a branch emptied the snake's socket, so the load
  *  hung over nothing (measured: 86 of 404 traps on Normal before the short ledges stood either side of every branch) */
@@ -90,7 +91,7 @@ function core(k: string, after: string, o: Unit = {}): { pieces: SectionPiece[];
   const flat: R2 = [0, 0];
   const first: SectionPiece = o.hop ? { key: g, shape: 'bank', w: NARROW, place: { kind: 'jump', after, dy: flat, gapPx: HOP, soft: true }, style: 'moss_stone', main: true } : led(g, after, NARROW, perch ? UP : flat);
   // (the bed is level with the ledge before the unit (a perch's vine ledge is the step up, its bed back down); the log `L` lies on it)
-  const pieces: SectionPiece[] = [first, bed(B, g, o.load ? SHORT : o.wide ? WIDE : LONG, perch ? DOWN : flat), fallen(L, B, o.load ? LOW : HIGH), led(d, B, NARROW)];
+  const pieces: SectionPiece[] = [first, bed(B, g, o.load ? SHORT : o.wide ? WIDE : LONG, perch ? DOWN : flat), fallen(L, B, LOW), led(d, B, NARROW)];
   const sockets: Socket[] = [];
   if (o.load) {
     sockets.push({ id: `${k}h`, role: 'source', on: g, t: HANDLE_T, dn: 0 });
@@ -232,8 +233,46 @@ export const EXIT_13: SectionTemplate = {
   entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
 } as SectionTemplate;
 
-/** World 1's quiet sections 1-3 walks between its beats: its arrivals and its rests on the ground (w1.ts tags each for the stage) */
-export const QUIET_13 = ['w1-meadow', 'w1-forest-edge', 'w1-morning-path', 'w1-home-banks', 'w1-fern-bank', 'w1-clearing', 'w1-log-walk'] as const;
+// ───────────────────────────── 1-3's own quiet: its arrival and its rests ─────────────────────────────
+/**
+ * The walk in and the breaths between the beats are 1-3's OWN pieces (Matt: variety comes from more pieces; funcheck read 1-3 as
+ * "an earlier stage", 57% alike to 1-1, while its links were World 1's meadow, forest edge and fern bank): root banks and fallen logs
+ * with no snake on them, a log to walk along, two to hop, a dip between roots. Nothing in them can hurt. No World 1 library section
+ * is in 1-3's pool any more (w1.ts takes its tag off every one).
+ */
+const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V[] }): SectionTemplate => ({
+  ...brick({ id: o.id, name: o.name, jobs: [o.job], difficulty: 1, versions: o.versions }),
+  phases: [o.job === 'arrive' ? 'start' : 'rest'], content: 'structural', uses: [], terrain: 'floor-stones', ...(o.job === 'arrive' ? { maxPerStage: 1 } : {}),
+} as SectionTemplate);
+/** a quiet bank (a rest's or the arrival's): long, level or a small root step (24-40 px), a flag's ground */
+const bank = (key: string, after: string | null, w: R2, dy: R2 = [0, 0]): SectionPiece => led(key, after, w, dy);
+export const QUIET_OWN_13: SectionTemplate[] = [
+  // [A] the walk in: root banks in the evening light, a low log to hop, petals low. Nothing here can hurt
+  link({ id: 'w1-13-root-arrival', name: 'the walk in along the root banks', job: 'arrive', versions: [
+    { id: 'low-log', lay: { pieces: [bank('a', null, [640, 700]), bank('b', 'a', [660, 720]), fallen('f', 'b', LOW, [220, 260], [0.45, 0.55]), bank('z', 'b', [260, 300])], sockets: [low('pa', 'a', [0.55, 0.75]), low('pf', 'f', 0.5), low('pz', 'z', [0.4, 0.6], 1)] } },
+    { id: 'root-steps', lay: { pieces: [bank('a', null, [640, 700]), bank('b', 'a', [440, 480], [-30, -24]), bank('c', 'b', [440, 480], [24, 30]), bank('z', 'c', [260, 300])], sockets: [low('pa', 'a', [0.55, 0.75]), low('pb', 'b', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)] } },
+  ] }),
+  // [R] a rest: one long fallen log to walk along, petals in a row on top
+  link({ id: 'w1-13-long-log', name: 'a rest: along the long fallen log', job: 'rest', versions: [[0.2, 0.3], [0.5, 0.6]].map((at, j) => ({
+    id: j ? 'log-late' : 'log-early',
+    lay: { pieces: [bank('a', null, [960, 1040]), fallen('f', 'a', LOW, [520, 600], at as R2), bank('z', 'a', [260, 300])], sockets: [{ ...low('pf', 'f', [0.3, 0.7], 3), span: 260 }, low('pz', 'z', [0.4, 0.6], 1)] },
+  })) }),
+  // [R] a rest: two short logs to hop, one after the other
+  link({ id: 'w1-13-twin-logs', name: 'a rest: two fallen logs to hop', job: 'rest', versions: ([[[200, 240], [300, 340]], [[300, 340], [200, 240]]] as R2[][]).map((w, j) => ({
+    id: j ? 'long-short' : 'short-long',
+    lay: { pieces: [bank('a', null, [1000, 1100]), fallen('f', 'a', LOW, w[0], [0.12, 0.18]), fallen('g', 'a', LOW, w[1], [0.72, 0.8]), bank('z', 'a', [260, 300])], sockets: [low('pf', 'f', 0.5), low('pg', 'g', 0.5), low('pz', 'z', [0.4, 0.6], 1)] },
+  })) }),
+  // [R] a rest: a dip between two roots, a low log lying in it
+  link({ id: 'w1-13-root-dip', name: 'a rest: the dip between the roots', job: 'rest', versions: [[30, 40], [44, 50]].map((d, j) => ({
+    id: j ? 'deep' : 'shallow',
+    lay: { pieces: [bank('a', null, [420, 480]), bank('m', 'a', [420, 480], d as R2), fallen('f', 'm', LOW, [200, 240], [0.4, 0.6]), bank('b', 'm', [420, 480], [-d[1], -d[0]] as R2), bank('z', 'b', [260, 300])], sockets: [low('pf', 'f', 0.5), low('pb', 'b', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)] },
+  })) }),
+  // [R] a rest: up over the hump of a great root and down again, a log leaning at its foot
+  link({ id: 'w1-13-root-hump', name: 'a rest: over the hump of a root', job: 'rest', versions: [[30, 40], [44, 50]].map((d, j) => ({
+    id: j ? 'tall' : 'low',
+    lay: { pieces: [bank('a', null, [460, 520]), fallen('f', 'a', LOW, [200, 240], [0.5, 0.7]), bank('m', 'a', [380, 440], [-d[1], -d[0]] as R2), bank('b', 'm', [420, 480], d as R2), bank('z', 'b', [260, 300])], sockets: [low('pf', 'f', 0.5), { ...low('pm', 'm', [0.3, 0.7], 3), span: 200 }, low('pz', 'z', [0.4, 0.6], 1)] },
+  })) }),
+];
 
 /** every section that is 1-3's own */
-export const SECTIONS_13: SectionTemplate[] = [...ARC_13, EXIT_13];
+export const SECTIONS_13: SectionTemplate[] = [...ARC_13, ...QUIET_OWN_13, EXIT_13];

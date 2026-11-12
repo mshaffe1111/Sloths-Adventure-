@@ -9,7 +9,7 @@ import { NEW_STOOD_IN } from './library.ts';
 import { buildGen2Stage, missionGraph, planBudget, stagePool } from '../../src/game/gen2/pipeline.ts';
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 import { W1_KIT, W1_SECTIONS, w1World } from '../../src/game/gen2/worlds/w1.ts';
-import { EXIT_13, QUIET_13, STAGE_13 } from '../../src/game/gen2/worlds/w1Arc13.ts';
+import { EXIT_13, QUIET_OWN_13, STAGE_13 } from '../../src/game/gen2/worlds/w1Arc13.ts';
 import { STAGE_PLAN } from '../../src/game/stagePlan.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
 const w1BriefOf11 = () => W1_KIT.graphs.briefs['1-1'];
@@ -23,11 +23,17 @@ const SEEDS = [1, 2, 3, 4, 5, 6];
 const rolls: Record<'normal' | 'easy', Roll13[]> = { normal: SEEDS.map((s) => roll(s, 'normal', O)), easy: SEEDS.map((s) => roll(s, 'easy', O)) };
 const each = (f: (r: Roll13, name: string) => void) => { for (const d of ['normal', 'easy'] as const) rolls[d].forEach((r, i) => f(r, `seed ${SEEDS[i]} ${d}`)); };
 
-test("in World 1's SHIPPED kit 1-3's pool is its own arc: its seven beats, its ground exit, and of the library only the quiet between; 1-1's pool is as it was", () => {
+test("in World 1's SHIPPED kit 1-3's pool is its own, every piece: its seven beats, its arrival, its four rests and its exit, and nothing of World 1's library; 1-1's pool is as it was", () => {
   const M = w1World().manifest;
   const pool13 = stagePool(M, STAGE_13).map((t) => t.id).sort();
-  assert.deepEqual(pool13, [...TWISTS.map((t) => t.id), EXIT_13.id, ...QUIET_13].sort());
-  for (const t of stagePool(M, STAGE_13).filter((q) => (QUIET_13 as readonly string[]).includes(q.id))) assert.ok(t.jobs!.every((j) => ['arrive', 'rest', 'exit'].includes(j)), `${t.id} is not a quiet section: it would bring another level's lesson into this one (LEVEL-BAR A3)`);
+  assert.deepEqual(pool13, [...TWISTS.map((t) => t.id), EXIT_13.id, ...QUIET_OWN_13.map((t) => t.id)].sort());
+  // (funcheck read 1-3 as "an earlier stage" while its links were World 1's meadow and fern bank: none is in its pool, and no stage
+  //  but 1-3 has one of 1-3's)
+  assert.equal(stagePool(M, STAGE_13).filter((t) => W1_SECTIONS.some((q) => q.id === t.id)).length, 0, "a World 1 library section is in 1-3's pool");
+  assert.ok(pool13.every((id) => id.startsWith('w1-13-')));
+  assert.deepEqual(QUIET_OWN_13.map((t) => `${t.id}:${t.jobs!.join('/')}:${t.phases.join('/')}`), ['w1-13-root-arrival:arrive:start', 'w1-13-long-log:rest:rest', 'w1-13-twin-logs:rest:rest', 'w1-13-root-dip:rest:rest', 'w1-13-root-hump:rest:rest'], 'one arrival, and a rest of its own for each of the four breaths');
+  // nothing in a quiet piece can hurt: it holds no animal socket and no trap, only petals
+  for (const t of QUIET_OWN_13) for (const v of t.subBlocks![0].versions) assert.ok(v.sockets!.every((k) => k.role === 'pickup'), `${t.id}/${v.id}: a quiet piece holds more than petals`);
   assert.deepEqual(TWISTS.map((t) => `${t.id}:${t.jobs!.join('/')}`), ['w1-13-lesson:teach', 'w1-13-again:practise', 'w1-13-stone-stair:flow', 'w1-13-other-way:test', 'w1-13-perch:twist', 'w1-13-gallery:signature', 'w1-13-finale:combine'], 'one brick a beat, one job a brick');
   // (1-1: the same sections as World 1's own table, each unchanged but for its tag list; none of 1-3's among them)
   const own = new Map(W1_SECTIONS.map((t) => [t.id, t]));
