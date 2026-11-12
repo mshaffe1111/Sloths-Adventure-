@@ -63,13 +63,14 @@ export const HELP_LINES: ReadonlySet<string> = new Set([...Object.values(MOVE_LI
  * help that her tip rules don't judge again (the ladder is the one place that decides help: a move already taught this stage is the
  * point, not a repeat)
  */
-export function helpGuideLine(text: string, help: 'teach' | 'reminders' | 'quiet', ms?: number): { key: string; text: string; kind: 'struggle'; who: 'Dot'; source: 'struggle'; soon: true; anyway: true; ms?: number } | null | undefined {
+export function helpGuideLine(text: string, help: 'teach' | 'reminders' | 'quiet', ms?: number): { key: string; text: string; kind: 'struggle'; who: 'Dot'; source: 'struggle'; soon: true; anyway: true; said: string; ms?: number } | null | undefined {
   if (!HELP_LINES.has(text)) return undefined;
   if (help === 'quiet') return null;
   // (`soon`: due now, so neither Tips' 30 s gap nor its busy count holds it back; a fall in progress still does)
   // (keyed as any engine line is, `engine:<words>`: the engine's "passed" for it, DotGuide passedLine, takes it down)
   // (`anyway`: it starts while he blinks after a set-back or is in the air: a player set back every 2 s is always one or the other)
-  return { key: `engine:${text}`, text, kind: 'struggle', who: 'Dot', source: 'struggle', soon: true, anyway: true, ms };
+  // (`said`: the engine's words, so her "shown" report reaches the engine for it as for any engine line, guideShown.ts)
+  return { key: `engine:${text}`, text, kind: 'struggle', who: 'Dot', source: 'struggle', soon: true, anyway: true, said: text, ms };
 }
 
 /**

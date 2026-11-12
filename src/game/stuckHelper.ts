@@ -3,7 +3,8 @@
  * In the control test (2026-10-23) two beginners gave up at the foot of a stump only the second jump climbs: one quit there twice and
  * never tried a second jump. This watches for that and nothing else: a jump taken with a wall too tall for one jump just ahead, that
  * lands back at the same height near where it began, without the second jump. Three of those in a row (a landing higher up resets
- * the count) and it says its line, once.
+ * the count) and it says its line. It is told (silent for the rest of the stage) only once Dot has shown the line (the engine calls
+ * told() on her "shown" report, guideShown.ts; audit C-03): a line her setting dropped is asked again after three more.
  */
 import { RUNGS } from './helpLadder.ts';
 
@@ -17,14 +18,14 @@ export class StuckWatch {
   private takeoff: { x: number; y: number; wall: boolean } | null = null;
   private usedDouble = false;
   private fails = 0;
-  private told = false;
+  private isTold = false;
 
   /**
    * once a frame. `wallAhead`: a solid face just in front, taller than one jump (the engine works it out). True on the one frame Dot
    * should speak.
    */
   tick(s: { grounded: boolean; x: number; y: number; doubleJumping: boolean; wallAhead: boolean }): boolean {
-    if (this.told) return false;
+    if (this.isTold) return false;
     let speak = false;
     if (this.wasGrounded && !s.grounded) {
       this.takeoff = { x: s.x, y: s.y, wall: s.wallAhead };
@@ -37,7 +38,7 @@ export class StuckWatch {
       else if (t.wall && !this.usedDouble && Math.abs(s.x - t.x) < NEAR_X) {
         this.fails++;
         if (this.fails >= STUCK_TRIES) {
-          this.told = true;
+          this.fails = 0;
           speak = true;
         }
       }
@@ -45,6 +46,11 @@ export class StuckWatch {
     }
     this.wasGrounded = s.grounded;
     return speak;
+  }
+
+  /** Dot has shown its line: nothing more this stage */
+  told(): void {
+    this.isTold = true;
   }
 }
 

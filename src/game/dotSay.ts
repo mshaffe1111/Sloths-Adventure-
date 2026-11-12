@@ -11,6 +11,7 @@ import { CALM, GUIDE, TIPS_GAP_MS, isUrgent, type GuideLine, type GuideQueue } f
 import { thingOf } from './dotTips.ts';
 import { helpAllows, knownMoveTip, markSkillSeen, tipsSkill, type DotHelp } from './dotGuideHelp.ts';
 import { confirmHeard } from './tipMemory.ts';
+import { guideShown } from './guideShown.ts';
 import { lessonOfLine, markLessonSeen } from './lessons.ts';
 
 /** Help keeps a little more room than the calm 10 s between the lines that can wait (Matt, 2026-10-29: less on every setting) */
@@ -75,7 +76,11 @@ export class DotSay {
     if (!cur || cur.n === this.keptN || now - cur.startedAt < GUIDE.minShowMs) return;
     this.keptN = cur.n;
     const l = cur.line;
-    if (l.said) confirmHeard(l.said);
+    if (l.said) {
+      confirmHeard(l.said);
+      // (and the engine counts it as given only now: the stuck helper's told, World 5's hold, the recorder, guideShown.ts)
+      guideShown(l.said);
+    }
     const lesson = lessonOfLine(l);
     if (lesson) markLessonSeen(lesson);
     // (a lesson that teaches a move has taught that move: a stage tip for it later says it again in other words, DOT-13)

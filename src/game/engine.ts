@@ -19,6 +19,7 @@ import { recorder } from './playRecorder.ts';
 import { dotLogId } from './recorderLabels.ts';
 import { liftY, pickFloor } from './lift.ts';
 import { StuckWatch, stuckLine } from './stuckHelper.ts';
+import { takeGuideShown } from './guideShown.ts';
 import { W5_STEP_HELP, W5_STEP_HELP_KEYS, W5_STEP_HELP_PAD } from './w5Lines.ts';
 import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
@@ -837,6 +838,8 @@ export class GameEngine {
 
     // (a new run of a stage: tips sent but never shown in an earlier run may be said again, tipMemory.ts)
     forgetSent();
+    // (and Dot's "shown" reports for the last stage's lines are not this one's, guideShown.ts)
+    takeGuideShown();
     // Generate Stage data
     // Easy (difficulty.ts): the vines' wide sweet spot, then the same stage made gentler (easyMode.ts)
     setTimedSwing(isEasy());
@@ -1513,6 +1516,7 @@ export class GameEngine {
       this.helpLine.until = this.gameTime + LINE_UP_S;
     }
     if (this.helpLine && this.gameTime >= this.helpLine.until) this.helpLineDown();
+    this.takeShown();
     if (this.helpDue && this.irisOpen <= 0 && this.player.grounded) {
       const a = this.helpDue;
       this.helpDue = null;
@@ -4611,19 +4615,38 @@ export class GameEngine {
     const air = !p.grounded && !p.climbing && !p.isVineSwinging;
     // (in 1-1 the help ladder's line at 3 replaces it: its "Too tall" breaks the story's first guard, help-lines.md)
     if (this.stuck.tick({ grounded: !air, x: p.x, y: p.y, doubleJumping: !!p.isDoubleJumping, wallAhead: this.wallWasAhead }) && !this.help) {
-      this.guide(stuckLine(lessonInputMode()), 6);
-      // (in World 5 the stillness waits while she says it: her help is read, not the silk's warning over it)
-      this.w5?.holdStill(STUCK_HOLD);
-      recorder.event('stuckHelp', Math.round(p.x));
+      this.stuckSay(this.stuck, stuckLine(lessonInputMode()), 'stuckHelp');
     }
     if (this.w5) {
       if (p.grounded) this.stepWasAhead = this.wallAhead(STEP_FACE.min, STEP_FACE.max);
       if (this.stuckStep.tick({ grounded: !air, x: p.x, y: p.y, doubleJumping: !!p.isDoubleJumping, wallAhead: this.stepWasAhead })) {
         const mode = lessonInputMode();
-        this.guide(mode === 'pad' ? W5_STEP_HELP_PAD : mode === 'keys' ? W5_STEP_HELP_KEYS : W5_STEP_HELP, 6);
-        this.w5.holdStill(STUCK_HOLD);
-        recorder.event('stuckStepHelp', Math.round(p.x));
+        this.stuckSay(this.stuckStep, mode === 'pad' ? W5_STEP_HELP_PAD : mode === 'keys' ? W5_STEP_HELP_KEYS : W5_STEP_HELP, 'stuckStepHelp');
       }
+    }
+  }
+  /** a stuck helper's line, sent and not yet shown: it is given (told, held, logged) only once Dot reports it shown (guideShown.ts) */
+  private stuckSent: Array<{ watch: StuckWatch; text: string; ev: 'stuckHelp' | 'stuckStepHelp'; x: number }> = [];
+  private stuckSay(watch: StuckWatch, text: string, ev: 'stuckHelp' | 'stuckStepHelp') {
+    this.guide(text, 6);
+    this.stuckSent = this.stuckSent.filter((s) => s.watch !== watch);
+    this.stuckSent.push({ watch, text, ev, x: Math.round(this.player.x) });
+  }
+  /**
+   * the engine lines Dot has shown since the last frame (guideShown.ts, audit C-03): the recorder's `dot` moment is logged for each, and
+   * a stuck helper's line is given now: its watch is told (not again this stage), and in World 5 the stillness waits while she says it
+   * (her help is read, not the silk's warning over it)
+   */
+  private takeShown() {
+    for (const text of takeGuideShown()) {
+      // (which of Dot's lines was really shown, for the testers' "did Dot's tips help?": recorderLabels.ts)
+      if (recorder.on) recorder.event('dot', dotLogId(text, this.currentStage.config.id));
+      const i = this.stuckSent.findIndex((s) => s.text === text);
+      if (i < 0) continue;
+      const s = this.stuckSent.splice(i, 1)[0];
+      s.watch.told();
+      this.w5?.holdStill(STUCK_HOLD);
+      recorder.event(s.ev, s.x);
     }
   }
   /** a solid face just in front of him, standing on the ground, taller than one jump climbs but one a double jump clears (or, given,
@@ -8442,8 +8465,7 @@ export class GameEngine {
 
   /** a guiding line: kept as the stage hint (one at a time), and handed to the app for Dot to say */
   private guide(text: string, seconds: number) {
-    // (which of Dot's lines was really shown, for the testers' "did Dot's tips help?": recorderLabels.ts)
-    if (recorder.on && text) recorder.event('dot', dotLogId(text, this.currentStage.config.id));
+    // (the recorder's `dot` moment is logged when she has shown it, takeShown)
     // (the tips just marked sent are kept on the phone once this line has been shown: tipMemory.ts)
     bindSent(text);
     this.stageHint = { text, life: seconds };
