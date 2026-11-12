@@ -54,7 +54,8 @@ test('ALL_VERDICTS is the union, in order, read off verdicts.types.ts', () => {
   const src = fs.readFileSync(new URL('./verdicts.types.ts', import.meta.url), 'utf8');
   const union = [...src.slice(src.indexOf('export type VerdictName'), src.indexOf('export interface Measure')).matchAll(/\| '([a-z0-9.-]+)'/g)].map((m) => m[1]);
   assert.deepEqual([...ALL_VERDICTS], union);
-  assert.equal(union.length, 17);
+  // (18: chain.mount, R-165.138, F12)
+  assert.equal(union.length, 18);
 });
 
 test('arc.single-gap-over: Easy 140 px is past a flick from 70 px (132); Normal 150 past the 143 band rule', (t) => {
@@ -124,6 +125,14 @@ test("hazard.untaught: a hurt drop before the end of its lesson's showing piece 
   for (const s of ['normal', 'easy'] as const) {
     planted('hazard.untaught', s, at(1100), t);
     assert.deepEqual(names(roll(s, at(1000))), [], `${s}: shown first, the roll is clean`);
+  }
+});
+test('chain.mount: a chain\'s first cap on a tall stem (160 px over its bank) needs more than a plain hop (R-165.138); 30 px up is a walk-on', (t) => {
+  const b = builtClean();
+  const cap = (y: number): Platform => ({ id: 9, x: 700, y, width: 70, height: 30, type: 'bouncy' });
+  for (const s of ['normal', 'easy'] as const) {
+    planted('chain.mount', s, { built: { ...b, platforms: [...b.platforms, cap(G - 160)] } }, t);
+    assert.deepEqual(names(roll(s, { built: { ...b, platforms: [...b.platforms, cap(G - 30)] } })), [], `${s}: a walk-on cap`);
   }
 });
 test('first-run.drift: the fixed layout built against its recorded lock', (t) => {

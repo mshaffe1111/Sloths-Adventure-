@@ -43,4 +43,9 @@ named and not fixed:
   few frames late at the stage start (it is not in the stage preload).
 
 ## Checks (final head)
-CHECKS
+tsc clean. gen2 + worlds + library + the new tests: 448 pass; the 2 that failed were mine, the verdict union's count (17 to 18) and its
+planted roll (`verdicts.test.ts`), both fixed, verdicts.test 30/30. Stage lock (16 layouts, both settings) against the base:
+**102/102 unchanged**, and again after `chain.mount`: World 1, 5-7 and 5-9 12/12. seedlist 1-1 --check PASS (355 seeds, refuses
+0), generality PASS (27 known), knowncheck, vite build, chunkcheck, artcheck, drawcheck PASS, and 12 core draw-related files 28/28.
+Not run: the full `src/game/*.test.ts` glob, clipcheck (no menu touched), kbdcheck, tierBots. roadmapcheck cannot run in this shallow
+clone (it needs fetch-depth 0).
