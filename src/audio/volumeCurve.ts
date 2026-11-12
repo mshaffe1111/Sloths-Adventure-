@@ -11,8 +11,11 @@
 /** the bar's range: from the top to one step above off, in dB (a tenth of the bar is 4 dB) */
 export const SLIDER_RANGE_DB = 40;
 
+/** a new game's music slider: -4 dB on the bar (Matt, 11-11: "the music's not as bad, but still is a little too loud") */
+export const DEFAULT_MUSIC = 0.9;
+
 /**
- * a new game's effects slider (the music starts at the top). Measured 11-11 (ffmpeg ebur128 on the shipped files): the recorded effects
+ * a new game's effects slider. Measured 11-11 (ffmpeg ebur128 on the shipped files): the recorded effects
  * reach -10.2 LUFS momentary (true peak +2.0 dBTP), the music mixes about -11 LUFS at their loudest, and the effects bus adds +2.1 dB
  * (SFX_BUS), so at the top the effects sat 1-3 dB over the music's loudest moments. 0.8 is -8 dB: about 5 dB under them.
  */

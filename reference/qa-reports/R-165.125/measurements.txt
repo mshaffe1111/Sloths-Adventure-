@@ -11,3 +11,7 @@ effects  25% (music 100): old peak  -2.9 dBFS rms -25.2 | new peak -18.7 dBFS rm
 both sliders 100%: rms -16.2 dB; both 50%: rms -36.2 dB
 
 Read: the old effects slider at 50% cut 3.9 dB of loudness (the compressor at -18 dB, ratio 3.5, ate the rest); the new one cuts 16.8 dB, and both sliders at 50% cut exactly 20 dB (after the dynamics). Peaks stay under full scale (limiter -1.5 dB, after the soft clipper).
+
+Defaults, through the real chain (chaindefaults.cjs.txt; 60 s of the recorded effects, 60 s of ending.mix.webm):
+  effects: today (bar 100%) peak -0.1 dBFS, RMS -16.2 dB -> new (bar 80%) peak -4.2 dBFS, RMS -22.6 dB: -6.4 dB
+  music:   today (bar 100%) peak -0.5 dBFS, RMS -10.6 dB -> new (bar 90%) peak -4.5 dBFS, RMS -14.6 dB: -4.0 dB

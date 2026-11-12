@@ -8,7 +8,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { sliderGain, busLevels, SLIDER_RANGE_DB, DEFAULT_SFX } from './volumeCurve.ts';
+import { sliderGain, busLevels, SLIDER_RANGE_DB, DEFAULT_SFX, DEFAULT_MUSIC } from './volumeCurve.ts';
 
 const db = (g: number) => 20 * Math.log10(g);
 
@@ -42,6 +42,10 @@ test('R-165.125 the overall level (the louder slider) is applied after the dynam
   assert.deepEqual(busLevels(0, 0), { out: 0, music: 0, sfx: 0 });
 });
 
-test('R-165.125 a new game starts the effects lower than the music', () => {
-  assert.ok(DEFAULT_SFX < 1 && DEFAULT_SFX > 0.5, `effects default ${DEFAULT_SFX}`);
+test('R-165.125 a new game starts both lower than the top (Matt: the music "a little too loud", the effects clearly lower than it)', () => {
+  assert.ok(DEFAULT_MUSIC < 1 && DEFAULT_MUSIC >= 0.85, `music default ${DEFAULT_MUSIC}`);
+  assert.ok(DEFAULT_SFX < DEFAULT_MUSIC && DEFAULT_SFX > 0.5, `effects default ${DEFAULT_SFX}`);
+  // in dB on the bar: the music a little down, the effects clearly further
+  const mDb = 20 * Math.log10(sliderGain(DEFAULT_MUSIC)), sDb = 20 * Math.log10(sliderGain(DEFAULT_SFX));
+  assert.ok(mDb <= -3 && mDb >= -6 && sDb <= mDb - 3, `music ${mDb.toFixed(1)} dB, effects ${sDb.toFixed(1)} dB`);
 });

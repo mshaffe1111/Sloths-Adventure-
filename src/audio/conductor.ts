@@ -23,7 +23,7 @@ import { Speech, voiceOf, type Tone } from './voiceLine.ts';
 import { playSting, STORY_STING_NAMES, stingDuck, stingVoices } from './stingers.ts';
 import { CALM, type MusicState } from './adaptive.ts';
 import { STINGS } from './stingers.ts';
-import { busLevels, DEFAULT_SFX } from './volumeCurve.ts';
+import { busLevels, DEFAULT_MUSIC, DEFAULT_SFX } from './volumeCurve.ts';
 
 // how far ahead of the audio clock the ambience is scheduled: long enough to ride out a stalled main thread
 // (a level loading, a garbage collection) without it dropping out and then firing in one burst
@@ -109,7 +109,7 @@ export class Conductor {
   private streak = 0;
   private lastHitAt = -10;
 
-  musicVol = readNum(KEY_MUSIC, 1);
+  musicVol = readNum(KEY_MUSIC, DEFAULT_MUSIC);
   sfxVol = readNum(KEY_SFX, DEFAULT_SFX);
   muted = (() => {
     try {
