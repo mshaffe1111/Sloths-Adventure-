@@ -124,22 +124,28 @@ export const HelpOffer: React.FC<{ reask: boolean; cut?: string; onAnswer: (yes:
   );
 };
 
-/** put the offer on screen on its own root; it takes itself down when answered */
 /** the NO card's pose in the standard hero atlas (heroStandardData.ts): mid-leap, never the arms-out apex */
 export const NO_POSE = 'rise';
 
-export function showHelpOffer(o: { reask: boolean; cut?: string }, answer: (yes: boolean) => void): void {
+/** put the offer on screen on its own root; it takes itself down when answered, and returns what takes it down unanswered (engine.ts
+ *  stop(): the stage ended under it) */
+export function showHelpOffer(o: { reask: boolean; cut?: string }, answer: (yes: boolean) => void): () => void {
   const host = document.createElement('div');
   host.className = 'ho-host';
   document.body.appendChild(host);
   const root = createRoot(host);
+  let up = true;
+  const down = () => {
+    if (!up) return;
+    up = false;
+    root.unmount();
+    host.remove();
+  };
   const onAnswer = (yes: boolean) => {
     // (taken down after this tap's events are over, so the tap that answered never reaches the touch controls under it)
-    window.setTimeout(() => {
-      root.unmount();
-      host.remove();
-    }, 0);
+    window.setTimeout(down, 0);
     answer(yes);
   };
   root.render(<HelpOffer reask={o.reask} cut={o.cut} onAnswer={onAnswer} />);
+  return down;
 }

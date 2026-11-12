@@ -1274,6 +1274,9 @@ export class GameEngine {
       this.grown = [];
     }
     this.help?.end();
+    // (and its card, if it is up or still loading: nothing else takes it off the page)
+    this.helpCardDown?.();
+    this.helpCardDown = null;
     this.helpAsking = null;
     this.helpDue = null;
     this.helpLine = null;
@@ -5094,9 +5097,33 @@ export class GameEngine {
   private helpAsking: { k: string; count: number; cut?: string } | null = null;
   /** the stage was paused from outside (the menu) while the offer was up: answering it does not start play under the menu */
   private outerPause = false;
-  /** how the offer is put on screen (HelpOffer.tsx, loaded only when first asked); the tests answer it themselves */
+  /** the offer's card (HelpOffer.tsx), loaded only when first asked (the tests plant a loader that fails) */
+  loadHelpOffer = () => import('../components/HelpOffer.tsx');
+  /** takes the offer's card down unanswered (stop(): a quit, or onFatal, under it), or stops one still loading from going up */
+  private helpCardDown: (() => void) | null = null;
+  /**
+   * how the offer is put on screen; the tests answer it themselves. A card that fails to load is a no, so play goes on: the stage is
+   * held while the offer is up, and the pause menu's Resume cannot let go of it (audit C-10: a failed chunk froze the stage, no card)
+   */
   helpAsk: (o: { reask: boolean; cut?: string }, answer: (yes: boolean) => void) => void = (o, answer) => {
-    void import('../components/HelpOffer.tsx').then((m) => m.showHelpOffer(o, answer));
+    let gone = false;
+    this.helpCardDown = () => {
+      gone = true;
+    };
+    this.loadHelpOffer().then(
+      (m) => {
+        if (gone) return;
+        this.helpCardDown = m.showHelpOffer(o, (yes) => {
+          this.helpCardDown = null;
+          answer(yes);
+        });
+      },
+      () => {
+        if (gone) return;
+        this.helpCardDown = null;
+        answer(false);
+      },
+    );
   };
 
   /** a put-back in 1-1: the ladder counts it, and whatever rung it reaches happens now */
