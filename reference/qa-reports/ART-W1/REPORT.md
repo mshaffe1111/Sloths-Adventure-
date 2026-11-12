@@ -14,12 +14,10 @@ or lay moved (dropTrap.ts, castPlay.ts and w1Cast.ts untouched).
   (then the handle's bough end grows from its bark). Where no sapling fits, two bough ends (W1C's stand-in layout, painted).
 - On aa98fbc3 (snakes on logs, load 25 higher) no sapling fits the handle's side (it would be 360-420 units tall): all three traps
   get the sapling BEYOND the log, arching back, up to 265 units tall (225 found nothing), crown partly behind the sign's right end.
-- `engine.ts`: the trap sheet starts loading as a stage with traps is built (warmTrapArt); the platforms are passed to drawTraps.
 - Catalog rows in CATALOG-MASTER's exact format: `reference/art/catalog-rows-w1traps.csv` (12 rows; the lead routes the merge).
 
 ## Stills (real page, roll 1-3 L1, trap0 hive / trap1 hive / trap2 stone; before, trap, glide, after; upright and sideways)
-`reference/qa-reports/ART-W1/stills/`. Pieces on dark and light: `pieces-on-dark-and-light.jpg`. Matt's hive beside hive A at the
-same game size: `hive-matt-vs-A.jpg`. Contact sheet the lead picked from: `contact-sheet-1.jpg`.
+`stills/` (+ engine.ts warms the sheet at stage build); `pieces-on-dark-and-light.jpg`; `hive-matt-vs-A.jpg`; `contact-sheet-1.jpg`.
 
 ## Polish check
 1. Painted, not drawn: every trap piece is painted; code draws only the "hit me" ring and moves the bees. PASS (stills/*before*).
@@ -48,8 +46,7 @@ takes (~$0.13) in round 3 after the lead's 12:31 hold, which reached me at 12:50
 
 ## Method used / Lessons applied / Method update
 - Method: reference/methods/hf-art.md (Qwen-Image + style LoRA 0.8, plain magenta at s1.0 per hf-props; img2img paste-ups at s0.42-0.55).
-- Lessons: show first (contact sheet before any cut); Pokey's drawn height 89.1 (D41); merge the base before shooting (D23); times
-  from `date` (D30); every job logged.
+- Lessons: show first; Pokey 89.1 (D41); merge the base before shooting (D23); times from `date` (D30); every job logged.
 - Method update (proposed): (1) on single props the style model paints a bough above and a pool below whatever the negatives say:
   cut each take with a hand-set box and key on the take's OWN drifted key (tools/art/w1traps/cuts.py), not pure magenta; (2) "lying /
   landed" always paints a broken hive: make a landed state by img2img of the hanging cut turned on its side at s0.42; (3) Matt's
@@ -60,6 +57,5 @@ takes (~$0.13) in round 3 after the lead's 12:31 hold, which reached me at 12:50
 - The handle's side on 1-3's new ground (pick one): (a) a second sapling, mirrored and smaller, behind the handle, its crown over the
   handle (two trees framing the trap; same tree twice, so better with the other arch take, r3b anchorArch-41, cut free); (b) the painted
   bough end at the corner (it floats, as W1C's stand-in did); (c) W1C lowers the hang (gameplay numbers, not mine).
-- Made thing: the tendril's stake is cut wood (Matt 11-11: no made things in World 1); W1C's list asked for a peg. Rows flag it.
+- Made thing: the tendril's stake is cut wood (Matt 11-11: none in World 1); W1C's list asked for a peg. Rows flag it.
 - The hive: Matt's (as ruled) or hive A, by the side-by-side above.
-- Not done: drawcheck has no 1-3 scenario; 1-3 measured separately (above).
