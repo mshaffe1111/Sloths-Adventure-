@@ -10,6 +10,8 @@ import { crestName } from './icons/crests.ts';
 import { countValue, easeOut } from './fx/countUp.ts';
 import { sound } from '../game/audio.ts';
 import { dotPresent } from '../game/wayside.ts';
+import { readStageResult } from '../game/stageBest.ts';
+import { realStageIds } from '../game/worldsData.ts';
 import { useBack } from './nav/useBack.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
@@ -121,12 +123,7 @@ export const BossIntroCard: React.FC<{ levelConfig: LevelConfig; onGo: () => voi
 export function expeditionScore(): number {
   let total = 0;
   try {
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (!k || !k.startsWith('sloth_lvl_')) continue;
-      const v = JSON.parse(localStorage.getItem(k) ?? 'null');
-      if (v && typeof v.highScore === 'number') total += v.highScore;
-    }
+    for (const id of realStageIds()) total += readStageResult(localStorage.getItem(`sloth_lvl_${id}`))?.highScore ?? 0;
   } catch {
     /* unreadable records: count what was read */
   }

@@ -9,6 +9,8 @@
  * has no opinion about screens.
  */
 import { reloadDifficulty } from './difficulty.ts';
+import { readStageResult } from './stageBest.ts';
+import { realStageIds } from './worldsData.ts';
 import { DOT_MEMORY, forgetDotSession } from './dotMemory.ts';
 import { FIRST_NOTE_KEY, STORY_KEY, midStoryKey, moveV1GateFlags, worldStoryKey } from './storyFlags.ts';
 
@@ -124,17 +126,16 @@ export function summarize(data: Record<string, string>): SaveSummary {
   let stagesCleared = 0;
   let stars = 0;
   const worlds = new Set<string>();
+  // (the stages the game itself counts, read the way it reads them: the extra stages are stages, a stage that does not exist is not)
+  const real = realStageIds();
   for (const [k, v] of Object.entries(data)) {
-    const m = /^sloth_lvl_(\d{1,2}|S)-\d{1,2}$/.exec(k);
-    if (!m) continue;
-    try {
-      const o = JSON.parse(v);
-      if (o && o.completed) stagesCleared++;
-      if (o && typeof o.stars === 'number') stars += Math.max(0, Math.min(3, o.stars | 0));
-      if (m[1] !== 'S') worlds.add(m[1]);
-    } catch {
-      /* skip */
-    }
+    const id = k.startsWith('sloth_lvl_') ? k.slice('sloth_lvl_'.length) : '';
+    const r = real.has(id) ? readStageResult(v) : null;
+    if (!r) continue;
+    if (r.completed) stagesCleared++;
+    stars += r.stars;
+    const w = /^(\d{1,2})-/.exec(id);
+    if (w) worlds.add(w[1]);
   }
   return { stagesCleared, stars, worldsStarted: worlds.size, secret: data['sloth_thorn_heart'] === '1' };
 }

@@ -106,7 +106,9 @@ for (const [file, oldLoaded] of [['save-0.9.5-mid.json', true], ['save-0.9.5-aft
     applySave(into, r.save);
     const raw = JSON.parse(text);
     assert.deepEqual(Object.fromEntries(into.m), raw.data, 'every entry of the old file is restored as it was');
-    assert.equal(r.save.summary.stagesCleared, 40); // (the summary counts the numbered stages: 5-M is not in it)
+    // (worlds 1-4 and Meeca's 5-M: the summary counts the stages the game counts, the extra ones too; it read 40 before, left 5-M out, and
+    // disagreed with the title: the save-hydrate-and-summary lead)
+    assert.equal(r.save.summary.stagesCleared, 41);
     assert.equal(JSON.parse(into.getItem(FINDS_KEY)!).found.length, 33);
   });
 }
