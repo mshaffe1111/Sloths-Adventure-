@@ -32,6 +32,9 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
   Parked: t-engine-11-followup@f24af141 (1-1's polish pass, after the engine); t-assets-compress@ffee5acc (waits for Matt's pick).
 
 ## Tomorrow, in this order
+0. **Matt-reported sweep FIRST** (D47; Opus high, short): every issue Matt reported (STATE.md, handoffs, ROADMAP, qa-reports, the testers'
+   sheet data the bots came from) that is still open; tag each on ROADMAP.md as reported by Matt; fixes already on a branch join the merge;
+   the rest go to the top of the queue. Never ship an open Matt-reported issue without asking him directly first.
 1. **Integration** (Opus xhigh, one builder): merge into one branch off main: seedchunks FIRST (room; or EN-S's t-engine-split if it
    passed), then guards -> fixes, yield, clock, library, predators, wire; PLUS from the parked t-engine-11-followup only the R-165.122 part of commit 2a988785
    (it is mixed with 1-1 items and a list rebuild: take only the hop-rock walls and their verdict, not the list rebuild) (hop rocks walked through: a generator rule, not 1-1 polish: every counted obstacle must block, or it is scenery and
