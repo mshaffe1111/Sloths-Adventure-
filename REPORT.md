@@ -1,7 +1,7 @@
 # EN-F report: engine-audit fixes, game-wide first, and R-165.125. t-engine-fixes on t-engine-guards @b3e8db15, HEAD 16065562 (code)
 **Method:** each finding's audit test (or a new one) into src/, red on b3e8db15, root fix, green; one commit per finding. Four
 sub-helpers in worktrees (saves, help, audio, things); a Critic read every helper commit (9 items sent back and redone) and then the
-owner's (found A-07b, A-12b: fixed). Method file: reference/methods/audit-fix.md. Main JS 3,982,859 -> 3,973,349 B at e80cf630 (e2a1c380: see Checks).
+owner's (found A-07b, A-12b: fixed). Method file: reference/methods/audit-fix.md. Main JS 3,982,859 -> 3,973,767 B.
 
 ## R-165.125 (Matt: too loud, effects most, music a little; the bars do little until nearly off) FIXED e2a1c380 + 16065562
 - Cause, measured through the real chain: the bars were linear gain AND sat before the master compressor (-18 dB, ratio 3.5): the
@@ -49,4 +49,11 @@ owner's (found A-07b, A-12b: fixed). Method file: reference/methods/audit-fix.md
 - Venom Fang's Easy bar: 4 wider segments, not 6 (qa-reports/EN-F/easybar-*). "Dot said" label "Flicker:" (was "The petal:"; players
   see "Flicker" already). The save summary leaves Thornbark out (counting him: your call); a 0.9.5 save now counts 5-M (41, not 40).
 - Pre-existing, not from this branch (same on b3e8db15): upright, the lives badge "x3" sits inside the boss name ("VENOM3FANG").
-## Checks: running on e2a1c380 since 11:34 PM ET; the results are filled in by the next commit.
+## Checks (each run once on a pinned head; results in the commit log of this report)
+- e80cf630 (every audit fix): full suite 2,762 tests, 0 fail (the known 4-3 TODO); seedlist 1-1 PASS (200 seeds); lock 102/102 stages
+  unchanged vs b3e8db15; tierBots 7/7; build, chunkcheck, artcheck, knowncheck PASS; drawcheck PASS; clipcheck PASS (83 known, none
+  new); kbdcheck PASS. e2a1c380 (+ R-165.125): tsc, full suite 2,765 tests 0 fail, build (main JS 3,973,767 B, -9,092 vs base),
+  chunkcheck, generality PASS. 16065562 (two defaults): tsc, the 207 sound tests, generality; buildcheck PASS (p95 115 ms).
+  roadmapcheck fails only because this clone is shallow. Not checked: audio #1 on a real Android phone (the steps are above).
+- Method update: reference/methods/audit-fix.md (new): pinned worktrees for long runs, one suite on the merged head, no pkill by
+  pattern, plant the audit's own "fix" before taking it (A-05), real key shapes in tests, a Critic on every helper commit.
