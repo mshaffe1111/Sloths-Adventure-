@@ -712,8 +712,9 @@ function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, 
 
 /**
  * The dealt types as the pool can fill them (dealContent's last step). `breaches` counts the deal's own rules a typing breaks; a
- * re-typing is taken only when it breaks no more of them than the deal did and leaves fewer slots the pool cannot fill: first one
- * node changed, then two (two nodes trading types keeps every count), then three; among equals the seed chooses (its own stream).
+ * re-typing is taken only when it breaks no more of them than the deal did and leaves fewer slots the pool cannot fill (or, with
+ * none short, less climb over the corridor's height): first one node changed, then two (two nodes trading types keeps every count),
+ * then three; among equals the seed chooses (its own stream).
  */
 function supplyDeal(
   nodes: MissionNode[], slots: ReadonlyArray<{ n: MissionNode; i: number }>, dealt: ReadonlyMap<number, ContentType>, M: WorldManifest, budget: StageBudget, seed: number,
@@ -724,14 +725,27 @@ function supplyDeal(
   const fits = poolFits({ M, budget, nodes, stageLen, exitDy: (t) => t.exitDy });
   const byId = new Map(M.sections.map((t) => [t.id, t]));
   const maxPer = (id: string) => byId.get(id)?.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity;
+  // (and the climb, R-165.120: the least the dealt stage must rise, each slot taking the section of its rule that climbs least (a
+  // node that must end higher, the least of its rising ones), against the corridor's height from the ground to its top. A deal over
+  // it cannot be laid inside the corridor whatever is chosen: 1-1's fresh seeds, 1 listable in 30 over the line, 22 in 24 just under.
+  // `spare`: two of the corridor's soft bands, the height the joins give back; set so that no proven stage's deal is over the line)
+  const brief = M.graphs?.briefs?.[budget.id];
+  const room = M.ground.y - M.corridor.top + 2 * M.corridor.soft;
   const short = (got: ReadonlyMap<number, ContentType>): number => {
     const need: string[][] = [];
-    let i = 0;
+    let i = 0, climb = 0;
     nodes.forEach((n, k) => {
       const typed = got.has(k) ? { ...n, content: got.get(k) } : n;
-      for (let c = 0; c < n.count!; c++, i++) need.push(M.sections.filter((t) => fits(t, typed, i)).map((t) => t.id));
+      for (let c = 0; c < n.count!; c++, i++) {
+        const cands = M.sections.filter((t) => fits(t, typed, i));
+        need.push(cands.map((t) => t.id));
+        const mustClimb = c === 0 && (!!n.mustRise || (!!brief?.endHigh && brief.trend === 'up' && n.job === 'signature'));
+        const dys = cands.map((t) => t.exitDy).filter((d) => !mustClimb || d < 0);
+        if (dys.length) climb += Math.max(0, -Math.max(...dys));
+      }
     });
-    return unfilled(need, maxPer);
+    // (a slot with no section first, by far; then the px of climb over the corridor)
+    return unfilled(need, maxPer) * 1e6 + Math.max(0, climb - room);
   };
   const base = short(dealt);
   if (!base) return dealt;
