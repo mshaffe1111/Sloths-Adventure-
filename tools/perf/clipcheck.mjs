@@ -522,6 +522,54 @@ async function walk(browser, base, save, size, devBase) {
     scope = '';
   });
 
+  // the stories and the cards of a run (audit C saves #11: never walked, and they held tap targets under 44 px and in the notch band):
+  // a story picture and its Skip and Back, the guardian's card, The End, the stage-cleared card with medals, the Game Over card and its
+  // extra-lives offer. Opened with the development build's own hooks (window.__story, __win, __play, __kill), on every save, both ways up
+  if (devBase) await tryStep('stories and run cards', async () => {
+    await page.goto(`${devBase}/?lessons=off`);
+    await seed(page, save);
+    await page.goto(`${devBase}/?lessons=off`);
+    await page.waitForFunction(() => typeof window.__story === 'function' && typeof window.__win === 'function', null, { timeout: 60000 });
+    await page.evaluate(() => window.__story('1-1', 'story_cutscene'));
+    await page.locator('.sp-next').first().waitFor({ state: 'visible', timeout: 20000 });
+    for (let i = 0; i < 12 && !(await page.locator('.sp-back').count()); i++) {
+      await page.locator('.sp-next').first().evaluate((e) => e.click());
+      await settle(300);
+    }
+    await settle(900);
+    await judge('cards: a story picture, with Skip and Back');
+    await page.evaluate(() => window.__story('10-10', 'boss_card'));
+    await page.locator('.boss-card').first().waitFor({ state: 'visible', timeout: 20000 });
+    await settle(900);
+    await judge("cards: the guardian's card");
+    await page.evaluate(() => window.__story('10-10', 'story_ending'));
+    await page.locator('.ending-card').first().waitFor({ state: 'visible', timeout: 20000 });
+    await settle(900);
+    await judge('cards: The End');
+    await page.evaluate((m) => window.__win('1-2', 3, m), IDS.badges.slice(0, 2));
+    await page.locator('.clr-medals.in').first().waitFor({ state: 'visible', timeout: 20000 });
+    await settle(600);
+    await judge('cards: stage cleared, with medals');
+    // Game Over, then again until the extra-lives offer (assist.ts OFFER_AFTER_FAILS)
+    await page.evaluate(() => window.__play('1-3'));
+    for (let n = 0; n < 4 && !(await page.locator('.clr-help').count()); n++) {
+      await page.waitForFunction(() => typeof window.__engine === 'function' && !!window.__engine(), null, { timeout: 30000 });
+      await settle(2500);
+      // (__kill takes the lives it can: one a respawn, so it is asked again until the card is up)
+      for (let k = 0; k < 12 && !(await page.locator('.clr-card.lost').count()); k++) {
+        await page.evaluate(() => window.__kill());
+        await settle(1500);
+      }
+      await page.locator('.clr-card.lost').first().waitFor({ state: 'visible', timeout: 20000 });
+      await settle(1200);
+      if (n === 0) await judge('cards: Game Over');
+      if (await page.locator('.clr-help').count()) break;
+      await page.evaluate(() => window.__play('1-3'));
+    }
+    await page.locator('.clr-help').first().waitFor({ state: 'visible', timeout: 5000 });
+    await judge('cards: Game Over, the extra-lives offer');
+  });
+
   // the testers' link (?ctest=1, as #ctest): the front page, the "I'm done" badge over the level, the end questions (blank, and with
   // "looked wrong" opened), and the sent screen. On the fresh save only: the link starts from nothing. A 26 px "I'm done" slipped
   // past because these screens were never walked (tester-page, 11-06)

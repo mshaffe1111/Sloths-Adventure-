@@ -482,15 +482,15 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       />
 
       {/* (above the world's title card, which used to dim Skip into the dark: UI-12) */}
-      <div className="absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-2 px-3 sm:px-5 pt-2.5">
+      <div className="sp-top absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-2">
         <span className={`ui-chip transition-opacity duration-300 ${cardUp ? 'opacity-0' : 'opacity-100'}`}>{panel.chapter}</span>
-        <button type="button" onClick={onFinish} className="ui-chip ui-chip-btn">
+        <button type="button" onClick={onFinish} className="ui-chip ui-chip-btn sp-skip">
           {skipLabel} <TextGlyph name="arrow" size={13} />
         </button>
       </div>
 
       {!cardUp && !panel.closing && (
-        <div className="absolute inset-x-0 bottom-0 z-10 px-3 sm:px-6" style={{ paddingBottom: 'max(10px, env(safe-area-inset-bottom, 0px))' }}>
+        <div className="sp-low absolute inset-x-0 bottom-0 z-10" style={{ paddingBottom: 'max(10px, env(safe-area-inset-bottom, 0px))' }}>
           {box}
         </div>
       )}
