@@ -14,7 +14,7 @@ import { jumpOK } from '../levelCheck.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Platform } from '../types.ts';
 import type { Difficulty } from '../difficulty.ts';
-import { BODY_H, lesserArcs, linkArcs } from './reach.ts';
+import { BODY_H, CHAIN_BANDS, bandHi, lesserArcs, linkArcs } from './reach.ts';
 import { deadZones, purposelessBounces, type LandPickup } from './landings.ts';
 import type { JudgedStage, PromiseDef, PromiseRegistry, Verdict } from './verdicts.types.ts';
 
@@ -98,6 +98,39 @@ const teachPromise = (id: 'teach.double-no-gap-after' | 'teach.double-gap-unsafe
   judge: (st) => { const d = builtOf(st).gen2?.brief?.teaches?.includes('double') ? doubleAfterTeach(builtOf(st), st.setting, st.stageId) : null; return d && d.id === id ? [{ name: id, setting: st.setting, at: { x0: d.x0, x1: d.x1 }, line: d.line }] : []; },
 });
 
+/** how far before a mount cap (its left edge) the ground he steps or hops onto it from may end (px): a run-up hop's reach, well inside a
+ *  single flick's 128 px from 70 px back (reach.md §2) */
+export const MOUNT_REACH = 120;
+/** a cap whose centre is this near past another cap's is that cap's next in a chain, not a mount: chain.md §2, "S 240-270 lands on the
+ *  next pillar; S 280 or more falls" (the widest flown cap to cap, past the bands' 225) */
+const CHAIN_LINK = Math.max(270, ...CHAIN_BANDS.map((r) => r.s.hi));
+
+/**
+ * `chain.mount` (R-165.138, Matt 11-12: tall-stem mushrooms needing a jump to mount): a bounce cap with no cap before it within a chain
+ * hop is a mount, stepped or hopped onto from the ground; its top may stand no more than the single-rise band's top (bands.md §2: what a
+ * plain hop is asked to climb) over the best ground ending within MOUNT_REACH px before it or under it. No ground there: a pole out of a pit.
+ */
+export function mountVerdicts(platforms: readonly Platform[], setting: Difficulty): Verdict[] {
+  const hop = bandHi('single-rise', setting)!;
+  const caps = platforms.filter((q) => q.type === 'bouncy' && !q.broken).sort((a, b) => a.x - b.x);
+  const ground = platforms.filter((q) => q.type !== 'bouncy' && !q.broken && !q.soil && q.width > 0);
+  const out: Verdict[] = [];
+  for (const c of caps) {
+    const cx = c.x + c.width / 2;
+    if (caps.some((p) => p !== c && p.x + p.width / 2 < cx && cx - (p.x + p.width / 2) <= CHAIN_LINK)) continue;
+    const at = { x0: Math.round(c.x), x1: Math.round(c.x + c.width) };
+    const from = ground.filter((q) => q.x < c.x + c.width && q.x + q.width >= c.x - MOUNT_REACH && q.y >= c.y - BODY_H.px * 4);
+    if (!from.length) {
+      out.push({ name: 'chain.mount', setting, at, line: `the bounce cap at x ${at.x0} has no ground within ${MOUNT_REACH} px to step or hop onto it from` });
+      continue;
+    }
+    const best = from.reduce((a, b) => (b.y < a.y ? b : a));
+    const rise = Math.round(best.y - c.y);
+    if (rise > hop) out.push({ name: 'chain.mount', setting, at, line: `the bounce cap at x ${at.x0} stands ${rise} px over the ground he mounts it from (x ${Math.round(best.x)}..${Math.round(best.x + best.width)}), over a plain hop's ${hop} (single-rise band)` });
+  }
+  return out;
+}
+
 /** the judged stages' promises (1-1's first), ONE definition for the pipeline's verdicts, the seed list and the tests (ADR-001 decision
  *  8): Easy has no double gap (bands.md §2), so the double's promises are judged on Normal only, by `settings`. Every judged stage
  *  (reach.ts JUDGED: the pipeline judges no other) is held to `floor.unmarked` */
@@ -106,6 +139,8 @@ export const PROMISES_11: PromiseRegistry = [
     id: 'floor.unmarked', stages: 'all', settings: ['normal', 'easy'],
     judge: (st) => floorlessGaps(builtOf(st)).map(([x0, x1]): Verdict => ({ name: 'floor.unmarked', setting: st.setting, at: { x0: Math.round(x0), x1: Math.round(x1) }, line: `an unmarked floorless gap at x ${Math.round(x0)}..${Math.round(x1)}` })),
   },
+  // (R-165.138: a chain's first cap is stepped or hopped onto, never mounted with a jump or a double)
+  { id: 'chain.mount', stages: 'all', settings: ['normal', 'easy'], judge: (st) => mountVerdicts(builtOf(st).platforms, st.setting) },
   teachPromise('teach.double-no-gap-after'),
   teachPromise('teach.double-gap-unsafe'),
   {

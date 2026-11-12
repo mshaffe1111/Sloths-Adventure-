@@ -10,7 +10,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { BOUNCE_FRAMES, BOUNCE_URL, type BounceFrame } from './bounceAtlasData.ts';
 import type { Platform } from './types.ts';
 import { viewRect, type ViewRect } from './artKit.ts';
-import { drawW8BounceLeaf } from './w8DecorArt.ts';
+import { drawW8BounceLeaf, w8LeafBox } from './w8DecorArt.ts';
 
 /** the view, kept for the stalk's cull */
 const stalkView: ViewRect = { x0: 0, y0: 0, x1: 0, y1: 0 };
@@ -59,6 +59,31 @@ function bake(sp: string, f: BounceFrame, scale: number) {
   const out = { fade, deep };
   baked.set(sp, out);
   return out;
+}
+
+/** a box about a painted plant's cap, world px: its middle and half-size */
+export interface CapBox { cx: number; cy: number; rx: number; ry: number }
+
+/** where world's painted cap stands on platform p (drawBounce's own sizes, from the atlas frame): the cap from its top to its rim */
+export function capBox(p: Platform, world: number): CapBox {
+  const sp = BOUNCE_FRAMES[`cap-w${world}`] ? `w${world}` : 'w1';
+  const cf = BOUNCE_FRAMES[`cap-${sp}`];
+  const k = (p.width * (cf.span ?? 1.1)) / (cf.w * (cf.cw ?? 1));
+  const cw = cf.w * k, ch = cf.h * k;
+  const half = ((cf.rim ?? 0.8) * ch) / 2;
+  return { cx: p.x + p.width / 2, cy: p.y + half, rx: ((cf.cw ?? 1) * cw) / 2, ry: half };
+}
+
+/**
+ * The box the gold rim (readable.ts drawAura) marks a bounce plant by: the painted cap drawBounce draws there, or World 8's leaf where
+ * it stands instead. Null while that picture is not in: a rim with nothing in it reads as an empty pickup ring (F12, the 1-2 stills).
+ */
+export function bounceAuraBox(p: Platform, world: number): CapBox | null {
+  if (world === 8 && p.id % 2 === 1) {
+    const leaf = w8LeafBox(p);
+    if (leaf) return leaf;
+  }
+  return warmBounce() ? capBox(p, world) : null;
 }
 
 /**

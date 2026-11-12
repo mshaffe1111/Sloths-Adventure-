@@ -16,7 +16,7 @@ import type {
 /** every name, in the union's order (the test checks this list against verdicts.types.ts, so a new name can't be missed here) */
 export const ALL_VERDICTS: readonly VerdictName[] = [
   'reach.unflown', 'arc.single-gap-over', 'arc.single-rise-over', 'block.lesser-passes', 'block.taught-fails', 'block.spare-thin', 'band.out',
-  'headroom.cuts-arc', 'floor.unmarked', 'drop.lethal-in-no-lethal', 'drop.unwarned', 'drop.look-lies', 'drop.untyped', 'hazard.untaught',
+  'headroom.cuts-arc', 'floor.unmarked', 'drop.lethal-in-no-lethal', 'drop.unwarned', 'drop.look-lies', 'drop.untyped', 'hazard.untaught', 'chain.mount',
   'teach.double-no-gap-after', 'teach.double-gap-unsafe', 'landing.dead-zone', 'bounce.no-purpose', 'first-run.drift',
 ];
 /** the checks that need a flown arc: not judged (with `reach.unflown`) where the setting and place have none (ADR-001 §3) */

@@ -6,7 +6,7 @@ import { drawHeroSprite } from './heroSprite.ts';
 import { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity } from './creatures.ts';
 import { drawBloom, type Bloom } from './flora.ts';
 import { drawFlowerSprite, flowersPainted } from './flowerSprites.ts';
-import { drawPickup } from './pickupSprites.ts';
+import { drawPickup, pickupReady } from './pickupSprites.ts';
 import { isPetalStage, relicArt } from './stagePlan.ts';
 import { drawPlantSprite, plantsPainted } from './plantSprites.ts';
 import { rng, tone } from './artKit.ts';
@@ -1041,6 +1041,9 @@ export function drawCollectible(
 ) {
   // (the snail stays where he is once touched: he never stops)
   if (item.collected && item.type !== 'thorn_gate' && !item.findId?.endsWith('_snail')) return;
+  // (a petal is drawn only as Meeca's petal: until its picture is in, nothing, rim included. It used to fall through to a painted
+  // flower, a red passion flower in the 1-2 stills inside the petal's gold rim, or a vector hibiscus: F12)
+  if (item.type === 'flower' && isPetalStage(world, mini) && !pickupReady('petal')) return;
   // (one off screen is skipped: 60% of the pickups drawn were, each an aura, a glow and a sprite: PERFORMANCE-RULES.md §2.5)
   const m = ctx.getTransform();
   if (m.b === 0 && m.c === 0 && m.a > 0) {

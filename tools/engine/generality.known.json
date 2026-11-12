@@ -146,22 +146,6 @@
    "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
   },
   {
-   "file": "src/game/gen2/reach.ts",
-   "kind": "stage-id",
-   "code": "scope: 'normal-1-1'",
-   "count": 1,
-   "why": "the flown-reach table has one Normal scope, 1-1's (R-165.61): a reach scope per brief",
-   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
-  },
-  {
-   "file": "src/game/gen2/verdicts.types.ts",
-   "kind": "stage-id",
-   "code": "ReachScope = 'normal-1-1'",
-   "count": 1,
-   "why": "the reach scope type names 1-1",
-   "owner": "the lead, from the R-165.123 burn-down (world data, the brief or a per-stage script)"
-  },
-  {
    "file": "src/game/gen2/verdicts.types.ts",
    "kind": "stage-id",
    "code": "stageId: '1-1'",

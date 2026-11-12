@@ -33,6 +33,11 @@ function img(name: string): HTMLImageElement | null {
   return null;
 }
 
+/** is pickup `name`'s picture in (asking starts its load) */
+export function pickupReady(name: string): boolean {
+  return !!img(name);
+}
+
 /** draws pickup `name` centred on the origin, `size` world units on its longest side; false when it is not (yet) loaded */
 export function drawPickup(ctx: CanvasRenderingContext2D, name: string, size: number, tilt = 0): boolean {
   const im = img(name);
