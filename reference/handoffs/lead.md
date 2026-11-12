@@ -67,10 +67,9 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
   original, dark images exempt, a check page for Matt. Retire both when they report (verify ls-remote first).
   EN-S (Fable, session_01FhBbYNeneV7CJUH3PDMtKm, t-engine-split on main, stop 12:15 AM): seedchunks merged first, D45 fix in gates.yml,
   a bundle breakdown, each world / old generator / special runs / bosses / story as their own chunks behind one loading seam; offline proven.
-- RUNNING (11-12 8:05 AM): INT-E (Opus xhigh, session_01FhBbYKdwDhw2Lnrf4pNT11, t-int-engine@3616dfd9, merges done, full gate + EnK5
-  running); P11 (Opus high, session_01FhBbYNA2XQgbQQrcxjr5GS, t-11-pass: dead-zone verdict + hop rocks + bounce purpose, one 1-1 list
-  rebuild, stills to the lead first); RF (Opus high, session_01FhBbYLQ7JMMvU92yPseQLK, t-render-fixes: R-164.1/.6/.7/.8 + the pit-wall
-  look, stills to the lead first). Both stop 11:30 AM. Model table: engine high or xhigh, max when needed (386731ac).
+- RUNNING (11-12 9:22 AM): PROOF-1 (cold Critic, Opus xhigh, session_01FhBbYMYtRUNd5ze6kU5rsW, t-proof-audit on t-int-engine@d0276817,
+  stop 11:45 AM); P11 (Opus high, session_01FhBbYNA2XQgbQQrcxjr5GS, t-11-pass, stop 11:30 AM); PIT (Opus high,
+  session_01FhBbYKVL3LoNkn91qrFBTb, t-pit-polish on t-render-fixes, stop 10:30 AM). Done today: SWEEP-M, INT-E (green), RF.
 - Everyone else retired tonight, branches verified. Next helpers start fresh from their role card + this note + a packet.
 
 ## How the team runs now (learned tonight; keep)
