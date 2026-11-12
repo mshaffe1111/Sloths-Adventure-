@@ -97,3 +97,26 @@ Branch `t-engine-clock`, base `origin/t-engine-yield` @347d50fa. No PR. Nothing 
   stone, a bell: watchers turn to it) is left as it is; the two can share one event list when this is wired.
 - **Next step:** the engine keeps one `FallState` beside the stillness state, makes a `Sound` on a hard landing, a punch and a
   break, and hands it to each stage's listeners with `sound`; thorn vines become the first `Listener`.
+
+## RIDES (the lead's last piece, 9:14 PM ET; GAME-MAP B4)
+- **`src/game/ride.ts`** (pure, 115 lines; not imported by the game yet, so 0 bytes shipped: main JS still 3,995,403).
+  - A path from data (`sideToSide`, `upDown`, or any list of points, travelled by distance) driven by the one clock: at the near
+    end while the clock is off or warning, along the path while it is on, at the far end while it rests; the next cycle brings it
+    back. `smooth` eases away from and into each stop (a lift). Easy only stretches the clock: same stops, same path.
+  - Carrying: `standingOn` (asked against the top it had before this step), `carry` (he takes the ride's own move and his feet are
+    set on its top), `jumpOff` (keeps all of its sideways speed and none of its up or down: `RIDE.keep`).
+  - A sinking pad: a beatBrick ('gone') on a count that only runs while he stands (`stepPad`, `padNow`): holds, warns, sinks; it
+    stays down 0.6 s after he leaves, then rises through its warning. Stepping off during the warning saves it.
+- **Proof (`ride.test.ts`, 8 tests written first):** over 28 s at 30 fps on a log and a lift, his feet equal the ride's top every
+  frame, his slip is under 1e-9 px, and no frame's move jumps (a lift's step changes by under 0.75 px a frame). Mid-travel a jump
+  off a log doing 200 px/s leaves at his own 60 plus 200; off a rising lift his jump is unchanged. The examples: a drifting log
+  carries him the whole 800 px after at least 14 frames of warning; a lift takes him up, waits 2 s or more, and brings him down.
+  Five mutations tried (2% slip, no return trip, creeping during the warning, pad never rises, no kept speed): each fails 1 to 3.
+- **Checks:** tsc clean; stage lock 102 of 102 unchanged; 44 tests in the clock, brick, stillness, noise and ride files pass.
+- **Not done / open for the lead:** (a) today's shipped movers (lift.ts, river.ts logs, the sine sway) are NOT replaced by this:
+  moving them is a per-stage play change and needs the lock and reach checker with it. (b) A wrapping log (in one side, out the
+  other) is still river.ts's `driftX`; this core is there-and-back. (c) Walking on a moving ride works (carry adds to his own
+  step) but the reach checker does not know rides yet. (d) Bubbles and vents (Worlds 6 and 9) are a path plus a pop or a push:
+  not built.
+- **Next step:** the engine steps each stage's rides beside `gameTime += dt`, calls `standingOn` then `carry` before his own
+  move, and `jumpOff` on the jump frame; then the reach checker learns a ride's positions from its clock.
