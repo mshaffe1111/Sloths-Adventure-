@@ -18,6 +18,8 @@ export const LOUD = {
   landing: { soft: 200, min: 180, perPx: 0.9, max: 560 },
   punch: { r: 240 },
   breaking: { r: 420 },
+  /** a thrown pebble or nut landing: it carries as the puzzle kit's thrown things do (noise.ts NOISE.hear; puzzlePlay.ts makes them) */
+  thrown: { r: NOISE.hear },
   /** the drum: how far it carries, and how long it stuns an awake predator (s) */
   drum: { r: 620, stun: 3 },
 } as const;
@@ -29,7 +31,7 @@ export interface Sound {
   t: number;
   /** how far it carries (px) */
   r: number;
-  from: 'landing' | 'punch' | 'break' | 'drum';
+  from: 'landing' | 'punch' | 'break' | 'drum' | 'thrown';
 }
 
 /** the noise of a landing after a fall of `fell` px, or null when it was soft */
@@ -40,6 +42,8 @@ export function landingNoise(x: number, y: number, t: number, fell: number): Sou
 export const punchNoise = (x: number, y: number, t: number): Sound => ({ x, y, t, r: LOUD.punch.r, from: 'punch' });
 export const breakNoise = (x: number, y: number, t: number): Sound => ({ x, y, t, r: LOUD.breaking.r, from: 'break' });
 export const drumNoise = (x: number, y: number, t: number): Sound => ({ x, y, t, r: LOUD.drum.r, from: 'drum' });
+/** where a thrown thing lands: the one noise he makes somewhere he is not, so the one that can lure (predators/core.ts `hear`) */
+export const thrownNoise = (x: number, y: number, t: number): Sound => ({ x, y, t, r: LOUD.thrown.r, from: 'thrown' });
 
 /** how far he has fallen: the top of his arc since he last stood or held on (y grows downward) */
 export interface FallState { top: number | null }

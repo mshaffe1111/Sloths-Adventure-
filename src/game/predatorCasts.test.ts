@@ -4,7 +4,7 @@
 // leaving its spot (the sentry), and stillness beating anything that has nowhere to go (the frog).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { landingNoise } from './heroNoise.ts';
+import { landingNoise, thrownNoise } from './heroNoise.ts';
 import { beat, blocks, checkPredator, foodChain, hear, hurt, newPredator, touches } from './predators/core.ts';
 import { DT, firstT, post, prey, run } from './predators/fixtures.ts';
 import { CAIMAN, CASTS_AFTER_1, FROG, HARPY, JAGUAR, OCELOT, RIVER_GUARD, SENTRY, SPIDER, TAYRA, TURTLE } from './predators/casts.ts';
@@ -32,7 +32,7 @@ test('turtle: all shell from the front. A punch only works from behind; a kick s
   assert.deepEqual([k.leaving, k.facing], [true, 1]);
   // nosy: it walks to a noise and he passes behind its back
   const n = newPredator(TURTLE, post());
-  assert.equal(hear(TURTLE, n, landingNoise(650, 300, 0, 400)!), 'drawn');
+  assert.equal(hear(TURTLE, n, thrownNoise(650, 300, 0)), 'drawn');
   assert.equal(run(TURTLE, n, 4, () => prey({ x: 520 })).filter((e) => e.tell).length, 0);
 });
 
@@ -87,7 +87,7 @@ test('sentry: it stands in the doorway and cannot be hit; a noise turns its head
   const s = newPredator(SENTRY, post());
   assert.equal(blocks(SENTRY, s), true);
   for (const w of ['stomp', 'punch', 'kick'] as const) assert.equal(beat(SENTRY, s, w, 0, 440), false, w);
-  assert.equal(hear(SENTRY, s, landingNoise(700, 300, 0, 400)!), 'drawn');
+  assert.equal(hear(SENTRY, s, thrownNoise(700, 300, 0)), 'drawn');
   const ev = run(SENTRY, s, 4.3, () => prey({ x: 450 }));
   assert.deepEqual([ev.length, s.x, s.facing], [0, 500, 1], 'head turned to the noise; he is inside its reach behind it');
   run(SENTRY, s, 0.5, () => prey({ x: -999 }), { t0: 4.3 });

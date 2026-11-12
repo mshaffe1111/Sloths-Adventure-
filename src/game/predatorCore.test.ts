@@ -2,7 +2,8 @@
 // never cruel, stillness and noise work on every kind the same way, and Easy is never harder.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { drumNoise, landingNoise, LOUD, sound } from './heroNoise.ts';
+import { drumNoise, landingNoise, LOUD, sound, thrownNoise } from './heroNoise.ts';
+import { NOISE } from './noise.ts';
 import {
   TELL_MIN, GONE_AFTER, beat, blocks, checkPredator, coolOf, foodChain, hear, hurt, newPredator, postsFor, sees, speedOf, tellOf, touches,
 } from './predators/core.ts';
@@ -274,10 +275,10 @@ test('a sleeper with wakeAt wakes when he MOVES close; a still sloth never wakes
   assert.equal(z.asleep, false);
 });
 
-test('the noise lure: a kind that hears goes to the noise and looks there, noticing nobody, then goes back to its habit', () => {
+test('the noise lure is a THROWN noise: a kind that hears goes to it and looks there, noticing nobody, then goes back to its habit', () => {
   const def = base({ habit: 'seek', hears: 3 });
   const s = newPredator(def, post());
-  assert.equal(hear(def, s, landingNoise(640, 300, 0, 400)!), 'drawn');
+  assert.equal(hear(def, s, thrownNoise(640, 300, 0)), 'drawn');
   const ev = run(def, s, 2.3, () => prey({ x: 520 }));
   assert.ok(Math.abs(s.x - 640) < 8, `it walked to the noise (${s.x})`);
   assert.equal(ev.filter((e) => e.tell || e.act).length, 0, 'he walked right behind it');
@@ -286,19 +287,41 @@ test('the noise lure: a kind that hears goes to the noise and looks there, notic
   assert.equal(s.phase, 'rest');
   // a noise past the end of its ground: it goes to the end and looks from there
   const e = newPredator(def, post());
-  assert.equal(hear(def, e, landingNoise(800, 300, 0, 400)!), 'drawn');
+  assert.equal(hear(def, e, thrownNoise(800, 300, 0)), 'drawn');
   run(def, e, 4, () => prey({ x: -999 }));
   assert.ok(e.x > 690 && e.x <= 700, `it stopped at the end of its ground (${e.x})`);
   // "noticing nobody" holds for a kind that remembers too: while it looks at the noise it does not learn him
   const keen = base({ habit: 'seek', hears: 3, sight: { ahead: 200, behind: 80, tall: 80, remembers: true } });
   const k = newPredator(keen, post());
-  hear(keen, k, landingNoise(640, 300, 0, 400)!);
+  hear(keen, k, thrownNoise(640, 300, 0));
   run(keen, k, 2, () => prey({ x: 560 }));
   assert.equal(k.knows, false);
   // a kind without `hears` stays where it is
   const deaf = base();
   const d = newPredator(deaf, post());
-  assert.equal(hear(deaf, d, landingNoise(640, 300, 0, 400)!), null);
+  assert.equal(hear(deaf, d, thrownNoise(640, 300, 0)), null);
+});
+
+test('his own noise is no lure: a hunter that goes to noises comes looking for HIM, eyes open (so a hard landing never blinds anything)', () => {
+  assert.equal(thrownNoise(0, 0, 0).r, NOISE.hear, 'a thrown thing carries as the puzzle kit\'s does');
+  const def = base({ habit: 'seek', hears: 3 });
+  const s = newPredator(def, post());
+  assert.equal(hear(def, s, landingNoise(640, 300, 0, 400)!), 'alert');
+  assert.deepEqual([s.phase, s.drawn], ['hunt', false]);
+  // he landed at 640 and stays there: it walks over, sees him, and tells
+  const ev = run(def, s, 3, () => prey({ x: 640 }));
+  assert.ok(Number.isFinite(firstT(ev, 'tell')), 'it found him');
+  // he landed and slipped away: it looks where the noise was, then stands down
+  const g = newPredator(def, post());
+  hear(def, g, landingNoise(640, 300, 0, 400)!);
+  const ev2 = run(def, g, def.giveUp + 0.5, () => prey({ x: -999 }));
+  assert.ok(g.x > 540, `it went to look (${g.x})`);
+  assert.equal(ev2.filter((e) => e.lostHim).length, 1);
+  // something that never leaves its post just stays (it is not blinded either)
+  const guard = base({ habit: 'guard', hears: 3, speed: { rest: 0, hunt: 0 }, beatenBy: { break: { ends: 'chasedOff' }, push: { ends: 'stunned', seconds: 6 } }, first: 'break' });
+  const p = newPredator(guard, post());
+  assert.equal(hear(guard, p, landingNoise(560, 300, 0, 400)!), null);
+  assert.ok(Number.isFinite(firstT(run(guard, p, 2, () => prey({ x: 440 })), 'tell')));
 });
 
 // ───────────────────────────── the food chain ─────────────────────────────

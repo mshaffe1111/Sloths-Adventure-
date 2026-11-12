@@ -168,10 +168,12 @@ export function beat(def: PredatorDef, s: PredatorState, way: Way, t: number, fr
 }
 
 /**
- * Let it hear a noise. heroNoise's rule first (a sleeper in reach wakes; the drum stuns the awake); then the lure: a kind that
- * `hears` goes to the noise and looks there, noticing nobody (a sweeper's eye does, during its pass).
+ * Let it hear a noise. heroNoise's rule first (a sleeper in reach wakes; the drum stuns the awake). Then, for a kind that `hears`:
+ *   - a THROWN noise is the lure: it goes there and looks, noticing nobody (a sweeper's eye does, during its pass);
+ *   - his own noise (a landing, a punch, a break) is where HE is, so it is no lure: a hunter at rest comes looking for him with its
+ *     eyes open ('alert'), and nothing is ever blinded by it.
  */
-export function hear(def: PredatorDef, s: PredatorState, n: Sound): 'woke' | 'stunned' | 'drawn' | null {
+export function hear(def: PredatorDef, s: PredatorState, n: Sound): 'woke' | 'stunned' | 'drawn' | 'alert' | null {
   if (s.phase === 'gone' || s.phase === 'flee') return null;
   const r = sound([s], n);
   if (r.woke) {
@@ -181,6 +183,13 @@ export function hear(def: PredatorDef, s: PredatorState, n: Sound): 'woke' | 'st
   if (r.stunned) return 'stunned';
   // a sweeper listens where its eye is (its shadow is what a noise pulls away)
   if (def.hears === undefined || !reaches(n, def.habit === 'sweep' ? { x: s.eyeX, y: n.y } : s)) return null;
+  if (n.from !== 'thrown') {
+    if (def.habit === 'sweep' || posted(def) || !(def.speed.hunt > 0) || s.phase !== 'rest') return null;
+    enter(s, 'hunt');
+    s.goalX = n.x;
+    s.lost = 0;
+    return 'alert';
+  }
   if (def.habit === 'sweep' ? s.phase !== 'hunt' : s.phase !== 'rest' && s.phase !== 'hunt') return null;
   s.drawn = true;
   s.goalX = n.x;

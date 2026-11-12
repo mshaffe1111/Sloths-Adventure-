@@ -300,3 +300,36 @@ What a bigger guardian needs, measured:
   landscape screen. The limit is 7.5 screens of drawn images a frame, worst today 7.22 (limits.json), and **no guardian fight is among
   drawcheck's seven scenarios**, so today nothing would catch a guardian that breaks it: add one fight as a scenario first. The glow
   some guardians use is a shadow blur (paintedBoss.ts:146), which the main-canvas limit sets at 0.
+
+## 9. Throw to lure (Matt, via the lead, 9:53 PM ET: taught in World 3, the quiet world; used after)
+
+**What exists** (the puzzle kit, in puzzle rooms only):
+- `carry` and `throw` are Moves (gen2/types.ts:35). Things to carry: acorn, stone, pinecone, pebble (all noisy), cake, mushroom, mango
+  (puzzleKit.ts:49-57). A tap in reach picks one up (puzzlePlay.ts:692-715); carrying, he walks at 0.68 speed (puzzleKit.ts:199).
+- The throw is a real arc (puzzleKit.ts:277-285, gravity 1500): a flick up lobs it (lands about 130 px ahead after 1.2 s, 224 px
+  high); a sideways flick throws it forward (lands about 295 px ahead after 0.6 s). A tap sets it down, silently.
+- A thrown noisy thing lands with a noise that carries 520 px for 4.5 s (puzzlePlay.ts:1077; noise.ts). Three listeners are wired:
+  the eagle's shadow circles the noise (engine.ts:7699, watcher.ts:179), a looking thorn vine strikes at it (engine.ts:8016), a
+  turtle walks to it and notices nobody (engine.ts:2749). The bell (680 px) is in World 2's bell rooms (w2Stages.ts:1073).
+
+**What the kit has as of tonight**: `heroNoise.thrownNoise(x, y, t)` (520 px), and one rule in `core.ts` `hear`: **only a thrown noise
+is a lure.** A kind that `hears` goes to it and notices nobody for its `hears` seconds. His own noise (a landing, a punch, a break) is
+where HE is: a hunter at rest comes looking with its eyes open, and nothing is ever blinded by it. A thrown noise also wakes every
+sleeper it reaches, so in the quiet world a throw is a choice, not a free pass.
+
+**Who answers a thrown noise** (from World 3 on, by the move ladder): the ocelot (comes to it: lure it under the stalactite, 3-3), the
+jaguar no (it only watches its column), the thorn vine (strikes at it), the Harpy Eagle from 4-5 (its shadow goes there), the
+capuchin lookout (looks away), the jumping spider (a pebble on a far thread), the tayra no (it charges what it sees), the crab and
+the stone sentry (turn to it: walk past behind), the night harpy most of all (it hunts by ear: throw it under the owl's light), the
+piranhas (a pebble in the water is a splash). The River King's guard and the turtle would, but World 2 comes before the lesson.
+
+**What it still needs** (not built):
+1. **Out of the puzzle rooms.** Today carry and throw live in the room kit. A laid stage needs pickup spots in its brief (a pebble
+   pile or a nut tree at an anchor, the kit's `source` piece, puzzleKit.ts:65) and the thrown landing handed to the cast (`hear`).
+2. **Never fruit.** Pebbles and nuts only (the story keeper). The mango is already not noisy, so the data holds the rule.
+3. **The hands problem.** There is no spare gesture: while he carries, the jump flick and the kick flick ARE the throws
+   (puzzlePlay.ts:675-692), so with a pebble in hand he cannot jump or kick. In a puzzle room that is fine; beside a hunter it is the
+   real cost of the tool. My call: keep it (carrying is a commitment; a tap drops it) and watch the testers in World 3.
+4. **Aim.** Two fixed arcs. Enough to teach with (he aims by where he stands); a third, longer arc from a hold is the first thing to
+   add if testers want range. No aim line: Dot never points, and an arc drawn on screen is the same thing.
+5. **Teaching it** (3-2 or 3-3): a pebble pile in the light, one ocelot facing away, one stalactite. The first throw can only go right.

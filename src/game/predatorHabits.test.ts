@@ -2,7 +2,7 @@
 // through predators/fixtures.ts's `run`, so the tell gate is asserted on every step of every habit.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { landingNoise } from './heroNoise.ts';
+import { landingNoise, thrownNoise } from './heroNoise.ts';
 import type { ClockDef } from './stageKit.types.ts';
 import { beat, blocks, checkOnClock, checkPredator, hear, hurt, newPredator, tellOf, touches } from './predators/core.ts';
 import { DT, base, firstT, post, prey, run } from './predators/fixtures.ts';
@@ -238,17 +238,31 @@ test('sweep: seen, he can still call the dive off by getting into cover and stil
   assert.ok(Number.isFinite(firstT(run(def, r, 6, (t) => prey({ x: 600 + (r.phase === 'tell' ? 230 * t : 0) })), 'act')), 'running out from under the shadow is not hiding');
 });
 
-test('sweep: a noise during the pass pulls its eye to the noise, where it sees nobody', () => {
+test('sweep: a thrown noise during the pass pulls its eye to the noise, where it sees nobody; his own landing does not', () => {
   const def = eagleLike();
   const s = newPredator(def, sky());
   let drew = false;
   const ev = run(def, s, 6, (t) => {
-    if (!drew && s.phase === 'hunt' && s.eyeX > 200) drew = hear(def, s, landingNoise(300, 300, t, 400)!) === 'drawn';
+    if (!drew && s.phase === 'hunt' && s.eyeX > 200) drew = hear(def, s, thrownNoise(300, 300, t)) === 'drawn';
     return prey({ x: 700 });
   });
   assert.equal(drew, true);
   assert.equal(ev.filter((e) => e.tell).length, 0, 'he walked on under where the eye would have been');
   assert.ok(Math.abs(s.eyeX - 300) < 1, `the eye is at the noise (${s.eyeX})`);
+  const own = newPredator(def, sky());
+  let tried: string | null = 'never';
+  const ev2 = run(def, own, 6, (t) => {
+    if (tried === 'never' && own.phase === 'hunt' && own.eyeX > 200) tried = hear(def, own, landingNoise(300, 300, t, 400)!);
+    return prey({ x: 700 });
+  });
+  assert.equal(tried, null);
+  assert.ok(Number.isFinite(firstT(ev2, 'tell')), 'the pass carries on and finds him');
+  // it listens where its eye is, not where it perches
+  const f = newPredator(def, post({ x: 1500, y: 40, minX: 200, maxX: 1600 }));
+  run(def, f, 2.2, () => prey({ x: 900, still: true, covered: true }));
+  assert.equal(f.phase, 'hunt');
+  assert.equal(hear(def, f, thrownNoise(1500, 300, 2.2)), null, 'right under its perch, 1,200 px from its eye');
+  assert.equal(hear(def, f, thrownNoise(300, 300, 2.2)), 'drawn', 'beside its eye, 1,200 px from its perch');
 });
 
 // ───────────────────────────── drop ─────────────────────────────
@@ -333,7 +347,7 @@ test('seek: asleep until a noise; the first noise only wakes it, the next one it
   assert.equal(hear(def, s, landingNoise(650, 300, 5, 400)!), 'woke');
   run(def, s, 1, FAR, { t0: 5 });
   assert.equal(s.x, 500, 'woken, it has not gone anywhere');
-  assert.equal(hear(def, s, landingNoise(650, 300, 6, 400)!), 'drawn');
+  assert.equal(hear(def, s, thrownNoise(650, 300, 6)), 'drawn');
   run(def, s, 2.5, FAR, { t0: 6 });
   assert.ok(Math.abs(s.x - 650) <= 6);
 });

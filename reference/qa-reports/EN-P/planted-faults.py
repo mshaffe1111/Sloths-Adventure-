@@ -36,6 +36,8 @@ M=[
  ("a sweeper hears at its body", "!reaches(n, def.habit === 'sweep' ? { x: s.eyeX, y: n.y } : s)", "!reaches(n, s)"),
  ("a charger walks home", "def.speed.hunt === 0 && def.act.speed === 0 && def.shy === undefined);", "def.speed.hunt === 0 && def.shy === undefined);"),
  ("a resting sweeper scares", " || (b.def.habit === 'sweep' && p === 'rest')) continue;", ") continue;"),
+ ("his own landing is a lure", "  if (n.from !== 'thrown') {", "  if (false) {"),
+ ("his own landing calls a sweeper off its pass", "if (def.habit === 'sweep' || posted(def) || !(def.speed.hunt > 0) || s.phase !== 'rest') return null;", "if (posted(def) && def.habit !== 'sweep' || !(def.speed.rest > 0) || s.phase === 'gone') return null;"),
  ("dozes does not sleep", "    s.asleep = true;\n    enter(s, 'rest');", "    enter(s, 'rest');"),
 ]
 ok=0; bad=[]

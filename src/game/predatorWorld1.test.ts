@@ -3,7 +3,8 @@
 // Every run goes through predators/fixtures.ts's `run`, which asserts the tell gate on every step.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { landingNoise } from './heroNoise.ts';
+import { landingNoise, thrownNoise } from './heroNoise.ts';
+import { inWorld } from './predators/roster.ts';
 import { STILLNESS } from './stillness.ts';
 import { GONE_AFTER, beat, checkPredator, foodChain, hear, hurt, newPredator, tellOf, touches } from './predators/core.ts';
 import { DT, firstT, post, prey, run } from './predators/fixtures.ts';
@@ -124,17 +125,30 @@ test('eagle, the last-second save: seen in the open, he makes the bush and goes 
   assert.equal(firstT(ev, 'act'), NaN);
 });
 
-test('eagle, way 2: a noise pulls its shadow to the noise for 4.5 s, and he crosses behind it', () => {
-  const s = newPredator(EAGLE, sky());
+test('eagle, in World 1 there is no noise lure: nothing he throws or lands pulls the shadow off him (the move ladder)', () => {
+  const W1 = inWorld(EAGLE, 1);
+  const s = newPredator(W1, sky());
+  let heard: string | null = 'never';
+  const ev = run(W1, s, 8, (t) => {
+    if (heard === 'never' && s.phase === 'hunt' && s.eyeX > 200) heard = hear(W1, s, thrownNoise(260, 300, t)) ?? hear(W1, s, landingNoise(260, 300, t, 420)!);
+    return prey({ x: 700 + 60 * Math.max(0, t - 2) });
+  });
+  assert.equal(heard, null);
+  assert.ok(Number.isFinite(firstT(ev, 'act')), 'crossing the open under the pass, he is dived at');
+  assert.equal(beat(W1, s, 'punch', 8), false, 'it cannot be hit');
+  assert.equal(beat(W1, s, 'stomp', 8), false);
+});
+
+test('eagle, from World 3 on (so 4-5): a thrown pebble pulls its shadow to the noise for 4.5 s, and he crosses behind it', () => {
+  const W4 = inWorld(EAGLE, 4);
+  const s = newPredator(W4, sky());
   let drew = false;
-  const ev = run(EAGLE, s, 6.4, (t) => {
-    if (!drew && s.phase === 'hunt' && s.eyeX > 200) drew = hear(EAGLE, s, landingNoise(260, 300, t, 420)!) === 'drawn';
+  const ev = run(W4, s, 6.4, (t) => {
+    if (!drew && s.phase === 'hunt' && s.eyeX > 200) drew = hear(W4, s, thrownNoise(260, 300, t)) === 'drawn';
     return prey({ x: 700 + 60 * Math.max(0, t - 2) });
   });
   assert.equal(drew, true);
   assert.equal(ev.filter((e) => e.tell).length, 0);
-  assert.equal(beat(EAGLE, s, 'punch', 6), false, 'it cannot be hit');
-  assert.equal(beat(EAGLE, s, 'stomp', 6), false);
 });
 
 // ───────────────────────────── the Boa Constrictor: it strikes at movement ─────────────────────────────
