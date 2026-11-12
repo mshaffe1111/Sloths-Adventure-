@@ -244,11 +244,14 @@ export function setW1PitWater(zones: ReadonlyArray<{ x0: number; x1: number; y: 
 /** does the stage's drawn water lie across x0..x1 (any of it): the ground's pit shade is not drawn over water (protoArt.ts drawGround) */
 export const waterAcross = (x0: number, x1: number) => pitWater.some((z) => z.x0 < x1 && z.x1 > x0);
 export const inWater = (g: PitGap) => pitWater.some((z) => z.x0 <= g.x0 + 4 && z.x1 >= g.x1 - 4 && z.y <= g.top + DROP_DARK);
-const cache = new WeakMap<readonly Platform[], { gaps: PitGap[]; bottom: number }>();
+const cache = new WeakMap<readonly Platform[], { gaps: PitGap[]; bottom: number; hurt: boolean }>();
 /** the stage's pits, and how far down its pieces reach (a drop is baked to there and a little more: below it the camera never looks) */
 const pitsOf = (platforms: readonly Platform[]) => {
   let v = cache.get(platforms);
-  if (!v) cache.set(platforms, (v = { gaps: findW1Pits(platforms), bottom: Math.max(0, ...platforms.map((q) => q.y + q.height)) + DROP_BELOW }));
+  if (!v) {
+    const gaps = findW1Pits(platforms);
+    cache.set(platforms, (v = { gaps, bottom: Math.max(0, ...platforms.map((q) => q.y + q.height)) + DROP_BELOW, hurt: gaps.some((g) => g.kind === 'hurt') }));
+  }
   return v;
 };
 /** a drop is baked this far under the stage's lowest piece */
@@ -316,6 +319,40 @@ export function dropOutline(g: PitGap, yl: number, yr: number, bottom: number): 
     if (y >= bottom) break;
   }
   return out;
+}
+
+/**
+ * a hollow's inside, baked once, drawn over the ground: the soft pit's dark and drop picture (bakeSoft) between its uneven walls
+ * (hollowWalls), from its lower lip down under its hurt floor's top. Sets h.x, the bake's world left
+ */
+function bakeHollow(g: PitGap, drop: HTMLImageElement): HTMLCanvasElement | null {
+  const X0 = g.x0 - HOLLOW_BITE - 2, X1 = g.x1 + HOLLOW_BITE + 2;
+  const bottom = (g.floor ?? g.top + 130) + HOLLOW_DARK_BELOW;
+  const soft = bakeSoft({ ...g, x0: X0, x1: X1, floor: bottom - 12 }, drop);
+  const c = canvas(X1 - X0, bottom - g.top);
+  const k = c?.getContext('2d');
+  if (!c || !k || !soft) return null;
+  // (its walls: the uneven line each side, every 4 px down)
+  k.beginPath();
+  const ys: number[] = [];
+  for (let y = g.top; y < bottom; y += 4) ys.push(y);
+  ys.push(bottom);
+  ys.forEach((y, i) => (i ? k.lineTo : k.moveTo).call(k, hollowWalls(g, y)[0] - X0, y - g.top));
+  for (let i = ys.length - 1; i >= 0; i--) k.lineTo(hollowWalls(g, ys[i])[1] - X0, ys[i] - g.top);
+  k.closePath();
+  k.clip();
+  k.drawImage(soft, 0, 0);
+  // (its foot thins out under the hurt floor's top, under the thorn bed's dark: never a straight line across)
+  k.globalCompositeOperation = 'destination-out';
+  const f = k.createLinearGradient(0, bottom - g.top - HOLLOW_DARK_BELOW, 0, bottom - g.top);
+  f.addColorStop(0, 'rgba(0,0,0,0)');
+  f.addColorStop(1, 'rgba(0,0,0,1)');
+  k.fillStyle = f;
+  k.fillRect(0, bottom - g.top - HOLLOW_DARK_BELOW, X1 - X0, HOLLOW_DARK_BELOW);
+  k.globalCompositeOperation = 'source-over';
+  const h = baked.get(g);
+  if (h) h.x = X0;
+  return c;
 }
 
 /** draw the pits in view (World 1 only: protoArt.ts calls it there); false while the pictures load */
@@ -419,6 +456,50 @@ function bakeBed(g: PitGap, bed: HTMLImageElement): HTMLCanvasElement | null {
  *  and how far under that top the pit's dark runs (the hurt floor's own slab is never seen: the bed and the dark cover it) */
 export const THORN_BED = { long: 210, low: 170, sink: 34, dark: 64, pad: 24 } as const;
 /**
+ * a hollow's torn lips, scaled to its width: each hangs LIP_IN of its own width into the pit, so over a hollow narrower than two full
+ * lips (84 px each) they met and read as one column of roots, not a hole (EN-W's Rough 1, Matt's 11-11). Each now hangs in at most
+ * HOLLOW_LIP_SHARE of the hollow's width, and never shrinks below HOLLOW_LIP_MIN wide
+ */
+export const LIP_IN = 0.38;
+export const HOLLOW_LIP_SHARE = 0.25;
+export const HOLLOW_LIP_MIN = 30;
+export const hollowLipWidth = (g: Pick<PitGap, 'x0' | 'x1'>) => Math.max(HOLLOW_LIP_MIN, Math.min(PIT_SIZE.lipW, ((g.x1 - g.x0) * HOLLOW_LIP_SHARE) / LIP_IN));
+/**
+ * a hollow's inside is drawn OVER the ground (its banks' sides over it are closed: protoArt.ts drawGround overHollow), its walls an
+ * uneven line that bites up to HOLLOW_BITE px into each bank's soil and never stands inside the pit: a straight cut showed as a hard line,
+ * and the banks' faces cut back under their end pieces showed a box-shaped cave and a grey-green sliver (EN-W's Roughs 1-3, 11-11)
+ */
+export const HOLLOW_BITE = 14;
+/** a hollow's wall at height y: [left x, right x] (world px), the uneven line keyed to the world, so the same hollow always looks the same */
+export const hollowWalls = (g: Pick<PitGap, 'x0' | 'x1'>, y: number): [number, number] => [g.x0 + 2 - (HOLLOW_BITE + 2) * wobble(y * 1.7, g.x0 * 0.013), g.x1 - 2 + (HOLLOW_BITE + 2) * wobble(y * 1.7 + 50, g.x1 * 0.017)];
+/**
+ * is bank p's side next to a hollow's hurt floor (a lower piece gen2 marks pit 'hurt' meeting it)? The ground painter closes that side
+ * (protoArt.ts drawGround): the hollow's inside is drawn over it here
+ */
+export const sideOverHollow = (p: Platform, banks: readonly Platform[], side: 'l' | 'r') => banks.some((q) => q !== p && q.pit === 'hurt' && q.y > p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2));
+/** the inside runs this far under the hurt floor's top, where the thorn bed's dark takes over */
+export const HOLLOW_DARK_BELOW = 30;
+/** the lip picture with its foot faded out, for a hollow (baked once): its column's flat foot hung in the pit's dark as a hard line */
+let fadedLip: HTMLCanvasElement | null | undefined;
+function lipFaded(lip: HTMLImageElement): HTMLCanvasElement | HTMLImageElement {
+  if (fadedLip === undefined) {
+    fadedLip = canvas(lip.width, lip.height);
+    const k = fadedLip?.getContext('2d');
+    if (fadedLip && k) {
+      k.drawImage(lip, 0, 0);
+      k.globalCompositeOperation = 'destination-out';
+      const f = k.createLinearGradient(0, lip.height * 0.55, 0, lip.height);
+      f.addColorStop(0, 'rgba(0,0,0,0)');
+      f.addColorStop(1, 'rgba(0,0,0,1)');
+      k.fillStyle = f;
+      k.fillRect(0, lip.height * 0.55, lip.width, lip.height * 0.45);
+    }
+  }
+  return fadedLip ?? lip;
+}
+/** the painted brambles lifted off the dark they lie in (EN-W's Rough 4: brown thorns on dark earth were hard to see on a phone) */
+export const THORN_LIFT = 'brightness(1.5) contrast(1.12) saturate(1.15)';
+/**
  * a hollow's thorn bed, baked once: the two painted brambles side by side along the whole floor, overlapping, wall to wall (it hurts
  * anywhere, so no bare floor shows), their feet a little under the floor's top
  */
@@ -439,19 +520,34 @@ function bakeThorns(g: PitGap, long: HTMLImageElement, low: HTMLImageElement): H
   v.addColorStop(1, 'rgba(10,7,5,0)');
   k.fillStyle = v;
   k.fillRect(0, foot - 26, W, H - (foot - 26));
-  // (past each wall the dark thins to nothing: a shade on the banks' feet, never a box wider than the pit)
-  k.globalCompositeOperation = 'destination-out';
-  for (const [xa, xb] of [[0, P], [W, W - P]] as const) {
-    const hz = k.createLinearGradient(xa, 0, xb, 0);
-    hz.addColorStop(0, 'rgba(0,0,0,1)');
-    hz.addColorStop(1, 'rgba(0,0,0,0)');
-    k.fillStyle = hz;
-    k.fillRect(Math.min(xa, xb), 0, P, H);
-  }
+  // (feathered to an oval, not a box: a rectangle a little wider than the pit read as a pasted shade at the bed's foot, EN-W's Rough 3.
+  // Full dark over the floor's top between the walls, thinning to nothing past them and below the floor)
+  k.globalCompositeOperation = 'destination-in';
+  const cx = W / 2, cy = foot - 4, rx = W / 2, ry = H - cy;
+  k.save();
+  k.translate(cx, cy);
+  k.scale(1, ry / rx);
+  const ov = k.createRadialGradient(0, 0, 0, 0, 0, rx);
+  ov.addColorStop(0, 'rgba(0,0,0,1)');
+  ov.addColorStop(Math.min(0.95, (W / 2 - P + 6) / rx), 'rgba(0,0,0,1)');
+  ov.addColorStop(1, 'rgba(0,0,0,0)');
+  k.fillStyle = ov;
+  k.fillRect(-rx, -rx, 2 * rx, 2 * rx);
+  k.restore();
+  // (above the oval's middle the dark is the column's own: kept whole between the walls)
+  k.globalCompositeOperation = 'destination-over';
+  k.fillStyle = v;
+  k.fillRect(P, foot - 26, W - 2 * P, Math.max(0, cy - (foot - 26)));
   k.globalCompositeOperation = 'source-over';
+  // (the brambles stand between the hollow's own uneven walls, hollowWalls: a straight clip showed as two hard lines down the bed)
+  const oy = (g.floor ?? 0) + THORN_BED.dark - H, ox = g.x0 - P;
+  k.save();
   k.beginPath();
-  k.rect(P, 0, W - 2 * P, H);
+  for (let y = 0; y <= H; y += 4) (y ? k.lineTo : k.moveTo).call(k, hollowWalls(g, y + oy)[0] - ox, y);
+  for (let y = H - (H % 4); y >= 0; y -= 4) k.lineTo(hollowWalls(g, y + oy)[1] - ox, y);
+  k.closePath();
   k.clip();
+  k.filter = THORN_LIFT;
   let x = P - 16 - hash(g.x0) * 30;
   let n = 0;
   while (x < W - P) {
@@ -467,6 +563,8 @@ function bakeThorns(g: PitGap, long: HTMLImageElement, low: HTMLImageElement): H
     x += bw * (0.58 + 0.12 * hash(g.x0 + n * 5.7));
     n++;
   }
+  k.filter = 'none';
+  k.restore();
   return c;
 }
 
@@ -530,7 +628,10 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
     for (const [sx, sy, sw, sh, soil] of g.steps ?? []) if (!soil) ctx.rect(sx + sw, sy - 2, -sw, sh + 4);
     ctx.clip('evenodd');
   };
-  const { gaps, bottom: stageBottom } = pitsOf(platforms);
+  const { gaps, bottom: stageBottom, hurt } = pitsOf(platforms);
+  // (a stage with a hollow starts its thorn pictures loading on its first frame, not when the first hollow comes into view: until they
+  // were in, the hollow showed its bare hurt-floor slab, a grey-green box, EN-W's "not wired")
+  if (hurt) w1ThornsReady();
   for (const g of gaps) {
     if (g.x1 < view.x0 - 100 || g.x0 > view.x1 + 100) continue;
     // (a drop the stage's water fills is the water's: engine.ts draws it)
@@ -541,18 +642,18 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
       if (g.floor === undefined || !w1ThornsReady()) continue;
       let h = baked.get(g);
       if (!h) baked.set(g, (h = { under: null, over: null, x: 0, y: 0, ox: 0, oy: 0 }));
-      if (layer === 'under') {
-        h.under ??= bakeSoft(g, drop);
-        if (h.under) ctx.drawImage(h.under, g.x0, g.top);
-        continue;
-      }
+      if (layer === 'under') continue;
+      h.under ??= bakeHollow(g, drop);
+      if (h.under) ctx.drawImage(h.under, h.x, g.top);
       const [yl, yr] = g.walls ?? [g.top, g.top];
-      if (g.lipL) ctx.drawImage(lip, g.x0 - lw * 0.62, yl - 12, lw, lh);
+      // (its torn lips scaled to it: two full lips met over a narrow hollow and read as a column of roots, hollowLipWidth)
+      const hw = hollowLipWidth(g), hh = (hw * lip.height) / lip.width, out = 1 - LIP_IN, hl = lipFaded(lip);
+      if (g.lipL) ctx.drawImage(hl, g.x0 - hw * out, yl - 12 * (hw / lw), hw, hh);
       if (g.lipR) {
         ctx.save();
-        ctx.translate(g.x1 + lw * 0.62, yr - 12);
+        ctx.translate(g.x1 + hw * out, yr - 12 * (hw / lw));
         ctx.scale(-1, 1);
-        ctx.drawImage(lip, 0, 0, lw, lh);
+        ctx.drawImage(hl, 0, 0, hw, hh);
         ctx.restore();
       }
       h.over ??= bakeThorns(g, pic('thornLong')!, pic('thornLow')!);

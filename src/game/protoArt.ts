@@ -5,7 +5,7 @@
  * The log, the rock, the golden seed, the leaf curtain, the branches (whole, creaking, snapped), the perch, the earth banks, the moss
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
  */
-import { drawW1Pits, paintedBank, waterAcross } from './w1Pits.ts';
+import { drawW1Pits, paintedBank, sideOverHollow, waterAcross } from './w1Pits.ts';
 import { drawHollowLog } from './w1NewArt.ts';
 import { drawCutArt } from './w1CutArt.ts';
 import { drawCrumbleTile } from './crumbleArt.ts';
@@ -1039,7 +1039,9 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
         (q.y < p.y && q.y + q.height >= p.y - 4 && q.x <= ex + 1 && q.x + q.width >= ex - 1)));
     };
     // the high canopy: a wall face on the side that faces the yard
-    const isWall = banks.some((q) => q !== p && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150);
+    // (a hollow's hurt floor, gen2 pit 'hurt', 150-170 down, is the floor of a pit, not a yard: the bank beside it keeps its painted face,
+    // as the bank across the pit does; as a wall it stood as one straight cut line down the pit's side, EN-W's stills 11-11)
+    const isWall = banks.some((q) => q !== p && q.pit !== 'hurt' && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150);
     // (a World 7 high ledge: its foot, the floor beside it, and whether no bank touches it at all)
     const high = kitWorld === 7 ? highLedge(p, banks) : undefined;
     // (World 7's high ledges are faced with the temple wall: no root wall beside it)
@@ -1067,7 +1069,11 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
       return !q || q.y - p.y >= HIGH_LEDGE;
     };
     const wall = high && { ...high, left: drop('l'), right: drop('r') };
-    drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks) }, false, view.y1 ?? 0, view, wall || undefined);
+    // (a side over a hollow's hurt floor (gen2 pit 'hurt') is closed: its soil runs straight down to the floor, and the hollow's inside,
+    // its torn lips and its thorn bed are drawn over it by World 1's pit painter, w1Pits.ts. Open, its end's face was cut back under the
+    // end piece down to the floor and the pit showed a box-shaped cave there and a grey-green sliver, EN-W's Roughs 1-3, 11-11)
+    const overHollow = (side: 'l' | 'r') => sideOverHollow(p, banks, side);
+    drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks) }, false, view.y1 ?? 0, view, wall || undefined);
   }
   shadeUpTo(-Infinity);
 }
