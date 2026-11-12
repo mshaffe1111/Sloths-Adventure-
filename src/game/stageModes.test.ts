@@ -109,6 +109,9 @@ test('down in the engine (4-7): a lower flag is further on wherever it stands, t
   r.stand(byY[0].x, byY[0].y); r.frame();
   assert.deepEqual(r.e.checkpoint, { x: byY[2].x, y: byY[2].y }, 'a higher flag never replaces a lower one');
   assert.ok(Math.abs(bar() - (byY[2].y - st.spawnY) / (st.exitTotemY - st.spawnY)) < 0.02, `the bar holds the lowest ledge (${bar()})`);
+  const held = bar();
+  r.fly(byY[2].x, byY[2].y + 900); r.frame();
+  assert.equal(bar(), held, 'a fall past the ledges is not progress until he stands');
 });
 
 test('up in the engine (1-4): a higher flag is further on, the bar is the old climb bar, no wall at the door', () => {
@@ -119,6 +122,8 @@ test('up in the engine (1-4): a higher flag is further on, the bar is the old cl
   r.stand(byY[0].x, byY[0].y); r.frame();
   assert.deepEqual(r.e.checkpoint, { x: byY[2].x, y: byY[2].y });
   assert.ok(Math.abs(bar() - ascentProgress(st.spawnY, st.exitTotemY, byY[2].y)) < 0.02, `the bar holds the best height (${bar()})`);
+  r.fly(byY[2].x, byY[2].y - 500); r.frame();
+  assert.ok(bar() > ascentProgress(st.spawnY, st.exitTotemY, byY[2].y - 400), `a climb counts height in the air, as before (${bar()})`);
   r.fly(st.config.levelWidth + 500, byY[2].y - 400); r.frame();
   assert.equal(r.p.x, st.config.levelWidth - 20);
 });

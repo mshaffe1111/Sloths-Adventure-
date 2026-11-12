@@ -64,5 +64,10 @@ export const MODES: Record<Travel, TravelMode> = {
   stay: { ...right, travel: 'stay', best: (prev) => prev, progress: () => 0, further: () => false, past: () => false, bounds: level, lead: () => ({ dx: 0, dy: 0 }) },
 };
 
+/** his place along the travel: x in a run, y in a climb or a way down (the bots' "how far on", tools/inspect) */
+export const along = (m: StageMode, at: Mark): number => (m.lead().dy ? at.y : at.x);
+/** is place `a` along the travel at or past place `b`? */
+export const reached = (m: StageMode, a: number, b: number): boolean => m.past({ x: a, y: a }, { from: b, to: b });
+
 /** a stretch laid from `lo` to `hi` (x in a run, y in a climb or drop) as the travel crosses it: entered at `from`, left at `to` */
 export const travelSpan = (m: StageMode, lo: number, hi: number): TravelSpan => (m.travel === 'left' || m.travel === 'up' ? { from: hi, to: lo } : { from: lo, to: hi });

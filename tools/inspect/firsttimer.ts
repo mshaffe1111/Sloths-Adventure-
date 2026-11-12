@@ -29,6 +29,8 @@
  */
 import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
 import { GameEngine } from '../../src/game/engine.ts';
+import { MODES, along, reached } from '../../src/game/stageModes.ts';
+import type { StageMode } from '../../src/game/stageKit.types.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
 import { GuideQueue, type GuideLine, type MoveId, type TopicId } from '../../src/game/dotGuide.ts';
 import { engineGuideLine } from '../../src/game/dotLines.ts';
@@ -605,8 +607,10 @@ export interface FTRun {
   frames: number;
   /** a tier bot's double jumps: each second press, ms after the first (R-165.59) */
   secondPressMs?: number[];
-  /** the furthest right he got (px): which pieces he entered */
+  /** the furthest right he got (px) */
   maxX?: number;
+  /** the furthest on he got along the stage's travel (px: x in a run, y in a climb or a way down, stageModes.ts): which pieces he entered */
+  far?: number;
   /** where he was every 0.5 s of play (px): the seconds he spent in each piece */
   xTrace?: number[];
   ms: number;
@@ -884,6 +888,9 @@ export class FirstTimerRun {
   readonly secondPressMs: number[] = [];
   /** the furthest right he got (px) */
   maxX = -Infinity;
+  /** the stage's travel, and the furthest on he got along it (px: x in a run, y in a climb or a way down) */
+  readonly mode: StageMode;
+  farOn = NaN;
   /** where he was every 15 frames (0.5 s) */
   readonly xTrace: number[] = [];
   /** the same loss at one spot this many times and he is put past it: 3 for KID and ADULT; a tier bot is a player, who tries again (8, a
@@ -902,6 +909,7 @@ export class FirstTimerRun {
   constructor(readonly id: string, readonly seed: number, readonly who: FirstTimer, readonly opts: RunOptions = {}) {
     this.r = rng(seed * 7919 + (opts.trial ?? 0) * 104723 + salt(who, 1, 2));
     this.sim = new RealPlay(id, seed);
+    this.mode = MODES[this.sim.stage.config.travel ?? 'right'];
     this.sim.safe = false;
     const e = (this.e = this.sim.e as Eng);
     // the engine's own lessons, stuck help and camera (the harness turns them off)
@@ -2000,6 +2008,8 @@ export class FirstTimerRun {
     if (this.sealed()) this.sealedT += DT;
     if (p.grounded) this.ground = { x: p.x, y: p.y };
     if (p.x > this.maxX) this.maxX = p.x;
+    const on = along(this.mode, p);
+    if (Number.isNaN(this.farOn) || reached(this.mode, on, this.farOn)) this.farOn = on;
     if (this.who.holdQ && this.frames % 15 === 0) this.xTrace.push(Math.round(p.x));
     // (the frame's own movement, for the next frame's choices: by then lastX and lastY are where he already is)
     this.moveX = p.x - this.lastX;
@@ -2163,7 +2173,7 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     turns: { n: run.turns, lag: +run.turnLag.toFixed(1) },
     backtrack: { route: run.routeRatio, bot: run.end === 'shrine' && run.direct > 0 && run.rescues === 0 ? +(run.walked / run.direct).toFixed(2) : null },
     frames: run.frames,
-    ...(who.holdQ ? { secondPressMs: run.secondPressMs, maxX: Math.round(run.maxX), xTrace: run.xTrace } : {}),
+    ...(who.holdQ ? { secondPressMs: run.secondPressMs, maxX: Math.round(run.maxX), far: Math.round(run.farOn), xTrace: run.xTrace } : {}),
     ms: Date.now() - t0,
   };
   out.flags = flagsFor(out);
