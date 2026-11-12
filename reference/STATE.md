@@ -560,3 +560,6 @@ lines); Matt sees them in the release.
   bites" 16 accepted (risk is the strike); the shimmy ROPE (posts + rope) breaks World 1's no-made-things rule -> a vine between two
   living trunks (ART-W1B pieces, F13 wires). F13 keeps "one shake, two snakes" only if the 2:00 margin needs it.
 - 2026-11-12 2:23 PM ET, Matt: "Fables at 98". W1C told to stop now (priority now) and push its final head; F13 (Opus max) started its finish from t-int-2 + W1C's newest head.
+- 2026-11-12 2:39 PM ET, Matt: "Is there any way that we can make 1-3 our test link then? Something a little bit different that people can
+  play?" -> chose "1-3 only": the testers' link (#ctest) plays 1-3 instead of 1-1, shipped with 0.9.7 after Matt plays 1-3 tonight
+  (R-165.157). Includes R-165.151 (delete the old control course) and the collector sheet's stage column.
