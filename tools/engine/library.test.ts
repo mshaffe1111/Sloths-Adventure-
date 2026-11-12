@@ -5,7 +5,7 @@
 //   npx tsx --test tools/engine/library.test.ts          (about a minute)
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { BEATS_12, EXIT_12, LINES_12, QUIET_12, SECTIONS_12, STAGE_12, build, config12, kitLib12, poolReport, roll } from './library.ts';
+import { BEATS_12, EXIT_12, LINES_12, QUIET_12, SECTIONS_12, STAGE_12, TEACH_12, build, config12, kitLib12, poolReport, roll } from './library.ts';
 import { buildGen2Stage, stagePool } from '../../src/game/gen2/pipeline.ts';
 import type { WorldKit } from '../../src/game/gen2/types.ts';
 
@@ -139,6 +139,26 @@ test("the story keeper's lines, verbatim, said where the design says: the lesson
     const m = st.platforms.filter((p: Any) => p.type === 'bouncy').sort((a: Any, b: Any) => a.x - b.x)[0];
     assert.ok(m.x - said('thorns')[0].x >= 800, `${d} seed ${s}: the thorn line ${Math.round(m.x - said('thorns')[0].x)} px before the mushroom`);
   });
+});
+
+/** the lesson's lines as the stage lays them (proto.hints): each once, and marked a TEACH line (the kit's teachTips), so Dot waits for a
+ *  clear moment and no stock lesson or her spacing takes the card; the petals-go-up line stays an ordinary hint */
+const teachOf = (st: Any) => {
+  const hs: Any[] = st.proto?.hints ?? [];
+  return Object.fromEntries(['thorns', 'thorns.then', 'hint.1-2.up'].map((id) => {
+    const text = id in LINES_12 ? (LINES_12 as Any)[id] : kitLib12().manifest.tips![id];
+    const h = hs.filter((q) => q.text === text);
+    return [id, h.length === 1 ? (h[0].teach ? 'teach' : 'hint') : `said ${h.length} times`];
+  }));
+};
+test("Dot's thorn lines are 1-2's TEACH lines on every roll, both settings (the kit's teachTips: the lead's blocker 11-12)", () => {
+  assert.deepEqual([...TEACH_12], ['thorns', 'thorns.then']);
+  each((st, d, s) => assert.deepEqual(teachOf(st), { thorns: 'teach', 'thorns.then': 'teach', 'hint.1-2.up': 'hint' }, `${d} seed ${s}`));
+});
+
+test('PLANTED: with the thorn lines left out of teachTips they are laid as ordinary hints, and that is caught', () => {
+  const st = plant((k) => ({ ...k, manifest: { ...k.manifest, teachTips: (k.manifest.teachTips ?? []).filter((m) => !m.startsWith('thorns')) } }))(1, 'normal');
+  assert.deepEqual(teachOf(st), { thorns: 'hint', 'thorns.then': 'hint', 'hint.1-2.up': 'hint' });
 });
 
 test('the length: at least 2 minutes for a quick player on every roll, under 4 for a first-timer (the time model)', () => {

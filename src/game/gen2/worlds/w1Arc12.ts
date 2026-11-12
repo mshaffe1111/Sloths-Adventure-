@@ -36,6 +36,9 @@ export const LINES_12 = {
   roots: 'There\'s something down by the roots...',
 } as const;
 const UP_LINE = 'hint.1-2.up';
+/** the lesson's two lines are 1-2's own TEACH lines (P13's kit `teachTips`): Dot waits for a clear moment and holds each for its reading
+ *  time, and no stock lesson or her 30 s spacing takes the card (before this, a walk-in never showed them: the lead's blocker 11-12) */
+export const TEACH_12 = ['thorns', 'thorns.then'] as const;
 /** 1-2's corridor under the floor line (a kit row, data): World 1's is 80 px, cut for a stage that climbs; the twist steps down 170 */
 export const ROOM_12 = 320;
 export const THORN_ROW = { lesson: 'thorns', art: 'w1-thorn', depth: [150, 170] as R2, clearStart: 1300 };
@@ -263,6 +266,7 @@ export function kitLib12(o: LibOpts = {}): WorldKit {
     lessons: o.flown ? { jump: '0-9', double: '0-9', bounce: '0-9' } : { jump: '1-1', double: '1-1', bounce: '1-1' },
     required: {},
     tips: { ...M.tips, ...LINES_12 },
+    teachTips: [...(M.teachTips ?? []), ...TEACH_12],
     graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'harvest'), ...Object.entries(ARC_12).map(([id, code]) => ({ id, archetype: 'harvest', code }))], briefs: { ...(o.flown ? {} : G.briefs), [ID]: brief } },
   } } as WorldKit;
 }

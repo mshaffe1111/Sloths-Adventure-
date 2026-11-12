@@ -12,9 +12,9 @@ import { fileURLToPath } from 'node:url';
 import { buildGen2Stage, stagePool } from '../../src/game/gen2/pipeline.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
 import type { SectionTemplate } from '../../src/game/gen2/types.ts';
-import { ARC_12, BEATS_12, BRIEF_12, EXIT_12, LINES_12, QUIET_12, ROOM_12, SECTIONS_12, STAGE_12, THORN_ROW, kitLib12, stageIdOf, type LibOpts } from '../../src/game/gen2/worlds/w1Arc12.ts';
+import { ARC_12, BEATS_12, BRIEF_12, EXIT_12, LINES_12, QUIET_12, ROOM_12, SECTIONS_12, STAGE_12, TEACH_12, THORN_ROW, kitLib12, stageIdOf, type LibOpts } from '../../src/game/gen2/worlds/w1Arc12.ts';
 import { quietOf } from './listRules.ts';
-export { ARC_12, BEATS_12, BRIEF_12, EXIT_12, LINES_12, QUIET_12, ROOM_12, SECTIONS_12, STAGE_12, THORN_ROW, kitLib12, stageIdOf, type LibOpts };
+export { ARC_12, BEATS_12, BRIEF_12, EXIT_12, LINES_12, QUIET_12, ROOM_12, SECTIONS_12, STAGE_12, TEACH_12, THORN_ROW, kitLib12, stageIdOf, type LibOpts };
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 /** tool-side, for library13.ts only: World 1's sections that stand on boughs or a high log with nothing under them (their `feel` there
