@@ -112,7 +112,10 @@ test('only the WebGL renderer is used: the layer never asks Pixi to auto-detect 
 test('the 2D canvas is never made see-through (every glow and blend drawn over the layer needs real pixels under it)', () => {
   const eng = fs.readFileSync(new URL('./engine.ts', import.meta.url), 'utf8');
   for (const m of eng.matchAll(/getContext\('2d',\s*([^)]*)\)/g)) assert.ok(!/alpha:\s*true/.test(m[1]), `engine.ts game canvas context: ${m[1]}`);
-  assert.ok(/alpha: false/.test(eng), 'the game canvas stays opaque (alpha: false)');
+  // (the game canvas's settings live in one place, gameCanvas.ts, shared by every first getContext on it: opaque both ways)
+  assert.ok(/canvas\.getContext\('2d', gameCtxOpts\(\)\)/.test(eng), 'the engine asks for the shared settings');
+  const opts = fs.readFileSync(new URL('./gameCanvas.ts', import.meta.url), 'utf8');
+  assert.ok(/\? \{ alpha: false, willReadFrequently: false \} : \{ alpha: false \}/.test(opts) && !/alpha:\s*true/.test(opts), 'the game canvas stays opaque (alpha: false)');
 });
 
 test('the loop drives the layer: one call right after the 2D frame, with the 2D canvas own camera translate; resizes pass through', () => {

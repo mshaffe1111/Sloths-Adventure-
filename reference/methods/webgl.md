@@ -82,6 +82,21 @@ list (chunkcheck checks it), and start a stage offline.
 - 2026-11-04: **Judge the look at every quality step (q0, q1, q2), not only q0.**
 
 ## Tried and didn't work
+- 2026-11-12 (GL0, R-3.3): **The ground's baked squares as WebGL textures, copied into the 2D canvas: measured, slower, taken out.**
+  Built whole (one texture a square, one sprite a stamp, one render, one `drawImage` of the layer into the 2D canvas where the stamps
+  were, a timed copy with a 2D fallback, mounted under the title card): commit a8048494 (with ac80b584's fixes), un-wired in the commit
+  after. The layer stick, the same frozen frames, A/B in one page (reference/qa-reports/GL0/):
+  - On the GPU pipeline (the 2D canvas on the GPU process, as on a phone): the squares' GPU work about 18 ms -> 60 ms a frame on 1-1
+    upright at x1 (the tables have every row), and the main thread +0.35 ms (x1) to +2.7 ms (x4). **The draw's main-thread cost is
+    about 1 ms a frame either way: the frame is spent on the GPU's fill, and a copy layer adds a full-screen blend to it.**
+  - On a software 2D canvas the copy is a readback: 4 ms -> 41 ms. The timed copy catches it under the title card and falls back.
+  - The look was close but not identical: 0.4% to 1.8% of pixels differ, nearly all by 1 or 2 of 255, up to 9 of 255 along the
+    squares' seams (the 2D stamps antialias each square's edge and let a hair of backdrop through; WebGL does not).
+  - **Why it cannot win:** a 2D canvas on the GPU already draws a baked canvas as a texture. Routing the same pixels through a second
+    canvas and copying them back adds work and removes none. The same holds for every "copy layer" (the backdrop, stage 1, was the same
+    design). **A WebGL layer pays only when it is SHOWN, not copied**: whole layers from the bottom up on the WebGL canvas with the 2D
+    canvas see-through above them, which needs every `lighter`/`screen`/`multiply` effect drawn over those layers moved first (the
+    look bar that stopped the see-through design on 11-04), or the whole world drawn by WebGL at once.
 - 2026-11-04: **Pixel-comparing two builds across page loads.** The same build shot twice differed by 2,000-59,000 px. Compare both
   ways inside one page, on one frozen frame.
 - 2026-11-04: Comparing whole-page screenshots: the DOM animations gave 21,000 to 178,000 "different" pixels.

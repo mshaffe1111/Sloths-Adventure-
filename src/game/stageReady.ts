@@ -26,8 +26,6 @@ import { releaseDecorPics, settleDecorBakes } from './envKit.ts';
 import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { backdropReady, revealSet, stageUsesCanopy } from './paintedBackdrops.ts';
 import { perfNote } from './perfLog.ts';
-import { mountGpuLayer } from './gpuLayer.ts';
-import { GROUND_WARM_FRAMES, groundWarming } from './gpuGround.ts';
 import { builtStageKeys, revealOf, type BuiltStage, type RevealStrips } from './stageManifest.ts';
 import { preloadEnabled, start } from './stagePreload.ts';
 import type { LevelConfig } from './types.ts';
@@ -76,9 +74,6 @@ export async function readyBuiltStage(
   releaseDecorPics();
   if (typeof Image === 'undefined' || !preloadEnabled()) return;
   const t0 = performance.now();
-  // (the GPU layer starts now, alongside the sheets' loads, so its start-up, Pixi's file and set-up, overlaps the loading instead of
-  // adding to it: the ground's squares are drawn on it, gpuGround.ts, R-3.3. No WebGL 2: it resolves false and nothing changes)
-  const gpu = mountGpuLayer();
   // (the settings every first getContext on the game canvas must share: gameCanvas.ts)
   const ctx = canvas?.getContext('2d', gameCtxOpts()) ?? null;
   const stage = engine.builtStage();
@@ -115,11 +110,6 @@ export async function readyBuiltStage(
   // the deadline: one left over is drawn by play's first use of it, as before)
   let drawn = warm(ctx, plains, deadline);
   if (reveal) drawn += warmReveal(reveal, ctx);
-  // (the layer is waited for here, never past the deadline; then the first squares are painted, uploaded and their copy timed on frames
-  // drawn under the card, so a phone whose copy is slow goes back to the 2D canvas before play, not after a slow first second)
-  await Promise.race([gpu, sleep(Math.max(0, left()))]);
-  if (live()) return;
-  for (let i = 0; i < GROUND_WARM_FRAMES && left() > 0 && groundWarming(); i++) frame();
   fitScenery(cfg.worldIndex, engine);
   // (each fit stamped once on the game's canvas: its upload now, not on the frame it is first drawn, a quality step's included)
   const fitMB = ctx ? Math.round(stampSceneryFits(ctx) / 1e5) / 10 : 0;

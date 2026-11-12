@@ -23,7 +23,8 @@
  * --pipeline: 'sw' (default) is headless Chromium as it comes: the 2D canvas is drawn by software inside the renderer. 'gpu' sends the
  * 2D canvas through the GPU process, as a phone does (the run fails if Chromium does not report it so); the "GPU" is still SwiftShader.
  * This container has no phone GPU: the numbers rank layers and prove a before/after here; they are not phone numbers.
- * Writes <out>/layerstick.json, <out>/layerstick.md and a still per spot (<out>/stills/).
+ * Writes <out>/layerstick.json (after every page), <out>/layerstick.md and a still per spot (<out>/stills/).
+ *   node tools/perf/layerstick.mjs --table <out>/layerstick.json     prints a saved run's table again (a run stopped early too)
  */
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -47,8 +48,14 @@ const FRAMES = Number(opt('--frames')?.[0] || 20);
 // process as a phone does (here on SwiftShader, a software GPU): the game's canvas and a WebGL canvas then live side by side on it
 const PIPE = opt('--pipeline')?.[0] || 'sw';
 const GPU_ARGS = ['--ignore-gpu-blocklist', '--enable-gpu-rasterization', '--enable-accelerated-2d-canvas', '--use-angle=swiftshader'];
+const TABLE = opt('--table')?.[0];
+// --stills-only: no timing; the game canvas's own pixels at every spot as PNG (<out>/png/), from the build in --root (default: this
+// repo), to compare two builds at the same spots: node tools/perf/layerstick.mjs --diff <png dir A> <png dir B>
+const STILLS_ONLY = argv.includes('--stills-only') ? !!argv.splice(argv.indexOf('--stills-only'), 1) : false;
+const ROOT = opt('--root')?.[0];
+const DIFF = opt('--diff', 2);
 const [outDir, stagesArg, orientArg] = argv;
-if (!outDir) { console.error('usage: node tools/perf/layerstick.mjs <out dir> [stages] [port|land] [--ab "<js A>" "<js B>"]'); process.exit(2); }
+if (!outDir && !TABLE && !DIFF) { console.error('usage: node tools/perf/layerstick.mjs <out dir> [stages] [port|land] [--ab "<js A>" "<js B>"]'); process.exit(2); }
 const STAGES = (stagesArg && stagesArg !== '-' ? stagesArg : '1-1,3-2,8-1').split(',');
 const ORIENTS = [{ id: 'port', viewport: { width: 400, height: 880 } }, { id: 'land', viewport: { width: 880, height: 400 } }].filter((o) => !orientArg || o.id === orientArg);
 const VARIANTS = ab ? [{ id: 'A', js: ab[0] }, { id: 'B', js: ab[1] }] : [{ id: 'now', js: '' }];
@@ -62,7 +69,7 @@ const log = (...a) => console.log(`[stick ${new Date().toLocaleTimeString('en-US
 const freePort = () => new Promise((res) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => res(p)); }); });
 
 async function startVite(port) {
-  const p = spawn('npx', ['vite', '--port', String(port), '--host', '127.0.0.1', '--strictPort'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
+  const p = spawn('npx', ['vite', '--port', String(port), '--host', '127.0.0.1', '--strictPort'], { cwd: ROOT || root, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
   let out = '';
   p.stdout.on('data', (d) => (out += d));
   p.stderr.on('data', (d) => (out += d));
@@ -90,6 +97,8 @@ async function playOne(browser, base, stage, orient) {
   const ctx = await browser.newContext({ viewport: orient.viewport, deviceScaleFactor: 3, isMobile: true, hasTouch: true });
   await ctx.route(/script\.google\.com/, (r) => r.abort());
   await ctx.addInitScript({ path: path.join(here, 'instrument.js') });
+  // (the same dice in every page: two builds' stills are of the same frame)
+  await ctx.addInitScript(() => { let s = 12345; Math.random = () => { s |= 0; s = (s + 0x6d2b79f5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; });
   const page = await ctx.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message.slice(0, 200)));
@@ -115,13 +124,13 @@ async function measure(ctx, page, errors, base, stage, orient) {
     for (let i = 0; i < 12; i++) { await page.clock.runFor(250); await sleep(300); }
     if (await page.evaluate(() => !!window.__perf.engine())) break;
   }
-  const info = await page.evaluate(async ({ n }) => {
+  const info = await page.evaluate(async ({ n, stillsOnly }) => {
     const e = window.__perf.engine();
     if (!e) return { error: 'no engine' };
     const S = window.__perf;
     // (the game's own clock, on the dev-only window.__stick, App.tsx: importing the module here can hand back a second copy of it)
-    if (!window.__stick) return { error: 'no window.__stick (a dev server build is needed)' };
-    window.__stick.stick.now = S.realNow;
+    if (!window.__stick && !stillsOnly) return { error: 'no window.__stick (a dev server build is needed)' };
+    if (window.__stick) window.__stick.stick.now = S.realNow;
     const R = Object.getPrototypeOf(e).render;
     e.render = function () {
       const pin = S.pin;
@@ -156,7 +165,7 @@ async function measure(ctx, page, errors, base, stage, orient) {
     const gl = document.createElement('canvas').getContext('webgl2');
     const dbg = gl && gl.getExtension('WEBGL_debug_renderer_info');
     return { stageName: st.config && st.config.name, spots, own: !!e.dotRun || !!e.slideRun, gpu: gl ? String(gl.getParameter(dbg ? dbg.UNMASKED_RENDERER_WEBGL : gl.RENDERER)) : 'no webgl2' };
-  }, { n: SPOTS });
+  }, { n: SPOTS, stillsOnly: STILLS_ONLY });
   if (info.error) { await ctx.close(); return { stage, orient: orient.id, error: info.error, errors }; }
 
   const rows = [];
@@ -175,6 +184,13 @@ async function measure(ctx, page, errors, base, stage, orient) {
       const inView = (e.enemies || []).filter((f) => !f.defeated && f.x > e.camera.x && f.x < e.camera.x + e.camera.viewportWidth && f.y > e.camera.y && f.y < e.camera.y + e.camera.viewportHeight).length;
       return { quality: e.quality, canvas: `${e.canvas.width}x${e.canvas.height}`, cam: [Math.round(e.camera.x), Math.round(e.camera.y)], creaturesInView: inView };
     });
+    if (STILLS_ONLY) {
+      const png = await page.evaluate(() => window.__perf.engine().canvas.toDataURL('image/png').split(',')[1]);
+      fs.mkdirSync(path.join(outDir, 'png'), { recursive: true });
+      fs.writeFileSync(path.join(outDir, 'png', `${stage}-${orient.id}-spot${si}.png`), Buffer.from(png, 'base64'));
+      Object.assign(info.spots[si], state);
+      continue;
+    }
     // the stick proves itself, once a page: a planted 5 ms in 'ground' lands in 'ground' and nowhere else
     if (si === 0) {
       const a = await read(page, 'cpu');
@@ -211,6 +227,7 @@ async function measure(ctx, page, errors, base, stage, orient) {
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
   // the pipeline did not change under the stick: the last spot's first reading (x1, cpu, the first way of drawing) taken again at the
   // very end must still be what it was (a canvas Chrome moved off the GPU mid-run reads many times slower from then on)
+  if (STILLS_ONLY) { await ctx.close(); return { stage, orient: orient.id, info, plantCheck: { ok: true }, drift: { ok: true }, rows, errors }; }
   const last = rows.filter((r) => r.spot === info.spots.length - 1 && r.rate === RATES[0] && r.variant === VARIANTS[0].id)[0];
   if (VARIANTS[0].js) { await page.evaluate(VARIANTS[0].js); for (let k = 0; k < 3; k++) { await page.clock.runFor(300); await sleep(100); } }
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: RATES[0] });
@@ -225,7 +242,7 @@ async function measure(ctx, page, errors, base, stage, orient) {
 // ---- the table -------------------------------------------------------------------------------------------------------------------
 const mean = (v) => (v.length ? v.reduce((a, b) => a + b, 0) / v.length : 0);
 const f = (n) => (Math.abs(n) < 0.005 ? '0' : n.toFixed(2));
-function table(results) {
+function table(results, ab = VARIANTS.length > 1) {
   const out = [];
   const cols = [...LAYERS, 'total', 'squares'];
   const val = (r, mode, c) => (c === 'total' ? r[mode].total : c === 'squares' ? r[mode].spans.squares ?? 0 : r[mode].layers[c]);
@@ -250,6 +267,38 @@ function table(results) {
   return out.join('\n');
 }
 
+// --table <layerstick.json>: print the table of a saved run again (a run stopped early keeps every page it finished)
+const saved = TABLE;
+if (saved) {
+  const j = JSON.parse(fs.readFileSync(saved, 'utf8'));
+  RATES.length = 0; RATES.push(...j.rates);
+  VARIANTS.length = 0; VARIANTS.push(...j.variants);
+  console.log(`Saved run: ${saved} (pipeline ${j.pipeline}, 2D canvas ${j.canvas2d}; ${j.results.length} pages)\n` + table(j.results, j.variants.length > 1) +
+    `\n\nSpots: ${j.results.filter((r) => r.info).map((r) => `${r.stage} ${r.orient} ${r.info.spots.map((p) => `x ${p.x} (${p.what}, ${p.creaturesInView ?? '?'} creatures in view)`).join('; ')}`).join(' | ')}.` +
+    `\nThe planted cost: ${j.results.map((r) => `${r.stage} ${r.orient} ${r.plantCheck?.ok ? 'PASS' : 'FAIL'}`).join(', ')}. The same pipeline at the end: ${j.results.map((r) => `${r.stage} ${r.orient} ${r.drift ? (r.drift.ok ? 'PASS' : 'FAIL') + ` ${r.drift.first} then ${r.drift.again}` : 'not checked'}`).join(', ')}.`);
+  process.exit(0);
+}
+if (DIFF) {
+  // every still in A against the same name in B: the pixels that differ, the largest difference in a colour channel (PIL)
+  const { execFileSync } = await import('node:child_process');
+  const names = fs.readdirSync(DIFF[0]).filter((f) => f.endsWith('.png')).sort();
+  let differ = 0;
+  for (const f of names) {
+    if (!fs.existsSync(path.join(DIFF[1], f))) { console.log(`${f}: missing in ${DIFF[1]}`); differ++; continue; }
+    const r = execFileSync('python3', ['-c', `
+import sys
+from PIL import Image, ImageChops
+a = Image.open(sys.argv[1]).convert('RGB'); b = Image.open(sys.argv[2]).convert('RGB')
+if a.size != b.size: print('SIZES DIFFER', a.size, b.size); sys.exit()
+d = ImageChops.difference(a, b)
+n = sum(1 for p in d.convert('L').point(lambda v: 255 if v else 0).getdata() if p)
+print(n, 'px differ of', a.size[0] * a.size[1], '| largest difference', max(e[1] for e in d.getextrema()), '/255')`, path.join(DIFF[0], f), path.join(DIFF[1], f)]).toString().trim();
+    if (!/^0 px/.test(r)) differ++;
+    console.log(`${f}: ${r}`);
+  }
+  console.log(differ ? `DIFFERENT: ${differ} of ${names.length} stills` : `SAME: ${names.length} stills, 0 px differ`);
+  process.exit(differ ? 1 : 0);
+}
 const port = await freePort();
 const vite = await startVite(port);
 const base = `http://127.0.0.1:${port}`;

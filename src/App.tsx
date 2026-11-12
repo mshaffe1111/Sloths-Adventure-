@@ -65,7 +65,6 @@ import { keepScreenOn, nativeApp } from './game/appShell.ts';
 import { ConfirmDialog } from './components/nav/Nav.tsx';
 import { ScreenVeil, STAGE_LIVE_EVENT } from './components/ScreenVeil.tsx';
 import { drawGpuFrame, gpuFallback, gpuLive, gpuProbe, gpuSizes, gpuStats, mountGpuLayer, setGpuCanvas } from './game/gpuLayer.ts';
-import { groundCheck, groundGpuOff, groundGpuStats, groundTextures } from './game/gpuGround.ts';
 import { stick, stickMedians } from './game/layerClock.ts';
 import { FIRST_NOTE_KEY, bossIntroKey, gateStoryKey, guardianCardKey, midStoryKey, worldStoryKey } from './game/storyFlags.ts';
 
@@ -712,8 +711,6 @@ export default function App() {
     // (and the GPU layer, for its checks: tools/qa/gpuLayer.cjs)
     (window as unknown as { __gpu?: unknown }).__gpu = {
       stats: gpuStats, live: gpuLive, probe: gpuProbe, fallback: gpuFallback, sizes: gpuSizes, frame: drawGpuFrame, mount: mountGpuLayer,
-      // (the ground's squares on it, R-3.3: tools/qa/gpuGround.cjs and the layer stick's --ab compare the two ways on one frame)
-      ground: { check: groundCheck, stats: groundGpuStats, off: groundGpuOff, textures: groundTextures },
     };
     // (the measuring stick's clock: tools/perf/layerstick.mjs. The game's own copy of it: a module imported again by a tool can be a
     // second copy once the dev server has seen a file change, GL0 2026-11-12)
