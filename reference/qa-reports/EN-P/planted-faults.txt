@@ -29,12 +29,11 @@ CAUGHT  the pause is not open  (# fail 1)
 CAUGHT  the caiman leaves its ripple  (# fail 1)
 CAUGHT  a rooted kind never finishes looking  (# fail 1)
 CAUGHT  stillness never beats one at its post  (# fail 2)
-SURVIVED  a sweeper hears at its body   -> a test was missing (the thrown noise reached its perch too); written; re-run: CAUGHT (# fail 1)
+CAUGHT  a sweeper hears at its body  (# fail 1)
 CAUGHT  a charger walks home  (# fail 1)
 CAUGHT  a resting sweeper scares  (# fail 1)
-CAUGHT  his own landing is a lure  (# fail 2)
+CAUGHT  his own landing is a lure  (# fail 3)
+CAUGHT  the bell is no lure  (# fail 1)
 CAUGHT  his own landing calls a sweeper off its pass  (# fail 1)
 CAUGHT  dozes does not sleep  (# fail 1)
-36/37 planted faults caught [('a sweeper hears at its body', 'SURVIVED')]
-
-After the missing test was written: 37/37 caught.
+38/38 planted faults caught []

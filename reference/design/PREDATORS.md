@@ -118,19 +118,19 @@ Ends: **stunned** (dazed for the seconds, then carries on), **gives up** (loses 
 **Bold** = the way its world teaches first. A noise lure is the kit's `hears`: it goes to look and notices nobody while it does.
 
 **The move ladder (the lead, 9:56 PM ET): a way is only there in a world at or after the world that teaches its move.** World 1:
-stomp 1-1, punch and drop traps 1-3, kick 1-5, stillness 1-7, the food chain 1-9. World 3: the noise lure, throwing, the drum. Wind
+stomp 1-1, punch and drop traps 1-3, kick 1-5, stillness 1-7, the food chain 1-9. World 2: the bell. World 3: thrown noise, the drum. Wind
 World 4, the dew drip World 5, break and push World 7, light World 8, geysers World 9. In the kit: `roster.ts` `TAUGHT` and
 `inWorld(def, world)`, which every cast is laid through; `predatorRoster.test.ts` fails when a way appears before its move.
-One thing for the lead: today World 2's turtles already walk to the puzzle bell (engine.ts:2749); under the ladder that waits for
-World 3, unless 2-7's bell is where noise is first taught.
+The bell stays in World 2 (the lead, 10:06 PM ET): it is built (turtles walk to it, engine.ts:2749) and is the right first taste: a
+fixed thing in the world that he rings. World 3 makes noise a rule of the world and teaches throwing.
 
 | Animal | Way 1 | Way 2 | Way 3 | More | Available from |
 |---|---|---|---|---|---|
 | Golden Tree Snake | **punch** (1-3): stunned 2 s, knocked off its branch end | drop trap (shake its vine, drop the hive: the BUZZ chases it, no stings shown): chased off, it glides away | stomp: gives up 5 s (he vaults it) | kick: chased off | 1-3 punch and trap; stomp from 1-1; kick from 1-5 |
 | Boa Constrictor | **drop trap** (1-9): chased off, grumpy | lure: lead the eagle's shadow over it (it fears the eagle): chased off | go still: he is a branch, it gives up 4 s | punch while its head is out (open): stunned 2.5 s | 1-9: trap (1-3), stillness (1-7), the eagle is in its world |
 | Harpy Eagle | **go still in a bush** (1-7): 2 empty passes and it gives up 8 s | seen in the open: reach a bush and go still before its dive (0.75 s) and it pulls up | from World 3 (so 4-5): a thrown noise pulls its shadow away 4.5 s; W4: behind a waterfall counts as cover | cannot be hit | **W1: stillness and cover only.** The noise lure from World 3, so 4-5 |
-| Snapping Turtle | **kick** (2-5): the shell slides away, chased off, and bowls over what it meets | stomp: stunned 1.8 s (it pulls in) | noise lure: it goes to look 4.5 s, back turned | punch from behind (open): stunned | W2: kick, stomp, punch. The noise lure from World 3: not in World 2 (see below) |
-| River King's guard | **kick** breaks the block: stunned 2 s | from World 3: the noise lure, it goes to look 4.5 s | a river trap (a snap-jaw stone, 2-5's lesson, snaps at its raft): stunned 3 s | cannot be stomped or punched (a guard never can) | W2: kick and the river trap. The noise lure from World 3 |
+| Snapping Turtle | **kick** (2-5): the shell slides away, chased off, and bowls over what it meets | stomp: stunned 1.8 s (it pulls in) | the bell: it goes to look 4.5 s, back turned | punch from behind (open): stunned | W2: all four (the bell is World 2's) |
+| River King's guard | **kick** breaks the block: stunned 2 s | the bell (World 2's own noise, rung not thrown): it leaves its post for nothing else, and goes to look 4.5 s | a river trap (a snap-jaw stone, 2-5's lesson, snaps at its raft): stunned 3 s | cannot be stomped or punched (a guard never can) | W2: all three (the bell is World 2's) |
 | Spectacled Caiman | **go still** (6-2): the ripple passes, gives up 5 s | punch while its jaws are shut (open): stunned 2.5 s | sap bubble (trap): stunned 4 s | W2: quiet feet and it never wakes | W2 (asleep), W6: all three |
 | Ocelot | **go still** (3-2): it loses him, gives up 5 s | noise-lure it under the loose stalactite (trap, 3-3): chased off | the drum (3-5): stunned 3 s | face it (it crawls); punch: stunned 1.5 s | W3: stillness, trap, drum, punch, noise. Light from World 8 |
 | Jaguar | **the stalactite** (trap, 3-3): chased off | the drum: stunned 3 s | punch while it is winded (open): stunned 2 s | W8 light: gives up 6 s; W9 its drop lands on a geyser: chased off | W3: trap, drum, punch. Light from W8, the geyser from W9 |
@@ -312,8 +312,8 @@ What a bigger guardian needs, measured:
   the eagle's shadow circles the noise (engine.ts:7699, watcher.ts:179), a looking thorn vine strikes at it (engine.ts:8016), a
   turtle walks to it and notices nobody (engine.ts:2749). The bell (680 px) is in World 2's bell rooms (w2Stages.ts:1073).
 
-**What the kit has as of tonight**: `heroNoise.thrownNoise(x, y, t)` (520 px), and one rule in `core.ts` `hear`: **only a thrown noise
-is a lure.** A kind that `hears` goes to it and notices nobody for its `hears` seconds. His own noise (a landing, a punch, a break) is
+**What the kit has as of tonight**: `heroNoise.thrownNoise(x, y, t)` (520 px) and `bellNoise` (680 px), and one rule in `core.ts` `hear`:
+**only a noise made somewhere he is not (thrown, or a rung bell) is a lure.** A kind that `hears` goes to it and notices nobody for its `hears` seconds. His own noise (a landing, a punch, a break) is
 where HE is: a hunter at rest comes looking with its eyes open, and nothing is ever blinded by it. A thrown noise also wakes every
 sleeper it reaches, so in the quiet world a throw is a choice, not a free pass.
 
@@ -321,7 +321,7 @@ sleeper it reaches, so in the quiet world a throw is a choice, not a free pass.
 jaguar no (it only watches its column), the thorn vine (strikes at it), the Harpy Eagle from 4-5 (its shadow goes there), the
 capuchin lookout (looks away), the jumping spider (a pebble on a far thread), the tayra no (it charges what it sees), the crab and
 the stone sentry (turn to it: walk past behind), the night harpy most of all (it hunts by ear: throw it under the owl's light), the
-piranhas (a pebble in the water is a splash). The River King's guard and the turtle would, but World 2 comes before the lesson.
+piranhas (a pebble in the water is a splash). In World 2 the turtle and the River King's guard answer the bell, not a throw.
 
 **What it still needs** (not built):
 1. **Out of the puzzle rooms.** Today carry and throw live in the room kit. A laid stage needs pickup spots in its brief (a pebble

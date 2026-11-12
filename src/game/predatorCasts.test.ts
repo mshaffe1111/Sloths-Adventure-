@@ -4,7 +4,9 @@
 // leaving its spot (the sentry), and stillness beating anything that has nowhere to go (the frog).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { landingNoise, thrownNoise } from './heroNoise.ts';
+import { bellNoise, landingNoise, thrownNoise } from './heroNoise.ts';
+import { NOISE } from './noise.ts';
+import { inWorld } from './predators/roster.ts';
 import { beat, blocks, checkPredator, foodChain, hear, hurt, newPredator, touches } from './predators/core.ts';
 import { DT, firstT, post, prey, run } from './predators/fixtures.ts';
 import { CAIMAN, CASTS_AFTER_1, FROG, HARPY, JAGUAR, OCELOT, RIVER_GUARD, SENTRY, SPIDER, TAYRA, TURTLE } from './predators/casts.ts';
@@ -34,6 +36,25 @@ test('turtle: all shell from the front. A punch only works from behind; a kick s
   const n = newPredator(TURTLE, post());
   assert.equal(hear(TURTLE, n, thrownNoise(650, 300, 0)), 'drawn');
   assert.equal(run(TURTLE, n, 4, () => prey({ x: 520 })).filter((e) => e.tell).length, 0);
+});
+
+test("River King's guard: it leaves its post for nothing but the bell (World 2's own noise, rung, not thrown)", () => {
+  const G = inWorld(RIVER_GUARD, 2);
+  const s = newPredator(G, post({ x: 500, minX: 420, maxX: 700 }));
+  assert.equal(blocks(G, s), true);
+  assert.equal(run(G, s, 3, () => prey({ x: 380 })).length, 0, 'he stands off and it only stands there');
+  assert.equal(hear(G, s, landingNoise(560, 300, 3, 400)!), null, 'his own landing does not move it');
+  const bell = bellNoise(600, 240, 3);
+  assert.equal(bell.r, NOISE.bellHear);
+  assert.equal(hear(G, s, bell), 'drawn');
+  const ev = run(G, s, 6, (t) => prey({ x: 380 + 30 * (t - 3) }), { t0: 3 });
+  assert.ok(s.x > 590, `it walked to the bell (${s.x})`);
+  assert.equal(ev.length, 0, 'and he walked through its post behind its back');
+  run(G, s, 12, () => prey({ x: -999 }), { t0: 9 });
+  assert.ok(Math.abs(s.x - 500) <= 6, 'then it goes back to its post');
+  // the turtle answers the bell too, in its own world
+  const t = newPredator(inWorld(TURTLE, 2), post());
+  assert.equal(hear(inWorld(TURTLE, 2), t, bellNoise(650, 240, 0)), 'drawn');
 });
 
 test('spider: it comes in bursts and pauses; in the pause it is open; stillness does not hide him from it', () => {

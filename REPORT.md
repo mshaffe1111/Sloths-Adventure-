@@ -10,7 +10,7 @@ the game ships changed, so there is nothing to shoot; the tell poses World 1's c
   today Worlds 6, 7 and 8 share one list of six animals). No two animals in a cast share a habit (a test holds it).
 - **§3 ways to beat each**, never only the stomp; ends are stunned, gives up, dozes off or chased off, never eaten or killed.
 - **The move ladder** (the lead, 9:56 PM ET): a way is only there once its world has
-  taught the move, so in World 1 the eagle is stillness and cover only. **§4 Easy** (tell x1.3, beat x1.5, speed x0.85, fewer). **§5 the kit**: 8 habits on one machine. **§7 creatures we own and do not
+  taught the move (the bell World 2, thrown noise World 3), so in World 1 the eagle is stillness and cover only. **§4 Easy** (tell x1.3, beat x1.5, speed x0.85, fewer). **§5 the kit**: 8 habits on one machine. **§7 creatures we own and do not
   use**: five can join now (dangler, orchid mantis, crab, piranha, beetle). **§8 size against Pokey**: 7 creatures flagged (the big
   hunters are drawn at half Pokey's height; the boa is smaller than the tree snake); the 10 guardians are 1.5-3.2x Pokey today.
   **§9 throw to lure**: the arc, the pickups and the landing noise already exist in the puzzle kit (file:line); what it still needs.
@@ -21,7 +21,7 @@ the game ships changed, so there is nothing to shoot; the tell poses World 1's c
 `world1.ts` (snake, boa, eagle), `casts.ts` (ten later animals, first-draft numbers from today's code: turtle, River King's guard,
 caiman, ocelot, jaguar, tayra, night harpy, frog, spider, sentry), `roster.ts` (habits and casts), `fixtures.ts` (test helpers).
 
-The rules, each with its proof (`npx tsx --test src/game/predator*.test.ts`: 67 kit tests, all green):
+The rules, each with its proof (`npx tsx --test src/game/predator*.test.ts`: 68 kit tests, all green):
 1. **The tell always comes first.** One door into the phase that hurts, only from a full tell (never under 0.5 s; longer on Easy).
    Proof: asserted on every step of every test, plus a fuzz over all 8 habits that must reach the act more than 60 times.
 2. **Being beaten is data and never cruel.** Each way names its end; "open" ways need the moment after a miss; the turtle's punch
@@ -33,11 +33,11 @@ The rules, each with its proof (`npx tsx --test src/game/predator*.test.ts`: 67 
 6. **Easy is never harder**; `checkPredator` refuses one way, only the stomp, a short tell, a punchable guard, a harder Easy.
    A clocked kind (the frog) tells on the stage clock's warn and acts on its on.
 7. **The move ladder** (`roster.ts` `TAUGHT`, `inWorld`): every cast is laid through it; a test fails when a way appears before its
-   move, or an animal is left with one way (World 1's eagle is the one named exception). **Throw to lure**: only a thrown noise
-   (`heroNoise.thrownNoise`) lures; his own landing brings a hunter looking with its eyes open and blinds nothing.
+   move, or an animal is left with one way (World 1's eagle is the one named exception). **Throw to lure**: only a noise made where he is not
+   (`thrownNoise` from World 3, `bellNoise` from World 2: the lead's ruling, 10:06 PM ET) lures; his own landing brings a hunter looking with its eyes open and blinds nothing.
 8. **The top three, worked through** (`predatorWorld1.test.ts`, 15 tests): snake, eagle, boa: the tell, the attack, each way to beat it.
 
-**The tests bite**: 37 faults planted in `core.ts` one at a time, **37 caught** (`reference/qa-reports/EN-P/planted-faults.txt`); three
+**The tests bite**: 38 faults planted in `core.ts` one at a time, **38 caught** (`reference/qa-reports/EN-P/planted-faults.txt`); three
 survived their first run and each showed a missing test, now written. Three more planted in `roster.ts` `inWorld`: caught.
 
 ## Checks (run on this branch; times ET)

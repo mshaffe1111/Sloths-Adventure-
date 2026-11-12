@@ -2,7 +2,7 @@
 // habit, every habit used somewhere, and World 1's data agreeing with the roster.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CASTS_AFTER_1, HARPY, JAGUAR, OCELOT, TAYRA } from './predators/casts.ts';
+import { CASTS_AFTER_1, HARPY, JAGUAR, OCELOT, RIVER_GUARD, TAYRA, TURTLE } from './predators/casts.ts';
 import { CASTS, HABIT, SPECIAL_CASTS, TAUGHT, inWorld, type Kind } from './predators/roster.ts';
 import { BOA, EAGLE, SNAKE, WORLD1 } from './predators/world1.ts';
 import type { Habit, Way } from './predators/types.ts';
@@ -41,7 +41,8 @@ test("World 1's data is World 1's cast, with the roster's habits", () => {
 const DEFS = [...WORLD1, ...CASTS_AFTER_1];
 const worldsOf = (kind: string): number[] => Object.keys(CASTS).map(Number).filter((w) => (CASTS[w] as readonly string[]).includes(kind));
 
-test('the ladder itself: World 1 teaches the hits, traps, stillness and the food chain; noise and the drum wait for World 3', () => {
+test('the ladder itself: World 1 teaches the hits, traps, stillness and the food chain; the bell is World 2\'s; thrown noise and the drum wait for World 3', () => {
+  assert.equal(TAUGHT.bell, 2, 'the lead, 10:06 PM ET: the bell stays in World 2');
   assert.deepEqual([TAUGHT.punch, TAUGHT.trap, TAUGHT.still, TAUGHT.lure, TAUGHT.noise, TAUGHT.drum, TAUGHT.wind, TAUGHT.dew, TAUGHT.break, TAUGHT.light, TAUGHT.geyser],
     [1, 1, 1, 1, 3, 3, 4, 5, 7, 8, 9]);
 });
@@ -51,6 +52,8 @@ test('in a world, an animal can only be beaten by moves that world has been taug
   assert.equal(eagle1.hears, undefined, 'World 1: his own landing must not pull the shadow off him');
   assert.deepEqual(Object.keys(eagle1.beatenBy), ['still'], 'in World 1 the eagle is stillness and cover only');
   assert.equal(inWorld(EAGLE, 4).hears, EAGLE.hears, 'the noise lure comes back in World 4');
+  assert.equal(inWorld(TURTLE, 2).hears, TURTLE.hears, 'World 2: the turtles answer the bell');
+  assert.equal(inWorld(RIVER_GUARD, 2).hears, RIVER_GUARD.hears, 'and so does the River King\'s guard');
   assert.deepEqual(Object.keys(inWorld(JAGUAR, 3).beatenBy).sort(), ['drum', 'punch', 'trap'], 'no light before World 8, no geyser before 9');
   assert.ok(inWorld(JAGUAR, 9).beatenBy.geyser && inWorld(JAGUAR, 8).beatenBy.light && !inWorld(JAGUAR, 8).beatenBy.geyser);
   // the food chain needs the hunter it fears in the same world

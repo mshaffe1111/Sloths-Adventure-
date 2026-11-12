@@ -17,7 +17,7 @@ export const TURTLE: PredatorDef = {
   first: 'kick',
 };
 
-/** River King's guard: holds its raft. World 2 beats it with the kick and a river trap; the noise lure waits for World 3's lesson */
+/** River King's guard: holds its raft and leaves its post for nothing but the bell (World 2's own noise); the kick breaks its block */
 export const RIVER_GUARD: PredatorDef = {
   kind: 'riverGuard', habit: 'guard', blocks: true, sight: { ahead: 180, behind: 60, tall: 60 }, hears: NOISE.dur, speed: { rest: 22, hunt: 26 },
   engage: 78, tell: 0.62, act: { aim: 'ahead', seconds: 0.2, speed: 0, reach: 78, tall: 30 }, recover: 0.95, cool: 1.6, giveUp: 2, easy: EASY,

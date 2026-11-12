@@ -20,6 +20,8 @@ export const LOUD = {
   breaking: { r: 420 },
   /** a thrown pebble or nut landing: it carries as the puzzle kit's thrown things do (noise.ts NOISE.hear; puzzlePlay.ts makes them) */
   thrown: { r: NOISE.hear },
+  /** a bell he rings (World 2's bell rooms): a fixed thing in the stage, and it carries further (noise.ts NOISE.bellHear) */
+  bell: { r: NOISE.bellHear },
   /** the drum: how far it carries, and how long it stuns an awake predator (s) */
   drum: { r: 620, stun: 3 },
 } as const;
@@ -31,7 +33,7 @@ export interface Sound {
   t: number;
   /** how far it carries (px) */
   r: number;
-  from: 'landing' | 'punch' | 'break' | 'drum' | 'thrown';
+  from: 'landing' | 'punch' | 'break' | 'drum' | 'thrown' | 'bell';
 }
 
 /** the noise of a landing after a fall of `fell` px, or null when it was soft */
@@ -42,6 +44,8 @@ export function landingNoise(x: number, y: number, t: number, fell: number): Sou
 export const punchNoise = (x: number, y: number, t: number): Sound => ({ x, y, t, r: LOUD.punch.r, from: 'punch' });
 export const breakNoise = (x: number, y: number, t: number): Sound => ({ x, y, t, r: LOUD.breaking.r, from: 'break' });
 export const drumNoise = (x: number, y: number, t: number): Sound => ({ x, y, t, r: LOUD.drum.r, from: 'drum' });
+/** a rung bell: the other noise that is somewhere he is not (it hangs where the stage put it), so it lures too */
+export const bellNoise = (x: number, y: number, t: number): Sound => ({ x, y, t, r: LOUD.bell.r, from: 'bell' });
 /** where a thrown thing lands: the one noise he makes somewhere he is not, so the one that can lure (predators/core.ts `hear`) */
 export const thrownNoise = (x: number, y: number, t: number): Sound => ({ x, y, t, r: LOUD.thrown.r, from: 'thrown' });
 
