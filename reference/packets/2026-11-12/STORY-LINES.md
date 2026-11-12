@@ -214,3 +214,11 @@ reads true, because it names the characters, not the cats.
 The page in order: line 1 (Pokey's reason), line 2 (the rewrite), line 3 (ten worlds), line 4 (the first stage rebuilt), THE PAIR with
 its caption, line 5 (as fixed), then the closing line (Matt's choice: "It's still a little project, just for fun. It just got bigger."
 or "It started as a little project, just for fun. It still is, just a lot bigger, and made with a lot of care.").
+
+**APPROVED by Matt (relayed by the lead, 3:42 PM ET):**
+- the About opening ("How Sloths began" with the Pocono/cats line, the "Our story ›" link, and "What's ours");
+- the "Our story" page, with line 5 as fixed;
+- the then-and-now caption "Then: six buttons and a lot of instructions. Now: the same sloth, and a lot more rainforest.";
+- the closing line "It's still a little project, just for fun. It just got bigger."
+
+Waiting: "Inspired by" (Matt's list of games) and the music line (Matt).
