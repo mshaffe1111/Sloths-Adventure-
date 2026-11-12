@@ -425,7 +425,8 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
     for (const w of opts.walls ?? []) pouring.push({ id: -1, x: w.x, width: w.width, top: w.top, bottom: w.bottom });
     plats = [];
     for (const p0 of stage.platforms) {
-      if (p0.broken) continue;
+      // (a hollow's hurt floor, gen2 WorldManifest.hurtFloor, is never stood on: he is set back the moment he touches it)
+      if (p0.broken || p0.pit === 'hurt') continue;
       const p = rolledTo.has(p0.id) ? { ...p0, x: rolledTo.get(p0.id)! } : p0;
       // a lift (2-7) is one stop the player reaches at its top and at its bottom: two copies under one id, so riding it joins them
       if (p.lift) { plats.push({ ...p, y: p.lift.top }, { ...p, y: p.lift.bottom }); continue; }

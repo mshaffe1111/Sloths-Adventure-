@@ -14,6 +14,7 @@ import { PROMISES_11 } from './promises11.ts';
 import { GEN2_STAGES } from './game.ts';
 import { w5Kit } from './worlds/w5.ts';
 import { generateAllLevels } from '../worldsData.ts';
+import { validateStage } from '../levelCheck.ts';
 import { RealPlay } from '../realPlay.ts';
 import { setDifficulty } from '../difficulty.ts';
 import type { Gen2Stage, WorldKit } from './types.ts';
@@ -134,6 +135,21 @@ test("hazard.untaught reads the world's own lesson name off the built stage: the
   const after = PROMISES_11.find((p) => p.id === 'hazard.untaught')!.judge({ stageId: STAGE, setting: 'normal', policy: 'per-gap', drops: dropsOf(taught), asks: [], built: taught } as never);
   assert.deepEqual(after.map((v) => v.line).filter((l) => /lesson/.test(l)), [], 'taught: no hollow comes before its showing piece');
   assert.equal(build('normal', w5Kit(7)).gen2.hurt, undefined, 'a stage with no hurt floor carries nothing');
+});
+
+test('the level check never stands him on a hurt floor: a hollow too wide to jump is not crossed by way of its floor (planted)', () => {
+  // (two banks 700 px apart, past any jump, and a floor 120 px down between them: a plain pit floor is a way across, down and a jump back
+  // up; a hurt floor is not, he is set back the moment he touches it)
+  const P = (id: number, x: number, y: number, width: number, pit?: 'hurt') => ({ id, x, y, width, height: 300, type: 'solid', style: 'moss_stone', ...(pit ? { pit } : {}) });
+  const stage = (pit?: 'hurt') => ({
+    config: cfg, trees: [], vines: [], ropes: [], enemies: [], boss: null, checkpoints: [], collectibles: [],
+    platforms: [P(1, 0, 900, 600), P(2, 600, 1020, 700, pit), P(3, 1300, 900, 700)],
+    spawnX: 100, spawnY: 900, exitTotemX: 1800, exitTotemY: 900,
+  }) as never;
+  assert.ok(validateStage(stage(), { rooms: false }).reachableIds.includes(3), 'by a plain floor the far bank is reached');
+  const hurt = validateStage(stage('hurt'), { rooms: false }).reachableIds;
+  assert.ok(!hurt.includes(2), 'he never stands on the hurt floor');
+  assert.ok(!hurt.includes(3), 'and the far bank is out of reach');
 });
 
 /** the real engine on the stub kit's stage: the game's own builder with the stage's kit swapped for the stub (a test seam, restored) */
