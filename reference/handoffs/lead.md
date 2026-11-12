@@ -57,7 +57,7 @@ NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes
   (D47), then 0.9.7 on his word (PR, he merges, check deploy + APK); (4) 1-2 and 1-3 to Matt's test link by Fri 11-13 (1-3 by Fable/W1C,
   1-2 from F12; pits from PIT); (5) HF is the lead's call ($63.53, ~$10 reserve): first job = the W1 trap art from W1-TRAPS-LIST.md;
   (6) after Matt's Fable reset: the golden 1-3 + reference/design/LEVEL-BAR.md.
-Rules learned today: judge every still before Matt sees it; re-judge when a helper replaces its stills; "as good or better", never
+Rules learned today: a HOLD or STOP to a helper goes with send_message priority "now" (plain messages wait until its turn ends: ART-W1 got a 12:31 hold at 12:50 and spent $0.13 meanwhile); judge every still before Matt sees it; re-judge when a helper replaces its stills; "as good or better", never
 pixel-identical (STAGE-RULES §5b); Matt-reported items tagged on ROADMAP the same turn; effort: xhigh only when needed, max when needed.
 Check-in trigger: re-arm send_later every 30 min while anyone works.
 FABLE 88% at 12:01 PM (resets Wed 11-18 2 AM ET; Matt may reset earlier when his normal limit, 75% at 12:03, hits 95-99%; the reserve goes to the golden 1-3 pass after his notes on tonight): GL0 stopped 12:03, W1C stops 12:30; no Fable after that unless the lead names a packet.
