@@ -44,3 +44,24 @@ test('A-07 a life lost to an animal during the 1-8 chase is one respawn, at full
     `one death to a snake in the chase: ${respawns} respawns, and he stands at the flag with ${e.player.hp} of ${e.player.maxHp} hearts`,
   );
 });
+
+test('A-07b a respawn at a flag BEFORE the chase starts leaves the chase as it was at the stage start: it sets off 520 px behind him', async () => {
+  // (the Critic, EN-F: restartAt put the front 520 px behind that flag, and stepChase keeps the further-back front when it starts, so a
+  // fall in the learning stretch before the long branch left the collapse thousands of px behind for the rest of the run)
+  const { CHASE } = await import('./chase.ts');
+  const { e } = makeEngine('1-8');
+  const plan = e.proto.chase;
+  const before = e.currentStage.checkpoints.filter((c: any) => c.x < plan.start).sort((a: any, b: any) => b.x - a.x)[0]
+    ?? { x: e.currentStage.spawnX, y: e.currentStage.spawnY };
+  e.checkpoint = { x: before.x, y: before.y };
+  e.respawnAtCheckpoint('pit');
+  assert.deepEqual({ ...e.chase }, { front: plan.start - CHASE.behind, active: false, hold: 0 }, 'the chase is the fresh one, waiting at its start');
+  // he runs onto the branch: it sets off the usual distance behind him, with no extra wait
+  const branch = e.platforms.filter((p: any) => p.chase).sort((a: any, b: any) => a.x - b.x);
+  const on = branch.find((p: any) => p.x + p.width > plan.start + 40)!;
+  standOn(e, on, Math.max(on.x + 10, plan.start + 20));
+  step(e, 2);
+  assert.ok(e.chase.active, 'the chase started');
+  const gap = e.player.x - e.chase.front;
+  assert.ok(gap <= CHASE.behind + 40 && e.chase.hold === 0, `it set off ${Math.round(gap)} px behind him (the usual is ${CHASE.behind}), hold ${e.chase.hold}`);
+});
