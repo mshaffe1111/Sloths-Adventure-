@@ -446,3 +446,9 @@ dead-leaf mantis (Acanthops) is the known fallback.
 | the journal, 1-4 (pokeyJournal.ts:51; replaces the squirrel lift, a made thing) | Pokey | Climbed the kapok between falling pods. From the top you can see where they took her. |
 
 The journal line is a real moment, so the joke doesn't come (VOICE: Pokey). It pays off the view north.
+
+**Nature check, Matt's sharpened test (6:46 PM ET): "does it make sense there to a player?"** Bananas and mangoes are fine; a pear is not.
+- 1-4: still PASS. Everything in it is what a player pictures in a rainforest.
+- W5 orchid mantis, re-judged: KEEP. A flower-shaped mantis in an orchid sanctuary makes sense to any player, and the kind (a mantis)
+  is real in the Neotropics. The dead-leaf mantis swap is withdrawn.
+- The snake rename (R-165.166) stands; Matt asked for it.

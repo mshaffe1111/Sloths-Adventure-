@@ -411,7 +411,8 @@ Keep these pages true as the game changes: a line that stops being true gets rew
 **New duty (Matt, 11-12): About is a living page.** Keep reference/story/ABOUT-OURS.md current as highlights ship. Propose an update to
 "What's ours" when a world is finished, and before launch. Only claim what is in the shipped game.
 
-**New standing duty, R-165.164 (Matt, 11-12 6:36 PM ET: "let the story designer do the research before each level"):** before a
+**New standing duty, R-165.164 (Matt, 11-12 6:36 PM ET: "let the story designer do the research before each level"):**
+THE TEST (Matt, 6:46 PM ET): "does it make sense there to a player?" Bananas and mangoes are fine, a pear is not; behaviour may be storybook. before a
 level's design is judged, research every plant, fruit and animal it puts in front of the player. Confirm each is real to its world's
 setting (World 1: Central/South American lowland rainforest), name a true swap for anything that isn't, and make sure the design doc
 carries a "Nature check". The first pass found the gliding Golden Tree Snake (Asian) and the orchid mantis (Asian); see STORY-LINES
