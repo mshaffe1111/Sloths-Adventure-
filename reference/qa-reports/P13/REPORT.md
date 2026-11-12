@@ -2,43 +2,38 @@
 Base for the numbers: W1C @26f72b31 (1-3 in World 1's shipped kit). STILL OWED: W1C's trap0 teach placement and `teachTips: ['traps']`
 in w1.ts, then the re-fly and the seed list (item 6), which waits for the lead's OK.
 
-## Done items (evidence)
-1. **Completable** (castBots.ts, real 1-3, seeds 1-60, both settings, real engine): adult, middle, expert 60/60 on Normal AND Easy;
-   child 56/60 N, 59/60 E. Fails by cause: 5 child rescues, every one a bot quirk on a shipped World 1 section (below), 1 child Easy
-   stranded (seed 49). No softlock, no unwinnable roll: every bot that walked past a snake turned back for it once Dot said why.
-   reference/qa-reports/P13/castBots-real-1-60.txt. Test-side 1-40 runs before and with the teach line: castBots-1-40-*.txt.
-   **Kid tier, separately** (seeds 1-30, castBots-real-kid-1-30.txt): Normal 24/30, Easy 29/30. Causes: 5 rescues at 50-54 px steps
-   and drops near x 27,400-27,900 and a stump (R-165.150, a real game defect: the engine lets him into a block under 50 px), and
-   stalls "a snake near" (1 N stranded seed 3 at 9/10, 1 E stranded seed 15). The kid springs 85/270 traps, never trap0.
-2. **Bots know a trap** (firsttimer.ts castPlan, from `e.cast` only): told by Dot (a line naming the vine/tendril and a blow), he walks
-   to a handle whose load hangs over an uncleared animal beyond it, punches, waits for the load. castBots.test.ts (planted on 2-2):
-   springs an armed trap with no hit (red without castPlan), passes a trap over nothing, never uses one he was not told of. Also: he
-   turns back from a sealed purge shrine once Dot's must line is up (gives up after 20 s with no nearer). tierBots.test 7/7: 1-1 unchanged.
-3. **Flown rows**: FLIGHT_STAGE=1-3, both settings (P13/fly/): Easy identical to easy-any; Normal 0-5 px under 1-2's, nothing gained.
-   8 `normal-1-3` rows (flownArcs.ts, sourced chain.md §1; the single hold's any is the flown 244, not 1-1's design-to 246). Row
-   `judged: 'normal-1-3'`. **Real 1-3: 120/120 clean Normal and Easy, seeds 1-120 and 50001-50120, 240/240 judged, 0 thrown**
-   (tools/engine/runs/clean.ts, any listed stage; P13/clean-1-3-*.txt). No rule loosened.
-4. **"excuse me"**: a wayside line can wait on a moment by data (`StageWay.on`, engine `moments` 'cast:<way>', GuideView.moments,
-   DotGuide). 1-3's line fires on the first punch that sends a snake gliding: castMoments.test.ts (real engine) no punch no line, a
-   shove no line, a trap no line (the trap line stays W1C's), the first punch-glide the line; wayside.test.ts. Red without, green with.
-5. **Stage rules**: length: expert N min 145.8 s, adult N min 120.8 s; **adult EASY 117.7-119.9 s on 9 of 60 rolls (under 2 min)**:
-   to W1C/lead. Teach: DEFECT found and fixed in my lane (the lead's ruling): the trap tip was cut after 1.5 s by the stock "Tap to
-   punch" lesson, or never shown. Now `StageHint.teach` / `WorldManifest.teachTips` -> a teach line that waits (60 s), skips the gap
-   (soon), stays its reading time, never cut by a stock lesson; the stock foe lesson skips an animal under a set trap (dotTeach.test.ts,
-   teachTips.test.ts, castMoments.test.ts, all red then green). With it (preview): every tier told 40/40. **trap0 still missed**: the
-   tip is 232 px before trap0's handle, read after he passes it (first trap sprung: child 39/40, middle 19, expert 13, adult 0, kid 0):
-   W1C's placement. Landing noise: W1C's TAUGHT.landing = World 2 (nothing wakes in 1-3). funcheck: 1-3 adds ONE breach (test-side:
-   Easy "looks like an earlier stage" 8 layouts vs 6); the other 11 breaches are on the base without 1-3 (P13/funcheck-*.txt).
-6. **Seed list**: NOT recorded (waits for W1C's trap0 placement + Easy length, then the lead's OK). seedlist.ts is general already.
-   Filter: 1-1's own (seedlist.ts: clean on both settings, verdicts accepted, quiet line <= 4 s) PLUS the bots, fed by --merge:
-   castBots --proven = adult, child, middle, expert each to the shrine, goal full, no rescue, both settings, none under 2 min (item 6
-   says rolls that pass 1-5; the kid is reported apart, R-165.150). 47 of 60 today (9 adult Easy under 2 min, 4 child). First seed 1.
-7. **Stills** (P13/stills/, ft-stills.mjs: the run's own state at each moment, test-side roll seed 1 N with the teach preview): first
-   snake, first trap, first punch-glide, gallery, end; upright and sideways. To be re-shot on the final head.
+## Done items (evidence; numbers on W1C 7d9efa0d, the real 1-3 in World 1's shipped kit)
+1. **Completable** (castBots.ts, real engine, seeds 1-40, both settings: P13/castBots-real-7d9efa0d-1-40.txt): adult, middle,
+   expert, child Easy, kid Easy 40/40; kid Normal 39/40 (seed 11 stranded at 9/10, a snake near); child Normal 37/40 (3 rescues at
+   shipped World 1 steps). No softlock, no unwinnable roll. Earlier heads: castBots-real-1-60.txt, castBots-1-40-*.txt (test-side).
+   **Kid tier apart** (R-165.150, the <50 px block he walks into): 39/40 N, 40/40 E now; before the bot fix 24/30 N, 29/30 E.
+2. **Bots know a trap** (firsttimer.ts castPlan, from `e.cast` only): told by Dot (a line naming the vine and a blow), he goes for a
+   handle whose load hangs over an uncleared animal beyond it, keeps it as a goal (walks back if he overshoots: W1C's trace), and
+   punches from anywhere in its measured reach (-10..85 px): KID/ADULT on the move (their thumbs never let go, R-165.59), tiers by
+   taps. castBots.test.ts 5/5 (planted on 2-2, each red without). He turns back from a sealed shrine on a cast stage once Dot says why.
+   tierBots.test 7/7 (1-1 unchanged); firstTimerBot.test's 5-9 kid runs unchanged.
+   **The bar: every tier told of traps 40/40 AND springs trap0 40/40, Normal and Easy.** Traps sprung per tier 306-327 of 360.
+3. **Flown rows**: FLIGHT_STAGE=1-3, both settings (P13/fly/): Easy identical to easy-any; Normal 0-5 px under 1-2's. 8
+   `normal-1-3` rows (flownArcs.ts, sourced chain.md §1; single hold's any the flown 244). Row `judged: 'normal-1-3'`. **Real 1-3:
+   120/120 clean Normal and Easy, seeds 1-120 and 50001-50120, 240/240 judged, 0 thrown** (clean.ts, any listed stage).
+4. **"excuse me"**: a wayside line waits on a moment by data (`StageWay.on`, engine `moments` 'cast:<way>', GuideView.moments,
+   DotGuide). Fires on the first punch-glide only: castMoments.test.ts (real engine: no punch, a shove, a trap: no line; the first
+   punch-glide: the line; the trap line stays W1C's), wayside.test.ts. Red without, green with.
+5. **Stage rules**: TEACH (the lead's ruling, my lane): `StageHint.teach` / `WorldManifest.teachTips` -> Dot's teach line: waits up
+   to 60 s, skips the gap (soon), stays its reading time, cuts in over a stock info card after 1.5 s, never cut by a stock lesson; the
+   stock foe lesson skips an animal under a set trap (dotTeach.test.ts 6/6, teachTips.test.ts, castMoments.test.ts; RealPlay passes
+   the flag). **LENGTH FAILS (to W1C): min s N/E kid 114.9/116.1 (Easy median 119.0), adult 119.9/120.3**, child 379.8/252.4,
+   middle 178.4/165.1, expert N 157.9. Landing noise: W1C's TAUGHT.landing = World 2. funcheck: the test-side 1-3 added ONE breach
+   (Easy "looks like an earlier stage" 8 vs 6); the other 11 are on the base (P13/funcheck-*.txt); not re-run on 7d9efa0d.
+6. **Seed list**: NOT recorded: blocked by the 2-min floor (7 of 40 seeds clear it for every tier). Filter = 1-1's own (seedlist.ts:
+   clean both settings, verdicts accepted, quiet line <= 4 s) PLUS the bots via --merge (castBots --proven: every tier, both
+   settings, shrine, goal full, no rescue, none under 120 s: item 6's "rolls that pass 1-5"). First seed would be the first proven.
+7. **Stills** (P13/stills/, the REAL game, layout 1 = seed 1, Normal, the adult first-timer's run, each moment in the run's state:
+   ft-moments.ts + ft-stills.mjs): first snake, first trap, first punch-glide, the gallery, the end; upright and sideways.
 
 ## Polish check (P13/stills, the contact sheet looked at)
 - First snake: the sleeper coiled under the hive, the vine by his hand, both on one upright screen. OK.
-- First trap: the hive lies on the empty branch, the snake gone. OK. (In this run the adult had passed trap0: this is trap 1.)
+- First trap (trap0 now): the hive lies on the empty branch, the snake gone. OK. Gallery sideways: the stone over a snake, its vine.
 - **Rough, named:** the goal sign reads 0/10 in every still, the end too: my still tool sets the count after the start and the HUD
   is not refreshed by it (the run itself counted 10/10). A still-tool limit, not the game; not fixed.
 - **Rough, named:** the engine lets Pokey walk INTO a block under 50 px (a 35 px stump in w1-log-walk) and stand inside it against
