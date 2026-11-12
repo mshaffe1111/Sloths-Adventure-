@@ -193,6 +193,8 @@ export interface Enemy {
   animTimer: number;
   hitFlashTimer: number;
   defeated: boolean;
+  /** summoned by a guardian in its fight: not a predator beaten for the records, and freed when the guardian falls */
+  minion?: boolean;
   koTimer: number;
   behaviorTimer: number;
   /** fight: seconds left staggered (it does nothing while staggered) and how long the stagger was */

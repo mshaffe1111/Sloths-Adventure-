@@ -3516,7 +3516,7 @@ export class GameEngine {
           const e = {
             id, type: kind, x, y: a.floor - 14, vx: 28, vy: 0, width: 38, height: 22, hp: 1, maxHp: 1, facing: x > this.player.x ? -1 : 1,
             patrolMinX: Math.max(a.left + 30, x - 160), patrolMaxX: Math.min(a.right - 30, x + 160), attackCooldown: 0.9, telegraphTimer: 0,
-            isAttacking: false, animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
+            isAttacking: false, animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, minion: true,
           } as Enemy;
           this.ringDrops.push({ e, t: 0, delay: this.ringDrops.length * 0.3 });
           sound.playWhoosh();
@@ -3557,7 +3557,7 @@ export class GameEngine {
     c.pDucking = p.ducking;
     c.arena = arena;
     let alive = 0;
-    for (const e of this.enemies) if (e.id >= 9000 && !e.defeated) alive++;
+    for (const e of this.enemies) if (e.minion && !e.defeated) alive++;
     c.minionsAlive = alive;
     return c;
   }
@@ -3638,7 +3638,7 @@ export class GameEngine {
     const mk = (w: number, h: number, hp: number, oy: number, vx: number): Enemy => ({
       id, type: kind, x, y: f - oy, vx, vy: 0, width: w, height: h, hp, maxHp: hp, facing: vx >= 0 ? 1 : -1,
       patrolMinX: arena.left + 30, patrolMaxX: arena.right - 30, attackCooldown: 1.2, telegraphTimer: 0, isAttacking: false,
-      animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
+      animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, minion: true,
     });
     let e: Enemy;
     if (kind === 'ocelot') e = mk(48, 28, 2, 18, x < (arena.left + arena.right) / 2 ? 55 : -55);
@@ -4487,7 +4487,7 @@ export class GameEngine {
     b.telegraphTimer = 0;
     b.isAttacking = false;
     this.hazards.length = 0;
-    for (const e of this.enemies) if (!e.defeated && e.id >= 9000) this.knockOut(e, e.x >= b.x ? 1 : -1, 'FREE!');
+    for (const e of this.enemies) if (!e.defeated && e.minion) this.knockOut(e, e.x >= b.x ? 1 : -1, 'FREE!');
     this.hitstopTimer = Math.max(this.hitstopTimer, 0.3);
     if (this.bossDef?.lair) this.slowMoLeft = 1.2; // a giant's last hit plays in slow motion, the camera pushing in
     this.camera.trauma = 1;
@@ -4560,7 +4560,7 @@ export class GameEngine {
   private knockOut(e: Enemy, dir: 1 | -1, label: string) {
     const p = this.player;
     e.defeated = true;
-    if (e.id < 9000 && e.type !== 'boss' && e.type !== 'ant_hazard') this.statKills[e.type] = (this.statKills[e.type] ?? 0) + 1;
+    if (!e.minion && e.type !== 'boss' && e.type !== 'ant_hazard') this.statKills[e.type] = (this.statKills[e.type] ?? 0) + 1;
     e.koTimer = 0;
     e.koAngle = 0;
     e.koLanded = false;
