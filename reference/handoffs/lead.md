@@ -31,7 +31,7 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
   | t-engine-predators@9bd5cee6 | t-engine-clock | reference/design/PREDATORS.md (story keeper PASS) + src/game/predators/ kit (8 habits, 13 animals, move ladder in TAUGHT/inWorld) | Fable |
   Parked: t-engine-11-followup@f24af141 (1-1's polish pass, after the engine); t-assets-compress@ffee5acc (waits for Matt's pick).
 
-## Tomorrow, in this order
+## Tomorrow, in this order (START ONLY ON MATT'S WORD; ALL HELPERS ON OPUS 5.5, no Fable: Matt 12:06 AM ET)
 0. **Matt-reported sweep FIRST** (D47; Opus high, short): every issue Matt reported (STATE.md, handoffs, ROADMAP, qa-reports, the testers'
    sheet data the bots came from) that is still open; tag each on ROADMAP.md as reported by Matt; fixes already on a branch join the merge;
    the rest go to the top of the queue. Never ship an open Matt-reported issue without asking him directly first.
@@ -40,14 +40,14 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
    (it is mixed with 1-1 items and a list rebuild: take only the hop-rock walls and their verdict, not the list rebuild) (hop rocks walked through: a generator rule, not 1-1 polish: every counted obstacle must block, or it is scenery and
    funcheck does not count it; Matt 11:22 PM); resolve conflicts; fix gates.yml so chunkcheck builds with BASE_PATH (D45); run the FULL gate once (CLAUDE.md Checks).
 2. **The proof audit** (one cold Critic, Opus xhigh): the merged engine, every gate, the bots: "prove it works" or name where it doesn't.
-3. **Then build on top** (FIRST: fly 1-2 and add its JUDGED row = data; fix the narrow-hollow look in the ground painter; then) (Fable if Matt says, else Opus xhigh; short fresh sessions): paint the thorn bed (World 1 manifest art only);
+3. **Then build on top** (FIRST, Matt's open issues: the dead-zone petal log as a gen2 verdict with the test from his case (R-165.124); the purpose rule as a verdict (R-165.126); the pit-wall art with no seams or boxes; the lead judges stills before Matt sees them. THEN: fly 1-2 and add its JUDGED row = data; fix the narrow-hollow look in the ground painter; then) (Fable if Matt says, else Opus xhigh; short fresh sessions): paint the thorn bed (World 1 manifest art only);
    count 1-2's double on the built stage (E12 item 5); the real 120-roll 1-2 run (`tools/engine/library.ts --seeds 120`, no --flown);
    wire the clock, stillness, noise, rides and World 1's snake/eagle/boa; lay 1-2 and 1-3 (goal: on Matt's test link by Fri 11-13, else
    switch to twisting the existing levels); the WebGL measuring stick (R-150.4/R-150.1, then R-3.1 PixiJS as its own chunk).
 4. **Cleanup** (Opus): the code split (each world its own chunk); delete the old generator per world on gen2; bots record which assets ever load.
 
 ## Open asks to Matt (one question at a time, your pick first)
-- Fable after tonight: (a) resume tomorrow on wiring (lead's pick), (b) code split, (c) stop for the week. Not answered.
+- Fable: ANSWERED 12:06 AM: Opus only tomorrow; Matt says when to start.
 - Compression DECIDED 11:00 PM: art at q82 for files above about q83, EXCEPT dark/black images (kept as shipped); music unchanged.
   About 14-16 MB off (app ~188 -> ~172). Run it 11-12 as a small Opus job from t-assets-compress's tools; show Matt before/after stills.
 - Guardians "huge" needs a Hugging Face picture list (8 of 10 are drawn larger than their sheets already); boss pass, his approval per picture.
