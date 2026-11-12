@@ -49,7 +49,7 @@ owner's (found A-07b, A-12b: fixed). Method file: reference/methods/audit-fix.md
 - Venom Fang's Easy bar: 4 wider segments, not 6 (qa-reports/EN-F/easybar-*). "Dot said" label "Flicker:" (was "The petal:"; players
   see "Flicker" already). The save summary leaves Thornbark out (counting him: your call); a 0.9.5 save now counts 5-M (41, not 40).
 - Pre-existing, not from this branch (same on b3e8db15): upright, the lives badge "x3" sits inside the boss name ("VENOM3FANG").
-## Checks (each run once on a pinned head; results in the commit log of this report)
+## Checks (each gate run once, on a pinned head)
 - e80cf630 (every audit fix): full suite 2,762 tests, 0 fail (the known 4-3 TODO); seedlist 1-1 PASS (200 seeds); lock 102/102 stages
   unchanged vs b3e8db15; tierBots 7/7; build, chunkcheck, artcheck, knowncheck PASS; drawcheck PASS; clipcheck PASS (83 known, none
   new); kbdcheck PASS. e2a1c380 (+ R-165.125): tsc, full suite 2,765 tests 0 fail, build (main JS 3,973,767 B, -9,092 vs base),
