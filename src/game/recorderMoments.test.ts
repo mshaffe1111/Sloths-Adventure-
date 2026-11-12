@@ -155,12 +155,16 @@ test("recorder 'dot': the first-run coach's line (its old words, which the revie
 
 test("recorder versions: the 'env' and every 'gen2' moment carry the build's commit, the seed list's version and the test round", async () => {
   const { runVersions, seedListVersion, TEST_ROUND, GIT_COMMIT } = await import('./testRound.ts');
-  const { PROVEN_SEEDS } = await import('./gen2/provenSeeds.ts');
+  const { PROVEN_INDEX } = await import('./gen2/provenIndex.ts');
+  const { listVersion, loadSeedList, provenList } = await import('./gen2/seedList.ts');
   assert.match(runVersions('1-1'), /^build \S+ list [0-9a-f]{8} round .+$/);
   assert.ok(TEST_ROUND.length > 0 && GIT_COMMIT.length > 0);
   // the list's version follows the list: the same list the same, a changed one different
   assert.equal(seedListVersion('1-1'), seedListVersion('1-1'));
-  assert.ok((PROVEN_SEEDS as Record<string, unknown>)['1-1'], '1-1 has a proven list');
+  assert.ok(PROVEN_INDEX['1-1'], '1-1 has a proven list');
+  // (the version is read from the index, without the list in hand: it is the loaded list's own hash)
+  assert.ok(await loadSeedList('1-1'));
+  assert.equal(seedListVersion('1-1'), listVersion(provenList('1-1')!));
   assert.equal(seedListVersion('no-such-stage'), 'none');
   // the gen2 moment, as the engine sends it: the versions ride after it, and the survey's run line is the same
   const lines: unknown[][] = [];

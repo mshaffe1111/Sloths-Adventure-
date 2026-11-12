@@ -57,6 +57,7 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 | Cutscene art and clips | `hf-cutscenes.md` | to write; source: tools/art/hfstory, the hf-cutscenes branch notes | next cutscene helper |
 | Props and sprite sheets (cutting, atlases, art-use) | `hf-props.md` | to write; source: tools/art/hfbatch, prop-sheets | next props helper |
 | Fixing a drawing fault in shared render code (trace the call, fix it once for every stage, the whole-picture check, stills both ways) | `render-fix.md` | written 11-05 (engine-render, R-164.6/7/8) | next render helper |
+| Building, extending and shipping a stage's proven seed list (the sweep on 4 workers, old seeds kept in place, the relay drop-outs, the chunk and offline proofs) | `seed-list.md` | written 11-11 (Engine, R-165.112) | next Engine member who rebuilds a list |
 | Keeping the roadmap (numbering, sizing, closing with proof, the release sweep, roadmapcheck) | `roadmap.md` | written 11-01 (roadmap-keeper) | roadmap-keeper |
 - `release.md`: shipping a release (the live site, the APK, both test links, the deploy checks), from 0.9.5.
 - `dispatch-packet.md`: the PM's task packet and the Critic's audit packet (the 6-role team, reference/TEAM.md).

@@ -5,6 +5,8 @@ import path from 'path';
 import {defineConfig} from 'vite';
 import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
+// @ts-ignore (a plain .mjs tool, shared with tools/perf/chunkcheck.mjs and its test)
+import { chunkOf } from './tools/perf/chunkplan.mjs';
 
 // the time of the latest commit, shown on the start screen so you can tell which version a device has. The deploy checks out the commit,
 // so git has it; GAME_BUILD_TIME overrides it (the preview build has no git folder); the build time is the last resort.
@@ -100,13 +102,14 @@ export default defineConfig(() => {
     build: {
       rollupOptions: {
         output: {
-          // React lives in its own 'vendor' file so the game's main script keeps room under the 4 MiB cache limit above (R-165.103;
-          // tools/perf/chunkcheck.mjs holds the main script to 3,994,304 B). It is a static split: index.html preloads it and the
-          // service worker precaches it, so nothing loads late and the game still plays offline.
-          manualChunks(id: string) {
-            if (/[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id)) return 'vendor';
-            return undefined;
-          },
+          // The game ships as a set of static files, none near the 4 MiB cache limit above (R-165.103, EN-S; tools/perf/chunkcheck.mjs holds
+          // every one 200 KB under it). tools/perf/chunkplan.mjs says which file each module goes in: React is 'vendor', and the game is
+          // split in layers (data, sound, the stage kit, each world's parts, the generators, the runs, the guardians, the story), each
+          // importing only the layers under it. It is a static split: index.html preloads every file and the service worker precaches
+          // them, so nothing loads late and the game still plays offline.
+          // (includeDependenciesRecursively off: the plan already names every module's file, and the bundler's own "take the imports
+          // along" would move modules between layers and tie the files in a loop)
+          codeSplitting: { includeDependenciesRecursively: false, groups: [{ name: (id: string, ctx: { getModuleInfo: (id: string) => unknown }) => chunkOf(id, (m: string) => ctx.getModuleInfo(m)) ?? null }] },
         },
       },
     },
