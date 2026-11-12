@@ -1,54 +1,50 @@
-# EN-G report (R-165.116, R-165.117, R-165.123), Engine. Branch t-engine-guards on release-0.9.6 @06bbd29f (on top of 3ce6ac43)
-**Method used:** test-first; each audit test brought in and run red on the old code before the fix (D37: the real engine read, not the
-audit's summary). Commits: a0760620 loop, 6b0c6ff3 + 3e9c4777 saves, 7553eade gate, then this report. Main chunk: 3,982,949 -> 3,982,860 B
-(-89 B; chunkcheck 11,444 B spare of its 3,994,304 B budget: the "37 KB spare" is against the raw 4 MiB cap, not the gate).
+# EN-F report: engine-audit fixes, game-wide first, and R-165.125. t-engine-fixes on t-engine-guards @b3e8db15, HEAD e2a1c380 (code)
+**Method:** each finding's audit test (or a new one) into src/, red on b3e8db15, root fix, green; one commit per finding. Four
+sub-helpers in worktrees (saves, help, audio, things); a Critic read every helper commit (9 items sent back and redone) and then the
+owner's (found A-07b, A-12b: fixed). Method file: reference/methods/audit-fix.md. Main JS 3,982,859 -> 3,973,349 B at e80cf630 (e2a1c380: see Checks).
 
-## Done-items (4/4)
-1. **R-165.116 loop.** engine.ts `loop()`: an account of real time not yet played (`acc`), played in whole 1/30 s steps, up to 3 a
-   frame, the rest dropped; a frame within 0.5 ms of 33.3 ms is one step. Governor and recorder see the true gap. Audit A-01's test is
-   now `src/game/frameLoop.test.ts` (its 8 cases and thresholds kept; added 144 Hz, 59.94 Hz, exact step size, the 30 fps lock, a stall).
-   Old loop 0/12 (A-01b: "played at 1.50x; the governor was fed 50.0 ms frames; q0 -> q2"; after a stall two frames of 2 steps);
-   fixed 12/12. Every step is exactly 1/30 s = realPlay's DT, so browser physics = the bots' (A-02's cause is gone).
-   Real browser (1-2, Chromium, `reference/qa-reports/R-165.116/`): upright and sideways 30.0 fps, game/real 1.000, every step
-   0.033333 s; CPU slowed 4x: 29.8 / 28.1 fps, game/real 0.999 / 1.001 (catch-up steps). Stills normal both ways (loop-contact.jpg).
-2. **R-165.117 saves.** One entry limit (16,000) in saveFile.ts for every key. Audit C's 2 tests and audit A's 2 save tests brought in
-   (`saveRoundTrip.test.ts`). The biggest finished game, filled through the game's own writers with its longest real ids
-   (`saveFill.ts`, a test kit the game never imports), round-trips as a file and as a save code: 97,882 chars (49% of the 200 KB cap);
-   biggest entry the Trophy Room, 4,099. 34 finds and every count to 47 load. 0.9.5's own code wrote `src/game/fixtures/save-0.9.5-mid`
-   (0.9.5 loaded it) and `-after-5M` (0.9.5 REFUSED it, "damaged entries"): both load now, every entry restored. Old limits: 6/8 red;
-   fixed: 17/17 with saveFile.test.ts. Play Store §6.8 (saves survive): this is the backup path's half of it.
-3. **R-165.123 gate.** `npx tsx tools/engine/generalitycheck.ts`: a token reader (comments and Dot's words never trip it) failing on a
-   stage id or world prefix, a world/stage-number rule (`===`, `switch`, `[..].includes`), a seed (`seed === n`, `layoutSeed: n`,
-   `setLayoutVariant(n)`), an x position >= 1,000 px. Scope and every exemption (with why) at the top of the tool; a new gen2 file is in
-   scope from its first commit. Debt: `tools/engine/generality.known.json`, 27 entries / 38 literals, each with why and owner, shrink-only
-   both ways (gate fails a gone literal; knowncheck counts each literal as an id). `generality.test.ts` 21/21: 15 planted kinds fail,
-   9 look-alikes pass, a mutation (world rule blinded) turns 6 red; CLI on a seed planted in reach.ts exits 1. In gates.yml, CLAUDE.md
-   Checks, gates.md (row 5c, breach reading, known lists). All 998 .ts in src/ tokenize with balanced brackets (0.85 s).
-4. **Gates (CI=1 FORCE_COLOR=1), all PASS:** tsc; touched tests 50/50 (frameLoop, saveRoundTrip, saveFile, generality); vite build;
-   chunkcheck; artcheck; knowncheck; roadmapcheck; generalitycheck; `seedlist.ts 1-1 --check` (200 seeds clean both settings);
-   buildcheck (p95 99 ms Normal, 77 ms Easy, budget 150).
+## R-165.125 (Matt: too loud, effects most; the bars do little until nearly off) FIXED e2a1c380
+- Cause, measured through the real chain: the bars were linear gain AND sat before the master compressor (-18 dB, ratio 3.5): the
+  old effects bar at 50% cut 3.9 dB of loudness, at 25% 9 dB. Now each tenth of a bar is 4 dB (0 = off), the louder bar is applied
+  after the dynamics: 50% cuts 16.8 dB, both bars at 50% exactly 20 dB. Limiter added (-1.5 dB): the recorded effects peak at
+  +2.0 dBTP; through the chain the loudest peak is now -0.1 dBFS. Effects default 100% -> 80% (-8 dB): they sat 1-3 dB over the
+  music's loudest moments (-10.2 vs about -11 LUFS momentary, +2.1 dB bus), now about 5 under. Saved bar positions are kept (quieter
+  on the new curve below the top). Numbers and script: reference/qa-reports/R-165.125/. Matt judges by ear; nothing re-recorded.
 
-## Pushback / for the lead
-- **Roadmap (integration):** R-165.116/.117/.123 rows exist only on ccr-702d3c49-i33jeq. roadmapcheck rule 3 needs an open row citing
-  the new known list, so I copied the R-165.123 row verbatim with "known debt tools/engine/generality.known.json" added to its Source,
-  and BUILD-PLAN.md:70's Day 1 total (615.5 -> 618.5). At integration keep ONE R-165.123 row (with the citation) and your total.
-  When .123 closes, the debt needs an open burn-down R-id or roadmapcheck fails.
-- **roadmapcheck had a hole:** it walked only src/ for *.known.json (its header says every); a list beside its tool escaped rule 3.
-  Now it walks tools/ too. A defect-log entry is the lead's call.
-- **Judgement calls to confirm:** nodeCode.ts's three V13 rules (`rules.mini === 1/9/6`: every world's X-1/X-6/X-9) are listed as debt
-  but may be legitimate structure; X_MIN 1,000 px means an x hard-coded nearer the start is not seen (named in the tool).
-- Root PUSHBACK.md is R-165.62's (on the base), not mine.
-
-## What's left (not in this packet)
-- Audit A-05 (camera 11 px cap per update: 22 px in one drawn 67 ms frame; the camera owner) and A-06 (paused stage redrawn every frame).
-- The 38 literals' burn-down (world data / brief / per-stage script: Engine 1's A2/A3 lane).
-- The full suite, lockall, drawcheck, clipcheck: the integration runner (TEAM.md cost rule 4). No Critic yet.
-
-## Method update
-- Worked: run an audit's test against `git show HEAD:<file>` swapped in, then the fix, in one command; it proves red-then-green fast.
-- Failed: 6b0c6ff3 went in with tsc red (I ran tsc and commit in one line without gating). Countermeasure used since: `tsc && git commit`.
-- A worst-case fill with synthetic 40-char ids overstated sizes 2x (play records 1,104, file 160 KB); real ids from the game's own
-  lists (fight.ts TRAITS, ALL_FINDS, BADGES) give the true biggest game.
-
-## Turnover
-reference/handoffs/engine-core.md §0d (the loop, the save kit, the gate and its list).
+## 1. Controls and physics (owner)
+- A-04 FIXED fb8af5f3: one take-off for press, coyote and buffered jumps (webs, spores, crumble timer, mushroom kept).
+- A-02 FIXED by the base (a0760620); c18f0225 proves one jump height at 60 Hz/30/22/20/15 fps through the real loop.
+- A-05 NOT A DEFECT since R-165.116: the cap is 330 px/s at any rate; the audit's "per drawn frame" fix, planted, put his head
+  70 px under the HUD at 15 fps (31 at 30). 60bb4aee pins the rate.
+- A-03 FIXED a8445f81 (every set-back makes crumbled platforms whole). A-07 FIXED cbd890d9 + 02a012ce (one way back to a flag
+  restarts the chase, 7-6 too; no death under the Game Over card: lives went to -14; a flag before the chase gives the fresh chase).
+- A-06 FIXED f065f2a5 (paused = one still frame; Chromium 1-2 both ways: still, still after a turn, moving on resume, 0 errors).
+- A-12 FIXED 50aa5880 + 7565bcd6 (ends when 20 of the last 60 frames fail). A-14 FIXED 6549823d + 8710a04a.
+- Input leads: ghost press 6549823d, held thumb at start fa90bc26 FIXED; input-loop-clock FIXED by the base. Entrance tap eb2acf5a.
+## 2. Saves and Play Store (saves helper)
+- C-04 f77b0df5, C-01 e00540b2 (gate scene own key, SAVE_VERSION 2, old saves moved; a game past 10-10 before then sees the card
+  once more), C-08 a5c9d058 (+ every screen has a Back owner): FIXED. saves#1 NOT REPRODUCED (fixed by the base, 6b0c6ff3).
+- FIXED: #10 c94f649c (a failed Load rolls back; needs more free room than before), #2 01585d70 + fbc628e3, #3 3d81cda6, #8 ef3768a6 +
+  086e7126 (sound settings are now the phone's), #9/C-05 db7dd5ed, #7 7d52c6fe, #5 aa2962e9 + 30973e44, #11 f59e72e0 (clipcheck opens
+  stories and run cards), #12 27bb0aa7 + 41379d31; leads newgame-leaks d07a90ed, hydrate-and-summary aa58987e, load-not-atomic (#10).
+## 3. Help and teaching (help helper)
+- C-03 5d8031ca, C-07 d5c9415b, C-09 bde542d1, C-10 2f44ce8b + 008c8d53, C-11 bd161b0b, C-12 b708c5f9 FIXED; C-06 NOT REPRODUCED in the
+  game (a new engine per run already forgets; e400dec2 pins it). Puzzle leads FIXED: P-05 2edfe2b8, P-06 f8f99c15, P-03 a5bf69b4.
+## 4. Audio, things, bosses, worlds
+- Audio #1-#11 FIXED (c8ff5c08 + e983a2a5, 2eeb6179, 6ba4efaf, 01f36e3c, 9ebeb31b, 0b798974, 3f1b150d, 5417e5b1, 4799269a, fba1208f,
+  e9ad589a). #1 is Java (AudioFocusPlugin), compiled against stubs only: needs a phone check (a podcast keeps playing when the game
+  opens muted; another app's music silences it, a tap brings it back; nothing over a call).
+- Things FIXED: #1 55193421, #2 f9ed7044, #3 e09dcc1e + e80cf630, #4 5b3b2875 + cc4ec25a, #6 acd324c1, #8 2b8c8fa3, #11 b73c9d3b,
+  #12 d11df3ae. #5 = saves#3, #7 = A-07, #10 = A-03.
+- Leads FIXED: boss phase-3 arena 51e51232, boss Easy bar 6016013b, W5 respawn stillness cdd64975, puzzle log softlock 22418081.
+## PARKED
+- A-17 (WebGL); A-08/A-15/A-16 (cleanup); C-02, C-13, A-09 (player words / data); A-10 (needs a device); A-11 (needs a perf
+  measure); things #9 (8-1's bat run uses the eagle's bush lines: World 8 needs its own lines and a bat cry); things #12b (R-5.23);
+  audio #4's 13 unplayed pieces (content call) and STINGS.bossAppear (a test asserts it); saves#10's silent write failures and
+  saves#5's Normal hold prompt (new words); usePWAInstall (product call). One stage only: 8-4 lantern resume, 5-M sapling, 4-6
+  ratchet, 9-10 gradients, 7-4 goal text. Not attempted (time): boss-first-tell, save-meeca-tips-never-kept.
+## For the lead to see (no new words anywhere)
+- Venom Fang's Easy bar: 4 wider segments, not 6 (qa-reports/EN-F/easybar-*). "Dot said" label "Flicker:" (was "The petal:"; players
+  see "Flicker" already). The save summary leaves Thornbark out (counting him: your call); a 0.9.5 save now counts 5-M (41, not 40).
+- Pre-existing, not from this branch (same on b3e8db15): upright, the lives badge "x3" sits inside the boss name ("VENOM3FANG").
+## Checks: running on e2a1c380 since 11:34 PM ET; the results are filled in by the next commit.
