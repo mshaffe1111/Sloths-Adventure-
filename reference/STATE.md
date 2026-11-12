@@ -535,3 +535,7 @@ lines); Matt sees them in the release.
   it found a better way, that should go to everybody afterwards... building rules that really are the most important things to our
   level designers"). R-165.154; CLAUDE.md rule added; reference/methods/level.md (Fable writing v1 now: Building rules first);
   reference/design/LEVEL-LOG.md started (hours and cost per level); every level packet: read level.md first, report "Learned".
+- 2026-11-12 1:46 PM ET, Matt: the lead approves the building rules ("after the levels, you review what was put in there and make the
+  decision. Does that go in or get pushed out?"); the cap is under 30, not 12 ("what we learn on 1-1... is going to be way different
+  than what it's going to be when we're on World 8"). CLAUDE.md updated: under 30 general rules + each world's own short section; the
+  lead decides every add, replace or removal after each level's retro, on evidence from LEVEL-LOG.
