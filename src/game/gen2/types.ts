@@ -193,6 +193,9 @@ export interface WorldManifest {
    * trimmed. A required section that fits no node of the stage is an authoring mistake, and the build says so
    */
   required?: Record<string, Array<{ section: string; phase?: Phase }>>;
+  /** this world's row for each engine slot a brick's piece may name (SectionPiece.slot, A13): the style its platform takes here and the
+   *  inventory pieces that may draw it (built from the world's inventory file: gen2/brickSlots.ts worldSlots) */
+  slots?: Readonly<Record<string, { style: NonNullable<Platform['style']>; art: readonly string[] }>>;
   /** mechanic -> the stage that teaches it first (a later stage takes it as known: no tip, and sections that use it are open) */
   lessons?: Record<string, string>;
   /** mechanic -> Dot's line for a 'tip' socket (under 10 words; a new line is marked "(new, needs Matt's approval)" until he says yes) */
@@ -279,6 +282,10 @@ export interface SectionPiece {
   h?: number;
   place: PlaceRule;
   style?: Platform['style'];
+  /** a BRICK's piece (GAME-MAP A13): the inventory's engine slot it fills (art/inventory.ts ArtRow.engine_slot, 'landing/platforms solid
+   *  log'), in place of one world's `style`: the lay takes its look from the world's own row for the slot (WorldManifest.slots), so one
+   *  section lays in every world that has the slot; a world with no row for it fails the section by name */
+  slot?: string;
   /** a landing (a jump lands on it): Easy widens it by EASY_LANDING px on the side the jump comes from */
   landing?: boolean;
   /** part of the main route (what the repair pass may stretch or bridge); a high road's branch is not */
@@ -596,6 +603,9 @@ export interface PlacedPiece {
   platform: Platform;
   main: boolean;
   landing: boolean;
+  /** a brick's piece: the slot it named, and the piece of this world's row that draws it (an inventory ArtRow.id) */
+  slot?: string;
+  art?: string;
 }
 
 export interface PlacedSection {

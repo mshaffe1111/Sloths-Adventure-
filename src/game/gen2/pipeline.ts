@@ -847,6 +847,8 @@ interface LocalPiece {
   h: number;
   shape: SectionTemplate['pieces'][number]['shape'];
   style?: Platform['style'];
+  /** a brick's piece: its engine slot (SectionPiece.slot) */
+  slot?: string;
   main: boolean;
   landing: boolean;
   /** an obstacle to hop (an `on` block): a beat */
@@ -1145,7 +1147,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on',
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -1785,8 +1787,12 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           placed.vines.push({ key: lp.key, vine: v, ...(h.swing ? { swing: h.swing } : {}), ...(h.window !== undefined ? { window: h.window } : {}), ...(h.gap ? { gap: [R(ox + h.gap[0]), R(ox + h.gap[1])] as [number, number] } : {}) });
           continue;
         }
-        const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, lp.style, !!lp.crumble);
-        placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing });
+        // (A13, one brick library across worlds: a piece that names its engine slot takes this world's row for it, its style and one of
+        // its inventory pieces by its own place (no shared stream moves); a world with no row fails the section by name, never a stand-in)
+        const row = lp.slot ? M.slots?.[lp.slot] : undefined;
+        if (lp.slot && !row?.art.length) throw new Error(`gen2 section ${tpl.id}: piece ${lp.key} asks slot "${lp.slot}" and world ${budget.world} has no row for it`);
+        const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, row?.style ?? lp.style, !!lp.crumble);
+        placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing, ...(row ? { slot: lp.slot, art: row.art[Math.floor(rngFor(seed, 83, p.x, p.y)() * row.art.length)] } : {}) });
       }
       const pieceOf = (k: string) => {
         const q = placed.pieces.find((pp) => pp.key === k);
