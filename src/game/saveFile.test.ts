@@ -22,7 +22,9 @@ test('a save holds only the game entries, with a truthful summary', () => {
   const s = buildSave(memStore(sample), new Date('2026-10-18T12:00:00Z'));
   assert.equal(s.format, SAVE_FORMAT);
   assert.ok(!('sloth_hint_v3' in s.data) && !('some_other_site_key' in s.data));
-  assert.equal(s.summary.stagesCleared, 3);
+  // (Thornbark's S-1 is not a stage cleared nor stars in the summary: before EN-F his result was never written, so no player ever saw it
+  // counted; EN-F saves#12 keeps it so, the lead's call to change. The secret shows as `secret` below)
+  assert.equal(s.summary.stagesCleared, 2);
   assert.equal(s.summary.stars, 5);
   assert.equal(s.summary.worldsStarted, 1);
   assert.equal(s.summary.secret, true);

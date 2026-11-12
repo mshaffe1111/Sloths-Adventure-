@@ -41,7 +41,7 @@ test("every golden seed the game writes is part of the adventure: a save file ca
 
 test("what this adventure did on this phone, as its writers write it, is cleared by a New Game and not carried by a file", () => {
   const mem = memStorage();
-  saveFlag('1-5', 5000, 800, Date.now(), mem);
+  saveFlag('1-5', 5000, 800, { t: 30, lives: 3, score: 120, got: [], beat: [], n: {}, kills: {}, seen: [] }, Date.now(), mem);
   setDotHelp('quiet', mem);
   withLocalStorage(mem, () => {
     markLooked(PAGES[0].id);
