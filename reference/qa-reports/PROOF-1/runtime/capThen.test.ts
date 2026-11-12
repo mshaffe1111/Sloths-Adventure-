@@ -30,3 +30,9 @@ test('wantAudioFocus: the plugin promise settles and want() reaches the phone (a
   void focusPlugin.then((p) => p.want({ on: true })).catch(() => {});
   assert.equal(await settle(focusPlugin), 'settled', `the plugin promise never settles; native calls made: ${JSON.stringify(calls)}`);
 });
+test('control: the same plugin held in a wrapper object settles and its call reaches the phone (the harness is sound)', async () => {
+  const held = import('@capacitor/core').then(({ registerPlugin }) => ({ p: registerPlugin<{ set(o: { on: boolean }): Promise<void> }>('KeepAwake') }));
+  assert.equal(await settle(held), 'settled');
+  await (await held).p.set({ on: true });
+  assert.ok(calls.includes('KeepAwake.set'), `native calls: ${JSON.stringify(calls)}`);
+});
