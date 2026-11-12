@@ -57,6 +57,7 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 | Cutscene art and clips | `hf-cutscenes.md` | to write; source: tools/art/hfstory, the hf-cutscenes branch notes | next cutscene helper |
 | Props and sprite sheets (cutting, atlases, art-use) | `hf-props.md` | to write; source: tools/art/hfbatch, prop-sheets | next props helper |
 | Fixing a drawing fault in shared render code (trace the call, fix it once for every stage, the whole-picture check, stills both ways) | `render-fix.md` | written 11-05 (engine-render, R-164.6/7/8) | next render helper |
+| A creature on the predator kit (the sheet, the cast, a worked example first, data, planted faults) | `predator-kit.md` | written 11-11 (EN-P) | whoever adds or changes an animal |
 | Keeping the roadmap (numbering, sizing, closing with proof, the release sweep, roadmapcheck) | `roadmap.md` | written 11-01 (roadmap-keeper) | roadmap-keeper |
 - `release.md`: shipping a release (the live site, the APK, both test links, the deploy checks), from 0.9.5.
 - `dispatch-packet.md`: the PM's task packet and the Critic's audit packet (the 6-role team, reference/TEAM.md).

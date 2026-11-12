@@ -1,122 +1,70 @@
-# EN-C: one clock for every timer (GAME-MAP A14)
+# EN-P: every predator gets a personality, and two or three ways to beat it
 
-Branch `t-engine-clock`, base `origin/t-engine-yield` @347d50fa. No PR. Nothing on screen changed, so there are no screenshots to judge.
-## Done, with proof
-1. **`src/game/clock.ts`.** One walk, `cycleRead`, under every timer; `ClockDef` (ADR-003 decision 4) made ready by `beatOf` and read
-   by `beatAt` / `clockAt`; `stageClock(defs, easy)` owns game time (`step(dt)` only: a pause holds it; no wall clock, no random
-   roll). A read gives the phase, seconds into it, seconds left, whole cycles, and seconds to the next 'on'. `checkClock` refuses an
-   'on' not entered from a 'warn', a phase with no length, and `easyStretch` under 1; at run time a stretch under 1 counts as 1, so
-   Easy can never be faster. Easy stretches the offset too, so lanes keep their stagger.
-   Proof: `clock.test.ts`, 8 tests written first (phases in order, warn before on, Easy never shorter, offsets stagger, pause holds,
-   the stage clock's time equals the engine's own `gameTime += dt` sum bit for bit). Mutation tried: letting Easy shrink fails it.
-2. **Timers moved, each proven unchanged.** `clockMove.test.ts` keeps every old function frozen word for word and compares the live
-   one with `Object.is`, about 2 million reads a group: the engine's frame sums (30 and 60 a second), tenths (where phase edges
-   sit), a time before 0, and seeded rolls. Mutation tried: a one-rounding-step change in the walk fails it.
-3. **`src/game/beatBrick.ts`.** The "on a beat" base for B5 pieces: a brick names a clock and says what it does while the clock is on
-   ('bites' or 'gone'); the clock's warning is its tell. `brickFair` is the builder's check (warning long enough to read, every safe
-   spell long enough to cross). Test-side example (`beatBrick.test.ts`): a snap-jaw stone safe on beats 1 to 3, biting on 4, its jaw
-   opening through the warning; four stones a beat apart never bite two at once; a sinking pad. Mutation tried: biting during the
-   warning fails 3 tests.
-4. **`tools/engine/clockaudit.ts`** (test-side): every hazard beat a built stage carries, found by its fields. 102 stages x 2 layouts
-   x 2 settings, 1,334 timers: **0 hurting with no warning, 0 stages where Easy is faster.** Shortest warnings: orchid 0.8 s, teapot
-   0.9, spore 1.0, wind and thorn vine 1.1, nest and bolt 1.2, geyser 1.3, rock 1.4, surge fall 1.5, tide 1.8. Worth knowing: only
-   rocks (3.8 to 4.7 s) and wind (5.4 to 5.6 s) are any slower on Easy today; every other beat is the same on both settings.
+Branch `t-engine-predators`, base `origin/t-engine-clock` @fd94c3f6. No PR. Written 9:55 PM ET, Nov 11. Nothing the game ships changed and nothing
+on screen changed, so there are no screenshots to judge (Polish check, below).
 
-## Which timers moved (all bit-identical)
-| Timer | Function |
-|---|---|
-| Falling rocks (World 4) | rockfall.ts `rockAt` |
-| Zones: spores, wind, tide troughs (World 6), geysers (9), bolts (10) | zones.ts `zoneState` |
-| Thorn vines (World 3), the awake one too | thornVine.ts `vinePhase` |
-| Eagle nests; teapots and orchids (World 5); surging falls | `nestAt`; `potAt`, `orchidAt`; `surgeFlow` |
-| Dot's gusts, river logs, lifts | `gustState`, `driftX`, `driftProgress`, `liftY`: cycle position from the clock (a lift's four stops stay its own sums) |
-| The reach checker's four copies | realReach.ts `calmFor` reads `cyclePos` |
+## Part 1: the design, `reference/design/PREDATORS.md` (295 lines; story keeper: PASS with 4 changes, all applied)
+- **§1 the roster today**, file:line: every creature that hurts, blocks or chases (the 12 fighting animals, the eagle's watch, thorn
+  vines, bats, moths, eaglets, the seamstress and butler, capuchins). Code facts: there is no combat triangle yet (a kick differs
+  from a punch only on the turtle); three tells are under 0.5 s (snake 0.38, ocelot 0.38, tayra 0.42); the frog has no tell at all.
+- **§2 one personality each**: the real animal, then our twist, its tell and rhythm; and **a cast per world** (Matt approved, 9:42 PM
+  ET): today Worlds 6, 7 and 8 share one list of six animals. No two animals in a cast share a habit (a test holds it).
+- **§3 ways to beat each**, never only the stomp; ends are stunned, gives up, dozes off or chased off, never eaten or killed.
+- **§4 Easy** (tell x1.3, beat x1.5, speed x0.85, fewer). **§5 the kit**: 8 habits on one machine. **§7 creatures we own and do not
+  use**: five can join now (dangler, orchid mantis, crab, piranha, beetle). **§8 size against Pokey**: 7 creatures flagged (the big
+  hunters are drawn at half Pokey's height; the boa is smaller than the tree snake); the 10 guardians are 1.5-3.2x Pokey today.
 
-## Not moved, and why
-- **6-8's rising tide (risingTide.ts `stepTide`).** Its surge beat only runs while the water rises: it stops for the warning, a hold
-  and while he rests on a flag. On game time the surges would land at different moments, a change to play. It needs a clock that
-  can be held; decide with the lead.
-- **The swinging lianas (engine `vineClock`).** Equal to game time in play, but the reach checker and five tests set it by itself to
-  try every swing phase. Merging it means changing those tools first.
-- **River sluices (`RiverZone.flowT`):** a river a puzzle runs keeps its own time on purpose. **World 7 doors, World 2 pads and
-  jaws, World 9 crust:** not in the code yet (B5 pieces; they start on `beatBrick`). One-shot timers that start on an event
-  (crumble regrow, flood rise, drowsy linger) and drawing-only loops were left alone.
+## Part 2: the kit, `src/game/predators/` (pure, 974 lines; tests 1,079 lines; not imported by the game)
+`types.ts` (an animal as data: `PredatorDef`; a stage's `Post`; the state, which is a heroNoise `Listener`; 13 ways, 4 ends), `core.ts`
+(the one machine: rest, hunt, TELL, act, recover; `stepPredator`, `beat`, `hear`, `foodChain`, `hurt`, `blocks`, `checkPredator`),
+`world1.ts` (snake, boa, eagle), `casts.ts` (ten later animals, first-draft numbers from today's code: turtle, River King's guard,
+caiman, ocelot, jaguar, tayra, night harpy, frog, spider, sentry), `roster.ts` (habits and casts), `fixtures.ts` (test helpers).
 
-## Checks
+The rules, each with its proof (`npx tsx --test src/game/predator*.test.ts`: 61 kit tests, all green):
+1. **The tell always comes first.** One door into the phase that hurts, only from a full tell (never under 0.5 s; longer on Easy).
+   Proof: asserted on every step of every test, plus a fuzz over all 8 habits that must reach the act more than 60 times.
+2. **Being beaten is data and never cruel.** Each way names its end; "open" ways need the moment after a miss; the turtle's punch
+   must come from behind. A way not on the list changes nothing.
+3. **Stillness** is stillness.ts `watcherSees`. A hunter that loses a still sloth gives up; running off is not a win. The boa
+   rears, he goes still, it settles back (a 0.2 s reaction fits inside its 0.8 s rear on both settings).
+4. **Noise** is heroNoise: it wakes a sleeper, the drum stuns, a kind that `hears` goes to look and notices nobody.
+5. **The food chain**: lead the eagle's shadow over the boa, or a tayra's line to the caiman's water, and it is chased off.
+6. **Easy is never harder**; `checkPredator` refuses one way, only the stomp, a short tell, a punchable guard, a harder Easy.
+   A clocked kind (the frog) tells on the stage clock's warn and acts on its on.
+7. **The top three, worked through** (`predatorWorld1.test.ts`, 14 tests): snake, eagle, boa: the tell, the attack, each way to beat it.
+
+**The tests bite**: 35 faults planted in `core.ts` one at a time, **35 caught** (`reference/qa-reports/EN-P/planted-faults.txt`); two
+survived their first run and each showed a missing test, now written.
+
+## Checks (run on this branch; times ET)
 - `npx tsc --noEmit -p .`: clean.
-- Stage lock, recorded at 347d50fa before any edit and checked after: **102 of 102 unchanged** (`lockall --layouts 2`, both settings).
-  Against the committed `lockall-main-0.9.5.json` only 1-1 differs, exactly as it does at the base (not from this branch).
-- `npx tsx tools/engine/seedlist.ts 1-1 --check`: PASS, 200 seeds clean on both settings.
-- Tests on the final code: the 3 new files plus every existing test file of a moved timer (rocks, zones, lifts, rivers, falls, Dot's
-  flight, all of Worlds 3, 4 and 5): **459 tests, 0 failed** (2 are those files' own standing TODOs). Not run: the rest of the
-  suite, drawcheck, clipcheck (nothing that draws changed). `roadmapcheck` cannot run here (shallow clone); `knowncheck` passes.
-- Bytes: main JS 3,995,263 at base, **3,995,403 now (+140 B)**; the limit is 3,994,304, so it was 959 over and is 1,099 over. Only
-  `cycleRead`, `cycle3` and `cyclePos` ship; `beatOf`, `stageClock`, `checkClock` and `beatBrick` are not imported by the game yet.
+- Stage lock, recorded at the base in its own worktree, checked here: **102/102 stages unchanged** (`lockall --layouts 2`, both settings).
+- Main JS: **3,995,374 B at the base and 3,995,374 B here (+0)**; no kit code is in the bundle. Not from this branch: chunkcheck
+  FAILS at the base and here by the same 1,070 B (limit 3,994,304), as EN-C's report already said.
+- artcheck PASS, knowncheck PASS.
+- `npx tsx tools/engine/seedlist.ts 1-1 --check`: PASS (200 seeds, each clean on both settings).
+- FULLTESTS_LINE
+- BUILDCHECK_LINE
+- roadmapcheck: cannot be judged in this clone (6 proofs name commits on branches it does not have); ROADMAP.md and tools/ untouched.
+- **Not run: drawcheck, clipcheck, kbdcheck, tierBots.** Nothing drawn, no screen and no stage changed (the lock and the byte count
+  show it). They run when an animal is wired in.
 
-## Left, and the exact next step
-1. Wire `stageClock` into the engine when the StageBrief runtime lands: build it at stage start from `brief.clocks`, call `step(dt)`
-   on the line that does `gameTime += dt` (engine.ts 1503), and serve `ModeHost.clock(id)` from `read(id)`.
-2. First B5 piece: a real snap-jaw stone = `BeatBrick` + art + `brickFair` in the builder with the crossing time as `safe`.
-3. The rising tide's held clock, then move it behind a frozen-oracle test like the others.
+## Polish check
+No screen, word, sound or stage changed, so there is nothing to shoot. The tell poses World 1's cast needs are in PREDATORS.md §6.
 
-## STILLNESS (the lead's follow-on, 9:03 PM ET; MAP-REVISIONS §1 and §8)
-- **`src/game/stillness.ts`** (pure, 87 lines; not imported by the game yet, so 0 bytes shipped: main JS still 3,995,403).
-  - The state: `stepStill` / `isStill` / `calm`. Still = on the ground at or under 25 px/s, or holding a vine without climbing (a
-    liana's swing may carry him); never in the air. It takes `calmIn` to come in (Normal 0.5 s, Easy 0.35 s, in `STILLNESS`) and is
-    gone the frame he moves. `calm` 0..1 is the tell the art lane will draw. No art, no player words.
-  - The watcher contract: `watcherSees(watcher, inSight, still, covered)`. Movement in sight is always seen, in cover too; still in
-    cover is unseen; still in the open is seen only by a watcher marked `seesStill`. `inCover` is the same place the bush hide uses.
-- **Proof (`stillness.test.ts`, 9 tests written first):** the state's rules; Easy never harder; the contract's truth table; `inCover`
-  agrees with watcher.ts `hidden` across a sweep; "moving" is the thorn vines' own line (`vineSees`) at every speed tried. The 1-7
-  example runs watcher.ts's real rhythm and shadow: running between bushes he is spotted; frozen in the bush with calm fully in
-  before the sweep, two passes cross him unseen; fidgeting in the bush or frozen in the open, the eagle sees him; a movement-only
-  hunter loses him in that same open spot. Mutations tried (cover ignored, airborne counts, no calm-in): each fails 2 or 3 tests.
-- **Checks:** tsc clean; stage lock 102 of 102 unchanged; 34 tests in the clock, brick, stillness and watcher files pass.
-- **Open for the lead:** (a) World 5's spiders are `seesStill`, so a still Pokey in cover is still unseen by them; if touch must beat
-  cover too it needs one more flag. (b) 1-7 today hides him by ducking in a bush with no calm-in; wiring this in changes that
-  stage's play, so it is a design call plus a 1-1-style recalibration, not a refactor.
-- **Next step:** the engine keeps one `StillState`, steps it beside `gameTime += dt`, and 1-7's `sees` (watcher.ts) reads
-  `watcherSees({ seesStill: true }, ...)`; then thorn vines read `moving` (already proven the same line).
+## What is left
+- **Not built**: a clocked "looking" window (thorn vine, eaglets); two-part acts (the night harpy's slide then shock); the kicked
+  shell bowling others over; the eagle's harmless first pass. Capuchins, moths and the seamstress stay on their own modules.
+- **Not wired.** The engine still runs predatorAI.ts and watcher.ts. Numbers in `casts.ts` are first drafts.
+- **For Matt** (the 9:53 PM note): the size proposals; guardians need new art to be "huge" (8 of 10 are already drawn larger than
+  their sheets); no guardian fight is in drawcheck's scenarios. The butler's cake (w5Play.ts:401) is against canon: flagged, not changed.
 
-## NOISE (the lead's second follow-on, 9:09 PM ET; GAME-MAP B10)
-- **`src/game/heroNoise.ts`** (pure, 87 lines; not imported by the game yet, so 0 bytes shipped: main JS still 3,995,403).
-  - Noise events from data (`LOUD`): a landing carries further the higher he fell (180 px, plus 0.9 px a px fallen past the soft
-    line, capped at 560); a fall of 200 px or less is silent; a punch 240 px, a break 420, the drum 620. `stepFall` measures the fall
-    from the top of his arc; catching a vine ends it with no landing, and a later drop is measured from where he held.
-  - The sleeper contract (`Listener`, `hears`, `sound`): a sleeper inside the radius wakes. It carries the way the puzzle kit's
-    noise does (noise.ts: `r` along the stage, `NOISE.hearY` up and down).
-  - The drum: every predator already awake in its radius is stunned for 3 s from the beat (`stunned`); a later beat never shortens it.
-- **Proof (`heroNoise.test.ts`, 8 tests written first):** the soft line is held above a double jump's rise from physics.ts, so
-  nothing he does on flat ground is loud; standing still for 10 s, a hop and a double jump leave a sleeper beside him asleep. The
-  3-5 example: a hop under a thorn vine wakes none; a 560 px drop beside them wakes the two in reach and not the far one; the same
-  drop caught on a liana wakes none. The drum example: two prowlers in its radius are stunned for exactly the set time, one outside
-  is not. Four mutations tried (no soft line, vine catch ignored, any noise stuns, radius ignored): each fails 1 to 4 tests.
-- **Checks:** tsc clean; stage lock 102 of 102 unchanged; 36 tests in the clock, brick, stillness and noise files pass.
-- **Open for the lead:** (a) the drum WAKES a sleeper in its radius and does not stun it (loud is loud, so the drum is a choice);
-  say if it should stun everything instead. (b) Walking makes no noise, as specified. (c) The puzzle kit's noise.ts (a thrown
-  stone, a bell: watchers turn to it) is left as it is; the two can share one event list when this is wired.
-- **Next step:** the engine keeps one `FallState` beside the stillness state, makes a `Sound` on a hard landing, a punch and a
-  break, and hands it to each stage's listeners with `sound`; thorn vines become the first `Listener`.
+## The exact next step
+Wire World 1's snake behind 1-3's laying (not the shipped 1-3): the stage hands `newPredator(SNAKE, post)` its branch ends, the
+engine calls `stepPredator` on the fixed step with Pokey from stillness.ts, reads `hurt`, and calls `beat` from the punch, the stomp
+and the drop trap (B2). Then the eagle replaces watcher.ts in 1-7's laying and the boa in 1-9. Method: `reference/methods/predator-kit.md`.
 
-## RIDES (the lead's last piece, 9:14 PM ET; GAME-MAP B4)
-- **`src/game/ride.ts`** (pure, 115 lines; not imported by the game yet, so 0 bytes shipped: main JS still 3,995,403).
-  - A path from data (`sideToSide`, `upDown`, or any list of points, travelled by distance) driven by the one clock: at the near
-    end while the clock is off or warning, along the path while it is on, at the far end while it rests; the next cycle brings it
-    back. `smooth` eases away from and into each stop (a lift). Easy only stretches the clock: same stops, same path.
-  - Carrying: `standingOn` (asked against the top it had before this step), `carry` (he takes the ride's own move and his feet are
-    set on its top), `jumpOff` (keeps all of its sideways speed and none of its up or down: `RIDE.keep`).
-  - A sinking pad: a beatBrick ('gone') on a count that only runs while he stands (`stepPad`, `padNow`): holds, warns, sinks; it
-    stays down 0.6 s after he leaves, then rises through its warning. Stepping off during the warning saves it.
-- **Proof (`ride.test.ts`, 8 tests written first):** over 28 s at 30 fps on a log and a lift, his feet equal the ride's top every
-  frame, his slip is under 1e-9 px, and no frame's move jumps (a lift's step changes by under 0.75 px a frame). Mid-travel a jump
-  off a log doing 200 px/s leaves at his own 60 plus 200; off a rising lift his jump is unchanged. The examples: a drifting log
-  carries him the whole 800 px after at least 14 frames of warning; a lift takes him up, waits 2 s or more, and brings him down.
-  Five mutations tried (2% slip, no return trip, creeping during the warning, pad never rises, no kept speed): each fails 1 to 3.
-- **Checks:** tsc clean; stage lock 102 of 102 unchanged; 44 tests in the clock, brick, stillness, noise and ride files pass.
-- **Not done / open for the lead:** (a) today's shipped movers (lift.ts, river.ts logs, the sine sway) are NOT replaced by this:
-  moving them is a per-stage play change and needs the lock and reach checker with it. (b) A wrapping log (in one side, out the
-  other) is still river.ts's `driftX`; this core is there-and-back. (c) Walking on a moving ride works (carry adds to his own
-  step) but the reach checker does not know rides yet. (d) Bubbles and vents (Worlds 6 and 9) are a path plus a pop or a push:
-  not built.
-- **Next step:** the engine steps each stage's rides beside `gameTime += dt`, calls `standingOn` then `carry` before his own
-  move, and `jumpOff` on the jump frame; then the reach checker learns a ride's positions from its clock.
+## Method update
+New: `reference/methods/predator-kit.md` (no method existed). Worked: the worked example before the data; one `run` helper that
+asserts the gate everywhere; a planted fault for every rule (green tests alone missed two). Failed: a dive aimed where he was (he
+outran it); tests in a subfolder (the test command does not reach them); "at its post" judged by speed alone (a charger walked home).
