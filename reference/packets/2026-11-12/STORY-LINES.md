@@ -56,3 +56,14 @@ offended!" stays as written.
 | 1-3 (now) | Learned to punch today. I said excuse me first. The snakes didn't wait for the second part. | Punched a vine and a hive dropped beside the snake. He glided off. Nobody told me snakes could fly. |
 | 1-7 (when 1-7 is laid with stillness) | Tossed an acorn so the eagle would look the other way. Dot called it cunning. I'd call it throwing. | Held still in a bush while an eagle looked right at me. I've been practising that all my life. |
 | 1-9 (when 1-9 is laid; provisional until Matt rules the boa's exits) | Fought the boa's guards all the way along his branches. They were only doing their job. So was I. | The boa thought I was a branch. I let him. Then a hive helped him find somewhere else to be. |
+
+## 1-2 The Petal Trail: the thorn and mushroom lesson (2:08 PM ET)
+| Where | Speaker | Final words |
+|---|---|---|
+| 1-2's lesson, first flag, about 800 px before the first thorn bed (once) | Dot | Ooh, thorns. Don't touch those, not even a little. |
+| the same moment, second line | Dot | Hop on and let the mushrooms do the jumping! |
+
+- The second line means "don't press Jump mid-chain" without naming a button, so it works for touch and pad alike.
+- "There's something down by the roots..." (hint.1-2.roots, approved 11-05) goes back in at the twist, the thorn-free hollow. Its
+  label is "the note": BRIEF-1-2's "must" puts Meeca's note by the pink bell LOW and in plain sight, so the hollow holds the note
+  (once the bell art exists, R-165.42), not petals alone.
