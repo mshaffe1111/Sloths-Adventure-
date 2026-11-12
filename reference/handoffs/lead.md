@@ -38,6 +38,10 @@ starts from INT-2's next head; then PROOF-1 delta re-audit (AF + INT-2).
 12:07 PM: RF2 (Opus high, session_01FhBbYNAQ6YJ6gEcgAWgz5k, t-render-2 from t-int-2@168b9309, packet RF2.md, stop 3:30): R-165.146 soil
 seam + R-165.129's open part. W1C 133f542d: R-165.141 done, trap Dot line done. P13 MUST also move "excuse me" from 1-3's halfway
 wayside (wayside.ts:67, DotGuide.tsx:1321 by stage id) to the first punch-glide moment, before tonight's test link.
+12:05 PM: GL0 retired (t-webgl-0@fdaa5333, REPORT 37 lines): stick + Stage 0 in; R-3.3 copy layer NOT kept (slower); frame = GPU fill
+(backdrop strips ~half); next WebGL step (Opus): re-take phone numbers with the fixed gpuprof, then SHOW the backdrop on WebGL under a
+see-through 2D canvas (blend effects move first). Full tests/drawcheck/clipcheck etc NOT run on it; not in tonight's merge.
+R-165.142 (gameCanvas willReadFrequently fix) lives on t-webgl-0: decide whether INT-2 takes it for 0.9.7.
 NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes + t-pit-polish + t-audit-fixes (+ t-12-fly), renumber the
   duplicate R-165.129, full gate; (2) PROOF-1 re-audits only the delta; (3) ask Matt ONE question: ship the R-165.125 sound levels or hold
   (D47), then 0.9.7 on his word (PR, he merges, check deploy + APK); (4) 1-2 and 1-3 to Matt's test link by Fri 11-13 (1-3 by Fable/W1C,
