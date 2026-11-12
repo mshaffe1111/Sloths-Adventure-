@@ -548,3 +548,9 @@ lines); Matt sees them in the release.
   Rulings: build it; the fork left out; "There's something down by the roots..." released from R-165.45 (its hold condition, 1-1 proving
   the engine, is met) for the twist; the mid-chain jump overshoot must be taught before beat 6 tests it (bots report thorn-hit rate).
   Dot's thorn line asked of the story keeper. 1-3: F13 adds "one shake, two snakes" (~+8-10 s) for a comfortable 2-minute margin.
+- 2026-11-12 2:15 PM ET (from the hook): ART-W1 retired at its context line (t-w1-art@6c4659ec: painted traps wired, ~$1.93 GPU, $17.08
+  model). The lead's judgment of its stills: the sapling and vines read as rainforest; FAILS: the vine's corner over the handle floats;
+  Matt's hive reads as a brown cocoon at phone size, so hive A (Hugging Face) is used instead (Matt left it to the lead); the tendril's
+  saw-cut stake breaks World 1's no-made-things rule; the stone's knotted net looks made (use the vine-wrapped take). ART-W1B (Opus
+  high, session_01FhBbYKTygXnUZ3ts1re6dE, t-w1-art2, cap $6, packet ART-W1B.md) fixes those and repaints w1sunrise-far without the edge
+  orchids (the white "ghost", F13's find). Merge order: t-w1-art2 replaces t-w1-art.
