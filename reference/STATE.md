@@ -486,3 +486,7 @@ lines); Matt sees them in the release.
   Stage Cleared fits 13 phone sizes. Lead calls: roster.ts EXEMPT from the generality gate as world data (it names 8-4's moth cast; its
   home should move to world data later); R-165.143 (17 tests not in CI), .144 (Cleared card overlaps at 640x360), .145 (Game Over
   scrolls 13 px at 360x640). R-165.142 reserved for GL0's gameCanvas fix. Y2 packet written (yield floor red after P11's verdicts).
+- 2026-11-12 12:01 PM ET, Matt: "Fable model is at 88pct". The weekly limit resets Wed 11-18 2:00 AM ET (rate-limit resetsAt). It ran
+  about 8 points an hour with two Fable sessions. The lead's call: GL0 stops now (REPORT from what it has; Opus does its final tables,
+  gates and step 3); W1C's stop moves to 12:30 PM (gates finish, report, turnover; P13 on Opus takes 1-3's proof). After that NO Fable
+  until the lead names a packet worth it; keep the rest as a reserve to Wednesday.
