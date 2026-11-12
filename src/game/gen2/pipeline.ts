@@ -16,6 +16,8 @@
  */
 import { rollLook } from '../artRoll.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
+import { FLAG_H } from '../stageArt.ts';
+import { STAGE_ART_FRAMES } from '../stageArtData.ts';
 import { doubleAllowed, jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
 import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
@@ -1341,7 +1343,32 @@ export const HARD_JOBS: ReadonlySet<string> = new Set(['teach', 'test', 'twist',
  */
 export const softFallStage = (st: object): boolean => !!(st as { gen2?: { softFalls?: boolean } }).gen2?.softFalls;
 
-type FlagStage = { spawnX: number; exitTotemX: number; checkpoints?: Array<{ x: number }>; heartFalls?: Array<{ x0: number; x1: number; soft?: boolean }> };
+/** a checkpoint's footprint about its x (world px, R-165.156): its painted post and pennant at their drawn height (stageArt FLAG_H over
+ *  the flag's frame: the post's foot `ax` in from its left, the pennant to its right) and Pokey's body where he respawns (x to x + 44,
+ *  engine.ts respawnAtCheckpoint), 6 px clear each side */
+export const FLAG_FOOT = (() => {
+  const f = STAGE_ART_FRAMES.flagUnlit, k = FLAG_H / f.h;
+  return { left: Math.ceil(f.ax * k) + 6, right: Math.ceil(Math.max((f.w - f.ax) * k, 44)) + 6 };
+})();
+/** a piece standing on `ground`'s top (its foot within 4 px of that top, or sunk into it), under a flag's footprint at x: a mushroom, a
+ *  root, a stone, a stump. A flag there stands in it (and he respawns in it or bounces off it): R-165.156, Matt's "every piece has a
+ *  purpose", a flag's purpose is a clear spot to start again */
+export function standsOnFlag(platforms: readonly Platform[], ground: { y: number; id?: number }, x: number): Platform | undefined {
+  return platforms.find((q) => q.id !== ground.id && q.y < ground.y && q.y + q.height >= ground.y - 4 && q.x < x + FLAG_FOOT.right && q.x + q.width > x - FLAG_FOOT.left);
+}
+/** the runs of [x0, x1] on `ground`'s top where a flag stands clear of every piece standing on it (standsOnFlag): its flag spots */
+export function flagRuns(platforms: readonly Platform[], ground: Platform, x0: number, x1: number): Array<[number, number]> {
+  let runs: Array<[number, number]> = x0 <= x1 ? [[x0, x1]] : [];
+  for (const q of platforms) {
+    if (q.id === ground.id || !(q.y < ground.y && q.y + q.height >= ground.y - 4)) continue;
+    // (no flag x with its footprint over q: x in (q.x - right, q.x + q.width + left), kept 1 px off each end)
+    const b0 = q.x - FLAG_FOOT.right, b1 = q.x + q.width + FLAG_FOOT.left;
+    runs = runs.flatMap(([a, b]): Array<[number, number]> => (b <= b0 || a >= b1 ? [[a, b]] : [...(a <= b0 ? [[a, b0] as [number, number]] : []), ...(b >= b1 ? [[b1, b] as [number, number]] : [])]));
+  }
+  return runs;
+}
+
+type FlagStage = { spawnX: number; exitTotemX: number; checkpoints?: Array<{ x: number; y?: number }>; heartFalls?: Array<{ x0: number; x1: number; soft?: boolean }>; platforms?: readonly Platform[] };
 /** where a fall costs a life on a stage: its water and void falls (gen2.falls) and its heart falls that are not soft */
 export function lethalSpans(st: FlagStage, falls: ReadonlyArray<{ x0: number; x1: number; kind: string }> = []): Array<[number, number]> {
   return [...falls.filter((f) => f.kind !== 'soft').map((f) => [f.x0, f.x1] as [number, number]), ...(st.heartFalls ?? []).filter((z) => !z.soft).map((z) => [z.x0, z.x1] as [number, number])];
@@ -1360,6 +1387,13 @@ export function rolledFlagBreaches(st: FlagStage, hard: ReadonlyArray<{ id: stri
   }
   for (const h of hard) if (h.x0 - st.spawnX >= ROLLED_FLAGS.first + ROLLED_FLAGS.clear && !xs.some((x) => x <= h.x0 + 150 && x >= h.x0 - ROLLED_FLAGS.before)) out.push(`flags: none before the hard node ${h.id} at x ${R(h.x0)} (within ${ROLLED_FLAGS.before} px)`);
   if (st.exitTotemX - xs[xs.length - 1] > ROLLED_FLAGS.last) out.push(`flags: the last ${R(st.exitTotemX - xs[xs.length - 1])} px from the exit (within ${ROLLED_FLAGS.last})`);
+  // (R-165.156: a flag never stands in a piece standing on its ground, a mushroom, a root, a stone)
+  if (st.platforms) for (const c of st.checkpoints ?? []) {
+    if (c.y === undefined) continue;
+    const ground = st.platforms.find((p) => p.y === c.y && p.x <= c.x && p.x + p.width >= c.x);
+    const q = ground && standsOnFlag(st.platforms, ground, c.x);
+    if (q) out.push(`flags: the flag at x ${R(c.x)} stands in a ${q.type}${q.style ? ` ${q.style}` : ''} piece at x ${R(q.x)}-${R(q.x + q.width)} on its ground`);
+  }
   return out;
 }
 /** the plain-walk seconds at the start before any animal may stand (§2 "Opening seconds": 3-5 s) */
@@ -2270,16 +2304,18 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   let t = 0;
   const flagSpot = (s: PlacedSection): { x: number; piece: Platform } | null => {
     const lastX = checkpoints.at(-1)?.x ?? SPAWN_X;
-    const ok = (x: number, piece: Platform | undefined): piece is Platform => !!piece && x - piece.x > 30 && piece.x + piece.width - x > 30 && x > lastX + 600 && !flagInZone(laid.zones, x, piece.y);
+    // (R-165.156: never in a piece standing on its ground, a mushroom, a root, a stone: standsOnFlag)
+    const ok = (x: number, piece: Platform | undefined): piece is Platform => !!piece && x - piece.x > 30 && piece.x + piece.width - x > 30 && x > lastX + 600 && !flagInZone(laid.zones, x, piece.y) && !standsOnFlag(laid.platforms, piece, x);
     const flagSock = s.sockets.find((k) => k.socket.role === 'flag');
     if (flagSock && ok(flagSock.x, flagSock.piece)) return { x: flagSock.x, piece: flagSock.piece };
     const exitPiece = s.pieces.find((p) => p.platform.y === s.exit.y && p.platform.x + p.platform.width >= s.exit.x - 1)?.platform;
     if (ok(s.exit.x - 80, exitPiece)) return { x: s.exit.x - 80, piece: exitPiece };
     // (else the rightmost wide main piece of the section, near its end, outside a room)
     if (s.room) return null;
+    // (its furthest run clear of what stands on it, flagRuns: the piece's own end when nothing does)
     for (const p of [...s.pieces].filter((q) => q.main && q.platform.width >= FLAG_SPAN.pad).sort((a, b) => b.platform.x - a.platform.x)) {
-      const x = p.platform.x + p.platform.width - FLAG_SPAN.pad / 2;
-      if (ok(x, p.platform)) return { x, piece: p.platform };
+      const runs = flagRuns(laid.platforms, p.platform, p.platform.x + FLAG_SPAN.pad / 2, p.platform.x + p.platform.width - FLAG_SPAN.pad / 2);
+      for (let r = runs.length - 1; r >= 0; r--) if (ok(runs[r][1], p.platform)) return { x: runs[r][1], piece: p.platform };
     }
     return null;
   };
@@ -2309,9 +2345,12 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       for (const q of sec.pieces) {
         const pl = q.platform;
         if (!q.main || pl.width < FLAG_SPAN.pad) continue;
-        const x = Math.min(pl.x + pl.width - FLAG_SPAN.pad / 2, to);
-        if (x < pl.x + 30 || x < from + 600 || flagInZone(laid.zones, x, pl.y)) continue;
-        if (!best || x > best.x) best = { x, y: pl.y };
+        // (R-165.156: on a run of it clear of what stands on it, flagRuns)
+        for (const [a, b] of flagRuns(laid.platforms, pl, pl.x + 30, pl.x + pl.width - FLAG_SPAN.pad / 2)) {
+          const x = Math.min(b, to);
+          if (x < a || x < from + 600 || flagInZone(laid.zones, x, pl.y)) continue;
+          if (!best || x > best.x) best = { x, y: pl.y };
+        }
       }
     }
     if (!best) break;
@@ -2326,12 +2365,13 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     const lethal = lethalSpans({ spawnX: laid.spawn.x, exitTotemX: laid.exit.x, heartFalls: laid.heartFalls }, laid.gaps.map((g) => ({ x0: g.x0, x1: g.x1, kind: g.water ? 'water' : g.soft ? 'soft' : budget.pit })));
     const cap = (a: number, b: number) => (lethal.some(([l0, l1]) => l1 > a && l0 < b) ? ROLLED_FLAGS.lethal : ROLLED_FLAGS.max);
     // (a flag spot: a wide main piece's top, outside a room and a zone)
+    // (R-165.156: only its runs clear of anything standing on it, a floor mushroom at a chain's lip, a root, a stone: flagRuns)
     const spots: Array<{ x0: number; x1: number; y: number }> = [];
     for (const sec of laid.sections) {
       if (sec.room) continue;
       for (const q of sec.pieces) {
         const pl = q.platform;
-        if (q.main && pl.width >= FLAG_SPAN.pad) spots.push({ x0: pl.x + FLAG_SPAN.pad / 2, x1: pl.x + pl.width - FLAG_SPAN.pad / 2, y: pl.y });
+        if (q.main && pl.width >= FLAG_SPAN.pad) for (const [x0, x1] of flagRuns(laid.platforms, pl, pl.x + FLAG_SPAN.pad / 2, pl.x + pl.width - FLAG_SPAN.pad / 2)) spots.push({ x0, x1, y: pl.y });
       }
     }
     // (before each hard node: the furthest spot within `before` px ahead of its first section, or 150 px into it)
