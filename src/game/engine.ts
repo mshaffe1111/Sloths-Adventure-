@@ -94,6 +94,7 @@ import { swimHeadY } from './heroSwim.ts';
 import { CLUE_NAME, clearOfHollowLogs, drawHollowLog, drawW1Clue, drawW1Dress, insideHollow } from './w1NewArt.ts';
 import { drawMudSplash, drawW1Creek } from './w1Creek.ts';
 import { paintedBank, setW1PitWater } from './w1Pits.ts';
+import { stageClock, type StageClock } from './clock.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
 import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
@@ -534,6 +535,8 @@ export class GameEngine {
 
   private hitstopTimer: number = 0;
   private gameTime: number = 0;
+  /** the stage's one clock (clock.ts): stepped on the fixed step, and `gameTime` is its time, so every timer reads the one clock */
+  private clock: StageClock = stageClock([], false);
   private standingOnId: number = -1;
   private riverHinted = false;
   /** World 3: how drowsy the spore cloud makes him right now, 0 (awake) to 1 (in the thick of it); it follows the cloud and ends with it. And how strongly the screen shows it */
@@ -1500,7 +1503,8 @@ export class GameEngine {
       this.stepDown(dt);
       return;
     }
-    this.gameTime += dt;
+    this.clock.step(dt);
+    this.gameTime = this.clock.time();
     this.irisOpen = Math.max(0, this.irisOpen - dt);
     this.vineClock += dt;
     // every liana swings on its own (the climbing vines hang still): it is drawn, and caught, where its swing puts it now
