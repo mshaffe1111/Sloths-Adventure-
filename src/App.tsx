@@ -1,5 +1,6 @@
 import { newPlay11, setPick11 } from './game/testlink1_1.ts';
 import { scheduleAhead } from './game/buildAhead.ts';
+import { loadSeedList, seedListSettled } from './game/gen2/seedList.ts';
 import { handleBack } from './components/nav/backStack.ts';
 import { PerfReadout } from './components/PerfReadout.tsx';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
@@ -668,6 +669,8 @@ export default function App() {
     // a stage in another world lets the last world's sheets go before this one's story or boss intro loads its own (atlasLoader.ts)
     enterWorld(lvl.worldIndex);
     if (!new URLSearchParams(window.location.search).get('music')) setMusicSalt((Math.random() * 0x7fffffff) | 0);
+    // (its proven seed list starts loading now, behind the story or the boss card: gen2/seedList.ts; nothing for a stage with none)
+    void loadSeedList(lvl.id);
     // a stage rolls its layout the first time it is entered and keeps it from then on (a retry keeps it too)
     setLayoutVariant(layoutForEntry(lvl));
     setActiveLevel(lvl);
@@ -848,7 +851,9 @@ export default function App() {
     startRun(lvl.id);
     // (the 'launch' moment, the lead 11-06: each phase from the tap to the first frame, so testers' real phones give the true split)
     const at = { ready: 0, timer: 0, built: 0 };
-    void readyToStart(lvl, canvasRef.current, inPlay).then(() => {
+    // (and the stage's proven seed list, its own file since R-165.112: in memory before the engine builds the stage, so the play's seed is
+    // drawn from it; a load that fails or stalls plays the stage's stand-in, a proven layout too: gen2/seedList.ts seedListSettled)
+    void Promise.all([readyToStart(lvl, canvasRef.current, inPlay), seedListSettled(lvl.id)]).then(() => {
       at.ready = performance.now();
       if (seq !== launchSeq.current) return;
       // Slight delay to allow canvas element mounting
