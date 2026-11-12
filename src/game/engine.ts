@@ -4946,7 +4946,8 @@ export class GameEngine {
   }
 
   private loseLife(reason: 'water' | 'pit' | 'hurt') {
-    if (this.down) return;
+    // (one beat at a time, and none once the run is over: under the Game Over card the engine keeps stepping, for Continue)
+    if (this.down || this.isGameOver) return;
     recorder.event('lostLife', reason);
     this.lostTo = reason;
     if (this.bossGuideUp) this.clearGuide();
@@ -5257,6 +5258,8 @@ export class GameEngine {
     this.dragSpeed = 1;
     this.dragJump = 1;
     this.lanternRun?.restart();
+    // the collapsing branch's chase waits behind his flag (chase.ts)
+    if (this.chase) this.restartChase();
     // 6-8: the tide starts again under his flag, waiting a moment (risingTide.ts)
     if (this.tide) {
       restartTide(this.tide, this.proto!.tide!, this.tideSet, this.checkpoint.y);
@@ -7614,8 +7617,10 @@ export class GameEngine {
     ctx.fillRect(x0, t.y - 16, x1 - x0, 28);
   }
 
-  /** caught on the long branch: one heart, back at the flag with the branch whole again from there, the collapse waiting a moment */
+  /** caught on the long branch: one heart, back at the flag (respawnAtCheckpoint puts the branch and the collapse back) */
   private chaseCaught() {
+    // (never under the Game Over card: the engine keeps stepping there, and the collapse caught the body again and again, audit C)
+    if (this.isGameOver) return;
     const p = this.player;
     const hp = p.hp - 1;
     this.statHeartsLost += 1;
@@ -7626,6 +7631,14 @@ export class GameEngine {
       this.respawnAtCheckpoint('pit');
       p.hp = hp;
     }
+  }
+
+  /**
+   * The chase (chase.ts) waits behind the flag he is back at, the branch whole from there. Part of every way back to a flag
+   * (respawnAtCheckpoint): a life lost to anything else on the branch (an animal) used to leave the collapse past his flag, so the next
+   * frame it "caught" him, took a heart and respawned him a second time (audit A-07).
+   */
+  private restartChase() {
     const flagX = this.checkpoint.x;
     for (const pl of this.platforms) if (pl.chase && pl.x + pl.width > flagX - 700) pl.broken = false;
     this.chaseFalling = [];
