@@ -803,6 +803,8 @@ export class FirstTimerRun {
   private trapWait: { post: TrapPost; until: number } | null = null;
   /** the drop trap he means to use (castPlan): kept until it is sprung, so he walks back to it when his thumb carries him past */
   private trapGoal: TrapPost | null = null;
+  /** (a first-timer past the handle: backing off for a run-up at it) */
+  private trapRunUp = false;
   /** the shrine sealed with the goal short, and Dot has said why: he turns back for an animal he passed, as a player told so does
    *  (`id` the animal, `best` the nearest he has come to it, `since` when he turned, `more` when he last came nearer: 20 s
    *  with no nearer and he gives it up); `turnBacks` how often */
@@ -1768,12 +1770,40 @@ export class FirstTimerRun {
       this.trapGoal = goal.post;
     }
     const h = goal.post;
-    // (he stands with his middle this far before the handle, on the side away from the load, facing it: the punch's reach,
-    // castEngine.test.ts)
+    // (he punches from anywhere in the blow's reach of the handle, on the side away from the load, facing it: measured in the real
+    // engine, a punch springs the vine from 10 px past it to 85 px short of it (P13 11-12); he aims for -4 to 80. A point to stand on was too fine for a
+    // first-timer's thumb, which runs him to full speed at every nudge: he rocked either side of it until rescued, 1-3 kid seed 6)
     const toLoad: -1 | 1 = h.loadX >= h.x ? 1 : -1;
-    const stand = h.x - toLoad * 28;
-    const off = stand - mid;
-    if (Math.abs(off) > 6) return off > 0 ? { right: true } : { left: true };
+    const short = (h.x - p.x) * toLoad;
+    const toward: Pad = toLoad > 0 ? { right: true } : { left: true }, away: Pad = toLoad > 0 ? { left: true } : { right: true };
+    // (the first-timers' thumbs, KID and ADULT, never let go once held, thumbify R-165.59: they cannot stop at a spot, so they punch on
+    // the move, the tap timed by their own hesitation to land mid-reach; past the handle, they back off a run-up and come again)
+    if (!this.who.holdQ) {
+      if (this.trapRunUp) {
+        if (short < 170) return away;
+        this.trapRunUp = false;
+      }
+      if (short < -4) {
+        this.trapRunUp = true;
+        return away;
+      }
+      const coming = p.vx * toLoad;
+      if (coming > 100 && short <= 40 + coming * this.who.hesitate) {
+        this.punchAt = t + this.who.hesitate;
+        this.swapGap = between(this.r, this.who.swap);
+        this.trapWait = { post: h, until: this.punchAt + 1.5 };
+        return toward;
+      }
+      return toward;
+    }
+    // (a tier bot's thumb lets go: far off he runs at it; within 150 px of the reach he taps, one press from a standstill, then lets the
+    // slide stop him and looks again)
+    const off = short > 80 ? short - 80 : short < -4 ? short + 4 : 0;
+    if (off !== 0) {
+      const go = (off > 0) === (toLoad > 0) ? { right: true } : { left: true };
+      if (Math.abs(off) > 150) return go;
+      return Math.abs(p.vx) > 20 ? {} : go;
+    }
     // (stopped: the thumb is off; he waits for himself to stand still before he turns and punches)
     if (Math.abs(p.vx) > 20) return {};
     if ((p.facing >= 0 ? 1 : -1) !== toLoad) return toLoad > 0 ? { right: true } : { left: true };

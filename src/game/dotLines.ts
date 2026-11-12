@@ -264,7 +264,7 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
     ...(step ? { step, ...(step === 'name' ? { waitMs: PUZZLE_NAME_WAIT_MS, soon: true } : {}) } : {}),
     // (and it belongs to its beat, just ahead: it skips the calm gap between lines as a first-time hazard does, `soon`, never cutting in
     // over a line up. Held by the 10 s gap, 1-3's trap tip came after he had walked past the first trap)
-    ...(o.teach && kind === 'teach' && !step ? { waitMs: TEACH_WAIT_MS, soon: true } : {}),
+    ...(o.teach && kind === 'teach' && !step ? { waitMs: TEACH_WAIT_MS, soon: true, stageTeach: true as const } : {}),
     // (the control test's lines are the test itself: each is said, every run, and none is dropped for a move he made before it came.
     // Seed 7920 said nothing for 24 s: "Run to the flowers" and "Turn around" went because he was already running at 2.5 s)
     // (only while the control test runs: a stage's own words can match a test row, "Flick up onto the mushroom to bounce" in 1-3)

@@ -87,6 +87,10 @@ export interface GuideLine {
   said?: string;
   /** a first-time hazard about to hit: it does not wait out the gap between lines (it never cuts in over a line, as a warning does) */
   soon?: boolean;
+  /** the stage's own teach line (StageHint.teach, dotLines.ts engineGuideLine): it outranks a stock line, so it may come in over a
+   *  plain information line already up its minimum time, as a first-time lesson does (1-3's trap tip waited behind the flag's card
+   *  until he had passed the first trap) */
+  stageTeach?: true;
   /** starts even while he is in danger (blinking after a set-back, in the air): 1-1's help ladder line, about the move he keeps missing,
    *  said while he is set back again and again (INT-1-1, the Critic's find: at a set-back every 2 s it never started) */
   anyway?: boolean;
@@ -314,7 +318,7 @@ export class GuideQueue {
    */
   private cutsIn(line: GuideLine, now: number): boolean {
     const cur = this.cur;
-    return this.calm && line.kind === 'teach' && !!cur && now >= CALM.startMs && now - cur.startedAt >= GUIDE.minShowMs && (cur.line.kind === 'story' || (line.source === 'lesson' && cur.line.kind === 'info'));
+    return this.calm && line.kind === 'teach' && !!cur && now >= CALM.startMs && now - cur.startedAt >= GUIDE.minShowMs && (cur.line.kind === 'story' || ((line.source === 'lesson' || !!line.stageTeach) && cur.line.kind === 'info'));
   }
 
   push(line: GuideLine, now: number): void {
