@@ -1183,7 +1183,6 @@ export class GameEngine {
       this.lessonSeen = lessonsSeen();
       this.lessonSeen.add('gap');
     }
-    sound.setTempo(1); // a boss fight that was enraged must not restart at the enraged speed
     sound.playLevelStart();
     this.loop(this.lastTime);
   }
@@ -3769,12 +3768,6 @@ export class GameEngine {
           markTipHeard(id, 'boss:' + b.phase);
           this.guide(line, 4);
         }
-        sound.setTempo(b.phase === 3 ? 1.08 : 1.04);
-      } else if (b.phase === 3) {
-        // (a new phase is heard, in the music's tempo, and seen on the bar's gold notch: no words over the boss, AN-3)
-        sound.setTempo(1.08);
-      } else {
-        sound.setTempo(1.04);
       }
     }
     // every guardian winds up with its own sound (SN-4: it was a jaguar's growl for all but Venom Fang; polish-sfx's recordings)

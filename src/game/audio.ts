@@ -10,11 +10,10 @@
  *   voice.ts       the story's voices: each character's babble (voiceLine.ts says when a syllable is due)
  */
 import type { Tone } from '../audio/voiceLine.ts';
-import { Conductor, type SceneOptions } from '../audio/conductor.ts';
+import { Conductor } from '../audio/conductor.ts';
 import type { AmbientType } from '../audio/ambience.ts';
 import { enemyIndex, hitArg, type Material } from '../audio/combat.ts';
 import { CALM, type MusicState } from '../audio/adaptive.ts';
-import type { CueName } from '../audio/cues.ts';
 import { PUZZLE_KIND } from '../audio/sfxGame.ts';
 import { WORLD_SURFACE } from '../audio/sfxRec.ts';
 import { holdScene, sceneForPanel, sceneForScreen, type Held, type PanelInfo } from '../audio/scenes.ts';
@@ -98,10 +97,6 @@ class SoundEngine {
   }
 
   // ------------------------------------------------------------------ music
-  scene(id: string | null, opts?: SceneOptions) {
-    this.held = null;
-    this.c.setScene(id, opts);
-  }
   /** music for a non-cutscene screen (cutscenes choose their own, panel by panel) */
   screen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1, salt = 0, objective?: string) {
     // the stage's state (a dark zone, a danger, a boss phase) belongs to that stage: any other screen, or another stage, starts calm
@@ -152,10 +147,6 @@ class SoundEngine {
   setIntensity(v: number) {
     this.c.setIntensity(v);
   }
-  /** the music's speed, 1 = as written (a boss enraging runs it faster) */
-  setTempo(scale: number) {
-    this.c.setTempo(scale);
-  }
   setLowHealth(on: boolean) {
     this.lowHealth = on;
     this.c.setLowHealth(on && this.inPlay);
@@ -163,10 +154,6 @@ class SoundEngine {
   /** what is happening, for the music to follow (see audio/adaptive.ts): danger 0..1, dark 0..1, exit 0..1, puzzle 0..1, boss phase, mood */
   setMusicState(s: Partial<MusicState>) {
     this.c.setMusicState(s);
-  }
-  /** an in-key stinger: 'checkpoint', 'discovery', 'secret', 'lowHealth', 'bossAppear' (see audio/cues.ts) */
-  cue(name: CueName) {
-    this.c.cue(name);
   }
   setAmbient(type: AmbientType | null) {
     this.c.setAmbient(type);
@@ -228,9 +215,6 @@ class SoundEngine {
    *  card lands: SN-5) */
   playExitChime() { this.c.fx('star', 2); }
   playDefeat() { this.c.sting('defeat'); }
-  /** the old engine started and stopped one global ambience; the world now picks its own (see setAmbient) */
-  startAmbient() {}
-  stopAmbient() { this.c.setAmbient(null); }
 
   // ------------------------------------------------------------------ new
   playBossVictory() { this.c.sting('bossVictory'); }

@@ -5,7 +5,7 @@
  *
  * The music is recorded (loops.ts): each piece was played once by its orchestra, offline (tools/music), and the
  * game plays the recordings back, mixing their stems with the game's state. Nothing is composed while the game
- * runs; the effects, stingers and cues are still played live.
+ * runs; the effects and stingers are still played live.
  *
  * Browsers only allow audio after a tap or key press, so nothing is created until `unlock()` is called from a
  * user gesture; scene changes asked for before that are remembered and start the moment audio is allowed.
@@ -22,7 +22,6 @@ import { playSyllable, voiceReady } from './voiceBank.ts';
 import { Speech, voiceOf, type Tone } from './voiceLine.ts';
 import { playSting, STORY_STING_NAMES, stingDuck, stingVoices } from './stingers.ts';
 import { CALM, type MusicState } from './adaptive.ts';
-import { CUE_DUCK, CUE_NAMES, cuePlan, playCue, type CueName } from './cues.ts';
 import { STINGS } from './stingers.ts';
 
 // how far ahead of the audio clock the ambience is scheduled: long enough to ride out a stalled main thread
@@ -169,7 +168,7 @@ export class Conductor {
       ctx.onstatechange = this.announce;
       // the sampled layers of the few synthesized effects (sfx.ts) load in the background; until they arrive those play their synthesized layers alone
       void import('./sampleLoader.ts').then((m) => m.loadSamples(this.core as AudioCore)).catch(() => {});
-      // the orchestra the game's stingers and cues play on (the music no longer needs it: it is recorded)
+      // the orchestra the game's stingers play on (the music no longer needs it: it is recorded)
       this.warmEffects();
       // the recorded music: its manifest and files' addresses, then whatever piece was asked for in the meantime
       const core = this.core;
@@ -214,7 +213,7 @@ export class Conductor {
   }
 
   private stingsWarm = false;
-  /** fetch, once, the recordings the story's stings play, so the first one is not played by the stand-in voices (the cue pieces have usually loaded most of them) */
+  /** fetch, once, the recordings the story's stings play, so the first one is not played by the stand-in voices (the game's stingers have usually loaded most of them) */
   warmStoryStings() {
     const core = this.core;
     if (!core || this.stingsWarm) return;
@@ -298,7 +297,7 @@ export class Conductor {
 
   private aheadTimer: ReturnType<typeof setTimeout> | null = null;
   private effectsWarm = false;
-  /** fetch, once, the recordings the game's stingers and cues play (the victory, the boss's arrival, the checkpoint's bells) */
+  /** fetch, once, the recordings the game's stingers play (the victory, the defeat, the boss's fall) */
   private warmEffects() {
     const core = this.core;
     if (!core || this.effectsWarm) return;
@@ -307,10 +306,6 @@ export class Conductor {
       .then((m) => {
         const voices = new Set<string>();
         for (const n of Object.keys(STINGS)) for (const v of stingVoices(n)) voices.add(v);
-        for (const n of CUE_NAMES) {
-          const p = cuePlan(n, DEFAULT_KEY, 0.5);
-          for (const x of [...p.notes, ...p.chords, ...p.hits]) voices.add(x.voice);
-        }
         const need = new Set<string>();
         for (const v of voices) for (const g of m.VOICE_GROUPS[v] ?? []) need.add(g);
         return m.loadOrch(core, need);
@@ -339,24 +334,6 @@ export class Conductor {
   get musicState(): MusicState {
     return this.mstate;
   }
-
-  /** an in-key stinger over the music (cues.ts), placed on the music's next eighth note; the music dips a little under it */
-  cue(name: CueName) {
-    const core = this.core;
-    if (!core || this.muted || core.ctx.state !== 'running') return 0;
-    const now = core.ctx.currentTime + 0.03;
-    const lp = this.loops;
-    const t = lp ? lp.gridAfter(now) : now;
-    const dur = playCue(core, name, this.key(), t, lp?.beatDur ?? 0.5);
-    this.duck(CUE_DUCK[name], Math.max(0.2, dur * 0.6), 0.8);
-    return dur;
-  }
-
-  /**
-   * Speed the music up or down (1 = as written). The music is recorded at its written speed, so this does nothing now (a recording
-   * played faster rises in pitch); kept so the game's calls stay as they were.
-   */
-  setTempo(_scale: number) {}
 
   /** the key of the music right now (sound effects play in it) */
   key(): KeyInfo {

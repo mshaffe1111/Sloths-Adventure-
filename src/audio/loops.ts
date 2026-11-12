@@ -365,20 +365,6 @@ export class LoopPlayer {
     return this.voice?.piece.key ?? null;
   }
 
-  get beatDur(): number {
-    return this.voice?.piece.beat ?? 0.5;
-  }
-
-  /** the first point of the music's grid (every `steps` sixteenths) at or after `t`, never more than `most` seconds away (as Playback.gridAfter) */
-  gridAfter(t: number, steps = 2, most = 0.3): number {
-    const v = this.voice;
-    if (!v) return t;
-    const step = (v.piece.beat / 4) * steps;
-    const pos = t - v.t0;
-    const next = v.t0 + Math.ceil(pos / step - 1e-6) * step;
-    return next - t > most ? t : Math.max(t, next);
-  }
-
   /** stop everything now and let go of every decoded piece */
   dispose() {
     this.want = null;
