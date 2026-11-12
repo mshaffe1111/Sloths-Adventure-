@@ -478,3 +478,7 @@ lines); Matt sees them in the release.
   lower tree, gone for good; no knock-offs, no coming back. R-165.141, to W1C. The lead's call inside it: a punch mid-branch still
   pushes it back (risk stays, so the trap keeps its value); the ending is always the glide. Other creatures (boa, eagle): not decided;
   the story keeper is asked for the in-character view before Matt is asked.
+- 2026-11-12 11:45 AM ET, the story keeper's view for the boa/eagle question (to Matt when they are built): every creature leaves on
+  its own legs or wings, never hurt; "bested" = outwitted or outwaited, not beaten up. Snake: glides off (R-165.141). Boa: can be fairly
+  bested (lured off its ledge by a drop trap, lands in soft leaves, slithers off grumpy; or mistakes a still Pokey for a branch and gives
+  up). Eagle: never bested by force; two empty passes over a still Pokey, then it flies off to hunt elsewhere.
