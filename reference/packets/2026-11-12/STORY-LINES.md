@@ -49,3 +49,10 @@ offended!" stays as written.
 | the high perch | the high branch |
 | three traps in a row | three traps in a row |
 | the last two snakes | the last two snakes |
+
+## Pokey's journal (pokeyJournal.ts STAGE_LINES; 1:55 PM ET)
+| Stage | Now | Final words |
+|---|---|---|
+| 1-3 (now) | Learned to punch today. I said excuse me first. The snakes didn't wait for the second part. | Punched a vine and a hive dropped beside the snake. He glided off. Nobody told me snakes could fly. |
+| 1-7 (when 1-7 is laid with stillness) | Tossed an acorn so the eagle would look the other way. Dot called it cunning. I'd call it throwing. | Held still in a bush while an eagle looked right at me. I've been practising that all my life. |
+| 1-9 (when 1-9 is laid; provisional until Matt rules the boa's exits) | Fought the boa's guards all the way along his branches. They were only doing their job. So was I. | The boa thought I was a branch. I let him. Then a hive helped him find somewhere else to be. |
