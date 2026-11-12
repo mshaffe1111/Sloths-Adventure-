@@ -52,6 +52,10 @@ W1C (Fable): 1-3 built to design (480/480), now moving into the shipped kit (han
 Matt's frames 1-2); $1.93 of $6 spent. OPEN: the master catalog (reference/art/CATALOG-MASTER.csv, tools/art/catalog_master.py) lives only on
 t-engine-inventory@621a3d2b (PASSED 11-11, never integrated): INT-2 merging it now (1:12 PM); ART-W1 writes its rows to
 reference/art/catalog-rows-w1traps.csv meanwhile.
+1:10 PM (Matt asked if 1-2 works): the shipped game still builds the OLD 1-2 (F12 stills used a hook). P12S (Opus high,
+session_01FhBbYLWBAyFDZwv15qoG2N, t-12-ship from t-int-2 + W1C's listedRoll, packet P12S.md, stop 5 PM): 1-2 into the kit, seed list,
+bots, real-game stills; CTEST_STAGE_ID='1-2' (testers' control test): it reports and WAITS for the lead's ruling. Rides along tonight
+only if it passes; INT-2 merges t-12-ship after t-13-proof.
 NEXT, in order: (1) INT-2 (Opus high): t-int-engine + t-11-pass + t-render-fixes + t-pit-polish + t-audit-fixes (+ t-12-fly), renumber the
   duplicate R-165.129, full gate; (2) PROOF-1 re-audits only the delta; (3) ask Matt ONE question: ship the R-165.125 sound levels or hold
   (D47), then 0.9.7 on his word (PR, he merges, check deploy + APK); (4) 1-2 and 1-3 to Matt's test link by Fri 11-13 (1-3 by Fable/W1C,
