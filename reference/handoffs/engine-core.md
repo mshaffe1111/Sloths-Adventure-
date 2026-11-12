@@ -8,7 +8,7 @@ A2 (ADR-001). Sections 0a-0b below are still true.
 ## 0d. The generator's yield (EN-Y, R-165.120, 11-11): what the next engineer on gen2's search must know
 - **Measure with the probe, never by eye:** `npx tsx tools/engine/yield.ts 1-1 --par 4` (200 fresh seeds a setting, about 60 s; `--from`
   for another range, `--min 50` to fail under 50%, `--json` for each seed's rules). Fresh means above the list's highest seed (61616).
-  11-11: Normal 56% / Easy 54% on 50001-50200, 57% / 53% on 70001-70200 (was 9% / 2%). Tune on one range, report the other.
+  11-11: Normal 57% / Easy 55% on 50001-50200, 58% / 54% on 70001-70200 (was 9% / 2%). Tune on one range, report the other.
 - **The table shows a never-clean seed's FIRST refused roll** (what it always returned), so its rule counts lag the search. To see what
   the later rolls died of, read `gen2.repairs` on the refused stage: each later try adds "roll k, try n: <line>".
 - **Where each piece is (pipeline.ts):** `rollUnmet` (the after-rules, with the slot each names), the accept point in `buildRolled`
@@ -23,9 +23,13 @@ A2 (ADR-001). Sections 0a-0b below are still true.
   paced lay laid again from its plan; a repaired clean roll through packPlan). Keep any new steering to what PlanSlot stores.
 - **TRAP, the deal's stream:** the deal's tries share one rng; filtering a candidate list changes how many numbers it draws and moves
   every later try. `supplyDeal` runs AFTER the tries, on its own stream (rngFor(seed, 71)), for that reason.
-- **Clean is not listable.** seedlist.ts also holds the quiet line (4 s) and the squirrels, outside the generator: 13 of 200 fresh
-  seeds list (was 0). 40 of 43 clean seeds fail only the quiet line. That is the next wall, and it needs the quiet line inside `src`.
-- **What still refuses (50001-50200, Normal):** V19b 60, floor.unmarked 58 (a seam's catch bough under a thin first piece lets him walk
+- **Clean is not listable.** seedlist.ts also holds the quiet line (4 s) and the squirrels, outside the generator: 20 of 200 fresh
+  seeds list (was 0). Most clean seeds fail only the quiet line. That is the next wall, and it needs the quiet line inside `src`.
+  Measure it with `npx tsx tools/engine/seedlist.ts 1-1 --count 400 --worker 0/1 --part /tmp/x.json --from 50001 --to 50201` (a
+  --part run writes no list file). A seam with no beat costs quiet time: pacing's flat join is a pit, not a walk, for that (13 -> 20).
+- **The joins are the lever for height.** A step leans to the corridor's middle, so low in the stage it climbs and spends the rise the
+  climb nodes need. Pacing without the join steering: 35% / 33% clean; with it 57% / 55%.
+- **What still refuses (50001-50200, Normal):** V19b 59, floor.unmarked 58 (a seam's catch bough under a thin first piece lets him walk
   off under it: quiet-arrival, log-chain, high-walk), signature short of sections or of rise 47, climb 27 (the corridor's top: the
   stage spends its 900 px of rise before the climb node). sprint-A lays clean 15 in 18; sprint-B 4 in 13, sprint-D 5 in 15.
 - **Next, in order of what it buys:** the quiet line in the search; pacing from the first roll (moves proven seeds: the lead's call,

@@ -1670,12 +1670,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         const r0 = jrng() * (walkW + stepW + pitW2);
         join = fixed ? fixed.join : r0 < walkW ? 'walk' : r0 < walkW + stepW ? 'step' : 'pit';
         // (pacing the climb: a step leans to the corridor's middle, so under the middle it climbs and over it it comes down. Before
-        // the late rise a step that would climb is a walk (the climbs ahead need that height) and a walk over the middle is a step
-        // down (it gives height back); after the late rise a step that would come down is a walk, so the end stays above the bough
+        // the late rise a step that would climb is laid flat (the climbs ahead need that height) and a walk over the middle is a step
+        // down (it gives height back); after the late rise a step that would come down is laid flat, so the end stays above the bough
         // window. Only the KIND of join changes, which the plan keeps: a plan laid again is the same stage)
         if (!fixed && paced && join !== 'pit') {
           const down = cur.y + L.exit.y <= (M.corridor.top + M.corridor.bottom) / 2;
-          join = rise.length ? (down ? 'walk' : join) : down ? 'step' : 'walk';
+          // (a step so taken away is a pit where the node may hold one: the seam keeps its beat, and the quiet line its measure)
+          const flat = join === 'step' && !quiet ? 'pit' : 'walk';
+          join = rise.length ? (down ? flat : join) : down ? 'step' : flat;
         }
       } else join = fixed ? fixed.join : 'jump';
       const j = jrng();
