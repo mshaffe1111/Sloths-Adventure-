@@ -2157,11 +2157,13 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const C = sink.collectibles;
   /** a flower's look from a spot (its own, or its row's first: a row or an arc of flowers is one species, stageQuality.test.ts) */
   const lookAt = (x: number, y: number) => M.flowers[Math.floor(rngFor(seed, 29, R(x), R(y))() * M.flowers.length)];
-  const flower = (x: number, y: number, rowLook?: (typeof M.flowers)[number]) => {
+  /** the stage's brief (GraphBrief.petals, .offRoad: what its pickups are and where they may hang is the brief's, not a section's) */
+  const brief = M.graphs?.briefs?.[budget.id];
+  const flower = (x: number, y: number, rowLook?: (typeof M.flowers)[number], type: 'flower' | 'fruit' = 'flower') => {
     if (C.some((c) => Math.hypot(c.x - x, c.y - y) < 40)) return;
     // (its look from its own spot, not the shared stream: a flower skipped for overlapping must not move every roll after it)
     const look = rowLook ?? lookAt(x, y);
-    C.push({ id: sink.nextCollectibleId(), type: 'flower', botanicalVariant: look, x: R(x), y: R(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
+    C.push({ id: sink.nextCollectibleId(), type, botanicalVariant: look, x: R(x), y: R(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
   };
   const tipsSaid = new Set<string>();
   const refuse = M.graphs?.briefs?.[budget.id]?.pick?.refuse;
@@ -2383,11 +2385,13 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         const n = s.count ?? 1;
         const span = Math.min(s.span ?? 0, k.piece.width - 40);
         const rowLook = lookAt(k.x, k.y);
+        // (off the road pays in blooms where the brief says so: a piece the lay placed with `main` false)
+        const what = brief?.offRoad === 'fruit' && sec.pieces.some((p) => p.platform === k.piece && p.main === false) ? 'fruit' : 'flower';
         for (let i = 0; i < n; i++) {
           const x = n === 1 ? k.x : k.x - span / 2 + (span * i) / (n - 1);
-          flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP), rowLook);
+          flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP), rowLook, what);
         }
-        fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what: 'flower', x: k.x, y: k.y });
+        fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what, x: k.x, y: k.y });
       } else if (s.role === 'objective') {
         const wantN = graphObjectives(laid, sec);
         if (objectives >= wantN) continue;
@@ -2461,7 +2465,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // petal arcs over the jumps (half a beat each, E1), and a harvest's top-up to its laid count
   for (const [gi, g] of laid.gaps.entries()) {
     const arc = rngFor(seed, 31, gi)() <= 0.7;
-    if (g.x1 - g.x0 < 90 || !arc) continue;
+    // (GraphBrief.petals 'low': no arc over any gap)
+    if (g.x1 - g.x0 < 90 || !arc || brief?.petals === 'low') continue;
     const arcLook = lookAt(g.x0, g.y);
     for (let i = 0; i < 3; i++) {
       const tt = (i + 0.5) / 3;
@@ -2474,7 +2479,10 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       for (const p of s.pieces) {
         if (flowers() >= budget.quota.lay) break;
         if (!p.main || p.platform.width < 200) continue;
-        for (let x = p.platform.x + 60; x < p.platform.x + p.platform.width - 60 && flowers() < budget.quota.lay; x += 90) flower(x, p.platform.y - FLOWER_UP);
+        // (never inside a piece standing on this one, a stump or a block: levelCheck refuses the petal and a harvest at its laid count
+        // cannot give it up, so the roll failed; with GraphBrief.petals and .offRoad the top-up lays most of a stage's petals)
+        const y = p.platform.y - FLOWER_UP, clear = (x: number) => !laid.platforms.some((q) => x >= q.x && x <= q.x + q.width && y > q.y + 2 && y < q.y + q.height - 2);
+        for (let x = p.platform.x + 60; x < p.platform.x + p.platform.width - 60 && flowers() < budget.quota.lay; x += 90) if (clear(x)) flower(x, y);
       }
     }
   }
@@ -2902,10 +2910,11 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
         fixed = true;
         continue;
       }
-      m = /^(flower|leaf|heart) #(\d+)/.exec(err);
+      m = /^(flower|leaf|fruit|heart) #(\d+)/.exec(err);
       if (m && /out of reach|inside platform|overlap|outside the walkable|past the shrine/.test(err)) {
         const id = Number(m[2]);
-        if (budget.archetype !== 'harvest' || st.collectibles.filter((c) => c.type === 'flower').length > budget.quota.lay) {
+        // (a bloom, GraphBrief.offRoad, is never in a harvest's count: one that cannot stand goes as a petal does outside a harvest)
+        if (m[1] === 'fruit' || budget.archetype !== 'harvest' || st.collectibles.filter((c) => c.type === 'flower').length > budget.quota.lay) {
           st.collectibles = st.collectibles.filter((c) => c.id !== id);
           fixed = true;
           continue;

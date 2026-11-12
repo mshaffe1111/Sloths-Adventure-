@@ -555,6 +555,13 @@ export interface GraphBrief {
    *  a fall past the bottom anywhere that is not water sets him back on the ledge he left, nothing lost (Gen2Meta.softFalls; the
    *  engine's softOn). The stage's gaps and soft zones are laid exactly as without it */
   softFalls?: boolean;
+  /** the stage's petals stay LOW (routing item 6; 1-2's story rule, "petals low on bark the whole way"): no petal arc is laid over
+   *  any gap; pickups come only from the sections' `pickup` sockets, at their `dn`, and a harvest's top-up (low already) */
+  petals?: 'low';
+  /** off the road pays in BLOOMS (routing item 6, the lead 11-11: "exploring always pays"): a `pickup` socket on a piece off the
+   *  road (its placed `main` false: a high road, a side perch; a stump is on the road) lays `fruit`, which counts toward a harvest's
+   *  goal when gathered and is never in its quota. The top-up and the trim count and move petals only */
+  offRoad?: 'fruit';
   /** the stage's pits are HOLLOWS (the lead 11-11 8:30 PM: the hazard under a gap is the brief's, applied by the lay, so a stage
    *  needs no re-cut copy of a section to change it): every pit place its sections lay, past the hurt floor's `clearStart` from the
    *  spawn, gets the world's hurt floor (WorldManifest.hurtFloor) as a place marked `hurt` does. Seams, water, glide and block
