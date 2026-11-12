@@ -11,6 +11,8 @@ import { TRAP, type TrapState } from './dropTrap.ts';
 const VINE = '#3f7d2c';
 const VINE_DARK = '#27541c';
 const CORD = '#7c5a36';
+/** how far up the cords run, to the canopy out of sight (px) */
+const CANOPY = 700;
 
 function hive(ctx: CanvasRenderingContext2D, x: number, y: number, tilt: number): void {
   // its bottom at (x, y): four stacked bands, widest second from the top
@@ -63,16 +65,20 @@ export function drawTraps(ctx: CanvasRenderingContext2D, traps: readonly TrapSta
     const hx = p.x + (set ? Math.sin(t * 2.1 + p.id * 2) * 3 : 0);
 
     ctx.lineCap = 'round';
+    // both ends hang from the canopy, out of sight above: nothing here is tied to thin air
+    ctx.strokeStyle = CORD;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(p.x, top - CANOPY);
+    ctx.lineTo(p.x, top);
     if (tr.phase === 'set' || loose) {
-      // the cord: from the handle's top, over, to the load
-      ctx.strokeStyle = CORD;
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(p.x, top);
-      ctx.quadraticCurveTo((p.x + p.loadX) / 2, top + 16, p.loadX, top);
+      // the cord: from the handle's top it sags across to the load, and holds it
+      ctx.quadraticCurveTo((p.x + p.loadX) / 2, top + 34, p.loadX, top);
       ctx.lineTo(p.loadX, p.loadY - 44);
-      ctx.stroke();
+      ctx.moveTo(p.loadX, top - CANOPY);
+      ctx.lineTo(p.loadX, top);
     }
+    ctx.stroke();
     if (p.kind === 'vine') {
       // a vine hanging to just over his head-height, a leaf tuft at its end
       const end = p.y - TRAP.handle.low - 34;
@@ -89,6 +95,14 @@ export function drawTraps(ctx: CanvasRenderingContext2D, traps: readonly TrapSta
       for (let i = 0; i < 3; i++) {
         ctx.beginPath();
         ctx.ellipse(hx + (i - 1) * 9, end + 6 + (i === 1 ? 5 : 0), 9, 5, (i - 1) * 0.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // a leaf either side on its way down, so it reads as a vine and not a pole
+      for (let i = 0; i < 4; i++) {
+        const ly = top + ((end - top) * (i + 1)) / 5;
+        const side = i % 2 ? 1 : -1;
+        ctx.beginPath();
+        ctx.ellipse(p.x + (hx - p.x) * ((i + 1) / 5) + side * 9, ly, 8, 4, side * 0.7, 0, Math.PI * 2);
         ctx.fill();
       }
       if (set) glow(ctx, hx, end + 6, t, p.id);

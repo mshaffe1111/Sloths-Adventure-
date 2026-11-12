@@ -209,6 +209,8 @@ export class CastPlay {
     if (s.leaving && s.phase !== 'gone') {
       const u = Math.min(1, s.t / GONE_AFTER);
       e.glide = u;
+      // (it is leaving, not waking: the drowsy head is never shown on a glide)
+      e.wakeT = 0;
       e.x += s.facing * GLIDE.far * u * u;
       e.y += GLIDE.drop * u * u - GLIDE.lift * Math.sin(Math.PI * Math.min(1, u * 2));
     }
