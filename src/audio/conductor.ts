@@ -192,10 +192,7 @@ export class Conductor {
       document.addEventListener('visibilitychange', this.onVisibility);
       this.timer = setInterval(this.tick, TICK_MS);
     }
-    if (this.ctx.state !== 'running' && !this.muted && !document.hidden && !this.appAway) {
-      if (fromTap) this.wokeAt = performance.now();
-      this.ctx.resume().then(this.announce, () => {});
-    }
+    this.applyRunState(fromTap);
     this.announce();
     // anything asked for before audio was allowed
     if (this.core && this.loops && !this.loops.playing && this.wantTheme) this.startTheme(this.wantTheme, this.wantOpts, true);
@@ -218,11 +215,22 @@ export class Conductor {
   }
 
   private appAway = false;
-  private onVisibility = () => {
-    if (!this.ctx) return;
-    if (document.hidden || this.appAway) this.ctx.suspend().catch(() => {});
-    else if (!this.muted) this.ctx.resume().catch(() => {});
-  };
+  /**
+   * The one rule for whether the sound runs: the context is suspended while the game is muted, hidden or away (the Android app in the
+   * background or without the audio focus), and running otherwise. Every path that can change one of them comes here (a muted start
+   * used to leave a context the WebView started running for the whole session).
+   */
+  private applyRunState(fromTap = false) {
+    const ctx = this.ctx;
+    if (!ctx) return;
+    if (this.muted || document.hidden || this.appAway) {
+      if (ctx.state === 'running') ctx.suspend().catch(() => {});
+    } else if (ctx.state !== 'running') {
+      if (fromTap) this.wokeAt = performance.now();
+      ctx.resume().then(this.announce, () => {});
+    }
+  }
+  private onVisibility = () => this.applyRunState();
   private ducked = false;
   /** another app speaks for a moment over the Android app (directions, a notification): play on at a quarter of the volume */
   setDucked(on: boolean) {
@@ -255,7 +263,8 @@ export class Conductor {
 
   private startTheme(id: string | null, opts: SceneOptions, first: boolean) {
     const loops = this.loops;
-    if (!loops) return;
+    // (muted, nothing is fetched or decoded: the wanted piece starts when the sound comes back on, setMuted)
+    if (!loops || this.muted) return;
     const fade = first ? 0.02 : opts.fade ?? 1.4;
     const rec = id ? recordingFor(loops.manifest, id, opts.seed) : null;
     loops.setIntensity(opts.intensity ?? this.intensity, true);
@@ -524,10 +533,13 @@ export class Conductor {
     this.muted = m;
     writeStr(KEY_MUTED, String(m));
     this.applyVolumes(false);
-    const ctx = this.ctx;
-    if (!ctx) return;
-    if (m) setTimeout(() => this.muted && ctx.suspend().catch(() => {}), 350);
-    else if (!document.hidden && !this.appAway) ctx.resume().catch(() => {});
+    if (!this.ctx) return;
+    // (muting suspends a moment later, once the fade-out is heard)
+    if (m) setTimeout(() => this.applyRunState(), 350);
+    else {
+      this.applyRunState();
+      if (this.loops) this.startTheme(this.wantTheme, this.wantOpts, !this.loops.playing);
+    }
   }
 
   setMusicVolume(v: number) {
