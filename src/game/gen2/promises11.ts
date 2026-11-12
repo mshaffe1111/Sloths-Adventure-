@@ -15,12 +15,13 @@ import { findW1Pits } from '../w1Pits.ts';
 import type { Platform } from '../types.ts';
 import type { Difficulty } from '../difficulty.ts';
 import { BODY_H, lesserArcs, linkArcs } from './reach.ts';
+import { deadZones, purposelessBounces, type LandPickup } from './landings.ts';
 import type { JudgedStage, PromiseDef, PromiseRegistry, Verdict } from './verdicts.types.ts';
 
 type Zone = { x0: number; x1: number; soft?: boolean };
 /** the stage `promiseBreaches11` reads as (this file's direct reader is 1-1's own, by name); the REGISTRY names no stage */
 const ONE_ONE = '1-1';
-interface Built { platforms: Platform[]; heartFalls?: Zone[]; waterY?: number; config: { levelHeight: number }; spawnX?: number; gen2?: { nodes?: Array<{ token: string; x0: number }>; brief?: { teaches?: string[] }; hurt?: { lesson: string; clearStart: number; shown?: number } } }
+interface Built { platforms: Platform[]; collectibles?: LandPickup[]; heartFalls?: Zone[]; waterY?: number; config: { levelHeight: number }; spawnX?: number; gen2?: { nodes?: Array<{ token: string; x0: number }>; brief?: { teaches?: string[] }; hurt?: { lesson: string; clearStart: number; shown?: number } } }
 
 /** the narrowest slot he can fall into (the Critic, E0a attempt 2: seed 323 Normal's 23 px slot is no drop; his body is about 32 px) */
 export const BODY_W = { px: 32, source: 'the Critic, E0a attempt 2 (seed 323 Normal x27200..27273)' } as const;
@@ -122,6 +123,20 @@ export const PROMISES_11: PromiseRegistry = [
       }
       return out;
     },
+  },
+  {
+    // (R-165.124, Matt 11-06 and 11-11, STAGE-RULES §1 "No dead-zone landings": every piece a pickup sits on is reached by a plain
+    // walk-off, a full jump or a bounce with margin, the arc uncut; landings.ts, on the engine's flown flights)
+    id: 'landing.dead-zone', stages: 'all', settings: ['normal', 'easy'],
+    judge: (st) => {
+      const b = builtOf(st);
+      return deadZones(b.platforms, b.collectibles ?? [], st.setting).map((p): Verdict => ({ name: 'landing.dead-zone', setting: st.setting, at: { x0: Math.round(p.x), x1: Math.round(p.x + p.width) }, line: `a dead-zone landing at x ${Math.round(p.x)}..${Math.round(p.x + p.width)} (top ${Math.round(p.y)}): no walk-off, full jump or bounce reaches it with margin and its arc uncut` }));
+    },
+  },
+  {
+    // (R-165.126's bounce part, Matt 11-11: a mushroom only where its bounce leads somewhere worth going; landings.ts)
+    id: 'bounce.no-purpose', stages: 'all', settings: ['normal', 'easy'],
+    judge: (st) => purposelessBounces(builtOf(st).platforms, builtOf(st).collectibles ?? [], st.setting).map((p): Verdict => ({ name: 'bounce.no-purpose', setting: st.setting, at: { x0: Math.round(p.x), x1: Math.round(p.x + p.width) }, line: `a mushroom at x ${Math.round(p.x)} whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one)` })),
   },
 ];
 
