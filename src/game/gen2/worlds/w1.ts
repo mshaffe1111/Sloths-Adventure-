@@ -485,7 +485,8 @@ const times = (n: number, g: G): G => (k, after) => {
 /** a low log off the route under a canopy piece, its petals at marching height (the ruling: petals low on low logs, never a petal road in
  *  the boughs); its top 136-144 px under the bough's: 110 px+ head room (Round 4 FR2, FR5: the mid road) */
 /**
- * Where a petal low log goes under a chain's 460-520 px start log (R-165.124, Matt 11-06 and 11-11: the dead-zone log): its left end about
+ * Where a petal low log goes under the log chain's 460-520 px start log (R-165.124, Matt 11-06 and 11-11: the dead-zone log; not the rising
+ * chain's, whose first gap is the help ladder's set-back piece: there the verdict refuses a dead-zone roll and the search lays another): its left end about
  * 30 px inside the start log's far end, so it reaches out past it, where a plain walk off that end lands (a 136-144 px drop carries him
  * about 100 px out; landings.ts proves it on the flown walk). At share 0.2-0.3 it lay wholly under the start log: the walk off fell short of
  * it and a full jump came down on the start log above it, so only a mid-air correction reached its petals. Its gap under the chain's first
@@ -1392,7 +1393,7 @@ const canopyWeaveRise = section({
 });
 const logChainRise = section({
   id: 'w1-log-chain-rise', name: 'the log chain, rising', phases: ['ketsu'], difficulty: 6, needs: ['jump'], exitDy: -370, ports: ['ledge', 'ledge'], window: BOUGH_WINDOW, maxPerStage: 1,
-  versions: [{ id: 'rise', groups: [(k) => { const ps = [limb(`${k}a`, { kind: 'start' }, [460, 520], 'log'), lowLog(`${k}lo`, `${k}a`, LOW_LOG_OUT)];
+  versions: [{ id: 'rise', groups: [(k) => { const ps = [limb(`${k}a`, { kind: 'start' }, [460, 520], 'log'), lowLog(`${k}lo`, `${k}a`, [0.2, 0.3])];
     // (C1, R-165.72: the chain the testers lost most lives in, now inside the single band: five steps up, then a level log; every gap a
     //  soft pit with its floor and a step out, so a miss is a short fall and a climb back)
     const dys: R2[] = [HOP_UP, HOP_UP, HOP_UP, HOP_UP, HOP_UP, [-4, 4]]; let prev = `${k}a`;
