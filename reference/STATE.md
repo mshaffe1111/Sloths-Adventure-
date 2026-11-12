@@ -494,3 +494,9 @@ lines); Matt sees them in the release.
   at 95 to 99 percent. That most likely will reset fable too." The lead's plan: keep today's Fable stops (W1C 12:30, GL0 done); the
   Fable reserve goes to the GOLDEN 1-3 polish pass + LEVEL-BAR.md AFTER Matt plays tonight's 1-3 and gives his notes, ideally after the
   reset. Every helper counts toward Matt's normal weekly limit (75% now): short sessions, no idle helpers.
+- 2026-11-12 12:07 PM ET, Matt: "I was hoping on having fable more involved with 1-3 from the start. Make it design and build. It would
+  just be polishing an opus level." The lead reversed its 12:30 stop: W1C (Fable) owns 1-3's DESIGN and BUILD to tonight's test link:
+  reference/design/1-3.md (the level's arc: teach, build-up, hive gallery, twist, finale; pacing; hearts/checkpoints by risk) and the
+  first LEVEL-BAR.md draft by 1 PM, then builds to it, pushing every 30 min. P13 (Opus high, session_01FhBbYLQMBLSzszj1sXmkwV,
+  t-13-proof) does only the plumbing beside it (bots + trap handle, flown rows, seed list, the "excuse me" moment), merging W1C's heads,
+  never touching the design. If Fable runs out before Matt's reset, Opus builds from 1-3.md.
