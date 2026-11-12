@@ -231,12 +231,14 @@ test('one-jump steps: a straight flick with the thumb lifted climbs every one or
 
 test('dips: every one is left with single flicks (no double or perfect jump needed), in Worlds 1 and 2, three rolls', () => {
   const bad: string[] = [];
-  let n = 0;
+  let n = 0, hurt = 0;
   for (const id of STAGES) {
     for (const seed of SEEDS) {
       const sim = touchPlay(id, seed);
       const rel = relativeGround(sim);
       for (const { d, top } of rel ? dipsRel(sim) : dipsOf(sim).map((d) => ({ d, top: 0 }))) {
+        // (a hurt floor, gen2's thorn bed, is a set-back, not a dip: he is never left in it; thornSetBack.test.ts holds it to that)
+        if (d.pit === 'hurt') { hurt++; continue; }
         n++;
         const flicks = rel ? relFlicks(sim, d, top) : leaveDip(sim, d);
         if (flicks < 0 || flicks > 3) bad.push(`${id} seed ${seed}: the dip at x ${Math.round(d.x)}..${Math.round(d.x + d.width)}, ${flicks < 0 ? 'never out' : `${flicks} flicks`}`);
@@ -244,6 +246,7 @@ test('dips: every one is left with single flicks (no double or perfect jump need
     }
   }
   assert.ok(n > 100, `${n} dips`);
+  assert.ok(hurt >= 20, `${hurt} thorn beds read as set-backs (1-2 lays them)`);
   assert.deepEqual(bad, []);
 });
 
