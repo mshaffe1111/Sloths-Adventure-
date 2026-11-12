@@ -32,7 +32,16 @@ A2 (ADR-001). Sections 0a-0b below are still true.
 - **What still refuses (50001-50200, Normal):** V19b 59, floor.unmarked 58 (a seam's catch bough under a thin first piece lets him walk
   off under it: quiet-arrival, log-chain, high-walk), signature short of sections or of rise 47, climb 27 (the corridor's top: the
   stage spends its 900 px of rise before the climb node). sprint-A lays clean 15 in 18; sprint-B 4 in 13, sprint-D 5 in 15.
-- **Next, in order of what it buys:** the quiet line in the search; pacing from the first roll (moves proven seeds: the lead's call,
+- **A2, the quiet line in the search (the lead's 7:31 PM ruling):** `BuildRequest.also` is a caller's rule the search asks last and
+  repairs for; `tools/engine/listRules.ts` `quietJudge` is the list's quiet line as that rule, and seedlist.ts builds and checks under
+  it. `yield.ts --list` measures LISTABLE: 33% on 50001-50200, 28% on 70001-70200 (was 0 of 200). TRAP: a seed listed under `also`
+  must be checked and searched under `also` too, or its search is another stage than its replay (seedListBreaches takes it).
+- **What caps listable is data, measured:** the two test-backs always break the quiet line (out of the pool: 46%); sprint-B with its
+  climb node needs 1,127 px of climb in 900 (1 in 30); sprint-D 0 of 43 until the test-backs go. `supplyDeal` weighs the least
+  climb against the corridor plus two soft bands: one band (980) is the natural line and moves two proven deals.
+- **Tonight's helpers on this branch:** B = packet E12 items 1-3 (gen2/listed.ts done; hurt floor laid and hurting, not drawn;
+  reach.ts JUDGED table, 1-2's rows not entered). C = EN-T (stageModes.ts; camera lead not wired). REPORT.md has each one's next step.
+- **Next, in order of what it buys:** park the two test-backs and rebuild the list; more rising signature pieces; pacing from the first roll (moves proven seeds: the lead's call,
   at a list rebuild); the window read where the gate reads it (67% of x, the highest piece there) instead of by slot; the deal
   weighing height (a test dealt climb beside a climb node cannot fit the corridor).
 
