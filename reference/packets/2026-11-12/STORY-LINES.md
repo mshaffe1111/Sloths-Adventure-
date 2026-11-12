@@ -146,3 +146,15 @@ Rules for building it:
 my wife and me"), exactly as drafted. Still open:
 - The music line stays out until Matt says.
 - The "Inspired by" list waits for the games Matt names. The tribute intro and its lines are drafted above.
+
+**Revised opening (Matt's added fact, 3:32 PM ET; this supersedes the approved one only by adding the cats line):**
+
+> **How Sloths began**
+> Sloths started as a conversation between my wife and me: what would a game about a sloth be like?
+> Pokey and Meeca are named after two cats we had, who did everything together. A little of how they act is theirs, too.
+>
+> **What's ours**
+> (unchanged, as approved)
+
+The line uses the game's spelling, Meeca ("Mika" was speech-to-text). If the cat's own name was spelled differently, the line still
+reads true, because it names the characters, not the cats.
