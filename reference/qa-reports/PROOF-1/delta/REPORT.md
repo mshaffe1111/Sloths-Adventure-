@@ -19,7 +19,7 @@ Auditor, 2026-11-12 1:15 PM ET. Every proof re-run here (scratch worktrees at 91
 - Gates on 91af3475: tsc, chunkcheck, knowncheck, artcheck, roadmapcheck, generality: exit 0.
 
 ## REJECT: the countermeasure for #5 breaks law 5's known-list rule
-- src/game/ciTests.test.ts:22 NOT_IN_CI can GROW: planting an orphan test plus its NOT_IN_CI entry passes ciTests and knowncheck
+- src/game/ciTests.test.ts:19 NOT_IN_CI can GROW: planting an orphan test plus its NOT_IN_CI entry passes ciTests and knowncheck
   (logs/citests.log). LAWS 5 lets a new gate keep a known list only if a test fails when an entry is added, and every entry has an
   owner in the defect log; this list has neither (AF names "no R-id yet"). Fix: add it to knowncheck LISTS (or pin the 17) + an R-id.
 

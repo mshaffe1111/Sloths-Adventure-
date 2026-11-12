@@ -11,7 +11,7 @@
  "violations": [
   {
    "file": "src/game/ciTests.test.ts",
-   "line": 22,
+   "line": 19,
    "rule": "LAWS 5: a new gate's known list must only shrink (a test fails when an entry is added) and every entry has a defect-log owner",
    "evidence": "planting tools/engine/plantOrphan.test.ts (staged) plus a NOT_IN_CI entry for it: ciTests.test.ts 3/3 pass and knowncheck PASS (delta/logs/citests.log); the 17 entries have no R-id (AF REPORT 'no R-id yet')."
   }
