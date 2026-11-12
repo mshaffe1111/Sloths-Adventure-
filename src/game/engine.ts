@@ -27,7 +27,7 @@ import { isGen2Stage } from './gen2/game.ts';
 import { maxGap, softFallStage } from './gen2/pipeline.ts';
 import { HelpLadder, setGrownSteps, LINE_UP_S, LINE_WAIT_S, takeHelpOnScreen, moveLine, pieceMoveLaid, setHelpLadder, stepPlan, stepsFor, STEP_CUT, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
 import { pickCut } from './w1CutArt.ts';
-import { difficulty, easeInShare, isEasy } from './difficulty.ts';
+import { easeInShare, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
 import { withGoals } from './goals.ts';
@@ -729,8 +729,11 @@ export class GameEngine {
   private readonly speedScale: number = gameSpeed();
   /** Easy's help still fading out after a switch to Normal (difficulty.ts easeInShare, LV-7), read once as the stage starts */
   private easeIn = -1;
-  /** Easy's kinder drifting logs (river.ts DRIFT_CATCH, LV-5), read once as the stage starts */
-  private readonly easyLogs: boolean = isEasy();
+  /** the stage is played on Easy: read once as it is built, so the pause menu's switch waits for the next stage ("It starts from the
+   * next stage", menuParts.tsx) and the report, the boss's tells, the assist and the drifting logs (LV-5) all follow the build */
+  private readonly easy: boolean = isEasy();
+  /** Dot's help was set to Quiet when the stage was built and at every return from the menu (Quiet Wings counts only such a run) */
+  private quietRun: boolean = dotHelp() === 'quiet';
   /**
    * Easy's soft falls on land (LV-4, polish report 2026-10-29: only the new generator's stages had them, so a child on Easy found Worlds
    * 1-5 harsher than World 6): on a hand-built or old-generator stage a fall off land (not into water) sets him back on the last still
@@ -844,19 +847,19 @@ export class GameEngine {
     takeGuideShown();
     // Generate Stage data
     // Easy (difficulty.ts): the vines' wide sweet spot, then the same stage made gentler (easyMode.ts)
-    setTimedSwing(isEasy());
-    this.forgive = isEasy() ? FORGIVE.easy : FORGIVE.normal;
+    setTimedSwing(this.easy);
+    this.forgive = this.easy ? FORGIVE.easy : FORGIVE.normal;
     // (a gen2 stage, gen2/game.ts, is laid for Easy by its own pipeline: the difficulty goes in with the build)
-    this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config, 'easy'))) : withGoals(generateStage(config, 'normal'));
+    this.currentStage = this.easy ? easyStage(withGoals(generateStage(config, 'easy'))) : withGoals(generateStage(config, 'normal'));
     // (gen2 lays real soft pits on Easy; a boss's arena and 1-8's chase keep their own rules)
     // (a stage whose brief says no fall costs a life has them on both settings, from its own data: 1-1, gen2/pipeline.ts softFallStage.
     // 1-1 is not in GEN2_STAGES, so isGen2Stage('1-1') is false and Easy had them there before the brief said so)
-    this.softOn = softFallStage(this.currentStage) || (isEasy() && !isGen2Stage(config) && config.objectiveType !== 'boss_lair' && !this.currentStage.arena);
+    this.softOn = softFallStage(this.currentStage) || (this.easy && !isGen2Stage(config) && config.objectiveType !== 'boss_lair' && !this.currentStage.arena);
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
     // (the help ladder, helpLadder.ts: 1-1 only, its pieces as laid; off on every other stage until help.md §5 has passed)
-    this.help = config.id === '1-1' && softFallStage(this.currentStage) && this.currentStage.meta?.pieces?.length ? new HelpLadder(isEasy() ? 'easy' : 'normal', this.currentStage.meta.pieces, undefined, (pc) => this.canGrowAt(pc)) : null;
+    this.help = config.id === '1-1' && softFallStage(this.currentStage) && this.currentStage.meta?.pieces?.length ? new HelpLadder(this.easy ? 'easy' : 'normal', this.currentStage.meta.pieces, undefined, (pc) => this.canGrowAt(pc)) : null;
     setHelpLadder(this.help);
     // each liana's own swing: its size (neighbours' swings never meet) and its place in the swing (physics.ts swingSetup)
     swingSetup(this.vines);
@@ -871,7 +874,7 @@ export class GameEngine {
     this.skyPillars = this.bossDef?.pillars && this.currentStage.arena ? makePillars(this.currentStage.arena.left) : null;
     setSovereignPillars(this.skyPillars);
     // Easy (difficulty.ts): a guardian takes about two thirds as many hits, each hit worth the same, and warns a little longer (tellMul)
-    if (this.boss && this.bossDef?.hits && isEasy()) {
+    if (this.boss && this.bossDef?.hits && this.easy) {
       const per = this.boss.maxHp / this.bossDef.hits;
       this.bossHits = Math.max(4, Math.round(this.bossDef.hits * 0.7));
       this.boss.maxHp = Math.round(per * this.bossHits);
@@ -885,7 +888,7 @@ export class GameEngine {
     // (a rolled stage's seed and setting, so a tester's play can be built again: gen2 1-1's Play draws a fresh one each time)
     const g2 = (this.currentStage as { gen2?: { seed?: number }; proto?: { gen2?: { seed?: number } } });
     const g2seed = (g2.gen2 ?? g2.proto?.gen2)?.seed;
-    if (g2seed !== undefined) recorder.event('gen2', `${this.currentStage.config.id} seed ${g2seed} ${isEasy() ? 'easy' : 'normal'}`);
+    if (g2seed !== undefined) recorder.event('gen2', `${this.currentStage.config.id} seed ${g2seed} ${this.easy ? 'easy' : 'normal'}`);
     // Dot's help setting, so the QA team can compare first-timers by it
     recorder.event('look', `help ${dotHelp()}`);
     recorder.stageStart();
@@ -896,14 +899,14 @@ export class GameEngine {
     this.chaseSlowDone = false;
     this.chaseNext = 0;
     this.tide = this.proto?.tide ? newTide(this.proto.tide) : null;
-    this.lanternRun = this.proto?.lantern ? new LanternRun(this.proto.lantern, isEasy()) : null;
+    this.lanternRun = this.proto?.lantern ? new LanternRun(this.proto.lantern, this.easy) : null;
     // (8-4: Pokey carries the jar in his paws; every other stage, his plain frames)
     const jarImg = this.lanternRun ? jarHeroImage() : null;
     setJarHero(jarImg ? { img: jarImg, frame: jarFrame } : null);
     this.revealZoom = 1;
     this.revealHeard = false;
     setReveal(0, null);
-    this.tideSet = isEasy() ? TIDE.easy : TIDE.normal;
+    this.tideSet = this.easy ? TIDE.easy : TIDE.normal;
     this.tideWarned = Infinity;
     if (this.tide) this.currentStage.waterY = this.tide.y;
     this.watch = newWatch();
@@ -1238,6 +1241,8 @@ export class GameEngine {
   public resume() {
     const was = this.isPaused;
     this.outerPause = false;
+    // (Dot's help can be changed only in the menu: a run is Quiet only if it was Quiet all the way)
+    if (dotHelp() !== 'quiet') this.quietRun = false;
     // (Normal's help offer is up: the stage stays still until it is answered, whatever else let go of the pause)
     if (this.helpAsking) return;
     this.isPaused = false;
@@ -2464,13 +2469,13 @@ export class GameEngine {
         // Check if player is horizontally within platform (generous width tolerance)
         // How far the player's CENTRE may hang past a ledge and still count as standing on it. It was 0.48 (21 px), which left
         // Pokey standing in mid-air with most of his body off the cliff. 0.26 (about 11 px) keeps a foot on the ledge.
-        const side = plat.type === 'drift' ? DRIFT_CATCH.side + (this.easyLogs ? DRIFT_CATCH.easySide : 0) : 0.26 + ASSIST.landSide * assist;
+        const side = plat.type === 'drift' ? DRIFT_CATCH.side + (this.easy ? DRIFT_CATCH.easySide : 0) : 0.26 + ASSIST.landSide * assist;
         const catchDrop = plat.type === 'drift' ? DRIFT_CATCH.drop : 14 + ASSIST.catchDrop * assist;
         if (!(p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width)) {
           // ledge-landing forgiveness (physics.ts FORGIVE.landPx, every stage): falling onto it from above, a foot that misses its edge
           // by a few px still lands, nudged on. Never for walking off an edge (his feet were not above its top) nor a drifting log
           // (but a log too on Easy: river.ts DRIFT_CATCH, LV-5)
-          if ((plat.type === 'drift' && !this.easyLogs) || !(playerPrevFeet < plat.y - 2)) return false;
+          if ((plat.type === 'drift' && !this.easy) || !(playerPrevFeet < plat.y - 2)) return false;
           const missL = plat.x - (p.x + p.width * side);
           const missR = p.x - p.width * side - (plat.x + plat.width);
           // (and only for a jump carrying him toward it that fell a little short: a hop straight up beside a step is not caught here,
@@ -2486,7 +2491,7 @@ export class GameEngine {
       // two at the same height (a basket flush on the path at its bottom stop): the one under his middle, a moving one first (lift.ts),
       // so a lift never rises without him
       const plat = pickFloor(floors, p.x);
-      if (plat && (plat.type !== 'drift' || this.easyLogs)) {
+      if (plat && (plat.type !== 'drift' || this.easy)) {
         // (caught by the ledge-landing forgiveness: on with a foot, as far as the usual tolerance needs)
         const side = plat.type === 'drift' ? DRIFT_CATCH.side + DRIFT_CATCH.easySide : 0.26 + ASSIST.landSide * assist;
         const missL = plat.x - (p.x + p.width * side);
@@ -3511,8 +3516,8 @@ export class GameEngine {
           this.ringDrops.push({ e, t: 0, delay: this.ringDrops.length * 0.3 });
           sound.playWhoosh();
         },
-        tellMul: isEasy() ? 1.3 : 1,
-        openMul: isEasy() && this.bossDef?.openCue ? EASY_OPEN_MUL : 1,
+        tellMul: this.easy ? 1.3 : 1,
+        openMul: this.easy && this.bossDef?.openCue ? EASY_OPEN_MUL : 1,
         dropHeart: (x) => {
           const a = this.currentStage.arena;
           if (!a) return;
@@ -4539,8 +4544,8 @@ export class GameEngine {
       ...(this.w5 ? this.w5.tally(this.collectibles, win) : {}),
       ...(this.dotRun ? { scratches: this.dotRun.fl.scratches } : {}),
       ...(this.mc ? { hints: this.mc.hintsAsked } : {}),
-      difficulty: difficulty(),
-      quiet: dotHelp() === 'quiet',
+      difficulty: this.easy ? 'easy' : 'normal',
+      quiet: this.quietRun && dotHelp() === 'quiet',
       kills: { ...this.statKills },
       seen: Array.from(this.statSeen),
       ...(this.filed ? { prior: this.filed } : {}),
@@ -5173,7 +5178,7 @@ export class GameEngine {
   }
   /** the widest gap a plain single jump makes for a rise (gen2's jump envelope at the stage's own margin) */
   private plainGap() {
-    const margin = (this.currentStage as { gen2?: { budget?: { margin?: number } } }).gen2?.budget?.margin ?? (isEasy() ? 0.65 : 0.82);
+    const margin = (this.currentStage as { gen2?: { budget?: { margin?: number } } }).gen2?.budget?.margin ?? (this.easy ? 0.65 : 0.82);
     return (dyUp: number) => maxGap(dyUp, false, margin);
   }
 
@@ -6402,7 +6407,7 @@ export class GameEngine {
   private assistNow(): number {
     const c = this.currentStage.config;
     // Easy keeps the first stage's help (the longer ledge grace, the stronger second jump, the wider landing) the whole game
-    if (isEasy()) return 1;
+    if (this.easy) return 1;
     // (and just after a switch from Easy, it fades out over five stages: difficulty.ts easeInShare, LV-7)
     if (this.easeIn < 0) this.easeIn = easeInShare(c.id);
     return Math.max(easeAssist((c.worldIndex - 1) * 10 + c.miniIndex), this.easeIn);
@@ -7177,7 +7182,7 @@ export class GameEngine {
   // --- 7-4's slide (w7SlideRun.ts does the work; these hand it the engine's hearts, platforms and canvas) ---
   private startSlide(st: import('./w7Slide.ts').SlideStage) {
     this.slideRun = new SlideRun(st, {
-      easy: isEasy(),
+      easy: this.easy,
       loseHeart: () => {
         const p = this.player;
         if (this.isGameOver) return;
@@ -8335,7 +8340,7 @@ export class GameEngine {
       t: 0,
       player: this.player,
       standingOn: -1,
-      easy: isEasy(),
+      easy: this.easy,
       tip: (key, text, seconds) => {
         // (Meeca's stage: her own thoughts and the others' bubbles, never Dot's)
         if (this.mc) return this.mc.kitLine(key, text, seconds);
