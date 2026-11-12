@@ -1,4 +1,4 @@
-# EN-L report, Engine, 2026-11-11 (written 9:53 PM ET, gates filled in at the end). Branch t-engine-library (base t-engine-yield@729f249d)
+# EN-L report, Engine, 2026-11-11 (final 9:57 PM ET). Branch t-engine-library (base t-engine-yield@729f249d)
 The piece library: a stage's hazard, pickups, trend and POOL now come from its brief and are applied by the lay. Nothing the game
 ships sets the new fields, so no shipped stage moves. Steps 1 and 3 were built by two parallel builders in worktrees and merged here.
 ## THE PROOF (step 4): 1-2 rolled from World 1's existing sections, picked by need, plus the chain bricks
@@ -23,7 +23,7 @@ A roll: 14.8 sections, 3.3 of them twist bricks, 12.7 hollows, 85 petals, 8.8 bl
 ## What this does NOT prove (read this before quoting 61%)
 1. **Flown rows.** 1-2's rows are filed under the flown stage's id, as the Designer's supply12 does. On today's engine 1-2 THROWS on every roll (its double is not counted: packet E12 item 5). 61% is "after item 5".
 2. **Strict clean is 0%** until the thorn bed is painted (w1Pits reports no `hurt` floor): every roll with a hollow is refused, rightly.
-3. **Too long.** Six rolls model 187-227 s typical against a target of 143 (max 157): my bricks are long and the length repair did not trim. Not investigated.
+3. **Length is 1-1's, not 1-2's.** Six rolls model 187-227 s typical; six of 1-1's own proven stages model 180-220 s (13-15 sections, 32,000-39,500 px). 1-2's brief aims 135 s: its kit rows need their own chunk count. Not a library fault, not fixed.
 4. Not run: the quiet line (listable), the tier bots, a still. No Dot line is said (the teach's tip names no line: words are Content's). `hint.1-2.*` has no socket. The showing piece is a ledge before the first chain, not the packet's log over a hollow.
 5. The chain bricks are in a TOOL file. Moving them into World 1's data, with Content's review of each band, is the real authoring that is left.
 ## Step 1, pickups by brief (DONE; briefPickups.test.ts, 5 tests)
@@ -37,9 +37,9 @@ The inventory's engine slot is `ArtRow.engine_slot` (src/game/art/inventory.ts:3
 PASS on the head (checked 9:56 PM ET): **tsc** (exit 0); **seedlist 1-1 --check: PASS, 200 seeds, each clean on both settings** (run after step 2, by each
 builder, and on the final head); **stage lock 102 of 102 unchanged** against the base (`lockall --layouts 2`, 408 builds; the base was
 102 of 102 against main); the tests touched: briefPick 6 of 6, briefPickups 5 of 5, briefPits 2 of 2, brickSlots 5 of 5, library.test 5 of 5.
-GEN2_LINE
+**gen2 + worlds suites: 393 of 393 pass, 0 fail** (the base's 377 plus 16 new; finished 9:57 PM ET); artcheck PASS; knowncheck PASS (no known-defect list gained an entry).
 **Main JS 3,996,883 B: +1,469 B over the base** (3,995,414). chunkcheck FAILS by 2,579 B (the base failed by 1,110; known until the seed-list split, R-165.112).
-NOT run: drawcheck, clipcheck, artcheck, the core suite outside gen2, tierBots, the generality gate (not on this base), any still (nothing that draws ships).
+NOT run: drawcheck, clipcheck, the core suite outside gen2, tierBots, the generality gate (not on this base), any still (nothing that draws ships). roadmapcheck cannot run in this container (a shallow clone).
 ## Method update
 - Worked: measure, then trace each refusal to its section (`library-where.ts`) before changing anything. It found three causes no summary named: my own brick's zero-width gap, the seams' pull to the corridor middle, and no room under the floor.
 - Failed: two guesses at the trend (a pick-weight lean alone; appending a way down to every rising section) moved the number 0-40 px and cost 15 minutes. The roll's own heights, section by section, showed the seams in one print. Edit for reference/methods: "a trend or height complaint: print each section's entry and exit height first".
