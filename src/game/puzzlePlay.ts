@@ -331,10 +331,13 @@ export class KitPlay {
   /** the world the pieces are drawn for, and the looks the stage's roll picked (artRoll.ts) */
   private readonly look: { world: number; stone: KitArtName };
   private readonly platforms: Platform[];
+  /** where each pushed log lay when the stage was built: a room's reset post puts its logs back there */
+  private readonly logHome: Map<Platform, { x: number; y: number }>;
 
   constructor(kit: KitExtras, platforms: Platform[], world: KitWorld = {}) {
     const byId = new Map(platforms.map((p) => [p.id, p]));
     this.platforms = platforms;
+    this.logHome = new Map(platforms.filter((p) => p.push).map((p) => [p, { x: p.x, y: p.y }]));
     // (the layout roll, as the rooms stand: a retry of the same roll builds them in the same places, a fresh roll moves them)
     const roll = kit.rooms.reduce((s, r) => s + Math.round(anchorAt(r.left, byId)?.x ?? 0), 0);
     const w = world.world ?? 0;
@@ -729,7 +732,7 @@ export class KitPlay {
         // (what it wants is the room's nudge, in Dot's bubble: no words floating in the world)
         if (!t.done) consider(t.x, t.y, () => h.float('?', t.x, t.y - 120, '#fde68a'));
       });
-      room.resets.forEach((r) => consider(r.x, r.y, () => this.resetRoom(room, h, platforms)));
+      room.resets.forEach((r) => consider(r.x, r.y, () => this.resetRoom(room, h)));
       // a teapot: a tap by it tips it over (rude), for good
       room.teapots.forEach((tp) => {
         if (!tp.tipped) consider(tp.x, tp.y, () => this.tip(room, tp, h));
@@ -919,10 +922,16 @@ export class KitPlay {
     h.sfx('drop');
   }
 
-  /** start the room again: things back where they started, the beetles awake at home, the levers, gates and lifts as they were */
-  private resetRoom(room: RoomRun, h: KitHost, platforms: readonly Platform[]) {
-    void platforms;
+  /** start the room again: things back where they started, the beetles awake at home, the levers, gates and lifts as they were, and
+   *  the logs it is pushed with back where they lay (audit C P-02: a seesaw room's log walked into the wrong way ended flush against
+   *  a bank where nobody could stand to push it back, and the post moved every piece but the log: only leaving the stage got him out) */
+  private resetRoom(room: RoomRun, h: KitHost) {
     if (this.held && this.held.room === room.ri) this.held = null;
+    for (const [lg, at] of this.logHome) {
+      if (lg.broken || lg.push!.min > room.box.x1 || lg.push!.max < room.box.x0) continue;
+      lg.x = at.x;
+      lg.y = at.y;
+    }
     for (const it of room.items) this.home(it);
     for (const b of room.beetles) b.st = { mode: 'idle', x: b.home, plat: b.st.plat, dir: -1, t: 0, food: -1 };
     for (const l of room.levers) l.on = !!l.spec.on;
