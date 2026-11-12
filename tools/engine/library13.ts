@@ -178,8 +178,10 @@ export const TWISTS: SectionTemplate[] = [
   brick({ id: 'lib-trap-two', weight: BAG, name: 'two branches in a row, a trap over each', jobs: ['twist', 'test'], difficulty: 6, versions: [
     ver('hive-stone', [HIVE, { ...STONE, asleep: true }]), ver('stone-hive', [STONE, { ...HIVE, asleep: true }]),
   ] }),
-  // (a trapped branch and a bare one; Easy drops the bare branch's snake)
-  brick({ id: 'lib-trap-test', weight: BAG, name: 'a trapped branch, then a bare one', jobs: ['test', 'twist'], difficulty: 6, versions: [
+  // (a trapped branch and a bare one, both snakes awake: a test node's alone, whose threat (0.9 of the stage's) pays for two awake
+  // snakes; in a twist's 0.8 the second socket stayed empty, and where that was the trapped one its load hung over nothing: measured,
+  // 8 of 882 loads on Normal. Easy drops the bare branch's snake)
+  brick({ id: 'lib-trap-test', weight: BAG, name: 'a trapped branch, then a bare one', jobs: ['test'], difficulty: 6, versions: [
     ver('trap-then-bare', [HIVE, { ...BARE, easy: 'drop' }]), ver('bare-then-trap', [{ ...BARE, easy: 'drop' }, { ...STONE, perch: true }]),
   ] }),
   // (the CLIMB bricks: the branch at the top of a root stair, so a node dealt the stairs can hold a snake and its trap too)
