@@ -54,7 +54,7 @@ test('ALL_VERDICTS is the union, in order, read off verdicts.types.ts', () => {
   const src = fs.readFileSync(new URL('./verdicts.types.ts', import.meta.url), 'utf8');
   const union = [...src.slice(src.indexOf('export type VerdictName'), src.indexOf('export interface Measure')).matchAll(/\| '([a-z0-9.-]+)'/g)].map((m) => m[1]);
   assert.deepEqual([...ALL_VERDICTS], union);
-  assert.equal(union.length, 17);
+  assert.equal(union.length, 19);
 });
 
 test('arc.single-gap-over: Easy 140 px is past a flick from 70 px (132); Normal 150 past the 143 band rule', (t) => {
@@ -124,6 +124,24 @@ test("hazard.untaught: a hurt drop before the end of its lesson's showing piece 
   for (const s of ['normal', 'easy'] as const) {
     planted('hazard.untaught', s, at(1100), t);
     assert.deepEqual(names(roll(s, at(1000))), [], `${s}: shown first, the roll is clean`);
+  }
+});
+test("landing.dead-zone and bounce.no-purpose (Matt 11-06, 11-11): a petal log only a mid-air correction reaches; mushrooms on flat ground (the whole rule: landings.test.ts)", (t) => {
+  const b = builtClean();
+  const L = (x: number, y: number, width: number): Platform => ({ id: 90 + x, x, y, width, height: 24, type: 'solid', style: 'moss_stone' });
+  // (a petal log 72 px under the take-off with a log 70 px over the gap: the walk-off falls short, the full jump lands on the log above;
+  // the gap's floor 400 px down, past a double from it)
+  const deep = [P(1, 0, G, 1000), P(2, 1260, G, 1000), P(3, 1000, G + 400, 260)];
+  const dead = { built: { ...b, platforms: [...deep, L(1000, G - 70, 400), L(1080, G + 72, 90)], collectibles: [{ x: 1120, y: G + 38, type: 'flower' }] } };
+  const twin = { built: { ...b, platforms: [...deep, L(1000, G - 70, 400), L(1040, G + 72, 140)], collectibles: [{ x: 1120, y: G + 38, type: 'flower' }] } };
+  const caps = (xs: number[]) => xs.map((x, i): Platform => ({ id: 80 + i, x, y: G - 30, width: 70, height: 30, type: 'bouncy' }));
+  const flat = { built: { ...b, platforms: [...b.platforms, ...caps([300, 500, 700])] } };
+  const bank = { built: { ...b, platforms: [P(1, 0, G, 800), P(4, 800, G - 210, 200, 510), P(2, 1260, G, 1000), P(3, 1000, G + 200, 260), ...caps([300, 500, 700])] } };
+  for (const s of ['normal', 'easy'] as const) {
+    planted('landing.dead-zone', s, dead, t);
+    assert.ok(!names(roll(s, twin)).includes('landing.dead-zone'), `${s}: the log out where the walk-off lands is clean`);
+    planted('bounce.no-purpose', s, flat, t);
+    assert.ok(!names(roll(s, bank)).includes('bounce.no-purpose'), `${s}: a bank 210 px up past the last mushroom gives the three a purpose`);
   }
 });
 test('first-run.drift: the fixed layout built against its recorded lock', (t) => {
