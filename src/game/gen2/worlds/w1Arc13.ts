@@ -32,7 +32,7 @@ export const LINES_13 = {
   bare: 'No vine? Walk him to the end of his branch.',
 } as const;
 /** the stage's MISSION line (the keeper's; it replaces the withdrawn "Knock the snakes off the branches..."): stagePlan's, when 1-3 ships */
-export const MISSION_13 = 'Clear the branches. Shake a vine and the snakes glide off.';
+export const MISSION_13 = 'Shake every vine, and off the snakes glide.';
 export const TRAP_LINE = LINES_13.traps;
 // ───────────────────────────── the drop-trap twist bricks (1-3's own) ─────────────────────────────
 /**

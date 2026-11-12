@@ -76,7 +76,7 @@ test('every roll is the designed level, on both settings: no throw, no error, th
 test("the stage carries its cast: proto.cast.kinds is ['snake'], and Dot says the story keeper's line once", () => {
   assert.deepEqual(LINES_13, { traps: 'See that hive? Punch the vine, down it comes!', 'traps.then': "Don't worry, it only gives him a fright.", bare: 'No vine? Walk him to the end of his branch.' }, "the story keeper's words, verbatim");
   for (const [id, words] of Object.entries(LINES_13)) assert.equal(kitLib13(O).manifest.tips![id], words);
-  assert.equal(MISSION_13, 'Clear the branches. Shake a vine and the snakes glide off.');
+  assert.equal(MISSION_13, 'Shake every vine, and off the snakes glide.');
   // (and it is the line the game shows for the stage: stagePlan.ts holds its own copy, menu code that imports no stage kit)
   assert.equal(STAGE_PLAN[1][2].name, 'Branch Snakes');
   assert.equal(STAGE_PLAN[1][2].desc, MISSION_13, "the stage plan's mission line is the keeper's");

@@ -32,7 +32,7 @@ test('backdrops: every world alternates three or four painted sets, its early li
 });
 
 test('backdrops: each new far strip is there at the far layers\' height (1302, native resolution: X-16; seamless: VI-4), well under the size limit; and the sinkhole is Matt\'s redo', () => {
-  assert.deepEqual([...FAR_ONLY].sort(), ['w10dusk', 'w10gale', 'w10storm', 'w1b', 'w1kapok', 'w1rain', 'w1sun2', 'w1sunrise', 'w2evening', 'w2mist', 'w2rapids', 'w3cavern', 'w3crystal', 'w3sinkhole', 'w4mist', 'w4storm', 'w4terraces', 'w6dawn', 'w6dusk', 'w6moon', 'w7court', 'w7dawn', 'w7dusk', 'w8dawn', 'w8night', 'w8sunset', 'w9ash', 'w9dawn', 'w9night']);
+  assert.deepEqual([...FAR_ONLY].sort(), ['w10dusk', 'w10gale', 'w10storm', 'w1b', 'w1kapok', 'w1rain', 'w1sun2', 'w2evening', 'w2mist', 'w2rapids', 'w3cavern', 'w3crystal', 'w3sinkhole', 'w4mist', 'w4storm', 'w4terraces', 'w6dawn', 'w6dusk', 'w6moon', 'w7court', 'w7dawn', 'w7dusk', 'w8dawn', 'w8night', 'w8sunset', 'w9ash', 'w9dawn', 'w9night']);
   for (const stem of FAR_ONLY) {
     const f = new URL(`../assets/backdrops/${stem}-far.webp`, import.meta.url);
     const buf = fs.readFileSync(f);
@@ -48,4 +48,11 @@ test('backdrops: each new far strip is there at the far layers\' height (1302, n
     // its world's middle and near strips are the ones it borrows
     assert.ok(fs.existsSync(new URL(`../assets/backdrops/w${/^w(\d+)/.exec(stem)![1]}-mid.webp`, import.meta.url)));
   }
+});
+
+test('no stage plays in w1sunrise while its far strip has the edge orchids that meet where it wraps (F13, 11-12: one big white shape behind 1-3\'s route)', () => {
+  // (1-1 left it on 11-05 for w1sun2, repainted with no orchids and a clean join; 1-3 tonight. A repaint of w1sunrise's far without
+  //  them, judged by the lead, is what lets a stage back onto it: change this test with that repaint)
+  assert.deepEqual(Object.entries(FAR_BY_STAGE).flatMap(([w, m]) => Object.entries(m).filter(([, set]) => set === 'w1sunrise').map(([s]) => `${w}-${s}`)), []);
+  assert.equal(stageBackdropStem('1-3'), stageBackdropStem('1-1'), "1-3's sky is 1-1's sunrise tonight");
 });
