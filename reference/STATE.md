@@ -554,3 +554,8 @@ lines); Matt sees them in the release.
   saw-cut stake breaks World 1's no-made-things rule; the stone's knotted net looks made (use the vine-wrapped take). ART-W1B (Opus
   high, session_01FhBbYKTygXnUZ3ts1re6dE, t-w1-art2, cap $6, packet ART-W1B.md) fixes those and repaints w1sunrise-far without the edge
   orchids (the white "ghost", F13's find). Merge order: t-w1-art2 replaces t-w1-art.
+- 2026-11-12 2:07 PM ET: W1C at fbb01511: all tonight's must-haves done (teach, mission line, rope, Easy >= 2:00 with all 9 traps, 1-3's own
+  arrival + rests: funcheck "looks like an earlier stage" 0/16, every snake on a painted fallen log). Lead rulings: hearts = the game's
+  rule (6; W1C's evidence: the child bot takes 4+ hits); Normal goal = 9 (every trap: Pokey doesn't have to fight); funcheck "nothing
+  bites" 16 accepted (risk is the strike); the shimmy ROPE (posts + rope) breaks World 1's no-made-things rule -> a vine between two
+  living trunks (ART-W1B pieces, F13 wires). F13 keeps "one shake, two snakes" only if the 2:00 margin needs it.
