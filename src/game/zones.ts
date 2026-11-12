@@ -17,7 +17,7 @@
  * a zone is doing at any moment.
  */
 
-import { quietWarnRest } from './clock.ts';
+import { cycle3 } from './clock.ts';
 
 export type ZoneKind = 'spore' | 'wind' | 'geyser' | 'bolt' | 'web' | 'tide' | 'dark' | 'crumble';
 
@@ -88,7 +88,7 @@ export function zoneState(z: Zone, t: number): ZoneState {
   if (isStatic(z)) return { phase: 'active', u: 0, strength: 1, untilActive: 0 };
   const idle = idleTime(z);
   // the one clock (clock.ts): idle, the warning, then active for the rest of the cycle
-  const k = quietWarnRest(t, z.offset, z.period, idle, z.warn);
+  const k = cycle3(t, z.offset, z.period, idle, z.warn);
   if (k.index === 0) return { phase: 'idle', u: k.at / idle, strength: 0, untilActive: z.period - z.active - k.at };
   if (k.index === 1) return { phase: 'warn', u: k.into / z.warn, strength: 0, untilActive: idle + z.warn - k.at };
   const a = k.into;

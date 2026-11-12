@@ -10,7 +10,7 @@
  * Pure (no canvas, no engine): the stage builder, the engine and the tests agree on what a vine is doing at any moment.
  */
 
-import { quietWarnRest } from './clock.ts';
+import { cycle3 } from './clock.ts';
 
 export interface ThornVine {
   /** where it hangs (world px), the roof it hangs from, and the bottom of its bud */
@@ -52,7 +52,7 @@ export const vinePeriod = (v: Pick<ThornVine, 'sleep' | 'stir' | 'look'>) => v.s
 /** what a vine is doing at time t, and how far through that it is (0..1) */
 export function vinePhase(v: ThornVine, t: number): { phase: VinePhase; u: number } {
   // the one clock (clock.ts): asleep, stirring (the warning), then looking for the rest of the cycle
-  const k = quietWarnRest(t, v.offset, vinePeriod(v), v.sleep, v.stir);
+  const k = cycle3(t, v.offset, vinePeriod(v), v.sleep, v.stir);
   return k.index === 0 ? { phase: 'sleep', u: k.into / v.sleep } : k.index === 1 ? { phase: 'stir', u: k.into / v.stir } : { phase: 'look', u: k.into / v.look };
 }
 

@@ -85,12 +85,13 @@ const WALK: CycleRead = { index: 0, into: 0, at: 0 };
 const QW = [0, 0];
 
 /**
- * The shape the first timers share (rocks, zones, thorn vines): a quiet stretch, a warning, then the rest of the cycle (index 2). Each
- * keeps its own lengths and its own period. Returns the one shared read: take what you need from it before the next read.
+ * The shape the game's timers share (rocks, zones, thorn vines, eagle nests, teapots, surging falls, orchids): a first stretch (most
+ * often the quiet one), a second (most often the warning), then the rest of the cycle (index 2). Each keeps its own lengths and its own
+ * period. Returns the one shared read: take what you need from it before the next read.
  */
-export function quietWarnRest(t: number, offset: number, period: number, quiet: number, warn: number): CycleRead {
-  QW[0] = quiet;
-  QW[1] = warn;
+export function cycle3(t: number, offset: number, period: number, first: number, second: number): CycleRead {
+  QW[0] = first;
+  QW[1] = second;
   return cycleRead(t, offset, period, QW, 2, WALK);
 }
 

@@ -135,3 +135,120 @@ test('thorn vines on the clock: every vine does exactly what it did, the one tha
   assert.deepEqual([...seen].sort(), ['look', 'sleep', 'stir']);
   assert.ok(n > 2_000_000, `${n} reads compared`);
 });
+
+// ───────────── the second round: nests, teapots, orchids, surging falls, Dot's gusts, river logs, lifts ─────────────
+import { NEST, nestAt, type Nest, type NestPhase } from './eaglet.ts';
+import { ORCHID, orchidAt, potAt, type Orchid, type OrchidPhase, type PotPhase, type Teapot } from './w5Kit.ts';
+import { surgeFlow, type Waterfall } from './waterfalls.ts';
+import { GUST_WARN, gustState, type Gust } from './dotFlightStage.ts';
+import { driftCycle, driftProgress, driftX, type DriftInfo } from './river.ts';
+import { liftCycle, liftY, type LiftInfo } from './lift.ts';
+
+// ── frozen as of 347d50fa: eaglet.ts nestAt, w5Kit.ts potAt and orchidAt, waterfalls.ts surgeFlow, dotFlightStage.ts gustState,
+//    river.ts driftX and driftProgress, lift.ts liftY ──
+function oldNestAt(n: Nest, t: number): { phase: NestPhase; u: number } {
+  const c = (((t + n.offset) % n.every) + n.every) % n.every;
+  const sleep = n.every - NEST.stir - NEST.look;
+  if (c < sleep) return { phase: 'sleep', u: c / sleep };
+  if (c < sleep + NEST.stir) return { phase: 'stir', u: (c - sleep) / NEST.stir };
+  return { phase: 'look', u: (c - sleep - NEST.stir) / NEST.look };
+}
+function oldPotAt(p: Teapot, t: number): { phase: PotPhase; u: number } {
+  const cyc = p.idle + p.warn + p.puff;
+  const s = (((t + p.offset) % cyc) + cyc) % cyc;
+  if (s < p.idle) return { phase: 'idle', u: s / p.idle };
+  if (s < p.idle + p.warn) return { phase: 'warn', u: (s - p.idle) / p.warn };
+  return { phase: 'puff', u: (s - p.idle - p.warn) / p.puff };
+}
+function oldOrchidAt(o: Orchid, t: number): { phase: OrchidPhase; open: number; solid: boolean; picks: boolean } {
+  const s = (((t + o.offset) % o.period) + o.period) % o.period;
+  const tell = ORCHID.tell;
+  if (s < o.open) return { phase: 'open', open: 1, solid: true, picks: true };
+  if (s < o.open + tell) {
+    const u = (s - o.open) / tell;
+    return { phase: 'closing', open: 1 - 0.55 * u, solid: true, picks: true };
+  }
+  if (s < o.period - tell) return { phase: 'shut', open: 0, solid: false, picks: false };
+  const u = (s - (o.period - tell)) / tell;
+  return { phase: 'opening', open: u, solid: false, picks: false };
+}
+type Surge = NonNullable<Waterfall['surge']>;
+function oldSurgeFlow(s: Surge, t: number): number {
+  const T = s.pour + s.ease + s.quiet;
+  const c = (((t + s.offset) % T) + T) % T;
+  if (c < s.pour) return Math.min(1, c / 0.4);
+  if (c < s.pour + s.ease) return 1 - (c - s.pour) / s.ease;
+  return 0;
+}
+function oldGustState(g: Gust, t: number): { blowing: boolean; warn: number } {
+  const c = (((t + g.phase) % g.period) + g.period) % g.period;
+  if (c < g.on) return { blowing: true, warn: 1 };
+  const until = g.period - c;
+  return { blowing: false, warn: until < GUST_WARN ? 1 - until / GUST_WARN : 0 };
+}
+function oldDriftX(d: DriftInfo, t: number): number {
+  const T = driftCycle(d);
+  const u = (((t + d.offset) % T) + T) % T;
+  const travelled = u * d.speed;
+  return d.dir === 1 ? d.x0 - d.width + travelled : d.x1 - travelled;
+}
+function oldDriftProgress(d: DriftInfo, t: number): number {
+  const T = driftCycle(d);
+  return ((((t + d.offset) % T) + T) % T) / T;
+}
+function oldLiftY(l: LiftInfo, t: number): number {
+  const ride = (l.bottom - l.top) / l.speed;
+  const T = liftCycle(l);
+  const u = (((t + l.phase) % T) + T) % T;
+  const ease = (k: number) => 0.5 - 0.5 * Math.cos(Math.PI * Math.max(0, Math.min(1, k)));
+  if (u < l.wait) return l.bottom;
+  if (u < l.wait + ride) return l.bottom - (l.bottom - l.top) * ease((u - l.wait) / ride);
+  if (u < 2 * l.wait + ride) return l.top;
+  return l.top + (l.bottom - l.top) * ease((u - 2 * l.wait - ride) / ride);
+}
+
+test('eagle nests, teapots and orchids on the clock: each does exactly what it did', () => {
+  const roll = rng(5404);
+  const ts = moments(roll);
+  let n = 0;
+  const seen = new Set<string>();
+  for (let i = 0; i < 150; i++) {
+    const nest = { x: 0, y: 0, x0: -200, x1: 200, every: i ? len(roll, 4, 9) : 6, offset: i ? len(roll, 0, 9) : 0 } as Nest;
+    const pot = { x: 0, y: 0, dir: 1, idle: len(roll, 1, 4), warn: len(roll, 0.4, 1.6), puff: len(roll, 0.4, 2), offset: len(roll, 0, 7) } as Teapot;
+    const period = i % 3 ? 6 : len(roll, 4.5, 8);
+    const orchid = { x: 0, y: 0, w: 120, period, open: Math.min(period - 2 * ORCHID.tell - 0.6, len(roll, ORCHID.minOpen, 4.2)), offset: len(roll, 0, 7) } as Orchid;
+    for (const t of ts) {
+      const a = nestAt(nest, t);
+      const b = potAt(pot, t);
+      const c = orchidAt(orchid, t);
+      seen.add('nest ' + a.phase).add('pot ' + b.phase).add('orchid ' + c.phase);
+      n += same(a, oldNestAt(nest, t), () => `${JSON.stringify(nest)} at ${t}`);
+      n += same(b, oldPotAt(pot, t), () => `${JSON.stringify(pot)} at ${t}`);
+      n += same(c, oldOrchidAt(orchid, t), () => `${JSON.stringify(orchid)} at ${t}`);
+    }
+  }
+  assert.equal(seen.size, 3 + 3 + 4, [...seen].join());
+  assert.ok(n > 2_000_000, `${n} reads compared`);
+});
+
+test('surging falls, Dot\'s gusts, river logs and lifts on the clock: each does exactly what it did', () => {
+  const roll = rng(7505);
+  const ts = moments(roll);
+  let n = 0;
+  const is = (now: number, old: number, what: () => string) => { if (!Object.is(now, old)) assert.fail(`${now} is not the old ${old} (${what()})`); n++; };
+  for (let i = 0; i < 120; i++) {
+    const surge: Surge = { pour: len(roll, 1, 4), ease: len(roll, 0.5, 1.5), quiet: len(roll, 1, 4), offset: len(roll, 0, 8) };
+    const gust = { id: 1, x0: 0, x1: 100, y0: 0, y1: 100, wx: 0, wy: 0, period: len(roll, 2.5, 6), on: len(roll, 0.6, 2), phase: len(roll, 0, 6) } as Gust;
+    const dir: 1 | -1 = i % 2 ? 1 : -1;
+    const log = { x0: 100, x1: 100 + Math.round(300 + roll() * 900), dir, speed: Math.round(30 + roll() * 90), width: 96 + (i % 3) * 24, offset: len(roll, 0, 20), baseY: 0 } as DriftInfo;
+    const lift = { x: 0, top: 100, bottom: 100 + Math.round(120 + roll() * 500), speed: Math.round(60 + roll() * 120), wait: len(roll, 0.8, 2.5), phase: len(roll, 0, 9) } as LiftInfo;
+    for (const t of ts) {
+      is(surgeFlow(surge, t), oldSurgeFlow(surge, t), () => `${JSON.stringify(surge)} at ${t}`);
+      same(gustState(gust, t), oldGustState(gust, t), () => `${JSON.stringify(gust)} at ${t}`);
+      is(driftX(log, t), oldDriftX(log, t), () => `${JSON.stringify(log)} at ${t}`);
+      is(driftProgress(log, t), oldDriftProgress(log, t), () => `${JSON.stringify(log)} at ${t}`);
+      is(liftY(lift, t), oldLiftY(lift, t), () => `${JSON.stringify(lift)} at ${t}`);
+    }
+  }
+  assert.ok(n > 2_000_000, `${n} reads compared`);
+});

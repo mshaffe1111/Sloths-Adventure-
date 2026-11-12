@@ -21,6 +21,7 @@
  *
  * Pure (no canvas, no engine): the stage builder, the engine (w5Play.ts) and the tests agree on what each one is doing.
  */
+import { cycle3 } from './clock.ts';
 import type { Vine } from './types.ts';
 
 // ───────────────────────────── don't sit ─────────────────────────────
@@ -325,11 +326,9 @@ export const newTeapot = (x: number, y: number, dir: 1 | -1 = 1, o: Partial<Pick
 export type PotPhase = 'idle' | 'warn' | 'puff';
 /** where the pot is in its beat: the phase and how far through it (0..1) */
 export function potAt(p: Teapot, t: number): { phase: PotPhase; u: number } {
-  const cyc = p.idle + p.warn + p.puff;
-  const s = (((t + p.offset) % cyc) + cyc) % cyc;
-  if (s < p.idle) return { phase: 'idle', u: s / p.idle };
-  if (s < p.idle + p.warn) return { phase: 'warn', u: (s - p.idle) / p.warn };
-  return { phase: 'puff', u: (s - p.idle - p.warn) / p.puff };
+  // the one clock (clock.ts): idle, the warning, then the puff for the rest of the cycle
+  const k = cycle3(t, p.offset, p.idle + p.warn + p.puff, p.idle, p.warn);
+  return k.index === 0 ? { phase: 'idle', u: k.into / p.idle } : k.index === 1 ? { phase: 'warn', u: k.into / p.warn } : { phase: 'puff', u: k.into / p.puff };
 }
 
 /** the spout (where the steam comes from) */
@@ -620,13 +619,12 @@ export function orchidTiming(mini: number, period = 6): { period: number; open: 
 export type OrchidPhase = 'open' | 'closing' | 'shut' | 'opening';
 /** an orchid now: its phase, how open the bloom looks (1 open, 0 shut), whether it holds him, and whether its petals can be picked */
 export function orchidAt(o: Orchid, t: number): { phase: OrchidPhase; open: number; solid: boolean; picks: boolean } {
-  const s = (((t + o.offset) % o.period) + o.period) % o.period;
   const tell = ORCHID.tell;
-  if (s < o.open) return { phase: 'open', open: 1, solid: true, picks: true };
-  if (s < o.open + tell) {
-    const u = (s - o.open) / tell;
-    return { phase: 'closing', open: 1 - 0.55 * u, solid: true, picks: true };
-  }
+  // the one clock (clock.ts): open, the closing shiver (the warning), then shut and opening share the rest of the cycle
+  const k = cycle3(t, o.offset, o.period, o.open, tell);
+  if (k.index === 0) return { phase: 'open', open: 1, solid: true, picks: true };
+  if (k.index === 1) return { phase: 'closing', open: 1 - 0.55 * (k.into / tell), solid: true, picks: true };
+  const s = k.at;
   if (s < o.period - tell) return { phase: 'shut', open: 0, solid: false, picks: false };
   const u = (s - (o.period - tell)) / tell;
   return { phase: 'opening', open: u, solid: false, picks: false };

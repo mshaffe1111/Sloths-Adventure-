@@ -7,7 +7,7 @@
  * Pure (no canvas, no engine): the stage builder, the engine and the tests agree on where every rock is.
  */
 
-import { quietWarnRest } from './clock.ts';
+import { cycle3 } from './clock.ts';
 
 export interface RockDrop {
   /** where it lets go (world px), and the surface it lands on */
@@ -38,7 +38,7 @@ export function rockAt(r: RockDrop, t: number): { phase: RockPhase; u: number; y
   const fallT = Math.max(0.01, (r.land - r.top) / ROCK.speed);
   const warnAt = r.every - r.warn - fallT - ROCK.shatter;
   // the one clock (clock.ts): quiet until warnAt, the shadow for `warn`, then the rock is loose for the rest of the cycle
-  const k = quietWarnRest(t, r.offset, r.every, warnAt, r.warn);
+  const k = cycle3(t, r.offset, r.every, warnAt, r.warn);
   if (k.index === 0) return { phase: 'idle', u: k.into / Math.max(0.01, warnAt), y: r.top };
   if (k.index === 1) return { phase: 'warn', u: k.into / r.warn, y: r.top };
   const f = k.into;
