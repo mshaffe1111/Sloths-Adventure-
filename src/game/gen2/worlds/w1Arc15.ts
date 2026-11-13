@@ -47,9 +47,11 @@ const OVER = 165;
 const UP: R2 = [-56, -50], DOWN: R2 = [50, 56];
 /** a bank he walks on (the low road, her road under), `w` exact so a deck over it is laid by px */
 const bank = (key: string, after: string | null, w: number, dy: R2 = [0, 0]): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: after ? { kind: 'walk', after, dy } : { kind: 'start' }, style: 'moss_stone', main: true });
-/** a piece of the high road over bank `on` (`onW` wide), its left end `x` px along it, `dy` over its top (default the road's OVER) */
+/** a piece of the high road over bank `on` (`onW` wide), its left end `x` px along it, `dy` over its top (default the road's OVER). Never a
+ *  `landing`: each setting's widths are its own here (Set), and Easy's 48 px landing pad on top of them laid a deck over the next root's
+ *  step (a hop under a deck) and the den's limb over its snake (seed 1 Easy) */
 const over = (key: string, on: string, onW: number, x: number, w: number, o: { creak?: boolean; dy?: number; style?: 'branch' | 'log' } = {}): SectionPiece => ({
-  key, shape: 'branch', w: [w, w], place: { kind: 'over', on, at: [x / onW, x / onW], dy: [-(o.dy ?? OVER), -(o.dy ?? OVER)] }, style: o.style ?? 'branch', landing: true, ...(o.creak ? { creak: true } : {}),
+  key, shape: 'branch', w: [w, w], place: { kind: 'over', on, at: [x / onW, x / onW], dy: [-(o.dy ?? OVER), -(o.dy ?? OVER)] }, style: o.style ?? 'branch', ...(o.creak ? { creak: true } : {}),
 });
 /** a straight vine from bank `on` (`onW` wide) up to the high road, `x` px along it: the road's next piece starts at its top */
 const vine = (key: string, on: string, onW: number, x: number, h = OVER): SectionPiece => ({ key, shape: 'vine', w: [0, 0], place: { kind: 'climb', on, at: [x / onW, x / onW], h: [h, h] } });
@@ -61,7 +63,7 @@ const ground = (key: string, after: string, w: number): SectionPiece => ({ ...ba
  *  4 and 7: a flag 80 px before the den). The pass finds its spots on the rests (each 160 px or wider) */
 const apron = (key: string, after: string, w: number): SectionPiece => ({ ...bank(key, after, w), main: false });
 /** the high road's first piece, its left end at vine `v`'s top */
-const atTop = (key: string, v: string, w: number, creak = false): SectionPiece => ({ key, shape: 'branch', w: [w, w], place: { kind: 'over', on: v, at: [0, 0], dy: [0, 0] }, style: 'branch', landing: true, ...(creak ? { creak: true } : {}) });
+const atTop = (key: string, v: string, w: number, creak = false): SectionPiece => ({ key, shape: 'branch', w: [w, w], place: { kind: 'over', on: v, at: [0, 0], dy: [0, 0] }, style: 'branch', ...(creak ? { creak: true } : {}) });
 /** petals: `n` in a row over `span` px, low on what they stand on */
 const petals = (id: string, on: string, t: R2 | number, n = 2, span = 110): Socket => ({ id, role: 'pickup', on, t, dn: 34, count: n, span });
 /** her MARK (the stage's goal item, gen2 lays every one where it stands: pipeline's objective 'mark'), at marching height on her road */
@@ -249,11 +251,14 @@ function creek(S: Set): Lay {
  *  the den's near side one sagging creaky limb, a vine up to it. Ridden down, it comes down BESIDE the den (never on it) and the snake
  *  glides off (w1Cast.ts's falling limb); he lands on her road */
 function stone(S: Set): Lay {
-  const W = 400, D = 280;
-  const xv = 200;
+  // (the den is SHORT, a trapped snake's 100 px patch: the limb chases off what stands within TRAP.scare (170 px) of where it lands, so
+  //  the whole patrol is inside that from a limb whose far end stops at the patrol's near end: 1-5 seed 1, a snake pacing a 232 px
+  //  patch stayed put when the limb came down at its far end. The trunk stands 120 px from the patch, past a strike's 105)
+  const W = 400, D = 150, LW = 120;
+  const xv = W - LW + 24;
   const pieces: SectionPiece[] = [
     bank('a', null, 220), bank('a2', 'a', 180, UP), { ...apron('U', 'a2', W), place: { kind: 'walk', after: 'a2', dy: DOWN } },
-    vine('v', 'U', W, xv), atTop('L', 'v', 130, true),
+    vine('v', 'U', W, xv), atTop('L', 'v', LW, true),
     // (two short ledges past the den: under a flag's pad (160) and an animal's lay (248), so no flag stands near enough the den to empty
     //  its socket (a flag keeps every animal 224 px off: seeds 4 and 7, a flag beside it))
     ground('den', 'U', D), bank('m', 'den', 150), bank('n', 'm', 150, UP), bank('o', 'n', 240, DOWN), bank('p', 'o', 220, UP), bank('z', 'p', 240, DOWN),
@@ -261,7 +266,7 @@ function stone(S: Set): Lay {
   const sockets: Socket[] = [
     flag('a', 0.3), mark('ma', 'a2', 0.5),
     { id: 'limb', role: 'prop', on: 'L', t: 0.5, dn: 0, allow: ['trap-limb'], group: 'den' },
-    { id: 'e', role: 'enemy', on: 'den', t: 0.6, dn: 0, allow: ['snake'], easy: 'stay', group: 'den' },
+    { id: 'e', role: 'enemy', on: 'den', t: 0.5, dn: 0, allow: ['snake-trapped'], easy: 'stay', group: 'den' },
     petals('pm', 'm', [0.3, 0.7], 1), mark('mn', 'o', 0.5), petals('pp', 'p', 0.5, 1),
   ];
   return { pieces, sockets };
@@ -349,7 +354,8 @@ export function kitLib15(): WorldKit {
     sections: SECTIONS_15,
     required: {},
     tips: { ...M.tips, ...LINES_15 },
-    teachTips: [...(M.teachTips ?? []), 'creak'],
+    // (every line of the keeper's here is a TEACH line: Dot says it on Normal's default Tips as on Help, D50)
+    teachTips: [...(M.teachTips ?? []), 'creak', 'sign', 'last', 'fresher'],
     graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'relic_hunt'), ...Object.entries(ARC_15).map(([id, code]) => ({ id, archetype: 'relic_hunt' as const, code }))], briefs: { ...G.briefs, [STAGE_15]: BRIEF_15 } },
   } } as WorldKit;
 }

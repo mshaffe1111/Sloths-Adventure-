@@ -180,11 +180,16 @@ export function relicArt(world: number, k: number): string | null {
 export function goalLine(kind: 'start' | 'late' | 'sealed', world: number, type: string, n: number): string {
   const g = GOAL_WORDS(world, type);
   if (!g) return '';
+  // (a goal whose locked exit Dot explains in the story keeper's own words, the count on the HUD beside it)
+  if (kind === 'sealed' && SEALED_LINES[`${world}:${type}`]) return SEALED_LINES[`${world}:${type}`];
   const noun = n === 1 ? g.one : g.many;
   if (kind === 'start') return `${g.verb} ${n} ${noun} to open the sanctuary`;
   if (kind === 'late') return `Still ${n} ${noun} to ${g.verb.toLowerCase()} before the sanctuary opens`;
   return `Sealed: ${g.verb.toLowerCase()} ${n} more ${noun} to open it`;
 }
+/** Dot's words at a locked exit, by world and goal, where the story keeper wrote them (1-5's marks: STORY-LINES.md 11-12, approved by Matt
+ *  10:20 PM ET; held equal to w1Arc15.ts LINES_15.sealed by library15.test.ts) */
+export const SEALED_LINES: Readonly<Record<string, string>> = { '1:relic_hunt': "We missed some of her marks. They're back there!" };
 function GOAL_WORDS(world: number, type: string): { verb: string; one: string; many: string } | null {
   if (type === 'harvest') {
     const [one, many] = world === 8 ? ['night bloom', 'night blooms'] : ['petal', 'petals'];
