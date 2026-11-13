@@ -722,3 +722,7 @@ lines); Matt sees them in the release.
   1-3 = "by far the easiest of all 3... a 1, maybe a 2"; 1-2 "a little bit harder than 3"; stages may fluctuate, the arc makes World 9
   feel like a 9. R-165.172. This is STAGE-RULES §1 #5's "per-world numbers... a later talk with Matt". Part of his message didn't
   transcribe cleanly ("Close to 4 inches..."): asked him where 1-1 sits.
+- 2026-11-12 8:27 PM ET, Matt: "one's harder than two, two's harder than three"; "get 4 and 5 to start becoming a little bit more difficult
+  and not have it where it's a only kid game... for adults... especially on normal. Easy can stay easier"; "easy, I see as a casual
+  playthrough." Written into STAGE-RULES §1 #5 (the meter's anchors) and the D15 / IDEAS-1-5 packets (1-5 Normal target ~5-6). 1-4's
+  BUILD packet must set a Normal target (~4-5) and revisit D14's "a knock costs a column, never a heart" on Normal.

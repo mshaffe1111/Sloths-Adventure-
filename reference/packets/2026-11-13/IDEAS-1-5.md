@@ -16,6 +16,8 @@ no made things; Pokey wins by being clever and kind, never by hurting anyone; th
 sense in a Central/South American rainforest; behaviour may be storybook).
 Skim for the bar: reference/design/1-3.md and 1-2.md (origin/t-int-2), reference/design/1-4.md (origin/t-14-design), LEVEL-BAR.md.
 
+DIFFICULTY (Matt 11-12 8:27 PM): on Normal 1-5 is harder than 1-1, something an adult wants to beat; Easy stays a casual playthrough.
+
 ## Your output: ONE short list, nothing else
 At most 12 one-line bullets in this order:
 1. THE ONE IDEA (what 1-5 is about, in one line a player would say).
