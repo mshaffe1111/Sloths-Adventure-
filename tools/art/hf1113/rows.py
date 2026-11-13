@@ -161,6 +161,24 @@ def main():
              draw_cost='one drawImage of an atlas frame', used_in='1-4 vine field')
     r['file_kb_ship'] = r['file_kb']
     rows.append(r)
+    # 1-5's dusk set (a far-only set: the sky and far repainted, World 1's own middle and near graded)
+    for part, how in (('sky', 'img2img s0.42 from World 1\'s sky graded to dusk; rows matched to the far\'s top (the 5% overlap)'),
+                      ('far', 'img2img s0.42 from World 1\'s far graded to dusk; wrap join 0.6 = its own column-to-column 0.6'),
+                      ('mid', 'World 1\'s own middle strip, colour-graded to dusk (painting untouched)'),
+                      ('near', 'World 1\'s own near strip, colour-graded to dusk (painting untouched)')):
+        f = GAME / f'src/assets/backdrops/w1dusk-{part}.webp'
+        if not f.exists():
+            continue
+        w, h = Image.open(f).size
+        r = {c: '' for c in COLS}
+        r.update(id=f'backdrops/w1dusk-{part}', source='ART Hugging Face 2026-11-13 (1-5 dusk)', file=f'src/assets/backdrops/w1dusk-{part}.webp',
+                 kind=f'backdrop {part} strip: World 1 at dusk', w=w, h=h, layer='backdrop', world_best=1, worlds=W1 + ' (1-5 at dusk)',
+                 no_fit=NOFIT_WOOD, made_thing='n', engine_slot='stageBackdrops.ts FAR_BY_STAGE set \'w1dusk\' (to wire: 1-5)',
+                 footing='none (backdrop)', ship_px=f'{w}x{h}', file_kb=round(f.stat().st_size / 1024, 1), part='H13',
+                 status='made, not wired (1-5.md:5 "dusk: limbs in last light, roots in shadow")', notes=how,
+                 draw_cost='one strip (drawStrip)', used_in='1-5')
+        r['file_kb_ship'] = r['file_kb']
+        rows.append(r)
     out = GAME / 'reference/art/catalog-rows-hf1113.csv'
     with open(out, 'w', newline='') as fh:
         wr = csv.DictWriter(fh, COLS); wr.writeheader(); wr.writerows(rows)

@@ -39,5 +39,28 @@ def main(far, sky, w1sky, od):
     print('sky', so.shape[1], so.shape[0], 'wrap diff %.1f interior %.1f' % (jd, inner))
 
 
-if __name__ == '__main__':
+if __name__ == '__main__' and sys.argv[1] != 'match':
     main(*sys.argv[1:5])
+
+
+def match_sky(sky_path, far_path):
+    """the engine overlaps the sky's foot on the far's top SKY_OVERLAP (5%) of the far's height (scenery.ts:1809); dusk's repaint left
+    the sky lightest at its foot and the far darkest at its top (a light band at the join), so each sky row's mean is moved onto a ramp
+    from the sky's own top to the far's top colour (cloud detail kept: only each row's mean shifts)"""
+    sky = np.asarray(Image.open(sky_path).convert('RGBA')).astype(np.float32)
+    far = np.asarray(Image.open(far_path).convert('RGB')).astype(np.float32)
+    H = sky.shape[0]
+    target_bot = far[:65].mean((0, 1))
+    top = sky[:32, :, :3].mean((0, 1))
+    rows = sky[..., :3].mean(1)  # H x 3
+    t = np.linspace(0, 1, H)[:, None] ** 1.3
+    want = top * (1 - t) + target_bot * t
+    rgb = sky[..., :3] + (want - rows)[:, None, :]
+    sky[..., :3] = np.clip(rgb, 0, 255)
+    sky[sky[..., 3] == 0, :3] = 0
+    Image.fromarray((sky + .5).astype(np.uint8), 'RGBA').save(sky_path, quality=90, method=6)
+    print('sky foot now', sky[448:, :, :3].mean((0, 1)).round(), 'far top', target_bot.round())
+
+
+if __name__ == '__main__' and len(sys.argv) > 1 and sys.argv[1] == 'match':
+    match_sky(sys.argv[2], sys.argv[3])
