@@ -49,7 +49,8 @@
  "guarana-golden": {
   "take": "find-guarana-37",
   "dest": "pickups",
-  "units": 34
+  "units": 34,
+  "key": "hue"
  },
  "w14-roughbough": {
   "take": "roughbough-23",

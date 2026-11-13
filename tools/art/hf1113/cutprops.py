@@ -34,6 +34,29 @@ def patch(im):
     return out
 
 
+def key_hue(im):
+    """for a piece whose colour sits near the drifted pink key (guarana's red-orange): background = the ring's hue within 22 deg,
+    saturated and bright; a soft ramp to 34 deg; then the biggest piece and any piece touching it"""
+    from scipy import ndimage as ndi
+    a = np.asarray(im.convert('HSV')).astype(np.float32)
+    rgb = np.asarray(im.convert('RGB'))
+    ring = np.concatenate([a[:8].reshape(-1, 3), a[-8:].reshape(-1, 3), a[:, :8].reshape(-1, 3), a[:, -8:].reshape(-1, 3)])
+    h0 = np.median(ring[:, 0])
+    dh = np.abs(((a[..., 0] - h0 + 128) % 256) - 128) * 360 / 256
+    bgish = (a[..., 1] > 90) & (a[..., 2] > 110)
+    alpha = np.where(bgish, np.clip((dh - 22) / 12, 0, 1), 1.0)
+    solid = alpha > 0.5
+    lab, n = ndi.label(solid)
+    if n:
+        sizes = ndi.sum(solid, lab, range(1, n + 1))
+        big = lab == 1 + int(np.argmax(sizes))
+        near = ndi.binary_dilation(big, iterations=6)
+        keep = np.isin(lab, [k for k in range(1, n + 1) if (near & (lab == k)).any() and sizes[k - 1] > 30])
+        alpha = alpha * ndi.binary_dilation(keep, iterations=2)
+    out = np.dstack([rgb, (alpha * 255).astype(np.uint8)])
+    return Image.fromarray(out, 'RGBA')
+
+
 def main(pp, takes, od):
     picks = json.loads(Path(pp).read_text())
     od = Path(od)
@@ -45,6 +68,8 @@ def main(pp, takes, od):
             im = im.crop((round(b[0] * W), round(b[1] * H), round(b[2] * W), round(b[3] * H)))
         if p.get('patch'):
             cut = patch(im)
+        elif p.get('key') == 'hue':
+            cut = key_hue(im)
         else:
             ring = np.asarray(im)
             own = tuple(int(v) for v in np.median(np.concatenate([ring[:6].reshape(-1, 3), ring[-6:].reshape(-1, 3)]), 0))
