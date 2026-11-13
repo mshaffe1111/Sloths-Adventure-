@@ -2,7 +2,7 @@ import React from 'react';
 import { feelClock, speedLabel } from '../game/feelPair.ts';
 
 /**
- * The vine pair test's stopwatch (feelPair.ts; a QA build only, feelPairStage.ts): each climb's last time, grab to standing on the bough,
+ * The vine field test's stopwatch (feelPair.ts; a QA build only, feelPairStage.ts): each climb's last time, grab to standing on the bough,
  * the running one counting up. Upright top middle under the HUD, sideways at the left under the lives (clear of his head), clear of the
  * phone's notch; it takes no taps (the game's thumbs pass
  * through it). It looks at the clock ten times a second and redraws only when a time has changed by a tenth.
@@ -24,7 +24,7 @@ export const FeelPairClock: React.FC = () => {
           <span className="fp-secs">{l.secs === null ? '–' : `${l.secs.toFixed(1)} s`}</span>
         </div>
       ))}
-      <div className="fp-tip">Tap by the sign: two vines at {speedLabel(c.speed)}</div>
+      <div className="fp-tip">Tap by the sign: slide at {speedLabel(c.speed)}</div>
       <style>{CSS}</style>
     </div>
   );

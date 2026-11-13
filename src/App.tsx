@@ -547,7 +547,7 @@ export default function App() {
       // (?level=kit is the puzzle kit's test room, which is in no world's list: kitStage.ts)
       // (&room=seesaw starts the test room at that room's door)
       if (wanted === KIT_STAGE_ID) setKitStart(params.get('room'));
-      // (?level=feel-pair: the vine pair's feel test, a QA build only, straight in with no story: feelPairStage.ts)
+      // (?level=feel-pair: the vine field's feel test, a QA build only, straight in with no story: feelPairStage.ts)
       if (wanted === FEEL_PAIR_ID && feelPairConfig()) {
         playFeelRoom();
         return;
@@ -1015,7 +1015,7 @@ export default function App() {
     });
   }, []);
 
-  // the vine pair's feel test (a QA build only: Matt's test link, feelPairStage.ts): straight into the room, no story, no roll
+  // the vine field's feel test (a QA build only: Matt's test link, feelPairStage.ts): straight into the room, no story, no roll
   const playFeelRoom = useCallback(() => {
     const c = feelPairConfig();
     if (!c) return;
@@ -1514,7 +1514,7 @@ export default function App() {
             runKey={runId}
           />
           <PerfReadout stageId={activeLevel.id} />
-          {/* (the vine pair's feel test: its climb stopwatch, feelPair.ts) */}
+          {/* (the vine field's feel test: its climb stopwatch, feelPair.ts) */}
           {activeLevel.id === FEEL_PAIR_ID && <FeelPairClock />}
           {/* (Meeca's stage has no Dot: her own thoughts are drawn in the stage, meecaPlay.ts) */}
           {/* (Meeca's stage draws its words on the canvas: the same words in the page, for screen readers and QA's bots) */}

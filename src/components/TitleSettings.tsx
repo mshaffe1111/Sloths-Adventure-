@@ -39,7 +39,7 @@ interface TitleSettingsProps {
   /** what the ten taps just did ("4 more…", "All stages and worlds unlocked"): shown on the credit itself, inside this card,
    * because a message behind the card can't be seen (Matt, 2026-10-31: the unlock "got lost" when the menu was redone) */
   creditMsg?: string | null;
-  /** the vine pair's feel test (a QA build only: Matt's test link; feelPairStage.ts): its row heads the About page */
+  /** the vine field's feel test (a QA build only: Matt's test link; feelPairStage.ts): its row heads the About page */
   onFeelTest?: () => void;
 }
 
@@ -125,7 +125,7 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
               <div className="st-row">
                 <PaintedIcon name="leaf" size={40} />
                 <span className="st-row-t">
-                  Vine pair test
+                  Vine field test
                   <small>Test link only: climb one vine, then two</small>
                 </span>
                 <button type="button" className="st-btn" onClick={p.onFeelTest}>

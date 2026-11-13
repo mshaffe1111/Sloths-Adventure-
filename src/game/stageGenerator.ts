@@ -68,6 +68,8 @@ export interface GeneratedStage {
   ropes?: Rope[];
   /** a feel-test room's sign and stopwatch (the QA build's vine pair test: feelPairStage.ts, run by feelPair.ts) */
   feelRoom?: import('./feelPairStage.ts').FeelRoomSpec;
+  /** fruit clusters snagged on a vine field's climbs (vineField.ts: pushed up a vine they tear free and drop) */
+  clusters?: import('./vineField.ts').VineCluster[];
   enemies: Enemy[];
   boss: BossEntity | null;
   collectibles: Collectible[];

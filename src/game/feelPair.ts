@@ -1,6 +1,7 @@
 /**
- * feelPair — the feel room's working parts (feelPairStage.ts; R-165.170): the speed sign at the pair's foot (a tap by it switches the
- * pair between its speeds) and the stopwatch (each climb timed from taking hold at its foot to standing on the bough).
+ * feelPair — the feel room's working parts (feelPairStage.ts: the vine field test, R-165.177): the sign at the field's foot (a tap by it
+ * switches the one-hand slide between its speeds, on every field vine) and the stopwatch (each climb timed, up from the floor to standing
+ * on a bough, or down from the top to the floor, filed under one hand or two by how he spent most of it).
  *
  * The engine makes one FeelRoom from the stage's `feelRoom` and calls `control` once a frame before Pokey moves (it may take the tap)
  * and `drawWorld` with the stage's scenery. The clock's lines live here (`feelClock`), and FeelPairClock.tsx shows them on the screen.
@@ -8,7 +9,6 @@
  */
 import type { PlayerState, Vine } from './types.ts';
 import type { FeelRoomSpec } from './feelPairStage.ts';
-import { CLIMB_SPEED, climbSpeedOf } from './vinePair.ts';
 import { drawKitArt, kitArtReady, kitSize } from './puzzleArt.ts';
 import { canvasLost } from './canvasLost.ts';
 
@@ -19,14 +19,15 @@ const FOOT = 60;
 /** the sign's size (times the kit's signpost) */
 const SIGN_SCALE = 1.55;
 
-export type ClimbKind = 'single' | 'pair';
+/** up or down, and on one hand or two */
+export type ClimbKind = 'up1' | 'up2' | 'down1' | 'down2';
 /** one line of the stopwatch: what was climbed, its last time (null: not yet), and whether it is running now */
 export interface ClockLine {
   label: string;
   secs: number | null;
   running: boolean;
 }
-/** what the screen shows: the lines, and the sign's speed now */
+/** what the screen shows: the lines, and the sign's slide now */
 export interface FeelClock {
   lines: ClockLine[];
   speed: number;
@@ -42,30 +43,33 @@ export const feelClock = (): FeelClock => clock;
 export const speedLabel = (k: number): string => `${Number(k.toFixed(2))}×`;
 
 export class FeelRoom {
-  readonly single: Vine;
-  readonly pair: Vine;
+  readonly field: Vine[];
   private speedAt = 0;
-  /** the climb being timed: which, at what speed, and when it began */
-  private run: { kind: ClimbKind; speed: number; t0: number } | null = null;
+  /** the climb being timed: up or down, the slide then, when it began, and how long of it was on two hands */
+  private run: { up: boolean; speed: number; t0: number; two: number } | null = null;
   private lastY = 0;
-  /** the last time of each climb, by line key ('single', 'pair@2', 'pair@1.6') */
+  private lastT = 0;
+  /** the last time of each climb, by line key */
   private last = new Map<string, number>();
   /** when the sign was last switched (its little wobble) */
   private flippedAt = -10;
   private now = 0;
+  private readonly floor: number;
 
   constructor(readonly spec: FeelRoomSpec, vines: readonly Vine[]) {
-    const s = vines.find((v) => v.id === spec.single);
-    const p = vines.find((v) => v.id === spec.pair);
-    if (!s || !p) throw new Error('feel room: its two climbs are not in the stage');
-    this.single = s;
-    this.pair = p;
-    this.speedAt = Math.max(0, spec.speeds.indexOf(climbSpeedOf(p) / CLIMB_SPEED));
+    this.field = spec.field.map((id) => {
+      const v = vines.find((q) => q.id === id);
+      if (!v || !v.field) throw new Error('feel room: a field vine is not in the stage');
+      return v;
+    });
+    this.floor = Math.max(...this.field.map((v) => v.bottomY));
+    const at = this.field[0].field;
+    this.speedAt = Math.max(0, spec.speeds.indexOf(typeof at === 'object' && at.slide !== undefined ? at.slide : spec.speeds[0]));
     clock = { lines: [], speed: this.speed, rev: clock.rev + 1 };
     this.publish();
   }
 
-  /** the pair's speed now (times the single's) */
+  /** the one-hand slide now (times the climb speed) */
   get speed(): number {
     return this.spec.speeds[this.speedAt];
   }
@@ -76,15 +80,15 @@ export class FeelRoom {
   }
 
   /**
-   * Once a frame, before he moves: a tap by the sign switches the pair's speed (returns true: the tap is taken, no punch), and the
-   * stopwatch follows the climb he is on.
+   * Once a frame, before he moves: a tap by the sign switches the slide (returns true: the tap is taken, no punch), and the stopwatch
+   * follows the climb he is on.
    */
   control(p: PlayerState, tap: boolean, t: number): { took: boolean } {
     this.now = t;
     let took = false;
     if (tap && this.bySign(p)) {
       this.speedAt = (this.speedAt + 1) % this.spec.speeds.length;
-      this.pair.climbSpeed = CLIMB_SPEED * this.speed;
+      for (const v of this.field) v.field = { ...(typeof v.field === 'object' ? v.field : {}), slide: this.speed };
       this.flippedAt = t;
       took = true;
     }
@@ -93,33 +97,44 @@ export class FeelRoom {
     return { took };
   }
 
-  /** the stopwatch: starts as he climbs up from a climb's foot, stops when he stands on the bough, is dropped if he comes off below it */
+  /** the stopwatch: up from the floor to a bough, or down from a bough's height to the floor; dropped if he comes off between */
   private time(p: PlayerState, t: number) {
-    const on = p.climbing ? (Math.abs(p.x - this.single.x) < 1 ? this.single : Math.abs(p.x - this.pair.x) < 1 ? this.pair : null) : null;
-    const goingUp = p.y < this.lastY - 0.5;
+    const dt = t - this.lastT;
+    this.lastT = t;
+    const dy = p.y - this.lastY;
     this.lastY = p.y;
-    if (!this.run && on && goingUp && p.y > on.bottomY - FOOT) {
-      this.run = on === this.pair ? { kind: 'pair', speed: this.speed, t0: t } : { kind: 'single', speed: 1, t0: t };
+    const top = this.spec.top;
+    if (this.run && p.climbing && (p.climbPair ?? 0) > 0) this.run.two += dt;
+    // (a climb that turns back is no climb: dropped, and the way back may be timed from here)
+    if (this.run && p.climbing && (this.run.up ? dy > 0.5 : dy < -0.5)) this.run = null;
+    if (!this.run) {
+      if (p.climbing && dy < -0.5 && p.y > this.floor - FOOT) this.run = { up: true, speed: this.speed, t0: t, two: 0 };
+      else if (p.climbing && dy > 0.5 && p.y < top + FOOT) this.run = { up: false, speed: this.speed, t0: t, two: 0 };
       return;
     }
-    if (!this.run || p.climbing) return;
-    if (p.grounded && p.y <= this.spec.top + 8) {
-      this.last.set(keyOf(this.run.kind, this.run.speed), t - this.run.t0);
-      this.run = null;
-    } else if (p.grounded || p.y > this.spec.top + 40) this.run = null;
+    if (p.climbing) return;
+    const r = this.run;
+    const secs = t - r.t0;
+    const two = r.two > secs / 2;
+    if (r.up && p.grounded && p.y <= top + 8) this.last.set(two ? 'up2' : 'up1', secs);
+    // (down: he steps off the vine's foot a few px over the floor, not yet grounded: engine.ts Exit B)
+    else if (!r.up && p.y >= this.floor - 12) this.last.set(two ? 'down2' : `down1@${r.speed}`, secs);
+    if (p.grounded || !r.up) this.run = null;
   }
 
-  /** the lines: the single, then the pair at each of the room's speeds */
+  /** the lines, in a fixed order (a line that jumped when the sign was switched read as a new time) */
   private publish() {
     const live = this.run ? this.now - this.run.t0 : 0;
     const lines: ClockLine[] = [];
-    const add = (kind: ClimbKind, speed: number, label: string) => {
-      const running = !!this.run && this.run.kind === kind && this.run.speed === speed;
-      lines.push({ label, secs: running ? live : this.last.get(keyOf(kind, speed)) ?? null, running });
+    const runKey = this.run ? (this.run.up ? (this.run.two > live / 2 ? 'up2' : 'up1') : this.run.two > live / 2 ? 'down2' : `down1@${this.run.speed}`) : '';
+    const add = (key: string, label: string) => {
+      const running = key === runKey;
+      lines.push({ label, secs: running ? live : this.last.get(key) ?? null, running });
     };
-    add('single', 1, 'One vine');
-    // (in a fixed order, the room's: a line that jumped when the sign was switched read as a new time)
-    for (const s of this.spec.speeds) add('pair', s, `Two vines ${speedLabel(s)}`);
+    add('up1', 'Up, one hand');
+    add('up2', 'Up, two hands');
+    for (const s of this.spec.speeds) add(`down1@${s}`, `Slide down ${speedLabel(s)}`);
+    add('down2', 'Down, two hands');
     // (only a change a tenth of a second or more is a new picture)
     const same = clock.speed === this.speed && clock.lines.length === lines.length &&
       clock.lines.every((l, i) => l.label === lines[i].label && l.running === lines[i].running && tenths(l.secs) === tenths(lines[i].secs));
@@ -127,7 +142,7 @@ export class FeelRoom {
     clock = { lines, speed: this.speed, rev: clock.rev + 1 };
   }
 
-  /** the sign at the pair's foot: the kit's painted signpost, its board lettered with the speed (baked once a speed: lettering()) */
+  /** the sign at the field's foot: the kit's painted signpost, its board lettered with the slide (baked once a speed: lettering()) */
   drawWorld(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number }) {
     const { x, y } = this.spec.sign;
     if (x < view.x0 - 100 || x > view.x1 + 100 || !kitArtReady()) return;
@@ -149,7 +164,6 @@ export class FeelRoom {
   }
 }
 
-const keyOf = (kind: ClimbKind, speed: number) => (kind === 'single' ? 'single' : `pair@${speed}`);
 const tenths = (s: number | null) => (s === null ? -1 : Math.floor(s * 10));
 
 /** the speed lettered as if burnt into the board (baked once per label, again if the phone takes the canvas back: LESSONS D6, and once

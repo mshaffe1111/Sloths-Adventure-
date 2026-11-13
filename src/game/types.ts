@@ -441,6 +441,12 @@ export interface Vine {
   pair?: number;
   /** how fast a climb is climbed, up or down (px/s; vinePair.ts climbSpeedOf). Unset: CLIMB_SPEED, 220, every single climb */
   climbSpeed?: number;
+  /**
+   * a climb (`tree_climb`) in a vine field (1-4.md, R-165.177; vineField.ts): a push toward a field vine in reach takes it in the other
+   * hand, again lets go of the old one (Matt's rule); one hand slides down, two climb up quicker. `true`: the field's default numbers
+   * (vineField.ts FIELD_FEEL), or the piece's own. Unset: a climb as it always was
+   */
+  field?: true | Partial<import('./vineField.ts').FieldFeel>;
 }
 
 /** A rope stretched across a gap. Pokey can hang from it and shimmy along it once he has learned the skill (see rope.ts). */

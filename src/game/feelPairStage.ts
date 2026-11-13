@@ -1,53 +1,60 @@
 /**
- * feelPairStage — Matt's feel test for the two-vine climb (R-165.170, FEEL-PAIR; 1-4.md piece 4): one single vine and one draped pair
- * side by side, the same height, on World 1's forest floor, before 1-4 is built on it. Matt plays the pair ALONE here and decides if it
- * stays (Matt, 11-12: "I'm afraid that we're gonna try to use something that just won't work").
+ * feelPairStage — Matt's feel test for the vine field (R-165.177, LATTICE; F15's FEEL-LATTICE.md, 1-4.md "The vine field"): a small field
+ * of short vines on World 1's forest floor, before 1-4 is built on it, to play Matt's rule (vineField.ts: a push toward a vine in reach
+ * takes it in the other hand, again lets go of the old one) and pushing a fruit cluster up its vine. It REPLACES v1's single-and-pair
+ * room (FEEL-PAIR, R-165.170) in place: the same entry, the same id.
  *
  * In a QA build only (Matt's test link, the dev server: playRecorder.ts qaBuild), never the shipped game: the Settings card's About page
- * on the title has a "Vine pair test" row there (TitleSettings.tsx), and `#autostart=1&level=feel-pair` opens it too. Elsewhere the room
+ * on the title has a "Vine field test" row there (TitleSettings.tsx), and `#autostart=1&level=feel-pair` opens it too. Elsewhere the room
  * does not exist: feelPairConfig() is null and generateStage never sees its id.
  *
- * The room: the floor (sound footing under both climbs), a single kapok climb on the left, the pair (one liana draped over the bough,
- * its two strands PAIR_GAP apart) on the right, 120 px+ apart (1-4.md), both up to one sound top FEEL.rise over the floor (the single's
- * perch and the pair's bough, end to end) with a flag on it. A signpost at the pair's foot shows its speed (2x or 1.6x the single's); a tap by it switches (feelPair.ts). A stopwatch
- * on screen times each climb, grab to standing on the bough (FeelPairClock.tsx). Nothing hurts, nothing falls, no exit: Matt leaves by
- * the pause menu.
+ * The room, left to right: a sign (the one-hand slide, 2x or 1.6x: a tap by it switches, feelPair.ts); five vines 80 px apart, 450 px
+ * tall, from a bough to the floor; six vines of mixed lengths (150-450 px) from a second bough, one 110 px gap he must jump; three vines
+ * with two fruit clusters on them to push up (a third bough). A stopwatch times each climb from the floor to a bough (FeelPairClock.tsx).
+ * Nothing falls on him, nothing hurts, no exit: Matt leaves by the pause menu. Stand-ins named plainly: the field vines are World 1's
+ * painted vine hung straight, the clusters are code-drawn, Pokey's two-vine climb is v1's pair climb (vineFieldArt.ts; R-165.178).
  */
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, LevelConfig, Platform, Vine } from './types.ts';
 import { qaBuild } from './playRecorder.ts';
-import { CLIMB_SPEED, PAIR_GAP, PAIR_SPEEDS } from './vinePair.ts';
+import { FIELD_FEEL, type VineCluster } from './vineField.ts';
 
 export const FEEL_PAIR_ID = 'feel-pair';
 
+/** the slides Matt tries on the sign (times the climb speed; FEEL-LATTICE §4), the first where it starts */
+export const SLIDE_SPEEDS = [FIELD_FEEL.slide, 1.6] as const;
+
 /**
- * The room's numbers (world px). The climb is about three storeys: 720 px, eight of Pokey's drawn height (89.1, heroSprite.ts; LESSONS
- * D41), so the single takes about 3.3 s, the pair 1.6-2.0 s. The single and the pair stand 160 apart (1-4.md: 120 px+ from the nearer
- * strand), so an upright phone shows both; the sign beside the pair's foot, out of its grab reach (vinePair.ts climbReach: 54 + 20).
+ * The room's numbers (world px). Each field hangs from a bough FEEL.rise over the floor (450: five of Pokey's drawn height, 89.1,
+ * heroSprite.ts; LESSONS D41). Each vine is [x, length]; a length short of the rise ends in the air.
  */
 export const FEEL = {
   floor: 1300,
-  rise: 720,
+  rise: 450,
   /** how much of the world shows under the floor's top (px) */
   below: 130,
-  width: 1500,
-  spawn: 260,
-  single: 680,
-  pair: 840,
-  sign: 950,
-  /** the top, one walk across: the single's own perch (the kapok's painted perch, protoArt.ts drawPerchArt), then the bough the pair is
-   *  draped over, meeting it (a plank across both read as a post holding a beam, and the trunk is a plant) */
-  perch: [640, 800] as const,
-  bough: [800, 940] as const,
+  width: 2300,
+  spawn: 220,
+  sign: 420,
+  /** lane 1: five vines 80 apart, floor to bough */
+  even: [[600, 450], [680, 450], [760, 450], [840, 450], [920, 450]] as ReadonlyArray<readonly [number, number]>,
+  evenBough: [540, 980] as const,
+  /** lane 1, on: six of mixed lengths, one 110 px gap (1320 to 1430) he must jump */
+  mixed: [[1160, 450], [1240, 300], [1320, 380], [1430, 420], [1510, 150], [1590, 330]] as ReadonlyArray<readonly [number, number]>,
+  mixedBough: [1100, 1650] as const,
+  /** lane 3: three vines, a cluster low on the first and one higher on the third */
+  push: [[1860, 450], [1940, 450], [2020, 450]] as ReadonlyArray<readonly [number, number]>,
+  pushBough: [1800, 2080] as const,
+  /** the clusters: which push vine (index), its bottom over the floor, its height */
+  clusters: [[0, 150, 56], [2, 300, 56]] as ReadonlyArray<readonly [number, number, number]>,
 } as const;
 
-/** what the engine's feel room needs (feelPair.ts FeelRoom): the two climbs' ids, the sign's foot, the bough's top */
+/** what the engine's feel room needs (feelPair.ts FeelRoom): the field's vine ids, the sign's foot, the boughs' top */
 export interface FeelRoomSpec {
-  single: number;
-  pair: number;
+  field: number[];
   sign: { x: number; y: number };
   top: number;
-  /** the pair's speeds (times the single's), the first its start */
+  /** the one-hand slides (times the climb speed), the first its start */
   speeds: readonly number[];
 }
 
@@ -58,14 +65,14 @@ export function feelPairConfig(): LevelConfig | null {
     worldIndex: 1,
     miniIndex: 14,
     id: FEEL_PAIR_ID,
-    name: 'Vine Pair Test',
+    name: 'Vine Field Test',
     objectiveType: 'sprint',
     targetCount: 1,
     timeLimit: 0,
     levelWidth: FEEL.width,
     // (the level ends just under the floor's bank, so the camera rests on the floor: 300 below it showed half a screen of soil sideways)
     levelHeight: FEEL.floor + FEEL.below,
-    description: 'One vine or two: climb each and feel the difference.',
+    description: 'Push toward a vine for two hands; again to let go of the old one.',
     unlocked: true,
     completed: false,
     stars: 0,
@@ -78,17 +85,22 @@ export function feelPairConfig(): LevelConfig | null {
 export function buildFeelPairStage(config: LevelConfig): GeneratedStage & { feelRoom: FeelRoomSpec } {
   const G = FEEL.floor;
   const top = G - FEEL.rise;
+  const bough = (id: number, [x0, x1]: readonly [number, number]): Platform =>
+    // (a bough's top is 2 px under the climbs' top: engine.ts Exit A)
+    ({ id, x: x0, y: top + 2, width: x1 - x0, height: 26, type: 'solid', style: 'branch' });
   const P: Platform[] = [
     // the forest floor, one sound bank wall to wall
     { id: 1, x: 0, y: G, width: FEEL.width, height: 90, type: 'solid', style: 'log' },
-    // the top: the single's perch and the pair's bough, end to end (a perch's top is 2 px under the climb's top: engine.ts Exit A)
-    { id: 2, x: FEEL.perch[0], y: top + 2, width: FEEL.perch[1] - FEEL.perch[0], height: 26, type: 'solid', style: 'branch' },
-    { id: 3, x: FEEL.bough[0], y: top + 2, width: FEEL.bough[1] - FEEL.bough[0], height: 26, type: 'solid', style: 'branch' },
+    bough(2, FEEL.evenBough),
+    bough(3, FEEL.mixedBough),
+    bough(4, FEEL.pushBough),
   ];
-  const V: Vine[] = [
-    { id: 1, x: FEEL.single, topY: top, bottomY: G, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' },
-    { id: 2, x: FEEL.pair, topY: top, bottomY: G, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb', pair: PAIR_GAP, climbSpeed: CLIMB_SPEED * PAIR_SPEEDS[0] },
-  ];
+  const V: Vine[] = [];
+  for (const [x, len] of [...FEEL.even, ...FEEL.mixed, ...FEEL.push]) {
+    V.push({ id: V.length + 1, x, topY: top, bottomY: top + len, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb', field: { slide: SLIDE_SPEEDS[0] } });
+  }
+  const pushAt = FEEL.even.length + FEEL.mixed.length;
+  const K: VineCluster[] = FEEL.clusters.map(([i, over, h], n) => ({ id: n + 1, vine: V[pushAt + i].id, y: G - over, h }));
   const C: Collectible[] = [];
   return {
     config: { ...config, levelWidth: FEEL.width, levelHeight: G + FEEL.below },
@@ -104,11 +116,11 @@ export function buildFeelPairStage(config: LevelConfig): GeneratedStage & { feel
     // (no door: the room is left from the pause menu)
     exitTotemX: 0,
     exitTotemY: G,
-    // the flag at the top, on the bough between the two climbs
-    checkpoints: [{ x: (FEEL.single + FEEL.pair) / 2, y: top + 2, reached: false }],
+    checkpoints: [],
     zones: [],
     meta: { attempt: 1, chunks: [], width: FEEL.width },
     proto: { hints: [], covers: [], beats: [] },
-    feelRoom: { single: 1, pair: 2, sign: { x: FEEL.sign, y: G }, top, speeds: PAIR_SPEEDS },
+    clusters: K,
+    feelRoom: { field: V.map((v) => v.id), sign: { x: FEEL.sign, y: G }, top, speeds: SLIDE_SPEEDS },
   } as GeneratedStage & { feelRoom: FeelRoomSpec };
 }
