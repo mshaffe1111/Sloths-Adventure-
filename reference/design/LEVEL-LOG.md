@@ -18,3 +18,5 @@ the first: count levels that reach his test link at the bar, against the usage %
 | Member | Job | Cost | What it bought |
 |---|---|---|---|
 | Critic (session_01FhBbYL2LcFRBpSzwjeZ98U) | cold audit of the new lead's review, 2 rounds | $3.30 | caught 4 real errors in the lead's plan before anyone acted on them |
+| ART1 (session_01FhBbYMvThjGLVUA8nE3ZmA) | art, blocked: no Hugging Face access in its session | $2.25 | a plan + handover for ART2; $0 HF. Cause: the HF connector was disconnected (fixed by Matt 10:20 AM) |
+| Story keeper, old session (session_019iachLiuwNTAZUBSJWUmR3) | two answers at handover, then retired | ~$6.36 | the open story list; failed 1 of 3 recall questions |
