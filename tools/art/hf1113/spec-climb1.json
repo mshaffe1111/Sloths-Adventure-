@@ -1,0 +1,61 @@
+{
+ "tag": "climb1",
+ "edits": [
+  {
+   "name": "c1-reachL",
+   "src": "gh:60d23a6fbe52d584b87a8f567da1862fb0b88f4b:reference/art/hf1113/starts/climb-hang.png",
+   "w": 1024,
+   "h": 1024,
+   "prompt": "The friendly brown three-toed sloth is climbing up between the two vertical vines, facing us, his body hanging in the middle between them, one paw gripping each vine, his arms stretched out wide to the sides and up, his claws curled round the vines. His left arm (on the left of the picture) reaches high up the left vine above his head, gripping it; his other arm is lower, bent, gripping the right vine at the height of his shoulder; his left knee is raised, his other leg hangs down. Keep everything else exactly as in the picture: the same face and eyes, the same brown fur and cream belly and cream face, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag at his hip, the same thin dark outline, the same soft painted storybook cartoon style, the same size, the same two vines in the same places, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, bar between his paws, stick, rope between the vines, branch, third vine, changed face, different eyes, missing wrist wraps, missing satchel, background scenery, ground, shadow, photo, 3d render, text, watermark, blurry, back view, side view, tail",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "lora": 0.6
+  },
+  {
+   "name": "c1-reachR",
+   "src": "gh:60d23a6fbe52d584b87a8f567da1862fb0b88f4b:reference/art/hf1113/starts/climb-hang.png",
+   "w": 1024,
+   "h": 1024,
+   "prompt": "The friendly brown three-toed sloth is climbing up between the two vertical vines, facing us, his body hanging in the middle between them, one paw gripping each vine, his arms stretched out wide to the sides and up, his claws curled round the vines. His right arm (on the right of the picture) reaches high up the right vine above his head, gripping it; his other arm is lower, bent, gripping the left vine at the height of his shoulder; his right knee is raised, his other leg hangs down. Keep everything else exactly as in the picture: the same face and eyes, the same brown fur and cream belly and cream face, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag at his hip, the same thin dark outline, the same soft painted storybook cartoon style, the same size, the same two vines in the same places, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, bar between his paws, stick, rope between the vines, branch, third vine, changed face, different eyes, missing wrist wraps, missing satchel, background scenery, ground, shadow, photo, 3d render, text, watermark, blurry, back view, side view, tail",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "lora": 0.6
+  },
+  {
+   "name": "c1-pull",
+   "src": "gh:60d23a6fbe52d584b87a8f567da1862fb0b88f4b:reference/art/hf1113/starts/climb-hang.png",
+   "w": 1024,
+   "h": 1024,
+   "prompt": "The friendly brown three-toed sloth is climbing up between the two vertical vines, facing us, his body hanging in the middle between them, one paw gripping each vine, his arms stretched out wide to the sides and up, his claws curled round the vines. Both paws grip the vines at the same height just above his head, his elbows bent out to the sides as he pulls himself up, both knees tucked up under him. Keep everything else exactly as in the picture: the same face and eyes, the same brown fur and cream belly and cream face, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag at his hip, the same thin dark outline, the same soft painted storybook cartoon style, the same size, the same two vines in the same places, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, bar between his paws, stick, rope between the vines, branch, third vine, changed face, different eyes, missing wrist wraps, missing satchel, background scenery, ground, shadow, photo, 3d render, text, watermark, blurry, back view, side view, tail",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "lora": 0.6
+  },
+  {
+   "name": "c1-hang",
+   "src": "gh:60d23a6fbe52d584b87a8f567da1862fb0b88f4b:reference/art/hf1113/starts/climb-hang.png",
+   "w": 1024,
+   "h": 1024,
+   "prompt": "The friendly brown three-toed sloth is climbing up between the two vertical vines, facing us, his body hanging in the middle between them, one paw gripping each vine, his arms stretched out wide to the sides and up, his claws curled round the vines. Both paws grip the vines at the same height above his head, his arms straight out in a wide V, his body hanging long and relaxed between them, his legs hanging down. Keep everything else exactly as in the picture: the same face and eyes, the same brown fur and cream belly and cream face, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag at his hip, the same thin dark outline, the same soft painted storybook cartoon style, the same size, the same two vines in the same places, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, bar between his paws, stick, rope between the vines, branch, third vine, changed face, different eyes, missing wrist wraps, missing satchel, background scenery, ground, shadow, photo, 3d render, text, watermark, blurry, back view, side view, tail",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "lora": 0.6
+  }
+ ]
+}
