@@ -22,7 +22,7 @@
   "units": 70
  },
  "w15-leafsign-down": {
-  "take": "leafsign-down-11",
+  "take": "leafsign-down2-23",
   "dest": "w1-1113",
   "units": 70
  },
@@ -49,10 +49,9 @@
   "units": 27
  },
  "guarana-golden": {
-  "take": "find-guarana-37",
+  "take": "find-guarana-g-23",
   "dest": "pickups",
-  "units": 34,
-  "key": "hue"
+  "units": 34
  },
  "w14-roughbough": {
   "take": "roughbough-23",
