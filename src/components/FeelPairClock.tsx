@@ -42,7 +42,7 @@ const CSS = `
 .fp-line { display: flex; justify-content: space-between; gap: 14px; }
 .fp-line.on { color: #fde047; }
 .fp-secs { font-variant-numeric: tabular-nums; min-width: 44px; text-align: right; }
-.fp-tip { margin-top: 3px; font-size: 11px; color: rgba(253, 246, 227, 0.75); text-align: center; }
+.fp-tip { margin-top: 3px; font-size: 12px; color: rgba(253, 246, 227, 0.75); text-align: center; }
 /* sideways the view is short and his head climbs through its top middle (45-50% feet, measured): there it sits at the left, under the
    lives, where he never is (the camera keeps him 40% across) */
 @media (orientation: landscape) and (max-height: 500px) {
