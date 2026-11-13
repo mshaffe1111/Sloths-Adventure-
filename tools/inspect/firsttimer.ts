@@ -55,6 +55,7 @@ const QUOTA_TYPES = new Set(['harvest', 'purge', 'relic_hunt', 'rescue', 'gauntl
 import { buildRoll } from './eraRoll.ts';
 import { STAGE_SECONDS } from '../../src/game/protoStage.ts';
 import { sampleRoute } from './beats.ts';
+import { towerRoutePts } from './towerRoute.ts';
 import type { Stage } from './stages.ts';
 
 // a phone: the lessons and tips say "slide" and "flick", not keys (lessons.ts lessonInputMode reads pointer: coarse)
@@ -889,6 +890,8 @@ export class FirstTimerRun {
   private climbVine: unknown = null;
   /** in a vine field: the figs under a shut gate pushed free, a pod's column stepped off (figPush.ts) */
   private figs: FigPush | null = null;
+  /** this frame's want is a fig push's tap (or its let-go): kept as it is, never run through the thumb (tapped) */
+  private figTap = false;
   private climbDown = false;
   private climbTurned = false;
   /** he was on a trunk when the last choice was made */
@@ -1029,8 +1032,12 @@ export class FirstTimerRun {
       let route = findRoute(st, []);
       // (the engine's own copy of a stage with puzzle rooms or Dot's pulley is changed as it loads, and the check cannot follow it: the
       // route is then traced on the stage as built, the same roll and setting, as the inspector traces it, round 5 2026-10-29)
-      if (route.traced === 'failed') route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), []);
-      pts = route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y }));
+      // (a tower the inspector cannot trace: the stage's own laid route, each turn's climb where its vine stands (towerRoute.ts), before
+      // any rebuild: buildRoll's roll of a LISTED tower is not the proven variant he plays, and its route led him under the storey
+      // above to dither (1-4 seed 1: 'the way on is 123 px up' at a vine he never walked to; INT-4 11-13))
+      const tower = route.traced === 'failed' ? towerRoutePts(st, this.sim.p) : null;
+      if (route.traced === 'failed' && !tower) route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), []);
+      pts = tower ?? (route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y })));
       // (no route the inspector can trace: the straight line from the spawn to the shrine gives him a way to head, and the run is marked)
       if (!pts.length && st.exitTotemX) {
         this.noRoute = true;
@@ -1464,7 +1471,10 @@ export class FirstTimerRun {
     // in a vine field (figPush.ts): under a shut gate, the figs pushed free; a pod's tell on his column, a vine over
     if (p.climbing) {
       const fig = (this.figs ??= new FigPush(who.stopReact)).step(e as unknown as FieldView, p, t);
-      if (fig) return fig;
+      if (fig) {
+        this.figTap = true;
+        return fig;
+      }
     }
     // on a trunk: straight up to its top (down where the way goes down), then off it with a flick the way on
     if (p.climbing) {
@@ -1908,6 +1918,16 @@ export class FirstTimerRun {
   }
 
   /** the thumb's own fumbles on top of what he means: drift into the dead zone, travel when turning, a late lift-off */
+  /** a fig push (figPush.ts) is a tap and a let-go, each kept as it is: the thumb's late lift-off re-arms every frame for KID and ADULT
+   *  (thumbify, R-165.59), so their taps ran together into one long hold, the engine saw one press (sideLatch), and under 1-4's shut gate
+   *  he held on a field vine until the clock ran out (INT-4, 11-13). A tap game is played with taps: none of his thumb's drift here. */
+  private tapped(want: Pad): Pad {
+    this.lastSteer = want.right ? 1 : want.left ? -1 : 0;
+    this.releaseLeft = 0;
+    this.releaseArmed = false;
+    return want;
+  }
+
   private thumbify(want: Pad): Pad {
     const who = this.who, t = this.t;
     const steer: -1 | 0 | 1 = want.right ? 1 : want.left ? -1 : 0;
@@ -1948,7 +1968,9 @@ export class FirstTimerRun {
   }
 
   private pad(): Pad {
-    const out = this.thumbify(this.rhythm(this.intend()));
+    this.figTap = false;
+    const want = this.rhythm(this.intend());
+    const out = this.figTap ? this.tapped(want) : this.thumbify(want);
     this.wasOnTrunk = !!this.sim.p.climbing;
     if (out.press) this.lastPress = this.t;
     return out;

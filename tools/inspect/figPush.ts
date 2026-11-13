@@ -29,6 +29,8 @@ export interface FieldView {
 const UNDER = 34;
 /** a push is a press and a let-go: the frames each lasts (the engine steps on the press, engine.ts sideLatch) */
 const PRESS = 3;
+/** s of pressing down without moving before he takes the way across instead */
+const DOWN_STALL = 0.6;
 
 export class FigPush {
   private target: VineCluster | null = null;
@@ -38,6 +40,8 @@ export class FigPush {
   /** when it last acted (a push, a step aside, a climb for a fig) and when a pod last knocked him off */
   private lastAct = -1e9;
   private lastKnock = -1e9;
+  /** where he last moved and when (a push or a climb that does not move him is stalled) */
+  private movedAt = { x: -1e9, y: -1e9, t: 0 };
 
   /** it is at work (going for a fig, or stepping off a pod's column): the bot's no-progress clock is not running (firsttimer.ts) */
   busy(t: number): boolean {
@@ -75,6 +79,7 @@ export class FigPush {
   /** this frame's thumb, or null (the bot's own climb) */
   step(v: FieldView, p: PlayerState, t: number): Pad | null {
     if ((v.knocked ?? 0) > 0) this.lastKnock = t;
+    if (Math.abs(p.x - this.movedAt.x) > 2 || Math.abs(p.y - this.movedAt.y) > 2) this.movedAt = { x: p.x, y: p.y, t };
     const pad = this.choose(v, p, t);
     if (pad) this.lastAct = t;
     return pad;
@@ -122,6 +127,9 @@ export class FigPush {
         const dir = this.sideVine(v, cv, -1, p.y) ? -1 : 1;
         return this.push(dir);
       }
+      // (down does not take him: a bunch on a vine he holds is under his hands, and no vine is climbed down past its figs. A player
+      // goes across, toward the fig he wants, and down there: 1-4 seed 2, two vines held over a bunch, he pressed down for 1200 s)
+      if (t - this.movedAt.t > DOWN_STALL) return this.push(cv.x > p.x + 1 ? 1 : cv.x < p.x - 1 ? -1 : (h.a.x < p.x ? 1 : -1));
       return { down: true };
     }
     // under it: across toward its vine
