@@ -837,3 +837,13 @@ lines); Matt sees them in the release.
 - 2026-11-13 9:16 AM ET: 0.9.7 PR #70 OPEN (https://github.com/mshaffe1111/Sloths-Adventure-/pull/70; release-0.9.7@f63ac487 = main + t-int-2@f01c76f7 + t-bc-fix@5fa60568 + version/What's New), mergeable clean, not draft. Every gate PASS on f66f32ec except funcheck (advisory, not in CI; main fails too): Matt ACCEPTED it. EnK5 v252 = this candidate. REL-097 retired. Lead subscribed to the PR to check the deploy + APK after Matt merges. (Overnight the session restarted; the PR was opened at 9:16 AM ET 11-13.)
 - 2026-11-13 9:18 AM ET: MATT MERGED PR #70 (0.9.7). Deploy + APK runs not listed yet; deploy check armed (+15 min).
 - 2026-11-13 9:45 AM ET: 0.9.7 LIVE. Merge d8d6a973: Publish to gh-pages run 43441537428 success; APK run 43441537394 success; release v0.9.7-39 "Sloths Adventure v0.9.7 (Nov 13, 2026)" on the Releases page (https://github.com/mshaffe1111/Sloths-Adventure-/releases/tag/v0.9.7-39); gh-pages 8c4f6606 "Publish d8d6a97" carries version 0.9.7 and "Petals and snakes, rebuilt". R-165.163 and R-165.125 shipped. The team is paused; the next lead starts on Matt's go.
+- 2026-11-13 10:02 AM ET: NEW LEAD session_01FhBbYNzGRJBDMzn6XbtQK2 in place (9:54 AM). Docs from ccr-702d3c49-i33jeq brought onto main's 0.9.7 base (4c82d041).
+  Story keeper told the new id; it owes nothing unsent: three lines for Matt (R-165.175 teach, R-165.171 coach, R-165.165 bell; in "Decisions
+  waiting on Matt") + the optional About line; it waits on the lead for 1-4's vine rework doc (story + nature check).
+  Cold review reference/notes/lead-review-2026-11-13.md sent to a cold Critic (session_01FhBbYL2LcFRBpSzwjeZ98U, branch t-crit-lead-review-1113);
+  nothing in it acted on before PASS. Check-in armed (trig_01Cg7fjXs2iUr1DsFdZtpjNF, 10:31 AM). No team scheduled tasks existed to re-create.
+  STORY KEEPER HEALTH CHECK (closed book; its session at 680k context, $3,924 lifetime): Q1 Pocono/Matt's cats RIGHT; Q3 judgment (a "Wait!
+  Slow down... pear" line mid-creek) RIGHT, five reasons all in its rules; Q2 RIGHT on "under 10 words", WRONG on who says piece lines in
+  10-1..10-5 (it said Flicker carries wayside lines; its own bible STORY-KEEPER.md:114 and DOT-LINES-2026-10-31.md:3 say Pokey). 2 of 3 =
+  REMAKE the session (PM.md §9; the role is never replaced). Done on Matt's go (team paused): successor from the persona, STORY-KEEPER.md,
+  NEW-LEAD-FROM-STORY-KEEPER.md (11-12 update) and STORY-LINES 11-12; same test; then the old session stops; lead.md, roles/README.md, Matt told.
