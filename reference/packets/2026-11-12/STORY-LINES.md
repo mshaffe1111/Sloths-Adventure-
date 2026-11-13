@@ -494,3 +494,8 @@ version '0.9.7', date '2026-11-12', title: **Petals and snakes, rebuilt**
 - Smoother on phones, with lots of small fixes.
 
 **0.9.7 What's New APPROVED by the lead** (11:02 PM ET); its date is set to 2026-11-13, the day it goes live. The text is unchanged.
+**0.9.7 What's New items 1-3, reworded for whatsNew.test.ts (each 90 characters or fewer; no "branch"; 11:10 PM ET):**
+1. The Petal Trail is rebuilt: mushroom bounces over the thorns, following Meeca's petals. (87)
+2. Touch a thorn and you only go back a little. Something is hidden down by the roots. (83)
+3. The snake stage is rebuilt: punch a vine, a hive drops, and the snake glides off unhurt. (88)
+Items 4-6 and the title are unchanged.
