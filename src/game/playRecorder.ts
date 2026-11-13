@@ -84,6 +84,9 @@ export function qaBuild(): boolean {
 /** the control test is on: #ctest in the address (the only part a shared Claude link passes on) or ?ctest=1, in any build, the live
  *  site included: the testers' link opens it there (Matt, 2026-10-29: "Only for that link. The full game should be unaffected"), and a
  *  player without that link never sees it */
+/** the stage the testers' link (#ctest on the live site) plays: 1-3, the designed level (Matt, 11-12 2:39 PM ET, R-165.157; 1-1 before) */
+export const CTEST_LEVEL_ID = '1-3';
+
 export function ctestEnabled(): boolean {
   if (STORE) return false;
   try {
