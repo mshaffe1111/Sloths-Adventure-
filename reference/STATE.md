@@ -744,3 +744,4 @@ lines); Matt sees them in the release.
   started on Opus MAX.
   DIFF-ALGO started: Opus MAX, session_01FhBbYLkEmfNhWBz7cCsNXu, t-diff-algo, stop 1:30 AM. ENG-ASCENT cost $0.37 before the stop.
 - 2026-11-12 8:36 PM ET, Matt's ratings after playing on Normal (the meter's anchors): 1-1 = 4, 1-2 = 2 maybe 3, 1-3 = 1. Sent to DIFF-ALGO; STAGE-RULES §1 #5 updated.
+- 2026-11-12 8:37 PM ET, Matt: 1-1 "possibly could be a 5": anchors 1-1 = 4-5, 1-2 = 2-3, 1-3 = 1 (sent to DIFF-ALGO; STAGE-RULES).
