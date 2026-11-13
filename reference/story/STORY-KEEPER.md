@@ -451,3 +451,13 @@ his taste. Matt keeps the final say. This replaces "each needs Matt's okay" on e
 - "I'll wait!" is Dot about herself (her lateness secret), not a stillness or wait instruction to Pokey.
 - The optional About line ("We weighed 84 ideas... 65 made it in"): NO. About claims only what ships; most of the 65 are in worlds not
   yet built, and the count goes stale as the game grows. Revisit at launch.
+
+**11-13 11:50 AM ET calls:**
+- R-165.192 (1-4 freed bunches fall down their column): OK with two fixes. A bunch lands BESIDE an animal, never on it (1-4.md:54),
+  and never falls while the oropendola is in that column. Figs land WHOLE and bounce, never splat. First startle (beat 9's snake),
+  Pokey: "Didn't touch you. Technically." (4 words, counted).
+- R-165.193 (the fruit ring and its extra life): the story wrapper. Pokey gathers for Meeca's welcome-home table (she is the host who
+  thanks everyone; the ending's tea table). It is a gift, never his food, so "nobody thinks about eating" holds. A full ring is a full
+  basket: something to bring her, and that is what gets him up again (the extra life is resolve, "I have to save her"). Shown, no
+  words: the ring's icon is a small woven basket. Payoff at the ending: the fruit on the tea table, no line. Guarana (the hidden find):
+  REAL, Amazonian; draw the red pod split open, black seeds in white rims.
