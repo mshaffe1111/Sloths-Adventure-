@@ -36,7 +36,7 @@ function taughtBy(s: RealPlay): number | null {
  * between its walls, still: what happens. `noLedge` forgets the ledge first (a planted fault: nowhere to put him back). The player's
  * x is his centre and y his feet (engine.ts: the hurt floor is met when his centre is inside the zone and his feet reach its line).
  */
-function dropInto(s: RealPlay, z: Zone, noLedge = false): { fell: boolean; heart: boolean; backOn: Platform | null } {
+function dropInto(s: RealPlay, z: Zone, noLedge = false, fromY = z.y! - 140): { fell: boolean; heart: boolean; backOn: Platform | null } {
   const e = s.e as Any, p = s.p;
   const safe = s.platforms.filter((q) => q.type === 'solid' && !q.broken && q.pit !== 'hurt' && q.width >= 200 && q.x + q.width <= z.x0 + 2 && q.x + q.width > z.x0 - 1600)
     .sort((a, b) => b.x + b.width - (a.x + a.width))[0];
@@ -47,7 +47,7 @@ function dropInto(s: RealPlay, z: Zone, noLedge = false): { fell: boolean; heart
   // (a heart is counted where the engine counts it, heartFall's statHeartsLost: a heart picked up on the ledge he is put back on would
   // hide it from his hp, as her island's heart did on INT-2's head)
   const hp = p.hp, lost = e.statHeartsLost ?? 0;
-  p.x = (z.x0 + z.x1) / 2; p.y = z.y! - 140; p.vx = 0; p.vy = 0; p.grounded = false;
+  p.x = (z.x0 + z.x1) / 2; p.y = fromY; p.vx = 0; p.vy = 0; p.grounded = false;
   const inside = () => p.x > z.x0 && p.x < z.x1;
   let fell = false;
   for (let i = 0; i < 75 && !fell; i++) {
@@ -101,7 +101,14 @@ test('PLANTED: a hurt floor narrower than Pokey cannot be fallen into, and with 
   lipR.x -= dx; lipR.width += dx; if (cap) { cap.x -= dx; cap.width += dx; }
   z1.x1 -= dx;
   for (const f of s1.platforms.filter((q) => q.pit === 'hurt' && Math.abs(q.x - z1.x0) < 3)) f.width = 36;
-  assert.equal(dropInto(s1, z1).fell, false, 'a 36 px hurt floor was fallen into');
+  // (dropped from just above its higher lip, as a player falls into it: a deep pit's lips stand more than 140 px over its floor, and a
+  // start under them is inside the walls, where no player can be. ADD-LEVEL 11-13: 1-2's listed seed 1 lays such a pit)
+  const lipL = s1.platforms.find((q) => q.type === 'solid' && q.pit !== 'hurt' && Math.abs(q.x + q.width - z1.x0) < 3);
+  const fromY = Math.min(z1.y! - 140, lipR.y, ...(lipL ? [lipL.y] : []), ...(cap ? [cap.y] : [])) - 10;
+  assert.equal(dropInto(s1, z1, false, fromY).fell, false, 'a 36 px hurt floor was fallen into');
+  // (and the same pit left wide, dropped from the same height, IS fallen into: the start height does not save him by itself)
+  const sw = sim('1-2', 1, 'normal');
+  assert.equal(dropInto(sw, hurtZones(sw).find((q) => q.x0 === z.x0)!, false, fromY).fell, true, 'the wide hurt floor, from the same height, was not fallen into');
   // (no ledge recorded: the set-back has nowhere to put him)
   const s2 = sim('1-2', 1, 'normal');
   assert.equal(dropInto(s2, hurtZones(s2).find((q) => q.x0 === z.x0)!, true).backOn, null, 'set back with no ledge recorded');

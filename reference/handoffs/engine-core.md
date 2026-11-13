@@ -8,6 +8,21 @@ Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, r
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
+## 0i. Adding a level is one step (ADD-LEVEL, R-165.187, t-add-level, 11-13): what the next engineer on stage plumbing must know
+- **`npx tsx tools/engine/addlevel.ts <id>`** once the arc is hooked into its world's kit and the row is in stageTable.ts: rolls 24
+  seeds both settings (libstage.ts), writes the seed list if the stage has none (seedlist.ts; `--relist` rebuilds), checks it, runs
+  castBots 1-40, prints the flight-sim command when the row is not judged, and ends with a DONE/MISSING checklist (exit 0 only READY).
+  1-3 replayed with its list removed: 3 m 32 s, the list byte-identical (18d380ae), every bot 40/40 both settings.
+- **libstage.ts is THE roll tool** (`--stage <id>`): it builds as the seed-list search builds (buildGen2Stage + listRules quietJudge),
+  so a listed seed lays the beats its list replays (libstage.test.ts proves it on every list). Stage-specific counts (1-3's traps)
+  stay in that stage's own test; library13.ts is kept only because library13.test.ts is 1-3's plan test.
+- **registrycheck.ts is the gate** (rolled job, seconds): every stageTable row needs kit, config, routed (stageGenerator builtOnGen2),
+  levelSeeds, sheets (its rolls' creatures in stageSheets' preload, BOTH settings: stageSheets.test walks listed stages on Normal
+  only), a limits.json drawcheck scenario, a seed list or standIn, and a judged scope with a row for every move Easy flies. CI checks
+  EVERY proven list via `registrycheck.ts --lists`. No known list: its 3 birth misses were fixed on the branch (1-1 drawcheck
+  scenario, 1-2's seed list, 1-3's list in CI), so every miss fails.
+- Trap: tools/ is outside tsconfig; typecheck a new tool with a temporary config at the repo root (types node + vite/client).
+
 ## 0h. The stage build's cost (BC-FIX, R-165.163, t-bc-fix, 11-12): what the next engineer on the build path must know
 - **buildcheck is the build's budget** (150 ms p95 at CPU x4, 1-1, Normal and Easy). P11's verdicts and Y2's repair took it to 446/430;
   BC-FIX brought it to 105/57 with every result identical (reference/qa-reports/BC-FIX/REPORT.md). Profile before changing code:
