@@ -92,7 +92,7 @@ for (const K of KITS) {
     const laid = new Map<string, number>(), missed = new Map<string, number>();
     // (what kills each string that does not lay clean, each named reason once a string, numbers and node ids taken out)
     const kills = new Map<string, number>();
-    const askKills = new Map<string, number>();
+    const askKills = new Map<string, number>(), sole = new Map<string, number>();
     const example = new Map<string, string>();
     let current = '';
     const kill = (lines: readonly string[]) => {
@@ -152,7 +152,12 @@ for (const K of KITS) {
         if (a.creatures && !st.enemies.some((e) => secs.some((q) => e.x >= q.x0 && e.x <= q.x1))) assert.ok(named(n.id), `${code}: node ${n.id} asked creatures, none stand there, unnamed`);
       }
       kill(errs);
-      if (frameClean) for (const k of new Set(errs.map(reasonOf))) askKills.set(k, (askKills.get(k) ?? 0) + 1);
+      if (frameClean) {
+        const ks = new Set(errs.map(reasonOf));
+        for (const k of ks) askKills.set(k, (askKills.get(k) ?? 0) + 1);
+        // (the only reason this string fails: fixing it alone frees the string)
+        if (ks.size === 1) { const [k] = ks; sole.set(k, (sole.get(k) ?? 0) + 1); }
+      }
       if (!errs.length) {
         tally.clean++;
         tally.cleanAsks += asked.length;
@@ -165,6 +170,7 @@ for (const K of KITS) {
     console.log(`  what kills the strings (strings it kills): ${[...kills].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, n]) => `${n} ${k}`).join(' | ')}`);
     if (process.env.MIX_EXAMPLES) for (const [k, n] of [...kills].sort((a, b) => b[1] - a[1]).slice(0, 12)) console.log(`  KILL ${n} | ${k} | e.g. ${example.get(k)}`);
     console.log(`  what kills the strings whose bare frame lays clean: ${[...askKills].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([k, n]) => `${n} ${k}`).join(' | ')}`);
+    console.log(`  frame-clean strings each reason kills ALONE (fixing it frees them): ${[...sole].sort((a, b) => b[1] - a[1]).map(([k, n]) => `${n} ${k}`).join(' | ') || 'none'}`);
     console.log(`  per element (node laid whole / node named a miss): ${els.map((e) => `${e} ${laid.get(e) ?? 0}/${missed.get(e) ?? 0}`).join(', ')}`);
     assert.equal(tally.refused + tally.named + tally.built, PER_KIT);
     assert.ok(tally.built > 0, `no string built on ${K.name}`);
