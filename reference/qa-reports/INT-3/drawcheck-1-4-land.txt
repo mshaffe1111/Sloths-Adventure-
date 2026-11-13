@@ -1,0 +1,19 @@
+1-4 sideways, perf harness (run.mjs, q0, 4 spots), drawImageScreens per spot (x, y, screens) and the top sites (screens/frame, all spots)
+BEFORE (t-int-3@96f728a8 + vault patch):
+1-4 spots [(0, 320, 8203, 5.82), (1, 922, 5699, 8.02), (2, 822, 2399, 6.09), (3, 1075, 360, 5.98)]
+   3.12 src/game/scenery.ts:2078 drawFitted
+   1.00 src/game/protoArt.ts:1285 drawGroundChunks
+   1.00 src/game/scenery.ts:2385 drawVignette
+   0.39 src/game/scenery.ts:1506 lanePool
+   0.39 src/game/scenery.ts:2082 drawFitted
+   0.12 src/game/scenery.ts:1759 drawTile
+   0.09 src/game/protoArt.ts:553 drawBranchArt
+AFTER (stripInk: a fit's clear top rows left out):
+1-4 spots [(0, 320, 8203, 5.45), (1, 922, 5699, 7.2), (2, 822, 2399, 5.64), (3, 1075, 360, 5.45)]
+   2.55 src/game/scenery.ts:2082 drawFitted
+   1.00 src/game/protoArt.ts:1285 drawGroundChunks
+   1.00 src/game/scenery.ts:2389 drawVignette
+   0.39 src/game/scenery.ts:1507 lanePool
+   0.38 src/game/scenery.ts:2086 drawFitted
+   0.12 src/game/scenery.ts:1760 drawTile
+   0.09 src/game/protoArt.ts:553 drawBranchArt
