@@ -307,6 +307,9 @@ over a certain age, probably like 12." Normal = 12 and up; Easy = children. Matt
 - The story keeper's three lines, each needs his okay: R-165.175 1-1 teach "Tap here when you've read it. I'll wait!"; R-165.171 coach
   "Flick up to hop up or over." / pad "Press Jump to hop up or over."; R-165.165 bell "Down in the hollow, on the low ledge."
 - The optional About line "We weighed 84 ideas for Sloths. 65 made it in, each grown into something of the rainforest's own."
+- Three NEW lines from the story keeper's 1-4 check (t-story@46fc378f): 1-4 pods "Hear it creak? Scoot a vine over till it drops!"
+  (replaces the approved pods line, now untrue); R-165.180 1-4 teach (Dot) "Creaky limbs drop you, but only to the branch below!"; 1-5
+  develop (Pokey) "Creaky again. If it drops me, I'll take the roots." Optional: credit the 1982 arcade vine climber on "Inspired by".
 Matt, 11-07 (9:53 PM ET): "You're the expert in making video games. Things like how the first level should be executed... That's why I
 hired you." That covers game-design calls like the first level. It does not cover his own rulings: a rule or number he set changes only
 when he changes it (LAWS 22; D35). Story stays with the story keeper (Matt has the final say); art he rates.
@@ -861,3 +864,4 @@ lines); Matt sees them in the release.
   ART blocked: the Hugging Face connector is not connected to member sessions (502 here too); Matt asked to reconnect at
   claude.ai/customize/connectors; ART preps specs with no spend, then hands over. S1 allowed one gates.yml line (routeHumps.test.ts).
   FA WRITE: gen2/pipeline.ts, tower*, types.ts, levelCheck.ts, seedList.ts (join), stageTime.ts, cameraFollow.ts, tools/engine/tower*.
+- 2026-11-13 10:20 AM ET: story keeper's 1-4 nature check PASS with look fixes (wild figs, oropendola flyer, ants with leaf bits, fruit never eaten); sent to B14 and ART2; three new lines queued for Matt.
