@@ -221,7 +221,8 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
   const crowded = (x0: number, x1: number, y: number, but: ReadonlyArray<Platform>) => {
     const near = all.filter((q) => !but.includes(q) && q.type === 'solid' && q.x < x1 + 40 && q.x + q.width > x0 - 40);
     if (near.some((q) => q.x < x1 && q.x + q.width > x0 && q.y < y + 24 && q.y + q.height > y && Math.abs(q.y - y) > 1)) return true;
-    return near.some((q) => q.y < y - 30 && q.y > y - reach) && near.some((q) => q.y > y + 30 && q.y < y + reach);
+    // (going down a bough is only ever a way on, which every open end is: no step to guard)
+    return flow === 'up' && near.some((q) => q.y < y - 30 && q.y > y - reach) && near.some((q) => q.y > y + 30 && q.y < y + reach);
   };
   // (a bridge never closes a jump the storey it joins was laid with: a section's gap at its height keeps its hop)
   const overGap = (x0: number, x1: number, y: number) => gaps.some((g) => g.x0 < x1 - 2 && g.x1 > x0 + 2 && Math.abs(g.y - y) <= 100);

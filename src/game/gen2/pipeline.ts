@@ -29,6 +29,7 @@ import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
 import { DOUBLE_RISE, JUMP_RISE, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, TAKEOFF_SLACK, TIMED, WALL_H } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
+import { SHRINE_STOP } from '../rules.ts';
 import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
@@ -1587,7 +1588,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     // a storey over (under): on the same way while it fits, else back the other way; if neither fits from here, a plain bough runs
     // on to the wall first, where the whole width is behind him
     let way: 1 | -1 = roomIn(dir, cur.x) >= ahead + 2 ? dir : (-dir as 1 | -1);
-    const tipOf = (w: 1 | -1) => (w === dir ? cur.x : flow === 'up' ? cur.x - dir * TOWER.vineIn : cur.x + dir * (CLIMB_CLEAR + 34));
+    // (a turn's near end: going up, back over the ledge he leaves, the vine standing on it; going down, out past its tip, under the
+    // vine that hangs there, never nearer the tower's side than a bridge is laid)
+    const tipOf = (w: 1 | -1) => (w === dir ? cur.x : flow === 'up' ? cur.x - dir * TOWER.vineIn : Math.max(24, Math.min(TW - 24, cur.x + dir * (CLIMB_CLEAR + 20))));
     if (way !== dir && roomIn(way, tipOf(way)) < ahead) {
       const run = roomIn(dir, cur.x);
       if (run > 1) {
@@ -2190,7 +2193,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       floorY = at.oy;
       shrine = mk(0, at.oy, TW, 'bank', 0);
     }
-    exitX = R(Math.max(TOWER.wall + 60, Math.min(TW - TOWER.wall - 60, at.ox + at.way * TOWER.totem)));
+    // (the totem: on the summit's ledge going up. Going down the engine stops him just past the shrine on the side away from the
+    // start (stageModes.ts down, rules.ts SHRINE_STOP), at every height: so the shrine stands at the far wall, where that stop is the wall)
+    exitX = flow === 'down' ? TW - 20 - SHRINE_STOP : R(Math.max(TOWER.wall + 60, Math.min(TW - TOWER.wall - 60, at.ox + at.way * TOWER.totem)));
     // (the catch boughs its open ends are owed, tower.ts towerCatches: laid with the section whose piece they hang under)
     for (const c of towerCatches(flow as 'up' | 'down', platforms, vines, floorY, TW, gaps)) {
       const b = mk(c.x, c.y, c.w, 'branch', 0);
