@@ -346,6 +346,8 @@ export interface Platform {
   /** `'hurt'` (gen2): this piece is a hollow's hurt floor (WorldManifest.hurtFloor); the world's painter draws it, the engine never sets
    *  him back on it */
   pit?: 'drop' | 'hurt';
+  /** a hurt floor's own look (gen2 WorldManifest.hurtLooks art, e.g. 'w15-creek'); absent, the world's hurt floor (the thorn bed) */
+  floorArt?: string;
   /** a catch a builder lays under a gap (the mixer's 'catch' piece): a fall's floor, left with a hop */
   catch?: boolean;
   /** drawn as its own kind, never given another look for variety (platformPlan.ts planThin): a world whose painted kit draws its pieces,
@@ -464,6 +466,8 @@ export interface Collectible {
   missing?: number;
   /** a relic drawn as one of Meeca's trail marks (the mixer's 1-5 marks goal): her M cut in a slab of bark, glowing */
   mark?: 'meeca';
+  /** her mark's arrow (World 1's finish, gen2/worlds/w1Marks.ts): 'up' where her road climbs next, 'on' along it */
+  arrow?: 'up' | 'on';
   /** a story find (note, book or keepsake): which one (see finds.ts) */
   findId?: string;
   /** World 3: one of Grandma's things hidden in a fern (a relic with `hidden`): what it is, for the words when it turns up */

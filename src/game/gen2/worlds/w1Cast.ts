@@ -15,6 +15,7 @@
 import type { TrapPost } from '../../castPlay.types.ts';
 import { TRAP } from '../../dropTrap.ts';
 import type { Enemy } from '../../types.ts';
+import type { LimbPlatform } from '../creak.ts';
 import type { CreatureDef, PropDef, PropEmitter, PropPair, StageSink } from '../types.ts';
 
 /** how high over its ground a load hangs (px): over his head as he walks under it (he is 89 px), over a rearing snake, and low enough
@@ -42,6 +43,8 @@ export const W1_TRAP_PROPS: PropDef[] = [
   { id: 'trap-stone', tags: ['trap-load'], w: 60, minApart: 300, beat: true },
   { id: 'trap-vine', tags: ['trap-handle'], w: 40, minApart: 300 },
   { id: 'trap-tendril', tags: ['trap-handle'], w: 40, minApart: 300 },
+  // (a creaky limb that IS the load, gen2/creak.ts: its socket stands on the limb, and riding it down chases off what it lands beside)
+  { id: 'trap-limb', tags: ['trap-limb'], w: 40, minApart: 300, beat: true },
 ];
 
 /** the two SOCKETS of a pair stand 85-130 px apart: the handle's, and the load's at the near end of the animal's patch. So he stands
@@ -64,6 +67,21 @@ const load = (what: TrapPost['load']): PropEmitter => (f, _p, out) => {
 const handle = (kind: TrapPost['kind']): PropEmitter => (f, _p, out) => {
   const t = trapsOf(out).find((q) => Number.isNaN(q.x));
   if (t) Object.assign(t, { kind, x: f.x, y: f.y });
+};
+/**
+ * A falling limb (1-5's "he is the stone", 1-4's cluster gate): the socket stands on a creaky limb (gen2/creak.ts); the limb is the load,
+ * its trap has no handle, and it lands on the first solid ground under its middle. Laid straight into the stage's traps (no animal
+ * arms it: the trap rules, dropTrap.ts limbFaults, say whether an animal stands beside where it lands and none under it)
+ */
+const limbLoad: PropEmitter = (f, _p, out) => {
+  const limb = out.platforms.find((q) => q.type === 'fragile' && q.creak !== undefined && f.x >= q.x && f.x <= q.x + q.width && Math.abs(q.y - f.y) <= 2);
+  if (!limb) throw new Error(`w1Cast: a falling limb's socket at x ${Math.round(f.x)} stands on no creaky limb`);
+  const mid = limb.x + limb.width / 2;
+  const under = out.platforms.filter((q) => q !== limb && q.type !== 'fragile' && q.y > limb.y + limb.height && mid >= q.x && mid <= q.x + q.width).sort((a, b) => a.y - b.y)[0];
+  if (!under) throw new Error(`w1Cast: the falling limb at x ${Math.round(mid)} has no ground under it`);
+  (limb as LimbPlatform).trapLoad = true;
+  const live = (out.proto.cast ??= { kinds: [], traps: [], said: W1_CAST_SAID }).traps;
+  live.push({ id: live.length + 1, kind: 'limb', load: 'limb', limb: limb.id, w: limb.width, x: Math.round(mid), y: limb.y, loadX: Math.round(mid), loadY: limb.y + limb.height, landY: under.y });
 };
 export const W1_TRAP_EMIT: Record<string, PropEmitter> = {
   'trap-hive': load('hive'), 'trap-stone': load('stone'), 'trap-vine': handle('vine'), 'trap-tendril': handle('tendril'),
@@ -91,6 +109,7 @@ export function armedTraps(kinds: readonly string[] = ['snake']): { emit: Record
   const waiting = new WeakMap<StageSink, StageSink>();
   const of = (out: StageSink): StageSink => waiting.get(out) ?? (waiting.set(out, { proto: {} } as StageSink), waiting.get(out)!);
   const emit = Object.fromEntries(Object.entries(W1_TRAP_EMIT).map(([id, fn]) => [id, ((f, p, out) => fn(f, p, of(out))) as PropEmitter]));
+  emit['trap-limb'] = limbLoad;
   return { emit, spawn: (e, c, out) => {
     if (!kinds.includes(e.type)) return;
     const hold = of(out).proto.cast?.traps ?? [], top = e.y + (c.footY ?? c.h / 2), mid = (e.patrolMinX + e.patrolMaxX) / 2;

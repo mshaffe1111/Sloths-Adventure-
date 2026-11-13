@@ -10,9 +10,13 @@
  */
 export interface TrapPost {
   id: number;
-  /** the handle: 'vine' hangs from above and is shaken; 'tendril' is tied off at his height and is cut */
-  kind: 'vine' | 'tendril';
-  load: 'hive' | 'stone';
+  /** the handle: 'vine' hangs from above and is shaken; 'tendril' is tied off at his height and is cut; 'limb': no handle, the load IS a
+   *  creaky limb (gen2/creak.ts) and it goes when the limb gives way under him (he rides it down: 1-5.md beat 7, 1-4.md #7) */
+  kind: 'vine' | 'tendril' | 'limb';
+  load: 'hive' | 'stone' | 'limb';
+  /** a 'limb' trap: the creaky limb's platform id, and its width (the load's span: it must come down BESIDE an animal, never on one) */
+  limb?: number;
+  w?: number;
   /** the handle: where he hits it (x, and the surface he stands on to do it) */
   x: number;
   y: number;

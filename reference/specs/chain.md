@@ -38,6 +38,14 @@ the flown 244, not 246, since no finer flight of 1-3 was made): 1-3: single-hold
 double-flick 211 / 204, gap 282 / 370 / 395; 1-3: double-tap-tap 149 / 143, gap 190 / 278 / 299; 1-3: bounce 223 / 217, gap 178; 1-3:
 bounce-air 315 / 306, gap 335. Easy on 1-3 is easy-any (every Easy table identical to 1-2's). Against 1-2, nothing gained a pixel.
 
+**Rows for src/game/gen2/reach.ts, scope Normal 1-5** (B15, 11-13: flown on stage 1-5, `FLIGHT_STAGE=1-5`, both settings, tables in
+reference/qa-reports/B15/fly/; climb block / thin, then from-70 / last ground / any, each the block column; the single hold's any is the
+flown 244): 1-5: single-hold 123 / 116, gap 137 / 222 / 244; 1-5: single-flick 123 / 116, gap 127 / 212 / 239; 1-5: single-tap 87 / 80,
+gap 77 / 162 / 183; 1-5: double-hold 211 / 204, gap 291 / 377 / 409; 1-5: double-flick 210 / 203, gap 278 / 363 / 391; 1-5:
+double-tap-tap 149 / 142, gap 190 / 275 / 299; 1-5: bounce 223 / 216, gap 178; 1-5: bounce-air 313 / 304, gap 335. Easy on 1-5 is easy-any
+(single hold 123 / 117, gap 141 / 227 / 244; double hold climbs 214 / 208: easy-any's, the hold's any the flown 244). Against 1-3 the
+doubles climb 2 px less and their from-70 and last-ground gaps lose 1-7 px; no single gap moved a pixel.
+
 Cause: the second jump's help is 0.958 of 1-1's on stage 2 (`easeAssist(2)`). No lesser move gained a pixel, so every block keeps its
 5 px, and the taught moves lost 1-2 px against margins of 70 px or more. So **bands.md §2 holds on 1-2 as written**, both settings
 (Easy's help is full on every stage). It must be flown again from about 1-5 on. One figure does move with it: a double flick lands

@@ -2875,9 +2875,9 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   const gen2Roll11 = config.id === '1-1' && !config.secret;
   // (builtOnGen2 below is this same test, for every reader that asks whether a stage is gen2's: one definition)
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled() && !gen2Roll11) {
-    // (a stage the mixer builds from its spec, 1-1 and 1-5, lays Easy itself: mixer/w1mix.ts; the rest are made gentler on the built
+    // (a stage the mixer builds from its spec, 1-1, lays Easy itself: mixer/w1mix.ts; the rest are made gentler on the built
     // stage alone, easyMode.ts)
-    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && config.id !== '1-5' && !!specFor(HAND_STAGES[config.id])));
+    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && !!specFor(HAND_STAGES[config.id])));
     addMissingFind(st);
     return difficulty === 'normal' ? w4Normal(st) : st;
   }

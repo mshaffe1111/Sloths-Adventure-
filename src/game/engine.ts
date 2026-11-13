@@ -7,7 +7,7 @@ import { drawW8Decor, type W8DecorSet } from './w8DecorArt.ts';
 import { drawSentrySprite } from './sentrySprite.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
-import { goalLine } from './stagePlan.ts';
+import { goalLine, sealedLine } from './stagePlan.ts';
 import { bindSent, FIRST_OF_STAGE, forgetSent, markTipHeard, tipHeard } from './tipMemory.ts';
 import { FERN_HMM, ZONE_LINE } from './dotTips.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
@@ -184,7 +184,7 @@ import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
@@ -2581,7 +2581,8 @@ export class GameEngine {
         // crumbling platform landed on that way never started to crumble)
         if (plat.type === 'fragile') {
           if (plat.fragileTimer === undefined) {
-            plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
+            // generous 1.1s before breaking (ruin tiles set their own; a creaky limb holds its world's `creak` s, gen2/creak.ts)
+            plat.fragileTimer = plat.crumbleAfter ?? plat.creak ?? 1.1;
             // a boss's cracking ledge: Dot says so the first time he stands on one
             if (plat.crackFrom !== undefined && this.bossDef?.crackTip) this.bossCtx?.guide?.('crack', this.bossDef.crackTip);
             if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
@@ -2714,6 +2715,8 @@ export class GameEngine {
           plat.regrowAt = this.gameTime + regrowDelay(plat.id);
           this.spawnDebrisBurst(plat.x + plat.width * 0.5, plat.y, '#a16207');
           sound.playCrumble();
+          // (a creaky limb that is a drop trap's load falls as the load, and chases off what it lands beside: castPlay.ts limbGone)
+          this.cast?.limbGone(plat.id);
         }
       }
       // a crumbled platform is a penalty (regrow.ts): it comes back only after half a minute or so, and only off screen, so it never
@@ -3286,7 +3289,8 @@ export class GameEngine {
           this.barrierMsgCooldown = 1.2;
           const remaining = this.currentStage.config.targetCount - currentProgress;
           // the same word the counter at the top uses, so the two always agree
-          const line = goalLine('sealed', this.currentStage.config.worldIndex, objType, remaining);
+          // (the story keeper's own words where a goal has them, stagePlan.ts sealedLine: 1-5's marks)
+          const line = sealedLine(this.currentStage.config.worldIndex, objType) ?? goalLine('sealed', this.currentStage.config.worldIndex, objType, remaining);
           // in the banner the stage hints use (the small red floating text was hard to read on the bright doorway)
           if (!this.stageHint) this.guide(line || 'Finish the goal to open the sanctuary', 3);
           }
@@ -6889,7 +6893,7 @@ export class GameEngine {
       // World 5's painted pink bell (Pell's note) and the painted exit totem
       if (this.w5?.drawItem(ctx, item, this.gameTime, this.currentStage.config.worldIndex)) return;
       if (item.type === 'seed') {
-        if (!item.collected && !drawSeedArt(ctx, item, this.gameTime)) drawSeed(ctx, item, this.gameTime);
+        if (!item.collected && !drawSeedArt(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex)) drawSeed(ctx, item, this.gameTime);
         return;
       }
       // a reed cage hanging over the water: the kit draws it (puzzlePlay.ts), and the little one hopping home once it is free
@@ -6941,7 +6945,7 @@ export class GameEngine {
     }
 
     // the stage's drop traps (castArt.ts): behind the animals they hang over
-    if (this.cast?.traps.length) drawTraps(ctx, this.cast.traps, this.gameTime, (x, y) => this.onScreen(x, y, 500), this.platforms);
+    if (this.cast?.traps.length) drawTraps(ctx, this.cast.traps, this.gameTime, (x, y) => this.onScreen(x, y, 500), this.platforms, (c, pl) => drawBranchArt(c, pl, 'creak', 0));
 
     // Render Enemies
     this.enemies.forEach((enemy) => {

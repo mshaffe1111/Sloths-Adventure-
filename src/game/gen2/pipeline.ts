@@ -969,6 +969,8 @@ interface LocalGap {
   putBack?: boolean;
   /** a place marked `hurt`: the world's hurt floor under it (WorldManifest.hurtFloor), no pit and no steps */
   hurt?: boolean;
+  /** a hurt place's look (WorldManifest.hurtLooks), absent the world's own hurt floor */
+  floor?: string;
   /** a free rope's hollow (place `rope` with `free`): its floor one hop under the lips, wall to wall, no steps: he walks down and
    *  through and can come back the same way (a deep pit with steps out the far side is one-way, and before a purge's shrine that
    *  strands whoever still owes an animal behind him) */
@@ -1144,7 +1146,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       // a fall there puts him back on the take-off ledge instead, soft, no life lost (a soft heart-fall zone), on both settings)
       const putBack = !!pc.block && !pl.water && dy >= -20;
       const back = (glide || pc.block) && !pl.water && !putBack ? { back: { lips: [a.y, y] as [number, number] } } : {};
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back, ...(putBack ? { putBack } : {}), ...(pl.hurt ? { hurt: true } : {}) });
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back, ...(putBack ? { putBack } : {}), ...(pl.hurt ? { hurt: true } : {}), ...('floor' in pl && pl.floor ? { floor: pl.floor } : {}) });
       // (the reach this jump asks: verdicts.ts classifies and judges it on 1-1, ADR-001; a glide is no flown move)
       if (!glide) asks.push({ x0: a.x + a.w, x1: x, yTake: cap !== undefined ? ref(pc.from!).y + CAP_UP.px : a.y, yLand: y, move: cap !== undefined ? 'bounce' : dbl || pc.block === 'double' ? 'double' : 'single', block: pc.block, thin: thinLaid(pc, w), key: pc.key });
     } else if (pl.kind === 'rope') {
@@ -2068,9 +2070,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           // Normal: a heart. Easy: soft. The depth is picked off the gap's x, so the roll's stream is the same with or without the mark)
           const H = M.hurtFloor;
           if (!H) throw new Error(`gen2 ${budget.id}: section ${tpl.id} lays a hurt place and the world's manifest has no hurtFloor row`);
-          const before = platforms.length, x0 = R(g0.x0), x1 = R(g0.x1), floor = R(oy + g.lo + H.depth[0] + (x0 % (H.depth[1] - H.depth[0] + 1)));
+          const look = g.floor ? M.hurtLooks?.[g.floor] : undefined;
+          if (g.floor && !look) throw new Error(`gen2 ${budget.id}: section ${tpl.id} lays a hurt floor look '${g.floor}' the world's manifest has no hurtLooks row for`);
+          const D = look?.depth ?? H.depth;
+          const before = platforms.length, x0 = R(g0.x0), x1 = R(g0.x1), floor = R(oy + g.lo + D[0] + (x0 % (D[1] - D[0] + 1)));
           for (const q of platforms) if ((Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
-          mk(x0, floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone').pit = 'hurt';
+          const fp = mk(x0, floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
+          fp.pit = 'hurt';
+          if (look) fp.floorArt = look.art;
           heartFalls.push({ x0, x1, y: floor, ...(budget.difficulty === 'easy' ? { soft: true } : {}) });
           placed.seam.push(...platforms.slice(before));
         } else if (g.putBack) {

@@ -18,6 +18,7 @@
 import { trackAtlas } from './atlasLoader.ts';
 import { drawEnd, drawLip, endFace } from './groundPaint.ts';
 import type { Platform } from './types.ts';
+import { W15_CREEK_ART, drawW15Creek, w15CreekReady } from './w15Creek.ts';
 
 const URL_OF = {
   drop: new URL('../assets/props/pits/w1-drop.webp', import.meta.url).href,
@@ -86,7 +87,7 @@ export const DROP_DARK = 200;
  * drop beside a log, a stone slab or a branch, or with ground standing in it, is open air: nothing is painted there (Matt's stills
  * 0224-0228: a black column hung down through the air under floating logs and slabs, and a dark box stood behind the bank he was on)
  */
-export interface PitGap { x0: number; x1: number; top: number; kind: 'fall' | 'soft' | 'hurt'; floor?: number; lipL: boolean; lipR: boolean; steps?: Array<[number, number, number, number, boolean]>; drop?: boolean; walls?: [number, number] }
+export interface PitGap { x0: number; x1: number; top: number; kind: 'fall' | 'soft' | 'hurt'; floor?: number; lipL: boolean; lipR: boolean; steps?: Array<[number, number, number, number, boolean]>; drop?: boolean; walls?: [number, number]; look?: string }
 
 const floorish = (q: Platform) => !q.broken && q.type !== 'bouncy' && q.type !== 'fragile' && q.type !== 'drift' && q.type !== 'moving';
 /**
@@ -132,7 +133,7 @@ function hurtPits(platforms: readonly Platform[]): PitGap[] {
     const l = lipOf((q) => q.x + q.width - x0), r = lipOf((q) => q.x - x1);
     if (!l && !r) continue;
     const yl = (l ?? r)!.y, yr = (r ?? l)!.y;
-    out.push({ x0, x1, top: Math.max(yl, yr), kind: 'hurt', floor: f.y, lipL: !!l && paintedBank(l), lipR: !!r && paintedBank(r), walls: [yl, yr] });
+    out.push({ x0, x1, top: Math.max(yl, yr), kind: 'hurt', floor: f.y, lipL: !!l && paintedBank(l), lipR: !!r && paintedBank(r), walls: [yl, yr], ...(f.floorArt ? { look: f.floorArt } : {}) });
   }
   return out;
 }
@@ -875,12 +876,14 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
   // (a stage with a hollow starts its thorn pictures loading on its first frame, not when the first hollow comes into view: until they
   // were in, the hollow showed its bare hurt-floor slab, a grey-green box, EN-W's "not wired")
   if (hurt) w1ThornsReady();
+  // (a creek-look hollow starts its picture loading on the stage's first frame too)
+  if (hurt && gaps.some((g) => g.look === W15_CREEK_ART)) w15CreekReady();
   // (a hollow's two bakes cost a few ms on a phone: the stage's hollows are baked one a frame from its first frames, the nearest first,
   // so each is ready long before it comes into view and no frame of play bakes more than one; one in view and not yet baked is baked
   // at once, PERFORMANCE-RULES §1)
   const bakeHurt = (g: PitGap, h: Baked) => {
     if (!h.hollow) h.hollow = bakeHollow(g, pic('drop')!) ?? undefined;
-    if (!h.over) {
+    if (!h.over && !g.look) {
       h.ox = Math.floor(hollowSpan(g)[0]);
       h.over = bakeThorns(g, pic('thornLong')!, pic('thornLow')!);
     }
@@ -891,7 +894,7 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
     for (const g of gaps) {
       if (g.kind !== 'hurt' || g.floor === undefined || inWater(g)) continue;
       const h = baked.get(g);
-      if (h?.hollow && h.over) continue;
+      if (h?.hollow && (h.over || g.look)) continue;
       if (!next || Math.abs(g.x0 - mid) < Math.abs(next.x0 - mid)) next = g;
     }
     if (next) {
@@ -924,7 +927,11 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
         ctx.drawImage(hl, 0, 0, hw, hh);
         ctx.restore();
       }
-      if (h.over) ctx.drawImage(h.over, h.ox, g.floor + THORN_BED.sink - h.over.height);
+      if (g.look === W15_CREEK_ART) {
+        // (the creek look: its water between the hollow's walls at the floor, under the lips, never past the walls)
+        const [c0, c1] = thornBedSpan(g);
+        drawW15Creek(ctx, c0, c1, g.floor);
+      } else if (h.over) ctx.drawImage(h.over, h.ox, g.floor + THORN_BED.sink - h.over.height);
       continue;
     }
     // (engine-core, 11-05: only a drop a builder marks, pit: 'drop', is painted here; on main only the mixer's stages mark any. The
