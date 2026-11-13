@@ -42,6 +42,7 @@ import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.
 import { creakLimb, needless } from './creak.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import { checkCode, formatToken, JOB_OF, LETTER_OF, MARK_OF, parseCode, type CodeToken } from './nodeCode.ts';
+import { askMisses, asksOf, hazardMiss, TYPE_OF_LETTER, type NodeAsks } from './nodeAsks.ts';
 import { columnFrame, columnWalls, legMarks, legsOf, mixed, reflectLeg, upOrDown, WALL, type Frame, type LaidLeg, type Travel } from './legs.ts';
 import {
   EASY_ENEMY_SHARE,
@@ -498,16 +499,41 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
   // rules below, and a node they add takes the leg of the node before it. A code with no mark: `tv` stays empty and nothing moves)
   const marks = legMarks(g.code);
   const parsed = parseCode(marks.code);
-  const bad = checkCode(parsed, {});
+  // (V16: a node may ask for creatures in a world that has a cast; the lay then lays them or names the miss, nodeAsks.ts)
+  const bad = checkCode(parsed, { graph: true, creatures: M.creatures.length > 0 });
   if (bad.length) throw new Error(`gen2 ${budget.id}: graph ${g.id} "${g.code}": ${bad.join('; ')}`);
-  // (the code's long form, NODES.md §8.9: the parser reads a node's dials and the pick, and the lay does not honour them yet. A graph
-  // that writes one fails here by name, so no designer's number is ever dropped in silence)
-  const unlaid = parsed.find((t) => t.job === '?' || t.dials || t.roads?.some((r) => r.some((q) => q.dials)));
-  if (unlaid) throw new Error(`gen2 ${budget.id}: graph ${g.id}: "${formatToken(unlaid)}" ${unlaid.job === '?' ? 'is a pick node, which is not laid yet' : 'carries long-form dials, which the lay does not honour yet'} (NODES.md §8.9)`);
+  // (the pick, NODES.md §8.9: one of two stretches laid on a walked choice, the card road (M4). Not laid yet: a graph that writes one
+  // fails here by name)
+  const pick = parsed.find((t) => t.job === '?');
+  if (pick) throw new Error(`gen2 ${budget.id}: graph ${g.id}: "${formatToken(pick)}" is a pick node, which is not laid yet (NODES.md §8.9)`);
+  // (a fork's roads are laid as one two-road section, NODES.md §8.2: what a designer writes inside them has no node of its own to lay
+  // it on, so a road that asks anything fails here by name, never dropped)
+  // (the high road's rise and find are the fork's own, V7: no ask)
+  const roadAsk = parsed.find((t) => t.roads?.some((r, hi) => r.some((q) => asksOf(hi === 0 ? { ...q, find: false, shape: q.shape === '^' ? '' : q.shape } : q, JOB_OF[q.job]))));
+  if (roadAsk) throw new Error(`gen2 ${budget.id}: graph ${g.id}: "${formatToken(roadAsk)}": a fork's roads are laid as one two-road section; marks inside a road are not laid yet (NODES.md §8.9)`);
   let jobs: NodeJob[] = parsed.map((t) => JOB_OF[t.job]);
   let tv: Array<Travel | undefined> = marks.marked ? [...marks.travel] : [];
-  const put = (at: number, del: number, ...js: NodeJob[]) => { if (tv.length) tv.splice(at, del, ...js.map(() => tv[Math.max(0, at - 1)])); jobs.splice(at, del, ...js); };
-  const keep = (f: (j: NodeJob, i: number) => boolean) => { const k = jobs.map(f); if (tv.length) tv = tv.filter((_, i) => k[i]); jobs = jobs.filter((_, i) => k[i]); };
+  // (the designer's asks, nodeAsks.ts: each node's marks and dials ride with its job as its travel does; a node the brief's rules add
+  // asks nothing, and a node they drop takes its asks with it, by name below)
+  let tk: Array<NodeAsks | undefined> = parsed.map((t) => asksOf(t, JOB_OF[t.job]));
+  const asked = tk.some(Boolean);
+  // (a node with asks that the brief's rules would drop is the brief and the code at odds: named, never dropped)
+  const drop = (i: number) => {
+    if (asked && tk[i]) throw new Error(`gen2 ${budget.id}: graph ${g.id}: the brief drops node ${i + 1} (${jobs[i]}), which asks ${JSON.stringify(tk[i])} (NODES.md §8.9: an ask is laid or named)`);
+  };
+  const put = (at: number, del: number, ...js: NodeJob[]) => {
+    for (let i = at; i < at + del; i++) drop(i);
+    if (tv.length) tv.splice(at, del, ...js.map(() => tv[Math.max(0, at - 1)]));
+    if (asked) tk.splice(at, del, ...js.map(() => undefined));
+    jobs.splice(at, del, ...js);
+  };
+  const keep = (f: (j: NodeJob, i: number) => boolean) => {
+    const k = jobs.map(f);
+    k.forEach((ok, i) => { if (!ok) drop(i); });
+    if (tv.length) tv = tv.filter((_, i) => k[i]);
+    if (asked) tk = tk.filter((_, i) => k[i]);
+    jobs = jobs.filter((_, i) => k[i]);
+  };
   // (ends: a quiet brief drops the finale, and the rest that led to it, so the stage walks on to its quiet arrival, NODES.md §8.4's
   // B under 1-1; a finale brief gets one before the exit)
   if (brief.ends === 'quiet') {
@@ -524,7 +550,8 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
   const forks = brief.branching === 'none' ? 0 : brief.branching === 'some' ? 1 + (r() < 0.5 ? 1 : 0) : 3 + (r() < 0.5 ? 1 : 0);
   while (jobs.filter((j) => j === 'fork').length > forks) jobs[jobs.lastIndexOf('fork')] = 'practise';
   for (let guard = 0; jobs.filter((j) => j === 'fork').length < forks && guard < 8; guard++) {
-    const open = jobs.map((j, i) => i).filter((i) => (jobs[i] === 'practise' || jobs[i] === 'flow' || jobs[i] === 'climb') && jobs[i - 1] !== 'fork' && jobs[i + 1] !== 'fork');
+    // (a node the designer asked things of keeps its job: a fork is laid as one two-road section, which would lay none of them)
+    const open = jobs.map((j, i) => i).filter((i) => (jobs[i] === 'practise' || jobs[i] === 'flow' || jobs[i] === 'climb') && jobs[i - 1] !== 'fork' && jobs[i + 1] !== 'fork' && !(asked && tk[i]));
     if (open.length) jobs[open[Math.floor(r() * open.length)]] = 'fork';
     else {
       // (no practise left to turn: a fork after the last teach or fork, before the tests; never next to a fork (stageQuality's line,
@@ -579,7 +606,20 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
       rating,
     };
     const want = WANT[budget.archetype];
-    return { ...base, id: `n${i + 1}`, job, shape, dials, ...(want && base.role !== 'start' && base.role !== 'goal' ? { want } : {}), ...(job === 'teach' ? { teaches: teach[ti++] } : {}), ...(tv[i] ? { travel: tv[i] } : {}) };
+    // (the designer's asks over the rolled dials, nodeAsks.ts: drawn first and then replaced, so the seed's stream is the one it was)
+    const a = asked ? tk[i] : undefined;
+    let sh = shape;
+    if (a) {
+      if (a.shape === '^' || a.shape === '_') { sh = a.shape === '^' ? 'rising' : 'falling'; dials.height = a.shape === '^' ? 'up' : 'down'; }
+      if (a.tempo) dials.tempo = a.tempo === '>' ? 'hurry' : 'patience';
+      if (a.dials?.rating !== undefined) dials.rating = a.dials.rating;
+      if (a.dials?.beat !== undefined) dials.beat = a.dials.beat;
+      if (a.dials?.threat) dials.threat = a.dials.threat.map((k) => ({ ...k }));
+      if (a.dials?.hazard) dials.hazard = { ...a.dials.hazard };
+      if (a.dials?.reward) dials.reward = { ...a.dials.reward };
+      if (a.dials?.points !== undefined) dials.points = a.dials.points;
+    }
+    return { ...base, id: `n${i + 1}`, job, shape: sh, dials, ...(want && base.role !== 'start' && base.role !== 'goal' ? { want } : {}), ...(job === 'teach' ? { teaches: teach[ti++] } : {}), ...(tv[i] ? { travel: tv[i] } : {}), ...(a ? { asked: a } : {}) };
   });
   // (V19: in a trend-up stage, the node after a descent in the last third ends higher than the descent began: it rises)
   if (brief.trend === 'up') nodes.forEach((n, i) => {
@@ -701,6 +741,9 @@ function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, 
   // (the fixed ones: a climb is a climb; a teach is its teacher's type)
   const fixed = new Map<number, ContentType>();
   for (const { n, i } of slots) {
+    // (a designer's content letter is the node's type, nodeAsks.ts; a letter with no type in the pool is named after the lay)
+    const askedType = n.asked?.content ? TYPE_OF_LETTER[n.asked.content] : undefined;
+    if (askedType) { fixed.set(i, askedType); continue; }
     if (n.job === 'climb') fixed.set(i, 'climb');
     if (n.job === 'teach' && n.teaches) {
       const c = M.sections.find((t) => t.teaches === n.teaches && t.content && t.content !== 'structural')?.content;
@@ -1881,6 +1924,18 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         if (h === 'up' ? d < 0 : h === 'down' ? d > 0 : d === 0) w *= 2;
         if (n.dials.terrain && t.terrain === n.dials.terrain) w *= 3;
       }
+      // (a designer's asks, nodeAsks.ts: a section that can lay what the node asks is the pick wherever the slot has one; with none,
+      // the built roll names the miss)
+      const a = n.asked;
+      if (a) {
+        const kinds = a.dials?.threat?.map((k) => k.kind);
+        const foe = t.sockets.some((s) => s.role === 'enemy' && (!kinds || !s.allow?.length || kinds.some((k) => s.allow!.includes(k))));
+        if (a.creatures || kinds) w *= foe ? 20 : 0.05;
+        if (a.find || a.dials?.reward?.find) w *= t.sockets.some((s) => s.role === 'find') ? 20 : 0.05;
+        const dbl = t.teaches === 'double' || (t.uses ?? []).includes('double') || (t.needs ?? []).includes('double');
+        if (a.move) w *= (a.move === '2') === dbl ? 20 : 0.05;
+        if (a.shape === '^' || a.shape === '_') w *= Math.sign(ed) === (a.shape === '^' ? -1 : 1) ? 20 : 0.05;
+      }
       return w;
     };
     // the node's bag holds its candidates by weight; the cooldown passes over the ones used just now
@@ -2629,7 +2684,7 @@ export interface Filled {
  * `normalFoes` (Easy laying Normal's plan: keptFoes of Normal's stage): a creature socket holds only the creature Normal's spacing
  * kept there, so Easy's animals are a subset of Normal's (Easy's own rules, spacing and 60% cut then drop from that list).
  */
-export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed: number, sink: StageSink, normalFoes?: ReadonlyMap<string, string>, hard?: ReadonlySet<string>): Filled {
+export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed: number, sink: StageSink, normalFoes?: ReadonlyMap<string, string>, hard?: ReadonlySet<string>, threatAsks?: ReadonlyMap<string, NonNullable<NodeDials['threat']>>): Filled {
   const M = kit.manifest;
   const rng = rngFor(seed, 17);
   const easy = budget.difficulty === 'easy';
@@ -2823,6 +2878,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
 
   // creatures
   const creatureBag = new ShuffleBag<CreatureDef>(rng, M.creatures);
+  const threatLeft = new Map([...(threatAsks ?? [])].map(([node, ks]) => [node, ks.map((k) => ({ kind: k.kind, left: k.count }))]));
   const foes: Array<RoutePiece & { e: Enemy; fill: FilledSocket; sec: PlacedSection; /** its socket says `easy: 'stay'`: Easy's count cut passes it by */ stay?: true }> = [];
 
   for (const [si, sec] of laid.sections.entries()) {
@@ -2870,18 +2926,23 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         fillProp(sec, k, paid && !(dropOnEasy && def!.hazard) ? what : null);
       } else if (s.role === 'enemy') {
         const pick = creatureBag.draw();
-        let c = [pick, ...M.creatures].find(
-          (cr) => cr && cr.threat <= Math.min(s.maxThreat ?? Infinity, threat) && (!s.allow?.length || s.allow.includes(cr.id) || cr.tags?.some((tg) => s.allow!.includes(tg))) && terrainOK(cr, k.piece),
-        );
+        // (a node whose code names its threat, nodeAsks.ts: its sockets take only the kinds it names, up to their counts, whatever the
+        // threat budget and the socket's chance: the designer fixed them. The count left is checked on the built stage)
+        const ask = threatLeft.get(sec.node);
+        const allowed = (cr: CreatureDef) => (!s.allow?.length || s.allow.includes(cr.id) || cr.tags?.some((tg) => s.allow!.includes(tg))) && terrainOK(cr, k.piece);
+        let c = ask
+          ? ask.map((q) => (q.left > 0 ? M.creatures.find((cr) => cr.id === q.kind && allowed(cr)) : undefined)).find(Boolean)
+          : [pick, ...M.creatures].find((cr) => cr && cr.threat <= Math.min(s.maxThreat ?? Infinity, threat) && allowed(cr));
         // (Easy on Normal's plan: only what Normal kept at this socket, so Easy never keeps an animal Normal's spacing dropped)
         if (normalFoes) {
           const kept = normalFoes.get(`${sec.uid}/${s.id}`);
           c = kept === undefined ? undefined : M.creatures.find((cr) => cr.id === kept);
         }
-        if (!want || !c || (dropOnEasy && !c.easyFirst) || opening(k.x, k.y)) continue;
+        if (!(want || ask) || !c || (dropOnEasy && !c.easyFirst) || opening(k.x, k.y)) continue;
         const pf = patchFor(k.x, k.piece, safe, c.minGround, clear.get(k.piece));
         if (!pf) continue;
         threat -= c.threat;
+        if (ask) { const q = ask.find((x) => x.kind === c!.id); if (q) q.left--; }
         // (nothing stands in a zone: levelCheck)
         if (foeInZone(sink.zones, pf.at, k.piece.y - (c.footY ?? c.h / 2))) continue;
         const e = makeEnemy(c, pf.at, k.piece.y, pf.patch, sink.nextEnemyId(), easy && (s.easy === 'soften' || s.easy === 'stay'));
@@ -3283,7 +3344,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   // (each liana's own swing, for the engine's self-swinging vines: proto.gen2.lianas, by vine id)
   const lianas = laid.sections.flatMap((s) => s.vines.flatMap((v) => (v.swing ? [{ vine: v.vine.id, amp: v.swing.amp, period: v.swing.period, ...(v.window !== undefined ? { window: Math.round(v.window * 1000) / 1000 } : {}), ...(v.gap ? { x0: v.gap[0], x1: v.gap[1] } : {}) }] : [])));
   if (lianas.length) sink.extras.lianas = lianas;
-  const filled = fillSockets(laid, budget, req.kit, seed, sink, normalFoes, new Set(graph.nodes.filter((n) => n.job && HARD_JOBS.has(n.job)).map((n) => n.id)));
+  const threatAsks = new Map(graph.nodes.flatMap((n) => (n.asked?.dials?.threat ? [[n.id, n.asked.dials.threat] as const] : [])));
+  const filled = fillSockets(laid, budget, req.kit, seed, sink, normalFoes, new Set(graph.nodes.filter((n) => n.job && HARD_JOBS.has(n.job)).map((n) => n.id)), threatAsks.size ? threatAsks : undefined);
   const looks = dress(laid, budget, req.kit, seed, sink);
   proto.hints = filled.hints;
   const rooms = laid.sections.flatMap((s) => (s.room ? [s.room] : []));
@@ -3353,7 +3415,50 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     gen2: meta,
   };
   ASKS.set(stage, laid.asks ?? []);
+  // (a graph with a designer's asks: each node's sections as laid, for the check in applyVerdicts, nodeAsks.ts)
+  if (graph.nodes.some((n) => n.asked)) {
+    const byId = new Map(req.kit.manifest.sections.map((t) => [t.id, t]));
+    LAID_NODES.set(stage, new Map(graph.nodes.map((n) => [n.id, laid.sections.filter((q) => q.node === n.id).map((q) => {
+      const t = byId.get(q.template);
+      const double = !!t && (t.teaches === 'double' || (t.uses ?? []).includes('double') || (t.needs ?? []).includes('double'));
+      return { ...(t?.content ? { content: t.content } : {}), double, dy: q.exit.y - q.entry.y };
+    })])));
+  }
   return { stage, laid };
+}
+/** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
+const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number }>>>();
+
+/** each designer's ask the built stage did not lay, by name (nodeAsks.ts): the creatures that stayed, the finds, the pickups and the
+ *  falls under each node's span, read off the finished stage */
+function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
+  const nodes = st.gen2.graph.nodes;
+  if (!nodes.some((n) => n.asked)) return [];
+  const laidNodes = LAID_NODES.get(st);
+  const nodeOf = new Map(st.gen2.sections.map((q) => [q.uid, q.node]));
+  const at = new Set(st.enemies.map((e) => e.x));
+  const sleeper = new Set(M.creatures.filter((c) => c.tags?.includes('sleeper')).map((c) => c.id));
+  const byId = new Map(M.sections.map((t) => [t.id, t]));
+  const tplOf = new Map(st.gen2.sections.map((q) => [q.uid, byId.get(q.template)]));
+  const falls = (st.gen2.drops ?? []).map((d) => ({ x0: d.x0, x1: d.x1, kind: d.ends.kind === 'putback' ? 'soft' : d.ends.kind === 'life' ? (d.ends as { cause: string }).cause : 'hurt' }));
+  const out: string[] = [];
+  nodes.forEach((n, k) => {
+    if (!n.asked) return;
+    const token = st.gen2.code?.[k] ?? n.id;
+    const fills = st.gen2.fills.filter((f) => nodeOf.get(f.section) === n.id);
+    const secs = st.gen2.sections.filter((q) => q.node === n.id);
+    const laidNode = {
+      id: n.id, token,
+      sections: laidNodes?.get(n.id) ?? [],
+      enemies: fills.filter((f) => f.role === 'enemy' && f.what && at.has(R(f.x))).map((f) => ({ kind: f.what!, asleep: sleeper.has(f.what!) })),
+      finds: fills.filter((f) => f.role === 'find' && f.what).map((f) => f.what!),
+      pickups: fills.filter((f) => f.role === 'pickup' && f.what).reduce((s, f) => s + (tplOf.get(f.section)?.sockets.find((q) => q.id === f.socket)?.count ?? 1), 0),
+    };
+    if (!laidNodes && (n.asked.shape || n.asked.content || n.asked.move)) out.push(`node ${n.id} "${token}": its sections' heights were not kept for the check`);
+    out.push(...askMisses(n.asked, laidNode, M.creatures, easy));
+    if (secs.length) out.push(...hazardMiss(n.asked, n.id, token, [Math.min(...secs.map((q) => q.x0)), Math.max(...secs.map((q) => q.x1))], falls));
+  });
+  return out;
 }
 /** each built stage's route asks (laid in world px), read by applyVerdicts; kept off gen2 so the built stage carries the verdicts only */
 const ASKS = new WeakMap<Gen2Stage, NonNullable<Laid['asks']>>();
@@ -3538,7 +3643,7 @@ export function stagePool(M: WorldManifest, stageId: string): SectionTemplate[] 
  * A built roll's errors, everything that fails it by name: its own (a check that failed), a tip with no words, a slot filled past its rule
  * (Law 22), a required section with no node, and every V-rule breach in its realised node code (the red team's RT-ENGINE #6)
  */
-export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loosened' | 'missing' | 'codeErrors' | 'windowMiss' | 'flagMiss' | 'towerMiss' | 'verdicts'>): string[] {
+export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loosened' | 'missing' | 'codeErrors' | 'windowMiss' | 'flagMiss' | 'towerMiss' | 'verdicts'> & Pick<Partial<Gen2Stage['gen2']>, 'dialMiss'>): string[] {
   const st = { gen2: { ...g, errors: [...(g.errors ?? [])] } };
   // (a tip whose id has no Dot line fails the roll: it was never shown)
   const unsaid = [...new Set(st.gen2.fills.filter((f) => f.role === 'tip' && f.unsaid).map((f) => f.what))];
@@ -3553,6 +3658,7 @@ export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loos
   if (st.gen2.windowMiss) st.gen2.errors.push(st.gen2.windowMiss);
   if (st.gen2.flagMiss?.length) st.gen2.errors.push(...st.gen2.flagMiss);
   if (st.gen2.towerMiss?.length) st.gen2.errors.push(...st.gen2.towerMiss);
+  if (st.gen2.dialMiss?.length) st.gen2.errors.push(...st.gen2.dialMiss.map((m) => `ask: ${m}`));
   // (R-165.61: a refused roll's verdicts, by name: `errors` derived from the RollVerdict, each line once, Normal's then Easy's)
   for (const d of ['normal', 'easy'] as const) for (const l of verdictLines(g.verdicts?.[d])) if (!st.gen2.errors.includes(l)) st.gen2.errors.push(l);
   return st.gen2.errors;
@@ -3660,6 +3766,9 @@ export function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
     const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines)];
     if (falls.length) st.gen2.towerMiss = falls;
   }
+  // (the designer's asks, nodeAsks.ts: each laid, or the roll fails by name)
+  const dm = dialMisses(st, req.kit.manifest, req.difficulty === 'easy');
+  if (dm.length) st.gen2.dialMiss = dm;
 }
 
 /**

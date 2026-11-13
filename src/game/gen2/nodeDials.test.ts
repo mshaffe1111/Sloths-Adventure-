@@ -1,6 +1,6 @@
 // The node code's long form (NODES.md §8.9, R-165.198): a node's dials, the formation mark and the pick node, read and written back
-// by the one parser (nodeCode.ts), and refused by name where they mean nothing. The lay does not honour them yet: a graph that
-// writes one fails by name (pipeline.ts rolledGraph), never in silence.
+// by the one parser (nodeCode.ts), and refused by name where they mean nothing. The lay honours each or the roll fails by name
+// (nodeAsks.ts); the pick is not laid yet and fails by name (pipeline.ts rolledGraph), never in silence.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../headlessDom.ts';
@@ -61,8 +61,12 @@ test('node dials (planted): a sign that is no dial, a number that means nothing 
   assert.equal(errs('A P R ?[M|P] R S E'), '');
 });
 
-test('node dials: a graph that writes a dial or a pick the lay cannot honour yet fails by name, never laid without it', () => {
+test('node dials: a graph that writes a dial is laid with it (or the roll fails by name, nodeAsks.ts); a pick fails by name', () => {
   const build = (code: string) => buildGen2Stage({ config: towerCfg('5-95', 'sprint'), kit: legsKit('5-95', code), seed: 1, difficulty: 'normal' });
-  assert.throws(() => build('A P:$8 M R S E'), /"P:\$8" carries long-form dials, which the lay does not honour yet/);
+  const st = build('A P:$8 M R S E');
+  assert.deepEqual(st.gen2.graph.nodes[1].dials?.reward, { pickups: 8 });
+  // (the toy's practise brick lays 3 petals a section: 8 is laid only by chance of the count, and a miss is named, never dropped)
+  const laid = st.gen2.errors.filter((e) => e.startsWith('ask: '));
+  assert.ok(laid.every((e) => /node n2 .*reward \$8: laid \d+ pickups/.test(e)), laid.join('; '));
   assert.throws(() => build('A P R ?[M|P] R S E'), /is a pick node, which is not laid yet/);
 });

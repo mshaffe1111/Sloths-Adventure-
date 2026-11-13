@@ -16,6 +16,7 @@ import type { Difficulty } from '../difficulty.ts';
 import type { Anchor, PieceSpec, RoomSpec } from '../puzzleKit.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { ProtoExtras } from '../protoStage.ts';
+import type { NodeAsks } from './nodeAsks.ts';
 import type { Zone } from '../zones.ts';
 import type { Collectible, Enemy, EnemyType, LevelConfig, ObjectiveType, Platform, Vine } from '../types.ts';
 import type { Rng } from './variety.ts';
@@ -593,6 +594,9 @@ export interface MissionNode {
   /** which way this node is laid (R-165.196; the code's leg marks /R /L /U /D, legs.ts): a run of nodes with one travel is a LEG.
    *  Unset: the graph's own flow, as every graph written before legs */
   travel?: 'right' | 'left' | 'up' | 'down';
+  /** what the designer's code fixed on this node (its marks and long-form dials, nodeAsks.ts): each laid, or the roll fails by name
+   *  (Gen2Meta.dialMiss). Unset: nothing asked, the node rolls as ever */
+  asked?: NodeAsks;
 }
 
 /** a node's job (NODES.md §1, §8.0's key): what it asks of the player. The graphs roll arrive to exit; the rest are LATER nodes (§6), or
@@ -824,6 +828,8 @@ export interface Gen2Meta {
   /** a tower's own misses (tower.ts towerFalls, towerSkips): a fall no sound wood catches within a trunk section going up, a storey a
    *  jump climbs without its vine; a blind drop going down */
   towerMiss?: string[];
+  /** each designer's ask (nodeAsks.ts) the built roll did not lay, by name: the roll fails (rollErrors) */
+  dialMiss?: string[];
   /** the brief the rolled graph was rolled under (manifest graphs.briefs) */
   brief?: GraphBrief;
   /** the stage's brief says no fall costs a life (GraphBrief.softFalls): what the engine reads (pipeline.ts softFallStage) */

@@ -109,3 +109,19 @@ export const legsKit = (stageId: string, code: string, width?: number, chunkSeco
   },
   emit: {},
 });
+
+/** a run piece with a creature on its far bank (the toy cast's spider): what a node's threat (`&`, `:&spider*1`) is laid on in the
+ *  mix-and-match fixture (nodeMix.test.ts). Kept out of LEG_BRICKS, so the legs fixtures lay as they always did */
+export const foeHop: SectionTemplate = {
+  ...pitHop,
+  id: 'legs-foe-hop',
+  name: 'foe hop',
+  sockets: [...pitHop.sockets, { id: 'foe', role: 'enemy', on: 'far', t: [0.55, 0.75], maxThreat: 3, easy: 'soften' }],
+};
+
+/** the legs kit and a creature brick for each run job: the mix-and-match fixture (nodeMix.test.ts, nodeAsks.test.ts) */
+export const mixKit = (stageId: string, code: string): WorldKit => {
+  const k = legsKit(stageId, code);
+  const foes = (['practise', 'flow', 'test', 'combine'] as const).map((j) => brick(foeHop, `legs-foe-${j}`, j, 'ground'));
+  return { ...k, manifest: { ...k.manifest, sections: [...k.manifest.sections, ...foes] } };
+};

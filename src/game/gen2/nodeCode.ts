@@ -191,6 +191,10 @@ export function formatToken(t: CodeToken): string {
 
 /** what a check of a string needs to know about its stage */
 export interface CodeRules {
+  /** a GRAPH (§8.4), not a realised roll: a designer names the content of some nodes and the deal fills the rest, so the mix rules
+   *  (V11's cap and neighbours, V12's windows, V14's deal) read the whole stage on its realised code (pipeline realisedCode), never a
+   *  graph's few named letters. Every other rule reads the graph as written */
+  graph?: boolean;
   /** the brief's teach count: one T per move (V2) */
   teaches?: number;
   /** the stage's lessons of shapes it owns: '^^' (1-4's shaft), '@', '*' (V8, V10) */
@@ -324,7 +328,7 @@ export function checkCode(tokens: readonly CodeToken[], rules: CodeRules = {}): 
   // content: NODES.md §7.3) and the structural ones never)
   const content = tokens.map((t, i) => ({ i, t, c: t.roads ? t.roads[1].find((r) => r.content)?.content : t.job === 'S' || t.job === 'H' ? undefined : t.content }))
     .filter((x) => x.c && !STRUCTURAL.has(x.t.job));
-  if (content.length) {
+  if (content.length && !rules.graph) {
     const count = new Map<string, number>();
     for (const x of content) count.set(x.c!, (count.get(x.c!) ?? 0) + 1);
     const cap = Math.round(0.4 * content.length);
