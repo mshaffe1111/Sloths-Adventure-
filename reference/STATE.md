@@ -783,3 +783,7 @@ lines); Matt sees them in the release.
   0 of 72 stages in Worlds 3-10 sit in their band (medians 5-17 vs bands 19-100). Recommends R-165.173 (1-1's five doubles are about half
   its points: move them to 1-4, 1-1 target 2.5). Ready packets: S1 INSPECT-ROUTE (R-165.176) -> S2 METER-GATE -> S3 METER-TARGET (N1-N3),
   D40 order. Pushback accepted (calibrated to Matt's latest 1-3 = 1; tools/ path kept per packet).
+- 2026-11-12 10:00 PM ET, Matt: "I just did the reset." Fable: "when we have Fable doing the up, it does the down, and it does the card
+  section. I think we just let Fable design that... do the 3 tests... then let a Fable design it and implement the cards into the engine."
+  So: ENG-ASCENT widened to UP AND DOWN (then the card road after 1-5's design), Fable; the 1-5 idea list C on Fable; F15 (Fable) designs
+  1-5 then builds the card road (replaces D15 Opus max); BC-FIX (Opus xhigh) starts too (blocks 0.9.7).

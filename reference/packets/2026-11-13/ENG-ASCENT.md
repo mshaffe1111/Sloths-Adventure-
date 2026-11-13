@@ -1,5 +1,5 @@
-# ENG-ASCENT: gen2 lays a stage UP (1-4's foundation; R-165.170) (the lead, 2026-11-12; back to Fable 8:34 PM ET). Fable 5.2 high
-(role engine-fable; Matt 6:50 PM "get a Fable model to run it"; Opus max takes DIFF-ALGO instead). Branch t-eng-ascent from t-int-2@465023ef.
+# ENG-ASCENT (now UP AND DOWN): gen2 lays a stage up or down (R-165.170) (the lead, 2026-11-12; widened 10:00 PM ET). Fable 5.2 high
+(role engine-fable; Matt 9:59 PM: "when we have Fable doing the up, it does the down, and it does the card section"). Branch t-eng-ascent from t-int-2@f01c76f7.
 
 Why: 1-4 "Up the Kapok" (reference/design/1-4.md on origin/t-14-design, passed the lead's look) is the first stage that travels UP.
 Today gen2 cannot lay one: pipeline.ts missionGraph throws "gen2: ascent stages run up (flow "up"): phase 2" (the TODO above it). D14
@@ -13,11 +13,16 @@ reference/LESSONS.md, reference/methods/level.md and gates.md, STAGE-RULES.md, a
    and the time model per beat, levelCheck and the bots able to fly/play it, the stage lock and seed lists unchanged for every
    existing stage (lock: nothing else moves). Prove it on a TEST graph (a fixture), not by re-laying the live 1-4 (the hand-built 1-4
    and its rooms stay until 1-4's build packet deletes them: no patching what is being replaced, D40).
+1b. **The descent lay (M).** The same for flow 'down' (a stage that starts high and works down: 1-5's idea lists start in the kapok's
+   crown; drops onto boughs, vines climbed down): every drop's landing in view before he commits (D46), no blind fall, the time model
+   and bots both ways. Same proof rules as piece 1.
 2. **Along the route (M).** Flags, hearts, quiet time and the 2:00 clock measured ALONG the climb (ROLLED_FLAGS counts x today):
    Matt's flag rule measured on the path, never a table (D49).
-3. **The climb camera (S).** While climbing up, his feet sit lower in the view so the column above shows (55% always today,
+3. **The climb camera (S).** While climbing up, his feet sit lower in the view so the column above shows (and going down, higher, so
+   the landing below shows) (55% always today,
    cameraFollow.ts:96); both ways on a phone (sideways is the SHORT view, engine.ts:1170). Perf budget holds (PERFORMANCE-RULES §1).
-Not yours: pods, hollows/rot, the pair (separate packets), any art.
+Not yours: pods, hollows/rot, the pair (FEEL-PAIR has it), any art. NEXT for you after these land and pass the lead's look: the card
+road (lay the next stretch from the player's pick), from F15's 1-5 design (its own packet).
 
 ## Rules
 - Never loosen a fairness rule, threshold or STAGE-RULES number; never re-record a seed list; no stage id/seed/x literal in engine
