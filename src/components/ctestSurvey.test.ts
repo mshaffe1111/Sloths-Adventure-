@@ -79,15 +79,25 @@ test('ctest survey: Send waits for the three required answers, and only those', 
   assert.equal(readyToSend({ hard: ['Running'], tips: ['Yes'], next: ['Yes'] }), false);
 });
 
-test("ctest survey: the front page's moves are only what 1-1 has (run, jump, double jump, the mushroom), each a real pose of Pokey's sheet", async () => {
-  const { MOVES } = await import('./ControlTestGate.tsx');
+test("ctest survey: the front page shows the moves of the stage the link plays (1-4's climb, or 1-3's traps), each a real pose of Pokey's sheet", async () => {
+  const { CTEST_PAGES, ctestPage } = await import('./ControlTestGate.tsx');
+  const { CTEST_LEVEL_ID } = await import('../game/playRecorder.ts');
   const { STD_FRAMES } = await import('../game/heroStandardData.ts');
-  assert.deepEqual(MOVES.map((m) => m.name), ['Run', 'Jump', 'Double jump', 'Mushroom bounce']);
-  for (const m of MOVES) {
-    assert.ok(STD_FRAMES[m.frame], `${m.frame} is on the sheet`);
-    assert.ok(!/vine|kick|punch|animal|snake|swing/i.test(m.how), m.how);
-    assert.ok(m.how.length <= 70, `${m.name}: one short line`);
+  assert.ok(CTEST_PAGES[CTEST_LEVEL_ID], `the link's stage ${CTEST_LEVEL_ID} has a front page`);
+  assert.equal(ctestPage(), CTEST_PAGES[CTEST_LEVEL_ID]);
+  assert.deepEqual(CTEST_PAGES['1-4'].moves.map((m) => m.name), ['Climb', 'Two hands', 'Push the figs', 'Heads up']);
+  assert.deepEqual(CTEST_PAGES['1-3'].moves.map((m) => m.name), ['Run', 'Jump', 'Punch', 'Drop a trap']);
+  for (const [id, pg] of Object.entries(CTEST_PAGES)) {
+    assert.ok(pg.moves.length <= 4, `${id}: the page holds four cards`);
+    assert.ok(pg.alt.length > 0 && !/1-1|mossy logs/.test(pg.alt), `${id}: its own still's words`);
+    for (const m of pg.moves) {
+      assert.ok(STD_FRAMES[m.frame], `${id} ${m.name}: ${m.frame} is on the sheet`);
+      assert.ok(m.how.length <= 70, `${id} ${m.name}: one short line`);
+    }
   }
+  // (1-4's cards say nothing of 1-1's moves; 1-3's nothing of the mushroom)
+  for (const m of CTEST_PAGES['1-4'].moves) assert.ok(!/mushroom|double/i.test(m.how), m.how);
+  for (const m of CTEST_PAGES['1-3'].moves) assert.ok(!/mushroom/i.test(m.how), m.how);
 });
 
 test('ctest survey: the row keeps the old keys in their old shape, adds the new ones, and leaves a skipped one out', () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { recorder, savedTesterName, testerId } from '../game/playRecorder.ts';
+import { CTEST_LEVEL_ID, recorder, savedTesterName, testerId } from '../game/playRecorder.ts';
 import { refinedControls } from '../game/refinedControls.ts';
 import { difficulty, setDifficulty, type Difficulty } from '../game/difficulty.ts';
 import { checkForUpdate, hardRefresh } from '../game/updates.ts';
@@ -89,20 +89,56 @@ export const HeroPose: React.FC<{ frame: string; h: number; className?: string }
   );
 };
 
-/** the real level, still: gen2 1-4 as the game draws it on Normal (Pokey two-handed in a vine field under a fig bunch, the gate
- *  bough over him: reference/qa-reports/B14/ctest-14.mjs), 31 KB */
-const STILL_URL = new URL('../assets/ui/ctest-1-4.webp', import.meta.url).href;
-
+/** one of the testers' moves: a painted Pokey pose on a little card with what to do (the tips folded in: the lead and Matt, 11-06) */
+export interface CtestMove {
+  frame: string;
+  name: string;
+  how: string;
+}
+/** the front page of one testers' stage: its still (the real level as the game draws it, 880 x 425, src/assets/ui/ctest-<stage>.webp),
+ *  the still's words for a screen reader, and only the moves that stage asks for (the story keeper's words, verbatim) */
+export interface CtestPage {
+  alt: string;
+  moves: readonly CtestMove[];
+}
+const RUN: CtestMove = { frame: 'run_3', name: 'Run', how: 'Slide your thumb sideways. Keep it down to keep running.' };
+const JUMP: CtestMove = { frame: 'rise', name: 'Jump', how: 'A quick flick up and forward, close to the edge. Not a slow drag.' };
 /**
- * 1-1's moves, each a painted Pokey pose on a little card with what to do (the tips folded in: the lead and Matt, 11-06). Only what 1-1
- * has: no vines, kicks or animals.
+ * Each stage the testers' link can name (playRecorder.ts CTEST_LEVEL_ID: 1-4, the vine-field climb, Matt 11-13 12:02 PM ET; 1-3 if 1-4 is
+ * not ready). The cards' words are the story keeper's (t-story@57ce5589), each checked against the built controls (FIX-B REPORT).
  */
-export const MOVES: ReadonlyArray<{ frame: string; name: string; how: string }> = [
-  { frame: 'run_3', name: 'Run', how: 'Slide your thumb sideways. Keep it down to keep running.' },
-  { frame: 'rise', name: 'Jump', how: 'A quick flick up and forward, close to the edge. Not a slow drag.' },
-  { frame: 'tumble', name: 'Double jump', how: 'Flick up again in the air, for tall steps and wide gaps.' },
-  { frame: 'spring_launch', name: 'Mushroom bounce', how: 'Land on a mushroom to spring up high. Steer to aim.' },
-];
+export const CTEST_PAGES: Readonly<Record<string, CtestPage>> = {
+  '1-4': {
+    alt: 'Pokey climbing a curtain of vines up a giant kapok tree',
+    moves: [
+      { frame: 'climb_2', name: 'Climb', how: 'Slide your thumb up to climb. Slide down to whoosh back down.' },
+      { frame: 'hang_b', name: 'Two hands', how: 'Slide toward the next vine to hold both. Two hands climb faster.' },
+      { frame: 'climb_6', name: 'Push the figs', how: 'Climb up under a fig bunch to push it free. The branch lifts.' },
+      { frame: 'swing_grip', name: 'Heads up', how: 'A creak above means a pod is coming. Move over a vine.' },
+    ],
+  },
+  '1-3': {
+    alt: 'Pokey beside a sleeping snake under a hive in the new level',
+    moves: [
+      RUN,
+      JUMP,
+      { frame: 'punch_2', name: 'Punch', how: 'Tap when a snake is close to punch it. Off it glides.' },
+      { frame: 'air_punch_1', name: 'Drop a trap', how: 'Punch the vine by a hive or stone. It drops beside the snake.' },
+    ],
+  },
+};
+/** the stills on hand (one per stage that has been shot; a stage with none shows the page without it) */
+let STILLS: Record<string, string> = {};
+try {
+  STILLS = import.meta.glob<string>('../assets/ui/ctest-*.webp', { eager: true, query: '?url', import: 'default' });
+} catch {
+  // (no bundler: the node tests, which read the files themselves)
+  STILLS = {};
+}
+/** the still of a testers' stage, or null when it has not been shot yet */
+export const ctestStill = (id: string): string | null => STILLS[`../assets/ui/ctest-${id}.webp`] ?? null;
+/** the front page of the stage the link plays */
+export const ctestPage = (id: string = CTEST_LEVEL_ID): CtestPage => CTEST_PAGES[id];
 
 /** a numbered step on the front door: a little gold token */
 const Step: React.FC<{ n: number }> = ({ n }) => (
@@ -116,9 +152,11 @@ const Head: React.FC<{ children: React.ReactNode }> = ({ children }) => <h2 clas
 
 /**
  * The testers' front door (only with #ctest in the address): who is playing, what gets recorded, and Start. Recording begins on
- * Start, and the level opens straight away (gen2 1-1, a fresh proven seed each run, on the setting picked here).
+ * Start, and the level opens straight away (playRecorder.ts CTEST_LEVEL_ID, a fresh roll of its list each run, on the setting picked here).
  */
 export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) => {
+  const page = ctestPage();
+  const still = ctestStill(CTEST_LEVEL_ID);
   const [name, setName] = React.useState(savedTesterName);
   const [level, setLevel] = React.useState<Difficulty>(difficulty);
   // (the name box kept above the phone's keyboard while it is typed in)
@@ -142,18 +180,18 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
       <form onSubmit={go}>
         {/* the hero: the real level, Pokey big in front of it, the NEW tag on its corner */}
         <div className="ct-hero">
-          <img className="ct-hero-still" src={STILL_URL} alt="Pokey climbing a curtain of vines up a giant kapok tree" draggable={false} />
+          {still && <img className="ct-hero-still" src={still} alt={page.alt} draggable={false} />}
           <span className="ct-new-tag ct-hero-new">NEW</span>
           <HeroPose frame="cheer_a" h={150} className="ct-hero-pokey" />
         </div>
         <p className="ct-kicker">Level test · Brand-new levels</p>
         <Plaque as="h1" className="ct-title">Pokey's new level</Plaque>
-        <p className="ct-p ct-lead">One level, about 3 minutes. Every run is different.</p>
+        <p className="ct-p ct-lead">One level, a few minutes. Every run is different.</p>
         <FreshBuild />
 
         <Head>The moves</Head>
         <div className="ct-moves">
-          {MOVES.map((m) => (
+          {page.moves.map((m) => (
             <div key={m.name} className="ct-move">
               <span className="ct-move-pic">
                 <HeroPose frame={m.frame} h={80} />

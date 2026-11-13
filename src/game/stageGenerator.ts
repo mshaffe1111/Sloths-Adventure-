@@ -20,10 +20,8 @@ import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { DOT_STAGE_ID, dotGeneratedStage } from './dotFlightStage.ts';
 import { MEECA_STAGE_ID } from './extraStages.ts';
 import { meecaGeneratedStage } from './meecaStage.ts';
-import { ctestEnabled, ctestSeed, qaBuild } from './playRecorder.ts';
+import { qaBuild } from './playRecorder.ts';
 
-/** the stage the control test replaces (no story scene before it); its layout is a new mix each run (playRecorder.ts ctestSeed) */
-export const CTEST_STAGE_ID = '1-2';
 import type {
   LevelConfig,
   Platform,
@@ -2876,7 +2874,6 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // the vine pair's feel test (a QA build only: feelPairStage.ts, R-165.170)
   if (config.id === FEEL_PAIR_ID && qaBuild()) return buildFeelPairStage(config);
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
-  if (config.id === CTEST_STAGE_ID && !config.secret && ctestEnabled()) return buildProtoStage(config, ctestSeed(), 'ctest', difficulty === 'easy');
   // Dot's netting flight, the extra stage after 4-5 (dotFlightStage.ts); it is only in the stage list with the New stages switch on
   if (config.id === DOT_STAGE_ID) return dotGeneratedStage(config, layoutVariant ?? 1);
   if (config.id === MEECA_STAGE_ID) return meecaGeneratedStage(config, layoutVariant ?? 1);

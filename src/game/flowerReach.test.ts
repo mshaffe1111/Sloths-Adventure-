@@ -60,7 +60,7 @@ test('every flower, fruit and leaf in every stage is somewhere he can get it', (
     }
   }
   setLayoutVariant(null);
-  for (const [id, plan] of [['1-2', 'ctest'], ['1-6', 'proto'], ['1-1', '1-1']] as const) {
+  for (const [id, plan] of [['1-6', 'proto'], ['1-1', '1-1']] as const) {
     for (const seed of [1, 2, 7]) {
       const st = buildProtoStage(levels.find((l) => l.id === id)!, seed, plan);
       for (const c of badPickups({ platforms: st.platforms, vines: st.vines, waterY: st.waterY }, st.collectibles)) bad.push(`${plan}/${seed} ${c.type} (${Math.round(c.x)}, ${Math.round(c.y)})`);

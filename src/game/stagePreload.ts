@@ -27,7 +27,6 @@ import { BACK_URL, DOT_BRIDGES_URL, DOT_PROPS_URL, dotPropsReady, warmDotSheets 
 import { DOT_ATLAS_URL } from './dotSprite.ts';
 import { kitUrl, paintedKitEnabled, PROTO2_URL, warmKit, warmProto2 } from './protoArt.ts';
 import { protoStageEnabled } from './protoStage.ts';
-import { ctestEnabled, ctestSeed } from './playRecorder.ts';
 import { W2_PROPS_URL, riverArtReady } from './riverArt.ts';
 import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
 import { W4_PROPS_URL, w4ArtReady } from './w4Art.ts';
@@ -41,11 +40,10 @@ import { MEECA_CARVE_URL } from './meecaCarveData.ts';
 import { MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { warmMeecaArt } from './meecaArt.ts';
 import { BACKDROP_WAIT_MS, backdropReady, stageUsesCanopy } from './paintedBackdrops.ts';
-import { CTEST_FOES, ctestMixDraws, stageSheets } from './stageSheets.ts';
+import { stageSheets } from './stageSheets.ts';
 import { ALWAYS } from './stageManifest.ts';
 import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { SPRITES, warmSprites } from './spriteSheets.ts';
-import { CTEST_STAGE_ID } from './stageGenerator.ts';
 import { DOT_PERCH_URL, HUD_ATLAS_URL, hudArtReady, perchArtReady } from '../components/hud/painted.tsx';
 import { warmBounce } from './bounceArt.ts';
 import { BOUNCE_URL } from './bounceAtlasData.ts';
@@ -257,18 +255,14 @@ let pending: { id: string; done: Promise<void> } | null = null;
  */
 export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: () => boolean = () => false, ms = 8000): Promise<void> {
   if (typeof Image === 'undefined' || !preloadEnabled()) return Promise.resolve();
-  // (the control test: the mix about to be played, so only its creatures are asked for, and the others' sheets are let go)
-  const mix = ctestEnabled() && cfg.id === CTEST_STAGE_ID ? ctestSeed() : undefined;
-  const id = mix ? `${cfg.id}#${mix}` : cfg.id;
+  const id = cfg.id;
   if (pending?.id === id) return pending.done;
   // (a stage in another world: the last world's sheets go first, as starting the stage would do)
   enterWorld(cfg.worldIndex);
   // (the dirty water's sheet is the world's own from World 8 on: badWaterArt.ts)
   if (cfg.worldIndex >= 6) setBadWaterWorld(cfg.worldIndex);
-  if (mix && !live()) releaseCtestFoes(ctestMixDraws(mix).foes);
-  // (and what every stage shows, and for the control test what its mix's built stage holds: stageManifest.ts; the rest of a stage's
-  // built contents are got in once it is built, stageReady.ts)
-  const keys = [...new Set([...stageSheets(cfg, { hand: protoStageEnabled(), paint: paintedKitEnabled(), ctest: ctestEnabled(), mix }), ...(cfg.id === DOT_STAGE_ID ? [] : ALWAYS), ...(mix ? ctestMixDraws(mix).built : [])])];
+  // (and what every stage shows: stageManifest.ts; the rest of a stage's built contents are got in once it is built, stageReady.ts)
+  const keys = [...new Set([...stageSheets(cfg, { hand: protoStageEnabled(), paint: paintedKitEnabled() }), ...(cfg.id === DOT_STAGE_ID ? [] : ALWAYS)])];
   const urls = start(keys);
   const plains = plainUrls(keys);
   const plainDone = loadPlain(plains);
@@ -311,18 +305,6 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
     if (pending === mine) pending = null;
   });
   return done;
-}
-
-/** the control test's creature sheets that this mix does not draw: let go (a decoded clip sheet is 13 to 20 MB) */
-function releaseCtestFoes(keep: readonly string[]) {
-  const urls: string[] = [];
-  for (const n of CTEST_FOES) {
-    if (keep.includes(n)) continue;
-    const u = creatureAnimUrl(n);
-    if (u) urls.push(u);
-    urls.push(...(SPRITES[n]?.urls() ?? []));
-  }
-  releaseSheets(urls);
 }
 
 /**
