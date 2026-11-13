@@ -40,3 +40,5 @@ the first: count levels that reach his test link at the bar, against the usage %
 | B14c (session_01FhBbYL2ZzaxtJErxEbEgoy) | 1-4: difficulty to 3.3 (in band), seed list 100/100, stills both settings, testers' still, gates.yml line | $10.82 | found the drawcheck breach (8.01 sideways) |
 | NODES-2 (session_01FhBbYL8WSkzk5wH55uTUb3) | node dials honoured-or-failed-by-name, nodeMix test + kill histogram, creature top-up any world; all gates green on b812051a | $15.85 | W1: 43/60 bare node strings lay clean (1 with every ask); top killer floor.unmarked |
 | VARIETY (session_01FhBbYLF4aRMBR5NoxbeWGb, Opus max) | item 0 1-4 vine-top: engine vault finder (vineTop.ts, 3,906 cases game-wide); shape/move asks as rules | $21.11 | legs fixture 2->3/60; W1 1/60 (floor.unmarked) |
+| IDEAS-1-6 A (Opus medium) | 1-6 idea list + tributes (Pitfall!, DK Jr., DKC) | $1.14 | ~8 min; tributes a-d with sources |
+| IDEAS-1-6 B (Opus high) | 1-6 idea list + tributes (Pitfall!, DK Jr., DKC rope level) | $1.24 | ~8 min; new blocks named |
