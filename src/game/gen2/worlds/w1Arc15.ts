@@ -58,9 +58,14 @@ const bank = (key: string, after: string | null, w: number, dy: R2 = [0, 0]): Se
 /** a piece of the high road over bank `on` (`onW` wide), its left end `x` px along it, `dy` over its top (default the road's OVER). Never a
  *  `landing`: each setting's widths are its own here (Set), and Easy's 48 px landing pad on top of them laid a deck over the next root's
  *  step (a hop under a deck) and the den's limb over its snake (seed 1 Easy) */
-const over = (key: string, on: string, onW: number, x: number, w: number, o: { creak?: boolean; dy?: number; style?: 'branch' | 'log' } = {}): SectionPiece => ({
+const deck = (key: string, on: string, onW: number, x: number, w: number, o: { creak?: boolean; dy?: number; style?: 'branch' | 'log' } = {}): SectionPiece => ({
   key, shape: 'branch', w: [w, w], place: { kind: 'over', on, at: [x / onW, x / onW], dy: [-(o.dy ?? OVER), -(o.dy ?? OVER)] }, style: o.style ?? 'branch', ...(o.creak ? { creak: true } : {}),
 });
+/** the high road's piece over bank `on`; a creaky limb or a branch GROWS FROM A TRUNK (Matt 11-07, R-165.54: a skinny branch is attached,
+ *  never floating; the lead's REDO 11-13): a World 1 climb trunk stands on the low road at its near end, the limb off its top. A log
+ *  reads as a platform and may float (the stub, the seed's bough) */
+const over = (key: string, on: string, onW: number, x: number, w: number, o: { creak?: boolean; dy?: number; style?: 'branch' | 'log' } = {}): SectionPiece[] =>
+  (o.style ?? 'branch') === 'log' ? [deck(key, on, onW, x, w, o)] : [vine(`${key}+t`, on, onW, x, o.dy ?? OVER), deck(key, on, onW, x, w, o)];
 /** a straight vine from bank `on` (`onW` wide) up to the high road, `x` px along it: the road's next piece starts at its top */
 const vine = (key: string, on: string, onW: number, x: number, h = OVER): SectionPiece => ({ key, shape: 'vine', w: [0, 0], place: { kind: 'climb', on, at: [x / onW, x / onW], h: [h, h] } });
 /** an awake snake's own ground: a bank OFF the `main` list (1-3's bed: the flag pass stands no flag on it and the lay tops no second
@@ -161,8 +166,8 @@ function lesson(S: Set): Lay {
     bank('U', 'c', W1), vine('v1', 'U', W1, x1), atTop('L0', 'v1', S.limb, true),
     bank('r1', 'U', 160, UP), bank('r2', 'r1', 140, DOWN),
     bank('V', 'r2', W2), vine('v2', 'V', W2, 40), atTop('L1', 'v2', S.limb, true),
-    over('L2', 'V', W2, 40 + S.limb + S.gap, S.limb, { creak: true }),
-    over('L3', 'V', W2, 40 + 2 * (S.limb + S.gap), S.limb, { creak: true }),
+    ...over('L2', 'V', W2, 40 + S.limb + S.gap, S.limb, { creak: true }),
+    ...over('L3', 'V', W2, 40 + 2 * (S.limb + S.gap), S.limb, { creak: true }),
     bank('r3', 'V', 200, UP), bank('z', 'r3', 260, DOWN),
   ];
   const sockets: Socket[] = [
@@ -183,9 +188,9 @@ function herRoad(S: Set): Lay {
   const pieces: SectionPiece[] = [
     bank('a', null, 160), bank('a2', 'a', 160, UP), bank('U', 'a2', W, DOWN),
     vine('v', 'U', W, xv), atTop('L1', 'v', S.limb, true),
-    over('L2', 'U', W, xv + S.limb + S.gap, S.limb, { creak: true }),
-    over('L3', 'U', W, xv + 2 * (S.limb + S.gap), S.limb, { creak: true }),
-    over('hi', 'U', W, seedX, 110, { style: 'log' }),
+    ...over('L2', 'U', W, xv + S.limb + S.gap, S.limb, { creak: true }),
+    ...over('L3', 'U', W, xv + 2 * (S.limb + S.gap), S.limb, { creak: true }),
+    ...over('hi', 'U', W, seedX, 110, { style: 'log' }),
     bank('r', 'U', 160, UP), ...t.pieces,
     bank('m', t.last, 220, DOWN), bank('n', 'm', 200, UP), bank('z', 'n', 240, DOWN),
   ];
@@ -211,14 +216,14 @@ function blocked(S: Set): Lay {
     bank('a', null, 220), vine('tv', 'a', 220, 40), atTop('tree', 'tv', 120),
     bank('a2', 'a', 180, UP), bank('show', 'a2', W1, DOWN),
     vine('v', 'show', W1, xv), atTop('L1', 'v', S.late, true),
-    over('L2', 'show', W1, xv + S.late + S.lateGap, S.late, { creak: true }),
+    ...over('L2', 'show', W1, xv + S.late + S.lateGap, S.late, { creak: true }),
     // (the stub: a short sound end, then nothing: the way on is down)
-    over('stub', 'show', W1, xv + 2 * (S.late + S.lateGap), 60, { style: 'log' }),
+    ...over('stub', 'show', W1, xv + 2 * (S.late + S.lateGap), 60, { style: 'log' }),
     dip('r', 'show', 160, S),
     // (the snake's ground between two aprons; up the vine on the first, over it on a sound bough, on along a creaky limb, down)
     apron('P', 'r', P), vine('v2', 'P', P, xv), atTop('B1', 'v2', B),
     ground('S', 'P', G),
-    apron('Q', 'S', Qa), over('L3', 'Q', Qa, 40 + S.lateGap, Math.min(S.late, Qa - 40 - S.lateGap), { creak: true }),
+    apron('Q', 'S', Qa), ...over('L3', 'Q', Qa, 40 + S.lateGap, Math.min(S.late, Qa - 40 - S.lateGap), { creak: true }),
     dip('Qb', 'Q', 240, S), dip('z', 'Qb', 340, S),
   ];
   const sockets: Socket[] = [
@@ -243,7 +248,7 @@ function boughRun(S: Set): Lay {
   for (let d = 0; d < 3; d++) {
     // (a deck: a vine up from the low road, two creaky limbs, a sound perch at its end over the next root; the low road under it flat)
     const D = `D${d}`, W = 40 + 2 * S.late + S.lateGap + 40;
-    pieces.push(d ? bank(D, prev, W) : bank(D, prev, W, DOWN), vine(`v${d}`, D, W, 40), atTop(`${D}a`, `v${d}`, S.late, true), over(`${D}b`, D, W, 40 + S.late + S.lateGap, S.late, { creak: true }));
+    pieces.push(d ? bank(D, prev, W) : bank(D, prev, W, DOWN), vine(`v${d}`, D, W, 40), atTop(`${D}a`, `v${d}`, S.late, true), ...over(`${D}b`, D, W, 40 + S.late + S.lateGap, S.late, { creak: true }));
     sockets.push(petals(`p${D}a`, `${D}a`, 0.5, 1), petals(`p${D}b`, `${D}b`, 0.5, 1));
     pieces.push(dip(`${D}r`, D, 220, S));
     prev = `${D}r`;
@@ -303,12 +308,12 @@ function weave(S: Set): Lay {
   const pieces: SectionPiece[] = [
     bank('a', null, 200), bank('a2', 'a', 180, UP), bank('U', 'a2', W1, DOWN),
     vine('v', 'U', W1, 40), atTop('L1', 'v', S.late, true),
-    over('L2', 'U', W1, 40 + S.late + S.lateGap, S.late, { creak: true }),
+    ...over('L2', 'U', W1, 40 + S.late + S.lateGap, S.late, { creak: true }),
     dip('r', 'U', 160, S),
     apron('P', 'r', P), vine('v2', 'P', P, xb), atTop('B', 'v2', B),
     ground('S', 'P', G),
     apron('Q', 'S', Qa),
-    over('L3', 'Q', Qa, 20 + S.lateGap, Math.min(S.late, Qa - 20 - S.lateGap), { creak: true }),
+    ...over('L3', 'Q', Qa, 20 + S.lateGap, Math.min(S.late, Qa - 20 - S.lateGap), { creak: true }),
     dip('Qb', 'Q', 240, S), dip('z', 'Qb', 340, S),
   ];
   const sockets: Socket[] = [
