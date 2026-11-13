@@ -53,3 +53,6 @@ billed from creation to terminate; probes were cpu-basic jobs of seconds.
 
 | When (ET) | Job | Decided by | Cost | What it bought |
 |---|---|---|---|---|
+| 10:33 AM | 4 cpu-basic probe jobs (seconds each: which part is refused; bucket mount and repo writes 403) | ART (packet) | ~$0.00 | the route: a sandbox |
+| 10:34 AM-12:06 PM | sandbox 6af72e1c29dd05ff03651469 (rtx-pro-6000), 92 min: climb1 12 edits; climb2 10; props1 42 stills (1-5 set, 1-4 pieces); fruit1 31 (9 fruit + guarana); props2 10 (sign, mark redos); props3 12 (oropendola, ant); props4 8 + props6 8 (dusk img2img); props5 8 (guarana on grey, down sign); oro1 6 edits; props7 4 (creek). ~2 min idle at 10:51 (a watcher bug, own miss) | ART (packet cap $15) | ~$4.22 | Pokey's two-hand climb (packed), 1-5's set + dusk set, 1-4's pieces, 9 fruit + golden guarana (all cut, catalogued); creek, flyer, ant takes for the next session |
+ART 11-13 total: ~92 GPU-min, **~$4.22** of its $15 cap (minutes x $2.75/60, creation to terminate). Balance ~$58.7 (from ~$62.9 at the packet).
