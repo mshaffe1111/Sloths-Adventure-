@@ -19,6 +19,8 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
   bought, in one line; log it in LEVEL-LOG.md. No helper runs tests it doesn't need (LAWS 5 scope) or spins past its stop line.
 - **No prototypes unless needed; tokens must last to Tuesday night** (10:22 AM; R-165.185): feel rooms only for a truly new mechanic
   Matt has not felt; small teams; members stop at their line.
+- **Show Matt pictures** (10:23 AM): for most new things, the lead sends him stills (SendUserFile) and he says if they look right;
+  members push a still of each new piece as soon as it draws, upright and sideways.
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
 ## TODAY 11-13 (started 10:16 AM ET; packets reference/packets/2026-11-13/TODAY.md + one per member; stop line 9:30 PM or 40% context)

@@ -25,3 +25,5 @@ One holder per file; the lead passes a token only after the holder has pushed. T
 | gen2/worlds/w1.ts, stageTable.ts, stagePlan.ts, tools/perf/drawcheck.mjs | B15 (1-5 is laid first) | B14 (1-4's hook) |
 | .github/workflows/gates.yml | S1 (one line, routeHumps.test.ts) | whoever asks next |
 New files are yours alone. Need a token? One line to the lead; carry on with other work meanwhile.
+- **Stills early (Matt, 10:23 AM: "just show me pictures"):** push a still of each new piece as soon as it draws (upright + sideways, in
+  reference/qa-reports/<ID>/stills/), and send the lead the paths in one line. Matt judges the look from them.
