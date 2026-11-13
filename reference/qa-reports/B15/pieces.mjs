@@ -19,9 +19,10 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2 });
   const p = await ctx.newPage();
   p.on('pageerror', (e) => console.log('ERR', e.message));
+  // (the setting is the game's own stored choice, difficulty.ts DIFFICULTY_KEY, set before the page loads: the page has no URL switch)
+  await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch { /* storage blocked */ } }, setting);
   await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
   await p.waitForTimeout(2500);
-  if (setting === 'easy') await p.evaluate(() => window.__setDifficulty?.('easy'));
   await p.evaluate(() => window.__play('1-5', 1));
   await p.waitForTimeout(4000);
   await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
