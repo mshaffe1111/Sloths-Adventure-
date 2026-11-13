@@ -1,0 +1,43 @@
+# F15: how the revised 1-4.md's meter numbers were made (10:23 PM ET). Run from a checkout of origin/t-diff-algo@1e5fe476 as tools/difficulty/design14.ts: npx tsx tools/difficulty/design14.ts
+# Output:
+# NORMAL (singles): meter 4.4  points 28.2  mean 8.0/min  peak 20.4/min
+#   2 rot 3.6 | 3 field 0.0 | 4 pods 1.7 | 5 fruit 1.9 | 7 ants 5.7 | 9 twist 1.2 | 11 hollow 8.9 | 13 crown 5.2
+# NORMAL (doubles taught here): meter 5.4  points 32.3  mean 9.1/min  peak 25.9/min
+#   2 rot 3.6 | 3 field 0.0 | 4 pods 1.7 | 5 fruit 1.9 | 7 ants 7.0 | 9 twist 1.2 | 11 hollow 10.3 | 13 crown 6.6
+# NORMAL (doubles, windows +0.3 s): meter 4.7  points 29.2  mean 8.3/min  peak 22.2/min
+#   2 rot 3.6 | 3 field 0.0 | 4 pods 1.7 | 5 fruit 1.9 | 7 ants 7.0 | 9 twist 1.2 | 11 hollow 8.1 | 13 crown 5.7
+# EASY: meter 2.3  points 15.2  mean 3.8/min  peak 11.5/min
+#   2 rot 2.9 | 3 field 0.0 | 4 pods 0.4 | 5 fruit 0.6 | 7 ants 3.1 | 9 twist 0.5 | 11 hollow 4.8 | 13 crown 2.9
+
+// scratch: the revised 1-4's beats (the vine field) through the meter's own arithmetic; novelty carried from 1-1..1-3 as built
+import { combine, rawOf, scoreStage, fittsBits, landBits, windowBits, OTHER_BITS, STAKES, type Challenge } from './score.ts';
+const SCALE = 0.30654;
+type Row = [beat: string, t: number, kind: string, bits: number, stakes: number, threat?: boolean];
+const jump = (share: number, land = 200, crumble = false, dbl = false) => fittsBits(share) + landBits(land) + (crumble ? 1 : 0) + (dbl ? OTHER_BITS.second : 0);
+const pod = (cycle: number, open: number) => windowBits(cycle, open);
+function run(name: string, setting: 'normal' | 'easy', rows: Row[], minutes: number) {
+  const seen = new Map<string, number>();
+  for (const id of ['1-1', '1-2', '1-3']) scoreStage(id, setting, 1, seen);
+  const out: Challenge[] = rows.map(([note, t, kind, bits, stakes, threat]) => ({ t, x: t * 200, kind, bits, cost: 'retry' as any, stakes, threat: !!threat, overlap: 1, novelty: 1, points: 0, note }));
+  const r = combine(out, minutes, seen);
+  const by = new Map<string, number>();
+  for (const c of out) by.set(c.note, (by.get(c.note) ?? 0) + c.points);
+  console.log(`${name}: meter ${(rawOf(r.mean, r.peak) * SCALE).toFixed(1)}  points ${r.points.toFixed(1)}  mean ${r.mean.toFixed(1)}/min  peak ${r.peak.toFixed(1)}/min`);
+  console.log('  ' + [...by].map(([k, v]) => `${k} ${v.toFixed(1)}`).join(' | '));
+}
+const H = STAKES.heart;
+const base = (dbl: boolean, w = 0): Row[] => [
+  ['2 rot', 30, 'single', jump(0.7, 160, true), 1], ['2 rot', 34, 'single', jump(0.7, 160, true), 1],
+  ['3 field', 46, 'climb', OTHER_BITS.climb, 1],
+  ['4 pods', 62, 'hazard', pod(3.6, 2.0), H, true], ['4 pods', 68, 'hazard', pod(3.6, 2.0), H, true],
+  ['5 fruit', 82, 'hazard', pod(3.0, 1.5), H, true], ['5 fruit', 88, 'puzzle', OTHER_BITS.puzzle, 1], ['5 fruit', 92, 'hazard', pod(3.0, 1.5), H, true],
+  ['7 ants', 110, 'hazard', pod(3.0, 1.2), H, true], ['7 ants', 115, 'hazard', pod(3.0, 1.2), H, true], ['7 ants', 120, 'hazard', pod(2.4, 1.0), H, true], ['7 ants', 125, 'single', jump(0.75, 140, true, dbl), 1],
+  ['9 twist', 142, 'creature-choice', OTHER_BITS.choice, 1], ['9 twist', 147, 'hazard', pod(3.0, 1.2), H, true],
+  ['11 hollow', 162, 'hazard', pod(2.4, 0.9 + w), H, true], ['11 hollow', 166, 'hazard', pod(2.4, 0.9 + w), H, true], ['11 hollow', 170, 'single', jump(0.78, 140, true, dbl), 1], ['11 hollow', 174, 'hazard', pod(2.4, 0.9 + w), H, true], ['11 hollow', 178, 'hazard', pod(2.4, 0.8 + w), H, true], ['11 hollow', 183, 'hazard', pod(2.4, 0.8 + w), H, true],
+  ['13 crown', 192, 'single', jump(0.8, 140, true, dbl), 1], ['13 crown', 196, 'hazard', pod(2.4, 0.8 + w), H, true], ['13 crown', 200, 'hazard', pod(2.4, 0.8 + w), H, true],
+];
+run('NORMAL (singles)', 'normal', base(false), 212 / 60);
+run('NORMAL (doubles taught here)', 'normal', base(true), 212 / 60);
+run('NORMAL (doubles, windows +0.3 s)', 'normal', base(true, 0.3), 212 / 60);
+const easy: Row[] = base(false).map((r) => r[2] === 'hazard' ? [r[0], r[1], r[2], Math.max(1, r[3] - 0.35), 1, true] as Row : r[2] === 'single' ? [r[0], r[1], r[2], jump(0.62, 208, true), 1] as Row : r);
+run('EASY', 'easy', easy, 240 / 60);
