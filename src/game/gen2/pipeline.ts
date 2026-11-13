@@ -500,7 +500,13 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
   const marks = legMarks(g.code);
   const parsed = parseCode(marks.code);
   // (V16: a node may ask for creatures in a world that has a cast; the lay then lays them or names the miss, nodeAsks.ts)
-  const bad = checkCode(parsed, { graph: true, creatures: M.creatures.length > 0 });
+  // (V3: the moves earlier stages taught, and this stage's own, whose teach nodes the brief lays right after the arrival, before any
+  // node the graph writes)
+  const known = [
+    ...Object.entries(M.lessons ?? {}).filter(([, st]) => stageOrder(st) < stageOrder(budget.id)).map(([m]) => m),
+    ...(brief.teaches ?? Object.entries(M.lessons ?? {}).filter(([, st]) => st === budget.id).map(([m]) => m)),
+  ];
+  const bad = checkCode(parsed, { graph: true, creatures: M.creatures.length > 0, known });
   if (bad.length) throw new Error(`gen2 ${budget.id}: graph ${g.id} "${g.code}": ${bad.join('; ')}`);
   // (the pick, NODES.md §8.9: one of two stretches laid on a walked choice, the card road (M4). Not laid yet: a graph that writes one
   // fails here by name)
