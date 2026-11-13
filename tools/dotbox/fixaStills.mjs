@@ -181,7 +181,41 @@ async function jump() {
   }
 }
 
-const jobs = { about, dot, teach, goal, jump };
+/** the Satchel on an old save: the locked bell's hint (R-165.165) and the snake's name and story (R-165.166) */
+async function satchel() {
+  for (const [ori, W, H] of SIZES) {
+    const p = await open(ori, W, H, 'old');
+    await p.goto(`${base}/?lessons=off`, { timeout: 300000 });
+    await p.locator('.ttl-play').waitFor({ state: 'visible', timeout: 300000 });
+    await sleep(2500);
+    await p.locator('.ttl-leaf-satchel').first().evaluate((e) => e.click());
+    await sleep(800);
+    await p.locator('.sh-tab:has-text("Finds")').first().evaluate((e) => e.click());
+    await sleep(600);
+    const bell = p.locator('text=Down in the hollow').first();
+    const hasBell = await bell.count();
+    if (hasBell) await bell.evaluate((e) => e.scrollIntoView({ block: 'center' }));
+    else {
+      // (the hint shows when the locked card is opened)
+      const locked = p.locator('.tr-sec:has-text("Notes from Meeca") + .tr-grid .tr-find:not(.open)').first();
+      if (await locked.count()) { await locked.evaluate((e) => e.click()); await sleep(600); }
+    }
+    await sleep(400);
+    await p.screenshot({ path: path.join(out, `satchel-bell-${ori}.png`) });
+    note(`satchel ${ori}: bell hint on screen: ${await p.locator('text=Down in the hollow, on the low ledge.').count() > 0}; old words gone: ${(await p.locator('text=against a root').count()) === 0}`);
+    if (!hasBell) { await p.keyboard.press('Escape'); await sleep(400); }
+    await p.locator('.sh-tab:has-text("Creatures")').first().evaluate((e) => { e.scrollIntoView({ block: 'start' }); e.click(); });
+    await sleep(600);
+    await p.screenshot({ path: path.join(out, `satchel-creatures-${ori}.png`) });
+    const card = p.locator('.tr-card.sc-tap').first();
+    if (await card.count()) { await card.evaluate((e) => e.click()); await sleep(700); await p.screenshot({ path: path.join(out, `satchel-snake-${ori}.png`) }); }
+    const txt = await p.evaluate(() => document.body.innerText);
+    note(`satchel ${ori}: "Golden Eyelash Viper" shown: ${/Golden Eyelash Viper/i.test(txt)}; "tree snake" anywhere: ${/tree snake/i.test(txt)}`);
+    await p.context().close();
+  }
+}
+
+const jobs = { about, dot, teach, goal, jump, satchel };
 for (const [k, f] of Object.entries(jobs)) if (!only || only.split(',').includes(k)) { try { await f(); } catch (e) { note(`${k} FAILED ${e.message.slice(0, 200)}`); } }
 fs.writeFileSync(path.join(out, `stills-log${only ? `-${only.replace(/,/g, '-')}` : ''}.txt`), log.join('\n') + '\n');
 await b.close();

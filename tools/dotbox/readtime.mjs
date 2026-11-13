@@ -89,7 +89,7 @@ while (Date.now() - t0 < Number(secsArg) * 1000) {
     await p.evaluate(() => { window.__tgt = []; for (const t of ['touchstart', 'pointerdown', 'click']) document.addEventListener(t, (e) => window.__tgt.push(`${t}:${String(e.target.className).slice(0, 30)}`), { capture: true, once: true }); });
     if (aim) await p.touchscreen.tap(aim.x, aim.y);
     await sleep(60);
-    cur.tgt = await p.evaluate(() => window.__tgt.join(' '));
+    cur.tgt = await p.evaluate(([x, y]) => { const el = document.querySelector('.dg-bub'); const b = el?.getBoundingClientRect(); const top = document.elementFromPoint(x, y); return window.__tgt.join(' ') + ` | aimed ${Math.round(x)},${Math.round(y)}; card now ${b ? [b.left, b.top, b.width, b.height].map(Math.round).join(',') : 'none'} ${el ? getComputedStyle(el).pointerEvents + ' ' + getComputedStyle(el).visibility + ' op ' + getComputedStyle(el).opacity : ''}; on top now ${top ? String(top.className).slice(0, 30) : ''}`; }, [aim?.x ?? 0, aim?.y ?? 0]);
     await sleep(120);
     const after = await p.evaluate(() => ({ ...window.__presses, gone: !document.querySelector('.dg-bub.in:not(.out)') || document.querySelector('.dg-bub.in p')?.innerText !== undefined }));
     cur.tapPunch = after.punch - before.punch;
