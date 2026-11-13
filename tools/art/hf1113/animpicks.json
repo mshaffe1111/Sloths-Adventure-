@@ -1,0 +1,36 @@
+{
+ "oropendola": {
+  "frames": [
+   "reference/art/hf1113/left/oropendola-up-37.webp",
+   "reference/art/hf1113/left/oro1-mid-s1.webp",
+   "reference/art/hf1113/left/oro1-down-s2.webp",
+   "reference/art/hf1113/left/oro1-mid-s1.webp"
+  ],
+  "mark": [
+   150,
+   218,
+   233
+  ],
+  "tol": 40,
+  "units": 70,
+  "fps": 8,
+  "dest": "src/assets/enemies"
+ },
+ "leafcutter": {
+  "frames": [
+   "reference/art/hf1113/left/leafcutter-11.webp",
+   "reference/art/hf1113/left/antA-s1.webp",
+   "reference/art/hf1113/left/leafcutter-11.webp",
+   "reference/art/hf1113/left/antB-s2.webp"
+  ],
+  "mark": [
+   120,
+   190,
+   40
+  ],
+  "tol": 45,
+  "units": 30,
+  "fps": 8,
+  "dest": "src/assets/enemies"
+ }
+}

@@ -58,3 +58,28 @@ def grade_sky():
 if __name__ == '__main__':
     OUT.mkdir(parents=True, exist_ok=True)
     grade_far(); grade_sky(); print('ok')
+
+
+def grade_layer(stem, out, dark):
+    """World 1's own middle / near strip at dusk: a colour grade only (the painting is untouched): shadow cooler and darker by `dark`,
+    warm last light on the bright upper edges of shapes (the sun just set behind the far hills), alpha kept"""
+    from scipy import ndimage as ndi
+    im = np.asarray(Image.open(GAME / f'src/assets/backdrops/{stem}.webp').convert('RGBA')).astype(np.float32) / 255
+    rgb, a = im[..., :3], im[..., 3:]
+    lum = rgb @ np.array([0.3, 0.59, 0.11], np.float32)
+    base = rgb * np.array([0.62, 0.58, 0.74]) * dark + np.array([0.05, 0.02, 0.08]) * dark
+    # an upper edge: this pixel solid, the one 6 px above clear or much darker (its top lit by the low sky)
+    up = np.roll(a[..., 0], 6, axis=0)
+    edge = np.clip(a[..., 0] - up, 0, 1)
+    edge = ndi.gaussian_filter(edge, 3) * np.clip(lum * 1.6, 0, 1)
+    warm = edge[..., None] * np.array([0.45, 0.22, 0.05])
+    out_rgb = np.clip(base + warm, 0, 1)
+    o = np.concatenate([out_rgb, a], 2)
+    o[o[..., 3] == 0, :3] = 0
+    Image.fromarray((o * 255 + .5).astype(np.uint8), 'RGBA').save(GAME / f'src/assets/backdrops/{out}.webp', quality=90, method=6)
+
+
+if __name__ == '__main__' and len(__import__('sys').argv) > 1 and __import__('sys').argv[1] == 'layers':
+    grade_layer('w1-mid', 'w1dusk-mid', 1.0)
+    grade_layer('w1-near', 'w1dusk-near', 0.9)
+    print('layers ok')

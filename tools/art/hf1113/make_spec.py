@@ -270,6 +270,24 @@ def props6(commit):
     (H / 'spec-oro1.json').write_text(json.dumps({'tag': 'oro1', 'edits': edits}, indent=1))
     print(len(items), 'img2img;', 6, 'edits')
 
-CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1, 'climb2': climb2, 'props2': props2, 'props3': props3, 'props5': props5, 'props6': lambda: props6(sys.argv[2]), 'props4': lambda: props4(sys.argv[2])}
+
+# ---- props7: 1-5's creek hurt floor (the lead 12:01 PM ET): shallow, fast, stony, foamy; knocks you back, never reads as a deep pool
+# (World 1's deadly creek is deep murky brown: props/pitwater/w1-creek.webp); dusk light; a side-on band whose top is the water surface
+CREEK = ('a long horizontal band of shallow fast-rushing clear rainforest creek water seen exactly from the side at ground level, '
+         'white foam and splashing white water along its choppy surface, round smooth grey and brown pebbles and stones clearly visible '
+         'through the very shallow water and lying on the stony bed just under it, a few wet stones poking up through the surface, '
+         'water rushing to the right, dusk light with violet and warm orange glints on the water, the band runs from the left edge to '
+         'the right edge of the picture, flat solid magenta above the water surface')
+
+
+def props7(seeds=(11, 23, 37, 53)):
+    items = [{'name': f'creek-{sd}', 'prompt': f'{CREEK}, hand-painted 2D storybook platformer game asset, rich colour, clean dark '
+              f'outline, painterly detail', 'seed': sd, 'w': 1792, 'h': 640} for sd in seeds]
+    spec = {'tag': 'props7', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
+            'neg': PNEG.replace(', floor', '') + ', deep water, dark pool, murky, waterfall, bank, grass, trees, sky, magenta water', 'items': items}
+    (H / 'spec-props7.json').write_text(json.dumps(spec, indent=1))
+    print(len(items), 'stills')
+
+CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1, 'climb2': climb2, 'props2': props2, 'props3': props3, 'props5': props5, 'props7': props7, 'props6': lambda: props6(sys.argv[2]), 'props4': lambda: props4(sys.argv[2])}
 if __name__ == '__main__':
     CMDS[sys.argv[1]]()

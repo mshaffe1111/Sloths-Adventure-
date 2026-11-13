@@ -161,11 +161,71 @@ def main():
              draw_cost='one drawImage of an atlas frame', used_in='1-4 vine field')
     r['file_kb_ship'] = r['file_kb']
     rows.append(r)
+    # 1-5's dusk set (a far-only set: the sky and far repainted, World 1's own middle and near graded)
+    for part, how in (('sky', 'img2img s0.42 from World 1\'s sky graded to dusk; rows matched to the far\'s top (the 5% overlap)'),
+                      ('far', 'img2img s0.42 from World 1\'s far graded to dusk; wrap join 0.6 = its own column-to-column 0.6'),
+                      ('mid', 'World 1\'s own middle strip, colour-graded to dusk (painting untouched)'),
+                      ('near', 'World 1\'s own near strip, colour-graded to dusk (painting untouched)')):
+        f = GAME / f'src/assets/backdrops/w1dusk-{part}.webp'
+        if not f.exists():
+            continue
+        w, h = Image.open(f).size
+        r = {c: '' for c in COLS}
+        r.update(id=f'backdrops/w1dusk-{part}', source='ART Hugging Face 2026-11-13 (1-5 dusk)', file=f'src/assets/backdrops/w1dusk-{part}.webp',
+                 kind=f'backdrop {part} strip: World 1 at dusk', w=w, h=h, layer='backdrop', world_best=1, worlds=W1 + ' (1-5 at dusk)',
+                 no_fit=NOFIT_WOOD, made_thing='n', engine_slot='stageBackdrops.ts FAR_BY_STAGE set \'w1dusk\' (to wire: 1-5)',
+                 footing='none (backdrop)', ship_px=f'{w}x{h}', file_kb=round(f.stat().st_size / 1024, 1), part='H13',
+                 status='made, not wired (1-5.md:5 "dusk: limbs in last light, roots in shadow")', notes=how,
+                 draw_cost='one strip (drawStrip)', used_in='1-5')
+        r['file_kb_ship'] = r['file_kb']
+        rows.append(r)
+    # the creek hurt floor and the two creatures (attempt 3)
+    cm = json.loads((GAME / 'src/assets/props/pitwater/w15-creek.json').read_text())
+    f = GAME / 'src/assets/props/pitwater/w15-creek.webp'
+    u = cm['units_per_px']
+    r = {c: '' for c in COLS}
+    r.update(id='hf1113/w15-creek', source='ART Hugging Face 2026-11-13 (take creek-53, join repainted: creek-53-band-s45-9)', file='src/assets/props/pitwater/w15-creek.webp',
+             kind='fast shallow creek, side on: white riffles, foam at stones, stony bed (a hurt floor)', w=cm['w'], h=cm['h'],
+             layer='danger look', world_best=1,
+             worlds=W1 + ' (1-5 at dusk) | COULD 2 Sunlit Riverbank: its river, tinted to its daytime palette (see notes: TINT)',
+             no_fit='9 Volcanic Jungle: lava, not water; 10 Stormy Highlands Fortress: stone and iron; 7 Ancient Ruins: carved channels',
+             made_thing='n', engine_slot='new slot: 1-5 creek hurt floor (drawn as w1Creek.ts draws its tile: surface on the floor line, tiled, drifting; bed colour below)',
+             footing=f"none (hurts): surface row {cm['surface']} px = the floor line; bed {cm['bed']} below the tile",
+             float_class='grounded (fills a pit to the floor line)', on_screen_px=f"{round(cm['w'] * u)}x{round(cm['h'] * u)} (units, a tile)",
+             ship_px=f"{cm['w']}x{cm['h']}", file_kb=round(f.stat().st_size / 1024, 1), part='H13', draw_cost='one drawImage per tile across the pit',
+             used_in='1-5 (the creek)', status='cut, not wired (engine): B15 places it',
+             notes=f"TINT: painted in 1-5's dusk (water #8a6fb8 violet with warm orange glints; bed {cm['bed']}): another world (W2's daytime river) reuses it regraded to its own palette (the lead 11-13); "
+                   f"tiles sideways (wrap step {cm['wrap']} vs about 1.7 between any two columns); stones stay under the surface (nothing reads as a stepping stone); no lily pads, no petals",
+             pokey_scale=f"{cm['h'] * u / POKEY:.2f}", scale_basis=f"3 px a unit (units_per_px {u}); stones about half Pokey's height")
+    r['file_kb_ship'] = r['file_kb']
+    rows.append(r)
+    for nm, kind, used, basis in (
+            ('oropendola', 'Montezuma oropendola flyer: 3 flap frames, 4-step cycle (oropendola.json)', '1-4 the daytime flyer (1-4.md:4)',
+             'bill to tail 70 units (a 50 cm bird by a 60 cm sloth, drawn 89.1)'),
+            ('leafcutter', 'leafcutter ant carrying a leaf bit: walk frames (leafcutter.json)', '1-4 the leafcutter ants (1-4.md:4)',
+             'drawn larger than life so it reads on a phone (a real one is about 2 units)')):
+        f = GAME / f'src/assets/enemies/{nm}.webp'
+        if not f.exists():
+            continue
+        j = json.loads((GAME / f'src/assets/enemies/{nm}.json').read_text())
+        w, h = Image.open(f).size
+        r = {c: '' for c in COLS}
+        r.update(id=f'hf1113/{nm}', source='ART Hugging Face 2026-11-13 (' + ', '.join(Path(t).stem for t in j['source']['takes']) + ')',
+                 file=f'src/assets/enemies/{nm}.webp', kind=kind, w=w, h=h, layer='decor near', world_best=1,
+                 worlds=W1 + (' | COULD 2 Sunlit Riverbank; 5 Orchid Sanctuary' if nm == 'oropendola' else ' | COULD 3 Mossy Grotto; 6 Deep Mangrove'),
+                 no_fit='9 Volcanic Jungle; 10 Stormy Highlands Fortress; 7 Ancient Ruins: none live there', made_thing='n',
+                 engine_slot=f'new slot: ambient creature strip ({nm}.json: cells, order, mark ax/ay, fps {j["fps"]})', footing='none (flies)' if nm == 'oropendola' else 'feet on the cell bottom (walks a floor or bough)',
+                 float_class='flies' if nm == 'oropendola' else 'grounded (walks)', on_screen_px=f"{j['units_w']}x{j['units_h']} (units, a cell)",
+                 ship_px=f'{w}x{h}', file_kb=round(f.stat().st_size / 1024, 1), part='H13', draw_cost='one drawImage of a strip cell',
+                 used_in=used, status='packed, not wired (engine)', pokey_scale=f"{j['units_h'] / POKEY:.2f}", scale_basis=basis)
+        r['file_kb_ship'] = r['file_kb']
+        rows.append(r)
     out = GAME / 'reference/art/catalog-rows-hf1113.csv'
     with open(out, 'w', newline='') as fh:
         wr = csv.DictWriter(fh, COLS); wr.writeheader(); wr.writerows(rows)
     master = GAME / 'reference/art/CATALOG-MASTER.csv'
-    old = [x for x in csv.DictReader(open(master)) if not (x['id'].startswith('hf1113/') or x['id'] == 'hero-climb2')]
+    mine = {r['id'] for r in rows}  # (every id this writes is replaced, the dusk backdrops' included: they doubled on a rerun)
+    old = [x for x in csv.DictReader(open(master)) if not (x['id'].startswith('hf1113/') or x['id'] in mine)]
     with open(master, 'w', newline='') as fh:
         wr = csv.DictWriter(fh, COLS); wr.writeheader(); wr.writerows(old + rows)
     print(len(rows), 'rows ->', out.name, '+ CATALOG-MASTER.csv')

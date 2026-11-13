@@ -3,6 +3,12 @@
 Last task: R-165.85 (cut only), Matt's 15 sheets of 11-09, by the Content member on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
 
+## 0d. 11-13 ART (t-art-1113): handed over mid-task, see reference/qa-reports/ART/HANDOVER.md
+- Packed: Pokey's two-hand climb (hero-climb2), 1-5's set + dusk set (w1dusk), 1-4's pieces, 9 fruit + golden guarana; 29 catalog rows.
+- Left: the creek hurt floor, the oropendola flyer, the leafcutter ant (takes in reference/art/hf1113/left/).
+- This HF credential can't mount the bucket or write repos (403): work in an HF sandbox, files back by hf_sandbox_fs (HANDOVER "Route").
+- Paint reds and pinks on GREY (magenta ate the guarana); a sawn stump is what "carved mark" prompts give: ask for bark filling the frame.
+
 ## 0c. Hugging Face picture list 1 (R-165.100): done, $2.04 of the $6.50 cap
 - 16 pieces at about 2000 px in `src/assets/w1-1111c/` (HF1-*); the stairs and the medium stump go to list 2 (redo/); catalogue `reference/art-incoming/hf-list1/`. Specs and scripts:
   `tools/art/hflist1/` (starts.py, make_specs.py, wrapfix.py, catalog.py). Starts live in reference/ (tools/ ignores pictures).
