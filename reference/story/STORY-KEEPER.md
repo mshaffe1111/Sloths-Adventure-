@@ -480,3 +480,4 @@ a vine. Bird call? Climb up or slide down." (13) · Creaky branches "Creaky bran
 a vine." (12). Alt text 1-4 "Pokey climbing a curtain of vines up a giant kapok tree" (11); 1-3 (13:15, the still shows him on the ground) "Pokey on the forest floor near a golden snake and a hive" (12); was "Pokey on a branch near a sleeping golden
 snake, a hive hanging above" (13); each only if the still shows exactly that. Lead line: "One level, a few minutes. Every run is
 different." (9): "about 3 minutes" is untrue for 1-4 (214 s designed on Normal, about 5 min on Easy at 1.4x).
+2:06 PM ET: R-165.171 keyboard: "Press Space to hop up or over." (7; Space is the jump key, SkillLearned.tsx:37). APPROVED.
