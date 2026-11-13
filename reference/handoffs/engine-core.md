@@ -31,9 +31,10 @@ Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 
   (towerFlags/towerFlagBreaches, a flag before every hard node); the opening seconds and the quiet stretches too; the clock walks
   `route.walk` (stageTime.ts). The ENGINE takes flags in the route's order (`flagFurther`, engine.ts, two sites): two flags on one
   storey both count. The hearts by every second flag go in that order too (stageGenerator.ts `flagsInOrder`).
-- **The climb camera.** `travelFeet(base, mode.lead().dy)` (cameraFollow.ts): feet 80% down on a stage that leads up, 34% on one that
-  leads down, a run unchanged; engine.ts uses it at the framing line AND at both set-back snaps (else the view drifts after a
-  respawn). It keys on the stage's travel, so every old ascent and 4-7 get it.
+- **The climb camera.** `travelFeet(base, towerLead(stage, mode))` (cameraFollow.ts, tower.ts): feet 80% down on a TOWER that leads
+  up, 34% on one that leads down; engine.ts uses it at the framing line AND at both set-back snaps (else the view drifts after a
+  respawn). Towers only, on purpose: the 18 shipped climbs and 4-7 keep 55% (towerLead gives them 0), because 80% leaves 108 px
+  under him sideways and lava, water and mist rise from there (9-2, 9-7, 4-1, 4-6). Each gets it when rebuilt as a tower or looked at.
 - **Proof tools.** `npx tsx tools/engine/towerroll.ts --seeds 24 --flow up|arc|down` (each roll's errors by name);
   `tools/engine/towermap.ts` (a to-scale SVG of a roll: look at the lay before trusting it); `tools/engine/towerFly.ts` (flyTower: the
   REAL engine, plain inputs, no rescue; withTowerSim builds a fixture the way the game builds a listed stage);
