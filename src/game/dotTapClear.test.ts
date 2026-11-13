@@ -128,3 +128,38 @@ test("the tools' reader (fadeK 1, the default) still has each card up its readin
   assert.equal(q.tick(3000 + readMs(l.text) - 50, env)?.line.key, 'a');
   assert.equal(q.tick(3000 + readMs(l.text), env), null);
 });
+
+test('a move tip whose move he has done stays up its reading time on the phone (a petal picked up at once), unless a next step follows', () => {
+  let ran = 0;
+  const e: TickEnv = { danger: false, moveCount: (m) => (m === 'run' ? ran : 0) };
+  const tip: GuideLine = { key: 'p', text: 'Run through petals to pick them up.', kind: 'teach', who: 'Dot', move: 'run', source: 'lesson' };
+  for (const readDone of [false, true]) {
+    const q = app();
+    q.readDone = readDone;
+    ran = 0;
+    q.push(tip, 3000);
+    q.tick(3000, e);
+    ran = 1;
+    const at = [3000 + 1600, 3000 + readMs(tip.text) - 100, 3000 + readMs(tip.text) + 50].map((t) => q.tick(t, e)?.line.key ?? null);
+    assert.deepEqual(at, readDone ? ['p', 'p', null] : [null, null, null], readDone ? 'held to its reading time' : 'the old way: gone at 1.5 s (the defect)');
+  }
+  const q = app();
+  q.readDone = true;
+  ran = 0;
+  q.push({ ...tip, key: 'g', next: { key: 'g2', text: 'Flick up as you swing forward to leap.', kind: 'teach', who: 'Dot', move: 'leap', source: 'lesson' } }, 3000);
+  q.tick(3000, e);
+  ran = 1;
+  assert.equal(q.tick(3000 + 1600, e), null, 'with a next step, it goes once done (its next step is about now)');
+});
+
+test('a warning and a scene\'s line keep their reading time; the rest of the cards stay 3x', () => {
+  const q = app();
+  const w = info('w', 'Ouch! Watch out for that one.', { kind: 'danger' });
+  q.push(w, 3000);
+  const s = q.tick(3000, env)!;
+  assert.equal(q.holdFor(s), readMs(w.text));
+  const sc = { line: info('s', 'Somebody I am scared of.', { kind: 'story', scene: true }), startedAt: 0, base: 0, n: 1 };
+  assert.equal(q.holdFor(sc), readMs(sc.line.text));
+  const st = { line: info('a', 'A story aside, said slowly.', { kind: 'story' }), startedAt: 0, base: 0, n: 2 };
+  assert.equal(q.holdFor(st), FADE_K * readMs(st.line.text));
+});

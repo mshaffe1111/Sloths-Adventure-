@@ -1,1 +1,4 @@
 stage 1-1 easy: Dot's help setting teach, engine easy true
+ 10.5 s    5.8 s up / read 5.5 s    8w "A flag! Fall, and you start again here."
+ 26.4 s   11.0 s up / read 5.0 s    7w "Flick up again midair to jump twice."
+2 cards; 0 were taken down before their reading time

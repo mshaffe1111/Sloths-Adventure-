@@ -12,7 +12,7 @@ const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 const [stage = '1-1', diff = 'normal', secsArg = '90', portArg = '5231', tapArg = ''] = process.argv.slice(2);
 const port = Number(portArg);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const vite = spawn('npx', ['vite', '--port', String(port), '--strictPort', '--host', '127.0.0.1'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
+const vite = spawn('npx', ['vite', '--port', String(port), '--strictPort', '--host', '127.0.0.1'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
 let vout = '';
 vite.stdout.on('data', (d) => (vout += d));
 for (let i = 0; i < 120 && !/Local:|ready in/.test(vout); i++) await sleep(500);
@@ -31,6 +31,16 @@ await p.evaluate((s) => window.__play(s), stage);
 await p.waitForFunction(() => (typeof window.__engine === 'function' ? window.__engine() : window.__engine)?.player, null, { timeout: 120000 });
 const info = await p.evaluate(() => ({ help: window.__dotRun?.help, easy: (typeof window.__engine === 'function' ? window.__engine() : window.__engine)?.easy ?? null }));
 console.log(`stage ${stage} ${diff}: Dot's help setting ${info.help}, engine easy ${info.easy}${tapArg ? ', tapping each card at its reading time' : ''}`);
+// (tap mode: count every punch or jump the game is handed, to prove a tap on her card is neither)
+if (tapArg) await p.evaluate(() => {
+  const e = typeof window.__engine === 'function' ? window.__engine() : window.__engine;
+  const st = e.input.state;
+  window.__presses = { punch: 0, jump: 0 };
+  for (const k of ['punchPressed', 'jumpPressed']) {
+    let v = st[k];
+    Object.defineProperty(st, k, { get: () => v, set: (x) => { if (x && !v) window.__presses[k === 'punchPressed' ? 'punch' : 'jump']++; v = x; }, configurable: true });
+  }
+});
 await p.keyboard.down('ArrowRight');
 const t0 = Date.now();
 const cards = [];
@@ -58,7 +68,12 @@ while (Date.now() - t0 < Number(secsArg) * 1000) {
   }
   if (tapArg && cur && !cur.tapped && now - cur.at >= cur.read && s.rect) {
     cur.tapped = true;
+    const before = await p.evaluate(() => ({ ...window.__presses }));
     await p.touchscreen.tap(s.rect[0] + s.rect[2] / 2, s.rect[1] + s.rect[3] / 2);
+    await sleep(120);
+    const after = await p.evaluate(() => ({ ...window.__presses, gone: !document.querySelector('.dg-bub.in:not(.out)') || document.querySelector('.dg-bub.in p')?.innerText !== undefined }));
+    cur.tapPunch = after.punch - before.punch;
+    cur.tapJump = after.jump - before.jump;
   }
   // the walker: hop at a wall (no progress) or just before a ledge's end
   stillMs = Math.abs(s.x - lastX) < 1 ? stillMs + 50 : 0;
@@ -74,8 +89,9 @@ let short = 0;
 for (const c of cards) {
   const ok = c.ms >= c.read;
   if (!ok && c.next !== '(run ended)') short++;
-  console.log(`${(c.at / 1000).toFixed(1).padStart(5)} s  ${(c.ms / 1000).toFixed(1).padStart(5)} s up / read ${(c.read / 1000).toFixed(1)} s ${ok ? '  ' : '<<'} ${words(c.text)}w "${c.text}"${c.next && c.next !== '(run ended)' ? ` -> replaced by "${c.next.slice(0, 40)}"` : c.next === null ? '' : ' (run ended)'}`);
+  console.log(`${(c.at / 1000).toFixed(1).padStart(5)} s  ${(c.ms / 1000).toFixed(1).padStart(5)} s up / read ${(c.read / 1000).toFixed(1)} s (x${(c.ms / c.read).toFixed(1)}) ${ok ? '  ' : '<<'}${c.tapped ? ` TAPPED (punches ${c.tapPunch}, jumps ${c.tapJump})` : ''} ${words(c.text)}w "${c.text}"${c.next && c.next !== '(run ended)' ? ` -> replaced by "${c.next.slice(0, 40)}"` : c.next === null ? '' : ' (run ended)'}`);
 }
 console.log(`${cards.length} cards; ${short} were taken down before their reading time`);
 await b.close();
-vite.kill();
+try { process.kill(-vite.pid); } catch { vite.kill(); }
+process.exit(0);

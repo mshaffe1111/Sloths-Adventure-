@@ -321,10 +321,20 @@ export class GuideQueue {
   /** the cards waiting when he last cleared one with a tap (their seq): he asked for them, so they come after the breath alone */
   private tapSeq = -Infinity;
 
-  /** how long the card up stays if it is not tapped: its reading time (its hint's words too) times fadeK, or what its sender asked */
+  /**
+   * how long the card up stays if it is not tapped: its reading time (its hint's words too) times fadeK, or what its sender asked. A
+   * warning is about this moment and a scene's line is paced by its scene (the next follows it): those keep their reading time.
+   */
   holdFor(s: Showing): number {
-    return Math.max(readMs(s.hint ? `${s.line.text} ${s.hint}` : s.line.text) * this.fadeK, s.line.ms ?? 0);
+    const k = s.line.kind === 'danger' || s.line.scene ? 1 : this.fadeK;
+    return Math.max(readMs(s.hint ? `${s.line.text} ${s.hint}` : s.line.text) * k, s.line.ms ?? 0);
   }
+  /**
+   * (the phone, R-165.175) a move tip whose move he has just done stays until it has been up its reading time: "Run through petals to
+   * pick them up." went 1.5 s after it came, at the first petal, and she "didn't know what she collected" (the real 1-2, before: 4 of 6
+   * cards down before their reading time). A tip with a next step goes at once: the next step is about what he is doing now.
+   */
+  readDone = false;
 
   /**
    * He tapped the card: it goes now, read (a move tip too: he has read it). A tap in its first TAP_MIN_MS does nothing. The cards waiting
@@ -528,7 +538,7 @@ export class GuideQueue {
         if (!gone) this.goneSince = -1;
         else if (this.goneSince < 0) this.goneSince = now;
         if (env.moveCount(l.move) > cur.base) {
-          if (shown) why = 'done';
+          if (shown && (!this.readDone || !!l.next || age >= readMs(l.text))) why = 'done';
         } else if (heldBack(l, env)) {
           if (shown) why = 'yield';
         } else if (this.calm && shown && (age >= CALM.moveCapMs || (gone && now - this.goneSince >= CALM.goneMs))) {

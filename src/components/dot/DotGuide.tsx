@@ -281,6 +281,7 @@ class GuideRun {
     this.queue = new GuideQueue(!/-D$/.test(level.id));
     // (R-165.175: a card stays till tapped, or about 3x its reading time; the tap is taught on her first card till he has tapped one)
     this.queue.fadeK = FADE_K;
+    this.queue.readDone = true;
     this.queue.tapHint = !tapLearned();
     this.dotSay = new DotSay(this.queue, this.help, this.seen, this.movesBefore, this.storyOn);
   }

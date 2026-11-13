@@ -4,9 +4,33 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for FIX-A (11-13, t-fixa): section 0i (Dot's card). Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0i. Dot's card: tap to clear, slow fade, +N, teach outranks lessons (FIX-A, t-fixa, 11-13): what the next engineer must know
+- **The card takes one touch** (R-165.175, Matt 11-12: "the player can get rid of it at their own pace"). `.dg-bub.in` is
+  pointer-events: auto above the touch layer (`.dg-root` z 34 > TouchController z 30, siblings), so a touch on it never reaches the
+  gestures: not a punch, not a jump (tools/dotbox/readtime.mjs `tap` counts the game's punch/jump presses around each tap: 0). The
+  queue's `tap(now)` ends the card (`why: 'tapped'`, counted as read: its skill is kept and a lesson's next step follows); a tap in the
+  first `TAP_MIN_MS` (400) is eaten but ignored.
+- **Unread, a card stays `fadeK` x its reading time** (`FADE_K` 3 in the app: DotGuide.tsx sets it; the last 1.2 s is a slow fade,
+  `.dg-bub.out.slow`). **The tools keep `fadeK` 1** (tools/inspect firsttimer/castBots/dotPace build their own GuideQueue): they model
+  a reader who taps each card once read, so the bots and their calibration did not move. Never set fadeK in the tools without
+  re-running tierBots' calibration.
+- **+N** is `queue.pending(now, env)`: waiting cards not old news, not held back, not stale. The cards counted at a tap (`tapSeq`) come
+  one after another, a breath apart, past the calm gap and the busy cap: he asked for them. A card that arrives after the tap waits as
+  before. Tested: a tapping player sees exactly the +N he was shown (src/game/dotTapClear.test.ts).
+- **1-1 teaches the tap** (`TAP_HINT`, the keeper's words): on Dot's first card that waits to be read (no move, not urgent, not Pokey,
+  no capMs), once a stage, until he has tapped one on this phone (`sloth_dot_tapped`, a device key in storageKeys.test.ts). The Skip
+  tips offer never rides on the hint card.
+- **A stage's teach line outranks stock lessons** (R-165.147): waiting, it goes first among its priority (`best()` +0.5); up, a stock
+  lesson's move tip that has been read its reading time yields to it and comes back once (src/game/dotTeachRank.test.ts). The P13 rules
+  (wait TEACH_WAIT_MS, skip the gap, pass Tips) are unchanged.
+- Measure on the real page, not the queue: `node tools/dotbox/readtime.mjs <stage> [easy|normal] [secs] [port] [tap]` logs every card's
+  time up vs its reading time; tools/dotbox/fixaStills.mjs shoots the card, About, 1-3's teach and the goal sign upright and sideways.
+- Open (R-165.175's row, not in FIX-A's packet): lines held longer while he is busy, a find that names what was found with its
+  picture and stays until read, and the cut rules (a lesson's cut of an info line after 1.5 s counts it heard).
 
 ## 0h. The stage build's cost (BC-FIX, R-165.163, t-bc-fix, 11-12): what the next engineer on the build path must know
 - **buildcheck is the build's budget** (150 ms p95 at CPU x4, 1-1, Normal and Easy). P11's verdicts and Y2's repair took it to 446/430;
