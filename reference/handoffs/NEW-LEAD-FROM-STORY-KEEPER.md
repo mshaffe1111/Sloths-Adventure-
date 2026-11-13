@@ -151,3 +151,7 @@ Read this section first; the sections above describe 11-11.
   - the 1-4 vines rework (DK Jr.-inspired), for story and nature;
   - R-165.165 (the Keeper's Bell "against a root" beside a stone ledge);
   - the Inspired-by games (Matt).
+- **One question to put to Matt (from the outgoing lead):** use the optional About line "We weighed 84 ideas for Sloths. 65 made it in,
+  each grown into something of the rainforest's own."? (The numbers are in STORY-LINES 11-12: 65 in, 11 parked, 8 out.)
+- **About for 0.9.8 is CLOSED:** "Inspired by" credits 29 games (no PUBG or Fortnite), and the music line is approved. Build them from
+  STORY-LINES 11-12.
