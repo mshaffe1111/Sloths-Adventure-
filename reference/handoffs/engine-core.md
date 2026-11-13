@@ -4,9 +4,30 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for FIX-A (11-13, t-fixa): section 0i (Dot's card). Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0m. The integration head, the strips' clear rows and the card's trail (INT-3, t-int-3, 11-13): what the next engineer must know
+- **Merges.** t-art-1113, t-add-level, t-fa, t-b15, t-b14, t-fixa, t-fixb merged in that order (never rebased). Traps: CATALOG-MASTER.csv
+  is CRLF and B14/FIX-B committed it as LF (every line "changed"): normalise the side to CRLF, then `git merge-file`, then
+  `python3 tools/art/catalog_master.py --emit` (cast.json is generated: never hand-merge it). B14 and B15 each deleted one hand-built plan
+  (1-4, 1-5) from protoStage/w1Sections: the merge keeps neither. FIX-B removed the 'ctest' plan and CTEST_STAGE_ID: keep that, and
+  keep FA's feel-pair import (qaBuild) in stageGenerator. Root PLAN/REPORT/PUSHBACK files of task branches go to their qa-reports folder.
+- **A fitted strip skips its clear top rows** (src/game/stripInk.ts; scenery.ts drawFitted `ink`): each strip is read back ONCE when it
+  decodes (paintedBackdrops.ts: sets, canopies, reveals), never in a frame; drawFitted starts its source rect at the first painted row
+  less a filter margin (fitInkRow). Exact: reference/qa-reports/INT-3/inkproof.mjs proves on all 197 strips at 12 fit sizes that no
+  painted row is left out (min 5 rows spare). A fit with its painted sky over it starts at row 0. It took 1-4 sideways from 8.02 to 7.20
+  screens (drawcheck 7.5) and every stage's backdrop down 0.4-0.8. Trap: the root was 1-4's 2600 px canopy crossfade (engine.ts
+  setCanopy, scenery.ts `cano`): both strip sets are drawn whole through it; any new crossfade pays two sets the same way.
+- **Dot's card owns a finger on any box it stood in over the last 300 ms** (src/game/dotCardHit.ts, R-165.201): DotGuide notes each
+  frame's box (and each frame of its 0.3 s fade, where it stood), TouchController claims a finger that goes down in the trail before
+  the gestures see it (never steers, jumps or punches) and taps that card on the lift (only if it is still the one up). Real page
+  (tools/dotbox/readtime.mjs 1-2 tap, DOTBOX_VIEW=915x412 for sideways): run 1 found the fade case (3 of 78 taps punched on a card
+  fading at its reading time); run 2 after the fix: reference/qa-reports/INT-3/tap-run2/. Trap: a tool that aims at a card's rect and
+  then taps in a second evaluate is exactly the player's latency; keep it that way.
+- **1-4 is not shippable on its bots** (castBots 1-40 after VARIETY's vault patch: 22 of 360), so #ctest plays 1-3
+  (playRecorder.ts CTEST_LEVEL_ID). The split of the failures into bot limits and level faults is the next job (B14 REPORT step 2).
 
 ## 0i. Adding a level is one step (ADD-LEVEL, R-165.187, t-add-level, 11-13): what the next engineer on stage plumbing must know
 - **`npx tsx tools/engine/addlevel.ts <id>`** once the arc is hooked into its world's kit and the row is in stageTable.ts: rolls 24
