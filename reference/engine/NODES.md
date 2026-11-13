@@ -529,8 +529,12 @@ float, which puts a floating slab on screen, and rocks don't float. It needs his
 - A fixture reads: `A P /D D_ P D_ /R M R /U U^ C U^ /R X R S E` (a level, a way down, a level, a column up, a level).
 - To see a roll before any still: `npx tsx tools/engine/legsmap.ts --code "<code>" --seed 2 --out /tmp/legs.svg --png`.
 
-### 9.2 The long form: what the designer fixes on a node (PARSED and checked; the lay does not honour it yet and FAILS such a graph by name)
-After the token, each dial is `:` and one sign, in any order. A node that names none rolls it.
+### 9.2 The long form: what the designer fixes on a node (BUILT 11-13, NODES-2: every mark and dial is LAID or the roll FAILS by name)
+After the token, each dial is `:` and one sign, in any order. A node that names none rolls it. What each element does today (Laid /
+Checked / Later) is one table, gen2/nodeAsks.ts `ELEMENTS`, shown as cards on NODE-KEY.html (written by tools/engine/nodekey.ts;
+nodeAsks.test.ts fails when they differ). A mark the job implies (`U^`, `D_`) is no ask; a mark inside a fork road (beyond V7's `^+`)
+and the pick `?[a|b]` fail by name before the lay; a node with asks that the brief would drop fails by name. nodeMix.test.ts writes
+60 strings a kit from the key's elements and proves each lays clean or is named, with a per-element table.
 | Dial | Means | Example |
 |---|---|---|
 | `:7` | rating 1-10 | `Xf2>:7` |

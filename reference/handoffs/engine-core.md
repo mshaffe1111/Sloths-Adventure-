@@ -12,6 +12,16 @@ Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 
 
 Rewritten again at the stop of NODES-TRAVEL (1:04 PM ET, 2026-11-13): branch `t-nodes`: a stage laid as LEGS (section 0j). Milestone 1 of 4 only. Sections below are still true.
 
+## 0k. Node asks (NODES-2, R-165.198, t-nodes, 11-13): what the next engineer on the node code must know
+- gen2/nodeAsks.ts holds the designer's asks (`MissionNode.asked`: a token's marks and dials the job does not imply) and the check
+  `askMisses` / `hazardMiss`. pipeline.ts: rolledGraph carries `tk` beside `jobs` (as `tv` carries travel; a dropped asked node throws
+  by name), applies shape/tempo/rating/dials AFTER the rolled draws (the seed's stream is unchanged), dealContent fixes an asked
+  content letter, the section pick weighs sections that can lay an ask x20 (x0.05 the rest), fillSockets' enemy branch takes only the
+  node's threat kinds up to their counts (`threatAsks`), and applyVerdicts writes `gen2.dialMiss` (folded by rollErrors as `ask: ...`).
+- ELEMENTS (nodeAsks.ts) is the ONE status table: change a status there, run `npx tsx tools/engine/nodekey.ts`, commit NODE-KEY.html.
+- The graph check passes `graph: true` (V11/V12/V14 read the realised roll only) and `known` (earlier lessons + the brief's teaches).
+- Not built: Later elements (s v p t x, beat, points, named clocks, ^^ @ * as run shapes), the pick, marks inside fork roads.
+
 ## 0j. Legs (NODES-TRAVEL, R-165.196 / .197 / .198, t-nodes, 11-13): what the next engineer on mixed travel must know
 - **State.** M1 is built and proven on fixtures: right, up and down legs in one stage. NOT built: left legs in a fixture (the mirror
   is written and unit-tested, never laid in a stage), the descent's own turns, forks across legs (M3), the card road (M4), the
