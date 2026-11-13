@@ -255,6 +255,27 @@ export const gateShut = (g: ClusterGate, clusters: readonly VineCluster[]): bool
 export const gateSag = (g: ClusterGate, clusters: readonly VineCluster[]): number =>
   g.clusters.length ? (GATE.sag * gateLeft(g, clusters)) / g.clusters.length : 0;
 
+/**
+ * The stage as it is once every fig gate is open (every cluster freed): each gate's bough, the boughs held with it and the ways up from
+ * it whole again, as fieldPlay.ts lets them up on the last cluster. A copy: the stage passed in is not changed. What a tool walks when
+ * it asks where he goes on a field stage (the gates' own fairness is gateFaults'), as a puzzle room's stage is walked solved.
+ */
+export function gatesOpened<S extends { platforms: readonly { id: number; broken?: boolean }[]; vines: readonly Vine[]; gates?: readonly ClusterGate[] }>(st: S): S {
+  if (!st.gates?.length) return st;
+  const boughs = new Set<number>();
+  const ways = new Set<number>();
+  for (const g of st.gates) {
+    boughs.add(g.platform);
+    for (const id of g.with ?? []) boughs.add(id);
+    for (const id of g.ways ?? []) ways.add(id);
+  }
+  return {
+    ...st,
+    platforms: st.platforms.map((q) => (boughs.has(q.id) ? { ...q, broken: false } : q)),
+    vines: st.vines.map((v) => (ways.has(v.id) ? { ...v, off: false } : v)),
+  };
+}
+
 /** the shut gate over a vine's top (its bough within GATE.under of the top, over the vine's line), or null */
 export function gateOver(v: Vine, gates: readonly ClusterGate[], clusters: readonly VineCluster[], platforms: readonly { id: number; x: number; y: number; width: number }[]): ClusterGate | null {
   for (const g of gates) {

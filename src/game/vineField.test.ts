@@ -106,3 +106,18 @@ test('a snagged cluster below him is a floor: he cannot climb down through it; o
   assert.equal(pushClusters({ a, b: null }, 200, [c]).length, 0);
   assert.equal(c.y, 300, 'a cluster below his feet stays where it is');
 });
+
+test('gatesOpened: the stage as it is once every fig gate is open (bough, the boughs held with it, its ways up), a copy', async () => {
+  const { gatesOpened } = await import('./vineField.ts');
+  const st = {
+    platforms: [{ id: 1, broken: true }, { id: 2, broken: true }, { id: 3, broken: true }, { id: 4 }],
+    vines: [{ id: 7, off: true }, { id: 8, off: true }] as unknown as import('./types.ts').Vine[],
+    gates: [{ id: 1, platform: 1, clusters: [5], far: 1 as const, with: [2], ways: [7] }],
+  };
+  const o = gatesOpened(st);
+  assert.deepEqual(o.platforms.map((p) => !!p.broken), [false, false, true, false], 'the gate, its held bough open; a broken bough not its own stays');
+  assert.deepEqual(o.vines.map((v) => !!v.off), [false, true], 'its way up let up; another off vine stays off');
+  assert.ok(st.platforms[0].broken && st.vines[0].off, 'the stage passed in is unchanged');
+  const none = { platforms: [{ id: 1, broken: true }], vines: [] as import('./types.ts').Vine[] };
+  assert.equal(gatesOpened(none), none, 'no gates: the same stage');
+});

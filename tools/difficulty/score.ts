@@ -22,6 +22,9 @@ import { findRoute, type Route } from '../inspect/route.ts';
 import { findBeats, sampleRoute, type Sample } from '../inspect/beats.ts';
 import { inspectJumps, routeJumps, ADULT, type JumpReport } from '../inspect/jumps.ts';
 import fs from 'node:fs';
+import { FIELD_FEEL, gatesOpened } from '../../src/game/vineField.ts';
+import { fallSeconds, POD } from '../../src/game/podfall.ts';
+import { beatOf } from '../../src/game/clock.ts';
 
 type Setting = 'normal' | 'easy';
 
@@ -78,6 +81,8 @@ export const REF_S = 1;
  * - a vine climb: 0.25 (straight up always climbs, STAGE-RULES §1); a liana release: a 0.4 s window in a 1.6 s swing (2.32);
  * - a puzzle or a trap's handle: 0.5.
  */
+/** how far above or below a challenge's own heights crumbling wood still counts as its footing (px): a step's height */
+export const CRUMBLE_DY = 40;
 export const OTHER_BITS = { choice: 0.5, second: windowBits(0.5, 0.333), climb: 0.25, swing: windowBits(1.6, 0.4), puzzle: 0.5 } as const;
 export const creatureBits = (tellS: number): number => Math.log2(1 + REF_S / Math.max(0.05, tellS));
 
@@ -86,6 +91,8 @@ type Cost = 'retry' | 'soft' | 'heart' | 'life';
 export interface Challenge {
   t: number;
   x: number;
+  /** the heights it spans (take-off and landing, or where it stands), where known: crumbling wood counts only at its own height */
+  ys?: [number, number];
   kind: string;
   bits: number;
   cost: Cost;
@@ -187,7 +194,9 @@ export interface StageScore {
 export function scoreStage(id: string, setting: Setting, seed: number, seen: Map<string, number>): StageScore {
   setDifficulty(setting);
   const rp = new RealPlay(id, seed);
-  const st = rp.stage as any;
+  // (a vine-field stage is walked with its fig gates open, as a puzzle room's stage is walked solved: each gate is a puzzle below, and
+  //  the engine shuts them at the start: fieldPlay.ts. Every other stage is the same object, unchanged)
+  const st = gatesOpened(rp.stage as any) as any;
   const type: string = st.config.objectiveType;
   // (the route the inspector takes: straight to the shrine; on a stage whose goal is its animals, past each of them)
   const targets = type === 'purge' || type === 'gauntlet'
@@ -216,7 +225,8 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
     const bits = moveBits + landBits(j.landW);
     const span = e ? [e.dir === 1 ? e.x : e.to.x + e.to.width, e.dir === 1 ? e.to.x : e.x] : [j.x, j.x + j.gap];
     const cost = costAt(st, softPits, span[0], span[1], j.miss);
-    add({ t: clockAt(samples, j.x, j.y), x: j.x, kind: move, bits, cost, stakes: stakesOf(st, cost, j.x), threat: false, note: `gap ${Math.round(j.gap)} rise ${Math.round(j.rise)} land ${Math.round(j.landW)} share ${share.toFixed(2)}` });
+    const landY = e ? e.to.y : j.y - j.rise;
+    add({ t: clockAt(samples, j.x, j.y), x: j.x, ys: [Math.min(j.y, landY), Math.max(j.y, landY)], kind: move, bits, cost, stakes: stakesOf(st, cost, j.x), threat: false, note: `gap ${Math.round(j.gap)} rise ${Math.round(j.rise)} land ${Math.round(j.landW)} share ${share.toFixed(2)}` });
   });
   // (the stage's drop traps: a creature whose load lands within 160 px of it is cleared from out of its reach)
   const traps: Array<{ loadX: number }> = (rp.e.cast?.traps ?? []).map((tr: any) => tr.post);
@@ -234,15 +244,44 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
       add({ t: b.t, x: b.x, kind: 'hazard', bits: m ? windowBits(Number(m[2]), Number(m[1])) : 2, cost: 'heart', stakes: STAKES.heart, threat: true, note: b.what });
     } else if (b.letter === 'V') {
       const swing = /swing|liana/.test(b.what);
-      add({ t: b.t, x: b.x, kind: swing ? 'swing' : 'climb', bits: swing ? OTHER_BITS.swing : OTHER_BITS.climb, cost: swing ? 'life' : 'retry', stakes: swing ? stakesOf(st, 'life', b.x) : 1, threat: false, note: b.what });
+      add({ t: b.t, x: b.x, ys: [b.y, b.y], kind: swing ? 'swing' : 'climb', bits: swing ? OTHER_BITS.swing : OTHER_BITS.climb, cost: swing ? 'life' : 'retry', stakes: swing ? stakesOf(st, 'life', b.x) : 1, threat: false, note: b.what });
     } else if (b.letter === 'P') {
-      add({ t: b.t, x: b.x, kind: 'puzzle', bits: OTHER_BITS.puzzle, cost: 'retry', stakes: 1, threat: false, note: b.what });
+      add({ t: b.t, x: b.x, ys: [b.y, b.y], kind: 'puzzle', bits: OTHER_BITS.puzzle, cost: 'retry', stakes: 1, threat: false, note: b.what });
     }
+  }
+  // a vine field's falling pods (podfall.ts) on the route: a timed crossing of the column at the beat's own numbers (clock.ts beatOf,
+  // Easy's stretch included): the window is the beat's quiet, the part of it when no pod is falling (period less its 'on'), out of the
+  // period; a heart where the pod costs one, a retry where it only knocks him off (Easy). Once a column, where the route first passes it
+  // (within the pod's reach of a hand either side, POD.hands, inside its column's height; up a field vine he climbs with two hands, so
+  // the vine beside his, FIELD_FEEL.reach over, is his too). A column the route never passes is not in his way.
+  const fieldXs: number[] = st.vines.filter((v: any) => v.field).map((v: any) => v.x);
+  const reachOf = (q: Route['segs'][number]) => q.kind === 'climb' && fieldXs.some((x) => Math.abs(x - q.x1) < 2) ? FIELD_FEEL.reach + POD.hands : POD.hands;
+  for (const pd of (st.pods ?? []) as any[]) {
+    const def = (st.clocks ?? []).find((c: any) => c.id === pd.clock);
+    if (!def) continue;
+    const b = beatOf(def, setting === 'easy');
+    let on = 0;
+    b.names.forEach((n, i) => { if (n === 'on') on += b.seconds[i]; });
+    const seg = route.segs.find((q) => Math.min(q.x0, q.x1) <= pd.x + reachOf(q) && Math.max(q.x0, q.x1) >= pd.x - reachOf(q)
+      && Math.max(q.y0, q.y1) >= pd.top && Math.min(q.y0, q.y1) <= pd.land);
+    if (!seg) continue;
+    const y = Math.max(pd.top, Math.min(pd.land, (seg.y0 + seg.y1) / 2));
+    const heart = pd.cost === 'heart';
+    add({ t: clockAt(samples, pd.x, y), x: pd.x, kind: 'hazard', bits: windowBits(b.period, Math.max(0.05, b.period - on)), cost: heart ? 'heart' : 'retry', stakes: heart ? STAKES.heart : 1, threat: true,
+      note: `pod ${pd.id}: safe ${(b.period - on).toFixed(2)}s of ${b.period.toFixed(2)}s (falls ${fallSeconds(pd).toFixed(2)}s)` });
+  }
+  // and its fig gates: the way up held shut until he pushes its fruit free, a puzzle each (OTHER_BITS.puzzle), where its bough is
+  for (const g of (st.gates ?? []) as any[]) {
+    const q = st.platforms.find((p: any) => p.id === g.platform);
+    if (!q) continue;
+    add({ t: clockAt(samples, q.x + q.width / 2, q.y), x: q.x + q.width / 2, ys: [q.y, q.y], kind: 'puzzle', bits: OTHER_BITS.puzzle, cost: 'retry', stakes: 1, threat: false, note: `fig gate ${g.id}: ${g.clusters.length} bunch${g.clusters.length > 1 ? 'es' : ''}` });
   }
   // crumbling footing on the route: the clock is the crumble (a fragile platform he stands on): +1 bit on the jump that lands on it
   for (const c of out) {
     if (c.kind === 'creature' || c.kind === 'hazard') continue;
-    const frag = st.platforms.some((p: any) => p.type === 'fragile' && c.x >= p.x - 40 && c.x <= p.x + p.width + 40);
+    // (at its own height where the challenge knows it: on a tower the rotten bough 600 px over a climb is not under him, 1-4)
+    const frag = st.platforms.some((p: any) => p.type === 'fragile' && c.x >= p.x - 40 && c.x <= p.x + p.width + 40
+      && (!c.ys || (p.y >= c.ys[0] - CRUMBLE_DY && p.y <= c.ys[1] + CRUMBLE_DY)));
     if (frag) { c.bits += 1; c.note += ' crumble'; }
   }
   // (the typical player's time, stageTime.ts; never under the route's own clock: the model reads about 1 s on 4-3, 11-12)
