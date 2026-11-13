@@ -24,3 +24,7 @@ Built on: FA's tower lay; replaced this sprint by: none.
 Milestones (push each, one line to the lead): (1) legs + up/down joins, (2) descent + left, (3) branches across legs, (4) card road.
 Stop line 9 PM ET or 40% context: then REPORT.md (30 lines + "Learned") and turnover note; the lead starts a fresh Fable from them.
 Lean (TODAY.md). Lead: session_01FhBbYNzGRJBDMzn6XbtQK2.
+## ADDENDUM (Matt 12:11 PM ET: "nodes mean something... taken in tempo, taken in if there's going to be enemies... dynamic")
+Item 5 grows: a node is the designer's unit; EVERY dial is data the lay honours: travel, job, shape, tempo, threat (cast kinds, count,
+asleep/awake), hazard, reward, and a difficulty target in meter points (DIFFICULTY.md, score.ts). Extend NodeDials (gen2/types.ts:572) and
+move the per-stage cast (GraphBrief.cast) down to nodes where a node names its own; never duplicate. The schema goes in PLAN.md first.
