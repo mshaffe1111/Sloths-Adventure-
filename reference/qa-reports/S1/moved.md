@@ -1,4 +1,5 @@
 # S1: every number that moved, old (t-s1@8a8877a9, before S1) -> new (t-s1@9bb17015). Generated 10:53 AM ET 11-13.
+**11:30 AM ET update: the lead scoped the step rule to the meter.** The meter rows below stand. The funcheck, tier-bot, calibration and seed-list sections describe the step route on every tool, which no longer ships: they are the findings for the follow-on packet. The calibration as committed is in REPORT.md item 5.
 
 ## Meter (score.ts --seeds 1-4, median (range); SCALE fixed at DIFFICULTY.md's 0.30654; re-anchored SCALE now 0.30179: world1-reanchored.txt)
 | stage | setting | DIFFICULTY.md | now | why |
