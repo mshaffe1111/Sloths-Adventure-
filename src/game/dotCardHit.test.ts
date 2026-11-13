@@ -42,6 +42,7 @@ test('dotCardHit: a claimed finger never reaches the game; its lift taps the car
   const trail = new CardTrail();
   let taps = 0;
   trail.setTap(() => taps++);
+  // (every box in these tests is card 0's)
   const now = bounce(trail, 1000);
   assert.equal(trail.claim(7, 210, 250, now), true);
   assert.equal(trail.owns(7), true);
@@ -86,7 +87,38 @@ test('dotCardHit: the touch layer asks the trail before any gesture, on every do
   assert.ok(end.indexOf('cardTrail.owns(') < end.indexOf('G.up('), 'a claimed finger never jumps or punches on its lift');
   // and the card's view feeds the trail with every box it draws the card in, and clears it when the card is down
   const dg = readFileSync(new URL('../components/dot/DotGuide.tsx', import.meta.url), 'utf8');
-  assert.ok(/cardTrail\.note\(bx, by, run\.bw, run\.bh, now\)/.test(dg));
-  assert.ok((dg.match(/cardTrail\.clear\(\)/g) ?? []).length >= 3);
-  assert.ok(dg.includes('cardTrail.setTap('));
+  assert.ok(dg.includes('cardTrail.note(bx, by, run.bw, run.bh, now, cur.n)'), 'each frame the card is drawn');
+  // (and each frame of its fade, where it last stood: the second case the real page found, a card fading at its reading time)
+  const fade = dg.slice(dg.indexOf('!cur && now < run.fadeUntil'));
+  assert.ok(fade.indexOf('cardTrail.note(run.lastBx, run.lastBy, run.bw, run.bh, now, run.trailN)') > 0 && fade.indexOf('cardTrail.note(') < fade.indexOf('} else {'));
+  assert.ok((dg.match(/cardTrail\.clear\(\)/g) ?? []).length >= 2, 'paused or unmounted: nothing is the card\'s');
+  assert.ok(dg.includes('cardTrail.setTap((n)') && dg.includes('c.n !== n'), 'a trail tap taps only the card the finger went down on');
+});
+
+test('dotCardHit: a card fading out at its reading time is still the card\'s under the finger (the real page\'s second case: 3 of 20 runs)', () => {
+  const trail = new CardTrail();
+  const tapped: number[] = [];
+  trail.setTap((n) => tapped.push(n));
+  // card 4 up at (134, 160) until 5000, then its 0.3 s fade where it stood (DotGuide notes each frame of it), then gone
+  for (let t = 4000; t <= 5000; t += 33) trail.note(100, 160, 220, 70, t, 4);
+  for (let t = 5033; t <= 5300; t += 33) trail.note(100, 160, 220, 70, t, 4);
+  // the finger lands 150 ms after the fade ended, where the player saw the fading card: the card's, not a punch
+  assert.equal(trail.claim(1, 134, 195, 5450), true);
+  trail.release(1, true);
+  assert.deepEqual(tapped, [4]);
+  // past the trail it is the game's again
+  assert.equal(trail.claim(2, 134, 195, 5300 + TRAIL_MS + 1), false);
+});
+
+test('dotCardHit: a finger on where the last card stood taps that card, never the one that has just replaced it elsewhere', () => {
+  const trail = new CardTrail();
+  const tapped: number[] = [];
+  trail.setTap((n) => tapped.push(n));
+  trail.note(100, 160, 220, 70, 1000, 7);
+  trail.note(500, 600, 220, 70, 1033, 8);
+  assert.equal(trail.claim(1, 134, 195, 1100), true);
+  trail.release(1, true);
+  assert.equal(trail.claim(2, 600, 620, 1100), true);
+  trail.release(2, true);
+  assert.deepEqual(tapped, [7, 8]);
 });

@@ -23,42 +23,53 @@ interface Box {
   w: number;
   h: number;
   t: number;
+  /** the card drawn there (its show number): a finger on it taps that card, never one that has since replaced it */
+  n: number;
 }
 
 export class CardTrail {
   private boxes: Box[] = [];
-  private onTap: (() => void) | null = null;
-  private claimed = new Set<number>();
+  private onTap: ((n: number) => void) | null = null;
+  /** each claimed finger, and the card it went down on */
+  private claimed = new Map<number, number>();
 
-  /** the card was drawn at (x, y), w x h CSS px, at time t (ms, performance.now's clock) */
-  note(x: number, y: number, w: number, h: number, t: number): void {
+  /**
+   * card `n` was on screen at (x, y), w x h CSS px, at time t (ms, performance.now's clock): each frame it is drawn, and each frame of
+   * its fade as it goes (DotGuide.tsx), so a finger aimed at a card that faded or slid from under it is still the card's
+   */
+  note(x: number, y: number, w: number, h: number, t: number, n = 0): void {
     if (!(w > 0 && h > 0)) return;
     const last = this.boxes[this.boxes.length - 1];
-    if (last && last.x === x && last.y === y && last.w === w && last.h === h) {
+    if (last && last.x === x && last.y === y && last.w === w && last.h === h && last.n === n) {
       last.t = t;
       return;
     }
-    this.boxes.push({ x, y, w, h, t });
+    this.boxes.push({ x, y, w, h, t, n });
     if (this.boxes.length > KEEP) this.boxes.splice(0, this.boxes.length - KEEP);
   }
 
-  /** the card is down (gone, replaced by nothing, the game paused): nothing is the card's any more */
+  /** the game is not running (paused, a menu, the stage gone): nothing on screen is a card's */
   clear(): void {
     this.boxes.length = 0;
   }
 
-  /** is (x, y) inside a box the card was drawn in during the last TRAIL_MS before `t`? */
-  hit(x: number, y: number, t: number): boolean {
+  /** the card whose box (x, y) is inside, of those on screen during the last TRAIL_MS before `t` (the newest first); null: none */
+  cardAt(x: number, y: number, t: number): number | null {
     for (let i = this.boxes.length - 1; i >= 0; i--) {
       const b = this.boxes[i];
-      if (t - b.t > TRAIL_MS) break;
-      if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) return true;
+      if (t - b.t > TRAIL_MS) continue;
+      if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) return b.n;
     }
-    return false;
+    return null;
   }
 
-  /** what a tap on the card does (DotGuide.tsx sets it while it is mounted) */
-  setTap(fn: (() => void) | null): void {
+  /** is (x, y) inside a box a card was on screen in during the last TRAIL_MS before `t`? */
+  hit(x: number, y: number, t: number): boolean {
+    return this.cardAt(x, y, t) !== null;
+  }
+
+  /** what a tap on card `n` does (DotGuide.tsx sets it while it is mounted: it taps the card only if `n` is still the one up) */
+  setTap(fn: ((n: number) => void) | null): void {
     this.onTap = fn;
   }
 
@@ -67,18 +78,19 @@ export class CardTrail {
    * identifier until it lifts.
    */
   claim(id: number, x: number, y: number, t: number): boolean {
+    const n = this.cardAt(x, y, t);
     // (a new finger reusing the number of one whose lift was never reported starts fresh)
-    if (!this.hit(x, y, t)) {
+    if (n === null) {
       this.claimed.delete(id);
       return false;
     }
-    this.claimed.add(id);
+    this.claimed.set(id, n);
     return true;
   }
 
   /** the fingers still on the glass: any other claimed one lifted unseen and is let go without a tap (TouchController CT-16) */
   keepOnly(ids: readonly number[]): void {
-    for (const id of [...this.claimed]) if (!ids.includes(id)) this.claimed.delete(id);
+    for (const id of [...this.claimed.keys()]) if (!ids.includes(id)) this.claimed.delete(id);
   }
 
   /** is this finger the card's (from claim until it lifts) */
@@ -88,8 +100,10 @@ export class CardTrail {
 
   /** a claimed finger lifted: the card is tapped. A cancelled one (a system gesture took it) is let go without a tap */
   release(id: number, tapped: boolean): void {
-    if (!this.claimed.delete(id)) return;
-    if (tapped) this.onTap?.();
+    const n = this.claimed.get(id);
+    if (n === undefined) return;
+    this.claimed.delete(id);
+    if (tapped) this.onTap?.(n);
   }
 }
 

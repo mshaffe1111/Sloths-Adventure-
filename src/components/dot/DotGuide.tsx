@@ -477,9 +477,10 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
   };
   // a finger that landed where the card just was (it slid from under it: the touch layer gave it to the card, dotCardHit.ts R-165.201)
   useEffect(() => {
-    cardTrail.setTap(() => {
+    cardTrail.setTap((n) => {
       const c = run.queue.cur;
-      if (!c || c.n !== run.trailN) return;
+      // (a card that has gone, or been replaced since the finger went down on it: the finger was its, and it does nothing)
+      if (!c || c.n !== n) return;
       const upMs = run.clock - c.startedAt;
       if (!run.queue.tap(run.clock)) return;
       markTapLearned();
@@ -1245,9 +1246,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         bub.style.transform = `translate3d(${bx.toFixed(1)}px, ${by.toFixed(1)}px, 0)`;
         run.lastBx = bx;
         run.lastBy = by;
-        if (run.trailN !== cur.n) cardTrail.clear();
         run.trailN = cur.n;
-        cardTrail.note(bx, by, run.bw, run.bh, now);
+        cardTrail.note(bx, by, run.bw, run.bh, now, cur.n);
         bubIn = toggle(bub, 'in', true, bubIn);
         // (its reading time counts from now, not from when it left the queue: DOT-7)
         run.queue.onScreen(run.clock);
@@ -1317,11 +1317,13 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         }
       } else if (bub && bubIn && !cur && now < run.fadeUntil) {
         bubOut = toggle(bub, 'out', true, bubOut);
+        // (still on screen while it fades where it last stood: a finger aimed at it is its, not a punch; dotCardHit.ts)
+        cardTrail.note(run.lastBx, run.lastBy, run.bw, run.bh, now, run.trailN);
       } else {
         bubIn = toggle(bub, 'in', false, bubIn);
         bubOut = toggle(bub, 'out', false, bubOut);
         bubSlow = toggle(bub, 'slow', false, bubSlow);
-        cardTrail.clear();
+        // (its last boxes age out of the trail on their own, TRAIL_MS after it was last on screen)
       }
 
       // nothing drawn on the thing: no ring, no arrow, no sparkle (Matt, 2026-10-29: "that horrible blue pointer, the helper, I want that
