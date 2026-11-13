@@ -66,16 +66,15 @@ export const FLOWN_ROWS: readonly FlownArc[] = [
   ...n13('bounce', [223, 217], [178, 178, 178], 'chain.md §1 "1-3: bounce 223 / 217, gap 178"'),
   ...n13('bounce-air', [315, 306], [335, 335, 335], 'chain.md §1 "1-3: bounce-air 315 / 306, gap 335"'),
   // 1-5 on Normal (B15, 11-13): flown on stage 1-5, `FLIGHT_STAGE=1-5 npx tsx reference/specs/sims/flight.ts normal <rise|dist|ddist|bdist>`
-  // (reference/qa-reports/B15/fly/). Its help is easeAssist(5): every gap the block column's figure, as 1-2's and 1-3's are. Against 1-3:
-  // the doubles climb 2 px less, the single flick's and the single tap's thin climb 1 px less, the from-70 and last-ground gaps of the
-  // doubles a few px less, the bounce + air jump climbs 313 / 304. The single hold's any is the flown 244 (never a looser figure).
-  ...n15('single-hold', [123, 116], [137, 222, 244], 'B15 fly/normal-rise.txt, normal-dist.txt "1-5: single-hold 123 / 116, gap 137 / 222 / 244"'),
-  ...n15('single-flick', [123, 116], [127, 212, 239], 'B15 fly "1-5: single-flick 123 / 116, gap 127 / 212 / 239"'),
-  ...n15('single-tap', [87, 80], [77, 162, 183], 'B15 fly "1-5: single-tap 87 / 80, gap 77 / 162 / 183"'),
-  ...n15('double-hold', [211, 204], [291, 377, 409], 'B15 fly/normal-ddist.txt "1-5: double-hold 211 / 204, gap 291 / 377 / 409"'),
-  ...n15('double-flick', [210, 203], [278, 363, 391], 'B15 fly "1-5: double-flick 210 / 203, gap 278 / 363 / 391"'),
-  ...n15('double-tap-tap', [149, 142], [190, 275, 299], 'B15 fly "1-5: double-tap-tap 149 / 142, gap 190 / 275 / 299"'),
-  ...n15('bounce', [223, 216], [178, 178, 178], 'B15 fly/normal-bdist.txt "1-5: bounce 223 / 216, gap 178"'),
-  ...n15('bounce-air', [313, 304], [335, 335, 335], 'B15 fly "1-5: bounce-air 313 / 304, gap 335"'),
+  // (reference/qa-reports/B15/fly/; chain.md §1 "Rows ... scope Normal 1-5"). Its help is easeAssist(5): every gap the block column's
+  // figure, as 1-2's and 1-3's are. The single hold's any is the flown 244 (never a looser figure). Easy on 1-5 flies as easy-any
+  ...n15('single-hold', [123, 116], [137, 222, 244], 'chain.md §1 "1-5: single-hold 123 / 116, gap 137 / 222 / 244"'),
+  ...n15('single-flick', [123, 116], [127, 212, 239], 'chain.md §1 "1-5: single-flick 123 / 116, gap 127 / 212 / 239"'),
+  ...n15('single-tap', [87, 80], [77, 162, 183], 'chain.md §1 "1-5: single-tap 87 / 80, gap 77 / 162 / 183"'),
+  ...n15('double-hold', [211, 204], [291, 377, 409], 'chain.md §1 "1-5: double-hold 211 / 204, gap 291 / 377 / 409"'),
+  ...n15('double-flick', [210, 203], [278, 363, 391], 'chain.md §1 "1-5: double-flick 210 / 203, gap 278 / 363 / 391"'),
+  ...n15('double-tap-tap', [149, 142], [190, 275, 299], 'chain.md §1 "1-5: double-tap-tap 149 / 142, gap 190 / 275 / 299"'),
+  ...n15('bounce', [223, 216], [178, 178, 178], 'chain.md §1 "1-5: bounce 223 / 216, gap 178"'),
+  ...n15('bounce-air', [313, 304], [335, 335, 335], 'chain.md §1 "1-5: bounce-air 313 / 304, gap 335"'),
 ];
 
