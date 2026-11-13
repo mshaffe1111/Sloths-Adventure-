@@ -33,7 +33,7 @@ function play(id: string, seed: number, setting: Setting) {
   if (!built.has(k)) {
     setDifficulty(setting);
     const st = new RealPlay(id, seed).stage as any;
-    const route = findRoute(st, []);
+    const route = findRoute(st, [], { steps: true });
     built.set(k, { st, jumps: routeJumps(route), reps: inspectJumps(st, route, setting === 'easy', ADULT) });
   }
   return built.get(k)!;
