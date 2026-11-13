@@ -10,6 +10,10 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **EVERY TRIBUTE IS RESEARCHED AND EXPLAINED** (Matt, 11-13 3:32 PM ET; R-165.203): every idea round and level design that borrows from
+  a classic game says, with cited research, what made it great, how the original taught it, and how we introduce it so it FEELS that good
+  on a phone (packet template: IDEAS-1-6.md "THE TRIBUTE RULE"). Matt should never have to explain the feel (R-165.177, 1-4's vines vs
+  Donkey Kong Jr.). Idea rounds: three Opus members at medium, high, xhigh (models.json 'ideas'), then one designer.
 - **THE RHYTHM: 3 LEVELS AHEAD + 1 POLISH MEMBER** (Matt, 11-13 3:28 PM ET; R-165.202): "I'll play it, give you feedback... we're going to
   do 3 levels at a time. We have another helper going back, fixing any of the polishing that I find on the levels that we just implemented."
   Get each level into his hands as soon as it passes (early is fine); design runs 3 levels ahead, builds stagger inside the 4-member cap,
