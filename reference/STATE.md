@@ -745,3 +745,7 @@ lines); Matt sees them in the release.
   DIFF-ALGO started: Opus MAX, session_01FhBbYLkEmfNhWBz7cCsNXu, t-diff-algo, stop 1:30 AM. ENG-ASCENT cost $0.37 before the stop.
 - 2026-11-12 8:36 PM ET, Matt's ratings after playing on Normal (the meter's anchors): 1-1 = 4, 1-2 = 2 maybe 3, 1-3 = 1. Sent to DIFF-ALGO; STAGE-RULES §1 #5 updated.
 - 2026-11-12 8:37 PM ET, Matt: 1-1 "possibly could be a 5": anchors 1-1 = 4-5, 1-2 = 2-3, 1-3 = 1 (sent to DIFF-ALGO; STAGE-RULES).
+- 2026-11-12 8:38 PM ET: INT-2's buildcheck bisect (1-1 p95 Normal/Easy at CPU x4, budget 150): d0276817 104/85 PASS; W1C pre-merge 114/82
+  PASS; P11 alone 259/269; Y2 merged 474/494; final 465023ef 446/430. Two causes: P11's verdicts/landings (~+180 ms) and Y2's two
+  searches/landingRepair (~+180 ms). BC-FIX packet written (Opus xhigh; fix the cause, results byte-identical, budget unchanged); starts
+  after Matt's reset. INT-2 told to append the 14 w1traps catalog rows now (D48), then REPORT and stop.
