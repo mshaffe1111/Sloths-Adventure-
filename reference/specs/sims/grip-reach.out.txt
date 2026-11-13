@@ -1,0 +1,49 @@
+# npx tsx reference/specs/sims/grip-reach.ts on t-int-3 91c4e346, run 2026-11-13 3:54 PM ET
+Normal (period 2.85) L=340 grip top    ( 80 px) no double: ledge 400 below anchor: 305 px | ledge 320 below anchor: 286 px | farthest launch: vx 340 vy -601 off at 35
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 0, 420 px 0, 460 px 0, 500 px 0, 540 px 0, 580 px 0
+Normal (period 2.85) L=340 grip top    ( 80 px) double   : ledge 400 below anchor: 471 px | ledge 320 below anchor: 452 px | farthest launch: vx 340 vy -601 off at 35
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 1233, 420 px 1233, 460 px 500, 500 px 0, 540 px 0, 580 px 0
+Normal (period 2.85) L=340 grip middle (170 px) no double: ledge 400 below anchor: 335 px | ledge 320 below anchor: 316 px | farthest launch: vx 356 vy -644 off at 72
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 0, 420 px 0, 460 px 0, 500 px 0, 540 px 0, 580 px 0
+Normal (period 2.85) L=340 grip middle (170 px) double   : ledge 400 below anchor: 503 px | ledge 320 below anchor: 481 px | farthest launch: vx 493 vy -606 off at 46
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 1233, 420 px 1233, 460 px 767, 500 px 133, 540 px 0, 580 px 0
+Normal (period 2.85) L=340 grip foot   (330 px) no double: ledge 400 below anchor: 425 px | ledge 320 below anchor: 407 px | farthest launch: vx 520 vy -714 off at 141
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 467, 420 px 233, 460 px 0, 500 px 0, 540 px 0, 580 px 0
+Normal (period 2.85) L=340 grip foot   (330 px) double   : ledge 400 below anchor: 591 px | ledge 320 below anchor: 563 px | farthest launch: vx 520 vy -714 off at 141
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 1233, 420 px 767, 460 px 667, 500 px 567, 540 px 433, 580 px 300
+Normal (period 2.85) L=420 grip top    ( 80 px) no double: ledge 400 below anchor: 305 px | ledge 320 below anchor: 286 px | farthest launch: vx 340 vy -601 off at 35
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 0, 420 px 0, 460 px 0, 500 px 0, 540 px 0, 580 px 0
+Normal (period 2.85) L=420 grip top    ( 80 px) double   : ledge 400 below anchor: 471 px | ledge 320 below anchor: 452 px | farthest launch: vx 340 vy -601 off at 35
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 1233, 420 px 1233, 460 px 500, 500 px 0, 540 px 0, 580 px 0
+Normal (period 2.85) L=420 grip middle (210 px) no double: ledge 400 below anchor: 358 px | ledge 320 below anchor: 339 px | farthest launch: vx 516 vy -635 off at 67
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 0, 420 px 0, 460 px 0, 500 px 0, 540 px 0, 580 px 0
+Normal (period 2.85) L=420 grip middle (210 px) double   : ledge 400 below anchor: 524 px | ledge 320 below anchor: 505 px | farthest launch: vx 516 vy -635 off at 67
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 1233, 420 px 1233, 460 px 733, 500 px 567, 540 px 0, 580 px 0
+Normal (period 2.85) L=420 grip foot   (410 px) no double: ledge 400 below anchor: 450 px | ledge 320 below anchor: 423 px | farthest launch: vx 520 vy -747 off at 176
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 467, 420 px 333, 460 px 0, 500 px 0, 540 px 0, 580 px 0
+Normal (period 2.85) L=420 grip foot   (410 px) double   : ledge 400 below anchor: 607 px | ledge 320 below anchor: 579 px | farthest launch: vx 520 vy -747 off at 176
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 833, 420 px 700, 460 px 633, 500 px 567, 540 px 467, 580 px 367
+Easy   (period 3.3) L=340 grip top    ( 80 px) no double: ledge 400 below anchor: 305 px | ledge 320 below anchor: 286 px | farthest launch: vx 340 vy -612 off at 35
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 0, 420 px 0, 460 px 0, 500 px 0, 540 px 0, 580 px 0
+Easy   (period 3.3) L=340 grip top    ( 80 px) double   : ledge 400 below anchor: 471 px | ledge 320 below anchor: 452 px | farthest launch: vx 340 vy -612 off at 35
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 1667, 420 px 1233, 460 px 733, 500 px 0, 540 px 0, 580 px 0
+Easy   (period 3.3) L=340 grip middle (170 px) no double: ledge 400 below anchor: 332 px | ledge 320 below anchor: 314 px | farthest launch: vx 340 vy -666 off at 72
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 0, 420 px 0, 460 px 0, 500 px 0, 540 px 0, 580 px 0
+Easy   (period 3.3) L=340 grip middle (170 px) double   : ledge 400 below anchor: 498 px | ledge 320 below anchor: 480 px | farthest launch: vx 340 vy -666 off at 72
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 1667, 420 px 1667, 460 px 1033, 500 px 0, 540 px 0, 580 px 0
+Easy   (period 3.3) L=340 grip foot   (330 px) no double: ledge 400 below anchor: 406 px | ledge 320 below anchor: 378 px | farthest launch: vx 520 vy -708 off at 122
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 467, 420 px 0, 460 px 0, 500 px 0, 540 px 0, 580 px 0
+Easy   (period 3.3) L=340 grip foot   (330 px) double   : ledge 400 below anchor: 562 px | ledge 320 below anchor: 544 px | farthest launch: vx 520 vy -708 off at 122
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 1200, 420 px 1067, 460 px 933, 500 px 833, 540 px 400, 580 px 0
+Easy   (period 3.3) L=420 grip top    ( 80 px) no double: ledge 400 below anchor: 305 px | ledge 320 below anchor: 286 px | farthest launch: vx 340 vy -612 off at 35
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 0, 420 px 0, 460 px 0, 500 px 0, 540 px 0, 580 px 0
+Easy   (period 3.3) L=420 grip top    ( 80 px) double   : ledge 400 below anchor: 471 px | ledge 320 below anchor: 452 px | farthest launch: vx 340 vy -612 off at 35
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 1667, 420 px 1233, 460 px 733, 500 px 0, 540 px 0, 580 px 0
+Easy   (period 3.3) L=420 grip middle (210 px) no double: ledge 400 below anchor: 350 px | ledge 320 below anchor: 322 px | farthest launch: vx 340 vy -689 off at 89
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 0, 420 px 0, 460 px 0, 500 px 0, 540 px 0, 580 px 0
+Easy   (period 3.3) L=420 grip middle (210 px) double   : ledge 400 below anchor: 516 px | ledge 320 below anchor: 488 px | farthest launch: vx 340 vy -689 off at 89
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 1667, 420 px 1300, 460 px 1000, 500 px 700, 540 px 0, 580 px 0
+Easy   (period 3.3) L=420 grip foot   (410 px) no double: ledge 400 below anchor: 434 px | ledge 320 below anchor: 406 px | farthest launch: vx 515 vy -760 off at 162
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 667, 420 px 67, 460 px 0, 500 px 0, 540 px 0, 580 px 0
+Easy   (period 3.3) L=420 grip foot   (410 px) double   : ledge 400 below anchor: 591 px | ledge 320 below anchor: 572 px | farthest launch: vx 515 vy -760 off at 162
+    press window (ms of one swing) to come down at or past, on the 400 line: 380 px 1100, 420 px 1000, 460 px 900, 500 px 833, 540 px 633, 580 px 100
