@@ -20,7 +20,6 @@ judge on 2,056 piece sets (each stage + 3 perturbed copies): deadZones, purposel
 differences found on a planted fault). 16 unlisted seeds x 2, full search (3 cap, 6 petal repairs): identical. lockall --check vs
 f01c76f7 102/102 unchanged; 1-1/1-2/1-3 verdicts and drops (unhashed by the lock) identical, 96 builds. seedlist 1-1 PASS (257), 1-3
 PASS (100). landingsMemo.test.ts: red without the field check, red with a wrong skip, green on the fix.
-
 **Gates (cc5d29a8):** tsc; suite 3,122 tests 0 fail (2 old TODOs); BASE_PATH build; chunk, art, draw, clip (83 known, same), known,
 generality, roadmap, kbd, build checks; seedlist; engine tool tests 33/33; tierBots 7/7: all PASS.
 **Suggestions:** validateStage is now the biggest cost (~50 of ~100 ms at x4), then 112 full flight lists a build (~17 ms).
