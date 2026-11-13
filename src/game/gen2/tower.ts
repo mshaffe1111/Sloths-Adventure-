@@ -265,7 +265,7 @@ export function openEnds(platforms: readonly Platform[], floorY: number, most: n
  * one. And none lies across other wood with less than his body between them (HEAD), nor over a jump its storey was laid with.
  * Laid until no open end is left, or a pass adds none (towerFalls then names what is left, and the roll is refused).
  */
-export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[], vines: readonly Vine[], floorY: number, width: number, gaps: ReadonlyArray<{ x0: number; x1: number; y: number }> = [], level: (p: Platform) => number = () => 0): Array<{ x: number; y: number; w: number; level: number }> {
+export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[], vines: readonly Vine[], floorY: number, width: number, gaps: ReadonlyArray<{ x0: number; x1: number; y: number }> = [], level: (p: Platform) => number = () => 0, sealed: (p: Platform) => boolean = () => false): Array<{ x: number; y: number; w: number; level: number }> {
   const most = flow === 'up' ? TOWER.fall : TOWER.see;
   const all: Platform[] = [...platforms];
   const lv = new Map<Platform, number>(platforms.map((p) => [p, level(p)]));
@@ -295,8 +295,13 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
   };
   // (a bridge or a run-on never closes a jump the storey it joins was laid with: a section's gap at its height keeps its hop)
   const overGap = (x0: number, x1: number, y: number) => gaps.some((g) => g.x0 < x1 - 2 && g.x1 > x0 + 2 && Math.abs(g.y - y) <= 100);
-  /** laid fairly: the storey it is of (storeyAt), or -1 when it is in the way or climbs a storey */
-  const fair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => (cramped(x0, x1, y, but) ? -1 : storeyAt(x0, x1, y, L, but));
+  // (a sealed piece, a gate: nothing of the lay's lies level with it or within a hop of it. Read as the verdict reads it, towerGates:
+  // a bough from just under its level up to a jump over it, within a hop across of its span, would be a way round)
+  const gates = platforms.filter(sealed);
+  const hop = Math.max(0, reachJump(0, true)) + LEAP.slack;
+  const byGate = (x0: number, x1: number, y: number) => gates.some((g) => y <= g.y + GATE_LEVEL && y >= g.y - LEAP.up && Math.max(0, x0 - (g.x + g.width), g.x - x1) <= hop);
+  /** laid fairly: the storey it is of (storeyAt), or -1 when it is in the way, climbs a storey or lies by a gate */
+  const fair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => (cramped(x0, x1, y, but) || byGate(x0, x1, y) ? -1 : storeyAt(x0, x1, y, L, but));
   for (let pass = 0; pass < 10; pass++) {
     const ends = openEnds(all, floorY, most, width);
     if (!ends.length) break;
@@ -307,15 +312,16 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       const Le = lv.get(e.p) ?? 0;
       const leftEnd = e.x < e.p.x;
       // 1. (an end near a side of the tower: the piece runs on into the wall, at its own height, so no slot is left to fall down)
-      if (e.x < TOWER.wall + 40 || e.x > width - TOWER.wall - 40) {
-        if (leftEnd) put(0, e.p.x, e.p.y, Le); else put(e.p.x + e.p.width, width, e.p.y, Le);
+      const [w0, w1] = leftEnd ? [0, e.p.x] : [e.p.x + e.p.width, width];
+      if ((e.x < TOWER.wall + 40 || e.x > width - TOWER.wall - 40) && !sealed(e.p) && !byGate(w0, w1, e.p.y)) {
+        put(w0, w1, e.p.y, Le);
         added++;
         continue;
       }
       // 2. (wood under him from a body's height down: wood nearer than a storey is his own storey's, a jump back up to where he fell)
       const lo = e.p.y + BODY_H + 12, hi = Math.min(e.p.y + most, floorY - 1);
       const gapTo = (q: Platform) => (e.x < q.x ? q.x - e.x : e.x - (q.x + q.width));
-      const anchor = all.filter((q) => q !== e.p && q.type === 'solid' && q.y >= lo && q.y <= hi && (e.x < q.x || e.x > q.x + q.width)).sort((a, b) => gapTo(a) - gapTo(b) || a.y - b.y)[0];
+      const anchor = all.filter((q) => q !== e.p && !sealed(q) && q.type === 'solid' && q.y >= lo && q.y <= hi && (e.x < q.x || e.x > q.x + q.width)).sort((a, b) => gapTo(a) - gapTo(b) || a.y - b.y)[0];
       if (anchor) {
         const left = e.x < anchor.x;
         // (a vine whose top stands at the anchor's end: the bridge starts a hop past it)
@@ -327,6 +333,8 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
         const L = x1 - x0 >= 60 && !overGap(x0, x1, anchor.y) ? fair(x0, x1, anchor.y, lv.get(anchor) ?? 0, [anchor]) : -1;
         if (L >= 0) { put(x0, x1, anchor.y, L); added++; continue; }
       }
+      // (a sealed piece is never run on, and no shelf is hung at its end: the wood under it is its own section's, or the fall is named)
+      if (sealed(e.p)) continue;
       // 3. (going up: the piece itself run on to the wall on that side)
       if (flow === 'up') {
         const [x0, x1] = leftEnd ? [0, e.p.x] : [e.p.x + e.p.width, width];
@@ -350,6 +358,39 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       }
     }
     if (!added) break;
+  }
+  return out;
+}
+
+/** how far under a gate's top a piece still counts as level with it (px) */
+const GATE_LEVEL = 30;
+
+/**
+ * A tower's shut gates passed, each by name (empty: none). `sealed`: the gate boughs (SectionPiece.sealed). With a gate shut he
+ * cannot come up onto it from the vines under it, and the vine that stands on it is held down: so nothing at its level or over it
+ * may be reached without it. Refused: any piece at the gate's level or higher (not the gate itself) that a jump reaches (LEAP,
+ * generous) from the wood under the gate's level, or a HOP reaches from the top of a climbing vine he can get onto from that wood
+ * (the vines hung under the gate above all: a bough beside the gate at its height is one hop from a field vine's top).
+ */
+export function towerGates(sealed: readonly Platform[], platforms: readonly Platform[], vines: readonly Vine[]): string[] {
+  const out: string[] = [];
+  const R = Math.round;
+  for (const g of sealed) {
+    const wood = platforms.filter((p) => p !== g && p.type !== 'bouncy');
+    const under = wood.filter((p) => p.y > g.y + GATE_LEVEL);
+    // (the vines he can get onto from that wood, but for the ones that stand on the gate: their tops are where a hop starts)
+    const tops = vines.filter((v) => v.vineType === 'tree_climb' && !(Math.abs(v.bottomY - g.y) <= 8 && v.x >= g.x - 4 && v.x <= g.x + g.width + 4)
+      && under.some((p) => v.x >= p.x - 30 && v.x <= p.x + p.width + 30 && p.y >= v.topY + 30 && p.y <= v.bottomY + 40));
+    let hit: string | undefined;
+    for (const b of wood) {
+      if (b.y > g.y + GATE_LEVEL) continue;
+      const v = tops.find((t) => leaps({ x: t.x - 1, y: t.topY, width: 2 }, b));
+      const a = v ? undefined : under.find((p) => leaps(p, b));
+      if (!v && !a) continue;
+      hit = `the piece at x ${R(b.x)}-${R(b.x + b.width)}, y ${R(b.y)} is reached by a hop from ${v ? `the top of the vine at x ${R(v.x)}` : `the piece at x ${R(a!.x)}-${R(a!.x + a!.width)}, y ${R(a!.y)}`}`;
+      break;
+    }
+    if (hit) out.push(`tower: the shut gate at x ${R(g.x)}-${R(g.x + g.width)}, y ${R(g.y)} is passed without opening it: ${hit}`);
   }
   return out;
 }
