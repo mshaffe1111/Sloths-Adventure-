@@ -5,44 +5,6 @@
  */
 import type { StageSpec } from './spec.ts';
 
-/** CP3's 1-5, "The Folded Petals" (ENGINE-SPEC "CP3 design"), after the designer's ruling (b), 11-05 */
-export const SPEC_15: StageSpec = {
-  id: '1-5', name: 'The Folded Petals',
-  story: { beat: 'down from the canopy to the forest floor at dusk, on Meeca\'s trail', feel: 'the chase tightens; creaky limbs give way' },
-  profile: { trend: 'down', tempo: 'steady', hills: 'hilly', branching: 'heavy', water: true, petals: 'scattered', look: { lead: 'tree', art: 'w1' },
-    length: { normal: [200, 260], easyMin: 120 }, mix: { jumps: 'lots', breakable: 'lots', bounces: 'some', climbing: 'some', water: 'some' }, theme: 'forest', core: ['branch', 'creaky', 'bank'] },
-  nodes: [
-    // (log jam leaves 1-5 now the creek's water draws: the designer's 11:40 ruling, so 1-1 and 1-5 share no more than half their ideas)
-    { job: 'warm-up', deck: ['bank hops', 'stump hop'] },
-    { job: 'teach creaky', teaches: 'creaky', deck: ['snap teach'], line: { text: 'Creaky branches! Grab the petals and keep moving' } },
-    // (each deck gains a floor idea, the old 1-1's cycle: the designer's ruling (a) on the review, 11-05 ~2:35 AM)
-    { job: 'climb up', deck: ['bounce up', 'the climb', 'stump hop'] },
-    // (Easy's third rest, the designer's option (c) for Easy's density, 11-05: Easy only)
-    { id: '3b', job: 'rest', deck: ['bank walk'], lay: { easyOnly: true } },
-    // (the designer's ruling (b), 11-05: the high road's breakables are creaky limbs (a stone slab on a kapok trunk floats, P-2))
-    // (the designer's 10:09 ruling: World 7's crumbling slab leaves World 1 (SHIPPED acf6e1e8), and World 1 has no ground rotten-wood
-    // art yet, so no low road lays a breakable until it is painted (R-165.30, held to art week))
-    // (the low road is the creek again, on the water the engine draws: the designer's 11:40 ruling)
-    { job: 'the fork', deck: { high: ['creaky boughs', 'bough hops'], low: ['lily-pad hop', 'reed isles'] } },
-    { job: 'rest', deck: ['bank walk'], line: { text: 'These petals are fresher. She came this way not long ago.' }, flagBefore: false },
-    { job: 'test creaky', deck: ['snap dash', 'the climb', 'bounce up', 'double gap'], lay: { inOrder: true }, flagBefore: true, heartAfter: true },
-    { job: 'twist', deck: ['rotten-branch drop', 'stump hop'] },
-    // (the second rest, the designer's ruling on the fun gate, 11-05 ~2:26 AM: a short flat pad and a Dot spot after the drop; its flag
-    // only if a hard node follows, which the flag rule decides; Dot's line is the designer's)
-    { id: '7b', job: 'rest', deck: ['bank walk'], line: { text: 'Down on the forest floor now. Her marks go on past the creek.' } },
-    // (the designer's ruling 6 on the CP3 miss: n8 draws one that the previous two nodes did not lay)
-    // (the creek's lily pads and reeds are back on real water, the engine's drawn creek (the designer's 11:40 ruling))
-    { job: 'creek', deck: ['reed isles', 'lily-pad hop', 'stump hop'], lay: { notLast: 2 } },
-    // (push block leaves n9 for CP3, the designer's ruling: the level check walks a pushed log only inside a puzzle room; back in CP4)
-    { job: 'puzzle beat', deck: ['bough stair', 'the climb', 'bank hops'], line: { text: 'Something shiny, far away...', pad: 'Something shiny, far away... too far, for now.' }, lay: { not: 3, seed: true } },
-    { job: 'master (fork)', deck: { high: ['creaky boughs', 'bridge span'], low: ['bough stair', 'stump hop'] }, flagBefore: true, heartAfter: true },
-    { job: 'cool down', deck: ['bank hops', 'stump hop'] },
-  ],
-  goal: { kind: 'marks', count: 15, normal: 10, easy: 8 },
-  taughtBefore: ['run', 'jump', 'double', 'bounce', 'climb'],
-  lay: { startY: 460, end: { kind: 'bank', w: 640 } },
-};
-
 /**
  * CP4's 1-1, "Into the Canopy" (ENGINE-SPEC "CP4, stage by stage", the designer's node plan): the arrival, teaching run, jump, the
  * bounce and then the double jump (nothing untaught: no creaky, no crumbling, no animals). It rises from the forest floor to the high
@@ -84,6 +46,7 @@ export const SPEC_11: StageSpec = {
   lay: { startY: 1260, end: { kind: 'log', w: 640 }, burstMin: 5, burstMax: 6 },
 };
 
-export const SPECS: StageSpec[] = [SPEC_11, SPEC_15];
+// (1-5 left the mixer for gen2, w1Arc15.ts: new replaces old)
+export const SPECS: StageSpec[] = [SPEC_11];
 /** the stage the engine builds from data, by its id (undefined: a stage the mixer does not build yet) */
 export const specFor = (id: string): StageSpec | undefined => SPECS.find((s) => s.id === id);

@@ -74,7 +74,7 @@ import type { LevelConfig } from './types.ts';
 export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '1-3': ['foe:goldsnake'],
   '1-4': ['foe:goldsnake', 'props2'],
-  '1-5': ['foe:goldsnake'], // (main's 1-5, back for 0.9.5)
+  '1-5': ['foe:goldsnake'], // (1-5 Where She Walked, gen2: 1-3's shy snake, w1Arc15.ts)
   '1-6': ['foe:goldsnake'],
   '1-7': ['foe:eagle', 'props2'],
   '1-8': ['foe:goldsnake'],
@@ -209,8 +209,7 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // 1's new pieces, w1NewArt.ts: the sheet is 1996x925, about 7 MB decoded, so only where laid; a spec with water (1-5's creek, profile
   // water) its deadly creek (w1Creek.ts) and the lily pads on it, drawn with World 2's painted pad (engine.ts paintedRivers, 738 KB).
   // No spec lays calm swim water yet: calm-water joins when one does)
-  // (1-5 stays main's in 0.9.5: protoStage.ts)
-  const spec = built && cfg.id !== '1-5' ? specFor(cfg.id) : undefined;
+  const spec = built ? specFor(cfg.id) : undefined;
   if (spec) out.push('pit-art:1');
   if (spec?.dress) out.push('w1-new');
   if (spec?.profile.water) out.push('creek:1', 'w2-props');

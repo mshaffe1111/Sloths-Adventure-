@@ -114,8 +114,9 @@ const NORMAL: Set = { limb: 140, gap: 60, late: 124, lateGap: 132, easy: false }
 const EASY: Set = { limb: 170, gap: 50, late: 160, lateGap: 104, easy: true };
 
 // ───────────────────────────── the beats ─────────────────────────────
-/** [M] beat 1, through or over: 1-1's hollow log grown, one big fallen trunk; petals inside it (the low road) and along its top (the high
- *  road, a stump step up, a stump and a bank down); her mark past it where both roads meet. Nothing here can hurt */
+/** [M] beat 1, through or over: 1-1's hollow log grown, one big fallen trunk; petals leading to its mouth (the low road, through it) and
+ *  along its top (the high road, a stump step up, a stump and a bank down); her mark past it where both roads meet. Nothing here can hurt
+ *  (no petal or mark stands INSIDE the trunk: levelCheck reads the shell's box as solid, and took them out) */
 function throughOrOver(len: 300 | 360): Lay {
   const hh = hollowLogSize('moss', len).height;
   const W = len + 800;
@@ -127,7 +128,7 @@ function throughOrOver(len: 300 | 360): Lay {
     { key: 'm', shape: 'block', w: [130, 140], place: { kind: 'on', on: 'f', at: [0.74, 0.75], h: [30, 36] }, style: 'moss_stone', landing: true },
     bank('z', 'f', 300),
   ];
-  const sockets: Socket[] = [petals('pa', 'a', [0.5, 0.6], 1), petals('pin', 'f', [0.36, 0.42], 2, 120), petals('ptop', 'H', [0.35, 0.65], 2, 140), mark('mz', 'z', 0.5)];
+  const sockets: Socket[] = [petals('pa', 'a', [0.5, 0.6], 1), petals('pin', 'f', [0.24, 0.26], 2, 80), petals('ptop', 'H', [0.35, 0.65], 2, 140), mark('mz', 'z', 0.5)];
   return { pieces, sockets };
 }
 /** [T] beat 2, the top can drop you (the lesson): a flag and Dot's line 800 px and more before the first limb; a root up and down; then
@@ -148,7 +149,7 @@ function lesson(S: Set): Lay {
     flag('a', 0.3), tip('tip', 'a', 0.4, 'creak'),
     petals('pb', 'b', [0.4, 0.6], 1), petals('pfall', 'U', (x1 + S.limb / 2) / W, 3, 120),
     petals('pL1', 'L1', 0.5, 1), petals('pL2', 'L2', 0.5, 1), petals('pL3', 'L3', 0.5, 1),
-    mark('mz', 'z', 0.5),
+    mark('mU', 'U', (x2 + 2 * S.limb + 1.5 * S.gap) / W),
   ];
   return { pieces, sockets };
 }
@@ -172,10 +173,10 @@ function herRoad(S: Set): Lay {
   ];
   const sockets: Socket[] = [
     tip('tip', 'a', 0.3, 'fresher'), mark('ma', 'a', 0.7),
-    petals('pU', 'U', [0.3, 0.6], 3, 160), petals('pL2', 'L2', 0.5, 1),
+    petals('pU', 'U', [0.2, 0.3], 3, 160), mark('mU', 'U', 0.62), petals('pL2', 'L2', 0.5, 1),
     ...t.sockets,
     { id: 'seed', role: 'find', on: 'hi', t: 0.85, dn: 34 }, tip('tip2', 'hi', 0.2, 'shiny'),
-    mark('mm', 'm', 0.6), petals('pz', 'z', 0.5, 1),
+    petals('pm', 'm', 0.6, 1), petals('pz', 'z', 0.5, 1),
   ];
   return { pieces, sockets };
 }
@@ -197,9 +198,8 @@ function blocked(S: Set): Lay {
   ];
   const sockets: Socket[] = [
     mark('ma', 'a', 0.5), petals('pL1', 'L1', 0.5, 1), petals('pL2', 'L2', 0.5, 1),
-    mark('mU', 'U', 0.85),
     { id: 'e', role: 'enemy', on: 'S', t: 0.5, dn: 0, allow: ['snake'], easy: 'soften' },
-    petals('pB1', 'B1', [0.3, 0.7], 3, 200), petals('pL3', 'L3', 0.5, 1),
+    petals('pB1', 'B1', [0.2, 0.4], 2, 120), mark('mB1', 'B1', 0.7), petals('pL3', 'L3', 0.5, 1),
     mark('mz', 'z', 0.5),
   ];
   return { pieces, sockets };
@@ -215,7 +215,7 @@ function boughRun(S: Set): Lay {
   let x = xv + S.late;
   for (let j = 2; j <= 6; j++) { const k = `L${j}`; pieces.push(over(k, 'U', W, x + S.lateGap, S.late, { creak: true })); sockets.push(petals(`p${k}`, k, 0.5, 1)); x += S.lateGap + S.late; }
   pieces.push(bank('z', 'U', 300));
-  sockets.push(mark('mU', 'U', 0.98), mark('mz', 'z', 0.6));
+  sockets.push(mark('mz', 'z', 0.6));
   return { pieces, sockets };
 }
 function creek(S: Set): Lay {
@@ -272,8 +272,8 @@ function weave(S: Set): Lay {
   const sockets: Socket[] = [
     flag('a', 0.3), mark('ma', 'a', 0.7), petals('pL1', 'L1', 0.5, 1), petals('pL2', 'L2', 0.5, 1),
     { id: 'e', role: 'enemy', on: 'S', t: 0.5, dn: 0, allow: ['snake'], easy: 'soften' },
-    petals('pB', 'B', [0.3, 0.7], 2, 180), petals('pL3', 'L3', 0.5, 1), petals('pL4', 'L4', 0.5, 1),
-    mark('mQ', 'Q', 0.9), mark('mz', 'z', 0.5),
+    petals('pB', 'B', [0.2, 0.4], 2, 120), mark('mB', 'B', 0.7), petals('pL3', 'L3', 0.5, 1), petals('pL4', 'L4', 0.5, 1),
+    mark('mz', 'z', 0.5),
   ];
   return { pieces, sockets };
 }
