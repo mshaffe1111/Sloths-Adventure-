@@ -759,3 +759,8 @@ lines); Matt sees them in the release.
   "it's not bad, especially when it's just teaching"; "if we could get the timing of the mushrooms to be more consistent so somebody can
   time their jumps better, then it would have been a much better level for her." -> R-165.174 (measure the bounce cadence, make each
   chain a steady beat, a cadence check). Confound noted: the result says as much about the mechanic as about Fable vs Opus.
+- 2026-11-12 9:33 PM ET, Matt clarified the blind test: she liked the level; the problem was timing. The END chains are the model ("jump on the
+  first one and it catapulted you to the second and the third and then off"); "a couple... didn't have the exact timing"; "if they were
+  all like the last ones, it would have been a lot better". Direction: the teaching chains feel exactly like the end chains; once learned,
+  mushroom jumps get "a little bit harder and harder". R-165.174 updated. Same shape for every mechanic: teach on the steady version,
+  then grow it.
