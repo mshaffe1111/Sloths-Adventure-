@@ -9,7 +9,7 @@
  *              in protoStage.ts HAND_STAGES shadowing it, new replaces old)
  *   attempts   levelSeeds.ts LEVEL_ATTEMPTS has it
  *   sheets     every creature and the bush sheet its rolls draw, both settings, is in its preload list (stageSheets.ts): the first 3 seeds
- *              of its list (else seeds 1-3), as the seed-list search builds them (libstage.ts buildStage)
+ *              of its list (else the first 3 of seeds 1-24 that build), as the seed-list search builds them (libstage.ts buildStage)
  *   drawcheck  it is a scenario of tools/perf/limits.json (drawcheck plays it, PERFORMANCE-RULES §8; D51)
  *   seeds      a proven seed list (provenIndex.ts) or a stand-in seed (its row's `standIn`, seedList.ts standIn)
  *   flown      its row is judged on a Normal scope (reach.ts JUDGED) and that scope has a flown row for every move Easy's rows fly
@@ -71,14 +71,19 @@ export async function realSheetMisses(id: string, preload: (cfg: Parameters<type
   if (!cfg) return [];
   if (PROVEN_INDEX[id]) await loadSeedList(id);
   const listed = provenSeeds(id);
-  const seeds = listed.length ? listed.slice(0, 3) : [1, 2, 3];
+  // (its first 3 listed seeds; with no list, the first 3 of seeds 1-24 that build on both settings: a roll that throws checks nothing)
+  const tries = listed.length ? listed.slice(0, 3) : Array.from({ length: 24 }, (_, i) => i + 1);
   const want = new Set(preload(cfg));
   const out = new Set<string>();
-  for (const seed of seeds) for (const d of SETTINGS) {
-    let st;
-    try { st = buildStage(id, seed, d); } catch (e) { out.add(`(seed ${seed} ${d} threw: ${String((e as Error).message).slice(0, 80)})`); continue; }
-    for (const k of [...stageAnims(st).map((n) => `foe:${n}`), ...(stageExtras(st).props2 ? ['props2'] : [])]) if (!want.has(k)) out.add(`${k} (seed ${seed} ${d})`);
+  let checked = 0;
+  for (const seed of tries) {
+    if (checked >= 3) break;
+    let both;
+    try { both = SETTINGS.map((d) => [d, buildStage(id, seed, d)] as const); } catch (e) { if (listed.length) out.add(`(listed seed ${seed} threw: ${String((e as Error).message).slice(0, 80)})`); continue; }
+    checked++;
+    for (const [d, st] of both) for (const k of [...stageAnims(st).map((n) => `foe:${n}`), ...(stageExtras(st).props2 ? ['props2'] : [])]) if (!want.has(k)) out.add(`${k} (seed ${seed} ${d})`);
   }
+  if (!checked) out.add(`(no seed of ${tries[0]}-${tries[tries.length - 1]} builds on both settings: its sheets are unchecked)`);
   return [...out];
 }
 
