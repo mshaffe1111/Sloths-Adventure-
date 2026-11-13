@@ -10,8 +10,8 @@
  *   - a cluster pushed up its vine tears free at the top and falls;
  *   - stepping off a bough to the floor costs nothing (loseLife is the engine's own here, not RealPlay's stub: engine-core trap 9).
  * v2 (B14, 11-13: FEEL-LATTICE §6-7; podfall.ts, fieldPlay.ts, vineField.ts ClusterGate):
- *   - pods down two columns on one steady beat: hanging on a podded vine he is knocked to the floor within a beat (counted, no heart);
- *     a vine over is never hit; two hands across a podded column are; the beat sign switches 3.6 s to 3 s;
+ *   - pods down two columns on one steady stage beat (beat.ts): hanging on a podded vine he is knocked to the floor within a beat
+ *     (counted, no heart); a vine over is never hit; two hands across a podded column are; a knock takes no vine on the way down;
  *   - a bough shut by a cluster is no footing: the climb stops at its top, no vault; freed, the bough springs open and he vaults on;
  *     a gate of two lifts a notch for the first and opens on the second.
  */
@@ -24,7 +24,6 @@ import { feelClock } from './feelPair.ts';
 import { generateStage } from './stageGenerator.ts';
 import { CLIMB_SPEED, GRAB_REACH } from './vinePair.ts';
 import { FIELD_FEEL, GATE } from './vineField.ts';
-import { podAt, tellStart } from './podfall.ts';
 import type { Vine } from './types.ts';
 
 const WIDTHS = [390, 1034];
@@ -68,7 +67,10 @@ test('the room: an even field, a mixed field with one gap he must jump, a cluste
   assert.equal(st.clusters?.length, FEEL.clusters.length + FEEL.underClusters.length);
   assert.deepEqual(st.gates?.map((g) => g.clusters.length), [1, 2], 'a gate of one, then a gate of two');
   assert.equal(st.pods?.length, 4, 'pods down two columns of lane 2 and down both push vines of lane 3b');
-  assert.ok(st.pods!.every((p) => p.warn >= 1 && p.cost === 'knock' && p.every === 3.6), 'a 1.0 s tell, a knock and no heart, one steady 3.6 s beat');
+  assert.ok(st.pods!.every((p) => p.clock === 'room-pods' && p.cost === 'knock'), 'every pod on one beat, a knock and no heart');
+  const beat = st.clocks!.find((c) => c.id === 'room-pods')!;
+  assert.deepEqual(beat.phases.map((q) => [q.name, q.seconds]).filter(([n]) => n === 'warn'), [['warn', 1]], 'a 1.0 s tell');
+  assert.ok(Math.abs(beat.phases.reduce((n, q) => n + q.seconds, 0) - 3.6) < 1e-9, 'one steady 3.6 s beat');
   const floor = st.platforms.find((p) => p.y === FEEL.floor)!;
   assert.ok(floor && floor.x <= 0 && floor.x + floor.width >= FEEL.width, 'sound floor wall to wall');
   for (const v of climbs) {
@@ -79,8 +81,8 @@ test('the room: an even field, a mixed field with one gap he must jump, a cluste
   assert.ok(!st.zones?.length && !st.heartFalls?.length && st.waterY === undefined && !st.rivers?.length, 'nothing that hurts');
   assert.ok(st.platforms.every((p) => p.type === 'solid' && p.crumbleAfter === undefined), 'only sound footing (the gates open by fruit)');
   assert.equal(st.exitTotemX, 0, 'no door');
-  const sign = st.feelRoom!.sign, beat = st.feelRoom!.beatSign!;
-  assert.ok(climbs.every((v) => Math.abs(sign.x - v.x) > GRAB_REACH + 20 && Math.abs(beat.x - v.x) > GRAB_REACH + 20), "both signs stand out of every vine's grab reach");
+  const sign = st.feelRoom!.sign;
+  assert.ok(climbs.every((v) => Math.abs(sign.x - v.x) > GRAB_REACH + 20), "the sign stands out of every vine's grab reach");
 });
 
 const press = (r: TouchRig) => r.push(stroke(1, [[0, 160, 700], [120, 160, 600]], false));
@@ -264,7 +266,7 @@ test('stepping off a bough to the floor costs nothing (the engine’s own loseLi
   assert.equal(r.r.e.statHeartsLost, 0, 'no heart lost (the counter engine.ts statHeartsLost adds every hurt to)');
 });
 
-type FieldEngine = { field: { pods: Array<{ id: number; x: number; every: number; offset: number }> } | null; clusters: Array<{ id: number; y: number; falling?: boolean; gone?: boolean }>; clustersFreed: number; platforms: Array<{ id: number; broken?: boolean; y: number }> };
+type FieldEngine = { field: { pods: Array<{ id: number; x: number }> } | null; clusters: Array<{ id: number; y: number; falling?: boolean; gone?: boolean }>; clustersFreed: number; platforms: Array<{ id: number; broken?: boolean; y: number }> };
 const fieldOf = (r: TouchRig) => r.r.e as unknown as FieldEngine;
 const podX = (i: number) => FEEL.pods[i][0];
 
@@ -310,24 +312,6 @@ test('pods: on a podded vine he is knocked to the floor within a beat (counted, 
     h = hangOn(r, podX(0), true, 4500, true);
     assert.ok(h.knocks >= 1 && h.onFloor && !h.retook, `@${w}: knocked to the floor, no vine retaken (knocks ${h.knocks}, floor ${h.onFloor}, retook ${h.retook})`);
   }
-});
-
-test('pods: the tell runs 1.0 s before every drop, and the beat sign switches 3.6 s to 3 s (each pod keeps its place in the beat)', () => {
-  const r = room(1034);
-  const pods = fieldOf(r).field!.pods;
-  const p0 = pods[0] as Parameters<typeof tellStart>[0];
-  const s0 = tellStart(p0);
-  assert.equal(podAt(p0, s0 + 0.99).phase, 'warn');
-  assert.equal(podAt(p0, s0 + 1.01).phase, 'fall');
-  const half = pods[1].offset / pods[1].every;
-  r.r.stand(FEEL.beatSign - 20, FEEL.floor);
-  r.clear();
-  r.run(300);
-  tap(r);
-  r.run(400);
-  assert.ok(pods.every((p) => p.every === 3), `the beat is 3 s (${pods.map((p) => p.every)})`);
-  assert.equal(feelClock().beat, 3);
-  assert.ok(Math.abs(pods[1].offset / pods[1].every - half) < 1e-9, 'the pair still half a beat apart');
 });
 
 test('a gate: shut, its bough is no footing and the climb stops at the top; the cluster pushed free springs it open and he vaults on', () => {

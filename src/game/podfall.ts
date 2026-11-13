@@ -1,31 +1,43 @@
 /**
- * podfall — falling pods (1-4.md engine piece 3, "4-1's rockfall down a column, a tell, the cost by data"): a ripe pod hangs under a
- * bough over a column of a vine field and lets go on its own steady beat. First it creaks and its fluff trickles down the column (the
- * tell, `warn` s before it lets go: 1.0 s on Normal, 1.5 s on Easy, 1-4.md "Pods fair"), then it drops down the column at the rockfall's
- * speed and bursts on the sound wood under it. A pod is dodged SIDEWAYS: a step to a vine out of its column. On two hands he spans two
- * columns, so a pod down either finds him (1-4.md "Two hands span two columns, so the fast way is the exposed way").
+ * podfall — falling pods (1-4.md engine piece 3: "4-1's rockfall down a column, a tell, the cost by data"), the first hazard on the
+ * stage beat (beat.ts). A ripe pod hangs under a bough over a column of a vine field. Its beat's 'warn' is the tell: it creaks and its
+ * fluff trickles down the column (1.0 s on Normal, 1.5 s on Easy by the beat's stretch: 1-4.md "Pods fair"); on 'on' it lets go, drops
+ * down the column at the rockfall's speed and bursts on the wood under it; through 'off' a new one swells. A pod is dodged SIDEWAYS: a
+ * step to a vine out of its column. On two hands he spans two columns, so a pod down either finds him (1-4.md: "the fast way is the
+ * exposed way"). Columns on one beat keep in step; each column's `shift` staggers it (half a beat apart, say).
  *
- * The clock is 4-1's rockfall (rockfall.ts rockAt: idle, the tell, the fall, the burst), so a pod and a rock agree on time. What a pod
- * costs is the piece's own data (`cost`): 'knock' knocks him off his vine to the catch bough under him; 'heart' does that and costs a
- * heart (Normal; Easy's pods only knock, 1-4.md "Easy ... no hearts lost to pods"). Nothing he does harms a pod.
+ * What a pod costs is the piece's own data (`cost`): 'knock' knocks him off his vine to the catch bough under him; 'heart' does that and
+ * costs a heart (Normal; Easy's pods only knock, 1-4.md "Easy ... no hearts lost to pods"). Nothing he does harms a pod.
  *
- * Pure (no canvas, no engine, no stage ids): the stage builder, the engine (engine.ts, its pods block) and the tests agree on every pod.
+ * Pure (no canvas, no engine, no stage ids): the stage builder, the engine (fieldPlay.ts) and the tests agree on every pod.
  */
-import { ROCK, rockAt, rockFits, type RockDrop, type RockPhase } from './rockfall.ts';
+import { ROCK } from './rockfall.ts';
+import type { ClockRead } from './clock.ts';
+import type { ClockDef } from './stageKit.types.ts';
 import type { Platform, Vine } from './types.ts';
+import { beatDef, beatFaults, type OnBeat } from './beat.ts';
+import { beatOf } from './clock.ts';
 
 /** what a pod costs him when it finds him */
 export type PodCost = 'knock' | 'heart';
 
-/** a column a pod falls down: a rockfall drop through open air (`air`: the tell is the creak and the trickle, never a shadow) */
-export interface PodColumn extends RockDrop {
+/** a column a pod falls down, on a stage beat (its `clock` and `shift`) */
+export interface PodColumn extends OnBeat {
   id: number;
   /** the field vine whose column it falls down (its x is the vine's), if it is over one */
   vine?: number;
+  x: number;
+  /** where its bottom hangs (it lets go from here), and the wood it bursts on (y) */
+  top: number;
+  land: number;
   cost: PodCost;
 }
 
 export const POD = {
+  /** how fast it falls (px/s): the rockfall's steady drop (rockfall.ts ROCK.speed), a fall you can read */
+  speed: ROCK.speed,
+  /** how long the burst shows on the wood (s) */
+  burst: 0.5,
   /** its body, for hitting him (px): a kapok pod about a quarter of his drawn height long (89.1, heroSprite.ts; LESSONS D41) */
   radius: 14,
   /** how far either side of a hand's line a pod finds him (px): his arms and head on the vine, never the vine beside it (70-90 px away) */
@@ -42,72 +54,69 @@ export const POD = {
   catchBelow: 450,
 } as const;
 
-export type PodPhase = RockPhase;
+export type PodPhase = 'idle' | 'warn' | 'fall' | 'burst' | 'gone';
+export interface PodState {
+  phase: PodPhase;
+  /** 0..1 through the phase (idle: through the beat's quiet, as a new pod swells) */
+  u: number;
+  /** its bottom's height (px) */
+  y: number;
+  /** which beat it is on (a hit counts once a beat) */
+  cycle: number;
+}
 
-/** what a pod is doing at time t (rockfall's clock): its phase, how far through it, and its height while it falls */
-export const podAt = (p: PodColumn, t: number): { phase: PodPhase; u: number; y: number } => rockAt(p, t);
+/** the seconds a pod takes to fall its column */
+export const fallSeconds = (p: Pick<PodColumn, 'top' | 'land'>): number => Math.max(0.01, (p.land - p.top) / POD.speed);
 
-/** which beat of its own a pod is on at time t (a hit is counted once a beat) */
-export const podBeat = (p: PodColumn, t: number): number => Math.floor((t + p.offset) / p.every);
+/** the 'on' a pod's beat needs to fall a column `len` px and burst (s), with a breath to spare */
+export const podOn = (len: number): number => Math.ceil(((Math.max(0, len) / POD.speed) + POD.burst + 0.1) * 10) / 10;
+
+/** a pods' beat: one every `period` s, a `tell`-s tell, long enough 'on' for its longest column (`len` px); Easy times `easyStretch` */
+export const podBeat = (id: string, period: number, tell: number, len: number, easyStretch: number, offset = 0): ClockDef =>
+  beatDef(id, period, tell, podOn(len), easyStretch, offset);
+
+/** what a pod is doing, from its beat's read (StageClock.read(p.clock, p.shift)) */
+export function podAt(p: PodColumn, r: Pick<ClockRead, 'phase' | 'u' | 'into' | 'cycle'>): PodState {
+  if (r.phase === 'warn') return { phase: 'warn', u: r.u, y: p.top, cycle: r.cycle };
+  if (r.phase === 'on') {
+    const fallT = fallSeconds(p);
+    if (r.into < fallT) return { phase: 'fall', u: r.into / fallT, y: p.top + r.into * POD.speed, cycle: r.cycle };
+    if (r.into < fallT + POD.burst) return { phase: 'burst', u: (r.into - fallT) / POD.burst, y: p.land, cycle: r.cycle };
+    return { phase: 'gone', u: 0, y: p.land, cycle: r.cycle };
+  }
+  return { phase: 'idle', u: r.phase === 'off' ? r.u : 1, y: p.top, cycle: r.cycle };
+}
 
 /**
  * Does a falling pod find him now? `xs`: the lines he occupies (on a vine field, each hand's vine x; off one, his middle), `feetY` his
  * feet, `height` his body. Off a vine the body's width counts (`POD.body`); on vines, only a pod down a column he holds (`POD.hands`).
  */
-export function podHits(p: PodColumn, t: number, xs: readonly number[], feetY: number, height: number, onVines: boolean): boolean {
-  const s = podAt(p, t);
+export function podHits(p: PodColumn, s: PodState, xs: readonly number[], feetY: number, height: number, onVines: boolean): boolean {
   if (s.phase !== 'fall') return false;
   const near = onVines ? POD.hands : POD.body;
   if (!xs.some((x) => Math.abs(x - p.x) < near)) return false;
   return s.y > feetY - height && s.y - POD.radius * 2 < feetY;
 }
 
-/** a pod's cycle leaves room for the tell, the fall and the burst (rockfall's own check) */
-export const podFits = (p: PodColumn): boolean => rockFits(p);
-
-/** the seconds into each beat its tell starts (the creak; then `warn` s to the drop) */
-export function tellStart(p: PodColumn): number {
-  const fallT = Math.max(0.01, (p.land - p.top) / ROCK.speed);
-  return p.every - p.warn - fallT - ROCK.shatter;
-}
-
-/** the game times its tells start in [t0, t1) */
-export function tellsIn(p: PodColumn, t0: number, t1: number): number[] {
-  const out: number[] = [];
-  const s = tellStart(p);
-  // (rockAt's clock: beat k runs from k * every - offset; its tell starts `s` into it)
-  for (let k = Math.floor((t0 + p.offset) / p.every) - 1; ; k++) {
-    const at = k * p.every - p.offset + s;
-    if (at >= t1) break;
-    if (at >= t0) out.push(at);
-  }
-  return out;
-}
-
 /**
  * What is wrong with a stage's pods, in words (none: they may be laid). 1-4.md "Rules" and "Pods fair":
- *   - each pod's cycle fits (rockfall's own check) and its tell is at least POD.tellMin;
- *   - two columns he can see at once (within POD.seen px across and both reaching the same heights) never start their tells within
- *     POD.apart s of each other, over a whole common cycle;
+ *   - the beats are fair (beat.ts beatFaults): a tell of POD.tellMin or more; two columns he can see at once never start their tells
+ *     within POD.apart s; each pod's beat is in the stage;
+ *   - each pod's beat leaves it time to fall its column and burst before the beat comes round;
  *   - a pod over a field vine leaves a free vine within that vine's reach (no pod falls down it), so a step aside always dodges it;
- *   - sound wood lies under every point of a column within POD.catchBelow px (the knock lands him on it, never in a long fall).
- * `reach`: how far a step to a neighbour reaches (vineField.ts FIELD_FEEL.reach).
+ *   - sound wood lies under every vine a pod falls on within POD.catchBelow px of its foot (the knock lands him on it).
+ * `reach`: how far a step to a neighbour reaches (vineField.ts FIELD_FEEL.reach). Checked on the setting `easy`.
  */
-export function podFaults(pods: readonly PodColumn[], vines: readonly Vine[], platforms: readonly Platform[], reach: number): string[] {
-  const out: string[] = [];
+export function podFaults(pods: readonly PodColumn[], clocks: readonly ClockDef[], vines: readonly Vine[], platforms: readonly Platform[], reach: number, easy = false): string[] {
+  const used = clocks.filter((c) => pods.some((p) => p.clock === c.id));
+  const out = beatFaults(used, pods.map((p) => ({ clock: p.clock, shift: p.shift, id: `pod ${p.id}`, x: p.x, y0: p.top, y1: p.land })), { tellMin: POD.tellMin, apart: POD.apart, seen: POD.seen }, easy);
   for (const p of pods) {
-    if (!podFits(p)) out.push(`pod ${p.id}: its beat (${p.every} s) has no room for its tell, its fall and its burst`);
-    if (p.warn < POD.tellMin - 1e-6) out.push(`pod ${p.id}: its tell is ${p.warn} s, under ${POD.tellMin} s`);
-  }
-  // tells apart, over one common stretch long enough for every pair's beats to meet (two whole cycles of the slower)
-  for (let i = 0; i < pods.length; i++) {
-    for (let j = i + 1; j < pods.length; j++) {
-      const a = pods[i], b = pods[j];
-      if (Math.abs(a.x - b.x) > POD.seen || a.land < b.top || b.land < a.top) continue;
-      const span = 8 * Math.max(a.every, b.every);
-      const ta = tellsIn(a, 0, span), tb = tellsIn(b, 0, span);
-      if (ta.some((x) => tb.some((y) => Math.abs(x - y) < POD.apart - 1e-6))) out.push(`pods ${a.id} and ${b.id}: their tells start within ${POD.apart} s`);
-    }
+    const c = clocks.find((q) => q.id === p.clock);
+    if (!c) continue;
+    const b = beatOf(c, easy);
+    let on = 0;
+    b.names.forEach((n, i) => { if (n === 'on') on += b.seconds[i]; });
+    if (on < fallSeconds(p) + POD.burst - 1e-6) out.push(`pod ${p.id}: its beat's 'on' (${on.toFixed(2)} s) is too short to fall its column and burst`);
   }
   const podded = new Set(pods.map((p) => p.vine).filter((v): v is number => v !== undefined));
   for (const p of pods) {
@@ -119,15 +128,9 @@ export function podFaults(pods: readonly PodColumn[], vines: readonly Vine[], pl
     }
     const free = vines.some((q) => q !== v && q.field && !podded.has(q.id) && Math.abs(q.x - v.x) <= reach && q.bottomY > v.topY && q.topY < v.bottomY);
     if (!free) out.push(`pod ${p.id}: no free vine within a step (${reach} px) of vine ${v.id}`);
-  }
-  for (const p of pods) {
-    // the lowest point of the column he can be at: the vine's foot (on a vine) or the pod's landing
-    const v = p.vine === undefined ? undefined : vines.find((q) => q.id === p.vine);
-    const from = v ? v.topY : p.top;
-    const wood = platforms.filter((q) => !q.broken && p.x >= q.x - 4 && p.x <= q.x + q.width + 4 && q.y >= from).map((q) => q.y);
+    const wood = platforms.filter((q) => !q.broken && v.x >= q.x - 4 && v.x <= q.x + q.width + 4 && q.y >= v.bottomY - 4).map((q) => q.y);
     const under = wood.length ? Math.min(...wood) : Infinity;
-    if (under - from > POD.catchBelow + (v ? v.bottomY - v.topY : 0)) out.push(`pod ${p.id}: no sound wood within ${POD.catchBelow} px under its column`);
-    if (v && under - v.bottomY > POD.catchBelow) out.push(`pod ${p.id}: the wood under vine ${v.id}'s foot is ${Math.round(under - v.bottomY)} px down (over ${POD.catchBelow})`);
+    if (under - v.bottomY > POD.catchBelow) out.push(`pod ${p.id}: the wood under vine ${v.id}'s foot is ${Number.isFinite(under) ? Math.round(under - v.bottomY) : 'no'} px down (over ${POD.catchBelow})`);
   }
   return out;
 }

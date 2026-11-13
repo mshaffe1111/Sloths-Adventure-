@@ -13,8 +13,10 @@ FAULTS = [
   ('gateShut reads a gate of two open after one', 'src/game/vineField.ts', 'gateLeft(g, clusters) > 0;\n', 'gateLeft(g, clusters) > g.clusters.length - 1;\n', 'src/game/feelPairRoom.test.ts', 'gate of two'),
   ('a freed cluster falls through the floor', 'src/game/fieldPlay.ts', 'if (v) c.land = clusterLand(v, c.y, this.platforms, this.gateIds);', '', 'src/game/feelPairRoom.test.ts', 'gate of two'),
   ('the tell is shortened to 0.6 s', 'src/game/feelPairStage.ts', 'export const POD_TELL = 1.0;', 'export const POD_TELL = 0.6;', 'src/game/feelPairRoom.test.ts', 'the room:'),
-  ('the beat sign does nothing', 'src/game/feelPair.ts', '(pod as { every: number }).every = now;', '', 'src/game/feelPairRoom.test.ts', 'beat sign'),
-  ('podFaults forgets the tells-apart rule', 'src/game/podfall.ts', 'out.push(`pods ${a.id} and ${b.id}: their tells start within ${POD.apart} s`);', '', 'src/game/podfall.test.ts', 'podFaults'),
+  ('the engine never builds the stage beats', 'src/game/engine.ts', 'this.clock = beatClock(st.clocks ?? [], this.easy, this.clock.time());', '', 'src/game/feelPairRoom.test.ts', 'pods: on a podded'),
+  ('beatFaults forgets the warnings-apart rule', 'src/game/beat.ts', 'out.push(`${a.id} and ${b.id}: their warnings start within ${rule.apart} s`);', '', 'src/game/podfall.test.ts', 'beatFaults'),
+  ('Easy does not stretch a lane\'s shift', 'src/game/clock.ts', 'const offset = b.offset + shift * b.stretch;', 'const offset = b.offset + shift;', 'src/game/podfall.test.ts', 'the beat:'),
+  ('podFaults forgets the fall fits its on', 'src/game/podfall.ts', "out.push(`pod ${p.id}: its beat's 'on' (${on.toFixed(2)} s) is too short to fall its column and burst`);", '', 'src/game/podfall.test.ts', 'podFaults'),
   ('gateFaults forgets a vine that misses the bough', 'src/game/vineField.ts', "out.push(`cluster ${id}: its vine ${v.id} does not reach gate ${g.id}'s bough`);", '', 'src/game/podfall.test.ts', 'a gate:'),
 ]
 bad = 0

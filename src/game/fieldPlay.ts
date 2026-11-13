@@ -13,7 +13,8 @@
  * (engine.ts, its `field` hooks); RealPlay drives it through the engine in the tests.
  */
 import type { Platform, PlayerState, Vine } from './types.ts';
-import { POD, podAt, podBeat, podHits, type PodColumn, type PodCost } from './podfall.ts';
+import { POD, podAt, podHits, type PodColumn, type PodCost } from './podfall.ts';
+import type { ClockRead } from './clock.ts';
 import { GATE, clusterLand, fallCluster, gateLeft, gateOver, gateSag, type ClusterGate, type Hands, type VineCluster } from './vineField.ts';
 import { drawGate, drawPod } from './vineFieldArt.ts';
 
@@ -22,6 +23,8 @@ export interface FieldHost {
   readonly t: number;
   readonly player: PlayerState;
   readonly hands: Hands | null;
+  /** where a beat stands now for a subscriber's lane (the engine's StageClock.read: beat.ts) */
+  beat(clock: string, shift?: number): ClockRead;
   /** a pod found him: knock him off his vine (and a heart on 'heart') */
   knock(cost: PodCost, fromX: number): void;
   sfx(kind: 'creak' | 'burst' | 'thump' | 'lift' | 'open'): void;
@@ -75,18 +78,18 @@ export class FieldPlay {
     if (this.pods.length) {
       const { xs, onVines } = this.lines(h);
       for (const pod of this.pods) {
-        const s = podAt(pod, t);
-        const key = `${pod.id}:${podBeat(pod, t)}`;
+        const s = podAt(pod, h.beat(pod.clock, pod.shift));
+        const key = `${pod.id}:${s.cycle}`;
         const near = Math.abs(pod.x - p.x) < HEAR.x && p.y > pod.top - HEAR.y && p.y < pod.land + HEAR.y;
         if (s.phase === 'warn' && near && !this.told.has(key)) {
           this.told.add(key);
           h.sfx('creak');
         }
-        if (s.phase === 'shatter' && near && !this.told.has(key + 'b')) {
+        if (s.phase === 'burst' && near && !this.told.has(key + 'b')) {
           this.told.add(key + 'b');
           h.sfx('burst');
         }
-        if (!this.hit.has(key) && p.invincibleTimer <= 0 && podHits(pod, t, xs, p.y, 64, onVines)) {
+        if (!this.hit.has(key) && p.invincibleTimer <= 0 && podHits(pod, s, xs, p.y, 64, onVines)) {
           this.hit.add(key);
           h.knock(pod.cost, pod.x);
         }
@@ -141,8 +144,8 @@ export class FieldPlay {
     return l.from + (l.to - l.from) * e;
   }
 
-  /** the pods and the shut gates on screen (stand-ins: vineFieldArt.ts) */
-  draw(ctx: CanvasRenderingContext2D, t: number, x0: number, x1: number): void {
+  /** the pods and the shut gates on screen (stand-ins: vineFieldArt.ts); `beat` reads a subscriber's beat */
+  draw(ctx: CanvasRenderingContext2D, t: number, x0: number, x1: number, beat: (clock: string, shift?: number) => ClockRead): void {
     for (const g of this.gates) {
       const b = this.platforms.find((q) => q.id === g.platform);
       if (!b || b.x > x1 + 60 || b.x + b.width < x0 - 60) continue;
@@ -152,7 +155,7 @@ export class FieldPlay {
     }
     for (const pod of this.pods) {
       if (pod.x < x0 - 60 || pod.x > x1 + 60) continue;
-      drawPod(ctx, pod, podAt(pod, t), t);
+      drawPod(ctx, pod, podAt(pod, beat(pod.clock, pod.shift)), t);
     }
   }
 

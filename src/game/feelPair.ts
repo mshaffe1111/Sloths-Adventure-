@@ -8,7 +8,6 @@
  * Nothing here allocates per frame: the lines are rebuilt only when a time changes by a tenth of a second.
  */
 import type { PlayerState, Vine } from './types.ts';
-import type { PodColumn } from './podfall.ts';
 import type { FeelRoomSpec } from './feelPairStage.ts';
 import { drawKitArt, kitArtReady, kitSize } from './puzzleArt.ts';
 import { canvasLost } from './canvasLost.ts';
@@ -28,22 +27,20 @@ export interface ClockLine {
   secs: number | null;
   running: boolean;
 }
-/** what the screen shows: the lines, the sign's slide now, the pods' beat now (null: no pods), the knocks and the fruit freed */
+/** what the screen shows: the lines, the sign's slide now, whether the room has pods, the knocks and the fruit freed */
 export interface FeelClock {
   lines: ClockLine[];
   speed: number;
   /** bumps whenever anything on it changes (the screen redraws only then) */
   rev: number;
-  beat: number | null;
+  pods: boolean;
   knocks: number;
   freed: number;
 }
 
-/** "3.6 s", "3 s" */
-export const beatLabel = (b: number): string => `${Number(b.toFixed(1))} s`;
 
 /** the stopwatch as the screen shows it (one room at a time; reset when a room is made) */
-let clock: FeelClock = { lines: [], speed: 2, rev: 0, beat: null, knocks: 0, freed: 0 };
+let clock: FeelClock = { lines: [], speed: 2, rev: 0, pods: false, knocks: 0, freed: 0 };
 export const feelClock = (): FeelClock => clock;
 
 /** "2x", "1.6x" */
@@ -62,13 +59,11 @@ export class FeelRoom {
   private flippedAt = -10;
   private now = 0;
   private readonly floor: number;
-  /** the pods' beat sign: which beat now, when last switched; the knocks and the fruit freed since the room was made */
-  private beatAt = 0;
-  private beatFlippedAt = -10;
+  /** the knocks and the fruit freed since the room was made */
   private knocks = 0;
   private freedN = 0;
 
-  constructor(readonly spec: FeelRoomSpec, vines: readonly Vine[], private readonly pods: readonly PodColumn[] = []) {
+  constructor(readonly spec: FeelRoomSpec, vines: readonly Vine[], private readonly pods = false) {
     this.field = spec.field.map((id) => {
       const v = vines.find((q) => q.id === id);
       if (!v || !v.field) throw new Error('feel room: a field vine is not in the stage');
@@ -77,13 +72,8 @@ export class FeelRoom {
     this.floor = Math.max(...this.field.map((v) => v.bottomY));
     const at = this.field[0].field;
     this.speedAt = Math.max(0, spec.speeds.indexOf(typeof at === 'object' && at.slide !== undefined ? at.slide : spec.speeds[0]));
-    clock = { lines: [], speed: this.speed, rev: clock.rev + 1, beat: this.beat, knocks: 0, freed: 0 };
+    clock = { lines: [], speed: this.speed, rev: clock.rev + 1, pods: this.pods, knocks: 0, freed: 0 };
     this.publish();
-  }
-
-  /** the pods' beat now (s), or null with no pods (or no beat sign) in the room */
-  get beat(): number | null {
-    return this.spec.beats?.length && this.pods.length ? this.spec.beats[this.beatAt] : null;
   }
 
   /** a pod knocked him off (engine.ts podKnock): counted on the clock */
@@ -98,11 +88,6 @@ export class FeelRoom {
     this.publish();
   }
 
-  /** whether he stands where a tap switches the pods' beat sign */
-  byBeatSign(p: PlayerState): boolean {
-    const b = this.spec.beatSign;
-    return !!b && this.beat !== null && p.grounded && !p.climbing && Math.abs(p.x - b.x) <= SIGN_REACH && Math.abs(p.y - b.y) < 20;
-  }
 
   /** the one-hand slide now (times the climb speed) */
   get speed(): number {
@@ -125,17 +110,6 @@ export class FeelRoom {
       this.speedAt = (this.speedAt + 1) % this.spec.speeds.length;
       for (const v of this.field) v.field = { ...(typeof v.field === 'object' ? v.field : {}), slide: this.speed };
       this.flippedAt = t;
-      took = true;
-    } else if (tap && this.byBeatSign(p)) {
-      // every pod onto the new beat, each keeping its place in the beat (so a pair half a beat apart stays half a beat apart)
-      const was = this.beat!;
-      this.beatAt = (this.beatAt + 1) % this.spec.beats!.length;
-      const now = this.beat!;
-      for (const pod of this.pods) {
-        (pod as { every: number }).every = now;
-        (pod as { offset: number }).offset = (pod.offset / was) * now;
-      }
-      this.beatFlippedAt = t;
       took = true;
     }
     this.time(p, t);
@@ -182,16 +156,15 @@ export class FeelRoom {
     for (const s of this.spec.speeds) add(`down1@${s}`, `Slide down ${speedLabel(s)}`);
     add('down2', 'Down, two hands');
     // (only a change a tenth of a second or more is a new picture)
-    const same = clock.speed === this.speed && clock.beat === this.beat && clock.knocks === this.knocks && clock.freed === this.freedN && clock.lines.length === lines.length &&
+    const same = clock.speed === this.speed && clock.knocks === this.knocks && clock.freed === this.freedN && clock.lines.length === lines.length &&
       clock.lines.every((l, i) => l.label === lines[i].label && l.running === lines[i].running && tenths(l.secs) === tenths(lines[i].secs));
     if (same) return;
-    clock = { lines, speed: this.speed, rev: clock.rev + 1, beat: this.beat, knocks: this.knocks, freed: this.freedN };
+    clock = { lines, speed: this.speed, rev: clock.rev + 1, pods: this.pods, knocks: this.knocks, freed: this.freedN };
   }
 
   /** the sign at the field's foot: the kit's painted signpost, its board lettered with the slide (baked once a speed: lettering()) */
   drawWorld(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number }) {
     this.drawSign(ctx, t, view, this.spec.sign, this.flippedAt, speedLabel(this.speed));
-    if (this.spec.beatSign && this.beat !== null) this.drawSign(ctx, t, view, this.spec.beatSign, this.beatFlippedAt, beatLabel(this.beat));
   }
 
   /** a sign: the kit's painted signpost, its board lettered (baked once a label: lettering()) */

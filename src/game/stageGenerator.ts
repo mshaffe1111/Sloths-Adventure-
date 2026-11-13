@@ -70,7 +70,9 @@ export interface GeneratedStage {
   feelRoom?: import('./feelPairStage.ts').FeelRoomSpec;
   /** fruit clusters snagged on a vine field's climbs (vineField.ts: pushed up a vine they tear free and drop) */
   clusters?: import('./vineField.ts').VineCluster[];
-  /** pods that fall down a vine field's columns on their own beat (podfall.ts; run by fieldPlay.ts) */
+  /** the stage's beats (clock.ts ClockDef; beat.ts): every hazard on a beat names one, and the engine runs them on game time */
+  clocks?: import('./stageKit.types.ts').ClockDef[];
+  /** pods that fall down a vine field's columns, each on a stage beat (podfall.ts; run by fieldPlay.ts) */
   pods?: import('./podfall.ts').PodColumn[];
   /** boughs shut by the clusters under them: each freed lifts it a notch, the last opens it (vineField.ts ClusterGate) */
   gates?: import('./vineField.ts').ClusterGate[];

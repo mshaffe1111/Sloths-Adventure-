@@ -9,3 +9,8 @@ WRITE (existing): src/game/vineField.ts(+test), vineFieldArt.ts, feelPairStage.t
    src/game/protoStage.ts (delete the hand-built 1-4 only); gen2/worlds/w1.ts (hook 1-4 only), stageTable.ts (a 1-4 row), stagePlan.ts (1-4 row).
 ASK FIRST (shared): src/game/engine.ts (pod + gate wiring, in their own blocks: FA's camera and B15's bough may touch it too), src/game/types.ts
    (Stage.pods, Stage.gates), 1-4's seed list (a new file), tools/perf/drawcheck.mjs (add 1-4, D51). Not mine: pipeline.ts, gates.yml, limits.json.
+BEAT API (lead 10:26, Matt "one clock"; src/game/beat.ts on clock.ts, which already had the beat but no stage wired it): a stage lists
+   `GeneratedStage.clocks: ClockDef[]` (phases off/warn/on/rest, offset, easyStretch); the engine runs them (`beatClock(defs, easy, t)` at
+   stage start); a hazard carries `OnBeat {clock, shift?}` and reads `StageClock.read(clock, shift)` each frame; `beatDef(id, period, tell,
+   on, easyStretch)` builds one; `warnsIn` + `beatFaults(defs, subs, {tellMin, apart, seen}, easy)` are every builder's fairness checks.
+   Pods (podfall.ts `podBeat`, `PodColumn extends OnBeat`) are its first user.

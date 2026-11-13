@@ -204,6 +204,7 @@ import { FeelRoom } from './feelPair.ts';
 import { clusterAbove, floorUnder, handsSpan, handsSpeed, handsX, keepHands, pushClusters, stepHands, type Hands, type VineCluster } from './vineField.ts';
 import { drawClusters } from './vineFieldArt.ts';
 import { FieldPlay, type FieldHost } from './fieldPlay.ts';
+import { beatClock } from './beat.ts';
 import type { PodCost } from './podfall.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
@@ -659,6 +660,7 @@ export class GameEngine {
     get t() { return e.gameTime; },
     get player() { return e.player; },
     get hands() { return e.hands; },
+    beat: (clock, shift) => e.clock.read(clock, shift),
     knock: (cost, fromX) => e.podKnock(cost, fromX),
     sfx: (kind) => e.fieldSfx(kind),
     loadLands: (x, y) => e.cast?.loadLands(x, y, e.gameTime, e.player.x),
@@ -1016,12 +1018,14 @@ export class GameEngine {
     // (Meeca's stage: her night look, and Easy's stuck watch without a clock, Matt's research rule)
     this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles, world: config.worldIndex, stage: config.miniIndex, vines: this.vines, ...(this.proto?.meeca ? { noClock: true, night: true } : {}) }) : null;
     this.plainVines = this.vines.filter((v) => !v.kit);
-    this.feel = this.currentStage.feelRoom ? new FeelRoom(this.currentStage.feelRoom, this.vines, this.currentStage.pods ?? []) : null;
+    this.feel = this.currentStage.feelRoom ? new FeelRoom(this.currentStage.feelRoom, this.vines, !!this.currentStage.pods?.length) : null;
     this.clusters = (this.currentStage.clusters ?? []).map((c) => ({ ...c }));
     this.clustersFreed = 0;
     this.hands = null;
     this.knocked = 0;
     const st = this.currentStage;
+    // the stage's beats (beat.ts, clock.ts): every hazard on a beat reads them; the game's time is kept
+    this.clock = beatClock(st.clocks ?? [], this.easy, this.clock.time());
     this.field = st.pods?.length || st.gates?.length || this.clusters.length ? new FieldPlay(st.pods ?? [], st.gates ?? [], this.platforms, this.vines, this.clusters) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
@@ -6905,7 +6909,7 @@ export class GameEngine {
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     this.feel?.drawWorld(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     if (this.clusters.length) drawClusters(ctx, this.clusters, this.vines, this.camera.x, this.camera.x + this.camera.viewportWidth);
-    this.field?.draw(ctx, this.gameTime, this.camera.x, this.camera.x + this.camera.viewportWidth);
+    this.field?.draw(ctx, this.gameTime, this.camera.x, this.camera.x + this.camera.viewportWidth, this.fieldHost.beat);
     // the bounce plants' caps and their cue over the painted ground, so one at a bank's end is never hidden under its lip
     if (!(ownScene && lair)) drawBounceCaps(ctx, world.id, this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats), this.camera, this.gameTime);
     profMark(ctx, 'ground');

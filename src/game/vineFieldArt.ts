@@ -11,7 +11,7 @@
  * Nothing allocates per frame (PERFORMANCE-RULES §3.1): the strand's points are a kept array.
  */
 import type { Platform, Vine } from './types.ts';
-import type { PodColumn, PodPhase } from './podfall.ts';
+import type { PodColumn, PodState } from './podfall.ts';
 import { vineTile } from './castArt.ts';
 import { layRope } from './ropeArt.ts';
 import type { VineCluster } from './vineField.ts';
@@ -141,7 +141,7 @@ const POD_DRAW = 21;
  * tell: a stream of tufts that reaches further down the longer it runs, so on a short sideways view he sees fluff falling past him on
  * his own column), falling with fluff streaming off it, then a white burst on the wood (stand-in, code-drawn).
  */
-export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: { phase: PodPhase; u: number; y: number }, t: number) {
+export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState, t: number) {
   const r = POD_DRAW;
   // (its bottom hangs at the column's top, where the fall starts: podfall.ts rockAt's y is the pod's bottom)
   const hangY = p.top - r * 1.9;
@@ -164,6 +164,7 @@ export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: { phase:
     podShape(ctx, p.x, hangY, r, Math.sin(t * 38) * 0.14 * (0.4 + s.u));
     return;
   }
+  if (s.phase === 'gone') return;
   if (s.phase === 'fall') {
     const y = s.y - r * 1.9;
     for (let i = 0; i < 4; i++) fluff(ctx, p.x + (i - 1.5) * 7, y - r * 1.9 - 8 - i * 12, 5 - i * 0.6, 0.85 - i * 0.18);

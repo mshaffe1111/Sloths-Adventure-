@@ -13,8 +13,8 @@
  *     from a bough to the floor; six vines of mixed lengths (150-450 px) from a second bough, one 110 px gap he must jump;
  *   lane 3a, the first push: three vines under a bough SHUT by one fruit cluster low on a quiet vine (nothing falls there): pushed up its
  *     vine it tears free, drops, and the bough springs open (vineField.ts ClusterGate);
- *   lane 2, pods: a second sign (the pods' beat: 3.6 s, 3 s or 2.4 s), then five vines with pods down two columns on ONE steady beat,
- *     half a beat apart, each creaking with its fluff trickling 1.0 s before it lets go (podfall.ts); a pod knocks him to the floor;
+ *   lane 2, pods: five vines with pods down two columns on ONE steady stage beat (3.6 s, beat.ts), half a beat apart, each creaking
+ *     with its fluff trickling 1.0 s before it lets go (podfall.ts); a pod knocks him to the floor;
  *   lane 3b, pushing under pods: a bough shut by two clusters, pods down both push vines, free vines between: he steps a vine over for a
  *     pod, the cluster stays snagged where he left it, he steps back; the bough lifts a notch for the first, springs open on the second.
  * A stopwatch times each climb from the floor to a bough, and counts the knocks and the fruit freed (FeelPairClock.tsx). No hearts, no
@@ -26,15 +26,14 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, LevelConfig, Platform, Vine } from './types.ts';
 import { qaBuild } from './playRecorder.ts';
 import { FIELD_FEEL, type ClusterGate, type VineCluster } from './vineField.ts';
-import type { PodColumn } from './podfall.ts';
+import { podBeat, type PodColumn } from './podfall.ts';
 
 export const FEEL_PAIR_ID = 'feel-pair';
 
 /** the slides Matt tries on the sign (times the climb speed; FEEL-LATTICE §4), the first where it starts */
 export const SLIDE_SPEEDS = [FIELD_FEEL.slide, 1.6] as const;
-/** the pods' beats Matt tries on the second sign (s; FEEL-LATTICE §6: 1-4's steady 3.6, then the quicker 3 and 2.4), the first where
- *  it starts. The tell is 1.0 s on every beat (1-4.md "Pods fair") */
-export const POD_BEATS = [3.6, 3, 2.4] as const;
+/** the pods' beat (s; 1-4.md's steady 3.6) and its tell (1-4.md "Pods fair": 1.0 s) */
+export const POD_BEAT = 3.6;
 export const POD_TELL = 1.0;
 
 /**
@@ -60,8 +59,7 @@ export const FEEL = {
   pushBough: [1800, 2080] as const,
   /** the clusters: which vine of `push` then of `under` (index into the two lanes in turn), its bottom over the floor, its height */
   clusters: [[0, 150, 56]] as ReadonlyArray<readonly [number, number, number]>,
-  /** lane 2: the beat sign, then five vines with pods down the 2nd and 4th columns (indices), half a beat apart */
-  beatSign: 2260,
+  /** lane 2: five vines with pods down the 2nd and 4th columns (indices), half a beat apart */
   pods: [[2420, 450], [2500, 450], [2580, 450], [2660, 450], [2740, 450]] as ReadonlyArray<readonly [number, number]>,
   podsBough: [2360, 2800] as const,
   podCols: [1, 3] as readonly number[],
@@ -78,9 +76,6 @@ export interface FeelRoomSpec {
   top: number;
   /** the one-hand slides (times the climb speed), the first its start */
   speeds: readonly number[];
-  /** the pods' beat sign's foot, and the beats it switches between (s), the first its start; unset: no pods in the room */
-  beatSign?: { x: number; y: number };
-  beats?: readonly number[];
 }
 
 /** the room's stage config, or null outside a QA build (the shipped game has no such room) */
@@ -140,12 +135,14 @@ export function buildFeelPairStage(config: LevelConfig): GeneratedStage & { feel
   ];
   // the pods: down lane 2's two columns, then down lane 3b's two push vines, each pair half a beat apart; under the bough to the floor.
   // They knock him down, nothing more (no hearts in the room: FEEL-LATTICE §6)
-  const beat = POD_BEATS[0];
-  const pod = (id: number, v: Vine, offset: number): PodColumn =>
-    ({ id, vine: v.id, x: v.x, top: top + 28, land: G, every: beat, warn: POD_TELL, offset, air: true, cost: 'knock' });
+  // (`top`: where its bottom hangs, a drawn pod's length under the bough: vineFieldArt.ts drawPod); every pod on ONE stage beat
+  const podTop = top + 110;
+  const clocks = [podBeat('room-pods', POD_BEAT, POD_TELL, G - podTop, 1)];
+  const pod = (id: number, v: Vine, shift: number): PodColumn =>
+    ({ id, vine: v.id, x: v.x, top: podTop, land: G, clock: 'room-pods', shift, cost: 'knock' });
   const pods: PodColumn[] = [
-    ...FEEL.podCols.map((i, n) => pod(n + 1, V[podsAt + i], n * (beat / 2))),
-    ...FEEL.underClusters.map(([i], n) => pod(FEEL.podCols.length + n + 1, V[underAt + i], beat / 4 + n * (beat / 2))),
+    ...FEEL.podCols.map((i, n) => pod(n + 1, V[podsAt + i], n * (POD_BEAT / 2))),
+    ...FEEL.underClusters.map(([i], n) => pod(FEEL.podCols.length + n + 1, V[underAt + i], POD_BEAT / 4 + n * (POD_BEAT / 2))),
   ];
   const C: Collectible[] = [];
   return {
@@ -168,7 +165,8 @@ export function buildFeelPairStage(config: LevelConfig): GeneratedStage & { feel
     proto: { hints: [], covers: [], beats: [] },
     clusters: K,
     gates,
+    clocks,
     pods,
-    feelRoom: { field: V.map((v) => v.id), sign: { x: FEEL.sign, y: G }, top, speeds: SLIDE_SPEEDS, beatSign: { x: FEEL.beatSign, y: G }, beats: POD_BEATS },
+    feelRoom: { field: V.map((v) => v.id), sign: { x: FEEL.sign, y: G }, top, speeds: SLIDE_SPEEDS },
   } as GeneratedStage & { feelRoom: FeelRoomSpec };
 }
