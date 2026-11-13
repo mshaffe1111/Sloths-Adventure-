@@ -20,7 +20,7 @@ Matt's goal today (10:13 AM ET): **1-4 and 1-5 on his test link tonight, polishe
 One holder per file; the lead passes a token only after the holder has pushed. To take a token: merge the last holder's pushed head first.
 | File | Holder now | Next |
 |---|---|---|
-| src/game/gen2/pipeline.ts, gen2/types.ts, gen2/seedList.ts, levelCheck.ts, stageTime.ts, cameraFollow.ts | FA | (ask) |
+| src/game/gen2/pipeline.ts, gen2/types.ts, gen2/seedList.ts, levelCheck.ts, stageTime.ts, cameraFollow.ts, tower.ts, nodeCode.ts | NODES-TRAVEL (from FA, 12:23 PM) | (ask) |
 | src/game/engine.ts, src/game/types.ts | B14 (pods + gate wiring, own blocks) | B15 (bough/limb wiring, if any) |
 | gen2/worlds/w1.ts, stageTable.ts, stagePlan.ts, tools/perf/drawcheck.mjs | B15 (1-5 is laid first) | B14 (1-4's hook) |
 | .github/workflows/gates.yml | S1 (one line, routeHumps.test.ts) | ADD-LEVEL |
