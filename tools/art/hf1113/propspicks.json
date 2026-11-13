@@ -1,0 +1,124 @@
+{
+ "w15-leafcurtain": {
+  "take": "leafcurtain-23",
+  "dest": "w1-1113",
+  "units": 150
+ },
+ "w15-roottunnel": {
+  "take": "roottunnel-11",
+  "dest": "w1-1113",
+  "units": 180
+ },
+ "w15-rottentrunk": {
+  "take": "rottentrunk-23",
+  "dest": "w1-1113",
+  "units": 150
+ },
+ "w15-leafsign-up": {
+  "take": "leafsign-up-37",
+  "dest": "w1-1113",
+  "units": 70
+ },
+ "w15-leafsign-down": {
+  "take": "leafsign-down-11",
+  "dest": "w1-1113",
+  "units": 70
+ },
+ "w15-leafsign-right": {
+  "take": "leafsign-right2-53",
+  "dest": "w1-1113",
+  "units": 70
+ },
+ "w15-mark-right": {
+  "take": "markbark-right-23",
+  "dest": "w1-1113",
+  "units": 44,
+  "patch": true
+ },
+ "w15-mark-up": {
+  "take": "markbark-up-37",
+  "dest": "w1-1113",
+  "units": 44,
+  "patch": true
+ },
+ "petal-folded": {
+  "take": "petal-folded-37",
+  "dest": "pickups",
+  "units": 27
+ },
+ "guarana-golden": {
+  "take": "find-guarana-37",
+  "dest": "pickups",
+  "units": 34
+ },
+ "w14-roughbough": {
+  "take": "roughbough-23",
+  "dest": "w1-1113",
+  "units": 60
+ },
+ "w14-figcluster": {
+  "take": "figcluster-37",
+  "dest": "w1-1113",
+  "units": 40
+ },
+ "w14-passiontangle": {
+  "take": "passiontangle-23",
+  "dest": "w1-1113",
+  "units": 50
+ },
+ "w14-kapokpod": {
+  "take": "kapokpod-37",
+  "dest": "w1-1113",
+  "units": 40
+ },
+ "w14-kapokpod-burst": {
+  "take": "kapokpod-burst-23",
+  "dest": "w1-1113",
+  "units": 30
+ },
+ "fruit-banana": {
+  "take": "fruit-banana-23",
+  "dest": "pickups",
+  "units": 34
+ },
+ "fruit-mango": {
+  "take": "fruit-mango-37",
+  "dest": "pickups",
+  "units": 34
+ },
+ "fruit-papaya": {
+  "take": "fruit-papaya-37",
+  "dest": "pickups",
+  "units": 34
+ },
+ "fruit-passionfruit": {
+  "take": "fruit-passionfruit-11",
+  "dest": "pickups",
+  "units": 34
+ },
+ "fruit-wildfig": {
+  "take": "fruit-wildfig-11",
+  "dest": "pickups",
+  "units": 34
+ },
+ "fruit-cacao": {
+  "take": "fruit-cacao-23",
+  "dest": "pickups",
+  "units": 34
+ },
+ "fruit-pineapple": {
+  "take": "fruit-pineapple-23",
+  "dest": "pickups",
+  "units": 34
+ },
+ "fruit-coconut": {
+  "take": "fruit-coconut-37",
+  "dest": "pickups",
+  "units": 34
+ },
+ "fruit-dragonfruit": {
+  "take": "fruit-dragonfruit-11",
+  "dest": "pickups",
+  "units": 34
+ }
+}
