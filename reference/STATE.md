@@ -787,3 +787,7 @@ lines); Matt sees them in the release.
   section. I think we just let Fable design that... do the 3 tests... then let a Fable design it and implement the cards into the engine."
   So: ENG-ASCENT widened to UP AND DOWN (then the card road after 1-5's design), Fable; the 1-5 idea list C on Fable; F15 (Fable) designs
   1-5 then builds the card road (replaces D15 Opus max); BC-FIX (Opus xhigh) starts too (blocks 0.9.7).
+- 2026-11-12 10:00 PM ET: started after Matt's reset: Fable idea C (session_01FhBbYLfZisGHiF2Fwmndci, t-ideas-15-c), Fable ENG-ASCENT up+down
+  then cards (session_01FhBbYPAPP7SGtvnaEXG3DU, t-eng-ascent, stop 4 AM), BC-FIX Opus xhigh (session_01FhBbYLKDNLwVSwxy4xwkzL, t-bc-fix,
+  stop 3 AM). F15 (Fable designs 1-5) starts when C lands. Matt 10:00 PM: "stay lean... get as much out of this 100% as possible":
+  written into TEAM.md Cost rules (7 points).

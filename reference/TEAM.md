@@ -82,6 +82,12 @@ artifact on a branch.
   Never build from ccr-0d59a91c-oy3imz (it carries the rejected 11-04 src/).
 
 ## Cost rules (Matt, 11-11 6:06 PM ET: "we need to bring the cost down... It's your team. You run the team the way you think is best")
+**Stay lean after a reset (Matt, 11-12 10:00 PM ET: "I was pretty loose with the tokens, knowing that I had this reset. Going forward,
+I want you to make sure that we're doing only what we're supposed to be doing and we stay lean. I want to get as much out of this 100% as
+possible."):** (1) only packets on the plan Matt agreed; no speculative helpers; (2) effort high by default, xhigh only for core-engine
+fixes and merges, max only with a written reason; (3) gates scoped by what changed (LAWS 5); (4) helpers stop at their line and are
+retired the minute they report; (5) the lead's check-ins read branch heads, commit messages and stills, not whole session logs, and
+answer Matt in short messages; (6) idea lists 20 minutes, design docs 60 lines; (7) usage reported in the daily report.
 Where today's money went (session records, 11-11): the two 1-2 packets cost about $98 across 8 rounds (Designer $62, Critic $36) for one
 level's paperwork; sessions ran to 360k-635k tokens of context, and every turn re-reads the whole context, so a long session costs more
 per step the longer it lives. These rules replace any older rule they contradict.
