@@ -699,3 +699,8 @@ lines); Matt sees them in the release.
   don't stop to smell the flowers. Picking's different."), then "Flick up just before the edge." at a raised step (R-165.171, same in
   1-3). 1-3's opening and lesson PASS upright (hive, vine ring, sleeping snake on screen with the card). Sideways: the lead's key driver
   stalled at a step (driver, not game); sideways lesson card judged from F13's real-page still (PASS). INT-2 on Step 3.
+- 2026-11-12 8:11 PM ET: TEST LINK PUBLISHED (EnK5, version 250, id 1794532252-2ec9) from t-int-2@465023ef: 1-3 (Fable, finished by Opus
+  max) + 1-2 (Opus max) designed levels + 1-1 pass + render/pit/audit fixes. 16 files changed + 14 stale removed (the live version was
+  INT-E f8f467f5 from this morning). Published while the full suite finishes (lock tonight + day PASS, 1-3 proven 100/100 on defaults,
+  draw/clip/kbd/known/generality/roadmap/art/build PASS; suite 1,197+ files 0 fail so far): the lead's call, the link is not a release;
+  a suite red gets told to Matt at once. Lead judged the real build (fresh save, upright) before publishing.
