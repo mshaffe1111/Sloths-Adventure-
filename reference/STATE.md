@@ -310,6 +310,8 @@ over a certain age, probably like 12." Normal = 12 and up; Easy = children. Matt
 - Three NEW lines from the story keeper's 1-4 check (t-story@46fc378f): 1-4 pods "Hear it creak? Scoot a vine over till it drops!"
   (replaces the approved pods line, now untrue); R-165.180 1-4 teach (Dot) "Creaky limbs drop you, but only to the branch below!"; 1-5
   develop (Pokey) "Creaky again. If it drops me, I'll take the roots." Optional: credit the 1982 arcade vine climber on "Inspired by".
+- Two more 1-4 Dot lines (story keeper 10:41 AM): two-hand step "Reach for the next vine! Two hands zoom up!"; cluster push "Climb under
+  the figs and push them free!"
 Matt, 11-07 (9:53 PM ET): "You're the expert in making video games. Things like how the first level should be executed... That's why I
 hired you." That covers game-design calls like the first level. It does not cover his own rulings: a rule or number he set changes only
 when he changes it (LAWS 22; D35). Story stays with the story keeper (Matt has the final say); art he rates.
