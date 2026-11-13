@@ -10,6 +10,11 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **THE LEVEL TARGET: ONE DESIGNER + ONE DEVELOPER, A 2-HOUR STAGE** (Matt, 11-13 12:41 PM ET): "we shouldn't have to use 20 people to create a
+  level." A level job starts only when every node/piece its design names already exists in the engine (NODE-KEY status "Now"); the
+  designer writes the node string (+ the story keeper's nature check and lines), ONE builder lays and proves it with ADD-LEVEL's one step.
+  Engine work is never done inside a level job. Burn ahead only where it pays off in that target; anything that adds no value there is
+  rethought. Measure every level in LEVEL-LOG (people, hours, cost). 1-4/1-5 (11-13) were the expensive transition: pieces built inside levels.
 - **EVERY PIECE IS A NODE BUILDING BLOCK; EACH WORLD BUILDS ON THE LAST** (Matt, 11-13 12:14 PM ET; R-165.198; "one of the main goals I gave
   for you"): every element built (swing vines, the two-hand vine field, pods on a beat, fig gates, creaky boughs, two roads, creatures...)
   is a node content/dial that any later node in any world can use, so World 2 is easier to build than World 1, World 3 easier than
