@@ -716,6 +716,8 @@ const PHONE = { w: 844, h: 390 };
 /** FT_TRACE=1: every jump and how it went, on stderr */
 const TRACE = typeof process !== 'undefined' && !!process.env.FT_TRACE;
 /** FT_FRAMES=a,b: every frame between a and b s of play, on stderr */
+/** px: the highest ledge over him he hops for on a tower's stair (a single jump rises 108 px, stageMetrics JUMP_RISE; a stair step is 60) */
+const STAIR_HOP = 100;
 const TRACE_FRAMES = typeof process !== 'undefined' && process.env.FT_FRAMES ? process.env.FT_FRAMES.split(",").map(Number) : null;
 
 interface Jump {
@@ -892,6 +894,8 @@ export class FirstTimerRun {
   private figs: FigPush | null = null;
   /** this frame's want is a fig push's tap (or its let-go): kept as it is, never run through the thumb (tapped) */
   private figTap = false;
+  /** he follows a tower's own route (towerRoute.ts): corners, no jump arcs, so he reads a stair of ledges himself */
+  private onTower = false;
   private climbDown = false;
   private climbTurned = false;
   /** he was on a trunk when the last choice was made */
@@ -1036,6 +1040,7 @@ export class FirstTimerRun {
       // any rebuild: buildRoll's roll of a LISTED tower is not the proven variant he plays, and its route led him under the storey
       // above to dither (1-4 seed 1: 'the way on is 123 px up' at a vine he never walked to; INT-4 11-13))
       const tower = route.traced === 'failed' ? towerRoutePts(st, this.sim.p) : null;
+      this.onTower = !!tower;
       if (route.traced === 'failed' && !tower) route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), []);
       pts = tower ?? (route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y })));
       // (no route the inspector can trace: the straight line from the spawn to the shrine gives him a way to head, and the run is marked)
@@ -1683,6 +1688,17 @@ export class FirstTimerRun {
     }
     // the way goes up right here (a ledge over him): jump for it
     if (up && dir === 0 && tgt && tgt.y < p.y - 60) return this.decide(fdir, this.mem.plan(p.x, p.y), false, {});
+    // (on a tower's own route, which has corners and no jump arcs (towerRoute.ts): the way rises across a stair of ledges over him, each
+    // a hop up, and he walked under all three and jumped for the top one, 240 px, 1-4 Easy: he jumps for the ledge over him that the way
+    // goes onto, as he does for one straight over him. Towers only: a traced route draws its own hops)
+    // (read 240 px along the way, as a player sees the stair rise ahead: the near point rises too little to call while he steps under the
+    // first ledge, and he jumped late, from under its far end, clean over it)
+    const rise = this.onTower && dir !== 0 && p.grounded ? this.prog.target(p, 240) : null;
+    // (and straight up through it, stopped first: a jump on the run carried him past the step's far end, the thumb's latency on top)
+    if (rise && rise.y < p.y - 40) {
+      const over = this.sim.platforms.some((q) => this.solid(q) && q.y < p.y - 30 && q.y > p.y - STAIR_HOP && p.x >= q.x + 12 && p.x <= q.x + q.width - 12 && rise.y <= q.y + 20);
+      if (over) return Math.abs(p.vx) > 40 ? {} : this.decide(0, this.mem.plan(p.x, p.y), false, {});
+    }
     if (dir !== 0) {
       // an edge coming: he means to jump `edgeAim` px before it (the thumb's latency moves it), unless the way on drops down
       // (a tier bot looks his own press distance ahead, drawn afresh for each edge; a stand lets go at the press distance's p25 and

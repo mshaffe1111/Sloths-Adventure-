@@ -40,11 +40,19 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
     let at = a;
     for (let n = 0; n < 12 && Math.abs(b.y - at.y) > HOP; n++) {
       const up = b.y < at.y, lo = Math.min(a.x, b.x) - 40, hi = Math.max(a.x, b.x) + 40;
-      const leads = vines.filter((v) => v.x >= lo && v.x <= hi && (up ? v.bottomY >= at.y - HOP && v.topY < at.y - HOP : v.topY <= at.y + HOP && v.bottomY > at.y + HOP));
-      if (!leads.length) break;
-      const v = leads.reduce((m, q) => (Math.abs(q.x - at.x) < Math.abs(m.x - at.x) ? q : m));
+      const inX = vines.filter((v) => v.x >= lo && v.x <= hi);
+      const leads = inX.filter((v) => (up ? v.bottomY >= at.y - HOP && v.topY < at.y - HOP : v.topY <= at.y + HOP && v.bottomY > at.y + HOP));
+      // (none from his height: the leg first rises by hops (steps, a stair of ledges) to the foot of the nearest vine that leads on;
+      // he goes for that foot, then up. 1-4's top section: three 60 px steps, then the field)
+      const foot = (v: (typeof vines)[number]) => (up ? v.bottomY : v.topY);
+      const next = leads.length ? leads : inX.filter((v) => (up ? v.topY < at.y - HOP && v.bottomY < at.y && v.bottomY > b.y : v.bottomY > at.y + HOP && v.topY > at.y && v.topY < b.y));
+      if (!next.length) break;
+      const v = next.reduce((m, q) => {
+        const dq = Math.abs(foot(q) - at.y), dm = Math.abs(foot(m) - at.y);
+        return dq < dm - 1 || (Math.abs(dq - dm) <= 1 && Math.abs(q.x - at.x) < Math.abs(m.x - at.x)) ? q : m;
+      });
       const end = up ? Math.max(v.topY, b.y) : Math.min(v.bottomY, b.y);
-      out.push({ x: v.x, y: at.y }, { x: v.x, y: end });
+      out.push({ x: v.x, y: leads.length ? at.y : foot(v) }, { x: v.x, y: end });
       at = { x: v.x, y: end };
     }
     out.push({ x: b.x, y: b.y });
