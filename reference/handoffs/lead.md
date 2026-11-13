@@ -14,6 +14,8 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   a classic game says, with cited research, what made it great, how the original taught it, and how we introduce it so it FEELS that good
   on a phone (packet template: IDEAS-1-6.md "THE TRIBUTE RULE"). Matt should never have to explain the feel (R-165.177, 1-4's vines vs
   Donkey Kong Jr.). Idea rounds: three Opus members at medium, high, xhigh (models.json 'ideas'), then one designer.
+- **STILL REVIEW IS PASS/FAIL (D61, 11-13; Matt 5:43 PM: "I expect more from you when reviewing"):** any code-drawn primitive or rough
+  spot in play view holds the test link until fixed, unless Matt is asked one question and says ship it. Naming it is not passing it.
 - **THE RHYTHM: 3 LEVELS AHEAD + 1 POLISH MEMBER** (Matt, 11-13 3:28 PM ET; R-165.202): "I'll play it, give you feedback... we're going to
   do 3 levels at a time. We have another helper going back, fixing any of the polishing that I find on the levels that we just implemented."
   Get each level into his hands as soon as it passes (early is fine); design runs 3 levels ahead, builds stagger inside the 4-member cap,
