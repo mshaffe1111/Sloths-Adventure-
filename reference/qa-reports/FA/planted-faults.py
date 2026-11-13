@@ -45,6 +45,12 @@ M=[
  ("engine.ts",B,"a set-back cuts to the old framing, then drifts","    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode)));","    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * fr.feetAt);",2),
  ("gen2/tower.ts",B,"every shipped climb gets the tower's framing too","  return (stage as { gen2?: { tower?: unknown } }).gen2?.tower ? mode.lead().dy : 0;","  return mode.lead().dy;"),
  ("gen2/tower.ts",B,"a tower keeps the run's framing","  return (stage as { gen2?: { tower?: unknown } }).gen2?.tower ? mode.lead().dy : 0;","  return 0 * mode.lead().dy;"),
+ ("gen2/pipeline.ts",T,"the lay forgets which pieces are sealed","        if (lp.sealed) sealedIds.add(p.id);\n",""),
+ ("gen2/pipeline.ts",T,"a section walks on from a gate bough","      if (sealedExit || opts.toFloor ||","      if (opts.toFloor ||"),
+ ("gen2/tower.ts",T,"a catch may lie beside a gate","  const fair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => (cramped(x0, x1, y, but) || byGate(x0, x1, y) ? -1 : storeyAt(x0, x1, y, L, but));","  const fair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => (cramped(x0, x1, y, but) ? -1 : storeyAt(x0, x1, y, L, but));"),
+ ("gen2/tower.ts",T,"a gate bough is run on like any piece","      if (sealed(e.p)) continue;\n",""),
+ ("gen2/tower.ts",T,"a gate passed is never named","    if (hit) out.push(`tower: the shut gate","    if (hit && !hit) out.push(`tower: the shut gate"),
+ ("gen2/tower.ts",T,"a hop off a vine's top is not read","      const v = tops.find((t) => leaps({ x: t.x - 1, y: t.topY, width: 2 }, b));","      const v = tops.find(() => false);"),
  ("realPlay.ts",B,"a fixture may stand in for a stage of the game","  if (levels.some((l) => l.id === cfg.id)) throw new Error(`withFixtureConfig: ${cfg.id} is a stage of the game`);\n",""),
 ]
 import os

@@ -324,6 +324,14 @@ export interface SectionPiece {
    * limb up to the end of the lesson's section must never be needed (pipeline checkStage proves the stage without them)
    */
   creak?: boolean;
+  /**
+   * a SEALED piece (a gate bough, 1-4's fig gates; R-165.170, the lead 11-13): in a tower the lay adds nothing of its own level with
+   * it or within a hop of it: no run-on to a wall, no bridge, no catch shelf, and the section after it is always a storey up by a
+   * vine standing ON it, never a walk on. So the only way onto it and past it is the way its section's own finish opens (a gate must
+   * be a gate), and `tower: the shut gate ... is passed` refuses any roll where a hop gets round it (tower.ts towerGates). Its open
+   * ends are caught by its own section's wood under them, or the roll is refused by name (towerFalls). Off unless a piece says so
+   */
+  sealed?: boolean;
 }
 
 /** a world's creaky limb (WorldManifest.creak) */
@@ -806,7 +814,7 @@ export interface Gen2Meta {
   /** a stage laid as a tower (MissionGraph.flow up or down, R-165.170): its width and floor, the plain boughs the lay ran on to a
    *  wall (a design wants none), and its ROUTE (tower.ts Route: each section's leg, the px of way before and through it, the px he
    *  walks): what "how far along" means where x runs both ways, read by the flags, the opening, the clock and the time model */
-  tower?: { flow: 'up' | 'down'; width: number; floorY: number; runouts: number; /** each storey join that climbs or comes down: its vine's x and the heights it joins */ turns: Array<{ x: number; from: number; to: number }>; route: import('./tower.ts').Route };
+  tower?: { flow: 'up' | 'down'; width: number; floorY: number; runouts: number; /** each storey join that climbs or comes down: its vine's x and the heights it joins */ turns: Array<{ x: number; from: number; to: number }>; /** its sealed pieces' platform ids (SectionPiece.sealed), when it has any */ sealed?: number[]; route: import('./tower.ts').Route };
   /** a stage that lays a hurt floor (WorldManifest.hurtFloor): its row's lesson and clearStart, and `shown`, the END x of the lesson's
    *  showing piece (the piece keyed `show` in the laid section whose `teaches` is the lesson) when one is laid: `hazard.untaught` reads it */
   hurt?: { lesson: string; clearStart: number; shown?: number };

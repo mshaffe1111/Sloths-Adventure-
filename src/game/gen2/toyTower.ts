@@ -144,6 +144,30 @@ const base: Omit<WorldManifest, 'sections' | 'name'> = {
   tips: { spider: "A spider! Hop over it. (new, needs Matt's approval)" },
 };
 
+/** a GATE: a wide foot, a vine up to a bough that says `sealed` (as 1-4's fig gates do): the lay adds nothing beside that bough, and
+ *  the section after it is a storey up by a vine standing on it. The foot runs under both its ends, so a step off it is caught */
+export const gated: SectionTemplate = {
+  id: 'tower-gated',
+  name: 'a gate bough',
+  archetypes: 'any',
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 3,
+  content: 'climb',
+  pieces: [
+    { key: 'foot', shape: 'branch', w: [520, 560], place: { kind: 'start' } },
+    { key: 'vine', shape: 'vine', w: 0, place: { kind: 'climb', on: 'foot', at: [0.45, 0.5], h: [300, 300] } },
+    { key: 'top', shape: 'branch', w: [200, 220], place: { kind: 'over', on: 'vine', at: 0, dy: 0 }, landing: true, main: true, sealed: true },
+  ],
+  entry: { piece: 'foot', kind: 'ledge' },
+  exit: { piece: 'top', kind: 'ledge' },
+  exitDy: -300,
+  sockets: [{ id: 'petals', role: 'pickup', on: 'foot', t: 0.25, dn: 34, count: 2, span: 90 }],
+  mirrorable: false,
+};
+/** the tower going up with gates in its pool (its sections all narrow enough to turn from a gate anywhere in the tower: a section
+ *  that is not, laid after a gate, fails its roll by name) */
+export const gateKit: WorldKit = { manifest: { ...base, name: 'Toy tower, gates', sections: [landing, vineUp, gated] }, emit: {} };
+
 /** the test tower going up, and the same going down */
 export const upManifest: WorldManifest = { ...base, name: 'Toy tower, up', sections: [landing, vineUp, hopsUp, stretch] };
 export const downManifest: WorldManifest = { ...base, name: 'Toy tower, down', sections: [landing, vineDown, dropsDown, stretch] };

@@ -15,8 +15,8 @@ import type { Platform, Vine } from '../types.ts';
 import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage, missionGraph, planBudget, rngFor, rollErrors, ROLLED_FLAGS } from './pipeline.ts';
 import { packPlan, stageParts, unpackPlan } from './seedList.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
-import { ARC_CODE, arcKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerSkips, vertical } from './tower.ts';
+import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, vertical } from './tower.ts';
 import type { Gen2Stage } from './types.ts';
 
 const ID = '5-93';
@@ -526,6 +526,66 @@ test('a stage whose brief asks (GraphBrief.tags) has every laid piece tagged wit
   assert.ok(tags.includes('s2:foot') && tags.includes('s2:vine') && tags.includes('s2:top'), "the teach brick's foot, vine and top are found by key");
   // (the tags are the only difference: the same stage, piece for piece)
   assert.deepEqual(tagged.platforms.map((p) => [p.x, p.y, p.width]), plain.platforms.map((p) => [p.x, p.y, p.width]));
+});
+
+test('towerGates (planted, B14\'s case): a bough the lay ran on beside a shut gate is one hop from a field vine\'s top; without it the gate holds', () => {
+  // (1-4's seed 1: the gate bough 514-954 at y 4809 over its field's foot, vines hung under it; the lay's run-ons 0-514 and 1054-1280
+  // at the same height)
+  const gate = solid(514, 4809, 440, 1), foot = solid(400, 5209, 700, 2), next = solid(300, 4809 - 281, 500, 3);
+  const vine = (x: number, id: number): Vine => ({ id, x, topY: 4809, bottomY: 5209, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' }) as Vine;
+  const field = [vine(600, 1), vine(680, 2), vine(760, 3)];
+  const way: Vine = { id: 9, x: 900, topY: 4809 - 281, bottomY: 4809, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
+  assert.deepEqual(towerGates([gate], [gate, foot, next], [...field, way]), [], 'the gate alone, the next storey a turn over it: it holds');
+  const left = solid(0, 4809, 514, 4), right = solid(1054, 4809, 226, 5);
+  const miss = towerGates([gate], [gate, foot, next, left, right], [...field, way]);
+  assert.equal(miss.length, 1);
+  assert.match(miss[0], /^tower: the shut gate at x 514-954, y 4809 is passed without opening it: the piece at x 0-514, y 4809 is reached by a hop from the top of the vine at x 600$/);
+  assert.match(towerGates([gate], [gate, foot, next, right], [...field, way]).join(';'), /the piece at x 1054-1280, y 4809 is reached by a hop/, 'a hop past its far end too');
+  // (a shelf a little under its level, or a bough a jump over it, is a way round as well; one far under it is not)
+  assert.equal(towerGates([gate], [gate, foot, next, solid(960, 4809 + 20, 180, 6)], field).length, 1);
+  assert.equal(towerGates([gate], [gate, foot, next, solid(1000, 4809 - 150, 180, 7)], field).length, 1);
+  assert.deepEqual(towerGates([gate], [gate, foot, next, solid(960, 4809 + 200, 180, 8)], field), []);
+  // (the vine that stands ON the gate is held down with it: its top is no way round)
+  assert.deepEqual(towerGates([gate], [gate, foot, next], [way]), []);
+  assert.deepEqual(towerGates([], [gate, foot, next, left, right], field), [], 'no sealed piece: nothing is judged');
+});
+
+test('towerCatches leaves a gate alone: a sealed piece is never run on, and no catch of another piece is laid level with it or a hop from it', () => {
+  const floor = solid(0, 3000, 1280, 1), gate = solid(500, 2000, 300, 2), high = solid(900, 1900, 150, 3);
+  const level = (p: Platform) => (p.id === 1 ? 0 : 1), sealed = (p: Platform) => p.id === 2;
+  const byGate = (c: { x: number; y: number; w: number }) => c.y <= gate.y + 30 && c.y >= gate.y - LEAP.up && Math.max(0, c.x - (gate.x + gate.width), gate.x - (c.x + c.w)) <= 400;
+  // (the gate alone, 1,000 px over the floor: unsealed, the lay runs it on to the walls; sealed, it lays nothing, and its falls are named)
+  const open = towerCatches('up', [floor, gate], [], 3000, 1280, [], level);
+  assert.ok(open.some((c) => c.y === gate.y), 'not sealed: the piece is run on at its own height (the planted case)');
+  const kept = towerCatches('up', [floor, gate], [], 3000, 1280, [], level, sealed);
+  assert.deepEqual(kept.filter(byGate), [], `sealed: nothing by the gate (${JSON.stringify(kept)})`);
+  assert.equal(towerFalls('up', [floor, gate, ...kept.map((c, k) => solid(c.x, c.y, c.w, 50 + k))], 3000, 1280).length, 2, "and its two ends' falls are named: its own section owes the wood under them");
+  // (another piece near it, 100 px higher: its catch is never run on over the gate nor hung beside it)
+  const near = towerCatches('up', [floor, gate, high], [], 3000, 1280, [], level, sealed);
+  assert.deepEqual(near.filter(byGate), [], `nothing of the other piece's by the gate (${JSON.stringify(near)})`);
+  assert.ok(towerCatches('up', [floor, gate, high], [], 3000, 1280, [], level).some(byGate), 'unsealed, the same lay does put wood there (the planted case)');
+});
+
+test('a sealed piece (a gate bough) in a built tower: nothing of the lay lies beside it, and the way on is a vine standing on it', () => {
+  let gatesSeen = 0;
+  for (const d of SETTINGS) for (const seed of SEEDS) {
+    const st = buildGen2Stage({ config: upCfg(), kit: gateKit, seed, difficulty: d });
+    assert.deepEqual(st.gen2.errors ?? [], [], `gates ${d} ${seed}`);
+    const T = st.gen2.tower!;
+    const gates = (T.sealed ?? []).map((id) => st.platforms.find((p) => p.id === id)!);
+    assert.deepEqual(towerGates(gates, st.platforms, st.vines), []);
+    for (const g of gates) {
+      gatesSeen++;
+      // (no wood but its own within a hop of it at its level: 300 px is far more than a hop off a vine's top needs)
+      for (const p of st.platforms) if (p !== g && p.y <= g.y + 30 && p.y >= g.y - 200) assert.ok(Math.max(p.x - (g.x + g.width), g.x - (p.x + p.width)) > 300, `gates ${d} ${seed}: the piece at x ${p.x}-${p.x + p.width}, y ${p.y} lies by the gate at x ${g.x}-${g.x + g.width}, y ${g.y}`);
+      // (the way on: a turn whose vine stands on the gate bough)
+      const t = T.turns.find((q) => q.from === g.y && q.x >= g.x - 4 && q.x <= g.x + g.width + 4);
+      assert.ok(t && t.to <= g.y - TOWER.turn, `gates ${d} ${seed}: a vine stands on the gate at y ${g.y} and climbs a turn (${JSON.stringify(t)})`);
+    }
+  }
+  assert.ok(gatesSeen >= 12, `gate boughs laid and judged: ${gatesSeen}`);
+  // (an unsealed tower names no gates and is laid as before)
+  assert.equal(up(1).gen2.tower!.sealed, undefined);
 });
 
 test("the flag rule's numbers are Matt's on a tower too (ROLLED_FLAGS, the one definition)", () => {

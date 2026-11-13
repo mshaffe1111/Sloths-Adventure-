@@ -7,7 +7,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../headlessDom.ts';
-import { arcKit, towerCfg, upKit } from './toyTower.ts';
+import { arcKit, gateKit, towerCfg, upKit } from './toyTower.ts';
 import { buildGen2Stage } from './pipeline.ts';
 import { routeAt, towerLead, type Route } from './tower.ts';
 import { flyTower, withTowerSim } from '../../../tools/engine/towerFly.ts';
@@ -56,6 +56,17 @@ test('the tower with a rolled graph (a designed arc: one brick a beat) is flown 
     assert.equal(f.end, 'shrine', `arc ${setting} ${seed}: ${f.end} at ${JSON.stringify(f.at)}`);
     assert.equal(f.legs, f.of);
     assert.equal(f.falls, 0, `arc ${setting} ${seed}`);
+  }
+});
+
+test('a tower with sealed pieces (gate boughs) is still flown to its shrine: the vine that stands on each gate is the way on', () => {
+  for (const seed of [1, 2, 3, 4]) {
+    const f = withTowerSim(up(), gateKit, seed, 'normal', (sim) => {
+      assert.ok(((sim.stage as unknown as { gen2: { tower: { sealed?: number[] } } }).gen2.tower.sealed ?? []).length >= 1, `gates ${seed}: a gate bough is laid`);
+      return flyTower(sim, 400);
+    });
+    assert.equal(f.end, 'shrine', `gates ${seed}: ${f.end} at ${JSON.stringify(f.at)}`);
+    assert.equal(f.falls, 0, `gates ${seed}`);
   }
 });
 
