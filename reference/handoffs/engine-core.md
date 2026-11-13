@@ -24,13 +24,22 @@ proven plan; Play is never blocked).
 - **1-1 teaches the tap** (`TAP_HINT`, the keeper's words): on Dot's first card that waits to be read (no move, not urgent, not Pokey,
   no capMs), once a stage, until he has tapped one on this phone (`sloth_dot_tapped`, a device key in storageKeys.test.ts). The Skip
   tips offer never rides on the hint card.
+- **`readDone` (the phone's queue only; the tools keep it off, so the bots and their calibration did not move):** a move tip whose move
+  is done stays until its reading time (unless it has a `next` step, or a stage teach / hazard / warning waits: then it goes at once);
+  a plain lesson waits until the card up has been read before cutting in (a hazard, the stage's teach or a warning still cut at 1.5 s);
+  a card cut short goes back marked `back` and is finished: it skips the stale and repeat rules, the calm gap, and waits up to
+  `GUIDE.backReadMs` (90 s); the reading time counts from when the card is on screen (`onScreen`, no 1.5 s cap). Each rule came from
+  the real page (reference/qa-reports/FIX-A/before-*.txt, after-*.txt), each has a planted test in src/game/dotTapClear.test.ts.
+- **No blink:** once her card has been on screen she no longer flies hover-to-perch for it (that hid the card mid-read, 1.1 s on 1-3).
+  Known: a perched card slides with the camera; in 3 of 10 scripted 1-2 runs the tap at the mushroom bounce landed where the card had just been and went
+  to the game as a punch (tap-repeat-1-2.txt). A card fixed on screen while up would end that; not done.
 - **A stage's teach line outranks stock lessons** (R-165.147): waiting, it goes first among its priority (`best()` +0.5); up, a stock
   lesson's move tip that has been read its reading time yields to it and comes back once (src/game/dotTeachRank.test.ts). The P13 rules
   (wait TEACH_WAIT_MS, skip the gap, pass Tips) are unchanged.
 - Measure on the real page, not the queue: `node tools/dotbox/readtime.mjs <stage> [easy|normal] [secs] [port] [tap]` logs every card's
   time up vs its reading time; tools/dotbox/fixaStills.mjs shoots the card, About, 1-3's teach and the goal sign upright and sideways.
-- Open (R-165.175's row, not in FIX-A's packet): lines held longer while he is busy, a find that names what was found with its
-  picture and stays until read, and the cut rules (a lesson's cut of an info line after 1.5 s counts it heard).
+- Open (R-165.175's row, not in FIX-A's packet): lines held longer while he is busy, and a find that names what was found with its
+  picture and stays until read.
 
 ## 0h. The stage build's cost (BC-FIX, R-165.163, t-bc-fix, 11-12): what the next engineer on the build path must know
 - **buildcheck is the build's budget** (150 ms p95 at CPU x4, 1-1, Normal and Easy). P11's verdicts and Y2's repair took it to 446/430;
