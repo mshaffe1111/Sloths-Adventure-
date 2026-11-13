@@ -44,7 +44,7 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 | FA | session_01FhBbYNtcMTuMaKP1e5JiQ5 | Fable high | t-fa | ascent lay finished (+ along the route, climb camera) for 1-4 |
 | B15 | session_01FhBbYMteKQmarmbYVMoZiN | Opus xhigh | t-b15 | bough + limb load + marks goal, crude room, then 1-5 whole (card road cut) |
 | B14 | session_01FhBbYMrAEyA6NNWrPtAzHo | Opus xhigh | t-b14 | LATTICE onto main, pods, cluster/gate, crude room v2, then 1-4 whole |
-| ART2 | session_01FhBbYLs1YqJxsPupP1Ngk1 (ART1 session_01FhBbYMvThjGLVUA8nE3ZmA had no HF; stopped) | Opus high | t-art-1113 | HF: two-hand climb (R-165.178), 1-5 set, 1-4 pieces; inventory; cap $15 |
+| ART2 (retired $24.10) -> ART3 | see STATE 12:07 PM | Opus high | t-art-1113 | HF: two-hand climb (R-165.178), 1-5 set, 1-4 pieces; inventory; cap $15 |
 | ENGINE-NEEDS | (retired, $10.33) | | | plan: reference/plans/ENGINE-NEEDS.md; waves A-D in STATE 11-13 |
 | ADD-LEVEL | session_01FhBbYLJhNRpJErB4SQprjk | Opus high | t-add-level | one-step add a level + registry gate (tools only) |
 | ECONOMY | session_01FhBbYLiMADVRwZv3e9nCar | Opus high | t-economy | Designer: one design for score, stars, fruit, finds, hearts, lives (R-165.194), by 2:30 PM |
