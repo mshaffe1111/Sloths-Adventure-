@@ -356,14 +356,24 @@ export function towerSkips(turns: ReadonlyArray<{ x: number; from: number; to: n
 /**
  * A tower's falls, each miss by name (empty: kept). Stepping off either end of any piece he can stand on, a body's width past it:
  *   - going UP, sound wood catches him within TOWER.fall px (STAGE-RULES §2 "Falls in climbs": a miss costs a storey, never the climb);
- *   - going DOWN, the drop is his way on, so its landing is in view before he commits: within TOWER.see px (D46: no blind fall).
+ *   - going DOWN, the drop is his way on, so its landing is in view before he commits: within TOWER.see px (D46: no blind fall);
+ *   - a piece that gives way under him (a crumbling tile, a creaky limb) drops him onto sound wood inside the same limit.
  * `floorY`: the tower's floor (nothing is under it to catch; a piece standing on it is not judged).
  */
 export function towerFalls(flow: 'up' | 'down', platforms: readonly Platform[], floorY: number, width: number): string[] {
   const most = flow === 'up' ? TOWER.fall : TOWER.see;
-  return openEnds(platforms, floorY, most, width).map(({ p, drop }) => (flow === 'up'
+  const out = openEnds(platforms, floorY, most, width).map(({ p, drop }) => (flow === 'up'
     ? `tower: a fall off the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)} drops ${drop === Infinity ? 'out of the tower' : `${Math.round(drop)} px`} (sound wood within ${TOWER.fall})`
     : `tower: a blind drop off the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)}: ${drop === Infinity ? 'nothing under it' : `${Math.round(drop)} px to its landing`} (in view: within ${TOWER.see})`));
+  // (a piece that gives way under him, a crumbling tile or a creaky limb: where it drops him, at its middle and a body in from each
+  // end, sound wood catches him inside the same limit)
+  for (const p of platforms) {
+    if (p.type !== 'fragile' || p.y >= floorY - 1) continue;
+    const xs = p.width > 64 ? [p.x + 24, p.x + p.width / 2, p.x + p.width - 24] : [p.x + p.width / 2];
+    const drop = Math.max(...xs.map((x) => { const land = catchUnder(platforms, x, p.y, 100000); return land === undefined ? Infinity : land - p.y; }));
+    if (drop > most) out.push(`tower: the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)} gives way over ${drop === Infinity ? 'nothing' : `a ${Math.round(drop)} px drop`} (sound wood within ${most})`);
+  }
+  return out;
 }
 
 // ───────────────────────────── flags along the route ─────────────────────────────

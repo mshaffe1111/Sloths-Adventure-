@@ -149,6 +149,19 @@ export const downManifest: WorldManifest = { ...base, name: 'Toy tower, down', s
 export const upKit: WorldKit = { manifest: upManifest, emit: {} };
 export const downKit: WorldKit = { manifest: downManifest, emit: {} };
 
+/** the fixture tower with a ROLLED graph, as a designed level has (level.md: one graph, a brief keyed by the stage's id, which the
+ *  test names): the arc (teach, practise, a test, a twist, a signature and a finale, rests between), laid up */
+export const ARC_CODE = 'A T P M R X R W R S R C E';
+export const arcKit = (stageId: string): WorldKit => ({
+  manifest: {
+    ...base,
+    name: 'Toy tower, an arc',
+    sections: [landing, vineUp, hopsUp, stretch],
+    graphs: { list: [{ id: 'tower-arc', archetype: 'ascent', code: ARC_CODE }], briefs: { [stageId]: { ends: 'quiet', trend: 'up', branching: 'none' } } },
+  },
+  emit: {},
+});
+
 /** a test stage's config: an ascent goes up by its kind; `travel` 'down' lays any other kind down */
 export const towerCfg = (id: string, type: LevelConfig['objectiveType'], travel?: 'up' | 'down'): LevelConfig => {
   const [w, s] = id.split('-').map(Number);

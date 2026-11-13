@@ -203,6 +203,11 @@ test('towerFalls: going up, a step off any end is caught by sound wood within a 
   const caught = [floor, high, solid(380, 1500, 200, 3), solid(640, 1500, 200, 4)];
   assert.deepEqual(towerFalls('up', caught, 1900, 1280), []);
   assert.equal(towerFalls('up', [floor, high, { ...solid(380, 1500, 200, 3), type: 'fragile' } as Platform, solid(640, 1500, 200, 4)], 1900, 1280).length, 1);
+  // (a piece that gives way: sound wood under it inside a trunk section, or it is named; another piece that gives way is no catch)
+  const limb = { ...solid(500, 1100, 200, 7), type: 'fragile' } as Platform;
+  assert.match(towerFalls('up', [floor, limb], 1900, 1280).join(';'), /^tower: the piece at x 500-700, y 1100 gives way over a 800 px drop \(sound wood within 450\)$/);
+  assert.deepEqual(towerFalls('up', [floor, limb, solid(380, 1500, 440, 8)], 1900, 1280), [], 'a short drop over sound wood: kept');
+  assert.equal(towerFalls('up', [floor, limb, { ...solid(480, 1300, 240, 9), type: 'fragile' } as Platform], 1900, 1280).length, 2, 'a rotting bough under a rotting bough catches nothing');
   // (an end at the wall is no end: the engine keeps him inside the tower)
   assert.deepEqual(towerFalls('up', [floor, solid(0, 1100, 300, 5), solid(240, 1500, 200, 6)], 1900, 1280), []);
   assert.equal(fallSeconds(0), 0);

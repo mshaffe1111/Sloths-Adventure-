@@ -18,6 +18,7 @@ M=[
  ("gen2/tower.ts",T,"a storey keeps no clearance","    return top - TOWER.clear - low;","    return top - 120 - low;"),
  ("gen2/tower.ts",T,"a turn is a jump high","  turn: Math.ceil(DOUBLE_RISE) + 40,","  turn: Math.ceil(DOUBLE_RISE) - 20,"),
  ("gen2/tower.ts",T,"a crumbling tile catches a fall","    if (p.type === 'fragile' || x < p.x","    if (x < p.x"),
+ ("gen2/tower.ts",T,"a rotting bough may hang over any drop","    if (p.type !== 'fragile' || p.y >= floorY - 1) continue;","    if (p.type !== 'solid' || p.y >= floorY - 1) continue;"),
  ("gen2/tower.ts",T,"a fall may be any height","  const most = flow === 'up' ? TOWER.fall : TOWER.see;\n  return openEnds(platforms, floorY, most, width).map","  const most = flow === 'up' ? 99999 : TOWER.see;\n  return openEnds(platforms, floorY, most, width).map"),
  ("gen2/tower.ts",T,"the jump model is the closed form (under the flown climb)","export const LEAP = { up: Math.ceil(DOUBLE_RISE) + 36, slack: 100 } as const;","export const LEAP = { up: Math.ceil(DOUBLE_RISE), slack: 0 } as const;"),
  ("gen2/tower.ts",T,"a skipped storey is never named","    if (hit) out.push(`tower: the storey","    if (hit && !hit) out.push(`tower: the storey"),
