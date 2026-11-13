@@ -70,7 +70,7 @@ export const REF_S = 1;
 /**
  * Things that are not a jump, each a timed press with its window (windowBits), read from the game's own numbers:
  * - a creature he must get past AWAKE: he has its tell to act (predators/core.ts tellOf: Normal the def's tell, Easy x def.easy.tell);
- *   World 1's snake: 0.5 s Normal, 0.65 s Easy (predators/world1.ts) = 1.58 / 1.36 bits;
+ *   World 1's snake: 0.5 s Normal, 0.65 s Easy (predators/world1.ts) = 1.58 / 1.34 bits;
  * - a creature ASLEEP, or one a drop trap clears from out of its reach (the trap's load lands within 160 px of it): a choice, no
  *   clock: 0.5 (he must see it and choose; 1-3's design: "Pokey does not have to fight");
  * - the second press of a double: any press 2-12 frames into the first jump climbs it (reach.md §1, the double row), a 333 ms window
@@ -150,6 +150,33 @@ function moveOf(j: JumpReport, setting: Setting, bouncy: boolean): { move: strin
   return ways.sort((a, b) => a.bits - b.bits)[0];
 }
 
+/**
+ * The meter's arithmetic on a stage's challenge list, pure (planted cases in --check): each challenge's points = its bits past the free
+ * one x stakes x overlap x novelty; the stage's mean points a minute and its hardest PEAK_WINDOW s, as points a minute
+ */
+export function combine(out: Challenge[], minutes: number, seen: Map<string, number>): { points: number; mean: number; peak: number } {
+  out.sort((a, b) => a.t - b.t);
+  for (const c of out) {
+    const others = out.filter((o) => o !== c && o.threat && Math.abs(o.t - c.t) <= OVERLAP.window).length;
+    c.overlap = Math.min(OVERLAP.max, 1 + OVERLAP.each * others);
+    const k = c.kind.replace('-choice', '');
+    const n = seen.get(k) ?? 0;
+    c.novelty = novelty(n);
+    seen.set(k, n + 1);
+    c.points = Math.max(0, c.bits - FREE_BITS) * c.stakes * c.overlap * c.novelty;
+  }
+  const points = out.reduce((s, c) => s + c.points, 0);
+  const mean = points / Math.max(0.5, minutes);
+  let peak = 0;
+  for (const c of out) {
+    const inWin = out.filter((o) => o.t >= c.t && o.t < c.t + PEAK_WINDOW).reduce((s, o) => s + o.points, 0);
+    peak = Math.max(peak, inWin * (60 / PEAK_WINDOW));
+  }
+  return { points, mean, peak };
+}
+/** a stage's raw load: the peak-end mix of its mean and its peak */
+export const rawOf = (mean: number, peak: number): number => MIX.mean * mean + MIX.peak * peak;
+
 export interface StageScore {
   id: string; setting: Setting; seed: number; minutes: number; traced: Route['traced'];
   count: Record<string, number>; bits: number; points: number; mean: number; peak: number; raw: number;
@@ -184,9 +211,10 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
     let note = '';
     if (e) {
       const lo = e.dir === 1 ? e.x : e.to.x + e.to.width, hi = e.dir === 1 ? e.to.x : e.x;
-      // (a raised block between the two banks is no gap: he hops onto it and walks off; routeJumps links the banks over it, and
-      // inspectJumps then calls the space under that jump a pit. Seen on 1-2's root humps, 11-12)
-      const hump = hi - lo > 40 ? live.find((p: any) => p !== e.from && p !== e.to && p.y < Math.min(e.from.y, e.to.y) - 10 && Math.min(hi, p.x + p.width) - Math.max(lo, p.x) >= 0.5 * (hi - lo)) : null;
+      // (a raised block between the two banks, low enough to hop onto (a single's climb), is no gap: he hops onto it and walks off;
+      // routeJumps links the banks over it, and inspectJumps then calls the space under that jump a pit. Seen on 1-2's root humps, 11-12;
+      // a platform higher than a hop is a ceiling or a tower's next floor, never a hump: 7-8, 11-12)
+      const hump = hi - lo > 40 ? live.find((p: any) => p !== e.from && p !== e.to && p.y < Math.min(e.from.y, e.to.y) - 10 && e.from.y - p.y <= REACH.single.climb && Math.min(hi, p.x + p.width) - Math.max(lo, p.x) >= 0.5 * (hi - lo)) : null;
       if (hump) { rep = { ...j, gap: 0, rise: e.from.y - hump.y, landW: hump.width, miss: 'retry', dbl: false, dblNeeded: false, unflyable: false, reach: (e.from.y - hump.y) / REACH.single.climb }; note = ' (hop onto the block the route jumped over)'; }
     }
     // (a mushroom launches him: the take-off is bouncy, or a cap or floor mushroom sits at the take-off's edge)
@@ -236,30 +264,15 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
     const frag = st.platforms.some((p: any) => p.type === 'fragile' && c.x >= p.x - 40 && c.x <= p.x + p.width + 40);
     if (frag) { c.bits += 1; c.note += ' crumble'; }
   }
-  out.sort((a, b) => a.t - b.t);
-  for (const c of out) {
-    const others = out.filter((o) => o !== c && o.threat && Math.abs(o.t - c.t) <= OVERLAP.window).length;
-    c.overlap = Math.min(OVERLAP.max, 1 + OVERLAP.each * others);
-    const k = c.kind.replace('-choice', '');
-    const n = seen.get(k) ?? 0;
-    c.novelty = novelty(n);
-    seen.set(k, n + 1);
-    c.points = Math.max(0, c.bits - FREE_BITS) * c.stakes * c.overlap * c.novelty;
-  }
-  const minutes = modelStage(st, MODEL_TYPICAL).total / 60;
-  const points = out.reduce((s, c) => s + c.points, 0);
-  const mean = points / Math.max(0.5, minutes);
-  let peak = 0;
-  for (const c of out) {
-    const inWin = out.filter((o) => o.t >= c.t && o.t < c.t + PEAK_WINDOW).reduce((s, o) => s + o.points, 0);
-    peak = Math.max(peak, inWin * (60 / PEAK_WINDOW));
-  }
+  // (the typical player's time, stageTime.ts; never under the route's own clock: the model reads about 1 s on 4-3, 11-12)
+  const minutes = Math.max(modelStage(st, MODEL_TYPICAL).total, br.total) / 60;
+  const { points, mean, peak } = combine(out, minutes, seen);
   const count: Record<string, number> = {};
   for (const c of out) count[c.kind] = (count[c.kind] ?? 0) + 1;
   return {
     id, setting, seed, minutes: Math.round(minutes * 100) / 100, traced: route.traced, count,
     bits: Math.round(out.reduce((s, c) => s + c.bits, 0) * 10) / 10, points: Math.round(points * 10) / 10,
-    mean: Math.round(mean * 10) / 10, peak: Math.round(peak * 10) / 10, raw: MIX.mean * mean + MIX.peak * peak, challenges: out,
+    mean: Math.round(mean * 10) / 10, peak: Math.round(peak * 10) / 10, raw: rawOf(mean, peak), challenges: out,
   };
 }
 
@@ -285,7 +298,19 @@ function check(): void {
   eq(windowBits(3, 1), 2, 'a third of the cycle open is 2 bits');
   eq(novelty(0), 1.5, 'the first time counts half again');
   eq(novelty(3), 1.25, 'the fourth time a quarter');
-  console.log('check: 8 planted cases pass');
+  // (combine: a jump at 3 bits with an awake creature 1 s away is +50%; a creature alone 2 s later is not; the peak is the busy 30 s)
+  const mk = (t: number, kind: string, bits: number, threat: boolean): Challenge => ({ t, x: t * 100, kind, bits, cost: 'retry', stakes: 1, threat, overlap: 1, novelty: 1, points: 0, note: '' });
+  const keep = NOVELTY.on; NOVELTY.on = false;
+  const list = [mk(10, 'single', 3, false), mk(11, 'creature', 2, true), mk(100, 'single', 2, false)];
+  const r = combine(list, 2, new Map());
+  NOVELTY.on = keep;
+  eq(list[0].overlap, 1 + OVERLAP.each, 'a threat within 1.5 s raises the jump');
+  eq(list[1].overlap, 1, 'a threat does not raise itself');
+  eq(list[0].points, (3 - FREE_BITS) * (1 + OVERLAP.each), 'points are the bits past the free one, times overlap');
+  eq(r.points, (3 - FREE_BITS) * (1 + OVERLAP.each) + (2 - FREE_BITS) + (2 - FREE_BITS), 'the stage sums its challenges');
+  eq(r.mean, r.points / 2, 'mean is points a minute');
+  eq(r.peak, ((3 - FREE_BITS) * (1 + OVERLAP.each) + (2 - FREE_BITS)) * 2, 'the peak is the busiest 30 s, a minute');
+  console.log('check: 14 planted cases pass');
 }
 
 if (process.argv[1] && process.argv[1].endsWith('score.ts')) {
@@ -305,7 +330,10 @@ if (process.argv[1] && process.argv[1].endsWith('score.ts')) {
     for (const seed of seeds) {
       // (novelty carries through the stages in game order, per setting and layout: a fresh player walks into 1-1 first)
       const seen = new Map<string, number>();
-      for (const id of stages) rows.push(scoreStage(id, setting, seed, seen));
+      for (const id of stages) {
+        // (a stage the route or the build cannot do is named, not hidden: it scores nothing and says why)
+        try { rows.push(scoreStage(id, setting, seed, seen)); } catch (err) { console.log(`${id} ${setting} seed ${seed}: NOT SCORED (${String(err).slice(0, 160)})`); }
+      }
     }
   }
   const anchorRows = rows.filter((r) => r.id === ANCHOR.id && r.setting === ANCHOR.setting);
@@ -313,6 +341,7 @@ if (process.argv[1] && process.argv[1].endsWith('score.ts')) {
   const out = [] as Array<Record<string, unknown>>;
   for (const setting of settings) for (const id of stages) {
     const mine = rows.filter((r) => r.id === id && r.setting === setting);
+    if (!mine.length) continue;
     const sc = mine.map((r) => r.raw * scale);
     const row = {
       id, setting, seeds: mine.length, score: Math.round(median(sc) * 10) / 10, min: Math.round(Math.min(...sc) * 10) / 10, max: Math.round(Math.max(...sc) * 10) / 10,
