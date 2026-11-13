@@ -70,7 +70,8 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 | ECONOMY | session_01FhBbYLiMADVRwZv3e9nCar | Opus high | t-economy | Designer: one design for score, stars, fruit, finds, hearts, lives (R-165.194), by 2:30 PM |
 | NODES-TRAVEL | session_01FhBbYLVefj53Qg33YnMJEC | Fable high | t-nodes | any node any direction, legs, descent, branches, card road, node dials (R-165.196/.197) |
 | PIECES | session_01FhBbYPJZkaMgp58vyKQ3yN | Fable high | t-pieces | still, cast-worlds, ride, zones-by-data, clock-on (R-165.197) |
-| FIX-A | session_01FhBbYNq8G5jPJKyYLFto3b | Opus high | t-fixa | 0.9.8 words + Dot cards + About (R-165.175,.171,.165,.166,.147,.155,.158) |
+| VARIETY | session_01FhBbYLF4aRMBR5NoxbeWGb | Opus MAX | t-nodes | vine-top fix (1-4) + make mixed node strings lay (R-165.200), 2 h box |
+| INT-3 | session_01FhBbYKRV7heptxgVUtCwNF | Opus xhigh | t-int-3 | tonight's integration + 1-4's owed fixes (packet INT-3.md) |
 | FIX-B | session_01FhBbYMUNZNCRSqaWMZWoTv | Opus high | t-fixb | 0.9.8 play fixes (R-165.122,.174,.150,.151,.157) |
 
 | Story keeper | session_01FhBbYMCa3JXWmyQicbmxuu (successor) | Opus high | t-story | bible onto t-story; closed-book check; 1-4 vine nature check |
