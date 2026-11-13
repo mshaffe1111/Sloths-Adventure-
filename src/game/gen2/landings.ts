@@ -67,30 +67,69 @@ function suffixMin(path: FlightPath): number[] {
   return m;
 }
 
+/**
+ * A flight's first catch frame on a top `top` px under its take-off (his feet descending across it within CATCH_DROP), -1 for none: the
+ * scan events() made for every piece, done once per path and top (R-165.163: tops repeat across a stage's pieces and ledges)
+ */
+const CATCHES = new WeakMap<FlightPath, Map<number, number>>();
+function catchFrame(path: FlightPath, top: number): number {
+  let m = CATCHES.get(path);
+  if (!m) CATCHES.set(path, (m = new Map()));
+  let f = m.get(top);
+  if (f === undefined) {
+    f = -1;
+    for (let i = 1; i < path.length; i++) {
+      const d0 = path[i - 1][1], d1 = path[i][1];
+      if (d1 > d0 && d0 <= top + CATCH_DROP.px && d1 >= top) { f = i; break; }
+    }
+    m.set(top, f);
+  }
+  return f;
+}
+
+/**
+ * The frames a wall `height` tall, its top `top` px under the take-off, has his body at its face (feet under its top, head over its
+ * underside), each with whether the rest of the flight brings his feet within the hoist (MANTLE) of its top: the scan events() made for
+ * every wall, once per path, top and height (R-165.163)
+ */
+const STOPS = new WeakMap<FlightPath, Map<string, ReadonlyArray<readonly [number, boolean]>>>();
+function stopFrames(path: FlightPath, top: number, height: number): ReadonlyArray<readonly [number, boolean]> {
+  let m = STOPS.get(path);
+  if (!m) STOPS.set(path, (m = new Map()));
+  const k = `${top} ${height}`;
+  let f = m.get(k);
+  if (!f) {
+    const highest = suffixMin(path), out: Array<readonly [number, boolean]> = [];
+    for (let i = 1; i < path.length; i++) {
+      const feet = path[i][1], head = feet - 48;
+      if (feet > top && head < top + height) out.push([i, highest[i] <= top + MANTLE.px]);
+    }
+    m.set(k, (f = out));
+  }
+  return f;
+}
+
 export function events(path: FlightPath, y0: number, dir: 1 | -1, pieces: readonly LandPiece[], self: LandPiece | null): Ev[] {
   const out: Ev[] = [];
   for (const P of pieces) {
     if (P.broken) continue;
     const top = P.y - y0;
     // a catch on its top
-    for (let i = 1; i < path.length; i++) {
-      const [, d0] = path[i - 1], [dx, d1] = path[i];
-      if (d1 <= d0 || !(d0 <= top + CATCH_DROP.px && d1 >= top)) continue;
+    const i = catchFrame(path, top);
+    if (i > 0) {
+      const dx = path[i][0];
       const side = P.type === 'bouncy' ? 12 : LAND_SIDE.px;
       const [a, b] = [P.x - side, P.x + P.width + side];
       out.push(dir > 0 ? { frame: i, lo: a - dx, hi: b - dx, piece: P, dx } : { frame: i, lo: a + dx, hi: b + dx, piece: P, dx });
-      break;
     }
     if (!isWall(P)) continue;
     // a side stop: his body enters the face from his side this frame, with the face beside him (feet under its top, head over its
     // underside). The engine stops his way there and his rise or fall goes on along the face: when the rest of the flight brings his
     // feet within the hoist (MANTLE) of its top he is hoisted (or carried over) onto it, a landing on it; else he slides down the face, a
     // flight stopped (piece null)
-    for (let i = 1; i < path.length; i++) {
-      const [x0] = path[i - 1], [x1, d1] = path[i];
-      const feet = d1, head = d1 - 48;
-      if (!(feet > top && head < top + P.height)) continue;
-      const onto = suffixMin(path)[i] <= top + MANTLE.px ? P : null;
+    for (const [i, hoist] of stopFrames(path, top, P.height)) {
+      const x0 = path[i - 1][0], x1 = path[i][0];
+      const onto = hoist ? P : null;
       if (dir > 0) {
         // (his right side was at or left of the face, P.x + 2, and is past it now)
         const lo = P.x - WALL_HALF.px - x1, hi = P.x + 2 - WALL_HALF.px - x0;
@@ -117,15 +156,25 @@ const JUMPS: readonly Flight[] = ['jump', 'double', 'jump-up', 'double-up'];
 const SINGLES: readonly Flight[] = ['jump', 'jump-up'];
 const BOUNCES: readonly Flight[] = ['bounce', 'bounce-air', 'bounce-up', 'bounce-air-up'];
 
+/** the take-off x span of a ledge (his middle over its top, LAND_SIDE past each end) or a cap (12 past each end) */
+const takeOff = (S: LandPiece): readonly [number, number] => S.type === 'bouncy' ? [S.x - 12, S.x + S.width + 12] : [S.x - LAND_SIDE.px, S.x + S.width + LAND_SIDE.px];
+
 /**
  * One stage's flights, each flown once from each source and kept (a stage judges dozens of landings from the same ledges): from a ledge
  * (or a cap) and a way, the piece each flight lands on first, and for a jump or a bounce the widest take-off window per piece it lands on.
+ * R-165.163 (1-1's stage build): each flight from a ledge one way is flown only when asked for and kept by itself, so a landing asks only
+ * for the flights whose events on it can meet the ledge's take-off span, and each landing's way is kept once judged; every answer is the
+ * one the whole set of flights gives.
  */
 export class Landings {
   private readonly byX: LandPiece[];
+  private readonly nears = new Map<LandPiece, LandPiece[]>();
   private readonly walks = new Map<LandPiece, Array<{ piece: LandPiece | null; mid: number }>>();
+  /** per ledge, per flight and way ('jump+', 'double-'...): windowsOf on that one flight's events */
+  private readonly flown = new Map<LandPiece, Map<string, Map<LandPiece, number>>>();
   private readonly wins = new Map<LandPiece, Map<LandPiece, number>>();
   private readonly singles = new Map<LandPiece, Map<LandPiece, number>>();
+  private readonly ways = new Map<LandPiece, CleanWay | null>();
   constructor(readonly pieces: readonly LandPiece[], readonly setting: Difficulty) {
     this.byX = pieces.filter((p) => !p.broken).slice().sort((a, b) => a.x - b.x);
   }
@@ -133,11 +182,17 @@ export class Landings {
   near(x0: number, x1: number): LandPiece[] {
     return this.byX.filter((p) => p.x < x1 + NEAR && p.x + p.width > x0 - NEAR);
   }
+  /** the pieces within NEAR px of S, kept per S */
+  private nearOf(S: LandPiece): LandPiece[] {
+    let n = this.nears.get(S);
+    if (!n) this.nears.set(S, (n = this.near(S.x, S.x + S.width)));
+    return n;
+  }
   /** a full-speed walk off each end of S: the piece it lands on first and his middle there */
   walk(S: LandPiece): Array<{ piece: LandPiece | null; mid: number }> {
     let w = this.walks.get(S);
     if (!w) {
-      const near = this.near(S.x, S.x + S.width), F = LAND_FLIGHTS[this.setting];
+      const near = this.nearOf(S), F = LAND_FLIGHTS[this.setting];
       w = ([1, -1] as const).map((dir) => {
         const edge = dir > 0 ? S.x + S.width : S.x;
         const e = first(events(F.walk, S.y, dir, near, S), edge);
@@ -147,24 +202,65 @@ export class Landings {
     }
     return w;
   }
+  /** one flight from S one way: the widest take-off window (px) per piece it lands on first */
+  private flight(S: LandPiece, how: Flight, dir: 1 | -1): Map<LandPiece, number> {
+    let byS = this.flown.get(S);
+    if (!byS) this.flown.set(S, (byS = new Map()));
+    const k = `${how}${dir > 0 ? '+' : '-'}`;
+    let m = byS.get(k);
+    if (!m) {
+      const [a, b] = takeOff(S);
+      byS.set(k, (m = windowsOf(events(LAND_FLIGHTS[this.setting][how], S.y, dir, this.nearOf(S), S), a, b)));
+    }
+    return m;
+  }
   /** the widest take-off window (px) from S, over every jump (a ledge) or bounce (a cap) and both ways, per piece landed on first */
   windows(S: LandPiece, single = false): Map<LandPiece, number> {
     const cache = single ? this.singles : this.wins;
     let m = cache.get(S);
     if (!m) {
       m = new Map();
-      const near = this.near(S.x, S.x + S.width), F = LAND_FLIGHTS[this.setting];
-      const bounce = S.type === 'bouncy';
-      const a = bounce ? S.x - 12 : S.x - LAND_SIDE.px, b = bounce ? S.x + S.width + 12 : S.x + S.width + LAND_SIDE.px;
-      for (const how of bounce ? BOUNCES : single ? SINGLES : JUMPS) for (const dir of [1, -1] as const) {
-        for (const [P, w] of windowsOf(events(F[how], S.y, dir, near, S), a, b)) if (w > (m.get(P) ?? 0)) m.set(P, w);
+      for (const how of S.type === 'bouncy' ? BOUNCES : single ? SINGLES : JUMPS) for (const dir of [1, -1] as const) {
+        for (const [P, w] of this.flight(S, how, dir)) if (w > (m.get(P) ?? 0)) m.set(P, w);
       }
       cache.set(S, m);
     }
     return m;
   }
-  /** how T is reached cleanly, or null (a dead zone) */
+  /**
+   * windows(S).get(T) ?? 0, flying only the flights whose events on T (events() on T alone: a piece's events never depend on the others)
+   * meet S's take-off span: a flight with none has no midpoint in that span whose first event is T's, so it holds no window for T
+   */
+  private windowOnto(S: LandPiece, T: LandPiece): number {
+    const all = this.wins.get(S);
+    if (all) return all.get(T) ?? 0;
+    const F = LAND_FLIGHTS[this.setting], [a, b] = takeOff(S);
+    let w = 0;
+    for (const how of S.type === 'bouncy' ? BOUNCES : JUMPS) for (const dir of [1, -1] as const) {
+      if (!events(F[how], S.y, dir, [T], S).some((e) => e.piece === T && e.hi > a && e.lo < b)) continue;
+      const v = this.flight(S, how, dir).get(T) ?? 0;
+      if (v > w) w = v;
+    }
+    return w;
+  }
+  /**
+   * Can a walk off either end of S land on T: one of T's own events holds the take-off edge. When none does, the first event there is
+   * never T's and walk(S) cannot name T
+   */
+  private mayWalkOnto(S: LandPiece, T: LandPiece): boolean {
+    const F = LAND_FLIGHTS[this.setting];
+    return ([1, -1] as const).some((dir) => {
+      const edge = dir > 0 ? S.x + S.width : S.x;
+      return events(F.walk, S.y, dir, [T], S).some((e) => e.piece === T && edge > e.lo && edge < e.hi);
+    });
+  }
+  /** how T is reached cleanly, or null (a dead zone); kept once judged */
   cleanWay(T: LandPiece): CleanWay | null {
+    let c = this.ways.get(T);
+    if (c === undefined) this.ways.set(T, (c = this.judge(T)));
+    return c;
+  }
+  private judge(T: LandPiece): CleanWay | null {
     const near = this.near(T.x, T.x + T.width);
     // walked on: a standable piece touching it, at its level or under it by no more than the hoist
     for (const S of near) {
@@ -175,22 +271,46 @@ export class Landings {
     // a walk-off from either end of a ledge, his middle LAND_IN inside T
     for (const S of near) {
       if (S === T || !standable(S)) continue;
+      if (!this.walks.has(S) && !this.mayWalkOnto(S, T)) continue;
       for (const w of this.walk(S)) if (w.piece === T && w.mid >= T.x + LAND_IN.px && w.mid <= T.x + T.width - LAND_IN.px) return { how: 'walk-off', from: S };
     }
     // a full jump from a ledge, a bounce off a cap: a take-off window of JUMP_WINDOW
     for (const S of near) {
       if (S === T || S.broken) continue;
-      const w = this.windows(S).get(T) ?? 0;
+      const w = this.windowOnto(S, T);
       if (w >= JUMP_WINDOW.px) return { how: S.type === 'bouncy' ? 'bounce' : 'jump', from: S, window: Math.round(w) };
     }
     return null;
   }
 }
 
+/**
+ * One Landings per piece set (R-165.163): a build's repair and its verdicts judge the same pieces on the same setting, and each flew every
+ * ledge's flights again (4 Landings a 1-1 build). Landings reads only the pieces and the setting (LAND_FLIGHTS is a fixed table), so the
+ * last few sets are kept and one is handed back only when it is the SAME piece objects, in the same order, each with the fields the
+ * judge reads (x, y, width, height, type, broken) unchanged since it was flown; anything else flies afresh.
+ */
+const KEPT = 4;
+const FIELDS = (p: LandPiece) => [p.x, p.y, p.width, p.height, p.type, !!p.broken] as const;
+const kept: Array<{ setting: Difficulty; pieces: readonly LandPiece[]; seen: ReadonlyArray<ReturnType<typeof FIELDS>>; L: Landings }> = [];
+export function landingsOf(pieces: readonly LandPiece[], setting: Difficulty): Landings {
+  const same = (k: (typeof kept)[number]) => k.setting === setting && k.pieces.length === pieces.length
+    && k.pieces.every((p, i) => p === pieces[i] && FIELDS(p).every((v, j) => v === k.seen[i][j]));
+  const hit = kept.find(same);
+  if (hit) return hit.L;
+  const L = new Landings(pieces, setting);
+  kept.unshift({ setting, pieces: pieces.slice(), seen: pieces.map(FIELDS), L });
+  if (kept.length > KEPT) kept.pop();
+  return L;
+}
+
 /** every piece's widest run of take-off x in [a, b] whose first event is a catch on it (px) */
-function windowsOf(evs: readonly Ev[], a: number, b: number): Map<LandPiece, number> {
+function windowsOf(all: readonly Ev[], a: number, b: number): Map<LandPiece, number> {
   const out = new Map<LandPiece, number>();
   if (b <= a) return out;
+  // (only the events whose span meets (a, b), in their order: every midpoint below is inside (a, b), so no other event can be the first
+  // there, and the others' ends inside [a, b] are a or b again; R-165.163)
+  const evs = all.filter((e) => e.hi > a && e.lo < b);
   const cuts = [a, b, ...evs.flatMap((e) => [e.lo, e.hi])].filter((v) => v >= a && v <= b).sort((p, q) => p - q);
   let cur: LandPiece | null = null, run = 0;
   for (let i = 0; i + 1 < cuts.length; i++) {
@@ -206,7 +326,7 @@ function windowsOf(evs: readonly Ev[], a: number, b: number): Map<LandPiece, num
 
 /** how `T` is reached cleanly among `pieces` on `setting`, or null (a dead zone) */
 export function cleanWay(T: LandPiece, pieces: readonly LandPiece[], setting: Difficulty): CleanWay | null {
-  return new Landings(pieces, setting).cleanWay(T);
+  return landingsOf(pieces, setting).cleanWay(T);
 }
 
 /** the piece a pickup sits on: the highest standable top under it within PICKUP_OVER, its x inside the top */
@@ -230,7 +350,7 @@ export function deadZones(pieces: readonly LandPiece[], pickups: readonly LandPi
     const p = pickupPiece(c, pieces);
     if (p) judged.add(p);
   }
-  const L = new Landings(pieces, setting);
+  const L = landingsOf(pieces, setting);
   return [...judged].filter((T) => !L.cleanWay(T)).sort((a, b) => a.x - b.x);
 }
 
@@ -246,7 +366,7 @@ export function purposelessBounces(pieces: readonly LandPiece[], pickups: readon
   // the floor a cap stands on: the highest standable top under its middle
   const floorOf = (m: LandPiece) => pieces.filter((p) => standable(p) && p.x <= m.x + m.width / 2 && p.x + p.width >= m.x + m.width / 2 && p.y >= m.y + m.height - 2).sort((a, b) => a.y - b.y)[0];
   // each cap's landings: every piece a window of JUMP_WINDOW px of contact x lands on first, for each way and flight
-  const L = new Landings(pieces, setting);
+  const L = landingsOf(pieces, setting);
   const lands = new Map<LandPiece, Set<LandPiece>>();
   for (const m of caps) lands.set(m, new Set([...L.windows(m)].filter(([, w]) => w >= JUMP_WINDOW.px).map(([P]) => P)));
   const worth = new Set<LandPiece>();
@@ -295,7 +415,7 @@ export function repairLandings(
   }
   const dead = deadZones(ps, pickups, setting);
   if (!dead.length) return { caps, moved: 0 };
-  const L = new Landings(ps, setting);
+  const L = landingsOf(ps, setting);
   let moved = 0;
   for (const T of dead) {
     const row = pickups.filter((c) => COLLECTED.has(c.type) && pickupPiece(c, ps) === T);

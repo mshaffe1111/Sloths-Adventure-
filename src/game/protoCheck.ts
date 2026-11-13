@@ -31,8 +31,15 @@ const DT = 1 / 30;
  */
 const SPAN = () => 135;
 
-/** the highest a double jump lifts his feet (px), at either tick rate and the best moment for the second jump */
+/**
+ * the highest a double jump lifts his feet (px), at either tick rate and the best moment for the second jump. Flown once: it reads only
+ * PHYS (a constant table), and the level check asks for it on every pair of pieces it links (R-165.163: 36 ms of a 1-1 build at CPU x4)
+ */
+let rise: number | undefined;
 export function maxRise(): number {
+  return (rise ??= flyMaxRise());
+}
+function flyMaxRise(): number {
   let best = 0;
   for (const dt of [1 / 30, 1 / 60]) {
     for (let tD = 0.05; tD < 0.6; tD += 0.01) {
