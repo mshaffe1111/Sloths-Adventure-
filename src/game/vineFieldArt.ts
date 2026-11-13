@@ -154,12 +154,13 @@ export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState
     return;
   }
   if (s.phase === 'warn') {
-    // the trickle: tufts drifting down the column, the stream reaching further each moment of the tell
-    const reach = (p.land - p.top) * Math.min(1, 0.3 + s.u);
-    for (let i = 0; i < 12; i++) {
-      const f = (t * 0.7 + i / 12) % 1;
-      const y = hangY + f * reach;
-      fluff(ctx, p.x + Math.sin(t * 2.6 + i * 1.7) * 12, y, 5 + (i % 3) * 1.5, 0.95 * (1 - f * 0.45));
+    // the trickle: a stream of tufts drifting down the column from the pod, reaching further each moment of the tell (at its start a
+    // third of the way, by its end the whole column), so on a phone he sees fluff falling past him on his own column before the drop
+    const reach = (p.land - p.top) * Math.min(1, 0.35 + s.u * 0.9);
+    for (let i = 0; i < 16; i++) {
+      const f = (t * 0.55 + i / 16) % 1;
+      const y = p.top + 6 + f * reach;
+      fluff(ctx, p.x + Math.sin(t * 2.4 + i * 1.7) * 10, y, 6 + (i % 3) * 1.6, 1 - f * 0.35);
     }
     podShape(ctx, p.x, hangY, r, Math.sin(t * 38) * 0.14 * (0.4 + s.u));
     return;

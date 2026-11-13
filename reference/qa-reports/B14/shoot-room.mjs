@@ -37,12 +37,11 @@ for (const [tag, w, h] of [['port', 412, 915], ['land', 915, 412]]) {
   const place = (x) => page.evaluate((x) => { const e = window.__engine(); Object.assign(e.player, { x, y: 1300, vx: 0, vy: 0, grounded: true, climbing: false, invincibleTimer: 0 }); }, x);
   const key = async (k, ms) => { await page.keyboard.down(k); await sleep(ms); await page.keyboard.up(k); };
   const shot = (name) => page.screenshot({ path: path.join(outDir, `${tag}-${name}.jpg`), quality: 85 });
-  // the phase of pod i now (rockfall's clock: rockfall.ts rockAt, speed 620, burst 0.5)
+  // the phase of pod i now, from the engine's own beat (beat.ts: StageClock.read(clock, shift)), and how far through it
   const phase = (i) => page.evaluate((i) => {
-    const e = window.__engine(), p = e.field.pods[i], t = e.gameTime;
-    const fallT = (p.land - p.top) / 620, warnAt = p.every - p.warn - fallT - 0.5;
-    const c = (((t + p.offset) % p.every) + p.every) % p.every;
-    return c < warnAt ? 'idle' : c < warnAt + p.warn ? `warn${((c - warnAt) / p.warn).toFixed(2)}` : c < warnAt + p.warn + fallT ? `fall${((c - warnAt - p.warn) / fallT).toFixed(2)}` : 'burst';
+    const e = window.__engine(), p = e.field.pods[i], r = e.clock.read(p.clock, p.shift);
+    const fallT = (p.land - p.top) / 620;
+    return r.phase === 'warn' ? `warn${r.u.toFixed(2)}` : r.phase === 'on' ? (r.into < fallT ? `fall${(r.into / fallT).toFixed(2)}` : 'burst') : 'idle';
   }, i);
   const waitFor = async (i, re) => { for (let k = 0; k < 400; k++) { if (re.test(await phase(i))) return true; await sleep(15); } return false; };
   // (the room's vines in order: 5 even, 6 mixed, 3 push, 5 pods, 5 under)
