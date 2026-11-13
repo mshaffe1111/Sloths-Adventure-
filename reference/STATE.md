@@ -764,3 +764,10 @@ lines); Matt sees them in the release.
   all like the last ones, it would have been a lot better". Direction: the teaching chains feel exactly like the end chains; once learned,
   mushroom jumps get "a little bit harder and harder". R-165.174 updated. Same shape for every mechanic: teach on the steady version,
   then grow it.
+- 2026-11-12 9:37 PM ET: lead read DIFF-ALGO's plan (t-diff-algo@665538d6, reference/design/DIFFICULTY.md 120 lines + methods/difficulty.md,
+  read-only prototype, sources cited, NO src change). Untuned calibration 1-1 4.0 / 1-2 2.0 / 1-3 1.1 vs Matt 4-5 / 2-3 / 1. Arc: world
+  band [10w-11, 10w+1], per-stage sawtooth targets (World 1: 2.5, 2.5, 1.5, 4.5, 5.5, 6.5, 5.5, 7.5, 9.5). BIG FINDING: on Normal the game
+  does not climb today: Worlds 2-9 read 5-11 at the median, nothing past World 2 in its band, World 10 median 17, Easy barely under Normal
+  past 1-3 -> a rebuild target per world, not a tune. 11 levers exist (file:line), 7 NEW (N1 builder reads the target ... N7 Easy help).
+  Gate spec G1-G6 (fairness floors never overridden; meter vs bots rank agree). Two inspector defects to fix first. Lead's view: the
+  meter + gate is a FOUNDATION (D40): after 0.9.7, before 1-4/1-5 are built and before any world is re-laid.
