@@ -695,3 +695,7 @@ lines); Matt sees them in the release.
   upright. The fresh-save worry (1-1's gap line out of place) does NOT show in 1-3's real flow. Install note for a fresh worktree:
   npm install --no-audit --no-fund --legacy-peer-deps (as CI), not npm ci. Before the final build: delete tools/testlink/dist so
   filesmap maps every file (the artifact holds an older build), then clean stale files on publish.
+- 2026-11-12 7:40 PM ET: lead judged the real build (465023ef, upright, fresh save): 1-2 opens with the iris, Dot's story line ("She said
+  don't stop to smell the flowers. Picking's different."), then "Flick up just before the edge." at a raised step (R-165.171, same in
+  1-3). 1-3's opening and lesson PASS upright (hive, vine ring, sleeping snake on screen with the card). Sideways: the lead's key driver
+  stalled at a step (driver, not game); sideways lesson card judged from F13's real-page still (PASS). INT-2 on Step 3.
