@@ -7,8 +7,8 @@
  * Times are for a brisk player who holds run: Pokey's top run speed (PHYS.maxRun), climbs at the engine's 220 px/s, swings at about
  * 430 px/s, shimmies at ROPE_SPEED, with stageTime.ts's overheads scaled to its quick player.
  */
-import { validateStage, jumpOK, type CheckGraph } from '../../src/game/levelCheck.ts';
-import { PHYS, JUMP_RISE } from '../../src/game/physics.ts';
+import { validateStage, jumpOK, HOLD_MANTLE, type CheckGraph } from '../../src/game/levelCheck.ts';
+import { PHYS, JUMP_RISE, reachJump } from '../../src/game/physics.ts';
 import { ROPE_SPEED } from '../../src/game/rope.ts';
 import { TIME, MODEL_TYPICAL, MODEL_FAST } from '../../src/game/stageTime.ts';
 import type { Platform, Vine } from '../../src/game/types.ts';
@@ -94,6 +94,22 @@ export function findRoute(stage: Stage, targets: Array<{ x: number; y: number }>
   for (const v of stage.vines) if (!isLiana(v)) nodes.set(`v${v.id}`, { key: `v${v.id}`, kind: 'climb', vine: v });
   (stage.updrafts ?? []).forEach((u, i) => nodes.set(`u${i}`, { key: `u${i}`, kind: 'draft', draft: u }));
   if (g) for (const [a, set] of g.adj) for (const b of set) addEdge(a, b, 'graph');
+  // (a jump between two banks over a block he can stand on is not the way: he hops onto a raised block, steps down a stair, or drops into
+  // a shallow dip and hops out, whenever that is no harder than the jump. The check links the banks over it, rightly (the block is low
+  // enough to clear), so the route dropped the block and the inspector called the space under the jump a pit: 1-2's 53 px hump read as
+  // a 231 px "pit", its stairs as a double. S1, R-165.176)
+  if (g) {
+    const P = plats.filter((p) => !p.broken);
+    for (const [a, list] of edges) {
+      const A = nodes.get(a)?.plat;
+      if (!A) continue;
+      const linked = (x: Platform, y: Platform) => !!g!.adj.get(keyOf(x))?.has(keyOf(y));
+      edges.set(a, list.filter((ed) => {
+        const B = nodes.get(ed.to)?.plat;
+        return !(B && ed.kind === 'graph' && stepBetween(P, A, B, stage.waterY, linked));
+      }));
+    }
+  }
 
   let added = 0;
   // liana chains (the check only links ledge -> liana -> ledge, so a run of lianas or silk lines over a gorge is added here)
@@ -183,6 +199,53 @@ export function findRoute(stage: Stage, targets: Array<{ x: number; y: number }>
   if (cur !== e) return { segs: [], traced: 'failed', presumedHops: 0, addedLinks: added, stops: stops.length - 1, skippedStops };
   const traced: Route['traced'] = usedPresumed ? 'presumed' : segs.some((x) => x.note === 'added') ? 'extended' : 'check';
   return { segs, traced, presumedHops: segs.filter((x) => x.kind === 'presumed').length, addedLinks: added, stops: stops.length - 1, skippedStops };
+}
+
+/** a ground piece he can stand on and walk (not a launcher, nothing that moves, not a log he pushes, not broken) */
+const standable = (p: Platform) => p.type !== 'bouncy' && p.type !== 'moving' && p.type !== 'drift' && !p.push && !p.broken;
+
+/**
+ * How much of one plain jump a move from X to Y asks (0 = a walk or a step down): the gap against the closed-form reach at that height
+ * (physics.ts reachJump), or the rise against the highest a jump lifts him onto a lip (JUMP_RISE and the hoist, levelCheck HOLD_MANTLE),
+ * whichever is nearer its limit. Only ever compared with another move's share, to pick the easier way.
+ */
+export function moveShare(X: Platform, Y: Platform): number {
+  const [x0, x1] = ext(X), [y0, y1] = ext(Y);
+  const gap = Math.max(0, y0 - x1, x0 - y1);
+  const rise = X.y - Y.y;
+  if (gap <= 10 && rise <= 16) return 0;
+  const r = reachJump(rise, false);
+  return Math.max(r > 0 ? gap / r : Infinity, Math.max(0, rise) / (JUMP_RISE + HOLD_MANTLE));
+}
+
+/**
+ * The block a jump from bank A to bank B passes over that a player stands on instead, or null: a standable piece under (or over) at
+ * least half the open span between the two banks, which the check links from A and to B (`linked`: its own graph, so each move is one
+ * it allows), above the water, and either
+ *  - a hump: a body block (50 px or taller, a wall to him: engine.ts) higher than both banks; a jump over it comes down on it, so he
+ *    hops onto it and walks off, always; or
+ *  - a stair or a dip: between their heights or lower than both, taken when neither move by it asks more of a jump than the jump
+ *    across (a pit's floor too deep to hop out of is not linked to B, so the jump stays: a pit with a floor under it).
+ * Banks that overlap (a branch over the ledge he stands on), a launch from a mushroom and anything that moves are never split.
+ */
+export function stepBetween(plats: Platform[], A: Platform, B: Platform, waterY: number | undefined, linked: (x: Platform, y: Platform) => boolean): Platform | null {
+  if (!standable(A) || !standable(B)) return null;
+  const [ax0, ax1] = ext(A), [bx0, bx1] = ext(B);
+  const lo = bx0 >= ax1 ? ax1 : bx1 <= ax0 ? bx1 : NaN;
+  const hi = bx0 >= ax1 ? bx0 : bx1 <= ax0 ? ax0 : NaN;
+  if (!(hi - lo > 40)) return null;
+  let best: Platform | null = null, bestOver = 0;
+  for (const H of plats) {
+    if (H === A || H === B || !standable(H) || (waterY !== undefined && H.y >= waterY)) continue;
+    const over = Math.min(hi, H.x + H.width) - Math.max(lo, H.x);
+    if (over < 0.5 * (hi - lo) || over <= bestOver) continue;
+    if (!linked(A, H) || !linked(H, B)) continue;
+    const hump = H.y < Math.min(A.y, B.y) - 10 && H.type === 'solid' && H.height >= 50;
+    if (!hump && Math.max(moveShare(A, H), moveShare(H, B)) > moveShare(A, B)) continue;
+    best = H;
+    bestOver = over;
+  }
+  return best;
 }
 
 /** the ledge a pickup sits over (within a jump's reach above it), or a climbing trunk's foot is not counted */
