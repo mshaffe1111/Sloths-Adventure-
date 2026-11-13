@@ -14,7 +14,8 @@ Matt's goal today (10:13 AM ET): **1-4 and 1-5 on his test link tonight, polishe
 - **Lean (Matt 11-12):** messages to the lead 5 lines max; REPORT.md 30 lines max (done-items with evidence, polish check, gates, what is
   left, pushback, "Learned"); one-line commit subjects; no narration. Safe-keeping push every 45 min; times from `TZ=America/New_York date`.
 - **Report to the lead:** send_message to session_01FhBbYNzGRJBDMzn6XbtQK2. Blocked? PUSHBACK.md on your branch + one message, then wait.
-- **Stop line:** 9:30 PM ET or 40% context, whichever first; push WIP and report.
+- **Stop line:** 9:30 PM ET or 40% context, whichever first; push WIP and report. **Never stop with a gate or script running in the
+  background** (D59, 11-13): a stopped member's container kills it. Wait for it, or name it plainly as UNRUN in the report.
 
 ## Shared-file tokens (the lead, 10:19 AM ET; PM.md:21: no two builders edit the same file at the same time)
 One holder per file; the lead passes a token only after the holder has pushed. To take a token: merge the last holder's pushed head first.
