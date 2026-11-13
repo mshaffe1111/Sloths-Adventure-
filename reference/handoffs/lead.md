@@ -5,6 +5,33 @@ Read this, then reference/STATE.md (newest at the bottom: every decision tonight
 (the plan, with "THE PLAN AS TOLD TO MATT"), reference/plans/MAP-REVISIONS.md (the map's changes and Matt's 84 ideas judged),
 reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Matt 11-11); it plans, dispatches, checks, decides.
 
+## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **Levels per 100% of his week is the scoreboard.** Today: 1-4 AND 1-5 on his test link tonight, polished (10:13 AM; R-165.182).
+- **Critics sparingly, only when needed** (10:13 AM: "they take way too much tokens"; R-165.183): one Critic where the risk is real
+  (shared engine code everything reuses, an integration head before a test link or release, a lead plan change); everything else is the
+  lead's own go-and-see on the real screens. This narrows PM.md:80 / :245 "every result goes to a Critic" by Matt's word.
+- **Make every level easier to make than the last** (10:15 AM; R-165.154): methods/level.md Building rules, "Learned" from every builder,
+  LEVEL-LOG hours and cost. Stronger models and more effort go to ENGINE work (it is reused); levels get the method.
+- **Idea rounds:** usually 3 models write short idea lists; ONE developer/designer picks from them (unlabelled) and says what it used.
+- **Inspired by a classic? Research it first:** what made it great, what we take, what we never copy (Matt: the Donkey Kong Jr. vines
+  were used wrong until we did this).
+- **Cost reports** (10:16 AM; R-165.184): as each key member finishes, give Matt its dollar cost (get_session usage.cost_usd) and what it
+  bought, in one line; log it in LEVEL-LOG.md. No helper runs tests it doesn't need (LAWS 5 scope) or spins past its stop line.
+- **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
+
+## TODAY 11-13 (started 10:16 AM ET; packets reference/packets/2026-11-13/TODAY.md + one per member; stop line 9:30 PM or 40% context)
+| Member | Session | Model/effort | Branch | Job |
+|---|---|---|---|---|
+| FA | session_01FhBbYNtcMTuMaKP1e5JiQ5 | Fable high | t-fa | ascent lay finished (+ along the route, climb camera) for 1-4 |
+| B15 | session_01FhBbYMteKQmarmbYVMoZiN | Opus xhigh | t-b15 | bough + limb load + marks goal, crude room, then 1-5 whole (card road cut) |
+| B14 | session_01FhBbYMrAEyA6NNWrPtAzHo | Opus xhigh | t-b14 | LATTICE onto main, pods, cluster/gate, crude room v2, then 1-4 whole |
+| ART | session_01FhBbYMvThjGLVUA8nE3ZmA | Opus high | t-art-1113 | HF: two-hand climb (R-165.178), 1-5 set, 1-4 pieces; inventory; cap $15 |
+| S1 | session_01FhBbYJXH6JJa93RhTnuDf7 | Opus high | t-s1 | the meter's inspector (R-165.176), tools only |
+| Story keeper | session_01FhBbYMCa3JXWmyQicbmxuu (successor) | Opus high | t-story | bible onto t-story; closed-book check; 1-4 vine nature check |
+| Critic (review) | session_01FhBbYL2LcFRBpSzwjeZ98U | Opus high | t-crit-lead-review-1113 | delta re-audit of the lead review |
+Retired: F15 (archived 10:16 AM; card road to a fresh Fable later). Old story keeper session_019iachLiuwNTAZUBSJWUmR3: stop after the
+successor passes its check. S2 meter gate / S3 targets: after tonight (S3 writes gen2/pipeline.ts, FA's file today).
+
 ## The handover (11-12 11:01 PM ET, from the outgoing lead session_01FhBbYP63h7cCX8DyW69stq, your backup for questions only)
 The outgoing lead's memory was compressed and it made three misses on 11-12 (typed times, a misread instruction, a Fable job started out
 of order); Matt rotated for a sharper, cheaper lead. Read reference/handoffs/lead.md's RIGHT NOW block and the last 11-12 entries of
