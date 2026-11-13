@@ -10,3 +10,4 @@ kbdcheck 0
 seedlist11 0
 seedlist14 0
 tooltests 0
+tierBots 0
