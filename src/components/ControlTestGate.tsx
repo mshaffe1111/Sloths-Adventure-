@@ -118,7 +118,7 @@ export const CTEST_PAGES: Readonly<Record<string, CtestPage>> = {
     ],
   },
   '1-3': {
-    alt: 'Pokey beside a sleeping snake under a hive in the new level',
+    alt: 'Pokey on the forest floor near a golden snake and a hive',
     moves: [
       RUN,
       JUMP,

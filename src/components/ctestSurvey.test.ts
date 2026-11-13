@@ -87,6 +87,9 @@ test("ctest survey: the front page shows the moves of the stage the link plays (
   assert.equal(ctestPage(), CTEST_PAGES[CTEST_LEVEL_ID]);
   assert.deepEqual(CTEST_PAGES['1-4'].moves.map((m) => m.name), ['Climb', 'Two hands', 'Push the figs', 'Heads up']);
   assert.deepEqual(CTEST_PAGES['1-3'].moves.map((m) => m.name), ['Run', 'Jump', 'Punch', 'Drop a trap']);
+  // (each still's words are the story keeper's, matched to what the still shows: t-story@61b66bf7, STORY-KEEPER.md; 1-3's still has him on the ground)
+  assert.equal(CTEST_PAGES['1-4'].alt, 'Pokey climbing a curtain of vines up a giant kapok tree');
+  assert.equal(CTEST_PAGES['1-3'].alt, 'Pokey on the forest floor near a golden snake and a hive');
   for (const [id, pg] of Object.entries(CTEST_PAGES)) {
     assert.ok(pg.moves.length <= 4, `${id}: the page holds four cards`);
     assert.ok(pg.alt.length > 0 && !/1-1|mossy logs/.test(pg.alt), `${id}: its own still's words`);
