@@ -1,0 +1,3516 @@
+{
+"scale": 0.30654,
+"rows": [
+{
+"id": "1-1",
+"setting": "normal",
+"seeds": 2,
+"score": 4.1,
+"min": 4,
+"max": 4.1,
+"minutes": 3.325,
+"points": 24.05,
+"mean": 7.1,
+"peak": 19.35,
+"count": {
+"single": 58,
+"double": 5
+},
+"traced": "presumed"
+},
+{
+"id": "1-2",
+"setting": "normal",
+"seeds": 2,
+"score": 2,
+"min": 1.9,
+"max": 2.1,
+"minutes": 3.55,
+"points": 8.45,
+"mean": 2.4,
+"peak": 10.85,
+"count": {
+"single": 63,
+"bounce": 9,
+"double": 1
+},
+"traced": "check"
+},
+{
+"id": "1-3",
+"setting": "normal",
+"seeds": 2,
+"score": 1.1,
+"min": 0.8,
+"max": 1.4,
+"minutes": 4.05,
+"points": 6.7,
+"mean": 1.65,
+"peak": 5.6,
+"count": {
+"single": 57,
+"creature-choice": 15,
+"creature": 2
+},
+"traced": "check"
+},
+{
+"id": "1-4",
+"setting": "normal",
+"seeds": 2,
+"score": 0.4,
+"min": 0.1,
+"max": 0.7,
+"minutes": 1.97,
+"points": 1.3499999999999999,
+"mean": 0.7,
+"peak": 1.95,
+"count": {
+"climb": 17,
+"puzzle": 2,
+"single": 9
+},
+"traced": "presumed"
+},
+{
+"id": "1-5",
+"setting": "normal",
+"seeds": 2,
+"score": 2,
+"min": 1.9,
+"max": 2,
+"minutes": 3.195,
+"points": 6.3,
+"mean": 1.95,
+"peak": 10.75,
+"count": {
+"single": 38
+},
+"traced": "presumed"
+},
+{
+"id": "1-6",
+"setting": "normal",
+"seeds": 2,
+"score": 10.7,
+"min": 10.6,
+"max": 10.7,
+"minutes": 3.9099999999999997,
+"points": 76.15,
+"mean": 19.55,
+"peak": 50.1,
+"count": {
+"swing": 16,
+"single": 38,
+"double": 10,
+"puzzle": 7,
+"creature": 2
+},
+"traced": "extended/presumed"
+},
+{
+"id": "1-7",
+"setting": "normal",
+"seeds": 2,
+"score": 4.4,
+"min": 4.4,
+"max": 4.4,
+"minutes": 3.9699999999999998,
+"points": 33.95,
+"mean": 8.55,
+"peak": 20.35,
+"count": {
+"hazard": 14,
+"single": 55,
+"double": 1,
+"puzzle": 2
+},
+"traced": "check"
+},
+{
+"id": "1-8",
+"setting": "normal",
+"seeds": 2,
+"score": 32.2,
+"min": 32.2,
+"max": 32.2,
+"minutes": 3.6799999999999997,
+"points": 255.35,
+"mean": 69.5,
+"peak": 140.6,
+"count": {
+"single": 20,
+"hazard": 80,
+"creature": 5,
+"double": 6,
+"swing": 5,
+"climb": 2
+},
+"traced": "check"
+},
+{
+"id": "1-9",
+"setting": "normal",
+"seeds": 2,
+"score": 5.3,
+"min": 5.1,
+"max": 5.5,
+"minutes": 2.75,
+"points": 27.15,
+"mean": 9.85,
+"peak": 24.75,
+"count": {
+"single": 38,
+"creature": 26,
+"creature-choice": 1,
+"double": 1
+},
+"traced": "check"
+},
+{
+"id": "2-1",
+"setting": "normal",
+"seeds": 2,
+"score": 7,
+"min": 4.3,
+"max": 9.7,
+"minutes": 4.12,
+"points": 63.05,
+"mean": 14.600000000000001,
+"peak": 31.349999999999998,
+"count": {
+"single": 1,
+"hazard": 26
+},
+"traced": "check"
+},
+{
+"id": "2-2",
+"setting": "normal",
+"seeds": 2,
+"score": 8.7,
+"min": 8.3,
+"max": 9.2,
+"minutes": 3.94,
+"points": 67.25,
+"mean": 17,
+"peak": 39.849999999999994,
+"count": {
+"single": 56,
+"hazard": 49,
+"creature": 7,
+"puzzle": 1
+},
+"traced": "check"
+},
+{
+"id": "2-3",
+"setting": "normal",
+"seeds": 2,
+"score": 11,
+"min": 7,
+"max": 15,
+"minutes": 3.485,
+"points": 73.1,
+"mean": 21.15,
+"peak": 50.45,
+"count": {
+"puzzle": 10,
+"single": 30,
+"double": 15,
+"hazard": 13
+},
+"traced": "check"
+},
+{
+"id": "2-4",
+"setting": "normal",
+"seeds": 2,
+"score": 12.6,
+"min": 11.7,
+"max": 13.5,
+"minutes": 5.470000000000001,
+"points": 108.35,
+"mean": 19.75,
+"peak": 62.25,
+"count": {
+"swing": 43,
+"hazard": 19
+},
+"traced": "extended"
+},
+{
+"id": "2-5",
+"setting": "normal",
+"seeds": 2,
+"score": 4.2,
+"min": 4.1,
+"max": 4.2,
+"minutes": 4.8100000000000005,
+"points": 45.05,
+"mean": 9.350000000000001,
+"peak": 17.85,
+"count": {
+"single": 10,
+"creature": 42,
+"hazard": 5
+},
+"traced": "check"
+},
+{
+"id": "2-6",
+"setting": "normal",
+"seeds": 2,
+"score": 0.3,
+"min": 0.3,
+"max": 0.4,
+"minutes": 2.375,
+"points": 1.4,
+"mean": 0.55,
+"peak": 1.7,
+"count": {
+"climb": 29,
+"single": 4,
+"creature": 1
+},
+"traced": "check"
+},
+{
+"id": "2-7",
+"setting": "normal",
+"seeds": 2,
+"score": 8.2,
+"min": 8,
+"max": 8.3,
+"minutes": 3.925,
+"points": 50.25,
+"mean": 12.8,
+"peak": 40.5,
+"count": {
+"single": 68,
+"hazard": 23,
+"double": 4,
+"climb": 2,
+"creature": 1,
+"swing": 3
+},
+"traced": "extended"
+},
+{
+"id": "2-8",
+"setting": "normal",
+"seeds": 2,
+"score": 5.2,
+"min": 4.9,
+"max": 5.4,
+"minutes": 3.125,
+"points": 36.75,
+"mean": 11.75,
+"peak": 21.9,
+"count": {
+"single": 60,
+"hazard": 17,
+"puzzle": 20,
+"double": 6
+},
+"traced": "check"
+},
+{
+"id": "2-9",
+"setting": "normal",
+"seeds": 2,
+"score": 5,
+"min": 4.3,
+"max": 5.7,
+"minutes": 3.705,
+"points": 38.400000000000006,
+"mean": 10.350000000000001,
+"peak": 22.15,
+"count": {
+"puzzle": 2,
+"creature": 30,
+"single": 13,
+"hazard": 9
+},
+"traced": "check"
+},
+{
+"id": "3-1",
+"setting": "normal",
+"seeds": 2,
+"score": 2.9,
+"min": 2.6,
+"max": 3.2,
+"minutes": 3.0999999999999996,
+"points": 16.3,
+"mean": 5.25,
+"peak": 13.7,
+"count": {
+"single": 76,
+"double": 2,
+"hazard": 4
+},
+"traced": "check"
+},
+{
+"id": "3-2",
+"setting": "normal",
+"seeds": 2,
+"score": 9.1,
+"min": 9.1,
+"max": 9.2,
+"minutes": 3.365,
+"points": 59.65,
+"mean": 17.7,
+"peak": 41.85,
+"count": {
+"single": 31,
+"hazard": 8,
+"puzzle": 3,
+"double": 7,
+"swing": 3,
+"climb": 14
+},
+"traced": "extended"
+},
+{
+"id": "3-3",
+"setting": "normal",
+"seeds": 2,
+"score": 7.9,
+"min": 7.2,
+"max": 8.6,
+"minutes": 5.27,
+"points": 65.5,
+"mean": 12.25,
+"peak": 39.3,
+"count": {
+"single": 34,
+"creature": 19,
+"double": 4,
+"hazard": 13
+},
+"traced": "check/extended"
+},
+{
+"id": "3-4",
+"setting": "normal",
+"seeds": 2,
+"score": 4.8,
+"min": 4.3,
+"max": 5.4,
+"minutes": 2.14,
+"points": 23.05,
+"mean": 10.8,
+"peak": 20.700000000000003,
+"count": {
+"climb": 23,
+"hazard": 7,
+"single": 8,
+"double": 2
+},
+"traced": "check"
+},
+{
+"id": "3-5",
+"setting": "normal",
+"seeds": 2,
+"score": 7.3,
+"min": 6.8,
+"max": 7.7,
+"minutes": 2.89,
+"points": 48.4,
+"mean": 16.8,
+"peak": 30.549999999999997,
+"count": {
+"hazard": 30,
+"single": 13,
+"double": 1,
+"puzzle": 3
+},
+"traced": "check/extended"
+},
+{
+"id": "3-6",
+"setting": "normal",
+"seeds": 2,
+"score": 5.6,
+"min": 5.2,
+"max": 5.9,
+"minutes": 3.215,
+"points": 32.15,
+"mean": 10.05,
+"peak": 26.25,
+"count": {
+"single": 50,
+"puzzle": 9,
+"double": 3,
+"hazard": 2,
+"swing": 2,
+"climb": 9
+},
+"traced": "extended"
+},
+{
+"id": "3-7",
+"setting": "normal",
+"seeds": 2,
+"score": 4.3,
+"min": 3.8,
+"max": 4.8,
+"minutes": 3.0999999999999996,
+"points": 24.5,
+"mean": 7.949999999999999,
+"peak": 20.15,
+"count": {
+"hazard": 10,
+"puzzle": 11,
+"single": 68,
+"climb": 2
+},
+"traced": "check"
+},
+{
+"id": "3-8",
+"setting": "normal",
+"seeds": 2,
+"score": 9.4,
+"min": 8.2,
+"max": 10.6,
+"minutes": 3.75,
+"points": 69.6,
+"mean": 18.6,
+"peak": 42.55,
+"count": {
+"swing": 17,
+"hazard": 24,
+"single": 19,
+"double": 1
+},
+"traced": "extended"
+},
+{
+"id": "3-9",
+"setting": "normal",
+"seeds": 2,
+"score": 4.8,
+"min": 4.7,
+"max": 4.8,
+"minutes": 5.18,
+"points": 45.900000000000006,
+"mean": 8.9,
+"peak": 22.1,
+"count": {
+"single": 27,
+"creature": 28,
+"climb": 22,
+"swing": 3
+},
+"traced": "extended/check"
+},
+{
+"id": "4-1",
+"setting": "normal",
+"seeds": 2,
+"score": 0,
+"min": 0,
+"max": 0,
+"minutes": 0.02,
+"points": 0,
+"mean": 0,
+"peak": 0,
+"count": {},
+"traced": "failed"
+},
+{
+"id": "4-2",
+"setting": "normal",
+"seeds": 2,
+"score": 13.1,
+"min": 10.8,
+"max": 15.4,
+"minutes": 3.615,
+"points": 102.35,
+"mean": 28.05,
+"peak": 57.300000000000004,
+"count": {
+"single": 29,
+"double": 38,
+"hazard": 9
+},
+"traced": "check"
+},
+{
+"id": "4-3",
+"setting": "normal",
+"seeds": 2,
+"score": 18.5,
+"min": 18,
+"max": 19,
+"minutes": 3.64,
+"points": 155.35,
+"mean": 42.7,
+"peak": 77.9,
+"count": {
+"single": 13,
+"climb": 9,
+"double": 59,
+"puzzle": 9,
+"hazard": 15
+},
+"traced": "check"
+},
+{
+"id": "4-4",
+"setting": "normal",
+"seeds": 2,
+"score": 15.7,
+"min": 15.5,
+"max": 16,
+"minutes": 5.43,
+"points": 153.1,
+"mean": 28.2,
+"peak": 74.4,
+"count": {
+"single": 13,
+"swing": 45,
+"hazard": 19,
+"puzzle": 3
+},
+"traced": "extended"
+},
+{
+"id": "4-5",
+"setting": "normal",
+"seeds": 2,
+"score": 11.1,
+"min": 5,
+"max": 17.3,
+"minutes": 3.48,
+"points": 61.85,
+"mean": 17.4,
+"peak": 55.25,
+"count": {
+"single": 60,
+"hazard": 12,
+"puzzle": 3,
+"double": 6
+},
+"traced": "check/extended"
+},
+{
+"id": "4-6",
+"setting": "normal",
+"seeds": 2,
+"score": 14.4,
+"min": 13.8,
+"max": 15.1,
+"minutes": 3.395,
+"points": 69.5,
+"mean": 20.45,
+"peak": 73.75,
+"count": {
+"climb": 27,
+"puzzle": 9,
+"hazard": 11,
+"creature": 2,
+"single": 13,
+"double": 17
+},
+"traced": "check"
+},
+{
+"id": "4-7",
+"setting": "normal",
+"seeds": 2,
+"score": 1.9,
+"min": 1.8,
+"max": 2,
+"minutes": 3.365,
+"points": 8.75,
+"mean": 2.5999999999999996,
+"peak": 10.05,
+"count": {
+"double": 2,
+"climb": 9,
+"single": 1,
+"hazard": 1
+},
+"traced": "check"
+},
+{
+"id": "4-8",
+"setting": "normal",
+"seeds": 2,
+"score": 2.4,
+"min": 0.6,
+"max": 4.3,
+"minutes": 5.03,
+"points": 19.8,
+"mean": 4.05,
+"peak": 11.8,
+"count": {
+"single": 9,
+"puzzle": 31,
+"double": 13,
+"hazard": 3
+},
+"traced": "check"
+},
+{
+"id": "4-9",
+"setting": "normal",
+"seeds": 2,
+"score": 0,
+"min": 0,
+"max": 0,
+"minutes": 4.9399999999999995,
+"points": 0,
+"mean": 0,
+"peak": 0,
+"count": {},
+"traced": "failed"
+},
+{
+"id": "5-1",
+"setting": "normal",
+"seeds": 2,
+"score": 5.7,
+"min": 5.4,
+"max": 6,
+"minutes": 4.09,
+"points": 40.5,
+"mean": 9.9,
+"peak": 27.35,
+"count": {
+"single": 20,
+"double": 14,
+"puzzle": 10,
+"creature": 14
+},
+"traced": "check"
+},
+{
+"id": "5-2",
+"setting": "normal",
+"seeds": 2,
+"score": 6.9,
+"min": 6.6,
+"max": 7.3,
+"minutes": 5.359999999999999,
+"points": 69.69999999999999,
+"mean": 13,
+"peak": 32.35,
+"count": {
+"single": 12,
+"creature": 22,
+"hazard": 13,
+"double": 8,
+"puzzle": 23
+},
+"traced": "check"
+},
+{
+"id": "5-3",
+"setting": "normal",
+"seeds": 2,
+"score": 4.1,
+"min": 3.4,
+"max": 4.8,
+"minutes": 3.9349999999999996,
+"points": 28.35,
+"mean": 7.199999999999999,
+"peak": 19.4,
+"count": {
+"double": 7,
+"single": 10,
+"puzzle": 25,
+"hazard": 1,
+"creature": 12
+},
+"traced": "check"
+},
+{
+"id": "5-4",
+"setting": "normal",
+"seeds": 2,
+"score": 8.4,
+"min": 8,
+"max": 8.7,
+"minutes": 5.805,
+"points": 74.55,
+"mean": 12.850000000000001,
+"peak": 41.7,
+"count": {
+"single": 13,
+"swing": 14,
+"double": 12,
+"hazard": 3,
+"creature": 8
+},
+"traced": "extended"
+},
+{
+"id": "5-5",
+"setting": "normal",
+"seeds": 2,
+"score": 4.5,
+"min": 4.5,
+"max": 4.6,
+"minutes": 4.245,
+"points": 38.1,
+"mean": 9,
+"peak": 20.700000000000003,
+"count": {
+"double": 5,
+"single": 10,
+"puzzle": 24,
+"creature": 12,
+"swing": 2,
+"hazard": 7
+},
+"traced": "extended/check"
+},
+{
+"id": "5-6",
+"setting": "normal",
+"seeds": 2,
+"score": 7.5,
+"min": 7.5,
+"max": 7.6,
+"minutes": 3.26,
+"points": 40.3,
+"mean": 12.35,
+"peak": 36.8,
+"count": {
+"single": 8,
+"double": 4,
+"creature": 16,
+"climb": 4,
+"hazard": 3,
+"puzzle": 3
+},
+"traced": "check"
+},
+{
+"id": "5-7",
+"setting": "normal",
+"seeds": 2,
+"score": 7.3,
+"min": 6.7,
+"max": 7.9,
+"minutes": 3.18,
+"points": 44.8,
+"mean": 14.1,
+"peak": 33.25,
+"count": {
+"single": 29,
+"puzzle": 24,
+"hazard": 18,
+"creature": 7,
+"double": 1
+},
+"traced": "check"
+},
+{
+"id": "5-8",
+"setting": "normal",
+"seeds": 2,
+"score": 11.8,
+"min": 11.4,
+"max": 12.3,
+"minutes": 3.135,
+"points": 74.9,
+"mean": 23.9,
+"peak": 53.45,
+"count": {
+"double": 4,
+"single": 51,
+"climb": 8,
+"bounce": 3,
+"creature": 5,
+"swing": 8,
+"hazard": 1
+},
+"traced": "extended"
+},
+{
+"id": "5-9",
+"setting": "normal",
+"seeds": 2,
+"score": 10.8,
+"min": 7.1,
+"max": 14.5,
+"minutes": 12.99,
+"points": 122.8,
+"mean": 8.8,
+"peak": 61.8,
+"count": {
+"single": 117,
+"creature": 28,
+"double": 4,
+"puzzle": 21,
+"hazard": 9
+},
+"traced": "check"
+},
+{
+"id": "6-1",
+"setting": "normal",
+"seeds": 2,
+"score": 7,
+"min": 5.1,
+"max": 9,
+"minutes": 3.9,
+"points": 51.85,
+"mean": 13.25,
+"peak": 32.65,
+"count": {
+"single": 11,
+"swing": 29,
+"climb": 1,
+"creature": 2
+},
+"traced": "extended"
+},
+{
+"id": "6-2",
+"setting": "normal",
+"seeds": 2,
+"score": 3,
+"min": 2.4,
+"max": 3.7,
+"minutes": 3.3049999999999997,
+"points": 24.15,
+"mean": 7.300000000000001,
+"peak": 12.5,
+"count": {
+"hazard": 12,
+"single": 14
+},
+"traced": "check"
+},
+{
+"id": "6-3",
+"setting": "normal",
+"seeds": 2,
+"score": 5.7,
+"min": 5.1,
+"max": 6.3,
+"minutes": 3.825,
+"points": 42.05,
+"mean": 11.05,
+"peak": 26.200000000000003,
+"count": {
+"single": 20,
+"swing": 17,
+"puzzle": 1,
+"creature": 4,
+"hazard": 4
+},
+"traced": "extended"
+},
+{
+"id": "6-4",
+"setting": "normal",
+"seeds": 2,
+"score": 2.5,
+"min": 2.2,
+"max": 2.7,
+"minutes": 3.3899999999999997,
+"points": 18.7,
+"mean": 5.55,
+"peak": 10.65,
+"count": {
+"hazard": 7,
+"single": 12,
+"creature": 9
+},
+"traced": "check"
+},
+{
+"id": "6-5",
+"setting": "normal",
+"seeds": 2,
+"score": 5,
+"min": 3.9,
+"max": 6,
+"minutes": 8.37,
+"points": 64.94999999999999,
+"mean": 7.6000000000000005,
+"peak": 24.8,
+"count": {
+"hazard": 47,
+"single": 75,
+"creature": 22
+},
+"traced": "check"
+},
+{
+"id": "6-6",
+"setting": "normal",
+"seeds": 2,
+"score": 7,
+"min": 6.7,
+"max": 7.4,
+"minutes": 3.8049999999999997,
+"points": 49.45,
+"mean": 13,
+"peak": 32.95,
+"count": {
+"single": 10,
+"swing": 18,
+"climb": 6,
+"hazard": 4,
+"double": 1,
+"puzzle": 1,
+"creature": 1
+},
+"traced": "extended"
+},
+{
+"id": "6-7",
+"setting": "normal",
+"seeds": 2,
+"score": 6.8,
+"min": 6.7,
+"max": 6.9,
+"minutes": 3.865,
+"points": 49,
+"mean": 12.7,
+"peak": 31.85,
+"count": {
+"single": 13,
+"swing": 18,
+"puzzle": 1,
+"hazard": 6,
+"climb": 2,
+"creature": 4
+},
+"traced": "extended"
+},
+{
+"id": "6-8",
+"setting": "normal",
+"seeds": 2,
+"score": 10.5,
+"min": 10.4,
+"max": 10.6,
+"minutes": 2.34,
+"points": 50.45,
+"mean": 21.5,
+"peak": 46.7,
+"count": {
+"single": 5,
+"climb": 22,
+"double": 5,
+"swing": 13,
+"creature": 5
+},
+"traced": "extended"
+},
+{
+"id": "6-9",
+"setting": "normal",
+"seeds": 2,
+"score": 4.9,
+"min": 4.6,
+"max": 5.1,
+"minutes": 12.175,
+"points": 93.45,
+"mean": 7.65,
+"peak": 24,
+"count": {
+"single": 50,
+"hazard": 76,
+"creature": 30
+},
+"traced": "check"
+},
+{
+"id": "7-1",
+"setting": "normal",
+"seeds": 2,
+"score": 3.3,
+"min": 1.3,
+"max": 5.4,
+"minutes": 3.54,
+"points": 21.55,
+"mean": 6.1,
+"peak": 15.549999999999999,
+"count": {
+"single": 16,
+"hazard": 16,
+"double": 1,
+"creature": 9
+},
+"traced": "check"
+},
+{
+"id": "7-2",
+"setting": "normal",
+"seeds": 2,
+"score": 13.1,
+"min": 10.6,
+"max": 15.7,
+"minutes": 3.27,
+"points": 76.5,
+"mean": 23.45,
+"peak": 62.3,
+"count": {
+"single": 52,
+"climb": 14,
+"creature": 4,
+"bounce": 5,
+"double": 3,
+"beyond": 1,
+"swing": 2,
+"hazard": 1
+},
+"traced": "extended"
+},
+{
+"id": "7-3",
+"setting": "normal",
+"seeds": 2,
+"score": 1.9,
+"min": 1.6,
+"max": 2.1,
+"minutes": 3.7199999999999998,
+"points": 12.75,
+"mean": 3.5,
+"peak": 8.7,
+"count": {
+"single": 23,
+"climb": 8,
+"puzzle": 6,
+"creature": 6
+},
+"traced": "check"
+},
+{
+"id": "7-4",
+"setting": "normal",
+"seeds": 2,
+"score": 1.3,
+"min": 1.3,
+"max": 1.3,
+"minutes": 0.67,
+"points": 2.4,
+"mean": 3.5,
+"peak": 4.8,
+"count": {
+"single": 5
+},
+"traced": "check"
+},
+{
+"id": "7-5",
+"setting": "normal",
+"seeds": 2,
+"score": 9.4,
+"min": 8.4,
+"max": 10.4,
+"minutes": 13.64,
+"points": 205.25,
+"mean": 15,
+"peak": 46.45,
+"count": {
+"single": 116,
+"creature": 22,
+"hazard": 39,
+"swing": 12,
+"climb": 4,
+"double": 7
+},
+"traced": "presumed/extended"
+},
+{
+"id": "7-6",
+"setting": "normal",
+"seeds": 2,
+"score": 5.2,
+"min": 4,
+"max": 6.4,
+"minutes": 3.21,
+"points": 29.549999999999997,
+"mean": 9.2,
+"peak": 24.8,
+"count": {
+"single": 19,
+"hazard": 16,
+"creature": 8,
+"double": 1
+},
+"traced": "check"
+},
+{
+"id": "7-7",
+"setting": "normal",
+"seeds": 2,
+"score": 1.5,
+"min": 1,
+"max": 1.9,
+"minutes": 3.545,
+"points": 9.15,
+"mean": 2.6,
+"peak": 6.8999999999999995,
+"count": {
+"single": 27,
+"climb": 6,
+"puzzle": 6,
+"creature": 7
+},
+"traced": "check"
+},
+{
+"id": "7-8",
+"setting": "normal",
+"seeds": 2,
+"score": 15.3,
+"min": 12.8,
+"max": 17.8,
+"minutes": 3.54,
+"points": 101.65,
+"mean": 28.950000000000003,
+"peak": 70.8,
+"count": {
+"double": 6,
+"single": 52,
+"climb": 10,
+"swing": 7,
+"creature": 8,
+"bounce": 5
+},
+"traced": "extended"
+},
+{
+"id": "7-9",
+"setting": "normal",
+"seeds": 2,
+"score": 14.1,
+"min": 9.1,
+"max": 19,
+"minutes": 21.895,
+"points": 378.7,
+"mean": 15.299999999999999,
+"peak": 76.45,
+"count": {
+"single": 227,
+"creature": 30,
+"double": 8,
+"swing": 37,
+"climb": 5
+},
+"traced": "presumed/extended"
+},
+{
+"id": "8-1",
+"setting": "normal",
+"seeds": 2,
+"score": 3.7,
+"min": 3.7,
+"max": 3.7,
+"minutes": 3.6399999999999997,
+"points": 32.7,
+"mean": 9,
+"peak": 15.3,
+"count": {
+"single": 23,
+"hazard": 25,
+"puzzle": 1,
+"climb": 6
+},
+"traced": "check"
+},
+{
+"id": "8-2",
+"setting": "normal",
+"seeds": 2,
+"score": 2.9,
+"min": 1,
+"max": 4.9,
+"minutes": 3.635,
+"points": 19.1,
+"mean": 5.25,
+"peak": 13.75,
+"count": {
+"single": 12,
+"hazard": 2,
+"climb": 16,
+"puzzle": 1,
+"creature": 1
+},
+"traced": "check"
+},
+{
+"id": "8-3",
+"setting": "normal",
+"seeds": 2,
+"score": 4.8,
+"min": 2.7,
+"max": 6.8,
+"minutes": 3.87,
+"points": 32.8,
+"mean": 8.15,
+"peak": 22.9,
+"count": {
+"swing": 17,
+"single": 9,
+"puzzle": 1,
+"hazard": 2,
+"creature": 7,
+"double": 1
+},
+"traced": "extended/check"
+},
+{
+"id": "8-4",
+"setting": "normal",
+"seeds": 2,
+"score": 9,
+"min": 8.8,
+"max": 9.1,
+"minutes": 3.8600000000000003,
+"points": 74.75,
+"mean": 19.35,
+"peak": 39.2,
+"count": {
+"hazard": 1,
+"single": 7,
+"double": 22,
+"climb": 5,
+"swing": 14
+},
+"traced": "extended"
+},
+{
+"id": "8-5",
+"setting": "normal",
+"seeds": 2,
+"score": 3.3,
+"min": 3.2,
+"max": 3.4,
+"minutes": 3.9800000000000004,
+"points": 21.35,
+"mean": 5.35,
+"peak": 16.3,
+"count": {
+"climb": 17,
+"single": 3,
+"puzzle": 1,
+"hazard": 2,
+"swing": 9,
+"creature": 1
+},
+"traced": "check"
+},
+{
+"id": "8-6",
+"setting": "normal",
+"seeds": 2,
+"score": 1.6,
+"min": 1.1,
+"max": 2.2,
+"minutes": 3.46,
+"points": 11.8,
+"mean": 3.35,
+"peak": 7.25,
+"count": {
+"single": 8,
+"creature": 3,
+"hazard": 1
+},
+"traced": "check"
+},
+{
+"id": "8-7",
+"setting": "normal",
+"seeds": 2,
+"score": 16.8,
+"min": 16.1,
+"max": 17.5,
+"minutes": 3.865,
+"points": 119.4,
+"mean": 30.849999999999998,
+"peak": 78.85,
+"count": {
+"double": 5,
+"single": 58,
+"bounce": 9,
+"creature": 8,
+"swing": 4,
+"climb": 11,
+"hazard": 4
+},
+"traced": "extended"
+},
+{
+"id": "8-8",
+"setting": "normal",
+"seeds": 2,
+"score": 4.8,
+"min": 2.6,
+"max": 6.9,
+"minutes": 13.955,
+"points": 120,
+"mean": 8.05,
+"peak": 23.1,
+"count": {
+"single": 136,
+"creature": 24,
+"hazard": 144
+},
+"traced": "check/presumed"
+},
+{
+"id": "8-9",
+"setting": "normal",
+"seeds": 2,
+"score": 10.2,
+"min": 7.6,
+"max": 12.7,
+"minutes": 21.345,
+"points": 136.75,
+"mean": 7.449999999999999,
+"peak": 58.9,
+"count": {
+"creature": 30,
+"single": 172,
+"climb": 73,
+"double": 8,
+"hazard": 11
+},
+"traced": "presumed"
+},
+{
+"id": "9-1",
+"setting": "normal",
+"seeds": 2,
+"score": 4.4,
+"min": 4,
+"max": 4.8,
+"minutes": 3.6550000000000002,
+"points": 29.700000000000003,
+"mean": 8.15,
+"peak": 20.8,
+"count": {
+"single": 10,
+"creature": 22,
+"double": 2,
+"swing": 1,
+"hazard": 1,
+"climb": 1
+},
+"traced": "check"
+},
+{
+"id": "9-2",
+"setting": "normal",
+"seeds": 2,
+"score": 16.9,
+"min": 14.2,
+"max": 19.6,
+"minutes": 3.885,
+"points": 114.35,
+"mean": 29.35,
+"peak": 80.85,
+"count": {
+"double": 5,
+"single": 42,
+"climb": 13,
+"swing": 9,
+"creature": 5,
+"hazard": 2,
+"bounce": 2
+},
+"traced": "extended"
+},
+{
+"id": "9-3",
+"setting": "normal",
+"seeds": 2,
+"score": 7,
+"min": 6.9,
+"max": 7.1,
+"minutes": 3.7199999999999998,
+"points": 47.9,
+"mean": 12.9,
+"peak": 33.05,
+"count": {
+"swing": 5,
+"creature": 23,
+"single": 7,
+"double": 3,
+"hazard": 4
+},
+"traced": "check/extended"
+},
+{
+"id": "9-4",
+"setting": "normal",
+"seeds": 2,
+"score": 5,
+"min": 4.8,
+"max": 5.2,
+"minutes": 3.855,
+"points": 32.45,
+"mean": 8.45,
+"peak": 24.05,
+"count": {
+"double": 6,
+"creature": 18,
+"climb": 3,
+"single": 8,
+"hazard": 3,
+"swing": 1
+},
+"traced": "check"
+},
+{
+"id": "9-5",
+"setting": "normal",
+"seeds": 2,
+"score": 7.4,
+"min": 6.8,
+"max": 8,
+"minutes": 3.47,
+"points": 38.05,
+"mean": 11,
+"peak": 37.349999999999994,
+"count": {
+"creature": 22,
+"climb": 2,
+"single": 8,
+"hazard": 5,
+"double": 1
+},
+"traced": "check"
+},
+{
+"id": "9-6",
+"setting": "normal",
+"seeds": 2,
+"score": 10.2,
+"min": 10,
+"max": 10.3,
+"minutes": 7.055,
+"points": 106.6,
+"mean": 15.05,
+"peak": 51.3,
+"count": {
+"creature": 34,
+"single": 45,
+"double": 6,
+"hazard": 25,
+"swing": 2
+},
+"traced": "extended/presumed"
+},
+{
+"id": "9-7",
+"setting": "normal",
+"seeds": 2,
+"score": 17.4,
+"min": 15.9,
+"max": 18.8,
+"minutes": 3.71,
+"points": 129.8,
+"mean": 35,
+"peak": 78.4,
+"count": {
+"double": 7,
+"single": 58,
+"hazard": 4,
+"bounce": 4,
+"creature": 5,
+"climb": 9,
+"swing": 10
+},
+"traced": "extended"
+},
+{
+"id": "9-8",
+"setting": "normal",
+"seeds": 2,
+"score": 7.4,
+"min": 7.3,
+"max": 7.6,
+"minutes": 3.955,
+"points": 54.55,
+"mean": 13.8,
+"peak": 34.650000000000006,
+"count": {
+"double": 5,
+"creature": 23,
+"puzzle": 4,
+"climb": 3,
+"hazard": 9,
+"single": 6
+},
+"traced": "check"
+},
+{
+"id": "9-9",
+"setting": "normal",
+"seeds": 2,
+"score": 9.8,
+"min": 9.2,
+"max": 10.5,
+"minutes": 8.43,
+"points": 128.6,
+"mean": 15.350000000000001,
+"peak": 48.8,
+"count": {
+"single": 30,
+"creature": 35,
+"double": 7,
+"hazard": 46,
+"swing": 6
+},
+"traced": "extended"
+},
+{
+"id": "10-1",
+"setting": "normal",
+"seeds": 2,
+"score": 6.7,
+"min": 5.9,
+"max": 7.5,
+"minutes": 3.83,
+"points": 39.650000000000006,
+"mean": 10.35,
+"peak": 33.5,
+"count": {
+"single": 9,
+"hazard": 5,
+"creature": 20,
+"climb": 1,
+"double": 3
+},
+"traced": "check"
+},
+{
+"id": "10-2",
+"setting": "normal",
+"seeds": 2,
+"score": 19,
+"min": 18,
+"max": 20.1,
+"minutes": 3.795,
+"points": 134.64999999999998,
+"mean": 35.55,
+"peak": 88.65,
+"count": {
+"double": 5,
+"single": 53,
+"hazard": 5,
+"swing": 11,
+"creature": 5,
+"bounce": 3,
+"climb": 11
+},
+"traced": "extended"
+},
+{
+"id": "10-3",
+"setting": "normal",
+"seeds": 2,
+"score": 5.1,
+"min": 4.5,
+"max": 5.7,
+"minutes": 3.9450000000000003,
+"points": 36.2,
+"mean": 9.15,
+"peak": 24.25,
+"count": {
+"double": 6,
+"climb": 6,
+"creature": 16,
+"single": 9,
+"hazard": 4
+},
+"traced": "check"
+},
+{
+"id": "10-4",
+"setting": "normal",
+"seeds": 2,
+"score": 17,
+"min": 15.5,
+"max": 18.5,
+"minutes": 3.9850000000000003,
+"points": 121.4,
+"mean": 30.55,
+"peak": 80.5,
+"count": {
+"double": 6,
+"single": 46,
+"bounce": 4,
+"creature": 10,
+"swing": 12,
+"hazard": 3,
+"climb": 13
+},
+"traced": "extended"
+},
+{
+"id": "10-5",
+"setting": "normal",
+"seeds": 2,
+"score": 24.8,
+"min": 22.6,
+"max": 27,
+"minutes": 3.885,
+"points": 161.1,
+"mean": 41.349999999999994,
+"peak": 120.65,
+"count": {
+"swing": 12,
+"creature": 5,
+"climb": 10,
+"single": 49,
+"hazard": 6,
+"double": 3,
+"bounce": 4
+},
+"traced": "extended"
+},
+{
+"id": "10-6",
+"setting": "normal",
+"seeds": 2,
+"score": 6.6,
+"min": 6.2,
+"max": 7,
+"minutes": 3.75,
+"points": 43.7,
+"mean": 11.7,
+"peak": 31.5,
+"count": {
+"swing": 5,
+"creature": 21,
+"single": 11,
+"hazard": 5
+},
+"traced": "check"
+},
+{
+"id": "10-7",
+"setting": "normal",
+"seeds": 2,
+"score": 19.4,
+"min": 11.8,
+"max": 27.1,
+"minutes": 10.29,
+"points": 164.8,
+"mean": 15.5,
+"peak": 111.2,
+"count": {
+"creature": 34,
+"hazard": 31,
+"single": 41,
+"double": 7,
+"swing": 2
+},
+"traced": "extended"
+},
+{
+"id": "10-8",
+"setting": "normal",
+"seeds": 2,
+"score": 18.3,
+"min": 14,
+"max": 22.6,
+"minutes": 4.135,
+"points": 140.35000000000002,
+"mean": 33.95,
+"peak": 85.35,
+"count": {
+"single": 84,
+"climb": 11,
+"hazard": 7,
+"swing": 4,
+"creature": 7,
+"bounce": 3,
+"double": 4
+},
+"traced": "extended"
+},
+{
+"id": "10-9",
+"setting": "normal",
+"seeds": 2,
+"score": 14.4,
+"min": 13.3,
+"max": 15.6,
+"minutes": 10.145,
+"points": 172.5,
+"mean": 17.049999999999997,
+"peak": 77.05000000000001,
+"count": {
+"creature": 36,
+"double": 13,
+"single": 46,
+"hazard": 66,
+"swing": 2
+},
+"traced": "presumed/extended"
+},
+{
+"id": "1-1",
+"setting": "easy",
+"seeds": 2,
+"score": 2.9,
+"min": 2.7,
+"max": 3.1,
+"minutes": 3.535,
+"points": 13.85,
+"mean": 3.9,
+"peak": 15.149999999999999,
+"count": {
+"single": 59,
+"double": 4,
+"bounce": 1
+},
+"traced": "check"
+},
+{
+"id": "1-2",
+"setting": "easy",
+"seeds": 2,
+"score": 1.1,
+"min": 0.3,
+"max": 1.9,
+"minutes": 3.525,
+"points": 3.7,
+"mean": 1.05,
+"peak": 6.1,
+"count": {
+"single": 37,
+"bounce": 29
+},
+"traced": "check"
+},
+{
+"id": "1-3",
+"setting": "easy",
+"seeds": 2,
+"score": 0.6,
+"min": 0.5,
+"max": 0.6,
+"minutes": 3.935,
+"points": 3.15,
+"mean": 0.8,
+"peak": 3,
+"count": {
+"single": 54,
+"creature-choice": 14,
+"creature": 1
+},
+"traced": "check"
+},
+{
+"id": "1-4",
+"setting": "easy",
+"seeds": 2,
+"score": 0.2,
+"min": 0.1,
+"max": 0.3,
+"minutes": 1.885,
+"points": 0.5,
+"mean": 0.25,
+"peak": 1,
+"count": {
+"climb": 17,
+"puzzle": 2,
+"single": 9
+},
+"traced": "presumed"
+},
+{
+"id": "1-5",
+"setting": "easy",
+"seeds": 2,
+"score": 2,
+"min": 1.9,
+"max": 2,
+"minutes": 3.195,
+"points": 6.3,
+"mean": 1.95,
+"peak": 10.8,
+"count": {
+"single": 38
+},
+"traced": "presumed"
+},
+{
+"id": "1-6",
+"setting": "easy",
+"seeds": 2,
+"score": 9.8,
+"min": 9.1,
+"max": 10.6,
+"minutes": 3.76,
+"points": 66.05000000000001,
+"mean": 17.6,
+"peak": 46.650000000000006,
+"count": {
+"swing": 16,
+"single": 41,
+"double": 7,
+"puzzle": 7,
+"creature": 1
+},
+"traced": "extended/presumed"
+},
+{
+"id": "1-7",
+"setting": "easy",
+"seeds": 2,
+"score": 4.4,
+"min": 4.4,
+"max": 4.4,
+"minutes": 3.9699999999999998,
+"points": 33.900000000000006,
+"mean": 8.5,
+"peak": 20.200000000000003,
+"count": {
+"hazard": 14,
+"single": 55,
+"double": 1,
+"puzzle": 2
+},
+"traced": "check"
+},
+{
+"id": "1-8",
+"setting": "easy",
+"seeds": 2,
+"score": 29.5,
+"min": 28.8,
+"max": 30.2,
+"minutes": 3.58,
+"points": 231.3,
+"mean": 64.65,
+"peak": 127.95,
+"count": {
+"single": 25,
+"hazard": 80,
+"creature": 3,
+"swing": 5,
+"climb": 2
+},
+"traced": "check"
+},
+{
+"id": "1-9",
+"setting": "easy",
+"seeds": 2,
+"score": 6.4,
+"min": 6.2,
+"max": 6.7,
+"minutes": 2.25,
+"points": 27.15,
+"mean": 12,
+"peak": 30,
+"count": {
+"single": 26,
+"creature": 13,
+"double": 5,
+"creature-choice": 1
+},
+"traced": "check"
+},
+{
+"id": "2-1",
+"setting": "easy",
+"seeds": 2,
+"score": 7.5,
+"min": 4.3,
+"max": 10.7,
+"minutes": 4.12,
+"points": 65.3,
+"mean": 15.05,
+"peak": 34,
+"count": {
+"single": 1,
+"hazard": 26
+},
+"traced": "check"
+},
+{
+"id": "2-2",
+"setting": "easy",
+"seeds": 2,
+"score": 7.5,
+"min": 5.8,
+"max": 9.3,
+"minutes": 3.865,
+"points": 58.4,
+"mean": 14.600000000000001,
+"peak": 34.65,
+"count": {
+"single": 53,
+"hazard": 49,
+"double": 2,
+"creature": 4,
+"puzzle": 1
+},
+"traced": "check"
+},
+{
+"id": "2-3",
+"setting": "easy",
+"seeds": 2,
+"score": 9.1,
+"min": 7.2,
+"max": 11.1,
+"minutes": 3.485,
+"points": 63.25,
+"mean": 18.25,
+"peak": 41.45,
+"count": {
+"puzzle": 10,
+"single": 30,
+"double": 15,
+"hazard": 13
+},
+"traced": "check"
+},
+{
+"id": "2-4",
+"setting": "easy",
+"seeds": 2,
+"score": 12.6,
+"min": 11.7,
+"max": 13.5,
+"minutes": 5.470000000000001,
+"points": 108.35,
+"mean": 19.75,
+"peak": 62.25,
+"count": {
+"swing": 43,
+"hazard": 19
+},
+"traced": "extended"
+},
+{
+"id": "2-5",
+"setting": "easy",
+"seeds": 2,
+"score": 3.7,
+"min": 3.4,
+"max": 4,
+"minutes": 4.035,
+"points": 33.25,
+"mean": 8.05,
+"peak": 15.850000000000001,
+"count": {
+"single": 10,
+"creature": 21,
+"hazard": 5
+},
+"traced": "check"
+},
+{
+"id": "2-6",
+"setting": "easy",
+"seeds": 2,
+"score": 0.3,
+"min": 0.3,
+"max": 0.3,
+"minutes": 2.355,
+"points": 0.9500000000000001,
+"mean": 0.35,
+"peak": 1.7000000000000002,
+"count": {
+"climb": 29,
+"single": 4,
+"creature": 1
+},
+"traced": "check"
+},
+{
+"id": "2-7",
+"setting": "easy",
+"seeds": 2,
+"score": 7,
+"min": 6.4,
+"max": 7.5,
+"minutes": 3.7750000000000004,
+"points": 43.7,
+"mean": 11.55,
+"peak": 34.05,
+"count": {
+"single": 68,
+"hazard": 23,
+"double": 4,
+"climb": 2,
+"creature": 1,
+"swing": 3
+},
+"traced": "extended"
+},
+{
+"id": "2-8",
+"setting": "easy",
+"seeds": 2,
+"score": 4.5,
+"min": 3.9,
+"max": 5.1,
+"minutes": 3.075,
+"points": 28.799999999999997,
+"mean": 9.3,
+"peak": 20.15,
+"count": {
+"single": 61,
+"hazard": 17,
+"puzzle": 20,
+"double": 1
+},
+"traced": "check"
+},
+{
+"id": "2-9",
+"setting": "easy",
+"seeds": 2,
+"score": 4.5,
+"min": 3.6,
+"max": 5.4,
+"minutes": 3.0300000000000002,
+"points": 28.4,
+"mean": 9.350000000000001,
+"peak": 20,
+"count": {
+"puzzle": 2,
+"creature": 15,
+"single": 13,
+"hazard": 9
+},
+"traced": "check"
+},
+{
+"id": "3-1",
+"setting": "easy",
+"seeds": 2,
+"score": 2.8,
+"min": 2.5,
+"max": 3.1,
+"minutes": 3.0999999999999996,
+"points": 15.85,
+"mean": 5.1,
+"peak": 13.3,
+"count": {
+"single": 76,
+"double": 2,
+"hazard": 4
+},
+"traced": "check"
+},
+{
+"id": "3-2",
+"setting": "easy",
+"seeds": 2,
+"score": 7.1,
+"min": 7.1,
+"max": 7.1,
+"minutes": 3.365,
+"points": 42.6,
+"mean": 12.649999999999999,
+"peak": 33.75,
+"count": {
+"single": 34,
+"hazard": 8,
+"puzzle": 3,
+"double": 4,
+"swing": 3,
+"climb": 14
+},
+"traced": "extended"
+},
+{
+"id": "3-3",
+"setting": "easy",
+"seeds": 2,
+"score": 5.2,
+"min": 4.5,
+"max": 5.8,
+"minutes": 4.82,
+"points": 40.15,
+"mean": 8.55,
+"peak": 25.15,
+"count": {
+"single": 35,
+"creature": 10,
+"double": 3,
+"hazard": 13
+},
+"traced": "check/extended"
+},
+{
+"id": "3-4",
+"setting": "easy",
+"seeds": 2,
+"score": 3.8,
+"min": 3.6,
+"max": 3.9,
+"minutes": 2.14,
+"points": 18.35,
+"mean": 8.6,
+"peak": 15.95,
+"count": {
+"climb": 23,
+"hazard": 7,
+"single": 8,
+"double": 2
+},
+"traced": "check"
+},
+{
+"id": "3-5",
+"setting": "easy",
+"seeds": 2,
+"score": 6.1,
+"min": 5.7,
+"max": 6.5,
+"minutes": 2.89,
+"points": 39.7,
+"mean": 14,
+"peak": 25.7,
+"count": {
+"hazard": 30,
+"single": 13,
+"double": 1,
+"puzzle": 3
+},
+"traced": "check/extended"
+},
+{
+"id": "3-6",
+"setting": "easy",
+"seeds": 2,
+"score": 4,
+"min": 3.6,
+"max": 4.4,
+"minutes": 3.215,
+"points": 21.799999999999997,
+"mean": 6.8,
+"peak": 19.4,
+"count": {
+"single": 52,
+"puzzle": 9,
+"double": 1,
+"hazard": 2,
+"swing": 2,
+"climb": 9
+},
+"traced": "extended"
+},
+{
+"id": "3-7",
+"setting": "easy",
+"seeds": 2,
+"score": 3.9,
+"min": 3.8,
+"max": 4.1,
+"minutes": 3.0999999999999996,
+"points": 23.15,
+"mean": 7.55,
+"peak": 18.200000000000003,
+"count": {
+"hazard": 10,
+"puzzle": 11,
+"single": 67,
+"double": 1,
+"climb": 2
+},
+"traced": "check"
+},
+{
+"id": "3-8",
+"setting": "easy",
+"seeds": 2,
+"score": 9,
+"min": 8.9,
+"max": 9.2,
+"minutes": 3.75,
+"points": 66.4,
+"mean": 17.75,
+"peak": 41.2,
+"count": {
+"swing": 17,
+"single": 19,
+"hazard": 22,
+"double": 1
+},
+"traced": "extended"
+},
+{
+"id": "3-9",
+"setting": "easy",
+"seeds": 2,
+"score": 3.7,
+"min": 3.2,
+"max": 4.2,
+"minutes": 4.705,
+"points": 30.6,
+"mean": 6.65,
+"peak": 17.6,
+"count": {
+"single": 27,
+"creature": 15,
+"climb": 16,
+"swing": 2
+},
+"traced": "extended/check"
+},
+{
+"id": "4-1",
+"setting": "easy",
+"seeds": 2,
+"score": 0,
+"min": 0,
+"max": 0,
+"minutes": 0.02,
+"points": 0,
+"mean": 0,
+"peak": 0,
+"count": {},
+"traced": "failed"
+},
+{
+"id": "4-2",
+"setting": "easy",
+"seeds": 2,
+"score": 11.1,
+"min": 10,
+"max": 12.2,
+"minutes": 3.615,
+"points": 91.35,
+"mean": 25.15,
+"peak": 47.25,
+"count": {
+"single": 26,
+"double": 41,
+"hazard": 9
+},
+"traced": "check"
+},
+{
+"id": "4-3",
+"setting": "easy",
+"seeds": 2,
+"score": 16.5,
+"min": 16.1,
+"max": 16.8,
+"minutes": 3.64,
+"points": 138.75,
+"mean": 38.099999999999994,
+"peak": 69.5,
+"count": {
+"single": 19,
+"climb": 9,
+"puzzle": 9,
+"double": 53,
+"hazard": 15
+},
+"traced": "check"
+},
+{
+"id": "4-4",
+"setting": "easy",
+"seeds": 2,
+"score": 15.7,
+"min": 15.5,
+"max": 15.9,
+"minutes": 5.43,
+"points": 152.7,
+"mean": 28.1,
+"peak": 74.4,
+"count": {
+"single": 13,
+"swing": 45,
+"hazard": 19,
+"puzzle": 3
+},
+"traced": "extended"
+},
+{
+"id": "4-5",
+"setting": "easy",
+"seeds": 2,
+"score": 10.2,
+"min": 3.4,
+"max": 17.1,
+"minutes": 3.48,
+"points": 57.1,
+"mean": 16,
+"peak": 50.65,
+"count": {
+"single": 62,
+"hazard": 11,
+"puzzle": 3,
+"double": 4
+},
+"traced": "check/extended"
+},
+{
+"id": "4-6",
+"setting": "easy",
+"seeds": 2,
+"score": 12.4,
+"min": 11.8,
+"max": 13,
+"minutes": 3.38,
+"points": 60.95,
+"mean": 18.05,
+"peak": 63.1,
+"count": {
+"climb": 27,
+"puzzle": 9,
+"hazard": 11,
+"creature": 1,
+"single": 13,
+"double": 17
+},
+"traced": "check"
+},
+{
+"id": "4-7",
+"setting": "easy",
+"seeds": 2,
+"score": 1.4,
+"min": 1.2,
+"max": 1.5,
+"minutes": 3.365,
+"points": 5.9,
+"mean": 1.8,
+"peak": 7.05,
+"count": {
+"double": 2,
+"climb": 9,
+"single": 1,
+"hazard": 1
+},
+"traced": "check"
+},
+{
+"id": "4-8",
+"setting": "easy",
+"seeds": 2,
+"score": 2.4,
+"min": 0.6,
+"max": 4.2,
+"minutes": 5.03,
+"points": 19.45,
+"mean": 4,
+"peak": 11.55,
+"count": {
+"single": 8,
+"puzzle": 31,
+"double": 14,
+"hazard": 3
+},
+"traced": "check"
+},
+{
+"id": "4-9",
+"setting": "easy",
+"seeds": 2,
+"score": 0,
+"min": 0,
+"max": 0,
+"minutes": 4.9399999999999995,
+"points": 0,
+"mean": 0,
+"peak": 0,
+"count": {},
+"traced": "failed"
+},
+{
+"id": "5-1",
+"setting": "easy",
+"seeds": 2,
+"score": 4.3,
+"min": 4.2,
+"max": 4.4,
+"minutes": 3.74,
+"points": 31.650000000000002,
+"mean": 8.45,
+"peak": 19.549999999999997,
+"count": {
+"single": 20,
+"double": 14,
+"puzzle": 10,
+"creature": 7
+},
+"traced": "check"
+},
+{
+"id": "5-2",
+"setting": "easy",
+"seeds": 2,
+"score": 6.4,
+"min": 5.9,
+"max": 6.8,
+"minutes": 4.835,
+"points": 55.95,
+"mean": 11.55,
+"peak": 29.950000000000003,
+"count": {
+"single": 12,
+"creature": 11,
+"hazard": 13,
+"double": 8,
+"puzzle": 23
+},
+"traced": "check"
+},
+{
+"id": "5-3",
+"setting": "easy",
+"seeds": 2,
+"score": 3.2,
+"min": 2.9,
+"max": 3.4,
+"minutes": 3.635,
+"points": 22.05,
+"mean": 6.050000000000001,
+"peak": 14.5,
+"count": {
+"double": 7,
+"single": 10,
+"puzzle": 25,
+"hazard": 1,
+"creature": 6
+},
+"traced": "check"
+},
+{
+"id": "5-4",
+"setting": "easy",
+"seeds": 2,
+"score": 8,
+"min": 7.3,
+"max": 8.7,
+"minutes": 5.35,
+"points": 70.4,
+"mean": 13.2,
+"peak": 38.85,
+"count": {
+"single": 16,
+"swing": 16,
+"double": 11,
+"hazard": 3,
+"creature": 5
+},
+"traced": "extended"
+},
+{
+"id": "5-5",
+"setting": "easy",
+"seeds": 2,
+"score": 3.9,
+"min": 3.7,
+"max": 4.1,
+"minutes": 3.92,
+"points": 30.85,
+"mean": 7.85,
+"peak": 17.8,
+"count": {
+"double": 4,
+"single": 11,
+"puzzle": 24,
+"creature": 6,
+"swing": 2,
+"hazard": 7
+},
+"traced": "extended/check"
+},
+{
+"id": "5-6",
+"setting": "easy",
+"seeds": 2,
+"score": 6.3,
+"min": 6.2,
+"max": 6.4,
+"minutes": 2.935,
+"points": 28.35,
+"mean": 9.65,
+"peak": 31.25,
+"count": {
+"single": 8,
+"double": 4,
+"creature": 8,
+"climb": 4,
+"hazard": 3,
+"puzzle": 3
+},
+"traced": "check"
+},
+{
+"id": "5-7",
+"setting": "easy",
+"seeds": 2,
+"score": 6.5,
+"min": 6.5,
+"max": 6.6,
+"minutes": 3,
+"points": 36.900000000000006,
+"mean": 12.3,
+"peak": 30.35,
+"count": {
+"single": 33,
+"puzzle": 21,
+"hazard": 18,
+"creature": 4,
+"double": 1
+},
+"traced": "check"
+},
+{
+"id": "5-8",
+"setting": "easy",
+"seeds": 2,
+"score": 9.6,
+"min": 9.3,
+"max": 9.8,
+"minutes": 3.035,
+"points": 59,
+"mean": 19.4,
+"peak": 42.95,
+"count": {
+"double": 4,
+"single": 51,
+"climb": 8,
+"bounce": 3,
+"creature": 3,
+"swing": 8,
+"hazard": 1
+},
+"traced": "extended"
+},
+{
+"id": "5-9",
+"setting": "easy",
+"seeds": 2,
+"score": 12.1,
+"min": 2.9,
+"max": 21.4,
+"minutes": 10.125,
+"points": 87.64999999999999,
+"mean": 7.8,
+"peak": 71.45,
+"count": {
+"single": 102,
+"creature": 18,
+"double": 1,
+"puzzle": 14,
+"hazard": 3
+},
+"traced": "check"
+},
+{
+"id": "6-1",
+"setting": "easy",
+"seeds": 2,
+"score": 6.3,
+"min": 4.8,
+"max": 7.9,
+"minutes": 3.9699999999999998,
+"points": 42.05,
+"mean": 10.5,
+"peak": 30.85,
+"count": {
+"single": 16,
+"swing": 23,
+"double": 1,
+"climb": 1,
+"creature": 1
+},
+"traced": "extended"
+},
+{
+"id": "6-2",
+"setting": "easy",
+"seeds": 2,
+"score": 2.6,
+"min": 2,
+"max": 3.3,
+"minutes": 3.135,
+"points": 20.9,
+"mean": 6.7,
+"peak": 10.4,
+"count": {
+"hazard": 13,
+"single": 13
+},
+"traced": "check"
+},
+{
+"id": "6-3",
+"setting": "easy",
+"seeds": 2,
+"score": 5.2,
+"min": 5,
+"max": 5.4,
+"minutes": 3.8899999999999997,
+"points": 36.45,
+"mean": 9.35,
+"peak": 24.45,
+"count": {
+"single": 19,
+"swing": 15,
+"puzzle": 1,
+"creature": 2,
+"hazard": 4
+},
+"traced": "extended"
+},
+{
+"id": "6-4",
+"setting": "easy",
+"seeds": 2,
+"score": 2.2,
+"min": 2,
+"max": 2.3,
+"minutes": 3.235,
+"points": 13.95,
+"mean": 4.3,
+"peak": 9.7,
+"count": {
+"hazard": 7,
+"single": 8,
+"creature": 5
+},
+"traced": "check"
+},
+{
+"id": "6-5",
+"setting": "easy",
+"seeds": 2,
+"score": 4.6,
+"min": 2.8,
+"max": 6.4,
+"minutes": 6.6899999999999995,
+"points": 48,
+"mean": 6.9,
+"peak": 23.3,
+"count": {
+"hazard": 37,
+"single": 67,
+"creature": 14
+},
+"traced": "check"
+},
+{
+"id": "6-6",
+"setting": "easy",
+"seeds": 2,
+"score": 5.4,
+"min": 5,
+"max": 5.8,
+"minutes": 3.8,
+"points": 38.150000000000006,
+"mean": 10.05,
+"peak": 25.049999999999997,
+"count": {
+"single": 10,
+"swing": 13,
+"climb": 5,
+"hazard": 4,
+"double": 1,
+"puzzle": 1,
+"creature": 1
+},
+"traced": "extended"
+},
+{
+"id": "6-7",
+"setting": "easy",
+"seeds": 2,
+"score": 5.6,
+"min": 5.5,
+"max": 5.8,
+"minutes": 3.87,
+"points": 36.849999999999994,
+"mean": 9.55,
+"peak": 27.25,
+"count": {
+"single": 13,
+"swing": 14,
+"puzzle": 1,
+"hazard": 5,
+"climb": 2,
+"double": 1,
+"creature": 3
+},
+"traced": "extended"
+},
+{
+"id": "6-8",
+"setting": "easy",
+"seeds": 2,
+"score": 9.5,
+"min": 9.4,
+"max": 9.5,
+"minutes": 2.2800000000000002,
+"points": 44.8,
+"mean": 19.6,
+"peak": 42.1,
+"count": {
+"single": 4,
+"climb": 22,
+"double": 6,
+"swing": 13,
+"creature": 3
+},
+"traced": "extended"
+},
+{
+"id": "6-9",
+"setting": "easy",
+"seeds": 2,
+"score": 4.5,
+"min": 4,
+"max": 5,
+"minutes": 11.84,
+"points": 89.35,
+"mean": 7.15,
+"peak": 22.3,
+"count": {
+"single": 56,
+"hazard": 92,
+"creature": 19
+},
+"traced": "check"
+},
+{
+"id": "7-1",
+"setting": "easy",
+"seeds": 2,
+"score": 2.2,
+"min": 0.6,
+"max": 3.9,
+"minutes": 3.395,
+"points": 14,
+"mean": 4.2,
+"peak": 10.45,
+"count": {
+"single": 24,
+"hazard": 14,
+"creature": 5
+},
+"traced": "check"
+},
+{
+"id": "7-2",
+"setting": "easy",
+"seeds": 2,
+"score": 10.3,
+"min": 7.8,
+"max": 12.7,
+"minutes": 3.245,
+"points": 58.75,
+"mean": 18.1,
+"peak": 48.8,
+"count": {
+"single": 52,
+"climb": 14,
+"creature": 3,
+"bounce": 5,
+"double": 4,
+"swing": 2,
+"hazard": 1
+},
+"traced": "extended"
+},
+{
+"id": "7-3",
+"setting": "easy",
+"seeds": 2,
+"score": 1,
+"min": 0.8,
+"max": 1.3,
+"minutes": 3.565,
+"points": 5.75,
+"mean": 1.6500000000000001,
+"peak": 4.9,
+"count": {
+"single": 22,
+"climb": 8,
+"puzzle": 6,
+"creature": 4
+},
+"traced": "check"
+},
+{
+"id": "7-4",
+"setting": "easy",
+"seeds": 2,
+"score": 1.3,
+"min": 1.3,
+"max": 1.3,
+"minutes": 0.67,
+"points": 2.4,
+"mean": 3.55,
+"peak": 4.8,
+"count": {
+"single": 5
+},
+"traced": "check"
+},
+{
+"id": "7-5",
+"setting": "easy",
+"seeds": 2,
+"score": 6.8,
+"min": 6,
+"max": 7.6,
+"minutes": 9.725000000000001,
+"points": 125.94999999999999,
+"mean": 12.8,
+"peak": 31.35,
+"count": {
+"single": 98,
+"creature": 15,
+"hazard": 28,
+"swing": 10,
+"climb": 4,
+"double": 1
+},
+"traced": "presumed/extended"
+},
+{
+"id": "7-6",
+"setting": "easy",
+"seeds": 2,
+"score": 3,
+"min": 2,
+"max": 4,
+"minutes": 3.055,
+"points": 17.8,
+"mean": 5.75,
+"peak": 13.8,
+"count": {
+"single": 20,
+"hazard": 14,
+"creature": 6
+},
+"traced": "check"
+},
+{
+"id": "7-7",
+"setting": "easy",
+"seeds": 2,
+"score": 0.6,
+"min": 0.6,
+"max": 0.6,
+"minutes": 3.425,
+"points": 3.45,
+"mean": 1,
+"peak": 3,
+"count": {
+"single": 23,
+"climb": 6,
+"puzzle": 6,
+"creature": 4
+},
+"traced": "check"
+},
+{
+"id": "7-8",
+"setting": "easy",
+"seeds": 2,
+"score": 11.2,
+"min": 9.5,
+"max": 12.9,
+"minutes": 3.465,
+"points": 75.55,
+"mean": 21.95,
+"peak": 51,
+"count": {
+"double": 6,
+"single": 52,
+"climb": 10,
+"swing": 7,
+"creature": 5,
+"bounce": 5
+},
+"traced": "extended"
+},
+{
+"id": "7-9",
+"setting": "easy",
+"seeds": 2,
+"score": 9.4,
+"min": 6.6,
+"max": 12.1,
+"minutes": 15.219999999999999,
+"points": 225.2,
+"mean": 13.55,
+"peak": 47.5,
+"count": {
+"single": 167,
+"creature": 19,
+"swing": 27,
+"climb": 4,
+"double": 11
+},
+"traced": "presumed/extended"
+},
+{
+"id": "8-1",
+"setting": "easy",
+"seeds": 2,
+"score": 3.7,
+"min": 3.7,
+"max": 3.7,
+"minutes": 3.6500000000000004,
+"points": 31.85,
+"mean": 8.7,
+"peak": 15.3,
+"count": {
+"single": 23,
+"hazard": 25,
+"puzzle": 1,
+"climb": 6
+},
+"traced": "check"
+},
+{
+"id": "8-2",
+"setting": "easy",
+"seeds": 2,
+"score": 3,
+"min": 2.5,
+"max": 3.5,
+"minutes": 3.71,
+"points": 17.9,
+"mean": 4.85,
+"peak": 14.7,
+"count": {
+"single": 12,
+"hazard": 2,
+"climb": 13,
+"puzzle": 1,
+"double": 3,
+"creature": 1
+},
+"traced": "check"
+},
+{
+"id": "8-3",
+"setting": "easy",
+"seeds": 2,
+"score": 5.5,
+"min": 4.7,
+"max": 6.2,
+"minutes": 3.82,
+"points": 33.05,
+"mean": 8.45,
+"peak": 27.15,
+"count": {
+"swing": 19,
+"puzzle": 1,
+"single": 10,
+"hazard": 2,
+"creature": 4
+},
+"traced": "extended"
+},
+{
+"id": "8-4",
+"setting": "easy",
+"seeds": 2,
+"score": 7.1,
+"min": 6.8,
+"max": 7.3,
+"minutes": 3.88,
+"points": 54.150000000000006,
+"mean": 13.95,
+"peak": 32.05,
+"count": {
+"hazard": 1,
+"single": 8,
+"double": 17,
+"climb": 5,
+"swing": 15
+},
+"traced": "extended"
+},
+{
+"id": "8-5",
+"setting": "easy",
+"seeds": 2,
+"score": 3.6,
+"min": 3,
+"max": 4.2,
+"minutes": 3.99,
+"points": 20.75,
+"mean": 5.15,
+"peak": 18.35,
+"count": {
+"climb": 18,
+"single": 5,
+"puzzle": 1,
+"hazard": 2,
+"swing": 12
+},
+"traced": "extended/check"
+},
+{
+"id": "8-6",
+"setting": "easy",
+"seeds": 2,
+"score": 0.8,
+"min": 0.8,
+"max": 0.8,
+"minutes": 3.38,
+"points": 4.15,
+"mean": 1.25,
+"peak": 3.8499999999999996,
+"count": {
+"single": 15,
+"creature": 2,
+"hazard": 1
+},
+"traced": "check"
+},
+{
+"id": "8-7",
+"setting": "easy",
+"seeds": 2,
+"score": 12,
+"min": 11.7,
+"max": 12.2,
+"minutes": 3.74,
+"points": 85.35,
+"mean": 22.8,
+"peak": 55.400000000000006,
+"count": {
+"double": 5,
+"single": 58,
+"bounce": 9,
+"swing": 4,
+"climb": 11,
+"creature": 6,
+"hazard": 4
+},
+"traced": "extended"
+},
+{
+"id": "8-8",
+"setting": "easy",
+"seeds": 2,
+"score": 4.7,
+"min": 1.8,
+"max": 7.6,
+"minutes": 10.16,
+"points": 88.1,
+"mean": 8.1,
+"peak": 22.650000000000002,
+"count": {
+"single": 105,
+"creature": 15,
+"hazard": 107
+},
+"traced": "check/presumed"
+},
+{
+"id": "8-9",
+"setting": "easy",
+"seeds": 2,
+"score": 5.4,
+"min": 3.9,
+"max": 6.9,
+"minutes": 16.740000000000002,
+"points": 60.95,
+"mean": 4.3,
+"peak": 31.25,
+"count": {
+"creature": 19,
+"single": 132,
+"climb": 61,
+"double": 5,
+"hazard": 7
+},
+"traced": "presumed"
+},
+{
+"id": "9-1",
+"setting": "easy",
+"seeds": 2,
+"score": 3.2,
+"min": 2.7,
+"max": 3.6,
+"minutes": 3.24,
+"points": 18.6,
+"mean": 5.75,
+"peak": 14.850000000000001,
+"count": {
+"single": 10,
+"creature": 13,
+"double": 2,
+"swing": 1,
+"hazard": 1,
+"climb": 1
+},
+"traced": "check"
+},
+{
+"id": "9-2",
+"setting": "easy",
+"seeds": 2,
+"score": 12.8,
+"min": 10.4,
+"max": 15.2,
+"minutes": 3.76,
+"points": 86.15,
+"mean": 22.799999999999997,
+"peak": 60.8,
+"count": {
+"double": 5,
+"single": 41,
+"climb": 13,
+"swing": 8,
+"creature": 4,
+"hazard": 2,
+"bounce": 2
+},
+"traced": "extended"
+},
+{
+"id": "9-3",
+"setting": "easy",
+"seeds": 2,
+"score": 5.6,
+"min": 5.4,
+"max": 5.8,
+"minutes": 3.3600000000000003,
+"points": 35.45,
+"mean": 10.6,
+"peak": 26.1,
+"count": {
+"swing": 6,
+"creature": 11,
+"single": 10,
+"double": 2,
+"hazard": 4
+},
+"traced": "extended/check"
+},
+{
+"id": "9-4",
+"setting": "easy",
+"seeds": 2,
+"score": 3.5,
+"min": 3.3,
+"max": 3.6,
+"minutes": 3.55,
+"points": 22.1,
+"mean": 6.2,
+"peak": 16.35,
+"count": {
+"double": 5,
+"creature": 9,
+"climb": 3,
+"single": 10,
+"hazard": 3,
+"swing": 1
+},
+"traced": "check"
+},
+{
+"id": "9-5",
+"setting": "easy",
+"seeds": 2,
+"score": 4.6,
+"min": 4.1,
+"max": 5.1,
+"minutes": 3.105,
+"points": 23.700000000000003,
+"mean": 7.6499999999999995,
+"peak": 22.6,
+"count": {
+"creature": 13,
+"climb": 2,
+"single": 8,
+"hazard": 5,
+"double": 1
+},
+"traced": "check"
+},
+{
+"id": "9-6",
+"setting": "easy",
+"seeds": 2,
+"score": 7.9,
+"min": 7.4,
+"max": 8.5,
+"minutes": 4.745,
+"points": 64.15,
+"mean": 13.5,
+"peak": 38.15,
+"count": {
+"creature": 19,
+"single": 31,
+"double": 5,
+"hazard": 21,
+"swing": 2
+},
+"traced": "extended/presumed"
+},
+{
+"id": "9-7",
+"setting": "easy",
+"seeds": 2,
+"score": 13.9,
+"min": 13,
+"max": 14.8,
+"minutes": 3.685,
+"points": 97.85,
+"mean": 26.55,
+"peak": 64.19999999999999,
+"count": {
+"double": 7,
+"single": 58,
+"hazard": 4,
+"bounce": 4,
+"creature": 4,
+"climb": 9,
+"swing": 10
+},
+"traced": "extended"
+},
+{
+"id": "9-8",
+"setting": "easy",
+"seeds": 2,
+"score": 5.6,
+"min": 5.6,
+"max": 5.6,
+"minutes": 3.605,
+"points": 37.7,
+"mean": 10.45,
+"peak": 26.05,
+"count": {
+"double": 7,
+"creature": 13,
+"puzzle": 4,
+"climb": 3,
+"hazard": 9,
+"single": 4
+},
+"traced": "check"
+},
+{
+"id": "9-9",
+"setting": "easy",
+"seeds": 2,
+"score": 7.3,
+"min": 7,
+"max": 7.7,
+"minutes": 6.140000000000001,
+"points": 79.05000000000001,
+"mean": 13.25,
+"peak": 34.45,
+"count": {
+"single": 20,
+"creature": 19,
+"double": 4,
+"hazard": 26,
+"swing": 5
+},
+"traced": "extended"
+},
+{
+"id": "10-1",
+"setting": "easy",
+"seeds": 2,
+"score": 4.7,
+"min": 4.4,
+"max": 5,
+"minutes": 3.505,
+"points": 27.5,
+"mean": 7.85,
+"peak": 22.85,
+"count": {
+"single": 9,
+"hazard": 5,
+"creature": 12,
+"climb": 1,
+"double": 3
+},
+"traced": "check"
+},
+{
+"id": "10-2",
+"setting": "easy",
+"seeds": 2,
+"score": 14.5,
+"min": 13.1,
+"max": 16,
+"minutes": 3.745,
+"points": 102.30000000000001,
+"mean": 27.35,
+"peak": 67.4,
+"count": {
+"double": 5,
+"single": 53,
+"hazard": 5,
+"swing": 11,
+"bounce": 3,
+"climb": 11,
+"creature": 4
+},
+"traced": "extended"
+},
+{
+"id": "10-3",
+"setting": "easy",
+"seeds": 2,
+"score": 3.8,
+"min": 3.2,
+"max": 4.4,
+"minutes": 3.7649999999999997,
+"points": 27.85,
+"mean": 7.35,
+"peak": 17.45,
+"count": {
+"double": 6,
+"climb": 6,
+"creature": 10,
+"single": 9,
+"hazard": 4
+},
+"traced": "check"
+},
+{
+"id": "10-4",
+"setting": "easy",
+"seeds": 2,
+"score": 13.9,
+"min": 12.6,
+"max": 15.2,
+"minutes": 3.86,
+"points": 92.15,
+"mean": 23.9,
+"peak": 66.9,
+"count": {
+"double": 5,
+"single": 46,
+"bounce": 4,
+"creature": 7,
+"swing": 12,
+"hazard": 3,
+"climb": 13
+},
+"traced": "extended"
+},
+{
+"id": "10-5",
+"setting": "easy",
+"seeds": 2,
+"score": 17.9,
+"min": 17.4,
+"max": 18.4,
+"minutes": 3.785,
+"points": 119.35,
+"mean": 31.5,
+"peak": 85.4,
+"count": {
+"swing": 12,
+"climb": 10,
+"single": 49,
+"hazard": 6,
+"creature": 3,
+"double": 3,
+"bounce": 4
+},
+"traced": "extended"
+},
+{
+"id": "10-6",
+"setting": "easy",
+"seeds": 2,
+"score": 5.6,
+"min": 5,
+"max": 6.2,
+"minutes": 3.47,
+"points": 34.7,
+"mean": 10.05,
+"peak": 26.700000000000003,
+"count": {
+"swing": 5,
+"single": 9,
+"creature": 12,
+"hazard": 5,
+"double": 2
+},
+"traced": "check/extended"
+},
+{
+"id": "10-7",
+"setting": "easy",
+"seeds": 2,
+"score": 8.4,
+"min": 5.6,
+"max": 11.2,
+"minutes": 5.805,
+"points": 71.85,
+"mean": 11.85,
+"peak": 42.95,
+"count": {
+"creature": 17,
+"hazard": 15,
+"single": 20,
+"double": 3
+},
+"traced": "check"
+},
+{
+"id": "10-8",
+"setting": "easy",
+"seeds": 2,
+"score": 13.7,
+"min": 11.8,
+"max": 15.5,
+"minutes": 3.9850000000000003,
+"points": 101.8,
+"mean": 25.5,
+"peak": 63.699999999999996,
+"count": {
+"single": 84,
+"climb": 11,
+"hazard": 7,
+"swing": 4,
+"bounce": 3,
+"double": 4,
+"creature": 4
+},
+"traced": "extended"
+},
+{
+"id": "10-9",
+"setting": "easy",
+"seeds": 2,
+"score": 10.5,
+"min": 9.8,
+"max": 11.2,
+"minutes": 5.890000000000001,
+"points": 90.9,
+"mean": 15.45,
+"peak": 53.05,
+"count": {
+"creature": 19,
+"double": 10,
+"single": 20,
+"hazard": 30,
+"swing": 2
+},
+"traced": "presumed/check"
+}
+]
+}

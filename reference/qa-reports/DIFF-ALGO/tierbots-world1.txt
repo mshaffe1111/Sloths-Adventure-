@@ -1,0 +1,16 @@
+# tier bots on World 1, 8 layouts each (npx tsx tools/inspect/tierBots.ts --stage <id> --tiers child,middle,expert --seeds 1-8 --setting both), base t-int-2@465023ef
+1-1 child easy runs 8 shrine 8 finish median s 356.5 lives/run 0.00 putbacks/run 1.25 rescues/run 0.00
+1-1 child normal runs 8 shrine 8 finish median s 490.2 lives/run 0.00 putbacks/run 3.00 rescues/run 0.12
+1-1 expert normal runs 8 shrine 8 finish median s 192.4 lives/run 0.00 putbacks/run 0.38 rescues/run 0.00
+1-1 middle easy runs 8 shrine 8 finish median s 210.9 lives/run 0.00 putbacks/run 1.00 rescues/run 0.12
+1-1 middle normal runs 8 shrine 8 finish median s 217.4 lives/run 0.00 putbacks/run 0.62 rescues/run 0.00
+1-2 child easy runs 8 shrine 8 finish median s 249.4 lives/run 0.00 putbacks/run 0.25 rescues/run 0.12
+1-2 child normal runs 8 shrine 8 finish median s 341 lives/run 0.00 putbacks/run 0.00 rescues/run 0.50
+1-2 expert normal runs 8 shrine 8 finish median s 145.2 lives/run 0.00 putbacks/run 0.50 rescues/run 0.00
+1-2 middle easy runs 8 shrine 8 finish median s 158.4 lives/run 0.00 putbacks/run 0.38 rescues/run 0.12
+1-2 middle normal runs 8 shrine 8 finish median s 168.2 lives/run 0.00 putbacks/run 0.00 rescues/run 0.00
+1-3 child easy runs 8 shrine 8 finish median s 308 lives/run 0.00 putbacks/run 0.00 rescues/run 0.00
+1-3 child normal runs 8 shrine 8 finish median s 458.6 lives/run 0.00 putbacks/run 0.00 rescues/run 0.00
+1-3 expert normal runs 8 shrine 8 finish median s 198.7 lives/run 0.00 putbacks/run 0.00 rescues/run 0.00
+1-3 middle easy runs 8 shrine 8 finish median s 210.2 lives/run 0.00 putbacks/run 0.00 rescues/run 0.00
+1-3 middle normal runs 8 shrine 8 finish median s 234.5 lives/run 0.00 putbacks/run 0.00 rescues/run 0.00
