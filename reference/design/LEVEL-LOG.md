@@ -53,3 +53,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | D17-18 (Opus xhigh) | 1-7 + 1-8 designs (60 lines each) + combined NEW table (28 blocks, 1-6..1-8); re-tuned to DIFFICULTY §4 | $6.85 | ~37 min |
 | ENGINE-STUDY-678 (Opus xhigh) | one engine plan for 1-6..1-8: 24 verified blocks, waves, 16 packets in 2 lanes, estimates, one art batch list | $5.74 | ~15 min |
 | GATES-4 (Opus high, runner) | the unrun gates on tonight's build + 24 stills; 2 reds named, nothing fixed | $3.08 | ~60 min |
+| FIX-INT (Opus xhigh) | 3 unit reds at the root (w1Marks null guard; vine test re-pointed; W1 length band per 2 lead rulings); every gate green on t-int-5@e8afc05c | $7.09 | ~50 min |
