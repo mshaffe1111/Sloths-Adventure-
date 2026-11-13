@@ -1296,7 +1296,7 @@ export function drawProtoScene(
   ctx: CanvasRenderingContext2D,
   platforms: Platform[],
   trees: Array<{ x: number; topY: number }>,
-  vines: Array<{ vineType?: string; x: number; topY: number; bottomY?: number; rope?: boolean; pair?: number; field?: unknown }>,
+  vines: Array<{ vineType?: string; x: number; topY: number; bottomY?: number; rope?: boolean; pair?: number; field?: unknown; off?: boolean; kit?: boolean }>,
   t: number,
   view: { x0: number; x1: number; y0?: number; y1?: number },
   st: ProtoSceneState,
@@ -1317,6 +1317,8 @@ export function drawProtoScene(
   for (const v of vines) {
     // (a vine hanging down a cliff is not a trunk: its stage draws it)
     if (v.vineType !== 'tree_climb' || v.rope || v.x < view.x0 - 120 || v.x > view.x1 + 120) continue;
+    // (a way up held down by a shut gate's bough is not there to see or take until the bough opens: vineField.ts ClusterGate.ways)
+    if (v.off && !v.kit) continue;
     const bottom = (v as { bottomY?: number }).bottomY ?? v.topY + 300;
     if (bottom + 14 < vy0 - 40 || v.topY - 30 > vy1 + 40) continue;
     // (a draped pair is a liana thrown over the bough, not a trunk: pairArt.ts)

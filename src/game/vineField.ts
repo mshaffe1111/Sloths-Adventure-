@@ -226,6 +226,9 @@ export interface ClusterGate {
   clusters: number[];
   /** which end is the far one, the end that sags (-1 its left end, 1 its right): the end away from where he climbs up to it */
   far: -1 | 1;
+  /** the ways up FROM the bough (vine ids: a climb standing on it), held down with it while it is shut (off, and not drawn: a way he
+   *  could hop to from a field vine's top would let him round the gate), let up when it opens */
+  ways?: number[];
 }
 
 export const GATE = {

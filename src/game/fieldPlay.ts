@@ -55,7 +55,12 @@ export class FieldPlay {
     // a shut gate is no footing until its clusters are freed
     for (const g of gates) {
       const b = platforms.find((q) => q.id === g.platform);
-      if (b) b.broken = gateLeft(g, clusters) > 0;
+      const shut = gateLeft(g, clusters) > 0;
+      if (b) b.broken = shut;
+      for (const id of g.ways ?? []) {
+        const w = vines.find((q) => q.id === id);
+        if (w) w.off = shut;
+      }
     }
   }
 
@@ -127,6 +132,14 @@ export class FieldPlay {
       const b = this.platforms.find((q) => q.id === g.platform);
       if (left === 0) {
         if (b) b.broken = false;
+        // (the way up it held down springs up with it)
+        for (const id of g.ways ?? []) {
+          const w = this.vines.find((q) => q.id === id);
+          if (w) {
+            w.off = false;
+            h.spark(w.x, (w.topY + w.bottomY) / 2, '#86efac');
+          }
+        }
         h.sfx('open');
         if (b) h.spark(b.x + b.width / 2, b.y - 20, '#fde68a');
       } else h.sfx('lift');
