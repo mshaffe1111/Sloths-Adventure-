@@ -48,6 +48,8 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 | ENGINE-NEEDS | (retired, $10.33) | | | plan: reference/plans/ENGINE-NEEDS.md; waves A-D in STATE 11-13 |
 | ADD-LEVEL | session_01FhBbYLJhNRpJErB4SQprjk | Opus high | t-add-level | one-step add a level + registry gate (tools only) |
 | ECONOMY | session_01FhBbYLiMADVRwZv3e9nCar | Opus high | t-economy | Designer: one design for score, stars, fruit, finds, hearts, lives (R-165.194), by 2:30 PM |
+| FIX-A | session_01FhBbYNq8G5jPJKyYLFto3b | Opus high | t-fixa | 0.9.8 words + Dot cards + About (R-165.175,.171,.165,.166,.147,.155,.158) |
+| FIX-B | session_01FhBbYMUNZNCRSqaWMZWoTv | Opus high | t-fixb | 0.9.8 play fixes (R-165.122,.174,.150,.151,.157) |
 | S1 | session_01FhBbYJXH6JJa93RhTnuDf7 | Opus high | t-s1 | the meter's inspector (R-165.176), tools only |
 | Story keeper | session_01FhBbYMCa3JXWmyQicbmxuu (successor) | Opus high | t-story | bible onto t-story; closed-book check; 1-4 vine nature check |
 | Critic (review) | session_01FhBbYL2LcFRBpSzwjeZ98U | Opus high | t-crit-lead-review-1113 | delta re-audit of the lead review |
