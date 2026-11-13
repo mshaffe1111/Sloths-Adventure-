@@ -3,7 +3,8 @@ import { feelClock, speedLabel } from '../game/feelPair.ts';
 
 /**
  * The vine pair test's stopwatch (feelPair.ts; a QA build only, feelPairStage.ts): each climb's last time, grab to standing on the bough,
- * the running one counting up. Top middle, under the HUD and clear of the phone's notch; it takes no taps (the game's thumbs pass
+ * the running one counting up. Upright top middle under the HUD, sideways at the left under the lives (clear of his head), clear of the
+ * phone's notch; it takes no taps (the game's thumbs pass
  * through it). It looks at the clock ten times a second and redraws only when a time has changed by a tenth.
  */
 export const FeelPairClock: React.FC = () => {
@@ -42,5 +43,9 @@ const CSS = `
 .fp-line.on { color: #fde047; }
 .fp-secs { font-variant-numeric: tabular-nums; min-width: 44px; text-align: right; }
 .fp-tip { margin-top: 3px; font-size: 11px; color: rgba(253, 246, 227, 0.75); text-align: center; }
-@media (orientation: landscape) and (max-height: 500px) { .fp-clock { top: calc(env(safe-area-inset-top, 0px) + 10px); } }
+/* sideways the view is short and his head climbs through its top middle (45-50% feet, measured): there it sits at the left, under the
+   lives, where he never is (the camera keeps him 40% across) */
+@media (orientation: landscape) and (max-height: 500px) {
+  .fp-clock { left: calc(env(safe-area-inset-left, 0px) + 10px); transform: none; top: calc(env(safe-area-inset-top, 0px) + 96px); }
+}
 `;

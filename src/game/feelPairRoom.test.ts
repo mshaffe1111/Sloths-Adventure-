@@ -58,11 +58,14 @@ test('the room: a single and a draped pair side by side, the same height, sound 
   assert.ok(Math.abs(pair.x - single.x) - PAIR_GAP / 2 >= 120, 'a single 120 px+ from a pair (1-4.md)');
   const floor = st.platforms.find((p) => p.y === single.bottomY)!;
   for (const v of climbs) assert.ok(floor && v.x - 80 > floor.x && v.x + 80 < floor.x + floor.width, 'sound floor under each climb');
-  const bough = st.platforms.find((p) => Math.abs(p.y - (single.topY + 2)) < 1)!;
-  for (const v of climbs) assert.ok(bough && v.x - 50 > bough.x && v.x + 50 < bough.x + bough.width, 'one bough both climbs reach');
+  // the top: one walk across from the single to the pair (its pieces end to end, no gap), the flag on it
+  const tops = st.platforms.filter((p) => Math.abs(p.y - (single.topY + 2)) < 1).sort((a, b) => a.x - b.x);
+  for (let i = 1; i < tops.length; i++) assert.equal(tops[i].x, tops[i - 1].x + tops[i - 1].width, 'the top has no gap');
+  const [t0, t1] = [tops[0].x, tops[tops.length - 1].x + tops[tops.length - 1].width];
+  for (const v of climbs) assert.ok(v.x - 30 > t0 && v.x + 30 < t1, 'one top both climbs reach, footing either side of each');
   assert.equal(st.checkpoints?.length, 1);
   const flag = st.checkpoints![0];
-  assert.ok(flag.x > bough.x && flag.x < bough.x + bough.width && Math.abs(flag.y - bough.y) < 1, 'the flag on the bough at the top');
+  assert.ok(flag.x > t0 && flag.x < t1 && Math.abs(flag.y - tops[0].y) < 1, 'the flag on the top');
   assert.equal(st.enemies.length, 0);
   assert.ok(!st.zones?.length && !st.heartFalls?.length && st.waterY === undefined && !st.rivers?.length, 'nothing that hurts');
   assert.ok(st.platforms.every((p) => p.type === 'solid' && p.crumbleAfter === undefined), 'only sound footing');
@@ -135,3 +138,27 @@ test('stepping off the bough to the floor costs nothing (the engine’s own lose
 });
 
 test.after(() => asQaBuildForTest(false));
+
+test("the sign's lettering is baked once, baked again when the phone takes its canvas back (LESSONS D6) and when the font arrives", async () => {
+  const { letteringFrom } = await import('./feelPair.ts');
+  let made = 0;
+  let lostNow = false;
+  const fake = () => {
+    made++;
+    const g = { clearRect() {}, fillText() {}, isContextLost: () => lostNow } as unknown as CanvasRenderingContext2D;
+    return { width: 0, height: 0, getContext: () => g } as unknown as HTMLCanvasElement;
+  };
+  let font = false;
+  const a = letteringFrom('9×', fake, () => font);
+  assert.equal(made, 1);
+  assert.equal(letteringFrom('9×', fake, () => font), a, 'kept while nothing changed');
+  font = true;
+  assert.equal(letteringFrom('9×', fake, () => font), a, 'the font arrived: the same canvas, lettered again');
+  assert.equal(made, 1);
+  lostNow = true;
+  const b = letteringFrom('9×', fake, () => font);
+  lostNow = false;
+  assert.notEqual(b, a, 'the phone took the canvas back: a fresh one');
+  assert.equal(made, 2);
+  assert.equal(letteringFrom('9×', fake, () => font), b);
+});

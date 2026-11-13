@@ -1384,7 +1384,8 @@ export function drawProtoScene(
     }
   }
   // branches (a perch where a climb trunk ends under one)
-  const tops = vines.filter((v) => v.vineType === 'tree_climb' && !v.rope);
+  // (a draped pair hangs over a plain bough: no kapok perch at its top, pairArt.ts)
+  const tops = vines.filter((v) => v.vineType === 'tree_climb' && !v.rope && !v.pair);
   for (const p of platforms) {
     if (!vis(p) || p.push || p.art || p.height >= 50 || (p.style !== 'branch' && !(ownKit() && thinKit(p)))) continue;
     // (World 8's fungus steps and knot perches: the painted brackets, w8FungusArt.ts)

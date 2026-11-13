@@ -8,8 +8,8 @@
  * does not exist: feelPairConfig() is null and generateStage never sees its id.
  *
  * The room: the floor (sound footing under both climbs), a single kapok climb on the left, the pair (one liana draped over the bough,
- * its two strands PAIR_GAP apart) on the right, 120 px+ apart (1-4.md), both up to ONE wide sound bough FEEL.rise over the floor with a
- * flag on it. A signpost at the pair's foot shows its speed (2x or 1.6x the single's); a tap by it switches (feelPair.ts). A stopwatch
+ * its two strands PAIR_GAP apart) on the right, 120 px+ apart (1-4.md), both up to one sound top FEEL.rise over the floor (the single's
+ * perch and the pair's bough, end to end) with a flag on it. A signpost at the pair's foot shows its speed (2x or 1.6x the single's); a tap by it switches (feelPair.ts). A stopwatch
  * on screen times each climb, grab to standing on the bough (FeelPairClock.tsx). Nothing hurts, nothing falls, no exit: Matt leaves by
  * the pause menu.
  */
@@ -22,19 +22,23 @@ export const FEEL_PAIR_ID = 'feel-pair';
 
 /**
  * The room's numbers (world px). The climb is about three storeys: 720 px, eight of Pokey's drawn height (89.1, heroSprite.ts; LESSONS
- * D41), so the single takes about 3.3 s, the pair 1.6-2.0 s. The single and the pair stand 280 apart (1-4.md: 120 px+), the sign beside
- * the pair's foot out of its grab reach (vinePair.ts climbReach: 54 + 20).
+ * D41), so the single takes about 3.3 s, the pair 1.6-2.0 s. The single and the pair stand 160 apart (1-4.md: 120 px+ from the nearer
+ * strand), so an upright phone shows both; the sign beside the pair's foot, out of its grab reach (vinePair.ts climbReach: 54 + 20).
  */
 export const FEEL = {
   floor: 1300,
   rise: 720,
+  /** how much of the world shows under the floor's top (px) */
+  below: 130,
   width: 1500,
   spawn: 260,
-  single: 560,
+  single: 680,
   pair: 840,
   sign: 950,
-  /** the bough both climbs reach: its two ends past the single and the pair */
-  bough: [460, 940] as const,
+  /** the top, one walk across: the single's own perch (the kapok's painted perch, protoArt.ts drawPerchArt), then the bough the pair is
+   *  draped over, meeting it (a plank across both read as a post holding a beam, and the trunk is a plant) */
+  perch: [640, 800] as const,
+  bough: [800, 940] as const,
 } as const;
 
 /** what the engine's feel room needs (feelPair.ts FeelRoom): the two climbs' ids, the sign's foot, the bough's top */
@@ -59,7 +63,8 @@ export function feelPairConfig(): LevelConfig | null {
     targetCount: 1,
     timeLimit: 0,
     levelWidth: FEEL.width,
-    levelHeight: FEEL.floor + 300,
+    // (the level ends just under the floor's bank, so the camera rests on the floor: 300 below it showed half a screen of soil sideways)
+    levelHeight: FEEL.floor + FEEL.below,
     description: 'One vine or two: climb each and feel the difference.',
     unlocked: true,
     completed: false,
@@ -76,8 +81,9 @@ export function buildFeelPairStage(config: LevelConfig): GeneratedStage & { feel
   const P: Platform[] = [
     // the forest floor, one sound bank wall to wall
     { id: 1, x: 0, y: G, width: FEEL.width, height: 90, type: 'solid', style: 'log' },
-    // the bough both climbs reach (a perch's top is 2 px under the climb's top: engine.ts Exit A, protoArt.ts drawPerchArt)
-    { id: 2, x: FEEL.bough[0], y: top + 2, width: FEEL.bough[1] - FEEL.bough[0], height: 26, type: 'solid', style: 'branch' },
+    // the top: the single's perch and the pair's bough, end to end (a perch's top is 2 px under the climb's top: engine.ts Exit A)
+    { id: 2, x: FEEL.perch[0], y: top + 2, width: FEEL.perch[1] - FEEL.perch[0], height: 26, type: 'solid', style: 'branch' },
+    { id: 3, x: FEEL.bough[0], y: top + 2, width: FEEL.bough[1] - FEEL.bough[0], height: 26, type: 'solid', style: 'branch' },
   ];
   const V: Vine[] = [
     { id: 1, x: FEEL.single, topY: top, bottomY: G, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' },
@@ -85,7 +91,7 @@ export function buildFeelPairStage(config: LevelConfig): GeneratedStage & { feel
   ];
   const C: Collectible[] = [];
   return {
-    config: { ...config, levelWidth: FEEL.width, levelHeight: Math.max(config.levelHeight, G + 300) },
+    config: { ...config, levelWidth: FEEL.width, levelHeight: G + FEEL.below },
     trees: [],
     platforms: P,
     vines: V,

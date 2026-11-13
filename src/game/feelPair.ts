@@ -17,7 +17,7 @@ export const SIGN_REACH = 60;
 /** how near a climb's foot a hold must start for the climb to be timed (px over its bottom) */
 const FOOT = 60;
 /** the sign's size (times the kit's signpost) */
-const SIGN_SCALE = 1.35;
+const SIGN_SCALE = 1.55;
 
 export type ClimbKind = 'single' | 'pair';
 /** one line of the stopwatch: what was climbed, its last time (null: not yet), and whether it is running now */
@@ -109,7 +109,7 @@ export class FeelRoom {
     } else if (p.grounded || p.y > this.spec.top + 40) this.run = null;
   }
 
-  /** the lines: the single, then the pair at each speed (the one the sign shows first) */
+  /** the lines: the single, then the pair at each of the room's speeds */
   private publish() {
     const live = this.run ? this.now - this.run.t0 : 0;
     const lines: ClockLine[] = [];
@@ -118,8 +118,8 @@ export class FeelRoom {
       lines.push({ label, secs: running ? live : this.last.get(keyOf(kind, speed)) ?? null, running });
     };
     add('single', 1, 'One vine');
-    const order = [this.speed, ...this.spec.speeds.filter((s) => s !== this.speed)];
-    for (const s of order) add('pair', s, `Two vines ${speedLabel(s)}`);
+    // (in a fixed order, the room's: a line that jumped when the sign was switched read as a new time)
+    for (const s of this.spec.speeds) add('pair', s, `Two vines ${speedLabel(s)}`);
     // (only a change a tenth of a second or more is a new picture)
     const same = clock.speed === this.speed && clock.lines.length === lines.length &&
       clock.lines.every((l, i) => l.label === lines[i].label && l.running === lines[i].running && tenths(l.secs) === tenths(lines[i].secs));
@@ -142,7 +142,7 @@ export class FeelRoom {
     ctx.save();
     ctx.translate(x, y - h * 0.64);
     if (rot) ctx.rotate(rot);
-    const bw = w * 0.7;
+    const bw = w * 0.8;
     const bh = (bw * board.height) / board.width;
     ctx.drawImage(board, -bw / 2, -bh / 2, bw, bh);
     ctx.restore();
@@ -152,22 +152,30 @@ export class FeelRoom {
 const keyOf = (kind: ClimbKind, speed: number) => (kind === 'single' ? 'single' : `pair@${speed}`);
 const tenths = (s: number | null) => (s === null ? -1 : Math.floor(s * 10));
 
-/** the speed lettered as if burnt into the board (baked once per label, again if the phone takes the canvas back: LESSONS D6) */
-const letters = new Map<string, HTMLCanvasElement>();
-function lettering(label: string): HTMLCanvasElement | null {
-  let c = letters.get(label);
-  if (c && canvasLost(c, 'feel sign lettering')) {
-    letters.delete(label);
-    c = undefined;
+/** the speed lettered as if burnt into the board (baked once per label, again if the phone takes the canvas back: LESSONS D6, and once
+ *  more when the game's display font arrives, if it was baked before it had) */
+const letters = new Map<string, { c: HTMLCanvasElement; font: boolean }>();
+const SIGN_FONT = '60px "Cherry Bomb One", "Outfit", sans-serif';
+const fontIn = (): boolean => {
+  try {
+    return typeof document.fonts?.check !== 'function' || document.fonts.check(SIGN_FONT);
+  } catch {
+    return true;
   }
-  if (c) return c;
-  if (typeof document === 'undefined') return null;
-  c = document.createElement('canvas');
+};
+/** the board's lettering for `label`: `make` gives a canvas, `fontReady` says whether the display font is in (a test gives both) */
+export function letteringFrom(label: string, make: () => HTMLCanvasElement, fontReady: () => boolean): HTMLCanvasElement | null {
+  const had = letters.get(label);
+  const lost = !!had && canvasLost(had.c, 'feel sign lettering');
+  if (had && !lost && (had.font || !fontReady())) return had.c;
+  // (the same canvas again when only the font changed; a fresh one when the phone took it back)
+  const c = had && !lost ? had.c : make();
   c.width = 160;
   c.height = 80;
   const g = c.getContext('2d');
   if (!g) return null;
-  g.font = '54px "Cherry Bomb One", "Outfit", sans-serif';
+  g.clearRect(0, 0, c.width, c.height);
+  g.font = SIGN_FONT;
   g.textAlign = 'center';
   g.textBaseline = 'middle';
   // a pale cut edge under dark burnt letters, so it reads on the wood at a glance
@@ -175,6 +183,10 @@ function lettering(label: string): HTMLCanvasElement | null {
   g.fillText(label, 80, 43);
   g.fillStyle = '#2b1608';
   g.fillText(label, 80, 40);
-  letters.set(label, c);
+  letters.set(label, { c, font: fontReady() });
   return c;
+}
+function lettering(label: string): HTMLCanvasElement | null {
+  if (typeof document === 'undefined') return null;
+  return letteringFrom(label, () => document.createElement('canvas'), fontIn);
 }
