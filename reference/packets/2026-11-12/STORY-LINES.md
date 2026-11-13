@@ -483,3 +483,12 @@ Her arrows sit at marching height, on her road, never up on the limbs, as the do
 
 **APPROVED by Matt (10:20 PM ET, relayed by the lead):** all five 1-5 lines as written: the mission line "She marked the way they took
 her. Follow her marks." and the four lines (the creaky teach, the big sign, the locked exit, the two-signs joke).
+
+## 0.9.7 What's New (11:01 PM ET, for the lead's approval)
+version '0.9.7', date '2026-11-12', title: **Petals and snakes, rebuilt**
+- The Petal Trail is rebuilt: bounce from mushroom to mushroom over the thorns, following Meeca's petals.
+- Touch the thorns and you only go back a little. Look for something hidden down by the roots.
+- Branch Snakes is rebuilt: punch a vine, a hive drops, and the snake glides away. Nobody gets hurt.
+- Into the Canopy has fairer landings.
+- Quieter sound, and volume sliders that go all the way down.
+- Smoother on phones, with lots of small fixes.
