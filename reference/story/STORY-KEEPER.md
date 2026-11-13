@@ -443,7 +443,7 @@ his taste. Matt keeps the final say. This replaces "each needs Matt's okay" on e
 | R-165.175 | 1-1, first Dot card (tap-to-clear) | Dot | Tap here when you've read it. I'll wait! |
 | R-165.171 | first-jump coach | coach | touch: Flick up to hop up or over. / pad: Press Jump to hop up or over. |
 | R-165.165 | 1-2 Keeper's Bell hint | hint | Down in the hollow, on the low ledge. |
-| 1-4 beat 4 | pods flag (replaces "Duck in a hollow") | Dot | Hear it creak? Scoot a vine over till it drops! |
+| 1-4 beat 4 | pods flag (replaces "Duck in a hollow") | Dot | Hear it creak? Scoot a vine over! (11:14 AM: was 10 words) |
 | 1-4 beat 3 | first two-hand step | Dot | Reach for the next vine! Two hands zoom up! |
 | 1-4 beat 5 | first fig-bunch push | Dot | Climb under the figs and push them free! |
 | R-165.180 | 1-4 beat 2, the creaky teach (when 1-4 lands) | Dot | Creaky limbs drop you, but just one branch down! |
