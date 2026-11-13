@@ -55,8 +55,12 @@ test('stages grow from about two and a quarter minutes in World 1 to about four 
   };
   const m1 = med(1);
   const m10 = med(10);
-  assert.ok(m1 >= 135 && m1 <= 175, `World 1 median ${m1.toFixed(0)} s`);
+  // (World 1's floor stays; its old 175 s cap was the old generator's own target, TYPICAL_W1 = 135, stageTime.ts:84, not a rule of
+  //  Matt's: his is STAGE-RULES.md:77, at least 2 minutes for a quick player on every roll, "5+ minutes is fine". So World 1 is capped
+  //  only by World 10, the game still growing (the lead's ruling, 11-13 4:49 PM ET; FIX-INT PUSHBACK.md))
+  assert.ok(m1 >= 135, `World 1 median ${m1.toFixed(0)} s`);
   assert.ok(m10 >= 215 && m10 <= 255, `World 10 median ${m10.toFixed(0)} s`);
+  assert.ok(m1 <= m10, `World 1 median ${m1.toFixed(0)} s is past World 10's ${m10.toFixed(0)} s`);
   for (let w = 2; w <= 10; w++) assert.ok(med(w) >= med(w - 1) - 6, `World ${w} is shorter than World ${w - 1}`);
   for (const l of levels.filter((x) => x.worldIndex === 10)) assert.ok(modelStage(stage(l, null), MODEL_TYPICAL).total <= 300, `${l.id} runs past five minutes`);
 });
