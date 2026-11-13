@@ -1,14 +1,17 @@
 """ART 11-13: rebuild a file sent back from the HF sandbox. Each `hf_sandbox_fs cat <file>.pN --max-bytes 100000` result is too big to
-show, so the harness saves it under /tmp/output-trim/; this finds those saves by the path they name and joins the parts in order.
+show, so the harness saves it (under /tmp/output-trim/ or the session's tool-results/); this finds those saves by the path they name and joins the parts in order.
 
     python3 -I tools/art/hf1113/pull.py <sandbox file> <local out>
 """
 import base64, glob, json, os, re, sys
 src, out = sys.argv[1], sys.argv[2]
 got = {}
-for f in sorted(glob.glob('/tmp/output-trim/*.txt'), key=os.path.getmtime):
+SAVES = glob.glob('/tmp/output-trim/*.txt') + glob.glob(os.path.expanduser('~/.claude/projects/*/*/tool-results/*hf_sandbox_fs*.txt'))
+for f in sorted(SAVES, key=os.path.getmtime):
     t = open(f).read()
     i = t.find('{"op":"cat"')
+    if i < 0:
+        i = t.find('{"op": "cat"')
     if i < 0:
         continue
     try:
