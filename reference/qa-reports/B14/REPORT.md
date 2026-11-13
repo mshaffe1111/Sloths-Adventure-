@@ -32,8 +32,14 @@ reads faded in some stills: the shooter's own invincibleTimer, not the game. Not
   the 1.0 s tell. 1.1 s is the floor. The rest of the gap is the flyer and ants (out tonight) and the hollow's single column.
 - **Bots 0 of 3 seeds pass** (castBots seeds 1-3, every bot, both settings: rescues). Diagnosis and evidence: EXACT NEXT STEP 1-2.
   Not fixed tonight: the level bug is the engine owner's; the bot's route work didn't fit the box.
-## Gates (cbe090f0, run 1:40-3:00 PM)
-SEE BELOW (filled as each ran).
+## Gates (on 7744b49c / cbe090f0, 1:40-2:20 PM)
+PASS: tsc, vite build, chunkcheck, artcheck, knowncheck, generalitycheck, roadmapcheck (after `git fetch --unshallow`), kbdcheck,
+seedlist 1-1 and 1-4 --check, tool tests (33/33), score.ts --check, w1Arc14 + podfall tests. **FAIL drawcheck: 1-4 sideways spot 1
+(x 922, y 5699) drawImageScreens 8.01 > 7.5** (drawcheck-b14c.txt): backdrop scenery.ts:2078 drawFitted ~3 screens, ground chunks 1,
+vignette 1, lanePool scenery.ts:1506; 1-4's own art is small (drawGate). Not mine to cut (scenery.ts); the limit is not loosened.
+buildcheck FAILED once at p95 196 ms while the suite ran beside it: rerun alone. Suite: capped run stopped at 2,458 (my 25 min cap);
+reds: inventory.test.ts:155 (ART's "1-4 falling pod" slot, CATALOG-MASTER gaps line), rollGuard.test.ts:42 (1-5 layout 173901: 110 s
+< 120, B15's stage). Uncapped rerun in flight at the stop (suite2). Not run: clipcheck, tierBots (1-1 unchanged).
 ## Learned / proposed level.md rules
 - A stills tool sets the setting the way the game reads it (the save), then checks a still shows Easy's difference (D50's spirit).
 - A meter reads a gated field as the player must play it: every push vine climbed, so its pods are on the way.
