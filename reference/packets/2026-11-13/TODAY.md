@@ -28,7 +28,7 @@ One holder per file; the lead passes a token only after the holder has pushed. T
 New files are yours alone. Need a token? One line to the lead; carry on with other work meanwhile.
 - **Stills early (Matt, 10:23 AM: "just show me pictures"):** push a still of each new piece as soon as it draws (upright + sideways, in
   reference/qa-reports/<ID>/stills/), and send the lead the paths in one line. Matt judges the look from them.
-- **Context (D55):** put your context % in EVERY message to the lead; at 40% finish the edit in flight, push, write REPORT.md with an
+- **Context (D55):** your window is 1,000,000 tokens (40% = 400k); put your context % in EVERY message to the lead; at 40% finish the edit in flight, push, write REPORT.md with an
   EXACT NEXT STEP list, and stop. (The lead cannot see a running session's context.)
 - **Every piece is a node building block (Matt 12:14 PM, R-165.198):** anything you build (a mechanic, a hazard, a creature, a route
   shape) must be usable by any node in any world as data (a content letter or dial in NODES.md §8's code), proven on 2+ worlds' kits
