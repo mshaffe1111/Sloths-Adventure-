@@ -10,6 +10,10 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **THE LEAD IS THE EXPERT: FIND THE FLAWS AND FIX THEM WITHOUT ASKING** (Matt, 11-13 11:42 AM ET: "You don't have to ask me to fix things.
+  You're the one that is looking at this, looking for flaws, looking for issues, and looking for aspects that this game can set itself
+  apart from... I've never made a game before... I need you to be the expert."). Design improvements, flaws and polish are the lead's
+  calls: decide, act, tell Matt in one line. Story calls still go to the story keeper; merges, money beyond the HF budget and his rules stay his.
 - **THE STORY KEEPER APPROVES ALL LINES** (Matt, 11-13 10:44 AM ET: "the storykeeper has full authority to add to the story and to approve
   all lines"; R-165.189): no line goes to Matt any more; the keeper adds to the story and approves every player line. Matt can still overrule.
 - **Levels per 100% of his week is the scoreboard.** Today: 1-4 AND 1-5 on his test link tonight, polished (10:13 AM; R-165.182).
