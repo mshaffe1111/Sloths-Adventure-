@@ -1,4 +1,4 @@
-# Designer handoff (rewritten 2026-11-11 5:41 PM ET by the Designer of the 1-2 packets, R-165.11, after both PASSED the packet Critic (eight rounds); the 1-2 rows rewritten 2026-11-12 by D12, the designer-builder of 1-2 (its designed arc); before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07; for the role agents of the 6-role model, reference/TEAM.md)
+# Designer handoff (economy rows rewritten 2026-11-13 by the ECONOMY Designer, R-165.194, branch t-economy; before that rewritten 2026-11-11 5:41 PM ET by the Designer of the 1-2 packets, R-165.11, after both PASSED the packet Critic (eight rounds); the 1-2 rows rewritten 2026-11-12 by D12, the designer-builder of 1-2 (its designed arc); before that 11-09 by the Designer of the reach flight, R-165.60; first written 11-07; for the role agents of the 6-role model, reference/TEAM.md)
 
 Read first, in order:
 - reference/LAWS.md;
@@ -29,6 +29,7 @@ Every ruling below cites the file and section where it's written in full.
 | **The flown numbers (11-09):** reach, bands, touch, help, the flight sim and its saved runs, the Engine packet | `reference/specs/` on t-designer-reach (reach.md, bands.md, touch.md, help.md, sims/flight.ts, sims/out/, packets/ENGINE-flight-test.md) |
 | **The bounce chain (11-11):** flown on 1-2, its bands, the worked lay, the 1-2 build probe, the fork-end check | `reference/specs/chain.md`, `sims/flight.ts` (mode `chain`, `FLIGHT_STAGE`), `sims/chainlay12.ts`, `sims/probe12.ts`, `sims/finds11.ts`, `sims/out/` (branch t-design-1-2) |
 | The designer's own working notes | `reference/engine/DESIGNER-NOTES.md` |
+| **The reward economy (11-13, R-165.194):** score, four stars, basket fruit, hearts/lives per setting, Game Over, star use, the ranked packets | `reference/design/ECONOMY.md`; measured by `reference/qa-reports/ECONOMY/measure.ts` (real engine, tier bots; `--hearts N` flies a proposed heart count by patching RealPlay.frame at run time, src/ untouched) + `summarize.py`; data `raw/*.jsonl`, tables `summary*.txt` |
 
 ## 2. The section pool (World 1, gen2)
 
@@ -119,6 +120,11 @@ Every ruling below cites the file and section where it's written in full.
 
 ## 4. Open items (none of these is finished; check each before assuming)
 
+- **Economy (11-13, R-165.194):** ECONOMY.md is a DESIGN awaiting the lead's and Matt's word: four stars (finish, basket, score target, clean),
+  Normal 3 hearts / Easy 5, Normal Game Over to the last rest flag, hidden stage per world at 26 of 40 stars. Next: HEARTS-3, then
+  SCORE-PAR (the par runner: the open question is analytic chain par vs a bot run; f is 0.9 Normal / 0.7 Easy to start, unproven on Easy),
+  BASKET spec/art/lay, STARS-4, GAMEOVER-REST, HIDDEN-1H (ECONOMY.md §5). The lead's 5th star (hidden find) was tested and refused.
+
 - **From the 1-2 packets (11-11):**
   - BOTH PACKETS PASSED the packet Critic at t-design-1-2@d9267c6b (t-critic-1-2-packet@65523e00, REPORT-attempt8.md; eight
     rounds). After that head only the Critic's two builder notes on ENGINE item 6 went in (the bloom at 32 px, the allamanda as
@@ -179,6 +185,11 @@ Every ruling below cites the file and section where it's written in full.
 - **1-2, open (11-12):** its two thorn lines are the kit's `teachTips` and Dot says both on Normal and Easy since P13's Tips fix (0e779b47, merged; stills 1a and 1c). Main's "The petals go up" is CUT in the new look, so the stair has no line. The thorn bed is a SET-BACK hurt floor, not a dip or a landing (the lead 11-12): plainWalk 'dips', w1Pits #13 and stageQuality read it so, and thornSetBack.test.ts holds every hurt floor taught first, really fallen into and setting him back safely (D12, d4d296fc). w1Pits #17 is the hollow painter, RF3's (a tall wall in a narrow hollow is cut straight; a 38 px step down makes mirrored walls). The rolled-flag pass stands flags on floor mushrooms and roots (R-165.156, P12S). Meeca's note (the Keeper's Bell, finds.ts w1_note) lies on the twist's hollow floor past its root every roll (FX's findSpot on 'hf' at t 0.66; t 0.6 could stand inside the root), and Dot says "There's something down by the roots..." on the lip (D12, t-12-design@cc0def2a, on INT-2's 90a54102).
 
 ## 5. Traps (each of these happened)
+
+- **The tier bots are weak on climbs and lianas (11-13):** 3-4 bots were rescued 7-18 times a run and 6-3 lost 5-11 lives a run to water
+  on every tier: read later-world economy numbers as direction only. World 1 numbers are sound (0 rescues to speak of).
+- **The score is visible** (HUD on change, Stage Cleared, Game Over): a grep of src/game alone missed the components (the lead's packet said "shown nowhere").
+- **A share of everyday fruit is not a skill test:** a bot that only walks the route gathers 58-97% of it (p10-p90).
 
 - **The level check counts no double on 1-2 to 1-5** (levelCheck.ts:132-134): a stage moved to gen2 before 1-6 needs `EARLY_DOUBLE`,
   or every double block reads as unreachable and its section is swapped out with no reason printed.

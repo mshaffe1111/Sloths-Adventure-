@@ -1,0 +1,34 @@
+score/stars by tier (12 seeds each). clean = no heart and no life lost
+stage set    tier    score p10   p50   p90 | maxCombo p50 | score/fruit p50 | clean
+1-1 easy   child    12300  15300  17350 |  6.0 |    164 | 12/12
+1-1 easy   middle   16900  22600  26450 | 10.5 |    223 | 12/12
+1-1 normal child    11700  12950  15250 |  4.0 |    143 | 12/12
+1-1 normal expert   21600  28550  34550 | 12.0 |    286 | 12/12
+1-1 normal middle   18700  21700  25700 | 10.0 |    226 | 12/12
+1-2 easy   child    10600  11250  12100 |  4.0 |    156 | 12/12
+1-2 easy   middle   12100  13100  13900 |  6.0 |    188 | 12/12
+1-2 normal child     9550  10250  11250 |  3.0 |    147 | 12/12
+1-2 normal expert   14150  16200  19000 |  9.0 |    228 | 12/12
+1-2 normal middle   13300  14800  15600 |  8.5 |    207 | 12/12
+1-3 easy   child    23100  24800  26100 |  8.5 |    215 | 10/12
+1-3 easy   middle   26650  31700  35750 | 11.5 |    276 |  9/12
+1-3 normal child    19150  21200  23750 |  8.0 |    184 |  6/12
+1-3 normal expert   32500  37250  40800 | 15.0 |    314 |  8/12
+1-3 normal middle   30250  34700  38800 | 12.0 |    283 |  8/12
+3-4 easy   child     8650  10650  14600 |  5.5 |    195 |  2/12
+3-4 easy   middle    9700  12550  17700 |  7.0 |    215 |  4/12
+3-4 normal child     8250   9700  10700 |  5.0 |    172 |  3/12
+3-4 normal expert   10000  14750  18200 |  8.0 |    233 |  5/12
+3-4 normal middle    9650  11300  16200 |  6.0 |    206 |  3/12
+6-3 easy   child    10350  11770  12610 |  5.0 |    157 |  0/12
+6-3 easy   middle   12400  15600  16000 |  6.0 |    187 |  0/12
+6-3 normal child    11740  13590  14250 |  4.5 |    156 |  0/12
+6-3 normal expert   14810  16710  18850 |  7.0 |    197 |  0/12
+6-3 normal middle   12680  17000  17540 |  7.0 |    190 |  0/12
+
+Normal, same seed: expert score / child score, and expert / middle (p50 over seeds)
+1-1 expert/child 1.97  expert/middle 1.23
+1-2 expert/child 1.50  expert/middle 1.14
+1-3 expert/child 1.75  expert/middle 1.07
+3-4 expert/child 1.44  expert/middle 1.12
+6-3 expert/child 1.26  expert/middle 1.08
