@@ -25,7 +25,7 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
 | FA | session_01FhBbYNtcMTuMaKP1e5JiQ5 | Fable high | t-fa | ascent lay finished (+ along the route, climb camera) for 1-4 |
 | B15 | session_01FhBbYMteKQmarmbYVMoZiN | Opus xhigh | t-b15 | bough + limb load + marks goal, crude room, then 1-5 whole (card road cut) |
 | B14 | session_01FhBbYMrAEyA6NNWrPtAzHo | Opus xhigh | t-b14 | LATTICE onto main, pods, cluster/gate, crude room v2, then 1-4 whole |
-| ART | session_01FhBbYMvThjGLVUA8nE3ZmA | Opus high | t-art-1113 | HF: two-hand climb (R-165.178), 1-5 set, 1-4 pieces; inventory; cap $15 |
+| ART2 | session_01FhBbYLs1YqJxsPupP1Ngk1 (ART1 session_01FhBbYMvThjGLVUA8nE3ZmA had no HF; stopped) | Opus high | t-art-1113 | HF: two-hand climb (R-165.178), 1-5 set, 1-4 pieces; inventory; cap $15 |
 | S1 | session_01FhBbYJXH6JJa93RhTnuDf7 | Opus high | t-s1 | the meter's inspector (R-165.176), tools only |
 | Story keeper | session_01FhBbYMCa3JXWmyQicbmxuu (successor) | Opus high | t-story | bible onto t-story; closed-book check; 1-4 vine nature check |
 | Critic (review) | session_01FhBbYL2LcFRBpSzwjeZ98U | Opus high | t-crit-lead-review-1113 | delta re-audit of the lead review |
