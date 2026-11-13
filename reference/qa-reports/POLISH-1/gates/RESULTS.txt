@@ -7,3 +7,11 @@ knowncheck 0
 generality 0
 roadmap 2
 roadmap (re-run after git fetch --unshallow) 0
+kbdcheck 0
+seedlist11 0
+seedlist14 0
+tooltests 0
+tierBots 0
+unit3 0
+unit2 0
+unit1 0
