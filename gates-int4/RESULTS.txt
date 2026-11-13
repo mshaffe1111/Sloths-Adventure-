@@ -8,3 +8,4 @@ seedlist-1-4 0 75s
 seedlist-1-5 0 141s
 registrycheck 0 7s
 tierBots 0 25s
+kbdcheck 0 153s
