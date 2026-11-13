@@ -14,6 +14,8 @@ import { generateAllLevels } from '../../worldsData.ts';
 import { STAGE_PLAN } from '../../stagePlan.ts';
 import { TRAP } from '../../dropTrap.ts';
 import type { Platform } from '../../types.ts';
+import { engineGuideLine } from '../../dotLines.ts';
+import { helpAllows } from '../../dotGuideHelp.ts';
 
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 const SEEDS = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -64,6 +66,15 @@ test("Dot's creaky line is a TEACH line said 800 px and more before the first li
     assert.ok(first.x - hint.x >= 800 && first.x - hint.x <= 1100, `seed ${seed} ${d}: her line is ${Math.round(first.x - hint.x)} px before the first limb`);
     assert.equal(st.enemies.filter((e: Any) => e.x < first.x).length, 0, `seed ${seed} ${d}: an animal before the first limb`);
     for (const k of ['last', 'sign'] as const) assert.ok(st.proto.hints.some((h: Any) => h.text === LINES_15[k] && h.teach), `seed ${seed} ${d}: "${LINES_15[k]}"`);
+  }
+});
+
+test("D50: every keeper's line here is SAID on Normal's default Tips and Easy's default Help, as the engine hands it to Dot (a teach line)", () => {
+  for (const k of ['creak', 'sign', 'last'] as const) {
+    const l = engineGuideLine(LINES_15[k], STAGE_15, { dot: true, teach: true });
+    assert.ok(l && l.stageTeach, `"${LINES_15[k]}" is no stage teach line (${l?.kind})`);
+    assert.equal(helpAllows(l, 'reminders', new Set()), true, `"${LINES_15[k]}" is hidden on Tips, Normal's default`);
+    assert.equal(helpAllows(l, 'teach', new Set()), true, `"${LINES_15[k]}" is hidden on Help, Easy's default`);
   }
 });
 
