@@ -22,6 +22,8 @@ import type { GraphBrief, SectionPiece, SectionTemplate, Socket, WorldKit } from
 import { w1World } from './w1.ts';
 import { FIELD_FEEL, gateFaults, type ClusterGate, type VineCluster } from '../../vineField.ts';
 import { podBeat, podFaults, type PodColumn } from '../../podfall.ts';
+import type { KitDecor } from '../../puzzleArt.ts';
+import { nestDoorAt } from '../../artDress.ts';
 
 /** the stage these rows are for: the tag its sections carry (stagePool) and the key of its brief */
 export const STAGE_14 = '1-4';
@@ -253,7 +255,7 @@ export function kitLib14(): WorldKit {
 }
 
 // ───────────────────────────── the finish: the fields, figs, gates, pods and beats, by piece key ─────────────────────────────
-type FinishStage = { platforms: Platform[]; vines: Vine[]; clusters?: VineCluster[]; gates?: ClusterGate[]; pods?: PodColumn[]; clocks?: ClockDef[]; gen2?: { sections?: Array<{ uid: string; template: string }> } };
+type FinishStage = { platforms: Platform[]; vines: Vine[]; clusters?: VineCluster[]; gates?: ClusterGate[]; pods?: PodColumn[]; clocks?: ClockDef[]; gen2?: { sections?: Array<{ uid: string; template: string }> }; proto?: { kitDecor?: KitDecor[] } };
 
 /** the beats 1-4 runs (beat.ts): each pod names one */
 export function beats14(maxLen: number): ClockDef[] {
@@ -304,6 +306,14 @@ export function finish14<T extends FinishStage>(st: T, difficulty: Difficulty): 
       maxLen = Math.max(maxLen, foot.y - podTop);
       pods.push({ id: pods.length + 1, vine: v.id, x: v.x, top: podTop, land: foot.y, clock: row.beat === 'quick' ? 'pods-quick' : 'pods-steady', shift: pd.shift, cost: easy ? 'knock' : 'heart' });
     }
+  }
+  // (the view north: the squirrels' nest door in the crown bough, shut as he climbs up to it, open as he arrives (KitDecor `near`):
+  //  1-4.md beat 14, "the squirrels on their pod pile stare", a cameo, never a beat (STORY-LINES 1-4 story notes). It is the puzzle
+  //  sheet's nest door, kept in the game when the hand-built 1-4's squirrel lift went: every piece of art has a place, STAGE-RULES §4)
+  for (const s of st.gen2?.sections ?? []) {
+    if (s.template !== VIEW.id) continue;
+    const crown = byTag.get(`${s.uid}:crown`) as Platform | undefined;
+    if (crown && st.proto) (st.proto.kitDecor ??= []).push(nestDoorAt(crown));
   }
   const clocks = beats14(Math.max(maxLen, 1));
   const bad = [...podFaults(pods, clocks, st.vines, st.platforms, FIELD_FEEL.reach, easy), ...gateFaults(gates, clusters, st.vines, st.platforms)];

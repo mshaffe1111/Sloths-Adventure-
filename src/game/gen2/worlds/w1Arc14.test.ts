@@ -116,6 +116,15 @@ test('the finish lays a fair field from the keys: field vines, figs on their vin
   assert.throws(() => finish14(broken, 'normal'), /no vine f3/);
 });
 
+test("the view north dresses the squirrels' nest door in the crown bough (the hand-built 1-4's door kept in the game)", () => {
+  const crown: Platform = { id: 5, x: 400, y: 900, width: 420, height: 24, type: 'solid', tag: 's16:crown' } as Platform;
+  type Dressed = { proto?: { kitDecor?: Array<{ n: string; open?: string; x: number; b: number }> } };
+  const st = finish14({ platforms: [crown], vines: [], gen2: { sections: [{ uid: 's16', template: 'w1-14-view-north' }] }, proto: {} }, 'normal') as Dressed;
+  assert.deepEqual(st.proto!.kitDecor!.map((d) => [d.n, d.open, d.x, d.b]), [['nestDoorShut', 'nestDoorOpen', 750, 908]]);
+  // (planted: no crown bough laid, no door)
+  assert.equal((finish14({ platforms: [], vines: [], gen2: { sections: [{ uid: 's16', template: 'w1-14-view-north' }] }, proto: {} }, 'normal') as Dressed).proto!.kitDecor, undefined);
+});
+
 test('every field row is in reach (vines GAP apart, under two hands\' reach) and every pod has the time to fall its column', () => {
   assert.ok(GAP <= FIELD_FEEL.reach && GAP >= 70, `fields 70-90 px apart (${GAP})`);
   for (const [id, row] of Object.entries(FIELD_ROWS)) {
