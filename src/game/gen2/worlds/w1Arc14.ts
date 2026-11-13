@@ -32,7 +32,11 @@ type R2 = [number, number];
 export const ARC_14: Record<string, string> = { 'ascent-14-arc': 'A T T R T T P R X R W R S R C E' };
 /** 1-4's brief, all of it data: an ascent of fields, its cast 1-3's snake */
 export const BRIEF_14: GraphBrief = {
-  ends: 'quiet', trend: 'up', branching: 'none', teaches: ['slide', 'creak', 'field', 'pods'], deal: { climb: 60, crumble: 20, hazard: 20 }, dealExact: true,
+  ends: 'quiet', trend: 'up', branching: 'none', teaches: ['slide', 'creak', 'field', 'pods'],
+  // (the deal is the arc's own, one type a beat, no type over V11's 40% and no two teaches of one type (V2): ground the going-up (it
+  // starts on the forest floor, the climbs short and over ground); crumble the rotting boughs and the crown's rotten stair; climb the field, the push and the drop;
+  // hazard the pods, under fire and the hollow: 1, 2, 3 and 3 of the nine content nodes)
+  deal: { ground: 11, crumble: 22, climb: 33, hazard: 34 }, dealExact: true,
   cast: ['snake'],
 };
 /** the story keeper's lines for 1-4, verbatim (the lead, 11-13 10:44 AM ET: final, Matt 10:43 AM; t-story@400b4c13 STORY-KEEPER.md):
@@ -82,19 +86,22 @@ interface FieldRow {
   gate: boolean;
   /** Easy's figs (one fewer on a gate of two or more: 1-4.md "gates of one cluster fewer") */
   easyFigs?: Array<{ vine: number; over: number }>;
+  /** the piece the vines stand on (default 'foot') */
+  foot?: string;
 }
 /** the finish's rows, by section template id */
 export const FIELD_ROWS: Record<string, FieldRow> = {};
 
 /** a field: a foot bough, n vines GAP apart standing on it, H tall, and a bough over them at their tops (the section's exit) */
-function field(id: string, name: string, o: { job: SectionTemplate['phases']; teaches?: string; uses?: string[]; difficulty: number; row: FieldRow; tips?: Socket[]; content?: 'climb' | 'hazard' }): SectionTemplate {
+function field(id: string, name: string, o: { jobs: NonNullable<SectionTemplate['jobs']>; job: SectionTemplate['phases']; teaches?: string; uses?: string[]; difficulty: number; row: FieldRow; tips?: Socket[]; content?: 'climb' | 'hazard' }): SectionTemplate {
   const W = 2 * MARGIN + (o.row.n - 1) * GAP;
-  const pieces: SectionPiece[] = [branch('foot', { kind: 'start' }, W)];
+  // (a field's foot is walked onto, never landed on: no `landing`, so Easy does not widen it and pull its vines out of two hands' reach)
+  const pieces: SectionPiece[] = [branch('foot', { kind: 'start' }, W, { landing: false })];
   for (let i = 0; i < o.row.n; i++) pieces.push(climbOn(`f${i + 1}`, 'foot', W, MARGIN + i * GAP, o.row.H));
   pieces.push(branch('top', { kind: 'over', on: 'foot', at: [0, 0], dy: [-o.row.H, -o.row.H] }, W));
   FIELD_ROWS[id] = o.row;
   return {
-    id, name, feel: [STAGE_14], own: true, archetypes: 'any', phases: o.job, difficulty: o.difficulty, content: o.content ?? 'climb',
+    id, name, feel: [STAGE_14], own: true, archetypes: 'any', phases: o.job, jobs: o.jobs, difficulty: o.difficulty, content: o.content ?? 'climb',
     ...(o.teaches ? { teaches: o.teaches } : {}), uses: o.uses ?? [], needs: [],
     pieces, entry: { piece: 'foot', kind: 'ledge' }, exit: { piece: 'top', kind: 'ledge' }, exitDy: -o.row.H,
     sockets: [...(o.tips ?? [])], mirrorable: false,
@@ -104,7 +111,7 @@ function field(id: string, name: string, o: { job: SectionTemplate['phases']; te
 // ───────────────────────────── the beats ─────────────────────────────
 /** [A] arrive: the buttress roots on the forest floor in mist; her last petal low on the bark */
 const ARRIVE: SectionTemplate = {
-  id: 'w1-14-roots', name: 'arrive: the buttress roots', feel: [STAGE_14], own: true, archetypes: 'any', phases: ['start'], difficulty: 1,
+  id: 'w1-14-roots', name: 'arrive: the buttress roots', feel: [STAGE_14], own: true, archetypes: 'any', phases: ['start'], jobs: ['arrive'], difficulty: 1,
   pieces: [{ key: 'roots', shape: 'bank', w: [520, 560], place: { kind: 'start' }, style: 'moss_stone', main: true }],
   entry: { piece: 'roots', kind: 'ground' }, exit: { piece: 'roots', kind: 'ground' }, exitDy: 0,
   sockets: [petals('petal', 'roots', 0.7)], mirrorable: false,
@@ -113,16 +120,16 @@ const ARRIVE: SectionTemplate = {
 /** [T] going up: a single vine from the root to a wide, low, sound bough with ground under it; then a taller one. The slide down is
  *  learned by shape (down on one hand is quicker), no words */
 const GOING_UP: SectionTemplate = {
-  id: 'w1-14-going-up', name: 'going up: a vine, then a taller one', feel: [STAGE_14], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'],
-  difficulty: 2, content: 'climb', teaches: 'slide', uses: [], needs: [],
+  id: 'w1-14-going-up', name: 'going up: a vine, then a taller one', feel: [STAGE_14], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], jobs: ['teach'],
+  difficulty: 2, content: 'ground', teaches: 'slide', uses: [], needs: [],
   pieces: [
-    branch('foot', { kind: 'start' }, 300),
+    { key: 'foot', shape: 'bank', w: [300, 300], place: { kind: 'start' }, style: 'moss_stone', main: true },
     climbOn('v1', 'foot', 300, 240, 220),
     branch('b1', { kind: 'over', on: 'v1', at: [0, 0], dy: [0, 0] }, 340),
     climbOn('v2', 'b1', 340, 290, 320),
     branch('b2', { kind: 'over', on: 'v2', at: [0, 0], dy: [0, 0] }, 260),
   ],
-  entry: { piece: 'foot', kind: 'ledge' }, exit: { piece: 'b2', kind: 'ledge' }, exitDy: -540,
+  entry: { piece: 'foot', kind: 'ground' }, exit: { piece: 'b2', kind: 'ledge' }, exitDy: -540,
   sockets: [petals('p', 'b1', 0.4)], mirrorable: false,
 } as SectionTemplate;
 
@@ -130,7 +137,7 @@ const GOING_UP: SectionTemplate = {
  *  walk. The sound wood runs under all three (a drop costs nothing) */
 const ROT = 110, SOUND_W = 640;
 const ROTTING: SectionTemplate = {
-  id: 'w1-14-rotting', name: 'rotting boughs over sound wood', feel: [STAGE_14], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'],
+  id: 'w1-14-rotting', name: 'rotting boughs over sound wood', feel: [STAGE_14], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], jobs: ['teach'],
   difficulty: 3, content: 'crumble', teaches: 'creak', uses: [], needs: ['jump'],
   pieces: [
     branch('a', { kind: 'start' }, 220),
@@ -146,34 +153,34 @@ const ROTTING: SectionTemplate = {
 
 /** [T] the field: five vines 80 apart over sound wood, nothing falling: he finds two hands, races up, slides down */
 const FIELD_TEACH = field('w1-14-field', 'the field: five vines, nothing falling', {
-  job: ['ki', 'sho', 'ten', 'ketsu'], teaches: 'field', difficulty: 3,
+  jobs: ['teach'], job: ['ki', 'sho', 'ten', 'ketsu'], teaches: 'field', difficulty: 3,
   row: { n: 5, H: 330, figs: [], pods: [], gate: false },
   tips: [tip('tip', 'foot', 0.15, 'field')],
 });
 /** [T] pods: pods down two of five columns on ONE steady beat (3.6 s), half a beat apart; the first watched from the foot, a column he is
  *  not on. Dot's line at the foot */
 const PODS = field('w1-14-pods', 'pods down two columns, one steady beat', {
-  job: ['ki', 'sho', 'ten', 'ketsu'], teaches: 'pods', uses: ['field'], difficulty: 4, content: 'hazard',
+  jobs: ['teach'], job: ['ki', 'sho', 'ten', 'ketsu'], teaches: 'pods', uses: ['field'], difficulty: 4, content: 'hazard',
   row: { n: 5, H: 360, figs: [], pods: [{ vine: 2, shift: 0 }, { vine: 4, shift: BEATS.steady / 2 }], beat: 'steady', gate: false },
   tips: [tip('tip', 'foot', 0.12, 'pods')],
 });
 /** [P] push the figs up: the way up shut by a sagging bough; ONE fig bunch low on a vine nothing falls on, pods on the steady beat two
  *  columns away */
 const PUSH = field('w1-14-push', 'push the figs up: a gate of one', {
-  job: ['ki', 'sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 5,
+  jobs: ['practise'], job: ['ki', 'sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 5,
   row: { n: 5, H: 360, figs: [{ vine: 1, over: 150 }], pods: [{ vine: 4, shift: 0 }], beat: 'steady', gate: true },
   tips: [tip('tip', 'foot', 0.12, 'figs')],
 });
 /** [X] pushing under fire: a gate of two bunches, pods down both push vines (half a beat apart), the vines between free */
 const UNDER_FIRE = field('w1-14-under-fire', 'a gate of two, pods down the push vines', {
-  job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 6, content: 'hazard',
+  jobs: ['test'], job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 6, content: 'hazard',
   row: { n: 5, H: 400, figs: [{ vine: 1, over: 150 }, { vine: 4, over: 250 }], pods: [{ vine: 1, shift: 0 }, { vine: 4, shift: BEATS.steady / 2 }], beat: 'steady', gate: true, easyFigs: [{ vine: 4, over: 250 }] },
 });
 /** [W] his turn to drop one: a snake dozes on the field's foot past its last vine; the bunch on the last vine, pushed free, thumps down
  *  beside it, and it glides off; the bough over the field lifts with it */
 const DROP_ONE = (() => {
   const t = field('w1-14-drop-one', 'his turn to drop one: the figs beside the snake', {
-    job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods', 'traps'], difficulty: 6,
+    jobs: ['twist'], job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 6,
     row: { n: 4, H: 360, figs: [{ vine: 4, over: 160 }], pods: [{ vine: 2, shift: 0 }], beat: 'steady', gate: true },
   });
   // (the foot runs on past the last vine to the snake's spot, within TRAP.scare (170) of where the bunch comes down)
@@ -184,24 +191,39 @@ const DROP_ONE = (() => {
 })();
 /** [S] the hollow: the tallest field, a gate of three, pods on the quicker beat down one push vine */
 const HOLLOW = field('w1-14-hollow', 'the hollow: a gate of three, the quicker beat', {
-  job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 8, content: 'hazard',
+  jobs: ['signature'], job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 8, content: 'hazard',
   row: { n: 6, H: 440, figs: [{ vine: 1, over: 140 }, { vine: 3, over: 300 }, { vine: 6, over: 200 }], pods: [{ vine: 3, shift: 0 }], beat: 'quick', gate: true, easyFigs: [{ vine: 1, over: 140 }, { vine: 6, over: 200 }] },
 });
-/** [C] the crown: a rotten stair up to three long vines, pods down two of them on the steady beat; up and out */
-const CROWN = field('w1-14-crown', 'the crown: a rotten stair to three long vines under pods', {
-  job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods', 'creak'], difficulty: 7, content: 'hazard',
-  row: { n: 3, H: 440, figs: [], pods: [{ vine: 1, shift: 0 }, { vine: 3, shift: BEATS.steady / 2 }], beat: 'steady', gate: false },
-});
+/** [C] the crown: a rotten stair (three creaking steps up over the foot: one breath, no stopping) to three long vines under pods on the
+ *  steady beat; up and out. Its type is the stair's (crumble); its pods make it the stage's climax */
+const STEP = 100, RISE = 60, CROWN_N = 3, CROWN_H = 440;
+const CROWN: SectionTemplate = (() => {
+  const W = 3 * (STEP + 20) + 2 * MARGIN + (CROWN_N - 1) * GAP + 40;
+  const midX = 3 * (STEP + 20) + 40, midW = 2 * MARGIN + (CROWN_N - 1) * GAP;
+  const pieces: SectionPiece[] = [branch('foot', { kind: 'start' }, W, { landing: false })];
+  for (let i = 0; i < 3; i++) pieces.push(branch(`r${i + 1}`, { kind: 'over', on: 'foot', at: [(20 + i * (STEP + 20)) / W, (20 + i * (STEP + 20)) / W], dy: [-RISE * (i + 1), -RISE * (i + 1)] }, STEP, { creak: true }));
+  pieces.push(branch('mid', { kind: 'over', on: 'foot', at: [midX / W, midX / W], dy: [-RISE * 4, -RISE * 4] }, midW, { landing: false }));
+  for (let i = 0; i < CROWN_N; i++) pieces.push(climbOn(`f${i + 1}`, 'mid', midW, MARGIN + i * GAP, CROWN_H));
+  pieces.push(branch('top', { kind: 'over', on: 'mid', at: [0, 0], dy: [-CROWN_H, -CROWN_H] }, midW));
+  FIELD_ROWS['w1-14-crown'] = { n: CROWN_N, H: CROWN_H, figs: [], pods: [{ vine: 1, shift: 0 }, { vine: 3, shift: BEATS.steady / 2 }], beat: 'steady', gate: false, foot: 'mid' };
+  return {
+    id: 'w1-14-crown', name: 'the crown: a rotten stair to three long vines under pods', feel: [STAGE_14], own: true, archetypes: 'any',
+    phases: ['sho', 'ten', 'ketsu'], jobs: ['combine'], difficulty: 7, content: 'crumble', uses: ['field', 'pods', 'creak'], needs: ['jump'],
+    pieces, entry: { piece: 'foot', kind: 'ledge' }, exit: { piece: 'top', kind: 'ledge' }, exitDy: -RISE * 4 - CROWN_H, sockets: [], mirrorable: false,
+  } as SectionTemplate;
+})();
 
-/** [R] a rest: a sound bough with a flag (and the halfway one, 1-4.md beat 6, is the first after P) */
-const rest = (id: string, w: number): SectionTemplate => ({
-  id, name: `a rest: a sound bough (${w})`, feel: [STAGE_14], own: true, archetypes: 'any', phases: ['rest'], difficulty: 1,
-  pieces: [branch('b', { kind: 'start' }, w)], entry: { piece: 'b', kind: 'ledge' }, exit: { piece: 'b', kind: 'ledge' }, exitDy: 0,
-  sockets: [flag('b', 0.5), petals('p', 'b', 0.25)], mirrorable: false,
+/** [R] a rest: a sound bough with a flag, or a bough and a low step up onto a second (each rest its own shape: no two alike) */
+const rest = (id: string, w: number, step?: number): SectionTemplate => ({
+  id, name: `a rest: a sound bough (${w}${step ? `, a step up to ${step}` : ''})`, feel: [STAGE_14], own: true, archetypes: 'any', phases: ['rest'], jobs: ['rest'], difficulty: 1,
+  pieces: [branch('b', { kind: 'start' }, w), ...(step ? [branch('c', { kind: 'walk', after: 'b', dy: [-40, -40] }, step)] : [])],
+  entry: { piece: 'b', kind: 'ledge' }, exit: { piece: step ? 'c' : 'b', kind: 'ledge' }, exitDy: step ? -40 : 0,
+  sockets: [flag('b', 0.5), petals('p', step ? 'c' : 'b', 0.5)], mirrorable: false,
 } as SectionTemplate);
+const RESTS = [rest('w1-14-rest-a', 320), rest('w1-14-rest-b', 360), rest('w1-14-rest-c', 260, 180), rest('w1-14-rest-d', 400), rest('w1-14-rest-e', 240, 220), rest('w1-14-rest-f', 300, 160)];
 /** [E] the view north: out into open sky on the crown's plain bough */
 const VIEW: SectionTemplate = {
-  id: 'w1-14-view-north', name: 'the view north', feel: [STAGE_14], own: true, archetypes: 'any', phases: ['goal'], difficulty: 1,
+  id: 'w1-14-view-north', name: 'the view north', feel: [STAGE_14], own: true, archetypes: 'any', phases: ['goal'], jobs: ['exit'], difficulty: 1,
   pieces: [branch('crown', { kind: 'start' }, 420)], entry: { piece: 'crown', kind: 'ledge' }, exit: { piece: 'crown', kind: 'ledge' }, exitDy: 0,
   sockets: [], mirrorable: false,
 } as SectionTemplate;
@@ -209,7 +231,7 @@ const VIEW: SectionTemplate = {
 /** every section that is 1-4's own */
 export const SECTIONS_14: SectionTemplate[] = [
   ARRIVE, GOING_UP, ROTTING, FIELD_TEACH, PODS, PUSH, UNDER_FIRE, DROP_ONE, HOLLOW, CROWN,
-  rest('w1-14-rest-a', 320), rest('w1-14-rest-b', 360), VIEW,
+  ...RESTS, VIEW,
 ];
 
 /** 1-4's kit: World 1's, its sections, its graph and brief, its lines (each a teach line, D50) */
@@ -252,7 +274,7 @@ export function finish14<T extends FinishStage>(st: T, difficulty: Difficulty): 
     if (!row) continue;
     const vine = (i: number) => byTag.get(`${s.uid}:f${i}`) as Vine | undefined;
     const top = byTag.get(`${s.uid}:top`) as Platform | undefined;
-    const foot = byTag.get(`${s.uid}:foot`) as Platform | undefined;
+    const foot = byTag.get(`${s.uid}:${row.foot ?? 'foot'}`) as Platform | undefined;
     if (!top || !foot) throw new Error(`1-4 finish: section ${s.uid} (${s.template}) has no top or foot`);
     for (let i = 1; i <= row.n; i++) {
       const v = vine(i);
