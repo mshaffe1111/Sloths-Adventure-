@@ -231,7 +231,7 @@ export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState
       const y = p.top + 6 + f * reach;
       const x = p.x + Math.sin(t * sway + i * 2.3) * (6 + 16 * f);
       const a = Math.min(1, f * 6) * (1 - f * f);
-      fluff(ctx, x, y, 7 * size, a, spin * (t + i * 1.9), i % 2 === 1);
+      fluff(ctx, x, y, 9 * size, a, spin * (t + i * 1.9), i % 2 === 1);
     }
     podShape(ctx, p.x, hangY, r, Math.sin(t * 38) * 0.14 * (0.4 + s.u));
     return;
