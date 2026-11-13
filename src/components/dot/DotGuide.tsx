@@ -12,6 +12,7 @@ import { countedText, FADE_K, GuideQueue, isUrgent, noteSaid, roomMaySay, readMs
 import { MoveWatch, StruggleWatch, inDanger, type DeathCause, type StruggleHelp } from '../../game/dotGuideWatch.ts';
 import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markMoveDone, markSkillSeen, markSkipOffered, markTapLearned, movesDone, offersSkip, seenSkills, skipTapCounts, skipTips, tapLearned, type DotHelp } from '../../game/dotGuideHelp.ts';
 import { recorder } from '../../game/playRecorder.ts';
+import { cardTrail } from '../../game/dotCardHit.ts';
 import { HELP_LINES, helpGuideLine, helpLadderOn, helpLineOnScreen, pushHelpLine } from '../../game/helpLadder.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuidePlatform, type GuideView } from '../../game/dotGuideView.ts';
 import {
@@ -264,6 +265,8 @@ class GuideRun {
   /** when she last landed (ms of play): she says her line from then */
   landedAt = 0;
   lastBx = 16;
+  /** the card the touch layer's trail holds (dotCardHit.ts): a trail tap is for this one, not one that has just replaced it */
+  trailN = -1;
   lastBy = 80;
 
   constructor(level: LevelConfig, guideN: number) {
@@ -472,6 +475,21 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
     markTapLearned();
     recorder.event('dotTap', `${(upMs / 1000).toFixed(1)}s ${c.line.key}`);
   };
+  // a finger that landed where the card just was (it slid from under it: the touch layer gave it to the card, dotCardHit.ts R-165.201)
+  useEffect(() => {
+    cardTrail.setTap(() => {
+      const c = run.queue.cur;
+      if (!c || c.n !== run.trailN) return;
+      const upMs = run.clock - c.startedAt;
+      if (!run.queue.tap(run.clock)) return;
+      markTapLearned();
+      recorder.event('dotTap', `${(upMs / 1000).toFixed(1)}s ${c.line.key} trail`);
+    });
+    return () => {
+      cardTrail.setTap(null);
+      cardTrail.clear();
+    };
+  }, [run]);
   const skipAt = useRef(0);
   const skipDown = useRef(false);
   const [skipArmed, setSkipArmed] = useState(false);
@@ -890,6 +908,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       if (!live) {
         if (!off && rootRef.current) rootRef.current.dataset.off = '1';
         off = true;
+        cardTrail.clear();
         if (e) run.lastT = v.t;
         return;
       }
@@ -1226,6 +1245,9 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         bub.style.transform = `translate3d(${bx.toFixed(1)}px, ${by.toFixed(1)}px, 0)`;
         run.lastBx = bx;
         run.lastBy = by;
+        if (run.trailN !== cur.n) cardTrail.clear();
+        run.trailN = cur.n;
+        cardTrail.note(bx, by, run.bw, run.bh, now);
         bubIn = toggle(bub, 'in', true, bubIn);
         // (its reading time counts from now, not from when it left the queue: DOT-7)
         run.queue.onScreen(run.clock);
@@ -1299,6 +1321,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         bubIn = toggle(bub, 'in', false, bubIn);
         bubOut = toggle(bub, 'out', false, bubOut);
         bubSlow = toggle(bub, 'slow', false, bubSlow);
+        cardTrail.clear();
       }
 
       // nothing drawn on the thing: no ring, no arrow, no sparkle (Matt, 2026-10-29: "that horrible blue pointer, the helper, I want that

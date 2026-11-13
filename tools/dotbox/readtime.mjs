@@ -19,7 +19,9 @@ for (let i = 0; i < 120 && !/Local:|ready in/.test(vout); i++) await sleep(500);
 const words = (t) => (t.trim().match(/\S+/g) || []).length;
 const readMs = (t) => Math.max(4000, 1500 + 500 * words(t));
 const b = await chromium.launch();
-const ctx = await b.newContext({ viewport: { width: 412, height: 915 }, deviceScaleFactor: 1, hasTouch: true, isMobile: true });
+// (DOTBOX_VIEW=915x412: sideways; upright by default)
+const [vwArg, vhArg] = (process.env.DOTBOX_VIEW || '412x915').split('x').map(Number);
+const ctx = await b.newContext({ viewport: { width: vwArg, height: vhArg }, deviceScaleFactor: 1, hasTouch: true, isMobile: true });
 await ctx.route(/script\.google\.com/, (r) => r.abort());
 const p = await ctx.newPage();
 p.on('pageerror', (e) => console.log('pageerror', e.message.slice(0, 160)));
