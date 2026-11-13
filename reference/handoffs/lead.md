@@ -10,6 +10,8 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **THE STORY KEEPER APPROVES ALL LINES** (Matt, 11-13 10:44 AM ET: "the storykeeper has full authority to add to the story and to approve
+  all lines"; R-165.189): no line goes to Matt any more; the keeper adds to the story and approves every player line. Matt can still overrule.
 - **Levels per 100% of his week is the scoreboard.** Today: 1-4 AND 1-5 on his test link tonight, polished (10:13 AM; R-165.182).
 - **Critics sparingly, only when needed** (10:13 AM: "they take way too much tokens"; R-165.183): one Critic where the risk is real
   (shared engine code everything reuses, an integration head before a test link or release, a lead plan change); everything else is the

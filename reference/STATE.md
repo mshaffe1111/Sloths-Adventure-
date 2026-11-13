@@ -304,10 +304,10 @@ over a certain age, probably like 12." Normal = 12 and up; Easy = children. Matt
 ## Decisions waiting on Matt (the one list; each has an R-number on ROADMAP.md)
 **CURRENT (new lead, 2026-11-13 10:00 AM ET; the 11-07 items below are history):**
 - Matt's "go" to end the pause (lead.md "The handover").
-- The story keeper's three lines, each needs his okay: R-165.175 1-1 teach "Tap here when you've read it. I'll wait!"; R-165.171 coach
+- (CLOSED 11-13 10:43 AM: the story keeper now approves all lines, R-165.189) The story keeper's three lines: R-165.175 1-1 teach "Tap here when you've read it. I'll wait!"; R-165.171 coach
   "Flick up to hop up or over." / pad "Press Jump to hop up or over."; R-165.165 bell "Down in the hollow, on the low ledge."
-- The optional About line "We weighed 84 ideas for Sloths. 65 made it in, each grown into something of the rainforest's own."
-- Three NEW lines from the story keeper's 1-4 check (t-story@46fc378f): 1-4 pods "Hear it creak? Scoot a vine over till it drops!"
+- (the keeper decides) The optional About line "We weighed 84 ideas for Sloths. 65 made it in, each grown into something of the rainforest's own."
+- (the keeper approved) Three NEW lines from the story keeper's 1-4 check (t-story@46fc378f): 1-4 pods "Hear it creak? Scoot a vine over till it drops!"
   (replaces the approved pods line, now untrue); R-165.180 1-4 teach (Dot) "Creaky limbs drop you, but only to the branch below!"; 1-5
   develop (Pokey) "Creaky again. If it drops me, I'll take the roots." Optional: credit the 1982 arcade vine climber on "Inspired by".
 - Two more 1-4 Dot lines (story keeper 10:41 AM): two-hand step "Reach for the next vine! Two hands zoom up!"; cluster push "Climb under
@@ -883,3 +883,4 @@ lines); Matt sees them in the release.
   HANG-UNDER and BREAK-PUSH (first needed 3-2, 7-2) held to wave C/D to save tokens (Matt: stretch to Tuesday). Vine field returns:
   3-4, 7-5, 10-4 (Architect pick; maybe a short one in 2-6): for the designer and Matt.
 - 2026-11-13 10:40 AM ET: MATT: varied tropical rainforest fruit from HF (R-165.188): story keeper lists them (nature check), ART2 paints after the climb + 1-5 set, inside the $15 cap.
+- 2026-11-13 10:44 AM ET: MATT: the story keeper has full authority to add to the story and approve all lines (R-165.189). The open line question to Matt is closed; all queued lines (3 for 0.9.8, 5 for 1-4/1-5, the About line) go to the keeper's call.
