@@ -12,8 +12,8 @@
  * columns pods fall down and on which beat. The pieces themselves are general (vineField.ts, podfall.ts, beat.ts, fieldPlay.ts).
  *
  * Stand-ins and cuts, named plainly (the report carries them): the flyer and the ant file (1-4.md piece 8) are not laid yet; the crown's
- * draped liana is a field of three; fig pickups on the vines are not laid (the figs are the gates' bunches); Pokey's halfway line waits
- * for a Pokey-line hook; the pods, figs and shut boughs are code-drawn until ART's painted pieces land.
+ * draped liana is a field of three; fig pickups on the vines are not laid (the figs are the gates' bunches); the pods, figs and shut
+ * boughs are code-drawn until ART's painted pieces land.
  */
 import type { ClockDef } from '../../stageKit.types.ts';
 import type { Platform, Vine } from '../../types.ts';
@@ -47,7 +47,7 @@ export const LINES_14 = {
   pods: 'Hear it creak? Scoot a vine over till it drops!',
   figs: 'Climb under the figs and push them free!',
 } as const;
-/** Pokey's halfway line (STORY-KEEPER.md:149; 1-4.md beat 6): held for a Pokey-line hook (a tip is Dot's voice; not laid as one) */
+/** Pokey's halfway line (STORY-KEEPER.md:149; 1-4.md beat 6): said by wayside.ts (World 1 stage 4, at half the way), in his voice */
 export const HALFWAY_14 = 'Meeca climbs this every Sunday. I waved from below.';
 /** the journal line (pokeyJournal.ts:51's 1-4, the keeper's rewrite) */
 export const JOURNAL_14 = 'Climbed the kapok between falling pods. From the top you can see where they took her.';
