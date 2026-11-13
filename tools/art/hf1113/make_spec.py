@@ -162,6 +162,31 @@ def climb2():
     (H / 'spec-climb2.json').write_text(json.dumps({'tag': 'climb2', 'edits': edits}, indent=1))
     print(sum(len(e['seeds']) for e in edits), 'edits')
 
-CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1, 'climb2': climb2}
+
+# ---- props2: round-1 redos (leaf sign right: blobs, no arrow; her mark: every take a SAWN stump, a made thing W1 forbids) ----
+BARK = ('rough brown living rainforest tree bark texture filling the whole picture edge to edge, deep vertical cracks with a little '
+        'green moss, flat front view, {}, the fresh cuts pale cream wood against the dark bark, crisp carving')
+PROPS2 = {
+    'leafsign-right2': ('a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, '
+                        'its wide blade held up flat facing us like a little sign, one big bold horizontal arrow pointing to the right '
+                        'painted clearly across the middle of the leaf in dark purple berry juice, a clean simple arrow shape with a '
+                        'triangle head', MAG, 1328, 1328),
+    'markbark-right': (BARK.format('a big capital letter M freshly carved deep into the bark in the middle and a carved arrow pointing '
+                                   'to the right beside it'), 'no background, the bark fills the frame', 1024, 1024),
+    'markbark-up': (BARK.format('a big capital letter M freshly carved deep into the bark in the middle and a carved arrow pointing '
+                                'straight up above it'), 'no background, the bark fills the frame', 1024, 1024),
+}
+
+
+def props2(seeds=(11, 23, 37, 53)):
+    items = [{'name': f'{k}-{sd}', 'prompt': f'{p}, {STYLE}, {bg}', 'seed': sd, 'w': w, 'h': h}
+             for k, (p, bg, w, h) in PROPS2.items() for sd in (seeds if k == 'leafsign-right2' else seeds[:3])]
+    spec = {'tag': 'props2', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
+            'neg': PNEG.replace('text, letters, numbers, words, ', 'words, writing, ') + ', stump, sawn, cut log, tree rings, top of a log',
+            'items': items}
+    (H / 'spec-props2.json').write_text(json.dumps(spec, indent=1))
+    print(len(items), 'stills')
+
+CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1, 'climb2': climb2, 'props2': props2}
 if __name__ == '__main__':
     CMDS[sys.argv[1]]()
