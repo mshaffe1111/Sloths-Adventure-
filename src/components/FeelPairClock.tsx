@@ -1,5 +1,5 @@
 import React from 'react';
-import { feelClock, speedLabel } from '../game/feelPair.ts';
+import { beatLabel, feelClock, speedLabel } from '../game/feelPair.ts';
 
 /**
  * The vine field test's stopwatch (feelPair.ts; a QA build only, feelPairStage.ts): each climb's last time, grab to standing on the bough,
@@ -24,7 +24,14 @@ export const FeelPairClock: React.FC = () => {
           <span className="fp-secs">{l.secs === null ? '–' : `${l.secs.toFixed(1)} s`}</span>
         </div>
       ))}
+      {c.beat !== null && (
+        <div className="fp-line">
+          <span className="fp-what">Knocked off · fruit freed</span>
+          <span className="fp-secs">{c.knocks} · {c.freed}</span>
+        </div>
+      )}
       <div className="fp-tip">Tap by the sign: slide at {speedLabel(c.speed)}</div>
+      {c.beat !== null && <div className="fp-tip">Tap by the pod sign: a pod every {beatLabel(c.beat)}</div>}
       <style>{CSS}</style>
     </div>
   );

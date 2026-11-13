@@ -1016,7 +1016,7 @@ export class GameEngine {
     // (Meeca's stage: her night look, and Easy's stuck watch without a clock, Matt's research rule)
     this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles, world: config.worldIndex, stage: config.miniIndex, vines: this.vines, ...(this.proto?.meeca ? { noClock: true, night: true } : {}) }) : null;
     this.plainVines = this.vines.filter((v) => !v.kit);
-    this.feel = this.currentStage.feelRoom ? new FeelRoom(this.currentStage.feelRoom, this.vines) : null;
+    this.feel = this.currentStage.feelRoom ? new FeelRoom(this.currentStage.feelRoom, this.vines, this.currentStage.pods ?? []) : null;
     this.clusters = (this.currentStage.clusters ?? []).map((c) => ({ ...c }));
     this.clustersFreed = 0;
     this.hands = null;
@@ -9060,6 +9060,7 @@ export class GameEngine {
     sound.playVineGrab();
     if (v) this.spawnSparkBurst(v.x, c.y - c.h / 2, '#c4b5fd');
     this.field?.torn(c, this.fieldHost);
+    this.feel?.freed();
   }
 
   /**
@@ -9076,6 +9077,7 @@ export class GameEngine {
     }
     p.grounded = false;
     this.knocked = 1.2;
+    this.feel?.knocked();
     if (cost === 'heart') {
       this.damagePlayer(1, fromX);
       return;
