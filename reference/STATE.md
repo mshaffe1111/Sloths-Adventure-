@@ -869,3 +869,7 @@ lines); Matt sees them in the release.
 - 2026-11-13 10:23 AM ET: MATT: show him pictures of what we implement; he says if they look right. Members push stills early; the lead forwards them.
 - 2026-11-13 10:27 AM ET: MATT: engine first, in bulk, 2 hours design-to-tests (R-165.186/.187). Lead's map count (90 stages): dir 30, clock 20, dark 17, swing 11, ride 11, still 10, water 10, lure 8. B14's pods redirected onto a general beat clock (20 stages). Architect ENGINE-NEEDS started (session_01FhBbYLVSn59vpCSU4ruo6P): code-checked truth table + ranked bulk packets + the 2-hour tool, by 12:30 PM.
 - 2026-11-13 10:27 AM ET: MATT: the lead's objective besides tonight's two levels: the game set up easy to work on and planned ahead, not reactive (lead.md top).
+- 2026-11-13 10:38 AM ET: CHECK-IN. FA plan only (bedb2e6e, coding); B14 plan + LATTICE merged (5368dc37); S1 fixes in (f14e6733), recalibrating bots;
+  ART2 on an HF sandbox (~$2.75/h; the bucket/repo writes 403 for this credential), climb round 1 running; story t-story@46fc378f;
+  ENGINE-NEEDS started. B15 WIP d8f73cfc edited 4 shared files it does not hold (pipeline.ts, gen2/types.ts = FA; types.ts, engine.ts = B14):
+  sent back (hunks to patches, revert). Check at every check-in: git diff --stat base...<branch> -- <shared files> vs the token table.
