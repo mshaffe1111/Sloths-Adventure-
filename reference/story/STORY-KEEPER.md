@@ -417,3 +417,6 @@ level's design is judged, research every plant, fruit and animal it puts in fron
 setting (World 1: Central/South American lowland rainforest), name a true swap for anything that isn't, and make sure the design doc
 carries a "Nature check". The first pass found the gliding Golden Tree Snake (Asian) and the orchid mantis (Asian); see STORY-LINES
 11-12.
+
+**NEW LEAD (11-13 9:54 AM ET): session_01FhBbYNzGRJBDMzn6XbtQK2.** The previous lead (session_01FhBbYP63h7cCX8DyW69stq) is backup, for
+questions only. 0.9.7 is live (d8d6a973). Lines for 11-13 are in reference/packets/2026-11-13/STORY-LINES.md.
