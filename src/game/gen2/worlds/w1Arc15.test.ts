@@ -22,6 +22,7 @@ import { markUp } from '../../../../tools/inspect/markClimb.ts';
 import { MARK_RISE } from '../../dressArt.ts';
 import { stageLooks } from '../../stagePlan.ts';
 import { RealPlay } from '../../realPlay.ts';
+import { setDifficulty } from '../../difficulty.ts';
 import { existsSync } from 'node:fs';
 
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -222,11 +223,11 @@ test("the bots' climb rule (markClimb.ts): only her marks not yet read, up at th
   assert.equal(markUp(v, { x: 1000, y: 420 }, [m()], 1), true, 'part way up the trunk, caught in a jump');
 });
 
-test("the squirrels' leaf-signs and the root tunnel stand where 1-5.md has them, each on sound ground: THIS WAY and THAT WAY before the trunk, theirs pointing over on her road with the tunnel past the sleeping snake, the big sign's one, both THIS WAY at the end", () => {
+test("the squirrels' leaf-signs and the root tunnel stand where 1-5.md has them, each on sound ground and never on a flag: THIS WAY and THAT WAY before the trunk, theirs pointing over on her road with the tunnel past the sleeping snake, the big sign's one, both THIS WAY at the end", () => {
   for (const d of ['normal', 'easy'] as const) for (const seed of SEEDS) {
-    const st = built(seed, d);
+    const st = finished(seed, d);
     const secs = st.gen2.sections.map((q: Any) => ({ id: q.template.replace('w1-15-', ''), x0: q.x0, x1: q.x1 }));
-    const inSec = (id: string) => (st.proto.dress ?? []).filter((q: Any) => { const sc = secs.find((k: Any) => k.id === id); return q.x >= sc.x0 && q.x < sc.x1 && String(q.n).startsWith('w15-'); }).map((q: Any) => q.n);
+    const inSec = (id: string) => (st.proto.dress ?? []).filter((q: Any) => { const sc = secs.find((k: Any) => k.id === id); return q.x >= sc.x0 && q.x < sc.x1 && (String(q.n).startsWith('w15-leafsign') || q.n === 'w15-roottunnel'); }).map((q: Any) => q.n);
     assert.deepEqual(inSec('through-or-over'), ['w15-leafsign-right', 'w15-leafsign-up'], `seed ${seed} ${d}`);
     assert.deepEqual(inSec('her-road').sort(), ['w15-leafsign-up', 'w15-roottunnel'], `seed ${seed} ${d}`);
     const big = inSec('big-sign');
@@ -234,6 +235,8 @@ test("the squirrels' leaf-signs and the root tunnel stand where 1-5.md has them,
     assert.deepEqual(inSec('freshest-mark'), ['w15-leafsign-right', 'w15-leafsign-right'], `seed ${seed} ${d}`);
     for (const q of (st.proto.dress ?? []).filter((k: Any) => String(k.n).startsWith('w15-leafsign') || k.n === 'w15-roottunnel')) {
       assert.ok(st.platforms.some((g: Platform) => g.type !== 'fragile' && g.y === q.b && q.x >= g.x && q.x <= g.x + g.width), `seed ${seed} ${d}: ${q.n} at x ${q.x} stands on nothing`);
+      // (no flag stands on a sign: a flag and the heart beside it covered the exit's second sign, the Easy still 11-13)
+      for (const c of st.checkpoints ?? []) assert.ok(Math.abs(c.x - q.x) >= 70 || Math.abs(c.y - q.b) > 80, `seed ${seed} ${d}: a flag at x ${Math.round(c.x)} on ${q.n} at x ${q.x}`);
     }
   }
 });
@@ -252,4 +255,20 @@ test("1-5's own pictures for what it gathers (its plan row's looks): her petals 
   assert.deepEqual(stageLooks(1, 5), { find: 'guarana-golden', petal: 'petal-folded' });
   assert.deepEqual(stageLooks(1, 2), {}, "every other stage keeps its world's usual");
   for (const n of ['guarana-golden', 'petal-folded']) assert.ok(existsSync(new URL(`../../../assets/pickups/${n}.webp`, import.meta.url)), n);
+});
+
+test("on Easy too, after Easy's own flags (easyMode.ts), no leaf-sign stands under a flag (listed rolls 70 and 87 Easy had one there, 11-13)", () => {
+  try {
+    setDifficulty('easy');
+    for (const v of [70, 87]) {
+      const sim = new RealPlay(STAGE_15, v);
+      const st = sim.stage as Any;
+      const signs = (st.proto?.dress ?? []).filter((q: Any) => String(q.n).startsWith('w15-leafsign'));
+      assert.ok(signs.length >= 5, `roll ${v}: ${signs.length} signs`);
+      for (const q of signs) for (const c of st.checkpoints ?? []) assert.ok(Math.abs(c.x - q.x) >= 70 || Math.abs(c.y - q.b) > 80, `roll ${v} Easy: a flag at x ${c.x} on ${q.n} at x ${q.x}`);
+      (sim.e as Any).stop?.();
+    }
+  } finally {
+    setDifficulty('normal');
+  }
 });

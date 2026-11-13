@@ -13,6 +13,7 @@
  * pipeline does not read this file until the planner's step 1 wires World 1 in.
  */
 import { dressMarks } from './w1Marks.ts';
+import { signsClearOfFlags } from '../../dressArt.ts';
 import { DOT_LINES } from '../../dotLinesData.ts';
 import type { CreakRow, Move, NodeJob, Phase, PortKind, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { DOUBLE_RISE, reachJump } from '../../physics.ts';
@@ -1540,6 +1541,7 @@ export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean; cut?:
   if (squirrels && (st as { gen2?: unknown }).gen2) w1Squirrels(st as never);
   // (Meeca's marks are cut in living trunks: a kapok behind each and ART's bark patch at marching height, w1Marks.ts)
   dressMarks(st as never);
+  signsClearOfFlags(st as never);
   return st;
 }
 

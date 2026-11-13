@@ -8,6 +8,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { DRESS_FRAMES, type DressName } from './dressAtlasData.ts';
 import { DRESS_NEW_FRAMES, DRESS_NEW_URLS, type DressNewName } from './dressNewData.ts';
 import { drawSheet } from './sheetBake.ts';
+import type { Platform } from './types.ts';
 
 export const DRESS_URL = new URL('../assets/props/dress.webp', import.meta.url).href;
 let img: HTMLImageElement | null = null;
@@ -131,4 +132,30 @@ export function drawDress(ctx: CanvasRenderingContext2D, items: readonly DressPi
     drawSheet(ctx, sheet, f.x, f.y, f.w, f.h, -w / 2, 0, w, h);
     ctx.restore();
   }
+}
+
+/** how far a leaf-sign stands from a flag (px, middle to middle): the flag's pole and its heart beside it, then the sign */
+export const SIGN_FLAG_GAP = 80;
+/**
+ * No leaf-sign stands on a flag (the Easy still, 11-13: a flag and its heart covered the exit's second sign). The flag pass lays flags on
+ * any bank after the props, so a sign a flag came down beside steps aside along its own bank, to whichever side of the flag keeps it
+ * on that bank and clear of every flag; with no such spot it stays (the test names it). World 1's finish runs it, and Easy's pass again
+ * after its own flags (easyMode.ts easyStage). Returns the stage.
+ */
+export function signsClearOfFlags<T extends { platforms: readonly Platform[]; checkpoints?: ReadonlyArray<{ x: number; y: number }>; proto?: { dress?: DressPiece[] }; dress?: DressPiece[] }>(st: T): T {
+  const flags = st.checkpoints ?? [];
+  const all = st.proto?.dress ?? st.dress ?? [];
+  for (const d of all) {
+    if (!String(d.n).startsWith('w15-leafsign')) continue;
+    const on = st.platforms.find((q) => q.type !== 'fragile' && q.y === d.b && d.x >= q.x && d.x <= q.x + q.width);
+    const near = (x: number) => flags.find((f) => Math.abs(f.x - x) < SIGN_FLAG_GAP && Math.abs(f.y - d.b) <= 80);
+    // (nor onto another sign of the bank: beat 1's two stand side by side)
+    const signed = (x: number) => all.some((o) => o !== d && String(o.n).startsWith('w15-leafsign') && o.b === d.b && Math.abs(o.x - x) < 70);
+    const f = near(d.x);
+    if (!f || !on) continue;
+    const w = 50;
+    const to = [f.x + SIGN_FLAG_GAP, f.x - SIGN_FLAG_GAP].find((x) => x - w / 2 >= on.x && x + w / 2 <= on.x + on.width && !near(x) && !signed(x));
+    if (to !== undefined) d.x = Math.round(to);
+  }
+  return st;
 }

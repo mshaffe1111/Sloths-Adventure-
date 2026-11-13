@@ -34,7 +34,9 @@ FAULTS = [
     ("the world's sets replace 1-5's own dressing", 'src/game/protoStage.ts', 'if (st.proto) st.proto.dress = [...ds, ...(st.proto.dress ?? [])];', 'if (st.proto) st.proto.dress = ds;', T_ARC),
     ("a leaf-sign's size drifts from its inventory row", 'src/game/dressArt.ts', 'w: 172, h: 210, scale: 0.79', 'w: 172, h: 210, scale: 0.9', 'src/game/dressArt.test.ts'),
     ("1-5's golden find drawn as the plain seed", 'src/game/stagePlan.ts', "looks: { find: 'guarana-golden', petal: 'petal-folded' }", "looks: { petal: 'petal-folded' }", T_ARC),
-    ("the exit's two signs are gone", ARC, "sockets: [sign('sg1', 'w15-sign-on', 'in', 0.35), sign('sg2', 'w15-sign-on', 'in', 0.72)]", 'sockets: []', T_ARC),
+    ("the exit's two signs are gone", ARC, "sockets: [sign('sg1', 'w15-sign-on', 'out', 0.5), sign('sg2', 'w15-sign-on', 'out', 0.65)]", 'sockets: []', T_ARC),
+    ("Easy's flags come down on a leaf-sign", 'src/game/easyMode.ts', '  signsClearOfFlags(stage as Stage & { proto?: { dress?: DressPiece[] } });\n', '', T_ARC),
+    ("a leaf-sign under one of Normal's flags", 'src/game/gen2/worlds/w1.ts', '  signsClearOfFlags(st as never);\n', '', T_ARC),
 ]
 
 def run(test: str) -> bool:

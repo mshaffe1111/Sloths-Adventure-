@@ -178,7 +178,7 @@ function throughOrOver(len: 300 | 360): Lay {
   const pieces: SectionPiece[] = [
     // (the trunk's floor stays on the root's level: sunk between two roots it was a dip a one-thumb player left with 4 flicks, stone, trunk,
     //  stone, root; plainWalk.test.ts allows 3)
-    bank('a', null, 220), bank('a2', 'a', 200, UP), bank('f', 'a2', W),
+    bank('a', null, 300), bank('a2', 'a', 200, UP), bank('f', 'a2', W),
     { key: 's', shape: 'block', w: [154, 160], place: { kind: 'on', on: 'f', at: [0.06, 0.07], h: [50, 56] }, style: 'moss_stone', landing: true },
     { key: 'H', shape: 'hollow', w: [len, len], place: { kind: 'on', on: 'f', at: [0.26, 0.27], h: [hh, hh] }, landing: true },
     { key: 'm', shape: 'block', w: [130, 140], place: { kind: 'on', on: 'f', at: [0.68, 0.69], h: [50, 56] }, style: 'moss_stone', landing: true },
@@ -186,7 +186,7 @@ function throughOrOver(len: 300 | 360): Lay {
   ];
   const sockets: Socket[] = [
     // (the squirrels' first leaf-signs: THIS WAY on into the trunk, THAT WAY up and over it)
-    sign('sgon', 'w15-sign-on', 'a', 0.5), sign('sgup', 'w15-sign-up', 'a', 0.86),
+    sign('sgon', 'w15-sign-on', 'a', 0.55), sign('sgup', 'w15-sign-up', 'a', 0.85),
     petals('pa', 'a2', 0.5, 1), petals('pin', 'f', [0.19, 0.2], 2, 70), petals('ptop', 'H', [0.35, 0.65], 2, 140), mark('mz', 'z', 0.6),
   ];
   return { pieces, sockets };
@@ -222,7 +222,7 @@ function herRoad(S: Set): Lay {
   const W = seedX + 110 + 30;
   const t = trapped('t', 'r', true);
   const pieces: SectionPiece[] = [
-    bank('a', null, 160), bank('a2', 'a', 160, UP), bank('U', 'a2', W, DOWN),
+    bank('a', null, 160), bank('a2', 'a', 260, UP), bank('U', 'a2', W, DOWN),
     vine('v', 'U', W, xv), atTop('L1', 'v', S.limb, true),
     ...over('L2', 'U', W, xv + S.limb + S.gap, S.limb, { creak: true }),
     ...over('L3', 'U', W, xv + 2 * (S.limb + S.gap), S.limb, { creak: true }),
@@ -279,7 +279,7 @@ function blocked(S: Set): Lay {
  *  the open under each perch; THIS WAY: the root ramp down to the creek's stepping roots over soft dips (stand-in for the water, named in
  *  the report), one awake snake on the far bank */
 function boughRun(S: Set): Lay {
-  const pieces: SectionPiece[] = [bank('a', null, 220), bank('a2', 'a', 180, UP)];
+  const pieces: SectionPiece[] = [bank('a', null, 220), bank('a2', 'a', 260, UP)];
   const sockets: Socket[] = [flag('a', 0.3), mark('ma', 'a', 0.75), sign('sgup', 'w15-sign-up', 'a2', 0.6)];
   let prev = 'a2';
   for (let d = 0; d < 3; d++) {
@@ -298,7 +298,7 @@ function boughRun(S: Set): Lay {
   return { pieces, sockets };
 }
 function creek(S: Set): Lay {
-  const pieces: SectionPiece[] = [bank('a', null, 220), bank('a2', 'a', 180, UP), bank('r1', 'a2', 200, DOWN), bank('r2', 'r1', 200, DOWN)];
+  const pieces: SectionPiece[] = [bank('a', null, 220), bank('a2', 'a', 260, UP), bank('r1', 'a2', 200, DOWN), bank('r2', 'r1', 200, DOWN)];
   const sockets: Socket[] = [flag('a', 0.3), mark('ma', 'a', 0.75), sign('sgdn', 'w15-sign-down', 'a2', 0.6)];
   let prev = 'r2';
   for (let j = 0; j < 7; j++) {
@@ -404,8 +404,9 @@ export const EXIT_15: SectionTemplate = {
   id: 'w1-15-freshest-mark', name: 'her freshest mark, and the totem', feel: [STAGE_15], own: true, archetypes: 'any', phases: ['goal'], difficulty: 1, needs: ['walk'], jobs: ['exit'], content: 'structural', terrain: 'floor-stones',
   pieces: [{ key: 'in', shape: 'bank', w: [300, 340], place: { kind: 'start' }, style: 'moss_stone', main: true, landing: true }],
   subBlocks: [{ id: 'body', versions: [{ id: 'bank', pieces: [{ key: 'out', shape: 'bank' as const, w: [560, 600] as R2, place: { kind: 'walk' as const, after: 'in', dy: [0, 0] as R2 }, style: 'moss_stone' as const, main: true, landing: true }], sockets: [mark('mout', 'out', 0.3), { id: 'exit-totem', role: 'objective' as const, on: 'out', t: 0.85, allow: ['exit_totem'] }] }] }],
-  // (both squirrels' signs say THIS WAY, 1-5.md beat 9)
-  entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [sign('sg1', 'w15-sign-on', 'in', 0.35), sign('sg2', 'w15-sign-on', 'in', 0.72)], mirrorable: false,
+  // (both squirrels' signs say THIS WAY, 1-5.md beat 9: on the far bank between her freshest mark and the shrine, off the bank the flag
+  //  pass takes: on it a flag and its heart stood over the second sign, the Easy still 11-13)
+  entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [sign('sg1', 'w15-sign-on', 'out', 0.5), sign('sg2', 'w15-sign-on', 'out', 0.65)], mirrorable: false,
 } as SectionTemplate;
 
 /** every section that is 1-5's own */
