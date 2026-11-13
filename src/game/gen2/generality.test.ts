@@ -104,7 +104,7 @@ test("knowncheck counts this list's entries, so an added literal or a raised cou
 const NEW_ENGINE = [
   'src/game/clock.ts', 'src/game/stageModes.ts', 'src/game/ride.ts', 'src/game/stillness.ts', 'src/game/noise.ts', 'src/game/heroNoise.ts',
   'src/game/saveFile.ts', 'src/game/predators/core.ts', 'src/game/predators/types.ts',
-  'src/game/predators/world1.ts', 'src/game/predators/casts.ts', 'src/game/predators/fixtures.ts',
+  'src/game/predators/world1.ts', 'src/game/predators/world2.ts', 'src/game/predators/world8.ts', 'src/game/predators/registry.ts', 'src/game/predators/fixtures.ts',
 ];
 for (const f of NEW_ENGINE) {
   test(`a stage id planted in ${f} fails the gate`, () => {

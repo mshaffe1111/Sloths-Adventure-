@@ -2,7 +2,11 @@
 // habit, every habit used somewhere, and World 1's data agreeing with the roster.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CASTS_AFTER_1, HARPY, JAGUAR, OCELOT, RIVER_GUARD, TAYRA, TURTLE } from './predators/casts.ts';
+import { CASTS_AFTER_1 } from './predators/registry.ts';
+import { RIVER_GUARD, TURTLE } from './predators/world2.ts';
+import { JAGUAR, OCELOT } from './predators/world3.ts';
+import { TAYRA } from './predators/world6.ts';
+import { HARPY } from './predators/world8.ts';
 import { CASTS, HABIT, SPECIAL_CASTS, TAUGHT, type Kind } from './predators/roster.ts';
 import { inWorld } from './predators/ways.ts';
 import { BOA, EAGLE, SNAKE, WORLD1 } from './predators/world1.ts';

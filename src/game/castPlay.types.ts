@@ -3,6 +3,7 @@
  * only: a built stage holds it at `proto.cast`, and the engine runs it (castPlay.ts). A stage with no `proto.cast` plays as it always
  * has (predatorAI.ts).
  */
+import type { LurePost } from './predators/lure.ts';
 
 /**
  * One drop trap as a stage lays it: a load (a hive, a stone) hung over an animal's ground, and the handle that lets it go (a vine he
@@ -31,4 +32,9 @@ export interface CastData {
    * once, the first time a drop trap sends an animal off; `punch`, once, the first time a punch does. Absent: she says nothing
    */
   said?: { trap?: string; punch?: string };
+  /** the stage's lure targets (predators/lure.ts; gen2/lureLay.ts lays them): fixed things an animal of the cast fears */
+  lures?: LurePost[];
+  /** his hard landings are heard in this stage (a stage that teaches quiet feet says so, whatever its world); absent: by the move
+   *  ladder (roster.ts TAUGHT.landing) */
+  landing?: boolean;
 }

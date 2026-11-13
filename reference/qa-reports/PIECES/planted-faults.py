@@ -19,6 +19,22 @@ FAULTS = [
     ('still: the check misses a short calm', 'src/game/gen2/stillLay.ts', "if (z.calm[0] < rule.calmMin - 1e-6)", "if (z.calm[0] < -1)", 'src/game/gen2/stillLay.test.ts'),
     ('still: the check counts a secret bush as a hide', 'src/game/gen2/stillLay.ts', "(st.bushes ?? []).filter((b) => !b.secret)", "(st.bushes ?? []).filter(() => true)", 'src/game/gen2/stillLay.test.ts'),
     ('still: World 8 loses its scare sockets', 'src/game/gen2/worlds/w8.ts', "own: ['roostHere'], scare: ['batRun'] }", "own: ['roostHere'] }", 'src/game/gen2/stillLay.test.ts'),
+    ('cast: the registry hands out an animal from a world still ahead', 'src/game/predators/registry.ts', "all.slice(0, Math.max(0, world))", "all", 'src/game/gen2/lureLay.test.ts'),
+    ('cast: the oldest row wins over a world\'s own', 'src/game/predators/registry.ts', "for (let i = rows.length - 1; i >= 0; i--) {", "for (let i = 0; i < rows.length; i++) {", 'src/game/gen2/lureLay.test.ts'),
+    ('cast: an animal\'s row sits in the wrong world', 'src/game/predators/registry.ts', "[WORLD1, WORLD2, WORLD3, [], WORLD5, WORLD6, WORLD7, WORLD8]", "[WORLD1, WORLD2, WORLD3, [], WORLD6, WORLD5, WORLD7, WORLD8]", 'src/game/gen2/lureLay.test.ts'),
+    ('cast: the ladder is skipped', 'src/game/predators/registry.ts', "  return d && inWorld(d, world);", "  return d;", 'src/game/gen2/lureLay.test.ts'),
+    ('lure: the engine\'s cast never runs the targets', 'src/game/castPlay.ts', "    if (this.lures.length) stepLures(this.members, this.lures, t);\n", "", 'src/game/gen2/lureLay.test.ts'),
+    ('lure: a target works on an animal at rest', 'src/game/predators/lure.ts', " || !AFTER_HIM.has(a.s.phase)) continue;", ") continue;", 'src/game/gen2/lureLay.test.ts'),
+    ('lure: a target works on any animal', 'src/game/predators/lure.ts', "if (!a.def.fears.includes(p.fear) || !inReach", "if (!inReach", 'src/game/gen2/lureLay.test.ts'),
+    ('lure: a target works at any distance', 'src/game/predators/lure.ts', "Math.abs(p.x - x) <= p.reach && ", "", 'src/game/gen2/lureLay.test.ts'),
+    ('lure: a target works across levels', 'src/game/predators/lure.ts', " && Math.abs(p.y - y) <= LURE.tall", "", 'src/game/gen2/lureLay.test.ts'),
+    ('noise: the stage\'s own word on landings is ignored', 'src/game/castPlay.ts', "this.loud = data.landing ?? TAUGHT.landing <= world;", "this.loud = TAUGHT.landing <= world;", 'src/game/gen2/lureLay.test.ts'),
+    ('lure: a socket for one kind takes any target', 'src/game/gen2/lureLay.ts', "allow: [fear ? lureTag(fear) : LURE_TAG]", "allow: [LURE_TAG]", 'src/game/gen2/lureLay.test.ts'),
+    ('lure: the target is laid with the wrong reach', 'src/game/gen2/lureLay.ts', "fear: row.fear, reach: row.reach };", "fear: row.fear, reach: 0 };", 'src/game/gen2/lureLay.test.ts'),
+    ('lure: the check passes a target nothing fears', 'src/game/gen2/lureLay.ts', "    if (!who.length) {", "    if (false) {", 'src/game/gen2/lureLay.test.ts'),
+    ('lure: the check passes a target out of reach of the patch', 'src/game/gen2/lureLay.ts', "if (!who.some((m) => drawnTo(m, p)))", "if (false)", 'src/game/gen2/lureLay.test.ts'),
+    ('lure: the check passes a target at the animal\'s start', 'src/game/gen2/lureLay.ts', "if (atStart(m, p))", "if (false)", 'src/game/gen2/lureLay.test.ts'),
+    ('lure: the check passes a lure-first animal with nothing', 'src/game/gen2/lureLay.ts', "    if (!post && !hunter)", "    if (false)", 'src/game/gen2/lureLay.test.ts'),
 ]
 
 def main():
