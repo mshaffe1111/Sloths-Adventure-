@@ -99,10 +99,11 @@ test("the engine says the keeper's line at 1-5's sealed door, not the counting l
   // (Dot's own lines queued at the start take her banner first: each is taken down as it shows, so the door's line can come; it shows
   //  only while she says nothing else, engine.ts)
   const seen = new Set<string>();
+  const said = (): string => e.stageHint?.text ?? '';
   for (let i = 0; i < 300 && !seen.has(LINES_15.sealed); i++) {
     e.stageHint = null;
     sim.frame({ right: true });
-    if (e.stageHint?.text) seen.add(e.stageHint.text);
+    if (said()) seen.add(said());
   }
   assert.ok(seen.has(LINES_15.sealed), `at the sealed door Dot said: ${[...seen].join(' / ')}`);
   assert.ok(![...seen].some((t) => t.startsWith('Sealed:')), 'the counting line, not the keeper\'s');

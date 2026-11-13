@@ -37,6 +37,7 @@ FAULTS = [
     ("the exit's two signs are gone", ARC, "sockets: [sign('sg1', 'w15-sign-on', 'out', 0.5), sign('sg2', 'w15-sign-on', 'out', 0.65)]", 'sockets: []', T_ARC),
     ("Easy's flags come down on a leaf-sign", 'src/game/easyMode.ts', '  signsClearOfFlags(stage as Stage & { proto?: { dress?: DressPiece[] } });\n', '', T_ARC),
     ("a leaf-sign under one of Normal's flags", 'src/game/gen2/worlds/w1.ts', '  signsClearOfFlags(st as never);\n', '', T_ARC),
+    ('a leaf-sign by a flag never steps aside', 'src/game/dressArt.ts', '    if (to !== undefined) d.x = Math.round(to);\n', '', 'src/game/dressArt.test.ts'),
 ]
 
 def run(test: str) -> bool:

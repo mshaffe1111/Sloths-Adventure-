@@ -257,10 +257,10 @@ test("1-5's own pictures for what it gathers (its plan row's looks): her petals 
   for (const n of ['guarana-golden', 'petal-folded']) assert.ok(existsSync(new URL(`../../../assets/pickups/${n}.webp`, import.meta.url)), n);
 });
 
-test("on Easy too, after Easy's own flags (easyMode.ts), no leaf-sign stands under a flag (listed rolls 70 and 87 Easy had one there, 11-13)", () => {
+test("on Easy too, after Easy's own flags (easyMode.ts), no leaf-sign stands under a flag, on every listed roll (two Easy rolls had one there, 11-13)", () => {
   try {
     setDifficulty('easy');
-    for (const v of [70, 87]) {
+    for (let v = 1; v <= 150; v++) {
       const sim = new RealPlay(STAGE_15, v);
       const st = sim.stage as Any;
       const signs = (st.proto?.dress ?? []).filter((q: Any) => String(q.n).startsWith('w15-leafsign'));
