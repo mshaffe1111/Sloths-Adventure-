@@ -27,6 +27,11 @@ const n15 = (move: ReachMove, climb: [number, number], n: [number, number, numbe
   { move, scope: 'normal-1-5', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
 ];
 
+/** a Normal row of 1-4's own scope (INT-3, 11-13: flown on the tower once RealPlay.bare opened its walls) */
+const n14 = (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
+  { move, scope: 'normal-1-4', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
+];
+
 /** every flown row: reach.md §2 ("Normal 1-1 and Easy are the same unless two figures are given"), then 1-2's Normal (chain.md §1) */
 export const FLOWN_ROWS: readonly FlownArc[] = [
   // (N any 246, not the table's 244: the same row's "the Critic's finer flight found 246 on Normal too: design to 246")
@@ -76,5 +81,16 @@ export const FLOWN_ROWS: readonly FlownArc[] = [
   ...n15('double-tap-tap', [149, 142], [190, 275, 299], 'chain.md §1 "1-5: double-tap-tap 149 / 142, gap 190 / 275 / 299"'),
   ...n15('bounce', [223, 216], [178, 178, 178], 'chain.md §1 "1-5: bounce 223 / 216, gap 178"'),
   ...n15('bounce-air', [313, 304], [335, 335, 335], 'chain.md §1 "1-5: bounce-air 313 / 304, gap 335"'),
+  // 1-4 on Normal (INT-3, 11-13): flown on stage 1-4, `FLIGHT_STAGE=1-4 npx tsx reference/specs/sims/flight.ts normal all`
+  // (reference/qa-reports/INT-3/fly14/; chain.md §1 "Rows ... scope Normal 1-4"). Each gap the block column's figure, as 1-2's, 1-3's and
+  // 1-5's are; the single hold's any is the flown 244. Easy on 1-4 flies as easy-any (fly14/easy-all.txt)
+  ...n14('single-hold', [123, 117], [137, 222, 244], 'chain.md §1 "1-4: single-hold 123 / 117, gap 137 / 222 / 244"'),
+  ...n14('single-flick', [123, 116], [127, 212, 239], 'chain.md §1 "1-4: single-flick 123 / 116, gap 127 / 212 / 239"'),
+  ...n14('single-tap', [87, 80], [77, 162, 184], 'chain.md §1 "1-4: single-tap 87 / 80, gap 77 / 162 / 184"'),
+  ...n14('double-hold', [212, 205], [291, 378, 409], 'chain.md §1 "1-4: double-hold 212 / 205, gap 291 / 378 / 409"'),
+  ...n14('double-flick', [210, 203], [278, 365, 395], 'chain.md §1 "1-4: double-flick 210 / 203, gap 278 / 365 / 395"'),
+  ...n14('double-tap-tap', [149, 142], [190, 277, 299], 'chain.md §1 "1-4: double-tap-tap 149 / 142, gap 190 / 277 / 299"'),
+  ...n14('bounce', [223, 216], [178, 178, 178], 'chain.md §1 "1-4: bounce 223 / 216, gap 178"'),
+  ...n14('bounce-air', [314, 305], [335, 335, 335], 'chain.md §1 "1-4: bounce-air 314 / 305, gap 335"'),
 ];
 

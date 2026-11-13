@@ -38,6 +38,14 @@ the flown 244, not 246, since no finer flight of 1-3 was made): 1-3: single-hold
 double-flick 211 / 204, gap 282 / 370 / 395; 1-3: double-tap-tap 149 / 143, gap 190 / 278 / 299; 1-3: bounce 223 / 217, gap 178; 1-3:
 bounce-air 315 / 306, gap 335. Easy on 1-3 is easy-any (every Easy table identical to 1-2's). Against 1-2, nothing gained a pixel.
 
+**Rows for src/game/gen2/reach.ts, scope Normal 1-4** (INT-3, 11-13: flown on stage 1-4, `FLIGHT_STAGE=1-4`, both settings, tables in
+reference/qa-reports/INT-3/fly14/, once RealPlay.bare made the bare world's side walls again (a tower's are its 1280 width: before, every
+jump read 39 px); climb block / thin, then from-70 / last ground / any, each the block column; the single hold's any is the flown 244):
+1-4: single-hold 123 / 117, gap 137 / 222 / 244; 1-4: single-flick 123 / 116, gap 127 / 212 / 239; 1-4: single-tap 87 / 80, gap 77 / 162 /
+184; 1-4: double-hold 212 / 205, gap 291 / 378 / 409; 1-4: double-flick 210 / 203, gap 278 / 365 / 395; 1-4: double-tap-tap 149 / 142, gap
+190 / 277 / 299; 1-4: bounce 223 / 216, gap 178; 1-4: bounce-air 314 / 305, gap 335. Easy on 1-4 is easy-any (single hold 123 / 117, gap
+141 / 227 / 244; double hold climbs 214 / 208).
+
 **Rows for src/game/gen2/reach.ts, scope Normal 1-5** (B15, 11-13: flown on stage 1-5, `FLIGHT_STAGE=1-5`, both settings, tables in
 reference/qa-reports/B15/fly/; climb block / thin, then from-70 / last ground / any, each the block column; the single hold's any is the
 flown 244): 1-5: single-hold 123 / 116, gap 137 / 222 / 244; 1-5: single-flick 123 / 116, gap 127 / 212 / 239; 1-5: single-tap 87 / 80,

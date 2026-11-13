@@ -331,6 +331,10 @@ export class RealPlay {
     swingSetup(vines);
     const st = e.currentStage as GeneratedStage;
     Object.assign(st, { zones: [], waterY: undefined, rivers: [], exitTotemX: 0, checkpoints: [], config: { ...st.config, levelHeight: 100000, levelWidth: 100000 } });
+    // (the side walls are the stage's travel mode's, set when the stage started: a tower's are its own width (1280), so the bare world
+    // must have them made again from its own size, by the same mode, or a sim's pieces past them are out of reach: INT-3, the flight
+    // sim on 1-4 read every jump as 39 px)
+    e.walls = e.mode.bounds({ levelWidth: 100000, exit: { x: 0, y: st.exitTotemY }, spawn: { x: st.spawnX, y: st.spawnY } });
   }
 
   /** stand still for this many seconds */
