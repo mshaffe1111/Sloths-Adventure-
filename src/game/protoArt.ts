@@ -1409,6 +1409,8 @@ export function drawProtoScene(
     }
     if (p.type === 'fragile') {
       if (p.broken) {
+        // (a limb that is a drop trap's load falls as the load, castArt.ts drawTraps: no snapped halves)
+        if ((p as { trapLoad?: true }).trapLoad) continue;
         if (!st.brokeAt.has(p.id)) st.brokeAt.set(p.id, t);
         drawBranchArt(ctx, p, 'snapped', t - st.brokeAt.get(p.id)!);
       } else {

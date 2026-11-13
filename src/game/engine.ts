@@ -183,7 +183,7 @@ import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
@@ -2692,7 +2692,8 @@ export class GameEngine {
         // crumbling platform landed on that way never started to crumble)
         if (plat.type === 'fragile') {
           if (plat.fragileTimer === undefined) {
-            plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
+            // generous 1.1s before breaking (ruin tiles set their own; a creaky limb holds its world's `creak` s, gen2/creak.ts)
+            plat.fragileTimer = plat.crumbleAfter ?? plat.creak ?? 1.1;
             // a boss's cracking ledge: Dot says so the first time he stands on one
             if (plat.crackFrom !== undefined && this.bossDef?.crackTip) this.bossCtx?.guide?.('crack', this.bossDef.crackTip);
             if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
@@ -2825,6 +2826,8 @@ export class GameEngine {
           plat.regrowAt = this.gameTime + regrowDelay(plat.id);
           this.spawnDebrisBurst(plat.x + plat.width * 0.5, plat.y, '#a16207');
           sound.playCrumble();
+          // (a creaky limb that is a drop trap's load falls as the load, and chases off what it lands beside: castPlay.ts limbGone)
+          this.cast?.limbGone(plat.id);
         }
       }
       // a crumbled platform is a penalty (regrow.ts): it comes back only after half a minute or so, and only off screen, so it never
@@ -7055,7 +7058,7 @@ export class GameEngine {
     }
 
     // the stage's drop traps (castArt.ts): behind the animals they hang over
-    if (this.cast?.traps.length) drawTraps(ctx, this.cast.traps, this.gameTime, (x, y) => this.onScreen(x, y, 500), this.platforms);
+    if (this.cast?.traps.length) drawTraps(ctx, this.cast.traps, this.gameTime, (x, y) => this.onScreen(x, y, 500), this.platforms, (c, pl) => drawBranchArt(c, pl, 'creak', 0));
 
     // Render Enemies
     this.enemies.forEach((enemy) => {
