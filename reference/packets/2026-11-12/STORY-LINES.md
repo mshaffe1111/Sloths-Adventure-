@@ -586,3 +586,8 @@ Suggested line for "Our story" or "Inspired by" (needs Matt's okay): **"We weigh
 something of the rainforest's own."**
 Caution: "Echoes" is the lead's reading of an idea's family tree, not a record of copying. So the 73% must never be shown as "copied"
 or "based on". The honest player-facing number is the 84 weighed and the 64 kept: it shows the thought that went in.
+
+**About words for 0.9.8: CLOSED (lead, 11:19 PM ET):**
+- "Inspired by" credits 29 games. PUBG and Fortnite are dropped; the page stays with platformers and arcade games.
+- The music line is approved as written.
+- Still for Matt's okay: the "84 ideas weighed, 64 made it in" line.
