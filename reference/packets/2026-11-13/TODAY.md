@@ -22,7 +22,8 @@ One holder per file; the lead passes a token only after the holder has pushed. T
 | File | Holder now | Next |
 |---|---|---|
 | src/game/gen2/pipeline.ts, gen2/types.ts, gen2/seedList.ts, levelCheck.ts, stageTime.ts, cameraFollow.ts, tower.ts, nodeCode.ts | NODES-TRAVEL (from FA, 12:23 PM) | (ask) |
-| src/game/engine.ts, src/game/types.ts | B14 (pods + gate wiring, own blocks) | B15 (bough/limb wiring, if any) |
+| src/game/engine.ts, src/game/types.ts | (evening) FEEL-VINE: engine.ts "1. TREE CLIMBING LOGIC" block only (~2038-2227); POLISH-1: the fig gate's own block only, asks first | B14/B15 retired |
+| src/game/physics.ts | PERF-BUILD (reach memo only) | FEEL-VINE (merge t-perf-build first) |
 | gen2/worlds/w1.ts, stageTable.ts, stagePlan.ts, tools/perf/drawcheck.mjs | B15 (1-5 is laid first) | B14 (1-4's hook) |
 | .github/workflows/gates.yml | S1 (one line, routeHumps.test.ts) | ADD-LEVEL |
 | tools/perf/limits.json (scenarios only) | ADD-LEVEL (1-1) | B15 (1-5), then B14 (1-4) |
