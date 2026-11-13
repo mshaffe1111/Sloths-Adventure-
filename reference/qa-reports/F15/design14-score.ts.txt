@@ -1,5 +1,5 @@
 # F15: how the revised 1-4.md's meter numbers were made (10:23 PM ET). Run from a checkout of origin/t-diff-algo@1e5fe476 as tools/difficulty/design14.ts: npx tsx tools/difficulty/design14.ts
-# Note (10:35 PM ET): after Matt added the flyer, its passes and the ants take the crossings labelled "7 ants" and "11 hollow" one for one (same windows, same cost), so these numbers stand; the build is re-scored.
+# Note (10:33 PM ET): after Matt added the flyer, its passes and the ants take the crossings labelled "7 ants" and "11 hollow" one for one (same windows, same cost), so these numbers stand; the build is re-scored.
 # Output:
 # NORMAL (singles): meter 4.4  points 28.2  mean 8.0/min  peak 20.4/min
 #   2 rot 3.6 | 3 field 0.0 | 4 pods 1.7 | 5 fruit 1.9 | 7 ants 5.7 | 9 twist 1.2 | 11 hollow 8.9 | 13 crown 5.2
