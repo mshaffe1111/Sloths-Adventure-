@@ -187,6 +187,26 @@ def props2(seeds=(11, 23, 37, 53)):
     (H / 'spec-props2.json').write_text(json.dumps(spec, indent=1))
     print(len(items), 'stills')
 
-CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1, 'climb2': climb2, 'props2': props2}
+
+# ---- props3: 1-4's creatures, LAST (1-4.md:4; the story keeper 11-13: a Montezuma oropendola, leafcutter ants each carrying a leaf bit)
+ORO = ('a Montezuma oropendola bird, rich chestnut-brown body, black head, a bare pale blue cheek patch and a small pink wattle, a long '
+       'black bill with an orange tip, bright yellow outer tail feathers')
+PROPS3 = {
+    'oropendola-up': (ORO + ', flying to the right seen exactly from the side, its wings raised high above its back', MAG, 1328, 1024),
+    'oropendola-down': (ORO + ', flying to the right seen exactly from the side, its wings swept down below its body', MAG, 1328, 1024),
+    'leafcutter': ('one leafcutter ant walking to the right seen exactly from the side, reddish-brown with long legs, carrying a bright '
+                   'green cut piece of leaf held up high above its head in its jaws like a little sail', MAG, 1328, 1024),
+}
+
+
+def props3(seeds=(11, 23, 37, 53)):
+    items = [{'name': f'{k}-{sd}', 'prompt': f'{p}, {STYLE}, {bg}', 'seed': sd, 'w': w, 'h': h}
+             for k, (p, bg, w, h) in PROPS3.items() for sd in seeds]
+    spec = {'tag': 'props3', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
+            'neg': PNEG.replace(', animals', '') + ', two birds, flock, nest, branch, perched, many ants, ant hill', 'items': items}
+    (H / 'spec-props3.json').write_text(json.dumps(spec, indent=1))
+    print(len(items), 'stills')
+
+CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1, 'climb2': climb2, 'props2': props2, 'props3': props3}
 if __name__ == '__main__':
     CMDS[sys.argv[1]]()
