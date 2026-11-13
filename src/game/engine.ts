@@ -201,8 +201,10 @@ import { shakeOffset } from './screenShake.ts';
 import { POWER_UP_SECS } from './powerUps.ts';
 import { climbReach, climbSpeedOf, rustleGap } from './vinePair.ts';
 import { FeelRoom } from './feelPair.ts';
-import { clusterAbove, fallCluster, floorUnder, handsSpan, handsSpeed, handsX, keepHands, pushClusters, stepHands, type Hands, type VineCluster } from './vineField.ts';
+import { clusterAbove, floorUnder, handsSpan, handsSpeed, handsX, keepHands, pushClusters, stepHands, type Hands, type VineCluster } from './vineField.ts';
 import { drawClusters } from './vineFieldArt.ts';
+import { FieldPlay, type FieldHost } from './fieldPlay.ts';
+import type { PodCost } from './podfall.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
 const TEA_STAND = 150;
@@ -648,6 +650,20 @@ export class GameEngine {
   /** the stage's fruit clusters snagged on field vines (vineField.ts), and how many he has pushed free */
   private clusters: VineCluster[] = [];
   clustersFreed = 0;
+  /** a vine field's falling pods, its torn clusters' fall and its gates (fieldPlay.ts), or null when the stage has none */
+  private field: FieldPlay | null = null;
+  /** seconds a pod's knock keeps every climb out of his hands (he falls to the catch bough; landing ends it) */
+  private knocked = 0;
+  /** what the vine field asks of the engine (fieldPlay.ts FieldHost): made once, it reads the engine live */
+  private readonly fieldHost: FieldHost = ((e: GameEngine): FieldHost => ({
+    get t() { return e.gameTime; },
+    get player() { return e.player; },
+    get hands() { return e.hands; },
+    knock: (cost, fromX) => e.podKnock(cost, fromX),
+    sfx: (kind) => e.fieldSfx(kind),
+    loadLands: (x, y) => e.cast?.loadLands(x, y, e.gameTime, e.player.x),
+    spark: (x, y, color) => e.spawnSparkBurst(x, y, color),
+  }))(this);
   private kitHostObj: KitHost | null = null;
   /** 1 = normal; below 1 pulls the camera back in a puzzle room so Pokey, the puzzle part and what it works all fit (puzzleCamera.ts:
    * never below 0.75 sideways, further upright, roomFloor) */
@@ -1004,6 +1020,9 @@ export class GameEngine {
     this.clusters = (this.currentStage.clusters ?? []).map((c) => ({ ...c }));
     this.clustersFreed = 0;
     this.hands = null;
+    this.knocked = 0;
+    const st = this.currentStage;
+    this.field = st.pods?.length || st.gates?.length || this.clusters.length ? new FieldPlay(st.pods ?? [], st.gates ?? [], this.platforms, this.vines, this.clusters) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
     this.slideRun = null;
@@ -1710,8 +1729,11 @@ export class GameEngine {
     this.lessonTick();
     // the puzzle kit reads the intents again (puzzlePlay.ts control): a tap by a piece uses it, and carrying, the jump and kick throw
     if (this.kit) this.kitControls();
-    // a vine field's torn clusters fall down their columns (vineField.ts)
-    for (const c of this.clusters) if (c.falling) fallCluster(c, dt, this.currentStage.config.levelHeight);
+    // a vine field's pods, its torn clusters' fall and its gates (fieldPlay.ts)
+    if (this.field) {
+      if (this.knocked > 0) this.knocked = this.player.grounded ? 0 : this.knocked - dt;
+      this.field.step(this.fieldHost, dt, this.currentStage.config.levelHeight);
+    }
     // a feel-test room (feelPair.ts): a tap by its sign switches the pair's speed (and is no punch); its stopwatch follows the climb
     if (this.feel && this.feel.control(p, this.input.state.punchPressed, this.gameTime).took) {
       this.input.state.punchPressed = false;
@@ -1979,7 +2001,7 @@ export class GameEngine {
       }
 
       if (v.vineType === 'tree_climb') {
-        if (v.off) continue;
+        if (v.off || this.knocked > 0) continue;
       // (a draped pair reaches from beside either strand: vinePair.ts climbReach)
       // (a field vine hangs from under a bough: it is not taken by its very top from above, unless climbing down onto it. With up held
       // after the vault onto the bough, he took the next vine's top and vaulted again, hopping along the bough vine to vine)
@@ -2137,8 +2159,9 @@ export class GameEngine {
           p.climbPair = kept.b ? Math.abs(kept.b.x - kept.a.x) : 0;
         }
       }
-      // Natural Exit A: Reached the Top of the Tree -> Vault onto Branch Platform!
-      if (p.y <= nearTreeVine.topY + 12 && (this.input.state.up || this.climbAssist > 0 || this.input.state.jumpPressed || this.input.state.left || this.input.state.right)) {
+      // Natural Exit A: Reached the Top of the Tree -> Vault onto Branch Platform! (not under a shut gate's bough: fieldPlay.ts, it is
+      // no footing until its fruit is freed, so the climb stops at the top)
+      if (p.y <= nearTreeVine.topY + 12 && (this.input.state.up || this.climbAssist > 0 || this.input.state.jumpPressed || this.input.state.left || this.input.state.right) && !this.field?.blocksTop(nearTreeVine)) {
         p.climbing = false;
         this.vineCooldownTimer = 0.35;
         this.lastReleasedVineId = nearTreeVine.id;
@@ -6879,6 +6902,7 @@ export class GameEngine {
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     this.feel?.drawWorld(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     if (this.clusters.length) drawClusters(ctx, this.clusters, this.vines, this.camera.x, this.camera.x + this.camera.viewportWidth);
+    this.field?.draw(ctx, this.gameTime, this.camera.x, this.camera.x + this.camera.viewportWidth);
     // the bounce plants' caps and their cue over the painted ground, so one at a bank's end is never hidden under its lip
     if (!(ownScene && lair)) drawBounceCaps(ctx, world.id, this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats), this.camera, this.gameTime);
     profMark(ctx, 'ground');
@@ -9035,6 +9059,44 @@ export class GameEngine {
     const v = this.vines.find((q) => q.id === c.vine);
     sound.playVineGrab();
     if (v) this.spawnSparkBurst(v.x, c.y - c.h / 2, '#c4b5fd');
+    this.field?.torn(c, this.fieldHost);
+  }
+
+  /**
+   * A falling pod found him (fieldPlay.ts, podfall.ts): he lets go of his vine and falls to the catch bough under him, no climb taken on
+   * the way down; on 'heart' (Normal's pods) it costs a heart too. The pod's own data says which (1-4.md "The cost").
+   */
+  private podKnock(cost: PodCost, fromX: number) {
+    const p = this.player;
+    if (p.climbing) {
+      p.climbing = false;
+      this.lastReleasedVineId = this.hands?.a.id ?? this.nearTreeVine?.id ?? this.lastReleasedVineId;
+      this.hands = null;
+      p.climbPair = 0;
+    }
+    p.grounded = false;
+    this.knocked = 1.2;
+    if (cost === 'heart') {
+      this.damagePlayer(1, fromX);
+      return;
+    }
+    // (a knock that costs nothing: the flinch and the fall, a moment of safety so one pod is one knock)
+    p.invincibleTimer = Math.max(p.invincibleTimer, 1.0);
+    p.vx = (p.x >= fromX ? 1 : -1) * 70;
+    p.vy = Math.max(p.vy, 40);
+    p.squashX = 1.25;
+    p.squashY = 0.75;
+    this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
+    sound.playPlayerHurt();
+    buzz('hurt');
+  }
+
+  /** a vine field's sounds (stand-ins until 1-4's own: the creak is the rockfall's trickle, the burst and the thump a log's knock) */
+  private fieldSfx(kind: 'creak' | 'burst' | 'thump' | 'lift' | 'open') {
+    if (kind === 'creak') sound.playRockWarn();
+    else if (kind === 'burst' || kind === 'thump') sound.playLog();
+    else if (kind === 'lift') sound.playVineGrab();
+    else sound.playGate();
   }
 
   private spawnSparkBurst(x: number, y: number, color: string) {

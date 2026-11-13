@@ -117,6 +117,10 @@ export interface VineCluster {
   falling?: boolean;
   vy?: number;
   gone?: boolean;
+  /** torn free: the sound wood it comes down on (y), set as it tears (clusterLand); unset, it falls out of the world */
+  land?: number;
+  /** torn free: how far it has bounced out of its column (px, away from his body; it never falls through his hands) */
+  dx?: number;
 }
 
 /** how far above his feet his reaching hands are while climbing (px; his drawn height is 89.1: heroSprite.ts, LESSONS D41) */
@@ -168,10 +172,116 @@ export function floorUnder(h: Hands, y: number, clusters: readonly VineCluster[]
   return lo;
 }
 
-/** a torn cluster's fall, a frame (gravity; gone below `floor`) */
-export function fallCluster(c: VineCluster, dt: number, floor: number) {
-  if (!c.falling || c.gone) return;
+/**
+ * A torn cluster's fall, a frame (gravity). It comes down on `c.land` (the sound wood under its column, clusterLand) and is gone there:
+ * true on the frame it lands (the engine thumps it down as a drop-trap load: castPlay.ts loadLands). With no land it is gone below
+ * `floor`, as LATTICE's room had it. It bounces out of its column, away from `fromX` (his middle), by CLUSTER_OUT over its first fall,
+ * so a cluster he pushed free never falls through him (it is his own push: it never hurts him, 1-4.md beat 9 "What falls on me can help me").
+ */
+export function fallCluster(c: VineCluster, dt: number, floor: number, fromX?: number, colX?: number): boolean {
+  if (!c.falling || c.gone) return false;
   c.vy = (c.vy ?? 0) + 1400 * dt;
   c.y += c.vy * dt;
+  if (fromX !== undefined && colX !== undefined) {
+    const dir = colX >= fromX ? 1 : -1;
+    c.dx = dir * Math.min(CLUSTER_OUT, Math.abs(c.dx ?? 0) + 240 * dt);
+  }
+  if (c.land !== undefined && c.y >= c.land) {
+    c.y = c.land;
+    c.gone = true;
+    return true;
+  }
   if (c.y - c.h > floor + 60) c.gone = true;
+  return false;
+}
+
+/** how far a torn cluster bounces out of its column as it falls (px): past his body's half width on the vine (POD.hands is 26) */
+export const CLUSTER_OUT = 34;
+
+/** the sound wood a cluster torn at `y` on vine `v` comes down on: the highest standable top under it in its column (a shut gate's
+ *  bough is no footing), or undefined when none is */
+export function clusterLand(v: Vine, y: number, platforms: readonly { x: number; y: number; width: number; broken?: boolean; id?: number }[], skip?: ReadonlySet<number>): number | undefined {
+  let best: number | undefined;
+  for (const q of platforms) {
+    if (q.broken || (q.id !== undefined && skip?.has(q.id))) continue;
+    if (v.x < q.x - CLUSTER_OUT || v.x > q.x + q.width + CLUSTER_OUT || q.y <= y) continue;
+    if (best === undefined || q.y < best) best = q.y;
+  }
+  return best;
+}
+
+// ───────────────────────────── the cluster gate (1-4.md engine piece 7) ─────────────────────────────
+
+/**
+ * A bough shut by fruit (1-4.md option A, "Lift the bough"): the clusters snagged on the field vines under it weigh it down. Shut, it
+ * sags (its far end down by GATE.sag, less a notch for each cluster freed) and is NO footing: it cannot be stood on, and a climb up a
+ * vine whose top is at it stops there (no vault onto a bough that is not there to stand on). Each cluster pushed free lifts it a notch;
+ * on the last it springs open, level and sound. His order: the clusters are freed in any order. The way up from it is the stage's.
+ */
+export interface ClusterGate {
+  id: number;
+  /** the bough's platform id */
+  platform: number;
+  /** the clusters that hold it down, by id */
+  clusters: number[];
+  /** which end is the far one, the end that sags (-1 its left end, 1 its right): the end away from where he climbs up to it */
+  far: -1 | 1;
+}
+
+export const GATE = {
+  /** how far the far end sags with every cluster on (px; the near end stays put) */
+  sag: 56,
+  /** seconds a notch takes to lift, and the spring open on the last */
+  lift: 0.3,
+  spring: 0.45,
+  /** a vine's top this near a shut gate's bough (px, up or down) is under it: the climb stops short of the vault */
+  under: 30,
+} as const;
+
+/** how many of a gate's clusters are still snagged */
+export const gateLeft = (g: ClusterGate, clusters: readonly VineCluster[]): number =>
+  g.clusters.filter((id) => clusters.some((c) => c.id === id && !c.falling && !c.gone)).length;
+
+/** is the gate shut (a cluster is still on it)? */
+export const gateShut = (g: ClusterGate, clusters: readonly VineCluster[]): boolean => gateLeft(g, clusters) > 0;
+
+/** how far its far end sags now (px): GATE.sag at full load, a notch less for each freed, none once open */
+export const gateSag = (g: ClusterGate, clusters: readonly VineCluster[]): number =>
+  g.clusters.length ? (GATE.sag * gateLeft(g, clusters)) / g.clusters.length : 0;
+
+/** the shut gate over a vine's top (its bough within GATE.under of the top, over the vine's line), or null */
+export function gateOver(v: Vine, gates: readonly ClusterGate[], clusters: readonly VineCluster[], platforms: readonly { id: number; x: number; y: number; width: number }[]): ClusterGate | null {
+  for (const g of gates) {
+    const b = platforms.find((q) => q.id === g.platform);
+    if (!b || v.x < b.x - 4 || v.x > b.x + b.width + 4 || Math.abs(b.y - v.topY) > GATE.under) continue;
+    if (gateShut(g, clusters)) return g;
+  }
+  return null;
+}
+
+/**
+ * What is wrong with a stage's gates, in words (none: they may be laid): its bough is in the stage; each of its clusters is in the
+ * stage, on a field vine whose top is at the bough (pushed up its vine, it tears free AT the bough); no cluster holds two gates.
+ */
+export function gateFaults(gates: readonly ClusterGate[], clusters: readonly VineCluster[], vines: readonly Vine[], platforms: readonly { id: number; x: number; y: number; width: number }[]): string[] {
+  const out: string[] = [];
+  const held = new Map<number, number>();
+  for (const g of gates) {
+    const b = platforms.find((q) => q.id === g.platform);
+    if (!b) out.push(`gate ${g.id}: its bough ${g.platform} is not in the stage`);
+    if (!g.clusters.length) out.push(`gate ${g.id}: no cluster holds it`);
+    for (const id of g.clusters) {
+      if (held.has(id)) out.push(`cluster ${id}: holds gates ${held.get(id)} and ${g.id}`);
+      held.set(id, g.id);
+      const c = clusters.find((q) => q.id === id);
+      if (!c) {
+        out.push(`gate ${g.id}: its cluster ${id} is not in the stage`);
+        continue;
+      }
+      const v = vines.find((q) => q.id === c.vine);
+      if (!v || !v.field) out.push(`cluster ${id}: not on a field vine`);
+      else if (b && (v.x < b.x - 4 || v.x > b.x + b.width + 4 || Math.abs(b.y - v.topY) > GATE.under)) out.push(`cluster ${id}: its vine ${v.id} does not reach gate ${g.id}'s bough`);
+    }
+  }
+  return out;
 }
