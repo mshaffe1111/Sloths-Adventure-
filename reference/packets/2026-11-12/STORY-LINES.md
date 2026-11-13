@@ -566,3 +566,23 @@ If that reads long on a phone, it splits into two lines: "Ten rainforest worlds,
 **Matt (11:25 PM ET): PUBG and Fortnite are NOT credited** ("They're actually not going to be in the game"). Their line is removed from
 "Inspired by", which now credits 29 games. The world map's IDEAS row #30 (the shrinking safe zone, marked IN) should be updated to
 match.
+
+## Matt's ideas, by the numbers (from the world map's "Your ideas", Sloths_World_Map_2.html; 11:35 PM ET)
+84 ideas in all. The shrinking safe zone (row 30) is counted OUT, per Matt at 11:25 PM.
+| Verdict | Ideas | Share |
+|---|---|---|
+| In the game (IN 63 + DONE 1) | 64 | 76% |
+| Parked for later | 11 | 13% |
+| Out | 9 | 11% |
+
+Of the 64 that are in, by where the idea came from (the map's "Echoes"):
+| Source | Ideas | Share |
+|---|---|---|
+| A named classic game (the Inspired-by list) | 47 | 73% |
+| A genre staple, with no one game behind it | 14 | 22% |
+| Our own, or real nature (heartbeat calm, the food chain, red light green light) | 3 | 5% |
+
+Suggested line for "Our story" or "Inspired by" (needs Matt's okay): **"We weighed 84 ideas for Sloths. 64 made it in, each grown into
+something of the rainforest's own."**
+Caution: "Echoes" is the lead's reading of an idea's family tree, not a record of copying. So the 73% must never be shown as "copied"
+or "based on". The honest player-facing number is the 84 weighed and the 64 kept: it shows the thought that went in.
