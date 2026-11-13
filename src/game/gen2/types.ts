@@ -639,6 +639,10 @@ export interface GraphBrief {
    *  a node whose job one type of section alone serves in the stage's pool is dealt that type. A designed level's variety is its
    *  beats; a type dealt at random is one its single brick a job cannot fill */
   dealExact?: boolean;
+  /** every piece the lay makes for this stage carries its section's uid and its own key (`<uid>:<key>` on Platform.tag / Vine.tag), so
+   *  the stage's own finish finds its beats by key (B14's hook, 11-13; 1-4's vine field, figs, gates and pods). Only a stage that asks:
+   *  a tag is data on the built stage, and every stage that does not ask is laid byte for byte as it was (the lock, the first run's) */
+  tags?: boolean;
   /** the stage's CAST, by kind (predators/registry.ts; reference/design/PREDATORS.md): every animal of one of these kinds the stage
    *  lays is run by the creature kit (castPlay.ts) with Pokey's stillness and noise, and the stage's drop traps work on it. Absent:
    *  the stage's animals play as they always have */

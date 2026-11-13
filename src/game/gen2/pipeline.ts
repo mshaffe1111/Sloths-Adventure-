@@ -1472,6 +1472,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const TW = tower ? Math.max(M.tower?.width ?? TOWER.width, RUNWAY + 2 * TOWER.wall) : 0;
   // (a bank aloft in a tower is a slab, never a column down through the storeys under it; on an ascent's floor it is ground as ever)
   const slab = (y: number) => tower && !(flow === 'up' && y >= M.ground.y - 1);
+  const tagged = !!M.graphs?.briefs?.[budget.id]?.tags;
   // (which storey each piece is of: how many turns were laid before it; tower.ts towerCatches reads it so no catch climbs a storey)
   const storeyOf = new Map<number, number>();
   let storeyNow = 0;
@@ -2005,6 +2006,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           // (its own swing on the Vine itself, for vine-fix's engine and checks: Vine.swingAmp / swingPeriod once that is on main; ignored
           // before. Its phase is the engine's (swingSetup))
           if (lp.hang.swing) Object.assign(v, { swingAmp: lp.hang.swing.amp, swingPeriod: lp.hang.swing.period });
+          // (a stage whose brief asks, GraphBrief.tags: every laid piece knows its section and key, what the stage's own finish finds it by)
+          if (tagged) (v as Vine & { tag?: string }).tag = `${placed.uid}:${lp.key}`;
           vines.push(v);
           const h = lp.hang;
           placed.vines.push({ key: lp.key, vine: v, ...(h.swing ? { swing: h.swing } : {}), ...(h.window !== undefined ? { window: h.window } : {}), ...(h.gap ? { gap: [R(ox + h.gap[0]), R(ox + h.gap[1])] as [number, number] } : {}) });
@@ -2015,6 +2018,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         const row = lp.slot ? M.slots?.[lp.slot] : undefined;
         if (lp.slot && !row?.art.length) throw new Error(`gen2 section ${tpl.id}: piece ${lp.key} asks slot "${lp.slot}" and world ${budget.world} has no row for it`);
         const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, row?.style ?? lp.style, !!lp.crumble);
+        if (tagged) (p as Platform & { tag?: string }).tag = `${placed.uid}:${lp.key}`;
         if (lp.creak) creakLimb(p, M, budget.difficulty, !creakTaught);
         placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing, ...(row ? { slot: lp.slot, art: row.art[Math.floor(rngFor(seed, 83, p.x, p.y)() * row.art.length)] } : {}) });
       }

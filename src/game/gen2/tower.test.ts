@@ -509,6 +509,25 @@ test('along the climb: no animal in the opening seconds of the way, and the quie
   assert.ok(foes >= 3, `animals judged: ${foes}`);
 });
 
+test('a stage whose brief asks (GraphBrief.tags) has every laid piece tagged with its section and key; any other stage carries no tag', () => {
+  const ARC = '5-94';
+  const kit = arcKit(ARC);
+  const briefs = kit.manifest.graphs!.briefs;
+  const tagKit = { ...kit, manifest: { ...kit.manifest, graphs: { ...kit.manifest.graphs!, briefs: { [ARC]: { ...briefs[ARC], tags: true } } } } };
+  const plain = buildGen2Stage({ config: towerCfg(ARC, 'ascent'), kit, seed: 2, difficulty: 'normal' });
+  const tagged = buildGen2Stage({ config: towerCfg(ARC, 'ascent'), kit: tagKit, seed: 2, difficulty: 'normal' });
+  const tagOf = (o: object) => (o as { tag?: string }).tag;
+  assert.ok(plain.platforms.every((p) => tagOf(p) === undefined) && plain.vines.every((v) => tagOf(v) === undefined), 'not asked: the built stage is as it always was');
+  const uids = new Set(tagged.gen2.sections.map((q) => q.uid));
+  const tags = [...tagged.platforms, ...tagged.vines].map(tagOf).filter((t): t is string => !!t);
+  assert.ok(tags.length >= 30, `${tags.length} pieces tagged`);
+  for (const t of tags) assert.ok(/^s\d+:[\w-]+$/.test(t) && uids.has(t.split(':')[0]), `the tag ${t} is <section uid>:<piece key>`);
+  for (const q of tagged.gen2.sections) assert.ok(tags.some((t) => t.startsWith(`${q.uid}:`)), `${q.uid} (${q.template}) has its pieces tagged`);
+  assert.ok(tags.includes('s2:foot') && tags.includes('s2:vine') && tags.includes('s2:top'), "the teach brick's foot, vine and top are found by key");
+  // (the tags are the only difference: the same stage, piece for piece)
+  assert.deepEqual(tagged.platforms.map((p) => [p.x, p.y, p.width]), plain.platforms.map((p) => [p.x, p.y, p.width]));
+});
+
 test("the flag rule's numbers are Matt's on a tower too (ROLLED_FLAGS, the one definition)", () => {
   assert.deepEqual({ ...ROLLED_FLAGS }, { first: 700, min: 900, max: 4000, lethal: 2300, last: 2000, before: 2400, clear: 1500 });
 });
