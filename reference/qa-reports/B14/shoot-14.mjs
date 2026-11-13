@@ -21,16 +21,18 @@ const browser = await chromium.launch();
 for (const [tag, w, h] of [['port', 412, 915], ['land', 915, 412]]) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
   await ctx.route(/script\.google\.com/, (r) => r.abort());
-  await ctx.addInitScript((easy) => {
-    Element.prototype.requestFullscreen = function () { return Promise.resolve(); };
-    try { if (easy) localStorage.setItem('sloth_difficulty', 'easy'); } catch {}
-  }, setting === 'easy');
+  await ctx.addInitScript(() => { Element.prototype.requestFullscreen = function () { return Promise.resolve(); }; });
   const page = await ctx.newPage();
   page.on('pageerror', (e) => console.log('pageerror', e.message.slice(0, 200)));
-  await page.goto(`http://127.0.0.1:${port}/?lessons=off&layout=${seedArg}#autostart=1&level=1-4`, { timeout: 300000 });
+  // (a fresh save: 1-4 is opened the way the stills tools open a stage, window.__play, as trap-stills.mjs does)
+  await page.goto(`http://127.0.0.1:${port}/?lessons=off${setting === 'easy' ? '&difficulty=easy' : ''}`, { timeout: 300000 });
+  await sleep(2500);
+  await page.evaluate(([id, v]) => window.__play(id, v), ['1-4', Number(seedArg)]);
+  await sleep(4000);
+  await page.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
   let ok = false;
-  for (let t = Date.now(); Date.now() - t < 240000; ) {
-    ok = await page.evaluate(() => { const e = typeof window.__engine === 'function' ? window.__engine() : window.__engine; return !!(e && e.currentStage && e.currentStage.gen2); });
+  for (let t = Date.now(); Date.now() - t < 120000; ) {
+    ok = await page.evaluate(() => { const e = typeof window.__engine === 'function' ? window.__engine() : window.__engine; return !!(e && e.currentStage && e.currentStage.gen2 && e.currentStage.config.id === '1-4'); });
     if (ok) break;
     await sleep(500);
   }

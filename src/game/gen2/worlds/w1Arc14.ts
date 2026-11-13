@@ -38,6 +38,8 @@ export const BRIEF_14: GraphBrief = {
   // hazard the pods, under fire and the hollow: 1, 2, 3 and 3 of the nine content nodes)
   deal: { ground: 11, crumble: 22, climb: 33, hazard: 34 }, dealExact: true,
   cast: ['snake'],
+  // (every laid piece carries its section's uid and key, so finish14 finds the fields, figs and gates by key: FA's option, GraphBrief.tags)
+  tags: true,
 };
 /** the story keeper's lines for 1-4, verbatim (the lead, 11-13 10:44 AM ET: final, Matt 10:43 AM; t-story@400b4c13 STORY-KEEPER.md; the pods line the keeper's 7-word trim, under §5b.7's 10 words, via the lead):
  *  the only player words this file holds. Dot, each said once at the first of its thing */
@@ -66,8 +68,9 @@ const TELL = 1.0, EASY_STRETCH = 1.5;
 /** the beats: the steady one of beats 4-9, and the quicker one of the hollow and the crown (1-4.md "Steady, then grown") */
 const BEATS = { steady: 3.6, quick: 2.4 } as const;
 
+/** a bough: on the way up (`main`: the lay may stand a flag on one 160 px or more wide, FA's rule), a landing unless told */
 const branch = (key: string, place: SectionPiece['place'], w: number, o: Partial<SectionPiece> = {}): SectionPiece =>
-  ({ key, shape: 'branch', w: [w, w], place, style: 'branch', landing: true, ...o });
+  ({ key, shape: 'branch', w: [w, w], place, style: 'branch', landing: true, main: true, ...o });
 const climbOn = (key: string, on: string, onW: number, x: number, h: number): SectionPiece =>
   ({ key, shape: 'vine', w: [0, 0], place: { kind: 'climb', on, at: [x / onW, x / onW], h: [h, h] } });
 const flag = (on: string, t = 0.5): Socket => ({ id: 'flag', role: 'flag', on, t });
@@ -154,7 +157,7 @@ const ROTTING: SectionTemplate = {
 /** [T] the field: five vines 80 apart over sound wood, nothing falling: he finds two hands, races up, slides down */
 const FIELD_TEACH = field('w1-14-field', 'the field: five vines, nothing falling', {
   jobs: ['teach'], job: ['ki', 'sho', 'ten', 'ketsu'], teaches: 'field', difficulty: 3,
-  row: { n: 5, H: 330, figs: [], pods: [], gate: false },
+  row: { n: 5, H: 400, figs: [], pods: [], gate: false },
   tips: [tip('tip', 'foot', 0.15, 'field')],
 });
 /** [T] pods: pods down two of five columns on ONE steady beat (3.6 s), half a beat apart; the first watched from the foot, a column he is
@@ -220,7 +223,9 @@ const rest = (id: string, w: number, step?: number): SectionTemplate => ({
   entry: { piece: 'b', kind: 'ledge' }, exit: { piece: step ? 'c' : 'b', kind: 'ledge' }, exitDy: step ? -40 : 0,
   sockets: [flag('b', 0.5), petals('p', step ? 'c' : 'b', 0.5)], mirrorable: false,
 } as SectionTemplate);
-const RESTS = [rest('w1-14-rest-a', 320), rest('w1-14-rest-b', 360), rest('w1-14-rest-c', 260, 180), rest('w1-14-rest-d', 400), rest('w1-14-rest-e', 240, 220), rest('w1-14-rest-f', 300, 160)];
+// (wide enough that a flag spot (FLAG_SPAN.pad in from each end) lies 1500-2400 px of way before the next hard beat and 900 or more past
+//  the one before, Matt's flag rule along the climb (ROLLED_FLAGS): at 260-320 the spot fell a few px too late before the pods)
+const RESTS = [rest('w1-14-rest-a', 400), rest('w1-14-rest-b', 420), rest('w1-14-rest-c', 360, 180), rest('w1-14-rest-d', 440), rest('w1-14-rest-e', 380, 220), rest('w1-14-rest-f', 380, 160)];
 /** [E] the view north: out into open sky on the crown's plain bough */
 const VIEW: SectionTemplate = {
   id: 'w1-14-view-north', name: 'the view north', feel: [STAGE_14], own: true, archetypes: 'any', phases: ['goal'], jobs: ['exit'], difficulty: 1,
