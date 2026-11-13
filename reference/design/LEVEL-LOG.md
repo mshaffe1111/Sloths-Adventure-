@@ -21,3 +21,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | ART1 (session_01FhBbYMvThjGLVUA8nE3ZmA) | art, blocked: no Hugging Face access in its session | $2.25 | a plan + handover for ART2; $0 HF. Cause: the HF connector was disconnected (fixed by Matt 10:20 AM) |
 | Story keeper, old session (session_019iachLiuwNTAZUBSJWUmR3) | two answers at handover, then retired | ~$6.36 | the open story list; failed 1 of 3 recall questions |
 | Architect ENGINE-NEEDS (session_01FhBbYLVSn59vpCSU4ruo6P) | code-checked truth table + ranked bulk engine plan + ADD-LEVEL packet | $10.33 | the engine build order for the rest of the game (reference/plans/ENGINE-NEEDS.md) |
+| S1 (session_01FhBbYJXH6JJa93RhTnuDf7) | the meter's inspector fixed (humps read as hops), meter-only scoping, 4 real World 5-7 findings logged (R-165.190) | $17.27 | true difficulty numbers for 1-4/1-5; ran to 41% context after two blockers |
