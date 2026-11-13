@@ -46,3 +46,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | D16 (Opus xhigh) | 1-6 design (59 lines) + grip measurement (R-165.204) | $3.71 | ~13 min; tributes a-d x4 (Pitfall!, DK Jr., DKC, Jungle Hunt); 6 NEW blocks named |
 | IDEAS-1-7-8 A (Opus medium) | 1-7 + 1-8 idea lists + tributes; 4 engine-study findings | $1.74 | ~6 min |
 | INT-3 (Opus xhigh) | merged 7 branches; vault patch; drawcheck root (stripInk, every stage lighter); R-165.201; tower flight sim root; 1-4 flown/judged; 8 gates PASS | $24.03 | ~1 h 50 min; its background gate script died at its stop (D59) |
+| IDEAS-1-7-8 B (Opus high) | 1-7 + 1-8 idea lists + tributes; 6 engine findings (two hide rules disagree) | $2.17 | ~7 min |
