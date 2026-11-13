@@ -373,6 +373,29 @@ test('a gate of two lifts a notch for the first cluster and opens on the second;
   assert.ok(e.clusters.filter((c) => c.id !== 1).every((c) => c.gone && Math.abs(c.y - FEEL.floor) < 1), "the gate's freed clusters came down on the floor");
 });
 
+test("the bots' fig step (tools/inspect/figPush.ts): from under a shut gate of two, pods falling, he frees both and stands on the bough", async () => {
+  const { FigPush } = await import('../../tools/inspect/figPush.ts');
+  const { DT, RealPlay } = await import('./realPlay.ts');
+  asQaBuildForTest(true);
+  for (const react of [0.3, 0.4]) {
+    // (the bots play by pad, as firsttimer.ts does: a plain RealPlay, no finger)
+    const r = new RealPlay(FEEL_PAIR_ID, 1);
+    r.safe = false;
+    const e = r.e as unknown as FieldEngine & { gameTime: number };
+    const bough = e.platforms.find((p) => p.id === 6)!;
+    const bot = new FigPush(react);
+    // up the middle vine of lane 3b (no figs on it) to the shut bough, then the bot's own fig step, else up
+    r.stand(FEEL.under[2][0], FEEL.floor);
+    let stood = false;
+    for (let i = 0; i < Math.round(60 / DT) && !stood; i++) {
+      r.frame(bot.step(r.e as never, r.p, e.gameTime) ?? { up: true });
+      stood = !bough.broken && r.p.grounded && Math.abs(r.p.y - (FEEL.floor - FEEL.rise + 2)) < 4;
+    }
+    assert.ok(!bough.broken, `react ${react}: both figs freed, the bough open (freed ${e.clustersFreed})`);
+    assert.ok(stood, `react ${react}: he stands on it (y ${r.p.y.toFixed(0)}, climbing ${r.p.climbing})`);
+  }
+});
+
 test.after(() => asQaBuildForTest(false));
 
 test("the sign's lettering is baked once, baked again when the phone takes its canvas back (LESSONS D6) and when the font arrives", async () => {

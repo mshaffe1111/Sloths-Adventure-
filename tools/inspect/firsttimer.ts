@@ -48,6 +48,7 @@ import type { Platform } from '../../src/game/types.ts';
 import { scares } from '../../src/game/dropTrap.ts';
 import type { TrapPost } from '../../src/game/castPlay.types.ts';
 import { findRoute } from './route.ts';
+import { FigPush, type FieldView } from './figPush.ts';
 import { buildRoll } from './eraRoll.ts';
 import { STAGE_SECONDS } from '../../src/game/protoStage.ts';
 import { sampleRoute } from './beats.ts';
@@ -883,6 +884,8 @@ export class FirstTimerRun {
   private roomAt = new Map<number, number>();
   /** the trunk he is on, and whether climbing down it got him nowhere */
   private climbVine: unknown = null;
+  /** in a vine field: the figs under a shut gate pushed free, a pod's column stepped off (figPush.ts) */
+  private figs: FigPush | null = null;
   private climbDown = false;
   private climbTurned = false;
   /** he was on a trunk when the last choice was made */
@@ -1455,6 +1458,11 @@ export class FirstTimerRun {
       return out;
     }
 
+    // in a vine field (figPush.ts): under a shut gate, the figs pushed free; a pod's tell on his column, a vine over
+    if (p.climbing) {
+      const fig = (this.figs ??= new FigPush(who.stopReact)).step(e as unknown as FieldView, p, t);
+      if (fig) return fig;
+    }
     // on a trunk: straight up to its top (down where the way goes down), then off it with a flick the way on
     if (p.climbing) {
       // (round 5, 2026-10-29: measured against lastY, which after() has already moved to where he is, this read 0 every frame, and he

@@ -17,6 +17,7 @@ FAULTS = [
   ('beatFaults forgets the warnings-apart rule', 'src/game/beat.ts', 'out.push(`${a.id} and ${b.id}: their warnings start within ${rule.apart} s`);', '', 'src/game/podfall.test.ts', 'beatFaults'),
   ('Easy does not stretch a lane\'s shift', 'src/game/clock.ts', 'const offset = b.offset + shift * b.stretch;', 'const offset = b.offset + shift;', 'src/game/podfall.test.ts', 'the beat:'),
   ('podFaults forgets the fall fits its on', 'src/game/podfall.ts', "out.push(`pod ${p.id}: its beat's 'on' (${on.toFixed(2)} s) is too short to fall its column and burst`);", '', 'src/game/podfall.test.ts', 'podFaults'),
+  ('the bots never step across to the figs', 'tools/inspect/figPush.ts', "return this.push(cv.x > p.x + 1 ? 1", "return { up: true }; return this.push(cv.x > p.x + 1 ? 1", 'src/game/feelPairRoom.test.ts', 'fig step'),
   ('gateFaults forgets a vine that misses the bough', 'src/game/vineField.ts', "out.push(`cluster ${id}: its vine ${v.id} does not reach gate ${g.id}'s bough`);", '', 'src/game/podfall.test.ts', 'a gate:'),
 ]
 bad = 0
