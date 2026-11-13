@@ -634,6 +634,12 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
     const next = nodes.slice(i + 1).find((q) => q.job !== 'rest' && q.job !== 'exit' && q.job !== 'reward');
     if (next) { next.mustRise = true; next.shape = 'rising'; if (next.dials) next.dials.height = 'up'; }
   });
+  // (a fall asked of the node V19 makes climb is refused here by name (askRefusal), never laid against V19 or against the ask; a
+  // shipped graph asks nothing, so nothing it rolls is read)
+  if (asked) for (const n of nodes) {
+    const why = askRefusal(n);
+    if (why) throw new Error(`gen2 ${budget.id}: graph ${g.id} "${g.code}": node ${n.id} (${n.job}) ${why}`);
+  }
   const total = nodes.reduce((s, n) => s + n.share, 0);
   for (const n of nodes) n.share /= total;
   // (length from the chunk count: a quiet node or a fork one section, the working nodes the rest by share, each at least one, largest
@@ -934,6 +940,19 @@ function supplyDeal(
     walk(0, k, new Map(dealt));
   }
   return found.length ? found[Math.floor(rng() * found.length)] : dealt;
+}
+
+/**
+ * A shape ask V19 overrules, refused at graph time by name, before anything is laid (VARIETY-2, R-165.198/.200): on an up stage the
+ * node after a late descent is `mustRise` (rolledGraph marks it rising over the ask; the lay draws only sections that climb for it, and
+ * V19 judges it ends above where the descent began), so a fall asked of it could only be laid against V19 or against the ask: the lay
+ * never lays against V19 to keep an ask. Only a conflict that holds on every seed is refused here: a pool with no section of the
+ * node's job that falls is NOT one (a node's net fall also comes from its joins and the corridor: nodeMix string 59's combine '_' was
+ * laid so with no falling combine section), and is named after the lay as before. Undefined when nothing overrules the ask.
+ */
+export function askRefusal(n: MissionNode): string | undefined {
+  if (n.asked?.shape === '_' && n.mustRise) return `asks shape _ (falling), but V19 makes it climb: it is the node after a late descent on an up stage`;
+  return undefined;
 }
 
 /** may type `t` lay node `n`'s shape and move asks (nodeAsks.ts): a section of the node's job and that type in the pool rises (`^`), falls
