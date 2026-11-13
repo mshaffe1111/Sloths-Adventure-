@@ -9,6 +9,8 @@ Read first, in order:
 - reference/engine/NODES.md §8 (the node code and its key);
 - reference/engine/W1-NEW-SECTIONS.md (every round);
 - a LEVEL's builder: reference/methods/level.md (on t-w1-creatures), reference/design/LEVEL-BAR.md, then the level's own design doc;
+- the next World 1 levels as designed: reference/design/1-6.md (t-16-design), 1-7.md and 1-8.md (t-1718-design); the combined table of every NEW block at the end of 1-8.md
+  is where the engine study for 1-6..1-8 starts (R-165.205). Trap: two hide rules exist (watcher.ts crouch vs the kit's still-in-cover); level designs use the kit's;
 - the hardness meter: reference/design/DIFFICULTY.md (every stage's Normal target, the points, the levers) and its read-only prototype
   `npx tsx tools/difficulty/score.ts --check` then `--stages <ids> --seeds 1-4 --detail` (on t-diff-algo until it merges).
 
