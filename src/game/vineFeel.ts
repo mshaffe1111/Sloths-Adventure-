@@ -35,8 +35,9 @@ export interface Settle {
 export const newSettle = (): Settle => ({ x: 0, y: 0, vx: 0, vy: 0, bx: NaN, by: NaN, ex: NaN, ey: NaN });
 
 /**
- * The spring's rate (1/s). Critically damped at 22/s a 40 px offset is under 5 px after 5 frames (0.17 s) and gone after 8 (0.27 s);
- * the biggest single-frame move it makes from a standing grab is about 10.5 px, under the run's 9-11 px a frame at full speed.
+ * The spring's rate (1/s). Critically damped at 25/s a 40 px offset is 3.2 px after 5 frames (167 ms: his paws are on the vine) and
+ * under 0.5 px after 8 (0.27 s); the biggest single-frame move it makes from a standing grab is 11.7 px (a run is 9.5 a frame). 22/s
+ * left 4.8 px at 167 ms on a hand step (measured, tools/inspect/vineFeel.ts).
  */
 export const SETTLE_RATE = 25;
 /** an offset beyond this (px) is a placement, a respawn or a cut, never a vine's snap: it is not carried (the old cut stands) */
