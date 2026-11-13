@@ -10,6 +10,8 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **TIME BOXES + HANDOFFS** (Matt, 11-13 12:48 PM ET): every member gets a box (60-90 min); at its end it hands off (REPORT with EXACT NEXT
+  STEP) and stops; the lead decides whether a fresh session continues. Plus the 40% context stop. Watch usage and retire early when it climbs.
 - **AT MOST 4 MEMBERS RUNNING AT ONCE** (Matt, 11-13 12:44 PM ET: "we need to limit how many we're running at one time... Not everything needs a
   different helper"): prioritise; double up related jobs on one member (a finishing member hands its leftovers to a running one, not a new one).
 - **STAY AHEAD OF THE BURN (Matt, 11-13 12:43 PM ET):** the lead decides when to switch members out (fresh session at 40% context, members
