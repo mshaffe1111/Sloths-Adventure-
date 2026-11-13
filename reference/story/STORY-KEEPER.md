@@ -432,3 +432,22 @@ Open (from NEW-LEAD-FROM-STORY-KEEPER.md, 11-12 update):
 - the Inspired-by games list (Matt);
 - the optional About line "We weighed 84 ideas..." (a question for Matt);
 - 11-13 lines waiting on Matt's okay: R-165.175, R-165.171, R-165.165 (reference/packets/2026-11-13/STORY-LINES.md on ccr-0d59a91c-oy3imz).
+
+**AUTHORITY (Matt, 11-13 10:43 AM ET, relayed by the lead): "Going forward, the storykeeper has full authority to add to the story and
+to approve all lines."** The keeper approves every player line and may add to the story. Nothing goes to Matt unless the keeper wants
+his taste. Matt keeps the final say. This replaces "each needs Matt's okay" on every line from 11-13 on.
+
+**Final calls, 11-13 10:47 AM ET (APPROVED by the keeper):**
+| R | Where | Speaker | Final words |
+|---|---|---|---|
+| R-165.175 | 1-1, first Dot card (tap-to-clear) | Dot | Tap here when you've read it. I'll wait! |
+| R-165.171 | first-jump coach | coach | touch: Flick up to hop up or over. / pad: Press Jump to hop up or over. |
+| R-165.165 | 1-2 Keeper's Bell hint | hint | Down in the hollow, on the low ledge. |
+| 1-4 beat 4 | pods flag (replaces "Duck in a hollow") | Dot | Hear it creak? Scoot a vine over till it drops! |
+| 1-4 beat 3 | first two-hand step | Dot | Reach for the next vine! Two hands zoom up! |
+| 1-4 beat 5 | first fig-bunch push | Dot | Climb under the figs and push them free! |
+| R-165.180 | 1-4 beat 2, the creaky teach (when 1-4 lands) | Dot | Creaky limbs drop you, but just one branch down! |
+| R-165.180 | 1-5 beat 2, the develop (when 1-4 lands; until then 1-5 keeps its approved teach) | Pokey | Creaky again. If it drops me, roots it is. |
+- "I'll wait!" is Dot about herself (her lateness secret), not a stillness or wait instruction to Pokey.
+- The optional About line ("We weighed 84 ideas... 65 made it in"): NO. About claims only what ships; most of the 65 are in worlds not
+  yet built, and the count goes stale as the game grows. Revisit at launch.
