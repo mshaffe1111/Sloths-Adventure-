@@ -4,6 +4,12 @@ byte-identical patches; keep one copy): origin/t-art-1113 (final), origin/t-add-
 origin/t-b15 (final), origin/t-b14 (final, holds the VARIETY vault patch), origin/t-fixa (final), origin/t-fixb (final).
 NOT tonight: t-pieces, t-nodes (engine WIP; their gates not run): next release.
 ## Done
+0. Owed by B14c (stopped at its line; t-b14@8bcbe53b REPORT): (a) apply VARIETY's engine-vault.patch (reference/qa-reports/VARIETY/
+   engine-vault.patch on origin/t-nodes: vineTop.ts + one engine.ts hunk; ask the lead for the commit if it isn't there yet), then re-run
+   1-4's castBots (seeds 1-6, then 1-40); (b) DRAWCHECK BREACH: 1-4 sideways spot 1 (x 922, y 5699) 8.01 > 7.5 screens
+   (PERFORMANCE-RULES §1 is pass/fail; never touch the limit): mostly scenery on a tall stage (backdrop drawFitted ~3 screens, ground
+   chunks, vignette, scenery.ts:1506 lanePool); fix at the root for every tower stage (evidence: reference/qa-reports/B14/drawcheck-b14c.txt);
+   (c) rollGuard 1-5 red (B15's) and inventory.test.ts:155 (fixed on t-art-1113 at a8fd1113: clears on merge).
 1. Every merge clean; tsc green after each.
 2. R-165.201: a tap inside a Dot card's box always goes to the card, never the game, even while the card moves (planted touch test at a
    mushroom bounce; real page upright + sideways). Blocks R-165.175 shipping.
