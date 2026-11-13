@@ -865,3 +865,4 @@ lines); Matt sees them in the release.
   claude.ai/customize/connectors; ART preps specs with no spend, then hands over. S1 allowed one gates.yml line (routeHumps.test.ts).
   FA WRITE: gen2/pipeline.ts, tower*, types.ts, levelCheck.ts, seedList.ts (join), stageTime.ts, cameraFollow.ts, tools/engine/tower*.
 - 2026-11-13 10:20 AM ET: story keeper's 1-4 nature check PASS with look fixes (wild figs, oropendola flyer, ants with leaf bits, fruit never eaten); sent to B14 and ART2; three new lines queued for Matt.
+- 2026-11-13 10:22 AM ET: MATT: no prototypes unless needed; stretch tokens to Tuesday night (R-165.185). B15's feel room and B14's room v2 CUT; Matt feels them in the built levels. ART1 retired $2.25.
