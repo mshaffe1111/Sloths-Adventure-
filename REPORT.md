@@ -1,29 +1,26 @@
-# CRITIC: LEAD-REVIEW-1113. Verdict: REJECT (2026-11-13 ET). Subject: reference/notes/lead-review-2026-11-13.md @05d76f84
-Docs audit, no game code changed: no gates needed (LAWS 5 scope). Lessons applied: D49 (a design table never beats a rule), D34/PM.md:194 (cite = checked fact).
-## Violations (each blocks acting on the review: PM.md:197, D35)
-1. B6 FALSE FACT (LAWS 3). It says 1-4's revised design "has no creaky limb" (grep creak/crumbl). origin/t-15-design@dee8c8c0
-   reference/design/1-4.md:30 beat 2 "Rotting boughs (T)": bracket fungus, notched underside, "goes at 1.1 s (engine.ts:2583)", the SAME piece
-   as 1-5.md:14; :37/:47 rotten stairs; :56-57 engine piece "6 Rotting boughs (S; with 1-5)", "7 ... drop-trap load". 1-4 is played before 1-5,
-   so in game order 1-4 teaches it first and 1-5's beat 2 is a second teach. The conclusion "1-5 is where World 1 first teaches" is wrong.
-2. CITES WRONG AT THE SUBMITTED SHA (PM.md:194 "checked in the same step"). The commit inserted 5 lines at STATE.md:305-309, so every STATE
-   cite past 304 points 5 lines early at 05d76f84: :834 (live) is :839, :832 (v252) is :837, :801 (1-5.md pass) is :806 (and :801 is now
-   Matt's 10:06 note), :805/:806/:831/:781/:790-817 likewise. lead.md got 1 line on top: :21-22 -> :22-23, :23-24 -> :24-25, :28 (pause) -> :29.
-3. B2 BREAKS THE ORDER IT INVOKES (CLAUDE.md:26 D40). It runs only S1 before 1-5 and puts S2 (meter gate) after, with S3 unaddressed; but
-   DIFFICULTY.md:72 (t-diff-algo) "N1 first: the builder takes the target, then the stages are laid to it", ROADMAP.md:664 S1->S2->S3,
-   lead.md:23 and STATE.md:778 ("before 1-4/1-5 are built") all put the gate and targets ahead of a build. C's "B2 restores the order" is
-   false. Either S2/S3 land first, or B2 states why S3 does not replace 1-5's build (D40: name what replaces it) and puts that to a Critic.
-4. B7 rests on an uncited fact (PM.md:194): "a crumble... which Matt has played". 1-5.md:54-55 says crumble is World 7's ruin tile, OFF the
-   main route; no file cited shows Matt played it, and 1-5 also adds a falling limb as a drop-trap load (1-5.md:56, a new load). Self-exempting
-   from LEAD-PERSONA.md:161 needs a cite, or the rule holds (feel room, or Matt plays the rot in 1-4's feel room per 1-4.md:59).
-## Minor
-- B3 "six art needs" lists seven (1-5.md:57-58: item 6 is the art line). "Hugging Face connector failed": HF runs from tools/README.md with
-  the token, not a connector; the failed servers in the session notice are unnamed. B5 ",924 lifetime" is a garbled number.
-- B5 omits "ended" from PM.md:229 (remake if ended OR failed). B1 says "Four" then lists five.
-## Missed (a new lead must know)
-- 0.9.7's after-merge steps are open: PM.md:125-127 / LAWS 12. No 0.9.7 debrief (newest reference/debriefs/ is 2026-11-01-0.9.3.md); ROADMAP
-  rows R-165.163/.125 (shipped, STATE.md:839) do not name PR #70; no EnK5 rebuild from merge d8d6a973 recorded; no retro.
-- ENG-ASCENT's WIP (t-eng-ascent@7499d79f, untested, STATE.md:822 at the SHA) is not in B: PM.md:241-242 says re-issue as a fresh packet.
-## Holds
-A1-A5 match the documents (content checked; only the line numbers drift). PM.md cites (:21,:80,:100,:106-129,:131-134,:189-197,:210-246),
-LAWS.md:81, CLAUDE.md:25/:27, models.json:33-39 (card road is Fable's, :38; F15's phase 2 stays Fable, STATE.md:824), 1-5.md:14/:37/:55/:59,
-DIFFICULTY.md:51, ROADMAP.md:664 say what is claimed. B1 true (no Critic entry after STATE.md:700). B4, B5, B8 loosen no ruling of Matt's.
+# CRITIC: LEAD-REVIEW-1113. Attempt 2 verdict: PASS (2026-11-13 10:17 AM ET). Subject: reference/notes/lead-review-2026-11-13.md
+Attempt 1 @05d76f84: REJECT (this branch @4e771886: B6 false, cites off at the SHA, B2 order, B7 uncited; missed ENG-ASCENT + 0.9.7 steps).
+Attempt 2 @5b4e2b8d (ccr-ea739a2f-dfcee4), delta only, as the lead asked. Lessons applied: D49, D34 (a cite is a checked fact at the SHA).
+## The four violations: each fixed
+1. B6 now says 1-4 teaches the bough first (1-4.md:30 beat 2, engine #6 at :56-57 on t-15-design@dee8c8c0), and 1-5's beat 2 holds the
+   one tip until 1-4 ships. The move follows "one tip, one channel" (STORY-KEEPER.md:111 and :207 on ccr-0d59a91c-oy3imz). True.
+2. Cites re-checked at 5b4e2b8d. STATE.md :304 :778 :786 :795-796 :806 :810 :811 :817 :822 :836 :837 :839; lead.md :16 :19 :22-23 :24-25
+   :29 :227. Each says what is claimed. The new STATE entries sit after :839, so nothing above shifts. `git diff f63ac487 d8d6a973` is
+   empty, so A1's "EnK5 already equals live" holds.
+3. B2 is now S1 -> S2 -> S3 -> 1-5's lay, matching DIFFICULTY.md:72, ROADMAP R-165.176, STATE.md:778 and lead.md:23. Running pieces
+   alongside is limited by PM.md:21. C's "B2 keeps the foundation first" is now true.
+4. B7 keeps LEAD-PERSONA.md:161: a crude room on Matt's link, and 1-5 is laid only after he plays it. Moving piece 3 ahead of 1-5.md:59 is
+   rule over table (D49). No rule is loosened.
+## Misses: both added
+- B8: ENG-ASCENT re-issued as a fresh packet from 7499d79f (PM.md:241-242; STATE.md:822). Timing it to 1-4 is allowed (1-5.md:58 needs no ascent).
+- B9: 0.9.7's after-merge steps. ROADMAP R-165.125 and .163 are "done (2026-11-13, PR #70, d8d6a973)": true, since 9442c9ec/5fa60568 are in
+  d8d6a973. The debrief and retro are named as the lead's next job (still owed, LAWS 12).
+## B11 (ROADMAP/BUILD-PLAN): forms only, no scope changed (row-by-row column diff 05d76f84..5b4e2b8d)
+- No row added or removed. 24 Time cells were rewritten "N h (no history: <old text>)": each N is inside the old range, and the old text is kept.
+- R-165.158 moves its note from the ID cell to What (word for word). .165/.167/.169 add a reason for grade C (grade unchanged).
+- .171 goes C->B and .176 S->M: both raise priority or size, neither lowers one. State changes only on .125/.163 (done, above).
+- I ran roadmapcheck: 05d76f84 FAIL (30), 5b4e2b8d PASS (Day 1 825.75). knowncheck PASS at 5b4e2b8d.
+## Minor (not blocking)
+- BUILD-PLAN.md:70 says the rows "add 67.5 h". That is 825.75 minus the stale printed 758.25. Against the 763.75 that 05d76f84 actually
+  computed, they add 62 h.
+- B5's story-keeper remake waits on Matt's go: stricter than PM.md:229, which allowed it.
