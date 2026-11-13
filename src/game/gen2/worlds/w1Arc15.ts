@@ -54,6 +54,13 @@ const over = (key: string, on: string, onW: number, x: number, w: number, o: { c
 });
 /** a straight vine from bank `on` (`onW` wide) up to the high road, `x` px along it: the road's next piece starts at its top */
 const vine = (key: string, on: string, onW: number, x: number, h = OVER): SectionPiece => ({ key, shape: 'vine', w: [0, 0], place: { kind: 'climb', on, at: [x / onW, x / onW], h: [h, h] } });
+/** an awake snake's own ground: a bank OFF the `main` list (1-3's bed: the flag pass stands no flag on it and the lay tops no second
+ *  animal up onto it; a flag on the bank under a snake empties its socket, seeds 4 and 7) */
+const ground = (key: string, after: string, w: number): SectionPiece => ({ ...bank(key, after, w), main: false });
+/** a bank beside a snake's ground, off the `main` list too: the flag pass stands a flag on any main bank 160 px or wider, 80 px in from
+ *  its ends (pipeline FLAG_SPAN.pad), and a flag keeps every animal 224 px off, so a flag on the bank next to the den emptied it (seeds
+ *  4 and 7: a flag 80 px before the den). The pass finds its spots on the rests (each 160 px or wider) */
+const apron = (key: string, after: string, w: number): SectionPiece => ({ ...bank(key, after, w), main: false });
 /** the high road's first piece, its left end at vine `v`'s top */
 const atTop = (key: string, v: string, w: number, creak = false): SectionPiece => ({ key, shape: 'branch', w: [w, w], place: { kind: 'over', on: v, at: [0, 0], dy: [0, 0] }, style: 'branch', landing: true, ...(creak ? { creak: true } : {}) });
 /** petals: `n` in a row over `span` px, low on what they stand on */
@@ -175,24 +182,23 @@ function herRoad(S: Set): Lay {
 /** [X] beat 5, blocked in turn: up on the high road a limb is already gone (a broken stub and a gap past any jump): drop to her road;
  *  then an awake snake paces across the low road: up the vine, over it on a sound bough, and on along shorter, wider-spaced limbs */
 function blocked(S: Set): Lay {
-  const W1 = 900, W2 = 1000;
-  const xv = 60;
+  const W1 = 900, P = 300, G = 320, Q = 420, xv = 60, xb = 60, B = P - xb + G + 40;
   const pieces: SectionPiece[] = [
     bank('a', null, 240), bank('U', 'a', W1),
     vine('v', 'U', W1, xv), atTop('L1', 'v', S.late, true),
     over('L2', 'U', W1, xv + S.late + S.lateGap, S.late, { creak: true }),
-    // (the stub: a short sound end, then nothing for 260 px: past any jump, so the way on is down)
+    // (the stub: a short sound end, then nothing for the rest of the bank: past any jump, so the way on is down)
     over('stub', 'U', W1, xv + 2 * (S.late + S.lateGap), 60, { style: 'log' }),
-    bank('V', 'U', W2),
-    // (the snake's ground: a long bank, its patrol under a sound bough; the vine before it at the bank's start)
-    vine('v2', 'V', W2, 60), atTop('B1', 'v2', 520),
-    over('L3', 'V', W2, 60 + 520 + S.lateGap, S.late, { creak: true }),
-    bank('z', 'V', 260),
+    // (the snake's ground between two banks; up the vine on the first, over it on a sound bough, on along a creaky limb, down)
+    apron('P', 'U', P), vine('v2', 'P', P, xb), atTop('B1', 'v2', B),
+    ground('S', 'P', G),
+    apron('Q', 'S', Q), over('L3', 'Q', Q, 40 + S.lateGap, S.late, { creak: true }),
+    bank('z', 'Q', 260),
   ];
   const sockets: Socket[] = [
     mark('ma', 'a', 0.5), petals('pL1', 'L1', 0.5, 1), petals('pL2', 'L2', 0.5, 1),
     mark('mU', 'U', 0.85),
-    { id: 'e', role: 'enemy', on: 'V', t: 0.32, dn: 0, allow: ['snake'], easy: 'soften' },
+    { id: 'e', role: 'enemy', on: 'S', t: 0.5, dn: 0, allow: ['snake'], easy: 'soften' },
     petals('pB1', 'B1', [0.3, 0.7], 3, 200), petals('pL3', 'L3', 0.5, 1),
     mark('mz', 'z', 0.5),
   ];
@@ -222,8 +228,8 @@ function creek(S: Set): Lay {
     sockets.push(petals(`p${k}`, k, 0.5, 1));
     prev = k;
   }
-  pieces.push(bank('V', prev, 420), bank('u1', 'V', 200, UP), bank('z', 'u1', 240, UP));
-  sockets.push({ id: 'e', role: 'enemy', on: 'V', t: 0.5, dn: 0, allow: ['snake'], easy: 'soften' }, mark('mV', 'V', 0.9), mark('mz', 'z', 0.6));
+  pieces.push(ground('S', prev, 420), { ...bank('u1', 'S', 200, UP), main: false }, bank('z', 'u1', 240, UP));
+  sockets.push({ id: 'e', role: 'enemy', on: 'S', t: 0.5, dn: 0, allow: ['snake'], easy: 'soften' }, mark('mu', 'u1', 0.5), mark('mz', 'z', 0.6));
   return { pieces, sockets };
 }
 /** [W] beat 7, he is the stone: her arrow points under, where an awake snake has its den on the low road, no tendril and no perch; over
@@ -233,15 +239,17 @@ function stone(S: Set): Lay {
   const W = 400, D = 280;
   const xv = 200;
   const pieces: SectionPiece[] = [
-    bank('a', null, 260), bank('U', 'a', W),
+    bank('a', null, 260), apron('U', 'a', W),
     vine('v', 'U', W, xv), atTop('L', 'v', 130, true),
-    bank('den', 'U', D), bank('m', 'den', 260), bank('z', 'm', 260),
+    // (two short ledges past the den: under a flag's pad (160) and an animal's lay (248), so no flag stands near enough the den to empty
+    //  its socket (a flag keeps every animal 224 px off: seed 4, the flag pass stood one on a 260 px bank beside it))
+    ground('den', 'U', D), bank('m', 'den', 150), bank('n', 'm', 150), bank('z', 'n', 260),
   ];
   const sockets: Socket[] = [
-    mark('ma', 'a', 0.6),
+    flag('a', 0.3), mark('ma', 'a', 0.6),
     { id: 'limb', role: 'prop', on: 'L', t: 0.5, dn: 0, allow: ['trap-limb'], group: 'den' },
     { id: 'e', role: 'enemy', on: 'den', t: 0.6, dn: 0, allow: ['snake'], easy: 'stay', group: 'den' },
-    petals('pm', 'm', [0.3, 0.7], 2), mark('mm', 'm', 0.8), petals('pz', 'z', 0.5, 1),
+    petals('pm', 'm', [0.3, 0.7], 1), mark('mn', 'n', 0.6), petals('pz', 'z', 0.5, 1),
   ];
   return { pieces, sockets };
 }
@@ -249,22 +257,23 @@ function stone(S: Set): Lay {
  *  (vine up, two creaky limbs over it on a sound bough's ends); then the last crossing, where her arrow points UP for the first time:
  *  the soldiers crossed on a fallen trunk, rotten in two spans, and under it only soft dips (the creek's stand-in) */
 function weave(S: Set): Lay {
-  const W1 = 760, W2 = 900;
+  const W1 = 760, P = 300, G = 320, Q = 520, xb = 40, B = P - xb + G + 20;
   const pieces: SectionPiece[] = [
     bank('a', null, 240), bank('U', 'a', W1),
     vine('v', 'U', W1, 60), atTop('L1', 'v', S.late, true),
     over('L2', 'U', W1, 60 + S.late + S.lateGap, S.late, { creak: true }),
-    bank('V', 'U', W2),
-    vine('v2', 'V', W2, 40), atTop('B', 'v2', 420),
-    over('L3', 'V', W2, 40 + 420 + S.lateGap, S.late, { creak: true }),
-    over('L4', 'V', W2, 40 + 420 + 2 * S.lateGap + S.late, S.late, { creak: true }),
-    bank('z', 'V', 300),
+    apron('P', 'U', P), vine('v2', 'P', P, xb), atTop('B', 'v2', B),
+    ground('S', 'P', G),
+    apron('Q', 'S', Q),
+    over('L3', 'Q', Q, 20 + S.lateGap, S.late, { creak: true }),
+    over('L4', 'Q', Q, 20 + 2 * S.lateGap + S.late, S.late, { creak: true }),
+    bank('z', 'Q', 300),
   ];
   const sockets: Socket[] = [
     flag('a', 0.3), mark('ma', 'a', 0.7), petals('pL1', 'L1', 0.5, 1), petals('pL2', 'L2', 0.5, 1),
-    { id: 'e', role: 'enemy', on: 'V', t: 0.3, dn: 0, allow: ['snake'], easy: 'soften' },
+    { id: 'e', role: 'enemy', on: 'S', t: 0.5, dn: 0, allow: ['snake'], easy: 'soften' },
     petals('pB', 'B', [0.3, 0.7], 2, 180), petals('pL3', 'L3', 0.5, 1), petals('pL4', 'L4', 0.5, 1),
-    mark('mV', 'V', 0.97), mark('mz', 'z', 0.5),
+    mark('mQ', 'Q', 0.9), mark('mz', 'z', 0.5),
   ];
   return { pieces, sockets };
 }
