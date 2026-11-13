@@ -1,0 +1,3 @@
+{"oropendola": {"frames": ["reference/art/hf1113/left/oropendola-up-37.webp", "reference/art/hf1113/left/oro1-mid-s1.webp",
+   "reference/art/hf1113/left/oro1-down-s2.webp", "reference/art/hf1113/left/oro1-mid-s1.webp"],
+  "mark": [150, 218, 233], "tol": 40, "units": 70, "fps": 8, "dest": "src/assets/enemies"}}
