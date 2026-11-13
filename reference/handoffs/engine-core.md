@@ -61,6 +61,9 @@ Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 
   are broken with it. Exit A does not vault under a shut gate (`field.blocksTop`).
 - **1-4's finish (w1Arc14.ts finish14) finds pieces by tag** (`uid:key`, FA's `GraphBrief.tags`). Traps: Easy widens `landing`
   pieces (field feet are not landings); the bots need tools/inspect/figPush.ts to read fig work as progress.
+- **B14b (11-13):** the two-hand climb is painted (heroClips.ts `climb2Pick`, hero-climb2.json; drawn with its own scale `clip.k`, so
+  no code sway rides on it). Tools walk a field stage with its gates open (`vineField.ts gatesOpened`, as kitSolved does for rooms);
+  score.ts reads pods by their beat (beatOf) and crumble by height. Gate boughs are `sealed` (FA); a gate field's foot runs GATE_RUN past them.
 
 ## 0h. The stage build's cost (BC-FIX, R-165.163, t-bc-fix, 11-12): what the next engineer on the build path must know
 - **buildcheck is the build's budget** (150 ms p95 at CPU x4, 1-1, Normal and Easy). P11's verdicts and Y2's repair took it to 446/430;
