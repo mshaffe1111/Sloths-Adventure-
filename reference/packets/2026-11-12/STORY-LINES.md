@@ -452,3 +452,31 @@ The journal line is a real moment, so the joke doesn't come (VOICE: Pokey). It p
 - W5 orchid mantis, re-judged: KEEP. A flower-shaped mantis in an orchid sanctuary makes sense to any player, and the kind (a mantis)
   is real in the Neotropics. The dead-leaf mantis swap is withdrawn.
 - The snake rename (R-165.166) stands; Matt asked for it.
+
+## 1-5 Where She Walked (design t-15-design@1fc844d9; the keeper's answers, 11-13 about 10:25 PM ET)
+**(1) Nature check: PASS** (the test: "does it make sense there to a player?")
+| Thing | Verdict |
+|---|---|
+| Kapok boughs at dusk, creaky limbs with bracket fungus, root tunnels, a big fallen hollow trunk | real, and what a player pictures |
+| A creek with stepping roots and lily pads | real (Amazon water lilies; roots at creek edges) |
+| The snake | the Golden Eyelash Viper (R-165.166) |
+| Squirrels' berry-juice paintings on living leaves | storybook, and it makes sense in this world: the squirrels already make signs (THE SLOTH sign, canon). Not a "made thing" like a stake or a plank. |
+| Her mark on living bark | right; the split stake (vectorArt.ts:1266) goes |
+| Dusk light | real |
+
+**(2) The goal is HER MARKS: CONFIRMED** (STORY-KEEPER §5: 1-5 owns the folded petals, the trail chase, creaky limbs, and Meeca's marks).
+Her arrows sit at marching height, on her road, never up on the limbs, as the doc already has it.
+- The mission line (stagePlan.ts:42) changes: "The petals go on. Gather more." becomes **"She marked the way they took her. Follow her
+  marks."**
+
+**(3) The four new lines (each needs Matt's okay):**
+| Where | Speaker | Final words |
+|---|---|---|
+| the creaky teach, before beat 2's first creaky limb | Dot | Creaky limbs drop you, but only down to the roots! |
+| the big sign, beat 6, before the curtain | Dot | Squirrels painted what's each way. Your pick! |
+| the locked exit (Dot explains any locked exit) | Dot | We missed some of her marks. They're back there! |
+| the two-signs joke, beat 1, at the first THIS WAY / THAT WAY | Pokey | THIS WAY. THAT WAY. Thank you, squirrels. |
+
+- The creaky line is true by the doc's own rule: a fall from over ALWAYS lands on the under road. It never says "slow" or "hurry".
+- The joke pays off at beat 9, where both signs finally say THIS WAY.
+- The kept lines stay as written: "She's making them last", the fresher-petals line, the journal, and the keepsake's lone tree.
