@@ -93,6 +93,7 @@ jobs:
       - run: npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts tools/inspect/routeHumps.test.ts
       # (an engine or kit change that stales a rolled stage's seed list fails here until the list is rebuilt: tools/engine/seedlist.ts 1-1)
       - run: npx tsx tools/engine/seedlist.ts 1-1 --check
+      - run: npx tsx tools/engine/seedlist.ts 1-4 --check
       # (the child, middle and expert bots, R-165.59: mapped from the tester profiles and calibrated on 1-1; a change to 1-1, the engine
       # or the bots that moves a run fails here until the calibration is re-run and calibration-main.jsonl recommitted with it,
       # reference/qa-reports/R-165.59/BOTS.md; about 40 s)

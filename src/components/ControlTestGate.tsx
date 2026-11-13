@@ -89,8 +89,9 @@ export const HeroPose: React.FC<{ frame: string; h: number; className?: string }
   );
 };
 
-/** the real level, still: gen2 1-1 as the game draws it (Pokey over the logs, a mushroom and petals), 28 KB */
-const STILL_URL = new URL('../assets/ui/ctest-1-1.webp', import.meta.url).href;
+/** the real level, still: gen2 1-4 as the game draws it on Normal (Pokey two-handed in a vine field under a fig bunch, the gate
+ *  bough over him: reference/qa-reports/B14/ctest-14.mjs), 31 KB */
+const STILL_URL = new URL('../assets/ui/ctest-1-4.webp', import.meta.url).href;
 
 /**
  * 1-1's moves, each a painted Pokey pose on a little card with what to do (the tips folded in: the lead and Matt, 11-06). Only what 1-1
@@ -141,7 +142,7 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
       <form onSubmit={go}>
         {/* the hero: the real level, Pokey big in front of it, the NEW tag on its corner */}
         <div className="ct-hero">
-          <img className="ct-hero-still" src={STILL_URL} alt="Pokey jumping over mossy logs in the new level" draggable={false} />
+          <img className="ct-hero-still" src={STILL_URL} alt="Pokey climbing a curtain of vines up a giant kapok tree" draggable={false} />
           <span className="ct-new-tag ct-hero-new">NEW</span>
           <HeroPose frame="cheer_a" h={150} className="ct-hero-pokey" />
         </div>
