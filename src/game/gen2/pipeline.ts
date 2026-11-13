@@ -751,6 +751,13 @@ function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, 
     // (a designer's content letter is the node's type, nodeAsks.ts; a letter with no type in the pool is named after the lay)
     const askedType = n.asked?.content ? TYPE_OF_LETTER[n.asked.content] : undefined;
     if (askedType) { fixed.set(i, askedType); continue; }
+    // (a shape or move the node asks that ONE type of section of its job lays in this pool is that type, as a designed graph's
+    // dealExact node is: the deal plans the neighbours round it. Dealt at random, its neighbour often took the type and the node got one
+    // with no section that rises (falls, asks the double), so the roll named the ask (nodeMix, R-165.198))
+    if (n.asked?.shape || n.asked?.move) {
+      const served = new Set(M.sections.filter((q) => q.content && q.content !== 'structural' && askServes(n, q.content, M.sections)).map((q) => q.content as ContentType));
+      if (served.size === 1) { fixed.set(i, [...served][0]); continue; }
+    }
     if (n.job === 'climb') fixed.set(i, 'climb');
     if (n.job === 'teach' && n.teaches) {
       const c = M.sections.find((t) => t.teaches === n.teaches && t.content && t.content !== 'structural')?.content;
@@ -1946,20 +1953,33 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         if (h === 'up' ? d < 0 : h === 'down' ? d > 0 : d === 0) w *= 2;
         if (n.dials.terrain && t.terrain === n.dials.terrain) w *= 3;
       }
-      // (a designer's asks, nodeAsks.ts: a section that can lay what the node asks is the pick wherever the slot has one; with none,
-      // the built roll names the miss)
-      const a = n.asked;
-      if (a) {
-        const kinds = a.dials?.threat?.map((k) => k.kind);
-        const foe = t.sockets.some((s) => s.role === 'enemy' && (!kinds || !s.allow?.length || kinds.some((k) => s.allow!.includes(k))));
-        if (a.creatures || kinds) w *= foe ? 20 : 0.05;
-        if (a.find || a.dials?.reward?.find) w *= t.sockets.some((s) => s.role === 'find') ? 20 : 0.05;
-        const dbl = t.teaches === 'double' || (t.uses ?? []).includes('double') || (t.needs ?? []).includes('double');
-        if (a.move) w *= (a.move === '2') === dbl ? 20 : 0.05;
-        if (a.shape === '^' || a.shape === '_') w *= Math.sign(ed) === (a.shape === '^' ? -1 : 1) ? 20 : 0.05;
-      }
+      // (a designer's asks, nodeAsks.ts: each element a section can lay weighs it up. Where some candidate lays them all, only those are
+      // drawn (`keeps`, below); where none does, these weights lean to the most of them and the built roll names each miss)
+      if (n.asked) for (const ok of askParts(t)) w *= ok ? 20 : 0.05;
       return w;
     };
+    // (each element the node asks, and whether `t` lays it: its creatures (of its kinds), its find, its move, its shape by the section's
+    // real exit (exitDyOf))
+    const askParts = (t: SectionTemplate): boolean[] => {
+      const a = n.asked;
+      if (!a) return [];
+      const out: boolean[] = [];
+      const kinds = a.dials?.threat?.map((k) => k.kind);
+      if (a.creatures || kinds) out.push(t.sockets.some((s) => s.role === 'enemy' && (!kinds || !s.allow?.length || kinds.some((k) => s.allow!.includes(k)))));
+      if (a.find || a.dials?.reward?.find) out.push(t.sockets.some((s) => s.role === 'find'));
+      const dbl = t.teaches === 'double' || (t.uses ?? []).includes('double') || (t.needs ?? []).includes('double');
+      if (a.move) out.push((a.move === '2') === dbl);
+      if (a.shape === '^' || a.shape === '_') out.push(Math.sign(exitDyOf(t)) === (a.shape === '^' ? -1 : 1));
+      return out;
+    };
+    // (the asks are a rule wherever the slot can keep them, R-165.198: the x20 weight alone was outdrawn, a bag gives every candidate a
+    // ticket and a rated node's draws are sorted by difficulty, so a level section often filled a node that asked to rise. The candidates
+    // that lay every ask and are not clamped out (the corridor, the level swing) are the only ones drawn when there are any)
+    // (a shape is the node's NET rise or fall: where no candidate here goes the asked way, one that goes against it is never drawn while
+    // a level one fits, or the slot after an asked fall climbed it back, as on the legs kit's '_' combine: down, level, up)
+    const against = (c: SectionTemplate) => (n.asked?.shape === '^' || n.asked?.shape === '_') && Math.sign(exitDyOf(c)) === (n.asked.shape === '^' ? 1 : -1);
+    let keeps = n.asked ? cands.filter((c) => askParts(c).every(Boolean) && weight(c) > 0) : [];
+    if (!keeps.length && n.asked?.shape) keeps = cands.filter((c) => !against(c) && weight(c) > 0);
     // the node's bag holds its candidates by weight; the cooldown passes over the ones used just now
     // (a rolled node's bag is its own: its weights are its dials', never another node's with the same phase)
     const key = `${n.job ? n.id : n.phase}|${cands.map((c) => c.id).join(',')}`;
@@ -1974,11 +1994,12 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (weight(t) > 0) tries.push(t);
       if (tries.length >= 3) break;
     }
-    const pool = tries.length ? tries : cands.filter((t) => weight(t) > 0);
+    let pool = tries.length ? tries : cands.filter((t) => weight(t) > 0);
+    if (keeps.length) { const k = pool.filter((c) => keeps.includes(c)); pool = k.length ? k : keeps; }
     // (a rolled node's cadence is a rule, not a lean: of the bag's draws, the one nearest the slot's want comes first; the bag still
     // decides which few are drawn, so the variety is the bag's)
     if (n.dials) pool.sort((a, b) => Math.abs(a.difficulty / 10 - want) - Math.abs(b.difficulty / 10 - want));
-    const t = cool.pick(pool.length ? pool : cands, (c) => c.id) ?? pickWeighted(pickRng, cands, weight)!;
+    const t = cool.pick(pool.length ? pool : cands, (c) => c.id) ?? pickWeighted(pickRng, keeps.length ? keeps : cands, weight)!;
     // (R-165.120, the pool's look-ahead: the pick stands unless taking it leaves a later slot with no section its rule allows, when
     // another candidate here would not: the scarce section is kept for the node that has nothing else. The pick's own order decides
     // among those that keep the pool whole; with none, the pick stands and the roll fails by name, as before)
@@ -1988,7 +2009,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     const less = (a: [number, number], b: [number, number]) => a[0] < b[0] || (a[0] === b[0] && a[1] < b[1]);
     let least = cost(t);
     if (!least[0] && !least[1]) return t;
-    const rest = [...pool, ...cands.filter((c) => !pool.includes(c) && weight(c) > 0).sort((a, b) => weight(b) - weight(a))].filter((c) => c !== t);
+    const rest = [...pool, ...(keeps.length ? keeps : cands).filter((c) => !pool.includes(c) && weight(c) > 0).sort((a, b) => weight(b) - weight(a))].filter((c) => c !== t);
     let pick = t;
     for (const c of rest) { const k = cost(c); if (less(k, least)) { pick = c; least = k; } if (!least[0] && !least[1]) break; }
     return pick;

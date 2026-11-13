@@ -100,3 +100,25 @@ test("node asks: NODE-KEY.html's cards show each element's status from ELEMENTS 
   // (tools/engine/nodekey.ts writes them; a card out of step with the table fails here)
   for (const e of ELEMENTS) assert.ok(html.includes(`data-element="${esc(e.element)}" data-status="${e.status}"`), `NODE-KEY.html has no card for "${e.element}" at status ${e.status}: run tools/engine/nodekey.ts`);
 });
+
+test('node asks (planted, VARIETY): a shape that ONE type of the node\'s job lays is dealt that type, and its sections go the asked way', () => {
+  // (the legs kit: a practise or a test rises or falls only in its ground sections. Dealt at random, the neighbour took ground and the
+  // node a level floating section, or the bag drew a level section past the x20 weight: 14 of 16 seeds named the miss)
+  const named = [1, 2, 3, 4, 5, 6, 7, 8].filter((s) => build('A P P^ R X_ R S E', s).gen2.errors.some((e) => /: shape /.test(e)));
+  assert.deepEqual(named, [], `seeds whose shape ask is named: ${named}`);
+  // (the node's type is the one that lays the shape)
+  const st = build('A P P^ R X_ R S E', 3);
+  for (const n of st.gen2.graph.nodes.filter((q) => q.asked?.shape)) assert.equal(n.content, 'ground', `${n.id} asks ${n.asked!.shape}`);
+});
+
+test('node asks (planted, VARIETY): where no section of the node\'s type goes the asked way, none that goes against it is drawn while a level one fits', () => {
+  // (the legs kit's combine at the ground: falling would leave the corridor, so '_' cannot be laid there and is named; but its slots
+  // never climb back up either: down, level, up was a net 0 that hid the fall the first slot made)
+  for (const s of [1, 2, 3, 4]) {
+    const st = build('A P C_ R X R S E', s);
+    const n = st.gen2.graph.nodes.find((q) => q.asked?.shape === '_')!;
+    const T = mixKit(ID, 'A P C_ R X R S E').manifest.sections;
+    const rose = st.gen2.sections.filter((q) => q.node === n.id && (T.find((t) => t.id === q.template)?.exitDy ?? 0) < 0);
+    assert.deepEqual(rose.map((q) => q.template), [], `seed ${s}: a section of the '_' node rises`);
+  }
+});
