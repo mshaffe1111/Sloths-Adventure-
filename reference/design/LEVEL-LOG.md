@@ -44,3 +44,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | IDEAS-1-6 B (Opus high) | 1-6 idea list + tributes (Pitfall!, DK Jr., DKC rope level) | $1.24 | ~8 min; new blocks named |
 | IDEAS-1-6 C (Opus xhigh) | 1-6 idea list + tributes (Pitfall!, Jungle Hunt, DK Jr., DKC); found R-165.204 | $3.49 | ~12 min; network blocked page fetches (search results only) |
 | D16 (Opus xhigh) | 1-6 design (59 lines) + grip measurement (R-165.204) | $3.71 | ~13 min; tributes a-d x4 (Pitfall!, DK Jr., DKC, Jungle Hunt); 6 NEW blocks named |
+| IDEAS-1-7-8 A (Opus medium) | 1-7 + 1-8 idea lists + tributes; 4 engine-study findings | $1.74 | ~6 min |
