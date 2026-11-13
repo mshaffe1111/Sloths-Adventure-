@@ -14,6 +14,9 @@ reference/GEMINI-PCG-RESEARCH.md (Part 2 §4 density tables) and GEMINI-LEDGER.m
 play time), reference/methods/level.md, LEVEL-BAR.md, the designs 1-2/1-3 (origin/t-int-2), 1-4 (origin/t-14-design), and what the
 engine already measures (levelCheck, castBots/tierBots, the first-timer bot, inspect.ts, funcheck, the time model).
 
+RESEARCH ON THE INTERNET TOO (Matt 8:38 PM: "look at the internet too, to do research on how game developers design difficulty in 2D
+platform games"): GDC talks, postmortems, developer articles, academic work; cite each source (title + link) and what you took.
+
 ## Deliver (reference/design/DIFFICULTY.md, 120 lines or fewer, plus a prototype script)
 1. The elements that make a stage hard, each with points and WHY (research: published difficulty models for platformers, our own
    bot data): e.g. gap distance vs max jump, timing window ms, double jumps, enemies/creatures by kind, hazards per minute, things at

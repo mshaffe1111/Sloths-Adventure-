@@ -749,3 +749,4 @@ lines); Matt sees them in the release.
   PASS; P11 alone 259/269; Y2 merged 474/494; final 465023ef 446/430. Two causes: P11's verdicts/landings (~+180 ms) and Y2's two
   searches/landingRepair (~+180 ms). BC-FIX packet written (Opus xhigh; fix the cause, results byte-identical, budget unchanged); starts
   after Matt's reset. INT-2 told to append the 14 w1traps catalog rows now (D48), then REPORT and stop.
+- 2026-11-12 8:38 PM ET, Matt: DIFF-ALGO researches the internet too (how developers design 2D platformer difficulty); sent, packet updated, sources cited.
