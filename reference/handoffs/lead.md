@@ -10,6 +10,10 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **THE RHYTHM: 3 LEVELS AHEAD + 1 POLISH MEMBER** (Matt, 11-13 3:28 PM ET; R-165.202): "I'll play it, give you feedback... we're going to
+  do 3 levels at a time. We have another helper going back, fixing any of the polishing that I find on the levels that we just implemented."
+  Get each level into his hands as soon as it passes (early is fine); design runs 3 levels ahead, builds stagger inside the 4-member cap,
+  one polish member works his feedback; every level's lessons go into level.md so the next is right the first time.
 - **TIME BOXES + HANDOFFS** (Matt, 11-13 12:48 PM ET): every member gets a box (60-90 min); at its end it hands off (REPORT with EXACT NEXT
   STEP) and stops; the lead decides whether a fresh session continues. Plus the 40% context stop. Watch usage and retire early when it climbs.
 - **AT MOST 4 MEMBERS RUNNING AT ONCE** (Matt, 11-13 12:44 PM ET: "we need to limit how many we're running at one time... Not everything needs a
