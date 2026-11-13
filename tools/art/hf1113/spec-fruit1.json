@@ -10,6 +10,34 @@
  "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, words, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, cast shadow, sky, scenery behind, animals, people, sloth, bitten, cut open, sliced, pile, basket, plate, table",
  "items": [
   {
+   "name": "find-guarana-11",
+   "prompt": "a small cluster of four round glossy red-orange guarana fruits on a short stalk, two of them split open showing a shiny black seed with a white rim like an eye, lit by a warm golden light, golden highlights on the fruit, a single game pickup item, whole and fresh, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "find-guarana-23",
+   "prompt": "a small cluster of four round glossy red-orange guarana fruits on a short stalk, two of them split open showing a shiny black seed with a white rim like an eye, lit by a warm golden light, golden highlights on the fruit, a single game pickup item, whole and fresh, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "find-guarana-37",
+   "prompt": "a small cluster of four round glossy red-orange guarana fruits on a short stalk, two of them split open showing a shiny black seed with a white rim like an eye, lit by a warm golden light, golden highlights on the fruit, a single game pickup item, whole and fresh, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "find-guarana-53",
+   "prompt": "a small cluster of four round glossy red-orange guarana fruits on a short stalk, two of them split open showing a shiny black seed with a white rim like an eye, lit by a warm golden light, golden highlights on the fruit, a single game pickup item, whole and fresh, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024
+  },
+  {
    "name": "fruit-banana-11",
    "prompt": "a small bunch of three ripe yellow-green curved bananas joined at a short green stem, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
    "seed": 11,

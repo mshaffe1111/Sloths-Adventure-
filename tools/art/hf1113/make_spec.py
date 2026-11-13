@@ -125,7 +125,13 @@ FRUIT = {
 
 
 def fruit1(seeds=(11, 23, 37)):
-    items = [{'name': f'fruit-{k}-{sd}', 'prompt': f'{p}, a single game pickup item, whole and fresh, never bitten, centred, '
+    # 1-5's hidden find first (the lead 11-13 11:07 AM ET: today's stand-in reads as a pear): real guarana, a warm golden light on it;
+    # the glow round it is code-drawn like the other finds (a soft halo cannot key off magenta)
+    gua = ('a small cluster of four round glossy red-orange guarana fruits on a short stalk, two of them split open showing a shiny '
+           'black seed with a white rim like an eye, lit by a warm golden light, golden highlights on the fruit')
+    items = [{'name': f'find-guarana-{sd}', 'prompt': f'{gua}, a single game pickup item, whole and fresh, centred, {STYLE}, {MAG}',
+              'seed': sd, 'w': 1024, 'h': 1024} for sd in (11, 23, 37, 53)]
+    items += [{'name': f'fruit-{k}-{sd}', 'prompt': f'{p}, a single game pickup item, whole and fresh, never bitten, centred, '
                                                     f'{STYLE}, {GRY if k in ("dragonfruit", "passionfruit") else MAG}', 'seed': sd, 'w': 1024, 'h': 1024}
              for k, p in FRUIT.items() for sd in seeds]
     spec = {'tag': 'fruit1', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
