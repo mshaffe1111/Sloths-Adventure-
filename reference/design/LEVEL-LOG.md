@@ -47,3 +47,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | IDEAS-1-7-8 A (Opus medium) | 1-7 + 1-8 idea lists + tributes; 4 engine-study findings | $1.74 | ~6 min |
 | INT-3 (Opus xhigh) | merged 7 branches; vault patch; drawcheck root (stripInk, every stage lighter); R-165.201; tower flight sim root; 1-4 flown/judged; 8 gates PASS | $24.03 | ~1 h 50 min; its background gate script died at its stop (D59) |
 | IDEAS-1-7-8 B (Opus high) | 1-7 + 1-8 idea lists + tributes; 6 engine findings (two hide rules disagree) | $2.17 | ~7 min |
+| INT-4 (Opus xhigh) | 1-4 bot split: every stuck kind a bot limit, fixed in tools/inspect; 1-4 castBots 22 -> 176/360 | $8.37 | ~27 min; gates not reached (40% line) |
