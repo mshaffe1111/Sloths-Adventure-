@@ -1,8 +1,9 @@
 # POLISH-2 REPORT (t-polish-2, gates on head 0b929f18 from 6:37 PM ET; results: gates/RESULTS.txt). Box 6:12-~7:05 PM ET, context ~40% at stop.
-**EXACT NEXT STEP:** 1. Lead pass/fail on stills 10-19. 2. Matt R-165.212 left: film a 3-fig gate (1-4 gate 6, `tools/lockclip.mjs ... <gate index 5>`)
-and an Easy lock clip; the lock's sound by ear on a phone (no audio in the container: UNHEARD). 3. The 'made' post: the crown's sure vine and
-every open gate's way up wind round a square-cut stump (a scenery trunk: trunkFit.ts DecoTrunk / protoArt.ts setDecoTrunks; World 1 rule): swap
-to living wood from the inventory, else ask the lead (HF). 4. R-165.209a 1-5 creek's square edge (w15Creek.ts: B15's token) and b 1-5 upright
+**Lead verdicts 6:31/6:35 PM:** fig lock PASS, tufts v2 PASS, crown route PASS. 12 (sideways lock frames) re-shot on the head f5da20a6.
+**EXACT NEXT STEP:** 1. Lead pass/fail on stills 18-19 (log end). 2. Matt R-165.212 left: film a 3-fig gate (1-4 gate 6, `tools/lockclip.mjs ... <gate index 5>`)
+and an Easy lock clip; the lock's sound by ear on a phone (no audio in the container: UNHEARD). 3. ONE art-pass item (lead 6:35 PM, not hunted now): square-cut
+posts: the crown's sure vine and every open gate's way up wind round a square-cut stump (likely trunkFit.ts DecoTrunk / protoArt.ts
+setDecoTrunks; World 1 has no made things): living wood from the inventory, else the lead's HF call. 4. R-165.209a 1-5 creek's square edge (w15Creek.ts: B15's token) and b 1-5 upright
 ground ~55% (cameraFollow.ts FRAME.feetAt: NODES-TRAVEL's token): not started, need tokens. 5. Pokey's "Meeca climbs this every Sunday" card
 sits mid-screen over the 1-4 field in every still (stills 05-09, 18): check on the real page with Tips default, likely a still-shooter artefact (hints
 marked shown). 6. 1-4 bots toward 40/40 (POLISH-1 REPORT item 4). 7. Catalog row hf1113/w14-roughbough: add "left end broken off (POLISH-2)".
