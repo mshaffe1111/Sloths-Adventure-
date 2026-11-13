@@ -207,6 +207,27 @@ def props3(seeds=(11, 23, 37, 53)):
     (H / 'spec-props3.json').write_text(json.dumps(spec, indent=1))
     print(len(items), 'stills')
 
-CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1, 'climb2': climb2, 'props2': props2, 'props3': props3}
+
+# ---- props4: 1-5's dusk (1-5.md:5 "dusk: limbs in last light, roots in shadow"): World 1's own far and sky strips repainted at dusk by
+# img2img (tools/art/w6to10/img2imggpu.py), so the canopy and hills stay World 1's; the wrap join is fixed after (hflist1/wrapfix.py)
+DUSK = ('the same rainforest canopy valley at dusk, the sun just set behind the far hills, the last warm orange-gold light low on the '
+        'horizon, rose and violet clouds, the far hills in cool purple haze, the treetops catching rim light, deep blue-violet higher sky, '
+        'hand-painted 2D storybook game background, painterly, no text')
+DSKY = ('the same sky at dusk, rose, peach and violet clouds lit from below by the set sun, a deep blue-violet sky, '
+        'hand-painted 2D storybook game background, painterly, no text')
+
+
+def props4(commit):
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/src/assets/backdrops/'
+    items = [{'name': f'dusk-far-s{s}-{sd}', 'start': 'w1-far.webp', 'prompt': DUSK, 'strength': s / 100, 'seed': sd, 'w': 2048, 'h': 1008}
+             for s in (55, 62) for sd in (11, 23)]
+    items += [{'name': f'dusk-sky-s{s}-{sd}', 'start': 'w1-sky.webp', 'prompt': DSKY, 'strength': s / 100, 'seed': sd, 'w': 2048, 'h': 400}
+              for s in (55, 65) for sd in (11, 23)]
+    spec = {'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]}, 'base': base,
+            'neg': 'text, letters, watermark, frame, border, photo, 3d render, blurry, people, animals, buildings', 'items': items}
+    (H / 'spec-props4.json').write_text(json.dumps(spec, indent=1))
+    print(len(items), 'img2img')
+
+CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1, 'climb2': climb2, 'props2': props2, 'props3': props3, 'props4': lambda: props4(sys.argv[2])}
 if __name__ == '__main__':
     CMDS[sys.argv[1]]()
