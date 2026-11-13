@@ -38,3 +38,5 @@ New files are yours alone. Need a token? One line to the lead; carry on with oth
 - **Time boxes (Matt 12:48 PM ET):** every member works in a box the lead names (60-90 min). At the box's end: push, REPORT.md with an
   EXACT NEXT STEP list (the handoff), one line to the lead with context %, then STOP. The lead then decides: a fresh session continues,
   the work waits, or it's done. Also stop early at 40% context.
+- **Read your queue at every push (D57):** call ReadNotifications at every push and before starting any new sub-task; a lead ruling
+  or STOP that crossed with your work wins over the plan you're on.
