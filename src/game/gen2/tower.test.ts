@@ -12,11 +12,11 @@ import { MODEL_FAST, MODEL_TYPICAL, modelStage, walkSpeed } from '../stageTime.t
 import { DOUBLE_RISE } from '../physics.ts';
 import { MODES } from '../stageModes.ts';
 import type { Platform, Vine } from '../types.ts';
-import { applyVerdicts, buildGen2Stage, keptFoes, layLocal, layStage, missionGraph, planBudget, rngFor, rollErrors, ROLLED_FLAGS } from './pipeline.ts';
+import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage, missionGraph, planBudget, rngFor, rollErrors, ROLLED_FLAGS } from './pipeline.ts';
 import { packPlan, stageParts, unpackPlan } from './seedList.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
-import { hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerSkips, vertical } from './tower.ts';
+import { ARC_CODE, arcKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerSkips, vertical } from './tower.ts';
 import type { Gen2Stage } from './types.ts';
 
 const ID = '5-93';
@@ -322,21 +322,102 @@ test('every piece of a storey, its hops\' catch boughs included, lies a turn or 
   assert.ok(withCatch >= 3, `sections with a catch under their entry were turned (${withCatch})`);
 });
 
-test('levelCheck: a tower\'s flags are in order when each is further on by its travel, though x runs both ways', () => {
-  // (the fixture going up as a stage of another kind, travel up by its data: levelCheck's flag order is asked of it)
-  const st = buildGen2Stage({ config: towerCfg(ID, 'sprint', 'up'), kit: upKit, seed: 2, difficulty: 'normal' });
-  assert.deepEqual(st.gen2.errors ?? [], []);
-  const cps = st.checkpoints ?? [];
-  assert.ok(cps.length >= 6);
-  assert.ok(cps.some((c, k) => k > 0 && c.x <= cps[k - 1].x), 'its flags run back in x on the storeys that run left');
-  for (let k = 1; k < cps.length; k++) assert.ok(MODES.up.further(cps[k], cps[k - 1]), `flag ${k} is higher than the one before: the engine takes it`);
-  assert.ok(!validateStage(st).errors.includes('checkpoints are out of order'));
-  // (planted: the same flags in the wrong order are still refused)
-  const wrong = { ...st, checkpoints: [...cps].reverse() };
-  assert.ok(validateStage(wrong).errors.includes('checkpoints are out of order'), 'a flag that is no further on is out of order');
-  // (and a run's rule has not moved: flags that go back in x are out of order)
+test("levelCheck: a tower's flags are in order when each is further ALONG THE ROUTE, though x runs both ways and a storey may hold two", () => {
+  for (const st of [up(2), buildGen2Stage({ config: towerCfg(ID, 'sprint', 'up'), kit: upKit, seed: 2, difficulty: 'normal' })]) {
+    assert.deepEqual(st.gen2.errors ?? [], []);
+    const cps = st.checkpoints ?? [];
+    const R = st.gen2.tower!.route;
+    assert.ok(cps.length >= 6);
+    assert.ok(cps.some((c, k) => k > 0 && c.x <= cps[k - 1].x), 'its flags run back in x on the storeys that run left');
+    for (let k = 1; k < cps.length; k++) {
+      assert.ok(routeAt(R, cps[k].x, cps[k].y) > routeAt(R, cps[k - 1].x, cps[k - 1].y), `flag ${k} is further along the way than the one before`);
+      assert.ok(flagFurther(st, MODES.up, cps[k], cps[k - 1]) && !flagFurther(st, MODES.up, cps[k - 1], cps[k]), `flag ${k}: the engine takes it, and never goes back to the one before`);
+    }
+    assert.ok(!validateStage(st).errors.includes('checkpoints are out of order'));
+    // (planted: the same flags in the wrong order are refused, on an ascent too)
+    assert.ok(validateStage({ ...st, checkpoints: [...cps].reverse() }).errors.includes('checkpoints are out of order'), 'a flag that is no further on is out of order');
+  }
+  // (and a run's rule has not moved: flags that go back in x are out of order, and its order is its travel mode's)
   const run = buildGen2Stage({ config: runCfg('5-1', 'sprint'), kit: runKit, seed: 3, difficulty: 'normal' });
-  if ((run.checkpoints ?? []).length >= 2) assert.ok(validateStage({ ...run, checkpoints: [...run.checkpoints!].reverse() }).errors.includes('checkpoints are out of order'));
+  assert.ok((run.checkpoints ?? []).length >= 2, 'the run has flags');
+  assert.ok(validateStage({ ...run, checkpoints: [...run.checkpoints!].reverse() }).errors.includes('checkpoints are out of order'));
+  assert.equal(flagFurther(run, MODES.right, { x: 500, y: 0 }, { x: 400, y: 900 }), true, 'a run: by x, as its mode says');
+  assert.equal(flagFurther(run, MODES.right, { x: 400, y: 0 }, { x: 500, y: 0 }), false);
+});
+
+test('flagFurther: two flags on one storey both count, in the order he meets them (height calls neither further)', () => {
+  // (a storey that runs LEFT along y 700 after a climb: flag a at x 800, flag b at x 400, further on though further left and no higher)
+  const legs = [
+    { uid: 's1', entry: { x: 200, y: 1000 }, exit: { x: 900, y: 1000 }, x0: 200, x1: 900 },
+    { uid: 's2', entry: { x: 860, y: 700 }, exit: { x: 100, y: 700 }, x0: 100, x1: 860 },
+  ];
+  const st = { gen2: { tower: { route: routeOf('up', legs, { x: 100, y: 1000 }, { x: 150, y: 400 }) } } };
+  const a = { x: 800, y: 700 }, b = { x: 400, y: 700 }, spawn = { x: 100, y: 1000 };
+  assert.equal(MODES.up.further(b, a), false, 'by height the second flag is no further on: the old answer');
+  assert.equal(flagFurther(st, MODES.up, b, a), true, 'along the route it is');
+  assert.equal(flagFurther(st, MODES.up, a, b), false, 'and a flag touched going back never replaces it');
+  assert.equal(flagFurther(st, MODES.up, a, spawn), true, 'the first flag is further on than the spawn');
+  assert.equal(flagFurther(st, MODES.up, a, a), false, 'a flag is not further on than itself');
+  // (a stage with no route: its travel mode's answer)
+  assert.equal(flagFurther({}, MODES.up, b, a), false);
+  assert.equal(flagFurther({}, MODES.up, { x: 0, y: 600 }, a), true);
+});
+
+const RULE = { first: 700, min: 900, max: 4000, last: 2000, before: 2400, clear: 1500 };
+/** a hand-built tower's route: `n` storeys 1,000 px long, 300 px apart, each turned back over the last */
+const zigzag = (n: number) => {
+  const legs = Array.from({ length: n }, (_, k) => {
+    const y = 5000 - 300 * k, right = k % 2 === 0;
+    return { uid: `s${k + 1}`, entry: { x: right ? 140 : 1140, y }, exit: { x: right ? 1140 : 140, y }, x0: 140, x1: 1140 };
+  });
+  const last = legs[n - 1];
+  return routeOf('up', legs, { x: 140, y: 5000 }, { x: last.exit.x, y: last.exit.y - 300 });
+};
+const storeySpots = (n: number) => Array.from({ length: n }, (_, k) => ({ x0: 240, x1: 1040, y: 5000 - 300 * k }));
+
+test("towerFlags: Matt's flag rule measured along the climb: a flag before each hard node, none close, no span over the cap, the last near the exit", () => {
+  const R = zigzag(12);
+  assert.equal(R.length, 12 * 1000 + 12 * 300, '15,600 px of way: 12 storeys and 12 climbs');
+  // (hard nodes begin 6,000 and 13,000 px along: the span rule alone, which steps from the start, lays no flag 1,500-2,400 px before
+  // the first of them (its flags fall at about 1,980, 3,500 and 5,480): only the hard node's own flag does)
+  const hard = [6000, 10 * 1300];
+  const spanOnly = towerFlags(R, storeySpots(12), [], RULE).map((f) => f.s);
+  assert.ok(!spanOnly.some((s) => s <= hard[0] - RULE.clear && s >= hard[0] - RULE.before), `the planted case: the span rule's flags ${spanOnly.map(Math.round)} miss the window before ${hard[0]}`);
+  const flags = towerFlags(R, storeySpots(12), hard, RULE);
+  const ss = flags.map((f) => f.s);
+  assert.deepEqual([...ss].sort((a, b) => a - b), ss, 'in the order he meets them');
+  for (const h of hard) assert.ok(ss.some((s) => s <= h - RULE.clear && s >= h - RULE.before), `a flag ${RULE.clear}-${RULE.before} px of way before the hard node at ${h}: ${ss}`);
+  assert.ok(ss[0] >= RULE.first, `the first ${ss[0]} px on`);
+  for (let k = 1; k < ss.length; k++) assert.ok(ss[k] - ss[k - 1] >= RULE.min && ss[k] - ss[k - 1] <= RULE.max, `${ss[k] - ss[k - 1]} px of way between flags ${k} and ${k + 1}`);
+  assert.ok(ss[0] <= RULE.max && R.length - ss[ss.length - 1] <= RULE.last, `the last ${R.length - ss[ss.length - 1]} px from the exit`);
+  assert.deepEqual(towerFlagBreaches(R, flags, hard.map((s, k) => ({ id: `n${k}`, s })), RULE), [], 'and the verdict keeps what the pass laid');
+  // (each stands on a spot, at its storey's height; two may share a storey: the measure is the way, not the height)
+  for (const f of flags) assert.ok(storeySpots(12).some((sp) => sp.y === f.y && f.x >= sp.x0 && f.x <= sp.x1));
+  // (measured by x, the old way, this tower would need no flag at all: its exit is 0 px to the right of its spawn)
+  assert.ok(flags.length >= 5 && Math.abs(R.exit.x - R.spawn.x) < RULE.first, `${flags.length} flags on a tower whose x span is ${Math.abs(R.exit.x - R.spawn.x)} px`);
+  // (a spot that is blocked, a wind's path or the like, is never stood on)
+  const open = towerFlags(R, storeySpots(12), hard, RULE, (_x, y) => y === flags[0].y);
+  assert.ok(open.every((f) => f.y !== flags[0].y));
+  // (with no hard node the span rule alone lays them)
+  const plain = towerFlags(R, storeySpots(12), [], RULE).map((f) => f.s);
+  for (let k = 1; k < plain.length; k++) assert.ok(plain[k] - plain[k - 1] <= RULE.max && plain[k] - plain[k - 1] >= RULE.min);
+  assert.ok(plain.length >= 4);
+});
+
+test('towerFlagBreaches, both ways (planted): none, too early, too far apart, a hard node with none before it, too far from the exit', () => {
+  const R = zigzag(12);
+  const at = (s: number) => { const k = Math.floor(s / 1300), d = s - k * 1300, right = k % 2 === 0; return { x: right ? 140 + d : 1140 - d, y: 5000 - 300 * k }; };
+  const good = [1000, 4000, 7000, 10000, 13000, 14500].map(at);
+  assert.deepEqual(towerFlagBreaches(R, good, [{ id: 'X', s: 9000 }], RULE), []);
+  assert.deepEqual(towerFlagBreaches(R, [], [], RULE), ['flags: none']);
+  assert.match(towerFlagBreaches(R, [at(400), ...good.slice(1)], [], RULE).join(';'), /flags: the first 400 px of way from the start \(at least 700\)/);
+  assert.match(towerFlagBreaches(R, [good[0], ...good.slice(2)], [], RULE).join(';'), /flags: 6000 px of way apart after the flag at x 1140, y 5000 \(900-4000\)/);
+  assert.match(towerFlagBreaches(R, [good[0], at(1500), ...good.slice(1)], [], RULE).join(';'), /flags: 500 px of way apart/);
+  assert.match(towerFlagBreaches(R, good, [{ id: 'X', s: 6800 }], RULE).join(';'), /flags: none before the hard node X, 6800 px along the way \(within 2400 px\)/);
+  assert.deepEqual(towerFlagBreaches(R, good, [{ id: 'X', s: 7100 }], RULE), [], 'a flag 100 px before it: kept');
+  assert.match(towerFlagBreaches(R, good.slice(0, 5), [], RULE).join(';'), /flags: the last 2600 px of way from the exit \(within 2000\)/);
+  // (the same flags given out of order are the same flags: the measure orders them)
+  assert.deepEqual(towerFlagBreaches(R, [...good].reverse(), [{ id: 'X', s: 9000 }], RULE), []);
 });
 
 test("the time model walks a tower's route, not its width, and every roll is two minutes or more for a quick player", () => {
@@ -369,7 +450,63 @@ test('the route measure: a run is its x; a tower adds what he walks and climbs, 
   assert.equal(routeAt(R, 500, 1000), 400, 'on the first storey');
   assert.equal(routeAt(R, 500, 700), 1140 + 360, 'the same x one storey up is 1,100 px of way further on');
   assert.ok(routeAt(R, 400, 700) > routeAt(R, 800, 700), 'on a storey that runs left, further left is further on');
-  assert.equal(routeAt(R, 5000, 300), R.length, 'past the top: the whole way');
+  // (a place off a leg's ends belongs to the storey at its height, never to the one over it that shares its x)
+  assert.equal(routeAt(R, 100, 1000), 0, 'the spawn, left of the first section, is the start of the way');
+  assert.equal(routeAt(R, 150, 1000), 50, 'and the runway is walked to it');
+  assert.equal(routeAt(R, 950, 1000), 800, "a run-on past the first storey's end is that storey's end");
+  assert.equal(routeAt(R, 950, 700), 1140 - 90, "and one 90 px behind the second storey's entry is 90 px short of it");
+  assert.equal(routeAt(R, 2000, 700), 800, 'never short of the storey before');
+});
+
+test('a tower with a rolled graph (a designed arc) rolls clean: the same beats in the graph\'s order on every roll, a flag before every hard node along the climb', () => {
+  const ARC = '5-94';
+  const beats = ARC_CODE.split(' ').length;
+  let hardSeen = 0;
+  for (const d of SETTINGS) for (const seed of [1, 2, 3, 4, 5, 6]) {
+    const st = buildGen2Stage({ config: towerCfg(ARC, 'ascent'), kit: arcKit(ARC), seed, difficulty: d });
+    assert.deepEqual(st.gen2.errors ?? [], [], `arc ${d} ${seed}`);
+    assert.deepEqual(validateStage(st).errors, [], `levelCheck, arc ${d} ${seed}`);
+    assert.equal(st.gen2.graph.flow, 'up');
+    assert.equal(st.gen2.graph.nodes.length, beats, 'the graph is the arc, node for node');
+    // (the beats in order: each section's node is its graph's, never out of turn)
+    const order = st.gen2.graph.nodes.map((n) => n.id);
+    const at = st.gen2.sections.map((q) => order.indexOf(q.node));
+    assert.deepEqual([...at].sort((a, b) => a - b), at, `arc ${d} ${seed}: the sections follow the graph`);
+    assert.deepEqual([...new Set(at)], order.map((_n, k) => k), 'and every beat is laid');
+    // (Matt's flag rule on the path, D49: a flag before each hard node, within `before` px of WAY ahead of it)
+    const R = st.gen2.tower!.route;
+    const hard = new Set(st.gen2.graph.nodes.filter((n) => n.job && HARD_JOBS.has(n.job)).map((n) => n.id));
+    const seen = new Set<string>();
+    const hs = st.gen2.sections.flatMap((q, k) => (hard.has(q.node) && !seen.has(q.node) && seen.add(q.node) ? [R.legs[k].s0] : []));
+    assert.equal(hs.length, 5, 'the teach, the test, the twist, the signature and the combine');
+    const fl = (st.checkpoints ?? []).map((c) => routeAt(R, c.x, c.y));
+    for (const h of hs) {
+      if (h < ROLLED_FLAGS.first + ROLLED_FLAGS.clear) continue; // (the spawn is its restart)
+      hardSeen++;
+      assert.ok(fl.some((f) => f <= h + 150 && f >= h - ROLLED_FLAGS.before), `arc ${d} ${seed}: a flag within ${ROLLED_FLAGS.before} px of way before the hard node at ${Math.round(h)} (flags ${fl.map(Math.round)})`);
+    }
+    assert.ok(fl[0] >= ROLLED_FLAGS.first && fl[0] <= ROLLED_FLAGS.max);
+    for (let k = 1; k < fl.length; k++) assert.ok(fl[k] - fl[k - 1] >= ROLLED_FLAGS.min && fl[k] - fl[k - 1] <= ROLLED_FLAGS.max, `arc ${d} ${seed}: ${Math.round(fl[k] - fl[k - 1])} px of way between flags`);
+    assert.ok(R.length - fl[fl.length - 1] <= ROLLED_FLAGS.last);
+    // (by x this tower's flags would be 0-1,100 px apart, and the rule unreadable: the way is what is measured)
+    assert.ok(R.length > 10 * st.config.levelWidth);
+  }
+  assert.ok(hardSeen >= 40, `hard nodes judged: ${hardSeen}`);
+});
+
+test('along the climb: no animal in the opening seconds of the way, and the quiet stretches are px of way', () => {
+  let foes = 0;
+  for (const d of SETTINGS) for (const seed of SEEDS) {
+    const st = up(seed, d);
+    const R = st.gen2.tower!.route;
+    const open = 5 * st.gen2.budget.walkSpeed;
+    for (const e of st.enemies) {
+      foes++;
+      assert.ok(routeAt(R, e.x, e.y) >= open, `up ${d} ${seed}: the animal at x ${e.x}, y ${e.y} is ${Math.round(routeAt(R, e.x, e.y))} px along the way (the opening: ${Math.round(open)})`);
+    }
+    for (const [a, b] of st.gen2.barren) assert.ok(a >= 0 && b <= R.length + 1 && b > a, `up ${d} ${seed}: the quiet stretch ${a}-${b} is on the way (0-${Math.round(R.length)})`);
+  }
+  assert.ok(foes >= 3, `animals judged: ${foes}`);
 });
 
 test("the flag rule's numbers are Matt's on a tower too (ROLLED_FLAGS, the one definition)", () => {

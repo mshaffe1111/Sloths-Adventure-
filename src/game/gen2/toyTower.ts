@@ -37,7 +37,8 @@ export const vineUp: SectionTemplate = {
   pieces: [
     { key: 'foot', shape: 'branch', w: [240, 300], place: { kind: 'start' } },
     { key: 'vine', shape: 'vine', w: 0, place: { kind: 'climb', on: 'foot', at: [0.75, 0.85], h: [230, 300] } },
-    { key: 'top', shape: 'branch', w: [240, 300], place: { kind: 'over', on: 'vine', at: 0, dy: 0 }, landing: true },
+    // (`main`: a bough laid `over` a vine is off the road unless it says so, and only a main piece holds a flag or an animal)
+    { key: 'top', shape: 'branch', w: [240, 300], place: { kind: 'over', on: 'vine', at: 0, dy: 0 }, landing: true, main: true },
   ],
   entry: { piece: 'foot', kind: 'ledge' },
   exit: { piece: 'top', kind: 'ledge' },
@@ -149,15 +150,34 @@ export const downManifest: WorldManifest = { ...base, name: 'Toy tower, down', s
 export const upKit: WorldKit = { manifest: upManifest, emit: {} };
 export const downKit: WorldKit = { manifest: downManifest, emit: {} };
 
-/** the fixture tower with a ROLLED graph, as a designed level has (level.md: one graph, a brief keyed by the stage's id, which the
- *  test names): the arc (teach, practise, a test, a twist, a signature and a finale, rests between), laid up */
+/** the fixture tower with a ROLLED graph, as a designed level has (level.md: ONE graph, one brick a beat, a brief keyed by the
+ *  stage's id, which the test names): the arc (teach, practise, flow, a test, a twist, a signature and a combine, rests between),
+ *  laid up. Each brick is one of the toy shapes with its own job and content type, so every roll is the same beats in order */
 export const ARC_CODE = 'A T P M R X R W R S R C E';
+const brick = (of: SectionTemplate, id: string, job: NonNullable<SectionTemplate['jobs']>[number], content: NonNullable<SectionTemplate['content']>, more: Partial<SectionTemplate> = {}): SectionTemplate => {
+  const { teaches: _t, uses: _u, ...plain } = of;
+  return { ...plain, id, name: id, jobs: [job], content, phases: ['ki', 'sho', 'ten', 'ketsu'], ...more };
+};
+export const ARC_BRICKS: SectionTemplate[] = [
+  brick(vineUp, 'arc-teach', 'teach', 'climb', { teaches: 'climb' }),
+  brick(hopsUp, 'arc-practise', 'practise', 'floating'),
+  brick(stretch, 'arc-flow', 'flow', 'ground', { sockets: stretch.sockets.filter((k) => k.role !== 'enemy' && k.role !== 'tip') }),
+  brick(vineUp, 'arc-test', 'test', 'climb'),
+  brick(hopsUp, 'arc-twist', 'twist', 'floating'),
+  brick(stretch, 'arc-signature', 'signature', 'ground', { sockets: stretch.sockets.filter((k) => k.role !== 'tip') }),
+  brick(hopsUp, 'arc-combine', 'combine', 'hazard'),
+];
 export const arcKit = (stageId: string): WorldKit => ({
   manifest: {
     ...base,
     name: 'Toy tower, an arc',
-    sections: [landing, vineUp, hopsUp, stretch],
-    graphs: { list: [{ id: 'tower-arc', archetype: 'ascent', code: ARC_CODE }], briefs: { [stageId]: { ends: 'quiet', trend: 'up', branching: 'none' } } },
+    sections: [landing, ...ARC_BRICKS],
+    tips: { ...base.tips, climb: "Hold up to climb. (new, needs Matt's approval)" },
+    graphs: {
+      list: [{ id: 'tower-arc', archetype: 'ascent', code: ARC_CODE }],
+      briefs: { [stageId]: { ends: 'quiet', trend: 'up', branching: 'none', teaches: ['climb'], deal: { climb: 29, floating: 29, ground: 28, hazard: 14 }, dealExact: true } },
+      chunkSeconds: 30,
+    },
   },
   emit: {},
 });

@@ -172,24 +172,42 @@ export function routeOf(flow: Flow, sections: ReadonlyArray<{ uid: string; entry
 }
 
 /**
- * How far along the route a place is (px from the spawn). A run: its x from the spawn, exactly. A tower: the leg it lies in (the one
- * whose stretch holds it: inside its x span and between its entry's and its exit's heights, the nearest by height when two storeys
- * share the x), then the px walked and climbed from that leg's entry, never past the leg's end.
+ * How far along the route a place is (px from the spawn). A run: its x from the spawn, exactly. A tower: the leg it lies in, then the
+ * px walked and climbed from that leg's entry, never past the leg's end. The leg is the one whose stretch is nearest: by HEIGHT
+ * first (how far the place lies over or under the heights the leg spans: a storey is a turn from the next), then by how far it lies
+ * off the leg's ends in x; so the spawn, a run-on to a wall or a catch at a storey's height belongs to that storey, never to the one
+ * over it that happens to share its x. A place before a leg's entry (the spawn before the first section, the ledge a turn's vine
+ * stands on) is that far short of the leg's start, never short of the leg before.
  */
 export function routeAt(route: Route, x: number, y: number): number {
   if (!vertical(route.flow)) return x - route.spawn.x;
-  let best: RouteLeg | undefined, bestD = Infinity;
-  for (const g of route.legs) {
-    if (x < g.x0 - 60 || x > g.x1 + 60) continue;
+  let k = -1, bestD = Infinity;
+  route.legs.forEach((g, i) => {
     const lo = Math.min(g.entry.y, g.exit.y), hi = Math.max(g.entry.y, g.exit.y);
-    const d = y < lo ? lo - y : y > hi ? y - hi : 0;
-    if (d < bestD) { best = g; bestD = d; }
-  }
-  if (!best) return y <= Math.min(route.spawn.y, route.exit.y) === (route.flow === 'up') ? route.length : 0;
+    const dy = y < lo ? lo - y : y > hi ? y - hi : 0;
+    const dx = x < g.x0 ? g.x0 - x : x > g.x1 ? x - g.x1 : 0;
+    const d = dy * 8 + dx;
+    if (d < bestD) { k = i; bestD = d; }
+  });
+  if (k < 0) return 0;
+  const best = route.legs[k];
+  const way = best.exit.x < best.entry.x ? -1 : 1;
+  const short = (best.entry.x - x) * way;
+  if (short > 0) return Math.max(k ? route.legs[k - 1].s0 + route.legs[k - 1].len : 0, best.s0 - short);
   const lo = Math.min(best.entry.y, best.exit.y), hi = Math.max(best.entry.y, best.exit.y);
   const dx = Math.min(Math.abs(best.exit.x - best.entry.x), Math.abs(Math.max(best.x0, Math.min(best.x1, x)) - best.entry.x));
   const dy = Math.abs(Math.max(lo, Math.min(hi, y)) - best.entry.y);
   return best.s0 + Math.min(best.len, dx + dy);
+}
+
+/**
+ * A stage's flags in the order he meets them: along the route where the stage has one (a gen2 tower), by x on any other stage, as
+ * ever. What "every second flag" means for the hearts laid by the flags (stageGenerator.ts): in a tower x runs both ways, and a
+ * sort by x picks flags from any storey.
+ */
+export function flagsInOrder<T extends { x: number; y: number }>(stage: object, flags: readonly T[]): T[] {
+  const route = (stage as { gen2?: { tower?: { route?: Route } } }).gen2?.tower?.route;
+  return [...flags].sort(route ? (a, b) => routeAt(route, a.x, a.y) - routeAt(route, b.x, b.y) : (a, b) => a.x - b.x);
 }
 
 // ───────────────────────────── the tower's verdicts ─────────────────────────────
@@ -382,12 +400,20 @@ export function towerFalls(flow: 'up' | 'down', platforms: readonly Platform[], 
 export interface FlagRule { first: number; min: number; max: number; last: number; before: number; clear: number }
 export interface RouteFlag { x: number; y: number; s: number }
 
-/** is `b` further on than `a` by the tower's travel (higher going up, lower going down), by a clear step? The engine takes a flag
- *  only when it is further on than the one he holds (stageModes.ts `further`: by height), so two flags never share a height */
-const furtherOn = (flow: Flow, a: { y: number }, b: { y: number }): boolean => (flow === 'up' ? b.y <= a.y - 12 : b.y >= a.y + 12);
+/**
+ * Is flag `cp` further on than the place he holds (`cur`: a flag, or the spawn)? On a stage with a route (a gen2 tower) it is read
+ * ALONG THE ROUTE, the px of way to each: x runs both ways in a tower and two flags may stand on one storey, where height (the
+ * travel mode's own answer, stageModes.ts) calls neither further. Any other stage: its travel mode's answer, as ever. The engine
+ * asks this when he touches a flag and when a run is resumed at one (engine.ts); levelCheck asks it of a tower's flag order.
+ */
+export function flagFurther(stage: object, mode: { further(cp: { x: number; y: number }, cur: { x: number; y: number }): boolean }, cp: { x: number; y: number }, cur: { x: number; y: number }): boolean {
+  const route = (stage as { gen2?: { tower?: { route?: Route } } }).gen2?.tower?.route;
+  return route ? routeAt(route, cp.x, cp.y) > routeAt(route, cur.x, cur.y) + 1 : mode.further(cp, cur);
+}
 
 /**
- * A tower's flags, Matt's rule measured ALONG THE ROUTE (D49; never x, which runs both ways in a tower): a flag before each hard
+ * A tower's flags, Matt's rule measured ALONG THE ROUTE (D49; never x, which runs both ways in a tower; never height, which two
+ * flags on one storey share: the engine takes them in the route's order, flagFurther): a flag before each hard
  * node (within `before` px of way ahead of it, `clear` or more ahead), none closer than `min` to the one before (`first` to the
  * start), then every span past `max` (`last` before the totem) split at the furthest spot in reach. `spots`: the clear runs of
  * wide main pieces a flag may stand on; `hard`: the route px where each hard node begins. Returned in the order he meets them.
@@ -404,10 +430,9 @@ export function towerFlags(route: Route, spots: ReadonlyArray<{ x0: number; x1: 
   }
   cands.sort((a, b) => a.s - b.s);
   const flags: RouteFlag[] = [];
-  const fits = (c: RouteFlag) => flags.every((f) => (f.s < c.s ? furtherOn(route.flow, f, c) : furtherOn(route.flow, c, f)));
   const add = (c: RouteFlag) => { flags.push(c); flags.sort((a, b) => a.s - b.s); };
   const bestIn = (lo: number, hi: number): RouteFlag | undefined => {
-    for (let k = cands.length - 1; k >= 0; k--) if (cands[k].s <= hi && cands[k].s >= lo && fits(cands[k])) return cands[k];
+    for (let k = cands.length - 1; k >= 0; k--) if (cands[k].s <= hi && cands[k].s >= lo) return cands[k];
     return undefined;
   };
   for (const h of hard) {
@@ -442,7 +467,6 @@ export function towerFlagBreaches(route: Route, flags: ReadonlyArray<{ x: number
   for (let k = 1; k < fs.length; k++) {
     const g = fs[k].s - fs[k - 1].s;
     if (g < rule.min || g > rule.max) out.push(`flags: ${R(g)} px of way apart after the flag at x ${R(fs[k - 1].x)}, y ${R(fs[k - 1].y)} (${rule.min}-${rule.max})`);
-    if (!furtherOn(route.flow, fs[k - 1], fs[k])) out.push(`flags: the flag at x ${R(fs[k].x)}, y ${R(fs[k].y)} is no ${route.flow === 'up' ? 'higher' : 'lower'} than the one before it (the engine would never take it)`);
   }
   for (const h of hard) if (h.s >= rule.first + rule.clear && !fs.some((f) => f.s <= h.s + 150 && f.s >= h.s - rule.before)) out.push(`flags: none before the hard node ${h.id}, ${R(h.s)} px along the way (within ${rule.before} px)`);
   if (route.length - fs[fs.length - 1].s > rule.last) out.push(`flags: the last ${R(route.length - fs[fs.length - 1].s)} px of way from the exit (within ${rule.last})`);
