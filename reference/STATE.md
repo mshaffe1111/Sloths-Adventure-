@@ -734,3 +734,6 @@ lines); Matt sees them in the release.
   Opus MAX (session_01FhBbYMS2AxdkCEW5hmX7XK, t-eng-ascent, base t-int-2@465023ef, stop 2 AM). Fable after the reset: DIFF-ALGO (packet
   2026-11-13/DIFF-ALGO.md: research + design the hardness meter, calibrated to Matt's anchors, a read-only prototype) and the 1-5 idea
   list C; then D15 designs 1-5.
+- 2026-11-12 8:33 PM ET: INT-2 full suite on 465023ef PASS (3,119 tests, 3,117 pass, 0 fail, 2 TODO incl. the bottomless-wall check). F13's
+  yield red was stale (its base 1480e843 predates Y2's fix a5bff66c, merged at d9563016). Every Step 3 gate green on the link's head
+  except buildcheck (R-165.163, known; INT-2 measuring 5 heads now). The published link is fully gated.
