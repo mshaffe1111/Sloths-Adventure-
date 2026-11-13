@@ -124,6 +124,9 @@ export interface PlayerState {
   facing: 1 | -1;
   grounded: boolean;
   climbing: boolean;
+  /** on a draped pair of strands (Vine.pair): the gap between them while he climbs it, else 0 or unset (heroClips.ts: longer pulls,
+   *  a sway from strand to strand) */
+  climbPair?: number;
   climbingVineId?: number;
   isVineSwinging?: boolean;
   /** hanging from a rope (shimmy) */
@@ -431,6 +434,19 @@ export interface Vine {
   kit?: boolean;
   /** not there now (a ladder still rolled up, a sapling bent over): it cannot be grabbed */
   off?: boolean;
+  /**
+   * a climb (`tree_climb`) that is ONE liana draped over a bough, its two ends hanging side by side this many px apart (1-4.md piece 4;
+   * `x` is between them): one grab takes both strands, from beside either (vinePair.ts climbReach). Unset: a single climb
+   */
+  pair?: number;
+  /** how fast a climb is climbed, up or down (px/s; vinePair.ts climbSpeedOf). Unset: CLIMB_SPEED, 220, every single climb */
+  climbSpeed?: number;
+  /**
+   * a climb (`tree_climb`) in a vine field (1-4.md, R-165.177; vineField.ts): a push toward a field vine in reach takes it in the other
+   * hand, again lets go of the old one (Matt's rule); one hand slides down, two climb up quicker. `true`: the field's default numbers
+   * (vineField.ts FIELD_FEEL), or the piece's own. Unset: a climb as it always was
+   */
+  field?: true | Partial<import('./vineField.ts').FieldFeel>;
 }
 
 /** A rope stretched across a gap. Pokey can hang from it and shimmy along it once he has learned the skill (see rope.ts). */
