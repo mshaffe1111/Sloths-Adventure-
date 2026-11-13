@@ -100,9 +100,17 @@ class FakeInput {
 }
 
 const levels = generateAllLevels();
+/** TEST-ONLY: a fixture stage's config by its id (a stage that is no stage of the game, e.g. gen2/toyTower.ts), found by levelConfig
+ *  while `fn` runs, so the bots (tools/inspect) can be flown on it by id. A fixture never stands in for a stage of the game */
+const fixtures = new Map<string, LevelConfig>();
+export function withFixtureConfig<T>(cfg: LevelConfig, fn: () => T): T {
+  if (levels.some((l) => l.id === cfg.id)) throw new Error(`withFixtureConfig: ${cfg.id} is a stage of the game`);
+  fixtures.set(cfg.id, cfg);
+  try { return fn(); } finally { fixtures.delete(cfg.id); }
+}
 export const levelConfig = (id: string): LevelConfig => {
   // (the extra stages, 4-D and 5-M, are only in the list in a browser: extraStages.ts)
-  const c = levels.find((l) => l.id === id) ?? EXTRA_STAGES.map((e) => e.config()).find((l) => l.id === id) ?? (id === KIT_STAGE_ID ? kitStageConfig() : undefined);
+  const c = fixtures.get(id) ?? levels.find((l) => l.id === id) ?? EXTRA_STAGES.map((e) => e.config()).find((l) => l.id === id) ?? (id === KIT_STAGE_ID ? kitStageConfig() : undefined);
   if (!c) throw new Error(`no stage ${id}`);
   return { ...c, unlocked: true };
 };

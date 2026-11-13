@@ -8,7 +8,7 @@
  *
  * Nothing here names a stage, a seed or a place: a tower's width is its world's data (WorldManifest.tower).
  */
-import { PHYS, DOUBLE_RISE } from '../physics.ts';
+import { PHYS, DOUBLE_RISE, reachJump } from '../physics.ts';
 import type { Platform, Vine } from '../types.ts';
 import type { LocalLayout } from './pipeline.ts';
 
@@ -52,6 +52,31 @@ export const TOWER = {
   totem: 250,
 } as const;
 
+/** the least a bough's top lies from the top of other wood it shares an x with: its thickness, his body and a margin (he walks under
+ *  it; it is never a bough across his chest) */
+const HEAD = 24 + BODY_H + 12;
+
+/**
+ * His jump, read GENEROUSLY (whatever the real engine can do, this says yes to): what the tower's own rules ask "could a jump get
+ * there?" with, so a storey is never skipped. `up`: the highest a double jump climbs onto a lip (flown 214 px, reach.md §2; the
+ * closed form DOUBLE_RISE is the apex of his feet), with a margin; `slack`: what the closed-form reach reads short across (reach.md
+ * §4: 57-98 px for the double).
+ */
+export const LEAP = { up: Math.ceil(DOUBLE_RISE) + 36, slack: 100 } as const;
+type Box = { x: number; y: number; width: number };
+/** could a jump (a double, a fall included) take him from standing on `a` to standing on `b`? Generous: see LEAP */
+export function leaps(a: Box, b: Box): boolean {
+  const rise = a.y - b.y;
+  if (rise > LEAP.up) return false;
+  const gap = Math.max(0, b.x - (a.x + a.width), a.x - (b.x + b.width));
+  return gap <= Math.max(0, reachJump(Math.max(-400, Math.min(rise, 150)), true)) + LEAP.slack;
+}
+
+/** a tower's soft pit: where a section's gap gets a catch bough (lip to lip, `hop` under its lower lip), its top's local y; undefined:
+ *  none (a water gap, a slot too narrow to fall in, or a step taller than a hop, whose lower ledge is the catch already) */
+export const gapCatchY = (g: { x0: number; x1: number; y: number; lo: number; water?: boolean }): number | undefined =>
+  !g.water && g.x1 - g.x0 >= 50 && g.lo - g.y <= TOWER.hop + 20 ? g.lo + TOWER.hop : undefined;
+
 /** the seconds a free fall of `px` takes (the engine's fall gravity, from rest) */
 export const fallSeconds = (px: number): number => Math.sqrt((2 * Math.max(0, px)) / PHYS.gravDown);
 
@@ -79,16 +104,19 @@ export const pieceThick = (p: { shape: string; h: number }, bankH: number): numb
   p.shape === 'bank' ? bankH : p.shape === 'branch' ? 24 : p.shape === 'stone' ? 22 : p.shape === 'hollow' ? 60 : Math.max(0, p.h);
 
 /** a local layout's extent about its entry: the x it covers, how far its pieces reach under its entry (`low`, px down, 0 or more:
- *  undersides and vine feet) and over it (`high`, px up, 0 or more: tops and vine tops) */
-export function localExtent(L: LocalLayout, bankH: number): { x0: number; x1: number; low: number; high: number } {
-  let x0 = 0, x1 = 0, low = 0, high = 0;
+ *  undersides, vine feet and its gaps' catch boughs; `hang`: the lowest catch's top) and over it (`high`, px up, 0 or more) */
+export function localExtent(L: LocalLayout, bankH: number): { x0: number; x1: number; low: number; high: number; hang: number } {
+  let x0 = 0, x1 = 0, low = 0, high = 0, hang = 0;
+  // (its gaps' catch boughs are its own wood: a storey laid over other wood keeps its clearance from their undersides too (`low`),
+  // and a turn lifts the lowest one's top (`hang`, px under its entry) a turn over the ledge he leaves, so no catch is a rung)
+  for (const g of L.gaps) { const cy = gapCatchY(g); if (cy !== undefined) { hang = Math.max(hang, cy); low = Math.max(low, cy + 24); } }
   for (const p of L.pieces) {
     x0 = Math.min(x0, p.x);
     x1 = Math.max(x1, p.x + (p.hang ? 0 : p.w));
     low = Math.max(low, p.hang ? p.y + p.h : p.y + pieceThick(p, bankH));
     high = Math.max(high, -p.y);
   }
-  return { x0, x1, low, high };
+  return { x0, x1, low, high, hang };
 }
 
 /**
@@ -196,36 +224,50 @@ export function openEnds(platforms: readonly Platform[], floorY: number, most: n
 
 /**
  * The catch boughs a tower's open ends are owed (each `[x, y, w]`, a plain bough): under every end whose fall is past the tower's
- * limit (going up TOWER.fall; going down TOWER.see, where the bough is the landing he can see).
- *   - An end near a side of the tower runs on into the wall at its own height: no slot is left between a storey and the wall.
- *   - A BRIDGE where the storey under it has wood in reach (a storey's clearance down or more, within the limit): that wood run on,
- *     at its own height, out under the open end, so a miss costs one storey and he walks back onto the way. Next to a vine's top
- *     it starts a hop past the vine, never over it.
- *   - else a bough of its own, one storey's clearance down, lowered (never past the limit) while other wood stands within a jump
- *     over it: no jump from a catch reaches back up, so a catch is never a shortcut.
- * Laid until no open end is left, or a pass adds none (towerFalls then names what is left).
+ * limit (going up TOWER.fall; going down TOWER.see, where the bough is the landing he can see). In this order:
+ *   1. An end near a side of the tower runs on into the wall at its own height: no slot is left between a storey and the wall.
+ *   2. A BRIDGE where the storey under it has wood in reach (a body's height down or more, within the limit): that wood run on,
+ *      at its own height, out under the open end, so a miss costs one storey and he walks back onto the way. Next to a vine's top
+ *      it starts a hop past the vine, never over it.
+ *   3. Going up, the piece itself RUN ON to the nearer wall at its own height (no fall is left at that end).
+ *   4. else a bough of its own under the end, lowered (never past the limit) until it is laid fairly.
+ * Laid fairly (going up): `level` says which storey a piece is of (how many turns were laid before it). No bough lets a jump climb
+ * a storey: none that wood of a lower storey could jump onto (LEAP, read generously) while a jump from it reaches wood of a higher
+ * one. And none lies across other wood with less than his body between them (HEAD), nor over a jump its storey was laid with.
+ * Laid until no open end is left, or a pass adds none (towerFalls then names what is left, and the roll is refused).
  */
-export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[], vines: readonly Vine[], floorY: number, width: number, gaps: ReadonlyArray<{ x0: number; x1: number; y: number }> = []): Array<{ x: number; y: number; w: number }> {
+export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[], vines: readonly Vine[], floorY: number, width: number, gaps: ReadonlyArray<{ x0: number; x1: number; y: number }> = [], level: (p: Platform) => number = () => 0): Array<{ x: number; y: number; w: number; level: number }> {
   const most = flow === 'up' ? TOWER.fall : TOWER.see;
   const all: Platform[] = [...platforms];
-  const out: Array<{ x: number; y: number; w: number }> = [];
-  const put = (x0: number, x1: number, y: number) => {
-    const c = { x: Math.round(x0), y: Math.round(y), w: Math.round(x1 - x0) };
+  const lv = new Map<Platform, number>(platforms.map((p) => [p, level(p)]));
+  const out: Array<{ x: number; y: number; w: number; level: number }> = [];
+  const put = (x0: number, x1: number, y: number, L: number) => {
+    const c = { x: Math.round(x0), y: Math.round(y), w: Math.round(x1 - x0), level: L };
     out.push(c);
-    all.push({ id: -1 - out.length, x: c.x, y: c.y, width: c.w, height: 24, type: 'solid' } as Platform);
+    const p = { id: -1 - out.length, x: c.x, y: c.y, width: c.w, height: 24, type: 'solid' } as Platform;
+    all.push(p);
+    lv.set(p, L);
   };
-  // (a bough laid at y across [x0, x1] is a STEP UP, a shortcut, when wood stands within a double jump under it and other wood
-  // within a double jump over it: a storey is a storey's clearance from the next, and a bough between the two would join them.
-  // Wood in its own body is in its way too. `but`: the wood it is laid as part of)
-  const reach = Math.ceil(DOUBLE_RISE) + 20;
-  const crowded = (x0: number, x1: number, y: number, but: ReadonlyArray<Platform>) => {
-    const near = all.filter((q) => !but.includes(q) && q.type === 'solid' && q.x < x1 + 40 && q.x + q.width > x0 - 40);
-    if (near.some((q) => q.x < x1 && q.x + q.width > x0 && q.y < y + 24 && q.y + q.height > y && Math.abs(q.y - y) > 1)) return true;
-    // (going down a bough is only ever a way on, which every open end is: no step to guard)
-    return flow === 'up' && near.some((q) => q.y < y - 30 && q.y > y - reach) && near.some((q) => q.y > y + 30 && q.y < y + reach);
+  const solid = (but: ReadonlyArray<Platform>) => all.filter((q) => !but.includes(q) && q.type === 'solid');
+  // (wood in its way: across other wood at another height with less than his body between the two; `but`: the wood it is laid as
+  // part of. Going down the old rule stands: only wood in the bough's own body)
+  const cramped = (x0: number, x1: number, y: number, but: ReadonlyArray<Platform>) => solid(but).some((q) => q.x < x1 && q.x + q.width > x0 && Math.abs(q.y - y) > 1
+    && (flow === 'up' ? Math.abs(q.y - y) < HEAD : q.y < y + 24 && q.y + q.height > y));
+  // (a storey climbed by a jump: the bough, of storey `L` (or of a lower one, if wood of a lower one could jump onto it), with wood of
+  // a higher storey inside a jump of it. Going down a bough is only ever a way on: nothing to guard)
+  /** the storey a bough at (x0-x1, y) is of: `L`, or a lower one if wood of a lower one could jump onto it; -1: it climbs a storey */
+  const storeyAt = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => {
+    if (flow !== 'up') return L;
+    const box = { x: x0, y, width: x1 - x0 };
+    const wood = solid(but);
+    let mine = L;
+    for (const q of wood) if (lv.get(q)! < mine && leaps(q, box)) mine = lv.get(q)!;
+    return wood.some((q) => lv.get(q)! > mine && leaps(box, q)) ? -1 : mine;
   };
-  // (a bridge never closes a jump the storey it joins was laid with: a section's gap at its height keeps its hop)
+  // (a bridge or a run-on never closes a jump the storey it joins was laid with: a section's gap at its height keeps its hop)
   const overGap = (x0: number, x1: number, y: number) => gaps.some((g) => g.x0 < x1 - 2 && g.x1 > x0 + 2 && Math.abs(g.y - y) <= 100);
+  /** laid fairly: the storey it is of (storeyAt), or -1 when it is in the way or climbs a storey */
+  const fair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => (cramped(x0, x1, y, but) ? -1 : storeyAt(x0, x1, y, L, but));
   for (let pass = 0; pass < 10; pass++) {
     const ends = openEnds(all, floorY, most, width);
     if (!ends.length) break;
@@ -233,13 +275,15 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
     for (const e of ends) {
       // (an earlier bough of this pass may already catch it)
       if (catchUnder(all, e.x, e.p.y, most) !== undefined) continue;
-      // (an end near a side of the tower: the piece runs on into the wall, at its own height, so no slot is left to fall down)
+      const Le = lv.get(e.p) ?? 0;
+      const leftEnd = e.x < e.p.x;
+      // 1. (an end near a side of the tower: the piece runs on into the wall, at its own height, so no slot is left to fall down)
       if (e.x < TOWER.wall + 40 || e.x > width - TOWER.wall - 40) {
-        if (e.x < e.p.x) put(0, e.p.x, e.p.y); else put(e.p.x + e.p.width, width, e.p.y);
+        if (leftEnd) put(0, e.p.x, e.p.y, Le); else put(e.p.x + e.p.width, width, e.p.y, Le);
         added++;
         continue;
       }
-      // (wood under him from a body's height down: wood nearer than a storey is his own storey's, a jump back up to where he fell)
+      // 2. (wood under him from a body's height down: wood nearer than a storey is his own storey's, a jump back up to where he fell)
       const lo = e.p.y + BODY_H + 12, hi = Math.min(e.p.y + most, floorY - 1);
       const gapTo = (q: Platform) => (e.x < q.x ? q.x - e.x : e.x - (q.x + q.width));
       const anchor = all.filter((q) => q !== e.p && q.type === 'solid' && q.y >= lo && q.y <= hi && (e.x < q.x || e.x > q.x + q.width)).sort((a, b) => gapTo(a) - gapTo(b) || a.y - b.y)[0];
@@ -251,16 +295,60 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
         const near = vine ? tip + (left ? -1 : 1) * (TOWER.hop + 30) : tip;
         const far = left ? Math.max(24, e.x - TOWER.catchW / 2) : Math.min(width - 24, e.x + TOWER.catchW / 2);
         const x0 = Math.min(near, far), x1 = Math.max(near, far);
-        if (x1 - x0 >= 60 && !crowded(x0, x1, anchor.y, [anchor]) && !overGap(x0, x1, anchor.y)) { put(x0, x1, anchor.y); added++; continue; }
+        const L = x1 - x0 >= 60 && !overGap(x0, x1, anchor.y) ? fair(x0, x1, anchor.y, lv.get(anchor) ?? 0, [anchor]) : -1;
+        if (L >= 0) { put(x0, x1, anchor.y, L); added++; continue; }
       }
+      // 3. (going up: the piece itself run on to the wall on that side)
+      if (flow === 'up') {
+        const [x0, x1] = leftEnd ? [0, e.p.x] : [e.p.x + e.p.width, width];
+        const L = overGap(x0, x1, e.p.y) ? -1 : fair(x0, x1, e.p.y, Le, [e.p]);
+        if (L >= 0) { put(x0, x1, e.p.y, L); added++; continue; }
+      }
+      // 4. (a bough of its own under the end)
       const x0 = Math.max(24, Math.min(width - 24 - TOWER.catchW, e.x - TOWER.catchW / 2));
-      let y = Math.min(e.p.y + TOWER.clear + 30, floorY - TOWER.hop);
-      while (crowded(x0, x0 + TOWER.catchW, y, []) && y + 20 <= e.p.y + most - 4) y += 20;
-      if (y > e.p.y + most || crowded(x0, x0 + TOWER.catchW, y, [])) continue;
-      put(x0, x0 + TOWER.catchW, y);
-      added++;
+      // (the highest fair height under the end, never past the limit: every 20 px, and the height of any wood it would lie across,
+      // where it is that wood run on)
+      const top = Math.min(e.p.y + (flow === 'up' ? 40 : TOWER.clear + 30), floorY - TOWER.hop), last = e.p.y + most - 4;
+      const ys: number[] = [];
+      for (let y = top; y <= last; y += 20) ys.push(y);
+      for (const q of all) if (q.type === 'solid' && q.x < x0 + TOWER.catchW && q.x + q.width > x0 && q.y > top && q.y <= last) ys.push(q.y);
+      for (const y of ys.sort((a, b) => a - b)) {
+        const L = fair(x0, x0 + TOWER.catchW, y, Le, []);
+        if (L < 0) continue;
+        put(x0, x0 + TOWER.catchW, y, L);
+        added++;
+        break;
+      }
     }
     if (!added) break;
+  }
+  return out;
+}
+
+/**
+ * A tower's storeys skipped, each by name (empty: none): going up, for every turn, the wood at or under the ledge he leaves and
+ * everything a jump reaches from it (LEAP, read generously; no vine) holds nothing as high as the storey the turn climbs to. So the
+ * vine is the only way up, and the stage is played storey by storey in the order it was laid (no catch bough, hop or step is a
+ * ladder). `turns`: each turn's vine x and the heights it joins. A way down is not judged here (its drops are towerFalls').
+ */
+export function towerSkips(turns: ReadonlyArray<{ x: number; from: number; to: number }>, platforms: readonly Platform[]): string[] {
+  const wood = platforms.filter((p) => p.type !== 'bouncy');
+  const out: string[] = [];
+  for (const t of turns) {
+    if (t.to >= t.from) continue;
+    const seen = new Set(wood.filter((p) => p.y >= t.from - 1));
+    const open = [...seen];
+    let hit: Platform | undefined;
+    while (open.length && !hit) {
+      const a = open.pop()!;
+      for (const b of wood) {
+        if (seen.has(b) || !leaps(a, b)) continue;
+        seen.add(b);
+        open.push(b);
+        if (b.y <= t.to + 1) { hit = b; break; }
+      }
+    }
+    if (hit) out.push(`tower: the storey at y ${Math.round(t.to)} is reached from y ${Math.round(t.from)} by jumps alone (onto the piece at x ${Math.round(hit.x)}-${Math.round(hit.x + hit.width)}, y ${Math.round(hit.y)}): the vine at x ${Math.round(t.x)} is not the only way up`);
   }
   return out;
 }

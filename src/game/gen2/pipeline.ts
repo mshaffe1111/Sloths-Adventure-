@@ -23,7 +23,7 @@ import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11 } from './verdicts.ts';
 import { PROMISES_11, realFalls } from './promises11.ts';
-import { localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, vertical } from './tower.ts';
+import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerSkips, vertical } from './tower.ts';
 import { repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
@@ -1469,6 +1469,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const TW = tower ? Math.max(M.tower?.width ?? TOWER.width, RUNWAY + 2 * TOWER.wall) : 0;
   // (a bank aloft in a tower is a slab, never a column down through the storeys under it; on an ascent's floor it is ground as ever)
   const slab = (y: number) => tower && !(flow === 'up' && y >= M.ground.y - 1);
+  // (which storey each piece is of: how many turns were laid before it; tower.ts towerCatches reads it so no catch climbs a storey)
+  const storeyOf = new Map<number, number>();
+  let storeyNow = 0;
   const mk = (x: number, y: number, w: number, shape: LocalPiece['shape'], h: number, style?: Platform['style'], crumble = false): Platform => {
     const p: Platform = crumble
       ? { id: pid++, x: R(x), y: R(y), width: CRUMBLE_TILE_W, height: CRUMBLE_H, type: 'fragile', crumbleAfter: crumbleTime(budget.stage), style: 'ruin' }
@@ -1483,6 +1486,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           ...(shape === 'hollow' ? { hollow: 'moss' as const } : {}),
         };
     platforms.push(p);
+    if (tower) storeyOf.set(p.id, storeyNow);
     return p;
   };
   const gaps: Laid['gaps'] = [];
@@ -1569,9 +1573,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   // ended: a walk on while it fits before the wall and clears what lies under (over) it; otherwise a storey over (under), a climbing
   // vine between the two, turned back the other way when the wall is too near. tower.ts has the numbers)
   let dir: 1 | -1 = 1;
-  const turns: Array<{ x: number; from: number; to: number; turned: boolean }> = [];
+  const turns: Array<{ x: number; from: number; to: number; turned: boolean; vine: Vine }> = [];
   let runouts = 0;
-  const towerJoin = (ext: { x0: number; x1: number; low: number; high: number }, opts: { keepFloor?: boolean; toFloor?: boolean; seam: Platform[]; what: string }): { ox: number; oy: number; way: 1 | -1; climbed: number } => {
+  const towerJoin = (ext: { x0: number; x1: number; low: number; high: number; hang?: number }, opts: { keepFloor?: boolean; toFloor?: boolean; seam: Platform[]; what: string }): { ox: number; oy: number; way: 1 | -1; climbed: number } => {
     const usable = TW - 2 * TOWER.wall;
     const ahead = ext.x1, behind = -ext.x0;
     if (ahead + behind > usable) throw new Error(`gen2 ${budget.id}: ${opts.what} is ${R(ahead + behind)} px wide, wider than the tower's storeys (${usable})`);
@@ -1605,12 +1609,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     const ox = tipOf(way);
     const a = Math.min(ox + way * ext.x0, ox + way * ext.x1), b = Math.max(ox + way * ext.x0, ox + way * ext.x1);
     const lim = limitAt(a, b);
-    const oy = R(flow === 'up' ? Math.min(cur.y - TOWER.turn, lim) : Math.max(cur.y + TOWER.turn, lim));
+    // (going up, its gaps' catch boughs hang under its entry: they too lie a turn over the ledge he leaves, so none is a rung up to it)
+    const oy = R(flow === 'up' ? Math.min(cur.y - TOWER.turn - (ext.hang ?? 0), lim) : Math.max(cur.y + TOWER.turn, lim));
     // the vine between the two: going up it stands on the ledge he leaves, its top at the new storey's near end; going down it hangs
     // just past the tip of the ledge he leaves, down to the new storey (clearClimbs moves each off its ledge's face)
     const v: Vine = { id: vines.length + 1, x: R(flow === 'up' ? ox : cur.x), topY: Math.min(oy, R(cur.y)), bottomY: Math.max(oy, R(cur.y)), swaySpeed: 1.1, swayPhase: (ox * 0.013) % 6.28, vineType: 'tree_climb' };
     vines.push(v);
-    turns.push({ x: v.x, from: R(cur.y), to: oy, turned: way !== dir });
+    turns.push({ x: v.x, from: R(cur.y), to: oy, turned: way !== dir, vine: v });
+    storeyNow = turns.length;
     return { ox, oy, way, climbed: Math.abs(oy - cur.y) };
   };
   const sections: PlacedSection[] = [];
@@ -2055,7 +2061,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         } else if (tower && !g.water) {
           // (a tower's soft pit: a catch bough under the gap, one hop under its lower lip, lip to lip, when its lips are a hop apart or
           // less; under a taller step the lower ledge is the catch already)
-          if (g.x1 - g.x0 >= 50 && g.lo - g.y <= TOWER.hop + 20) { const c = mk(g0.x0, oy + g.lo + TOWER.hop, g0.x1 - g0.x0, 'branch', 0); placed.seam.push(c); }
+          const cy = gapCatchY(g);
+          if (cy !== undefined) placed.seam.push(mk(g0.x0, oy + cy, g0.x1 - g0.x0, 'branch', 0));
         } else if (!g.water && FR?.catchDrop) {
           const before = platforms.length;
           // (under the gap's LOWER lip, as a join's is: hung under the upper one it was a step down onto the lower bough, Roll A 11-05)
@@ -2187,8 +2194,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       shrine = mk(at.way > 0 ? at.ox : at.ox - TOWER.summit, at.oy, TOWER.summit, 'bank', 0);
       const low = platforms.filter((q) => q.y >= M.ground.y - 1 && q.type === 'solid');
       const a = Math.min(...low.map((q) => q.x)), b = Math.max(...low.map((q) => q.x + q.width));
+      storeyNow = 0;
       if (b < TW) mk(b, M.ground.y, TW - b, 'bank', 0);
       if (a > 0) mk(0, M.ground.y, a, 'bank', 0);
+      storeyNow = turns.length;
     } else {
       floorY = at.oy;
       shrine = mk(0, at.oy, TW, 'bank', 0);
@@ -2197,7 +2206,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     // start (stageModes.ts down, rules.ts SHRINE_STOP), at every height: so the shrine stands at the far wall, where that stop is the wall)
     exitX = flow === 'down' ? TW - 20 - SHRINE_STOP : R(Math.max(TOWER.wall + 60, Math.min(TW - TOWER.wall - 60, at.ox + at.way * TOWER.totem)));
     // (the catch boughs its open ends are owed, tower.ts towerCatches: laid with the section whose piece they hang under)
-    for (const c of towerCatches(flow as 'up' | 'down', platforms, vines, floorY, TW, gaps)) {
+    for (const c of towerCatches(flow as 'up' | 'down', platforms, vines, floorY, TW, gaps, (q) => storeyOf.get(q.id) ?? 0)) {
+      storeyNow = c.level;
       const b = mk(c.x, c.y, c.w, 'branch', 0);
       (sections.find((q) => q.pieces.some((pp) => pp.platform.x < c.x + c.w && pp.platform.x + pp.platform.width > c.x && pp.platform.y < c.y && pp.platform.y > c.y - TOWER.fall)) ?? sections[sections.length - 1])?.seam.push(b);
     }
@@ -2208,6 +2218,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     exitX = R(shrine.x + 300);
   }
   clearClimbs(vines, platforms);
+  // (a turn's x is its vine's, where clearClimbs left it)
+  for (const t of turns) t.x = t.vine.x;
   // (the blocks: a teach or a test section's block pieces, as laid, for the place rule in the check)
   const nodeJob = new Map(graph.nodes.map((n) => [n.id, n.job]));
   const blocks = graph.id
@@ -2276,7 +2288,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     ...(rise.length ? { rise } : {}),
     width: tower ? TW : R(shrine.x + shrine.width + 40),
     bottom: flow === 'down' ? floorY + M.ground.bankH : baseline + shiftedDown,
-    ...(tower ? { tower: { flow, width: TW, floorY, turns, runouts } } : {}),
+    ...(tower ? { tower: { flow, width: TW, floorY, turns: turns.map(({ x, from, to, turned }) => ({ x, from, to, turned })), runouts } } : {}),
     nextId: pid,
     ...(themeShare < 1 ? { theme: M.sections.filter((t) => near.get(t.id)! < themeShare).map((t) => t.id) } : {}),
   };
@@ -3089,7 +3101,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     // (the stage's own brief, never the world's: 1-1 alone, R-165.86)
     ...(req.kit.manifest.graphs?.briefs?.[budget.id]?.softFalls ? { softFalls: true as const } : {}),
     ...hurtMeta(laid, req.kit.manifest),
-    ...(laid.tower ? { tower: { flow: laid.tower.flow, width: laid.tower.width, floorY: laid.tower.floorY, runouts: laid.tower.runouts, route: routeOf(laid.tower.flow, laid.sections, laid.spawn, laid.exit) } } : {}),
+    ...(laid.tower ? { tower: { flow: laid.tower.flow, width: laid.tower.width, floorY: laid.tower.floorY, runouts: laid.tower.runouts, turns: laid.tower.turns.map(({ x, from, to }) => ({ x, from, to })), route: routeOf(laid.tower.flow, laid.sections, laid.spawn, laid.exit) } } : {}),
     sections: laid.sections.map(({ uid, template, node, phase, tension, mirrored, x0, x1, seconds }) => ({ uid, template, node, phase, tension, mirrored, x0, x1, seconds })),
     fills: filled.fills,
     ...(laid.theme ? { theme: laid.theme } : {}),
@@ -3394,7 +3406,7 @@ function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2S
 
 /** the verdicts judged on a built rolled stage by the gates' own definitions (V19b's window, a rolled stage's flags), set on its gen2 and
  *  folded by rollErrors; Easy's Normal build gets them too, so a seed is clean on both settings or on neither (proven.test) */
-function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
+export function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
   // (R-165.61: every fall as a Drop record, and the roll's verdicts on this setting: judged on 1-1, every name notJudged elsewhere)
   st.gen2.drops = dropsOf(st, req.kit.manifest);
   st.gen2.verdicts = { ...st.gen2.verdicts, [req.difficulty]: judgedOnArcs(req.config.id) ? judgeRoll(judged11(st, req.difficulty), PROMISES_11) : NOT_JUDGED_ALL(req.difficulty) };
@@ -3420,7 +3432,8 @@ function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
     const hardAt = st.gen2.sections.flatMap((q, k) => (hardNodes.has(q.node) && !seen.has(q.node) && seen.add(q.node) ? [{ id: q.node, s: T.route.legs[k].s0 }] : []));
     const f = towerFlagBreaches(T.route, st.checkpoints ?? [], hardAt, ROLLED_FLAGS);
     if (f.length) st.gen2.flagMiss = f;
-    const falls = towerFalls(T.flow, st.platforms, T.floorY, T.width);
+    // (and, going up, no storey is climbed by jumps alone: the turn's vine is the only way, tower.ts towerSkips)
+    const falls = [...towerFalls(T.flow, st.platforms, T.floorY, T.width), ...(T.flow === 'up' ? towerSkips(T.turns, st.platforms) : [])];
     if (falls.length) st.gen2.towerMiss = falls;
   }
 }
