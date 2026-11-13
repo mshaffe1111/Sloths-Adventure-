@@ -18,7 +18,7 @@ import { drawFx, fxFrame } from './bossFx.ts';
 import { makeTintedCanvas, type Coat } from './heroTint.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { rimFor, rimOn } from './heroRim.ts';
-import { clipPick, heroClipsAreLive, heroClipsLive } from './heroClips.ts';
+import { clipPick, heroClipsAreLive, heroClipsLive, pairSway } from './heroClips.ts';
 import { drawVineHang } from './heroVine.ts';
 import { drawSwimHero } from './heroSwim.ts';
 import { drawRopeHang } from './heroRope.ts';
@@ -321,7 +321,8 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
     ctx.save();
     ctx.globalAlpha *= clip.blend;
     // (on the ground the run start's lean and the end of a turn's squeeze ride on the redrawn run too)
-    const lean = p.grounded ? ch?.rot : undefined;
+    // (and on a draped pair, the sway toward the strand the reaching hand takes: heroClips.ts pairSway)
+    const lean = p.grounded ? ch?.rot : p.climbing && p.climbPair ? pairSway(p) : undefined;
     const drew = drawStandard(ctx, p, time, { name: clip.name, bob: 0, sx: ch?.sx, rot: lean }, clip.img, clip.f);
     ctx.restore();
     if (drew) return true;

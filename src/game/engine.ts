@@ -199,6 +199,7 @@ import { FONT_UI } from './fonts.ts';
 import { withHurtFlash } from './hurtFlash.ts';
 import { shakeOffset } from './screenShake.ts';
 import { POWER_UP_SECS } from './powerUps.ts';
+import { climbReach, climbSpeedOf, rustleGap } from './vinePair.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
 const TEA_STAND = 150;
@@ -1955,7 +1956,8 @@ export class GameEngine {
 
       if (v.vineType === 'tree_climb') {
         if (v.off) continue;
-      if (Math.abs(p.x - v.x) < (p.climbing ? 60 : 54) && p.y >= v.topY - 12 && p.y <= v.bottomY + 25) {
+      // (a draped pair reaches from beside either strand: vinePair.ts climbReach)
+      if (Math.abs(p.x - v.x) < climbReach(v, p.climbing) && p.y >= v.topY - 12 && p.y <= v.bottomY + 25) {
           nearTreeVine = v;
           break;
         }
@@ -2030,21 +2032,24 @@ export class GameEngine {
       p.grounded = false;
       p.vx = 0;
       p.vy = 0;
-      p.x = nearTreeVine.x; // snap smoothly to tree trunk vine
+      p.x = nearTreeVine.x; // snap smoothly to tree trunk vine (a draped pair: between its two strands, a hand on each)
+      p.climbPair = nearTreeVine.pair ?? 0;
 
-      // Climb Up / Down
+      // Climb Up / Down, at the climb's own speed (a single 220 px/s, CLIMB_SPEED; a pair as its piece says: vinePair.ts)
+      const climbV = climbSpeedOf(nearTreeVine);
       if (this.input.state.up || this.climbAssist > 0) {
-        p.y = Math.max(nearTreeVine.topY - 4, p.y - 220 * dt);
-        // one soft grip per hand, a little uneven like real hands (every 0.18 s sounded like the audio skipping on an iPhone)
+        p.y = Math.max(nearTreeVine.topY - 4, p.y - climbV * dt);
+        // one soft grip per hand, a little uneven like real hands (every 0.18 s sounded like the audio skipping on an iPhone); a quicker
+        // climb rustles quicker in step (rustleGap)
         if (this.treeClimbAudioTimer <= 0) {
           sound.playTreeClimb();
-          this.treeClimbAudioTimer = 0.36 + Math.random() * 0.12;
+          this.treeClimbAudioTimer = rustleGap(nearTreeVine, Math.random());
         }
       } else if (this.input.state.down) {
-        p.y = Math.min(nearTreeVine.bottomY + 4, p.y + 220 * dt);
+        p.y = Math.min(nearTreeVine.bottomY + 4, p.y + climbV * dt);
         if (this.treeClimbAudioTimer <= 0) {
           sound.playTreeClimb();
-          this.treeClimbAudioTimer = 0.36 + Math.random() * 0.12;
+          this.treeClimbAudioTimer = rustleGap(nearTreeVine, Math.random());
         }
       }
 

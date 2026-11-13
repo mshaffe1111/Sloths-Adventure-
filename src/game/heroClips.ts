@@ -148,6 +148,20 @@ export const MOVE_SHEETS: Record<string, string> = {
 };
 /** the climb sheet is one full hand-over-hand cycle (left reach, right reach) over this much height */
 export const CLIMB_CYCLE_PX = 110;
+/** on a draped pair (Vine.pair, 1-4.md piece 4) each pull is a long arm's reach, a strand a hand: the same cycle over this much more
+ *  height, so the quicker climb is bigger pulls as well as quicker ones (at 2x the single, about 1.3x the hand rate, not a blur) */
+export const PAIR_CYCLE_K = 1.5;
+/** and his body sways a little toward the strand the reaching hand takes (radians either side; a code touch on the painted clip) */
+export const PAIR_SWAY = 0.07;
+/** where he is in the climb's hand-over-hand cycle (0..1): one pull per hand over CLIMB_CYCLE_PX of height (a pair's longer) */
+export function climbU(p: Pick<PlayerState, 'y' | 'climbPair'>): number {
+  const cyc = CLIMB_CYCLE_PX * (p.climbPair ? PAIR_CYCLE_K : 1);
+  return (((-p.y / cyc) % 1) + 1) % 1;
+}
+/** the lean of a climb on a pair (radians, toward the reaching hand's strand); 0 on a single climb */
+export function pairSway(p: Pick<PlayerState, 'y' | 'climbPair' | 'climbing'>): number {
+  return p.climbing && p.climbPair ? PAIR_SWAY * Math.sin(climbU(p) * Math.PI * 2) : 0;
+}
 /** the swing sheet runs from the back of the swing to the front; this angle (radians) or more is the end of the sheet */
 export const SWING_REACH = 1.0;
 /** strides per turn of walkCycle (the same rate as the standard hero's cycle, so the feet keep pace with the ground) */
@@ -200,7 +214,7 @@ export function movePick(p: PlayerState): ClipFrame | null {
     // (climbing down plays the cycle backward: the clip made for a climb down, pa-climbdown-s3, hardly moved)
     const sheet = MOVE_SHEETS.climb;
     if (!hasClip(sheet)) return null;
-    const u = ((((-p.y / CLIMB_CYCLE_PX) % 1) + 1) % 1);
+    const u = climbU(p);
     return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, u));
   }
   // the swing: the frame follows where he is in the swing, from the back (0) to the front (1)
