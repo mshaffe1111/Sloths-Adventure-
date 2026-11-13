@@ -35,6 +35,22 @@ FAULTS = [
     ('lure: the check passes a target out of reach of the patch', 'src/game/gen2/lureLay.ts', "if (!who.some((m) => drawnTo(m, p)))", "if (false)", 'src/game/gen2/lureLay.test.ts'),
     ('lure: the check passes a target at the animal\'s start', 'src/game/gen2/lureLay.ts', "if (atStart(m, p))", "if (false)", 'src/game/gen2/lureLay.test.ts'),
     ('lure: the check passes a lure-first animal with nothing', 'src/game/gen2/lureLay.ts', "    if (!post && !hunter)", "    if (false)", 'src/game/gen2/lureLay.test.ts'),
+    ('ride: the engine never moves a ride', 'src/game/engine.ts', "        const m = moveRide(plat, this.clock);\n        if (p.grounded && this.standingOnId === plat.id) (p.x += m.dx), (p.y += m.dy);\n        continue;", "        continue;", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: the engine moves a ride but does not carry him', 'src/game/engine.ts', "        if (p.grounded && this.standingOnId === plat.id) (p.x += m.dx), (p.y += m.dy);\n        continue;", "        continue;", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: the engine carries him across but not up', 'src/game/engine.ts', "(p.x += m.dx), (p.y += m.dy);", "(p.x += m.dx);", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: a ride ignores its lane\'s stagger', 'src/game/ridePlay.ts', "clock.read(r.clock, r.shift)", "clock.read(r.clock)", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: the built stage drops its beats', 'src/game/gen2/pipeline.ts', "    ...(sink.clocks?.length ? { clocks: sink.clocks } : {}),\n", "", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: a beat is listed once per ride', 'src/game/gen2/rideLay.ts', "      if (!clocks.some((c) => c.id === row.beat)) clocks.push(", "      clocks.push(", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: a log is laid over a stone in the water', 'src/game/gen2/rideLay.ts', " || ahead.some((p) => p !== to && p.x < to.x && p.y < from.y + 200 && p.y > from.y - 200)) return null;", ") return null;", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: a log climbs to a higher bank', 'src/game/gen2/rideLay.ts', "ahead.find((p) => Math.abs(p.y - from.y) <= RIDE_LAY.level)", "ahead[0]", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: a lift is laid in a slot too wide for it', 'src/game/gen2/rideLay.ts', " || room > row.w + 2 * RIDE_LAY.reach) return null;", ") return null;", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: an eased ride is not eased', 'src/game/gen2/rideLay.ts', "...(row.smooth ? { smooth: true } : {}) };", "};", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: the check passes a ride with no beat or a short warning', 'src/game/gen2/rideLay.ts', "  const out = beatFaults(used, subs, rule, easy);", "  const out: string[] = [];", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: the check passes a ride that barely stops', 'src/game/gen2/rideLay.ts', "    if (stop < rule.stop - 1e-6)", "    if (false)", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: the check passes a ride that is too fast', 'src/game/gen2/rideLay.ts', "    if (peak > rule.speed + 1e-6)", "    if (false)", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: the check forgets an eased ride\'s peak', 'src/game/gen2/rideLay.ts', "(far / on) * (r.smooth ? 1.5 : 1)", "(far / on)", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: the check passes a ride no bank reaches', 'src/game/gen2/rideLay.ts', "      if (!reach) out.push(", "      if (false) out.push(", 'src/game/gen2/rideLay.test.ts'),
+    ('ride: the check passes a ride through a solid', 'src/game/gen2/rideLay.ts', "      if (hit) {", "      if (false) {", 'src/game/gen2/rideLay.test.ts'),
 ]
 
 def main():

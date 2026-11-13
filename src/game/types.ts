@@ -329,6 +329,8 @@ export interface Platform {
   /** a hollow log (World 1, Matt's painted hollowlog-moss / -plain, w1NewArt.ts): the platform is its shell's top (HOLLOW_SHELL tall), the
    *  painted log hanging from it to the floor, its inside clear to walk through: w1NewArt.ts hollowLogSize gives its height and clearance */
   hollow?: 'moss' | 'plain';
+  /** a ride on a stage beat (a 'moving' platform: ride.ts; ridePlay.ts moves it by the stage's clock; gen2/rideLay.ts lays it) */
+  ride?: import('./ride.ts').Ride;
   /** World 2's rope-and-basket lift (a 'moving' platform that rides up and down: lift.ts) */
   lift?: import('./lift.ts').LiftInfo;
   /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts), World 4's fern bridge, a pushed boulder and a pool's floating log (w4Play.ts), and World 4's little mossy rocks to hop (`rock`, protoArt drawRockArt), the mailbox post at a porch's dead end in 2-6 (`post`, a knot: `lip`), and 6-8's ledges in World 6's pieces (`stilt`, w6StiltArt.ts) */

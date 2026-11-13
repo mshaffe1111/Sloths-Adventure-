@@ -96,6 +96,8 @@ import { CLUE_NAME, clearOfHollowLogs, drawHollowLog, drawW1Clue, drawW1Dress, i
 import { drawMudSplash, drawW1Creek } from './w1Creek.ts';
 import { paintedBank, setW1PitWater } from './w1Pits.ts';
 import { stageClock, type StageClock } from './clock.ts';
+import { beatClock } from './beat.ts';
+import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
 import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
@@ -987,6 +989,8 @@ export class GameEngine {
     // (Meeca's stage: her night look, and Easy's stuck watch without a clock, Matt's research rule)
     this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles, world: config.worldIndex, stage: config.miniIndex, vines: this.vines, ...(this.proto?.meeca ? { noClock: true, night: true } : {}) }) : null;
     this.plainVines = this.vines.filter((v) => !v.kit);
+    // the stage's beats (beat.ts, clock.ts): every hazard on a beat reads them; the game's time is kept
+    this.clock = beatClock(this.currentStage.clocks ?? [], this.easy, this.clock.time());
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
     this.slideRun = null;
@@ -1702,6 +1706,12 @@ export class GameEngine {
     // --- Moving platforms: slide on a sine path and carry whoever stands on them ---
     for (const plat of this.platforms) {
       if (plat.type !== 'moving' || plat.broken) continue;
+      if (plat.ride) {
+        // a ride on a stage beat (ride.ts, ridePlay.ts; gen2/rideLay.ts lays it): where its beat puts it, carrying whoever stands on it
+        const m = moveRide(plat, this.clock);
+        if (p.grounded && this.standingOnId === plat.id) (p.x += m.dx), (p.y += m.dy);
+        continue;
+      }
       if (plat.lift) {
         // World 2's basket lift rides up and down, and carries whoever stands in it
         const ny = liftY(plat.lift, this.gameTime);

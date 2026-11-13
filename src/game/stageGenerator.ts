@@ -92,6 +92,8 @@ export interface GeneratedStage {
   rivers?: import('./river.ts').RiverZone[];
   /** Worlds 3 and 4: spore clouds and wind gusts that wake on a rhythm (see zones.ts) */
   zones?: import('./zones.ts').Zone[];
+  /** the stage's beats (clock.ts ClockDef; beat.ts): every hazard on a beat names one, and the engine runs them on game time */
+  clocks?: import('./stageKit.types.ts').ClockDef[];
   /** World 8 Normal's swing and glide gaps (gen2 heartFalls): a fall there costs a heart and sets him back on the ledge he left; a
    *  `soft` one (a level block gap, World 1's double gaps) sets him back with nothing lost */
   /** `y` (a hollow with a hurt floor, gen2 WorldManifest.hurtFloor): the floor's top, the hurt line; his feet reaching it inside the zone is
