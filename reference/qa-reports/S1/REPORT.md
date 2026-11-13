@@ -23,11 +23,8 @@ KID_RUNS_59 the same runs {3,5,6,7} in a new order (goal unchanged). Not run (st
 - The step rule is right about the ground but the route feeds content rules (listRules' quiet line, worlds' quiet/diversity tests, recorded
   kid runs): over-hump "jumps" were counted as action. My pick: land S1 now WITHOUT stepBetween (revert it, the score.ts deletion and the
   1-1 list; keep 2, 3 and test 3/4; re-run the calibration), and give the step rule its own packet with Worlds 5-7's owners. Your call.
-- ADD-LEVEL's 1-2 list, if built on t-s1, is judged on the step route.
-- "Never link over a dip", taken literally, would climb him out of 150 px pit floors; a dip is split only when the way through is no harder.
-## Suggestion: S1b JUMPS-HOIST: jumps.ts fly/maxRise (:114, :232) omit FORGIVE.mantle 26 px (physics.ts:45), so a rise reads ~19% harder than
-flown; the meter calls 1-1's 79-82 px stump hops doubles. Done: a 110 px face reads single.
+- ADD-LEVEL's 1-2 list, if built on t-s1, is judged on the step route. "Never link over a dip", taken literally, would climb him out of 150 px pit floors; a dip is split only when the way through is no harder.
+## Suggestion S1b: jumps.ts fly/maxRise (:114, :232) omit FORGIVE.mantle 26 px (physics.ts:45): rises read ~19% hard, stump hops "doubles".
 ## Unresolved: the 4 fails; funcheck 1-3 "nothing bites" 0->11 of 16 (not in CI); routeWalls.test fails on base and head alike (not in CI).
-## Method update (difficulty.md Traps): delete the two route traps; add "route.ts feeds listRules and world tests: run the full suite".
-## Learned: grep who imports a tool before changing it (src/ tests, seed searches and recorded runs did); a tool calls the game's own
-predicate and check (builtOnGen2, validateAsJudged). Lessons applied: D19, D21, D23, D29, D40, D48, D52. Turnover note: not rewritten.
+## Method update (difficulty.md Traps): drop the 2 route traps; add "route.ts feeds listRules and world tests: run the full suite".
+## Learned: grep who imports a tool before changing it; call the game's own predicate/check. Lessons: D19 D21 D23 D29 D40 D48 D52. No turnover.
