@@ -461,3 +461,11 @@ his taste. Matt keeps the final say. This replaces "each needs Matt's okay" on e
   basket: something to bring her, and that is what gets him up again (the extra life is resolve, "I have to save her"). Shown, no
   words: the ring's icon is a small woven basket. Payoff at the ending: the fruit on the tea table, no line. Guarana (the hidden find):
   REAL, Amazonian; draw the red pod split open, black seeds in white rims.
+
+**11-13 12:05 PM ET, 1-5 after the card road was cut:**
+- The big-sign line "Squirrels painted what's each way. Your pick!" is RETIRED (untrue: the roll lays the stretch). New, Dot (7 words,
+  counted): "Never mind the signs. Follow her marks!" True whatever the roll lays; the goal is her marks.
+- The two-signs joke (beat 1) stays only if beat 9's signs both still say THIS WAY; if the roll drops that, cut the joke too.
+- The creek as shallow fast water that knocks him back: REAL (rainforest creeks run fast over stones after rain). Fixes: the water must
+  LOOK fast (white riffles, foam at the stones, streaks), never a calm pool (D38); NO lily pads in it (they grow in still water, and
+  they tell "calm"); stepping stones or roots instead; no petals in the water.
