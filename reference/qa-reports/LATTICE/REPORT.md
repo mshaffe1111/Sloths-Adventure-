@@ -24,8 +24,9 @@ R-165.178.
 **Not built (lead's scope):** pods, flyer, ants, fruit pickups, the bough lifting a notch per cluster (1-4's pieces).
 The draped pair (Vine.pair) stays: 1-4.md beat 13 still uses it.
 **Gates:** tsc PASS; unit suite 3135 pass / 0 fail (1 TODO from base); vite build (deploy base) PASS; chunkcheck PASS; artcheck PASS;
-knowncheck PASS; generalitycheck PASS; roadmapcheck PASS. buildcheck FAIL under load (1-1 p95 ~500 ms while the suite ran; not re-run
-idle yet; this work does not touch 1-1's build). seedlist 1-1 PASS (257); tool tests 33/0; tierBots 7/0. drawcheck / clipcheck / kbdcheck: see the last line.
+knowncheck PASS; generalitycheck PASS; roadmapcheck PASS; seedlist 1-1 PASS (257); tool tests 33/0; tierBots 7/0; drawcheck PASS;
+clipcheck PASS (83 known); kbdcheck PASS. **buildcheck FAIL, and the base fails it the same way:** idle, 1-1 p95 478 ms (normal),
+against origin/t-feel-pair's own src at 509 ms, budget 150. That is this container or the base, not the field. The lead's call.
 **Lessons applied:** D41 (hands 78 px up from his 89.1 drawn height), D40 (no patching the pair: the field replaces the room), engine for
 every stage (no ids in vineField.ts), LAWS 5 (every gate run; any not finished is named, never skipped).
 **Method update:** the touch rig found all three bugs; script-only (keyboard) stills missed (1). For any new climb move, test by touch
