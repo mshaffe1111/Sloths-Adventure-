@@ -163,7 +163,7 @@ function podShape(ctx: CanvasRenderingContext2D, x: number, y: number, r: number
 }
 
 /** a fluff tuft: the painted silk tuft (w14-fluff), `r` its half-height-ish size; a white puff stand-in only while it loads */
-function fluff(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, a: number) {
+function fluff(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, a: number, turn = 0, flip = false) {
   // (no colour string built per tuft: fixed fills and the alpha, PERFORMANCE-RULES §3.1)
   ctx.globalAlpha = Math.max(0, Math.min(1, a));
   // (painted: a silk tuft cut from ART's pod-burst plume (w14-fluff), never a code-drawn circle: Matt 11-13, R-165.213, "a column of
@@ -171,7 +171,13 @@ function fluff(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, a
   const im = pic(PIECES.fluff);
   if (im) {
     const h = r * 3, w = (h * im.width) / im.height;
-    ctx.drawImage(im, x - w / 2, y - h / 2, w, h);
+    // (each tuft its own turn and side, so no two read as one stamp: the lead's still review 11-13 6:31 PM)
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(turn);
+    if (flip) ctx.scale(-1, 1);
+    ctx.drawImage(im, -w / 2, -h / 2, w, h);
+    ctx.restore();
     ctx.globalAlpha = 1;
     return;
   }
@@ -185,6 +191,14 @@ function fluff(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, a
   ctx.fill();
   ctx.globalAlpha = 1;
 }
+
+/** the tell's loose tufts: [phase, size, pace (falls a second), spin (rad/s), sway (rad/s)], each its own (four, never a column) */
+const TUFTS: ReadonlyArray<readonly [number, number, number, number, number]> = [
+  [0.0, 1.2, 0.42, 0.7, 1.9],
+  [0.29, 0.75, 0.55, -1.3, 2.6],
+  [0.53, 1.0, 0.37, 1.8, 1.4],
+  [0.8, 0.85, 0.5, -0.5, 2.2],
+];
 
 /** the drawn pod's size (px across its widest, half): 1.5x the hit radius (podfall.ts POD.radius 14) */
 const POD_DRAW = 21;
@@ -209,11 +223,15 @@ export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState
   if (s.phase === 'warn') {
     // the trickle: a stream of tufts drifting down the column from the pod, reaching further each moment of the tell (at its start a
     // third of the way, by its end the whole column), so on a phone he sees fluff falling past him on his own column before the drop
+    // (a few loose tufts, never a column: each its own size, pace, turn and drift, fading in under the pod and out as it falls)
     const reach = (p.land - p.top) * Math.min(1, 0.35 + s.u * 0.9);
-    for (let i = 0; i < 16; i++) {
-      const f = (t * 0.55 + i / 16) % 1;
+    for (let i = 0; i < TUFTS.length; i++) {
+      const [phase, size, pace, spin, sway] = TUFTS[i];
+      const f = (t * pace + phase) % 1;
       const y = p.top + 6 + f * reach;
-      fluff(ctx, p.x + Math.sin(t * 2.4 + i * 1.7) * 10, y, 6 + (i % 3) * 1.6, 1 - f * 0.35);
+      const x = p.x + Math.sin(t * sway + i * 2.3) * (6 + 16 * f);
+      const a = Math.min(1, f * 6) * (1 - f * f);
+      fluff(ctx, x, y, 7 * size, a, spin * (t + i * 1.9), i % 2 === 1);
     }
     podShape(ctx, p.x, hangY, r, Math.sin(t * 38) * 0.14 * (0.4 + s.u));
     return;
@@ -221,7 +239,10 @@ export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState
   if (s.phase === 'gone') return;
   if (s.phase === 'fall') {
     const y = s.y - r * 1.9;
-    for (let i = 0; i < 4; i++) fluff(ctx, p.x + (i - 1.5) * 7, y - r * 1.9 - 8 - i * 12, 5 - i * 0.6, 0.85 - i * 0.18);
+    for (let i = 0; i < 3; i++) {
+      const [, size, , spin] = TUFTS[i];
+      fluff(ctx, p.x + (i - 1) * 9 + Math.sin(t * 5 + i) * 3, y - r * 1.9 - 8 - i * 16, 5 * size, 0.85 - i * 0.25, spin * t, i === 1);
+    }
     podShape(ctx, p.x, y, r, 0);
     return;
   }
@@ -236,7 +257,7 @@ export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState
   for (let i = 0; i < 10; i++) {
     const a = (i / 10) * Math.PI * 2;
     const d = 8 + s.u * 30;
-    fluff(ctx, p.x + Math.cos(a) * d, p.land - 10 + Math.sin(a) * d * 0.5 - s.u * 12, 6 + (i % 2) * 2, 0.95 * (1 - s.u));
+    fluff(ctx, p.x + Math.cos(a) * d, p.land - 10 + Math.sin(a) * d * 0.5 - s.u * 12, 5 + ((i * 7) % 5) * 0.8, 0.95 * (1 - s.u), a + s.u * (i % 2 ? 1.5 : -1.5), i % 2 === 0);
   }
 }
 
