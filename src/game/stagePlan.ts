@@ -39,7 +39,9 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     //  library13.test.ts)
     S('purge', 'Branch Snakes', 'Shake every vine, and off the snakes glide.'),
     S('ascent', 'Up the Kapok', 'Climb the giant kapok to the very top.'),
-    S('harvest', 'Where She Walked', 'The petals go on. Gather more.'),
+    // (the story keeper's line, approved by Matt 11-12 10:20 PM ET: the goal is HER MARKS, gen2/worlds/w1Arc15.ts MISSION_15, held equal by
+    //  tools/engine/library15.test.ts; the count is the check's floor, the goal a share of the marks laid, goals.ts)
+    S('relic_hunt', 'Where She Walked', 'She marked the way they took her. Follow her marks.', 8),
     S('vine_runner', 'First Lianas', 'Swing on the hanging lianas across the gaps in the canopy.'),
     S('stealth', 'A Very Good Bush', 'Eagles are watching. Duck under the leaves the way Dot hid from the soldiers.'),
     S('sprint', 'The Long Branch', 'Race the long branch to the shrine.'),
@@ -189,7 +191,7 @@ function GOAL_WORDS(world: number, type: string): { verb: string; one: string; m
     return { verb: 'Collect', one, many };
   }
   if (type === 'relic_hunt') {
-    const w = ({ 3: ['keepsake', 'keepsakes'], 5: ['message', 'messages'], 9: ['thread', 'threads'] } as Record<number, string[]>)[world] ?? ['relic', 'relics'];
+    const w = ({ 1: ['mark', 'marks'], 3: ['keepsake', 'keepsakes'], 5: ['message', 'messages'], 9: ['thread', 'threads'] } as Record<number, string[]>)[world] ?? ['relic', 'relics'];
     return { verb: 'Find', one: w[0], many: w[1] };
   }
   // (4-9 The Aerie counts the capuchin guards, and its counter says "guards": the goal says the same)
@@ -202,7 +204,7 @@ function GOAL_WORDS(world: number, type: string): { verb: string; one: string; m
 /** the word the HUD counts in: what this world's harvest gathers and its searches find */
 export function countWord(world: number, type: string): string {
   if (type === 'harvest') return world === 1 ? 'petals' : world === 8 ? 'night blooms' : 'flowers';
-  if (type === 'relic_hunt') return ({ 3: 'keepsakes', 5: 'messages', 9: 'threads' } as Record<number, string>)[world] ?? 'relics';
+  if (type === 'relic_hunt') return ({ 1: 'marks', 3: 'keepsakes', 5: 'messages', 9: 'threads' } as Record<number, string>)[world] ?? 'relics';
   // (4-9 The Aerie: the capuchin guards the wind blows off their ledges)
   if (type === 'gauntlet' && world === 4) return 'guards';
   if (type === 'purge' || type === 'gauntlet') return 'predators';

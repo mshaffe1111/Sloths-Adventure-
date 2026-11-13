@@ -37,6 +37,7 @@ import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, 
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
+import { creakLimb, needless } from './creak.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import { checkCode, formatToken, JOB_OF, LETTER_OF, MARK_OF, parseCode, type CodeToken } from './nodeCode.ts';
 import {
@@ -932,6 +933,8 @@ interface LocalPiece {
   hop: boolean;
   /** a crumbling ruin tile (SectionPiece.crumble) */
   crumble?: boolean;
+  /** a creaky limb (SectionPiece.creak; creak.ts) */
+  creak?: boolean;
   /** a hanging piece (x is where it hangs, y its top, h its length, w 0): a liana with its swing, or a climbing vine */
   hang?: { kind: 'liana' | 'vine'; swing?: LianaSwing; from?: string; window?: number; gap?: [number, number] };
   /** a ledge a rope crosses to (place `rope`): the piece the rope hangs from */
@@ -1240,7 +1243,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on',
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -1808,6 +1811,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     return pick;
   };
 
+  // (a creaky limb is never needed until its lesson's section is laid, creak.ts)
+  let creakTaught = false;
   for (const n of graph.nodes) {
     // (the heights V19 holds the late rise to: where the bough window begins (the route as the slots reach two thirds), and where a late
     // descent began)
@@ -1928,6 +1933,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         const row = lp.slot ? M.slots?.[lp.slot] : undefined;
         if (lp.slot && !row?.art.length) throw new Error(`gen2 section ${tpl.id}: piece ${lp.key} asks slot "${lp.slot}" and world ${budget.world} has no row for it`);
         const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, row?.style ?? lp.style, !!lp.crumble);
+        if (lp.creak) creakLimb(p, M, budget.difficulty, !creakTaught);
         placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing, ...(row ? { slot: lp.slot, art: row.art[Math.floor(rngFor(seed, 83, p.x, p.y)() * row.art.length)] } : {}) });
       }
       const pieceOf = (k: string) => {
@@ -2027,7 +2033,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       }
       // (its crumbling tiles, one crumble zone over them: levelCheck's tile rules hold inside it, and nothing stands in it; it ends at
       // the tiles' underside, so the hall walked under them is not in it)
-      const tiles = placed.pieces.filter((pp) => pp.platform.type === 'fragile').map((pp) => pp.platform);
+      const tiles = placed.pieces.filter((pp) => pp.platform.type === 'fragile' && pp.platform.crumbleAfter !== undefined).map((pp) => pp.platform);
       if (tiles.length) {
         const x0 = Math.min(...tiles.map((t) => t.x));
         const x1 = Math.max(...tiles.map((t) => t.x + t.width));
@@ -2045,6 +2051,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       placed.seconds = sectionSeconds(L, tpl, budget) + dx / budget.walkSpeed;
       secs += placed.seconds;
       sections.push(placed);
+      if (M.creak && tpl.teaches === M.creak.lesson) creakTaught = true;
       // (a slot filled past its rule keeps its note with the plan, so a kept slot still says so)
       const loose = fixed ? fixed.loose : lastLoose;
       plan.push({ template: tpl.id, mirrored, node: n.id, join, ...(Object.keys(L.versions).length ? { versions: L.versions } : {}), ...(salt ? { salt } : {}), ...(loose ? { loose } : {}) });
@@ -2542,6 +2549,11 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP), rowLook, what);
         }
         fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what, x: k.x, y: k.y });
+      } else if (s.role === 'objective' && s.allow?.includes('mark')) {
+        // (her MARK, a designed goal item (creak.ts marks): every one a section holds is laid where the designer put it, never shared
+        // out by a quota; the goal is a share of those laid, goals.ts)
+        C.push({ id: sink.nextCollectibleId(), type: 'relic', mark: 'meeca', x: k.x, y: k.piece.y - (s.dn ?? 30), collected: false, bobPhase: 0 });
+        fills.push({ section: sec.uid, socket: s.id, role: 'objective', what: 'mark', x: k.x, y: k.y });
       } else if (s.role === 'objective') {
         const wantN = graphObjectives(laid, sec);
         if (objectives >= wantN) continue;
@@ -2993,8 +3005,9 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
   const res = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)
-  if (!st.platforms.some((p) => p.type === 'fragile')) return res;
-  const bareSt = { ...held, platforms: held.platforms.filter((p) => p.type !== 'fragile') };
+  // (and a creaky limb laid before its lesson is over: creak.ts. One after it may be the way, Matt's rule)
+  if (!st.platforms.some(needless)) return res;
+  const bareSt = { ...held, platforms: held.platforms.filter((p) => !needless(p)) };
   const bare = judgedOnArcs(budget.id) ? validateStage(bareSt, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(bareSt);
   const need = bare.errors.filter((e) => !/^(flower|leaf|heart) #/.test(e)).map((e) => `crumbling tiles needed: ${e}`);
   return need.length ? { ...res, ok: false, errors: [...res.errors, ...need] } : res;

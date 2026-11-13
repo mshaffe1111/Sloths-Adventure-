@@ -1,0 +1,175 @@
+diff --git a/src/game/gen2/creak.ts b/src/game/gen2/creak.ts
+new file mode 100644
+index 00000000..d2a84d2c
+--- /dev/null
++++ b/src/game/gen2/creak.ts
+@@ -0,0 +1,44 @@
++/**
++ * creak — the CREAKY LIMB as one gen2 piece, for any stage of any world that has a row for it (packet B15 item 1; 1-5.md:55, 1-4.md:30).
++ *
++ * A section marks a piece `creak: true` (SectionPiece.creak). The lay makes that piece's platform a fragile limb in the world's look
++ * (WorldManifest.creak.style: World 1's 'branch', drawn notched and creaking before he steps on it, protoArt drawBranchArt) that holds
++ * the world's `hold` seconds for this setting once he lands on it (engine.ts reads Platform.creak), then drops him to what is under it.
++ * Every set-back makes every limb whole again (engine.ts crumbledWhole); one that went grows back off screen 30-35 s later (regrow.ts).
++ *
++ * Required once taught (Matt, 11-02: "crumbling platforms may be required anywhere once taught, pits included"): every limb laid up to the
++ * END of the section that teaches it (the world's `creak.lesson`) is marked `creakFree`, and the stage must clear without those
++ * (pipeline checkStage); any limb after the lesson may be the way. World 7's ruin tiles stay what they were: never needed.
++ * WORLD DATA decides the look, the hold and the lesson; no stage id, seed or x lives here.
++ */
++import type { Platform } from '../types.ts';
++import type { Difficulty, WorldManifest } from './types.ts';
++
++/**
++ * A creaky limb's own marks on its platform (kept off the shared Platform type: only gen2's check and the falling-limb trap read them):
++ *  - creakFree: laid before its lesson is over, so the stage must clear without it (pipeline checkStage);
++ *  - trapLoad: it is a drop trap's load (castPlay.types TrapPost kind 'limb'): once it gives way castArt draws its fall and where it
++ *    lies, so the old renderer draws no snapped halves (protoArt.ts).
++ */
++export type LimbPlatform = Platform & { creakFree?: true; trapLoad?: true };
++
++/** make a laid piece's platform the world's creaky limb. `free`: laid before its lesson is over (never needed) */
++export function creakLimb(p: LimbPlatform, M: Pick<WorldManifest, 'world' | 'creak'>, difficulty: Difficulty, free: boolean): Platform {
++  const row = M.creak;
++  if (!row) throw new Error(`gen2: a creaky limb is laid in world ${M.world}, which has no creaky limb (WorldManifest.creak)`);
++  p.type = 'fragile';
++  p.creak = row.hold[difficulty === 'easy' ? 'easy' : 'normal'];
++  p.style = row.style;
++  if (free) p.creakFree = true;
++  else delete p.creakFree;
++  return p;
++}
++
++/** is this a creaky limb (gen2's piece, or the mixer's: a fragile platform with its own hold) */
++export const isCreak = (p: Platform): boolean => p.type === 'fragile' && p.creak !== undefined;
++
++/**
++ * Must the stage clear without this platform? World 7's crumbling tiles (fragile with no creak hold: never needed, STAGE-RULES §1) and
++ * a creaky limb laid before its lesson is over. A limb after its lesson may be the way.
++ */
++export const needless = (p: LimbPlatform): boolean => p.type === 'fragile' && (p.creak === undefined || !!p.creakFree);
+diff --git a/src/game/gen2/pipeline.ts b/src/game/gen2/pipeline.ts
+index 5ae24cd8..eca1c4b4 100644
+--- a/src/game/gen2/pipeline.ts
++++ b/src/game/gen2/pipeline.ts
+@@ -39,6 +39,7 @@ import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME,
+ import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
+ import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
+ import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
++import { creakLimb, needless } from './creak.ts';
+ import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
+ import { checkCode, formatToken, JOB_OF, LETTER_OF, MARK_OF, parseCode, type CodeToken } from './nodeCode.ts';
+ import {
+@@ -936,6 +937,8 @@ interface LocalPiece {
+   hop: boolean;
+   /** a crumbling ruin tile (SectionPiece.crumble) */
+   crumble?: boolean;
++  /** a creaky limb (SectionPiece.creak; creak.ts) */
++  creak?: boolean;
+   /** a hanging piece (x is where it hangs, y its top, h its length, w 0): a liana with its swing, or a climbing vine */
+   hang?: { kind: 'liana' | 'vine'; swing?: LianaSwing; from?: string; window?: number; gap?: [number, number] };
+   /** a ledge a rope crosses to (place `rope`): the piece the rope hangs from */
+@@ -1244,7 +1247,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
+     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
+     const p: LocalPiece = {
+       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on',
+-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
++      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
+     };
+     by.set(pc.key, p);
+     out.push(p);
+@@ -1871,6 +1874,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
+     return pick;
+   };
+ 
++  // (a creaky limb is never needed until its lesson's section is laid, creak.ts)
++  let creakTaught = false;
+   for (const n of graph.nodes) {
+     // (the heights V19 holds the late rise to: where the bough window begins (the route as the slots reach two thirds), and where a late
+     // descent began)
+@@ -2004,6 +2009,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
+         const row = lp.slot ? M.slots?.[lp.slot] : undefined;
+         if (lp.slot && !row?.art.length) throw new Error(`gen2 section ${tpl.id}: piece ${lp.key} asks slot "${lp.slot}" and world ${budget.world} has no row for it`);
+         const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, row?.style ?? lp.style, !!lp.crumble);
++        if (lp.creak) creakLimb(p, M, budget.difficulty, !creakTaught);
+         placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing, ...(row ? { slot: lp.slot, art: row.art[Math.floor(rngFor(seed, 83, p.x, p.y)() * row.art.length)] } : {}) });
+       }
+       const pieceOf = (k: string) => {
+@@ -2107,7 +2113,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
+       }
+       // (its crumbling tiles, one crumble zone over them: levelCheck's tile rules hold inside it, and nothing stands in it; it ends at
+       // the tiles' underside, so the hall walked under them is not in it)
+-      const tiles = placed.pieces.filter((pp) => pp.platform.type === 'fragile').map((pp) => pp.platform);
++      const tiles = placed.pieces.filter((pp) => pp.platform.type === 'fragile' && pp.platform.crumbleAfter !== undefined).map((pp) => pp.platform);
+       if (tiles.length) {
+         const x0 = Math.min(...tiles.map((t) => t.x));
+         const x1 = Math.max(...tiles.map((t) => t.x + t.width));
+@@ -2131,6 +2137,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
+       }
+       secs += placed.seconds;
+       sections.push(placed);
++      if (M.creak && tpl.teaches === M.creak.lesson) creakTaught = true;
+       // (a slot filled past its rule keeps its note with the plan, so a kept slot still says so)
+       const loose = fixed ? fixed.loose : lastLoose;
+       plan.push({ template: tpl.id, mirrored, node: n.id, join, ...(Object.keys(L.versions).length ? { versions: L.versions } : {}), ...(salt ? { salt } : {}), ...(loose ? { loose } : {}) });
+@@ -2680,6 +2687,11 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
+           flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP), rowLook, what);
+         }
+         fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what, x: k.x, y: k.y });
++      } else if (s.role === 'objective' && s.allow?.includes('mark')) {
++        // (her MARK, a designed goal item (creak.ts marks): every one a section holds is laid where the designer put it, never shared
++        // out by a quota; the goal is a share of those laid, goals.ts)
++        C.push({ id: sink.nextCollectibleId(), type: 'relic', mark: 'meeca', x: k.x, y: k.piece.y - (s.dn ?? 30), collected: false, bobPhase: 0 });
++        fills.push({ section: sec.uid, socket: s.id, role: 'objective', what: 'mark', x: k.x, y: k.y });
+       } else if (s.role === 'objective') {
+         const wantN = graphObjectives(laid, sec);
+         if (objectives >= wantN) continue;
+@@ -3140,8 +3152,9 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
+   const res = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
+   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
+   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)
+-  if (!st.platforms.some((p) => p.type === 'fragile')) return res;
+-  const bareSt = { ...held, platforms: held.platforms.filter((p) => p.type !== 'fragile') };
++  // (and a creaky limb laid before its lesson is over: creak.ts. One after it may be the way, Matt's rule)
++  if (!st.platforms.some(needless)) return res;
++  const bareSt = { ...held, platforms: held.platforms.filter((p) => !needless(p)) };
+   const bare = judgedOnArcs(budget.id) ? validateStage(bareSt, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(bareSt);
+   const need = bare.errors.filter((e) => !/^(flower|leaf|heart) #/.test(e)).map((e) => `crumbling tiles needed: ${e}`);
+   return need.length ? { ...res, ok: false, errors: [...res.errors, ...need] } : res;
+diff --git a/src/game/gen2/types.ts b/src/game/gen2/types.ts
+index 5830115b..a54421a4 100644
+--- a/src/game/gen2/types.ts
++++ b/src/game/gen2/types.ts
+@@ -192,6 +192,11 @@ export interface WorldManifest {
+    *  painted family the world's painter draws it with; `depth`: px under the gap's lower lip [min, max]; `clearStart`: no hollow this
+    *  near the spawn, px */
+   hurtFloor?: { lesson: string; art: string; depth: [number, number]; clearStart: number };
++  /** the world's creaky limb (SectionPiece.creak; gen2/creak.ts): the style its platform is drawn in (World 1: 'branch', drawn
++   *  notched as branchCreak), how long it holds once stood on (s, by setting), and the section `teaches` id of its lesson (every limb
++   *  laid up to the end of the lesson's section is never needed; after it one may be required anywhere, STAGE-RULES §1). A roll that
++   *  lays a creaky limb in a world with no row fails by name */
++  creak?: CreakRow;
+   /** the stages of the world gen2 must never build (the signature stage, the guardian's lair) */
+   handBuilt: string[];
+   /**
+@@ -312,6 +317,20 @@ export interface SectionPiece {
+    * no animal or flag stands on or over them
+    */
+   crumble?: boolean;
++  /**
++   * a CREAKY LIMB (gen2/creak.ts, the world's `creak` row): a piece he stands on that gives way `creak.hold` s after he lands on it and
++   * drops him to what is under it; whole again on any set-back, grown back off screen 30-35 s after it went (engine.ts). Unlike a
++   * crumbling tile it may be on the main route and may be REQUIRED once its lesson is laid (Matt, 11-02: "required anywhere"); every
++   * limb up to the end of the lesson's section must never be needed (pipeline checkStage proves the stage without them)
++   */
++  creak?: boolean;
++}
++
++/** a world's creaky limb (WorldManifest.creak) */
++export interface CreakRow {
++  style: NonNullable<Platform['style']>;
++  hold: { easy: number; normal: number };
++  lesson: string;
+ }
+ 
+ /** what a socket can hold */

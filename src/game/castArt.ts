@@ -297,12 +297,37 @@ export function drawTrunk(ctx: CanvasRenderingContext2D, x: number, y: number, g
   return true;
 }
 
-/** every trap on screen. `seen`: the engine's on-screen test; `platforms`: where a sapling may stand */
+/** how thick a falling limb is drawn (px): the walkable strip of World 1's branch (pipeline: a 'branch' is 24 high) */
+const LIMB_H = 24;
+/**
+ * a 'limb' trap's load (gen2/creak.ts): the creaky limb itself. While it holds, the platform draws it; once it gives way it falls as the
+ * load and lies where it came down (tilted, as a fallen limb lies), drawn by the engine's own branch painter (`limbArt`: castArt stays
+ * out of the old renderer's chunk), and only while its platform is gone (grown back, the limb is the platform's again)
+ */
+function drawLimb(ctx: CanvasRenderingContext2D, tr: TrapState, platforms: readonly Platform[], limbArt: (ctx: CanvasRenderingContext2D, p: Platform) => void): void {
+  const p = tr.post;
+  if (tr.phase === 'set' || tr.phase === 'loose' || !p.w) return;
+  const pl = platforms.find((q) => q.id === p.limb);
+  if (pl && !pl.broken) return;
+  const down = tr.phase === 'down';
+  ctx.save();
+  ctx.translate(p.loadX, tr.y - LIMB_H / 2);
+  ctx.rotate(down ? 0.06 : Math.min(0.06, tr.t * 0.2));
+  limbArt(ctx, { ...(pl ?? { id: -1, type: 'fragile' }), x: -p.w / 2, y: -LIMB_H / 2, width: p.w, height: LIMB_H, broken: false } as Platform);
+  ctx.restore();
+}
+
+/** every trap on screen. `seen`: the engine's on-screen test; `platforms`: where a sapling may stand; `limbArt`: how a fallen creaky limb is
+ *  painted (a 'limb' trap's load) */
 export function drawTraps(ctx: CanvasRenderingContext2D, traps: readonly TrapState[], t: number, seen: (x: number, y: number) => boolean,
-  platforms: readonly Platform[]): void {
+  platforms: readonly Platform[], limbArt?: (ctx: CanvasRenderingContext2D, p: Platform) => void): void {
   if (!warmTrapArt()) return;
   for (const tr of traps) {
     const p = tr.post;
+    if (p.kind === 'limb') {
+      if (limbArt && (seen(p.loadX, p.loadY) || seen(p.loadX, p.landY))) drawLimb(ctx, tr, platforms, limbArt);
+      continue;
+    }
     let lay = layouts.get(p);
     if (!lay) layouts.set(p, (lay = layoutTrap(p, platforms)));
     if (!seen(p.x, p.y) && !seen(p.loadX, p.loadY) && !(lay.sap && seen(lay.sap.x, lay.sap.y)) && !(lay.sap2 && seen(lay.sap2.x, lay.sap2.y))) continue;
