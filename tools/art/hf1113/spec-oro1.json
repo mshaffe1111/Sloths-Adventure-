@@ -1,0 +1,31 @@
+{
+ "tag": "oro1",
+ "edits": [
+  {
+   "name": "oro1-down",
+   "src": "b:art1113/stills/oropendola-up-37.png",
+   "w": 1328,
+   "h": 1024,
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "prompt": "Change only its wings: both wings are now swept down below its body at the bottom of a wingbeat. Keep everything else exactly as in the picture: the same bird, the same chestnut-brown body, black head, pale blue cheek, black bill with the orange tip, yellow tail, the same outline and painted cartoon style, the same size and place, facing right, the same flat magenta background. Nothing else in the picture.",
+   "neg": "two birds, extra wings, extra legs, perched, branch, text, watermark, blurry, photo"
+  },
+  {
+   "name": "oro1-mid",
+   "src": "b:art1113/stills/oropendola-up-37.png",
+   "w": 1328,
+   "h": 1024,
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "prompt": "Change only its wings: both wings are now spread straight out level to the sides, gliding. Keep everything else exactly as in the picture: the same bird, the same chestnut-brown body, black head, pale blue cheek, black bill with the orange tip, yellow tail, the same outline and painted cartoon style, the same size and place, facing right, the same flat magenta background. Nothing else in the picture.",
+   "neg": "two birds, extra wings, extra legs, perched, branch, text, watermark, blurry, photo"
+  }
+ ]
+}
