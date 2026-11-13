@@ -5,6 +5,10 @@ Read this, then reference/STATE.md (newest at the bottom: every decision tonight
 (the plan, with "THE PLAN AS TOLD TO MATT"), reference/plans/MAP-REVISIONS.md (the map's changes and Matt's 84 ideas judged),
 reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Matt 11-11); it plans, dispatches, checks, decides.
 
+## THE LEAD'S OBJECTIVE (Matt, 11-13 10:27 AM ET): besides tonight's two levels, set the game up so it is easy to work on and planned
+ahead: "We're not reacting, but we are ready for everything that happens." Engine pieces before the levels that need them; a ranked,
+code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
+
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
 - **Levels per 100% of his week is the scoreboard.** Today: 1-4 AND 1-5 on his test link tonight, polished (10:13 AM; R-165.182).
 - **Critics sparingly, only when needed** (10:13 AM: "they take way too much tokens"; R-165.183): one Critic where the risk is real
