@@ -185,7 +185,7 @@ the plan, the open decisions) is in reference/handoffs/lead.md and reference/STA
    on the top line of lead.md: members' blockers are routed there.
 2. Read lead.md ("The handover", "The backup lead", "Start here"), reference/STATE.md, reference/roles/PM.md (your manual), and the
    knowledge pack it lists.
-3. **Your first message to anyone goes to the story keeper,** session_019iachLiuwNTAZUBSJWUmR3 (or its successor, if lead.md names
+3. **Your first message to anyone goes to the story keeper,** session_01FhBbYMCa3JXWmyQicbmxuu (successor 11-13; the old session_019iachLiuwNTAZUBSJWUmR3 is retired) (or its successor, if lead.md names
    one): who you are, where the plan stands per STATE.md, and what story work is open.
 4. Answer the five handover questions in PM.md section 8 from the documents alone, and fix the notes wherever they fell short.
 5. Take stock of the team (PM.md section 9) before starting anything new.

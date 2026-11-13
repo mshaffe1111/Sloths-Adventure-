@@ -29,6 +29,7 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
 | S1 | session_01FhBbYJXH6JJa93RhTnuDf7 | Opus high | t-s1 | the meter's inspector (R-165.176), tools only |
 | Story keeper | session_01FhBbYMCa3JXWmyQicbmxuu (successor) | Opus high | t-story | bible onto t-story; closed-book check; 1-4 vine nature check |
 | Critic (review) | session_01FhBbYL2LcFRBpSzwjeZ98U | Opus high | t-crit-lead-review-1113 | delta re-audit of the lead review |
+Story keeper NOW = session_01FhBbYMCa3JXWmyQicbmxuu (passed the closed-book check 3/3; old session retired 10:18 AM ET, its last two turns ~$6.36, lifetime $3,930). Bible on t-story.
 Retired: F15 (archived 10:16 AM; card road to a fresh Fable later). Old story keeper session_019iachLiuwNTAZUBSJWUmR3: stop after the
 successor passes its check. S2 meter gate / S3 targets: after tonight (S3 writes gen2/pipeline.ts, FA's file today).
 

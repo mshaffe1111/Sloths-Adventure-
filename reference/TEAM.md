@@ -51,7 +51,7 @@ artifact on a branch.
   Matt, 11-07, to the story keeper (relayed by it the same evening): "I'm creating a new lead and will be continually replacing as
   memory fills up. The only written role is you are always on the team and can't be replaced, in charge of story direction." So the story keeper is in charge of story direction: story, characters, Dot's voice and story calls are decided by it, with Matt
   having the final say; the lead brings it every such call and does not overrule it.
-  - It is session_019iachLiuwNTAZUBSJWUmR3 (the old lead), in charge of story direction. Its bible: reference/story/STORY-KEEPER.md.
+  - It is session_01FhBbYMCa3JXWmyQicbmxuu (successor 11-13; old session_019iachLiuwNTAZUBSJWUmR3 retired) (the old lead), in charge of story direction. Its bible: reference/story/STORY-KEEPER.md.
   - Canon versus delivery: the story keeper owns what the story is (canon, plot, characters, voice). How it's delivered in the game
     is bounded by the frame budget, the rules for players who can't read yet, and the Critic's gates. A story beat that can't pass
     those after 2 revisions with the story keeper goes to Matt as one multiple-choice question.
@@ -75,7 +75,7 @@ artifact on a branch.
     - It gets the release notes and the STATE.md decisions after each release, so its knowledge stays current.
   - **The role is never replaced. Only if its session itself ends** does the lead start a successor at once. Its first job: read STORY-KEEPER.md and the
     story folder, then rewrite the bible as its turnover note. The lead tells Matt. The role never lapses.
-- **Story keeper (the old lead, session_019iachLiuwNTAZUBSJWUmR3): the ONLY long-lived session kept** (Matt, 11-07: "Too much story
+- **Story keeper (the old lead, session_01FhBbYMCa3JXWmyQicbmxuu (successor 11-13; old session_019iachLiuwNTAZUBSJWUmR3 retired)): the ONLY long-lived session kept** (Matt, 11-07: "Too much story
   knowledge"). It owns the story, characters, Dot's voice and the lessons of past releases. The PM asks it before any story, dialogue
   or taste call, and it reviews player text. It's not a builder and not a node in the graph.
   Its bible: reference/story/STORY-KEEPER.md (on branch `studio` since 11-07; on main once studio merges). It listed 10 open story threads on 11-07; where each stands: ROADMAP R-165.55.

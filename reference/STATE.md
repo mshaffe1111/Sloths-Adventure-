@@ -855,3 +855,9 @@ lines); Matt sees them in the release.
   tonight (Matt's two-level target; S3 writes gen2/pipeline.ts, FA's file today; designed levels are scored by hand with S1's fixed inspector).
 - 2026-11-13 10:17 AM ET: Lead review attempt 2 PASSED its cold Critic (t-crit-lead-review-1113@e196242d); Critic retired, cost $3.30 (two audits).
   B2's S2/S3 order then changed by the lead on Matt's 10:13 AM two-level goal (entry above). Debrief 0.9.7 written (c1731e66).
+- 2026-11-13 10:18 AM ET: STORY KEEPER successor session_01FhBbYMCa3JXWmyQicbmxuu passed the closed-book check 3/3 (incl. the 10-1..10-5 piece lines =
+  Pokey, the one the old session missed); old session_019iachLiuwNTAZUBSJWUmR3 ARCHIVED. Bible + handoff + STORY-LINES on t-story@da7522e8.
+  Ids updated in LEAD-PERSONA.md, PM.md, TEAM.md, lead.md. First task: 1-4 vine rework nature check + R-165.180 develop line.
+  ART blocked: the Hugging Face connector is not connected to member sessions (502 here too); Matt asked to reconnect at
+  claude.ai/customize/connectors; ART preps specs with no spend, then hands over. S1 allowed one gates.yml line (routeHumps.test.ts).
+  FA WRITE: gen2/pipeline.ts, tower*, types.ts, levelCheck.ts, seedList.ts (join), stageTime.ts, cameraFollow.ts, tools/engine/tower*.
