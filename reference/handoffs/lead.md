@@ -10,6 +10,11 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **EVERY PIECE IS A NODE BUILDING BLOCK; EACH WORLD BUILDS ON THE LAST** (Matt, 11-13 12:14 PM ET; R-165.198; "one of the main goals I gave
+  for you"): every element built (swing vines, the two-hand vine field, pods on a beat, fig gates, creaky boughs, two roads, creatures...)
+  is a node content/dial that any later node in any world can use, so World 2 is easier to build than World 1, World 3 easier than
+  World 2, and variety multiplies. A piece only one stage can use is not done. NODES.md §8's code is the one grammar; the node key
+  (reference/engine/NODE-KEY.html) shows every building block with its status.
 - **THE LEAD IS THE EXPERT: FIND THE FLAWS AND FIX THEM WITHOUT ASKING** (Matt, 11-13 11:42 AM ET: "You don't have to ask me to fix things.
   You're the one that is looking at this, looking for flaws, looking for issues, and looking for aspects that this game can set itself
   apart from... I've never made a game before... I need you to be the expert."). Design improvements, flaws and polish are the lead's

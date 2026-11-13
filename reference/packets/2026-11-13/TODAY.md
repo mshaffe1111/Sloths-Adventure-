@@ -30,3 +30,6 @@ New files are yours alone. Need a token? One line to the lead; carry on with oth
   reference/qa-reports/<ID>/stills/), and send the lead the paths in one line. Matt judges the look from them.
 - **Context (D55):** put your context % in EVERY message to the lead; at 40% finish the edit in flight, push, write REPORT.md with an
   EXACT NEXT STEP list, and stop. (The lead cannot see a running session's context.)
+- **Every piece is a node building block (Matt 12:14 PM, R-165.198):** anything you build (a mechanic, a hazard, a creature, a route
+  shape) must be usable by any node in any world as data (a content letter or dial in NODES.md §8's code), proven on 2+ worlds' kits
+  where it can be. A piece only one stage can lay is not done.
