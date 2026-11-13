@@ -75,6 +75,13 @@ def main(pp, takes, od):
             own = tuple(int(v) for v in np.median(np.concatenate([ring[:6].reshape(-1, 3), ring[-6:].reshape(-1, 3)]), 0))
             pad = Image.new('RGB', (im.width + 40, im.height + 40), own); pad.paste(im, (20, 20))
             cut = key_own(pad, solo=True)
+        if p.get('fill'):
+            # (an enclosed dark inside, a tunnel's mouth, keys partly clear: every hole the piece encloses is made solid)
+            from scipy import ndimage as ndi
+            arr = np.asarray(cut).copy()
+            solid = ndi.binary_fill_holes(arr[..., 3] > 128)
+            arr[..., 3] = np.maximum(arr[..., 3], solid.astype(np.uint8) * 255)
+            cut = Image.fromarray(arr, 'RGBA')
         bb = cut.getchannel('A').point(lambda v: 255 if v > 8 else 0).getbbox()
         cut = cut.crop(bb)
         if p['dest'] == 'pickups':
