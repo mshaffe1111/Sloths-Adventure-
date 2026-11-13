@@ -718,3 +718,7 @@ lines); Matt sees them in the release.
   lead's branch; list kept here): step 0 idea round (Matt 6:02 PM); the story keeper's nature check before judging (R-165.164); step 1
   checks phone claims against engine.ts:1170 + cameraFollow.ts:96 (D14); step 1 greps inventory/<world>.json for every piece and lists
   art gaps (B); every brief: re-grep each cited file:line before pushing (B).
+- 2026-11-12 8:26 PM ET, Matt (after playing the new link): a HARDNESS METER on Normal, 0-100, World 10's hardest = 100; ramp starts at 1-4;
+  1-3 = "by far the easiest of all 3... a 1, maybe a 2"; 1-2 "a little bit harder than 3"; stages may fluctuate, the arc makes World 9
+  feel like a 9. R-165.172. This is STAGE-RULES §1 #5's "per-world numbers... a later talk with Matt". Part of his message didn't
+  transcribe cleanly ("Close to 4 inches..."): asked him where 1-1 sits.
