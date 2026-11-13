@@ -515,3 +515,33 @@ float, which puts a floating slab on screen, and rocks don't float. It needs his
   - B3's stump clause applies only to perched mushrooms (#21: a double off the stump top reaches 56 + 185 = 241, under its
     [-290, -270]).
 - **#10, #22, #29:** 4-5 rises with wider boughs, still 10 s or more and inside the 900 px corridor (the porter's entry). Accepted.
+
+## 9. Legs and the long form (engine, 1:04 PM ET, 2026-11-13; R-165.196, R-165.198). What is BUILT says so; the rest is the contract, not yet laid
+§8's one grammar, extended. A code that uses none of this reads exactly as before (the lock: 102/102 stages unchanged).
+
+### 9.1 Legs: which way a node is laid (BUILT for /R /U /D; /L is M2)
+- A LEG MARK is its own token between the nodes: `/R` right, `/L` left, `/U` up, `/D` down (R, L, U and D alone are jobs). It sets the
+  travel of every node after it, to the next mark. No mark: the stage's own travel, as ever. A node the brief adds takes the leg before it.
+- Any job may stand in any leg: travel is how the node is LAID, the job is what it asks. A right or left leg is laid as a run on its own
+  ground (pits, steps, water as in any run); an up or down leg is laid as a tower in a column that begins where he stands: walls, a
+  doorway in, a ledge (up) or a floor and a doorway (down) out. A section wider than a storey (1,140 px) cannot stand in a column.
+- V11 still holds across legs (no type on two neighbouring content nodes): alternate a leg's nodes, `U^ C U^`, never `U^ U^`.
+- A fixture reads: `A P /D D_ P D_ /R M R /U U^ C U^ /R X R S E` (a level, a way down, a level, a column up, a level).
+- To see a roll before any still: `npx tsx tools/engine/legsmap.ts --code "<code>" --seed 2 --out /tmp/legs.svg --png`.
+
+### 9.2 The long form: what the designer fixes on a node (PARSED and checked; the lay does not honour it yet and FAILS such a graph by name)
+After the token, each dial is `:` and one sign, in any order. A node that names none rolls it.
+| Dial | Means | Example |
+|---|---|---|
+| `:7` | rating 1-10 | `Xf2>:7` |
+| `:p5.5` | the node's difficulty target, meter points (tools/difficulty/score.ts) | `Mf2>:p6` |
+| `:t0.9` | the beat, seconds | `Mg2>:t0.9` |
+| `:&kind*n!` | threat: a cast kind, how many, `!` awake, or `z` asleep after the count (`snake*1z`); several with a comma; needs the `&` mark (`&&` a formation) | `Xf2&&>:&snake*2!` |
+| `:#kind@clock` | hazard under or along the node: soft, water, hurt, void or a world's own; `@clock` a named clock | `:#hurt`, `:#pods@beat` |
+| `:+find` `:$n` | reward: what the find is (needs `+`); how many pickups | `Pf2^+:+seed`, `:$8` |
+- New content letters, one per building block, each to be laid from WORLD data: `s` swing vine, `v` vine field (two hands), `p` beat
+  pieces on a clock, `t` gate, `x` trap. (g f c b r k w h stand.) Rule V22 checks letters and dials; none of the five is laid yet.
+- `?[a|b]` is the PICK (the card road): a walked choice lays one of two stretches. Rule V23: one a stage, after a rest, no teach inside.
+- Three strings: `A Pg1< /D Dc_ Dr_ /R R Mg2&>:&spider*1! /U Uc^ Uv^ /R R F[Pf2^+:+seed|Pg1]< S E` ·
+  `A Tg1< Pg1> /U Uc^ /L Mf2>:p6:t0.9 R /U Uc^ /R Xf2&&>:&snake*2!:#hurt R S E` · `A T P R ?[Mk2+>:+seed|Pw1&<:&snake*1z:#water] R X R S E`.
+

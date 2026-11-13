@@ -38,7 +38,8 @@ export interface CodeToken {
  *   `:7`           rating, 1-10 (the cadence)
  *   `:p5.5`        the node's difficulty target, in meter points (tools/difficulty/score.ts)
  *   `:t0.9`        the beat, seconds (the tempo mark's own number)
- *   `:&snake*2!`   threat: a cast kind (the world's creature id), how many (`*n`; unset 1), `!` awake or `z` asleep; several with a comma
+ *   `:&snake*2!`   threat: a cast kind (the world's creature id), how many (`*n`; unset 1), `!` awake, or `z` asleep after the count
+ *                  (`snake*1z`); several with a comma
  *   `:#hurt`       hazard: what lies under or along the node (soft, water, hurt, void, or a world's own hazard id), `@clock` when it
  *                  keeps a named clock's beat (`:#pods@beat`)
  *   `:+seed`       reward: what the find is (the `+` mark says there is one)
@@ -91,10 +92,11 @@ function dialsOf(tail: string, t: string, at: number): CodeDials | undefined {
     else if (sign === 't') d.beat = num(rest, 'the beat dial (":t0.9")');
     else if (sign === '&') {
       d.threat = rest.split(',').map((one) => {
-        const m = /^([a-z][a-z0-9_-]*)(?:\*(\d+))?([!z])?$/.exec(one);
-        if (!m) return bad(`"${one}" is not a threat ("kind", "kind*2", "kind*2!" awake, "kindz" asleep)`);
-        // (a kind that ends in z is written with its count, "buzz*1": a bare trailing z is the asleep mark)
-        return { kind: m[1], count: m[2] ? Number(m[2]) : 1, ...(m[3] ? { state: m[3] === '!' ? ('awake' as const) : ('asleep' as const) } : {}) };
+        // (asleep is written after the count, "snake*1z": a bare trailing z would be a letter of the kind's own name)
+        const m = /^([a-z][a-z0-9_-]*)(?:\*(\d+)([!z])?|(!))?$/.exec(one);
+        if (!m) return bad(`"${one}" is not a threat ("kind", "kind*2", "kind!" or "kind*2!" awake, "kind*2z" asleep)`);
+        const mark = m[3] ?? m[4];
+        return { kind: m[1], count: m[2] ? Number(m[2]) : 1, ...(mark ? { state: mark === '!' ? ('awake' as const) : ('asleep' as const) } : {}) };
       });
     } else if (sign === '#') {
       const m = /^([a-z][a-z0-9_-]*)(?:@([a-z][a-z0-9_-]*))?$/.exec(rest);
@@ -116,7 +118,7 @@ function formatDials(d: CodeDials | undefined): string {
   if (d.rating !== undefined) out.push(`${d.rating}`);
   if (d.points !== undefined) out.push(`p${d.points}`);
   if (d.beat !== undefined) out.push(`t${d.beat}`);
-  if (d.threat) out.push(`&${d.threat.map((k) => `${k.kind}${k.count !== 1 || (!k.state && k.kind.endsWith('z')) ? `*${k.count}` : ''}${k.state === 'awake' ? '!' : k.state === 'asleep' ? 'z' : ''}`).join(',')}`);
+  if (d.threat) out.push(`&${d.threat.map((k) => `${k.kind}${k.count !== 1 || k.state === 'asleep' ? `*${k.count}` : ''}${k.state === 'awake' ? '!' : k.state === 'asleep' ? 'z' : ''}`).join(',')}`);
   if (d.hazard) out.push(`#${d.hazard.kind}${d.hazard.clock ? `@${d.hazard.clock}` : ''}`);
   if (d.reward?.find) out.push(`+${d.reward.find}`);
   if (d.reward?.pickups !== undefined) out.push(`$${d.reward.pickups}`);

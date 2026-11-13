@@ -10,6 +10,40 @@ proven plan; Play is never blocked).
 
 Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 lays a stage UP as a tower (section 0i). Sections below are still true.
 
+Rewritten again at the stop of NODES-TRAVEL (1:04 PM ET, 2026-11-13): branch `t-nodes`: a stage laid as LEGS (section 0j). Milestone 1 of 4 only. Sections below are still true.
+
+## 0j. Legs (NODES-TRAVEL, R-165.196 / .197 / .198, t-nodes, 11-13): what the next engineer on mixed travel must know
+- **State.** M1 is built and proven on fixtures: right, up and down legs in one stage. NOT built: left legs in a fixture (the mirror
+  is written and unit-tested, never laid in a stage), the descent's own turns, forks across legs (M3), the card road (M4), the
+  lay honouring the long-form dials (item 10), the tier bots on a stage of legs, NODE-KEY.html cards, the blockcheck gate.
+  Plan and report: reference/qa-reports/NODES-TRAVEL/PLAN.md, REPORT.md. Not merged; engine.ts is untouched (engine-hook.patch there).
+- **One lay, per-leg state.** `layStage` (pipeline.ts): `legsOf(graph.nodes, graph.flow)` (legs.ts); `routed = mixed(legs)`. A run
+  and a tower of one leg have `routed` false and read nothing new. On a stage of legs `flow`, `tower`, `frame`, `floorAt` and the
+  run lay's datum (`gy`, `ctop`, `cbot`, `baseline`) are LETS, set by `beginLeg` and closed by `endLeg` at each leg change in the
+  node loop. Every `M.corridor` / `M.ground.y` read inside layStage goes through the datum: never add a raw one.
+- **A column mid-stage** (`columnFrame`, `columnWalls`, `closeColumn`, `layCatches`): begins where he stands; walls are plain
+  `block` pieces just OUTSIDE the frame (`wallIds`: a pit's `deepen` must never stretch one); going up its floor is laid at
+  `beginLeg`, going down at `endLeg` (FA's toFloor). The way out is `towerJoin(..., { way })` plus a ledge over the wall.
+  tower.ts still reads a tower from x 0: a column's pieces are handed to towerCatches / towerFalls / towerSkips moved by `-frame.x0`.
+- **Left** = `reflectLeg` (legs.ts): the leg is laid rightwards `ASIDE` px off to the side, then mirrored about `leftSum / 2`.
+  It refuses lianas and puzzle rooms by name. After all legs, a stage that ran left of x 0 is moved right whole.
+- **Meta.** `gen2.tower.flow` is 'legs' and `gen2.tower.legs` (LaidLeg: travel, i0-i1, box, `ground` of a run leg, `frame`,
+  `floorY`, `turns` of a column). Flags, hearts, quiet time and the clock read `gen2.tower.route` as on a tower. `config.travel`
+  is the LAST leg's (unset when it is right). Strays are judged per run leg against its own corridor (`corridorOf`).
+- **Engine side** (not applied: B14's token): `towerLead(stage, mode, p)` frames by the column he is in, `routeRatio` is the
+  progress bar on a stage of legs. reference/qa-reports/NODES-TRAVEL/engine-hook.patch, 5 lines, `git apply --check` clean on 64bece0f.
+- **Proof tools.** `tools/engine/legsmap.ts` (to-scale map, --png); `tools/engine/towerFly.ts` flyTower now flies a stage of legs
+  (turns found where he stands; a run leg's landing is the next piece of road, never a pit's floor). Fixtures: gen2/toyLegs.ts
+  (UP_CODE, DOWN_CODE, MIXED_CODE; `legsKit(id, code)`); tests gen2/legs.test.ts, legsLay.test.ts, nodeDials.test.ts.
+- **Traps.** (1) A fixture stage id must not be a stage of the game (5-95 here; withFixtureConfig throws on 5-3). (2) One brick a
+  job means the lay cannot steer the route back: a run brick must END LEVEL or its node strays out of the corridor and the repair
+  runs the pool dry ("pool short at slot N"). (3) Size nodes with `chunkSeconds` near one section's seconds (10), or the length
+  repair pads one node with 20 copies. (4) A graph code is jobs and shapes: a content letter on two neighbours breaks V11.
+  (5) The DOWN column lays and passes the verdicts but does not fly: towerCatches' down branch lays a bough across a turn's vine
+  (he stands on it, the vine runs through it), and a vine that leads down is taken in the air past the ledge's tip, never from
+  the ground. Rebuild that branch, add the verdict "no wood across a turn's vine", set TOWER.see to 280 (FA's note), then fly.
+  (6) In a `( ... ) &` shell line a variable set before `&&` is set in the background only.
+
 ## 0i. The tower lay (FA, R-165.170, t-fa, 11-13): what the next engineer on a stage that travels up or down must know
 - **One lay.** `layStage` (pipeline.ts) lays a run or a tower; `graph.flow` 'up'/'down' (an ascent by its kind, or `config.travel`) turns
   on the tower branches, every one behind `tower`. A run takes none of them: the lock is 102/102 unchanged. The tower's numbers and pure

@@ -500,6 +500,10 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
   const parsed = parseCode(marks.code);
   const bad = checkCode(parsed, {});
   if (bad.length) throw new Error(`gen2 ${budget.id}: graph ${g.id} "${g.code}": ${bad.join('; ')}`);
+  // (the code's long form, NODES.md §8.9: the parser reads a node's dials and the pick, and the lay does not honour them yet. A graph
+  // that writes one fails here by name, so no designer's number is ever dropped in silence)
+  const unlaid = parsed.find((t) => t.job === '?' || t.dials || t.roads?.some((r) => r.some((q) => q.dials)));
+  if (unlaid) throw new Error(`gen2 ${budget.id}: graph ${g.id}: "${formatToken(unlaid)}" ${unlaid.job === '?' ? 'is a pick node, which is not laid yet' : 'carries long-form dials, which the lay does not honour yet'} (NODES.md §8.9)`);
   let jobs: NodeJob[] = parsed.map((t) => JOB_OF[t.job]);
   let tv: Array<Travel | undefined> = marks.marked ? [...marks.travel] : [];
   const put = (at: number, del: number, ...js: NodeJob[]) => { if (tv.length) tv.splice(at, del, ...js.map(() => tv[Math.max(0, at - 1)])); jobs.splice(at, del, ...js); };
