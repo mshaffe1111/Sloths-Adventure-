@@ -21,6 +21,11 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
   Matt has not felt; small teams; members stop at their line.
 - **Show Matt pictures** (10:23 AM): for most new things, the lead sends him stills (SendUserFile) and he says if they look right;
   members push a still of each new piece as soon as it draws, upright and sideways.
+- **ENGINE FIRST, IN BULK (10:26 AM; R-165.186/.187):** the lead's main job is an engine where Matt can implement levels, 2 hours from
+  design to tests. Count what the world map needs (reference/plans/WORLD-MAP.html; count script idea: tags + travel arrows per stage),
+  build the pieces many levels use as general gen2 pieces BEFORE the levels need them; pieces used in <=3 stages of one world wait.
+  11-13 count (90 stages): dir 30 (up 20), clock 20, dark 17, swing 11, ride 11, still 10, water 10, lure 8, crumble 6, fling 6.
+  The plan doc: reference/plans/ENGINE-NEEDS.md (Architect session_01FhBbYLVSn59vpCSU4ruo6P, t-engine-needs).
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
 ## TODAY 11-13 (started 10:16 AM ET; packets reference/packets/2026-11-13/TODAY.md + one per member; stop line 9:30 PM or 40% context)
@@ -30,6 +35,7 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
 | B15 | session_01FhBbYMteKQmarmbYVMoZiN | Opus xhigh | t-b15 | bough + limb load + marks goal, crude room, then 1-5 whole (card road cut) |
 | B14 | session_01FhBbYMrAEyA6NNWrPtAzHo | Opus xhigh | t-b14 | LATTICE onto main, pods, cluster/gate, crude room v2, then 1-4 whole |
 | ART2 | session_01FhBbYLs1YqJxsPupP1Ngk1 (ART1 session_01FhBbYMvThjGLVUA8nE3ZmA had no HF; stopped) | Opus high | t-art-1113 | HF: two-hand climb (R-165.178), 1-5 set, 1-4 pieces; inventory; cap $15 |
+| ENGINE-NEEDS | session_01FhBbYLVSn59vpCSU4ruo6P | Opus high | t-engine-needs | Architect: bulk engine plan (R-165.186/.187), read only, by 12:30 PM |
 | S1 | session_01FhBbYJXH6JJa93RhTnuDf7 | Opus high | t-s1 | the meter's inspector (R-165.176), tools only |
 | Story keeper | session_01FhBbYMCa3JXWmyQicbmxuu (successor) | Opus high | t-story | bible onto t-story; closed-book check; 1-4 vine nature check |
 | Critic (review) | session_01FhBbYL2LcFRBpSzwjeZ98U | Opus high | t-crit-lead-review-1113 | delta re-audit of the lead review |
