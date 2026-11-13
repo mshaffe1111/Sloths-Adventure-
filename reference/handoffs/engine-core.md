@@ -49,6 +49,18 @@ Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 
   TOWER.see (300) is 11 px more than shows under his feet sideways (289); easyStage's flag pass and topUpFoes read x on a tower
   whose kind is not an ascent (easyMode.ts:517, pipeline topUpFoes): an ascent takes neither path.
 
+## 0j. The vine field's threats and gates, and the stage beat (B14, 1-4, 11-13): what the next engineer on them must know
+- **The stage beat is clock.ts's, now wired:** a stage lists `GeneratedStage.clocks` (ClockDef: off/warn/on/rest, offset, easyStretch);
+  engine.ts builds them at stage start (`beatClock(defs, easy, t)`, game time kept). A hazard carries `OnBeat {clock, shift}` and reads
+  `clock.read(clock, shift)`; `beat.ts beatFaults` is every builder's fairness check (a warn before every on, tells apart). Pods first.
+- **fieldPlay.ts runs a field each frame** (pods' tells/hits, torn bunches falling to the wood under them, gates); engine.ts hosts it
+  through `fieldHost` (knock = `podKnock`: off the vine, no climb taken while `knocked`, a heart only on cost 'heart').
+- **A shut gate is `broken`** (no footing; protoArt/terrain already skip broken) with `art: 'hidden'` so fieldPlay draws its bough
+  always (one picture, sagging or level); its `ways` (climbs up from it) are `off` and not drawn, its `with` (lay boughs at its height)
+  are broken with it. Exit A does not vault under a shut gate (`field.blocksTop`).
+- **1-4's finish (w1Arc14.ts finish14) finds pieces by tag** (`uid:key`, FA's `GraphBrief.tags`). Traps: Easy widens `landing`
+  pieces (field feet are not landings); the bots need tools/inspect/figPush.ts to read fig work as progress.
+
 ## 0h. The stage build's cost (BC-FIX, R-165.163, t-bc-fix, 11-12): what the next engineer on the build path must know
 - **buildcheck is the build's budget** (150 ms p95 at CPU x4, 1-1, Normal and Easy). P11's verdicts and Y2's repair took it to 446/430;
   BC-FIX brought it to 105/57 with every result identical (reference/qa-reports/BC-FIX/REPORT.md). Profile before changing code:

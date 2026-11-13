@@ -7,7 +7,7 @@ FAULTS = [
   ('pods hit a vine beside his own', 'src/game/podfall.ts', 'hands: 26,', 'hands: 90,', 'src/game/feelPairRoom.test.ts', 'pods: on a podded'),
   ('two hands count as one line', 'src/game/fieldPlay.ts', 'h.hands.b ? [h.hands.a.x, h.hands.b.x] : [h.hands.a.x]', '[p.x]', 'src/game/feelPairRoom.test.ts', 'pods: on a podded'),
   ('a knock lets him grab the next vine on the way down', 'src/game/engine.ts', "if (v.off || this.knocked > 0) continue;", 'if (v.off) continue;', 'src/game/feelPairRoom.test.ts', 'pods: on a podded'),
-  ('a shut gate is footing', 'src/game/fieldPlay.ts', 'if (b) b.broken = gateLeft(g, clusters) > 0;', 'if (b) b.broken = false;', 'src/game/feelPairRoom.test.ts', 'a gate: shut'),
+  ('a shut gate is footing', 'src/game/fieldPlay.ts', 'if (b) b.broken = shut;', 'if (b) b.broken = false;', 'src/game/feelPairRoom.test.ts', 'a gate: shut'),
   ('the climb vaults onto a shut bough', 'src/game/engine.ts', '&& !this.field?.blocksTop(nearTreeVine)) {', ') {', 'src/game/feelPairRoom.test.ts', 'a gate: shut'),
   ('a gate opens on the first cluster', 'src/game/fieldPlay.ts', 'if (left === 0) {', 'if (left <= 1) {', 'src/game/feelPairRoom.test.ts', 'gate of two'),
   ('gateShut reads a gate of two open after one', 'src/game/vineField.ts', 'gateLeft(g, clusters) > 0;\n', 'gateLeft(g, clusters) > g.clusters.length - 1;\n', 'src/game/feelPairRoom.test.ts', 'gate of two'),
@@ -21,7 +21,9 @@ FAULTS = [
   ('gateFaults forgets a vine that misses the bough', 'src/game/vineField.ts', "out.push(`cluster ${id}: its vine ${v.id} does not reach gate ${g.id}'s bough`);", '', 'src/game/podfall.test.ts', 'a gate:'),
 ]
 bad = 0
+only = sys.argv[1] if len(sys.argv) > 1 else ''
 for name, f, old, new, tfile, pat in FAULTS:
+  if only and only not in name: continue
   src = open(f).read()
   if src.count(old) != 1:
     print(f'NOT PLANTED ({src.count(old)} matches): {name}'); bad += 1; continue
