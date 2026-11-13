@@ -1,0 +1,516 @@
+{
+ "scale": 0.30653987914518643,
+ "rows": [
+  {
+   "id": "1-1",
+   "setting": "normal",
+   "seeds": 4,
+   "score": 4,
+   "min": 2.9,
+   "max": 4.1,
+   "minutes": 3.385,
+   "points": 23.6,
+   "mean": 7.1,
+   "peak": 17.700000000000003,
+   "count": {
+    "single": 58,
+    "double": 5
+   },
+   "traced": "presumed"
+  },
+  {
+   "id": "1-2",
+   "setting": "normal",
+   "seeds": 4,
+   "score": 2,
+   "min": 1.6,
+   "max": 2.2,
+   "minutes": 3.54,
+   "points": 8.45,
+   "mean": 2.4,
+   "peak": 10.85,
+   "count": {
+    "single": 63,
+    "bounce": 9,
+    "double": 1
+   },
+   "traced": "check"
+  },
+  {
+   "id": "1-3",
+   "setting": "normal",
+   "seeds": 4,
+   "score": 1.1,
+   "min": 0.8,
+   "max": 1.4,
+   "minutes": 4.029999999999999,
+   "points": 6.550000000000001,
+   "mean": 1.6,
+   "peak": 5.55,
+   "count": {
+    "single": 57,
+    "creature-choice": 15,
+    "creature": 2
+   },
+   "traced": "check"
+  },
+  {
+   "id": "1-1",
+   "setting": "easy",
+   "seeds": 4,
+   "score": 2.4,
+   "min": 1.3,
+   "max": 3.1,
+   "minutes": 3.5999999999999996,
+   "points": 13.45,
+   "mean": 3.9,
+   "peak": 11.399999999999999,
+   "count": {
+    "single": 59,
+    "double": 4,
+    "bounce": 1
+   },
+   "traced": "check"
+  },
+  {
+   "id": "1-2",
+   "setting": "easy",
+   "seeds": 4,
+   "score": 0.9,
+   "min": 0.2,
+   "max": 1.9,
+   "minutes": 3.5149999999999997,
+   "points": 3.4,
+   "mean": 0.95,
+   "peak": 4.949999999999999,
+   "count": {
+    "single": 37,
+    "bounce": 29
+   },
+   "traced": "check"
+  },
+  {
+   "id": "1-3",
+   "setting": "easy",
+   "seeds": 4,
+   "score": 0.6,
+   "min": 0.5,
+   "max": 0.6,
+   "minutes": 3.935,
+   "points": 3.15,
+   "mean": 0.8,
+   "peak": 3,
+   "count": {
+    "single": 54,
+    "creature-choice": 14,
+    "creature": 1
+   },
+   "traced": "check"
+  }
+ ],
+ "runs": [
+  {
+   "id": "1-1",
+   "setting": "normal",
+   "seed": 1,
+   "minutes": 2.99,
+   "traced": "presumed",
+   "count": {
+    "single": 58,
+    "double": 5
+   },
+   "bits": 72.2,
+   "points": 18,
+   "mean": 6,
+   "peak": 21.1,
+   "raw": 13.532185302089125
+  },
+  {
+   "id": "1-2",
+   "setting": "normal",
+   "seed": 1,
+   "minutes": 3.56,
+   "traced": "check",
+   "count": {
+    "single": 63,
+    "bounce": 9,
+    "double": 1
+   },
+   "bits": 70,
+   "points": 8.4,
+   "mean": 2.4,
+   "peak": 10.2,
+   "raw": 6.269781618309362
+  },
+  {
+   "id": "1-3",
+   "setting": "normal",
+   "seed": 1,
+   "minutes": 4.01,
+   "traced": "check",
+   "count": {
+    "single": 57,
+    "creature-choice": 15,
+    "creature": 2
+   },
+   "bits": 60.6,
+   "points": 5.4,
+   "mean": 1.3,
+   "peak": 4.1,
+   "raw": 2.7070332234624077
+  },
+  {
+   "id": "1-1",
+   "setting": "normal",
+   "seed": 2,
+   "minutes": 3.66,
+   "traced": "presumed",
+   "count": {
+    "single": 78,
+    "double": 9,
+    "bounce": 3
+   },
+   "bits": 103.6,
+   "points": 30.1,
+   "mean": 8.2,
+   "peak": 17.6,
+   "raw": 12.932750104709339
+  },
+  {
+   "id": "1-2",
+   "setting": "normal",
+   "seed": 2,
+   "minutes": 3.54,
+   "traced": "check",
+   "count": {
+    "single": 59,
+    "bounce": 9,
+    "double": 2
+   },
+   "bits": 67.5,
+   "points": 8.5,
+   "mean": 2.4,
+   "peak": 11.5,
+   "raw": 6.945506017755784
+  },
+  {
+   "id": "1-3",
+   "setting": "normal",
+   "seed": 2,
+   "minutes": 4.09,
+   "traced": "check",
+   "count": {
+    "single": 60,
+    "creature-choice": 15,
+    "creature": 2
+   },
+   "bits": 66.9,
+   "points": 8,
+   "mean": 2,
+   "peak": 7.1,
+   "raw": 4.530119054659049
+  },
+  {
+   "id": "1-1",
+   "setting": "normal",
+   "seed": 3,
+   "minutes": 3.34,
+   "traced": "presumed",
+   "count": {
+    "single": 71,
+    "double": 4
+   },
+   "bits": 80.8,
+   "points": 16.3,
+   "mean": 4.9,
+   "peak": 13.8,
+   "raw": 9.326069014236037
+  },
+  {
+   "id": "1-2",
+   "setting": "normal",
+   "seed": 3,
+   "minutes": 3.54,
+   "traced": "check",
+   "count": {
+    "single": 61,
+    "bounce": 8,
+    "double": 2
+   },
+   "bits": 69.1,
+   "points": 9.1,
+   "mean": 2.6,
+   "peak": 11.8,
+   "raw": 7.178119575689706
+  },
+  {
+   "id": "1-3",
+   "setting": "normal",
+   "seed": 3,
+   "minutes": 4,
+   "traced": "check",
+   "count": {
+    "single": 56,
+    "creature-choice": 15,
+    "creature": 2
+   },
+   "bits": 59.5,
+   "points": 4.6,
+   "mean": 1.1,
+   "peak": 3.8,
+   "raw": 2.4505543722087917
+  },
+  {
+   "id": "1-1",
+   "setting": "normal",
+   "seed": 4,
+   "minutes": 3.43,
+   "traced": "presumed",
+   "count": {
+    "single": 74,
+    "double": 7,
+    "bounce": 3
+   },
+   "bits": 101.8,
+   "points": 29.2,
+   "mean": 8.5,
+   "peak": 17.8,
+   "raw": 13.164996205848059
+  },
+  {
+   "id": "1-2",
+   "setting": "normal",
+   "seed": 4,
+   "minutes": 3.5,
+   "traced": "check",
+   "count": {
+    "single": 58,
+    "bounce": 8,
+    "double": 1
+   },
+   "bits": 63.8,
+   "points": 7,
+   "mean": 2,
+   "peak": 8.5,
+   "raw": 5.232572026805932
+  },
+  {
+   "id": "1-3",
+   "setting": "normal",
+   "seed": 4,
+   "minutes": 4.05,
+   "traced": "check",
+   "count": {
+    "single": 58,
+    "creature-choice": 15,
+    "creature": 2
+   },
+   "bits": 64.7,
+   "points": 7.7,
+   "mean": 1.9,
+   "peak": 7,
+   "raw": 4.437390533829826
+  },
+  {
+   "id": "1-1",
+   "setting": "easy",
+   "seed": 1,
+   "minutes": 3.2,
+   "traced": "check",
+   "count": {
+    "single": 59,
+    "double": 4,
+    "bounce": 1
+   },
+   "bits": 60.6,
+   "points": 11.2,
+   "mean": 3.5,
+   "peak": 14.1,
+   "raw": 8.817227251247592
+  },
+  {
+   "id": "1-2",
+   "setting": "easy",
+   "seed": 1,
+   "minutes": 3.53,
+   "traced": "check",
+   "count": {
+    "single": 37,
+    "bounce": 29
+   },
+   "bits": 50.5,
+   "points": 1.5,
+   "mean": 0.4,
+   "peak": 1.2,
+   "raw": 0.8159599574584379
+  },
+  {
+   "id": "1-3",
+   "setting": "easy",
+   "seed": 1,
+   "minutes": 3.92,
+   "traced": "check",
+   "count": {
+    "single": 54,
+    "creature-choice": 14,
+    "creature": 1
+   },
+   "bits": 54.9,
+   "points": 3,
+   "mean": 0.8,
+   "peak": 2.7,
+   "raw": 1.7197830389120898
+  },
+  {
+   "id": "1-1",
+   "setting": "easy",
+   "seed": 2,
+   "minutes": 3.87,
+   "traced": "check",
+   "count": {
+    "single": 77,
+    "double": 6,
+    "bounce": 2
+   },
+   "bits": 80.4,
+   "points": 16.5,
+   "mean": 4.3,
+   "peak": 16.2,
+   "raw": 10.21193776377849
+  },
+  {
+   "id": "1-2",
+   "setting": "easy",
+   "seed": 2,
+   "minutes": 3.52,
+   "traced": "check",
+   "count": {
+    "single": 33,
+    "bounce": 29,
+    "double": 2
+   },
+   "bits": 52.3,
+   "points": 5.9,
+   "mean": 1.7,
+   "peak": 11,
+   "raw": 6.339216565876739
+  },
+  {
+   "id": "1-3",
+   "setting": "easy",
+   "seed": 2,
+   "minutes": 3.95,
+   "traced": "check",
+   "count": {
+    "single": 56,
+    "creature-choice": 14,
+    "creature": 1
+   },
+   "bits": 58.1,
+   "points": 3.3,
+   "mean": 0.8,
+   "peak": 3.3,
+   "raw": 2.0845611648056415
+  },
+  {
+   "id": "1-1",
+   "setting": "easy",
+   "seed": 3,
+   "minutes": 3.55,
+   "traced": "check",
+   "count": {
+    "single": 72,
+    "double": 3
+   },
+   "bits": 66.8,
+   "points": 8.5,
+   "mean": 2.4,
+   "peak": 6.3,
+   "raw": 4.349485195431265
+  },
+  {
+   "id": "1-2",
+   "setting": "easy",
+   "seed": 3,
+   "minutes": 3.51,
+   "traced": "check",
+   "count": {
+    "single": 33,
+    "bounce": 29,
+    "double": 2
+   },
+   "bits": 51.5,
+   "points": 5.3,
+   "mean": 1.5,
+   "peak": 8.7,
+   "raw": 5.08535980513763
+  },
+  {
+   "id": "1-3",
+   "setting": "easy",
+   "seed": 3,
+   "minutes": 3.91,
+   "traced": "check",
+   "count": {
+    "single": 53,
+    "creature-choice": 14,
+    "creature": 1
+   },
+   "bits": 53.9,
+   "points": 2.7,
+   "mean": 0.7,
+   "peak": 2.8,
+   "raw": 1.7226697507551423
+  },
+  {
+   "id": "1-1",
+   "setting": "easy",
+   "seed": 4,
+   "minutes": 3.65,
+   "traced": "check",
+   "count": {
+    "single": 75,
+    "double": 6,
+    "bounce": 1
+   },
+   "bits": 80.5,
+   "points": 15.7,
+   "mean": 4.3,
+   "peak": 8.7,
+   "raw": 6.526309677802104
+  },
+  {
+   "id": "1-2",
+   "setting": "easy",
+   "seed": 4,
+   "minutes": 3.48,
+   "traced": "check",
+   "count": {
+    "single": 30,
+    "bounce": 30
+   },
+   "bits": 44.9,
+   "points": 0.9,
+   "mean": 0.3,
+   "peak": 0.9,
+   "raw": 0.577705257846269
+  },
+  {
+   "id": "1-3",
+   "setting": "easy",
+   "seed": 4,
+   "minutes": 3.95,
+   "traced": "check",
+   "count": {
+    "single": 54,
+    "creature-choice": 14,
+    "creature": 1
+   },
+   "bits": 56.7,
+   "points": 3.6,
+   "mean": 0.9,
+   "peak": 3.2,
+   "raw": 2.0613700717719556
+  }
+ ]
+}
