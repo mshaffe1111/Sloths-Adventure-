@@ -22,11 +22,9 @@ miss). Drawcheck stills for 1-1 in its run (/tmp/drawcheck-tFs5pn/shots): 1-1 up
 tsc PASS; full suite 3122: 3119 pass, 1 todo, 1 fail (thornSetBack, item 5: now 5/5); tools' tests 73/73; tierBots 7/7; seedlist 1-1/1-2/1-3
 --check PASS; registrycheck PASS; lock 101/102 unchanged, only 1-2 (intended); build + chunkcheck + artcheck PASS; drawcheck PASS (d1f290bb,
 584 s); generality, roadmapcheck, knowncheck, kbdcheck PASS; buildcheck PASS (easy p95 83 ms). Not run: clipcheck (no screen changed).
-## Pushback
-- library13.ts stays: its test is 1-3's plan test. stageSheets.test walks listed stages on Normal only; the gate now checks Easy too.
+## Pushback: library13.ts stays: its test is 1-3's plan test. stageSheets.test walks listed stages on Normal only; the gate now checks Easy too.
 ## Proposed level.md step 3 (replaces "copy this tool for your stage"; the lead approves)
 3. **Register it in one step:** `npx tsx tools/engine/addlevel.ts <stage>` (rolls, list, bots, flight, every registration: READY or MISSING
    by file); `libstage.ts --stage <stage>` re-rolls while tuning. Check: registrycheck.ts in CI.
 ## Lessons applied: D51 (now a gate), D19 (gate calls builtOnGen2/stageSheets), D22/law 22 (fixed roots, no known list), D52, D53, rule 12.
-## Learned: replaying a finished level's registration is the cheapest proof; a byte-identical list says the build path is the real one.
-Turnover: reference/handoffs/engine-core.md §0i.
+## Learned: replaying a finished level's registration is the cheapest proof (a byte-identical list). Turnover: engine-core.md §0i.
