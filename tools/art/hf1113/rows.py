@@ -187,14 +187,15 @@ def main():
     r.update(id='hf1113/w15-creek', source='ART Hugging Face 2026-11-13 (take creek-53, join repainted: creek-53-band-s45-9)', file='src/assets/props/pitwater/w15-creek.webp',
              kind='fast shallow creek, side on: white riffles, foam at stones, stony bed (a hurt floor)', w=cm['w'], h=cm['h'],
              layer='danger look', world_best=1,
-             worlds=W1 + ' (1-5 at dusk) | COULD 2 Sunlit Riverbank: its river (regrade the dusk light to day)',
+             worlds=W1 + ' (1-5 at dusk) | COULD 2 Sunlit Riverbank: its river, tinted to its daytime palette (see notes: TINT)',
              no_fit='9 Volcanic Jungle: lava, not water; 10 Stormy Highlands Fortress: stone and iron; 7 Ancient Ruins: carved channels',
              made_thing='n', engine_slot='new slot: 1-5 creek hurt floor (drawn as w1Creek.ts draws its tile: surface on the floor line, tiled, drifting; bed colour below)',
              footing=f"none (hurts): surface row {cm['surface']} px = the floor line; bed {cm['bed']} below the tile",
              float_class='grounded (fills a pit to the floor line)', on_screen_px=f"{round(cm['w'] * u)}x{round(cm['h'] * u)} (units, a tile)",
              ship_px=f"{cm['w']}x{cm['h']}", file_kb=round(f.stat().st_size / 1024, 1), part='H13', draw_cost='one drawImage per tile across the pit',
              used_in='1-5 (the creek)', status='cut, not wired (engine): B15 places it',
-             notes=f"tiles sideways (wrap step {cm['wrap']} vs about 1.7 between any two columns); stones stay under the surface (nothing reads as a stepping stone); no lily pads, no petals",
+             notes=f"TINT: painted in 1-5's dusk (water #8a6fb8 violet with warm orange glints; bed {cm['bed']}): another world (W2's daytime river) reuses it regraded to its own palette (the lead 11-13); "
+                   f"tiles sideways (wrap step {cm['wrap']} vs about 1.7 between any two columns); stones stay under the surface (nothing reads as a stepping stone); no lily pads, no petals",
              pokey_scale=f"{cm['h'] * u / POKEY:.2f}", scale_basis=f"3 px a unit (units_per_px {u}); stones about half Pokey's height")
     r['file_kb_ship'] = r['file_kb']
     rows.append(r)
