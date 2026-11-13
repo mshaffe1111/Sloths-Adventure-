@@ -92,3 +92,46 @@ test('the lid is from below only, and gone the frame the last fig is pushed free
     }
   assert.ok(highest(r, v, PLANS.up, b).stood, 'open: the climb vaults onto the bough');
 });
+
+test('a fig locks in on the frame it tears free: its own sound, a gold pop, the thorns settle; the last springs the gate (Matt: "an indicator that shows it was locked in")', () => {
+  const r = new RealPlay('1-4', 1);
+  const e = r.e as unknown as {
+    field: { thornsOf: (g: unknown, t: number) => { hold: number; strain: number; pull: number } };
+    clusters: { id: number; vine: number; y: number; falling?: boolean }[];
+    fieldSfx: (k: string) => void;
+    gameTime: number;
+  };
+  const heard: Array<{ k: string; f: number }> = [];
+  let f = 0;
+  e.fieldSfx = (k: string) => heard.push({ k, f });
+  // (the pods are another piece's business: one over a fig's column knocks him off mid-push)
+  (e.field as unknown as { pods: unknown[] }).pods = [];
+  // the gate with the most figs: each but the last locks with 'lift', the last springs it with 'open'
+  const g = [...r.stage.gates!].sort((a, b) => b.clusters.length - a.clusters.length)[0];
+  assert.ok(g.clusters.length >= 2, 'a gate of two figs or more to watch the notches');
+  let hold = e.field.thornsOf(g, e.gameTime).hold;
+  assert.equal(hold, 1, 'every fig on: the tangle stands whole');
+  for (const [n, id] of g.clusters.entries()) {
+    const c = e.clusters.find((q) => q.id === id)!;
+    const v = r.vines.find((q) => q.id === c.vine)!;
+    (e as unknown as { hands: unknown }).hands = null; // (placed on the next fig's vine: his hands are taken afresh there)
+    r.climb(v, c.y + 90);
+    let strained = 0, tore = -1;
+    for (f = 0; f < 150 && tore < 0; f++) {
+      r.frame({ up: true });
+      strained = Math.max(strained, e.field.thornsOf(g, e.gameTime).strain);
+      if (c.falling) tore = f;
+    }
+    assert.ok(tore >= 0, `fig ${id} pushed up its vine tears free`);
+    assert.ok(strained > 0.5, `fig ${id}: the tangle strained as he pushed (${strained.toFixed(2)})`);
+    const last = n === g.clusters.length - 1;
+    assert.ok(heard.some((h) => h.f === tore && h.k === (last ? 'open' : 'lift')), `fig ${id}: its sound on the very frame it locked (${JSON.stringify(heard.slice(-3))})`);
+    const s = e.field.thornsOf(g, e.gameTime);
+    if (!last) assert.ok(s.hold < hold, `fig ${id}: the tangle drops a notch`);
+    else {
+      r.wait(1);
+      assert.equal(e.field.thornsOf(g, e.gameTime).pull, 1, 'the last: the tangle has pulled back off the bough');
+    }
+    hold = s.hold;
+  }
+});

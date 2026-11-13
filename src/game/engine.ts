@@ -9095,12 +9095,17 @@ export class GameEngine {
     buzz('hurt');
   }
 
-  /** a vine field's sounds (stand-ins until 1-4's own: the creak is the rockfall's trickle, the burst and the thump a log's knock) */
+  /** a vine field's sounds (stand-ins until 1-4's own: the creak is the rockfall's trickle, the burst and the thump a log's knock, a fig
+   *  locking in the puzzle kit's snap, the gate springing open its gate sound and thorns) */
   private fieldSfx(kind: 'creak' | 'burst' | 'thump' | 'lift' | 'open') {
     if (kind === 'creak') sound.playRockWarn();
     else if (kind === 'burst' || kind === 'thump') sound.playLog();
-    else if (kind === 'lift') sound.playVineGrab();
-    else sound.playGate();
+    // (a fig locked in: the puzzle kit's snap, unlike the climb's grab; the last springs the gate and its thorns draw back: R-165.212)
+    else if (kind === 'lift') sound.playPuzzle('snap');
+    else {
+      sound.playGate();
+      sound.playThorns();
+    }
   }
 
   private spawnSparkBurst(x: number, y: number, color: string) {
