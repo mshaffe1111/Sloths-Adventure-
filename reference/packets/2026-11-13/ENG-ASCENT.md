@@ -1,5 +1,5 @@
-# ENG-ASCENT: gen2 lays a stage UP (1-4's foundation; R-165.170) (the lead, 2026-11-12; model changed 8:32 PM ET). Opus 5.5 MAX
-(engine; Matt 8:3x PM: "run Opus Max"; Fable takes the difficulty algorithm after his reset). Branch t-eng-ascent from t-int-2@465023ef.
+# ENG-ASCENT: gen2 lays a stage UP (1-4's foundation; R-165.170) (the lead, 2026-11-12; back to Fable 8:34 PM ET). Fable 5.2 high
+(role engine-fable; Matt 6:50 PM "get a Fable model to run it"; Opus max takes DIFF-ALGO instead). Branch t-eng-ascent from t-int-2@465023ef.
 
 Why: 1-4 "Up the Kapok" (reference/design/1-4.md on origin/t-14-design, passed the lead's look) is the first stage that travels UP.
 Today gen2 cannot lay one: pipeline.ts missionGraph throws "gen2: ascent stages run up (flow "up"): phase 2" (the TODO above it). D14

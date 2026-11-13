@@ -737,3 +737,8 @@ lines); Matt sees them in the release.
 - 2026-11-12 8:33 PM ET: INT-2 full suite on 465023ef PASS (3,119 tests, 3,117 pass, 0 fail, 2 TODO incl. the bottomless-wall check). F13's
   yield red was stale (its base 1480e843 predates Y2's fix a5bff66c, merged at d9563016). Every Step 3 gate green on the link's head
   except buildcheck (R-165.163, known; INT-2 measuring 5 heads now). The published link is fully gated.
+- 2026-11-12 8:34 PM ET, Matt corrected the lead: "when I say the Opus Max, I mean to research the algorithm and the arc... through what we
+  have already created, what the levels are going to look like... a plan on difficulty and different ways that we can build difficulty
+  into the engine." The lead had misread "run Opus Max" as the climb engine: ENG-ASCENT interrupted ~1 min in (nothing pushed),
+  archived; packet back to Fable after the reset. DIFF-ALGO widened (the arc across all 10 worlds' plans + the engine's levers) and
+  started on Opus MAX.

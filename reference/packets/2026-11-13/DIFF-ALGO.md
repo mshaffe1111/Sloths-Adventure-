@@ -1,7 +1,7 @@
-# DIFF-ALGO: research and design the hardness meter, a difficulty arc for every level (R-165.172) (the lead, 2026-11-12 8:33 PM ET).
-Fable 5.2 high (role engine-fable: diagnosis and design; Matt 8:31 PM: "get Fable to run through and create a difficulty arc, an
-algorithm that we build into it"). DESIGN + a measured prototype only; the meter's build and gate are a later Opus packet.
-Branch t-diff-algo from the integration head the lead names.
+# DIFF-ALGO: research and plan the hardness meter and the difficulty arc for the whole game (R-165.172) (the lead, 2026-11-12; Opus 8:34 PM ET).
+Opus 5.5 MAX (designer; Matt 8:33 PM: "the Opus Max... to research the algorithm and the arc that goes through what we have already
+created, what the levels are going to look like, and actually make a plan on difficulty and different ways that we can build difficulty
+into the engine"). RESEARCH + PLAN + a read-only measured prototype; the meter's build and gate are a later packet. Branch t-diff-algo.
 
 Why (Matt, 11-12 8:26-8:31 PM ET, read his words in reference/STATE.md and STAGE-RULES §1 #5): Normal gets a 0-100 hardness meter, World
 10's hardest = 100, each world about its own tenth, stages may go up and down, "when we're in the 9 levels... it feels like a 9 level".
@@ -14,7 +14,7 @@ reference/GEMINI-PCG-RESEARCH.md (Part 2 §4 density tables) and GEMINI-LEDGER.m
 play time), reference/methods/level.md, LEVEL-BAR.md, the designs 1-2/1-3 (origin/t-int-2), 1-4 (origin/t-14-design), and what the
 engine already measures (levelCheck, castBots/tierBots, the first-timer bot, inspect.ts, funcheck, the time model).
 
-## Deliver (reference/design/DIFFICULTY.md, 80 lines or fewer, plus a prototype script)
+## Deliver (reference/design/DIFFICULTY.md, 120 lines or fewer, plus a prototype script)
 1. The elements that make a stage hard, each with points and WHY (research: published difficulty models for platformers, our own
    bot data): e.g. gap distance vs max jump, timing window ms, double jumps, enemies/creatures by kind, hazards per minute, things at
    once (threat overlap), required precision landings, checkpoint spacing and the cost of a miss, time pressure, new-vs-taught.
@@ -23,7 +23,13 @@ engine already measures (levelCheck, castBots/tierBots, the first-timer bot, ins
 3. CALIBRATION: a prototype (tools/difficulty/score.ts or similar, read-only, no game change) that scores the stages we have (World 1
    at least, 1-1/1-2/1-3 on Normal and Easy), and shows Matt's anchors hold (1-1 = 4, 1-2 above 1-3, 1-3 = 1-2) without hand-tuning per
    stage; say where it disagrees with him and why.
-4. How a designer uses it (a target per level in the design doc; what to change to move a stage up or down) and how a gate would
+4. THE ARC ACROSS THE GAME: go through what exists (every world's stages as built, reference/plans/MAP-REVISIONS.md's plan for all
+   ten worlds, the designs 1-2..1-5) and give each planned stage a target band, so the whole game climbs to World 10 = 100 with
+   breathers; name where today's stages sit off their band.
+5. THE ENGINE'S LEVERS: every way the engine can raise or lower difficulty (gap and height vs jump reach, timing windows, enemy count,
+   speed and tells, hazard overlap, checkpoint spacing and cost of a miss, time limits, crumble timing, Easy's softening in
+   difficulty.ts), which exist today (file:line) and which would be new, so a designer can hit a target without guessing.
+6. How a designer uses it (a target per level in the design doc; what to change to move a stage up or down) and how a gate would
    check it (the later Opus packet's spec).
 Rules: no game code change; never loosen a rule; times from date; every file:line re-grepped before push. Return: push, a send_message
 to the lead (session_01FhBbYP63h7cCX8DyW69stq) in 10 lines or fewer with World 1's scores. Time box: 3 hours. Stop line from the lead.
