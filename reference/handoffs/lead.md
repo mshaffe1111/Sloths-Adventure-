@@ -10,6 +10,10 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **STAY AHEAD OF THE BURN (Matt, 11-13 12:43 PM ET):** the lead decides when to switch members out (fresh session at 40% context, members
+  self-report it, D55); no testing of what can't affect the game (LAWS 5: docs/tools = fast gates); no re-running a gate already green
+  on the same code; fewer members at once; medium effort for low-risk work. Where tokens really go: long sessions re-reading their
+  context each turn, many sessions at once, and Fable, more than the gates themselves.
 - **MODELS (Matt, 11-13 12:42 PM ET): no Fable (too expensive). Engine work on Opus xhigh; everything else Opus high, or medium for low-risk
   work (docs, mechanical steps, small known fixes). tools/team/models.json logs it.**
 - **THE LEVEL TARGET: ONE DESIGNER + ONE DEVELOPER, A 2-HOUR STAGE** (Matt, 11-13 12:41 PM ET): "we shouldn't have to use 20 people to create a
