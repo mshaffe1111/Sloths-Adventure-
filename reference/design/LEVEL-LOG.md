@@ -25,3 +25,5 @@ the first: count levels that reach his test link at the bar, against the usage %
 | ART2 (session_01FhBbYLs1YqJxsPupP1Ngk1) | HF: two-hand climb (2 rounds), 1-5 set + redos, 1-4 set, 9 fruit + golden guarana, 1-5 dusk, 25 pieces cut into the inventory | $25.20 (+ ~$4.22 Hugging Face) | most of tonight's painted art; retired at 53% context |
 | B14 (session_01FhBbYMrAEyA6NNWrPtAzHo) | 1-4: beat clock, pods, fig gate, vine field onto main, 1-4 arc 12/12 in beat order, old 1-4 deleted, art placed | $52.87 | most of 1-4's engine pieces; ran to 76% context (the lead's 40% watch could not see it: get_session reads 0 while a session runs, D55) |
 | ECONOMY designer (session_01FhBbYLiMADVRwZv3e9nCar) | one design for score, stars, basket, hearts, lives, Game Over (research + 420 measured bot runs) | $5.30 | reference/design/ECONOMY.md and 7 ready packets; the economy wave after 0.9.8 |
+
+**Usage (Matt's weekly %, R-165.184/185):** 11-12 ~10 PM reset; 4% at 10:36 PM 11-12; 19% at 12:39 PM 11-13 (5 Opus + 2 Fable members running, plus the lead). Budget to last to Tuesday night: ~0.8% an hour average.
