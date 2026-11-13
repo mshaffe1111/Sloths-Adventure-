@@ -59,7 +59,8 @@ function words(world: number, type: string): { verb: string; one: string; many: 
     return { verb: 'collect', one, many };
   }
   if (type === 'relic_hunt') {
-    const w = ({ 3: ['keepsake', 'keepsakes'], 5: ['message', 'messages'], 9: ['thread', 'threads'] } as Record<number, string[]>)[world] ?? ['relic', 'relics'];
+    // (World 1's search follows Meeca's marks, 1-5: stagePlan.ts GOAL_WORDS says the same)
+    const w = ({ 1: ['mark', 'marks'], 3: ['keepsake', 'keepsakes'], 5: ['message', 'messages'], 9: ['thread', 'threads'] } as Record<number, string[]>)[world] ?? ['relic', 'relics'];
     return { verb: 'find', one: w[0], many: w[1] };
   }
   if (type === 'gauntlet' && world === 4) return { verb: 'beat', one: 'guard', many: 'guards' };
@@ -123,11 +124,13 @@ export function goalInfo(cfg: Cfg, dotStage = false, creature?: string): GoalInf
     icon = w !== 8 ? { kind: 'pickup', name: 'petal' } : { kind: 'flower', num: stageFlowers(w, cfg.miniIndex)[0] };
     slotIcon = () => icon;
   } else if (type === 'relic_hunt') {
+    // (her marks, World 1's search: Meeca's carved bark scrap, the painted 'carving', never the stone idol)
+    const none: GoalIcon = w === 1 ? { kind: 'drawn', name: 'carving' } : { kind: 'drawn', name: 'idol' };
     const art = relicArt(w, 0);
-    icon = art ? { kind: 'pickup', name: art } : { kind: 'drawn', name: 'idol' };
+    icon = art ? { kind: 'pickup', name: art } : none;
     slotIcon = (i) => {
       const a = relicArt(w, i);
-      return a ? { kind: 'pickup', name: a } : { kind: 'drawn', name: 'idol' };
+      return a ? { kind: 'pickup', name: a } : none;
     };
   } else if (type === 'rescue') {
     icon = { kind: 'drawn', name: 'cage' };

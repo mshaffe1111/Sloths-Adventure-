@@ -70,6 +70,8 @@ export class CastPlay {
   private still = newStill();
   private fall = newFall();
   private readonly covers: readonly Cover[];
+  /** the stage's ground, for a glide that leaves along it (sync) */
+  private readonly ground: readonly Platform[];
   /** his landings are heard here: only from the world that teaches it (the move ladder) */
   private readonly loud: boolean;
   private readonly out: CastStep = { noticed: [], told: [], struck: [], hurts: [], cleared: [], fell: [], landed: null, woke: 0 };
@@ -82,6 +84,7 @@ export class CastPlay {
    */
   constructor(data: CastData, enemies: Enemy[], platforms: readonly Platform[], world: number, covers: readonly Cover[] = []) {
     this.covers = covers;
+    this.ground = platforms;
     this.loud = TAUGHT.landing <= world;
     this.traps = data.traps.filter((p) => Number.isFinite(p.x) && Number.isFinite(p.loadX)).map(newTrap);
     for (const e of enemies) {
@@ -225,6 +228,10 @@ export class CastPlay {
       e.wakeT = 0;
       e.x += s.facing * GLIDE.far * u * u;
       e.y += GLIDE.drop * u * u - GLIDE.lift * Math.sin(Math.PI * Math.min(1, u * 2));
+      // (down to the ground under it and away along it, never into it: an animal chased off on the flat floor (1-5's den) glided 150 px
+      //  down into the soil; off a branch's end it still drops to what is below, B15 stills 11-13)
+      const floor = groundUnder(this.ground, { x: e.x + e.width / 2, y: s.y - 4, height: 0 });
+      e.y = Math.min(e.y, floor - m.foot);
     }
     if (s.phase === 'gone' && !e.defeated) {
       // out of the stage on its own: no knock-out, nothing to draw
