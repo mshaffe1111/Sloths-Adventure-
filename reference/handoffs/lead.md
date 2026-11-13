@@ -1,3 +1,4 @@
+LEAD SESSION (blockers route here): session_01FhBbYNzGRJBDMzn6XbtQK2 (took over 2026-11-13 9:54 AM ET)
 # Turnover note: the lead (PM). Last handover: 2026-11-12 late evening by session_01FhBbYP63h7cCX8DyW69stq (rotation; Matt)
 
 Read this, then reference/STATE.md (newest at the bottom: every decision tonight is dated there), reference/plans/ENGINE-PLAN.md
@@ -12,7 +13,7 @@ reference/STATE.md before anything else. In short:
   clerk REL-097 (session_01FhBbYMo7vanZV56PXG1MTw, branch release-0.9.7) builds the candidate; the outgoing lead aims to open the PR
   about 1 AM. If it isn't merged and live when you start, finishing it is your FIRST job: Matt merges, you check the deploy and the APK
   on the Releases page (release.md "After the merge"). Matt's calls: ship the new sound; ship with R-165.174/.175/.166/.171 open.
-- **Matt's test link (EnK5) v251:** the designed 1-2 and 1-3, the 1-1 pass, and a basic vine-pair room. The integration head is
+- **Matt's test link (EnK5) v252:** the 0.9.7 candidate (STATE.md 11-13 9:16 AM; v251 had the vine-pair room, now superseded by LATTICE on t-lattice). The integration head is
   t-int-2@f01c76f7.
 - **Levels:** 1-1, 1-2, 1-3 built (Matt rated them 4-5, 2-3 and 1 on the new meter). **1-5 is designed and its lines are approved
   (t-15-design); it is the NEXT level to build, ahead of 1-4.** 1-4 is designed around a vine field Matt approved (t-15-design); it waits

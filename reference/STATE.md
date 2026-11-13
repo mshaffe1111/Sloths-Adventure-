@@ -302,6 +302,11 @@ The defect log, root causes, gates and the cold Critic stay.
 over a certain age, probably like 12." Normal = 12 and up; Easy = children. Matt is recruiting child testers but has few contacts.
 
 ## Decisions waiting on Matt (the one list; each has an R-number on ROADMAP.md)
+**CURRENT (new lead, 2026-11-13 10:00 AM ET; the 11-07 items below are history):**
+- Matt's "go" to end the pause (lead.md "The handover").
+- The story keeper's three lines, each needs his okay: R-165.175 1-1 teach "Tap here when you've read it. I'll wait!"; R-165.171 coach
+  "Flick up to hop up or over." / pad "Press Jump to hop up or over."; R-165.165 bell "Down in the hollow, on the low ledge."
+- The optional About line "We weighed 84 ideas for Sloths. 65 made it in, each grown into something of the rainforest's own."
 Matt, 11-07 (9:53 PM ET): "You're the expert in making video games. Things like how the first level should be executed... That's why I
 hired you." That covers game-design calls like the first level. It does not cover his own rulings: a rule or number he set changes only
 when he changes it (LAWS 22; D35). Story stays with the story keeper (Matt has the final say); art he rates.
