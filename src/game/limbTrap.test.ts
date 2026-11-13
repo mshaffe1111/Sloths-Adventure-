@@ -14,6 +14,7 @@ import { GOAL_SHARE, goalHave, marksHeld, normalGoal } from './goals.ts';
 import { countWord, goalLine, SEALED_LINES, sealedLine } from './stagePlan.ts';
 import { LINES_15, STAGE_15 } from './gen2/worlds/w1Arc15.ts';
 import { goalInfo } from '../components/hud/goalInfo.ts';
+import { RealPlay } from './realPlay.ts';
 
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 const LIMB: TrapPost = { id: 1, kind: 'limb', load: 'limb', limb: 7, w: 130, x: 1000, y: 400, loadX: 1000, loadY: 424, landY: 565 };
@@ -87,4 +88,23 @@ test("the HUD counts her marks, and Dot explains the locked exit in the keeper's
   assert.equal(sealedLine(3, 'relic_hunt'), null);
   assert.equal(SEALED_LINES['1:relic_hunt'], "We missed some of her marks. They're back there!");
   assert.equal(goalLine('sealed', 3, 'relic_hunt', 2), 'Sealed: find 2 more keepsakes to open it', 'every other search keeps its own words');
+});
+
+test("the engine says the keeper's line at 1-5's sealed door, not the counting line (engine.ts: stagePlan sealedLine before goalLine)", () => {
+  const sim = new RealPlay(STAGE_15, 1);
+  const st = sim.stage as unknown as { exitTotemX: number; platforms: Array<{ x: number; y: number; width: number; height: number }> };
+  const e = sim.e as unknown as { stageHint: { text: string } | null; stop?: () => void };
+  const ground = st.platforms.filter((q) => st.exitTotemX >= q.x && st.exitTotemX <= q.x + q.width && q.height > 30).sort((a, b) => a.y - b.y)[0];
+  sim.stand(st.exitTotemX - 140, ground.y);
+  // (Dot's own lines queued at the start take her banner first: each is taken down as it shows, so the door's line can come; it shows
+  //  only while she says nothing else, engine.ts)
+  const seen = new Set<string>();
+  for (let i = 0; i < 300 && !seen.has(LINES_15.sealed); i++) {
+    e.stageHint = null;
+    sim.frame({ right: true });
+    if (e.stageHint?.text) seen.add(e.stageHint.text);
+  }
+  assert.ok(seen.has(LINES_15.sealed), `at the sealed door Dot said: ${[...seen].join(' / ')}`);
+  assert.ok(![...seen].some((t) => t.startsWith('Sealed:')), 'the counting line, not the keeper\'s');
+  e.stop?.();
 });

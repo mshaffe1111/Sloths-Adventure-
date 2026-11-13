@@ -23,7 +23,7 @@ FAULTS = [
     ('Dot says the creaky line at the limb', ARC, "flag('a', 0.3), tip('tip', 'a', 0.25, 'creak'),", "flag('a', 0.3), tip('tip', 'c', 0.9, 'creak'),", T_ARC),
     ("a creaky limb hangs over a snake's patch", ARC, "over('L3', 'Q', Qa, 20 + S.lateGap,", "over('L3', 'S', G, 20,", T_ARC),
     ('the first snake of the stage is awake', ARC, "const t = trapped('t', 'r', true);", "const t = trapped('t', 'r', false);", T_ARC),
-    ("the den's patch is wider than the limb's chase", ARC, 'const W = 400, D = 150, LW = 120;', 'const W = 400, D = 300, LW = 120;', T_LIMB),
+    ("the den's patch is wider than the limb's chase", ARC, 'const W = 400, D = 150, LW = 120;', 'const W = 400, D = 300, LW = 120;', T_ARC),
     ('a step up under a deck', ARC, "    bank('r3', 'V', 200, UP), bank('z', 'r3', 260, DOWN),", "    { ...bank('r3', 'V', 200, UP), place: { kind: 'walk', after: 'V', dy: [-56, -50] } }, bank('z', 'r3', 260, DOWN), over('L4', 'r3', 200, 0, 120, { creak: true }),", T_ARC),
     ("a line changed from the keeper's words", ARC, "creak: 'Creaky limbs drop you, but only down to the roots!'", "creak: 'Creaky limbs drop you to the roots!'", T_ARC),
     ('a deck ends over the thorns (no run-off past it)', ARC, 'const RUNOFF = 150;', 'const RUNOFF = 30;', T_ARC),
