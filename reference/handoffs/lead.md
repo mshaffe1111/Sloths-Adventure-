@@ -47,6 +47,7 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 | ART2 | session_01FhBbYLs1YqJxsPupP1Ngk1 (ART1 session_01FhBbYMvThjGLVUA8nE3ZmA had no HF; stopped) | Opus high | t-art-1113 | HF: two-hand climb (R-165.178), 1-5 set, 1-4 pieces; inventory; cap $15 |
 | ENGINE-NEEDS | (retired, $10.33) | | | plan: reference/plans/ENGINE-NEEDS.md; waves A-D in STATE 11-13 |
 | ADD-LEVEL | session_01FhBbYLJhNRpJErB4SQprjk | Opus high | t-add-level | one-step add a level + registry gate (tools only) |
+| ECONOMY | session_01FhBbYLiMADVRwZv3e9nCar | Opus high | t-economy | Designer: one design for score, stars, fruit, finds, hearts, lives (R-165.194), by 2:30 PM |
 | S1 | session_01FhBbYJXH6JJa93RhTnuDf7 | Opus high | t-s1 | the meter's inspector (R-165.176), tools only |
 | Story keeper | session_01FhBbYMCa3JXWmyQicbmxuu (successor) | Opus high | t-story | bible onto t-story; closed-book check; 1-4 vine nature check |
 | Critic (review) | session_01FhBbYL2LcFRBpSzwjeZ98U | Opus high | t-crit-lead-review-1113 | delta re-audit of the lead review |
