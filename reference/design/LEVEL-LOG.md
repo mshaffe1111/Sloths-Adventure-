@@ -13,3 +13,8 @@ The point: each level should cost less than the one before it at the same bar (L
 
 **The measure from 11-12 10:03 PM ET (Matt): how many levels per 100% of his weekly usage.** The week after his 11-12 ~10 PM reset is
 the first: count levels that reach his test link at the bar, against the usage % he reports.
+
+**Member costs, 11-13 (R-165.184; get_session usage.cost_usd at retire):**
+| Member | Job | Cost | What it bought |
+|---|---|---|---|
+| Critic (session_01FhBbYL2LcFRBpSzwjeZ98U) | cold audit of the new lead's review, 2 rounds | $3.30 | caught 4 real errors in the lead's plan before anyone acted on them |

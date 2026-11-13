@@ -853,3 +853,5 @@ lines); Matt sees them in the release.
   10:16 AM: a cost line per key member as it completes (R-165.184). Started 10:16 AM: FA (Fable), B15, B14 (Opus xhigh), ART, S1 (Opus
   high), story keeper successor; F15 archived. Team table: lead.md "TODAY 11-13". Lead's call vs its own review B2: S2/S3 move after
   tonight (Matt's two-level target; S3 writes gen2/pipeline.ts, FA's file today; designed levels are scored by hand with S1's fixed inspector).
+- 2026-11-13 10:17 AM ET: Lead review attempt 2 PASSED its cold Critic (t-crit-lead-review-1113@e196242d); Critic retired, cost $3.30 (two audits).
+  B2's S2/S3 order then changed by the lead on Matt's 10:13 AM two-level goal (entry above). Debrief 0.9.7 written (c1731e66).
