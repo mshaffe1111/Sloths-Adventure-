@@ -29,7 +29,7 @@
    40
   ],
   "tol": 45,
-  "units": 30,
+  "units": 22.2,
   "fps": 8,
   "dest": "src/assets/enemies"
  }

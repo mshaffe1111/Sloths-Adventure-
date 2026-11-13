@@ -203,7 +203,7 @@ def main():
             ('oropendola', 'Montezuma oropendola flyer: 3 flap frames, 4-step cycle (oropendola.json)', '1-4 the daytime flyer (1-4.md:4)',
              'bill to tail 70 units (a 50 cm bird by a 60 cm sloth, drawn 89.1)'),
             ('leafcutter', 'leafcutter ant carrying a leaf bit: walk frames (leafcutter.json)', '1-4 the leafcutter ants (1-4.md:4)',
-             'drawn larger than life so it reads on a phone (a real one is about 2 units)')):
+             'about 20 units tall with its leaf (the lead 11-13: 26 read as a giant ant); larger than life (a real one is about 2 units) so it reads on a phone')):
         f = GAME / f'src/assets/enemies/{nm}.webp'
         if not f.exists():
             continue
