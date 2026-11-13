@@ -28,3 +28,5 @@ One holder per file; the lead passes a token only after the holder has pushed. T
 New files are yours alone. Need a token? One line to the lead; carry on with other work meanwhile.
 - **Stills early (Matt, 10:23 AM: "just show me pictures"):** push a still of each new piece as soon as it draws (upright + sideways, in
   reference/qa-reports/<ID>/stills/), and send the lead the paths in one line. Matt judges the look from them.
+- **Context (D55):** put your context % in EVERY message to the lead; at 40% finish the edit in flight, push, write REPORT.md with an
+  EXACT NEXT STEP list, and stop. (The lead cannot see a running session's context.)
