@@ -492,3 +492,5 @@ version '0.9.7', date '2026-11-12', title: **Petals and snakes, rebuilt**
 - Into the Canopy has fairer landings.
 - Quieter sound, and volume sliders that go all the way down.
 - Smoother on phones, with lots of small fixes.
+
+**0.9.7 What's New APPROVED by the lead** (11:02 PM ET); its date is set to 2026-11-13, the day it goes live. The text is unchanged.
