@@ -13,6 +13,7 @@
 import type { GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
 import { hollowLogSize } from '../../w1NewArt.ts';
 import { w1World } from './w1.ts';
+import { ROOM_12, THORN_ROW } from './w1Arc12.ts';
 
 /** the stage these rows are for: the tag its sections carry (stagePool) and the key of its brief */
 export const STAGE_15 = '1-5';
@@ -25,7 +26,8 @@ export const ARC_15: Record<string, string> = { 'search-15-arc': 'A M T R P R X 
 /** 1-5's brief, all of it data: a search for her marks, on the ground and the boughs over it, its cast 1-3's shy snake */
 export const BRIEF_15: GraphBrief = {
   ends: 'quiet', trend: 'level', branching: 'none', teaches: ['creak'], deal: { ground: 14, crumble: 29, climb: 29, hazard: 28 }, dealExact: true,
-  cast: ['snake'],
+  // (every section pit is a hollow of 1-2's thorns, as 1-2 lays them: the soft pits the bricks mark, past the row's clearStart)
+  cast: ['snake'], pits: 'hurt',
 };
 /** the story keeper's lines for 1-5, verbatim (STORY-LINES.md 11-12 "1-5 Where She Walked", approved by Matt 10:20 PM ET; and the kept
  *  ones: "She's making them last", STORY-KEEPER.md:150; the fresher petals, the mixer's 1-5). The only
@@ -113,10 +115,11 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
 interface Set { limb: number; gap: number; late: number; lateGap: number; easy: boolean; /** the low road's gaps over a soft dip from beat 5 on (her road is the hard one later: 1-5.md "Why each road") */ dip: R2 }
 const NORMAL: Set = { limb: 140, gap: 60, late: 124, lateGap: 132, easy: false, dip: [136, 143] };
 const EASY: Set = { limb: 170, gap: 50, late: 160, lateGap: 104, easy: true, dip: [104, 112] };
-/** a bank past a gap over a soft dip on the low road (a miss is a climb back, never a heart): only where no deck stands over it (no
- *  ceiling in the jump, D46). Normal's gap is the widest the lay takes at Normal's margin (pipeline maxGap: 143 px level), Easy's about three quarters of it; never a landing
+/** a bank past a gap over a hollow of 1-2's THORNS on the low road (World 1's hurt floor, taught in 1-2 and back here: everything builds
+ *  on everything, STAGE-RULES §0.1; a miss is a heart and a set-back on Normal, a set-back on Easy, and every creaky limb is whole again):
+ *  only where no deck stands over it (no ceiling in the jump, D46). Normal's gap is the widest the lay takes at Normal's margin (pipeline maxGap: 143 px level), Easy's about three quarters of it; never a landing
  *  pad on top of it (each setting's gap is its own) */
-const dip = (key: string, after: string, w: number, S: Set): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'pit', after, jump: 'jump', gapPx: S.dip, soft: true }, style: 'moss_stone', main: true });
+const dip = (key: string, after: string, w: number, S: Set): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy: [0, 0], gapPx: S.dip, soft: true }, style: 'moss_stone', main: true });
 
 // ───────────────────────────── the beats ─────────────────────────────
 /*
@@ -247,7 +250,7 @@ function creek(S: Set): Lay {
   let prev = 'r2';
   for (let j = 0; j < 7; j++) {
     const k = `s${j}`;
-    pieces.push({ key: k, shape: 'bank', w: [S.easy ? 150 : 110, S.easy ? 150 : 120], place: { kind: 'pit', after: prev, jump: 'jump', gapPx: S.easy ? [96, 104] : [132, 140], soft: true }, style: 'moss_stone', main: true });
+    pieces.push({ key: k, shape: 'bank', w: [S.easy ? 150 : 110, S.easy ? 150 : 120], place: { kind: 'jump', after: prev, dy: [0, 0], gapPx: S.easy ? [96, 104] : [132, 140], soft: true }, style: 'moss_stone', main: true });
     sockets.push(petals(`p${k}`, k, 0.5, 1));
     prev = k;
   }
@@ -360,6 +363,14 @@ export function kitLib15(): WorldKit {
   return { ...k, manifest: { ...M,
     moves: [...M.moves.filter((m) => m !== 'climb'), 'climb'],
     sections: SECTIONS_15,
+    // (1-2's thorn hollows, World 1's hurt floor, under the low road's later gaps: a heart and a set-back on Normal, a set-back on Easy)
+    hurtFloor: THORN_ROW,
+    // (room under the floor line for the hollows' depth (THORN_ROW 150-170 px), as 1-2's kit gives it: with World 1's own 80 px the
+    //  hollow fell outside the corridor and no jump over it linked)
+    corridor: { ...M.corridor, bottom: M.ground.y + ROOM_12 },
+    // (the moves 1-1 taught, as 1-2's kit has them: the level check links a jump over a thorn hollow with the double he has had since
+    //  1-1; with no row it linked single jumps only, and no hollow over 109 px was crossed)
+    lessons: { jump: '1-1', double: '1-1', bounce: '1-1' },
     required: {},
     tips: { ...M.tips, ...LINES_15 },
     // (every line of the keeper's here is a TEACH line: Dot says it on Normal's default Tips as on Help, D50)
