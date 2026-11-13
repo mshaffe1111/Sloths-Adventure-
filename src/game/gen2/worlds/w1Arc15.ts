@@ -201,7 +201,10 @@ function blocked(S: Set): Lay {
   const W1 = xv + 2 * S.late + 2 * S.lateGap + 60 + 120;
   const B = P - xv + G + 40;
   const pieces: SectionPiece[] = [
-    bank('a', null, 200), bank('a2', 'a', 180, UP), bank('show', 'a2', W1, DOWN),
+    // (the keepsake's LONE TREE (finds.ts DOT_HINTS w1_keepsake: "Climb the lone tree in Where She Walked. Check its branch."; 1-5.md
+    //  "Story promises"): a trunk on the beat's first bank and one short branch off its top, over that bank alone)
+    bank('a', null, 220), vine('tv', 'a', 220, 40), atTop('tree', 'tv', 120),
+    bank('a2', 'a', 180, UP), bank('show', 'a2', W1, DOWN),
     vine('v', 'show', W1, xv), atTop('L1', 'v', S.late, true),
     over('L2', 'show', W1, xv + S.late + S.lateGap, S.late, { creak: true }),
     // (the stub: a short sound end, then nothing: the way on is down)
@@ -215,6 +218,7 @@ function blocked(S: Set): Lay {
   ];
   const sockets: Socket[] = [
     mark('ma', 'a', 0.75), petals('pL1', 'L1', 0.5, 1), petals('pL2', 'L2', 0.5, 1),
+    { id: 'keep', role: 'findSpot', on: 'tree', t: 0.6, dn: 30 },
     { id: 'e', role: 'enemy', on: 'S', t: 0.5, dn: 0, allow: ['snake'], easy: 'soften' },
     petals('pB1', 'B1', [0.3, 0.7], 3, 200), petals('pL3', 'L3', 0.5, 1),
     // (her marks on the LOW road: over risks your way, under your hearts (1-5.md); one on a bough was missed by every bot on the
@@ -251,7 +255,10 @@ function creek(S: Set): Lay {
   let prev = 'r2';
   for (let j = 0; j < 7; j++) {
     const k = `s${j}`;
-    pieces.push({ key: k, shape: 'bank', w: [S.easy ? 150 : 110, S.easy ? 150 : 120], place: { kind: 'jump', after: prev, dy: [0, 0], gapPx: S.easy ? [96, 104] : [132, 140], soft: true }, style: 'moss_stone', main: true });
+    // (the fourth root is an island a flag can stand on: the creek's hollows make it a span where a heart can be lost, and the flag pass
+    //  needs a bank 160 px and more inside it, 2,300 px at most from the last flag)
+    const w: R2 = j === 3 ? [320, 340] : S.easy ? [150, 150] : [110, 120];
+    pieces.push({ key: k, shape: 'bank', w, place: { kind: 'jump', after: prev, dy: [0, 0], gapPx: S.easy ? [96, 104] : [132, 140], soft: true }, style: 'moss_stone', main: true });
     sockets.push(petals(`p${k}`, k, 0.5, 1));
     prev = k;
   }

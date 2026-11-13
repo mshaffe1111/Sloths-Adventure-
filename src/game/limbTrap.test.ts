@@ -13,6 +13,7 @@ import { makeEngine, standOn, step } from './engineCoreHarness.ts';
 import { GOAL_SHARE, goalHave, marksHeld, normalGoal } from './goals.ts';
 import { countWord, goalLine, SEALED_LINES } from './stagePlan.ts';
 import { LINES_15, STAGE_15 } from './gen2/worlds/w1Arc15.ts';
+import { goalInfo } from '../components/hud/goalInfo.ts';
 
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 const LIMB: TrapPost = { id: 1, kind: 'limb', load: 'limb', limb: 7, w: 130, x: 1000, y: 400, loadX: 1000, loadY: 424, landY: 565 };
@@ -46,12 +47,16 @@ test('on the real 1-5, he rides the den\'s limb down: it falls as the load and t
     const limb = e.platforms.find((p: Any) => p.id === tr.post.limb)!;
     const den = e.enemies.find((q: Any) => Math.abs(q.y + 11 - tr.post.landY) < 40 && Math.min(Math.abs(q.patrolMinX - tr.post.loadX), Math.abs(q.patrolMaxX - tr.post.loadX)) <= TRAP.scare);
     assert.ok(den, `${d}: no snake beside where the limb lands`);
-    const hp = e.player.hp;
+    const hp = e.player.hp, foot = tr.post.landY - den.y;
     standOn(e, limb, limb.x + limb.width / 2);
     let fell = false;
     for (let i = 0; i < 120; i++) { step(e, 1); if (tr.phase === 'down') { fell = true; break; } }
     assert.ok(fell, `${d}: the limb never came down`);
-    step(e, 30);
+    // (it glides down to the ground and away along it, never INTO it: on flat ground it went 150 px into the soil, B15 stills 11-13)
+    const floor = tr.post.landY;
+    let deepest = -Infinity;
+    for (let i = 0; i < 30; i++) { step(e, 1); if (!den.defeated) deepest = Math.max(deepest, den.y + foot - floor); }
+    assert.ok(deepest <= 1, `${d}: the snake glided ${Math.round(deepest)} px into the ground`);
     assert.ok(den.kit.leaving || den.kit.phase === 'gone' || den.defeated, `${d}: the snake beside it stayed (${den.kit.phase})`);
     assert.equal(e.player.hp, hp, `${d}: he was hurt riding it down`);
   }
@@ -72,6 +77,9 @@ test('her marks are a gen2 goal: every mark a section holds is laid, the goal is
 });
 
 test("the HUD counts her marks, and Dot explains the locked exit in the keeper's words", () => {
+  const g = goalInfo({ id: STAGE_15, worldIndex: 1, miniIndex: 5, objectiveType: 'relic_hunt', targetCount: 13 } as Any);
+  assert.match(g.line, /13 marks/);
+  assert.deepEqual(g.icon, { kind: 'drawn', name: 'carving' }, "her mark is Meeca's carved bark, never the stone idol");
   assert.equal(countWord(1, 'relic_hunt'), 'marks');
   assert.equal(goalLine('start', 1, 'relic_hunt', 3), 'Find 3 marks to open the sanctuary');
   assert.equal(goalLine('sealed', 1, 'relic_hunt', 2), LINES_15.sealed);
