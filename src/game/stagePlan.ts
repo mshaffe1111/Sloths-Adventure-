@@ -185,6 +185,11 @@ export function goalLine(kind: 'start' | 'late' | 'sealed', world: number, type:
   if (kind === 'late') return `Still ${n} ${noun} to ${g.verb.toLowerCase()} before the sanctuary opens`;
   return `Sealed: ${g.verb.toLowerCase()} ${n} more ${noun} to open it`;
 }
+/** Dot's words at a locked exit, by world and goal, where the story keeper wrote them (1-5's marks: STORY-LINES.md 11-12, approved by Matt
+ *  10:20 PM ET; held equal to w1Arc15.ts LINES_15.sealed by limbTrap.test.ts). The engine says it in place of goalLine's 'sealed' (the
+ *  count is on the HUD beside it); every other goal keeps goalLine's own words */
+export const SEALED_LINES: Readonly<Record<string, string>> = { '1:relic_hunt': "We missed some of her marks. They're back there!" };
+export const sealedLine = (world: number, type: string): string | null => SEALED_LINES[`${world}:${type}`] ?? null;
 function GOAL_WORDS(world: number, type: string): { verb: string; one: string; many: string } | null {
   if (type === 'harvest') {
     const [one, many] = world === 8 ? ['night bloom', 'night blooms'] : ['petal', 'petals'];

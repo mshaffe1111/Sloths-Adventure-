@@ -7,7 +7,7 @@ import { drawW8Decor, type W8DecorSet } from './w8DecorArt.ts';
 import { drawSentrySprite } from './sentrySprite.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
-import { goalLine } from './stagePlan.ts';
+import { goalLine, sealedLine } from './stagePlan.ts';
 import { bindSent, FIRST_OF_STAGE, forgetSent, markTipHeard, tipHeard } from './tipMemory.ts';
 import { FERN_HMM, ZONE_LINE } from './dotTips.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
@@ -3405,7 +3405,8 @@ export class GameEngine {
           this.barrierMsgCooldown = 1.2;
           const remaining = this.currentStage.config.targetCount - currentProgress;
           // the same word the counter at the top uses, so the two always agree
-          const line = goalLine('sealed', this.currentStage.config.worldIndex, objType, remaining);
+          // (the story keeper's own words where a goal has them, stagePlan.ts sealedLine: 1-5's marks)
+          const line = sealedLine(this.currentStage.config.worldIndex, objType) ?? goalLine('sealed', this.currentStage.config.worldIndex, objType, remaining);
           // in the banner the stage hints use (the small red floating text was hard to read on the bright doorway)
           if (!this.stageHint) this.guide(line || 'Finish the goal to open the sanctuary', 3);
           }
