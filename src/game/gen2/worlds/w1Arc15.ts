@@ -30,15 +30,16 @@ export const BRIEF_15: GraphBrief = {
   cast: ['snake'], pits: 'hurt',
 };
 /** the story keeper's lines for 1-5, verbatim (STORY-LINES.md 11-12 "1-5 Where She Walked", approved by Matt 10:20 PM ET; and the kept
- *  ones: "She's making them last", STORY-KEEPER.md:150; the fresher petals, the mixer's 1-5). The only
+ *  one: "She's making them last", STORY-KEEPER.md:150). The only
  *  player words this file holds */
 export const LINES_15 = {
   creak: 'Creaky limbs drop you, but only down to the roots!',
   sign: "Squirrels painted what's each way. Your pick!",
   sealed: "We missed some of her marks. They're back there!",
   last: "She's making them last.",
-  fresher: 'These petals are fresher. She came this way not long ago.',
 } as const;
+/* (the fresher-petals line is 1-5's WAYSIDE story beat already, dotLinesData.ts way.1-5, said at the halfway mark in its new look's words,
+ *  "She squashed this one extra flat."; as a tip too it was said twice a run, B15 stills 11-13) */
 /** Pokey's joke at the first THIS WAY / THAT WAY: held for the squirrels' sign art (World 1 has none until ART paints it) */
 export const JOKE_15 = 'THIS WAY. THAT WAY. Thank you, squirrels.';
 /** the stage's MISSION line (the keeper's, approved by Matt 11-12 10:20 PM ET): stagePlan's, held equal by library15.test.ts */
@@ -169,8 +170,7 @@ function lesson(S: Set): Lay {
 }
 /** [P] beat 4, her road or theirs: her mark at the split; UNDER (her road), the sound root way, petals and her next mark; OVER (the
  *  squirrels'), a vine up and three creaky limbs on the same beat to a short sound bough with the golden seed, down before the first snake
- *  of the stage, which sleeps on a log under a stone with its tendril beside him (shared ground: both roads meet before it). Dot's
- *  fresher-petals line at the split */
+ *  of the stage, which sleeps on a log under a stone with its tendril beside him (shared ground: both roads meet before it) */
 function herRoad(S: Set): Lay {
   const xv = 40, seedX = xv + 3 * S.limb + 3 * S.gap;
   const W = seedX + 110 + 30;
@@ -185,7 +185,7 @@ function herRoad(S: Set): Lay {
     bank('m', t.last, 220, DOWN), bank('n', 'm', 200, UP), bank('z', 'n', 240, DOWN),
   ];
   const sockets: Socket[] = [
-    tip('tip', 'a', 0.3, 'fresher'), mark('ma', 'a', 0.75),
+    mark('ma', 'a', 0.75),
     petals('pU', 'U', 0.12, 2, 80), mark('mU', 'U', (xv + 2 * S.limb + 1.5 * S.gap) / W), petals('pL2', 'L2', 0.5, 1),
     { id: 'seed', role: 'find', on: 'hi', t: 0.5, dn: 34 },
     ...t.sockets,
@@ -382,7 +382,7 @@ export function kitLib15(): WorldKit {
     required: {},
     tips: { ...M.tips, ...LINES_15 },
     // (every line of the keeper's here is a TEACH line: Dot says it on Normal's default Tips as on Help, D50)
-    teachTips: [...(M.teachTips ?? []), 'creak', 'sign', 'last', 'fresher'],
+    teachTips: [...(M.teachTips ?? []), 'creak', 'sign', 'last'],
     graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'relic_hunt'), ...Object.entries(ARC_15).map(([id, code]) => ({ id, archetype: 'relic_hunt' as const, code }))], briefs: { ...G.briefs, [STAGE_15]: BRIEF_15 } },
   } } as WorldKit;
 }

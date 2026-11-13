@@ -48,7 +48,6 @@ test("the keeper's lines verbatim (approved by Matt 11-12 10:20 PM ET), the miss
     sign: "Squirrels painted what's each way. Your pick!",
     sealed: "We missed some of her marks. They're back there!",
     last: "She's making them last.",
-    fresher: 'These petals are fresher. She came this way not long ago.',
   });
   assert.equal(JOKE_15, 'THIS WAY. THAT WAY. Thank you, squirrels.');
   assert.equal(MISSION_15, 'She marked the way they took her. Follow her marks.');
@@ -64,7 +63,7 @@ test("Dot's creaky line is a TEACH line said 800 px and more before the first li
     const first = st.platforms.filter(isCreak).sort((a: Platform, b: Platform) => a.x - b.x)[0];
     assert.ok(first.x - hint.x >= 800 && first.x - hint.x <= 1100, `seed ${seed} ${d}: her line is ${Math.round(first.x - hint.x)} px before the first limb`);
     assert.equal(st.enemies.filter((e: Any) => e.x < first.x).length, 0, `seed ${seed} ${d}: an animal before the first limb`);
-    for (const k of ['last', 'fresher', 'sign'] as const) assert.ok(st.proto.hints.some((h: Any) => h.text === LINES_15[k] && h.teach), `seed ${seed} ${d}: "${LINES_15[k]}"`);
+    for (const k of ['last', 'sign'] as const) assert.ok(st.proto.hints.some((h: Any) => h.text === LINES_15[k] && h.teach), `seed ${seed} ${d}: "${LINES_15[k]}"`);
   }
 });
 

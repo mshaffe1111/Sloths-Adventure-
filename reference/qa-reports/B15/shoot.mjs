@@ -10,17 +10,20 @@ fs.mkdirSync(out, { recursive: true });
 const b = await chromium.launch();
 const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
 // (where in each beat to stand, px past the beat's start; several spots for the long beats)
-const SPOTS = {
+const SPOTS = process.env.ALL ? {
   'w1-15-arrival': [60, 420], 'w1-15-through-or-over': [300, 700], 'w1-15-creak-lesson': [80, 900, 1300], 'w1-15-her-road': [180, 700],
   'w1-15-blocked': [200, 1100, 1500], 'w1-15-big-sign': [120, 700], 'w1-15-stone': [300, 560], 'w1-15-weave': [200, 1100], 'w1-15-freshest-mark': [200, 600],
+} : {
+  // (one spot a beat, where its question stands on screen)
+  'w1-15-arrival': [420], 'w1-15-through-or-over': [300], 'w1-15-creak-lesson': [900], 'w1-15-her-road': [380],
+  'w1-15-blocked': [1100], 'w1-15-big-sign': [700], 'w1-15-stone': [300], 'w1-15-weave': [1100], 'w1-15-freshest-mark': [500],
 };
 for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2 });
   const p = await ctx.newPage();
   p.on('pageerror', (e) => console.log('ERR', e.message));
-  await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+  await p.goto(`http://127.0.0.1:${port}/?lessons=off${setting === 'easy' ? '&difficulty=easy' : ''}`);
   await p.waitForTimeout(2500);
-  if (setting === 'easy') await p.evaluate(() => { try { localStorage.setItem('slothDifficulty', 'easy'); } catch { /* */ } window.__setDifficulty?.('easy'); });
   await p.evaluate(([v]) => window.__play('1-5', v), [+layout]);
   await p.waitForTimeout(4000);
   await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
