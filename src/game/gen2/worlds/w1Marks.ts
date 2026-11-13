@@ -20,7 +20,8 @@ export const MARK_UP_AHEAD = 320;
 const PATCH_H = ONE_DRESS['w15-mark-right'].scale * 89.1;
 
 type MarkStage = {
-  collectibles: Collectible[];
+  /** (optional: World 1's finish also takes a toy stage of bare platforms, w1.ts w1Finish, w1CutArt.test's planted stone) */
+  collectibles?: Collectible[];
   platforms: Platform[];
   vines?: Vine[];
   proto?: { trunks?: Array<{ x: number; topY: number; bottomY: number; w?: number; art?: 'plain' }>; dress?: DressPiece[] };
@@ -32,7 +33,7 @@ export const marksUp = (st: Pick<MarkStage, 'vines'>, x: number, ground: number)
 
 /** dress every mark of hers in the stage: a kapok behind it and the cut in its bark. Returns the stage */
 export function dressMarks<T extends MarkStage>(st: T): T {
-  const marks = st.collectibles.filter((c) => c.type === 'relic' && c.mark === 'meeca');
+  const marks = (st.collectibles ?? []).filter((c) => c.type === 'relic' && c.mark === 'meeca');
   if (!marks.length) return st;
   const proto = (st.proto ??= {});
   const trunks = (proto.trunks ??= []);
