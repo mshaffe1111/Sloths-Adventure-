@@ -6,6 +6,7 @@ variety across all worlds). This needs root-cause engine reasoning across the la
 Continue branch t-nodes (NODES-2's head + REPORT.md: its HISTOGRAM of named failure reasons, ranked, is your frozen start). You hold
 gen2/pipeline.ts, gen2/types.ts, tower.ts, nodeCode.ts, legs.ts, nodeAsks.ts and the kit files the report names; engine.ts by patch.
 ## Done
+0. FIRST (blocks tonight's 1-4): the tower lay's turn vine can stand past the end of the bough it climbs to (B14c: 26 px off, clearClimbs; B14b: 1-4 Easy seed 1, vine x1063 vs bough end 1037), and the verdicts let it through. Fix the lay at the root + a verdict with a planted case from that roll; push; one line to the lead (B14c re-runs 1-4's bots on it).
 1. Fix the top failure reasons at their ROOT (general, for every world's kit: missing section kinds a node can ask for, lay rules that
    only fit the shapes levels were hand-built for, verdict checks that refuse fair rolls); never loosen a fairness verdict or STAGE-RULES
    number to make a string pass (LAWS 22). Each fix: a planted test.
