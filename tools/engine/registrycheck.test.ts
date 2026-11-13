@@ -1,8 +1,8 @@
-// The registry gate (tools/engine/registrycheck.ts, ADD-LEVEL R-165.187): the shipped table passes against its known list, and every
+// The registry gate (tools/engine/registrycheck.ts, ADD-LEVEL R-165.187): the shipped table passes with no known list, and every
 // need is proven by a planted fault on the real inputs (one registration taken away, nothing else changed), each failing by its name.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { allMisses, ciChecks, CI_LOOP, judge, readKnown, realInputs, realSheetMisses, stageMisses, type RegistryInputs } from './registrycheck.ts';
+import { allMisses, ciChecks, CI_LOOP, realInputs, realSheetMisses, stageMisses, type RegistryInputs } from './registrycheck.ts';
 import { stageSheets } from '../../src/game/stageSheets.ts';
 
 const real = realInputs();
@@ -11,21 +11,16 @@ const quick = (o: Partial<RegistryInputs> = {}): RegistryInputs => ({ ...real, s
 const needs = async (id: string, I: RegistryInputs) => (await stageMisses(id, I)).map((m) => m.need);
 const listed = real.lists[0];
 
-test('the shipped table passes the gate: every miss is a known one, and no known entry is fixed (shrink-only)', async () => {
-  const { fail } = judge(await allMisses(real), readKnown());
-  assert.deepEqual(fail, []);
-});
-
-test('the known list holds only misses that existed when the gate was built, each with its reason', () => {
-  for (const k of readKnown()) assert.ok(k.stage && k.need && k.why.length > 20, JSON.stringify(k));
+test('the shipped table passes the gate: every stage-table stage registered everywhere, every list checked in CI (no known list)', async () => {
+  assert.deepEqual((await allMisses(real)).map((x) => `${x.stage} ${x.need}: ${x.line}`), []);
 });
 
 test('planted: a stage taken out of drawcheck\'s scenarios fails "drawcheck" (D51), and the gate fails on it', async () => {
   const id = real.stages.find((s) => real.scenarios.includes(s))!;
   const I = quick({ scenarios: real.scenarios.filter((s) => s !== id) });
   assert.ok((await needs(id, I)).includes('drawcheck'));
-  const { fail } = judge(await allMisses(I), readKnown());
-  assert.ok(fail.some((f) => f.startsWith(`${id} drawcheck:`)), fail.join('\n'));
+  const fail = (await allMisses(I)).map((x) => `${x.stage} ${x.need}`);
+  assert.ok(fail.includes(`${id} drawcheck`), fail.join('\n'));
 });
 
 test('planted: a listed stage with its list taken away and no stand-in fails "seeds"; a stand-in alone passes', async () => {
@@ -88,11 +83,4 @@ test('planted: gates.yml without a seed-list check for a list fails "ci-seedlist
   const I = quick({ gatesYml: bare, lists: ['1-1', '1-3'] });
   const miss = (await allMisses(I)).filter((x) => x.need === 'ci-seedlist').map((x) => x.stage);
   assert.deepEqual(miss, ['1-3']);
-});
-
-test('shrink-only: a known entry that is no longer a miss fails until it is deleted; an unknown miss fails; a known miss is held', () => {
-  const known = [{ stage: '1-2', need: 'seeds', why: 'planted: the list is owed since the gate was built' }];
-  assert.deepEqual(judge([], known).fail, ['1-2 seeds: fixed, but still in tools/engine/registry.known.json: delete the entry (shrink-only)']);
-  assert.equal(judge([{ stage: '1-2', need: 'seeds', line: 'x' }], known).fail.length, 0);
-  assert.equal(judge([{ stage: '1-2', need: 'drawcheck', line: 'x' }], known).fail.length, 2);
 });

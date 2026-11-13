@@ -19,7 +19,8 @@ proven plan; Play is never blocked).
 - **registrycheck.ts is the gate** (rolled job, seconds): every stageTable row needs kit, config, routed (stageGenerator builtOnGen2),
   levelSeeds, sheets (its rolls' creatures in stageSheets' preload, BOTH settings: stageSheets.test walks listed stages on Normal
   only), a limits.json drawcheck scenario, a seed list or standIn, and a judged scope with a row for every move Easy flies. CI checks
-  EVERY proven list via `registrycheck.ts --lists`. Known misses: tools/engine/registry.known.json (shrink-only; a fixed entry fails).
+  EVERY proven list via `registrycheck.ts --lists`. No known list: its 3 birth misses were fixed on the branch (1-1 drawcheck
+  scenario, 1-2's seed list, 1-3's list in CI), so every miss fails.
 - Trap: tools/ is outside tsconfig; typecheck a new tool with a temporary config at the repo root (types node + vite/client).
 
 ## 0h. The stage build's cost (BC-FIX, R-165.163, t-bc-fix, 11-12): what the next engineer on the build path must know

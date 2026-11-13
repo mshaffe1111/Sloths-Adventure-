@@ -16,10 +16,10 @@
  *              (flownArcs.ts); a stage with no judged scope lays to the unflown reach (`reach.unflown`) and is a miss until it is flown
  * and, once for the table: CI runs `seedlist.ts <id> --check` for EVERY proven list (.github/workflows/gates.yml), by name or through
  * this tool's `--lists` loop.
- * The misses that existed when the gate was built are in registry.known.json (LAWS law 5: shrink-only; knowncheck.mjs fails an added
- * entry, and this gate fails an entry that is no longer a miss, so it is deleted the day it is fixed).
- *   npx tsx tools/engine/registrycheck.ts                 the gate (seconds; exit 1 on a miss not known, or a known entry fixed)
- *   npx tsx tools/engine/registrycheck.ts --stage 1-4     one stage's misses, known or not (addlevel.ts prints these); exit 1 if any
+ * No known list: the misses it found when it was built (1-1 never a drawcheck scenario, 1-2 with no list, 1-3's list unchecked in CI)
+ * were fixed in the same branch (the lead's ruling, 11-13: fix the root), so every miss fails (LAWS law 22: never list around a defect).
+ *   npx tsx tools/engine/registrycheck.ts                 the gate (seconds; exit 1 on any miss)
+ *   npx tsx tools/engine/registrycheck.ts --stage 1-4     one stage's misses (addlevel.ts prints these); exit 1 if any
  *   npx tsx tools/engine/registrycheck.ts --lists         the stages with a proven list, one a line (gates.yml loops seedlist over them)
  */
 import '../../src/game/headlessDom.ts';
@@ -148,21 +148,6 @@ export async function allMisses(I: RegistryInputs): Promise<Miss[]> {
   return out;
 }
 
-export interface KnownEntry { stage: string; need: string; why: string }
-export const KNOWN_FILE = 'tools/engine/registry.known.json';
-export const readKnown = (): KnownEntry[] => (fs.existsSync(path.join(root, KNOWN_FILE)) ? readJson(KNOWN_FILE).known : []);
-const key = (x: { stage: string; need: string }) => `${x.stage}|${x.need}`;
-
-/** the gate's verdict: misses not known fail; known entries that are no longer a miss fail (shrink-only: delete them) */
-export function judge(misses: Miss[], known: KnownEntry[]): { fail: string[]; knownHeld: number } {
-  const k = new Set(known.map(key)), m = new Set(misses.map(key));
-  const fail = [
-    ...misses.filter((x) => !k.has(key(x))).map((x) => `${x.stage} ${x.need}: ${x.line}`),
-    ...known.filter((x) => !m.has(key(x))).map((x) => `${x.stage} ${x.need}: fixed, but still in ${KNOWN_FILE}: delete the entry (shrink-only)`),
-  ];
-  return { fail, knownHeld: misses.filter((x) => k.has(key(x))).length };
-}
-
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const argv = process.argv.slice(2);
   if (argv.includes('--lists')) { for (const id of Object.keys(PROVEN_INDEX)) console.log(id); process.exit(0); }
@@ -171,12 +156,11 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   if (one) {
     const ms = await stageMisses(one, I);
     if (I.lists.includes(one) && !ciChecks(I.gatesYml, one)) ms.push({ stage: one, need: 'ci-seedlist', line: `gates.yml does not check its list` });
-    const known = new Set(readKnown().map(key));
-    console.log(ms.length ? `registrycheck ${one}: ${ms.length} missing\n${ms.map((x) => `  ${x.need.padEnd(11)} ${x.line}${known.has(key(x)) ? '  [known]' : ''}`).join('\n')}` : `registrycheck ${one}: registered everywhere (${NEEDS.join(', ')})`);
+    console.log(ms.length ? `registrycheck ${one}: ${ms.length} missing\n${ms.map((x) => `  ${x.need.padEnd(11)} ${x.line}`).join('\n')}` : `registrycheck ${one}: registered everywhere (${NEEDS.join(', ')})`);
     process.exit(ms.length ? 1 : 0);
   }
   const t0 = Date.now();
-  const { fail, knownHeld } = judge(await allMisses(I), readKnown());
-  console.log(fail.length ? `registrycheck: FAIL\n  ${fail.join('\n  ')}` : `registrycheck: PASS (${I.stages.length} stages: ${I.stages.join(', ')}; ${I.lists.length} lists checked in CI; ${knownHeld} known misses held, ${KNOWN_FILE}; ${Math.round((Date.now() - t0) / 1000)} s)`);
+  const fail = (await allMisses(I)).map((x) => `${x.stage} ${x.need}: ${x.line}`);
+  console.log(fail.length ? `registrycheck: FAIL\n  ${fail.join('\n  ')}` : `registrycheck: PASS (${I.stages.length} stages: ${I.stages.join(', ')}, each registered everywhere; ${I.lists.length} lists checked in CI; ${Math.round((Date.now() - t0) / 1000)} s)`);
   process.exit(fail.length ? 1 : 0);
 }

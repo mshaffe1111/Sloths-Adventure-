@@ -106,8 +106,8 @@ else {
 // 6. the registry (fresh inputs: a list written in step 3 is on disk, not in this process's index, so it is read again in a child)
 step(6, 'every other registration (tools/engine/registrycheck.ts --stage)');
 const r = run(['tools/engine/registrycheck.ts', '--stage', id]);
-const regMisses = [...r.out.matchAll(/^ {2}(\S+)\s+(.+?)(  \[known\])?$/gm)].map((m) => ({ need: m[1], line: m[2], known: !!m[3] }));
-for (const m of regMisses) if (m.need !== 'flown') left.push(`${m.need}: ${m.line}${m.known ? ' [known miss, registry.known.json]' : ''}`);
+const regMisses = [...r.out.matchAll(/^ {2}(\S+)\s+(.+)$/gm)].map((m) => ({ need: m[1], line: m[2] }));
+for (const m of regMisses) if (m.need !== 'flown') left.push(`${m.need}: ${m.line}`);
 if (!r.code) done.push('registered everywhere registrycheck looks');
 
 console.log(`\n== addlevel ${id}: ${clock()}`);
