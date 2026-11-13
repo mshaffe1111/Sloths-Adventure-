@@ -7,3 +7,4 @@ seedlist-1-3 0 30s
 seedlist-1-4 0 75s
 seedlist-1-5 0 141s
 registrycheck 0 7s
+tierBots 0 25s
