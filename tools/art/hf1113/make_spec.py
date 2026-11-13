@@ -133,6 +133,29 @@ def fruit1(seeds=(11, 23, 37)):
     (H / 'spec-fruit1.json').write_text(json.dumps(spec, indent=1))
     print(len(items), 'stills')
 
-CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1}
+
+# ---- climb round 2: the missing opposite reach and dangling legs, edited from round 1's keepers (in the sandbox at /w/hfpokey/edits) ----
+STRAP = ('His satchel strap still runs from his shoulder on the right of the picture down to the bag at his hip on the left of the picture, '
+         'exactly as now: do not mirror him. ')
+LEGS = 'His legs hang down loosely below him, feet dangling with the toes pointing down, never standing as if on the ground. '
+
+
+def climb2():
+    edits = [
+        {'name': 'c2-reachLhigh', 'src': 'b:hfpokey/edits/c1-reachR-s3.png', 'w': 1024, 'h': 1024, 'seeds': [1, 2, 3, 4], 'lora': 0.6,
+         'neg': NEG + ', mirrored, satchel on the other side', 'prompt':
+         'Swap which arm is high. Now his left arm (on the left of the picture) reaches high up the left vine above his head, gripping it, '
+         'and his right arm (on the right of the picture) is lower and bent, gripping the right vine at the height of his chest; his '
+         'left knee is raised and his right leg hangs down. ' + STRAP + KEEP},
+        {'name': 'c2-hangdangle', 'src': 'b:hfpokey/edits/c1-hang-s1.png', 'w': 1024, 'h': 1024, 'seeds': [1, 2, 3], 'lora': 0.6,
+         'neg': NEG + ', standing, feet flat', 'prompt': 'Keep his arms and paws exactly where they are on the two vines. ' + LEGS + STRAP + KEEP},
+        {'name': 'c2-bothhigh', 'src': 'b:hfpokey/edits/c1-reachL-s3.png', 'w': 1024, 'h': 1024, 'seeds': [1, 2, 3], 'lora': 0.6,
+         'neg': NEG + ', standing, feet flat', 'prompt': 'Keep his arms and paws exactly where they are on the two vines. Both knees are '
+         'drawn up under him as he pulls himself up, his feet tucked. ' + STRAP + KEEP},
+    ]
+    (H / 'spec-climb2.json').write_text(json.dumps({'tag': 'climb2', 'edits': edits}, indent=1))
+    print(sum(len(e['seeds']) for e in edits), 'edits')
+
+CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1, 'climb2': climb2}
 if __name__ == '__main__':
     CMDS[sys.argv[1]]()
