@@ -1,5 +1,6 @@
 /**
- * The main route through a stage: the quickest way from the spawn to the shrine, found on the level check's own graph (levelCheck.ts:
+ * The main route through a stage: the quickest way from the spawn to the shrine, found on the level check's own graph as the game judges
+ * the stage (levelCheck.ts validateAsJudged:
  * every jump, climb, swing and rope it allows with the real jump physics), plus a few links the check does not model for hand-built
  * stages (a chain of lianas or silk lines, a rope between two ledges, and, as a last resort, a "presumed" hop between nearby ledges so a
  * stage the check cannot finish is still traced; those are counted and shown).
@@ -7,7 +8,8 @@
  * Times are for a brisk player who holds run: Pokey's top run speed (PHYS.maxRun), climbs at the engine's 220 px/s, swings at about
  * 430 px/s, shimmies at ROPE_SPEED, with stageTime.ts's overheads scaled to its quick player.
  */
-import { validateStage, jumpOK, HOLD_MANTLE, type CheckGraph } from '../../src/game/levelCheck.ts';
+import { validateAsJudged, jumpOK, type CheckGraph } from '../../src/game/levelCheck.ts';
+import { lesserArcs } from '../../src/game/gen2/reach.ts';
 import { PHYS, JUMP_RISE, reachJump } from '../../src/game/physics.ts';
 import { ROPE_SPEED } from '../../src/game/rope.ts';
 import { TIME, MODEL_TYPICAL, MODEL_FAST } from '../../src/game/stageTime.ts';
@@ -74,7 +76,9 @@ export const isLiana = (v: Vine) => v.vineType === 'swing_liana' || !!v.isSwingi
 
 export function findRoute(stage: Stage, targets: Array<{ x: number; y: number }> = []): Route {
   let graph: CheckGraph | null = null;
-  validateStage(stage, { inspect: (g) => (graph = g) });
+  // (the check as the game judges the stage: 1-1..1-3 on their flown arcs, levelCheck.ts validateAsJudged. validateStage alone read 1-1's
+  // 253-256 px double test gaps as past reach, so its Normal route needed a presumed hop on every layout: S1, 11-13)
+  validateAsJudged(stage, { inspect: (g) => (graph = g) });
   const g = graph as CheckGraph | null;
   const nodes = new Map<string, Node>();
   const edges = new Map<string, Edge[]>();
@@ -205,17 +209,21 @@ export function findRoute(stage: Stage, targets: Array<{ x: number; y: number }>
 const standable = (p: Platform) => p.type !== 'bouncy' && p.type !== 'moving' && p.type !== 'drift' && !p.push && !p.broken;
 
 /**
- * How much of one plain jump a move from X to Y asks (0 = a walk or a step down): the gap against the closed-form reach at that height
- * (physics.ts reachJump), or the rise against the highest a jump lifts him onto a lip (JUMP_RISE and the hoist, levelCheck HOLD_MANTLE),
- * whichever is nearer its limit. Only ever compared with another move's share, to pick the easier way.
+ * How much of one plain jump a move from X to Y asks (0 = a walk or a step down), on the FLOWN single (gen2/reach.ts lesserArcs, the
+ * hold at its best: 246 px level, 123 px up a block face, 117 onto a thin lip; the same physics on every stage and both settings, within
+ * 2 px): the gap against that reach, carried to the landing's height by the closed form's shape (physics.ts reachJump, which alone reads
+ * 33-69 px short: reference/specs/reach.md §4), or the rise against the climb, whichever is nearer its limit. The meter (score.ts REACH)
+ * measures a move on the same flown figures. Only ever compared with another move's share, to pick the easier way.
  */
+const FLOWN = lesserArcs('easy', '1-1').single;
 export function moveShare(X: Platform, Y: Platform): number {
   const [x0, x1] = ext(X), [y0, y1] = ext(Y);
   const gap = Math.max(0, y0 - x1, x0 - y1);
   const rise = X.y - Y.y;
   if (gap <= 10 && rise <= 16) return 0;
-  const r = reachJump(rise, false);
-  return Math.max(r > 0 ? gap / r : Infinity, Math.max(0, rise) / (JUMP_RISE + HOLD_MANTLE));
+  const shape = reachJump(rise, false) / reachJump(0, false);
+  const climb = Y.type === 'solid' && Y.height >= 50 ? FLOWN.climb.block : FLOWN.climb.thin;
+  return Math.max(shape > 0 ? gap / (FLOWN.gap * shape) : Infinity, Math.max(0, rise) / climb);
 }
 
 /**

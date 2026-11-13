@@ -207,35 +207,15 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
   const live = st.platforms.filter((p: any) => !p.broken);
   jumps.forEach((j, i) => {
     const e: any = edges[i];
-    let rep: JumpReport = j;
-    let note = '';
-    if (e) {
-      const lo = e.dir === 1 ? e.x : e.to.x + e.to.width, hi = e.dir === 1 ? e.to.x : e.x;
-      // (a raised block between the two banks, low enough to hop onto (a single's climb), is no gap: he hops onto it and walks off;
-      // routeJumps links the banks over it, and inspectJumps then calls the space under that jump a pit. Seen on 1-2's root humps, 11-12;
-      // a platform higher than a hop is a ceiling or a tower's next floor, never a hump: 7-8, 11-12)
-      const hump = hi - lo > 40 ? live.find((p: any) => p !== e.from && p !== e.to && p.y < Math.min(e.from.y, e.to.y) - 10 && e.from.y - p.y <= REACH.single.climb && Math.min(hi, p.x + p.width) - Math.max(lo, p.x) >= 0.5 * (hi - lo)) : null;
-      if (hump) { rep = { ...j, gap: 0, rise: e.from.y - hump.y, landW: hump.width, miss: 'retry', dbl: false, dblNeeded: false, unflyable: false, reach: (e.from.y - hump.y) / REACH.single.climb }; note = ' (hop onto the block the route jumped over)'; }
-    }
+    // (the route steps onto a hump, down a stair and into a shallow dip itself, so every edge here is a real jump: route.ts stepBetween,
+    // S1 11-13; this file corrected 1-2's humps and dips on its own until then)
     // (a mushroom launches him: the take-off is bouncy, or a cap or floor mushroom sits at the take-off's edge)
     const bouncy = !!e && (e.from.type === 'bouncy' || live.some((p: any) => p.type === 'bouncy' && Math.abs((e.dir === 1 ? p.x + p.width : p.x) - e.x) < 60 && Math.abs(p.y - e.from.y) <= 40));
-    let { move, share, bits: moveBits } = moveOf(rep, setting, bouncy);
-    // (a lower block under the gap is a dip with a floor: he may step down into it and climb out, by a hop or the dip's own mushroom;
-    // routeJumps links the banks over it, so take the easier way. Seen on 1-2's root steps and its finale's hollow, 11-12)
-    if (e && !note) {
-      const lo = e.dir === 1 ? e.x : e.to.x + e.to.width, hi = e.dir === 1 ? e.to.x : e.x;
-      const dip = hi - lo > 40 ? live.find((p: any) => p !== e.from && p !== e.to && p.type !== 'bouncy' && p.y > Math.max(e.from.y, e.to.y) + 10 && Math.min(hi, p.x + p.width) - Math.max(lo, p.x) >= 0.5 * (hi - lo)) : null;
-      if (dip) {
-        const out = dip.y - e.to.y;
-        const lift = live.some((p: any) => p.type === 'bouncy' && p.x < dip.x + dip.width && p.x + p.width > dip.x && Math.abs(p.y + 30 - dip.y) < 40);
-        const alt = out <= 0 ? { move: 'step', share: 0, bits: 0 } : lift ? { move: 'bounce', share: out / REACH.bounce.climb, bits: fittsBits(out / REACH.bounce.climb) } : moveOf({ ...rep, gap: 0, rise: out, dbl: false, unflyable: false, reach: out / REACH.single.climb }, setting, false);
-        if (alt.bits < moveBits) { ({ move, share, bits: moveBits } = alt); note = ` (down into the dip and out${lift ? ' on its mushroom' : ''}: the route jumped over it)`; }
-      }
-    }
-    const bits = moveBits + landBits(rep.landW);
+    const { move, share, bits: moveBits } = moveOf(j, setting, bouncy);
+    const bits = moveBits + landBits(j.landW);
     const span = e ? [e.dir === 1 ? e.x : e.to.x + e.to.width, e.dir === 1 ? e.to.x : e.x] : [j.x, j.x + j.gap];
-    const cost = costAt(st, softPits, span[0], span[1], rep.miss);
-    add({ t: clockAt(samples, j.x, j.y), x: j.x, kind: move, bits, cost, stakes: stakesOf(st, cost, j.x), threat: false, note: `gap ${Math.round(rep.gap)} rise ${Math.round(rep.rise)} land ${Math.round(rep.landW)} share ${share.toFixed(2)}${note}` });
+    const cost = costAt(st, softPits, span[0], span[1], j.miss);
+    add({ t: clockAt(samples, j.x, j.y), x: j.x, kind: move, bits, cost, stakes: stakesOf(st, cost, j.x), threat: false, note: `gap ${Math.round(j.gap)} rise ${Math.round(j.rise)} land ${Math.round(j.landW)} share ${share.toFixed(2)}` });
   });
   // (the stage's drop traps: a creature whose load lands within 160 px of it is cleared from out of its reach)
   const traps: Array<{ loadX: number }> = (rp.e.cast?.traps ?? []).map((tr: any) => tr.post);

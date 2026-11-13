@@ -7,6 +7,9 @@
 //  2. the inspector builds each stage as the game builds it on entry, on both settings: engine.ts:901, through generateStage for every
 //     stage built on gen2 (stageGenerator.ts builtOnGen2). Before S1 stages.ts built 1-2 and 1-3 for Normal and then threw in easyStage
 //     on Easy, and built 1-1 with its deleted hand-built builder.
+//  3. the route is found on the check as the game judges the stage (levelCheck.ts validateAsJudged: 1-1..1-3 on their flown arcs).
+//     Before S1 it asked validateStage alone, which reads 1-1's 253-256 px double test gaps as past reach, so 1-1's Normal route was
+//     finished by a "presumed" hop on every layout, the meter's anchor stage included.
 // The detectors below are written from the stage data alone, not from route.ts's own rule, so the test does not grade itself.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -104,4 +107,14 @@ test('the inspector builds 1-1, 1-2 and 1-3 as the game does on entry, on both s
       assert.deepEqual(sig(mine), sig(game), `${id} ${s}: the inspector's stage is the game's`);
     }
   }
+});
+
+test("the route is the check's own on 1-1, 1-2 and 1-3, both settings: no presumed hop (1-1's double test gap is judged on its flown arcs)", () => {
+  const bad: string[] = [];
+  for (const id of STAGES) for (const seed of SEEDS) for (const s of ['normal', 'easy'] as Setting[]) {
+    setDifficulty(s);
+    const r = findRoute(new RealPlay(id, seed).stage as any, []);
+    if (r.traced === 'presumed' || r.traced === 'failed') bad.push(`${id} seed ${seed} ${s}: ${r.traced}`);
+  }
+  assert.deepEqual(bad, []);
 });
