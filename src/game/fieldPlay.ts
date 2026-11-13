@@ -16,7 +16,7 @@ import type { Platform, PlayerState, Vine } from './types.ts';
 import { POD, podAt, podHits, type PodColumn, type PodCost } from './podfall.ts';
 import type { ClockRead } from './clock.ts';
 import { GATE, clusterLand, fallCluster, gateLeft, gateOver, gateSag, gateShut, type ClusterGate, type Hands, type VineCluster } from './vineField.ts';
-import { drawGate, drawPod } from './vineFieldArt.ts';
+import { drawGate, drawGateThorns, drawPod, type ThornState } from './vineFieldArt.ts';
 
 /** what the field asks of its host (the engine) */
 export interface FieldHost {
@@ -43,6 +43,10 @@ export class FieldPlay {
   /** where a gate's sag is easing to, and from (px), for its lift */
   private readonly lift = new Map<number, { from: number; to: number; t0: number; len: number }>();
   private readonly gateIds: Set<number>;
+  /** where each cluster was laid (its y), to read how far up its vine he has pushed it */
+  private readonly laid = new Map<number, number>();
+  /** a kept thorn state (no allocation a frame) */
+  private readonly thorn: ThornState = { hold: 1, strain: 0, settle: 0, pull: 0 };
 
   constructor(
     readonly pods: readonly PodColumn[],
@@ -52,6 +56,7 @@ export class FieldPlay {
     private readonly clusters: VineCluster[],
   ) {
     this.gateIds = new Set(gates.map((g) => g.platform));
+    for (const c of clusters) this.laid.set(c.id, c.y);
     // a shut gate is no footing until its clusters are freed
     for (const g of gates) {
       const b = platforms.find((q) => q.id === g.platform);
@@ -152,6 +157,8 @@ export class FieldPlay {
   torn(c: VineCluster, h: FieldHost): void {
     const v = this.vines.find((q) => q.id === c.vine);
     if (v) c.land = clusterLand(v, c.y, this.platforms, this.gateIds);
+    // (it locks in: a gold pop where it tore free, under the bough it was holding down)
+    if (v) h.spark(v.x, c.y - c.h, '#fde68a');
     for (const g of this.gates) {
       if (!g.clusters.includes(c.id)) continue;
       const left = gateLeft(g, this.clusters);
@@ -190,6 +197,29 @@ export class FieldPlay {
     return l.from + (l.to - l.from) * e;
   }
 
+  /** how a gate's thorn tangle stands at `t` (vineFieldArt.ts drawGateThorns): a notch less for each fig in, straining while one is
+   *  pushed, a shudder as one locks in, pulled back after the last */
+  thornsOf(g: ClusterGate, t: number): ThornState {
+    const s = this.thorn;
+    const n = g.clusters.length;
+    const left = gateLeft(g, this.clusters);
+    const l = this.lift.get(g.id);
+    const since = l ? t - l.t0 : Infinity;
+    s.hold = n ? (left || 1) / n : 0;
+    s.pull = left === 0 ? (l ? Math.min(1, since / GATE.pull) : 1) : 0;
+    s.settle = left > 0 && since < GATE.settle ? Math.sin((since / GATE.settle) * Math.PI) * (1 - since / GATE.settle) : 0;
+    s.strain = 0;
+    for (const id of g.clusters) {
+      const c = this.clusters.find((q) => q.id === id);
+      const v = c && !c.falling && !c.gone ? this.vines.find((q) => q.id === c.vine) : undefined;
+      const y0 = c ? this.laid.get(c.id) : undefined;
+      if (!c || !v || y0 === undefined) continue;
+      const way = y0 - (v.topY + c.h);
+      if (way > 1) s.strain = Math.max(s.strain, Math.min(1, (y0 - c.y) / way));
+    }
+    return s;
+  }
+
   /** the pods and the shut gates on screen (stand-ins: vineFieldArt.ts); `beat` reads a subscriber's beat */
   draw(ctx: CanvasRenderingContext2D, t: number, x0: number, x1: number, beat: (clock: string, shift?: number) => ClockRead): void {
     for (const g of this.gates) {
@@ -200,6 +230,7 @@ export class FieldPlay {
       const sag = this.sagOf(g, t);
       if (!b.broken && sag < 0.5 && b.art !== 'hidden') continue;
       drawGate(ctx, b, g.far, sag);
+      if (g.clusters.length) drawGateThorns(ctx, b, g.far, sag, this.thornsOf(g, t), t);
     }
     for (const pod of this.pods) {
       if (pod.x < x0 - 60 || pod.x > x1 + 60) continue;

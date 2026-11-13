@@ -25,6 +25,8 @@ const PIECES = {
   bough: piece(new URL('../assets/w1-1113/w14-roughbough.webp', import.meta.url).href),
   // (a silk tuft cut from the burst's own plume, its husk side faded out: POLISH-1 11-13, the inventory's hf1113/w14-fluff)
   fluff: piece(new URL('../assets/w1-1113/w14-fluff.webp', import.meta.url).href),
+  // (a shut gate's thorn tangle: 1-2's own painted bramble, the inventory's w1-thorn-bramble-long, the art World 1's hurt floor ships)
+  thorns: piece(new URL('../assets/props/pits/w1-thorn-long.webp', import.meta.url).href),
 };
 /** a piece's picture once loaded (starts the load; the phone taking it back reloads it: atlasLoader.ts) */
 function pic(p: Piece): HTMLImageElement | null {
@@ -270,6 +272,60 @@ export function drawGate(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 
     ctx.beginPath();
     ctx.ellipse(fx, thick + 2, 12, 5, 0, 0, Math.PI);
     ctx.fill();
+  }
+  ctx.restore();
+}
+
+/** the bramble's picture (522 x 203, its stems' foot about 92% down) and how tall it stands on a shut bough (a share of his height) */
+const THORNS = { w: 522, h: 203, foot: 0.92, tall: 1.25 } as const;
+
+/** how a shut gate's thorn tangle stands now (fieldPlay.ts thornsOf) */
+export interface ThornState {
+  /** how much of it is still there (1 every fig on; less a notch for each fig freed; the pull-back runs 0 to 1 after the last) */
+  hold: number;
+  /** 0..1 the most-pushed fig's way up its vine: the tangle strains up as he pushes */
+  strain: number;
+  /** 0..1 the settle after a fig locks in (a quick shudder down) */
+  settle: number;
+  /** 0..1 the pull-back once the last fig is in: the tangle draws back off the bough to its two ends and is gone */
+  pull: number;
+}
+
+/**
+ * A shut gate's thorn tangle (Matt, R-165.212: "put something over the platform... that shows it is locked"; World 1 has no made things):
+ * 1-2's painted bramble lying along the shut bough, over the way up, tilted with its sag. It strains as a fig is pushed, shudders down a
+ * notch as each fig locks in, and on the last it pulls back off the bough to its ends. Only its motion is code (STAGE-RULES §4).
+ */
+export function drawGateThorns(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 'y' | 'width'>, far: -1 | 1, sag: number, s: ThornState, t: number) {
+  if (s.pull >= 1 || s.hold <= 0) return;
+  const im = pic(PIECES.thorns);
+  if (!im) return;
+  const pivotX = far > 0 ? b.x : b.x + b.width;
+  const ang = Math.atan2(sag, b.width) * far;
+  const h0 = THORNS.tall * POKEY_H;
+  const pw = (h0 * THORNS.w) / THORNS.h;
+  const span = b.width * 0.94;
+  const n = Math.max(1, Math.ceil(span / (pw * 0.8)));
+  const step = n > 1 ? (span - pw) / (n - 1) : 0;
+  const ease = s.pull * s.pull * (3 - 2 * s.pull);
+  const tall = h0 * (0.55 + 0.45 * s.hold) * (1 - 0.85 * ease) * (1 - 0.12 * s.settle) * (1 + 0.1 * s.strain);
+  const shake = s.strain * 1.6 * Math.sin(t * 47) + s.settle * 2.5 * Math.sin(t * 61);
+  ctx.save();
+  ctx.translate(pivotX, b.y);
+  ctx.rotate(ang);
+  const x0 = (far > 0 ? 0 : -b.width) + (b.width - span) / 2;
+  const mid = x0 + span / 2;
+  ctx.globalAlpha = 1 - ease;
+  for (let i = 0; i < n; i++) {
+    const cx = n > 1 ? x0 + pw / 2 + step * i : mid;
+    // (the pull-back: each clump draws away from the middle, to its own end of the bough)
+    const out = (cx < mid ? -1 : 1) * ease * span * 0.35;
+    const flip = i % 2 ? -1 : 1;
+    ctx.save();
+    ctx.translate(cx + out + (i % 2 ? shake : -shake), 0);
+    ctx.scale(flip, 1);
+    ctx.drawImage(im, -pw / 2, -tall * THORNS.foot, pw, tall);
+    ctx.restore();
   }
   ctx.restore();
 }

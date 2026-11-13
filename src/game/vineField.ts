@@ -246,6 +246,9 @@ export const GATE = {
   lid: 4,
   /** and this far past either end of its bough (px: his body's half width, so a leap from an end vine cannot round it) */
   lidSide: 22,
+  /** seconds a gate's thorn tangle shudders as a fig locks in, and takes to pull back off the bough after the last */
+  settle: 0.4,
+  pull: 0.7,
 } as const;
 
 /** how many of a gate's clusters are still snagged */
