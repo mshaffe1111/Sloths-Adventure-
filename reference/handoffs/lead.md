@@ -8,7 +8,7 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
 The outgoing lead's memory was compressed and it made three misses on 11-12 (typed times, a misread instruction, a Fable job started out
 of order); Matt rotated for a sharper, cheaper lead. Read reference/handoffs/lead.md's RIGHT NOW block and the last 11-12 entries of
 reference/STATE.md before anything else. In short:
-- **Release 0.9.7 is in flight** (Matt's go 11-12 ~11 PM: today's work live, What's New updated, the merge link for him). The release
+- **0.9.7 is LIVE (11-13 ~9:30 AM ET):** merge d8d6a973, deploy and APK green, release v0.9.7-39. (Was: release 0.9.7 in flight) (Matt's go 11-12 ~11 PM: today's work live, What's New updated, the merge link for him). The release
   clerk REL-097 (session_01FhBbYMo7vanZV56PXG1MTw, branch release-0.9.7) builds the candidate; the outgoing lead aims to open the PR
   about 1 AM. If it isn't merged and live when you start, finishing it is your FIRST job: Matt merges, you check the deploy and the APK
   on the Releases page (release.md "After the merge"). Matt's calls: ship the new sound; ship with R-165.174/.175/.166/.171 open.
