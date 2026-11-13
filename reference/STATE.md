@@ -873,3 +873,10 @@ lines); Matt sees them in the release.
   ART2 on an HF sandbox (~$2.75/h; the bucket/repo writes 403 for this credential), climb round 1 running; story t-story@46fc378f;
   ENGINE-NEEDS started. B15 WIP d8f73cfc edited 4 shared files it does not hold (pipeline.ts, gen2/types.ts = FA; types.ts, engine.ts = B14):
   sent back (hunks to patches, revert). Check at every check-in: git diff --stat base...<branch> -- <shared files> vs the token table.
+- 2026-11-13 10:39 AM ET: ENGINE-NEEDS DONE (Architect, $10.33, 11 min; reference/plans/ENGINE-NEEDS.md now on the lead branch). Truth: GEN2 today = swing, pits,
+  tide, gusts, ropes, fork roads; dark/still one world (W6); ride.ts + beatBrick.ts built but unused; no named clock reaches the engine;
+  missing: break, follow, hold, leash, heat, drowsy. A new stage is hand-registered in 9+ places; CI checks only 1-1's seed list.
+  WAVES (lead's decision): A now = ADD-LEVEL (session_01FhBbYLJhNRpJErB4SQprjk, t-add-level, tools only). B after FA/B14/B15 push =
+  CLOCK-ON, STILL, CAST-WORLDS (serve 1-7..1-9 and W2). C = RIDE, ZONES-BY-DATA, TRAVEL-LEFT. D = LIGHT, FOLLOW, RISE+POOL, smalls.
+  HANG-UNDER and BREAK-PUSH (first needed 3-2, 7-2) held to wave C/D to save tokens (Matt: stretch to Tuesday). Vine field returns:
+  3-4, 7-5, 10-4 (Architect pick; maybe a short one in 2-6): for the designer and Matt.
