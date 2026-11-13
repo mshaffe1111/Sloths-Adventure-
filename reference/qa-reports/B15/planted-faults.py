@@ -17,6 +17,7 @@ FAULTS = [
     ('a chased-off animal glides into the ground', 'src/game/castPlay.ts', '      e.y = Math.min(e.y, floor - m.foot);\n', '', T_LIMB),
     ('a mark is laid as a plain relic', 'src/game/gen2/pipeline.ts', "type: 'relic', mark: 'meeca', x: k.x", "type: 'relic', x: k.x", T_LIMB),
     ("the locked exit forgets the keeper's line", 'src/game/stagePlan.ts', "{ '1:relic_hunt': \"We missed some of her marks. They're back there!\" }", '{}', T_LIMB),
+    ("the engine's locked exit ignores the keeper's line", 'src/game/engine.ts', "const line = sealedLine(this.currentStage.config.worldIndex, objType) ?? goalLine(", "const line = null ?? goalLine(", 'src/game/limbTrap.test.ts'),
     ('the HUD shows the stone idol for her marks', 'src/components/hud/goalInfo.ts', "w === 1 ? { kind: 'drawn', name: 'carving' } : { kind: 'drawn', name: 'idol' }", "{ kind: 'drawn', name: 'idol' }", T_LIMB),
     ("the creaky line is not a teach line", ARC, "teachTips: [...(M.teachTips ?? []), 'creak', 'last']", "teachTips: [...(M.teachTips ?? []), 'last']", T_ARC),
     ('Dot says the creaky line at the limb', ARC, "flag('a', 0.3), tip('tip', 'a', 0.25, 'creak'),", "flag('a', 0.3), tip('tip', 'c', 0.9, 'creak'),", T_ARC),

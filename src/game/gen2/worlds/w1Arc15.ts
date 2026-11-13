@@ -146,7 +146,9 @@ function throughOrOver(len: 300 | 360): Lay {
   const hh = hollowLogSize('moss', len).height;
   const W = len + 900;
   const pieces: SectionPiece[] = [
-    bank('a', null, 220), bank('a2', 'a', 200, UP), bank('f', 'a2', W, DOWN),
+    // (the trunk's floor stays on the root's level: sunk between two roots it was a dip a one-thumb player left with 4 flicks, stone, trunk,
+    //  stone, root; plainWalk.test.ts allows 3)
+    bank('a', null, 220), bank('a2', 'a', 200, UP), bank('f', 'a2', W),
     { key: 's', shape: 'block', w: [154, 160], place: { kind: 'on', on: 'f', at: [0.06, 0.07], h: [50, 56] }, style: 'moss_stone', landing: true },
     { key: 'H', shape: 'hollow', w: [len, len], place: { kind: 'on', on: 'f', at: [0.26, 0.27], h: [hh, hh] }, landing: true },
     { key: 'm', shape: 'block', w: [130, 140], place: { kind: 'on', on: 'f', at: [0.68, 0.69], h: [50, 56] }, style: 'moss_stone', landing: true },

@@ -11,7 +11,7 @@ import { limbGone, newTrap, shake, stepTrap, trapFaults, TRAP } from './dropTrap
 import type { TrapPost } from './castPlay.types.ts';
 import { makeEngine, standOn, step } from './engineCoreHarness.ts';
 import { GOAL_SHARE, goalHave, marksHeld, normalGoal } from './goals.ts';
-import { countWord, goalLine, SEALED_LINES } from './stagePlan.ts';
+import { countWord, goalLine, SEALED_LINES, sealedLine } from './stagePlan.ts';
 import { LINES_15, STAGE_15 } from './gen2/worlds/w1Arc15.ts';
 import { goalInfo } from '../components/hud/goalInfo.ts';
 
@@ -82,7 +82,9 @@ test("the HUD counts her marks, and Dot explains the locked exit in the keeper's
   assert.deepEqual(g.icon, { kind: 'drawn', name: 'carving' }, "her mark is Meeca's carved bark, never the stone idol");
   assert.equal(countWord(1, 'relic_hunt'), 'marks');
   assert.equal(goalLine('start', 1, 'relic_hunt', 3), 'Find 3 marks to open the sanctuary');
-  assert.equal(goalLine('sealed', 1, 'relic_hunt', 2), LINES_15.sealed);
+  assert.equal(sealedLine(1, 'relic_hunt'), LINES_15.sealed, 'the locked exit is the keeper\'s line');
+  assert.equal(goalLine('sealed', 1, 'relic_hunt', 2), 'Sealed: find 2 more marks to open it', 'goalLine keeps its own words');
+  assert.equal(sealedLine(3, 'relic_hunt'), null);
   assert.equal(SEALED_LINES['1:relic_hunt'], "We missed some of her marks. They're back there!");
   assert.equal(goalLine('sealed', 3, 'relic_hunt', 2), 'Sealed: find 2 more keepsakes to open it', 'every other search keeps its own words');
 });
