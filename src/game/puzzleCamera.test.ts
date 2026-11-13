@@ -13,7 +13,8 @@ import { GameEngine } from './engine.ts';
 import { boxFits, fitZoom, ROOM_CAM, roomCentre, roomFloor, type CamBox } from './puzzleCamera.ts';
 import { KIT } from './puzzleKit.ts';
 
-const STAGES = ['1-4', '1-6', '1-7', '2-2', '2-3', '2-8', '2-9', 'kit'];
+// (1-4's squirrel-lift rooms went with the hand-built 1-4: the gen2 1-4 replaced it, B14 11-13; its fig gates are field pieces, no room)
+const STAGES = ['1-6', '1-7', '2-2', '2-3', '2-8', '2-9', 'kit'];
 const PHONES: Array<[number, number]> = [[390, 844], [360, 740], [844, 390]];
 
 type Room = {

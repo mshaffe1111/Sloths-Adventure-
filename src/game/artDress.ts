@@ -78,7 +78,7 @@ function world1(d: DressInput, out: KitDecor[]) {
   for (const r of d.rooms) {
     if (r.id.startsWith('seesaw-show')) continue;
     const top = d.platforms.find((p) => p.id === r.right.on);
-    if (r.id.startsWith('squirrel-lift') && top) out.push({ n: 'nestDoorShut', open: 'nestDoorOpen', room: r.id, x: top.x + top.width - 70, b: top.y + 8, scale: 0.9 });
+    // (1-4's squirrel-lift nest door went with the hand-built 1-4: the door is 1-4's crown dressing now, nestDoorAt below)
     if (r.id.startsWith('seesaw-') && top) out.push({ n: 'branchGate', room: r.id, rise: true, x: top.x + 75, b: top.y + 6, w: 150 });
     const b = anchorAt(r.beyond, d.platforms);
     if (b) out.push({ n: 'petalBundle', room: r.id, pop: true, x: b.x, b: b.y - 20, scale: 1.3 });
@@ -369,3 +369,9 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
   }
   return out;
 }
+
+/** the squirrels' nest door in a bough's far end, shut, opening as he comes near (KitDecor `near`): 1-4's view north (w1Arc14.ts
+ *  finish14), "the squirrels on their pod pile stare" (1-4.md beat 14); the puzzle sheet's door, kept in the game when the hand-built
+ *  1-4's squirrel lift went (STAGE-RULES §4: every piece of art has a place) */
+export const nestDoorAt = (bough: { x: number; y: number; width: number }): KitDecor =>
+  ({ n: 'nestDoorShut', open: 'nestDoorOpen', near: 220, x: bough.x + bough.width - 70, b: bough.y + 8, scale: 0.9 });

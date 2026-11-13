@@ -53,6 +53,8 @@ import { BadgeToast } from './components/BadgeToast.tsx';
 import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
 import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
 import { KIT_STAGE_ID, kitStageConfig, setKitStart } from './game/kitStage.ts';
+import { FEEL_PAIR_ID, feelPairConfig } from './game/feelPairStage.ts';
+import { FeelPairClock } from './components/FeelPairClock.tsx';
 import { ctestEnabled, recorder } from './game/playRecorder.ts';
 import { guardBack } from './game/backGuard.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts';
@@ -545,6 +547,11 @@ export default function App() {
       // (?level=kit is the puzzle kit's test room, which is in no world's list: kitStage.ts)
       // (&room=seesaw starts the test room at that room's door)
       if (wanted === KIT_STAGE_ID) setKitStart(params.get('room'));
+      // (?level=feel-pair: the vine field's feel test, a QA build only, straight in with no story: feelPairStage.ts)
+      if (wanted === FEEL_PAIR_ID && feelPairConfig()) {
+        playFeelRoom();
+        return;
+      }
       startLevel(allLevels.find((l) => l.id === wanted) ?? (wanted === KIT_STAGE_ID ? kitStageConfig() : allLevels[0]));
     }
   }, []);
@@ -691,7 +698,7 @@ export default function App() {
     // (and the test link's 1-1 pick, for a still of a picked roll: stage.ts --roll, tools/engine/runs/stills-at.mjs; TEST-LINK ONLY)
     (window as unknown as { __setPick11?: typeof setPick11 }).__setPick11 = setPick11;
     (window as unknown as { __play?: (id: string, layout?: number) => void }).__play = (id: string, layout?: number) => {
-      const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : allLevels.find((l) => l.id === id);
+      const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : id === FEEL_PAIR_ID ? feelPairConfig() : allLevels.find((l) => l.id === id);
       if (lvl) {
         if (layout !== undefined) setLayoutVariant(layout);
         setActiveLevel(lvl);
@@ -1008,6 +1015,14 @@ export default function App() {
     });
   }, []);
 
+  // the vine field's feel test (a QA build only: Matt's test link, feelPairStage.ts): straight into the room, no story, no roll
+  const playFeelRoom = useCallback(() => {
+    const c = feelPairConfig();
+    if (!c) return;
+    setActiveLevel(c);
+    launchEngine(c);
+  }, [launchEngine]);
+
   const saveLevelProgress = (id: string, stars: number, lvlScore: number, bestTime: number) => {
     try {
       // keep the player's best: a worse replay must never overwrite a better stored result
@@ -1224,6 +1239,7 @@ export default function App() {
           }}
           isMuted={isMuted}
           onToggleMute={handleToggleMute}
+          onFeelTest={feelPairConfig() ? playFeelRoom : undefined}
         />
       )}
 
@@ -1498,6 +1514,8 @@ export default function App() {
             runKey={runId}
           />
           <PerfReadout stageId={activeLevel.id} />
+          {/* (the vine field's feel test: its climb stopwatch, feelPair.ts) */}
+          {activeLevel.id === FEEL_PAIR_ID && <FeelPairClock />}
           {/* (Meeca's stage has no Dot: her own thoughts are drawn in the stage, meecaPlay.ts) */}
           {/* (Meeca's stage draws its words on the canvas: the same words in the page, for screen readers and QA's bots) */}
           {activeLevel.id === MEECA_STAGE_ID && <MeecaWords engine={meecaEngine} />}

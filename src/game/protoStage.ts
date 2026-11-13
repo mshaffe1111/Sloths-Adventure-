@@ -50,7 +50,7 @@ import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
 import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
-import { w1Chase, w1Kapok, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
+import { w1Chase, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
 import { W4Roll } from './w4Sections.ts';
 import { buildFromSpec } from './mixer/w1mix.ts';
 import { w1DressWidth } from './w1NewArt.ts';
@@ -66,8 +66,8 @@ import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, t
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-4' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4' | '8-4';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-4': '1-4', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4' | '8-4';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
 // 5-5 Caught in Silk (w5Stages.ts): the cocoons and the pouch scene
 HAND_STAGES['5-5'] = '5-5';
 // 7-4 The Way Down (Matt, 2026-10-29: not a climb; the floor crumbles into a slide seen from behind: w7Slide.ts)
@@ -483,7 +483,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   // (a stage with a spec (src/game/mixer/stages.ts: 1-1 and 1-5) is built from its data by the mixer; nothing here per stage)
   const spec = specFor(plan);
   if (spec) return buildFromSpec(config, seed, easy, spec);
-  if (plan === '1-4') return buildKapok(config, seed);
   if (plan === '3-4') return buildSinkhole(config, seed);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
   if (plan === '4-3') return buildWaterfallSteps(config, seed);
@@ -5419,9 +5418,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     beats.push([b0, cur.y, name]);
   };
 
-  // ---- 1-4's squirrels' lift (the shared puzzle kit, puzzleKit.ts: the counterweight basket and its lift), 2026-10-28
-  /** only the kapok of 1-4 has the squirrels' lift (the bank houses, the sinkhole and the cliffs climb as they did) */
-  const squirrels = !village && !grotto && !cliff && !mist;
+  // ---- the lift room (the shared puzzle kit, puzzleKit.ts: the counterweight basket and its lift), 2026-10-28: 4-1's knot pulley.
+  // (1-4's squirrels' lift was the other; it went with the hand-built 1-4, B14 11-13: 1-4 is the vine field, w1Arc14.ts)
   const ROOMS: RoomSpec[] = [];
   const onL = (p: Platform, ax: number, dy = 0): Anchor => ({ on: p.id, at: (ax - p.x) / p.width, ...(dy ? { dy } : {}) });
   /**
@@ -5545,16 +5543,6 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     }
     climb(Math.round(R.r(270, 320)));
     flag();
-    // 1-4: the squirrels' lift, the first time (a tap sets the acorn in the low basket)
-    if (squirrels) {
-      // (built going right: when there is no room that way, hop back across the tree first, and up)
-      for (let k = 0; k < 4 && !liftRoom(false); k++) {
-        dir = -1;
-        hops(2);
-        climb(Math.round(R.r(260, 300)));
-      }
-      flag();
-    }
     // 4-1: Dot's knot pulley, once (the basket hangs low beside the lift: stand on it and a tap sets a stone in)
     if (cliff) {
       for (let k = 0; k < 4 && !liftRoom(false, pulley); k++) {
@@ -5570,17 +5558,15 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     let n = 0;
     // (4-6 leaves room for the mist and the nests, which take a while: it is a longer stage, stageSeconds('4-6'))
     // (and since 2026-10-28 its pinwheel lift a second time: a shorter climb across the tree leaves it room, PINWHEEL_AGAIN)
-    // (1-4, the variety pass 2026-10-28: the roll's rhythm of hops and ropes, and how often a snake waits: w1Sections.ts w1Kapok)
-    const climb14 = squirrels ? w1Kapok(seed) : null;
     while (expert < (mist ? stageSeconds('4-6') - MIST_LEAVES - PINWHEEL_AGAIN : EXPERT_SECONDS - 32) && n < 30) {
       // (4-1, 2026-10-28: the cliff climbs mostly by hops up wide ledges, where its rocks come loose, and a rope now and then: 4-6's
       // climb is the tree's ropes. The stage inspector found the two alike on every measure)
-      if (climb14 ? climb14.steps[n % climb14.steps.length] === 'hops' : w4Climb ? w4Climb.hopsAt(n) : cliff ? n % 3 !== 1 : n % 3 === 2) hops(R.i(2, 3), cliff);
+      if (w4Climb ? w4Climb.hopsAt(n) : cliff ? n % 3 !== 1 : n % 3 === 2) hops(R.i(2, 3), cliff);
       else rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
       // from the third run on, a snake now and then on a wide branch (the punch learned in 1-3 comes back)
       // (the sinkhole is a quiet climb toward the moonlight: nothing prowls on its shelves)
       // (the cliff has its falling rocks instead)
-      if (n >= 2 && cur.width >= 320 && R.chance(climb14?.snakes ?? 0.4) && !grotto && !cliff && !mist) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
+      if (n >= 2 && cur.width >= 320 && R.chance(0.4) && !grotto && !cliff && !mist) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
       climb(Math.round(R.r(260, 320)));
       n++;
       if (n % 2 === 0) flag();
@@ -5708,8 +5694,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     const gap = Math.min(Math.round(R.r(900, 1050)), Math.round(room() - 340));
     const before = cur.y;
     rope(gap, 340, 6);
-    // (1-4: unless the climb's last flag already stands at this height, at the rope's near end)
-    if (!squirrels || !checkpoints.some((c) => Math.abs(c.y - before) < 1)) flag();
+    flag();
   });
 
   // ---- 4-6 after the mist: the nests, then the nests and the mist together, across the tree, and the high mist at the top
@@ -5931,15 +5916,6 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       return;
     }
     climb(Math.round(R.r(280, 320)));
-    // 1-4: the squirrels' lift again, its basket hung high now (flick up to throw the acorn in)
-    if (squirrels) {
-      for (let k = 0; k < 4 && !liftRoom(true); k++) {
-        dir = -1;
-        hops(2);
-        climb(Math.round(R.r(260, 300)));
-      }
-      flag();
-    }
     // (4-1: up the cliff's wide ledges, where its rocks come loose)
     hops(2, cliff);
     // the crown: a wide branch with the shrine on it

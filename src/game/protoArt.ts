@@ -52,6 +52,8 @@ let stageWorld = 1;
 /** trunks drawn behind a stage's boughs that are scenery, not climbs (1-1's canopy: no bough floats with nothing holding it) */
 /** `art: 'plain'`: the bare kapok (trunkPlain), so neighbouring trees never share one trunk picture and vine wrap (the mixer's 1-5, S-4) */
 import { fitTrunks, type DecoTrunk } from './trunkFit.ts';
+import { drawDrapedPair } from './pairArt.ts';
+import { drawFieldVine } from './vineFieldArt.ts';
 export { fitTrunks };
 type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' };
 let decoTrunks: ReadonlyArray<DecoTrunk> = [];
@@ -1314,7 +1316,7 @@ export function drawProtoScene(
   ctx: CanvasRenderingContext2D,
   platforms: Platform[],
   trees: Array<{ x: number; topY: number }>,
-  vines: Array<{ vineType?: string; x: number; topY: number; bottomY?: number; rope?: boolean }>,
+  vines: Array<{ vineType?: string; x: number; topY: number; bottomY?: number; rope?: boolean; pair?: number; field?: unknown; off?: boolean; kit?: boolean }>,
   t: number,
   view: { x0: number; x1: number; y0?: number; y1?: number },
   st: ProtoSceneState,
@@ -1335,8 +1337,20 @@ export function drawProtoScene(
   for (const v of vines) {
     // (a vine hanging down a cliff is not a trunk: its stage draws it)
     if (v.vineType !== 'tree_climb' || v.rope || v.x < view.x0 - 120 || v.x > view.x1 + 120) continue;
+    // (a way up held down by a shut gate's bough is not there to see or take until the bough opens: vineField.ts ClusterGate.ways)
+    if (v.off && !v.kit) continue;
     const bottom = (v as { bottomY?: number }).bottomY ?? v.topY + 300;
     if (bottom + 14 < vy0 - 40 || v.topY - 30 > vy1 + 40) continue;
+    // (a draped pair is a liana thrown over the bough, not a trunk: pairArt.ts)
+    if (v.pair) {
+      drawDrapedPair(ctx, v.x, v.topY, bottom, v.pair);
+      continue;
+    }
+    // (a vine field's vines hang free from the bough, one vine a hand: vineFieldArt.ts)
+    if (v.field) {
+      drawFieldVine(ctx, v.x, v.topY, bottom);
+      continue;
+    }
     // (World 7's brown vines up the old walls: the story's "the vines on the old walls hung brown". A climb whose top meets a wall's
     // top-left corner is drawn as three of the kit's painted brown vines hanging down the wall's face, not the pale climbing pillar,
     // which stood half over the air like a pasted pane, QA 2026-10-29)
@@ -1398,7 +1412,8 @@ export function drawProtoScene(
     }
   }
   // branches (a perch where a climb trunk ends under one)
-  const tops = vines.filter((v) => v.vineType === 'tree_climb' && !v.rope);
+  // (a draped pair hangs over a plain bough: no kapok perch at its top, pairArt.ts)
+  const tops = vines.filter((v) => v.vineType === 'tree_climb' && !v.rope && !v.pair && !v.field);
   for (const p of platforms) {
     if (!vis(p) || p.push || p.art || p.height >= 50 || (p.style !== 'branch' && !(ownKit() && thinKit(p)))) continue;
     // (World 8's fungus steps and knot perches: the painted brackets, w8FungusArt.ts)

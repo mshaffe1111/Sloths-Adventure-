@@ -8,6 +8,8 @@ import { STAGE_TABLE } from './worlds/stageTable.ts';
 import { w1World } from './worlds/w1.ts';
 import { kitLib12 } from './worlds/w1Arc12.ts';
 import { kitLib15 } from './worlds/w1Arc15.ts';
+import { finish14, kitLib14 } from './worlds/w1Arc14.ts';
+import type { Difficulty } from '../difficulty.ts';
 import { JUDGED } from './reach.ts';
 import type { WorldKit } from './types.ts';
 import type { ReachScope } from './verdicts.types.ts';
@@ -21,14 +23,19 @@ export interface ListedStage {
   firstRun?: true;
   /** the test link's A, B, C picker runs on it */
   pick?: true;
+  /** what its kit lays after World 1's finish (1-4's vine fields, figs, gates, pods and beats: w1Arc14.ts finish14) */
+  finish?: <T>(st: T, difficulty: Difficulty) => T;
 }
 
 /** the world kits a row names (worlds/stageTable.ts `kit`); 'w1-12' is World 1's with 1-2's manifest-wide rows over it (w1Arc12.ts) */
-const KITS: Record<string, () => WorldKit> = { w1: w1World, 'w1-12': () => kitLib12(), 'w1-15': kitLib15 };
+const KITS: Record<string, () => WorldKit> = { w1: w1World, 'w1-12': () => kitLib12(), 'w1-14': kitLib14, 'w1-15': kitLib15 };
+/** the kits' own finishes, run after World 1's (by kit name) */
+const FINISH: Record<string, ListedStage['finish']> = { 'w1-14': finish14 as ListedStage['finish'] };
 
 /** the rows, from the ONE stage table (worlds/stageTable.ts, world data): each stage's kit and its own flags */
 export const LISTED: Record<string, ListedStage> = Object.fromEntries(Object.entries(STAGE_TABLE).map(([id, r]) => [id, {
   kit: KITS[r.kit],
+  ...(FINISH[r.kit] ? { finish: FINISH[r.kit] } : {}),
   ...(r.squirrels ? { squirrels: true as const } : {}),
   ...(r.firstRun ? { firstRun: true as const } : {}),
   ...(r.pick ? { pick: true as const } : {}),

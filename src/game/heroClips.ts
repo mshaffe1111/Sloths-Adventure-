@@ -12,8 +12,9 @@
  * a hit) stops a clip at once, so the clips never get in the way of control.
  */
 import { HERO_CLIPS, type HeroClip } from './heroClipsData.ts';
+import CLIMB2 from '../assets/hero/hero-climb2.json';
 import type { PlayerState } from './types.ts';
-import type { StdFrame } from './heroStandardData.ts';
+import { STD_STAND_H, type StdFrame } from './heroStandardData.ts';
 
 let forced: boolean | null = null;
 export function heroClipsEnabled(): boolean {
@@ -50,6 +51,7 @@ function load(name: string) {
 export function warmHeroClips() {
   if (!heroClipsEnabled()) return;
   for (const n of Object.keys(HERO_CLIPS)) load(n);
+  loadClimb2();
 }
 export function hasClip(name: string): boolean {
   return !!HERO_CLIPS[name] && ready.has(name);
@@ -62,6 +64,9 @@ export interface ClipFrame {
   name: string;
   /** how much of the clip shows over the ordinary hero (1 = all): a short fade at each end, so the change of pose melts */
   blend: number;
+  /** a sheet drawn at its own size (atlas px to world units), not the standard hero's; and a width stretch (the two-hand climb) */
+  k?: number;
+  sx?: number;
 }
 /** seconds of fade at each end of a clip */
 export const CLIP_FADE = 0.2;
@@ -148,6 +153,20 @@ export const MOVE_SHEETS: Record<string, string> = {
 };
 /** the climb sheet is one full hand-over-hand cycle (left reach, right reach) over this much height */
 export const CLIMB_CYCLE_PX = 110;
+/** on a draped pair (Vine.pair, 1-4.md piece 4) each pull is a long arm's reach, a strand a hand: the same cycle over this much more
+ *  height, so the quicker climb is bigger pulls as well as quicker ones (at 2x the single, about 1.3x the hand rate, not a blur) */
+export const PAIR_CYCLE_K = 1.5;
+/** and his body sways a little toward the strand the reaching hand takes (radians either side; a code touch on the painted clip) */
+export const PAIR_SWAY = 0.07;
+/** where he is in the climb's hand-over-hand cycle (0..1): one pull per hand over CLIMB_CYCLE_PX of height (a pair's longer) */
+export function climbU(p: Pick<PlayerState, 'y' | 'climbPair'>): number {
+  const cyc = CLIMB_CYCLE_PX * (p.climbPair ? PAIR_CYCLE_K : 1);
+  return (((-p.y / cyc) % 1) + 1) % 1;
+}
+/** the lean of a climb on a pair (radians, toward the reaching hand's strand); 0 on a single climb */
+export function pairSway(p: Pick<PlayerState, 'y' | 'climbPair' | 'climbing'>): number {
+  return p.climbing && p.climbPair ? PAIR_SWAY * Math.sin(climbU(p) * Math.PI * 2) : 0;
+}
 /** the swing sheet runs from the back of the swing to the front; this angle (radians) or more is the end of the sheet */
 export const SWING_REACH = 1.0;
 /** strides per turn of walkCycle (the same rate as the standard hero's cycle, so the feet keep pace with the ground) */
@@ -187,8 +206,58 @@ export function flipU(somersaultAngle: number): number {
   return Math.min(0.999, u * u * (3 - 2 * u));
 }
 
+/**
+ * Pokey's two-hand climb (R-165.178, Matt 11-12: "we need to do a motion for him to climb between two"): painted frames, a paw closing
+ * on each strand (src/assets/hero/hero-climb2.json, ART 11-13). Drawn whenever he holds two vines (PlayerState.climbPair > 0): the
+ * draped pair and a field's two hands. One climb cycle (climbU, a pair's longer pulls) runs the 4 reaches; held still, he hangs.
+ */
+interface Climb2Frame { x: number; y: number; w: number; h: number; grips: number[][]; gap: number; ax: number }
+const C2 = CLIMB2 as unknown as { stand_px: number; pokey_units: number; cycle: string[]; still: string; frames: Record<string, Climb2Frame> };
+/** atlas px to world units: his drawn height (HERO_UNITS x HERO_SPRITE_SCALE, 89.1) over the sheet's standing height */
+export const CLIMB2_K = C2.pokey_units / C2.stand_px;
+/** the gap the paws were painted for, in world units (about 80: FEEL-LATTICE's vines are 70-90 apart) */
+export const CLIMB2_GAP = (C2.frames[C2.still].gap) * CLIMB2_K;
+/** the frame tops (his highest paw) sit where the single climb's paws are: the old clip's anchor (move-climb ay) in world units */
+export const CLIMB2_TOP = HERO_CLIPS['move-climb'].ay * (C2.pokey_units / STD_STAND_H);
+/** the width stretch that lays his paws on strands `pair` apart, kept to what still reads as his own arms */
+export const CLIMB2_SX_MIN = 0.85;
+export const CLIMB2_SX_MAX = 1.15;
+/** pure: which painted frame and how wide, for a two-hand climb at cycle point u (0..1), moving or held still, strands `pair` apart */
+export function climb2Choice(u: number, moving: boolean, pair: number): { name: string; sx: number } {
+  const name = moving ? C2.cycle[moveIndex(C2.cycle.length, u)] : C2.still;
+  return { name, sx: Math.max(CLIMB2_SX_MIN, Math.min(CLIMB2_SX_MAX, pair / CLIMB2_GAP)) };
+}
+/** pure: a two-hand frame in the standard hero's terms (feet anchor = the frame top CLIMB2_TOP above his feet; x between the paws) */
+export function climb2Frame(name: string): StdFrame | null {
+  const f = C2.frames[name];
+  if (!f) return null;
+  return { x: f.x, y: f.y, w: f.w, h: f.h, ax: f.ax, ay: CLIMB2_TOP / CLIMB2_K, hx: f.ax };
+}
+let climb2Img: HTMLImageElement | null = null;
+let climb2Ready = false;
+function loadClimb2() {
+  if (climb2Img || typeof Image === 'undefined') return;
+  climb2Img = new Image();
+  climb2Img.onload = () => (climb2Ready = true);
+  climb2Img.src = new URL('../assets/hero/hero-climb2.webp', import.meta.url).href;
+}
+/** where his feet were last frame on a two-hand climb, and since when they have not moved (game seconds) */
+let c2LastY = NaN;
+let c2StillAt = -1;
+/** seconds held at one height before the still hang shows (a moment's pause mid-pull keeps the pull) */
+export const CLIMB2_STILL_AFTER = 0.2;
+/** the two-hand climb's frame now, or null (one hand, a single vine, or the sheet not loaded) */
+export function climb2Pick(p: PlayerState, time: number): ClipFrame | null {
+  if (!p.climbing || !(p.climbPair && p.climbPair > 0) || !climb2Ready || !climb2Img) return null;
+  if (!(Math.abs(p.y - c2LastY) < 0.5)) c2StillAt = time;
+  c2LastY = p.y;
+  const c = climb2Choice(climbU(p), time - c2StillAt < CLIMB2_STILL_AFTER, p.climbPair);
+  const f = climb2Frame(c.name);
+  return f ? { img: climb2Img, f, name: `climb2#${c.name}`, blend: 1, k: CLIMB2_K, sx: c.sx } : null;
+}
+
 /** the redrawn frame for a move or the run/walk, or null when he is doing something else or the sheet is not there */
-export function movePick(p: PlayerState): ClipFrame | null {
+export function movePick(p: PlayerState, time = 0): ClipFrame | null {
   if (p.attackMove && p.attackU !== undefined && !p.isVineSwinging && !p.climbing && !p.hanging) {
     if (!p.grounded && p.attackMove !== 'mega') return null; // the air attacks keep their own frames
     const sheet = MOVE_SHEETS[p.attackMove];
@@ -197,10 +266,13 @@ export function movePick(p: PlayerState): ClipFrame | null {
   }
   // the climb: the frame follows the height he has climbed, so his paws keep pace with the trunk
   if (p.climbing) {
+    // two vines in his paws: the painted two-hand climb (R-165.178)
+    const two = climb2Pick(p, time);
+    if (two) return two;
     // (climbing down plays the cycle backward: the clip made for a climb down, pa-climbdown-s3, hardly moved)
     const sheet = MOVE_SHEETS.climb;
     if (!hasClip(sheet)) return null;
-    const u = ((((-p.y / CLIMB_CYCLE_PX) % 1) + 1) % 1);
+    const u = climbU(p);
     return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, u));
   }
   // the swing: the frame follows where he is in the swing, from the back (0) to the front (1)
@@ -237,7 +309,7 @@ export function clipPick(p: PlayerState, time: number, ev: ClipCalm): ClipFrame 
   }
   // the redrawn run, walk and fight moves (only while hurt is not showing: the flinch keeps its own frames)
   if (!ev.isHurt(time)) {
-    const mv = movePick(p);
+    const mv = movePick(p, time);
     if (mv) {
       playing = null;
       stillSince = time;

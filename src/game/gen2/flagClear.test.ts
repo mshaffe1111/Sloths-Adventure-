@@ -61,6 +61,12 @@ test('every rolled stage: no flag stands in a mushroom, root or stone, and the f
       judged++;
       flags += (st.checkpoints ?? []).length;
       bad.push(...standing(`${id} seed ${seed} ${difficulty}`, st));
+      // (a tower's flags are Matt's rule measured ALONG THE CLIMB (tower.ts towerFlagBreaches, FA's piece 2), which the build itself holds
+      // (gen2.flagMiss, its errors): x runs both ways up a tower, so the run's x measure below reads nonsense there (1-4, B14 11-13)
+      if (st.gen2.tower) {
+        for (const b of st.gen2.flagMiss ?? []) bad.push(`${id} seed ${seed} ${difficulty}: ${b}`);
+        continue;
+      }
       const hard = (st.gen2.nodes ?? []).filter((q) => HARD_JOBS.has(JOB_OF[q.token[0] as keyof typeof JOB_OF] ?? '')).map((q, i) => ({ id: `${q.token} #${i + 1}`, x0: q.x0 }));
       for (const b of rolledFlagBreaches(st, hard, lethalSpans(st, st.gen2.falls ?? []))) bad.push(`${id} seed ${seed} ${difficulty}: ${b}`);
     }

@@ -147,6 +147,8 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["way.1.hurt2", "", "wayside", "story", "Ow! That one was yours, but I felt it.", "Ow! That one was yours, but I felt it.", null, null, null],
   ["way.1-2", "1-2", "wayside", "story", "She said don't stop to smell the flowers. She never said anything about picking up her petals.", "She said don't stop to smell the flowers. Picking's different.", null, null, null],
   ["way.1-3", "1-3", "wayside", "story", "You said \"excuse me\" just before that punch. I heard it. So did he.", "You said \"excuse me\" before that punch. I heard. So did he.", null, null, null],
+  // (1-4's halfway, Pokey's: the story keeper's words, STORY-KEEPER.md:149, approved with 1-4's lines 11-13; the same in both looks)
+  ["way.1-4", "1-4", "wayside", "story", "Meeca climbs this every Sunday. I waved from below.", "Meeca climbs this every Sunday. I waved from below.", null, null, null],
   ["way.1-5", "1-5", "wayside", "story", "These petals are fresher. She came this way not long ago.", "She squashed this one extra flat.", null, null, null],
   ["way.1-6", "1-6", "wayside", "story", "Meeca used to cross these twice before I'd finished one. She'd wait at the end with a snack.", "Meeca crossed these twice before I'd finished one. She always waited.", null, null, null],
   ["way.1-7", "1-7", "wayside", "story", "Low, like me in my bush, Meeca says she saw me, fibs.", "Low, like me in my bush, Meeca says she saw me, fibs.", null, null, null],

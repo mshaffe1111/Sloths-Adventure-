@@ -21,7 +21,7 @@
 import { CooldownQueue, ShuffleBag, type Rng } from './gen2/variety.ts';
 
 /** World 1's stages with section versions (1-6 is the 'proto' plan; 1-10, the boss lair, has one designed layout) */
-export type W1Stage = '1-1' | '1-4' | '1-6' | '1-7' | '1-8' | '1-9';
+export type W1Stage = '1-1' | '1-6' | '1-7' | '1-8' | '1-9';
 export type Slot = 'start' | 'develop' | 'twist' | 'finish';
 const SLOTS: readonly Slot[] = ['start', 'develop', 'twist', 'finish'];
 
@@ -331,15 +331,7 @@ const SECTIONS: Record<W1Stage, Table> = {
       },
     ],
   },
-  // 1-4 Up the Kapok: the climb's middle is a run of hops and ropes (buildKapok); the roll picks their rhythm and how often a snake
-  // waits on a wide branch. The squirrels' lift rooms and the long rope are in every roll.
-  '1-4': {
-    finish: [
-      { id: 'ropes', build: () => {} },
-      { id: 'hops', build: () => {} },
-      { id: 'snakes', build: () => {} },
-    ],
-  },
+  // (1-4 Up the Kapok rolls on gen2 from 11-13, the vine field: w1Arc14.ts. Its hand-built rhythm rows went with the hand-built 1-4)
   // 1-6 (the 'proto' plan) Swinging Vines: the swing, the fallen log and its seesaws, the canopy road. Four flavours carried through
   // the stage, each leaning on a different heavy beat between the lessons: the gorge's vines, climbs up the kapoks and walls, snakes on
   // the ground and on ledges, or bounces up to high branches. The swing lessons, the puzzle rooms and the canopy road with its glide
@@ -522,15 +514,3 @@ export function w1Chase(seed: number): ChasePiece[] {
   return CHASE[w1Pick('1-8', seed).finish ?? 'leaps'];
 }
 
-const KAPOK: Record<string, { steps: Array<'hops' | 'rope'>; snakes: number }> = {
-  // the old rhythm: two ropes, then hops
-  ropes: { steps: ['rope', 'rope', 'hops'], snakes: 0.4 },
-  // hops along and up the branches between the ropes, and no snakes
-  hops: { steps: ['hops', 'rope', 'hops', 'rope', 'rope'], snakes: 0 },
-  // rope and hops in turn, and a snake on every wide branch
-  snakes: { steps: ['rope', 'hops'], snakes: 1 },
-};
-/** this roll's run of hops and ropes up 1-4's kapok, and the chance of a snake on a wide branch */
-export function w1Kapok(seed: number): { steps: Array<'hops' | 'rope'>; snakes: number } {
-  return KAPOK[w1Pick('1-4', seed).finish ?? 'ropes'];
-}

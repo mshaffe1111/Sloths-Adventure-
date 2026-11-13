@@ -167,6 +167,16 @@ export class CastPlay {
     return !!m && beat(m.def, m.s, way, t, fromX);
   }
 
+  /**
+   * Something let fall came down at (x, y) as a drop-trap load does (a fruit cluster pushed free in a vine field: fieldPlay.ts): every
+   * animal it would scare (dropTrap.ts scares: within TRAP.scare across, TRAP.tall up or down) is chased off, away from him. How many.
+   */
+  loadLands(x: number, y: number, t: number, heroX: number): number {
+    let n = 0;
+    for (const m of this.members) if (Math.abs(m.s.x - x) <= TRAP.scare && Math.abs(m.s.y - y) <= TRAP.tall && beat(m.def, m.s, 'trap', t, heroX)) n++;
+    return n;
+  }
+
   /** a creaky limb has given way (engine.ts): the 'limb' trap it is the load of, if any, falls now (returned) */
   limbGone(platformId: number): TrapPost | null {
     for (const tr of this.traps) if (tr.post.limb === platformId && limbGone(tr)) return tr.post;

@@ -49,6 +49,9 @@ import { scares } from '../../src/game/dropTrap.ts';
 import type { TrapPost } from '../../src/game/castPlay.types.ts';
 import { findRoute } from './route.ts';
 import { markUp } from './markClimb.ts';
+import { FigPush, type FieldView } from './figPush.ts';
+/** the objectives whose goal is a count (engine.ts isQuotaType); every other stage's goal is the shrine */
+const QUOTA_TYPES = new Set(['harvest', 'purge', 'relic_hunt', 'rescue', 'gauntlet']);
 import { buildRoll } from './eraRoll.ts';
 import { STAGE_SECONDS } from '../../src/game/protoStage.ts';
 import { sampleRoute } from './beats.ts';
@@ -884,6 +887,8 @@ export class FirstTimerRun {
   private roomAt = new Map<number, number>();
   /** the trunk he is on, and whether climbing down it got him nowhere */
   private climbVine: unknown = null;
+  /** in a vine field: the figs under a shut gate pushed free, a pod's column stepped off (figPush.ts) */
+  private figs: FigPush | null = null;
   private climbDown = false;
   private climbTurned = false;
   /** he was on a trunk when the last choice was made */
@@ -1456,6 +1461,11 @@ export class FirstTimerRun {
       return out;
     }
 
+    // in a vine field (figPush.ts): under a shut gate, the figs pushed free; a pod's tell on his column, a vine over
+    if (p.climbing) {
+      const fig = (this.figs ??= new FigPush(who.stopReact)).step(e as unknown as FieldView, p, t);
+      if (fig) return fig;
+    }
     // on a trunk: straight up to its top (down where the way goes down), then off it with a flick the way on
     if (p.climbing) {
       // (round 5, 2026-10-29: measured against lastY, which after() has already moved to where he is, this read 0 every frame, and he
@@ -2101,7 +2111,8 @@ export class FirstTimerRun {
         // (the same fall three times, never getting higher: noted as a loop and he is put past it, as the same death three times is.
         // bot-fix 2026-11-01: each fall moved his place back down the way, so the climb back up counted as progress and the 20 s clock
         // never ran out: on 1-4 he climbed and fell from the same branch every 24 s until the cap, and the run read "time")
-        if (top === this.fallTop) this.fallBacks++;
+        // (a pod's knock off a vine field is a hit, counted as one, never a missed climb: figPush.ts knockedRecently)
+        if (top === this.fallTop && !this.figs?.knockedRecently(t)) this.fallBacks++;
         else {
           this.fallTop = top;
           this.fallBacks = 1;
@@ -2116,7 +2127,8 @@ export class FirstTimerRun {
       }
     } else this.offRoute = 0;
     // stuck: no progress for 8 s (not while standing at a puzzle)
-    if (more || this.huntMore || this.puzzleWait || this.stillSpot) {
+    // (and not while he works a vine field's gate or steps off a pod's column: figPush.ts busy, the figs are the way on)
+    if (more || this.huntMore || this.puzzleWait || this.stillSpot || this.figs?.busy(t)) {
       if (this.stuckOpen && this.noProg >= 8) this.stuckOpen.dur = +this.noProg.toFixed(1);
       this.stuckOpen = null;
       this.noProg = 0;
@@ -2217,6 +2229,9 @@ export class FirstTimerRun {
       this.after();
       if (e.exitTotemReached) {
         this.end = 'shrine';
+        // (a stage with no quota (an ascent, a sprint: engine.ts's progress `default`) counts its goal as the shrine itself; the engine
+        // reports that a frame after the one that reaches it, which the loop never plays, so the goal reads 0 of 1 at the shrine)
+        if (this.goal && !QUOTA_TYPES.has(String(this.sim.e.currentStage.config.objectiveType))) this.goal.got = Math.max(this.goal.got, this.goal.need);
         break;
       }
       if (this.sealedT > 3) {

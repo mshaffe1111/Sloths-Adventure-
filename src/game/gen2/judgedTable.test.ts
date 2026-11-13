@@ -17,7 +17,7 @@ import { provenSeeds } from './seedList.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import type { Platform } from '../types.ts';
 
-const FIX = '1-4';
+const FIX = '1-6'; // (stage 1-6's id as a test-only listed stage: off 1-4 once 1-4 was listed for real, B14 11-13, as listed.test.ts)
 /** a planted roll of `stageId` with one single-jump gap of `gap` px */
 const planted = (stageId: string, gap: number): Judged11 =>
   ({ stageId, setting: 'normal', policy: 'per-gap', drops: [], asks: [{ section: 's1', kind: 'single-gap', x0: 400, x1: 400 + gap, figure: gap, move: 'single-flick', headroom: 9999 }], routeGaps: [] }) as Judged11;

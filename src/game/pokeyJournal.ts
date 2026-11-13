@@ -48,7 +48,8 @@ export const STAGE_LINES: Record<string, string> = {
   '1-2': 'Petals up the trees and back down again. She put the first one low for me. The rest, less so.',
   // (the story keeper's words, 11-12: 1-3 is the drop traps, and nobody is knocked off anything, R-165.141)
   '1-3': 'Punched a vine and a hive dropped beside the snake. He glided off. Nobody told me snakes could fly.',
-  '1-4': "The squirrels let me ride their lift up the kapok, for one acorn. They didn't laugh. Out loud.",
+  // (the story keeper's words, 11-12/13: the squirrels' lift went with the hand-built 1-4; 1-4 is the vine field and its pods)
+  '1-4': 'Climbed the kapok between falling pods. From the top you can see where they took her.',
   '1-5': "More petals, but further apart now. She's running out of them. I'm not catching up fast enough.",
   '1-6': "First lianas. You have to let go of one before you've got the next. Nobody mentioned that part.",
   '1-7': "Tossed an acorn so the eagle would look the other way. Dot called it cunning. I'd call it throwing.",
