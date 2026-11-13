@@ -21,7 +21,6 @@ import { lessonDotLine, pickLesson, type LessonId, type LessonScene } from './le
 import { landingAhead } from './cameraFollow.ts';
 import { GuideQueue } from './dotGuide.ts';
 import type { Platform, Vine } from './types.ts';
-import { asQaBuildForTest } from './playRecorder.ts';
 
 // ───────────────────────────── 1. the automatic landing ─────────────────────────────
 
@@ -160,41 +159,32 @@ test('1-6: holding down and toward the ledge as the swing carries him past it pu
   assert.ok(tried >= 1, 'no roll of 1-6 hangs its first liana where the swing reaches the ledge');
 });
 
-test("the control test's swing stretch: pumping its lianas at full length never sets him down on a ledge beside them", async () => {
-  const loc = (globalThis as unknown as { location: { hash: string; search: string } }).location;
-  const was = { hash: loc.hash, search: loc.search };
+test("1-6's swing lesson over the soft moss: pumping its lianas at full length never sets him down on a ledge beside them", () => {
+  // (the subject: soft-moss liana chains, protoStage.ts chain(n, true, 'hollow'). It was the 2026-10-24 control course's 'Swing'
+  //  stretch, chain(1) then chain(2) over a hollow; R-165.151 (FIX-B 03c3a59a) deleted that course, so it is held here on 1-6's
+  //  'Learn: swing over soft moss' beat, the live stage that builds the same chains, its mossy hop rocks below them)
   let checked = 0;
-  try {
-    // (the control test opens only in a QA build: UI-15)
-    asQaBuildForTest(true);
-    loc.hash = '#ctest';
-    for (let mix = 1; mix <= 60 && checked < 6; mix++) {
-      loc.search = `?mix=${mix}`;
-      const probe = new RealPlay('1-2', 1);
-      const beats = ((probe.e.proto?.beats ?? []) as Array<[number, number, string]>).filter((b) => b[2] === 'Swing');
-      if (!beats.length) continue;
-      const [x0, x1] = beats[0];
-      const lianas = probe.vines.filter((v) => v.vineType !== 'tree_climb' && v.x >= x0 && v.x <= x1).map((v) => v.id);
-      for (const id of lianas) {
-        for (const mode of ['pump', 'pumpDown', 'holdLeft', 'holdRight'] as Mode[]) {
-          const r = new RealPlay('1-2', 1);
-          const v = r.vines.find((q) => q.id === id)!;
-          const out = swingFor(r, v, mode, mode === 'pumpDown' ? 250 : v.bottomY - v.topY, 8);
-          if (!out.swinging) {
-            // the only landing allowed while pumping: a floor under the vine he climbed down onto
-            const on = r.platforms.find((q) => Math.abs(r.p.y - q.y) < 1 && r.p.x >= q.x - 10 && r.p.x <= q.x + q.width + 10);
-            assert.ok(on && v.x >= on.x - 10 && v.x <= on.x + on.width + 10, `mix ${mix} liana ${id} ${mode}: set down beside the vine at x${Math.round(r.p.x)} y${Math.round(r.p.y)}`);
-          }
+  for (let seed = 1; seed <= 60 && checked < 6; seed++) {
+    const probe = new RealPlay('1-6', seed);
+    const beats = ((probe.e.proto?.beats ?? []) as Array<[number, number, string]>).filter((b) => b[2].startsWith('Learn: swing over soft moss'));
+    if (!beats.length) continue;
+    const [x0, x1] = beats[0];
+    const lianas = probe.vines.filter((v) => v.vineType !== 'tree_climb' && v.x >= x0 && v.x <= x1).map((v) => v.id);
+    for (const id of lianas) {
+      for (const mode of ['pump', 'pumpDown', 'holdLeft', 'holdRight'] as Mode[]) {
+        const r = new RealPlay('1-6', seed);
+        const v = r.vines.find((q) => q.id === id)!;
+        const out = swingFor(r, v, mode, mode === 'pumpDown' ? 250 : v.bottomY - v.topY, 8);
+        if (!out.swinging) {
+          // the only landing allowed while pumping: a floor under the vine he climbed down onto
+          const on = r.platforms.find((q) => Math.abs(r.p.y - q.y) < 1 && r.p.x >= q.x - 10 && r.p.x <= q.x + q.width + 10);
+          assert.ok(on && v.x >= on.x - 10 && v.x <= on.x + on.width + 10, `seed ${seed} liana ${id} ${mode}: set down beside the vine at x${Math.round(r.p.x)} y${Math.round(r.p.y)}`);
         }
-        checked++;
       }
+      checked++;
     }
-  } finally {
-    asQaBuildForTest(false);
-    loc.hash = was.hash;
-    loc.search = was.search;
   }
-  assert.ok(checked >= 2, `found ${checked} control-test lianas`);
+  assert.ok(checked >= 2, `found ${checked} soft-moss lianas on 1-6`);
 });
 
 test('a floor under the vine is still landed on as he climbs down onto it, pumping or not', () => {
