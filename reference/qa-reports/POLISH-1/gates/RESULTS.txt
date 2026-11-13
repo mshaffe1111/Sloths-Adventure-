@@ -15,3 +15,4 @@ tierBots 0
 unit3 0
 unit2 0
 unit1 0
+(the first runner was stopped at its 30-min limit inside drawcheck; perf gates re-run 6:24 PM)
