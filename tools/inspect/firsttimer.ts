@@ -1188,9 +1188,15 @@ export class FirstTimerRun {
   /** over a small landing, falling to it: 1 near its middle (let go of the steer), 2 past it (steer back), 0 not over one */
   private overSmall(dir: -1 | 0 | 1): 0 | 1 | 2 {
     const p = this.sim.p;
-    if (dir === 0 || p.vy < -60) return 0;
+    // (on a tower's stair of short steps he is already over the next step on the way up: he lets go there, as a thumb does, not at the
+    // top of the arc; waiting for the fall carried him off a 100 px rotten step's far end at a run (1-4's crown, POLISH-1 11-13))
+    const rising = p.vy < -60;
+    if (dir === 0 || (rising && !this.onTower)) return 0;
+    // (rising, only a step higher than the one he jumped from: the step under his take-off is behind him)
+    const from = this.airFrom?.y ?? p.y;
     for (const q of this.sim.platforms) {
       if (q.broken || q.width >= 220 || p.x < q.x || p.x > q.x + q.width || q.y < p.y - 2 || q.y > p.y + 140) continue;
+      if (rising && q.y > from - 20) continue;
       // (a tier bot does not aim to land on a bounce mushroom: on w1-twin-mushroom-fork he steered back onto one until rescued)
       if (this.who.holdQ && q.type === 'bouncy') continue;
       const past = dir * (p.x - (q.x + q.width / 2));
@@ -2158,7 +2164,7 @@ export class FirstTimerRun {
         if (this.fallBacks >= this.tries3 && this.prog.best <= top) {
           this.fallBacks = 0;
           const at = this.prog.pts[top];
-          this.stuck.push({ x: Math.round(at.x), y: Math.round(at.y), t: +t.toFixed(1), dur: 0, what: `fell back down from here ${this.tries3} times`, step: null, dip: null, puzzle: false, rescued: true });
+          this.stuck.push({ x: Math.round(at.x), y: Math.round(at.y), t: +t.toFixed(1), dur: 0, what: `fell back down from here ${this.tries3} times${process.env.FT_BROKEN ? ' broken:' + this.sim.platforms.filter((q) => q.broken).map((q) => `${Math.round(q.x)},${Math.round(q.y)}`).join(' ') : ''}`, step: null, dip: null, puzzle: false, rescued: true });
           this.prog.hi = Math.max(this.prog.hi, top);
           if (!this.rescue()) this.end = 'stranded';
         }

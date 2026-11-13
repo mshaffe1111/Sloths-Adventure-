@@ -31,14 +31,17 @@ type R2 = [number, number];
 
 /** 1-4's ONE graph (1-4.md "The arc"): A arrive, T going up (the slide, by shape), T rotting boughs, T the field (two hands), T pods,
  *  P push the figs up, X pushing under fire, W his turn to drop one, S the hollow, C the crown, E the view north; R the rests between */
-export const ARC_14: Record<string, string> = { 'ascent-14-arc': 'A T T R T T P R X R W R S R C E' };
+// (R-165.206, POLISH-1 11-13: a quick player ran it in 81-101 s; two beats more, each with its own job (a practise gate of two, a test
+//  across two columns), each after its own rest, each its own job so no roll can reorder the level (U a climb after the practise, M a
+//  flow after the test: one section a job, level.md rule 2)
+export const ARC_14: Record<string, string> = { 'ascent-14-arc': 'A T T R T T P R U R X R M R W R S R C E' };
 /** 1-4's brief, all of it data: an ascent of fields, its cast 1-3's snake */
 export const BRIEF_14: GraphBrief = {
   ends: 'quiet', trend: 'up', branching: 'none', teaches: ['slide', 'creak', 'field', 'pods'],
   // (the deal is the arc's own, one type a beat, no type over V11's 40% and no two teaches of one type (V2): ground the going-up (a
-  // walk along wide low boughs with two short climbs, sound wood under every one); crumble the rotting boughs and the crown's rotten stair; climb the field, the push and the drop;
-  // hazard the pods, under fire and the hollow: 1, 2, 3 and 3 of the nine content nodes)
-  deal: { ground: 11, crumble: 22, climb: 33, hazard: 34 }, dealExact: true,
+  // walk along wide low boughs with two short climbs, sound wood under every one); crumble the rotting boughs and the crown's rotten stair; climb the field, both pushes and the drop;
+  // hazard the pods, under fire, the columns and the hollow: 1, 2, 4 and 4 of the eleven content nodes)
+  deal: { ground: 9, crumble: 18, climb: 36, hazard: 37 }, dealExact: true,
   cast: ['snake'],
   // (every laid piece carries its section's uid and key, so finish14 finds the fields, figs and gates by key: FA's option, GraphBrief.tags)
   tags: true,
@@ -197,6 +200,19 @@ const UNDER_FIRE = field('w1-14-under-fire', 'a gate of two, pods down the push 
   jobs: ['test'], job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 6, content: 'hazard',
   row: { n: 5, H: 400, figs: [{ vine: 1, over: 150 }, { vine: 4, over: 250 }], pods: [{ vine: 1, shift: 0 }, { vine: 4, shift: BEATS.grown / 2 }], beat: 'grown', gate: true, easyFigs: [{ vine: 4, over: 250 }] },
 });
+/** [U] push the figs up, twice (a climb): a gate of two bunches on two vines apart, pods on the steady beat down the free column between them,
+ *  so the second push is a step across a column he times (R-165.206: the push practised before it is tested under fire). Easy: one bunch */
+const PUSH_TWO = field('w1-14-push-two', 'push the figs up: a gate of two, a column between', {
+  jobs: ['climb'], job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 5,
+  row: { n: 5, H: 380, figs: [{ vine: 2, over: 150 }, { vine: 5, over: 230 }], pods: [{ vine: 3, shift: 0 }], beat: 'steady', gate: true, easyFigs: [{ vine: 2, over: 150 }] },
+});
+/** [M] across the columns (a flow): a gate of two at the field's two ends, pods on the grown beat down the two columns between (half a beat
+ *  apart), so he crosses both on their beat to reach the far bunch and back (R-165.206; under fire's pods are ON the push vines, here he
+ *  crosses them: a test of its own). Easy: the far bunch only */
+const COLUMNS = field('w1-14-columns', 'across the columns: a gate at both ends', {
+  jobs: ['flow'], job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 6, content: 'hazard',
+  row: { n: 6, H: 420, figs: [{ vine: 1, over: 160 }, { vine: 6, over: 240 }], pods: [{ vine: 3, shift: 0 }, { vine: 5, shift: BEATS.grown / 2 }], beat: 'grown', gate: true, easyFigs: [{ vine: 6, over: 240 }] },
+});
 /** [W] his turn to drop one: a snake dozes on the field's foot past its last vine; the bunch on the last vine, pushed free, thumps down
  *  beside it, and it glides off; the bough over the field lifts with it */
 const DROP_ONE = (() => {
@@ -224,6 +240,11 @@ const CROWN: SectionTemplate = (() => {
   const pieces: SectionPiece[] = [branch('foot', { kind: 'start' }, W, { landing: false })];
   for (let i = 0; i < 3; i++) pieces.push(branch(`r${i + 1}`, { kind: 'over', on: 'foot', at: [(20 + i * (STEP + 20)) / W, (20 + i * (STEP + 20)) / W], dy: [-RISE * (i + 1), -RISE * (i + 1)] }, STEP, { creak: true }));
   pieces.push(branch('mid', { kind: 'over', on: 'foot', at: [midX / W, midX / W], dy: [-RISE * 4, -RISE * 4] }, midW, { landing: false }));
+  // (the sure way up beside the stair: a sound vine from the foot to the mid. A step gives at the creak's hold and a fall onto the foot is
+  //  no set-back (engine.ts crumbledWhole runs on a set-back only), so with the stair alone a climber who stood too long on two steps was
+  //  stranded under the mid until the steps grew back off screen (POLISH-1 11-13: kid Normal seed 16; level.md rule 5). The stair stays the
+  //  quick way, the vine the steady one: the stage's own "one vine sure")
+  pieces.push(climbOn('sure', 'foot', W, midX + 20, RISE * 4));
   for (let i = 0; i < CROWN_N; i++) pieces.push(climbOn(`f${i + 1}`, 'mid', midW, MARGIN + i * GAP, CROWN_H));
   pieces.push(branch('top', { kind: 'over', on: 'mid', at: [0, 0], dy: [-CROWN_H, -CROWN_H] }, midW));
   FIELD_ROWS['w1-14-crown'] = { n: CROWN_N, H: CROWN_H, figs: [], pods: [{ vine: 1, shift: 0 }, { vine: 3, shift: BEATS.grown / 2 }], beat: 'grown', gate: false, foot: 'mid' };
@@ -243,7 +264,8 @@ const rest = (id: string, w: number, step?: number): SectionTemplate => ({
 } as SectionTemplate);
 // (wide enough that a flag spot (FLAG_SPAN.pad in from each end) lies 1500-2400 px of way before the next hard beat and 900 or more past
 //  the one before, Matt's flag rule along the climb (ROLLED_FLAGS): at 260-320 the spot fell a few px too late before the pods)
-const RESTS = [rest('w1-14-rest-a', 400), rest('w1-14-rest-b', 420), rest('w1-14-rest-c', 360, 180), rest('w1-14-rest-d', 440), rest('w1-14-rest-e', 380, 220), rest('w1-14-rest-f', 380, 160)];
+const RESTS = [rest('w1-14-rest-a', 400), rest('w1-14-rest-b', 420), rest('w1-14-rest-c', 360, 180), rest('w1-14-rest-d', 440), rest('w1-14-rest-e', 380, 220), rest('w1-14-rest-f', 380, 160),
+  rest('w1-14-rest-g', 460), rest('w1-14-rest-h', 400, 240)];
 /** [E] the view north: out into open sky on the crown's plain bough */
 const VIEW: SectionTemplate = {
   id: 'w1-14-view-north', name: 'the view north', feel: [STAGE_14], own: true, archetypes: 'any', phases: ['goal'], jobs: ['exit'], difficulty: 1,
@@ -253,7 +275,7 @@ const VIEW: SectionTemplate = {
 
 /** every section that is 1-4's own */
 export const SECTIONS_14: SectionTemplate[] = [
-  ARRIVE, GOING_UP, ROTTING, FIELD_TEACH, PODS, PUSH, UNDER_FIRE, DROP_ONE, HOLLOW, CROWN,
+  ARRIVE, GOING_UP, ROTTING, FIELD_TEACH, PODS, PUSH, PUSH_TWO, UNDER_FIRE, COLUMNS, DROP_ONE, HOLLOW, CROWN,
   ...RESTS, VIEW,
 ];
 

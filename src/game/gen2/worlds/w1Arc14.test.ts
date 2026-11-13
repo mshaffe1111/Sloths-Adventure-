@@ -43,7 +43,7 @@ test("1-4's graph passes the node code's rules with its own brief (V2 one teach 
   const W1 = w1World().manifest;
   assert.deepEqual(checkCode(parseCode(code), { teaches: BRIEF_14.teaches!.length, windows: W1.graphs?.windows }), []);
   // every content job of the arc is served by exactly one of 1-4's own sections (one brick a beat: a roll cannot reorder the level)
-  for (const job of ['teach', 'practise', 'test', 'twist', 'signature', 'combine'] as const) {
+  for (const job of ['teach', 'practise', 'climb', 'test', 'flow', 'twist', 'signature', 'combine'] as const) {
     const n = SECTIONS_14.filter((t) => t.jobs?.includes(job)).length;
     assert.equal(n, job === 'teach' ? 4 : 1, `${job}: ${n} sections`);
   }
@@ -132,4 +132,32 @@ test('every field row is in reach (vines GAP apart, under two hands\' reach) and
     for (const f of [...row.figs, ...(row.easyFigs ?? [])]) assert.ok(f.vine >= 1 && f.vine <= row.n && f.over > 0 && f.over < row.H - 60, `${id}: a fig bunch on a vine of the field, under its top`);
     for (const p of row.pods) assert.ok(p.vine >= 1 && p.vine <= row.n, `${id}: a pod down a column of the field`);
   }
+});
+
+/** from a section's pieces, the way from a creaking stair's foot to the bough it climbs to that is NOT the stair: a sound vine standing on
+ *  that foot whose top reaches the bough's height under its span (pieces placed 'over'/'climb' on the foot, by the foot's width) */
+function sureWayUp(t: (typeof SECTIONS_14)[number]): string | null {
+  const n0 = (r: unknown) => (Array.isArray(r) ? r[0] : r) as number;
+  const pl = (p: (typeof t.pieces)[number]) => p.place as unknown as { kind: string; on?: string; at?: unknown; dy?: unknown; h?: unknown };
+  const W = n0(t.pieces.find((p) => p.key === 'foot')!.w);
+  const overFoot = (p: (typeof t.pieces)[number]) => pl(p).kind === 'over' && pl(p).on === 'foot';
+  const steps = t.pieces.filter((p) => p.creak && overFoot(p));
+  if (!steps.length) return 'no stair';
+  const rise = Math.max(...steps.map((p) => -n0(pl(p).dy)));
+  // the bough the stair climbs to: the next piece over the foot, higher than every step
+  const top = t.pieces.find((p) => !p.creak && overFoot(p) && -n0(pl(p).dy) > rise)!;
+  const y = -n0(pl(top).dy), x0 = n0(pl(top).at) * W, x1 = x0 + n0(top.w);
+  const vine = t.pieces.find((p) => p.shape === 'vine' && pl(p).kind === 'climb' && pl(p).on === 'foot' && n0(pl(p).at) * W >= x0 && n0(pl(p).at) * W <= x1 && n0(pl(p).h) >= y - 10);
+  return vine ? null : `nothing but the stair reaches the bough ${y} px over the foot`;
+}
+
+test('no creaking stair strands him: beside every stair a sound vine climbs from its foot to the bough it leads to (planted: kid Normal seed 16 at the crown, POLISH-1 11-13)', () => {
+  // (a step gives at the creak's hold, and a fall onto the stair's own foot is no set-back (engine.ts crumbledWhole runs on a set-back
+  //  only), so with the stair alone two broken steps left him under the bough until they grew back off screen: level.md rule 5)
+  const stairs = SECTIONS_14.filter((t) => t.pieces.some((p) => p.creak && p.place.kind === 'over' && (p.place as unknown as { on: string }).on === 'foot'));
+  assert.ok(stairs.some((t) => t.id === 'w1-14-crown'), 'the crown has its rotten stair');
+  for (const t of stairs) assert.equal(sureWayUp(t), null, t.id);
+  // planted: the crown without its sure vine is the stranding case, and the check says so
+  const crown = SECTIONS_14.find((t) => t.id === 'w1-14-crown')!;
+  assert.match(sureWayUp({ ...crown, pieces: crown.pieces.filter((p) => p.key !== 'sure') }) ?? '', /nothing but the stair/);
 });
