@@ -10,7 +10,7 @@ Opus max) designed levels + 1-1 pass + fixes. Every CLAUDE.md check green on 465
 Y2 +~180; BC-FIX packet ready, blocks 0.9.7). Lead judged the real build (fresh save; path: Settings > About > tap Shaffer x10 > World
 Map > Big explorer). Matt played: 1-1 = 4-5, 1-2 = 2-3, 1-3 = 1 on a new 0-100 Normal HARDNESS METER (R-165.172; STAGE-RULES §1 #5);
 from 1-4 Normal must challenge adults, Easy = casual playthrough. His wife plays 1-2 vs 1-3 blind tonight: record her notes separately.
-RUNNING (report to the lead): FEEL-PAIR (Opus xhigh, session_01FhBbYMJ7AWJme9TCabLmnw, t-feel-pair, two-vine room in the QA build only,
+PAUSE AT MIDNIGHT 11-12 (Matt): nothing restarts until Matt says go. RUNNING until then (report to the lead): FEEL-PAIR (Opus xhigh, session_01FhBbYMJ7AWJme9TCabLmnw, t-feel-pair, two-vine room in the QA build only,
 stop 1 AM); DIFF-ALGO (Opus MAX, session_01FhBbYLkEmfNhWBz7cCsNXu, t-diff-algo: research incl. the internet + the meter + the arc for
 all 10 worlds + the engine's levers + a read-only prototype calibrated to Matt's ratings, stop 1:30 AM); INT-2 (session_01FhBbYJyqGNbY6jh1mWA5WW)
 DONE and retired (final head t-int-2@f01c76f7: + 14 w1traps catalog rows; new packets base on it). Story keeper (session_019iachLiuwNTAZUBSJWUmR3, permanent): nature
