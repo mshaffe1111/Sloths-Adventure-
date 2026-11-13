@@ -13,3 +13,15 @@ The point: each level should cost less than the one before it at the same bar (L
 
 **The measure from 11-12 10:03 PM ET (Matt): how many levels per 100% of his weekly usage.** The week after his 11-12 ~10 PM reset is
 the first: count levels that reach his test link at the bar, against the usage % he reports.
+
+**Member costs, 11-13 (R-165.184; get_session usage.cost_usd at retire):**
+| Member | Job | Cost | What it bought |
+|---|---|---|---|
+| Critic (session_01FhBbYL2LcFRBpSzwjeZ98U) | cold audit of the new lead's review, 2 rounds | $3.30 | caught 4 real errors in the lead's plan before anyone acted on them |
+| ART1 (session_01FhBbYMvThjGLVUA8nE3ZmA) | art, blocked: no Hugging Face access in its session | $2.25 | a plan + handover for ART2; $0 HF. Cause: the HF connector was disconnected (fixed by Matt 10:20 AM) |
+| Story keeper, old session (session_019iachLiuwNTAZUBSJWUmR3) | two answers at handover, then retired | ~$6.36 | the open story list; failed 1 of 3 recall questions |
+| Architect ENGINE-NEEDS (session_01FhBbYLVSn59vpCSU4ruo6P) | code-checked truth table + ranked bulk engine plan + ADD-LEVEL packet | $10.33 | the engine build order for the rest of the game (reference/plans/ENGINE-NEEDS.md) |
+| S1 (session_01FhBbYJXH6JJa93RhTnuDf7) | the meter's inspector fixed (humps read as hops), meter-only scoping, 4 real World 5-7 findings logged (R-165.190) | $17.27 | true difficulty numbers for 1-4/1-5; ran to 41% context after two blockers |
+| ART2 (session_01FhBbYLs1YqJxsPupP1Ngk1) | HF: two-hand climb (2 rounds), 1-5 set + redos, 1-4 set, 9 fruit + golden guarana, 1-5 dusk, 25 pieces cut into the inventory | $25.20 (+ ~$4.22 Hugging Face) | most of tonight's painted art; retired at 53% context |
+| B14 (session_01FhBbYMrAEyA6NNWrPtAzHo) | 1-4: beat clock, pods, fig gate, vine field onto main, 1-4 arc 12/12 in beat order, old 1-4 deleted, art placed | $52.87 | most of 1-4's engine pieces; ran to 76% context (the lead's 40% watch could not see it: get_session reads 0 while a session runs, D55) |
+| ECONOMY designer (session_01FhBbYLiMADVRwZv3e9nCar) | one design for score, stars, basket, hearts, lives, Game Over (research + 420 measured bot runs) | $5.30 | reference/design/ECONOMY.md and 7 ready packets; the economy wave after 0.9.8 |
