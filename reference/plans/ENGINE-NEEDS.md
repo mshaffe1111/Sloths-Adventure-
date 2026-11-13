@@ -53,7 +53,7 @@ world data, planted tests, proven on 2+ worlds' kits, lockall unchanged for ever
 | 11 | BREAK-PUSH: cracked stone, push blocks | break 5 (7-2 first) | M | breakable.ts; gen2/breakLay.ts | none |
 | 12 | Small: far fling (W8), glide down a drop (4-7, 8-6), crumbling vine (7-5, 9-3) on B15's bough | 6 + 2 + 2 | S each | gen2/pipeline.ts land rule (shared) | FA 1b, B15 |
 Side by side: wave A (now, beside FA/B14/B15): ADD-LEVEL (section 3; tools only) and 10, 11 (new runtime files only, hooks later).
-Wave B (after FA, B14, B15 push): 1 || 2 || 3: disjoint WRITE lists; pipeline/types hooks in the order 2, 3, 1. Wave C: 4 || 6 || 5
+Wave B (after FA, B14, B15 push): DESCENT (FA piece 1b, R-165.170; fresh Fable from t-fa; 3-1, 4-7, 6-7, 8-6) || 1 || 2 || 3: disjoint WRITE lists; pipeline/types hooks in the order 2, 3, 1. Wave C: 4 || 6 || 5
 (5 holds pipeline.ts longest: 4 and 6 hook first). Wave D: 7, 8, 9, 12. engine.ts: one holder at a time (1, then 4).
 
 ## 3. The 2-hour level: what stands between a finished design and a tested level today
