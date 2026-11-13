@@ -1,0 +1,22 @@
+about story fresh upright: page 659px in a 659px view (scrolls), Back 97,44
+  Esc from story: back on About
+about inspired fresh upright: page 1714px in a 659px view (scrolls), Back 97,44
+  Esc from inspired: back on About
+about story old upright: page 659px in a 659px view (scrolls), Back 97,44
+  Esc from story: back on About
+about inspired old upright: page 1714px in a 659px view (scrolls), Back 97,44
+  Esc from inspired: back on About
+about story fresh sideways: page 476px in a 200px view (scrolls), Back 97,44
+  Esc from story: back on About
+about inspired fresh sideways: page 1206px in a 200px view (scrolls), Back 97,44
+  Esc from inspired: back on About
+about story old sideways: page 476px in a 200px view (scrolls), Back 97,44
+  Esc from story: back on About
+about inspired old sideways: page 1206px in a 200px view (scrolls), Back 97,44
+  Esc from inspired: back on About
+dot fresh upright: no card that waits to be read came in 90 s {"x":4475.433333333337,"help":"reminders","size":1,"said":["Flick up and forward to jump.","Slide your thumb to run. Keep it down."]}
+dot old upright: "A flag! Fall, and you start again here." hint=no card 311x52 px, pointer-events auto, badge "+1"
+  tapped: next card "Reach the shrine to finish the stage."
+dot fresh sideways: no card that waits to be read came in 90 s {"x":4407.46666666667,"help":"reminders","size":1,"said":["Flick up and forward to jump.","Slide your thumb to run. Keep it down."]}
+dot old sideways: "A flag! Fall, and you start again here." hint=no card 281x47 px, pointer-events auto, badge "+2"
+  tapped: next card "Run through petals to pick them up."

@@ -185,6 +185,22 @@ export function markSkipOffered(s: Pick<Storage, 'setItem'> | null = store()): v
     /* ignore */
   }
 }
+/** R-165.175: he has cleared one of Dot's cards with a tap on this phone (her first card stops teaching it: dotGuide.ts TAP_HINT) */
+const TAP_KEY = 'sloth_dot_tapped';
+export function tapLearned(s: Pick<Storage, 'getItem'> | null = store()): boolean {
+  try {
+    return s?.getItem(TAP_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+export function markTapLearned(s: Pick<Storage, 'setItem'> | null = store()): void {
+  try {
+    s?.setItem(TAP_KEY, '1');
+  } catch {
+    /* ignore */
+  }
+}
 /** the button was tapped: tips off (Quiet) */
 export function skipTips(s: Pick<Storage, 'setItem'> | null = store()): DotHelp {
   setDotHelp('quiet', s);
