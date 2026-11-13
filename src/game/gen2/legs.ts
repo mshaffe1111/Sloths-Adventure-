@@ -60,6 +60,11 @@ export function legsOf(nodes: ReadonlyArray<{ travel?: Travel }>, flow: Travel):
   return legs;
 }
 
+/** a leg as it was laid: its travel, the sections it holds (`i0` to `i1`, not included), the box they lie in, for a run leg the
+ *  ground its corridor is measured from, and for a column
+ *  (up or down) its frame, its floor's top and the storey joins it climbs or comes down by */
+export interface LaidLeg { travel: Travel; i0: number; i1: number; x0: number; x1: number; y0: number; y1: number; /** a run leg (right or left): its own ground, the height it began at */ ground?: number; frame?: Frame; floorY?: number; turns?: Array<{ x: number; from: number; to: number }> }
+
 /** is a graph laid as legs (a route through more than one travel, or a run laid left)? A graph of one right leg is a run and one of
  *  a single up or down leg is a tower, each laid exactly as before legs */
 export const mixed = (legs: readonly Leg[]): boolean => legs.length > 1 || legs[0]?.travel === 'left';

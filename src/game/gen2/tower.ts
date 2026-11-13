@@ -13,8 +13,8 @@ import type { Platform, Vine } from '../types.ts';
 import type { LocalLayout } from './pipeline.ts';
 
 /** which way a graph is laid (MissionGraph.flow) */
-export type Flow = 'right' | 'up' | 'down';
-export const vertical = (flow: Flow): flow is 'up' | 'down' => flow !== 'right';
+export type Flow = 'right' | 'up' | 'down' | 'legs';
+export const vertical = (flow: Flow): flow is 'up' | 'down' => flow === 'up' || flow === 'down';
 
 /** his body (the collider the engine moves: physics.ts), for the head room between storeys */
 const BODY_H = 48;
@@ -180,7 +180,7 @@ export function routeOf(flow: Flow, sections: ReadonlyArray<{ uid: string; entry
  * stands on) is that far short of the leg's start, never short of the leg before.
  */
 export function routeAt(route: Route, x: number, y: number): number {
-  if (!vertical(route.flow)) return x - route.spawn.x;
+  if (route.flow === 'right') return x - route.spawn.x;
   let k = -1, bestD = Infinity;
   route.legs.forEach((g, i) => {
     const lo = Math.min(g.entry.y, g.exit.y), hi = Math.max(g.entry.y, g.exit.y);
@@ -207,8 +207,38 @@ export function routeAt(route: Route, x: number, y: number): number {
  * way down) have rising water, lava and mist under him and their own framing rules, and are not moved here: each is looked at when it
  * is rebuilt as a tower, or by a packet of its own.
  */
-export function towerLead(stage: object, mode: { lead(): { dx: number; dy: number } }): number {
-  return (stage as { gen2?: { tower?: unknown } }).gen2?.tower ? mode.lead().dy : 0;
+export function towerLead(stage: object, mode: { lead(): { dx: number; dy: number } }, at?: { x: number; y: number }): number {
+  const T = (stage as { gen2?: { tower?: { flow: Flow; legs?: LegBox[] } } }).gen2?.tower;
+  if (!T) return 0;
+  if (T.flow !== 'legs') return mode.lead().dy;
+  // (a stage of legs, R-165.196: the column he is in leads the view its own way, up or down; on a run leg, or when the engine
+  // names no place, the framing every run has)
+  const leg = at && T.legs ? columnAt(T.legs, at.x, at.y) : undefined;
+  return leg ? (leg.travel === 'up' ? -1 : 1) : 0;
+}
+
+/** a laid leg, as much of it as the route's readers need (legs.ts LaidLeg) */
+type LegBox = { travel: 'right' | 'left' | 'up' | 'down'; y0: number; frame?: { x0: number; x1: number }; floorY?: number };
+/** how far outside a column's frame he still counts as in it: its wall's thickness, and a storey over its top */
+const COLUMN_KEEP = { x: 60, over: 320, under: 40 } as const;
+/** the column (a leg laid up or down) the place lies in, on a stage of legs; undefined on a run leg. No allocation: the engine asks
+ *  every frame */
+export function columnAt(legs: readonly LegBox[], x: number, y: number): LegBox | undefined {
+  for (let i = 0; i < legs.length; i++) {
+    const g = legs[i];
+    if (g.frame && x >= g.frame.x0 - COLUMN_KEEP.x && x <= g.frame.x1 + COLUMN_KEEP.x && y >= g.y0 - COLUMN_KEEP.over && y <= (g.floorY ?? Infinity) + COLUMN_KEEP.under) return g;
+  }
+  return undefined;
+}
+
+/**
+ * How far through a stage of legs a place is, 0 to 1 along its route (the progress bar's answer where x and height each run both
+ * ways); undefined on any other stage, whose travel mode answers as ever (stageModes.ts).
+ */
+export function routeRatio(stage: object, at: { x: number; y: number }): number | undefined {
+  const T = (stage as { gen2?: { tower?: { flow: Flow; route?: Route } } }).gen2?.tower;
+  if (!T?.route || T.flow !== 'legs') return undefined;
+  return Math.max(0, Math.min(1, routeAt(T.route, at.x, at.y) / Math.max(1, T.route.length)));
 }
 
 /**

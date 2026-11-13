@@ -167,7 +167,7 @@ export interface WorldManifest {
   corridor: { top: number; bottom: number; soft: number };
   /** a stage laid up or down (MissionGraph.flow, tower.ts): the tower's world width, px (unset: TOWER.width). A storey runs wall to
    *  wall of it before it turns, so it is how many sections a storey holds */
-  tower?: { width: number };
+  tower?: { width: number; /** the look of a mid-stage column's walls and floor (legs.ts columnWalls; unset: the ground's style) */ wall?: Platform['style'] };
   /** the world's difficulty band (§1b), in D units; default: bandFor(world) */
   band?: readonly [number, number];
   creatures: CreatureDef[];
@@ -590,18 +590,35 @@ export interface MissionNode {
   content?: ContentType;
   /** V19 (NODES.md §8.3): the node after a descent in a trend-up stage's last third must end higher, so it takes rising sections only */
   mustRise?: boolean;
+  /** which way this node is laid (R-165.196; the code's leg marks /R /L /U /D, legs.ts): a run of nodes with one travel is a LEG.
+   *  Unset: the graph's own flow, as every graph written before legs */
+  travel?: 'right' | 'left' | 'up' | 'down';
 }
 
 /** a node's job (NODES.md §1, §8.0's key): what it asks of the player. The graphs roll arrive to exit; the rest are LATER nodes (§6), or
  *  tags a section may carry for a node's part (cooldown-in-node, choice-reward, reward), all named as the W1 kit names them */
 export type NodeJob =
   | 'arrive' | 'teach' | 'practise' | 'fork' | 'rest' | 'flow' | 'combine' | 'climb' | 'descent' | 'twist' | 'test' | 'signature' | 'finale' | 'exit'
-  | 'reward' | 'pressure' | 'puzzle' | 'arena' | 'story' | 'preview' | 'change' | 'cooldown-in-node' | 'choice-reward';
+  | 'reward' | 'pressure' | 'puzzle' | 'arena' | 'story' | 'preview' | 'change' | 'cooldown-in-node' | 'choice-reward'
+  /** the pick (the code's `?[a|b]`, NODES.md §8.9): a walked choice lays one of two stretches (the card road) */
+  | 'pick';
 /** a node's shape (NODES.md §2) */
 export type NodeShape = 'flat' | 'rising' | 'falling' | 'two-road';
 /** a node's rolled dials (NODES.md §3): tempo (hurry or patience, even odds), density (climbing through the stage), height (up, level
  *  or down inside the node, from its shape), terrain (a family from the world's list), rating (1-10, the cadence: ramps and cools) */
-export interface NodeDials { tempo: 'hurry' | 'patience'; density: 'low' | 'medium' | 'high'; height: 'up' | 'level' | 'down'; terrain?: string; rating: number }
+export interface NodeDials {
+  tempo: 'hurry' | 'patience'; density: 'low' | 'medium' | 'high'; height: 'up' | 'level' | 'down'; terrain?: string; rating: number;
+  /** what the DESIGNER fixed on this node (the code's long form, NODES.md §8.9, R-165.198; nodeCode.ts CodeDials). Each is honoured by
+   *  the lay or the roll fails by name (never dropped); a node that names none rolls it, as ever:
+   *  `beat` the tempo's beat in seconds; `threat` the cast on the node (a creature id of the world, how many, awake or asleep);
+   *  `hazard` what lies under or along it (soft, water, hurt, void or a world's hazard id; `clock`: a named clock it keeps);
+   *  `reward` the find's id and the pickups it lays; `points` its difficulty target in meter points */
+  beat?: number;
+  threat?: Array<{ kind: string; count: number; state?: 'awake' | 'asleep' }>;
+  hazard?: { kind: string; clock?: string };
+  reward?: { find?: string; pickups?: number };
+  points?: number;
+}
 /** a stage graph (NODES.md §4), one of an archetype's several, stored as its node code (§8.4: jobs and shapes, `A T P F R X R S E`) */
 export interface StageGraphDef { id: string; archetype: Archetype; code: string }
 /** the parts of a stage's brief (WORLD-RULEBOOK §5) the graph reads */
@@ -814,7 +831,7 @@ export interface Gen2Meta {
   /** a stage laid as a tower (MissionGraph.flow up or down, R-165.170): its width and floor, the plain boughs the lay ran on to a
    *  wall (a design wants none), and its ROUTE (tower.ts Route: each section's leg, the px of way before and through it, the px he
    *  walks): what "how far along" means where x runs both ways, read by the flags, the opening, the clock and the time model */
-  tower?: { flow: 'up' | 'down'; width: number; floorY: number; runouts: number; /** each storey join that climbs or comes down: its vine's x and the heights it joins */ turns: Array<{ x: number; from: number; to: number }>; /** its sealed pieces' platform ids (SectionPiece.sealed), when it has any */ sealed?: number[]; route: import('./tower.ts').Route };
+  tower?: { flow: 'up' | 'down' | 'legs'; /** a stage of LEGS (flow 'legs', R-165.196): each leg as laid, in order */ legs?: import('./legs.ts').LaidLeg[]; width: number; floorY: number; runouts: number; /** each storey join that climbs or comes down: its vine's x and the heights it joins */ turns: Array<{ x: number; from: number; to: number }>; /** its sealed pieces' platform ids (SectionPiece.sealed), when it has any */ sealed?: number[]; route: import('./tower.ts').Route };
   /** a stage that lays a hurt floor (WorldManifest.hurtFloor): its row's lesson and clearStart, and `shown`, the END x of the lesson's
    *  showing piece (the piece keyed `show` in the laid section whose `teaches` is the lesson) when one is laid: `hazard.untaught` reads it */
   hurt?: { lesson: string; clearStart: number; shown?: number };

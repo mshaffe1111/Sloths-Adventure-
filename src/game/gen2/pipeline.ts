@@ -42,6 +42,7 @@ import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.
 import { creakLimb, needless } from './creak.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import { checkCode, formatToken, JOB_OF, LETTER_OF, MARK_OF, parseCode, type CodeToken } from './nodeCode.ts';
+import { columnFrame, columnWalls, legMarks, legsOf, mixed, reflectLeg, upOrDown, WALL, type Frame, type LaidLeg, type Travel } from './legs.ts';
 import {
   EASY_ENEMY_SHARE,
   EASY_LANDING,
@@ -493,20 +494,26 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
   const r = rngFor(seed, 67);
   const g = list[Math.floor(r() * list.length)];
   // (the graph's code, read and checked: a graph that breaks a rule is the world's data at fault, named with its rule and token)
-  const parsed = parseCode(g.code);
+  // (its leg marks, legs.ts: taken out before the nodes are read; each node's travel then rides with its job through the brief's
+  // rules below, and a node they add takes the leg of the node before it. A code with no mark: `tv` stays empty and nothing moves)
+  const marks = legMarks(g.code);
+  const parsed = parseCode(marks.code);
   const bad = checkCode(parsed, {});
   if (bad.length) throw new Error(`gen2 ${budget.id}: graph ${g.id} "${g.code}": ${bad.join('; ')}`);
   let jobs: NodeJob[] = parsed.map((t) => JOB_OF[t.job]);
+  let tv: Array<Travel | undefined> = marks.marked ? [...marks.travel] : [];
+  const put = (at: number, del: number, ...js: NodeJob[]) => { if (tv.length) tv.splice(at, del, ...js.map(() => tv[Math.max(0, at - 1)])); jobs.splice(at, del, ...js); };
+  const keep = (f: (j: NodeJob, i: number) => boolean) => { const k = jobs.map(f); if (tv.length) tv = tv.filter((_, i) => k[i]); jobs = jobs.filter((_, i) => k[i]); };
   // (ends: a quiet brief drops the finale, and the rest that led to it, so the stage walks on to its quiet arrival, NODES.md §8.4's
   // B under 1-1; a finale brief gets one before the exit)
   if (brief.ends === 'quiet') {
-    jobs = jobs.filter((j) => j !== 'finale');
-    while (jobs.length > 2 && jobs[jobs.length - 1] === 'exit' && jobs[jobs.length - 2] === 'rest') jobs.splice(jobs.length - 2, 1);
-  } else if (!jobs.includes('finale')) jobs.splice(Math.max(1, jobs.lastIndexOf('exit')), 0, 'finale');
+    keep((j) => j !== 'finale');
+    while (jobs.length > 2 && jobs[jobs.length - 1] === 'exit' && jobs[jobs.length - 2] === 'rest') put(jobs.length - 2, 1);
+  } else if (!jobs.includes('finale')) put(Math.max(1, jobs.lastIndexOf('exit')), 0, 'finale');
   // (the lessons force the teach nodes: the first after the arrival, each next after the one before)
   const teach = brief.teaches ?? Object.entries(M.lessons ?? {}).filter(([, st]) => st === budget.id).map(([m]) => m);
   const teachAt = () => jobs.reduce((k, j, i) => (j === 'teach' ? i : k), jobs[0] === 'arrive' ? 0 : -1);
-  while (jobs.filter((j) => j === 'teach').length < teach.length) jobs.splice(teachAt() + 1, 0, 'teach');
+  while (jobs.filter((j) => j === 'teach').length < teach.length) put(teachAt() + 1, 0, 'teach');
   // (a stage with no moves named keeps its graph's teach nodes, each taking any move not yet taught)
   if (teach.length || brief.teaches) while (jobs.filter((j) => j === 'teach').length > teach.length) jobs[jobs.lastIndexOf('teach')] = 'practise';
   // (branching: the fork count)
@@ -524,8 +531,8 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
       const first = Math.max(1, jobs.indexOf('teach') + 1);
       let at = -1;
       for (let k = after + 1; k >= first; k--) if (jobs[k - 1] !== 'fork' && jobs[k] !== 'fork') { at = k; break; }
-      if (at >= 0) jobs.splice(at, 0, 'fork');
-      else jobs.splice(after + 1, 0, ...(jobs[after] === 'fork' ? (['flow', 'fork'] as NodeJob[]) : (['fork', 'flow'] as NodeJob[])));
+      if (at >= 0) put(at, 0, 'fork');
+      else put(after + 1, 0, ...(jobs[after] === 'fork' ? (['flow', 'fork'] as NodeJob[]) : (['fork', 'flow'] as NodeJob[])));
     }
   }
   // (a required section is the stage's own find, the key's H (NODES.md §8.0: the seed perch, NOW in 1-1): a reward node each, after the
@@ -534,11 +541,11 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
     const s = jobs.lastIndexOf('signature');
     // (right before the signature, inside its last third with the boughs: X R H S E; on graph C, R D_ H S E, where V19 passes over
     // the find and holds the signature to rise)
-    jobs.splice(s > 0 ? s : Math.max(1, jobs.lastIndexOf('exit')), 0, 'reward');
+    put(s > 0 ? s : Math.max(1, jobs.lastIndexOf('exit')), 0, 'reward');
   }
   // (the rests)
-  for (let i = 0; i < jobs.length - 1; i++) if (NEEDS_REST.has(jobs[i]) && !QUIET_JOBS.has(jobs[i + 1]) && jobs[i + 1] !== 'exit') jobs.splice(i + 1, 0, 'rest');
-  jobs = jobs.filter((j, i) => !(QUIET_JOBS.has(j) && QUIET_JOBS.has(jobs[i - 1])));
+  for (let i = 0; i < jobs.length - 1; i++) if (NEEDS_REST.has(jobs[i]) && !QUIET_JOBS.has(jobs[i + 1]) && jobs[i + 1] !== 'exit') put(i + 1, 0, 'rest');
+  keep((j, i) => !(QUIET_JOBS.has(j) && QUIET_JOBS.has(jobs[i - 1])));
   // (each node: its shape and its dials)
   const lean: Record<GraphBrief['trend'], Array<[NodeShape, number]>> = {
     up: [['rising', 2], ['flat', 1.5], ['falling', 0.5]],
@@ -568,7 +575,7 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
       rating,
     };
     const want = WANT[budget.archetype];
-    return { ...base, id: `n${i + 1}`, job, shape, dials, ...(want && base.role !== 'start' && base.role !== 'goal' ? { want } : {}), ...(job === 'teach' ? { teaches: teach[ti++] } : {}) };
+    return { ...base, id: `n${i + 1}`, job, shape, dials, ...(want && base.role !== 'start' && base.role !== 'goal' ? { want } : {}), ...(job === 'teach' ? { teaches: teach[ti++] } : {}), ...(tv[i] ? { travel: tv[i] } : {}) };
   });
   // (V19: in a trend-up stage, the node after a descent in the last third ends higher than the descent began: it rises)
   if (brief.trend === 'up') nodes.forEach((n, i) => {
@@ -1326,7 +1333,7 @@ export interface Laid {
   /** a tower (graph.flow up or down, R-165.170): its width, its floor (an ascent's ground; a way down's last floor, the shrine's), each
    *  storey join that climbs or comes down (the vine's x, the heights it joins, whether the storey turned back), and how many plain
    *  boughs the lay ran on to a wall for a section too wide to turn where he stood (a design wants none) */
-  tower?: { flow: 'up' | 'down'; width: number; floorY: number; turns: Array<{ x: number; from: number; to: number; turned: boolean }>; runouts: number; sealed?: number[] };
+  tower?: { flow: 'up' | 'down' | 'legs'; /** a stage of legs (R-165.196): each leg as laid */ legs?: LaidLeg[]; width: number; floorY: number; turns: Array<{ x: number; from: number; to: number; turned: boolean }>; runouts: number; sealed?: number[] };
 }
 
 export interface LayOptions {
@@ -1467,13 +1474,23 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const pickRng = rngFor(seed, 3);
   const platforms: Platform[] = [];
   let pid = 1;
-  const baseline = M.corridor.bottom + M.ground.bankH;
+  let baseline = M.corridor.bottom + M.ground.bankH;
   // (a tower, R-165.170, tower.ts: the graph is laid up or down, a storey over or under the last. `flow` right: none of it is read)
-  const flow = graph.flow;
-  const tower = vertical(flow);
-  const TW = tower ? Math.max(M.tower?.width ?? TOWER.width, RUNWAY + 2 * TOWER.wall) : 0;
+  // (LEGS, R-165.196, legs.ts: a node carries its travel, and a run of nodes with one travel is a leg. A graph of one right leg is a
+  // run and one of a single up or down leg a tower: `routed` is false and nothing below reads a leg. Otherwise each leg is laid in
+  // turn by the lay its travel calls for: `flow` and `tower` are those of the leg he is on, `frame` its column (a tower of one leg:
+  // 0 to its width), `floorAt` that column's floor, and `gy` / `ctop` / `cbot` / `baseline` the run lay's ground and corridor at the
+  // leg's own height (a run: the manifest's own numbers, never moved))
+  const legs = legsOf(graph.nodes, graph.flow);
+  const routed = mixed(legs);
+  let flow: 'right' | 'up' | 'down' = !routed ? graph.flow : upOrDown(legs[0].travel) ? legs[0].travel : 'right';
+  let tower = vertical(flow);
+  const TW = tower || routed ? Math.max(M.tower?.width ?? TOWER.width, RUNWAY + 2 * TOWER.wall) : 0;
+  let frame: Frame = { x0: 0, x1: TW };
+  let floorAt = M.ground.y;
+  let gy = M.ground.y, ctop = M.corridor.top, cbot = M.corridor.bottom;
   // (a bank aloft in a tower is a slab, never a column down through the storeys under it; on an ascent's floor it is ground as ever)
-  const slab = (y: number) => tower && !(flow === 'up' && y >= M.ground.y - 1);
+  const slab = (y: number) => tower && !(flow === 'up' && y >= floorAt - 1);
   const tagged = !!M.graphs?.briefs?.[budget.id]?.tags;
   // (which storey each piece is of: how many turns were laid before it; tower.ts towerCatches reads it so no catch climbs a storey)
   const storeyOf = new Map<number, number>();
@@ -1559,7 +1576,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (World 9 fills every bank down past the floor (its lava is drawn under it); elsewhere only a bank whose foot leaves a hole he
       // fits through (48 px, his height) is filled, so the shipped stages build as curated (five 8-6 Normal rolls change: their dark
       // glide floors ran 51-85 px under a bank's foot); a thin perch or branch beside the pit is never stretched into a column)
-      for (const q of platforms) if ((Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40 && (budget.world === 9 || floor - (q.y + q.height) > 48)) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
+      for (const q of platforms) if (!wallIds.has(q.id) && (Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40 && (budget.world === 9 || floor - (q.y + q.height) > 48)) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
     };
     if (back) {
       const out = backPit(x0, x1, lipY, farY, depthNow, hop);
@@ -1583,28 +1600,28 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   let dir: 1 | -1 = 1;
   const turns: Array<{ x: number; from: number; to: number; turned: boolean; vine: Vine }> = [];
   let runouts = 0;
-  const towerJoin = (ext: { x0: number; x1: number; low: number; high: number; hang?: number }, opts: { keepFloor?: boolean; toFloor?: boolean; seam: Platform[]; what: string }): { ox: number; oy: number; way: 1 | -1; climbed: number } => {
+  const towerJoin = (ext: { x0: number; x1: number; low: number; high: number; hang?: number }, opts: { keepFloor?: boolean; toFloor?: boolean; /** the way the storey must run (a column's ledge out, toward the wall he leaves by) */ way?: 1 | -1; seam: Platform[]; what: string }): { ox: number; oy: number; way: 1 | -1; climbed: number } => {
     const usable = TW - 2 * TOWER.wall;
     const ahead = ext.x1, behind = -ext.x0;
     if (ahead + behind > usable) throw new Error(`gen2 ${budget.id}: ${opts.what} is ${R(ahead + behind)} px wide, wider than the tower's storeys (${usable})`);
-    const roomIn = (d: 1 | -1, x: number) => (d > 0 ? TW - TOWER.wall - x : x - TOWER.wall);
+    const roomIn = (d: 1 | -1, x: number) => (d > 0 ? frame.x1 - TOWER.wall - x : x - frame.x0 - TOWER.wall);
     // (the height its entry may have over [a, b], and whether a walk on at his own height keeps that)
-    const limitAt = (a: number, b: number) => (opts.toFloor ? storeyLimit('down', 0, TW, ext.low, ext.high, platforms, vines) : storeyLimit(flow as 'up' | 'down', a, b, ext.low, ext.high, platforms, vines));
+    const limitAt = (a: number, b: number) => (opts.toFloor ? storeyLimit('down', frame.x0, frame.x1, ext.low, ext.high, platforms, vines) : storeyLimit(flow as 'up' | 'down', a, b, ext.low, ext.high, platforms, vines));
     const clears = (y: number, lim: number) => (flow === 'up' ? y <= lim : y >= lim);
-    const onFloor = flow === 'up' && cur.y >= M.ground.y - 1;
+    const onFloor = flow === 'up' && cur.y >= floorAt - 1;
     // (a sealed piece is left only by the vine that stands on it: the next section is a storey up, with no bough run on beside it)
     const sealedExit = sealedIds.has(cur.piece.id);
     const walkOn = () => {
-      if (sealedExit || opts.toFloor || (onFloor && !opts.keepFloor) || roomIn(dir, cur.x) < ahead || roomIn(-dir as 1 | -1, cur.x) < behind) return false;
+      if (sealedExit || opts.toFloor || (opts.way !== undefined && opts.way !== dir) || (onFloor && !opts.keepFloor) || roomIn(dir, cur.x) < ahead || roomIn(-dir as 1 | -1, cur.x) < behind) return false;
       return onFloor || clears(cur.y, limitAt(Math.min(cur.x + dir * ext.x0, cur.x + dir * ext.x1), Math.max(cur.x + dir * ext.x0, cur.x + dir * ext.x1)));
     };
     if (walkOn()) return { ox: cur.x, oy: cur.y, way: dir, climbed: 0 };
     // a storey over (under): on the same way while it fits, else back the other way; if neither fits from here, a plain bough runs
     // on to the wall first, where the whole width is behind him
-    let way: 1 | -1 = roomIn(dir, cur.x) >= ahead + 2 ? dir : (-dir as 1 | -1);
+    let way: 1 | -1 = opts.way ?? (roomIn(dir, cur.x) >= ahead + 2 ? dir : (-dir as 1 | -1));
     // (a turn's near end: going up, back over the ledge he leaves, the vine standing on it; going down, out past its tip, under the
     // vine that hangs there, never nearer the tower's side than a bridge is laid)
-    const tipOf = (w: 1 | -1) => (w === dir ? cur.x : flow === 'up' ? cur.x - dir * TOWER.vineIn : Math.max(24, Math.min(TW - 24, cur.x + dir * (CLIMB_CLEAR + 20))));
+    const tipOf = (w: 1 | -1) => (w === dir ? cur.x : flow === 'up' ? cur.x - dir * TOWER.vineIn : Math.max(frame.x0 + 24, Math.min(frame.x1 - 24, cur.x + dir * (CLIMB_CLEAR + 20))));
     // (from a sealed piece no bough runs on: where the section fits neither on from its tip nor back over it, its storey starts
     // further back ALONG the sealed piece, the vine standing on the piece there; where even that is too narrow the roll fails by name)
     let sealedOx: number | undefined;
@@ -1613,8 +1630,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const backEnd = dir > 0 ? g.x + TOWER.vineIn : g.x + g.width - TOWER.vineIn;
       if (flow !== 'up' || roomIn(dir, backEnd) < ahead + 2) throw new Error(`gen2 ${budget.id}: ${opts.what} (${R(ahead)} px) fits no turn from the sealed piece at x ${R(g.x)}-${R(g.x + g.width)} (room ${R(roomIn(dir, backEnd))} px on, ${R(roomIn(way, tipOf(way)))} px back) and no bough may run on from it`);
       way = dir;
-      sealedOx = dir > 0 ? Math.max(backEnd, TW - TOWER.wall - ahead - 2) : Math.min(backEnd, TOWER.wall + ahead + 2);
-    } else if (way !== dir && roomIn(way, tipOf(way)) < ahead) {
+      sealedOx = dir > 0 ? Math.max(backEnd, frame.x1 - TOWER.wall - ahead - 2) : Math.min(backEnd, frame.x0 + TOWER.wall + ahead + 2);
+    } else if (opts.way === undefined && way !== dir && roomIn(way, tipOf(way)) < ahead) {
       const run = roomIn(dir, cur.x);
       if (run > 1) {
         const x = dir > 0 ? cur.x : cur.x - run;
@@ -1716,7 +1733,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
    *  bough window's start) */
   const needsRise = (n: MissionNode) => upStage && (!!n.mustRise || (endHigh && n.job === 'signature' && descentY === undefined));
   /** where the next section enters: the join clamps it into the corridor */
-  const entryY = () => Math.max(M.corridor.top, Math.min(M.corridor.bottom, cur.y));
+  const entryY = () => Math.max(ctop, Math.min(cbot, cur.y));
   const fits = (t: SectionTemplate, n: MissionNode, i: number, loose: 0 | 1 | 2 = 0) =>
     jobFits(t, n, loose) &&
     (!n.mustRise || loose === 2 || exitDyOf(t) < 0) &&
@@ -1772,7 +1789,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       });
       riseAfter = least.map((_, k) => least.slice(k + 1).reduce((a, b) => a + b, 0));
     }
-    return Math.max(0, M.corridor.top - (entryY() + exitDyOf(c) - (riseAfter[i] ?? 0)));
+    return Math.max(0, ctop - (entryY() + exitDyOf(c) - (riseAfter[i] ?? 0)));
   };
   // (and the late rise's debt: a late descent is followed by a node that must end higher than it began (V19). Whatever is taken
   // here, a section must be left for that node that climbs back what the descent falls, with room for the joins between: the fall of
@@ -1806,10 +1823,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (inside the corridor, like any pick: a later slot takes it otherwise; judged from the entry the join will give it, which is
       // clamped into the corridor, never from the last exit, 11-06: on 1-1 seed 102948 a descent ended past the corridor's floor and the
       // level seed perch was refused at the only slot it had)
-      const endY = Math.max(M.corridor.top, Math.min(M.corridor.bottom, cur.y)) + exitDyOf(t);
+      const endY = Math.max(ctop, Math.min(cbot, cur.y)) + exitDyOf(t);
       // (on a rolled graph a required section stands in its own reward node, the key's H, by its phase, window and uses)
       const reqFits = n.job ? n.job === 'reward' && fits(t, n, i, 2) : fits(t, n, i);
-      if (!placedReq.has(r.section) && (!r.phase || r.phase === n.phase) && reqFits && (tower || (endY >= M.corridor.top && endY <= M.corridor.bottom))) return t;
+      if (!placedReq.has(r.section) && (!r.phase || r.phase === n.phase) && reqFits && (tower || (endY >= ctop && endY <= cbot))) return t;
     }
     // (a required section is never drawn by weight: it comes once, where the plan puts it)
     let cands = M.sections.filter((t) => fits(t, n, i) && !must.some((r) => r.section === t.id));
@@ -1836,10 +1853,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     const want = n.dials
       ? Math.max(0, Math.min(1, n.dials.rating / 10 + ramp + (n.dials.density === 'high' ? 0.1 : n.dials.density === 'low' ? -0.1 : 0)))
       : (budget.band[0] + (budget.band[1] - budget.band[0]) * n.tension - budget.band[0]) / (budget.band[1] - budget.band[0]);
-    const room = M.corridor;
+    const room = { top: ctop, bottom: cbot, soft: M.corridor.soft };
     // (a tower has no corridor: its storeys climb or come down as far as the graph is long)
     const lean = tower ? 0 : cur.y < room.top + room.soft ? 1 : cur.y > room.bottom - room.soft ? -1 : 0;
-    const home = tower || M.graphs?.briefs?.[budget.id]?.trend !== 'level' || Math.abs(cur.y - M.ground.y) <= LEVEL_SWING ? 0 : Math.sign(M.ground.y - cur.y);
+    const home = tower || M.graphs?.briefs?.[budget.id]?.trend !== 'level' || Math.abs(cur.y - gy) <= LEVEL_SWING ? 0 : Math.sign(gy - cur.y);
     const weight = (t: SectionTemplate) => {
       let w = (t.weight ?? 1) * Math.exp(-Math.abs(t.difficulty / 10 - want) * 4);
       if (n.want?.some((tag) => t.sockets.some((s) => s.allow?.includes(tag)) || t.name.includes(tag))) w *= 3;
@@ -1898,7 +1915,131 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
 
   // (a creaky limb is never needed until its lesson's section is laid, creak.ts)
   let creakTaught = false;
+  // ── legs (R-165.196, legs.ts): where each begins and ends ──
+  /** a leg laid LEFT is laid rightwards this far off to the side, every rule of a run kept, then mirrored to where it belongs */
+  const ASIDE = 1 << 20;
+  let legK = 0, leftSum: number | undefined, firstLeft = false;
+  /** where the leg he is on began in each of the lay's lists */
+  let mark = { p: 0, v: 0, r: 0, z: 0, g: 0, a: 0, h: 0, s: 0, t: 0 };
+  const doors: Array<{ side: -1 | 1; y: number }> = [];
+  const laidLegs: Array<LaidLeg & { t0: number; t1: number }> = [];
+  const wallIds = new Set<number>();
+  /** a run leg's sections: the corridor each was laid in (its leg's own) */
+  const corridorOf = new Map<string, [number, number]>();
+  /** the catch boughs a column's open ends are owed (tower.ts towerCatches, which reads a tower from x 0: a mid-stage column's own
+   *  pieces are handed to it moved to its frame). Laid with the section whose piece they hang under */
+  const layCatches = (floorY: number) => {
+    const fx = frame.x0;
+    const P = !routed ? platforms : platforms.slice(mark.p).filter((q) => !wallIds.has(q.id)).map((q) => ({ ...q, x: q.x - fx }));
+    const V = !routed ? vines : vines.slice(mark.v).map((v) => ({ ...v, x: v.x - fx }));
+    const Gp = !routed ? gaps : gaps.slice(mark.g).map((g) => ({ ...g, x0: g.x0 - fx, x1: g.x1 - fx }));
+    const mine = !routed ? sections : sections.slice(mark.s);
+    for (const c of towerCatches(flow as 'up' | 'down', P, V, floorY, TW, Gp, (q) => storeyOf.get(q.id) ?? 0, (q) => sealedIds.has(q.id))) {
+      storeyNow = c.level;
+      const cx = c.x + fx;
+      const b = mk(cx, c.y, c.w, 'branch', 0);
+      (mine.find((q) => q.pieces.some((pp) => pp.platform.x < cx + c.w && pp.platform.x + pp.platform.width > cx && pp.platform.y < c.y && pp.platform.y > c.y - TOWER.fall)) ?? sections[sections.length - 1])?.seam.push(b);
+    }
+  };
+  /** a column's walls (legs.ts columnWalls: a mid-stage column has no level edge to hold him in), and the leg as laid */
+  const closeColumn = (k: number, top: number, floorY: number) => {
+    for (const w of columnWalls(frame, top, floorY, doors)) {
+      // (the first leg's column begins at the level's own edge)
+      if (k === 0 && w.x < frame.x0) continue;
+      const p = mk(w.x, w.y, w.w, 'block', w.h, M.tower?.wall ?? M.ground.style);
+      wallIds.add(p.id);
+      sections[sections.length - 1]?.seam.push(p);
+    }
+    laidLegs.push({ travel: legs[k].travel, i0: mark.s, i1: sections.length, x0: frame.x0, x1: frame.x1, y0: R(top), y1: R(floorY), frame: { ...frame }, floorY: R(floorY), t0: mark.t, t1: turns.length });
+  };
+  const beginLeg = (k: number) => {
+    const t = legs[k].travel;
+    mark = { p: k ? platforms.length : 0, v: vines.length, r: ropes.length, z: zones.length, g: gaps.length, a: asks.length, h: heartFalls.length, s: sections.length, t: turns.length };
+    flow = upOrDown(t) ? t : 'right';
+    tower = vertical(flow);
+    doors.length = 0;
+    leftSum = undefined;
+    if (vertical(flow)) {
+      // (a column that begins where he stands: he comes in by a doorway in the wall behind him. Going up, its floor is plain ground
+      // from the ledge he leaves to the far wall, as an ascent's is: every fall in the column ends on it)
+      frame = k ? columnFrame(flow, cur.x, dir, TW) : { x0: 0, x1: TW };
+      floorAt = cur.y;
+      if (k) doors.push({ side: -dir as -1 | 1, y: R(cur.y) });
+      if (k && flow === 'up') {
+        const a = dir > 0 ? cur.x : frame.x0, b = dir > 0 ? frame.x1 : cur.x;
+        sections[sections.length - 1]?.seam.push(mk(a, cur.y, b - a, 'bank', 0, M.tower?.wall));
+      }
+      return;
+    }
+    // (a run leg stands on its own ground: the corridor and the banks' foot are measured from where it begins)
+    if (k) {
+      gy = cur.y;
+      ctop = gy - (M.ground.y - M.corridor.top);
+      cbot = gy + (M.corridor.bottom - M.ground.y);
+      baseline = cbot + M.ground.bankH;
+      cur = { ...cur, kind: 'ground' };
+    }
+    if (t === 'left') {
+      // (the mirror line: x becomes `leftSum - x`. The first leg turns about the runway's middle, the runway with it)
+      if (k) { leftSum = 2 * cur.x + ASIDE; cur = { ...cur, x: cur.x + ASIDE }; } else { leftSum = RUNWAY; firstLeft = true; }
+    }
+    dir = 1;
+  };
+  /** the leg he is on ends. A column going on to `next`: a plain ledge out over the wall on the side the next leg leaves by (going up:
+   *  from where he stands when his storey runs that way, else a storey over, turned back; going down: the column's floor, wall to
+   *  wall, and out through the doorway at its foot). A run leg laid left is set in its place by the mirror */
+  const endLeg = (k: number, next?: Travel) => {
+    if (vertical(flow)) {
+      let top = Math.min(cur.y, ...platforms.slice(mark.p).map((q) => q.y));
+      let floorY = floorAt;
+      if (next) {
+        const want: 1 | -1 = next === 'left' ? -1 : next === 'right' ? 1 : dir;
+        const seam: Platform[] = [];
+        const far = want > 0 ? frame.x1 + WALL.w : frame.x0 - WALL.w;
+        let piece: Platform, climbed = 0, walked = 0;
+        if (flow === 'up') {
+          let ox = cur.x, oy = cur.y;
+          if (dir !== want) {
+            const tip = cur.x - dir * TOWER.vineIn;
+            const room = want > 0 ? frame.x1 - TOWER.wall - tip : tip - frame.x0 - TOWER.wall;
+            ({ ox, oy, climbed } = towerJoin({ x0: 0, x1: Math.max(1, room), low: 24, high: 0 }, { way: want, seam, what: 'the ledge out of the column' }));
+          }
+          piece = mk(Math.min(ox, far), oy, Math.abs(far - ox), 'branch', 0);
+          walked = Math.abs(far - ox);
+          top = Math.min(top, oy);
+          doors.push({ side: want, y: R(oy) });
+          cur = { x: far, y: oy, kind: 'ground', piece };
+        } else {
+          const at = towerJoin({ x0: 0, x1: TOWER.catchW, low: M.ground.bankH, high: 0 }, { toFloor: true, seam, what: 'the floor of the way down' });
+          floorY = at.oy;
+          climbed = at.climbed;
+          piece = mk(want > 0 ? frame.x0 : frame.x0 - WALL.w, at.oy, TW + WALL.w, 'bank', 0, M.tower?.wall);
+          walked = Math.abs(far - cur.x);
+          doors.push({ side: want, y: R(at.oy) });
+          cur = { x: far, y: at.oy, kind: 'ground', piece };
+        }
+        seam.push(piece);
+        dir = want;
+        const last = sections[sections.length - 1];
+        if (last) { last.seam.push(...seam); last.seconds += walked / budget.walkSpeed + (climbed ? climbed / TIME.climbSpeed + TIME.climbOverhead : 0); }
+        layCatches(floorY);
+      }
+      closeColumn(k, top, floorY);
+      return;
+    }
+    const mine = sections.slice(mark.s), own = platforms.slice(mark.p);
+    if (leftSum !== undefined) {
+      reflectLeg({ platforms: own, vines: vines.slice(mark.v), ropes: ropes.slice(mark.r), zones: zones.slice(mark.z), gaps: gaps.slice(mark.g), asks: asks.slice(mark.a), heartFalls: heartFalls.slice(mark.h), sections: mine }, leftSum);
+      cur = { ...cur, x: leftSum - cur.x };
+      dir = -1;
+    } else dir = 1;
+    laidLegs.push({ travel: legs[k].travel, i0: mark.s, i1: sections.length, x0: Math.min(...own.map((q) => q.x)), x1: Math.max(...own.map((q) => q.x + q.width)), y0: Math.min(...own.map((q) => q.y)), y1: Math.max(...own.map((q) => q.y + q.height)), ground: R(gy), t0: mark.t, t1: turns.length });
+  };
+  let ni = -1;
+  if (routed) beginLeg(0);
   for (const n of graph.nodes) {
+    ni++;
+    if (routed && ni >= legs[legK].to) { endLeg(legK, legs[legK + 1].travel); legK++; beginLeg(legK); }
     // (the heights V19 holds the late rise to: where the bough window begins (the route as the slots reach two thirds), and where a late
     // descent began)
     if (upStage && chunkTotal) {
@@ -1952,7 +2093,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         // down (it gives height back); after the late rise a step that would come down is laid flat, so the end stays above the bough
         // window. Only the KIND of join changes, which the plan keeps: a plan laid again is the same stage)
         if (!fixed && paced && join !== 'pit') {
-          const down = cur.y + L.exit.y <= (M.corridor.top + M.corridor.bottom) / 2;
+          const down = cur.y + L.exit.y <= (ctop + cbot) / 2;
           // (a step so taken away is a pit where the node may hold one: the seam keeps its beat, and the quiet line its measure)
           const flat = join === 'step' && !quiet ? 'pit' : 'walk';
           join = rise.length ? (down ? flat : join) : down ? 'step' : flat;
@@ -1964,7 +2105,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const lim1 = riseCap(false, 1, budget);
       if (join === 'step') {
         // (up or down by a hop, leaning back toward the corridor's middle; on a level stage, GraphBrief.trend, toward the height it began at)
-        const middle = M.graphs?.briefs?.[budget.id]?.trend === 'level' ? M.ground.y : (M.corridor.top + M.corridor.bottom) / 2;
+        const middle = M.graphs?.briefs?.[budget.id]?.trend === 'level' ? gy : (ctop + cbot) / 2;
         const dir = cur.y + L.exit.y > middle ? -1 : 1;
         dy = dir * (20 + j * (lim1 * 0.8 - 20));
       } else if (join === 'pit' || join === 'jump') {
@@ -1972,7 +2113,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         const g = gapFor(-dy, false, budget);
         dx = Math.max(60, R(Math.min(tempo ? tempo.gapMax : 1, (0.5 + 0.3 * budget.heat + 0.15 * jrng()) * (tempo ? tempo.gap : 1)) * g));
       }
-      if (!tower) dy = Math.max(M.corridor.top - cur.y, Math.min(M.corridor.bottom - cur.y, dy));
+      if (!tower) dy = Math.max(ctop - cur.y, Math.min(cbot - cur.y, dy));
       let ox = cur.x + dx;
       let oy = R(cur.y + dy);
       // (a tower: the join is the lay's, towerJoin; a storey that runs left is the section reflected about its entry)
@@ -2164,6 +2305,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       }
       secs += placed.seconds;
       sections.push(placed);
+      if (routed && !tower) corridorOf.set(placed.uid, [ctop, cbot]);
       if (M.creak && tpl.teaches === M.creak.lesson) creakTaught = true;
       // (a slot filled past its rule keeps its note with the plan, so a kept slot still says so)
       const loose = fixed ? fixed.loose : lastLoose;
@@ -2213,40 +2355,68 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   // the shrine's bank (a walk on from the last section)
   // (a tower: going up, the summit's ledge, one storey over the last; going down, the tower's floor, wall to wall under everything,
   // reached by the last vine. An ascent's floor is its runway, the arrival laid on it, and plain ground out to both walls)
-  let shrine: Platform, exitX: number, floorY = M.ground.y;
+  let shrine: Platform, exitX: number, floorY = floorAt;
   if (tower) {
     const seam: Platform[] = [];
     const at = towerJoin({ x0: 0, x1: TOWER.summit, low: M.ground.bankH, high: 0 }, { toFloor: flow === 'down', seam, what: 'the shrine ledge' });
     if (flow === 'up') {
       shrine = mk(at.way > 0 ? at.ox : at.ox - TOWER.summit, at.oy, TOWER.summit, 'bank', 0);
-      const low = platforms.filter((q) => q.y >= M.ground.y - 1 && q.type === 'solid');
-      const a = Math.min(...low.map((q) => q.x)), b = Math.max(...low.map((q) => q.x + q.width));
-      storeyNow = 0;
-      if (b < TW) mk(b, M.ground.y, TW - b, 'bank', 0);
-      if (a > 0) mk(0, M.ground.y, a, 'bank', 0);
-      storeyNow = turns.length;
+      // (a column of a stage of legs has its floor already, laid where it began)
+      if (!routed) {
+        const low = platforms.filter((q) => q.y >= M.ground.y - 1 && q.type === 'solid');
+        const a = Math.min(...low.map((q) => q.x)), b = Math.max(...low.map((q) => q.x + q.width));
+        storeyNow = 0;
+        if (b < TW) mk(b, M.ground.y, TW - b, 'bank', 0);
+        if (a > 0) mk(0, M.ground.y, a, 'bank', 0);
+        storeyNow = turns.length;
+      }
     } else {
       floorY = at.oy;
-      shrine = mk(0, at.oy, TW, 'bank', 0);
+      shrine = mk(frame.x0, at.oy, TW, 'bank', 0);
     }
     // (the totem: on the summit's ledge going up. Going down the engine stops him just past the shrine on the side away from the
     // start (stageModes.ts down, rules.ts SHRINE_STOP), at every height: so the shrine stands at the far wall, where that stop is the wall)
-    exitX = flow === 'down' ? TW - 20 - SHRINE_STOP : R(Math.max(TOWER.wall + 60, Math.min(TW - TOWER.wall - 60, at.ox + at.way * TOWER.totem)));
+    exitX = flow === 'down' ? frame.x1 - 20 - SHRINE_STOP : R(Math.max(frame.x0 + TOWER.wall + 60, Math.min(frame.x1 - TOWER.wall - 60, at.ox + at.way * TOWER.totem)));
     // (the catch boughs its open ends are owed, tower.ts towerCatches: laid with the section whose piece they hang under)
-    for (const c of towerCatches(flow as 'up' | 'down', platforms, vines, floorY, TW, gaps, (q) => storeyOf.get(q.id) ?? 0, (q) => sealedIds.has(q.id))) {
-      storeyNow = c.level;
-      const b = mk(c.x, c.y, c.w, 'branch', 0);
-      (sections.find((q) => q.pieces.some((pp) => pp.platform.x < c.x + c.w && pp.platform.x + pp.platform.width > c.x && pp.platform.y < c.y && pp.platform.y > c.y - TOWER.fall)) ?? sections[sections.length - 1])?.seam.push(b);
-    }
+    layCatches(floorY);
     if (sections.length) { const last = sections[sections.length - 1]; last.seam.push(...seam); last.seconds += at.climbed / TIME.climbSpeed + TIME.climbOverhead; }
     cur = { x: exitX, y: at.oy, kind: 'ground', piece: shrine };
+    // (a stage of legs that ends in a column: its walls, with no way out but the totem)
+    if (routed) closeColumn(legK, Math.min(at.oy, ...platforms.slice(mark.p).map((q) => q.y)), floorY);
   } else {
     shrine = mk(cur.x, cur.y, SHRINE_BANK, 'bank', 0);
     exitX = R(shrine.x + 300);
+    // (a stage of legs that ends on a run leg: laid left, the shrine and the totem are mirrored with it)
+    if (routed) { const sum = leftSum; endLeg(legK); if (sum !== undefined) exitX = sum - exitX; }
   }
   clearClimbs(vines, platforms);
   // (a turn's x is its vine's, where clearClimbs left it)
   for (const t of turns) t.x = t.vine.x;
+  // (a stage of legs: a leg laid left may run past x 0, so the whole stage is moved right until it begins at x 0, and its width and
+  // foot are those of everything laid)
+  let spawnX = firstLeft ? RUNWAY - SPAWN_X : SPAWN_X;
+  if (routed) {
+    const right = R(Math.max(0, -Math.min(...platforms.map((q) => q.x), ...vines.map((v) => v.x - 40))));
+    if (right > 0) {
+      if (sections.some((q) => q.room)) throw new Error(`gen2 ${budget.id}: a stage of legs that runs left of its start holds a puzzle room, which is not moved yet`);
+      for (const q of platforms) q.x += right;
+      for (const v of new Set([...vines, ...sections.flatMap((q) => q.vines.map((e) => e.vine))])) v.x += right;
+      for (const r of ropes) { r.x0 += right; r.x1 += right; }
+      for (const o of [...gaps, ...asks, ...heartFalls]) { o.x0 += right; o.x1 += right; }
+      for (const z of zones) { z.x0 += right; z.x1 += right; if (z.emit) z.emit = z.emit.map((x) => x + right); for (const l of z.lights ?? []) l.x += right; }
+      for (const q of sections) {
+        q.entry.x += right; q.exit.x += right; q.x0 += right; q.x1 += right;
+        for (const k of q.sockets) k.x += right;
+        for (const b of q.beats) b.x += right;
+        for (const e of q.vines) if (e.gap) e.gap = [e.gap[0] + right, e.gap[1] + right];
+      }
+      for (const t of turns) t.x += right;
+      for (const g of laidLegs) { g.x0 += right; g.x1 += right; if (g.frame) { g.frame.x0 += right; g.frame.x1 += right; } }
+      cur.x += right;
+      exitX += right;
+      spawnX += right;
+    }
+  }
   // (the blocks: a teach or a test section's block pieces, as laid, for the place rule in the check)
   const nodeJob = new Map(graph.nodes.map((n) => [n.id, n.job]));
   const blocks = graph.id
@@ -2261,12 +2431,15 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         });
       })
     : [];
-  const strays = graph.id && !tower ? sections.filter((q) => q.exit.y < M.corridor.top - 20 || q.exit.y > M.corridor.bottom + 20).map((q) => ({ uid: q.uid, y: Math.round(q.exit.y) })) : [];
+  // (a stage of legs: each run leg's sections against the corridor at that leg's own ground; a column has no corridor)
+  const strays = !graph.id ? [] : routed
+    ? sections.filter((q) => { const c = corridorOf.get(q.uid); return !!c && (q.exit.y < c[0] - 20 || q.exit.y > c[1] + 20); }).map((q) => ({ uid: q.uid, y: Math.round(q.exit.y) }))
+    : !tower ? sections.filter((q) => q.exit.y < ctop - 20 || q.exit.y > cbot + 20).map((q) => ({ uid: q.uid, y: Math.round(q.exit.y) })) : [];
   let shiftedDown = 0;
   // (a rolled graph's stage that climbs above the camera's reach is moved down whole: the camera never scrolls above y 0, so its highest
   // platform, vine, rope or socket is brought to CAMERA_TOP, where the shipped stages keep theirs (290-335 px), with room for a pickup
   // above it. Everything laid moves together; what is placed later (pickups, creatures, dressing, the totem) reads the moved pieces)
-  if (graph.id || tower) {
+  if (graph.id || tower || routed) {
     // (a puzzle room's own pieces, laid later from its anchors, reach `above` over its left anchor's platform: they count too)
     const byPid = new Map(platforms.map((p) => [p.id, p]));
     const roomTops = sections.flatMap((q) => (q.room && byPid.get(q.room.left.on) ? [byPid.get(q.room.left.on)!.y - q.room.above] : []));
@@ -2293,6 +2466,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       cur.y += down;
       floorY += down;
       for (const t of turns) { t.from += down; t.to += down; }
+      for (const g of laidLegs) { g.y0 += down; g.y1 += down; if (g.floorY !== undefined) g.floorY += down; if (g.ground !== undefined) g.ground += down; }
       shiftedDown = down;
     }
   }
@@ -2306,16 +2480,18 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     platforms,
     gaps,
     asks,
-    spawn: { x: SPAWN_X, y: runway.y, piece: runway },
+    spawn: { x: spawnX, y: runway.y, piece: runway },
     exit: { x: exitX, y: shrine.y, piece: shrine },
     vines,
     ropes,
     zones,
     heartFalls,
     ...(rise.length ? { rise } : {}),
-    width: tower ? TW : R(shrine.x + shrine.width + 40),
-    bottom: flow === 'down' ? floorY + M.ground.bankH : baseline + shiftedDown,
-    ...(tower ? { tower: { flow, width: TW, floorY, turns: turns.map(({ x, from, to, turned }) => ({ x, from, to, turned })), runouts, ...(sealedIds.size ? { sealed: [...sealedIds] } : {}) } } : {}),
+    width: routed ? R(Math.max(...platforms.map((q) => q.x + q.width)) + 40) : tower ? TW : R(shrine.x + shrine.width + 40),
+    bottom: routed ? R(Math.max(...platforms.map((q) => q.y + q.height))) : flow === 'down' ? floorY + M.ground.bankH : baseline + shiftedDown,
+    ...(routed
+      ? { tower: { flow: 'legs' as const, legs: laidLegs.map(({ t0, t1, ...g }) => ({ ...g, ...(g.frame ? { turns: turns.slice(t0, t1).map(({ x, from, to }) => ({ x, from, to })) } : {}) })), width: TW, floorY: Math.max(floorY + shiftedDown * 0, ...laidLegs.map((g) => g.floorY ?? -Infinity)), turns: turns.map(({ x, from, to, turned }) => ({ x, from, to, turned })), runouts, ...(sealedIds.size ? { sealed: [...sealedIds] } : {}) } }
+      : tower && vertical(flow) ? { tower: { flow, width: TW, floorY, turns: turns.map(({ x, from, to, turned }) => ({ x, from, to, turned })), runouts, ...(sealedIds.size ? { sealed: [...sealedIds] } : {}) } } : {}),
     nextId: pid,
     ...(themeShare < 1 ? { theme: M.sections.filter((t) => near.get(t.id)! < themeShare).map((t) => t.id) } : {}),
   };
@@ -3118,7 +3294,12 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   const kills = (y: number) => (watery ? y >= bobLow + 36 : y >= Math.max(req.config.levelHeight, R(bobLow + 120)) + 116);
   const bobFoot = Math.max(bobLow, ...floors.filter((y) => budget.world === 9 || kills(y)).map((y) => y + 30));
   // (a tower's travel is its flow: the engine reads which way is on from config.travel alone, stageModes.ts)
-  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(bobFoot + 120)), ...(budget.doubleTaught ? { doubleTaught: true as const } : {}), ...(laid.tower ? { travel: laid.tower.flow } : {}) };
+  // (a stage of legs: the travel of its LAST leg, which is where its exit wall stands; a last leg laid right names none, as a run)
+  const legsTravel = (T: NonNullable<Laid['tower']>): { travel?: LevelConfig['travel'] } => {
+    const t = T.flow === 'legs' ? T.legs?.[T.legs.length - 1]?.travel ?? 'right' : T.flow;
+    return t === 'right' ? {} : { travel: t };
+  };
+  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(bobFoot + 120)), ...(budget.doubleTaught ? { doubleTaught: true as const } : {}), ...(laid.tower ? legsTravel(laid.tower) : {}) };
   const meta: Gen2Meta = {
     seed,
     plan: laid.plan,
@@ -3133,7 +3314,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     // (the stage's own brief, never the world's: 1-1 alone, R-165.86)
     ...(req.kit.manifest.graphs?.briefs?.[budget.id]?.softFalls ? { softFalls: true as const } : {}),
     ...hurtMeta(laid, req.kit.manifest),
-    ...(laid.tower ? { tower: { flow: laid.tower.flow, width: laid.tower.width, floorY: laid.tower.floorY, runouts: laid.tower.runouts, turns: laid.tower.turns.map(({ x, from, to }) => ({ x, from, to })), ...(laid.tower.sealed ? { sealed: laid.tower.sealed } : {}), route: routeOf(laid.tower.flow, laid.sections, laid.spawn, laid.exit) } } : {}),
+    ...(laid.tower ? { tower: { flow: laid.tower.flow, ...(laid.tower.legs ? { legs: laid.tower.legs } : {}), width: laid.tower.width, floorY: laid.tower.floorY, runouts: laid.tower.runouts, turns: laid.tower.turns.map(({ x, from, to }) => ({ x, from, to })), ...(laid.tower.sealed ? { sealed: laid.tower.sealed } : {}), route: routeOf(laid.tower.flow, laid.sections, laid.spawn, laid.exit) } } : {}),
     sections: laid.sections.map(({ uid, template, node, phase, tension, mirrored, x0, x1, seconds }) => ({ uid, template, node, phase, tension, mirrored, x0, x1, seconds })),
     fills: filled.fills,
     ...(laid.theme ? { theme: laid.theme } : {}),
@@ -3468,7 +3649,11 @@ export function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
     // (and, going up, no storey is climbed by jumps alone: the turn's vine is the only way, tower.ts towerSkips)
     // (and no shut gate is passed without opening it: a sealed piece has nothing a hop reaches beside it, tower.ts towerGates)
     const gates = (T.sealed ?? []).flatMap((id) => st.platforms.filter((q) => q.id === id));
-    const falls = [...towerFalls(T.flow, st.platforms, T.floorY, T.width), ...(T.flow === 'up' ? towerSkips(T.turns, st.platforms) : []), ...towerGates(gates, st.platforms, st.vines)];
+    // (a stage of legs: each column is judged by itself, its own pieces handed over moved to its frame; its walls stand outside it)
+    const cols = T.flow === 'legs'
+      ? (T.legs ?? []).flatMap((g) => (g.frame && upOrDown(g.travel) ? [{ flow: g.travel, x0: g.frame.x0, floorY: g.floorY ?? T.floorY, turns: g.turns ?? [], own: st.platforms.filter((q) => q.x + q.width > g.frame!.x0 && q.x < g.frame!.x1 && q.y >= g.y0 - WALL.over - 1 && q.y <= (g.floorY ?? g.y1) + 1).map((q) => ({ ...q, x: q.x - g.frame!.x0 })) }] : []))
+      : [{ flow: T.flow, x0: 0, floorY: T.floorY, turns: T.turns, own: st.platforms }];
+    const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines)];
     if (falls.length) st.gen2.towerMiss = falls;
   }
 }
