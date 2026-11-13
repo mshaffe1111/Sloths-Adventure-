@@ -24,9 +24,9 @@ export const WHATS_NEW: Release[] = [
     date: '2026-11-13',
     title: 'Petals and snakes, rebuilt',
     items: [
-      'The Petal Trail is rebuilt: bounce from mushroom to mushroom over the thorns, following Meeca’s petals.',
-      'Touch the thorns and you only go back a little. Look for something hidden down by the roots.',
-      'Branch Snakes is rebuilt: punch a vine, a hive drops, and the snake glides away. Nobody gets hurt.',
+      'The Petal Trail is rebuilt: mushroom bounces over the thorns, following Meeca’s petals.',
+      'Touch a thorn and you only go back a little. Something is hidden down by the roots.',
+      'The snake stage is rebuilt: punch a vine, a hive drops, and the snake glides off unhurt.',
       'Into the Canopy has fairer landings.',
       'Quieter sound, and volume sliders that go all the way down.',
       'Smoother on phones, with lots of small fixes.',
