@@ -1,5 +1,5 @@
 # POLISH-2: Matt's fig gate, the stills the lead judges, the rough spots (the polish lane). Opus 5.5 high (content). Written 5:54 PM ET by the lead.
-Continue branch t-polish-1 from POLISH-1's final head (its REPORT.md EXACT NEXT STEP is your frozen start). Read reference/methods/level.md first.
+Branch t-polish-2 from origin/t-polish-1 (27e8ba66+). POLISH-1 (session_01FhBbYNxvoWeMSfXsaV7UjY) is still finishing its gates and REPORT on t-polish-1: merge origin/t-polish-1 again when its REPORT lands (its EXACT NEXT STEP then joins your list); never push to t-polish-1. Read reference/methods/level.md first.
 The lead's still review is PASS/FAIL now (D61: a code-drawn primitive or rough spot holds the test link). FEEL-VINE (session_01FhBbYJpKWzuJjhLc7tj3DY)
 holds engine.ts's "1. TREE CLIMBING LOGIC" block: never touch it.
 ## Done (in this order)
