@@ -105,7 +105,10 @@ for (const c of cards) {
   if (!ok && c.next !== '(run ended)') short++;
   console.log(`${(c.at / 1000).toFixed(1).padStart(5)} s  ${(c.ms / 1000).toFixed(1).padStart(5)} s up / read ${(c.read / 1000).toFixed(1)} s (x${(c.ms / c.read).toFixed(1)}) ${ok ? '  ' : '<<'}${c.tapped ? ` TAPPED (punches ${c.tapPunch}, jumps ${c.tapJump})` : ''} ${words(c.text)}w "${c.text}"${c.next && c.next !== '(run ended)' ? ` -> replaced by "${c.next.slice(0, 40)}"` : c.next === null ? '' : ' (run ended)'}`);
 }
-console.log(`${cards.length} cards; ${short} were taken down before their reading time`);
+// (a blink: the same card gone and back within 2.5 s, its line never ended in between)
+let blinks = 0;
+for (let i = 1; i < cards.length; i++) if (cards[i].text === cards[i - 1].text && cards[i].at - (cards[i - 1].at + cards[i - 1].ms) < 2500) blinks++;
+console.log(`${cards.length} cards; ${short} were taken down before their reading time; ${blinks} blinked off and back`);
 const ends = await p.evaluate(() => window.__ends);
 console.log('why each ended (the queue): ' + ends.map((e) => `"${e.text.slice(0, 28)}" ${e.why} at ${(e.up / 1000).toFixed(1)} s`).join('; '));
 await b.close();

@@ -104,16 +104,26 @@ async function play(p, stage, q = '') {
 }
 
 async function dot() {
-  for (const [ori, W, H] of SIZES) for (const [save, extra] of [['fresh', {}], ['old', { sloth_dot_tapped: '1' }]]) {
+  for (const [ori, W, H] of SIZES) for (const [save, extra] of [['fresh', { sloth_coach_done: '1' }], ['old', { sloth_dot_tapped: '1' }]]) {
     const p = await open(ori, W, H, save, extra);
     await play(p, '1-1');
-    const s = await walkTo(p, (s) => s.shown && !s.move && !!s.text, 90000);
-    if (!s) { note(`dot ${save} ${ori}: no card that waits to be read came in 90 s`); await p.context().close(); continue; }
+    // (the walker can stall on a roll before the first flag: Dot's real flag line is handed to her real queue at 4 s, as the lesson
+    // sends it, lessons.ts LESSON_DOT.checkpoint; the queue, her help setting, the hint and the card do the rest)
+    await sleep(3000);
+    await p.evaluate(() => window.__dotRun.say({ key: 'lesson:checkpoint:0', text: 'A flag! Fall, and you start again here.', kind: 'info', who: 'Dot', topic: 'flag', skill: 'lesson:checkpoint', source: 'lesson', waitMs: 9000 }));
+    const s = await walkTo(p, (s) => s.shown && !s.move && !!s.text, 75000);
+    if (!s) {
+      const why = await p.evaluate(`(() => { const e = ${E}; const r = window.__dotRun; return JSON.stringify({ x: e?.player?.x, cur: r?.queue?.cur?.line?.text, help: r?.help, size: r?.queue?.size, said: (r?.queue?.history ?? []).map((l) => l.text) }); })()`).catch((e) => e.message);
+      await p.screenshot({ path: path.join(out, `dot-debug-${save}-${ori}.png`) }).catch(() => {});
+      note(`dot ${save} ${ori}: no card that waits to be read came in 90 s ${why}`);
+      await p.context().close();
+      continue;
+    }
     await p.keyboard.up('ArrowRight');
     await sleep(500);
     await p.screenshot({ path: path.join(out, `dot-card-${save}-${ori}.png`) });
     // (+N: two more of her real lines queued behind it, to show the badge)
-    await p.evaluate(() => { const r = window.__dotRun; const n = r.clock; r.queue.push({ key: 'fixa:heart', text: 'Hurt? Grab a heart to heal.', kind: 'info', who: 'Dot', source: 'lesson', waitMs: 60000 }, n); r.queue.push({ key: 'fixa:shrine', text: 'Reach the shrine to finish the stage.', kind: 'info', who: 'Dot', source: 'lesson', waitMs: 60000 }, n); });
+    await p.evaluate(() => { const r = window.__dotRun; const n = r.clock; r.queue.push({ key: 'fixa:idol', text: 'Some stages hide things up high. Have a look.', kind: 'info', who: 'Dot', source: 'lesson', waitMs: 60000 }, n); r.queue.push({ key: 'fixa:shrine', text: 'Reach the shrine to finish the stage.', kind: 'info', who: 'Dot', source: 'lesson', waitMs: 60000 }, n); });
     await sleep(400);
     await p.screenshot({ path: path.join(out, `dot-card-more-${save}-${ori}.png`) });
     const m = await p.evaluate(() => { const el = document.querySelector('.dg-bub.in'); const r = el.getBoundingClientRect(); return { w: Math.round(r.width), h: Math.round(r.height), more: document.querySelector('.dg-more')?.textContent, hint: document.querySelector('.dg-hint')?.textContent ?? null, pe: getComputedStyle(el).pointerEvents }; });
@@ -134,7 +144,7 @@ async function teach() {
   for (const [ori, W, H] of SIZES) for (const diff of ['normal', 'easy']) {
     const p = await open(ori, W, H, 'old', diff === 'easy' ? { sloth_difficulty: 'easy' } : {});
     await play(p, '1-3');
-    const info = await p.evaluate(`(() => { const e = ${E}; const h = (e.proto?.hints ?? []).find((q) => q.teach); const t = (e.dropTraps ?? e.traps ?? [])[0]; return { help: window.__dotRun?.help, hint: h && { x: h.x, text: h.text }, trapX: t ? (t.x ?? t.post?.x) : null }; })()`);
+    const info = await p.evaluate(`(() => { const e = ${E}; const h = (e.proto?.hints ?? []).find((q) => q.teach); const t = [...(e.cast?.traps ?? [])].sort((a, b) => a.post.x - b.post.x)[0]; return { help: window.__dotRun?.help, hint: h && { x: h.x, text: h.text }, trapX: t ? Math.round(t.post.x) : null }; })()`);
     const s = await walkTo(p, (s) => s.shown && !!s.text && !!info.hint && s.text !== null && (s.key || '').includes('engine:') && /hive|vine/i.test(s.text), 60000);
     if (s) await p.screenshot({ path: path.join(out, `teach-1-3-${diff}-${ori}.png`) });
     note(`teach 1-3 ${diff} ${ori} (Dot's help ${info.help}): teach line ${JSON.stringify(info.hint)}, first trap x ${info.trapX}; ${s ? `SHOWN "${s.text}" with Pokey at x ${Math.round(s.x)}` : 'NOT shown in 60 s'}`);
@@ -151,7 +161,7 @@ async function goal() {
     for (const n of [t, t + 2]) {
       await p.evaluate(`${E}.player.enemiesDefeated = ${n}`);
       await sleep(1200);
-      const label = await p.evaluate(() => [...document.querySelectorAll('[aria-label]')].map((e) => e.getAttribute('aria-label')).find((a) => / of \d+ /.test(a)) ?? null);
+      const label = await p.evaluate(() => { const hit = [...document.querySelectorAll('body *')].filter((e) => /^\d+\/\d+$/.test(e.textContent.replace(/\s+/g, ''))).sort((a, b) => a.textContent.length - b.textContent.length)[0]; return hit ? hit.textContent.replace(/\s+/g, '') : null; });
       await p.screenshot({ path: path.join(out, `goal-1-3-${n > t ? 'past' : 'at'}-${ori}.png`) });
       note(`goal 1-3 ${ori}: ${n} cleared of ${t}: the sign reads "${label}"`);
     }

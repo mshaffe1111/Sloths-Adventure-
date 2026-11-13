@@ -1071,7 +1071,9 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
               if (!covered && p.ko !== undefined && koCover(bx, by) > p.ko + 400) covered = true;
             }
             // hovering for want of a perch: one may have come into view since (the camera moves on with him)
-            const perch = p.mode === 'hover' && !p.noPerch && p.target && p.topic !== 'controls' && run.clock - run.lastReplan > 1000 ? choosePerch(v, p.target, safeNow()) : null;
+            // (not once her card is up: flying to the perch took the card down mid-read and put it up again, R-165.175's measure on 1-2
+            // and 1-3; she stays hovering for this card)
+            const perch = p.mode === 'hover' && !p.noPerch && p.target && p.topic !== 'controls' && run.clock - run.lastReplan > 1000 && !cur.onScreen ? choosePerch(v, p.target, safeNow()) : null;
             // an animal has walked up to her perch: she moves off it
             let crowded = false;
             if (p.mode === 'perch') for (const en of v.enemies) if (!en.defeated && Math.abs(en.x - p.wx) < 100 && Math.abs(en.y - p.wy) < 100) crowded = true;

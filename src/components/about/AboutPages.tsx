@@ -42,19 +42,20 @@ export const AboutPage: React.FC<{ page: AboutPageId; onBack: () => void }> = ({
   }, [page]);
   return (
     <div className="ab-page" ref={top} tabIndex={-1} role="region" aria-label={page === 'story' ? 'Our story' : 'Inspired by'}>
-      <button type="button" className="ab-back" onClick={onBack} aria-label="Back to About">
-        <span aria-hidden="true">‹</span> About
-      </button>
+      <div className="ab-head">
+        <button type="button" className="ab-back" onClick={onBack} aria-label="Back to About">
+          <span aria-hidden="true">‹</span> About
+        </button>
+        <h3 className="ab-h">{page === 'story' ? 'Our story' : 'Inspired by'}</h3>
+      </div>
       {page === 'story' ? (
         <>
-          <h3 className="ab-h">Our story</h3>
           {OUR_STORY.map((l) => (
             <p key={l}>{l}</p>
           ))}
         </>
       ) : (
         <>
-          <h3 className="ab-h">Inspired by</h3>
           <p>{INSPIRED_INTRO}</p>
           <ul className="ab-games">
             {INSPIRED_BY.map((e) => (

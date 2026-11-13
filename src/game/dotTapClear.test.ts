@@ -206,3 +206,19 @@ test('on the phone the reading time counts from when the card is on screen, howe
   t.onScreen(6000);
   assert.equal(t.cur?.startedAt, 4500, "the tools' queue as before (at most 1.5 s)");
 });
+
+test("a done move tip held for reading gives way at once to the stage's teach line or a hazard waiting behind it (1-3: the trap tip came 600 px late)", () => {
+  let jumped = 0;
+  const e: TickEnv = { danger: false, moveCount: (m) => (m === 'jump' ? jumped : 0) };
+  const gap: GuideLine = { key: 'g', text: 'Flick up to hop up or over.', kind: 'teach', who: 'Dot', move: 'jump', source: 'lesson', soon: true };
+  const teach: GuideLine = { key: 't', text: 'Snake napping under a hive ahead! Punch the vine!', kind: 'teach', who: 'Dot', source: 'engine', stageTeach: true, soon: true, waitMs: 60000 };
+  const q = app();
+  q.readDone = true;
+  q.push(gap, 3000);
+  q.tick(3000, e);
+  q.push(teach, 3500);
+  jumped = 1;
+  let at = -1;
+  for (let t = 3500; t <= 3000 + readMs(gap.text) && at < 0; t += 50) if (q.tick(t, e)?.line.key === 't') at = t;
+  assert.ok(at > 0 && at <= 3000 + 1500 + 700, `the teach at ${at - 3000} ms: right after the tip's minimum time, not its reading time`);
+});

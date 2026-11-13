@@ -547,7 +547,9 @@ export class GuideQueue {
         if (!gone) this.goneSince = -1;
         else if (this.goneSince < 0) this.goneSince = now;
         if (env.moveCount(l.move) > cur.base) {
-          if (shown && (!this.readDone || !!l.next || age >= readMs(l.text))) why = 'done';
+          // (held for reading on the phone, unless the stage's own teach line or a hazard about to hit is waiting: that moment wins)
+          const pressing = (b: Waiting | null) => !!b && (!!b.line.stageTeach || !!b.line.soon || isUrgent(b.line));
+          if (shown && (!this.readDone || !!l.next || age >= readMs(l.text) || pressing(this.best(now, env)))) why = 'done';
         } else if (heldBack(l, env)) {
           if (shown) why = 'yield';
         } else if (this.calm && shown && (age >= CALM.moveCapMs || (gone && now - this.goneSince >= CALM.goneMs))) {
