@@ -4,7 +4,26 @@ Read this, then reference/STATE.md (newest at the bottom: every decision tonight
 (the plan, with "THE PLAN AS TOLD TO MATT"), reference/plans/MAP-REVISIONS.md (the map's changes and Matt's 84 ideas judged),
 reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Matt 11-11); it plans, dispatches, checks, decides.
 
-## RIGHT NOW (11-12 11:20 AM ET; written before the lead's memory compression; this block wins over older lines below)
+## RIGHT NOW (11-12 8:42 PM ET; this block wins over everything below it)
+DONE TODAY: Matt's test link EnK5 v250 PUBLISHED 8:10 PM from t-int-2@465023ef: 1-3 (Fable W1C, finished by F13 Opus max) + 1-2 (D12
+Opus max) designed levels + 1-1 pass + fixes. Every CLAUDE.md check green on 465023ef EXCEPT buildcheck (446/430 ms vs 150: P11 +~180,
+Y2 +~180; BC-FIX packet ready, blocks 0.9.7). Lead judged the real build (fresh save; path: Settings > About > tap Shaffer x10 > World
+Map > Big explorer). Matt played: 1-1 = 4-5, 1-2 = 2-3, 1-3 = 1 on a new 0-100 Normal HARDNESS METER (R-165.172; STAGE-RULES §1 #5);
+from 1-4 Normal must challenge adults, Easy = casual playthrough. His wife plays 1-2 vs 1-3 blind tonight: record her notes separately.
+RUNNING (report to the lead): FEEL-PAIR (Opus xhigh, session_01FhBbYMJ7AWJme9TCabLmnw, t-feel-pair, two-vine room in the QA build only,
+stop 1 AM); DIFF-ALGO (Opus MAX, session_01FhBbYLkEmfNhWBz7cCsNXu, t-diff-algo: research incl. the internet + the meter + the arc for
+all 10 worlds + the engine's levers + a read-only prototype calibrated to Matt's ratings, stop 1:30 AM); INT-2 (session_01FhBbYJyqGNbY6jh1mWA5WW)
+appending 14 w1traps catalog rows then stops (retire after ls-remote). Story keeper (session_019iachLiuwNTAZUBSJWUmR3, permanent): nature
+check duty before each level (R-165.164; bar: "does it make sense there to a player"); snake rename = Golden Eyelash Viper (R-165.166, tomorrow).
+WAITING ON MATT'S RESET (he was at ~96-99%; he says when): Fable on ENG-ASCENT (packet 2026-11-13/ENG-ASCENT.md, the ascent lay first)
++ Fable's 1-5 idea list C (IDEAS-1-5.md; A = Opus xhigh t-ideas-15-a@d4ae2319, B = Opus max t-ideas-15-b@df33077c, both done); then D15
+(Opus max) designs 1-5 (D15.md: Normal target ~5-6); BC-FIX (Opus xhigh). 1-4's design passed (t-14-design@1b88b431); its build waits
+on the engine pieces + Matt's feel test; its build packet must set a Normal target ~4-5 and revisit "a knock never costs a heart".
+TOMORROW: retro + LEVEL-LOG costs; 0.9.7 prep (BC-FIX, R-165.157 testers on 1-3, R-165.158 About, R-165.125 sound question, clear the
+tester sheet after the archive copy); story keeper's words (R-165.165/.166/.171); level.md rule changes the lead approved (list in STATE
+11-12 8:24 PM). D30 REPEAT today: stamp every ledger time with `date` inside the writing command (R-165.168 gate ordered).
+
+## EARLIER (superseded) RIGHT NOW (11-12 11:20 AM ET; written before the lead's memory compression; this block wins over older lines below)
 Running (all report to the lead, session_01FhBbYP63h7cCX8DyW69stq; story keeper session_019iachLiuwNTAZUBSJWUmR3, permanent):
 - P11 1-1 pass (Opus high, session_01FhBbYNA2XQgbQQrcxjr5GS, t-11-pass): dead-zone + bounce-purpose verdicts, hop rocks, list 258,
   first run 9800; its L18 stills PASSED the lead's look; owes: what the empty ring by the checkpoint flag is (F12 found the mushroom rim
