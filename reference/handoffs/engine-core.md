@@ -14,6 +14,28 @@ Rewritten again at the stop of NODES-TRAVEL (1:04 PM ET, 2026-11-13): branch `t-
 
 Rewritten again at the stop of VARIETY (2:33 PM ET, 2026-11-13): branch `t-nodes`: one vault finder for the engine and the tower verdict; a node's shape or move ask is a rule where the slot can keep it (section 0l). Sections below are still true.
 
+Rewritten again at the stop of VARIETY-2 (2026-11-13, branch `t-nodes`): a '_' V19 overrules is refused at graph time; why floor.unmarked kills mix strings (section 0m). Sections below are still true.
+
+## 0m. The asks against V19, and what kills World 1's mix (VARIETY-2, R-165.197/.198/.200, t-nodes, 11-13)
+- **askRefusal** (pipeline.ts, called in rolledGraph after V19 marks `mustRise`): a '_' asked of the node after a late descent on an up
+  stage throws by V19's name before anything is laid (planted: gen2/askRefusal.test.ts, red before). ONLY that: a refusal by "no section of
+  the node's job falls / keeps the move" was built, measured and taken out: 12 of its 35 refusals were asks the lay KEPT (a node's net
+  fall also comes from its joins and the corridor; nodeMix string 59's combine '_' laid with no falling combine section). Refuse at graph
+  time only what fails on every seed; everything else is laid or named after the lay.
+- **floor.unmarked is the painter's ruler, not the late sections** (reference/qa-reports/VARIETY-2/PUSHBACK.md): findW1Pits reads one ground
+  line G (the widest bank top over the whole stage); a 24 px log within 20 px of G is "ground", so a log chain or rung row laid at that
+  stage's G reads as falls (water), the same chain on a stage whose G is elsewhere is not judged (string 57 seed 58: asked G 813, bare
+  G 1269, same log chain); holes between two tall banks are judged only at 24-1600 px. 11 bare frames fail the same way. Fixing it moves
+  the painter and the verdict on shipped stages: a lead ruling (planner.md §3 "Floors").
+- **Pool short in mix rolls** (repairs.ts): climb twists and signature sections banned for leaving the corridor out the TOP (route already
+  high), and every reroll short of a bounce test (W1 has two). A spared ban only renames that failure: bans are per roll.
+- **Tools** (reference/qa-reports/VARIETY-2/tools/): mixlist.ts (nodeMix's 60 W1 strings asked + bare, raw ask misses, JSON), floorkind.ts
+  (each floorless gap's lips), secprobe.ts (G and one section's pieces and pits), repairs.ts (the swap record), fallmiss.ts ('_' asks).
+  World 1's falling sections by job: practise twin-bounce; test stair-test-back, bank-stair-test-back (+4); no flow, combine, twist,
+  teach or signature section falls (declared exitDy).
+- **Traps.** (1) `S=...; (cmd) & (cmd2)` sets S in the background only: the second command wrote to `/` (engine-core 0j trap 6, again).
+  (2) A heredoc with regex and template strings can trip the shell's safety parse: write the file with the Write tool instead.
+
 ## 0l. The vault and the asks (VARIETY, R-165.197/.198/.200, t-nodes, 11-13): what the next engineer must know
 - **Straight up at a vine's top** vaults him toward the side with more ledge (engine.ts vaultSide -> src/game/vineTop.ts vaultSide /
   ledgeOut, the ONE finder; the tower verdict towerVaults reads it too, D19). Every climbing vine the lay makes stands CLIMB_CLEAR (26,

@@ -32,6 +32,9 @@ A roll with any error never reaches the proven list or a player. `provenGen2Stag
   facing either way, read with the engine's own finder (src/game/vineTop.ts). Runs only on a tower or a stage of legs; shipped runs
   are covered by tools/engine/vaultscan.ts (0 regressions), not by a verdict. A node's shape/move ask is a rule in the deal and the pick
   where the slot can keep it (engine-core.md 0l).
+- (VARIETY-2, 11-13) **askRefusal** (pipeline.ts, graph time, before the lay): a '_' asked of a `mustRise` node (the node after a late
+  descent on an up stage) throws `... node nN (job) asks shape _ (falling), but V19 makes it climb ...`; planted gen2/askRefusal.test.ts.
+  floor.unmarked's kills on mixed strings come from findW1Pits' one ground line (engine-core.md 0m; §3 "Floors" below), not the asks.
 
 | Verdict | Enforces | Where | Planted test |
 |---|---|---|---|

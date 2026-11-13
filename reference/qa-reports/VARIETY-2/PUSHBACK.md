@@ -13,8 +13,8 @@ Tools: reference/qa-reports/VARIETY-2/tools/ (mixlist.ts = nodeMix's 60 W1 strin
 - **All 87 gaps by lip** (floorkind.ts): thin/thin 32, thin/bank 29, bank/thin 3 (logs or rungs that happen to sit on that stage's G),
   bank/bank 23 (a hole between two tall banks under a bough walk: judged only when 24-1600 px wide, w1Pits.ts:164; the same section
   over a wider hole is not judged). Which strings fail is set by the stage-wide bank mix, not by what the late sections lay.
-- **So a lay fix inside the late sections would be a patch** on a ruler the planner already names as the blocker (planner.md:82-83
-  "Floors": "findW1Pits' single ground line, which needs per-gap lips"; :109 trap 10). Fixing it changes the painter and floor.unmarked for
+- **So a lay fix inside the late sections would be a patch** on a ruler the planner already names as the blocker (planner.md:85-86
+  "Floors": "findW1Pits' single ground line, which needs per-gap lips"; :112 trap 10). Fixing it changes the painter and floor.unmarked for
   shipped stages (what gets water), so it needs the lead's ruling (LAWS 22: a stricter, consistent ruler, never a looser one).
   Ready packet: EXACT NEXT STEP in REPORT.md.
 
