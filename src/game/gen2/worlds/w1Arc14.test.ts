@@ -9,7 +9,8 @@ import type { Platform, Vine } from '../../types.ts';
 import { checkCode, parseCode } from '../nodeCode.ts';
 import { stagePool } from '../pipeline.ts';
 import { stageLine } from '../../wayside.ts';
-import { ARC_14, BRIEF_14, FIELD_ROWS, GAP, HALFWAY_14, LINES_14, SECTIONS_14, STAGE_14, beats14, finish14, kitLib14 } from './w1Arc14.ts';
+import { STAGE_LINES } from '../../pokeyJournal.ts';
+import { ARC_14, BRIEF_14, FIELD_ROWS, GAP, HALFWAY_14, JOURNAL_14, LINES_14, SECTIONS_14, STAGE_14, beats14, finish14, kitLib14 } from './w1Arc14.ts';
 import { w1World } from './w1.ts';
 import { FIELD_FEEL } from '../../vineField.ts';
 import { POD, podFaults } from '../../podfall.ts';
@@ -28,6 +29,8 @@ test("1-4's words are the story keeper's, verbatim (the lead, 11-13 10:44 AM ET)
     assert.ok(M.teachTips?.includes(k), `${k} is a teach line (said on Normal's default Tips)`);
   }
   for (const l of Object.values(LINES_14)) assert.ok(l.split(' ').length < 10, `under 10 words: "${l}"`);
+  // the journal's 1-4 (pokeyJournal.ts), the keeper's rewrite of the squirrel lift
+  assert.equal(STAGE_LINES['1-4'], JOURNAL_14);
   // Pokey's halfway line (wayside.ts, World 1 stage 4: his, at half the way)
   const half = stageLine(1, 4);
   assert.deepEqual(half && { who: half.who, text: half.text, at: half.at }, { who: 'Pokey', text: HALFWAY_14, at: 'half' });

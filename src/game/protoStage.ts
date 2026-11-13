@@ -66,8 +66,8 @@ import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, t
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4' | '8-4';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4' | '8-4';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
 // 5-5 Caught in Silk (w5Stages.ts): the cocoons and the pouch scene
 HAND_STAGES['5-5'] = '5-5';
 // 7-4 The Way Down (Matt, 2026-10-29: not a climb; the floor crumbles into a slide seen from behind: w7Slide.ts)
@@ -484,7 +484,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   // (a stage with a spec (src/game/mixer/stages.ts: 1-1 and 1-5) is built from its data by the mixer; nothing here per stage)
   const spec = specFor(plan);
   if (spec) return buildFromSpec(config, seed, easy, spec);
-  if (plan === '1-4') return buildKapok(config, seed);
   if (plan === '3-4') return buildSinkhole(config, seed);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
   if (plan === '4-3') return buildWaterfallSteps(config, seed);
