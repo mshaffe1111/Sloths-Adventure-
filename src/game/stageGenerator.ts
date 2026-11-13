@@ -6,6 +6,7 @@ import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
+import { flagsInOrder } from './gen2/tower.ts';
 import { pick11, play11Seed, roll11Seed, withPlaySeed } from './testlink1_1.ts';
 import { builtOnArcs, linkArcs } from './gen2/reach.ts';
 import { buildPlayStage, provenSeedFor, seedListReady } from './gen2/seedList.ts';
@@ -2910,7 +2911,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     const risky = stage.enemies.length > 0 || stage.waterY !== undefined || !!stage.heartFalls?.some((z) => !z.soft) || !!(stage as { proto?: { water?: Array<{ kind?: string }> } }).proto?.water?.some((z) => z.kind === 'deadly') || ((stage as { gen2?: { budget?: { pit?: string } } }).gen2?.budget?.pit ?? 'soft') !== 'soft';
     let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
     // (H1 is for the unshipped gen2 1-1 only, the lead 11-06: the live gen2 worlds keep their hearts as they are)
-    if (risky || GEN2_STAGES[config.id]) [...(stage.checkpoints ?? [])].sort((a, b) => a.x - b.x).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
+    if (risky || GEN2_STAGES[config.id]) flagsInOrder(stage, stage.checkpoints ?? []).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
     const done = finishStage(stage, finishReach(stage, difficulty));
     // (World 5's dressing sets, once the pickups are all placed, so none is covered: artDress.ts dressSets)
     addDress(done as Parameters<typeof addDress>[0], layoutVariant ?? 1);
