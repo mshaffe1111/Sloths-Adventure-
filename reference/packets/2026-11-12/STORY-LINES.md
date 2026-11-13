@@ -562,3 +562,7 @@ rather the page stay with platformers and arcade games.
 "What's ours", line 3 becomes: **"Ten rainforest worlds, with art made for this game in its own style, and music written just for it."**
 If that reads long on a phone, it splits into two lines: "Ten rainforest worlds, with art made for this game in its own style." and
 "Music written just for this game."
+
+**Matt (11:25 PM ET): PUBG and Fortnite are NOT credited** ("They're actually not going to be in the game"). Their line is removed from
+"Inspired by", which now credits 29 games. The world map's IDEAS row #30 (the shrinking safe zone, marked IN) should be updated to
+match.
