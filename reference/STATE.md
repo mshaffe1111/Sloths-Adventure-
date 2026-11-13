@@ -778,3 +778,8 @@ lines); Matt sees them in the release.
   reports... if I just wanted to waste the tokens, I'd just hit reset." LAW 5 AMENDED (LAWS.md): a branch with no game code change runs
   the fast gates; the full gate still runs on the integration head before any link/PR/release. DIFF-ALGO told to stop its suite (its
   diff: reference/ + tools/difficulty/ only, checked) and finish on fast gates.
+- 2026-11-12 9:53 PM ET: DIFF-ALGO DONE and retired (t-diff-algo@1e5fe476, ls-remote checked; diff = reference/ + tools/difficulty/ only;
+  fast gates per Law 5's new scope PASS; the full suite was at 2,136 passing, 0 failing when stopped). All 90 stages scored both settings:
+  0 of 72 stages in Worlds 3-10 sit in their band (medians 5-17 vs bands 19-100). Recommends R-165.173 (1-1's five doubles are about half
+  its points: move them to 1-4, 1-1 target 2.5). Ready packets: S1 INSPECT-ROUTE (R-165.176) -> S2 METER-GATE -> S3 METER-TARGET (N1-N3),
+  D40 order. Pushback accepted (calibrated to Matt's latest 1-3 = 1; tools/ path kept per packet).
