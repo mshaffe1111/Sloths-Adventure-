@@ -165,6 +165,9 @@ export interface WorldManifest {
   /** the vertical corridor clamp (Part 3 §1): the route's ground stays between these world y's; inside `soft` px of an edge the
    *  selector leans toward sections that drift back */
   corridor: { top: number; bottom: number; soft: number };
+  /** a stage laid up or down (MissionGraph.flow, tower.ts): the tower's world width, px (unset: TOWER.width). A storey runs wall to
+   *  wall of it before it turns, so it is how many sections a storey holds */
+  tower?: { width: number };
   /** the world's difficulty band (§1b), in D units; default: bandFor(world) */
   band?: readonly [number, number];
   creatures: CreatureDef[];
@@ -189,6 +192,11 @@ export interface WorldManifest {
    *  painted family the world's painter draws it with; `depth`: px under the gap's lower lip [min, max]; `clearStart`: no hollow this
    *  near the spawn, px */
   hurtFloor?: { lesson: string; art: string; depth: [number, number]; clearStart: number };
+  /** the world's creaky limb (SectionPiece.creak; gen2/creak.ts): the style its platform is drawn in (World 1: 'branch', drawn
+   *  notched as branchCreak), how long it holds once stood on (s, by setting), and the section `teaches` id of its lesson (every limb
+   *  laid up to the end of the lesson's section is never needed; after it one may be required anywhere, STAGE-RULES §1). A roll that
+   *  lays a creaky limb in a world with no row fails by name */
+  creak?: CreakRow;
   /** the stages of the world gen2 must never build (the signature stage, the guardian's lair) */
   handBuilt: string[];
   /**
@@ -309,6 +317,20 @@ export interface SectionPiece {
    * no animal or flag stands on or over them
    */
   crumble?: boolean;
+  /**
+   * a CREAKY LIMB (gen2/creak.ts, the world's `creak` row): a piece he stands on that gives way `creak.hold` s after he lands on it and
+   * drops him to what is under it; whole again on any set-back, grown back off screen 30-35 s after it went (engine.ts). Unlike a
+   * crumbling tile it may be on the main route and may be REQUIRED once its lesson is laid (Matt, 11-02: "required anywhere"); every
+   * limb up to the end of the lesson's section must never be needed (pipeline checkStage proves the stage without them)
+   */
+  creak?: boolean;
+}
+
+/** a world's creaky limb (WorldManifest.creak) */
+export interface CreakRow {
+  style: NonNullable<Platform['style']>;
+  hold: { easy: number; normal: number };
+  lesson: string;
 }
 
 /** what a socket can hold */
@@ -495,6 +517,9 @@ export interface StageBudget {
    *  here: the built stage's config carries it, and the lay's link reach reads it (packet E12 item 5) */
   doubleTaught?: true;
   archetype: Archetype;
+  /** the stage is laid as a tower (MissionGraph.flow, R-165.170): UP for an ascent or a stage whose data says it travels up, DOWN for
+   *  one whose data says it travels down (LevelConfig.travel, the one place a stage names its travel). Unset on a run */
+  flow?: 'up' | 'down';
   difficulty: Difficulty;
   /** D(world, stage) (F2), inside the world's band (§1b) */
   D: number;
@@ -614,6 +639,10 @@ export interface GraphBrief {
    *  a node whose job one type of section alone serves in the stage's pool is dealt that type. A designed level's variety is its
    *  beats; a type dealt at random is one its single brick a job cannot fill */
   dealExact?: boolean;
+  /** every piece the lay makes for this stage carries its section's uid and its own key (`<uid>:<key>` on Platform.tag / Vine.tag), so
+   *  the stage's own finish finds its beats by key (B14's hook, 11-13; 1-4's vine field, figs, gates and pods). Only a stage that asks:
+   *  a tag is data on the built stage, and every stage that does not ask is laid byte for byte as it was (the lock, the first run's) */
+  tags?: boolean;
   /** the stage's CAST, by kind (predators/registry.ts; reference/design/PREDATORS.md): every animal of one of these kinds the stage
    *  lays is run by the creature kit (castPlay.ts) with Pokey's stillness and noise, and the stage's drop traps work on it. Absent:
    *  the stage's animals play as they always have */
@@ -624,8 +653,9 @@ export type ContentType = 'ground' | 'floating' | 'climb' | 'bounce' | 'rope' | 
 
 export interface MissionGraph {
   archetype: Archetype;
-  /** horizontal stages run right; an ascent runs up (phase 2) */
-  flow: 'right' | 'up';
+  /** which way the graph is laid (R-165.170): a run right; an ascent UP; a way down (GraphBrief.flow 'down') DOWN. A tower, up or
+   *  down, is laid storey over storey (tower.ts); the built stage's config.travel says the same to the engine (stageModes.ts) */
+  flow: 'right' | 'up' | 'down';
   nodes: MissionNode[];
   /** the rolled graph's id (manifest `graphs`); absent on the SPINE */
   id?: string;
@@ -728,7 +758,9 @@ export interface PlanSlot {
   template: string;
   mirrored: boolean;
   node: string;
-  join: 'walk' | 'step' | 'pit' | 'jump';
+  /** `turn` (a tower, R-165.170): the section hangs a storey over (or under) the last, a climbing vine between them; which joins of a
+   *  tower turn is the lay's geometry (the room to the wall), laid again on every build: the plan only records it */
+  join: 'walk' | 'step' | 'pit' | 'jump' | 'turn';
   /** the sub-block versions it rolled (sub-block id -> version id), so Easy lays the same ones */
   versions?: Record<string, string>;
   /** the slot's stream salt (a swap at this slot moved it): Easy rolls the slot's geometry from the same stream */
@@ -764,10 +796,17 @@ export interface Gen2Meta {
   windowMiss?: string;
   /** a rolled stage's flags against ROLLED_FLAGS (pipeline rolledFlagBreaches), each miss by name */
   flagMiss?: string[];
+  /** a tower's own misses (tower.ts towerFalls, towerSkips): a fall no sound wood catches within a trunk section going up, a storey a
+   *  jump climbs without its vine; a blind drop going down */
+  towerMiss?: string[];
   /** the brief the rolled graph was rolled under (manifest graphs.briefs) */
   brief?: GraphBrief;
   /** the stage's brief says no fall costs a life (GraphBrief.softFalls): what the engine reads (pipeline.ts softFallStage) */
   softFalls?: true;
+  /** a stage laid as a tower (MissionGraph.flow up or down, R-165.170): its width and floor, the plain boughs the lay ran on to a
+   *  wall (a design wants none), and its ROUTE (tower.ts Route: each section's leg, the px of way before and through it, the px he
+   *  walks): what "how far along" means where x runs both ways, read by the flags, the opening, the clock and the time model */
+  tower?: { flow: 'up' | 'down'; width: number; floorY: number; runouts: number; /** each storey join that climbs or comes down: its vine's x and the heights it joins */ turns: Array<{ x: number; from: number; to: number }>; route: import('./tower.ts').Route };
   /** a stage that lays a hurt floor (WorldManifest.hurtFloor): its row's lesson and clearStart, and `shown`, the END x of the lesson's
    *  showing piece (the piece keyed `show` in the laid section whose `teaches` is the lesson) when one is laid: `hazard.untaught` reads it */
   hurt?: { lesson: string; clearStart: number; shown?: number };

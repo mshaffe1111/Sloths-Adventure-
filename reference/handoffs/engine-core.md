@@ -8,6 +8,48 @@ Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, r
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
+Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 lays a stage UP as a tower (section 0i). Sections below are still true.
+
+## 0i. The tower lay (FA, R-165.170, t-fa, 11-13): what the next engineer on a stage that travels up or down must know
+- **One lay.** `layStage` (pipeline.ts) lays a run or a tower; `graph.flow` 'up'/'down' (an ascent by its kind, or `config.travel`) turns
+  on the tower branches, every one behind `tower`. A run takes none of them: the lock is 102/102 unchanged. The tower's numbers and pure
+  pieces are `gen2/tower.ts` (TOWER, reflectLocal, storeyLimit, routeOf/routeAt, towerCatches, towerFalls, towerSkips, towerFlags,
+  flagFurther, flagsInOrder). No stage id, seed or x: a tower's width is `WorldManifest.tower.width` (unset: 1280).
+- **A storey is a turn.** `towerJoin`: a section walks on while it fits before the wall and clears what is laid there; else it is laid a
+  storey over, a climbing vine between (plan join `turn`), turned back when the wall is near. A leftward storey is the section reflected
+  about its entry (reflectLocal: heights kept; the run's `mirrored` is off in a tower). `Gen2Meta.tower.turns` names each turn where its
+  vine STANDS (clearClimbs moves a vine 26 px off the ledge's face after it is laid: read `turns[k].x`, never the leg's entry x).
+- **No storey is climbed without its vine (the verdict towerSkips).** The frozen WIP laid catch boughs that made a jump ladder past a
+  vine and two sections (seed 3). Now every piece has a storey (how many turns were laid before it, `storeyOf`), a catch is laid only
+  where no jump (LEAP: generous, the FLOWN 214 px climb plus a margin, never the closed-form DOUBLE_RISE) joins two storeys, and any
+  roll where one does is refused by name. TOWER.turn (225) is only 4 px over LEAP.up (221): do not lower one or raise the other.
+- **A miss costs a storey (towerFalls).** Every open end and every piece that gives way (a crumbling tile, a creaky limb) has sound wood
+  within 450 px under it. towerCatches lays, in order: the piece run on into a near wall; the storey under it run on under the end (a
+  bridge); the piece itself run on to the wall; else a shelf under the end. Rough spot, named: on the FIXTURE these read as plain
+  boughs wall to wall on many storeys; a designed level's own pieces decide how many open ends it has.
+- **Along the route.** `routeAt(route, x, y)` is "how far on" in a tower (a run: x). Flags are Matt's ROLLED_FLAGS measured along it
+  (towerFlags/towerFlagBreaches, a flag before every hard node); the opening seconds and the quiet stretches too; the clock walks
+  `route.walk` (stageTime.ts). The ENGINE takes flags in the route's order (`flagFurther`, engine.ts, two sites): two flags on one
+  storey both count. The hearts by every second flag go in that order too (stageGenerator.ts `flagsInOrder`).
+- **The climb camera.** `travelFeet(base, towerLead(stage, mode))` (cameraFollow.ts, tower.ts): feet 80% down on a TOWER that leads
+  up, 34% on one that leads down; engine.ts uses it at the framing line AND at both set-back snaps (else the view drifts after a
+  respawn). Towers only, on purpose: the 18 shipped climbs and 4-7 keep 55% (towerLead gives them 0), because 80% leaves 108 px
+  under him sideways and lava, water and mist rise from there (9-2, 9-7, 4-1, 4-6). Each gets it when rebuilt as a tower or looked at.
+- **Proof tools.** `npx tsx tools/engine/towerroll.ts --seeds 24 --flow up|arc|down` (each roll's errors by name);
+  `tools/engine/towermap.ts` (a to-scale SVG of a roll: look at the lay before trusting it); `tools/engine/towerFly.ts` (flyTower: the
+  REAL engine, plain inputs, no rescue; withTowerSim builds a fixture the way the game builds a listed stage);
+  `tools/engine/towerstills.mjs` (the fixture on the real page, in place of 1-4, in the page only);
+  `python3 reference/qa-reports/FA/planted-faults.py` (every tower rule's planted fault: all CAUGHT).
+- **Traps.** (1) A bough laid `over` a vine is NOT main unless it says `main: true`: no flag or animal stands on it, and a hard node
+  then has no flag spot (the arc fixture failed "flags: none before the hard node" until its top bough said so). (2) The first-timer
+  bot needs rescues on any tower (8 on the hand-built 1-4): use flyTower for "can it be played", the model for the clock. (3) A plain
+  flyer runs the fixture in about 105 s where MODEL_FAST says 155-160: the model is a quick PLAYER, the flyer a perfect one; judge a
+  level's 2:00 with both. (4) `withTestStage` plants an empty plan list: plant a real one (withTowerSim does) or provenPlan throws.
+  (5) Holding jump on the way down opens the leaf: a bot that holds it glides past its landing.
+- **Open (each named in REPORT.md).** The descent (flow 'down') lays but most rolls fail "a blind drop" (piece 1b, not built);
+  TOWER.see (300) is 11 px more than shows under his feet sideways (289); easyStage's flag pass and topUpFoes read x on a tower
+  whose kind is not an ascent (easyMode.ts:517, pipeline topUpFoes): an ascent takes neither path.
+
 ## 0h. The stage build's cost (BC-FIX, R-165.163, t-bc-fix, 11-12): what the next engineer on the build path must know
 - **buildcheck is the build's budget** (150 ms p95 at CPU x4, 1-1, Normal and Easy). P11's verdicts and Y2's repair took it to 446/430;
   BC-FIX brought it to 105/57 with every result identical (reference/qa-reports/BC-FIX/REPORT.md). Profile before changing code:
