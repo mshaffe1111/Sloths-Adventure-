@@ -21,6 +21,7 @@ const DEVICE: Record<string, string> = {
   sloth_show_touches: 'settings', sloth_wayside_off: 'settings', sloth_fullscreen: 'settings', sloth_fs_tip: 'tip once per device',
   sloth_howto_seen: 'once per device', sloth_coach_done: 'once per device', sloth_slowtip_shown: 'once per device',
   sloth_dot_skip_offered: "Dot's Skip tips button, offered once per device (dotGuideHelp.ts)",
+  sloth_dot_tapped: "Dot's cards: he has cleared one with a tap on this device, so her first card stops teaching it (dotGuideHelp.ts, R-165.175)",
   sloth_dot_silk: "Dot's flight: the silk found on this device, kept for good (dotFlightRun.ts)",
   sloth_update_applied_at: 'the update check',
   // testers and debug switches

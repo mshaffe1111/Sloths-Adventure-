@@ -1,0 +1,1 @@
+stage 1-1 easy: Dot's help setting teach, engine easy true

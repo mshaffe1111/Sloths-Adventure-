@@ -14,7 +14,9 @@
  *   - nothing starts while the stage-start goal card is up (the two share the top-centre lane);
  *   - every line is up for at least 1.5 s, even when its move is done at once or its sender takes it down (QA, v189: "Tap to punch it
  *     when it's close" closed on the very punch it asked for, before it could be read);
- *   - an info line stays 1.5 s + 0.5 s a word, at least 4 s; nothing closes on a tap (a tap is a punch);
+ *   - an info line stays 1.5 s + 0.5 s a word, at least 4 s; on the phone (FADE_K) a card left unread stays about 3x that, and a tap on
+ *     the card clears it at the player's own pace (R-165.175, Matt 11-12: "the player can get rid of it at their own pace"). The card
+ *     takes that touch: a tap on it is never a punch or a jump (DotGuide.tsx). One card at a time; the view shows +N for those waiting;
  *   - no line starts while Pokey is in danger, unless it is the danger warning itself;
  *   - a story aside waits 8 s after the last line; anything else waits a short breath;
  *   - a plain information line steps aside, after a fair look, for a tip about a thing coming up now (World 5's cocoons, cakes), and
@@ -227,6 +229,8 @@ export interface Showing {
   n: number;
   /** its bubble has appeared (onScreen) */
   onScreen?: boolean;
+  /** the tap's lesson rides on this card (TAP_HINT): its words are read too */
+  hint?: string;
 }
 
 export interface TickEnv {
@@ -264,7 +268,18 @@ const heldBack = (l: GuideLine, env?: TickEnv): boolean => !!env?.swinging && l.
 
 export type GuideEvent =
   | { type: 'start'; show: Showing }
-  | { type: 'end'; show: Showing; why: 'done' | 'read' | 'cap' | 'yield' | 'cut' | 'cleared' };
+  | { type: 'end'; show: Showing; why: 'done' | 'read' | 'cap' | 'yield' | 'cut' | 'cleared' | 'tapped' };
+
+/**
+ * R-165.175: how many reading times a card stays when it is left unread (the app's queue; DotGuide.tsx sets it). The tools' readers
+ * (tools/inspect: the first-timer and cast bots, dotPace) keep 1: a reader who taps each card once read, so what they measure is unchanged.
+ */
+export const FADE_K = 3;
+/** a tap this soon after a card opens does not clear it (a stray touch as it opens); the card still takes the touch */
+export const TAP_MIN_MS = 400;
+/** 1-1 teaches the tap on Dot's first card that waits to be read (the story keeper's final words, 11-13; "I'll wait!" is Dot about
+ *  herself). Said once a stage until he has cleared a card with a tap on this phone (dotGuideHelp.ts tapLearned). */
+export const TAP_HINT = "Tap here when you've read it. I'll wait!";
 
 export class GuideQueue {
   /** `calm`: Dot toned down (CALM); `gapMs`: the least time from one line's start to the next's (Tips: TIPS_GAP_MS) */
@@ -299,6 +314,44 @@ export class GuideQueue {
   private clearCur = false;
   /** what happened on the last calls (the view and the tests read it) */
   events: GuideEvent[] = [];
+  /** how many reading times a card left unread stays (FADE_K on the phone; 1: a reader who taps each card once read) */
+  fadeK = 1;
+  /** the tap is still to be taught: Dot's first card that waits to be read carries TAP_HINT (once a stage) */
+  tapHint = false;
+  /** the cards waiting when he last cleared one with a tap (their seq): he asked for them, so they come after the breath alone */
+  private tapSeq = -Infinity;
+
+  /** how long the card up stays if it is not tapped: its reading time (its hint's words too) times fadeK, or what its sender asked */
+  holdFor(s: Showing): number {
+    return Math.max(readMs(s.hint ? `${s.line.text} ${s.hint}` : s.line.text) * this.fadeK, s.line.ms ?? 0);
+  }
+
+  /**
+   * He tapped the card: it goes now, read (a move tip too: he has read it). A tap in its first TAP_MIN_MS does nothing. The cards waiting
+   * at this moment (the +N) then come one after another, a breath apart, whatever the calm gaps: he is reading at his own pace.
+   */
+  tap(now: number): boolean {
+    const c = this.cur;
+    if (!c || now - c.startedAt < TAP_MIN_MS) return false;
+    this.events.push({ type: 'end', show: c, why: 'tapped' });
+    this.cur = null;
+    this.clearCur = false;
+    this.endedAt = now;
+    this.tapSeq = this.seq;
+    if (c.hint) this.tapHint = false;
+    return true;
+  }
+
+  /** the +N badge: the cards still to come now (not old news, not held back here), as a tapping player would see them next */
+  pending(now: number, env?: TickEnv): number {
+    let n = 0;
+    for (const w of this.waiting) {
+      if (heldBack(w.line, env) || env?.hush?.(w.line) || (!isUrgent(w.line) && env?.stale?.(w.line))) continue;
+      const timed = !w.line.move || w.line.thing || ((w.line.soon || w.line.mech) && w.line.mech !== w.line.move && (w.base === undefined || w.base < 0));
+      if (timed ? now <= w.until : !(w.base !== undefined && w.base >= 0 && env && env.moveCount(w.line.move!) > w.base)) n++;
+    }
+    return n;
+  }
 
   /** a line with this key, or these same words (a lesson and a stage tip can say the same thing), is up or waiting */
   has(key: string, text?: string): boolean {
@@ -388,6 +441,12 @@ export class GuideQueue {
 
   private begin(line: GuideLine, now: number, base: number): void {
     this.cur = { line, startedAt: now, base, n: ++this.n };
+    // (the tap's lesson: on Dot's first card that waits to be read; a move tip closes when its move is done, and Pokey's own thought
+    // is not hers)
+    if (this.tapHint && !line.move && !isUrgent(line) && line.who === 'Dot' && line.capMs === undefined) {
+      this.cur.hint = TAP_HINT;
+      this.tapHint = false;
+    }
     this.startedAt = now;
     this.starts = [...this.starts.filter((t) => now - t < BUSY_WINDOW_MS), now];
     this.goneSince = -1;
@@ -477,7 +536,7 @@ export class GuideQueue {
           const b = this.best(now, env);
           if (b && b.line.kind !== 'story' && (PRIORITY[b.line.kind] > PRIORITY[l.kind] || b.line.step === 'name' || (!!b.line.mech && !l.mech))) why = 'yield';
         }
-      } else if (age >= showFor(l)) why = 'read';
+      } else if (age >= this.holdFor(cur)) why = 'read';
       else if (l.kind === 'story' && age >= (l.scene ? readMs(l.text) * GUIDE.sceneHeard : GUIDE.storyYieldMs)) {
         // a story aside gives way to teaching that is waiting (research D3), after a fair look; it comes back later, in full
         // (a line of a scene may give way again: the scene's lines come one after another over a long stretch, and a tip about a thing
@@ -524,7 +583,9 @@ export class GuideQueue {
     if (now - this.endedAt < gap) return null;
     if (env.hold) return null;
     if (env.danger && !isUrgent(b.line) && !b.line.anyway) return null;
-    if (this.calm && !isUrgent(b.line)) {
+    // (the cards he asked for by tapping: only the breath, R-165.175)
+    const asked = b.seq <= this.tapSeq;
+    if (this.calm && !isUrgent(b.line) && !asked) {
       // (calm) nothing in the stage's first seconds; then the gaps between lines
       if (now < CALM.startMs) return null;
       const teach = GuideQueue.lessonish(b.line) || b.line.kind === 'teach' || !!b.line.soon;
