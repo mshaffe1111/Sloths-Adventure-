@@ -26,6 +26,9 @@ for (const [tag, w, h] of [['port', 412, 915], ['land', 915, 412]]) {
   page.on('pageerror', (e) => console.log('pageerror', e.message.slice(0, 200)));
   // (a fresh save: 1-4 is opened the way the stills tools open a stage, window.__play, as trap-stills.mjs does)
   await page.goto(`http://127.0.0.1:${port}/?lessons=off${setting === 'easy' ? '&difficulty=easy' : ''}`, { timeout: 300000 });
+  // (the setting is the save's, not the URL's: set it and reload, as trap-stills.mjs does)
+  await page.evaluate((m) => localStorage.setItem('sloth_difficulty', m), setting);
+  await page.reload({ timeout: 300000 });
   await sleep(2500);
   await page.evaluate(([id, v]) => window.__play(id, v), ['1-4', Number(seedArg)]);
   await sleep(4000);
