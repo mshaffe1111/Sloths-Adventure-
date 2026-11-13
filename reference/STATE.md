@@ -730,3 +730,7 @@ lines); Matt sees them in the release.
   on 1-4"; R-165.173, decided with the meter's numbers); the meter must assign POINTS to things (creatures, double jumps, jump distance,
   things at once), researched, "not guessing", in every level; "get Fable to run through and create a difficulty arc, an algorithm that
   we build into it" (R-165.172 updated). Asked Matt which Fable does first (difficulty algorithm vs the climb engine).
+- 2026-11-12 8:33 PM ET, Matt: "run Opus Max, and hopefully that'll get us to the point of where I can do the reset". Started ENG-ASCENT on
+  Opus MAX (session_01FhBbYMS2AxdkCEW5hmX7XK, t-eng-ascent, base t-int-2@465023ef, stop 2 AM). Fable after the reset: DIFF-ALGO (packet
+  2026-11-13/DIFF-ALGO.md: research + design the hardness meter, calibrated to Matt's anchors, a read-only prototype) and the 1-5 idea
+  list C; then D15 designs 1-5.
