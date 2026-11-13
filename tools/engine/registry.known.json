@@ -1,0 +1,17 @@
+{
+ "about": "The registry gate's known misses (tools/engine/registrycheck.ts, ADD-LEVEL R-165.187): each registration a stage-table stage lacked when the gate was built (2026-11-13, on b09a9a05). Shrink-only (LAWS.md law 5): the gate fails an entry that is no longer a miss (delete it the day it is fixed) and tools/perf/knowncheck.mjs fails an added entry.",
+ "known": [
+  {
+   "stage": "1-1",
+   "need": "drawcheck",
+   "why": "1-1 has never been a drawcheck scenario (tools/perf/limits.json scenarios; run.mjs plays only the scenarios drawcheck hands it), so the stage Matt plays most is not measured per frame. Fix: add \"1-1\" to limits.json scenarios (shared file: the lead's token) and run drawcheck.",
+   "owner": "the lead (limits.json token)"
+  },
+  {
+   "stage": "1-2",
+   "need": "seeds",
+   "why": "1-2 holds no proven seed list and its row no stand-in (provenIndex.ts; ENGINE-NEEDS.md §3), so its rolls are searched at runtime. Fix: npx tsx tools/engine/seedlist.ts 1-2 (seed lists are shared: the lead's token).",
+   "owner": "the lead (seed-list token)"
+  }
+ ]
+}

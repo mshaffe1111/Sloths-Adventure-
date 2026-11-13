@@ -307,6 +307,9 @@ over a certain age, probably like 12." Normal = 12 and up; Easy = children. Matt
 - The story keeper's three lines, each needs his okay: R-165.175 1-1 teach "Tap here when you've read it. I'll wait!"; R-165.171 coach
   "Flick up to hop up or over." / pad "Press Jump to hop up or over."; R-165.165 bell "Down in the hollow, on the low ledge."
 - The optional About line "We weighed 84 ideas for Sloths. 65 made it in, each grown into something of the rainforest's own."
+- Three NEW lines from the story keeper's 1-4 check (t-story@46fc378f): 1-4 pods "Hear it creak? Scoot a vine over till it drops!"
+  (replaces the approved pods line, now untrue); R-165.180 1-4 teach (Dot) "Creaky limbs drop you, but only to the branch below!"; 1-5
+  develop (Pokey) "Creaky again. If it drops me, I'll take the roots." Optional: credit the 1982 arcade vine climber on "Inspired by".
 Matt, 11-07 (9:53 PM ET): "You're the expert in making video games. Things like how the first level should be executed... That's why I
 hired you." That covers game-design calls like the first level. It does not cover his own rulings: a rule or number he set changes only
 when he changes it (LAWS 22; D35). Story stays with the story keeper (Matt has the final say); art he rates.
@@ -847,3 +850,33 @@ lines); Matt sees them in the release.
   10-1..10-5 (it said Flicker carries wayside lines; its own bible STORY-KEEPER.md:114 and DOT-LINES-2026-10-31.md:3 say Pokey). 2 of 3 =
   REMAKE the session (PM.md §9; the role is never replaced). Done on Matt's go (team paused): successor from the persona, STORY-KEEPER.md,
   NEW-LEAD-FROM-STORY-KEEPER.md (11-12 update) and STORY-LINES 11-12; same test; then the old session stops; lead.md, roles/README.md, Matt told.
+- 2026-11-13 10:17 AM ET: MATT'S GO (10:13 AM): "I expect to see levels 1.4 and 1.5 by tonight" (R-165.182); Critics sparingly, only when needed (R-165.183,
+  narrows PM.md:80); two-hand vine climb from Hugging Face (R-165.178). 10:15 AM: keep making levels easier to make, stronger models and
+  effort on engine work, 3-model idea rounds with one picker, research a classic before borrowing from it (lead.md STANDING DIRECTION).
+  10:16 AM: a cost line per key member as it completes (R-165.184). Started 10:16 AM: FA (Fable), B15, B14 (Opus xhigh), ART, S1 (Opus
+  high), story keeper successor; F15 archived. Team table: lead.md "TODAY 11-13". Lead's call vs its own review B2: S2/S3 move after
+  tonight (Matt's two-level target; S3 writes gen2/pipeline.ts, FA's file today; designed levels are scored by hand with S1's fixed inspector).
+- 2026-11-13 10:17 AM ET: Lead review attempt 2 PASSED its cold Critic (t-crit-lead-review-1113@e196242d); Critic retired, cost $3.30 (two audits).
+  B2's S2/S3 order then changed by the lead on Matt's 10:13 AM two-level goal (entry above). Debrief 0.9.7 written (c1731e66).
+- 2026-11-13 10:18 AM ET: STORY KEEPER successor session_01FhBbYMCa3JXWmyQicbmxuu passed the closed-book check 3/3 (incl. the 10-1..10-5 piece lines =
+  Pokey, the one the old session missed); old session_019iachLiuwNTAZUBSJWUmR3 ARCHIVED. Bible + handoff + STORY-LINES on t-story@da7522e8.
+  Ids updated in LEAD-PERSONA.md, PM.md, TEAM.md, lead.md. First task: 1-4 vine rework nature check + R-165.180 develop line.
+  ART blocked: the Hugging Face connector is not connected to member sessions (502 here too); Matt asked to reconnect at
+  claude.ai/customize/connectors; ART preps specs with no spend, then hands over. S1 allowed one gates.yml line (routeHumps.test.ts).
+  FA WRITE: gen2/pipeline.ts, tower*, types.ts, levelCheck.ts, seedList.ts (join), stageTime.ts, cameraFollow.ts, tools/engine/tower*.
+- 2026-11-13 10:20 AM ET: story keeper's 1-4 nature check PASS with look fixes (wild figs, oropendola flyer, ants with leaf bits, fruit never eaten); sent to B14 and ART2; three new lines queued for Matt.
+- 2026-11-13 10:22 AM ET: MATT: no prototypes unless needed; stretch tokens to Tuesday night (R-165.185). B15's feel room and B14's room v2 CUT; Matt feels them in the built levels. ART1 retired $2.25.
+- 2026-11-13 10:23 AM ET: MATT: show him pictures of what we implement; he says if they look right. Members push stills early; the lead forwards them.
+- 2026-11-13 10:27 AM ET: MATT: engine first, in bulk, 2 hours design-to-tests (R-165.186/.187). Lead's map count (90 stages): dir 30, clock 20, dark 17, swing 11, ride 11, still 10, water 10, lure 8. B14's pods redirected onto a general beat clock (20 stages). Architect ENGINE-NEEDS started (session_01FhBbYLVSn59vpCSU4ruo6P): code-checked truth table + ranked bulk packets + the 2-hour tool, by 12:30 PM.
+- 2026-11-13 10:27 AM ET: MATT: the lead's objective besides tonight's two levels: the game set up easy to work on and planned ahead, not reactive (lead.md top).
+- 2026-11-13 10:38 AM ET: CHECK-IN. FA plan only (bedb2e6e, coding); B14 plan + LATTICE merged (5368dc37); S1 fixes in (f14e6733), recalibrating bots;
+  ART2 on an HF sandbox (~$2.75/h; the bucket/repo writes 403 for this credential), climb round 1 running; story t-story@46fc378f;
+  ENGINE-NEEDS started. B15 WIP d8f73cfc edited 4 shared files it does not hold (pipeline.ts, gen2/types.ts = FA; types.ts, engine.ts = B14):
+  sent back (hunks to patches, revert). Check at every check-in: git diff --stat base...<branch> -- <shared files> vs the token table.
+- 2026-11-13 10:39 AM ET: ENGINE-NEEDS DONE (Architect, $10.33, 11 min; reference/plans/ENGINE-NEEDS.md now on the lead branch). Truth: GEN2 today = swing, pits,
+  tide, gusts, ropes, fork roads; dark/still one world (W6); ride.ts + beatBrick.ts built but unused; no named clock reaches the engine;
+  missing: break, follow, hold, leash, heat, drowsy. A new stage is hand-registered in 9+ places; CI checks only 1-1's seed list.
+  WAVES (lead's decision): A now = ADD-LEVEL (session_01FhBbYLJhNRpJErB4SQprjk, t-add-level, tools only). B after FA/B14/B15 push =
+  CLOCK-ON, STILL, CAST-WORLDS (serve 1-7..1-9 and W2). C = RIDE, ZONES-BY-DATA, TRAVEL-LEFT. D = LIGHT, FOLLOW, RISE+POOL, smalls.
+  HANG-UNDER and BREAK-PUSH (first needed 3-2, 7-2) held to wave C/D to save tokens (Matt: stretch to Tuesday). Vine field returns:
+  3-4, 7-5, 10-4 (Architect pick; maybe a short one in 2-6): for the designer and Matt.

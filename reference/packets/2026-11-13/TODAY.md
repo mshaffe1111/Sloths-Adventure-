@@ -15,3 +15,15 @@ Matt's goal today (10:13 AM ET): **1-4 and 1-5 on his test link tonight, polishe
   left, pushback, "Learned"); one-line commit subjects; no narration. Safe-keeping push every 45 min; times from `TZ=America/New_York date`.
 - **Report to the lead:** send_message to session_01FhBbYNzGRJBDMzn6XbtQK2. Blocked? PUSHBACK.md on your branch + one message, then wait.
 - **Stop line:** 9:30 PM ET or 40% context, whichever first; push WIP and report.
+
+## Shared-file tokens (the lead, 10:19 AM ET; PM.md:21: no two builders edit the same file at the same time)
+One holder per file; the lead passes a token only after the holder has pushed. To take a token: merge the last holder's pushed head first.
+| File | Holder now | Next |
+|---|---|---|
+| src/game/gen2/pipeline.ts, gen2/types.ts, gen2/seedList.ts, levelCheck.ts, stageTime.ts, cameraFollow.ts | FA | (ask) |
+| src/game/engine.ts, src/game/types.ts | B14 (pods + gate wiring, own blocks) | B15 (bough/limb wiring, if any) |
+| gen2/worlds/w1.ts, stageTable.ts, stagePlan.ts, tools/perf/drawcheck.mjs | B15 (1-5 is laid first) | B14 (1-4's hook) |
+| .github/workflows/gates.yml | S1 (one line, routeHumps.test.ts) | whoever asks next |
+New files are yours alone. Need a token? One line to the lead; carry on with other work meanwhile.
+- **Stills early (Matt, 10:23 AM: "just show me pictures"):** push a still of each new piece as soon as it draws (upright + sideways, in
+  reference/qa-reports/<ID>/stills/), and send the lead the paths in one line. Matt judges the look from them.
