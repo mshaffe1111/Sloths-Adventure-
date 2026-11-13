@@ -74,7 +74,12 @@ const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v);
 const dxTo = (x0: number, x1: number, x: number) => (x < x0 ? x0 - x : x > x1 ? x - x1 : 0);
 export const isLiana = (v: Vine) => v.vineType === 'swing_liana' || !!v.isSwingingVine || !!v.silk;
 
-export function findRoute(stage: Stage, targets: Array<{ x: number; y: number }> = []): Route {
+/**
+ * `steps`: the route steps onto a hump, down a stair and into a shallow dip instead of jumping over them (stepBetween). The meter asks for it
+ * (tools/difficulty/score.ts); the seed lists' quiet line, the worlds' quiet and diversity tests and the bots keep the route without it
+ * until they move onto it together with Worlds 5-7's findings (the lead's 11:30 AM ET ruling, S1; REPORT.md lists the four findings).
+ */
+export function findRoute(stage: Stage, targets: Array<{ x: number; y: number }> = [], opts: { steps?: boolean } = {}): Route {
   let graph: CheckGraph | null = null;
   // (the check as the game judges the stage: 1-1..1-3 on their flown arcs, levelCheck.ts validateAsJudged. validateStage alone read 1-1's
   // 253-256 px double test gaps as past reach, so its Normal route needed a presumed hop on every layout: S1, 11-13)
@@ -102,7 +107,7 @@ export function findRoute(stage: Stage, targets: Array<{ x: number; y: number }>
   // a shallow dip and hops out, whenever that is no harder than the jump. The check links the banks over it, rightly (the block is low
   // enough to clear), so the route dropped the block and the inspector called the space under the jump a pit: 1-2's 53 px hump read as
   // a 231 px "pit", its stairs as a double. S1, R-165.176)
-  if (g) {
+  if (g && opts.steps) {
     const P = plats.filter((p) => !p.broken);
     for (const [a, list] of edges) {
       const A = nodes.get(a)?.plat;

@@ -90,7 +90,7 @@ jobs:
       - run: npm install --no-audit --no-fund --legacy-peer-deps
       # (the engine tools' own tests, outside the suite glob: the section library, the seed-list writer, the seed yield, the travel
       # bots, 1-3's designed arc (library13) and the cast bots (castBots, F13 11-12); PROOF-1 violation 5, about 5 s. src/game/ciTests.test.ts fails on a test file no workflow runs)
-      - run: npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts
+      - run: npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts tools/inspect/routeHumps.test.ts
       # (an engine or kit change that stales a rolled stage's seed list fails here until the list is rebuilt: tools/engine/seedlist.ts 1-1)
       - run: npx tsx tools/engine/seedlist.ts 1-1 --check
       # (the child, middle and expert bots, R-165.59: mapped from the tester profiles and calibrated on 1-1; a change to 1-1, the engine

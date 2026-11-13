@@ -193,7 +193,8 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
   const targets = type === 'purge' || type === 'gauntlet'
     ? st.enemies.filter((m: any) => m.type !== 'eagle').map((m: any) => ({ x: m.x, y: m.y }))
     : [];
-  const route = findRoute(st, targets);
+  // (the meter's route steps onto humps, down stairs and into shallow dips: route.ts `steps`, S1)
+  const route = findRoute(st, targets, { steps: true });
   const samples = sampleRoute(route);
   const br = findBeats(st, route, samples);
   // (the same reference thumb on both settings, so a setting's own softening is what moves its score: ADULT, jumps.ts)
