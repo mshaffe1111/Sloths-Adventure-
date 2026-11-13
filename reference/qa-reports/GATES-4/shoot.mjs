@@ -42,7 +42,21 @@ for (const [tag, w, h] of [['port', 412, 915], ['land', 915, 412]]) {
   await sleep(3000);
   const name = (beat, t) => path.join(outDir, `${stage}-${setting}-${tag}-${beat}${t ? '-' + t.replace(/^w\d+-\d+-/, '') : ''}.jpg`);
   await page.screenshot({ path: name('1start'), quality: 80 });
-  const secs = await page.evaluate(() => window.__engine().currentStage.gen2.sections.map((s) => ({ uid: s.uid, t: s.template, x: s.entry.x, y: s.entry.y })));
+  // (a section's way in: a tower's route legs carry it (as shoot-14.mjs uses); a run's sections carry only x0..x1, so Pokey stands on the
+  //  lowest wide platform under the section's first 40-200 px)
+  const secs = await page.evaluate(() => {
+    const e = window.__engine(), st = e.currentStage, g = st.gen2;
+    const tpl = (uid) => g.sections.find((s) => s.uid === uid)?.template;
+    if (g.tower?.route?.legs?.length) return g.tower.route.legs.map((l) => ({ uid: l.uid, t: tpl(l.uid), x: l.entry.x, y: l.entry.y }));
+    const plats = (st.platforms || []).filter((p) => p.width >= 50 && !p.hazard && p.type !== 'thorns');
+    return g.sections.map((s) => {
+      for (let dx = 40; dx <= 200; dx += 20) {
+        const X = s.x0 + dx, under = plats.filter((p) => p.x <= X && X <= p.x + p.width).sort((a, b) => b.y - a.y)[0];
+        if (under) return { uid: s.uid, t: s.template, x: X - 30, y: under.y - (e.player.height || 40) };
+      }
+      return { uid: s.uid, t: s.template, x: s.x0 + 10, y: e.player.y };
+    });
+  });
   const picks = [['2mid', secs[Math.floor(secs.length / 2)]], ['3finale', secs[secs.length - 1]]];
   for (const [beat, L] of picks) {
     await page.evaluate((L) => { const e = window.__engine(); Object.assign(e.player, { x: L.x + 30, y: L.y, vx: 0, vy: 0, grounded: true, climbing: false, invincibleTimer: 30 }); }, L);
