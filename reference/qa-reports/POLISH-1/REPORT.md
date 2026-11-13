@@ -1,4 +1,4 @@
-# POLISH-1 REPORT (t-polish-1 from t-int-5@e8afc05c; written 5:54 PM ET, stopped at ~40% context). Gates: gates/RESULTS.txt (head named there).
+# POLISH-1 REPORT (t-polish-1 from t-int-5@e8afc05c; written 5:54 PM ET, stopped at ~40% context). Gates (src head e9decc1d, gates/RESULTS.txt): tsc, unit 3/3 shards, build, chunk, art, known, generality, roadmap (after unshallow), kbd, seedlist 1-1 + 1-4 --check, tool tests, tierBots, drawcheck, buildcheck (p95 122 ms) ALL 0; clipcheck FAIL once (Dot's first tip: a 5 s wait for .dg-skip timed out, both ways), PASS re-run alone (83 known, none added).
 **EXACT NEXT STEP:** 1. Matt R-165.212 (fig gate), not started in code. Root found: fieldPlay.ts:56-66 a shut gate's bough is `broken`,
 so it has NO collision at all and he passes up through it. Fix: the shut bough solid from below (engine.ts gate/platform collision, NOT the
 climbing block 2038-2227: FEEL-VINE holds it; ask the lead), a lock-in beat in fieldPlay.ts torn() (snap, sound, the fig's look changes), a
