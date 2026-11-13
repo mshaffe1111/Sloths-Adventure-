@@ -13,7 +13,7 @@ from 1-4 Normal must challenge adults, Easy = casual playthrough. His wife plays
 RUNNING (report to the lead): FEEL-PAIR (Opus xhigh, session_01FhBbYMJ7AWJme9TCabLmnw, t-feel-pair, two-vine room in the QA build only,
 stop 1 AM); DIFF-ALGO (Opus MAX, session_01FhBbYLkEmfNhWBz7cCsNXu, t-diff-algo: research incl. the internet + the meter + the arc for
 all 10 worlds + the engine's levers + a read-only prototype calibrated to Matt's ratings, stop 1:30 AM); INT-2 (session_01FhBbYJyqGNbY6jh1mWA5WW)
-appending 14 w1traps catalog rows then stops (retire after ls-remote). Story keeper (session_019iachLiuwNTAZUBSJWUmR3, permanent): nature
+DONE and retired (final head t-int-2@f01c76f7: + 14 w1traps catalog rows; new packets base on it). Story keeper (session_019iachLiuwNTAZUBSJWUmR3, permanent): nature
 check duty before each level (R-165.164; bar: "does it make sense there to a player"); snake rename = Golden Eyelash Viper (R-165.166, tomorrow).
 WAITING ON MATT'S RESET (he was at ~96-99%; he says when): Fable on ENG-ASCENT (packet 2026-11-13/ENG-ASCENT.md, the ascent lay first)
 + Fable's 1-5 idea list C (IDEAS-1-5.md; A = Opus xhigh t-ideas-15-a@d4ae2319, B = Opus max t-ideas-15-b@df33077c, both done); then D15
