@@ -287,6 +287,8 @@ export interface BossEntity extends Enemy {
 }
 
 export interface Platform {
+  /** the laid section's uid and the piece's key it came from (`s4:gate`; gen2 pipeline): what a stage's own finish finds it by */
+  tag?: string;
   id: number;
   x: number;
   y: number;
@@ -408,6 +410,8 @@ export interface TreeStructure {
 }
 
 export interface Vine {
+  /** the laid section's uid and the piece's key it came from (`s4:f2`; gen2 pipeline): what a stage's own finish finds it by */
+  tag?: string;
   id: number;
   x: number;
   topY: number;
