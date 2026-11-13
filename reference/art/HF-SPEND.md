@@ -46,3 +46,10 @@ ART-W1 total: ~42 GPU-min, **~$1.93** of its $6 cap (rtx-pro-6000 ~$2.75/h, from
 | 2:45 PM | ART-W1B sky13-hdF 6af61765 (native pass round the circle), ~2 min | lead (packet) | ~$0.09 | the far at 2160 px; its join still 7.7 (the take's ends painted apart) |
 | 3:28 PM | ART-W1B sky13-S 6af62170 (the 1024 px band round the join repainted whole, 4 takes), ~3 min | lead (packet) | ~$0.14 | s55-7: join 1.69 vs 0.69 between any two columns, no visible join |
 ART-W1B total: ~13 GPU-min, **~$0.61** of its $6 cap (estimates from GPU minutes).
+
+## 2026-11-13 (ART, t-art-1113; the lead's packet cap $15, ~$10 reserve kept)
+Route: this credential is refused for the bucket mount and repo writes (403), so the work runs in one rtx-pro-6000 HF sandbox (~$2.75/h),
+billed from creation to terminate; probes were cpu-basic jobs of seconds.
+
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|

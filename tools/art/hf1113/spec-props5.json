@@ -1,0 +1,69 @@
+{
+ "tag": "props5",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, words, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, cast shadow, sky, scenery behind, animals, people, sloth",
+ "items": [
+  {
+   "name": "find-guarana-g-11",
+   "prompt": "a small cluster of four round glossy red-orange guarana fruits on a short stalk, two of them split open showing a shiny black seed with a white rim like an eye, lit by a warm golden light, golden highlights on the fruit, a single game pickup item, whole and fresh, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat plain mid grey background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "find-guarana-g-23",
+   "prompt": "a small cluster of four round glossy red-orange guarana fruits on a short stalk, two of them split open showing a shiny black seed with a white rim like an eye, lit by a warm golden light, golden highlights on the fruit, a single game pickup item, whole and fresh, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat plain mid grey background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "find-guarana-g-37",
+   "prompt": "a small cluster of four round glossy red-orange guarana fruits on a short stalk, two of them split open showing a shiny black seed with a white rim like an eye, lit by a warm golden light, golden highlights on the fruit, a single game pickup item, whole and fresh, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat plain mid grey background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "find-guarana-g-53",
+   "prompt": "a small cluster of four round glossy red-orange guarana fruits on a short stalk, two of them split open showing a shiny black seed with a white rim like an eye, lit by a warm golden light, golden highlights on the fruit, a single game pickup item, whole and fresh, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat plain mid grey background",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "leafsign-down2-11",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, one big bold arrow pointing straight down painted clearly in the middle of the leaf in dark purple berry juice, the whole arrow inside the leaf, a clean simple arrow with a triangle head, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafsign-down2-23",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, one big bold arrow pointing straight down painted clearly in the middle of the leaf in dark purple berry juice, the whole arrow inside the leaf, a clean simple arrow with a triangle head, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafsign-down2-37",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, one big bold arrow pointing straight down painted clearly in the middle of the leaf in dark purple berry juice, the whole arrow inside the leaf, a clean simple arrow with a triangle head, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafsign-down2-53",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, one big bold arrow pointing straight down painted clearly in the middle of the leaf in dark purple berry juice, the whole arrow inside the leaf, a clean simple arrow with a triangle head, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 53,
+   "w": 1328,
+   "h": 1328
+  }
+ ]
+}

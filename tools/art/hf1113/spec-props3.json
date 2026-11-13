@@ -1,0 +1,97 @@
+{
+ "tag": "props3",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, words, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, cast shadow, sky, scenery behind, people, sloth, two birds, flock, nest, branch, perched, many ants, ant hill",
+ "items": [
+  {
+   "name": "oropendola-up-11",
+   "prompt": "a Montezuma oropendola bird, rich chestnut-brown body, black head, a bare pale blue cheek patch and a small pink wattle, a long black bill with an orange tip, bright yellow outer tail feathers, flying to the right seen exactly from the side, its wings raised high above its back, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1328,
+   "h": 1024
+  },
+  {
+   "name": "oropendola-up-23",
+   "prompt": "a Montezuma oropendola bird, rich chestnut-brown body, black head, a bare pale blue cheek patch and a small pink wattle, a long black bill with an orange tip, bright yellow outer tail feathers, flying to the right seen exactly from the side, its wings raised high above its back, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1328,
+   "h": 1024
+  },
+  {
+   "name": "oropendola-up-37",
+   "prompt": "a Montezuma oropendola bird, rich chestnut-brown body, black head, a bare pale blue cheek patch and a small pink wattle, a long black bill with an orange tip, bright yellow outer tail feathers, flying to the right seen exactly from the side, its wings raised high above its back, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1328,
+   "h": 1024
+  },
+  {
+   "name": "oropendola-up-53",
+   "prompt": "a Montezuma oropendola bird, rich chestnut-brown body, black head, a bare pale blue cheek patch and a small pink wattle, a long black bill with an orange tip, bright yellow outer tail feathers, flying to the right seen exactly from the side, its wings raised high above its back, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 53,
+   "w": 1328,
+   "h": 1024
+  },
+  {
+   "name": "oropendola-down-11",
+   "prompt": "a Montezuma oropendola bird, rich chestnut-brown body, black head, a bare pale blue cheek patch and a small pink wattle, a long black bill with an orange tip, bright yellow outer tail feathers, flying to the right seen exactly from the side, its wings swept down below its body, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1328,
+   "h": 1024
+  },
+  {
+   "name": "oropendola-down-23",
+   "prompt": "a Montezuma oropendola bird, rich chestnut-brown body, black head, a bare pale blue cheek patch and a small pink wattle, a long black bill with an orange tip, bright yellow outer tail feathers, flying to the right seen exactly from the side, its wings swept down below its body, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1328,
+   "h": 1024
+  },
+  {
+   "name": "oropendola-down-37",
+   "prompt": "a Montezuma oropendola bird, rich chestnut-brown body, black head, a bare pale blue cheek patch and a small pink wattle, a long black bill with an orange tip, bright yellow outer tail feathers, flying to the right seen exactly from the side, its wings swept down below its body, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1328,
+   "h": 1024
+  },
+  {
+   "name": "oropendola-down-53",
+   "prompt": "a Montezuma oropendola bird, rich chestnut-brown body, black head, a bare pale blue cheek patch and a small pink wattle, a long black bill with an orange tip, bright yellow outer tail feathers, flying to the right seen exactly from the side, its wings swept down below its body, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 53,
+   "w": 1328,
+   "h": 1024
+  },
+  {
+   "name": "leafcutter-11",
+   "prompt": "one leafcutter ant walking to the right seen exactly from the side, reddish-brown with long legs, carrying a bright green cut piece of leaf held up high above its head in its jaws like a little sail, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1328,
+   "h": 1024
+  },
+  {
+   "name": "leafcutter-23",
+   "prompt": "one leafcutter ant walking to the right seen exactly from the side, reddish-brown with long legs, carrying a bright green cut piece of leaf held up high above its head in its jaws like a little sail, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1328,
+   "h": 1024
+  },
+  {
+   "name": "leafcutter-37",
+   "prompt": "one leafcutter ant walking to the right seen exactly from the side, reddish-brown with long legs, carrying a bright green cut piece of leaf held up high above its head in its jaws like a little sail, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1328,
+   "h": 1024
+  },
+  {
+   "name": "leafcutter-53",
+   "prompt": "one leafcutter ant walking to the right seen exactly from the side, reddish-brown with long legs, carrying a bright green cut piece of leaf held up high above its head in its jaws like a little sail, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 53,
+   "w": 1328,
+   "h": 1024
+  }
+ ]
+}
