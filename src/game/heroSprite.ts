@@ -322,8 +322,9 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
     ctx.globalAlpha *= clip.blend;
     // (on the ground the run start's lean and the end of a turn's squeeze ride on the redrawn run too)
     // (and on a draped pair, the sway toward the strand the reaching hand takes: heroClips.ts pairSway)
-    const lean = p.grounded ? ch?.rot : p.climbing && p.climbPair ? pairSway(p) : undefined;
-    const drew = drawStandard(ctx, p, time, { name: clip.name, bob: 0, sx: ch?.sx, rot: lean }, clip.img, clip.f);
+    // (the painted two-hand climb carries its own reach, so no code sway rides on it: clip.k is set only on that sheet)
+    const lean = p.grounded ? ch?.rot : p.climbing && p.climbPair && !clip.k ? pairSway(p) : undefined;
+    const drew = drawStandard(ctx, p, time, { name: clip.name, bob: 0, sx: clip.sx ?? ch?.sx, rot: lean }, clip.img, clip.f, clip.k);
     ctx.restore();
     if (drew) return true;
   }
@@ -408,10 +409,10 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
 }
 
 /** draws one frame of the standard hero. It turns and squashes the way the main hero does, so every effect (the flip, the hang, the vine) behaves the same */
-function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: number, ch: StdChoice, img: HTMLImageElement, clipF?: StdFrame): boolean {
+function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: number, ch: StdChoice, img: HTMLImageElement, clipF?: StdFrame, clipK?: number): boolean {
   const f = clipF ?? stdFrame(ch.name);
   if (!f) return false;
-  const k = STD_K;
+  const k = clipK ?? STD_K;
   ctx.save();
   ctx.translate(p.x + (p.grounded ? p.drawDx ?? 0 : 0), p.y);
   if (!polishEnabled() && p.grounded && !p.climbing && !p.isVineSwinging && !p.hanging) {
