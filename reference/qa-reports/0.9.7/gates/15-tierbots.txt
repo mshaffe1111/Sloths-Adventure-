@@ -1,0 +1,54 @@
+## npx tsx --test tools/inspect/tierBots.test.ts (head f66f32ec, 11:57PM ET)
+TAP version 13
+# Subtest: child easy: every mapped number is its profile field
+ok 1 - child easy: every mapped number is its profile field
+  ---
+  duration_ms: 1.995781
+  type: 'test'
+  ...
+# Subtest: child normal: every mapped number is its profile field
+ok 2 - child normal: every mapped number is its profile field
+  ---
+  duration_ms: 0.554974
+  type: 'test'
+  ...
+# Subtest: middle easy: every mapped number is its profile field
+ok 3 - middle easy: every mapped number is its profile field
+  ---
+  duration_ms: 0.618588
+  type: 'test'
+  ...
+# Subtest: middle normal: every mapped number is its profile field
+ok 4 - middle normal: every mapped number is its profile field
+  ---
+  duration_ms: 0.422442
+  type: 'test'
+  ...
+# Subtest: expert normal: every mapped number is its profile field
+ok 5 - expert normal: every mapped number is its profile field
+  ---
+  duration_ms: 0.449721
+  type: 'test'
+  ...
+# Subtest: the committed calibration runs, judged again, give the committed table
+ok 6 - the committed calibration runs, judged again, give the committed table
+  ---
+  duration_ms: 4.368995
+  type: 'test'
+  ...
+# Subtest: three variants a tier and setting replay exactly as committed
+ok 7 - three variants a tier and setting replay exactly as committed
+  ---
+  duration_ms: 14383.733789
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15241.934401
+EXIT 0 secs 16

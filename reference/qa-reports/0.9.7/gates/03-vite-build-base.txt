@@ -1,0 +1,11 @@
+## BASE_PATH=/Sloths-Adventure-/ npx vite build (re-run: the first chunkcheck ran on a plain build, the clerk's mistake) 11:58PM ET
+mode      generateSW
+precache  1047 entries (173002.57 KiB)
+files generated
+  dist/sw.js
+  dist/workbox-9c191d2f.js
+EXIT 0
+0
+-rw-r--r-- 1 root root 667329 Nov 13 04:58 dist/assets/index-BhjMKPTi.js
+-rw-r--r-- 1 root root 706484 Nov 13 04:58 dist/assets/oldgen-aBmlsBzy.js
+-rw-r--r-- 1 root root 756466 Nov 13 04:58 dist/assets/stagekit-C2VvfbUZ.js

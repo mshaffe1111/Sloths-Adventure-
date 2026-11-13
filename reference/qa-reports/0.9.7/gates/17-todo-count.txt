@@ -1,0 +1,4 @@
+## bash -c echo candidate: $(git grep -n "todo:" HEAD -- "src/*.test.ts" | wc -l); echo main: $(git grep -n "todo:" origin/main -- "src/*.test.ts" | wc -l) (head f66f32ec, 11:57PM ET)
+candidate: 3
+main: 3
+EXIT 0 secs 0
