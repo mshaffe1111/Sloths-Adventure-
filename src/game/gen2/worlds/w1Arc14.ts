@@ -110,7 +110,8 @@ function field(id: string, name: string, o: { jobs: NonNullable<SectionTemplate[
   // (a field's foot is walked onto, never landed on: no `landing`, so Easy does not widen it and pull its vines out of two hands' reach)
   const pieces: SectionPiece[] = [branch('foot', { kind: 'start' }, WF, { landing: false })];
   for (let i = 0; i < o.row.n; i++) pieces.push(climbOn(`f${i + 1}`, 'foot', WF, run + MARGIN + i * GAP, o.row.H));
-  pieces.push(branch('top', { kind: 'over', on: 'foot', at: [run / WF, run / WF], dy: [-o.row.H, -o.row.H] }, W, o.row.gate ? { sealed: true } : {}));
+  // (its top is climbed onto, never jumped to: no `landing` either, or Easy widens it past its vines and the lay's way up from it with it)
+  pieces.push(branch('top', { kind: 'over', on: 'foot', at: [run / WF, run / WF], dy: [-o.row.H, -o.row.H] }, W, { landing: false, ...(o.row.gate ? { sealed: true } : {}) }));
   FIELD_ROWS[id] = o.row;
   return {
     id, name, feel: [STAGE_14], own: true, archetypes: 'any', phases: o.job, jobs: o.jobs, difficulty: o.difficulty, content: o.content ?? 'climb',
