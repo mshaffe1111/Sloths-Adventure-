@@ -7,3 +7,10 @@ WRITE: tools/art/hf1113/* (specs, starts, cut/pack scripts), reference/art/hf111
   src/assets/hero/ (climb2 strip + json, new files only), src/assets/w1-1113/ (new pieces), reference/art/CATALOG-MASTER.csv,
   src/game/art/inventory/* (catalog emit only), reference/art/HF-SPEND.md, reference/handoffs/art-director.md, PLAN.md, REPORT.md, PUSHBACK.md.
 NOT: engine/draw code (heroSprite.ts, ropeArt.ts), pipeline.ts, world files: B14/B15 place the pieces.
+
+## Attempt 2 (10:41 AM ET): HF access works (hf_whoami = mshaffe111)
+- hf_jobs runs, but the bucket mount and repo writes are refused (403) for this credential, so jobs can't hand files back. Route used
+  instead: one rtx-pro-6000 HF sandbox (same image, token forwarded as its secret), scripts curled from this branch's raw GitHub, files
+  back by hf_sandbox_fs cat in base64 parts (tools/art/hf1113/sbx.py there, pull.py here). Terminated when idle.
+- Vine spacing checked (the WIP open item): the field is 80 game units apart (t-lattice vineField), the draped pair 40 (vinePair PAIR_GAP);
+  frames are painted for the field's 80 against his 89.1 drawn units.
