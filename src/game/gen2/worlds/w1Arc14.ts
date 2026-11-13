@@ -61,6 +61,9 @@ export const JOURNAL_14 = 'Climbed the kapok between falling pods. From the top 
 export const GAP = 80;
 /** a field's foot runs this far past its first and last vine (px): room to stand at each end */
 const MARGIN = 60;
+/** how far a gate field's foot runs out past its sealed bough at each end (px): one vine spacing, so a step off either end of the gate
+ *  lands on the field's own foot one storey down (tower.ts towerFalls; FA's sealed piece gets no catch from the lay) */
+export const GATE_RUN = GAP;
 /** a pod's bottom hangs this far under its bough's top (px): a drawn pod's length (vineFieldArt.ts drawPod) */
 const POD_HANG = 110;
 /** a fig bunch's height (px) */
@@ -100,10 +103,14 @@ export const FIELD_ROWS: Record<string, FieldRow> = {};
 /** a field: a foot bough, n vines GAP apart standing on it, H tall, and a bough over them at their tops (the section's exit) */
 function field(id: string, name: string, o: { jobs: NonNullable<SectionTemplate['jobs']>; job: SectionTemplate['phases']; teaches?: string; uses?: string[]; difficulty: number; row: FieldRow; tips?: Socket[]; content?: 'climb' | 'hazard' }): SectionTemplate {
   const W = 2 * MARGIN + (o.row.n - 1) * GAP;
+  // (a gate's bough is SEALED (FA, SectionPiece.sealed): the lay adds nothing level with it or within a hop, so the fruit is the only
+  //  way on, and nothing of the lay's catches a step off its ends: its own foot runs GATE_RUN out under both, one storey down)
+  const run = o.row.gate ? GATE_RUN : 0;
+  const WF = W + 2 * run;
   // (a field's foot is walked onto, never landed on: no `landing`, so Easy does not widen it and pull its vines out of two hands' reach)
-  const pieces: SectionPiece[] = [branch('foot', { kind: 'start' }, W, { landing: false })];
-  for (let i = 0; i < o.row.n; i++) pieces.push(climbOn(`f${i + 1}`, 'foot', W, MARGIN + i * GAP, o.row.H));
-  pieces.push(branch('top', { kind: 'over', on: 'foot', at: [0, 0], dy: [-o.row.H, -o.row.H] }, W));
+  const pieces: SectionPiece[] = [branch('foot', { kind: 'start' }, WF, { landing: false })];
+  for (let i = 0; i < o.row.n; i++) pieces.push(climbOn(`f${i + 1}`, 'foot', WF, run + MARGIN + i * GAP, o.row.H));
+  pieces.push(branch('top', { kind: 'over', on: 'foot', at: [run / WF, run / WF], dy: [-o.row.H, -o.row.H] }, W, o.row.gate ? { sealed: true } : {}));
   FIELD_ROWS[id] = o.row;
   return {
     id, name, feel: [STAGE_14], own: true, archetypes: 'any', phases: o.job, jobs: o.jobs, difficulty: o.difficulty, content: o.content ?? 'climb',
