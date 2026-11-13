@@ -13,7 +13,7 @@ World 1 median: base 152 (in band), now 180. Sorted now: 147 152 152 159 180 213
 
 ## Why this is the band, not a stage
 - The band's ceiling is the OLD generator's target: stageTime.ts:83-84 "a typical stage of World 1 is about 2:15" (TYPICAL_W1 = 135),
-  and the test reads it as "about two and a quarter minutes in World 1" (stageQuality.test.ts:49).
+  and the test reads it as "about two and a quarter minutes in World 1" (stageQuality.test.ts:50).
 - Matt's rule since: STAGE-RULES.md:77 "Every stage takes at least 2 minutes for a quick player, on every roll (5+ minutes is fine)":
   a floor and no ceiling. gen2 lays to it on every roll, so its typical runs about 1.2x its quick: 180-261 s.
 - The open rule-break on World 1 is the other way: ROADMAP R-165.206, 1-4 too SHORT for quick players (castBots expert min 101 s),
@@ -26,5 +26,5 @@ World 1 median: base 152 (in band), now 180. Sorted now: 147 152 152 159 180 213
 - Old-builder 1-6..1-9 read 107-116 s fast in the model; STAGE-RULES.md:77 is judged by quick-player bots, not this model; not measured here.
 
 ## Ask (the lead's ruling; Matt's if the band changes)
-The World 1 band in stageQuality.test.ts:56 needs a ruling against STAGE-RULES.md:77 (e.g. a floor only, as Matt's rule is), made for
+The World 1 band in stageQuality.test.ts:58 needs a ruling against STAGE-RULES.md:77 (e.g. a floor only, as Matt's rule is), made for
 its own reason, not to clear this red. Until then this test stays red on t-int-5 and I have not touched it.
