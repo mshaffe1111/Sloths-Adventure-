@@ -11,6 +11,7 @@
 import { PHYS, DOUBLE_RISE, reachJump } from '../physics.ts';
 import type { Platform, Vine } from '../types.ts';
 import type { LocalLayout } from './pipeline.ts';
+import { ledgeOut, vaultSide } from '../vineTop.ts';
 
 /** which way a graph is laid (MissionGraph.flow) */
 export type Flow = 'right' | 'up' | 'down' | 'legs';
@@ -449,6 +450,24 @@ export function towerSkips(turns: ReadonlyArray<{ x: number; from: number; to: n
       }
     }
     if (hit) out.push(`tower: the storey at y ${Math.round(t.to)} is reached from y ${Math.round(t.from)} by jumps alone (onto the piece at x ${Math.round(hit.x)}-${Math.round(hit.x + hit.width)}, y ${Math.round(hit.y)}): the vine at x ${Math.round(t.x)} is not the only way up`);
+  }
+  return out;
+}
+
+/**
+ * Straight up at the top of every climbing vine lands him on the wood there, whichever way he faces (STAGE-RULES §1: straight up always
+ * climbs; D46: the plain action lands, never only a mid-air correction). Read with the engine's own finder (vineTop.ts vaultSide and
+ * ledgeOut, D19): each vine whose straight-up vault, facing either way, goes toward no wood it lands on, by name. Until 11-13 the
+ * engine's finder never saw a cleared vine's bough, and 1-4's turn-backs vaulted him off the storey above (B14c).
+ */
+export function towerVaults(vines: readonly Vine[], platforms: readonly Platform[]): string[] {
+  const out: string[] = [];
+  for (const v of vines) {
+    if (v.vineType !== 'tree_climb') continue;
+    const f = ([1, -1] as const).find((face) => ledgeOut(v, platforms, vaultSide(v, platforms, face)) === 0);
+    if (f === undefined) continue;
+    const side = vaultSide(v, platforms, f);
+    out.push(`tower: straight up at the top of the vine at x ${Math.round(v.x)} (y ${Math.round(v.topY)}), facing ${f > 0 ? 'right' : 'left'}, vaults him ${side > 0 ? 'right' : 'left'} onto no wood`);
   }
   return out;
 }

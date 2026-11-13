@@ -27,6 +27,7 @@ import { isGen2Stage } from './gen2/game.ts';
 import { maxGap, softFallStage } from './gen2/pipeline.ts';
 import { MODES, type TravelMode } from './stageModes.ts';
 import { flagFurther, towerLead } from './gen2/tower.ts';
+import { vaultSide as vaultSideOf } from './vineTop.ts';
 import type { Mark } from './stageKit.types.ts';
 import { HelpLadder, setGrownSteps, LINE_UP_S, LINE_WAIT_S, takeHelpOnScreen, moveLine, pieceMoveLaid, setHelpLadder, stepPlan, stepsFor, STEP_CUT, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
 import { pickCut } from './w1CutArt.ts';
@@ -8871,19 +8872,10 @@ export class GameEngine {
     });
   }
 
-  /** which way off a trunk's top has more ledge to land on (within 200 px), so a vault with only up held lands on it; a tie keeps `facing` */
+  /** which way off a trunk's top has more ledge to land on, so a vault with only up held lands on it; a tie keeps `facing` (vineTop.ts:
+   *  the same finder the generator's verdict reads; it sees a cleared vine's bough CLIMB_CLEAR px off, which this one did not until 11-13) */
   private vaultSide(v: Vine, facing: 1 | -1): 1 | -1 {
-    const reach = (dir: 1 | -1) => {
-      let d = 0;
-      while (d < 200) {
-        const x = v.x + dir * (d + 10);
-        if (!this.platforms.some((q) => !q.broken && q.type !== 'bouncy' && x >= q.x && x <= q.x + q.width && q.y >= v.topY - 16 && q.y <= v.topY + 30)) break;
-        d += 10;
-      }
-      return d;
-    };
-    const l = reach(-1), r = reach(1);
-    return l === r ? facing : r > l ? 1 : -1;
+    return vaultSideOf(v, this.platforms, facing);
   }
 
   /** one particle, from the pool; past the cap the oldest is reused, so a frame never holds more than MAX_PARTICLES */

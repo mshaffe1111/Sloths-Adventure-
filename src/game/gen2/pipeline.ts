@@ -23,7 +23,8 @@ import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11 } from './verdicts.ts';
 import { PROMISES_11, realFalls } from './promises11.ts';
-import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, vertical } from './tower.ts';
+import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
+import { CLIMB_CLEAR } from '../vineTop.ts';
 import { repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
@@ -2634,8 +2635,8 @@ export function backPit(x0: number, x1: number, lipY: number, farY: number, pitD
   return { floor: out.floor, steps: out.steps.map((s) => ({ ...s, x: x0 + x1 - (s.x + s.w) })) };
 }
 
-/** how far a climbing vine stands out in front of the face of the bough it leads up to (px): Pokey's half-width (21) and a little */
-export const CLIMB_CLEAR = 26;
+// (how far a climbing vine stands out in front of the face of the bough it leads up to: vineTop.ts, where the engine's vault reads it)
+export { CLIMB_CLEAR };
 
 /**
  * Every climbing vine that stands on the face of a bough it leads up to (an `over` piece on a vine starts at the vine's x) is moved
@@ -3815,7 +3816,8 @@ export function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
     const cols = T.flow === 'legs'
       ? (T.legs ?? []).flatMap((g) => (g.frame && upOrDown(g.travel) ? [{ flow: g.travel, x0: g.frame.x0, floorY: g.floorY ?? T.floorY, turns: g.turns ?? [], own: st.platforms.filter((q) => q.x + q.width > g.frame!.x0 && q.x < g.frame!.x1 && q.y >= g.y0 - WALL.over - 1 && q.y <= (g.floorY ?? g.y1) + 1).map((q) => ({ ...q, x: q.x - g.frame!.x0 })) }] : []))
       : [{ flow: T.flow, x0: 0, floorY: T.floorY, turns: T.turns, own: st.platforms }];
-    const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines)];
+    // (and straight up at every vine's top lands him on the wood there, whichever way he faces: tower.ts towerVaults, the engine's finder)
+    const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines), ...towerVaults(st.vines, st.platforms)];
     if (falls.length) st.gen2.towerMiss = falls;
   }
   // (the designer's asks, nodeAsks.ts: each laid, or the roll fails by name)
