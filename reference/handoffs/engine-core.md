@@ -8,6 +8,20 @@ Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, r
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
+## 0h. The stage build's cost (BC-FIX, R-165.163, t-bc-fix, 11-12): what the next engineer on the build path must know
+- **buildcheck is the build's budget** (150 ms p95 at CPU x4, 1-1, Normal and Easy). P11's verdicts and Y2's repair took it to 446/430;
+  BC-FIX brought it to 105/57 with every result identical (reference/qa-reports/BC-FIX/REPORT.md). Profile before changing code:
+  the scratch scripts' recipe is in REPORT.md (CDP Profiler on tools/perf/buildtime.html at x4; vite's line numbers sit a little
+  past the source's).
+- **landings.ts flies each flight once a stage.** `landingsOf(pieces, setting)` hands back the kept Landings only for the SAME piece
+  objects in the same order with x, y, width, height, type and broken unchanged: never build `new Landings` on a hot path, and a new
+  field the judge reads must join FIELDS, or a piece changed in place is judged stale (landingsMemo.test.ts is red then).
+- **A landing flies only the flights its own events can meet** (windowOnto, mayWalkOnto): events() of one piece never depend on the
+  others, so T's own events decide whether a flight can name T. The full sorted event list stays the source of truth: its sort
+  comparator ties null-piece side stops with everything at the same frame, so never prune pieces BEFORE that sort (the order inside a
+  frame can change); filtering AFTER it (windowsOf) is exact.
+- **maxRise() is flown once** (protoCheck.ts): it reads only PHYS. If PHYS ever becomes tunable at run time, that cache must go.
+
 ## 0g. World 1's ground seams (RF2, t-render-2, 11-12): what the next engineer on the painted ground must know
 - **Soil fills are sampled FILL_INSET (3) sheet px in from every edge** (groundPaint.ts fillSrc). The ground sheets are lossy WebP: fills
   2-3 of every world sit on the lip strip and their last 3 rows are dark (World 1: 60 -> 36), and Worlds 6/9 bleed at side edges. Drawn
