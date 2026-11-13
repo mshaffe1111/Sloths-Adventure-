@@ -1,0 +1,31 @@
+{
+ "tag": "ant2",
+ "edits": [
+  {
+   "name": "antA",
+   "src": "gh:COMMIT:reference/art/hf1113/starts2/leafcutter-11.png",
+   "w": 1024,
+   "h": 790,
+   "prompt": "Change only its six legs: it is walking to the right mid-stride, its front-left, middle-right and back-left legs reaching forward, the other three legs pushing back. Keep everything else exactly as in the picture: the same leafcutter ant, the same reddish-brown shiny body, the same head and eyes, the same green leaf bit held up in its jaws, the same thin dark outline, the same painted cartoon style, the same size and place, facing right, the same flat magenta background. Nothing else in the picture.",
+   "neg": "two ants, extra legs, more than six legs, missing leaf, extra leaf, ground, shadow, branch, text, watermark, blurry, photo, 3d render",
+   "seeds": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "name": "antB",
+   "src": "gh:COMMIT:reference/art/hf1113/starts2/leafcutter-11.png",
+   "w": 1024,
+   "h": 790,
+   "prompt": "Change only its six legs: it is walking to the right mid-stride, its front-right, middle-left and back-right legs reaching forward, the other three legs pushing back. Keep everything else exactly as in the picture: the same leafcutter ant, the same reddish-brown shiny body, the same head and eyes, the same green leaf bit held up in its jaws, the same thin dark outline, the same painted cartoon style, the same size and place, facing right, the same flat magenta background. Nothing else in the picture.",
+   "neg": "two ants, extra legs, more than six legs, missing leaf, extra leaf, ground, shadow, branch, text, watermark, blurry, photo, 3d render",
+   "seeds": [
+    1,
+    2,
+    3
+   ]
+  }
+ ]
+}
