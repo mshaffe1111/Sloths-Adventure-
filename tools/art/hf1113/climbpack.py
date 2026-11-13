@@ -26,12 +26,16 @@ def main(pp):
     for n in picks['cycle'] + [picks['still']]:
         if n not in order:
             order.append(n)
+    pre = grips.get('scale', 1.0)  # (climbprep.py already scaled the cuts by this)
     k = STAND_PX / STAND_START
     ims, fr, x = [], {}, 0
     for n in order:
         im = Image.open(d / f'{n}.png').convert('RGBA')
-        im = im.resize((round(im.width * k), round(im.height * k)), Image.LANCZOS)
+        if abs(pre - k) > 1e-6:
+            im = im.resize((round(im.width * k / pre), round(im.height * k / pre)), Image.LANCZOS)
         g = grips[n]
+        if isinstance(g, float):
+            continue
         gs = [[round(q['x'] * k, 1), round(q['y'] * k, 1)] for q in g['grips']]
         vx = g['vines_x']
         fr[n] = {'x': x, 'y': 0, 'w': im.width, 'h': im.height, 'grips': gs,
