@@ -26,6 +26,7 @@ import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
 import { maxGap, softFallStage } from './gen2/pipeline.ts';
 import { MODES, type TravelMode } from './stageModes.ts';
+import { flagFurther, towerLead } from './gen2/tower.ts';
 import type { Mark } from './stageKit.types.ts';
 import { HelpLadder, setGrownSteps, LINE_UP_S, LINE_WAIT_S, takeHelpOnScreen, moveLine, pieceMoveLaid, setHelpLadder, stepPlan, stepsFor, STEP_CUT, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
 import { pickCut } from './w1CutArt.ts';
@@ -132,7 +133,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, travelFeet, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -2809,7 +2810,7 @@ export class GameEngine {
           cp.reached = true;
           recorder.event('checkpoint', Math.round(cp.x));
           // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right, a descent goes down)
-          if (this.mode.further(cp, this.checkpoint)) {
+          if (flagFurther(this.currentStage, this.mode, cp, this.checkpoint)) {
             this.checkpoint = { x: cp.x, y: cp.y };
             // the Android app keeps it, so a run cut off by the phone comes back here (flagResume.ts)
             if (nativeApp()) saveFlag(this.currentStage.config.id, cp.x, cp.y, this.heldRun());
@@ -5637,7 +5638,7 @@ export class GameEngine {
     this.graceMoves = this.input.moves;
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
     this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * FRAME.across);
-    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * fr.feetAt);
+    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode)));
     this.camCut = true;
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
@@ -5726,7 +5727,7 @@ export class GameEngine {
     const cps = this.currentStage.checkpoints ?? [];
     const flag = cps.find((cp) => Math.abs(cp.x - at.x) < 2 && Math.abs(cp.y - at.y) < 2);
     if (!flag) return; // the stage changed since (a new build): start at the beginning
-    for (const cp of cps) if (!this.mode.further(cp, flag)) cp.reached = true;
+    for (const cp of cps) if (!flagFurther(this.currentStage, this.mode, cp, flag)) cp.reached = true;
     this.checkpoint = { x: flag.x, y: flag.y };
     // the run as it was at the flag: what he had picked up, beaten and freed, the clock, the lives and every count the report reads
     this.restoreRun(at.run);
@@ -5812,7 +5813,7 @@ export class GameEngine {
     this.launched = false;
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
     this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * FRAME.across);
-    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * fr.feetAt);
+    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode)));
     this.camCut = true;
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
@@ -6104,7 +6105,7 @@ export class GameEngine {
     this.camAnchorY = camAnchor(this.camAnchorY, { y: p.y, grounded: p.grounded, climbing: p.climbing, hanging: !!p.hanging, swingBottom: sv ? sv.topY + (p.swingLength ?? 100) : undefined }, vh);
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
     this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * FRAME.across + this.camLookX + runX;
-    this.camera.targetY = this.camAnchorY - vh * fr.feetAt;
+    this.camera.targetY = this.camAnchorY - vh * travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode));
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
     const look = this.w4?.look(p.x, p.y);
     if (look) {
