@@ -66,6 +66,10 @@ const MISS_OF: Readonly<Record<string, RegExp>> = {
   tempo: /: tempo/, rating: /: rating/, threat: /: threat/, hazard: /: hazard #/, reward: /: reward \+/, pickups: /: reward \$/, beat: /: beat /,
   points: /: points /,
 };
+/** a named reason, its numbers, node ids and tokens taken out, so one reason counts once whatever node or x it names */
+const reasonOf = (line: string) => line
+  .replace(/^gen2 [0-9-]+: (graph \S+ "[^"]*": )?/, '').replace(/node n\d+ "[^"]*"/g, 'node').replace(/ at token \d+/g, '').replace(/\(n\d+ /g, '(')
+  .replace(/: [A-Z]\S* (uses|bounces|names|teaches)/, ': T $1').replace(/"[^"]*"/g, 'T').replace(/-?\d+(\.\d+)?/g, '#').replace(/ at x #\.\.#.*$/, '').replace(/ at x #.*$/, '').slice(0, 90);
 const cfgs = generateAllLevels();
 interface Kit { name: string; config: LevelConfig; kit: (code: string) => WorldKit; cast: readonly string[] }
 const W1 = w1World();
@@ -83,9 +87,18 @@ const PER_KIT = 60;
 for (const K of KITS) {
   test(`mix and match: ${PER_KIT} node strings on ${K.name} each lay clean or fail by name, and what a clean roll asked is laid`, () => {
     const r = stream(0x51071 + K.name.length);
-    const tally = { refused: 0, named: 0, built: 0, clean: 0, asks: 0, cleanAsks: 0 };
+    const tally = { refused: 0, named: 0, built: 0, frameClean: 0, clean: 0, asks: 0, cleanAsks: 0 };
     // (per element: on how many built nodes it was laid with every ask of its node, and on how many its node named a miss)
     const laid = new Map<string, number>(), missed = new Map<string, number>();
+    // (what kills each string that does not lay clean, each named reason once a string, numbers and node ids taken out)
+    const kills = new Map<string, number>();
+    const askKills = new Map<string, number>();
+    const example = new Map<string, string>();
+    let current = '';
+    const kill = (lines: readonly string[]) => {
+      for (const l of lines) { const k = reasonOf(l); if (!example.has(k)) example.set(k, `${current} -> ${l.slice(0, 160)}`); }
+      for (const k of new Set(lines.map(reasonOf))) kills.set(k, (kills.get(k) ?? 0) + 1);
+    };
     const examples: string[] = [];
     const castOf = (code: string) => K.kit(code).manifest;
     for (let s = 0; s < PER_KIT; s++) {
@@ -93,14 +106,9 @@ for (const K of KITS) {
       const pmc = ['P', 'M', 'C'];
       const code = `A ${token(r, K.cast, pmc)} ${token(r, K.cast, pmc)} R ${token(r, K.cast, ['X'])} R ${token(r, K.cast, ['W', ...pmc])} R S E`;
       const M = castOf(code);
-      const v = checkCode(parseCode(code), { graph: true, creatures: M.creatures.length > 0 });
-      if (v.length) {
-        // (refused by §8.3, each line its rule and token)
-        for (const line of v) assert.match(line, /^V\d+ at token \d+: /, `${code}: ${line}`);
-        tally.refused++;
-        if (process.env.MIXDBG) for (const l of v) console.log('V', l.replace(/ at token \d+/, '').slice(0, 70));
-        continue;
-      }
+      current = code;
+      // (§8.3 is the lay's own check (rolledGraph, with the brief's teaches known): a string it refuses throws "V<n> at token <i>")
+      assert.doesNotThrow(() => checkCode(parseCode(code), { graph: true }), code);
       let st;
       try {
         st = buildGen2Stage({ config: K.config, kit: K.kit(code), seed: 1 + s, difficulty: 'normal' });
@@ -108,11 +116,19 @@ for (const K of KITS) {
         // (refused by the lay: an Error that names the stage and its reason, never a crash in the engine's own code)
         assert.ok(e instanceof Error && !(e instanceof TypeError) && !(e instanceof RangeError), `${code}: ${String(e)}`);
         assert.match(e.message, /^gen2 |^node code/, `${code}: ${e.message}`);
-        tally.named++;
+        if (/V\d+ at token \d+: /.test(e.message)) tally.refused++;
+        else tally.named++;
+        kill([e.message]);
         continue;
       }
       tally.built++;
       const errs = st.gen2.errors;
+      // (the same frame with nothing asked, on the same seed: what the kit and the brief lay without any designer's ask. A string whose
+      // bare frame fails is killed by the kit, not by its asks)
+      const bare = code.split(' ').map((t) => t[0]).join(' ');
+      let frameClean = false;
+      try { frameClean = !buildGen2Stage({ config: K.config, kit: K.kit(bare), seed: 1 + s, difficulty: 'normal' }).gen2.errors.length; } catch { frameClean = false; }
+      if (frameClean) tally.frameClean++;
       const asked = st.gen2.graph.nodes.filter((n) => n.asked);
       tally.asks += asked.length;
       const named = (id: string) => errs.some((e) => e.startsWith(`ask: node ${id} `));
@@ -135,7 +151,8 @@ for (const K of KITS) {
         }
         if (a.creatures && !st.enemies.some((e) => secs.some((q) => e.x >= q.x0 && e.x <= q.x1))) assert.ok(named(n.id), `${code}: node ${n.id} asked creatures, none stand there, unnamed`);
       }
-      if (process.env.MIXDBG) for (const l of errs) console.log('E', l.replace(/node n\d+ "[^"]*"/, 'node').replace(/\d+/g, '#').slice(0, 90));
+      kill(errs);
+      if (frameClean) for (const k of new Set(errs.map(reasonOf))) askKills.set(k, (askKills.get(k) ?? 0) + 1);
       if (!errs.length) {
         tally.clean++;
         tally.cleanAsks += asked.length;
@@ -143,8 +160,11 @@ for (const K of KITS) {
       }
     }
     // (the variety number: how many of the strings lay clean, each a different mix the designer wrote)
-    console.log(`mix and match on ${K.name}: ${PER_KIT} strings; refused by a V-rule ${tally.refused}; refused by the lay, named ${tally.named}; built ${tally.built}, of which clean ${tally.clean} (holding ${tally.cleanAsks} asked nodes)${examples.length ? `; e.g. ${examples.join(' / ')}` : ''}`);
+    console.log(`mix and match on ${K.name}: ${PER_KIT} strings; refused by a V-rule ${tally.refused}; refused by the lay, named ${tally.named}; built ${tally.built}, whose bare frame lays clean ${tally.frameClean}, laid clean with every ask ${tally.clean} (holding ${tally.cleanAsks} asked nodes)${examples.length ? `; e.g. ${examples.join(' / ')}` : ''}`);
     const els = [...new Set([...laid.keys(), ...missed.keys()])].sort();
+    console.log(`  what kills the strings (strings it kills): ${[...kills].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, n]) => `${n} ${k}`).join(' | ')}`);
+    if (process.env.MIX_EXAMPLES) for (const [k, n] of [...kills].sort((a, b) => b[1] - a[1]).slice(0, 12)) console.log(`  KILL ${n} | ${k} | e.g. ${example.get(k)}`);
+    console.log(`  what kills the strings whose bare frame lays clean: ${[...askKills].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([k, n]) => `${n} ${k}`).join(' | ')}`);
     console.log(`  per element (node laid whole / node named a miss): ${els.map((e) => `${e} ${laid.get(e) ?? 0}/${missed.get(e) ?? 0}`).join(', ')}`);
     assert.equal(tally.refused + tally.named + tally.built, PER_KIT);
     assert.ok(tally.built > 0, `no string built on ${K.name}`);

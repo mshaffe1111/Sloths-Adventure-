@@ -119,9 +119,28 @@ export const foeHop: SectionTemplate = {
   sockets: [...pitHop.sockets, { id: 'foe', role: 'enemy', on: 'far', t: [0.55, 0.75], maxThreat: 3, easy: 'soften' }],
 };
 
-/** the legs kit and a creature brick for each run job: the mix-and-match fixture (nodeMix.test.ts, nodeAsks.test.ts) */
+/** a run piece that ends a step higher than it began (a node's `^`), and one that ends a step lower (`_`) */
+export const stepUp: SectionTemplate = {
+  ...stepRun, id: 'legs-step-up', name: 'step up', exitDy: -50,
+  pieces: [stepRun.pieces[0], stepRun.pieces[1], { ...stepRun.pieces[2], place: { kind: 'jump', after: 'b', dy: 0, share: [0.45, 0.7] } }],
+};
+export const stepDown: SectionTemplate = {
+  ...stepRun, id: 'legs-step-down', name: 'step down', exitDy: 50,
+  pieces: [stepRun.pieces[0], { ...stepRun.pieces[1], place: { kind: 'walk', after: 'a', dy: 50 } }, { ...stepRun.pieces[2], place: { kind: 'jump', after: 'b', dy: 0, share: [0.45, 0.7] } }],
+};
+
+/** the legs kit with what a mixed node can ask of a run: a creature brick, a step up and a step down for each run job, and a floating
+ *  practise and flow beside the ground ones (two types a job, so the deal can keep a type off two neighbours, V11). The mix-and-match
+ *  fixture (nodeMix.test.ts, nodeAsks.test.ts); LEG_BRICKS stay as they were */
 export const mixKit = (stageId: string, code: string): WorldKit => {
   const k = legsKit(stageId, code);
-  const foes = (['practise', 'flow', 'test', 'combine'] as const).map((j) => brick(foeHop, `legs-foe-${j}`, j, 'ground'));
-  return { ...k, manifest: { ...k.manifest, sections: [...k.manifest.sections, ...foes] } };
+  const runs = ['practise', 'flow', 'test', 'combine'] as const;
+  const more = [
+    ...runs.map((j) => brick(foeHop, `legs-foe-${j}`, j, 'ground')),
+    ...runs.map((j) => brick(stepUp, `legs-up-${j}`, j, 'ground')),
+    ...runs.map((j) => brick(stepDown, `legs-down-${j}`, j, 'ground')),
+    brick(logRun, 'legs-log-practise', 'practise', 'floating'),
+    brick(logRun, 'legs-log-flow', 'flow', 'floating'),
+  ];
+  return { ...k, manifest: { ...k.manifest, sections: [...k.manifest.sections, ...more] } };
 };

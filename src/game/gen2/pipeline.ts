@@ -820,7 +820,11 @@ function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, 
         const ok = (t: ContentType) => (used.get(t) ?? 0) < cap && inWin(t, i) && taughtBy(t, i) && neighbourOK(prev, n, t) && !(nextFixed === t && slots[k + 1].n.job !== 'teach' && !(n.job === 'teach' && slots[k + 1].n.job === 'practise'));
         const pool = [...new Set([...types, ...fixed.values()])];
         const order = (xs: ContentType[]) => xs.map((t) => [t, (left.get(t) ?? 0) + r() * 0.5] as const).sort((a, b) => b[1] - a[1]).map(([t]) => t);
-        c = order(pool.filter((t) => (left.get(t) ?? 0) > 0 && ok(t)))[0] ?? order(pool.filter(ok))[0];
+        // (a designer's shape or move ask, nodeAsks.ts: first a type whose pool has a section for the node's job that rises, falls, or
+        // asks the double as asked; a node with no such ask reads exactly as before: the extra tries hold nothing and draw nothing)
+        const can = (t: ContentType) => askServes(n, t, M.sections);
+        c = order(pool.filter((t) => (left.get(t) ?? 0) > 0 && ok(t) && can(t)))[0] ?? order(pool.filter((t) => ok(t) && can(t)))[0]
+          ?? order(pool.filter((t) => (left.get(t) ?? 0) > 0 && ok(t)))[0] ?? order(pool.filter(ok))[0];
         if (!c) { bad++; c = order(pool)[0]; }
         left.set(c, (left.get(c) ?? 0) - 1);
         used.set(c, (used.get(c) ?? 0) + 1);
@@ -922,6 +926,17 @@ function supplyDeal(
     walk(0, k, new Map(dealt));
   }
   return found.length ? found[Math.floor(rng() * found.length)] : dealt;
+}
+
+/** may type `t` lay node `n`'s shape and move asks (nodeAsks.ts): a section of the node's job and that type in the pool rises (`^`), falls
+ *  (`_`), or asks the double (`2`) or not (`1`) as asked. A node with neither ask: every type serves */
+function askServes(n: MissionNode, t: ContentType, sections: readonly SectionTemplate[]): boolean {
+  const a = n.asked;
+  const shape = a?.shape === '^' ? -1 : a?.shape === '_' ? 1 : 0;
+  if (!shape && !a?.move) return true;
+  return sections.some((q) => q.content === t && !!n.job && !!q.jobs?.includes(n.job)
+    && (!shape || Math.sign(q.exitDy ?? 0) === shape)
+    && (!a!.move || (a!.move === '2') === (q.teaches === 'double' || (q.uses ?? []).includes('double') || (q.needs ?? []).includes('double'))));
 }
 
 /** a content type's letter in the node code (§8.0) */
@@ -2690,7 +2705,7 @@ export interface Filled {
  * `normalFoes` (Easy laying Normal's plan: keptFoes of Normal's stage): a creature socket holds only the creature Normal's spacing
  * kept there, so Easy's animals are a subset of Normal's (Easy's own rules, spacing and 60% cut then drop from that list).
  */
-export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed: number, sink: StageSink, normalFoes?: ReadonlyMap<string, string>, hard?: ReadonlySet<string>, threatAsks?: ReadonlyMap<string, NonNullable<NodeDials['threat']>>): Filled {
+export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed: number, sink: StageSink, normalFoes?: ReadonlyMap<string, string>, hard?: ReadonlySet<string>, nodeAsks?: ReadonlyMap<string, NodeAsks>): Filled {
   const M = kit.manifest;
   const rng = rngFor(seed, 17);
   const easy = budget.difficulty === 'easy';
@@ -2884,7 +2899,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
 
   // creatures
   const creatureBag = new ShuffleBag<CreatureDef>(rng, M.creatures);
-  const threatLeft = new Map([...(threatAsks ?? [])].map(([node, ks]) => [node, ks.map((k) => ({ kind: k.kind, left: k.count }))]));
+  const pickLeft = new Map([...(nodeAsks ?? [])].flatMap(([node, a]) => (a.dials?.reward?.pickups !== undefined ? [[node, { left: a.dials.reward.pickups }] as [string, { left: number }]] : [])));
+  const threatLeft = new Map([...(nodeAsks ?? [])].flatMap(([node, a]) => (a.dials?.threat ? [[node, a.dials.threat.map((k) => ({ kind: k.kind, left: k.count }))] as const] : [])));
   const foes: Array<RoutePiece & { e: Enemy; fill: FilledSocket; sec: PlacedSection; /** its socket says `easy: 'stay'`: Easy's count cut passes it by */ stay?: true }> = [];
 
   for (const [si, sec] of laid.sections.entries()) {
@@ -2955,8 +2971,12 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         const fill: FilledSocket = { section: sec.uid, socket: s.id, role: 'enemy', what: c.id, x: pf.at, y: k.y };
         foes.push({ x: pf.at, kind: c.id, e, fill, sec, ...(s.easy === 'stay' ? { stay: true } : {}), ...(s.group ? { group: `${sec.uid}/${s.group}` } : {}) });
       } else if (s.role === 'pickup') {
-        if (!want) continue;
-        const n = s.count ?? 1;
+        // (a node whose code fixes its pickups (`:$8`, nodeAsks.ts): its sockets lay them in order, whatever their chance, until the
+        // count is met; what its sockets cannot hold is named on the built stage)
+        const pl = pickLeft.get(sec.node);
+        if (!(want || pl)) continue;
+        const n = pl ? Math.min(s.count ?? 1, pl.left) : s.count ?? 1;
+        if (pl) { pl.left -= n; if (!n) continue; }
         const span = Math.min(s.span ?? 0, k.piece.width - 40);
         const rowLook = lookAt(k.x, k.y);
         // (off the road pays in blooms where the brief says so: a piece the lay placed with `main` false)
@@ -2965,7 +2985,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           const x = n === 1 ? k.x : k.x - span / 2 + (span * i) / (n - 1);
           flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP), rowLook, what);
         }
-        fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what, x: k.x, y: k.y });
+        fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what, x: k.x, y: k.y, ...(pl ? { count: n } : {}) });
       } else if (s.role === 'objective' && s.allow?.includes('mark')) {
         // (her MARK, a designed goal item (creak.ts marks): every one a section holds is laid where the designer put it, never shared
         // out by a quota; the goal is a share of those laid, goals.ts)
@@ -3049,6 +3069,29 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   }
   const topped = topUpFoes(laid, budget, kit, seed, sink, safe, openX, [...foes.filter((f) => kept.has(f)), ...props]);
   fills.push(...topped);
+  // (a node whose code asks for creatures (`&`, `&&`, `:&kind*n`, nodeAsks.ts) that its sockets did not lay, in a world whose pieces
+  // carry no socket for them (World 1 has none): the rest walk the node's own main pieces, as a purge's top-up walks the stage's,
+  // under every rule a top-up keeps (the opening, a flag's lead-in, the zones, the spacing from every animal already standing). The
+  // kinds it names, else the cast's walkers; what still cannot stand is named on the built stage)
+  if (nodeAsks) {
+    const standing = (): RoutePiece[] => [...foes.filter((f) => kept.has(f)), ...props, ...fills.filter((f) => f.role === 'enemy' && f.socket === 'topup' && f.what).map((f) => ({ x: f.x, kind: f.what! }))];
+    let salt = 0;
+    for (const [node, a] of nodeAsks) {
+      salt++;
+      const want = a.dials?.threat ?? (a.creatures ? [{ kind: '', count: a.formation ? 2 : 1 }] : []);
+      if (!want.length) continue;
+      const secs = new Set(laid.sections.filter((q) => q.node === node).map((q) => q.uid));
+      const here = fills.filter((f) => f.role === 'enemy' && f.what && secs.has(f.section) && sink.enemies.some((e) => e.x === R(f.x) || e.x === f.x));
+      for (const k of want) {
+        const have = here.filter((f) => !k.kind || f.what === k.kind).length;
+        const kinds = k.kind ? M.creatures.filter((c) => c.id === k.kind) : M.creatures.filter((c) => c.terrain !== 'air' && !c.tags?.includes('trapped'));
+        if (have >= k.count || !kinds.length) continue;
+        const more = topUpFoes(laid, budget, kit, seed, sink, safe, openX, standing(), { sections: secs, kinds, need: k.count - have, salt });
+        fills.push(...more);
+        here.push(...more);
+      }
+    }
+  }
   // (rests are allowed to be quiet: only barren stretches outside them are reported, and a top-up animal fills the stretch it is in)
   const restSpans = laid.sections.filter((s) => s.phase === 'rest' || s.phase === 'start' || s.phase === 'goal').map((s) => (route ? ([legs.get(s.uid)!.s0, legs.get(s.uid)!.s0 + legs.get(s.uid)!.len] as const) : ([s.x0, s.x1] as const)));
   const wayOf = (f: { x: number; y: number }) => (along ? along(f.x, f.y) : f.x);
@@ -3187,19 +3230,22 @@ function topUpFoes(
   safe: ReadonlyArray<{ x: number; y: number }>,
   openX: number,
   fixed: readonly RoutePiece[],
+  /** a node's ask (nodeAsks.ts): only its sections, the kinds it names, as many as it lacks; its own streams (`salt`), so a stage
+   *  with no ask rolls as it always did */
+  ask?: { sections: ReadonlySet<string>; kinds: readonly CreatureDef[]; need: number; salt: number },
 ): FilledSocket[] {
-  if (budget.archetype !== 'purge' && budget.archetype !== 'gauntlet') return [];
+  if (!ask && budget.archetype !== 'purge' && budget.archetype !== 'gauntlet') return [];
   const M = kit.manifest;
   const lastX = laid.exit.x - 200;
-  const need = budget.quota.lay - sink.enemies.filter((e) => e.x <= lastX).length;
+  const need = ask ? ask.need : budget.quota.lay - sink.enemies.filter((e) => e.x <= lastX).length;
   if (need <= 0) return [];
   const tagged = M.creatures.filter((c) => c.terrain !== 'air' && c.tags?.includes('topup'));
-  const kinds = tagged.length ? tagged : M.creatures.filter((c) => c.terrain !== 'air');
+  const kinds = ask ? ask.kinds : tagged.length ? tagged : M.creatures.filter((c) => c.terrain !== 'air');
   if (!kinds.length) return [];
-  const bag = new ShuffleBag<CreatureDef>(rngFor(seed, 37), kinds);
+  const bag = new ShuffleBag<CreatureDef>(ask ? rngFor(seed, 37, 1000 + ask.salt) : rngFor(seed, 37), [...kinds]);
   const flags = safe.slice(1, -1);
   const pieces = laid.sections
-    .filter((s) => s.phase !== 'start' && s.phase !== 'rest' && s.phase !== 'goal' && !s.room)
+    .filter((s) => (!ask || ask.sections.has(s.uid)) && s.phase !== 'start' && s.phase !== 'rest' && s.phase !== 'goal' && !s.room)
     .flatMap((s) => s.pieces.filter((p) => p.main).map((p) => ({ s, p: p.platform })))
     .sort((a, b) => b.p.width - a.p.width || a.p.x - b.p.x);
   // (where an animal may walk on each piece: clear of the jumps on and off it)
@@ -3234,7 +3280,7 @@ function topUpFoes(
   }
   const minGap: Record<string, number> = {};
   for (const c of M.creatures) minGap[c.id] = SAME_CREATURE;
-  const spaced = poissonPlace<RoutePiece>(cands, { rng: rngFor(seed, 41), minGap, minGapAny: ANY_APART, maxGap: Infinity, fixed });
+  const spaced = poissonPlace<RoutePiece>(cands, { rng: ask ? rngFor(seed, 41, 1000 + ask.salt) : rngFor(seed, 41), minGap, minGapAny: ANY_APART, maxGap: Infinity, fixed });
   const ok = new Set(spaced.placed);
   const out: FilledSocket[] = [];
   for (const k of cands) {
@@ -3350,8 +3396,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   // (each liana's own swing, for the engine's self-swinging vines: proto.gen2.lianas, by vine id)
   const lianas = laid.sections.flatMap((s) => s.vines.flatMap((v) => (v.swing ? [{ vine: v.vine.id, amp: v.swing.amp, period: v.swing.period, ...(v.window !== undefined ? { window: Math.round(v.window * 1000) / 1000 } : {}), ...(v.gap ? { x0: v.gap[0], x1: v.gap[1] } : {}) }] : [])));
   if (lianas.length) sink.extras.lianas = lianas;
-  const threatAsks = new Map(graph.nodes.flatMap((n) => (n.asked?.dials?.threat ? [[n.id, n.asked.dials.threat] as const] : [])));
-  const filled = fillSockets(laid, budget, req.kit, seed, sink, normalFoes, new Set(graph.nodes.filter((n) => n.job && HARD_JOBS.has(n.job)).map((n) => n.id)), threatAsks.size ? threatAsks : undefined);
+  const nodeAsks = new Map(graph.nodes.flatMap((n) => (n.asked ? [[n.id, n.asked] as const] : [])));
+  const filled = fillSockets(laid, budget, req.kit, seed, sink, normalFoes, new Set(graph.nodes.filter((n) => n.job && HARD_JOBS.has(n.job)).map((n) => n.id)), nodeAsks.size ? nodeAsks : undefined);
   const looks = dress(laid, budget, req.kit, seed, sink);
   proto.hints = filled.hints;
   const rooms = laid.sections.flatMap((s) => (s.room ? [s.room] : []));
@@ -3458,7 +3504,7 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
       sections: laidNodes?.get(n.id) ?? [],
       enemies: fills.filter((f) => f.role === 'enemy' && f.what && at.has(R(f.x))).map((f) => ({ kind: f.what!, asleep: sleeper.has(f.what!) })),
       finds: fills.filter((f) => f.role === 'find' && f.what).map((f) => f.what!),
-      pickups: fills.filter((f) => f.role === 'pickup' && f.what).reduce((s, f) => s + (tplOf.get(f.section)?.sockets.find((q) => q.id === f.socket)?.count ?? 1), 0),
+      pickups: fills.filter((f) => f.role === 'pickup' && f.what).reduce((s, f) => s + (f.count ?? tplOf.get(f.section)?.sockets.find((q) => q.id === f.socket)?.count ?? 1), 0),
     };
     if (!laidNodes && (n.asked.shape || n.asked.content || n.asked.move)) out.push(`node ${n.id} "${token}": its sections' heights were not kept for the check`);
     out.push(...askMisses(n.asked, laidNode, M.creatures, easy));

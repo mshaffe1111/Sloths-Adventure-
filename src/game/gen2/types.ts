@@ -740,6 +740,8 @@ export interface FilledSocket {
   y: number;
   /** a tip whose id named no Dot line: nothing was said (the roll fails by name, pipeline buildGen2Stage) */
   unsaid?: boolean;
+  /** a pickup socket of a node whose code fixed its pickups (`:$n`, nodeAsks.ts): how many it laid (else the socket's own count) */
+  count?: number;
 }
 
 /**
