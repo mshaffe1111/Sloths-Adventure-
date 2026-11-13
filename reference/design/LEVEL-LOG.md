@@ -10,3 +10,6 @@ The point: each level should cost less than the one before it at the same bar (L
 | 1-4 | D14 (Opus max), from an idea round: A Opus high $0.61, B Opus xhigh $1.13, C Opus max $2.83 | not built: waits for 8 engine pieces (the ascent lay first) + Matt's feel test of the pair | 11-12 6:07 PM (ideas) | design passed the lead's look 11-12 | ideas ~10 min + design 22 min (6:17-6:39 PM) | design so far $11.14 (ideas $4.57 + D14 $6.57) | | C's list helped most (code-checked facts); the brief's phone claim was backwards (sideways is short, upright is narrow): level.md step 1 checks phone claims against engine.ts:1170 and cameraFollow.ts:96 first |
 
 **Blind test 11-12 (Matt's wife, relayed by Matt):** preferred 1-3 (Fable design) over 1-2 (Opus max design): 1-2's mushroom bounce timing felt inconsistent (R-165.174); neither had a favourite moment; neither felt repetitive. Matt rated (Normal, 0-100 meter): 1-1 = 4-5, 1-2 = 2-3, 1-3 = 1. Caveat: one player, and the mechanic (mushrooms) confounds designer vs designer.
+
+**The measure from 11-12 10:03 PM ET (Matt): how many levels per 100% of his weekly usage.** The week after his 11-12 ~10 PM reset is
+the first: count levels that reach his test link at the bar, against the usage % he reports.

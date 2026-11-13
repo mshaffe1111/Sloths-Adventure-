@@ -791,3 +791,4 @@ lines); Matt sees them in the release.
   then cards (session_01FhBbYPAPP7SGtvnaEXG3DU, t-eng-ascent, stop 4 AM), BC-FIX Opus xhigh (session_01FhBbYLKDNLwVSwxy4xwkzL, t-bc-fix,
   stop 3 AM). F15 (Fable designs 1-5) starts when C lands. Matt 10:00 PM: "stay lean... get as much out of this 100% as possible":
   written into TEAM.md Cost rules (7 points).
+- 2026-11-12 10:03 PM ET, Matt: workers lean too (short messages and reports, no over-explaining); the measure is levels per 100% of his weekly usage. TEAM.md Cost rules + LEVEL-LOG; sent to every running helper.
