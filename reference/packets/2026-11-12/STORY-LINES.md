@@ -591,3 +591,12 @@ or "based on". The honest player-facing number is the 84 weighed and the 64 kept
 - "Inspired by" credits 29 games. PUBG and Fortnite are dropped; the page stays with platformers and arcade games.
 - The music line is approved as written.
 - Still for Matt's okay: the "84 ideas weighed, 64 made it in" line.
+
+**CORRECTION (11:40 PM ET).** Matt's words to the keeper were "They're actually not going to be in the game. So you don't have to
+credit PUBG and Fortnite." "They" meant the games, not the idea (lead, 11:19 PM: "drop them; the page stays with platformers and
+arcade games"). So:
+- The shrinking arena idea STAYS IN: World 9's rising-lava arena and the guardian arena. The world map's row #30 stays as it is. Every
+  note above that says "safe zone OUT" is withdrawn.
+- **The ideas by the numbers, corrected:** 84 ideas. In 65 (77%), parked 11 (13%), out 8 (10%). Of the 65 in: a credited classic game
+  47; a genre staple 14; the battle-royale echo, not credited, 1; our own or nature 3.
+- **The suggested line, corrected:** "We weighed 84 ideas for Sloths. 65 made it in, each grown into something of the rainforest's own."
