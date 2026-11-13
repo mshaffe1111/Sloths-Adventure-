@@ -23,6 +23,8 @@ const PIECES = {
   burst: piece(new URL('../assets/w1-1113/w14-kapokpod-burst.webp', import.meta.url).href),
   figs: piece(new URL('../assets/w1-1113/w14-figcluster.webp', import.meta.url).href),
   bough: piece(new URL('../assets/w1-1113/w14-roughbough.webp', import.meta.url).href),
+  // (a silk tuft cut from the burst's own plume, its husk side faded out: POLISH-1 11-13, the inventory's hf1113/w14-fluff)
+  fluff: piece(new URL('../assets/w1-1113/w14-fluff.webp', import.meta.url).href),
 };
 /** a piece's picture once loaded (starts the load; the phone taking it back reloads it: atlasLoader.ts) */
 function pic(p: Piece): HTMLImageElement | null {
@@ -158,10 +160,19 @@ function podShape(ctx: CanvasRenderingContext2D, x: number, y: number, r: number
   ctx.restore();
 }
 
-/** a fluff tuft (stand-in): a soft white puff with a faint grey rim, so it reads on sky and on leaves */
+/** a fluff tuft: the painted silk tuft (w14-fluff), `r` its half-height-ish size; a white puff stand-in only while it loads */
 function fluff(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, a: number) {
   // (no colour string built per tuft: fixed fills and the alpha, PERFORMANCE-RULES §3.1)
   ctx.globalAlpha = Math.max(0, Math.min(1, a));
+  // (painted: a silk tuft cut from ART's pod-burst plume (w14-fluff), never a code-drawn circle: Matt 11-13, R-165.213, "a column of
+  //  white bubbles" down the fig vine. The circles below draw only while the picture loads)
+  const im = pic(PIECES.fluff);
+  if (im) {
+    const h = r * 3, w = (h * im.width) / im.height;
+    ctx.drawImage(im, x - w / 2, y - h / 2, w, h);
+    ctx.globalAlpha = 1;
+    return;
+  }
   ctx.fillStyle = '#8f8b7e';
   ctx.beginPath();
   ctx.arc(x, y + 1, r + 1.5, 0, Math.PI * 2);

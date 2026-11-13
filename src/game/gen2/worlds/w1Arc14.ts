@@ -32,9 +32,9 @@ type R2 = [number, number];
 /** 1-4's ONE graph (1-4.md "The arc"): A arrive, T going up (the slide, by shape), T rotting boughs, T the field (two hands), T pods,
  *  P push the figs up, X pushing under fire, W his turn to drop one, S the hollow, C the crown, E the view north; R the rests between */
 // (R-165.206, POLISH-1 11-13: a quick player ran it in 81-101 s; two beats more, each with its own job (a practise gate of two, a test
-//  across two columns), each after its own rest, each its own job so no roll can reorder the level (U a climb after the practise, M a
-//  flow after the test: one section a job, level.md rule 2)
-export const ARC_14: Record<string, string> = { 'ascent-14-arc': 'A T T R T T P R U R X R M R W R S R C E' };
+//  across two columns), each after its own rest, each its own job so no roll can reorder the level (U a climb and M a flow after the
+//  test, one section a job: level.md rule 2), climb and hazard taking turns as before (the node code: no type on two neighbours)
+export const ARC_14: Record<string, string> = { 'ascent-14-arc': 'A T T R T T P R X R U R M R W R S R C E' };
 /** 1-4's brief, all of it data: an ascent of fields, its cast 1-3's snake */
 export const BRIEF_14: GraphBrief = {
   ends: 'quiet', trend: 'up', branching: 'none', teaches: ['slide', 'creak', 'field', 'pods'],
