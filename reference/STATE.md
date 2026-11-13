@@ -684,3 +684,7 @@ lines); Matt sees them in the release.
 - 2026-11-12 6:56 PM ET: INT-2 at t-int-2@d68930d4 (t-12-design 864314c1, t-render-3 + D12's note 6d2cb506 clean; w1Pits #17 green; lock
   1-2 only, intended). Waiting on F13's final delta (asked for 7:20 PM, sha straight to INT-2), then Step 3. INT-2 measuring buildcheck
   on the old heads meanwhile.
+- 2026-11-12 7:04 PM ET: F13 DONE and retired (t-13-finish@d0cf0b0c, ls-remote checked; $47.03): one lesson card on defaults, journal waits
+  for it; trap0 re-fly on defaults 40/40 every tier both settings (kid Normal 33 -> 40); seedlist 1-3 100 PASS; clipcheck PASS; 1-3 perf
+  sideways 7.48 / upright 6.47 (thin, named). Open on t-int-2 (not F13's): one yield test red, buildcheck red (1480e843 fails, W1C
+  pre-merge passes). INT-2 told: merge d0cf0b0c keeping FX's 1-1 list (257), find the yield red's owner, Step 3.
