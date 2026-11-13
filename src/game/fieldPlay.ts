@@ -15,7 +15,7 @@
 import type { Platform, PlayerState, Vine } from './types.ts';
 import { POD, podAt, podHits, type PodColumn, type PodCost } from './podfall.ts';
 import type { ClockRead } from './clock.ts';
-import { GATE, clusterLand, fallCluster, gateLeft, gateOver, gateSag, type ClusterGate, type Hands, type VineCluster } from './vineField.ts';
+import { GATE, clusterLand, fallCluster, gateLeft, gateOver, gateSag, gateShut, type ClusterGate, type Hands, type VineCluster } from './vineField.ts';
 import { drawGate, drawPod } from './vineFieldArt.ts';
 
 /** what the field asks of its host (the engine) */
@@ -71,6 +71,31 @@ export class FieldPlay {
   /** a shut gate's bough is over this vine's top: the climb stops short of the vault (there is nothing to vault onto) */
   blocksTop(v: Vine): boolean {
     return !!this.gates.length && !!gateOver(v, this.gates, this.clusters, this.platforms);
+  }
+
+  /**
+   * A shut gate is a lid from below (Matt, R-165.212: "it let me go above the platform"): rising inside its bough's span (and the boughs
+   * held with it), his feet stop at the line a climb stops at (the bough's top less GATE.lid), as a head meets wood. Only from below: feet
+   * already over the line are left alone (never pushed up, never trapped), and the frame its last fig locks it is gone (torn() opens it).
+   * The engine calls it once a frame, just after it moves him through the air (engine.ts, after `p.y += p.vy * dt`).
+   */
+  lid(p: PlayerState, dt: number): boolean {
+    if (p.climbing || p.vy >= 0) return false;
+    const was = p.y - p.vy * dt;
+    for (const g of this.gates) {
+      if (!gateShut(g, this.clusters)) continue;
+      for (const id of [g.platform, ...(g.with ?? [])]) {
+        const b = this.platforms.find((q) => q.id === id);
+        if (!b || p.x < b.x - GATE.lidSide || p.x > b.x + b.width + GATE.lidSide) continue;
+        const line = b.y - GATE.lid;
+        if (was >= line - 0.5 && p.y < line) {
+          p.y = line;
+          p.vy = 0;
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /** the lines he occupies: each hand's vine on a field, else his middle */

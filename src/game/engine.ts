@@ -2534,6 +2534,7 @@ export class GameEngine {
 
         p.x += (p.vx + this.windV + this.bossShove + this.bossGust) * dt;
         p.y += p.vy * dt;
+        this.field?.lid(p, dt);
       }
     }
 
