@@ -19,7 +19,7 @@ test("1-4's words are the story keeper's, verbatim (the lead, 11-13 10:44 AM ET)
   assert.deepEqual({ ...LINES_14 }, {
     creak: 'Creaky limbs drop you, but just one branch down!',
     field: 'Reach for the next vine! Two hands zoom up!',
-    pods: 'Hear it creak? Scoot a vine over till it drops!',
+    pods: 'Hear it creak? Scoot a vine over!',
     figs: 'Climb under the figs and push them free!',
   });
   const M = kitLib14().manifest;

@@ -39,12 +39,12 @@ export const BRIEF_14: GraphBrief = {
   deal: { ground: 11, crumble: 22, climb: 33, hazard: 34 }, dealExact: true,
   cast: ['snake'],
 };
-/** the story keeper's lines for 1-4, verbatim (the lead, 11-13 10:44 AM ET: final, Matt 10:43 AM; t-story@400b4c13 STORY-KEEPER.md):
+/** the story keeper's lines for 1-4, verbatim (the lead, 11-13 10:44 AM ET: final, Matt 10:43 AM; t-story@400b4c13 STORY-KEEPER.md; the pods line the keeper's 7-word trim, under §5b.7's 10 words, via the lead):
  *  the only player words this file holds. Dot, each said once at the first of its thing */
 export const LINES_14 = {
   creak: 'Creaky limbs drop you, but just one branch down!',
   field: 'Reach for the next vine! Two hands zoom up!',
-  pods: 'Hear it creak? Scoot a vine over till it drops!',
+  pods: 'Hear it creak? Scoot a vine over!',
   figs: 'Climb under the figs and push them free!',
 } as const;
 /** Pokey's halfway line (STORY-KEEPER.md:149; 1-4.md beat 6): said by wayside.ts (World 1 stage 4, at half the way), in his voice */
