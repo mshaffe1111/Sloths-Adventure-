@@ -27,3 +27,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | ECONOMY designer (session_01FhBbYLiMADVRwZv3e9nCar) | one design for score, stars, basket, hearts, lives, Game Over (research + 420 measured bot runs) | $5.30 | reference/design/ECONOMY.md and 7 ready packets; the economy wave after 0.9.8 |
 
 **Usage (Matt's weekly %, R-165.184/185):** 11-12 ~10 PM reset; 4% at 10:36 PM 11-12; 19% at 12:39 PM 11-13 (5 Opus + 2 Fable members running, plus the lead). Budget to last to Tuesday night: ~0.8% an hour average.
+| ADD-LEVEL (session_01FhBbYLJhNRpJErB4SQprjk) | one-step add a level (addlevel.ts, libstage.ts), registrycheck gate (no known list), 1-2's first seed list, every list checked in CI, 1-1 in drawcheck | $10.50 | 1-3's registration replayed in 3 m 32 s (was ~3 h 50 m of P13's plumbing) |
