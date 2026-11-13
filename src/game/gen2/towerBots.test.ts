@@ -9,11 +9,11 @@ import assert from 'node:assert/strict';
 import '../headlessDom.ts';
 import { arcKit, towerCfg, upKit } from './toyTower.ts';
 import { buildGen2Stage } from './pipeline.ts';
-import { routeAt, type Route } from './tower.ts';
+import { routeAt, towerLead, type Route } from './tower.ts';
 import { flyTower, withTowerSim } from '../../../tools/engine/towerFly.ts';
-import { withFixtureConfig } from '../realPlay.ts';
+import { RealPlay, withFixtureConfig } from '../realPlay.ts';
 import { MODES } from '../stageModes.ts';
-import { CLIMB_VIEW } from '../cameraFollow.ts';
+import { CLIMB_VIEW, travelFeet } from '../cameraFollow.ts';
 
 const ID = '5-93';
 const SEEDS = [1, 2, 3, 4, 5, 6];
@@ -131,6 +131,23 @@ test('the climb camera in the engine: on a tower his feet rest low in the view s
     const y0 = e.camera.y;
     for (let i = 0; i < 60; i++) sim.frame();
     assert.ok(Math.abs(e.camera.y - y0) <= 6, `and the view holds still after it (it moved ${Math.round(Math.abs(e.camera.y - y0))} px)`);
+  });
+});
+
+test('the climb framing is a tower\'s alone: a shipped climb of the old generator and the way down keep the framing they had', () => {
+  // (three shipped stages as the game builds them today: their travel leads up or down, and their view is not moved)
+  for (const [id, travel] of [['2-6', 'up'], ['4-7', 'down'], ['9-2', 'up']] as const) {
+    const sim = new RealPlay(id, 1);
+    const e = sim.e as { mode: { travel: string; lead(): { dx: number; dy: number } }; currentStage: object };
+    assert.equal(e.mode.travel, travel, `${id} travels ${travel}`);
+    assert.notEqual(e.mode.lead().dy, 0);
+    assert.equal(towerLead(e.currentStage, e.mode), 0, `${id}: no tower, so its view leads nowhere new`);
+    assert.equal(travelFeet(0.55, towerLead(e.currentStage, e.mode)), 0.55);
+  }
+  withTowerSim(up(), upKit, 1, 'normal', (sim) => {
+    const e = sim.e as { mode: { lead(): { dx: number; dy: number } }; currentStage: object };
+    assert.equal(towerLead(e.currentStage, e.mode), -1, 'a tower laid up leads up');
+    assert.equal(travelFeet(0.55, towerLead(e.currentStage, e.mode)), CLIMB_VIEW.up);
   });
 });
 

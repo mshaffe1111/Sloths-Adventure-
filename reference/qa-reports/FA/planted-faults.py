@@ -41,8 +41,10 @@ M=[
  ("gen2/pipeline.ts",T,"an animal may stand in the opening seconds of a tower","  const opening = (x: number, y: number) => (along ? along(x, y) < OPEN_SECONDS * budget.walkSpeed : x < openX);","  const opening = (x: number, _y: number) => x < openX;"),
  ("cameraFollow.ts",C,"a climb keeps the run's framing","  return leadDy < 0 ? Math.max(base, CLIMB_VIEW.up) : leadDy > 0 ? Math.min(base, CLIMB_VIEW.down) : base;","  return leadDy < 9 ? base : base;"),
  ("cameraFollow.ts",C,"a climb's feet sit at the old 55%","  up: 0.8,","  up: 0.55,"),
- ("engine.ts",B,"the engine's view ignores the climb framing","    this.camera.targetY = this.camAnchorY - vh * travelFeet(fr.feetAt, this.mode.lead().dy);","    this.camera.targetY = this.camAnchorY - vh * fr.feetAt;"),
- ("engine.ts",B,"a set-back cuts to the old framing, then drifts","    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * travelFeet(fr.feetAt, this.mode.lead().dy));","    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * fr.feetAt);",2),
+ ("engine.ts",B,"the engine's view ignores the climb framing","    this.camera.targetY = this.camAnchorY - vh * travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode));","    this.camera.targetY = this.camAnchorY - vh * fr.feetAt;"),
+ ("engine.ts",B,"a set-back cuts to the old framing, then drifts","    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode)));","    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * fr.feetAt);",2),
+ ("gen2/tower.ts",B,"every shipped climb gets the tower's framing too","  return (stage as { gen2?: { tower?: unknown } }).gen2?.tower ? mode.lead().dy : 0;","  return mode.lead().dy;"),
+ ("gen2/tower.ts",B,"a tower keeps the run's framing","  return (stage as { gen2?: { tower?: unknown } }).gen2?.tower ? mode.lead().dy : 0;","  return 0 * mode.lead().dy;"),
  ("realPlay.ts",B,"a fixture may stand in for a stage of the game","  if (levels.some((l) => l.id === cfg.id)) throw new Error(`withFixtureConfig: ${cfg.id} is a stage of the game`);\n",""),
 ]
 import os

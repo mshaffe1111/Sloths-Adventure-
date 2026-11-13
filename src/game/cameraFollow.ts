@@ -118,13 +118,15 @@ export const FRAME = {
 // him as over him, and what he needs is over him: the next storey, where the vine leads. Sideways the view is only 540 px of world
 // tall: with his feet 55% down, 297 px over them, and the HUD's band over the top of that, the storey above (a turn up: 225 px or
 // more, 281 where it lies over the one he is on) was hidden behind the hearts and the goal sign. Now, on a stage whose travel leads up
-// (StageMode.lead().dy < 0), his feet sit CLIMB_VIEW.up down the view: sideways 432 px of world over his feet, 285 clear under the
+// (a stage laid as a TOWER, gen2/tower.ts towerLead: its travel's lead, -1), his feet sit CLIMB_VIEW.up down the view: sideways 432 px of world over his feet, 285 clear under the
 // HUD band (cameraFollow.test.ts holds the px, both ways round); upright 782 px over them, two storeys and more.
 // On a stage that leads DOWN his feet sit CLIMB_VIEW.down from the top, so the landing under him shows before he commits (D46: no
 // blind drop); the engine's HUD rule still keeps his head under the band (engine.ts underHud), so sideways they come to rest lower
 // than that share and about 290 px shows under them.
 // It is the stage's travel, never where he happens to be on it: the framing does not move as he walks, hops or climbs, so nothing
-// eases and nothing jiggles (the anchor's rules above are unchanged). A run (dy 0) keeps its framing exactly.
+// eases and nothing jiggles (the anchor's rules above are unchanged). A run (dy 0) keeps its framing exactly, and so does every
+// shipped climb of the old generator and the way down (towerLead gives them 0): rising water, lava and mist come from under him
+// there, and seeing less under his feet is a change each of those stages must be looked at for (R-165.170's report).
 
 export const CLIMB_VIEW = {
   /** on a stage that leads up: how far down the view his feet sit (the rest is over him) */
@@ -135,7 +137,7 @@ export const CLIMB_VIEW = {
 
 /**
  * How far down the view his feet sit on this stage: `base` (the screen's framing, Framing.feetAt) on a run; on a stage that leads up
- * never higher than CLIMB_VIEW.up; on one that leads down never lower than CLIMB_VIEW.down. `leadDy`: StageMode.lead().dy.
+ * never higher than CLIMB_VIEW.up; on one that leads down never lower than CLIMB_VIEW.down. `leadDy`: gen2/tower.ts towerLead.
  */
 export function travelFeet(base: number, leadDy: number): number {
   return leadDy < 0 ? Math.max(base, CLIMB_VIEW.up) : leadDy > 0 ? Math.min(base, CLIMB_VIEW.down) : base;

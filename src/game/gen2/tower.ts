@@ -201,6 +201,17 @@ export function routeAt(route: Route, x: number, y: number): number {
 }
 
 /**
+ * Which way the VIEW leads on this stage, for the climb camera (cameraFollow.ts travelFeet): its travel's own lead (StageMode.lead)
+ * on a stage laid as a tower, -1 up, 1 down; 0 on every other stage, which keeps the framing it has. A tower's storeys are laid with
+ * the next one a turn over him, and the framing is sized to that (tower.test.ts); the shipped climbs of the old generator (and the
+ * way down) have rising water, lava and mist under him and their own framing rules, and are not moved here: each is looked at when it
+ * is rebuilt as a tower, or by a packet of its own.
+ */
+export function towerLead(stage: object, mode: { lead(): { dx: number; dy: number } }): number {
+  return (stage as { gen2?: { tower?: unknown } }).gen2?.tower ? mode.lead().dy : 0;
+}
+
+/**
  * A stage's flags in the order he meets them: along the route where the stage has one (a gen2 tower), by x on any other stage, as
  * ever. What "every second flag" means for the hearts laid by the flags (stageGenerator.ts): in a tower x runs both ways, and a
  * sort by x picks flags from any storey.
