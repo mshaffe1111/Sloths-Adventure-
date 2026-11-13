@@ -84,7 +84,8 @@ export interface W4Extras {
   updrafts?: Updraft[];
   /** a fall this far below the ledge he last stood on is a fall into the mist (4-7: the gaps have no floor) */
   deepFall?: number;
-  /** the stage goes down, back and forth across the cliff (4-7): a lower flag is further on, wherever it stands */
+  /** the stage goes down, back and forth across the cliff (4-7). The engine no longer reads this for travel: 4-7's plan names
+   *  `travel: 'down'` (stagePlan.ts, stageModes.ts), and stageModes.test.ts holds the two together */
   descent?: boolean;
   /** the ledges in the order the path takes them (4-7): the view always shows the next one as well as him (engine landingToShow) */
   route?: number[];

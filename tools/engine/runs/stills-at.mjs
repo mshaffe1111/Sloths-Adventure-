@@ -1,5 +1,7 @@
 // RUNS #1 #79: stills of the real game at given places (no scratch scene: the stage as built), tools/validate/stills.mjs's way (the
-// engine paused, Pokey placed, 60 frames stepped, rendered), 2x, upright 412 x 915 and sideways 915 x 412.
+// engine paused, Pokey placed, 60 frames stepped, then 30 frames stepped AND rendered, one per animation frame: the ground paints a few
+// squares a frame, so one render after the steps showed the rest as false dark soil boxes, RF's REPORT), 2x, upright 412 x 915 and
+// sideways 915 x 412.
 //   node tools/engine/runs/stills-at.mjs <port> <out dir> <file prefix> <stage> <layout> <x:pick> ...   pick: low | high (the ledge under x)
 import fs from 'node:fs';
 import path from 'node:path';
@@ -37,11 +39,13 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
       Object.assign(e.player, { x, y: under ? under.y : 580, vx: 0, vy: 0, grounded: true, hanging: false, climbing: false, facing: 1, invincibleTimer: 9 });
       for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
       for (let i = 0; i < 60; i++) e.update(1 / 30);
-      e.clearGuide?.();
-      // (safe while the frames settle, then not: a still never shows him flashing see-through, the lead 11-05)
-      e.player.invincibleTimer = 0;
-      e.render();
     }, [x, pick, E]);
+    for (let i = 0; i < 30; i++) {
+      await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.player.invincibleTimer = 0; e.render(); }, E);
+      await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
+    }
+    // (safe while the frames settle, then not: a still never shows him flashing see-through, the lead 11-05)
+    await p.evaluate((E) => { const e = eval(E); e.player.invincibleTimer = 0; e.render(); }, E);
     const file = path.join(out, `${prefix}-${id}-L${layout}-x${x}-${tag}.jpg`);
     await p.screenshot({ path: file, type: 'jpeg', quality: 78 });
     console.log('wrote', file);

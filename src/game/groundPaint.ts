@@ -69,6 +69,20 @@ function endFrame(g: GroundSheet, x: number): GroundSheet['end'] {
   return es[Math.floor(lookHash(Math.round(x), 71) * es.length) % es.length];
 }
 /**
+ * How far inside its frame a soil fill is sampled, in sheet pixels. The sheets are lossy WebP, and a fill packed against a darker piece
+ * (the lip strip under fills 2 and 3 in every world, a neighbour's edge in Worlds 6 and 9) takes that piece's dark into its last 1-3
+ * rows: World 1's fill 2 falls from 60 to 36 over its last three rows. Laid edge to edge every 600 units, those rows drew a dark hairline
+ * along every soil row and column (R-165.146: under a raised bank at World 1's floor line; R-165.129: across 1-1's earth pillars at
+ * y 1200). The fills' edge strips are shared (any fill's last rows match any other's, 1.6 apart against 7 mid-tile), so leaving out 3
+ * rows a side drops about 1.8 units of soil at a join, and nothing shows.
+ */
+export const FILL_INSET = 3;
+/** the part of a soil fill a tile is drawn from (its frame, FILL_INSET in from every edge) */
+export function fillSrc(f: { x: number; y: number; w: number; h: number }): [number, number, number, number] {
+  return [f.x + FILL_INSET, f.y + FILL_INSET, f.w - 2 * FILL_INSET, f.h - 2 * FILL_INSET];
+}
+
+/**
  * The soil tiles covering x0..x1 by y0..y1, laid from the world's origin in a brick bond: row r's tiles start at r * TILE / 2 (the
  * textures are made periodic on that lattice, so the rows meet with no seam).
  */
@@ -137,9 +151,9 @@ export function drawSoil(
   if (x1 <= x0 || bottom <= top) return true;
   const { img, g } = s;
   for (const cell of soilCells(x0, x1, top, bottom, SOIL_TILE, g.fills.length)) {
-    const f = g.fills[cell.v % g.fills.length];
+    const [sx, sy, sw, sh] = fillSrc(g.fills[cell.v % g.fills.length]);
     // (a hair over a tile, so no gap shows between two at any zoom)
-    ctx.drawImage(img, f.x, f.y, f.w, f.h, cell.x, cell.y, SOIL_TILE + 0.6, SOIL_TILE + 0.6);
+    ctx.drawImage(img, sx, sy, sw, sh, cell.x, cell.y, SOIL_TILE + 0.6, SOIL_TILE + 0.6);
   }
   if (shade) shadeSoil(ctx, w, x0, x1, top, bottom, viewBottom, viewTop, depthAt);
   return true;

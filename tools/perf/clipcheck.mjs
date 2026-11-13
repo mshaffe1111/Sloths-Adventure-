@@ -57,6 +57,11 @@ const SIZES = [
   { id: 'side', viewport: { width: 915, height: 412 }, insets: { top: 0, bottom: 21, left: 48, right: 48 } },
 ];
 const SAVES = ['fresh', 'old', 'done'];
+/** cards that must fit with nothing scrolled are also judged at these phones, the same way up (an iPhone 12-15's screen and insets) */
+const FIT_SIZES = {
+  up: [{ id: 'up390', viewport: { width: 390, height: 844 }, insets: { top: 47, bottom: 34, left: 0, right: 0 } }],
+  side: [{ id: 'side844', viewport: { width: 844, height: 390 }, insets: { top: 0, bottom: 21, left: 47, right: 47 } }],
+};
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const freePort = () => new Promise((res) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => res(p)); }); });
 
@@ -138,14 +143,18 @@ async function seed(page, kind) {
 // ---- the judge, run in the page ---------------------------------------------------------------------------------------------------
 // returns the breaches on screen now; with scrolled=true every scroll box was first scrolled to its end
 // (scope: a selector to judge only inside, for a screen laid over another one: the testers' end questions over the stopped level)
-function audit({ minTap, insets, scope }) {
+function audit({ minTap, insets, scope, fit }) {
   const W = innerWidth, H = innerHeight, TOL = 2;
   const within = (scope && document.querySelector(scope)) || document.body;
-  const vis = (el) => {
+  const shown = (el) => {
     for (let e = el; e && e !== document.documentElement; e = e.parentElement) {
       const cs = getComputedStyle(e);
       if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) < 0.05) return false;
     }
+    return true;
+  };
+  const vis = (el) => {
+    if (!shown(el)) return false;
     const r = el.getBoundingClientRect();
     return r.width > 0 && r.height > 0 && r.bottom > 0 && r.right > 0 && r.top < H && r.left < W;
   };
@@ -218,7 +227,10 @@ function audit({ minTap, insets, scope }) {
   // tappables
   const TAP = 'button, a[href], input:not([type=hidden]), select, textarea, [role=button], [role=tab], [role=switch], [role=slider], [role=checkbox], [role=link], [role=radio]';
   for (const el of within.querySelectorAll(TAP)) {
-    if (el.closest('[data-clipcheck-skip],.cc-overlay') || el.disabled || el.getAttribute('aria-disabled') === 'true' || !vis(el)) continue;
+    // (`fit`: a card that must fit the safe area with nothing scrolled, PROOF-1 violation 2: a tappable in it is judged where it sits
+    // when the card opens, a scroll box gives it no pass, and one wholly off the screen counts too)
+    const pinned = !!(fit && el.closest(fit));
+    if (el.closest('[data-clipcheck-skip],.cc-overlay') || el.disabled || el.getAttribute('aria-disabled') === 'true' || !(pinned ? shown(el) && el.getBoundingClientRect().width > 0 : vis(el))) continue;
     if (el.parentElement?.closest(TAP)) continue; // a tappable inside another tappable: the outer one is the target
     if (getComputedStyle(el).pointerEvents === 'none') continue;
     const r = el.getBoundingClientRect();
@@ -240,14 +252,14 @@ function audit({ minTap, insets, scope }) {
     // inside a scroll box it scrolls clear of the insets on that box's axis (a list that scrolls up and down still sits in the
     // notch band at the side)
     let sx = false, sy = false;
-    for (let a = el.parentElement; a && a !== document.documentElement; a = a.parentElement) {
+    for (let a = el.parentElement; !pinned && a && a !== document.documentElement; a = a.parentElement) {
       const acs = getComputedStyle(a);
       if (/auto|scroll/.test(acs.overflowY) && a.scrollHeight > a.clientHeight + 4) sy = true;
       if (/auto|scroll/.test(acs.overflowX) && a.scrollWidth > a.clientWidth + 4) sx = true;
     }
-    const inT = !sy && r.top < insets.top - TOL && insets.top > 0, inB = !sy && r.bottom > H - insets.bottom + TOL && insets.bottom > 0;
-    const inL = !sx && r.left < insets.left - TOL && insets.left > 0, inR = !sx && r.right > W - insets.right + TOL && insets.right > 0;
-    if ((inT || inB || inL || inR) && r.top < H && r.bottom > 0) add('inset', el, label(el), `inside the ${[inT && 'top', inB && 'bottom', inL && 'left', inR && 'right'].filter(Boolean).join('+')} inset`);
+    const inT = !sy && r.top < insets.top - TOL && (insets.top > 0 || pinned), inB = !sy && r.bottom > H - insets.bottom + TOL && (insets.bottom > 0 || pinned);
+    const inL = !sx && r.left < insets.left - TOL && (insets.left > 0 || pinned), inR = !sx && r.right > W - insets.right + TOL && (insets.right > 0 || pinned);
+    if ((inT || inB || inL || inR) && (pinned || (r.top < H && r.bottom > 0))) add('inset', el, label(el), `inside the ${[inT && 'top', inB && 'bottom', inL && 'left', inR && 'right'].filter(Boolean).join('+')} inset${pinned ? ' (nothing scrolled)' : ''}${pinned && (r.top >= H || r.bottom <= 0) ? ', off the screen' : ''}`);
   }
   // text both overflowing and cut: report the cut only
   const cuts = new Set(out.filter((x) => x.kind === 'cut').map((x) => `${x.sel}|${x.text}`));
@@ -285,6 +297,9 @@ async function walk(browser, base, save, size, devBase) {
   const settle = (ms = 550) => page.waitForTimeout(ms);
   // (judge only inside this, when set: a screen laid over another)
   let scope = '';
+  // (a card that must fit the safe area with nothing scrolled, when set; and a phone size tried on top of this walk's, when set)
+  let fit = '';
+  let extra = null;
 
   const judge = async (screen) => {
     if (ONLY && !screen.includes(ONLY)) return;
@@ -294,10 +309,10 @@ async function walk(browser, base, save, size, devBase) {
         Promise.all([...document.images].filter((i) => !i.complete).map((i) => new Promise((r) => { i.onload = i.onerror = r; }))).then(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity).map((a) => a.finished.catch(() => {})))),
         new Promise((r) => setTimeout(r, 2500)),
       ]));
-      const b = await page.evaluate(audit, { minTap: MIN_TAP, insets: size.insets, scope });
+      const b = await page.evaluate(audit, { minTap: MIN_TAP, insets: extra?.insets ?? size.insets, scope, fit });
       if (!b.length) return;
       // the contact sheet: outline each breach, number it, shoot the screen
-      const file = path.join(out, 'shots', `${save}-${size.id}-${String(++shotN).padStart(2, '0')}.png`);
+      const file = path.join(out, 'shots', `${save}-${extra?.id ?? size.id}-${String(++shotN).padStart(2, '0')}.png`);
       await page.evaluate((b) => {
         const o = document.createElement('div');
         o.className = 'cc-overlay';
@@ -312,7 +327,7 @@ async function walk(browser, base, save, size, devBase) {
       }, b);
       await page.screenshot({ path: file });
       await page.evaluate(() => document.querySelector('.cc-overlay')?.remove());
-      b.forEach((x, i) => found.push({ ...x, n: i + 1, screen: name, save, size: size.id, shot: file }));
+      b.forEach((x, i) => found.push({ ...x, n: i + 1, screen: name, save, size: extra?.id ?? size.id, shot: file }));
     };
     await take(screen);
     if (await scrollAll(page)) {
@@ -511,15 +526,105 @@ async function walk(browser, base, save, size, devBase) {
   });
 
   // Dot's very first tip, with its Skip tips button (once per device, never on 1-1: dotGuideHelp.ts offersSkip): 1-3 on the fresh save,
-  // lessons on, says "Run through petals" within its first seconds. Judged inside her layer only. Sideways its Skip sat inside the right
-  // 48 px inset until 11-06 (VineHud's guide safe area now keeps the phone's insets). Fails closed: no Skip up is a screen not opened
+  // lessons on. Judged inside her layer only. Sideways its Skip sat inside the right 48 px inset until 11-06 (VineHud's guide safe area
+  // now keeps the phone's insets). Fails closed: no Skip up is a screen not opened.
+  // (1-3 is a designed level since 11-12: it opens on a quiet walk, so her first tip comes as he walks in, never while he stands at the
+  //  spawn, which the old 1-3's petals beside it made true. He is walked right with the keys, hopping, until her tip is up: F13)
   if (save === 'fresh') await tryStep("Dot's first tip", async () => {
     await page.goto(`${base}/?autostart=1&level=1-3`);
-    await page.locator('.dg-skip').first().waitFor({ state: 'attached', timeout: 30000 });
+    const skip = page.locator('.dg-skip').first();
+    await page.waitForTimeout(2500);
+    await page.keyboard.down('ArrowRight');
+    for (let t = 0; t < 120 && !(await skip.count()); t++) {
+      await page.keyboard.press('Space');
+      await page.waitForTimeout(300);
+    }
+    await page.keyboard.up('ArrowRight');
+    await skip.waitFor({ state: 'attached', timeout: 5000 });
     await settle(1200);
     scope = '.dg-root';
     await judge("play: Dot's first tip");
     scope = '';
+  });
+
+  // the stories and the cards of a run (audit C saves #11: never walked, and they held tap targets under 44 px and in the notch band):
+  // a story picture and its Skip and Back, the guardian's card, The End, the stage-cleared card with medals, the Game Over card and its
+  // extra-lives offer. Opened with the development build's own hooks (window.__story, __win, __play, __kill), on every save, both ways up
+  if (devBase) await tryStep('stories and run cards', async () => {
+    await page.goto(`${devBase}/?lessons=off`);
+    await seed(page, save);
+    await page.goto(`${devBase}/?lessons=off`);
+    await page.waitForFunction(() => typeof window.__story === 'function' && typeof window.__win === 'function', null, { timeout: 60000 });
+    await page.evaluate(() => window.__story('1-1', 'story_cutscene'));
+    await page.locator('.sp-next').first().waitFor({ state: 'visible', timeout: 20000 });
+    for (let i = 0; i < 12 && !(await page.locator('.sp-back').count()); i++) {
+      await page.locator('.sp-next').first().evaluate((e) => e.click());
+      await settle(300);
+    }
+    await settle(900);
+    await judge('cards: a story picture, with Skip and Back');
+    await page.evaluate(() => window.__story('10-10', 'boss_card'));
+    await page.locator('.boss-card').first().waitFor({ state: 'visible', timeout: 20000 });
+    await settle(900);
+    await judge("cards: the guardian's card");
+    await page.evaluate(() => window.__story('10-10', 'story_ending'));
+    await page.locator('.ending-card').first().waitFor({ state: 'visible', timeout: 20000 });
+    await settle(900);
+    await judge('cards: The End');
+    await page.evaluate((m) => window.__win('1-2', 3, m), IDS.badges.slice(0, 2));
+    await page.locator('.clr-medals.in').first().waitFor({ state: 'visible', timeout: 20000 });
+    await settle(600);
+    // the card fits the safe area with nothing scrolled (PROOF-1 violation 2: sideways at 844x390 its bottom row sat in the home bar,
+    // and at 915x412 and upright under 915 px it started off the screen, while this walk's scroll pass called it fine): judged as
+    // opened at this walk's size and at a common shorter phone, the same way up
+    fit = '.clr-card.clr-won';
+    await judge('cards: stage cleared, with medals');
+    for (const ex of FIT_SIZES[size.id] ?? []) {
+      extra = ex;
+      await page.setViewportSize(ex.viewport);
+      await cdp.send('Emulation.setSafeAreaInsetsOverride', { insets: ex.insets });
+      await settle(700);
+      // (back to nothing scrolled: the judge before this one scrolled every box to its end)
+      await page.evaluate(() => { for (const e of document.querySelectorAll('*')) if (e.scrollTop || e.scrollLeft) { e.scrollTop = 0; e.scrollLeft = 0; } });
+      await settle(200);
+      await judge(`cards: stage cleared, with medals, at ${ex.viewport.width}x${ex.viewport.height}`);
+    }
+    // the planted failure, every run: the card made 200 px taller must put its bottom row in the inset, or this rule itself is broken
+    if (!ONLY || 'cards: stage cleared, planted'.includes(ONLY)) {
+      await page.evaluate(() => { const s = document.createElement('style'); s.id = 'cc-plant-tall'; s.textContent = '.clr-card.clr-won .clr-main { padding-top: 200px !important; }'; document.head.appendChild(s); });
+      await settle(300);
+      // (as opened, nothing scrolled: the scrim's scroll anchoring follows the grown card, so the scroll is reset after the plant)
+      await page.evaluate(() => { for (const e of document.querySelectorAll('*')) if (e.scrollTop) e.scrollTop = 0; });
+      await settle(200);
+      const caught = (await page.evaluate(audit, { minTap: MIN_TAP, insets: extra?.insets ?? size.insets, fit })).some((x) => x.kind === 'inset' && /clr-btn2|pm-go/.test(x.sel));
+      await page.evaluate(() => document.getElementById('cc-plant-tall')?.remove());
+      if (!caught) missed.push('cards: the planted too-tall stage-cleared card was NOT caught: the nothing-scrolled inset rule is broken');
+    }
+    if (extra) {
+      extra = null;
+      await page.setViewportSize(size.viewport);
+      await cdp.send('Emulation.setSafeAreaInsetsOverride', { insets: size.insets });
+      await settle(400);
+    }
+    fit = '';
+    // Game Over, then again until the extra-lives offer (assist.ts OFFER_AFTER_FAILS)
+    await page.evaluate(() => window.__play('1-3'));
+    for (let n = 0; n < 4 && !(await page.locator('.clr-help').count()); n++) {
+      await page.waitForFunction(() => typeof window.__engine === 'function' && !!window.__engine(), null, { timeout: 30000 });
+      await settle(2500);
+      // (__kill takes the lives it can: one a respawn, so it is asked again until the card is up)
+      for (let k = 0; k < 12 && !(await page.locator('.clr-card.lost').count()); k++) {
+        await page.evaluate(() => window.__kill());
+        await settle(1500);
+      }
+      await page.locator('.clr-card.lost').first().waitFor({ state: 'visible', timeout: 20000 });
+      await settle(1200);
+      if (n === 0) await judge('cards: Game Over');
+      if (await page.locator('.clr-help').count()) break;
+      await page.evaluate(() => window.__play('1-3'));
+    }
+    await page.locator('.clr-help').first().waitFor({ state: 'visible', timeout: 5000 });
+    await judge('cards: Game Over, the extra-lives offer');
   });
 
   // the testers' link (?ctest=1, as #ctest): the front page, the "I'm done" badge over the level, the end questions (blank, and with

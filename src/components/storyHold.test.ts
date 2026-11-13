@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { holdStep, thunderShake, type HoldPhase } from './storyHold.ts';
+import { holdStep, keepTouchFromPage, thunderShake, type HoldPhase } from './storyHold.ts';
 import { finalePanels } from '../game/storyFinale.ts';
 import { BOSS_STORIES, bossPanels } from '../game/storyBosses.ts';
 
@@ -52,4 +52,15 @@ test('the General argues in full once; a retry gets his first line, Pokey\'s ans
   assert.deepEqual(again.map((p) => p.text), BOSS_STORIES[10].intro.slice(0, 2).map((l) => l.text));
   assert.ok(again.at(-1)!.tip, 'the fight tip still shows');
   assert.equal(bossPanels(4, 'intro', 'Sky Sovereign', true).length, BOSS_STORIES[4].intro.length, 'short intros stay whole');
+});
+
+test('on the played picture a touch that starts on Skip or Back reaches it; the rest are the hands (audit C saves #5)', () => {
+  /** an element whose nearest button ancestor is `button` (or none) */
+  const el = (inButton: boolean) => ({ closest: (sel: string) => (sel === 'button' && inButton ? {} : null) });
+  assert.equal(keepTouchFromPage(el(true), 1), false, 'a thumb on Skip (or the arrow inside it), alone, taps Skip');
+  assert.equal(keepTouchFromPage(el(false), 1), true, 'a thumb on the picture is a hand: it taps nothing');
+  assert.equal(keepTouchFromPage(null, 1), true);
+  // (the quality check: a thumb resting on Skip while the other holds the picture is a hand; lifting it, as the scene asks, must not
+  // skip the finale's let-go, on any browser)
+  assert.equal(keepTouchFromPage(el(true), 2), true, 'with two thumbs down, the one on Skip is a hand too');
 });

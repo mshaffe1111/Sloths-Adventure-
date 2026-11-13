@@ -1,0 +1,46 @@
+[
+ {
+  "orient": "up",
+  "seed": 16847,
+  "plan": [
+   "w1-forest-edge",
+   "lib-thorn-teach",
+   "w1-bank-run",
+   "w1-hollow-twoway",
+   "w1-fern-bank",
+   "lib-way-down-a",
+   "w1-leap-stones",
+   "w1-meadow",
+   "w1-bank-stair-fork",
+   "w1-stump-descent",
+   "w1-mushroom-fork-dip",
+   "w1-ledges",
+   "w1-floor-dash",
+   "lib-thorn-chain-rise",
+   "new-low-bark-arrival"
+  ],
+  "w": 37256
+ },
+ {
+  "orient": "side",
+  "seed": 16847,
+  "plan": [
+   "w1-forest-edge",
+   "lib-thorn-teach",
+   "w1-bank-run",
+   "w1-hollow-twoway",
+   "w1-fern-bank",
+   "lib-way-down-a",
+   "w1-leap-stones",
+   "w1-meadow",
+   "w1-bank-stair-fork",
+   "w1-stump-descent",
+   "w1-mushroom-fork-dip",
+   "w1-ledges",
+   "w1-floor-dash",
+   "lib-thorn-chain-rise",
+   "new-low-bark-arrival"
+  ],
+  "w": 37256
+ }
+]

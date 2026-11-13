@@ -121,6 +121,8 @@ export interface CodeRules {
   later?: boolean;
   /** the brief's trend (V19: in a trend-up stage a descent in the last third is followed, before the exit, by a rising node) */
   trend?: 'up' | 'down' | 'level';
+  /** the moves an earlier stage taught (the world's `lessons`, V3): 'double' and 'bounce' count as taught with no T for them here */
+  known?: readonly string[];
 }
 
 /**
@@ -137,8 +139,8 @@ export function checkCode(tokens: readonly CodeToken[], rules: CodeRules = {}): 
   const uses = (t: CodeToken, i: number, inFork = false) => {
     // (V3: a content job uses only moves taught earlier: the double, and a bounce, once a T for them came before)
     if (['P', 'X', 'C', 'W', 'M', 'U', 'S'].includes(t.job)) {
-      if (t.move === '2' && ![...taught].some((s) => s.endsWith('2'))) at(i, 'V3', `${formatToken(t)} uses the double before its teach`);
-      if (t.content === 'b' && ![...taught].some((s) => s.startsWith('b'))) at(i, 'V3', `${formatToken(t)} bounces before the bounce is taught`);
+      if (t.move === '2' && !rules.known?.includes('double') && ![...taught].some((s) => s.endsWith('2'))) at(i, 'V3', `${formatToken(t)} uses the double before its teach`);
+      if (t.content === 'b' && !rules.known?.includes('bounce') && ![...taught].some((s) => s.startsWith('b'))) at(i, 'V3', `${formatToken(t)} bounces before the bounce is taught`);
     }
     if (t.job === 'T') {
       // (V2: T is flat or rising, never in a fork, its move new)

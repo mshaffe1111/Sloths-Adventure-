@@ -3,14 +3,14 @@
 //   npx tsx tools/inspect/helpSweep.ts [--fly] [--seeds N] [--out file.json]
 import '../../src/game/headlessDom.ts';
 import { writeFileSync } from 'node:fs';
-import { PROVEN_SEEDS } from '../../src/game/gen2/provenSeeds.ts';
+import { provenSeeds } from '../../src/game/gen2/seedList.ts';
 import { plainThrough, sweepSeed } from '../../src/game/helpSweep.ts';
 
 const args = process.argv.slice(2);
 const fly = args.includes('--fly');
 const n = args.includes('--seeds') ? Number(args[args.indexOf('--seeds') + 1]) : Infinity;
 const outFile = args.includes('--out') ? args[args.indexOf('--out') + 1] : null;
-const seeds = PROVEN_SEEDS['1-1'].seeds.slice(0, n);
+const seeds = provenSeeds('1-1').slice(0, n);
 const report: Record<string, unknown> = { seeds: seeds.length };
 let fail = 0;
 for (const setting of ['easy', 'normal'] as const) {

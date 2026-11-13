@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { StoryPanel } from '../game/story.ts';
 import { isEasy } from '../game/difficulty.ts';
-import { holdStep, LETGO, thunderShake, type HoldPhase } from './storyHold.ts';
+import { holdStep, LETGO, thunderShake, type HoldPhase, keepTouchFromPage } from './storyHold.ts';
 import { noticed } from '../game/storyNotice.ts';
 import { loadFinds } from '../game/finds.ts';
 import { loadBadgeStore } from '../game/badgeStore.ts';
 import { withWorldPlate } from '../game/plateData.ts';
 import { drawStoryScene, preloadSceneCards, preloadScenePhotos, preloadScenePlates, releaseStoryArt, SCENE_H, warmStoryCast } from '../game/storyArt.ts';
 import { sound } from '../game/audio.ts';
+import { buzz } from '../game/haptics.ts';
 import { stingDue } from '../audio/scenes.ts';
-import { typeSchedule } from '../game/storyTyping.ts';
+import { shownFor, typeSchedule } from '../game/storyTyping.ts';
 import { directScene } from '../game/storyDirect.ts';
 import { Plaque } from './KitParts.tsx';
 import { type IconName } from './icons/index.tsx';
@@ -116,7 +117,6 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   useEffect(() => {
     sound.warmVoices(new Set(panels.map((p) => p.speaker)));
   }, [panels]);
-  const [shown, setShown] = useState(0);
   const panel = panels[idx];
   // how each picture is delivered: its entrance, the beat before the words, the pace, pages, camera, voice and music (storyDirect.ts)
   const dirs = useMemo(() => directScene(panels), [panels]);
@@ -125,6 +125,9 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   // (which page, of which picture: a new picture starts on its first page without waiting for an effect)
   const [pageAt, setPageAt] = useState({ idx: 0, n: 0 });
   const page = pageAt.idx === idx ? pageAt.n : 0;
+  // how many letters are typed, of which picture and page: derived the same way, so a new picture never shows (or speaks) the last one's count
+  const [shownAt, setShownAt] = useState({ idx: 0, page: 0, n: 0 });
+  const shown = shownFor(shownAt, idx, page);
   const text = dir.pages[Math.min(page, dir.pages.length - 1)] ?? panel.text;
   const lastPage = page >= dir.pages.length - 1;
   const prevChapter = idx > 0 ? panels[idx - 1].chapter : null;
@@ -144,7 +147,6 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   // typewriter (time-based so a slow frame never stalls the text); waits for the title card, then the picture's beat (a later page
   // follows at once)
   useEffect(() => {
-    setShown(0);
     if (cardUp) return;
     const start = performance.now() + (page === 0 ? dir.beat : 120);
     const when = typeSchedule(text, dir.typeMs);
@@ -153,7 +155,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const tick = (now: number) => {
       while (k < when.length && when[k] <= now - start) k++;
       const n = k;
-      setShown((prev) => (prev === n ? prev : Math.max(prev, n)));
+      setShownAt((prev) => (shownFor(prev, idx, page) >= n ? prev : { idx, page, n }));
       if (n < text.length) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -257,8 +259,10 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const el = rootRef.current;
     if (!el || !hold) return;
     const count = (e: TouchEvent) => {
-      // (the thumbs are the hands: no tap goes through to the Next button or the picture while they are down)
-      if (e.cancelable) e.preventDefault();
+      // (the thumbs are the hands: no tap goes through to the picture while they are down; Skip and Back still take theirs)
+      // (the fingers on the glass for this event: a lifted one is no longer in e.touches)
+      const fingers = e.touches.length + (e.type === 'touchend' || e.type === 'touchcancel' ? e.changedTouches.length : 0);
+      if (e.cancelable && keepTouchFromPage(e.target, fingers)) e.preventDefault();
       setThumbs(e.touches.length);
     };
     const opts = { passive: false } as const;
@@ -286,11 +290,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     if (phase === 'reach') {
       const boom = window.setTimeout(() => {
         sound.storySting('blow');
-        try {
-          navigator.vibrate?.(140);
-        } catch {
-          /* no vibration here */
-        }
+        buzz('thunder');
       }, LETGO.breakMs);
       const done = window.setTimeout(() => setIdx((i) => Math.min(panels.length - 1, i + 1)), LETGO.breakMs + LETGO.afterBreakMs);
       return () => {
@@ -386,7 +386,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     }
     if (!done) {
       skipped.current = true;
-      setShown(text.length);
+      setShownAt({ idx, page, n: text.length });
       return;
     }
     if (performance.now() - doneAt.current < 350) return;
@@ -482,15 +482,15 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       />
 
       {/* (above the world's title card, which used to dim Skip into the dark: UI-12) */}
-      <div className="absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-2 px-3 sm:px-5 pt-2.5">
+      <div className="sp-top absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-2">
         <span className={`ui-chip transition-opacity duration-300 ${cardUp ? 'opacity-0' : 'opacity-100'}`}>{panel.chapter}</span>
-        <button type="button" onClick={onFinish} className="ui-chip ui-chip-btn">
+        <button type="button" onClick={onFinish} className="ui-chip ui-chip-btn sp-skip">
           {skipLabel} <TextGlyph name="arrow" size={13} />
         </button>
       </div>
 
       {!cardUp && !panel.closing && (
-        <div className="absolute inset-x-0 bottom-0 z-10 px-3 sm:px-6" style={{ paddingBottom: 'max(10px, env(safe-area-inset-bottom, 0px))' }}>
+        <div className="sp-low absolute inset-x-0 bottom-0 z-10" style={{ paddingBottom: 'max(10px, env(safe-area-inset-bottom, 0px))' }}>
           {box}
         </div>
       )}

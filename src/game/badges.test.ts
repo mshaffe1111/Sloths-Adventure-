@@ -70,6 +70,20 @@ test('no silver or gold comes from playing one ordinary stage', () => {
   for (const id of tiered) assert.ok(!got.includes(id), `${id} from one stage`);
 });
 
+test('"without taking a hit" means no heart and no life lost, on every medal that says it (audit C things-12a)', () => {
+  // drowned three times (a life each, no heart): Ghost Walk's count already said this was not a hit-free clear
+  const drowned = { livesLost: 3, heartsLost: 0, floraTotal: 20, floraCollected: 20 };
+  const got = earnedNow(drowned);
+  for (const id of ['untouchable', 'garden_keeper']) assert.ok(!got.includes(id), `${id} after losing 3 lives`);
+  assert.ok(!earnedNow({ ...drowned, id: '1-10' }).includes('untouched_guardian'), 'untouched_guardian after losing 3 lives');
+  assert.equal(recordStage(emptyStore(), stage(drowned)).counters.noHitClears, 0);
+  // and a clear with neither still earns all of them
+  const clean = { livesLost: 0, heartsLost: 0, floraTotal: 20, floraCollected: 20 };
+  for (const id of ['untouchable', 'garden_keeper']) assert.ok(earnedNow(clean).includes(id), id);
+  assert.ok(earnedNow({ ...clean, id: '1-10' }).includes('untouched_guardian'));
+  assert.equal(recordStage(emptyStore(), stage(clean)).counters.noHitClears, 1);
+});
+
 test('single-stage medals need a win and the right stats', () => {
   const flawless = earnedNow({ livesLost: 0, heartsLost: 0 });
   assert.ok(flawless.includes('flawless') && flawless.includes('untouchable'));

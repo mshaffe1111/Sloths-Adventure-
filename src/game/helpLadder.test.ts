@@ -63,10 +63,10 @@ test('the count is per piece: put-backs at another piece neither add to it nor f
 test('the count resets standing on the piece beyond, and on a stage end; not on a pause, time, a refused offer or a step given', () => {
   const l = new HelpLadder('normal', PIECES);
   run(l, 4);
-  l.stood(1200); // (standing inside the piece is not past it)
-  l.stood(999);
+  l.stood({ x: 1200, y: 0 }); // (standing inside the piece is not past it)
+  l.stood({ x: 999, y: 0 });
   assert.equal(l.count('chain'), 4);
-  l.stood(2000); // the piece beyond
+  l.stood({ x: 2000, y: 0 }); // the piece beyond
   assert.equal(l.count('chain'), 0, 'reset past the piece');
   run(l, 3);
   l.end();
@@ -89,7 +89,7 @@ test('the pad\'s full jump: Easy at 5 for the piece he is being set back at, unt
   assert.equal(padFullJump(), false, 'not before 5');
   run(l, 1);
   assert.equal(padFullJump(), true, 'at 5');
-  l.stood(2100);
+  l.stood({ x: 2100, y: 0 });
   assert.equal(padFullJump(), false, 'past the piece');
   const nl = new HelpLadder('normal', PIECES);
   setHelpLadder(nl);
@@ -167,3 +167,19 @@ test('the move a piece needs, from the piece as laid: a mushroom is the bounce, 
   assert.equal(pieceMoveLaid(piece, wide, [], single), 'double', 'a 220 px gap');
   assert.equal(pieceMoveLaid(piece, rise, [{ x: 420, y: 520, width: 40, height: 30 }], single), 'bounce');
 });
+
+test('Normal: an offer that could not be shown (its card failed to load) counts as no answer: it is asked again at the next put-back, and a no after that still gets its one re-ask', () => {
+  const l = new HelpLadder('normal', PIECES);
+  let acts: string[] = [];
+  for (let n = 1; n <= RUNGS.offer; n++) acts = l.putBack(AT).map((a) => a.rung);
+  assert.deepEqual(acts, ['offer']);
+  const k = l.pieceAt(AT)!.k;
+  l.unshown(k);
+  assert.equal(l.answer(k, true), false, 'nothing is waiting for an answer after an unshown offer');
+  assert.deepEqual(l.putBack(AT).map((a) => `${a.rung} ${a.count}`), [`offer ${RUNGS.offer + 1}`], 'asked again at the next put-back');
+  assert.equal(l.answer(k, false), false);
+  const later: string[] = [];
+  for (let n = 0; n < RUNGS.reaskAfter; n++) later.push(...l.putBack(AT).map((a) => `${a.rung} ${a.count}`));
+  assert.deepEqual(later, [`reask ${RUNGS.offer + 1 + RUNGS.reaskAfter}`], 'that no is his first: the re-ask comes 8 later');
+});
+

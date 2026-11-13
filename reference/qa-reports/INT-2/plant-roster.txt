@@ -1,0 +1,7 @@
+# INT-2 plant (11-12, R-165.153): a function back in predators/roster.ts, then the gate
+generality check: 36 engine files (104 exempt under the engine folders), 27 literals, 27 known
+✗ LOGIC IN DATA: src/game/predators/roster.ts:59  function  (its exemption covers data only: move the rule into engine code under the gate)
+FAIL
+exit 1
+# plant removed:
+PASS

@@ -9,7 +9,7 @@
  * context's own 48 kHz (an iPhone) costs twice the memory (the orchestra's memory audit, 2026-10-25).
  */
 import type { AudioCore } from './core.ts';
-import { bytesOf } from './sampleLoader.ts';
+import { bytesOf, onceUntilFailed } from './assetFetch.ts';
 import { recBank } from './sfxRec.ts';
 
 const files = import.meta.glob('../assets/sfxrec/*.mp3', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
@@ -68,34 +68,32 @@ function store(fx: string, i: number, buf: AudioBuffer) {
 const isBed = (fx: string) => /^bed\d+$/.test(fx);
 const started = new WeakMap<AudioCore, Promise<void>>();
 
-/** fetch and decode every recorded effect once (the beds wait for loadBed) */
+/** fetch and decode every recorded effect once (the beds wait for loadBed); a failed load is forgotten, so the next call tries again */
 export function loadRec(core: AudioCore): Promise<void> {
-  const have = started.get(core);
-  if (have) return have;
-  const job = (async () => {
-    const url = Object.values(packs)[0];
-    if (!url) return;
-    const entries = unpack(await bytesOf(url))
-      .map(([name, bytes]) => ({ n: parseRecName('/' + name), bytes }))
-      .filter((e): e is { n: { fx: string; i: number }; bytes: ArrayBuffer } => !!e.n && !isBed(e.n.fx));
-    // the frequent moves first, so they are ready by the first jump
-    const first = (fx: string) => (/^(jump|step|landing|swish|flower|uiTap)/.test(fx) ? 0 : 1);
-    entries.sort((a, b) => first(a.n.fx) - first(b.n.fx));
-    const queue = [...entries];
-    const worker = async () => {
-      for (let e = queue.shift(); e; e = queue.shift()) {
-        try {
-          store(e.n.fx, e.n.i, await decode(core, e.bytes));
-        } catch {
-          /* a take that will not decode is simply missing: its effect plays its other takes */
-        }
+  return onceUntilFailed(started, core, () => loadPack(core), 'the recorded effects (sfxrec/takes.mp3)');
+}
+
+async function loadPack(core: AudioCore): Promise<void> {
+  const url = Object.values(packs)[0];
+  if (!url) return;
+  const entries = unpack(await bytesOf(url))
+    .map(([name, bytes]) => ({ n: parseRecName('/' + name), bytes }))
+    .filter((e): e is { n: { fx: string; i: number }; bytes: ArrayBuffer } => !!e.n && !isBed(e.n.fx));
+  // the frequent moves first, so they are ready by the first jump
+  const first = (fx: string) => (/^(jump|step|landing|swish|flower|uiTap)/.test(fx) ? 0 : 1);
+  entries.sort((a, b) => first(a.n.fx) - first(b.n.fx));
+  const queue = [...entries];
+  const worker = async () => {
+    for (let e = queue.shift(); e; e = queue.shift()) {
+      try {
+        store(e.n.fx, e.n.i, await decode(core, e.bytes));
+      } catch {
+        /* a take that will not decode is simply missing: its effect plays its other takes */
       }
-    };
-    await Promise.all([worker(), worker(), worker(), worker()]);
-    for (const [fx, list] of recBank) recBank.set(fx, list.filter(Boolean));
-  })();
-  started.set(core, job);
-  return job;
+    }
+  };
+  await Promise.all([worker(), worker(), worker(), worker()]);
+  for (const [fx, list] of recBank) recBank.set(fx, list.filter(Boolean));
 }
 
 /**
@@ -123,19 +121,11 @@ export function seamless(ctx: BaseAudioContext, buf: AudioBuffer): AudioBuffer {
   return out;
 }
 
-const beds = new Map<number, Promise<AudioBuffer | null>>();
-/** a world's bed (1..10), fetched and decoded once */
+const beds = new Map<number, Promise<AudioBuffer>>();
+/** a world's bed (1..10), fetched and decoded once (null: it has none, or it did not load this time: the next start tries again) */
 export function loadBed(core: AudioCore, world: number): Promise<AudioBuffer | null> {
-  let p = beds.get(world);
-  if (!p) {
-    const url = Object.entries(files).find(([path]) => parseRecName(path)?.fx === `bed${world}`)?.[1];
-    p = url
-      ? bytesOf(url)
-          .then((b) => decode(core, b))
-          .then((buf) => seamless(core.ctx, buf))
-          .catch(() => null)
-      : Promise.resolve(null);
-    beds.set(world, p);
-  }
-  return p;
+  const url = Object.entries(files).find(([path]) => parseRecName(path)?.fx === `bed${world}`)?.[1];
+  if (!url) return Promise.resolve(null);
+  const bed = onceUntilFailed(beds, world, () => bytesOf(url).then((b) => decode(core, b)).then((buf) => seamless(core.ctx, buf)), `World ${world}'s ambience bed`);
+  return bed.catch(() => null);
 }

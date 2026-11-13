@@ -1,8 +1,9 @@
 /**
  * regrow — when a crumbled platform (a broken log, a fragile plank, a ruin tile) grows back (Matt, 2026-10-28): breaking one is a
  * penalty, so it comes back only after REGROW.min to REGROW.max seconds (each platform its own fixed time in that range), and only while
- * it is off screen, so it never pops back in view, and never where Pokey is. Crumbling platforms are never needed to finish a stage
- * (levelCheck.ts treats them so), so the long wait costs time, never the way on.
+ * it is off screen, so it never pops back in view, and never where Pokey is. A crumbling platform may be required (Matt, 2026-11-02,
+ * pits included): every set-back, a lost life or a fall that costs none, makes them all whole at once (engine.ts crumbledWhole), so the
+ * long wait only ever applies to one he broke and walked on from. (levelCheck.ts still judges the way on without them: audit A-03.)
  *
  * Pure: the engine asks it each frame (engine.ts, the fragile platforms' step).
  */

@@ -180,6 +180,17 @@ export class PadInput {
     this.jumpSet('pad', it.up);
   }
 
+  /**
+   * The game dropped every held input (a new stage: InputEngine.clearAll) while the thumb may still be on the pad: forget what the pad
+   * had said (silently), so its next report says it again. It only speaks when its push changes, so a thumb held right under the title
+   * card never ran him (audit A, input slice). A held Jump is not pressed again: the stage does not start with a jump nobody made.
+   */
+  restate() {
+    this.move = 'none';
+    this.duck = false;
+    this.climb = 0;
+  }
+
   /** the pad's thumb lifted */
   padUp() {
     this.move = 'none';

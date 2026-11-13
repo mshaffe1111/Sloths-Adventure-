@@ -13,14 +13,18 @@ import { parseTouchVector } from './rules.ts';
 export const MIN_TOUCH_JUMP_HOLD_MS = 220;
 
 /**
- * how long a jump press is kept for the engine (s): the difficulty's jump buffer plus one frame, so the engine's own buffer
- * (engine.ts, physics.ts FORGIVE.buffer) starts from the frame it reads the press. One rule for both (Gemini G2): 133 ms Normal, 200 Easy.
+ * how long a jump press is kept for the engine (s): the jump buffer of the mode the stage is played on, plus one frame, so the engine's
+ * own buffer (engine.ts, physics.ts FORGIVE.buffer) starts from the frame it reads the press. One rule for both (Gemini G2): 133 ms
+ * Normal, 200 Easy.
  */
-export const pressKeep = (): number => (isEasy() ? FORGIVE.easy.buffer : FORGIVE.normal.buffer) + 1 / 30;
+export const pressKeep = (easy: boolean): number => (easy ? FORGIVE.easy.buffer : FORGIVE.normal.buffer) + 1 / 30;
 
 const TOUCH_EVENTS = ['touchstart', 'touchend', 'touchcancel'] as const;
 
 export class InputEngine {
+  /** the stage being played is on Easy: set by the engine as it builds the stage (engine.ts `easy`), so a switch in the pause menu
+   * waits for the next stage here too; before any stage, the menu's mode */
+  public easy: boolean = isEasy();
   public state: InputState = {
     left: false,
     right: false,
@@ -165,7 +169,7 @@ export class InputEngine {
       if (!this.state.jumpHeld || isUpTwice) {
         this.state.jumpPressed = true;
         this.state.jumpLean = 0;
-        this.jumpBufferTimer = pressKeep();
+        this.jumpBufferTimer = pressKeep(this.easy);
       }
       this.state.jumpHeld = true;
     }
@@ -336,12 +340,12 @@ export class InputEngine {
     // (held at least `holdMs` from the take-off, MIN_TOUCH_JUMP_HOLD_MS unless the press says (the Pad's Jump button: a tap is a hop);
     // until he takes off, as long as the press can wait to be used as well)
     this.touchHoldMin = holdMs / 1000;
-    this.touchHold = this.touchHoldMin + pressKeep();
+    this.touchHold = this.touchHoldMin + pressKeep(this.easy);
     this.releaseWanted = false;
     this.state.up = true;
     this.state.jumpPressed = true;
     this.state.jumpHeld = true;
-    this.jumpBufferTimer = pressKeep();
+    this.jumpBufferTimer = pressKeep(this.easy);
   }
 
   /** climbing by touch or the Pad (-1 up, 1 down): a jump let go meanwhile must not stop the climb (releaseTouchUp) */
@@ -482,7 +486,7 @@ export class InputEngine {
           if (fresh) {
             this.state.jumpPressed = true;
             this.state.jumpLean = 0;
-            this.jumpBufferTimer = pressKeep();
+            this.jumpBufferTimer = pressKeep(this.easy);
           }
           this.state.jumpHeld = jumpNow;
         } else if (prev.up || prev.jump) {
@@ -552,6 +556,23 @@ export class InputEngine {
       this.state.megaPunchPressed = false;
     }
     this.state.layerSwitchPressed = false;
+  }
+
+  /**
+   * Forget the presses latched and not yet used (a jump, a punch, a kick, a mega punch). The engine calls it as it hands play back after
+   * holding the world (the respawn after the life-lost beat, a resume): the latches only run down in update(), which the held world does
+   * not call, so a flick made while he was going down jumped him at the flag 0.6 s later (audit A, input slice: the ghost press).
+   * What the thumb is holding (a direction, a held jump) is not a press and stays.
+   */
+  public dropPresses() {
+    this.state.jumpPressed = false;
+    this.state.punchPressed = false;
+    this.state.kickPressed = false;
+    this.state.megaPunchPressed = false;
+    this.jumpBufferTimer = 0;
+    this.punchBufferTimer = 0;
+    this.kickBufferTimer = 0;
+    this.megaBufferTimer = 0;
   }
 
   /** a buzz, when the Vibration setting is on (haptics.ts) */

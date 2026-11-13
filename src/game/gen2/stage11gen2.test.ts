@@ -52,7 +52,7 @@ test('gen2 1-1: right after the double is taught, a gap only the second jump cro
     const sim = roll(r), st = sim.stage as typeof sim.stage & { gen2?: { nodes?: Array<{ token: string; x0: number }> } };
     const teach = (st.gen2?.nodes ?? []).find((n) => /^T\w*2/.test(n.token));
     if (!teach) { bad.push(`Roll ${r}: no double teach node`); continue; }
-    const g = doubleGap(sim.platforms, teach.x0, st.waterY ?? st.config.levelHeight, st.heartFalls ?? [], 'normal');
+    const g = doubleGap(sim.platforms, teach.x0, st.waterY ?? st.config.levelHeight, st.heartFalls ?? [], 'normal', '1-1');
     if (!g) bad.push(`Roll ${r}: no gap only the second jump crosses within 1,500 px of the teach (x ${Math.round(teach.x0)})`);
     else if (!g.safe) bad.push(`Roll ${r}: nothing under the double gap at ${Math.round(g.a.x + g.a.width)}`);
   }
@@ -177,6 +177,6 @@ test('the double-gap safety reading: a soft zone over the gap is safe; a bare ga
   // (a 255 px level gap, the re-lay's test band: on the flown arcs one jump never crosses it and a double does; changed, INT-1-1: 200 px
   // was past one jump only on the closed form)
   const ps = [P(1, 0, 600, 500), P(2, 755, 600, 500)];
-  assert.equal(doubleGap(ps, 0, 2000, [{ x0: 500, x1: 755, soft: true }], 'normal')?.safe, true);
-  assert.equal(doubleGap(ps, 0, 2000, [], 'normal')?.safe, false);
+  assert.equal(doubleGap(ps, 0, 2000, [{ x0: 500, x1: 755, soft: true }], 'normal', '1-1')?.safe, true);
+  assert.equal(doubleGap(ps, 0, 2000, [], 'normal', '1-1')?.safe, false);
 });

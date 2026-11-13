@@ -5,7 +5,7 @@
  * The log, the rock, the golden seed, the leaf curtain, the branches (whole, creaking, snapped), the perch, the earth banks, the moss
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
  */
-import { drawW1Pits, paintedBank, waterAcross } from './w1Pits.ts';
+import { drawW1Pits, paintedBank, sideOverHollow, waterAcross } from './w1Pits.ts';
 import { drawHollowLog } from './w1NewArt.ts';
 import { drawCutArt } from './w1CutArt.ts';
 import { drawCrumbleTile } from './crumbleArt.ts';
@@ -561,7 +561,7 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
  * wobble (never a ruler-straight cut). A moss floor (`moss`) is the World 1 kit's moss strip. `view`: only what is on screen.
  */
 export function drawBankArt(
-  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
+  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean; lipless?: boolean; shadeFrom?: number; underL?: number; underR?: number }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
   high?: { foot: number; runTop: number; left: boolean; right: boolean },
 ): boolean {
   if (!protoArtReady()) return false;
@@ -615,7 +615,10 @@ export function drawBankArt(
   }
   // (its darkening with depth is the bank's own: from about where the middle of the view is when he stands on it to full dark where the
   // bottom of that view is, so the soil looks the same however the view is placed and can be painted once: groundChunks)
-  drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, p.y + DEPTH_BELOW * depthView, p.y - DEPTH_ABOVE * depthView, true, groundDepth ?? undefined);
+  // (`shadeFrom`: a hollow's hurt floor darkens from its lower lip's top, as its banks' soil does: from its own top it stood as a lighter
+  // block under the thorns, the lead 11-12)
+  const sy = open.shadeFrom ?? p.y;
+  drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, sy + DEPTH_BELOW * depthView, sy - DEPTH_ABOVE * depthView, true, groundDepth ?? undefined);
   // (World 7, inside the soil's outline: a bank other than a high ledge with Matt's painted roots and statues set into its soil,
   // w7FaceArt.ts)
   if (w === 7 && view && high === undefined) drawW7Face(ctx, p, bottom, view);
@@ -635,14 +638,20 @@ export function drawBankArt(
   }
   // the top lip, under the end pieces' own lip corners (`bare`: a pit's low step, too narrow for the end pieces, which are wider than it
   // and see-through below their rims: its soil keeps the end's wobbling face and the lip runs to its ends)
-  const la = open.left && !open.bare ? p.x + 30 : p.x - 1;
-  const lb = open.right && !open.bare ? p.x + p.width - 30 : p.x + p.width + 1;
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(la, p.y - 120, lb - la, 260);
-  ctx.clip();
-  drawLip(ctx, w, la, lb, p.y, view);
-  ctx.restore();
+  // (`lipless`: a hollow's hurt floor, the bottom of a hole: its grass lip stood under the thorns as a lit slab with a straight foot,
+  // the lead 11-12. Its soil runs on under the hollow's rounded floor, w1Pits.ts)
+  // (`underL`/`underR`: a higher bank stands on that side, and the lip runs that far on under it, drawn before it: its soil covers the
+  // lip, all but where its end face curves back in above the floor, which showed the backdrop as a box with a straight side, W1C 11-12)
+  const la = open.left && !open.bare ? p.x + 30 : p.x - 1 - (open.underL ?? 0);
+  const lb = open.right && !open.bare ? p.x + p.width - 30 : p.x + p.width + 1 + (open.underR ?? 0);
+  if (!open.lipless) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(la, p.y - 120, lb - la, 260);
+    ctx.clip();
+    drawLip(ctx, w, la, lb, p.y, view);
+    ctx.restore();
+  }
   const end = (right: boolean, step?: number) => {
     const x = right ? p.x + p.width : p.x;
     // (only an end on screen: a long bank's far end is thousands of units off)
@@ -1009,6 +1018,9 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
   const pits = new Map<string, { x0: number; x1: number; top: number; pieces: Platform[] }>();
   for (const p of banks) {
     if (!vis(p)) continue;
+    // (a hollow's hurt floor, gen2 pit 'hurt': its hole is painted whole by World 1's pit painter, w1Pits.ts. This shade's straight sides
+    // stood under its thorns as a blue-grey box, the lead 11-12)
+    if (p.pit === 'hurt') continue;
     const L = tall.filter((q) => q.y <= p.y - 60 && q.x + q.width <= p.x + p.width + 2 && q.x + q.width >= p.x - 300).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
     const R = tall.filter((q) => q.y <= p.y - 60 && q.x >= p.x - 2 && q.x <= p.x + p.width + 300).sort((a, b) => a.x - b.x)[0];
     if (!L || !R) continue;
@@ -1039,7 +1051,9 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
         (q.y < p.y && q.y + q.height >= p.y - 4 && q.x <= ex + 1 && q.x + q.width >= ex - 1)));
     };
     // the high canopy: a wall face on the side that faces the yard
-    const isWall = banks.some((q) => q !== p && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150);
+    // (a hollow's hurt floor, gen2 pit 'hurt', 150-170 down, is the floor of a pit, not a yard: the bank beside it keeps its painted face,
+    // as the bank across the pit does; as a wall it stood as one straight cut line down the pit's side, EN-W's stills 11-11)
+    const isWall = banks.some((q) => q !== p && q.pit !== 'hurt' && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150);
     // (a World 7 high ledge: its foot, the floor beside it, and whether no bank touches it at all)
     const high = kitWorld === 7 ? highLedge(p, banks) : undefined;
     // (World 7's high ledges are faced with the temple wall: no root wall beside it)
@@ -1067,9 +1081,88 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
       return !q || q.y - p.y >= HIGH_LEDGE;
     };
     const wall = high && { ...high, left: drop('l'), right: drop('r') };
-    drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks) }, false, view.y1 ?? 0, view, wall || undefined);
+    // (a side over a hollow's hurt floor (gen2 pit 'hurt') is closed: its soil runs straight down to the floor, and the hollow's inside,
+    // its torn lips and its thorn bed are drawn over it by World 1's pit painter, w1Pits.ts. Open, its end's face was cut back under the
+    // end piece down to the floor and the pit showed a box-shaped cave there and a grey-green sliver, EN-W's Roughs 1-3, 11-11)
+    const overHollow = (side: 'l' | 'r') => sideOverHollow(p, banks, side);
+    const lips = p.pit === 'hurt' ? banks.filter((q) => q !== p && q.y < p.y && (Math.abs(q.x + q.width - p.x) < 2 || Math.abs(p.x + p.width - q.x) < 2)).map((q) => q.y) : [];
+    drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined, underL: lipUnder(p, banks, false), underR: lipUnder(p, banks, true) }, false, view.y1 ?? 0, view, wall || undefined);
+  }
+  // (gen2 World 1's dip pockets, over the banks: painted soil edge to edge under their lip, so a pocket reads as a soil hollow, not a
+  // grey window; isPocket needs ownLook, which only gen2 World 1 sets, so every other stage draws as before)
+  // (painted here, into the ground's squares, its darkening laid from the ground line as its banks' is: drawn live over the squares,
+  // laid from the view, it stood as a lighter box with straight sides between 1-1's earth pillars, and moved with the camera: R-165.129)
+  for (const p of banks) {
+    if (!vis(p) || !isPocket(p, banks)) continue;
+    const bottom = Math.max(p.y + p.height, (view.y1 ?? 0) + 40);
+    ctx.save();
+    ctx.beginPath();
+    // (under its lip the soil runs on under the banks' end faces either side, which curve in and left the backdrop showing below them)
+    ctx.rect(p.x - 2, p.y + 6, p.width + 4, 14);
+    ctx.rect(p.x - POCKET_SIDE, p.y + 20, p.width + 2 * POCKET_SIDE, bottom - p.y - 20);
+    ctx.clip();
+    drawSoil(ctx, kitWorld, p.x - POCKET_SIDE, p.x + p.width + POCKET_SIDE, p.y + 6, bottom, view.y1 ?? 0, view.y0, true, groundDepth ?? undefined);
+    ctx.restore();
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(p.x - 1, p.y - 120, p.width + 2, 260);
+    ctx.clip();
+    drawLip(ctx, kitWorld, p.x - 1, p.x + p.width + 1, p.y, view);
+    ctx.restore();
+  }
+  // the floor's lip runs on under a short raised bank (stepFootLips), over the foot of its end pieces, cut clean at the floor's top
+  for (const f of stepFootLips(banks)) {
+    if (f.x1 < view.x0 - 80 || f.x0 > view.x1 + 80) continue;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(f.x0, f.y - 120, f.x1 - f.x0, 260);
+    // (and 2 units on past each end from the floor's top down, where the lip is solid: the run's soil comes a unit out over each floor's
+    // lip there, and a clip edge at the end alone left a dark hairline down the band)
+    ctx.rect(f.x0 - 2, f.y - 1, f.x1 - f.x0 + 4, 141);
+    ctx.clip();
+    drawLip(ctx, kitWorld, f.x0 - 2, f.x1 + 2, f.y, view);
+    ctx.restore();
   }
   shadeUpTo(-Infinity);
+}
+
+/** how far a floor's lip runs on under a higher bank beside it (world units: past the most a World 1 end face curves back in, 20, at 90 down) */
+export const LIP_UNDER = 60;
+/** how far p's lip runs on under the higher bank on that side (0: none there, or p is a pit's step or a hollow's floor) */
+export function lipUnder(p: Platform, banks: readonly Platform[], right: boolean): number {
+  if (p.soil || p.pit === 'hurt') return 0;
+  const q = banks.find((o) => o !== p && !o.soil && o.pit !== 'hurt' && o.y < p.y - 2 && Math.abs(right ? o.x - (p.x + p.width) : o.x + o.width - p.x) < 2);
+  return q ? Math.min(LIP_UNDER, q.width) : 0;
+}
+
+/**
+ * Where a floor's lip runs on under a short raised bank (R-165.146): a run of touching banks standing less than SHORT_STEP above a floor,
+ * with the floor at the same height on both sides. The run's end pieces are cut clean at the floor's top for the floor's lip to cover
+ * (drawBankArt), but each floor's lip stopped at its own end, so under the run its moss band was missing: a bare soil box with straight
+ * sides and a straight foot along the floor's lip line (W1C's 1-3 stills, the lead 11-12). Drawn after the banks, over the run's foot.
+ * (Only between two floors: a run that ends at a drop or a wall has its own painted end there.)
+ */
+export function stepFootLips(banks: readonly Platform[]): Array<{ x0: number; x1: number; y: number }> {
+  const out: Array<{ x0: number; x1: number; y: number }> = [];
+  const floorish = (q: Platform) => !q.soil && q.pit !== 'hurt';
+  const nextTo = (q: Platform) => banks.filter((o) => o !== q && floorish(o) && Math.abs(o.x - (q.x + q.width)) < 2);
+  for (const a of banks) {
+    if (!floorish(a)) continue;
+    let at = a, n = 0;
+    for (;;) {
+      const nx = nextTo(at);
+      const up = nx.find((o) => o.y < a.y - 2 && o.y > a.y - SHORT_STEP);
+      if (up && !nx.some((o) => o.y <= a.y + 2 && o !== up)) {
+        at = up;
+        if (++n > 40) break;
+        continue;
+      }
+      const b = nx.find((o) => Math.abs(o.y - a.y) < 2);
+      if (n > 0 && b) out.push({ x0: a.x + a.width, x1: b.x, y: a.y });
+      break;
+    }
+  }
+  return out;
 }
 
 // ───────────────────────────── the ground, painted once ─────────────────────────────
@@ -1216,26 +1309,6 @@ export function drawProtoScene(
   // World 1's pits (R-6.38): the drop under the ground (its shade, floors and steps draw over it), the lips and leaf bed over it
   if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'under');
   if (!drawGroundChunks(ctx, platforms, banks, view)) drawGround(ctx, platforms, banks, view);
-  // (gen2 World 1's dip pockets, over the ground: painted soil edge to edge under their lip, so a pocket reads as a soil hollow, not a
-  // grey window; isPocket needs ownLook, which only gen2 World 1 sets, so every other stage draws as before)
-  for (const p of banks) {
-    if (!vis(p) || !isPocket(p, banks)) continue;
-    const bottom = Math.max(p.y + p.height, (view.y1 ?? 0) + 40);
-    ctx.save();
-    ctx.beginPath();
-    // (under its lip the soil runs on under the banks' end faces either side, which curve in and left the backdrop showing below them)
-    ctx.rect(p.x - 2, p.y + 6, p.width + 4, 14);
-    ctx.rect(p.x - POCKET_SIDE, p.y + 20, p.width + 2 * POCKET_SIDE, bottom - p.y - 20);
-    ctx.clip();
-    drawSoil(ctx, kitWorld, p.x - POCKET_SIDE, p.x + p.width + POCKET_SIDE, p.y + 6, bottom, view.y1 ?? 0, view.y0);
-    ctx.restore();
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(p.x - 1, p.y - 120, p.width + 2, 260);
-    ctx.clip();
-    drawLip(ctx, kitWorld, p.x - 1, p.x + p.width + 1, p.y, view);
-    ctx.restore();
-  }
   if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'over', drawChaseBroken);
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;

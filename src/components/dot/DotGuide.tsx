@@ -73,7 +73,14 @@ export interface GuideFeed {
   ms: number;
   n: number;
   passed?: boolean;
-  recent?: ReadonlyArray<{ text: string; ms: number; n: number; passed?: boolean }>;
+  /** the stage's own teach line (engine.ts onGuide `teach`) */
+  teach?: true;
+  recent?: ReadonlyArray<{ text: string; ms: number; n: number; passed?: boolean; teach?: true }>;
+}
+/** a first-time lesson from the engine (App.tsx onLesson), numbered so each is said once, as the engine's lines are */
+export interface LessonFeed {
+  id: LessonId;
+  n: number;
 }
 export interface DotGuideProps {
   level: LevelConfig;
@@ -85,7 +92,7 @@ export interface DotGuideProps {
   guide?: GuideFeed | null;
   coachStep?: CoachStep;
   coachStyle?: ControlStyle;
-  lessonId?: LessonId | null;
+  lesson?: LessonFeed | null;
   /** the goal's count (for Dot's "That's all of them!") */
   count?: { cur: number; target: number };
 }
@@ -204,6 +211,8 @@ class GuideRun {
   prevJumpRun = 0;
   // lines from the engine
   lastGuide: number;
+  /** the last lesson said (its feed number: one already said when she is put back on screen is not said again) */
+  lastLesson = 0;
   // the line on screen and Dot
   show: Showing | null = null;
   plan: Plan | null = null;
@@ -286,7 +295,7 @@ class GuideRun {
    * A line from the engine, in its old words: what it is comes from those words (a warning, the locked exit, a tip and the move that
    * closes it), and what is said is Matt's approved line for it (dotLines.ts). A cut line is not said.
    */
-  engineLine(text: string, ms: number): void {
+  engineLine(text: string, ms: number, teach?: boolean): void {
     // (1-1's help ladder, helpLadder.ts: its lines go straight in as struggle help, on Help and Tips, never on Quiet. Her tip rules
     // dropped them as a move already taught, R-165.62)
     const help = helpGuideLine(text, this.help, ms);
@@ -295,7 +304,7 @@ class GuideRun {
       return;
     }
     const v = this.view;
-    const l = engineGuideLine(text, this.stageId, { boss: v.boss, flight: v.flight, dot: this.dot, ms });
+    const l = engineGuideLine(text, this.stageId, { boss: v.boss, flight: v.flight, dot: this.dot, ms, teach });
     if (!l) return;
     // (a replay of a stage already cleared, its goal met in full: no "Still N to collect!", DOT-17)
     if (l.counted && this.replay) return;
@@ -394,8 +403,12 @@ const MOVE_IDS: MoveId[] = ['run', 'jump', 'double', 'grab', 'climb', 'leap', 'g
 const QUOTA = new Set(['harvest', 'relic_hunt', 'purge', 'gauntlet', 'rescue']);
 
 export const DotGuide: React.FC<DotGuideProps> = (props) => {
-  const { level, guide, coachStep, lessonId } = props;
-  const [run] = useState(() => new GuideRun(level, guide?.n ?? 0));
+  const { level, guide, coachStep, lesson } = props;
+  const [run] = useState(() => {
+    const r = new GuideRun(level, guide?.n ?? 0);
+    r.lastLesson = lesson?.n ?? 0;
+    return r;
+  });
   // (dev only: the guide's state, for the placement shooter tools/dotbox/shoot.mjs)
   if (import.meta.env.DEV && typeof window !== 'undefined') (window as unknown as { __dotRun?: unknown }).__dotRun = run;
   // (the dev build lets the screenshot tools look inside: window.__dotGuide())
@@ -482,7 +495,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       if (g.passed) run.passedLine(g.text);
       // (in a boss fight every line of hers belongs to an attack: its end takes it down)
       else if (!g.text) run.queue.clear((l) => l.source === 'engine' && (l.kind === 'danger' || run.view.boss), run.clock);
-      else run.engineLine(g.text, g.ms);
+      else run.engineLine(g.text, g.ms, g.teach);
     }
     run.lastGuide = guide.n;
   }, [guide?.n]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -490,10 +503,12 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
   // a first-time lesson: one of Dot's lines, or Pokey's while she is away (the engine did not stop for it)
   useEffect(() => {
     // (already on the vine or the trunk: the lesson starts after its "grab it" step)
-    const l = lessonId ? lessonDotLine(lessonId, undefined, run.view.swinging || run.view.climbing || run.view.hanging) : undefined;
+    if (!lesson || lesson.n <= run.lastLesson) return;
+    run.lastLesson = lesson.n;
+    const l = lessonDotLine(lesson.id, undefined, run.view.swinging || run.view.climbing || run.view.hanging);
     // (Dot's while she is with him; his own thought while she is away, World 7 above all)
     if (l) run.say(lessonSaidBy(l, run.dot));
-  }, [lessonId, run]);
+  }, [lesson?.n, run]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // the first-stage coach: each step is a line that stays until its move is done; a step that moves on takes its line down
   useEffect(() => {
@@ -1315,6 +1330,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           shownH: run.H,
           fernOpen: hidesFern(run.world, run.mini) && !loadFinds().includes(findForStage(run.world, run.mini)?.id ?? ''),
           shownF: run.F,
+          moments: v.moments,
         });
         if (due && !q.has(storyKey(due.flag))) {
           if (due.flag === 'H') run.hurtAt = -1;

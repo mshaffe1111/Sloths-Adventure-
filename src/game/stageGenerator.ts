@@ -7,8 +7,9 @@ import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { pick11, play11Seed, roll11Seed, withPlaySeed } from './testlink1_1.ts';
-import { judgedOnArcs, linkArcs } from './gen2/reach.ts';
-import { buildPlayStage } from './gen2/seedList.ts';
+import { builtOnArcs, linkArcs } from './gen2/reach.ts';
+import { buildPlayStage, provenSeedFor, seedListReady } from './gen2/seedList.ts';
+import { listedStage, type ListedStage } from './gen2/listed.ts';
 import { w1Finish, w1World } from './gen2/worlds/w1.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
 import { dipWayOut } from './dipWayOut.ts';
@@ -93,7 +94,9 @@ export interface GeneratedStage {
   zones?: import('./zones.ts').Zone[];
   /** World 8 Normal's swing and glide gaps (gen2 heartFalls): a fall there costs a heart and sets him back on the ledge he left; a
    *  `soft` one (a level block gap, World 1's double gaps) sets him back with nothing lost */
-  heartFalls?: Array<{ x0: number; x1: number; soft?: boolean }>;
+  /** `y` (a hollow with a hurt floor, gen2 WorldManifest.hurtFloor): the floor's top, the hurt line; his feet reaching it inside the zone is
+   *  the fall (a heart; on a `soft` zone, Easy's, the set-back with the hurt sound and blink and no heart) */
+  heartFalls?: Array<{ x0: number; x1: number; soft?: boolean; y?: number }>;
   /** the two-lane forks of the stage (see LaneFork): each lane is checked on its own by the validator and timed on its own by stageTime.ts */
   lanes?: LaneFork[];
   /**
@@ -2887,10 +2890,16 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // the new generator's stages (gen2/game.ts: 5-7 and 5-9): one of the curated rolls, then the shared passes below; and the test link's
   // 1-1 picker's gen2 rolls (testlink1_1.ts: QA builds only, World 1's kit gen2/worlds/w1.ts w1World, the roll's seed)
   const roll11 = gen2Roll11 ? pick11() : null;
-  if (isGen2Stage(config) || roll11) {
+  // (a LISTED stage that has no hand-built plan left is rolled from its world's kit, gen2/listed.ts: its listed seed's proven plan
+  // replayed when its list is in, else its stand-in, else the search from the layout's number. New replaces old: the stage's
+  // hand-built builder is deleted when its row is added)
+  const listed = listedRoll(config);
+  if (isGen2Stage(config) || roll11 || listed) {
     const seed11 = roll11 === 'A' || roll11 === 'B' || roll11 === 'C' ? roll11Seed(roll11) : play11Seed(layoutVariant ?? 1);
     // (Play: the listed seed's proven plan replayed, the planner's buildPlayStage, ~100 ms at CPU x4; a roll the same way)
-    const stage = roll11 ? w1Finish(buildPlayStage(config, w1World(), seed11, difficulty)) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
+    const stage = listed
+      ? w1Finish(buildPlayStage(config, listed.kit(), seedListReady(config.id) ? provenSeedFor(config.id, layoutVariant ?? 1) : layoutVariant ?? 1, difficulty), !!listed.squirrels)
+      : roll11 ? w1Finish(buildPlayStage(config, w1World(), seed11, difficulty)) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
     // (Easy's own goal for the stage, as the first-timer kid bot measured it: easyStage sets it, withGoals leaves it)
     const easyGoal = GEN2_STAGES[config.id]?.easyGoal;
     if (difficulty === 'easy' && easyGoal !== undefined) stage.easyGoal = Math.min(easyGoal, stage.enemies.length);
@@ -2947,7 +2956,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
 /** the platforms a gen2 stage's pickups are placed against (finishStage: trails, finds, fixPickups): on 1-1 the level jumps the flown
  *  arcs cross too (R-165.61, gen2/reach.ts linkArcs), so a pickup past a 240-262 px gap is not moved back; every other stage as before */
 export function finishReach(stage: GeneratedStage, difficulty: Difficulty): number[] {
-  return validateStage(stage, { rooms: false, ...(judgedOnArcs(stage.config.id) ? { arcs: linkArcs(difficulty) } : {}) }).reachableIds;
+  return validateStage(stage, { rooms: false, ...(builtOnArcs(stage) ? { arcs: linkArcs(difficulty, stage.config.id) } : {}) }).reachableIds;
 }
 
 function finishStage<T extends GeneratedStage>(stage: T, reachableIds: number[]): T {
@@ -3035,6 +3044,14 @@ export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
   if (!find) return;
   // (the snail is out in the open, like a note: he is just touched)
   const hidden = find.kind !== 'note' && find.kind !== 'snail';
+  const cids = stage.collectibles.map((c) => c.id);
+  const put = (x: number, top: number) => stage.collectibles.push({ id: (cids.length ? Math.max(...cids) : 0) + 1, type: 'find', x, y: top - 26, collected: false, bobPhase: 0, findId: find.id, hidden });
+  // (a stage whose brick marks the find's spot, gen2's 'findSpot' socket, ProtoExtras.findSpot: there, every roll)
+  const spot = (stage as { proto?: { findSpot?: { x: number; b: number } } }).proto?.findSpot;
+  if (spot) {
+    put(spot.x, spot.b);
+    return;
+  }
   // (the reach only: levelCheck CheckOptions.rooms)
   const reach = new Set(reachableIds ?? validateStage(stage, { rooms: false }).reachableIds);
   const cpts = stage.checkpoints ?? [];
@@ -3077,17 +3094,7 @@ export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
     : cands.filter((c) => c.p.y >= ys[Math.floor(ys.length / 2)]);
   pool.sort((m, n) => m.p.id - n.p.id || m.x - n.x);
   const pick = pool[hash32(`${cfg.id}:${find.id}`) % pool.length];
-  const cids = stage.collectibles.map((c) => c.id);
-  stage.collectibles.push({
-    id: (cids.length ? Math.max(...cids) : 0) + 1,
-    type: 'find',
-    x: pick.x,
-    y: pick.p.y - 26,
-    collected: false,
-    bobPhase: 0,
-    findId: find.id,
-    hidden,
-  });
+  put(pick.x, pick.p.y);
 }
 
 /**
@@ -3097,5 +3104,9 @@ export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
  * the rest (1-1: gen2/rolledFlags, forks11, the quiet line, the standing kinds).
  */
 export function builtOnGen2(config: Pick<LevelConfig, 'id' | 'secret'>): boolean {
-  return isGen2Stage(config) || (config.id === '1-1' && !config.secret);
+  return isGen2Stage(config) || (config.id === '1-1' && !config.secret) || !!listedRoll(config);
+}
+/** a listed stage (gen2/listed.ts) with no hand-built plan: the game rolls it from its world's kit. Its row, or undefined */
+export function listedRoll(config: Pick<LevelConfig, 'id' | 'secret'>): ListedStage | undefined {
+  return config.secret || HAND_STAGES[config.id] ? undefined : listedStage(config.id);
 }

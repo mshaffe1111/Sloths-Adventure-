@@ -10,6 +10,7 @@
  * This file stays light (no stage code), because worldsData.ts builds the stage list from it.
  */
 import type { LevelConfig } from './types.ts';
+import { readStageResult } from './stageBest.ts';
 
 export const DOT_STAGE_ID = '4-D';
 
@@ -85,13 +86,9 @@ export function withExtraStages(levels: LevelConfig[], on = newStagesOn()): Leve
     if (at < 0) continue;
     const c = ex.config();
     try {
-      const saved = localStorage.getItem(`sloth_lvl_${c.id}`);
-      const parsed = saved ? JSON.parse(saved) : null;
+      const parsed = readStageResult(localStorage.getItem(`sloth_lvl_${c.id}`));
       if (parsed) {
-        c.completed = !!parsed.completed;
-        c.stars = parsed.stars || 0;
-        c.highScore = parsed.highScore || 0;
-        c.bestTime = parsed.bestTime || 0;
+        Object.assign(c, parsed);
         c.unlocked = true;
       }
     } catch {

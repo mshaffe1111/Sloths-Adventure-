@@ -1879,8 +1879,13 @@ function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof
     // ascents) the camera is in the air and that band showed the bare sky, so the strip's last rows carry on down to the edge
     const gap = vh - (top + dh);
     if (gap > 0) {
-      const rows = Math.max(1, Math.round(ih * 0.03));
-      ctx.drawImage(img, 0, ih - rows, iw, rows, px, top + dh - 1 / k, pw, gap + 2);
+      let foot = rawFeet.get(img);
+      if (foot === undefined || canvasLost(foot, 'backdrop foot')) {
+        const rows = Math.max(1, Math.round(ih * 0.03));
+        foot = stripFoot(img, 0, ih - rows, iw, rows);
+        rawFeet.set(img, foot);
+      }
+      if (foot) ctx.drawImage(foot, 0, 0, FOOT_W, FOOT_H, px, top + dh - 1 / k, pw, gap + 2);
     }
   }
 }
@@ -1893,9 +1898,46 @@ function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof
  * picture, two sizes each (upright and sideways; the quality governor stepping down makes a new one), and only in gameplay: menus and
  * story scenes, baked small, draw the strips as before.
  */
+/** the foot's size: the strip's bottom edge averaged into FOOT_W columns, fading down FOOT_H rows */
+export const FOOT_W = 48;
+export const FOOT_H = 48;
+/** how dark the foot is by the bottom of the view (the soil's DEPTH_DARK) */
+export const FOOT_DARK = 0.45;
+/**
+ * What carries a strip on down below its painted bottom to the bottom of the view (over a chasm, or up a climb where no ground covers
+ * it): its last rows averaged into a few soft columns, darker with depth. Stretched as they were, those rows (World 1's near strip ends in
+ * a log bed's dark jagged marks) stood as a band of hard vertical streaks across the bottom quarter of an upright screen under 1-1's low
+ * log (P11's stills, R-165.129). Baked once, as small as this, and stamped as the rows were: one draw a copy, as before.
+ */
+export function stripFoot(src: CanvasImageSource, sx: number, sy: number, sw: number, sh: number): HTMLCanvasElement | null {
+  if (typeof document === 'undefined') return null;
+  const cv = document.createElement('canvas');
+  cv.width = FOOT_W;
+  cv.height = FOOT_H;
+  const c = cv.getContext('2d');
+  if (!c) return null;
+  c.imageSmoothingEnabled = true;
+  c.imageSmoothingQuality = 'high';
+  // (the bottom edge, averaged across: a column of the foot is the edge's colour there, with no line in it to stretch into a streak)
+  c.drawImage(src, sx, sy, sw, sh, 0, 0, FOOT_W, 1);
+  c.drawImage(cv, 0, 0, FOOT_W, 1, 0, 1, FOOT_W, FOOT_H - 1);
+  // (darker with depth, to FOOT_DARK by the bottom: it reads as the drop going on down, not as more of the forest floor)
+  c.globalCompositeOperation = 'source-atop';
+  const g = c.createLinearGradient(0, 0, 0, FOOT_H);
+  g.addColorStop(0, 'rgba(0,0,0,0)');
+  g.addColorStop(1, `rgba(0,0,0,${FOOT_DARK})`);
+  c.fillStyle = g;
+  c.fillRect(0, 0, FOOT_W, FOOT_H);
+  return cv;
+}
+/** the raw strips' feet (the fitted ones keep theirs with the fit) */
+const rawFeet = new WeakMap<Layer, HTMLCanvasElement | null>();
+
 interface Fitted {
   key: string;
   cv: HTMLCanvasElement;
+  /** the strip's foot (stripFoot), from the fitted pixels, its grade in it */
+  foot: HTMLCanvasElement | null;
   /** the colour grade painted into it (renderScenery's full-screen grade, baked: it is not drawn over the fitted strips again) */
   grade: string;
   /** whether its painted sky is part of it */
@@ -1971,7 +2013,7 @@ function makeFit(img: HTMLImageElement, sky: Layer | null, pitch: number, dh: nu
   c.globalCompositeOperation = 'source-atop';
   c.fillStyle = fitGrade;
   c.fillRect(0, 0, cv.width, cv.height);
-  const f: Fitted = { key, cv, grade: fitGrade, sky: !!sky, oy, d, sky0: sky ? Math.ceil(oy + skyY) : 0 };
+  const f: Fitted = { key, cv, foot: stripFoot(cv, 0, Math.max(0, cv.height - Math.max(2, Math.round(d * 0.03))), bw, Math.max(2, Math.round(d * 0.03))), grade: fitGrade, sky: !!sky, oy, d, sky0: sky ? Math.ceil(oy + skyY) : 0 };
   // (the oldest size goes: its pixels are freed now, not whenever the collector gets to them)
   // (three: this quality step's and the two lighter ones', all fitted under the title card, so a step down mid-play is a swap)
   if (list.length >= 3) list.shift()!.cv.width = 0;
@@ -1993,7 +2035,7 @@ function drawFitted(ctx: CanvasRenderingContext2D, img: HTMLImageElement, part: 
   const key = fitKey(img, sky, pitchF, dhF, k);
   const list = fits.get(img);
   // (a fit the phone took back draws nothing: let go, so the plan makes it again and the frame draws the old way meanwhile)
-  if (list && stripMode === 'plan') for (let i = list.length - 1; i >= 0; i--) if (canvasLost(list[i].cv, 'backdrop fit')) list.splice(i, 1);
+  if (list && stripMode === 'plan') for (let i = list.length - 1; i >= 0; i--) if (canvasLost(list[i].cv, 'backdrop fit') || canvasLost(list[i].foot, 'backdrop foot')) list.splice(i, 1);
   let f = list?.find((x) => x.key === key);
   if (stripMode === 'plan') {
     if (f) return;
@@ -2021,7 +2063,6 @@ function drawFitted(ctx: CanvasRenderingContext2D, img: HTMLImageElement, part: 
   const sh = sky ? skyRows(sky, img, dh) : 0;
   const skyTop = top + dh * SKY_OVERLAP - sh;
   const gap = vh - (top + dh);
-  const rows = Math.max(1, Math.round(ih * 0.03)) * (f.d / ih);
   const W = Math.ceil(vw * k);
   const Hd = Math.ceil(vh * k);
   let x0 = -((camX * par) % pitch);
@@ -2038,7 +2079,7 @@ function drawFitted(ctx: CanvasRenderingContext2D, img: HTMLImageElement, part: 
     // (a screen taller than any phone: the sky's top row carries on up to the edge)
     if (sky && skyTop > 0) ctx.drawImage(cv, 0, f.sky0, bw, 1, px, 0, (bw * r) / k, skyTop + 1 / k);
     // the strip's last rows carry on down to the bottom of the view (up a climb the camera is in the air: drawStrip)
-    if (gap > 0) ctx.drawImage(cv, 0, f.oy + f.d - rows, bw, rows, px, top + dh - 1 / k, (bw * r) / k, gap + 2);
+    if (gap > 0 && f.foot) ctx.drawImage(f.foot, 0, 0, FOOT_W, FOOT_H, px, top + dh - 1 / k, (bw * r) / k, gap + 2);
   }
   ctx.imageSmoothingQuality = q;
 }

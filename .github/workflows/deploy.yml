@@ -32,7 +32,10 @@ jobs:
         with:
           node-version: 22
       - run: npm install --no-audit --no-fund --legacy-peer-deps
-      - run: npx tsx --test --test-shard=${{ matrix.shard }}/6 src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts
+      # the art inventory test also checks the cut pieces not packed yet on the branches that hold them (src/game/art/inventory.test.ts);
+      # without them it still checks those rows are not placed, so a missing branch does not fail this step
+      - run: git fetch --no-tags --depth=1 origin art-director:refs/remotes/origin/art-director art-raw-2026-11-07:refs/remotes/origin/art-raw-2026-11-07 || echo "art branches not fetched"
+      - run: npx tsx --test --test-shard=${{ matrix.shard }}/6 src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts src/game/art/*.test.ts
 
   # The other gates (artcheck, knowncheck, clipcheck, drawcheck: reference/methods/gates.md), side by side with the tests. A failing
   # gate blocks the publish like a failing test (LAWS.md law 5).

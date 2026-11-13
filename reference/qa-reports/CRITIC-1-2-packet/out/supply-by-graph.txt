@@ -1,0 +1,42 @@
+== ONLY=harvest-12-A (60 seeds, Normal)
+throws 30 of 60 sections per roll 14 - 14
+56 pool short at slot # (n# combine: no floating section left)
+30 pool short at slot # (n# practise: no climb section left)
+27 THROW gen# 1-2: no section fits node n# (rest): the pool is spent (4 that fit are laid already, slot #)
+24 node code: V3 at token 4: P2^+ uses the double before its teach
+24 node code: V3 at token 4: Pc2 uses the double before its teach
+== ONLY=harvest-12-A NOARR=1 (w1-meadow rest-only)
+throws 4 of 60 sections per roll 14 - 16
+104 pool short at slot # (n# combine: no floating section left)
+54 pool short at slot # (n# practise: no climb section left)
+36 node code: V3 at token 4: P2^+ uses the double before its teach
+36 node code: V3 at token 4: Pc2 uses the double before its teach
+36 node code: V11 at token 12: 4 of 8 content nodes are 'b' (cap 3)
+== ONLY=harvest-12-B (60 seeds, Normal)
+throws 58 of 60 sections per roll 16 - 16
+58 THROW gen# 1-2: no section fits node n# (rest): the pool is spent (4 that fit are laid already, slot #)
+4 pool short at slot # (n# twist: no floating section left)
+4 node code: V11 at token 12: 4 of 8 content nodes are 'c' (cap 3)
+4 node code: V11 at token 12: 'c' on two neighbouring content nodes
+2 node code: V3 at token 3: P2^+ uses the double before its teach
+== ONLY=harvest-12-B NOARR=1 (w1-meadow rest-only)
+throws 1 of 60 sections per roll 16 - 17
+114 pool short at slot # (n# twist: no floating section left)
+52 pool short at slot # (n# descent: no bounce section left)
+36 pool short at slot # (n# practise: no climb section left)
+26 node code: V3 at token 3: P2^+ uses the double before its teach
+26 node code: V3 at token 3: Pc2 uses the double before its teach
+== ONLY=harvest-12-C (60 seeds, Normal)
+throws 0 of 60 sections per roll 15 - 16
+58 pool short at slot # (n# fork: no floating section left)
+46 pool short at slot # (n# descent: no bounce section left)
+42 pool short at slot # (n# combine: no climb section left)
+28 node code: V11 at token 6: 'b' on two neighbouring content nodes
+28 node code: V3 at token 4: P2^+ uses the double before its teach
+== ONLY=harvest-12-C NOARR=1 (w1-meadow rest-only)
+throws 0 of 60 sections per roll 15 - 16
+58 pool short at slot # (n# fork: no floating section left)
+46 pool short at slot # (n# descent: no bounce section left)
+42 pool short at slot # (n# combine: no climb section left)
+28 node code: V11 at token 6: 'b' on two neighbouring content nodes
+26 node code: V3 at token 4: P2^+ uses the double before its teach

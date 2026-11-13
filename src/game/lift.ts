@@ -4,6 +4,8 @@
  * where the basket is at any moment.
  */
 
+import { cyclePos } from './clock.ts';
+
 export interface LiftInfo {
   /** the basket floor's height at the top stop and at the bottom stop (y grows downward: top < bottom) */
   top: number;
@@ -25,7 +27,7 @@ export const liftCycle = (l: LiftInfo) => 2 * ((l.bottom - l.top) / l.speed + l.
 export function liftY(l: LiftInfo, t: number): number {
   const ride = (l.bottom - l.top) / l.speed;
   const T = liftCycle(l);
-  const u = (((t + l.phase) % T) + T) % T;
+  const u = cyclePos(t, l.phase, T);
   const ease = (k: number) => 0.5 - 0.5 * Math.cos(Math.PI * Math.max(0, Math.min(1, k)));
   if (u < l.wait) return l.bottom;
   if (u < l.wait + ride) return l.bottom - (l.bottom - l.top) * ease((u - l.wait) / ride);

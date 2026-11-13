@@ -1,0 +1,77 @@
+
+[chain] normal, stage 1-2: a floor mushroom, then 3 pillar mushrooms (caps 70 x 30 on pillars 120 wide), then a bank. S = cap centre to cap centre, px
+  (a) LEVEL caps: how each S ends. held = thumb right all the way; hover = steering at each cap
+       S    held     hover
+      90    skip     clean
+     100    skip     clean
+     110    skip     clean
+     120    pillar   clean
+     130    pillar   clean
+     140    skip     clean
+     150    skip     clean
+     160    pillar   clean
+     170    pillar   clean
+     180    skip     clean
+     190    pillar   clean
+     200    clean    clean
+     210    clean    clean
+     220    clean    clean
+     230    clean    clean
+     240    pillar   pillar
+     250    pillar   pillar
+     260    pillar   pillar
+     270    pillar   pillar
+     280    fell     fell
+     290    fell     fell
+     300    fell     fell
+     310    fell     fell
+     320    fell     fell
+     330    fell     fell
+  (b) STEPPED caps (each `step` px higher than the last; negative: lower): the S that end clean, 5 px apart
+    step  -90   held clean 220-255            held clean-or-pillar 85-300 (holes)     hover clean 100-255
+    step  -60   held clean 210-245            held clean-or-pillar 80-290 (holes)     hover clean 80-245 (holes)
+    step  -30   held clean 205-235            held clean-or-pillar 125-280 (holes)    hover clean 80-235
+    step    0   held clean 195-230            held clean-or-pillar 115-270 (holes)    hover clean 80-230
+    step   30   held clean 185-220            held clean-or-pillar 105-260 (holes)    hover clean 80-220
+    step   60   held clean 175-210            held clean-or-pillar 90-255 (holes)     hover clean 105-210
+    step   90   held clean 165-200            held clean-or-pillar 85-245 (holes)     hover clean 105-200
+    step  120   held clean 145-180            held clean-or-pillar 80-235 (holes)     hover clean 80-180
+    step  140   held clean 80-175             held clean-or-pillar 80-225             hover clean 80-175
+    step  150   held clean 80-170             held clean-or-pillar 80-220             hover clean 80-170
+  (c) thumb held, by where he starts his run (0-110 px further back, 12 starts): starts that end clean / on a pillar / fell, level caps
+    S 195   clean 12  pillar 0  fell 0  other 0
+    S 200   clean 12  pillar 0  fell 0  other 0
+    S 205   clean 12  pillar 0  fell 0  other 0
+    S 210   clean 12  pillar 0  fell 0  other 0
+    S 215   clean 12  pillar 0  fell 0  other 0
+    S 220   clean 12  pillar 0  fell 0  other 0
+    S 225   clean 12  pillar 0  fell 0  other 0
+    S 230   clean 10  pillar 2  fell 0  other 0
+    S 235   clean 0  pillar 12  fell 0  other 0
+  (d) PILLAR width (level, thumb held): S clean / S clean-or-pillar
+    pillar  70   clean 195-240 (holes) clean-or-pillar 195-245
+    pillar 120   clean 195-230        clean-or-pillar 115-270 (holes)
+    pillar 160   clean 195-230        clean-or-pillar 105-290 (holes)
+    pillar 200   clean 195-230        clean-or-pillar 100-310 (holes)
+  (e) the EXIT off the last cap (level chain, S 215, thumb held): the bank lip E px past the last pillar (120 wide), its top `out` px over the pillar top (the cap is +30): E that end clean
+    out    0   E 0-170
+    out   30   E 0-160
+    out   60   E 0-150
+    out   90   E 0-140
+    out  120   E 0-135
+    out  150   E 0-120
+    out  170   E 0-110
+    out  185   E 0-100
+    out  195   E 0-90
+  (f) the ENTRY: the floor mushroom its edge d0 px before the lip (level, thumb held): S clean
+    d0   0   S 195-230
+    d0  20   S 195-230
+    d0  40   S 195-230
+    d0  60   S 195-230
+  (g) a NERVOUS thumb: one extra Jump flick in the air (frames 14-70, every 2nd), level chain: how the 29 tries end, thumb held / hover
+    S 170 held   clean 1  skip 16  pillar 12  fell 0  short 0
+    S 170 hover  clean 27  skip 2  pillar 0  fell 0  short 0
+    S 190 held   clean 1  skip 16  pillar 4  fell 8  short 0
+    S 190 hover  clean 27  skip 2  pillar 0  fell 0  short 0
+    S 215 held   clean 4  skip 6  pillar 10  fell 9  short 0
+    S 215 hover  clean 27  skip 2  pillar 0  fell 0  short 0

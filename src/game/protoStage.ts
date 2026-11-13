@@ -66,8 +66,8 @@ import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, t
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4' | '8-4';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4' | '8-4';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
 // 5-5 Caught in Silk (w5Stages.ts): the cocoons and the pouch scene
 HAND_STAGES['5-5'] = '5-5';
 // 7-4 The Way Down (Matt, 2026-10-29: not a climb; the floor crumbles into a slide seen from behind: w7Slide.ts)
@@ -111,6 +111,12 @@ export interface StageHint {
    * (said the first time that stage is played)
    */
   firstOf?: string;
+  /**
+   * a stage's own TEACH line (its first trap, a new creature's way): Dot says it as a teach line, which waits for a clear moment (up
+   * to TEACH_WAIT_MS) rather than being old news after a few seconds, stays its full reading time, and is never cut by a stock lesson
+   * (dotLines.ts engineGuideLine `teach`). The stage's data says so; the engine names no stage
+   */
+  teach?: true;
 }
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }
@@ -123,6 +129,8 @@ export const waterArt = (kind: WaterKind | undefined): 'pit' | 'calm' => (kind =
 export interface ProtoExtras {
   hints: StageHint[];
   covers: LeafCover[];
+  /** the stage's cast and drop traps, when its brief names a cast (castPlay.types.ts): the kit runs these animals, not predatorAI.ts */
+  cast?: import('./castPlay.types.ts').CastData;
   /** the beats, for the blueprint and the tests: [x0, x1, name] */
   beats: Array<[number, number, string]>;
   /** pickups the last pass had to move to where he can get them (flowerReach.ts): a hand-built stage should need none */
@@ -138,13 +146,14 @@ export interface ProtoExtras {
   /** dressing from World 1's new painted pieces (w1NewArt.ts, the mixer's stage spec `dress`): a frame name, its centre x and the ground
    *  it stands on (1-1: the squirrels who watch him leave); the bootprint clue is its own decal, flush on the piece top at b (w1NewArt.ts drawW1Clue) */
   mixDress?: Array<{ n: string; x: number; b: number; flip?: boolean }>;
+  /** where the stage's find stands (gen2: the first 'findSpot' socket a laid brick carries): x, and the top b of the piece it is on.
+   *  stageGenerator addFinds puts the find there (26 px over b, as on any spot) instead of on a ledge picked by a hash */
+  findSpot?: { x: number; b: number };
   /** drawn water a stage declares (engine.ts drawWaterAndFlags): from x0 to x1, its surface at y, a body to below the ground. Its `kind`
    *  picks its art (the designer, 11-05): 'deadly' (the default) and 'teaching' are the world's painted pit water (World 1's murky creek,
    *  stageArt.ts drawPitWater), 'calm' is the clear swim water (calmWaterArt.ts), only where he swims, from 6-7 on. Lily pads over it draw
    *  on its surface; falling in is a splash, then under it, then the stage's own fall */
   water?: Array<{ x0: number; x1: number; y: number; kind?: WaterKind }>;
-  /** 1-2's catch mushrooms (platform ids): one under each high branch's near end, a miss bounced back up to the trail (buildPlan catchUp) */
-  catchUps?: number[];
   /** hollows in climb trunks (1-4): drawn on the trunk at this height, glowing once he is close */
   hollows?: Array<{ x: number; y: number }>;
   /**
@@ -311,16 +320,6 @@ export function plainOrder(heights: readonly number[]): number[] {
 /** how high a double jump lifts him (computed once from the physics) */
 const RISE = maxRise();
 
-/**
- * 1-2 The Petal Trail asks for 80 petals, not the generated stage's 33 (Matt, 2026-10-23): the trail holds about half again as many, so he
- * has to follow most of it, high and low, to open the sanctuary. One petal in trails, at most six on a screen (petals.ts, Matt 2026-10-29)
- * leaves the trail 105-121 petals, so it asks for 72 (was 80), keeping it about half again as many.
- */
-export const PETAL_GOAL_12 = 72;
-/** 1-2's catch mushrooms (buildPlan catchUp) stand this far past the near end of the branch they bounce him back up to */
-export const CATCH_DX = 10;
-/** and under highLeaps' branches (240 up: a walk off one lands further on, and the bounce wants a second flick and a steer) */
-export const CATCH_HIGH_DX = -10;
 /** 1-5 More Petals asks for 77 (a step up from 1-2's 72; was 90 before the six-a-screen cap left it 108-122), and holds about one and
  *  a half times that */
 export const PETAL_GOAL_15 = 77;
@@ -341,8 +340,6 @@ export const NEST_GOAL_48 = 8;
 /** 4-8's falls: how far onto the shelf the water lands (the boulder's last stretch), and how far above the shelf it pours from */
 const FALL_LIP = 60;
 const FALL_HEAD = 280;
-/** 1-3 Branch Snakes asks for 16 snakes, not 10: the stage holds about 25, so the punching it teaches is most of the way through */
-export const SNAKE_GOAL_13 = 16;
 
 /** the stage's length target: a quick, sure player (Matt) needs at least this long (s) */
 export const EXPERT_SECONDS = 140;
@@ -503,8 +500,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   if (plan === '1-8') return buildLongBranch(config, seed);
   const R = stream(seed);
   const P: Platform[] = [];
-  /** 1-2's catch mushrooms (catchUp) */
-  const CATCH_UPS: number[] = [];
   const V: Vine[] = [];
   const ROPES: Rope[] = [];
   const RIVERS: RiverZone[] = [];
@@ -1415,8 +1410,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       const guard = snakes && k % 2 === 1;
       const w = Math.round(guard ? R.r(240, 270) : R.r(170, 230));
       branch(bx, bx + w, y);
-      // (the branches are 240 up: a bounce and a second flick; a walk off one carries him further, so its catch reaches back under the gap)
-      if (k > 0) catchUp(bx, CATCH_HIGH_DX);
       if (guard) snake(bx + w / 2, y, w - 100);
       else row(bx + 40, bx + w - 40, y - 34, 2, 'hibiscus');
       bx += w + Math.round(dbl ? two * R.r(0.6, 0.7) : one * R.r(0.4, 0.55));
@@ -1486,19 +1479,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
 
 
   /**
-   * 1-2's way back up (fix-petals, 2026-11-01): a mushroom on the floor at the near end of a high branch, so a hop that falls short of it
-   * (or a walk off the stair top under it) is one bounce back up to the trail, never the rest of the run's petals lost. The first-timer
-   * bot left 15-23 petals a run on 1-2's boughs, every one up a run it had fallen off with no way back, and the door stayed sealed on
-   * every Normal roll tested (70-77 of 92-99). 1-2 teaches the petal goal, so a missed hop costs a moment, not the goal. (A bounce goes
-   * up through the branch over it: branches are stood on from above only.)
-   */
-  function catchUp(bx: number, dx = CATCH_DX) {
-    if (plan !== '1-2') return;
-    CATCH_UPS.push(pid);
-    P.push({ id: pid++, x: Math.round(bx + dx), y: G - 30, width: 70, height: 30, type: 'bouncy' });
-  }
-
-  /**
    * the petal stairs: stumps rising to a run of branches, the petals climbing with them. The forest floor carries on below (safe),
    * but the petals are up top. With `nook`, a branch above the run hides behind leaves that part as he comes close: more petals there.
    */
@@ -1509,17 +1489,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     const steps = [40, 80, 120];
     for (const h of steps) {
       const w = R.r(115, 140);
-      // (1-2: each step stands down into the ground, the bank broken around it, as lowStumps' do: the first, 40 px, was a thin ledge he
-      // walked straight through on the floor, its petal over his head; fix-petals)
-      if (plan === '1-2') {
-        close();
-        block(x, x + w, h).height = h + BANK_H;
-        flower(x + w / 2, G - h - 34, 'orchid');
-        run(w);
-        open(x);
-        run(R.r(50, 75));
-        continue;
-      }
       block(x, x + w, h);
       flower(x + w / 2, G - h - 34, 'orchid');
       run(w + R.r(50, 75));
@@ -1531,7 +1500,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     for (let k = 0; k < n; k++) {
       const w = Math.round(R.r(220, 300));
       branch(bx, bx + w, y);
-      catchUp(bx);
       row(bx + 40, bx + w - 40, y - 34, 2, 'orchid');
       if (k === n - 2) nookAt = bx + w * 0.5;
       bx += w + Math.round(reachJump(0, false) * R.r(0.35, 0.5));
@@ -1575,7 +1543,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       for (let j = 0; j < n; j++) {
         const w = Math.round(R.r(200, 280));
         branch(bx, bx + w, y);
-        if (j > 0) catchUp(bx);
         row(bx + 40, bx + w - 40, y - 34, 2, 'hibiscus');
         bx += w + Math.round(reachJump(0, false) * R.r(0.35, 0.5));
       }
@@ -1661,51 +1628,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     pieces.push({ k: 'highrun', x0, x1: x });
   }
 
-  if (plan === '1-2') {
-    // 1-2 The Petal Trail: the petals show the way. Taught on the floor (they arc over each gap where the jump goes), tested up the
-    // stumps to the branches overhead, twisted into a trail that swaps between high and low. The stage asks for 33 of them.
-    // (Rebuilt 2026-10-28: the trail is bounces and arcs, up and down, where 1-1 is hops along stones; the steps are 40 up and wide,
-    // the hidden shelf is a mushroom up, and between the pieces the petals go up a mushroom and arc back down over a dip.)
-    beat('Learn: follow the petals', () => {
-      rest(R.r(300, 340));
-      // (the rest's first petal lay 60 px behind where he starts (spawnX 140): nobody walking on ever took it, so the stage that teaches
-      // the petal goal starts with none behind him; fix-petals)
-      for (let i = C.length - 1; i >= 0; i--) if (C[i].type === 'flower' && C[i].x < 140) C.splice(i, 1);
-      hint(x - 160, 'Follow the petals', 'Follow the petals', 'Follow the petals');
-      row(x - 160, x + 40, G - 34, 3, 'orchid');
-      const one = reachJump(0, false);
-      for (const w of [one * 0.4, one * 0.5, one * 0.6]) {
-        run(R.r(160, 220));
-        const edge = x;
-        close();
-        const far = Math.round(edge + w);
-        softPit(edge, far);
-        arc(edge - 50, far + 50, G - 110, 3, 'hibiscus');
-        open(far);
-      }
-      run(R.r(160, 220));
-      // (then the petals up the stumps, or up a mushroom, in this roll's rhythm)
-      section('start');
-      flag();
-    });
-    beat('Test: up to the branches', () => {
-      hint(x + 60, 'The petals go up', 'The petals go up', 'The petals go up');
-      // (every version climbs the stairs to the hidden shelf with World 1's note: w1Sections.ts)
-      section('develop');
-      flag();
-    });
-    beat('Twist: high and low', () => {
-      hint(x + 60, 'Stay on the petals, high or low', 'Stay on the petals, high or low', 'Stay on the petals, high or low');
-      section('twist');
-      flag();
-    });
-    beat('Finish', () => {
-      // (the trail's own beat, in this roll's rhythm: up a mushroom to the petals and down again, or up the stairs and along)
-      section('finish');
-      homeRun(['dip']);
-    });
-    thinFinish(120);
-  }
 
   /** branches over a soft pit with a snake on most of them: punch it or hop over it (falling only drops him to the moss) */
   function snakeBranches(n: number, y: number) {
@@ -1774,44 +1696,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     pieces.push({ k: 'snakes', x0, x1: x });
   }
 
-  if (plan === '1-3') {
-    // 1-3 Branch Snakes: punching. One snake asleep on a wide branch to learn on, then snakes on narrow branches (punch or hop),
-    // then a snake guarding a rope: clearing the stage teaches Shimmy Rope, and a short rope near the end is there to try it on.
-    // (Rebuilt 2026-10-28: the walks between the snakes hold rocks to hop and dips, the stumps stay low, no tall double jumps.)
-    beat('Learn: the sleeping snake', () => {
-      rest(R.r(420, 470));
-      // (stumps and a rock before the first snake: the first-timer bot walked into it 2.5 s in, before Dot's tip, on every roll; nothing
-      // can hurt in the first five seconds, 2026-10-28)
-      lowStumps();
-      busy(1, ['log'], R.r(200, 240));
-      const wx = x + 120;
-      branch(wx, wx + 420, G - 90);
-      snake(wx + 260, G - 90, 60, true);
-      row(wx + 40, wx + 160, G - 124, 2, 'orchid');
-      hint(wx - 80, 'Hop up beside the sleeping snake and tap to punch it', 'Hop up beside the sleeping snake and press Punch', 'Hop up beside the sleeping snake and press J to punch');
-      run(R.r(600, 640));
-      expert += 3;
-      // (then two more snakes, awake now, in this roll's rhythm: w1Sections.ts)
-      section('start');
-      flag();
-    });
-    beat('Test: snakes on the branches', () => {
-      hint(x + 60, 'Punch the snakes or hop over them', 'Punch the snakes or hop over them', 'Punch the snakes or hop over them');
-      section('develop');
-      flag();
-    });
-    beat('Twist: the rope guard', () => {
-      hint(x + 60, 'A snake guards the rope', 'A snake guards the rope', 'A snake guards the rope');
-      section('twist');
-      flag();
-    });
-    beat('Finish', () => {
-      section('finish');
-      // the short rope to try the new move on (it needs the skill this stage teaches, so it is a reason to come back)
-      ropeGap(false, true, true);
-      homeRun();
-    });
-  }
 
   /** petals arcing over soft gaps only a double jump crosses: the top of each arc is higher than one jump reaches */
   function doubleArcs(tight = false) {
@@ -5327,7 +5211,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
   cid = heartsAtFlags(C, checkpoints, cid);
   // the puzzle rooms' own platforms (a seesaw's two ends, a gate's door): added once, here, so the game and the check see the same ground
   const kit: KitExtras | undefined = ROOMS.length ? { rooms: ROOMS } : undefined;
@@ -5356,7 +5240,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     proto: {
       ...(W3D.length ? { w3decor: W3D } : {}),
       ...(THORNS.length ? { thorns: THORNS } : {}),
-      hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(CATCH_UPS.length ? { catchUps: CATCH_UPS } : {}), ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}), ...(RING ? { ring: RING } : {}),
+      hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}), ...(RING ? { ring: RING } : {}),
       ...(MIX ? { mix: MIX, grant: ['shimmy'] as SkillId[] } : {}),
       ...(W4C.length || W4K.length || W4R.length || Object.keys(W4X).length ? { w4: { ...W4X, ...(W4C.length ? { chimes: W4C } : {}), ...(W4K.length ? { knots: W4K } : {}), ...(W4R.length ? { rocks: W4R } : {}) } } : {}),
     },

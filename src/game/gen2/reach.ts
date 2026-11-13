@@ -3,32 +3,18 @@
  * t-designer-reach@030a4093: reference/specs/reach.md §2 (the arcs, flown on the real engine at 30 fps) and reference/specs/bands.md
  * §1-§2 (the bands a section may ask for). Every row names its `source` line so the Critic can diff this file against the specs.
  *
- * SCOPE (THE BOUNDARY, packet E0a): these figures gate 1-1 ONLY (`judgedOnArcs`). Every other stage (5-7, 5-9, Worlds 6-8, the old
+ * SCOPE (THE BOUNDARY, packet E0a): these figures gate the stages of the JUDGED table only (`judgedOnArcs`). Every other stage (5-7, 5-9, Worlds 6-8, the old
  * generator) keeps physics.ts's closed-form figures exactly as before and carries the verdicts as `notJudged`.
  */
 import type { Difficulty } from '../difficulty.ts';
 import type { Band, BandTable, FlownArc, ReachMove, ReachScope, SectionKind } from './verdicts.types.ts';
+import { STAGE_TABLE } from './worlds/stageTable.ts';
+import { FLOWN_ROWS } from './worlds/flownArcs.ts';
 
-// ───────────────────────── reach.md §2: the flown arcs, per scope ─────────────────────────
+// ───────────────────────── the flown arcs, per scope: world data (worlds/flownArcs.ts) ─────────────────────────
 
-const row = (move: ReachMove, climb: [number, number], n: [number, number, number], e: [number, number, number], source: string): FlownArc[] => [
-  { move, scope: 'normal-1-1', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
-  { move, scope: 'easy-any', climb: { block: climb[0], thin: climb[1] }, gap: { from70: e[0], lastGround: e[1], any: e[2] }, source },
-];
-
-/** every row of reach.md §2 ("Normal 1-1 and Easy are the same unless two figures are given") */
-export const FLOWN_ARCS: readonly FlownArc[] = [
-  // (N any 246, not the table's 244: the same row's "the Critic's finer flight found 246 on Normal too: design to 246")
-  ...row('single-hold', [123, 117], [137, 223, 246], [141, 227, 246], 'reach.md §2 "Single, hold" (N any: "design to 246")'),
-  ...row('single-flick', [123, 117], [128, 213, 239], [132, 217, 243], 'reach.md §2 "Single, flick"'),
-  ...row('single-tap', [87, 81], [77, 163, 184], [77, 163, 184], 'reach.md §2 "Single, Pad tap" (one figure: the same on Easy)'),
-  ...row('double-hold', [214, 208], [292, 379, 409], [296, 383, 411], 'reach.md §2 "Double, hold"'),
-  ...row('double-flick', [212, 206], [283, 370, 396], [287, 374, 400], 'reach.md §2 "Double, flick"'),
-  ...row('double-tap-tap', [150, 144], [191, 278, 299], [195, 282, 299], 'reach.md §2 "Double, Pad tap,tap"'),
-  // (the bounce's gap is one figure, mushroom at the lip, for every take-off column)
-  ...row('bounce', [223, 217], [179, 179, 179], [183, 183, 183], 'reach.md §2 "Bounce (floor mushroom, cap 30 px up)"'),
-  ...row('bounce-air', [317, 309], [340, 340, 340], [340, 340, 340], 'reach.md §2 "Bounce + air jump"'),
-];
+/** every flown row, each scope's (reach.md §2 for 1-1 and Easy, chain.md §1 for 1-2): world data, since a scope names its stage */
+export const FLOWN_ARCS: readonly FlownArc[] = FLOWN_ROWS;
 
 /** the apex of his feet over the floor (reach.md §2's first column), for the headroom a move needs */
 export const APEX: Readonly<Record<ReachMove, { px: number; source: string }>> = {
@@ -66,7 +52,19 @@ export const BANDS: BandTable = {
   'double-test-gap': { easy: 'none', normal: b(252, 262) },
   'bounce-teach': { easy: b(232, 246), normal: b(232, 246) },
   'bounce-air-test': { easy: b(236, 250), normal: b(236, 250) },
+  // (its LEVEL row; a stepped hop reads CHAIN_BANDS by its step: chainBand)
+  'chain-hop': { easy: b(205, 220), normal: b(205, 220) },
 };
+/** chain.md §3, cap to cap (S, cap centre to cap centre) by the step between the two caps, px up: the same rows on both settings. A step
+ *  in no row is not laid (between the rows; a cap more than 66 px over the last, or more than 36 px under it) */
+export const CHAIN_BANDS: ReadonlyArray<{ step: readonly [number, number]; s: { lo: number; hi: number }; source: string }> = [
+  { step: [-6, 6], s: { lo: 205, hi: 220 }, source: 'chain.md §3 "Cap to cap, level (±6 px)"' },
+  { step: [24, 36], s: { lo: 195, hi: 210 }, source: 'chain.md §3 "Cap to cap, a step up of 24-36 px"' },
+  { step: [54, 66], s: { lo: 185, hi: 200 }, source: 'chain.md §3 "Cap to cap, a step up of 54-66 px"' },
+  { step: [-36, -24], s: { lo: 215, hi: 225 }, source: 'chain.md §3 "Cap to cap, a step down of 24-36 px"' },
+];
+/** the band a chain hop of this step may ask for; 'none' for a step in no row */
+export const chainBand = (step: number): Band => CHAIN_BANDS.find((r) => step >= r.step[0] && step <= r.step[1])?.s ?? 'none';
 export const BAND_SOURCE: Readonly<Record<SectionKind, string>> = {
   'single-gap': 'bands.md §2 "Single jump, gap"',
   'single-rise': 'bands.md §2 "Single jump, rise"',
@@ -75,17 +73,30 @@ export const BAND_SOURCE: Readonly<Record<SectionKind, string>> = {
   'double-test-gap': 'bands.md §2 "Double gap (Normal only; Easy has none)"',
   'bounce-teach': 'bands.md §2 "Bounce teach, floor mushroom"',
   'bounce-air-test': 'bands.md §2 "Bounce + air jump test (U, V)"',
+  'chain-hop': 'chain.md §3 "Cap to cap"',
 };
 
 // ───────────────────────── lookups ─────────────────────────
 
-/** the stages judged on the flown arcs (THE BOUNDARY: 1-1 only, on both settings; ADR-001 §3's "easy-any" is limited to 1-1 here) */
-export const judgedOnArcs = (stageId: string): boolean => stageId === '1-1';
+/**
+ * THE TABLE (packet E12 item 3, D43): the stages judged on the flown arcs, each with its Normal scope (its own flown rows above). A stage
+ * is judged where it has a row, on both settings; Easy's rows are `easy-any`. DATA: read from the one stage table (worlds/stageTable.ts,
+ * a row's `judged`; INT-E), so no line here names a stage; judging the next stage is flying it, entering its rows and giving its row
+ * `judged`. Mutable: a test fixture adds and removes its own line (listed.ts, tests only).
+ */
+export const JUDGED: Record<string, ReachScope> = Object.fromEntries(Object.entries(STAGE_TABLE).flatMap(([id, r]) => (r.judged ? [[id, r.judged]] : [])));
 
-/** where a stage's setting has flown rows (reach.md "Scope"): Normal 1-1, Easy anywhere; undefined: unflown (`reach.unflown`) */
+/** is this stage judged on the flown arcs (THE BOUNDARY: a stage with a JUDGED row, on both settings) */
+export const judgedOnArcs = (stageId: string): boolean => Object.hasOwn(JUDGED, stageId);
+
+/** is this BUILT stage judged on the flown arcs: a stage gen2 built (it carries its gen2 record) whose id has a JUDGED row. A stage
+ *  the old builder laid under such an id (an old layout, the testers' control course) is not: every reader of a built stage asks this */
+export const builtOnArcs = (st: { config: { id: string }; gen2?: unknown }): boolean => !!st.gen2 && judgedOnArcs(st.config.id);
+
+/** where a stage's setting has flown rows (reach.md "Scope"): Normal by its JUDGED row, Easy anywhere; undefined: unflown (`reach.unflown`) */
 export function scopeOf(stageId: string, setting: Difficulty): ReachScope | undefined {
   if (setting === 'easy') return 'easy-any';
-  return stageId === '1-1' ? 'normal-1-1' : undefined;
+  return judgedOnArcs(stageId) ? JUDGED[stageId] : undefined;
 }
 
 /** a flown row; throws on an unflown scope (a caller checks scopeOf first) */
@@ -94,7 +105,12 @@ export function arc(move: ReachMove, scope: ReachScope): FlownArc {
   if (!a) throw new Error(`reach.ts: no flown row for ${move} in ${scope}`);
   return a;
 }
-export const scopeFor = (setting: Difficulty): ReachScope => (setting === 'easy' ? 'easy-any' : 'normal-1-1');
+/** the judged stage's own scope on a setting; a stage with no flown rows there throws by name (a caller asks judgedOnArcs first) */
+export function scopeFor(setting: Difficulty, stageId: string): ReachScope {
+  const s = scopeOf(stageId, setting);
+  if (!s) throw new Error(`${stageId} ${setting} has no flown rows (reach.ts JUDGED)`);
+  return s;
+}
 
 /** the band's top, or undefined for 'none' */
 export const bandHi = (kind: SectionKind, setting: Difficulty): number | undefined => {
@@ -108,8 +124,8 @@ export const bandHi = (kind: SectionKind, setting: Difficulty): number | undefin
  * from 70 px (132). Double: a double flick from 70 px (283 / 287); no "from 55" figure was flown for the double, so 70 is used on both.
  */
 export interface JumpArcs { single: { gap: number; climb: { block: number; thin: number } }; double: { gap: number; climb: { block: number; thin: number } } }
-export function linkArcs(setting: Difficulty): JumpArcs {
-  const s = scopeFor(setting);
+export function linkArcs(setting: Difficulty, stageId: string): JumpArcs {
+  const s = scopeFor(setting, stageId);
   const sf = arc('single-flick', s), df = arc('double-flick', s);
   return {
     single: { gap: setting === 'normal' ? bandHi('single-gap', 'normal')! : sf.gap.from70, climb: sf.climb },
@@ -117,8 +133,8 @@ export function linkArcs(setting: Difficulty): JumpArcs {
   };
 }
 /** the lesser moves at their best (any timing, hold): what a block must keep out by SPARE (bands.md §1) */
-export function lesserArcs(setting: Difficulty): JumpArcs {
-  const s = scopeFor(setting);
+export function lesserArcs(setting: Difficulty, stageId: string): JumpArcs {
+  const s = scopeFor(setting, stageId);
   const sh = arc('single-hold', s), dh = arc('double-hold', s);
   return { single: { gap: sh.gap.any, climb: sh.climb }, double: { gap: dh.gap.any, climb: dh.climb } };
 }
@@ -128,9 +144,10 @@ export function lesserArcs(setting: Difficulty): JumpArcs {
  * band's top (Easy's double gap, band 'none': up to the double flick from 70 px, and `band.out` refuses it as a verdict). A raised landing
  * has no flown figure: the caller keeps its closed-form envelope, capped by this.
  */
-export function gapEnvelope(dbl: boolean, setting: Difficulty): number {
+export function gapEnvelope(dbl: boolean, setting: Difficulty, stageId: string): number {
+  const s = scopeFor(setting, stageId);
   if (!dbl) return bandHi('single-gap', setting)!;
-  return bandHi('double-test-gap', setting) ?? arc('double-flick', scopeFor(setting)).gap.from70;
+  return bandHi('double-test-gap', setting) ?? arc('double-flick', s).gap.from70;
 }
 /** the highest rise the builder lays on 1-1: the single-rise band's top, or the double teach's rise band's top (its thin-lip row for
  *  a lip under a block's 50 px) */

@@ -5,7 +5,7 @@
  *
  * The music is recorded (loops.ts): each piece was played once by its orchestra, offline (tools/music), and the
  * game plays the recordings back, mixing their stems with the game's state. Nothing is composed while the game
- * runs; the effects, stingers and cues are still played live.
+ * runs; the effects and stingers are still played live.
  *
  * Browsers only allow audio after a tap or key press, so nothing is created until `unlock()` is called from a
  * user gesture; scene changes asked for before that are remembered and start the moment audio is allowed.
@@ -22,8 +22,8 @@ import { playSyllable, voiceReady } from './voiceBank.ts';
 import { Speech, voiceOf, type Tone } from './voiceLine.ts';
 import { playSting, STORY_STING_NAMES, stingDuck, stingVoices } from './stingers.ts';
 import { CALM, type MusicState } from './adaptive.ts';
-import { CUE_DUCK, CUE_NAMES, cuePlan, playCue, type CueName } from './cues.ts';
 import { STINGS } from './stingers.ts';
+import { busLevels, DEFAULT_MUSIC, DEFAULT_SFX } from './volumeCurve.ts';
 
 // how far ahead of the audio clock the ambience is scheduled: long enough to ride out a stalled main thread
 // (a level loading, a garbage collection) without it dropping out and then firing in one burst
@@ -109,8 +109,8 @@ export class Conductor {
   private streak = 0;
   private lastHitAt = -10;
 
-  musicVol = readNum(KEY_MUSIC, 1);
-  sfxVol = readNum(KEY_SFX, 1);
+  musicVol = readNum(KEY_MUSIC, DEFAULT_MUSIC);
+  sfxVol = readNum(KEY_SFX, DEFAULT_SFX);
   muted = (() => {
     try {
       return localStorage.getItem(KEY_MUTED) === 'true';
@@ -167,11 +167,9 @@ export class Conductor {
       }
       this.ctx = ctx;
       ctx.onstatechange = this.announce;
-      // the recorded sounds load in the background; until they are ready the effects use their synthesized layers
+      // the sampled layers of the few synthesized effects (sfx.ts) load in the background; until they arrive those play their synthesized layers alone
       void import('./sampleLoader.ts').then((m) => m.loadSamples(this.core as AudioCore)).catch(() => {});
-      // the recorded effect set: decoded at once, the frequent moves first, so the first jump already has its sound
-      void import('./sfxRecLoader.ts').then((m) => m.loadRec(this.core as AudioCore)).catch(() => {});
-      // the orchestra the game's stingers and cues play on (the music no longer needs it: it is recorded)
+      // the orchestra the game's stingers play on (the music no longer needs it: it is recorded)
       this.warmEffects();
       // the recorded music: its manifest and files' addresses, then whatever piece was asked for in the meantime
       const core = this.core;
@@ -188,21 +186,35 @@ export class Conductor {
       this.amb.lite = this.lite;
       this.core.lite = this.lite;
       this.applyVolumes(true);
+      if (this.paused) this.applyPause();
       document.addEventListener('visibilitychange', this.onVisibility);
       this.timer = setInterval(this.tick, TICK_MS);
     }
-    if (this.ctx.state !== 'running' && !this.muted && !document.hidden && !this.appAway) {
-      if (fromTap) this.wokeAt = performance.now();
-      this.ctx.resume().then(this.announce, () => {});
-    }
+    this.applyRunState(fromTap);
     this.announce();
+    this.loadRecorded();
     // anything asked for before audio was allowed
     if (this.core && this.loops && !this.loops.playing && this.wantTheme) this.startTheme(this.wantTheme, this.wantOpts, true);
     if (this.core && this.wantAmbient && this.amb && !this.amb.type) this.amb.start(this.wantAmbient);
   }
 
+  /**
+   * the recorded effect set (most of the game's effects: sfxRec.ts has no stand-in for them): decoded at once, the frequent moves first, so
+   * the first jump already has its sound. A load that failed is tried again on the next tap (sfxRecLoader.ts forgets it, and says so once)
+   */
+  private recJob: Promise<void> | null = null;
+  private loadRecorded() {
+    const core = this.core;
+    if (!core || this.recJob) return;
+    this.recJob = import('./sfxRecLoader.ts')
+      .then((m) => m.loadRec(core))
+      .catch(() => {
+        if (this.core === core) this.recJob = null;
+      });
+  }
+
   private stingsWarm = false;
-  /** fetch, once, the recordings the story's stings play, so the first one is not played by the stand-in voices (the cue pieces have usually loaded most of them) */
+  /** fetch, once, the recordings the story's stings play, so the first one is not played by the stand-in voices (the game's stingers have usually loaded most of them) */
   warmStoryStings() {
     const core = this.core;
     if (!core || this.stingsWarm) return;
@@ -217,11 +229,22 @@ export class Conductor {
   }
 
   private appAway = false;
-  private onVisibility = () => {
-    if (!this.ctx) return;
-    if (document.hidden || this.appAway) this.ctx.suspend().catch(() => {});
-    else if (!this.muted) this.ctx.resume().catch(() => {});
-  };
+  /**
+   * The one rule for whether the sound runs: the context is suspended while the game is muted, hidden or away (the Android app in the
+   * background or without the audio focus), and running otherwise. Every path that can change one of them comes here (a muted start
+   * used to leave a context the WebView started running for the whole session).
+   */
+  private applyRunState(fromTap = false) {
+    const ctx = this.ctx;
+    if (!ctx) return;
+    if (this.muted || document.hidden || this.appAway) {
+      if (ctx.state === 'running') ctx.suspend().catch(() => {});
+    } else if (ctx.state !== 'running') {
+      if (fromTap) this.wokeAt = performance.now();
+      ctx.resume().then(this.announce, () => {});
+    }
+  }
+  private onVisibility = () => this.applyRunState();
   private ducked = false;
   /** another app speaks for a moment over the Android app (directions, a notification): play on at a quarter of the volume */
   setDucked(on: boolean) {
@@ -254,7 +277,8 @@ export class Conductor {
 
   private startTheme(id: string | null, opts: SceneOptions, first: boolean) {
     const loops = this.loops;
-    if (!loops) return;
+    // (muted, nothing is fetched or decoded: the wanted piece starts when the sound comes back on, setMuted)
+    if (!loops || this.muted) return;
     const fade = first ? 0.02 : opts.fade ?? 1.4;
     const rec = id ? recordingFor(loops.manifest, id, opts.seed) : null;
     loops.setIntensity(opts.intensity ?? this.intensity, true);
@@ -274,7 +298,7 @@ export class Conductor {
 
   private aheadTimer: ReturnType<typeof setTimeout> | null = null;
   private effectsWarm = false;
-  /** fetch, once, the recordings the game's stingers and cues play (the victory, the boss's arrival, the checkpoint's bells) */
+  /** fetch, once, the recordings the game's stingers play (the victory, the defeat, the boss's fall) */
   private warmEffects() {
     const core = this.core;
     if (!core || this.effectsWarm) return;
@@ -283,10 +307,6 @@ export class Conductor {
       .then((m) => {
         const voices = new Set<string>();
         for (const n of Object.keys(STINGS)) for (const v of stingVoices(n)) voices.add(v);
-        for (const n of CUE_NAMES) {
-          const p = cuePlan(n, DEFAULT_KEY, 0.5);
-          for (const x of [...p.notes, ...p.chords, ...p.hits]) voices.add(x.voice);
-        }
         const need = new Set<string>();
         for (const v of voices) for (const g of m.VOICE_GROUPS[v] ?? []) need.add(g);
         return m.loadOrch(core, need);
@@ -315,24 +335,6 @@ export class Conductor {
   get musicState(): MusicState {
     return this.mstate;
   }
-
-  /** an in-key stinger over the music (cues.ts), placed on the music's next eighth note; the music dips a little under it */
-  cue(name: CueName) {
-    const core = this.core;
-    if (!core || this.muted || core.ctx.state !== 'running') return 0;
-    const now = core.ctx.currentTime + 0.03;
-    const lp = this.loops;
-    const t = lp ? lp.gridAfter(now) : now;
-    const dur = playCue(core, name, this.key(), t, lp?.beatDur ?? 0.5);
-    this.duck(CUE_DUCK[name], Math.max(0.2, dur * 0.6), 0.8);
-    return dur;
-  }
-
-  /**
-   * Speed the music up or down (1 = as written). The music is recorded at its written speed, so this does nothing now (a recording
-   * played faster rises in pitch); kept so the game's calls stay as they were.
-   */
-  setTempo(_scale: number) {}
 
   /** the key of the music right now (sound effects play in it) */
   key(): KeyInfo {
@@ -492,19 +494,28 @@ export class Conductor {
 
   // ------------------------------------------------------------------------------------------- state
 
+  /** the stage is paused (the pause menu, or a view opened from it): the music muffled and quieter, the ambience low. Only a change
+   *  does anything, so a screen change never touches the music's level */
   setPaused(p: boolean) {
+    if (p === this.paused) return;
     this.paused = p;
+    this.applyPause();
+  }
+
+  private applyPause() {
+    const p = this.paused;
     const core = this.core;
     if (!core) return;
     const t = core.ctx.currentTime;
     const open = Math.min(20000, core.ctx.sampleRate / 2 - 100);
     core.musicFilter.frequency.cancelScheduledValues(t);
     core.musicFilter.frequency.setTargetAtTime(p ? 650 : open, t, p ? 0.05 : 0.12);
-    // (the world's tune goes on under the pause menu at 45%, muffled: SN-6)
-    core.musicDuck.gain.cancelScheduledValues(t);
-    core.musicDuck.gain.setTargetAtTime(p ? PAUSED_MUSIC : 1, t, p ? 0.05 : 0.12);
+    // (the world's tune goes on under the pause menu at 45%, muffled: SN-6; on its own gain, never the sting's duck)
+    core.pauseLevel.gain.cancelScheduledValues(t);
+    core.pauseLevel.gain.setTargetAtTime(p ? PAUSED_MUSIC : 1, t, p ? 0.05 : 0.12);
     core.amb.gain.cancelScheduledValues(t);
-    core.amb.gain.setTargetAtTime(p ? 0.18 * this.sfxVol : 0.6 * this.sfxVol, t, 0.1);
+    const amb = busLevels(this.musicVol, this.sfxVol).sfx;
+    core.amb.gain.setTargetAtTime(p ? 0.18 * amb : 0.6 * amb, t, 0.1);
   }
 
   setLowHealth(on: boolean) {
@@ -515,10 +526,13 @@ export class Conductor {
     this.muted = m;
     writeStr(KEY_MUTED, String(m));
     this.applyVolumes(false);
-    const ctx = this.ctx;
-    if (!ctx) return;
-    if (m) setTimeout(() => this.muted && ctx.suspend().catch(() => {}), 350);
-    else if (!document.hidden && !this.appAway) ctx.resume().catch(() => {});
+    if (!this.ctx) return;
+    // (muting suspends a moment later, once the fade-out is heard)
+    if (m) setTimeout(() => this.applyRunState(), 350);
+    else {
+      this.applyRunState();
+      if (this.loops) this.startTheme(this.wantTheme, this.wantOpts, !this.loops.playing);
+    }
   }
 
   setMusicVolume(v: number) {
@@ -543,14 +557,18 @@ export class Conductor {
       else p.setTargetAtTime(v, t, 0.05);
     };
     set(core.master.gain, this.muted ? 0 : this.ducked ? 0.25 : 1);
-    set(core.music.gain, MUSIC_LEVEL * this.musicVol);
-    set(core.sfx.gain, SFX_BUS * this.sfxVol);
-    set(core.amb.gain, (this.paused ? 0.18 : 0.6) * this.sfxVol);
+    // (the sliders on an even-decibel bar; the louder one is the overall level, set after the dynamics, the other the balance before
+    // them: volumeCurve.ts, R-165.125)
+    const lv = busLevels(this.musicVol, this.sfxVol);
+    set(core.out.gain, lv.out);
+    set(core.music.gain, MUSIC_LEVEL * lv.music);
+    set(core.sfx.gain, SFX_BUS * lv.sfx);
+    set(core.amb.gain, (this.paused ? 0.18 : 0.6) * lv.sfx);
     // the reverb and echo tails follow the same volumes as the dry sound
-    set(core.sends.music.gain, this.musicVol);
-    set(core.musicEchoSend.gain, this.musicVol);
-    set(core.sends.sfx.gain, this.sfxVol);
-    set(core.sends.amb.gain, (this.paused ? 0.3 : 1) * this.sfxVol);
+    set(core.sends.music.gain, lv.music);
+    set(core.musicEchoSend.gain, lv.music);
+    set(core.sends.sfx.gain, lv.sfx);
+    set(core.sends.amb.gain, (this.paused ? 0.3 : 1) * lv.sfx);
   }
 
   /** what is happening right now: used by tests and the debug overlay */

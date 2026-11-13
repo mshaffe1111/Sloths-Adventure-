@@ -23,6 +23,8 @@ export interface StageSpec {
   desc?: string;
   /** the count {n} names: what the engine's goal is on every roll (stagePlanGoals.test.ts checks it) */
   goal?: number;
+  /** which way the route leads when it is not the mission's usual way (a climb goes up, the rest right): 4-7 goes down the cliff */
+  travel?: import('./stageKit.types.ts').Travel;
 }
 
 const S = (type: StageSpec['type'], name: string, desc?: string, goal?: number): StageSpec => ({ type, name, desc, goal });
@@ -33,7 +35,9 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
   1: [
     S('sprint', 'Into the Canopy', 'Run the high branches of the kapok trees and reach the shrine.'),
     S('harvest', 'The Petal Trail', 'Meeca left a trail of petals. Follow it and gather them.'),
-    S('purge', 'Branch Snakes', 'Clear the snakes off the branches with your Claw Punches.'),
+    // (the story keeper's line, 11-12 2:10 PM, naming the goal exactly, every vine: it is gen2/worlds/w1Arc13.ts MISSION_13, held equal by
+    //  library13.test.ts)
+    S('purge', 'Branch Snakes', 'Shake every vine, and off the snakes glide.'),
     S('ascent', 'Up the Kapok', 'Climb the giant kapok to the very top.'),
     S('harvest', 'Where She Walked', 'The petals go on. Gather more.'),
     S('vine_runner', 'First Lianas', 'Swing on the hanging lianas across the gaps in the canopy.'),
@@ -71,7 +75,7 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('vine_runner', 'Crosswind', 'Swing across the gaps while the wind pushes you.'),
     S('stealth', "The Sovereign's Dive", 'The Sky Sovereign is hunting. Stay under cover.'),
     S('ascent', 'Above the Mist', 'Climb above the mist to the eagle nests.'),
-    S('sprint', 'The Long Drop', 'Glide down the long drops to the shrine.'),
+    { ...S('sprint', 'The Long Drop', 'Glide down the long drops to the shrine.'), travel: 'down' },
     S('rescue', 'Nests on the Cliff', 'Free the little ones caught on the cliff.'),
     S('gauntlet', 'The Aerie', "Fight through the Sovereign's aerie and reach the shrine."),
   ],

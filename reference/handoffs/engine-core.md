@@ -4,6 +4,162 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
+Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
+proven plan; Play is never blocked).
+
+## 0g. World 1's ground seams (RF2, t-render-2, 11-12): what the next engineer on the painted ground must know
+- **Soil fills are sampled FILL_INSET (3) sheet px in from every edge** (groundPaint.ts fillSrc). The ground sheets are lossy WebP: fills
+  2-3 of every world sit on the lip strip and their last 3 rows are dark (World 1: 60 -> 36), and Worlds 6/9 bleed at side edges. Drawn
+  edge to edge every 600 units, that was a hairline along every soil row (1-1's pillars at y 1200, 1-3's floor line at 600). Never
+  sample a packed piece to its frame's edge; measure the edge rows (RF2 REPORT has the numbers per world) before trusting "periodic".
+- **The floor's lip at a raised bank:** under a short step (< SHORT_STEP, 60) between two floors the floor's lip is drawn AFTER the run
+  (stepFootLips), covering the end pieces' clean cut; beside any higher bank it runs LIP_UNDER (60) on under it, drawn BEFORE it
+  (lipUnder), so only the gap where the end face curves back in shows it. Without them: a bare box with straight sides at every step.
+- **1-1's dip pockets are painted in drawGround (baked squares) with groundDepth**, not live in drawProtoScene: live, laid from the view,
+  they were a lighter box between the earth pillars that moved with the camera. Anything drawn live over the squares must use the
+  ground's darkening, or be baked with it.
+- **Backdrop strips over a chasm** end in stripFoot (scenery.ts): the bottom edge averaged to 48 columns, darker downward. Stretching
+  the strip's last rows (the old way) made hard vertical streaks across the bottom quarter of an upright screen.
+- Finding a drawer: tools in RF2's REPORT ("Method update"): a per-pixel trace of every draw into the ground squares beats guessing.
+
+## 0d. Rulings and facts to keep (R-165.112, 11-11)
+- **A list is never in the main script.** `gen2/proven/seeds-<stage>.ts` (GENERATED) holds the list; `gen2/provenIndex.ts` (GENERATED)
+  holds, a stage, its count, its version (`listVersion`, the hash a run's `list` stamp carries) and `load: () => import(...)`. The
+  build makes each list a chunk (`assets/seeds-1-1-*.js`) that the service worker precaches (the `js` glob). Main: 3,956,993 B with 200
+  seeds and with 355 (it was 3,981,833 with the 200 inside it). `seedListChunk.test.ts` walks the static imports from `src/main.tsx`
+  and fails if any reaches a list file. Never import a list file by name.
+- **Who loads it:** `loadSeedList(id)` (never rejects; one fetch at a time; a file that is not the one the index names is refused).
+  The game asks at the card (`buildAhead.ts scheduleAhead`), at `App.tsx startLevel`, and WAITS in `launchEngine`
+  (`seedListSettled`, beside `readyToStart`): at most `SEED_LIST_WAIT_MS` 3 s, once a stage; after a failed or stalled load later
+  starts go straight in. Under Node a reader reads the file on the spot (`loadNow`, createRequire): tests and tools need no import.
+  A test that must see the page's side plants a source: `plantSeedListSource` (seedListLoad.test.ts).
+- **The stand-in.** With the list not in memory, 1-1 builds `standIn('1-1')`: FIRST_RUN_11 (seed 4106, firstRun11.ts, now in the main
+  script) by its own plan, so Play never searches, never waits on the network and never plays an unproven layout. The play keeps it
+  (`playSeed` pinned in `play11Seed`); the device's shuffled order is not touched. A stage that gets a list later needs its own
+  stand-in in `STAND_INS`, or a not-loaded list falls to `provenGen2Stage` (the search).
+- **Play pressed before the list is in:** `newPlay11` returns null and owes the draw; `play11Seed` makes it at the build.
+  `peekPlay11` returns null until the list is in.
+- **The order of a list is its identity.** Layout variant N is the list's N-th seed (first run 4106 = variant 11, Rolls A/B/C, the
+  bots' calibration on variants 1-40). To ADD seeds: `seedlist --merge <file> --in-order`, the old seeds first, in place. 1-1 now:
+  355 seeds = the 200 in place + 155 after them (reference/qa-reports/R-165.112/list-build.json holds the sweep).
+- **Chromium keeps a failed module fetch for the page's life** (measured: 1 request for 3 asks). So after a failed list load the
+  session plays the stand-in until the app is opened again, although `loadSeedList` asks each time. A real in-session retry needs a
+  fetch()ed JSON list (and its own precache glob): a packet, not done.
+
+## 0e. Lane EN-F, the audit fixes (t-engine-fixes, 11-11/12): what the engine core now promises
+- **One take-off (A-04):** engine.ts `groundJump()` is the only ground jump: a press on the ground, in coyote time, or buffered before a
+  landing. It judges the spore fog itself (`flightClear`), and the landing's floor effects (crumble timer, a boss's cracking ledge) run
+  before a buffered jump leaves; a mushroom always bounces and uses a buffered press up. A new jump modifier goes in groundJump, once.
+- **One way back to a flag:** `respawnAtCheckpoint` restarts every run state: the chase (`restartChase`, A-07; the collapse is reused in
+  7-6), the tide, the lantern, World 5's stillness (`w5.calm()`), crumbled platforms (`crumbledWhole`, A-03) and latched presses
+  (`dropPresses`). A new per-run state is reset there. `softFall` (and heartFall / lanternSetBack through it) also makes crumbled
+  platforms whole. `loseLife` and `chaseCaught` do nothing once the run is over (the engine keeps stepping under the Game Over card).
+- **Presses never outlive a held world:** `InputEngine.dropPresses()` (latched jump, punch, kick, mega; never a held direction) runs at
+  the respawn, on resume and at a guardian entrance's end. realPlay.ts and bossPlay.ts inputs have the same method: keep them in step.
+  The reverse holds too: a stage-start clearAll() makes the recogniser and the Pad `restate()` (forget what was said, keep the fingers),
+  so a thumb held under the title card steers on its next move. A flag before the chase start gives the fresh chase (chase.ts
+  restartAt, A-07b).
+- **Paused = one still frame (A-06):** `stillDrawn`; the loop draws once and stops until resume, a resize or a restored context; pause()
+  settles the shake. **Failed frames (A-12):** the stage ends once 20 of the last 60 frames failed (a ring), never on a rarer error.
+- **The camera's rise cap is a rate (A-05):** 11 px per 1/30 s step = 330 px/s at every frame rate. Never cap it per drawn frame:
+  planted, that put his head 70 px under the HUD at 15 fps (cameraBounce.test.ts guards it).
+- **Test kit:** `src/game/engineCoreHarness.ts` (the audit's real-engine harness: makeEngine, standOn, step).
+
+## 0d. Lane EN-G, guards (t-engine-guards, 11-11): the loop, saves, the generality gate
+- **The loop (R-165.116):** engine.ts `loop()` keeps `acc`, real time not yet played, and plays it in whole 1/30 s steps (at most 3 a
+  frame; past that the rest is dropped). A frame within 0.5 ms of 33.3 ms is exactly one step and its hair is let go (so a 59.94 Hz
+  screen never slips a frame). `lastRenderTime` is the time of the last frame that ran; the governor, the recorder and the perf log see
+  that true gap. Every step is exactly 1/30 s, the same as realPlay's `DT`, so the bots and the browser now play the same physics.
+  Proof: `src/game/frameLoop.test.ts` (48-144 Hz, struggling phones, one late frame, a stall). Still open: audit A-05 (the camera's
+  11 px rise cap is per update, so a 67 ms frame lifts 22 px; the camera owner's fix) and A-06 (a paused stage redraws every frame).
+- **Saves (R-165.117):** saveFile.ts has ONE entry limit, `MAX_ENTRY_CHARS` 16,000. `src/game/saveFill.ts` (a test kit, never imported
+  by the game) fills every save key through its real writer at its largest; `saveRoundTrip.test.ts` round-trips it and fails when a
+  save key has no filler, an entry passes half the limit, or the file passes 60% of `MAX_SAVE_BYTES`. A new save key: add its filler.
+  0.9.5's own saves are `src/game/fixtures/save-0.9.5-*.json` (made by `tools/save/oldSaves.ts` in a worktree of that release).
+- **The generality gate (R-165.123):** `npx tsx tools/engine/generalitycheck.ts` (`--list` shows every hit). Engine scope and every
+  exemption, with its reason, are at the top of the tool. Its debt is `tools/engine/generality.known.json`: shrink-only both ways. When
+  you move a literal into world data or a brief, lower that entry's `count` in the same commit, or the gate fails. Never add to the list:
+  put the fact in world data. A new non-test .ts under src/game/gen2/ (outside worlds/) is engine code from its first commit.
+
+## 0d. The generator's yield (EN-Y, R-165.120, 11-11): what the next engineer on gen2's search must know
+- **Measure with the probe, never by eye:** `npx tsx tools/engine/yield.ts 1-1 --par 4` (200 fresh seeds a setting, about 60 s; `--from`
+  for another range, `--min 50` to fail under 50%, `--json` for each seed's rules). Fresh means above the list's highest seed (61616).
+  11-11: Normal 57% / Easy 55% on 50001-50200, 58% / 54% on 70001-70200 (was 9% / 2%). Tune on one range, report the other.
+- **The table shows a never-clean seed's FIRST refused roll** (what it always returned), so its rule counts lag the search. To see what
+  the later rolls died of, read `gen2.repairs` on the refused stage: each later try adds "roll k, try n: <line>".
+- **Where each piece is (pipeline.ts):** `rollUnmet` (the after-rules, with the slot each names), the accept point in `buildRolled`
+  (search for "R-165.120: a rolled graph's plan is taken only"), `windowFix` (V19b from the gate's numbers), `supplyDeal` + `unfilled`
+  + `poolFits` (the deal and the lay against the pool), `leftShort` and `overspent` inside `layStage` (look-ahead, pacing).
+- **The proof no proven seed moved is by construction, then by the gate.** Everything in the accept point runs only where the old
+  search would have returned a refused roll. `supplyDeal` and the pool look-ahead run on the first roll too: they act only when the
+  pool cannot fill the stage, which a proven roll never had. `seedlist.ts 1-1 --check` is the gate; run it after ANY change here.
+- **TRAP, the replay:** Play and the list rebuild a stage from its stored plan (template, mirror, versions, salt, join kind, node).
+  Anything a repair changes that the plan does not store makes a stage the list can never replay. Pacing first steered the step's
+  direction; that would have failed every new seed's replay. It now changes only the join's KIND. yield.test.ts holds this twice (a
+  paced lay laid again from its plan; a repaired clean roll through packPlan). Keep any new steering to what PlanSlot stores.
+- **TRAP, the deal's stream:** the deal's tries share one rng; filtering a candidate list changes how many numbers it draws and moves
+  every later try. `supplyDeal` runs AFTER the tries, on its own stream (rngFor(seed, 71)), for that reason.
+- **Clean is not listable.** seedlist.ts also holds the quiet line (4 s) and the squirrels, outside the generator: 20 of 200 fresh
+  seeds list (was 0). Most clean seeds fail only the quiet line. That is the next wall, and it needs the quiet line inside `src`.
+  Measure it with `npx tsx tools/engine/seedlist.ts 1-1 --count 400 --worker 0/1 --part /tmp/x.json --from 50001 --to 50201` (a
+  --part run writes no list file). A seam with no beat costs quiet time: pacing's flat join is a pit, not a walk, for that (13 -> 20).
+- **The joins are the lever for height.** A step leans to the corridor's middle, so low in the stage it climbs and spends the rise the
+  climb nodes need. Pacing without the join steering: 35% / 33% clean; with it 57% / 55%.
+- **What still refuses (50001-50200, Normal):** V19b 59, floor.unmarked 58 (a seam's catch bough under a thin first piece lets him walk
+  off under it: quiet-arrival, log-chain, high-walk), signature short of sections or of rise 47, climb 27 (the corridor's top: the
+  stage spends its 900 px of rise before the climb node). sprint-A lays clean 15 in 18; sprint-B 4 in 13, sprint-D 5 in 15.
+- **A2, the quiet line in the search (the lead's 7:31 PM ruling):** `BuildRequest.also` is a caller's rule the search asks last and
+  repairs for; `tools/engine/listRules.ts` `quietJudge` is the list's quiet line as that rule, and seedlist.ts builds and checks under
+  it. `yield.ts --list` measures LISTABLE: 33% on 50001-50200, 28% on 70001-70200 (was 0 of 200). TRAP: a seed listed under `also`
+  must be checked and searched under `also` too, or its search is another stage than its replay (seedListBreaches takes it).
+- **What caps listable is data, measured:** the two test-backs always break the quiet line (out of the pool: 46%); sprint-B with its
+  climb node needs 1,127 px of climb in 900 (1 in 30); sprint-D 0 of 43 until the test-backs go. `supplyDeal` weighs the least
+  climb against the corridor plus two soft bands: one band (980) is the natural line and moves two proven deals.
+- **Tonight's helpers on this branch:** B = packet E12 items 1-3 (gen2/listed.ts done; hurt floor laid and hurting, not drawn;
+  reach.ts JUDGED table, 1-2's rows not entered). C = EN-T (stageModes.ts; camera lead not wired). REPORT.md has each one's next step.
+- **Late additions (8:30 PM):** `reach.ts builtOnArcs(stage)`: the arcs judge a stage gen2 BUILT, never an id alone (the level
+  check, finishReach and the petal pass ask it; a hand fixture needs a `gen2` record to be flown). `GraphBrief.pits: 'hurt'`: the
+  lay puts the world's hurt floor under every section pit past clearStart (briefPits.test.ts, 1-1's own sections). TRAP it found:
+  anything laid with a y of its own (a zone's line) must move in layStage's shift-down block, or it is wrong on every rolled stage.
+  TRAP the lock found: JSON field ORDER is part of a stage's fingerprint; write new fields where the old ones were written.
+- **Next, in order of what it buys:** park the two test-backs and rebuild the list; more rising signature pieces; pacing from the first roll (moves proven seeds: the lead's call,
+  at a list rebuild); the window read where the gate reads it (67% of x, the highest piece there) instead of by slot; the deal
+  weighing height (a test dealt climb beside a climb node cannot fit the corridor).
+
+## 0e. The piece library (EN-L, 11-11): a stage's brief, not its sections, says what it is
+- **Four things are the brief's now, applied by the lay (gen2/types.ts GraphBrief; nothing shipped sets them yet):** `pits` ('hurt': a
+  hollow under every section pit; 'lesson': only under sections that teach or use the hurt floor's lesson), `petals: 'low'` and
+  `offRoad: 'fruit'` (fillSockets), `trend: 'level'` (a seam's step and the pick lean to the start height, pipeline LEVEL_SWING), and
+  `pick` (stagePool: the whole library by need; `feel` only excludes through `pick.refuse`, which also empties a socket whose
+  `allow` starts with a refused name). Tests: briefPits, briefPickups, briefPick (gen2/), each on 1-1's OWN sections and proven plans.
+- **The proof is a tool, run it before and after any change here:** `npx tsx tools/engine/library.ts --seeds 120 --par 3 --flown`
+  (1-2's brief from World 1's sections plus the chain bricks; 11-11: 61% / 56% clean but for the unpainted thorn bed, 0 throws).
+  `library-where.ts <from> <n> [regex]` names the section behind each refusal: read it before guessing.
+- **TRAP, the corridor's middle:** a step join leans to the middle of `manifest.corridor`. World 1's sits 410 px over its floor, so any
+  World 1 stage that is not `level` climbs at every seam whatever its sections do. A level stage also needs room UNDER the floor
+  line (World 1 has 80 px): a per-stage corridor row is not built; the tool overrides it test-side (ROOM_12).
+- **TRAP, a height complaint:** print each laid section's entry and exit height first (two guesses cost 15 minutes here).
+- **One brick, two worlds (A13):** `SectionPiece.slot` + `WorldManifest.slots` (gen2/brickSlots.ts helpers, test-only). Nothing draws
+  `PlacedPiece.art` yet; boughs and mushrooms have no inventory key. The inventory files came unchanged from t-engine-inventory.
+- **Still welded:** World 1's `feel` lists hold stage ids until 1-1's brief takes `pick` and its list is rebuilt.
+
+## 0f. Tonight's pieces wired on the 1-2 path (EN-W, 11-11 late): what the next engineer must know
+- **The thorn bed is found and painted** (`w1Pits.ts`: `findW1Pits` kind `'hurt'`, read off the piece gen2 marks `pit: 'hurt'`;
+  `drawW1Pits` paints the pit's dark and the two cut brambles, `src/assets/props/pits/w1-thorn-*.webp`). So `drop.look-lies` passes on
+  World 1, and the search stops dead-ending on every plan that holds a hollow: 1-2 on flown rows went 0% strict to 118 of 120.
+- **1-2's double is counted by the built stage** (`LevelConfig.doubleTaught`, set by `planBudget` from the world's `lessons`, an
+  earlier stage only; `doubleAllowed` reads it). No shipped config carries it.
+- **Read before quoting an unflown number:** a stage with no JUDGED row (reach.ts) lays to the unflown reach (230 px double; three
+  World 1 sections ask 253-256 and THROW) and carries `NOT_JUDGED_ALL` (pipeline applyVerdicts): its "clean" is not the verdicts'.
+  1-2 needs its own flown rows before `library.ts` without `--flown` means what `--flown` means.
+- **The engine steps one `StageClock`** where `gameTime += dt` was; `gameTime` is a view of it, read AND written through the clock
+  (`engineClock.test.ts`): harnesses place game time (`realPlay.ts` `t`, `tools/perf/frozen.mjs`), so never copy the clock over it. No
+  stage declares a clock yet: serve `ModeHost.clock(id)` from `this.clock.read(id)` when a brief carries `clocks`.
+- **Look, not done:** a hollow under about 70 px wide reads as a column of roots (the banks' end faces meet over it, the ground
+  painter); the slab's left end face peeks; the pictures are not in the stage preload. REPORT.md "Polish check" has all of it.
+- **To see a hollow in the real page:** a worktree, `tools/engine/library.ts` copied into `src/game/gen2/` without its main block, and
+  `stageGenerator.ts` building 1-1 from `kitLib12({ flown: true })`; then `tools/engine/runs/stills-at.mjs` (layout 2, x 26180, 27930).
 
 ## 0c. Rulings and facts to keep (INT-1-1, 11-11)
 - **The help promises only what gets him through** (the lead's ruling): `engine.canGrowAt(piece)` = something grows AND
@@ -99,10 +255,10 @@ A2 (ADR-001). Sections 0a-0b below are still true.
 | Rises with no room for a whole stair grow nothing (228 Easy / 253 Normal over 138 seeds' pieces) | Open: the lead's call (planks?) | REPORT.md |
 | The harness's `died` in 1-1 on Normal | OPEN. RealPlay notes a fall through its loseLife stub; in 1-1 a fall is now a set-back on both settings (as it always was on Easy), so `died` stays false there. Tools that read it on 1-1 (realReach, plainWalk, firsttimer, tools/validate/play.ts) see a set-back, not a death. RealPlay should note set-backs too (realPlay.ts was not mine to write) | REPORT.md Suggestions |
 | The set-back under a rise lands on the low catch branch when he touched it on the way down (the last ledge he stood on) | As Easy has always done; from it he steps back up to the take-off log. Watch it in the A2 work | engine.ts softAt |
-| Main JS chunk headroom (R-165.103, 11-11): React, react-dom and scheduler in a static 'vendor' chunk; `tools/perf/chunkcheck.mjs` holds every JS chunk to 3,994,304 B (gates job, after a build) | In review on t-engine-chunks: main 3,944,491 B (49,813 B under the gate; t-engine-e0a's +15 KB fits). OPEN: cold stage start measured +298 ms median at CPU x4 against main (title +117 ms); no cause found (the profiles are canvas-native work, same code). buildcheck alone: this branch 1 PASS / 3 FAIL (p95 129-166 ms), main 3 PASS (123-146 ms, max 159); it runs the dev server, which manualChunks should not touch, unproven. Next room, if needed: more static manualChunks (gen2/seeds.ts 219 KB, story + journal 150 KB), never a dynamic import a stage needs | vite.config.ts `build.rollupOptions.output.manualChunks` |
+| Main JS chunk headroom (R-165.103, R-165.112): React, react-dom and scheduler in a static 'vendor' chunk; each proven seed list in its own lazy chunk; `tools/perf/chunkcheck.mjs` holds every JS chunk to 3,994,304 B | On t-engine-seedchunks: main 3,957,009 B (37,295 B under the gate), whatever the lists hold. What grows main now is code and inline data, not seeds. OPEN: gen2/seeds.ts (the curated rolls, 244 KB of source, imported by gen2/game.ts) is still in main: the same move would free it (reference/qa-reports/0.9.5/lazy-seeds.py is the old, now stale, contingency) | reference/qa-reports/R-165.112/ |
 | Branch share of thin landings at most 30% a roll (the designer's Round 11) | OPEN. 0.9.5 shipped without it by the lead's ruling (A), because Matt played the same mix on 11-05. The 138 listed rolls read median 48%, worst 65% (branch / solids 30 px tall or less, both settings). `floorRoll.catchStyles ['log','branch']` is NOT in the w1 kit. On seeds 1-40 it alone left 15 of 22 rolls over by that count. The planner counts pieces up to 60 px; agree ONE measure first | R-165.46 |
 | **1-1 after E0a: every roll is refused until C1's re-lay** | The 138 listed seeds are all refused (band.out, block.lesser-passes, teach.double-no-gap-after on every one; see REPORT.md). Play's 1-1 throws on this branch alone: never merge E0 without C1 | R-165.72 |
-| 1-1's proven list: 138 seeds (stale under E0a); the target is 300 (`SEED_LIST_TARGET`), tonight's floor was 100 (`SEED_LIST_MIN`) | OPEN. The yield is about 0.36%, so 300 needs about 85,000 tries: about 1.5 h on 4 workers. Or raise the yield. Then put SEED_LIST_MIN back to 300 | R-165.47 |
+| 1-1's proven list: 355 seeds (11-11, R-165.112; over the 300 target `SEED_LIST_TARGET`); the floor `SEED_LIST_MIN` is still 100 | OPEN: put SEED_LIST_MIN back to 300 (the Designer's number, the lead's call). More seeds cost nothing in main now: sweep past 90000 and add them `--in-order`. The suite's whole-list tests (helpLadderSweep, w1.relay) grow with the list: sample them before the list reaches thousands | R-165.47 |
 | Soft floors under the 6 floorless spots | Not in 0.9.5 (the planner's; the lead's ruling: next week). The list filter (`floorlessGaps`) keeps unmarked floorless rolls out meanwhile, and it stays in permanently | gen2/promises11.ts |
 | The double TEST band 205-228 px and Easy's twin versions | Held. Every double gap is laid in the TEACH band 195-203 (`DOUBLE_TEACH`), because a level double reaches 204 px on some budgets. The test band waits on per-version Easy twins (rise 110-114 px) | w1.ts `DOUBLE_TEACH`/`DOUBLE_TEST` |
 | funcheck findings that held 0.9.5 from going live | Logged by the lead after the merge | R-165.48-.51 |
@@ -110,6 +266,7 @@ A2 (ADR-001). Sections 0a-0b below are still true.
 | #44 version a becomes `d d b d` | Not done | w1.ts |
 | The kit's `squirrels()` decor sockets | Dead data: the pipeline fills only the bootprint decor. The real squirrels come from `w1Squirrels`. Delete the sockets when a list rebuild is planned anyway (removing them may move rolls) | w1.ts ~:120 |
 | 4-9 layout 4's dead log stair (ids 86-89) under its branch bridge; 1-3 Easy dressing behind step branches; 6-1 and 8-1 platforms inside the HUD band | Live defects, open | reference/qa-reports/engine-core/NEXT.md |
+| The art inventory (R-165.104 C, 11-11): `src/game/art/inventory.ts` + `inventory/w1..w10.json` (each world's level art, 120-230 KB, about 24 KB gzipped) and `inventory/cast.json` (characters, enemies, pickups, UI, backdrops: 1.7 MB, never needed at a stage build). Each is its own lazy chunk: `loadInventory(world)` or `loadInventory('cast')`. Not wired into any stage yet: C2 does that. Regenerate with `python3 tools/art/catalog_master.py --emit` after every `--merge`; never hand-edit. Queries: byId, byWorld (made things never W1 unless includeMade), bySlot (slot keys, not the csv's prose), gaps (ask world N's file) | Built, not wired | src/game/art/ |
 | CoachOverlay (old 1-1) still shows coach.jump's old words and the cut coach.nice | Open (the planner's note) | reference/notes/planner-status.md |
 
 `reference/qa-reports/engine-core/NEXT.md` is the 11-05 queue. Some of it is done since (ownLook and the art swap, the double tags via
@@ -124,7 +281,7 @@ gapPx/blocks, `stage.ts --roll` fail-closed). Read it for the open findings at i
 - `src/game/gen2/seedList.ts`:
   - `buildPlayStage` replays a proven plan, else falls back to `provenGen2Stage`;
   - also holds `provenSeeds`, `provenSeedFor`, `seedListBreaches` (what `--check` runs), `packPlan`, `SEED_LIST_MIN`, `SEED_LIST_TARGET`, `QUIET_MAX` (4 s, binding).
-- `src/game/gen2/provenSeeds.ts`: GENERATED, never edit by hand. Each seed with its packed plan, quiet and outro.
+- `src/game/gen2/proven/seeds-<stage>.ts` and `src/game/gen2/provenIndex.ts`: GENERATED (tools/engine/seedlist.ts through seedlistFile.ts), never edit by hand. The list file: each seed with its packed plan, quiet and outro. The index: count, version, loader (section 0d).
 - `src/game/testlink1_1.ts`:
   - `pick11()` returns 'play' | 'old' | 'A' | 'B' | 'C';
   - `newPlay11` / `peekPlay11` / `play11Seed` / `clearPlay11`;
@@ -206,10 +363,11 @@ gapPx/blocks, `stage.ts --roll` fail-closed). Read it for the open findings at i
    Check the seed and the build in the output, not the exit code.
 2. **Seeds proven on old code don't stay proven.** Any change to the kit, pipeline, Dot or flags can break listed seeds (the Dot fix dropped 2 of 100 through the flag check). Run `seedlist --check` after every merge that touches gen2, and re-pin Rolls A/B/C. Roll B's 110867 silently broke V19.
 3. **A post-pipeline pass that can throw needs a matching filter in the list builder.** Play calls `w1Finish`; the builder doesn't. I added `dresses()` to the builder and to `--check` so no listed seed can throw in Play. Do the same for any new finish step.
-4. **The yield is tiny (about 0.35%).** The default cap (`count x 200` seeds) can't reach 100 at that yield. Use `--from/--to` and workers, and budget the time before promising a count.
+4. **The yield is tiny (about 0.4%).** The default cap (`count x 200` seeds) can't reach 100 at that yield. Use `--from/--to` and workers, and budget the time before promising a count. Measured 11-11 on INT-1-1's code: seeds 1-90000 on 4 workers (`--worker i/4 --count 100000 --from 1 --to 90001 --part pN.json`), 381 kept, 2,660 s a worker with the suite running beside it (45 min).
+4a. **The relay test's (b) and (c) are NOT in the list builder** (w1.relay.test.ts: room for help at every rise, put-backs before the need). 26 of the 381 swept seeds fail them and were left out by hand, as C1 left out 25: run the relay test on a candidate list (print every bad line, not its first 10), drop the seeds it names, `--merge --in-order` the rest. Until those two are a filter in the builder (a packet: they live in a test file), every list build repeats this.
 5. **Measures need one definition before they're a bar.** The branch share read 48% my way and 24% the planner's way (30 px vs 60 px pieces, and catchStyles on or off). Settle the measure in the spec before anyone filters on it.
 6. **Recorded facts in tests go stale when a dependency re-measures.** goalsEasy.test held 5-9's old kid runs after the planner re-measured them; firstTimerBot.test holds the live record. Update a recorded fact with its source commit. Never loosen the assertion (law 22).
-7. **Merges with the planner's branch.** We both added `gapPx` to softGap/gDoubleGaps; keep the side with the default (`DOUBLE_TEACH`). `provenSeeds.ts` always conflicts: take yours, then re-merge or rebuild.
+7. **Merges with the planner's branch.** We both added `gapPx` to softGap/gDoubleGaps; keep the side with the default (`DOUBLE_TEACH`). `proven/seeds-1-1.ts` and `provenIndex.ts` always conflict: take yours (both files together), then re-merge or rebuild.
 8. **Things I wrongly assumed:**
    - `isGen2Stage(1-1)` broke Easy's soft-on; tests read gen2 from the built stage (`!!stage.gen2`) instead.
    - roofedDrop must run on gen2-built stages only (4-9 stays as main).

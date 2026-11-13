@@ -7,7 +7,7 @@
  *   round  TEST_ROUND below, bumped BY HAND for each round of testing; the testers' front page shows it in small print, so Matt can tell
  *          testers which round they are on
  */
-import { PROVEN_SEEDS } from './gen2/provenSeeds.ts';
+import { PROVEN_INDEX } from './gen2/provenIndex.ts';
 
 /** bump this by hand for each test round (and say so in the round's notes) */
 export const TEST_ROUND = '1-1 gen2 r1';
@@ -15,26 +15,10 @@ export const TEST_ROUND = '1-1 gen2 r1';
 declare const __GIT_COMMIT__: string;
 export const GIT_COMMIT: string = typeof __GIT_COMMIT__ !== 'undefined' && __GIT_COMMIT__ ? __GIT_COMMIT__ : 'dev';
 
-/** FNV-1a over a string, as 8 hex digits */
-function fnv(s: string): string {
-  let h = 0x811c9dc5;
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 0x01000193) >>> 0;
-  }
-  return h.toString(16).padStart(8, '0');
-}
-
-const lists = new Map<string, string>();
-/** the stage's proven list as a version: its seeds and packed plans hashed (worked out once), or 'none' for a stage with no list */
+/** the stage's proven list as a version: its seeds and packed plans hashed (seedList.ts listVersion; the list tool writes it into the
+ *  index, so it is known without the list in hand), or 'none' for a stage with no list */
 export function seedListVersion(stageId: string): string {
-  let v = lists.get(stageId);
-  if (v === undefined) {
-    const l = (PROVEN_SEEDS as Record<string, unknown>)[stageId];
-    v = l ? fnv(JSON.stringify(l)) : 'none';
-    lists.set(stageId, v);
-  }
-  return v;
+  return PROVEN_INDEX[stageId]?.version ?? 'none';
 }
 
 /** the three, as the moments carry them: `build <commit> list <hash> round <label>` (the round last: it has spaces) */

@@ -9,7 +9,7 @@
  */
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Difficulty } from './difficulty.ts';
-import { judgedOnArcs, linkArcs } from './gen2/reach.ts';
+import { builtOnArcs, linkArcs } from './gen2/reach.ts';
 import type { Platform, Vine } from './types.ts';
 import { HANG_DROP, ROPE_OVERLAP, ropeYAt } from './rope.ts';
 import { maxRise } from './protoCheck.ts';
@@ -131,7 +131,9 @@ export function arcGap(arcs: JumpArcs, a: Platform, b: Platform, allowDouble: bo
  */
 export const EARLY_DOUBLE: ReadonlySet<string> = new Set(['1-1']);
 /** the validator's rule for whether a double jump may be counted on a stage: from stage 6 (1-6's practice spot), and EARLY_DOUBLE */
-export const doubleAllowed = (cfg: { worldIndex: number; miniIndex: number }) => (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6 || EARLY_DOUBLE.has(`${cfg.worldIndex}-${cfg.miniIndex}`);
+/** (packet E12 item 5: or on a stage that carries the fact, `doubleTaught`: gen2 sets it where the world's `lessons` say an EARLIER
+ *  stage taught the double, pipeline.ts planBudget; never read off an id) */
+export const doubleAllowed = (cfg: { worldIndex: number; miniIndex: number; doubleTaught?: boolean }) => !!cfg.doubleTaught || (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6 || EARLY_DOUBLE.has(`${cfg.worldIndex}-${cfg.miniIndex}`);
 
 /** Can the player get from platform a to platform b with jumps (and a double jump)? */
 export function jumpOK(a: Platform, b: Platform, allowDouble = true, arcs?: JumpArcs): { ok: boolean; gap: number } {
@@ -376,14 +378,14 @@ function cutSpans(spans: Array<[number, number]>, x0: number, x1: number): Array
 
 /**
  * validateStage as the game judges the stage (INT-1-1): on 1-1 with the flown arcs of its own setting (gen2/reach.ts linkArcs, the
- * boundary judgedOnArcs; stageGenerator.ts finishReach and the pipeline pass the same), every other stage the closed form, unchanged. The
+ * boundary builtOnArcs: a stage gen2 built, never an id alone; stageGenerator.ts finishReach and the pipeline pass the same), every other stage the closed form, unchanged. The
  * tests that ask "is this shipped stage beatable" ask it this way; validateStage alone on 1-1 reads its 253-256 px double test gaps as
  * past reach (the closed form never flew them)
  */
 export function validateAsJudged(stage: GeneratedStage, opts: CheckOptions = {}): CheckResult {
-  if (!judgedOnArcs(stage.config.id)) return validateStage(stage, opts);
+  if (!builtOnArcs(stage)) return validateStage(stage, opts);
   const d = (stage as { gen2?: { budget?: { difficulty?: Difficulty } } }).gen2?.budget?.difficulty ?? 'normal';
-  return validateStage(stage, { ...opts, arcs: opts.arcs ?? linkArcs(d) });
+  return validateStage(stage, { ...opts, arcs: opts.arcs ?? linkArcs(d, stage.config.id) });
 }
 
 export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): CheckResult {
@@ -425,7 +427,8 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
     for (const w of opts.walls ?? []) pouring.push({ id: -1, x: w.x, width: w.width, top: w.top, bottom: w.bottom });
     plats = [];
     for (const p0 of stage.platforms) {
-      if (p0.broken) continue;
+      // (a hollow's hurt floor, gen2 WorldManifest.hurtFloor, is never stood on: he is set back the moment he touches it)
+      if (p0.broken || p0.pit === 'hurt') continue;
       const p = rolledTo.has(p0.id) ? { ...p0, x: rolledTo.get(p0.id)! } : p0;
       // a lift (2-7) is one stop the player reaches at its top and at its bottom: two copies under one id, so riding it joins them
       if (p.lift) { plats.push({ ...p, y: p.lift.top }, { ...p, y: p.lift.bottom }); continue; }

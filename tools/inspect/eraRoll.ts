@@ -140,7 +140,7 @@ export const NOT_JUDGED: Record<string, string> = {
   '2-4': "its liana chains are checked by the swing checks, not the level check (w2Stages.test.ts)",
   // (its tested roll failed the level check on pickups it could not reach until the petal pass took them out, 2026-10-30; on 6 of the
   // sampled rolls the check still stops short of the exit: to look at)
-  '1-2': 'a hand-built stage checked by its pieces and the swing checks (stage12.test.ts: protoCheck, flowerReach.ts), not the level check',
+  '1-2': "a gen2 stage rolled from World 1's kit (w1Arc12.ts, listed), judged by gen2's verdicts, not the level check",
 };
 
 /** whether the level check judges this stage: its tested roll (layout 1) passes it, and its tests use it */

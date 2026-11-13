@@ -14,7 +14,7 @@ interface Props {
   /** `passed`: the moment of this line has passed (he is past its spot): take it down if it is still up or waiting */
   guide?: GuideFeed | null;
   /** what Dot's guide needs besides */
-  dot: Pick<DotGuideProps, 'engine' | 'playing' | 'coachStep' | 'coachStyle' | 'lessonId' | 'count'>;
+  dot: Pick<DotGuideProps, 'engine' | 'playing' | 'coachStep' | 'coachStyle' | 'lesson' | 'count'>;
 }
 
 /**

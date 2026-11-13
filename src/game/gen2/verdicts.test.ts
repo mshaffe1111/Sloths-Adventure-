@@ -22,7 +22,7 @@ const P = (id: number, x: number, y: number, width: number, height = 300): Platf
 /** a clean 1-1 built stage: one floor, a teach node, and after it a 260 px gap with ground 200 px under it (only the double crosses) */
 const builtClean = () => ({
   platforms: [P(1, 0, G, 1000), P(2, 1260, G, 1000), P(3, 1000, G + 200, 260)],
-  config: { levelHeight: 2000 }, gen2: { nodes: [{ token: 'Tg2>', x0: 0 }] },
+  config: { levelHeight: 2000 }, gen2: { nodes: [{ token: 'Tg2>', x0: 0 }], brief: { teaches: ['double'] } }, // (its brief teaches the double, as 1-1's: the double's promises run by the brief)
 });
 type Ask = JudgedStage['asks'][number];
 const ask = (kind: SectionKind, figure: number, over: Partial<Ask> = {}): Ask =>
@@ -54,7 +54,8 @@ test('ALL_VERDICTS is the union, in order, read off verdicts.types.ts', () => {
   const src = fs.readFileSync(new URL('./verdicts.types.ts', import.meta.url), 'utf8');
   const union = [...src.slice(src.indexOf('export type VerdictName'), src.indexOf('export interface Measure')).matchAll(/\| '([a-z0-9.-]+)'/g)].map((m) => m[1]);
   assert.deepEqual([...ALL_VERDICTS], union);
-  assert.equal(union.length, 16);
+  // (20: landing.dead-zone and bounce.no-purpose, P11; chain.mount, R-165.138, F12)
+  assert.equal(union.length, 20);
 });
 
 test('arc.single-gap-over: Easy 140 px is past a flick from 70 px (132); Normal 150 past the 143 band rule', (t) => {
@@ -116,6 +117,45 @@ test('teach.double-no-gap-after and teach.double-gap-unsafe (Normal only, by the
   const easy = roll('easy', { built: { ...b, platforms: [P(1, 0, G, 1000), P(2, 1200, G, 1000), P(3, 1000, G + 200, 200)] } });
   assert.ok(!names(easy).includes('teach.double-no-gap-after') && easy.notJudged.includes('teach.double-no-gap-after'), 'Easy: stated, not judged');
 });
+test("hazard.untaught: a hurt drop before the end of its lesson's showing piece (both settings); after it, clean (the whole rule: hurtFloor.test.ts)", (t) => {
+  // (the gap at 1000..1260 as a hollow with a hurt floor, a heart drop with its own look; packet E12 item 2)
+  const hollow = { x0: 1000, x1: 1260, lipY: G, ends: { kind: 'heart', to: 'take-off' }, look: 'hurt-art' } as unknown as Drop;
+  const b = builtClean();
+  const at = (shown: number) => ({ drops: [hollow], built: { ...b, spawnX: 0, gen2: { ...b.gen2, hurt: { lesson: 'spikes', clearStart: 900, shown } } } });
+  for (const s of ['normal', 'easy'] as const) {
+    planted('hazard.untaught', s, at(1100), t);
+    assert.deepEqual(names(roll(s, at(1000))), [], `${s}: shown first, the roll is clean`);
+  }
+});
+test("landing.dead-zone and bounce.no-purpose (Matt 11-06, 11-11): a petal log only a mid-air correction reaches; mushrooms on flat ground (the whole rule: landings.test.ts)", (t) => {
+  const b = builtClean();
+  const L = (x: number, y: number, width: number): Platform => ({ id: 90 + x, x, y, width, height: 24, type: 'solid', style: 'moss_stone' });
+  // (a petal log 72 px under the take-off with a log 70 px over the gap: the walk-off falls short, the full jump lands on the log above;
+  // the gap's floor 400 px down, past a double from it)
+  const deep = [P(1, 0, G, 1000), P(2, 1260, G, 1000), P(3, 1000, G + 400, 260)];
+  const dead = { built: { ...b, platforms: [...deep, L(1000, G - 70, 400), L(1080, G + 72, 90)], collectibles: [{ x: 1120, y: G + 38, type: 'flower' }] } };
+  const twin = { built: { ...b, platforms: [...deep, L(1000, G - 70, 400), L(1040, G + 72, 140)], collectibles: [{ x: 1120, y: G + 38, type: 'flower' }] } };
+  const caps = (xs: number[]) => xs.map((x, i): Platform => ({ id: 80 + i, x, y: G - 30, width: 70, height: 30, type: 'bouncy' }));
+  const flat = { built: { ...b, platforms: [...b.platforms, ...caps([300, 500, 700])] } };
+  const bank = { built: { ...b, platforms: [P(1, 0, G, 800), P(4, 800, G - 210, 200, 510), P(2, 1260, G, 1000), P(3, 1000, G + 200, 260), ...caps([300, 500, 700])] } };
+  for (const s of ['normal', 'easy'] as const) {
+    planted('landing.dead-zone', s, dead, t);
+    assert.ok(!names(roll(s, twin)).includes('landing.dead-zone'), `${s}: the log out where the walk-off lands is clean`);
+    planted('bounce.no-purpose', s, flat, t);
+    assert.ok(!names(roll(s, bank)).includes('bounce.no-purpose'), `${s}: a bank 210 px up past the last mushroom gives the three a purpose`);
+  }
+});
+test('chain.mount: a chain\'s first cap on a tall stem (160 px over its bank) needs more than a plain hop (R-165.138); 30 px up is a walk-on', (t) => {
+  const b = builtClean();
+  const cap = (y: number): Platform => ({ id: 9, x: 700, y, width: 70, height: 30, type: 'bouncy' });
+  for (const s of ['normal', 'easy'] as const) {
+    planted('chain.mount', s, { built: { ...b, platforms: [...b.platforms, cap(G - 160)] } }, t);
+    // (INT-2: past the double's gap, the walk-on cap bounces him onto a block 210 px up beside it: it has a purpose, so P11's
+    // bounce.no-purpose leaves it be; before the gap a raised block would hide the gap from the double-teach walk)
+    const road = P(4, 1580, G - 210, 120, 210);
+    assert.deepEqual(names(roll(s, { built: { ...b, platforms: [...b.platforms, road, { ...cap(G - 30), x: 1500 }] } })), [], `${s}: a walk-on cap`);
+  }
+});
 test('first-run.drift: the fixed layout built against its recorded lock', (t) => {
   const layout = { seed: 7, lock: { normal: 'aaa', easy: 'bbb' } };
   assert.deepEqual(firstRunVerdicts(layout, { normal: 'aaa', easy: 'bbb' }), []);
@@ -127,8 +167,8 @@ test('every name that can fail in a flown scope has a planted roll above (the un
   const src = fs.readFileSync(new URL(import.meta.url), 'utf8');
   for (const n of ALL_VERDICTS.filter((x) => x !== 'reach.unflown')) assert.ok(src.includes(`planted('${n}'`) || (n === 'first-run.drift' && src.includes('firstRunVerdicts(layout')), n);
 });
-test('reach.unflown cannot fail inside a flown scope: an unflown scope (Normal past 1-1) states it, with the arc names, in notJudged', () => {
-  const v = judgeRoll({ stageId: '1-2', setting: 'normal', policy: 'per-gap', drops: [], asks: [ask('single-gap', 400)], routeGaps: [] } as Judged11, []);
+test('reach.unflown cannot fail inside a flown scope: an unflown scope (Normal on a stage never flown) states it, with the arc names, in notJudged', () => {
+  const v = judgeRoll({ stageId: '1-4', setting: 'normal', policy: 'per-gap', drops: [], asks: [ask('single-gap', 400)], routeGaps: [] } as Judged11, []);
   assert.equal(v.accepted, true, 'a 400 px gap is not judged where nothing was flown');
   for (const n of ['reach.unflown', ...ARC_VERDICTS]) assert.ok(v.notJudged.includes(n as VerdictName), n);
   for (const s of ['normal', 'easy'] as const) assert.ok(!roll(s, { asks: [ask('single-gap', 400)] }).notJudged.includes('reach.unflown'), `1-1 ${s}: flown`);
@@ -139,7 +179,7 @@ test('the verdict path holds no closed-form figure: reach.ts and verdicts.ts nam
     const code = fs.readFileSync(new URL(f, import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, '');
     assert.doesNotMatch(code, /reachJump|reachBounce|JUMP_RISE|DOUBLE_RISE|BOUNCE_REACH|TAKEOFF_SLACK|physics/, f);
   }
-  for (const a of FLOWN_ARCS) assert.match(a.source, /^reach\.md §2 "/, a.move);
+  for (const a of FLOWN_ARCS) assert.match(a.source, /^(reach\.md §2|chain\.md §1) "/, a.move);
   // (1-1: the band, never maxGap's 229.8 / 203.6 or riseLimit's 143.7 / 113.9)
   const b = (difficulty: Difficulty) => ({ id: '1-1', margin: difficulty === 'easy' ? 0.65 : 0.82, riseShare: difficulty === 'easy' ? 0.84 : 1, difficulty });
   assert.equal(gapFor(0, true, b('normal')), 262);
@@ -148,7 +188,7 @@ test('the verdict path holds no closed-form figure: reach.ts and verdicts.ts nam
   assert.equal(riseCap(true, 0.95, b('easy')), 132);
   assert.equal(riseCap(true, 0.95, b('easy'), true), 128);
   assert.equal(riseCap(false, 0.9, b('normal')), 80);
-  assert.equal(gapEnvelope(true, 'easy'), 287, 'Easy has no double gap band: the flick from 70 px; band.out refuses it');
+  assert.equal(gapEnvelope(true, 'easy', '1-1'), 287, 'Easy has no double gap band: the flick from 70 px; band.out refuses it');
   assert.equal(riseEnvelope(true, 'normal'), (BANDS['double-teach-rise'].normal as { hi: number }).hi);
   // (outside 1-1: the closed form, exactly)
   for (const dy of [-120, -40, 0, 30, 90]) for (const dbl of [false, true]) {
@@ -158,9 +198,9 @@ test('the verdict path holds no closed-form figure: reach.ts and verdicts.ts nam
   // (levelCheck's jumpOK with the arcs: a 240 px level gap one jump at its best crosses, which the closed form says it can't)
   const a = P(1, 0, G, 300), c = P(2, 540, G, 300);
   assert.equal(jumpOK(a, c, false).ok, false);
-  assert.equal(jumpOK(a, c, false, lesserArcs('normal')).ok, true);
-  assert.equal(jumpOK(a, P(2, 600, G, 300), true, linkArcs('normal')).ok, false, 'a 300 px gap: past the double flick from 70 px, 283');
-  assert.equal(jumpOK(a, P(2, 560, G, 300), true, linkArcs('normal')).ok, true, 'a 260 px gap: the double flick crosses');
+  assert.equal(jumpOK(a, c, false, lesserArcs('normal', '1-1')).ok, true);
+  assert.equal(jumpOK(a, P(2, 600, G, 300), true, linkArcs('normal', '1-1')).ok, false, 'a 300 px gap: past the double flick from 70 px, 283');
+  assert.equal(jumpOK(a, P(2, 560, G, 300), true, linkArcs('normal', '1-1')).ok, true, 'a 260 px gap: the double flick crosses');
 });
 
 // (main's 0.9.5 build of these, layout 1, hashed on origin/main@181d2846 before E0's first change: platforms, falls, errors and plan;
@@ -245,7 +285,10 @@ test('1-1\'s finish reach (stageGenerator finishReach): the far bank of a 256 px
     platforms: [P(1, 0, G, 600), P(2, 856, G, 700)],
     collectibles: [{ id: 1, x: 1200, y: G - 40, type: 'flower', collected: false }],
     spawnX: 100, spawnY: G, exitTotemX: 1450, exitTotemY: G,
+    // (a stage gen2 built carries its gen2 record: the arcs judge a BUILT stage, never an id alone, reach.ts builtOnArcs)
+    gen2: { budget: { difficulty: 'normal' } },
   } as unknown as GeneratedStage;
+  assert.ok(!finishReach({ ...st, gen2: undefined } as unknown as GeneratedStage, 'normal').includes(2), "1-1's id on a stage gen2 did not build: the closed form");
   for (const d of ['normal', 'easy'] as const) {
     const ids = finishReach(st, d);
     assert.ok(ids.includes(2), `${d}: the far bank is reached (${ids})`);
@@ -253,7 +296,7 @@ test('1-1\'s finish reach (stageGenerator finishReach): the far bank of a 256 px
     fixPickups({ platforms: st.platforms, vines: [], ropes: [], glide: false, onRoute: new Set(ids) } as never, items);
     assert.deepEqual([items[0].x, items[0].y], [1200, G - 40], `${d}: the flower stays`);
   }
-  assert.ok(!finishReach({ ...st, config: { ...c11, id: '1-2' } } as GeneratedStage, 'normal').includes(2), 'outside 1-1: the closed form, as before');
+  assert.ok(!finishReach({ ...st, config: { ...c11, id: '1-4' } } as GeneratedStage, 'normal').includes(2), 'outside the judged table: the closed form, as before');
 });
 
 // ───────────────────────── attempt 3: floorless false positives and the petal pass's reach (each planted red first) ─────────────────────────
@@ -298,7 +341,7 @@ test('the petal pass on 1-1 judges reach with the flown arcs: a flower past a 25
       spawnX: 100, spawnY: G, exitTotemX: 450, exitTotemY: G, gen2: { budget: { difficulty: d } },
     } as unknown as GeneratedStage;
     assert.deepEqual([...unreachablePickups(st)], [], `${d}: the flower past the gap is reachable`);
-    assert.deepEqual([...unreachablePickups({ ...st, config: { ...c11, id: '1-2' } } as GeneratedStage)], [7], `${d}: 1-2, closed form, as before`);
+    assert.deepEqual([...unreachablePickups({ ...st, config: { ...c11, id: '1-4' } } as GeneratedStage)], [7], `${d}: 1-4 (never flown), closed form, as before`);
   }
 });
 

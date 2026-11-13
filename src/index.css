@@ -231,6 +231,17 @@
 .sp-dot.on { width: 22px; background: #ffd23a; }
 .sp-bar { position: relative; height: 6px; width: min(46vw, 260px); border-radius: 3px; background: rgba(255,255,255,.22); overflow: hidden; }
 .sp-bar > i { position: absolute; inset: 0 auto 0 0; border-radius: 3px; background: #ffd23a; transition: width .25s ease; }
+/* (clear of the notch and the status bar, both ways up; Skip, Back and Next at least 44 px tall: audit C saves #11, PLAY-STORE-RULES §4) */
+.sp-top { padding: max(10px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) 0 max(12px, env(safe-area-inset-left, 0px)); }
+.sp-low { padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); }
+@media (min-width: 640px) {
+  .sp-top { padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+  .sp-low { padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); }
+}
+.sp-skip, .sp-back, .sp-next { min-height: 44px; }
+/* (a long chapter name wraps inside its chip rather than push Skip off the side of an upright phone) */
+.sp-top > .ui-chip:first-child { white-space: normal; min-width: 0; line-height: 1.25; }
+.sp-skip { flex: none; }
 .sp-back { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); color: #f0ead6; font-size: 12px; font-weight: 700; cursor: pointer; }
 /* Next: a small green board, the game's one button family (UI-12: it was the last glossy orange button) */
 .sp-next { --edge: #1d4a1b; display: inline-flex; align-items: center; gap: 7px; padding: 7px 20px; cursor: pointer; font-family: var(--font-fun); font-weight: 400; font-size: 15px; color: #fff4d8;
@@ -436,7 +447,7 @@
 .clr-sec.one { grid-template-columns: minmax(0, 1fr); }
 .clr-sec.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .clr-help { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; border-radius: 14px; border: 1.5px dashed rgba(253, 186, 116, 0.55); font-family: var(--font-ui); font-size: 13.5px; line-height: 1.35; text-align: center; color: var(--gx-ink); background: rgba(240, 176, 74, .18); border-color: rgba(168, 90, 23, .5); }
-.clr-help .clr-btn2 { min-height: 40px; font-size: 15px; }
+.clr-help .clr-btn2 { min-height: 44px; font-size: 15px; }
 .clr-ribbon.dusk h2 { color: #ffc98a; }
 .clr-scrim.lost { background: radial-gradient(ellipse at 50% 40%, rgba(40, 24, 52, 0.78), rgba(8, 10, 24, 0.9)); }
 .clr-card.lost { background: linear-gradient(180deg, #243a44, #131f2c); border-color: #fdba74; box-shadow: 0 20px 56px rgba(0, 0, 0, 0.65), 0 0 0 6px rgba(253, 186, 116, 0.08); }
@@ -468,7 +479,7 @@
   .clr-chip b { font-size: 18px; }
   .clr-clue { padding: 7px 12px; }
   .clr-clue p { font-size: 12.5px; }
-  .clr-btn2 { min-height: 38px; font-size: 14px; }
+  .clr-btn2 { min-height: 44px; font-size: 14px; }
   .clr-note { display: none; }
   .clr-praise b { font-size: 20px; }
   .clr-praise span { font-size: 12px; }
@@ -496,8 +507,8 @@
   .clr-main { gap: 5px; }
   .clr-chip b { font-size: 16px; }
   .clr-chip { padding: 2px 6px; }
-  .clr-btn2 { min-height: 32px; font-size: 13px; }
-  .clr-main .pm-go { min-height: 40px; font-size: 18px; }
+  .clr-btn2 { min-height: 44px; font-size: 13px; }
+  .clr-main .pm-go { min-height: 44px; font-size: 18px; }
   .clr-clue { padding: 5px 10px; }
   .clr-clue svg { display: none; }
   .clr-stars svg { width: 30px; height: 30px; }

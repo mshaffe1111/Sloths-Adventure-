@@ -9,7 +9,7 @@ import '../headlessDom.ts';
 import { buildGen2Stage, softFallStage } from './pipeline.ts';
 import { buildPlayStage } from './seedList.ts';
 import { floorlessGaps } from './promises11.ts';
-import { PROVEN_SEEDS } from './provenSeeds.ts';
+import { provenSeeds } from './seedList.ts';
 import { w1Finish, w1World } from './worlds/w1.ts';
 import { generateStage, setLayoutVariant } from '../stageGenerator.ts';
 import { generateAllLevels } from '../worldsData.ts';
@@ -20,7 +20,7 @@ const cfg = (id: string) => ({ ...generateAllLevels().find((l) => l.id === id)!,
  * the first 16 listed seeds of the re-laid 1-1 (4106, the first run, among them). Changed, INT-1-1: these were the 11-10 play window's
  * seeds (reference/qa-reports/window-2026-11-10), which are no longer listed and no longer build on the re-lay
  */
-const WINDOW = PROVEN_SEEDS['1-1'].seeds.slice(0, 16);
+const WINDOW = provenSeeds('1-1').slice(0, 16);
 
 /** World 1's kit as it was before the 1-1 brief said `softFalls` (origin/main's) */
 function kitWithout(): WorldKit {
@@ -83,9 +83,19 @@ test('floorlessGaps does not read the word: an unmarked floorless gap is still a
 
 // origin/main at 181d2846 (sha256 of the stage's platforms, heartFalls and gen2.falls, first 16 hex)
 const MAIN: Record<string, string[]> = {
-  '1-2': ['67ccc8de6ae51e0f', 'fdedeb5a9f36c723', 'b14540d0e57c4a4a'],
   '8-3': ['d7097751a77b9452', 'daacff5017ec0ef8', 'fcfa0af041aee16c'],
 };
+// (1-2's pin was the hand-built 1-2's, deleted 11-12 (P12S: the game rolls 1-2 on gen2, its change named by the lock); what the pin
+// guarded still holds: 1-2 is not a soft-fall stage)
+test('1-2, rolled on gen2, is not a soft-fall stage on Normal (layouts 1-3): its thorn hollows cost a heart', () => {
+  for (let v = 1; v <= 3; v++) {
+    setLayoutVariant(v);
+    const st = generateStage(cfg('1-2'), 'normal') as ReturnType<typeof generateStage>;
+    setLayoutVariant(null);
+    assert.equal(softFallStage(st), false, `layout ${v}`);
+    assert.ok((st.heartFalls ?? []).length && (st.heartFalls ?? []).every((z) => !z.soft), `layout ${v}: its hollows are hard on Normal`);
+  }
+});
 for (const [id, pins] of Object.entries(MAIN)) {
   test(`${id} Normal lays the same ground, gaps and heartFalls as origin/main, byte for byte (layouts 1-3), and is not a soft-fall stage`, () => {
     pins.forEach((pin, i) => {

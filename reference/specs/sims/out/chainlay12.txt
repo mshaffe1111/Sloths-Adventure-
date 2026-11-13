@@ -1,0 +1,14 @@
+normal level4               seed 1  S 213 216 209 212  rise 0 0 0 0  exit gap 73  in band
+normal level4               seed 2  S 210 213 215 210  rise 0 0 0 0  exit gap 62  in band
+normal up-up-level          seed 1  S 203 206 209 212  rise 27 24 0 0  exit gap 73  in band
+normal up-up-level          seed 2  S 200 203 215 210  rise 25 25 0 0  exit gap 62  in band
+normal down-level-up        seed 1  S 221 216 199 212  rise -27 0 26 0  exit gap 73  in band
+normal down-level-up        seed 2  S 218 213 205 210  rise -29 0 25 0  exit gap 62  in band
+easy   level4-easy          seed 1  S 213 216 209  rise 0 0 0  exit gap 64  in band
+easy   level4-easy          seed 2  S 210 213 215  rise 0 0 0  exit gap 56  in band
+easy   up-up-level-easy     seed 1  S 203 216 209  rise 27 0 0  exit gap 64  in band
+easy   up-up-level-easy     seed 2  S 200 213 215  rise 25 0 0  exit gap 56  in band
+easy   down-level-up-easy   seed 1  S 221 216 199  rise -27 0 26  exit gap 64  in band
+easy   down-level-up-easy   seed 2  S 218 213 205  rise -29 0 25  exit gap 56  in band
+
+every lay in band (36 lays: 3 versions x 6 seeds x 2 settings)

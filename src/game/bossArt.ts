@@ -6,8 +6,7 @@ import type { BossEntity } from './types.ts';
 import { drawGritBit, drawRiseGlow, drawSoftShadow } from './w4Grit.ts';
 import type { BossHazard } from './bossAI.ts';
 import type { BossDef, MoveDef } from './bossAI.ts';
-import { EASY_OPEN_MUL, openLeft, opensSoon, weakOpen, weakRect } from './bossAI.ts';
-import { isEasy } from './difficulty.ts';
+import { openLeft, opensSoon, weakOpen, weakRect } from './bossAI.ts';
 import { drawBossEntity } from './vectorArt.ts';
 import { withHurtFlash } from './hurtFlash.ts';
 import { demoPlayer, drawMilo } from './miloVariants.ts';
@@ -230,7 +229,7 @@ function drawFallbackBoss(ctx: CanvasRenderingContext2D, b: BossEntity, time: nu
   withHurtFlash(ctx, b.hitFlashTimer > 0, b.x - 280, b.y - 300, 560, 420, (c) => drawBossEntity(c, b, time, world));
 }
 
-export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, time: number, world: number, floor: number) {
+export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, time: number, world: number, floor: number, openMul = 1) {
   const br = b.ai;
   if (!br) {
     drawFallbackBoss(ctx, b, time, world);
@@ -299,7 +298,7 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
   }
   ctx.restore();
 
-  drawWeakPoint(ctx, b, def, time, floor);
+  drawWeakPoint(ctx, b, def, time, floor, openMul);
 
   // dizzy stars
   if (br.state === 'stun') {
@@ -1247,7 +1246,9 @@ function drawBolt(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
  * A giant's weak point. While the head is covered it is only a faint ember, so you learn where it is; in the opening after an attack
  * (and while the boss is stunned) it blazes: a pulsing ring with a cross-hair, the signal to jump up and strike.
  */
-function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, time: number, floor: number) {
+/** `openMul`: how much longer the opening lasts on the run's mode (the engine's own, bossAI.ts EASY_OPEN_MUL), so its last-half-second
+ * flicker ends with the real opening */
+function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, time: number, floor: number, openMul: number) {
   const r = weakRect(b, def, floor);
   const br = b.ai;
   if (!r || !br || br.state === 'dying' || b.defeated) return;
@@ -1278,7 +1279,7 @@ function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDe
     return;
   }
   // the last half second of the opening it flickers: time to get clear
-  if (def.openCue && openLeft(b, def, isEasy() && def.openCue ? EASY_OPEN_MUL : 1) < 0.5 && Math.sin(time * 40) < -0.2) {
+  if (def.openCue && openLeft(b, def, openMul) < 0.5 && Math.sin(time * 40) < -0.2) {
     ctx.restore();
     return;
   }

@@ -46,6 +46,7 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 | Hugging Face art, all kinds (models, starts, img2img settings, seeds, keying, edges, sizes, budget log, getting files back without the token) | `hf-art.md` | written 11-01 (hf-backdrops2) | next HF helper |
 | Painted backdrop strips (far/sky/middle/near, both orientations, FAR_BY_STAGE, floor.py depth floor) | `hf-backdrops.md` | written 11-01 (hf-backdrops2) | next backdrop helper |
 | Building a stage or a world (generator sections, variety, teaching, curation) | `stage-build.md` | the rules are in STAGE-RULES.md; the method (order of work, tools) to write | next stage helper |
+| Designing and building ONE level as a level (one idea grown beat by beat, one graph with one piece a beat, the phone's numbers, the bots, the gates; scored on reference/design/LEVEL-BAR.md) | `level.md` | written 11-12 (W1C, 1-3) | next level builder (1-2, D12) |
 | Fixing an unfair spot (check the ruler first, first-timer bots, real-engine repro, fail-before/pass-after test, stage hashes) | `stage-fix.md` | written 11-01 (w8-rope2 + bot-fix + fix-petals) | next stage-fix helper |
 | A menu screen or pop-up (nav kit, Back, safe areas, save states to shoot, clipcheck) | `menu-screen.md` | written 11-01 (whatsnew) | next menu helper |
 | Player-facing words (Pokey/Dot voice, per-item lines not templates, no repeats, approval) | `player-text.md` | written 11-01 (journal-voice) | next writing job |
@@ -57,7 +58,13 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 | Cutscene art and clips | `hf-cutscenes.md` | to write; source: tools/art/hfstory, the hf-cutscenes branch notes | next cutscene helper |
 | Props and sprite sheets (cutting, atlases, art-use) | `hf-props.md` | to write; source: tools/art/hfbatch, prop-sheets | next props helper |
 | Fixing a drawing fault in shared render code (trace the call, fix it once for every stage, the whole-picture check, stills both ways) | `render-fix.md` | written 11-05 (engine-render, R-164.6/7/8) | next render helper |
+| Building, extending and shipping a stage's proven seed list (the sweep on 4 workers, old seeds kept in place, the relay drop-outs, the chunk and offline proofs) | `seed-list.md` | written 11-11 (Engine, R-165.112) | next Engine member who rebuilds a list |
+| Making a level (designed before it is built: the one idea, the arc as data, rolls, tests with planted faults, real-game stills, bots, gates, the Learned table) | `level.md` | written 11-12 (W1C, after 1-3; D12's Learned row after 1-2) | every level builder |
+| A creature on the predator kit (the sheet, the cast, a worked example first, data, planted faults) | `predator-kit.md` | written 11-11 (EN-P) | whoever adds or changes an animal |
 | Keeping the roadmap (numbering, sizing, closing with proof, the release sweep, roadmapcheck) | `roadmap.md` | written 11-01 (roadmap-keeper) | roadmap-keeper |
 - `release.md`: shipping a release (the live site, the APK, both test links, the deploy checks), from 0.9.5.
 - `dispatch-packet.md`: the PM's task packet and the Critic's audit packet (the 6-role team, reference/TEAM.md).
 - `kit-audit.md`: auditing a world's art kit against the painted pieces, with stills (art director, 11-06; Content's method).
+- `audit-fix.md`: fixing an engine audit's findings test-first with sub-helpers, the Critic and one final gate run (EN-F, 11-12).
+- `board.md`: the lead's Kanban board for Matt (R-165.75): its data file, the build and its checks, when to republish.
+- `MATT-RELEASE-STEPS.md`: Matt's own side of a release in plain words (what he taps, in order); the team's side is `release.md` (0.9.6).

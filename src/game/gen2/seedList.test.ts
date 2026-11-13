@@ -38,9 +38,8 @@ test("a play's draw always lands on the list, any number", () => {
 // (plan replay, the lead 11-06: Play builds a listed seed's proven plan, one lay and its check; the list's plans are held identical to
 // their full search by tools/engine/seedlist.ts --check, in CI. Planted: a plan with one slot flipped to mirrored is named stale)
 test("a listed seed's replay is its full search's stage; a tampered plan is named stale; Play's build is clean", async () => {
-  const { PROVEN_SEEDS } = await import('./provenSeeds.ts');
-  const { buildPlayStage, packPlan, provenPlan, stageParts, unpackPlan } = await import('./seedList.ts');
-  const L = PROVEN_SEEDS['1-1'];
+  const { buildPlayStage, packPlan, provenList, provenPlan, stageParts, unpackPlan } = await import('./seedList.ts');
+  const L = provenList('1-1')!;
   const picks = [0, Math.floor(L.seeds.length / 2), L.seeds.length - 1];
   assert.deepEqual(seedListBreaches(c, w1World, picks.map((i) => L.seeds[i]), 0, { dict: L.dict, plans: picks.map((i) => L.plans[i]) }), []);
   const r = provenPlan('1-1', L.seeds[0])!;

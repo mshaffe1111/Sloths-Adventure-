@@ -115,6 +115,10 @@ export interface WorldManifest {
   /** how deep a soft pit's floor lies under its lips at most (px): a pit too narrow for wide steps out is shallower, its floor one
    *  plain hop under the far lip (pipeline pitSteps: every dip has a one-jump way out, every step a tread a thumb can land on) */
   pitDepth: number;
+  /** the world's pit painter, how its falls LOOK (pipeline.ts dropsOf, read by the verdicts' drop.look-lies; INT-E 11-12, the lead: the
+   *  world's pit rules, never a world number): today only World 1's, 'w1Pits' (w1Pits.ts paints a soft pit's floor, a marked fall as a
+   *  drop and a hollow's hurt floor as the thorn bed, hurtFloor.art 'w1-thorn'). Absent, nothing paints a pit floor */
+  pitPainter?: 'w1Pits';
   /**
    * World 1's floor families (the planner's floor road, engine-floorroad 4fd9e992; the designer's floor ruling, WORLD-RULEBOOK 9a22b846):
    * each roll draws a hop family by weight. A hop roll (h >= `hopRoll`) keeps every soft pit's floor `shallow` under its lips and leans
@@ -180,6 +184,11 @@ export interface WorldManifest {
   /** on Normal a fall at a swing or a glide (a gap under a liana, a glide gap) costs a heart, not a life, and sets him back on the ledge he
    *  left (World 8, Matt 2026-10-31: "hurt, then cost a life"); no pit is laid under them. Easy's stay soft pits */
   heartFalls?: boolean;
+  /** the world's hurt floor, laid under every place marked `hurt` (a roll that lays one with no row fails by name): a fall onto it costs
+   *  a heart on Normal and sets him back (Easy: the set-back, no heart). `lesson`: the section `teaches` id that shows it first; `art`: the
+   *  painted family the world's painter draws it with; `depth`: px under the gap's lower lip [min, max]; `clearStart`: no hollow this
+   *  near the spawn, px */
+  hurtFloor?: { lesson: string; art: string; depth: [number, number]; clearStart: number };
   /** the stages of the world gen2 must never build (the signature stage, the guardian's lair) */
   handBuilt: string[];
   /**
@@ -188,10 +197,16 @@ export interface WorldManifest {
    * trimmed. A required section that fits no node of the stage is an authoring mistake, and the build says so
    */
   required?: Record<string, Array<{ section: string; phase?: Phase }>>;
+  /** this world's row for each engine slot a brick's piece may name (SectionPiece.slot, A13): the style its platform takes here and the
+   *  inventory pieces that may draw it (built from the world's inventory file: gen2/brickSlots.ts worldSlots) */
+  slots?: Readonly<Record<string, { style: NonNullable<Platform['style']>; art: readonly string[] }>>;
   /** mechanic -> the stage that teaches it first (a later stage takes it as known: no tip, and sections that use it are open) */
   lessons?: Record<string, string>;
   /** mechanic -> Dot's line for a 'tip' socket (under 10 words; a new line is marked "(new, needs Matt's approval)" until he says yes) */
   tips?: Record<string, string>;
+  /** the tips (by mechanic, as `tips`) that are a stage's own TEACH line: Dot waits for a clear moment and keeps it up its reading
+   *  time, and no stock lesson cuts it (protoStage.ts StageHint.teach) */
+  teachTips?: readonly string[];
 }
 
 // ───────────────────────────── a section ─────────────────────────────
@@ -247,14 +262,20 @@ export type PlaceRule =
   | { kind: 'walk'; after: string; dy?: Range }
   /** `gapPx` (the designer's pixel bands, 11-06: a double's TEACH 195-205, its TEST 205-230): the gap laid in this band exactly, in place of
    *  `share`, never scaled by the roll's tempo or the jump's reach; a band past the reach fails the section by name */
-  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean }
-  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean }
+  /** `hurt` (a jump, double or pit place): the gap is a HOLLOW with the world's hurt floor under it (WorldManifest.hurtFloor), no steps out */
+  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean; hurt?: boolean }
+  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean; hurt?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
   | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
   | { kind: 'climb'; on: string; at: Range; h: Range }
-  | { kind: 'rope'; after: string; gap: Range; soft?: boolean };
+  | { kind: 'rope'; after: string; gap: Range; soft?: boolean;
+      /** the rope is a try-it, never the way (a stage laid before the Shimmy skill is his, or a second road): its pit is soft with the
+       *  plain steps out the far side, so he can always walk down and through, and the rope is hung `required: false` */
+      free?: boolean;
+      /** how the rope is drawn (Rope.look): 'vine', a painted vine between two living trees; unset, World 2's rope between posts */
+      look?: 'vine' };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */
@@ -273,6 +294,10 @@ export interface SectionPiece {
   h?: number;
   place: PlaceRule;
   style?: Platform['style'];
+  /** a BRICK's piece (GAME-MAP A13): the inventory's engine slot it fills (art/inventory.ts ArtRow.engine_slot, 'landing/platforms solid
+   *  log'), in place of one world's `style`: the lay takes its look from the world's own row for the slot (WorldManifest.slots), so one
+   *  section lays in every world that has the slot; a world with no row for it fails the section by name */
+  slot?: string;
   /** a landing (a jump lands on it): Easy widens it by EASY_LANDING px on the side the jump comes from */
   landing?: boolean;
   /** part of the main route (what the repair pass may stretch or bridge); a high road's branch is not */
@@ -296,6 +321,7 @@ export type SocketRole =
   | 'receptor'   // the receptor half (names its source in `link`)
   | 'objective'  // the stage's goal item (cage / relic / cocoon): filled from the mission graph's quota
   | 'find'       // a hidden find off the main line (World 1's golden seed: rulebook §4 rule 12), filled once a stage, by the first one met
+  | 'findSpot'   // where the stage's find stands (finds.ts: Meeca's note, a keepsake; stageGenerator addFinds), once a stage, by the first one met
   | 'flag'       // a checkpoint (rests carry one)
   | 'tip'        // Dot's line about this section's mechanic (the first time it appears: the teaching rule)
   | 'decor';     // scenery only, from the world's decor set
@@ -315,13 +341,19 @@ export interface Socket {
   maxThreat?: number;
   /** a socket the roll may leave empty (0..1 chance of filling); required sockets have none */
   chance?: number;
-  /** on Easy: keep it, drop it, or keep it softened (a slower creature, a longer tell) */
-  easy?: 'keep' | 'drop' | 'soften';
+  /** on Easy: keep it, drop it, or keep it softened (a slower creature, a longer tell). All three still answer to Easy's count cut
+   *  (the first of a kind stays, then 60% of the rest). `stay`: softened, and the count cut never takes it: the animal a piece is
+   *  built round (a trap's own snake), without which that piece of the stage is empty on Easy */
+  easy?: 'keep' | 'drop' | 'soften' | 'stay';
   /** only filled in these phases (a twist socket that sleeps in a Ki section) */
   phases?: Phase[];
   /** pickups: how many in a row and over what span (px) */
   count?: number;
   span?: number;
+  /** a DESIGNED GROUP (variety.ts poissonPlace): the sockets of one section that name the same group (a trap and the animals it is
+   *  laid for) are placed where the designer put them: the lay's gaps (any two 120 px apart, two of a kind 420) are not kept between
+   *  them, and every gap to any other piece is kept as ever. The trap rules (dropTrap.ts trapFaults) still judge what is laid */
+  group?: string;
 }
 
 /** one sub-block: its versions (each its own pieces and sockets); every version must leave the same piece keys the rest refers to */
@@ -391,6 +423,12 @@ export interface SectionTemplate {
   feel?: readonly string[];
   /** what it must never serve: never laid in a stage that owns any of these (manifest.owns) */
   not?: readonly string[];
+  /** out of every pool, and why (a stage picked by need, GraphBrief.pick, has no stage list to leave it off) */
+  parked?: string;
+  /** a DESIGNED stage's own piece (a beat of its arc, its arrival, a rest, its exit): in the pools of the stages its `feel` names and
+   *  no other, a stage picked by need (GraphBrief.pick, which reads no `feel`) included. Without it another stage's pick took a
+   *  level's beat for a link (1-3's exit, with its rope and hollow, dealt into a test-side 1-2) */
+  own?: true;
   phases: Phase[];
   /** 1 (gentle) .. 10 (hard): picked when the node's tension, scaled into the stage's band, is near it */
   difficulty: number;
@@ -453,6 +491,9 @@ export interface StageBudget {
   id: string;
   world: number;
   stage: number;
+  /** the world's `lessons` say an EARLIER stage taught the double and the old rule (levelCheck doubleAllowed) does not already count it
+   *  here: the built stage's config carries it, and the lay's link reach reads it (packet E12 item 5) */
+  doubleTaught?: true;
   archetype: Archetype;
   difficulty: Difficulty;
   /** D(world, stage) (F2), inside the world's band (§1b) */
@@ -547,6 +588,36 @@ export interface GraphBrief {
    *  a fall past the bottom anywhere that is not water sets him back on the ledge he left, nothing lost (Gen2Meta.softFalls; the
    *  engine's softOn). The stage's gaps and soft zones are laid exactly as without it */
   softFalls?: boolean;
+  /** the stage's petals stay LOW (routing item 6; 1-2's story rule, "petals low on bark the whole way"): no petal arc is laid over
+   *  any gap; pickups come only from the sections' `pickup` sockets, at their `dn`, and a harvest's top-up (low already) */
+  petals?: 'low';
+  /** off the road pays in BLOOMS (routing item 6, the lead 11-11: "exploring always pays"): a `pickup` socket on a piece off the
+   *  road (its placed `main` false: a high road, a side perch; a stump is on the road) lays `fruit`, which counts toward a harvest's
+   *  goal when gathered and is never in its quota. The top-up and the trim count and move petals only */
+  offRoad?: 'fruit';
+  /** the stage's pits are HOLLOWS (the lead 11-11 8:30 PM: the hazard under a gap is the brief's, applied by the lay, so a stage
+   *  needs no re-cut copy of a section to change it): every pit place its sections lay, past the hurt floor's `clearStart` from the
+   *  spawn, gets the world's hurt floor (WorldManifest.hurtFloor) as a place marked `hurt` does. Seams, water, glide and block
+   *  gaps stay as they are.
+   *  `lesson`: only under the sections that teach or use the hurt floor's lesson (a chain brick `uses` it: the thorns lie under the
+   *  chains, and every other section keeps its soft pits) */
+  pits?: 'hurt' | 'lesson';
+  /** the stage's pool is picked by NEED, not by a list of stages (the lead 11-11: a section is a brick, never one stage's): every
+   *  section of the world that is not parked, whose content type the stage's deal holds (or that is structural, or names none) and
+   *  that serves nothing the stage must never hold (`not`). A section's `feel` is then never read as the stages it serves: it only
+   *  EXCLUDES, against `refuse`. `refuse`: what this stage never holds: a section whose `feel` names one is out of the pool, and a
+   *  socket whose `allow` starts with one (another stage's Dot line, its prop) stays empty, so a shape never brings another stage's
+   *  words with it. What a section needs, uses and teaches is judged at each node, as everywhere */
+  pick?: { refuse?: readonly string[] };
+  /** a DESIGNED graph (one section a job, in a set order: a level's arc): the deal is the brief's shares to the node, with no node
+   *  moved from one type to another by the roll (the jitter a rolled stage gets on half its seeds, for variety between rolls), and
+   *  a node whose job one type of section alone serves in the stage's pool is dealt that type. A designed level's variety is its
+   *  beats; a type dealt at random is one its single brick a job cannot fill */
+  dealExact?: boolean;
+  /** the stage's CAST, by kind (predators/registry.ts; reference/design/PREDATORS.md): every animal of one of these kinds the stage
+   *  lays is run by the creature kit (castPlay.ts) with Pokey's stillness and noise, and the stage's drop traps work on it. Absent:
+   *  the stage's animals play as they always have */
+  cast?: readonly string[];
 }
 /** a content type (NODES.md §7.2): what fills a content node; `structural` sections (arrive, rest, exit) sit outside the mix */
 export type ContentType = 'ground' | 'floating' | 'climb' | 'bounce' | 'rope' | 'crumble' | 'water' | 'hazard' | 'puzzle';
@@ -569,6 +640,9 @@ export interface PlacedPiece {
   platform: Platform;
   main: boolean;
   landing: boolean;
+  /** a brick's piece: the slot it named, and the piece of this world's row that draws it (an inventory ArtRow.id) */
+  slot?: string;
+  art?: string;
 }
 
 export interface PlacedSection {
@@ -592,7 +666,7 @@ export interface PlacedSection {
   /** the sockets resolved to world points (filled in pass 4) */
   sockets: Array<{ socket: Socket; x: number; y: number; piece: Platform }>;
   room?: RoomSpec;
-  beats: Array<{ x: number; letter: SectionBeat['letter'] }>;
+  beats: Array<{ x: number; letter: SectionBeat['letter']; /** a designed group's key (Socket.group): its own animals keep no gap to it */ group?: string }>;
   /** the seconds the time model expects (the walk plus extraSeconds) */
   seconds: number;
 }
@@ -694,6 +768,9 @@ export interface Gen2Meta {
   brief?: GraphBrief;
   /** the stage's brief says no fall costs a life (GraphBrief.softFalls): what the engine reads (pipeline.ts softFallStage) */
   softFalls?: true;
+  /** a stage that lays a hurt floor (WorldManifest.hurtFloor): its row's lesson and clearStart, and `shown`, the END x of the lesson's
+   *  showing piece (the piece keyed `show` in the laid section whose `teaches` is the lesson) when one is laid: `hazard.untaught` reads it */
+  hurt?: { lesson: string; clearStart: number; shown?: number };
   /** each node as laid, for the gates that read the built stage (V18's nodePieces.ts, the stills spots): its token, the x-range its
    *  sections cover, its first block's landing x (NODES.md §8.7) when it has one, and a twist's two answers (B5) */
   nodes?: Array<{ token: string; x0: number; x1: number; block?: number; moves?: Array<'double' | 'bounce'> }>;
@@ -735,6 +812,13 @@ export interface BuildRequest {
   difficulty: Difficulty;
   /** whole-stage re-rolls allowed after local repair fails (LEVEL_ATTEMPTS' role) */
   maxRerolls?: number;
+  /**
+   * Rules the caller holds a roll to beyond the pipeline's own (R-165.120: the seed list's quiet line, judged on a bot's route by
+   * tools/engine/listRules.ts, which the game never ships). The search asks them last, of a roll nothing else refuses, and repairs
+   * for them as for its own: a line that names a slot swaps the section there, the rest roll again. A roll they still refuse
+   * carries their lines in gen2.errors. Whoever lists a seed under them must check and replay it under them too.
+   */
+  also?: (st: Gen2Stage, difficulty: Difficulty) => ReadonlyArray<{ line: string; slot?: number }>;
   /** the section ids the stage before this one shipped (its curated roll): kept out while others are left (C4, across stages) */
   recent?: string[];
   /** the sub-block versions (versionKey) the world's earlier stages shipped: each waits until the others have had their turn (C4) */

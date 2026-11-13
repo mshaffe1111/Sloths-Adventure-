@@ -18,6 +18,7 @@
  * of the mixed stretch. `checkFlight` proves every roll can be flown with Dot's real numbers (dotFlight.ts DOT): the energy needed
  * between flowers, every hole against her body, the thorns clear of every route through a hole, the gusts' lulls long enough to cross.
  */
+import { cyclePos } from './clock.ts';
 import type { LevelConfig } from './types.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import { stream } from './protoStage.ts';
@@ -221,7 +222,7 @@ export function openingY(o: Opening, t: number): number {
 }
 /** a gust is blowing at t; `warn` is how far into its warning it is (0..1, 1 = it blows), or 0 when calm */
 export function gustState(g: Gust, t: number): { blowing: boolean; warn: number } {
-  const c = (((t + g.phase) % g.period) + g.period) % g.period;
+  const c = cyclePos(t, g.phase, g.period);
   if (c < g.on) return { blowing: true, warn: 1 };
   const until = g.period - c;
   return { blowing: false, warn: until < GUST_WARN ? 1 - until / GUST_WARN : 0 };

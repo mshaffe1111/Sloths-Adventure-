@@ -9,6 +9,7 @@
  * (components/CoachOverlay.tsx).
  */
 import type { ControlStyle } from './controlPrefs.ts';
+import { markLessonSeen } from './lessons.ts';
 
 /** what the player is being shown: slide to run, slide to jump, well done, or nothing */
 export type CoachStep = 'run' | 'jump' | 'nice' | null;
@@ -47,6 +48,15 @@ export function markCoachDone() {
   } catch {
     /* ignore */
   }
+}
+
+/**
+ * the coach has taught: its jump line has been shown (dotSay.ts keep, the DOT-1 rule), or he made the jump. Not again on this phone, and
+ * the gap lesson it taught is heard (the gap card would only say it twice)
+ */
+export function coachTaught() {
+  markCoachDone();
+  markLessonSeen('gap');
 }
 
 /** true when the device has saved any stage result: a returning player does not need the lesson */

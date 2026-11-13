@@ -19,6 +19,8 @@ import { hollowLogSize, w1DressFacing, w1DressWidth } from '../../w1NewArt.ts';
 import { pickCut, W1_CUT } from '../../w1CutArt.ts';
 import type { Platform } from '../../types.ts';
 import { SPRINT_GRAPHS } from '../graphs.ts';
+import { BRIEF_13, LESSON_CARD_13, LINES_13, PURGE_13, SECTIONS_13, STAGE_13 } from './w1Arc13.ts';
+import { W1_CAST_CREATURES, W1_TRAP_PAIRS, W1_TRAP_PROPS, armedTraps } from './w1Cast.ts';
 
 /**
  * World 1's manifest rows for its floor (the planner's correction, 11-05 4:19 PM: gen2's own ground IS the floor). `ground` is the
@@ -63,6 +65,8 @@ export const W1_KIT = {
   rollRanges: { gap: { min: 0.79, mode: 0.82, max: 0.91, p90: 0.99, centre: 0.65 }, rise: { home: [0.65, 0.69] as [number, number], hilly: [0.81, 0.94] as [number, number], hillyShare: 7 / 32, centre: 0.67 } },
   pit: 'soft' as const,
   pitDepth: 110,
+  /** its pits are painted by w1Pits.ts (the moss floor, the marked drops, the thorn bed): the drop looks the verdicts read (dropsOf) */
+  pitPainter: 'w1Pits' as const,
   /** the planner's 4:27 PM: catch boughs laid 90 px under a canopy gap by the engine (floorRoll.catchDrop, engine-chunks types) */
   floorRoll: { catchDrop: 90, hop: [{ range: [0.43, 0.51] as [number, number], weight: 11 }, { range: [0.74, 0.8] as [number, number], weight: 11 }, { range: [0.99, 1.0] as [number, number], weight: 10 }], shallow: 70, deep: 240, hopRoll: 0.9, jumpRoll: 0.55 },
 };
@@ -482,6 +486,15 @@ const times = (n: number, g: G): G => (k, after) => {
 };
 /** a low log off the route under a canopy piece, its petals at marching height (the ruling: petals low on low logs, never a petal road in
  *  the boughs); its top 136-144 px under the bough's: 110 px+ head room (Round 4 FR2, FR5: the mid road) */
+/**
+ * Where a petal low log goes under the log chain's 460-520 px start log (R-165.124, Matt 11-06 and 11-11: the dead-zone log; not the rising
+ * chain's, whose first gap is the help ladder's set-back piece: there the verdict refuses a dead-zone roll and the search lays another): its left end about
+ * 30 px inside the start log's far end, so it reaches out past it, where a plain walk off that end lands (a 136-144 px drop carries him
+ * about 100 px out; landings.ts proves it on the flown walk). At share 0.2-0.3 it lay wholly under the start log: the walk off fell short of
+ * it and a full jump came down on the start log above it, so only a mid-air correction reached its petals. Its gap under the chain's first
+ * jump is a catch for a short jump.
+ */
+const LOW_LOG_OUT: R2 = [0.93, 0.95];
 const lowLog = (key: string, over: string, at: R2): W1Piece => limb(key, { kind: 'over', on: over, at, dy: [136, 144] }, [180, 220], 'log', false);
 /** the exit totem's socket on the end log (the ruling: an `objective` socket; main's stageGenerator.ts:2136 gen.item('exit_totem')) */
 const totem = (on: string): Socket => ({ id: 'exit-totem', role: 'objective', on, t: 0.85, allow: ['exit_totem'] });
@@ -1211,12 +1224,12 @@ const dippingBoughsTwist = section({
 const logChain = section({
   id: 'w1-log-chain', name: 'the log chain', phases: ['ketsu'], difficulty: 6, needs: ['jump'], exitDy: -148, ports: ['ledge', 'ledge'], window: BOUGH_WINDOW, maxPerStage: 1,
   versions: [
-    { id: 'a', groups: [(k) => { const ps = [limb(`${k}a`, { kind: 'start' }, [460, 520], 'log'), lowLog(`${k}lo`, `${k}a`, [0.2, 0.3])];
+    { id: 'a', groups: [(k) => { const ps = [limb(`${k}a`, { kind: 'start' }, [460, 520], 'log'), lowLog(`${k}lo`, `${k}a`, LOW_LOG_OUT)];
       // (C1, R-165.72: the chain inside the single band (bands.md §2), a catch bough under every gap (the engine's, floorRoll.catchDrop): two steps up, two level)
       const dys: R2[] = [HOP_UP, HOP_UP, [-4, 4], [-4, 4]]; let prev = `${k}a`;
       dys.forEach((dy, j) => { const key = `${k}c${j}`; ps.push(limb(key, { kind: 'jump', after: prev, dy, share: dy[0] < -50 ? [0.4, 0.5] : [0.5, 0.6] }, [400, 460], 'log')); prev = key; });
       return { pieces: ps, sockets: [petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2), dot(`${k}nomoss`, `${k}a`, 0.7, 'hint.1-1.noMoss')], last: prev }; }] },
-    { id: 'b', groups: [(k) => { const ps = [limb(`${k}a`, { kind: 'start' }, [460, 520], 'log'), lowLog(`${k}lo`, `${k}a`, [0.2, 0.3])];
+    { id: 'b', groups: [(k) => { const ps = [limb(`${k}a`, { kind: 'start' }, [460, 520], 'log'), lowLog(`${k}lo`, `${k}a`, LOW_LOG_OUT)];
       const steps: Array<['double' | 'jump', R2, R2, R2]> = [['jump', HOP_UP, [0.4, 0.5], [400, 460]], ['jump', [48, 52], [0.5, 0.6], [400, 460]], ['jump', HOP_UP, [0.4, 0.5], [400, 460]], ['jump', [-52, -48], [0.4, 0.5], [560, 640]]];
       let prev = `${k}a`; steps.forEach(([kind, dy, share, w], j) => { const key = `${k}c${j}`; ps.push(limb(key, { kind, after: prev, dy, share }, w, 'log')); prev = key; });
       return { pieces: ps, sockets: [petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2), dot(`${k}nomoss`, `${k}a`, 0.7, 'hint.1-1.noMoss')], last: prev }; }] },
@@ -1514,7 +1527,7 @@ export const W1_PHASES: readonly Phase[] = ['start', 'ki', 'sho', 'rest', 'ten',
 /** what World 1 does to a built gen2 stage (GEN2_STAGES `finish`; the test link's picker calls it too): every piece keeps its own kind,
  *  never re-labelled for variety (W1-ART-AUDIT §3.1, Matt's approval 11-05: the leaf ledge, the frond strip and the stone drawn as a log came
  *  from that swap, not from w1.ts). A finished stage is returned for chaining */
-export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean; cut?: string } & Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' | 'style' | 'type'>> }>(st: T): T {
+export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean; cut?: string } & Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height' | 'style' | 'type'>> }>(st: T, squirrels = true): T {
   for (const p of st.platforms) p.ownLook = true;
   // (the art swap, W1-ART-AUDIT §3.2-3.5: each stone, stump and thin log drawn as one of the art director's cut pieces, w1CutArt.ts)
   // (a stone or stump stands on the ground: only where a solid piece meets its foot, so a pit's step drawn as a rock never ends in the air,
@@ -1522,7 +1535,8 @@ export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean; cut?:
   const onGround = (p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>) => st.platforms.some((q) => q !== p && q.type === 'solid' && Math.abs(q.y - (p.y + p.height)) <= 6 && q.x <= p.x + p.width / 2 && q.x + q.width >= p.x + p.width / 2);
   for (const p of st.platforms) if (p.type === 'solid') { const c = pickCut(p); if (c && (W1_CUT[c].kind === 'log' || onGround(p))) p.cut = c; }
   // (a built roll only: a toy stage of bare platforms, w1CutArt.test's, has no spawn or sections to dress)
-  if ((st as { gen2?: unknown }).gen2) w1Squirrels(st as never);
+  // (the squirrels who came to watch him leave are a stage's own dressing: its stage-table row says so, stageTable.ts `squirrels`)
+  if (squirrels && (st as { gen2?: unknown }).gen2) w1Squirrels(st as never);
   return st;
 }
 
@@ -1592,13 +1606,27 @@ export const W1_TIPS: Record<string, string> = Object.fromEntries(DOT_LINES.map(
 export function w1World(): WorldKit {
   const manifest: WorldManifest = {
     world: 1, name: 'The Home Forest', moves: ['double'],
-    ground: W1_KIT.ground, pit: W1_KIT.pit, pitDepth: W1_KIT.pitDepth, floorRoll: W1_KIT.floorRoll, rollRanges: W1_KIT.rollRanges,
-    graphs: W1_KIT.graphs, corridor: W1_KIT.corridor, themeShare: W1_KIT.themeShare, required: W1_KIT.required,
-    creatures: [], props: [], pairs: [], decor: [], flowers: ['orchid', 'hibiscus'], sections: [...W1_SECTIONS], handBuilt: [],
+    ground: W1_KIT.ground, pit: W1_KIT.pit, pitDepth: W1_KIT.pitDepth, pitPainter: W1_KIT.pitPainter, floorRoll: W1_KIT.floorRoll, rollRanges: W1_KIT.rollRanges,
+    // (1-3 Branch Snakes, w1Arc13.ts: its one designed graph and its brief, beside the sprint graphs and 1-1's brief; a stage rolls
+    // only the graphs of its own archetype and reads only its own brief)
+    graphs: { ...W1_KIT.graphs, list: [...W1_KIT.graphs.list, ...Object.entries(PURGE_13).map(([id, code]) => ({ id, archetype: 'purge' as const, code }))], briefs: { ...W1_KIT.graphs.briefs, [STAGE_13]: BRIEF_13 } },
+    corridor: W1_KIT.corridor, themeShare: W1_KIT.themeShare, required: W1_KIT.required,
+    // (World 1's cast rows and drop-trap pairs, w1Cast.ts: laid only where a section holds a socket for one, so by 1-3's bricks alone)
+    creatures: W1_CAST_CREATURES, props: W1_TRAP_PROPS, pairs: W1_TRAP_PAIRS, decor: [], flowers: ['orchid', 'hibiscus'],
+    // (1-3's pool is its own, LEVEL-BAR A3: its beats, its arrival, its rests and its exit, each tagged for it alone; no World 1
+    // library section is in it. A tag only says which stages' pools hold a section, stagePool: no other stage's pool changes)
+    sections: [...W1_SECTIONS.map((t) => (t.feel.includes(STAGE_13) ? { ...t, feel: t.feel.filter((f) => f !== STAGE_13) } : t)), ...SECTIONS_13],
+    handBuilt: [],
     // (Dot's lines by their text id: the words a hint carries are the line's old text, which dotLines.ts swaps for the new look's words
     // where it is said; without these the pipeline put the raw id on screen, the red team's RT-ENGINE #1: "hint.1-1.double")
-    tips: W1_TIPS,
+    // (1-3's lesson is one card, the keeper's two lines together: LESSON_CARD_13)
+    tips: { ...W1_TIPS, ...LINES_13, traps: LESSON_CARD_13 },
+    // (the first trap's line is a TEACH line: Dot waits for a clear moment, keeps it up its reading time, and no stock lesson cuts it;
+    // so are its second half, the lesson's "it only gives him a fright", and the first branch with no vine (the first appearance of
+    // beating a snake without one): on Normal's default Tips they were hidden, P13's find, the lead 11-12)
+    teachTips: ['traps', 'bare'],
   };
-  return { manifest };
+  // (the traps are armed by the animal that stays under them: the kit's own emitters and spawn hook, w1Cast.ts armedTraps)
+  return { manifest, ...armedTraps() };
 }
 

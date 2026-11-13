@@ -3,7 +3,7 @@
  */
 import { hashStr } from './theory.ts';
 import { BOSS_THEME, WORLD_THEME } from './themes.ts';
-import { composeStageFull, stageThemeId } from './composer.ts';
+import { stageThemeId } from './composer.ts';
 import { PACE_CODE, PACE_TEMPO, paceFor } from './orchestrate.ts';
 import { actOfWorld } from './acts.ts';
 import { STYLES } from './styles.ts';
@@ -134,26 +134,18 @@ export type GameplayScreen = 'title' | 'world_map' | 'playing' | 'paused' | 'vic
  */
 /** Meeca's stage (5-M, after 5-5) */
 export const MEECA_MUSIC_STAGE = '5-M';
-let meecaPick: SceneChoice | null = null;
+/** the roll of the World 5 sneak dice her song is: the first that opens with the lament (no roll puts the clarinet on it; meecaMusic.test.ts) */
+export const MEECA_SEED = 8;
 /**
  * Meeca's stage plays her Heartbloom song as the stage music: the composer's World 5 sound (oboe, clarinet, cello over strings and
- * harp) at the sneak pace (pizzicato, soft timpani, a hush: the column's quiet march), on a roll of the dice that opens with the
- * lament, which is her lullaby's own notes sung sadly in the minor (composer.ts QUOTES), with the clarinet on the tune when a roll
- * gives one. Slower and quieter than a stage: dusk, and a march. The same piece every time she plays it.
+ * harp) at the sneak pace (pizzicato, soft timpani, a hush: the column's quiet march), on the roll of the dice that opens with the
+ * lament, which is her lullaby's own notes sung sadly in the minor (composer.ts QUOTES). Slower and
+ * quieter than a stage: dusk, and a march. The same piece every time she plays it: it is recorded under this id (the manifest), so
+ * nothing is composed to find it (it used to compose up to 600 pieces on the main thread as her stage began: audit C #7).
  */
+const MEECA_PICK: SceneChoice = { id: stageThemeId(5, MEECA_SEED, 'sneak'), intensity: 0.26, seed: MEECA_SEED, tempo: 0.86, form: true };
 export function meecaStageMusic(): SceneChoice {
-  if (meecaPick) return meecaPick;
-  let pick: number | null = null;
-  let any: number | null = null;
-  for (let seed = 1; seed < 600 && pick === null; seed++) {
-    const c = composeStageFull(5, seed, 'sneak');
-    if (c.info.tune !== 'lament') continue;
-    any ??= seed;
-    if (c.info.lead === 'clarinet') pick = seed;
-  }
-  const seed = pick ?? any ?? 1;
-  meecaPick = { id: stageThemeId(5, seed, 'sneak'), intensity: 0.26, seed, tempo: 0.86, form: true };
-  return meecaPick;
+  return MEECA_PICK;
 }
 
 export function stageMusic(world: number, levelId: string, mini: number, salt = 0, objective?: string): SceneChoice {
@@ -192,7 +184,7 @@ export function sceneForScreen(screen: string, world: number, isBoss: boolean, l
       return { id: `map-${Math.max(1, Math.min(10, world || 1))}`, intensity: 0.5 };
     case 'paused':
       // the stage's own tune goes on under the pause menu, quieter and muffled (conductor.ts setPaused): it used to switch to the World
-      // 1 tune (SN-6). null: keep what is playing
+      // 1 tune (SN-6). null here: game/audio.ts screen() asks for the stage's piece itself (what is playing may be the satchel's loop)
       return null;
     case 'playing':
     {

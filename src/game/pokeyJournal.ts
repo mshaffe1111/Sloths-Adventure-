@@ -46,7 +46,8 @@ export const STAGE_LINES: Record<string, string> = {
   // World 1 · Emerald Canopy
   '1-1': 'High branches, big gaps. I jumped every one of them. Nobody was more surprised than me.',
   '1-2': 'Petals up the trees and back down again. She put the first one low for me. The rest, less so.',
-  '1-3': "Learned to punch today. I said excuse me first. The snakes didn't wait for the second part.",
+  // (the story keeper's words, 11-12: 1-3 is the drop traps, and nobody is knocked off anything, R-165.141)
+  '1-3': 'Punched a vine and a hive dropped beside the snake. He glided off. Nobody told me snakes could fly.',
   '1-4': "The squirrels let me ride their lift up the kapok, for one acorn. They didn't laugh. Out loud.",
   '1-5': "More petals, but further apart now. She's running out of them. I'm not catching up fast enough.",
   '1-6': "First lianas. You have to let go of one before you've got the next. Nobody mentioned that part.",
@@ -522,10 +523,12 @@ export function worldReview(
   let fastest: { name: string; t: number } | null = null;
   let flowers: { name: string; f: number; ft: number } | null = null;
   const clean: string[] = [];
+  let recorded = 0;
   for (const l of cleared) {
     stats.stars += l.stars;
     const f = records[l.id]?.first;
     if (!f) continue;
+    recorded++;
     stats.time += f.t;
     stats.falls += f.ll;
     stats.flowers += f.fl;
@@ -534,6 +537,9 @@ export function worldReview(
     if (f.ft > 0 && (!flowers || f.fl / f.ft > flowers.f / flowers.ft)) flowers = { name: l.name, f: f.fl, ft: f.ft };
     if (f.ll === 0 && f.hl === 0) clean.push(l.name);
   }
+  // the time, falls and petal totals stand beside "cleared/total stages": shown only when every cleared stage has its record (a save
+  // from before the records began has some stages without one), or they would be the totals of a few stages read as the world's
+  if (recorded < cleared.length) Object.assign(stats, { time: 0, falls: 0, flowers: 0, flowerTotal: 0 });
   const best: string[] = [];
   if (clean.length) best.push(clean.length === 1 ? `Not a scratch in ${clean[0]}.` : `Not a scratch in ${num(clean.length)} stages.`);
   if (fastest) best.push(`Quickest: ${fastest.name}, in ${fmtTime(fastest.t)}.`);

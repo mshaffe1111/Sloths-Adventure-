@@ -1,0 +1,7763 @@
+[
+ {
+  "src": "src/assets/enemies/queen-anim.webp",
+  "bytes": 2814618,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 8172,
+  "q_est": 79,
+  "out": {
+   "90": 2814618,
+   "82": 2814618,
+   "75": 2539704
+  }
+ },
+ {
+  "src": "src/assets/enemies/prowler-anim.webp",
+  "bytes": 2112730,
+  "factor": 1.0,
+  "w": 4096,
+  "h": 2951,
+  "q_est": 81,
+  "out": {
+   "90": 2112730,
+   "82": 2112730,
+   "75": 1857686
+  }
+ },
+ {
+  "src": "src/assets/enemies/soldier-anim.webp",
+  "bytes": 2053904,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 5721,
+  "q_est": 79,
+  "out": {
+   "90": 2053904,
+   "82": 2053904,
+   "75": 1851274
+  }
+ },
+ {
+  "src": "src/assets/enemies/croc-anim.webp",
+  "bytes": 1966454,
+  "factor": 1.0,
+  "w": 4096,
+  "h": 2056,
+  "q_est": 90,
+  "out": {
+   "90": 1966454,
+   "82": 1707540,
+   "75": 1546538
+  }
+ },
+ {
+  "src": "src/assets/enemies/seamstress-anim.webp",
+  "bytes": 1929524,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 6664,
+  "q_est": 87,
+  "out": {
+   "90": 1929524,
+   "82": 1633018,
+   "75": 1353052
+  }
+ },
+ {
+  "src": "src/assets/characters/flicker-anim.webp",
+  "bytes": 1848728,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2544,
+  "q_est": 88,
+  "out": {
+   "90": 1848728,
+   "82": 1625132,
+   "75": 1425348
+  }
+ },
+ {
+  "src": "src/assets/enemies/goldsnake-anim.webp",
+  "bytes": 1551996,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2578,
+  "q_est": 84,
+  "out": {
+   "90": 1551996,
+   "82": 1533594,
+   "75": 1339698
+  }
+ },
+ {
+  "src": "src/assets/enemies/jaguar-anim.webp",
+  "bytes": 1329424,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2554,
+  "q_est": 81,
+  "out": {
+   "90": 1329424,
+   "82": 1329424,
+   "75": 1188108
+  }
+ },
+ {
+  "src": "src/assets/enemies/pell-anim.webp",
+  "bytes": 1303076,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 3512,
+  "q_est": 79,
+  "out": {
+   "90": 1303076,
+   "82": 1303076,
+   "75": 1188848
+  }
+ },
+ {
+  "src": "src/assets/title/clip-pair-laugh.webp",
+  "bytes": 1231222,
+  "factor": 1.0,
+  "w": 3636,
+  "h": 2255,
+  "q_est": 83,
+  "out": {
+   "90": 1231222,
+   "82": 1231222,
+   "75": 1001924
+  }
+ },
+ {
+  "src": "src/assets/enemies/eagle-anim.webp",
+  "bytes": 1089134,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2545,
+  "q_est": 95,
+  "out": {
+   "90": 833896,
+   "82": 721578,
+   "75": 656772
+  }
+ },
+ {
+  "src": "src/assets/enemies/ocelot-anim.webp",
+  "bytes": 1035956,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1973,
+  "q_est": 81,
+  "out": {
+   "90": 1035956,
+   "82": 1035956,
+   "75": 939990
+  }
+ },
+ {
+  "src": "src/assets/characters/cels-4.webp",
+  "bytes": 963348,
+  "factor": 1.0,
+  "w": 2044,
+  "h": 2016,
+  "q_est": 90,
+  "out": {
+   "90": 963348,
+   "82": 760190,
+   "75": 664542
+  }
+ },
+ {
+  "src": "src/assets/title/clip-pokey-cheer.webp",
+  "bytes": 955554,
+  "factor": 1.0,
+  "w": 3752,
+  "h": 2560,
+  "q_est": 83,
+  "out": {
+   "90": 955554,
+   "82": 955554,
+   "75": 790498
+  }
+ },
+ {
+  "src": "src/assets/characters/cels-6.webp",
+  "bytes": 944304,
+  "factor": 1.0,
+  "w": 2010,
+  "h": 1920,
+  "q_est": 90,
+  "out": {
+   "90": 944304,
+   "82": 752866,
+   "75": 661446
+  }
+ },
+ {
+  "src": "src/assets/props/w5-props.webp",
+  "bytes": 916828,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1710,
+  "q_est": 90,
+  "out": {
+   "90": 916828,
+   "82": 752694,
+   "75": 663350
+  }
+ },
+ {
+  "src": "src/assets/characters/cels-5.webp",
+  "bytes": 894412,
+  "factor": 1.0,
+  "w": 2038,
+  "h": 1860,
+  "q_est": 90,
+  "out": {
+   "90": 894412,
+   "82": 704572,
+   "75": 616742
+  }
+ },
+ {
+  "src": "src/assets/w6to10/creatures/sentry-anim-0.webp",
+  "bytes": 844424,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 4009,
+  "q_est": 79,
+  "out": {
+   "90": 844424,
+   "82": 844424,
+   "75": 716980
+  }
+ },
+ {
+  "src": "src/assets/props/w3-props.webp",
+  "bytes": 806492,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2301,
+  "q_est": 81,
+  "out": {
+   "90": 806492,
+   "82": 806492,
+   "75": 693328
+  }
+ },
+ {
+  "src": "src/assets/title/clip-pokey-look.webp",
+  "bytes": 778028,
+  "factor": 1.0,
+  "w": 4074,
+  "h": 1377,
+  "q_est": 83,
+  "out": {
+   "90": 778028,
+   "82": 778028,
+   "75": 636582
+  }
+ },
+ {
+  "src": "src/assets/enemies/turtle-anim.webp",
+  "bytes": 776844,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1653,
+  "q_est": 80,
+  "out": {
+   "90": 776844,
+   "82": 776844,
+   "75": 703832
+  }
+ },
+ {
+  "src": "src/assets/story/hd/meeca-1.webp",
+  "bytes": 758148,
+  "factor": 1.0,
+  "w": 2032,
+  "h": 1766,
+  "q_est": 90,
+  "out": {
+   "90": 758148,
+   "82": 595244,
+   "75": 522498
+  }
+ },
+ {
+  "src": "src/assets/story/live/council.webp",
+  "bytes": 757298,
+  "factor": 1.0,
+  "w": 3120,
+  "h": 1800,
+  "q_est": 77,
+  "out": {
+   "90": 757298,
+   "82": 757298,
+   "75": 672658
+  }
+ },
+ {
+  "src": "src/assets/props/w2-props.webp",
+  "bytes": 756262,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2166,
+  "q_est": 79,
+  "out": {
+   "90": 756262,
+   "82": 756262,
+   "75": 692208
+  }
+ },
+ {
+  "src": "src/assets/title/clip-meeca-wave.webp",
+  "bytes": 753182,
+  "factor": 1.0,
+  "w": 4004,
+  "h": 1176,
+  "q_est": 83,
+  "out": {
+   "90": 753182,
+   "82": 753182,
+   "75": 622244
+  }
+ },
+ {
+  "src": "src/assets/story/hd/meeca-0.webp",
+  "bytes": 743638,
+  "factor": 1.0,
+  "w": 2036,
+  "h": 1888,
+  "q_est": 89,
+  "out": {
+   "90": 743638,
+   "82": 601444,
+   "75": 520262
+  }
+ },
+ {
+  "src": "src/assets/props/w4-props.webp",
+  "bytes": 725716,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1433,
+  "q_est": 86,
+  "out": {
+   "90": 725716,
+   "82": 655588,
+   "75": 573860
+  }
+ },
+ {
+  "src": "src/assets/title/clip-pokey-idle.webp",
+  "bytes": 701032,
+  "factor": 1.0,
+  "w": 3864,
+  "h": 906,
+  "q_est": 84,
+  "out": {
+   "90": 701032,
+   "82": 661936,
+   "75": 570546
+  }
+ },
+ {
+  "src": "src/assets/title/clip-meeca-idle.webp",
+  "bytes": 688406,
+  "factor": 1.0,
+  "w": 3938,
+  "h": 1179,
+  "q_est": 83,
+  "out": {
+   "90": 688406,
+   "82": 688406,
+   "75": 570476
+  }
+ },
+ {
+  "src": "src/assets/props/dress.webp",
+  "bytes": 687868,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 2385,
+  "q_est": 87,
+  "out": {
+   "90": 687868,
+   "82": 601092,
+   "75": 528112
+  }
+ },
+ {
+  "src": "src/assets/enemies/guard-anim.webp",
+  "bytes": 631820,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1671,
+  "q_est": 79,
+  "out": {
+   "90": 631820,
+   "82": 631820,
+   "75": 580760
+  }
+ },
+ {
+  "src": "src/assets/props/dressnew-w5.webp",
+  "bytes": 608816,
+  "factor": 1.0,
+  "w": 990,
+  "h": 1602,
+  "q_est": 88,
+  "out": {
+   "90": 608816,
+   "82": 538928,
+   "75": 482102
+  }
+ },
+ {
+  "src": "src/assets/props/puzzle-kit.webp",
+  "bytes": 603304,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 939,
+  "q_est": 86,
+  "out": {
+   "90": 603304,
+   "82": 547256,
+   "75": 479762
+  }
+ },
+ {
+  "src": "src/assets/story/hd/pokey-1.webp",
+  "bytes": 597856,
+  "factor": 1.0,
+  "w": 1998,
+  "h": 1718,
+  "q_est": 89,
+  "out": {
+   "90": 597856,
+   "82": 472544,
+   "75": 408030
+  }
+ },
+ {
+  "src": "src/assets/story/hd/pokey-2.webp",
+  "bytes": 596406,
+  "factor": 1.0,
+  "w": 2008,
+  "h": 1988,
+  "q_est": 89,
+  "out": {
+   "90": 596406,
+   "82": 465926,
+   "75": 399798
+  }
+ },
+ {
+  "src": "src/assets/story/hd/dot-0.webp",
+  "bytes": 582302,
+  "factor": 1.0,
+  "w": 2021,
+  "h": 1472,
+  "q_est": 89,
+  "out": {
+   "90": 582302,
+   "82": 498784,
+   "75": 454634
+  }
+ },
+ {
+  "src": "src/assets/characters/cels-3.webp",
+  "bytes": 580844,
+  "factor": 1.0,
+  "w": 1942,
+  "h": 1982,
+  "q_est": 89,
+  "out": {
+   "90": 580844,
+   "82": 455818,
+   "75": 393058
+  }
+ },
+ {
+  "src": "src/assets/bosses/boss-fx.webp",
+  "bytes": 578808,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2003,
+  "q_est": 87,
+  "out": {
+   "90": 578808,
+   "82": 507044,
+   "75": 448396
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/wave.webp",
+  "bytes": 576352,
+  "factor": 1.0,
+  "w": 1448,
+  "h": 1428,
+  "q_est": 86,
+  "out": {
+   "90": 576352,
+   "82": 511022,
+   "75": 442354
+  }
+ },
+ {
+  "src": "src/assets/enemies/ironclaw-atlas.webp",
+  "bytes": 576038,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 2488,
+  "q_est": 90,
+  "out": {
+   "90": 576038,
+   "82": 449516,
+   "75": 389546
+  }
+ },
+ {
+  "src": "src/assets/story/hd/pokey-0.webp",
+  "bytes": 554210,
+  "factor": 1.0,
+  "w": 1922,
+  "h": 1798,
+  "q_est": 89,
+  "out": {
+   "90": 554210,
+   "82": 441618,
+   "75": 380736
+  }
+ },
+ {
+  "src": "src/assets/props/dressnew-w1.webp",
+  "bytes": 548342,
+  "factor": 1.0,
+  "w": 969,
+  "h": 2217,
+  "q_est": 87,
+  "out": {
+   "90": 548342,
+   "82": 476858,
+   "75": 418390
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/idle-yawn.webp",
+  "bytes": 545236,
+  "factor": 1.0,
+  "w": 1728,
+  "h": 1470,
+  "q_est": 86,
+  "out": {
+   "90": 545236,
+   "82": 487728,
+   "75": 420186
+  }
+ },
+ {
+  "src": "src/assets/hero/hero-standard.webp",
+  "bytes": 535262,
+  "factor": 1.0,
+  "w": 1536,
+  "h": 1918,
+  "q_est": 79,
+  "out": {
+   "90": 535262,
+   "82": 535262,
+   "75": 487754
+  }
+ },
+ {
+  "src": "src/assets/props/dressnew-w2.webp",
+  "bytes": 532494,
+  "factor": 1.0,
+  "w": 975,
+  "h": 2183,
+  "q_est": 87,
+  "out": {
+   "90": 532494,
+   "82": 470530,
+   "75": 419180
+  }
+ },
+ {
+  "src": "src/assets/story/hd/guard-1.webp",
+  "bytes": 529922,
+  "factor": 1.0,
+  "w": 1862,
+  "h": 1790,
+  "q_est": 89,
+  "out": {
+   "90": 529922,
+   "82": 440800,
+   "75": 389550
+  }
+ },
+ {
+  "src": "src/assets/story/hd/guard-0.webp",
+  "bytes": 519246,
+  "factor": 1.0,
+  "w": 1824,
+  "h": 1800,
+  "q_est": 89,
+  "out": {
+   "90": 519246,
+   "82": 433220,
+   "75": 383682
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/look-around.webp",
+  "bytes": 516274,
+  "factor": 1.0,
+  "w": 1200,
+  "h": 1442,
+  "q_est": 86,
+  "out": {
+   "90": 516274,
+   "82": 460448,
+   "75": 393734
+  }
+ },
+ {
+  "src": "src/assets/enemies/spider-anim.webp",
+  "bytes": 491434,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 848,
+  "q_est": 81,
+  "out": {
+   "90": 491434,
+   "82": 491434,
+   "75": 453658
+  }
+ },
+ {
+  "src": "src/assets/story/plates/ruins.webp",
+  "bytes": 476484,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 84,
+  "out": {
+   "90": 476484,
+   "82": 437328,
+   "75": 342068
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2-near.webp",
+  "bytes": 470748,
+  "factor": 1.0,
+  "w": 3416,
+  "h": 1736,
+  "q_est": 94,
+  "out": {
+   "90": 377680,
+   "82": 308662,
+   "75": 271218
+  }
+ },
+ {
+  "src": "src/assets/medals/medals.webp",
+  "bytes": 466976,
+  "factor": 1.0,
+  "w": 1536,
+  "h": 1268,
+  "q_est": 88,
+  "out": {
+   "90": 466976,
+   "82": 389292,
+   "75": 330396
+  }
+ },
+ {
+  "src": "src/assets/props/meeca-night.webp",
+  "bytes": 464044,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 793,
+  "q_est": 86,
+  "out": {
+   "90": 464044,
+   "82": 429828,
+   "75": 374028
+  }
+ },
+ {
+  "src": "src/assets/hero/hero-atlas.webp",
+  "bytes": 453730,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1243,
+  "q_est": 84,
+  "out": {
+   "90": 453730,
+   "82": 424920,
+   "75": 364884
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/push.webp",
+  "bytes": 451272,
+  "factor": 1.0,
+  "w": 1912,
+  "h": 1176,
+  "q_est": 86,
+  "out": {
+   "90": 451272,
+   "82": 404760,
+   "75": 356312
+  }
+ },
+ {
+  "src": "src/assets/characters/cels-1.webp",
+  "bytes": 448576,
+  "factor": 1.0,
+  "w": 1859,
+  "h": 1945,
+  "q_est": 89,
+  "out": {
+   "90": 448576,
+   "82": 352988,
+   "75": 306570
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/belly-scratch.webp",
+  "bytes": 444224,
+  "factor": 1.0,
+  "w": 1160,
+  "h": 1428,
+  "q_est": 86,
+  "out": {
+   "90": 444224,
+   "82": 393056,
+   "75": 337184
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/hurt.webp",
+  "bytes": 434208,
+  "factor": 1.0,
+  "w": 1312,
+  "h": 1230,
+  "q_est": 86,
+  "out": {
+   "90": 434208,
+   "82": 392102,
+   "75": 340358
+  }
+ },
+ {
+  "src": "src/assets/story/hd/guard-2.webp",
+  "bytes": 433238,
+  "factor": 1.0,
+  "w": 1818,
+  "h": 1290,
+  "q_est": 89,
+  "out": {
+   "90": 433238,
+   "82": 373206,
+   "75": 339808
+  }
+ },
+ {
+  "src": "src/assets/proto/props-atlas.webp",
+  "bytes": 424186,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1782,
+  "q_est": 87,
+  "out": {
+   "90": 424186,
+   "82": 332854,
+   "75": 265040
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2-mid.webp",
+  "bytes": 422622,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 95,
+  "out": {
+   "90": 325744,
+   "82": 251498,
+   "75": 214400
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8-mid.webp",
+  "bytes": 419378,
+  "factor": 1.0,
+  "w": 3200,
+  "h": 1302,
+  "q_est": 95,
+  "out": {
+   "90": 332570,
+   "82": 274550,
+   "75": 243514
+  }
+ },
+ {
+  "src": "src/assets/characters/cels-0.webp",
+  "bytes": 417580,
+  "factor": 1.0,
+  "w": 1432,
+  "h": 2037,
+  "q_est": 89,
+  "out": {
+   "90": 417580,
+   "82": 333444,
+   "75": 289498
+  }
+ },
+ {
+  "src": "src/assets/props/dot-props.webp",
+  "bytes": 404064,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 935,
+  "q_est": 85,
+  "out": {
+   "90": 404064,
+   "82": 362246,
+   "75": 315510
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5gold2-mid.webp",
+  "bytes": 401372,
+  "factor": 1.0,
+  "w": 2454,
+  "h": 1302,
+  "q_est": 92,
+  "out": {
+   "90": 371200,
+   "82": 284274,
+   "75": 246060
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5gold2-near.webp",
+  "bytes": 382694,
+  "factor": 1.0,
+  "w": 3520,
+  "h": 1736,
+  "q_est": 94,
+  "out": {
+   "90": 300738,
+   "82": 238000,
+   "75": 206896
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5dusk2-mid.webp",
+  "bytes": 378614,
+  "factor": 1.0,
+  "w": 2475,
+  "h": 1302,
+  "q_est": 92,
+  "out": {
+   "90": 359176,
+   "82": 289556,
+   "75": 256666
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/cheer.webp",
+  "bytes": 377742,
+  "factor": 1.0,
+  "w": 1744,
+  "h": 860,
+  "q_est": 86,
+  "out": {
+   "90": 377742,
+   "82": 342376,
+   "75": 297814
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5twi2-mid.webp",
+  "bytes": 376674,
+  "factor": 1.0,
+  "w": 2542,
+  "h": 1302,
+  "q_est": 92,
+  "out": {
+   "90": 359852,
+   "82": 293244,
+   "75": 262818
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5twi1-mid.webp",
+  "bytes": 373554,
+  "factor": 1.0,
+  "w": 2394,
+  "h": 1302,
+  "q_est": 92,
+  "out": {
+   "90": 349142,
+   "82": 284712,
+   "75": 255078
+  }
+ },
+ {
+  "src": "src/assets/enemies/thornbark-atlas.webp",
+  "bytes": 371564,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 1639,
+  "q_est": 90,
+  "out": {
+   "90": 371564,
+   "82": 297696,
+   "75": 259694
+  }
+ },
+ {
+  "src": "src/assets/story/plates/village.webp",
+  "bytes": 369670,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 84,
+  "out": {
+   "90": 369670,
+   "82": 327924,
+   "75": 252216
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4terraces-far.webp",
+  "bytes": 369222,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 369222,
+   "82": 204992,
+   "75": 159788
+  }
+ },
+ {
+  "src": "src/assets/w6/ledges.webp",
+  "bytes": 364478,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1735,
+  "q_est": 89,
+  "out": {
+   "90": 364478,
+   "82": 293770,
+   "75": 259180
+  }
+ },
+ {
+  "src": "src/assets/props/dressnew-w6.webp",
+  "bytes": 363648,
+  "factor": 1.0,
+  "w": 989,
+  "h": 1613,
+  "q_est": 87,
+  "out": {
+   "90": 363648,
+   "82": 319718,
+   "75": 281432
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1c-near.webp",
+  "bytes": 362970,
+  "factor": 1.0,
+  "w": 3637,
+  "h": 1736,
+  "q_est": 95,
+  "out": {
+   "90": 272638,
+   "82": 202412,
+   "75": 168406
+  }
+ },
+ {
+  "src": "src/assets/characters/cels-2.webp",
+  "bytes": 355594,
+  "factor": 1.0,
+  "w": 1780,
+  "h": 1616,
+  "q_est": 89,
+  "out": {
+   "90": 355594,
+   "82": 273944,
+   "75": 233352
+  }
+ },
+ {
+  "src": "src/assets/w4/falls.webp",
+  "bytes": 355142,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1384,
+  "q_est": 89,
+  "out": {
+   "90": 355142,
+   "82": 303114,
+   "75": 275626
+  }
+ },
+ {
+  "src": "src/assets/props/dressnew-w7.webp",
+  "bytes": 347606,
+  "factor": 1.0,
+  "w": 1021,
+  "h": 1793,
+  "q_est": 87,
+  "out": {
+   "90": 347606,
+   "82": 298036,
+   "75": 256178
+  }
+ },
+ {
+  "src": "src/assets/story/plates/nest-storm.webp",
+  "bytes": 345862,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 83,
+  "out": {
+   "90": 345862,
+   "82": 345862,
+   "75": 219100
+  }
+ },
+ {
+  "src": "src/assets/props/dressnew-w4.webp",
+  "bytes": 338096,
+  "factor": 1.0,
+  "w": 1021,
+  "h": 1830,
+  "q_est": 87,
+  "out": {
+   "90": 338096,
+   "82": 297186,
+   "75": 262980
+  }
+ },
+ {
+  "src": "src/assets/ground/w7.webp",
+  "bytes": 332910,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2944,
+  "q_est": 81,
+  "out": {
+   "90": 332910,
+   "82": 332910,
+   "75": 279568
+  }
+ },
+ {
+  "src": "src/assets/characters/meeca-standard.webp",
+  "bytes": 332410,
+  "factor": 1.0,
+  "w": 1280,
+  "h": 1669,
+  "q_est": 64,
+  "out": {
+   "90": 332410,
+   "82": 332410,
+   "75": 332410
+  }
+ },
+ {
+  "src": "src/assets/story/plates/tea.webp",
+  "bytes": 328902,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 84,
+  "out": {
+   "90": 328902,
+   "82": 295916,
+   "75": 223726
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5-near.webp",
+  "bytes": 327400,
+  "factor": 1.0,
+  "w": 3520,
+  "h": 1736,
+  "q_est": 94,
+  "out": {
+   "90": 254644,
+   "82": 201352,
+   "75": 174564
+  }
+ },
+ {
+  "src": "src/assets/props/dressnew-w3.webp",
+  "bytes": 322020,
+  "factor": 1.0,
+  "w": 1011,
+  "h": 1727,
+  "q_est": 87,
+  "out": {
+   "90": 322020,
+   "82": 271584,
+   "75": 228186
+  }
+ },
+ {
+  "src": "src/assets/enemies/venom2-atlas.webp",
+  "bytes": 317498,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1775,
+  "q_est": 89,
+  "out": {
+   "90": 317498,
+   "82": 245830,
+   "75": 212118
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5dusk1-mid.webp",
+  "bytes": 315882,
+  "factor": 1.0,
+  "w": 2394,
+  "h": 1302,
+  "q_est": 92,
+  "out": {
+   "90": 297926,
+   "82": 237490,
+   "75": 209652
+  }
+ },
+ {
+  "src": "src/assets/story/plates/w5-day.webp",
+  "bytes": 312874,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 85,
+  "out": {
+   "90": 312874,
+   "82": 257734,
+   "75": 194832
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5twi2-far.webp",
+  "bytes": 310686,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 310686,
+   "82": 176618,
+   "75": 137350
+  }
+ },
+ {
+  "src": "src/assets/hero/pokey-swim.webp",
+  "bytes": 309504,
+  "factor": 1.0,
+  "w": 2920,
+  "h": 747,
+  "q_est": 89,
+  "out": {
+   "90": 309504,
+   "82": 250492,
+   "75": 220438
+  }
+ },
+ {
+  "src": "src/assets/story/hd/pokeyface-0.webp",
+  "bytes": 308622,
+  "factor": 1.0,
+  "w": 1804,
+  "h": 1804,
+  "q_est": 89,
+  "out": {
+   "90": 308622,
+   "82": 236842,
+   "75": 205476
+  }
+ },
+ {
+  "src": "src/assets/enemies/jaguar-atlas.webp",
+  "bytes": 308416,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 831,
+  "q_est": 91,
+  "out": {
+   "90": 308416,
+   "82": 244802,
+   "75": 209338
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5twi2-near.webp",
+  "bytes": 307450,
+  "factor": 1.0,
+  "w": 3520,
+  "h": 1736,
+  "q_est": 94,
+  "out": {
+   "90": 254392,
+   "82": 212392,
+   "75": 190318
+  }
+ },
+ {
+  "src": "src/assets/story/plates/storm-returns.webp",
+  "bytes": 305368,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 83,
+  "out": {
+   "90": 305368,
+   "82": 305368,
+   "75": 192812
+  }
+ },
+ {
+  "src": "src/assets/w6to10/creatures/fruitbat-anim.webp",
+  "bytes": 304096,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1452,
+  "q_est": 79,
+  "out": {
+   "90": 304096,
+   "82": 304096,
+   "75": 257510
+  }
+ },
+ {
+  "src": "src/assets/story/plates/hill.webp",
+  "bytes": 303496,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 83,
+  "out": {
+   "90": 303496,
+   "82": 303496,
+   "75": 199058
+  }
+ },
+ {
+  "src": "src/assets/story/plates/w2-day.webp",
+  "bytes": 301868,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 86,
+  "out": {
+   "90": 301868,
+   "82": 243476,
+   "75": 184448
+  }
+ },
+ {
+  "src": "src/assets/enemies/eagle-atlas.webp",
+  "bytes": 300978,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 796,
+  "q_est": 95,
+  "out": {
+   "90": 241232,
+   "82": 204246,
+   "75": 184562
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5night-mid.webp",
+  "bytes": 299908,
+  "factor": 1.0,
+  "w": 2394,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 299908,
+   "82": 237884,
+   "75": 216156
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1-near.webp",
+  "bytes": 299868,
+  "factor": 1.0,
+  "w": 3214,
+  "h": 1736,
+  "q_est": 94,
+  "out": {
+   "90": 243168,
+   "82": 188956,
+   "75": 155460
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5twi1-near.webp",
+  "bytes": 298080,
+  "factor": 1.0,
+  "w": 3520,
+  "h": 1736,
+  "q_est": 94,
+  "out": {
+   "90": 246962,
+   "82": 202462,
+   "75": 176762
+  }
+ },
+ {
+  "src": "src/assets/w6to10/creatures/sentry-anim-1.webp",
+  "bytes": 296964,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1514,
+  "q_est": 79,
+  "out": {
+   "90": 296964,
+   "82": 296964,
+   "75": 250926
+  }
+ },
+ {
+  "src": "src/assets/story/plates/nest-morning.webp",
+  "bytes": 296842,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 84,
+  "out": {
+   "90": 296842,
+   "82": 262952,
+   "75": 203828
+  }
+ },
+ {
+  "src": "src/assets/enemies/venom-atlas.webp",
+  "bytes": 296638,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 964,
+  "q_est": 90,
+  "out": {
+   "90": 296638,
+   "82": 244504,
+   "75": 210408
+  }
+ },
+ {
+  "src": "src/assets/ground/w6.webp",
+  "bytes": 296076,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2944,
+  "q_est": 80,
+  "out": {
+   "90": 296076,
+   "82": 296076,
+   "75": 234066
+  }
+ },
+ {
+  "src": "src/assets/bosses/boss-atk.webp",
+  "bytes": 293746,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 660,
+  "q_est": 90,
+  "out": {
+   "90": 293746,
+   "82": 240898,
+   "75": 216028
+  }
+ },
+ {
+  "src": "src/assets/w1to4art/w1-new.webp",
+  "bytes": 293670,
+  "factor": 1.0,
+  "w": 1996,
+  "h": 925,
+  "q_est": 90,
+  "out": {
+   "90": 293670,
+   "82": 226918,
+   "75": 193102
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4mist-far.webp",
+  "bytes": 293570,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 293570,
+   "82": 147296,
+   "75": 112436
+  }
+ },
+ {
+  "src": "src/assets/w7slide/flume-cave.webp",
+  "bytes": 285794,
+  "factor": 1.0,
+  "w": 2037,
+  "h": 1408,
+  "q_est": 89,
+  "out": {
+   "90": 285794,
+   "82": 200396,
+   "75": 158928
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3cavern-far.webp",
+  "bytes": 284474,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 284474,
+   "82": 146382,
+   "75": 113030
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5dusk1-near.webp",
+  "bytes": 283428,
+  "factor": 1.0,
+  "w": 3520,
+  "h": 1736,
+  "q_est": 94,
+  "out": {
+   "90": 228862,
+   "82": 182386,
+   "75": 155464
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4-mid.webp",
+  "bytes": 279896,
+  "factor": 1.0,
+  "w": 2442,
+  "h": 1302,
+  "q_est": 95,
+  "out": {
+   "90": 207438,
+   "82": 164704,
+   "75": 141286
+  }
+ },
+ {
+  "src": "src/assets/story/hd/meeca-2.webp",
+  "bytes": 276410,
+  "factor": 1.0,
+  "w": 1882,
+  "h": 800,
+  "q_est": 89,
+  "out": {
+   "90": 276410,
+   "82": 221362,
+   "75": 189934
+  }
+ },
+ {
+  "src": "src/assets/story/plates/w1-day.webp",
+  "bytes": 275916,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 85,
+  "out": {
+   "90": 275916,
+   "82": 222302,
+   "75": 160984
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/doze.webp",
+  "bytes": 274134,
+  "factor": 1.0,
+  "w": 904,
+  "h": 924,
+  "q_est": 86,
+  "out": {
+   "90": 274134,
+   "82": 247314,
+   "75": 212426
+  }
+ },
+ {
+  "src": "src/assets/story/plates/cookhouse.webp",
+  "bytes": 273490,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 83,
+  "out": {
+   "90": 273490,
+   "82": 273490,
+   "75": 190986
+  }
+ },
+ {
+  "src": "src/assets/w7/temple-run.webp",
+  "bytes": 272358,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2048,
+  "q_est": 87,
+  "out": {
+   "90": 272358,
+   "82": 196522,
+   "75": 140122
+  }
+ },
+ {
+  "src": "src/assets/story/plates/w1-dusk.webp",
+  "bytes": 264556,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 85,
+  "out": {
+   "90": 264556,
+   "82": 194892,
+   "75": 143032
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7-near.webp",
+  "bytes": 259806,
+  "factor": 1.0,
+  "w": 3310,
+  "h": 1736,
+  "q_est": 94,
+  "out": {
+   "90": 218372,
+   "82": 173506,
+   "75": 148974
+  }
+ },
+ {
+  "src": "src/assets/w7slide/flume-pokey.webp",
+  "bytes": 259036,
+  "factor": 1.0,
+  "w": 1933,
+  "h": 1550,
+  "q_est": 87,
+  "out": {
+   "90": 259036,
+   "82": 213682,
+   "75": 177802
+  }
+ },
+ {
+  "src": "src/assets/kits/w2.webp",
+  "bytes": 258144,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1255,
+  "q_est": 85,
+  "out": {
+   "90": 258144,
+   "82": 220876,
+   "75": 177516
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10dusk-far.webp",
+  "bytes": 257314,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 257314,
+   "82": 138502,
+   "75": 105380
+  }
+ },
+ {
+  "src": "src/assets/story/plates/grandma-door.webp",
+  "bytes": 256688,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 83,
+  "out": {
+   "90": 256688,
+   "82": 256688,
+   "75": 174912
+  }
+ },
+ {
+  "src": "src/assets/ground/w8.webp",
+  "bytes": 256644,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2944,
+  "q_est": 80,
+  "out": {
+   "90": 256644,
+   "82": 256644,
+   "75": 206798
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9dawn-far.webp",
+  "bytes": 256566,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 256566,
+   "82": 138806,
+   "75": 106844
+  }
+ },
+ {
+  "src": "src/assets/story/plates/grandma-door-empty.webp",
+  "bytes": 256204,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 83,
+  "out": {
+   "90": 256204,
+   "82": 256204,
+   "75": 172838
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4-near.webp",
+  "bytes": 256098,
+  "factor": 1.0,
+  "w": 3256,
+  "h": 1736,
+  "q_est": 95,
+  "out": {
+   "90": 206390,
+   "82": 165560,
+   "75": 142388
+  }
+ },
+ {
+  "src": "src/assets/enemies/journal-cards.webp",
+  "bytes": 255094,
+  "factor": 1.0,
+  "w": 1608,
+  "h": 900,
+  "q_est": 86,
+  "out": {
+   "90": 255094,
+   "82": 234560,
+   "75": 204796
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5dusk2-near.webp",
+  "bytes": 254430,
+  "factor": 1.0,
+  "w": 3520,
+  "h": 1736,
+  "q_est": 94,
+  "out": {
+   "90": 198498,
+   "82": 159830,
+   "75": 136148
+  }
+ },
+ {
+  "src": "src/assets/story/plates/w1-storm.webp",
+  "bytes": 250848,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 85,
+  "out": {
+   "90": 250848,
+   "82": 198102,
+   "75": 148600
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5dusk1-far.webp",
+  "bytes": 249694,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 249694,
+   "82": 133824,
+   "75": 105038
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6-near.webp",
+  "bytes": 249392,
+  "factor": 1.0,
+  "w": 3222,
+  "h": 1736,
+  "q_est": 94,
+  "out": {
+   "90": 201072,
+   "82": 149992,
+   "75": 124028
+  }
+ },
+ {
+  "src": "src/assets/story/plates/w7-day.webp",
+  "bytes": 248730,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 85,
+  "out": {
+   "90": 248730,
+   "82": 194622,
+   "75": 143044
+  }
+ },
+ {
+  "src": "src/assets/story/live/gates.webp",
+  "bytes": 246596,
+  "factor": 1.0,
+  "w": 1860,
+  "h": 1077,
+  "q_est": 79,
+  "out": {
+   "90": 246596,
+   "82": 246596,
+   "75": 210592
+  }
+ },
+ {
+  "src": "src/assets/story/plates/w4-day.webp",
+  "bytes": 245572,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 85,
+  "out": {
+   "90": 245572,
+   "82": 182790,
+   "75": 136000
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6-far.webp",
+  "bytes": 243546,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 243546,
+   "82": 134668,
+   "75": 103926
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9night-far.webp",
+  "bytes": 241652,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 241652,
+   "82": 122178,
+   "75": 92230
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1sun2-mid.webp",
+  "bytes": 241266,
+  "factor": 1.0,
+  "w": 3729,
+  "h": 1302,
+  "q_est": 72,
+  "out": {
+   "90": 241266,
+   "82": 241266,
+   "75": 241266
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5gold2-far.webp",
+  "bytes": 240588,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 240588,
+   "82": 128788,
+   "75": 99562
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8night-far.webp",
+  "bytes": 240266,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 240266,
+   "82": 119212,
+   "75": 89594
+  }
+ },
+ {
+  "src": "src/assets/ground/w2.webp",
+  "bytes": 239826,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2944,
+  "q_est": 80,
+  "out": {
+   "90": 239826,
+   "82": 239826,
+   "75": 192792
+  }
+ },
+ {
+  "src": "src/assets/ground/w5.webp",
+  "bytes": 239100,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2944,
+  "q_est": 80,
+  "out": {
+   "90": 239100,
+   "82": 239100,
+   "75": 204264
+  }
+ },
+ {
+  "src": "src/assets/kits/w6.webp",
+  "bytes": 238260,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1363,
+  "q_est": 85,
+  "out": {
+   "90": 238260,
+   "82": 210046,
+   "75": 166254
+  }
+ },
+ {
+  "src": "src/assets/w1to4art/w1-cut.webp",
+  "bytes": 235906,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 591,
+  "q_est": 87,
+  "out": {
+   "90": 235906,
+   "82": 197206,
+   "75": 160110
+  }
+ },
+ {
+  "src": "src/assets/w7slide/chamber.webp",
+  "bytes": 234764,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 878,
+  "q_est": 90,
+  "out": {
+   "90": 234764,
+   "82": 147228,
+   "75": 110174
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2mist-near.webp",
+  "bytes": 234648,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 234648,
+   "82": 186354,
+   "75": 166048
+  }
+ },
+ {
+  "src": "src/assets/ground/w9.webp",
+  "bytes": 234124,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2944,
+  "q_est": 80,
+  "out": {
+   "90": 234124,
+   "82": 234124,
+   "75": 192324
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10after-far.webp",
+  "bytes": 233312,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 233312,
+   "82": 122746,
+   "75": 94988
+  }
+ },
+ {
+  "src": "src/assets/story/plates/cell.webp",
+  "bytes": 231940,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 83,
+  "out": {
+   "90": 231940,
+   "82": 231940,
+   "75": 158748
+  }
+ },
+ {
+  "src": "src/assets/props/stage-art.webp",
+  "bytes": 230428,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 1003,
+  "q_est": 90,
+  "out": {
+   "90": 230428,
+   "82": 185396,
+   "75": 163326
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8-near.webp",
+  "bytes": 227922,
+  "factor": 1.0,
+  "w": 3519,
+  "h": 1736,
+  "q_est": 95,
+  "out": {
+   "90": 183800,
+   "82": 145692,
+   "75": 129006
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5night-near.webp",
+  "bytes": 227068,
+  "factor": 1.0,
+  "w": 3520,
+  "h": 1736,
+  "q_est": 95,
+  "out": {
+   "90": 188404,
+   "82": 157058,
+   "75": 139482
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8sunset-far.webp",
+  "bytes": 223738,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 223738,
+   "82": 109564,
+   "75": 83092
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2evening-near.webp",
+  "bytes": 223014,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 88,
+  "out": {
+   "90": 223014,
+   "82": 179194,
+   "75": 160790
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3-far.webp",
+  "bytes": 222918,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 222918,
+   "82": 110810,
+   "75": 84888
+  }
+ },
+ {
+  "src": "src/assets/kits/w3.webp",
+  "bytes": 222736,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1229,
+  "q_est": 85,
+  "out": {
+   "90": 222736,
+   "82": 195020,
+   "75": 157612
+  }
+ },
+ {
+  "src": "src/assets/enemies/golem-atlas.webp",
+  "bytes": 222584,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 796,
+  "q_est": 90,
+  "out": {
+   "90": 222584,
+   "82": 175980,
+   "75": 147986
+  }
+ },
+ {
+  "src": "src/assets/story/hd/pokeyface-1.webp",
+  "bytes": 222388,
+  "factor": 1.0,
+  "w": 1932,
+  "h": 1100,
+  "q_est": 89,
+  "out": {
+   "90": 222388,
+   "82": 170606,
+   "75": 145852
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5night-far.webp",
+  "bytes": 222122,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 222122,
+   "82": 109952,
+   "75": 83712
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6dusk-mid.webp",
+  "bytes": 222088,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 222088,
+   "82": 187554,
+   "75": 170054
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5-mid.webp",
+  "bytes": 218916,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 79,
+  "out": {
+   "90": 218916,
+   "82": 218916,
+   "75": 198836
+  }
+ },
+ {
+  "src": "src/assets/story/plates/nest-night.webp",
+  "bytes": 218230,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 82,
+  "out": {
+   "90": 218230,
+   "82": 218230,
+   "75": 141338
+  }
+ },
+ {
+  "src": "src/assets/story/plates/gates.webp",
+  "bytes": 218034,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 83,
+  "out": {
+   "90": 218034,
+   "82": 218034,
+   "75": 145050
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2evening-mid.webp",
+  "bytes": 216114,
+  "factor": 1.0,
+  "w": 2076,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 216114,
+   "82": 189780,
+   "75": 162140
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5arena-table.webp",
+  "bytes": 215492,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 868,
+  "q_est": 83,
+  "out": {
+   "90": 215492,
+   "82": 215492,
+   "75": 159498
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6dusk-far.webp",
+  "bytes": 215256,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 215256,
+   "82": 108786,
+   "75": 84058
+  }
+ },
+ {
+  "src": "src/assets/story/cards/stone-golem.webp",
+  "bytes": 215150,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 84,
+  "out": {
+   "90": 215150,
+   "82": 195584,
+   "75": 149904
+  }
+ },
+ {
+  "src": "src/assets/story/plates/warroom.webp",
+  "bytes": 213180,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 83,
+  "out": {
+   "90": 213180,
+   "82": 213180,
+   "75": 137410
+  }
+ },
+ {
+  "src": "src/assets/ground/w3.webp",
+  "bytes": 212002,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2944,
+  "q_est": 80,
+  "out": {
+   "90": 212002,
+   "82": 212002,
+   "75": 173772
+  }
+ },
+ {
+  "src": "src/assets/story/plates/raft.webp",
+  "bytes": 211378,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 85,
+  "out": {
+   "90": 211378,
+   "82": 176802,
+   "75": 135030
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6-mid.webp",
+  "bytes": 208888,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 88,
+  "out": {
+   "90": 208888,
+   "82": 185220,
+   "75": 164028
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2-far.webp",
+  "bytes": 206364,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 206364,
+   "82": 113284,
+   "75": 89610
+  }
+ },
+ {
+  "src": "src/assets/enemies/snake-atlas.webp",
+  "bytes": 206008,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 378,
+  "q_est": 90,
+  "out": {
+   "90": 206008,
+   "82": 163200,
+   "75": 141110
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5arena-webs.webp",
+  "bytes": 205402,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 868,
+  "q_est": 83,
+  "out": {
+   "90": 205402,
+   "82": 205402,
+   "75": 146516
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2rapids-mid.webp",
+  "bytes": 203898,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 77,
+  "out": {
+   "90": 203898,
+   "82": 203898,
+   "75": 191610
+  }
+ },
+ {
+  "src": "src/assets/ground/w4.webp",
+  "bytes": 203710,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2944,
+  "q_est": 80,
+  "out": {
+   "90": 203710,
+   "82": 203710,
+   "75": 166258
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6dawn-mid.webp",
+  "bytes": 203154,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 203154,
+   "82": 184004,
+   "75": 163908
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5-far.webp",
+  "bytes": 202240,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 202240,
+   "82": 107554,
+   "75": 84562
+  }
+ },
+ {
+  "src": "src/assets/story/plates/w8-night.webp",
+  "bytes": 201630,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 85,
+  "out": {
+   "90": 201630,
+   "82": 166918,
+   "75": 130494
+  }
+ },
+ {
+  "src": "src/assets/ground/w1.webp",
+  "bytes": 201534,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2944,
+  "q_est": 80,
+  "out": {
+   "90": 201534,
+   "82": 201534,
+   "75": 164718
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1b-far.webp",
+  "bytes": 201508,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 201508,
+   "82": 108932,
+   "75": 84982
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1kapok-near.webp",
+  "bytes": 200912,
+  "factor": 1.0,
+  "w": 2850,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 200912,
+   "82": 151572,
+   "75": 128136
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9-near.webp",
+  "bytes": 199360,
+  "factor": 1.0,
+  "w": 3519,
+  "h": 1736,
+  "q_est": 94,
+  "out": {
+   "90": 152854,
+   "82": 118422,
+   "75": 100514
+  }
+ },
+ {
+  "src": "src/assets/story/plates/w6-dusk.webp",
+  "bytes": 198796,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 85,
+  "out": {
+   "90": 198796,
+   "82": 141858,
+   "75": 104014
+  }
+ },
+ {
+  "src": "src/assets/kits/w7.webp",
+  "bytes": 198772,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1114,
+  "q_est": 85,
+  "out": {
+   "90": 198772,
+   "82": 174442,
+   "75": 137622
+  }
+ },
+ {
+  "src": "src/assets/story/plates/gorge.webp",
+  "bytes": 198668,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 82,
+  "out": {
+   "90": 198668,
+   "82": 198668,
+   "75": 142396
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1kapok-far.webp",
+  "bytes": 197632,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 1302,
+  "q_est": 85,
+  "out": {
+   "90": 197632,
+   "82": 164476,
+   "75": 126706
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9-mid.webp",
+  "bytes": 197112,
+  "factor": 1.0,
+  "w": 2677,
+  "h": 1302,
+  "q_est": 94,
+  "out": {
+   "90": 160692,
+   "82": 129276,
+   "75": 114018
+  }
+ },
+ {
+  "src": "src/assets/hud/hud-atlas.webp",
+  "bytes": 196014,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 1264,
+  "q_est": 89,
+  "out": {
+   "90": 196014,
+   "82": 150894,
+   "75": 130064
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7court-far.webp",
+  "bytes": 195246,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 1302,
+  "q_est": 81,
+  "out": {
+   "90": 195246,
+   "82": 195246,
+   "75": 147242
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6moon-mid.webp",
+  "bytes": 195210,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 195210,
+   "82": 163208,
+   "75": 147334
+  }
+ },
+ {
+  "src": "src/assets/story/cards/crocus-rex.webp",
+  "bytes": 195132,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 83,
+  "out": {
+   "90": 195132,
+   "82": 195132,
+   "75": 143746
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2rapids-near.webp",
+  "bytes": 194972,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 76,
+  "out": {
+   "90": 194972,
+   "82": 194972,
+   "75": 194972
+  }
+ },
+ {
+  "src": "src/assets/enemies/croc-atlas.webp",
+  "bytes": 192066,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 746,
+  "q_est": 90,
+  "out": {
+   "90": 192066,
+   "82": 149220,
+   "75": 120788
+  }
+ },
+ {
+  "src": "src/assets/kits/w8.webp",
+  "bytes": 192010,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1066,
+  "q_est": 85,
+  "out": {
+   "90": 192010,
+   "82": 166440,
+   "75": 132890
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2rapids-far.webp",
+  "bytes": 191656,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 1302,
+  "q_est": 85,
+  "out": {
+   "90": 191656,
+   "82": 166506,
+   "75": 121774
+  }
+ },
+ {
+  "src": "src/assets/story/cards/venom-fang.webp",
+  "bytes": 190996,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 83,
+  "out": {
+   "90": 190996,
+   "82": 190996,
+   "75": 137168
+  }
+ },
+ {
+  "src": "src/assets/story/plates/w5-dusk.webp",
+  "bytes": 190690,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 85,
+  "out": {
+   "90": 190690,
+   "82": 155320,
+   "75": 116248
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1-mid.webp",
+  "bytes": 190370,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 190370,
+   "82": 171278,
+   "75": 152110
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9-far.webp",
+  "bytes": 190248,
+  "factor": 1.0,
+  "w": 2639,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 190248,
+   "82": 94366,
+   "75": 71970
+  }
+ },
+ {
+  "src": "src/assets/story/drake/drake-cave.webp",
+  "bytes": 189784,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 84,
+  "out": {
+   "90": 189784,
+   "82": 153358,
+   "75": 115446
+  }
+ },
+ {
+  "src": "src/assets/flora/plants-atlas.webp",
+  "bytes": 188706,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 452,
+  "q_est": 83,
+  "out": {
+   "90": 188706,
+   "82": 188706,
+   "75": 166910
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10storm-far.webp",
+  "bytes": 187208,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 187208,
+   "82": 137450,
+   "75": 100316
+  }
+ },
+ {
+  "src": "src/assets/story/cards/squirrels.webp",
+  "bytes": 186238,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 85,
+  "out": {
+   "90": 186238,
+   "82": 165780,
+   "75": 122846
+  }
+ },
+ {
+  "src": "src/assets/flora/flowers-atlas.webp",
+  "bytes": 185274,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 485,
+  "q_est": 82,
+  "out": {
+   "90": 185274,
+   "82": 185274,
+   "75": 164826
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1rain-far.webp",
+  "bytes": 185222,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 1302,
+  "q_est": 85,
+  "out": {
+   "90": 185222,
+   "82": 156214,
+   "75": 117986
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/move-climb.webp",
+  "bytes": 185092,
+  "factor": 1.0,
+  "w": 1160,
+  "h": 813,
+  "q_est": 86,
+  "out": {
+   "90": 185092,
+   "82": 167064,
+   "75": 146496
+  }
+ },
+ {
+  "src": "src/assets/w7slide/chute-wall-roots.webp",
+  "bytes": 184930,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 1024,
+  "q_est": 90,
+  "out": {
+   "90": 184930,
+   "82": 119158,
+   "75": 86302
+  }
+ },
+ {
+  "src": "src/assets/enemies/ocelot-atlas.webp",
+  "bytes": 184828,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 656,
+  "q_est": 90,
+  "out": {
+   "90": 184828,
+   "82": 148040,
+   "75": 128176
+  }
+ },
+ {
+  "src": "src/assets/lairs/fg-croc.webp",
+  "bytes": 183560,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 570,
+  "q_est": 85,
+  "out": {
+   "90": 183560,
+   "82": 172916,
+   "75": 158580
+  }
+ },
+ {
+  "src": "src/assets/story/cards/mailman.webp",
+  "bytes": 181596,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 83,
+  "out": {
+   "90": 181596,
+   "82": 181596,
+   "75": 131988
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3-near.webp",
+  "bytes": 181280,
+  "factor": 1.0,
+  "w": 3200,
+  "h": 1736,
+  "q_est": 94,
+  "out": {
+   "90": 138020,
+   "82": 103364,
+   "75": 87886
+  }
+ },
+ {
+  "src": "src/assets/lairs/prowler-lair.webp",
+  "bytes": 178028,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 1430,
+  "q_est": 65,
+  "out": {
+   "90": 178028,
+   "82": 178028,
+   "75": 178028
+  }
+ },
+ {
+  "src": "src/assets/kits/w4.webp",
+  "bytes": 177586,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1349,
+  "q_est": 85,
+  "out": {
+   "90": 177586,
+   "82": 152570,
+   "75": 124286
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4-far.webp",
+  "bytes": 177544,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 177544,
+   "82": 101626,
+   "75": 80724
+  }
+ },
+ {
+  "src": "src/assets/story/cards/general.webp",
+  "bytes": 177508,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 83,
+  "out": {
+   "90": 177508,
+   "82": 177508,
+   "75": 124282
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7dawn-near.webp",
+  "bytes": 176920,
+  "factor": 1.0,
+  "w": 2850,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 176920,
+   "82": 137624,
+   "75": 118878
+  }
+ },
+ {
+  "src": "src/assets/story/cards/sky-sovereign.webp",
+  "bytes": 176352,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 83,
+  "out": {
+   "90": 176352,
+   "82": 176352,
+   "75": 127256
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9ash-far.webp",
+  "bytes": 175106,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 175106,
+   "82": 127206,
+   "75": 95808
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7court-near.webp",
+  "bytes": 173804,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 173804,
+   "82": 139290,
+   "75": 122324
+  }
+ },
+ {
+  "src": "src/assets/enemies/turtle-atlas.webp",
+  "bytes": 173722,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 774,
+  "q_est": 85,
+  "out": {
+   "90": 173722,
+   "82": 163296,
+   "75": 139830
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10-near.webp",
+  "bytes": 173196,
+  "factor": 1.0,
+  "w": 3216,
+  "h": 1736,
+  "q_est": 94,
+  "out": {
+   "90": 139346,
+   "82": 108734,
+   "75": 92836
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10night-far.webp",
+  "bytes": 173040,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 173040,
+   "82": 124922,
+   "75": 92952
+  }
+ },
+ {
+  "src": "src/assets/kits/w10.webp",
+  "bytes": 172222,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1147,
+  "q_est": 85,
+  "out": {
+   "90": 172222,
+   "82": 144590,
+   "75": 117462
+  }
+ },
+ {
+  "src": "src/assets/story/live/steps.webp",
+  "bytes": 171696,
+  "factor": 1.0,
+  "w": 1580,
+  "h": 1266,
+  "q_est": 79,
+  "out": {
+   "90": 171696,
+   "82": 171696,
+   "75": 139808
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1rain-near.webp",
+  "bytes": 171150,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 171150,
+   "82": 143490,
+   "75": 130032
+  }
+ },
+ {
+  "src": "src/assets/story/cards/gruntlewick.webp",
+  "bytes": 171022,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 83,
+  "out": {
+   "90": 171022,
+   "82": 171022,
+   "75": 122476
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8sunset-mid.webp",
+  "bytes": 169754,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 169754,
+   "82": 140602,
+   "75": 128264
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4mist-near.webp",
+  "bytes": 168904,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 88,
+  "out": {
+   "90": 168904,
+   "82": 134968,
+   "75": 117258
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/move-mega.webp",
+  "bytes": 166072,
+  "factor": 1.0,
+  "w": 2816,
+  "h": 416,
+  "q_est": 85,
+  "out": {
+   "90": 166072,
+   "82": 149484,
+   "75": 129352
+  }
+ },
+ {
+  "src": "src/assets/story/live/nest-night.webp",
+  "bytes": 165888,
+  "factor": 1.0,
+  "w": 1684,
+  "h": 1188,
+  "q_est": 79,
+  "out": {
+   "90": 165888,
+   "82": 165888,
+   "75": 140632
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7dusk-near.webp",
+  "bytes": 165054,
+  "factor": 1.0,
+  "w": 2850,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 165054,
+   "82": 126992,
+   "75": 109176
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10gale-far.webp",
+  "bytes": 164430,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 164430,
+   "82": 116732,
+   "75": 85178
+  }
+ },
+ {
+  "src": "src/assets/ground/w10.webp",
+  "bytes": 164290,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 2944,
+  "q_est": 80,
+  "out": {
+   "90": 164290,
+   "82": 164290,
+   "75": 132900
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3crystal-mid.webp",
+  "bytes": 164262,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 164262,
+   "82": 135962,
+   "75": 119766
+  }
+ },
+ {
+  "src": "src/assets/enemies/seamstress-poses.webp",
+  "bytes": 163068,
+  "factor": 1.0,
+  "w": 1457,
+  "h": 283,
+  "q_est": 82,
+  "out": {
+   "90": 163068,
+   "82": 163068,
+   "75": 151228
+  }
+ },
+ {
+  "src": "src/assets/story/cards/marsh-reaver.webp",
+  "bytes": 162412,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 83,
+  "out": {
+   "90": 162412,
+   "82": 162412,
+   "75": 112806
+  }
+ },
+ {
+  "src": "src/assets/story/cards/tarantula-queen.webp",
+  "bytes": 162308,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 83,
+  "out": {
+   "90": 162308,
+   "82": 162308,
+   "75": 114810
+  }
+ },
+ {
+  "src": "src/assets/enemies/boa-anim.webp",
+  "bytes": 161312,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 426,
+  "q_est": 80,
+  "out": {
+   "90": 161312,
+   "82": 161312,
+   "75": 146326
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7dusk-mid.webp",
+  "bytes": 159668,
+  "factor": 1.0,
+  "w": 2076,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 159668,
+   "82": 136320,
+   "75": 115474
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8night-mid.webp",
+  "bytes": 159278,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 159278,
+   "82": 130126,
+   "75": 118240
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4storm-far.webp",
+  "bytes": 158342,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 1302,
+  "q_est": 85,
+  "out": {
+   "90": 158342,
+   "82": 135432,
+   "75": 107376
+  }
+ },
+ {
+  "src": "src/assets/story/plates/steps.webp",
+  "bytes": 157838,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 82,
+  "out": {
+   "90": 157838,
+   "82": 157838,
+   "75": 105722
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3crystal-far.webp",
+  "bytes": 156872,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 156872,
+   "82": 110642,
+   "75": 78472
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7court-mid.webp",
+  "bytes": 156554,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 156554,
+   "82": 130344,
+   "75": 115612
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8dawn-far.webp",
+  "bytes": 155410,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 155410,
+   "82": 110770,
+   "75": 79554
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1rain-mid.webp",
+  "bytes": 155376,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 90,
+  "out": {
+   "90": 155376,
+   "82": 134130,
+   "75": 122698
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3cavern-mid.webp",
+  "bytes": 154450,
+  "factor": 1.0,
+  "w": 2076,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 154450,
+   "82": 125702,
+   "75": 112388
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1b-mid.webp",
+  "bytes": 153050,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 153050,
+   "82": 138568,
+   "75": 121932
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2mist-mid.webp",
+  "bytes": 152968,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 152968,
+   "82": 134018,
+   "75": 113224
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6moon-far.webp",
+  "bytes": 149698,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 149698,
+   "82": 109404,
+   "75": 79050
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6dawn-near.webp",
+  "bytes": 149672,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 88,
+  "out": {
+   "90": 149672,
+   "82": 122148,
+   "75": 107000
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7-far.webp",
+  "bytes": 148458,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 1302,
+  "q_est": 85,
+  "out": {
+   "90": 148458,
+   "82": 129522,
+   "75": 95722
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/step-back.webp",
+  "bytes": 148396,
+  "factor": 1.0,
+  "w": 1640,
+  "h": 410,
+  "q_est": 86,
+  "out": {
+   "90": 148396,
+   "82": 134956,
+   "75": 117254
+  }
+ },
+ {
+  "src": "src/assets/kits/w9.webp",
+  "bytes": 148138,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1068,
+  "q_est": 85,
+  "out": {
+   "90": 148138,
+   "82": 128082,
+   "75": 102878
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3-mid.webp",
+  "bytes": 147744,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 147744,
+   "82": 131362,
+   "75": 117088
+  }
+ },
+ {
+  "src": "src/assets/story/plates/courtyard.webp",
+  "bytes": 147370,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 82,
+  "out": {
+   "90": 147370,
+   "82": 147370,
+   "75": 97122
+  }
+ },
+ {
+  "src": "src/assets/w7slide/flume-props.webp",
+  "bytes": 146822,
+  "factor": 1.0,
+  "w": 1996,
+  "h": 254,
+  "q_est": 90,
+  "out": {
+   "90": 146822,
+   "82": 112712,
+   "75": 97444
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10-mid.webp",
+  "bytes": 146710,
+  "factor": 1.0,
+  "w": 2412,
+  "h": 1302,
+  "q_est": 95,
+  "out": {
+   "90": 119004,
+   "82": 97996,
+   "75": 86300
+  }
+ },
+ {
+  "src": "src/assets/enemies/queen-atlas.webp",
+  "bytes": 146496,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 579,
+  "q_est": 90,
+  "out": {
+   "90": 146496,
+   "82": 110982,
+   "75": 91034
+  }
+ },
+ {
+  "src": "src/assets/kits/w5.webp",
+  "bytes": 146206,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 783,
+  "q_est": 89,
+  "out": {
+   "90": 146206,
+   "82": 113550,
+   "75": 95330
+  }
+ },
+ {
+  "src": "src/assets/story/live/courtyard.webp",
+  "bytes": 146122,
+  "factor": 1.0,
+  "w": 1560,
+  "h": 1281,
+  "q_est": 78,
+  "out": {
+   "90": 146122,
+   "82": 146122,
+   "75": 118308
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1sun2-near.webp",
+  "bytes": 144488,
+  "factor": 1.0,
+  "w": 2850,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 144488,
+   "82": 110482,
+   "75": 95026
+  }
+ },
+ {
+  "src": "src/assets/story/cards/pell.webp",
+  "bytes": 143098,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 83,
+  "out": {
+   "90": 143098,
+   "82": 143098,
+   "75": 102376
+  }
+ },
+ {
+  "src": "src/assets/enemies/guard-atlas.webp",
+  "bytes": 142536,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 768,
+  "q_est": 81,
+  "out": {
+   "90": 142536,
+   "82": 142536,
+   "75": 125902
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7dusk-far.webp",
+  "bytes": 142164,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 1302,
+  "q_est": 85,
+  "out": {
+   "90": 142164,
+   "82": 119804,
+   "75": 87068
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1c-mid.webp",
+  "bytes": 141514,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 141514,
+   "82": 126762,
+   "75": 113772
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4terraces-mid.webp",
+  "bytes": 140554,
+  "factor": 1.0,
+  "w": 2076,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 140554,
+   "82": 115350,
+   "75": 99620
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6dusk-near.webp",
+  "bytes": 140188,
+  "factor": 1.0,
+  "w": 2850,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 140188,
+   "82": 110110,
+   "75": 95208
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2mist-far.webp",
+  "bytes": 138488,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 1302,
+  "q_est": 85,
+  "out": {
+   "90": 138488,
+   "82": 114332,
+   "75": 83966
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7dawn-mid.webp",
+  "bytes": 138402,
+  "factor": 1.0,
+  "w": 2076,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 138402,
+   "82": 120964,
+   "75": 101514
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6moon-near.webp",
+  "bytes": 138240,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 138240,
+   "82": 108688,
+   "75": 96078
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4storm-near.webp",
+  "bytes": 137462,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 137462,
+   "82": 111622,
+   "75": 97860
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3sinkhole-mid.webp",
+  "bytes": 137262,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 137262,
+   "82": 122042,
+   "75": 110114
+  }
+ },
+ {
+  "src": "src/assets/w7slide/obstacles.webp",
+  "bytes": 137262,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 902,
+  "q_est": 91,
+  "out": {
+   "90": 137262,
+   "82": 88462,
+   "75": 72072
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4terraces-near.webp",
+  "bytes": 137154,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 88,
+  "out": {
+   "90": 137154,
+   "82": 113236,
+   "75": 99530
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7dawn-far.webp",
+  "bytes": 135470,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 1302,
+  "q_est": 85,
+  "out": {
+   "90": 135470,
+   "82": 111612,
+   "75": 81210
+  }
+ },
+ {
+  "src": "src/assets/hero/hero-studies.webp",
+  "bytes": 135116,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 547,
+  "q_est": 92,
+  "out": {
+   "90": 125424,
+   "82": 94102,
+   "75": 79430
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w6d.webp",
+  "bytes": 134980,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 555,
+  "q_est": 90,
+  "out": {
+   "90": 134980,
+   "82": 102128,
+   "75": 84050
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w8c.webp",
+  "bytes": 134918,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 965,
+  "q_est": 89,
+  "out": {
+   "90": 134918,
+   "82": 105592,
+   "75": 90844
+  }
+ },
+ {
+  "src": "src/assets/story/plates/w3-storm.webp",
+  "bytes": 133500,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 85,
+  "out": {
+   "90": 133500,
+   "82": 105486,
+   "75": 79548
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2evening-far.webp",
+  "bytes": 133364,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 1302,
+  "q_est": 85,
+  "out": {
+   "90": 133364,
+   "82": 110360,
+   "75": 80640
+  }
+ },
+ {
+  "src": "src/assets/enemies/butler-poses.webp",
+  "bytes": 133072,
+  "factor": 1.0,
+  "w": 1219,
+  "h": 220,
+  "q_est": 83,
+  "out": {
+   "90": 133072,
+   "82": 133072,
+   "75": 123878
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4storm-mid.webp",
+  "bytes": 132446,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 132446,
+   "82": 115376,
+   "75": 98274
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5dusk2-far.webp",
+  "bytes": 132334,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 1302,
+  "q_est": 85,
+  "out": {
+   "90": 132334,
+   "82": 110226,
+   "75": 77334
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4mist-mid.webp",
+  "bytes": 131736,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 131736,
+   "82": 108692,
+   "75": 95168
+  }
+ },
+ {
+  "src": "src/assets/story/cards/night-wing-monarch.webp",
+  "bytes": 131342,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 83,
+  "out": {
+   "90": 131342,
+   "82": 131342,
+   "75": 91296
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5gold2-sky.webp",
+  "bytes": 131128,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 84,
+  "out": {
+   "90": 131128,
+   "82": 110314,
+   "75": 78844
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8dawn-mid.webp",
+  "bytes": 130242,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 86,
+  "out": {
+   "90": 130242,
+   "82": 115668,
+   "75": 99612
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w7c-b.webp",
+  "bytes": 129786,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 830,
+  "q_est": 89,
+  "out": {
+   "90": 129786,
+   "82": 97534,
+   "75": 81494
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/move-walk.webp",
+  "bytes": 129744,
+  "factor": 1.0,
+  "w": 1184,
+  "h": 651,
+  "q_est": 85,
+  "out": {
+   "90": 129744,
+   "82": 119096,
+   "75": 102820
+  }
+ },
+ {
+  "src": "src/assets/flora/birds-atlas.webp",
+  "bytes": 129172,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 551,
+  "q_est": 90,
+  "out": {
+   "90": 129172,
+   "82": 101390,
+   "75": 86304
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w7c.webp",
+  "bytes": 128734,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 875,
+  "q_est": 89,
+  "out": {
+   "90": 128734,
+   "82": 101120,
+   "75": 85036
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1sunrise-far.webp",
+  "bytes": 128482,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 1302,
+  "q_est": 84,
+  "out": {
+   "90": 128482,
+   "82": 108786,
+   "75": 81824
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7-mid.webp",
+  "bytes": 127080,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 127080,
+   "82": 109432,
+   "75": 92304
+  }
+ },
+ {
+  "src": "src/assets/story/cards/soldiers.webp",
+  "bytes": 126138,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 83,
+  "out": {
+   "90": 126138,
+   "82": 126138,
+   "75": 85588
+  }
+ },
+ {
+  "src": "src/assets/w7/chairs-ring.webp",
+  "bytes": 124272,
+  "factor": 1.0,
+  "w": 1600,
+  "h": 405,
+  "q_est": 90,
+  "out": {
+   "90": 124272,
+   "82": 97044,
+   "75": 82040
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3sinkhole-far.webp",
+  "bytes": 122782,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 1302,
+  "q_est": 85,
+  "out": {
+   "90": 122782,
+   "82": 104412,
+   "75": 77094
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6dawn-far.webp",
+  "bytes": 122496,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 1302,
+  "q_est": 85,
+  "out": {
+   "90": 122496,
+   "82": 104390,
+   "75": 79846
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1kapok-mid.webp",
+  "bytes": 122102,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 122102,
+   "82": 108792,
+   "75": 97996
+  }
+ },
+ {
+  "src": "src/assets/w6to10/lairs/lair-queen-calm.webp",
+  "bytes": 120398,
+  "factor": 1.0,
+  "w": 1664,
+  "h": 928,
+  "q_est": 84,
+  "out": {
+   "90": 120398,
+   "82": 107248,
+   "75": 81540
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w6c.webp",
+  "bytes": 119986,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 834,
+  "q_est": 89,
+  "out": {
+   "90": 119986,
+   "82": 97308,
+   "75": 84552
+  }
+ },
+ {
+  "src": "src/assets/enemies/sovereign-atlas.webp",
+  "bytes": 119868,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 574,
+  "q_est": 87,
+  "out": {
+   "90": 119868,
+   "82": 102482,
+   "75": 84116
+  }
+ },
+ {
+  "src": "src/assets/w7/vine-anchors.webp",
+  "bytes": 119768,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 527,
+  "q_est": 89,
+  "out": {
+   "90": 119768,
+   "82": 92420,
+   "75": 80506
+  }
+ },
+ {
+  "src": "src/assets/w7slide/chute-end-light.webp",
+  "bytes": 119142,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 1024,
+  "q_est": 89,
+  "out": {
+   "90": 119142,
+   "82": 79604,
+   "75": 55400
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/move-run.webp",
+  "bytes": 118152,
+  "factor": 1.0,
+  "w": 1144,
+  "h": 426,
+  "q_est": 86,
+  "out": {
+   "90": 118152,
+   "82": 104692,
+   "75": 91308
+  }
+ },
+ {
+  "src": "src/assets/w6to10/lairs/lair-queen-rage.webp",
+  "bytes": 118032,
+  "factor": 1.0,
+  "w": 1664,
+  "h": 928,
+  "q_est": 84,
+  "out": {
+   "90": 118032,
+   "82": 100244,
+   "75": 74454
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1sunrise-mid.webp",
+  "bytes": 117334,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 117334,
+   "82": 102496,
+   "75": 90010
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w8c-b.webp",
+  "bytes": 116714,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 882,
+  "q_est": 89,
+  "out": {
+   "90": 116714,
+   "82": 88900,
+   "75": 76042
+  }
+ },
+ {
+  "src": "src/assets/story/plates/door.webp",
+  "bytes": 115254,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 82,
+  "out": {
+   "90": 115254,
+   "82": 115254,
+   "75": 76312
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8-far.webp",
+  "bytes": 114846,
+  "factor": 1.0,
+  "w": 2639,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 114846,
+   "82": 57272,
+   "75": 44186
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10-far.webp",
+  "bytes": 114078,
+  "factor": 1.0,
+  "w": 2194,
+  "h": 1302,
+  "q_est": 91,
+  "out": {
+   "90": 114078,
+   "82": 61660,
+   "75": 47964
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8sunset-near.webp",
+  "bytes": 112846,
+  "factor": 1.0,
+  "w": 2850,
+  "h": 1736,
+  "q_est": 88,
+  "out": {
+   "90": 112846,
+   "82": 91398,
+   "75": 81300
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9dawn-mid.webp",
+  "bytes": 112528,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 112528,
+   "82": 91408,
+   "75": 82072
+  }
+ },
+ {
+  "src": "src/assets/props/faces810.webp",
+  "bytes": 112430,
+  "factor": 1.0,
+  "w": 1930,
+  "h": 972,
+  "q_est": 85,
+  "out": {
+   "90": 112430,
+   "82": 99170,
+   "75": 80162
+  }
+ },
+ {
+  "src": "src/assets/w7slide/chute-far-dark.webp",
+  "bytes": 112002,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 1024,
+  "q_est": 90,
+  "out": {
+   "90": 112002,
+   "82": 72064,
+   "75": 52130
+  }
+ },
+ {
+  "src": "src/assets/enemies/drake-atlas.webp",
+  "bytes": 111928,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 545,
+  "q_est": 90,
+  "out": {
+   "90": 111928,
+   "82": 85004,
+   "75": 69900
+  }
+ },
+ {
+  "src": "src/assets/hero/hero-vine.webp",
+  "bytes": 111534,
+  "factor": 1.0,
+  "w": 1454,
+  "h": 431,
+  "q_est": 89,
+  "out": {
+   "90": 111534,
+   "82": 90202,
+   "75": 79532
+  }
+ },
+ {
+  "src": "src/assets/lairs/lair-sov-calm.webp",
+  "bytes": 111448,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1152,
+  "q_est": 83,
+  "out": {
+   "90": 111448,
+   "82": 111448,
+   "75": 71292
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9dawn-near.webp",
+  "bytes": 111408,
+  "factor": 1.0,
+  "w": 2850,
+  "h": 1736,
+  "q_est": 88,
+  "out": {
+   "90": 111408,
+   "82": 85874,
+   "75": 75198
+  }
+ },
+ {
+  "src": "src/assets/story/plates/w3-night.webp",
+  "bytes": 110532,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 84,
+  "out": {
+   "90": 110532,
+   "82": 91612,
+   "75": 71782
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9night-mid.webp",
+  "bytes": 109852,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 109852,
+   "82": 91444,
+   "75": 83268
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1sun2-far.webp",
+  "bytes": 109696,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 109696,
+   "82": 75494,
+   "75": 56198
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5night-sky.webp",
+  "bytes": 109536,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 84,
+  "out": {
+   "90": 109536,
+   "82": 70198,
+   "75": 42768
+  }
+ },
+ {
+  "src": "src/assets/story/hd/pokey-3.webp",
+  "bytes": 107936,
+  "factor": 1.0,
+  "w": 1630,
+  "h": 512,
+  "q_est": 89,
+  "out": {
+   "90": 107936,
+   "82": 82854,
+   "75": 71672
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/move-kick2.webp",
+  "bytes": 107804,
+  "factor": 1.0,
+  "w": 1992,
+  "h": 440,
+  "q_est": 85,
+  "out": {
+   "90": 107804,
+   "82": 96652,
+   "75": 84344
+  }
+ },
+ {
+  "src": "src/assets/proto/crown.webp",
+  "bytes": 107690,
+  "factor": 1.0,
+  "w": 1200,
+  "h": 577,
+  "q_est": 89,
+  "out": {
+   "90": 107690,
+   "82": 82362,
+   "75": 70810
+  }
+ },
+ {
+  "src": "src/assets/backdrops/dot-near-3.webp",
+  "bytes": 107644,
+  "factor": 1.0,
+  "w": 1536,
+  "h": 1024,
+  "q_est": 79,
+  "out": {
+   "90": 107644,
+   "82": 107644,
+   "75": 88526
+  }
+ },
+ {
+  "src": "src/assets/props/gates/w7.webp",
+  "bytes": 107334,
+  "factor": 1.0,
+  "w": 998,
+  "h": 640,
+  "q_est": 90,
+  "out": {
+   "90": 107334,
+   "82": 78078,
+   "75": 63364
+  }
+ },
+ {
+  "src": "src/assets/story/cards/magma-drake.webp",
+  "bytes": 106776,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 82,
+  "out": {
+   "90": 106776,
+   "82": 106776,
+   "75": 73920
+  }
+ },
+ {
+  "src": "src/assets/enemies/tayra-atlas.webp",
+  "bytes": 106166,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 890,
+  "q_est": 89,
+  "out": {
+   "90": 106166,
+   "82": 83836,
+   "75": 73402
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4terraces-sky.webp",
+  "bytes": 106030,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 84,
+  "out": {
+   "90": 106030,
+   "82": 83204,
+   "75": 59802
+  }
+ },
+ {
+  "src": "src/assets/props/bounce.webp",
+  "bytes": 104774,
+  "factor": 1.0,
+  "w": 3520,
+  "h": 256,
+  "q_est": 87,
+  "out": {
+   "90": 104774,
+   "82": 88166,
+   "75": 76216
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w6var.webp",
+  "bytes": 104348,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 812,
+  "q_est": 89,
+  "out": {
+   "90": 104348,
+   "82": 77934,
+   "75": 64148
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10dusk-near.webp",
+  "bytes": 103220,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 88,
+  "out": {
+   "90": 103220,
+   "82": 79958,
+   "75": 69232
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10gale-near.webp",
+  "bytes": 103174,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 88,
+  "out": {
+   "90": 103174,
+   "82": 80060,
+   "75": 70726
+  }
+ },
+ {
+  "src": "src/assets/story/plates/w10-storm.webp",
+  "bytes": 102376,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 2720,
+  "q_est": 85,
+  "out": {
+   "90": 102376,
+   "82": 80036,
+   "75": 59870
+  }
+ },
+ {
+  "src": "src/assets/w7slide/chute-wall-glyph.webp",
+  "bytes": 101750,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 1024,
+  "q_est": 89,
+  "out": {
+   "90": 101750,
+   "82": 66586,
+   "75": 44838
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5twi1-far.webp",
+  "bytes": 101364,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 1302,
+  "q_est": 84,
+  "out": {
+   "90": 101364,
+   "82": 88394,
+   "75": 65572
+  }
+ },
+ {
+  "src": "src/assets/backdrops/dot-near-1.webp",
+  "bytes": 100952,
+  "factor": 1.0,
+  "w": 1536,
+  "h": 1024,
+  "q_est": 79,
+  "out": {
+   "90": 100952,
+   "82": 100952,
+   "75": 82896
+  }
+ },
+ {
+  "src": "src/assets/story/cards/shadow-prowler.webp",
+  "bytes": 100918,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 83,
+  "out": {
+   "90": 100918,
+   "82": 100918,
+   "75": 68498
+  }
+ },
+ {
+  "src": "src/assets/lairs/lair-sov-rage.webp",
+  "bytes": 100710,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1152,
+  "q_est": 82,
+  "out": {
+   "90": 100710,
+   "82": 100710,
+   "75": 65136
+  }
+ },
+ {
+  "src": "src/assets/enemies/caiman-atlas.webp",
+  "bytes": 100356,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 479,
+  "q_est": 90,
+  "out": {
+   "90": 100356,
+   "82": 76510,
+   "75": 64702
+  }
+ },
+ {
+  "src": "src/assets/props/gates/w1.webp",
+  "bytes": 99952,
+  "factor": 1.0,
+  "w": 1010,
+  "h": 640,
+  "q_est": 90,
+  "out": {
+   "90": 99952,
+   "82": 70928,
+   "75": 59304
+  }
+ },
+ {
+  "src": "src/assets/props/gates/w3.webp",
+  "bytes": 99938,
+  "factor": 1.0,
+  "w": 996,
+  "h": 640,
+  "q_est": 90,
+  "out": {
+   "90": 99938,
+   "82": 72824,
+   "75": 59062
+  }
+ },
+ {
+  "src": "src/assets/props/gates/w4.webp",
+  "bytes": 99180,
+  "factor": 1.0,
+  "w": 989,
+  "h": 640,
+  "q_est": 90,
+  "out": {
+   "90": 99180,
+   "82": 72740,
+   "75": 60418
+  }
+ },
+ {
+  "src": "src/assets/characters/meeca-carve.webp",
+  "bytes": 98232,
+  "factor": 1.0,
+  "w": 965,
+  "h": 412,
+  "q_est": 85,
+  "out": {
+   "90": 98232,
+   "82": 92476,
+   "75": 80200
+  }
+ },
+ {
+  "src": "src/assets/backdrops/hollow.webp",
+  "bytes": 97530,
+  "factor": 1.0,
+  "w": 2560,
+  "h": 1430,
+  "q_est": 80,
+  "out": {
+   "90": 97530,
+   "82": 97530,
+   "75": 71392
+  }
+ },
+ {
+  "src": "src/assets/props/gates/w6.webp",
+  "bytes": 97238,
+  "factor": 1.0,
+  "w": 1000,
+  "h": 640,
+  "q_est": 90,
+  "out": {
+   "90": 97238,
+   "82": 70116,
+   "75": 56498
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10dusk-mid.webp",
+  "bytes": 96798,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 96798,
+   "82": 79100,
+   "75": 70084
+  }
+ },
+ {
+  "src": "src/assets/w7slide/pokey-slide-stills.webp",
+  "bytes": 96496,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 512,
+  "q_est": 91,
+  "out": {
+   "90": 96496,
+   "82": 67444,
+   "75": 58886
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8dawn-near.webp",
+  "bytes": 95828,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 88,
+  "out": {
+   "90": 95828,
+   "82": 78896,
+   "75": 69846
+  }
+ },
+ {
+  "src": "src/assets/w6to10/gemini/w6-hides-arches.webp",
+  "bytes": 95458,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 228,
+  "q_est": 90,
+  "out": {
+   "90": 95458,
+   "82": 71718,
+   "75": 58992
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w8var.webp",
+  "bytes": 94768,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 866,
+  "q_est": 89,
+  "out": {
+   "90": 94768,
+   "82": 70630,
+   "75": 59208
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3sinkhole-near.webp",
+  "bytes": 94512,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 94512,
+   "82": 76480,
+   "75": 69192
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9ash-mid.webp",
+  "bytes": 94478,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 94478,
+   "82": 79872,
+   "75": 72708
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10storm-near.webp",
+  "bytes": 92964,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 92964,
+   "82": 74364,
+   "75": 65584
+  }
+ },
+ {
+  "src": "src/assets/props/gates/w8.webp",
+  "bytes": 92870,
+  "factor": 1.0,
+  "w": 974,
+  "h": 640,
+  "q_est": 89,
+  "out": {
+   "90": 92870,
+   "82": 69814,
+   "75": 59048
+  }
+ },
+ {
+  "src": "src/assets/proto/props2-atlas.webp",
+  "bytes": 92310,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 598,
+  "q_est": 90,
+  "out": {
+   "90": 92310,
+   "82": 65072,
+   "75": 51098
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w8b.webp",
+  "bytes": 90400,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 714,
+  "q_est": 89,
+  "out": {
+   "90": 90400,
+   "82": 73232,
+   "75": 61608
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10night-near.webp",
+  "bytes": 89404,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 88,
+  "out": {
+   "90": 89404,
+   "82": 72040,
+   "75": 63650
+  }
+ },
+ {
+  "src": "src/assets/story/ground/w2.webp",
+  "bytes": 89394,
+  "factor": 1.0,
+  "w": 1600,
+  "h": 400,
+  "q_est": 87,
+  "out": {
+   "90": 89394,
+   "82": 73764,
+   "75": 61170
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8night-near.webp",
+  "bytes": 88734,
+  "factor": 1.0,
+  "w": 2850,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 88734,
+   "82": 72872,
+   "75": 66744
+  }
+ },
+ {
+  "src": "src/assets/enemies/spider-atlas.webp",
+  "bytes": 88696,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 290,
+  "q_est": 90,
+  "out": {
+   "90": 88696,
+   "82": 67986,
+   "75": 56394
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9ash-near.webp",
+  "bytes": 88476,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 88,
+  "out": {
+   "90": 88476,
+   "82": 71528,
+   "75": 62872
+  }
+ },
+ {
+  "src": "src/assets/props/gates/w2.webp",
+  "bytes": 88404,
+  "factor": 1.0,
+  "w": 999,
+  "h": 640,
+  "q_est": 90,
+  "out": {
+   "90": 88404,
+   "82": 61876,
+   "75": 50248
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3crystal-near.webp",
+  "bytes": 87328,
+  "factor": 1.0,
+  "w": 2902,
+  "h": 1736,
+  "q_est": 88,
+  "out": {
+   "90": 87328,
+   "82": 70822,
+   "75": 63676
+  }
+ },
+ {
+  "src": "src/assets/flora/butterflies-atlas.webp",
+  "bytes": 86636,
+  "factor": 1.0,
+  "w": 512,
+  "h": 473,
+  "q_est": 91,
+  "out": {
+   "90": 86636,
+   "82": 67142,
+   "75": 56576
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9night-near.webp",
+  "bytes": 85924,
+  "factor": 1.0,
+  "w": 2850,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 85924,
+   "82": 67456,
+   "75": 59510
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/move-jab.webp",
+  "bytes": 83614,
+  "factor": 1.0,
+  "w": 1800,
+  "h": 418,
+  "q_est": 85,
+  "out": {
+   "90": 83614,
+   "82": 76764,
+   "75": 66258
+  }
+ },
+ {
+  "src": "src/assets/enemies/boa-atlas.webp",
+  "bytes": 83334,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 368,
+  "q_est": 90,
+  "out": {
+   "90": 83334,
+   "82": 65732,
+   "75": 57464
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/teeter.webp",
+  "bytes": 83314,
+  "factor": 1.0,
+  "w": 1536,
+  "h": 402,
+  "q_est": 85,
+  "out": {
+   "90": 83314,
+   "82": 74762,
+   "75": 63124
+  }
+ },
+ {
+  "src": "src/assets/w8/lantern.webp",
+  "bytes": 82986,
+  "factor": 1.0,
+  "w": 1111,
+  "h": 900,
+  "q_est": 89,
+  "out": {
+   "90": 82986,
+   "82": 62882,
+   "75": 54208
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/move-kick.webp",
+  "bytes": 82240,
+  "factor": 1.0,
+  "w": 1624,
+  "h": 410,
+  "q_est": 85,
+  "out": {
+   "90": 82240,
+   "82": 73554,
+   "75": 64036
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10gale-mid.webp",
+  "bytes": 80780,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 87,
+  "out": {
+   "90": 80780,
+   "82": 70734,
+   "75": 62868
+  }
+ },
+ {
+  "src": "src/assets/enemies/prowler-atlas.webp",
+  "bytes": 80426,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 438,
+  "q_est": 89,
+  "out": {
+   "90": 80426,
+   "82": 59792,
+   "75": 48694
+  }
+ },
+ {
+  "src": "src/assets/hero/hero-rope.webp",
+  "bytes": 79564,
+  "factor": 1.0,
+  "w": 1337,
+  "h": 224,
+  "q_est": 92,
+  "out": {
+   "90": 73710,
+   "82": 57432,
+   "75": 49544
+  }
+ },
+ {
+  "src": "src/assets/props/gates/w10.webp",
+  "bytes": 79324,
+  "factor": 1.0,
+  "w": 1002,
+  "h": 640,
+  "q_est": 90,
+  "out": {
+   "90": 79324,
+   "82": 56944,
+   "75": 45688
+  }
+ },
+ {
+  "src": "src/assets/story/ground/w5.webp",
+  "bytes": 78410,
+  "factor": 1.0,
+  "w": 1600,
+  "h": 400,
+  "q_est": 87,
+  "out": {
+   "90": 78410,
+   "82": 65168,
+   "75": 52012
+  }
+ },
+ {
+  "src": "src/assets/story/cards/flicker.webp",
+  "bytes": 78324,
+  "factor": 1.0,
+  "w": 1920,
+  "h": 1080,
+  "q_est": 82,
+  "out": {
+   "90": 78324,
+   "82": 78324,
+   "75": 49304
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1kapok-sky.webp",
+  "bytes": 77890,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 513,
+  "q_est": 85,
+  "out": {
+   "90": 77890,
+   "82": 66628,
+   "75": 50916
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10storm-mid.webp",
+  "bytes": 77474,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 77474,
+   "82": 62544,
+   "75": 56710
+  }
+ },
+ {
+  "src": "src/assets/lairs/lair-croc-rage.webp",
+  "bytes": 77466,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1152,
+  "q_est": 82,
+  "out": {
+   "90": 77466,
+   "82": 77466,
+   "75": 51766
+  }
+ },
+ {
+  "src": "src/assets/enemies/frog-atlas.webp",
+  "bytes": 77222,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 328,
+  "q_est": 90,
+  "out": {
+   "90": 77222,
+   "82": 58530,
+   "75": 48428
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3cavern-near.webp",
+  "bytes": 75534,
+  "factor": 1.0,
+  "w": 2803,
+  "h": 1736,
+  "q_est": 89,
+  "out": {
+   "90": 75534,
+   "82": 62184,
+   "75": 56068
+  }
+ },
+ {
+  "src": "src/assets/flora/leaves-atlas.webp",
+  "bytes": 74398,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 269,
+  "q_est": 90,
+  "out": {
+   "90": 74398,
+   "82": 60946,
+   "75": 54284
+  }
+ },
+ {
+  "src": "src/assets/ui/trails.webp",
+  "bytes": 73604,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 283,
+  "q_est": 87,
+  "out": {
+   "90": 73604,
+   "82": 63762,
+   "75": 57068
+  }
+ },
+ {
+  "src": "src/assets/props/gates/w9.webp",
+  "bytes": 73526,
+  "factor": 1.0,
+  "w": 991,
+  "h": 640,
+  "q_est": 89,
+  "out": {
+   "90": 73526,
+   "82": 52018,
+   "75": 42962
+  }
+ },
+ {
+  "src": "src/assets/story/ground/w4.webp",
+  "bytes": 70432,
+  "factor": 1.0,
+  "w": 1600,
+  "h": 400,
+  "q_est": 87,
+  "out": {
+   "90": 70432,
+   "82": 58172,
+   "75": 44076
+  }
+ },
+ {
+  "src": "src/assets/characters/dot-perch-atlas.webp",
+  "bytes": 69864,
+  "factor": 1.0,
+  "w": 792,
+  "h": 420,
+  "q_est": 90,
+  "out": {
+   "90": 69864,
+   "82": 54260,
+   "75": 46648
+  }
+ },
+ {
+  "src": "src/assets/characters/dot-atlas.webp",
+  "bytes": 69508,
+  "factor": 1.0,
+  "w": 512,
+  "h": 511,
+  "q_est": 79,
+  "out": {
+   "90": 69508,
+   "82": 69508,
+   "75": 59702
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10night-mid.webp",
+  "bytes": 69046,
+  "factor": 1.0,
+  "w": 2113,
+  "h": 1302,
+  "q_est": 89,
+  "out": {
+   "90": 69046,
+   "82": 58570,
+   "75": 52582
+  }
+ },
+ {
+  "src": "src/assets/props/dot-bridges.webp",
+  "bytes": 68758,
+  "factor": 1.0,
+  "w": 3072,
+  "h": 512,
+  "q_est": 87,
+  "out": {
+   "90": 68758,
+   "82": 62322,
+   "75": 57608
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w8roost.webp",
+  "bytes": 68468,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 582,
+  "q_est": 89,
+  "out": {
+   "90": 68468,
+   "82": 52028,
+   "75": 44064
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10dusk-sky.webp",
+  "bytes": 68320,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 84,
+  "out": {
+   "90": 68320,
+   "82": 51508,
+   "75": 36340
+  }
+ },
+ {
+  "src": "src/assets/hero/journal-poses.webp",
+  "bytes": 68156,
+  "factor": 1.0,
+  "w": 600,
+  "h": 600,
+  "q_est": 87,
+  "out": {
+   "90": 68156,
+   "82": 60702,
+   "75": 52926
+  }
+ },
+ {
+  "src": "src/assets/w7/crumble.webp",
+  "bytes": 67876,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 296,
+  "q_est": 91,
+  "out": {
+   "90": 67876,
+   "82": 39618,
+   "75": 31296
+  }
+ },
+ {
+  "src": "src/assets/lairs/fg-sov.webp",
+  "bytes": 67834,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 239,
+  "q_est": 85,
+  "out": {
+   "90": 67834,
+   "82": 62874,
+   "75": 53896
+  }
+ },
+ {
+  "src": "src/assets/props/gates/w5.webp",
+  "bytes": 67156,
+  "factor": 1.0,
+  "w": 631,
+  "h": 640,
+  "q_est": 89,
+  "out": {
+   "90": 67156,
+   "82": 52596,
+   "75": 44418
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w6balt.webp",
+  "bytes": 67110,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 608,
+  "q_est": 89,
+  "out": {
+   "90": 67110,
+   "82": 52184,
+   "75": 44786
+  }
+ },
+ {
+  "src": "src/assets/story/ground/w1.webp",
+  "bytes": 66532,
+  "factor": 1.0,
+  "w": 1600,
+  "h": 400,
+  "q_est": 88,
+  "out": {
+   "90": 66532,
+   "82": 50320,
+   "75": 35940
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/move-cross.webp",
+  "bytes": 65190,
+  "factor": 1.0,
+  "w": 1848,
+  "h": 205,
+  "q_est": 85,
+  "out": {
+   "90": 65190,
+   "82": 58354,
+   "75": 49554
+  }
+ },
+ {
+  "src": "src/assets/story/ground/w8.webp",
+  "bytes": 65154,
+  "factor": 1.0,
+  "w": 1600,
+  "h": 400,
+  "q_est": 87,
+  "out": {
+   "90": 65154,
+   "82": 54720,
+   "75": 44328
+  }
+ },
+ {
+  "src": "src/assets/story/ground/w7.webp",
+  "bytes": 64546,
+  "factor": 1.0,
+  "w": 1600,
+  "h": 400,
+  "q_est": 87,
+  "out": {
+   "90": 64546,
+   "82": 50656,
+   "75": 38224
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10storm-sky.webp",
+  "bytes": 64224,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 513,
+  "q_est": 84,
+  "out": {
+   "90": 64224,
+   "82": 55354,
+   "75": 41400
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w8roost-b.webp",
+  "bytes": 63892,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 567,
+  "q_est": 89,
+  "out": {
+   "90": 63892,
+   "82": 49128,
+   "75": 42590
+  }
+ },
+ {
+  "src": "src/assets/story/plates/council.webp",
+  "bytes": 63406,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 572,
+  "q_est": 87,
+  "out": {
+   "90": 63406,
+   "82": 50634,
+   "75": 32304
+  }
+ },
+ {
+  "src": "src/assets/w8/pokey-jar.webp",
+  "bytes": 61988,
+  "factor": 1.0,
+  "w": 889,
+  "h": 206,
+  "q_est": 90,
+  "out": {
+   "90": 61988,
+   "82": 48582,
+   "75": 42230
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4storm-sky.webp",
+  "bytes": 61666,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 513,
+  "q_est": 85,
+  "out": {
+   "90": 61666,
+   "82": 54040,
+   "75": 42274
+  }
+ },
+ {
+  "src": "src/assets/lairs/lair-croc-calm.webp",
+  "bytes": 60256,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 1152,
+  "q_est": 82,
+  "out": {
+   "90": 60256,
+   "82": 60256,
+   "75": 40190
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8night-sky.webp",
+  "bytes": 58902,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 58902,
+   "82": 58902,
+   "75": 29156
+  }
+ },
+ {
+  "src": "src/assets/w6to10/gemini/w7a-puzzle-take2.webp",
+  "bytes": 58298,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 277,
+  "q_est": 89,
+  "out": {
+   "90": 58298,
+   "82": 43788,
+   "75": 35186
+  }
+ },
+ {
+  "src": "src/assets/enemies/harpy-atlas.webp",
+  "bytes": 57792,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 555,
+  "q_est": 89,
+  "out": {
+   "90": 57792,
+   "82": 44106,
+   "75": 37486
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6dawn-sky.webp",
+  "bytes": 57230,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 57230,
+   "82": 57230,
+   "75": 40864
+  }
+ },
+ {
+  "src": "src/assets/props/w4-grit.webp",
+  "bytes": 56224,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 146,
+  "q_est": 92,
+  "out": {
+   "90": 52416,
+   "82": 43192,
+   "75": 38844
+  }
+ },
+ {
+  "src": "src/assets/hero/clips/move-hook.webp",
+  "bytes": 55306,
+  "factor": 1.0,
+  "w": 1888,
+  "h": 206,
+  "q_est": 85,
+  "out": {
+   "90": 55306,
+   "82": 49996,
+   "75": 42252
+  }
+ },
+ {
+  "src": "src/assets/enemies/reaver-atlas.webp",
+  "bytes": 54164,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 469,
+  "q_est": 89,
+  "out": {
+   "90": 54164,
+   "82": 42842,
+   "75": 35444
+  }
+ },
+ {
+  "src": "src/assets/w7slide/chute-floor-1groove.webp",
+  "bytes": 54138,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 1024,
+  "q_est": 90,
+  "out": {
+   "90": 54138,
+   "82": 33204,
+   "75": 23900
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10gale-sky.webp",
+  "bytes": 53624,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 53624,
+   "82": 53624,
+   "75": 33856
+  }
+ },
+ {
+  "src": "src/assets/backdrops/dot-far-2.webp",
+  "bytes": 52796,
+  "factor": 1.0,
+  "w": 1536,
+  "h": 1024,
+  "q_est": 78,
+  "out": {
+   "90": 52796,
+   "82": 52796,
+   "75": 42036
+  }
+ },
+ {
+  "src": "src/assets/story/ground/w3.webp",
+  "bytes": 52072,
+  "factor": 1.0,
+  "w": 1600,
+  "h": 400,
+  "q_est": 87,
+  "out": {
+   "90": 52072,
+   "82": 43086,
+   "75": 34298
+  }
+ },
+ {
+  "src": "src/assets/props/w9-water.webp",
+  "bytes": 51574,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 754,
+  "q_est": 85,
+  "out": {
+   "90": 51574,
+   "82": 44278,
+   "75": 35890
+  }
+ },
+ {
+  "src": "src/assets/props/w5-sway.webp",
+  "bytes": 51358,
+  "factor": 1.0,
+  "w": 488,
+  "h": 728,
+  "q_est": 89,
+  "out": {
+   "90": 51358,
+   "82": 43544,
+   "75": 39670
+  }
+ },
+ {
+  "src": "src/assets/story/castle7.webp",
+  "bytes": 51062,
+  "factor": 1.0,
+  "w": 828,
+  "h": 732,
+  "q_est": 87,
+  "out": {
+   "90": 51062,
+   "82": 44400,
+   "75": 33932
+  }
+ },
+ {
+  "src": "src/assets/enemies/monarch-atlas.webp",
+  "bytes": 50950,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 326,
+  "q_est": 89,
+  "out": {
+   "90": 50950,
+   "82": 38594,
+   "75": 32264
+  }
+ },
+ {
+  "src": "src/assets/w6to10/creatures/fruitbat-fly-anim.webp",
+  "bytes": 50910,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 429,
+  "q_est": 79,
+  "out": {
+   "90": 50910,
+   "82": 50910,
+   "75": 43838
+  }
+ },
+ {
+  "src": "src/assets/w7slide/chute-floor-3lane.webp",
+  "bytes": 49590,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 1024,
+  "q_est": 90,
+  "out": {
+   "90": 49590,
+   "82": 30642,
+   "75": 22206
+  }
+ },
+ {
+  "src": "src/assets/proto/props3-atlas.webp",
+  "bytes": 49500,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 400,
+  "q_est": 89,
+  "out": {
+   "90": 49500,
+   "82": 35742,
+   "75": 29176
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5dusk1-sky.webp",
+  "bytes": 49482,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 49482,
+   "82": 49482,
+   "75": 29468
+  }
+ },
+ {
+  "src": "src/assets/w7slide/chute-ceiling.webp",
+  "bytes": 48716,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 1024,
+  "q_est": 89,
+  "out": {
+   "90": 48716,
+   "82": 28994,
+   "75": 20140
+  }
+ },
+ {
+  "src": "src/assets/story/ground/w9.webp",
+  "bytes": 48394,
+  "factor": 1.0,
+  "w": 1600,
+  "h": 400,
+  "q_est": 87,
+  "out": {
+   "90": 48394,
+   "82": 38534,
+   "75": 28496
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7dawn-sky.webp",
+  "bytes": 48214,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 513,
+  "q_est": 84,
+  "out": {
+   "90": 48214,
+   "82": 43056,
+   "75": 33224
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10night-sky.webp",
+  "bytes": 47414,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 47414,
+   "82": 47414,
+   "75": 31902
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2mist-sky.webp",
+  "bytes": 46628,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 513,
+  "q_est": 84,
+  "out": {
+   "90": 46628,
+   "82": 42446,
+   "75": 33576
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1sunrise-sky.webp",
+  "bytes": 46086,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 513,
+  "q_est": 85,
+  "out": {
+   "90": 46086,
+   "82": 39126,
+   "75": 29956
+  }
+ },
+ {
+  "src": "src/assets/props/w6-water.webp",
+  "bytes": 46064,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 754,
+  "q_est": 87,
+  "out": {
+   "90": 46064,
+   "82": 38546,
+   "75": 32082
+  }
+ },
+ {
+  "src": "src/assets/story/ground/w10.webp",
+  "bytes": 44710,
+  "factor": 1.0,
+  "w": 1600,
+  "h": 400,
+  "q_est": 87,
+  "out": {
+   "90": 44710,
+   "82": 36304,
+   "75": 28572
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7-sky.webp",
+  "bytes": 44010,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 44010,
+   "82": 44010,
+   "75": 31108
+  }
+ },
+ {
+  "src": "src/assets/backdrops/dot-far-1.webp",
+  "bytes": 43964,
+  "factor": 1.0,
+  "w": 1536,
+  "h": 1024,
+  "q_est": 78,
+  "out": {
+   "90": 43964,
+   "82": 43964,
+   "75": 34950
+  }
+ },
+ {
+  "src": "src/assets/props/w10-water.webp",
+  "bytes": 43226,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 754,
+  "q_est": 84,
+  "out": {
+   "90": 43226,
+   "82": 37908,
+   "75": 31728
+  }
+ },
+ {
+  "src": "src/assets/w6to10/gemini/w8a-puzzle.webp",
+  "bytes": 43208,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 256,
+  "q_est": 89,
+  "out": {
+   "90": 43208,
+   "82": 32610,
+   "75": 27024
+  }
+ },
+ {
+  "src": "src/assets/enemies/snake2-atlas.webp",
+  "bytes": 42090,
+  "factor": 1.0,
+  "w": 2048,
+  "h": 179,
+  "q_est": 90,
+  "out": {
+   "90": 42090,
+   "82": 32836,
+   "75": 26934
+  }
+ },
+ {
+  "src": "src/assets/story/ground/w6.webp",
+  "bytes": 41604,
+  "factor": 1.0,
+  "w": 1600,
+  "h": 400,
+  "q_est": 87,
+  "out": {
+   "90": 41604,
+   "82": 31248,
+   "75": 22810
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1rain-sky.webp",
+  "bytes": 40802,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 513,
+  "q_est": 85,
+  "out": {
+   "90": 40802,
+   "82": 35428,
+   "75": 28004
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3sinkhole-sky.webp",
+  "bytes": 40434,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 513,
+  "q_est": 84,
+  "out": {
+   "90": 40434,
+   "82": 33522,
+   "75": 25300
+  }
+ },
+ {
+  "src": "src/assets/props/water-signs.webp",
+  "bytes": 40286,
+  "factor": 1.0,
+  "w": 678,
+  "h": 232,
+  "q_est": 90,
+  "out": {
+   "90": 40286,
+   "82": 31870,
+   "75": 27734
+  }
+ },
+ {
+  "src": "src/assets/props/w8-water.webp",
+  "bytes": 40088,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 754,
+  "q_est": 85,
+  "out": {
+   "90": 40088,
+   "82": 35076,
+   "75": 28654
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w10-sky.webp",
+  "bytes": 39306,
+  "factor": 1.0,
+  "w": 2194,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 39306,
+   "82": 39306,
+   "75": 20172
+  }
+ },
+ {
+  "src": "src/assets/flora/petals.webp",
+  "bytes": 38140,
+  "factor": 1.0,
+  "w": 512,
+  "h": 171,
+  "q_est": 92,
+  "out": {
+   "90": 36084,
+   "82": 30364,
+   "75": 27538
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8dawn-sky.webp",
+  "bytes": 36080,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 36080,
+   "82": 36080,
+   "75": 24634
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7court-sky.webp",
+  "bytes": 34752,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 34752,
+   "82": 34752,
+   "75": 23922
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8-sky.webp",
+  "bytes": 34690,
+  "factor": 1.0,
+  "w": 2639,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 34690,
+   "82": 34690,
+   "75": 20500
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1-sky.webp",
+  "bytes": 34172,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 34172,
+   "82": 34172,
+   "75": 19956
+  }
+ },
+ {
+  "src": "src/assets/photos/s3_06.webp",
+  "bytes": 33650,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 82,
+  "out": {
+   "90": 33650,
+   "82": 33650,
+   "75": 29542
+  }
+ },
+ {
+  "src": "src/assets/photos/s3_08.webp",
+  "bytes": 32930,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 32930,
+   "82": 32930,
+   "75": 28738
+  }
+ },
+ {
+  "src": "src/assets/photos/s3_09.webp",
+  "bytes": 32730,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 32730,
+   "82": 32730,
+   "75": 28358
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_07.webp",
+  "bytes": 32540,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 82,
+  "out": {
+   "90": 32540,
+   "82": 32540,
+   "75": 27596
+  }
+ },
+ {
+  "src": "src/assets/enemies/goldsnake-wake.webp",
+  "bytes": 31884,
+  "factor": 1.0,
+  "w": 392,
+  "h": 328,
+  "q_est": 92,
+  "out": {
+   "90": 29644,
+   "82": 21834,
+   "75": 18548
+  }
+ },
+ {
+  "src": "src/assets/props/pits/w1-bed.webp",
+  "bytes": 31858,
+  "factor": 1.0,
+  "w": 512,
+  "h": 175,
+  "q_est": 88,
+  "out": {
+   "90": 31858,
+   "82": 26638,
+   "75": 22152
+  }
+ },
+ {
+  "src": "src/assets/photos/s4_08.webp",
+  "bytes": 31822,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 31822,
+   "82": 31822,
+   "75": 27762
+  }
+ },
+ {
+  "src": "src/assets/photos/s2_05.webp",
+  "bytes": 31574,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 31574,
+   "82": 31574,
+   "75": 27782
+  }
+ },
+ {
+  "src": "src/assets/characters/meeca-blanket.webp",
+  "bytes": 31564,
+  "factor": 1.0,
+  "w": 469,
+  "h": 410,
+  "q_est": 85,
+  "out": {
+   "90": 31564,
+   "82": 28226,
+   "75": 23764
+  }
+ },
+ {
+  "src": "src/assets/enemies/goldsnake-head.webp",
+  "bytes": 31522,
+  "factor": 1.0,
+  "w": 392,
+  "h": 328,
+  "q_est": 90,
+  "out": {
+   "90": 31522,
+   "82": 24110,
+   "75": 20396
+  }
+ },
+ {
+  "src": "src/assets/photos/s3_02.webp",
+  "bytes": 31450,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 82,
+  "out": {
+   "90": 31450,
+   "82": 31450,
+   "75": 27662
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9ash-sky.webp",
+  "bytes": 31126,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 31126,
+   "82": 31126,
+   "75": 22740
+  }
+ },
+ {
+  "src": "src/assets/photos/s3_07.webp",
+  "bytes": 31090,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 31090,
+   "82": 31090,
+   "75": 27274
+  }
+ },
+ {
+  "src": "src/assets/photos/s3_03.webp",
+  "bytes": 31062,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 82,
+  "out": {
+   "90": 31062,
+   "82": 31062,
+   "75": 26962
+  }
+ },
+ {
+  "src": "src/assets/photos/s4_12.webp",
+  "bytes": 30850,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 30850,
+   "82": 30850,
+   "75": 26706
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_03.webp",
+  "bytes": 30696,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 83,
+  "out": {
+   "90": 30696,
+   "82": 30696,
+   "75": 26622
+  }
+ },
+ {
+  "src": "src/assets/photos/s4_07.webp",
+  "bytes": 30590,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 82,
+  "out": {
+   "90": 30590,
+   "82": 30590,
+   "75": 26920
+  }
+ },
+ {
+  "src": "src/assets/photos/s3_04.webp",
+  "bytes": 30420,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 30420,
+   "82": 30420,
+   "75": 26352
+  }
+ },
+ {
+  "src": "src/assets/photos/s2_06.webp",
+  "bytes": 30358,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 30358,
+   "82": 30358,
+   "75": 26134
+  }
+ },
+ {
+  "src": "src/assets/photos/s3_05.webp",
+  "bytes": 30164,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 82,
+  "out": {
+   "90": 30164,
+   "82": 30164,
+   "75": 26872
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_14.webp",
+  "bytes": 30124,
+  "factor": 1.0,
+  "w": 624,
+  "h": 300,
+  "q_est": 81,
+  "out": {
+   "90": 30124,
+   "82": 30124,
+   "75": 25834
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_08.webp",
+  "bytes": 30038,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 30038,
+   "82": 30038,
+   "75": 25612
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3crystal-sky.webp",
+  "bytes": 29920,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 29920,
+   "82": 29920,
+   "75": 17972
+  }
+ },
+ {
+  "src": "src/assets/enemies/goldsnake-sleep.webp",
+  "bytes": 29706,
+  "factor": 1.0,
+  "w": 392,
+  "h": 328,
+  "q_est": 92,
+  "out": {
+   "90": 27668,
+   "82": 20284,
+   "75": 17284
+  }
+ },
+ {
+  "src": "src/assets/photos/s2_16.webp",
+  "bytes": 29596,
+  "factor": 1.0,
+  "w": 624,
+  "h": 300,
+  "q_est": 81,
+  "out": {
+   "90": 29596,
+   "82": 29596,
+   "75": 25570
+  }
+ },
+ {
+  "src": "src/assets/photos/s2_15.webp",
+  "bytes": 29336,
+  "factor": 1.0,
+  "w": 624,
+  "h": 300,
+  "q_est": 81,
+  "out": {
+   "90": 29336,
+   "82": 29336,
+   "75": 25088
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_12.webp",
+  "bytes": 29266,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 29266,
+   "82": 29266,
+   "75": 25602
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_16.webp",
+  "bytes": 29158,
+  "factor": 1.0,
+  "w": 624,
+  "h": 300,
+  "q_est": 81,
+  "out": {
+   "90": 29158,
+   "82": 29158,
+   "75": 25046
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4mist-sky.webp",
+  "bytes": 29014,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 29014,
+   "82": 29014,
+   "75": 16562
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_10.webp",
+  "bytes": 28902,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 80,
+  "out": {
+   "90": 28902,
+   "82": 28902,
+   "75": 25216
+  }
+ },
+ {
+  "src": "src/assets/photos/s4_05.webp",
+  "bytes": 28806,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 28806,
+   "82": 28806,
+   "75": 25160
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_06.webp",
+  "bytes": 28238,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 28238,
+   "82": 28238,
+   "75": 24924
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_13.webp",
+  "bytes": 27786,
+  "factor": 1.0,
+  "w": 624,
+  "h": 300,
+  "q_est": 81,
+  "out": {
+   "90": 27786,
+   "82": 27786,
+   "75": 23360
+  }
+ },
+ {
+  "src": "src/assets/ui/ctest-1-1.webp",
+  "bytes": 27718,
+  "factor": 1.0,
+  "w": 880,
+  "h": 425,
+  "q_est": 81,
+  "out": {
+   "90": 27718,
+   "82": 27718,
+   "75": 20970
+  }
+ },
+ {
+  "src": "src/assets/photos/s4_02.webp",
+  "bytes": 27702,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 82,
+  "out": {
+   "90": 27702,
+   "82": 27702,
+   "75": 24120
+  }
+ },
+ {
+  "src": "src/assets/photos/s4_06.webp",
+  "bytes": 27640,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 27640,
+   "82": 27640,
+   "75": 23728
+  }
+ },
+ {
+  "src": "src/assets/photos/s3_01.webp",
+  "bytes": 27162,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 27162,
+   "82": 27162,
+   "75": 23516
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_05.webp",
+  "bytes": 27060,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 27060,
+   "82": 27060,
+   "75": 23220
+  }
+ },
+ {
+  "src": "src/assets/photos/s4_14.webp",
+  "bytes": 27002,
+  "factor": 1.0,
+  "w": 624,
+  "h": 300,
+  "q_est": 80,
+  "out": {
+   "90": 27002,
+   "82": 27002,
+   "75": 23774
+  }
+ },
+ {
+  "src": "src/assets/story/castle6.webp",
+  "bytes": 26912,
+  "factor": 1.0,
+  "w": 828,
+  "h": 732,
+  "q_est": 85,
+  "out": {
+   "90": 26912,
+   "82": 22490,
+   "75": 17442
+  }
+ },
+ {
+  "src": "src/assets/items/locket.webp",
+  "bytes": 26880,
+  "factor": 1.0,
+  "w": 534,
+  "h": 453,
+  "q_est": 84,
+  "out": {
+   "90": 26880,
+   "82": 24476,
+   "75": 19002
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_04.webp",
+  "bytes": 26824,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 81,
+  "out": {
+   "90": 26824,
+   "82": 26824,
+   "75": 23656
+  }
+ },
+ {
+  "src": "src/assets/photos/s4_11.webp",
+  "bytes": 26760,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 79,
+  "out": {
+   "90": 26760,
+   "82": 26760,
+   "75": 23774
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3cavern-sky.webp",
+  "bytes": 26086,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 26086,
+   "82": 26086,
+   "75": 14284
+  }
+ },
+ {
+  "src": "src/assets/photos/s4_16.webp",
+  "bytes": 25922,
+  "factor": 1.0,
+  "w": 624,
+  "h": 300,
+  "q_est": 80,
+  "out": {
+   "90": 25922,
+   "82": 25922,
+   "75": 22476
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2rapids-sky.webp",
+  "bytes": 25064,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 25064,
+   "82": 25064,
+   "75": 18730
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w7dusk-sky.webp",
+  "bytes": 24888,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 513,
+  "q_est": 84,
+  "out": {
+   "90": 24888,
+   "82": 21652,
+   "75": 16914
+  }
+ },
+ {
+  "src": "src/assets/enemies/venom-body.webp",
+  "bytes": 24666,
+  "factor": 1.0,
+  "w": 1280,
+  "h": 280,
+  "q_est": 92,
+  "out": {
+   "90": 22906,
+   "82": 15028,
+   "75": 12058
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w4-sky.webp",
+  "bytes": 24662,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 24662,
+   "82": 24662,
+   "75": 14456
+  }
+ },
+ {
+  "src": "src/assets/items/teddy.webp",
+  "bytes": 24168,
+  "factor": 1.0,
+  "w": 534,
+  "h": 450,
+  "q_est": 84,
+  "out": {
+   "90": 24168,
+   "82": 21424,
+   "75": 16278
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_09.webp",
+  "bytes": 24118,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 79,
+  "out": {
+   "90": 24118,
+   "82": 24118,
+   "75": 20758
+  }
+ },
+ {
+  "src": "src/assets/story/finds/notch.webp",
+  "bytes": 23996,
+  "factor": 1.0,
+  "w": 190,
+  "h": 768,
+  "q_est": 89,
+  "out": {
+   "90": 23996,
+   "82": 19734,
+   "75": 17544
+  }
+ },
+ {
+  "src": "src/assets/photos/s4_04.webp",
+  "bytes": 23982,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 80,
+  "out": {
+   "90": 23982,
+   "82": 23982,
+   "75": 21058
+  }
+ },
+ {
+  "src": "src/assets/props/pitwater/w5.webp",
+  "bytes": 23824,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 516,
+  "q_est": 86,
+  "out": {
+   "90": 23824,
+   "82": 20664,
+   "75": 18330
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5-sky.webp",
+  "bytes": 23610,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 23610,
+   "82": 23610,
+   "75": 14318
+  }
+ },
+ {
+  "src": "src/assets/items/stopwatch.webp",
+  "bytes": 23486,
+  "factor": 1.0,
+  "w": 534,
+  "h": 453,
+  "q_est": 84,
+  "out": {
+   "90": 23486,
+   "82": 20988,
+   "75": 15990
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_11.webp",
+  "bytes": 23476,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 80,
+  "out": {
+   "90": 23476,
+   "82": 23476,
+   "75": 20818
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w3-sky.webp",
+  "bytes": 23322,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 23322,
+   "82": 23322,
+   "75": 12984
+  }
+ },
+ {
+  "src": "src/assets/props/pitwater/w1-mud-splash.webp",
+  "bytes": 23202,
+  "factor": 1.0,
+  "w": 280,
+  "h": 221,
+  "q_est": 90,
+  "out": {
+   "90": 23202,
+   "82": 18972,
+   "75": 16692
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5twi2-sky.webp",
+  "bytes": 23192,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 23192,
+   "82": 23192,
+   "75": 14148
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6dusk-sky.webp",
+  "bytes": 23118,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 23118,
+   "82": 23118,
+   "75": 11194
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5dusk2-sky.webp",
+  "bytes": 23064,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 23064,
+   "82": 23064,
+   "75": 16368
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_15.webp",
+  "bytes": 23058,
+  "factor": 1.0,
+  "w": 624,
+  "h": 300,
+  "q_est": 80,
+  "out": {
+   "90": 23058,
+   "82": 23058,
+   "75": 20414
+  }
+ },
+ {
+  "src": "src/assets/props/pitwater/w1.webp",
+  "bytes": 23016,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 516,
+  "q_est": 86,
+  "out": {
+   "90": 23016,
+   "82": 19726,
+   "75": 17444
+  }
+ },
+ {
+  "src": "src/assets/props/pitwater/w4.webp",
+  "bytes": 22892,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 516,
+  "q_est": 87,
+  "out": {
+   "90": 22892,
+   "82": 20070,
+   "75": 17920
+  }
+ },
+ {
+  "src": "src/assets/flora/heartbloom-epic.webp",
+  "bytes": 22876,
+  "factor": 1.0,
+  "w": 484,
+  "h": 228,
+  "q_est": 93,
+  "out": {
+   "90": 20510,
+   "82": 15022,
+   "75": 12780
+  }
+ },
+ {
+  "src": "src/assets/ui/sign-big.webp",
+  "bytes": 22722,
+  "factor": 1.0,
+  "w": 700,
+  "h": 361,
+  "q_est": 89,
+  "out": {
+   "90": 22722,
+   "82": 17300,
+   "75": 14864
+  }
+ },
+ {
+  "src": "src/assets/photos/s4_01.webp",
+  "bytes": 22406,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 79,
+  "out": {
+   "90": 22406,
+   "82": 22406,
+   "75": 20188
+  }
+ },
+ {
+  "src": "src/assets/items/petal.webp",
+  "bytes": 22380,
+  "factor": 1.0,
+  "w": 534,
+  "h": 450,
+  "q_est": 84,
+  "out": {
+   "90": 22380,
+   "82": 20096,
+   "75": 15390
+  }
+ },
+ {
+  "src": "src/assets/items/scroll.webp",
+  "bytes": 22228,
+  "factor": 1.0,
+  "w": 534,
+  "h": 453,
+  "q_est": 84,
+  "out": {
+   "90": 22228,
+   "82": 20188,
+   "75": 15550
+  }
+ },
+ {
+  "src": "src/assets/flora/heartbloom-ultimate.webp",
+  "bytes": 21898,
+  "factor": 1.0,
+  "w": 377,
+  "h": 230,
+  "q_est": 93,
+  "out": {
+   "90": 20016,
+   "82": 14694,
+   "75": 12730
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6moon-sky.webp",
+  "bytes": 21828,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 21828,
+   "82": 21828,
+   "75": 14586
+  }
+ },
+ {
+  "src": "src/assets/story/castle5.webp",
+  "bytes": 21186,
+  "factor": 1.0,
+  "w": 876,
+  "h": 732,
+  "q_est": 85,
+  "out": {
+   "90": 21186,
+   "82": 17528,
+   "75": 13438
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w8sunset-sky.webp",
+  "bytes": 21006,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 21006,
+   "82": 21006,
+   "75": 12998
+  }
+ },
+ {
+  "src": "src/assets/props/pits/w1-lip.webp",
+  "bytes": 20984,
+  "factor": 1.0,
+  "w": 256,
+  "h": 475,
+  "q_est": 87,
+  "out": {
+   "90": 20984,
+   "82": 17606,
+   "75": 15186
+  }
+ },
+ {
+  "src": "src/assets/props/pitwater/w3.webp",
+  "bytes": 20826,
+  "factor": 1.0,
+  "w": 1024,
+  "h": 516,
+  "q_est": 86,
+  "out": {
+   "90": 20826,
+   "82": 17868,
+   "75": 15458
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_02.webp",
+  "bytes": 20722,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 79,
+  "out": {
+   "90": 20722,
+   "82": 20722,
+   "75": 18734
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w5twi1-sky.webp",
+  "bytes": 20560,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 20560,
+   "82": 20560,
+   "75": 14596
+  }
+ },
+ {
+  "src": "src/assets/items/key.webp",
+  "bytes": 19910,
+  "factor": 1.0,
+  "w": 534,
+  "h": 453,
+  "q_est": 84,
+  "out": {
+   "90": 19910,
+   "82": 17494,
+   "75": 13198
+  }
+ },
+ {
+  "src": "src/assets/items/seeds.webp",
+  "bytes": 19678,
+  "factor": 1.0,
+  "w": 534,
+  "h": 453,
+  "q_est": 84,
+  "out": {
+   "90": 19678,
+   "82": 17870,
+   "75": 13746
+  }
+ },
+ {
+  "src": "src/assets/photos/s1_01.webp",
+  "bytes": 19160,
+  "factor": 1.0,
+  "w": 624,
+  "h": 294,
+  "q_est": 79,
+  "out": {
+   "90": 19160,
+   "82": 19160,
+   "75": 17330
+  }
+ },
+ {
+  "src": "src/assets/items/medal.webp",
+  "bytes": 19002,
+  "factor": 1.0,
+  "w": 534,
+  "h": 453,
+  "q_est": 84,
+  "out": {
+   "90": 19002,
+   "82": 16840,
+   "75": 12840
+  }
+ },
+ {
+  "src": "src/assets/story/finds/snail.webp",
+  "bytes": 18644,
+  "factor": 1.0,
+  "w": 512,
+  "h": 131,
+  "q_est": 90,
+  "out": {
+   "90": 18644,
+   "82": 14928,
+   "75": 12946
+  }
+ },
+ {
+  "src": "src/assets/items/ribbon.webp",
+  "bytes": 18330,
+  "factor": 1.0,
+  "w": 534,
+  "h": 450,
+  "q_est": 84,
+  "out": {
+   "90": 18330,
+   "82": 16136,
+   "75": 12032
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9night-sky.webp",
+  "bytes": 18248,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 84,
+  "out": {
+   "90": 18248,
+   "82": 14546,
+   "75": 11320
+  }
+ },
+ {
+  "src": "src/assets/flora/heartbloom-bloom.webp",
+  "bytes": 18048,
+  "factor": 1.0,
+  "w": 345,
+  "h": 239,
+  "q_est": 93,
+  "out": {
+   "90": 16560,
+   "82": 12038,
+   "75": 10082
+  }
+ },
+ {
+  "src": "src/assets/hero/title-idle.webp",
+  "bytes": 18000,
+  "factor": 1.0,
+  "w": 180,
+  "h": 303,
+  "q_est": 92,
+  "out": {
+   "90": 16840,
+   "82": 13344,
+   "75": 11736
+  }
+ },
+ {
+  "src": "src/assets/props/pitwater/w1-creek.webp",
+  "bytes": 17740,
+  "factor": 1.0,
+  "w": 884,
+  "h": 1232,
+  "q_est": 86,
+  "out": {
+   "90": 17740,
+   "82": 12170,
+   "75": 9334
+  }
+ },
+ {
+  "src": "src/assets/items/token.webp",
+  "bytes": 16974,
+  "factor": 1.0,
+  "w": 534,
+  "h": 453,
+  "q_est": 84,
+  "out": {
+   "90": 16974,
+   "82": 14892,
+   "75": 11072
+  }
+ },
+ {
+  "src": "src/assets/props/w1-bootprint.webp",
+  "bytes": 15976,
+  "factor": 1.0,
+  "w": 440,
+  "h": 112,
+  "q_est": 90,
+  "out": {
+   "90": 15976,
+   "82": 12078,
+   "75": 10466
+  }
+ },
+ {
+  "src": "src/assets/icons/shimmy.webp",
+  "bytes": 15886,
+  "factor": 1.0,
+  "w": 192,
+  "h": 192,
+  "q_est": 91,
+  "out": {
+   "90": 15886,
+   "82": 12454,
+   "75": 10402
+  }
+ },
+ {
+  "src": "src/assets/icons/howto.webp",
+  "bytes": 15760,
+  "factor": 1.0,
+  "w": 192,
+  "h": 192,
+  "q_est": 91,
+  "out": {
+   "90": 15760,
+   "82": 12370,
+   "75": 10652
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9dawn-sky.webp",
+  "bytes": 15528,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 15528,
+   "82": 15528,
+   "75": 9072
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w8fungus.webp",
+  "bytes": 15444,
+  "factor": 1.0,
+  "w": 604,
+  "h": 164,
+  "q_est": 90,
+  "out": {
+   "90": 15444,
+   "82": 11500,
+   "75": 9662
+  }
+ },
+ {
+  "src": "src/assets/icons/glide.webp",
+  "bytes": 15140,
+  "factor": 1.0,
+  "w": 192,
+  "h": 192,
+  "q_est": 91,
+  "out": {
+   "90": 15140,
+   "82": 11432,
+   "75": 9568
+  }
+ },
+ {
+  "src": "src/assets/title/log.webp",
+  "bytes": 15068,
+  "factor": 1.0,
+  "w": 475,
+  "h": 217,
+  "q_est": 90,
+  "out": {
+   "90": 15068,
+   "82": 10740,
+   "75": 8740
+  }
+ },
+ {
+  "src": "src/assets/icons/gear.webp",
+  "bytes": 14918,
+  "factor": 1.0,
+  "w": 192,
+  "h": 192,
+  "q_est": 91,
+  "out": {
+   "90": 14918,
+   "82": 11646,
+   "75": 9812
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w9-sky.webp",
+  "bytes": 14888,
+  "factor": 1.0,
+  "w": 2639,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 14888,
+   "82": 14888,
+   "75": 9648
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w6-sky.webp",
+  "bytes": 14814,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 82,
+  "out": {
+   "90": 14814,
+   "82": 14814,
+   "75": 9450
+  }
+ },
+ {
+  "src": "src/assets/items/rattle.webp",
+  "bytes": 14458,
+  "factor": 1.0,
+  "w": 534,
+  "h": 450,
+  "q_est": 84,
+  "out": {
+   "90": 14458,
+   "82": 12728,
+   "75": 9686
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w8glowcaps.webp",
+  "bytes": 14426,
+  "factor": 1.0,
+  "w": 300,
+  "h": 248,
+  "q_est": 89,
+  "out": {
+   "90": 14426,
+   "82": 10902,
+   "75": 9304
+  }
+ },
+ {
+  "src": "src/assets/icons/sound.webp",
+  "bytes": 14390,
+  "factor": 1.0,
+  "w": 192,
+  "h": 192,
+  "q_est": 90,
+  "out": {
+   "90": 14390,
+   "82": 10986,
+   "75": 9370
+  }
+ },
+ {
+  "src": "src/assets/ui/satchel.webp",
+  "bytes": 14340,
+  "factor": 1.0,
+  "w": 192,
+  "h": 192,
+  "q_est": 88,
+  "out": {
+   "90": 14340,
+   "82": 12028,
+   "75": 10420
+  }
+ },
+ {
+  "src": "src/assets/icons/story.webp",
+  "bytes": 14320,
+  "factor": 1.0,
+  "w": 192,
+  "h": 192,
+  "q_est": 91,
+  "out": {
+   "90": 14320,
+   "82": 11112,
+   "75": 9506
+  }
+ },
+ {
+  "src": "src/assets/items/bell.webp",
+  "bytes": 14294,
+  "factor": 1.0,
+  "w": 534,
+  "h": 453,
+  "q_est": 84,
+  "out": {
+   "90": 14294,
+   "82": 12648,
+   "75": 9632
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2-sky.webp",
+  "bytes": 13916,
+  "factor": 1.0,
+  "w": 2640,
+  "h": 513,
+  "q_est": 82,
+  "out": {
+   "90": 13916,
+   "82": 13916,
+   "75": 8192
+  }
+ },
+ {
+  "src": "src/assets/w6to10/props-made/w7-plates.webp",
+  "bytes": 13890,
+  "factor": 1.0,
+  "w": 708,
+  "h": 86,
+  "q_est": 90,
+  "out": {
+   "90": 13890,
+   "82": 10580,
+   "75": 8604
+  }
+ },
+ {
+  "src": "src/assets/icons/map.webp",
+  "bytes": 12412,
+  "factor": 1.0,
+  "w": 192,
+  "h": 192,
+  "q_est": 90,
+  "out": {
+   "90": 12412,
+   "82": 9778,
+   "75": 8394
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w1sun2-sky.webp",
+  "bytes": 12002,
+  "factor": 1.0,
+  "w": 2159,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 12002,
+   "82": 12002,
+   "75": 7912
+  }
+ },
+ {
+  "src": "src/assets/flora/heartbloom-bud.webp",
+  "bytes": 11952,
+  "factor": 1.0,
+  "w": 266,
+  "h": 234,
+  "q_est": 93,
+  "out": {
+   "90": 10546,
+   "82": 7708,
+   "75": 6510
+  }
+ },
+ {
+  "src": "src/assets/backdrops/w2evening-sky.webp",
+  "bytes": 10750,
+  "factor": 1.0,
+  "w": 2160,
+  "h": 513,
+  "q_est": 83,
+  "out": {
+   "90": 10750,
+   "82": 10750,
+   "75": 7992
+  }
+ },
+ {
+  "src": "src/assets/ui/card.webp",
+  "bytes": 10472,
+  "factor": 1.0,
+  "w": 640,
+  "h": 668,
+  "q_est": 87,
+  "out": {
+   "90": 10472,
+   "82": 8512,
+   "75": 6998
+  }
+ },
+ {
+  "src": "src/assets/icons/compass.webp",
+  "bytes": 10112,
+  "factor": 1.0,
+  "w": 144,
+  "h": 144,
+  "q_est": 91,
+  "out": {
+   "90": 10112,
+   "82": 8046,
+   "75": 6796
+  }
+ },
+ {
+  "src": "src/assets/props/w6-calm-water.webp",
+  "bytes": 9926,
+  "factor": 1.0,
+  "w": 228,
+  "h": 296,
+  "q_est": 91,
+  "out": {
+   "90": 9926,
+   "82": 8758,
+   "75": 8426
+  }
+ },
+ {
+  "src": "src/assets/title/slab.webp",
+  "bytes": 9670,
+  "factor": 1.0,
+  "w": 440,
+  "h": 103,
+  "q_est": 90,
+  "out": {
+   "90": 9670,
+   "82": 7146,
+   "75": 5830
+  }
+ },
+ {
+  "src": "src/assets/props/pits/w1-drop.webp",
+  "bytes": 9156,
+  "factor": 1.0,
+  "w": 512,
+  "h": 585,
+  "q_est": 85,
+  "out": {
+   "90": 9156,
+   "82": 7234,
+   "75": 5370
+  }
+ },
+ {
+  "src": "src/assets/icons/cards.webp",
+  "bytes": 8848,
+  "factor": 1.0,
+  "w": 124,
+  "h": 124,
+  "q_est": 92,
+  "out": {
+   "90": 8566,
+   "82": 7080,
+   "75": 6236
+  }
+ },
+ {
+  "src": "src/assets/ui/ui-kit.webp",
+  "bytes": 8596,
+  "factor": 1.0,
+  "w": 284,
+  "h": 136,
+  "q_est": 89,
+  "out": {
+   "90": 8596,
+   "82": 7300,
+   "75": 6532
+  }
+ },
+ {
+  "src": "src/assets/icons/heart.webp",
+  "bytes": 8470,
+  "factor": 1.0,
+  "w": 160,
+  "h": 160,
+  "q_est": 90,
+  "out": {
+   "90": 8470,
+   "82": 6714,
+   "75": 5858
+  }
+ },
+ {
+  "src": "src/assets/ui/leaf-token.webp",
+  "bytes": 7412,
+  "factor": 1.0,
+  "w": 160,
+  "h": 146,
+  "q_est": 90,
+  "out": {
+   "90": 7412,
+   "82": 5648,
+   "75": 4854
+  }
+ },
+ {
+  "src": "src/assets/pickups/locket.webp",
+  "bytes": 6896,
+  "factor": 1.0,
+  "w": 82,
+  "h": 96,
+  "q_est": 92,
+  "out": {
+   "90": 6792,
+   "82": 5906,
+   "75": 5392
+  }
+ },
+ {
+  "src": "src/assets/pickups/teddy.webp",
+  "bytes": 6464,
+  "factor": 1.0,
+  "w": 78,
+  "h": 96,
+  "q_est": 92,
+  "out": {
+   "90": 6360,
+   "82": 5434,
+   "75": 4844
+  }
+ },
+ {
+  "src": "src/assets/icons/journal.webp",
+  "bytes": 6420,
+  "factor": 1.0,
+  "w": 104,
+  "h": 104,
+  "q_est": 91,
+  "out": {
+   "90": 6420,
+   "82": 5124,
+   "75": 4486
+  }
+ },
+ {
+  "src": "src/assets/ui/token.webp",
+  "bytes": 6344,
+  "factor": 1.0,
+  "w": 160,
+  "h": 162,
+  "q_est": 90,
+  "out": {
+   "90": 6344,
+   "82": 4924,
+   "75": 4182
+  }
+ },
+ {
+  "src": "src/assets/props/rope-kit.webp",
+  "bytes": 6006,
+  "factor": 1.0,
+  "w": 146,
+  "h": 352,
+  "q_est": 89,
+  "out": {
+   "90": 6006,
+   "82": 4884,
+   "75": 4308
+  }
+ },
+ {
+  "src": "src/assets/icons/key.webp",
+  "bytes": 5976,
+  "factor": 1.0,
+  "w": 104,
+  "h": 104,
+  "q_est": 91,
+  "out": {
+   "90": 5976,
+   "82": 4912,
+   "75": 4398
+  }
+ },
+ {
+  "src": "src/assets/icons/home.webp",
+  "bytes": 5976,
+  "factor": 1.0,
+  "w": 120,
+  "h": 120,
+  "q_est": 90,
+  "out": {
+   "90": 5976,
+   "82": 4536,
+   "75": 3894
+  }
+ },
+ {
+  "src": "src/assets/icons/trophy.webp",
+  "bytes": 5760,
+  "factor": 1.0,
+  "w": 96,
+  "h": 96,
+  "q_est": 92,
+  "out": {
+   "90": 5654,
+   "82": 4684,
+   "75": 4120
+  }
+ },
+ {
+  "src": "src/assets/icons/scenes.webp",
+  "bytes": 5546,
+  "factor": 1.0,
+  "w": 104,
+  "h": 104,
+  "q_est": 90,
+  "out": {
+   "90": 5546,
+   "82": 4170,
+   "75": 3422
+  }
+ },
+ {
+  "src": "src/assets/pickups/petal.webp",
+  "bytes": 5376,
+  "factor": 1.0,
+  "w": 87,
+  "h": 96,
+  "q_est": 92,
+  "out": {
+   "90": 5218,
+   "82": 4246,
+   "75": 3602
+  }
+ },
+ {
+  "src": "src/assets/icons/medal.webp",
+  "bytes": 5330,
+  "factor": 1.0,
+  "w": 104,
+  "h": 104,
+  "q_est": 90,
+  "out": {
+   "90": 5330,
+   "82": 4296,
+   "75": 3716
+  }
+ },
+ {
+  "src": "src/assets/icons/paw.webp",
+  "bytes": 5254,
+  "factor": 1.0,
+  "w": 104,
+  "h": 104,
+  "q_est": 90,
+  "out": {
+   "90": 5254,
+   "82": 4024,
+   "75": 3460
+  }
+ },
+ {
+  "src": "src/assets/pickups/scroll.webp",
+  "bytes": 5206,
+  "factor": 1.0,
+  "w": 96,
+  "h": 90,
+  "q_est": 91,
+  "out": {
+   "90": 5206,
+   "82": 4174,
+   "75": 3636
+  }
+ },
+ {
+  "src": "src/assets/pickups/ribbon.webp",
+  "bytes": 5192,
+  "factor": 1.0,
+  "w": 91,
+  "h": 96,
+  "q_est": 91,
+  "out": {
+   "90": 5192,
+   "82": 4346,
+   "75": 3846
+  }
+ },
+ {
+  "src": "src/assets/icons/clubs.webp",
+  "bytes": 5094,
+  "factor": 1.0,
+  "w": 96,
+  "h": 96,
+  "q_est": 91,
+  "out": {
+   "90": 5094,
+   "82": 4198,
+   "75": 3740
+  }
+ },
+ {
+  "src": "src/assets/icons/pouch.webp",
+  "bytes": 4918,
+  "factor": 1.0,
+  "w": 84,
+  "h": 84,
+  "q_est": 91,
+  "out": {
+   "90": 4918,
+   "82": 4036,
+   "75": 3576
+  }
+ },
+ {
+  "src": "src/assets/icons/save.webp",
+  "bytes": 4836,
+  "factor": 1.0,
+  "w": 96,
+  "h": 96,
+  "q_est": 90,
+  "out": {
+   "90": 4836,
+   "82": 3814,
+   "75": 3282
+  }
+ },
+ {
+  "src": "src/assets/icons/leaf.webp",
+  "bytes": 4582,
+  "factor": 1.0,
+  "w": 96,
+  "h": 96,
+  "q_est": 90,
+  "out": {
+   "90": 4582,
+   "82": 3650,
+   "75": 3176
+  }
+ },
+ {
+  "src": "src/assets/pickups/bell.webp",
+  "bytes": 4540,
+  "factor": 1.0,
+  "w": 78,
+  "h": 96,
+  "q_est": 91,
+  "out": {
+   "90": 4540,
+   "82": 3726,
+   "75": 3318
+  }
+ },
+ {
+  "src": "src/assets/icons/shrink.webp",
+  "bytes": 4384,
+  "factor": 1.0,
+  "w": 80,
+  "h": 80,
+  "q_est": 91,
+  "out": {
+   "90": 4384,
+   "82": 3604,
+   "75": 3128
+  }
+ },
+ {
+  "src": "src/assets/icons/expand.webp",
+  "bytes": 4244,
+  "factor": 1.0,
+  "w": 80,
+  "h": 80,
+  "q_est": 91,
+  "out": {
+   "90": 4244,
+   "82": 3440,
+   "75": 3076
+  }
+ },
+ {
+  "src": "src/assets/ui/slider-knob.webp",
+  "bytes": 4108,
+  "factor": 1.0,
+  "w": 120,
+  "h": 119,
+  "q_est": 90,
+  "out": {
+   "90": 4108,
+   "82": 3174,
+   "75": 2774
+  }
+ },
+ {
+  "src": "src/assets/icons/sparkle.webp",
+  "bytes": 4104,
+  "factor": 1.0,
+  "w": 80,
+  "h": 80,
+  "q_est": 92,
+  "out": {
+   "90": 4028,
+   "82": 3382,
+   "75": 3016
+  }
+ }
+]

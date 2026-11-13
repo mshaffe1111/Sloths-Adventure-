@@ -80,6 +80,9 @@ export interface LevelConfig {
   worldIndex: number; // 1-10
   miniIndex: number;  // 1-10
   id: string;         // e.g. "1-1"
+  /** (gen2) an earlier stage's lesson taught the double jump, so this stage's checks count it (levelCheck.ts doubleAllowed); set only by
+   *  pipeline.ts planBudget from the world's `lessons`, and only where the old rule (mission 6 on) does not already count it */
+  doubleTaught?: true;
   name: string;
   objectiveType: ObjectiveType;
   targetCount: number;
@@ -94,6 +97,8 @@ export interface LevelConfig {
   bestTime: number;
   /** a hidden bonus level that is not part of the 100 (see secret.ts) */
   secret?: 'thornbark';
+  /** which way the route leads (stageModes.ts); unset is 'right'. The engine reads travel only from here */
+  travel?: import('./stageKit.types.ts').Travel;
 }
 
 export interface PlayerState {
@@ -193,6 +198,8 @@ export interface Enemy {
   animTimer: number;
   hitFlashTimer: number;
   defeated: boolean;
+  /** summoned by a guardian in its fight: not a predator beaten for the records, and freed when the guardian falls */
+  minion?: boolean;
   koTimer: number;
   behaviorTimer: number;
   /** fight: seconds left staggered (it does nothing while staggered) and how long the stagger was */
@@ -204,6 +211,10 @@ export interface Enemy {
   recoil?: number;
   recoilDir?: 1 | -1;
   koLanded?: boolean;
+  /** an animal of a stage's cast: its creature-kit state (castPlay.ts). The kit steps it, never predatorAI.ts */
+  kit?: import('./predators/types.ts').PredatorState;
+  /** a cast animal leaving for good, 0..1 through its glide away (castPlay.ts): the art fades and flattens it */
+  glide?: number;
   /** a snake that starts asleep (protoStage.ts 1-3): it lies still until Pokey comes close, so the first one is a free punch */
   asleep?: boolean;
   /** seconds left of the drowsy moment just after it woke (the waking head shows) */
@@ -332,7 +343,9 @@ export interface Platform {
   soil?: boolean;
   /** World 1: a floorless gap beside this bank is a painted drop, a fall, not water (w1Pits.ts: a builder sets it on either bank; the mixer
    *  marks every bank) */
-  pit?: 'drop';
+  /** `'hurt'` (gen2): this piece is a hollow's hurt floor (WorldManifest.hurtFloor); the world's painter draws it, the engine never sets
+   *  him back on it */
+  pit?: 'drop' | 'hurt';
   /** a catch a builder lays under a gap (the mixer's 'catch' piece): a fall's floor, left with a hop */
   catch?: boolean;
   /** drawn as its own kind, never given another look for variety (platformPlan.ts planThin): a world whose painted kit draws its pieces,
@@ -432,6 +445,9 @@ export interface Rope {
   g1: number;
   /** true when the stage cannot be finished without it (only ever in stages where everyone has the skill) */
   required: boolean;
+  /** how it is drawn (only the drawing; it is the same rope to hang on): 'vine', a painted vine tied to the arms of two living trees
+   *  (World 1, where nothing is made: castArt.ts vineTile and drawTrunk); unset, World 2's twisted rope between posts (ropeArt.ts) */
+  look?: 'vine';
 }
 
 export interface Collectible {

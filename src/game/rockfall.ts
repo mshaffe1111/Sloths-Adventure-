@@ -7,6 +7,8 @@
  * Pure (no canvas, no engine): the stage builder, the engine and the tests agree on where every rock is.
  */
 
+import { cycle3 } from './clock.ts';
+
 export interface RockDrop {
   /** where it lets go (world px), and the surface it lands on */
   x: number;
@@ -34,11 +36,12 @@ export type RockPhase = 'idle' | 'warn' | 'fall' | 'shatter';
 /** what a drop point is doing at time t: its phase, how far through it (0..1), and the rock's height while it falls */
 export function rockAt(r: RockDrop, t: number): { phase: RockPhase; u: number; y: number } {
   const fallT = Math.max(0.01, (r.land - r.top) / ROCK.speed);
-  const c = (((t + r.offset) % r.every) + r.every) % r.every;
   const warnAt = r.every - r.warn - fallT - ROCK.shatter;
-  if (c < warnAt) return { phase: 'idle', u: c / Math.max(0.01, warnAt), y: r.top };
-  if (c < warnAt + r.warn) return { phase: 'warn', u: (c - warnAt) / r.warn, y: r.top };
-  const f = c - warnAt - r.warn;
+  // the one clock (clock.ts): quiet until warnAt, the shadow for `warn`, then the rock is loose for the rest of the cycle
+  const k = cycle3(t, r.offset, r.every, warnAt, r.warn);
+  if (k.i === 0) return { phase: 'idle', u: k.s / Math.max(0.01, warnAt), y: r.top };
+  if (k.i === 1) return { phase: 'warn', u: k.s / r.warn, y: r.top };
+  const f = k.s;
   if (f < fallT) return { phase: 'fall', u: f / fallT, y: r.top + f * ROCK.speed };
   return { phase: 'shatter', u: (f - fallT) / ROCK.shatter, y: r.land };
 }

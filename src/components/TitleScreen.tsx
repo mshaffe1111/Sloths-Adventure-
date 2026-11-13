@@ -190,6 +190,22 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   };
   const start = () => goOn(onStartGame);
   const covered = saveOpen || newOpen || menuOpen || howOpen || intro || !!pickThen;
+  // Space and Enter press Play: the same way on as a tap, through the how-to and the mode card (audit C saves #9: the keys used to start
+  // the stage straight from App.tsx, past both of them and the prologue). A card or dialog that is up owns the keyboard.
+  const keyStart = useRef({ start, covered });
+  keyStart.current = { start, covered };
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.repeat || (e.code !== 'Space' && e.code !== 'Enter' && e.code !== 'NumpadEnter')) return;
+      if (keyStart.current.covered || document.querySelector('.ui-scrim, .pm-scrim, .nv-scrim')) return;
+      // (a focused button or field takes its own key)
+      if (e.target instanceof HTMLElement && e.target.closest('button, a, input, textarea, select, [contenteditable="true"]')) return;
+      e.preventDefault();
+      keyStart.current.start();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   return (
     <div className={`gx2 select-none gx2-${phase}${cold ? '' : ' gx2-back'}${named ? ' gx2-named' : ''}${covered ? ' gx2-covered' : ''}`}>

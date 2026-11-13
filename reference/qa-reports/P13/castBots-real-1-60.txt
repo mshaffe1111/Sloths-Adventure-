@@ -1,0 +1,24 @@
+proven: 47 of 60 seeds (every bot passes, none under 120 s) -> /tmp/claude-0/proven13.json
+   seed 2 out: adult easy 118.9 s
+   seed 4 out: adult easy 119.3 s
+   seed 14 out: child normal shrine rescued x1
+   seed 16 out: child normal shrine rescued x1
+   seed 19 out: adult easy 119.5 s
+   seed 32 out: adult easy 119.7 s
+   seed 34 out: adult easy 119.5 s
+   seed 37 out: adult easy 118.2 s
+   seed 39 out: adult easy 119.9 s; child normal shrine rescued x1
+   seed 40 out: adult easy 117.7 s
+   seed 49 out: child easy stranded
+   seed 51 out: child normal shrine rescued x1
+   seed 55 out: adult easy 119.1 s
+castBots 1-3, seeds 1-60
+adult  normal PASS 60/60; time median 233.3 s (min 120.8); hits 65 lives 0 (foe:snake 65); cleared punch 349, trap 170, stomp 91, kick 1; told of traps 57/60; first trap sprung 5/60; traps sprung 170/540; turned back 96; left 169
+adult  easy   PASS 60/60; time median 125.9 s (min 117.7); hits 35 lives 0 (foe:snake 35); cleared punch 219, trap 75, stomp 37; told of traps 54/60; first trap sprung 0/60; traps sprung 76/300; turned back 18; left 149
+child  normal PASS 56/60; time median 385.7 s (min 354.7); hits 61 lives 0 (foe:snake 61); cleared trap 511, stomp 80, punch 107, kick 6; told of traps 60/60; first trap sprung 59/60; traps sprung 511/540; turned back 0; left 76
+        fail 4: shrine rescued x1  (seeds 14,39,16,51)
+child  easy   PASS 59/60; time median 259.7 s (min 227.4); hits 61 lives 2 (foe:snake 63); cleared trap 133, stomp 80, punch 154, kick 3; told of traps 35/60; first trap sprung 16/60; traps sprung 133/300; turned back 10; left 110
+        fail 1: stranded goal 3/5  (seeds 49)
+middle normal PASS 60/60; time median 183.7 s (min 167.8); hits 28 lives 0 (foe:snake 28); cleared trap 418, punch 167, stomp 97, kick 2; told of traps 55/60; first trap sprung 14/60; traps sprung 418/540; turned back 5; left 96
+middle easy   PASS 60/60; time median 163.9 s (min 152.1); hits 15 lives 1 (foe:snake 16); cleared stomp 137, punch 151, trap 107, kick 1; told of traps 31/60; first trap sprung 1/60; traps sprung 107/300; turned back 8; left 84
+expert normal PASS 60/60; time median 155.6 s (min 145.8); hits 25 lives 0 (foe:snake 25); cleared trap 387, punch 162, stomp 99, kick 4; told of traps 52/60; first trap sprung 7/60; traps sprung 387/540; turned back 15; left 128

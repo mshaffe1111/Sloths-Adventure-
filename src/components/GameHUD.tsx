@@ -27,6 +27,8 @@ interface GameHUDProps {
   lives?: number;
   /** where Pokey is on the screen (CSS px), for the new HUD's pickup flight */
   heroPoint?: () => { x: number; y: number } | null;
+  /** the stage's own animal, for a purge's goal card (engine.ts goalCreature) */
+  goalCreature?: () => string | undefined;
   /** a new number each time the stage (re)starts: the new HUD plays its short goal card again */
   runKey?: number;
 }

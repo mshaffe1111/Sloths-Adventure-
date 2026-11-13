@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import '../headlessDom.ts';
 import { w1World } from './worlds/w1.ts';
 import { buildPlayStage } from './seedList.ts';
-import { PROVEN_SEEDS } from './provenSeeds.ts';
+import { provenSeeds } from './seedList.ts';
 import { generateAllLevels } from '../worldsData.ts';
 
 // (changed, INT-1-1: judged on the first 24 LISTED seeds, as Play builds them, not raw rolls: on the re-lay only 8 of 24 raw builds were
@@ -20,7 +20,7 @@ test('gen2 1-1: one to three forks, apart, not in the opening or the final appro
   assert.ok(forkIds.size >= 2, `${forkIds.size} fork sections in the kit`);
   const bad: string[] = [];
   let judged = 0;
-  for (const seed of PROVEN_SEEDS['1-1'].seeds.slice(0, 24)) for (const difficulty of ['normal', 'easy'] as const) {
+  for (const seed of provenSeeds('1-1').slice(0, 24)) for (const difficulty of ['normal', 'easy'] as const) {
     const st = buildPlayStage(c, kit, seed, difficulty);
     assert.deepEqual(st.gen2.errors ?? [], [], `listed seed ${seed} ${difficulty} builds cleanly`);
     judged++;

@@ -135,6 +135,24 @@ test('a scripted line waits for its moment', () => {
   assert.equal(dueLine({ ...near, ratio: 0.86 })?.flag, 'L');
 });
 
+test('a line can wait on a moment of play, by data: 1-3\'s "excuse me" waits on the first punch that sends a snake off (P13, 11-12)', () => {
+  const s = stageLine(1, 3)!;
+  assert.equal(s.at, 'on');
+  assert.equal(s.on, 'cast:punch', 'the moment is named in the line\'s data, never by its stage in code');
+  assert.match(s.text, /excuse me/, 'the words are the story keeper\'s, unchanged');
+  const base = { world: 1, mini: 3, playedMs: 120_000, shownL: false, shownH: false };
+  // no punch, no line: not at the start, not at halfway, not at the exit, not after a trap
+  for (const ratio of [0, 0.5, 0.86, 1]) assert.equal(dueLine({ ...base, ratio }), null, `no punch: quiet at ${ratio}`);
+  assert.equal(dueLine({ ...base, ratio: 0.5, moments: ['cast:trap'] }), null, 'a trap is not a punch');
+  // the first punch that sends one off: the line, wherever he is
+  const due = dueLine({ ...base, ratio: 0.1, moments: ['cast:trap', 'cast:punch'] });
+  assert.equal(due?.flag, 'L');
+  assert.equal(due!.line.text, s.text);
+  assert.equal(dueLine({ ...base, ratio: 0.9, moments: ['cast:punch'], shownL: true }), null, 'once heard, never again');
+  // a place line ignores the moments
+  assert.equal(dueLine({ world: 2, mini: 5, ratio: 0.3, playedMs: 30_000, shownL: false, shownH: false, moments: ['cast:punch'] }), null);
+});
+
 test('a fall is answered a beat later, once, and before the scripted line', () => {
   // world 4 stage 3 has a "start" line; before it is due, only a fall can bring a line
   const early = { world: 4, mini: 3, ratio: 0, playedMs: 1000, shownL: false, shownH: false };

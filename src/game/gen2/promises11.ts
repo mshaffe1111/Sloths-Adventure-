@@ -14,11 +14,14 @@ import { jumpOK } from '../levelCheck.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Platform } from '../types.ts';
 import type { Difficulty } from '../difficulty.ts';
-import { BODY_H, lesserArcs, linkArcs } from './reach.ts';
+import { BODY_H, CHAIN_BANDS, bandHi, lesserArcs, linkArcs } from './reach.ts';
+import { deadZones, purposelessBounces, type LandPickup } from './landings.ts';
 import type { JudgedStage, PromiseDef, PromiseRegistry, Verdict } from './verdicts.types.ts';
 
 type Zone = { x0: number; x1: number; soft?: boolean };
-interface Built { platforms: Platform[]; heartFalls?: Zone[]; waterY?: number; config: { levelHeight: number }; gen2?: { nodes?: Array<{ token: string; x0: number }> } }
+/** the stage `promiseBreaches11` reads as (this file's direct reader is 1-1's own, by name); the REGISTRY names no stage */
+const ONE_ONE = '1-1';
+interface Built { platforms: Platform[]; collectibles?: LandPickup[]; heartFalls?: Zone[]; waterY?: number; config: { levelHeight: number }; spawnX?: number; gen2?: { nodes?: Array<{ token: string; x0: number }>; brief?: { teaches?: string[] }; hurt?: { lesson: string; clearStart: number; shown?: number } } }
 
 /** the narrowest slot he can fall into (the Critic, E0a attempt 2: seed 323 Normal's 23 px slot is no drop; his body is about 32 px) */
 export const BODY_W = { px: 32, source: 'the Critic, E0a attempt 2 (seed 323 Normal x27200..27273)' } as const;
@@ -55,8 +58,8 @@ export function floorlessGaps(st: Pick<Built, 'platforms' | 'heartFalls'>): Arra
 
 /** from `tip` on, the first gap within 1,500 px one jump at its best can't cross and a double flick can (reach.ts, flown, `setting`);
  *  safe: ground under it or a soft zone over it */
-export function doubleGap(platforms: Platform[], tip: number, death: number, zones: readonly Zone[] = [], setting: Difficulty = 'normal'): { a: Platform; b: Platform; safe: boolean } | undefined {
-  const lesser = lesserArcs(setting), taught = linkArcs(setting);
+export function doubleGap(platforms: Platform[], tip: number, death: number, zones: readonly Zone[] = [], setting: Difficulty, stageId: string): { a: Platform; b: Platform; safe: boolean } | undefined {
+  const lesser = lesserArcs(setting, stageId), taught = linkArcs(setting, stageId);
   const way: Platform[] = [];
   for (const p of platforms.filter((q) => q.type === 'solid' && q.x + q.width > tip).sort((a, b) => a.x - b.x)) {
     if (way.length && p.y > way[way.length - 1].y + 80) continue;
@@ -73,10 +76,10 @@ export function doubleGap(platforms: Platform[], tip: number, death: number, zon
 }
 
 /** the double-teach promise: its breach by name and line, or null when kept */
-export function doubleAfterTeach(st: Built, setting: Difficulty = 'normal'): { id: 'teach.double-no-gap-after' | 'teach.double-gap-unsafe'; line: string; x0: number; x1: number } | null {
+export function doubleAfterTeach(st: Built, setting: Difficulty, stageId: string): { id: 'teach.double-no-gap-after' | 'teach.double-gap-unsafe'; line: string; x0: number; x1: number } | null {
   const teach = (st.gen2?.nodes ?? []).find((n) => /^T\w*2/.test(n.token));
   if (!teach) return { id: 'teach.double-no-gap-after', line: 'no double teach node', x0: 0, x1: 0 };
-  const g = doubleGap(st.platforms, teach.x0, st.waterY ?? st.config.levelHeight, st.heartFalls ?? [], setting);
+  const g = doubleGap(st.platforms, teach.x0, st.waterY ?? st.config.levelHeight, st.heartFalls ?? [], setting, stageId);
   if (!g) return { id: 'teach.double-no-gap-after', line: `no gap only the second jump crosses within 1,500 px of the teach (x ${Math.round(teach.x0)})`, x0: Math.round(teach.x0), x1: Math.round(teach.x0 + 1500) };
   if (!g.safe) return { id: 'teach.double-gap-unsafe', line: `nothing under the double gap at ${Math.round(g.a.x + g.a.width)}`, x0: Math.round(g.a.x + g.a.width), x1: Math.round(g.b.x) };
   return null;
@@ -89,24 +92,91 @@ const builtOf = (st: JudgedStage): Built => {
   if (!b) throw new Error(`promises11: ${st.stageId} ${st.setting} was judged without its built stage`);
   return b;
 };
+// (packet E12 item 3: the double's promises run on a judged stage whose BRIEF teaches the double, GraphBrief.teaches; 1-1's does)
 const teachPromise = (id: 'teach.double-no-gap-after' | 'teach.double-gap-unsafe'): PromiseDef => ({
-  id, stages: ['1-1'], settings: ['normal'],
-  judge: (st) => { const d = doubleAfterTeach(builtOf(st), st.setting); return d && d.id === id ? [{ name: id, setting: st.setting, at: { x0: d.x0, x1: d.x1 }, line: d.line }] : []; },
+  id, stages: 'all', settings: ['normal'],
+  judge: (st) => { const d = builtOf(st).gen2?.brief?.teaches?.includes('double') ? doubleAfterTeach(builtOf(st), st.setting, st.stageId) : null; return d && d.id === id ? [{ name: id, setting: st.setting, at: { x0: d.x0, x1: d.x1 }, line: d.line }] : []; },
 });
 
-/** 1-1's promises, ONE definition for the pipeline's verdicts, the seed list and the tests (ADR-001 decision 8): Easy has no double gap
- *  (bands.md §2), so the double's promises are judged on Normal only, by `settings` */
+/** how far before a mount cap (its left edge) the ground he steps or hops onto it from may end (px): a run-up hop's reach, well inside a
+ *  single flick's 128 px from 70 px back (reach.md §2) */
+export const MOUNT_REACH = 120;
+/** a cap whose centre is this near past another cap's is that cap's next in a chain, not a mount: chain.md §2, "S 240-270 lands on the
+ *  next pillar; S 280 or more falls" (the widest flown cap to cap, past the bands' 225) */
+const CHAIN_LINK = Math.max(270, ...CHAIN_BANDS.map((r) => r.s.hi));
+
+/**
+ * `chain.mount` (R-165.138, Matt 11-12: tall-stem mushrooms needing a jump to mount): a bounce cap with no cap before it within a chain
+ * hop is a mount, stepped or hopped onto from the ground; its top may stand no more than the single-rise band's top (bands.md §2: what a
+ * plain hop is asked to climb) over the best ground ending within MOUNT_REACH px before it or under it. No ground there: a pole out of a pit.
+ */
+export function mountVerdicts(platforms: readonly Platform[], setting: Difficulty): Verdict[] {
+  const hop = bandHi('single-rise', setting)!;
+  const caps = platforms.filter((q) => q.type === 'bouncy' && !q.broken).sort((a, b) => a.x - b.x);
+  const ground = platforms.filter((q) => q.type !== 'bouncy' && !q.broken && !q.soil && q.width > 0);
+  const out: Verdict[] = [];
+  for (const c of caps) {
+    const cx = c.x + c.width / 2;
+    if (caps.some((p) => p !== c && p.x + p.width / 2 < cx && cx - (p.x + p.width / 2) <= CHAIN_LINK)) continue;
+    const at = { x0: Math.round(c.x), x1: Math.round(c.x + c.width) };
+    const from = ground.filter((q) => q.x < c.x + c.width && q.x + q.width >= c.x - MOUNT_REACH && q.y >= c.y - BODY_H.px * 4);
+    if (!from.length) {
+      out.push({ name: 'chain.mount', setting, at, line: `the bounce cap at x ${at.x0} has no ground within ${MOUNT_REACH} px to step or hop onto it from` });
+      continue;
+    }
+    const best = from.reduce((a, b) => (b.y < a.y ? b : a));
+    const rise = Math.round(best.y - c.y);
+    if (rise > hop) out.push({ name: 'chain.mount', setting, at, line: `the bounce cap at x ${at.x0} stands ${rise} px over the ground he mounts it from (x ${Math.round(best.x)}..${Math.round(best.x + best.width)}), over a plain hop's ${hop} (single-rise band)` });
+  }
+  return out;
+}
+
+/** the judged stages' promises (1-1's first), ONE definition for the pipeline's verdicts, the seed list and the tests (ADR-001 decision
+ *  8): Easy has no double gap (bands.md §2), so the double's promises are judged on Normal only, by `settings`. Every judged stage
+ *  (reach.ts JUDGED: the pipeline judges no other) is held to `floor.unmarked` */
 export const PROMISES_11: PromiseRegistry = [
   {
-    id: 'floor.unmarked', stages: ['1-1'], settings: ['normal', 'easy'],
+    id: 'floor.unmarked', stages: 'all', settings: ['normal', 'easy'],
     judge: (st) => floorlessGaps(builtOf(st)).map(([x0, x1]): Verdict => ({ name: 'floor.unmarked', setting: st.setting, at: { x0: Math.round(x0), x1: Math.round(x1) }, line: `an unmarked floorless gap at x ${Math.round(x0)}..${Math.round(x1)}` })),
   },
+  // (R-165.138: a chain's first cap is stepped or hopped onto, never mounted with a jump or a double)
+  { id: 'chain.mount', stages: 'all', settings: ['normal', 'easy'], judge: (st) => mountVerdicts(builtOf(st).platforms, st.setting) },
   teachPromise('teach.double-no-gap-after'),
   teachPromise('teach.double-gap-unsafe'),
+  {
+    // (packet E12 item 2: a hurt floor is shown before it is asked. On the route no hurt drop starts before the END of its lesson's showing
+    // piece, and none within the row's clearStart of the spawn; the lesson's own first chain comes after `show` and passes)
+    id: 'hazard.untaught', stages: 'all', settings: ['normal', 'easy'],
+    judge: (st) => {
+      const b = builtOf(st), h = b.gen2?.hurt, spawn = b.spawnX ?? 0, out: Verdict[] = [];
+      for (const d of st.drops as ReadonlyArray<{ x0: number; x1: number; ends: { kind: string } }>) {
+        if (d.ends.kind !== 'heart') continue;
+        const near = !!h && d.x0 < spawn + h.clearStart, early = !h || h.shown === undefined || d.x0 < h.shown;
+        if (!near && !early) continue;
+        const at = { x0: Math.round(d.x0), x1: Math.round(d.x1) };
+        out.push({ name: 'hazard.untaught', setting: st.setting, at, line: `a hurt drop at x ${at.x0}..${at.x1} ${near ? `within ${h!.clearStart} px of the spawn (x ${Math.round(spawn)})` : `before the '${h?.lesson}' lesson has shown it (${h?.shown === undefined ? 'no showing piece is laid' : `its showing piece ends at x ${h.shown}`})`}` });
+      }
+      return out;
+    },
+  },
+  {
+    // (R-165.124, Matt 11-06 and 11-11, STAGE-RULES §1 "No dead-zone landings": every piece a pickup sits on is reached by a plain
+    // walk-off, a full jump or a bounce with margin, the arc uncut; landings.ts, on the engine's flown flights)
+    id: 'landing.dead-zone', stages: 'all', settings: ['normal', 'easy'],
+    judge: (st) => {
+      const b = builtOf(st);
+      return deadZones(b.platforms, b.collectibles ?? [], st.setting).map((p): Verdict => ({ name: 'landing.dead-zone', setting: st.setting, at: { x0: Math.round(p.x), x1: Math.round(p.x + p.width) }, line: `a dead-zone landing at x ${Math.round(p.x)}..${Math.round(p.x + p.width)} (top ${Math.round(p.y)}): no walk-off, full jump or bounce reaches it with margin and its arc uncut` }));
+    },
+  },
+  {
+    // (R-165.126's bounce part, Matt 11-11: a mushroom only where its bounce leads somewhere worth going; landings.ts)
+    id: 'bounce.no-purpose', stages: 'all', settings: ['normal', 'easy'],
+    judge: (st) => purposelessBounces(builtOf(st).platforms, builtOf(st).collectibles ?? [], st.setting).map((p): Verdict => ({ name: 'bounce.no-purpose', setting: st.setting, at: { x0: Math.round(p.x), x1: Math.round(p.x + p.width) }, line: `a mushroom at x ${Math.round(p.x)} whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one)` })),
+  },
 ];
 
 /** every promise a roll breaks on `setting`, by its line (empty: kept), from the registry: the ones not judged there are skipped */
 export function promiseBreaches11(st: Built, setting: Difficulty = 'normal'): string[] {
-  const js = { stageId: '1-1', setting, policy: 'no-lethal', drops: [], asks: [], built: st } as unknown as JudgedStage;
+  const js = { stageId: ONE_ONE, setting, policy: 'no-lethal', drops: [], asks: [], built: st } as unknown as JudgedStage;
   return PROMISES_11.filter((p) => p.settings.includes(setting)).flatMap((p) => p.judge(js).map((v) => v.line));
 }
