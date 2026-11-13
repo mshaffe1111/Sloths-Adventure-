@@ -4,14 +4,39 @@
  *     green line while the sheet loads);
  *   - a fruit cluster is CODE-DRAWN: a bunch of small round orange-red wild figs on a stalk (circles; the story keeper's nature check,
  *     11-13: never purple grocery figs), no painted art yet;
- *   - a falling pod is CODE-DRAWN (B14, 11-13): a green-brown kapok pod hanging under the bough, its fluff trickling down the column in
- *     the tell, a white puff where it bursts; the ART member's painted seed pod replaces it (reference/packets/2026-11-13/ART.md);
- *   - a shut gate's bough is CODE-DRAWN (B14): a brown bough tilted down at its far end by its sag, bracket-fungus shelves on it, until
- *     the painted bough (B15's rotting bough piece / ART) is drawn tilted instead.
+ *   - a falling pod, its burst, a fig bunch and a shut gate's bough are ART's painted pieces (11-13, the inventory's hf1113/w14-*, sized
+ *     by its pokey_scale against his drawn 89.1: pod 0.45, burst 0.34, figs 0.45, bough by its own walk line); the fluff's trickle is a
+ *     small code touch (STAGE-RULES §4). The code-drawn shapes below draw only while a picture loads (named stand-ins).
  * Nothing allocates per frame (PERFORMANCE-RULES §3.1): the strand's points are a kept array.
  */
 import type { Platform, Vine } from './types.ts';
 import type { PodColumn, PodState } from './podfall.ts';
+import { trackAtlas } from './atlasLoader.ts';
+
+// ───────────────────────────── 1-4's painted pieces (ART 11-13, the inventory's hf1113/w14-*) ─────────────────────────────
+/** his drawn height (heroSprite.ts; LESSONS D41): the inventory's pokey_scale is a share of it */
+const POKEY_H = 89.1;
+type Piece = { url: string; img: HTMLImageElement | null; ready: boolean };
+const piece = (url: string): Piece => ({ url, img: null, ready: false });
+const PIECES = {
+  pod: piece(new URL('../assets/w1-1113/w14-kapokpod.webp', import.meta.url).href),
+  burst: piece(new URL('../assets/w1-1113/w14-kapokpod-burst.webp', import.meta.url).href),
+  figs: piece(new URL('../assets/w1-1113/w14-figcluster.webp', import.meta.url).href),
+  bough: piece(new URL('../assets/w1-1113/w14-roughbough.webp', import.meta.url).href),
+};
+/** a piece's picture once loaded (starts the load; the phone taking it back reloads it: atlasLoader.ts) */
+function pic(p: Piece): HTMLImageElement | null {
+  if (!p.img && typeof Image !== 'undefined') {
+    const im = new Image();
+    p.img = im;
+    trackAtlas(im, p.url, () => { p.ready = true; }, () => { p.img = null; }, () => { p.img = null; p.ready = false; });
+  }
+  return p.ready ? p.img : null;
+}
+/** drawn heights (px), the inventory's pokey_scale x his drawn height */
+const POD_H = 0.45 * POKEY_H, BURST_H = 0.34 * POKEY_H, FIGS_H = 0.45 * POKEY_H;
+/** the rough bough's picture: 707 x 180, his feet at 42 px down, walkable from 90 to 666 px across (the inventory row) */
+const BOUGH = { w: 707, h: 180, walkY: 42, x0: 90, x1: 666 } as const;
 import { vineTile } from './castArt.ts';
 import { layRope } from './ropeArt.ts';
 import type { VineCluster } from './vineField.ts';
@@ -53,6 +78,13 @@ export function drawClusters(ctx: CanvasRenderingContext2D, clusters: readonly V
     let x = NaN;
     for (const v of vines) if (v.id === c.vine) x = v.x + (c.dx ?? 0);
     if (!(x > x0 - 80 && x < x1 + 80)) continue;
+    const figs = pic(PIECES.figs);
+    if (figs) {
+      // (the bunch hangs from its stalk at the top: its bottom at c.y, its height the inventory's)
+      const w = (FIGS_H * figs.width) / figs.height;
+      ctx.drawImage(figs, x - w / 2, c.y - FIGS_H, w, FIGS_H);
+      continue;
+    }
     const h = c.h;
     // the stalk up to the vine
     ctx.strokeStyle = '#4d5a1e';
@@ -89,6 +121,14 @@ function podShape(ctx: CanvasRenderingContext2D, x: number, y: number, r: number
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(shake);
+  const im = pic(PIECES.pod);
+  if (im) {
+    // (the painted pod on its twig, its middle at (x, y), its height the inventory's scaled with r against the stand-in's)
+    const h = POD_H * (r / POD_DRAW), w = (h * im.width) / im.height;
+    ctx.drawImage(im, -w / 2, -h / 2, w, h);
+    ctx.restore();
+    return;
+  }
   const w = r * 0.95, h = r * 1.9;
   ctx.fillStyle = '#b08a46';
   ctx.strokeStyle = '#2a1d0b';
@@ -172,7 +212,14 @@ export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState
     podShape(ctx, p.x, y, r, 0);
     return;
   }
-  // the burst: a puff of fluff on the wood, thinning out
+  // the burst: the painted pod burst open on the wood, silk spilling, fading; and a puff of fluff thinning out
+  const bim = pic(PIECES.burst);
+  if (bim) {
+    const w = (BURST_H * bim.width) / bim.height;
+    ctx.globalAlpha = Math.max(0, 1 - s.u * 0.8);
+    ctx.drawImage(bim, p.x - w / 2, p.land - BURST_H, w, BURST_H);
+    ctx.globalAlpha = 1;
+  }
   for (let i = 0; i < 10; i++) {
     const a = (i / 10) * Math.PI * 2;
     const d = 8 + s.u * 30;
@@ -192,6 +239,14 @@ export function drawGate(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 
   ctx.translate(pivotX, b.y);
   ctx.rotate(ang);
   const x0 = far > 0 ? 0 : -b.width, w = b.width;
+  const im = pic(PIECES.bough);
+  if (im) {
+    // (the painted rough bough, its walk line on the bough's top, its walkable span over the bough's width, sagging with it)
+    const k = w / (BOUGH.x1 - BOUGH.x0);
+    ctx.drawImage(im, x0 - BOUGH.x0 * k, -BOUGH.walkY * k, BOUGH.w * k, BOUGH.h * k);
+    ctx.restore();
+    return;
+  }
   ctx.fillStyle = '#5a4026';
   ctx.beginPath();
   ctx.roundRect(x0, 0, w, thick, thick / 2);

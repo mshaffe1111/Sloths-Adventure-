@@ -57,6 +57,10 @@ export class FieldPlay {
       const b = platforms.find((q) => q.id === g.platform);
       const shut = gateLeft(g, clusters) > 0;
       if (b) b.broken = shut;
+      for (const id of g.with ?? []) {
+        const q = platforms.find((x) => x.id === id);
+        if (q) q.broken = shut;
+      }
       for (const id of g.ways ?? []) {
         const w = vines.find((q) => q.id === id);
         if (w) w.off = shut;
@@ -132,6 +136,10 @@ export class FieldPlay {
       const b = this.platforms.find((q) => q.id === g.platform);
       if (left === 0) {
         if (b) b.broken = false;
+        for (const id of g.with ?? []) {
+          const q = this.platforms.find((x) => x.id === id);
+          if (q) q.broken = false;
+        }
         // (the way up it held down springs up with it)
         for (const id of g.ways ?? []) {
           const w = this.vines.find((q) => q.id === id);
@@ -162,8 +170,10 @@ export class FieldPlay {
     for (const g of this.gates) {
       const b = this.platforms.find((q) => q.id === g.platform);
       if (!b || b.x > x1 + 60 || b.x + b.width < x0 - 60) continue;
+      // (a gate's bough is always the field's own picture, shut and sagging or open and level: the stage marks it `art: 'hidden'` so the
+      // ground's painter leaves it to this, and it never swaps look as it springs open)
       const sag = this.sagOf(g, t);
-      if (!b.broken && sag < 0.5) continue;
+      if (!b.broken && sag < 0.5 && b.art !== 'hidden') continue;
       drawGate(ctx, b, g.far, sag);
     }
     for (const pod of this.pods) {

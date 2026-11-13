@@ -35,8 +35,8 @@ export const ARC_14: Record<string, string> = { 'ascent-14-arc': 'A T T R T T P 
 /** 1-4's brief, all of it data: an ascent of fields, its cast 1-3's snake */
 export const BRIEF_14: GraphBrief = {
   ends: 'quiet', trend: 'up', branching: 'none', teaches: ['slide', 'creak', 'field', 'pods'],
-  // (the deal is the arc's own, one type a beat, no type over V11's 40% and no two teaches of one type (V2): ground the going-up (it
-  // starts on the forest floor, the climbs short and over ground); crumble the rotting boughs and the crown's rotten stair; climb the field, the push and the drop;
+  // (the deal is the arc's own, one type a beat, no type over V11's 40% and no two teaches of one type (V2): ground the going-up (a
+  // walk along wide low boughs with two short climbs, sound wood under every one); crumble the rotting boughs and the crown's rotten stair; climb the field, the push and the drop;
   // hazard the pods, under fire and the hollow: 1, 2, 3 and 3 of the nine content nodes)
   deal: { ground: 11, crumble: 22, climb: 33, hazard: 34 }, dealExact: true,
   cast: ['snake'],
@@ -128,13 +128,14 @@ const GOING_UP: SectionTemplate = {
   id: 'w1-14-going-up', name: 'going up: a vine, then a taller one', feel: [STAGE_14], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], jobs: ['teach'],
   difficulty: 2, content: 'ground', teaches: 'slide', uses: [], needs: [],
   pieces: [
-    { key: 'foot', shape: 'bank', w: [300, 300], place: { kind: 'start' }, style: 'moss_stone', main: true },
+    // (a bough: the ascent lay turns up off the floor after the arrival, so this beat starts a storey up, never on the ground)
+    branch('foot', { kind: 'start' }, 300),
     climbOn('v1', 'foot', 300, 240, 220),
     branch('b1', { kind: 'over', on: 'v1', at: [0, 0], dy: [0, 0] }, 340),
     climbOn('v2', 'b1', 340, 290, 320),
     branch('b2', { kind: 'over', on: 'v2', at: [0, 0], dy: [0, 0] }, 260),
   ],
-  entry: { piece: 'foot', kind: 'ground' }, exit: { piece: 'b2', kind: 'ledge' }, exitDy: -540,
+  entry: { piece: 'foot', kind: 'ledge' }, exit: { piece: 'b2', kind: 'ledge' }, exitDy: -540,
   sockets: [petals('p', 'b1', 0.4)], mirrorable: false,
 } as SectionTemplate;
 
@@ -296,9 +297,23 @@ export function finish14<T extends FinishStage>(st: T, difficulty: Difficulty): 
       ids.push(id);
     }
     if (row.gate && ids.length) {
-      // (the lay's climb up from the shut bough, if one stands on it, is held down with it until it opens: fieldPlay.ts lets it up)
-      const ways = st.vines.filter((w) => !w.field && w.vineType === 'tree_climb' && Math.abs(w.bottomY - top.y) <= 8 && w.x >= top.x - 4 && w.x <= top.x + top.width + 4).map((w) => w.id);
-      gates.push({ id: gates.length + 1, platform: top.id, clusters: ids, far: 1, ...(ways.length ? { ways } : {}) });
+      // (the lay's plain boughs at its height that touch it (its runs out to the walls): held with it, so a hop off a field vine's top
+      //  never lands at the gate's height round it)
+      const withIds: number[] = [];
+      for (let grow = true; grow; ) {
+        grow = false;
+        const held = [top, ...st.platforms.filter((q) => withIds.includes(q.id))];
+        for (const q of st.platforms) {
+          if (withIds.includes(q.id) || q === top || q.tag || q.type !== 'solid' || Math.abs(q.y - top.y) > 2) continue;
+          if (held.some((r) => q.x <= r.x + r.width + 130 && q.x + q.width >= r.x - 130)) { withIds.push(q.id); grow = true; }
+        }
+      }
+      // (and the lay's climbs up from any of them are held down with it until it opens: fieldPlay.ts lets them up)
+      const spans = [top, ...st.platforms.filter((q) => withIds.includes(q.id))];
+      const ways = st.vines.filter((w) => !w.field && w.vineType === 'tree_climb' && spans.some((q) => Math.abs(w.bottomY - q.y) <= 8 && w.x >= q.x - 4 && w.x <= q.x + q.width + 4)).map((w) => w.id);
+      gates.push({ id: gates.length + 1, platform: top.id, clusters: ids, far: 1, ...(ways.length ? { ways } : {}), ...(withIds.length ? { with: withIds } : {}) });
+      // (its bough is the field's rough bough picture, shut or open, never the ground painter's branch: fieldPlay.ts draws it)
+      top.art = 'hidden';
     }
     for (const pd of row.pods) {
       const v = vine(pd.vine)!;

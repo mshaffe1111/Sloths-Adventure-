@@ -229,6 +229,9 @@ export interface ClusterGate {
   /** the ways up FROM the bough (vine ids: a climb standing on it), held down with it while it is shut (off, and not drawn: a way he
    *  could hop to from a field vine's top would let him round the gate), let up when it opens */
   ways?: number[];
+  /** plain boughs at its height that touch it (platform ids): held with it while it is shut (no footing, not drawn), so a hop off a
+   *  field vine's top never lands at the gate's height round the gate; whole again when it opens */
+  with?: number[];
 }
 
 export const GATE = {

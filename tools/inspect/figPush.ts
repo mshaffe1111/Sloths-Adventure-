@@ -21,6 +21,8 @@ export interface FieldView {
   vines: Vine[];
   field: { gates: readonly ClusterGate[]; pods: readonly PodColumn[]; blocksTop(v: Vine): boolean } | null;
   clock: { read(id: string, shift?: number): ClockRead };
+  /** seconds a pod's knock still keeps the climbs out of his hands (engine.ts knocked): > 0 just after a knock */
+  knocked?: number;
 }
 
 /** how far below a fig bunch his hands go before he steps across to its vine (px) */
@@ -33,7 +35,19 @@ export class FigPush {
   private pressT = 0;
   private dodgeUntil = -1;
   private seenTell = new Map<number, number>();
+  /** when it last acted (a push, a step aside, a climb for a fig) and when a pod last knocked him off */
+  private lastAct = -1e9;
+  private lastKnock = -1e9;
 
+  /** it is at work (going for a fig, or stepping off a pod's column): the bot's no-progress clock is not running (firsttimer.ts) */
+  busy(t: number): boolean {
+    return !!this.target || t - this.lastAct < 4;
+  }
+
+  /** a pod knocked him off in the last few seconds: a fall that is a hit, not a missed climb (the bot's fell-back count leaves it out) */
+  knockedRecently(t: number): boolean {
+    return t - this.lastKnock < 6;
+  }
   /** `react`: seconds from a pod's tell starting to his step aside (the tier's reaction; Infinity: he never dodges) */
   constructor(private readonly react = 0.45) {}
 
@@ -60,6 +74,13 @@ export class FigPush {
 
   /** this frame's thumb, or null (the bot's own climb) */
   step(v: FieldView, p: PlayerState, t: number): Pad | null {
+    if ((v.knocked ?? 0) > 0) this.lastKnock = t;
+    const pad = this.choose(v, p, t);
+    if (pad) this.lastAct = t;
+    return pad;
+  }
+
+  private choose(v: FieldView, p: PlayerState, t: number): Pad | null {
     if (!p.climbing || !v.hands || !v.field) {
       this.target = null;
       return null;
