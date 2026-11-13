@@ -35,6 +35,13 @@ Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 
   up, 34% on one that leads down; engine.ts uses it at the framing line AND at both set-back snaps (else the view drifts after a
   respawn). Towers only, on purpose: the 18 shipped climbs and 4-7 keep 55% (towerLead gives them 0), because 80% leaves 108 px
   under him sideways and lava, water and mist rise from there (9-2, 9-7, 4-1, 4-6). Each gets it when rebuilt as a tower or looked at.
+- **A gate is a gate (`SectionPiece.sealed`, the lead 11-13, B14's fig gates).** By a sealed piece the lay adds nothing level with it
+  or within a hop (no run-on, bridge or shelf: towerCatches `byGate`), never walks on from it (the next section is a storey up by a
+  vine standing ON it; if it fits neither way from the tip, its storey starts further back along the piece; else the build throws
+  "fits no turn from the sealed piece"), and the verdict `towerGates` refuses any roll where wood at the gate's level or above is one
+  hop from a vine top or from the wood under it. Its own open ends are its section's to catch (the foot under them), or towerFalls
+  names them. Off unless a piece says so. `GraphBrief.tags` (B14's hook, behind the brief so no shipped stage's data moves): every
+  laid piece carries `<uid>:<key>` on Platform.tag / Vine.tag for the stage's own finish.
 - **Proof tools.** `npx tsx tools/engine/towerroll.ts --seeds 24 --flow up|arc|down` (each roll's errors by name);
   `tools/engine/towermap.ts` (a to-scale SVG of a roll: look at the lay before trusting it); `tools/engine/towerFly.ts` (flyTower: the
   REAL engine, plain inputs, no rescue; withTowerSim builds a fixture the way the game builds a listed stage);
