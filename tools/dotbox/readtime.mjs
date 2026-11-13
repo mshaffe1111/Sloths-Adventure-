@@ -83,7 +83,13 @@ while (Date.now() - t0 < Number(secsArg) * 1000) {
   if (tapArg && cur && !cur.tapped && now - cur.at >= cur.read && s.rect) {
     cur.tapped = true;
     const before = await p.evaluate(() => ({ ...window.__presses }));
-    await p.touchscreen.tap(s.rect[0] + s.rect[2] / 2, s.rect[1] + s.rect[3] / 2);
+    // (where the finger lands: the card's rect now, and what is on top there)
+    const aim = await p.evaluate(() => { const el = document.querySelector('.dg-bub.in'); if (!el) return null; const b = el.getBoundingClientRect(); const x = b.left + b.width / 2, y = b.top + b.height / 2; const top = document.elementFromPoint(x, y); return { x, y, on: !!top?.closest('.dg-bub'), top: top ? `${top.tagName}.${String(top.className).slice(0, 40)}` : null, cls: el.className }; });
+    cur.aim = aim;
+    await p.evaluate(() => { window.__tgt = []; for (const t of ['touchstart', 'pointerdown', 'click']) document.addEventListener(t, (e) => window.__tgt.push(`${t}:${String(e.target.className).slice(0, 30)}`), { capture: true, once: true }); });
+    if (aim) await p.touchscreen.tap(aim.x, aim.y);
+    await sleep(60);
+    cur.tgt = await p.evaluate(() => window.__tgt.join(' '));
     await sleep(120);
     const after = await p.evaluate(() => ({ ...window.__presses, gone: !document.querySelector('.dg-bub.in:not(.out)') || document.querySelector('.dg-bub.in p')?.innerText !== undefined }));
     cur.tapPunch = after.punch - before.punch;
@@ -103,7 +109,7 @@ let short = 0;
 for (const c of cards) {
   const ok = c.ms >= c.read;
   if (!ok && c.next !== '(run ended)') short++;
-  console.log(`${(c.at / 1000).toFixed(1).padStart(5)} s  ${(c.ms / 1000).toFixed(1).padStart(5)} s up / read ${(c.read / 1000).toFixed(1)} s (x${(c.ms / c.read).toFixed(1)}) ${ok ? '  ' : '<<'}${c.tapped ? ` TAPPED (punches ${c.tapPunch}, jumps ${c.tapJump})` : ''} ${words(c.text)}w "${c.text}"${c.next && c.next !== '(run ended)' ? ` -> replaced by "${c.next.slice(0, 40)}"` : c.next === null ? '' : ' (run ended)'}`);
+  console.log(`${(c.at / 1000).toFixed(1).padStart(5)} s  ${(c.ms / 1000).toFixed(1).padStart(5)} s up / read ${(c.read / 1000).toFixed(1)} s (x${(c.ms / c.read).toFixed(1)}) ${ok ? '  ' : '<<'}${c.tapped ? ` TAPPED (punches ${c.tapPunch}, jumps ${c.tapJump}${c.aim && !c.aim.on ? `; under the finger: ${c.aim.top}, card ${c.aim.cls}` : ''}${c.tapPunch || c.tapJump ? `; events ${c.tgt}; card ${c.aim?.cls}` : ''})` : ''} ${words(c.text)}w "${c.text}"${c.next && c.next !== '(run ended)' ? ` -> replaced by "${c.next.slice(0, 40)}"` : c.next === null ? '' : ' (run ended)'}`);
 }
 // (a blink: the same card gone and back within 2.5 s, its line never ended in between)
 let blinks = 0;

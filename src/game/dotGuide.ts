@@ -133,6 +133,8 @@ export const GUIDE = {
   sceneHeard: 0.7,
   /** a line sent back by an interruption may wait this long to be said again */
   backMs: 30000,
+  /** (the phone, R-165.175) a card cut short mid-read waits this long to be read in full: the cards ahead of it stay till tapped */
+  backReadMs: 90000,
   /** every line is up at least this long (a move done at once, or a sender taking it down, waits for it) */
   minShowMs: 1500,
   /** a boss fight's warning or tip is up at most this long (it belongs to one attack; QA v189: one stayed 20 s of a 26 s fight) */
@@ -219,6 +221,8 @@ interface Waiting {
   until: number;
   /** order of arrival (an interrupted line goes back in front of its priority) */
   seq: number;
+  /** (the phone) a card cut short mid-read, waiting to be read in full: it is finished even if its lesson has since gone stale */
+  back?: boolean;
 }
 export interface Showing {
   line: GuideLine;
@@ -356,7 +360,7 @@ export class GuideQueue {
   pending(now: number, env?: TickEnv): number {
     let n = 0;
     for (const w of this.waiting) {
-      if (heldBack(w.line, env) || env?.hush?.(w.line) || (!isUrgent(w.line) && env?.stale?.(w.line))) continue;
+      if (heldBack(w.line, env) || env?.hush?.(w.line) || (!isUrgent(w.line) && !w.back && env?.stale?.(w.line))) continue;
       const timed = !w.line.move || w.line.thing || ((w.line.soon || w.line.mech) && w.line.mech !== w.line.move && (w.base === undefined || w.base < 0));
       if (timed ? now <= w.until : !(w.base !== undefined && w.base >= 0 && env && env.moveCount(w.line.move!) > w.base)) n++;
     }
@@ -409,7 +413,8 @@ export class GuideQueue {
       const up = now - cur.startedAt;
       const floor = this.readFloor(cur);
       const heard = (cur.line.scene && up >= readMs(cur.line.text) * GUIDE.sceneHeard) || (lessonCut && up >= floor) || (this.calm && up >= floor && !cur.line.move);
-      if (!heard) this.waiting.push({ line: cur.line, until: now + Math.max(GUIDE.backMs, waitFor(cur.line)), seq: -++this.seq, base: cur.line.move ? cur.base : undefined });
+      // (on the phone it waits longer: the cards ahead of it stay till tapped, up to 3x their reading time, and it is being finished)
+      if (!heard) this.waiting.push({ line: cur.line, until: now + Math.max(this.readDone ? GUIDE.backReadMs : GUIDE.backMs, waitFor(cur.line)), seq: -++this.seq, base: cur.line.move ? cur.base : undefined, ...(this.readDone ? { back: true } : {}) });
       this.cur = null;
       this.begin(line, now, 0);
       return;
@@ -490,7 +495,7 @@ export class GuideQueue {
     const skipped: GuideLine[] = [];
     this.waiting = this.waiting.filter((w) => {
       // (a tip whose thing he has done already is not said, nor anything after it)
-      if (!isUrgent(w.line) && env.stale?.(w.line)) return false;
+      if (!isUrgent(w.line) && !w.back && env.stale?.(w.line)) return false;
       // (calm) words said often enough this stage, or a move tip whose move he has done since it was said, are not said again
       // (calm) the same warning again and again as the eagle passes is nagging: at most repeatWarn times a stage
       if (this.calm && w.line.kind === 'danger' && (this.heard.get(norm(w.line.text))?.n ?? 0) >= this.repeatWarn) return false;
@@ -498,7 +503,8 @@ export class GuideQueue {
       if (this.calm && w.line.kind === 'danger' && SAME_TIP.get(w.line.key)?.some((k) => now - (this.saidAt.get(k) ?? -1e9) < CALM.nearMs)) return false;
       if (this.calm && !isUrgent(w.line)) {
         const h = this.heard.get(norm(w.line.text));
-        if (h && (h.n >= this.repeatMax || (w.line.move && env.moveCount(w.line.move) > h.base))) {
+        // (a card cut short mid-read is the same saying, being finished: not a repeat)
+        if (h && !w.back && (h.n >= this.repeatMax || (w.line.move && env.moveCount(w.line.move) > h.base))) {
           if (w.line.next) skipped.push(w.line.next);
           return false;
         }

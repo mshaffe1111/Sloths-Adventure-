@@ -222,3 +222,35 @@ test("a done move tip held for reading gives way at once to the stage's teach li
   for (let t = 3500; t <= 3000 + readMs(gap.text) && at < 0; t += 50) if (q.tick(t, e)?.line.key === 't') at = t;
   assert.ok(at > 0 && at <= 3000 + 1500 + 700, `the teach at ${at - 3000} ms: right after the tip's minimum time, not its reading time`);
 });
+
+test('a card cut mid-read comes back even when its lesson has since gone stale (1-2: the petals card, cut by the jump tip, was dropped once he had a petal)', () => {
+  const petals = info('p', 'Run through petals to pick them up.', { source: 'lesson' });
+  const gap: GuideLine = { key: 'g', text: 'Flick up to hop up or over.', kind: 'teach', who: 'Dot', move: 'jump', source: 'lesson', soon: true };
+  const e: TickEnv = { danger: false, moveCount: () => 0, stale: (l) => l.key === 'p' };
+  for (const readDone of [false, true]) {
+    const q = app();
+    q.readDone = readDone;
+    q.repeatMax = 1; // (Tips and Help: a plain line once a stage, dotSay.ts REPEAT)
+    q.push(petals, 3000);
+    q.tick(3000, env);
+    q.push(gap, 4600);
+    let back = false;
+    for (let t = 4600; t <= 40000; t += 100) if (q.tick(t, e)?.line.key === 'p') back = true;
+    assert.equal(back, readDone, readDone ? 'the phone: it comes back to be read in full' : "the tools' queue as before");
+  }
+});
+
+test('a card cut mid-read on the phone waits through long cards ahead of it (each up 3x, untapped) and is still read in full', () => {
+  const petals = info('p', 'Run through petals to pick them up.', { source: 'lesson', waitMs: 9000 });
+  const gap: GuideLine = { key: 'g', text: 'Flick up to hop up or over.', kind: 'teach', who: 'Dot', move: 'jump', source: 'lesson', soon: true };
+  const q = app();
+  q.readDone = true;
+  q.push(petals, 3000);
+  q.tick(3000, env);
+  q.push(gap, 4600);
+  // (two higher-priority teach cards come in behind it and each holds the screen 3x its reading time)
+  q.push(info('a', 'Ooh, thorns. Do not touch those, not even a little.', { kind: 'teach', soon: true }), 5000);
+  q.push(info('b', 'Hop on and let the mushrooms do the jumping!', { kind: 'teach', soon: true }), 5100);
+  const keys = run(q, 4600, 90000).map((r) => r.key);
+  assert.ok(keys.includes('a') && keys.includes('b') && keys.includes('p'), keys.join(','));
+});
