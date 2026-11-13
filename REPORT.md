@@ -14,7 +14,7 @@
 7. R-165.158 About: What's ours (music line) + Our story › + Inspired by › (30 lines, words diffed exactly vs STORY-LINES; pair waits).
 **Polish check**: about-*.jpg (fresh/old, both ways; sideways Back+title one row after the first shot wasted the short view; titles now
 stand out), dot-card(-more,-next)-*.jpg (hint italic, +2 badge), teach-1-3-*.jpg, goal-1-3-*.jpg, jump-1-2-*.jpg, satchel-*.jpg.
-**Gates (run so far, on 533b37a2+)**: tsc PASS; knowncheck, generalitycheck, roadmapcheck, artcheck PASS; unit suite 2421 ok / 0 not ok at the 1:45 stop (still running, not finished). NOT RUN yet: vite build, chunkcheck, drawcheck, clipcheck, kbdcheck, buildcheck, seedlist 1-1, tool tests, tierBots.
+**Gates (run so far, on 533b37a2+)**: tsc PASS; knowncheck, generalitycheck, roadmapcheck, artcheck PASS; unit suite FINISHED 2:10 PM: 3145 tests, 3143 pass, 0 fail, 2 todo (pre-existing, e.g. 4-3 boulder fixer). NOT RUN yet: vite build, chunkcheck, drawcheck, clipcheck, kbdcheck, buildcheck, seedlist 1-1, tool tests, tierBots.
 **Lock**: lockall --layouts 16 vs base: 102/102 stages unchanged.
 **Unresolved**: in 3 of 10 scripted 1-2 runs the tap at the mushroom bounce missed a perched card sliding with the camera (a punch went to the game);
 lines held longer while busy; a find naming what was found (R-165.175 row, not in packet). The keeper's "29 games" vs 30 lines shown.
@@ -23,7 +23,7 @@ lines held longer while busy; a find naming what was found (R-165.175 row, not i
 summary. Method update (in-play-text.md): "nothing closes on a tap" is now "her card clears on a tap and eats it"; readtime.mjs is the check.
 Lessons applied: D50 (defaults), D19 (gate calls the screen's code), D23 (base stamped), D54 (grep whole src). Note: engine-core.md 0i.
 **EXACT NEXT STEP** (stopped at the lead's 1:45 PM box; its message reached me at 2:03 PM, my miss: I did not read the queue for 74 min):
-1. On t-fixa HEAD: rerun the CLAUDE.md "Checks" in order (unit suite to the end; BASE_PATH=/Sloths-Adventure-/ npx vite build; chunkcheck;
+1. On t-fixa HEAD: run the rest of the CLAUDE.md "Checks" in order (BASE_PATH=/Sloths-Adventure-/ npx vite build; chunkcheck;
    drawcheck; clipcheck, which now walks About > Our story / Inspired by; kbdcheck; buildcheck; seedlist 1-1 --check; the tool tests;
    tierBots). tierBots/seedlist should not move (the tools' queue keeps fadeK 1, readDone off); if they do, stop and report, never re-record.
 2. The keeper approves the keys line ("Press Space to hop up or over.") or gives words.
