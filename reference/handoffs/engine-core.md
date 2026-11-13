@@ -4,9 +4,22 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0n. Tonight's three unit reds, fixed at their roots (FIX-INT, t-int-5 from t-int-4, 11-13): what the next engineer must know
+- **w1Finish takes a toy stage** (bare platforms, w1.ts:1539; w1CutArt.test plants one). Anything World 1's finish calls through `as never`
+  must be null-safe for every field but platforms: B15's dressMarks read `st.collectibles` unguarded (fixed, w1Marks.ts `?? []`).
+- **The control course is gone** (R-165.151, FIX-B). A test that read its 'Swing' stretch now reads 1-6's 'Learn: swing over soft moss'
+  beat (protoStage.ts plan 'proto', the same soft-hollow chains). A deletion packet greps every READER (tests by beat name, #ctest), not
+  only the builders.
+- **Stage length checks are per builder** (the lead's rulings 11-13 4:49 and 5:03 PM; stageQuality.test.ts growthBreaks): World 1's cap
+  is World 10's median (the old 175 s cap was stageTime.ts:84's target, not STAGE-RULES.md:77); the world-to-world growth step reads like
+  with like (same-kind worlds whole; else each builder's own stages, 3+ in both). World 1 is a MIX tonight (1-1..1-5 gen2, 1-6..1-9 old);
+  W9 after W8 is the one step unread until one of them changes builder. Never lengthen an old-builder stage to pass it (D40).
+- **buildcheck runs alone**: under the unit suite's load 1-1's Normal p95 read 155 ms (FAIL); quiet, 147 ms vs the 150 budget (PASS,
+  3 ms spare). 1-1's build cost is close to its line: the next thing added to World 1's finish should be measured with it.
 
 ## 0m. The integration head, the strips' clear rows and the card's trail (INT-3, t-int-3, 11-13): what the next engineer must know
 - **Merges.** t-art-1113, t-add-level, t-fa, t-b15, t-b14, t-fixa, t-fixb merged in that order (never rebased). Traps: CATALOG-MASTER.csv
