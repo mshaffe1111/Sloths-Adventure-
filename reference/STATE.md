@@ -500,3 +500,335 @@ lines); Matt sees them in the release.
   first LEVEL-BAR.md draft by 1 PM, then builds to it, pushing every 30 min. P13 (Opus high, session_01FhBbYLQMBLSzszj1sXmkwV,
   t-13-proof) does only the plumbing beside it (bots + trap handle, flown rows, seed list, the "excuse me" moment), merging W1C's heads,
   never touching the design. If Fable runs out before Matt's reset, Opus builds from 1-3.md.
+- 2026-11-12 12:29-12:34 PM ET, Matt sent his own painted hive sheet (6 frames, magenta key: intact -> aftermath), saved at
+  reference/art/matt/2026-11-12-hive-break-sheet.jpg; "It doesn't have to be used. That's up to you." The lead's call: frame 1 = the
+  hanging hive, frame 2 (one crack) = the landed hive, which stays whole (the story keeper's ruling holds); one bee cropped as a sprite
+  for 3-5 code-drawn bees that circle the snake (the reason it glides off) and drift away, never near Pokey. ART-W1 stops painting a
+  hive on Hugging Face (saves GPU) and cuts Matt's.
+- 2026-11-12 12:55 PM ET: W1C built 1-3 to its design (20c735fc): 480/480 rolls clean, the same 13 beats, 198 s. The lead chose (B):
+  Matt plays the REAL game tonight, 1-3 moved into World 1's shipped kit (hand-built 1-3 deleted), never a page-hack preview. Normal
+  runs hotter (awake snakes from beat 6 on, by data). R-165.148 (painted snake glide pose), R-165.149 (camera lead upright) named.
+- 2026-11-12 1:15 PM ET: RF2 PASSED the lead's look (t-render-2@a5d166c5; before/after sheets reference/qa-reports/RF2/stills/): four
+  shared draw causes fixed with planted tests (WebP edge bleed hairlines every 600 units, the floor lip under raised banks = R-165.146,
+  1-1's dip-pocket soil baked, the low-log band = backdrop rows stretched over the chasm, now a soft fade to dark). R-165.129 stays open
+  only for a PAINTED chasm depth (a later Hugging Face call). Retired.
+- 2026-11-12 1:20 PM ET: PROOF-1 delta on t-int-2@91af3475: all 5 violations FIXED and re-proven by the Critic; REJECT on one: NOT_IN_CI
+  (ciTests.test.ts:19) can grow (law 5: a known list must be shrink-only with an owner). Fix to INT-2: NOT_IN_CI into knowncheck's LISTS,
+  owner R-165.143; plus R-165.152 (plugin guard hole) and R-165.153 (roster.ts logic under a data exemption: the lead's 12:00 ruling was
+  too broad). PROOF-1 kept for a one-item re-check. Still unproven for 0.9.7: the guardian fight to its end without a harness; 30 fps on
+  a real phone (Matt).
+- 2026-11-12 1:36-1:52 PM ET, Matt: "Fables at 94 and all models is at 82". Projection: Fable 100% about 3 PM; all-models 95% about
+  4:20 PM. Matt chose "Let Fable stop, reset later": W1C spends what's left on 1-3's own link pieces and the rope (turnover written
+  first, pushes every 20 min); Opus (P13) finishes hearts by data, survey chips and the final gates from W1C's head; 1-3 still reaches the
+  test link tonight; after Matt's reset (~4:30-5 PM) Fable does the polish pass on his notes. Keep helpers lean until the reset.
+- 2026-11-12 1:37-2:02 PM ET, Matt: "maybe we have Opus Max finish it out. And maybe have Opus Max work on 1.2. That way it'll get to
+  the reset faster." Done: D12 (Opus MAX, session_01FhBbYL2J8WMSCxDNyH7jt7, t-12-design from t-12-ship) designs and builds 1-2 as a
+  designed level like 1-3 (reference/design/1-2.md to the lead by 3:15 PM, judged before building); F13 (Opus MAX,
+  session_01FhBbYLor45ufvfpo74eKDv, t-13-finish) reads now and finishes 1-3 from W1C's last head when Fable stops (~3 PM). P13 and P12S
+  stay the plumbing (bots, seed lists, kit road). Packet: reference/packets/2026-11-12/D12-F13.md. Max reason: the first two levels set
+  the bar; the weekly limit resets soon.
+- 2026-11-12 1:41 PM ET: PROOF-1 re-check PASS on t-int-2@1480e843 (NOT_IN_CI shrink-only in knowncheck; R-165.153 done; R-165.152
+  catches 8 shapes, one left: a dynamic import's .then returning the packaged plugin, noted on the row). PROOF-1 retired. The integration
+  t-int-2@1480e843 now holds: engine, P11, F12, AF, RF, PIT, inventory, E1, w11-analyst, ADR/reach/1-2 docs, PROOF-1 fixes; red only
+  yield.test.ts (Y2).
+- 2026-11-12 1:43 PM ET, Matt: continuous improvement for level building ("it shouldn't just stop with Fable... if we're building 1-4 and
+  it found a better way, that should go to everybody afterwards... building rules that really are the most important things to our
+  level designers"). R-165.154; CLAUDE.md rule added; reference/methods/level.md (Fable writing v1 now: Building rules first);
+  reference/design/LEVEL-LOG.md started (hours and cost per level); every level packet: read level.md first, report "Learned".
+- 2026-11-12 1:46 PM ET, Matt: the lead approves the building rules ("after the levels, you review what was put in there and make the
+  decision. Does that go in or get pushed out?"); the cap is under 30, not 12 ("what we learn on 1-1... is going to be way different
+  than what it's going to be when we're on World 8"). CLAUDE.md updated: under 30 general rules + each world's own short section; the
+  lead decides every add, replace or removal after each level's retro, on evidence from LEVEL-LOG.
+- 2026-11-12 1:53 PM ET, CORRECTION (F13 caught it, D30): the lead's own clock lines from about 1:37 PM drifted ~30 min AHEAD in
+  messages and in this ledger (entries labelled 1:55-2:36 PM were written between 1:37 and 1:53 PM). Real times come only from the
+  hook's "Now:" line each turn.
+- 2026-11-12 ~2:00 PM ET: 1-2.md (D12, t-12-design@8adfd01a) PASSED the lead's judgment: "Meeca's petals lie low on bark; across the
+  thorns the only bark is a mushroom's throw apart", 14 beats (lesson, again, petals go up, the long chain, twist: down where no thorns
+  grow, the long crossing with her island, finale), 178 s first-timer, ~145 s fast, Matt's flag/heart rules and three verdicts named.
+  Rulings: build it; the fork left out; "There's something down by the roots..." released from R-165.45 (its hold condition, 1-1 proving
+  the engine, is met) for the twist; the mid-chain jump overshoot must be taught before beat 6 tests it (bots report thorn-hit rate).
+  Dot's thorn line asked of the story keeper. 1-3: F13 adds "one shake, two snakes" (~+8-10 s) for a comfortable 2-minute margin.
+- 2026-11-12 2:06 PM ET: ART-W1 retired at its context line (t-w1-art@6c4659ec: painted traps wired, ~$1.93 GPU, $17.08
+  model). The lead's judgment of its stills: the sapling and vines read as rainforest; FAILS: the vine's corner over the handle floats;
+  Matt's hive reads as a brown cocoon at phone size, so hive A (Hugging Face) is used instead (Matt left it to the lead); the tendril's
+  saw-cut stake breaks World 1's no-made-things rule; the stone's knotted net looks made (use the vine-wrapped take). ART-W1B (Opus
+  high, session_01FhBbYKTygXnUZ3ts1re6dE, t-w1-art2, cap $6, packet ART-W1B.md) fixes those and repaints w1sunrise-far without the edge
+  orchids (the white "ghost", F13's find). Merge order: t-w1-art2 replaces t-w1-art.
+- 2026-11-12 2:07 PM ET: W1C at fbb01511: all tonight's must-haves done (teach, mission line, rope, Easy >= 2:00 with all 9 traps, 1-3's own
+  arrival + rests: funcheck "looks like an earlier stage" 0/16, every snake on a painted fallen log). Lead rulings: hearts = the game's
+  rule (6; W1C's evidence: the child bot takes 4+ hits); Normal goal = 9 (every trap: Pokey doesn't have to fight); funcheck "nothing
+  bites" 16 accepted (risk is the strike); the shimmy ROPE (posts + rope) breaks World 1's no-made-things rule -> a vine between two
+  living trunks (ART-W1B pieces, F13 wires). F13 keeps "one shake, two snakes" only if the 2:00 margin needs it.
+- 2026-11-12 2:23 PM ET, Matt: "Fables at 98". W1C told to stop now (priority now) and push its final head; F13 (Opus max) started its finish from t-int-2 + W1C's newest head.
+- 2026-11-12 2:39 PM ET, Matt: "Is there any way that we can make 1-3 our test link then? Something a little bit different that people can
+  play?" -> chose "1-3 only": the testers' link (#ctest) plays 1-3 instead of 1-1, shipped with 0.9.7 after Matt plays 1-3 tonight
+  (R-165.157). Includes R-165.151 (delete the old control course) and the collector sheet's stage column.
+- 2026-11-12 2:42 PM ET, Matt: tester data: "we can actually delete all the data since we already have all the information we needed to
+  create the bots". He chose "Archive copy, then clear". DONE: Drive copy "Sloths control tests ARCHIVE 2026-11-12 (1-1 runs, bot
+  source)" (id 1JrJZp7jDVoD2eamtJ4jBz7GgbmvjNdKBFt_vSRlvT5w), verified (Sessions 4,670 rows, last rows match the original). TO DO AT
+  0.9.7 (when testers switch to 1-3, R-165.157): clear the original sheet's Sessions rows 2+ (keep the header) in "Sloths control tests"
+  (id 1JnINRwlPz-tM1fLXRz6DRajKHD05RxYRRiEau4eDGtk). Drive reports canEdit=false on the original for this connection: if the clear is
+  refused, Matt clears it himself (select rows 2+, delete).
+- 2026-11-12 2:43 PM ET, Matt: "we're going to have to accept not everybody's going to be able to finish every level and just make some
+  concessions there. If 3 out of 40, that's a really good percentage." Ruling: a skill fail rate like this is accepted (difficulty);
+  a SOFTLOCK (a state with no way to clear a needed snake except restarting) is still a blocker. P13 confirms the 3 kid strands are skill.
+- 2026-11-12 2:59 PM ET: Y2 DONE and PASSED (t-yield-2@a5bff66c): 1-1 fresh-seed yield 136/136 of 200 (68%; base 88/84, d0276817 113/109);
+  yield.test 20/30 green; verdicts unchanged; two searches (old search first, so all 258 proven seeds lay the same; repair only for
+  seeds with no clean roll); lock 102/102. Left: seed 50028 (a floorless slot from P11's catch-bough split; fixing it moves proven
+  seeds). Retired.
+- 2026-11-12 3:13 PM ET, Matt: add "Inspired by" games at the end of Settings > About the game (R-165.158). Asking Matt for the list.
+- 2026-11-12 3:15 PM ET, Matt on R-165.158: use OUR list (the games our design docs draw on for the levels, big and little); purpose also: "keep people from thinking it's just AI slop and that real thought went behind this". The story keeper compiles the list from reference/ideas + MAP-REVISIONS + GAME-MAP and drafts the section; Matt sees the draft before it's built.
+- 2026-11-12 3:18 PM ET, Matt on R-165.158: add the original side before "Inspired by": it began as a conversation between Matt and his wife about making a sloth game; what's original (characters, story, worlds, levels, art made for this game); a tribute, but original. Story keeper drafting; every claim true; no names without Matt.
+- 2026-11-12 3:19 PM ET, Matt approved the About opening ("How Sloths began" + "What's ours", the story keeper's draft) in his own voice. Open: the music line (if it was made for the game), Matt's list of games for "Inspired by". Builds after the list (R-165.158).
+- 2026-11-12 3:20 PM ET: D12 found every 1-2 thorn bed from beat 4 is clearable by a plain full jump (beds 32-96 px vs reach 143 Normal/114 Easy; the generator never lays a gap past 114 px, so in 1-1 too). Lead ruling (A): on Normal from beat 4 the caps are as wide as their stumps (cap-only footing, so the mushrooms are the way: Matt's purpose rule); Easy keeps its wood; stills first. A level.md learning.
+- 2026-11-12 3:22 PM ET, Matt: Pokey is short for Pocono (his cat's name); add it to the About opening ("gives the vibe that it isn't just a prompt... real thought went through this"). The cats have passed; the About does not say so (Matt: "we don't have to get into that").
+- 2026-11-12 3:24 PM ET, Matt shared a screenshot of the game's FIRST attempt (flat placeholder art, "Stage 1-1 Canopy Sprint", RUN TO GOAL bar, keyboard hints): saved at reference/art/matt/2026-11-12-first-attempt.png for the About/Our story page.
+- 2026-11-12 3:25 PM ET, Matt approved a then-and-now pair on "Our story" (his first-attempt screenshot beside 1-3 today, once its painted art is in), caption by the story keeper. R-165.158 now covers: About opening (approved), Our story page, Inspired by (waits for Matt's list), then-and-now.
+- 2026-11-12 3:26 PM ET, Matt approved "Our story" (closing: "It's still a little project, just for fun. It just got bigger."; caption: "Then: six buttons and a lot of instructions. Now: the same sloth, and a lot more rainforest."). R-165.158: About opening + Our story + then-and-now APPROVED; Inspired by waits for Matt's games; the music line waits on Matt. Build after tonight's test link (with 0.9.7).
+- 2026-11-12 3:30 PM ET: 1-3 SEED LIST RECORDED (P13, t-13-proof@9e5f3b7d, on F13 c925d4e6): 100 seeds, first-run seed 1; every bot tier 130/130 both settings; kid min 2:13; quiet line 3.6 s; seedlist 1-3 and 1-1 --check PASS. Goal Normal 13 (= the snakes the vines clear) / Easy 10: kept. Sky repaint and trap pieces PASSED the lead's look (ART-W1B).
+- 2026-11-12 3:36 PM ET, Matt (two story sections confusing): About layout = "What's ours" + two links: "Our story >" (ONE page: how it began + how it grew + then-and-now) and "Inspired by >" (the tribute page). Story keeper merging; stage card goal line for purge stages = "This stage: send {count} {creatures} on their way to open the shrine." (P13 building).
+- 2026-11-12 3:40 PM ET, Matt APPROVED the final About screen (What's ours + Our story > + Inspired by >) and the one-page "Our story" (the story keeper's text in STORY-LINES.md). R-165.158 build: after tonight's test link, with 0.9.7; Inspired by waits for Matt's games; music line waits on Matt.
+- 2026-11-12 3:41 PM ET: D12 found stage teach lines (1-3 trap, 1-2 thorns) never show on NORMAL: helpAllows drops them on Tips (Normal's default). P13 fixing (general, planted test) and re-proving on defaults. LESSONS D50. Matt: "What's ours" should include our gameplay too (story keeper adding true, shipped gameplay lines).
+- 2026-11-12 3:45 PM ET, Matt approved the broad "What's ours" ("Gameplay crafted to tell that story the whole way through, and many ideas of our own along the way.") and: the game isn't finished; boss battles, special stages and little touches will be ours too; "inspired by" is not a one-to-one copy. About is a LIVING page: the story keeper keeps a running list of "ours" highlights as they ship and proposes updates at each world's finish and before launch.
+- 2026-11-12 3:48 PM ET, Matt: all models at 90% (82% at 1:36 PM: ~3.6 points an hour with today's team incl. two Opus max). Projection: 95% ~5:10 PM, 99% ~6:20 PM. Matt resets at 95-99% and will say if Fable opens. The evening merge + test link build run ~5-7 PM, so helpers push often; the lead retires each helper the moment it is done.
+- 2026-11-12 3:50 PM ET: P12S retired at its context line (t-12-ship@2e982c11; $14.70; it read 8 queued messages ~90 min late). Done: 1-2 into the
+  kit, ctest proven unchanged, H1 test, isW1Stage crash fix. NOT done -> FX (Opus high, session_01FhBbYKjnCLuVSaiv4oa69K, t-fx from
+  t-int-2, packet FX.md, stop 6:30): flags off mushrooms (R-165.156) + find spot; the ctest switch (R-165.157/.151) moves to tomorrow.
+  P12S finding to D12: 1-2's thorns NEVER cost (hollows 49-66 px, Pokey 44 px caught on the lip; 0 harms in 144 runs): D12 must make a
+  miss fall in on Normal within the 114 px limit, or say what blocks it.
+- 2026-11-12 3:51 PM ET: ART-W1B DONE and retired (t-w1-art2@8448584d; ~$0.61 GPU): traps painted and wired, sky repainted (join 1.69 vs old 12.9), shimmy pieces (trunk + link) to F13. Found: 1-3 sideways at x ~26036 draws 8.53 screens vs 7.5 (pre-existing in W1C's lay; drawcheck never played 1-3): F13 fixes it under 7.5 and adds 1-3/1-2 to drawcheck (LESSONS D51). F13 also does the sky flip (copy the new file over w1sunrise-far.webp).
+- 2026-11-12 4:01 PM ET: P13 DONE and retired (t-13-proof@3facbfc3): bots know traps, 1-3 flown rows, 1-3 list (100, seed 1), excuse-me moment, goal sign stops at goal (R-165.155), purge card line, teach lines pass on Normal's Tips (D12's find); every tier 130/130 on defaults. F13 runs seedlist 1-3 --check on its final head and re-records with the same filter only if the lay moved (lead's OK stands).
+- 2026-11-12 4:02 PM ET: rulings on D12's 1-2 reds: thorn beds are SET-BACK hurt floors, not dips (FX replaces the tests' model: safe set-back ledge, taught, can really be fallen into); the hollow painter's two limits are FIXED, not dodged in data (RF3, Opus high, session_01FhBbYMKTn7hPEmLXrmbNfS, t-render-3, packet RF3.md, stop 7 PM). P13 retired (t-13-proof@3facbfc3); F13 owns the 1-3 list.
+- 2026-11-12 4:29 PM ET: FX's flags-off-mushrooms root fix (ruling A everywhere) moves 1-1's flags: the lead APPROVED re-recording the 1-1 list (a real defect fix: seed 27252's old flag respawned Pokey inside a stone; 55341 re-searched; first run 9800 flags-only drift), FIRST_RUN_11 hash re-recorded, before/after stills of the first run's moved flags to the lead. D12's find-spot data goes in a small branch from the integration head after FX lands (no WIP merges).
+- 2026-11-12 4:40 PM ET: FX ruling changed to (2): the section-pass flag fix re-lays 30 builds = 15 curated seeds in 8 W5-8 stages (seeds.test pin; re-curation needed), too slow/risky tonight. Tonight: the rolled-pass fix (1-1) + 1-1 list re-record + find spot. R-165.156 stays OPEN for the section pass (W5-8, 1-2, 1-3) as its own packet with curation tomorrow; 1-2/1-3 flags on mushrooms named as a known rough spot for tonight.
+- 2026-11-12 5:02 PM ET: F13 at c9d07668: 1-3 draw breach fixed (sideways worst 7.48 vs 7.5; soil shading 1.66 -> 1.00 screens), drawcheck now plays 1-2/1-3 (PASS 18), teach lines shown on defaults. Ruled TONIGHT: "See that hive?" fires with the hive on screen (upright), and the lesson's two lines share one card (no new words). Final gates running.
+- 2026-11-12 5:10 PM ET, Matt: his wife will play 1-2 (D12, Opus max) and 1-3 (Fable/W1C, finished by F13) BLIND tonight and say which she likes better and why; Matt feeds it back. A real test of designed vs designed (Fable vs Opus max), with the mechanic itself as a confound.
+- 2026-11-12 5:48 PM ET: FX DONE and retired (t-fx@e085120c): rolled-pass flags off pieces, 1-1 list re-recorded 257 (27252 dropped, 55341 re-searched; first run flags-only), find spot (brick findSpot socket). Lead judged the before/after first-run stills: flags-only, PASS. Open: R-165.156 section pass (8 W5-8 stages, 15 curated seeds; 1-2/1-3), R-165.160 Easy-only flags, R-165.161 rock bulge vs stand box.
+- 2026-11-12 5:50 PM ET: 1-2 DONE and PASSED the lead's look (D12, t-12-design@b161efbe; designed arc, caps-only footing, thorns cost on Normal, teach lines on Normal, set-back model; bots Normal 24/24 0 lives lost, Easy 16/16). INT-2 merges t-fx, then t-12-design, then D12's t-12-note (Meeca's note + roots line), RF3's final, F13's final delta (lesson card + Skip fix for clipcheck). D12 started 1:40 PM, 1-2 done 5:49 PM (~4 h 10 m, Opus max).
+- 2026-11-12 6:02 PM ET, Matt on how levels are designed without tunnel vision: a LIGHT pitch round ("we let them come up with ideas, we then
+  hand that over to the developer, and the developer comes up with the idea"). Method (level.md step 0, to be added when level.md is
+  merged): 2-3 quick idea helpers through different lenses (fun/feel, story with the story keeper, build-smart with existing pieces;
+  Fable as one when available), each a SHORT idea list (10 bullets max, a few minutes); the level designer gets all lists, designs the
+  level, and names in its design doc which ideas it used and why (so we learn which lens helps); the lead judges the design doc as today;
+  Matt sees a one-minute summary before the build. Starts with 1-4 (the two-vine climb needs its engine piece first).
+- 2026-11-12 6:07 PM ET, Matt: test the idea round now on 1-4 with three efforts, then a designer picks/combines; when Fable is back, the next
+  round uses Opus xhigh + Opus max + Fable and designs TWO levels at once. Started: IDEAS-1-4 (packet reference/packets/2026-11-12/
+  IDEAS-1-4.md, same brief for all): A = Opus HIGH (session_01FhBbYJsZyoxcenxTxhZwmc, t-ideas-14-a), B = Opus XHIGH
+  (session_01FhBbYNU1GCTEwYjyMCC2Kr, t-ideas-14-b), C = Opus MAX (session_01FhBbYMuNxrPmKojME9JJhj, t-ideas-14-c). The letter->effort
+  map stays with the lead; the designer gets the lists unlabelled and says which ideas it used and why. Then a designer (Opus max)
+  writes reference/design/1-4.md; the build waits for the two-vine climb engine piece.
+- 2026-11-12 6:10 PM ET: INT-2 merged t-fx (357c0e74); FX's rolled-pass flag rule also moved 1-3's flags/petals/dress (platforms, enemies, cast unchanged; seedlist 1-3 PASS 100). Lead: accept (a) as the same defect fix; Step 3 adds a dry run of 1-3's proven filter (bots, defaults) to confirm the 100 seeds.
+- 2026-11-12 6:12 PM ET: 1-3 lesson ruling: the card stays at the flag (~3 s before the vine, so every tier reads it); the story keeper rewrites line 1 to be true without the hive in view; one two-line card; F13's stop line 7:45 PM. R-165.162 = the real fix (Dot or the camera shows the named thing as she speaks).
+- 2026-11-12 6:17 PM ET: the 1-4 idea round done. A (Opus HIGH) $0.61, ~3 min: the wind's beat, pair = arms on one/feet on the other, the boa
+  hanging as a fake vine (doesn't sway), pod-fluff sunset. B (XHIGH) $1.13, ~4 min: the pair taught as the ANSWER after the problem is
+  felt, fast lane vs safe lane, a snake climbs after him, "a slow sloth finding his own way to be quick". C (MAX) $2.83, ~10 min: the
+  pair as one liana draped over a bough (reads natural), "the drop decides", squirrels harvesting pods, Shimmy Rope reused, and
+  CODE-CHECKED facts: gen2 lays an ascent flat (pipeline.ts:416 TODO: vertical laying is engine work before 1-4), the journal's squirrel
+  lift is a made thing (story keeper must rewrite), Pokey's halfway line, the Notch find. D14 (Opus max, session_01FhBbYNCZq3F5dwGa6TUPi9,
+  t-14-design, packet D14.md) designs 1-4 from the three, design only; build waits for the engine pieces + Matt's feel test. Idea
+  helpers retired.
+- 2026-11-12 6:19 PM ET: RF3 DONE and retired (t-render-3@18afc7b0: hollow painter fitted walls + 38 px mirror fix; lock unchanged). R-165.163 buildcheck red (1-1 build p95 > 150 ms budget) blocks 0.9.7; INT-2 measures which merge caused it.
+- 2026-11-12 6:33 PM ET, Matt: "Do tropical rainforests have pears?" then "we have squirrels in there... Maybe flying squirrels." R-165.164
+  (nature check). Facts: pears are temperate, not rainforest; World 1's tree squirrels are real (red-tailed and variegated squirrels live
+  beside sloths in Central America); flying squirrels are NOT in the lowland rainforest (a few in Mexico/Honduras mountain pine forest;
+  the big gliders are Asian). Lead proposed the story keeper checks each level's plants/animals; waits on Matt. Check-in 6:29: INT-2 merged
+  t-12-design (864314c1) + W1C report (90a54102), merging D12's t-12-note (f887735e); F13's lesson card still PASSED the lead's look
+  (keeper's two lines, one card, Skip, both ways, nothing covered); D12 asked for one still of the note in its hollow before 7 PM.
+- 2026-11-12 6:35 PM ET: D12's t-12-note PASSED the lead's look (stills 8a/8b both ways: the Keeper's Bell on the hollow floor past the root,
+  roots line back). D12's last head t-12-design@f887735e (cc0def2a + its turnover note); INT-2 merges it. Ruled: the coati + flowering bush
+  on the twist's far bank are World 1 dressing (w1Coati), not cast: intended. Nit R-165.165 (find text "against a root" beside a stone
+  ledge) for the story keeper tomorrow. D12 done; retire after ls-remote shows f887735e.
+- 2026-11-12 6:36 PM ET: D12's last head t-12-design@6d2cb506 (defaults stills of the note; PASS). Seen in it: on a FRESH save, 1-2 shows
+  1-1's first coach line ("Run, then <flick> to jump the gap") because 1-1 was never played. Tonight's test-link judging MUST open 1-3 and
+  1-2 on a fresh save and judge what Dot says first (a wrong-place coach line is a named rough spot or a fix); the 1-3-only testers'
+  link (R-165.157) needs its own first-play coaching plan tomorrow.
+- 2026-11-12 6:37 PM ET, Matt (6:36): "let the story designer do the research before each level just to make sure." R-165.164 is now a
+  standing duty: the story keeper's nature check before each level's design is judged (TEAM.md, story keeper "Integrated every time");
+  the design doc carries a "Nature check" section; level.md step 0 gets the line when level.md lands. First use: 1-4 (D14's doc).
+- 2026-11-12 6:37 PM ET: D12 retired (archived after ls-remote t-12-design@6d2cb506). D12's whole session cost $86.18 (LEVEL-LOG 1-2 row).
+- 2026-11-12 6:38 PM ET: the story keeper's first nature check (on what's built): World 1's gliding golden snake is Asian (Chrysopelea);
+  true swap = the parrot snake (green; mouth-wide warning; drops to a lower branch and slips away) -> R-165.166, Matt's call (asked now;
+  conflicts with his R-165.141 "glides"); W5's orchid mantis is Asian -> dead-leaf mantis, R-165.167 (later); its "Inspired by" line
+  corrected. Rest of the built cast checks out Neotropical. Tonight's link ships the glide as is, named.
+- 2026-11-12 6:44 PM ET, Matt on R-165.166: asked whether a yellow rainforest snake exists (yes: the eyelash viper's golden form, coiled on
+  branches like ours), then ruled: "keep it the way that it is... As long as we have a yellow snake and there's a yellow snake that exists,
+  I say we just change the name... It's a video game." RENAME only (story keeper picks the name, every player-facing mention), the look and
+  the glide stay (R-165.141/.148 unchanged). The nature check's bar, written in TEAM.md: the kind and look must be real to the place;
+  behaviour may be storybook.
+- 2026-11-12 6:45 PM ET: D30 REPEAT, owned: the lead's STATE lines 6:35-6:44 PM were typed up to 15 min ahead (and D14's packet said 6:25
+  for a 6:17 commit); all corrected from commit times; messages to D12/story keeper carried the wrong clock. Root cause: hand-typed
+  times in heredocs. Countermeasure: every ledger line stamped by `date` inside the writing command; gate ordered R-165.168. D14 DONE
+  (t-14-design@1b88b431): reference/design/1-4.md, 60 lines, to judge now.
+- 2026-11-12 6:46 PM ET: 1-4's design PASSED the lead's look (D14, t-14-design@1b88b431, reference/design/1-4.md). Why two vines: pods fall on
+  a beat (a clock); one vine + a hollow is the sure way, the pair (one liana draped over a bough, no new button) the quick way, required
+  once at the crown. Without the pair: singles get two hollows, 10-15 s longer. Build waits on 8 engine pieces in order (D40): ascent lay
+  (L), flags/clock along the climb, climb camera; pods, hollows/rot, pod trap; the level on singles; the pair; polish. The pair can be
+  prototyped ALONE for Matt's feel test. D14 retired (.57); idea round .57. Story keeper's nature check on 1-4 sent.
+- 2026-11-12 6:46 PM ET, Matt: improvising is fine ("talking squirrels... sloths that run, jump, punch, kick") but "keep it where it makes
+  sense. A banana and other things make more sense to me." The nature check's test is "does it make sense there to a player" (bananas yes,
+  pears no); written into TEAM.md's bar.
+- 2026-11-12 6:47 PM ET, Matt: "we could also use multiple [fruit] just to keep it spruced up a little bit." R-165.169 (fruit variety:
+  several rainforest fruits as pickups/dressing; inventory first, then HF for missing art; after 0.9.7).
+- 2026-11-12 6:47 PM ET: story keeper: the snake's new name is "Golden Eyelash Viper" (the real golden "oropel" eyelash viper, Costa Rica
+  to Ecuador; its eye scales read as the art's little horns); 3 player-facing mentions (journal.ts:27, creatureLore.ts:9, the journal's
+  plural), tomorrow, R-165.166. 1-4's nature check PASSES (kapok, lianas, bracket fungus, knot-holes, red-tailed squirrels as a cameo
+  only, mist, highlands; pods on a beat = storybook, allowed). Owed words written in STORY-LINES.md: halfway "Meeca climbs this every
+  Sunday. I waved from below."; the pods flag (Dot) "Hear it creak? Duck in a hollow till it drops!"; journal 1-4 "Climbed the kapok
+  between falling pods. From the top you can see where they took her."
+- 2026-11-12 6:48 PM ET: story keeper re-judged on Matt's test: W5's orchid mantis STAYS (R-165.167 withdrawn); the snake rename stands.
+- 2026-11-12 6:51 PM ET, Matt: tonight after the test link, "we finalize 1.5 also, and we do what we did last night... start building the
+  engine pieces... Maybe get a Fable model to run it" (Matt ~96%, a reset coming should bring Fable back). R-165.170. Lead's read: 1.5 =
+  level 1-5's design. Plan: after the link, 1-5 idea round (Opus xhigh + Opus max + Fable) -> designer; 1-4's engine pieces from the
+  final integration head in D40 order, Fable on the ascent lay; the pair's feel-test room alone; R-165.163 buildcheck fix (blocks 0.9.7)
+  on Opus overnight too.
+- 2026-11-12 6:56 PM ET: INT-2 at t-int-2@d68930d4 (t-12-design 864314c1, t-render-3 + D12's note 6d2cb506 clean; w1Pits #17 green; lock
+  1-2 only, intended). Waiting on F13's final delta (asked for 7:20 PM, sha straight to INT-2), then Step 3. INT-2 measuring buildcheck
+  on the old heads meanwhile.
+- 2026-11-12 7:04 PM ET: F13 DONE and retired (t-13-finish@d0cf0b0c, ls-remote checked; $47.03): one lesson card on defaults, journal waits
+  for it; trap0 re-fly on defaults 40/40 every tier both settings (kid Normal 33 -> 40); seedlist 1-3 100 PASS; clipcheck PASS; 1-3 perf
+  sideways 7.48 / upright 6.47 (thin, named). Open on t-int-2 (not F13's): one yield test red, buildcheck red (1480e843 fails, W1C
+  pre-merge passes). INT-2 told: merge d0cf0b0c keeping FX's 1-1 list (257), find the yield red's owner, Step 3.
+- 2026-11-12 7:13 PM ET: lead's rehearsal of the test link on t-int-2@465023ef (built, served locally, NOT published): the real build opens;
+  path for Matt/his wife = Settings > About > tap "Shaffer" 10x (all unlocked) > World Map > "Who's exploring?" (Big explorer = Normal)
+  > Stage 1-3 > Play. Fresh save in 1-3: Dot says "Run through petals to pick them up." (petals on screen), "Flick up just before the
+  edge." (at a raised step: slight word/picture gap), then the one lesson card with hive, vine ring and sleeping snake ALL on screen
+  upright. The fresh-save worry (1-1's gap line out of place) does NOT show in 1-3's real flow. Install note for a fresh worktree:
+  npm install --no-audit --no-fund --legacy-peer-deps (as CI), not npm ci. Before the final build: delete tools/testlink/dist so
+  filesmap maps every file (the artifact holds an older build), then clean stale files on publish.
+- 2026-11-12 7:40 PM ET: lead judged the real build (465023ef, upright, fresh save): 1-2 opens with the iris, Dot's story line ("She said
+  don't stop to smell the flowers. Picking's different."), then "Flick up just before the edge." at a raised step (R-165.171, same in
+  1-3). 1-3's opening and lesson PASS upright (hive, vine ring, sleeping snake on screen with the card). Sideways: the lead's key driver
+  stalled at a step (driver, not game); sideways lesson card judged from F13's real-page still (PASS). INT-2 on Step 3.
+- 2026-11-12 8:11 PM ET: TEST LINK PUBLISHED (EnK5, version 250, id 1794532252-2ec9) from t-int-2@465023ef: 1-3 (Fable, finished by Opus
+  max) + 1-2 (Opus max) designed levels + 1-1 pass + render/pit/audit fixes. 16 files changed + 14 stale removed (the live version was
+  INT-E f8f467f5 from this morning). Published while the full suite finishes (lock tonight + day PASS, 1-3 proven 100/100 on defaults,
+  draw/clip/kbd/known/generality/roadmap/art/build PASS; suite 1,197+ files 0 fail so far): the lead's call, the link is not a release;
+  a suite red gets told to Matt at once. Lead judged the real build (fresh save, upright) before publishing.
+- 2026-11-12 8:14 PM ET, Matt: not reset yet (5% left); "start an opus thing... to burn through some stuff... when I'm closer, let you know
+  when to start the engine." Started (R-165.170): FEEL-PAIR (Opus xhigh, session_01FhBbYMJ7AWJme9TCabLmnw, t-feel-pair, packet
+  2026-11-13/FEEL-PAIR.md, base t-int-2@465023ef, stop 1 AM); 1-5 idea A = Opus XHIGH (session_01FhBbYJZsd4g4s2ZyuURDZf, t-ideas-15-a),
+  B = Opus MAX (session_01FhBbYLoPmhAYSDcgKv3Jo7, t-ideas-15-b); C = Fable after Matt's reset (with ENG-ASCENT). Letter->effort map stays
+  with the lead; D15 (Opus max) designs 1-5 from all three once C is in.
+- 2026-11-12 8:17 PM ET: 1-5 idea A (Opus XHIGH) DONE in ~4 min, t-ideas-15-a@d4ae2319, retired: the squirrels' leaf-signs pick the next stretch; over = quick + view + the far 'shiny' seed, under = her folded petals + story (petals stay low, STORY-KEEPER:153); every over-road drop lands on her trail; twist: a sign turns in the breeze, trust her marks; flags today's fork putting petals high (w1mix.ts:1089) as a story break.
+- 2026-11-12 8:23 PM ET: 1-5 idea B (Opus MAX) DONE in ~9 min, t-ideas-15-b@df33077c, retired: grows 1-1's hollow-log two-way into the
+  teach; over = see danger ahead + finds, under = quicker + her petals; the squirrels' signs first at a fork he can see past (they tell
+  the truth), then before leaf curtains (the card road); twist at the creek: her mark points UP (soldiers crossed on a high trunk);
+  the joke: both signs say THIS WAY where the roads meet; phone trap: the over deck within ~2.5 Pokey heights or sideways the choice is
+  blind. Art gaps named (no sign/reed/tunnel art in W1). LEAD APPROVED rule changes for level.md (apply when level.md lands on the
+  lead's branch; list kept here): step 0 idea round (Matt 6:02 PM); the story keeper's nature check before judging (R-165.164); step 1
+  checks phone claims against engine.ts:1170 + cameraFollow.ts:96 (D14); step 1 greps inventory/<world>.json for every piece and lists
+  art gaps (B); every brief: re-grep each cited file:line before pushing (B).
+- 2026-11-12 8:26 PM ET, Matt (after playing the new link): a HARDNESS METER on Normal, 0-100, World 10's hardest = 100; ramp starts at 1-4;
+  1-3 = "by far the easiest of all 3... a 1, maybe a 2"; 1-2 "a little bit harder than 3"; stages may fluctuate, the arc makes World 9
+  feel like a 9. R-165.172. This is STAGE-RULES §1 #5's "per-world numbers... a later talk with Matt". Part of his message didn't
+  transcribe cleanly ("Close to 4 inches..."): asked him where 1-1 sits.
+- 2026-11-12 8:27 PM ET, Matt: "one's harder than two, two's harder than three"; "get 4 and 5 to start becoming a little bit more difficult
+  and not have it where it's a only kid game... for adults... especially on normal. Easy can stay easier"; "easy, I see as a casual
+  playthrough." Written into STAGE-RULES §1 #5 (the meter's anchors) and the D15 / IDEAS-1-5 packets (1-5 Normal target ~5-6). 1-4's
+  BUILD packet must set a Normal target (~4-5) and revisit D14's "a knock costs a column, never a heart" on Normal.
+- 2026-11-12 8:31 PM ET, Matt: 1-1 is a 4 ("more double jumps... could be taken down a little bit... maybe we start introducing double jumps
+  on 1-4"; R-165.173, decided with the meter's numbers); the meter must assign POINTS to things (creatures, double jumps, jump distance,
+  things at once), researched, "not guessing", in every level; "get Fable to run through and create a difficulty arc, an algorithm that
+  we build into it" (R-165.172 updated). Asked Matt which Fable does first (difficulty algorithm vs the climb engine).
+- 2026-11-12 8:33 PM ET, Matt: "run Opus Max, and hopefully that'll get us to the point of where I can do the reset". Started ENG-ASCENT on
+  Opus MAX (session_01FhBbYMS2AxdkCEW5hmX7XK, t-eng-ascent, base t-int-2@465023ef, stop 2 AM). Fable after the reset: DIFF-ALGO (packet
+  2026-11-13/DIFF-ALGO.md: research + design the hardness meter, calibrated to Matt's anchors, a read-only prototype) and the 1-5 idea
+  list C; then D15 designs 1-5.
+- 2026-11-12 8:33 PM ET: INT-2 full suite on 465023ef PASS (3,119 tests, 3,117 pass, 0 fail, 2 TODO incl. the bottomless-wall check). F13's
+  yield red was stale (its base 1480e843 predates Y2's fix a5bff66c, merged at d9563016). Every Step 3 gate green on the link's head
+  except buildcheck (R-165.163, known; INT-2 measuring 5 heads now). The published link is fully gated.
+- 2026-11-12 8:34 PM ET, Matt corrected the lead: "when I say the Opus Max, I mean to research the algorithm and the arc... through what we
+  have already created, what the levels are going to look like... a plan on difficulty and different ways that we can build difficulty
+  into the engine." The lead had misread "run Opus Max" as the climb engine: ENG-ASCENT interrupted ~1 min in (nothing pushed),
+  archived; packet back to Fable after the reset. DIFF-ALGO widened (the arc across all 10 worlds' plans + the engine's levers) and
+  started on Opus MAX.
+  DIFF-ALGO started: Opus MAX, session_01FhBbYLkEmfNhWBz7cCsNXu, t-diff-algo, stop 1:30 AM. ENG-ASCENT cost $0.37 before the stop.
+- 2026-11-12 8:36 PM ET, Matt's ratings after playing on Normal (the meter's anchors): 1-1 = 4, 1-2 = 2 maybe 3, 1-3 = 1. Sent to DIFF-ALGO; STAGE-RULES §1 #5 updated.
+- 2026-11-12 8:37 PM ET, Matt: 1-1 "possibly could be a 5": anchors 1-1 = 4-5, 1-2 = 2-3, 1-3 = 1 (sent to DIFF-ALGO; STAGE-RULES).
+- 2026-11-12 8:38 PM ET: INT-2's buildcheck bisect (1-1 p95 Normal/Easy at CPU x4, budget 150): d0276817 104/85 PASS; W1C pre-merge 114/82
+  PASS; P11 alone 259/269; Y2 merged 474/494; final 465023ef 446/430. Two causes: P11's verdicts/landings (~+180 ms) and Y2's two
+  searches/landingRepair (~+180 ms). BC-FIX packet written (Opus xhigh; fix the cause, results byte-identical, budget unchanged); starts
+  after Matt's reset. INT-2 told to append the 14 w1traps catalog rows now (D48), then REPORT and stop.
+- 2026-11-12 8:38 PM ET, Matt: DIFF-ALGO researches the internet too (how developers design 2D platformer difficulty); sent, packet updated, sources cited.
+- 2026-11-12 9:00 PM ET: INT-2 DONE and retired ($32.59): final head t-int-2@f01c76f7 (code 613b3c94 = 465023ef + 14 w1traps catalog rows, inventory re-emitted; inventory/brickSlots/artUse/tsc/known/roadmap/generality PASS, seedlists 257/100, lock 102/102 unchanged). REPORT reference/qa-reports/INT-2/REPORT.md (buildcheck table). Overnight packets now base on f01c76f7.
+- 2026-11-12 9:14 PM ET: check-in. DIFF-ALGO's read-only prototype (t-diff-algo@80a6685a, tools/difficulty/score.ts: Fitts bits per challenge, stakes, overlap, novelty, peak-end) scores World 1 Normal 1-1 4.0 / 1-2 1.8 / 1-3 1.0 vs Matt's 4-5 / 2-3 / 1 (1-2 a little under). FEEL-PAIR working (pair as one grab + QA-only room pushed 8:31; polishing sign lettering, stopwatch order, reviewing the 2x clip).
+- 2026-11-12 9:32 PM ET, BLIND TEST (Matt's wife; she was not told who made which; relayed by Matt): preferred 1-3 (Fable, finished by Opus
+  max) over 1-2 (Opus max). Why: "she wasn't a fan of the mushrooms"; she "had a little bit problems with the timing of the mushrooms.
+  They weren't as consistent as what they should be with being able just to run and just hit them all"; she'd replay 1-3 over 1-2 (the
+  mushrooms again); no favourite moment; "it wasn't repetitive, which is good". Matt: he IS a fan of the mushrooms; for a 2nd/3rd level
+  "it's not bad, especially when it's just teaching"; "if we could get the timing of the mushrooms to be more consistent so somebody can
+  time their jumps better, then it would have been a much better level for her." -> R-165.174 (measure the bounce cadence, make each
+  chain a steady beat, a cadence check). Confound noted: the result says as much about the mechanic as about Fable vs Opus.
+- 2026-11-12 9:33 PM ET, Matt clarified the blind test: she liked the level; the problem was timing. The END chains are the model ("jump on the
+  first one and it catapulted you to the second and the third and then off"); "a couple... didn't have the exact timing"; "if they were
+  all like the last ones, it would have been a lot better". Direction: the teaching chains feel exactly like the end chains; once learned,
+  mushroom jumps get "a little bit harder and harder". R-165.174 updated. Same shape for every mechanic: teach on the steady version,
+  then grow it.
+- 2026-11-12 9:37 PM ET: lead read DIFF-ALGO's plan (t-diff-algo@665538d6, reference/design/DIFFICULTY.md 120 lines + methods/difficulty.md,
+  read-only prototype, sources cited, NO src change). Untuned calibration 1-1 4.0 / 1-2 2.0 / 1-3 1.1 vs Matt 4-5 / 2-3 / 1. Arc: world
+  band [10w-11, 10w+1], per-stage sawtooth targets (World 1: 2.5, 2.5, 1.5, 4.5, 5.5, 6.5, 5.5, 7.5, 9.5). BIG FINDING: on Normal the game
+  does not climb today: Worlds 2-9 read 5-11 at the median, nothing past World 2 in its band, World 10 median 17, Easy barely under Normal
+  past 1-3 -> a rebuild target per world, not a tune. 11 levers exist (file:line), 7 NEW (N1 builder reads the target ... N7 Easy help).
+  Gate spec G1-G6 (fairness floors never overridden; meter vs bots rank agree). Two inspector defects to fix first. Lead's view: the
+  meter + gate is a FOUNDATION (D40): after 0.9.7, before 1-4/1-5 are built and before any world is re-laid.
+- 2026-11-12 9:38 PM ET, BLIND TEST (Matt's wife, relayed): "keep Dot's messages up longer. They go away too fast... when she collected the petal, Dot said something, but she didn't know what she collected." R-165.175 (measure on the real build first; today's rule dotGuide.ts readMs = 1.5 s + 0.5 s/word, min 4 s, ~120 wpm, assumes reading while not playing).
+- 2026-11-12 9:41 PM ET, Matt: Dot's cards are TAPPED to clear (taught in 1-1); chose "tap to clear + slow fade" (unread fades after ~3x reading time; one at a time with a +N badge; the tap never jumps). R-165.175 updated; the story keeper writes the 1-1 teach line.
+- 2026-11-12 9:50 PM ET: check-in. FEEL-PAIR REPORT draft (t-feel-pair@78a2906e): pair as one grab (single 220 px/s unchanged, pair 2x 440 / 1.6x), QA-only room reached by Settings > About > "Vine pair test" > Play (ship build shows no row; planted test), speed sign (tap is no punch), stopwatch (one vine 3.5 s, two 2x 1.9 s, 1.6x 2.3 s), liana = W1's painted vine on a code path; placeholders named (no arms-out frames); pushback: new optional fields in types.ts (Architect's file), the 2x camera trails a little (1-4's piece 5 owns it). Stills not committed yet; gates still running. DIFF-ALGO running its suite (b09c2568 at 9:48 added each world's new thing on the climb).
+- 2026-11-12 9:51 PM ET, Matt on DIFF-ALGO's full suite (docs/tools only): "if they don't need to run the reports, then let's not run the
+  reports... if I just wanted to waste the tokens, I'd just hit reset." LAW 5 AMENDED (LAWS.md): a branch with no game code change runs
+  the fast gates; the full gate still runs on the integration head before any link/PR/release. DIFF-ALGO told to stop its suite (its
+  diff: reference/ + tools/difficulty/ only, checked) and finish on fast gates.
+- 2026-11-12 9:53 PM ET: DIFF-ALGO DONE and retired (t-diff-algo@1e5fe476, ls-remote checked; diff = reference/ + tools/difficulty/ only;
+  fast gates per Law 5's new scope PASS; the full suite was at 2,136 passing, 0 failing when stopped). All 90 stages scored both settings:
+  0 of 72 stages in Worlds 3-10 sit in their band (medians 5-17 vs bands 19-100). Recommends R-165.173 (1-1's five doubles are about half
+  its points: move them to 1-4, 1-1 target 2.5). Ready packets: S1 INSPECT-ROUTE (R-165.176) -> S2 METER-GATE -> S3 METER-TARGET (N1-N3),
+  D40 order. Pushback accepted (calibrated to Matt's latest 1-3 = 1; tools/ path kept per packet).
+- 2026-11-12 10:00 PM ET, Matt: "I just did the reset." Fable: "when we have Fable doing the up, it does the down, and it does the card
+  section. I think we just let Fable design that... do the 3 tests... then let a Fable design it and implement the cards into the engine."
+  So: ENG-ASCENT widened to UP AND DOWN (then the card road after 1-5's design), Fable; the 1-5 idea list C on Fable; F15 (Fable) designs
+  1-5 then builds the card road (replaces D15 Opus max); BC-FIX (Opus xhigh) starts too (blocks 0.9.7).
+- 2026-11-12 10:00 PM ET: started after Matt's reset: Fable idea C (session_01FhBbYLfZisGHiF2Fwmndci, t-ideas-15-c), Fable ENG-ASCENT up+down
+  then cards (session_01FhBbYPAPP7SGtvnaEXG3DU, t-eng-ascent, stop 4 AM), BC-FIX Opus xhigh (session_01FhBbYLKDNLwVSwxy4xwkzL, t-bc-fix,
+  stop 3 AM). F15 (Fable designs 1-5) starts when C lands. Matt 10:00 PM: "stay lean... get as much out of this 100% as possible":
+  written into TEAM.md Cost rules (7 points).
+- 2026-11-12 10:03 PM ET, Matt: workers lean too (short messages and reports, no over-explaining); the measure is levels per 100% of his weekly usage. TEAM.md Cost rules + LEVEL-LOG; sent to every running helper.
+- 2026-11-12 10:04 PM ET: 1-5 idea C (FABLE) DONE in ~4 min ($2.25), t-ideas-15-c@543b5acc, retired: whose trail (marching under the roots vs her marks up on creaky limbs); the exit counts her marks (Normal must take the hard road most times); falling is a way down; twist = over THEN under (drop a rotten bough by a snake's den); flags today's fork = one two-road section with the find forced high (pipeline.ts:579). Fable's rate limit now reads 'allowed' (Matt's reset brought it back). F15 (Fable) started: session_01FhBbYLH67hs9RNxYKQnb2B, t-15-design, phase 1 design only.
+- 2026-11-12 10:06 PM ET, Matt: let the Fable designer plan difficulty in. F15 told: 1-5 Normal target 5.5 (Easy ~half) beat by beat with score.ts; then revise 1-4.md for difficulty (target 4.5 / Easy ~2.5, pods cost on Normal, double jumps first taught there as an option pending R-165.173), before its phase 2.
+- 2026-11-12 10:11 PM ET, Matt on the two-vine climb: "Won't everybody always just pick the first one?... real thought... not just thrown together... feel like a little bit of like Donkey Kong Jr." Lead agreed (a pick at the bottom is not a choice). R-165.177: F15 redesigns 1-4's vine play as a climbing system (vines in reach, switch mid-climb, two hands up fast / one hand down fast, threats along vines, pods), the arcade principle only; feel room v2 before 1-4 is built. Tonight's FEEL-PAIR room still shows the basic grab.
+- 2026-11-12 10:12 PM ET, Matt's picture of 1-4's vines: many short hanging vines, vine to vine, things falling (rocks: our pods/seeds), fruit to collect while dodging. Sent to F15; R-165.177 updated.
+- 2026-11-12 10:14 PM ET, Matt: a PURPOSE for 1-4's vines ("you push something up and you're trying to free the fruit, and the fruit... opens up... a door that you need to get through... just aspects... not all Donkey Kong Country... Have Fable think through this again"). Sent to F15 (rethink from scratch, up to 3 options with its pick; 60 min for the 1-4 part). R-165.177.
+- 2026-11-12 10:15 PM ET, Matt: inspired-by mechanics get researched first (why the original was great; what we take; never copy). STAGE-RULES §1 #5 + the approved level.md changes list (step 1); sent to F15 for 1-4's vines (5 lines with sources).
+- 2026-11-12 10:18 PM ET: F15 phase 1 PASSED the lead's look: 1-5.md (t-15-design@1fc844d9): her road (her mark's arrow, folded petals) vs the squirrels' road (quicker, the seed); a broken limb drops you onto the under road; Normal target 5.5, designed 5.3 either pick, Easy 2.6 (today's 1-5 reads 2.0 both settings); card road = two whole plans from one seed, cut-safe; goal = her marks. 1-5 can be built AHEAD of 1-4 on today's engine + 3 small pieces (W1 creaky limb in gen2, marks as a gen2 goal, a limb as a trap load); order: those, the level on plain splits, then the card road (Fable phase 2), polish. Runs ACROSS (World 3 owns the first descent). F15 next: 1-4 vine rethink. Story keeper asked for nature check + marks goal + 4 lines.
+- 2026-11-12 10:19 PM ET: story keeper on 1-5: nature check PASSES; goal = her marks CONFIRMED (mission line "She marked the way they took her. Follow her marks."); four lines for Matt's okay (STORY-LINES.md): creaky teach, the big sign, the locked exit, the two-signs joke. Asked Matt.
+- 2026-11-12 10:20 PM ET, Matt APPROVED all five 1-5 lines as written (mission + creaky teach + big sign + locked exit + two-signs joke). Story keeper told.
+- 2026-11-12 10:22 PM ET: check-in. ENG-ASCENT PLAN pushed 10:05 (t-eng-ascent@5244cb6f). BC-FIX PLAN 10:06: 73% of 1-1's build = landings.ts's judge flown 4x on the same pieces; fix 10:18 (t-bc-fix@b1ff2aee: judge flies each flight once a stage, answers unchanged). FEEL-PAIR ($21.28 so far) was digging into buildcheck (a known base red): told to note it in one line and wrap up.
+- 2026-11-12 10:24 PM ET: FEEL-PAIR DONE and PASSED the lead's look (t-feel-pair@edf4f898; stills both ways: room, pair mid-climb, stopwatch clear of Pokey; placeholders named, no arms-out frames). TEST LINK v251 published (EnK5, from t-feel-pair = 465023ef + the room): Settings > About > "Vine pair test" > Play (lead smoke-checked on the real build). FEEL-PAIR retired. It tests the basic grab only; the vine field is R-165.177.
+- 2026-11-12 10:31 PM ET: F15's 1-4 revision PASSED (vine field, difficulty 4.4 designed vs 4.5, pods/nips cost a heart on Normal, doubles option, research caveat: search extracts only). Matt: 1-4 teaches the vine field (it returns and grows later if it plays well); purpose = push clusters up (A); add falling things across vines + a flyer that knocks him down. F15 updating 1-4.md + FEEL-LATTICE.md (15 min); then the lattice feel room (v2) gets built for Matt before 1-4.
+- 2026-11-12 10:31 PM ET, Matt played the vine pair room: two hands at 1.6x (his pick); needs a real two-vine climbing motion (R-165.178: painted frames via HF, the lead's call). F15 told to use 1.6x and note the art piece.
+- 2026-11-12 10:33 PM ET, Matt's vine control rule: start on one vine; push toward another = both hands (old + new); push toward the new one again = let go of the old. No new controls. Matches F15's design; written as Matt's rule (R-165.177).
+- 2026-11-12 10:34 PM ET: F15 updated 1-4.md + FEEL-LATTICE.md (t-15-design@fda7b355): purpose A; danger in the push (0.6x under a cluster, pods down push vines, a daytime flyer at one height, ants; any knocks him to the catch bough + a heart on Normal; flyer/ants first watched from the halfway bough); meter 4.4 unchanged by design (to be proven). LATTICE started (Opus high, session_01FhBbYP57dZFWMPKfMiacbK, t-lattice from t-feel-pair, stop 3:30 AM): the vine-field room replaces v1, Matt's 1.6x and control rule binding. F15 idle, waits for phase 2 (card road) tomorrow.
+- 2026-11-12 10:35 PM ET: F15 final docs t-15-design@dee8c8c0 (1.6x two hands; cluster push on two hands 1.0x; Matt's control rule quoted as his; two-vine climb = painted art). F15 owned a 61-line push (fixed). F15 idle until phase 2. LATTICE pointed at dee8c8c0.
+- 2026-11-12 10:36 PM ET, Matt: prototypes stay cheap ("a crudely drawn prototype... don't want to waste tokens"). LATTICE told: crude code-drawn shapes, no polish, no clips, one sideways still per lane, required gates only, 90-minute box. Rule for every feel room from now: crude is fine; it tests feel, not looks.
+- 2026-11-12 10:36 PM ET, Matt: "already 4% and nothing's even been thought of. They're just pissing away time." Lead's call: ENG-ASCENT
+  (Fable) STOPPED (1-5 goes before 1-4 and needs no ascent lay; WIP kept on t-eng-ascent@870c8a58: a tower laid up, route measure, flags
+  along the route). Kept: BC-FIX (release blocker; fix in, final gates), LATTICE (crude, 90 min). The lead's own turns are a real share of
+  the burn: check-ins now ls-remote + subjects only, fewer messages. Since the reset (10 PM): 1-5 idea C, 1-5 design, 1-4 vine redesign x3,
+  BC-FIX's fix, ENG-ASCENT WIP.
+- 2026-11-12 10:37 PM ET: ENG-ASCENT retired. WIP t-eng-ascent@7499d79f (untested, tsc clean): gen2 lays a tower up or down (tower.ts + toyTower fixture; UP clean on 10 seeds both settings, DOWN seed 1 Normal clean). LEFT: tests + planted, the lock check (touched levelCheck flag order, stageTime, types, seedList JOIN), bots, stills, a down catch case, the climb camera. Resume when 1-4's build is next.
+- 2026-11-12 10:37 PM ET, Matt: "I understand the concept and approve the concept... move on and start to add it and build it." The vine field is APPROVED (R-165.177). LATTICE redirected from a crude room to the REAL engine mechanic (field, Matt's control rule, 1.6x/slide/push speeds as data, planted tests; the QA room only as its test bed; no pods/flyer/ants/art tonight).
+- 2026-11-12 10:40 PM ET, Matt: Fable ONLY for the core engine (up/down laying and its pieces; the card road counts); never stories, level design or level building; those stay on Opus xhigh; tune Fable usage down. models.json updated (fable tier + changes log). F15's phase 2 (card road) stays Fable; the vine-field-across-the-game plan goes to Opus xhigh.
+- 2026-11-12 10:41 PM ET, Matt: PAUSE at midnight; get as much done until then; restart in the morning ONLY when Matt says go. BC-FIX and LATTICE stop lines moved to midnight (push WIP at 11:55). F15 idle (no phase 2 tonight). No new helpers before Matt's go.
+- 2026-11-12 10:59 PM ET, Matt: RELEASE 0.9.7 tonight ("we need to launch... What's New... prepare me the links so I can merge it");
+  chose build tonight (link ~1 AM); SHIP the new sound levels (R-165.125 answered); SHIP with R-165.174/.175/.166/.171 open (fixed in
+  0.9.8). Story keeper asked for What's New; BC-FIX told the release waits on it; REL-097 packet written.
+- 2026-11-12 11:01 PM ET: lead rotation prepared (Matt): LEAD-PERSONA.md improved (HF is the lead's call; push Matt; Lean section; No tunnel vision section), reference/handoffs/NEW-LEAD-2026-11-13.md = the full paste for Matt (persona + this handover), lead.md gets The handover / The backup lead / Start here. The outgoing lead stays as backup (questions only). REL-097 started (session_01FhBbYMo7vanZV56PXG1MTw).
+- 2026-11-12 11:01 PM ET: BC-FIX buildcheck PASS 105/57 ms (was 446/430), lock 102/102, suite 3,122/0, gates green (clipcheck + final quiet buildcheck running). 0.9.7 What's New from the story keeper APPROVED by the lead (title 'Petals and snakes, rebuilt', 6 items; date set to 2026-11-13, the live date); sent to REL-097.
+- 2026-11-12 11:07 PM ET: BC-FIX DONE and retired ($9.53): t-bc-fix@5fa60568, buildcheck 105/57 ms (3 quiet runs <=126/81) vs 446/430; cause = landings judge flown 4x per build + maxRise re-simulated per link; fix memoized and exact (257 seeds x2 identical, 317k judge answers, lock 102/102). R-165.163 fixed on t-bc-fix (done at merge). REL-097 told to merge it.
+- 2026-11-12 11:09 PM ET: REL-097 merged t-int-2 + t-bc-fix into release-0.9.7 (no conflicts, nothing test-only added). whatsNew.test caught 3 items (>90 chars; 'branch' banned): the story keeper reworded (87/83/88 chars), lead approved; the test unchanged. Full gate starting.
+- 2026-11-12 11:15 PM ET, Matt answered two About-page waits (R-165.158): Inspired-by games = WORLD-MAP.html "Your ideas" Echoes (IN/DONE ideas); music "written for the game itself". "That's for... the story helper": sent to the story keeper (tribute wording + a not-affiliated line). Both waits closed.
+- 2026-11-12 11:19 PM ET: story keeper wrote the About words (STORY-LINES.md, its branch): Inspired by = the IN/DONE games, tribute + not-affiliated line; music in "What's ours" line 3. Matt: DROP PUBG and Fortnite (platformers and arcade only). Words closed for 0.9.8's About build (R-165.158).
+- 2026-11-12 11:19 PM ET: correction sent to the story keeper: Matt dropped only the PUBG/Fortnite CREDIT (page = platformers + arcade); the shrinking arena mechanic stays IN (World 9 rising lava, guardian arenas); WORLD-MAP row #30 unchanged. Its quote fixed to Matt's actual words.
+- 2026-11-12 11:47 PM ET: LATTICE DONE, PASSED the lead's look (crude by design) and retired: t-lattice@f302f06e (base t-feel-pair = 465023ef): vineField.ts + Vine.field, Matt's push rule by touch, one hand 220 up / 2x slide, two hands 1.6x up / 0.5x down, clusters push 0.6x (1.0x two hands), tear free and fall; QA room = a small field; 6 planted unit + 8 touch tests (3 bugs caught and fixed). buildcheck red only because its base predates BC-FIX: merge it onto release-0.9.7/main later. Stand-ins named (code clusters, v1 pose). NOT on Matt's link yet (EnK5 gets the 0.9.7 candidate tonight); next lead puts it on.
+- 2026-11-13 9:16 AM ET: 0.9.7 PR #70 OPEN (https://github.com/mshaffe1111/Sloths-Adventure-/pull/70; release-0.9.7@f63ac487 = main + t-int-2@f01c76f7 + t-bc-fix@5fa60568 + version/What's New), mergeable clean, not draft. Every gate PASS on f66f32ec except funcheck (advisory, not in CI; main fails too): Matt ACCEPTED it. EnK5 v252 = this candidate. REL-097 retired. Lead subscribed to the PR to check the deploy + APK after Matt merges. (Overnight the session restarted; the PR was opened at 9:16 AM ET 11-13.)
+- 2026-11-13 9:18 AM ET: MATT MERGED PR #70 (0.9.7). Deploy + APK runs not listed yet; deploy check armed (+15 min).
+- 2026-11-13 9:45 AM ET: 0.9.7 LIVE. Merge d8d6a973: Publish to gh-pages run 43441537428 success; APK run 43441537394 success; release v0.9.7-39 "Sloths Adventure v0.9.7 (Nov 13, 2026)" on the Releases page (https://github.com/mshaffe1111/Sloths-Adventure-/releases/tag/v0.9.7-39); gh-pages 8c4f6606 "Publish d8d6a97" carries version 0.9.7 and "Petals and snakes, rebuilt". R-165.163 and R-165.125 shipped. The team is paused; the next lead starts on Matt's go.
