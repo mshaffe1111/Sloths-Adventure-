@@ -14,7 +14,7 @@
    validateAsJudged and recommitted (BOTS.md:11-12): middle rescues 1->0 (Easy); child Normal put-backs 2.58->1.75 and expert Normal
    0.38->0.68 now miss their tolerance; child Normal rescues 8->13. The table did not pass before either (BOTS.md:13-15).
 ## Gates (3f862fe9)
-tsc PASS; full suite: see the last line; seedlist 1-1 --check PASS (257); tool tests incl. tierBots 7/7 and routeHumps 4/4 PASS;
+tsc PASS; full suite PASS (3120 pass, 0 fail, 2 todo already on main); seedlist 1-1 --check PASS (257); tool tests incl. tierBots 7/7 and routeHumps 4/4 PASS;
 score.ts --check PASS; knowncheck, generality, roadmapcheck PASS. Earlier head c3499746: build, chunkcheck, artcheck, buildcheck (alone)
 PASS, and none of their inputs changed since. Not run (the lead stopped the task): drawcheck, clipcheck, kbdcheck.
 ## Findings for R-ids (the step route, when gates and bots move onto it; all pass on today's route)
