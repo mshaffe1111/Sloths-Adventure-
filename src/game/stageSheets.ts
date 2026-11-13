@@ -57,6 +57,7 @@ import { SLIDE_STAGE_ID } from './w7Slide.ts';
 import { CTEST_STAGE_ID } from './stageGenerator.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { KIT_STAGE_ID } from './kitStage.ts';
+import { FEEL_PAIR_ID } from './feelPairStage.ts';
 import { gen2Creatures, gen2Water, isGen2Stage } from './gen2/game.ts';
 import { W5_ROOM_STAGES } from './gen2/worlds/w5.ts';
 import { W6_ROOM_STAGES } from './gen2/worlds/w6.ts';
@@ -178,6 +179,8 @@ export interface SheetSwitches {
 export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>, sw: SheetSwitches): string[] {
   // the puzzle kit's test room: World 1's painted ground, the kit's pieces, and World 4's sheet for the trade room's capuchin
   if (cfg.id === KIT_STAGE_ID) return ['kit:1', 'kit-pieces', 'w4-props', 'perch', ...everyStage(1)];
+  // the vine pair's feel test (feelPairStage.ts): World 1's painted ground, the kit's signpost for its speed sign
+  if (cfg.id === FEEL_PAIR_ID) return ['kit:1', 'kit-pieces', 'perch', ...everyStage(1)];
   if (cfg.id === DOT_STAGE_ID) return ['dot'];
   // 7-4's slide (w7Slide.ts): World 7's kit for the hall and the chamber (the slide's own pictures load as it starts: w7SlideArt.ts
   // warmSlide), and Dot's perch as on every stage (her guide is still the engine's, though World 7 gives her no lines)

@@ -62,7 +62,8 @@ export function stageExtras(st: StageDraws): { vine: boolean; props2: boolean; r
   const vine = (st.vines ?? []).some((v) => !v.rope && v.vineType !== 'tree_climb');
   const props2 = !!st.proto?.bushes?.length || !!st.proto?.hollows?.length;
   const rope = !!st.ropes?.length;
-  const vineRope = !!st.ropes?.some((r) => r.look === 'vine');
+  // (and a draped pair of climbing strands, pairArt.ts: the same painted vine)
+  const vineRope = !!st.ropes?.some((r) => r.look === 'vine') || (st.vines ?? []).some((v) => !!(v as { pair?: number }).pair);
   return { vine, props2, rope, vineRope };
 }
 

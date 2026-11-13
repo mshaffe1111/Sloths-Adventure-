@@ -200,6 +200,7 @@ import { withHurtFlash } from './hurtFlash.ts';
 import { shakeOffset } from './screenShake.ts';
 import { POWER_UP_SECS } from './powerUps.ts';
 import { climbReach, climbSpeedOf, rustleGap } from './vinePair.ts';
+import { FeelRoom } from './feelPair.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
 const TEA_STAND = 150;
@@ -636,6 +637,8 @@ export class GameEngine {
   private stepHelp = false;
   /** the stage's puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): things to carry and throw, plates, gates, levers, lifts, beetles */
   private kit: KitPlay | null = null;
+  /** a feel-test room's speed sign and climb stopwatch (feelPair.ts; the QA build's vine pair test, feelPairStage.ts) */
+  private feel: FeelRoom | null = null;
   private kitHostObj: KitHost | null = null;
   /** 1 = normal; below 1 pulls the camera back in a puzzle room so Pokey, the puzzle part and what it works all fit (puzzleCamera.ts:
    * never below 0.75 sideways, further upright, roomFloor) */
@@ -988,6 +991,7 @@ export class GameEngine {
     // (Meeca's stage: her night look, and Easy's stuck watch without a clock, Matt's research rule)
     this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles, world: config.worldIndex, stage: config.miniIndex, vines: this.vines, ...(this.proto?.meeca ? { noClock: true, night: true } : {}) }) : null;
     this.plainVines = this.vines.filter((v) => !v.kit);
+    this.feel = this.currentStage.feelRoom ? new FeelRoom(this.currentStage.feelRoom, this.vines) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
     this.slideRun = null;
@@ -1694,6 +1698,12 @@ export class GameEngine {
     this.lessonTick();
     // the puzzle kit reads the intents again (puzzlePlay.ts control): a tap by a piece uses it, and carrying, the jump and kick throw
     if (this.kit) this.kitControls();
+    // a feel-test room (feelPair.ts): a tap by its sign switches the pair's speed (and is no punch); its stopwatch follows the climb
+    if (this.feel && this.feel.control(p, this.input.state.punchPressed, this.gameTime).took) {
+      this.input.state.punchPressed = false;
+      sound.playUiTap();
+      this.spawnSparkBurst(this.feel.spec.sign.x, this.feel.spec.sign.y - 70, '#fde047');
+    }
 
     if (this.coach && !this.coach.done) {
       this.coach.update(dt, p.x, this.coachWasGrounded && !p.grounded && p.vy < -200);
@@ -6793,6 +6803,7 @@ export class GameEngine {
     setDepthView(this.camera.viewportHeight);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    this.feel?.drawWorld(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     // the bounce plants' caps and their cue over the painted ground, so one at a bank's end is never hidden under its lip
     if (!(ownScene && lair)) drawBounceCaps(ctx, world.id, this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats), this.camera, this.gameTime);
     profMark(ctx, 'ground');

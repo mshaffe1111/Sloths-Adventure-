@@ -4,6 +4,7 @@ import { w4Normal } from './w4Normal.ts';
 import { groundToFloor } from './groundFloor.ts';
 import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
+import { buildFeelPairStage, FEEL_PAIR_ID } from './feelPairStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { pick11, play11Seed, roll11Seed, withPlaySeed } from './testlink1_1.ts';
@@ -18,7 +19,7 @@ import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { DOT_STAGE_ID, dotGeneratedStage } from './dotFlightStage.ts';
 import { MEECA_STAGE_ID } from './extraStages.ts';
 import { meecaGeneratedStage } from './meecaStage.ts';
-import { ctestEnabled, ctestSeed } from './playRecorder.ts';
+import { ctestEnabled, ctestSeed, qaBuild } from './playRecorder.ts';
 
 /** the stage the control test replaces (no story scene before it); its layout is a new mix each run (playRecorder.ts ctestSeed) */
 export const CTEST_STAGE_ID = '1-2';
@@ -65,6 +66,8 @@ export interface GeneratedStage {
   dress?: import('./dressArt.ts').DressPiece[];
   /** shimmy ropes across gaps (the engine only lets Pokey use them once he has the skill) */
   ropes?: Rope[];
+  /** a feel-test room's sign and stopwatch (the QA build's vine pair test: feelPairStage.ts, run by feelPair.ts) */
+  feelRoom?: import('./feelPairStage.ts').FeelRoomSpec;
   enemies: Enemy[];
   boss: BossEntity | null;
   collectibles: Collectible[];
@@ -2861,6 +2864,8 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   }
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
   if (config.id === KIT_STAGE_ID) return buildKitStage(config);
+  // the vine pair's feel test (a QA build only: feelPairStage.ts, R-165.170)
+  if (config.id === FEEL_PAIR_ID && qaBuild()) return buildFeelPairStage(config);
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
   if (config.id === CTEST_STAGE_ID && !config.secret && ctestEnabled()) return buildProtoStage(config, ctestSeed(), 'ctest', difficulty === 'easy');
   // Dot's netting flight, the extra stage after 4-5 (dotFlightStage.ts); it is only in the stage list with the New stages switch on
