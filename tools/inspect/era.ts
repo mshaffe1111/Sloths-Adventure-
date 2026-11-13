@@ -264,7 +264,8 @@ async function main() {
   const { generateAllLevels } = await import('../../src/game/worldsData.ts');
   const { stageSpec } = await import('../../src/game/stagePlan.ts');
   const { HAND_STAGES } = await import('../../src/game/protoStage.ts');
-  const { isGen2Stage } = await import('../../src/game/gen2/game.ts');
+  // (the game's one definition of a gen2-built stage: 1-1 and the listed rolls such as 1-2 and 1-3 too, stageGenerator.ts builtOnGen2; S1)
+  const { builtOnGen2 } = await import('../../src/game/stageGenerator.ts');
   const { W2_STAGES } = await import('../../src/game/w2Stages.ts');
   const skipped: EraOutput['skipped'] = [];
   const levels = generateAllLevels().filter((c) => {
@@ -332,7 +333,7 @@ async function main() {
     const rs = variants.map((v) => map.get(v)!);
     byId.set(c.id, rs);
     const spec = stageSpec(c.worldIndex, c.miniIndex);
-    const source = HAND_STAGES[c.id] || W2_STAGES[c.id] ? 'hand' : isGen2Stage(c) ? 'gen2' : 'generated';
+    const source = builtOnGen2(c) ? 'gen2' : HAND_STAGES[c.id] || W2_STAGES[c.id] ? 'hand' : 'generated';
     summaries.push(summarise({ id: c.id, world: c.worldIndex, name: spec?.name ?? c.name, type: c.objectiveType, source }, rs, source === 'hand' ? targetFor(c.id) : 0, RULES));
   }
 
