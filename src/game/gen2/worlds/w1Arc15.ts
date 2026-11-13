@@ -34,14 +34,19 @@ export const BRIEF_15: GraphBrief = {
  *  player words this file holds */
 export const LINES_15 = {
   creak: 'Creaky limbs drop you, but only down to the roots!',
-  sign: "Squirrels painted what's each way. Your pick!",
   sealed: "We missed some of her marks. They're back there!",
   last: "She's making them last.",
 } as const;
 /* (the fresher-petals line is 1-5's WAYSIDE story beat already, dotLinesData.ts way.1-5, said at the halfway mark in its new look's words,
  *  "She squashed this one extra flat."; as a tip too it was said twice a run, B15 stills 11-13) */
-/** Pokey's joke at the first THIS WAY / THAT WAY: held for the squirrels' sign art (World 1 has none until ART paints it) */
-export const JOKE_15 = 'THIS WAY. THAT WAY. Thank you, squirrels.';
+/** the keeper's lines HELD until what they speak of is on screen (World 1 has no leaf-sign art until ART paints it, and with the card
+ *  road cut the roll, not the player, picks beat 6's stretch: "Your pick!" would be untrue). Approved by Matt 11-12 10:20 PM ET, verbatim */
+export const HELD_15 = {
+  /** Dot, before the curtain (beat 6): back with the signs and a pick he makes */
+  sign: "Squirrels painted what's each way. Your pick!",
+  /** Pokey, at the first THIS WAY / THAT WAY (beat 1) */
+  joke: 'THIS WAY. THAT WAY. Thank you, squirrels.',
+} as const;
 /** the stage's MISSION line (the keeper's, approved by Matt 11-12 10:20 PM ET): stagePlan's, held equal by library15.test.ts */
 export const MISSION_15 = 'She marked the way they took her. Follow her marks.';
 // ───────────────────────────── the pieces ─────────────────────────────
@@ -227,13 +232,13 @@ function blocked(S: Set): Lay {
   ];
   return { pieces, sockets };
 }
-/** [H] beat 6, the big sign (a plain sign pair; the card road is cut, 1-5.md:27): Dot's line, then ONE of the two stretches, the roll's
- *  pick. THAT WAY: up a vine to the bough run, three decks of creaky limbs with a sound perch between them, the low road hopping a root in
+/** [H] beat 6, the big sign (a plain sign pair; the card road is cut, 1-5.md:27): ONE of the two stretches, the roll's pick (Dot's
+ *  sign line is held: HELD_15). THAT WAY: up a vine to the bough run, three decks of creaky limbs with a sound perch between them, the low road hopping a root in
  *  the open under each perch; THIS WAY: the root ramp down to the creek's stepping roots over soft dips (stand-in for the water, named in
  *  the report), one awake snake on the far bank */
 function boughRun(S: Set): Lay {
   const pieces: SectionPiece[] = [bank('a', null, 220), bank('a2', 'a', 180, UP)];
-  const sockets: Socket[] = [flag('a', 0.3), tip('tip', 'a', 0.5, 'sign'), mark('ma', 'a', 0.75)];
+  const sockets: Socket[] = [flag('a', 0.3), mark('ma', 'a', 0.75)];
   let prev = 'a2';
   for (let d = 0; d < 3; d++) {
     // (a deck: a vine up from the low road, two creaky limbs, a sound perch at its end over the next root; the low road under it flat)
@@ -251,7 +256,7 @@ function boughRun(S: Set): Lay {
 }
 function creek(S: Set): Lay {
   const pieces: SectionPiece[] = [bank('a', null, 220), bank('a2', 'a', 180, UP), bank('r1', 'a2', 200, DOWN), bank('r2', 'r1', 200, DOWN)];
-  const sockets: Socket[] = [flag('a', 0.3), tip('tip', 'a', 0.5, 'sign'), mark('ma', 'a', 0.75)];
+  const sockets: Socket[] = [flag('a', 0.3), mark('ma', 'a', 0.75)];
   let prev = 'r2';
   for (let j = 0; j < 7; j++) {
     const k = `s${j}`;
@@ -382,7 +387,7 @@ export function kitLib15(): WorldKit {
     required: {},
     tips: { ...M.tips, ...LINES_15 },
     // (every line of the keeper's here is a TEACH line: Dot says it on Normal's default Tips as on Help, D50)
-    teachTips: [...(M.teachTips ?? []), 'creak', 'sign', 'last'],
+    teachTips: [...(M.teachTips ?? []), 'creak', 'last'],
     graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'relic_hunt'), ...Object.entries(ARC_15).map(([id, code]) => ({ id, archetype: 'relic_hunt' as const, code }))], briefs: { ...G.briefs, [STAGE_15]: BRIEF_15 } },
   } } as WorldKit;
 }

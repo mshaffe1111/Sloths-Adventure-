@@ -9,7 +9,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { buildGen2Stage, stagePool } from '../pipeline.ts';
 import { isCreak } from '../creak.ts';
-import { BRIEF_15, JOKE_15, kitLib15, LINES_15, MISSION_15, SECTIONS_15, STAGE_15 } from './w1Arc15.ts';
+import { BRIEF_15, HELD_15, kitLib15, LINES_15, MISSION_15, SECTIONS_15, STAGE_15 } from './w1Arc15.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import { STAGE_PLAN } from '../../stagePlan.ts';
 import { TRAP } from '../../dropTrap.ts';
@@ -47,11 +47,10 @@ test('the arc beat for beat, the same beats in the same order on every roll, bot
 test("the keeper's lines verbatim (approved by Matt 11-12 10:20 PM ET), the mission held equal to the stage plan", () => {
   assert.deepEqual({ ...LINES_15 }, {
     creak: 'Creaky limbs drop you, but only down to the roots!',
-    sign: "Squirrels painted what's each way. Your pick!",
     sealed: "We missed some of her marks. They're back there!",
     last: "She's making them last.",
   });
-  assert.equal(JOKE_15, 'THIS WAY. THAT WAY. Thank you, squirrels.');
+  assert.deepEqual({ ...HELD_15 }, { sign: "Squirrels painted what's each way. Your pick!", joke: 'THIS WAY. THAT WAY. Thank you, squirrels.' });
   assert.equal(MISSION_15, 'She marked the way they took her. Follow her marks.');
   assert.equal(STAGE_PLAN[1][4].desc, MISSION_15);
   assert.equal(STAGE_PLAN[1][4].type, 'relic_hunt');
@@ -65,12 +64,12 @@ test("Dot's creaky line is a TEACH line said 800 px and more before the first li
     const first = st.platforms.filter(isCreak).sort((a: Platform, b: Platform) => a.x - b.x)[0];
     assert.ok(first.x - hint.x >= 800 && first.x - hint.x <= 1100, `seed ${seed} ${d}: her line is ${Math.round(first.x - hint.x)} px before the first limb`);
     assert.equal(st.enemies.filter((e: Any) => e.x < first.x).length, 0, `seed ${seed} ${d}: an animal before the first limb`);
-    for (const k of ['last', 'sign'] as const) assert.ok(st.proto.hints.some((h: Any) => h.text === LINES_15[k] && h.teach), `seed ${seed} ${d}: "${LINES_15[k]}"`);
+    for (const k of ['last'] as const) assert.ok(st.proto.hints.some((h: Any) => h.text === LINES_15[k] && h.teach), `seed ${seed} ${d}: "${LINES_15[k]}"`);
   }
 });
 
 test("D50: every keeper's line here is SAID on Normal's default Tips and Easy's default Help, as the engine hands it to Dot (a teach line)", () => {
-  for (const k of ['creak', 'sign', 'last'] as const) {
+  for (const k of ['creak', 'last'] as const) {
     const l = engineGuideLine(LINES_15[k], STAGE_15, { dot: true, teach: true });
     assert.ok(l && l.stageTeach, `"${LINES_15[k]}" is no stage teach line (${l?.kind})`);
     assert.equal(helpAllows(l, 'reminders', new Set()), true, `"${LINES_15[k]}" is hidden on Tips, Normal's default`);

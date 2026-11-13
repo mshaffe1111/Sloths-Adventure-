@@ -18,7 +18,7 @@ FAULTS = [
     ('a mark is laid as a plain relic', 'src/game/gen2/pipeline.ts', "type: 'relic', mark: 'meeca', x: k.x", "type: 'relic', x: k.x", T_LIMB),
     ("the locked exit forgets the keeper's line", 'src/game/stagePlan.ts', "{ '1:relic_hunt': \"We missed some of her marks. They're back there!\" }", '{}', T_LIMB),
     ('the HUD shows the stone idol for her marks', 'src/components/hud/goalInfo.ts', "w === 1 ? { kind: 'drawn', name: 'carving' } : { kind: 'drawn', name: 'idol' }", "{ kind: 'drawn', name: 'idol' }", T_LIMB),
-    ("the creaky line is not a teach line", ARC, "teachTips: [...(M.teachTips ?? []), 'creak', 'sign', 'last']", "teachTips: [...(M.teachTips ?? []), 'sign', 'last']", T_ARC),
+    ("the creaky line is not a teach line", ARC, "teachTips: [...(M.teachTips ?? []), 'creak', 'last']", "teachTips: [...(M.teachTips ?? []), 'last']", T_ARC),
     ('Dot says the creaky line at the limb', ARC, "flag('a', 0.3), tip('tip', 'a', 0.25, 'creak'),", "flag('a', 0.3), tip('tip', 'c', 0.9, 'creak'),", T_ARC),
     ("a creaky limb hangs over a snake's patch", ARC, "over('L3', 'Q', Qa, 20 + S.lateGap,", "over('L3', 'S', G, 20,", T_ARC),
     ('the first snake of the stage is awake', ARC, "const t = trapped('t', 'r', true);", "const t = trapped('t', 'r', false);", T_ARC),
