@@ -9,7 +9,7 @@
  * seeds, no positions. Pure but for the animals it writes back to (the fields the art already reads); no canvas, no sounds.
  */
 import type { CastData, TrapPost } from './castPlay.types.ts';
-import { TRAP, handleBox, newTrap, scares, shake, stepTrap, type TrapState } from './dropTrap.ts';
+import { TRAP, handleBox, limbGone, newTrap, scares, shake, stepTrap, type TrapState } from './dropTrap.ts';
 import { landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
 import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, newPredator, stepPredator, tellOf } from './predators/core.ts';
 import { castDef } from './predators/registry.ts';
@@ -164,10 +164,16 @@ export class CastPlay {
     return !!m && beat(m.def, m.s, way, t, fromX);
   }
 
+  /** a creaky limb has given way (engine.ts): the 'limb' trap it is the load of, if any, falls now (returned) */
+  limbGone(platformId: number): TrapPost | null {
+    for (const tr of this.traps) if (tr.post.limb === platformId && limbGone(tr)) return tr.post;
+    return null;
+  }
+
   /** a blow's box against the traps' handles: the first set trap it lands on is let go (returned) */
   strike(box: Box): TrapPost | null {
     for (const tr of this.traps) {
-      if (tr.phase !== 'set') continue;
+      if (tr.phase !== 'set' || tr.post.kind === 'limb') continue;
       const h = handleBox(tr.post);
       if (box.x < h.x + h.w && box.x + box.w > h.x && box.y < h.y + h.h && box.y + box.h > h.y && shake(tr)) return tr.post;
     }
@@ -176,7 +182,7 @@ export class CastPlay {
 
   /** is there a set trap's handle within a blow's reach of him? (for the pad's hint, as an animal or a cage is) */
   handleNear(x: number, y: number, reach = 70): boolean {
-    return this.traps.some((tr) => tr.phase === 'set' && Math.abs(tr.post.x - x) <= reach + TRAP.handle.w / 2 && Math.abs(tr.post.y - y) <= TRAP.handle.high);
+    return this.traps.some((tr) => tr.phase === 'set' && tr.post.kind !== 'limb' && Math.abs(tr.post.x - x) <= reach + TRAP.handle.w / 2 && Math.abs(tr.post.y - y) <= TRAP.handle.high);
   }
 
   /**

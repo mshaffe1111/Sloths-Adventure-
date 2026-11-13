@@ -189,6 +189,11 @@ export interface WorldManifest {
    *  painted family the world's painter draws it with; `depth`: px under the gap's lower lip [min, max]; `clearStart`: no hollow this
    *  near the spawn, px */
   hurtFloor?: { lesson: string; art: string; depth: [number, number]; clearStart: number };
+  /** the world's creaky limb (SectionPiece.creak; gen2/creak.ts): the style its platform is drawn in (World 1: 'branch', drawn
+   *  notched as branchCreak), how long it holds once stood on (s, by setting), and the section `teaches` id of its lesson (every limb
+   *  laid up to the end of the lesson's section is never needed; after it one may be required anywhere, STAGE-RULES §1). A roll that
+   *  lays a creaky limb in a world with no row fails by name */
+  creak?: CreakRow;
   /** the stages of the world gen2 must never build (the signature stage, the guardian's lair) */
   handBuilt: string[];
   /**
@@ -309,6 +314,20 @@ export interface SectionPiece {
    * no animal or flag stands on or over them
    */
   crumble?: boolean;
+  /**
+   * a CREAKY LIMB (gen2/creak.ts, the world's `creak` row): a piece he stands on that gives way `creak.hold` s after he lands on it and
+   * drops him to what is under it; whole again on any set-back, grown back off screen 30-35 s after it went (engine.ts). Unlike a
+   * crumbling tile it may be on the main route and may be REQUIRED once its lesson is laid (Matt, 11-02: "required anywhere"); every
+   * limb up to the end of the lesson's section must never be needed (pipeline checkStage proves the stage without them)
+   */
+  creak?: boolean;
+}
+
+/** a world's creaky limb (WorldManifest.creak) */
+export interface CreakRow {
+  style: NonNullable<Platform['style']>;
+  hold: { easy: number; normal: number };
+  lesson: string;
 }
 
 /** what a socket can hold */
