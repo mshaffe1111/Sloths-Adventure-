@@ -10,6 +10,8 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **AT MOST 4 MEMBERS RUNNING AT ONCE** (Matt, 11-13 12:44 PM ET: "we need to limit how many we're running at one time... Not everything needs a
+  different helper"): prioritise; double up related jobs on one member (a finishing member hands its leftovers to a running one, not a new one).
 - **STAY AHEAD OF THE BURN (Matt, 11-13 12:43 PM ET):** the lead decides when to switch members out (fresh session at 40% context, members
   self-report it, D55); no testing of what can't affect the game (LAWS 5: docs/tools = fast gates); no re-running a gate already green
   on the same code; fewer members at once; medium effort for low-risk work. Where tokens really go: long sessions re-reading their
