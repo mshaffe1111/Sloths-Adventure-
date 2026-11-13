@@ -23,7 +23,8 @@ One holder per file; the lead passes a token only after the holder has pushed. T
 | src/game/gen2/pipeline.ts, gen2/types.ts, gen2/seedList.ts, levelCheck.ts, stageTime.ts, cameraFollow.ts | FA | (ask) |
 | src/game/engine.ts, src/game/types.ts | B14 (pods + gate wiring, own blocks) | B15 (bough/limb wiring, if any) |
 | gen2/worlds/w1.ts, stageTable.ts, stagePlan.ts, tools/perf/drawcheck.mjs | B15 (1-5 is laid first) | B14 (1-4's hook) |
-| .github/workflows/gates.yml | S1 (one line, routeHumps.test.ts) | whoever asks next |
+| .github/workflows/gates.yml | S1 (one line, routeHumps.test.ts) | ADD-LEVEL |
+| tools/perf/limits.json (scenarios only) | ADD-LEVEL (1-1) | B15 (1-5), then B14 (1-4) |
 New files are yours alone. Need a token? One line to the lead; carry on with other work meanwhile.
 - **Stills early (Matt, 10:23 AM: "just show me pictures"):** push a still of each new piece as soon as it draws (upright + sideways, in
   reference/qa-reports/<ID>/stills/), and send the lead the paths in one line. Matt judges the look from them.
