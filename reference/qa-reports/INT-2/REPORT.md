@@ -1,5 +1,5 @@
 # INT-2: integration for 0.9.7 and Matt's 1-3 test link (2026-11-12 ET). Branch `t-int-2` from origin/t-int-engine@d0276817
-Final head **465023ef** (code); this report after it. Every merge its own merge commit; root REPORT.md files moved to reference/qa-reports/<name>/.
+Step 3 ran on **465023ef** (the test link's head); the catalog rows after it on **613b3c94**; this report last. Every merge its own merge commit; root REPORT.md files moved to reference/qa-reports/<name>/.
 
 ## Merges, conflicts and how each was settled
 1. t-11-pass@36a4ef1c -> c3ee9a26; t-render-fixes@b8e98fac -> 70feb2f5; t-pit-polish@0e7c3e6b -> 9130cd03: no conflicts.
@@ -19,6 +19,10 @@ Final head **465023ef** (code); this report after it. Every merge its own merge 
    rule also re-placed 1-3's flags/petals/dress: STOPPED and reported; the lead accepted it (a).
 10. t-12-design@489ae984 -> 864314c1: tools/engine/library.ts poolReport = D12's rewrite (over F13's patch to the old one); W1C's root
    REPORT.md -> qa-reports/W1C/ (90a54102). t-render-3@18afc7b0 and t-12-design@6d2cb506 (D12's note) -> d68930d4: no conflicts.
+11. After Step 3 (the lead, 8:38 PM): 613b3c94 appends ART-W1's 14 drop-trap rows (catalog-rows-w1traps.csv) to CATALOG-MASTER.csv and
+   re-emits src/game/art/inventory/ (also syncs cast.json's B3-w1sunrise-far row, which ART-W1B changed in the CSV only). Inventory 9/9,
+   brickSlots + artUse 6/6, tsc / known / roadmap / generality PASS, seedlist 257 / 100 PASS, lock vs 465023ef 102/102 unchanged.
+   The 14 rows' status still reads "in game on t-w1-art2 (not merged)": the art director's words, left as written.
 Guard: `git ls-tree HEAD node_modules` empty after every merge.
 
 ## Step 3: every CLAUDE.md check once, on 465023ef
@@ -46,6 +50,5 @@ t-yield-2 (+~180 ms); every other merge flat within noise. Budget untouched. Own
 
 ## Left
 - buildcheck red (above): blocks 0.9.7 in CI, not tonight's link.
-- reference/art/catalog-rows-w1traps.csv (14 rows) not yet in CATALOG-MASTER.csv: waits for the lead (needs --emit + checks).
 - The lead's ROADMAP rows keep landing as "N-M h (a guess)", which roadmapcheck refuses (R-12).
 - t-designer-reach@e97542b4 (post-pass bands.md edit) not merged: never passed.
