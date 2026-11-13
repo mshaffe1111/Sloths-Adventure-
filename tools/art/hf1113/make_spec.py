@@ -245,6 +245,31 @@ def props5(seeds=(11, 23, 37, 53)):
     (H / 'spec-props5.json').write_text(json.dumps(spec, indent=1))
     print(len(items), 'stills')
 
-CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1, 'climb2': climb2, 'props2': props2, 'props3': props3, 'props5': props5, 'props4': lambda: props4(sys.argv[2])}
+
+# ---- props6: the dusk again from graded starts (duskstarts.py), lower strength so the light stays dusk; oro1: the flyer's frames
+# edited from the keeper oropendola-up-37 so every frame is the same bird (pokeygpu.py edits, no Pokey model)
+def props6(commit):
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/reference/art/hf1113/starts/'
+    items = [{'name': f'dusk2-far-s{s}-{sd}', 'start': 'dusk-far.png', 'prompt': DUSK, 'strength': s / 100, 'seed': sd, 'w': 2048, 'h': 1008}
+             for s in (42, 50) for sd in (11, 23)]
+    items += [{'name': f'dusk2-sky-s{s}-{sd}', 'start': 'dusk-sky.png', 'prompt': DSKY, 'strength': s / 100, 'seed': sd, 'w': 2048, 'h': 400}
+              for s in (42, 50) for sd in (11, 23)]
+    spec = {'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]}, 'base': base,
+            'neg': 'text, letters, watermark, frame, border, photo, 3d render, blurry, people, animals, buildings, daylight, blue daytime sky',
+            'items': items}
+    (H / 'spec-props6.json').write_text(json.dumps(spec, indent=1))
+    keep = ('Keep everything else exactly as in the picture: the same bird, the same chestnut-brown body, black head, pale blue cheek, '
+            'black bill with the orange tip, yellow tail, the same outline and painted cartoon style, the same size and place, facing '
+            'right, the same flat magenta background. Nothing else in the picture.')
+    edits = [{'name': 'oro1-down', 'src': 'b:art1113/stills/oropendola-up-37.png', 'w': 1328, 'h': 1024, 'seeds': [1, 2, 3],
+              'prompt': 'Change only its wings: both wings are now swept down below its body at the bottom of a wingbeat. ' + keep,
+              'neg': 'two birds, extra wings, extra legs, perched, branch, text, watermark, blurry, photo'},
+             {'name': 'oro1-mid', 'src': 'b:art1113/stills/oropendola-up-37.png', 'w': 1328, 'h': 1024, 'seeds': [1, 2, 3],
+              'prompt': 'Change only its wings: both wings are now spread straight out level to the sides, gliding. ' + keep,
+              'neg': 'two birds, extra wings, extra legs, perched, branch, text, watermark, blurry, photo'}]
+    (H / 'spec-oro1.json').write_text(json.dumps({'tag': 'oro1', 'edits': edits}, indent=1))
+    print(len(items), 'img2img;', 6, 'edits')
+
+CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1, 'climb2': climb2, 'props2': props2, 'props3': props3, 'props5': props5, 'props6': lambda: props6(sys.argv[2]), 'props4': lambda: props4(sys.argv[2])}
 if __name__ == '__main__':
     CMDS[sys.argv[1]]()
