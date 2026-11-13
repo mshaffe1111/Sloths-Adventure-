@@ -7,4 +7,5 @@
 4. New replaces old: delete score.ts's hump/dip correction once the route is right; re-score 1-1/1-2/1-3 both settings vs DIFFICULTY.md.
 5. inspect.ts --worlds 1 --stages 1-1,1-2,1-3 runs. Fast gates: tsc, tools tests, knowncheck, generality, roadmapcheck. REPORT.md.
 WRITE: tools/inspect/route.ts, tools/inspect/jumps.ts, tools/inspect/stages.ts, tools/inspect/routeHumps.test.ts (new),
-tools/difficulty/score.ts, reference/qa-reports/S1/*. ASK: gates.yml:93 gains tools/inspect/routeHumps.test.ts (ciTests rule).
+tools/difficulty/score.ts, reference/qa-reports/S1/*; added during the work (same defect, its pairs): tools/inspect/era.ts,
+tools/inspect/findSweep.mts, reference/qa-reports/R-165.59/calibration-main.jsonl (BOTS.md:11-12 recommit). ASK: gates.yml:93 gains tools/inspect/routeHumps.test.ts (ciTests rule).
