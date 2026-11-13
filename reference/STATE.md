@@ -814,3 +814,4 @@ lines); Matt sees them in the release.
   along the route). Kept: BC-FIX (release blocker; fix in, final gates), LATTICE (crude, 90 min). The lead's own turns are a real share of
   the burn: check-ins now ls-remote + subjects only, fewer messages. Since the reset (10 PM): 1-5 idea C, 1-5 design, 1-4 vine redesign x3,
   BC-FIX's fix, ENG-ASCENT WIP.
+- 2026-11-12 10:37 PM ET: ENG-ASCENT retired. WIP t-eng-ascent@7499d79f (untested, tsc clean): gen2 lays a tower up or down (tower.ts + toyTower fixture; UP clean on 10 seeds both settings, DOWN seed 1 Normal clean). LEFT: tests + planted, the lock check (touched levelCheck flag order, stageTime, types, seedList JOIN), bots, stills, a down catch case, the climb camera. Resume when 1-4's build is next.
