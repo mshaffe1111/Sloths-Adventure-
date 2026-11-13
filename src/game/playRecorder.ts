@@ -84,8 +84,9 @@ export function qaBuild(): boolean {
 /** the control test is on: #ctest in the address (the only part a shared Claude link passes on) or ?ctest=1, in any build, the live
  *  site included: the testers' link opens it there (Matt, 2026-10-29: "Only for that link. The full game should be unaffected"), and a
  *  player without that link never sees it */
-/** the stage the testers' link (#ctest on the live site) plays: 1-3, the designed level (Matt, 11-12 2:39 PM ET, R-165.157; 1-1 before) */
-export const CTEST_LEVEL_ID = '1-3';
+/** the stage the testers' link (#ctest on the live site) plays, ONE data value (R-165.157): 1-4, the vine-field climb (Matt, 11-13 12:02 PM ET),
+ *  if it passes his play on the test link tonight, else '1-3' (Matt, 11-12 2:39 PM ET); 1-1 before. Its front page: ControlTestGate.tsx CTEST_PAGES */
+export const CTEST_LEVEL_ID = '1-4';
 
 export function ctestEnabled(): boolean {
   if (STORE) return false;
