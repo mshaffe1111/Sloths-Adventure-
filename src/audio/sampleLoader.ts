@@ -4,6 +4,7 @@
  * that never call it simply get an empty sample bank, and every effect falls back to its synthesized version.
  */
 import type { AudioCore } from './core.ts';
+import { bytesOf } from './assetFetch.ts';
 
 const files = import.meta.glob('../assets/sfx/*.mp3', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
@@ -11,17 +12,6 @@ const files = import.meta.glob('../assets/sfx/*.mp3', { eager: true, query: '?ur
 function parseName(path: string): { group: string; i: number } | null {
   const m = /\/([A-Za-z]+)_(\d+)\.mp3$/.exec(path);
   return m ? { group: m[1], i: Number(m[2]) } : null;
-}
-
-/** the bytes behind a url; a data: url (the single-file preview build) is decoded directly, since a page may not be allowed to fetch it */
-export async function bytesOf(url: string): Promise<ArrayBuffer> {
-  if (url.startsWith('data:')) {
-    const bin = atob(url.slice(url.indexOf(',') + 1));
-    const out = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
-    return out.buffer;
-  }
-  return (await fetch(url)).arrayBuffer();
 }
 
 const loading = new WeakMap<AudioCore, Promise<void>>();

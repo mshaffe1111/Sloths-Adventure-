@@ -46,7 +46,9 @@ export const JUMP_CLEAR = 120;
 
 export function jumpEdges(src: GeneratedStage | Platform[]): JumpEdge[] {
   const all = Array.isArray(src) ? src : src.platforms;
-  const plats = all.filter((p) => !p.broken && p.type !== 'drift' && p.type !== 'moving' && p.type !== 'bouncy');
+  // (a hurt floor, gen2's thorn bed, is never stood on: touching it is a set-back to the ledge he left, so it is neither a landing nor the
+  // ground running on under a gap; a leap over a thorn pit is a real leap. The lead's ruling 11-12: a set-back floor, not footing)
+  const plats = all.filter((p) => !p.broken && p.type !== 'drift' && p.type !== 'moving' && p.type !== 'bouncy' && p.pit !== 'hurt');
   const sorted = [...plats].sort((a, b) => a.x - b.x);
   const out: JumpEdge[] = [];
   for (const a of sorted) {

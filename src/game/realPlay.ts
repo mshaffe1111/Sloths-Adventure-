@@ -11,6 +11,7 @@
 import { headlessCanvas } from './headlessDom.ts';
 import { GameEngine } from './engine.ts';
 import { helpLineOnScreen } from './helpLadder.ts';
+import { guideShown } from './guideShown.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { EXTRA_STAGES } from './extraStages.ts';
 import { KIT_STAGE_ID, kitStageConfig } from './kitStage.ts';
@@ -61,6 +62,16 @@ class FakeInput {
   jumpBuffer = 0;
   punchBuffer = 0;
   kickBuffer = 0;
+  /** as InputEngine.dropPresses: the engine drops a press latched while it held the world (a respawn, a resume, an entrance's end) */
+  dropPresses() {
+    this.state.jumpPressed = false;
+    this.state.punchPressed = false;
+    this.state.kickPressed = false;
+    this.state.megaPunchPressed = false;
+    this.jumpBuffer = 0;
+    this.punchBuffer = 0;
+    this.kickBuffer = 0;
+  }
   update(dt: number) {
     if (this.jumpBuffer > 0) {
       this.jumpBuffer -= dt;
@@ -119,10 +130,11 @@ export class RealPlay {
   /** keep him from being hurt (default) */
   safe = true;
 
-  constructor(readonly id: string, readonly seed: number) {
+  /** (`cfg`: the stage's config with a test's own change, e.g. a fixture's travel; unset is the game's) */
+  constructor(readonly id: string, readonly seed: number, cfg: LevelConfig = levelConfig(id)) {
     setLayoutVariant(seed);
     const noop = () => {};
-    const e = new GameEngine(headlessCanvas(), levelConfig(id), this.input as never, {
+    const e = new GameEngine(headlessCanvas(), cfg, this.input as never, {
       onProgressUpdate: noop, onVictory: noop, onDefeat: noop, onGameOver: noop,
       // (a line whose moment has passed: noted, so the tests can take it down as Dot's guide does)
       onGuide: (text: string, _s: number, passed?: boolean) => {
@@ -135,11 +147,14 @@ export class RealPlay {
     // (World 5's spiders crouch only in full view on the screen, w5Kit SPIDER5.edge: there the camera is play, not paint, and runs)
     for (const m of COSMETIC) if (!(m === 'updateCamera' && (e.w5 || e.mc))) e[m] = noop;
     const guide = e.guide.bind(e);
-    e.guide = (text: string, seconds: number) => {
+    e.guide = (text: string, seconds: number, o?: { teach?: true }) => {
       this.said.push({ text, x: e.player.x, y: e.player.y, t: e.gameTime });
-      guide(text, seconds);
+      // (and what the line is, as the stage says: its own teach line, StageHint.teach)
+      guide(text, seconds, o);
       // (no bubble here: a help ladder line counts as on screen at once, helpLadder.ts helpLineOnScreen; DotGuide.tsx reports it in play)
       helpLineOnScreen(text);
+      // (and every line counts as shown at once: the stuck helper's told and World 5's hold hang off it, guideShown.ts)
+      guideShown(text);
     };
     e.loseLife = () => {
       this.died = true;

@@ -80,9 +80,9 @@ function sweep(seed: number, setting: 'normal' | 'easy', brief = true) {
   return { lost, wrong, backs, solids: solids.length };
 }
 
-// (listed seeds of the re-laid 1-1, INT-1-1: the first run's 4106, and 982 and 1025, which lay w1-log-chain-rise; the 11-10 window's
+// (listed seeds of the re-laid 1-1, re-pinned by P11 on its rebuilt list: the first run's 9800, and 982 and 24432, which lay w1-log-chain-rise; the 11-10 window's
 // seeds 3747, 15458 and 19582 are no longer on the list and no longer build)
-const SWEEP = [4106, 982, 1025];
+const SWEEP = [9800, 982, 24432];
 for (const setting of ['normal', 'easy'] as const) {
   for (const seed of SWEEP) {
     test(`1-1 ${setting} seed ${seed}: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall`, () => {

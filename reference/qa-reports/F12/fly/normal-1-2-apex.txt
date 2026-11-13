@@ -1,0 +1,13 @@
+
+[apex] normal: highest his feet rise over the take-off floor (px), standing start, no piece to land on
+               single hold     97.8
+          double hold best    188.2     f2=2min f2 2-12: 180.0
+              single flick     97.2
+         double flick best    186.2     f2=6min f2 2-12: 172.2
+                single tap     61.7
+           double tap best    124.2     f2=3min f2 2-12: 73.2
+        bounce (Jump free)    197.6
+        bounce (Jump held)    198.1
+   bounce+double hold best    288.3     f=12
+  bounce+double flick best    287.9
+  (bounce figures are over the FLOOR; the cap is 30 px up, so over the cap = figure - 30)

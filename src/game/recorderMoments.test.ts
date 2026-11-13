@@ -1,5 +1,5 @@
 // The testers' recorder moments (the lead, 11-06: what else the data should capture), each planted in the real engine (realPlay.ts):
-// pickup, softFall, dot, move (the first double jump and the first bounce of a stage, once each), and section in plain words. The pause
+// pickup, softFall, dot, move/use (the first double jump and bounce of a stage `move`, every later one `use`: R-165.58), and section in plain words. The pause
 // and restart moments are App.tsx's (PauseMenu's taps); they are checked in the browser with the rest (tools/perf/clipcheck.mjs walks
 // the testers' link) and named here only as a reminder.
 import test from 'node:test';
@@ -40,7 +40,7 @@ function bare(r: RealPlay, extra: Platform[] = []) {
   return e;
 }
 
-test("recorder 'move': the first double jump and the first bounce of a stage, once each, with x; a new stage notes them again", () => {
+test("recorder 'move': the first double jump and the first bounce of a stage are 'move' with x, the next ones 'use'; a new stage starts over", () => {
   const r = new RealPlay('1-1', 1);
   bare(r, [P(9002, 1600, 680, 70, 20, 'bouncy', undefined)]);
   const { log, stop } = listen();
@@ -54,6 +54,7 @@ test("recorder 'move': the first double jump and the first bounce of a stage, on
     const dbl = log.filter(([w, d]) => w === 'move' && d.startsWith('double'));
     assert.equal(dbl.length, 1, JSON.stringify(log));
     assert.match(dbl[0][1], /^double \d+$/);
+    assert.equal(log.filter(([w, d]) => w === 'use' && d.startsWith('double')).length, 1, JSON.stringify(log));
     // the mushroom: dropped onto it
     r.fly(1635, 560, 0, 200, 1);
     for (let i = 0; i < 30; i++) r.frame({});
@@ -61,11 +62,13 @@ test("recorder 'move': the first double jump and the first bounce of a stage, on
     for (let i = 0; i < 30; i++) r.frame({});
     const bnc = log.filter(([w, d]) => w === 'move' && d.startsWith('bounce'));
     assert.equal(bnc.length, 1, JSON.stringify(log));
+    assert.equal(log.filter(([w, d]) => w === 'use' && d.startsWith('bounce')).length, 1, JSON.stringify(log));
     // a restart: noted again
     recorder.stageStart();
     r.fly(900, 400, 0, 0, 1);
     r.frame({ press: true, jump: true });
     assert.equal(log.filter(([w, d]) => w === 'move' && d.startsWith('double')).length, 2);
+    assert.equal(log.filter(([w, d]) => w === 'use' && d.startsWith('double')).length, 1);
   } finally {
     stop();
   }
@@ -98,6 +101,10 @@ test("recorder 'dot': the line Dot really says, by its review id (old words or n
   const { log, stop } = listen();
   try {
     (r as unknown as { e: { guide: (t: string, s: number) => void } }).e.guide('Jump the little gaps', 3);
+    // (logged once Dot has shown it, not at the send: guideShown.ts, audit C-03. RealPlay reports it shown at once; the engine reads it
+    // on its next frame)
+    assert.deepEqual(log.filter(([w]) => w === 'dot'), [], 'not at the send');
+    r.frame();
     assert.deepEqual(log.filter(([w]) => w === 'dot'), [['dot', 'hint.1-1.gaps']]);
   } finally {
     stop();
@@ -155,12 +162,16 @@ test("recorder 'dot': the first-run coach's line (its old words, which the revie
 
 test("recorder versions: the 'env' and every 'gen2' moment carry the build's commit, the seed list's version and the test round", async () => {
   const { runVersions, seedListVersion, TEST_ROUND, GIT_COMMIT } = await import('./testRound.ts');
-  const { PROVEN_SEEDS } = await import('./gen2/provenSeeds.ts');
+  const { PROVEN_INDEX } = await import('./gen2/provenIndex.ts');
+  const { listVersion, loadSeedList, provenList } = await import('./gen2/seedList.ts');
   assert.match(runVersions('1-1'), /^build \S+ list [0-9a-f]{8} round .+$/);
   assert.ok(TEST_ROUND.length > 0 && GIT_COMMIT.length > 0);
   // the list's version follows the list: the same list the same, a changed one different
   assert.equal(seedListVersion('1-1'), seedListVersion('1-1'));
-  assert.ok((PROVEN_SEEDS as Record<string, unknown>)['1-1'], '1-1 has a proven list');
+  assert.ok(PROVEN_INDEX['1-1'], '1-1 has a proven list');
+  // (the version is read from the index, without the list in hand: it is the loaded list's own hash)
+  assert.ok(await loadSeedList('1-1'));
+  assert.equal(seedListVersion('1-1'), listVersion(provenList('1-1')!));
   assert.equal(seedListVersion('no-such-stage'), 'none');
   // the gen2 moment, as the engine sends it: the versions ride after it, and the survey's run line is the same
   const lines: unknown[][] = [];

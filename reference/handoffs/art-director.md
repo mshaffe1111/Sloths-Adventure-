@@ -1,15 +1,43 @@
-# Hand-off: the art director role (2026-11-07, to the Content agent)
+# Hand-off: the art director role (Content), rewritten 2026-11-11 (R-165.85: the 11-09 batch passed; the 11-11 batch cut)
 
-From the art director (session_01FhBbYLmXQhDLjAzTexXzo3), stopping at the lead's word for the 6-role team (reference/TEAM.md on
-ccr-23292c36-550qmt). Everything below was checked in git when this was written: 2026-11-07 6:55 PM ET by `date`. This branch is
-art-director @ 6c6ec67b plus this note. Read it top to bottom before touching art; the traps are at the end.
+Last task: R-165.85 (cut only), Matt's 15 sheets of 11-09, by the Content member on branch t-c2-art-cut. The earlier note (from the
+art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0c. Hugging Face picture list 1 (R-165.100): done, $2.04 of the $6.50 cap
+- 16 pieces at about 2000 px in `src/assets/w1-1111c/` (HF1-*); the stairs and the medium stump go to list 2 (redo/); catalogue `reference/art-incoming/hf-list1/`. Specs and scripts:
+  `tools/art/hflist1/` (starts.py, make_specs.py, wrapfix.py, catalog.py). Starts live in reference/ (tools/ ignores pictures).
+- Strips tile (wrap colour difference 0.9-2.5); the native pass alone did not, wrapfix.py's cross-fade does. Its alpha rule (hf-art.md): blend RGB only; ramped, snapped alpha plus a 1 px rim, never a straight alpha cross-fade (ghosts).
+- The palisade is far background in W2/W10 only until list 2.
+- Still angled: the stairs and the palisade (a side-on start is needed). Every job is in reference/art/HF-SPEND.md.
+
+## 0b. Matt's 11-11b sheets (fourth batch, from the lead's prompts): cut, not placed
+- 45 kept in `src/assets/w1-1111b/`, none rejected; catalogue `reference/art-incoming/matt-2026-11-11b/cut/`. 1024 px sheets (no 600 px floor).
+- Soft art on magenta (mist, steam, waterfall, glow): `softfix.py` unmixes it as an overlay; `waterfix.py`, `pitfix.py` fix leftover hue.
+- The ground strips don't tile as painted (rounded ends); angled pieces and too-small set pieces are flagged in CATALOG.md.
+
+## 0a. Matt's 11-11 sheets (third batch): cut, not placed
+- 54 kept in `src/assets/w1-1111/`, 1 rejected (the smeared ledge on 06); catalogue: `reference/art-incoming/matt-2026-11-11/cut/`.
+- Fills root steps, full-size rocks, mid-size stump steps, cairns, ladders, a short rope bridge. Five pieces are "later world"
+  (basalt, sandstone arch, geode, black spheres, white jagged rock; the last reads as danger).
+- Only N-08-d passes the 3 px flatness test; mossy blocks (N-12-b, N-13-a) and the island N-02-e come close: stand lines by hand.
+- Size trick: zero RGB under alpha 0 and save optimised; lossless for what shows, ~5% smaller. The 11-09 PNGs haven't had it.
+
+## 0. Matt's 11-09 sheets: cut, not placed (passed the Critic at eddc6b0c)
+- 54 pieces kept (attempt 2: the lead allowed six under 600 px), full size, in `src/assets/w1-1109/` (no code refers to them). Catalogue, contact sheets by kind, rejected cuts and
+  the cutter: `reference/art-incoming/matt-2026-11-09/cut/` (CATALOG.md first).
+- Next: the 1-1 re-lay (R-165.72) and Matt's mock-up sheet pick from these. Platform logs: M-14-a, M-15-a/b (M-15-a/b are near
+  twins). Side-on lily pads: M-03-a to d (sheet 02 is top view, never platforms). Puzzle pieces for R-165.81: M-01-a to d, M-04-a to d.
+- Flags still open: M-04-b crate has painted words; M-06-e pitcher plants read as danger; M-04-d lever has one pose only.
+- Walk lines pass the critic's test (at least 50% within 3 px of level) or are "by hand": only M-13-b's crown, M-14-a/b and M-15-a/b
+  have a line. Blocks, soft landings and lily pads are by hand; their silhouette reading is in the notes.
+- 4 cuts rejected: M-02-c reeds, M-12-c loose leaf, M-12-f fern, M-12-g spider plant (mauve between its leaves).
 
 ## 1. What's open
 | Item | State | Where |
 |---|---|---|
 | 1-1 near strip repaint | Done and accepted by the lead (11-06, 10:10 AM ET). **NOT in the game**: engine-core's `src/assets/backdrops/w1sun2-near.webp` is still the old log-pile strip (sha 85b0f79f…; mine is 64294b6d…). Waiting on the move and a wide-pan still. | `reference/art/near11/` (A = pick, B = backup), README there |
 | Watch on the near strip | The big right-hand boulders are its brightest shapes. Check they don't read as standable in a wide pan; also check the tile seam across 3 tiles. | lead, 11-06 |
-| Earth ledges floating | **Pending Matt.** Until he answers: "may float: pending Matt; use from the floor up only". | §4 |
+| Earth ledges floating | Answered by Matt 11-07: platform-looking islands may float. | §4 |
 | G-dress / G-kin gates | Spec accepted, queued for engine-core. The art half isn't started: tagging the dressing sprites (`dressTags.json`) with a contact sheet. | `reference/art/GATE-SPEC-dress-kin.md` |
 | Phase A code fixes, Worlds 2-10 | Scheduled, not started (rule: no other world is built until 1-1 and 1-2 prove). 27 lines, each with a stage and a still. | `reference/art/PHASE-A-FIXES.md` |
 | Flowering vine | The petals read grey (the de-pink step greyed them). Re-cut without de-pink, or wait for Matt's re-roll R-02. | `reference/art/cut/up3x/README.md` |
@@ -59,13 +87,12 @@ art-director @ 6c6ec67b plus this note. Read it top to bottom before touching ar
 7. **Show-first stills** before anything goes in: `tools/art/w1keepers/showfirst.py` composites cuts into a real frame from
    `tools/art/kitaudit/shoot.mjs`. Results in `reference/art/show-first/`.
 
-## 4. The floating rule (Matt, via the lead, 11-06 11:31 AM ET)
-- **Walked-on platforms may float** with no support: boughs, logs, planks.
-- **Rocks, stones, pads and props never float.**
-- **Earth ledges / floating earth islands: pending Matt.** Use them from the floor up only until he answers. The new catalog (§6) tags
-  10 islands "FLOAT CANDIDATE" for this reason.
-- Related rule (Matt 11-06 12:15 AM): never stack unrelated pieces (a trunk on a plank looks tacky). Vertical climbs are one picture:
-  the earth walls, the fungus trunks. That is G-kin.
+## 4. The floating rule (Matt, 2026-11-07, STAGE-RULES "What may float"; replaces the 11-06 rule)
+- "If it looks like it can be a platform, it can float." Logs, planks and earth islands that read as platforms may float.
+- Skinny things (boughs, branches, vines, ropes) attach to a trunk, post, root or rope.
+- Rocks, stump-steps, decor (bushes and ferns included), hide spots and caves are grounded, never floating.
+- Every catalogued piece carries one class: may float, attached or grounded. Lily pads: may float, on water only.
+- Related rule (Matt 11-06 12:15 AM): never stack unrelated pieces (a trunk on a plank looks tacky). Vertical climbs are one picture.
 
 ## 5. The kit audit (11-06)
 - `reference/art/KIT-AUDIT.md` + stills in `reference/art/kit-audit/`.
@@ -87,7 +114,8 @@ art-director @ 6c6ec67b plus this note. Read it top to bottom before touching ar
 |---|---|
 | The 11-05 Gemini sheets (07-43) | `reference/art-incoming/gemini-2026-11-05/` + README (the lead's read per sheet) |
 | My cuts from them (111: 107 keep, 4 hold) | `reference/art/cut/` on art-director: PNGs, `manifest.json` (world tags by KIN), contact sheets, README |
-| **The new weekend cuts: 91 pieces** | **branch `art-raw-2026-11-07`, folder `cut/`**: `CATALOG.md` (counts per kind, W1 gaps, the next picture list), `catalog.csv` (one row per piece, measured flat walkable top), `kept/`, `sheets/` (cyan line = walkable top), `rejected/`, `cutter/` |
+| **Matt's 11-09 cuts: 48 pieces** | `src/assets/w1-1109/` + `reference/art-incoming/matt-2026-11-09/cut/` (CATALOG.md, catalog.csv, sheets/, rejected/, cutter/) |
+| **The weekend cuts: 91 pieces** | **branch `art-raw-2026-11-07`, folder `cut/`**: `CATALOG.md` (counts per kind, W1 gaps, the next picture list), `catalog.csv` (one row per piece, measured flat walkable top), `kept/`, `sheets/` (cyan line = walkable top), `rejected/`, `cutter/` |
 | Painted kits in the game | W1: `src/assets/proto/props-atlas.webp` (+ `props2-atlas`, `protoAtlasData.ts`); W2-W10: `src/assets/kits/w<N>.webp`, `kitAtlasData.ts` |
 | 1-1's cut atlas | `src/assets/w1to4art/w1-cut.webp/.json` (engine-core) |
 | Backdrop strips | `src/assets/backdrops/<stem>-{far,sky,mid,near}.webp`; 1-1 plays `w1sun2` (`stageBackdrops.ts`) |
@@ -122,5 +150,18 @@ already have rocks and a root arch (`w1-hide-root-arch`), so check both sets bef
 10. **Time stamps**: take them from `TZ=America/New_York date` in the same step, never from memory (I sent one 7 minutes off; the lead
     caught it).
 11. **The earth wall soil** is warmer than W1's bank. Use the `-w1.png` tinted files in W1; keep the originals for W3's darker kin.
+
+12. **Matt's printed labels merge into pieces** when the text sits within ~60 px of the art (the cutter's merge distance). The 11-09
+    cutter clears them by glyph detection; a word it misses (M-09 "Giant Ce") needs a `labelbox`. Check every piece's bottom edge.
+13. **Painted fades and shadows in the ground colour** (M-05's trunk top, M-11's floor shadow under the arch) key as solid pink-red.
+    Model them as ground plus an overlay and unmix (cutter/fadefix.py, floorfix.py); erasing by hue leaves holes.
+14. **speckkill erases art painted in the ground's hue** (M-12-f's magenta fern stems went with the ground). Use it per sheet, then look.
+15. **The pink scan must catch dark magenta too** (r>g+45, b>g+25 within 8 px of the edge; the critic found 120,60,95 spikes the
+    bright-only scan missed). Run `edgefix.py` on every piece, then the scan; painted pink (lotus, Victoria rims) is checked at 2x by eye.
+16. **The auto walk line is only a line if it's flat**: measure the share within 3 px of level; under 50% it is "by hand".
+17. **Prompt text painted on a sheet** (11-11 sheet 09): the glyph finder misses big bold text; set `labelbox` boxes that stay clear
+    of the art, then `specks.py` for stray dots. A smeared piece touching a good one (sheet 06): clear it with boxes stepped along the
+    good piece's edge, keep a raw crop as its rejected record.
+18. **Never pipe the builder into `head`**: a broken pipe stops it half way and leaves contact sheets missing.
 
 Stopping now.

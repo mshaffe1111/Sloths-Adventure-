@@ -2,6 +2,8 @@ import type { Rope } from './types.ts';
 import { ropeYAt } from './rope.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { ROPE_KIT } from './ropeKitData.ts';
+import { TRUNK_TIE, drawTrunk, trunkScale, vineTile } from './castArt.ts';
+import { canvasLost } from './canvasLost.ts';
 
 /**
  * Draws shimmy ropes in painted art (Matt, 2026-10-28: the stroked rope with its dashed twist and the gradient posts with yellow
@@ -10,6 +12,8 @@ import { ROPE_KIT } from './ropeKitData.ts';
  * is tied on (rope-kit.webp, tools/art/rope/pack_kit.py). Under Pokey's weight the rope gives: a taut rope with a load on it bends
  * to a V at the load, deepest when he is in the middle (ropeDip). Only the drawing gives; the rope's physics (rope.ts) is unchanged,
  * and his hands are drawn on the rope where it is drawn (heroRope.ts, PlayerState.hangDip).
+ * A rope whose data says `look: 'vine'` (Rope.look; World 1, where nothing is made) is World 1's painted vine laid the same way along
+ * the same sag, tied in the leaves of two living trees' arms instead of to posts (castArt.ts vineTile and drawTrunk, ART-W1B's pieces).
  */
 
 export const ROPE_KIT_URL = new URL('../assets/props/rope-kit.webp', import.meta.url).href;
@@ -61,8 +65,10 @@ export interface RopeLoad {
   amt: number;
 }
 
+/** a painted rope's tile lying left to right (its px): where it is on its sheet, the rope's middle row and its thickness */
+type RopeTile = { x: number; y: number; w: number; h: number; mid: number; thick: number };
 /** the painted rope laid through `pts` (a polyline), its twist running on along the length */
-function layRope(ctx: CanvasRenderingContext2D, im: CanvasImageSource, pts: ArrayLike<readonly [number, number]>, thick = ROPE_THICK, src = ROPE_KIT.tile) {
+function layRope(ctx: CanvasRenderingContext2D, im: CanvasImageSource, pts: ArrayLike<readonly [number, number]>, thick = ROPE_THICK, src: RopeTile = ROPE_KIT.tile) {
   const t = src;
   const k = thick / t.thick;
   const tileLen = t.w * k;
@@ -152,9 +158,13 @@ export function drawRopes(
   const W = ctx.canvas.width;
   const H = ctx.canvas.height;
   for (const r of ropes) {
-    if (flat && (m.a * (r.x1 + POST_W * 3) + m.e < 0 || m.a * (r.x0 - POST_W * 3) + m.e > W)) continue;
+    // (a vine's trees stand back from its ends, their crowns over the tie: Rope.look)
+    const vine = r.look === 'vine';
+    const tk = vine ? trunkScale(r.y, Math.max(r.g0, r.g1)) : 0;
+    const side = vine ? TRUNK_TIE.back * tk : POST_W * 3;
+    if (flat && (m.a * (r.x1 + side) + m.e < 0 || m.a * (r.x0 - side) + m.e > W)) continue;
     // (or wholly above or below it: the post caps reach a little over the tie, the poles down to the ground)
-    if (flat && m.d > 0 && (m.d * (Math.max(r.g0, r.g1) + 20) + m.f < 0 || m.d * (r.y - 80) + m.f > H)) continue;
+    if (flat && m.d > 0 && (m.d * (Math.max(r.g0, r.g1) + 20) + m.f < 0 || m.d * (r.y - (vine ? TRUNK_TIE.up * tk : 80)) + m.f > H)) continue;
     // the rope is only a rope to someone who has learned the skill; before that it is still drawn (it is part of the jungle)
     const n = Math.max(2, Math.ceil((r.x1 - r.x0) / SLICE));
     const pts = ropePts;
@@ -169,15 +179,29 @@ export function drawRopes(
       const i = pts.findIndex(([x]) => x > ld.x);
       if (i > 0) pts.splice(i, 0, [ld.x, ropeDrawY(r, ld.x, ld)]);
     }
-    if (im) {
+    const v = vine ? vineTile() : null;
+    if (v) {
+      // World 1's vine: the painted vine along the sag, then a living tree at each end, its leaves over the vine's tied end
+      layRope(ctx, v.src, pts, ROPE_THICK, v.tile);
+      // (a tree off to the side of the screen is skipped)
+      const treeOn = (x: number, g: number, reach: 1 | -1) => {
+        if (!flat) return true;
+        const k = trunkScale(r.y, g);
+        const a = x - reach * TRUNK_TIE.back * k;
+        const b = x + reach * TRUNK_TIE.fore * k;
+        return m.a * Math.max(a, b) + m.e >= 0 && m.a * Math.min(a, b) + m.e <= W;
+      };
+      if (treeOn(r.x0, r.g0, 1)) drawTrunk(ctx, r.x0, r.y, r.g0, 1);
+      if (treeOn(r.x1, r.g1, -1)) drawTrunk(ctx, r.x1, r.y, r.g1, -1);
+    } else if (im && !vine) {
       layRope(ctx, im, pts);
       // (a post off to the side of the screen is skipped)
       const postOn = (x: number) => !flat || (m.a * (x + POST_W * 3) + m.e >= 0 && m.a * (x - POST_W * 3) + m.e <= W);
       if (postOn(r.x0)) paintedPost(ctx, im, r.x0, r.g0, r.y);
       if (postOn(r.x1)) paintedPost(ctx, im, r.x1, r.g1, r.y);
     } else {
-      // (the painted pieces are still on their way: a plain rope for a moment, so it never vanishes)
-      ctx.strokeStyle = '#9a7656';
+      // (the painted pieces are still on their way: a plain rope (or vine) for a moment, so it never vanishes)
+      ctx.strokeStyle = vine ? '#7d8a36' : '#9a7656';
       ctx.lineWidth = ROPE_THICK * 0.8;
       ctx.lineCap = 'round';
       ctx.beginPath();
@@ -187,10 +211,15 @@ export function drawRopes(
   }
 }
 
-/** the rope's tile re-coloured once per tint (multiplied by `tint`, its own alpha kept): silk, glowing vine, jungle liana */
+/** the rope's tile re-coloured once per tint (multiplied by `tint`, its own alpha kept): silk, glowing vine, jungle liana. Baked again
+ *  when the phone has taken that canvas back (canvasLost.ts, LESSONS D6; the vine tile's pair, castArt.ts vineTileFrom) */
 const tinted = new Map<string, HTMLCanvasElement>();
-function tintedTile(im: HTMLImageElement, tint: string): HTMLCanvasElement | null {
+export function tintedTile(im: HTMLImageElement, tint: string): HTMLCanvasElement | null {
   let c = tinted.get(tint);
+  if (c && canvasLost(c, 'tinted rope tile')) {
+    tinted.delete(tint);
+    c = undefined;
+  }
   if (c) return c;
   if (typeof document === 'undefined') return null;
   const t = ROPE_KIT.tile;

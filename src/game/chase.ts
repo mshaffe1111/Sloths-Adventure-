@@ -79,8 +79,15 @@ export function caught(s: ChaseState, x: number): boolean {
 
 /** start again at a flag: the front well behind it, waiting a moment (and not set off at all if the flag is before the chase) */
 export function restartAt(s: ChaseState, plan: ChasePlan, flagX: number): void {
+  // a flag before the branch: the chase as at the stage start (it sets off CHASE.behind behind him when he reaches it). The front kept
+  // 520 px behind THIS flag used to be kept when it started (stepChase keeps the further-back front), so a fall before the branch left
+  // the collapse thousands of px behind for the rest of the run (the Critic, EN-F, on A-07's restart at every respawn)
+  if (flagX < plan.start) {
+    Object.assign(s, newChase(plan));
+    return;
+  }
   s.front = flagX - CHASE.behind;
-  s.active = flagX >= plan.start;
+  s.active = true;
   s.hold = CHASE.hold;
 }
 

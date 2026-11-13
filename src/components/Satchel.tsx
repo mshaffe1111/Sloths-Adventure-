@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { readStageResult } from '../game/stageBest.ts';
 import { PaintedIcon, paint, type AnyIcon } from './icons/PaintedIcon.tsx';
 import { FINDS, ALL_FINDS } from '../game/finds.ts';
 import { BADGES, type BadgeStore, type EvalContext } from '../game/badges.ts';
@@ -83,9 +84,11 @@ export const Satchel: React.FC<Props> = (p) => {
   // the journal's stages: the game's list, and Thornbark's secret hollow on World 7's page after 7-10 once he is beaten (never a tease)
   const journalStages = useMemo(() => {
     if (!thornHeart) return levels;
+    // (its result, saved like any stage's since 2026-11-11; a save that beat him before that has none, and keeps the three it showed)
     let stars = 3;
     try {
-      stars = JSON.parse(localStorage.getItem(`sloth_lvl_${THORNBARK_LEVEL.id}`) || 'null')?.stars || 3;
+      const kept = readStageResult(localStorage.getItem(`sloth_lvl_${THORNBARK_LEVEL.id}`))?.stars;
+      if (typeof kept === 'number') stars = kept;
     } catch {
       /* no storage: three stars, he was beaten */
     }

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildSave, parseSave, applySave, resetProgress, isSaveKey, checksum, saveFileName, SAVE_FORMAT, type Store } from './saveFile.ts';
+import { buildSave, parseSave, applySave, resetProgress, isSaveKey, checksum, saveFileName, SAVE_FORMAT, MAX_ENTRY_CHARS, type Store } from './saveFile.ts';
 
 function memStore(init: Record<string, string> = {}): Store & { m: Map<string, string> } {
   const m = new Map(Object.entries(init));
@@ -22,7 +22,9 @@ test('a save holds only the game entries, with a truthful summary', () => {
   const s = buildSave(memStore(sample), new Date('2026-10-18T12:00:00Z'));
   assert.equal(s.format, SAVE_FORMAT);
   assert.ok(!('sloth_hint_v3' in s.data) && !('some_other_site_key' in s.data));
-  assert.equal(s.summary.stagesCleared, 3);
+  // (Thornbark's S-1 is not a stage cleared nor stars in the summary: before EN-F his result was never written, so no player ever saw it
+  // counted; EN-F saves#12 keeps it so, the lead's call to change. The secret shows as `secret` below)
+  assert.equal(s.summary.stagesCleared, 2);
   assert.equal(s.summary.stars, 5);
   assert.equal(s.summary.worldsStarted, 1);
   assert.equal(s.summary.secret, true);
@@ -69,8 +71,9 @@ test('unknown keys inside a save are never written', () => {
 });
 
 test('only game entries count as save keys', () => {
-  for (const k of ['sloth_lvl_1-1', 'sloth_lvl_10-10', 'sloth_lvl_S-1', 'sloth_story_w3', 'sloth_story_n1', 'sloth_story_g1', 'sloth_story_g11', 'sloth_secret_gate', 'sloth_game_muted']) assert.ok(isSaveKey(k), k);
-  for (const k of ['sloth_hint_v3', 'sloth_lvl_', 'sloth_lvl_1-1; drop', 'token', '__proto__']) assert.ok(!isSaveKey(k), k);
+  for (const k of ['sloth_lvl_1-1', 'sloth_lvl_10-10', 'sloth_lvl_S-1', 'sloth_story_w3', 'sloth_story_n1', 'sloth_story_g1', 'sloth_story_g11', 'sloth_secret_gate']) assert.ok(isSaveKey(k), k);
+  // (the sound settings are the device's since audit C saves #8: a loaded file must not change this phone's mute)
+  for (const k of ['sloth_hint_v3', 'sloth_game_muted', 'sloth_music_vol', 'sloth_sfx_vol', 'sloth_lvl_', 'sloth_lvl_1-1; drop', 'token', '__proto__']) assert.ok(!isSaveKey(k), k);
 });
 
 test('file name carries the date', () => {
@@ -111,9 +114,9 @@ test('a save with every trophy earned still loads (the Trophy Room record is far
   const r = parseSave(JSON.stringify(buildSave(s)));
   assert.ok(r.ok, r.ok ? '' : r.reason);
   if (r.ok) assert.equal(r.save.data['sloth_badges'], record);
-  // a stage result is still held to the small limit
+  // an entry over the one entry limit is still refused (R-165.117 made it one limit for every key, saveRoundTrip.test.ts)
   const bad = buildSave(s);
-  bad.data['sloth_lvl_1-1'] = JSON.stringify({ completed: true, junk: 'x'.repeat(500) });
+  bad.data['sloth_lvl_1-1'] = JSON.stringify({ completed: true, junk: 'x'.repeat(MAX_ENTRY_CHARS) });
   bad.checksum = checksum(bad.data);
   assert.equal(parseSave(JSON.stringify(bad)).ok, false);
 });

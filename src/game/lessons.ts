@@ -1,9 +1,9 @@
 /**
- * lessons — the first time each new thing shows up, the game stops and explains it, once.
+ * lessons — the first time each new thing shows up, Dot explains it, once.
  *
- * A lesson is a card with Pokey's face, a title, and a few "do this, get that" lines for the way this player is controlling the game (touch
+ * A lesson is a few "do this, get that" lines for the way this player is controlling the game (touch
  * screen, thumb pad, or keyboard). The engine spots the first foe, the first climbable trunk, the first swinging vine and so on ahead of the hero
- * (`pickLesson`), pauses, and the app shows the card (components/LessonCard.tsx). A lesson counts as shown once Dot's line for it has been
+ * (`pickLesson`), and Dot says it as one of her lines, in play (components/dot/DotGuide.tsx; no card, no pause). A lesson counts as shown once Dot's line for it has been
  * up its minimum time (dotSay.ts), and a New Game clears what has been shown (dotMemory.ts), so it teaches it all again. `?lessons=off` skips them, `?lessons=all` shows every one again (for trying them out).
  */
 import { controlStyle } from './controlPrefs.ts';
@@ -319,6 +319,9 @@ export interface LessonScene {
   /** the puzzle rooms' spans: no jump's lesson at a room's set pieces (a "Flick up just before the edge" at 8-2's hammock well read
    *  as the answer to the puzzle; World 8 builder, 2026-10-29) */
   rooms?: readonly { x0: number; x1: number }[];
+  /** an animal the stage teaches by its own line (one under a set drop trap: the trap's teach line, StageHint.teach): the stock foe
+   *  lesson leaves it to that line, and comes at an animal the stage does not teach (1-3's bare branch). Left out: none */
+  ownTeach?: (e: { x: number; y: number }) => boolean;
 }
 
 /** what a lesson's done-check reads: the stage's things (their collected and defeated flags) and his hearts */
@@ -395,6 +398,7 @@ export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonI
 
   for (const e of s.enemies) {
     if (e.defeated || e.type === 'boss' || !near(e.x, e.y, NEAR.foe)) continue;
+    if (s.ownTeach?.(e)) continue;
     if (want('foe')) return 'foe';
     if (e.type === 'eagle' && want('eagle')) return 'eagle';
     // (not World 5's ground spiders, which a stomp does beat: Dot had just said "or stomp it" when this said "Don't stomp this one")

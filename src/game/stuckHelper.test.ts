@@ -12,10 +12,21 @@ function hop(w: StuckWatch, x: number, wall: boolean, opts: { x2?: number; y2?: 
   return spoke;
 }
 
-test('stuck-helper: three single jumps at a tall wall, landing where they began, and Dot speaks once', () => {
+test('stuck-helper: three single jumps at a tall wall, landing where they began, and Dot speaks once (once her line is shown)', () => {
   const w = new StuckWatch();
-  const said = Array.from({ length: STUCK_TRIES + 3 }, () => hop(w, 1000, true));
+  // (the engine calls told() on Dot's "shown" report, guideShown.ts: here at once)
+  const said = Array.from({ length: STUCK_TRIES + 3 }, () => {
+    const s = hop(w, 1000, true);
+    if (s) w.told();
+    return s;
+  });
   assert.deepEqual(said.map(Number), [0, 0, 1, 0, 0, 0]);
+});
+
+test('stuck-helper: a line Dot never showed (her setting dropped it) is not told: three more failed jumps ask again (audit C-03)', () => {
+  const w = new StuckWatch();
+  const said = Array.from({ length: 2 * STUCK_TRIES + 1 }, () => hop(w, 1000, true));
+  assert.deepEqual(said.map(Number), [0, 0, 1, 0, 0, 1, 0]);
 });
 
 test('stuck-helper: jumps with no wall ahead, or that use the second jump, or that get up, never count', () => {

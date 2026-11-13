@@ -1,0 +1,6 @@
+R-165.116 live loop, t-engine-guards @7553eade (dev server, Chromium, 1-2, 6 s per run; run: node loopcheck.mjs <port> <outDir>, script in loopcheck.mjs.txt)
+up   (390x844) CPU 1x: 30.00 fps, game/real 1.0000, 180 steps, every step 0.033333 s, q0, 0 page errors
+up   (390x844) CPU 4x: 29.80 fps, game/real 0.9987, 181 steps, every step 0.033333 s, q0
+side (844x390) CPU 1x: 30.00 fps, game/real 1.0000, 180 steps, every step 0.033333 s, q0
+side (844x390) CPU 4x: 28.06 fps, game/real 1.0012, 182 steps (catch-up), every step 0.033333 s, q1 (the governor stepping down on truly late frames)
+Stills: loop-contact.jpg (up 1x, up 4x, side 1x, side 4x).

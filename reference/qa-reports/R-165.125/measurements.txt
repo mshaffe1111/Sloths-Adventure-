@@ -1,0 +1,17 @@
+R-165.125 measurements, 2026-11-11 (EN-F). Files: ffmpeg ebur128 (integrated / momentary-max LUFS, true peak) on the shipped assets.
+Recorded effects (src/assets/sfxrec/takes.mp3): integrated -21.7 LUFS, momentary max -10.2 LUFS, true peak +2.0 dBTP (over full scale).
+Music mixes (src/assets/music/*.mix.webm, 37 files): integrated mean -15.8 LUFS (range -17.7..-12.5); momentary max about -11 LUFS; true peak -0.0..-1.3 dBTP.
+In the game the effects bus adds +2.1 dB (SFX_BUS 1.27) and the master a +5 dB high shelf: effects at the top sit 1-3 dB over the music's loudest moments.
+
+Through the real chain (Chromium OfflineAudioContext, the game's AudioCore, the first 60 s of the recorded effects into the effects bus; old = linear slider before the compressor, new = volumeCurve.ts):
+effects 100% (music 100): old peak  -0.1 dBFS rms -16.2 | new peak  -0.1 dBFS rms -16.2
+effects  80% (music 100): old peak  -0.1 dBFS rms -17.3 | new peak  -0.8 dBFS rms -21.6
+effects  50% (music 100): old peak  -0.4 dBFS rms -20.1 | new peak  -9.0 dBFS rms -33.0
+effects  25% (music 100): old peak  -2.9 dBFS rms -25.2 | new peak -18.7 dBFS rms -42.9
+both sliders 100%: rms -16.2 dB; both 50%: rms -36.2 dB
+
+Read: the old effects slider at 50% cut 3.9 dB of loudness (the compressor at -18 dB, ratio 3.5, ate the rest); the new one cuts 16.8 dB, and both sliders at 50% cut exactly 20 dB (after the dynamics). Peaks stay under full scale (limiter -1.5 dB, after the soft clipper).
+
+Defaults, through the real chain (chaindefaults.cjs.txt; 60 s of the recorded effects, 60 s of ending.mix.webm):
+  effects: today (bar 100%) peak -0.1 dBFS, RMS -16.2 dB -> new (bar 80%) peak -4.2 dBFS, RMS -22.6 dB: -6.4 dB
+  music:   today (bar 100%) peak -0.5 dBFS, RMS -10.6 dB -> new (bar 90%) peak -4.5 dBFS, RMS -14.6 dB: -4.0 dB

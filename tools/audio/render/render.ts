@@ -4,7 +4,7 @@
  */
 import { AudioCore } from '../../../src/audio/core.ts';
 import { runFx, SFX } from '../../../src/audio/sfx.ts';
-import { bytesOf } from '../../../src/audio/sampleLoader.ts';
+import { bytesOf } from '../../../src/audio/assetFetch.ts';
 
 const files = import.meta.glob('../../../src/assets/sfx/*.mp3', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 const KEY = { tonic: 60, scale: [0, 2, 4, 5, 7, 9, 11] };

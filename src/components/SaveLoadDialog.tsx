@@ -119,7 +119,7 @@ export const SaveLoadDialog: React.FC<Props> = ({ onClose, onLoaded }) => {
       setNote({ kind: 'ok', text: 'Loaded. Your adventure is back.' });
       onLoaded();
     } catch {
-      setNote({ kind: 'bad', text: 'Could not write the save into this browser.' });
+      setNote({ kind: 'bad', text: 'Could not save it on this device.' });
     }
   };
 
@@ -154,7 +154,7 @@ export const SaveLoadDialog: React.FC<Props> = ({ onClose, onLoaded }) => {
               </div>
             )}
             <p className="ui-copy">
-              Saves every stage result, the stories you have seen and your sound settings into one small file. You can load it later, or on another device.
+              Saves your stages, the stories you have seen and the things you have found in one small file. Load it later, or on another device.
             </p>
             <div className="ui-row">
               <button type="button" className="ui-btn ui-btn-gold" onClick={doDownload}>
@@ -171,7 +171,7 @@ export const SaveLoadDialog: React.FC<Props> = ({ onClose, onLoaded }) => {
           <div className="ui-body">
             {!pending && (
               <>
-                <p className="ui-copy">Loading <b>replaces</b> the progress on this device with what is in the file.</p>
+                <p className="ui-copy">Loading <b>replaces</b> the progress on this device with this save.</p>
                 <div className="ui-row">
                   <button type="button" className="ui-btn ui-btn-gold" onClick={() => fileRef.current?.click()}>
                     Choose save file…

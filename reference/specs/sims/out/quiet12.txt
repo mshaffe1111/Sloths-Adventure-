@@ -1,0 +1,11 @@
+q-nnnnnn (the climb, then n n n n n n): 120 builds of 120, laid on 50; worst quiet stretch touching it: min 8.7 median 9.2 max 11.1 s; over 4 s on 50 of 50
+q-NNNNNN (the climb, then N N N N N N): 120 builds of 120, laid on 41; worst quiet stretch touching it: min 0 median 2.1 max 4.1 s; over 4 s on 1 of 41
+q-JNJN (the climb, then J N J N): 120 builds of 120, laid on 52; worst quiet stretch touching it: min 2.2 median 2.3 max 3.7 s; over 4 s on 0 of 52
+q-JNYN (the climb, then J N Y N): 120 builds of 120, laid on 47; worst quiet stretch touching it: min 2.2 median 2.4 max 4.3 s; over 4 s on 1 of 47
+q-NJNJ (the climb, then N J N J): 120 builds of 120, laid on 48; worst quiet stretch touching it: min 2.1 median 2.2 max 4.4 s; over 4 s on 1 of 48
+q-NJJN (the climb, then N J J N): 120 builds of 120, laid on 47; worst quiet stretch touching it: min 3.1 median 3.3 max 4.1 s; over 4 s on 1 of 47
+q-NYNJ (the climb, then N Y N J): 120 builds of 120, laid on 51; worst quiet stretch touching it: min 2.2 median 2.3 max 4.9 s; over 4 s on 1 of 51
+q-NJYJ (the climb, then N J Y J): 120 builds of 120, laid on 53; worst quiet stretch touching it: min 3.8 median 5.1 max 7.8 s; over 4 s on 48 of 53
+q-JNJY (the climb, then J N J Y): 120 builds of 120, laid on 51; worst quiet stretch touching it: min 3.8 median 4 max 6.9 s; over 4 s on 23 of 51
+q-JNcJcN (the climb, then J N c J c N): 120 builds of 120, laid on 47; worst quiet stretch touching it: min 2.2 median 2.4 max 4.2 s; over 4 s on 1 of 47
+q-JNHJN (the climb, then J N H J N): 120 builds of 120, laid on 46; worst quiet stretch touching it: min 2.2 median 2.4 max 3.7 s; over 4 s on 0 of 46

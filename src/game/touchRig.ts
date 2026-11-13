@@ -93,7 +93,7 @@ export class TouchRig {
       kickNear: () => inp.kickNear, onVine: () => inp.onVine, onSwing: () => inp.onSwing, onRope: () => inp.onRope, inCover: () => inp.inCover,
     });
     inp.onFocusLost = () => this.g.cancelAll();
-    inp.onCleared = () => this.g.cancelAll();
+    inp.onCleared = () => this.g.restate();
     this.nextFrame = clock + FRAME_MS;
     this.nextTick = clock + TICK_MS;
   }

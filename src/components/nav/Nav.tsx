@@ -1,7 +1,7 @@
 import React from 'react';
 import { PaintedIcon, paint, type AnyIcon } from '../icons/PaintedIcon.tsx';
 import { Plaque } from '../KitParts.tsx';
-import { backStack } from './backStack.ts';
+import { useBack } from './useBack.ts';
 import './nav.css';
 
 /**
@@ -13,12 +13,7 @@ import './nav.css';
  * thing on screen would do. Use these, never a hand-made X or a back chip, so every screen exits the same way.
  */
 
-/** while `enabled`, Android's Back (and Escape) runs `onBack`; the newest caller wins */
-export function useBack(onBack: () => void, enabled = true): void {
-  const ref = React.useRef(onBack);
-  ref.current = onBack;
-  React.useEffect(() => (enabled ? backStack.push(() => ref.current()) : undefined), [enabled]);
-}
+export { useBack };
 
 /**
  * A screen's Back: the round painted token with an arrow, and the place it goes on a wooden tag beside it ("Start Screen",

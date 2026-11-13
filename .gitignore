@@ -1,4 +1,4 @@
-node_modules/
+node_modules
 build/
 dist/
 coverage/
@@ -10,3 +10,6 @@ coverage/
 # (the dev server no longer writes a service worker here: PF-3)
 dev-dist/
 __pycache__/
+
+# the lead board page is built, not kept
+tools/board/dist/

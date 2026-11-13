@@ -1,0 +1,86 @@
+{
+ "sapling": {
+  "source": "the shipped atlas (ART-W1)",
+  "units": 260,
+  "axis": "h",
+  "why": "the anchor: a bent sapling, the load hangs under its crown (anchorArch-5)"
+ },
+ "clump": {
+  "source": "the shipped atlas (ART-W1)",
+  "units": 78,
+  "axis": "w",
+  "why": "the bough end the handle hangs from, its stick toward the sapling (leafClump-41)"
+ },
+ "link": {
+  "source": "the shipped atlas (ART-W1)",
+  "units": 170,
+  "axis": "w",
+  "why": "the vine from the handle over to the load (vineLink-79)"
+ },
+ "handle": {
+  "source": "the shipped atlas (ART-W1)",
+  "units": 30,
+  "axis": "w",
+  "why": "the vine handle, set: a knotted loop at his raised hand (handleSet-29)"
+ },
+ "sprung": {
+  "source": "the shipped atlas (ART-W1)",
+  "units": 46,
+  "axis": "h",
+  "why": "the vine handle, sprung: a limp snapped end (handleSprung-41)"
+ },
+ "bee": {
+  "source": "the shipped atlas (ART-W1)",
+  "units": 9,
+  "axis": "w",
+  "why": "Matt, 11-12: one bee from his hive sheet's frame 1, for the buzz"
+ },
+ "sapling2": {
+  "source": "cuts/anchorArch-41.png",
+  "units": 220,
+  "axis": "h",
+  "why": "the second sapling behind the handle: the vine's corner hangs from its crown"
+ },
+ "tendril": {
+  "source": "r4cut/rootSet-5.png",
+  "units": 30,
+  "axis": "w",
+  "why": "the tendril handle, set: taut, knotted round a living root hoop"
+ },
+ "stake": {
+  "source": "r4cut/rootCut-17.png",
+  "units": 46,
+  "axis": "w",
+  "why": "the tendril handle, cut: the root hoop and the torn curl of creeper"
+ },
+ "stoneHang": {
+  "source": "cuts/stoneHang-17.png",
+  "units": 50,
+  "axis": "w",
+  "why": "the mossy stone with vines wrapped round it, hanging (A)"
+ },
+ "stoneDown": {
+  "source": "cuts/stoneDown-down-stoneHang-17-s42-31.png",
+  "units": 50,
+  "axis": "w",
+  "why": "the same stone landed, its vines slack (A)"
+ },
+ "hiveHang": {
+  "source": "cuts/hiveHang-67.png",
+  "units": 52,
+  "axis": "h",
+  "why": "hive A: the painted hanging hive with the dark doorway"
+ },
+ "hiveDown": {
+  "source": "cuts/hiveDown-down-hiveHang-67-s42-7.png",
+  "units": 56,
+  "axis": "w",
+  "why": "hive A landed on its side, whole"
+ },
+ "trunk": {
+  "source": "cuts/anchorArm-41.png",
+  "units": 230,
+  "axis": "h",
+  "why": "a living tree for a shimmy vine's end (World 1: no rope, no posts): the vine ties on at its arm"
+ }
+}

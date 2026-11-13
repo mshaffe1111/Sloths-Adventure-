@@ -7,15 +7,8 @@ import { withGoals } from './goals.ts';
 import { judgeLines, median, REFERENCE, splitsOf } from './passLines.ts';
 import type { Platform } from './types.ts';
 
-test("the split measure is engine-runs' own: main's 1-2 (unchanged on engine-core) reads its recorded row, 16 (13-25) and 0.787", () => {
-  const c = { ...generateAllLevels().find((l) => l.id === '1-2')!, unlocked: true };
-  const m = Array.from({ length: 16 }, (_, i) => { setLayoutVariant(i + 1); const st = withGoals(generateStage(c, 'normal')); setLayoutVariant(null); return splitsOf(st); });
-  assert.equal(median(m.map((q) => q.splits)), 16);
-  assert.equal(Math.min(...m.map((q) => q.splits)), 13);
-  assert.equal(Math.max(...m.map((q) => q.splits)), 25);
-  assert.ok(Math.abs(median(m.map((q) => q.twoRoad)) - 0.787) < 0.002);
-});
-
+// (deleted 11-12, P12S: "the split measure is engine-runs' own" read the hand-built 1-2's recorded row, 16 (13-25) and 0.787; that 1-2's
+// builder is deleted (the game rolls 1-2 on gen2), so the fixture cannot be built. The measure stays proven by the planted floors below)
 test("1-1's lines are old 1-1's measured medians, not its profile words: a planted 1-1 with 20 splits fails, one with 34 and 0.61 passes", () => {
   assert.deepEqual(REFERENCE['1-1'] && [REFERENCE['1-1'].splitsMin, REFERENCE['1-1'].twoRoadMin], [34, 0.61]);
   // (a floor 3,000 px long and over it n high ledges 400 px long, 800 apart (the measure joins tops within 90 px): n splits)

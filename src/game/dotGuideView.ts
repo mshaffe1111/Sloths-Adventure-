@@ -119,6 +119,8 @@ export interface GuideView {
   w5: readonly GuideW5[];
   /** in a puzzle room, the part of the puzzle that matters now (empty elsewhere) */
   kit: readonly GuideKit[];
+  /** the moments of play this stage run has had (engine.ts `moments`, e.g. 'cast:punch'): a story line can wait on one */
+  moments: readonly string[];
   /** the score pop-ups floating up ("+100 FLOWER!"): Dot keeps off them */
   popups: readonly GuideThing[];
   /** a boss's weak spot while it is open (world units; the NOW! marker sits on it): Dot's bubble never covers it */
@@ -179,6 +181,7 @@ export function emptyGuideView(): GuideView {
     hazards: NONE,
     bushes: NONE,
     kit: NONE,
+    moments: NONE,
     w5: NONE,
     popups: NONE,
     weakOn: false,

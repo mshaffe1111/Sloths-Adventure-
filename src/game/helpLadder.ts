@@ -15,6 +15,8 @@
  * The words are the story keeper's (reference/specs/help-lines.md), word for word.
  */
 import { PHYS } from './physics.ts';
+import { MODES, travelSpan } from './stageModes.ts';
+import type { Mark, StageMode, TravelSpan } from './stageKit.types.ts';
 
 export type Setting = 'easy' | 'normal';
 export type Rung = 'move' | 'pad' | 'step' | 'offer' | 'reask';
@@ -63,13 +65,14 @@ export const HELP_LINES: ReadonlySet<string> = new Set([...Object.values(MOVE_LI
  * help that her tip rules don't judge again (the ladder is the one place that decides help: a move already taught this stage is the
  * point, not a repeat)
  */
-export function helpGuideLine(text: string, help: 'teach' | 'reminders' | 'quiet', ms?: number): { key: string; text: string; kind: 'struggle'; who: 'Dot'; source: 'struggle'; soon: true; anyway: true; ms?: number } | null | undefined {
+export function helpGuideLine(text: string, help: 'teach' | 'reminders' | 'quiet', ms?: number): { key: string; text: string; kind: 'struggle'; who: 'Dot'; source: 'struggle'; soon: true; anyway: true; said: string; ms?: number } | null | undefined {
   if (!HELP_LINES.has(text)) return undefined;
   if (help === 'quiet') return null;
   // (`soon`: due now, so neither Tips' 30 s gap nor its busy count holds it back; a fall in progress still does)
   // (keyed as any engine line is, `engine:<words>`: the engine's "passed" for it, DotGuide passedLine, takes it down)
   // (`anyway`: it starts while he blinks after a set-back or is in the air: a player set back every 2 s is always one or the other)
-  return { key: `engine:${text}`, text, kind: 'struggle', who: 'Dot', source: 'struggle', soon: true, anyway: true, ms };
+  // (`said`: the engine's words, so her "shown" report reaches the engine for it as for any engine line, guideShown.ts)
+  return { key: `engine:${text}`, text, kind: 'struggle', who: 'Dot', source: 'struggle', soon: true, anyway: true, said: text, ms };
 }
 
 /**
@@ -97,6 +100,8 @@ interface Count {
   noes: number;
   /** the offer is up, waiting for an answer */
   asking: boolean;
+  /** an offer (or re-ask) that could not be shown (its card failed to load): asked again at the next put-back here */
+  again: 'offer' | 'reask' | null;
 }
 
 /** what a put-back asks the engine to do (in order) */
@@ -110,8 +115,8 @@ export class HelpLadder {
   private counts = new Map<string, Count>();
   /** the piece the latest put-back counted for, until he stands beyond it (the pad's full jump is for it) */
   private active: Piece | null = null;
-  /** the least x1 of the pieces with a count: standing at or past it resets that piece (one compare a grounded frame) */
-  private beyond = Infinity;
+  /** the far end of the first piece with a count along the travel: standing at or past it resets that piece (one compare a grounded frame) */
+  private beyond: TravelSpan | null = null;
 
   constructor(
     readonly setting: Setting,
@@ -120,7 +125,14 @@ export class HelpLadder {
     private readonly r: Rungs = RUNGS,
     /** whether anything can grow at a piece: where nothing can, Dot never promises a step (no step rung, no offer, no re-ask) */
     private readonly canGrow: (p: Piece) => boolean = () => true,
+    /** which way the stage travels: "past a piece" is past its far end that way (stageModes.ts) */
+    private readonly mode: StageMode = MODES.right,
   ) {}
+
+  /** `sp` unless `b` is a counted stretch he reaches the end of first */
+  private nearer(b: TravelSpan | null, sp: TravelSpan): TravelSpan {
+    return b && this.mode.past({ x: sp.to, y: sp.to }, b) ? b : sp;
+  }
 
   /** the piece at world x (the last one whose span holds it), or null at a seam */
   pieceAt(x: number): Piece | null {
@@ -138,10 +150,10 @@ export class HelpLadder {
     const piece = this.pieceAt(x);
     if (!piece) return [];
     let c = this.counts.get(piece.k);
-    if (!c) this.counts.set(piece.k, (c = { n: 0, fired: new Set(), noAt: -1, noes: 0, asking: false }));
+    if (!c) this.counts.set(piece.k, (c = { n: 0, fired: new Set(), noAt: -1, noes: 0, asking: false, again: null }));
     c.n++;
     this.active = piece;
-    this.beyond = Math.min(this.beyond, piece.x1);
+    this.beyond = this.nearer(this.beyond, travelSpan(this.mode, piece.x0, piece.x1));
     const out: HelpAct[] = [];
     const fire = (rung: Rung) => {
       if (c!.fired.has(rung)) return;
@@ -153,7 +165,12 @@ export class HelpLadder {
       if (c.n === this.r.pad) fire('pad');
       if (c.n === this.r.step && this.canGrow(piece)) fire('step');
     } else if (!c.asking) {
-      if (c.n === this.r.offer && !c.fired.has('step') && this.canGrow(piece)) fire('offer');
+      if (c.again) {
+        const r = c.again;
+        c.again = null;
+        c.fired.delete(r);
+        fire(r);
+      } else if (c.n === this.r.offer && !c.fired.has('step') && this.canGrow(piece)) fire('offer');
       else if (c.noes === 1 && c.n === c.noAt + this.r.reaskAfter && this.canGrow(piece)) fire('reask');
       if (out.some((a) => a.rung === 'offer' || a.rung === 'reask')) c.asking = true;
     }
@@ -174,16 +191,28 @@ export class HelpLadder {
     return false;
   }
 
-  /** he stands at world x (only called on a grounded frame): past a counted piece, its count resets */
-  stood(x: number): void {
-    if (x < this.beyond) return;
-    let least = Infinity;
+  /**
+   * Normal's offer (or re-ask) at a piece could not be shown (its card failed to load, engine.ts helpAsk; audit C-10b): it is not an
+   * answer, so nothing is counted (no "no", no re-ask clock); the same question is asked again at his next put-back there
+   */
+  unshown(k: string, rung: 'offer' | 'reask' = 'offer'): void {
+    const c = this.counts.get(k);
+    if (!c || !c.asking) return;
+    c.asking = false;
+    c.again = rung;
+  }
+
+  /** he stands here (only called on a grounded frame): past a counted piece along the travel, its count resets */
+  stood(at: Mark): void {
+    if (!this.beyond || !this.mode.past(at, this.beyond)) return;
+    let least: TravelSpan | null = null;
     for (const [k, c] of this.counts) {
       const p = this.pieces.find((q) => q.k === k)!;
-      if (x >= p.x1) {
+      const sp = travelSpan(this.mode, p.x0, p.x1);
+      if (this.mode.past(at, sp)) {
         c.n = 0;
         if (this.active?.k === k) this.active = null;
-      } else if (c.n > 0) least = Math.min(least, p.x1);
+      } else if (c.n > 0) least = this.nearer(least, sp);
     }
     this.beyond = least;
   }
@@ -198,7 +227,7 @@ export class HelpLadder {
   end(): void {
     this.counts.clear();
     this.active = null;
-    this.beyond = Infinity;
+    this.beyond = null;
   }
 }
 

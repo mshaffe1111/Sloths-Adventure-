@@ -1,0 +1,10 @@
+1-3 seed 13 normal kid: stranded at x 30193, goal {"got":12,"need":13}, 172 s
+  animal 516 at x 30007: reached yes (20.2 s), cleared yes, by punch; goal {"got":13,"need":13}
+NOT a softlock: from the stranded state the goal fills ({"got":13,"need":13}); 0 animal(s) tried and not cleared on the way
+1-3 seed 27 normal kid: stranded at x 30011, goal {"got":11,"need":13}, 169 s
+  animal 516 at x 29712: reached yes (20.8 s), cleared yes, by punch; goal {"got":12,"need":13}
+  animal 508 at x 19147: reached yes (75.2 s), cleared yes, by punch; goal {"got":13,"need":13}
+NOT a softlock: from the stranded state the goal fills ({"got":13,"need":13}); 0 animal(s) tried and not cleared on the way
+1-3 seed 38 normal kid: stranded at x 30485, goal {"got":12,"need":13}, 171 s
+  animal 516 at x 30855: reached yes (20.2 s), cleared yes, by punch; goal {"got":13,"need":13}
+NOT a softlock: from the stranded state the goal fills ({"got":13,"need":13}); 0 animal(s) tried and not cleared on the way

@@ -52,7 +52,7 @@ for (let i = 0; Date.now() - t0 < SECS * 1000; i++) {
   if (hasState && i % 10 === 0) {
     const k = (i / 10) % 4;
     await page.evaluate((k) => window.__sound.setMusicState({ danger: k === 1 ? 1 : 0, dark: k === 2 ? 1 : 0, exit: k === 3 ? 1 : 0 }), k);
-    if (k === 1) await page.evaluate(() => window.__sound.cue('checkpoint'));
+    if (k === 1) await page.evaluate(() => window.__sound.playCheckpoint());
   }
   const ps = await procs();
   peakRss = Math.max(peakRss, ps.filter((p) => p.type === 'renderer').reduce((a, p) => a + rss(p.id), 0));

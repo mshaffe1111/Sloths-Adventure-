@@ -1,0 +1,36 @@
+const { chromium } = require('playwright');
+const { spawn } = require('child_process');
+const root = process.argv[2];
+(async () => {
+  const srv = spawn('npx', ['vite', '--port', '4402', '--host', '127.0.0.1', '--strictPort'], { cwd: root, stdio: 'ignore', detached: true });
+  await new Promise((r) => setTimeout(r, 9000));
+  const b = await chromium.launch();
+  const page = await b.newPage();
+  await page.goto('http://127.0.0.1:4402/');
+  const res = await page.evaluate(async () => {
+    const { AudioCore, SFX_BUS } = await import('/src/audio/core.ts');
+    const { busLevels, DEFAULT_MUSIC, DEFAULT_SFX } = await import('/src/audio/volumeCurve.ts');
+    const SR = 44100, SECS = 60;
+    const probe = new OfflineAudioContext(2, SR, SR);
+    const load = async (u) => probe.decodeAudioData(await (await fetch(u)).arrayBuffer());
+    const fx = await load('/src/assets/sfxrec/__m_fx.wav'), mus = await load('/src/assets/sfxrec/__m_mus.wav');
+    const run = async (which, mode) => {
+      const ctx = new OfflineAudioContext(2, SR * SECS, SR);
+      const core = new AudioCore(ctx, { recorded: true });
+      const src = ctx.createBufferSource();
+      src.buffer = which === 'fx' ? fx : mus;
+      src.connect(which === 'fx' ? core.sfx : core.music);
+      if (mode === 'today') { core.sfx.gain.value = SFX_BUS; core.music.gain.value = 1; core.out.gain.value = 1; }
+      else { const lv = busLevels(DEFAULT_MUSIC, DEFAULT_SFX); core.sfx.gain.value = SFX_BUS * lv.sfx; core.music.gain.value = lv.music; core.out.gain.value = lv.out; }
+      src.start(0);
+      const o = await ctx.startRendering();
+      let peak = 0, sum = 0, n = 0;
+      for (let ch = 0; ch < 2; ch++) { const d = o.getChannelData(ch); for (let i = 0; i < d.length; i++) { const a = Math.abs(d[i]); if (a > peak) peak = a; sum += d[i] * d[i]; n++; } }
+      return [+(20 * Math.log10(peak)).toFixed(1), +(10 * Math.log10(sum / n)).toFixed(1)];
+    };
+    return { fxToday: await run('fx', 'today'), fxNew: await run('fx', 'new'), musToday: await run('mus', 'today'), musNew: await run('mus', 'new') };
+  });
+  console.log('RESULT ' + JSON.stringify(res));
+  await b.close();
+  try { process.kill(-srv.pid); } catch {}
+})();

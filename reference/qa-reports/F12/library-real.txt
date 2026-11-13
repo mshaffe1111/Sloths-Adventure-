@@ -1,0 +1,65 @@
+# npx tsx tools/engine/library.ts --seeds 120 --par 3   (NO --flown; 1-2 filed as 1-2, judged on normal-1-2 / easy-any) at 5aef3edd
+1-2 by need: pool 69 of 107 (World 1's 95 + 8 twist bricks + 1 new stood in + 3 uses of the way-down brick); out: high-leaps (parked), bounce-run (parked), low-boughs (no floating in the deal), ropes (no rope in the deal), log-road (no floating in the deal), canopy-rungs (no floating in the deal), high-walk (refused: canopy), quiet-arrival (refused: canopy), bough-bench (refused: canopy), stump-towers (no floating in the deal), bounce-double (parked), canopy-weave (no floating in the deal), sunlit-log (refused: canopy), stilt-logs (no floating in the deal), last-step-up (refused: canopy), twin-mushroom-fork (parked), stair-fork (parked), log-stair-test (parked), dipping-boughs-twist (no floating in the deal), log-chain (no floating in the deal), mushroom-chain (parked), root-stair-fork (parked), bough-descent (no floating in the deal), log-steps-descent (no floating in the deal), canopy-drop (no floating in the deal), long-bounce-twist (parked), bounce-stair-combine (parked), bounce-bough-combine (no floating in the deal), canopy-rungs-level (no floating in the deal), log-stair-test-back (parked), mushroom-chain-back (parked), bounce-stair-level (parked), bounce-over-dip (parked), mushroom-stair (parked), high-walk-up (refused: canopy), bough-bench-up (refused: canopy), canopy-weave-rise (no floating in the deal), log-chain-rise (no floating in the deal)
+supply by job/type:
+   arrive/structural           4  meadow, forest-edge, morning-path, home-banks
+   choice-reward/ground        1  hollow-twoway
+   climb/bounce                2  twin-bounce, lib-cap-steps-up
+   climb/climb                 6  ledges, bough-stepup, bough-log, stair-run, bank-run, zigzag-run
+   combine/-                   3  lib-way-down-a, lib-way-down-b, lib-way-down-c
+   combine/bounce              1  lib-cap-steps-up
+   combine/ground              1  mushroom-log
+   descent/-                   3  lib-way-down-a, lib-way-down-b, lib-way-down-c
+   descent/bounce              1  lib-cap-steps-down
+   descent/climb               1  dropdown-stair
+   descent/ground              2  stone-road, stump-descent
+   exit/structural             1  new-low-bark-arrival
+   flow/-                      3  lib-way-down-a, lib-way-down-b, lib-way-down-c
+   flow/bounce                 2  lib-cap-hop, lib-cap-run
+   flow/climb                  3  stair-run, bank-run, zigzag-run
+   flow/ground                 4  stone-dips, leap-stones, stone-road, floor-dash
+   fork/bounce                 2  mushroom-fork, mushroom-fork-dip
+   fork/climb                  1  bank-stair-fork
+   fork/ground                 2  hollow-twoway, floor-dash
+   practise/-                  3  lib-way-down-a, lib-way-down-b, lib-way-down-c
+   practise/bounce             5  cache-stones, hop-bounce, twin-bounce, lib-cap-hop, lib-cap-run
+   practise/climb              2  ledges, mound-log
+   practise/ground             7  stones, stump-stones, stone-dips, stump-stile, stone-zigzag, knot-bank, stump-descent
+   rest/structural             4  meadow, fern-bank, clearing, log-walk
+   reward/bounce               1  seed-perch
+   signature/bounce            2  lib-thorn-chain, lib-thorn-chain-rise
+   teach/bounce                4  hop-bounce, mushroom-lift, mushroom-bank-teach, lib-thorn-teach
+   teach/ground                6  learn, double-teach, step-stones-teach, log-teach, dip-double-teach, bank-double-teach
+   test/-                      3  lib-way-down-a, lib-way-down-b, lib-way-down-c
+   test/bounce                 3  two-lifts, bounce-wall, lib-cap-test
+   test/climb                  4  stair-test, bank-stair-test, stair-test-back, bank-stair-test-back
+   test/ground                 4  second-jump, leap-stones, fallen-trunk, fallen-trunk-13
+   twist/-                     3  lib-way-down-a, lib-way-down-b, lib-way-down-c
+   twist/bounce                3  drop-bounce-twist, dip-bounce-twist, lib-cap-test
+   twist/climb                 3  backstep-twist, high-step-twist, stair-gap-twist
+   twist/ground                3  fallen-trunk, fallen-trunk-13, two-answers
+== normal: clean but for the thorn bed's draw (the engine's open item): 118 of 120 (98%)
+== normal: 120 rolls (seeds 1-120): CLEAN 118 (98%), thrown 0, pool short 1; a roll clean but for the draw: 14.8 sections, 3.3 of them twist bricks, 12.4 hollows, 84.9 petals, 9.4 blooms
+   the route's height on those rolls: the end stands 28 px over the start (median; -232 to 566), highest to lowest 264 px (median; most 654)
+      2  verdict drop.untyped (normal): a gap at x #..# the builder laid with no Drop record
+      2  verdict floor.unmarked (normal): an unmarked floorless gap at x #..#
+      1  pool short at slot # (n# descent: no climb section left)
+      1  node code: V# at token #: # of # content nodes are 'g' (cap #)
+      1  node code: V# at token #: 'g' on two neighbouring content nodes
+      1  verdict band.out (normal): single-rise at x # (s#): # px, over the band's #
+      1  verdict arc.single-rise-over (normal): single-rise at x # (s#): # px, over a flick's climb #
+== easy: clean but for the thorn bed's draw (the engine's open item): 118 of 120 (98%)
+== easy: 120 rolls (seeds 1-120): CLEAN 118 (98%), thrown 0, pool short 1; a roll clean but for the draw: 14.8 sections, 3.3 of them twist bricks, 10.3 hollows, 84.6 petals, 9.4 blooms
+   the route's height on those rolls: the end stands 30 px over the start (median; -277 to 578), highest to lowest 250 px (median; most 648)
+      2  verdict drop.untyped (normal): a gap at x #..# the builder laid with no Drop record
+      2  verdict floor.unmarked (normal): an unmarked floorless gap at x #..#
+      1  pool short at slot # (n# descent: no climb section left)
+      1  node code: V# at token #: # of # content nodes are 'g' (cap #)
+      1  node code: V# at token #: 'g' on two neighbouring content nodes
+      1  verdict band.out (normal): single-rise at x # (s#): # px, over the band's #
+      1  verdict arc.single-rise-over (normal): single-rise at x # (s#): # px, over a flick's climb #
+      1  verdict band.out (easy): single-rise at x # (s#): # px, over the band's #
+      1  verdict arc.single-rise-over (easy): single-rise at x # (s#): # px, over a flick's climb #
+      1  verdict drop.untyped (easy): a gap at x #..# the builder laid with no Drop record
+      1  verdict floor.unmarked (easy): an unmarked floorless gap at x #..#
+World 1 sections laid at least once: 43 of 57; never laid: learn, hop-bounce, mushroom-lift, twin-bounce, double-teach, bough-stepup, knot-bank, bough-log, seed-perch, step-stones-teach, log-teach, dip-double-teach, bank-double-teach, mushroom-bank-teach
+twist bricks laid: lib-thorn-teach:240 lib-cap-hop:28 lib-cap-run:30 lib-cap-steps-down:40 lib-cap-steps-up:22 lib-cap-test:38 lib-thorn-chain:176 lib-thorn-chain-rise:92 lib-way-down-a:80 lib-way-down-b:24 lib-way-down-c:12

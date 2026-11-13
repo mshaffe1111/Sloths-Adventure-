@@ -8,6 +8,8 @@
  * Pure (no canvas, no engine): the stage builder, the engine and the tests agree on what a nest is doing.
  */
 
+import { cycle3 } from './clock.ts';
+
 export interface Nest {
   /** the nest's middle, and the ledge surface it sits on */
   x: number;
@@ -37,11 +39,10 @@ export type NestPhase = 'sleep' | 'stir' | 'look';
 
 /** what the nest is doing at time t, and how far through that it is (0..1) */
 export function nestAt(n: Nest, t: number): { phase: NestPhase; u: number } {
-  const c = (((t + n.offset) % n.every) + n.every) % n.every;
   const sleep = n.every - NEST.stir - NEST.look;
-  if (c < sleep) return { phase: 'sleep', u: c / sleep };
-  if (c < sleep + NEST.stir) return { phase: 'stir', u: (c - sleep) / NEST.stir };
-  return { phase: 'look', u: (c - sleep - NEST.stir) / NEST.look };
+  // the one clock (clock.ts): asleep, stirring (the warning), then looking for the rest of the cycle
+  const k = cycle3(t, n.offset, n.every, sleep, NEST.stir);
+  return k.i === 0 ? { phase: 'sleep', u: k.s / sleep } : k.i === 1 ? { phase: 'stir', u: k.s / NEST.stir } : { phase: 'look', u: k.s / NEST.look };
 }
 
 /** which look this is (so a look blows him back once at most) */

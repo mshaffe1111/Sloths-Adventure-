@@ -1,0 +1,110 @@
+# The engine plan: DRAFT (the new lead, 2026-11-11 6:15 PM ET), held for review: Matt 6:01 PM ET "release first, then the engine; research what goes in the engine versus hard-coded". Source: GAME-MAP.md §10 on t-design-game-map@6909c3c9
+
+Matt, 11-11: "a large portion of the engine done up front so levels can be expedited... not level to level." Matt, 11-11 ~6 PM ET:
+"You can use Fable 5.2 High to get the engine fixed and ready."
+
+## What "the large portion" is (the lead's call)
+Everything most stages need, built once, before levels are laid: **GAME-MAP §10 Part A (A1-A16, about 110 h)**, plus the Day-1
+defects that hit every stage (R-165.116 frame loop speed-up, R-165.117 refused saves, R-165.121 live 8-5/8-6), plus **the World 1 and
+World 2 pieces in Part B** (about 52 + 47 h) so World 1 can be laid while World 2's pieces finish. **About 210 h.**
+Waits until its world: every Part B piece from World 3 on (about 130 h), each built in the sprint before its world is laid.
+Cut from the engine: anything only one or two stages use (GAME-MAP marks these CUT? with a cheaper way).
+
+## The rule for every piece (D43, D44)
+- Works for any stage, proven on at least two stages from different worlds or directions. No stage id, seed or x in engine code (A1's
+  gate fails the build).
+- Engine pieces: Fable 5.2 high, full rigor (a cold Critic on the result). One-level features: good enough now, polish at finalize.
+  No more 1-1 polish rounds until 1-1's finalize.
+
+## Lanes (each builder a fresh session with its own Critic; packets in reference/packets/2026-11-11/)
+| Lane | First packet (tonight) | Then, in order | Hours |
+|---|---|---|---|
+| Engine 1, the spine | EN1: merge the stage kit types (A2), travel as a mode (A3) | A7 gen2 lays up, down, left; A4 old special runs as modes | 30-50 |
+| Engine 2, the checks | EN2: any stage onto gen2 by data, proven on 1-2 (the passed 1-2 engine packet E12: routing, hurt floors, finds) | A5 jump checks by brief; A9 generator yield; A10 hazards and hearts | 25-40 |
+| Engine 3, guards and shared | EN3: the generality gate (A1), the frame-loop speed-up (R-165.116), the refused save (R-165.117) | A14 one clock; A13 one brick library; A11 help ladder; A12 bots; A15 rewards; A16 goal kinds | 35-55 |
+| Designer (from 11-12, after Matt's answers) | World 1 stage briefs (1-3 to 1-9) on the kit; A6 every move's arcs flown | World 2 briefs | - |
+| Then | World 1 and 2 Part B pieces split across the three engine lanes as their spines finish | | about 100 |
+
+## Dates (measured where possible)
+- No measured history for Fable on engine builds. The map's rate: about 24 useful helper-hours a day with three lanes (C1 lost about a
+  third of its time to Critic rounds, STATE.md 11-11). Part A plus the defects: **about 5-6 days, done around 11-17**. World 1 laying
+  starts when EN1, EN2 and A5 have passed (**about 11-15**). The World 1 and 2 pieces: **about 11-21** (range 11-19 to 11-25).
+- I re-measure after the first three packets land and give Matt the real rate.
+
+## Risks
+- **Code size (found 11-11 6:10 PM ET):** the main JS chunk is about 3.96 MB against the 4 MiB cap: about 37 KB spare after R-165.112. About 210 h
+  of engine work will not fit. A code-split job (each world's data and the old special runs loaded when needed) joins the next round,
+  before the World 1 and 2 pieces. Until then every lane reports its bytes.
+- Three lanes in one engine: engine.ts and pipeline.ts are shared. Each lane merges the newest passed lane before its next packet.
+- gen2's yield (2 clean stages in 120 fresh seeds, R-165.120) may be the long pole: it is a Lane 2 item and is measured first.
+- The release in flight (0.9.6) is the base; the lanes merge main after it lands.
+
+## What merges, in what order
+release-0.9.6 to main (Matt's merge) -> t-engine-seedchunks and t-engine-11-followup (after their Critics) -> the lanes, each after its
+Critic, in the order they pass. The audits' failing tests (t-audit-engine-a/b/c) are brought in by the packet that fixes each.
+
+## The lead's review of the game map (11-11 6:20 PM ET, Matt: "clear eyes... do not just assume what's been done is the best")
+Sound, keep: the brief recipe (mission x direction x clock x rules x moves), ADR-003's one engine with plug-in modes, one clock, the
+cut list (§10 C: about 65 h of one-stage pieces done the cheap way for about 9 h), the move ladder, building world pieces one world ahead.
+Change:
+1. **Measure the engine by "hours to lay a stage", not by a feature list.** The map's own numbers: about 300 h engine, about 700 h laying
+   86 stages (about 8 h a stage; 1-1's re-lay took 6 h 04 m with two Critic rounds). The engine is worth what it cuts from that. Target:
+   2 h or less a stage, Critic included, by the end of World 1.
+2. **Generator yield goes first, before gen2 learns new directions.** gen2 lays a clean 1-1 from a fresh seed 2 times in 120 (R-165.120).
+   Every stage then depends on hunting seeds, which is why laying costs 6-8 h. If the cause is structural (V19b and "pool short" refusing
+   most rolls), fixing it may change the generator, and building every-direction laying (A7) on it first would be building on what gets
+   replaced (D40). So: A5 verdicts by brief, then A9 yield measured and fixed, then A7.
+3. **A proper home for one-stage set pieces (the stage script).** Today the choice is "general in the engine" or "hard-code a branch",
+   and the hard-coding is how gen2 became 1-1-only. The 27 hand-made stages (guardians, hidden, set pieces) and every cut-list piece get
+   a per-stage script beside the world data, built on the engine's plugs (MutatorRun, ModeHost, one clock). It may name its stage; engine
+   core may not (A1's gate draws exactly that line). Nothing used by one stage enters the engine.
+4. **A vertical slice before mass production.** Lay 1-2 and 1-3 on the general engine as the proof that "laying is fast", measure the
+   real hours, and only then plan World 1's remaining stages on that number. 1-2 lands as a stage laid by data, never as engine work.
+5. **Review depth follows risk.** Engine pieces: a cold Critic each. Stages laid on proven pieces: bots and gates on every stage, a
+   Critic on the first stage of each new piece and a sample after that, not two Critic rounds on every stage. (Cost seen today: the two
+   1-2 packets used about $98 of model time across 8 rounds for one level's paperwork.)
+
+## Matt, 11-11 6:03 PM ET, and the lead's rulings on 1-1 and 1-2
+Matt: "how long do we spend time working on a very small fix that appears one time in a game versus doing global changes so that we can
+make 70% of the game better and then go back and fix little things... My expectation with this engine is to make levels going fast. Then
+have it go back through 1-1... decide what we're doing with 1-2... it could take up to 20 hours... that's unacceptable."
+- **1-2 is NOT built as its own job.** Its passed packets (t-design-1-2@6c70f6ff) are mined, not run: the general parts (routing any
+  stage by data = A8, hurt floors and heart costs = A10, a stage's own find in a required section) go into the engine lanes, written
+  for any stage and proven on 1-2 plus one stage of another world. The 1-2-only parts wait. 1-2 is then laid as data on the finished
+  pieces, as the vertical slice with 1-3, and its hours are measured. If laying it takes more than a few hours, the engine is not done.
+- **1-1:** ships as 0.9.6. The follow-up round (t-engine-11-followup) is parked unreviewed; 1-1's small fixes (R-165.115, .119, .122,
+  the empty walk at x 140) are done in one pass after the engine pieces land, on the general engine.
+- **The order:** the release; then the engine (generator yield first, Part A, World 1 and 2 pieces); then 1-2 and 1-3 laid fast; then
+  1-1's polish pass; then World 1 laid.
+
+## THE PLAN AS TOLD TO MATT (11-11 6:25 PM ET); this section wins over everything above it
+1. **Proof run, to Fri 11-13:** the generator fix, any stage by data, hurt floors; then 1-2 and 1-3 laid as data. Measure hours per stage.
+2. **Then a world at a time, never a level at a time:** a stage is one brief row (data) + the generator + the bots. Two or three Opus
+   builders each lay several stages of one world in parallel; the world's new pieces are built one world ahead. Target: World 1 by
+   about 11-17, then a world every 2-3 days (the real rate is measured on Friday and told to Matt).
+3. **If Friday fails:** stop rebuilding; give each existing level its twist with the moves the engine has; time one level first.
+4. **Tokens down, quality up:** quality moves from AI reviewers (tokens) to the machine checks every stage already runs (bots, fairness
+   verdicts, the stage lock: compute, not tokens) plus Matt playing the test link plus the lead looking at stills. One reviewer sweep a
+   day. Full gates once per release. Short sessions. Fable only on the hardest engine problem of the day.
+
+## WebGL joins the plan (Matt, 11-11 7:52 PM ET; the lead reversed its "not now")
+Matt: low-end phones drop to about 20 fps (the test data the bots came from); "the WebGL change was going to get pieced in as the game
+was being built." ROADMAP R-3: the APK runs under 20 fps; Play ranks on frame rate. So it is a launch problem, and R-3's staged plan is
+the safe way (no rewrite): a WebGL lane beside level laying, from 11-12, on Opus:
+1. R-150.4 / R-150.1 the measuring stick first (real frame numbers, so each stage proves its gain).
+2. R-3.1 Stage 0: PixiJS v8 pinned, one WebGL 2 canvas under the 2D canvas, the 30 fps loop driving both, context loss handled.
+   **Loaded as its own chunk on demand, never in the main JS file** (the main file is at its limit, D45).
+3. R-3.3 the ground as textures; R-3.4 Pokey and creatures as atlases; R-3.5 props and particles batched. Each lands only with its
+   measured gain, upright and sideways, and the stage lock unchanged. R-3.12 (sheets over 4096 px) before the atlases.
+Roadmap hours (no history): about 13 h for stages 0-4 (range 13-25 h).
+
+## Size: the plan (Matt, 11-11 8:50 PM ET: "biggest first... we're running pretty fat... for the Google Play Store")
+Live site 177 MB (images 113, video 54, sound 5.5, code 4); APK 188 MB. Biggest first, working down (AS-1 ranks every file).
+1. Quick wins (AS-1, from 11-11): resize what is stored bigger than it is drawn; compress video (VP9, never AV1) and art (WebP) at
+   the setting Matt picks from side-by-side stills.
+2. Animation: frame-by-frame painted sheets (1.3-2.7 MB each) are the largest single kind; fewer frames, trimmed empty space, or
+   skeletal animation (one painted creature cut into parts) where it saves the most. Show first.
+3. Story video to in-engine scenes (painted stills with motion) where it reads as well.
+4. WebGL's GPU texture formats (KTX2/Basis) with the WebGL lane: smaller downloads and far less phone memory.
+5. Google Play Asset Delivery: each world's art downloaded when the player gets there; the first install stays small. Verify Play's
+   base-download limit against 188 MB first.

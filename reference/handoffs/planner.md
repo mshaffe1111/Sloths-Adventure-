@@ -62,6 +62,10 @@ gap or a rise (gapPx guards, riseLimit, the designer's bands 195-205 / 205-228, 
   ['log', 'branch'], the verdict, branchShare.test). Waits on the designer ruling what height is "thin": mine counts 60 px or less
   (median 24%, worst 29% with catchStyles), engine-core's 30 px or less (median 38%). Switch the filter, re-measure, report the yield.
 
+- **Flags off pieces, the rest** (R-165.156, FX 11-12, reference/qa-reports/FX/REPORT.md): the rolled pass uses flagRuns/standsOnFlag
+  (pipeline.ts); the SECTION pass (flagSpot, span split) and easyMode capFlagSpans do not yet, and the footprint clears the stand box,
+  not W1's drawn rock bulge (cutBox). Moving section-pass flags re-lays 15 curated W6-8 seeds: re-curate with them.
+
 ## 4. Traps (each one cost time on 11-06)
 
 1. **Never edit files while a check runs on them.** The suite, lock and seed list read the tree; a mid-run edit spoils the result. Use a
@@ -83,3 +87,9 @@ gap or a rise (gapPx guards, riseLimit, the designer's bands 195-205 / 205-228, 
 11. **Easy's reach is smaller**: a Normal pixel band can be past it (195-205 is refused on Easy). gapPx throws by name; do not clamp.
 12. **Shell heredocs**: quote them (`<<'EOF'`) or backticks in Markdown run as commands.
 13. **Times**: every time in a message comes from `TZ=America/New_York date` run just before it.
+14. **Two searches on a judged stage (Y2, 11-12).** `buildRolled` searches first exactly as before, with the landing repair OFF
+    (`checkAndRepair(..., landings)`), so every seed the old search laid cleanly lays the same stage and the proven list never moves. Only a
+    seed with no clean roll is searched again, on fresh rolls (`maxRerolls + 1` on), with the repair ON (`landings.ts repairLandings`: idle
+    mushrooms taken up, dead-zone petal rows moved to a clean piece in their section). Every replay and Easy lay runs the repair ON; on a
+    first-search stage it is a no-op (its verdicts were clean). Changing the repair moves only second-search seeds; changing anything the
+    first search reads still moves the list (trap 4).

@@ -1,0 +1,2 @@
+## npx tsc --noEmit -p . (head f66f32ec, 11:11PM ET)
+EXIT 0 secs 4

@@ -44,7 +44,6 @@ interface StatusModalsProps {
   onOpenSatchel: () => void;
   /** Meeca's stage: ask Flicker for a hint (null when he cannot be asked now) */
   onAskHint?: () => string | null;
-  onViewStory?: () => void;
 }
 
 export const StatusModals: React.FC<StatusModalsProps> = ({

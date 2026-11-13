@@ -8,7 +8,7 @@
  */
 import type { AudioCore, OrchSample } from './core.ts';
 import { LOOP_LEN, parseOrchName } from './orchNames.ts';
-import { bytesOf } from './sampleLoader.ts';
+import { bytesOf } from './assetFetch.ts';
 import type { Theme } from './music.ts';
 import { fullOrchestra, realVoice } from './realize.ts';
 import { layerTracks } from './adaptive.ts';

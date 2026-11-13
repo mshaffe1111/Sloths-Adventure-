@@ -14,6 +14,8 @@
  * Pure (no canvas, no engine): the stage builder, the engine and the tests agree on how much each fall is pouring.
  */
 
+import { cycle3 } from './clock.ts';
+
 export interface Waterfall {
   id: number;
   /** the falling water's left edge and width, and its top and bottom (world px) */
@@ -86,11 +88,10 @@ export function plugged(w: Waterfall, platformX: (id: number) => number | undefi
 
 /** a surge fall's own pour at time t, 0..1: full while pouring, easing down, then quiet (ramps back up fast) */
 export function surgeFlow(s: NonNullable<Waterfall['surge']>, t: number): number {
-  const T = s.pour + s.ease + s.quiet;
-  const c = (((t + s.offset) % T) + T) % T;
-  if (c < s.pour) return Math.min(1, c / 0.4); // (it roars back in over the first 0.4 s)
-  if (c < s.pour + s.ease) return 1 - (c - s.pour) / s.ease;
-  return 0;
+  // the one clock (clock.ts): pouring, easing down (the warning that it is about to stop), then quiet for the rest of the cycle
+  const k = cycle3(t, s.offset, s.pour + s.ease + s.quiet, s.pour, s.ease);
+  if (k.i === 0) return Math.min(1, k.s / 0.4); // (it roars back in over the first 0.4 s)
+  return k.i === 1 ? 1 - k.s / s.ease : 0;
 }
 
 /** the next value of a fall's flow (0 dry .. 1 pouring): it eases toward what its plug and rhythm ask for */

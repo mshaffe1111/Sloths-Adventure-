@@ -19,7 +19,7 @@ import { DotFace } from '../DotFace.tsx';
 import { BossHud } from '../BossHud.tsx';
 import { bloomUpdate, bloomView, newBloom, nextBloomEdge, showsSlots, type HudValues } from './bloom.ts';
 import { bossRect, centreGeo, centrePlace, counterW, heartsShown, hudGeo, hudMode, hudSafeRect, type Insets } from './hudLayout.ts';
-import { goalInfo } from './goalInfo.ts';
+import { goalInfo, goalShown } from './goalInfo.ts';
 import { clearOfInsets, fallbackSafeArea, setGuideSafeArea } from '../../game/dotGuidePerch.ts';
 import { Bolt, GoalPic, Heart, Leaf, MenuLines, Star, Tick, Vine, vineY } from './hudArt.tsx';
 import { GoalCard } from './GoalCard.tsx';
@@ -48,6 +48,8 @@ export interface VineHudProps {
   lives?: number;
   /** where Pokey is on the screen (CSS px): a pickup flies from here into the counter */
   heroPoint?: () => { x: number; y: number } | null;
+  /** the stage's own animal, for a purge's goal card (engine.ts goalCreature) */
+  goalCreature?: () => string | undefined;
   /** a new number each time the stage (re)starts */
   runKey?: number;
 }
@@ -96,8 +98,10 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
   const meeca = levelConfig.id === MEECA_STAGE_ID;
   // (the count the engine sends wins over the stage's planned one: an easier layout can ask for a different number)
   const info = React.useMemo(
-    () => goalInfo({ ...levelConfig, targetCount: targetObjectiveCount || levelConfig.targetCount }, dotStage),
-    [levelConfig, dotStage, targetObjectiveCount],
+    () => goalInfo({ ...levelConfig, targetCount: targetObjectiveCount || levelConfig.targetCount }, dotStage, props.goalCreature?.()),
+    // (the stage's animal: its own data, once the engine has the stage, engine.ts goalCreature)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [levelConfig, dotStage, targetObjectiveCount, props.runKey],
   );
   const target = info.kind === 'count' ? targetObjectiveCount : 0;
   // (App sends 0 until the engine has counted what the stage holds; the plan's number can be wrong, 2-3 planned 3 of 5 cages: the goal
@@ -133,7 +137,8 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
     const before = lastGoal.current;
     if (currentObjectiveCount === before) return;
     lastGoal.current = currentObjectiveCount;
-    if (currentObjectiveCount < before || info.kind !== 'count' || reducedMotion()) {
+    // (a clear past the goal flies nothing: the sign is already full, R-165.155)
+    if (currentObjectiveCount < before || info.kind !== 'count' || reducedMotion() || (target > 0 && before >= target)) {
       setShownGoal(currentObjectiveCount);
       return;
     }
@@ -176,9 +181,10 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
     anim.oncancel = done;
     // (a safety net: the flight's own end normally comes first; it is not cleared by the next pickup)
     window.setTimeout(done, 700);
-  }, [currentObjectiveCount, info.kind]);
+  }, [currentObjectiveCount, info.kind, target]);
   // (a restart sets the count back at once)
-  const goalNow = currentObjectiveCount < shownGoal ? currentObjectiveCount : shownGoal;
+  // (and never past the goal itself: goalInfo.ts goalShown, R-165.155)
+  const goalNow = goalShown(currentObjectiveCount < shownGoal ? currentObjectiveCount : shownGoal, target);
 
   // --- bloom: what is visible now ---
   const track = React.useRef(newBloom());

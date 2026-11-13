@@ -1,0 +1,5375 @@
+[
+{
+"mean_luma": 36.8,
+"near_black": 0.736,
+"vis": 0.47,
+"src": "src/assets/enemies/queen-anim.webp",
+"q_est": 79,
+"bytes": 2814618,
+"smooth_dark": 0.018
+},
+{
+"mean_luma": 36.8,
+"near_black": 0.773,
+"vis": 0.455,
+"src": "src/assets/enemies/prowler-anim.webp",
+"q_est": 81,
+"bytes": 2112730,
+"smooth_dark": 0.01
+},
+{
+"mean_luma": 96.6,
+"near_black": 0.179,
+"vis": 0.61,
+"src": "src/assets/enemies/soldier-anim.webp",
+"q_est": 79,
+"bytes": 2053904,
+"smooth_dark": 0.002
+},
+{
+"mean_luma": 39.2,
+"near_black": 0.701,
+"vis": 0.424,
+"src": "src/assets/enemies/croc-anim.webp",
+"q_est": 90,
+"bytes": 1966454,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 115.2,
+"near_black": 0.442,
+"vis": 0.503,
+"src": "src/assets/enemies/seamstress-anim.webp",
+"q_est": 87,
+"bytes": 1929524,
+"smooth_dark": 0.012
+},
+{
+"mean_luma": 107.1,
+"near_black": 0.133,
+"vis": 0.533,
+"src": "src/assets/characters/flicker-anim.webp",
+"q_est": 88,
+"bytes": 1848728,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 135.9,
+"near_black": 0.143,
+"vis": 0.431,
+"src": "src/assets/enemies/goldsnake-anim.webp",
+"q_est": 84,
+"bytes": 1551996,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 97.2,
+"near_black": 0.215,
+"vis": 0.455,
+"src": "src/assets/enemies/jaguar-anim.webp",
+"q_est": 81,
+"bytes": 1329424,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 103.8,
+"near_black": 0.11,
+"vis": 0.547,
+"src": "src/assets/enemies/pell-anim.webp",
+"q_est": 79,
+"bytes": 1303076,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 123.3,
+"near_black": 0.108,
+"vis": 0.448,
+"src": "src/assets/title/clip-pair-laugh.webp",
+"q_est": 83,
+"bytes": 1231222,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 44.1,
+"near_black": 0.787,
+"vis": 0.388,
+"src": "src/assets/enemies/eagle-anim.webp",
+"q_est": 95,
+"bytes": 1089134,
+"smooth_dark": 0.164
+},
+{
+"mean_luma": 86.3,
+"near_black": 0.39,
+"vis": 0.443,
+"src": "src/assets/enemies/ocelot-anim.webp",
+"q_est": 81,
+"bytes": 1035956,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 121.8,
+"near_black": 0.123,
+"vis": 0.515,
+"src": "src/assets/characters/cels-4.webp",
+"q_est": 90,
+"bytes": 963348,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 128.4,
+"near_black": 0.102,
+"vis": 0.303,
+"src": "src/assets/title/clip-pokey-cheer.webp",
+"q_est": 83,
+"bytes": 955554,
+"smooth_dark": 0.002
+},
+{
+"mean_luma": 121.2,
+"near_black": 0.114,
+"vis": 0.468,
+"src": "src/assets/characters/cels-6.webp",
+"q_est": 90,
+"bytes": 944304,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 160.6,
+"near_black": 0.091,
+"vis": 0.471,
+"src": "src/assets/props/w5-props.webp",
+"q_est": 90,
+"bytes": 916828,
+"smooth_dark": 0.001
+},
+{
+"mean_luma": 117.0,
+"near_black": 0.124,
+"vis": 0.528,
+"src": "src/assets/characters/cels-5.webp",
+"q_est": 90,
+"bytes": 894412,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 51.4,
+"near_black": 0.503,
+"vis": 0.481,
+"src": "src/assets/w6to10/creatures/sentry-anim-0.webp",
+"q_est": 79,
+"bytes": 844424,
+"smooth_dark": 0.032
+},
+{
+"mean_luma": 84.3,
+"near_black": 0.201,
+"vis": 0.414,
+"src": "src/assets/props/w3-props.webp",
+"q_est": 81,
+"bytes": 806492,
+"smooth_dark": 0.034
+},
+{
+"mean_luma": 135.8,
+"near_black": 0.084,
+"vis": 0.448,
+"src": "src/assets/title/clip-pokey-look.webp",
+"q_est": 83,
+"bytes": 778028,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 91.2,
+"near_black": 0.17,
+"vis": 0.588,
+"src": "src/assets/enemies/turtle-anim.webp",
+"q_est": 80,
+"bytes": 776844,
+"smooth_dark": 0.001
+},
+{
+"mean_luma": 104.4,
+"near_black": 0.165,
+"vis": 0.478,
+"src": "src/assets/story/hd/meeca-1.webp",
+"q_est": 90,
+"bytes": 758148,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 66.2,
+"near_black": 0.279,
+"vis": 0.525,
+"src": "src/assets/story/live/council.webp",
+"q_est": 77,
+"bytes": 757298,
+"smooth_dark": 0.019
+},
+{
+"mean_luma": 106.3,
+"near_black": 0.107,
+"vis": 0.408,
+"src": "src/assets/props/w2-props.webp",
+"q_est": 79,
+"bytes": 756262,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 103.9,
+"near_black": 0.17,
+"vis": 0.41,
+"src": "src/assets/title/clip-meeca-wave.webp",
+"q_est": 83,
+"bytes": 753182,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 104.8,
+"near_black": 0.165,
+"vis": 0.476,
+"src": "src/assets/story/hd/meeca-0.webp",
+"q_est": 89,
+"bytes": 743638,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 100.2,
+"near_black": 0.159,
+"vis": 0.458,
+"src": "src/assets/props/w4-props.webp",
+"q_est": 86,
+"bytes": 725716,
+"smooth_dark": 0.003
+},
+{
+"mean_luma": 136.6,
+"near_black": 0.081,
+"vis": 0.65,
+"src": "src/assets/title/clip-pokey-idle.webp",
+"q_est": 84,
+"bytes": 701032,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 106.0,
+"near_black": 0.141,
+"vis": 0.37,
+"src": "src/assets/title/clip-meeca-idle.webp",
+"q_est": 83,
+"bytes": 688406,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 88.0,
+"near_black": 0.226,
+"vis": 0.417,
+"src": "src/assets/props/dress.webp",
+"q_est": 87,
+"bytes": 687868,
+"smooth_dark": 0.01
+},
+{
+"mean_luma": 72.3,
+"near_black": 0.134,
+"vis": 0.404,
+"src": "src/assets/enemies/guard-anim.webp",
+"q_est": 79,
+"bytes": 631820,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 126.2,
+"near_black": 0.129,
+"vis": 0.453,
+"src": "src/assets/props/dressnew-w5.webp",
+"q_est": 88,
+"bytes": 608816,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 105.1,
+"near_black": 0.056,
+"vis": 0.483,
+"src": "src/assets/props/puzzle-kit.webp",
+"q_est": 86,
+"bytes": 603304,
+"smooth_dark": 0.004
+},
+{
+"mean_luma": 136.3,
+"near_black": 0.027,
+"vis": 0.456,
+"src": "src/assets/story/hd/pokey-1.webp",
+"q_est": 89,
+"bytes": 597856,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 141.2,
+"near_black": 0.024,
+"vis": 0.458,
+"src": "src/assets/story/hd/pokey-2.webp",
+"q_est": 89,
+"bytes": 596406,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 125.8,
+"near_black": 0.029,
+"vis": 0.313,
+"src": "src/assets/story/hd/dot-0.webp",
+"q_est": 89,
+"bytes": 582302,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 84.7,
+"near_black": 0.229,
+"vis": 0.486,
+"src": "src/assets/characters/cels-3.webp",
+"q_est": 89,
+"bytes": 580844,
+"smooth_dark": 0.013
+},
+{
+"mean_luma": 121.4,
+"near_black": 0.136,
+"vis": 0.353,
+"src": "src/assets/bosses/boss-fx.webp",
+"q_est": 87,
+"bytes": 578808,
+"smooth_dark": 0.018
+},
+{
+"mean_luma": 136.5,
+"near_black": 0.104,
+"vis": 0.506,
+"src": "src/assets/hero/clips/wave.webp",
+"q_est": 86,
+"bytes": 576352,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 57.1,
+"near_black": 0.547,
+"vis": 0.494,
+"src": "src/assets/enemies/ironclaw-atlas.webp",
+"q_est": 90,
+"bytes": 576038,
+"smooth_dark": 0.002
+},
+{
+"mean_luma": 136.4,
+"near_black": 0.026,
+"vis": 0.444,
+"src": "src/assets/story/hd/pokey-0.webp",
+"q_est": 89,
+"bytes": 554210,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 105.7,
+"near_black": 0.191,
+"vis": 0.401,
+"src": "src/assets/props/dressnew-w1.webp",
+"q_est": 87,
+"bytes": 548342,
+"smooth_dark": 0.003
+},
+{
+"mean_luma": 132.1,
+"near_black": 0.098,
+"vis": 0.38,
+"src": "src/assets/hero/clips/idle-yawn.webp",
+"q_est": 86,
+"bytes": 545236,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 138.0,
+"near_black": 0.017,
+"vis": 0.463,
+"src": "src/assets/hero/hero-standard.webp",
+"q_est": 79,
+"bytes": 535262,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 101.5,
+"near_black": 0.165,
+"vis": 0.394,
+"src": "src/assets/props/dressnew-w2.webp",
+"q_est": 87,
+"bytes": 532494,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 64.0,
+"near_black": 0.401,
+"vis": 0.369,
+"src": "src/assets/story/hd/guard-1.webp",
+"q_est": 89,
+"bytes": 529922,
+"smooth_dark": 0.006
+},
+{
+"mean_luma": 47.5,
+"near_black": 0.577,
+"vis": 0.419,
+"src": "src/assets/story/hd/guard-0.webp",
+"q_est": 89,
+"bytes": 519246,
+"smooth_dark": 0.011
+},
+{
+"mean_luma": 133.6,
+"near_black": 0.094,
+"vis": 0.541,
+"src": "src/assets/hero/clips/look-around.webp",
+"q_est": 86,
+"bytes": 516274,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 101.2,
+"near_black": 0.262,
+"vis": 0.537,
+"src": "src/assets/enemies/spider-anim.webp",
+"q_est": 81,
+"bytes": 491434,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 94.8,
+"near_black": 0.098,
+"vis": 1.0,
+"src": "src/assets/story/plates/ruins.webp",
+"q_est": 84,
+"bytes": 476484,
+"smooth_dark": 0.013
+},
+{
+"mean_luma": 72.2,
+"near_black": 0.156,
+"vis": 0.369,
+"src": "src/assets/backdrops/w2-near.webp",
+"q_est": 94,
+"bytes": 470748,
+"smooth_dark": 0.008
+},
+{
+"mean_luma": 104.8,
+"near_black": 0.219,
+"vis": 0.468,
+"src": "src/assets/medals/medals.webp",
+"q_est": 88,
+"bytes": 466976,
+"smooth_dark": 0.014
+},
+{
+"mean_luma": 115.8,
+"near_black": 0.091,
+"vis": 0.463,
+"src": "src/assets/props/meeca-night.webp",
+"q_est": 86,
+"bytes": 464044,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 129.9,
+"near_black": 0.091,
+"vis": 0.437,
+"src": "src/assets/hero/hero-atlas.webp",
+"q_est": 84,
+"bytes": 453730,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 113.7,
+"near_black": 0.111,
+"vis": 0.354,
+"src": "src/assets/hero/clips/push.webp",
+"q_est": 86,
+"bytes": 451272,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 64.3,
+"near_black": 0.332,
+"vis": 0.358,
+"src": "src/assets/characters/cels-1.webp",
+"q_est": 89,
+"bytes": 448576,
+"smooth_dark": 0.016
+},
+{
+"mean_luma": 140.0,
+"near_black": 0.084,
+"vis": 0.546,
+"src": "src/assets/hero/clips/belly-scratch.webp",
+"q_est": 86,
+"bytes": 444224,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 135.8,
+"near_black": 0.082,
+"vis": 0.487,
+"src": "src/assets/hero/clips/hurt.webp",
+"q_est": 86,
+"bytes": 434208,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 58.5,
+"near_black": 0.418,
+"vis": 0.304,
+"src": "src/assets/story/hd/guard-2.webp",
+"q_est": 89,
+"bytes": 433238,
+"smooth_dark": 0.006
+},
+{
+"mean_luma": 86.1,
+"near_black": 0.124,
+"vis": 0.525,
+"src": "src/assets/proto/props-atlas.webp",
+"q_est": 87,
+"bytes": 424186,
+"smooth_dark": 0.014
+},
+{
+"mean_luma": 100.5,
+"near_black": 0.063,
+"vis": 0.516,
+"src": "src/assets/backdrops/w2-mid.webp",
+"q_est": 95,
+"bytes": 422622,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 50.6,
+"near_black": 0.635,
+"vis": 0.502,
+"src": "src/assets/backdrops/w8-mid.webp",
+"q_est": 95,
+"bytes": 419378,
+"smooth_dark": 0.257
+},
+{
+"mean_luma": 63.0,
+"near_black": 0.335,
+"vis": 0.389,
+"src": "src/assets/characters/cels-0.webp",
+"q_est": 89,
+"bytes": 417580,
+"smooth_dark": 0.021
+},
+{
+"mean_luma": 111.7,
+"near_black": 0.231,
+"vis": 0.31,
+"src": "src/assets/props/dot-props.webp",
+"q_est": 85,
+"bytes": 404064,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 133.0,
+"near_black": 0.091,
+"vis": 0.557,
+"src": "src/assets/backdrops/w5gold2-mid.webp",
+"q_est": 92,
+"bytes": 401372,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 114.6,
+"near_black": 0.101,
+"vis": 0.326,
+"src": "src/assets/backdrops/w5gold2-near.webp",
+"q_est": 94,
+"bytes": 382694,
+"smooth_dark": 0.024
+},
+{
+"mean_luma": 119.5,
+"near_black": 0.092,
+"vis": 0.464,
+"src": "src/assets/backdrops/w5dusk2-mid.webp",
+"q_est": 92,
+"bytes": 378614,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 129.3,
+"near_black": 0.115,
+"vis": 0.41,
+"src": "src/assets/hero/clips/cheer.webp",
+"q_est": 86,
+"bytes": 377742,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 131.8,
+"near_black": 0.03,
+"vis": 0.49,
+"src": "src/assets/backdrops/w5twi2-mid.webp",
+"q_est": 92,
+"bytes": 376674,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 134.3,
+"near_black": 0.017,
+"vis": 0.477,
+"src": "src/assets/backdrops/w5twi1-mid.webp",
+"q_est": 92,
+"bytes": 373554,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 52.7,
+"near_black": 0.566,
+"vis": 0.422,
+"src": "src/assets/enemies/thornbark-atlas.webp",
+"q_est": 90,
+"bytes": 371564,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 126.7,
+"near_black": 0.091,
+"vis": 1.0,
+"src": "src/assets/story/plates/village.webp",
+"q_est": 84,
+"bytes": 369670,
+"smooth_dark": 0.027
+},
+{
+"mean_luma": 161.2,
+"near_black": 0.035,
+"vis": 1.0,
+"src": "src/assets/backdrops/w4terraces-far.webp",
+"q_est": 91,
+"bytes": 369222,
+"smooth_dark": 0.004
+},
+{
+"mean_luma": 87.3,
+"near_black": 0.138,
+"vis": 0.249,
+"src": "src/assets/w6/ledges.webp",
+"q_est": 89,
+"bytes": 364478,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 83.8,
+"near_black": 0.304,
+"vis": 0.376,
+"src": "src/assets/props/dressnew-w6.webp",
+"q_est": 87,
+"bytes": 363648,
+"smooth_dark": 0.007
+},
+{
+"mean_luma": 67.6,
+"near_black": 0.246,
+"vis": 0.416,
+"src": "src/assets/backdrops/w1c-near.webp",
+"q_est": 95,
+"bytes": 362970,
+"smooth_dark": 0.055
+},
+{
+"mean_luma": 71.2,
+"near_black": 0.319,
+"vis": 0.35,
+"src": "src/assets/characters/cels-2.webp",
+"q_est": 89,
+"bytes": 355594,
+"smooth_dark": 0.012
+},
+{
+"mean_luma": 172.4,
+"near_black": 0.039,
+"vis": 0.343,
+"src": "src/assets/w4/falls.webp",
+"q_est": 89,
+"bytes": 355142,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 100.1,
+"near_black": 0.161,
+"vis": 0.395,
+"src": "src/assets/props/dressnew-w7.webp",
+"q_est": 87,
+"bytes": 347606,
+"smooth_dark": 0.001
+},
+{
+"mean_luma": 59.6,
+"near_black": 0.444,
+"vis": 1.0,
+"src": "src/assets/story/plates/nest-storm.webp",
+"q_est": 83,
+"bytes": 345862,
+"smooth_dark": 0.207
+},
+{
+"mean_luma": 105.0,
+"near_black": 0.126,
+"vis": 0.286,
+"src": "src/assets/props/dressnew-w4.webp",
+"q_est": 87,
+"bytes": 338096,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 84.1,
+"near_black": 0.043,
+"vis": 0.749,
+"src": "src/assets/ground/w7.webp",
+"q_est": 81,
+"bytes": 332910,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 102.7,
+"near_black": 0.101,
+"vis": 0.505,
+"src": "src/assets/characters/meeca-standard.webp",
+"q_est": 64,
+"bytes": 332410,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 56.0,
+"near_black": 0.632,
+"vis": 1.0,
+"src": "src/assets/story/plates/tea.webp",
+"q_est": 84,
+"bytes": 328902,
+"smooth_dark": 0.415
+},
+{
+"mean_luma": 117.5,
+"near_black": 0.074,
+"vis": 0.282,
+"src": "src/assets/backdrops/w5-near.webp",
+"q_est": 94,
+"bytes": 327400,
+"smooth_dark": 0.002
+},
+{
+"mean_luma": 107.1,
+"near_black": 0.117,
+"vis": 0.445,
+"src": "src/assets/props/dressnew-w3.webp",
+"q_est": 87,
+"bytes": 322020,
+"smooth_dark": 0.003
+},
+{
+"mean_luma": 126.6,
+"near_black": 0.096,
+"vis": 0.351,
+"src": "src/assets/enemies/venom2-atlas.webp",
+"q_est": 89,
+"bytes": 317498,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 112.0,
+"near_black": 0.058,
+"vis": 0.51,
+"src": "src/assets/backdrops/w5dusk1-mid.webp",
+"q_est": 92,
+"bytes": 315882,
+"smooth_dark": 0.009
+},
+{
+"mean_luma": 148.0,
+"near_black": 0.017,
+"vis": 1.0,
+"src": "src/assets/story/plates/w5-day.webp",
+"q_est": 85,
+"bytes": 312874,
+"smooth_dark": 0.006
+},
+{
+"mean_luma": 131.3,
+"near_black": 0.078,
+"vis": 1.0,
+"src": "src/assets/backdrops/w5twi2-far.webp",
+"q_est": 91,
+"bytes": 310686,
+"smooth_dark": 0.025
+},
+{
+"mean_luma": 116.6,
+"near_black": 0.12,
+"vis": 0.23,
+"src": "src/assets/hero/pokey-swim.webp",
+"q_est": 89,
+"bytes": 309504,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 145.9,
+"near_black": 0.012,
+"vis": 0.487,
+"src": "src/assets/story/hd/pokeyface-0.webp",
+"q_est": 89,
+"bytes": 308622,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 99.7,
+"near_black": 0.096,
+"vis": 0.428,
+"src": "src/assets/enemies/jaguar-atlas.webp",
+"q_est": 91,
+"bytes": 308416,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 101.2,
+"near_black": 0.094,
+"vis": 0.278,
+"src": "src/assets/backdrops/w5twi2-near.webp",
+"q_est": 94,
+"bytes": 307450,
+"smooth_dark": 0.018
+},
+{
+"mean_luma": 58.3,
+"near_black": 0.518,
+"vis": 1.0,
+"src": "src/assets/story/plates/storm-returns.webp",
+"q_est": 83,
+"bytes": 305368,
+"smooth_dark": 0.285
+},
+{
+"mean_luma": 57.6,
+"near_black": 0.364,
+"vis": 0.481,
+"src": "src/assets/w6to10/creatures/fruitbat-anim.webp",
+"q_est": 79,
+"bytes": 304096,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 87.9,
+"near_black": 0.339,
+"vis": 1.0,
+"src": "src/assets/story/plates/hill.webp",
+"q_est": 83,
+"bytes": 303496,
+"smooth_dark": 0.15
+},
+{
+"mean_luma": 107.8,
+"near_black": 0.032,
+"vis": 1.0,
+"src": "src/assets/story/plates/w2-day.webp",
+"q_est": 86,
+"bytes": 301868,
+"smooth_dark": 0.005
+},
+{
+"mean_luma": 44.0,
+"near_black": 0.767,
+"vis": 0.264,
+"src": "src/assets/enemies/eagle-atlas.webp",
+"q_est": 95,
+"bytes": 300978,
+"smooth_dark": 0.033
+},
+{
+"mean_luma": 75.1,
+"near_black": 0.09,
+"vis": 0.477,
+"src": "src/assets/backdrops/w5night-mid.webp",
+"q_est": 91,
+"bytes": 299908,
+"smooth_dark": 0.022
+},
+{
+"mean_luma": 59.6,
+"near_black": 0.295,
+"vis": 0.435,
+"src": "src/assets/backdrops/w1-near.webp",
+"q_est": 94,
+"bytes": 299868,
+"smooth_dark": 0.046
+},
+{
+"mean_luma": 102.6,
+"near_black": 0.104,
+"vis": 0.262,
+"src": "src/assets/backdrops/w5twi1-near.webp",
+"q_est": 94,
+"bytes": 298080,
+"smooth_dark": 0.005
+},
+{
+"mean_luma": 64.3,
+"near_black": 0.32,
+"vis": 0.396,
+"src": "src/assets/w6to10/creatures/sentry-anim-1.webp",
+"q_est": 79,
+"bytes": 296964,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 121.6,
+"near_black": 0.253,
+"vis": 1.0,
+"src": "src/assets/story/plates/nest-morning.webp",
+"q_est": 84,
+"bytes": 296842,
+"smooth_dark": 0.115
+},
+{
+"mean_luma": 84.5,
+"near_black": 0.182,
+"vis": 0.382,
+"src": "src/assets/enemies/venom-atlas.webp",
+"q_est": 90,
+"bytes": 296638,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 49.9,
+"near_black": 0.512,
+"vis": 0.744,
+"src": "src/assets/ground/w6.webp",
+"q_est": 80,
+"bytes": 296076,
+"smooth_dark": 0.08
+},
+{
+"mean_luma": 109.5,
+"near_black": 0.226,
+"vis": 0.349,
+"src": "src/assets/bosses/boss-atk.webp",
+"q_est": 90,
+"bytes": 293746,
+"smooth_dark": 0.001
+},
+{
+"mean_luma": 107.7,
+"near_black": 0.137,
+"vis": 0.558,
+"src": "src/assets/w1to4art/w1-new.webp",
+"q_est": 90,
+"bytes": 293670,
+"smooth_dark": 0.013
+},
+{
+"mean_luma": 80.8,
+"near_black": 0.364,
+"vis": 1.0,
+"src": "src/assets/backdrops/w4mist-far.webp",
+"q_est": 91,
+"bytes": 293570,
+"smooth_dark": 0.152
+},
+{
+"mean_luma": 83.4,
+"near_black": 0.263,
+"vis": 0.45,
+"src": "src/assets/w7slide/flume-cave.webp",
+"q_est": 89,
+"bytes": 285794,
+"smooth_dark": 0.092
+},
+{
+"mean_luma": 47.3,
+"near_black": 0.601,
+"vis": 1.0,
+"src": "src/assets/backdrops/w3cavern-far.webp",
+"q_est": 91,
+"bytes": 284474,
+"smooth_dark": 0.292
+},
+{
+"mean_luma": 91.9,
+"near_black": 0.16,
+"vis": 0.297,
+"src": "src/assets/backdrops/w5dusk1-near.webp",
+"q_est": 94,
+"bytes": 283428,
+"smooth_dark": 0.041
+},
+{
+"mean_luma": 81.0,
+"near_black": 0.134,
+"vis": 0.475,
+"src": "src/assets/backdrops/w4-mid.webp",
+"q_est": 95,
+"bytes": 279896,
+"smooth_dark": 0.027
+},
+{
+"mean_luma": 103.7,
+"near_black": 0.195,
+"vis": 0.424,
+"src": "src/assets/story/hd/meeca-2.webp",
+"q_est": 89,
+"bytes": 276410,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 104.2,
+"near_black": 0.093,
+"vis": 1.0,
+"src": "src/assets/story/plates/w1-day.webp",
+"q_est": 85,
+"bytes": 275916,
+"smooth_dark": 0.054
+},
+{
+"mean_luma": 121.3,
+"near_black": 0.11,
+"vis": 0.581,
+"src": "src/assets/hero/clips/doze.webp",
+"q_est": 86,
+"bytes": 274134,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 41.8,
+"near_black": 0.755,
+"vis": 1.0,
+"src": "src/assets/story/plates/cookhouse.webp",
+"q_est": 83,
+"bytes": 273490,
+"smooth_dark": 0.461
+},
+{
+"mean_luma": 89.6,
+"near_black": 0.047,
+"vis": 1.0,
+"src": "src/assets/w7/temple-run.webp",
+"q_est": 87,
+"bytes": 272358,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 98.8,
+"near_black": 0.023,
+"vis": 1.0,
+"src": "src/assets/story/plates/w1-dusk.webp",
+"q_est": 85,
+"bytes": 264556,
+"smooth_dark": 0.015
+},
+{
+"mean_luma": 52.0,
+"near_black": 0.52,
+"vis": 0.372,
+"src": "src/assets/backdrops/w7-near.webp",
+"q_est": 94,
+"bytes": 259806,
+"smooth_dark": 0.09
+},
+{
+"mean_luma": 101.6,
+"near_black": 0.089,
+"vis": 0.367,
+"src": "src/assets/w7slide/flume-pokey.webp",
+"q_est": 87,
+"bytes": 259036,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 97.2,
+"near_black": 0.071,
+"vis": 0.522,
+"src": "src/assets/kits/w2.webp",
+"q_est": 85,
+"bytes": 258144,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 84.0,
+"near_black": 0.156,
+"vis": 1.0,
+"src": "src/assets/backdrops/w10dusk-far.webp",
+"q_est": 91,
+"bytes": 257314,
+"smooth_dark": 0.072
+},
+{
+"mean_luma": 73.9,
+"near_black": 0.279,
+"vis": 1.0,
+"src": "src/assets/story/plates/grandma-door.webp",
+"q_est": 83,
+"bytes": 256688,
+"smooth_dark": 0.136
+},
+{
+"mean_luma": 68.4,
+"near_black": 0.051,
+"vis": 0.74,
+"src": "src/assets/ground/w8.webp",
+"q_est": 80,
+"bytes": 256644,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 137.5,
+"near_black": 0.165,
+"vis": 1.0,
+"src": "src/assets/backdrops/w9dawn-far.webp",
+"q_est": 91,
+"bytes": 256566,
+"smooth_dark": 0.041
+},
+{
+"mean_luma": 71.3,
+"near_black": 0.282,
+"vis": 1.0,
+"src": "src/assets/story/plates/grandma-door-empty.webp",
+"q_est": 83,
+"bytes": 256204,
+"smooth_dark": 0.118
+},
+{
+"mean_luma": 65.2,
+"near_black": 0.286,
+"vis": 0.31,
+"src": "src/assets/backdrops/w4-near.webp",
+"q_est": 95,
+"bytes": 256098,
+"smooth_dark": 0.045
+},
+{
+"mean_luma": 81.9,
+"near_black": 0.372,
+"vis": 0.276,
+"src": "src/assets/enemies/journal-cards.webp",
+"q_est": 86,
+"bytes": 255094,
+"smooth_dark": 0.011
+},
+{
+"mean_luma": 83.7,
+"near_black": 0.236,
+"vis": 0.294,
+"src": "src/assets/backdrops/w5dusk2-near.webp",
+"q_est": 94,
+"bytes": 254430,
+"smooth_dark": 0.086
+},
+{
+"mean_luma": 62.4,
+"near_black": 0.355,
+"vis": 1.0,
+"src": "src/assets/story/plates/w1-storm.webp",
+"q_est": 85,
+"bytes": 250848,
+"smooth_dark": 0.239
+},
+{
+"mean_luma": 170.1,
+"near_black": 0.012,
+"vis": 1.0,
+"src": "src/assets/backdrops/w5dusk1-far.webp",
+"q_est": 91,
+"bytes": 249694,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 57.0,
+"near_black": 0.424,
+"vis": 0.421,
+"src": "src/assets/backdrops/w6-near.webp",
+"q_est": 94,
+"bytes": 249392,
+"smooth_dark": 0.126
+},
+{
+"mean_luma": 80.3,
+"near_black": 0.201,
+"vis": 1.0,
+"src": "src/assets/story/plates/w7-day.webp",
+"q_est": 85,
+"bytes": 248730,
+"smooth_dark": 0.106
+},
+{
+"mean_luma": 81.6,
+"near_black": 0.137,
+"vis": 0.448,
+"src": "src/assets/story/live/gates.webp",
+"q_est": 79,
+"bytes": 246596,
+"smooth_dark": 0.001
+},
+{
+"mean_luma": 129.2,
+"near_black": 0.071,
+"vis": 1.0,
+"src": "src/assets/story/plates/w4-day.webp",
+"q_est": 85,
+"bytes": 245572,
+"smooth_dark": 0.03
+},
+{
+"mean_luma": 80.0,
+"near_black": 0.313,
+"vis": 1.0,
+"src": "src/assets/backdrops/w6-far.webp",
+"q_est": 91,
+"bytes": 243546,
+"smooth_dark": 0.1
+},
+{
+"mean_luma": 39.6,
+"near_black": 0.786,
+"vis": 1.0,
+"src": "src/assets/backdrops/w9night-far.webp",
+"q_est": 91,
+"bytes": 241652,
+"smooth_dark": 0.517
+},
+{
+"mean_luma": 46.0,
+"near_black": 0.553,
+"vis": 0.302,
+"src": "src/assets/backdrops/w1sun2-mid.webp",
+"q_est": 72,
+"bytes": 241266,
+"smooth_dark": 0.16
+},
+{
+"mean_luma": 201.1,
+"near_black": 0.002,
+"vis": 1.0,
+"src": "src/assets/backdrops/w5gold2-far.webp",
+"q_est": 91,
+"bytes": 240588,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 71.9,
+"near_black": 0.312,
+"vis": 1.0,
+"src": "src/assets/backdrops/w8night-far.webp",
+"q_est": 91,
+"bytes": 240266,
+"smooth_dark": 0.171
+},
+{
+"mean_luma": 110.2,
+"near_black": 0.001,
+"vis": 0.743,
+"src": "src/assets/ground/w2.webp",
+"q_est": 80,
+"bytes": 239826,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 78.9,
+"near_black": 0.01,
+"vis": 0.73,
+"src": "src/assets/ground/w5.webp",
+"q_est": 80,
+"bytes": 239100,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 80.6,
+"near_black": 0.271,
+"vis": 0.44,
+"src": "src/assets/kits/w6.webp",
+"q_est": 85,
+"bytes": 238260,
+"smooth_dark": 0.018
+},
+{
+"mean_luma": 85.8,
+"near_black": 0.074,
+"vis": 0.455,
+"src": "src/assets/w1to4art/w1-cut.webp",
+"q_est": 87,
+"bytes": 235906,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 84.6,
+"near_black": 0.14,
+"vis": 1.0,
+"src": "src/assets/w7slide/chamber.webp",
+"q_est": 90,
+"bytes": 234764,
+"smooth_dark": 0.018
+},
+{
+"mean_luma": 84.1,
+"near_black": 0.116,
+"vis": 0.302,
+"src": "src/assets/backdrops/w2mist-near.webp",
+"q_est": 89,
+"bytes": 234648,
+"smooth_dark": 0.019
+},
+{
+"mean_luma": 56.7,
+"near_black": 0.323,
+"vis": 0.735,
+"src": "src/assets/ground/w9.webp",
+"q_est": 80,
+"bytes": 234124,
+"smooth_dark": 0.098
+},
+{
+"mean_luma": 125.8,
+"near_black": 0.11,
+"vis": 1.0,
+"src": "src/assets/backdrops/w10after-far.webp",
+"q_est": 91,
+"bytes": 233312,
+"smooth_dark": 0.05
+},
+{
+"mean_luma": 49.1,
+"near_black": 0.574,
+"vis": 1.0,
+"src": "src/assets/story/plates/cell.webp",
+"q_est": 83,
+"bytes": 231940,
+"smooth_dark": 0.272
+},
+{
+"mean_luma": 111.5,
+"near_black": 0.211,
+"vis": 0.356,
+"src": "src/assets/props/stage-art.webp",
+"q_est": 90,
+"bytes": 230428,
+"smooth_dark": 0.004
+},
+{
+"mean_luma": 54.4,
+"near_black": 0.565,
+"vis": 0.249,
+"src": "src/assets/backdrops/w8-near.webp",
+"q_est": 95,
+"bytes": 227922,
+"smooth_dark": 0.24
+},
+{
+"mean_luma": 53.6,
+"near_black": 0.471,
+"vis": 0.262,
+"src": "src/assets/backdrops/w5night-near.webp",
+"q_est": 95,
+"bytes": 227068,
+"smooth_dark": 0.229
+},
+{
+"mean_luma": 94.0,
+"near_black": 0.136,
+"vis": 1.0,
+"src": "src/assets/backdrops/w8sunset-far.webp",
+"q_est": 91,
+"bytes": 223738,
+"smooth_dark": 0.074
+},
+{
+"mean_luma": 49.7,
+"near_black": 0.43,
+"vis": 0.299,
+"src": "src/assets/backdrops/w2evening-near.webp",
+"q_est": 88,
+"bytes": 223014,
+"smooth_dark": 0.075
+},
+{
+"mean_luma": 47.6,
+"near_black": 0.642,
+"vis": 1.0,
+"src": "src/assets/backdrops/w3-far.webp",
+"q_est": 91,
+"bytes": 222918,
+"smooth_dark": 0.341
+},
+{
+"mean_luma": 100.4,
+"near_black": 0.058,
+"vis": 0.502,
+"src": "src/assets/kits/w3.webp",
+"q_est": 85,
+"bytes": 222736,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 91.3,
+"near_black": 0.198,
+"vis": 0.394,
+"src": "src/assets/enemies/golem-atlas.webp",
+"q_est": 90,
+"bytes": 222584,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 144.8,
+"near_black": 0.032,
+"vis": 0.463,
+"src": "src/assets/story/hd/pokeyface-1.webp",
+"q_est": 89,
+"bytes": 222388,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 62.6,
+"near_black": 0.356,
+"vis": 1.0,
+"src": "src/assets/backdrops/w5night-far.webp",
+"q_est": 91,
+"bytes": 222122,
+"smooth_dark": 0.206
+},
+{
+"mean_luma": 27.5,
+"near_black": 0.953,
+"vis": 0.535,
+"src": "src/assets/backdrops/w6dusk-mid.webp",
+"q_est": 89,
+"bytes": 222088,
+"smooth_dark": 0.33
+},
+{
+"mean_luma": 140.0,
+"near_black": 0.027,
+"vis": 0.461,
+"src": "src/assets/backdrops/w5-mid.webp",
+"q_est": 79,
+"bytes": 218916,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 51.6,
+"near_black": 0.541,
+"vis": 1.0,
+"src": "src/assets/story/plates/nest-night.webp",
+"q_est": 82,
+"bytes": 218230,
+"smooth_dark": 0.363
+},
+{
+"mean_luma": 52.1,
+"near_black": 0.524,
+"vis": 1.0,
+"src": "src/assets/story/plates/gates.webp",
+"q_est": 83,
+"bytes": 218034,
+"smooth_dark": 0.305
+},
+{
+"mean_luma": 49.0,
+"near_black": 0.492,
+"vis": 0.476,
+"src": "src/assets/backdrops/w2evening-mid.webp",
+"q_est": 87,
+"bytes": 216114,
+"smooth_dark": 0.098
+},
+{
+"mean_luma": 135.9,
+"near_black": 0.047,
+"vis": 1.0,
+"src": "src/assets/backdrops/w5arena-table.webp",
+"q_est": 83,
+"bytes": 215492,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 38.5,
+"near_black": 0.727,
+"vis": 1.0,
+"src": "src/assets/backdrops/w6dusk-far.webp",
+"q_est": 91,
+"bytes": 215256,
+"smooth_dark": 0.496
+},
+{
+"mean_luma": 88.0,
+"near_black": 0.137,
+"vis": 1.0,
+"src": "src/assets/story/cards/stone-golem.webp",
+"q_est": 84,
+"bytes": 215150,
+"smooth_dark": 0.027
+},
+{
+"mean_luma": 66.2,
+"near_black": 0.248,
+"vis": 1.0,
+"src": "src/assets/story/plates/warroom.webp",
+"q_est": 83,
+"bytes": 213180,
+"smooth_dark": 0.139
+},
+{
+"mean_luma": 134.8,
+"near_black": 0.016,
+"vis": 0.735,
+"src": "src/assets/ground/w3.webp",
+"q_est": 80,
+"bytes": 212002,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 147.4,
+"near_black": 0.018,
+"vis": 1.0,
+"src": "src/assets/story/plates/raft.webp",
+"q_est": 85,
+"bytes": 211378,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 59.6,
+"near_black": 0.361,
+"vis": 0.489,
+"src": "src/assets/backdrops/w6-mid.webp",
+"q_est": 88,
+"bytes": 208888,
+"smooth_dark": 0.083
+},
+{
+"mean_luma": 166.8,
+"near_black": 0.008,
+"vis": 1.0,
+"src": "src/assets/backdrops/w2-far.webp",
+"q_est": 91,
+"bytes": 206364,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 145.7,
+"near_black": 0.023,
+"vis": 0.347,
+"src": "src/assets/enemies/snake-atlas.webp",
+"q_est": 90,
+"bytes": 206008,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 103.7,
+"near_black": 0.107,
+"vis": 1.0,
+"src": "src/assets/backdrops/w5arena-webs.webp",
+"q_est": 83,
+"bytes": 205402,
+"smooth_dark": 0.016
+},
+{
+"mean_luma": 97.9,
+"near_black": 0.072,
+"vis": 0.436,
+"src": "src/assets/backdrops/w2rapids-mid.webp",
+"q_est": 77,
+"bytes": 203898,
+"smooth_dark": 0.001
+},
+{
+"mean_luma": 95.8,
+"near_black": 0.002,
+"vis": 0.74,
+"src": "src/assets/ground/w4.webp",
+"q_est": 80,
+"bytes": 203710,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 69.4,
+"near_black": 0.155,
+"vis": 0.408,
+"src": "src/assets/backdrops/w6dawn-mid.webp",
+"q_est": 87,
+"bytes": 203154,
+"smooth_dark": 0.014
+},
+{
+"mean_luma": 202.5,
+"near_black": 0.008,
+"vis": 1.0,
+"src": "src/assets/backdrops/w5-far.webp",
+"q_est": 91,
+"bytes": 202240,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 60.3,
+"near_black": 0.427,
+"vis": 1.0,
+"src": "src/assets/story/plates/w8-night.webp",
+"q_est": 85,
+"bytes": 201630,
+"smooth_dark": 0.216
+},
+{
+"mean_luma": 63.5,
+"near_black": 0.023,
+"vis": 0.739,
+"src": "src/assets/ground/w1.webp",
+"q_est": 80,
+"bytes": 201534,
+"smooth_dark": 0.002
+},
+{
+"mean_luma": 144.9,
+"near_black": 0.072,
+"vis": 1.0,
+"src": "src/assets/backdrops/w1b-far.webp",
+"q_est": 91,
+"bytes": 201508,
+"smooth_dark": 0.035
+},
+{
+"mean_luma": 72.3,
+"near_black": 0.102,
+"vis": 0.361,
+"src": "src/assets/backdrops/w1kapok-near.webp",
+"q_est": 89,
+"bytes": 200912,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 44.3,
+"near_black": 0.689,
+"vis": 0.325,
+"src": "src/assets/backdrops/w9-near.webp",
+"q_est": 94,
+"bytes": 199360,
+"smooth_dark": 0.409
+},
+{
+"mean_luma": 85.8,
+"near_black": 0.011,
+"vis": 1.0,
+"src": "src/assets/story/plates/w6-dusk.webp",
+"q_est": 85,
+"bytes": 198796,
+"smooth_dark": 0.009
+},
+{
+"mean_luma": 93.0,
+"near_black": 0.123,
+"vis": 0.444,
+"src": "src/assets/kits/w7.webp",
+"q_est": 85,
+"bytes": 198772,
+"smooth_dark": 0.002
+},
+{
+"mean_luma": 164.2,
+"near_black": 0.02,
+"vis": 1.0,
+"src": "src/assets/story/plates/gorge.webp",
+"q_est": 82,
+"bytes": 198668,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 164.2,
+"near_black": 0.102,
+"vis": 1.0,
+"src": "src/assets/backdrops/w1kapok-far.webp",
+"q_est": 85,
+"bytes": 197632,
+"smooth_dark": 0.027
+},
+{
+"mean_luma": 56.8,
+"near_black": 0.549,
+"vis": 0.36,
+"src": "src/assets/backdrops/w9-mid.webp",
+"q_est": 94,
+"bytes": 197112,
+"smooth_dark": 0.226
+},
+{
+"mean_luma": 141.8,
+"near_black": 0.153,
+"vis": 0.651,
+"src": "src/assets/hud/hud-atlas.webp",
+"q_est": 89,
+"bytes": 196014,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 154.6,
+"near_black": 0.04,
+"vis": 1.0,
+"src": "src/assets/backdrops/w7court-far.webp",
+"q_est": 81,
+"bytes": 195246,
+"smooth_dark": 0.009
+},
+{
+"mean_luma": 28.5,
+"near_black": 0.969,
+"vis": 0.434,
+"src": "src/assets/backdrops/w6moon-mid.webp",
+"q_est": 89,
+"bytes": 195210,
+"smooth_dark": 0.311
+},
+{
+"mean_luma": 129.4,
+"near_black": 0.092,
+"vis": 1.0,
+"src": "src/assets/story/cards/crocus-rex.webp",
+"q_est": 83,
+"bytes": 195132,
+"smooth_dark": 0.002
+},
+{
+"mean_luma": 95.3,
+"near_black": 0.092,
+"vis": 0.292,
+"src": "src/assets/backdrops/w2rapids-near.webp",
+"q_est": 76,
+"bytes": 194972,
+"smooth_dark": 0.008
+},
+{
+"mean_luma": 57.8,
+"near_black": 0.466,
+"vis": 0.431,
+"src": "src/assets/enemies/croc-atlas.webp",
+"q_est": 90,
+"bytes": 192066,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 66.7,
+"near_black": 0.297,
+"vis": 0.458,
+"src": "src/assets/kits/w8.webp",
+"q_est": 85,
+"bytes": 192010,
+"smooth_dark": 0.019
+},
+{
+"mean_luma": 133.3,
+"near_black": 0.273,
+"vis": 1.0,
+"src": "src/assets/backdrops/w2rapids-far.webp",
+"q_est": 85,
+"bytes": 191656,
+"smooth_dark": 0.117
+},
+{
+"mean_luma": 106.6,
+"near_black": 0.155,
+"vis": 1.0,
+"src": "src/assets/story/cards/venom-fang.webp",
+"q_est": 83,
+"bytes": 190996,
+"smooth_dark": 0.008
+},
+{
+"mean_luma": 131.0,
+"near_black": 0.008,
+"vis": 1.0,
+"src": "src/assets/story/plates/w5-dusk.webp",
+"q_est": 85,
+"bytes": 190690,
+"smooth_dark": 0.007
+},
+{
+"mean_luma": 67.9,
+"near_black": 0.238,
+"vis": 0.391,
+"src": "src/assets/backdrops/w1-mid.webp",
+"q_est": 87,
+"bytes": 190370,
+"smooth_dark": 0.073
+},
+{
+"mean_luma": 86.6,
+"near_black": 0.259,
+"vis": 1.0,
+"src": "src/assets/backdrops/w9-far.webp",
+"q_est": 91,
+"bytes": 190248,
+"smooth_dark": 0.113
+},
+{
+"mean_luma": 55.7,
+"near_black": 0.472,
+"vis": 1.0,
+"src": "src/assets/story/drake/drake-cave.webp",
+"q_est": 84,
+"bytes": 189784,
+"smooth_dark": 0.366
+},
+{
+"mean_luma": 117.4,
+"near_black": 0.05,
+"vis": 0.649,
+"src": "src/assets/flora/plants-atlas.webp",
+"q_est": 83,
+"bytes": 188706,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 92.3,
+"near_black": 0.122,
+"vis": 1.0,
+"src": "src/assets/backdrops/w10storm-far.webp",
+"q_est": 87,
+"bytes": 187208,
+"smooth_dark": 0.041
+},
+{
+"mean_luma": 107.6,
+"near_black": 0.151,
+"vis": 1.0,
+"src": "src/assets/story/cards/squirrels.webp",
+"q_est": 85,
+"bytes": 186238,
+"smooth_dark": 0.017
+},
+{
+"mean_luma": 116.9,
+"near_black": 0.074,
+"vis": 0.575,
+"src": "src/assets/flora/flowers-atlas.webp",
+"q_est": 82,
+"bytes": 185274,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 145.4,
+"near_black": 0.122,
+"vis": 1.0,
+"src": "src/assets/backdrops/w1rain-far.webp",
+"q_est": 85,
+"bytes": 185222,
+"smooth_dark": 0.027
+},
+{
+"mean_luma": 122.7,
+"near_black": 0.053,
+"vis": 0.363,
+"src": "src/assets/hero/clips/move-climb.webp",
+"q_est": 86,
+"bytes": 185092,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 84.2,
+"near_black": 0.073,
+"vis": 1.0,
+"src": "src/assets/w7slide/chute-wall-roots.webp",
+"q_est": 90,
+"bytes": 184930,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 90.4,
+"near_black": 0.311,
+"vis": 0.344,
+"src": "src/assets/enemies/ocelot-atlas.webp",
+"q_est": 90,
+"bytes": 184828,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 73.2,
+"near_black": 0.327,
+"vis": 0.192,
+"src": "src/assets/lairs/fg-croc.webp",
+"q_est": 85,
+"bytes": 183560,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 105.9,
+"near_black": 0.096,
+"vis": 1.0,
+"src": "src/assets/story/cards/mailman.webp",
+"q_est": 83,
+"bytes": 181596,
+"smooth_dark": 0.005
+},
+{
+"mean_luma": 37.4,
+"near_black": 0.822,
+"vis": 0.313,
+"src": "src/assets/backdrops/w3-near.webp",
+"q_est": 94,
+"bytes": 181280,
+"smooth_dark": 0.461
+},
+{
+"mean_luma": 62.7,
+"near_black": 0.471,
+"vis": 1.0,
+"src": "src/assets/lairs/prowler-lair.webp",
+"q_est": 65,
+"bytes": 178028,
+"smooth_dark": 0.205
+},
+{
+"mean_luma": 86.8,
+"near_black": 0.077,
+"vis": 0.455,
+"src": "src/assets/kits/w4.webp",
+"q_est": 85,
+"bytes": 177586,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 190.7,
+"near_black": 0.014,
+"vis": 1.0,
+"src": "src/assets/backdrops/w4-far.webp",
+"q_est": 91,
+"bytes": 177544,
+"smooth_dark": 0.002
+},
+{
+"mean_luma": 125.8,
+"near_black": 0.074,
+"vis": 1.0,
+"src": "src/assets/story/cards/general.webp",
+"q_est": 83,
+"bytes": 177508,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 72.9,
+"near_black": 0.151,
+"vis": 0.312,
+"src": "src/assets/backdrops/w7dawn-near.webp",
+"q_est": 89,
+"bytes": 176920,
+"smooth_dark": 0.005
+},
+{
+"mean_luma": 122.3,
+"near_black": 0.111,
+"vis": 1.0,
+"src": "src/assets/story/cards/sky-sovereign.webp",
+"q_est": 83,
+"bytes": 176352,
+"smooth_dark": 0.003
+},
+{
+"mean_luma": 132.7,
+"near_black": 0.187,
+"vis": 1.0,
+"src": "src/assets/backdrops/w9ash-far.webp",
+"q_est": 87,
+"bytes": 175106,
+"smooth_dark": 0.055
+},
+{
+"mean_luma": 85.2,
+"near_black": 0.116,
+"vis": 0.291,
+"src": "src/assets/backdrops/w7court-near.webp",
+"q_est": 89,
+"bytes": 173804,
+"smooth_dark": 0.052
+},
+{
+"mean_luma": 92.0,
+"near_black": 0.163,
+"vis": 0.521,
+"src": "src/assets/enemies/turtle-atlas.webp",
+"q_est": 85,
+"bytes": 173722,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 44.0,
+"near_black": 0.734,
+"vis": 0.305,
+"src": "src/assets/backdrops/w10-near.webp",
+"q_est": 94,
+"bytes": 173196,
+"smooth_dark": 0.379
+},
+{
+"mean_luma": 95.1,
+"near_black": 0.043,
+"vis": 1.0,
+"src": "src/assets/backdrops/w10night-far.webp",
+"q_est": 87,
+"bytes": 173040,
+"smooth_dark": 0.014
+},
+{
+"mean_luma": 64.2,
+"near_black": 0.199,
+"vis": 0.452,
+"src": "src/assets/kits/w10.webp",
+"q_est": 85,
+"bytes": 172222,
+"smooth_dark": 0.004
+},
+{
+"mean_luma": 77.4,
+"near_black": 0.086,
+"vis": 0.496,
+"src": "src/assets/story/live/steps.webp",
+"q_est": 79,
+"bytes": 171696,
+"smooth_dark": 0.011
+},
+{
+"mean_luma": 72.1,
+"near_black": 0.098,
+"vis": 0.293,
+"src": "src/assets/backdrops/w1rain-near.webp",
+"q_est": 89,
+"bytes": 171150,
+"smooth_dark": 0.017
+},
+{
+"mean_luma": 113.5,
+"near_black": 0.137,
+"vis": 1.0,
+"src": "src/assets/story/cards/gruntlewick.webp",
+"q_est": 83,
+"bytes": 171022,
+"smooth_dark": 0.04
+},
+{
+"mean_luma": 60.5,
+"near_black": 0.218,
+"vis": 0.296,
+"src": "src/assets/backdrops/w8sunset-mid.webp",
+"q_est": 89,
+"bytes": 169754,
+"smooth_dark": 0.023
+},
+{
+"mean_luma": 58.8,
+"near_black": 0.332,
+"vis": 0.272,
+"src": "src/assets/backdrops/w4mist-near.webp",
+"q_est": 88,
+"bytes": 168904,
+"smooth_dark": 0.06
+},
+{
+"mean_luma": 132.7,
+"near_black": 0.03,
+"vis": 0.245,
+"src": "src/assets/hero/clips/move-mega.webp",
+"q_est": 85,
+"bytes": 166072,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 59.9,
+"near_black": 0.393,
+"vis": 0.522,
+"src": "src/assets/story/live/nest-night.webp",
+"q_est": 79,
+"bytes": 165888,
+"smooth_dark": 0.058
+},
+{
+"mean_luma": 54.7,
+"near_black": 0.425,
+"vis": 0.307,
+"src": "src/assets/backdrops/w7dusk-near.webp",
+"q_est": 89,
+"bytes": 165054,
+"smooth_dark": 0.053
+},
+{
+"mean_luma": 106.9,
+"near_black": 0.253,
+"vis": 1.0,
+"src": "src/assets/backdrops/w10gale-far.webp",
+"q_est": 87,
+"bytes": 164430,
+"smooth_dark": 0.108
+},
+{
+"mean_luma": 60.2,
+"near_black": 0.224,
+"vis": 0.749,
+"src": "src/assets/ground/w10.webp",
+"q_est": 80,
+"bytes": 164290,
+"smooth_dark": 0.105
+},
+{
+"mean_luma": 51.9,
+"near_black": 0.381,
+"vis": 0.42,
+"src": "src/assets/backdrops/w3crystal-mid.webp",
+"q_est": 89,
+"bytes": 164262,
+"smooth_dark": 0.121
+},
+{
+"mean_luma": 145.9,
+"near_black": 0.221,
+"vis": 0.424,
+"src": "src/assets/enemies/seamstress-poses.webp",
+"q_est": 82,
+"bytes": 163068,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 99.4,
+"near_black": 0.081,
+"vis": 1.0,
+"src": "src/assets/story/cards/marsh-reaver.webp",
+"q_est": 83,
+"bytes": 162412,
+"smooth_dark": 0.002
+},
+{
+"mean_luma": 163.9,
+"near_black": 0.045,
+"vis": 1.0,
+"src": "src/assets/story/cards/tarantula-queen.webp",
+"q_est": 83,
+"bytes": 162308,
+"smooth_dark": 0.001
+},
+{
+"mean_luma": 115.2,
+"near_black": 0.2,
+"vis": 0.429,
+"src": "src/assets/enemies/boa-anim.webp",
+"q_est": 80,
+"bytes": 161312,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 48.8,
+"near_black": 0.492,
+"vis": 0.489,
+"src": "src/assets/backdrops/w7dusk-mid.webp",
+"q_est": 87,
+"bytes": 159668,
+"smooth_dark": 0.102
+},
+{
+"mean_luma": 61.7,
+"near_black": 0.126,
+"vis": 0.32,
+"src": "src/assets/backdrops/w8night-mid.webp",
+"q_est": 89,
+"bytes": 159278,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 161.0,
+"near_black": 0.059,
+"vis": 1.0,
+"src": "src/assets/backdrops/w4storm-far.webp",
+"q_est": 85,
+"bytes": 158342,
+"smooth_dark": 0.013
+},
+{
+"mean_luma": 75.6,
+"near_black": 0.202,
+"vis": 1.0,
+"src": "src/assets/story/plates/steps.webp",
+"q_est": 82,
+"bytes": 157838,
+"smooth_dark": 0.14
+},
+{
+"mean_luma": 75.2,
+"near_black": 0.247,
+"vis": 1.0,
+"src": "src/assets/backdrops/w3crystal-far.webp",
+"q_est": 87,
+"bytes": 156872,
+"smooth_dark": 0.123
+},
+{
+"mean_luma": 105.0,
+"near_black": 0.022,
+"vis": 0.337,
+"src": "src/assets/backdrops/w7court-mid.webp",
+"q_est": 89,
+"bytes": 156554,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 64.1,
+"near_black": 0.55,
+"vis": 1.0,
+"src": "src/assets/backdrops/w8dawn-far.webp",
+"q_est": 87,
+"bytes": 155410,
+"smooth_dark": 0.342
+},
+{
+"mean_luma": 79.5,
+"near_black": 0.092,
+"vis": 0.334,
+"src": "src/assets/backdrops/w1rain-mid.webp",
+"q_est": 90,
+"bytes": 155376,
+"smooth_dark": 0.037
+},
+{
+"mean_luma": 41.3,
+"near_black": 0.84,
+"vis": 0.569,
+"src": "src/assets/backdrops/w3cavern-mid.webp",
+"q_est": 89,
+"bytes": 154450,
+"smooth_dark": 0.519
+},
+{
+"mean_luma": 67.4,
+"near_black": 0.18,
+"vis": 0.318,
+"src": "src/assets/backdrops/w1b-mid.webp",
+"q_est": 87,
+"bytes": 153050,
+"smooth_dark": 0.045
+},
+{
+"mean_luma": 84.7,
+"near_black": 0.098,
+"vis": 0.332,
+"src": "src/assets/backdrops/w2mist-mid.webp",
+"q_est": 87,
+"bytes": 152968,
+"smooth_dark": 0.007
+},
+{
+"mean_luma": 60.7,
+"near_black": 0.493,
+"vis": 1.0,
+"src": "src/assets/backdrops/w6moon-far.webp",
+"q_est": 87,
+"bytes": 149698,
+"smooth_dark": 0.272
+},
+{
+"mean_luma": 78.1,
+"near_black": 0.141,
+"vis": 0.291,
+"src": "src/assets/backdrops/w6dawn-near.webp",
+"q_est": 88,
+"bytes": 149672,
+"smooth_dark": 0.003
+},
+{
+"mean_luma": 116.5,
+"near_black": 0.21,
+"vis": 1.0,
+"src": "src/assets/backdrops/w7-far.webp",
+"q_est": 85,
+"bytes": 148458,
+"smooth_dark": 0.06
+},
+{
+"mean_luma": 140.0,
+"near_black": 0.02,
+"vis": 0.414,
+"src": "src/assets/hero/clips/step-back.webp",
+"q_est": 86,
+"bytes": 148396,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 57.7,
+"near_black": 0.441,
+"vis": 0.465,
+"src": "src/assets/kits/w9.webp",
+"q_est": 85,
+"bytes": 148138,
+"smooth_dark": 0.099
+},
+{
+"mean_luma": 30.7,
+"near_black": 0.925,
+"vis": 0.494,
+"src": "src/assets/backdrops/w3-mid.webp",
+"q_est": 87,
+"bytes": 147744,
+"smooth_dark": 0.468
+},
+{
+"mean_luma": 77.3,
+"near_black": 0.161,
+"vis": 1.0,
+"src": "src/assets/story/plates/courtyard.webp",
+"q_est": 82,
+"bytes": 147370,
+"smooth_dark": 0.1
+},
+{
+"mean_luma": 91.6,
+"near_black": 0.142,
+"vis": 0.437,
+"src": "src/assets/w7slide/flume-props.webp",
+"q_est": 90,
+"bytes": 146822,
+"smooth_dark": 0.005
+},
+{
+"mean_luma": 42.7,
+"near_black": 0.74,
+"vis": 0.325,
+"src": "src/assets/backdrops/w10-mid.webp",
+"q_est": 95,
+"bytes": 146710,
+"smooth_dark": 0.36
+},
+{
+"mean_luma": 54.1,
+"near_black": 0.556,
+"vis": 0.405,
+"src": "src/assets/enemies/queen-atlas.webp",
+"q_est": 90,
+"bytes": 146496,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 109.8,
+"near_black": 0.041,
+"vis": 0.413,
+"src": "src/assets/kits/w5.webp",
+"q_est": 89,
+"bytes": 146206,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 76.8,
+"near_black": 0.04,
+"vis": 0.406,
+"src": "src/assets/story/live/courtyard.webp",
+"q_est": 78,
+"bytes": 146122,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 74.0,
+"near_black": 0.096,
+"vis": 0.323,
+"src": "src/assets/backdrops/w1sun2-near.webp",
+"q_est": 89,
+"bytes": 144488,
+"smooth_dark": 0.005
+},
+{
+"mean_luma": 66.4,
+"near_black": 0.475,
+"vis": 1.0,
+"src": "src/assets/story/cards/pell.webp",
+"q_est": 83,
+"bytes": 143098,
+"smooth_dark": 0.234
+},
+{
+"mean_luma": 81.0,
+"near_black": 0.091,
+"vis": 0.357,
+"src": "src/assets/enemies/guard-atlas.webp",
+"q_est": 81,
+"bytes": 142536,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 101.8,
+"near_black": 0.428,
+"vis": 1.0,
+"src": "src/assets/backdrops/w7dusk-far.webp",
+"q_est": 85,
+"bytes": 142164,
+"smooth_dark": 0.172
+},
+{
+"mean_luma": 66.9,
+"near_black": 0.197,
+"vis": 0.322,
+"src": "src/assets/backdrops/w1c-mid.webp",
+"q_est": 87,
+"bytes": 141514,
+"smooth_dark": 0.061
+},
+{
+"mean_luma": 99.1,
+"near_black": 0.019,
+"vis": 0.407,
+"src": "src/assets/backdrops/w4terraces-mid.webp",
+"q_est": 89,
+"bytes": 140554,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 31.9,
+"near_black": 0.862,
+"vis": 0.31,
+"src": "src/assets/backdrops/w6dusk-near.webp",
+"q_est": 89,
+"bytes": 140188,
+"smooth_dark": 0.301
+},
+{
+"mean_luma": 133.5,
+"near_black": 0.18,
+"vis": 1.0,
+"src": "src/assets/backdrops/w2mist-far.webp",
+"q_est": 85,
+"bytes": 138488,
+"smooth_dark": 0.094
+},
+{
+"mean_luma": 34.2,
+"near_black": 0.787,
+"vis": 0.453,
+"src": "src/assets/backdrops/w7dawn-mid.webp",
+"q_est": 87,
+"bytes": 138402,
+"smooth_dark": 0.17
+},
+{
+"mean_luma": 32.7,
+"near_black": 0.832,
+"vis": 0.296,
+"src": "src/assets/backdrops/w6moon-near.webp",
+"q_est": 89,
+"bytes": 138240,
+"smooth_dark": 0.302
+},
+{
+"mean_luma": 83.7,
+"near_black": 0.029,
+"vis": 0.228,
+"src": "src/assets/backdrops/w4storm-near.webp",
+"q_est": 89,
+"bytes": 137462,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 31.5,
+"near_black": 0.889,
+"vis": 0.427,
+"src": "src/assets/backdrops/w3sinkhole-mid.webp",
+"q_est": 87,
+"bytes": 137262,
+"smooth_dark": 0.345
+},
+{
+"mean_luma": 94.9,
+"near_black": 0.147,
+"vis": 0.267,
+"src": "src/assets/w7slide/obstacles.webp",
+"q_est": 91,
+"bytes": 137262,
+"smooth_dark": 0.023
+},
+{
+"mean_luma": 86.5,
+"near_black": 0.091,
+"vis": 0.212,
+"src": "src/assets/backdrops/w4terraces-near.webp",
+"q_est": 88,
+"bytes": 137154,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 71.2,
+"near_black": 0.595,
+"vis": 1.0,
+"src": "src/assets/backdrops/w7dawn-far.webp",
+"q_est": 85,
+"bytes": 135470,
+"smooth_dark": 0.268
+},
+{
+"mean_luma": 122.2,
+"near_black": 0.075,
+"vis": 0.375,
+"src": "src/assets/hero/hero-studies.webp",
+"q_est": 92,
+"bytes": 135116,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 88.4,
+"near_black": 0.247,
+"vis": 0.473,
+"src": "src/assets/w6to10/props-made/w6d.webp",
+"q_est": 90,
+"bytes": 134980,
+"smooth_dark": 0.048
+},
+{
+"mean_luma": 97.0,
+"near_black": 0.114,
+"vis": 0.225,
+"src": "src/assets/w6to10/props-made/w8c.webp",
+"q_est": 89,
+"bytes": 134918,
+"smooth_dark": 0.019
+},
+{
+"mean_luma": 36.7,
+"near_black": 0.86,
+"vis": 1.0,
+"src": "src/assets/story/plates/w3-storm.webp",
+"q_est": 85,
+"bytes": 133500,
+"smooth_dark": 0.702
+},
+{
+"mean_luma": 63.8,
+"near_black": 0.447,
+"vis": 1.0,
+"src": "src/assets/backdrops/w2evening-far.webp",
+"q_est": 85,
+"bytes": 133364,
+"smooth_dark": 0.229
+},
+{
+"mean_luma": 116.2,
+"near_black": 0.263,
+"vis": 0.477,
+"src": "src/assets/enemies/butler-poses.webp",
+"q_est": 83,
+"bytes": 133072,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 76.6,
+"near_black": 0.064,
+"vis": 0.313,
+"src": "src/assets/backdrops/w4storm-mid.webp",
+"q_est": 87,
+"bytes": 132446,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 71.9,
+"near_black": 0.473,
+"vis": 1.0,
+"src": "src/assets/backdrops/w5dusk2-far.webp",
+"q_est": 85,
+"bytes": 132334,
+"smooth_dark": 0.265
+},
+{
+"mean_luma": 63.5,
+"near_black": 0.317,
+"vis": 0.425,
+"src": "src/assets/backdrops/w4mist-mid.webp",
+"q_est": 89,
+"bytes": 131736,
+"smooth_dark": 0.109
+},
+{
+"mean_luma": 72.6,
+"near_black": 0.375,
+"vis": 1.0,
+"src": "src/assets/story/cards/night-wing-monarch.webp",
+"q_est": 83,
+"bytes": 131342,
+"smooth_dark": 0.145
+},
+{
+"mean_luma": 180.4,
+"near_black": 0.019,
+"vis": 0.996,
+"src": "src/assets/backdrops/w5gold2-sky.webp",
+"q_est": 84,
+"bytes": 131128,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 32.5,
+"near_black": 0.86,
+"vis": 0.327,
+"src": "src/assets/backdrops/w8dawn-mid.webp",
+"q_est": 86,
+"bytes": 130242,
+"smooth_dark": 0.299
+},
+{
+"mean_luma": 76.8,
+"near_black": 0.253,
+"vis": 0.266,
+"src": "src/assets/w6to10/props-made/w7c-b.webp",
+"q_est": 89,
+"bytes": 129786,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 142.7,
+"near_black": 0.046,
+"vis": 0.347,
+"src": "src/assets/hero/clips/move-walk.webp",
+"q_est": 85,
+"bytes": 129744,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 87.5,
+"near_black": 0.192,
+"vis": 0.324,
+"src": "src/assets/flora/birds-atlas.webp",
+"q_est": 90,
+"bytes": 129172,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 94.3,
+"near_black": 0.139,
+"vis": 0.236,
+"src": "src/assets/w6to10/props-made/w7c.webp",
+"q_est": 89,
+"bytes": 128734,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 88.9,
+"near_black": 0.381,
+"vis": 1.0,
+"src": "src/assets/backdrops/w1sunrise-far.webp",
+"q_est": 84,
+"bytes": 128482,
+"smooth_dark": 0.257
+},
+{
+"mean_luma": 53.8,
+"near_black": 0.418,
+"vis": 0.403,
+"src": "src/assets/backdrops/w7-mid.webp",
+"q_est": 87,
+"bytes": 127080,
+"smooth_dark": 0.042
+},
+{
+"mean_luma": 51.6,
+"near_black": 0.575,
+"vis": 1.0,
+"src": "src/assets/story/cards/soldiers.webp",
+"q_est": 83,
+"bytes": 126138,
+"smooth_dark": 0.287
+},
+{
+"mean_luma": 97.1,
+"near_black": 0.06,
+"vis": 0.417,
+"src": "src/assets/w7/chairs-ring.webp",
+"q_est": 90,
+"bytes": 124272,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 79.4,
+"near_black": 0.219,
+"vis": 1.0,
+"src": "src/assets/backdrops/w3sinkhole-far.webp",
+"q_est": 85,
+"bytes": 122782,
+"smooth_dark": 0.125
+},
+{
+"mean_luma": 136.1,
+"near_black": 0.182,
+"vis": 1.0,
+"src": "src/assets/backdrops/w6dawn-far.webp",
+"q_est": 85,
+"bytes": 122496,
+"smooth_dark": 0.061
+},
+{
+"mean_luma": 93.7,
+"near_black": 0.059,
+"vis": 0.26,
+"src": "src/assets/backdrops/w1kapok-mid.webp",
+"q_est": 87,
+"bytes": 122102,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 51.2,
+"near_black": 0.665,
+"vis": 1.0,
+"src": "src/assets/w6to10/lairs/lair-queen-calm.webp",
+"q_est": 84,
+"bytes": 120398,
+"smooth_dark": 0.243
+},
+{
+"mean_luma": 100.4,
+"near_black": 0.179,
+"vis": 0.202,
+"src": "src/assets/w6to10/props-made/w6c.webp",
+"q_est": 89,
+"bytes": 119986,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 67.8,
+"near_black": 0.33,
+"vis": 0.359,
+"src": "src/assets/enemies/sovereign-atlas.webp",
+"q_est": 87,
+"bytes": 119868,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 85.4,
+"near_black": 0.16,
+"vis": 0.259,
+"src": "src/assets/w7/vine-anchors.webp",
+"q_est": 89,
+"bytes": 119768,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 111.7,
+"near_black": 0.055,
+"vis": 1.0,
+"src": "src/assets/w7slide/chute-end-light.webp",
+"q_est": 89,
+"bytes": 119142,
+"smooth_dark": 0.021
+},
+{
+"mean_luma": 139.7,
+"near_black": 0.031,
+"vis": 0.423,
+"src": "src/assets/hero/clips/move-run.webp",
+"q_est": 86,
+"bytes": 118152,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 48.8,
+"near_black": 0.667,
+"vis": 1.0,
+"src": "src/assets/w6to10/lairs/lair-queen-rage.webp",
+"q_est": 84,
+"bytes": 118032,
+"smooth_dark": 0.323
+},
+{
+"mean_luma": 49.9,
+"near_black": 0.498,
+"vis": 0.305,
+"src": "src/assets/backdrops/w1sunrise-mid.webp",
+"q_est": 87,
+"bytes": 117334,
+"smooth_dark": 0.176
+},
+{
+"mean_luma": 85.9,
+"near_black": 0.211,
+"vis": 0.236,
+"src": "src/assets/w6to10/props-made/w8c-b.webp",
+"q_est": 89,
+"bytes": 116714,
+"smooth_dark": 0.007
+},
+{
+"mean_luma": 43.0,
+"near_black": 0.747,
+"vis": 1.0,
+"src": "src/assets/story/plates/door.webp",
+"q_est": 82,
+"bytes": 115254,
+"smooth_dark": 0.625
+},
+{
+"mean_luma": 58.5,
+"near_black": 0.571,
+"vis": 1.0,
+"src": "src/assets/backdrops/w8-far.webp",
+"q_est": 91,
+"bytes": 114846,
+"smooth_dark": 0.485
+},
+{
+"mean_luma": 45.0,
+"near_black": 0.72,
+"vis": 1.0,
+"src": "src/assets/backdrops/w10-far.webp",
+"q_est": 91,
+"bytes": 114078,
+"smooth_dark": 0.577
+},
+{
+"mean_luma": 58.1,
+"near_black": 0.349,
+"vis": 0.201,
+"src": "src/assets/backdrops/w8sunset-near.webp",
+"q_est": 88,
+"bytes": 112846,
+"smooth_dark": 0.138
+},
+{
+"mean_luma": 74.9,
+"near_black": 0.062,
+"vis": 0.265,
+"src": "src/assets/backdrops/w9dawn-mid.webp",
+"q_est": 89,
+"bytes": 112528,
+"smooth_dark": 0.011
+},
+{
+"mean_luma": 70.1,
+"near_black": 0.223,
+"vis": 0.599,
+"src": "src/assets/props/faces810.webp",
+"q_est": 85,
+"bytes": 112430,
+"smooth_dark": 0.074
+},
+{
+"mean_luma": 87.8,
+"near_black": 0.085,
+"vis": 1.0,
+"src": "src/assets/w7slide/chute-far-dark.webp",
+"q_est": 90,
+"bytes": 112002,
+"smooth_dark": 0.024
+},
+{
+"mean_luma": 68.2,
+"near_black": 0.316,
+"vis": 0.347,
+"src": "src/assets/enemies/drake-atlas.webp",
+"q_est": 90,
+"bytes": 111928,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 132.1,
+"near_black": 0.056,
+"vis": 0.416,
+"src": "src/assets/hero/hero-vine.webp",
+"q_est": 89,
+"bytes": 111534,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 82.9,
+"near_black": 0.177,
+"vis": 1.0,
+"src": "src/assets/lairs/lair-sov-calm.webp",
+"q_est": 83,
+"bytes": 111448,
+"smooth_dark": 0.091
+},
+{
+"mean_luma": 65.3,
+"near_black": 0.206,
+"vis": 0.262,
+"src": "src/assets/backdrops/w9dawn-near.webp",
+"q_est": 88,
+"bytes": 111408,
+"smooth_dark": 0.069
+},
+{
+"mean_luma": 38.0,
+"near_black": 0.888,
+"vis": 1.0,
+"src": "src/assets/story/plates/w3-night.webp",
+"q_est": 84,
+"bytes": 110532,
+"smooth_dark": 0.79
+},
+{
+"mean_luma": 45.5,
+"near_black": 0.765,
+"vis": 0.333,
+"src": "src/assets/backdrops/w9night-mid.webp",
+"q_est": 89,
+"bytes": 109852,
+"smooth_dark": 0.433
+},
+{
+"mean_luma": 94.2,
+"near_black": 0.425,
+"vis": 1.0,
+"src": "src/assets/backdrops/w1sun2-far.webp",
+"q_est": 87,
+"bytes": 109696,
+"smooth_dark": 0.323
+},
+{
+"mean_luma": 17.8,
+"near_black": 0.924,
+"vis": 0.996,
+"src": "src/assets/backdrops/w5night-sky.webp",
+"q_est": 84,
+"bytes": 109536,
+"smooth_dark": 0.621
+},
+{
+"mean_luma": 132.5,
+"near_black": 0.046,
+"vis": 0.341,
+"src": "src/assets/story/hd/pokey-3.webp",
+"q_est": 89,
+"bytes": 107936,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 137.9,
+"near_black": 0.029,
+"vis": 0.203,
+"src": "src/assets/hero/clips/move-kick2.webp",
+"q_est": 85,
+"bytes": 107804,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 72.8,
+"near_black": 0.113,
+"vis": 0.565,
+"src": "src/assets/proto/crown.webp",
+"q_est": 89,
+"bytes": 107690,
+"smooth_dark": 0.003
+},
+{
+"mean_luma": 117.4,
+"near_black": 0.11,
+"vis": 1.0,
+"src": "src/assets/backdrops/dot-near-3.webp",
+"q_est": 79,
+"bytes": 107644,
+"smooth_dark": 0.05
+},
+{
+"mean_luma": 105.4,
+"near_black": 0.079,
+"vis": 0.779,
+"src": "src/assets/props/gates/w7.webp",
+"q_est": 90,
+"bytes": 107334,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 92.0,
+"near_black": 0.249,
+"vis": 1.0,
+"src": "src/assets/story/cards/magma-drake.webp",
+"q_est": 82,
+"bytes": 106776,
+"smooth_dark": 0.094
+},
+{
+"mean_luma": 47.8,
+"near_black": 0.788,
+"vis": 0.31,
+"src": "src/assets/enemies/tayra-atlas.webp",
+"q_est": 89,
+"bytes": 106166,
+"smooth_dark": 0.104
+},
+{
+"mean_luma": 230.0,
+"near_black": 0.0,
+"vis": 0.996,
+"src": "src/assets/backdrops/w4terraces-sky.webp",
+"q_est": 84,
+"bytes": 106030,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 143.8,
+"near_black": 0.012,
+"vis": 0.393,
+"src": "src/assets/props/bounce.webp",
+"q_est": 87,
+"bytes": 104774,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 89.0,
+"near_black": 0.091,
+"vis": 0.314,
+"src": "src/assets/w6to10/props-made/w6var.webp",
+"q_est": 89,
+"bytes": 104348,
+"smooth_dark": 0.012
+},
+{
+"mean_luma": 56.1,
+"near_black": 0.419,
+"vis": 0.235,
+"src": "src/assets/backdrops/w10dusk-near.webp",
+"q_est": 88,
+"bytes": 103220,
+"smooth_dark": 0.213
+},
+{
+"mean_luma": 53.7,
+"near_black": 0.343,
+"vis": 0.216,
+"src": "src/assets/backdrops/w10gale-near.webp",
+"q_est": 88,
+"bytes": 103174,
+"smooth_dark": 0.093
+},
+{
+"mean_luma": 62.0,
+"near_black": 0.345,
+"vis": 1.0,
+"src": "src/assets/story/plates/w10-storm.webp",
+"q_est": 85,
+"bytes": 102376,
+"smooth_dark": 0.313
+},
+{
+"mean_luma": 98.0,
+"near_black": 0.008,
+"vis": 1.0,
+"src": "src/assets/w7slide/chute-wall-glyph.webp",
+"q_est": 89,
+"bytes": 101750,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 94.9,
+"near_black": 0.341,
+"vis": 1.0,
+"src": "src/assets/backdrops/w5twi1-far.webp",
+"q_est": 84,
+"bytes": 101364,
+"smooth_dark": 0.24
+},
+{
+"mean_luma": 116.4,
+"near_black": 0.147,
+"vis": 1.0,
+"src": "src/assets/backdrops/dot-near-1.webp",
+"q_est": 79,
+"bytes": 100952,
+"smooth_dark": 0.044
+},
+{
+"mean_luma": 46.4,
+"near_black": 0.694,
+"vis": 1.0,
+"src": "src/assets/story/cards/shadow-prowler.webp",
+"q_est": 83,
+"bytes": 100918,
+"smooth_dark": 0.273
+},
+{
+"mean_luma": 43.8,
+"near_black": 0.704,
+"vis": 1.0,
+"src": "src/assets/lairs/lair-sov-rage.webp",
+"q_est": 82,
+"bytes": 100710,
+"smooth_dark": 0.435
+},
+{
+"mean_luma": 98.8,
+"near_black": 0.155,
+"vis": 0.352,
+"src": "src/assets/enemies/caiman-atlas.webp",
+"q_est": 90,
+"bytes": 100356,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 94.9,
+"near_black": 0.154,
+"vis": 0.744,
+"src": "src/assets/props/gates/w1.webp",
+"q_est": 90,
+"bytes": 99952,
+"smooth_dark": 0.003
+},
+{
+"mean_luma": 87.8,
+"near_black": 0.164,
+"vis": 0.752,
+"src": "src/assets/props/gates/w3.webp",
+"q_est": 90,
+"bytes": 99938,
+"smooth_dark": 0.003
+},
+{
+"mean_luma": 104.2,
+"near_black": 0.08,
+"vis": 0.781,
+"src": "src/assets/props/gates/w4.webp",
+"q_est": 90,
+"bytes": 99180,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 97.7,
+"near_black": 0.202,
+"vis": 0.53,
+"src": "src/assets/characters/meeca-carve.webp",
+"q_est": 85,
+"bytes": 98232,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 53.9,
+"near_black": 0.604,
+"vis": 1.0,
+"src": "src/assets/backdrops/hollow.webp",
+"q_est": 80,
+"bytes": 97530,
+"smooth_dark": 0.49
+},
+{
+"mean_luma": 99.2,
+"near_black": 0.2,
+"vis": 0.767,
+"src": "src/assets/props/gates/w6.webp",
+"q_est": 90,
+"bytes": 97238,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 59.9,
+"near_black": 0.228,
+"vis": 0.272,
+"src": "src/assets/backdrops/w10dusk-mid.webp",
+"q_est": 89,
+"bytes": 96798,
+"smooth_dark": 0.096
+},
+{
+"mean_luma": 113.8,
+"near_black": 0.056,
+"vis": 0.462,
+"src": "src/assets/w7slide/pokey-slide-stills.webp",
+"q_est": 91,
+"bytes": 96496,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 46.4,
+"near_black": 0.624,
+"vis": 0.184,
+"src": "src/assets/backdrops/w8dawn-near.webp",
+"q_est": 88,
+"bytes": 95828,
+"smooth_dark": 0.229
+},
+{
+"mean_luma": 88.3,
+"near_black": 0.118,
+"vis": 0.466,
+"src": "src/assets/w6to10/gemini/w6-hides-arches.webp",
+"q_est": 90,
+"bytes": 95458,
+"smooth_dark": 0.014
+},
+{
+"mean_luma": 66.4,
+"near_black": 0.159,
+"vis": 0.277,
+"src": "src/assets/w6to10/props-made/w8var.webp",
+"q_est": 89,
+"bytes": 94768,
+"smooth_dark": 0.006
+},
+{
+"mean_luma": 36.4,
+"near_black": 0.921,
+"vis": 0.235,
+"src": "src/assets/backdrops/w3sinkhole-near.webp",
+"q_est": 89,
+"bytes": 94512,
+"smooth_dark": 0.556
+},
+{
+"mean_luma": 63.0,
+"near_black": 0.323,
+"vis": 0.231,
+"src": "src/assets/backdrops/w9ash-mid.webp",
+"q_est": 89,
+"bytes": 94478,
+"smooth_dark": 0.099
+},
+{
+"mean_luma": 50.9,
+"near_black": 0.531,
+"vis": 0.226,
+"src": "src/assets/backdrops/w10storm-near.webp",
+"q_est": 89,
+"bytes": 92964,
+"smooth_dark": 0.25
+},
+{
+"mean_luma": 75.0,
+"near_black": 0.247,
+"vis": 0.712,
+"src": "src/assets/props/gates/w8.webp",
+"q_est": 89,
+"bytes": 92870,
+"smooth_dark": 0.015
+},
+{
+"mean_luma": 91.3,
+"near_black": 0.094,
+"vis": 0.592,
+"src": "src/assets/proto/props2-atlas.webp",
+"q_est": 90,
+"bytes": 92310,
+"smooth_dark": 0.025
+},
+{
+"mean_luma": 82.4,
+"near_black": 0.22,
+"vis": 0.184,
+"src": "src/assets/w6to10/props-made/w8b.webp",
+"q_est": 89,
+"bytes": 90400,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 64.6,
+"near_black": 0.118,
+"vis": 0.228,
+"src": "src/assets/backdrops/w10night-near.webp",
+"q_est": 88,
+"bytes": 89404,
+"smooth_dark": 0.018
+},
+{
+"mean_luma": 66.6,
+"near_black": 0.234,
+"vis": 0.671,
+"src": "src/assets/story/ground/w2.webp",
+"q_est": 87,
+"bytes": 89394,
+"smooth_dark": 0.046
+},
+{
+"mean_luma": 54.8,
+"near_black": 0.432,
+"vis": 0.194,
+"src": "src/assets/backdrops/w8night-near.webp",
+"q_est": 89,
+"bytes": 88734,
+"smooth_dark": 0.171
+},
+{
+"mean_luma": 104.4,
+"near_black": 0.221,
+"vis": 0.43,
+"src": "src/assets/enemies/spider-atlas.webp",
+"q_est": 90,
+"bytes": 88696,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 53.9,
+"near_black": 0.327,
+"vis": 0.227,
+"src": "src/assets/backdrops/w9ash-near.webp",
+"q_est": 88,
+"bytes": 88476,
+"smooth_dark": 0.132
+},
+{
+"mean_luma": 98.6,
+"near_black": 0.064,
+"vis": 0.788,
+"src": "src/assets/props/gates/w2.webp",
+"q_est": 90,
+"bytes": 88404,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 46.5,
+"near_black": 0.713,
+"vis": 0.224,
+"src": "src/assets/backdrops/w3crystal-near.webp",
+"q_est": 88,
+"bytes": 87328,
+"smooth_dark": 0.474
+},
+{
+"mean_luma": 99.1,
+"near_black": 0.157,
+"vis": 0.485,
+"src": "src/assets/flora/butterflies-atlas.webp",
+"q_est": 91,
+"bytes": 86636,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 40.1,
+"near_black": 0.868,
+"vis": 0.259,
+"src": "src/assets/backdrops/w9night-near.webp",
+"q_est": 89,
+"bytes": 85924,
+"smooth_dark": 0.543
+},
+{
+"mean_luma": 132.9,
+"near_black": 0.086,
+"vis": 0.193,
+"src": "src/assets/hero/clips/move-jab.webp",
+"q_est": 85,
+"bytes": 83614,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 119.1,
+"near_black": 0.178,
+"vis": 0.419,
+"src": "src/assets/enemies/boa-atlas.webp",
+"q_est": 90,
+"bytes": 83334,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 139.2,
+"near_black": 0.02,
+"vis": 0.286,
+"src": "src/assets/hero/clips/teeter.webp",
+"q_est": 85,
+"bytes": 83314,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 82.2,
+"near_black": 0.086,
+"vis": 0.328,
+"src": "src/assets/w8/lantern.webp",
+"q_est": 89,
+"bytes": 82986,
+"smooth_dark": 0.003
+},
+{
+"mean_luma": 134.7,
+"near_black": 0.029,
+"vis": 0.212,
+"src": "src/assets/hero/clips/move-kick.webp",
+"q_est": 85,
+"bytes": 82240,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 47.3,
+"near_black": 0.521,
+"vis": 0.194,
+"src": "src/assets/backdrops/w10gale-mid.webp",
+"q_est": 87,
+"bytes": 80780,
+"smooth_dark": 0.148
+},
+{
+"mean_luma": 48.9,
+"near_black": 0.644,
+"vis": 0.378,
+"src": "src/assets/enemies/prowler-atlas.webp",
+"q_est": 89,
+"bytes": 80426,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 131.6,
+"near_black": 0.01,
+"vis": 0.469,
+"src": "src/assets/hero/hero-rope.webp",
+"q_est": 92,
+"bytes": 79564,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 74.3,
+"near_black": 0.211,
+"vis": 0.824,
+"src": "src/assets/props/gates/w10.webp",
+"q_est": 90,
+"bytes": 79324,
+"smooth_dark": 0.012
+},
+{
+"mean_luma": 107.7,
+"near_black": 0.043,
+"vis": 0.528,
+"src": "src/assets/story/ground/w5.webp",
+"q_est": 87,
+"bytes": 78410,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 39.3,
+"near_black": 0.746,
+"vis": 1.0,
+"src": "src/assets/story/cards/flicker.webp",
+"q_est": 82,
+"bytes": 78324,
+"smooth_dark": 0.498
+},
+{
+"mean_luma": 144.6,
+"near_black": 0.07,
+"vis": 0.996,
+"src": "src/assets/backdrops/w1kapok-sky.webp",
+"q_est": 85,
+"bytes": 77890,
+"smooth_dark": 0.011
+},
+{
+"mean_luma": 56.3,
+"near_black": 0.164,
+"vis": 0.198,
+"src": "src/assets/backdrops/w10storm-mid.webp",
+"q_est": 89,
+"bytes": 77474,
+"smooth_dark": 0.006
+},
+{
+"mean_luma": 52.8,
+"near_black": 0.475,
+"vis": 1.0,
+"src": "src/assets/lairs/lair-croc-rage.webp",
+"q_est": 82,
+"bytes": 77466,
+"smooth_dark": 0.31
+},
+{
+"mean_luma": 99.1,
+"near_black": 0.265,
+"vis": 0.357,
+"src": "src/assets/enemies/frog-atlas.webp",
+"q_est": 90,
+"bytes": 77222,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 39.1,
+"near_black": 0.847,
+"vis": 0.24,
+"src": "src/assets/backdrops/w3cavern-near.webp",
+"q_est": 89,
+"bytes": 75534,
+"smooth_dark": 0.561
+},
+{
+"mean_luma": 116.6,
+"near_black": 0.013,
+"vis": 0.325,
+"src": "src/assets/flora/leaves-atlas.webp",
+"q_est": 90,
+"bytes": 74398,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 110.6,
+"near_black": 0.208,
+"vis": 0.424,
+"src": "src/assets/ui/trails.webp",
+"q_est": 87,
+"bytes": 73604,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 65.6,
+"near_black": 0.427,
+"vis": 0.795,
+"src": "src/assets/props/gates/w9.webp",
+"q_est": 89,
+"bytes": 73526,
+"smooth_dark": 0.073
+},
+{
+"mean_luma": 62.7,
+"near_black": 0.359,
+"vis": 0.657,
+"src": "src/assets/story/ground/w4.webp",
+"q_est": 87,
+"bytes": 70432,
+"smooth_dark": 0.039
+},
+{
+"mean_luma": 125.4,
+"near_black": 0.062,
+"vis": 0.353,
+"src": "src/assets/characters/dot-perch-atlas.webp",
+"q_est": 90,
+"bytes": 69864,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 125.9,
+"near_black": 0.003,
+"vis": 0.41,
+"src": "src/assets/characters/dot-atlas.webp",
+"q_est": 79,
+"bytes": 69508,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 76.3,
+"near_black": 0.021,
+"vis": 0.193,
+"src": "src/assets/backdrops/w10night-mid.webp",
+"q_est": 89,
+"bytes": 69046,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 33.9,
+"near_black": 0.797,
+"vis": 0.052,
+"src": "src/assets/props/dot-bridges.webp",
+"q_est": 87,
+"bytes": 68758,
+"smooth_dark": 0.212
+},
+{
+"mean_luma": 71.5,
+"near_black": 0.231,
+"vis": 0.242,
+"src": "src/assets/w6to10/props-made/w8roost.webp",
+"q_est": 89,
+"bytes": 68468,
+"smooth_dark": 0.044
+},
+{
+"mean_luma": 38.4,
+"near_black": 0.759,
+"vis": 0.996,
+"src": "src/assets/backdrops/w10dusk-sky.webp",
+"q_est": 84,
+"bytes": 68320,
+"smooth_dark": 0.446
+},
+{
+"mean_luma": 130.5,
+"near_black": 0.057,
+"vis": 0.322,
+"src": "src/assets/hero/journal-poses.webp",
+"q_est": 87,
+"bytes": 68156,
+"smooth_dark": 0.03
+},
+{
+"mean_luma": 81.6,
+"near_black": 0.1,
+"vis": 0.342,
+"src": "src/assets/w7/crumble.webp",
+"q_est": 91,
+"bytes": 67876,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 113.3,
+"near_black": 0.17,
+"vis": 0.212,
+"src": "src/assets/lairs/fg-sov.webp",
+"q_est": 85,
+"bytes": 67834,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 122.7,
+"near_black": 0.098,
+"vis": 0.468,
+"src": "src/assets/props/gates/w5.webp",
+"q_est": 89,
+"bytes": 67156,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 85.7,
+"near_black": 0.075,
+"vis": 0.216,
+"src": "src/assets/w6to10/props-made/w6balt.webp",
+"q_est": 89,
+"bytes": 67110,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 51.2,
+"near_black": 0.421,
+"vis": 0.77,
+"src": "src/assets/story/ground/w1.webp",
+"q_est": 88,
+"bytes": 66532,
+"smooth_dark": 0.067
+},
+{
+"mean_luma": 141.3,
+"near_black": 0.036,
+"vis": 0.339,
+"src": "src/assets/hero/clips/move-cross.webp",
+"q_est": 85,
+"bytes": 65190,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 51.4,
+"near_black": 0.552,
+"vis": 0.52,
+"src": "src/assets/story/ground/w8.webp",
+"q_est": 87,
+"bytes": 65154,
+"smooth_dark": 0.098
+},
+{
+"mean_luma": 46.4,
+"near_black": 0.586,
+"vis": 0.69,
+"src": "src/assets/story/ground/w7.webp",
+"q_est": 87,
+"bytes": 64546,
+"smooth_dark": 0.083
+},
+{
+"mean_luma": 89.2,
+"near_black": 0.023,
+"vis": 0.996,
+"src": "src/assets/backdrops/w10storm-sky.webp",
+"q_est": 84,
+"bytes": 64224,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 70.1,
+"near_black": 0.165,
+"vis": 0.244,
+"src": "src/assets/w6to10/props-made/w8roost-b.webp",
+"q_est": 89,
+"bytes": 63892,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 64.2,
+"near_black": 0.349,
+"vis": 1.0,
+"src": "src/assets/story/plates/council.webp",
+"q_est": 87,
+"bytes": 63406,
+"smooth_dark": 0.07
+},
+{
+"mean_luma": 140.1,
+"near_black": 0.018,
+"vis": 0.66,
+"src": "src/assets/w8/pokey-jar.webp",
+"q_est": 90,
+"bytes": 61988,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 106.4,
+"near_black": 0.307,
+"vis": 0.996,
+"src": "src/assets/backdrops/w4storm-sky.webp",
+"q_est": 85,
+"bytes": 61666,
+"smooth_dark": 0.162
+},
+{
+"mean_luma": 60.5,
+"near_black": 0.262,
+"vis": 1.0,
+"src": "src/assets/lairs/lair-croc-calm.webp",
+"q_est": 82,
+"bytes": 60256,
+"smooth_dark": 0.139
+},
+{
+"mean_luma": 14.5,
+"near_black": 0.984,
+"vis": 0.996,
+"src": "src/assets/backdrops/w8night-sky.webp",
+"q_est": 83,
+"bytes": 58902,
+"smooth_dark": 0.76
+},
+{
+"mean_luma": 105.6,
+"near_black": 0.185,
+"vis": 0.357,
+"src": "src/assets/w6to10/gemini/w7a-puzzle-take2.webp",
+"q_est": 89,
+"bytes": 58298,
+"smooth_dark": 0.111
+},
+{
+"mean_luma": 53.5,
+"near_black": 0.753,
+"vis": 0.242,
+"src": "src/assets/enemies/harpy-atlas.webp",
+"q_est": 89,
+"bytes": 57792,
+"smooth_dark": 0.02
+},
+{
+"mean_luma": 134.0,
+"near_black": 0.373,
+"vis": 0.996,
+"src": "src/assets/backdrops/w6dawn-sky.webp",
+"q_est": 83,
+"bytes": 57230,
+"smooth_dark": 0.192
+},
+{
+"mean_luma": 106.4,
+"near_black": 0.14,
+"vis": 0.539,
+"src": "src/assets/props/w4-grit.webp",
+"q_est": 92,
+"bytes": 56224,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 136.8,
+"near_black": 0.04,
+"vis": 0.304,
+"src": "src/assets/hero/clips/move-hook.webp",
+"q_est": 85,
+"bytes": 55306,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 67.5,
+"near_black": 0.313,
+"vis": 0.2,
+"src": "src/assets/enemies/reaver-atlas.webp",
+"q_est": 89,
+"bytes": 54164,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 118.4,
+"near_black": 0.0,
+"vis": 1.0,
+"src": "src/assets/w7slide/chute-floor-1groove.webp",
+"q_est": 90,
+"bytes": 54138,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 89.1,
+"near_black": 0.413,
+"vis": 0.996,
+"src": "src/assets/backdrops/w10gale-sky.webp",
+"q_est": 83,
+"bytes": 53624,
+"smooth_dark": 0.261
+},
+{
+"mean_luma": 177.0,
+"near_black": 0.006,
+"vis": 1.0,
+"src": "src/assets/backdrops/dot-far-2.webp",
+"q_est": 78,
+"bytes": 52796,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 35.0,
+"near_black": 0.792,
+"vis": 0.695,
+"src": "src/assets/story/ground/w3.webp",
+"q_est": 87,
+"bytes": 52072,
+"smooth_dark": 0.257
+},
+{
+"mean_luma": 59.6,
+"near_black": 0.377,
+"vis": 0.673,
+"src": "src/assets/props/w9-water.webp",
+"q_est": 85,
+"bytes": 51574,
+"smooth_dark": 0.226
+},
+{
+"mean_luma": 196.7,
+"near_black": 0.126,
+"vis": 0.474,
+"src": "src/assets/props/w5-sway.webp",
+"q_est": 89,
+"bytes": 51358,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 116.8,
+"near_black": 0.082,
+"vis": 1.0,
+"src": "src/assets/story/castle7.webp",
+"q_est": 87,
+"bytes": 51062,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 54.1,
+"near_black": 0.387,
+"vis": 0.29,
+"src": "src/assets/enemies/monarch-atlas.webp",
+"q_est": 89,
+"bytes": 50950,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 56.9,
+"near_black": 0.409,
+"vis": 0.248,
+"src": "src/assets/w6to10/creatures/fruitbat-fly-anim.webp",
+"q_est": 79,
+"bytes": 50910,
+"smooth_dark": 0.002
+},
+{
+"mean_luma": 126.4,
+"near_black": 0.0,
+"vis": 1.0,
+"src": "src/assets/w7slide/chute-floor-3lane.webp",
+"q_est": 90,
+"bytes": 49590,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 106.8,
+"near_black": 0.029,
+"vis": 0.367,
+"src": "src/assets/proto/props3-atlas.webp",
+"q_est": 89,
+"bytes": 49500,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 190.9,
+"near_black": 0.0,
+"vis": 0.996,
+"src": "src/assets/backdrops/w5dusk1-sky.webp",
+"q_est": 83,
+"bytes": 49482,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 69.2,
+"near_black": 0.081,
+"vis": 1.0,
+"src": "src/assets/w7slide/chute-ceiling.webp",
+"q_est": 89,
+"bytes": 48716,
+"smooth_dark": 0.005
+},
+{
+"mean_luma": 41.6,
+"near_black": 0.737,
+"vis": 0.65,
+"src": "src/assets/story/ground/w9.webp",
+"q_est": 87,
+"bytes": 48394,
+"smooth_dark": 0.188
+},
+{
+"mean_luma": 111.7,
+"near_black": 0.393,
+"vis": 0.996,
+"src": "src/assets/backdrops/w7dawn-sky.webp",
+"q_est": 84,
+"bytes": 48214,
+"smooth_dark": 0.2
+},
+{
+"mean_luma": 59.7,
+"near_black": 0.499,
+"vis": 0.996,
+"src": "src/assets/backdrops/w10night-sky.webp",
+"q_est": 83,
+"bytes": 47414,
+"smooth_dark": 0.375
+},
+{
+"mean_luma": 106.6,
+"near_black": 0.444,
+"vis": 0.996,
+"src": "src/assets/backdrops/w2mist-sky.webp",
+"q_est": 84,
+"bytes": 46628,
+"smooth_dark": 0.29
+},
+{
+"mean_luma": 132.3,
+"near_black": 0.262,
+"vis": 0.996,
+"src": "src/assets/backdrops/w1sunrise-sky.webp",
+"q_est": 85,
+"bytes": 46086,
+"smooth_dark": 0.166
+},
+{
+"mean_luma": 86.2,
+"near_black": 0.022,
+"vis": 0.678,
+"src": "src/assets/props/w6-water.webp",
+"q_est": 87,
+"bytes": 46064,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 39.7,
+"near_black": 0.751,
+"vis": 0.658,
+"src": "src/assets/story/ground/w10.webp",
+"q_est": 87,
+"bytes": 44710,
+"smooth_dark": 0.217
+},
+{
+"mean_luma": 128.0,
+"near_black": 0.348,
+"vis": 0.996,
+"src": "src/assets/backdrops/w7-sky.webp",
+"q_est": 83,
+"bytes": 44010,
+"smooth_dark": 0.152
+},
+{
+"mean_luma": 177.4,
+"near_black": 0.006,
+"vis": 1.0,
+"src": "src/assets/backdrops/dot-far-1.webp",
+"q_est": 78,
+"bytes": 43964,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 78.3,
+"near_black": 0.037,
+"vis": 0.678,
+"src": "src/assets/props/w10-water.webp",
+"q_est": 84,
+"bytes": 43226,
+"smooth_dark": 0.021
+},
+{
+"mean_luma": 74.4,
+"near_black": 0.232,
+"vis": 0.327,
+"src": "src/assets/w6to10/gemini/w8a-puzzle.webp",
+"q_est": 89,
+"bytes": 43208,
+"smooth_dark": 0.054
+},
+{
+"mean_luma": 145.5,
+"near_black": 0.007,
+"vis": 0.2,
+"src": "src/assets/enemies/snake2-atlas.webp",
+"q_est": 90,
+"bytes": 42090,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 53.4,
+"near_black": 0.478,
+"vis": 0.772,
+"src": "src/assets/story/ground/w6.webp",
+"q_est": 87,
+"bytes": 41604,
+"smooth_dark": 0.122
+},
+{
+"mean_luma": 198.0,
+"near_black": 0.002,
+"vis": 0.996,
+"src": "src/assets/backdrops/w1rain-sky.webp",
+"q_est": 85,
+"bytes": 40802,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 88.7,
+"near_black": 0.137,
+"vis": 0.996,
+"src": "src/assets/backdrops/w3sinkhole-sky.webp",
+"q_est": 84,
+"bytes": 40434,
+"smooth_dark": 0.037
+},
+{
+"mean_luma": 127.4,
+"near_black": 0.007,
+"vis": 0.508,
+"src": "src/assets/props/water-signs.webp",
+"q_est": 90,
+"bytes": 40286,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 63.1,
+"near_black": 0.334,
+"vis": 0.678,
+"src": "src/assets/props/w8-water.webp",
+"q_est": 85,
+"bytes": 40088,
+"smooth_dark": 0.306
+},
+{
+"mean_luma": 10.8,
+"near_black": 0.986,
+"vis": 0.996,
+"src": "src/assets/backdrops/w10-sky.webp",
+"q_est": 83,
+"bytes": 39306,
+"smooth_dark": 0.72
+},
+{
+"mean_luma": 152.8,
+"near_black": 0.148,
+"vis": 0.407,
+"src": "src/assets/flora/petals.webp",
+"q_est": 92,
+"bytes": 38140,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 109.1,
+"near_black": 0.115,
+"vis": 0.996,
+"src": "src/assets/backdrops/w8dawn-sky.webp",
+"q_est": 83,
+"bytes": 36080,
+"smooth_dark": 0.082
+},
+{
+"mean_luma": 187.1,
+"near_black": 0.0,
+"vis": 0.996,
+"src": "src/assets/backdrops/w7court-sky.webp",
+"q_est": 83,
+"bytes": 34752,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 29.3,
+"near_black": 0.867,
+"vis": 0.996,
+"src": "src/assets/backdrops/w8-sky.webp",
+"q_est": 83,
+"bytes": 34690,
+"smooth_dark": 0.702
+},
+{
+"mean_luma": 182.7,
+"near_black": 0.0,
+"vis": 0.996,
+"src": "src/assets/backdrops/w1-sky.webp",
+"q_est": 83,
+"bytes": 34172,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 137.4,
+"near_black": 0.037,
+"vis": 1.0,
+"src": "src/assets/photos/s3_06.webp",
+"q_est": 82,
+"bytes": 33650,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 150.9,
+"near_black": 0.033,
+"vis": 1.0,
+"src": "src/assets/photos/s3_08.webp",
+"q_est": 81,
+"bytes": 32930,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 133.7,
+"near_black": 0.035,
+"vis": 1.0,
+"src": "src/assets/photos/s3_09.webp",
+"q_est": 81,
+"bytes": 32730,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 129.3,
+"near_black": 0.058,
+"vis": 1.0,
+"src": "src/assets/photos/s1_07.webp",
+"q_est": 82,
+"bytes": 32540,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 134.9,
+"near_black": 0.179,
+"vis": 0.586,
+"src": "src/assets/enemies/goldsnake-wake.webp",
+"q_est": 92,
+"bytes": 31884,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 107.4,
+"near_black": 0.018,
+"vis": 0.628,
+"src": "src/assets/props/pits/w1-bed.webp",
+"q_est": 88,
+"bytes": 31858,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 151.5,
+"near_black": 0.034,
+"vis": 1.0,
+"src": "src/assets/photos/s4_08.webp",
+"q_est": 81,
+"bytes": 31822,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 142.7,
+"near_black": 0.038,
+"vis": 1.0,
+"src": "src/assets/photos/s2_05.webp",
+"q_est": 81,
+"bytes": 31574,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 95.5,
+"near_black": 0.16,
+"vis": 0.515,
+"src": "src/assets/characters/meeca-blanket.webp",
+"q_est": 85,
+"bytes": 31564,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 138.3,
+"near_black": 0.184,
+"vis": 0.671,
+"src": "src/assets/enemies/goldsnake-head.webp",
+"q_est": 90,
+"bytes": 31522,
+"smooth_dark": 0.003
+},
+{
+"mean_luma": 141.9,
+"near_black": 0.023,
+"vis": 1.0,
+"src": "src/assets/photos/s3_02.webp",
+"q_est": 82,
+"bytes": 31450,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 177.3,
+"near_black": 0.005,
+"vis": 0.996,
+"src": "src/assets/backdrops/w9ash-sky.webp",
+"q_est": 83,
+"bytes": 31126,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 138.7,
+"near_black": 0.029,
+"vis": 1.0,
+"src": "src/assets/photos/s3_07.webp",
+"q_est": 81,
+"bytes": 31090,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 146.4,
+"near_black": 0.027,
+"vis": 1.0,
+"src": "src/assets/photos/s3_03.webp",
+"q_est": 82,
+"bytes": 31062,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 146.7,
+"near_black": 0.042,
+"vis": 1.0,
+"src": "src/assets/photos/s4_12.webp",
+"q_est": 81,
+"bytes": 30850,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 124.4,
+"near_black": 0.048,
+"vis": 1.0,
+"src": "src/assets/photos/s1_03.webp",
+"q_est": 83,
+"bytes": 30696,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 144.9,
+"near_black": 0.043,
+"vis": 1.0,
+"src": "src/assets/photos/s4_07.webp",
+"q_est": 82,
+"bytes": 30590,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 148.5,
+"near_black": 0.024,
+"vis": 1.0,
+"src": "src/assets/photos/s3_04.webp",
+"q_est": 81,
+"bytes": 30420,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 111.6,
+"near_black": 0.07,
+"vis": 1.0,
+"src": "src/assets/photos/s2_06.webp",
+"q_est": 81,
+"bytes": 30358,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 160.0,
+"near_black": 0.018,
+"vis": 1.0,
+"src": "src/assets/photos/s3_05.webp",
+"q_est": 82,
+"bytes": 30164,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 114.9,
+"near_black": 0.079,
+"vis": 1.0,
+"src": "src/assets/photos/s1_14.webp",
+"q_est": 81,
+"bytes": 30124,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 115.5,
+"near_black": 0.067,
+"vis": 1.0,
+"src": "src/assets/photos/s1_08.webp",
+"q_est": 81,
+"bytes": 30038,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 40.7,
+"near_black": 0.719,
+"vis": 0.996,
+"src": "src/assets/backdrops/w3crystal-sky.webp",
+"q_est": 83,
+"bytes": 29920,
+"smooth_dark": 0.547
+},
+{
+"mean_luma": 140.8,
+"near_black": 0.158,
+"vis": 0.577,
+"src": "src/assets/enemies/goldsnake-sleep.webp",
+"q_est": 92,
+"bytes": 29706,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 94.6,
+"near_black": 0.094,
+"vis": 1.0,
+"src": "src/assets/photos/s2_16.webp",
+"q_est": 81,
+"bytes": 29596,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 133.5,
+"near_black": 0.029,
+"vis": 1.0,
+"src": "src/assets/photos/s2_15.webp",
+"q_est": 81,
+"bytes": 29336,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 152.7,
+"near_black": 0.039,
+"vis": 1.0,
+"src": "src/assets/photos/s1_12.webp",
+"q_est": 81,
+"bytes": 29266,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 135.7,
+"near_black": 0.05,
+"vis": 1.0,
+"src": "src/assets/photos/s1_16.webp",
+"q_est": 81,
+"bytes": 29158,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 64.5,
+"near_black": 0.042,
+"vis": 0.996,
+"src": "src/assets/backdrops/w4mist-sky.webp",
+"q_est": 83,
+"bytes": 29014,
+"smooth_dark": 0.02
+},
+{
+"mean_luma": 128.8,
+"near_black": 0.062,
+"vis": 1.0,
+"src": "src/assets/photos/s1_10.webp",
+"q_est": 80,
+"bytes": 28902,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 144.8,
+"near_black": 0.028,
+"vis": 1.0,
+"src": "src/assets/photos/s4_05.webp",
+"q_est": 81,
+"bytes": 28806,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 138.3,
+"near_black": 0.051,
+"vis": 1.0,
+"src": "src/assets/photos/s1_06.webp",
+"q_est": 81,
+"bytes": 28238,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 109.4,
+"near_black": 0.048,
+"vis": 1.0,
+"src": "src/assets/photos/s1_13.webp",
+"q_est": 81,
+"bytes": 27786,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 107.2,
+"near_black": 0.031,
+"vis": 1.0,
+"src": "src/assets/ui/ctest-1-1.webp",
+"q_est": 81,
+"bytes": 27718,
+"smooth_dark": 0.001
+},
+{
+"mean_luma": 138.3,
+"near_black": 0.037,
+"vis": 1.0,
+"src": "src/assets/photos/s4_02.webp",
+"q_est": 82,
+"bytes": 27702,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 140.2,
+"near_black": 0.039,
+"vis": 1.0,
+"src": "src/assets/photos/s4_06.webp",
+"q_est": 81,
+"bytes": 27640,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 147.9,
+"near_black": 0.028,
+"vis": 1.0,
+"src": "src/assets/photos/s3_01.webp",
+"q_est": 81,
+"bytes": 27162,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 135.6,
+"near_black": 0.037,
+"vis": 1.0,
+"src": "src/assets/photos/s1_05.webp",
+"q_est": 81,
+"bytes": 27060,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 145.3,
+"near_black": 0.052,
+"vis": 1.0,
+"src": "src/assets/photos/s4_14.webp",
+"q_est": 80,
+"bytes": 27002,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 115.7,
+"near_black": 0.033,
+"vis": 1.0,
+"src": "src/assets/story/castle6.webp",
+"q_est": 85,
+"bytes": 26912,
+"smooth_dark": 0.003
+},
+{
+"mean_luma": 181.4,
+"near_black": 0.063,
+"vis": 1.0,
+"src": "src/assets/items/locket.webp",
+"q_est": 84,
+"bytes": 26880,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 143.9,
+"near_black": 0.03,
+"vis": 1.0,
+"src": "src/assets/photos/s1_04.webp",
+"q_est": 81,
+"bytes": 26824,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 154.2,
+"near_black": 0.051,
+"vis": 1.0,
+"src": "src/assets/photos/s4_11.webp",
+"q_est": 79,
+"bytes": 26760,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 8.8,
+"near_black": 0.966,
+"vis": 0.996,
+"src": "src/assets/backdrops/w3cavern-sky.webp",
+"q_est": 83,
+"bytes": 26086,
+"smooth_dark": 0.838
+},
+{
+"mean_luma": 106.3,
+"near_black": 0.046,
+"vis": 1.0,
+"src": "src/assets/photos/s4_16.webp",
+"q_est": 80,
+"bytes": 25922,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 180.2,
+"near_black": 0.035,
+"vis": 0.996,
+"src": "src/assets/backdrops/w2rapids-sky.webp",
+"q_est": 83,
+"bytes": 25064,
+"smooth_dark": 0.023
+},
+{
+"mean_luma": 154.5,
+"near_black": 0.047,
+"vis": 0.996,
+"src": "src/assets/backdrops/w7dusk-sky.webp",
+"q_est": 84,
+"bytes": 24888,
+"smooth_dark": 0.014
+},
+{
+"mean_luma": 154.2,
+"near_black": 0.064,
+"vis": 1.0,
+"src": "src/assets/enemies/venom-body.webp",
+"q_est": 92,
+"bytes": 24666,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 227.0,
+"near_black": 0.0,
+"vis": 0.996,
+"src": "src/assets/backdrops/w4-sky.webp",
+"q_est": 83,
+"bytes": 24662,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 154.2,
+"near_black": 0.089,
+"vis": 1.0,
+"src": "src/assets/items/teddy.webp",
+"q_est": 84,
+"bytes": 24168,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 123.8,
+"near_black": 0.046,
+"vis": 1.0,
+"src": "src/assets/photos/s1_09.webp",
+"q_est": 79,
+"bytes": 24118,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 94.0,
+"near_black": 0.001,
+"vis": 0.228,
+"src": "src/assets/story/finds/notch.webp",
+"q_est": 89,
+"bytes": 23996,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 99.0,
+"near_black": 0.036,
+"vis": 1.0,
+"src": "src/assets/photos/s4_04.webp",
+"q_est": 80,
+"bytes": 23982,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 92.5,
+"near_black": 0.041,
+"vis": 0.363,
+"src": "src/assets/props/pitwater/w5.webp",
+"q_est": 86,
+"bytes": 23824,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 207.0,
+"near_black": 0.0,
+"vis": 0.996,
+"src": "src/assets/backdrops/w5-sky.webp",
+"q_est": 83,
+"bytes": 23610,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 173.0,
+"near_black": 0.066,
+"vis": 1.0,
+"src": "src/assets/items/stopwatch.webp",
+"q_est": 84,
+"bytes": 23486,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 126.3,
+"near_black": 0.048,
+"vis": 1.0,
+"src": "src/assets/photos/s1_11.webp",
+"q_est": 80,
+"bytes": 23476,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 8.4,
+"near_black": 0.996,
+"vis": 0.996,
+"src": "src/assets/backdrops/w3-sky.webp",
+"q_est": 83,
+"bytes": 23322,
+"smooth_dark": 0.895
+},
+{
+"mean_luma": 64.0,
+"near_black": 0.544,
+"vis": 0.368,
+"src": "src/assets/props/pitwater/w1-mud-splash.webp",
+"q_est": 90,
+"bytes": 23202,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 97.4,
+"near_black": 0.219,
+"vis": 0.996,
+"src": "src/assets/backdrops/w5twi2-sky.webp",
+"q_est": 83,
+"bytes": 23192,
+"smooth_dark": 0.197
+},
+{
+"mean_luma": 4.9,
+"near_black": 0.99,
+"vis": 0.996,
+"src": "src/assets/backdrops/w6dusk-sky.webp",
+"q_est": 83,
+"bytes": 23118,
+"smooth_dark": 0.917
+},
+{
+"mean_luma": 129.6,
+"near_black": 0.0,
+"vis": 0.996,
+"src": "src/assets/backdrops/w5dusk2-sky.webp",
+"q_est": 83,
+"bytes": 23064,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 147.4,
+"near_black": 0.026,
+"vis": 1.0,
+"src": "src/assets/photos/s1_15.webp",
+"q_est": 80,
+"bytes": 23058,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 64.9,
+"near_black": 0.326,
+"vis": 0.363,
+"src": "src/assets/props/pitwater/w1.webp",
+"q_est": 86,
+"bytes": 23016,
+"smooth_dark": 0.336
+},
+{
+"mean_luma": 69.5,
+"near_black": 0.282,
+"vis": 0.362,
+"src": "src/assets/props/pitwater/w4.webp",
+"q_est": 87,
+"bytes": 22892,
+"smooth_dark": 0.252
+},
+{
+"mean_luma": 92.2,
+"near_black": 0.175,
+"vis": 0.721,
+"src": "src/assets/flora/heartbloom-epic.webp",
+"q_est": 93,
+"bytes": 22876,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 106.2,
+"near_black": 0.132,
+"vis": 0.575,
+"src": "src/assets/ui/sign-big.webp",
+"q_est": 89,
+"bytes": 22722,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 141.5,
+"near_black": 0.035,
+"vis": 1.0,
+"src": "src/assets/photos/s4_01.webp",
+"q_est": 79,
+"bytes": 22406,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 168.2,
+"near_black": 0.02,
+"vis": 1.0,
+"src": "src/assets/items/petal.webp",
+"q_est": 84,
+"bytes": 22380,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 179.4,
+"near_black": 0.051,
+"vis": 1.0,
+"src": "src/assets/items/scroll.webp",
+"q_est": 84,
+"bytes": 22228,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 129.4,
+"near_black": 0.055,
+"vis": 0.634,
+"src": "src/assets/flora/heartbloom-ultimate.webp",
+"q_est": 93,
+"bytes": 21898,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 105.3,
+"near_black": 0.0,
+"vis": 0.996,
+"src": "src/assets/backdrops/w6moon-sky.webp",
+"q_est": 83,
+"bytes": 21828,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 62.4,
+"near_black": 0.417,
+"vis": 1.0,
+"src": "src/assets/story/castle5.webp",
+"q_est": 85,
+"bytes": 21186,
+"smooth_dark": 0.212
+},
+{
+"mean_luma": 85.4,
+"near_black": 0.0,
+"vis": 0.996,
+"src": "src/assets/backdrops/w8sunset-sky.webp",
+"q_est": 83,
+"bytes": 21006,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 72.9,
+"near_black": 0.001,
+"vis": 0.491,
+"src": "src/assets/props/pits/w1-lip.webp",
+"q_est": 87,
+"bytes": 20984,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 40.8,
+"near_black": 0.675,
+"vis": 0.36,
+"src": "src/assets/props/pitwater/w3.webp",
+"q_est": 86,
+"bytes": 20826,
+"smooth_dark": 0.588
+},
+{
+"mean_luma": 115.2,
+"near_black": 0.035,
+"vis": 1.0,
+"src": "src/assets/photos/s1_02.webp",
+"q_est": 79,
+"bytes": 20722,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 153.3,
+"near_black": 0.101,
+"vis": 0.996,
+"src": "src/assets/backdrops/w5twi1-sky.webp",
+"q_est": 83,
+"bytes": 20560,
+"smooth_dark": 0.064
+},
+{
+"mean_luma": 182.8,
+"near_black": 0.062,
+"vis": 1.0,
+"src": "src/assets/items/key.webp",
+"q_est": 84,
+"bytes": 19910,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 166.8,
+"near_black": 0.036,
+"vis": 1.0,
+"src": "src/assets/items/seeds.webp",
+"q_est": 84,
+"bytes": 19678,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 91.6,
+"near_black": 0.037,
+"vis": 1.0,
+"src": "src/assets/photos/s1_01.webp",
+"q_est": 79,
+"bytes": 19160,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 169.8,
+"near_black": 0.055,
+"vis": 1.0,
+"src": "src/assets/items/medal.webp",
+"q_est": 84,
+"bytes": 19002,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 118.1,
+"near_black": 0.054,
+"vis": 0.531,
+"src": "src/assets/story/finds/snail.webp",
+"q_est": 90,
+"bytes": 18644,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 177.1,
+"near_black": 0.042,
+"vis": 1.0,
+"src": "src/assets/items/ribbon.webp",
+"q_est": 84,
+"bytes": 18330,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 6.8,
+"near_black": 1.0,
+"vis": 0.996,
+"src": "src/assets/backdrops/w9night-sky.webp",
+"q_est": 84,
+"bytes": 18248,
+"smooth_dark": 0.953
+},
+{
+"mean_luma": 80.6,
+"near_black": 0.393,
+"vis": 0.746,
+"src": "src/assets/flora/heartbloom-bloom.webp",
+"q_est": 93,
+"bytes": 18048,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 135.2,
+"near_black": 0.082,
+"vis": 0.7,
+"src": "src/assets/hero/title-idle.webp",
+"q_est": 92,
+"bytes": 18000,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 49.0,
+"near_black": 0.541,
+"vis": 0.934,
+"src": "src/assets/props/pitwater/w1-creek.webp",
+"q_est": 86,
+"bytes": 17740,
+"smooth_dark": 0.526
+},
+{
+"mean_luma": 151.4,
+"near_black": 0.099,
+"vis": 1.0,
+"src": "src/assets/items/token.webp",
+"q_est": 84,
+"bytes": 16974,
+"smooth_dark": 0.001
+},
+{
+"mean_luma": 42.1,
+"near_black": 0.744,
+"vis": 0.88,
+"src": "src/assets/props/w1-bootprint.webp",
+"q_est": 90,
+"bytes": 15976,
+"smooth_dark": 0.047
+},
+{
+"mean_luma": 96.9,
+"near_black": 0.235,
+"vis": 0.79,
+"src": "src/assets/icons/shimmy.webp",
+"q_est": 91,
+"bytes": 15886,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 99.3,
+"near_black": 0.351,
+"vis": 0.66,
+"src": "src/assets/icons/howto.webp",
+"q_est": 91,
+"bytes": 15760,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 154.1,
+"near_black": 0.0,
+"vis": 0.996,
+"src": "src/assets/backdrops/w9dawn-sky.webp",
+"q_est": 83,
+"bytes": 15528,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 118.2,
+"near_black": 0.091,
+"vis": 0.644,
+"src": "src/assets/w6to10/props-made/w8fungus.webp",
+"q_est": 90,
+"bytes": 15444,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 100.4,
+"near_black": 0.188,
+"vis": 0.789,
+"src": "src/assets/icons/glide.webp",
+"q_est": 91,
+"bytes": 15140,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 86.3,
+"near_black": 0.189,
+"vis": 0.776,
+"src": "src/assets/title/log.webp",
+"q_est": 90,
+"bytes": 15068,
+"smooth_dark": 0.045
+},
+{
+"mean_luma": 66.4,
+"near_black": 0.338,
+"vis": 0.652,
+"src": "src/assets/icons/gear.webp",
+"q_est": 91,
+"bytes": 14918,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 90.7,
+"near_black": 0.0,
+"vis": 0.996,
+"src": "src/assets/backdrops/w9-sky.webp",
+"q_est": 83,
+"bytes": 14888,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 71.3,
+"near_black": 0.023,
+"vis": 0.996,
+"src": "src/assets/backdrops/w6-sky.webp",
+"q_est": 82,
+"bytes": 14814,
+"smooth_dark": 0.019
+},
+{
+"mean_luma": 179.7,
+"near_black": 0.044,
+"vis": 1.0,
+"src": "src/assets/items/rattle.webp",
+"q_est": 84,
+"bytes": 14458,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 100.1,
+"near_black": 0.206,
+"vis": 0.389,
+"src": "src/assets/w6to10/props-made/w8glowcaps.webp",
+"q_est": 89,
+"bytes": 14426,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 102.7,
+"near_black": 0.264,
+"vis": 0.736,
+"src": "src/assets/icons/sound.webp",
+"q_est": 90,
+"bytes": 14390,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 70.9,
+"near_black": 0.286,
+"vis": 0.614,
+"src": "src/assets/ui/satchel.webp",
+"q_est": 88,
+"bytes": 14340,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 75.7,
+"near_black": 0.256,
+"vis": 0.6,
+"src": "src/assets/icons/story.webp",
+"q_est": 91,
+"bytes": 14320,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 164.0,
+"near_black": 0.095,
+"vis": 1.0,
+"src": "src/assets/items/bell.webp",
+"q_est": 84,
+"bytes": 14294,
+"smooth_dark": 0.006
+},
+{
+"mean_luma": 181.5,
+"near_black": 0.0,
+"vis": 0.996,
+"src": "src/assets/backdrops/w2-sky.webp",
+"q_est": 82,
+"bytes": 13916,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 109.9,
+"near_black": 0.086,
+"vis": 0.685,
+"src": "src/assets/w6to10/props-made/w7-plates.webp",
+"q_est": 90,
+"bytes": 13890,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 124.7,
+"near_black": 0.191,
+"vis": 0.543,
+"src": "src/assets/icons/map.webp",
+"q_est": 90,
+"bytes": 12412,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 193.6,
+"near_black": 0.0,
+"vis": 0.996,
+"src": "src/assets/backdrops/w1sun2-sky.webp",
+"q_est": 83,
+"bytes": 12002,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 46.2,
+"near_black": 0.692,
+"vis": 0.661,
+"src": "src/assets/flora/heartbloom-bud.webp",
+"q_est": 93,
+"bytes": 11952,
+"smooth_dark": 0.019
+},
+{
+"mean_luma": 85.8,
+"near_black": 0.004,
+"vis": 0.996,
+"src": "src/assets/backdrops/w2evening-sky.webp",
+"q_est": 83,
+"bytes": 10750,
+"smooth_dark": 0.001
+},
+{
+"mean_luma": 184.0,
+"near_black": 0.034,
+"vis": 0.999,
+"src": "src/assets/ui/card.webp",
+"q_est": 87,
+"bytes": 10472,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 83.0,
+"near_black": 0.302,
+"vis": 0.687,
+"src": "src/assets/icons/compass.webp",
+"q_est": 91,
+"bytes": 10112,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 127.5,
+"near_black": 0.004,
+"vis": 0.322,
+"src": "src/assets/props/w6-calm-water.webp",
+"q_est": 91,
+"bytes": 9926,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 95.0,
+"near_black": 0.071,
+"vis": 0.767,
+"src": "src/assets/title/slab.webp",
+"q_est": 90,
+"bytes": 9670,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 32.5,
+"near_black": 0.783,
+"vis": 1.0,
+"src": "src/assets/props/pits/w1-drop.webp",
+"q_est": 85,
+"bytes": 9156,
+"smooth_dark": 0.54
+},
+{
+"mean_luma": 111.3,
+"near_black": 0.287,
+"vis": 0.634,
+"src": "src/assets/icons/cards.webp",
+"q_est": 92,
+"bytes": 8848,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 111.8,
+"near_black": 0.182,
+"vis": 0.484,
+"src": "src/assets/ui/ui-kit.webp",
+"q_est": 89,
+"bytes": 8596,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 64.1,
+"near_black": 0.46,
+"vis": 0.68,
+"src": "src/assets/icons/heart.webp",
+"q_est": 90,
+"bytes": 8470,
+"smooth_dark": 0.015
+},
+{
+"mean_luma": 85.5,
+"near_black": 0.265,
+"vis": 0.805,
+"src": "src/assets/ui/leaf-token.webp",
+"q_est": 90,
+"bytes": 7412,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 121.9,
+"near_black": 0.157,
+"vis": 0.582,
+"src": "src/assets/pickups/locket.webp",
+"q_est": 92,
+"bytes": 6896,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 102.7,
+"near_black": 0.114,
+"vis": 0.729,
+"src": "src/assets/pickups/teddy.webp",
+"q_est": 92,
+"bytes": 6464,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 123.3,
+"near_black": 0.111,
+"vis": 0.851,
+"src": "src/assets/icons/journal.webp",
+"q_est": 91,
+"bytes": 6420,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 113.6,
+"near_black": 0.138,
+"vis": 0.812,
+"src": "src/assets/ui/token.webp",
+"q_est": 90,
+"bytes": 6344,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 93.1,
+"near_black": 0.178,
+"vis": 0.264,
+"src": "src/assets/props/rope-kit.webp",
+"q_est": 89,
+"bytes": 6006,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 70.1,
+"near_black": 0.522,
+"vis": 0.453,
+"src": "src/assets/icons/key.webp",
+"q_est": 91,
+"bytes": 5976,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 69.4,
+"near_black": 0.347,
+"vis": 0.66,
+"src": "src/assets/icons/home.webp",
+"q_est": 90,
+"bytes": 5976,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 95.1,
+"near_black": 0.326,
+"vis": 0.696,
+"src": "src/assets/icons/trophy.webp",
+"q_est": 92,
+"bytes": 5760,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 65.7,
+"near_black": 0.404,
+"vis": 0.937,
+"src": "src/assets/icons/scenes.webp",
+"q_est": 90,
+"bytes": 5546,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 127.9,
+"near_black": 0.031,
+"vis": 0.749,
+"src": "src/assets/pickups/petal.webp",
+"q_est": 92,
+"bytes": 5376,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 116.8,
+"near_black": 0.191,
+"vis": 0.538,
+"src": "src/assets/icons/medal.webp",
+"q_est": 90,
+"bytes": 5330,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 85.5,
+"near_black": 0.243,
+"vis": 0.791,
+"src": "src/assets/icons/paw.webp",
+"q_est": 90,
+"bytes": 5254,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 151.2,
+"near_black": 0.087,
+"vis": 0.638,
+"src": "src/assets/pickups/scroll.webp",
+"q_est": 91,
+"bytes": 5206,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 108.8,
+"near_black": 0.118,
+"vis": 0.498,
+"src": "src/assets/pickups/ribbon.webp",
+"q_est": 91,
+"bytes": 5192,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 64.4,
+"near_black": 0.337,
+"vis": 0.506,
+"src": "src/assets/icons/clubs.webp",
+"q_est": 91,
+"bytes": 5094,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 90.2,
+"near_black": 0.266,
+"vis": 0.722,
+"src": "src/assets/icons/pouch.webp",
+"q_est": 91,
+"bytes": 4918,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 64.4,
+"near_black": 0.461,
+"vis": 0.753,
+"src": "src/assets/icons/save.webp",
+"q_est": 90,
+"bytes": 4836,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 103.3,
+"near_black": 0.179,
+"vis": 0.67,
+"src": "src/assets/icons/leaf.webp",
+"q_est": 90,
+"bytes": 4582,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 99.0,
+"near_black": 0.074,
+"vis": 0.484,
+"src": "src/assets/pickups/bell.webp",
+"q_est": 91,
+"bytes": 4540,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 79.9,
+"near_black": 0.303,
+"vis": 0.648,
+"src": "src/assets/icons/shrink.webp",
+"q_est": 91,
+"bytes": 4384,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 75.1,
+"near_black": 0.275,
+"vis": 0.585,
+"src": "src/assets/icons/expand.webp",
+"q_est": 91,
+"bytes": 4244,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 105.3,
+"near_black": 0.302,
+"vis": 0.815,
+"src": "src/assets/ui/slider-knob.webp",
+"q_est": 90,
+"bytes": 4108,
+"smooth_dark": 0.0
+},
+{
+"mean_luma": 99.4,
+"near_black": 0.412,
+"vis": 0.566,
+"src": "src/assets/icons/sparkle.webp",
+"q_est": 92,
+"bytes": 4104,
+"smooth_dark": 0.0
+}
+]

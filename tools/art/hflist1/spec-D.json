@@ -1,0 +1,266 @@
+{
+ "tag": "hfl1-D",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, cast shadow, sky, scenery behind",
+ "base": "BASE",
+ "items": [
+  {
+   "name": "i3-stump-short-s60-11",
+   "start": "i3-stump-short.jpg",
+   "prompt": "a natural rainforest tree stump broken off and rotted down to a level top, a thick cushion of green moss on its flat top, spreading roots, weathered bark, no saw cuts, no tree rings, no cut face, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.6,
+   "seed": 11,
+   "w": 2048,
+   "h": 992
+  },
+  {
+   "name": "i3-stump-short-s60-23",
+   "start": "i3-stump-short.jpg",
+   "prompt": "a natural rainforest tree stump broken off and rotted down to a level top, a thick cushion of green moss on its flat top, spreading roots, weathered bark, no saw cuts, no tree rings, no cut face, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 992
+  },
+  {
+   "name": "i3-stump-short-s68-11",
+   "start": "i3-stump-short.jpg",
+   "prompt": "a natural rainforest tree stump broken off and rotted down to a level top, a thick cushion of green moss on its flat top, spreading roots, weathered bark, no saw cuts, no tree rings, no cut face, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.68,
+   "seed": 11,
+   "w": 2048,
+   "h": 992
+  },
+  {
+   "name": "i3-stump-short-s68-23",
+   "start": "i3-stump-short.jpg",
+   "prompt": "a natural rainforest tree stump broken off and rotted down to a level top, a thick cushion of green moss on its flat top, spreading roots, weathered bark, no saw cuts, no tree rings, no cut face, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 2048,
+   "h": 992
+  },
+  {
+   "name": "i3-stump-medium-s60-11",
+   "start": "i3-stump-medium.jpg",
+   "prompt": "a natural rainforest tree stump broken off and rotted down to a level top, a thick cushion of green moss on its flat top, spreading roots, weathered bark, no saw cuts, no tree rings, no cut face, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.6,
+   "seed": 11,
+   "w": 2048,
+   "h": 912
+  },
+  {
+   "name": "i3-stump-medium-s60-23",
+   "start": "i3-stump-medium.jpg",
+   "prompt": "a natural rainforest tree stump broken off and rotted down to a level top, a thick cushion of green moss on its flat top, spreading roots, weathered bark, no saw cuts, no tree rings, no cut face, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 912
+  },
+  {
+   "name": "i3-stump-medium-s68-11",
+   "start": "i3-stump-medium.jpg",
+   "prompt": "a natural rainforest tree stump broken off and rotted down to a level top, a thick cushion of green moss on its flat top, spreading roots, weathered bark, no saw cuts, no tree rings, no cut face, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.68,
+   "seed": 11,
+   "w": 2048,
+   "h": 912
+  },
+  {
+   "name": "i3-stump-medium-s68-23",
+   "start": "i3-stump-medium.jpg",
+   "prompt": "a natural rainforest tree stump broken off and rotted down to a level top, a thick cushion of green moss on its flat top, spreading roots, weathered bark, no saw cuts, no tree rings, no cut face, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 2048,
+   "h": 912
+  },
+  {
+   "name": "i3-stump-tall-s60-11",
+   "start": "i3-stump-tall.jpg",
+   "prompt": "a natural rainforest tree stump broken off and rotted down to a level top, a thick cushion of green moss on its flat top, spreading roots, weathered bark, no saw cuts, no tree rings, no cut face, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.6,
+   "seed": 11,
+   "w": 1088,
+   "h": 2048
+  },
+  {
+   "name": "i3-stump-tall-s60-23",
+   "start": "i3-stump-tall.jpg",
+   "prompt": "a natural rainforest tree stump broken off and rotted down to a level top, a thick cushion of green moss on its flat top, spreading roots, weathered bark, no saw cuts, no tree rings, no cut face, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 1088,
+   "h": 2048
+  },
+  {
+   "name": "i3-stump-tall-s68-11",
+   "start": "i3-stump-tall.jpg",
+   "prompt": "a natural rainforest tree stump broken off and rotted down to a level top, a thick cushion of green moss on its flat top, spreading roots, weathered bark, no saw cuts, no tree rings, no cut face, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.68,
+   "seed": 11,
+   "w": 1088,
+   "h": 2048
+  },
+  {
+   "name": "i3-stump-tall-s68-23",
+   "start": "i3-stump-tall.jpg",
+   "prompt": "a natural rainforest tree stump broken off and rotted down to a level top, a thick cushion of green moss on its flat top, spreading roots, weathered bark, no saw cuts, no tree rings, no cut face, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 1088,
+   "h": 2048
+  },
+  {
+   "name": "i4-P-02-a-s62-11",
+   "start": "i4-P-02-a.jpg",
+   "prompt": "a block of earth seen exactly from the side, a flat grassy top edge, layered brown soil with small stones on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.62,
+   "seed": 11,
+   "w": 2048,
+   "h": 560
+  },
+  {
+   "name": "i4-P-02-a-s62-23",
+   "start": "i4-P-02-a.jpg",
+   "prompt": "a block of earth seen exactly from the side, a flat grassy top edge, layered brown soil with small stones on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 2048,
+   "h": 560
+  },
+  {
+   "name": "i4-P-02-a-s68-11",
+   "start": "i4-P-02-a.jpg",
+   "prompt": "a block of earth seen exactly from the side, a flat grassy top edge, layered brown soil with small stones on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.68,
+   "seed": 11,
+   "w": 2048,
+   "h": 560
+  },
+  {
+   "name": "i4-P-02-a-s68-23",
+   "start": "i4-P-02-a.jpg",
+   "prompt": "a block of earth seen exactly from the side, a flat grassy top edge, layered brown soil with small stones on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 2048,
+   "h": 560
+  },
+  {
+   "name": "i4-P-02-b-s62-11",
+   "start": "i4-P-02-b.jpg",
+   "prompt": "a block of earth seen exactly from the side, a flat gravel top edge, layered brown soil on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.62,
+   "seed": 11,
+   "w": 2048,
+   "h": 480
+  },
+  {
+   "name": "i4-P-02-b-s62-23",
+   "start": "i4-P-02-b.jpg",
+   "prompt": "a block of earth seen exactly from the side, a flat gravel top edge, layered brown soil on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 2048,
+   "h": 480
+  },
+  {
+   "name": "i4-P-02-b-s68-11",
+   "start": "i4-P-02-b.jpg",
+   "prompt": "a block of earth seen exactly from the side, a flat gravel top edge, layered brown soil on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.68,
+   "seed": 11,
+   "w": 2048,
+   "h": 480
+  },
+  {
+   "name": "i4-P-02-b-s68-23",
+   "start": "i4-P-02-b.jpg",
+   "prompt": "a block of earth seen exactly from the side, a flat gravel top edge, layered brown soil on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 2048,
+   "h": 480
+  },
+  {
+   "name": "i4-P-02-c-s62-11",
+   "start": "i4-P-02-c.jpg",
+   "prompt": "a block of earth seen exactly from the side, a row of weathered wooden planks laid flat on its top edge, layered brown soil on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.62,
+   "seed": 11,
+   "w": 2048,
+   "h": 528
+  },
+  {
+   "name": "i4-P-02-c-s62-23",
+   "start": "i4-P-02-c.jpg",
+   "prompt": "a block of earth seen exactly from the side, a row of weathered wooden planks laid flat on its top edge, layered brown soil on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 2048,
+   "h": 528
+  },
+  {
+   "name": "i4-P-02-c-s68-11",
+   "start": "i4-P-02-c.jpg",
+   "prompt": "a block of earth seen exactly from the side, a row of weathered wooden planks laid flat on its top edge, layered brown soil on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.68,
+   "seed": 11,
+   "w": 2048,
+   "h": 528
+  },
+  {
+   "name": "i4-P-02-c-s68-23",
+   "start": "i4-P-02-c.jpg",
+   "prompt": "a block of earth seen exactly from the side, a row of weathered wooden planks laid flat on its top edge, layered brown soil on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 2048,
+   "h": 528
+  },
+  {
+   "name": "i4-P-02-d-s62-11",
+   "start": "i4-P-02-d.jpg",
+   "prompt": "a block of earth seen exactly from the side, a flat top edge with scattered pebbles, layered brown soil on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.62,
+   "seed": 11,
+   "w": 2048,
+   "h": 560
+  },
+  {
+   "name": "i4-P-02-d-s62-23",
+   "start": "i4-P-02-d.jpg",
+   "prompt": "a block of earth seen exactly from the side, a flat top edge with scattered pebbles, layered brown soil on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 2048,
+   "h": 560
+  },
+  {
+   "name": "i4-P-02-d-s68-11",
+   "start": "i4-P-02-d.jpg",
+   "prompt": "a block of earth seen exactly from the side, a flat top edge with scattered pebbles, layered brown soil on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.68,
+   "seed": 11,
+   "w": 2048,
+   "h": 560
+  },
+  {
+   "name": "i4-P-02-d-s68-23",
+   "start": "i4-P-02-d.jpg",
+   "prompt": "a block of earth seen exactly from the side, a flat top edge with scattered pebbles, layered brown soil on its front, hand-painted 2D platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 2048,
+   "h": 560
+  }
+ ]
+}

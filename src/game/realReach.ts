@@ -20,6 +20,7 @@
  * Only moves toward things a jump, a glide, a climb or a swing could plausibly reach are tried (`bound`, generous on purpose), and each
  * target has a list of moves, best guesses first: the result is what the engine allowed with those moves, never more.
  */
+import { cyclePos } from './clock.ts';
 import { DT, RealPlay, type Pad } from './realPlay.ts';
 import { PHYS, reachGlide, reachJump, inSweetSpot, swingStep, TIMED } from './physics.ts';
 import { HANG_DROP, ropeYAt } from './rope.ts';
@@ -764,24 +765,24 @@ export class RealReach {
     const calmFor = (t: number) => {
       let m = 4;
       for (const z of zones) {
-        const s = (((t + z.offset) % z.period) + z.period) % z.period;
+        const s = cyclePos(t, z.offset, z.period);
         const quiet = z.period - z.active;
         m = Math.min(m, s < quiet ? quiet - s : 0);
       }
       for (const n of nests) {
-        const c = (((t + n.offset) % n.every) + n.every) % n.every;
+        const c = cyclePos(t, n.offset, n.every);
         const sleep = n.every - 1.2 - 1.6;
         m = Math.min(m, c < sleep ? sleep - c : 0);
       }
       // a surging fall: its quiet spell, and the last of its easing (waterfalls.ts surgeFlow)
       for (const { surge: q } of surges) {
         const T = q.pour + q.ease + q.quiet;
-        const c = (((t + q.offset) % T) + T) % T;
+        const c = cyclePos(t, q.offset, T);
         m = Math.min(m, c >= q.pour + q.ease * 0.7 ? T - c : 0);
       }
       // an orchid: how long it still holds him (open, then the closing shiver)
       for (const o of orchids) {
-        const c = (((t + o.offset) % o.period) + o.period) % o.period;
+        const c = cyclePos(t, o.offset, o.period);
         const hold = o.open + ORCHID.tell;
         m = Math.min(m, c < hold ? hold - c : 0);
       }

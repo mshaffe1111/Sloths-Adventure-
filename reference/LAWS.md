@@ -3,8 +3,9 @@
 Matt: "These are the laws that you must follow by, and that what they must follow by... AIs are made to be stingy and always go for
 results rather than doing things right always. So they skip things... Laws can never be broken."
 
-These bind the lead AND every helper. They are printed into every session at start, on resume and after every memory compression (the
-SessionStart hook in .claude/settings.json), so a wiped memory still starts here. If a law and speed conflict, the law wins. **When time
+These bind the lead AND every helper. Their headlines are printed into every session at start, on resume and after every memory compression (the
+SessionStart hook in .claude/settings.json runs tools/session/laws-short.mjs, read live from this file; Matt, 2026-11-11, to save tokens),
+and every member reads this full file once at the start of every task, so a wiped memory still starts here. If a law and speed conflict, the law wins. **When time
 is short, cut scope, never a check.** Say plainly what was cut.
 
 ## Law zero: the partnership (Matt, 2026-11-01, his words)

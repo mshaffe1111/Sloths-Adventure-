@@ -8,16 +8,16 @@
  */
 import type { Difficulty } from '../difficulty.ts';
 import type { Platform } from '../types.ts';
-import { APEX, arc, BAND_SOURCE, BANDS, BLOCK_H, BODY_H, lesserArcs, linkArcs, scopeOf, SPARE, TAKEOFF } from './reach.ts';
+import { APEX, arc, BAND_SOURCE, BANDS, BLOCK_H, BODY_H, chainBand, lesserArcs, linkArcs, scopeFor, scopeOf, SPARE, TAKEOFF } from './reach.ts';
 import type {
-  Drop, FirstRunLayout, JudgedStage, LethalLook, Measure, PromiseRegistry, ReachMove, RollVerdict, SectionKind, SoftLook, Verdict, VerdictName,
+  Drop, FirstRunLayout, HurtLook, JudgedStage, LethalLook, Measure, PromiseRegistry, ReachMove, RollVerdict, SectionKind, SoftLook, Verdict, VerdictName,
 } from './verdicts.types.ts';
 
 /** every name, in the union's order (the test checks this list against verdicts.types.ts, so a new name can't be missed here) */
 export const ALL_VERDICTS: readonly VerdictName[] = [
   'reach.unflown', 'arc.single-gap-over', 'arc.single-rise-over', 'block.lesser-passes', 'block.taught-fails', 'block.spare-thin', 'band.out',
-  'headroom.cuts-arc', 'floor.unmarked', 'drop.lethal-in-no-lethal', 'drop.unwarned', 'drop.look-lies', 'drop.untyped',
-  'teach.double-no-gap-after', 'teach.double-gap-unsafe', 'first-run.drift',
+  'headroom.cuts-arc', 'floor.unmarked', 'drop.lethal-in-no-lethal', 'drop.unwarned', 'drop.look-lies', 'drop.untyped', 'hazard.untaught', 'chain.mount',
+  'teach.double-no-gap-after', 'teach.double-gap-unsafe', 'landing.dead-zone', 'bounce.no-purpose', 'first-run.drift',
 ];
 /** the checks that need a flown arc: not judged (with `reach.unflown`) where the setting and place have none (ADR-001 §3) */
 export const ARC_VERDICTS: readonly VerdictName[] = ['arc.single-gap-over', 'arc.single-rise-over', 'block.lesser-passes', 'block.taught-fails', 'block.spare-thin', 'band.out', 'headroom.cuts-arc'];
@@ -36,7 +36,7 @@ export interface RouteAsk { x0: number; x1: number; yTake: number; yLand: number
 /** the move each kind is BUILT for (the flick, bands.md §1) and the lesser move it must keep out (a block's) */
 export const TAUGHT: Record<SectionKind, ReachMove> = {
   'single-gap': 'single-flick', 'single-rise': 'single-flick', 'double-teach-rise': 'double-flick', 'double-teach-rise-thin': 'double-flick',
-  'double-test-gap': 'double-flick', 'bounce-teach': 'bounce-air', 'bounce-air-test': 'bounce-air',
+  'double-test-gap': 'double-flick', 'bounce-teach': 'bounce-air', 'bounce-air-test': 'bounce-air', 'chain-hop': 'bounce',
 };
 
 /**
@@ -74,18 +74,19 @@ export function headroomOf(a: Pick<RouteAsk, 'x0' | 'x1' | 'yTake' | 'yLand'>, p
   return low === -Infinity ? 9999 : R(a.yTake - low);
 }
 
-/** one ask's verdicts (a JudgedStage `asks` row), on the setting's flown arcs and bands */
-export function askVerdicts(q: JudgedStage['asks'][number], setting: Difficulty): Verdict[] {
+/** one ask's verdicts (a JudgedStage `asks` row), on the bands and the judged stage's own flown arcs on the setting */
+export function askVerdicts(q: JudgedStage['asks'][number], setting: Difficulty, stageId: string): Verdict[] {
   const out: Verdict[] = [];
   const at = { x0: R(q.x0), x1: R(q.x1), section: q.section };
   const v = (name: VerdictName, line: string, measure?: Measure) => out.push({ name, setting, at, ...(measure ? { measure } : {}), line });
-  const band = BANDS[q.kind][setting];
-  const where = `${q.kind} at x ${R(q.x0)} (${q.section})`;
+  // (a chain hop's band goes by the step between its two caps, chain.md §3; every other kind's by the setting)
+  const band = q.kind === 'chain-hop' ? chainBand(q.step ?? 0) : BANDS[q.kind][setting];
+  const where = `${q.kind}${q.step ? `, a step of ${R(q.step)} px,` : ''} at x ${R(q.x0)} (${q.section})`;
   if (band === 'none') v('band.out', `${where}: ${setting} has no ${q.kind} (band 'none')`, meas(q.figure, 0, true, BAND_SOURCE[q.kind]));
   else if (q.figure > band.hi) v('band.out', `${where}: ${R(q.figure)} px, over the band's ${band.hi}`, meas(q.figure, band.hi, true, BAND_SOURCE[q.kind]));
   else if (q.figure < band.lo) v('band.out', `${where}: ${R(q.figure)} px, under the band's ${band.lo}`, meas(q.figure, band.lo, false, BAND_SOURCE[q.kind]));
-  const scope = scopeOf('1-1', setting)!;
-  const link = linkArcs(setting), lesser = lesserArcs(setting);
+  const scope = scopeFor(setting, stageId);
+  const link = linkArcs(setting, stageId), lesser = lesserArcs(setting, stageId);
   const thin = q.kind === 'double-teach-rise-thin';
   if (q.kind === 'single-gap' && q.figure > link.single.gap) {
     v('arc.single-gap-over', `${where}: ${R(q.figure)} px, past a flick's ${link.single.gap}`, meas(q.figure, link.single.gap, true, setting === 'normal' ? BAND_SOURCE['single-gap'] + ' (a flick from 55 px)' : arc('single-flick', scope).source + ' from 70 px'));
@@ -120,6 +121,8 @@ export function askVerdicts(q: JudgedStage['asks'][number], setting: Difficulty)
 const SOFT_LOOKS: readonly string[] = ['ground', 'pit-floor-art'] satisfies readonly SoftLook[];
 const LETHAL_LOOKS: readonly string[] = ['water-art', 'void-dark'] satisfies readonly LethalLook[];
 const isLethal = (d: Drop): boolean => d.ends.kind === 'life';
+/** each kind of end and the looks that are true of it: a soft look, a lethal look and the hurt look never stand in for one another */
+const LOOKS: Record<string, readonly string[]> = { lethal: LETHAL_LOOKS, soft: SOFT_LOOKS, heart: ['hurt-art'] satisfies readonly HurtLook[] };
 
 /** the drops' verdicts: a lethal drop on a no-lethal stage, a lethal drop unwarned, a drop drawn with the other kind's look */
 export function dropVerdicts(st: Pick<JudgedStage, 'setting' | 'policy' | 'drops'>): Verdict[] {
@@ -129,7 +132,8 @@ export function dropVerdicts(st: Pick<JudgedStage, 'setting' | 'policy' | 'drops
     if (isLethal(d) && st.policy === 'no-lethal') out.push({ name: 'drop.lethal-in-no-lethal', setting: st.setting, at, line: `a fall into ${(d.ends as { cause: string }).cause} costs a life at x ${at.x0}..${at.x1} on a no-lethal stage` });
     const w = (d as { warn?: { dotLine?: string; sign?: boolean } }).warn;
     if (isLethal(d) && (!w || !w.dotLine || w.sign !== true)) out.push({ name: 'drop.unwarned', setting: st.setting, at, line: `the lethal drop at x ${at.x0}..${at.x1} has ${!w || !w.dotLine ? "no Dot line" : 'no sign'}` });
-    if (isLethal(d) ? SOFT_LOOKS.includes(d.look) : LETHAL_LOOKS.includes(d.look)) out.push({ name: 'drop.look-lies', setting: st.setting, at, line: `the ${isLethal(d) ? 'lethal' : 'soft'} drop at x ${at.x0}..${at.x1} is drawn as ${d.look}` });
+    const end = isLethal(d) ? 'lethal' : d.ends.kind === 'heart' ? 'heart' : 'soft';
+    if (!LOOKS[end].includes(d.look)) out.push({ name: 'drop.look-lies', setting: st.setting, at, line: `the ${end} drop at x ${at.x0}..${at.x1} is drawn as ${d.look}` });
   }
   return out;
 }
@@ -162,7 +166,7 @@ export interface Judged11 extends JudgedStage { routeGaps: ReadonlyArray<readonl
 export function judgeRoll(st: Judged11, promises: PromiseRegistry = []): RollVerdict {
   const failed: Verdict[] = [];
   const notJudged: VerdictName[] = ['first-run.drift'];
-  if (scopeOf(st.stageId, st.setting)) for (const q of st.asks) failed.push(...askVerdicts(q, st.setting));
+  if (scopeOf(st.stageId, st.setting)) for (const q of st.asks) failed.push(...askVerdicts(q, st.setting, st.stageId));
   else notJudged.push('reach.unflown', ...ARC_VERDICTS);
   failed.push(...dropVerdicts(st), ...untypedVerdicts(st, st.routeGaps));
   for (const p of promises) {

@@ -1,0 +1,84 @@
+{
+  "_why": "Which model and effort each helper runs on, by how much the work matters (Matt 11-11: 'make sure from sonnet to fable we have the right engine and efforts based on importance'). tools/team/modelgate.mjs refuses any create_session that does not match. Change a row only on Matt's word; date it in _changes.",
+  "_changes": [
+    "11-09 Matt: every helper on Opus 5.5, high or medium by need, never low (TEAM.md 5a)",
+    "11-11 1:34 PM Matt: engine and gameplay on Fable 5.2 until he says go back; engine on Opus always high (TEAM.md 5b)",
+    "11-11 1:36 PM Matt: reviewers (critics) on Fable too",
+    "11-11 Matt: tiers from Sonnet to Fable by importance; this table and its gate",
+    "11-11 4:36 PM Matt: \"We will need to start using Opus again for all models\": every tier on Opus 5.5 (Fable period over; engine on Opus always high)",
+    "11-11 4:37 PM Matt: \"U will need to make the efforts based on work\": the lead picks effort per task inside each tier's range; xhigh allowed for the hardest critical work (merge reviews, core engine); max still asks Matt",
+    "11-11 4:40 PM Matt: \"For now use engine work on xhigh\": engine and integration roles on Opus 5.5 xhigh only",
+    "11-11 ~6 PM Matt (to the new lead): engine tier on Fable 5.2 high for the core engine build; critics and everything else stay Opus 5.5",
+    "11-11 6:13 PM Matt: only about 2 hours of Fable in total; engine back on Opus 5.5 xhigh; Fable only via role engine-fable on packets the lead names",
+    "11-12 7:30 AM Matt: 'Xhigh only when needed. Max if needed.': engine tier high or xhigh; max allowed when the lead states why"
+  ],
+  "tiers": {
+    "critical": {
+      "model": "claude-opus-5-5",
+      "effort": [
+        "high",
+        "xhigh"
+      ],
+      "what": "anything that ships or judges what ships: engine, stage and mechanic builds, integration, reviewers, architecture; xhigh for merge/release reviews and core-engine fixes, high otherwise"
+    },
+    "engine": {
+      "model": "claude-opus-5-5",
+      "effort": [
+        "high",
+        "xhigh"
+      ],
+      "what": "engine and integration work on Opus 5.5: high by default; xhigh only when needed (merges across the engine core, the hardest fixes); max only with a stated reason (Matt 11-12 7:30 AM)"
+    },
+    "fable": {
+      "model": "claude-fable-5-2",
+      "effort": [
+        "high"
+      ],
+      "what": "the lead's named strongest-model packets only (diagnosis and design); Matt has about 2 hours of Fable in total"
+    },
+    "core": {
+      "model": "claude-opus-5-5",
+      "effort": [
+        "high"
+      ],
+      "what": "art direction and art jobs, design maps, research that decides direction"
+    },
+    "support": {
+      "model": "claude-opus-5-5",
+      "effort": [
+        "high",
+        "medium"
+      ],
+      "what": "docs, catalogs, inventory labelling, packet drafting, summaries a reviewer will check"
+    },
+    "mechanical": {
+      "model": "claude-opus-5-5",
+      "effort": [
+        "medium",
+        "high"
+      ],
+      "what": "fixed-recipe jobs with a checker after them: shooting stills and clips to a list, running gates and reporting, moving or converting files"
+    }
+  },
+  "roles": {
+    "engine": "engine",
+    "content": "critical",
+    "designer": "critical",
+    "integration": "engine",
+    "engine-fable": "fable",
+    "critic": "critical",
+    "architect": "critical",
+    "art": "core",
+    "art-director": "core",
+    "research": "core",
+    "docs": "support",
+    "catalog": "support",
+    "runner": "mechanical"
+  },
+  "never": {
+    "effort": [
+      "low"
+    ],
+    "askMatt": []
+  }
+}

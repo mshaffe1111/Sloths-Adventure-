@@ -1,0 +1,3 @@
+## node tools/perf/chunkcheck.mjs (head f66f32ec, 11:34PM ET)
+chunkcheck: FAIL: this build's base is '/', the deploy's is '/Sloths-Adventure-/': it is not the build that ships, and its scripts are smaller than the shipped ones (LESSONS D45). Build with: BASE_PATH=/Sloths-Adventure-/ npx vite build
+EXIT 1 secs 0

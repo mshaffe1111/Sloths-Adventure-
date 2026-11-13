@@ -1,0 +1,3 @@
+harvest-12-A: 120 rolls; N beats a roll: min 5 median 13 max 18; rolls with 10 or more: 97; rolls holding a run of 5 or 6 N in a row: 81
+harvest-12-B: 120 rolls; N beats a roll: min 2 median 9 max 15; rolls with 10 or more: 58; rolls holding a run of 5 or 6 N in a row: 41
+harvest-12-C: 120 rolls; N beats a roll: min 7 median 13 max 19; rolls with 10 or more: 102; rolls holding a run of 5 or 6 N in a row: 87

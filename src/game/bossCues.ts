@@ -22,11 +22,11 @@ export function darkReveal(b: BossEntity, def: BossDef, dark: number): number {
 }
 
 /** the boss drawn back over the dark, and his eyes (world space: call it inside the camera transform) */
-export function drawBossOverDark(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, world: number, floor: number, time: number, dark: number, arena?: { left: number; right: number }) {
+export function drawBossOverDark(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, world: number, floor: number, time: number, dark: number, arena?: { left: number; right: number }, openMul = 1) {
   const k = darkReveal(b, def, dark);
   const br = b.ai;
   if (k <= 0 || !br) return;
-  drawBossFighter(ctx, { ...b, ai: { ...br, alpha: br.alpha * k } }, def, time, world, floor);
+  drawBossFighter(ctx, { ...b, ai: { ...br, alpha: br.alpha * k } }, def, time, world, floor, openMul);
   drawGroundCues(ctx, b, def, floor, time, dark, arena);
   // the eyes: two glints at the head, flaring as he winds up (the same spot as his glowing-eyes weak point after a shadow step)
   const winding = br.state === 'tell';

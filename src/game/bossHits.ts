@@ -5,9 +5,10 @@
  * stall (2026-10-26, QA: "a punch gave points but the counter stayed"; "a single punch took 2").
  */
 
-/** how many segments a boss bar has: about one per hit, so the bar itself says how long the fight still is */
+/** how many segments a boss bar has: one per hit the fight takes, so the bar itself says how long the fight still is (no floor: an Easy
+ *  fight of 4 hits has 4 segments, not a bar that says 6) */
 export function bossSegmentCount(maxHp: number, hits?: number): number {
-  if (hits && hits > 0) return Math.max(6, Math.min(40, Math.round(hits)));
+  if (hits && hits > 0) return Math.max(1, Math.min(40, Math.round(hits)));
   return Math.max(10, Math.min(28, Math.round(maxHp / 4)));
 }
 

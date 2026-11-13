@@ -1,0 +1,16 @@
+1-3 normal engine easy false help setting stored null
+  x 2373 teach true: "See that hive? Punch the vine, down it comes!" -> SHOWN
+  x 3104 teach false: "Don't worry, it only gives him a fright." -> not shown; up instead: nothing
+  x 13152 teach false: "No vine? Walk him to the end of his branch." -> not shown; up instead: nothing
+1-3 easy engine easy true help setting stored null
+  x 2373 teach true: "See that hive? Punch the vine, down it comes!" -> SHOWN
+  x 3104 teach false: "Don't worry, it only gives him a fright." -> SHOWN
+  x 13126 teach false: "No vine? Walk him to the end of his branch." -> SHOWN
+1-2 normal engine easy false help setting stored null
+  x 162 teach false: "Follow the petals" -> not shown; up instead: She said don't stop to smell the flo
+  x 2246 teach false: "The petals go up" -> not shown; up instead: nothing
+  x 9918 teach false: "Stay on the petals, high or low" -> not shown; up instead: nothing
+1-2 easy engine easy true help setting stored null
+  x 162 teach false: "Follow the petals" -> not shown; up instead: She said don't stop to smell the flo
+  x 2246 teach false: "The petals go up" -> not shown; up instead: nothing
+  x 9918 teach false: "Stay on the petals, high or low" -> SHOWN

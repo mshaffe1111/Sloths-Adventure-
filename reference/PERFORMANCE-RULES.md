@@ -121,7 +121,7 @@ These are measured facts about our code. A desktop browser can't reproduce the P
 1. **No allocations in the frame loop.** No new arrays, objects, closures (`forEach` with an arrow inside the loop), strings or gradients per frame in hot paths. Reuse objects (pools) for particles, petals, dust and pop-ups. Garbage-collection pauses of 5-30 ms are the classic "it hitches every few seconds".
 2. **A fixed-step update, so a slow frame never slows the game.**
    - Update in steps of exactly 1/30 s. A long frame runs up to 3 catch-up steps, and anything longer is dropped.
-   - Today a 100 ms frame moves the game only 50 ms (the 0.05 s cap). That makes Pokey truly slower on a struggling phone, which is the "sluggish" feeling.
+   - In place since R-165.116 (2026-11-11): engine.ts loop() keeps an account of real time not yet played (`acc`) and plays it in whole 1/30 s steps; a frame on time (within 0.5 ms) is one step; the governor and the recorder see the true gap. `src/game/frameLoop.test.ts` proves game time = real time within 2% at 48 to 144 Hz and on struggling phones, and that one late frame never speeds the game up. (Before it, a 100 ms frame moved the game only 50 ms, and then the old phase line counted a late frame's remainder twice: 1.5x speed after one dropped refresh.)
    - Each step stays the same small size, so nothing passes through walls.
    - At a steady 30 fps the game plays exactly as it does now.
    - Our update costs 0-2 ms, so the catch-up steps can't snowball.

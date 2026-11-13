@@ -1,0 +1,22 @@
+1-3 seed 1 normal kid: stranded at x 32015, goal {"got":12,"need":13}, 173 s
+  animal 516 at x 32244: reached yes (20.2 s), cleared yes, by punch; goal {"got":13,"need":13}
+NOT a softlock: from the stranded state the goal fills ({"got":13,"need":13}); 0 animal(s) tried and not cleared on the way
+1-3 seed 3 normal kid: stranded at x 32329, goal {"got":12,"need":13}, 175 s
+  animal 516 at x 32424: reached yes (20.4 s), cleared yes, by punch; goal {"got":13,"need":13}
+NOT a softlock: from the stranded state the goal fills ({"got":13,"need":13}); 0 animal(s) tried and not cleared on the way
+1-3 seed 4 normal kid: stranded at x 31472, goal {"got":12,"need":13}, 171 s
+  animal 516 at x 31564: reached yes (20.4 s), cleared yes, by punch; goal {"got":13,"need":13}
+NOT a softlock: from the stranded state the goal fills ({"got":13,"need":13}); 0 animal(s) tried and not cleared on the way
+1-3 seed 15 normal kid: stranded at x 31951, goal {"got":12,"need":13}, 180 s
+  animal 516 at x 32122: reached yes (20.2 s), cleared yes, by punch; goal {"got":13,"need":13}
+NOT a softlock: from the stranded state the goal fills ({"got":13,"need":13}); 0 animal(s) tried and not cleared on the way
+1-3 seed 16 normal kid: stranded at x 32148, goal {"got":11,"need":13}, 176 s
+  animal 516 at x 31753: reached yes (20.4 s), cleared yes, by punch; goal {"got":12,"need":13}
+  animal 510 at x 24448: reached yes (56.4 s), cleared yes, by punch; goal {"got":13,"need":13}
+NOT a softlock: from the stranded state the goal fills ({"got":13,"need":13}); 0 animal(s) tried and not cleared on the way
+1-3 seed 26 normal kid: stranded at x 32136, goal {"got":12,"need":13}, 173 s
+  animal 516 at x 32288: reached yes (20.4 s), cleared yes, by punch; goal {"got":13,"need":13}
+NOT a softlock: from the stranded state the goal fills ({"got":13,"need":13}); 0 animal(s) tried and not cleared on the way
+1-3 seed 30 normal kid: stranded at x 32126, goal {"got":12,"need":13}, 173 s
+  animal 516 at x 31724: reached yes (20.4 s), cleared yes, by punch; goal {"got":13,"need":13}
+NOT a softlock: from the stranded state the goal fills ({"got":13,"need":13}); 0 animal(s) tried and not cleared on the way

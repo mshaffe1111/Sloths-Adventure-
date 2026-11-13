@@ -1,0 +1,11 @@
+proven: 130 of 130 seeds (every bot passes, none under 120 s) -> /tmp/claude-0/pq-1-130.json
+castBots 1-3, seeds 1-130
+kid    normal PASS 130/130; time median 140.7 s (min 133.9); hits 12 lives 0 (foe:snake 12); cleared trap 1544, stomp 139, punch 9; told of traps 130/130; first trap sprung 130/130; traps sprung 1414/1560; turned back 62; left 518
+kid    easy   PASS 130/130; time median 136.1 s (min 132.7); hits 2 lives 0 (foe:snake 2); cleared trap 1537, stomp 41, kick 1, punch 1; told of traps 130/130; first trap sprung 130/130; traps sprung 1407/1560; turned back 0; left 370
+adult  normal PASS 130/130; time median 144.7 s (min 139.7); hits 33 lives 0 (foe:snake 33); cleared trap 1560, stomp 439, punch 90, kick 1; told of traps 130/130; first trap sprung 130/130; traps sprung 1430/1560; turned back 0; left 120
+adult  easy   PASS 130/130; time median 142.2 s (min 138.7); hits 17 lives 0 (foe:snake 17); cleared trap 1560, stomp 249, punch 48, kick 2; told of traps 130/130; first trap sprung 130/130; traps sprung 1430/1560; turned back 0; left 91
+child  normal PASS 130/130; time median 451.1 s (min 392.4); hits 75 lives 0 (foe:snake 75); cleared trap 1570, punch 243, stomp 216, kick 8; told of traps 130/130; first trap sprung 130/130; traps sprung 1441/1560; turned back 0; left 173
+child  easy   PASS 130/130; time median 310.8 s (min 274.5); hits 21 lives 0 (foe:snake 21); cleared trap 1561, stomp 206, punch 99, kick 3; told of traps 130/130; first trap sprung 130/130; traps sprung 1434/1560; turned back 0; left 81
+middle normal PASS 130/130; time median 232.4 s (min 215.5); hits 30 lives 0 (foe:snake 30); cleared trap 1554, stomp 337, punch 179, kick 4; told of traps 130/130; first trap sprung 129/130; traps sprung 1429/1560; turned back 0; left 136
+middle easy   PASS 130/130; time median 208.7 s (min 190.1); hits 10 lives 0 (foe:snake 10); cleared trap 1554, stomp 232, punch 73, kick 1; told of traps 130/130; first trap sprung 130/130; traps sprung 1428/1560; turned back 0; left 90
+expert normal PASS 130/130; time median 196.6 s (min 182); hits 37 lives 0 (foe:snake 37); cleared trap 1545, stomp 363, punch 114, kick 2; told of traps 130/130; first trap sprung 130/130; traps sprung 1423/1560; turned back 3; left 186

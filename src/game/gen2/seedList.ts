@@ -5,9 +5,20 @@
  * (no gen2.errors: every slot filled by its rule, the required sections placed, no V-rule broken, Easy laying Normal's plan), and its
  * replay is identical to its full search (every part of the stage the lock hashes). tools/engine/seedlist.ts writes the list; its --check,
  * in CI, holds every seed to both, so an engine or kit change that stales the list fails until the list is rebuilt.
+ *
+ * WHERE A LIST LIVES (R-165.112): each stage's list is its own file, gen2/proven/seeds-<stage>.ts, loaded on its own (a lazy chunk the
+ * service worker precaches, so it is there offline) and NEVER imported by name from the game's main script: the main script holds only
+ * provenIndex.ts (a stage's count, version and loader: the same few bytes whatever the list's length), so a list can hold thousands of
+ * layouts. loadSeedList fetches a stage's list (the game: when the stage's card opens, a stage starts, and before its engine is built,
+ * App.tsx launchEngine, which waits for it); the readers below are plain and answer from the list in memory. A stage whose list is not
+ * in memory (the load failed or is still on its way) plays its STAND-IN: one listed seed whose proven plan is in the main script (1-1:
+ * the fixed first run, firstRun11.ts), so Play still only ever builds a proven layout, and never waits on the network to do it.
+ * Under Node (the tests and the tools: no page, no build, nothing to fetch) a reader that finds a list never asked for reads the
+ * stage's file on the spot (loadNow), so a test builds 1-1 as it always has; seedListLoad.test.ts plants the page's side.
  */
 import { buildGen2Stage, provenGen2Stage } from './pipeline.ts';
-import { PROVEN_SEEDS } from './provenSeeds.ts';
+import { PROVEN_INDEX } from './provenIndex.ts';
+import { stageRow } from './worlds/stageTable.ts';
 import type { BuildRequest, Gen2Stage, PlanSlot, WorldKit } from './types.ts';
 import type { LevelConfig } from '../types.ts';
 import type { Difficulty } from '../difficulty.ts';
@@ -56,7 +67,148 @@ export function unpackPlan(s: string, dict: readonly string[]): Replay {
   return { seed, rerolls, plan, foes: foes ? foes.split(',').map((kv) => kv.split('=') as [string, string]) : [] };
 }
 
-const list = (stageId: string): PackedList | undefined => PROVEN_SEEDS[stageId] as PackedList | undefined;
+/** a list as a version: its seeds and packed plans hashed (FNV-1a, 8 hex digits). The index holds it (seedlist.ts writes it), so a run can
+ *  say which list it was drawn from without the list in hand (testRound.ts) */
+export function listVersion(l: PackedList): string {
+  const s = JSON.stringify(l);
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h.toString(16).padStart(8, '0');
+}
+
+/** where a stage's list comes from (provenIndex.ts: a dynamic import of the stage's list file; a test plants its own) */
+export type SeedListSource = () => Promise<{ LIST: PackedList }>;
+/** where a stage's list is: never asked for; on its way; in memory; or its last load failed (the next loadSeedList tries again) */
+export type SeedListState = 'unloaded' | 'loading' | 'ready' | 'failed';
+const sources = new Map<string, SeedListSource>(Object.entries(PROVEN_INDEX).map(([id, e]) => [id, e.load]));
+const lists = new Map<string, PackedList>();
+const loading = new Map<string, Promise<boolean>>();
+const failed = new Map<string, string>();
+
+/** the ways a loaded list is not the one the index names (a cut-off or stale file is never played from) */
+function listFaults(stageId: string, l: PackedList | undefined): string | null {
+  if (!l || !Array.isArray(l.seeds) || !Array.isArray(l.plans) || !Array.isArray(l.dict)) return 'no list in the file';
+  if (l.plans.length !== l.seeds.length) return `${l.seeds.length} seeds but ${l.plans.length} plans`;
+  const e = PROVEN_INDEX[stageId];
+  if (e && l.seeds.length !== e.n) return `${l.seeds.length} seeds, the index says ${e.n}`;
+  return null;
+}
+/**
+ * Fetch a stage's list. Resolves true once it is in memory (at once when it already is), false when the stage has no list or the load
+ * failed; never rejects. One fetch at a time a stage; a failed load is not kept, so the next call tries again.
+ */
+export function loadSeedList(stageId: string): Promise<boolean> {
+  if (lists.has(stageId)) return Promise.resolve(true);
+  const src = sources.get(stageId);
+  if (!src) return Promise.resolve(false);
+  let p = loading.get(stageId);
+  if (!p) {
+    p = Promise.resolve().then(src).then((m) => {
+      const fault = listFaults(stageId, m?.LIST);
+      if (fault) throw new Error(fault);
+      lists.set(stageId, m.LIST);
+      failed.delete(stageId);
+      return true;
+    }).catch((e: unknown) => {
+      failed.set(stageId, e instanceof Error ? e.message : String(e));
+      return false;
+    }).finally(() => { loading.delete(stageId); });
+    loading.set(stageId, p);
+  }
+  return p;
+}
+export function seedListState(stageId: string): SeedListState {
+  return lists.has(stageId) ? 'ready' : loading.has(stageId) ? 'loading' : failed.has(stageId) ? 'failed' : 'unloaded';
+}
+/** why the last load failed (the recorder and the tests), or null */
+export const seedListError = (stageId: string): string | null => failed.get(stageId) ?? null;
+/** does this stage draw from a list at all (the index: known without the list) */
+export const hasSeedList = (stageId: string): boolean => sources.has(stageId);
+/** how long a stage start waits for a list that is still loading before it plays the stand-in (ms) */
+export const SEED_LIST_WAIT_MS = 3000;
+/**
+ * The wait before a stage is built (App.tsx launchEngine): resolves as soon as the stage's list is in memory, its load has failed, or
+ * `capMs` has passed with the load still on its way (a stalled network never holds Play long: the stand-in plays). A stage waits ONCE:
+ * after a failed or stalled load, later starts go straight in (the stand-in again) while the load is tried again behind them, until the
+ * list arrives. true: the list is ready
+ */
+const gaveUp = new Set<string>();
+export function seedListSettled(stageId: string, capMs = SEED_LIST_WAIT_MS): Promise<boolean> {
+  if (!hasSeedList(stageId) || lists.has(stageId)) return Promise.resolve(lists.has(stageId));
+  const load = loadSeedList(stageId).then((ok) => { if (ok) gaveUp.delete(stageId); else gaveUp.add(stageId); return ok; });
+  if (gaveUp.has(stageId)) return Promise.resolve(false);
+  return new Promise((resolve) => {
+    const t = setTimeout(() => { gaveUp.add(stageId); resolve(lists.has(stageId)); }, capMs);
+    void load.then((ok) => { clearTimeout(t); resolve(ok); });
+  });
+}
+/** tests: plant a stage's source (a failing one, a cut-off one, a stalled one) and forget what was loaded: from here the stage's list
+ *  comes only from that source, as on a page (no reading the file on the spot); returns the undo */
+const planted = new Set<string>();
+export function plantSeedListSource(stageId: string, src: SeedListSource | null): () => void {
+  const was = { src: sources.get(stageId), list: lists.get(stageId), err: failed.get(stageId), planted: planted.has(stageId) };
+  if (src) sources.set(stageId, src); else sources.delete(stageId);
+  lists.delete(stageId); loading.delete(stageId); failed.delete(stageId); gaveUp.delete(stageId);
+  planted.add(stageId);
+  return () => {
+    gaveUp.delete(stageId);
+    if (was.src) sources.set(stageId, was.src); else sources.delete(stageId);
+    loading.delete(stageId);
+    if (was.list) lists.set(stageId, was.list); else lists.delete(stageId);
+    if (was.err !== undefined) failed.set(stageId, was.err); else failed.delete(stageId);
+    if (!was.planted) planted.delete(stageId);
+  };
+}
+
+/** tests (listed.ts, a fixture stage's rows): its list put in memory at once, as if loaded (its source planted too, so the stage
+ *  has a list); returns the undo, plantSeedListSource's */
+export function plantSeedList(stageId: string, l: PackedList): () => void {
+  const undo = plantSeedListSource(stageId, () => Promise.resolve({ LIST: l }));
+  lists.set(stageId, l);
+  return undo;
+}
+
+/**
+ * Node only (the tests and the tools run the game's code with no page and nothing to fetch): read the stage's list file on the spot.
+ * A page never comes here (no Node `process`): there the list arrives by loadSeedList alone. Returns the list, or undefined
+ */
+function loadNow(stageId: string): PackedList | undefined {
+  const node = (globalThis as { process?: { versions?: { node?: string }; getBuiltinModule?: (id: string) => unknown } }).process;
+  if (planted.has(stageId) || !node?.versions?.node || !node.getBuiltinModule) return undefined;
+  const { createRequire } = node.getBuiltinModule('node:module') as { createRequire: (from: string) => (id: string) => unknown };
+  const l = (createRequire(import.meta.url)(`./proven/seeds-${stageId}.ts`) as { LIST?: PackedList }).LIST;
+  const fault = listFaults(stageId, l);
+  if (fault) throw new Error(`gen2 ${stageId}: its proven seed list file is not the one provenIndex.ts names (${fault}): tools/engine/seedlist.ts ${stageId}`);
+  lists.set(stageId, l!);
+  return l;
+}
+
+/**
+ * A stage's stand-in: ONE listed seed with its proven plan, kept in the main script, played when the stage's list cannot be had: its
+ * row's `standIn` in the one stage table (worlds/stageTable.ts, world data; a listed stage's is its fixed first run, locked by
+ * `seedlist <stage> --check`; seedList.test.ts holds it to the list's own entry)
+ */
+export const standIn = (stageId: string): Replay | undefined => stageRow(stageId)?.standIn;
+
+/**
+ * The list of a stage, when it is in memory; undefined for a stage with none, or one whose list is not here (yet). A list nobody has
+ * asked for: under Node it is read on the spot; on a page it is asked for now (the callers' own wait, launchEngine, should have: this
+ * keeps a path that skipped it from standing on the stand-in for good) and this answer is "not here"
+ */
+function list(stageId: string): PackedList | undefined {
+  const l = lists.get(stageId);
+  if (l || !sources.has(stageId) || seedListState(stageId) !== 'unloaded') return l;
+  const now = loadNow(stageId);
+  if (!now) void loadSeedList(stageId);
+  return now;
+}
+/** is the stage's list in memory (as `list` has it: read on the spot under Node, asked for on a page) */
+export const seedListReady = (stageId: string): boolean => !!list(stageId);
+/** the stage's whole packed list (the list tool and the tests); undefined for a stage with none, or one whose load failed */
+export const provenList = (stageId: string): PackedList | undefined => list(stageId);
 /** the proven seeds of a stage, in the order they were found */
 export function provenSeeds(stageId: string): readonly number[] {
   return list(stageId)?.seeds ?? [];
@@ -67,11 +219,12 @@ export function provenSeedFor(stageId: string, n: number): number {
   if (!s.length) throw new Error(`gen2 ${stageId}: no proven seed list (tools/engine/seedlist.ts ${stageId})`);
   return s[((Math.floor(n) % s.length) + s.length) % s.length];
 }
-/** a listed seed's proven plan; undefined off the list */
+/** a listed seed's proven plan; undefined off the list. With the list not in memory (a failed load), the stand-in's own plan */
 export function provenPlan(stageId: string, seed: number): Replay | undefined {
   const L = list(stageId);
-  const i = L ? L.seeds.indexOf(seed) : -1;
-  return L && i >= 0 ? unpackPlan(L.plans[i], L.dict) : undefined;
+  if (!L) { const s = standIn(stageId); return s && sources.has(stageId) && s.seed === seed ? s : undefined; }
+  const i = L.seeds.indexOf(seed);
+  return i >= 0 ? unpackPlan(L.plans[i], L.dict) : undefined;
 }
 
 /**
@@ -103,13 +256,14 @@ export function stageParts(st: Gen2Stage): Record<string, string> {
  * Every way a stage's seed list breaks the rule, by name: too short, a repeat, a seed that no longer lays cleanly on a setting, or a seed
  * whose replayed plan is not its full search's stage (`plans`: the packed list's plans, checked when given)
  */
-export function seedListBreaches(config: LevelConfig, kit: () => WorldKit, seeds: readonly number[], min = SEED_LIST_MIN, plans?: { dict: readonly string[]; plans: readonly string[] }): string[] {
+export function seedListBreaches(config: LevelConfig, kit: () => WorldKit, seeds: readonly number[], min = SEED_LIST_MIN, plans?: { dict: readonly string[]; plans: readonly string[] }, also?: BuildRequest['also']): string[] {
   const out: string[] = [];
   if (seeds.length < min) out.push(`${config.id}: ${seeds.length} proven seeds, under ${min}`);
   if (new Set(seeds).size !== seeds.length) out.push(`${config.id}: a seed is listed twice`);
   seeds.forEach((seed, i) => {
     for (const difficulty of ['normal', 'easy'] as const) {
-      const full = buildGen2Stage({ config, kit: kit(), seed, difficulty });
+      // (`also`: the rules the list was built under beyond the pipeline's own, so the search here is the search that listed the seed)
+      const full = buildGen2Stage({ config, kit: kit(), seed, difficulty, ...(also ? { also } : {}) });
       // (R-165.61: the roll's verdict on this setting, by name: 1-1's arcs, drops and its promises, judged by the pipeline from ONE registry,
       // promises11.ts PROMISES_11, whose `settings` say where each applies; no substring filter. A refused verdict is in `errors` too)
       const v = full.gen2.verdicts?.[difficulty];

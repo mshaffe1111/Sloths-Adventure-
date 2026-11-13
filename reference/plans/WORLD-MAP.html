@@ -1,0 +1,473 @@
+<title>Sloths World Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f1e8; --panel:#fffdf7; --ink:#1f2a1f; --muted:#5d6b5a; --line:#d9d3c2;
+  --accent:#2f7a3d; --accent-ink:#ffffff; --warn:#b5531f; --warn-bg:#fbe9dd;
+  --built:#2f7a3d; --tonight:#1d6fa5; --inbuild:#8a5cc2; --planned:#a3a08f;
+  --chip:#ece7d8; --new:#c98a12;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121811; --panel:#1a2219; --ink:#e8eee4; --muted:#9fae9a; --line:#2e3a2c;
+    --accent:#6cc27b; --accent-ink:#0d150c; --warn:#f0965e; --warn-bg:#3a2417;
+    --built:#6cc27b; --tonight:#5fb1e6; --inbuild:#b997ea; --planned:#6f7568;
+    --chip:#243023; --new:#f2c14e;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121811; --panel:#1a2219; --ink:#e8eee4; --muted:#9fae9a; --line:#2e3a2c;
+  --accent:#6cc27b; --accent-ink:#0d150c; --warn:#f0965e; --warn-bg:#3a2417;
+  --built:#6cc27b; --tonight:#5fb1e6; --inbuild:#b997ea; --planned:#6f7568;
+  --chip:#243023; --new:#f2c14e;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Atkinson Hyperlegible",system-ui,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 16px 64px}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0}
+h1{font-size:clamp(30px,6vw,52px);font-weight:800;letter-spacing:-.01em;line-height:1.05}
+.lede{color:var(--muted);max-width:760px;margin:12px 0 0}
+.stats{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 6px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.stat b{display:block;font-family:Fraunces,serif;font-size:24px}
+.stat span{color:var(--muted);font-size:13px}
+nav.tabs{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding:12px 0;margin:10px 0 8px;border-bottom:1px solid var(--line)}
+nav.tabs button{flex:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;cursor:pointer;min-height:40px}
+nav.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+section{margin-top:28px}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.sec-h p{margin:0;color:var(--muted);font-size:14px}
+.world{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:18px}
+.world-top{display:grid;grid-template-columns:1fr auto;gap:8px 16px;align-items:start}
+.world-top h3{font-size:24px}
+.act{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+.move{display:inline-block;margin-top:6px;background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:3px 10px;font-weight:700;font-size:14px}
+.tempo{font-size:13px;color:var(--muted);text-align:right}
+.rules{margin:10px 0 0;padding-left:18px;color:var(--ink);font-size:14px}
+.beat{margin:10px 0 0;font-style:italic;color:var(--muted);font-size:14px}
+.with{margin:6px 0 0;font-size:14px}
+.flag{margin:12px 0 0;background:var(--warn-bg);border-left:4px solid var(--warn);padding:10px 12px;border-radius:8px;font-size:14px}
+.flag b{color:var(--warn)}
+.stages{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:14px}
+.st{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg);position:relative}
+.st .id{font-family:Fraunces,serif;font-weight:800;font-size:15px}
+.st .nm{font-weight:700;font-size:14px}
+.st .meta{font-size:12px;color:var(--muted);margin:2px 0 6px}
+.st .tw{font-size:13px;line-height:1.4}
+.st .teach{display:inline-block;margin-top:6px;font-size:12px;font-weight:700;color:var(--new)}
+.st.moved{border-color:var(--warn);border-style:dashed}
+.st .done{position:absolute;top:8px;right:10px;font-size:11px;font-weight:700;color:var(--built)}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.tag{font-size:11px;background:var(--chip);border-radius:6px;padding:1px 6px;color:var(--ink)}
+.extras{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px}
+.extra{border:1px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:13px}
+.extra b{font-family:Fraunces,serif}
+.pieces{display:grid;gap:8px}
+.piece{display:grid;grid-template-columns:minmax(150px,230px) 1fr auto;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.piece .nm{font-weight:700;font-size:14px}
+.piece .nm small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.bar{height:12px;background:var(--chip);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:6px}
+.piece .n{font-family:Fraunces,serif;font-weight:800;font-size:18px;min-width:34px;text-align:right}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted);margin:6px 0 12px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.ladder{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.rung{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.rung .w{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.rung .mv{font-family:Fraunces,serif;font-weight:800;font-size:18px}
+.rung .at{font-size:13px}
+.rung.late{border-color:var(--warn)}
+.rung.late .at{color:var(--warn);font-weight:700}
+.order{counter-reset:o;list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.order li{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px 12px 52px;position:relative}
+.order li:before{counter-increment:o;content:counter(o);position:absolute;left:14px;top:12px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:700;font-size:14px}
+.order li b{display:block}
+.order li span{color:var(--muted);font-size:14px}
+.ig{font-size:20px;margin:22px 0 10px}
+.ideas{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.idea{background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--planned);border-radius:10px;padding:10px 12px}
+.idea.v-IN,.idea.v-DONE{border-left-color:var(--built)} .idea.v-PARK{border-left-color:var(--new)} .idea.v-OUT{border-left-color:var(--warn)}
+.ih{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.vd{font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.it{font-weight:700;font-size:15px;margin:2px 0 4px}
+.insp{font-size:13px;font-style:italic;color:var(--muted)}
+.wh{font-size:13px;margin-top:4px}
+.beat-l{margin:2px 0 0;padding-left:18px}
+[hidden]{display:none!important}
+@media (max-width:560px){
+  .world-top{grid-template-columns:1fr}
+  .tempo{text-align:left}
+  .piece{grid-template-columns:1fr auto}
+  .piece .bar{grid-column:1 / -1;order:3}
+}
+</style>
+
+<div class="wrap">
+  <h1>The world map: 113 stages, one engine</h1>
+  <p class="lede">Every stage we will build, in play order, with its twist, the move it teaches, and the engine pieces it uses. The counts underneath show which pieces repeat most, and that is the order the engine builds them in. Drafted by the lead on 11-11 and checked by the story keeper, who owns stage names, story beats and who travels with Pokey.</p>
+  <div class="stats" id="stats"></div>
+
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button role="tab" data-view="worlds" aria-selected="true">Worlds</button>
+    <button role="tab" data-view="pieces" aria-selected="false">What the engine needs</button>
+    <button role="tab" data-view="ladder" aria-selected="false">Move ladder</button>
+    <button role="tab" data-view="creatures" aria-selected="false">Creatures</button>
+    <button role="tab" data-view="ideas" aria-selected="false">Your ideas</button>
+    <button role="tab" data-view="order" aria-selected="false">Build order</button>
+  </nav>
+
+  <section id="v-worlds">
+    <div class="sec-h"><h2>Worlds, in play order</h2><p>Arrows: → right · ← left · ↑ up · ↓ down · ⇄ out and back. Dashed tiles: stages the lead moved so each world teaches its new move by about stage 3 (story keeper approved).</p></div>
+    <div id="worlds"></div>
+  </section>
+
+  <section id="v-pieces" hidden>
+    <div class="sec-h"><h2>What the engine needs, by how many stages use it</h2><p>Counted from the 90 core stages below. Built once, used everywhere.</p></div>
+    <div class="legend" id="legend"></div>
+    <div class="pieces" id="pieces"></div>
+  </section>
+
+  <section id="v-ladder" hidden>
+    <div class="sec-h"><h2>The move ladder</h2><p>One new move a world. A world should teach it by its third stage so the rest of the world can build on it.</p></div>
+    <div class="ladder" id="ladder"></div>
+  </section>
+
+  <section id="v-creatures" hidden>
+    <div class="sec-h"><h2>Creatures: who they are and how you beat them</h2><p>Designed by Fable on 11-11 from the real animals, with the story keeper's background. Every creature warns before it can hurt, and every way to beat one ends with it chased off, fleeing, stunned or dozing: never eaten. Passed by the story keeper with four changes, applied.</p></div>
+    <div id="creatures"></div>
+  </section>
+
+  <section id="v-ideas" hidden>
+    <div class="sec-h"><h2>Your 84 ideas: where each came from and where it lands</h2><p>"Echoes" is the lead's reading of each idea's family tree: the classic game it brings to mind. We build our own rainforest version of the mechanic, never a copy of a game.</p></div>
+    <div id="ideas"></div>
+  </section>
+
+  <section id="v-order" hidden>
+    <div class="sec-h"><h2>Build order</h2><p>Foundations, then the levels, then polish. Each world's new pieces are built while the world before it is laid.</p></div>
+    <ol class="order" id="order"></ol>
+  </section>
+</div>
+
+<script>
+const STATUS={built:{label:"Built",c:"--built"},tonight:{label:"Built 11-11 (on a branch)",c:"--tonight"},inbuild:{label:"In build",c:"--inbuild"},planned:{label:"Planned",c:"--planned"}};
+const PIECES={
+  dir:{n:"Travel any direction",d:"up, down, left, out and back",s:"tonight"},
+  clock:{n:"One clock",d:"things on a beat, always with a warning",s:"planned"},
+  dark:{n:"Light and dark",d:"dark zones, carried and followed light",s:"built"},
+  still:{n:"Stillness and watchers",d:"Pokey's signature move",s:"planned"},
+  ride:{n:"Rides and moving platforms",d:"logs, pads, lifts, vents, creatures",s:"planned"},
+  water:{n:"Water, tide, rising",d:"swim, tide, rising water and lava",s:"built"},
+  crumble:{n:"Crumbling and snapping",d:"boughs, tiles, vines",s:"built"},
+  swing:{n:"Swinging",d:"lianas, pendulum",s:"built"},
+  lure:{n:"Food chain and lures",d:"lead hunters to what hunts them",s:"planned"},
+  follow:{n:"Followers",d:"freed animals come home with you",s:"planned"},
+  wind:{n:"Wind and updrafts",d:"gusts, lift",s:"built"},
+  glide:{n:"Leaf glide",d:"glide arcs as bricks",s:"built"},
+  trap:{n:"Drop traps",d:"shake a vine, cut a tendril",s:"planned"},
+  hang:{n:"Hanging under",d:"hand over hand under roots",s:"planned"},
+  noise:{n:"Noise",d:"loud landings wake things; the drum",s:"planned"},
+  break:{n:"Breaking and pushing",d:"cracked stone, push blocks",s:"planned"},
+  fling:{n:"Swing and fling",d:"let go at the top to fly",s:"planned"},
+  leash:{n:"Vine leash",d:"tie creatures on, tie off to a post",s:"planned"},
+  hold:{n:"Hold on",d:"freeze on the lightning flash",s:"planned"},
+  heat:{n:"Heat meter",d:"hot rock, shade cools",s:"planned"},
+  chase:{n:"The chase",d:"the branch collapses behind you",s:"built"},
+  machine:{n:"Temple machine",d:"gates and switches",s:"built"},
+  drowsy:{n:"Don't stop",d:"drowsy if he idles with no threat near",s:"planned"},
+  hurt:{n:"Hurt floors",d:"thorns cost a heart and set him back",s:"inbuild"},
+  roads:{n:"Two roads",d:"over or under",s:"planned"}
+};
+const DIRT={"↑":"dir","↓":"dir","←":"dir","⇄":"dir","↖":"dir"};
+const W=[
+ {n:"Emerald Canopy",beat:'Purpose: a scared sloth sets off after her petals and finds he can do this.',with:'Dot',act:"Act I · The Trail",move:"The basics: jump, double jump, bounce, punch, climb, swing, hide",tempo:"Classic, one twist per stage",
+  rules:["Branches stand still","One twist per stage, each taught safely","Stillness is taught here: in the bush, hold still"],
+  hidden:"Zipline Canopy (a sloped rope ride), opened by the golden guarana in 1-5's root tunnel",boss:"Venom Fang",
+  s:[["1-1","Into the Canopy","sprint","→","The basics, re-laid. Live in 0.9.6.",[],"run, jump, double jump, bounce",1],
+     ["1-2","The Petal Trail","harvest","→","Bounce chain over a thorn floor",["hurt"]],
+     ["1-3","Branch Snakes","purge","→","Drop traps: shake a vine, cut a tendril, drop a hive on the snakes",["trap"],"punch; rope"],
+     ["1-4","Up the Kapok","ascent","↑","The first climb, inside the hollow kapok: rotting boughs, ripe fruit falling down the trunk, twin vines climb faster",["crumble","clock"],"climb; crumbling"],
+     ["1-5","Where She Walked","harvest","→","Over or under: the risky canopy or the fast root tunnel. The card-road test: the squirrels' painted signs, THIS WAY or THAT WAY, pick the next stretch",["roads"]],
+     ["1-6","First Lianas","vine_runner","→","The pendulum: build speed, let go at the top",["swing"],"swing"],
+     ["1-7","A Very Good Bush","stealth","→","The eagle's shadow: in the bush, hold still; soft landings stay quiet",["still","noise"],"stillness"],
+     ["1-8","The Long Branch","sprint","→","The branch collapses behind you; rolling nuts at two heights: jump the low, duck the high",["chase","clock"]],
+     ["1-9","The Boa's Branches","gauntlet","→","Drop traps and the food chain chase the boa off (never carried off or eaten)",["trap","lure"]]]},
+ {n:"Sunlit Riverbank",beat:'Patience and company: a village of waiters; he leads the little ones home.',with:'Dot',act:"Act I",move:"Ride: hop on things that move",tempo:"Hurry: the rides don't wait",
+  rules:["Nothing stands still: logs, sinking pads, rafts","River lanes going both ways (the Frogger world)","Bring the freed animals home; the first run back to the left"],
+  hidden:"The Rapids: a raft ride down white water",boss:"Crocus Rex",
+  s:[["2-1","Down to the River","sprint","→","Drifting logs carry you; step off before the reeds",["ride"],"ride"],
+     ["2-2","Petals for the Crown","harvest","→","Lily pads sink if you stand too long",["ride","clock"]],
+     ["2-3","Stuck in the Reeds","rescue","→","Bring them home: freed animals hop behind you",["follow"],"bring them home"],
+     ["2-4","Over the Water","vine_runner","→","Let go of the vine onto a moving log",["swing","ride"]],
+     ["2-5","River Snappers","purge","→","Snap-jaw stones: safe on three beats, snap on the fourth",["clock","trap"]],
+     ["2-6","Up the Bank Houses","ascent","↑","Lifts ride up and down; cross the backs of sleeping caimans, quietly",["dir","ride","still"]],
+     ["2-7","The Mailman's Route","sprint","⇄","Ring the bell, then race back left through a changed river",["dir"]],
+     ["2-8","Before the Water Rises","rescue","↑","Free them and bring them up ahead of the rising water",["dir","follow","water"]],
+     ["2-9","The River King's Court","gauntlet","→","The full river: lanes of logs both ways, guards on rafts",["ride","clock"]]]},
+ {n:"Mossy Grotto",beat:"Memory in the dark: Grandma's things in the ferns, the bell for coming home; Dot doesn't do dark.",with:'Dot',act:"Act I",move:"Hang under roots and branches",tempo:"Patience: slow and quiet",
+  rules:["Dark: you see only near glowworms and fungus","Quiet: noise wakes things; stillness keeps them asleep","The first stage that goes down"],
+  hidden:"The Cave Slide: an underground water chute",boss:"Shadow Prowler",
+  s:[["3-1","Into the Grotto","sprint","↓","The first stage that goes down; light only from glowworms",["dir","dark"],"dark"],
+     ["3-2","Glowworm Path","stealth","→","Hang along the roof roots above the prowlers",["dark","hang","still"],"hang under"],
+     ["3-3","Footprints in a Circle","purge","→","Lure a prowler under a loose stalactite",["dark","lure","trap"]],
+     ["3-4","The Sinkhole","ascent","↑","Sleepy mushrooms puff on a beat as you climb",["dir","dark","clock"]],
+     ["3-5","Sleeping Vines","stealth","→","Noise wakes the thorn vines; the drum is your one loud tool",["dark","noise","still","hang"],"noise wakes things"],
+     ["3-6","Grandma's Things","relic_hunt","→","Carry a glowing fungus cap: it lights a small circle",["dark"]],
+     ["3-7","Which Fern?","relic_hunt","←","Every fern looks alike; the right one rustles",["dir","dark"]],
+     ["3-8","Thorn Vine Swing","vine_runner","→","Thorn vines pulse; swing on the quiet beat",["dark","swing","clock"]],
+     ["3-9","The Prowler's Ring","gauntlet","→","Dark, hanging, quiet and prowlers together",["dark","hang","noise"]]]},
+ {n:"Mist Cascades",beat:"The cost: the ledge falls away; fear of falling; Dot's brave flight through the netting.",with:'Dot',act:"Act II · The Cost",move:"Leaf glide",tempo:"Hurry: keep ahead of the rocks",
+  rules:["The air moves you: gusts and updrafts","Rocks fall on a beat","Tall stages both ways: climb up, glide down"],
+  hidden:"Up the Falls (plus Dot's Flight, built)",boss:"Sky Sovereign",
+  s:[["4-1","The Broken Ledge","ascent","↑","The leaf is learned on clearing",["dir","glide"],"glide"],
+     ["4-2","First Glide","sprint","→","Gusts push the leaf left and right",["wind","glide"],"wind"],
+     ["4-3","Waterfall Steps","ascent","↑","The hand-built set piece; rocks fall on a beat",["dir","clock"]],
+     ["4-4","Crosswind","vine_runner","→","Swing while the wind pushes you",["swing","wind"]],
+     ["4-5","The Sovereign's Dive","stealth","→","The eagle's shadow returns: freeze under cover when it turns",["still"]],
+     ["4-6","Above the Mist","ascent","↑","Mist hides ledges until you are close; bark opens and closes on a beat",["dir","clock"]],
+     ["4-7","The Long Drop","sprint","↓","The hand-built descent; the first drop only the leaf can cross",["dir","glide"]],
+     ["4-8","Nests on the Cliff","rescue","↑","Bring them home again, riding updrafts",["dir","follow","wind"],"updrafts"],
+     ["4-9","The Aerie","gauntlet","→","Wind blows the guards off their ledges",["wind"]]]},
+ {n:"Orchid Sanctuary",beat:'Temptation: the loveliest place is a trap; Meeca fought back here for one night; the Queen is lonely.',with:'Dot',act:"Act II",move:"Lead on a vine",tempo:"Hurry",
+  rules:["The clock: orchids close","Silk that hums: touch a thread and spiders come","Don't stop: idle with no threat near and he gets drowsy; a cold dew drip wakes him (no eating in the sanctuary)"],
+  hidden:"The Wilted Garden: blooms open where you step (plus Meeca's stage, built)",boss:"Tarantula Queen",
+  flag:"<b>Reordered (story keeper approved 11-11):</b> the vine leash arrives at 5-5, too late for the world to build on it. Swap 5-3 and 5-5 so it is taught third. The halfway pouch scene stays at slot 5.",
+  s:[["5-1","The Loveliest Place","sprint","→","Don't stop: he gets drowsy and sits; a tap or a cold dew drip wakes him",["drowsy"],"don't stop"],
+     ["5-2","Don't Sit","stealth","→","Keep moving and stay hidden: cover moves with the breeze; here, freezing doesn't hide him",["drowsy","still"]],
+     ["5-3","Caught in Silk","rescue","→","The vine leash: freed creatures tie on; tie off to a post",["leash","follow"],"lead on a vine",0,1],
+     ["5-4","Silk Bridges","vine_runner","→","Sticky webs slow you",["swing"]],
+     ["5-5","Closing Orchids","harvest","→","Orchids close in waves: a clock on every flower",["clock"],"the clock",0,1],
+     ["5-6","Where She Ran","relic_hunt","←","The chase goes left; Meeca's scratched petals mark the way",["dir"]],
+     ["5-7","Don't Touch the Silk","stealth","→","Touch a humming thread and the spiders wake",["still","noise"],"humming silk"],
+     ["5-8","Up the Bloom Trees","ascent","↑","The leash on a climb: tie off, climb, untie",["dir","leash"]],
+     ["5-9","The Queen's Garden","gauntlet","→","The clock, silk and the leash together",["clock","leash"]]]},
+ {n:"Deep Mangrove",beat:'Loss: impatience costs a night, Dot leaves, and a small new light arrives (Flicker).',with:'Dot to 6-5, then Flicker (silent) from 6-6',act:"Act II",move:"Swim and dive",tempo:"Patience: wait for the tide",
+  rules:["The tide raises and lowers the whole stage","Water is a place, not a pit","Food chain: lure hunters to what hunts them"],
+  hidden:"The Sunken Hollow: dive to find it",boss:"Marsh Reaver",
+  flag:"<b>Reordered (story keeper approved 11-11):</b> swimming arrives at 6-7 of 9. Swimming is now taught in 6-2, in a still, empty pool first, before Dot leaves at 6-6. The deep dive stays in 6-7.",
+  s:[["6-1","The Root Maze","vine_runner","→","High roots to swing, low roots to hang under",["swing","hang"]],
+     ["6-2","Flat Water","stealth","→","Learn to swim in a still pool with Dot; then ripples show what swims below, so cross when it's far",["water","still"],"swim",0,1],
+     ["6-3","Root to Root","vine_runner","→","The tide changes which roots you can reach",["swing","clock","water"],"the tide"],
+     ["6-4","Low Tide","sprint","→","The tide comes in behind you",["water","clock"]],
+     ["6-5","The Spear","purge","→","Lure the hunters to the caiman's water; never eaten",["lure","water"],"food chain"],
+     ["6-6","Lights in the Roots","sprint","→","Flicker's light in the dark roots; Dot leaves",["dark"]],
+     ["6-7","Through the Roots","vine_runner","↓","Dive down the root well; rising bubbles lift you",["dir","water","ride"],"dive"],
+     ["6-8","Stilt Climb","ascent","↑","The tide rises under you",["dir","water"]],
+     ["6-9","Blackwater","gauntlet","→","Swim, swing, tide and hunters together",["water","swing","lure"]]]},
+ {n:"Ancient Ruins",beat:'Alone: silence, ten chairs and an eleventh; the photograph shows who the General is.',with:'Flicker (silent): Pokey is alone; help steps grow without words',act:"Act II",move:"Break and push: the punch breaks cracked stone",tempo:"Hurry",
+  rules:["Floors fall away","The temple is a machine: switches, timed doors, a find that changes the room","Alone: no Dot"],
+  hidden:"Under the Ruins (plus Thornbark, built)",boss:"Stone Idol Golem",
+  flag:"<b>Reordered (story keeper approved 11-11):</b> breaking stone arrives at 7-5. Swap 7-2 and 7-5 so it's taught second.",
+  s:[["7-1","The Open Door","sprint","→","Cracked tiles fall if you stand still",["crumble"],"falling floors"],
+     ["7-2","Stone Sentries","purge","→","Sentries can't be punched: break the cracked pillar onto them",["break"],"punch breaks stone",0,1],
+     ["7-3","Ten Chairs","relic_hunt","→","Each relic turns a chair and opens the courtyard",["machine"],"the temple machine"],
+     ["7-4","The Way Up","ascent","↑","The floor drops into the slide (the built set piece)",["dir"]],
+     ["7-5","Brown Vines","ascent","↑","Brown vines snap a moment after you grab them",["dir","crumble"],"",0,1],
+     ["7-6","Falling Floors","sprint","←","The collapse chase from 1-8 returns, running left",["dir","chase","crumble"]],
+     ["7-7","The Photograph","relic_hunt","→","Timed stone doors and seed-key gates",["clock","machine"],"timed doors"],
+     ["7-8","The Upper Temple","ascent","↑","Push blocks into steps; break the ceiling from below",["dir","break"]],
+     ["7-9","The Golem's Hall","gauntlet","→","Falling floors, doors and sentries together",["crumble","clock","break"]]]},
+ {n:"Twilight Treetops",beat:'Reunion: Dot comes back; light in the dark; friends together.',with:'Dot is back',act:"Act III · The Iron Road",move:"Swing and fling",tempo:"Patience",
+  rules:["Night: you carry your light, the jar","Things are there only when lit","Swing chains with no ground"],
+  hidden:"The Moth Lights: lead a swarm that lights the way",boss:"Night-Wing Monarch",
+  s:[["8-1","As the Light Goes","sprint","→","Dusk to dark across the stage",["dark"]],
+     ["8-2","Night Blooms","harvest","→","Blooms open only in light; moonlit branches fade on a beat",["dark","clock"],"lit-only things"],
+     ["8-3","Long Swings","vine_runner","→","Let go at the top of the swing to fly far",["swing","fling"],"swing and fling"],
+     ["8-4","Lantern Run","sprint","→","The built special stage",["dark"]],
+     ["8-5","Next Branch","vine_runner","→","Swing chains with no ground: fling, catch, fling",["swing","fling"]],
+     ["8-6","Glide by Moonlight","sprint","↓","Glide down through the dark; moonbeams light the landings",["dir","glide","dark"]],
+     ["8-7","The Tallest Tree","ascent","↑","Climb with the jar; glowing flowers refill it",["dir","dark"]],
+     ["8-8","Night Hunters","purge","→","Lure the hunters into the owl's light; mimic bushes blink first",["lure","dark","still"]],
+     ["8-9","Monarch's Wood","gauntlet","→","Dark, fling and lit-only branches",["dark","fling"]]]},
+ {n:"Volcanic Jungle",beat:"Resolve: Dot's slip, a lonely Drake, Pell wants to be found; the night before the mountain.",with:'Dot',act:"Act III",move:"Hot-air ride: open the leaf over a vent",tempo:"Hurry",
+  rules:["Heat: hot rock warms you; shade cools you","Lava","The Drake's gaze sweeps and remembers you"],
+  hidden:"Up the Vent: a long ride up a vent shaft",boss:"Magma Drake",
+  flag:"<b>Reordered (story keeper approved 11-11):</b> the vent ride arrives at 9-5. Swap 9-2 and 9-5: ride the vents early, and the rising lava later becomes an escape on them.",
+  s:[["9-1","Pepper Air","sprint","→","Heat: stand on hot rock and you warm; shade cools",["heat"],"heat"],
+     ["9-2","Vent Riding","sprint","↑","Open the leaf over vents and rise",["dir","ride","glide"],"hot-air ride",0,1],
+     ["9-3","Ember Canopy","vine_runner","→","Vines smoulder and drop after you fling off",["fling","crumble"]],
+     ["9-4","The Drake's Doorstep","stealth","→","The gaze sweeps; hold still, and it remembers you",["still"]],
+     ["9-5","Rising Heat","ascent","↑","Lava rises under you; ride the vents to stay ahead",["dir","water","ride"],"rising lava",0,1],
+     ["9-6","Ash Fields","purge","→","Break boulders, lure hunters onto the geysers",["break","lure"]],
+     ["9-7","Lava Steps","ascent","↑","Crust floors harden and melt on a beat",["dir","clock"],"crust floors"],
+     ["9-8","Pell's Thread","relic_hunt","→","Follow the thread up and down through the vents",["ride"]],
+     ["9-9","The Drake's Hoard","gauntlet","→","Heat, lava and vents together; the rising-lava arena",["heat","ride"]]]},
+ {n:"Stormy Highlands",beat:"Holding on, then letting go: Dot's confession, the storm, and Pokey holds out his hand to the General.",with:'Flicker (silent) 10-1 to 10-5, Dot again from 10-6',act:"Act III",move:"Hold on: freeze on the flash",tempo:"Patience",
+  rules:["Lightning on a beat","Thunder gusts tear you off unless you hold","Every move from Worlds 1 to 9, three and four at once"],
+  hidden:"Pokey's Own Road: pick a card at each totem",boss:"General Iron-Claw: the fight ends with Pokey letting go of one hand and holding it out",
+  s:[["10-1","The Door Made for Him","sprint","→","A quiet stage: a breath before the end",[]],
+     ["10-2","The Thousand Steps","ascent","↑","Lightning rods charge, then strike their column",["dir","clock"]],
+     ["10-3","Thunder","stealth","→","Hold on when the flash comes, or the gust takes you",["hold","wind","clock"],"hold on"],
+     ["10-4","Holding On","ascent","↑","Hold on during the climb",["dir","hold"]],
+     ["10-5","Halfway Up","ascent","↖","A switchback climb, running left as it rises",["dir"]],
+     ["10-6","The Iron Netting","vine_runner","←","Swing and hang under the netting, running left",["dir","hang","swing"]],
+     ["10-7","The Walls","purge","→","Every world's trick: break, lure, push, the moat",["break","lure","water"]],
+     ["10-8","The Last Steps","ascent","↑","Vents, hold and fling: three and four at once",["dir","ride","hold","fling"]],
+     ["10-9","The Fortress Gate","gauntlet","→","Everything",["clock","hold","fling","lure"]]]}
+];
+// tally
+const count={};
+let core=0;
+W.forEach(w=>w.s.forEach(s=>{core++;const t=new Set(s[5]);if(DIRT[s[3]])t.add("dir");t.forEach(k=>count[k]=(count[k]||0)+1)}));
+document.getElementById("stats").innerHTML=[["113","stages in all"],[core,"core stages"],["10","guardians"],["10","hidden stages"],["3","extras built"]].map(([b,s])=>`<div class="stat"><b>${b}</b><span>${s}</span></div>`).join("");
+// worlds
+const wEl=document.getElementById("worlds");
+W.forEach((w,i)=>{
+  const tiles=w.s.map(s=>{
+    const tags=new Set(s[5]);if(DIRT[s[3]])tags.add("dir");
+    return `<div class="st${s[8]?" moved":""}">${s[7]?'<span class="done">LIVE</span>':""}<div class="id">${s[0]} <span style="font-weight:400">${s[3]}</span></div><div class="nm">${s[1]}</div><div class="meta">${s[2].replace("_"," ")}</div><div class="tw">${s[4]}</div>${s[6]?`<span class="teach">Teaches: ${s[6]}</span>`:""}<div class="tags">${[...tags].map(t=>`<span class="tag">${PIECES[t].n}</span>`).join("")}</div></div>`}).join("");
+  wEl.insertAdjacentHTML("beforeend",`<article class="world" id="w${i+1}"><div class="world-top"><div><div class="act">World ${i+1} · ${w.act}</div><h3>${w.n}</h3><span class="move">New move: ${w.move}</span></div><div class="tempo">${w.tempo}</div></div><ul class="rules">${w.rules.map(r=>`<li>${r}</li>`).join("")}</ul>${w.beat?`<p class="beat">${w.beat}</p>`:""}${w.with?`<p class="with"><b>With Pokey:</b> ${w.with}</p>`:""}${w.flag?`<div class="flag">${w.flag}</div>`:""}<div class="stages">${tiles}</div><div class="extras"><div class="extra"><b>Hidden stage</b><br>${w.hidden}</div><div class="extra"><b>Guardian</b><br>${w.boss}</div></div></article>`);
+});
+// pieces
+document.getElementById("legend").innerHTML=Object.values(STATUS).map(s=>`<span><i style="background:var(${s.c})"></i>${s.label}</span>`).join("");
+const max=Math.max(...Object.values(count));
+document.getElementById("pieces").innerHTML=Object.entries(count).sort((a,b)=>b[1]-a[1]).map(([k,n])=>{const p=PIECES[k],st=STATUS[p.s];return `<div class="piece"><div class="nm">${p.n}<small>${p.d} · ${st.label}</small></div><div class="bar"><i style="width:${(n/max*100).toFixed(1)}%;background:var(${st.c})"></i></div><div class="n">${n}</div></div>`}).join("");
+// ladder
+const firstAt=[1,1,2,1,3,2,2,3,2,3];
+document.getElementById("ladder").innerHTML=W.map((w,i)=>{const late={4:5,5:7,6:5,8:5}[i];return `<div class="rung${late?" late":""}"><div class="w">World ${i+1}</div><div class="mv">${w.move.split(":")[0]}</div><div class="at">${late?`Taught at stage ${firstAt[i]} (moved up from stage ${late})`:`Taught at stage ${firstAt[i]}`}</div></div>`}).join("");
+// order
+const ORDER=[
+ ["Release 0.9.6: the new 1-1","Live 11-11 7:19 PM ET."],
+ ["The generator lays clean stages","Built 11-11: clean fresh seeds 9% to 57%. Next: the last checks inside the search (33% listable so far)."],
+ ["Travel any direction, hurt floors, any stage by data","Built or in build 11-11. Covers 31 non-rightward stages."],
+ ["Make room, then merge (11-12)","The seed-list split first, then tonight's work, with one outside review."],
+ ["The piece library and 1-2, 1-3 laid fast (to 11-13)","A new stage = existing sections + a few twist pieces. Measure the hours."],
+ ["WebGL, a piece at a time (from 11-12)","Measure frames first, then the ground, Pokey and creatures, props. Low-end phones drop to about 20 fps."],
+ ["World 1's own pieces","Stillness and watchers, noise, drop traps, the clock, two roads, the card-road test in 1-5."],
+ ["Lay World 1 (about 11-17)","Then a world every 2 to 3 days, each world's new pieces built while the one before is laid."],
+ ["1-1's single polish pass","Its named rough spots, done once on the finished engine."]
+];
+document.getElementById("order").innerHTML=ORDER.map(([b,s])=>`<li><b>${b}</b><span>${s}</span></li>`).join("");
+
+const IDEAS=[
+ ["Your 30 level ideas",[
+  [1,"Canopy Highway: lanes of traffic","Frogger (1981)","IN","World 2's river lanes; a taste in 1-8"],
+  [2,"Collected critters trail behind you","Pikmin (2001); Yoshi's Island's egg trail","IN","World 2 followers, bring them home"],
+  [3,"Territory loops","Qix (1981)","PARK","A bonus stage after launch: a new control scheme"],
+  [4,"Time moves only when Pokey moves","Superhot (2016)","PARK","One World 7 puzzle room at most"],
+  [5,"Escort builder with Meeca","ICO (2001); Lemmings' builders (1991)","PARK","Two-character AI; Meeca's stage stays as built"],
+  [6,"Pinball bonus","Sonic 2's Casino Night Zone (1992)","OUT","New physics for one stage"],
+  [7,"Algae camouflage","Real three-toed sloths; Metal Gear Solid 3's camouflage (2004)","IN","Pokey's signature move: stillness, from 1-7 to World 10"],
+  [8,"Sun and shade body heat","Genre staple (survival heat meters)","IN","World 9's heat: shade cools, sun bakes"],
+  [9,"Moth swarm","Pikmin (a swarm you lead)","IN","World 8's hidden stage, The Moth Lights"],
+  [10,"Claw-lock pendulum","Pitfall!'s swinging vines (1982)","IN","1-6 pendulum, then World 8's fling"],
+  [11,"Sink with a stone in a lagoon","Zelda: Ocarina of Time's Iron Boots (1998)","IN","World 6 diving, a push block as ballast"],
+  [12,"The descent to the forest floor","Downwell (2015)","IN","World 3, the first stage going down"],
+  [13,"Mirage platforms","Genre staple (fake floors)","OUT","What looks standable must be standable"],
+  [14,"Shadow platforms","Contrast (2013)","IN","World 8: things there only when lit"],
+  [15,"Sound solidifies branches","Sound Shapes (2012)","PARK","A second noise system"],
+  [16,"Shrink and grow","Super Mario's mini and mega mushrooms","OUT","Changes every jump number"],
+  [17,"Reflection world","Zelda: A Link to the Past's Light and Dark Worlds (1991)","IN","As a look only: World 6's water reflections"],
+  [18,"Breathing strangler fig","Genre staple (timed platforms)","IN","Platforms on a rhythm, World 5"],
+  [19,"Amber static","Original","PARK","Needs a one-page design first"],
+  [20,"Slingshot vines","Angry Birds' slingshot (2009)","IN","World 8's fling"],
+  [21,"Food chain: lure hunters to what hunts them","Real ecology","IN","Worlds 3, 6, 8, 9; 1-9's boa chased off"],
+  [22,"Time loop with your past self","Braid (2008); P.B. Winterbottom (2010)","OUT","A replay system for one stage"],
+  [23,"Wildlife photographer","Pokémon Snap (1999)","PARK","A collectible set later"],
+  [24,"Heartbeat calm","Original","IN","Folded into stillness, no gauge"],
+  [25,"Ride a tapir or caiman","Rodeo Stampede (2016); Yoshi","IN","Sleeping caimans crossed quietly (World 2); a tapir in World 6"],
+  [26,"Tethered escape with Meeca","Unravel Two (2018)","OUT","Two-body physics"],
+  [27,"Mimic forest","Dark Souls' mimic chests (2011)","IN","World 8 only, every mimic blinks first"],
+  [28,"Pick a card for the next stretch","Hades' door choices (2020); Loop Hero's cards (2021)","IN","A test in 1-5 with the squirrels' painted signs; World 10's hidden stage"],
+  [29,"Pollinator bloom","Flower (2009); Okami's blooming trail (2006)","IN","World 5's hidden stage, The Wilted Garden"],
+  [30,"Shrinking safe zone","Battle royale games (PUBG, Fortnite)","IN","The guardian arena, first in World 9's rising lava"]]],
+ ["Your 30 arcade-era ideas",[
+  [1,"Two vines climb twice as fast","Donkey Kong Jr. (1982)","IN","1-4 Up the Kapok"],
+  [2,"Over/under routing","Pitfall!'s tunnels (1982)","IN","1-5 Where She Walked"],
+  [3,"Mud pits crust over on a clock","Pitfall!'s tar pits","IN","World 9's crust floors"],
+  [4,"Snap-jaw stepping stones","Pitfall!'s crocodile heads","IN","World 2's River Snappers"],
+  [5,"Rolling nuts at two heights","Donkey Kong's barrels (1981)","IN","1-8 The Long Branch"],
+  [6,"Rising bubbles lift Pokey","Bubble Bobble (1986)","IN","World 6"],
+  [7,"Fruit dropped down a climb","Donkey Kong's barrels down the ladders","IN","1-4 (ripe fruit falling); thrown fruit in World 4"],
+  [8,"Shake the vine to drop climbers","Genre staple","IN","1-3 drop traps"],
+  [9,"Ride a seed-fluff up a shaft","Balloon Fight (1984)","IN","World 4's updraft shafts"],
+  [10,"Safe-fall recovery","Celeste-style quick respawn (2018)","DONE","Live in 1-1 (0.9.6)"],
+  [11,"Bark that opens and closes on a climb","Genre staple (timed doors)","IN","World 4's tall stages"],
+  [12,"Cut a tendril, drop it on a predator","Donkey Kong Jr.'s dropped fruit","IN","1-3 Branch Snakes"],
+  [13,"Bounce into an overhead current","Genre staple","IN","World 4's wind"],
+  [14,"Dig a hole, the predator becomes a bridge","Lode Runner (1983)","PARK","A dig verb; maybe a World 7 trapdoor later"],
+  [15,"Step painting","Q*bert (1982); Amidar (1981)","IN","World 5's Wilted Garden"],
+  [16,"A find changes the layout elsewhere","Zelda's dungeons","IN","World 7's temple machine"],
+  [17,"Bump from below to flip a beetle","Mario Bros. (1983)","PARK","A new verb; the punch covers fighting"],
+  [18,"Hollow-log drum stuns predators","Mario Bros.' POW block","IN","World 3: the quiet world's one loud tool"],
+  [19,"Dive under logs for 4 seconds","Genre staple (underwater stages)","IN","World 6"],
+  [20,"Sap bubbles trap a predator","Bubble Bobble","IN","World 6"],
+  [21,"A light tunnel goes dark","Genre staple","IN","World 3, glowworm light"],
+  [22,"Grapple to the underside, no jump","Bionic Commando (1988)","IN","World 3's hanging"],
+  [23,"Timed doors and coloured seed-keys","Montezuma's Revenge (1984)","IN","World 7's ruins"],
+  [24,"A drowsiness meter","Adventure Island's energy meter (1986)","IN","World 5's don't stop; a cold dew drip wakes him (no eating in the sanctuary)"],
+  [25,"Orchids that change your powers","Super Mario's power-up flowers","OUT","Powers move every jump check; one bounce-bloom instead"],
+  [26,"Vine elevator","Elevator Action (1983)","IN","World 4's lifts; no berry throwing"],
+  [27,"Up-only climb, break ceilings from below","Ice Climber (1985)","IN","World 4's Up the Falls; World 7's ceilings"],
+  [28,"Boulder on a leaf bridge","Genre staple","IN","World 7"],
+  [29,"Push a rock the wrong way to find a secret","Super Mario Bros.' warp zones (1985)","IN","How hidden stages are found, every world"],
+  [30,"A pursuer copies your path","Super Mario Galaxy's Cosmic Clones (2007)","IN","Cut to the cheap way: 1-9's boa lured by traps"]]],
+ ["Your 24 platformer archetypes",[
+  [1,"Predator shadow, red light green light","The playground game; Super Mario's Boos","IN","1-7 with stillness"],
+  [2,"Monsoon gusts","Celeste's Golden Ridge (2018)","IN","World 4"],
+  [3,"Flash-flood escape climb","Genre staple (rising-water escapes)","IN","2-8 and World 6"],
+  [4,"Bioluminescent night","Ori and the Blind Forest's look (2015)","IN","Worlds 3 and 8, the night look"],
+  [5,"Slippery moss and mudslides","Genre staple (ice levels)","PARK","Low friction changes every jump"],
+  [6,"Lily-pad raft that scrolls by itself","Super Mario's auto-scroll stages","IN","World 2's hidden stage, The Rapids"],
+  [7,"Sinking pads","Frogger's diving turtles","IN","World 2"],
+  [8,"Push a giant seed","Sokoban (1982)","IN","World 7"],
+  [9,"Bounce chain over a deadly floor","Genre staple","IN","1-2 The Petal Trail"],
+  [10,"Rotting boughs","Super Mario World's donut lifts (1990)","IN","1-4"],
+  [11,"Hand over hand under a branch","Genre staple (monkey bars)","IN","World 3"],
+  [12,"Pendulum vine swing","Pitfall!'s vines","IN","1-6 First Lianas"],
+  [13,"Leaf parachute and updrafts","Super Mario World's cape","IN","World 4's glide"],
+  [14,"Seesaw branches","Sonic's Star Light Zone (1991)","PARK","A new physics object"],
+  [15,"A hummingbird rides along","Banjo-Kazooie (1998)","PARK","Dot never points the way (story keeper)"],
+  [16,"Inside a hollow kapok","Genre staple (tower interiors)","IN","1-4 climbs inside the kapok"],
+  [17,"Wrap-around stage","Mario Bros.' screen wrap","OUT","A camera and world change"],
+  [18,"Foreground/background swap","Mutant Mudds (2012)","OUT","Two collision layers"],
+  [19,"Hit a switch, race back","Wario Land 4's escapes (2001)","IN","2-7 The Mailman's Route"],
+  [20,"Sunset silhouette","Donkey Kong Country Returns' silhouette stages (2010)","IN","The sunset look"],
+  [21,"Baby-sloth caravan that scatters on a hit","Yoshi's Island's Baby Mario (1995)","IN","World 2 followers"],
+  [22,"Sound stealth","Thief (1998)","IN","1-7 and World 3"],
+  [23,"Wash away thorns","Genre staple","IN","World 6: the tide clears a path"],
+  [24,"Ziplines","Genre staple","IN","World 1's hidden stage, as a sloped rope"]]]
+];
+const ideaEl=document.getElementById("ideas");
+ideaEl.innerHTML=IDEAS.map(([g,rows])=>`<h3 class="ig">${g}</h3><div class="ideas">${rows.map(r=>`<div class="idea v-${r[3]}"><div class="ih"><span class="in">${r[0]}</span><span class="vd">${r[3]==="IN"?"In":r[3]==="PARK"?"Parked":r[3]==="DONE"?"Done":"Out"}</span></div><div class="it">${r[1]}</div><div class="insp">Echoes: ${r[2]}</div><div class="wh">${r[4]}</div></div>`).join("")}</div>`).join("");
+
+
+const CREAT=[
+ ["Golden Tree Snake","W1, W2","Patrol, shy","The real \"flying snake\": it flattens its body and glides between trees.","It gives ground, backing along its branch, and strikes only when it runs out of branch or you crowd it. Beaten, it flattens and glides off to a lower tree. Nobody is hurt.","Rears and sways, with a hiss.",["Punch: knocked off its branch end","Drop trap: shake its vine or drop the hive, and it glides away","Stomp: he vaults it","Kick: chased off"]],
+ ["Boa Constrictor","W1 star, W7, W8","Ambush","Senses warmth and movement; a sloth's body runs cool.","It strikes only at movement. To a boa, a still sloth is a cool, mossy branch: red light, green light at arm's length.","Head draws back, tongue flicks, leaves rattle.",["Drop trap (1-9): chased off, grumpy","Lead the eagle's shadow over it (it fears the eagle)","Go still: it gives up","Punch its head while it's stretched out after a miss"]],
+ ["Harpy Eagle","W1, W4","Sweep","The real hunter of sloths: it watches the canopy for movement.","The shadow. It is never on the ground. It crosses its stretch and takes only what it sees.","A screech, then the shadow waits at the edge before it crosses.",["Go still in a bush: two empty passes and it gives up","Make a noise elsewhere: the shadow goes to look","Behind a waterfall counts as cover (W4)"]],
+ ["Snapping Turtle","W2 star","Seek","Sits still with its mouth open, wiggling its tongue as bait. All shell.","Nosy and grumpy. It goes to look at any noise, and from the front it is just a shell.","Neck pulls back, with a click.",["Kick: the shell slides away and bowls over what it meets","Stomp: it pulls in","Make a noise: it turns its back to look","Punch it from behind"]],
+ ["Spectacled Caiman","W2 (asleep), W6 star","Sweep, in water","Floats like a log, feels ripples through its jaw, eyes shine at night.","The ripple. Asleep it IS a log you cross on quiet feet. Awake, it swims its stretch and snaps at whatever stirs the water.","Ripples gather and two eyes rise.",["Go still: the ripple passes","Punch while its jaws are shut","Trap it in a sap bubble","W2: quiet feet and it never wakes"]],
+ ["Ocelot","W3 star, W7, W10","Stalk","A night stalker that freezes when its prey looks round.","Like the ghosts in Mario: it creeps while your back is turned, crawls when you face it, loses you when you're still, and comes to noise.","Crouch and a twitching tail, with a soft chirr.",["Go still: it loses you","Lure it under the loose stalactite (3-3)","The drum stuns it","Face it, then punch"]],
+ ["Jaguar","W3, W8, W9","Drop","Ambushes from above, dropping from a bough.","It waits on a shelf and comes down where you WERE when it growled, then has to climb all the way back, grumbling.","Eyes shine, pebbles fall, a growl.",["The stalactite trap","The drum","Punch while it's winded","W8 light; W9 its drop lands on a geyser"]],
+ ["Tayra","W6 star, W9","Charge","A tireless runner that guards its fruit stash.","It runs its line to the very end, every time, and can't turn until it skids. You choose where the line ends.","It stands up tall and chitters.",["Lure its charge into the caiman's water (6-5)","Stomp over the dash","Kick: bowled back","W9: its line ends on a geyser"]],
+ ["Night Harpy","W8 star, W9","Seek","Hunts by ear in the dark.","It hunts by sound and hates light.","",["Light: the owl's light or the jar","Lure it under the owl (it fears the owl)","Go still: no sound, it loses you","The drum, then punch while it's dizzy"]],
+ ["Thorn Vine","W3","Ambush, on the clock","(ours) A sensitive plant, like touch-me-nots that fold when brushed.","A sleeper with one eye. It stirs, looks, sleeps, and lashes only at what moves while it looks.","An eye opens during the stir.",["Go still while it looks","The drum","Drop a stone on it: it curls away"]],
+ ["Stone Sentry","W7 star","Guard","(ours) A temple statue.","A doorway that hits back. It can't be hit; it strikes only what comes within reach, and turns its head to noise.","Eyes glow, stone grinds.",["Break the cracked pillar onto it","Push a block into it","Make a noise: it turns its head","Can't be punched or stomped"]],
+ ["Fruit Bats","W8","Sweep","Roost by the hundred; one startled bat sets off the lot.","One creature made of many. A ripple of wings runs along the roost on a beat; cross while they settle. They shoo, they never bite.","A flutter runs through the roost.",["Go still as the ripple passes","Light settles them"]],
+ ["Capuchins","W4 star","Thief, lookout, guard","Clever, loud, steal food, post lookouts.","The thief sneaks a petal and teases; the lookout stares, then calls the eagle; the guard paces a ledge. They never hurt Pokey.","",["Thief: punch, it drops the petal and runs","Lookout: lure it with fruit, or take cover","Guard: the wind blows it off its ledge (4-9)"]],
+ ["Mimic log or night bloom","W8, new","Guard","(ours)","A log or night bloom that blinks. Never a bush: bushes stay safe in every world. There is never a mimic without the blink.","Blinks twice and rustles.",["Light shows it","Punch after it snaps"]],
+ ["The Drake's Gaze","W9 star","Sweep, remembers","(the guardian's eye, not a body)","\"Visitor.\" then \"Intruder.\" The first time, stillness hides you; once it has seen you, only shade does.","The glow turns before the beam.",["Go still (the first time only)","Shade","Cover"]],
+];
+const NEWC=[
+ ["Dangler","W5","A spider on a line, the way real orb spiders drop. It bobs on the clock, comes down when a thread hums, and climbs back: a yo-yo gate."],
+ ["Orchid Mantis","W5 star","Has a disguise pose: the flower that is the trap. The real orchid mantis looks exactly like a bloom."],
+ ["Crab","W6","Mangrove crabs wave one big claw and bolt down their holes when the tide comes. It guards a root gap; the tide beats it, a kick flips it."],
+ ["Piranha","W6","Drawn to splashing. A hard landing in water calls the shoal; calm strokes pass. They nip and scatter. Throw a splash elsewhere, or lead them to the caiman."],
+ ["Beetle","W7","Dung beetles roll their ball in a straight line by starlight. It rolls a giant seed along its beat: the seed blocks you, pushes you, and is a ride if you hop on."],
+];
+const CASTS=[["1 Emerald Canopy","snake, eagle, boa","the boa"],["2 Sunlit Riverbank","turtle, River King's guard, sleeping caiman, snake","the turtle"],["3 Mossy Grotto","ocelot, jaguar, thorn vine, grotto eyes","the ocelot"],["4 Mist Cascades","eagle, capuchin thief, lookout, guard, eaglets","the capuchins"],["5 Orchid Sanctuary","spider, seamstress, butler, dangler, orchid mantis","the mantis"],["6 Deep Mangrove","caiman, tayra, frog, crab, piranha","the tayra and the caiman"],["7 Ancient Ruins","stone sentry, boa, ocelot, beetle","the sentry"],["8 Twilight Treetops","night harpy, jaguar, bats, mimic log or bloom, a dozing boa","the night harpy"],["9 Volcanic Jungle","the Drake's gaze, tayra, jaguar, night harpy","the gaze"],["10 Stormy Highlands","soldier, ocelot, and one of each earlier habit","every lesson at once"]];
+document.getElementById("creatures").innerHTML=
+ `<div class="flag"><b>Fable's big recommendation, for you to decide:</b> today Worlds 6, 7 and 8 share one list of six animals, which is part of why they feel alike. Give each world its own cast of 3 to 5 animals, one habit each, and a star. Five of the new ones use art we already own.</div>`+
+ `<h3 class="ig">Each world's cast (proposed)</h3><div class="ideas">${CASTS.map(c=>`<div class="idea v-IN"><div class="ih"><span>World ${c[0]}</span></div><div class="it">${c[1]}</div><div class="wh">Star: ${c[2]}</div></div>`).join("")}</div>`+
+ `<h3 class="ig">The creatures</h3><div class="ideas">${CREAT.map(c=>`<div class="idea v-IN"><div class="ih"><span>${c[1]}</span><span class="vd">${c[2]}</span></div><div class="it">${c[0]}</div><div class="insp">The real animal: ${c[3]}</div><div class="wh"><b>In our game:</b> ${c[4]}</div>${c[5]?`<div class="wh"><b>Warning:</b> ${c[5]}</div>`:""}<div class="wh"><b>Ways to beat it:</b><ul class="beat-l">${c[6].map(x=>`<li>${x}</li>`).join("")}</ul></div></div>`).join("")}</div>`+
+ `<h3 class="ig">New creatures on art we already own</h3><div class="ideas">${NEWC.map(c=>`<div class="idea v-PARK"><div class="ih"><span>${c[1]}</span><span class="vd">Art owned</span></div><div class="it">${c[0]}</div><div class="wh">${c[2]}</div></div>`).join("")}</div>`+
+ `<p class="lede">Four more (the owl, the howler monkey, a lava lizard, sleeping bats) need a few animation clips first. Every new creature still gets your picture approval before it ships.</p>`;
+
+// tabs
+document.querySelectorAll("nav.tabs button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("nav.tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  ["worlds","pieces","ladder","creatures","ideas","order"].forEach(v=>document.getElementById("v-"+v).hidden=v!==b.dataset.view);
+}));
+</script>
