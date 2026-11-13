@@ -1,0 +1,49 @@
+# F15: how 1-5.md's meter numbers were made (10:17 PM ET). Run from a checkout of origin/t-diff-algo@1e5fe476 as tools/difficulty/design15.ts: npx tsx tools/difficulty/design15.ts
+# Output:
+# NORMAL her road: meter 5.3  points 36.3  mean 10.6/min  peak 23.7/min
+#   2 creaky 1.8 | 3 split 1.5 | 5 braid 6.9 | 7 card 8.9 | 9 twist 3.8 | 11 finale 13.4
+# NORMAL bough run: meter 5.3  points 36.3  mean 10.9/min  peak 23.7/min
+#   2 creaky 1.8 | 3 split 1.5 | 5 braid 6.9 | 7 card 8.9 | 9 twist 3.8 | 11 finale 13.4
+# EASY: meter 2.6  points 16.0  mean 4.2/min  peak 12.5/min
+#   2 creaky 1.4 | 3 split 0.5 | 5 braid 3.7 | 7 card 2.6 | 9 twist 1.6 | 11 finale 6.3
+
+// scratch: the designed 1-5's beats through the meter's own arithmetic (combine), novelty carried from 1-1..1-3 as built
+import { combine, rawOf, scoreStage, fittsBits, landBits, creatureBits, OTHER_BITS, STAKES, type Challenge } from './score.ts';
+const SCALE = 0.30654;
+type Row = [beat: string, t: number, kind: string, bits: number, stakes: number, threat?: boolean];
+const jump = (share: number, land = 200, crumble = false) => fittsBits(share) + landBits(land) + (crumble ? 1 : 0);
+function run(name: string, setting: 'normal' | 'easy', rows: Row[], minutes: number) {
+  const seen = new Map<string, number>();
+  for (const id of ['1-1', '1-2', '1-3']) scoreStage(id, setting, 1, seen);
+  const out: Challenge[] = rows.map(([note, t, kind, bits, stakes, threat]) => ({ t, x: t * 200, kind, bits, cost: 'retry' as any, stakes, threat: !!threat, overlap: 1, novelty: 1, points: 0, note }));
+  const r = combine(out, minutes, seen);
+  const by = new Map<string, number>();
+  for (const c of out) by.set(c.note, (by.get(c.note) ?? 0) + c.points);
+  console.log(`${name}: meter ${(rawOf(r.mean, r.peak) * SCALE).toFixed(1)}  points ${r.points.toFixed(1)}  mean ${r.mean.toFixed(1)}/min  peak ${r.peak.toFixed(1)}/min`);
+  console.log('  ' + [...by].map(([k, v]) => `${k} ${v.toFixed(1)}`).join(' | '));
+}
+const N = 0.82, T = 0.86, snake = creatureBits(0.5), H = STAKES.heart;
+// NORMAL, her road at every split (the goal's road), 206 s designed
+const her: Row[] = [
+  ['2 creaky', 30, 'single', jump(0.7, 160, true), 1],
+  ['3 split', 48, 'creature-choice', OTHER_BITS.choice, 1], ['3 split', 52, 'single', jump(N), 1],
+  ['5 braid', 70, 'single', jump(0.78, 140, true), 1], ['5 braid', 73, 'single', jump(0.78, 140, true), 1], ['5 braid', 78, 'creature', snake, H, true], ['5 braid', 84, 'single', jump(N), 1], ['5 braid', 88, 'climb', OTHER_BITS.climb, 1],
+  ['7 card', 100, 'single', jump(N, 120), H], ['7 card', 105, 'single', jump(N, 120), H], ['7 card', 110, 'creature', snake, H, true], ['7 card', 116, 'single', jump(T, 110), H], ['7 card', 122, 'single', jump(N, 120), H],
+  ['9 twist', 140, 'single', jump(0.78, 140, true), 1], ['9 twist', 144, 'puzzle', OTHER_BITS.puzzle, 1], ['9 twist', 150, 'single', jump(N), 1],
+  ['11 finale', 166, 'single', jump(N, 120, true), 1], ['11 finale', 171, 'creature', snake, H, true], ['11 finale', 176, 'single', jump(N, 120, true), 1], ['11 finale', 181, 'single', jump(N, 110, true), H], ['11 finale', 186, 'creature', snake, H, true], ['11 finale', 191, 'single', jump(T, 110), 1], ['11 finale', 196, 'single', jump(N, 120), 1],
+];
+run('NORMAL her road', 'normal', her, 206 / 60);
+// NORMAL, the bough run picked at the card road (creaky run, soft falls onto catch boughs)
+const bough = her.map((r) => r[0] !== '7 card' ? r : null).filter(Boolean) as Row[];
+bough.push(['7 card', 100, 'single', jump(0.78, 140, true), 1], ['7 card', 105, 'single', jump(N, 120, true), 1], ['7 card', 110, 'single', jump(N, 120, true), 1], ['7 card', 116, 'single', jump(N, 120), 1]);
+run('NORMAL bough run', 'normal', bough, 200 / 60);
+// EASY: gaps at 0.65, landings +48, snakes asleep or trapped (a choice), no heart water, the finale's switches 2
+const E = 0.65;
+const easy: Row[] = [
+  ['2 creaky', 30, 'single', jump(0.6, 208, true), 1], ['3 split', 48, 'creature-choice', OTHER_BITS.choice, 1], ['3 split', 52, 'single', jump(E), 1],
+  ['5 braid', 70, 'single', jump(E, 168, true), 1], ['5 braid', 73, 'single', jump(E, 168, true), 1], ['5 braid', 78, 'creature-choice', OTHER_BITS.choice, 1], ['5 braid', 84, 'single', jump(E), 1],
+  ['7 card', 100, 'single', jump(0.72, 158), 1], ['7 card', 105, 'single', jump(0.72, 158), 1], ['7 card', 110, 'creature-choice', OTHER_BITS.choice, 1], ['7 card', 116, 'single', jump(0.72, 158), 1],
+  ['9 twist', 140, 'single', jump(E, 168, true), 1], ['9 twist', 144, 'puzzle', OTHER_BITS.puzzle, 1],
+  ['11 finale', 166, 'single', jump(0.72, 158, true), 1], ['11 finale', 172, 'creature-choice', OTHER_BITS.choice, 1], ['11 finale', 178, 'single', jump(0.72, 136, true), 1], ['11 finale', 186, 'single', jump(0.72, 136, true), 1], ['11 finale', 193, 'single', jump(E, 158), 1],
+];
+run('EASY', 'easy', easy, 230 / 60);
