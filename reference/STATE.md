@@ -688,3 +688,10 @@ lines); Matt sees them in the release.
   for it; trap0 re-fly on defaults 40/40 every tier both settings (kid Normal 33 -> 40); seedlist 1-3 100 PASS; clipcheck PASS; 1-3 perf
   sideways 7.48 / upright 6.47 (thin, named). Open on t-int-2 (not F13's): one yield test red, buildcheck red (1480e843 fails, W1C
   pre-merge passes). INT-2 told: merge d0cf0b0c keeping FX's 1-1 list (257), find the yield red's owner, Step 3.
+- 2026-11-12 7:13 PM ET: lead's rehearsal of the test link on t-int-2@465023ef (built, served locally, NOT published): the real build opens;
+  path for Matt/his wife = Settings > About > tap "Shaffer" 10x (all unlocked) > World Map > "Who's exploring?" (Big explorer = Normal)
+  > Stage 1-3 > Play. Fresh save in 1-3: Dot says "Run through petals to pick them up." (petals on screen), "Flick up just before the
+  edge." (at a raised step: slight word/picture gap), then the one lesson card with hive, vine ring and sleeping snake ALL on screen
+  upright. The fresh-save worry (1-1's gap line out of place) does NOT show in 1-3's real flow. Install note for a fresh worktree:
+  npm install --no-audit --no-fund --legacy-peer-deps (as CI), not npm ci. Before the final build: delete tools/testlink/dist so
+  filesmap maps every file (the artifact holds an older build), then clean stale files on publish.
