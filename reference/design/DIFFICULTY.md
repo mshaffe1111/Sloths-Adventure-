@@ -17,7 +17,7 @@ is Sorenson 2011's and Aramini 2018's, and Wehbe 2017 measured it.
 | Creature asleep or trapped | 0.5: a choice, no clock | 1-3's 12 trapped snakes | 1-3's design: "Pokey does not have to fight" |
 | Timed hazard / crumble / swing | log2(1 + cycle / open window); a crumble +1 on the jump onto it; a liana release log2(1 + 1.6 / 0.4) = 2.32 | a gust open 1/3 of its cycle: 2 | Lee & Oulasvirta 2016; Rational Design grades each timing (McEntee 2012) |
 | THE FREE BIT | the first bit of every move is free: only bits past it are CHALLENGE | a 50 px step: 0 | Matt: "simple things a 9-year-old can do"; a move with half its reach to spare is not aimed |
-Then three multipliers per challenge (points = challenge bits x stakes x overlap x novelty):
+- **Three multipliers per challenge** (points = challenge bits x stakes x overlap x novelty):
 - **Stakes** (a miss as the engine charges it: engine.ts:905 `softOn`, gen2 `budget.pit`, `heartFalls`, the flags): another go or a soft
   set-back 1.0, a heart 1.25, a life 1.5 + (seconds back to the flag) / 240, at most 2.0 (chance of dying x penalty: McMillen; a miss costs time: Juul 2010).
 - **Overlap** (things at once): +50% for each other live threat within 1.5 s, at most x2.5. Our map plans it (GAME-MAP: Worlds 1-3 one thing,
@@ -33,7 +33,6 @@ Then three multipliers per challenge (points = challenge bits x stakes x overlap
   so **100 = 326**: about 3 bits a move at the chase density (1.1-1.4 actions a second, STAGE-RULES §2), most over a life-costing fall
   with the flag a minute back and a threat at once on half of them, at the §1b floors. Linear in bits is a log scale of precision (log
   survival, Isaksen 2015; logit, Constant 2017). Re-check the top once World 10 is built to its targets.
-
 ## 3. Calibration on World 1 (no stage tuned; meter: 4 layouts a stage; bots: 8 layouts, put-backs a run; no World 1 bot lost a life)
 | Stage | Matt, Normal | Meter Normal (median, range) | Meter Easy | Child bot N / E | Middle bot N / E | Expert N |
 |---|---|---|---|---|---|---|
@@ -67,12 +66,13 @@ Then three multipliers per challenge (points = challenge bits x stakes x overlap
 | 3 / 4 / 5 | 19..31 / 29..41 / 39..51 | 5.6 / 11.1 / 7.3 | 0.79 / 0.89 / 0.87 | 0 / 0 / 0 (4-1, 4-9: no route) | 18.7 / 24.9 / 37.5 |
 | 6 / 7 / 8 | 49..61 / 59..71 / 69..81 | 5.7 / 5.2 / 4.8 | 0.90 / 0.67 / 0.98 | 0 / 0 / 0 | 50 / 57 / 70 |
 | 9 / 10 | 79..91 / 89..100 | 7.4 / 17.0 (max 24.8) | 0.76 / 0.75 | 0 / 0 | 78 / 79 |
-- **What it says (first read: 2 layouts, 44 of 90 routes only partly traced, calibrated on World 1 alone):** on Normal the game does not
-  climb. World 2 to 9 read 5-11 at the median; nothing past World 2 is in its band; Easy is barely softer than Normal past 1-3 (some
-  stages read Easy at or over Normal: the meter does not yet see Easy's later first attacks, easyMode.ts:485). Even
-  if the meter missed half of a late stage's challenge, World 5 would read 15, not 45. This arc is a REBUILD target, not a tune: each
-  world's stages get its target in their brief (N1) and the levers of §5, in dependency order (the builder first, then the stages).
-
+- **What it says (first read: 2 layouts, 44 of 90 routes partly traced, calibrated on World 1 alone):** on Normal the game does not climb.
+  Worlds 2-9 read 5-11 at the median, nothing past World 2 is in its band, and Easy is barely softer than Normal past 1-3 (the meter does
+  not yet see Easy's later first attacks, easyMode.ts:485). Were the meter to miss half of a late stage, World 5 would read 15, not 45:
+  this arc is a REBUILD target, not a tune, in dependency order (N1 first: the builder takes the target, then the stages are laid to it).
+- **Each world's new thing climbs the same way** (MAP-REVISIONS, GAME-MAP): W2 rides and lanes, W3 hanging and the dark, W4 glide and gusts
+  (pairs begin), W5 don't-stop silk, W6 swim and tide, W7 falling floors and timed doors (triples), W8 swing chains and carried light, W9
+  heat and rising lava, W10 everything at once. Its first stages teach it low in the band (novelty x1.5 carries it); its last combine it.
 ## 5. The engine's levers (to move a stage; today = file:line, NEW = a later packet)
 | Lever | What it does on the meter | Today (Normal / Easy; file:line) |
 |---|---|---|
@@ -88,10 +88,10 @@ Then three multipliers per challenge (points = challenge bits x stakes x overlap
 | Timed hazards, crumbles, swings | window / cycle in bits; a crumble +1 | gusts x1.25 on World 4 Normal (w4Normal.ts:19); fragile 1.1 s (engine.ts:2583); W7 tiles (zones.ts:234); liana window 167 / 300 ms (gen2/types.ts:857) |
 | Time pressure, help | a chase times every move; help lowers it for the stuck | chase (chase.ts:21), tide (risingTide.ts:43); a time limit only sets stars (rules.ts:167); help ladder 1-1 only (engine.ts:910) |
 | The stage dial | none yet on 0-100 | gen2's D band and STAGE_HEAT (gen2/pipeline.ts:330-340): its own units, gen2 stages only |
-**NEW (none exists today; grepped):** N1 a meter target in every stage's brief, read by the builder in place of D and heat (pipeline.ts:338);
-N2 a per-stage creature tell and speed scale on Normal; N3 a "threats at once" setting per job (pairs from World 4, triples from 7: GAME-MAP)
-that lifts the 120 / 420 px spacing where the target asks; N4 flag spacing from the target; N5 Easy timing on hazards (zones, rocks, thorn
-vines read no setting); N6 flown reach for every world (Normal past stage 25 never flown); N7 Easy help after repeated failure off 1-1.
+- **NEW (none exists today; grepped):** N1 a meter target in every stage's brief, read by the builder in place of D and heat (pipeline.ts:338);
+  N2 a per-stage creature tell and speed scale on Normal; N3 a "threats at once" setting per job (pairs from World 4, triples from 7: GAME-MAP)
+  that lifts the 120 / 420 px spacing where the target asks; N4 flag spacing from the target; N5 Easy timing on hazards (zones, rocks, thorn
+  vines read no setting); N6 flown reach for every world (Normal past stage 25 never flown); N7 Easy help after repeated failure off 1-1.
 
 ## 6. How a designer uses it, and the gate (the later Opus packet's spec)
 - **Design doc:** its header names "Normal target N (band), Easy about N/2"; its beat table carries each beat's points from `--detail`;
