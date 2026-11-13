@@ -20,12 +20,9 @@ test("a snake asks for the golden snake's clips, a royal turtle the guard's, the
   for (const t of ['snake', 'turtle', 'boa', 'eagle', 'ocelot', 'jaguar']) assert.ok(sheetFile(animOf(t)), `${t}: ${animOf(t)}-anim.webp`);
 });
 
-test('every creature of every control-test mix and hand-built World 1 stage is asked for as it starts, the eagle and the ring drops too', () => {
-  const ct = levels.find((l) => l.id === '1-2')!;
-  const stages = [
-    ...Array.from({ length: 40 }, (_, i) => buildProtoStage(ct, i + 1, 'ctest')),
-    ...levels.filter((l) => l.worldIndex === 1 && HAND_STAGES[l.id]).map((l) => buildProtoStage(l, 1, HAND_STAGES[l.id])),
-  ];
+test('every creature of every hand-built World 1 stage is asked for as it starts, the eagle and the ring drops too', () => {
+  // (rolls 1-6 of each: the old control course's 40 mixes were the eagles and rings here until it was deleted, R-165.151)
+  const stages = levels.filter((l) => l.worldIndex === 1 && HAND_STAGES[l.id]).flatMap((l) => [1, 2, 3, 4, 5, 6].map((v) => buildProtoStage(l, v, HAND_STAGES[l.id])));
   let eagles = 0;
   let rings = 0;
   for (const st of stages) {
@@ -46,7 +43,7 @@ test('every creature of every control-test mix and hand-built World 1 stage is a
     if (st.vines.some((v) => v.vineType !== 'tree_climb' && !v.rope)) assert.ok(x.vine);
     if (st.proto?.bushes?.length) assert.ok(x.props2);
   }
-  assert.ok(eagles > 0 && rings > 0, `the mixes held eagles (${eagles}) and rings (${rings})`);
+  assert.ok(eagles > 0 && rings > 0, `the stages held eagles (${eagles}) and rings (${rings})`);
 });
 
 /** just enough of an <img> for trackAtlas */

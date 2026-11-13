@@ -66,8 +66,8 @@ import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, t
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4' | '8-4';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
+export type StagePlan = 'proto' | '1-1' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4' | '8-4';
+export const HAND_STAGES: Record<string, StagePlan> = { '1-1': '1-1', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
 // 5-5 Caught in Silk (w5Stages.ts): the cocoons and the pouch scene
 HAND_STAGES['5-5'] = '5-5';
 // 7-4 The Way Down (Matt, 2026-10-29: not a climb; the floor crumbles into a slide seen from behind: w7Slide.ts)
@@ -209,10 +209,11 @@ export interface ProtoExtras {
   catches?: Array<{ plat: number; planks: [number, number] }>;
   /** 2-6: the face of the river bank the village is dug into, behind the whole climb (drawn by protoArt.ts drawEarthWall) */
   bankWall?: { x0: number; x1: number; top: number; bottom: number };
-  /** the control test's mix: the seed and the stretches it drew, in order (logged when the run starts, so any run can be built again) */
-  mix?: string;
   /** moves this stage lends him whether or not he has learned them yet (the control test's rope stretch needs Shimmy Rope) */
   grant?: SkillId[];
+  /** the old control test's mix (R-165.151: the course is deleted and nothing sets it; engine.ts still reads it, B14's file: it goes with
+   *  engine.ts's next change) */
+  mix?: string;
 }
 
 /** a small seeded random stream (mulberry32): the same seed always builds the same stage */
@@ -503,7 +504,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   const V: Vine[] = [];
   const ROPES: Rope[] = [];
   const RIVERS: RiverZone[] = [];
-  let MIX: string | undefined;
   const BUSHES: Bush[] = [];
   const ZONES: WatchZone[] = [];
   /** the acorn meadows' watched stretches (1-7): their passes are the puzzle, as built */
@@ -2316,95 +2316,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     if (bankFrom >= x0) bankFrom += dx;
     x += dx;
     expert += dx / RUN;
-  }
-
-  if (plan === 'ctest') {
-    // The control test (Matt, 2026-10-24): the basics every run, then six short stretches drawn from the whole game, two of each kind
-    // (moving about, fighting, and the rest: the eagle and the water). Every run is a different mix (the caller gives each run a new
-    // seed: playRecorder.ts ctestSeed), so across runs every stretch gets played, and stretches can be compared tester by tester.
-    // The seed and the mix are logged when the run starts, so any run can be built again (?mix=<seed>).
-    beat('Run and stop', () => {
-      hint(x + 60, 'Run to the flowers and stop on them');
-      run(450);
-      row(x, x + 160, G - 34, 3, 'orchid');
-      run(550);
-      hint(x - 250, 'Now turn around and run back a little');
-      run(250);
-      flag();
-    });
-    beat('Short hops', () => {
-      hint(x + 60, 'Hop up the stumps');
-      stumps();
-      flag();
-    });
-    beat('Long jumps', () => {
-      hint(x + 60, CTEST_GAPS);
-      gaps();
-      flag();
-    });
-    type Stretch = { name: string; tip: [string, string, string]; build: () => void };
-    const same = (t: string): [string, string, string] => [t, t, t];
-    const moving: Stretch[] = [
-      { name: 'Climb', tip: same('Climb to the top of the tree, then back down'), build: () => climbTree() },
-      { name: 'Swing', tip: same('Jump into the vine to grab it, jump again to let go'), build: () => { chain(1, true, 'hollow'); rest(R.r(250, 350)); chain(2, true, 'hollow'); } },
-      { name: 'Rope', tip: ['Jump up into the rope to grab it, then slide to move along', 'Jump up into the rope, then hold left or right', 'Jump up into the rope, then hold left or right'], build: () => { ropeGap(false, true); ropeGap(false, true); } },
-      { name: 'Crumbling branches', tip: same('Creaky branches! Grab the petals and keep moving'), build: () => creakRun() },
-      { name: 'Bounce', tip: same('Land on the mushroom to bounce up high'), build: () => { highRoad(); mushroomCache(); } },
-      { name: 'Stepping stones', tip: same('Hop from stone to stone'), build: () => pillars(R.shuffle([60, 110, 70, 130]), [0.55, 0.68]) },
-      { name: 'Double jumps', tip: same('Jump, then jump again in the air to cross'), build: () => doubleArcs() },
-      { name: 'Canopy road', tip: same('Climb up and cross the high branches'), build: () => canopy(false) },
-      { name: 'High vines', tip: same('Climb the tree, then swing across the vines'), build: () => highRun() },
-      { name: 'Push the log', tip: same('Push the log against the wall, then climb up'), build: () => logPuzzle() },
-    ];
-    const fighting: Stretch[] = [
-      { name: 'Snakes', tip: same('Punch and kick the snakes'), build: () => { snakes(); } },
-      { name: 'Snakes on branches', tip: same('Punch the snakes or hop over them'), build: () => snakeBranches(3, G - 130) },
-      { name: 'Boa guard', tip: same('A guard! Wait for it to strike, then punch it'), build: () => guardBranch() },
-      { name: 'Sleeping snake', tip: same('Sneak past the sleeping snake, or knock it off'), build: () => sleepingGuard() },
-      { name: 'Snake ring', tip: same('Snakes from above! Clear them all to open the way'), build: () => snakeRing() },
-      { name: 'Snapping turtles', tip: same('Hit a turtle from behind, or kick its shell'), build: () => turtles() },
-      { name: 'Cages', tip: same('Punch each cage twice to free the little one'), build: () => cages() },
-    ];
-    const other: Stretch[] = [
-      { name: 'Hide from the eagle', tip: ['An eagle is watching. Slide down inside a bush to hide', 'An eagle is watching. Hold down inside a bush to hide', 'An eagle is watching. Hold down inside a bush to hide'], build: () => bushRow(4, [420, 520], ['tall', 'wide', 'fern'], [6.5, 8]) },
-      { name: 'River logs', tip: same('Hop on the logs and ride them across'), build: () => { riverCross(1, 55, 2, 190); rest(R.r(260, 340)); riverCross(-1, 55, 2, 185); } },
-      { name: 'Lily pads', tip: same('Hop across the lily pads'), build: () => lilyPads(5) },
-    ];
-    const drawn = R.shuffle([...R.shuffle(moving).slice(0, 2), ...R.shuffle(fighting).slice(0, 2), ...R.shuffle(other).slice(0, 2)]);
-    // an animal's patch keeps this far from every flag (levelCheck.ts SAFE_APPROACH is 200), so a respawn never lands beside one
-    const CLEAR = 240;
-    for (const st of drawn) {
-      beat(st.name, () => {
-        const flagAt = x - 80;
-        const foes = E.length;
-        rest(R.r(160, 220));
-        hint(x - 60, ...st.tip);
-        const from = x;
-        st.build();
-        // too near the flag behind? slide the whole stretch on (everything it built since `from`)
-        const near = E.slice(foes).reduce((m, e) => Math.min(m, e.patrolMinX - flagAt), Infinity);
-        if (near < CLEAR) shiftFrom(from, CLEAR - near);
-        // and room before the next flag
-        const far = E.slice(foes).reduce((m, e) => Math.max(m, e.patrolMaxX), -Infinity);
-        if (x - 80 - far < CLEAR) run(CLEAR - (x - 80 - far));
-        flag();
-      });
-    }
-    beat('Finish', () => rest(700));
-    MIX = `seed ${seed}: ${drawn.map((d) => d.name).join(', ')}`;
-    // no secrets in a test
-    for (let i = C.length - 1; i >= 0; i--) if (C[i].type === 'seed' || C[i].type === 'find') C.splice(i, 1);
-    // a piece's own flag can sit by its own animal (the log's high ground): that animal stays home
-    const nearFlag = (e: Enemy) => checkpoints.some((f) => Math.abs(e.y - f.y) < 400 && (f.x >= e.patrolMinX - CLEAR && f.x <= e.patrolMaxX + CLEAR));
-    for (let i = E.length - 1; i >= 0; i--) if (nearFlag(E[i])) E.splice(i, 1);
-    // where two stretches meet, a flower can land on another or inside a branch: the later one goes
-    const solid = (c: Collectible) => P.some((p) => p.type !== 'drift' && !p.push && c.x >= p.x && c.x <= p.x + p.width && c.y > p.y + 2 && c.y < p.y + p.height - 2);
-    for (let i = C.length - 1; i >= 0; i--) {
-      const c = C[i];
-      if (c.type !== 'flower') continue;
-      if (solid(c) || C.some((o, j) => j < i && o.type === 'flower' && Math.hypot(o.x - c.x, o.y - c.y) < 40)) C.splice(i, 1);
-    }
-    covers.length = 0;
   }
 
   if (plan === 'proto') {
@@ -5241,7 +5152,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       ...(W3D.length ? { w3decor: W3D } : {}),
       ...(THORNS.length ? { thorns: THORNS } : {}),
       hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}), ...(RING ? { ring: RING } : {}),
-      ...(MIX ? { mix: MIX, grant: ['shimmy'] as SkillId[] } : {}),
       ...(W4C.length || W4K.length || W4R.length || Object.keys(W4X).length ? { w4: { ...W4X, ...(W4C.length ? { chimes: W4C } : {}), ...(W4K.length ? { knots: W4K } : {}), ...(W4R.length ? { rocks: W4R } : {}) } } : {}),
     },
   };
