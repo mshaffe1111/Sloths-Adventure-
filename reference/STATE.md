@@ -884,3 +884,4 @@ lines); Matt sees them in the release.
   3-4, 7-5, 10-4 (Architect pick; maybe a short one in 2-6): for the designer and Matt.
 - 2026-11-13 10:40 AM ET: MATT: varied tropical rainforest fruit from HF (R-165.188): story keeper lists them (nature check), ART2 paints after the climb + 1-5 set, inside the $15 cap.
 - 2026-11-13 10:44 AM ET: MATT: the story keeper has full authority to add to the story and approve all lines (R-165.189). The open line question to Matt is closed; all queued lines (3 for 0.9.8, 5 for 1-4/1-5, the About line) go to the keeper's call.
+- 2026-11-13 10:44 AM ET: STORY KEEPER APPROVED (t-story@400b4c13): 0.9.8 lines (tap-to-clear, coach, bell) as written; 1-4 pods/two hands/figs; R-165.180 1-4 teach "Creaky limbs drop you, but just one branch down!", 1-5 develop (Pokey) "Creaky again. If it drops me, roots it is."; About '84 ideas' line NO (claims only what ships). Sent to B14, B15.
