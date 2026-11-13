@@ -771,3 +771,4 @@ lines); Matt sees them in the release.
   past 1-3 -> a rebuild target per world, not a tune. 11 levers exist (file:line), 7 NEW (N1 builder reads the target ... N7 Easy help).
   Gate spec G1-G6 (fairness floors never overridden; meter vs bots rank agree). Two inspector defects to fix first. Lead's view: the
   meter + gate is a FOUNDATION (D40): after 0.9.7, before 1-4/1-5 are built and before any world is re-laid.
+- 2026-11-12 9:38 PM ET, BLIND TEST (Matt's wife, relayed): "keep Dot's messages up longer. They go away too fast... when she collected the petal, Dot said something, but she didn't know what she collected." R-165.175 (measure on the real build first; today's rule dotGuide.ts readMs = 1.5 s + 0.5 s/word, min 4 s, ~120 wpm, assumes reading while not playing).
