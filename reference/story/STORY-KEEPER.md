@@ -477,6 +477,6 @@ a vine. Bird call? Climb up or slide down." (13) · Creaky branches "Creaky bran
 1-3 (fallback): Run and Jump as 1-1's, word for word · Punch "Tap when a snake is close to punch it. Off it glides." (12) · Drop a trap
 "Punch the vine by a hive or stone. It drops beside the snake." (13)
 12:45 PM ET, after FIX-B's check: Heads up without the bird (until the oropendola ships) "A creak above means a pod is coming. Move over
-a vine." (12). Alt text 1-4 "Pokey climbing a curtain of vines up a giant kapok tree" (11); 1-3 "Pokey on a branch near a sleeping golden
+a vine." (12). Alt text 1-4 "Pokey climbing a curtain of vines up a giant kapok tree" (11); 1-3 (13:15, the still shows him on the ground) "Pokey on the forest floor near a golden snake and a hive" (12); was "Pokey on a branch near a sleeping golden
 snake, a hive hanging above" (13); each only if the still shows exactly that. Lead line: "One level, a few minutes. Every run is
 different." (9): "about 3 minutes" is untrue for 1-4 (214 s designed on Normal, about 5 min on Easy at 1.4x).
