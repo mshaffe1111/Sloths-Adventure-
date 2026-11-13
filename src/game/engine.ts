@@ -28,6 +28,7 @@ import { maxGap, softFallStage } from './gen2/pipeline.ts';
 import { MODES, type TravelMode } from './stageModes.ts';
 import { flagFurther, towerLead } from './gen2/tower.ts';
 import { vaultSide as vaultSideOf } from './vineTop.ts';
+import { carry as settleCarry, climbEnd, drawnOff, newSettle, settleStep } from './vineFeel.ts';
 import type { Mark } from './stageKit.types.ts';
 import { HelpLadder, setGrownSteps, LINE_UP_S, LINE_WAIT_S, takeHelpOnScreen, moveLine, pieceMoveLaid, setHelpLadder, stepPlan, stepsFor, STEP_CUT, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
 import { pickCut } from './w1CutArt.ts';
@@ -2036,6 +2037,8 @@ export class GameEngine {
     this.nearSwingVine = nearSwingVine;
 
     // 1. TREE CLIMBING LOGIC (Vertical vines on tree trunks)
+    // (the drawn Pokey's settle after a snap onto, between or off the top of a vine: vineFeel.ts, drawn only, FEEL-VINE)
+    settleStep(this.vineSettle, dt, p.x, p.y, p.climbing);
     // a flick up is a jump press and an up press at once, and a thumb lifts again quickly: remember it for a moment
     // so a jump that touches a trunk grabs it even if the thumb has already left the glass
     if (this.input.state.jumpPressed) this.upIntent = 0.35;
@@ -2109,14 +2112,19 @@ export class GameEngine {
         }
         nearTreeVine = this.hands.a;
       }
+      // (where he was and how he moved before the vine takes him: the drawn Pokey keeps both and settles, vineFeel.ts)
+      const was = { x: p.x, y: p.y, vx: p.vx, vy: p.vy, on: p.climbing };
       p.climbing = true;
       p.isVineSwinging = false;
       p.grounded = false;
       p.vx = 0;
       p.vy = 0;
-      // snap smoothly to tree trunk vine (a draped pair: between its two strands, a hand on each; two field vines: between them)
+      // onto the tree trunk vine's line (a draped pair: between its two strands, a hand on each; two field vines: between them): the
+      // body is there at once, every reach is measured from it; the drawn Pokey slides there (a grab carries his speed into the catch)
       p.x = this.hands ? handsX(this.hands) : nearTreeVine.x;
       p.climbPair = this.hands?.b ? Math.abs(this.hands.b.x - this.hands.a.x) : nearTreeVine.pair ?? 0;
+      // (from where his own speed would have carried him this frame: the catch never holds him still for a frame)
+      settleCarry(this.vineSettle, p.x - was.x - (was.on ? 0 : was.vx * dt), 0, was.on ? 0 : was.vx, 0, 0, 0);
 
       // Climb Up / Down, at the climb's own speed (a single 220 px/s, CLIMB_SPEED; a pair as its piece says: vinePair.ts; a field vine
       // by its hands: one slides down, two climb up quicker, a cluster pushed up is slow: vineField.ts handsSpeed)
@@ -2154,6 +2162,8 @@ export class GameEngine {
           this.treeClimbAudioTimer = rustleGap(nearTreeVine, Math.random());
         }
       }
+      // (a catch from the air: the fall or rise he had runs into the climb's own pace instead of stopping dead)
+      if (!was.on) settleCarry(this.vineSettle, 0, p.y - was.y - was.vy * dt, 0, was.vy, 0, (p.y - was.y) / dt);
 
       // (a field vine whose span he has climbed out of lets go: a short one runs out under a long one, vineField.ts keepHands)
       if (this.hands) {
@@ -2161,7 +2171,9 @@ export class GameEngine {
         if (kept) {
           this.hands = kept;
           nearTreeVine = kept.a;
+          const kx = p.x;
           p.x = handsX(kept);
+          settleCarry(this.vineSettle, p.x - kx, 0);
           p.climbPair = kept.b ? Math.abs(kept.b.x - kept.a.x) : 0;
         }
       }
@@ -2172,11 +2184,15 @@ export class GameEngine {
         this.vineCooldownTimer = 0.35;
         this.lastReleasedVineId = nearTreeVine.id;
         this.input.state.jumpPressed = false;
+        // (the climb's own pace this frame, before the vault lifts him to its start: the drawn Pokey rolls on from both, vineFeel.ts)
+        const climbVy = (p.y - was.y) / dt;
+        const y0 = p.y;
         p.y = nearTreeVine.topY - 12;
         p.vy = -190;
         // (with only up held, toward the side with more ledge at the top: he used to vault the way he faced, and walking back to a trunk
         // (4-3's, after the water threw him back) he faced away from the shelf and vaulted off its short end)
         p.vx = (this.input.state.left ? -1 : this.input.state.right ? 1 : this.vaultSide(nearTreeVine, p.facing)) * 160;
+        settleCarry(this.vineSettle, 0, p.y - y0, 0, climbVy, p.vx, p.vy);
         p.grounded = true;
         p.jumpsLeft = 2;
         sound.playJump();
@@ -2225,6 +2241,7 @@ export class GameEngine {
         p.jumpsLeft = 2;
         sound.playJump();
       }
+      if (p.climbing) climbEnd(this.vineSettle, p.x, p.y);
     } else {
       if (p.climbing && !nearTreeVine) {
         p.climbing = false;
@@ -4939,6 +4956,8 @@ export class GameEngine {
   private stepWasAhead = false;
   /** how far (px, signed) his drawing stands off a wall he is sliding down in the air (WALL_OFF): it never moves his body */
   private wallOff = 0;
+  /** the drawn Pokey's settle after a vine moves him in one frame (vineFeel.ts; drawn only, FEEL-VINE) */
+  private vineSettle = newSettle();
   /** Meeca drawn this far sideways, out of a wall face beside her (meecaFaceDraw.ts) */
   meecaOff = 0;
   private watchForStuck() {
@@ -7175,11 +7194,12 @@ export class GameEngine {
     // Render Hero Sloth
     heroClipsLive(true);
     // (and in World 5 a wobble while he pulls against the silk on him: w5Play.ts wobble)
-    const drawOff = (this.mc ? this.meecaOff : this.wallOff) + (this.w5?.wobble(this.gameTime) ?? 0);
-    const shiftOff = Math.abs(drawOff) > 0.3;
+    const vs = drawnOff(this.vineSettle, this.player.x, this.player.y, this.player.climbing);
+    const drawOff = (this.mc ? this.meecaOff : this.wallOff) + (this.w5?.wobble(this.gameTime) ?? 0) + vs.x;
+    const shiftOff = Math.abs(drawOff) > 0.3 || Math.abs(vs.y) > 0.3;
     if (shiftOff) {
       ctx.save();
-      ctx.translate(drawOff, 0);
+      ctx.translate(drawOff, vs.y);
     }
     // carrying, throwing or setting down: Matt's carry poses (puzzlePlay.ts drawPokey)
     // (Meeca's stage: her own sheet draws her carrying, in the chair and on the silk: meecaArt.ts meecaPose)
