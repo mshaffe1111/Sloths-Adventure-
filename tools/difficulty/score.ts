@@ -256,6 +256,13 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
   // the vine beside his, FIELD_FEEL.reach over, is his too). A column the route never passes is not in his way.
   const fieldXs: number[] = st.vines.filter((v: any) => v.field).map((v: any) => v.x);
   const reachOf = (q: Route['segs'][number]) => q.kind === 'climb' && fieldXs.some((x) => Math.abs(x - q.x1) < 2) ? FIELD_FEEL.reach + POD.hands : POD.hands;
+  // (a vine that holds a gate's fruit is climbed to push it free whatever way the route takes with the gate open: a pod down it is
+  //  in his way, crossed where the fruit hangs)
+  const pushY = new Map<number, number>();
+  for (const g of (st.gates ?? []) as any[]) for (const cid of g.clusters ?? []) {
+    const c = (st.clusters ?? []).find((q: any) => q.id === cid);
+    if (c && !pushY.has(c.vine)) pushY.set(c.vine, c.y);
+  }
   for (const pd of (st.pods ?? []) as any[]) {
     const def = (st.clocks ?? []).find((c: any) => c.id === pd.clock);
     if (!def) continue;
@@ -264,8 +271,9 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
     b.names.forEach((n, i) => { if (n === 'on') on += b.seconds[i]; });
     const seg = route.segs.find((q) => Math.min(q.x0, q.x1) <= pd.x + reachOf(q) && Math.max(q.x0, q.x1) >= pd.x - reachOf(q)
       && Math.max(q.y0, q.y1) >= pd.top && Math.min(q.y0, q.y1) <= pd.land);
-    if (!seg) continue;
-    const y = Math.max(pd.top, Math.min(pd.land, (seg.y0 + seg.y1) / 2));
+    const push = pd.vine !== undefined ? pushY.get(pd.vine) : undefined;
+    if (!seg && push === undefined) continue;
+    const y = Math.max(pd.top, Math.min(pd.land, seg ? (seg.y0 + seg.y1) / 2 : push!));
     const heart = pd.cost === 'heart';
     add({ t: clockAt(samples, pd.x, y), x: pd.x, kind: 'hazard', bits: windowBits(b.period, Math.max(0.05, b.period - on)), cost: heart ? 'heart' : 'retry', stakes: heart ? STAKES.heart : 1, threat: true,
       note: `pod ${pd.id}: safe ${(b.period - on).toFixed(2)}s of ${b.period.toFixed(2)}s (falls ${fallSeconds(pd).toFixed(2)}s)` });

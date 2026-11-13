@@ -70,8 +70,15 @@ const POD_HANG = 110;
 const FIG_H = 56;
 /** the pods' tell (s, Normal; Easy times the beat's stretch: 1.5 s) and Easy's stretch (1-4.md "Easy ... tells 1.5 s, beats 1.4x") */
 const TELL = 1.0, EASY_STRETCH = 1.5;
-/** the beats: the steady one of beats 4-9, and the quicker one of the hollow and the crown (1-4.md "Steady, then grown") */
-const BEATS = { steady: 3.6, quick: 2.4 } as const;
+/** the beats (1-4.md "Steady, then grown": ONE steady beat through beats 4-5, it quickens only from beat 7): the steady teach beat, the
+ *  grown beat of beats 7-9 and the crown (the fields' 1.2-2.0 s safe of 3.0-3.6 s) and the quick one of the hollow (0.8-0.9 s safe).
+ *  Each beat's 'on' is its own longest column's fall and burst (podOn). No field stands over POD.catchBelow (450 px: a knock from any
+ *  point lands him on sound wood, 1-4.md "Pods fair"), so a column (H less POD_HANG) is at most 340 px and its 'on' 1.2 s; and a beat is
+ *  its quiet, its 1.0 s tell (tellMin) and its 'on', so its safe window is never under the tell. The hollow's window is the least those
+ *  two rules leave, 1.1 s of a 2.3 s beat (the design's 0.8-0.9 s of 2.4 s needs a shorter tell or a taller field: neither is loosened,
+ *  the lead's call 11-13). The crown keeps two columns, so it stays on the grown beat: two tells in one 2.3 s beat cannot both be 1.5 s
+ *  apart (POD.apart) */
+const BEATS = { steady: 3.6, grown: 3.0, quick: 2.3 } as const;
 
 /** a bough: on the way up (`main`: the lay may stand a flag on one 160 px or more wide, FA's rule), a landing unless told */
 const branch = (key: string, place: SectionPiece['place'], w: number, o: Partial<SectionPiece> = {}): SectionPiece =>
@@ -188,14 +195,14 @@ const PUSH = field('w1-14-push', 'push the figs up: a gate of one', {
 /** [X] pushing under fire: a gate of two bunches, pods down both push vines (half a beat apart), the vines between free */
 const UNDER_FIRE = field('w1-14-under-fire', 'a gate of two, pods down the push vines', {
   jobs: ['test'], job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 6, content: 'hazard',
-  row: { n: 5, H: 400, figs: [{ vine: 1, over: 150 }, { vine: 4, over: 250 }], pods: [{ vine: 1, shift: 0 }, { vine: 4, shift: BEATS.steady / 2 }], beat: 'steady', gate: true, easyFigs: [{ vine: 4, over: 250 }] },
+  row: { n: 5, H: 400, figs: [{ vine: 1, over: 150 }, { vine: 4, over: 250 }], pods: [{ vine: 1, shift: 0 }, { vine: 4, shift: BEATS.grown / 2 }], beat: 'grown', gate: true, easyFigs: [{ vine: 4, over: 250 }] },
 });
 /** [W] his turn to drop one: a snake dozes on the field's foot past its last vine; the bunch on the last vine, pushed free, thumps down
  *  beside it, and it glides off; the bough over the field lifts with it */
 const DROP_ONE = (() => {
   const t = field('w1-14-drop-one', 'his turn to drop one: the figs beside the snake', {
     jobs: ['twist'], job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 6,
-    row: { n: 4, H: 360, figs: [{ vine: 4, over: 160 }], pods: [{ vine: 2, shift: 0 }], beat: 'steady', gate: true },
+    row: { n: 4, H: 360, figs: [{ vine: 4, over: 160 }], pods: [{ vine: 2, shift: 0 }], beat: 'grown', gate: true },
   });
   // (the foot runs on past the last vine to the snake's spot, within TRAP.scare (170) of where the bunch comes down)
   const W = 2 * MARGIN + 3 * GAP + 160;
@@ -219,7 +226,7 @@ const CROWN: SectionTemplate = (() => {
   pieces.push(branch('mid', { kind: 'over', on: 'foot', at: [midX / W, midX / W], dy: [-RISE * 4, -RISE * 4] }, midW, { landing: false }));
   for (let i = 0; i < CROWN_N; i++) pieces.push(climbOn(`f${i + 1}`, 'mid', midW, MARGIN + i * GAP, CROWN_H));
   pieces.push(branch('top', { kind: 'over', on: 'mid', at: [0, 0], dy: [-CROWN_H, -CROWN_H] }, midW));
-  FIELD_ROWS['w1-14-crown'] = { n: CROWN_N, H: CROWN_H, figs: [], pods: [{ vine: 1, shift: 0 }, { vine: 3, shift: BEATS.steady / 2 }], beat: 'steady', gate: false, foot: 'mid' };
+  FIELD_ROWS['w1-14-crown'] = { n: CROWN_N, H: CROWN_H, figs: [], pods: [{ vine: 1, shift: 0 }, { vine: 3, shift: BEATS.grown / 2 }], beat: 'grown', gate: false, foot: 'mid' };
   return {
     id: 'w1-14-crown', name: 'the crown: a rotten stair to three long vines under pods', feel: [STAGE_14], own: true, archetypes: 'any',
     phases: ['sho', 'ten', 'ketsu'], jobs: ['combine'], difficulty: 7, content: 'crumble', uses: ['field', 'pods', 'creak'], needs: ['jump'],
@@ -267,8 +274,9 @@ export function kitLib14(): WorldKit {
 type FinishStage = { platforms: Platform[]; vines: Vine[]; clusters?: VineCluster[]; gates?: ClusterGate[]; pods?: PodColumn[]; clocks?: ClockDef[]; gen2?: { sections?: Array<{ uid: string; template: string }> }; proto?: { kitDecor?: KitDecor[] } };
 
 /** the beats 1-4 runs (beat.ts): each pod names one */
-export function beats14(maxLen: number): ClockDef[] {
-  return [podBeat('pods-steady', BEATS.steady, TELL, maxLen, EASY_STRETCH), podBeat('pods-quick', BEATS.quick, TELL, maxLen, EASY_STRETCH)];
+export function beats14(maxLen: number | Partial<Record<keyof typeof BEATS, number>>): ClockDef[] {
+  const len = (b: keyof typeof BEATS) => Math.max(1, typeof maxLen === 'number' ? maxLen : (maxLen[b] ?? 1));
+  return (Object.keys(BEATS) as Array<keyof typeof BEATS>).map((b) => podBeat(`pods-${b}`, BEATS[b], TELL, len(b), EASY_STRETCH));
 }
 
 /**
@@ -284,7 +292,7 @@ export function finish14<T extends FinishStage>(st: T, difficulty: Difficulty): 
   for (const v of st.vines) if (v.tag) byTag.set(v.tag, v);
   for (const p of st.platforms) if (p.tag) byTag.set(p.tag, p);
   const clusters: VineCluster[] = [], gates: ClusterGate[] = [], pods: PodColumn[] = [];
-  let maxLen = 0;
+  const maxLen: Partial<Record<keyof typeof BEATS, number>> = {};
   for (const s of st.gen2?.sections ?? []) {
     const row = FIELD_ROWS[s.template];
     if (!row) continue;
@@ -326,8 +334,9 @@ export function finish14<T extends FinishStage>(st: T, difficulty: Difficulty): 
     for (const pd of row.pods) {
       const v = vine(pd.vine)!;
       const podTop = top.y + POD_HANG;
-      maxLen = Math.max(maxLen, foot.y - podTop);
-      pods.push({ id: pods.length + 1, vine: v.id, x: v.x, top: podTop, land: foot.y, clock: row.beat === 'quick' ? 'pods-quick' : 'pods-steady', shift: pd.shift, cost: easy ? 'knock' : 'heart' });
+      const b = row.beat ?? 'steady';
+      maxLen[b] = Math.max(maxLen[b] ?? 0, foot.y - podTop);
+      pods.push({ id: pods.length + 1, vine: v.id, x: v.x, top: podTop, land: foot.y, clock: `pods-${b}`, shift: pd.shift, cost: easy ? 'knock' : 'heart' });
     }
   }
   // (the view north: the squirrels' nest door in the crown bough, shut as he climbs up to it, open as he arrives (KitDecor `near`):
@@ -338,7 +347,7 @@ export function finish14<T extends FinishStage>(st: T, difficulty: Difficulty): 
     const crown = byTag.get(`${s.uid}:crown`) as Platform | undefined;
     if (crown && st.proto) (st.proto.kitDecor ??= []).push(nestDoorAt(crown));
   }
-  const clocks = beats14(Math.max(maxLen, 1));
+  const clocks = beats14(maxLen);
   const bad = [...podFaults(pods, clocks, st.vines, st.platforms, FIELD_FEEL.reach, easy), ...gateFaults(gates, clusters, st.vines, st.platforms)];
   if (bad.length) throw new Error(`1-4 finish: ${bad.slice(0, 4).join('; ')}`);
   return Object.assign(st, { clusters, gates, pods, clocks });
