@@ -1,8 +1,43 @@
-# Turnover note: the lead (PM). Rewritten, never appended. Last rewrite: 2026-11-11 10:45 PM ET by session_01FhBbYP63h7cCX8DyW69stq
+# Turnover note: the lead (PM). Last handover: 2026-11-12 late evening by session_01FhBbYP63h7cCX8DyW69stq (rotation; Matt)
 
 Read this, then reference/STATE.md (newest at the bottom: every decision tonight is dated there), reference/plans/ENGINE-PLAN.md
 (the plan, with "THE PLAN AS TOLD TO MATT"), reference/plans/MAP-REVISIONS.md (the map's changes and Matt's 84 ideas judged),
 reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Matt 11-11); it plans, dispatches, checks, decides.
+
+## The handover (11-12 11:01 PM ET, from the outgoing lead session_01FhBbYP63h7cCX8DyW69stq, your backup for questions only)
+The outgoing lead's memory was compressed and it made three misses on 11-12 (typed times, a misread instruction, a Fable job started out
+of order); Matt rotated for a sharper, cheaper lead. Read reference/handoffs/lead.md's RIGHT NOW block and the last 11-12 entries of
+reference/STATE.md before anything else. In short:
+- **Release 0.9.7 is in flight** (Matt's go 11-12 ~11 PM: today's work live, What's New updated, the merge link for him). The release
+  clerk REL-097 (session_01FhBbYMo7vanZV56PXG1MTw, branch release-0.9.7) builds the candidate; the outgoing lead aims to open the PR
+  about 1 AM. If it isn't merged and live when you start, finishing it is your FIRST job: Matt merges, you check the deploy and the APK
+  on the Releases page (release.md "After the merge"). Matt's calls: ship the new sound; ship with R-165.174/.175/.166/.171 open.
+- **Matt's test link (EnK5) v251:** the designed 1-2 and 1-3, the 1-1 pass, and a basic vine-pair room. The integration head is
+  t-int-2@f01c76f7.
+- **Levels:** 1-1, 1-2, 1-3 built (Matt rated them 4-5, 2-3 and 1 on the new meter). **1-5 is designed and its lines are approved
+  (t-15-design); it is the NEXT level to build, ahead of 1-4.** 1-4 is designed around a vine field Matt approved (t-15-design); it waits
+  on its engine pieces, including the ascent lay (Fable WIP on t-eng-ascent) and the vine-field mechanic (WIP on t-lattice), and on a plan
+  for where the vine field returns later in the game.
+- **Difficulty:** the hardness meter's research and plan are done (DIFFICULTY.md on t-diff-algo). It found that Worlds 2-10 do not get
+  harder on Normal today: a world-by-world rebuild target. Its next steps are R-165.176, then the meter gate, then builder targets.
+- **The next release (0.9.8):** the fixes Matt and his wife's blind test asked for (R-165.174 mushroom timing, R-165.175 Dot's messages:
+  tap to clear plus a slow fade, R-165.166 the snake's new name, R-165.171), plus R-165.157/.151 and R-165.158.
+- **Team at handover:** the story keeper (session_019iachLiuwNTAZUBSJWUmR3, permanent: your first message goes to it); F15 (Fable,
+  session_01FhBbYLH67hs9RNxYKQnb2B, idle: it owns 1-5's card road on your word, after 1-5's level is built on plain splits); REL-097
+  until 0.9.7 is live. BC-FIX and LATTICE stopped at midnight; their work is on their branches. Nothing else runs.
+- **Matt paused the team at midnight 11-12. Nothing restarts until he says go.**
+- **Usage:** Matt reset his weekly usage at about 10 PM on 11-12, and about 4% was gone by 10:36 PM. He wants as many levels as possible
+  out of this 100%. That is the scoreboard.
+How to do each of these is yours to work out from the documents. Don't take the outgoing lead's plan as given: your cold review (Start
+now, step 6) is where you challenge it. If a fact is missing, ask the backup lead (session_01FhBbYP63h7cCX8DyW69stq), facts only.
+
+## The backup lead
+session_01FhBbYP63h7cCX8DyW69stq (the 11-11/11-12 lead). Questions only, facts only ("where is", "what was"), never "why" a
+strategy was chosen; write every answer into the documents the same day. It does no work and dispatches no one.
+
+## Start here
+reference/roles/LEAD-PERSONA.md "Start now, in this order"; then reference/roles/PM.md (your manual). The full paste Matt used to
+start you is reference/handoffs/NEW-LEAD-2026-11-13.md.
 
 ## RIGHT NOW (11-12 8:42 PM ET; this block wins over everything below it)
 DONE TODAY: Matt's test link EnK5 v250 PUBLISHED 8:10 PM from t-int-2@465023ef: 1-3 (Fable W1C, finished by F13 Opus max) + 1-2 (D12

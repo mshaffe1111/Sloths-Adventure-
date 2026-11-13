@@ -821,3 +821,4 @@ lines); Matt sees them in the release.
 - 2026-11-12 10:59 PM ET, Matt: RELEASE 0.9.7 tonight ("we need to launch... What's New... prepare me the links so I can merge it");
   chose build tonight (link ~1 AM); SHIP the new sound levels (R-165.125 answered); SHIP with R-165.174/.175/.166/.171 open (fixed in
   0.9.8). Story keeper asked for What's New; BC-FIX told the release waits on it; REL-097 packet written.
+- 2026-11-12 11:01 PM ET: lead rotation prepared (Matt): LEAD-PERSONA.md improved (HF is the lead's call; push Matt; Lean section; No tunnel vision section), reference/handoffs/NEW-LEAD-2026-11-13.md = the full paste for Matt (persona + this handover), lead.md gets The handover / The backup lead / Start here. The outgoing lead stays as backup (questions only). REL-097 started (session_01FhBbYMo7vanZV56PXG1MTw).
