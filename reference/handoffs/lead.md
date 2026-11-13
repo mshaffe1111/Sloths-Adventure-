@@ -10,6 +10,8 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **MODELS (Matt, 11-13 12:42 PM ET): no Fable (too expensive). Engine work on Opus xhigh; everything else Opus high, or medium for low-risk
+  work (docs, mechanical steps, small known fixes). tools/team/models.json logs it.**
 - **THE LEVEL TARGET: ONE DESIGNER + ONE DEVELOPER, A 2-HOUR STAGE** (Matt, 11-13 12:41 PM ET): "we shouldn't have to use 20 people to create a
   level." A level job starts only when every node/piece its design names already exists in the engine (NODE-KEY status "Now"); the
   designer writes the node string (+ the story keeper's nature check and lines), ONE builder lays and proves it with ADD-LEVEL's one step.
