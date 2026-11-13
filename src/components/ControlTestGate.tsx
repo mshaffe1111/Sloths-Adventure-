@@ -109,12 +109,12 @@ const JUMP: CtestMove = { frame: 'rise', name: 'Jump', how: 'A quick flick up an
  */
 export const CTEST_PAGES: Readonly<Record<string, CtestPage>> = {
   '1-4': {
-    alt: 'Pokey climbing the vines of the kapok in the new level',
+    alt: 'Pokey climbing a curtain of vines up a giant kapok tree',
     moves: [
       { frame: 'climb_2', name: 'Climb', how: 'Slide your thumb up to climb. Slide down to whoosh back down.' },
       { frame: 'hang_b', name: 'Two hands', how: 'Slide toward the next vine to hold both. Two hands climb faster.' },
       { frame: 'climb_6', name: 'Push the figs', how: 'Climb up under a fig bunch to push it free. The branch lifts.' },
-      { frame: 'swing_grip', name: 'Heads up', how: 'Creak above? Move over a vine. Bird call? Climb up or slide down.' },
+      { frame: 'swing_grip', name: 'Heads up', how: 'A creak above means a pod is coming. Move over a vine.' },
     ],
   },
   '1-3': {
@@ -186,7 +186,7 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
         </div>
         <p className="ct-kicker">Level test · Brand-new levels</p>
         <Plaque as="h1" className="ct-title">Pokey's new level</Plaque>
-        <p className="ct-p ct-lead">One level, about 3 minutes. Every run is different.</p>
+        <p className="ct-p ct-lead">One level, a few minutes. Every run is different.</p>
         <FreshBuild />
 
         <Head>The moves</Head>
