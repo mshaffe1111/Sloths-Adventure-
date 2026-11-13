@@ -15,7 +15,7 @@ re-checked last; 3 were off and fixed), D40 (no old stage lengthened), D57 (queu
 Unit: full run 3263 pass / 1 fail (stageQuality's old body) / 2 TODO of 3266 on 30139209; only stageQuality.test.ts changed after, re-run
 whole on 49fed4ab 22/22 -> 3265/3265 + 2 TODO. tsc, knowncheck, generality, roadmapcheck (unshallowed), vite build (BASE_PATH), chunkcheck,
 artcheck, kbdcheck, seedlist 1-1 --check (257), engine-tool tests 33/33, tierBots 7/7: PASS. buildcheck: PASS alone (p95 147 / 150 ms;
-FAIL 155 ms when run beside the suite). drawcheck: DRAW. clipcheck: CLIP.
+FAIL 155 ms when run beside the suite). drawcheck PASS (599 s) and clipcheck PASS (83 known, none added; 467 s), run together after the suite.
 
 ## Polish check
 No screen changed (a null guard no real stage reaches; three test files). No stills owed.
@@ -34,3 +34,8 @@ W9 after W8 is the one growth step unread (W8 holds 2 old stages, W9 no gen2). b
 
 ## Turnover note
 reference/handoffs/engine-core.md section 0n (this branch).
+
+## EXACT NEXT STEP
+1. Lead: merge or carry t-int-5 into the test-link head (src changes vs t-int-4: w1Marks.ts only; tests: vineFollowUps, stageQuality).
+2. Lead: confirm the like-with-like reading of the 5:03 ruling (World 1 is a mix; W9 after W8 unread), or rule otherwise.
+3. Whoever lengthens 1-4 (R-165.206): re-run stageQuality.test.ts and buildcheck alone (1-1 p95 has 3 ms spare).
