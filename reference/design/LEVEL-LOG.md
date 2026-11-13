@@ -55,3 +55,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | GATES-4 (Opus high, runner) | the unrun gates on tonight's build + 24 stills; 2 reds named, nothing fixed | $3.08 | ~60 min |
 | FIX-INT (Opus xhigh) | 3 unit reds at the root (w1Marks null guard; vine test re-pointed; W1 length band per 2 lead rulings); every gate green on t-int-5@e8afc05c | $7.09 | ~50 min |
 | PERF-BUILD (Opus xhigh) | 1-1 stage-start build: cold reach memo filled in one pass; buildcheck 5/5 PASS (worst margin 22 ms); exact (lock 102/102) | >= $2.85 (meter reset by an OOM container restart; true cost higher, unreadable) | ~70 min |
+| POLISH-1 (Opus high) | 1-4: crown sure vine (planted), +2 beats & 2 rests (re-rolled once, 100/100), bubbles -> painted tufts, bots 176 -> 242/360; found the fig gate root and the crumble strand | $10.03 | ~75 min |
