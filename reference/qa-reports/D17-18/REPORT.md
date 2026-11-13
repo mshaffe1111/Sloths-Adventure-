@@ -7,6 +7,7 @@ EXACT NEXT STEP: the lead reads reference/design/1-7.md and 1-8.md, checks the t
 ## 2. Polish check
 Design only: no stills (nothing built). Each beat names the stills the builder shoots (upright 412x915, sideways 915x412) and the numbers to put in tests.
 ## 3. Pushback
+- RULED (the lead, 4:36 PM; re-tuned 4:34 PM ET): all four accepted. 1-7 Normal 5.5 / Easy ~3 and 1-8 Normal 7.5 / Easy ~4 per DIFFICULTY §4; K3 and the finale's nuts 1.5 s+ apart (one threat at a time); no lure in World 1; give-up stays EXISTS. No NEW block changed, so the combined table stands.
 - DIFFICULTY: the packet says each stage harder than the one before; DIFFICULTY.md §4 sets 1-7 at 5.5 (a breather) and 1-8 at 7.5. I followed the packet (1-7 7.5, 1-8 8.5, 1-9 still 9.5); both fit Matt's band rule (STAGE-RULES §1b). §4 needs the lead's edit, or tell me to design 1-7 at 5.5.
 - Packet fact "gives up after 2 empty passes is not in watcher.ts": true, but it EXISTS in the kit (`giveUp: 2`, world1.ts; core.ts:265-276 endPass: flees 8 s). Not a NEW block.
 - MAP-REVISIONS.md:159 puts Matt's #22 sound stealth "IN: 1-7"; roster.ts:51-57 (the lead, 11-12) has no landing noise before World 2 and thrown noise from World 3. I designed on roster.ts (no noise in 1-7); the map line or the ruling needs one answer.
