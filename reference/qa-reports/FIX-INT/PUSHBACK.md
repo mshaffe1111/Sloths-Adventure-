@@ -30,7 +30,7 @@ The World 1 band in stageQuality.test.ts:58 needs a ruling against STAGE-RULES.m
 its own reason, not to clear this red. Until then this test stays red on t-int-5 and I have not touched it.
 
 ## 4:58 PM ET: the lead's 4:49 PM ruling applied (W1 >= 135 kept; W1's cap now "W1 median <= W10 median"); the test is still red
-Next assertion down, kept whole by the ruling: "World 2 is shorter than World 1" (stageQuality.test.ts:63, med(w) >= med(w-1) - 6).
+Next assertion down, kept whole by the ruling: "World 2 is shorter than World 1" (stageQuality.test.ts:64, med(w) >= med(w-1) - 6).
 World medians now (typical, designed layout): W1 180, W2 159, W3 172, W4 174, W5 188, W6 197, W7 211, W8 218, W9 230, W10 238.
 W2-W4 are all old-builder stages (2-1..2-9 at 155-194) laid to the same old linear target (stageTime.ts:96, TYPICAL_W1 -> TYPICAL_W10),
 so W2 >= W1 - 6 is that same old number, not a rule of Matt's. W3 >= W2 - 6 onward all hold. Needs a second ruling.
