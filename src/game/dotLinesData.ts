@@ -26,7 +26,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["lesson.foe.punch", "", "lesson card", "move", "Tap when it is close: Punch (in the air, a tap is a jump kick)", "Tap to punch it when it's close.", null, "tap", "foe"],
   ["lesson.foe.stomp", "", "lesson card", "move", "Jump on its head: Stomp (most foes can be stomped)", "Flick up and land on its head.", null, "flick-up", "foe"],
   ["lesson.gap.double", "", "lesson card", "move", "Flick up again in the air: Double jump (it pushes you forward, for a gap that is a little too wide)", "Flick up again midair to go farther.", null, "double-jump", "far side of the gap"],
-  ["lesson.gap.jump", "", "lesson card", "move", "Slide up and across: Run and jump (keep your thumb moving forward in the air)", "Flick up just before the edge.", null, "flick-up", "gap edge"],
+  ["lesson.gap.jump", "", "lesson card", "move", "Slide up and across: Run and jump (keep your thumb moving forward in the air)", "Flick up to hop up or over.", null, "flick-up", "gap edge"],
   ["lesson.moving", "", "lesson card", "move", "It slides back and forth and carries you with it. Wait for it to swing close, then hop on. Hop on when it is close: Ride it", "Flick up when it swings close.", null, "flick-up", "moving platform"],
   ["lesson.nostomp", "", "lesson card", "move", "Spiders and ants cannot be stomped, so do not land on them. Punch or kick them, or jump right over.", "Tap to punch it. Don't stomp this one.", null, "tap", "spider or ant"],
   ["lesson.rope.creep", "", "lesson card", "move", "Slide left or right: Creep along (at the far end he steps off onto the ledge)", "Slide your thumb to creep along.", null, "slide", "rope"],

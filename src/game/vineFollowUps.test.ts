@@ -601,7 +601,7 @@ test("QA's v192 new-look repro: a gap tip from before the vine waits while he sw
   const env = (swinging: boolean) => ({ danger: false, swinging, moveCount: (m: string) => counts[m] ?? 0 });
   const gap = lessonDotLine('gap', 'screen')!;
   const grab = lessonDotLine('swing', 'screen')!;
-  assert.equal(gap.text, 'Flick up just before the edge.');
+  assert.equal(gap.text, 'Flick up to hop up or over.');
   assert.ok(gap.move === 'jump' && gap.topic === 'gap' && grab.move === 'grab' && grab.next?.move === 'leap');
   const q = new GuideQueue();
   // the gap tip (from x 550) is up, and he does not jump that gap: it stays, as a move tip does
