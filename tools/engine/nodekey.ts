@@ -6,7 +6,9 @@ let html = readFileSync(f, 'utf8');
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const label = { laid: 'Laid', checked: 'Checked', later: 'Later' } as const;
 const cards = ELEMENTS.map((e) => `    <div class="card${e.status === 'later' ? ' later' : ''}" data-element="${esc(e.element)}" data-status="${e.status}"><div class="card-top"><span class="code">${esc(e.mark)}</span><span class="name">${esc(e.element)}</span><span class="pill ${e.status === 'later' ? 'later' : 'now'}">${label[e.status]}</span></div><p>${esc(e.how)}</p></div>`).join('\n');
+// (a long code (":&snake*2", ":#pods@beat") takes its own line above the name rather than running under it)
 const section = `<section aria-labelledby="h-asks" id="asks">
+  <style>#asks .card-top{flex-wrap:wrap;row-gap:4px}#asks .code{flex:none;font-size:17px;overflow-wrap:anywhere}#asks .name{flex:1 1 120px;min-width:0}</style>
   <h2 id="h-asks">What a node can ask, and what the lay does with it</h2>
   <p class="note">Any element mixes with any other on one node, in any world whose kit has the pieces. Every element a code writes is laid, or the roll fails and names it: nothing a designer writes is dropped. <b>Laid</b>: the lay builds it from the ask, and the built roll is checked. <b>Checked</b>: the lay rolls it as before, and the roll fails by name when it is not there. <b>Later</b>: nothing in the engine lays it yet, so a code that writes it always fails by name.</p>
   <div class="cards">
