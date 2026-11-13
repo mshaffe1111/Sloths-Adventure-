@@ -1,0 +1,202 @@
+{
+ "tag": "fruit1",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, words, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, cast shadow, sky, scenery behind, animals, people, sloth, bitten, cut open, sliced, pile, basket, plate, table",
+ "items": [
+  {
+   "name": "fruit-banana-11",
+   "prompt": "a small bunch of three ripe yellow-green curved bananas joined at a short green stem, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-banana-23",
+   "prompt": "a small bunch of three ripe yellow-green curved bananas joined at a short green stem, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-banana-37",
+   "prompt": "a small bunch of three ripe yellow-green curved bananas joined at a short green stem, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-mango-11",
+   "prompt": "one whole ripe mango, a red-orange blushed kidney-shaped oval fruit hanging from a long thin stem with one long leaf, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-mango-23",
+   "prompt": "one whole ripe mango, a red-orange blushed kidney-shaped oval fruit hanging from a long thin stem with one long leaf, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-mango-37",
+   "prompt": "one whole ripe mango, a red-orange blushed kidney-shaped oval fruit hanging from a long thin stem with one long leaf, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-papaya-11",
+   "prompt": "one whole ripe papaya, a long oval fruit green turning to orange, smooth skin, a short stub of stem, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-papaya-23",
+   "prompt": "one whole ripe papaya, a long oval fruit green turning to orange, smooth skin, a short stub of stem, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-papaya-37",
+   "prompt": "one whole ripe papaya, a long oval fruit green turning to orange, smooth skin, a short stub of stem, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-passionfruit-11",
+   "prompt": "one whole round purple passion fruit with slightly wrinkled glossy skin and a short curly stem and one green leaf, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-passionfruit-23",
+   "prompt": "one whole round purple passion fruit with slightly wrinkled glossy skin and a short curly stem and one green leaf, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-passionfruit-37",
+   "prompt": "one whole round purple passion fruit with slightly wrinkled glossy skin and a short curly stem and one green leaf, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-wildfig-11",
+   "prompt": "a small bunch of three small round orange-red wild figs on a short woody stalk with one green leaf, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-wildfig-23",
+   "prompt": "a small bunch of three small round orange-red wild figs on a short woody stalk with one green leaf, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-wildfig-37",
+   "prompt": "a small bunch of three small round orange-red wild figs on a short woody stalk with one green leaf, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-cacao-11",
+   "prompt": "one whole cacao pod, a long ridged oval pod ripening yellow to red, a short woody stem, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-cacao-23",
+   "prompt": "one whole cacao pod, a long ridged oval pod ripening yellow to red, a short woody stem, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-cacao-37",
+   "prompt": "one whole cacao pod, a long ridged oval pod ripening yellow to red, a short woody stem, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-pineapple-11",
+   "prompt": "one whole golden pineapple with a spiky green leaf crown, diamond-patterned skin, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-pineapple-23",
+   "prompt": "one whole golden pineapple with a spiky green leaf crown, diamond-patterned skin, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-pineapple-37",
+   "prompt": "one whole golden pineapple with a spiky green leaf crown, diamond-patterned skin, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-coconut-11",
+   "prompt": "one whole green-to-brown coconut in its smooth husk, round and slightly three-sided, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-coconut-23",
+   "prompt": "one whole green-to-brown coconut in its smooth husk, round and slightly three-sided, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-coconut-37",
+   "prompt": "one whole green-to-brown coconut in its smooth husk, round and slightly three-sided, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-dragonfruit-11",
+   "prompt": "one whole hot pink dragon fruit with green-tipped curling scales, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-dragonfruit-23",
+   "prompt": "one whole hot pink dragon fruit with green-tipped curling scales, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "fruit-dragonfruit-37",
+   "prompt": "one whole hot pink dragon fruit with green-tipped curling scales, a single game pickup item, whole and fresh, never bitten, centred, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}

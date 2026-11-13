@@ -109,6 +109,30 @@ def props1(seeds=(11, 23, 37)):
     print(len(items), 'stills')
 
 
-CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1}
+
+# ---- the fruit pickups (the lead 11-13 10:40 AM ET, the story keeper's list: whole, never bitten, as they really grow) ----
+FRUIT = {
+    'banana': 'a small bunch of three ripe yellow-green curved bananas joined at a short green stem',
+    'mango': 'one whole ripe mango, a red-orange blushed kidney-shaped oval fruit hanging from a long thin stem with one long leaf',
+    'papaya': 'one whole ripe papaya, a long oval fruit green turning to orange, smooth skin, a short stub of stem',
+    'passionfruit': 'one whole round purple passion fruit with slightly wrinkled glossy skin and a short curly stem and one green leaf',
+    'wildfig': 'a small bunch of three small round orange-red wild figs on a short woody stalk with one green leaf',
+    'cacao': 'one whole cacao pod, a long ridged oval pod ripening yellow to red, a short woody stem',
+    'pineapple': 'one whole golden pineapple with a spiky green leaf crown, diamond-patterned skin',
+    'coconut': 'one whole green-to-brown coconut in its smooth husk, round and slightly three-sided',
+    'dragonfruit': 'one whole hot pink dragon fruit with green-tipped curling scales',
+}
+
+
+def fruit1(seeds=(11, 23, 37)):
+    items = [{'name': f'fruit-{k}-{sd}', 'prompt': f'{p}, a single game pickup item, whole and fresh, never bitten, centred, '
+                                                    f'{STYLE}, {MAG}', 'seed': sd, 'w': 1024, 'h': 1024}
+             for k, p in FRUIT.items() for sd in seeds]
+    spec = {'tag': 'fruit1', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
+            'neg': PNEG + ', bitten, cut open, sliced, pile, basket, plate, table', 'items': items}
+    (H / 'spec-fruit1.json').write_text(json.dumps(spec, indent=1))
+    print(len(items), 'stills')
+
+CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1}
 if __name__ == '__main__':
     CMDS[sys.argv[1]]()
