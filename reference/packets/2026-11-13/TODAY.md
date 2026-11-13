@@ -33,3 +33,8 @@ New files are yours alone. Need a token? One line to the lead; carry on with oth
 - **Every piece is a node building block (Matt 12:14 PM, R-165.198):** anything you build (a mechanic, a hazard, a creature, a route
   shape) must be usable by any node in any world as data (a content letter or dial in NODES.md §8's code), proven on 2+ worlds' kits
   where it can be. A piece only one stage can lay is not done.
+- **Burn (Matt 12:43 PM):** never re-run a gate already green on the same code; a change that can't affect the game runs the fast gates
+  only (LAWS 5); don't read long tool output into your context (tail it); stop at 40% context.
+- **Time boxes (Matt 12:48 PM ET):** every member works in a box the lead names (60-90 min). At the box's end: push, REPORT.md with an
+  EXACT NEXT STEP list (the handoff), one line to the lead with context %, then STOP. The lead then decides: a fresh session continues,
+  the work waits, or it's done. Also stop early at 40% context.

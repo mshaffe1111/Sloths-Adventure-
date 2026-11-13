@@ -11,7 +11,8 @@
     "11-11 ~6 PM Matt (to the new lead): engine tier on Fable 5.2 high for the core engine build; critics and everything else stay Opus 5.5",
     "11-11 6:13 PM Matt: only about 2 hours of Fable in total; engine back on Opus 5.5 xhigh; Fable only via role engine-fable on packets the lead names",
     "11-12 7:30 AM Matt: 'Xhigh only when needed. Max if needed.': engine tier high or xhigh; max allowed when the lead states why",
-    "11-12 10:39 PM Matt: \"I only want Fable to put the core engine together... the up, the down, and pieces to it. I don't want it writing stories anymore or building the levels. Let's stay on Opus Extra... tune down the Fable usage\": Fable = core engine only; level design and building on Opus xhigh"
+    "11-12 10:39 PM Matt: \"I only want Fable to put the core engine together... the up, the down, and pieces to it. I don't want it writing stories anymore or building the levels. Let's stay on Opus Extra... tune down the Fable usage\": Fable = core engine only; level design and building on Opus xhigh",
+    "11-13 12:42 PM ET Matt: \"back off of the higher engine fable to 5.2... Keep engine work on extra opus extra and then keep everything down at high or medium. Medium for work that doesn't have a lot of potential issues\": Fable stopped; engine/integration on Opus 5.5 xhigh; all else high, medium where low-risk"
   ],
   "tiers": {
     "critical": {
@@ -35,7 +36,7 @@
       "effort": [
         "high"
       ],
-      "what": "CORE ENGINE ONLY (Matt 11-12 10:39 PM): laying stages up and down and its pieces, the card road, other core engine foundations the lead names; never story, level design or level building (those are Opus xhigh)"
+      "what": "NOT IN USE (Matt 11-13 12:42 PM: too expensive; engine work on Opus xhigh). Earlier: core engine only."
     },
     "core": {
       "model": "claude-opus-5-5",

@@ -10,6 +10,21 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **TIME BOXES + HANDOFFS** (Matt, 11-13 12:48 PM ET): every member gets a box (60-90 min); at its end it hands off (REPORT with EXACT NEXT
+  STEP) and stops; the lead decides whether a fresh session continues. Plus the 40% context stop. Watch usage and retire early when it climbs.
+- **AT MOST 4 MEMBERS RUNNING AT ONCE** (Matt, 11-13 12:44 PM ET: "we need to limit how many we're running at one time... Not everything needs a
+  different helper"): prioritise; double up related jobs on one member (a finishing member hands its leftovers to a running one, not a new one).
+- **STAY AHEAD OF THE BURN (Matt, 11-13 12:43 PM ET):** the lead decides when to switch members out (fresh session at 40% context, members
+  self-report it, D55); no testing of what can't affect the game (LAWS 5: docs/tools = fast gates); no re-running a gate already green
+  on the same code; fewer members at once; medium effort for low-risk work. Where tokens really go: long sessions re-reading their
+  context each turn, many sessions at once, and Fable, more than the gates themselves.
+- **MODELS (Matt, 11-13 12:42 PM ET): no Fable (too expensive). Engine work on Opus xhigh; everything else Opus high, or medium for low-risk
+  work (docs, mechanical steps, small known fixes). tools/team/models.json logs it.**
+- **THE LEVEL TARGET: ONE DESIGNER + ONE DEVELOPER, A 2-HOUR STAGE** (Matt, 11-13 12:41 PM ET): "we shouldn't have to use 20 people to create a
+  level." A level job starts only when every node/piece its design names already exists in the engine (NODE-KEY status "Now"); the
+  designer writes the node string (+ the story keeper's nature check and lines), ONE builder lays and proves it with ADD-LEVEL's one step.
+  Engine work is never done inside a level job. Burn ahead only where it pays off in that target; anything that adds no value there is
+  rethought. Measure every level in LEVEL-LOG (people, hours, cost). 1-4/1-5 (11-13) were the expensive transition: pieces built inside levels.
 - **EVERY PIECE IS A NODE BUILDING BLOCK; EACH WORLD BUILDS ON THE LAST** (Matt, 11-13 12:14 PM ET; R-165.198; "one of the main goals I gave
   for you"): every element built (swing vines, the two-hand vine field, pods on a beat, fig gates, creaky boughs, two roads, creatures...)
   is a node content/dial that any later node in any world can use, so World 2 is easier to build than World 1, World 3 easier than
@@ -48,7 +63,7 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 |---|---|---|---|---|
 | FA | session_01FhBbYNtcMTuMaKP1e5JiQ5 | Fable high | t-fa | ascent lay finished (+ along the route, climb camera) for 1-4 |
 | B15 | session_01FhBbYMteKQmarmbYVMoZiN | Opus xhigh | t-b15 | bough + limb load + marks goal, crude room, then 1-5 whole (card road cut) |
-| B14 (retired $52.87) -> B14b | see STATE 12:14 PM | Opus xhigh | t-b14 | LATTICE onto main, pods, cluster/gate, crude room v2, then 1-4 whole |
+| B14 ($52.87) -> B14b ($11.78) -> B14c session_01FhBbYL2ZzaxtJErxEbEgoy (Opus high, box 3:30 PM) | t-b14 | Opus xhigh | t-b14 | LATTICE onto main, pods, cluster/gate, crude room v2, then 1-4 whole |
 | ART2 (retired $24.10) -> ART3 | see STATE 12:07 PM | Opus high | t-art-1113 | HF: two-hand climb (R-165.178), 1-5 set, 1-4 pieces; inventory; cap $15 |
 | ENGINE-NEEDS | (retired, $10.33) | | | plan: reference/plans/ENGINE-NEEDS.md; waves A-D in STATE 11-13 |
 | ADD-LEVEL | session_01FhBbYLJhNRpJErB4SQprjk | Opus high | t-add-level | one-step add a level + registry gate (tools only) |
