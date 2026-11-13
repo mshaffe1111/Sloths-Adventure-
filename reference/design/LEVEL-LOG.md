@@ -51,3 +51,5 @@ the first: count levels that reach his test link at the bar, against the usage %
 | IDEAS-1-7-8 C (Opus xhigh) | 1-7 + 1-8 idea lists + tributes; 5 engine findings (seesStill eagle, chase liana fairness) | unreadable | 16 min; the lead archived it before it went idle (its own rule), so its cost was lost: about $2-4 by its siblings |
 | VARIETY-2 (Opus max) | proved VARIETY's item 1 (all gates); found W1 floor.unmarked root = the painter's single ground line (ruler job packet ready); '_' vs V19 named; found R-165.207 (buildcheck at budget on main) | $16.13 | ~1 h 35 min |
 | D17-18 (Opus xhigh) | 1-7 + 1-8 designs (60 lines each) + combined NEW table (28 blocks, 1-6..1-8); re-tuned to DIFFICULTY §4 | $6.85 | ~37 min |
+| ENGINE-STUDY-678 (Opus xhigh) | one engine plan for 1-6..1-8: 24 verified blocks, waves, 16 packets in 2 lanes, estimates, one art batch list | $5.74 | ~15 min |
+| GATES-4 (Opus high, runner) | the unrun gates on tonight's build + 24 stills; 2 reds named, nothing fixed | $3.08 | ~60 min |
