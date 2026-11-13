@@ -42,3 +42,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | VARIETY (session_01FhBbYLF4aRMBR5NoxbeWGb, Opus max) | item 0 1-4 vine-top: engine vault finder (vineTop.ts, 3,906 cases game-wide); shape/move asks as rules | $21.11 | legs fixture 2->3/60; W1 1/60 (floor.unmarked) |
 | IDEAS-1-6 A (Opus medium) | 1-6 idea list + tributes (Pitfall!, DK Jr., DKC) | $1.14 | ~8 min; tributes a-d with sources |
 | IDEAS-1-6 B (Opus high) | 1-6 idea list + tributes (Pitfall!, DK Jr., DKC rope level) | $1.24 | ~8 min; new blocks named |
+| IDEAS-1-6 C (Opus xhigh) | 1-6 idea list + tributes (Pitfall!, Jungle Hunt, DK Jr., DKC); found R-165.204 | $3.49 | ~12 min; network blocked page fetches (search results only) |
