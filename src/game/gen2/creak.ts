@@ -14,8 +14,16 @@
 import type { Platform } from '../types.ts';
 import type { Difficulty, WorldManifest } from './types.ts';
 
+/**
+ * A creaky limb's own marks on its platform (kept off the shared Platform type: only gen2's check and the falling-limb trap read them):
+ *  - creakFree: laid before its lesson is over, so the stage must clear without it (pipeline checkStage);
+ *  - trapLoad: it is a drop trap's load (castPlay.types TrapPost kind 'limb'): once it gives way castArt draws its fall and where it
+ *    lies, so the old renderer draws no snapped halves (protoArt.ts).
+ */
+export type LimbPlatform = Platform & { creakFree?: true; trapLoad?: true };
+
 /** make a laid piece's platform the world's creaky limb. `free`: laid before its lesson is over (never needed) */
-export function creakLimb(p: Platform, M: Pick<WorldManifest, 'world' | 'creak'>, difficulty: Difficulty, free: boolean): Platform {
+export function creakLimb(p: LimbPlatform, M: Pick<WorldManifest, 'world' | 'creak'>, difficulty: Difficulty, free: boolean): Platform {
   const row = M.creak;
   if (!row) throw new Error(`gen2: a creaky limb is laid in world ${M.world}, which has no creaky limb (WorldManifest.creak)`);
   p.type = 'fragile';
@@ -33,4 +41,4 @@ export const isCreak = (p: Platform): boolean => p.type === 'fragile' && p.creak
  * Must the stage clear without this platform? World 7's crumbling tiles (fragile with no creak hold: never needed, STAGE-RULES §1) and
  * a creaky limb laid before its lesson is over. A limb after its lesson may be the way.
  */
-export const needless = (p: Platform): boolean => p.type === 'fragile' && (p.creak === undefined || !!p.creakFree);
+export const needless = (p: LimbPlatform): boolean => p.type === 'fragile' && (p.creak === undefined || !!p.creakFree);

@@ -15,6 +15,7 @@
 import type { TrapPost } from '../../castPlay.types.ts';
 import { TRAP } from '../../dropTrap.ts';
 import type { Enemy } from '../../types.ts';
+import type { LimbPlatform } from '../creak.ts';
 import type { CreatureDef, PropDef, PropEmitter, PropPair, StageSink } from '../types.ts';
 
 /** how high over its ground a load hangs (px): over his head as he walks under it (he is 89 px), over a rearing snake, and low enough
@@ -78,7 +79,7 @@ const limbLoad: PropEmitter = (f, _p, out) => {
   const mid = limb.x + limb.width / 2;
   const under = out.platforms.filter((q) => q !== limb && q.type !== 'fragile' && q.y > limb.y + limb.height && mid >= q.x && mid <= q.x + q.width).sort((a, b) => a.y - b.y)[0];
   if (!under) throw new Error(`w1Cast: the falling limb at x ${Math.round(mid)} has no ground under it`);
-  limb.trapLoad = true;
+  (limb as LimbPlatform).trapLoad = true;
   const live = (out.proto.cast ??= { kinds: [], traps: [], said: W1_CAST_SAID }).traps;
   live.push({ id: live.length + 1, kind: 'limb', load: 'limb', limb: limb.id, w: limb.width, x: Math.round(mid), y: limb.y, loadX: Math.round(mid), loadY: limb.y + limb.height, landY: under.y });
 };
