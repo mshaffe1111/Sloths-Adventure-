@@ -189,6 +189,9 @@ export interface WorldManifest {
    *  painted family the world's painter draws it with; `depth`: px under the gap's lower lip [min, max]; `clearStart`: no hollow this
    *  near the spawn, px */
   hurtFloor?: { lesson: string; art: string; depth: [number, number]; clearStart: number };
+  /** the hurt floor's other looks, by name (a jump place's `floor`): the same floor (a heart and a set-back on Normal, a set-back on Easy)
+   *  with its own art and depth, e.g. World 1's creek; a place naming a look the world lacks is a build error */
+  hurtLooks?: Record<string, { art: string; depth: [number, number] }>;
   /** the world's creaky limb (SectionPiece.creak; gen2/creak.ts): the style its platform is drawn in (World 1: 'branch', drawn
    *  notched as branchCreak), how long it holds once stood on (s, by setting), and the section `teaches` id of its lesson (every limb
    *  laid up to the end of the lesson's section is never needed; after it one may be required anywhere, STAGE-RULES §1). A roll that
@@ -268,7 +271,7 @@ export type PlaceRule =
   /** `gapPx` (the designer's pixel bands, 11-06: a double's TEACH 195-205, its TEST 205-230): the gap laid in this band exactly, in place of
    *  `share`, never scaled by the roll's tempo or the jump's reach; a band past the reach fails the section by name */
   /** `hurt` (a jump, double or pit place): the gap is a HOLLOW with the world's hurt floor under it (WorldManifest.hurtFloor), no steps out */
-  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean; hurt?: boolean }
+  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean; hurt?: boolean; floor?: string }
   | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean; hurt?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }

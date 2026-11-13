@@ -37,15 +37,15 @@ export const LINES_15 = {
   creak: 'Creaky limbs drop you, but only down to the roots!',
   sealed: "We missed some of her marks. They're back there!",
   last: "She's making them last.",
+  /** Dot at the big sign (the lead's ruling 11-13, with the card road cut: the signs no longer pick, her marks do) */
+  sign: 'Never mind the signs. Follow her marks!',
 } as const;
 /* (the fresher-petals line is 1-5's WAYSIDE story beat already, dotLinesData.ts way.1-5, said at the halfway mark in its new look's words,
  *  "She squashed this one extra flat."; as a tip too it was said twice a run, B15 stills 11-13) */
 /** the keeper's lines HELD until what they speak of is on screen (World 1 has no leaf-sign art until ART paints it, and with the card
  *  road cut the roll, not the player, picks beat 6's stretch: "Your pick!" would be untrue). Approved by Matt 11-12 10:20 PM ET, verbatim */
 export const HELD_15 = {
-  /** Dot, before the curtain (beat 6): back with the signs and a pick he makes */
-  sign: "Squirrels painted what's each way. Your pick!",
-  /** Pokey, at the first THIS WAY / THAT WAY (beat 1) */
+    /** Pokey, at the first THIS WAY / THAT WAY (beat 1) */
   joke: 'THIS WAY. THAT WAY. Thank you, squirrels.',
 } as const;
 /** the stage's MISSION line (the keeper's, approved by Matt 11-12 10:20 PM ET): stagePlan's, held equal by library15.test.ts */
@@ -166,7 +166,11 @@ const EASY: Set = { limb: 170, gap: 50, late: 160, lateGap: 104, easy: true, dip
  *  on everything, STAGE-RULES §0.1; a miss is a heart and a set-back on Normal, a set-back on Easy, and every creaky limb is whole again):
  *  only where no deck stands over it (no ceiling in the jump, D46). Normal's gap is the widest the lay takes at Normal's margin (pipeline maxGap: 143 px level), Easy's about three quarters of it; never a landing
  *  pad on top of it (each setting's gap is its own) */
-const dip = (key: string, after: string, w: number, S: Set): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy: [0, 0], gapPx: S.dip, soft: true }, style: 'moss_stone', main: true });
+const dip = (key: string, after: string, w: number, S: Set, floor?: 'creek'): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy: [0, 0], gapPx: S.dip, soft: true, ...(floor ? { floor } : {}) }, style: 'moss_stone', main: true });
+/** World 1's creek as a look of its hurt floor (ART's dusk creek, w15Creek.ts; the lead's ruling 11-13: a heart and a set-back on Normal,
+ *  a set-back on Easy, looks fast, stones under the surface, no lily pads, no petals in it). Shallower than the thorn hollows: a creek
+ *  bank, not a ravine. World data: World 2's river reuses the tile through its own row (B14c moves this row into w1.ts when it holds it) */
+export const CREEK_LOOK = { creek: { art: 'w15-creek', depth: [118, 128] as R2 } };
 
 // ───────────────────────────── the beats ─────────────────────────────
 /*
@@ -281,12 +285,12 @@ function blocked(S: Set): Lay {
   return { pieces, sockets };
 }
 /** [H] beat 6, the big sign (a plain sign pair; the card road is cut, 1-5.md:27): ONE of the two stretches, the roll's pick (Dot's
- *  sign line is held: HELD_15). THAT WAY: up a vine to the bough run, three decks of creaky limbs with a sound perch between them, the low road hopping a root in
+ *  line at its first bank: "Never mind the signs. Follow her marks!"). THAT WAY: up a vine to the bough run, three decks of creaky limbs with a sound perch between them, the low road hopping a root in
  *  the open under each perch; THIS WAY: the root ramp down to the creek's stepping roots over soft dips (stand-in for the water, named in
  *  the report), one awake snake on the far bank */
 function boughRun(S: Set): Lay {
   const pieces: SectionPiece[] = [bank('a', null, FIRST_W), bank('a2', 'a', 260, UP)];
-  const sockets: Socket[] = [flag('a', 0.2), firstMark(FIRST_W), sign('sgup', 'w15-sign-up', 'a2', 0.6)];
+  const sockets: Socket[] = [flag('a', 0.2), tip('tsg', 'a', 0.04, 'sign'), firstMark(FIRST_W), sign('sgup', 'w15-sign-up', 'a2', 0.6)];
   let prev = 'a2';
   for (let d = 0; d < 3; d++) {
     // (a deck: a vine up from the low road, two creaky limbs, a sound perch at its end over the next root; the low road under it flat)
@@ -305,14 +309,14 @@ function boughRun(S: Set): Lay {
 }
 function creek(S: Set): Lay {
   const pieces: SectionPiece[] = [bank('a', null, FIRST_W), bank('a2', 'a', 260, UP), bank('r1', 'a2', 200, DOWN), bank('r2', 'r1', 200, DOWN)];
-  const sockets: Socket[] = [flag('a', 0.2), firstMark(FIRST_W), sign('sgdn', 'w15-sign-down', 'a2', 0.6)];
+  const sockets: Socket[] = [flag('a', 0.2), tip('tsg', 'a', 0.04, 'sign'), firstMark(FIRST_W), sign('sgdn', 'w15-sign-down', 'a2', 0.6)];
   let prev = 'r2';
   for (let j = 0; j < 7; j++) {
     const k = `s${j}`;
     // (the fourth root is an island a flag can stand on: the creek's hollows make it a span where a heart can be lost, and the flag pass
     //  needs a bank 160 px and more inside it, 2,300 px at most from the last flag)
     const w: R2 = j === 3 ? [320, 340] : S.easy ? [150, 150] : [110, 120];
-    pieces.push({ key: k, shape: 'bank', w, place: { kind: 'jump', after: prev, dy: [0, 0], gapPx: S.easy ? [96, 104] : [132, 140], soft: true }, style: 'moss_stone', main: true });
+    pieces.push({ key: k, shape: 'bank', w, place: { kind: 'jump', after: prev, dy: [0, 0], gapPx: S.easy ? [96, 104] : [132, 140], soft: true, floor: 'creek' }, style: 'moss_stone', main: true });
     sockets.push(petals(`p${k}`, k, 0.5, 1));
     prev = k;
   }
@@ -358,7 +362,8 @@ function weave(S: Set): Lay {
     ground('S', 'P', G),
     apron('Q', 'S', Qa),
     ...over('L3', 'Q', Qa, 20 + S.lateGap, S.late, { creak: true }),
-    dip('Qb', 'Q', 240, S), dip('z', 'Qb', 340, S),
+    // (then the creek, 1-5.md beat 8: under is only water)
+    dip('Qb', 'Q', 240, S, 'creek'), dip('z', 'Qb', 340, S, 'creek'),
   ];
   const sockets: Socket[] = [
     flag('a', 0.2), firstMark(FIRST_W), petals('pL1', 'L1', 0.5, 1), petals('pL2', 'L2', 0.5, 1),
@@ -431,6 +436,7 @@ export function kitLib15(): WorldKit {
     sections: SECTIONS_15,
     // (1-2's thorn hollows, World 1's hurt floor, under the low road's later gaps: a heart and a set-back on Normal, a set-back on Easy)
     hurtFloor: THORN_ROW,
+    hurtLooks: { ...M.hurtLooks, ...CREEK_LOOK },
     // (room under the floor line for the hollows' depth (THORN_ROW 150-170 px), as 1-2's kit gives it: with World 1's own 80 px the
     //  hollow fell outside the corridor and no jump over it linked)
     corridor: { ...M.corridor, bottom: M.ground.y + ROOM_12 },
@@ -440,7 +446,7 @@ export function kitLib15(): WorldKit {
     required: {},
     tips: { ...M.tips, ...LINES_15 },
     // (every line of the keeper's here is a TEACH line: Dot says it on Normal's default Tips as on Help, D50)
-    teachTips: [...(M.teachTips ?? []), 'creak', 'last'],
+    teachTips: [...(M.teachTips ?? []), 'creak', 'last', 'sign'],
     graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'relic_hunt'), ...Object.entries(ARC_15).map(([id, code]) => ({ id, archetype: 'relic_hunt' as const, code }))], briefs: { ...G.briefs, [STAGE_15]: BRIEF_15 } },
   } } as WorldKit;
 }

@@ -57,8 +57,9 @@ test("the keeper's lines verbatim (approved by Matt 11-12 10:20 PM ET), the miss
     creak: 'Creaky limbs drop you, but only down to the roots!',
     sealed: "We missed some of her marks. They're back there!",
     last: "She's making them last.",
+    sign: 'Never mind the signs. Follow her marks!',
   });
-  assert.deepEqual({ ...HELD_15 }, { sign: "Squirrels painted what's each way. Your pick!", joke: 'THIS WAY. THAT WAY. Thank you, squirrels.' });
+  assert.deepEqual({ ...HELD_15 }, { joke: 'THIS WAY. THAT WAY. Thank you, squirrels.' });
   assert.equal(MISSION_15, 'She marked the way they took her. Follow her marks.');
   assert.equal(STAGE_PLAN[1][4].desc, MISSION_15);
   assert.equal(STAGE_PLAN[1][4].type, 'relic_hunt');
@@ -72,7 +73,7 @@ test("Dot's creaky line is a TEACH line said 800 px and more before the first li
     const first = st.platforms.filter(isCreak).sort((a: Platform, b: Platform) => a.x - b.x)[0];
     assert.ok(first.x - hint.x >= 800 && first.x - hint.x <= 1100, `seed ${seed} ${d}: her line is ${Math.round(first.x - hint.x)} px before the first limb`);
     assert.equal(st.enemies.filter((e: Any) => e.x < first.x).length, 0, `seed ${seed} ${d}: an animal before the first limb`);
-    for (const k of ['last'] as const) assert.ok(st.proto.hints.some((h: Any) => h.text === LINES_15[k] && h.teach), `seed ${seed} ${d}: "${LINES_15[k]}"`);
+    for (const k of ['last', 'sign'] as const) assert.ok(st.proto.hints.some((h: Any) => h.text === LINES_15[k] && h.teach), `seed ${seed} ${d}: "${LINES_15[k]}"`);
   }
 });
 
@@ -270,5 +271,20 @@ test("on Easy too, after Easy's own flags (easyMode.ts), no leaf-sign stands und
     }
   } finally {
     setDifficulty('normal');
+  }
+});
+
+test("the creek (the lead's ruling 11-13): the weave ends over it on every roll; it is World 1's hurt floor in the creek's look, a heart on Normal and a set-back on Easy, with no pickup over its water", () => {
+  for (const d of ['normal', 'easy'] as const) for (const seed of SEEDS) {
+    const st = built(seed, d);
+    const creeks = st.platforms.filter((p: Any) => p.pit === 'hurt' && p.floorArt === 'w15-creek');
+    assert.ok(creeks.length >= 2, `seed ${seed} ${d}: ${creeks.length} creek floors`);
+    for (const c of creeks) {
+      const z = (st.heartFalls ?? []).find((h: Any) => h.x0 === c.x && h.x1 === c.x + c.width);
+      assert.ok(z, `seed ${seed} ${d}: the creek at ${c.x} has no heart-fall zone`);
+      assert.equal(!!z.soft, d === 'easy', `seed ${seed} ${d}: the creek at ${c.x} is ${z.soft ? 'soft' : 'a heart'}`);
+      const wet = (st.pickups ?? []).filter((p: Any) => p.x > c.x + 8 && p.x < c.x + c.width - 8 && p.y > c.y - 60);
+      assert.equal(wet.length, 0, `seed ${seed} ${d}: a pickup in the creek at ${c.x}`);
+    }
   }
 });
