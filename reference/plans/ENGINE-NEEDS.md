@@ -40,7 +40,7 @@ world data, planted tests, proven on 2+ worlds' kits, lockall unchanged for ever
 | # | Packet | Serves | Size | WRITE (new files unless marked shared) | Depends on |
 |---|---|---|---|---|---|
 | 1 | CLOCK-ON: named ClockDefs reach the engine; beat bricks (snap stones, sinking pads) and clocked hazards laid from data | clock 20 (1-8, 2-2, 2-5, 2-9 first) | L | gen2/beatLay.ts; engine.ts (shared: clock at :564); beatBrick.ts | B14's beat clock + pods |
-| 1b | REWARDS (R-165.193): fruit ring -> extra life, chain multiplier, finds open hidden stages on the map | every stage | M | gen2-free: hud + save + map | none |
+| 1b | REWARDS (R-165.193): a woven-basket ring on the HUD (story keeper: fruit for Meeca's welcome-home table), full basket -> extra life, chain multiplier, finds open hidden stages on the map | every stage | M | gen2-free: hud + save + map | none |
 | 2 | STILL: hide + watcher as world-neutral sockets, look by world row; W6/W8 emitters move onto it | still 10 (1-7 first) | M | gen2/stillLay.ts; gen2/worlds/w6.ts, w8.ts (theirs) | none (pipeline hook after FA) |
 | 3 | CAST-WORLDS: the predator registry by world; lure targets as sockets; landing noise by world data | lure 8, noise 4, trap 4 (1-7, 1-9 first) | M | predators/registry.ts, predators/world2.ts+, gen2/lureLay.ts | B15 (limb load) |
 | 4 | RIDE: ride.ts wired into the engine; logs, pads, lifts as gen2 pieces | ride 11 (5 of W2's 9) | M | gen2/rideLay.ts; ride.ts; engine.ts (shared, after 1) | 1 (ride reads the clock) |
