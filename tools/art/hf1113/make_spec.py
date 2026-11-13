@@ -126,7 +126,7 @@ FRUIT = {
 
 def fruit1(seeds=(11, 23, 37)):
     items = [{'name': f'fruit-{k}-{sd}', 'prompt': f'{p}, a single game pickup item, whole and fresh, never bitten, centred, '
-                                                    f'{STYLE}, {MAG}', 'seed': sd, 'w': 1024, 'h': 1024}
+                                                    f'{STYLE}, {GRY if k in ("dragonfruit", "passionfruit") else MAG}', 'seed': sd, 'w': 1024, 'h': 1024}
              for k, p in FRUIT.items() for sd in seeds]
     spec = {'tag': 'fruit1', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
             'neg': PNEG + ', bitten, cut open, sliced, pile, basket, plate, table', 'items': items}
