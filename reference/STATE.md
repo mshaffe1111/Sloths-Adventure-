@@ -726,3 +726,7 @@ lines); Matt sees them in the release.
   and not have it where it's a only kid game... for adults... especially on normal. Easy can stay easier"; "easy, I see as a casual
   playthrough." Written into STAGE-RULES §1 #5 (the meter's anchors) and the D15 / IDEAS-1-5 packets (1-5 Normal target ~5-6). 1-4's
   BUILD packet must set a Normal target (~4-5) and revisit D14's "a knock costs a column, never a heart" on Normal.
+- 2026-11-12 8:31 PM ET, Matt: 1-1 is a 4 ("more double jumps... could be taken down a little bit... maybe we start introducing double jumps
+  on 1-4"; R-165.173, decided with the meter's numbers); the meter must assign POINTS to things (creatures, double jumps, jump distance,
+  things at once), researched, "not guessing", in every level; "get Fable to run through and create a difficulty arc, an algorithm that
+  we build into it" (R-165.172 updated). Asked Matt which Fable does first (difficulty algorithm vs the climb engine).
