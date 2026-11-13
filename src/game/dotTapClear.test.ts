@@ -163,3 +163,46 @@ test('a warning and a scene\'s line keep their reading time; the rest of the car
   const st = { line: info('a', 'A story aside, said slowly.', { kind: 'story' }), startedAt: 0, base: 0, n: 2 };
   assert.equal(q.holdFor(st), FADE_K * readMs(st.line.text));
 });
+
+test('on the phone a newer line never cuts one short mid-read: a plain lesson waits for the read; a hazard lesson or a warning that must cut sends the card back in full', () => {
+  const petals = info('p', 'Run through petals to pick them up.', { source: 'lesson' });
+  const plain: GuideLine = { key: 'h', text: 'Hurt? Grab a heart to heal.', kind: 'teach', who: 'Dot', source: 'lesson' };
+  for (const readDone of [false, true]) {
+    const q = app();
+    q.readDone = readDone;
+    q.push(petals, 3000);
+    q.tick(3000, env);
+    q.push(plain, 4600);
+    const rows = run(q, 4600, 3000 + readMs(petals.text) + 1000);
+    const at = rows.find((r) => r.key === 'h')?.at ?? -1;
+    if (readDone) assert.ok(at >= 3000 + readMs(petals.text), `the lesson at ${at - 3000} ms: after the petals card's reading time (${readMs(petals.text)})`);
+    else assert.ok(at > 0 && at - 3000 < 2000, "the tools' queue as before: in at the minimum time");
+  }
+  // (1-2 before: the gap's lesson, a hazard about to hit, cut the petals card at 1.5 s and it was gone for good)
+  const gap: GuideLine = { key: 'g', text: 'Flick up to hop up or over.', kind: 'teach', who: 'Dot', move: 'jump', source: 'lesson', soon: true };
+  for (const cutter of [gap, info('w', 'Ouch! Watch out for that one.', { kind: 'danger' })]) {
+    const q = app();
+    q.readDone = true;
+    q.push(petals, 3000);
+    q.tick(3000, env);
+    q.push(cutter, 4600);
+    const rows = run(q, 4600, 40000);
+    assert.equal(rows[0]?.key, cutter.key, `${cutter.key} comes in at once`);
+    assert.ok(rows.some((r) => r.key === 'p'), `the card ${cutter.key} cut comes back to be read in full`);
+  }
+});
+
+test('on the phone the reading time counts from when the card is on screen, however long her flight took', () => {
+  const q = app();
+  q.readDone = true;
+  const l = info('a', 'A flag! Fall, and you start again here.');
+  q.push(l, 3000);
+  q.tick(3000, env);
+  q.onScreen(6000);
+  assert.equal(q.cur?.startedAt, 6000, 'a 3 s flight: the card counts from 6 s');
+  const t = new GuideQueue(true, TIPS_GAP_MS);
+  t.push(l, 3000);
+  t.tick(3000, env);
+  t.onScreen(6000);
+  assert.equal(t.cur?.startedAt, 4500, "the tools' queue as before (at most 1.5 s)");
+});

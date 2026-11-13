@@ -41,6 +41,20 @@ if (tapArg) await p.evaluate(() => {
     Object.defineProperty(st, k, { get: () => v, set: (x) => { if (x && !v) window.__presses[k === 'punchPressed' ? 'punch' : 'jump']++; v = x; }, configurable: true });
   }
 });
+// (why each card ended: the queue's own end events, read as the view drains them)
+await p.evaluate(() => {
+  window.__ends = [];
+  const hook = () => {
+    const r = window.__dotRun;
+    if (!r || r.queue.__hooked) return;
+    const q = r.queue;
+    q.__hooked = true;
+    const d = q.drain.bind(q);
+    q.drain = () => { const ev = d(); for (const e of ev) if (e.type === 'end') window.__ends.push({ text: e.show.line.text, why: e.why, up: Math.round(r.clock - e.show.startedAt) }); return ev; };
+  };
+  setInterval(hook, 200);
+  hook();
+});
 await p.keyboard.down('ArrowRight');
 const t0 = Date.now();
 const cards = [];
@@ -92,6 +106,8 @@ for (const c of cards) {
   console.log(`${(c.at / 1000).toFixed(1).padStart(5)} s  ${(c.ms / 1000).toFixed(1).padStart(5)} s up / read ${(c.read / 1000).toFixed(1)} s (x${(c.ms / c.read).toFixed(1)}) ${ok ? '  ' : '<<'}${c.tapped ? ` TAPPED (punches ${c.tapPunch}, jumps ${c.tapJump})` : ''} ${words(c.text)}w "${c.text}"${c.next && c.next !== '(run ended)' ? ` -> replaced by "${c.next.slice(0, 40)}"` : c.next === null ? '' : ' (run ended)'}`);
 }
 console.log(`${cards.length} cards; ${short} were taken down before their reading time`);
+const ends = await p.evaluate(() => window.__ends);
+console.log('why each ended (the queue): ' + ends.map((e) => `"${e.text.slice(0, 28)}" ${e.why} at ${(e.up / 1000).toFixed(1)} s`).join('; '));
 await b.close();
 try { process.kill(-vite.pid); } catch { vite.kill(); }
 process.exit(0);

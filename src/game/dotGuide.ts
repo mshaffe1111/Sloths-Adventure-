@@ -381,7 +381,15 @@ export class GuideQueue {
    */
   private cutsIn(line: GuideLine, now: number): boolean {
     const cur = this.cur;
-    return this.calm && line.kind === 'teach' && !!cur && now >= CALM.startMs && now - cur.startedAt >= GUIDE.minShowMs && (cur.line.kind === 'story' || ((line.source === 'lesson' || !!line.stageTeach) && cur.line.kind === 'info'));
+    // (on the phone a plain lesson waits until the card up has been read; a hazard about to hit or the stage's own teach line comes in at
+    // the minimum time as before, and the card it cut comes back to be read in full: push's `heard`)
+    const floor = line.soon || line.stageTeach || !cur ? GUIDE.minShowMs : this.readFloor(cur);
+    return this.calm && line.kind === 'teach' && !!cur && now >= CALM.startMs && now - cur.startedAt >= floor && (cur.line.kind === 'story' || ((line.source === 'lesson' || !!line.stageTeach) && cur.line.kind === 'info'));
+  }
+  /** how long a line must have been up before another may cut in over it and it counts as heard: its minimum time, or on the phone
+   *  (readDone) its whole reading time: a newer line never cuts one short mid-read (R-165.175; 1-2: the petals card cut at 1.5 s) */
+  private readFloor(cur: Showing): number {
+    return this.readDone ? Math.max(GUIDE.minShowMs, readMs(cur.line.text)) : GUIDE.minShowMs;
   }
 
   push(line: GuideLine, now: number): void {
@@ -399,7 +407,8 @@ export class GuideQueue {
       // (calm: and any line cut once it has been up its minimum time has been seen: it is not said twice, DOT-6. "The Sky Sovereign is
       // hunting" came again 11 s after a warning cut it)
       const up = now - cur.startedAt;
-      const heard = (cur.line.scene && up >= readMs(cur.line.text) * GUIDE.sceneHeard) || (lessonCut && up >= GUIDE.minShowMs) || (this.calm && up >= GUIDE.minShowMs && !cur.line.move);
+      const floor = this.readFloor(cur);
+      const heard = (cur.line.scene && up >= readMs(cur.line.text) * GUIDE.sceneHeard) || (lessonCut && up >= floor) || (this.calm && up >= floor && !cur.line.move);
       if (!heard) this.waiting.push({ line: cur.line, until: now + Math.max(GUIDE.backMs, waitFor(cur.line)), seq: -++this.seq, base: cur.line.move ? cur.base : undefined });
       this.cur = null;
       this.begin(line, now, 0);
@@ -598,8 +607,9 @@ export class GuideQueue {
     if (now - this.endedAt < gap) return null;
     if (env.hold) return null;
     if (env.danger && !isUrgent(b.line) && !b.line.anyway) return null;
-    // (the cards he asked for by tapping: only the breath, R-165.175)
-    const asked = b.seq <= this.tapSeq;
+    // (the cards he asked for by tapping: only the breath, R-165.175; on the phone, a card a warning cut short too: it comes back to be
+    // read in full, not 30 s later)
+    const asked = b.seq <= this.tapSeq || (this.readDone && b.seq < 0);
     if (this.calm && !isUrgent(b.line) && !asked) {
       // (calm) nothing in the stage's first seconds; then the gaps between lines
       if (now < CALM.startMs) return null;
@@ -628,7 +638,8 @@ export class GuideQueue {
     const c = this.cur;
     if (!c || c.onScreen) return;
     c.onScreen = true;
-    if (now > c.startedAt) c.startedAt = Math.min(now, c.startedAt + 1500);
+    // (on the phone, R-165.175: from the moment it is on screen, however long her flight; 1-2 measured 3.7 s on screen of a 5 s line)
+    if (now > c.startedAt) c.startedAt = this.readDone ? now : Math.min(now, c.startedAt + 1500);
   }
 
   /** take the events since the last call */
