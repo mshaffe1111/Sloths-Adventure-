@@ -12,6 +12,25 @@ Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 
 
 Rewritten again at the stop of NODES-TRAVEL (1:04 PM ET, 2026-11-13): branch `t-nodes`: a stage laid as LEGS (section 0j). Milestone 1 of 4 only. Sections below are still true.
 
+Rewritten again at the stop of VARIETY (2:33 PM ET, 2026-11-13): branch `t-nodes`: one vault finder for the engine and the tower verdict; a node's shape or move ask is a rule where the slot can keep it (section 0l). Sections below are still true.
+
+## 0l. The vault and the asks (VARIETY, R-165.197/.198/.200, t-nodes, 11-13): what the next engineer must know
+- **Straight up at a vine's top** vaults him toward the side with more ledge (engine.ts vaultSide -> src/game/vineTop.ts vaultSide /
+  ledgeOut, the ONE finder; the tower verdict towerVaults reads it too, D19). Every climbing vine the lay makes stands CLIMB_CLEAR (26,
+  now in vineTop.ts, re-exported by pipeline.ts) off its bough's end; the finder steps over a gap up to VAULT_GAP (40; the real vault
+  lands on wood 56 out, vineTop.test.ts). Until 11-13 it sampled from 10 px and stopped at the first miss: it never saw a cleared bough,
+  so the vault went the way he faced (1-4's turn-backs: off the storey above). `npx tsx tools/engine/vaultscan.ts 16`: every stage's vine
+  tops old vs new (3,906 fixed, 0 regressed, 0 moved; 2,132 cases on 13 stages land on no wood either way, before and after: the x-10
+  arenas, 4-3, 4-9, 5-M: not looked at). w8Lantern.ts keeps its own CLIMB_CLEAR copy (26).
+- **Asks as a rule** (pipeline.ts): dealContent fixes a node whose shape/move ask only ONE type of its job lays (askServes) to that type,
+  like dealExact; the pick's `keeps`: where any candidate lays every ask (askParts) and is not clamped out, only those are drawn (the bag
+  gave every candidate a ticket and a rated node's draws are sorted by difficulty, so the x20 weight lost); with none, a shape ask never
+  draws a section against it while a level one fits. Shipped graphs ask nothing: no lock moves.
+- **Traps.** (1) RealPlay('1-4', seed) draws from the PROVEN list: its seed n is not library14's seed n. (2) A probe that holds up for 90
+  frames walks onto the next vine (a field's foot vine): judge the vault on the frame he lands. (3) `off` vines (a shut gate's) never take
+  him: a 'miss' there is the gate. (4) pool short on W1 mix rolls is usually the REPAIR loop's bans (FITS_DEBUG-style log in the report),
+  not the deal: fix what drives the repairs first.
+
 ## 0k. Node asks (NODES-2, R-165.198, t-nodes, 11-13): what the next engineer on the node code must know
 - gen2/nodeAsks.ts holds the designer's asks (`MissionNode.asked`: a token's marks and dials the job does not imply) and the check
   `askMisses` / `hazardMiss`. pipeline.ts: rolledGraph carries `tk` beside `jobs` (as `tv` carries travel; a dropped asked node throws

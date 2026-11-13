@@ -28,6 +28,10 @@ count / hazard hurt, add `gen2.dialMiss` to `rollErrors`, then delete the throw.
 A roll with any error never reaches the proven list or a player. `provenGen2Stage` walks `seed + k x 7919` for 24 tries, catching throws;
 `buildPlayStage` replays a listed seed's packed plan (`gen2/seedList.ts`). Every verdict below is folded by `rollErrors()` in
 `src/game/gen2/pipeline.ts`.
+- (VARIETY, 11-13) **towerVaults** (tower.ts, in a tower's `towerMiss`): straight up at every climbing vine's top must land on wood,
+  facing either way, read with the engine's own finder (src/game/vineTop.ts). Runs only on a tower or a stage of legs; shipped runs
+  are covered by tools/engine/vaultscan.ts (0 regressions), not by a verdict. A node's shape/move ask is a rule in the deal and the pick
+  where the slot can keep it (engine-core.md 0l).
 
 | Verdict | Enforces | Where | Planted test |
 |---|---|---|---|
