@@ -1,0 +1,116 @@
+1-1   sprint       →  | run, jump, double jump, bounce | The basics, re-laid. Live in 0.9.6.
+1-2   harvest      → hurt |  | Bounce chain over a thorn floor
+1-3   purge        → trap | punch; rope | Drop traps: shake a vine, cut a tendril, drop a hive on the snakes
+1-4   ascent       ↑ crumble,clock,dir | climb; crumbling | The first climb, inside the hollow kapok: rotting boughs, ripe fruit f
+1-5   harvest      → roads |  | Over or under: the risky canopy or the fast root tunnel. The card-road
+1-6   vine_runner  → swing | swing | The pendulum: build speed, let go at the top
+1-7   stealth      → still,noise | stillness | The eagle's shadow: in the bush, hold still; soft landings stay quiet
+1-8   sprint       → chase,clock |  | The branch collapses behind you; rolling nuts at two heights: jump the
+1-9   gauntlet     → trap,lure |  | Drop traps and the food chain chase the boa off (never carried off or 
+2-1   sprint       → ride | ride | Drifting logs carry you; step off before the reeds
+2-2   harvest      → ride,clock |  | Lily pads sink if you stand too long
+2-3   rescue       → follow | bring them home | Bring them home: freed animals hop behind you
+2-4   vine_runner  → swing,ride |  | Let go of the vine onto a moving log
+2-5   purge        → clock,trap |  | Snap-jaw stones: safe on three beats, snap on the fourth
+2-6   ascent       ↑ dir,ride,still |  | Lifts ride up and down; cross the backs of sleeping caimans, quietly
+2-7   sprint       ⇄ dir |  | Ring the bell, then race back left through a changed river
+2-8   rescue       ↑ dir,follow,water |  | Free them and bring them up ahead of the rising water
+2-9   gauntlet     → ride,clock |  | The full river: lanes of logs both ways, guards on rafts
+3-1   sprint       ↓ dir,dark | dark | The first stage that goes down; light only from glowworms
+3-2   stealth      → dark,hang,still | hang under | Hang along the roof roots above the prowlers
+3-3   purge        → dark,lure,trap |  | Lure a prowler under a loose stalactite
+3-4   ascent       ↑ dir,dark,clock |  | Sleepy mushrooms puff on a beat as you climb
+3-5   stealth      → dark,noise,still,hang | noise wakes things | Noise wakes the thorn vines; the drum is your one loud tool
+3-6   relic_hunt   → dark |  | Carry a glowing fungus cap: it lights a small circle
+3-7   relic_hunt   ← dir,dark |  | Every fern looks alike; the right one rustles
+3-8   vine_runner  → dark,swing,clock |  | Thorn vines pulse; swing on the quiet beat
+3-9   gauntlet     → dark,hang,noise |  | Dark, hanging, quiet and prowlers together
+4-1   ascent       ↑ dir,glide | glide | The leaf is learned on clearing
+4-2   sprint       → wind,glide | wind | Gusts push the leaf left and right
+4-3   ascent       ↑ dir,clock |  | The hand-built set piece; rocks fall on a beat
+4-4   vine_runner  → swing,wind |  | Swing while the wind pushes you
+4-5   stealth      → still |  | The eagle's shadow returns: freeze under cover when it turns
+4-6   ascent       ↑ dir,clock |  | Mist hides ledges until you are close; bark opens and closes on a beat
+4-7   sprint       ↓ dir,glide |  | The hand-built descent; the first drop only the leaf can cross
+4-8   rescue       ↑ dir,follow,wind | updrafts | Bring them home again, riding updrafts
+4-9   gauntlet     → wind |  | Wind blows the guards off their ledges
+5-1   sprint       → drowsy | don't stop | Don't stop: he gets drowsy and sits; a tap or a cold dew drip wakes hi
+5-2   stealth      → drowsy,still |  | Keep moving and stay hidden: cover moves with the breeze; here, freezi
+5-3   rescue       → leash,follow | lead on a vine | The vine leash: freed creatures tie on; tie off to a post
+5-4   vine_runner  → swing |  | Sticky webs slow you
+5-5   harvest      → clock | the clock | Orchids close in waves: a clock on every flower
+5-6   relic_hunt   ← dir |  | The chase goes left; Meeca's scratched petals mark the way
+5-7   stealth      → still,noise | humming silk | Touch a humming thread and the spiders wake
+5-8   ascent       ↑ dir,leash |  | The leash on a climb: tie off, climb, untie
+5-9   gauntlet     → clock,leash |  | The clock, silk and the leash together
+6-1   vine_runner  → swing,hang |  | High roots to swing, low roots to hang under
+6-2   stealth      → water,still | swim | Learn to swim in a still pool with Dot; then ripples show what swims b
+6-3   vine_runner  → swing,clock,water | the tide | The tide changes which roots you can reach
+6-4   sprint       → water,clock |  | The tide comes in behind you
+6-5   purge        → lure,water | food chain | Lure the hunters to the caiman's water; never eaten
+6-6   sprint       → dark |  | Flicker's light in the dark roots; Dot leaves
+6-7   vine_runner  ↓ dir,water,ride | dive | Dive down the root well; rising bubbles lift you
+6-8   ascent       ↑ dir,water |  | The tide rises under you
+6-9   gauntlet     → water,swing,lure |  | Swim, swing, tide and hunters together
+7-1   sprint       → crumble | falling floors | Cracked tiles fall if you stand still
+7-2   purge        → break | punch breaks stone | Sentries can't be punched: break the cracked pillar onto them
+7-3   relic_hunt   → machine | the temple machine | Each relic turns a chair and opens the courtyard
+7-4   ascent       ↑ dir |  | The floor drops into the slide (the built set piece)
+7-5   ascent       ↑ dir,crumble |  | Brown vines snap a moment after you grab them
+7-6   sprint       ← dir,chase,crumble |  | The collapse chase from 1-8 returns, running left
+7-7   relic_hunt   → clock,machine | timed doors | Timed stone doors and seed-key gates
+7-8   ascent       ↑ dir,break |  | Push blocks into steps; break the ceiling from below
+7-9   gauntlet     → crumble,clock,break |  | Falling floors, doors and sentries together
+8-1   sprint       → dark |  | Dusk to dark across the stage
+8-2   harvest      → dark,clock | lit-only things | Blooms open only in light; moonlit branches fade on a beat
+8-3   vine_runner  → swing,fling | swing and fling | Let go at the top of the swing to fly far
+8-4   sprint       → dark |  | The built special stage
+8-5   vine_runner  → swing,fling |  | Swing chains with no ground: fling, catch, fling
+8-6   sprint       ↓ dir,glide,dark |  | Glide down through the dark; moonbeams light the landings
+8-7   ascent       ↑ dir,dark |  | Climb with the jar; glowing flowers refill it
+8-8   purge        → lure,dark,still |  | Lure the hunters into the owl's light; mimic bushes blink first
+8-9   gauntlet     → dark,fling |  | Dark, fling and lit-only branches
+9-1   sprint       → heat | heat | Heat: stand on hot rock and you warm; shade cools
+9-2   sprint       ↑ dir,ride,glide | hot-air ride | Open the leaf over vents and rise
+9-3   vine_runner  → fling,crumble |  | Vines smoulder and drop after you fling off
+9-4   stealth      → still |  | The gaze sweeps; hold still, and it remembers you
+9-5   ascent       ↑ dir,water,ride | rising lava | Lava rises under you; ride the vents to stay ahead
+9-6   purge        → break,lure |  | Break boulders, lure hunters onto the geysers
+9-7   ascent       ↑ dir,clock | crust floors | Crust floors harden and melt on a beat
+9-8   relic_hunt   → ride |  | Follow the thread up and down through the vents
+9-9   gauntlet     → heat,ride |  | Heat, lava and vents together; the rising-lava arena
+10-1  sprint       →  |  | A quiet stage: a breath before the end
+10-2  ascent       ↑ dir,clock |  | Lightning rods charge, then strike their column
+10-3  stealth      → hold,wind,clock | hold on | Hold on when the flash comes, or the gust takes you
+10-4  ascent       ↑ dir,hold |  | Hold on during the climb
+10-5  ascent       ↖ dir |  | A switchback climb, running left as it rises
+10-6  vine_runner  ← dir,hang,swing |  | Swing and hang under the netting, running left
+10-7  purge        → break,lure,water |  | Every world's trick: break, lure, push, the moat
+10-8  ascent       ↑ dir,ride,hold,fling |  | Vents, hold and fling: three and four at once
+10-9  gauntlet     → clock,hold,fling,lure |  | Everything
+----
+dir 30 1-4 2-6 2-7 2-8 3-1 3-4 3-7 4-1 4-3 4-6 4-7 4-8 5-6 5-8 6-7 6-8 7-4 7-5 7-6 7-8 8-6 8-7 9-2 9-5 9-7 10-2 10-4 10-5 10-6 10-8
+clock 20 1-4 1-8 2-2 2-5 2-9 3-4 3-8 4-3 4-6 5-5 5-9 6-3 6-4 7-7 7-9 8-2 9-7 10-2 10-3 10-9
+dark 17 3-1 3-2 3-3 3-4 3-5 3-6 3-7 3-8 3-9 6-6 8-1 8-2 8-4 8-6 8-7 8-8 8-9
+swing 11 1-6 2-4 3-8 4-4 5-4 6-1 6-3 6-9 8-3 8-5 10-6
+ride 11 2-1 2-2 2-4 2-6 2-9 6-7 9-2 9-5 9-8 9-9 10-8
+still 10 1-7 2-6 3-2 3-5 4-5 5-2 5-7 6-2 8-8 9-4
+water 10 2-8 6-2 6-3 6-4 6-5 6-7 6-8 6-9 9-5 10-7
+lure 8 1-9 3-3 6-5 6-9 8-8 9-6 10-7 10-9
+crumble 6 1-4 7-1 7-5 7-6 7-9 9-3
+fling 6 8-3 8-5 8-9 9-3 10-8 10-9
+hang 5 3-2 3-5 3-9 6-1 10-6
+glide 5 4-1 4-2 4-7 8-6 9-2
+wind 5 4-2 4-4 4-8 4-9 10-3
+break 5 7-2 7-8 7-9 9-6 10-7
+trap 4 1-3 1-9 2-5 3-3
+noise 4 1-7 3-5 3-9 5-7
+follow 4 2-3 2-8 4-8 5-3
+hold 4 10-3 10-4 10-8 10-9
+leash 3 5-3 5-8 5-9
+chase 2 1-8 7-6
+drowsy 2 5-1 5-2
+machine 2 7-3 7-7
+heat 2 9-1 9-9
+hurt 1 1-2
+roads 1 1-5
