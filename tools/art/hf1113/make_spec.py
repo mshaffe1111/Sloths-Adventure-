@@ -228,6 +228,23 @@ def props4(commit):
     (H / 'spec-props4.json').write_text(json.dumps(spec, indent=1))
     print(len(items), 'img2img')
 
-CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1, 'climb2': climb2, 'props2': props2, 'props3': props3, 'props4': lambda: props4(sys.argv[2])}
+
+# ---- props5: the guarana again ON GREY (red-orange keyed away with the drifted pink: cut-check.jpg) and the down sign with the arrow
+# ON the leaf (leafsign-down-11's arrow hangs in the air past the leaf's edge)
+def props5(seeds=(11, 23, 37, 53)):
+    gua = ('a small cluster of four round glossy red-orange guarana fruits on a short stalk, two of them split open showing a shiny '
+           'black seed with a white rim like an eye, lit by a warm golden light, golden highlights on the fruit')
+    items = [{'name': f'find-guarana-g-{sd}', 'prompt': f'{gua}, a single game pickup item, whole and fresh, centred, {STYLE}, {GRY}',
+              'seed': sd, 'w': 1024, 'h': 1024} for sd in seeds]
+    down = ('a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade '
+            'held up flat facing us like a little sign, one big bold arrow pointing straight down painted clearly in the middle of the '
+            'leaf in dark purple berry juice, the whole arrow inside the leaf, a clean simple arrow with a triangle head')
+    items += [{'name': f'leafsign-down2-{sd}', 'prompt': f'{down}, {STYLE}, {MAG}', 'seed': sd, 'w': 1328, 'h': 1328} for sd in seeds]
+    spec = {'tag': 'props5', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
+            'neg': PNEG, 'items': items}
+    (H / 'spec-props5.json').write_text(json.dumps(spec, indent=1))
+    print(len(items), 'stills')
+
+CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1, 'fruit1': fruit1, 'climb2': climb2, 'props2': props2, 'props3': props3, 'props5': props5, 'props4': lambda: props4(sys.argv[2])}
 if __name__ == '__main__':
     CMDS[sys.argv[1]]()
