@@ -98,7 +98,7 @@ function trapped(k: string, after: string, asleep: boolean): { pieces: SectionPi
 type Lay = { pieces: SectionPiece[]; sockets: Socket[] };
 type V = { id: string; lay: Lay; easy?: Lay };
 /** a brick (1-3's form): its first piece `in`, its last `out` (both on the low road, level), a version's Easy twin beside it */
-function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble'; teaches?: string; maxPerStage?: number; versions: V[]; /** no creaky limb in it (it may stand before the lesson) */ noCreak?: true }): SectionTemplate {
+function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: 'ground' | 'climb' | 'hazard' | 'crumble'; teaches?: string; maxPerStage?: number; versions: V[]; /** no creaky limb in it (it may stand before the lesson) */ noCreak?: true; /** it shows a lesson the stage only RE-shows (1-2's thorns): it still uses the creaky limb */ reshows?: string }): SectionTemplate {
   const ren = (ps: SectionPiece[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; const f = (s: string) => (s === a ? 'in' : s === z ? 'out' : s); return ps.map((p) => ({ ...p, key: f(p.key), place: Object.fromEntries(Object.entries(p.place).map(([q, v]) => [q, (q === 'after' || q === 'on') && typeof v === 'string' ? f(v) : v])) as SectionPiece['place'] })); };
   const sk = (ps: SectionPiece[], ss: Socket[]) => { const a = ps[0].key, z = ps[ps.length - 1].key; return ss.map((s) => ({ ...s, on: s.on === a ? 'in' : s.on === z ? 'out' : s.on })); };
   const first = ren(o.versions[0].lay.pieces)[0];
@@ -106,8 +106,8 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
     { id: v.id, pieces: ren(v.lay.pieces).slice(1), sockets: sk(v.lay.pieces, v.lay.sockets), ...(v.easy ? { easy: `${v.id}-easy` } : {}) },
     ...(v.easy ? [{ id: `${v.id}-easy`, pieces: ren(v.easy.pieces).slice(1), sockets: sk(v.easy.pieces, v.easy.sockets), easyOnly: true }] : []),
   ]);
-  const { versions: _v, noCreak: _n, ...rest } = o;
-  return { ...rest, feel: [STAGE_15], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches || o.noCreak ? [] : ['creak'], terrain: 'raised-logs', pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
+  const { versions: _v, noCreak: _n, reshows, ...rest } = o;
+  return { ...rest, ...(reshows ? { teaches: reshows } : {}), feel: [STAGE_15], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], needs: ['jump'], uses: o.teaches || o.noCreak ? [] : ['creak'], terrain: 'raised-logs', pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false } as SectionTemplate;
 }
 
 /** the settings' numbers: a creaky limb's length and the gap between two (steady to beat 4: one length, one gap, R-165.174; from beat 5
@@ -193,19 +193,20 @@ function herRoad(S: Set): Lay {
   ];
   return { pieces, sockets };
 }
-/** [X] beat 5, blocked in turn: up on the high road a limb is already gone (a broken stub and nothing past it): drop to her road; then an
+/** [X] beat 5, blocked in turn (and where 1-2's thorns come back: its first bank is the hollows' SHOWING piece, `show`, the thorn bed
+ *  in plain view past its end before any is asked: World 1's hurt-floor rule, promises11 hazard.untaught): up on the high road a limb is already gone (a broken stub and nothing past it): drop to her road; then an
  *  awake snake paces across the low road: up the vine, over it on a sound bough (her mark on it), on along a creaky limb, down */
 function blocked(S: Set): Lay {
   const xv = 40, P = 240, G = 300, Qa = 320;
   const W1 = xv + 2 * S.late + 2 * S.lateGap + 60 + 120;
   const B = P - xv + G + 40;
   const pieces: SectionPiece[] = [
-    bank('a', null, 200), bank('a2', 'a', 180, UP), bank('U', 'a2', W1, DOWN),
-    vine('v', 'U', W1, xv), atTop('L1', 'v', S.late, true),
-    over('L2', 'U', W1, xv + S.late + S.lateGap, S.late, { creak: true }),
+    bank('a', null, 200), bank('a2', 'a', 180, UP), bank('show', 'a2', W1, DOWN),
+    vine('v', 'show', W1, xv), atTop('L1', 'v', S.late, true),
+    over('L2', 'show', W1, xv + S.late + S.lateGap, S.late, { creak: true }),
     // (the stub: a short sound end, then nothing: the way on is down)
-    over('stub', 'U', W1, xv + 2 * (S.late + S.lateGap), 60, { style: 'log' }),
-    dip('r', 'U', 160, S),
+    over('stub', 'show', W1, xv + 2 * (S.late + S.lateGap), 60, { style: 'log' }),
+    dip('r', 'show', 160, S),
     // (the snake's ground between two aprons; up the vine on the first, over it on a sound bough, on along a creaky limb, down)
     apron('P', 'r', P), vine('v2', 'P', P, xv), atTop('B1', 'v2', B),
     ground('S', 'P', G),
@@ -312,7 +313,7 @@ export const BEATS_15: SectionTemplate[] = [
   brick({ id: 'w1-15-through-or-over', name: 'through the hollow trunk or over it', jobs: ['flow'], content: 'ground', difficulty: 2, noCreak: true, versions: ([300, 360] as const).map((len) => ({ id: `trunk-${len}`, lay: throughOrOver(len) })) }),
   brick({ id: 'w1-15-creak-lesson', name: 'the top can drop you: the first creaky limb', jobs: ['teach'], content: 'crumble', teaches: 'creak', difficulty: 2, versions: [{ id: 'one-then-three', lay: lesson(NORMAL), easy: lesson(EASY) }] }),
   brick({ id: 'w1-15-her-road', name: 'her road or theirs: under past a sleeping snake, or over to the seed', jobs: ['practise'], content: 'climb', difficulty: 3, versions: [{ id: 'under-or-over', lay: herRoad(NORMAL), easy: herRoad(EASY) }] }),
-  brick({ id: 'w1-15-blocked', name: 'blocked in turn: a gone limb, then an awake snake', jobs: ['test'], content: 'hazard', difficulty: 5, versions: [{ id: 'drop-then-climb', lay: blocked(NORMAL), easy: blocked(EASY) }] }),
+  brick({ id: 'w1-15-blocked', name: 'blocked in turn: a gone limb, then an awake snake', jobs: ['test'], content: 'hazard', difficulty: 5, reshows: THORN_ROW.lesson, versions: [{ id: 'drop-then-climb', lay: blocked(NORMAL), easy: blocked(EASY) }] }),
   brick({ id: 'w1-15-big-sign', name: 'the big sign: the bough run or the creek', jobs: ['reward'], content: 'crumble', difficulty: 6, maxPerStage: 1, versions: [{ id: 'that-way-boughs', lay: boughRun(NORMAL), easy: boughRun(EASY) }, { id: 'this-way-creek', lay: creek(NORMAL), easy: creek(EASY) }] }),
   brick({ id: 'w1-15-stone', name: 'he is the stone: ride the limb down by the den', jobs: ['twist'], content: 'climb', difficulty: 5, versions: [{ id: 'limb-by-the-den', lay: stone(NORMAL), easy: stone(EASY) }] }),
   brick({ id: 'w1-15-weave', name: 'the weave: three switches at pace', jobs: ['signature'], maxPerStage: 1, content: 'hazard', difficulty: 7, versions: [{ id: 'three-switches', lay: weave(NORMAL), easy: weave(EASY) }] }),

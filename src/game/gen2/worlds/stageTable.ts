@@ -36,8 +36,9 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   '1-2': { kit: 'w1-12', judged: 'normal-1-2' },
   // (1-3 Branch Snakes: the designed arc, w1Arc13.ts; judged on its own flown rows, flownArcs.ts normal-1-3, P13 11-12. Its seed list is owed)
   '1-3': { kit: 'w1', judged: 'normal-1-3' },
-  // (1-5 Where She Walked: the designed arc, w1Arc15.ts, on World 1's kit with its own rows (kitLib15); the mixer's 1-5 is deleted)
-  '1-5': { kit: 'w1-15' },
+  // (1-5 Where She Walked: the designed arc, w1Arc15.ts, on World 1's kit with its own rows (kitLib15); the mixer's 1-5 is deleted. Judged
+  // on its own flown rows, flownArcs.ts normal-1-5, B15 11-13)
+  '1-5': { kit: 'w1-15', judged: 'normal-1-5' },
 };
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */
