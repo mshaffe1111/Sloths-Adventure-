@@ -27,12 +27,16 @@ export const BRIEF_13: GraphBrief = {
 /** the story keeper's lines for 1-3, verbatim (the lead, 11-12 12:50 PM; reference/packets/2026-11-12/STORY-LINES.md): the only
  *  player words this file holds. The lesson's two (said at the lesson's flag, one after the other) and the bare branch's one */
 export const LINES_13 = {
-  traps: 'See that hive? Punch the vine, down it comes!',
+  traps: 'Snake napping under a hive ahead! Punch the vine!',
   'traps.then': "Don't worry, it only gives him a fright.",
   bare: 'No vine? Walk him to the end of his branch.',
 } as const;
 /** the stage's MISSION line (the keeper's; it replaces the withdrawn "Knock the snakes off the branches..."): stagePlan's, when 1-3 ships */
 export const MISSION_13 = 'Shake every vine, and off the snakes glide.';
+/** the lesson as ONE card: the keeper's two lesson lines, together, so the second can never be lost behind the first (the lead,
+ *  11-12 5:02 PM: said as two tips, the second was not said if he walked straight on to the handle). Said at the lesson's flag, where
+ *  the hive is not on screen yet, so its first line says what is AHEAD (the keeper's rewrite, 6:12 PM; it was "See that hive?") */
+export const LESSON_CARD_13 = `${LINES_13.traps} ${LINES_13['traps.then']}`;
 export const TRAP_LINE = LINES_13.traps;
 // ───────────────────────────── the drop-trap twist bricks (1-3's own) ─────────────────────────────
 /**
@@ -220,7 +224,7 @@ export const ARC_13: SectionTemplate[] = [
     //  trapped logs (this one and the stone in beat 2) are about 15 s of the level's own idea, never a longer walk)
     const c2 = core('n', 'm', { load: 'trap-hive', asleep: true });
     const pieces: SectionPiece[] = [led('a', null, LEDGE), led('b', 'a', LEDGE, UP), led('c', 'b', LEDGE, DOWN), led('d', 'c', LEDGE), ...c.pieces, led('m', c.last, LEDGE), ...c2.pieces, led('z', c2.last, LEDGE)];
-    const sockets: Socket[] = [{ id: 'flag', role: 'flag', on: 'a', t: 0.5 }, { id: 'tip', role: 'tip', on: 'a', t: 0.4, allow: ['traps'] }, { id: 'tip2', role: 'tip', on: 'd', t: 0.5, allow: ['traps.then'] }, ...c.sockets, ...c2.sockets, low('pa', 'a', [0.3, 0.6]), low('pb', 'b', [0.3, 0.7]), low('pc', 'c', [0.3, 0.7]), low('pm', 'm', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)];
+    const sockets: Socket[] = [{ id: 'flag', role: 'flag', on: 'a', t: 0.5 }, { id: 'tip', role: 'tip', on: 'a', t: 0.4, allow: ['traps'] }, { id: 'tip2', role: 'tip', on: 'd', t: 0.5, allow: [] /* (says nothing now: the lesson is one card, LESSON_CARD_13. Kept in its place: each socket after it rolls its own stream by its place in this list, so the lay stays the recorded one) */ }, ...c.sockets, ...c2.sockets, low('pa', 'a', [0.3, 0.6]), low('pb', 'b', [0.3, 0.7]), low('pc', 'c', [0.3, 0.7]), low('pm', 'm', [0.3, 0.6]), low('pz', 'z', [0.4, 0.6], 1)];
     return { id: 'asleep-under-the-hive', lay: breath({ pieces, sockets }, 4, true) };
   })()] }),
   // [P] beat 2, again, awake: a snake pacing under a hive; then one under a STONE held by a TENDRIL tied at his feet, the second

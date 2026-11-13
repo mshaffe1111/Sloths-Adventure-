@@ -76,7 +76,7 @@ is scored 0 (missing), 1 (there, rough), 2 (at the bar), with the proof named. *
 | A made thing in a world that has none: World 2's wooden posts and rope at 1-3's way out | the lead, on stills | a rope's look is DATA (`look: 'vine'` on its section's rope place, Rope.look): ART-W1B's vine tied in two living trees; `library13.test` holds it on every seed, both settings; planted. World 1's other ropes (1-4, 1-5, 1-7, 1-9) named, the lead's call |
 | A painted piece drawn out from a rope's end standing off its bank (a tree's foot over the hollow, or in front of the totem) | measuring the trunk against the exit's banks before drawing it | `library13.test`: each tree's whole foot on its own bank, at about its usual size, the totem 40 px clear of the far tree; planted (a short bank, a tree half again too big) |
 | A section out of a stage's pool with no reason named (a designed level's own pieces read as "refused: ") | the CI tools test, red since W1C's d03487f7 | `tools/engine/library.ts` poolReport names another stage's own piece; `library.test` fails on any section out with no reason |
-| A teach line about a thing said where the thing is not on screen ("See that hive?" 900 px before the hive, both ways) | the real page at default settings, on stills | NOT a check yet: a test that a tip naming a thing is laid within an upright screen of it (suggested) |
+| A teach line about a thing said where the thing is not on screen ("See that hive?" 900 px before the hive, both ways), and its second line lost when he walked straight on | the real page at default settings, on stills | the keeper's words now say "ahead", one card holds both lines (library13.test, teachTips.test). NOT a check yet: a tip naming a thing laid within an upright screen of it |
 
 ## Scoring 1-3 as it stands today (t-w1-creatures, 11-12 afternoon, honest)
 A1 2, A2 2 (one graph, one piece a beat, held on every seed), A3 2 (every piece is its own: no library section in its pool),
@@ -90,12 +90,13 @@ is with ART-W1). D11 2, D12 1 (a rope he cannot use yet is the last thing he pas
 flown rows not marked judged). **Not shippable to main yet: one 0 (the painted traps). To Matt's test link tonight: yes, said as
 a stand-in.**
 
-## Scoring 1-3 on F13's final head (a090d7d3, 11-12 evening, honest)
-A1 2, A2 2, A3 2, A4 2 (its own pieces and now its own sky: the repainted sunrise). B5 1 (P13's bots, 40 seeds, c925d4e6; no roll
-moved from b39cd468 to the final head: medians 135.8-149.3 s on every tier, none under 2:05; but the kid bot strands on 7 of 40 Normal seeds at the
-finale's awake bare-log snake, 11-12 of 13: P13 calls it a bot limit, not yet confirmed), B6 1 (the game's own flags and hearts), B7 2.
-C8 2, C9 1 (sideways the first sapling's crown tucks behind the goal sign's end: ART-W1's named spot; nothing that matters is
-behind it), C10 2 (every trap piece and the way out's vine and trees are painted). D11 2, D12 1 (by ruling: a vine he cannot use yet
-is the last thing he passes). E13 2 (P13's seed list of 100, `seedlist 1-3 --check`), E14 1 (every gate green on the exact head
-but one: yield.test's 1-1 floor, red on t-int-2 itself; the lock: only 1-3 moved). **No 0. Three (must) lines at 1 (B5, C9, E14),
-each named with its owner: not shippable to main by this bar's own rule yet; to Matt's test link: yes.**
+## Scoring 1-3 on F13's final head (8b638e57, 11-12 evening, honest)
+A1 2, A2 2, A3 2, A4 2 (its own pieces and its own sky: the repainted sunrise). B5 2 (castBots on DEFAULT settings, 40 seeds, both
+settings: every tier finishes 40 of 40, told of the traps 40 of 40, the first trap sprung 40 of 40; the first-timers' medians 136-145 s,
+none under 2:05; the child tier, a slow young player, 311-452 s), B6 1 (the game's own flags and hearts), B7 2 (the lesson is one card in
+the keeper's words, true where it is said: "Snake napping under a hive ahead!"). C8 2, C9 1 (sideways the first sapling's crown tucks
+behind the goal sign's end: ART-W1's named spot; nothing that matters is behind it), C10 2 (every trap piece and the way out's vine and
+trees are painted). D11 2, D12 1 (by ruling: a vine he cannot use yet is the last thing he passes). E13 2 (P13's seed list of 100,
+`seedlist 1-3 --check` PASS on the final head), E14 1 (every gate green on the exact head but two, both from t-int-2 and red on its own
+head: yield.test's 1-1 floor and buildcheck's 1-1 build time; the lock: only 1-3 moved). **No 0. Two (must) lines at 1 (C9, E14), each
+named with its owner: not shippable to main by this bar's own rule until INT-2's merge clears E14; to Matt's test link: yes.**

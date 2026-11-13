@@ -248,7 +248,7 @@ export const PAGES: JournalPage[] = [
   },
   {
     id: 'sleepers', chapter: 'sneaking', title: 'Sleeping snakes', demo: 'sleepers', pose: 'punch',
-    open: { tip: [tip('1-3', 'See that hive? Punch the vine, down it comes!')], cleared: ['1-3'] },
+    open: { tip: [tip('1-3', "Snake napping under a hive ahead! Punch the vine! Don't worry, it only gives him a fright.")], cleared: ['1-3'] },
     where: 'Learned in World 1', riddle: 'Shh... zzz...',
     intro: 'Some snakes are fast asleep. Creep up and hit first. Get too close and they wake up.',
     lines: {

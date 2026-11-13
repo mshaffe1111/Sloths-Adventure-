@@ -526,11 +526,21 @@ async function walk(browser, base, save, size, devBase) {
   });
 
   // Dot's very first tip, with its Skip tips button (once per device, never on 1-1: dotGuideHelp.ts offersSkip): 1-3 on the fresh save,
-  // lessons on, says "Run through petals" within its first seconds. Judged inside her layer only. Sideways its Skip sat inside the right
-  // 48 px inset until 11-06 (VineHud's guide safe area now keeps the phone's insets). Fails closed: no Skip up is a screen not opened
+  // lessons on. Judged inside her layer only. Sideways its Skip sat inside the right 48 px inset until 11-06 (VineHud's guide safe area
+  // now keeps the phone's insets). Fails closed: no Skip up is a screen not opened.
+  // (1-3 is a designed level since 11-12: it opens on a quiet walk, so her first tip comes as he walks in, never while he stands at the
+  //  spawn, which the old 1-3's petals beside it made true. He is walked right with the keys, hopping, until her tip is up: F13)
   if (save === 'fresh') await tryStep("Dot's first tip", async () => {
     await page.goto(`${base}/?autostart=1&level=1-3`);
-    await page.locator('.dg-skip').first().waitFor({ state: 'attached', timeout: 30000 });
+    const skip = page.locator('.dg-skip').first();
+    await page.waitForTimeout(2500);
+    await page.keyboard.down('ArrowRight');
+    for (let t = 0; t < 120 && !(await skip.count()); t++) {
+      await page.keyboard.press('Space');
+      await page.waitForTimeout(300);
+    }
+    await page.keyboard.up('ArrowRight');
+    await skip.waitFor({ state: 'attached', timeout: 5000 });
     await settle(1200);
     scope = '.dg-root';
     await judge("play: Dot's first tip");
