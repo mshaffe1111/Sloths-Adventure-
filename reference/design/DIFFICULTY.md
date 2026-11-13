@@ -1,4 +1,4 @@
-# The hardness meter and the difficulty arc (DIFF-ALGO, R-165.172; written 2026-11-12, 9:10 PM ET). A plan and a measured prototype; no game code
+# The hardness meter and the difficulty arc (DIFF-ALGO, R-165.172; written 2026-11-12 9:52 PM ET). A plan and a measured prototype; no game code
 Matt (11-12, 8:26-8:38 PM ET; STAGE-RULES §1 #5): Normal scored 0-100, World 10's hardest = 100, each world about its own tenth; "assign
 points" to creatures, double jumps, jump distance, "how many things are going on at one time", "not guessing". His ratings after playing
 on Normal: **1-1 = 4 (maybe 5), 1-2 = 2 (maybe 3), 1-3 = 1**; Easy "a casual playthrough", always lower. Prototype (read-only, tools only,
