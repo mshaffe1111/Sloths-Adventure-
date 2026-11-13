@@ -499,3 +499,66 @@ version '0.9.7', date '2026-11-12', title: **Petals and snakes, rebuilt**
 2. Touch a thorn and you only go back a little. Something is hidden down by the roots. (83)
 3. The snake stage is rebuilt: punch a vine, a hive drops, and the snake glides off unhurt. (88)
 Items 4-6 and the title are unchanged.
+
+## "Inspired by", the full page, from the world map's IDEAS "Echoes" (Matt, 11:13 PM ET; for 0.9.8)
+Source: reference/plans/WORLD-MAP.html IDEAS on ccr-702d3c49-i33jeq. Only games whose idea is IN or DONE are named. Entries marked
+"Genre staple", "Original" or "Real ecology", and the playground game, are not games and are left out.
+
+> **Inspired by**
+> Sloths is our tribute to the classic 2D platformers and the little arcade games that came before it. Every idea we borrowed, we grew
+> into something the rainforest could call its own. Some are still on their way.
+>
+> **Adventure Island**: an energy meter, which became Pokey's drowsiness.
+> **Angry Birds**: a slingshot, which became a vine that flings him.
+> **Balloon Fight**: floating up, which became a ride on kapok fluff.
+> **Bionic Commando**: grabbing the underside of things.
+> **Bubble Bobble**: bubbles that lift you, and trap whoever is chasing.
+> **Celeste**: getting right back up after a fall, and wind that pushes you.
+> **Contrast**: things that are only there in the light.
+> **Dark Souls**: a mimic, which became a forest that always blinks first.
+> **Donkey Kong**: barrels down the ladders, which became rolling nuts and falling fruit.
+> **Donkey Kong Country Returns**: stages in silhouette at sunset.
+> **Donkey Kong Jr.**: climbing two vines at once, and fruit dropped on whoever is below.
+> **Downwell**: a whole stage that goes down.
+> **Elevator Action**: riding a lift, which became a vine elevator.
+> **Flower** and **Okami**: a trail that blooms where you walk.
+> **Frogger**: lanes to cross, and turtles that sink.
+> **Hades** and **Loop Hero**: choosing what comes next.
+> **Ice Climber**: climbing up, and breaking through from below.
+> **The Legend of Zelda**: sinking with heavy boots, a world in reflection, rooms that change.
+> **Mario Bros.**: the POW block, which became a hollow-log drum.
+> **Metal Gear Solid 3**: camouflage, which became Pokey's stillness.
+> **Montezuma's Revenge**: timed doors and coloured keys.
+> **Ori and the Blind Forest**: a forest that glows at night.
+> **Pikmin** and **Yoshi's Island**: little ones who follow you home.
+> **Pitfall!**: swinging vines, tunnels below, and crocodile stepping stones.
+> **PUBG** and **Fortnite**: safe ground that keeps shrinking.
+> **Q\*bert** and **Amidar**: changing every step you land on.
+> **Rodeo Stampede**: riding the animals.
+> **Sokoban**: pushing things into place.
+> **Super Mario Bros.** and **Super Mario World**: hidden warps, ghosts that creep while you look away, crumbling platforms and a cape to
+> float on.
+> **Thief**: sneaking by sound.
+> **Wario Land 4**: hit a switch, then race back.
+> **The real rainforest**: a sloth who stays safe by staying still, a harpy eagle that watches for movement, and a frog whose colours
+> are its warning.
+>
+> Sloths Rainforest Adventures is not affiliated with or endorsed by any of these games or their makers.
+
+**Why it is true today:** every line names the IDEA a game gave us, not a place in Sloths. "Inspired by" is a claim about the design,
+which is true now. "Some are still on their way" covers the ideas not yet built. No line says "based on". Titles only: no logos, art or
+characters.
+
+**Left out, and why:**
+- PARK or OUT: Qix, Superhot, ICO, Lemmings, Sonic 2, Sonic's Star Light Zone, Sound Shapes, Super Mario's mushrooms and power-up
+  flowers, Braid, P.B. Winterbottom, Pokemon Snap, Unravel Two, Lode Runner, Mutant Mudds, Banjo-Kazooie, the Mario Bros. bump and screen
+  wrap.
+- Super Mario Galaxy: its idea (a pursuer that copies your path) was cut to the cheap way.
+
+**Matt's call:** PUBG and Fortnite are the "Echoes" for the shrinking arena. They are on the page as the rule asks; drop them if he'd
+rather the page stay with platformers and arcade games.
+
+## The music line (Matt, 11:13 PM ET: "the music was written for the game itself")
+"What's ours", line 3 becomes: **"Ten rainforest worlds, with art made for this game in its own style, and music written just for it."**
+If that reads long on a phone, it splits into two lines: "Ten rainforest worlds, with art made for this game in its own style." and
+"Music written just for this game."

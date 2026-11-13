@@ -34,3 +34,6 @@ highlight is added only when it will stay true.
 - The guardians' new fights.
 
 Note (11-12): the "Inspired by" real-rainforest line now names only animals true to the setting: sloth, harpy eagle, poison frog.
+
+**11-12, 11:20 PM ET:** "Inspired by" is drafted in full (STORY-LINES 11-12). The music line is added to "What's ours": music written
+for the game (Matt).
