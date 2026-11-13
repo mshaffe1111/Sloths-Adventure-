@@ -469,3 +469,10 @@ his taste. Matt keeps the final say. This replaces "each needs Matt's okay" on e
 - The creek as shallow fast water that knocks him back: REAL (rainforest creeks run fast over stones after rain). Fixes: the water must
   LOOK fast (white riffles, foam at the stones, streaks), never a calm pool (D38); NO lily pads in it (they grow in still water, and
   they tell "calm"); stepping stones or roots instead; no petals in the water.
+
+**11-13 12:25 PM ET, the #ctest move cards (ControlTestGate.tsx MOVES; 10-14 words each like 1-1's; counted with wc):**
+1-4: Climb "Slide your thumb up to climb. Slide down to whoosh back down." (12) · Two hands "Slide toward the next vine to hold both. Two
+hands climb faster." (12) · Push the figs "Climb up under a fig bunch to push it free. The branch lifts." (13) · Heads up "Creak above? Move over
+a vine. Bird call? Climb up or slide down." (13) · Creaky branches "Creaky branches with fungus give way. Safe wood is always just below." (12)
+1-3 (fallback): Run and Jump as 1-1's, word for word · Punch "Tap when a snake is close to punch it. Off it glides." (12) · Drop a trap
+"Punch the vine by a hive or stone. It drops beside the snake." (13)
