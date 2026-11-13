@@ -85,8 +85,9 @@ export function qaBuild(): boolean {
  *  site included: the testers' link opens it there (Matt, 2026-10-29: "Only for that link. The full game should be unaffected"), and a
  *  player without that link never sees it */
 /** the stage the testers' link (#ctest on the live site) plays, ONE data value (R-165.157): 1-4, the vine-field climb (Matt, 11-13 12:02 PM ET),
- *  if it passes his play on the test link tonight, else '1-3' (Matt, 11-12 2:39 PM ET); 1-1 before. Its front page: ControlTestGate.tsx CTEST_PAGES */
-export const CTEST_LEVEL_ID = '1-4';
+ *  only once its bots pass 40/40 (the lead's INT-3 packet); until then '1-3' (Matt, 11-12 2:39 PM ET; INT-3 11-13: 1-4's castBots 22 of 360,
+ *  reference/qa-reports/INT-3/castbots-1-4-s1-40.txt); 1-1 before. Its front page: ControlTestGate.tsx CTEST_PAGES */
+export const CTEST_LEVEL_ID: string = '1-3';
 
 export function ctestEnabled(): boolean {
   if (STORE) return false;
