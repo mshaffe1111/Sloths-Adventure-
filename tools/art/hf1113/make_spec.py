@@ -51,5 +51,64 @@ def args(spec, commit):
                       'volumes': ['hf://buckets/mshaffe111/w5-xfer:/out:rw'], 'name': f'art1113-{tag}'}))
 
 
+
+
+# ---- 1-5's set and 1-4's pieces: text to image, Qwen-Image + the style model (tools/art/w6to10/stillsgpu.py) ----
+STYLE = ('hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, '
+         'clean dark outline, painterly detail')
+MAG = 'isolated on a flat solid magenta background'
+GRY = 'isolated on a flat plain mid grey background'
+PNEG = ('perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, words, watermark, frame, border, '
+        'photo, 3d render, blurry, gradient background, floor, cast shadow, sky, scenery behind, animals, people, sloth')
+PROPS1 = {
+    # 1-5 (F15 1-5.md:12-20, :57-58): the squirrels' leaf-signs (berry-juice doodles on big living leaves), the leaf curtain, the folded
+    # petal, Meeca's mark on living bark, the root tunnel mouth, the rotten fallen trunk
+    'leafsign-right': ('a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, '
+                       'its wide blade held up flat facing us like a little sign, a big simple fat arrow pointing right painted '
+                       'roughly on the leaf in dark purple berry juice, finger-painted strokes', MAG, 1328, 1328),
+    'leafsign-up': ('a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its '
+                    'wide blade held up flat facing us like a little sign, a big simple curved arrow pointing up and over painted '
+                    'roughly on the leaf in dark purple berry juice, finger-painted strokes', MAG, 1328, 1328),
+    'leafsign-down': ('a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, '
+                      'its wide blade held up flat facing us like a little sign, a big simple curved arrow pointing down and under '
+                      'painted roughly on the leaf in dark purple berry juice, finger-painted strokes', MAG, 1328, 1328),
+    'leafcurtain': ('a curtain of long broad green jungle leaves and thin leafy vines hanging straight down side by side from a mossy '
+                    'branch along the top edge, a dense hanging leaf curtain, the leaf tips ragged at the bottom', MAG, 1664, 1088),
+    'petal-folded': ('one single soft dusty pink blossom petal folded neatly in half, lying on its side, small and delicate with a '
+                     'pale cream edge and a soft crease', GRY, 1024, 1024),
+    'mark-right': ('a rounded patch of living rainforest tree bark, rough brown bark with green moss at its edges, a capital letter M '
+                   'freshly carved into the bark and a carved arrow beside it pointing right, the fresh cuts pale cream wood',
+                   MAG, 1024, 1024),
+    'mark-up': ('a rounded patch of living rainforest tree bark, rough brown bark with green moss at its edges, a capital letter M '
+                'freshly carved into the bark and a carved arrow above it pointing straight up, the fresh cuts pale cream wood',
+                MAG, 1024, 1024),
+    'roottunnel': ('the arched mouth of a low tunnel under huge tangled rainforest tree roots, thick twisting brown roots arching over '
+                   'a dark shadowy opening, moss and ferns on the roots, a flat earth floor running through the tunnel mouth',
+                   MAG, 1664, 1088),
+    'rottentrunk': ('a huge fallen rotten tree trunk lying flat on its side, very long, its flat mossy top a walkway, a hollow dark '
+                    'open end on the left, soft crumbling rotten bark, orange bracket fungus, ferns and moss', MAG, 2048, 832),
+    # 1-4 (F15 1-4.md:30, the story keeper 11-13: wild figs, never purple grocery figs)
+    'roughbough': ('a long horizontal rainforest tree bough, rotting and spongy, a flat mossy top to walk on, orange-brown bracket '
+                   'fungus shelves growing from its side, a cracked notched sagging underside, soft dark rot patches', MAG, 2048, 640),
+    'figcluster': ('a small bunch of round orange-red wild figs hanging from a short woody stalk with two green leaves, the figs '
+                   'small and round, glossy, some speckled', MAG, 1024, 1024),
+    'passiontangle': ('a small tangle of passion-flower vine with curly tendrils, three round orange-red fruits and one white and purple '
+                      'passion flower, hanging from a short stem', MAG, 1024, 1024),
+    'kapokpod': ('one closed kapok tree seed pod, long oval and woody, brown-green with ridges, hanging from a short twig', MAG, 1024, 1024),
+    'kapokpod-burst': ('one kapok seed pod burst open, split woody brown husk with soft white silky fluff spilling out of it, lying on '
+                       'its side', MAG, 1024, 1024),
+}
+
+
+def props1(seeds=(11, 23, 37)):
+    items = [{'name': f'{k}-{sd}', 'prompt': f'{p}, {STYLE}, {bg}', 'seed': sd, 'w': w, 'h': h}
+             for k, (p, bg, w, h) in PROPS1.items() for sd in seeds]
+    spec = {'tag': 'props1', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
+            'neg': PNEG, 'items': items}
+    (H / 'spec-props1.json').write_text(json.dumps(spec, indent=1))
+    print(len(items), 'stills')
+
+
+CMDS = {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3]), 'props1': props1}
 if __name__ == '__main__':
-    {'climb1': lambda: climb1(sys.argv[2]), 'args': lambda: args(sys.argv[2], sys.argv[3])}[sys.argv[1]]()
+    CMDS[sys.argv[1]]()
