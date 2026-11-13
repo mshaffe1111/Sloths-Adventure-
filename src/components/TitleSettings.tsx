@@ -6,6 +6,7 @@ import { UpdateLink } from './UpdateControls.tsx';
 import { PaintedIcon, paint, type AnyIcon } from './icons/PaintedIcon.tsx';
 import { ConfirmDialog, useBack } from './nav/Nav.tsx';
 import { WhatsNew } from './WhatsNew.tsx';
+import { AboutPage, WhatsOurs, type AboutPageId } from './about/AboutPages.tsx';
 import { browserStore, buildSave } from '../game/saveFile.ts';
 
 type Tab = 'sound' | 'game' | 'saves' | 'trophies' | 'about';
@@ -60,6 +61,8 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
   const [tab, setTab] = React.useState<Tab>('sound');
   const [confirm, setConfirm] = React.useState(false);
   const [news, setNews] = React.useState(false);
+  // (About's own pages, Our story and Inspired by: open inside the About tab, R-165.158)
+  const [aboutPage, setAboutPage] = React.useState<AboutPageId | null>(null);
   const { onClose } = p;
   // Android's Back and Esc close it, like its X and a tap outside (nav/backStack.ts; the confirm over it takes Back first)
   useBack(onClose);
@@ -117,6 +120,7 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
           </div>
         );
       case 'about':
+        if (aboutPage) return <AboutPage page={aboutPage} onBack={() => setAboutPage(null)} />;
         return (
           <div className="st-rows">
             <div className="st-row">
@@ -140,6 +144,7 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
                 </small>
               </span>
             </div>
+            <WhatsOurs onOpen={setAboutPage} />
             <div className="st-row">
               <PaintedIcon name="heart" size={40} />
               <span className="st-row-t">
@@ -188,7 +193,7 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
         </button>
         <div className="st-tabs" role="tablist" aria-label="Settings sections">
           {tabs.map((t) => (
-            <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} aria-label={t.name} className={`st-tab${tab === t.id ? ' on' : ''}`} onClick={() => setTab(t.id)}>
+            <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} aria-label={t.name} className={`st-tab${tab === t.id ? ' on' : ''}`} onClick={() => { setTab(t.id); setAboutPage(null); }}>
               <PaintedIcon name={paint(t.icon)} size={28} />
               <span>{t.name}</span>
             </button>
