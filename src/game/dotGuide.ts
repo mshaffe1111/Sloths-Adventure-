@@ -433,7 +433,11 @@ export class GuideQueue {
     let best: Waiting | null = null;
     for (const w of this.waiting) {
       if (heldBack(w.line, env) || env?.hush?.(w.line)) continue;
-      if (!best || PRIORITY[w.line.kind] > PRIORITY[best.line.kind] || (PRIORITY[w.line.kind] === PRIORITY[best.line.kind] && w.seq < best.seq)) best = w;
+      // (a stage's own teach line outranks the stock lines of its priority waiting with it, R-165.147: 1-3's trap tip queued behind the
+      // gap's and the foe's lessons and came after the first trap)
+      const pw = PRIORITY[w.line.kind] + (w.line.stageTeach ? 0.5 : 0);
+      const pb = best ? PRIORITY[best.line.kind] + (best.line.stageTeach ? 0.5 : 0) : -1;
+      if (!best || pw > pb || (pw === pb && w.seq < best.seq)) best = w;
     }
     void now;
     return best;
@@ -534,7 +538,8 @@ export class GuideQueue {
         else if (age >= readMs(l.text)) {
           // (read: it steps aside for a more important line, or for a puzzle's first line or a new thing's, which belong to now)
           const b = this.best(now, env);
-          if (b && b.line.kind !== 'story' && (PRIORITY[b.line.kind] > PRIORITY[l.kind] || b.line.step === 'name' || (!!b.line.mech && !l.mech))) why = 'yield';
+          // (and a stock lesson's tip, read, for the stage's own teach line at its beat: it comes back once after, R-165.147)
+          if (b && b.line.kind !== 'story' && (PRIORITY[b.line.kind] > PRIORITY[l.kind] || b.line.step === 'name' || (!!b.line.mech && !l.mech) || (!!b.line.stageTeach && !l.stageTeach && GuideQueue.lessonish(l)))) why = 'yield';
         }
       } else if (age >= this.holdFor(cur)) why = 'read';
       else if (l.kind === 'story' && age >= (l.scene ? readMs(l.text) * GUIDE.sceneHeard : GUIDE.storyYieldMs)) {
