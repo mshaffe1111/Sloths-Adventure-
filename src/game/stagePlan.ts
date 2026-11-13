@@ -25,6 +25,9 @@ export interface StageSpec {
   goal?: number;
   /** which way the route leads when it is not the mission's usual way (a climb goes up, the rest right): 4-7 goes down the cliff */
   travel?: import('./stageKit.types.ts').Travel;
+  /** the stage's own pictures for what it gathers (pickupSprites.ts names, src/assets/pickups): `find` its golden find, `petal` Meeca's
+   *  petals; unset, the world's usual. Data, read by the draw through stageLooks: no draw line names a stage */
+  looks?: { find?: string; petal?: string };
 }
 
 const S = (type: StageSpec['type'], name: string, desc?: string, goal?: number): StageSpec => ({ type, name, desc, goal });
@@ -41,7 +44,9 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('ascent', 'Up the Kapok', 'Climb the giant kapok to the very top.'),
     // (the story keeper's line, approved by Matt 11-12 10:20 PM ET: the goal is HER MARKS, gen2/worlds/w1Arc15.ts MISSION_15, held equal by
     //  tools/engine/library15.test.ts; the count is the check's floor, the goal a share of the marks laid, goals.ts)
-    S('relic_hunt', 'Where She Walked', 'She marked the way they took her. Follow her marks.', 8),
+    // (her petals FOLDED, "She's making them last", and the golden find a guarana bunch: ART's pieces for 1-5, the inventory's
+    //  hf1113/petal-folded and hf1113/guarana-golden)
+    { ...S('relic_hunt', 'Where She Walked', 'She marked the way they took her. Follow her marks.', 8), looks: { find: 'guarana-golden', petal: 'petal-folded' } },
     S('vine_runner', 'First Lianas', 'Swing on the hanging lianas across the gaps in the canopy.'),
     S('stealth', 'A Very Good Bush', 'Eagles are watching. Duck under the leaves the way Dot hid from the soldiers.'),
     S('sprint', 'The Long Branch', 'Race the long branch to the shrine.'),
@@ -158,6 +163,8 @@ export function stageSpec(world: number, mini: number): StageSpec | null {
 
 /** World 1's harvests gather Meeca's petals, not flowers */
 /** Meeca's petal is every stage's pickup (petals.ts, Matt 2026-10-29), but World 8's harvests: their night blooms are the goal's own */
+/** a stage's own pictures for its pickups (StageSpec.looks), or an empty set: the world's usual */
+export const stageLooks = (world: number, mini: number): NonNullable<StageSpec['looks']> => stageSpec(world, mini)?.looks ?? {};
 export const isPetalStage = (world: number, mini: number) => !(world === 8 && stageSpec(world, mini)?.type === 'harvest');
 
 /** what a search (relic hunt) turns up in a world: one of the painted keepsakes (items/<name>.webp), or the golden idol (null) */

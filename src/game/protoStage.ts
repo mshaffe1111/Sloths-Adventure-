@@ -472,7 +472,9 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
     if (dropped.length && st.proto) st.proto.dressDropped = dropped.map((d) => ({ n: d.n, x: d.x, b: d.b }));
   }
   if (!ds.length) return;
-  if (st.proto) st.proto.dress = ds;
+  // (a stage's own set dressing, laid by its builder before the sets (1-5's leaf-signs and root tunnel, its emitters; her marks in their
+  // trunks, World 1's finish), is kept and drawn over the sets: the sets used to replace it)
+  if (st.proto) st.proto.dress = [...ds, ...(st.proto.dress ?? [])];
   else st.dress = ds;
 }
 

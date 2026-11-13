@@ -10,7 +10,8 @@
  * A fall from the high road ALWAYS lands on the low road in view (D46): every creaky limb stands over a bank, never over a pit, a patch
  * or a heart. Under a deck nothing asks for a jump (his jump tops out 171 px up, past the deck's underside).
  */
-import type { GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
+import type { GraphBrief, NodeJob, PropDef, PropEmitter, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
+import type { DressPiece, OneName } from '../../dressArt.ts';
 import { hollowLogSize } from '../../w1NewArt.ts';
 import { w1World } from './w1.ts';
 import { ROOM_12, THORN_ROW } from './w1Arc12.ts';
@@ -52,6 +53,10 @@ export const MISSION_15 = 'She marked the way they took her. Follow her marks.';
 // ───────────────────────────── the pieces ─────────────────────────────
 /** how far over the low road the high road stands (px): 150-180 (sideways, 1-5.md "On a phone") */
 const OVER = 165;
+/** the low road's sound ground past the end of every piece of the high road over a thorn hollow (px): walked off at a run he falls about
+ *  110 px on before he lands (the expert bot off beat 5's last limb, 11-13: 24 px of road past its end, he landed in the thorns and was
+ *  set back onto the bough, round and round). A fall from over always lands on the low road (D46) */
+const RUNOFF = 150;
 const UP: R2 = [-56, -50], DOWN: R2 = [50, 56];
 /** a bank he walks on (the low road, her road under), `w` exact so a deck over it is laid by px */
 const bank = (key: string, after: string | null, w: number, dy: R2 = [0, 0]): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: after ? { kind: 'walk', after, dy } : { kind: 'start' }, style: 'moss_stone', main: true });
@@ -83,6 +88,31 @@ const petals = (id: string, on: string, t: R2 | number, n = 2, span = 110): Sock
 const mark = (id: string, on: string, t: number): Socket => ({ id, role: 'objective', on, t, dn: 34, allow: ['mark'] });
 const tip = (id: string, on: string, t: number, line: keyof typeof LINES_15): Socket => ({ id, role: 'tip', on, t, allow: [line] });
 const flag = (on: string, t = 0.5): Socket => ({ id: 'flag', role: 'flag', on, t });
+
+// ───────────────────────────── the squirrels' leaf-signs and the root tunnel (ART 11-13) ─────────────────────────────
+/**
+ * ART's 1-5 dressing as props (scenery: no threat, no beat): a socket asks for one, and its emitter lays the picture in the stage's dressing
+ * (dressArt.ts ONE_DRESS, sized by the inventory) on the ground under the socket. The leaf-signs tell the truth about what is on the
+ * screen past them (1-5.md: THAT WAY up, THIS WAY in/on/down); the root tunnel stands on her road's floor, its own floor on the ground.
+ * The leaf curtain is not laid: it parts on the card road's pick (cut), and every bough at the big sign is a creaky limb (a curtain
+ * hung from one would hang from nothing once it gave way).
+ */
+export const DRESS_15 = {
+  'w15-sign-up': 'w15-leafsign-up', 'w15-sign-down': 'w15-leafsign-down', 'w15-sign-on': 'w15-leafsign-right', 'w15-tunnel': 'w15-roottunnel',
+} as const satisfies Record<string, OneName>;
+type Dress15 = keyof typeof DRESS_15;
+export const PROPS_15: PropDef[] = (Object.keys(DRESS_15) as Dress15[]).map((id) => ({ id, tags: [id], w: 40, minApart: 0 }));
+/** the ground under x at or below y (the top of the highest sound piece there), or y */
+const groundAt = (out: Parameters<PropEmitter>[2], x: number, y: number): number =>
+  Math.min(...out.platforms.filter((q) => q.type !== 'fragile' && !q.broken && q.y >= y - 2 && x >= q.x && x <= q.x + q.width).map((q) => q.y), Infinity) || y;
+const dressEmit = (id: Dress15): PropEmitter => (f, _def, out) => {
+  const dress = ((out.proto as { dress?: DressPiece[] }).dress ??= []);
+  const b = groundAt(out, f.x, f.y);
+  dress.push({ n: DRESS_15[id], x: Math.round(f.x), b: Math.round(Number.isFinite(b) ? b : f.y) });
+};
+export const EMIT_15: Record<string, PropEmitter> = Object.fromEntries((Object.keys(DRESS_15) as Dress15[]).map((id) => [id, dressEmit(id)]));
+/** a leaf-sign or the tunnel at t along a piece (its middle there) */
+const sign = (id: string, what: Dress15, on: string, t: number): Socket => ({ id, role: 'prop', on, t, dn: 0, allow: [what] });
 
 // ───────────────────────────── the snake under its trap (1-3's unit, 1-5's own copy) ─────────────────────────────
 /** 1-3's trapped-snake unit as World 1 lays it (w1Arc13.ts core, the phone's numbers measured there): a short ledge `g` with the handle,
@@ -154,7 +184,11 @@ function throughOrOver(len: 300 | 360): Lay {
     { key: 'm', shape: 'block', w: [130, 140], place: { kind: 'on', on: 'f', at: [0.68, 0.69], h: [50, 56] }, style: 'moss_stone', landing: true },
     bank('z1', 'f', 220, UP), bank('z', 'z1', 240, DOWN),
   ];
-  const sockets: Socket[] = [petals('pa', 'a2', 0.5, 1), petals('pin', 'f', [0.19, 0.2], 2, 70), petals('ptop', 'H', [0.35, 0.65], 2, 140), mark('mz', 'z', 0.6)];
+  const sockets: Socket[] = [
+    // (the squirrels' first leaf-signs: THIS WAY on into the trunk, THAT WAY up and over it)
+    sign('sgon', 'w15-sign-on', 'a', 0.5), sign('sgup', 'w15-sign-up', 'a', 0.86),
+    petals('pa', 'a2', 0.5, 1), petals('pin', 'f', [0.19, 0.2], 2, 70), petals('ptop', 'H', [0.35, 0.65], 2, 140), mark('mz', 'z', 0.6),
+  ];
   return { pieces, sockets };
 }
 /** [T] beat 2, the top can drop you (the lesson): a flag and Dot's line 800 px and more before the first limb; a root up and down; a vine
@@ -194,10 +228,10 @@ function herRoad(S: Set): Lay {
     ...over('L3', 'U', W, xv + 2 * (S.limb + S.gap), S.limb, { creak: true }),
     ...over('hi', 'U', W, seedX, 110, { style: 'log' }),
     bank('r', 'U', 160, UP), ...t.pieces,
-    bank('m', t.last, 220, DOWN), bank('n', 'm', 200, UP), bank('z', 'n', 240, DOWN),
+    bank('m', t.last, 300, DOWN), bank('n', 'm', 200, UP), bank('z', 'n', 240, DOWN),
   ];
   const sockets: Socket[] = [
-    mark('ma', 'a', 0.75),
+    mark('ma', 'a', 0.75), sign('sgup', 'w15-sign-up', 'a2', 0.6), sign('tun', 'w15-tunnel', 'm', 0.5),
     petals('pU', 'U', 0.12, 2, 80), mark('mU', 'U', (xv + 2 * S.limb + 1.5 * S.gap) / W), petals('pL2', 'L2', 0.5, 1),
     { id: 'seed', role: 'find', on: 'hi', t: 0.5, dn: 34 },
     ...t.sockets,
@@ -209,8 +243,8 @@ function herRoad(S: Set): Lay {
  *  in plain view past its end before any is asked: World 1's hurt-floor rule, promises11 hazard.untaught): up on the high road a limb is already gone (a broken stub and nothing past it): drop to her road; then an
  *  awake snake paces across the low road: up the vine, over it on a sound bough (her mark on it), on along a creaky limb, down */
 function blocked(S: Set): Lay {
-  const xv = 40, P = 240, G = 300, Qa = 320;
-  const W1 = xv + 2 * S.late + 2 * S.lateGap + 60 + 120;
+  const xv = 40, P = 240, G = 300, Qa = 40 + S.lateGap + S.late + RUNOFF;
+  const W1 = xv + 2 * S.late + 2 * S.lateGap + 60 + RUNOFF;
   const B = P - xv + G + 40;
   const pieces: SectionPiece[] = [
     // (the keepsake's LONE TREE (finds.ts DOT_HINTS w1_keepsake: "Climb the lone tree in Where She Walked. Check its branch."; 1-5.md
@@ -225,17 +259,18 @@ function blocked(S: Set): Lay {
     // (the snake's ground between two aprons; up the vine on the first, over it on a sound bough, on along a creaky limb, down)
     apron('P', 'r', P), vine('v2', 'P', P, xv), atTop('B1', 'v2', B),
     ground('S', 'P', G),
-    apron('Q', 'S', Qa), ...over('L3', 'Q', Qa, 40 + S.lateGap, Math.min(S.late, Qa - 40 - S.lateGap), { creak: true }),
+    apron('Q', 'S', Qa), ...over('L3', 'Q', Qa, 40 + S.lateGap, S.late, { creak: true }),
     dip('Qb', 'Q', 240, S), dip('z', 'Qb', 340, S),
   ];
   const sockets: Socket[] = [
     mark('ma', 'a', 0.75), petals('pL1', 'L1', 0.5, 1), petals('pL2', 'L2', 0.5, 1),
     { id: 'keep', role: 'findSpot', on: 'tree', t: 0.6, dn: 30 },
     { id: 'e', role: 'enemy', on: 'S', t: 0.5, dn: 0, allow: ['snake'], easy: 'soften' },
-    petals('pB1', 'B1', [0.3, 0.7], 3, 200), petals('pL3', 'L3', 0.5, 1),
-    // (her marks on the LOW road: over risks your way, under your hearts (1-5.md); one on a bough was missed by every bot on the
-    //  low road, 11-13. Marks stand on flat ground he walks, never on a hop's root or a stepping bank he can jump clean over)
-    mark('mQ', 'Q', 0.6), mark('mz', 'z', 0.72),
+    // (her road goes OVER the awake snake (1-5.md beat 5, "her arrows mark the line"): her mark on the sound bough, a petal either side;
+    //  a player on the low road walks under it and misses it. Marks stand where he walks, never on a hop's root or a bank he can jump
+    //  clean over. The bots go up for it: tools/inspect/markClimb.ts)
+    petals('pB1a', 'B1', 0.2, 1), mark('mB', 'B1', 0.5), petals('pB1b', 'B1', 0.82, 1), petals('pL3', 'L3', 0.5, 1),
+    mark('mz', 'z', 0.72),
   ];
   return { pieces, sockets };
 }
@@ -245,13 +280,14 @@ function blocked(S: Set): Lay {
  *  the report), one awake snake on the far bank */
 function boughRun(S: Set): Lay {
   const pieces: SectionPiece[] = [bank('a', null, 220), bank('a2', 'a', 180, UP)];
-  const sockets: Socket[] = [flag('a', 0.3), mark('ma', 'a', 0.75)];
+  const sockets: Socket[] = [flag('a', 0.3), mark('ma', 'a', 0.75), sign('sgup', 'w15-sign-up', 'a2', 0.6)];
   let prev = 'a2';
   for (let d = 0; d < 3; d++) {
     // (a deck: a vine up from the low road, two creaky limbs, a sound perch at its end over the next root; the low road under it flat)
-    const D = `D${d}`, W = 40 + 2 * S.late + S.lateGap + 40;
+    const D = `D${d}`, W = 40 + 2 * S.late + S.lateGap + RUNOFF;
     pieces.push(d ? bank(D, prev, W) : bank(D, prev, W, DOWN), vine(`v${d}`, D, W, 40), atTop(`${D}a`, `v${d}`, S.late, true), ...over(`${D}b`, D, W, 40 + S.late + S.lateGap, S.late, { creak: true }));
-    sockets.push(petals(`p${D}a`, `${D}a`, 0.5, 1), petals(`p${D}b`, `${D}b`, 0.5, 1));
+    // (THAT WAY's two marks: one at the vine up, one on the run's middle limb, her road)
+    sockets.push(d === 1 ? mark('mD', `${D}a`, 0.5) : petals(`p${D}a`, `${D}a`, 0.5, 1), petals(`p${D}b`, `${D}b`, 0.5, 1));
     pieces.push(dip(`${D}r`, D, 220, S));
     prev = `${D}r`;
   }
@@ -263,7 +299,7 @@ function boughRun(S: Set): Lay {
 }
 function creek(S: Set): Lay {
   const pieces: SectionPiece[] = [bank('a', null, 220), bank('a2', 'a', 180, UP), bank('r1', 'a2', 200, DOWN), bank('r2', 'r1', 200, DOWN)];
-  const sockets: Socket[] = [flag('a', 0.3), mark('ma', 'a', 0.75)];
+  const sockets: Socket[] = [flag('a', 0.3), mark('ma', 'a', 0.75), sign('sgdn', 'w15-sign-down', 'a2', 0.6)];
   let prev = 'r2';
   for (let j = 0; j < 7; j++) {
     const k = `s${j}`;
@@ -305,7 +341,7 @@ function stone(S: Set): Lay {
 /** [C] beat 8, the weave: both roads on screen, switches at pace: the high road rots out (drop); an awake snake on the low road (vine up,
  *  over it on a sound bough with her mark, two creaky limbs on past it); down to the far bank */
 function weave(S: Set): Lay {
-  const W1 = 40 + 2 * S.late + S.lateGap + 160, P = 240, G = 300, Qa = 320, xb = 40;
+  const W1 = 40 + 2 * S.late + S.lateGap + 160, P = 240, G = 300, Qa = 20 + S.lateGap + S.late + RUNOFF, xb = 40;
   const B = P - xb + G + 20;
   const pieces: SectionPiece[] = [
     bank('a', null, 200), bank('a2', 'a', 180, UP), bank('U', 'a2', W1, DOWN),
@@ -315,14 +351,15 @@ function weave(S: Set): Lay {
     apron('P', 'r', P), vine('v2', 'P', P, xb), atTop('B', 'v2', B),
     ground('S', 'P', G),
     apron('Q', 'S', Qa),
-    ...over('L3', 'Q', Qa, 20 + S.lateGap, Math.min(S.late, Qa - 20 - S.lateGap), { creak: true }),
+    ...over('L3', 'Q', Qa, 20 + S.lateGap, S.late, { creak: true }),
     dip('Qb', 'Q', 240, S), dip('z', 'Qb', 340, S),
   ];
   const sockets: Socket[] = [
     flag('a', 0.3), mark('ma', 'a', 0.75), petals('pL1', 'L1', 0.5, 1), petals('pL2', 'L2', 0.5, 1),
     { id: 'e', role: 'enemy', on: 'S', t: 0.5, dn: 0, allow: ['snake'], easy: 'soften' },
-    petals('pB', 'B', [0.3, 0.7], 2, 180), petals('pL3', 'L3', 0.5, 1),
-    mark('mQ', 'Q', 0.6), mark('mz', 'z', 0.72),
+    // (her road goes over the snake: her mark on the sound bough, as in beat 5)
+    petals('pBa', 'B', 0.2, 1), mark('mB', 'B', 0.5), petals('pBb', 'B', 0.82, 1), petals('pL3', 'L3', 0.5, 1),
+    mark('mz', 'z', 0.72),
   ];
   return { pieces, sockets };
 }
@@ -367,7 +404,8 @@ export const EXIT_15: SectionTemplate = {
   id: 'w1-15-freshest-mark', name: 'her freshest mark, and the totem', feel: [STAGE_15], own: true, archetypes: 'any', phases: ['goal'], difficulty: 1, needs: ['walk'], jobs: ['exit'], content: 'structural', terrain: 'floor-stones',
   pieces: [{ key: 'in', shape: 'bank', w: [300, 340], place: { kind: 'start' }, style: 'moss_stone', main: true, landing: true }],
   subBlocks: [{ id: 'body', versions: [{ id: 'bank', pieces: [{ key: 'out', shape: 'bank' as const, w: [560, 600] as R2, place: { kind: 'walk' as const, after: 'in', dy: [0, 0] as R2 }, style: 'moss_stone' as const, main: true, landing: true }], sockets: [mark('mout', 'out', 0.3), { id: 'exit-totem', role: 'objective' as const, on: 'out', t: 0.85, allow: ['exit_totem'] }] }] }],
-  entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
+  // (both squirrels' signs say THIS WAY, 1-5.md beat 9)
+  entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [sign('sg1', 'w15-sign-on', 'in', 0.35), sign('sg2', 'w15-sign-on', 'in', 0.72)], mirrorable: false,
 } as SectionTemplate;
 
 /** every section that is 1-5's own */
@@ -380,7 +418,8 @@ export const SECTIONS_15: SectionTemplate[] = [...BEATS_15, ...QUIET_15, EXIT_15
  */
 export function kitLib15(): WorldKit {
   const k = w1World(), M = k.manifest, G = M.graphs!;
-  return { ...k, manifest: { ...M,
+  return { ...k, emit: { ...k.emit, ...EMIT_15 }, manifest: { ...M,
+    props: [...M.props, ...PROPS_15],
     moves: [...M.moves.filter((m) => m !== 'climb'), 'climb'],
     sections: SECTIONS_15,
     // (1-2's thorn hollows, World 1's hurt floor, under the low road's later gaps: a heart and a set-back on Normal, a set-back on Easy)

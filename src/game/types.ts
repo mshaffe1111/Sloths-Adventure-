@@ -464,6 +464,8 @@ export interface Collectible {
   missing?: number;
   /** a relic drawn as one of Meeca's trail marks (the mixer's 1-5 marks goal): her M cut in a slab of bark, glowing */
   mark?: 'meeca';
+  /** her mark's arrow (World 1's finish, gen2/worlds/w1Marks.ts): 'up' where her road climbs next, 'on' along it */
+  arrow?: 'up' | 'on';
   /** a story find (note, book or keepsake): which one (see finds.ts) */
   findId?: string;
   /** World 3: one of Grandma's things hidden in a fern (a relic with `hidden`): what it is, for the words when it turns up */

@@ -35,6 +35,16 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     const creak = e.platforms.filter((q) => q.type === 'fragile' && q.creak !== undefined).sort((a, c) => a.x - c.x);
     const trap = e.cast?.traps?.find((t) => t.post.kind === 'limb');
     const q = sel === 'limb' ? creak.find((c) => !c.creakFree && !c.trapLoad) : sel === 'den' ? e.platforms.find((c) => c.id === trap?.post.limb) : null;
+    if (sel.startsWith('dress:')) {
+      // (beside one of ART's pieces in the dressing: the root tunnel, a leaf-sign)
+      const d = (e.proto?.dress ?? []).filter((q) => q.n === sel.slice(6)).sort((a, c) => a.x - c.x).pop();
+      if (!d) return false;
+      const x = d.x - 150;
+      const g = e.platforms.filter((c) => !c.broken && x >= c.x && x <= c.x + c.width && c.y >= d.b - 80).sort((a, c) => a.y - c.y)[0];
+      if (!g) return false;
+      Object.assign(e.player, { x, y: g.y, vx: 0, vy: 0, grounded: true, hanging: false, climbing: false, facing: 1, invincibleTimer: 0 });
+      return true;
+    }
     if (sel === 'mark') {
       const m = e.currentStage.collectibles.filter((c) => c.mark === 'meeca').sort((a, c) => a.x - c.x)[2];
       const g = e.platforms.filter((c) => !c.broken && m.x - 140 >= c.x && m.x - 140 <= c.x + c.width && c.y > m.y).sort((a, c) => a.y - c.y)[0];
@@ -59,6 +69,8 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     await frames(p, 24); await shot('den-3-the-snake-glides-off');
   }
   if (await place('mark')) { await frames(p, 30); await shot('her-mark'); }
+  if (await place('dress:w15-roottunnel')) { await frames(p, 30); await shot('root-tunnel'); }
+  if (await place('dress:w15-leafsign-right')) { await frames(p, 30); await shot('exit-signs'); }
   await ctx.close();
 }
 await b.close();

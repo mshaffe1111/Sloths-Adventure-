@@ -6892,7 +6892,7 @@ export class GameEngine {
       // World 5's painted pink bell (Pell's note) and the painted exit totem
       if (this.w5?.drawItem(ctx, item, this.gameTime, this.currentStage.config.worldIndex)) return;
       if (item.type === 'seed') {
-        if (!item.collected && !drawSeedArt(ctx, item, this.gameTime)) drawSeed(ctx, item, this.gameTime);
+        if (!item.collected && !drawSeedArt(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex)) drawSeed(ctx, item, this.gameTime);
         return;
       }
       // a reed cage hanging over the water: the kit draws it (puzzlePlay.ts), and the little one hopping home once it is free

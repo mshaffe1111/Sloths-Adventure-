@@ -12,6 +12,7 @@
  * enter and exit on 'ground' ports on the manifest's ground line; stones, stumps, logs and boughs are ordinary pieces over it. The
  * pipeline does not read this file until the planner's step 1 wires World 1 in.
  */
+import { dressMarks } from './w1Marks.ts';
 import { DOT_LINES } from '../../dotLinesData.ts';
 import type { CreakRow, Move, NodeJob, Phase, PortKind, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { DOUBLE_RISE, reachJump } from '../../physics.ts';
@@ -1537,6 +1538,8 @@ export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean; cut?:
   // (a built roll only: a toy stage of bare platforms, w1CutArt.test's, has no spawn or sections to dress)
   // (the squirrels who came to watch him leave are a stage's own dressing: its stage-table row says so, stageTable.ts `squirrels`)
   if (squirrels && (st as { gen2?: unknown }).gen2) w1Squirrels(st as never);
+  // (Meeca's marks are cut in living trunks: a kapok behind each and ART's bark patch at marching height, w1Marks.ts)
+  dressMarks(st as never);
   return st;
 }
 

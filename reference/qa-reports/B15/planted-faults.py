@@ -26,6 +26,15 @@ FAULTS = [
     ("the den's patch is wider than the limb's chase", ARC, 'const W = 400, D = 150, LW = 120;', 'const W = 400, D = 300, LW = 120;', T_LIMB),
     ('a step up under a deck', ARC, "    bank('r3', 'V', 200, UP), bank('z', 'r3', 260, DOWN),", "    { ...bank('r3', 'V', 200, UP), place: { kind: 'walk', after: 'V', dy: [-56, -50] } }, bank('z', 'r3', 260, DOWN), over('L4', 'r3', 200, 0, 120, { creak: true }),", T_ARC),
     ("a line changed from the keeper's words", ARC, "creak: 'Creaky limbs drop you, but only down to the roots!'", "creak: 'Creaky limbs drop you to the roots!'", T_ARC),
+    ('a deck ends over the thorns (no run-off past it)', ARC, 'const RUNOFF = 150;', 'const RUNOFF = 30;', T_ARC),
+    ("her mark is cut in no trunk", 'src/game/gen2/worlds/w1Marks.ts', "    trunks.push({ x: Math.round(m.x), topY: ground - MARK_TRUNK.rise", "    if (Math.random() > 2) trunks.push({ x: Math.round(m.x), topY: ground - MARK_TRUNK.rise", T_ARC),
+    ("her mark's arrow points on where her road climbs", 'src/game/gen2/worlds/w1Marks.ts', "    m.arrow = marksUp(st, m.x, ground) ? 'up' : 'on';", "    m.arrow = 'on';", T_ARC),
+    ("her mark on the bough over the snake moved back to the low road", ARC, "mark('mB', 'B1', 0.5)", "mark('mB', 'Q', 0.6)", T_ARC),
+    ('the bots never go up for her mark', 'tools/inspect/markClimb.ts', '  if (!dir) return false;', '  return false;', T_ARC),
+    ("the world's sets replace 1-5's own dressing", 'src/game/protoStage.ts', 'if (st.proto) st.proto.dress = [...ds, ...(st.proto.dress ?? [])];', 'if (st.proto) st.proto.dress = ds;', T_ARC),
+    ("a leaf-sign's size drifts from its inventory row", 'src/game/dressArt.ts', 'w: 172, h: 210, scale: 0.79', 'w: 172, h: 210, scale: 0.9', 'src/game/dressArt.test.ts'),
+    ("1-5's golden find drawn as the plain seed", 'src/game/stagePlan.ts', "looks: { find: 'guarana-golden', petal: 'petal-folded' }", "looks: { petal: 'petal-folded' }", T_ARC),
+    ("the exit's two signs are gone", ARC, "sockets: [sign('sg1', 'w15-sign-on', 'in', 0.35), sign('sg2', 'w15-sign-on', 'in', 0.72)]", 'sockets: []', T_ARC),
 ]
 
 def run(test: str) -> bool:

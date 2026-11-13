@@ -5,6 +5,8 @@
  * The log, the rock, the golden seed, the leaf curtain, the branches (whole, creaking, snapped), the perch, the earth banks, the moss
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
  */
+import { drawPickup, pickupReady } from './pickupSprites.ts';
+import { stageLooks } from './stagePlan.ts';
 import { drawW1Pits, paintedBank, sideOverHollow, waterAcross } from './w1Pits.ts';
 import { drawHollowLog } from './w1NewArt.ts';
 import { drawCutArt } from './w1CutArt.ts';
@@ -369,9 +371,27 @@ export function drawRockArt(ctx: CanvasRenderingContext2D, p: Platform): boolean
   return true;
 }
 
-export function drawSeedArt(ctx: CanvasRenderingContext2D, c: Collectible, t: number): boolean {
-  if (!protoArtReady()) return false;
+export function drawSeedArt(ctx: CanvasRenderingContext2D, c: Collectible, t: number, world = 1, mini = 1): boolean {
+  // (a stage's own golden find where its plan row names one, StageSpec.looks: 1-5's guarana bunch, the inventory's hf1113/guarana-golden;
+  //  the warm glow under it is the golden seed's own)
+  const own = stageLooks(world, mini).find;
+  if (own && !pickupReady(own)) return false;
+  if (!own && !protoArtReady()) return false;
   const bob = Math.sin(t * 2.2 + c.bobPhase) * 4;
+  if (own) {
+    ctx.save();
+    const g = ctx.createRadialGradient(c.x, c.y + bob, 2, c.x, c.y + bob, 40);
+    g.addColorStop(0, 'rgba(255, 226, 120, 0.7)');
+    g.addColorStop(1, 'rgba(255, 200, 60, 0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(c.x, c.y + bob, 40, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.translate(c.x, c.y + bob);
+    drawPickup(ctx, own, 38, Math.sin(t * 1.6 + c.bobPhase) * 0.06);
+    ctx.restore();
+    return true;
+  }
   ctx.save();
   const glow = ctx.createRadialGradient(c.x, c.y + bob, 2, c.x, c.y + bob, 40);
   glow.addColorStop(0, 'rgba(255, 226, 120, 0.75)');

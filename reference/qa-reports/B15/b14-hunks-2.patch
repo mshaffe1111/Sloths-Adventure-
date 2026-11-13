@@ -1,0 +1,26 @@
+diff --git a/src/game/engine.ts b/src/game/engine.ts
+index b668f85b..07012fdc 100644
+--- a/src/game/engine.ts
++++ b/src/game/engine.ts
+@@ -6892,7 +6892,7 @@ export class GameEngine {
+       // World 5's painted pink bell (Pell's note) and the painted exit totem
+       if (this.w5?.drawItem(ctx, item, this.gameTime, this.currentStage.config.worldIndex)) return;
+       if (item.type === 'seed') {
+-        if (!item.collected && !drawSeedArt(ctx, item, this.gameTime)) drawSeed(ctx, item, this.gameTime);
++        if (!item.collected && !drawSeedArt(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex)) drawSeed(ctx, item, this.gameTime);
+         return;
+       }
+       // a reed cage hanging over the water: the kit draws it (puzzlePlay.ts), and the little one hopping home once it is free
+diff --git a/src/game/types.ts b/src/game/types.ts
+index 5a783420..9118d28a 100644
+--- a/src/game/types.ts
++++ b/src/game/types.ts
+@@ -464,6 +464,8 @@ export interface Collectible {
+   missing?: number;
+   /** a relic drawn as one of Meeca's trail marks (the mixer's 1-5 marks goal): her M cut in a slab of bark, glowing */
+   mark?: 'meeca';
++  /** her mark's arrow (World 1's finish, gen2/worlds/w1Marks.ts): 'up' where her road climbs next, 'on' along it */
++  arrow?: 'up' | 'on';
+   /** a story find (note, book or keepsake): which one (see finds.ts) */
+   findId?: string;
+   /** World 3: one of Grandma's things hidden in a fern (a relic with `hidden`): what it is, for the words when it turns up */
