@@ -480,3 +480,6 @@ Her arrows sit at marching height, on her road, never up on the limbs, as the do
 - The creaky line is true by the doc's own rule: a fall from over ALWAYS lands on the under road. It never says "slow" or "hurry".
 - The joke pays off at beat 9, where both signs finally say THIS WAY.
 - The kept lines stay as written: "She's making them last", the fresher-petals line, the journal, and the keepsake's lone tree.
+
+**APPROVED by Matt (10:20 PM ET, relayed by the lead):** all five 1-5 lines as written: the mission line "She marked the way they took
+her. Follow her marks." and the four lines (the creaky teach, the big sign, the locked exit, the two-signs joke).
