@@ -545,11 +545,10 @@ const gLogRoad = (n: number, ends: boolean, hops = false, withFind = false, post
   if (ends) { const e = bankW(`${k}e`, f.key, [-45, -35], [170, 200]); const o = bankW(`${k}o`, e.key, [35, 45], [220, 260]); pieces.push(e, o); last = o.key; }
   return { pieces, sockets, last };
 };
-/** a perched mushroom: a stump on `on`, the mushroom on the stump (the perch rule, Q2). 50-56 px, a wall he hops, like every World 1
- *  stump (R-165.122, Matt twice: "the rocks that you can go through"; the lead's ruling B, 11-13): FR9b's perch exception (40-46 px, under
- *  the engine's 50 px wall, physics.ts WALL_H) let a plain walk pass straight through the rock under the mushroom, on 1-1 2-7 a roll
- *  (reference/qa-reports/FIXB/lowwalk.ts) */
-const perch = (k: string, on: string, at: R2, w: R2 = LAND): W1Piece[] => [stump(`${k}st`, on, at, [50, 56], w), mushroom(`${k}m`, `${k}st`, [0.5, 0.5])];
+/** a perched mushroom: a stump on `on`, the mushroom on the stump (the perch rule, Q2). Under 50 px (FR9b's perch exception, the
+ *  designer 11-06): no wall, the step help lifts him onto it and the mushroom; at 50-56 its face was a step he could only bounce off from
+ *  (plainWalk's one-jump steps, 1-1 seeds 1 and 3) */
+const perch = (k: string, on: string, at: R2, w: R2 = LAND): W1Piece[] => [stump(`${k}st`, on, at, [40, 46], w), mushroom(`${k}m`, `${k}st`, [0.5, 0.5])];
 /** (C1) the `at` over the seed perch's stump (170-176 wide, the mushroom at its middle) where the bough starts 30-35 px past the mushroom's
  *  edge (Easy's widened stump adds 10-20) */
 const PAST_PERCH: R2 = [0.88, 0.9];
@@ -961,7 +960,7 @@ const seedPerch = section({
     const f = floor(`${k}f`, [640, 720], startOr(after));
     // (Round 11: the seed's perch is a log, floating: Matt's rule, walked-on logs may float)
     const b: W1Piece = { ...bough(`${k}b`, `${k}st`, PAST_PERCH, [-(Math.round(DOUBLE_RISE) + 50), -(Math.round(DOUBLE_RISE) + 50)], [200, 240]), style: 'log' };
-    // (FR9b: a 50-56 px stump on the floor past the perch, a wall he hops (the perch itself is one too since R-165.122); the floor ran 4-5.6 s quiet)
+    // (FR9b: a 50-56 px stump on the floor past the perch, a wall he hops: the perch itself is under 50, no beat, and the floor ran 4-5.6 s quiet)
     return { pieces: [f, ...perch(k, f.key, [0.3, 0.35], [170, 176]), b, stumpL(`${k}w`, f.key, [0.74, 0.8], [50, 56])], sockets: [{ id: 'seed', role: 'find', on: b.key, t: 0.5, dn: 70 }], last: f.key };
   }, gStile([40, 76, 100, 76, 40])] },
   // (Round 6, engine-spec fc34a6f44: the low route's version, climbing into the perch from the floor (c c, then the bounce) and back down
