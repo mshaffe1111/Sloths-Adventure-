@@ -752,3 +752,10 @@ lines); Matt sees them in the release.
 - 2026-11-12 8:38 PM ET, Matt: DIFF-ALGO researches the internet too (how developers design 2D platformer difficulty); sent, packet updated, sources cited.
 - 2026-11-12 9:00 PM ET: INT-2 DONE and retired ($32.59): final head t-int-2@f01c76f7 (code 613b3c94 = 465023ef + 14 w1traps catalog rows, inventory re-emitted; inventory/brickSlots/artUse/tsc/known/roadmap/generality PASS, seedlists 257/100, lock 102/102 unchanged). REPORT reference/qa-reports/INT-2/REPORT.md (buildcheck table). Overnight packets now base on f01c76f7.
 - 2026-11-12 9:14 PM ET: check-in. DIFF-ALGO's read-only prototype (t-diff-algo@80a6685a, tools/difficulty/score.ts: Fitts bits per challenge, stakes, overlap, novelty, peak-end) scores World 1 Normal 1-1 4.0 / 1-2 1.8 / 1-3 1.0 vs Matt's 4-5 / 2-3 / 1 (1-2 a little under). FEEL-PAIR working (pair as one grab + QA-only room pushed 8:31; polishing sign lettering, stopwatch order, reviewing the 2x clip).
+- 2026-11-12 9:32 PM ET, BLIND TEST (Matt's wife; she was not told who made which; relayed by Matt): preferred 1-3 (Fable, finished by Opus
+  max) over 1-2 (Opus max). Why: "she wasn't a fan of the mushrooms"; she "had a little bit problems with the timing of the mushrooms.
+  They weren't as consistent as what they should be with being able just to run and just hit them all"; she'd replay 1-3 over 1-2 (the
+  mushrooms again); no favourite moment; "it wasn't repetitive, which is good". Matt: he IS a fan of the mushrooms; for a 2nd/3rd level
+  "it's not bad, especially when it's just teaching"; "if we could get the timing of the mushrooms to be more consistent so somebody can
+  time their jumps better, then it would have been a much better level for her." -> R-165.174 (measure the bounce cadence, make each
+  chain a steady beat, a cadence check). Confound noted: the result says as much about the mechanic as about Fable vs Opus.
