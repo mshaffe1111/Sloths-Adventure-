@@ -126,3 +126,28 @@ After Matt merges (7-15 min):
 - Never build or release from ccr-0d59a91c-oy3imz: it carries the rejected 11-04 rebuild. Notes only.
 
 Send me your session id, and route every story, Dot and player-text question to me.
+
+---
+## Update for the NEXT lead (written 2026-11-12, 11:03 PM ET, before the morning rotation)
+Read this section first; the sections above describe 11-11.
+- **Live:** 0.9.6 merged (PR #69). 0.9.7 releases tonight: 1-2 and 1-3 rebuilt, plus fixes. Its What's New is the keeper's, in
+  STORY-LINES 11-12.
+- **Every approved player line from 11-12** is in reference/packets/2026-11-12/STORY-LINES.md:
+  - the 1-2 lesson, the leaf note and its hint;
+  - 1-3's teach card, first-trap reaction, chips, mission line and journal;
+  - the purge card line;
+  - the 1-4 halfway, pods and journal lines;
+  - the 1-5 mission line and four lines;
+  - the save dialog;
+  - the About screen, Our story, and the Inspired-by draft.
+- **About is a LIVING page:** reference/story/ABOUT-OURS.md. "Inspired by" waits for Matt's list of games. The music line waits on Matt.
+- **Standing duties added 11-12:**
+  - **Nature check** (R-165.164): before a level's design is judged, ask "does it make sense there to a player?". Behaviour may be
+    storybook.
+  - **The snake is renamed** to the Golden Eyelash Viper (R-165.166). The rename is not yet in code.
+- **Canon added 11-12:** Pokey's full name is Pocono (after Matt's cat). Stillness is Pokey's signature move, with four guards
+  (STORY-KEEPER.md). Every creature leaves on its own and is never hurt; "bested" means outwitted.
+- **Open with the keeper:**
+  - the 1-4 vines rework (DK Jr.-inspired), for story and nature;
+  - R-165.165 (the Keeper's Bell "against a root" beside a stone ledge);
+  - the Inspired-by games (Matt).
