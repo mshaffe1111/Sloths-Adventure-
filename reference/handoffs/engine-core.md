@@ -8,6 +8,27 @@ Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, r
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
+Updated at the end of FEEL-PAIR (11-12, t-feel-pair): section 0h, the draped pair and its feel room; the rest is as it was.
+
+## 0h. The draped pair and its feel room (FEEL-PAIR, R-165.170, t-feel-pair, 11-12): what the next engineer on climbs must know
+- **A climb's speed and reach are values on the vine piece** (vinePair.ts): `Vine.climbSpeed` (px/s, up AND down; unset = CLIMB_SPEED
+  220, every single climb, unchanged) and `Vine.pair` (the strands' gap; x is between them). climbReach adds half the gap to 54/60, so
+  up beside either strand takes both; he hangs at x (between them) with `PlayerState.climbPair` set. engine.ts reads them in the trunk
+  grab (~:1960) and the climb (~:2040). The rustle quickens with the speed (rustleGap); a single's is byte-for-byte the old 0.36-0.48 s.
+- **Drawing:** protoArt.ts skips a pair in the trunk loop and calls pairArt.ts drawDrapedPair (World 1's painted vine tile, castArt.ts
+  vineTile, laid with ropeArt.ts layRope along a path: trailing ends, two strands, a round loop over the bough); a pair's top gets no
+  kapok perch (`tops` leaves pairs out). sheetWarm.ts warms the trap sheet for any pair. The hero: heroClips.ts climbU/pairSway (the
+  climb cycle 1.5x longer on a pair, a +-0.07 rad sway); there are NO arms-out frames: that is new art (the lead's call).
+- **The feel room** (feelPairStage.ts + feelPair.ts + FeelPairClock.tsx): QA build only (`feelPairConfig()` null elsewhere;
+  generateStage builds it only with qaBuild()). Entry: title, Settings (gear), About, "Vine pair test", Play; or `#autostart=1&level=
+  feel-pair`. GeneratedStage.feelRoom -> engine.ts `this.feel` (control() before the attack step takes a tap by the sign; drawWorld
+  draws the sign). RealPlay hosts it with `asQaBuildForTest(true)`. Stills and clips: reference/qa-reports/FEEL-PAIR/shoot.mjs.
+- **Traps I hit:** (1) a keyboard press and release inside one frame never reaches the engine (inputEngine keyup clears the buffer):
+  hold a key 150 ms in a script. (2) Headless full screen (the game's wide mode) shrinks Playwright's recorded frames to two thirds with
+  a grey band: stub requestFullscreen in the recording context. (3) Text under 12 px fails textSize.test.ts (UI-14). (4) The camera's
+  vertical ease lags a climb by speed/6.5 px: feet 50% of a sideways view on a single, 45% on a 2x pair; the 1-4 climb camera (piece 5)
+  owns that framing, not the pair.
+
 ## 0g. World 1's ground seams (RF2, t-render-2, 11-12): what the next engineer on the painted ground must know
 - **Soil fills are sampled FILL_INSET (3) sheet px in from every edge** (groundPaint.ts fillSrc). The ground sheets are lossy WebP: fills
   2-3 of every world sit on the lip strip and their last 3 rows are dark (World 1: 60 -> 36), and Worlds 6/9 bleed at side edges. Drawn
