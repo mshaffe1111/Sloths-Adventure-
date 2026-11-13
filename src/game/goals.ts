@@ -22,9 +22,10 @@ export const GOAL_SHARE = {
   /** the middle of 70-80% */
   defeat: 0.75,
   rescue: 1,
-  /** her MARKS (a search that follows Meeca's marks, 1-5; gen2 lays every mark a section holds, pipeline): the middle of 85-90%, as a
-   *  gather's, so Normal takes her road at nearly every split and may miss about one in eight */
-  marks: 0.875,
+  /** her MARKS (a search that follows Meeca's marks, 1-5; gen2 lays every mark a section holds, pipeline): four in five, so Normal misses
+   *  her road at no more than a few splits (1-5's her-road marks are a quarter of them). Measured: at 0.875 the middle and expert bots,
+   *  which never climb to a bough's mark, met the sealed door on 2 of 3 rolls (B15, 11-13) */
+  marks: 0.8,
 } as const;
 
 /** Easy asks this share of Normal's goal (rounded): Matt, 2026-10-29, "softer, 65% of Normal" (LV-6) */

@@ -1385,7 +1385,8 @@ export function drawProtoScene(
     if (p.style === 'fungus_shelf' && drawW8Fungus(ctx, p)) continue;
     if (p.style === 'roost_branch' && drawRoostBough(ctx, p)) continue;
     const trunk = tops.find((v) => v.x >= p.x && v.x <= p.x + p.width && Math.abs(v.topY + 2 - p.y) < 4);
-    if (trunk && p.width <= 220) {
+    // (a creaky limb at a trunk's top keeps its own notched look: drawn as a perch it read as a sound branch, gen2/creak.ts)
+    if (trunk && p.width <= 220 && p.type !== 'fragile') {
       drawPerchArt(ctx, trunk.x, p.y, p.x + p.width);
       continue;
     }

@@ -28,7 +28,7 @@ export const BRIEF_15: GraphBrief = {
   cast: ['snake'],
 };
 /** the story keeper's lines for 1-5, verbatim (STORY-LINES.md 11-12 "1-5 Where She Walked", approved by Matt 10:20 PM ET; and the kept
- *  ones: "She's making them last", STORY-KEEPER.md:150; the fresher petals, mixer/stages.ts's 1-5; the seed's "Something shiny"). The only
+ *  ones: "She's making them last", STORY-KEEPER.md:150; the fresher petals, the mixer's 1-5). The only
  *  player words this file holds */
 export const LINES_15 = {
   creak: 'Creaky limbs drop you, but only down to the roots!',
@@ -36,7 +36,6 @@ export const LINES_15 = {
   sealed: "We missed some of her marks. They're back there!",
   last: "She's making them last.",
   fresher: 'These petals are fresher. She came this way not long ago.',
-  shiny: 'Something shiny, far away...',
 } as const;
 /** Pokey's joke at the first THIS WAY / THAT WAY: held for the squirrels' sign art (World 1 has none until ART paints it) */
 export const JOKE_15 = 'THIS WAY. THAT WAY. Thank you, squirrels.';
@@ -119,7 +118,7 @@ const EASY: Set = { limb: 170, gap: 50, late: 160, lateGap: 104, easy: true };
  *  (no petal or mark stands INSIDE the trunk: levelCheck reads the shell's box as solid, and took them out) */
 function throughOrOver(len: 300 | 360): Lay {
   const hh = hollowLogSize('moss', len).height;
-  const W = len + 800;
+  const W = len + 1000;
   const pieces: SectionPiece[] = [
     bank('a', null, 300),
     bank('f', 'a', W),
@@ -135,8 +134,8 @@ function throughOrOver(len: 300 | 360): Lay {
  *  the long bank: a vine up to ONE creaky limb that gives way and drops him onto petals; a straight vine back up to three limbs of the
  *  same length and gap; down off the last. Every limb here is over the bank (never needed: creak.ts, the lesson's own) */
 function lesson(S: Set): Lay {
-  const W = 1260;
-  const x1 = 120, x2 = 480;
+  const W = 1440;
+  const x1 = 120, x2 = 520;
   const pieces: SectionPiece[] = [
     bank('a', null, 300), bank('b', 'a', 260, UP), bank('c', 'b', 300, DOWN), bank('U', 'c', W),
     vine('v1', 'U', W, x1), atTop('L0', 'v1', S.limb, true),
@@ -157,25 +156,26 @@ function lesson(S: Set): Lay {
  *  ASLEEP on a log under a stone with its tendril beside him, her next mark past it; OVER (the squirrels'), a vine up and three creaky
  *  limbs on the same beat, then a high bough over the snake to the golden seed, and down past it. Dot's fresher-petals line at the split */
 function herRoad(S: Set): Lay {
-  const W = 720;
-  const t = trapped('t', 'U', true);
   const xv = 60;
-  const deck = xv + 3 * S.limb + 2 * S.gap + S.gap;
+  const seedX = xv + 3 * S.limb + 3 * S.gap;
+  const W = seedX + 220 + 140;
+  const t = trapped('t', 'U', true);
   const pieces: SectionPiece[] = [
     bank('a', null, 260), bank('U', 'a', W),
     vine('v', 'U', W, xv), atTop('L1', 'v', S.limb, true),
     over('L2', 'U', W, xv + S.limb + S.gap, S.limb, { creak: true }),
     over('L3', 'U', W, xv + 2 * (S.limb + S.gap), S.limb, { creak: true }),
+    // (the seed's bough: sound, at the end of the limbs and over the bank, so the high road comes down before the trap: hung over the
+    //  trap's sapling it crossed its crown, stills 11-13)
+    over('hi', 'U', W, seedX, 220, { style: 'log' }),
     ...t.pieces,
-    // (the seed's bough: solid, high over the trap's load (TRAP_HANG 100 over the log), from past the limbs to past the snake's log)
-    over('hi', 'U', W, Math.min(deck, W - 40), W - Math.min(deck, W - 40) + 460, { dy: OVER + 50, style: 'log' }),
     bank('m', t.last, 260), bank('z', 'm', 240),
   ];
   const sockets: Socket[] = [
     tip('tip', 'a', 0.3, 'fresher'), mark('ma', 'a', 0.7),
-    petals('pU', 'U', [0.2, 0.3], 3, 160), mark('mU', 'U', 0.62), petals('pL2', 'L2', 0.5, 1),
+    petals('pU', 'U', [0.15, 0.22], 3, 160), mark('mU', 'U', (xv + 2 * S.limb + 1.5 * S.gap) / W), petals('pL2', 'L2', 0.5, 1),
+    { id: 'seed', role: 'find', on: 'hi', t: 0.7, dn: 34 },
     ...t.sockets,
-    { id: 'seed', role: 'find', on: 'hi', t: 0.85, dn: 34 }, tip('tip2', 'hi', 0.2, 'shiny'),
     petals('pm', 'm', 0.6, 1), petals('pz', 'z', 0.5, 1),
   ];
   return { pieces, sockets };
@@ -183,7 +183,7 @@ function herRoad(S: Set): Lay {
 /** [X] beat 5, blocked in turn: up on the high road a limb is already gone (a broken stub and a gap past any jump): drop to her road;
  *  then an awake snake paces across the low road: up the vine, over it on a sound bough, and on along shorter, wider-spaced limbs */
 function blocked(S: Set): Lay {
-  const W1 = 900, P = 300, G = 320, Q = 420, xv = 60, xb = 60, B = P - xb + G + 40;
+  const W1 = 1040, P = 300, G = 320, Q = 520, xv = 60, xb = 60, B = P - xb + G + 40;
   const pieces: SectionPiece[] = [
     bank('a', null, 240), bank('U', 'a', W1),
     vine('v', 'U', W1, xv), atTop('L1', 'v', S.late, true),
@@ -193,8 +193,9 @@ function blocked(S: Set): Lay {
     // (the snake's ground between two banks; up the vine on the first, over it on a sound bough, on along a creaky limb, down)
     apron('P', 'U', P), vine('v2', 'P', P, xb), atTop('B1', 'v2', B),
     ground('S', 'P', G),
-    apron('Q', 'S', Q), over('L3', 'Q', Q, 40 + S.lateGap, S.late, { creak: true }),
-    bank('z', 'Q', 260),
+    // (the apron past the snake, then a main bank the flag pass may stand the stage's last flags on, 340 px and more past the den)
+    apron('Q', 'S', 260), over('L3', 'Q', 260, 40 + S.lateGap, S.late, { creak: true }),
+    bank('Qb', 'Q', Q - 260), bank('z', 'Qb', 260),
   ];
   const sockets: Socket[] = [
     mark('ma', 'a', 0.5), petals('pL1', 'L1', 0.5, 1), petals('pL2', 'L2', 0.5, 1),
@@ -213,7 +214,7 @@ function boughRun(S: Set): Lay {
   const pieces: SectionPiece[] = [bank('a', null, 280), bank('U', 'a', W), vine('v', 'U', W, xv), atTop('L1', 'v', S.late, true)];
   const sockets: Socket[] = [flag('a', 0.3), tip('tip', 'a', 0.5, 'sign'), mark('ma', 'a', 0.85)];
   let x = xv + S.late;
-  for (let j = 2; j <= 6; j++) { const k = `L${j}`; pieces.push(over(k, 'U', W, x + S.lateGap, S.late, { creak: true })); sockets.push(petals(`p${k}`, k, 0.5, 1)); x += S.lateGap + S.late; }
+  for (let j = 2; j <= 7; j++) { const k = `L${j}`; pieces.push(over(k, 'U', W, x + S.lateGap, S.late, { creak: true })); sockets.push(petals(`p${k}`, k, 0.5, 1)); x += S.lateGap + S.late; }
   pieces.push(bank('z', 'U', 300));
   sockets.push(mark('mz', 'z', 0.6));
   return { pieces, sockets };
@@ -222,7 +223,7 @@ function creek(S: Set): Lay {
   const pieces: SectionPiece[] = [bank('a', null, 280), bank('r1', 'a', 200, DOWN), bank('r2', 'r1', 200, DOWN)];
   const sockets: Socket[] = [flag('a', 0.3), tip('tip', 'a', 0.5, 'sign'), mark('ma', 'a', 0.85)];
   let prev = 'r2';
-  for (let j = 0; j < 5; j++) {
+  for (let j = 0; j < 6; j++) {
     const k = `s${j}`;
     pieces.push({ key: k, shape: 'bank', w: [S.easy ? 150 : 110, S.easy ? 150 : 120], place: { kind: 'pit', after: prev, jump: 'jump', gapPx: S.easy ? [90, 96] : [112, 120], soft: true }, style: 'moss_stone', main: true, landing: true });
     sockets.push(petals(`p${k}`, k, 0.5, 1));
@@ -257,17 +258,17 @@ function stone(S: Set): Lay {
  *  (vine up, two creaky limbs over it on a sound bough's ends); then the last crossing, where her arrow points UP for the first time:
  *  the soldiers crossed on a fallen trunk, rotten in two spans, and under it only soft dips (the creek's stand-in) */
 function weave(S: Set): Lay {
-  const W1 = 760, P = 300, G = 320, Q = 520, xb = 40, B = P - xb + G + 20;
+  const W1 = 900, P = 300, G = 320, Q = 640, xb = 40, B = P - xb + G + 20;
   const pieces: SectionPiece[] = [
     bank('a', null, 240), bank('U', 'a', W1),
     vine('v', 'U', W1, 60), atTop('L1', 'v', S.late, true),
     over('L2', 'U', W1, 60 + S.late + S.lateGap, S.late, { creak: true }),
     apron('P', 'U', P), vine('v2', 'P', P, xb), atTop('B', 'v2', B),
     ground('S', 'P', G),
-    apron('Q', 'S', Q),
-    over('L3', 'Q', Q, 20 + S.lateGap, S.late, { creak: true }),
-    over('L4', 'Q', Q, 20 + 2 * S.lateGap + S.late, S.late, { creak: true }),
-    bank('z', 'Q', 300),
+    apron('Q', 'S', 260), bank('Qb', 'Q', Q - 260),
+    over('L3', 'Q', 260, 20 + S.lateGap, S.late, { creak: true }),
+    over('L4', 'Qb', Q - 260, 20 + 2 * S.lateGap + S.late - 260, S.late, { creak: true }),
+    bank('z', 'Qb', 300),
   ];
   const sockets: Socket[] = [
     flag('a', 0.3), mark('ma', 'a', 0.7), petals('pL1', 'L1', 0.5, 1), petals('pL2', 'L2', 0.5, 1),
