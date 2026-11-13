@@ -710,3 +710,11 @@ lines); Matt sees them in the release.
   B = Opus MAX (session_01FhBbYLoPmhAYSDcgKv3Jo7, t-ideas-15-b); C = Fable after Matt's reset (with ENG-ASCENT). Letter->effort map stays
   with the lead; D15 (Opus max) designs 1-5 from all three once C is in.
 - 2026-11-12 8:17 PM ET: 1-5 idea A (Opus XHIGH) DONE in ~4 min, t-ideas-15-a@d4ae2319, retired: the squirrels' leaf-signs pick the next stretch; over = quick + view + the far 'shiny' seed, under = her folded petals + story (petals stay low, STORY-KEEPER:153); every over-road drop lands on her trail; twist: a sign turns in the breeze, trust her marks; flags today's fork putting petals high (w1mix.ts:1089) as a story break.
+- 2026-11-12 8:23 PM ET: 1-5 idea B (Opus MAX) DONE in ~9 min, t-ideas-15-b@df33077c, retired: grows 1-1's hollow-log two-way into the
+  teach; over = see danger ahead + finds, under = quicker + her petals; the squirrels' signs first at a fork he can see past (they tell
+  the truth), then before leaf curtains (the card road); twist at the creek: her mark points UP (soldiers crossed on a high trunk);
+  the joke: both signs say THIS WAY where the roads meet; phone trap: the over deck within ~2.5 Pokey heights or sideways the choice is
+  blind. Art gaps named (no sign/reed/tunnel art in W1). LEAD APPROVED rule changes for level.md (apply when level.md lands on the
+  lead's branch; list kept here): step 0 idea round (Matt 6:02 PM); the story keeper's nature check before judging (R-165.164); step 1
+  checks phone claims against engine.ts:1170 + cameraFollow.ts:96 (D14); step 1 greps inventory/<world>.json for every piece and lists
+  art gaps (B); every brief: re-grep each cited file:line before pushing (B).
