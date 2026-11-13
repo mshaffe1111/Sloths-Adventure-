@@ -49,3 +49,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | IDEAS-1-7-8 B (Opus high) | 1-7 + 1-8 idea lists + tributes; 6 engine findings (two hide rules disagree) | $2.17 | ~7 min |
 | INT-4 (Opus xhigh) | 1-4 bot split: every stuck kind a bot limit, fixed in tools/inspect; 1-4 castBots 22 -> 176/360 | $8.37 | ~27 min; gates not reached (40% line) |
 | IDEAS-1-7-8 C (Opus xhigh) | 1-7 + 1-8 idea lists + tributes; 5 engine findings (seesStill eagle, chase liana fairness) | unreadable | 16 min; the lead archived it before it went idle (its own rule), so its cost was lost: about $2-4 by its siblings |
+| VARIETY-2 (Opus max) | proved VARIETY's item 1 (all gates); found W1 floor.unmarked root = the painter's single ground line (ruler job packet ready); '_' vs V19 named; found R-165.207 (buildcheck at budget on main) | $16.13 | ~1 h 35 min |
