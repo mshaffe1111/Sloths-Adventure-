@@ -8,6 +8,24 @@ Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14,
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
+## 0x. The level's top in the snake verdict, the snake lay, a liana's length (ENG-S4, t-eng-s4, 11-14): what the next engineer must know
+- The view the verdicts judge is the engine's: cameraFollow.ts `usualZoom` IS applyZoom's base zoom (engine.ts calls it), and
+  `settledView(w, h, levelH, widen)` gives the view's height, the HUD band in world px and the least/most the view's top may be (a
+  normal stage never shows past its top; upright a widened swing may show sky over a level shorter than the view). snakeCam.test.ts
+  pins it to the real engine at rest (520 / 900 / 1600 px levels, every phone). Change applyZoom's floors or the clamp: change these too.
+- snakeViewFaults(sn, len, phases, site, phones): site = { anchorY, levelH } (snakeFaults passes Vine.topY and the stage's height);
+  phones default VIEW_PHONES (782x288 sideways; 320x782, 390x844, 412x915 upright, each at no widening, SWING_CAM.out and where sky first
+  shows). Two rules: seen SNAKE.seen before his hands; the whole tell wherever the focus box fits the clear view's height.
+- What it means for a lay (depth-table.md): a snake from the bough needs its anchor >= 270 px under the level's top and a 6 s+ trip
+  (down-off; 7 s down-back) on a 410/420 liana; risers lay anywhere. Every liana laid today hangs 74-222 px down: none can carry one.
+- gen2/snakeLay.ts laySnakes: a stage finish (listed.ts FINISH, finish14's pattern) by section template + liana key (brief tagged),
+  throws on snakeFaults. NODE letter n (key later; dials route incl. still = false liana). Brown catalog rows: a rows file
+  (reference/art/catalog-rows-eng-s4.csv), appended to the master after t-art-678b's rows at integration.
+- The swing rule takes `len` (rolled only when set: no shipped roll moves); w1Liana's 4th argument.
+- OPEN: chains (REPORT EXACT NEXT STEP 1); the false liana's drawn length (its liana's length: 410 px draws 4.6x Pokey).
+- Shoot: reference/qa-reports/ENG-S4/shoot.mjs (LOWER=<px> hangs the liana lower at runtime, TRIP=<s>, CLIP=1; labels print the
+  level's top, view top, band, clear view, widening, the verdict on that phone, lives lost). Never edit src/ while it runs (vite reloads).
+
 ## 0w. The camera's focus and the false liana's landing (ENG-S3, CAM-THREAT, t-eng-s3, 11-14; STOPPED by the lead, gates UNRUN)
 - PieceHost.focus(box): one step's request (engine clears camFocus before stepPieces); updateCamera applies cameraFollow.ts focusY after
   the HUD hold; steps capped at CAM_RISE_STEP while focused, never losing him. The vine snake asks FOCUS_CAM.lead (1.2 s) before its tell
