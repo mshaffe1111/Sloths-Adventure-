@@ -7,6 +7,7 @@ import './headlessDom.ts';
 import { buildGen2Stage } from './gen2/pipeline.ts';
 import { w1World } from './gen2/worlds/w1.ts';
 import { generateAllLevels } from './worldsData.ts';
+import { generateStage, listedRoll, setLayoutVariant } from './stageGenerator.ts';
 
 const none: Progress = { lessons: new Set(), tipHeard: () => false, cleared: () => false, skills: new Set(), finds: [] };
 
@@ -35,11 +36,25 @@ test('every tip a page waits for is one the game really says', () => {
   const engine = readFileSync(new URL('./engine.ts', import.meta.url), 'utf8');
   // (1-3 is generated: its tips are what its build lays, on both settings. Read from its source, a page waited for 1-3's old first line
   //  alone after the lesson became one card, and the test still passed: F13 11-12, D19)
-  const cfg13 = generateAllLevels().find((l) => l.id === '1-3' && !l.secret)!;
+  // (and so is every LISTED stage, rolled from its world's kit (stageGenerator.ts listedRoll): what the game builds says its tips, on
+  //  both settings; a page waited on 1-7's deleted line until BUILD-17b)
+  const levels = generateAllLevels().filter((l) => !l.secret);
+  const cfg13 = levels.find((l) => l.id === '1-3')!;
   const said13 = new Set((['normal', 'easy'] as const).flatMap((difficulty) => (buildGen2Stage({ config: cfg13, kit: w1World(), seed: 1, difficulty }) as unknown as { proto: { hints: Array<{ text: string }> } }).proto.hints.map((h) => h.text)));
+  const builtSaid = (stage: string): Set<string> => {
+    const cfg = levels.find((l) => l.id === stage)!;
+    setLayoutVariant(1);
+    try {
+      return new Set((['normal', 'easy'] as const).flatMap((d) => ((generateStage(cfg, d) as unknown as { proto?: { hints?: Array<{ text: string }> } }).proto?.hints ?? []).map((h) => h.text)));
+    } finally {
+      setLayoutVariant(null);
+    }
+  };
   for (const p of PAGES) {
     for (const [stage, id] of p.open.tip ?? []) {
+      const cfg = levels.find((l) => l.id === stage);
       if (id.startsWith('tip:') && stage === '1-3') assert.ok(said13.has(id.slice(4)), `${p.id}: 1-3 as built says "${id.slice(4)}"`);
+      else if (id.startsWith('tip:') && cfg && listedRoll(cfg)) assert.ok(builtSaid(stage).has(id.slice(4)), `${p.id}: ${stage} as built says "${id.slice(4)}"`);
       else if (id.startsWith('tip:')) assert.ok(proto.includes(`'${id.slice(4)}'`), `${p.id}: the stage hint "${id.slice(4)}" exists`);
       else assert.ok(engine.includes(`'${id.split(':')[0]}:`) || engine.includes(`'${id}'`), `${p.id}: the engine says ${id}`);
     }

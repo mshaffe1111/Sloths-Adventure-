@@ -67,7 +67,7 @@ export function dressStage(d: DressInput): KitDecor[] {
 }
 
 /**
- * World 1's rooms (1-4's squirrels' lift, 1-6's seesaws, 1-7's acorn meadow), from Matt's World 1 sheet:
+ * World 1's rooms (1-6's seesaws; 1-4's squirrels' lift and 1-7's acorn meadow went with their hand-built stages), from Matt's World 1 sheet:
  *   1-4  the squirrels' home on their tree, a hollow log with a round door on the ledge the lift goes up to: it opens as the lift tops out
  *   1-6  a branch gate at the top of the bank the seesaw is the way up to: shut, it rises out of the way as the seesaw tips
  *   all  a petal bundle, the room's reward: it rises out of the spot past the way on as he gets there (a picture: it is not a pickup and

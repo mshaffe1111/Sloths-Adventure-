@@ -36,7 +36,10 @@ const enter = (s: PredatorState, phase: Phase): void => {
 /** the tell on a setting (s). Easy is never shorter, whatever the data says */
 export const tellOf = (def: PredatorDef, easy: boolean): number => def.tell * (easy ? Math.max(1, def.easy.tell) : 1);
 /** the beat between attacks on a setting (s) */
-export const coolOf = (def: PredatorDef, easy: boolean): number => def.cool * (easy ? Math.max(1, def.easy.cool) : 1);
+export const coolOf = (def: PredatorDef, easy: boolean, own?: number): number => (own ?? def.cool) * (easy ? Math.max(1, def.easy.cool) : 1);
+
+/** a sweeper's pass over him that cannot hurt: its first over its stretch when it was laid free, and on Easy always (watcher.ts freeFirst) */
+export const sparedPass = (def: PredatorDef, s: PredatorState, easy: boolean): boolean => def.habit === 'sweep' && s.passes === 0 && (s.free || easy);
 /** every speed's multiple on a setting: 1 on Normal, never over 1 on Easy */
 export const speedOf = (def: PredatorDef, easy: boolean): number => (easy ? Math.min(1, def.easy.speed) : 1);
 /** Easy has fewer: the posts a setting uses */
@@ -90,12 +93,15 @@ export function checkOnClock(def: PredatorDef, clock: ClockDef): string[] {
 
 export function newPredator(def: PredatorDef, post: Post): PredatorState {
   const facing = post.facing ?? 1;
+  const eyeX = def.habit === 'sweep' ? (facing > 0 ? post.minX : post.maxX) : post.x;
   return {
-    x: post.x, y: post.y, asleep: !!post.asleep, stunUntil: 0,
+    // (a sweeper that rides its eye starts where its eye does: its body IS its shadow's bird, never flying in from where it was laid)
+    x: def.rides && !post.perched ? eyeX : post.x, y: post.y, asleep: !!post.asleep, stunUntil: 0,
     phase: 'rest', t: 0, facing, homeX: post.x, homeY: post.y, minX: post.minX, maxX: post.maxX,
-    eyeX: def.habit === 'sweep' ? (facing > 0 ? post.minX : post.maxX) : post.x,
+    eyeX,
     aimX: post.x, aimY: post.y, goalX: post.x, drawn: false, look: 0, knows: false, leaving: false,
-    lost: 0, cool: 0, awayUntil: 0, saw: false, beatenBy: null,
+    lost: 0, cool: 0, awayUntil: 0, saw: false, beatenBy: null, ownCool: post.cool, passes: 0, free: !!post.free,
+    ...(post.perched ? { perched: true } : {}),
   };
 }
 
@@ -257,7 +263,7 @@ function stepFlee(def: PredatorDef, s: PredatorState, sc: Scene): void {
   s.y = toward(s.y, s.homeY, v);
   if (sc.t >= s.awayUntil) {
     enter(s, 'rest');
-    s.cool = Math.max(s.cool, coolOf(def, sc.easy));
+    s.cool = Math.max(s.cool, coolOf(def, sc.easy, s.ownCool));
   }
 }
 
@@ -268,12 +274,13 @@ function endPass(def: PredatorDef, s: PredatorState, sc: Scene, ev: PredatorEven
   s.drawn = false;
   if (s.saw) s.lost = 0;
   else if (there) s.lost += 1;
+  if (there) s.passes++;
   if (!s.saw && there && sc.hero.still && s.lost >= def.giveUp && beat(def, s, 'still', sc.t)) {
     ev.beaten = 'still';
     return;
   }
   enter(s, 'rest');
-  s.cool = coolOf(def, sc.easy);
+  s.cool = coolOf(def, sc.easy, s.ownCool);
 }
 
 /**
@@ -295,7 +302,7 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
   }
   if (s.phase === 'stunned') {
     enter(s, 'rest');
-    s.cool = Math.max(s.cool, coolOf(def, easy));
+    s.cool = Math.max(s.cool, coolOf(def, easy, s.ownCool));
   }
   if (s.asleep) {
     if (s.phase !== 'rest') enter(s, 'rest');
@@ -310,8 +317,9 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
   if (saw) s.knows = true;
   const on = (phase: 'warn' | 'on'): boolean => !def.onBeat || sc.beat?.phase === phase;
   const dist = Math.abs(hero.x - s.x);
-  // where its body belongs between acts: its post, or (a sweeper that rides its eye) wherever its eye is
-  const restX = def.rides ? s.eyeX : s.homeX;
+  // where its body belongs between acts: its post, or (a sweeper that rides its eye) wherever its eye is; a perched one sits on its post
+  const rides = !!def.rides && !s.perched;
+  const restX = rides ? s.eyeX : s.homeX;
   const home = Math.abs(s.x - restX) <= AT && Math.abs(s.y - s.homeY) <= AT;
   const ready = s.cool <= 0 && (def.act.aim === 'ahead' || home);
   const back = (def.speed.rest || def.act.speed * 0.5) * k * dt;
@@ -331,7 +339,7 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
         // the eye waits at the end its next pass starts from; the pass is called when he is in its stretch
         const end = s.facing > 0 ? s.minX : s.maxX;
         s.eyeX = toward(s.eyeX, end, def.speed.rest * 2 * dt);
-        if (def.rides && home) s.x = s.eyeX;
+        if (rides && home) s.x = s.eyeX;
         if (s.eyeX === end && home && s.cool <= 0 && hero.x >= s.minX && hero.x <= s.maxX && on('warn')) {
           enter(s, 'hunt');
           s.saw = false;
@@ -364,12 +372,12 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
           // a noise pulls the eye to it; it circles there and sees nobody
           const g = clamp(s.goalX, s.minX, s.maxX);
           s.eyeX = toward(s.eyeX, g, def.speed.rest * k * dt);
-          if (def.rides) s.x = s.eyeX;
+          if (rides) s.x = s.eyeX;
           if (s.eyeX === g && (s.look += dt) >= (def.hears ?? 0)) s.drawn = false;
           break;
         }
         s.eyeX = toward(s.eyeX, far, def.speed.rest * k * dt);
-        if (def.rides) s.x = s.eyeX;
+        if (rides) s.x = s.eyeX;
         if (sees(def, s, hero)) {
           s.saw = true;
           s.knows = true;
@@ -483,7 +491,7 @@ export function stepPredator(def: PredatorDef, s: PredatorState, sc: Scene): Pre
       if (sweep) endPass(def, s, sc, ev);
       else {
         enter(s, 'rest');
-        s.cool = coolOf(def, easy);
+        s.cool = coolOf(def, easy, s.ownCool);
       }
       break;
     }

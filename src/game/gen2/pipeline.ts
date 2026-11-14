@@ -1478,6 +1478,30 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     by.set(pc.key, p);
     out.push(p);
   }
+  // (a creaky limb laid ACROSS a pit, a jump onto it and on off it: it gives way under him, gen2/creak.ts "drops him to what is under it",
+  // so the pit runs on under the limb, one pit from the lip he jumped from to the lip he jumps to. Laid apart, each jump's gap had its own
+  // pit and the limb's own span had none: when it gave way he fell into nothing (1-7's beats 8 and 14, BUILD-17b). Only plain pits join,
+  // alike in water and softness; a limb laid over ground ('over' a bank, 1-4's and 1-5's) has no pit at either end and is left)
+  const plainPit = (g: (typeof gaps)[number]) => g.pit && !g.back && !g.putBack && !g.hurt;
+  for (const p of out) {
+    if (!p.creak) continue;
+    const gl = gaps.find((g) => plainPit(g) && Math.abs(g.x1 - p.x) <= 1);
+    const gr = gaps.find((g) => plainPit(g) && Math.abs(g.x0 - (p.x + p.w)) <= 1);
+    if (!gl && !gr) continue;
+    if (gl && gr && (!!gl.water !== !!gr.water || !!gl.soft !== !!gr.soft)) continue;
+    const g = (gl ?? gr)!;
+    // (a shallow catch, wade-deep, no steps: a step out laid under the limb stood under its own ceiling, 1-7 seed 2's 75 px step at
+    // x 18791 that a flick leaning away could not climb, plainWalk.test)
+    g.shallow = true;
+    g.x0 = Math.min(g.x0, p.x);
+    g.x1 = Math.max(g.x1, p.x + p.w);
+    if (gl && gr) {
+      g.x1 = gr.x1;
+      g.y = Math.min(gl.y, gr.y);
+      g.lo = Math.max(gl.lo, gr.lo);
+      gaps.splice(gaps.indexOf(gr), 1);
+    }
+  }
   let entry = { ...tpl.entry };
   let exitP = { ...tpl.exit };
   const right = Math.max(...out.map((p) => p.x + p.w));
@@ -3722,6 +3746,7 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
   const sleeper = new Set(M.creatures.filter((c) => c.tags?.includes('sleeper')).map((c) => c.id));
   const byId = new Map(M.sections.map((t) => [t.id, t]));
   const tplOf = new Map(st.gen2.sections.map((q) => [q.uid, byId.get(q.template)]));
+  const propTags = new Map(M.props.map((p) => [p.id, p.tags]));
   // (a node's hazard ask is a fall the node lays on its route: a hole under the route is the earth's, never the node's hazard, DropSite)
   const falls = (st.gen2.drops ?? []).filter((d) => !d.site).map((d) => ({ x0: d.x0, x1: d.x1, kind: d.ends.kind === 'putback' ? 'soft' : d.ends.kind === 'life' ? (d.ends as { cause: string }).cause : 'hurt' }));
   const out: string[] = [];
@@ -3736,6 +3761,7 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
       enemies: fills.filter((f) => f.role === 'enemy' && f.what && at.has(R(f.x))).map((f) => ({ kind: f.what!, asleep: sleeper.has(f.what!) })),
       finds: fills.filter((f) => f.role === 'find' && f.what).map((f) => f.what!),
       pickups: fills.filter((f) => f.role === 'pickup' && f.what).reduce((s, f) => s + (f.count ?? tplOf.get(f.section)?.sockets.find((q) => q.id === f.socket)?.count ?? 1), 0),
+      props: fills.filter((f) => f.role === 'prop' && f.what).map((f) => propTags.get(f.what!) ?? []),
     };
     if (!laidNodes && (n.asked.shape || n.asked.content || n.asked.move)) out.push(`node ${n.id} "${token}": its sections' heights were not kept for the check`);
     out.push(...askMisses(n.asked, laidNode, M.creatures, easy));

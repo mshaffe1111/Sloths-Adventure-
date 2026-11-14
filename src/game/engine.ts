@@ -204,7 +204,9 @@ import { dotHelp, seenSkills } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
 import { aheadZone, type AheadProbe } from './dotGuidePerch.ts';
 import { FONT_UI } from './fonts.ts';
-import { withHurtFlash } from './hurtFlash.ts';
+import { withHurtFlash, withWash } from './hurtFlash.ts';
+import { MOSS_TINT, SNAG_PERCH, sweepPose, type SweepPose } from './sweepPose.ts';
+import { drawLianaMoss, drawMossCover, drawPerchedEagle, drawSnag, mossHeight } from './w17Art.ts';
 import { shakeOffset } from './screenShake.ts';
 import { POWER_UP_SECS } from './powerUps.ts';
 import { climbReach, climbSpeedOf, rustleGap } from './vinePair.ts';
@@ -657,6 +659,15 @@ export class GameEngine {
   /** the stage's cast on the creature kit and its drop traps, when its brief names a cast (castPlay.ts); null on every other stage */
   private cast: CastPlay | null = null;
   private readonly castHero: CastHero = { x: 0, y: 0, vx: 0, vy: 0, facing: 1, grounded: false, holding: false };
+  /** the cast's sweepers as drawn (sweepPose.ts): the eased pose and the painted body it is drawn with, by the animal's id (never the
+   *  kit's own animal: its x and y are the kit's, which the blows and stomps read) */
+  private readonly sweepDrawn = new Map<number, { pose: SweepPose; body: Enemy }>();
+  /** the moss over him last step (castPlay.ts calmNow), for the calm sound the step it comes all the way in */
+  private mossWas = 0;
+  /** his swing's rope length on the last cast step (NaN off a swing): climbing a swinging liana is moving, the swing is not */
+  private swingLenWas = NaN;
+  /** the game time the sweepers were last drawn at (their easing's step) */
+  private sweepT = 0;
   /** the stage's runtime pieces on the one hook (pieces/index.ts): every registered kind its data lays, started at the stage's start */
   private pieces: StagePiece[] = [];
   /** what a piece may read of the engine (stagePiece.types.ts PieceHost): made once, it reads the engine live */
@@ -4630,7 +4641,12 @@ export class GameEngine {
   /** the stage's cast from its own data, at every stage start: the kit takes the animals the brief names (castPlay.ts); none named, none taken */
   private startCast() {
     const world = this.currentStage.config.worldIndex;
-    this.cast = this.proto?.cast ? new CastPlay(this.proto.cast, this.enemies, this.platforms, world, this.proto.bushes ?? []) : null;
+    // (the covers: the stage's hides, and every mossy liana as cover while he holds it, 1-7 NEW 6)
+    const ropes = this.vines.filter((v) => v.mossy).map((v) => ({ x: 0, w: 0, y: 0, rope: v.id }));
+    this.cast = this.proto?.cast ? new CastPlay(this.proto.cast, this.enemies, this.platforms, world, [...(this.proto.bushes ?? []), ...ropes]) : null;
+    this.swingLenWas = NaN;
+    this.sweepDrawn.clear();
+    this.mossWas = 0;
     // (its painted trap pieces load with the stage, so the first frame has them: castArt.ts)
     if (this.cast?.traps.length) warmTrapArt();
   }
@@ -4647,17 +4663,43 @@ export class GameEngine {
     h.x = p.x;
     h.y = p.y;
     h.vx = p.vx;
-    h.vy = p.vy;
+    // (on a swinging liana the swing carries him: that is the vine moving, not him; climbing it is the rope's length changing)
+    const len = p.isVineSwinging ? p.swingLength ?? 0 : NaN;
+    h.vy = p.isVineSwinging ? (Number.isFinite(this.swingLenWas) ? (len - this.swingLenWas) / Math.max(dt, 1e-3) : 0) : p.vy;
+    this.swingLenWas = len;
     h.facing = p.facing;
     h.grounded = p.grounded;
-    h.holding = !!(p.climbing || p.isVineSwinging);
+    // (hanging on a rope is holding too: hanging moss hides him only while he hangs in it, stillness.ts inCover; without it the drape never
+    //  hid him in the game, BUILD-17's hanging-moss still: hanging true, calmNow 0. hangCover.test.ts)
+    h.holding = !!(p.climbing || p.isVineSwinging || p.hanging);
+    h.hanging = !!p.hanging;
+    h.rope = p.isVineSwinging ? p.swingVineId : p.climbing ? p.climbingVineId : undefined;
     const r = c.step(h, dt, this.gameTime, this.easy);
-    // (the cues the old animals give: a '?' when it notices him, a '!' and its call when its tell begins)
-    for (const e of r.noticed) this.addFloatingText('?', e.x, e.y - 34, '#fde047');
+    // (the cues the old animals give: a '?' when it notices him, a '!' and its call when its tell begins. A sweeper's notice is its pass
+    //  being called: the screech, its warn (1-7: sound comes first); its tell is the dive, its '!' where it is drawn)
+    for (const e of r.noticed) {
+      if (e.kit && this.isSweeper(e)) sound.playEagleScreech();
+      else this.addFloatingText('?', e.x, e.y - 34, '#fde047');
+    }
     for (const e of r.told) {
       sound.playPredator(castCall(e.type), 0);
-      this.addFloatingText('!', e.x, e.y - 34, '#f97316');
+      // (a sweeper's tell is its dive, drawn: no '!' over it, 1-7.md's tributes)
+      if (!(e.kit && this.isSweeper(e))) this.addFloatingText('!', e.x, e.y - 34, '#f97316');
     }
+    // a sweeper's free pass dove and pulled up short: Dot's line, once ever (the stage's own words, castPlay.types.ts said.spared)
+    for (const e of r.spared) {
+      sound.playWhoosh();
+      const line = this.proto?.cast?.said?.spared;
+      if (line && !tipHeard(FIRST_OF_STAGE, 'cast:spared')) {
+        markTipHeard(FIRST_OF_STAGE, 'cast:spared');
+        this.guide(line, 4);
+      }
+      recorder.event('spared', e.type);
+    }
+    // the moss all the way in over him, still in cover: the calm sound, once each time it comes in (1-7 NEW 3)
+    const moss = c.calmNow(this.easy);
+    if (moss >= 1 && this.mossWas < 1) sound.playWindChime();
+    this.mossWas = moss;
     for (const e of r.struck) sound.playPredator(castCall(e.type), 1);
     for (const k of r.hurts) {
       if (this.debugBoxes) this.dbgHurt.push(k.box);
@@ -4691,6 +4733,75 @@ export class GameEngine {
       this.spawnDebrisBurst(t.loadX, t.landY - 8, t.load === 'hive' ? '#fbbf24' : '#a8a29e');
     }
     if (r.landed) recorder.event('landing', String(Math.round(r.landed.r)));
+  }
+
+  /** is this cast animal a sweeper (drawn from its eye, sweepPose.ts, not where the kit stands it)? */
+  private isSweeper(e: Enemy): boolean {
+    return !!this.cast?.sweepers.some((m) => m.e === e);
+  }
+
+  /**
+   * The cast's sweepers (World 1's eagle, 1-7 NEW 2), drawn from the kit's state in the old watcher's language (sweepPose.ts): far off
+   * between passes, in at the edge for the screech, over its eye with its shadow on the ground for the pass, the dive. The painted eagle
+   * (eagleSprite.ts) and the shadow sprite (drawWatchShadow, drawn with the front layer). Eased toward the pose; a faded pose snaps.
+   */
+  private drawCastSky(ctx: CanvasRenderingContext2D) {
+    const c = this.cast!;
+    // (eased by game time: a paused game holds still)
+    const dt = Math.max(0, Math.min(0.1, this.gameTime - this.sweepT));
+    this.sweepT = this.gameTime;
+    const cam = this.camera;
+    const view = { x: cam.x, y: cam.y, w: cam.viewportWidth };
+    const k = 1 - Math.exp(-14 * dt);
+    if (!this.proto?.watch) this.watchShadowAt = null;
+    const hidden = c.calmNow(this.easy) >= 1;
+    for (const m of c.sweepers) {
+      // (a perched one's snag stands behind him wherever it is, its perch branch under the eagle's feet: 1-7 beat 12)
+      if (m.s.perched && this.onScreen(m.s.homeX, m.s.homeY + SNAG_PERCH / 2, 260)) drawSnag(ctx, m.s.homeX, m.s.homeY + SNAG_PERCH, m.s.facing < 0);
+      const want = sweepPose(m.def, m.s, { hero: this.player, view, easy: this.easy, spared: c.spares(m, this.easy), time: this.gameTime, hidden });
+      let d = this.sweepDrawn.get(m.e.id);
+      if (!want) {
+        if (d) d.pose.alpha = 0;
+        continue;
+      }
+      if (!d) {
+        const body = { ...m.e, id: m.e.id, defeated: false, kit: undefined } as Enemy;
+        d = { pose: { ...want }, body };
+        this.sweepDrawn.set(m.e.id, d);
+      }
+      const p = d.pose;
+      // (a pose that starts faded out moves there at once: the jump is never seen; anything else eases, so a dive called off pulls up)
+      const snap = want.snap && p.alpha < 0.05;
+      const ease = (a: number, b: number) => (snap ? b : a + (b - a) * k);
+      p.x = ease(p.x, want.x);
+      p.y = ease(p.y, want.y);
+      p.scale = ease(p.scale, want.scale);
+      p.alpha = ease(p.alpha, want.alpha);
+      p.facing = want.facing;
+      p.phase = want.phase;
+      p.attacking = want.attacking;
+      p.shadow = want.shadow;
+      p.perch = want.perch;
+      if (want.shadow && (!this.watchShadowAt || want.shadow.a > this.watchShadowAt.a)) this.watchShadowAt = { x: want.shadow.x, a: want.shadow.a };
+      if (p.alpha < 0.02 || !this.onScreen(p.x, p.y, 200)) continue;
+      // perched on its snag: the painted perched frames (looking ahead, the head turn, looking down, the blink), its feet on the branch
+      if (p.perch && drawPerchedEagle(ctx, p.x, p.y, p.perch, p.facing)) continue;
+      const e = d.body;
+      e.x = p.x;
+      e.y = p.y;
+      e.facing = p.facing;
+      e.swoopPhase = p.phase;
+      e.isAttacking = p.attacking;
+      // (never the sprite's flare: its ring and '!' are code-drawn, and the dive is the tell)
+      e.telegraphTimer = 0;
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.translate(e.x, e.y);
+      ctx.scale(p.scale, p.scale);
+      ctx.translate(-e.x, -e.y);
+      if (!drawEagleSprite(ctx, e, this.gameTime)) drawHarpyEagle(ctx, e, this.gameTime);
+      ctx.restore();
+    }
   }
 
   /** a punch or a kick on a cast animal: the kit says whether it works and how it ends; this is the blow's weight */
@@ -7083,6 +7194,11 @@ export class GameEngine {
       this.camera,
       this.gameTime
     );
+    // the Spanish moss on a mossy liana (holding one is cover, 1-7 NEW 6), hanging from the rope where its swing puts it (w17Art.ts)
+    for (const v of this.vines) {
+      if (!v.mossy || v.vineType === 'tree_climb' || !this.onScreen(v.x, (v.topY + v.bottomY) / 2, (v.bottomY - v.topY) / 2 + 200)) continue;
+      drawLianaMoss(ctx, { x: v.x, top: v.topY, len: v.bottomY - v.topY, angle: v.swingAngle ?? 0 }, this.gameTime);
+    }
 
     // World 2's painted drifting logs (the drawn ones were left out above), under the water's sheet so they sit in the river
     if (this.riverLogsPainted(world.id)) {
@@ -7258,7 +7374,7 @@ export class GameEngine {
     if (rig) {
       // fliers throw a shadow on the ground below them (walkers already carry their own)
       for (const e of this.enemies) {
-        if (e.defeated || e.type !== 'eagle' || !this.onScreen(e.x, e.y, 300)) continue;
+        if (e.defeated || e.type !== 'eagle' || (e.kit && this.isSweeper(e)) || !this.onScreen(e.x, e.y, 300)) continue;
         drawGroundShadow(ctx, rig, this.platforms, e.x, e.y + e.height * 0.5, e.width * 0.45, 0.8);
       }
     }
@@ -7272,6 +7388,8 @@ export class GameEngine {
     this.enemies.forEach((enemy) => {
       if (enemy.defeated && enemy.koTimer > (enemy.koLife ?? 0)) return;
       if (!this.onScreen(enemy.x, enemy.y, 400)) return;
+      // (a cast sweeper is drawn from its eye, in the sky: drawCastSky)
+      if (enemy.kit && this.isSweeper(enemy)) return;
       // (a cast animal gliding off for good wears no rim: it can no longer hurt)
       if (!enemy.defeated && enemy.glide === undefined) {
         // the ember rim (see readable.ts): everything that can hurt you wears it
@@ -7353,6 +7471,7 @@ export class GameEngine {
       if (!drawGlideSprite(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade)) drawGlideLeaf(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade);
     }
     if (this.proto?.watch) this.drawWatchBack(ctx);
+    if (this.cast?.sweepers.length) this.drawCastSky(ctx);
     if (this.ringDrops.length) this.drawRingDrops(ctx);
     // the swing's sweet spot: a small warm glow on the vine where he holds it while letting go now would leap to the next vine (the
     // glints along the vine as well, step), painted once (sweetGlowPic), no ring round him and no per-frame blur
@@ -7387,9 +7506,14 @@ export class GameEngine {
     // (Meeca's stage: her own sheet draws her carrying, in the chair and on the silk: meecaArt.ts meecaPose)
     // (7-4's crumble: the floor's painted break and Matt's falling poses, w7SlideRun.ts)
     const kitPose = !!this.mc || (!!this.slideRun && this.slideRun.drawHero(ctx, this.player)) || (!!this.kit && this.kit.drawPokey(ctx, this.player));
+    // still in cover with the cast watching (1-7): the moss comes over him as the calm comes in, laid over only his own drawing (hurtFlash.ts
+    // withWash); never outside cover (castPlay.ts calmNow), so it never says 'hidden' where the eagle sees him
+    const moss = this.cast && !kitPose ? this.cast.calmNow(this.easy) : 0;
+    const mossWash = moss > 0 ? `rgba(${MOSS_TINT.rgb}, ${(MOSS_TINT.alpha * moss).toFixed(3)})` : null;
     // (qaHideHero: the visibility check draws a frame without her to compare, tools/qa/meecaVisible.cjs)
     if (this.mc && !this.qaHideHero) drawMeecaHero(ctx, this.player, this.mc, this.kit, this.gameTime);
     else if (kitPose) { /* drawn */ }
+    else if (mossWash) withWash(ctx, mossWash, this.player.x - 64, this.player.y - 120, 128, 132, (c) => drawHeroSloth(c, this.player, this.gameTime));
     else if (rig) {
       const hp = this.player;
       drawGroundShadow(ctx, rig, this.platforms, hp.x, hp.y, 30 * (hp.ducking ? 1.3 : 1.05));
@@ -9136,13 +9260,17 @@ export class GameEngine {
       if (!this.onScreen(b.x + b.w / 2, b.y, 400)) continue;
       const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
       // (World 4 has its own painted cover: w4Art.ts)
-      if (this.w4 && !b.hanging && drawW4Bush(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
+      if (this.w4 && !b.hanging && b.kind !== 'moss' && b.kind !== 'mossPatch' && b.kind !== 'mossHang' && drawW4Bush(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // (World 8's roost hides: the tree hollow and the leaf curtain, batArt.ts)
       const w8look = w8Hides?.find((h) => h.x === b.x && h.y === b.y)?.look;
       if (w8look && drawW8Hide(ctx, b, w8look, inside)) continue;
-      if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
+      const moss = inside && this.cast ? this.cast.calmNow(this.easy) : 0;
+      // (World 1's moss cover, 1-7: the carpet, the mound, hanging moss; w17Art.ts)
+      if (b.kind === 'moss' || b.kind === 'mossPatch' || b.kind === 'mossHang') {
+        if (drawMossCover(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime, moss)) continue;
+      } else if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime, moss)) continue;
       // before the sheet loads: a plain green mound
-      const h = b.kind === 'grotto' ? w3FernHeight(b.w) : bushHeight({ ...b, kind: b.kind });
+      const h = b.kind === 'grotto' ? w3FernHeight(b.w) : b.kind === 'moss' || b.kind === 'mossPatch' || b.kind === 'mossHang' ? mossHeight({ ...b, kind: b.kind }) : bushHeight({ ...b, kind: b.kind });
       ctx.save();
       ctx.globalAlpha = inside ? 0.8 : 1;
       ctx.fillStyle = '#2f6b2a';

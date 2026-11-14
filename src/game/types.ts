@@ -216,6 +216,12 @@ export interface Enemy {
   koLanded?: boolean;
   /** an animal of a stage's cast: its creature-kit state (castPlay.ts). The kit steps it, never predatorAI.ts */
   kit?: import('./predators/types.ts').PredatorState;
+  /** a cast animal's own cool (s) for the kit (predators Post.cool): a sweeper's calm over ITS stretch (w1Cast.ts eagle rows) */
+  kitCool?: number;
+  /** a cast sweeper laid with its first pass free (predators Post.free; w1Cast.ts eagle rows) */
+  kitFree?: boolean;
+  /** a cast sweeper perched on a snag at its x (predators Post.perched; w1Cast.ts eagleOver): its body stays, its gaze sweeps */
+  kitPerch?: boolean;
   /** a cast animal leaving for good, 0..1 through its glide away (castPlay.ts): the art fades and flattens it */
   glide?: number;
   /** a snake that starts asleep (protoStage.ts 1-3): it lies still until Pokey comes close, so the first one is a free punch */
@@ -414,6 +420,8 @@ export interface TreeStructure {
 }
 
 export interface Vine {
+  /** thick with Spanish moss (1-7 NEW 6): holding it is cover from a cast watcher wherever it swings (castPlay.ts, stillness.ts Cover.rope) */
+  mossy?: boolean;
   /** the laid section's uid and the piece's key it came from (`s4:f2`; gen2 pipeline): what a stage's own finish finds it by */
   tag?: string;
   id: number;

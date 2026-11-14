@@ -5,6 +5,7 @@ on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engi
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
 Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fixed for every stage). Rewritten for BUILD-17 (11-14, t-build-17): section 0x (1-7 built; hanging cover; the perch at 56). Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
@@ -97,6 +98,85 @@ proven plan; Play is never blocked).
   keeps the threat box (anchor+60 .. his feet) under HUD_BAND while a snake on HIS liana is in its tell or above his hands; where it
   can't fit, a gen2 verdict refuses a lay giving the snake < 1 s in view. No stopgap (D40).
 - Shoot it: reference/qa-reports/ENG-S2/shoot.mjs (the snake; CLIP=1 for clips) and shootfalse.mjs (the false liana), both on 6-3.
+
+## 0y. 1-7's shared faults, fixed where they live (BUILD-17b, t-build-17, 11-14): what the next engineer must know
+- **A kit sweeper is judged by its STRETCH** (levelCheck.ts safe spots; gen2/stillLay.ts `isKitSweeper`, `SWEEPER_KINDS`): its laid x is
+  only the stretch's start; its eye crosses [patrolMinX, patrolMaxX]. Against the spawn and the shrine it keeps SAFE_APPROACH as a walker's
+  patch does; a FLAG inside or beside a stretch is fair because every respawn stands the cast down (castPlay.ts `calm`: rest, a whole
+  calm, then the 2 s warn) and stillFaults puts a hide within one calm's walk of every spot. eagleKit.test "back at a flag inside its
+  stretch" holds the stand-down (planted: calm() not resetting the cool). If you ever change calm() or respawnAtCheckpoint, that test and
+  this exemption stand or fall together. pickups.test mirrors the rule (it re-implements the check on purpose).
+- **A listed stage is a built stage in the sheet preload** (stageSheets.ts `listed`, the same test as stageGenerator.ts listedRoll): it
+  takes its STAGE_DRAWS row, never the old generator's whole set. stageSheets.test now holds every listed row to what rolls 1-3 draw on
+  both settings, and W1_ROOMS to the World 1 stages that build rooms (only 1-6 today). A new listed stage needs its row the day it is listed.
+- **A creaky limb laid ACROSS a pit has the pit under it** (pipeline.ts layLocal, after the piece loop): a creak piece with a plain pit
+  gap ending at its near end and/or starting at its far end joins them into ONE pit lip to lip (same water/soft only; back/putBack/hurt
+  gaps are never joined). Before, each jump had its own pit and the limb's span had none: when it gave way he fell into nothing. Only
+  1-7 lays a limb by 'jump' (1-4 and 1-5 lay theirs 'over' a bank); its seed list still `--check`s 100/100. creak.test plants both.
+- **requiredMove.test is RED on purpose until 1-6 is replaced**: its fixture is the OLD hand-built 1-6, whose full first-timer was at
+  346.7 s of 360 before BUILD-16c's hopCatches (700a279e) and times out after it (bisected). The lead ruled (a), D40: no work on old 1-6;
+  link #3 carries the new 1-6, and the test re-points with it.
+- **The journal's 'hide' page teaches the OLD slide-down hide** (movesJournal.ts): it now opens only when 1-7 is cleared (its 1-7 tip
+  was a deleted line). Its words and demo need the keeper and the designer: 1-7 teaches keeping still in the green. The movesJournal
+  test reads every listed stage's built tips, so a page can never wait on a line the game no longer says.
+
+## 0x. 1-7 built on the kit (BUILD-17, t-build-17, 11-14): what the next engineer must know
+- **1-7 is World 1 data**: gen2/worlds/w1Arc17.ts (kitLib17, finish17), stage-table row 'w1-17', listed.ts KITS/FINISH. The hand-built 1-7
+  is deleted (protoStage's 1-7 plan, secretBush/ropeBushes/acornMeadow, w1Sections' rows, stage17.test.ts and the old 1-7 tests).
+- **World 1 has no decorate pass**, so World 1's still finish (clipWatches + castWatches) runs as finish17's first step: libstage and the
+  pipeline's own checks see the stage BEFORE it (no eagles, "cast (no cast)"); the game and w1Arc17.test.ts see it after.
+- **A stretch ends at a gap** (stillLay watchedRun): a beat whose question is across a gap (the creaky limb, the lianas) gets one eye over
+  the whole beat in finish17 (W17_JOIN: to 120 px past the beat's last hide).
+- **Hanging is holding** (engine.ts:4625-4626, stepCast): the cast's hero had climbing/swinging as holding, never hanging, so hanging moss
+  never hid him in the game; and a creep along the rope is moving (stillness.ts moving, CastHero.hanging). hangCover.test.ts, planted.
+- **The perch is 56 px** (sweepPose.ts SNAG_PERCH, w17Art.ts snagB.perch 712): at 90 it cleared the progress sign by 4 px sideways (zoom
+  0.763); BUILD-17's shoot-perch.mjs prints eagle top vs `.vh-cplate` bottom in every caption.
+- **Kit tip ids that equal a move lesson ('creak', 'swing') are never said**: a stage's own lines need their own ids (lineId: `w17.<key>`).
+- **The bots on 1-7** carry BUILD-16c's climb-back (c8f67aa7, 5b0b1121) plus two of BUILD-17's: a MOSSY liana is held through the
+  eagle's look (it let go toward ground cover mid-swing), and the climb-back fires when the FACE ahead is over a double even if the route
+  is not (1-7's SHORT liana pit: route 179 px, wall 259; pitClimb.test "shallow pit").
+
+## 0w. 1-7's moss cover, the perched eagle, bots that hold still (ENG-E2, t-eng-e2, 11-14): what the next engineer must know
+- **Moss is cover like a bush** (watcher.ts Bush kinds `moss` carpet, `mossPatch` mound, `mossHang` hanging): laid by W1_STILL's rows
+  (w1Cast.ts: w1-hide-moss 346 px, -patch 169, -hang 173 and -curtain 78 with `hanging: true`; stillLay.ts HideRow.hanging ties a hanging hide's
+  top at its socket's spot: a rope's line or a bough's underside). Drawn by w17Art.ts from ART-678b's own files (src/assets/w1-678/, a file is
+  3x its game size: the catalog's units) in front of him; `mossAlpha`: a mound or hanging moss thins as the moss comes (the bush ghost rule), a
+  CARPET NEVER THINS (it covers only his feet: thinned, it vanished exactly when he hid). Preloaded by stageManifest key `w17`.
+- **A mossy liana looks mossy**: engine.ts draws drawLianaMoss on every `Vine.mossy` swing liana right after renderWorldObjects (three
+  clumps of the curtain without its twig, hanging straight under gravity from where the swing puts the rope).
+- **Letter m (cover) is laid**: nodeAsks.ts FILL_LETTER `{ m: 'hide' }`: a node asking m must have laid a prop tagged hide (pipeline
+  dialMisses passes each node's prop tags); NODE-KEY.html regenerated (nodekey.ts). The deal does not filter sections by m.
+- **The perch** (Post.perched, PredatorState.perched; laid by `eagleOver(z, groundY, id, { x })` -> Enemy.kitPerch): its body stays at its
+  post SNAG_PERCH (120 px, sweepPose.ts; the snag's low branch, w17Art.ts SNAG_PERCH_DRAWN, held equal by a test) over the ground under it
+  while its gaze (eyeX) sweeps; core.ts `rides = def.rides && !s.perched` everywhere riding was read; it acts (the dive) from the snag at the
+  act's 700 px/s and flies home through rest. sweepPose perchedPose: rest 'ahead' (an idle blink every 4.3 s), the warn 'turn' (+ the gaze
+  shadow at the start end), the pass 'down' with the shadow, 'blink' when its gaze is on him and he is hidden (SweepScene.hidden =
+  calmNow >= 1); tell/act/recover/flee fly. drawCastSky draws the snag (behind him: it runs before the player) and the perched frames.
+  The perch was 208 px first: sideways (412 tall) its head was off the screen top; 120 shows all of it under the HUD.
+- **Bots**: firsttimer.ts hides from the KIT eagle too (the old block read only proto.watch): a second (`heed`) after a sweeper's look starts
+  over his stretch he heads for `stillCoverNear` (ground cover at his level within 600 px) and takes his thumb off inside (no crouch: the
+  kit hides a STILL sloth). 'hide' is learned from moss/green + still words too. A test harness that steps a FirstTimerRun by hand must call
+  `after()` each frame (a jump ends there; without it his first hop never ended and he never hid).
+- Proof: src/game/eaglePerch.test.ts (7), src/game/gen2/mossLay.test.ts (7), tools/inspect/castBots.test.ts (+3); planted faults 10/10
+  (reference/qa-reports/ENG-E2/planted.out.txt). Real game: reference/qa-reports/ENG-E2/shoot.mjs (stills, CLIP=1 clips), shoot-hang.mjs.
+
+## 0v. 1-7's eagle and cover on the creature kit (ENG-E1, t-eng-e1, 11-14): what the next engineer must know
+- 1-7 is designed on the KIT's hide rule only (stillness.ts: still 0.5 s in cover; no crouch). watcher.ts still runs the OLD 1-7 (protoStage)
+  and Worlds 3/4/6/8; it goes from World 1 when w1Arc07 replaces protoStage's 1-7 (1-7.md NEW 12).
+- Laying it: World 1's still table (w1Cast.ts W1_STILL, w1Still(stage, lessonSockets)) lays hides as proto.bushes and a watched stretch;
+  its finish (clipWatches, then stillLay.ts castWatches) turns each stretch into ONE kit eagle over it (eagleOver: patrol = the stretch,
+  kitCool = the stretch's calm, kitFree where taught). A built stage carries no proto.watch zone for it. stillFaults reads it via sweptZones.
+- The kit: Post.cool / Enemy.kitCool is an animal's own cool (coolOf's third arg); Post.free / kitFree and Easy make a sweeper's FIRST pass
+  over him free (core.ts sparedPass: the dive comes, no box hurts, CastStep.spared; passes counts ended passes with him in its stretch).
+  EAGLE now `rides` its eye and a rider starts on its eye (newPredator).
+- Drawn: engine.ts drawCastSky from sweepPose.ts (pure, tested) with the painted eagle and the old watcher's shadow sprite; the screech on
+  the pass's call (CastStep.noticed); Dot's free-pass line is stage data (CastData.said.spared, the keeper's). Sweepers are skipped by the
+  enemy loop. The moss: CastPlay.calmNow (in cover only) -> hurtFlash.ts withWash on Pokey (MOSS_TINT) + the wind chime once when it is
+  all the way in; a bush he is in thins as it comes (drawBushArt `moss`).
+- A mossy liana (Vine.mossy) is cover while held (stillness.ts Cover.rope; startCast adds one per mossy vine); on a swing, his vy for
+  stillness is the rope length's change (climbing), never the swing.
+- NOT built (the REPORT's next steps): moss carpet/patch/hanging-moss rows and their art (t-art-678b w17-moss-*), the perch (rides off per
+  animal + perched art + head-turn), bots that hold still in cover, 1-7's own lay.
 
 ## 0u. The swing camera and THE FAR CAP (ENG-S1, R-165.225, t-eng-s1, 11-14): what the next engineer must know
 - Upright, a swing widens the view (cameraFollow.ts SWING_CAM: up to 1.3x, out 4.5/s, back in 3/s once he is down or holds on; engine.ts

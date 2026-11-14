@@ -12,7 +12,7 @@
  *
  * World 6 (the watched water) and World 8 (the bat roosts) lay through this; their numbers are their rows (w6.ts, w8.ts).
  */
-import type { Platform } from '../types.ts';
+import type { Enemy, Platform } from '../types.ts';
 import { PHYS } from '../physics.ts';
 import type { Bush, WatchZone } from '../watcher.ts';
 import type { PropDef, PropEmitter, Socket, StageSink } from './types.ts';
@@ -34,6 +34,9 @@ export interface HideRow {
   role: 'hide';
   bush: Bush['kind'];
   w: number;
+  /** it hangs from where its socket stands (a rope's line, a bough's underside: its top there), and hides him while he hangs in it
+   *  (stillness.ts inCover's hanging rule; World 1's hanging moss) */
+  hanging?: boolean;
   minApart?: number;
   looks?: string[];
 }
@@ -50,6 +53,10 @@ export interface WatchRow {
   own?: readonly string[];
   /** sockets whose id starts with one of these are a scare run: no hides along it, seen is a set-back to its start, never a heart */
   scare?: readonly string[];
+  /** the kit animal that watches (World 1: 'eagle'): each stretch is laid as that animal over it (castWatches), not as watcher.ts's eagle */
+  cast?: string;
+  /** whose first pass is free (it dives and pulls up short): the stretches where it is taught, or none (default) */
+  free?: 'lesson';
   /** the longest a watched stretch runs (px) and how far it runs past the last hide along it */
   max?: number;
   w?: number;
@@ -155,7 +162,7 @@ export function stillEmitters(rows: Readonly<Record<string, StillRow>>, stage: n
   for (const [id, row] of Object.entries(rows)) {
     if (row.role === 'hide') {
       emit[id] = (f, p, out) => {
-        const b: Bush = { x: R(f.x - row.w / 2), w: row.w, y: f.y, kind: row.bush };
+        const b: Bush = { x: R(f.x - row.w / 2), w: row.w, y: f.y, kind: row.bush, ...(row.hanging ? { hanging: true } : {}) };
         (out.proto.bushes ??= []).push(b);
         note.hide?.(out, { x: b.x, w: row.w, y: f.y, look: lookAt(p, f.x, 1) });
       };
@@ -165,9 +172,12 @@ export function stillEmitters(rows: Readonly<Record<string, StillRow>>, stage: n
       const scare = starts(f.socket, row.scare);
       const own = starts(f.socket, row.own) || scare ? pieceAt(out.platforms, f.x, f.y) : undefined;
       const run: [number, number] = own ? [own.x, own.x + own.width] : watchedRun(out.platforms, f.x, f.y, row.max) ?? [f.x - STILL.blind, f.x + STILL.blind];
+      const lesson = !!row.lesson?.includes(f.socket);
       const z: WatchZone = {
-        x0: R(run[0] + STILL.inset), x1: R(run[1] - STILL.inset), calm: calmFor(row.calm, stage, !!row.lesson?.includes(f.socket)),
+        x0: R(run[0] + STILL.inset), x1: R(run[1] - STILL.inset), calm: calmFor(row.calm, stage, lesson),
         ...(scare ? { setback: R(run[0] + STILL.setback) } : {}),
+        ...(row.cast ? { cast: row.cast } : {}),
+        ...(row.free === 'lesson' && lesson ? { freeFirst: true } : {}),
       };
       const zones = (out.proto.watch ??= []);
       // (two watchers on one stretch make one zone)
@@ -195,6 +205,39 @@ export function clipWatches(out: Pick<StageSink, 'proto'>, past: number = STILL.
     return [{ ...z, x1: R(Math.min(z.x1, Math.max(...inside.map((b) => b.x + b.w)) + past)) }];
   });
 }
+
+/**
+ * A world whose watcher is a creature-kit animal (WatchRow.cast; World 1's eagle, 1-7): after clipWatches, each of its stretches becomes
+ * that animal over the stretch (`lay` makes it: w1Cast.ts eagleOver), with the stretch's calm as its own cool (the middle of the rolled
+ * band) and its first pass free where the zone says so; the stretch leaves proto.watch (watcher.ts never runs it) and the kind joins the
+ * stage's cast. One animal a stretch: the kit's eye crosses exactly that stretch.
+ */
+export function castWatches(out: Pick<StageSink, 'proto' | 'platforms' | 'enemies'>, lay: (z: WatchZone, groundY: number) => Enemy): void {
+  const zones = out.proto.watch;
+  if (!zones?.some((z) => z.cast)) return;
+  const cast = (out.proto.cast ??= { kinds: [], traps: [] });
+  for (const z of zones) {
+    if (!z.cast) continue;
+    const mid = (z.x0 + z.x1) / 2;
+    const under = out.platforms.filter((p) => p.type !== 'fragile' && mid >= p.x && mid <= p.x + p.width).sort((a, b) => a.y - b.y)[0];
+    out.enemies.push(lay(z, under?.y ?? 0));
+    if (!cast.kinds.includes(z.cast)) cast.kinds.push(z.cast);
+  }
+  out.proto.watch = zones.filter((z) => !z.cast);
+  if (!out.proto.watch.length) delete out.proto.watch;
+}
+
+/** the kinds castWatches lays as a kit sweeper (World 1's eagle) */
+export const SWEEPER_KINDS: readonly string[] = ['eagle'];
+/**
+ * is this animal a kit sweeper laid over a watched stretch (castWatches: its own calm, Enemy.kitCool)? Its eye crosses exactly
+ * [patrolMinX, patrolMaxX]; its laid x is only that stretch's start (levelCheck judges it by the stretch, not by where it was laid)
+ */
+export const isKitSweeper = (e: Pick<Enemy, 'type' | 'kitCool'>, kinds: readonly string[] = SWEEPER_KINDS): boolean => kinds.includes(e.type) && e.kitCool !== undefined;
+
+/** the stretches a stage's kit sweepers watch, as zones, so stillFaults holds them to the same rules (their cool is their calm) */
+export const sweptZones = (enemies: readonly Enemy[], kinds: readonly string[] = SWEEPER_KINDS): WatchZone[] =>
+  enemies.filter((e) => isKitSweeper(e, kinds)).map((e) => ({ x0: e.patrolMinX, x1: e.patrolMaxX, calm: [e.kitCool!, e.kitCool!] }));
 
 /** what a laid stretch must give him (the numbers the check holds a stage to) */
 export interface StillRule {

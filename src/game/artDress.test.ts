@@ -82,17 +82,17 @@ test('World 3 floor sets and World 4 bridges: never the same set in two stages i
 
 // (1-4's squirrel lifts went with the hand-built 1-4, B14 11-13: 1-4 is the vine field; their nest door is 1-4's crown dressing now,
 //  w1Arc14.ts finish14, held in w1Arc14.test.ts)
+// (1-7's acorn meadow went with the hand-built 1-7, BUILD-17: the rolled 1-7 has no room. 1-6's seesaws are World 1's rooms now, so the
+//  petal bundle every room gets is held on them; the first seesaw shows itself, artDress.ts: no gate and no reward there)
 test("World 1's rooms: the branch gate up 1-6's seesaw banks, and a petal bundle for every room", () => {
   for (const seed of [1, 2, 3]) {
-    const by = (id: string) => buildProtoStage(cfg(id), seed, HAND_STAGES[id]);
-    const s16 = by('1-6');
+    const s16 = buildProtoStage(cfg('1-6'), seed, HAND_STAGES['1-6']);
     const gated = (s16.kit?.rooms ?? []).filter((r) => r.id.startsWith('seesaw-') && !r.id.startsWith('seesaw-show'));
     assert.ok(gated.length >= 1);
     for (const r of gated) assert.ok((s16.proto.kitDecor ?? []).some((d) => d.n === 'branchGate' && d.rise && d.room === r.id), `seed ${seed} ${r.id}`);
-    const s17 = by('1-7');
-    for (const r of s17.kit?.rooms ?? []) assert.ok((s17.proto.kitDecor ?? []).some((d) => d.n === 'petalBundle' && d.room === r.id), `seed ${seed} ${r.id}`);
+    for (const r of gated) assert.ok((s16.proto.kitDecor ?? []).some((d) => d.n === 'petalBundle' && d.room === r.id), `seed ${seed} ${r.id}: its petal bundle`);
     // (a picture, not a pickup: the stage's pickups are the same as without the dressing)
-    for (const st of [s16, s17]) assert.ok(!st.collectibles.some((c) => (c as { findId?: string }).findId === 'petalBundle'));
+    assert.ok(!s16.collectibles.some((c) => (c as { findId?: string }).findId === 'petalBundle'));
   }
 });
 

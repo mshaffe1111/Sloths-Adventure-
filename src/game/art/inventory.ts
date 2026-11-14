@@ -10,6 +10,8 @@
 
 export type Layer =
   | 'platform' | 'step' | 'soft landing' | 'climb' | 'danger look' | 'decor near' | 'decor mid' | 'backdrop'
+  // a support (a pole or post that holds a bough or plank up; he does not stand on it): no scale cap (the lead, 11-14, ART-678b)
+  | 'support'
   | 'character' | 'enemy' | 'pickup' | 'ui';
 
 export interface ArtRow {
@@ -55,7 +57,7 @@ export interface InventoryFile {
 }
 
 export type InventoryName = `w${number}` | 'cast';
-export const LEVEL_LAYERS: ReadonlySet<string> = new Set(['platform', 'step', 'soft landing', 'climb', 'danger look', 'decor near', 'decor mid']);
+export const LEVEL_LAYERS: ReadonlySet<string> = new Set(['platform', 'step', 'soft landing', 'climb', 'danger look', 'decor near', 'decor mid', 'support']);
 
 export const STANDABLE: ReadonlySet<string> = new Set(['platform', 'step', 'soft landing']);
 

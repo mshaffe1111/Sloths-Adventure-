@@ -33,9 +33,10 @@ export interface CastData {
   traps: TrapPost[];
   /**
    * Dot's words for the cast's first moments, as the stage's kit carries them (the story keeper's, never the engine's): `trap`, said
-   * once, the first time a drop trap sends an animal off; `punch`, once, the first time a punch does. Absent: she says nothing
+   * once, the first time a drop trap sends an animal off; `punch`, once, the first time a punch does; `spared`, once, the first time a
+   * sweeper's free pass dives on him and pulls up short (1-7: the eagle saw him move). Absent: she says nothing
    */
-  said?: { trap?: string; punch?: string };
+  said?: { trap?: string; punch?: string; spared?: string };
   /** the stage's lure targets (predators/lure.ts; gen2/lureLay.ts lays them): fixed things an animal of the cast fears */
   lures?: LurePost[];
   /** his hard landings are heard in this stage (a stage that teaches quiet feet says so, whatever its world); absent: by the move

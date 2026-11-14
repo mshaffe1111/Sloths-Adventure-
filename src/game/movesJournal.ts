@@ -234,7 +234,10 @@ export const PAGES: JournalPage[] = [
   // ───────────── Sneaking ─────────────
   {
     id: 'hide', chapter: 'sneaking', title: 'Hide in a bush', demo: 'hide', pose: 'duck',
-    open: { tip: [tip('1-7', 'An eagle is watching. Slide down inside a bush to hide'), ['1-7', 'watch:hide']], cleared: ['1-7'] },
+    // (its 1-7 line and the watcher's 'watch:hide' on 1-7 left with the hand-built 1-7 (BUILD-17): the rolled 1-7 says neither, so the
+    // page opens once 1-7 is cleared. NAMED for the keeper and the designer: this page teaches the old slide-down hide, and 1-7 now
+    // teaches keeping still in the green, BUILD-17b REPORT)
+    open: { cleared: ['1-7'] },
     where: 'Learned in World 1', riddle: 'Dot knows a good trick for hiding from soldiers.',
     intro: 'When the eagle screeches, its shadow is coming. Get inside a bush and keep low until it has gone by.',
     lines: {

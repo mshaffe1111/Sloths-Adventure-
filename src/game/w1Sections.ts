@@ -21,7 +21,7 @@
 import { CooldownQueue, ShuffleBag, type Rng } from './gen2/variety.ts';
 
 /** World 1's stages with section versions (1-6 is the 'proto' plan; 1-10, the boss lair, has one designed layout) */
-export type W1Stage = '1-1' | '1-6' | '1-7' | '1-8' | '1-9';
+export type W1Stage = '1-1' | '1-6' | '1-8' | '1-9';
 export type Slot = 'start' | 'develop' | 'twist' | 'finish';
 const SLOTS: readonly Slot[] = ['start', 'develop', 'twist', 'finish'];
 
@@ -101,11 +101,8 @@ export interface W1Kit {
   logPuzzle: (busyTop?: boolean) => void;
   seesawRoom: (demo: boolean) => void;
   seesawTwist: () => void;
-  // ----- the eagle (1-7)
+  // ----- watched bushes (World 3's grottoes; 1-7 is gen2 since BUILD-17)
   bushRow: (n: number, gap: [number, number], kinds: Bush[], calm: [number, number], rocks?: boolean) => void;
-  secretBush: (calm: [number, number]) => void;
-  ropeBushes: (calm: [number, number]) => void;
-  acornMeadow: (calm: [number, number]) => void;
   // ----- the boa's guards (1-9)
   guardBranch: (low?: boolean) => void;
   ropeGuard: () => void;
@@ -378,59 +375,6 @@ const SECTIONS: Record<W1Stage, Table> = {
           (k) => { k.bounceWall(true, false); k.highLeaps(4, true, true); },
           (k) => k.highLeaps(4, true, true),
         ], 2, 16),
-      },
-    ],
-  },
-  // 1-7 A Very Good Bush: hide from the eagle. The roll's rhythm: bush rows on the ground, the rope line with bushes on it, or open
-  // stretches out of the eagle's sight (bounces and hops) between the watched ones. The secret bush and the acorn meadow are in every
-  // roll; the finish runs a minute past the meadow.
-  // (QA 2026-10-29, 1-7 upright: the next bush was often off screen, and the eagle took hearts 5 to 1 in about 80 s. The bushes stand
-  // 460-540 apart, so one is always on an upright screen, 416 px of the world wide (World 1's band: the eagle's rhythm is the lesson,
-  // not the distance), and the calms between passes are 1.5 s longer)
-  '1-7': {
-    rhythms: ['bushes', 'rope', 'open'],
-    develop: [
-      {
-        id: 'bushes', beat: 'bushes', build: (k) => {
-          k.bushRow(3, [460, 520], ['wide', 'fern', 'tall'], [8, 9.5], true); k.secretBush([8, 9.5]); k.lowStumps();
-          k.bushRow(3, [480, 540], ['fern', 'tall', 'wide'], [7.5, 9], true);
-        },
-      },
-      {
-        id: 'rope', beat: 'rope', build: (k) => {
-          k.bushRow(2, [460, 520], ['wide', 'fern'], [8, 9.5], true); k.secretBush([8, 9.5]); k.bounceWall(true, false);
-          k.bushRow(2, [480, 540], ['tall', 'wide'], [7.5, 9], true); k.bounceWall(true, false);
-        },
-      },
-      {
-        id: 'open', beat: 'open', build: (k) => {
-          k.bushRow(2, [460, 520], ['wide', 'tall'], [8, 9.5], true); k.secretBush([8, 9.5]); k.highLeaps(4, false, true);
-          k.bushRow(2, [480, 540], ['fern', 'wide'], [7.5, 9], true); k.highLeaps(4, true, true);
-        },
-      },
-    ],
-    finish: [
-      {
-        id: 'bushes', beat: 'bushes', build: (k) => fillTo(k, k.EXPERT + 62, null, [
-          (k) => k.bushRow(3, [460, 540], ['tall', 'wide', 'fern'], [7.5, 9], true),
-          (k) => { k.bushRow(2, [460, 520], ['wide', 'fern'], [7.5, 9], true); k.busy(2, ['log', 'dip'], k.R.r(180, 220)); },
-          (k) => { k.bushRow(2, [470, 530], ['fern', 'tall'], [7.5, 9], true); k.lowStumps(); },
-        ], 1, 12),
-      },
-      {
-        // the eagle's stretches with a wall to bounce up between them, out of its sight
-        id: 'rope', beat: 'rope', build: (k) => fillTo(k, k.EXPERT + 62, null, [
-          (k) => { k.bushRow(2, [460, 520], ['wide', 'tall'], [7.5, 9], true); k.bounceWall(true, false); },
-          (k) => { k.bounceWall(true, false); k.bushRow(2, [470, 530], ['wide', 'tall'], [7.5, 9], true); k.bounceWall(true, false); },
-          (k) => { k.bounceWall(true, false); k.bounceWall(true, false); },
-        ], 1, 12),
-      },
-      {
-        id: 'open', beat: 'open', build: (k) => fillTo(k, k.EXPERT + 62, null, [
-          (k) => { k.bushRow(2, [470, 530], ['tall', 'fern'], [7.5, 9], true); k.highLeaps(5, false, true); },
-          (k) => { k.highLeaps(4, true, true); k.highLeaps(4, false, true); },
-          (k) => { k.highLeaps(5, true, true); k.bushRow(2, [470, 530], ['wide', 'tall'], [7.5, 9], true); },
-        ], 1, 12),
       },
     ],
   },

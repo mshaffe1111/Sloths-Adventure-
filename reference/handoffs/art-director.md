@@ -1,6 +1,6 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-11 (R-165.85: the 11-09 batch passed; the 11-11 batch cut)
+# Hand-off: the art director role (Content), rewritten 2026-11-14 12:47 AM ET (ART-678b: the ART-678 pieces re-cut, catalogued; nothing placed)
 
-Last task: R-165.85 (cut only), Matt's 15 sheets of 11-09, by the Content member on branch t-c2-art-cut. The earlier note (from the
+Last task: ART-678b (§0e). Before it: R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
 
 ## 0e. 11-14 POLISH-6 (t-polish-6): stones stay on their ground (R-165.226)
@@ -10,6 +10,18 @@ art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 t
   being in PROVEN_INDEX; a new cut piece is measured by its frame box (cutBox), which IS its opaque extent (measured 11-14).
 - Art faults still open: w1-rock-roots' footing line ~52 px low (a wall behind him); settleCut never picks it as a stand-in.
 - 1-1 layout n plays list index n-1 (layout 17 = seed 9652, Matt's frame; 18 = 9800, the first-run layout).
+## 0e-b. ART-678 / ART-678b (t-art-678b): 26 pieces in src/assets/w1-678/, catalogued, NOT placed
+- Cut from the kept raws (reference/art/hf678/raw/, q95) by `python3 tools/art/hf678/recut.py tools/art/hf678/recut.json reference/art/hf678/raw <out>`
+  (no HF). Its key: background = what floods from the border through key-like px (the key map, its haze to white and shadow to
+  black on a magenta take, the key's hue only on px brighter than a line); edge 1 px in, 0.8 px blur, rim px take the nearest solid
+  colour (despill). Hand boxes, `drop` (paint a neighbour as key), `round` (soften a square twig end), `protect` (a grey beak on grey).
+- Underlayer (R-165.224): w1-underlayer-deep (hf678/underdeep.py from band b: NO grass lip, the lead FAILED the grass bands as a floor
+  he falls through); a/b deleted. Mock-up tool: hf678/undermock.py. Live pole: w1-livepole + hf678/polebuild.py (layer 'support', no cap).
+- Catalog: tools/art/hf678/rows.py -> catalog-rows-hf678.csv -> CATALOG-MASTER.csv -> `catalog_master.py --emit`. One slot a family
+  (snake, harpy, live post, rolling nut): a 1-piece slot is a World 1 "gap" that inventory.test.ts fails unless CATALOG-MASTER.md lists it,
+  and only --merge (needs the B parts) rewrites the .md.
+- Open: snake olive vs brown (lead's pick, beside-2); the engine must fill below the deep band on tall phones. Sheets: reference/qa-reports/ART-678b/.
+- Trap: the model's outline is dark MAROON (30,5,18) on pink takes: a key by hue ate it, leaving line dashes outside the piece (the "halo").
 
 ## 0d. 11-13 ART (t-art-1113): handed over mid-task, see reference/qa-reports/ART/HANDOVER.md
 - Packed: Pokey's two-hand climb (hero-climb2), 1-5's set + dusk set (w1dusk), 1-4's pieces, 9 fruit + golden guarana; 29 catalog rows.

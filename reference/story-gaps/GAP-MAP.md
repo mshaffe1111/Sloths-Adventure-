@@ -75,7 +75,7 @@ Every new line is short enough to read at a glance (the asides stay up 6.5 secon
 | 1-5 Where She Walked | ★ "She squashed this one extra flat." (the trail) | | | |
 | halfway | ★ "I Am Fine" | | | |
 | 1-6 First Lianas | ★ Pokey: Meeca always waited | | | |
-| 1-7 A Very Good Bush | · Dot: she'll hum softly | **gap 1-7 to 1-9** | **Dot** (start): "Get low, low like me in my bush, she says she saw me, she did not." | `wayside.ts` W1 stage 7 + `dotLinesData.ts` `way.1-7` (replaces the hum line) |
+| 1-7 A Very Good Bush | · Dot: she'll hum softly | **gap 1-7 to 1-9** | **Dot** (start): "A whole hour in that bush. Meeca says she saw me. Fibs!" (KEEPER-17, 11-14: the crouch is retired) | `wayside.ts` W1 stage 7 + `dotLinesData.ts` `way.1-7` (replaces the hum line) |
 | 1-8 The Long Branch | · Pokey: Dot's flown it four times | | | |
 | 1-9 The Boa's Branches | · Dot: too small to chase | | | |
 | 1-10 Venom Fang | ★ guardian scene; ★ journal | | | |
