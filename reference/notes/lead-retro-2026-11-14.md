@@ -38,3 +38,5 @@ like we get into a loop of that's the only games that we really focus from."
   Angry Birds, Hades/Loop Hero and more). The persona points to that file; the wider research shelf above is secondary.
 - Designers too (Matt, 2:08 PM ET): mix and match across the whole shelf plus our own ideas in every level; one game's toolbox per level is the tunnel vision that makes it repetitive (STAGE-RULES tribute rule + DESIGNER.md updated). The persona says the lead enforces it in every idea round and design review.
 - Matt's 100 side-scrollers (2:23 PM ET): reference/plans/PLATFORMER-100-MATT.md (verbatim) + PLATFORMER-100.md (the lead's pick list of what fits a sloth on a phone, by world and engine piece). The persona names all three files as the shelf.
+- Packets that point a member at whole REPORTs make it burn context reading (BUILD-17b: 38% in 32 minutes). A packet names the exact
+  files and line ranges to read and the 3-5 facts it needs; the full REPORT is for reference only.
