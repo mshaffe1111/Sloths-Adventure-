@@ -4,9 +4,154 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0n. Tonight's three unit reds, fixed at their roots (FIX-INT, t-int-5 from t-int-4, 11-13): what the next engineer must know
+- **w1Finish takes a toy stage** (bare platforms, w1.ts:1539; w1CutArt.test plants one). Anything World 1's finish calls through `as never`
+  must be null-safe for every field but platforms: B15's dressMarks read `st.collectibles` unguarded (fixed, w1Marks.ts `?? []`).
+- **The control course is gone** (R-165.151, FIX-B). A test that read its 'Swing' stretch now reads 1-6's 'Learn: swing over soft moss'
+  beat (protoStage.ts plan 'proto', the same soft-hollow chains). A deletion packet greps every READER (tests by beat name, #ctest), not
+  only the builders.
+- **Stage length checks are per builder** (the lead's rulings 11-13 4:49 and 5:03 PM; stageQuality.test.ts growthBreaks): World 1's cap
+  is World 10's median (the old 175 s cap was stageTime.ts:84's target, not STAGE-RULES.md:77); the world-to-world growth step reads like
+  with like (same-kind worlds whole; else each builder's own stages, 3+ in both). World 1 is a MIX tonight (1-1..1-5 gen2, 1-6..1-9 old);
+  W9 after W8 is the one step unread until one of them changes builder. Never lengthen an old-builder stage to pass it (D40).
+- **buildcheck runs alone**: under the unit suite's load 1-1's Normal p95 read 155 ms (FAIL); quiet, 147 ms vs the 150 budget (PASS,
+  3 ms spare). 1-1's build cost is close to its line: the next thing added to World 1's finish should be measured with it.
+
+## 0m. The integration head, the strips' clear rows and the card's trail (INT-3, t-int-3, 11-13): what the next engineer must know
+- **Merges.** t-art-1113, t-add-level, t-fa, t-b15, t-b14, t-fixa, t-fixb merged in that order (never rebased). Traps: CATALOG-MASTER.csv
+  is CRLF and B14/FIX-B committed it as LF (every line "changed"): normalise the side to CRLF, then `git merge-file`, then
+  `python3 tools/art/catalog_master.py --emit` (cast.json is generated: never hand-merge it). B14 and B15 each deleted one hand-built plan
+  (1-4, 1-5) from protoStage/w1Sections: the merge keeps neither. FIX-B removed the 'ctest' plan and CTEST_STAGE_ID: keep that, and
+  keep FA's feel-pair import (qaBuild) in stageGenerator. Root PLAN/REPORT/PUSHBACK files of task branches go to their qa-reports folder.
+- **A fitted strip skips its clear top rows** (src/game/stripInk.ts; scenery.ts drawFitted `ink`): each strip is read back ONCE when it
+  decodes (paintedBackdrops.ts: sets, canopies, reveals), never in a frame; drawFitted starts its source rect at the first painted row
+  less a filter margin (fitInkRow). Exact: reference/qa-reports/INT-3/inkproof.mjs proves on all 197 strips at 12 fit sizes that no
+  painted row is left out (min 5 rows spare). A fit with its painted sky over it starts at row 0. It took 1-4 sideways from 8.02 to 7.20
+  screens (drawcheck 7.5) and every stage's backdrop down 0.4-0.8. Trap: the root was 1-4's 2600 px canopy crossfade (engine.ts
+  setCanopy, scenery.ts `cano`): both strip sets are drawn whole through it; any new crossfade pays two sets the same way.
+- **Dot's card owns a finger on any box it stood in over the last 300 ms** (src/game/dotCardHit.ts, R-165.201): DotGuide notes each
+  frame's box (and each frame of its 0.3 s fade, where it stood), TouchController claims a finger that goes down in the trail before
+  the gestures see it (never steers, jumps or punches) and taps that card on the lift (only if it is still the one up). Real page
+  (tools/dotbox/readtime.mjs 1-2 tap, DOTBOX_VIEW=915x412 for sideways): run 1 found the fade case (3 of 78 taps punched on a card
+  fading at its reading time); run 2 after the fix: reference/qa-reports/INT-3/tap-run2/. Trap: a tool that aims at a card's rect and
+  then taps in a second evaluate is exactly the player's latency; keep it that way.
+- **1-4 is not shippable on its bots** (castBots 1-40 after VARIETY's vault patch: 22 of 360), so #ctest plays 1-3
+  (playRecorder.ts CTEST_LEVEL_ID). The split of the failures into bot limits and level faults is the next job (B14 REPORT step 2).
+
+## 0i. Adding a level is one step (ADD-LEVEL, R-165.187, t-add-level, 11-13): what the next engineer on stage plumbing must know
+- **`npx tsx tools/engine/addlevel.ts <id>`** once the arc is hooked into its world's kit and the row is in stageTable.ts: rolls 24
+  seeds both settings (libstage.ts), writes the seed list if the stage has none (seedlist.ts; `--relist` rebuilds), checks it, runs
+  castBots 1-40, prints the flight-sim command when the row is not judged, and ends with a DONE/MISSING checklist (exit 0 only READY).
+  1-3 replayed with its list removed: 3 m 32 s, the list byte-identical (18d380ae), every bot 40/40 both settings.
+- **libstage.ts is THE roll tool** (`--stage <id>`): it builds as the seed-list search builds (buildGen2Stage + listRules quietJudge),
+  so a listed seed lays the beats its list replays (libstage.test.ts proves it on every list). Stage-specific counts (1-3's traps)
+  stay in that stage's own test; library13.ts is kept only because library13.test.ts is 1-3's plan test.
+- **registrycheck.ts is the gate** (rolled job, seconds): every stageTable row needs kit, config, routed (stageGenerator builtOnGen2),
+  levelSeeds, sheets (its rolls' creatures in stageSheets' preload, BOTH settings: stageSheets.test walks listed stages on Normal
+  only), a limits.json drawcheck scenario, a seed list or standIn, and a judged scope with a row for every move Easy flies. CI checks
+  EVERY proven list via `registrycheck.ts --lists`. No known list: its 3 birth misses were fixed on the branch (1-1 drawcheck
+  scenario, 1-2's seed list, 1-3's list in CI), so every miss fails.
+- Trap: tools/ is outside tsconfig; typecheck a new tool with a temporary config at the repo root (types node + vite/client).
+
+Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 lays a stage UP as a tower (section 0j). Sections below are still true.
+
+## 0j. The tower lay (FA, R-165.170, t-fa, 11-13): what the next engineer on a stage that travels up or down must know
+- **One lay.** `layStage` (pipeline.ts) lays a run or a tower; `graph.flow` 'up'/'down' (an ascent by its kind, or `config.travel`) turns
+  on the tower branches, every one behind `tower`. A run takes none of them: the lock is 102/102 unchanged. The tower's numbers and pure
+  pieces are `gen2/tower.ts` (TOWER, reflectLocal, storeyLimit, routeOf/routeAt, towerCatches, towerFalls, towerSkips, towerFlags,
+  flagFurther, flagsInOrder). No stage id, seed or x: a tower's width is `WorldManifest.tower.width` (unset: 1280).
+- **A storey is a turn.** `towerJoin`: a section walks on while it fits before the wall and clears what is laid there; else it is laid a
+  storey over, a climbing vine between (plan join `turn`), turned back when the wall is near. A leftward storey is the section reflected
+  about its entry (reflectLocal: heights kept; the run's `mirrored` is off in a tower). `Gen2Meta.tower.turns` names each turn where its
+  vine STANDS (clearClimbs moves a vine 26 px off the ledge's face after it is laid: read `turns[k].x`, never the leg's entry x).
+- **No storey is climbed without its vine (the verdict towerSkips).** The frozen WIP laid catch boughs that made a jump ladder past a
+  vine and two sections (seed 3). Now every piece has a storey (how many turns were laid before it, `storeyOf`), a catch is laid only
+  where no jump (LEAP: generous, the FLOWN 214 px climb plus a margin, never the closed-form DOUBLE_RISE) joins two storeys, and any
+  roll where one does is refused by name. TOWER.turn (225) is only 4 px over LEAP.up (221): do not lower one or raise the other.
+- **A miss costs a storey (towerFalls).** Every open end and every piece that gives way (a crumbling tile, a creaky limb) has sound wood
+  within 450 px under it. towerCatches lays, in order: the piece run on into a near wall; the storey under it run on under the end (a
+  bridge); the piece itself run on to the wall; else a shelf under the end. Rough spot, named: on the FIXTURE these read as plain
+  boughs wall to wall on many storeys; a designed level's own pieces decide how many open ends it has.
+- **Along the route.** `routeAt(route, x, y)` is "how far on" in a tower (a run: x). Flags are Matt's ROLLED_FLAGS measured along it
+  (towerFlags/towerFlagBreaches, a flag before every hard node); the opening seconds and the quiet stretches too; the clock walks
+  `route.walk` (stageTime.ts). The ENGINE takes flags in the route's order (`flagFurther`, engine.ts, two sites): two flags on one
+  storey both count. The hearts by every second flag go in that order too (stageGenerator.ts `flagsInOrder`).
+- **The climb camera.** `travelFeet(base, towerLead(stage, mode))` (cameraFollow.ts, tower.ts): feet 80% down on a TOWER that leads
+  up, 34% on one that leads down; engine.ts uses it at the framing line AND at both set-back snaps (else the view drifts after a
+  respawn). Towers only, on purpose: the 18 shipped climbs and 4-7 keep 55% (towerLead gives them 0), because 80% leaves 108 px
+  under him sideways and lava, water and mist rise from there (9-2, 9-7, 4-1, 4-6). Each gets it when rebuilt as a tower or looked at.
+- **A gate is a gate (`SectionPiece.sealed`, the lead 11-13, B14's fig gates).** By a sealed piece the lay adds nothing level with it
+  or within a hop (no run-on, bridge or shelf: towerCatches `byGate`), never walks on from it (the next section is a storey up by a
+  vine standing ON it; if it fits neither way from the tip, its storey starts further back along the piece; else the build throws
+  "fits no turn from the sealed piece"), and the verdict `towerGates` refuses any roll where wood at the gate's level or above is one
+  hop from a vine top or from the wood under it. Its own open ends are its section's to catch (the foot under them), or towerFalls
+  names them. Off unless a piece says so. `GraphBrief.tags` (B14's hook, behind the brief so no shipped stage's data moves): every
+  laid piece carries `<uid>:<key>` on Platform.tag / Vine.tag for the stage's own finish.
+- **Proof tools.** `npx tsx tools/engine/towerroll.ts --seeds 24 --flow up|arc|down` (each roll's errors by name);
+  `tools/engine/towermap.ts` (a to-scale SVG of a roll: look at the lay before trusting it); `tools/engine/towerFly.ts` (flyTower: the
+  REAL engine, plain inputs, no rescue; withTowerSim builds a fixture the way the game builds a listed stage);
+  `tools/engine/towerstills.mjs` (the fixture on the real page, in place of 1-4, in the page only);
+  `python3 reference/qa-reports/FA/planted-faults.py` (every tower rule's planted fault: all CAUGHT).
+- **Traps.** (1) A bough laid `over` a vine is NOT main unless it says `main: true`: no flag or animal stands on it, and a hard node
+  then has no flag spot (the arc fixture failed "flags: none before the hard node" until its top bough said so). (2) The first-timer
+  bot needs rescues on any tower (8 on the hand-built 1-4): use flyTower for "can it be played", the model for the clock. (3) A plain
+  flyer runs the fixture in about 105 s where MODEL_FAST says 155-160: the model is a quick PLAYER, the flyer a perfect one; judge a
+  level's 2:00 with both. (4) `withTestStage` plants an empty plan list: plant a real one (withTowerSim does) or provenPlan throws.
+  (5) Holding jump on the way down opens the leaf: a bot that holds it glides past its landing.
+- **Open (each named in REPORT.md).** The descent (flow 'down') lays but most rolls fail "a blind drop" (piece 1b, not built);
+  TOWER.see (300) is 11 px more than shows under his feet sideways (289); easyStage's flag pass and topUpFoes read x on a tower
+  whose kind is not an ascent (easyMode.ts:517, pipeline topUpFoes): an ascent takes neither path.
+
+## 0k. The vine field's threats and gates, and the stage beat (B14, 1-4, 11-13): what the next engineer on them must know
+- **The stage beat is clock.ts's, now wired:** a stage lists `GeneratedStage.clocks` (ClockDef: off/warn/on/rest, offset, easyStretch);
+  engine.ts builds them at stage start (`beatClock(defs, easy, t)`, game time kept). A hazard carries `OnBeat {clock, shift}` and reads
+  `clock.read(clock, shift)`; `beat.ts beatFaults` is every builder's fairness check (a warn before every on, tells apart). Pods first.
+- **fieldPlay.ts runs a field each frame** (pods' tells/hits, torn bunches falling to the wood under them, gates); engine.ts hosts it
+  through `fieldHost` (knock = `podKnock`: off the vine, no climb taken while `knocked`, a heart only on cost 'heart').
+- **A shut gate is `broken`** (no footing; protoArt/terrain already skip broken) with `art: 'hidden'` so fieldPlay draws its bough
+  always (one picture, sagging or level); its `ways` (climbs up from it) are `off` and not drawn, its `with` (lay boughs at its height)
+  are broken with it. Exit A does not vault under a shut gate (`field.blocksTop`).
+- **1-4's finish (w1Arc14.ts finish14) finds pieces by tag** (`uid:key`, FA's `GraphBrief.tags`). Traps: Easy widens `landing`
+  pieces (field feet are not landings); the bots need tools/inspect/figPush.ts to read fig work as progress.
+- **B14b (11-13):** the two-hand climb is painted (heroClips.ts `climb2Pick`, hero-climb2.json; drawn with its own scale `clip.k`, so
+  no code sway rides on it). Tools walk a field stage with its gates open (`vineField.ts gatesOpened`, as kitSolved does for rooms);
+  score.ts reads pods by their beat (beatOf) and crumble by height. Gate boughs are `sealed` (FA); a gate field's foot runs GATE_RUN past them.
+## 0l. Dot's card: tap to clear, slow fade, +N, teach outranks lessons (FIX-A, t-fixa, 11-13): what the next engineer must know
+- **The card takes one touch** (R-165.175, Matt 11-12: "the player can get rid of it at their own pace"). `.dg-bub.in` is
+  pointer-events: auto above the touch layer (`.dg-root` z 34 > TouchController z 30, siblings), so a touch on it never reaches the
+  gestures: not a punch, not a jump (tools/dotbox/readtime.mjs `tap` counts the game's punch/jump presses around each tap: 0). The
+  queue's `tap(now)` ends the card (`why: 'tapped'`, counted as read: its skill is kept and a lesson's next step follows); a tap in the
+  first `TAP_MIN_MS` (400) is eaten but ignored.
+- **Unread, a card stays `fadeK` x its reading time** (`FADE_K` 3 in the app: DotGuide.tsx sets it; the last 1.2 s is a slow fade,
+  `.dg-bub.out.slow`). **The tools keep `fadeK` 1** (tools/inspect firsttimer/castBots/dotPace build their own GuideQueue): they model
+  a reader who taps each card once read, so the bots and their calibration did not move. Never set fadeK in the tools without
+  re-running tierBots' calibration.
+- **+N** is `queue.pending(now, env)`: waiting cards not old news, not held back, not stale. The cards counted at a tap (`tapSeq`) come
+  one after another, a breath apart, past the calm gap and the busy cap: he asked for them. A card that arrives after the tap waits as
+  before. Tested: a tapping player sees exactly the +N he was shown (src/game/dotTapClear.test.ts).
+- **1-1 teaches the tap** (`TAP_HINT`, the keeper's words): on Dot's first card that waits to be read (no move, not urgent, not Pokey,
+  no capMs), once a stage, until he has tapped one on this phone (`sloth_dot_tapped`, a device key in storageKeys.test.ts). The Skip
+  tips offer never rides on the hint card.
+- **`readDone` (the phone's queue only; the tools keep it off, so the bots and their calibration did not move):** a move tip whose move
+  is done stays until its reading time (unless it has a `next` step, or a stage teach / hazard / warning waits: then it goes at once);
+  a plain lesson waits until the card up has been read before cutting in (a hazard, the stage's teach or a warning still cut at 1.5 s);
+  a card cut short goes back marked `back` and is finished: it skips the stale and repeat rules, the calm gap, and waits up to
+  `GUIDE.backReadMs` (90 s); the reading time counts from when the card is on screen (`onScreen`, no 1.5 s cap). Each rule came from
+  the real page (reference/qa-reports/FIX-A/before-*.txt, after-*.txt), each has a planted test in src/game/dotTapClear.test.ts.
+- **No blink:** once her card has been on screen she no longer flies hover-to-perch for it (that hid the card mid-read, 1.1 s on 1-3).
+  Known: a perched card slides with the camera; in 3 of 10 scripted 1-2 runs the tap at the mushroom bounce landed where the card had just been and went
+  to the game as a punch (tap-repeat-1-2.txt). A card fixed on screen while up would end that; not done.
+- **A stage's teach line outranks stock lessons** (R-165.147): waiting, it goes first among its priority (`best()` +0.5); up, a stock
+  lesson's move tip that has been read its reading time yields to it and comes back once (src/game/dotTeachRank.test.ts). The P13 rules
+  (wait TEACH_WAIT_MS, skip the gap, pass Tips) are unchanged.
+- Measure on the real page, not the queue: `node tools/dotbox/readtime.mjs <stage> [easy|normal] [secs] [port] [tap]` logs every card's
+  time up vs its reading time; tools/dotbox/fixaStills.mjs shoots the card, About, 1-3's teach and the goal sign upright and sideways.
+- Open (R-165.175's row, not in FIX-A's packet): lines held longer while he is busy, and a find that names what was found with its
+  picture and stays until read.
 
 ## 0h. The stage build's cost (BC-FIX, R-165.163, t-bc-fix, 11-12): what the next engineer on the build path must know
 - **buildcheck is the build's budget** (150 ms p95 at CPU x4, 1-1, Normal and Easy). P11's verdicts and Y2's repair took it to 446/430;
@@ -21,6 +166,27 @@ proven plan; Play is never blocked).
   comparator ties null-piece side stops with everything at the same frame, so never prune pieces BEFORE that sort (the order inside a
   frame can change); filtering AFTER it (windowsOf) is exact.
 - **maxRise() is flown once** (protoCheck.ts): it reads only PHYS. If PHYS ever becomes tunable at run time, that cache must go.
+
+Updated at the end of FEEL-PAIR (11-12, t-feel-pair): section 0i, the draped pair and its feel room; the rest is as it was.
+
+## 0i. The draped pair and its feel room (FEEL-PAIR, R-165.170, t-feel-pair, 11-12): what the next engineer on climbs must know
+- **A climb's speed and reach are values on the vine piece** (vinePair.ts): `Vine.climbSpeed` (px/s, up AND down; unset = CLIMB_SPEED
+  220, every single climb, unchanged) and `Vine.pair` (the strands' gap; x is between them). climbReach adds half the gap to 54/60, so
+  up beside either strand takes both; he hangs at x (between them) with `PlayerState.climbPair` set. engine.ts reads them in the trunk
+  grab (~:1960) and the climb (~:2040). The rustle quickens with the speed (rustleGap); a single's is byte-for-byte the old 0.36-0.48 s.
+- **Drawing:** protoArt.ts skips a pair in the trunk loop and calls pairArt.ts drawDrapedPair (World 1's painted vine tile, castArt.ts
+  vineTile, laid with ropeArt.ts layRope along a path: trailing ends, two strands, a round loop over the bough); a pair's top gets no
+  kapok perch (`tops` leaves pairs out). sheetWarm.ts warms the trap sheet for any pair. The hero: heroClips.ts climbU/pairSway (the
+  climb cycle 1.5x longer on a pair, a +-0.07 rad sway); there are NO arms-out frames: that is new art (the lead's call).
+- **The feel room** (feelPairStage.ts + feelPair.ts + FeelPairClock.tsx): QA build only (`feelPairConfig()` null elsewhere;
+  generateStage builds it only with qaBuild()). Entry: title, Settings (gear), About, "Vine pair test", Play; or `#autostart=1&level=
+  feel-pair`. GeneratedStage.feelRoom -> engine.ts `this.feel` (control() before the attack step takes a tap by the sign; drawWorld
+  draws the sign). RealPlay hosts it with `asQaBuildForTest(true)`. Stills and clips: reference/qa-reports/FEEL-PAIR/shoot.mjs.
+- **Traps I hit:** (1) a keyboard press and release inside one frame never reaches the engine (inputEngine keyup clears the buffer):
+  hold a key 150 ms in a script. (2) Headless full screen (the game's wide mode) shrinks Playwright's recorded frames to two thirds with
+  a grey band: stub requestFullscreen in the recording context. (3) Text under 12 px fails textSize.test.ts (UI-14). (4) The camera's
+  vertical ease lags a climb by speed/6.5 px: feet 50% of a sideways view on a single, 45% on a 2x pair; the 1-4 climb camera (piece 5)
+  owns that framing, not the pair.
 
 ## 0g. World 1's ground seams (RF2, t-render-2, 11-12): what the next engineer on the painted ground must know
 - **Soil fills are sampled FILL_INSET (3) sheet px in from every edge** (groundPaint.ts fillSrc). The ground sheets are lossy WebP: fills

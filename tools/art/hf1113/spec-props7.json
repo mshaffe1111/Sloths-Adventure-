@@ -1,0 +1,41 @@
+{
+ "tag": "props7",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, words, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, sky, scenery behind, animals, people, sloth, deep water, dark pool, murky, waterfall, bank, grass, trees, sky, magenta water",
+ "items": [
+  {
+   "name": "creek-11",
+   "prompt": "a long horizontal band of shallow fast-rushing clear rainforest creek water seen exactly from the side at ground level, white foam and splashing white water along its choppy surface, round smooth grey and brown pebbles and stones clearly visible through the very shallow water and lying on the stony bed just under it, a few wet stones poking up through the surface, water rushing to the right, dusk light with violet and warm orange glints on the water, the band runs from the left edge to the right edge of the picture, flat solid magenta above the water surface, hand-painted 2D storybook platformer game asset, rich colour, clean dark outline, painterly detail",
+   "seed": 11,
+   "w": 1792,
+   "h": 640
+  },
+  {
+   "name": "creek-23",
+   "prompt": "a long horizontal band of shallow fast-rushing clear rainforest creek water seen exactly from the side at ground level, white foam and splashing white water along its choppy surface, round smooth grey and brown pebbles and stones clearly visible through the very shallow water and lying on the stony bed just under it, a few wet stones poking up through the surface, water rushing to the right, dusk light with violet and warm orange glints on the water, the band runs from the left edge to the right edge of the picture, flat solid magenta above the water surface, hand-painted 2D storybook platformer game asset, rich colour, clean dark outline, painterly detail",
+   "seed": 23,
+   "w": 1792,
+   "h": 640
+  },
+  {
+   "name": "creek-37",
+   "prompt": "a long horizontal band of shallow fast-rushing clear rainforest creek water seen exactly from the side at ground level, white foam and splashing white water along its choppy surface, round smooth grey and brown pebbles and stones clearly visible through the very shallow water and lying on the stony bed just under it, a few wet stones poking up through the surface, water rushing to the right, dusk light with violet and warm orange glints on the water, the band runs from the left edge to the right edge of the picture, flat solid magenta above the water surface, hand-painted 2D storybook platformer game asset, rich colour, clean dark outline, painterly detail",
+   "seed": 37,
+   "w": 1792,
+   "h": 640
+  },
+  {
+   "name": "creek-53",
+   "prompt": "a long horizontal band of shallow fast-rushing clear rainforest creek water seen exactly from the side at ground level, white foam and splashing white water along its choppy surface, round smooth grey and brown pebbles and stones clearly visible through the very shallow water and lying on the stony bed just under it, a few wet stones poking up through the surface, water rushing to the right, dusk light with violet and warm orange glints on the water, the band runs from the left edge to the right edge of the picture, flat solid magenta above the water surface, hand-painted 2D storybook platformer game asset, rich colour, clean dark outline, painterly detail",
+   "seed": 53,
+   "w": 1792,
+   "h": 640
+  }
+ ]
+}

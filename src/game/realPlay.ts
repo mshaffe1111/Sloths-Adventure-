@@ -15,6 +15,7 @@ import { guideShown } from './guideShown.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { EXTRA_STAGES } from './extraStages.ts';
 import { KIT_STAGE_ID, kitStageConfig } from './kitStage.ts';
+import { FEEL_PAIR_ID, feelPairConfig } from './feelPairStage.ts';
 import { setLayoutVariant } from './stageGenerator.ts';
 import { newAirDrive, swingClockAt, swingSetup, vineAmp, vineAngle, vineOmega } from './physics.ts';
 import { newGlide } from './glide.ts';
@@ -100,9 +101,17 @@ class FakeInput {
 }
 
 const levels = generateAllLevels();
+/** TEST-ONLY: a fixture stage's config by its id (a stage that is no stage of the game, e.g. gen2/toyTower.ts), found by levelConfig
+ *  while `fn` runs, so the bots (tools/inspect) can be flown on it by id. A fixture never stands in for a stage of the game */
+const fixtures = new Map<string, LevelConfig>();
+export function withFixtureConfig<T>(cfg: LevelConfig, fn: () => T): T {
+  if (levels.some((l) => l.id === cfg.id)) throw new Error(`withFixtureConfig: ${cfg.id} is a stage of the game`);
+  fixtures.set(cfg.id, cfg);
+  try { return fn(); } finally { fixtures.delete(cfg.id); }
+}
 export const levelConfig = (id: string): LevelConfig => {
   // (the extra stages, 4-D and 5-M, are only in the list in a browser: extraStages.ts)
-  const c = levels.find((l) => l.id === id) ?? EXTRA_STAGES.map((e) => e.config()).find((l) => l.id === id) ?? (id === KIT_STAGE_ID ? kitStageConfig() : undefined);
+  const c = fixtures.get(id) ?? levels.find((l) => l.id === id) ?? EXTRA_STAGES.map((e) => e.config()).find((l) => l.id === id) ?? (id === KIT_STAGE_ID ? kitStageConfig() : id === FEEL_PAIR_ID ? feelPairConfig() ?? undefined : undefined);
   if (!c) throw new Error(`no stage ${id}`);
   return { ...c, unlocked: true };
 };
@@ -322,6 +331,10 @@ export class RealPlay {
     swingSetup(vines);
     const st = e.currentStage as GeneratedStage;
     Object.assign(st, { zones: [], waterY: undefined, rivers: [], exitTotemX: 0, checkpoints: [], config: { ...st.config, levelHeight: 100000, levelWidth: 100000 } });
+    // (the side walls are the stage's travel mode's, set when the stage started: a tower's are its own width (1280), so the bare world
+    // must have them made again from its own size, by the same mode, or a sim's pieces past them are out of reach: INT-3, the flight
+    // sim on 1-4 read every jump as 39 px)
+    e.walls = e.mode.bounds({ levelWidth: 100000, exit: { x: 0, y: st.exitTotemY }, spawn: { x: st.spawnX, y: st.spawnY } });
   }
 
   /** stand still for this many seconds */

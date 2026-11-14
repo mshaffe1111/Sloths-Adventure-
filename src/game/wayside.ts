@@ -72,6 +72,8 @@ export const WAYSIDE: Record<number, WorldWay> = {
       2: dot('start', 'She said don\'t stop to smell the flowers. She never said anything about picking up her petals.'),
       // (on the first punch that sends a snake gliding off, never by place: halfway it could land just after a trap, P13 11-12)
       3: dotOn('cast:punch', 'You said "excuse me" just before that punch. I heard it. So did he.'),
+      // (1-4.md beat 6, the halfway bough; STORY-KEEPER.md:149, the keeper's words: w1Arc14.ts HALFWAY_14 holds them equal)
+      4: pokey('half', 'Meeca climbs this every Sunday. I waved from below.'),
       5: petal('start', 'These petals are fresher. She came this way not long ago.'),
       6: pokey('half', 'Meeca used to cross these twice before I\'d finished one. She\'d wait at the end with a snack.'),
       // (the bush the stage is named for: Meeca's 1-2 note says she saw her in it; the tea pays it off, "Was it a nice bush?")

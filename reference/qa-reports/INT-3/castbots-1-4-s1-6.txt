@@ -1,0 +1,35 @@
+castBots 1-4, seeds 1-6
+kid    normal PASS 0/6; time median - s (min -); hits 56 lives 10 (other 66); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+        fail 6: time goal 0/1 rescued x2  (seeds 4,3,1,5,2,6)
+kid    easy   PASS 0/6; time median - s (min -); hits 0 lives 0 (none); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+        fail 6: time goal 0/1 rescued x1  (seeds 4,3,1,5,2,6)
+adult  normal PASS 0/6; time median - s (min -); hits 116 lives 20 (other 136); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+        fail 3: shrine rescued x4  (seeds 4,3,5)
+        fail 2: shrine rescued x3  (seeds 2,6)
+        fail 1: time goal 0/1 rescued x2  (seeds 1)
+adult  easy   PASS 0/6; time median - s (min -); hits 0 lives 0 (none); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+        fail 6: shrine rescued x3  (seeds 4,3,1,5,2,6)
+child  normal PASS 0/6; time median - s (min -); hits 23 lives 1 (other 24); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+        fail 2: shrine rescued x2  (seeds 4,1)
+        fail 1: shrine rescued x4  (seeds 3)
+        fail 1: shrine rescued x3  (seeds 5)
+        fail 1: shrine rescued x1  (seeds 2)
+        fail 1: shrine rescued x5  (seeds 6)
+child  easy   PASS 0/6; time median - s (min -); hits 0 lives 0 (none); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+        fail 2: shrine rescued x3  (seeds 4,3)
+        fail 2: shrine rescued x2  (seeds 2,6)
+        fail 1: shrine rescued x4  (seeds 1)
+        fail 1: shrine rescued x6  (seeds 5)
+middle normal PASS 0/6; time median - s (min -); hits 16 lives 1 (other 17); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+        fail 2: shrine rescued x2  (seeds 4,1)
+        fail 2: shrine rescued x1  (seeds 3,6)
+        fail 1: shrine rescued x4  (seeds 5)
+        fail 1: time goal 0/1 rescued x3  (seeds 2)
+middle easy   PASS 1/6; time median 121 s (min 121); hits 0 lives 0 (none); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+        fail 3: shrine rescued x2  (seeds 4,1,6)
+        fail 2: shrine rescued x1  (seeds 5,2)
+expert normal PASS 2/6; time median 201 s (min 198.7); hits 11 lives 0 (other 11); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x2  (seeds 4)
+        fail 1: shrine rescued x3  (seeds 1)
+        fail 1: time goal 0/1  (seeds 2)
+        fail 1: time goal 0/1 rescued x2  (seeds 6)

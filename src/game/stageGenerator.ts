@@ -4,8 +4,10 @@ import { w4Normal } from './w4Normal.ts';
 import { groundToFloor } from './groundFloor.ts';
 import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
+import { buildFeelPairStage, FEEL_PAIR_ID } from './feelPairStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
+import { flagsInOrder } from './gen2/tower.ts';
 import { pick11, play11Seed, roll11Seed, withPlaySeed } from './testlink1_1.ts';
 import { builtOnArcs, linkArcs } from './gen2/reach.ts';
 import { buildPlayStage, provenSeedFor, seedListReady } from './gen2/seedList.ts';
@@ -18,10 +20,8 @@ import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { DOT_STAGE_ID, dotGeneratedStage } from './dotFlightStage.ts';
 import { MEECA_STAGE_ID } from './extraStages.ts';
 import { meecaGeneratedStage } from './meecaStage.ts';
-import { ctestEnabled, ctestSeed } from './playRecorder.ts';
+import { qaBuild } from './playRecorder.ts';
 
-/** the stage the control test replaces (no story scene before it); its layout is a new mix each run (playRecorder.ts ctestSeed) */
-export const CTEST_STAGE_ID = '1-2';
 import type {
   LevelConfig,
   Platform,
@@ -65,6 +65,16 @@ export interface GeneratedStage {
   dress?: import('./dressArt.ts').DressPiece[];
   /** shimmy ropes across gaps (the engine only lets Pokey use them once he has the skill) */
   ropes?: Rope[];
+  /** a feel-test room's sign and stopwatch (the QA build's vine pair test: feelPairStage.ts, run by feelPair.ts) */
+  feelRoom?: import('./feelPairStage.ts').FeelRoomSpec;
+  /** fruit clusters snagged on a vine field's climbs (vineField.ts: pushed up a vine they tear free and drop) */
+  clusters?: import('./vineField.ts').VineCluster[];
+  /** the stage's beats (clock.ts ClockDef; beat.ts): every hazard on a beat names one, and the engine runs them on game time */
+  clocks?: import('./stageKit.types.ts').ClockDef[];
+  /** pods that fall down a vine field's columns, each on a stage beat (podfall.ts; run by fieldPlay.ts) */
+  pods?: import('./podfall.ts').PodColumn[];
+  /** boughs shut by the clusters under them: each freed lifts it a notch, the last opens it (vineField.ts ClusterGate) */
+  gates?: import('./vineField.ts').ClusterGate[];
   enemies: Enemy[];
   boss: BossEntity | null;
   collectibles: Collectible[];
@@ -2861,8 +2871,9 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   }
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
   if (config.id === KIT_STAGE_ID) return buildKitStage(config);
+  // the vine pair's feel test (a QA build only: feelPairStage.ts, R-165.170)
+  if (config.id === FEEL_PAIR_ID && qaBuild()) return buildFeelPairStage(config);
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
-  if (config.id === CTEST_STAGE_ID && !config.secret && ctestEnabled()) return buildProtoStage(config, ctestSeed(), 'ctest', difficulty === 'easy');
   // Dot's netting flight, the extra stage after 4-5 (dotFlightStage.ts); it is only in the stage list with the New stages switch on
   if (config.id === DOT_STAGE_ID) return dotGeneratedStage(config, layoutVariant ?? 1);
   if (config.id === MEECA_STAGE_ID) return meecaGeneratedStage(config, layoutVariant ?? 1);
@@ -2874,9 +2885,9 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   const gen2Roll11 = config.id === '1-1' && !config.secret;
   // (builtOnGen2 below is this same test, for every reader that asks whether a stage is gen2's: one definition)
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled() && !gen2Roll11) {
-    // (a stage the mixer builds from its spec, 1-1 and 1-5, lays Easy itself: mixer/w1mix.ts; the rest are made gentler on the built
+    // (a stage the mixer builds from its spec, 1-1, lays Easy itself: mixer/w1mix.ts; the rest are made gentler on the built
     // stage alone, easyMode.ts)
-    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && config.id !== '1-5' && !!specFor(HAND_STAGES[config.id])));
+    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && !!specFor(HAND_STAGES[config.id])));
     addMissingFind(st);
     return difficulty === 'normal' ? w4Normal(st) : st;
   }
@@ -2898,7 +2909,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     const seed11 = roll11 === 'A' || roll11 === 'B' || roll11 === 'C' ? roll11Seed(roll11) : play11Seed(layoutVariant ?? 1);
     // (Play: the listed seed's proven plan replayed, the planner's buildPlayStage, ~100 ms at CPU x4; a roll the same way)
     const stage = listed
-      ? w1Finish(buildPlayStage(config, listed.kit(), seedListReady(config.id) ? provenSeedFor(config.id, layoutVariant ?? 1) : layoutVariant ?? 1, difficulty), !!listed.squirrels)
+      ? ((st) => (listed.finish ? listed.finish(st, difficulty) : st))(w1Finish(buildPlayStage(config, listed.kit(), seedListReady(config.id) ? provenSeedFor(config.id, layoutVariant ?? 1) : layoutVariant ?? 1, difficulty), !!listed.squirrels))
       : roll11 ? w1Finish(buildPlayStage(config, w1World(), seed11, difficulty)) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
     // (Easy's own goal for the stage, as the first-timer kid bot measured it: easyStage sets it, withGoals leaves it)
     const easyGoal = GEN2_STAGES[config.id]?.easyGoal;
@@ -2910,7 +2921,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     const risky = stage.enemies.length > 0 || stage.waterY !== undefined || !!stage.heartFalls?.some((z) => !z.soft) || !!(stage as { proto?: { water?: Array<{ kind?: string }> } }).proto?.water?.some((z) => z.kind === 'deadly') || ((stage as { gen2?: { budget?: { pit?: string } } }).gen2?.budget?.pit ?? 'soft') !== 'soft';
     let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
     // (H1 is for the unshipped gen2 1-1 only, the lead 11-06: the live gen2 worlds keep their hearts as they are)
-    if (risky || GEN2_STAGES[config.id]) [...(stage.checkpoints ?? [])].sort((a, b) => a.x - b.x).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
+    if (risky || GEN2_STAGES[config.id]) flagsInOrder(stage, stage.checkpoints ?? []).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
     const done = finishStage(stage, finishReach(stage, difficulty));
     // (World 5's dressing sets, once the pickups are all placed, so none is covered: artDress.ts dressSets)
     addDress(done as Parameters<typeof addDress>[0], layoutVariant ?? 1);

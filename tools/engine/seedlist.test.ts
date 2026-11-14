@@ -5,16 +5,35 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { searchYield } from './yield.ts';
 
 const run = (...args: string[]) => spawnSync(process.execPath, ['--import', 'tsx', 'tools/engine/seedlist.ts', ...args], { encoding: 'utf8' });
 
-test('a listed stage with no list yet fails --check by name, not by a throw (1-2 today)', () => {
-  const r = run('1-2', '--check');
-  assert.equal(r.status, 1, r.stderr);
-  assert.match(r.stdout, /seedlist 1-2: FAIL\n {2}1-2: 0 proven seeds, under \d+/);
-  assert.doesNotMatch(r.stdout + r.stderr, /Error|at .*\.ts:\d+/, 'no throw');
+test('a listed stage with no list yet fails --check by name, not by a throw (a list taken out of the index, in a scratch worktree)', () => {
+  // (every stage-table row holds a list now: registrycheck.ts fails one that does not, ADD-LEVEL 11-13. A stage between its row and its
+  // list is still real (addlevel.ts step 3), so the check runs on a scratch worktree of HEAD with one list's line taken out of the index)
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'seedlist-nolist-'));
+  const wt = path.join(dir, 'wt');
+  try {
+    const add = spawnSync('git', ['worktree', 'add', '--detach', '-q', wt, 'HEAD'], { encoding: 'utf8' });
+    assert.equal(add.status, 0, add.stderr);
+    fs.symlinkSync(path.resolve('node_modules'), path.join(wt, 'node_modules'));
+    const ix = path.join(wt, 'src/game/gen2/provenIndex.ts');
+    const lines = fs.readFileSync(ix, 'utf8').split('\n');
+    const line = lines.find((l) => /^\s*'[^']+': \{ n: \d+/.test(l))!;
+    const id = line.match(/'([^']+)'/)![1];
+    fs.writeFileSync(ix, lines.filter((l) => l !== line).join('\n'));
+    const r = spawnSync(process.execPath, ['--import', 'tsx', 'tools/engine/seedlist.ts', id, '--check'], { encoding: 'utf8', cwd: wt });
+    assert.equal(r.status, 1, r.stderr);
+    assert.match(r.stdout, new RegExp(`seedlist ${id}: FAIL\\n {2}${id}: 0 proven seeds, under \\d+`));
+    assert.doesNotMatch(r.stdout + r.stderr, /Error|at .*\.ts:\d+/, 'no throw');
+  } finally {
+    spawnSync('git', ['worktree', 'remove', '--force', wt]);
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test('an id with no row exits 2, by name', () => {

@@ -108,10 +108,10 @@ const fallenLog = (platforms: Array<{ x: number; y: number; width: number; heigh
   return { log, wall };
 };
 
-test("1-6's fallen log and the control test's 'Push the log': the canopy's face is solid to the ground (no walking under it into the water)", () => {
+test("1-6's fallen log: the canopy's face is solid to the ground (no walking under it into the water)", () => {
   // (QA: Sally drowned 12 times at the control test's "Push the log", seed 571060, and Matt twice at 1-6's fallen log: the canopy was a
   // 90 px bank floating 230 up, with open air under it, and the ground ended at its face)
-  const builds = [...SEEDS.map((s) => buildProtoStage(cfg, s)), buildProtoStage(cfg, 571060, 'ctest')];
+  const builds = SEEDS.map((s) => buildProtoStage(cfg, s));
   for (const st of builds) {
     const { log, wall } = fallenLog(st.platforms);
     assert.ok(log && wall, 'the log and its wall');

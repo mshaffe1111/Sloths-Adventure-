@@ -1,0 +1,4 @@
+stage 1-1 normal: Dot's help setting reminders, engine easy false, tapping each card at its reading time
+ 17.4 s    5.9 s up / read 5.5 s (x1.1)    TAPPED (punches 0, jumps 0) 8w "A flag! Fall, and you start again here."
+ 26.0 s    5.7 s up / read 5.0 s (x1.1)    TAPPED (punches 0, jumps 0) 7w "Flick up again midair to jump twice."
+2 cards; 0 were taken down before their reading time

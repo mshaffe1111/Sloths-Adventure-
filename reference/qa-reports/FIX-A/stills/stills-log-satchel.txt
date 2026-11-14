@@ -1,0 +1,4 @@
+satchel upright: bell hint on screen: true; old words gone: true
+satchel upright: "Golden Eyelash Viper" shown: true; "tree snake" anywhere: false
+satchel sideways: bell hint on screen: true; old words gone: true
+satchel sideways: "Golden Eyelash Viper" shown: true; "tree snake" anywhere: false

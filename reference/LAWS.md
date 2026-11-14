@@ -33,6 +33,12 @@ have.
    doesn't ship. The one exception: a NEW gate may start with a list of the defects that already exist, only if that list can only
    shrink (a test fails when an entry is added or a fixed one is left on it) and every entry is in the defect log with an owner
    (added 2026-11-01, clipcheck).
+   **Scoped by what changed (Matt, 2026-11-12 9:51 PM ET: "if they don't need to run the reports, then let's not run the reports... if
+   I just wanted to waste the tokens, I'd just hit reset"):** a branch that changes NO game code (nothing under src/, no seed list, no
+   asset, no build or CI config: only reference/ docs or a read-only tool) runs the fast gates (tsc, roadmapcheck, knowncheck,
+   generality, and the tool's own tests or --check). The full tests, the build and the perf gates still run, every one, on the
+   integration head before ANY test link, PR or release: nothing ships on fast gates alone. A branch that touches game code runs
+   everything, as before.
 6. **No filler, no repeats.** Player-facing words are written per item, in the character's voice. No line that could sit anywhere, no line
    that apologises for missing data, no repeats on a page.
 7. **Nothing untested or half-finished reaches main.** New replaces old outright once it passes; no switches, no half-fixes.

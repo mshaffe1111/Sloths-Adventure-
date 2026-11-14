@@ -21,7 +21,7 @@
 import { CooldownQueue, ShuffleBag, type Rng } from './gen2/variety.ts';
 
 /** World 1's stages with section versions (1-6 is the 'proto' plan; 1-10, the boss lair, has one designed layout) */
-export type W1Stage = '1-1' | '1-4' | '1-5' | '1-6' | '1-7' | '1-8' | '1-9';
+export type W1Stage = '1-1' | '1-6' | '1-7' | '1-8' | '1-9';
 export type Slot = 'start' | 'develop' | 'twist' | 'finish';
 const SLOTS: readonly Slot[] = ['start', 'develop', 'twist', 'finish'];
 
@@ -331,73 +331,7 @@ const SECTIONS: Record<W1Stage, Table> = {
       },
     ],
   },
-  // 1-4 Up the Kapok: the climb's middle is a run of hops and ropes (buildKapok); the roll picks their rhythm and how often a snake
-  // waits on a wide branch. The squirrels' lift rooms and the long rope are in every roll.
-  '1-4': {
-    finish: [
-      { id: 'ropes', build: () => {} },
-      { id: 'hops', build: () => {} },
-      { id: 'snakes', build: () => {} },
-    ],
-  },
-  // 1-5 More Petals: everything so far, mixed. The roll's rhythm leans on one family of moves: climbs and ropes, fights, or bounces
-  // and jumps (each version still asks for several moves, and the keepsake's fern tree and the creaking branches are in every roll).
-  '1-5': {
-    rhythms: ['climb', 'fight', 'bounce'],
-    develop: [
-      {
-        id: 'everything', beat: 'fight', build: (k) => {
-          const groups: Build[] = [
-            // (a dip first: right after the mushroom's cache, the fern tree's top was a way onto the cache)
-            (k) => { k.dipArc(); k.logHop(); k.fernTree(); k.dipArc(); },
-            (k) => k.ropeGap(false, true, true),
-            (k) => k.doubleArcs(true),
-            (k) => { k.dipArc(); k.mushroomCache(); },
-            (k) => k.snakeLedge(),
-          ];
-          k.R.shuffle(groups).forEach((g) => g(k));
-        },
-      },
-      {
-        id: 'climbs', beat: 'climb', build: (k) => {
-          k.climbWall(); k.ropeGap(false, true, true); k.logHop(); k.fernTree(); k.dipArc(); k.climbWall(); k.snakeLedge(); k.doubleArcs(true); k.dipArc(); k.mushroomCache();
-        },
-      },
-      {
-        id: 'bounces', beat: 'bounce', pool: 'bounces', build: (k) => {
-          k.highLeaps(3, true, true); k.ropeGap(false, true, true); k.logHop(); k.fernTree(); k.dipArc(); k.bounceWall(); k.snakeLedge(); k.doubleArcs(true); k.dipArc(); k.mushroomCache();
-        },
-      },
-    ],
-    twist: [
-      { id: 'creak', beat: 'fight', build: (k) => { k.creakRun(); k.busy(1); k.creakRun(); k.dipArc(); } },
-      { id: 'creakRope', beat: 'climb', build: (k) => { k.creakRun(); k.ropeGap(false, true, true); k.creakRun(); k.dipArc(); } },
-      { id: 'creakHigh', beat: 'bounce', build: (k) => { k.creakRun(); k.highLeaps(3, false, true); k.creakRun(); k.dipArc(); } },
-    ],
-    finish: [
-      {
-        id: 'fights', beat: 'fight', build: (k) => fillTo(k, k.EXPERT - 22, null, [
-          (k) => { k.snakeLedge(); k.dipArc(); },
-          (k) => { k.snakeWalk(1); k.creakRun(); k.dipArc(); },
-          (k) => { k.snakeLedge(); k.snakeWalk(2); k.dipArc(); },
-        ]),
-      },
-      {
-        id: 'climbs', beat: 'climb', build: (k) => fillTo(k, k.EXPERT - 22, null, [
-          (k) => k.climbWall(),
-          (k) => { k.climbWall(); k.logHop(); k.climbTree(true); k.dipArc(); },
-          (k) => { k.creakRun(); k.dipArc(); k.climbWall(); },
-        ]),
-      },
-      {
-        id: 'bounces', beat: 'bounce', build: (k) => fillTo(k, k.EXPERT - 22, null, [
-          (k) => { k.bounceWall(true, false); k.highLeaps(3, false, true); },
-          (k) => k.highLeaps(5, true, true),
-          (k) => k.highLeaps(4, false, true),
-        ]),
-      },
-    ],
-  },
+  // (1-4 Up the Kapok rolls on gen2 from 11-13, the vine field: w1Arc14.ts. Its hand-built rhythm rows went with the hand-built 1-4)
   // 1-6 (the 'proto' plan) Swinging Vines: the swing, the fallen log and its seesaws, the canopy road. Four flavours carried through
   // the stage, each leaning on a different heavy beat between the lessons: the gorge's vines, climbs up the kapoks and walls, snakes on
   // the ground and on ledges, or bounces up to high branches. The swing lessons, the puzzle rooms and the canopy road with its glide
@@ -580,15 +514,3 @@ export function w1Chase(seed: number): ChasePiece[] {
   return CHASE[w1Pick('1-8', seed).finish ?? 'leaps'];
 }
 
-const KAPOK: Record<string, { steps: Array<'hops' | 'rope'>; snakes: number }> = {
-  // the old rhythm: two ropes, then hops
-  ropes: { steps: ['rope', 'rope', 'hops'], snakes: 0.4 },
-  // hops along and up the branches between the ropes, and no snakes
-  hops: { steps: ['hops', 'rope', 'hops', 'rope', 'rope'], snakes: 0 },
-  // rope and hops in turn, and a snake on every wide branch
-  snakes: { steps: ['rope', 'hops'], snakes: 1 },
-};
-/** this roll's run of hops and ropes up 1-4's kapok, and the chance of a snake on a wide branch */
-export function w1Kapok(seed: number): { steps: Array<'hops' | 'rope'>; snakes: number } {
-  return KAPOK[w1Pick('1-4', seed).finish ?? 'ropes'];
-}

@@ -26,7 +26,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["lesson.foe.punch", "", "lesson card", "move", "Tap when it is close: Punch (in the air, a tap is a jump kick)", "Tap to punch it when it's close.", null, "tap", "foe"],
   ["lesson.foe.stomp", "", "lesson card", "move", "Jump on its head: Stomp (most foes can be stomped)", "Flick up and land on its head.", null, "flick-up", "foe"],
   ["lesson.gap.double", "", "lesson card", "move", "Flick up again in the air: Double jump (it pushes you forward, for a gap that is a little too wide)", "Flick up again midair to go farther.", null, "double-jump", "far side of the gap"],
-  ["lesson.gap.jump", "", "lesson card", "move", "Slide up and across: Run and jump (keep your thumb moving forward in the air)", "Flick up just before the edge.", null, "flick-up", "gap edge"],
+  ["lesson.gap.jump", "", "lesson card", "move", "Slide up and across: Run and jump (keep your thumb moving forward in the air)", "Flick up to hop up or over.", null, "flick-up", "gap edge"],
   ["lesson.moving", "", "lesson card", "move", "It slides back and forth and carries you with it. Wait for it to swing close, then hop on. Hop on when it is close: Ride it", "Flick up when it swings close.", null, "flick-up", "moving platform"],
   ["lesson.nostomp", "", "lesson card", "move", "Spiders and ants cannot be stomped, so do not land on them. Punch or kick them, or jump right over.", "Tap to punch it. Don't stomp this one.", null, "tap", "spider or ant"],
   ["lesson.rope.creep", "", "lesson card", "move", "Slide left or right: Creep along (at the far end he steps off onto the ledge)", "Slide your thumb to creep along.", null, "slide", "rope"],
@@ -147,6 +147,8 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["way.1.hurt2", "", "wayside", "story", "Ow! That one was yours, but I felt it.", "Ow! That one was yours, but I felt it.", null, null, null],
   ["way.1-2", "1-2", "wayside", "story", "She said don't stop to smell the flowers. She never said anything about picking up her petals.", "She said don't stop to smell the flowers. Picking's different.", null, null, null],
   ["way.1-3", "1-3", "wayside", "story", "You said \"excuse me\" just before that punch. I heard it. So did he.", "You said \"excuse me\" before that punch. I heard. So did he.", null, null, null],
+  // (1-4's halfway, Pokey's: the story keeper's words, STORY-KEEPER.md:149, approved with 1-4's lines 11-13; the same in both looks)
+  ["way.1-4", "1-4", "wayside", "story", "Meeca climbs this every Sunday. I waved from below.", "Meeca climbs this every Sunday. I waved from below.", null, null, null],
   ["way.1-5", "1-5", "wayside", "story", "These petals are fresher. She came this way not long ago.", "She squashed this one extra flat.", null, null, null],
   ["way.1-6", "1-6", "wayside", "story", "Meeca used to cross these twice before I'd finished one. She'd wait at the end with a snack.", "Meeca crossed these twice before I'd finished one. She always waited.", null, null, null],
   ["way.1-7", "1-7", "wayside", "story", "Low, like me in my bush, Meeca says she saw me, fibs.", "Low, like me in my bush, Meeca says she saw me, fibs.", null, null, null],

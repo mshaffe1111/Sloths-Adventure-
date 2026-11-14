@@ -1,0 +1,4 @@
+stage 1-1 normal: Dot's help setting reminders, engine easy false
+ 17.4 s   28.8 s up / read 5.5 s (x5.2)    8w "A flag! Fall, and you start again here."
+ 48.0 s   12.4 s up / read 5.0 s (x2.5)    7w "Flick up again midair to jump twice."
+2 cards; 0 were taken down before their reading time

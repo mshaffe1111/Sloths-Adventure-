@@ -1,0 +1,25 @@
+head 16f2e24c2 start 7:35 PM
+tsc 0 7:35 PM
+build 0 7:35 PM
+chunkcheck 0 7:35 PM
+artcheck 0 7:35 PM
+knowncheck 0 7:35 PM
+generality 0 7:36 PM
+roadmap 1 7:36 PM
+kbdcheck 0 7:39 PM
+unit1 0 7:57 PM
+unit3 0 8:00 PM
+seedlists 0 8:00 PM
+registry 0 8:00 PM
+unit2 0 8:02 PM
+tooltests 0 8:03 PM
+tierBots 0 8:03 PM
+drawcheck 0 8:12 PM
+clipcheck 0 8:17 PM
+buildcheck 0 8:17 PM
+done 8:17 PM
+--- fast gates on 68d015dda (docs only since 16f2e24c: methods/README.md row, INT-6 report/stills) 8:17 PM
+tsc 0 8:17 PM
+roadmap 0 8:17 PM
+knowncheck 0 8:17 PM
+generality 0 8:17 PM

@@ -48,9 +48,14 @@ import type { Platform } from '../../src/game/types.ts';
 import { scares } from '../../src/game/dropTrap.ts';
 import type { TrapPost } from '../../src/game/castPlay.types.ts';
 import { findRoute } from './route.ts';
+import { markUp } from './markClimb.ts';
+import { FigPush, type FieldView } from './figPush.ts';
+/** the objectives whose goal is a count (engine.ts isQuotaType); every other stage's goal is the shrine */
+const QUOTA_TYPES = new Set(['harvest', 'purge', 'relic_hunt', 'rescue', 'gauntlet']);
 import { buildRoll } from './eraRoll.ts';
 import { STAGE_SECONDS } from '../../src/game/protoStage.ts';
 import { sampleRoute } from './beats.ts';
+import { towerRoutePts } from './towerRoute.ts';
 import type { Stage } from './stages.ts';
 
 // a phone: the lessons and tips say "slide" and "flick", not keys (lessons.ts lessonInputMode reads pointer: coarse)
@@ -711,6 +716,8 @@ const PHONE = { w: 844, h: 390 };
 /** FT_TRACE=1: every jump and how it went, on stderr */
 const TRACE = typeof process !== 'undefined' && !!process.env.FT_TRACE;
 /** FT_FRAMES=a,b: every frame between a and b s of play, on stderr */
+/** px: the highest ledge over him he hops for on a tower's stair (a single jump rises 108 px, stageMetrics JUMP_RISE; a stair step is 60) */
+const STAIR_HOP = 100;
 const TRACE_FRAMES = typeof process !== 'undefined' && process.env.FT_FRAMES ? process.env.FT_FRAMES.split(",").map(Number) : null;
 
 interface Jump {
@@ -883,6 +890,12 @@ export class FirstTimerRun {
   private roomAt = new Map<number, number>();
   /** the trunk he is on, and whether climbing down it got him nowhere */
   private climbVine: unknown = null;
+  /** in a vine field: the figs under a shut gate pushed free, a pod's column stepped off (figPush.ts) */
+  private figs: FigPush | null = null;
+  /** this frame's want is a fig push's tap (or its let-go): kept as it is, never run through the thumb (tapped) */
+  private figTap = false;
+  /** he follows a tower's own route (towerRoute.ts): corners, no jump arcs, so he reads a stair of ledges himself */
+  private onTower = false;
   private climbDown = false;
   private climbTurned = false;
   /** he was on a trunk when the last choice was made */
@@ -1023,8 +1036,13 @@ export class FirstTimerRun {
       let route = findRoute(st, []);
       // (the engine's own copy of a stage with puzzle rooms or Dot's pulley is changed as it loads, and the check cannot follow it: the
       // route is then traced on the stage as built, the same roll and setting, as the inspector traces it, round 5 2026-10-29)
-      if (route.traced === 'failed') route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), []);
-      pts = route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y }));
+      // (a tower the inspector cannot trace: the stage's own laid route, each turn's climb where its vine stands (towerRoute.ts), before
+      // any rebuild: buildRoll's roll of a LISTED tower is not the proven variant he plays, and its route led him under the storey
+      // above to dither (1-4 seed 1: 'the way on is 123 px up' at a vine he never walked to; INT-4 11-13))
+      const tower = route.traced === 'failed' ? towerRoutePts(st, this.sim.p) : null;
+      this.onTower = !!tower;
+      if (route.traced === 'failed' && !tower) route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), []);
+      pts = tower ?? (route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y })));
       // (no route the inspector can trace: the straight line from the spawn to the shrine gives him a way to head, and the run is marked)
       if (!pts.length && st.exitTotemX) {
         this.noRoute = true;
@@ -1170,9 +1188,15 @@ export class FirstTimerRun {
   /** over a small landing, falling to it: 1 near its middle (let go of the steer), 2 past it (steer back), 0 not over one */
   private overSmall(dir: -1 | 0 | 1): 0 | 1 | 2 {
     const p = this.sim.p;
-    if (dir === 0 || p.vy < -60) return 0;
+    // (on a tower's stair of short steps he is already over the next step on the way up: he lets go there, as a thumb does, not at the
+    // top of the arc; waiting for the fall carried him off a 100 px rotten step's far end at a run (1-4's crown, POLISH-1 11-13))
+    const rising = p.vy < -60;
+    if (dir === 0 || (rising && !this.onTower)) return 0;
+    // (rising, only a step higher than the one he jumped from: the step under his take-off is behind him)
+    const from = this.airFrom?.y ?? p.y;
     for (const q of this.sim.platforms) {
       if (q.broken || q.width >= 220 || p.x < q.x || p.x > q.x + q.width || q.y < p.y - 2 || q.y > p.y + 140) continue;
+      if (rising && q.y > from - 20) continue;
       // (a tier bot does not aim to land on a bounce mushroom: on w1-twin-mushroom-fork he steered back onto one until rescued)
       if (this.who.holdQ && q.type === 'bouncy') continue;
       const past = dir * (p.x - (q.x + q.width / 2));
@@ -1455,6 +1479,14 @@ export class FirstTimerRun {
       return out;
     }
 
+    // in a vine field (figPush.ts): under a shut gate, the figs pushed free; a pod's tell on his column, a vine over
+    if (p.climbing) {
+      const fig = (this.figs ??= new FigPush(who.stopReact)).step(e as unknown as FieldView, p, t);
+      if (fig) {
+        this.figTap = true;
+        return fig;
+      }
+    }
     // on a trunk: straight up to its top (down where the way goes down), then off it with a flick the way on
     if (p.climbing) {
       // (round 5, 2026-10-29: measured against lastY, which after() has already moved to where he is, this read 0 every frame, and he
@@ -1466,7 +1498,8 @@ export class FirstTimerRun {
       // once, before he flicks off, round 5 2026-10-29)
       if (this.climbVine !== e.nearTreeVine || !this.wasOnTrunk) {
         this.climbVine = e.nearTreeVine;
-        this.climbDown = !!(tgt && tgt.y > p.y + 40 && Math.abs(tgt.x - p.x) < 60);
+        // (never down a trunk whose top is where her mark stands: he caught it to go up for it, markClimb.ts)
+        this.climbDown = !!(tgt && tgt.y > p.y + 40 && Math.abs(tgt.x - p.x) < 60) && !(e.nearTreeVine && markUp(e.nearTreeVine, p, this.sim.collectibles as never, dir));
         this.climbTurned = false;
       }
       if (this.climbStill < 0.4) return this.climbDown ? { down: true } : { up: true };
@@ -1633,7 +1666,8 @@ export class FirstTimerRun {
     // open ground, a hop up to the ledge above, round 5 2026-10-29)
     this.trunkUpT = e.nearTreeVine && !p.climbing && p.grounded && Math.abs(this.moveY) < 0.5 ? this.trunkUpT + DT : 0;
     if (this.trunkUpT > 0.6) this.trunkIgnoreUntil = t + 2;
-    if (e.nearTreeVine && t >= this.trunkIgnoreUntil && (up || this.blockedT > who.stopReact)) return { up: true };
+    // (and where one of her marks stands up on the high road this climb leads to: he goes up for it, markClimb.ts)
+    if (e.nearTreeVine && t >= this.trunkIgnoreUntil && (up || this.blockedT > who.stopReact || markUp(e.nearTreeVine, p, this.sim.collectibles as never, dir))) return { up: true };
     // stopped dead against something: a plain jump
     // (bot-fix, 2026-11-01: measured against lastX, which after() has already moved to where he is, this read 0 every frame, as the
     // trunk's lastY did in round 5: every 0.3 s of walking was a "stop", so he hopped along flat ground and took off ~110 px before a
@@ -1660,6 +1694,17 @@ export class FirstTimerRun {
     }
     // the way goes up right here (a ledge over him): jump for it
     if (up && dir === 0 && tgt && tgt.y < p.y - 60) return this.decide(fdir, this.mem.plan(p.x, p.y), false, {});
+    // (on a tower's own route, which has corners and no jump arcs (towerRoute.ts): the way rises across a stair of ledges over him, each
+    // a hop up, and he walked under all three and jumped for the top one, 240 px, 1-4 Easy: he jumps for the ledge over him that the way
+    // goes onto, as he does for one straight over him. Towers only: a traced route draws its own hops)
+    // (read 240 px along the way, as a player sees the stair rise ahead: the near point rises too little to call while he steps under the
+    // first ledge, and he jumped late, from under its far end, clean over it)
+    const rise = this.onTower && dir !== 0 && p.grounded ? this.prog.target(p, 240) : null;
+    // (and straight up through it, stopped first: a jump on the run carried him past the step's far end, the thumb's latency on top)
+    if (rise && rise.y < p.y - 40) {
+      const over = this.sim.platforms.some((q) => this.solid(q) && q.y < p.y - 30 && q.y > p.y - STAIR_HOP && p.x >= q.x + 12 && p.x <= q.x + q.width - 12 && rise.y <= q.y + 20);
+      if (over) return Math.abs(p.vx) > 40 ? {} : this.decide(0, this.mem.plan(p.x, p.y), false, {});
+    }
     if (dir !== 0) {
       // an edge coming: he means to jump `edgeAim` px before it (the thumb's latency moves it), unless the way on drops down
       // (a tier bot looks his own press distance ahead, drawn afresh for each edge; a stand lets go at the press distance's p25 and
@@ -1895,6 +1940,16 @@ export class FirstTimerRun {
   }
 
   /** the thumb's own fumbles on top of what he means: drift into the dead zone, travel when turning, a late lift-off */
+  /** a fig push (figPush.ts) is a tap and a let-go, each kept as it is: the thumb's late lift-off re-arms every frame for KID and ADULT
+   *  (thumbify, R-165.59), so their taps ran together into one long hold, the engine saw one press (sideLatch), and under 1-4's shut gate
+   *  he held on a field vine until the clock ran out (INT-4, 11-13). A tap game is played with taps: none of his thumb's drift here. */
+  private tapped(want: Pad): Pad {
+    this.lastSteer = want.right ? 1 : want.left ? -1 : 0;
+    this.releaseLeft = 0;
+    this.releaseArmed = false;
+    return want;
+  }
+
   private thumbify(want: Pad): Pad {
     const who = this.who, t = this.t;
     const steer: -1 | 0 | 1 = want.right ? 1 : want.left ? -1 : 0;
@@ -1935,7 +1990,9 @@ export class FirstTimerRun {
   }
 
   private pad(): Pad {
-    const out = this.thumbify(this.rhythm(this.intend()));
+    this.figTap = false;
+    const want = this.rhythm(this.intend());
+    const out = this.figTap ? this.tapped(want) : this.thumbify(want);
     this.wasOnTrunk = !!this.sim.p.climbing;
     if (out.press) this.lastPress = this.t;
     return out;
@@ -2098,7 +2155,8 @@ export class FirstTimerRun {
         // (the same fall three times, never getting higher: noted as a loop and he is put past it, as the same death three times is.
         // bot-fix 2026-11-01: each fall moved his place back down the way, so the climb back up counted as progress and the 20 s clock
         // never ran out: on 1-4 he climbed and fell from the same branch every 24 s until the cap, and the run read "time")
-        if (top === this.fallTop) this.fallBacks++;
+        // (a pod's knock off a vine field is a hit, counted as one, never a missed climb: figPush.ts knockedRecently)
+        if (top === this.fallTop && !this.figs?.knockedRecently(t)) this.fallBacks++;
         else {
           this.fallTop = top;
           this.fallBacks = 1;
@@ -2106,14 +2164,15 @@ export class FirstTimerRun {
         if (this.fallBacks >= this.tries3 && this.prog.best <= top) {
           this.fallBacks = 0;
           const at = this.prog.pts[top];
-          this.stuck.push({ x: Math.round(at.x), y: Math.round(at.y), t: +t.toFixed(1), dur: 0, what: `fell back down from here ${this.tries3} times`, step: null, dip: null, puzzle: false, rescued: true });
+          this.stuck.push({ x: Math.round(at.x), y: Math.round(at.y), t: +t.toFixed(1), dur: 0, what: `fell back down from here ${this.tries3} times${process.env.FT_BROKEN ? ' broken:' + this.sim.platforms.filter((q) => q.broken).map((q) => `${Math.round(q.x)},${Math.round(q.y)}`).join(' ') : ''}`, step: null, dip: null, puzzle: false, rescued: true });
           this.prog.hi = Math.max(this.prog.hi, top);
           if (!this.rescue()) this.end = 'stranded';
         }
       }
     } else this.offRoute = 0;
     // stuck: no progress for 8 s (not while standing at a puzzle)
-    if (more || this.huntMore || this.puzzleWait || this.stillSpot) {
+    // (and not while he works a vine field's gate or steps off a pod's column: figPush.ts busy, the figs are the way on)
+    if (more || this.huntMore || this.puzzleWait || this.stillSpot || this.figs?.busy(t)) {
       if (this.stuckOpen && this.noProg >= 8) this.stuckOpen.dur = +this.noProg.toFixed(1);
       this.stuckOpen = null;
       this.noProg = 0;
@@ -2214,6 +2273,9 @@ export class FirstTimerRun {
       this.after();
       if (e.exitTotemReached) {
         this.end = 'shrine';
+        // (a stage with no quota (an ascent, a sprint: engine.ts's progress `default`) counts its goal as the shrine itself; the engine
+        // reports that a frame after the one that reaches it, which the loop never plays, so the goal reads 0 of 1 at the shrine)
+        if (this.goal && !QUOTA_TYPES.has(String(this.sim.e.currentStage.config.objectiveType))) this.goal.got = Math.max(this.goal.got, this.goal.need);
         break;
       }
       if (this.sealedT > 3) {

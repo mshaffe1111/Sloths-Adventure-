@@ -7,6 +7,7 @@
  */
 import { getSceneSeed, onSceneSeedChange } from './sceneSeed.ts';
 import { canvasLost } from './canvasLost.ts';
+import { fitInkRow, inkTop } from './stripInk.ts';
 import { drawPaintedLeaf } from './leafSprites.ts';
 import { drawPetal } from './petalSprites.ts';
 import { renderLifeBack, renderLifeFront } from './life.ts';
@@ -2056,6 +2057,9 @@ function drawFitted(ctx: CanvasRenderingContext2D, img: HTMLImageElement, part: 
   const cv = f.cv;
   const bw = cv.width;
   const ih = layerH(img);
+  // (the strip's clear rows over its paint are left out: drawn, they changed no pixel and cost about a screen a set: stripInk.ts. A fit
+  // with its painted sky over it starts at row 0)
+  const ink = f.sky ? 0 : fitInkRow(inkTop(img), f.oy, f.d, ih);
   const q = ctx.imageSmoothingQuality;
   ctx.imageSmoothingQuality = 'low';
   // the top of the canvas on screen, in device pixels (whole: `top` is snapped, `oy` a whole row)
@@ -2073,7 +2077,7 @@ function drawFitted(ctx: CanvasRenderingContext2D, img: HTMLImageElement, part: 
     // just the part of the copy that is on screen (whole rows and columns of the canvas: at r 1 each lands on a whole device pixel)
     const sx = Math.max(0, Math.floor(-dx / r));
     const sw = Math.min(bw, Math.ceil((W - dx) / r)) - sx;
-    const sy = Math.max(0, Math.floor(-y0 / r));
+    const sy = Math.max(ink, Math.floor(-y0 / r));
     const sh2 = Math.min(cv.height, Math.ceil((Hd - y0) / r)) - sy;
     if (sw > 0 && sh2 > 0) ctx.drawImage(cv, sx, sy, sw, sh2, (dx + sx * r) / k, (y0 + sy * r) / k, (sw * r) / k, (sh2 * r) / k);
     // (a screen taller than any phone: the sky's top row carries on up to the edge)

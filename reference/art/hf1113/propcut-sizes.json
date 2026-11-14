@@ -1,0 +1,194 @@
+{
+ "w15-leafcurtain": {
+  "take": "leafcurtain-23",
+  "dest": "w1-1113",
+  "w": 632,
+  "h": 450,
+  "units": 150,
+  "kb": 89.3
+ },
+ "w15-roottunnel": {
+  "take": "roottunnel-11",
+  "dest": "w1-1113",
+  "w": 839,
+  "h": 540,
+  "units": 180,
+  "kb": 150.3
+ },
+ "w15-rottentrunk": {
+  "take": "rottentrunk-23",
+  "dest": "w1-1113",
+  "w": 1233,
+  "h": 450,
+  "units": 150,
+  "kb": 166.2
+ },
+ "w15-leafsign-up": {
+  "take": "leafsign-up-37",
+  "dest": "w1-1113",
+  "w": 172,
+  "h": 210,
+  "units": 70,
+  "kb": 15.7
+ },
+ "w15-leafsign-down": {
+  "take": "leafsign-down-11",
+  "dest": "w1-1113",
+  "w": 198,
+  "h": 210,
+  "units": 70,
+  "kb": 14.1
+ },
+ "w15-leafsign-right": {
+  "take": "leafsign-right2-53",
+  "dest": "w1-1113",
+  "w": 240,
+  "h": 210,
+  "units": 70,
+  "kb": 17.1
+ },
+ "w15-mark-right": {
+  "take": "markbark-right-23",
+  "dest": "w1-1113",
+  "w": 114,
+  "h": 132,
+  "units": 44,
+  "kb": 6.7
+ },
+ "w15-mark-up": {
+  "take": "markbark-up-37",
+  "dest": "w1-1113",
+  "w": 114,
+  "h": 132,
+  "units": 44,
+  "kb": 7.2
+ },
+ "petal-folded": {
+  "take": "petal-folded-37",
+  "dest": "pickups",
+  "w": 96,
+  "h": 63,
+  "units": 27,
+  "kb": 5.0
+ },
+ "guarana-golden": {
+  "take": "find-guarana-37",
+  "dest": "pickups",
+  "w": 90,
+  "h": 96,
+  "units": 34,
+  "kb": 5.8
+ },
+ "w14-roughbough": {
+  "take": "roughbough-23",
+  "dest": "w1-1113",
+  "w": 707,
+  "h": 180,
+  "units": 60,
+  "kb": 44.7
+ },
+ "w14-figcluster": {
+  "take": "figcluster-37",
+  "dest": "w1-1113",
+  "w": 146,
+  "h": 120,
+  "units": 40,
+  "kb": 14.7
+ },
+ "w14-passiontangle": {
+  "take": "passiontangle-23",
+  "dest": "w1-1113",
+  "w": 85,
+  "h": 150,
+  "units": 50,
+  "kb": 11.4
+ },
+ "w14-kapokpod": {
+  "take": "kapokpod-37",
+  "dest": "w1-1113",
+  "w": 86,
+  "h": 120,
+  "units": 40,
+  "kb": 5.5
+ },
+ "w14-kapokpod-burst": {
+  "take": "kapokpod-burst-23",
+  "dest": "w1-1113",
+  "w": 159,
+  "h": 90,
+  "units": 30,
+  "kb": 10.1
+ },
+ "fruit-banana": {
+  "take": "fruit-banana-23",
+  "dest": "pickups",
+  "w": 95,
+  "h": 96,
+  "units": 34,
+  "kb": 5.0
+ },
+ "fruit-mango": {
+  "take": "fruit-mango-37",
+  "dest": "pickups",
+  "w": 77,
+  "h": 96,
+  "units": 34,
+  "kb": 5.4
+ },
+ "fruit-papaya": {
+  "take": "fruit-papaya-37",
+  "dest": "pickups",
+  "w": 87,
+  "h": 96,
+  "units": 34,
+  "kb": 4.7
+ },
+ "fruit-passionfruit": {
+  "take": "fruit-passionfruit-11",
+  "dest": "pickups",
+  "w": 96,
+  "h": 89,
+  "units": 34,
+  "kb": 5.5
+ },
+ "fruit-wildfig": {
+  "take": "fruit-wildfig-11",
+  "dest": "pickups",
+  "w": 96,
+  "h": 64,
+  "units": 34,
+  "kb": 4.7
+ },
+ "fruit-cacao": {
+  "take": "fruit-cacao-23",
+  "dest": "pickups",
+  "w": 84,
+  "h": 96,
+  "units": 34,
+  "kb": 6.6
+ },
+ "fruit-pineapple": {
+  "take": "fruit-pineapple-23",
+  "dest": "pickups",
+  "w": 52,
+  "h": 96,
+  "units": 34,
+  "kb": 4.4
+ },
+ "fruit-coconut": {
+  "take": "fruit-coconut-37",
+  "dest": "pickups",
+  "w": 85,
+  "h": 96,
+  "units": 34,
+  "kb": 4.4
+ },
+ "fruit-dragonfruit": {
+  "take": "fruit-dragonfruit-11",
+  "dest": "pickups",
+  "w": 96,
+  "h": 89,
+  "units": 34,
+  "kb": 6.4
+ }
+}

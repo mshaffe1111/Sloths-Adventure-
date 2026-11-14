@@ -29,6 +29,15 @@ as somebody gets through World 5 and on... not supposed to be where it's going t
    sloppiness has a consequence (a fall, a lost life) in any world, World 2 included. Every time we ask the player to do the same thing
    again (run, jump, climb), it is a little harder than last time: tighter gaps, less time, a hazard added. Fair, never cruel: every
    danger reads before it bites and the checkpoint is close. The exact per-world numbers are a later talk with Matt.
+   **The hardness meter (Matt, 2026-11-12 8:26-8:27 PM ET; R-165.172):** Normal is scored 0-100, World 10's hardest = 100, each world
+   about its own tenth (World 9 "feels like a 9"); stages may go up and down inside it. Matt's ratings after playing them on Normal (8:36 PM):
+   1-1 = 4, possibly 5 ("more double jumps"), 1-2 = 2, maybe 3, 1-3 = 1. From 1-4 on, Normal climbs so it is "not... only [a] kid game": an adult
+   should want it for more than "running across and just doing simple things that a 9-year-old can do". "Easy can stay easier": Easy is
+   "a casual playthrough". Every level design names its Normal target on the meter.
+   **Inspired-by mechanics are researched first (Matt, 2026-11-12 10:15 PM ET: "when we do these, like, inspired by things, we need to do a
+   little research on what we're doing... there was a reason why these games were great"):** a design that borrows from a classic game
+   says, with sources, what made the original great (its loop, feel, pacing, goal), what we take and what we never copy (levels,
+   characters, look). Principles only; the result is our own rainforest version.
    **Easy vs Normal (Matt, 2026-11-02):** "Normal should be different than easy. Easy should be just a casual play where you can just
    kind of cruise through... easy would be kind of the difficulty that we have most of the game right now." The arc above is NORMAL.
    Easy stays a cruise (about today's level or gentler; src/game/difficulty.ts already softens gaps, enemies, hearts, flags and vines).

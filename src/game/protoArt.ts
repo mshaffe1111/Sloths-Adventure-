@@ -5,6 +5,8 @@
  * The log, the rock, the golden seed, the leaf curtain, the branches (whole, creaking, snapped), the perch, the earth banks, the moss
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
  */
+import { drawPickup, pickupReady } from './pickupSprites.ts';
+import { stageLooks } from './stagePlan.ts';
 import { drawW1Pits, paintedBank, sideOverHollow, waterAcross } from './w1Pits.ts';
 import { drawHollowLog } from './w1NewArt.ts';
 import { drawCutArt } from './w1CutArt.ts';
@@ -50,6 +52,8 @@ let stageWorld = 1;
 /** trunks drawn behind a stage's boughs that are scenery, not climbs (1-1's canopy: no bough floats with nothing holding it) */
 /** `art: 'plain'`: the bare kapok (trunkPlain), so neighbouring trees never share one trunk picture and vine wrap (the mixer's 1-5, S-4) */
 import { fitTrunks, type DecoTrunk } from './trunkFit.ts';
+import { drawDrapedPair } from './pairArt.ts';
+import { drawFieldVine } from './vineFieldArt.ts';
 export { fitTrunks };
 type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' };
 let decoTrunks: ReadonlyArray<DecoTrunk> = [];
@@ -369,9 +373,27 @@ export function drawRockArt(ctx: CanvasRenderingContext2D, p: Platform): boolean
   return true;
 }
 
-export function drawSeedArt(ctx: CanvasRenderingContext2D, c: Collectible, t: number): boolean {
-  if (!protoArtReady()) return false;
+export function drawSeedArt(ctx: CanvasRenderingContext2D, c: Collectible, t: number, world = 1, mini = 1): boolean {
+  // (a stage's own golden find where its plan row names one, StageSpec.looks: 1-5's guarana bunch, the inventory's hf1113/guarana-golden;
+  //  the warm glow under it is the golden seed's own)
+  const own = stageLooks(world, mini).find;
+  if (own && !pickupReady(own)) return false;
+  if (!own && !protoArtReady()) return false;
   const bob = Math.sin(t * 2.2 + c.bobPhase) * 4;
+  if (own) {
+    ctx.save();
+    const g = ctx.createRadialGradient(c.x, c.y + bob, 2, c.x, c.y + bob, 40);
+    g.addColorStop(0, 'rgba(255, 226, 120, 0.7)');
+    g.addColorStop(1, 'rgba(255, 200, 60, 0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(c.x, c.y + bob, 40, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.translate(c.x, c.y + bob);
+    drawPickup(ctx, own, 38, Math.sin(t * 1.6 + c.bobPhase) * 0.06);
+    ctx.restore();
+    return true;
+  }
   ctx.save();
   const glow = ctx.createRadialGradient(c.x, c.y + bob, 2, c.x, c.y + bob, 40);
   glow.addColorStop(0, 'rgba(255, 226, 120, 0.75)');
@@ -1294,7 +1316,7 @@ export function drawProtoScene(
   ctx: CanvasRenderingContext2D,
   platforms: Platform[],
   trees: Array<{ x: number; topY: number }>,
-  vines: Array<{ vineType?: string; x: number; topY: number; bottomY?: number; rope?: boolean }>,
+  vines: Array<{ vineType?: string; x: number; topY: number; bottomY?: number; rope?: boolean; pair?: number; field?: unknown; off?: boolean; kit?: boolean }>,
   t: number,
   view: { x0: number; x1: number; y0?: number; y1?: number },
   st: ProtoSceneState,
@@ -1315,8 +1337,20 @@ export function drawProtoScene(
   for (const v of vines) {
     // (a vine hanging down a cliff is not a trunk: its stage draws it)
     if (v.vineType !== 'tree_climb' || v.rope || v.x < view.x0 - 120 || v.x > view.x1 + 120) continue;
+    // (a way up held down by a shut gate's bough is not there to see or take until the bough opens: vineField.ts ClusterGate.ways)
+    if (v.off && !v.kit) continue;
     const bottom = (v as { bottomY?: number }).bottomY ?? v.topY + 300;
     if (bottom + 14 < vy0 - 40 || v.topY - 30 > vy1 + 40) continue;
+    // (a draped pair is a liana thrown over the bough, not a trunk: pairArt.ts)
+    if (v.pair) {
+      drawDrapedPair(ctx, v.x, v.topY, bottom, v.pair);
+      continue;
+    }
+    // (a vine field's vines hang free from the bough, one vine a hand: vineFieldArt.ts)
+    if (v.field) {
+      drawFieldVine(ctx, v.x, v.topY, bottom);
+      continue;
+    }
     // (World 7's brown vines up the old walls: the story's "the vines on the old walls hung brown". A climb whose top meets a wall's
     // top-left corner is drawn as three of the kit's painted brown vines hanging down the wall's face, not the pale climbing pillar,
     // which stood half over the air like a pasted pane, QA 2026-10-29)
@@ -1378,14 +1412,16 @@ export function drawProtoScene(
     }
   }
   // branches (a perch where a climb trunk ends under one)
-  const tops = vines.filter((v) => v.vineType === 'tree_climb' && !v.rope);
+  // (a draped pair hangs over a plain bough: no kapok perch at its top, pairArt.ts)
+  const tops = vines.filter((v) => v.vineType === 'tree_climb' && !v.rope && !v.pair && !v.field);
   for (const p of platforms) {
     if (!vis(p) || p.push || p.art || p.height >= 50 || (p.style !== 'branch' && !(ownKit() && thinKit(p)))) continue;
     // (World 8's fungus steps and knot perches: the painted brackets, w8FungusArt.ts)
     if (p.style === 'fungus_shelf' && drawW8Fungus(ctx, p)) continue;
     if (p.style === 'roost_branch' && drawRoostBough(ctx, p)) continue;
     const trunk = tops.find((v) => v.x >= p.x && v.x <= p.x + p.width && Math.abs(v.topY + 2 - p.y) < 4);
-    if (trunk && p.width <= 220) {
+    // (a creaky limb at a trunk's top keeps its own notched look: drawn as a perch it read as a sound branch, gen2/creak.ts)
+    if (trunk && p.width <= 220 && p.type !== 'fragile') {
       drawPerchArt(ctx, trunk.x, p.y, p.x + p.width);
       continue;
     }
@@ -1396,6 +1432,8 @@ export function drawProtoScene(
     }
     if (p.type === 'fragile') {
       if (p.broken) {
+        // (a limb that is a drop trap's load falls as the load, castArt.ts drawTraps: no snapped halves)
+        if ((p as { trapLoad?: true }).trapLoad) continue;
         if (!st.brokeAt.has(p.id)) st.brokeAt.set(p.id, t);
         drawBranchArt(ctx, p, 'snapped', t - st.brokeAt.get(p.id)!);
       } else {

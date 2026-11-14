@@ -7,7 +7,7 @@ import { drawW8Decor, type W8DecorSet } from './w8DecorArt.ts';
 import { drawSentrySprite } from './sentrySprite.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
-import { goalLine } from './stagePlan.ts';
+import { goalLine, sealedLine } from './stagePlan.ts';
 import { bindSent, FIRST_OF_STAGE, forgetSent, markTipHeard, tipHeard } from './tipMemory.ts';
 import { FERN_HMM, ZONE_LINE } from './dotTips.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
@@ -26,6 +26,9 @@ import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
 import { maxGap, softFallStage } from './gen2/pipeline.ts';
 import { MODES, type TravelMode } from './stageModes.ts';
+import { flagFurther, towerLead } from './gen2/tower.ts';
+import { vaultSide as vaultSideOf } from './vineTop.ts';
+import { carry as settleCarry, climbEnd, drawnOff, newSettle, settleStep } from './vineFeel.ts';
 import type { Mark } from './stageKit.types.ts';
 import { HelpLadder, setGrownSteps, LINE_UP_S, LINE_WAIT_S, takeHelpOnScreen, moveLine, pieceMoveLaid, setHelpLadder, stepPlan, stepsFor, STEP_CUT, STEP_LINE, type HelpAct, type Piece } from './helpLadder.ts';
 import { pickCut } from './w1CutArt.ts';
@@ -132,7 +135,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, travelFeet, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -183,7 +186,7 @@ import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
@@ -199,6 +202,13 @@ import { FONT_UI } from './fonts.ts';
 import { withHurtFlash } from './hurtFlash.ts';
 import { shakeOffset } from './screenShake.ts';
 import { POWER_UP_SECS } from './powerUps.ts';
+import { climbReach, climbSpeedOf, rustleGap } from './vinePair.ts';
+import { FeelRoom } from './feelPair.ts';
+import { clusterAbove, floorUnder, handsSpan, handsSpeed, handsX, keepHands, pushClusters, stepHands, type Hands, type VineCluster } from './vineField.ts';
+import { drawClusters } from './vineFieldArt.ts';
+import { FieldPlay, type FieldHost } from './fieldPlay.ts';
+import { beatClock } from './beat.ts';
+import type { PodCost } from './podfall.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
 const TEA_STAND = 150;
@@ -635,6 +645,30 @@ export class GameEngine {
   private stepHelp = false;
   /** the stage's puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): things to carry and throw, plates, gates, levers, lifts, beetles */
   private kit: KitPlay | null = null;
+  /** a feel-test room's speed sign and climb stopwatch (feelPair.ts; the QA build's vine pair test, feelPairStage.ts) */
+  private feel: FeelRoom | null = null;
+  /** a vine field's hands (vineField.ts, Matt's rule): which field vines he holds while climbing one, else null */
+  private hands: Hands | null = null;
+  /** the side a push has just stepped his hands toward (held on, it neither steps again nor hops him off), 0 once let up */
+  private sideLatch = 0;
+  /** the stage's fruit clusters snagged on field vines (vineField.ts), and how many he has pushed free */
+  private clusters: VineCluster[] = [];
+  clustersFreed = 0;
+  /** a vine field's falling pods, its torn clusters' fall and its gates (fieldPlay.ts), or null when the stage has none */
+  private field: FieldPlay | null = null;
+  /** seconds a pod's knock keeps every climb out of his hands (he falls to the catch bough; landing ends it) */
+  private knocked = 0;
+  /** what the vine field asks of the engine (fieldPlay.ts FieldHost): made once, it reads the engine live */
+  private readonly fieldHost: FieldHost = ((e: GameEngine): FieldHost => ({
+    get t() { return e.gameTime; },
+    get player() { return e.player; },
+    get hands() { return e.hands; },
+    beat: (clock, shift) => e.clock.read(clock, shift),
+    knock: (cost, fromX) => e.podKnock(cost, fromX),
+    sfx: (kind) => e.fieldSfx(kind),
+    loadLands: (x, y) => e.cast?.loadLands(x, y, e.gameTime, e.player.x),
+    spark: (x, y, color) => e.spawnSparkBurst(x, y, color),
+  }))(this);
   private kitHostObj: KitHost | null = null;
   /** 1 = normal; below 1 pulls the camera back in a puzzle room so Pokey, the puzzle part and what it works all fit (puzzleCamera.ts:
    * never below 0.75 sideways, further upright, roomFloor) */
@@ -987,6 +1021,15 @@ export class GameEngine {
     // (Meeca's stage: her night look, and Easy's stuck watch without a clock, Matt's research rule)
     this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles, world: config.worldIndex, stage: config.miniIndex, vines: this.vines, ...(this.proto?.meeca ? { noClock: true, night: true } : {}) }) : null;
     this.plainVines = this.vines.filter((v) => !v.kit);
+    this.feel = this.currentStage.feelRoom ? new FeelRoom(this.currentStage.feelRoom, this.vines, !!this.currentStage.pods?.length) : null;
+    this.clusters = (this.currentStage.clusters ?? []).map((c) => ({ ...c }));
+    this.clustersFreed = 0;
+    this.hands = null;
+    this.knocked = 0;
+    const st = this.currentStage;
+    // the stage's beats (beat.ts, clock.ts): every hazard on a beat reads them; the game's time is kept
+    this.clock = beatClock(st.clocks ?? [], this.easy, this.clock.time());
+    this.field = st.pods?.length || st.gates?.length || this.clusters.length ? new FieldPlay(st.pods ?? [], st.gates ?? [], this.platforms, this.vines, this.clusters) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
     this.slideRun = null;
@@ -1693,6 +1736,17 @@ export class GameEngine {
     this.lessonTick();
     // the puzzle kit reads the intents again (puzzlePlay.ts control): a tap by a piece uses it, and carrying, the jump and kick throw
     if (this.kit) this.kitControls();
+    // a vine field's pods, its torn clusters' fall and its gates (fieldPlay.ts)
+    if (this.field) {
+      if (this.knocked > 0) this.knocked = this.player.grounded ? 0 : this.knocked - dt;
+      this.field.step(this.fieldHost, dt, this.currentStage.config.levelHeight);
+    }
+    // a feel-test room (feelPair.ts): a tap by its sign switches the pair's speed (and is no punch); its stopwatch follows the climb
+    if (this.feel && this.feel.control(p, this.input.state.punchPressed, this.gameTime).took) {
+      this.input.state.punchPressed = false;
+      sound.playUiTap();
+      this.spawnSparkBurst(this.feel.spec.sign.x, this.feel.spec.sign.y - 70, '#fde047');
+    }
 
     if (this.coach && !this.coach.done) {
       this.coach.update(dt, p.x, this.coachWasGrounded && !p.grounded && p.vy < -200);
@@ -1954,8 +2008,12 @@ export class GameEngine {
       }
 
       if (v.vineType === 'tree_climb') {
-        if (v.off) continue;
-      if (Math.abs(p.x - v.x) < (p.climbing ? 60 : 54) && p.y >= v.topY - 12 && p.y <= v.bottomY + 25) {
+        if (v.off || this.knocked > 0) continue;
+      // (a draped pair reaches from beside either strand: vinePair.ts climbReach)
+      // (a field vine hangs from under a bough: it is not taken by its very top from above, unless climbing down onto it. With up held
+      // after the vault onto the bough, he took the next vine's top and vaulted again, hopping along the bough vine to vine)
+      const fromAbove = !!v.field && !p.climbing && !this.input.state.down && p.y < v.topY + 14;
+      if (!fromAbove && Math.abs(p.x - v.x) < climbReach(v, p.climbing) && p.y >= v.topY - 12 && p.y <= v.bottomY + 25) {
           nearTreeVine = v;
           break;
         }
@@ -1967,6 +2025,9 @@ export class GameEngine {
         }
       }
     }
+    // in a vine field, the vines he holds are his (between two, the search finds either: vineField.ts)
+    if (!p.climbing) this.hands = null;
+    else if (this.hands) nearTreeVine = this.hands.a;
     // hands full (puzzlePlay.ts): no climbing a trunk, no catching a vine
     if (this.kit?.holding) {
       nearTreeVine = null;
@@ -1976,6 +2037,8 @@ export class GameEngine {
     this.nearSwingVine = nearSwingVine;
 
     // 1. TREE CLIMBING LOGIC (Vertical vines on tree trunks)
+    // (the drawn Pokey's settle after a snap onto, between or off the top of a vine: vineFeel.ts, drawn only, FEEL-VINE)
+    settleStep(this.vineSettle, dt, p.x, p.y, p.climbing);
     // a flick up is a jump press and an up press at once, and a thumb lifts again quickly: remember it for a moment
     // so a jump that touches a trunk grabs it even if the thumb has already left the glass
     if (this.input.state.jumpPressed) this.upIntent = 0.35;
@@ -2008,6 +2071,7 @@ export class GameEngine {
         sound.playVineGrab();
         // the press that grabbed the trunk must not also leap off it or hop away with a drifting thumb
         this.climbGrace = 0.3;
+        this.sideLatch = this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
         this.climbSideTimer = 0;
         this.upIntent = 0;
         this.jumpBufferTimer = 0;
@@ -2025,40 +2089,110 @@ export class GameEngine {
       const sideHeld = this.input.state.left || this.input.state.right;
       const vertHeld = this.input.state.up || this.input.state.down || this.climbAssist > 0;
       this.climbSideTimer = sideHeld && !vertHeld && this.climbGrace <= 0 ? this.climbSideTimer + dt : 0;
+      // a vine field (vineField.ts, Matt's rule): a push toward a field vine in reach takes it in the other hand; again, lets go of the
+      // old one. Held on after a step, it neither steps again nor hops him off; with no vine there it is a plain push (held: hop off)
+      if (!nearTreeVine.field) this.hands = null;
+      else if (!this.hands || (this.hands.a !== nearTreeVine && this.hands.b !== nearTreeVine)) this.hands = { a: nearTreeVine, b: null };
+      if (this.hands) {
+        const dir = this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
+        if (!sideHeld) this.sideLatch = 0;
+        else if (this.sideLatch === dir) this.climbSideTimer = 0;
+        // (the grab's little carry and its grace are not his thumb: a push just after taking hold steps; it waited them out and was lost)
+        // (a push held through the grab itself, steering a leap onto the vine, is latched there: it never steps on the catch)
+        else if (!this.input.state.up && !this.input.state.down && dir) {
+          const next = stepHands(this.hands, dir, p.y, this.vines);
+          if (next) {
+            this.hands = next;
+            this.climbAssist = 0;
+            this.sideLatch = dir;
+            this.climbSideTimer = 0;
+            p.facing = dir;
+            sound.playVineGrab();
+          }
+        }
+        nearTreeVine = this.hands.a;
+      }
+      // (where he was and how he moved before the vine takes him: the drawn Pokey keeps both and settles, vineFeel.ts)
+      const was = { x: p.x, y: p.y, vx: p.vx, vy: p.vy, on: p.climbing };
       p.climbing = true;
       p.isVineSwinging = false;
       p.grounded = false;
       p.vx = 0;
       p.vy = 0;
-      p.x = nearTreeVine.x; // snap smoothly to tree trunk vine
+      // onto the tree trunk vine's line (a draped pair: between its two strands, a hand on each; two field vines: between them): the
+      // body is there at once, every reach is measured from it; the drawn Pokey slides there (a grab carries his speed into the catch)
+      p.x = this.hands ? handsX(this.hands) : nearTreeVine.x;
+      p.climbPair = this.hands?.b ? Math.abs(this.hands.b.x - this.hands.a.x) : nearTreeVine.pair ?? 0;
+      // (from where his own speed would have carried him this frame: the catch never holds him still for a frame)
+      settleCarry(this.vineSettle, p.x - was.x - (was.on ? 0 : was.vx * dt), 0, was.on ? 0 : was.vx, 0, 0, 0);
 
-      // Climb Up / Down
-      if (this.input.state.up || this.climbAssist > 0) {
-        p.y = Math.max(nearTreeVine.topY - 4, p.y - 220 * dt);
-        // one soft grip per hand, a little uneven like real hands (every 0.18 s sounded like the audio skipping on an iPhone)
+      // Climb Up / Down, at the climb's own speed (a single 220 px/s, CLIMB_SPEED; a pair as its piece says: vinePair.ts; a field vine
+      // by its hands: one slides down, two climb up quicker, a cluster pushed up is slow: vineField.ts handsSpeed)
+      const climbV = climbSpeedOf(nearTreeVine);
+      const hands = this.hands;
+      const pushing = !!hands && !!clusterAbove(hands, p.y, this.clusters);
+      if (hands && (this.input.state.up || this.climbAssist > 0)) {
+        const span = handsSpan(hands);
+        const top = Math.min(hands.a.topY, hands.b?.topY ?? hands.a.topY, span.top);
+        p.y = Math.max(top - 4, p.y - handsSpeed(hands, true, pushing) * dt);
+        for (const c of pushClusters(hands, p.y, this.clusters)) this.clusterTorn(c);
         if (this.treeClimbAudioTimer <= 0) {
           sound.playTreeClimb();
-          this.treeClimbAudioTimer = 0.36 + Math.random() * 0.12;
+          this.treeClimbAudioTimer = rustleGap({ climbSpeed: handsSpeed(hands, true, pushing) }, Math.random());
+        }
+      } else if (hands && this.input.state.down) {
+        const bottom = Math.max(hands.a.bottomY, hands.b?.bottomY ?? hands.a.bottomY);
+        p.y = Math.min(bottom + 4, floorUnder(hands, p.y, this.clusters), p.y + handsSpeed(hands, false, pushing) * dt);
+        if (this.treeClimbAudioTimer <= 0) {
+          sound.playTreeClimb();
+          this.treeClimbAudioTimer = rustleGap({ climbSpeed: handsSpeed(hands, false, pushing) }, Math.random());
+        }
+      } else if (this.input.state.up || this.climbAssist > 0) {
+        p.y = Math.max(nearTreeVine.topY - 4, p.y - climbV * dt);
+        // one soft grip per hand, a little uneven like real hands (every 0.18 s sounded like the audio skipping on an iPhone); a quicker
+        // climb rustles quicker in step (rustleGap)
+        if (this.treeClimbAudioTimer <= 0) {
+          sound.playTreeClimb();
+          this.treeClimbAudioTimer = rustleGap(nearTreeVine, Math.random());
         }
       } else if (this.input.state.down) {
-        p.y = Math.min(nearTreeVine.bottomY + 4, p.y + 220 * dt);
+        p.y = Math.min(nearTreeVine.bottomY + 4, p.y + climbV * dt);
         if (this.treeClimbAudioTimer <= 0) {
           sound.playTreeClimb();
-          this.treeClimbAudioTimer = 0.36 + Math.random() * 0.12;
+          this.treeClimbAudioTimer = rustleGap(nearTreeVine, Math.random());
         }
       }
+      // (a catch from the air: the fall or rise he had runs into the climb's own pace instead of stopping dead)
+      if (!was.on) settleCarry(this.vineSettle, 0, p.y - was.y - was.vy * dt, 0, was.vy, 0, (p.y - was.y) / dt);
 
-      // Natural Exit A: Reached the Top of the Tree -> Vault onto Branch Platform!
-      if (p.y <= nearTreeVine.topY + 12 && (this.input.state.up || this.climbAssist > 0 || this.input.state.jumpPressed || this.input.state.left || this.input.state.right)) {
+      // (a field vine whose span he has climbed out of lets go: a short one runs out under a long one, vineField.ts keepHands)
+      if (this.hands) {
+        const kept = keepHands(this.hands, p.y);
+        if (kept) {
+          this.hands = kept;
+          nearTreeVine = kept.a;
+          const kx = p.x;
+          p.x = handsX(kept);
+          settleCarry(this.vineSettle, p.x - kx, 0);
+          p.climbPair = kept.b ? Math.abs(kept.b.x - kept.a.x) : 0;
+        }
+      }
+      // Natural Exit A: Reached the Top of the Tree -> Vault onto Branch Platform! (not under a shut gate's bough: fieldPlay.ts, it is
+      // no footing until its fruit is freed, so the climb stops at the top)
+      if (p.y <= nearTreeVine.topY + 12 && (this.input.state.up || this.climbAssist > 0 || this.input.state.jumpPressed || this.input.state.left || this.input.state.right) && !this.field?.blocksTop(nearTreeVine)) {
         p.climbing = false;
         this.vineCooldownTimer = 0.35;
         this.lastReleasedVineId = nearTreeVine.id;
         this.input.state.jumpPressed = false;
+        // (the climb's own pace this frame, before the vault lifts him to its start: the drawn Pokey rolls on from both, vineFeel.ts)
+        const climbVy = (p.y - was.y) / dt;
+        const y0 = p.y;
         p.y = nearTreeVine.topY - 12;
         p.vy = -190;
         // (with only up held, toward the side with more ledge at the top: he used to vault the way he faced, and walking back to a trunk
         // (4-3's, after the water threw him back) he faced away from the shelf and vaulted off its short end)
         p.vx = (this.input.state.left ? -1 : this.input.state.right ? 1 : this.vaultSide(nearTreeVine, p.facing)) * 160;
+        settleCarry(this.vineSettle, 0, p.y - y0, 0, climbVy, p.vx, p.vy);
         p.grounded = true;
         p.jumpsLeft = 2;
         sound.playJump();
@@ -2107,6 +2241,7 @@ export class GameEngine {
         p.jumpsLeft = 2;
         sound.playJump();
       }
+      if (p.climbing) climbEnd(this.vineSettle, p.x, p.y);
     } else {
       if (p.climbing && !nearTreeVine) {
         p.climbing = false;
@@ -2416,6 +2551,7 @@ export class GameEngine {
 
         p.x += (p.vx + this.windV + this.bossShove + this.bossGust) * dt;
         p.y += p.vy * dt;
+        this.field?.lid(p, dt);
       }
     }
 
@@ -2580,7 +2716,8 @@ export class GameEngine {
         // crumbling platform landed on that way never started to crumble)
         if (plat.type === 'fragile') {
           if (plat.fragileTimer === undefined) {
-            plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
+            // generous 1.1s before breaking (ruin tiles set their own; a creaky limb holds its world's `creak` s, gen2/creak.ts)
+            plat.fragileTimer = plat.crumbleAfter ?? plat.creak ?? 1.1;
             // a boss's cracking ledge: Dot says so the first time he stands on one
             if (plat.crackFrom !== undefined && this.bossDef?.crackTip) this.bossCtx?.guide?.('crack', this.bossDef.crackTip);
             if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
@@ -2692,7 +2829,7 @@ export class GameEngine {
           cp.reached = true;
           recorder.event('checkpoint', Math.round(cp.x));
           // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right, a descent goes down)
-          if (this.mode.further(cp, this.checkpoint)) {
+          if (flagFurther(this.currentStage, this.mode, cp, this.checkpoint)) {
             this.checkpoint = { x: cp.x, y: cp.y };
             // the Android app keeps it, so a run cut off by the phone comes back here (flagResume.ts)
             if (nativeApp()) saveFlag(this.currentStage.config.id, cp.x, cp.y, this.heldRun());
@@ -2713,6 +2850,8 @@ export class GameEngine {
           plat.regrowAt = this.gameTime + regrowDelay(plat.id);
           this.spawnDebrisBurst(plat.x + plat.width * 0.5, plat.y, '#a16207');
           sound.playCrumble();
+          // (a creaky limb that is a drop trap's load falls as the load, and chases off what it lands beside: castPlay.ts limbGone)
+          this.cast?.limbGone(plat.id);
         }
       }
       // a crumbled platform is a penalty (regrow.ts): it comes back only after half a minute or so, and only off screen, so it never
@@ -3285,7 +3424,8 @@ export class GameEngine {
           this.barrierMsgCooldown = 1.2;
           const remaining = this.currentStage.config.targetCount - currentProgress;
           // the same word the counter at the top uses, so the two always agree
-          const line = goalLine('sealed', this.currentStage.config.worldIndex, objType, remaining);
+          // (the story keeper's own words where a goal has them, stagePlan.ts sealedLine: 1-5's marks)
+          const line = sealedLine(this.currentStage.config.worldIndex, objType) ?? goalLine('sealed', this.currentStage.config.worldIndex, objType, remaining);
           // in the banner the stage hints use (the small red floating text was hard to read on the bright doorway)
           if (!this.stageHint) this.guide(line || 'Finish the goal to open the sanctuary', 3);
           }
@@ -4817,6 +4957,8 @@ export class GameEngine {
   private stepWasAhead = false;
   /** how far (px, signed) his drawing stands off a wall he is sliding down in the air (WALL_OFF): it never moves his body */
   private wallOff = 0;
+  /** the drawn Pokey's settle after a vine moves him in one frame (vineFeel.ts; drawn only, FEEL-VINE) */
+  private vineSettle = newSettle();
   /** Meeca drawn this far sideways, out of a wall face beside her (meecaFaceDraw.ts) */
   meecaOff = 0;
   private watchForStuck() {
@@ -5518,7 +5660,7 @@ export class GameEngine {
     this.graceMoves = this.input.moves;
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
     this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * FRAME.across);
-    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * fr.feetAt);
+    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode)));
     this.camCut = true;
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
@@ -5607,7 +5749,7 @@ export class GameEngine {
     const cps = this.currentStage.checkpoints ?? [];
     const flag = cps.find((cp) => Math.abs(cp.x - at.x) < 2 && Math.abs(cp.y - at.y) < 2);
     if (!flag) return; // the stage changed since (a new build): start at the beginning
-    for (const cp of cps) if (!this.mode.further(cp, flag)) cp.reached = true;
+    for (const cp of cps) if (!flagFurther(this.currentStage, this.mode, cp, flag)) cp.reached = true;
     this.checkpoint = { x: flag.x, y: flag.y };
     // the run as it was at the flag: what he had picked up, beaten and freed, the clock, the lives and every count the report reads
     this.restoreRun(at.run);
@@ -5693,7 +5835,7 @@ export class GameEngine {
     this.launched = false;
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
     this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * FRAME.across);
-    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * fr.feetAt);
+    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode)));
     this.camCut = true;
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
@@ -5985,7 +6127,7 @@ export class GameEngine {
     this.camAnchorY = camAnchor(this.camAnchorY, { y: p.y, grounded: p.grounded, climbing: p.climbing, hanging: !!p.hanging, swingBottom: sv ? sv.topY + (p.swingLength ?? 100) : undefined }, vh);
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
     this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * FRAME.across + this.camLookX + runX;
-    this.camera.targetY = this.camAnchorY - vh * fr.feetAt;
+    this.camera.targetY = this.camAnchorY - vh * travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode));
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
     const look = this.w4?.look(p.x, p.y);
     if (look) {
@@ -6788,6 +6930,9 @@ export class GameEngine {
     setDepthView(this.camera.viewportHeight);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    this.feel?.drawWorld(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
+    if (this.clusters.length) drawClusters(ctx, this.clusters, this.vines, this.camera.x, this.camera.x + this.camera.viewportWidth);
+    this.field?.draw(ctx, this.gameTime, this.camera.x, this.camera.x + this.camera.viewportWidth, this.fieldHost.beat);
     // the bounce plants' caps and their cue over the painted ground, so one at a bank's end is never hidden under its lip
     if (!(ownScene && lair)) drawBounceCaps(ctx, world.id, this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats), this.camera, this.gameTime);
     profMark(ctx, 'ground');
@@ -6888,7 +7033,7 @@ export class GameEngine {
       // World 5's painted pink bell (Pell's note) and the painted exit totem
       if (this.w5?.drawItem(ctx, item, this.gameTime, this.currentStage.config.worldIndex)) return;
       if (item.type === 'seed') {
-        if (!item.collected && !drawSeedArt(ctx, item, this.gameTime)) drawSeed(ctx, item, this.gameTime);
+        if (!item.collected && !drawSeedArt(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex)) drawSeed(ctx, item, this.gameTime);
         return;
       }
       // a reed cage hanging over the water: the kit draws it (puzzlePlay.ts), and the little one hopping home once it is free
@@ -6940,7 +7085,7 @@ export class GameEngine {
     }
 
     // the stage's drop traps (castArt.ts): behind the animals they hang over
-    if (this.cast?.traps.length) drawTraps(ctx, this.cast.traps, this.gameTime, (x, y) => this.onScreen(x, y, 500), this.platforms);
+    if (this.cast?.traps.length) drawTraps(ctx, this.cast.traps, this.gameTime, (x, y) => this.onScreen(x, y, 500), this.platforms, (c, pl) => drawBranchArt(c, pl, 'creak', 0));
 
     // Render Enemies
     this.enemies.forEach((enemy) => {
@@ -7050,11 +7195,12 @@ export class GameEngine {
     // Render Hero Sloth
     heroClipsLive(true);
     // (and in World 5 a wobble while he pulls against the silk on him: w5Play.ts wobble)
-    const drawOff = (this.mc ? this.meecaOff : this.wallOff) + (this.w5?.wobble(this.gameTime) ?? 0);
-    const shiftOff = Math.abs(drawOff) > 0.3;
+    const vs = drawnOff(this.vineSettle, this.player.x, this.player.y, this.player.climbing);
+    const drawOff = (this.mc ? this.meecaOff : this.wallOff) + (this.w5?.wobble(this.gameTime) ?? 0) + vs.x;
+    const shiftOff = Math.abs(drawOff) > 0.3 || Math.abs(vs.y) > 0.3;
     if (shiftOff) {
       ctx.save();
-      ctx.translate(drawOff, 0);
+      ctx.translate(drawOff, vs.y);
     }
     // carrying, throwing or setting down: Matt's carry poses (puzzlePlay.ts drawPokey)
     // (Meeca's stage: her own sheet draws her carrying, in the chair and on the silk: meecaArt.ts meecaPose)
@@ -8870,19 +9016,10 @@ export class GameEngine {
     });
   }
 
-  /** which way off a trunk's top has more ledge to land on (within 200 px), so a vault with only up held lands on it; a tie keeps `facing` */
+  /** which way off a trunk's top has more ledge to land on, so a vault with only up held lands on it; a tie keeps `facing` (vineTop.ts:
+   *  the same finder the generator's verdict reads; it sees a cleared vine's bough CLIMB_CLEAR px off, which this one did not until 11-13) */
   private vaultSide(v: Vine, facing: 1 | -1): 1 | -1 {
-    const reach = (dir: 1 | -1) => {
-      let d = 0;
-      while (d < 200) {
-        const x = v.x + dir * (d + 10);
-        if (!this.platforms.some((q) => !q.broken && q.type !== 'bouncy' && x >= q.x && x <= q.x + q.width && q.y >= v.topY - 16 && q.y <= v.topY + 30)) break;
-        d += 10;
-      }
-      return d;
-    };
-    const l = reach(-1), r = reach(1);
-    return l === r ? facing : r > l ? 1 : -1;
+    return vaultSideOf(v, this.platforms, facing);
   }
 
   /** one particle, from the pool; past the cap the oldest is reused, so a frame never holds more than MAX_PARTICLES */
@@ -8936,6 +9073,56 @@ export class GameEngine {
       const spd = 90 + Math.random() * 120;
       this.emit({ x, y, vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd - 30, color, size: 2.6, life: 0.32, maxLife: 0.32, type: 'star' });
     }
+  }
+
+  /** a cluster pushed up to its vine's top tears free (vineField.ts): it drops down its column from here */
+  private clusterTorn(c: VineCluster) {
+    this.clustersFreed++;
+    const v = this.vines.find((q) => q.id === c.vine);
+    sound.playVineGrab();
+    if (v) this.spawnSparkBurst(v.x, c.y - c.h / 2, '#c4b5fd');
+    this.field?.torn(c, this.fieldHost);
+    this.feel?.freed();
+  }
+
+  /**
+   * A falling pod found him (fieldPlay.ts, podfall.ts): he lets go of his vine and falls to the catch bough under him, no climb taken on
+   * the way down; on 'heart' (Normal's pods) it costs a heart too. The pod's own data says which (1-4.md "The cost").
+   */
+  private podKnock(cost: PodCost, fromX: number) {
+    const p = this.player;
+    if (p.climbing) {
+      p.climbing = false;
+      this.lastReleasedVineId = this.hands?.a.id ?? this.nearTreeVine?.id ?? this.lastReleasedVineId;
+      this.hands = null;
+      p.climbPair = 0;
+    }
+    p.grounded = false;
+    this.knocked = 1.2;
+    this.feel?.knocked();
+    if (cost === 'heart') {
+      this.damagePlayer(1, fromX);
+      return;
+    }
+    // (a knock that costs nothing: the flinch and the fall, a moment of safety so one pod is one knock)
+    p.invincibleTimer = Math.max(p.invincibleTimer, 1.0);
+    p.vx = (p.x >= fromX ? 1 : -1) * 70;
+    p.vy = Math.max(p.vy, 40);
+    p.squashX = 1.25;
+    p.squashY = 0.75;
+    this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
+    sound.playPlayerHurt();
+    buzz('hurt');
+  }
+
+  /** a vine field's sounds (stand-ins until 1-4's own: the creak is the rockfall's trickle, the burst and the thump a log's knock, a fig
+   *  locking in the puzzle kit's snap, the gate springing open its gate sound) */
+  private fieldSfx(kind: 'creak' | 'burst' | 'thump' | 'lift' | 'open') {
+    if (kind === 'creak') sound.playRockWarn();
+    else if (kind === 'burst' || kind === 'thump') sound.playLog();
+    // (a fig locked in: the puzzle kit's snap, unlike the climb's grab; the last springs the gate, its bramble drawing back: R-165.212)
+    else if (kind === 'lift') sound.playPuzzle('snap');
+    else sound.playGate();
   }
 
   private spawnSparkBurst(x: number, y: number, color: string) {

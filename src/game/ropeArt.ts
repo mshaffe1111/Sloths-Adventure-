@@ -68,7 +68,7 @@ export interface RopeLoad {
 /** a painted rope's tile lying left to right (its px): where it is on its sheet, the rope's middle row and its thickness */
 type RopeTile = { x: number; y: number; w: number; h: number; mid: number; thick: number };
 /** the painted rope laid through `pts` (a polyline), its twist running on along the length */
-function layRope(ctx: CanvasRenderingContext2D, im: CanvasImageSource, pts: ArrayLike<readonly [number, number]>, thick = ROPE_THICK, src: RopeTile = ROPE_KIT.tile) {
+export function layRope(ctx: CanvasRenderingContext2D, im: CanvasImageSource, pts: ArrayLike<readonly [number, number]>, thick = ROPE_THICK, src: RopeTile = ROPE_KIT.tile) {
   const t = src;
   const k = thick / t.thick;
   const tileLen = t.w * k;

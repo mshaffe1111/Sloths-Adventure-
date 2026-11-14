@@ -15,6 +15,7 @@
  * animals for Easy's lower bar (budget.quota.check, which caps the goal here). So for them this leaves out the stones, the animal cut
  * and the longer tell (nothing is softened twice), and keeps what gen2 does not do: Easy's goal (`easyGoal`), the 70%-hold check, the flags and a heart at every flag.
  */
+import { signsClearOfFlags, type DressPiece } from './dressArt.ts';
 import { GEN2_STAGES } from './gen2/game.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, Platform } from './types.ts';
@@ -536,5 +537,7 @@ export function easyStage(stage: Stage): Stage {
   // (no hearts on Meeca's stage: nothing there hurts her, and a heart is only picked up when hurt, so Easy's hearts by the flags just
   // sat there, QA 2026-10-31 "not picked up"; H1 by flagHeartsOwed, below)
   if (!(stage as Stage & { proto?: { meeca?: unknown } }).proto?.meeca && flagHeartsOwed(stage)) for (const cp of cps) heartBy(stage, cp, next);
+  // (no leaf-sign under one of Easy's own flags: dressArt.ts signsClearOfFlags, as World 1's finish did for Normal's)
+  signsClearOfFlags(stage as Stage & { proto?: { dress?: DressPiece[] } });
   return stage;
 }

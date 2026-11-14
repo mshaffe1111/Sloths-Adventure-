@@ -35,8 +35,8 @@ export const QUIET_MAX = 4;
 /** one stage's list as stored: section ids once (`dict`), then per seed its packed plan (packPlan) */
 export interface PackedList { dict: string[]; seeds: number[]; plans: string[]; quiet?: number[]; outro?: number[] }
 type Replay = NonNullable<BuildRequest['replay']>;
-const JOIN = { walk: 'w', step: 's', pit: 'p', jump: 'j' } as const;
-const UNJOIN: Record<string, PlanSlot['join']> = { w: 'walk', s: 'step', p: 'pit', j: 'jump' };
+const JOIN = { walk: 'w', step: 's', pit: 'p', jump: 'j', turn: 't' } as const;
+const UNJOIN: Record<string, PlanSlot['join']> = { w: 'walk', s: 'step', p: 'pit', j: 'jump', t: 'turn' };
 
 /**
  * A seed's search result packed small: "seed:rerolls|slot;slot..|foes" (foes: Normal's kept animals, "section/socket=creature,..", empty

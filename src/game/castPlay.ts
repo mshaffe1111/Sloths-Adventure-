@@ -9,7 +9,7 @@
  * seeds, no positions. Pure but for the animals it writes back to (the fields the art already reads); no canvas, no sounds.
  */
 import type { CastData, TrapPost } from './castPlay.types.ts';
-import { TRAP, handleBox, newTrap, scares, shake, stepTrap, type TrapState } from './dropTrap.ts';
+import { TRAP, handleBox, limbGone, newTrap, scares, shake, stepTrap, type TrapState } from './dropTrap.ts';
 import { landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
 import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, newPredator, stepPredator, tellOf } from './predators/core.ts';
 import { castDef } from './predators/registry.ts';
@@ -70,6 +70,8 @@ export class CastPlay {
   private still = newStill();
   private fall = newFall();
   private readonly covers: readonly Cover[];
+  /** the stage's ground, for a glide that leaves along it (sync) */
+  private readonly ground: readonly Platform[];
   /** his landings are heard here: only from the world that teaches it (the move ladder) */
   private readonly loud: boolean;
   private readonly out: CastStep = { noticed: [], told: [], struck: [], hurts: [], cleared: [], fell: [], landed: null, woke: 0 };
@@ -82,6 +84,7 @@ export class CastPlay {
    */
   constructor(data: CastData, enemies: Enemy[], platforms: readonly Platform[], world: number, covers: readonly Cover[] = []) {
     this.covers = covers;
+    this.ground = platforms;
     this.loud = TAUGHT.landing <= world;
     this.traps = data.traps.filter((p) => Number.isFinite(p.x) && Number.isFinite(p.loadX)).map(newTrap);
     for (const e of enemies) {
@@ -164,10 +167,26 @@ export class CastPlay {
     return !!m && beat(m.def, m.s, way, t, fromX);
   }
 
+  /**
+   * Something let fall came down at (x, y) as a drop-trap load does (a fruit cluster pushed free in a vine field: fieldPlay.ts): every
+   * animal it would scare (dropTrap.ts scares: within TRAP.scare across, TRAP.tall up or down) is chased off, away from him. How many.
+   */
+  loadLands(x: number, y: number, t: number, heroX: number): number {
+    let n = 0;
+    for (const m of this.members) if (Math.abs(m.s.x - x) <= TRAP.scare && Math.abs(m.s.y - y) <= TRAP.tall && beat(m.def, m.s, 'trap', t, heroX)) n++;
+    return n;
+  }
+
+  /** a creaky limb has given way (engine.ts): the 'limb' trap it is the load of, if any, falls now (returned) */
+  limbGone(platformId: number): TrapPost | null {
+    for (const tr of this.traps) if (tr.post.limb === platformId && limbGone(tr)) return tr.post;
+    return null;
+  }
+
   /** a blow's box against the traps' handles: the first set trap it lands on is let go (returned) */
   strike(box: Box): TrapPost | null {
     for (const tr of this.traps) {
-      if (tr.phase !== 'set') continue;
+      if (tr.phase !== 'set' || tr.post.kind === 'limb') continue;
       const h = handleBox(tr.post);
       if (box.x < h.x + h.w && box.x + box.w > h.x && box.y < h.y + h.h && box.y + box.h > h.y && shake(tr)) return tr.post;
     }
@@ -176,7 +195,7 @@ export class CastPlay {
 
   /** is there a set trap's handle within a blow's reach of him? (for the pad's hint, as an animal or a cage is) */
   handleNear(x: number, y: number, reach = 70): boolean {
-    return this.traps.some((tr) => tr.phase === 'set' && Math.abs(tr.post.x - x) <= reach + TRAP.handle.w / 2 && Math.abs(tr.post.y - y) <= TRAP.handle.high);
+    return this.traps.some((tr) => tr.phase === 'set' && tr.post.kind !== 'limb' && Math.abs(tr.post.x - x) <= reach + TRAP.handle.w / 2 && Math.abs(tr.post.y - y) <= TRAP.handle.high);
   }
 
   /**
@@ -219,6 +238,10 @@ export class CastPlay {
       e.wakeT = 0;
       e.x += s.facing * GLIDE.far * u * u;
       e.y += GLIDE.drop * u * u - GLIDE.lift * Math.sin(Math.PI * Math.min(1, u * 2));
+      // (down to the ground under it and away along it, never into it: an animal chased off on the flat floor (1-5's den) glided 150 px
+      //  down into the soil; off a branch's end it still drops to what is below, B15 stills 11-13)
+      const floor = groundUnder(this.ground, { x: e.x + e.width / 2, y: s.y - 4, height: 0 });
+      e.y = Math.min(e.y, floor - m.foot);
     }
     if (s.phase === 'gone' && !e.defeated) {
       // out of the stage on its own: no knock-out, nothing to draw

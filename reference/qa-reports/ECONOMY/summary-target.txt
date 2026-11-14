@@ -1,0 +1,34 @@
+score star: target = K x fruit laid on the stage; share of runs that reach it (12 seeds)
+stage set    tier    K 150 K 170 K 190 K 210
+1-1 easy   child      2/12    0/12    0/12    0/12
+1-1 easy   middle    12/12    6/12    5/12    4/12
+1-1 normal child      0/12    0/12    0/12    0/12
+1-1 normal expert    12/12   12/12   11/12    7/12
+1-1 normal middle    12/12   10/12    1/12    0/12
+1-2 easy   child      4/12    0/12    0/12    0/12
+1-2 easy   middle    12/12    6/12    0/12    0/12
+1-2 normal child      0/12    0/12    0/12    0/12
+1-2 normal expert    12/12   12/12   11/12    6/12
+1-2 normal middle    12/12   11/12    7/12    2/12
+1-3 easy   child     11/12   10/12    2/12    0/12
+1-3 easy   middle    12/12   12/12   12/12    8/12
+1-3 normal child     10/12    0/12    0/12    0/12
+1-3 normal expert    12/12   12/12   12/12   12/12
+1-3 normal middle    12/12   12/12   12/12   12/12
+3-4 easy   child     10/12    7/12    1/12    0/12
+3-4 easy   middle    12/12   11/12    5/12    1/12
+3-4 normal child      5/12    1/12    0/12    0/12
+3-4 normal expert    12/12   12/12   10/12    4/12
+3-4 normal middle    12/12    8/12    3/12    1/12
+6-3 easy   child      0/12    0/12    0/12    0/12
+6-3 easy   middle     0/12    0/12    0/12    0/12
+6-3 normal child      0/12    0/12    0/12    0/12
+6-3 normal expert     4/12    1/12    0/12    0/12
+6-3 normal middle     3/12    0/12    0/12    0/12
+
+Normal: target = f x PAR, PAR = the expert bot score on the same seed (a stand-in for a par runner); runs that reach it
+1-1 chi@0.7: 0/12 mid@0.7:11/12 chi@0.8: 0/12 mid@0.8: 6/12 chi@0.9: 0/12 mid@0.9: 3/12
+1-2 chi@0.7: 2/12 mid@0.7:12/12 chi@0.8: 0/12 mid@0.8:11/12 chi@0.9: 0/12 mid@0.9: 4/12
+1-3 chi@0.7: 0/12 mid@0.7:12/12 chi@0.8: 0/12 mid@0.8:12/12 chi@0.9: 0/12 mid@0.9: 8/12
+3-4 chi@0.7: 6/12 mid@0.7:10/12 chi@0.8: 2/12 mid@0.8: 9/12 chi@0.9: 0/12 mid@0.9: 6/12
+6-3 chi@0.7:12/12 mid@0.7:12/12 chi@0.8: 5/12 mid@0.8:11/12 chi@0.9: 1/12 mid@0.9: 9/12

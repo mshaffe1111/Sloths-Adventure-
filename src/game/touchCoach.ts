@@ -10,6 +10,7 @@
  */
 import type { ControlStyle } from './controlPrefs.ts';
 import { markLessonSeen } from './lessons.ts';
+import { CTEST_LEVEL_ID, ctestEnabled } from './playRecorder.ts';
 
 /** what the player is being shown: slide to run, slide to jump, well done, or nothing */
 export type CoachStep = 'run' | 'jump' | 'nice' | null;
@@ -70,11 +71,12 @@ function hasProgress(): boolean {
 }
 
 /**
- * Whether to teach on this stage: stage 1-1, a touch screen, a first game, and not already taught. `?coach=1` forces it on (for trying it out),
+ * Whether to teach on this stage: the first stage a new player meets (1-1, or the testers' stage on the #ctest link, playRecorder.ts
+ * CTEST_LEVEL_ID: a tester starts there, R-165.157), a touch screen, a first game, and not already taught. `?coach=1` forces it on (for trying it out),
  * `?coach=0` off.
  */
 export function coachWanted(levelId: string, secret: unknown): boolean {
-  if (secret || levelId !== '1-1') return false;
+  if (secret || (levelId !== '1-1' && !(levelId === CTEST_LEVEL_ID && ctestEnabled()))) return false;
   let q: string | null = null;
   try {
     q = new URLSearchParams(window.location.search).get('coach');

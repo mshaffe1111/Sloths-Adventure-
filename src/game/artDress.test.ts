@@ -19,7 +19,7 @@ import type { LevelConfig } from './types.ts';
 
 const levels = generateAllLevels();
 const cfg = (id: string): LevelConfig => levels.find((l) => l.id === id)!;
-const W34 = ['1-4', '1-6', '1-7', '3-1', '3-2', '3-3', '3-4', '3-5', '3-6', '3-7', '3-8', '3-9', '4-1', '4-2', '4-3', '4-4', '4-5', '4-6', '4-7', '4-8', '4-9'] as StagePlan[];
+const W34 = ['1-6', '1-7', '3-1', '3-2', '3-3', '3-4', '3-5', '3-6', '3-7', '3-8', '3-9', '4-1', '4-2', '4-3', '4-4', '4-5', '4-6', '4-7', '4-8', '4-9'] as StagePlan[];
 
 test('every piece of the puzzle kit atlas is drawn somewhere in the game', () => {
   const dir = new URL('.', import.meta.url).pathname;
@@ -80,17 +80,11 @@ test('World 3 floor sets and World 4 bridges: never the same set in two stages i
   }
 });
 
-test("World 1's rooms: the squirrels' nest door on 1-4's lifts, the branch gate up 1-6's seesaw banks, and a petal bundle for every room", () => {
+// (1-4's squirrel lifts went with the hand-built 1-4, B14 11-13: 1-4 is the vine field; their nest door is 1-4's crown dressing now,
+//  w1Arc14.ts finish14, held in w1Arc14.test.ts)
+test("World 1's rooms: the branch gate up 1-6's seesaw banks, and a petal bundle for every room", () => {
   for (const seed of [1, 2, 3]) {
     const by = (id: string) => buildProtoStage(cfg(id), seed, HAND_STAGES[id]);
-    const s14 = by('1-4');
-    const lifts = (s14.kit?.rooms ?? []).filter((r) => r.id.startsWith('squirrel-lift'));
-    assert.ok(lifts.length >= 1);
-    for (const r of lifts) {
-      const kd = (s14.proto.kitDecor ?? []).filter((d) => d.room === r.id);
-      assert.ok(kd.some((d) => d.n === 'nestDoorShut' && d.open === 'nestDoorOpen'), `seed ${seed} ${r.id}`);
-      assert.ok(kd.some((d) => d.n === 'petalBundle' && d.pop), `seed ${seed} ${r.id}`);
-    }
     const s16 = by('1-6');
     const gated = (s16.kit?.rooms ?? []).filter((r) => r.id.startsWith('seesaw-') && !r.id.startsWith('seesaw-show'));
     assert.ok(gated.length >= 1);
@@ -98,7 +92,7 @@ test("World 1's rooms: the squirrels' nest door on 1-4's lifts, the branch gate 
     const s17 = by('1-7');
     for (const r of s17.kit?.rooms ?? []) assert.ok((s17.proto.kitDecor ?? []).some((d) => d.n === 'petalBundle' && d.room === r.id), `seed ${seed} ${r.id}`);
     // (a picture, not a pickup: the stage's pickups are the same as without the dressing)
-    for (const st of [s14, s16, s17]) assert.ok(!st.collectibles.some((c) => (c as { findId?: string }).findId === 'petalBundle'));
+    for (const st of [s16, s17]) assert.ok(!st.collectibles.some((c) => (c as { findId?: string }).findId === 'petalBundle'));
   }
 });
 

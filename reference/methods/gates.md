@@ -3,6 +3,10 @@ Last proven: 2026-11-01, kaizen-gates (built clipcheck, playerText.test, knownch
 
 ## When to use it
 - Before every report and every merge: run every gate below, in this order. LAWS.md law 5: never skip, loosen or "expected-fail" one.
+- Scoped by what changed (LAWS.md law 5, Matt 2026-11-12 9:51 PM ET): a branch with NO game code change (only reference/ docs or a
+  read-only tool; nothing under src/, no seed list, asset, build or CI config) runs the fast gates: tsc, roadmapcheck, knowncheck,
+  generality, and the tool's own tests or --check. Everything else runs everything. The full set always runs on the integration head
+  before any test link, PR or release.
 - When a defect escapes (CONTINUOUS-IMPROVEMENT.md): the countermeasure is a new check here (L3), built with "Adding a new check" below.
 
 ## The gates (what each catches, how long, where)

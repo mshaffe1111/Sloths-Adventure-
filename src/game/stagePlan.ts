@@ -25,6 +25,9 @@ export interface StageSpec {
   goal?: number;
   /** which way the route leads when it is not the mission's usual way (a climb goes up, the rest right): 4-7 goes down the cliff */
   travel?: import('./stageKit.types.ts').Travel;
+  /** the stage's own pictures for what it gathers (pickupSprites.ts names, src/assets/pickups): `find` its golden find, `petal` Meeca's
+   *  petals; unset, the world's usual. Data, read by the draw through stageLooks: no draw line names a stage */
+  looks?: { find?: string; petal?: string };
 }
 
 const S = (type: StageSpec['type'], name: string, desc?: string, goal?: number): StageSpec => ({ type, name, desc, goal });
@@ -39,7 +42,11 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     //  library13.test.ts)
     S('purge', 'Branch Snakes', 'Shake every vine, and off the snakes glide.'),
     S('ascent', 'Up the Kapok', 'Climb the giant kapok to the very top.'),
-    S('harvest', 'Where She Walked', 'The petals go on. Gather more.'),
+    // (the story keeper's line, approved by Matt 11-12 10:20 PM ET: the goal is HER MARKS, gen2/worlds/w1Arc15.ts MISSION_15, held equal by
+    //  tools/engine/library15.test.ts; the count is the check's floor, the goal a share of the marks laid, goals.ts)
+    // (her petals FOLDED, "She's making them last", and the golden find a guarana bunch: ART's pieces for 1-5, the inventory's
+    //  hf1113/petal-folded and hf1113/guarana-golden)
+    { ...S('relic_hunt', 'Where She Walked', 'She marked the way they took her. Follow her marks.', 8), looks: { find: 'guarana-golden', petal: 'petal-folded' } },
     S('vine_runner', 'First Lianas', 'Swing on the hanging lianas across the gaps in the canopy.'),
     S('stealth', 'A Very Good Bush', 'Eagles are watching. Duck under the leaves the way Dot hid from the soldiers.'),
     S('sprint', 'The Long Branch', 'Race the long branch to the shrine.'),
@@ -156,6 +163,8 @@ export function stageSpec(world: number, mini: number): StageSpec | null {
 
 /** World 1's harvests gather Meeca's petals, not flowers */
 /** Meeca's petal is every stage's pickup (petals.ts, Matt 2026-10-29), but World 8's harvests: their night blooms are the goal's own */
+/** a stage's own pictures for its pickups (StageSpec.looks), or an empty set: the world's usual */
+export const stageLooks = (world: number, mini: number): NonNullable<StageSpec['looks']> => stageSpec(world, mini)?.looks ?? {};
 export const isPetalStage = (world: number, mini: number) => !(world === 8 && stageSpec(world, mini)?.type === 'harvest');
 
 /** what a search (relic hunt) turns up in a world: one of the painted keepsakes (items/<name>.webp), or the golden idol (null) */
@@ -183,13 +192,18 @@ export function goalLine(kind: 'start' | 'late' | 'sealed', world: number, type:
   if (kind === 'late') return `Still ${n} ${noun} to ${g.verb.toLowerCase()} before the sanctuary opens`;
   return `Sealed: ${g.verb.toLowerCase()} ${n} more ${noun} to open it`;
 }
+/** Dot's words at a locked exit, by world and goal, where the story keeper wrote them (1-5's marks: STORY-LINES.md 11-12, approved by Matt
+ *  10:20 PM ET; held equal to w1Arc15.ts LINES_15.sealed by limbTrap.test.ts). The engine says it in place of goalLine's 'sealed' (the
+ *  count is on the HUD beside it); every other goal keeps goalLine's own words */
+export const SEALED_LINES: Readonly<Record<string, string>> = { '1:relic_hunt': "We missed some of her marks. They're back there!" };
+export const sealedLine = (world: number, type: string): string | null => SEALED_LINES[`${world}:${type}`] ?? null;
 function GOAL_WORDS(world: number, type: string): { verb: string; one: string; many: string } | null {
   if (type === 'harvest') {
     const [one, many] = world === 8 ? ['night bloom', 'night blooms'] : ['petal', 'petals'];
     return { verb: 'Collect', one, many };
   }
   if (type === 'relic_hunt') {
-    const w = ({ 3: ['keepsake', 'keepsakes'], 5: ['message', 'messages'], 9: ['thread', 'threads'] } as Record<number, string[]>)[world] ?? ['relic', 'relics'];
+    const w = ({ 1: ['mark', 'marks'], 3: ['keepsake', 'keepsakes'], 5: ['message', 'messages'], 9: ['thread', 'threads'] } as Record<number, string[]>)[world] ?? ['relic', 'relics'];
     return { verb: 'Find', one: w[0], many: w[1] };
   }
   // (4-9 The Aerie counts the capuchin guards, and its counter says "guards": the goal says the same)
@@ -202,7 +216,7 @@ function GOAL_WORDS(world: number, type: string): { verb: string; one: string; m
 /** the word the HUD counts in: what this world's harvest gathers and its searches find */
 export function countWord(world: number, type: string): string {
   if (type === 'harvest') return world === 1 ? 'petals' : world === 8 ? 'night blooms' : 'flowers';
-  if (type === 'relic_hunt') return ({ 3: 'keepsakes', 5: 'messages', 9: 'threads' } as Record<number, string>)[world] ?? 'relics';
+  if (type === 'relic_hunt') return ({ 1: 'marks', 3: 'keepsakes', 5: 'messages', 9: 'threads' } as Record<number, string>)[world] ?? 'relics';
   // (4-9 The Aerie: the capuchin guards the wind blows off their ledges)
   if (type === 'gauntlet' && world === 4) return 'guards';
   if (type === 'purge' || type === 'gauntlet') return 'predators';

@@ -1,0 +1,57 @@
+
+== 1. the row (at 0 s)
+
+== 2. the rolls: 24 seeds x both settings (libstage.ts) (at 0 s)
+1-3: 24 seeds x both settings, built from its stage-table row as the seed-list search builds it
+== normal: CLEAN 24 of 24 (100%), thrown 0; 15 distinct beat orders; graphs purge-13-arc 24
+   cast snake 24; creatures per clean roll snake 17-17; seconds 238.9-245.3; width 34945-36143 px
+== easy: CLEAN 24 of 24 (100%), thrown 0; 15 distinct beat orders; graphs purge-13-arc 24
+   cast snake 24; creatures per clean roll snake 15-15; seconds 233.6-237.8; width 35074-35861 px
+clean on BOTH settings: 24 of 24 seeds (first: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+pool sections never laid: none
+
+== 3. the seed list (tools/engine/seedlist.ts) (at 4 s)
+  the list file src/game/gen2/proven/seeds-1-3.ts: 52492 bytes, its own chunk (the main script holds only its line in provenIndex.ts)
+seedlist 1-3: 100 proven of 100 tried (100%), 14 s; the quiet line bound at 4 s: 0 clean seeds over it left out
+  quiet line (REPORTED, outro excluded; binds at FR9): longest 3.6 s, median 3.4 s, under 4 s on 100 of 100
+  outro (goal section): 1294-1480 px
+  yield, graph purge-13-arc: 100 kept of 100 fresh seeds tried (100%)
+
+seedlist 1-3: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-3: PASS (100 seeds, each clean on both settings)
+
+
+== 4. the bots (tools/inspect/castBots.ts --seeds 1-40, both settings) (at 56 s)
+castBots 1-3, seeds 1-40
+kid    normal PASS 40/40; time median 139.3 s (min 134.1); hits 7 lives 0 (foe:snake 7); cleared trap 478, stomp 42, punch 3, kick 1; told of traps 40/40; first trap sprung 40/40; traps sprung 438/480; turned back 16; left 156
+kid    easy   PASS 40/40; time median 136.2 s (min 133.3); hits 0 lives 0 (none); cleared trap 475, stomp 16; told of traps 40/40; first trap sprung 40/40; traps sprung 435/480; turned back 0; left 109
+adult  normal PASS 40/40; time median 144.9 s (min 139); hits 9 lives 0 (foe:snake 9); cleared trap 480, punch 24, stomp 130; told of traps 40/40; first trap sprung 40/40; traps sprung 440/480; turned back 0; left 46
+adult  easy   PASS 40/40; time median 141.9 s (min 139.5); hits 5 lives 0 (foe:snake 5); cleared trap 480, stomp 77, punch 8; told of traps 40/40; first trap sprung 40/40; traps sprung 440/480; turned back 0; left 35
+child  normal PASS 40/40; time median 451.9 s (min 406.5); hits 23 lives 0 (foe:snake 23); cleared trap 481, punch 82, stomp 64, kick 1; told of traps 40/40; first trap sprung 40/40; traps sprung 441/480; turned back 0; left 52
+child  easy   PASS 40/40; time median 311.3 s (min 290.2); hits 6 lives 0 (foe:snake 6); cleared trap 478, punch 28, stomp 64; told of traps 40/40; first trap sprung 40/40; traps sprung 440/480; turned back 0; left 30
+middle normal PASS 40/40; time median 233.2 s (min 216.5); hits 11 lives 0 (foe:snake 11); cleared trap 478, stomp 91, punch 57, kick 1; told of traps 40/40; first trap sprung 40/40; traps sprung 438/480; turned back 0; left 53
+middle easy   PASS 40/40; time median 209.3 s (min 195.6); hits 5 lives 0 (foe:snake 5); cleared trap 477, stomp 72, punch 25, kick 1; told of traps 40/40; first trap sprung 40/40; traps sprung 438/480; turned back 0; left 25
+expert normal PASS 40/40; time median 197.3 s (min 188.9); hits 12 lives 0 (foe:snake 12); cleared trap 474, stomp 118, punch 35; told of traps 40/40; first trap sprung 40/40; traps sprung 437/480; turned back 0; left 53
+
+
+== 5. the flown rows (at 207 s)
+  judged on "normal-1-3", every move Easy flies has its row
+
+== 6. every other registration (tools/engine/registrycheck.ts --stage) (at 207 s)
+registrycheck 1-3: 1 missing
+  ci-seedlist gates.yml does not check its list
+
+
+== addlevel 1-3: 208 s
+  DONE     row, kit and config resolve
+  DONE     rolls: 24/24 Normal, 24/24 Easy clean; 24/24 on both
+  DONE     seed list written: 100 proven of 100 tried (100%), 14 s; the quiet line bound at 4 s: 0 clean seeds over it left out
+  DONE     seed list: --check PASS
+  DONE     bots: every bot passes 40/40 on both settings
+  DONE     flown: judged on normal-1-3
+  MISSING  ci-seedlist: gates.yml does not check its list
+addlevel 1-3: NOT READY (1 missing above)
+
+real	3m31.915s
+user	9m29.348s
+sys	0m13.506s

@@ -1,0 +1,232 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Sloths Node Key</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a field guide. A code strip you can tap, then the key as reference cards grouped by part of the code. */
+:root{
+  --bg:#f2f5ee; --panel:#ffffff; --fg:#1d2a1f; --muted:#5b6b5d; --line:#d6dfd2;
+  --accent:#2f6b3a; --accent-soft:#e1ecdf; --find:#9a6a12; --find-soft:#f6ecd6; --later:#8a8f88; --later-soft:#ececea;
+  --display:"Young Serif", Georgia, serif; --body:"Atkinson Hyperlegible", system-ui, sans-serif; --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121a14; --panel:#1a241c; --fg:#e4ecdf; --muted:#9db0a0; --line:#2c3a2e;
+  --accent:#8fcf8f; --accent-soft:#223424; --find:#e8b85a; --find-soft:#3a2f17; --later:#8d968c; --later-soft:#262c26; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121a14; --panel:#1a241c; --fg:#e4ecdf; --muted:#9db0a0; --line:#2c3a2e;
+  --accent:#8fcf8f; --accent-soft:#223424; --find:#e8b85a; --find-soft:#3a2f17; --later:#8d968c; --later-soft:#262c26; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+main{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:36px}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,6vw,40px);line-height:1.1}
+h2{font-size:24px}
+h3{font-size:18px}
+p{margin:0;max-width:65ch}
+.lede{color:var(--muted)}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+header{display:flex;flex-direction:column;gap:10px}
+code,.mono{font-family:var(--mono)}
+section{display:flex;flex-direction:column;gap:14px}
+.anatomy{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.anat-row{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end}
+.anat-part{display:flex;flex-direction:column;align-items:center;gap:4px}
+.anat-part b{font-family:var(--mono);font-size:26px;padding:4px 10px;border-radius:6px;background:var(--accent-soft);color:var(--accent)}
+.anat-part span{font-size:12px;color:var(--muted);text-align:center;max-width:86px}
+.rolls{display:flex;flex-direction:column;gap:14px}
+.roll{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.roll-head{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.strip{display:flex;flex-wrap:wrap;gap:6px}
+.tok{font-family:var(--mono);font-size:15px;font-weight:700;border:1px solid var(--line);background:var(--bg);color:var(--fg);
+  border-radius:6px;padding:6px 8px;cursor:pointer;min-height:44px;min-width:44px}
+.tok.struct{color:var(--muted)}
+.tok[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.tok:focus-visible{outline:3px solid var(--find);outline-offset:2px}
+.decode{border-top:1px dashed var(--line);padding-top:10px;font-size:15px;min-height:3em}
+.decode ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.decode .hint{color:var(--muted)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:999px;padding:8px 14px;cursor:pointer;min-height:44px}
+.tab[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card.later{background:var(--later-soft)}
+.card-top{display:flex;align-items:center;gap:10px}
+.code{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--accent);min-width:38px}
+.card.later .code{color:var(--later)}
+.name{font-weight:700}
+.pill{margin-left:auto;font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:2px 8px;font-weight:700}
+.pill.now{background:var(--accent-soft);color:var(--accent)}
+.pill.later{background:var(--panel);color:var(--later);border:1px solid var(--line)}
+.label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.plays{font-size:15px}
+.engine{font-size:13.5px;color:var(--muted)}
+.pieces{display:grid;grid-template-columns:auto 1fr;gap:3px 8px;font-size:13.5px}
+.pieces dt{font-weight:700}
+.pieces dt.must{color:var(--accent)} .pieces dt.never{color:#b5452f}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pieces dt.never{color:#f08f78}}
+:root[data-theme="dark"] .pieces dt.never{color:#f08f78}
+.mix{display:flex;flex-direction:column;gap:8px}
+.bar{display:grid;grid-template-columns:120px 1fr 44px;gap:10px;align-items:center;font-size:14px}
+.track{height:12px;background:var(--line);border-radius:6px;overflow:hidden}
+.fill{height:100%;background:var(--accent)}
+.bar .pct{font-variant-numeric:tabular-nums;text-align:right;font-family:var(--mono)}
+.note{font-size:14px;color:var(--muted)}
+footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:no-preference){.tok{transition:background .15s,color .15s}}
+</style>
+
+<main>
+<header>
+  <div class="eyebrow">Sloths Rainforest Adventures · engine</div>
+  <h1>The node key</h1>
+  <p class="lede">Every stage is a line of short codes. Each code is one stretch of play: what it's for, what it's made of and how it moves. This key says exactly what the engine builds for each code and how it plays for Pokey, so nobody has to guess.</p>
+</header>
+
+<section aria-labelledby="h-read">
+  <h2 id="h-read">How to read one code</h2>
+  <div class="anatomy">
+    <div class="anat-row" aria-label="The code Pc2^+ broken into parts">
+      <div class="anat-part"><b>P</b><span>job: practise</span></div>
+      <div class="anat-part"><b>c</b><span>made of: climb</span></div>
+      <div class="anat-part"><b>2</b><span>move: double jump</span></div>
+      <div class="anat-part"><b>^</b><span>shape: rising</span></div>
+      <div class="anat-part"><b>+</b><span>a find on it</span></div>
+      <div class="anat-part"><b>&gt;</b><span>tempo: hurry</span></div>
+    </div>
+    <p><code>Pc2^+&gt;</code> reads as: practise the double jump up a rising stair, with a treasure on it, at a quick pace. The capital letter always comes first. A fork is written <code>F[high|low]</code>.</p>
+  </div>
+</section>
+
+<section aria-labelledby="h-rolls">
+  <h2 id="h-rolls">Three example rolls of 1-1</h2>
+  <p class="note">Tap any code to see what it means. These are examples from the design, and all three follow every rule. Real rolls come from the engine.</p>
+  <div class="rolls" id="rolls"></div>
+</section>
+
+<section aria-labelledby="h-key">
+  <h2 id="h-key">The key</h2>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div class="cards" id="cards" role="tabpanel"></div>
+</section>
+
+<section aria-labelledby="h-mix">
+  <h2 id="h-mix">What 1-1 is made of</h2>
+  <p class="note">Each 1-1 roll is dealt its content from this mix, give or take one stretch. No type goes over 40%, and the same type never runs twice in a row, except practising right after a teach.</p>
+  <div class="mix" id="mix"></div>
+</section>
+
+<footer id="foot">Source: the designer's NODES.md on the engine-spec branch (the key and pieces in §8.0, rules V1-V18 in §8.3; every piece rule is checked by V18). Status: NOW = in 1-1's build; LATER = designed, not built yet.</footer>
+</main>
+
+<script>
+const JOBS={
+A:["Arrive","now","Flat and safe. No ground ends and nothing hurts in the first 1,300 px.","You walk in on soft moss floor and look around. Nothing can hurt you yet."],
+T:["Teach","now","One new move, in three steps: shown; then a safe check that blocks the way until you do the move (a miss costs nothing); then one small challenge. Flat or rising, never on a fork. Checked by a test player without the move, who can't get past.","Something new turns up, like a step too tall to hop. You try the new move where missing is safe, then use it once for real."],
+P:["Practise","now","A taught move again, a little changed each time. May sit on a fork. One exact repeat is allowed before a rest.","You do the move you just learned a few more times, each one a bit different."],
+X:["Test","now","A taught move under pressure, and required: a test player without it fails here, the full player passes. A rest follows, and it eases off at its end.","A harder stretch you can only get through by using the move. Then it lets up."],
+C:["Combine","now","Two taught moves on one beat: the stage's pair (in 1-1, bounce then double).","Two moves back to back, like a mushroom bounce straight into a double jump."],
+W:["Twist","now","A taught move turned around: its rhythm differs from the stretch before. Only after a test. A rest follows.","A move you know, used a new way, so the rhythm you just got used to breaks."],
+R:["Rest","now","About twice the local beat, with no hard input. Comes after every test, twist and set piece. Holds a Dot spot (she speaks only where one of Matt's approved lines fits).","A calm patch to breathe. Dot might say something here."],
+S:["Signature","now","One per stage, unique in the game, in the last third. It links to what came before, lets him suddenly do something new, and says itself in one phrase. A rest or the exit follows.","The one big moment you remember the stage by, like a chain of double jumps across floating logs."],
+F:["Fork","now","Two roads that both finish and rejoin. The high road holds a find. Both roads pass every check. It counts as its low road's type.","The path splits: a harder high road with a treasure, or an easier low road. Both get you there."],
+U:["Climb","now","A rising stair of landings, taught moves only. A straight-up trunk climb only where a stage owns it (World 1: 1-4).","You hop up a staircase of logs and ledges toward the treetops."],
+D:["Descent","now","Across and down.","You drop down ledge by ledge toward the forest floor."],
+M:["Flow","now","A run of quick beats at the roll's tempo, never more than 2.5 s with nothing to do.","A run where every jump leads straight into the next, without stopping."],
+E:["Exit","now","The end piece where the stage's trend arrives. In 1-1: a long high log with the exit totem, and the clue. After a signature it must be a real breath: a calm walk-on, at least a rest long.","You walk out along a long high log to the totem, calm, and the stage is done."],
+L:["Finale","later","15-20 s at the exit, everything taught, dense. Not in 1-1 (it ends quiet).","The last stretch throws everything you've learned at you, fast."],
+H:["Hidden alcove","later","A find off the main route, proven reachable.","A sneaky spot off the path with something to find, if you look."],
+K:["Chase","later","Moving pressure. Never in a world's first stage. World 1's chase is 1-5's, by story.","Something is coming. Keep moving and don't stop."],
+Z:["Puzzle room","later","A hand-built room that stays as built.","A room where you stop and work out how to get through."],
+B:["Arena","later","A fight in a held space, on the combat ladder.","You hold one spot and deal with the creatures that come."],
+Y:["Story beat","later","A beat the brief names (the note, a clue), with no hard input over it.","You stop for a moment and something in the story happens."],
+V:["Boss preview","later","The boss's attack in small form, in a world's 9th stage only.","A small taste of what the boss will throw at you."],
+G:["Change of pace","later","One sense flipped: slow, dark or a puzzle. A world's 6th stage's job.","The stage suddenly feels different: slower, darker or a head-scratcher."]
+};
+const CONTENT={
+g:["Ground jump run","now","Pieces on the moss floor road: hops, gap jumps, stone runs, stump stiles, mounds. Landings 3.5-7 body widths. Rocks sit on the ground, never float.","You jump along the forest floor over stones, stumps and dips. In 1-1 a miss just drops you to the floor."],
+f:["Floating pieces","now","Boughs, floating logs, plank spans. Platforms may float. In 1-1, only in the last third. Moving lifts come later (World 2).","You hop across branches and logs hanging in the air."],
+c:["Climb","now","A rising stair of landings.","Each landing is a little higher than the last, so you go up as you go along."],
+b:["Bounce","now","A mushroom seated on a stump or bank, never floating; a twin bounce; a bounce into a double.","You land on a mushroom and it springs you up high."],
+r:["Rope and vine","later","Shimmy rope (taught 1-3), liana (taught 1-6). Straight up or down on a vine always climbs. Not in 1-1.","You grab a rope or vine and shimmy or swing across."],
+k:["Crumble","later","A creaky limb that gives way (0.5 s on Normal). A required one is whole again when he respawns. Taught 1-5.","A branch creaks and drops away soon after you land, so don't wait around."],
+w:["Water","later","Lily pads, stones on the bed, drifting logs.","You cross water on pads, stones and floating logs."],
+h:["Hazard","later","The world's taught hazards, which come back in later worlds.","Something on the way hurts, so you go over or around it."]
+};
+const MOVES={"1":["Jump","now","A single jump is enough.","One hop gets you there."],"2":["Double jump","now","Required: a gap or height past a single jump, which a test player without the double fails.","You jump, then jump again in the air to reach it."]};
+const SHAPES={"flat":["Flat","now","Across, in one band. Written with no mark.","You head straight along."],"^":["Rising","now","Across and up.","You climb as you go."],"_":["Falling","now","Across and down.","You work your way down."],"F[ | ]":["Two roads","now","High and low roads that rejoin.","You pick a high road or a low road."],"^^":["Shaft","later","Straight up a column (1-4).","You go straight up a tall trunk."],"@":["Loop-back","later","Under, up a shaft, back over the start, then a drop to the exit.","You run under, climb up, then run back over where you started."],"*":["Hub","later","A centre with an alcove or two off it.","A little clearing with hidden corners to poke into."]};
+const MARKS={"+":["Find","now","The golden seed or a keepsake, proven reachable. Never petals: they're Meeca's trail, low at marching height.","A treasure sits on the harder road."],">":["Hurry","now","The stretch rolls a quick tempo.","Keep moving. The jumps come at you quick."],"<":["Patience","now","The stretch rolls a patient tempo.","Take your time, look, then go."],"&":["Creatures","later","How many critters on this stretch: none (no mark), one kind (&), a group (&&). From 1-3 on, with about a third of each stage enemy-free.","Critters are about, so watch where you land."]};
+const PIECES={
+g:["The moss floor road under it, plus at least one of: a mossy stone, a log on a stump, a stump, a mound or a bank.","A low log; dressing off to the side; petals low on the ground.","A rock, stone, mound or bank in the air; water pieces; a rope or vine as the way across."],
+f:["At least one floating platform: a solid log, a branch, or plank-bridge planks.","Catch branches under each gap; a trunk in the art.","A floating rock or stone; a trunk used as something to land on; a moving lift in World 1."],
+c:["Landings that each sit higher than the last: a log, a branch, or a mossy stone on a bank or its own base.","A stump as a step.","A trunk used as something to land on; climbing a vine up a trunk, except in the stage that owns it (World 1: 1-4)."],
+b:["A bounce mushroom sitting on the floor, a bank, a stump or a log.","","A mushroom in the air; a bouncy branch or bouncing stone in World 1; the small decoration mushrooms used as something to land on."],
+r:["A rope tied at both ends at about the same height; or a vine hung from a branch or the canopy, with a landing past its swing; or a climbing vine that reaches a landing at its foot.","","Any rope or vine in 1-1; a vine hanging from open sky; a trunk used as something to land on."],
+k:["A creaky branch on a trunk or bough, in World 1's branch art.","","World 7's crumbling stone floor in World 1; a crumbling stone in the air."],
+w:["Drawn water, with lily pads on its surface, stones sitting on its bed, or drifting logs on a drawn river.","","Lily pads, reeds or drifting logs anywhere off water; a stone floating on the water."],
+h:["The world's own taught hazard (for example World 3's thorn vines hanging or swinging from trunks).","","A hazard before its world teaches it; another world's hazard art."]
+}; // the designer's MUST / MAY / NEVER column (NODES.md §8.0), checked by rule V18
+const GROUPS=[["Jobs",JOBS,"The capital letter: what the stretch is for."],["Made of",CONTENT,"The small letter: what the stretch is built from."],["Moves",MOVES,"The digit: which jump it needs."],["Shapes",SHAPES,"The mark after the move: where it goes."],["Marks",MARKS,"Extras on the end."]];
+const ROLLS=[
+ ["Roll 1","graph A","A Tg1< Tg2< Tb> Pc1^> F[Pc2^+|Pb]< R Xf2> R Sf2> E"],
+ ["Roll 2","graph B","A Tg1> Tg2< Tb< Mg2> F[Pb2^+|Pc1^]< R Cb2< Uc^> Xf2> R Sf2< E"],
+ ["Roll 3","graph D","A Tg1< Tg2> Tb> Pb2< R Uc^< F[Pc2^+|Pg1]> Xf2> R Sf2< E"]];
+const MIX=[["Ground jumps",40],["Floating pieces",25],["Climbs",20],["Bounce",15]];
+
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function parseOne(t){ // one node token, no fork
+  const m=t.match(/^([A-Z])([a-z])?([12])?(\^\^|\^|_|@|\*)?(\+)?([<>])?(&{0,2})$/);
+  if(!m) return [`<li>${esc(t)}</li>`];
+  const out=[];const [,j,c,mv,sh,fd,tp,cr]=m;
+  if(JOBS[j]) out.push(`<li><b>${j} · ${JOBS[j][0]}:</b> ${JOBS[j][3]}</li>`);
+  if(c&&CONTENT[c]) out.push(`<li><b>${c} · ${CONTENT[c][0]}:</b> ${CONTENT[c][3]}</li>`);
+  if(mv) out.push(`<li><b>${mv} · ${MOVES[mv][0]}:</b> ${MOVES[mv][3]}</li>`);
+  out.push(sh?`<li><b>${esc(sh)} · ${SHAPES[sh][0]}:</b> ${SHAPES[sh][3]}</li>`:(c?`<li><b>Flat:</b> ${SHAPES.flat[3]}</li>`:""));
+  if(fd) out.push(`<li><b>+ · Find:</b> ${MARKS["+"][3]}</li>`);
+  if(tp) out.push(`<li><b>${esc(tp)} · ${MARKS[tp][0]}:</b> ${MARKS[tp][3]}</li>`);
+  return out;
+}
+function decode(tok){
+  const f=tok.match(/^F\[(.+)\|(.+)\]([<>])?$/);
+  if(f){return `<b>Fork.</b> ${JOBS.F[3]}<ul><li><b>High road, ${esc(f[1])}:</b></li>${parseOne(f[1]).join("")}<li><b>Low road, ${esc(f[2])}:</b></li>${parseOne(f[2]).join("")}${f[3]?`<li><b>${esc(f[3])} · ${MARKS[f[3]][0]}</b> on both roads</li>`:""}</ul>`;}
+  return `<ul>${parseOne(tok).join("")}</ul>`;
+}
+const rollsEl=document.getElementById("rolls");
+ROLLS.forEach(([name,graph,str],ri)=>{
+  const box=document.createElement("div");box.className="roll";
+  box.innerHTML=`<div class="roll-head"><span><b>${name}</b></span><span>${graph}</span></div><div class="strip" role="group" aria-label="${name} codes"></div><div class="decode" aria-live="polite"><span class="hint">Tap a code above.</span></div>`;
+  const strip=box.querySelector(".strip"),dec=box.querySelector(".decode");
+  str.split(" ").forEach((t,i)=>{
+    const b=document.createElement("button");b.className="tok"+(/^[ARE]$/.test(t)?" struct":"");b.textContent=t;b.id=`tok-${ri}-${i}`;b.setAttribute("aria-pressed","false");
+    b.addEventListener("click",()=>{strip.querySelectorAll(".tok").forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");dec.innerHTML=decode(t);});
+    strip.appendChild(b);
+  });
+  rollsEl.appendChild(box);
+});
+const tabsEl=document.getElementById("tabs"),cardsEl=document.getElementById("cards");
+function showGroup(gi){
+  [...tabsEl.children].forEach((t,i)=>t.setAttribute("aria-selected",i===gi?"true":"false"));
+  const [,data,intro]=GROUPS[gi];
+  cardsEl.innerHTML="";
+  const p=document.createElement("p");p.className="note";p.style.gridColumn="1/-1";p.textContent=intro;cardsEl.appendChild(p);
+  Object.entries(data).forEach(([code,[name,st,eng,plays]])=>{
+    const c=document.createElement("article");c.className="card"+(st==="later"?" later":"");
+    const pc=PIECES[code];
+    c.innerHTML=`<div class="card-top"><span class="code">${esc(code==="flat"?"—":code)}</span><span class="name">${name}</span><span class="pill ${st}">${st==="now"?"Now":"Later"}</span></div>
+      <div class="label">How it plays</div><p class="plays">${plays}</p>
+      <div class="label">What the engine requires</div><p class="engine">${eng}</p>
+      ${pc?`<div class="label">Pieces</div><dl class="pieces"><dt class="must">Must</dt><dd>${pc[0]}</dd>${pc[1]?`<dt>May</dt><dd>${pc[1]}</dd>`:""}<dt class="never">Never</dt><dd>${pc[2]}</dd></dl>`:""}`;
+    cardsEl.appendChild(c);
+  });
+  try{localStorage.setItem("nodekey-tab",String(gi))}catch(e){}
+}
+GROUPS.forEach(([label],i)=>{const b=document.createElement("button");b.className="tab";b.id=`tab-${i}`;b.setAttribute("role","tab");b.textContent=label;b.addEventListener("click",()=>showGroup(i));tabsEl.appendChild(b);});
+let start=0;try{start=Number(localStorage.getItem("nodekey-tab"))||0}catch(e){}
+showGroup(Math.min(start,GROUPS.length-1));
+const mixEl=document.getElementById("mix");
+MIX.forEach(([n,p])=>{const r=document.createElement("div");r.className="bar";r.innerHTML=`<span>${n}</span><div class="track"><div class="fill" style="width:${p}%"></div></div><span class="pct">${p}%</span>`;mixEl.appendChild(r);});
+</script>
+
+</body></html>

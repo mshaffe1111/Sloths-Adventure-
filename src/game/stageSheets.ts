@@ -48,15 +48,13 @@
  * as it starts (sheetWarm.ts warmStageSheets), for a roll that holds something these lists did not foresee.
  */
 import { DRESS_NEW_URLS } from './dressNewData.ts';
-import { buildProtoStage, HAND_STAGES, W3_PUZZLES } from './protoStage.ts';
-import { stageAnims, stageExtras } from './sheetWarm.ts';
-import { builtStageKeys } from './stageManifest.ts';
+import { HAND_STAGES, W3_PUZZLES } from './protoStage.ts';
 import { W2_PUZZLES, W2_STAGES } from './w2Stages.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID } from './extraStages.ts';
 import { SLIDE_STAGE_ID } from './w7Slide.ts';
-import { CTEST_STAGE_ID } from './stageGenerator.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { KIT_STAGE_ID } from './kitStage.ts';
+import { FEEL_PAIR_ID } from './feelPairStage.ts';
 import { gen2Creatures, gen2Water, isGen2Stage } from './gen2/game.ts';
 import { W5_ROOM_STAGES } from './gen2/worlds/w5.ts';
 import { W6_ROOM_STAGES } from './gen2/worlds/w6.ts';
@@ -74,7 +72,7 @@ import type { LevelConfig } from './types.ts';
 export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '1-3': ['foe:goldsnake'],
   '1-4': ['foe:goldsnake', 'props2'],
-  '1-5': ['foe:goldsnake'], // (main's 1-5, back for 0.9.5)
+  '1-5': ['foe:goldsnake'], // (1-5 Where She Walked, gen2: 1-3's shy snake, w1Arc15.ts)
   '1-6': ['foe:goldsnake'],
   '1-7': ['foe:eagle', 'props2'],
   '1-8': ['foe:goldsnake'],
@@ -102,30 +100,6 @@ export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '5-7': ['foe:spider'],
   '5-9': ['foe:spider'],
 };
-
-/** the control test's mixes (1-2 with the control test on): every creature any of them holds */
-export const CTEST_FOES: readonly string[] = ['boa', 'eagle', 'goldsnake', 'turtle'];
-
-/**
- * What one control-test mix draws (its seed: playRecorder.ts ctestSeed): the creatures its six stretches hold, and whether it has bushes
- * (props2). Built as the engine will build it (13 to 44 ms; the last few kept). A mix holds one to three of the four creatures, so asking
- * for all four decoded about 175 MB a run for a phone to hold (QA 2026-10-29: an Android in Facebook's browser fell to 2 fps on a replay).
- */
-const mixDraws = new Map<number, { foes: string[]; props2: boolean; built: string[] }>();
-/** (and `built`: everything the mix's built stage can draw, stageManifest.ts, so the front page preloads all of it) */
-export function ctestMixDraws(seed: number): { foes: string[]; props2: boolean; built: string[] } {
-  const hit = mixDraws.get(seed);
-  if (hit) return hit;
-  const cfg = {
-    worldIndex: 1, miniIndex: 2, id: CTEST_STAGE_ID, name: 'Control Test', objectiveType: 'sprint', targetCount: 1, timeLimit: 270,
-    levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
-  } as LevelConfig;
-  const st = buildProtoStage(cfg, seed, 'ctest');
-  const v = { foes: stageAnims(st).filter((n) => CTEST_FOES.includes(n)), props2: stageExtras(st).props2, built: builtStageKeys(st) };
-  if (mixDraws.size > 4) mixDraws.delete(mixDraws.keys().next().value!);
-  mixDraws.set(seed, v);
-  return v;
-}
 
 /**
  * Every creature the old generator can place in a world (stageGenerator.ts: a snake or, from World 4, a tayra in a plain slot; the
@@ -169,15 +143,13 @@ export interface SheetSwitches {
   hand: boolean;
   /** the painted platforms are on (protoArt.ts paintedKitEnabled: everyone, unless ?paint=0) */
   paint: boolean;
-  /** the control test is on (its 1-2 is the hand-built test stage) */
-  ctest: boolean;
-  /** the control test's mix about to be played (its seed): only its creatures are asked for; left out, every creature any mix holds */
-  mix?: number;
 }
 
 export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>, sw: SheetSwitches): string[] {
   // the puzzle kit's test room: World 1's painted ground, the kit's pieces, and World 4's sheet for the trade room's capuchin
   if (cfg.id === KIT_STAGE_ID) return ['kit:1', 'kit-pieces', 'w4-props', 'perch', ...everyStage(1)];
+  // the vine field's feel test (feelPairStage.ts): World 1's painted ground, the kit's signpost for its speed sign
+  if (cfg.id === FEEL_PAIR_ID) return ['kit:1', 'kit-pieces', 'perch', ...everyStage(1)];
   if (cfg.id === DOT_STAGE_ID) return ['dot'];
   // 7-4's slide (w7Slide.ts): World 7's kit for the hall and the chamber (the slide's own pictures load as it starts: w7SlideArt.ts
   // warmSlide), and Dot's perch as on every stage (her guide is still the engine's, though World 7 gives her no lines)
@@ -185,7 +157,7 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (cfg.id === MEECA_STAGE_ID) return ['kit:1', 'kit:5', 'w5-props', 'kit-pieces', 'meeca', 'meeca-night', 'anim:pell', 'anim:soldier', 'anim:flicker', ...everyStage(5)];
   const w = cfg.worldIndex;
   // (a gen2 stage is built like a hand-built one, with World 5's dressing, whatever the switch: gen2/game.ts)
-  const built = !cfg.secret && ((sw.ctest && cfg.id === CTEST_STAGE_ID) || (sw.hand && (!!HAND_STAGES[cfg.id] || !!W2_STAGES[cfg.id])) || isGen2Stage(cfg));
+  const built = !cfg.secret && ((sw.hand && (!!HAND_STAGES[cfg.id] || !!W2_STAGES[cfg.id])) || isGen2Stage(cfg));
   const hasKit = w === 1 || !!KIT_FRAMES[w];
   const out: string[] = [];
   // (as engine.ts decides paintKit: a hand-built stage always, any other with a kit of its own when painting is on, never a boss lair)
@@ -203,14 +175,11 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // (World 8's generated stages: their set dressing, w8DecorArt.ts)
   if (w === 8 && isGen2Stage(cfg)) out.push('w8-decor');
   if (built && W4_FALL_STAGES.has(cfg.id)) out.push('w4-falls');
-  // (the control test's water stretches, River logs and Lily pads, are drawn with World 2's river; every mix has one of them)
-  if (built && sw.ctest && cfg.id === CTEST_STAGE_ID) out.push('w2-props');
   // (the mixer's stages: World 1's painted drops, which they mark (w1Pits.ts); a spec that asks for dressing (1-1's squirrels) also World
   // 1's new pieces, w1NewArt.ts: the sheet is 1996x925, about 7 MB decoded, so only where laid; a spec with water (1-5's creek, profile
   // water) its deadly creek (w1Creek.ts) and the lily pads on it, drawn with World 2's painted pad (engine.ts paintedRivers, 738 KB).
   // No spec lays calm swim water yet: calm-water joins when one does)
-  // (1-5 stays main's in 0.9.5: protoStage.ts)
-  const spec = built && cfg.id !== '1-5' ? specFor(cfg.id) : undefined;
+  const spec = built ? specFor(cfg.id) : undefined;
   if (spec) out.push('pit-art:1');
   if (spec?.dress) out.push('w1-new');
   if (spec?.profile.water) out.push('creek:1', 'w2-props');
@@ -220,11 +189,6 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // (World 6 on gen2 on: a stage's animals, the eagle and the bushes change from roll to roll, so it asks for the world's whole set:
   // the old generator's, and every animal the gen2 world's manifest can lay, World 7's frog among them)
   else if (isGen2Stage(cfg) && w >= 6) out.push(...[...new Set([...genFoes(w), ...gen2Creatures(cfg.id)])].map((f) => `foe:${f}`), 'props2');
-  else if (sw.ctest && cfg.id === CTEST_STAGE_ID) {
-    const m = sw.mix ? ctestMixDraws(sw.mix) : { foes: CTEST_FOES, props2: true };
-    out.push(...m.foes.map((f) => `foe:${f}`));
-    if (m.props2) out.push('props2');
-  }
   else out.push(...(STAGE_DRAWS[cfg.id] ?? []));
   // (a generated World 3 or 5 stage's zones: its spore mushrooms and its webs are Matt's painted pieces, zoneArt.ts; as
   // stageGenerator.ts decides which stages get zones)
