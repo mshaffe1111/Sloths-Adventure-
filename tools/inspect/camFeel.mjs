@@ -100,20 +100,29 @@ for (const [orient, w, h] of [['up', 390, 844], ['side', 844, 390]].filter(([o])
       if (shots) await p.screenshot({ path: join(dir, `f${String(i).padStart(4, '0')}.png`) });
     }
     for (const k of held) await p.keyboard.up(k);
-    // per frame: the view's move (css px on the screen) and its change from the frame before (the jerk the eye reads as a cut)
+    // per engine step: the view's move (css px on the screen) and its change from the step before (the jerk the eye reads as a cut).
+    // (Playwright's clock runs a 1/30 s frame as 33 or 34 ms, so now and then the loop takes no step in a frame and two in the next:
+    // that is the harness's pacing, not the camera, so moves are counted per step taken, and a frame with none is skipped)
     let worst = { d: 0, j: 0, fd: -1, fj: -1 };
     const lines = [];
+    let last = rows[0], pdx = 0, pdy = 0, first = true;
     for (let i = 1; i < rows.length; i++) {
-      const a = rows[i - 1], r = rows[i];
-      const dx = (r.cx - a.cx) * r.s, dy = (r.cy - a.cy) * r.s;
-      const pdx = i > 1 ? (a.cx - rows[i - 2].cx) * a.s : 0, pdy = i > 1 ? (a.cy - rows[i - 2].cy) * a.s : 0;
-      const d = Math.hypot(dx, dy), j = Math.hypot(dx - pdx, dy - pdy);
+      const a = last, r = rows[i];
+      const n = Math.max(0, r.t - a.t);
+      if (n === 0) { lines.push(`f${i} (no engine step this frame: the harness's clock)`); continue; }
+      last = r;
+      const dx = ((r.cx - a.cx) * r.s) / n, dy = ((r.cy - a.cy) * r.s) / n;
+      const d = Math.hypot(dx, dy), j = first ? d : Math.hypot(dx - pdx, dy - pdy);
+      first = false;
+      pdx = dx; pdy = dy;
       // which rule: the anchor re-picked, the landing look, or the HUD hold / lift (the aim moved by more than the anchor)
       const why = [Math.abs(r.an - a.an) > 2 ? `anchor ${Math.round(r.an - a.an)}` : '', Math.abs(r.ly - a.ly) + Math.abs(r.lx - a.lx) > 2 ? `land ${Math.round(r.lx - a.lx)},${Math.round(r.ly - a.ly)}` : '',
-        Math.abs(r.ty - a.ty - (r.an - a.an) - (r.ly - a.ly)) > 2 ? `aimY ${Math.round(r.ty - a.ty)}` : '', r.cl !== a.cl ? (r.cl ? 'GRAB' : 'LET GO') : '', r.gr !== a.gr ? (r.gr ? 'LAND' : 'LEAVE') : ''].filter(Boolean).join(' ');
+        Math.abs(r.ty - a.ty - (r.an - a.an) - (r.ly - a.ly)) > 2 ? `aimY ${Math.round(r.ty - a.ty)}` : '', r.cl !== a.cl ? (r.cl ? 'GRAB' : 'LET GO') : '', r.gr !== a.gr ? (r.gr ? 'LAND' : 'LEAVE') : '', n > 1 ? `(${n} steps)` : ''].filter(Boolean).join(' ');
       if (d > worst.d) Object.assign(worst, { d, fd: i });
       if (j > worst.j) Object.assign(worst, { j, fj: i });
-      lines.push(`f${i} cam ${Math.round(r.cx)},${Math.round(r.cy)} move ${dx.toFixed(1)},${dy.toFixed(1)} jerk ${j.toFixed(1)} aim ${Math.round(r.tx)},${Math.round(r.ty)} anchor ${Math.round(r.an)} pokey ${Math.round(r.px)},${Math.round(r.py)}${r.cl ? ' climb' : ''}${r.gr ? ' ground' : ''} ${why}`);
+      // his head and feet on the screen (css px from the top), to check he stays in the view
+      const head = (r.py - 104 - r.cy) * r.s, feet = (r.py - r.cy) * r.s;
+      lines.push(`f${i} cam ${Math.round(r.cx)},${Math.round(r.cy)} move ${dx.toFixed(1)},${dy.toFixed(1)} jerk ${j.toFixed(1)} aim ${Math.round(r.tx)},${Math.round(r.ty)} anchor ${Math.round(r.an)} pokey ${Math.round(r.px)},${Math.round(r.py)} head ${Math.round(head)} feet ${Math.round(feet)}${r.cl ? ' climb' : ''}${r.gr ? ' ground' : ''} ${why}`);
     }
     writeFileSync(join(out, `${stage}-${name}-${orient}.txt`), lines.join('\n') + '\n');
     const s = `${stage} ${orient} ${name}: worst move ${worst.d.toFixed(1)} css px (f${worst.fd}), worst jerk ${worst.j.toFixed(1)} (f${worst.fj})`;

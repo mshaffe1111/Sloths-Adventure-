@@ -1,0 +1,54 @@
+f1 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 538,7631 anchor 8063 pokey 1148,8063 head 237 feet 312 climb 
+f2 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 537,7631 anchor 8063 pokey 1148,8063 head 237 feet 312 climb 
+f3 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 537,7631 anchor 8063 pokey 1148,8063 head 237 feet 312 climb 
+f4 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 536,7631 anchor 8063 pokey 1148,8063 head 237 feet 312 climb 
+f5 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 536,7631 anchor 8063 pokey 1148,8056 head 232 feet 307 LET GO
+f6 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 525,7631 anchor 8063 pokey 1138,8038 head 219 feet 294 
+f7 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 506,7631 anchor 8063 pokey 1118,8008 head 197 feet 273 (2 steps)
+f8 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 496,7631 anchor 8063 pokey 1109,7997 head 189 feet 264 
+f9 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 487,7631 anchor 8063 pokey 1100,7987 head 182 feet 257 
+f10 (no engine step this frame: the harness's clock)
+f11 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 477,7631 anchor 8063 pokey 1091,7980 head 177 feet 252 
+f12 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 468,7631 anchor 8063 pokey 1082,7975 head 173 feet 248 
+f13 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 458,7631 anchor 8063 pokey 1072,7972 head 171 feet 246 
+f14 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 449,7631 anchor 8063 pokey 1063,7971 head 170 feet 245 
+f15 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 431,7631 anchor 8063 pokey 1045,7976 head 174 feet 249 (2 steps)
+f16 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 421,7631 anchor 8063 pokey 1035,7982 head 179 feet 254 
+f17 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 412,7631 anchor 8063 pokey 1026,7992 head 185 feet 261 
+f18 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 402,7631 anchor 8063 pokey 1017,8004 head 194 feet 269 
+f19 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 393,7631 anchor 8063 pokey 1007,8019 head 205 feet 280 
+f20 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 383,7631 anchor 8063 pokey 998,8037 head 218 feet 293 
+f21 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 374,7631 anchor 8063 pokey 988,8057 head 233 feet 308 
+f22 (no engine step this frame: the harness's clock)
+f23 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 354,7631 anchor 8063 pokey 969,8107 head 269 feet 344 (2 steps)
+f24 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 345,7631 anchor 8063 pokey 960,8136 head 289 feet 364 
+f25 cam 111,7631 move 0.0,0.0 jerk 0.0 aim 335,7631 anchor 8063 pokey 950,8167 head 312 feet 387 
+f26 cam 111,7637 move 0.0,4.4 jerk 4.4 aim 326,7659 anchor 8091 pokey 941,8199 head 331 feet 406 anchor 28
+f27 cam 111,7666 move 0.0,21.0 jerk 16.6 aim 316,7771 anchor 8203 pokey 931,8203 head 313 feet 388 ground anchor 112 LAND
+f28 cam 111,7689 move 0.0,16.4 jerk 4.5 aim 310,7771 anchor 8203 pokey 926,8203 head 296 feet 371 ground 
+f29 cam 111,7707 move 0.0,12.9 jerk 3.6 aim 308,7771 anchor 8203 pokey 924,8203 head 283 feet 358 ground 
+f30 cam 111,7721 move 0.0,10.1 jerk 2.8 aim 308,7771 anchor 8203 pokey 924,8203 head 273 feet 348 ground 
+f31 cam 111,7731 move 0.0,7.9 jerk 2.2 aim 308,7771 anchor 8203 pokey 924,8203 head 265 feet 341 ground 
+f32 cam 111,7740 move 0.0,6.2 jerk 1.7 aim 308,7771 anchor 8203 pokey 924,8203 head 259 feet 334 ground 
+f33 cam 111,7747 move 0.0,4.8 jerk 1.3 aim 308,7771 anchor 8203 pokey 924,8203 head 254 feet 330 ground 
+f34 cam 111,7752 move 0.0,3.8 jerk 1.0 aim 308,7771 anchor 8203 pokey 924,8203 head 251 feet 326 ground 
+f35 cam 111,7756 move 0.0,3.0 jerk 0.8 aim 308,7771 anchor 8203 pokey 924,8203 head 248 feet 323 ground 
+f36 cam 111,7759 move 0.0,2.3 jerk 0.6 aim 308,7771 anchor 8203 pokey 924,8203 head 245 feet 320 ground 
+f37 cam 111,7762 move 0.0,1.8 jerk 0.5 aim 308,7771 anchor 8203 pokey 924,8203 head 243 feet 319 ground 
+f38 cam 111,7764 move 0.0,1.4 jerk 0.4 aim 308,7771 anchor 8203 pokey 924,8203 head 242 feet 317 ground 
+f39 cam 111,7765 move 0.0,1.1 jerk 0.3 aim 308,7771 anchor 8203 pokey 924,8203 head 241 feet 316 ground 
+f40 cam 111,7767 move 0.0,0.9 jerk 0.2 aim 308,7771 anchor 8203 pokey 924,8203 head 240 feet 315 ground 
+f41 cam 111,7768 move 0.0,0.7 jerk 0.2 aim 308,7771 anchor 8203 pokey 924,8203 head 239 feet 314 ground 
+f42 cam 111,7768 move 0.0,0.5 jerk 0.1 aim 308,7771 anchor 8203 pokey 924,8203 head 239 feet 314 ground 
+f43 cam 111,7769 move 0.0,0.4 jerk 0.1 aim 308,7771 anchor 8203 pokey 924,8203 head 238 feet 314 ground 
+f44 cam 111,7769 move 0.0,0.3 jerk 0.1 aim 308,7771 anchor 8203 pokey 924,8203 head 238 feet 313 ground 
+f45 cam 111,7770 move 0.0,0.3 jerk 0.1 aim 308,7771 anchor 8203 pokey 924,8203 head 238 feet 313 ground 
+f46 cam 111,7770 move 0.0,0.2 jerk 0.1 aim 308,7771 anchor 8203 pokey 924,8203 head 238 feet 313 ground 
+f47 cam 111,7770 move 0.0,0.2 jerk 0.0 aim 308,7771 anchor 8203 pokey 924,8203 head 237 feet 313 ground 
+f48 cam 111,7770 move 0.0,0.1 jerk 0.0 aim 308,7771 anchor 8203 pokey 924,8203 head 237 feet 312 ground 
+f49 cam 111,7771 move 0.0,0.1 jerk 0.0 aim 308,7771 anchor 8203 pokey 924,8203 head 237 feet 312 ground 
+f50 cam 111,7771 move 0.0,0.1 jerk 0.0 aim 308,7771 anchor 8203 pokey 924,8203 head 237 feet 312 ground 
+f51 cam 111,7771 move 0.0,0.1 jerk 0.0 aim 308,7771 anchor 8203 pokey 924,8203 head 237 feet 312 ground 
+f52 cam 111,7771 move 0.0,0.0 jerk 0.0 aim 308,7771 anchor 8203 pokey 924,8203 head 237 feet 312 ground 
+f53 cam 111,7771 move 0.0,0.0 jerk 0.0 aim 308,7771 anchor 8203 pokey 924,8203 head 237 feet 312 ground 
+f54 cam 111,7771 move 0.0,0.0 jerk 0.0 aim 308,7771 anchor 8203 pokey 924,8203 head 237 feet 312 ground 
