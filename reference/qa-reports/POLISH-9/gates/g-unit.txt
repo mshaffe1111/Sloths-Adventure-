@@ -14180,3 +14180,165 @@ ok 2346 - P-06 (planted the other way): two thrown things lost are two failed tr
   duration_ms: 26.544337
   type: 'test'
   ...
+# Subtest: 3-1: the first water is taught well before it, and is one plain level jump with a wide landing (every roll, Normal and Easy)
+ok 2347 - 3-1: the first water is taught well before it, and is one plain level jump with a wide landing (every roll, Normal and Easy)
+  ---
+  duration_ms: 4002.402775
+  type: 'test'
+  ...
+# Subtest: 3-1: in the real engine a short running flick clears the first water, and walking off it costs the life (it is real water)
+ok 2348 - 3-1: in the real engine a short running flick clears the first water, and walking off it costs the life (it is real water)
+  ---
+  duration_ms: 402.643849
+  type: 'test'
+  ...
+# Subtest: 2-2: wide lily pads (wider still on Easy), and every crossing of pads or stones ends on a level step at the bank's foot
+ok 2349 - 2-2: wide lily pads (wider still on Easy), and every crossing of pads or stones ends on a level step at the bank's foot
+  ---
+  duration_ms: 2108.214876
+  type: 'test'
+  ...
+# Subtest: 2-2: a flag before the first water that costs a life, and never more than 4100 px between flags (every roll)
+ok 2350 - 2-2: a flag before the first water that costs a life, and never more than 4100 px between flags (every roll)
+  ---
+  duration_ms: 666.297156
+  type: 'test'
+  ...
+# Subtest: 2-2: in the real engine, a hop from each lily pad lands on the next and stays there with the thumb lifted (ponds rolls)
+ok 2351 - 2-2: in the real engine, a hop from each lily pad lands on the next and stays there with the thumb lifted (ponds rolls)
+  ---
+  duration_ms: 6497.376848
+  type: 'test'
+  ...
+# Subtest: 1-7: Dot's climb lesson never fires on the ground for the trunk hidden in the secret bush, and a flick up inside it still climbs
+ok 2352 - 1-7: Dot's climb lesson never fires on the ground for the trunk hidden in the secret bush, and a flick up inside it still climbs
+  ---
+  duration_ms: 1097.756379
+  type: 'test'
+  ...
+# Subtest: 1-7: the acorn rooms say what an acorn is for, and that the long stretch needs one
+ok 2353 - 1-7: the acorn rooms say what an acorn is for, and that the long stretch needs one
+  ---
+  duration_ms: 894.432774
+  type: 'test'
+  ...
+# Subtest: 1-7: in every watched stretch a bush is on an upright screen wherever he stands, and the first pass over each stretch only warns
+ok 2354 - 1-7: in every watched stretch a bush is on an upright screen wherever he stands, and the first pass over each stretch only warns
+  ---
+  duration_ms: 770.154752
+  type: 'test'
+  ...
+# Subtest: watcher: a freeFirst stretch's first pass is harmless, its second is not, and a plain stretch is as before
+ok 2355 - watcher: a freeFirst stretch's first pass is harmless, its second is not, and a plain stretch is as before
+  ---
+  duration_ms: 0.929567
+  type: 'test'
+  ...
+# Subtest: 2-6: the first ladder is on an upright screen from the start, and a plain walk stops beside it (every roll)
+ok 2356 - 2-6: the first ladder is on an upright screen from the start, and a plain walk stops beside it (every roll)
+  ---
+  duration_ms: 379.717052
+  type: 'test'
+  ...
+# Subtest: 2-6: Dot's climb line goes up while a plain walk stands by the first ladder (every roll, both settings, both views, taught or not)
+ok 2357 - 2-6: Dot's climb line goes up while a plain walk stands by the first ladder (every roll, both settings, both views, taught or not)
+  ---
+  duration_ms: 3210.273509
+  type: 'test'
+  ...
+# Subtest: 2-6: a plain walk to a porch's dead end stops there: no fall of 400 px or more, none onto the floor (every roll, Normal and Easy)
+ok 2358 - 2-6: a plain walk to a porch's dead end stops there: no fall of 400 px or more, none onto the floor (every roll, Normal and Easy)
+  ---
+  duration_ms: 5545.465068
+  type: 'test'
+  ...
+# Subtest: the painted plank's slanted ends sit on the collider's ends: no 20-90 px of air at a porch's end, and a hop gap still shows
+ok 2359 - the painted plank's slanted ends sit on the collider's ends: no 20-90 px of air at a porch's end, and a hop gap still shows
+  ---
+  duration_ms: 1.61332
+  type: 'test'
+  ...
+# Subtest: 3-3 Easy: every prowler beaten by a tap or a flick counts toward the goal (rolls 1-3)
+ok 2360 - 3-3 Easy: every prowler beaten by a tap or a flick counts toward the goal (rolls 1-3)
+  ---
+  duration_ms: 1304.375353
+  type: 'test'
+  ...
+# Subtest: layouts that once left the quota out of reach now hold every enemy before the exit
+ok 2361 - layouts that once left the quota out of reach now hold every enemy before the exit
+  ---
+  duration_ms: 1159.551191
+  type: 'test'
+  ...
+# Subtest: R-165.207: filling 1-1's eight reach tables flies a bounded number of air frames (the height-at-a-time memo flew millions)
+ok 2362 - R-165.207: filling 1-1's eight reach tables flies a bounded number of air frames (the height-at-a-time memo flew millions)
+  ---
+  duration_ms: 98.989535
+  type: 'test'
+  ...
+# Subtest: R-165.207: every reach table entry equals the old height-at-a-time simulation (1-1's tables densely, every 2 px stages use)
+ok 2363 - R-165.207: every reach table entry equals the old height-at-a-time simulation (1-1's tables densely, every 2 px stages use)
+  ---
+  duration_ms: 328.263734
+  type: 'test'
+  ...
+# Subtest: R-165.207: every other table the game asks equals the old simulation (every 6 px over the heights stages use)
+ok 2364 - R-165.207: every other table the game asks equals the old simulation (every 6 px over the heights stages use)
+  ---
+  duration_ms: 268.708956
+  type: 'test'
+  ...
+# Subtest: R-165.207: the whole table range and past it (the per-height path) equal the old simulation, sampled
+ok 2365 - R-165.207: the whole table range and past it (the per-height path) equal the old simulation, sampled
+  ---
+  duration_ms: 197.12699
+  type: 'test'
+  ...
+# Subtest: R-165.207: maxDropReach, read from the tables, equals the old one that simulated every drop (every key to past the table range)
+ok 2366 - R-165.207: maxDropReach, read from the tables, equals the old one that simulated every drop (every key to past the table range)
+  ---
+  duration_ms: 291.755513
+  type: 'test'
+  ...
+# Subtest: a reach answer belongs to its 2 px bucket, not to whoever asked first
+ok 2367 - a reach answer belongs to its 2 px bucket, not to whoever asked first
+  ---
+  duration_ms: 2.440127
+  type: 'test'
+  ...
+# Subtest: the biggest-drop bound covers every drop up to it, for jumps, double jumps and bounces
+ok 2368 - the biggest-drop bound covers every drop up to it, for jumps, double jumps and bounces
+  ---
+  duration_ms: 27.676097
+  type: 'test'
+  ...
+# Subtest: reachMin never exceeds either sampling rate
+ok 2369 - reachMin never exceeds either sampling rate
+  ---
+  duration_ms: 0.463254
+  type: 'test'
+  ...
+# Subtest: validating a stage gives the same answer before and after other stages warmed the tables
+ok 2370 - validating a stage gives the same answer before and after other stages warmed the tables
+  ---
+  duration_ms: 476.926045
+  type: 'test'
+  ...
+# Subtest: every world has a backdrop lightness, and the pool never vanishes or goes solid
+ok 2371 - every world has a backdrop lightness, and the pool never vanishes or goes solid
+  ---
+  duration_ms: 1.073556
+  type: 'test'
+  ...
+# Subtest: lighter backdrops get a deeper pool than darker ones
+ok 2372 - lighter backdrops get a deeper pool than darker ones
+  ---
+  duration_ms: 0.258685
+  type: 'test'
+  ...
+# Subtest: out-of-range worlds are clamped, not crashed
+ok 2373 - out-of-range worlds are clamped, not crashed
+  ---
+  duration_ms: 0.148717
+  type: 'test'
+  ...
