@@ -7,6 +7,6 @@ Order (D40): lay first (stop laying wood in a shut top's jump reach; measure exp
 then the verdict (planted), then rebuild 1-4's proven list (seedlist 1-4, 100 seeds) and re-pin every seed/roll test on the FULL suite
 (never from a partial run), yield measured (seeds tried per accepted roll, before/after). castBots 1-4 both settings: the bots still solve
 every gate. Clips with tools/inspect/clip.mjs (touch pad): the old far-ledge flick now has no wood to start from (name the frame), plus
-push/snap/try-over both settings and orientations. Full CLAUDE.md Checks (buildcheck ALONE). GREEN or exactly what is red.
+push/snap/try-over both settings and orientations. Gates scoped by what you touched (LAWS 5, Matt 11-14: tsc, full unit, every seed list/bot/lock it moves, perf gates only if drawing or build changed; buildcheck ALONE); the integrator runs the full set. GREEN or exactly what is red.
 No until/sleep wait loops (D67). Read the message queue at every push (D57). BOX: 90 minutes or 40% context (400k of 1M by the real figure).
 Lead: session_01FhBbYNzGRJBDMzn6XbtQK2.

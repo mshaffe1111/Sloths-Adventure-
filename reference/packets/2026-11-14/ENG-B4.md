@@ -12,6 +12,6 @@ Build in order (D40), every piece for ANY stage that lays K, no stage id/world/x
    planted toy test in CI, BEFORE any level lays it.
 6. A fixture stage that lays K for clips (until w1Arc08 exists): CLIPS both ways, both settings, of a chase stretch, the tint at the
    break, a caught run (heart, last flag, branch whole); name the frame where each happens (D69). Add the fixture to drawcheck (c).
-7. Full CLAUDE.md Checks on your final head (buildcheck ALONE; a flake proven by A/B at matched load, R-165.207).
+7. Gates scoped by what you touched (LAWS 5, Matt 11-14): tsc, full unit, every seed list/bot/lock your change moves, perf gates only if drawing or build changed (buildcheck ALONE); the integrator runs the full set.
 REPORT: what a 1-8 builder can lay now, beat by beat against 1-8.md, and EXACT NEXT STEP. No until/sleep wait loops (D67); read the
 queue at every push (D57). BOX: 2 hours or 40% context (400k of 1M by the real figure). Lead: session_01FhBbYNzGRJBDMzn6XbtQK2.
