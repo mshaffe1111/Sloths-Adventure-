@@ -2,13 +2,26 @@
 POLISH-9 (5:28-5:32 AM ET) stopped on the lead's pause; POLISH-9b (7:58 AM ET on) resumed at 182bb680. Opus 5.5 high.
 Context at report: about 22% of 1M (my estimate; D64).
 
-## VERDICT: __VERDICT2__
+## VERDICT: **NOT GREEN: 16 tests went red from the graph ruling's change.** They pin RAW (unlisted) 1-1 seeds, whose B/C rolls are now A/D
+rolls. The listed game, every gate and the list itself are green. The final suite on 660df344: 3,387 tests, 3,369 pass, 16 fail, 2 todo
+(gates/g-unit-fails.txt, g-unit-fail-files.txt). buildcheck ALONE is UNRUN. The box ran over by 50 min, so I stopped for the lead's call.
 
-## EXACT NEXT STEP (the next 1-1 member or the lead, one step)
-1-1 is ready for the integration head. Merge t-polish-9 into it, then run the full CLAUDE.md checks there before link #2.
-R-165.235 (bring sprint-B and -C back to 1-1 with non-double combine pieces) is the next 1-1 content job.
+## EXACT NEXT STEP (the lead's call first; my recommendation is (A))
+**(A) Retarget the 16, about 45-60 min.** Each needs a real retarget, not a number swap. By file:
+- **helpLadder11 (5), helpLadderCadence (4), softFall11 (2 + its plant):** pinned to raw seed 982's w1-log-chain-rise, which 982 no longer
+  lays (it rolled B/C before). Retarget to a LISTED layout that holds w1-log-chain-rise on each setting, found from the list, not copied.
+- **proven.test, seedList.test ("no seed of 200 fails its build: the planted case is gone"):** with B/C off, 1-1's raw rolls nearly all
+  build clean. The plant needs a failing build made on purpose. One option: the 1-1 kit with refuseGraphs removed (exactly the old
+  rolls, so the old failing seeds fail again). Or a seed range that still fails.
+- **landingRepair.test ("no roll was repaired: the repair never ran"):** the same cause. Find fresh rolls that need the repair, or plant one
+  with the old kit as above.
+- **levelCheckRoof (raw 118786):** find a raw seed whose road runs over a log, as the test describes.
+- Then the full suite again, then buildcheck ALONE.
 
-## The last red, closed (the lead's ruling, 9:31 AM; 660df344)
+**(B) Revert 660df344's graph change and relist B.** This puts back 163 seeds and the one deal red, and leaves the deal to R-165.235.
+I'd not take it: the deal rule is right, and A/D-only is your ruling.
+
+## The deal red, closed (the lead's ruling, 9:31 AM; 660df344); it opened the 16 above
 - **The red: yield.test "the deal", 52 of 200 graphs.** Since CUT_11_DOUBLES, 1-1's pool has no section for the combine job, and
   sprint-B and sprint-C each deal one (n8).
 - **The fix: 1-1 rolls sprint-A and sprint-D only.**
@@ -98,7 +111,12 @@ R-165.235 (bring sprint-B and -C back to 1-1 with non-double combine pieces) is 
 - **Stills** (stills/, 2x, Roll A = seed 9652 with 0 rerolls, the built setting printed by the game for each file):
   rollA-{normal,easy}-1-1-L10-*-x{11560,12090}-{upright,sideways}.jpg (the bounce teach) and -x{22300,23300}-* (the stone stair).
 
-## Gates on e0c78137 (src as of b7df7a52; later commits are reports and logs only)
+## Gates
+- **On 660df344 (the graph ruling and relist B):**
+  - full suite 3,369 / 3,387, 16 fail (above);
+  - yield.test 9/9; seedlist 1-1 --check PASS (162); CI tool tests 84/84; tsc, generality, knowncheck PASS;
+  - buildcheck ALONE UNRUN.
+- **On b7df7a52, before the graph ruling** (as first reported):
 - **PASS:**
   - tsc
   - BASE_PATH build; chunkcheck; artcheck (on 690d4ba5's src; later src changes are tests and tools only, plus listRules and the list file)
@@ -151,10 +169,11 @@ level.md (rules 5, 12, 14, 18), BOTS.md, bands.md; FT_TRACE / FT_FRAMES; git wor
 - D64: context against 1M.
 
 ## UNRUN (D59)
-- **buildcheck ALONE: UNRUN.** It needs nothing else running; the final suite ended at 9:30 AM, past the 9:28 box.
-- The box ran over by about 3 minutes, to let the full suite finish rather than leave it 90% run (my call; named).
-- castBots and tierBots were not re-run after the relist: it left layouts 1-57 identical (relist-1-1-diff.txt), so their layouts did not move.
-- Nothing is left running: the vite dev server was stopped after the stills, both gate runs finished, and the scratch worktrees were removed.
+- **buildcheck ALONE:** UNRUN.
+- **Not re-run on 660df344:** drawcheck, clipcheck, build/chunk/art and seedlist 1-2 to 1-5. They passed on b7df7a52. 660df344 changes
+  only 1-1's graph pick (a brief field) and its list, and nothing that draws.
+- **Box:** ran over to 10:20 AM ET to finish the lead's added ruling; stopped there for the lead's call on the 16.
+- **Nothing left running:** the dev server was stopped, all gate runs finished, and the scratch worktrees were removed.
 
 ## Turnover note
 Not rewritten. This REPORT's EXACT NEXT STEP is the resume point.
