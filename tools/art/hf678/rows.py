@@ -18,22 +18,22 @@ COLS, walk, W1, NOFIT_WOOD = R13['COLS'], R13['walk'], R13['W1'], R13['NOFIT_WOO
 PX = 3.0
 SET = '1-6..1-8 set (ART-678 picture list)'
 # one slot a family (a creature's poses, a hazard's states), so a family is one slot with all its pieces, never a 1-piece 'gap'
-POST = 'new slot: live post (a gen2 post he lands on or that holds a log, hopRocks.test.ts:66; or a plank pole)'
+POST = 'new slot: live post (a support: the 1-4 plank pole holding a bough, the gen2 post that holds a log, hopRocks.test.ts:66)'
 SNAKE = 'new slot: vine snake (1-6, IDEAS-1-6: lianas and the vine snakes; four poses)'
 HARPY = 'new slot: harpy eagle perch (1-7 the watch, PREDATORS.md:40; four frames)'
 NUT = 'new slot: rolling nut (1-8, IDEAS-1-7-8:17: two heights; whole, then broken)'
 COULD_WOOD = '3 Mossy Grotto: mossy wood; 6 Deep Mangrove: wet wood; 8 Twilight Treetops: boughs'
 # name: (kind, layer, engine_slot, footing, float_class, worlds, notes, take)
 META = {
-    'w1-livepost-short': ('live post, short: a broken stump post wrapped in a vine, on its own mossy root pad', 'platform',
+    'w1-livepost-short': ('live post, short: a broken stump post wrapped in a vine, on its own mossy root pad', 'support',
                           POST,
-                          'walk top measured', 'grounded (its root pad on the floor)', f'{W1} | COULD {COULD_WOOD}', '', 'post-53'),
-    'w1-livepost-mid': ('live post, mid: a split stump post wrapped in a vine, fern at its foot', 'platform',
-                        POST, 'walk top measured',
+                          'its root pad on the floor (a support: not stood on)', 'grounded (its root pad on the floor)', f'{W1} | COULD {COULD_WOOD}', '', 'post-53'),
+    'w1-livepost-mid': ('live post, mid: a split stump post wrapped in a vine, fern at its foot', 'support',
+                        POST, 'its root pad on the floor (a support: not stood on)',
                         'grounded (its root pad on the floor)', f'{W1} | COULD {COULD_WOOD}', 'its top is split: a perch, not a flat top', 'post-53'),
-    'w1-livepost-tall': ('live post, tall: a sawn post wrapped in a vine, moss cap, fern at its foot', 'platform',
-                         POST, 'walk top measured',
-                         'grounded (its root pad on the floor)', f'{W1} | COULD {COULD_WOOD}', 'flat moss cap: the one he can stand on', 'post-53'),
+    'w1-livepost-tall': ('live post, tall: a sawn post wrapped in a vine, moss cap, fern at its foot', 'support',
+                         POST, 'its root pad on the floor (a support: not stood on)',
+                         'grounded (its root pad on the floor)', f'{W1} | COULD {COULD_WOOD}', 'flat moss cap; the pole cap of w1-livepole', 'post-53'),
     'w17-snag-a': ('dead snag tree, broken top, vine round its foot, on a root pad', 'decor mid', 'new slot: mid-layer dressing (a dead tree)',
                    'none (not stood on)', 'grounded (root pad)', f'{W1} | COULD 6 Deep Mangrove: a drowned snag; 8 Twilight Treetops',
                    'a tall background tree: no step range', 'snag-23'),
@@ -80,12 +80,14 @@ META = {
                              'grounded (on the floor)', W1, '', 'nuts-53'),
     'w18-squirreltracks': ('squirrel paw tracks in a moss strip', 'decor near', 'new slot: floor marks along a platform top (tiled)',
                            'sits on a floor', 'on a floor', W1, '', 'nuts-53'),
-    'w1-underlayer-a': ('earth and root underlayer band, grass top, stones (tiles end to end)', 'backdrop',
-                        'new slot: the band along the bottom under the lowest walkable (R-165.224)', 'none (behind the ground)',
-                        'band along the bottom', f'{W1} | COULD 3 Mossy Grotto', 'light rain-streak marks in the soil; wrap closed (wrapfix, 2.8)', 'under-11'),
-    'w1-underlayer-b': ('dark earth and root underlayer band, grass top (tiles end to end)', 'backdrop',
-                        'new slot: the band along the bottom under the lowest walkable (R-165.224)', 'none (behind the ground)',
-                        'band along the bottom', f'{W1} | COULD 3 Mossy Grotto', 'darker, cleaner; wrap closed (wrapfix, 2.5); the art pick for R-165.224', 'under-53'),
+    'w1-underlayer-deep': ('deep earth and root underlayer band: no grass top, a ragged earth edge with a dark lip, darker and hazier with depth (tiles end to end)',
+                           'backdrop', 'new slot: the band along the bottom, well below the lowest walkable (R-165.224)', 'none (behind the ground)',
+                           'band along the bottom', f'{W1} | COULD 3 Mossy Grotto',
+                           'from under-53 by hf678/underdeep.py (the grass-lipped a/b read as a floor: the lead FAILED them 11-14); wrap 1.1', 'under-53'),
+    'w1-livepole': ('live pole: w1-livepost-tall at a bough-holding height (cap + trunk + vine foot, hi-res cut)', 'support',
+                    POST, 'its root pad on the floor (a support: not stood on)', 'grounded (its root pad on the floor)', f'{W1} | COULD {COULD_WOOD}',
+                    'replaces the 1-4 square plank pole (pole-1-4-before-after.jpg); taller: hf678/polebuild.py tiles one vine turn (rows 380/726 of the 1200 px cut)',
+                    'post-53'),
 }
 
 

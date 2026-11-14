@@ -2,7 +2,8 @@
 lowest ground strip. A MOCK-UP, nothing wired: the band is drawn behind everything above `top` (the frame's own pixels are kept there)
 and the foreground leaves below are re-laid over it by a colour mask (bright leaf green). Every sheet prints what it shows.
 
-    python3 undermock.py <band.webp|png> <frame.jpg> <frame label> <px per unit in frame> <top y> <out prefix> [join x]
+    python3 undermock.py <band.webp|png> <frame.jpg> <frame label> <px per unit in frame> <top y> <out prefix> [join x] [keep y]
+([keep y]: frame rows above it are kept in front; default top + 18)
 
 Sizes: the band is 3 px per game unit; in the frame it is drawn at (px per unit in frame) / 3. The seam: the band is tiled from x0 =
 join - band width, so a join between two copies lands at `join` (default the frame's middle) and can be judged in the frame.
@@ -46,10 +47,18 @@ while x < FW:
     x += bt.width
 out = Fr.convert('RGBA'); out.alpha_composite(lay)
 o = np.asarray(out.convert('RGB')).copy(); f = np.asarray(Fr).astype(int)
-o[:top + 18] = f[:top + 18]  # everything above the band's top (the ground strip, Pokey) stays in front
+keep = int(sys.argv[8]) if len(sys.argv) > 8 else top + 18
+o[:keep] = f[:keep]  # everything above (the ground strip, Pokey) stays in front
 r, g, b = f[..., 0], f[..., 1], f[..., 2]
-leaf = (g > r + 25) & (g > b + 15) & (g > 95)
+leaf = ((g > r + 18) & (g > b + 8) & (g > 60)) | ((r > g + 60) & (r > 120))  # leaves, and the red berry among them
 leaf[:FH - 260] = False  # only the foreground leaves along the bottom edge
+# whole leaves only (a colour mask alone left cut-off scraps): close, fill, keep pieces over 1500 px, then take in their dark outline
+from scipy import ndimage as ndi
+leaf = ndi.binary_fill_holes(ndi.binary_closing(leaf, iterations=3))
+lab, n = ndi.label(leaf)
+if n:
+    sz = ndi.sum(leaf, lab, range(1, n + 1)); leaf = np.isin(lab, 1 + np.nonzero(sz > 1500)[0])
+leaf = ndi.binary_dilation(leaf, iterations=3)
 o[leaf] = f[leaf]
 M = Image.fromarray(o.astype(np.uint8))
 pair = Image.new('RGB', (FW * 2 + 20, FH + 110), 'white'); d = ImageDraw.Draw(pair)
