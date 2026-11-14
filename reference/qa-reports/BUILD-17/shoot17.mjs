@@ -85,6 +85,9 @@ for (const diff of DIFFS) for (const [w, h] of PHONES) {
     //  so its next look comes over him in the still)
     const at = await page.evaluate(async (b) => {
       const e = window.__engine(), p = e.player, st = e.currentStage;
+      // (off any vine first, with the engine's own re-grab cooldown: put down near a liana he was caught again the next frame)
+      if (p.isVineSwinging) { e.lastReleasedVineId = p.swingVineId; e.vineCooldownTimer = 2; }
+      p.isVineSwinging = false; p.climbing = false; p.hanging = false;
       const s = st.gen2.sections.find((q) => q.template === b.sec);
       const ps = e.platforms.filter((q) => q.tag?.startsWith(`${s.uid}:`));
       const x0 = Math.min(...ps.map((q) => q.x)), x1 = Math.max(...ps.map((q) => q.x + q.width));
