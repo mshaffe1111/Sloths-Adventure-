@@ -1441,7 +1441,16 @@ export class FirstTimerRun {
     const looking = ((e.cast?.sweepers ?? []) as any[]).some((m) => p.x >= m.s.minX - 40 && p.x <= m.s.maxX + 40 && (m.s.phase === 'hunt' || m.s.phase === 'tell' || m.s.phase === 'act'));
     if (!looking) this.castWarnAt = -1;
     else if (this.castWarnAt < 0) this.castWarnAt = t;
-    if (looking && this.learned.has('hide') && t >= this.castWarnAt + who.heed && !this.jump) {
+    // (on a liana he never lets go toward ground cover: that drops him into the gap (BUILD-17: every rescue on 1-7 was a bot letting go
+    // of a mossy liana mid-swing when the eagle looked). A MOSSY liana is cover while it swings him (1-7 beat 10, stillness.ts inCover's
+    // rope rule): told how to hide, he holds on, no input, until the look is over; on any other liana his swing goes on as before)
+    if (p.isVineSwinging) {
+      const held = (e.vines ?? []).find((v: any) => v.id === p.swingVineId);
+      if (looking && this.learned.has('hide') && t >= this.castWarnAt + who.heed && held?.mossy) {
+        this.hiding = true;
+        return {};
+      }
+    } else if (looking && this.learned.has('hide') && t >= this.castWarnAt + who.heed && !this.jump) {
       const cover = stillCoverNear(e.proto?.bushes ?? [], p.x, p.y);
       if (cover) {
         this.hiding = true;

@@ -78,10 +78,16 @@ const bank = (key: string, after: string | null, w: number): SectionPiece => ({ 
 const hop = (key: string, after: string, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'jump', after, dy: [0, 0], share: [0.3, 0.35], soft: true }, style: 'moss_stone', main: true, landing: true });
 /** a limb over a soft gap: creaky (gives way 1.1 s after he lands; whole on a set-back) or, Easy, a sound bough */
 const limb = (key: string, after: string, creak: boolean): SectionPiece => ({ key, shape: 'branch', w: [150, 160], place: { kind: 'jump', after, dy: [0, 0], share: [0.3, 0.35], soft: true }, style: 'branch', landing: true, ...(creak ? { creak: true } : { main: true }) });
-/** a liana from `after` over a gap and the bank it throws him onto (1-6's World 1 liana rows: w1Swing.ts) */
+/** a liana from `after` over a gap and the bank it throws him onto (1-6's World 1 liana rows: w1Swing.ts). A SHORT gap (any hold flies it:
+ *  1-7's question on a liana is the hide, not the grip, so it never asks 1-6's low hold) lands on a perch 80 px over the bank he left,
+ *  then a bank 80 px down (1-6's lianaRun), so the beat stays on the floor line; `key` is that last bank */
+const SHORT_RISE = 80;
 function liana(key: string, after: string, gap: LianaGap, w = 300): SectionPiece[] {
   const G = W1_LIANA_GAP[gap];
-  return [w1Liana(`${key}l`, after, gap), { key, shape: 'bank', w: [w, w], place: { kind: 'land', after: `${key}l`, dy: [0, 0], share: G.share, ...(G.window ? { window: G.window } : {}) }, style: 'moss_stone', main: true, landing: true }];
+  const short = gap === 'short';
+  const perch = short ? `${key}p` : key;
+  const land: SectionPiece = { key: perch, shape: 'bank', w: [short ? 240 : w, short ? 240 : w], place: { kind: 'land', after: `${key}l`, dy: short ? [-SHORT_RISE, -SHORT_RISE] : [0, 0], share: G.share, ...(G.window ? { window: G.window } : {}) }, style: 'moss_stone', main: true, landing: true };
+  return [w1Liana(`${key}l`, after, gap), land, ...(short ? [{ ...bank(key, perch, w), place: { kind: 'walk' as const, after: perch, dy: [SHORT_RISE, SHORT_RISE] as R2 } }] : [])];
 }
 
 /** a low mossy rock to hop on `on` at `at` (50-56 px, 1-6's stumps: a 34-40 px rock is walked over with no jump, so it is no beat; LABELS §1 a mossy stone stands on ground). A hop is a beat to the
@@ -169,8 +175,8 @@ function creakStill(easy: boolean): Lay {
  *  one is cover while it swings him); the eye over the whole beat, its first pass over the lianas free. Easy: moss floor under them is
  *  World 1's soft pit (a miss is a climb back), and ONE liana */
 function mossyLianas(easy: boolean): Lay {
-  const r1 = liana('b1', 'w1', 'long');
-  const r2 = easy ? [] : liana('b2', 'b1', 'long');
+  const r1 = liana('b1', 'w1', 'short');
+  const r2 = easy ? [] : liana('b2', 'b1', 'short');
   const last = easy ? 'b1' : 'b2';
   return {
     pieces: [bank('a', null, 320), bank('w1', 'a', 340), ...r1, ...r2, bank('w2', last, 260), hop('z', 'w2', 320)],
@@ -188,8 +194,8 @@ function eagleLands(easy: boolean): Lay {
 /** [L] beat 14, the light gap (finale): patches further apart, one creaky limb (Easy sound), a mossy liana pair (Easy one), bare bark only
  *  where the shadow has passed; it ends with him LETTING GO of the last liana onto the far bank (a freeze is never the last beat) */
 function lightGap(easy: boolean): Lay {
-  const r1 = liana('b1', 'w2', 'long');
-  const r2 = easy ? [] : liana('b2', 'b1', 'long');
+  const r1 = liana('b1', 'w2', 'short');
+  const r2 = easy ? [] : liana('b2', 'b1', 'short');
   const last = easy ? 'b1' : 'b2';
   return {
     pieces: [bank('a', null, 320), bank('w1', 'a', 380), limb('k', 'w1', !easy), hop('w2', 'k', 300), ...r1, ...r2, hop('z', last, 360)],
