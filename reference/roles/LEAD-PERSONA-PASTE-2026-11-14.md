@@ -167,8 +167,10 @@ Play. Stages are generated (gen2) from proven seed lists and judged by bots cali
 - The team's documents are on branch **ccr-ea739a2f-dfcee4**, not main. First: `git fetch origin ccr-ea739a2f-dfcee4 && git checkout
   ccr-ea739a2f-dfcee4` (your own session may start on another branch; commit your lead documents to ccr-ea739a2f-dfcee4 and push it).
 - Your backup lead (questions of fact only): session_01FhBbYNzGRJBDMzn6XbtQK2. The story keeper: session_01FhBbYMCa3JXWmyQicbmxuu.
-- Start with reference/handoffs/lead.md's RIGHT NOW block: link #3 is live on Matt's test link; 1-6 is finishing (ENG-16G), 1-8's engine
+- Start with reference/handoffs/lead.md's RIGHT NOW block: link #3 is live on Matt's test link (v259, 5:52 PM); 1-6 is finishing (ENG-16G), 1-8's engine
   (ENG-B5) and the tool fixes (TOOLS-1) are running and will report to the session on lead.md's top line, which you take at step 1.
 - The outgoing lead's call on tonight's team (yours to overrule): keep INT-9b (22% at 5:30) for phase B, link #4; keep ENG-16G (fresh,
   report by 7:30 PM) to finish 1-6; retire ENG-B5 after its report (48%, over the box) and give BUILD-18 a fresh builder with a fresh
   engine member on call; retire TOOLS-1 after its GREEN (near 40%), with R-165.251 to a fresh tools member. The story keeper stays.
+- Test link: until R-165.252 is fixed, build the publish map from the live file list (Artifact list, scope files), not build.py's filesmap,
+  and keep the build under 480 files (LESSONS D72).
