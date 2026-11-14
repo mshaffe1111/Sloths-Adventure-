@@ -1,4 +1,4 @@
-# B5 REPORT (ENG-B5, t-eng-b5 from t-eng-b4@956e33e0). Written 5:20 PM ET 11-14. Code head: see the last line (gates).
+# B5 REPORT (ENG-B5, t-eng-b5 from t-eng-b4@956e33e0). Written 5:20 PM ET 11-14, gates 5:33 PM ET. Code head a957fe4b (src unchanged after it).
 **a. ROLLING HAZARD, done.** rolling.ts (pure rules) + pieces/rollingPiece.ts (PIECE_KINDS after CHASE); data `GeneratedStage.rolling:
 RollSpec[] {kind low|high, dropX, speed, bounce, teach?}`. Set off by HIS x (`rollAhead`, ~350-370 px at a full run); drop-in tell 0.8 s
 (TELL_MIN 0.5; from up to 480 px, clamped under the HUD band), a thunk (playLand), 0.15 s+ of roll after it; seen 1.0 s+ (Easy 1.1) from
@@ -44,8 +44,17 @@ a gen2 `h` letter lay (rolling is laid by data by the builder).
 (s2) ENGINE: the C4 edge under the chase lead: centre the disc on screen at the edge (or size by the gap), re-run B5/contrast.mjs to the
 bar. (s3) CRITIC: add '1-98' to limits.json scenarios (run.mjs already accepts it) so CI's drawcheck plays a laid chase with hazards.
 (s4) DESIGNER: confirm after-crack nut = a heart, ROLL_EASY, and 320 px phones at 0.90 s.
-**Method update (stage-piece.md):** a clip tool presses jump with input.triggerTouchUp/releaseTouchUp (D69); his x is his MIDDLE, y his
-FEET; a hazard's lay check takes the platforms (rocks), not only the spec. **Learned:** a camera change moves every screen-anchored
-draw (the edge): re-measure them with the new framing; cache keys must include the data a harness can swap.
-**Lessons applied:** D6, D16, D19, D23/D36, D40, D57, D59, D62, D63, D64, D66, D67, D69; law 22 (the fruit fixed at its phasing, no test
-loosened; Easy's landing-at-his-feet fixed at the tell, not the test). **Turnover:** engine-core.md 0w + 0v (fe0aa1a0... see git log).
+**Method update (stage-piece.md):** clip tools press jump with input.triggerTouchUp/releaseTouchUp (D69); his x is his MIDDLE, y his FEET;
+a hazard's lay check takes the platforms (rocks). **Learned:** a camera change moves every screen-anchored draw (the edge): re-measure.
+**Gates on a957fe4b (src) / ced9ea4e (head), LAWS 5 scoped (src changed):** tsc PASS; FULL SUITE (the CLAUDE.md glob, one run in
+this tree on ced9ea4e): SUITE_RESULT; chaseBots 9 pass + 1 todo (B4's child), tierBots 7/7, engine tools 33/33, rolling 13/13,
+chaseCamera 4/4, chaseFixtureStage 2/2, chaseLay + fixture 12/12; drawcheck PASS (22/22, 663 s) + the 1-98 fixture PASS both ways; lock
+102/102 stages unchanged vs 956e33e0 (lockall --layouts 16); build PASS, chunkcheck PASS, artcheck PASS, generality PASS, knowncheck
+PASS, roadmapcheck PASS (after unshallow). Not run: clipcheck, kbdcheck, buildcheck, seedlist --check (no menu, keyboard or seed change).
+**EXACT NEXT STEP for BUILD-18 (1-8's builder):** READY: lay `rolling` specs on 1-8's stage data (teach nut + teach fruit on beats 1-2,
+nuts/fruit on K stretches and L), each passing rollProblems + rollGroundProblems (plain run-in, no hop rock, no gap; 1.5 s+ apart);
+the camera lead, the bots' reading and the chase are automatic from that data; check it on the page with `?fixture=chase` habits
+(B5/shoot.mjs works on any stage id). NOT READY: the phased liana (NEW 4), the still fork's eagle (NEW 7), the tip (NEW 8), painted
+nut/fruit art (s1), the edge under the lead (s2). OPEN for the Designer: B4's (d), the child tier reaches the fork on 1 of 3 seeds on
+Normal (every miss a fall at a 120 px gap: narrower stretch gaps, or accept?), plus s4 (after-crack nut = heart, ROLL_EASY, 320 px).
+**Lessons:** D6, D16, D19, D23/D36, D40, D57, D59, D62, D63, D64, D66, D67, D69; law 22 (no test loosened). **Turnover:** engine-core.md 0w + 0v.
