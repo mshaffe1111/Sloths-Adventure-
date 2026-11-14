@@ -8,7 +8,9 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { AHEAD, heroBox, landingAhead, perchBox, showBoth, SWING_CAM, SWING_SEEN, swingWideEase, swingWideTarget, type Box } from './cameraFollow.ts';
+import { AHEAD, landingAhead, perchBox, showBoth, SWING_CAM, SWING_SEEN, swingHeroBox, swingWideEase, swingWideTarget, type Box } from './cameraFollow.ts';
+import { VINE_FRAMES, VINE_BODY_PX } from './heroVineData.ts';
+import { VINE_HANG, vinePose, vineTrail } from './heroVine.ts';
 import { LETGO_FLIGHTS, pressWindow, setTimedSwing, type AirBody } from './physics.ts';
 import { lianaRelease } from './gen2/pipeline.ts';
 import { gripsOf } from './levelCheck.ts';
@@ -36,7 +38,7 @@ test('THE FAR CAP is the camera\'s own: every press that sees the perch under SW
   const vw = SWING_CAM.refVw * SWING_CAM.out;
   const vh = vw * (915 / 412);
   let seen = 0;
-  for (const [near, w] of [[460, 120], [500, 120], [480, 140], [380, 240], [340, 280]] as const) {
+  for (const [near, w] of [[400, 120], [420, 120], [440, 120], [400, 140], [360, 160], [340, 200]] as const) {
     for (const r of landingPresses(near, w)) {
       if (near + w > r.x + SWING_SEEN) continue;
       seen++;
@@ -44,9 +46,9 @@ test('THE FAR CAP is the camera\'s own: every press that sees the perch under SW
       const feet = r.y + 60;
       const plain = { x: r.x - vw * 0.45, y: feet - vh * 0.55 };
       const box = perchBox(near, near + w, BOUGH_Y, 1);
-      const v = showBoth(plain.x, plain.y, r.x, feet, box, vw, vh);
+      const v = showBoth(plain.x, plain.y, r.x, feet, box, vw, vh, swingHeroBox(r.x, feet, 1));
       assert.ok(inView(box, v, vw, vh), `a ${w} px perch ${near} px out: not whole in view as he presses at x ${Math.round(r.x)}`);
-      assert.ok(inView(heroBox(r.x, feet), v, vw, vh, AHEAD.heroPad), `and Pokey left the view (x ${Math.round(r.x)})`);
+      assert.ok(inView(swingHeroBox(r.x, feet, 1), v, vw, vh, AHEAD.heroPad), `and his drawn swing pose left the view (x ${Math.round(r.x)})`);
     }
   }
   assert.ok(seen >= 20, `only ${seen} seen presses: the test proves nothing`);
@@ -58,7 +60,7 @@ test('gen2 lays a dialled liana\'s perch only where its landing presses see it w
   // (the perch's width did not matter to the window before: he lands on its near part; now its far end must be seen)
   assert.equal(lianaRelease(v, sw, { x: 540, y: BOUGH_Y, w: 240 }, 'normal'), 0, 'a 240 px perch 540 px out is past what he sees as he presses');
   assert.equal(lianaRelease(v, sw, { x: 420, y: BOUGH_Y, w: 240 }, 'normal'), 0, 'and so is one 420 px out');
-  assert.ok(lianaRelease(v, sw, { x: 480, y: BOUGH_Y, w: 120 }, 'normal') >= 0.4, 'a narrow FAR perch 480 px out still gives the foot its window');
+  assert.ok(lianaRelease(v, sw, { x: 420, y: BOUGH_Y, w: 120 }, 'normal') >= 0.4, 'a narrow FAR perch 420 px out still gives the foot its window');
   // a dial-free liana (Worlds 6-8) is as it was: its window does not look at the perch's far end
   const free = { amp: 0.45, period: 2.85 };
   assert.equal(lianaRelease(v, free, { x: 380, y: BOUGH_Y, w: 240 }, 'normal'), lianaRelease(v, free, { x: 380, y: BOUGH_Y, w: 120 }, 'normal'));
@@ -76,6 +78,27 @@ test('a swing\'s landing is the WHOLE perch, end to end (at most SWING_CAM.perch
   // leftward the same, mirrored
   const back = landingAhead(0, -1, hang, [{ x: -610, y: BOUGH_Y, width: 130 }], [], true)!;
   assert.ok(back.x0 <= -610 && back.x1 >= -480);
+});
+
+test('SWING_CAM.body holds ALL of his drawn swing pose: measured from the poses\' own frames through every swing (heroVine drawVineHang)', () => {
+  // the drawn picture's corners about his swing point, as drawVineHang turns it (facing right; left is its mirror), over whole swings
+  const K = VINE_HANG / VINE_BODY_PX, SETTLE = 0.5;
+  let back = 0, ahead = 0;
+  for (const amp of [0.3, 0.45]) for (const T of [2.85, 3.3]) for (let i = 0; i < 400; i++) {
+    const th = (2 * Math.PI * i) / 400, a = amp * Math.sin(th), om = amp * ((2 * Math.PI) / T) * Math.cos(th);
+    // (the forward sweep, where he presses toward the perch: the view leads him then)
+    if (om <= 0) continue;
+    const f = VINE_FRAMES[vinePose(a, om, 1)];
+    const gx = -Math.sin(a) * VINE_HANG;
+    const r = f.phi + SETTLE * (f.psi - f.phi) - a + vineTrail(om);
+    for (const [x, y] of [[-f.gx * K, -f.gy * K], [(f.w - f.gx) * K, -f.gy * K], [-f.gx * K, (f.h - f.gy) * K], [(f.w - f.gx) * K, (f.h - f.gy) * K]]) {
+      const wx = gx + x * Math.cos(r) - y * Math.sin(r);
+      back = Math.max(back, -wx);
+      ahead = Math.max(ahead, wx);
+    }
+  }
+  assert.ok(SWING_CAM.body.back >= back - 3, `drawn ${back.toFixed(0)} px behind his swing point, the view keeps ${SWING_CAM.body.back}`);
+  assert.ok(SWING_CAM.body.back <= back + 8, `the view keeps ${SWING_CAM.body.back} px behind him for a pose drawn ${back.toFixed(0)}: the cap is shorter than it needs`);
 });
 
 test('the swing ease: upright only, out to at most SWING_CAM.out in ~0.67 s, back in ~1 s; settles exactly', () => {
@@ -113,9 +136,9 @@ function setup(w: number, h: number, plats: Array<Partial<Platform>>, vines: Arr
 const ledge = (id: number, x: number, width: number): Partial<Platform> => ({ id, x, y: FLOOR, width, height: 200, type: 'solid' });
 
 test('the real engine, upright: swinging toward a FAR perch, the view eases out past the level\'s height (sky over it), shows the WHOLE perch at every frame gen2 counts as seeing it, and eases back in once he is down', () => {
-  // the liana 400 px over the bough he left (anchor at 1300), a 120 px perch 480 px past the anchor, level with the bough
+  // the liana 400 px over the bough he left (anchor at 1300), a 120 px perch 420 px past the anchor (FAR at the cap), level with the bough
   const vine: Partial<Vine> = { id: 9, x: 1300, topY: FLOOR - 400, bottomY: FLOOR + 10, vineType: 'swing_liana', isSwingingVine: true, swaySpeed: 1.1, swayPhase: 0 };
-  const perch = ledge(2, 1300 + 480, 120);
+  const perch = ledge(2, 1300 + 420, 120);
   for (const [w, h] of [[412, 915], [390, 844], [400, 880]] as const) {
     const { r, e } = setup(w, h, [ledge(1, 0, 1100), perch, ledge(3, 2400, 2000)], [vine]);
     const usual = e.zoom as number;
@@ -123,15 +146,18 @@ test('the real engine, upright: swinging toward a FAR perch, the view eases out 
     r.swing(vine as Vine, { angle: -0.4, omega: 0.5, len: 400 });
     let sweetSeen = 0;
     let sweetMissed = '';
+    let bodyOut = '';
     for (let i = 0; i < 240; i++) {
       r.frame({ right: true });
       assert.ok(r.p.isVineSwinging, 'still on the liana');
       // (after the ease has had a swing to settle, at every frame of a forward sweep from which gen2 counts a press as seeing the
       // perch: SWING_SEEN, the cap's own claim)
       const om = r.p.swingAngularVelocity ?? 0;
-      if (i >= 30 && om > 0 && r.p.x + SWING_SEEN >= 1780 + 120) {
+      // (all of his drawn swing pose stays in at the back edge, every frame once widened: SWING_CAM.body)
+      if (i >= 30 && r.p.x - SWING_CAM.body.back < (e.camera.x as number) - 1) bodyOut ||= `x ${Math.round(r.p.x)} view from ${Math.round(e.camera.x)}`;
+      if (i >= 30 && om > 0 && r.p.x + SWING_SEEN >= 1720 + 120) {
         const vx = e.camera.x as number, vwNow = e.camera.viewportWidth as number;
-        if (1780 + 120 <= vx + vwNow * AHEAD.pad.r + 1 && r.p.x - 28 >= vx) sweetSeen++;
+        if (1720 + 120 <= vx + vwNow * AHEAD.pad.r + 1 && r.p.x - SWING_CAM.body.back >= vx) sweetSeen++;
         else sweetMissed ||= `x ${Math.round(r.p.x)} view ${Math.round(vx)}..${Math.round(vx + vwNow)}`;
       }
     }
@@ -139,10 +165,11 @@ test('the real engine, upright: swinging toward a FAR perch, the view eases out 
     assert.ok(e.camera.viewportWidth > usualVw * 1.29, `${w}x${h}: ${Math.round(e.camera.viewportWidth)} px wide, usual ${Math.round(usualVw)}`);
     assert.ok(e.camera.viewportHeight > 900, `${w}x${h}: the level's height still caps it (${Math.round(e.camera.viewportHeight)} px tall)`);
     assert.ok(Math.abs(e.camera.y + e.camera.viewportHeight - 900) < 1, `${w}x${h}: the view's foot is the level's foot`);
+    assert.equal(bodyOut, '', `${w}x${h}: his drawn swing pose went out at the back edge`);
     assert.equal(sweetMissed, '', `${w}x${h}: the whole perch was out of view where SWING_SEEN says he sees it (${sweetMissed})`);
     assert.ok(sweetSeen >= 20, `${w}x${h}: only ${sweetSeen} seeing frames (the test proves nothing)`);
     // down on the perch: back in to the usual view (95% in a second, settled within two)
-    r.stand(1300 + 520, FLOOR);
+    r.stand(1300 + 470, FLOOR);
     for (let i = 0; i < 60; i++) r.frame();
     assert.ok(Math.abs(e.zoom - usual) < 1e-6, `${w}x${h}: still widened after landing (zoom ${e.zoom.toFixed(3)})`);
   }
@@ -150,7 +177,7 @@ test('the real engine, upright: swinging toward a FAR perch, the view eases out 
 
 test('the real engine, sideways: a swing never widens the view', () => {
   const vine: Partial<Vine> = { id: 9, x: 1300, topY: FLOOR - 400, bottomY: FLOOR + 10, vineType: 'swing_liana', isSwingingVine: true, swaySpeed: 1.1, swayPhase: 0 };
-  const { r, e } = setup(844, 390, [ledge(1, 0, 1100), ledge(2, 1780, 120), ledge(3, 2400, 2000)], [vine]);
+  const { r, e } = setup(844, 390, [ledge(1, 0, 1100), ledge(2, 1720, 120), ledge(3, 2400, 2000)], [vine]);
   const usual = e.zoom as number;
   r.swing(vine as Vine, { angle: -0.4, omega: 0.5, len: 400 });
   for (let i = 0; i < 60; i++) r.frame({ right: true });

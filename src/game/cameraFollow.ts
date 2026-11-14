@@ -434,7 +434,20 @@ export const SWING_CAM = {
    * applyZoom: the level's height x 0.45). SWING_SEEN is figured on it, so a perch it passes is whole in view on every one of them
    */
   refVw: 405,
+  /**
+   * his DRAWN body on a swing, from his swing point (p.x) (px of world): the swing pose turns about his hands a body's length up the vine
+   * and trails the swing (heroVine.ts drawVineHang), so through the forward sweep he is drawn up to 91 px behind it and 35 px ahead
+   * (swingCam.test.ts measures it from the poses' own frames). The view keeps all of it, not just his 56 px collider (heroBox): the first
+   * cap (471 px) let the forward sweep cut his head off at the back edge (ENG-S1's first still, 412 x 915)
+   */
+  body: { back: 91, ahead: 35 },
 } as const;
+
+/** Pokey's room on a swing, facing `facing` (his feet at px, py): his drawn swing pose (SWING_CAM.body), as tall as heroBox */
+export function swingHeroBox(px: number, py: number, facing: number): Box {
+  const B = SWING_CAM.body;
+  return facing >= 0 ? { x0: px - B.back, x1: px + B.ahead, y0: py - 104, y1: py + 12 } : { x0: px - B.ahead, x1: px + B.back, y0: py - 104, y1: py + 12 };
+}
 
 /** a swing's landing: the perch from its near end (`near`) to its far end (`far`), at most SWING_CAM.perch of it, and the space over it */
 export function perchBox(near: number, far: number, y: number, facing: number): Box {
@@ -464,7 +477,7 @@ export function swingWideEase(k: number, target: number, dt: number): number {
  * The view's top-left that shows `land` as well as Pokey (feet at px, py), moved as little as it can be from (tx, ty), the view the
  * camera wanted anyway. Pokey's own room comes first.
  */
-export function showBoth(tx: number, ty: number, px: number, py: number, land: Box, vw: number, vh: number): { x: number; y: number } {
+export function showBoth(tx: number, ty: number, px: number, py: number, land: Box, vw: number, vh: number, hero: Box = heroBox(px, py)): { x: number; y: number } {
   const P = AHEAD.pad, Q = AHEAD.heroPad;
   const fit = (t: number, l0: number, l1: number, lo: number, hi: number, a: number, b: number, hlo: number, hhi: number, size: number) => {
     // the landing inside the clear part of the view ...
@@ -474,7 +487,7 @@ export function showBoth(tx: number, ty: number, px: number, py: number, land: B
     v = Math.max(v, b - size * hhi);
     return Math.min(v, a - size * hlo);
   };
-  const h = heroBox(px, py);
+  const h = hero;
   return { x: fit(tx, land.x0, land.x1, P.l, P.r, h.x0, h.x1, Q.l, Q.r, vw), y: fit(ty, land.y0, land.y1, P.t, P.b, h.y0, h.y1, Q.t, Q.b, vh) };
 }
 
@@ -492,9 +505,9 @@ export function keepHeroX(camX: number, px: number, vw: number): number {
 
 /**
  * THE FAR CAP, in one place (R-165.225): how far ahead of his middle, at the moment he presses to let go, the far end of a perch may lie
- * and still be whole in the view at the swing's full ease on the narrowest gate phone: him led to the back edge (the engine keeps his
- * middle HERO_KEEP in, or his half body plus AHEAD.heroPad, whichever is more), the perch inside AHEAD.pad's clear part ahead. gen2 counts
+ * and still be whole in the view at the swing's full ease on the narrowest gate phone: him led to the back edge (ALL of his drawn swing
+ * pose in, SWING_CAM.body, plus AHEAD.heroPad), the perch inside AHEAD.pad's clear part ahead. gen2 counts
  * a release press only if its perch's far end is within this of him (pipeline lianaRelease), so no liana it lays throws him at a perch
- * he cannot see whole. 472 px.
+ * he cannot see whole. 414 px.
  */
-export const SWING_SEEN = Math.floor(AHEAD.pad.r * SWING_CAM.out * SWING_CAM.refVw - Math.max(HERO_KEEP, 28 + AHEAD.heroPad.l * SWING_CAM.out * SWING_CAM.refVw));
+export const SWING_SEEN = Math.floor(AHEAD.pad.r * SWING_CAM.out * SWING_CAM.refVw - Math.max(HERO_KEEP, SWING_CAM.body.back + AHEAD.heroPad.l * SWING_CAM.out * SWING_CAM.refVw));

@@ -14,7 +14,8 @@ import { W1_LIANA_GAP, W1_SWING_SECTIONS, withSwing } from './w1Swing.ts';
 
 // 1-6.md's measured liana: 420 px long, the ledge it leaves 400 px under its anchor; the perch level with that ledge, `near` px past
 // the anchor, `w` wide. Since Matt's "shorter swings" (R-165.225, 11-14) a dialled liana's perch is laid only where he sees it whole as
-// he presses (cameraFollow.ts SWING_SEEN): FAR is a narrow perch (120-140 px) 460-500 px out, no longer 530-560 (ENG-S1 cap-seen.out.txt)
+// he presses, all of him in view too (cameraFollow.ts SWING_SEEN): FAR is a narrow perch (120-140 px) ~400-440 px out, no longer 530-560
+// (ENG-S1 cap-seen.out.txt)
 const LIANA_16 = { x: 0, topY: 0, bottomY: 420 };
 const win = (near: number, d: 'normal' | 'easy', grip?: LianaSwing['grip'], w = 300) =>
   lianaRelease(LIANA_16, { amp: VINE.amp, period: VINE.period[d], ...(grip ? { grip } : {}) }, { x: near, y: 400, w }, d);
@@ -28,16 +29,16 @@ test('the grip dial: a liana\'s reach is checked at the holds its row names (pre
     const need = LIANA.window[d];
     // FAR (the lead's ruling (A), 11-14): a narrow perch at the cap. The 'low' dial checks the foot alone and flies it; the top never
     // does; and 1-6.md's old FAR (540 px, a wide bough) is past what he sees as he presses, so it is never laid
-    const far = 480;
+    const far = 420;
     assert.ok(win(far, d, 'low', 120) >= need, `${d} ${far} px: the foot's window ${win(far, d, 'low', 120)} s is under ${need} s`);
     assert.equal(win(far, d, 'high', 120), 0, `${d} ${far} px: the top flies FAR`);
     assert.equal(win(540, d, 'low', 300), 0, `${d}: the old FAR perch (540 px, 300 wide) is still laid`);
     // LONG: the low holds fly it, the top does not (1-6.md: "top 0 ms"): a 'high' liana is never laid over it
     const long = d === 'normal' ? 500 : 480;
     assert.ok(win(long, d) >= need && win(long, d, 'high') === 0, `${d} ${long} px: LONG from the low holds ${win(long, d)} s, from the top ${win(long, d, 'high')} s`);
-    // SHORT: the top still flies it, so every hold does ("climb high, then let go"), onto World 1's SHORT perch (w1Swing.ts, laid 160-200
-    // px out, 240-320 wide with Easy's pad: lay-s1.out.txt)
-    assert.ok(win(200, d, 'high', 260) >= need, `${d}: SHORT from the top ${win(200, d, 'high', 260)} s`);
+    // SHORT: the top still flies it, so every hold does ("climb high, then let go"), onto World 1's SHORT perch as the cap lays it
+    // (w1Swing.ts: 80-185 px out, 240-320 wide with Easy's pad, its far end within ~450: ENG-S1 lay-s1.out.txt)
+    assert.ok(win(160, d, 'high', 260) >= need, `${d}: SHORT from the top ${win(160, d, 'high', 260)} s`);
   }
   // 'high' is the highest hold he can take (SWING.minLen down it), whatever the liana's length
   assert.deepEqual(gripsOf('high', 420), [80 / 420]);
@@ -54,7 +55,7 @@ test('a perch band is flown at its liana\'s own grip: a cached window of another
   const low = band('low')!;
   const plain = band()!;
   assert.ok(high[1] < 460, `the top's band reaches ${high[1]} px`);
-  assert.ok(low[1] >= 500, `the foot's band reaches only ${low[1]} px: the top's cached windows were reused`);
+  assert.ok(low[1] >= 440, `the foot's band reaches only ${low[1]} px: the top's cached windows were reused`);
   // and the plain band (no dial) is the level check's of every liana before it: unchanged
   assert.ok(plain[1] < low[1]);
 });
@@ -141,9 +142,11 @@ test('built: a liana row with the grip dial reaches the stage\'s Vine, and the s
       for (const s of st.gen2.sections.filter((x) => x.template === far.id)) {
         const v = st.vines.find((x) => x.vineType === 'swing_liana' && x.grip === 'low');
         assert.ok(v, `${what}: the built liana lost its grip`);
-        // its perch lies past the ~380 px the plain check links from any hold (sl.out.txt): only the dial's flight reaches it
+        // its perch lies past the ~380 px the plain check links from any hold (A1-SWING sl.out.txt: 380 the last it links, 400 none): only
+        // the dial's flight reaches it (since R-165.225 the cap keeps a FAR perch within ~440, so the line is the plain check's own 380)
         const perch = st.platforms.filter((p) => p.x > v.x + 40 && Math.abs(p.y - (v.bottomY - 10)) < 120).sort((a, b) => a.x - b.x)[0];
-        assert.ok(perch && perch.x - v.x > 400, `${what}: the FAR perch is ${perch && perch.x - v.x} px past the anchor (${s.uid})`);
+        // (Easy lays FAR as LONG, 1-6.md: under the cap its FAR is LONG's distance, 364-371 px on 1-6's kit; so on Easy a LONG gap at least)
+        assert.ok(perch && perch.x - v.x > (d === 'normal' ? 380 : 340), `${what}: the FAR perch is ${perch && perch.x - v.x} px past the anchor (${s.uid})`);
         built++;
       }
     }

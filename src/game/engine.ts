@@ -137,7 +137,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, swingHeroBox, AHEAD, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -6252,7 +6252,8 @@ export class GameEngine {
       const land = this.landingToShow(dt);
       landShown = land;
       if (land) {
-        const v = showBoth(this.camera.targetX, this.camera.targetY, p.x, p.y, land, vw, vh);
+        // (on a swing, upright, ALL of his drawn swing pose beside the landing: it trails 91 px behind his swing point, SWING_CAM.body)
+        const v = showBoth(this.camera.targetX, this.camera.targetY, p.x, p.y, land, vw, vh, sv && this.swingWide > 1 ? swingHeroBox(p.x, p.y, facing) : undefined);
         landX = v.x - this.camera.targetX;
         landY = v.y - this.camera.targetY;
       }
@@ -6329,6 +6330,12 @@ export class GameEngine {
     const teaK = this.teaAimK();
     const kept = keepHeroX(this.camera.x, p.x, vw);
     this.camera.x = kept + (this.camera.x - kept) * teaK;
+    // (and on a widened swing the eased camera keeps ALL of his drawn pose in, behind him too: SWING_CAM.body, cameraFollow.ts)
+    if (sv && this.swingWide > 1) {
+      const hb = swingHeroBox(p.x, p.y, facing);
+      const pad = AHEAD.heroPad.l * vw;
+      this.camera.x = Math.max(hb.x1 + pad - vw, Math.min(hb.x0 - pad, this.camera.x));
+    }
     // (standing, never even for a moment while the view eases)
     if (p.grounded) this.camera.y = Math.min(this.camera.y, underHud(p.y, band));
     // (and rising past a plain jump's height, toward the same hold, but never more than CAM_RISE_STEP a frame: the eased view trailed a
