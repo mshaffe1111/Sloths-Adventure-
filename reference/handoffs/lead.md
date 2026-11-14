@@ -97,7 +97,7 @@ like smoke); (4) "push" for a release.
 merges 1-6 into link #3, every gate once, stills/clips -> the lead judges -> EnK5 (INT-9.md); it also reviews line by line, at xhigh,
 the engine lines high-tier builders wrote 11-14 (BUILD-16b goals.ts seal, BUILD-16c/16d bot code; BUILD-17's 5 groups already PASS)
 (D70, R-165.246). 3. New lead: BUILD-18 (1-8) on ENG-B4's engine (t-eng-b4@956e33e0; B4 REPORT's ready packets a nut/fruit, b chase
-camera lead, c drawcheck fixture; the child-at-the-fork designer question), after R-165.246's lift pass.
+camera lead, c drawcheck fixture; the child-at-the-fork designer question), after R-165.246's lift pass (an engine member at xhigh; packet to write from level.md rule 22 and the ENGINE-WORTHY lists in BUILD-16d/17/17b REPORTs).
 **Turnover tonight (Matt, 11-14 12:11 PM ET):** after 1-6 and 1-7 are on his test link (~8 PM ET) a new lead takes over (PM.md §8);
 1-8 (the chase: ENG-B4 engine, then BUILD-18) is the new lead's FIRST job. This lead becomes the backup.
 **Matt's decisions today (11-14):** easier 1-1 (fewer doubles, easier jumps; props off ledges R-165.226/.228); 1-4 rocks/pods slower +
@@ -112,7 +112,7 @@ real presses, 11:39 AM); FIX-15 fixing. The lead had passed link #1's gate on a 
 | Member | Session | Branch | Job |
 |---|---|---|---|
 | ENG-16F | session_01FhBbYNHM3zg2cqxN8NoKn4 | t-build-16 (xhigh) | 1-6: FAR rule rewrite, 26 old reds (old-1-6 tests retire with R-165.238), kid Normal rescues frame by frame, relist, stills, clips |
-| INT-9 | session_01FhBbYKSqV5AeZmMEkQ1msT | t-int-9 (from t-int-8, xhigh) | link #3: clip tool + FIX-15/15b + TIPS + chains + 1-7 now; the new 1-6 when ENG-16E is GREEN; R-165.238 |
+| INT-9 | session_01FhBbYKSqV5AeZmMEkQ1msT | t-int-9 (from t-int-8, xhigh) | link #3: clip tool + FIX-15/15b + TIPS + chains + 1-7 + POLISH-10 + journal lines now; the new 1-6 when ENG-16F is GREEN; R-165.238 |
 **Done today and waiting for the next integrator:** t-eng-s5@a2743943 (chains, GREEN), t-int-8-clip@315548d1 (clip tool; full run UNRUN), t-keeper-17@a8dd2409 (1-7 lines).
 **Done, waiting for INT-9:** t-tips@a054e8e7 (GREEN). **Queue (packets in reference/packets/2026-11-14/), in order as slots free:**
 INT-9 (link #3: the new 1-6 + 1-7 + TIPS + FIX-15/15b + chains + clip tool + R-165.238; packet written). For the new lead after

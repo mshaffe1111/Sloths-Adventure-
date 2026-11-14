@@ -87,7 +87,7 @@ Everything else is yours on his standing permission (11-07).
 2. **Answer pushback first.** A PUSHBACK.md or a send_message from a member gets a decision before more work: adopt (re-issue the
    packet), or decline with the reason in the packet's next version. Never ignore one.
 3. **Suggestions** go into the graph as packets or onto the roadmap with an R-number; tell the member which.
-4. **Every result goes to the Critic** (a separate fresh agent). PASS: merge into the release candidate branch (never main), update STATE.md. REJECT: the 3-strike
+4. **The lead judges every result; the Critic is used sparingly** (Matt 11-13: releases, plans and contested calls; a separate fresh agent). PASS: merge into the release candidate branch (never main), update STATE.md. REJECT: the 3-strike
    breaker (TEAM.md rule 4).
 5. **Look yourself** at every PASS that changes the screen, upright and sideways, the way Matt will, before it counts (LAWS 9, 14).
 6. **A new or changed role card, method or brief goes to a Critic cold before anyone uses it** (a fresh one for a new document;
@@ -172,6 +172,7 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
 - Package-lock.json from an install is never committed.
 
 ## Model and effort (standing rule)
+**SUPERSEDED 11-14 1:51 PM ET (Matt: "we only are going up to extra high right now. I find max doesn't really bring what I expect for the cost... We should be using builders at least high"): every member at high or xhigh (xhigh for engine, integration, merges, the hardest fixes); no max, no medium, never low. The 11-09 text below is history.**
 **STANDING RULE for every lead (Matt, 11-09 10:35 PM ET): "Lets make sure all helpers have the appropriate opus levels (high or medium) based on needs. If you think max would help ask me and I will approve or deny. This is a standing rule for all leads going forward. Cant afford shoddy work being cheap."** Every member runs on Opus (claude-opus-5-5) at effort high or medium, by what the task needs; never low to save money. Max only with Matt's yes, asked as one question with the reason. This replaces the 10-28 and 11-07 effort lines (low for written steps; max the lead's call).
 
 ## 8. Lead rotation (Matt, 11-07: clear the lead periodically so it doesn't drift or grow biased)
