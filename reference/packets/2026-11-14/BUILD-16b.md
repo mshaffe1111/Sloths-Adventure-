@@ -1,4 +1,4 @@
-# BUILD-16b: finish 1-6 "First Lianas" from BUILD-16's handover (R-165.203). Opus 5.5 high (content; a level builder). Written 10:45 AM ET 11-14.
+# BUILD-16b: finish 1-6 "First Lianas" from BUILD-16's handover (R-165.203). Opus 5.5 high (content; a level builder). Written 10:40 AM ET 11-14.
 Branch: continue t-build-16 from origin/t-build-16@9b167cf2 (BUILD-16 stopped at 38% context, measured). READ FIRST, IN ORDER:
 reference/methods/level.md (Building rules first), reference/design/LEVEL-BAR.md, STAGE-RULES.md, DIFFICULTY.md (:61 targets), then
 reference/qa-reports/BUILD-16/REPORT.md on t-build-16: its EXACT NEXT STEP 1-6 is your packet, with the lead's rulings below.
