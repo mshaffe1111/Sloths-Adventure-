@@ -1,0 +1,5 @@
+upright-412x915-normal {"stage":"1-7","seed":2,"diff":"(unset: Normal)","easy":false,"eagles":9}
+upright-412x915-normal b1-bush {"phase":"hunt","eye":3096,"perched":false,"x":3183,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b2-shake {"phase":"hunt","eye":4877,"perched":false,"x":4964,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b3-road {"phase":"hunt","eye":6230,"perched":false,"x":6312,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b5-bark {"phase":"hunt","eye":11389,"perched":false,"x":11475,"hidden":0,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
