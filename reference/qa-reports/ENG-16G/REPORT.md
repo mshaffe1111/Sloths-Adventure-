@@ -126,6 +126,17 @@ STEP 3). A miss into a soft pit is the stage's designed cost (1-6.md: "a miss dr
 pitWayBack, as ENG-16F's B3/B4) unless the stair back is missing under these lianas (STAGE). First check for the next engineer: on s20
 and s36, is there a stair back to the take-off bank under that liana (w1Pits.ts / pipeline backPit), and does the kid take it?
 
+### 6. The gates on 498f8d61 (the final code head; later commits are reference/ only)
+- Lock re-check vs 68e4bce1 on 498f8d61 (`lock-check-498f8d61.txt`; covers the petal commit and the relist): 101/102 stages unchanged,
+  1-6 intended, exit 0. The first check (`lock-check.txt`, before the petal commit): 101/102, 1-6 intended (vines only).
+- The whole suite (CLAUDE.md's glob, 6 shards as CI, 2 workers, from a side worktree at 498f8d61): (SHARDS)
+- **RED: src/game/requiredMove.test.ts:8** ("the limited bot: without the double or the bounce, it stops short on 1-6"): "without the
+  bounce: shrine on 0 rescues, 0 mushroom bounces". Its premise ("1-6 on main needs both the second jump and the bounce") is the OLD
+  hand-built 1-6's, deleted by ENG-16F; the new 1-6 lays no mushroom, and on the relisted seed 1 the no-bounce bot reaches the shrine on
+  its own. It passed on the old list only because that seed's no-bounce run fell (a soft fall counts against "on its own"). Not patched
+  (law 22; and 1-6 moves again with the petal lay): the next packet retargets the test to a stage whose route needs the bounce (the
+  gate's intent), and checks the double half on the new 1-6 still bites.
+
 ## Polish check
 - No stills or clips were shot: the lead's ruling 6:23 PM ET (the walked-span petal lay will move 1-6; no polish on what is being
   replaced). The shoot scripts are ready for the next engineer: `node reference/qa-reports/ENG-16G/shoot.mjs <sha> normal|easy` (CLIP=1
