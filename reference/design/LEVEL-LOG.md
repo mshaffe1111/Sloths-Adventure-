@@ -58,3 +58,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | POLISH-1 (Opus high) | 1-4: crown sure vine (planted), +2 beats & 2 rests (re-rolled once, 100/100), bubbles -> painted tufts, bots 176 -> 242/360; found the fig gate root and the crumble strand | $10.03 | ~75 min |
 | FEEL-VINE (Opus xhigh) | vine grab/vault/step/catch: drawn-only settle (on-screen jerk 40-50 px -> 4-10), 7 planted tests, real-page clip recorder, method feel-fix.md; camera handed to FEEL-CAM | ~$9.92+ (meter after a container restart) | ~90 min |
 | POLISH-2 (Opus high) | Matt's fig gate (lid from below, 1-2's bramble, lock pop, lock sound; 6 tests), tufts v2, log end, stills for the lead | $12.39 | ~70 min |
+| FEEL-CAM (Opus xhigh) | camera re-pick eases on vine grab/leap/exit (jerk 17.5->2.6 etc.), cuts stay cuts, planted tests, real-page measurer | $7.16 | ~60 min |
