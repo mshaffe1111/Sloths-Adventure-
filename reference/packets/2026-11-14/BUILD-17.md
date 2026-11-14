@@ -8,6 +8,12 @@ petals, node string), ENG-E1 + ENG-E2 REPORTs (what lays), and how 1-6 was built
    captions print eagle top vs the HUD sign's DOM bottom. ENGINE LINES: list file:line in REPORT for the xhigh integrator.
 2. Hanging-moss still with him actually hanging (player.hanging true, Dot's box dismissed) and the mossy liana (isVineSwinging true),
    both orientations. A still proves only what you can see in it (D69).
+## Dot's lines: APPROVED by KEEPER-17 (12:27 PM ET), verbatim in reference/story/lines-1-7.md on origin/t-keeper-17@a8dd2409
+Take them from that file exactly (hold them verbatim in a test). Keeper's flags are rulings: (a) "keep still", never "hold still";
+(b) no line says "it only sees what moves"; (c) the locked exit: key 9b to 1-7 alone (SEALED_LINES is world:type; never '1:harvest'),
+and if 1-7's goal type stays 'stealth' wire 9b so Dot explains the locked exit; (d) the journal + way.1-7 rewrites ship WITH 1-7;
+the old crouch lines (dotLinesData.ts:115-117,132-134, dotGuide.ts:183) go when 1-7 ships, after grepping that w6/w8 crouch zones
+don't read eng.watch.* (dotTips.ts:29-31).
 ## Build
 w1Arc17 (World 1 data, no engine lines): the beats of 1-7.md, Easy rows, flags/hearts by Matt's rules (typed from STAGE-RULES, D49),
 Dot's lines from KEEPER-17 (the lead forwards them verbatim; leave a placeholder key until then, never your own words), petals on the
