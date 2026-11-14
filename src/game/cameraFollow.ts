@@ -45,6 +45,119 @@ export function camAnchor(prev: number, p: CamSubject, vh: number): number {
   return prev;
 }
 
+// ───── the re-pick ease (R-165.214, Matt 2026-11-13: getting on and off vines "not very smooth") ─────
+//
+// The anchor's rules pick a new height in ONE frame when he catches a vine (in the air it held the ground he left; on the vine it is
+// him: 60-90 px up at once), lands after jumping off one (140 px down at once), or a hand step or vault puts his body somewhere new.
+// The camera eases after its aim, but an aim that jumps starts it from rest to 14-28 css px a frame in one frame (measured on the real
+// page, tools/inspect/camFeel.mjs, 1-4 both ways): the world lurches. Now the camera aims at an EASED subject: where his body and the
+// anchor's pick move as they did last frame, it follows them exactly (a climb, a run and a fall frame the same as before); where they
+// jump (the rule re-picked, or his body was put somewhere), the jump is taken up by an offset that a critically damped spring brings
+// back to nothing, so the view starts from rest and comes in like any other move. Never past the band the air rules already allow
+// (CAM.airUp / airDown of the view's height, a quarter of its width), so he never leaves the screen; a respawn or a placement cut
+// (camAnchor's teleport) is followed at once.
+
+export const REPICK = {
+  /** the spring's rate (per second, critically damped): 8 settles a 90 px re-pick in about 0.6 s with a jerk of 2-3 css px */
+  rate: 8,
+  /** a change in his move from one frame to the next over this (world px) is a re-pick, not a move: a climb starts at about 7 px a
+   *  frame, a run turns by under 2, gravity adds about 2; a grab, a hand step or a landing re-pick moves 17-140 */
+  cut: 12,
+  /** the widest the offset may grow across (fraction of the view's width) */
+  across: 0.25,
+  /** an offset that holds him higher on the screen leaves this much (px of world) between his head and the HUD band at the aim: the
+   *  camera trails a climbing aim by 25-45 px, and standing, the HUD rule pulls the view at once (1-5 headless: a 27 px jerk without it) */
+  hudRoom: 60,
+} as const;
+
+/** one axis of the eased subject */
+export interface EaseAxis {
+  /** the last raw value, and the move it is expected to keep making (his body's, held to him) */
+  raw: number;
+  d: number;
+  /** the offset still to take up, and how fast it is changing (px/s) */
+  off: number;
+  v: number;
+}
+export interface Repick {
+  x: EaseAxis;
+  y: EaseAxis;
+  /** what held the anchor last frame (swinging, standing / climbing / hanging, or in the air) */
+  mode: string;
+  /** his body's height last frame, and where the camera was left last frame (markCam): moved since by anything else, it was a cut */
+  by: number;
+  cx: number;
+  cy: number;
+}
+const axis = (): EaseAxis => ({ raw: NaN, d: 0, off: 0, v: 0 });
+export const newRepick = (): Repick => ({ x: axis(), y: axis(), mode: '', by: NaN, cx: NaN, cy: NaN });
+/** a body jump bigger than this in one frame (px) is a respawn, a flag or a door, never a move (vineFeel.ts SETTLE_MAX's number) */
+export const REPICK_TELEPORT = 96;
+
+/** what holds the anchor: a change of it is always a re-pick */
+export const anchorMode = (p: CamSubject): string => (p.swingBottom !== undefined ? 'swing' : p.grounded || p.climbing || p.hanging ? 'held' : 'air');
+
+/** one axis: the value to aim at this frame for `raw`, taking up `jump` (px: the part of this frame's move that is a re-pick) into the
+ *  offset, which is kept within [-lo, hi] (px of world) */
+function easeAxis(a: EaseAxis, raw: number, dt: number, jump: number, cut: boolean, lo: number, hi: number): number {
+  if (cut || !Number.isFinite(a.raw)) {
+    Object.assign(a, { raw, d: 0, off: 0, v: 0 });
+    return raw;
+  }
+  a.raw = raw;
+  a.off -= jump;
+  const w = REPICK.rate;
+  a.v += (-w * w * a.off - 2 * w * a.v) * dt;
+  a.off += a.v * dt;
+  if (a.off < -lo || a.off > hi) {
+    a.off = Math.max(-lo, Math.min(hi, a.off));
+    a.v = 0;
+  }
+  return raw + a.off;
+}
+
+/** the part of a body's move `d` that is a snap, not a move: its change from last frame's move `d0` over REPICK.cut */
+const snapPart = (d: number, d0: number): number => (Math.abs(d - d0) > REPICK.cut ? d - d0 : 0);
+
+/**
+ * The eased subject this frame: `x` his body's middle, `anchor` camAnchor's pick (this frame's), `p` what camAnchor was given, `prevAnchor`
+ * the anchor it was given as last frame's, `camX/camY` the camera as this frame found it. A re-pick is the part of the aim's move that his
+ * body's own move does not explain: the anchor jumping further than he moved (a catch, a landing, a swing caught or let go), or his body
+ * put somewhere new while it holds (a hand step, a vault: its move changed by over REPICK.cut in a frame). A speed change is never one
+ * (the air rule starting to follow a fall moves the anchor no further than he moved). A CUT is followed at once, never eased: a respawn
+ * or stage start (prevAnchor NaN, or a jump of a view), a flag, door or teleport (his body moved over REPICK_TELEPORT px in a frame), or
+ * the camera put somewhere by anything but updateCamera since last frame (markCam). `roomUp`: how far his head sits under the HUD band at
+ * the framing (px of world; the engine's feet share of the view less HERO_HEAD and the band): an offset holding him higher stays
+ * REPICK.hudRoom inside it, so the HUD rule never has to pull the view (where there is no room, the old one-frame move is kept).
+ */
+export function repick(s: Repick, x: number, anchor: number, prevAnchor: number, p: CamSubject, vw: number, vh: number, dt: number, camX: number, camY: number, roomUp = Infinity): { x: number; y: number } {
+  const moved = Number.isFinite(s.cx) && (Math.abs(camX - s.cx) > 0.5 || Math.abs(camY - s.cy) > 0.5);
+  const cut = moved || !Number.isFinite(prevAnchor) || Math.abs(p.y - prevAnchor) > vh * CAM.teleport || Math.abs(x - s.x.raw) > REPICK_TELEPORT || Math.abs(p.y - s.by) > REPICK_TELEPORT;
+  const mode = anchorMode(p);
+  const held = mode === 'held' && s.mode === 'held';
+  s.mode = mode;
+  // y: the anchor's move past his body's own this frame, or (held to him both frames) his body's snap
+  const dBody = Number.isFinite(s.by) ? p.y - s.by : 0;
+  s.by = p.y;
+  const dRaw = Number.isFinite(s.y.raw) ? anchor - s.y.raw : 0;
+  const snapY = held ? snapPart(dBody, s.y.d) : 0;
+  const jumpY = held ? snapY : dRaw - Math.max(Math.min(0, dBody), Math.min(Math.max(0, dBody), dRaw));
+  s.y.d = held && !snapY ? dBody : 0;
+  // (the anchor above him by up to the air's "down" band puts him lower on the screen; below him by "up" puts him higher)
+  const y = easeAxis(s.y, anchor, dt, jumpY, cut, vh * CAM.airDown, Math.max(0, Math.min(vh * CAM.airUp, roomUp - REPICK.hudRoom)));
+  // x: his body's snap
+  const dx = Number.isFinite(s.x.raw) ? x - s.x.raw : 0;
+  const jumpX = snapPart(dx, s.x.d);
+  if (!jumpX) s.x.d = dx;
+  const xx = easeAxis(s.x, x, dt, jumpX, cut, vw * REPICK.across, vw * REPICK.across);
+  return { x: xx, y };
+}
+/** where updateCamera left the camera this frame (repick's cut test) */
+export function markCam(s: Repick, x: number, y: number): void {
+  s.cx = x;
+  s.cy = y;
+}
+
 /** the look-ahead this frame: easing toward `facing` x `look` (CAM.lookAhead, or less on a narrow upright phone: framing) */
 export function camLook(prev: number, facing: number, dt: number, look: number = CAM.lookAhead): number {
   const want = (facing < 0 ? -1 : 1) * look;
