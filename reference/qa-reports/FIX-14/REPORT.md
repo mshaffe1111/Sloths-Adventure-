@@ -1,4 +1,4 @@
-# FIX-14 REPORT (steps 1-2; step 3+ waits on Matt's pick). t-fix-14 from origin/main@73e7bed0; mock on t-fix-14-mock
+# FIX-14 REPORT (steps 1-2 done; step 5 diagnosed, pushback; step 3+ waits on Matt's pick). t-fix-14 from origin/main@73e7bed0; mock on t-fix-14-mock
 ## EXACT NEXT STEP
 The lead judges the two mocks as clips (D63) and asks Matt one question: (a) mockA (two vines faster + petal pair between them, pods
 slow and telegraphed) and (b) mockB (tied thatch that snaps; head stops under the bough). On his pick, build packet step 3 on t-fix-14
@@ -22,6 +22,24 @@ Matt's case, and drops the bramble), then steps 4-5.
   by themselves make two vines worth it. The reward that shows in a clip is speed AND petals only two hands reach (Matt's own idea).
 - Two hands still get hit on either vine's line, and he still has to stop to take a hand (engine.ts:2102): step 4 should let a side
   push take a hand while climbing.
+
+## Step 5 (R-165.206 rotten fork), started 12:50 AM ET: ROOT CAUSE FOUND, PUSHBACK, NOT FIXED (evidence in fork/)
+- Same bots, seeds 1-8, both settings (middle + child, castBots on a merge of origin/t-len-14@d56cd91): pre-fork base 2467b5e5 23/32
+  pass; with the fork 4/32. (The relist changed which roll a seed is, so the two are not the same layouts.)
+- Where: the stuck points are the fork's sound vine and the link vine over its top (seed 4 Easy: (326, 6412), (162, 5985); seed 1
+  Easy: (956, 6412), (1120, 6008)). Frames (middle Easy s4, 76-80 s): on the fork floor he paces 290-352 px round the vine (x 326)
+  and never presses up.
+- Cause: tools/inspect/towerRoute.ts within(): a vine that spans his height "leads on", so the route goes along the ENTRY's height
+  (6412) to the vine and up; the vine's foot is on the fork floor 200 px under. The route floats in the air; on the floor the target
+  never reads as up, so he never climbs. A person drops, sees the vine, climbs: the bots' route, not the level, is wrong here.
+- Proof: fork/towerRoute-fix.patch (route: across, DOWN to the vine's foot, then up) lifts the fork runs 4/32 to 14/32. Not
+  committed: it is a bots' tool (outside this packet's level fix; INT-6 asked for the level), and it has no planted test yet.
+- Left after the route fix: "the way on is 281 px down" on the fork floor (seed 7 Normal, (147, 6275)); "in a dip 50 px deep" at the
+  creaks. Not diagnosed.
+- PUSHBACK (lead's call): (A) land the route fix in towerRoute.ts with a planted test (a down-then-up leg), then diagnose the rest; or
+  (B) the level's way: the creak as the way UP, which V9 refuses for job D (nodeCode.ts:158 "a descent is falling"): needs a free job
+  letter from the lead; or (C) hide the exit until he is down (new engine work). My view: (A) first: the level reads fine to a
+  person, and the route bug would bite any future down-then-up section; then judge the fork on the bots again.
 ## Gates (docs, media and read-only tools on t-fix-14: LAWS 5 fast gates) on this head: see the commit message
 ## Learned
 - Matt's "rocks" are pods; name the thing as the code names it before measuring.
