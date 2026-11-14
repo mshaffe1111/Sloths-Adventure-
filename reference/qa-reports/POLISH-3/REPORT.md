@@ -1,7 +1,7 @@
 # POLISH-3 REPORT (t-polish-3 from t-eng-base@204e3dec; lead session_01FhBbYNzGRJBDMzn6XbtQK2). Opus 5.5 high. Box 9:51-11:21 PM ET 11-13.
-**EXACT NEXT STEP:** 1. Lead pass/fail on stills/ (below). 2. When t-ruler merges: on the merged head run `seedlist 1-1 --merge <the list's
+**EXACT NEXT STEP:** (lead 10:50 PM: the 1-1 fix PASSES as play; the fog/painted floor is R-165.224; seed-323 goes to the engine lane) 1. The 1-4 rotten-fork redesign (item 2, below). 2. When t-ruler merges: on the merged head run `seedlist 1-1 --merge <the list's
 257 seeds in order, JSON> --in-order --count 257` (88 s; 49477, 55341, 65753 replay differently under the ruler), then --check. 3. verdicts.test.ts
-seed-323 copy: NOT fixable by a bank (below); promises11 realFalls' floor clause is the fix (its owner, the lead's call). 4. Items 2-5 of the
+seed-323 copy: NOT fixable by a bank (below); promises11 realFalls' floor clause is the fix (the engine lane, lead 10:50 PM). 4. Items 2-5 of the
 packet not started: 1-4's rotten fork (w1Arc14.ts on t-len-14@d56cd91, t-int-6 REPORT step 2), the 1-4 gate under the HUD, GOLDEN SEED, petals.
 ## Done (evidence)
 - **R-165.221 (pipeline.ts `earthHoles`, `softHoles`):** a stage whose brief says no fall costs a life (`softFalls`: 1-1) gets ONE soft zone
@@ -19,7 +19,7 @@ packet not started: 1-4's rotten fork (w1Arc14.ts on t-len-14@d56cd91, t-int-6 R
 - stills/1-1-L1-normal-{sideways,upright}-x26000-after.jpg, 1-1-L1-easy-{sideways,upright}-x28000-after.jpg (seed 769, easy:true printed).
 - stills/1-1-L1-normal-sideways-walkoff-log115-putback.webm: off log 115 at x25947, falls, iris, back on 115 at 25851; lives/hearts kept.
 - ROUGH, NOT FIXED (unchanged by this work, named): he falls THROUGH the backdrop's painted forest floor (it reads as ground under the logs),
-  and upright ~40% of the screen under the climb is empty fog. Fix = art (earth or a painted drop under World 1's high road): show-first.
+  and upright ~40% of the screen under the climb is empty fog. Logged by the lead as R-165.224 (a general underlayer, show-first to Matt).
 ## Gates: see gates/RESULTS.txt (every CLAUDE.md Check + CI step once on the head).
 ## Pushback
 - seed-323 copy: with E0a's REAL next bank (block 131 @28042, d2748131) the hole 27200..28042 is a fall with or without branch 128, and with
