@@ -5985,8 +5985,14 @@ export class GameEngine {
       if (cp.x < x0 - 80 || cp.x > x1 + 80) continue;
       // World 5: the painted lace pennant
       if (this.w5?.drawFlag(ctx, cp, t, world.id)) continue;
-      // the painted leaf-pennant post (stageArt.ts): unlit, then lit and fluttering once reached. (No code-drawn aura behind the unlit
-      // one any more: its dark pool and gold rim read as a black hole on a bright sky, the lead 11-14 on 1-4; the painted post reads)
+      // the painted leaf-pennant post (stageArt.ts): unlit, then lit and fluttering once reached; the unlit one keeps its gold rim
+      // ("yours to use", readable.ts) but no dark pool under it (it read as a black hole on a bright sky: the lead 11-14, on 1-4)
+      if (!cp.reached) {
+        ctx.save();
+        ctx.translate(cp.x + 20, cp.y - 52);
+        drawAura(ctx, 'take', world.id, 30, 40, t, cp.x * 0.01, 1, false);
+        ctx.restore();
+      }
       drawCheckpointArt(ctx, cp.x, cp.y, cp.reached, t);
     }
     // the new generator's water warnings (gen2 proto.gen2.waterWarnings): the painted warning sign at the water's edge (World 5's garden
