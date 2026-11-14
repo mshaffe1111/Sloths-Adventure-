@@ -11,18 +11,25 @@ alone pass nothing.** Stills/clips print the built setting (D62); the lead judge
   shows that it's breaking... or have a lock... right now it's only a guess." "It still goes over the top... it cannot go above the
   platform above it... like on Pokey's head as a collision thing with the platform... his shoulders... Just enough to get the fruit up."
 - Vines: "aren't easy to navigate through"; the clips "show how wonky the play is".
+- Two vines (12:09 AM, R-165.229): "there's really no benefit of doing two vines at the same time. It's actually worse than doing one...
+  Maybe it's navigation's faster, but maybe we put two fruits... side by side, so it shows there's a benefit"; "maybe we drop the rocks
+  even completely, or we make it so the rocks are real slow. We light up the vines and we show that you push those things up to kind of
+  unlock things, which we need to refine"; "you can't collect petals doing two arms".
 ## In order
 1. **Measure, before any change (one table in PLAN.md):** rockfall.ts drops on 1-4 (every, warn, fall speed, count per screen, how the
    warn is drawn today and whether it reads on the backdrop); the fig gate today (what happens at full push, where Pokey's head can go:
    reproduce Matt's "goes over the top" on the real page, with a clip); vine climb speed + air steer off a vine vs 1-5 (Matt likes 1-5).
-2. **SHOW FIRST (CLAUDE.md), before building:** two mock clips for Matt, upright: (a) a rock telegraph: the vine/bough a rock comes from
+2. **SHOW FIRST (CLAUDE.md), before building:** two mock clips for Matt, upright: (a) the two-vine climb beating the one-vine climb past a telegraphed rock, plus a rock telegraph: the vine/bough a rock comes from
    shakes and changes colour, dust trickles, for a set warning time before the drop; (b) the fig lock: a tied-down thatch whose ties
    visibly strain and SNAP when the fruit is fully up (painted-art rule: if the ties/thatch need art, name the pieces for the next HF
    batch; a code-drawn stand-in is fine for the MOCK only). Send the lead both; nothing is built past the mock until Matt picks.
 3. After Matt's pick: rocks slower, fewer, telegraphed (min warn time in one place, every stage that uses rockfall), Easy gentler; a
    head/shoulder stop under the gate bough so only the fruit passes (planted test from Matt's case: push to full, hold up, jump: Pokey's
    top never above the bough's underside) + R-165.223's skip probe for this gate; the lock moment.
-4. Vines (R-165.216): only from the step 1 numbers, matched to 1-5's feel; planted tests.
+4. Vines (R-165.216) and the two-vine reward (R-165.229): from the step 1 numbers (one-vine vs two-vine climb speed, rock exposure,
+   petals reachable two-handed); DK Jr.'s rule (two vines climb UP clearly faster, one vine slides down faster), petals between paired
+   vines collectable with two hands (planted test), a visible reward pair; matched to 1-5's feel. The lead's view: keep the rocks, rare,
+   slow and telegraphed, as the reason to choose the fast two-vine way; the mock in step 2 shows Matt that vs no rocks.
 5. R-165.206 rotten fork (w1Arc14.ts ROTTEN_FORK on t-len-14@d56cd91; t-int-6 REPORT step 2): the creak is the way UP, or the exit
    hidden till he is down; castBots before/after; adult Easy >= the 100 s climb floor (STAGE-RULES:77); ONE relist at the end.
 Not yours: 1-1 (POLISH-4/5), engine pieces for 1-6..1-8 (A1/B1), art generation (the lead runs HF).
