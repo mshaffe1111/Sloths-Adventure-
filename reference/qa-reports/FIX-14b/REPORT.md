@@ -1,18 +1,13 @@
 # FIX-14b REPORT. t-fix-14b (from t-fix-14@f35253ba + t-len-14@d56cd915). Stopped at the box, ~3:4x AM ET 11-14
 ## EXACT NEXT STEP (in order; the next member starts here)
-1. Two vines (R-165.229, NOT STARTED): engine.ts ~2102: let a side push take the other hand WHILE up is held (today `!up && !down`
-   only: the stop-start Matt calls wonky), latched once per push (sideLatch) so a drifting thumb steps once, never hops off a field
-   vine; keep CT-4's trunk rule (touchGestures trunkSide) for plain vines. Measure 1.6x up two-handed, 2x slide down one-handed
-   (FIELD_FEEL, exists). Petals: in finish14, a petal on a field stretch with a neighbour within FIELD_FEEL.reach goes to the pair's mid
-   x (pickup reach 38 px from (x, y-20), engine.ts ~3215: a two-hand hang is 40 px off a vine's line), plus the reward pair (two petals
-   side by side between two vines); planted test: every such petal inside the reach of a two-hand hang.
-2. The pod tell as the vine itself (R-165.227, art part NOT STARTED): vineFieldArt.ts drawPod 'warn': redraw the pod's own field vine
-   (vineTile, its painted strip) brightened ('lighter' pass, warm) and shaken along its length for the whole tell, w1m-dust-puff + chips
-   sifting; swap the pod to w1m-pod-hang / w1m-pod-fall (already in src/assets/w1-matt with catalog rows). No flat bar, no code glow.
-3. Fork (R-165.206, NOT STARTED): w1Arc14.ts ROTTEN_FORK (merged in here from t-len-14): >= 80 px of ledge past the link vine;
-   proposed level.md rule + a lay test over every roll; the creak dip; castBots 40 before/after; adult Easy >= 100 s.
-4. Then ONE relist (`npx tsx tools/engine/addlevel.ts 1-4 --relist`), the clips sideways (clip.mjs `side` threw: the engine was null
-   sideways; give the landscape load longer or wait on __engine), and the full CLAUDE.md Checks on the head.
+1. Fork (R-165.206, NOT STARTED: the box ran out): w1Arc14.ts ROTTEN_FORK (merged in here from t-len-14): >= 80 px of ledge past the
+   link vine; FIX-14's proposed level.md rule + a lay test over every roll's vine feet; the creak dip ("in a dip 50 px deep, the way on
+   is 150 px up", middle N s4); castBots 40 before/after (before = this head's numbers below); adult Easy >= 100 s.
+2. Then ONE relist (`npx tsx tools/engine/addlevel.ts 1-4 --relist`; the one run here was BEFORE the two-vine/petal/tell commits, so the
+   fork's relist is the one that counts), sideways clips (clip.mjs `side` threw: the engine was null sideways; wait on __engine longer),
+   the two-vine clip (clip.mjs has no `vines` mode yet), and the full Checks on that head.
+3. The lead's calls: (a) drop the white-gold pop at a fig's tear now that the tie snaps (two signals at once)? (b) the old pod
+   (w14-kapokpod) and 1-2's bramble no longer draw on 1-4: their catalog rows' used_in may need the inventory owner's update.
 ## Done (evidence in reference/qa-reports/FIX-14b/)
 - Step 1, fig gate (R-165.212 + R-165.223's probe): his DRAWN head stops at the shut bough's DRAWN underside on the one-hand, two-hand
   and plain climb and the jump (FieldPlay.shutBoughAt/capY/lid; GATE.head 89 = heroSprite 66 x 1.35, tested; GATE.depth = the painted
@@ -26,16 +21,28 @@
   re-emitted): the leaf thatch along the shut bough, a vine tie at each fig: taut -> straining (pale, frayed, shivering by push %) ->
   SNAP (painted snap + bark chips), thatch shudders; on the last the thatch is thrown off. Replaces the thorn tangle (new replaces old).
   Clips: gate-normal-up.mp4, gate-easy-up.mp4 (+ sheet). Clip measure: his head most over the shut underside 0 px (never over).
-- Step 3 numbers (R-165.227): PODS_14 in w1Arc14.ts is the ONE place: on / speed 300 (was 620) / tell 1.5 (was 1.0) / beats 4.6, 4.2,
-  3.6 (was 3.6, 3.0, 2.3) / Easy 1.5x. `on: false` lays no pods (Matt's other choice, one line; planted on the real finish). POD.tellMin
-  1.5. The relist (addlevel 1-4 --relist on this head): 24/24 clean both settings, 100/100 proven.
+- Step 2, two vines (R-165.229): a side push with up held takes the other field vine (latched once a push; never hops off): no
+  stop-start. Petals on a paired stretch hang BETWEEN the pair (vineField.ts pairPetals, run last in finishStage, general: any field
+  vine): two hands take them, one hand passes 40 px by. fieldPetals.test.ts: every paired petal on 1-4 seeds 1-6, both settings, taken
+  by a climb that steps while climbing; planted: left on the line (0.9.8), missed; two hands measured 1.6x one hand up; one hand slides
+  2x down (FIELD_FEEL, unchanged). Not built: a separate "reward pair" art; the strings of petals between the pair are the visible pair.
+- Step 3, pods (R-165.227): PODS_14 in w1Arc14.ts is the ONE place: on / speed 300 (was 620) / tell 1.5 (was 1.0) / beats 4.6, 4.2,
+  3.6 (was 3.6, 3.0, 2.3) / Easy 1.5x; `on: false` lays no pods (Matt's other choice, one line; planted on the real finish). POD.tellMin
+  1.5. The tell is the pod's OWN vine, its painted art laid again lit and shaking harder as the drop nears, Matt's sheet-2 dust and bark
+  chips sifting down it; his restyled pod hangs and falls (w1m-pod-hang/fall, ART-MATT ed4f59c0 recut). Clip pods-normal-up.mp4 + strip.
+- Found by the full suite and fixed at the root: the bots' fig step (figPush.ts) waited to be stuck at the vine's TOP, so under the new
+  head stop it never pushed (castBots 1-4 went 0/40, its test freed 0): it now reads the stop (capY). feelPairRoom's gate test now
+  checks the head rule (it asserted the old feet rule).
+- The lead's ruling 2:08 AM applied: the tie draws at 0.55 Pokey (short loop, knot on the bough).
+## Gates on the final head (frozen worktree): PENDING, filled in below when they finish
 ## Polish check (judged on the real page, stepped-frame clips; seed 1, built setting printed by clip.mjs)
 - gate-normal-up-sheet.jpg: the ties read in three states at phone size (green loop; pale frayed loop; two whipping ends), the thatch
   reads as leaves over the bough; his head stays under the wood on hold and jump. Rough spots, named plainly: (1) the loops are small
   (49 x 108 px as ART-MATT sized them) and the strain shiver is subtle at 1x: the lead should judge the clip at phone size; (2) the old
   white-gold "pop" still flashes at the tear beside the new snap (two signals at once: drop the pop if the lead agrees); (3) the camera
   sits Pokey low on screen while he pushes (not this job's, but it hides the push); (4) NO sideways clip yet (clip.mjs failed sideways).
-- Pods: numbers only. The tell is still drawn on the pod (fluff), NOT yet the vine itself: do not show Matt pods as final.
+- pods-normal-up-strip.jpg: the pod's own vine is visibly brighter than its neighbour through the tell, dust at its top, the new pod reads
+  on the leaves. Rough: the shake is small at 1x, and the lit vine reads yellow-green, not a colour change Matt named: the lead judges.
 ## Lessons applied: D40 (built on t-len-14 for the fork; nothing patched that a planned job replaces), D59 (no gate left running),
    D61 (no code-drawn primitive in the lock: all painted), D62 (clips print the built setting), D63 (judged on clips + a cheat probe),
    D64 (context from the token count).
