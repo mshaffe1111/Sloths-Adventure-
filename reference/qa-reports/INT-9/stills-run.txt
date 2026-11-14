@@ -15,3 +15,9 @@
 [in#0 @ 0x55973f932e80] Error opening input: No such file or directory
 Error opening input file reference/qa-reports/INT-9/stills/1-1/double-easy-up/f%04d.jpg.
 Error opening input files: No such file or directory
+1-1 double easy side 2 3:38 PM
+[image2 @ 0x55b8ec708f80] Could find no file with path 'reference/qa-reports/INT-9/stills/1-1/double-easy-side/f%04d.jpg' and index in the range 0-4
+[in#0 @ 0x55b8ec708e80] Error opening input: No such file or directory
+Error opening input file reference/qa-reports/INT-9/stills/1-1/double-easy-side/f%04d.jpg.
+Error opening input files: No such file or directory
+shoot done 3ad51f04 3:38 PM
