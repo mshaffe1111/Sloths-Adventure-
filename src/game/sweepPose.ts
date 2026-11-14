@@ -38,8 +38,9 @@ export const MOSS_TINT = { rgb: '86, 138, 52', alpha: 0.45 } as const;
 
 /** how high over its ground a perched sweeper's feet grip its snag (game px): a low branch of the snag (w17Art.ts SNAG_PERCH_DRAWN, the
  *  piece it is measured on: 1-7 beat 12), low enough that all of it shows under the HUD on a sideways phone (412 px tall: at 208 px its
- *  head was off the top, ENG-E2's sideways stills) and its look down at him reads */
-export const SNAG_PERCH = 120;
+ *  head was off the top, ENG-E2's sideways stills; at 120 its beak touched the progress sign, so 90: its feet about Pokey's height, its
+ *  top clear of the HUD by 24 px or more both ways, BUILD-17's captions) and its look down at him reads */
+export const SNAG_PERCH = 90;
 
 /** a perched sweeper's look (the four painted frames, w17Art.ts): away ahead at rest, its head turning for the warn, down the gaze, a blink */
 export type PerchLook = 'ahead' | 'turn' | 'down' | 'blink';

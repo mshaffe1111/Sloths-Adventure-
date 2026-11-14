@@ -43,7 +43,7 @@ export const W17 = {
   drape: { w: 520, h: 420, top: 34 },
   drapeB: { w: 235, h: 420, top: 34, moss: { x: 35, y: 52, w: 118, h: 368 } },
   snagA: { w: 316, h: 900, foot: 880, trunk: 120 },
-  snagB: { w: 294, h: 900, foot: 880, trunk: 132, perch: 520 },
+  snagB: { w: 294, h: 900, foot: 880, trunk: 132, perch: 610 },
   perch: { w: 351, h: 390, grip: { x: 190, y: 338 } },
 } as const;
 /** game px per file px: the catalog's units (Pokey 89.1 drawn at 267 file px) */
