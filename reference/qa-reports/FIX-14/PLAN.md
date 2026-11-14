@@ -20,7 +20,7 @@ Packet: origin/ccr-ea739a2f-dfcee4:reference/packets/2026-11-14/FIX-14.md. Rows 
 Repro: `PW=/opt/node-tools/node_modules/playwright/index.mjs node reference/qa-reports/FIX-14/figrepro.mjs 5199 <out> normal <gate#>` (logs head vs bough each 0.2 s; Playwright video renders the page in a corner here, so the clip for Matt is built from per-frame screenshots).
 ## Step 1b: Matt's "over the top", reproduced (11-14 ~12:40 AM ET, real page at 73e7bed0, seed 1 Normal, upright)
 - Climb a PLAIN field vine under a SHUT gate (gate 0, vine x 866): his feet stop 4 px under the bough's TOP (7018 vs 7022), so his whole
-  box is 76 px above the underside and he stands drawn ON the shut bough in the bramble (`mock/before-over-the-top-0.9.8.mp4`, sheet
+  box is 76 px above the underside and he stands drawn ON the shut bough in the bramble (`mock/before-over-the-top-0.9.8.mp4`, 4.9 s, 74 frames, 1x, sheet
   `mock/before-over-the-top-sheet.jpg`). Cause: the climb's top stop (`topY - 4`, engine.ts:2136/2151) and GATE.lid (fieldPlay.ts:95)
   are both on his FEET at the bough's top; the drawn Pokey is 89 px tall (box 48), so even his box-safe stops show his head through the wood
   (Matt's frame clipB-01: arms and head over the bough).
@@ -34,6 +34,11 @@ Repro: `PW=/opt/node-tools/node_modules/playwright/index.mjs node reference/qa-r
 | `mock/mockB-fig-lock.mp4` (8.6 s) | gate of two: each fig tied to a leaf thatch; the tie strains (bulges, pales, frays, shivers), SNAPS with a crack at full push; hold up: head stops under the bough; jump: still under; last fig: thatch thrown off, way open | box top never above the underside while shut (fig case 45 px under, plain vine 69 px under); fig still frees; gate of one opens as before |
 Mock numbers: pods 300 px/s (was 620), tell 1.5 s (was 1.0), beats 4.6/4.2/3.6 s (was 3.6/3.0/2.3, so fewer drops); feet stop at
 the drawn bough's underside + 89 (his drawn height) under a shut gate, on the climb AND the jump; a fig frees when its top passes the
-DRAWN (sagged) bough top. Art for the real build (HF, the lead's call): a woven-leaf thatch strip (tileable, 1-4 palette), a vine tie
-(whole, strained, two snapped ends), the glowing-vine tell (or a tint on the vine art), a bigger, lighter pod that reads on the leaves.
+DRAWN (sagged) bough top. Art for the real build (HF, the lead's call; the lead's notes 11-14 12:43 AM: the mock's glow reads as a laser and the tie as a paperclip):
+- a vine TIE, painted rope-vine, in 3 states: taut (at rest, over thatch and bough), straining (stretched, paler, fibres starting), snapped
+  (two frayed ends); plus a few loose fibre bits for the snap burst;
+- a woven-leaf THATCH strip, tileable along a bough, 1-4 palette, that reads apart from the bough's moss;
+- the pod TELL as the vine itself: the field vine's own art brightened along its twist (a lit variant of the vine strip, or a tint pass
+  in code over the painted vine) and shaken along its length, with painted DUST/bark-grit specks sifting down; no flat bar;
+- a bigger, lighter POD that reads on the leaves (falling and hanging).
 ## Step 3+ waits for Matt's pick (packet steps 3-5).
