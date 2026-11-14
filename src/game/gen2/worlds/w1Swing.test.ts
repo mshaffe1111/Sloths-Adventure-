@@ -2,7 +2,8 @@
 // carrying `grip`, lianaBand's cache key) or without withSwing; proven on World 1's kit (1-6) and World 6's (6-3), both settings.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { gripsOf, jumpLinkGap, layLocal, lianaBand, lianaRelease, planBudget, rngFor, VINE } from '../pipeline.ts';
+import { jumpLinkGap, layLocal, lianaBand, lianaRelease, planBudget, rngFor, VINE } from '../pipeline.ts';
+import { gripsOf, swingLandings } from '../../levelCheck.ts';
 import { pressWindow, type AirBody } from '../../physics.ts';
 import { LIANA, type LianaSwing, type WorldKit } from '../types.ts';
 import { generateAllLevels } from '../../worldsData.ts';
@@ -39,13 +40,17 @@ test('the grip dial: a liana\'s reach is checked at the holds its row names (pre
 });
 
 test('a perch band is flown at its liana\'s own grip: a cached window of another grip is never reused', () => {
+  // the same liana and ledge, its band asked at the top first (cached), then at the foot: the foot's band reaches a FAR perch, the
+  // top's never past a SHORT one (1-6.md: top 0 ms at 480 px). A cache that forgot the grip handed the foot the top's windows
   const from = { x: -480, y: 400, w: 300 };
-  const need = 1.2;
-  const band = (grip?: LianaSwing['grip']) => lianaBand(from, LIANA_16, { amp: VINE.amp, period: VINE.period.normal, ...(grip ? { grip } : {}) }, 0, 300, need, -Infinity, 'normal');
-  const plain = band();
-  const high = band('high');
-  assert.ok(plain && high, 'both bands exist');
-  assert.notDeepEqual(high, plain, `the top's band ${high} is the low holds' ${plain}: the grip was not flown`);
+  const band = (grip?: LianaSwing['grip']) => lianaBand(from, LIANA_16, { amp: VINE.amp, period: VINE.period.normal, ...(grip ? { grip } : {}) }, 0, 300, LIANA.window.normal, -Infinity, 'normal', true);
+  const high = band('high')!;
+  const low = band('low')!;
+  const plain = band()!;
+  assert.ok(high[1] < 460, `the top's band reaches ${high[1]} px`);
+  assert.ok(low[1] >= 520, `the foot's band reaches only ${low[1]} px: the top's cached windows were reused`);
+  // and the plain band (no dial) is the level check's of every liana before it: unchanged
+  assert.ok(plain[1] < low[1]);
 });
 
 const all = generateAllLevels();
@@ -81,4 +86,29 @@ test('World 1\'s liana rows lay on World 1\'s and World 6\'s kits: the grip ride
       }
     }
   }
+});
+
+test('the level check flies a liana with a grip dial as the engine plays it (opt-in): a FAR gap links from the foot, never without the dial or past his reach', () => {
+  // 1-6.md's FAR gap: the perch 540 px past the anchor, level with the ledge he left (400 px under the anchor, the liana 420 long)
+  const near = { id: -1, x: -480, y: 400, width: 300, height: 90, type: 'solid' as const };
+  const lines = (gap: number, grip?: 'low' | 'high', dbl = true) => {
+    const v = { id: 1, x: 0, topY: 0, bottomY: 420, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana' as const, isSwingingVine: true, ...(grip ? { grip } : {}) };
+    const far = { id: -2, x: gap, y: 400, width: 300, height: 90, type: 'solid' as const };
+    return swingLandings(near, v, 1, [near, far], 1e9, dbl).get(-2) ?? 0;
+  };
+  // with the dial, from the foot with the double: linked (6 lines: a 200 ms press window)
+  assert.ok(lines(540, 'low') >= 6, `FAR from the foot: ${lines(540, 'low')} lines`);
+  // without the dial: the plain check of every liana before it, which never flew a hold or the double, still refuses it
+  assert.equal(lines(540), 0, 'without the dial the plain check is unchanged');
+  // past the foot's measured reach (1-6.md: foot + double 591-607 px), refused even with the dial; and with no double (a stage before it
+  // is taught), the foot alone does not reach a FAR gap
+  assert.equal(lines(640, 'low'), 0, 'past his reach');
+  assert.equal(lines(540, 'low', false), 0, 'no double, no FAR');
+  // the top ('high') links a SHORT gap and not a FAR one
+  assert.ok(lines(420, 'high') >= 6 && lines(540, 'high') === 0);
+  // the other way round: the same gap mirrored is the same answer
+  const v = { id: 1, x: 0, topY: 0, bottomY: 420, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana' as const, isSwingingVine: true, grip: 'low' as const };
+  const back = { id: -1, x: 180, y: 400, width: 300, height: 90, type: 'solid' as const };
+  const farL = { id: -2, x: -540 - 300, y: 400, width: 300, height: 90, type: 'solid' as const };
+  assert.equal(swingLandings(back, v, -1, [back, farL], 1e9, true).get(-2) ?? 0, lines(540, 'low'));
 });

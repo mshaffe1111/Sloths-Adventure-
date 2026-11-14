@@ -18,7 +18,7 @@ import { rollLook } from '../artRoll.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
 import { FLAG_H } from '../stageArt.ts';
 import { STAGE_ART_FRAMES } from '../stageArtData.ts';
-import { doubleAllowed, jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
+import { doubleAllowed, gripsOf, jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
 import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11 } from './verdicts.ts';
@@ -236,18 +236,8 @@ export const VINE = {
 } as const;
 
 /**
- * The holds a liana's reach check flies, by its `grip` dial (LianaSwing.grip), as shares down it from the anchor (physics.ts pressWindow,
- * whose window is the worse of them). Absent: two low holds (pressWindow's own [0.7, 0.95]), every liana laid before the dial. 'low': the
- * foot only, the one hold a FAR gap flies from (1-6.md: 530-560 px out, foot 433-467 ms, top and middle 0). 'high': the top only
- * (SWING.minLen down it, the highest he can hold), so a "hold high" gap is one the top still flies (1-6's risers: the foot is taken).
- */
-export function gripsOf(grip: LianaGrip | undefined, len: number): number[] | undefined {
-  return grip === 'low' ? [0.95] : grip === 'high' ? [Math.min(1, SWING.minLen / Math.max(1, len))] : undefined;
-}
-
-/**
  * The release window of a liana (s): of ONE swing, how long a press to let go toward the perch gets him onto it (its top `far.y`, from
- * `far.x` for `far.w` px), the worse of the holds its grip dial names (gripsOf). The ONE place gen2 sizes a swing by: the engine's own physics.ts pressWindow (the
+ * `far.x` for `far.w` px), the worse of the holds its grip dial names (levelCheck gripsOf). The ONE place gen2 sizes a swing by: the engine's own physics.ts pressWindow (the
  * press as engine.ts plays it, RELEASE's forgiveness, timedLaunch's leap, LETGO_FLIGHTS) on this difficulty's swing (setTimedSwing, put
  * back as it was after).
  */
@@ -282,9 +272,10 @@ const RELEASE_CACHE = new Map<string, number>();
  * Where the perch after a liana may start (its near end), relative to the liana's ledge: the band of near ends whose release window
  * is at least `need` (lianaRelease), and which the level check of today links too (levelCheck swingLandings, 6 lines or more: until
  * branch vine-fix changes it, both must hold), as [lo, hi], never nearer than `min`; null when none does. `from` is the ledge the
- * swing starts from.
+ * swing starts from. A liana with a grip dial is checked at its hold, with the double if `dbl` (the stage allows it: levelCheck
+ * flightLandings), as the window is.
  */
-export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, dy: number, w: number, need: number, min = -Infinity, difficulty: Difficulty = 'normal'): [number, number] | null {
+export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, dy: number, w: number, need: number, min = -Infinity, difficulty: Difficulty = 'normal', dbl = false): [number, number] | null {
   const window = (x: number) => {
     const key = [R(v.x - from.x - from.w), R(v.topY - from.y), R(v.bottomY - from.y), R(x - from.x - from.w), R(dy), R(w), swing.amp.toFixed(3), swing.period.toFixed(3), swing.grip ?? '', difficulty].join(',');
     let r = RELEASE_CACHE.get(key);
@@ -292,7 +283,7 @@ export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vin
     return r;
   };
   const near: Platform = { id: -1, x: from.x, y: from.y, width: from.w, height: 90, type: 'solid' };
-  const linked = (x: number) => (swingLandings(near, { id: -1, x: v.x, topY: v.topY, bottomY: v.bottomY, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true }, 1, [near, { id: -2, x, y: from.y + dy, width: w, height: 90, type: 'solid' }], 1e9).get(-2) ?? 0) >= 6;
+  const linked = (x: number) => (swingLandings(near, { id: -1, x: v.x, topY: v.topY, bottomY: v.bottomY, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, ...(swing.grip ? { grip: swing.grip } : {}) }, 1, [near, { id: -2, x, y: from.y + dy, width: w, height: 90, type: 'solid' }], 1e9, dbl).get(-2) ?? 0) >= 6;
   let lo = -1;
   let hi = -1;
   for (let x = R(Math.max(v.x + 40, min)); x <= v.x + 900; x += 20) {
@@ -1313,7 +1304,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       let dy = dy0;
       for (const d of [...new Set([0, -40, 40, -80, 80, -120, -160].map((o) => dy0 + o).concat([dy0 / 2, -120, -80, -40, 0]))]) {
         for (const extra of [0, 100, 200, 400]) {
-          band = lianaBand({ x: a.x, y: a.y, w: a.w }, { x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, d, w + extra, need, minFor(d), budget.difficulty);
+          band = lianaBand({ x: a.x, y: a.y, w: a.w }, { x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, d, w + extra, need, minFor(d), budget.difficulty, dblOK);
           if (band) {
             dy = d;
             w += extra;
@@ -2296,7 +2287,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           };
           // (its own swing on the Vine itself, for vine-fix's engine and checks: Vine.swingAmp / swingPeriod once that is on main; ignored
           // before. Its phase is the engine's (swingSetup))
-          if (lp.hang.swing) Object.assign(v, { swingAmp: lp.hang.swing.amp, swingPeriod: lp.hang.swing.period });
+          if (lp.hang.swing) Object.assign(v, { swingAmp: lp.hang.swing.amp, swingPeriod: lp.hang.swing.period, ...(lp.hang.swing.grip ? { grip: lp.hang.swing.grip } : {}) });
           // (a stage whose brief asks, GraphBrief.tags: every laid piece knows its section and key, what the stage's own finish finds it by)
           if (tagged) (v as Vine & { tag?: string }).tag = `${placed.uid}:${lp.key}`;
           vines.push(v);
