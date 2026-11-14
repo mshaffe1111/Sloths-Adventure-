@@ -141,6 +141,11 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
   Opus for now, R-165.76). Set permission_mode "auto", never acceptEdits (it blocks send_message on an approval only Matt can give).
   create_session has no effort setting: the packet's `effort:` line tells the member how much room to take, and the lead says so
   to Matt plainly. Check the model with get_session after creating. The Agent tool is only for the lead's own quick lookups.
+- **Retiring a member (archive_session), in this order (D68):** (1) send it nothing more once you decide to retire it; (2) list_events
+  kinds ["assistant","result"]: the newest event is a `result` AND no message from the lead is newer than that result (a message wakes
+  it, and archiving then cuts its turn); (3) read its cost (total_cost_usd) and real context (last turn's cache_read_input_tokens) from
+  that result and write the LEVEL-LOG row; (4) `git ls-remote` its branch head matches its last report; (5) archive. A message sent by
+  mistake: wait for its next result first.
 - **GitHub:** the GitHub MCP tools for PRs, runs (actions_list), logs (get_job_logs) and releases. Branch deletes are refused from the lead's
   machine: ask Matt to delete on GitHub. A member's "pushed" is proven by `git ls-remote`.
 - **EnK5 rebuild:** a worktree of the commit, `npm install --legacy-peer-deps`, `python3 tools/testlink/build.py "<note>"`. The artifact
