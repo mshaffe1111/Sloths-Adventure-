@@ -11,6 +11,10 @@ import { generateAllLevels } from './worldsData.ts';
 import { generateStage, setLayoutVariant } from './stageGenerator.ts';
 import type { StageHint } from './protoStage.ts';
 import { FirstTimerRun, FT_ADULT, FT_CHILD_EASY, freshPhone, rng, type FirstTimer } from '../../tools/inspect/firsttimer.ts';
+import { tipMisses, TIP_NEAR } from './gen2/pipeline.ts';
+import { LISTED } from './gen2/listed.ts';
+import { GEN2_STAGES } from './gen2/game.ts';
+import type { Gen2Stage } from './gen2/types.ts';
 
 type Run = { play(): void; e: { proto?: { hints: StageHint[] } }; sim: { frame(p?: unknown): void; p: { x: number; y: number; height: number } } };
 
@@ -49,9 +53,9 @@ test('every rolled tip carries its section band, and the band holds the socket i
   for (const c of generateAllLevels().filter((l) => !l.secret)) {
     for (const setting of ['normal', 'easy'] as const) {
       setLayoutVariant(1);
-      let st;
+      let st: { gen2?: { fills: Array<{ role: string; socket: string; what: string | null; unsaid?: boolean; x: number; y: number }> }; proto?: { hints: StageHint[] } };
       try {
-        st = generateStage({ ...c, unlocked: true }, setting);
+        st = generateStage({ ...c, unlocked: true }, setting) as unknown as typeof st;
       } finally {
         setLayoutVariant(null);
       }
@@ -73,7 +77,7 @@ test('1-4 (a climbing stage): x alone said all four teach lines on the start flo
   for (const layout of [0, 1, 2]) {
     const walk = (strip: boolean) => {
       const r = new RealPlay('1-4', layout);
-      const hs = (r.stage.proto?.hints ?? []) as StageHint[];
+      const hs = ((r.stage as unknown as { proto?: { hints: StageHint[] } }).proto?.hints ?? []);
       if (strip) for (const h of hs) delete (h as { band?: unknown }).band;
       const y0 = r.p.y;
       for (let i = 0; i < 20 * 30; i++) r.frame({ right: true, jump: i % 20 < 2, press: i % 20 === 0 });
@@ -98,3 +102,36 @@ for (const id of ['1-1', '1-2', '1-5']) {
     }
   });
 }
+
+test('the tip verdict: no rolled stage misses (every stage, layouts 1-2, both settings); 1-4 by x alone and a teach after its first showing fail by name (planted)', () => {
+  assert.equal(TIP_NEAR, 1026, 'PHYS.maxRun 285 px/s x a tip 3.6 s up');
+  let n = 0;
+  for (const c of generateAllLevels().filter((l) => !l.secret)) {
+    for (const setting of ['normal', 'easy'] as const) {
+      const kit = LISTED[c.id]?.kit() ?? GEN2_STAGES[c.id]?.kit(setting);
+      if (!kit) continue;
+      for (const layout of [1, 2]) {
+        setLayoutVariant(layout);
+        let st: Gen2Stage;
+        try {
+          st = generateStage({ ...c, unlocked: true }, setting) as unknown as Gen2Stage;
+        } finally {
+          setLayoutVariant(null);
+        }
+        if (!st.gen2) continue;
+        assert.deepEqual(tipMisses(st as never, kit.manifest), [], `${c.id} ${setting} layout ${layout}`);
+        n++;
+        if (c.id !== '1-4' || layout !== 1) continue;
+        const hints = ((st.proto as { hints: StageHint[] }).hints).map((h) => ({ ...h, band: [-1e9, 1e9] as const }));
+        const x = tipMisses({ ...st, proto: { hints } } as never, kit.manifest);
+        assert.equal(x.filter((m) => /past TIP_NEAR/.test(m)).length, 4, `1-4 ${setting} by x alone: ${x.join('; ')}`);
+        // (the creak lesson's section moved after another that shows creaking boughs: the line comes after the thing)
+        const k = st.gen2.sections.findIndex((q) => q.uid === st.gen2.fills.find((f) => f.role === 'tip' && f.what === 'creak')!.section);
+        const sections = st.gen2.sections.map((q, i) => (i === k - 1 ? { ...q, template: st.gen2.sections[k].template } : q));
+        const late = tipMisses({ ...st, gen2: { ...st.gen2, sections } } as never, kit.manifest);
+        assert.ok(late.some((m) => /teaches creak in s\d+, but s\d+ shows it first/.test(m)), late.join('; '));
+      }
+    }
+  }
+  assert.ok(n >= 50, `${n} rolled builds judged`);
+});

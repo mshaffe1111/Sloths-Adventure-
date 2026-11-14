@@ -1,0 +1,26 @@
+tipwalk: 1 vertical stage(s) [1-4], 4 layouts x Normal and Easy
+1-4 normal layout 1 (up):
+  spawn x 140 y 11265, built normal seed 2, up; TIP_NEAR 1026
+  after 20 s: x 1260 y 11265
+1-4 normal layout 2 (up):
+  spawn x 140 y 11209, built normal seed 3, up; TIP_NEAR 1026
+  after 20 s: x 1260 y 11209
+1-4 normal layout 3 (up):
+  spawn x 140 y 11225, built normal seed 4, up; TIP_NEAR 1026
+  after 20 s: x 1260 y 11225
+1-4 normal layout 4 (up):
+  spawn x 140 y 11546, built normal seed 5, up; TIP_NEAR 1026
+  after 20 s: x 1260 y 11546
+1-4 easy layout 1 (up):
+  spawn x 140 y 11321, built easy seed 2, up; TIP_NEAR 1026
+  after 20 s: x 1260 y 11321
+1-4 easy layout 2 (up):
+  spawn x 140 y 11265, built easy seed 3, up; TIP_NEAR 1026
+  after 20 s: x 1260 y 11265
+1-4 easy layout 3 (up):
+  spawn x 140 y 10984, built easy seed 4, up; TIP_NEAR 1026
+  after 20 s: x 1260 y 10984
+1-4 easy layout 4 (up):
+  spawn x 140 y 10984, built easy seed 5, up; TIP_NEAR 1026
+  after 20 s: x 1260 y 10984
+tipwalk: PASS

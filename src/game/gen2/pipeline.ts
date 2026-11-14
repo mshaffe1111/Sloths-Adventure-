@@ -3802,8 +3802,68 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
  */
 export const TIP_BAND = { over: BOUNCE_REACH, under: DOUBLE_RISE } as const;
 export function tipBand(sec: Pick<PlacedSection, 'entry' | 'exit' | 'pieces' | 'seam' | 'vines'>): [number, number] {
-  const ys = [sec.entry.y, sec.exit.y, ...sec.pieces.map((p) => p.platform.y), ...sec.seam.map((q) => q.y), ...sec.vines.flatMap((v) => [v.vine.topY, v.vine.bottomY])];
+  const ys = [sec.entry.y, sec.exit.y, ...sec.pieces.map((p) => p.platform.y), ...sec.vines.flatMap((v) => [v.vine.topY, v.vine.bottomY])];
   return [R(Math.min(...ys) - TIP_BAND.over), R(Math.max(...ys) + TIP_BAND.under)];
+}
+
+/**
+ * Where on its route a rolled stage's tips can first be said (R-165.236). The route's line (tower.ts routeOf: the spawn, each section's
+ * entry and exit in order, the totem) is walked in 4 px steps, his feet on it; a tip is said at the first step past its x with his feet in
+ * its band (StageHint.band, the engine's rule), or failing that at its socket. `early`: route px from there to the tip's own socket (the
+ * place the designer put the line, by what it teaches). A run's route is x itself, so there `early` is 0 by construction; a climbing or
+ * descending stage's storeys share their x, and x alone said 1-4's teach lines 1,200-3,500 px of climb early.
+ */
+export function tipReach(st: Pick<Gen2Stage, 'spawnX'> & { proto?: { hints?: readonly StageHint[] }; gen2: Pick<Gen2Stage['gen2'], 'fills' | 'tower'> }): Array<{ what: string; x: number; y: number; at: number; socket: number; early: number }> {
+  const route = st.gen2.tower?.route;
+  const line = route ? [route.spawn, ...route.legs.flatMap((g) => [g.entry, g.exit]), route.exit] : [];
+  const hints = st.proto?.hints ?? [];
+  const out: Array<{ what: string; x: number; y: number; at: number; socket: number; early: number }> = [];
+  for (const f of st.gen2.fills) {
+    if (f.role !== 'tip' || !f.what || f.unsaid || f.socket === 'water') continue;
+    const h = hints.find((q) => q.x === f.x && q.band);
+    if (!h?.band) continue;
+    // (a run's route is x: nothing past x is before the socket)
+    const socket = route ? routeAt(route, f.x, f.y) : f.x - st.spawnX;
+    let at = socket;
+    walk: for (let i = 1, s = 0; i < line.length; i++) {
+      const a = line[i - 1], b = line[i], len = Math.abs(b.x - a.x) + Math.abs(b.y - a.y), n = Math.max(1, Math.ceil(len / 4));
+      for (let j = 0; j <= n; j++) {
+        const x = a.x + ((b.x - a.x) * j) / n, y = a.y + ((b.y - a.y) * j) / n;
+        if (x >= h.x && y >= h.band[0] && y <= h.band[1]) { at = Math.min(at, s + (len * j) / n); break walk; }
+      }
+      s += len;
+    }
+    out.push({ what: f.what, x: f.x, y: f.y, at: R(at), socket: R(socket), early: R(socket - at) });
+  }
+  return out;
+}
+
+/**
+ * The tip verdict's reach (R-165.236): a tip may be said at most this many px of route before its socket. The route he runs at full
+ * speed (PHYS.maxRun 285 px/s, planner.md §2's reach table) while the line is up (TIP_SAY_S 3.6 s): 1,026 px. Said further back, the
+ * line is gone before he reaches what it teaches. 1-4 by x alone: 3,354-7,410 px; with the bands at most 860 (16 builds, 11-14)
+ */
+/** seconds a stage tip is up (engine.ts says a stage's tips for this long; TIP_NEAR is what he runs in it) */
+export const TIP_SAY_S = 3.6;
+export const TIP_NEAR = Math.round(PHYS.maxRun * TIP_SAY_S);
+/**
+ * A rolled stage's tips judged (R-165.236), each miss by name: a tip said more than TIP_NEAR px of route before its socket (tipReach),
+ * and a teach tip whose section is not the first on the route to show what it teaches (its template's `teaches`: an earlier section
+ * teaches or uses it, so the line comes after the thing). Every stage; on a run the first can not happen (its route is x).
+ */
+export function tipMisses(st: Parameters<typeof tipReach>[0] & { gen2: Pick<Gen2Stage['gen2'], 'sections'> }, M: Pick<WorldManifest, 'sections'>): string[] {
+  const out = tipReach(st).filter((q) => q.early > TIP_NEAR).map((q) => `tip "${q.what}" (x ${q.x}, y ${q.y}) is said ${q.early} px of route before its socket, past TIP_NEAR ${TIP_NEAR}`);
+  const tpl = new Map(M.sections.map((t) => [t.id, t]));
+  const order = st.gen2.sections.map((q) => q.uid);
+  for (const f of st.gen2.fills) {
+    if (f.role !== 'tip' || !f.what || f.unsaid || f.socket === 'water') continue;
+    const k = order.indexOf(f.section);
+    const m = tpl.get(st.gen2.sections[k]?.template ?? '')?.teaches;
+    if (!m) continue;
+    const first = st.gen2.sections.findIndex((q) => { const t = tpl.get(q.template); return t?.teaches === m || (t?.uses ?? []).includes(m); });
+    if (first >= 0 && first < k) out.push(`tip "${f.what}" teaches ${m} in ${f.section}, but ${st.gen2.sections[first].uid} shows it first`);
+  }
+  return out;
 }
 
 /** a Dot line's id to the words a tip says: the kit's own (manifest.tips, World 1's W1_TIPS built from dotLinesData), one source;
@@ -3960,6 +4020,9 @@ export function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
       : [{ flow: T.flow, x0: 0, floorY: T.floorY, turns: T.turns, own: st.platforms }];
     // (and straight up at every vine's top lands him on the wood there, whichever way he faces: tower.ts towerVaults, the engine's finder)
     const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines), ...towerVaults(st.vines, st.platforms)];
+    // (and its tips, R-165.236: none said more than TIP_NEAR px of climb before its socket, each in the first section to show what it
+    // teaches: tipMisses. x alone said 1-4's four teach lines on the start floor)
+    falls.push(...tipMisses(st, req.kit.manifest));
     if (falls.length) st.gen2.towerMiss = falls;
   }
   // (the designer's asks, nodeAsks.ts: each laid, or the roll fails by name)

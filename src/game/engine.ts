@@ -24,7 +24,7 @@ import { W5_STEP_HELP, W5_STEP_HELP_KEYS, W5_STEP_HELP_PAD } from './w5Lines.ts'
 import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
-import { maxGap, softFallStage } from './gen2/pipeline.ts';
+import { maxGap, softFallStage, TIP_SAY_S } from './gen2/pipeline.ts';
 import { MODES, type TravelMode } from './stageModes.ts';
 import { flagFurther, towerLead } from './gen2/tower.ts';
 import { vaultSide as vaultSideOf } from './vineTop.ts';
@@ -3136,7 +3136,7 @@ export class GameEngine {
         if (h.firstOf) markTipHeard(FIRST_OF_STAGE, h.firstOf);
         const mode = lessonInputMode();
         const said = mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text;
-        this.guide(said, 3.6, h.teach ? TEACH_LINE : undefined);
+        this.guide(said, TIP_SAY_S, h.teach ? TEACH_LINE : undefined);
         if (h.passX !== undefined) this.passTips.push({ x: h.passX, text: said });
       }
       // a move tip about one spot goes once he is on the ground past it, done or not (StageHint.passX)
