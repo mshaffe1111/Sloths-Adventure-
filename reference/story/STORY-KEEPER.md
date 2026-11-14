@@ -481,3 +481,7 @@ a vine." (12). Alt text 1-4 "Pokey climbing a curtain of vines up a giant kapok 
 snake, a hive hanging above" (13); each only if the still shows exactly that. Lead line: "One level, a few minutes. Every run is
 different." (9): "about 3 minutes" is untrue for 1-4 (214 s designed on Normal, about 5 min on Easy at 1.4x).
 2:06 PM ET: R-165.171 keyboard: "Press Space to hop up or over." (7; Space is the jump key, SkillLearned.tsx:37). APPROVED.
+
+**11-14 about 5:50 PM ET: the lead rotates tonight.** Matt starts a new lead; its session id goes on line 1 of reference/handoffs/lead.md
+on ccr-ea739a2f-dfcee4. session_01FhBbYNzGRJBDMzn6XbtQK2 becomes the backup. The keeper stays; line approvals go to the new lead.
+Brief the new lead from this file when it messages.
