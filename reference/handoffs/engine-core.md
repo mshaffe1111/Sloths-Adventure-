@@ -4,9 +4,25 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0t. The piece hook and the one letter grammar (HOOKS, ENGINE-678 W0, t-hooks, 11-13): what the next engineer must know
+- **A runtime piece never touches engine.ts again.** Write a `PieceKind` (stagePiece.types.ts) in its own file under src/game/pieces/ and
+  add it to `PIECE_KINDS` (pieces/index.ts). The engine asks every kind to `start(stage, host)` once per stage (after its platforms and
+  clock exist), `step`s each piece where rides used to move (before the moving-platform loop), asks `hurts` after the cast steps (a hurt
+  goes through the ONE damagePlayer: safe time, knock away from `fromX`), calls `respawn` at the end of respawnAtCheckpoint, and draws
+  each piece only on the layers it names: 'world' (after the traps, behind him), 'front' (with the bushes, over him), 'screen' (after
+  the world transform). A piece reads the engine only through `PieceHost` (live getters; one object made once).
+- **RIDE is the first piece** (pieces/ridePiece.ts): the moving-platform loop skips `plat.ride`. No shipped stage lays a ride yet.
+- **The headless canvas cannot run render()** (scenery needs real canvases): pieceHook.test.ts pins the three draw calls' order in
+  render()'s text instead, and proves start/step/hurt/respawn with a planted probe on 1-2, 2-1 and 3-3 through RealPlay.
+- **One letter table: gen2/nodeLetters.ts.** JOB_OF, CONTENT_OF, V13's LATER jobs (nodeCode.ts) and nodeAsks' LATER_CONTENT are derived
+  from it; NODE-KEY.html's Jobs / Made of / pieces rows are written from it by `npx tsx tools/engine/nodekey.ts`, and
+  nodeLetters.test.ts fails when they differ. Add a letter THERE, then run nodekey.ts. Liana is `s` (r is rope + climbing vine);
+  `m` cover and `h`'s rolling dials are named LATER (B3, B2); a letter with no piece rule has no PIECE_WORDS row (no empty Never).
+- **Never edit the tree while the gate script runs** (it reads files as each step starts): run gates in a separate worktree, or wait.
 
 ## 0n. Tonight's three unit reds, fixed at their roots (FIX-INT, t-int-5 from t-int-4, 11-13): what the next engineer must know
 - **w1Finish takes a toy stage** (bare platforms, w1.ts:1539; w1CutArt.test plants one). Anything World 1's finish calls through `as never`
