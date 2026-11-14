@@ -93,10 +93,12 @@ export function checkOnClock(def: PredatorDef, clock: ClockDef): string[] {
 
 export function newPredator(def: PredatorDef, post: Post): PredatorState {
   const facing = post.facing ?? 1;
+  const eyeX = def.habit === 'sweep' ? (facing > 0 ? post.minX : post.maxX) : post.x;
   return {
-    x: post.x, y: post.y, asleep: !!post.asleep, stunUntil: 0,
+    // (a sweeper that rides its eye starts where its eye does: its body IS its shadow's bird, never flying in from where it was laid)
+    x: def.rides ? eyeX : post.x, y: post.y, asleep: !!post.asleep, stunUntil: 0,
     phase: 'rest', t: 0, facing, homeX: post.x, homeY: post.y, minX: post.minX, maxX: post.maxX,
-    eyeX: def.habit === 'sweep' ? (facing > 0 ? post.minX : post.maxX) : post.x,
+    eyeX,
     aimX: post.x, aimY: post.y, goalX: post.x, drawn: false, look: 0, knows: false, leaving: false,
     lost: 0, cool: 0, awayUntil: 0, saw: false, beatenBy: null, ownCool: post.cool, passes: 0, free: !!post.free,
   };

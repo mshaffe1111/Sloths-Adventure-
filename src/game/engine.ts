@@ -201,7 +201,8 @@ import { dotHelp, seenSkills } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
 import { aheadZone, type AheadProbe } from './dotGuidePerch.ts';
 import { FONT_UI } from './fonts.ts';
-import { withHurtFlash } from './hurtFlash.ts';
+import { withHurtFlash, withWash } from './hurtFlash.ts';
+import { MOSS_TINT, sweepPose, type SweepPose } from './sweepPose.ts';
 import { shakeOffset } from './screenShake.ts';
 import { POWER_UP_SECS } from './powerUps.ts';
 import { climbReach, climbSpeedOf, rustleGap } from './vinePair.ts';
@@ -641,6 +642,13 @@ export class GameEngine {
   /** the stage's cast on the creature kit and its drop traps, when its brief names a cast (castPlay.ts); null on every other stage */
   private cast: CastPlay | null = null;
   private readonly castHero: CastHero = { x: 0, y: 0, vx: 0, vy: 0, facing: 1, grounded: false, holding: false };
+  /** the cast's sweepers as drawn (sweepPose.ts): the eased pose and the painted body it is drawn with, by the animal's id (never the
+   *  kit's own animal: its x and y are the kit's, which the blows and stomps read) */
+  private readonly sweepDrawn = new Map<number, { pose: SweepPose; body: Enemy }>();
+  /** the moss over him last step (castPlay.ts calmNow), for the calm sound the step it comes all the way in */
+  private mossWas = 0;
+  /** the game time the sweepers were last drawn at (their easing's step) */
+  private sweepT = 0;
   /** the stage's runtime pieces on the one hook (pieces/index.ts): every registered kind its data lays, started at the stage's start */
   private pieces: StagePiece[] = [];
   /** what a piece may read of the engine (stagePiece.types.ts PieceHost): made once, it reads the engine live */
@@ -4582,6 +4590,8 @@ export class GameEngine {
   private startCast() {
     const world = this.currentStage.config.worldIndex;
     this.cast = this.proto?.cast ? new CastPlay(this.proto.cast, this.enemies, this.platforms, world, this.proto.bushes ?? []) : null;
+    this.sweepDrawn.clear();
+    this.mossWas = 0;
     // (its painted trap pieces load with the stage, so the first frame has them: castArt.ts)
     if (this.cast?.traps.length) warmTrapArt();
   }
@@ -4603,12 +4613,31 @@ export class GameEngine {
     h.grounded = p.grounded;
     h.holding = !!(p.climbing || p.isVineSwinging);
     const r = c.step(h, dt, this.gameTime, this.easy);
-    // (the cues the old animals give: a '?' when it notices him, a '!' and its call when its tell begins)
-    for (const e of r.noticed) this.addFloatingText('?', e.x, e.y - 34, '#fde047');
+    // (the cues the old animals give: a '?' when it notices him, a '!' and its call when its tell begins. A sweeper's notice is its pass
+    //  being called: the screech, its warn (1-7: sound comes first); its tell is the dive, its '!' where it is drawn)
+    for (const e of r.noticed) {
+      if (e.kit && this.isSweeper(e)) sound.playEagleScreech();
+      else this.addFloatingText('?', e.x, e.y - 34, '#fde047');
+    }
     for (const e of r.told) {
       sound.playPredator(castCall(e.type), 0);
-      this.addFloatingText('!', e.x, e.y - 34, '#f97316');
+      const at = this.sweepDrawn.get(e.id)?.pose ?? e;
+      this.addFloatingText('!', at.x, at.y - 34, '#f97316');
     }
+    // a sweeper's free pass dove and pulled up short: Dot's line, once ever (the stage's own words, castPlay.types.ts said.spared)
+    for (const e of r.spared) {
+      sound.playWhoosh();
+      const line = this.proto?.cast?.said?.spared;
+      if (line && !tipHeard(FIRST_OF_STAGE, 'cast:spared')) {
+        markTipHeard(FIRST_OF_STAGE, 'cast:spared');
+        this.guide(line, 4);
+      }
+      recorder.event('spared', e.type);
+    }
+    // the moss all the way in over him, still in cover: the calm sound, once each time it comes in (1-7 NEW 3)
+    const moss = c.calmNow(this.easy);
+    if (moss >= 1 && this.mossWas < 1) sound.playWindChime();
+    this.mossWas = moss;
     for (const e of r.struck) sound.playPredator(castCall(e.type), 1);
     for (const k of r.hurts) {
       if (this.debugBoxes) this.dbgHurt.push(k.box);
@@ -4642,6 +4671,67 @@ export class GameEngine {
       this.spawnDebrisBurst(t.loadX, t.landY - 8, t.load === 'hive' ? '#fbbf24' : '#a8a29e');
     }
     if (r.landed) recorder.event('landing', String(Math.round(r.landed.r)));
+  }
+
+  /** is this cast animal a sweeper (drawn from its eye, sweepPose.ts, not where the kit stands it)? */
+  private isSweeper(e: Enemy): boolean {
+    return !!this.cast?.sweepers.some((m) => m.e === e);
+  }
+
+  /**
+   * The cast's sweepers (World 1's eagle, 1-7 NEW 2), drawn from the kit's state in the old watcher's language (sweepPose.ts): far off
+   * between passes, in at the edge for the screech, over its eye with its shadow on the ground for the pass, the dive. The painted eagle
+   * (eagleSprite.ts) and the shadow sprite (drawWatchShadow, drawn with the front layer). Eased toward the pose; a faded pose snaps.
+   */
+  private drawCastSky(ctx: CanvasRenderingContext2D) {
+    const c = this.cast!;
+    // (eased by game time: a paused game holds still)
+    const dt = Math.max(0, Math.min(0.1, this.gameTime - this.sweepT));
+    this.sweepT = this.gameTime;
+    const cam = this.camera;
+    const view = { x: cam.x, y: cam.y, w: cam.viewportWidth };
+    const k = 1 - Math.exp(-14 * dt);
+    if (!this.proto?.watch) this.watchShadowAt = null;
+    for (const m of c.sweepers) {
+      const want = sweepPose(m.def, m.s, { hero: this.player, view, easy: this.easy, spared: c.spares(m, this.easy), time: this.gameTime });
+      let d = this.sweepDrawn.get(m.e.id);
+      if (!want) {
+        if (d) d.pose.alpha = 0;
+        continue;
+      }
+      if (!d) {
+        const body = { ...m.e, id: m.e.id, defeated: false, kit: undefined } as Enemy;
+        d = { pose: { ...want }, body };
+        this.sweepDrawn.set(m.e.id, d);
+      }
+      const p = d.pose;
+      // (a pose that starts faded out moves there at once: the jump is never seen; anything else eases, so a dive called off pulls up)
+      const snap = want.snap && p.alpha < 0.05;
+      const ease = (a: number, b: number) => (snap ? b : a + (b - a) * k);
+      p.x = ease(p.x, want.x);
+      p.y = ease(p.y, want.y);
+      p.scale = ease(p.scale, want.scale);
+      p.alpha = ease(p.alpha, want.alpha);
+      p.facing = want.facing;
+      p.phase = want.phase;
+      p.attacking = want.attacking;
+      p.shadow = want.shadow;
+      if (want.shadow && (!this.watchShadowAt || want.shadow.a > this.watchShadowAt.a)) this.watchShadowAt = { x: want.shadow.x, a: want.shadow.a };
+      if (p.alpha < 0.02 || !this.onScreen(p.x, p.y, 200)) continue;
+      const e = d.body;
+      e.x = p.x;
+      e.y = p.y;
+      e.facing = p.facing;
+      e.swoopPhase = p.phase;
+      e.isAttacking = p.attacking;
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.translate(e.x, e.y);
+      ctx.scale(p.scale, p.scale);
+      ctx.translate(-e.x, -e.y);
+      if (!drawEagleSprite(ctx, e, this.gameTime)) drawHarpyEagle(ctx, e, this.gameTime);
+      ctx.restore();
+    }
   }
 
   /** a punch or a kick on a cast animal: the kit says whether it works and how it ends; this is the blow's weight */
@@ -7172,7 +7262,7 @@ export class GameEngine {
     if (rig) {
       // fliers throw a shadow on the ground below them (walkers already carry their own)
       for (const e of this.enemies) {
-        if (e.defeated || e.type !== 'eagle' || !this.onScreen(e.x, e.y, 300)) continue;
+        if (e.defeated || e.type !== 'eagle' || (e.kit && this.isSweeper(e)) || !this.onScreen(e.x, e.y, 300)) continue;
         drawGroundShadow(ctx, rig, this.platforms, e.x, e.y + e.height * 0.5, e.width * 0.45, 0.8);
       }
     }
@@ -7186,6 +7276,8 @@ export class GameEngine {
     this.enemies.forEach((enemy) => {
       if (enemy.defeated && enemy.koTimer > (enemy.koLife ?? 0)) return;
       if (!this.onScreen(enemy.x, enemy.y, 400)) return;
+      // (a cast sweeper is drawn from its eye, in the sky: drawCastSky)
+      if (enemy.kit && this.isSweeper(enemy)) return;
       // (a cast animal gliding off for good wears no rim: it can no longer hurt)
       if (!enemy.defeated && enemy.glide === undefined) {
         // the ember rim (see readable.ts): everything that can hurt you wears it
@@ -7267,6 +7359,7 @@ export class GameEngine {
       if (!drawGlideSprite(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade)) drawGlideLeaf(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade);
     }
     if (this.proto?.watch) this.drawWatchBack(ctx);
+    if (this.cast?.sweepers.length) this.drawCastSky(ctx);
     if (this.ringDrops.length) this.drawRingDrops(ctx);
     // the swing's sweet spot: a small warm glow on the vine where he holds it while letting go now would leap to the next vine (the
     // glints along the vine as well, step), painted once (sweetGlowPic), no ring round him and no per-frame blur
@@ -7301,9 +7394,14 @@ export class GameEngine {
     // (Meeca's stage: her own sheet draws her carrying, in the chair and on the silk: meecaArt.ts meecaPose)
     // (7-4's crumble: the floor's painted break and Matt's falling poses, w7SlideRun.ts)
     const kitPose = !!this.mc || (!!this.slideRun && this.slideRun.drawHero(ctx, this.player)) || (!!this.kit && this.kit.drawPokey(ctx, this.player));
+    // still in cover with the cast watching (1-7): the moss comes over him as the calm comes in, laid over only his own drawing (hurtFlash.ts
+    // withWash); never outside cover (castPlay.ts calmNow), so it never says 'hidden' where the eagle sees him
+    const moss = this.cast && !kitPose ? this.cast.calmNow(this.easy) : 0;
+    const mossWash = moss > 0 ? `rgba(${MOSS_TINT.rgb}, ${(MOSS_TINT.alpha * moss).toFixed(3)})` : null;
     // (qaHideHero: the visibility check draws a frame without her to compare, tools/qa/meecaVisible.cjs)
     if (this.mc && !this.qaHideHero) drawMeecaHero(ctx, this.player, this.mc, this.kit, this.gameTime);
     else if (kitPose) { /* drawn */ }
+    else if (mossWash) withWash(ctx, mossWash, this.player.x - 64, this.player.y - 120, 128, 132, (c) => drawHeroSloth(c, this.player, this.gameTime));
     else if (rig) {
       const hp = this.player;
       drawGroundShadow(ctx, rig, this.platforms, hp.x, hp.y, 30 * (hp.ducking ? 1.3 : 1.05));

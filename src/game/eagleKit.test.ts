@@ -12,7 +12,7 @@ import type { Cover } from './stillness.ts';
 import type { Enemy, Platform } from './types.ts';
 
 const GROUND = 500;
-const ground: Platform[] = [{ id: 1, x: -200, y: GROUND, width: 2000, height: 40, type: 'ground' } as Platform];
+const ground: Platform[] = [{ id: 1, x: -200, y: GROUND, width: 2000, height: 40, type: 'solid' } as Platform];
 const eagle = (o: Partial<Enemy> = {}): Enemy =>
   ({ id: 7, type: 'eagle', x: 200, y: GROUND - 220, vx: 0, vy: 0, width: 58, height: 42, hp: 1, maxHp: 1, facing: 1, patrolMinX: 0, patrolMaxX: 800,
     attackCooldown: 0, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, ...o }) as Enemy;

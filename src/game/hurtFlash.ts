@@ -52,7 +52,15 @@ export function deviceBox(m: DOMMatrix | { a: number; b: number; c: number; d: n
  * stays inside: only that patch is cleared, tinted and copied back.
  */
 export function withHurtFlash(ctx: CanvasRenderingContext2D, on: boolean, x: number, y: number, w: number, h: number, draw: (c: CanvasRenderingContext2D) => void): void {
-  if (!on) {
+  withWash(ctx, on ? `rgba(255, 255, 255, ${HURT_WHITE})` : null, x, y, w, h, draw);
+}
+
+/**
+ * Draw `draw` onto ctx with `wash` (a CSS colour with its alpha) laid over only what it drew, the hurt flash's way (one small layer, only
+ * on the frames it shows); null draws it plain. The moss coming over a still Pokey in cover (1-7, castPlay.ts calmNow) is one.
+ */
+export function withWash(ctx: CanvasRenderingContext2D, wash: string | null, x: number, y: number, w: number, h: number, draw: (c: CanvasRenderingContext2D) => void): void {
+  if (!wash) {
     draw(ctx);
     return;
   }
@@ -75,7 +83,7 @@ export function withHurtFlash(ctx: CanvasRenderingContext2D, on: boolean, x: num
   l.save();
   l.setTransform(1, 0, 0, 1, 0, 0);
   l.globalCompositeOperation = 'source-atop';
-  l.fillStyle = `rgba(255, 255, 255, ${HURT_WHITE})`;
+  l.fillStyle = wash;
   l.fillRect(0, 0, r.w, r.h);
   l.restore();
   ctx.save();

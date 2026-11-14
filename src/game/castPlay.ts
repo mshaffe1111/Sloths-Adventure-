@@ -105,6 +105,16 @@ export class CastPlay {
     }
   }
 
+  /** the cast's sweepers (World 1's eagle): drawn from their kit state (sweepPose.ts), not as an animal on the ground */
+  get sweepers(): CastMember[] {
+    return this.members.filter((m) => m.def.habit === 'sweep');
+  }
+
+  /** is this a sweeper's free pass now (core.ts sparedPass)? For the art: its dive pulls up short */
+  spares(m: CastMember, easy: boolean): boolean {
+    return sparedPass(m.def, m.s, easy);
+  }
+
   /** is he hidden-still right now (the calm has come all the way in)? For the art */
   isStill(easy: boolean): boolean {
     return isStill(this.still, STILLNESS[easy ? 'easy' : 'normal']);

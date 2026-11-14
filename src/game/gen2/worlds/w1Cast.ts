@@ -12,7 +12,7 @@
  * a third of the way in, so from the handle the hung load is 140-190 px on and the animal's whole patch is on screen; a sideways
  * phone shows about 150 px over his head under the HUD, so a load hangs 100 px over its ground, no higher.
  */
-import type { TrapPost } from '../../castPlay.types.ts';
+import type { CastData, TrapPost } from '../../castPlay.types.ts';
 import { TRAP } from '../../dropTrap.ts';
 import type { Enemy } from '../../types.ts';
 import type { LimbPlatform } from '../creak.ts';
@@ -90,7 +90,7 @@ export const W1_TRAP_EMIT: Record<string, PropEmitter> = {
 /** Dot's words for World 1's cast (the story keeper's ruling, 11-12, reference/packets/2026-11-12/STORY-LINES.md): once, on the first
  *  trap sprung in World 1, as the snake glides away. Her line for the first PUNCH that sends one gliding is 1-3's wayside line today
  *  (wayside.ts, said at the halfway mark): it moves here when the wayside lets a line wait on a moment instead of a place */
-export const W1_CAST_SAID: { trap?: string; punch?: string } = { trap: 'Off he glides, not a scratch, just very offended!' };
+export const W1_CAST_SAID: NonNullable<CastData['said']> = { trap: 'Off he glides, not a scratch, just very offended!' };
 
 /** how near its load's socket an animal must stand, on the ground the load lands on, for the trap to be its own (px) */
 export const TRAP_UNDER = 150;
