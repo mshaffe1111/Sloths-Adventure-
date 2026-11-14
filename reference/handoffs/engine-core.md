@@ -8,9 +8,24 @@ Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewr
 Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fixed for every stage). Rewritten for BUILD-17 (11-14, t-build-17): section 0x (1-7 built; hanging cover; the perch at 56). Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
-Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for TOOLS-1 (11-14, t-tools-1): section 0za (a flight cache keyed by the setting's swing; the meter's swings; clipcheck's frame walk). Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0za. TOOLS-1 (t-tools-1, 11-14): three tool faults; one was the engine's
+- **Every cache of a flight off a liana is keyed by the setting's swing** (levelCheck.ts `swingSettingKey`: TIMED's period, grab
+  reach and sweet spot, which physics `setTimedSwing` changes per setting). `FLIGHTS` (swingLandingsIn) was keyed by geometry alone,
+  so in one process a Normal build's liana landings were handed to the Easy build of the same seed (and back): castBots' "state leak"
+  (R-165.244) was this, not the bots. Gate: src/game/flightSetting.test.ts (Easy after Normal equals Easy alone in a fresh process).
+  TRAP: any new cache of an answer that reads TIMED (or anything setDifficulty changes) puts that in its key; chainLines and
+  heldCached already did. Lock on t-int-9: 102/102 unchanged (lockall never sets TIMED, so it cannot see this class; see the next line).
+- **The tools build Easy with Normal's swing**: seedlist.ts, lockall.ts and every direct generateStage/buildGen2Stage caller never call
+  setTimedSwing; only the engine does (engine.ts, before generateStage). Their Easy liana checks read Normal's TIMED. Not fixed here
+  (a packet for the lead: REPORT, Suggestions).
+- **The meter** (tools/difficulty/score.ts `swingChallenges`): one swing a liana, at its release; the grab off a bank is not a second
+  challenge; a miss costs what the ground under the swing costs (costAt with the jump inspector's pit rule). Gate: tools/difficulty/score.test.ts.
+- **clipcheck "Dot's first tip"** walks by game frames on the development build (pressFrame), taps a card that waits, judges once the
+  Skip is armed. CLIPCHECK_STEPS / CLIPCHECK_CPU / CLIPCHECK_SHOTS run and stress one step on its own.
 
 ## 0z. INT-9 (link #3, t-int-9, 11-14): a bank beside a pit reaches past its floor in every world; the two 0v-0y lines
 - Sections 0v-0y appear TWICE below: ENG-S2..S5 (snake, chains) and ENG-E1..BUILD-17b (1-7) were written on separate branches and
