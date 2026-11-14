@@ -7,7 +7,7 @@ import { buildGen2Stage, chainRelease, layLocal, lianaRelease, planBudget, rngFo
 import { cfg as toyCfg, kit as toyKit, manifest as toyManifest } from '../toyWorld.ts';
 import { chainLines, validateStage } from '../../levelCheck.ts';
 import { chainPhase, chainWindow, isChain, setTimedSwing, swingClearance, swingReach, TIMED, type SwingVine } from '../../physics.ts';
-import { landingAhead, lianaBox, SWING_SEEN } from '../../cameraFollow.ts';
+import { HURT_SHOW, hurtFocus, landingAhead, lianaBox, SWING_SEEN } from '../../cameraFollow.ts';
 import { LIANA, type SectionTemplate, type WorldKit } from '../types.ts';
 import type { Vine } from '../../types.ts';
 import { generateAllLevels } from '../../worldsData.ts';
@@ -184,4 +184,13 @@ test('built: World 1\'s chain row over a PAINTED thorn hollow on Normal (banks r
     }
   }
   assert.ok(built > 0, 'no seed laid the chain row: the test proves nothing');
+});
+
+test('a swing over a hollow that hurts asks the view to keep its thorn bed in (hurtFocus, the engine\'s focus): sideways the swing view\'s foot sat at the lip', () => {
+  const floor = { x: 300, y: 560, width: 900 };
+  // over the hollow, swinging: the box runs from his head down past the hollow's floor, where the thorn bed stands
+  assert.deepEqual(hurtFocus([floor], 700, 330), { x0: 660, x1: 740, y0: 330 - 104, y1: 560 + HURT_SHOW });
+  // not over it (on the bank before it), or the floor above him: nothing asked
+  assert.equal(hurtFocus([floor], 200, 330), null);
+  assert.equal(hurtFocus([{ ...floor, y: 300 }], 700, 330), null);
 });

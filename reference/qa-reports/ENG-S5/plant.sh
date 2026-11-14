@@ -41,3 +41,7 @@ s=s.replace('const seen = swing.grip || held ? (px: number)', 'const seen = swin
 run under "
 p='src/game/cameraFollow.ts'; s=open(p).read()
 s=s.replace('const better = !best || (whole ? (under ? best.under && score < best.score : best.under || score < best.score) : score < best.score);', 'const better = !best || score < best.score;',1); open(p,'w').write(s)"
+# 9. no focus on the hollow under a swing
+run hurtfocus "
+p='src/game/cameraFollow.ts'; s=open(p).read()
+s=s.replace('if (px >= f.x && px <= f.x + f.width && f.y > py) return', 'if (false) return',1); open(p,'w').write(s)"

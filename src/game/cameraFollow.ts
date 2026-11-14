@@ -482,6 +482,18 @@ export function perchBox(near: number, far: number, y: number, facing: number): 
 // tell, so the tell is in view from its first frame. gen2's verdict (vineSnake.ts snakeViewFaults) refuses a lay whose snake is not in
 // the clear view 1 s+ before it reaches his lowest hold on the shortest view the game frames.
 
+/**
+ * A swing over a hollow that hurts (gen2 pit 'hurt': World 1's thorn bed): the box the view keeps while he swings there, from his head
+ * down past the hollow's floor by `HURT_SHOW` (the thorn bed stands on it), so the danger is in the view's lower part, him whole first
+ * (the engine's focus, focusY). null when no hurt floor lies under him. ENG-S5, the lead's 11:38 check: sideways the swing view's foot
+ * sat at the lip and no thorn showed under the chain.
+ */
+export const HURT_SHOW = 12;
+export function hurtFocus(hurt: ReadonlyArray<{ x: number; y: number; width: number }>, px: number, py: number): Box | null {
+  for (const f of hurt) if (px >= f.x && px <= f.x + f.width && f.y > py) return { x0: px - 40, x1: px + 40, y0: py - HERO_HEAD, y1: f.y + HURT_SHOW };
+  return null;
+}
+
 export const FOCUS_CAM = {
   /** how long before a threat's tell a piece asks for the focus (s): the view moves up to ~200 px at CAM_RISE_STEP (11) a frame, then eases */
   lead: 1.2,

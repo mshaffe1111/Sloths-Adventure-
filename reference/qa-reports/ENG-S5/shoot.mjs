@@ -3,7 +3,7 @@
  * The row is laid by gen2 itself (pipeline layLocal of w1Swing.ts W1_CHAIN_SECTIONS[1]: bough, three lianas liana to liana, perch;
  * SHORT, SHORT, LONG) on 1-6's World 1 kit for the setting the GAME built, and set into the running stage (STAGE, default 1-2: a gen2
  * World 1 stage whose pit painter is live) at his spawn, the stage's own ground there trimmed away for the gap. Normal: the row's banks
- * and ONE hurt-marked floor, as the pipeline lays them (w1Pits paints the thorn bed); Easy: a moss floor STAND-IN (no root stair). The phases are the engine's (physics swingSetup).
+ * and ONE hurt-marked floor, as the pipeline lays them, no floorArt (w1Pits paints the thorn bed); Easy: a moss floor STAND-IN (no root stair). The phases are the engine's (physics swingSetup).
  * The player: put on l1 (as ENG-S4's shooter does: the catch off a bough is the single liana's, proven); on each liana a bot presses to let go only when the
  * engine's own flight from that moment (physics timedLaunch + airStep) catches the next liana (or lands on the perch) AND the lay counts
  * that press (what he aims at whole within SWING_SEEN of him, as chainRelease / lianaRelease count presses), after riding at
@@ -22,7 +22,7 @@ const root = path.join(here, '..', '..', '..');
 const [sha = '?', portArg] = process.argv.slice(2);
 const port = Number(portArg || 5241);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const out = path.join(here, 'shots');
+const out = path.join(here, process.env.OUT || 'shots');
 fs.mkdirSync(out, { recursive: true });
 const clip = !!process.env.CLIP;
 const RIDE = Number(process.env.RIDE || 1.2);
@@ -85,7 +85,9 @@ for (const diff of DIFFS) for (const [w, h] of PHONES) {
     const bankH = 90;
     const mk = (pc) => ({ id: id++, x: ox + pc.x, y: oy + pc.y, width: pc.w, height: floorY + bankH - (oy + pc.y), type: 'solid', style: 'moss_stone' });
     keep.push(mk(a), mk(b));
-    const floor = { id: id++, x: ox + g.x0, y: floorY, width: g.x1 - g.x0, height: bankH, type: 'block', style: 'moss_stone', ...(g.hurt ? { pit: 'hurt', floorArt: 'w1-thorn' } : {}) };
+    const floor = { id: id++, x: ox + g.x0, y: floorY, width: g.x1 - g.x0, height: bankH, type: 'block', style: 'moss_stone', ...(g.hurt ? { pit: 'hurt' } : {}) };
+    // (no floorArt: the pipeline sets one only for a hurtLooks row; on the default row's floor a look reads as a special floor and the
+    // painter bakes no thorn bed: the lead's 11:38 check saw plain dark earth under the chain)
     keep.push(floor);
     e.platforms = keep;
     if (st.platforms) st.platforms = keep;
@@ -209,6 +211,7 @@ for (const diff of DIFFS) for (const [w, h] of PHONES) {
     lastLog = v.log.length;
     await stamp(`${head}\n${v.swinging ? `ON l${v.k + 1} held ${v.hold}` : v.grounded ? 'ON THE GROUND' : 'IN THE AIR'} | view ${v.view.join('-')} next ${v.nx ?? '-'}..${v.far ?? '-'} | zoom ${v.zoom} | next liana's whole swing in view: ${v.nextWhole === null ? '-' : v.nextWhole ? 'YES' : 'NO'} | lives lost ${v.lost}\n${v.log.slice(-3).join(' / ')}`);
     if (ev.startsWith('press on l') && v.nextWhole !== null) pressSeen.push(`${ev.slice(0, 11)}: ${v.nextWhole ? 'whole' : 'NOT whole'} (view ${v.view.join('-')}, swing ${v.nx}..${v.far})`);
+    if (v.swinging && v.k === 1 && !stills.has('mid') && (await page.evaluate(() => window.__eng().vineClock - window.__chain.on)) > 0.9) { stills.add('mid'); await page.screenshot({ path: path.join(out, `${tag}-on-middle-liana.png`) }); }
     for (const key of ['press on l1', 'press on l2', 'press on l3', 'down on']) {
       if (ev.startsWith(key) && !stills.has(key)) { stills.add(key); await page.screenshot({ path: path.join(out, `${tag}-${key.replace(/ /g, '-')}.png`) }); }
     }

@@ -1,22 +1,17 @@
 vite up true
 chain3-1-2-normal-upright-412x915 set {"stage":"1-2","diff":"normal","easy":false,"period":2.85,"grabX":60,"lianas":[{"x":517,"len":410,"amp":0.25,"phase":0.618,"grip":"high"},{"x":771,"len":410,"amp":0.24,"phase":0.993,"grip":"high"},{"x":1015,"len":410,"amp":0.24,"phase":0.306,"grip":""}],"dx":[254,244],"perchPast":335,"perchW":133,"gap":"thorn hollow (hurt-marked, painted by w1Pits)"}
-chain3-1-2-normal-upright-412x915 reach -116@-9,382 -116@-9,382
-chain3-1-2-normal-upright-412x915 last {"k":2,"hold":377,"swinging":false,"view":[1576,2016]} log ["caught l1 at 0.43 (held 327)","press on l1 at 3.90","caught l2 at 4.43 (held 284)","press on l2 at 5.67","caught l3 at 6.23 (held 252)","press on l3 at 7.63 (with the second jump at 0.45 s)","second jump at +0.47 s","down on the PERCH, lives lost 0"] next-liana frames whole in view 49/114 at the presses ["press on l1: whole (view 449-889, swing 771..868)"]
-chain3-1-2-normal-upright-412x915 clip 117 frames at 11.1 fps
+chain3-1-2-normal-upright-412x915 reach -116@-9,382 -116@-9,382 -116@-9,382 -109@-3,383 -109@-3,383 -109@-3,383 -109@-3,383 -102@4,383 -102@4,383 -102@4,383 -96@11,382 -96@11,382 -96@11,382 -89@17,382 -89@17,382 -89@17,382 -89@17,382 -74@24,382 -74@24,382 -74@24,382 -67@30,381 -67@30,381 -67@30,381 -61@37,381 -61@37,381 -61@37,381 -46@43,380 -46@43,380 -46@43,380 -31@48,379 -31@48,379 -25@54,379 -25@54,379 -25@54,379 -11@59,378 -11@59,378 -11@59,378
+chain3-1-2-normal-upright-412x915 last {"k":2,"hold":378,"swinging":false,"view":[1579,2021]} log ["caught l1 at 0.53 (held 328)","press on l1 at 3.90","caught l2 at 4.43 (held 285)","press on l2 at 5.67","caught l3 at 6.23 (held 253)","press on l3 at 8.00 (with the second jump at 0.3 s)","second jump at +0.33 s","down on the PERCH, lives lost 0"] next-liana frames whole in view 57/123 at the presses ["press on l1: whole (view 449-889, swing 771..868)"]
+chain3-1-2-normal-upright-412x915 clip 133 frames at 12.6 fps
 chain3-1-2-normal-sideways-915x412 set {"stage":"1-2","diff":"normal","easy":false,"period":2.85,"grabX":60,"lianas":[{"x":517,"len":410,"amp":0.25,"phase":0.618,"grip":"high"},{"x":771,"len":410,"amp":0.24,"phase":0.993,"grip":"high"},{"x":1015,"len":410,"amp":0.24,"phase":0.306,"grip":""}],"dx":[254,244],"perchPast":335,"perchW":133,"gap":"thorn hollow (hurt-marked, painted by w1Pits)"}
-chain3-1-2-normal-sideways-915x412 reach -116@-9,382 -116@-9,382 -116@-9,382
-chain3-1-2-normal-sideways-915x412 last {"k":2,"hold":377,"swinging":false,"view":[1238,2437]} log ["caught l1 at 0.40 (held 327)","press on l1 at 3.90","caught l2 at 4.43 (held 284)","press on l2 at 5.67","caught l3 at 6.23 (held 252)","press on l3 at 7.63 (with the second jump at 0.45 s)","second jump at +0.47 s","down on the PERCH, lives lost 0"] next-liana frames whole in view 94/94 at the presses []
-chain3-1-2-normal-sideways-915x412 clip 90 frames at 8.2 fps
+chain3-1-2-normal-sideways-915x412 reach -102@4,382 -96@11,382 -96@11,382 -89@17,382 -89@17,382 -89@17,382 -74@24,382 -74@24,382 -67@30,381 -67@30,381 -67@30,381 -61@37,381 -61@37,381 -46@43,380 -46@43,380 -46@43,380 -31@48,379 -31@48,379 -31@48,379 -6@64,377 -6@64,377
+chain3-1-2-normal-sideways-915x412 last {"k":2,"hold":377,"swinging":false,"view":[1233,2432]} log ["caught l1 at 1.20 (held 328)","press on l1 at 3.90","caught l2 at 4.43 (held 284)","press on l2 at 5.67","caught l3 at 6.23 (held 252)","press on l3 at 8.03 (with the second jump at 0.15 s)","second jump at +0.17 s","down on the PERCH, lives lost 0"] next-liana frames whole in view 101/101 at the presses []
+chain3-1-2-normal-sideways-915x412 clip 118 frames at 12.1 fps
 chain3-1-2-easy-upright-412x915 set {"stage":"1-2","diff":"easy","easy":true,"period":3.3,"grabX":76,"lianas":[{"x":517,"len":410,"amp":0.25,"phase":0.618,"grip":"high"},{"x":771,"len":410,"amp":0.24,"phase":0.993,"grip":"high"},{"x":1015,"len":410,"amp":0.24,"phase":0.368,"grip":""}],"dx":[254,244],"perchPast":276,"perchW":181,"gap":"moss floor (stand-in: no root stair)"}
-node:internal/modules/run_main:123
-    triggerUncaughtException(
-    ^
-
-page.evaluate: Execution context was destroyed, most likely because of a navigation
-    at look (/home/user/Sloths-Adventure-/reference/qa-reports/ENG-S5/shoot.mjs:183:33)
-    at /home/user/Sloths-Adventure-/reference/qa-reports/ENG-S5/shoot.mjs:200:15 {
-  log: [],
-  name: 'Error'
-}
-
-Node.js v22.23.4
+chain3-1-2-easy-upright-412x915 reach -70@-32,381 -70@-32,381 -65@-26,381 -65@-26,381 -68@-20,381 -68@-20,381 -68@-20,381 -62@-15,382 -62@-15,382 -57@-9,382 -57@-9,382 -57@-9,382 -51@-3,382 -51@-3,382 -51@-3,382 -45@3,382 -45@3,382 -45@3,382 -39@8,382 -39@8,382 -34@14,382 -34@14,382 -28@20,381 -28@20,381 -13@25,381 -13@25,381 -13@25,381 -8@31,381 -8@31,381 -8@31,381 -3@36,380 -3@36,380 -3@36,380 12@41,380 12@41,380 12@41,380 17@46,379 17@46,379 17@46,379
+chain3-1-2-easy-upright-412x915 last {"k":2,"hold":377,"swinging":false,"view":[1550,1991]} log ["caught l1 at 1.03 (held 331)","press on l1 at 4.37","caught l2 at 5.00 (held 314)","press on l2 at 6.43","caught l3 at 7.07 (held 277)","press on l3 at 8.97","down on the PERCH, lives lost 0"] next-liana frames whole in view 54/119 at the presses ["press on l1: whole (view 436-876, swing 771..868)"]
+chain3-1-2-easy-upright-412x915 clip 124 frames at 11.4 fps
+chain3-1-2-easy-sideways-915x412 set {"stage":"1-2","diff":"easy","easy":true,"period":3.3,"grabX":76,"lianas":[{"x":517,"len":410,"amp":0.25,"phase":0.618,"grip":"high"},{"x":771,"len":410,"amp":0.24,"phase":0.993,"grip":"high"},{"x":1015,"len":410,"amp":0.24,"phase":0.368,"grip":""}],"dx":[254,244],"perchPast":276,"perchW":181,"gap":"moss floor (stand-in: no root stair)"}
+chain3-1-2-easy-sideways-915x412 reach -51@-3,382 -51@-3,382 -45@3,382 -39@8,382 -34@14,382 -28@20,381 -8@31,381 -3@36,380 -3@36,380 12@41,380 12@41,380 31@51,379
+chain3-1-2-easy-sideways-915x412 last {"k":2,"hold":377,"swinging":false,"view":[1217,2416]} log ["caught l1 at 0.50 (held 327)","press on l1 at 1.70","caught l2 at 2.07 (held 211)","press on l2 at 3.33","caught l3 at 3.80 (held 147)","press on l3 at 5.70","down on the PERCH, lives lost 0"] next-liana frames whole in view 58/58 at the presses ["press on l1: whole (view 113-1312, swing 771..868)"]
+chain3-1-2-easy-sideways-915x412 clip 64 frames at 7.9 fps
