@@ -41,5 +41,9 @@ m = json.loads(mf.read_text())
 ent = m['propsMade']['sheets'][SHEET]
 ent['frames'] = {n: v for n, v in ent['frames'].items() if n != FRAME}
 ent['pairs'] = [p for p in ent.get('pairs', []) if FRAME not in p]
+# (the packing record keeps every packed file's size: artCutin.test.ts checks it against the disk)
+for f in (f'props-made/{SHEET}.json', f'props-made/{data["sheet"]}'):
+    if f in m.get('files', {}):
+        m['files'][f] = (D.parent / f).stat().st_size
 mf.write_text(json.dumps(m, indent=1))
 print(SHEET, 'now', sheet.size, (D / data['sheet']).stat().st_size, 'bytes;', FRAME, 'parked in', park / f'{SHEET}-{FRAME}.png')
