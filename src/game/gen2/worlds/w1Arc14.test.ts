@@ -10,7 +10,7 @@ import { checkCode, parseCode } from '../nodeCode.ts';
 import { stagePool } from '../pipeline.ts';
 import { stageLine } from '../../wayside.ts';
 import { STAGE_LINES } from '../../pokeyJournal.ts';
-import { ARC_14, BRIEF_14, FIELD_ROWS, GAP, HALFWAY_14, JOURNAL_14, LINES_14, SECTIONS_14, STAGE_14, beats14, finish14, kitLib14 } from './w1Arc14.ts';
+import { ARC_14, BRIEF_14, FIELD_ROWS, GAP, PODS_14, HALFWAY_14, JOURNAL_14, LINES_14, SECTIONS_14, STAGE_14, beats14, finish14, kitLib14 } from './w1Arc14.ts';
 import { w1World } from './w1.ts';
 import { FIELD_FEEL } from '../../vineField.ts';
 import { POD, podFaults } from '../../podfall.ts';
@@ -71,8 +71,8 @@ test('Easy is never harder than Normal: no more figs on a gate, the same field a
   }
   const [steady, quick] = beats14(400);
   for (const b of [steady, quick]) {
-    assert.ok(Math.abs(warnLength(b, false) - 1.0) < 1e-9, `${b.id}: a 1.0 s tell on Normal`);
-    assert.ok(warnLength(b, true) >= 1.5 - 1e-9, `${b.id}: 1.5 s on Easy`);
+    assert.ok(Math.abs(warnLength(b, false) - PODS_14.tell) < 1e-9 && PODS_14.tell >= POD.tellMin, `${b.id}: the ${PODS_14.tell} s tell Matt saw, on Normal (never under POD.tellMin)`);
+    assert.ok(warnLength(b, true) >= PODS_14.tell * 1.5 - 1e-9, `${b.id}: longer on Easy`);
   }
 });
 
@@ -160,4 +160,23 @@ test('no creaking stair strands him: beside every stair a sound vine climbs from
   // planted: the crown without its sure vine is the stranding case, and the check says so
   const crown = SECTIONS_14.find((t) => t.id === 'w1-14-crown')!;
   assert.match(sureWayUp({ ...crown, pieces: crown.pieces.filter((p) => p.key !== 'sure') }) ?? '', /nothing but the stair/);
+});
+
+// Matt's pick waits (11-14): the pods as the mocks showed them, or none. Every number is PODS_14's, and `on: false` lays no pods
+// (planted both ways on the real finish).
+test('the pods are PODS_14\'s: speed, tell and beats from the one block; on: false lays none (Matt\'s other choice, one line)', () => {
+  const st = finish14(laidField('w1-14-pods'), 'normal');
+  assert.ok(st.pods!.length > 0 && st.pods!.every((p) => p.speed === PODS_14.speed), 'every pod falls at PODS_14.speed');
+  assert.equal(PODS_14.speed, 300, 'the mock Matt saw: 300 px/s (was 620)');
+  for (const c of st.clocks!) {
+    const period = c.phases.reduce((a, q) => a + q.seconds, 0);
+    assert.ok((Object.values(PODS_14.beats) as number[]).some((b) => Math.abs(b - period) < 1e-9), `${c.id}: its beat is PODS_14's (${period})`);
+  }
+  const was = PODS_14.on;
+  (PODS_14 as { on: boolean }).on = false;
+  try {
+    assert.equal(finish14(laidField('w1-14-pods'), 'normal').pods!.length, 0, 'on: false lays no pods');
+  } finally {
+    (PODS_14 as { on: boolean }).on = was;
+  }
 });

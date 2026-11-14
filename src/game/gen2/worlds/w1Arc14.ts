@@ -74,17 +74,17 @@ export const GATE_RUN = GAP;
 const POD_HANG = 110;
 /** a fig bunch's height (px) */
 const FIG_H = 56;
-/** the pods' tell (s, Normal; Easy times the beat's stretch: 1.5 s) and Easy's stretch (1-4.md "Easy ... tells 1.5 s, beats 1.4x") */
-const TELL = 1.0, EASY_STRETCH = 1.5;
-/** the beats (1-4.md "Steady, then grown": ONE steady beat through beats 4-5, it quickens only from beat 7): the steady teach beat, the
- *  grown beat of beats 7-9 and the crown (the fields' 1.2-2.0 s safe of 3.0-3.6 s) and the quick one of the hollow (0.8-0.9 s safe).
- *  Each beat's 'on' is its own longest column's fall and burst (podOn). No field stands over POD.catchBelow (450 px: a knock from any
- *  point lands him on sound wood, 1-4.md "Pods fair"), so a column (H less POD_HANG) is at most 340 px and its 'on' 1.2 s; and a beat is
- *  its quiet, its 1.0 s tell (tellMin) and its 'on', so its safe window is never under the tell. The hollow's window is the least those
- *  two rules leave, 1.1 s of a 2.3 s beat (the design's 0.8-0.9 s of 2.4 s needs a shorter tell or a taller field: neither is loosened,
- *  the lead's call 11-13). The crown keeps two columns, so it stays on the grown beat: two tells in one 2.3 s beat cannot both be 1.5 s
- *  apart (POD.apart) */
-const BEATS = { steady: 3.6, grown: 3.0, quick: 2.3 } as const;
+/**
+ * 1-4's pods, ALL their numbers in this one place (Matt 11-14 12:06 AM, R-165.227: "they just drop too quickly... super hard... maybe we
+ * have the vines change colors to let us know that there's about to have something drop"; "maybe we drop the rocks even completely, or we
+ * make it so the rocks are real slow"). Built as the mocks he saw (FIX-14 mockA): `on: false` lays no pods at all (his other choice, one
+ * line); `speed` the fall (px/s, was rockfall's 620); `tell` the vine's warning before a drop (s, Normal; Easy times `easyStretch`);
+ * `beats` how often each beat drops (s: rarer, was 3.6 / 3.0 / 2.3). The steady beat teaches (beats 4-5), the grown one runs beats 7-9
+ * and the crown, the quick one the hollow. Each beat's 'on' is its own longest column's fall and burst (podOn); no field stands over
+ * POD.catchBelow (450 px: a knock from any point lands him on sound wood, 1-4.md "Pods fair"); podFaults refuses a roll that breaks them.
+ */
+export const PODS_14 = { on: true, speed: 300, tell: 1.5, easyStretch: 1.5, beats: { steady: 4.6, grown: 4.2, quick: 3.6 } } as const;
+const BEATS = PODS_14.beats;
 
 /** a bough: on the way up (`main`: the lay may stand a flag on one 160 px or more wide, FA's rule), a landing unless told */
 const branch = (key: string, place: SectionPiece['place'], w: number, o: Partial<SectionPiece> = {}): SectionPiece =>
@@ -321,7 +321,7 @@ type FinishStage = { platforms: Platform[]; vines: Vine[]; clusters?: VineCluste
 /** the beats 1-4 runs (beat.ts): each pod names one */
 export function beats14(maxLen: number | Partial<Record<keyof typeof BEATS, number>>): ClockDef[] {
   const len = (b: keyof typeof BEATS) => Math.max(1, typeof maxLen === 'number' ? maxLen : (maxLen[b] ?? 1));
-  return (Object.keys(BEATS) as Array<keyof typeof BEATS>).map((b) => podBeat(`pods-${b}`, BEATS[b], TELL, len(b), EASY_STRETCH));
+  return (Object.keys(BEATS) as Array<keyof typeof BEATS>).map((b) => podBeat(`pods-${b}`, BEATS[b], PODS_14.tell, len(b), PODS_14.easyStretch, 0, PODS_14.speed));
 }
 
 /**
@@ -376,12 +376,12 @@ export function finish14<T extends FinishStage>(st: T, difficulty: Difficulty): 
       // (its bough is the field's rough bough picture, shut or open, never the ground painter's branch: fieldPlay.ts draws it)
       top.art = 'hidden';
     }
-    for (const pd of row.pods) {
+    for (const pd of PODS_14.on ? row.pods : []) {
       const v = vine(pd.vine)!;
       const podTop = top.y + POD_HANG;
       const b = row.beat ?? 'steady';
       maxLen[b] = Math.max(maxLen[b] ?? 0, foot.y - podTop);
-      pods.push({ id: pods.length + 1, vine: v.id, x: v.x, top: podTop, land: foot.y, clock: `pods-${b}`, shift: pd.shift, cost: easy ? 'knock' : 'heart' });
+      pods.push({ id: pods.length + 1, vine: v.id, x: v.x, top: podTop, land: foot.y, clock: `pods-${b}`, shift: pd.shift, cost: easy ? 'knock' : 'heart', speed: PODS_14.speed });
     }
   }
   // (the view north: the squirrels' nest door in the crown bough, shut as he climbs up to it, open as he arrives (KitDecor `near`):

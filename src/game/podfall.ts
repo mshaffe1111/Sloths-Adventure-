@@ -31,6 +31,8 @@ export interface PodColumn extends OnBeat {
   top: number;
   land: number;
   cost: PodCost;
+  /** how fast it falls (px/s): the stage's own number (1-4: w1Arc14.ts PODS_14), else POD.speed */
+  speed?: number;
 }
 
 export const POD = {
@@ -44,8 +46,9 @@ export const POD = {
   hands: 26,
   /** how far either side of his middle it finds him off a vine (px): rockfall's 22 + 14, the same body */
   body: ROCK.radius + 14,
-  /** the tell's least length (s): 1-4.md "Pods fair: the tell 1.0 s+ before one lets go" */
-  tellMin: 1.0,
+  /** the tell's least length (s): Matt 11-14 (R-165.227, "let us know that there's about to have something drop"): the mock he saw
+   *  warned 1.5 s, and no pod may warn less (was 1-4.md's 1.0 s) */
+  tellMin: 1.5,
   /** no two tells he can see start within this long of each other (s): World 1 is one thing at a time (1-4.md "Rules") */
   apart: 1.5,
   /** how far apart two columns may be and still both be in his view (px): an upright phone's 440 px across, a little over */
@@ -66,21 +69,21 @@ export interface PodState {
 }
 
 /** the seconds a pod takes to fall its column */
-export const fallSeconds = (p: Pick<PodColumn, 'top' | 'land'>): number => Math.max(0.01, (p.land - p.top) / POD.speed);
+export const fallSeconds = (p: Pick<PodColumn, 'top' | 'land' | 'speed'>): number => Math.max(0.01, (p.land - p.top) / (p.speed ?? POD.speed));
 
 /** the 'on' a pod's beat needs to fall a column `len` px and burst (s), with a breath to spare */
-export const podOn = (len: number): number => Math.ceil(((Math.max(0, len) / POD.speed) + POD.burst + 0.1) * 10) / 10;
+export const podOn = (len: number, speed: number = POD.speed): number => Math.ceil(((Math.max(0, len) / speed) + POD.burst + 0.1) * 10) / 10;
 
 /** a pods' beat: one every `period` s, a `tell`-s tell, long enough 'on' for its longest column (`len` px); Easy times `easyStretch` */
-export const podBeat = (id: string, period: number, tell: number, len: number, easyStretch: number, offset = 0): ClockDef =>
-  beatDef(id, period, tell, podOn(len), easyStretch, offset);
+export const podBeat = (id: string, period: number, tell: number, len: number, easyStretch: number, offset = 0, speed: number = POD.speed): ClockDef =>
+  beatDef(id, period, tell, podOn(len, speed), easyStretch, offset);
 
 /** what a pod is doing, from its beat's read (StageClock.read(p.clock, p.shift)) */
 export function podAt(p: PodColumn, r: Pick<ClockRead, 'phase' | 'u' | 'into' | 'cycle'>): PodState {
   if (r.phase === 'warn') return { phase: 'warn', u: r.u, y: p.top, cycle: r.cycle };
   if (r.phase === 'on') {
     const fallT = fallSeconds(p);
-    if (r.into < fallT) return { phase: 'fall', u: r.into / fallT, y: p.top + r.into * POD.speed, cycle: r.cycle };
+    if (r.into < fallT) return { phase: 'fall', u: r.into / fallT, y: p.top + r.into * (p.speed ?? POD.speed), cycle: r.cycle };
     if (r.into < fallT + POD.burst) return { phase: 'burst', u: (r.into - fallT) / POD.burst, y: p.land, cycle: r.cycle };
     return { phase: 'gone', u: 0, y: p.land, cycle: r.cycle };
   }
