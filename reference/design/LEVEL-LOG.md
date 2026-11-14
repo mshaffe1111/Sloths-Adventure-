@@ -64,3 +64,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | TRIAGE-MATT (Opus medium) | 43 open Matt-reported rows checked vs code: 27 still true, 8 fixed, 4 moot, 4 need a run; ranked 1-1/1-4 list | $3.84 | ~12 min |
 | ENG-INT5 (Opus xhigh) | engine base t-eng-base: feel-cam + castBots climb floor + t-pieces + t-nodes on 0.9.8; every gate green; lock unchanged | $6.92 | ~57 min |
 | RULER (Opus max) | per-gap pit ruler + 5 planted tests; found 1-1 earthless holes (R-165.221) and its own 1-2 log bug; held until 1-1 lays | $17.52 | ~70 min |
+| HOOKS (Opus xhigh) | StagePiece + one engine loop (RIDE moved on), one letter table for nodeCode/nodeAsks/NODE-KEY; every gate green | $11.51 | ~85 min |
