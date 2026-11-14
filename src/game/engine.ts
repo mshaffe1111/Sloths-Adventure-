@@ -99,7 +99,6 @@ import { CLUE_NAME, clearOfHollowLogs, drawHollowLog, drawW1Clue, drawW1Dress, i
 import { drawMudSplash, drawW1Creek } from './w1Creek.ts';
 import { paintedBank, setW1PitWater } from './w1Pits.ts';
 import { stageClock, type StageClock } from './clock.ts';
-import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
 import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
@@ -112,6 +111,8 @@ import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { CastPlay, type CastHero } from './castPlay.ts';
+import { drawPieces, piecesHurt, respawnPieces, startPieces, stepPieces } from './pieces/index.ts';
+import type { PieceHost, StagePiece } from './stagePiece.types.ts';
 import { scares } from './dropTrap.ts';
 import { drawTraps, warmTrapArt } from './castArt.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
@@ -640,6 +641,24 @@ export class GameEngine {
   /** the stage's cast on the creature kit and its drop traps, when its brief names a cast (castPlay.ts); null on every other stage */
   private cast: CastPlay | null = null;
   private readonly castHero: CastHero = { x: 0, y: 0, vx: 0, vy: 0, facing: 1, grounded: false, holding: false };
+  /** the stage's runtime pieces on the one hook (pieces/index.ts): every registered kind its data lays, started at the stage's start */
+  private pieces: StagePiece[] = [];
+  /** what a piece may read of the engine (stagePiece.types.ts PieceHost): made once, it reads the engine live */
+  private readonly pieceHost: PieceHost = ((e: GameEngine): PieceHost => ({
+    get t() { return e.gameTime; },
+    get easy() { return e.easy; },
+    get player() { return e.player; },
+    get standingOnId() { return e.standingOnId; },
+    get platforms() { return e.platforms; },
+    get clock() { return e.clock; },
+    view: {
+      get x() { return e.camera.x; },
+      get y() { return e.camera.y; },
+      get w() { return e.camera.viewportWidth; },
+      get h() { return e.camera.viewportHeight; },
+      get zoom() { return e.zoom; },
+    },
+  }))(this);
   /** the moments of play this stage run has had, each named once, in order (a story line can wait on one: wayside.ts StageWay.on).
    *  'cast:<way>': the first animal of the stage's cast that way sent off (a punch, a kick, a stomp, a trap). Emptied at the stage's start */
   readonly moments: string[] = [];
@@ -1032,6 +1051,8 @@ export class GameEngine {
     const st = this.currentStage;
     // the stage's beats (beat.ts, clock.ts): every hazard on a beat reads them; the game's time is kept
     this.clock = beatClock(st.clocks ?? [], this.easy, this.clock.time());
+    // (the stage's runtime pieces, once its platforms and its clock are made: pieces/index.ts)
+    this.startPieces();
     this.field = st.pods?.length || st.gates?.length || this.clusters.length ? new FieldPlay(st.pods ?? [], st.gates ?? [], this.platforms, this.vines, this.clusters) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
@@ -1757,14 +1778,10 @@ export class GameEngine {
     }
 
     // --- Moving platforms: slide on a sine path and carry whoever stands on them ---
+    // (the stage's runtime pieces step first: a ride on a stage beat is one, pieces/ridePiece.ts, so this loop leaves its platform be)
+    if (this.pieces.length) stepPieces(this.pieces, dt, this.pieceHost);
     for (const plat of this.platforms) {
-      if (plat.type !== 'moving' || plat.broken) continue;
-      if (plat.ride) {
-        // a ride on a stage beat (ride.ts, ridePlay.ts; gen2/rideLay.ts lays it): where its beat puts it, carrying whoever stands on it
-        const m = moveRide(plat, this.clock);
-        if (p.grounded && this.standingOnId === plat.id) (p.x += m.dx), (p.y += m.dy);
-        continue;
-      }
+      if (plat.type !== 'moving' || plat.broken || plat.ride) continue;
       if (plat.lift) {
         // World 2's basket lift rides up and down, and carries whoever stands in it
         const ny = liftY(plat.lift, this.gameTime);
@@ -2884,6 +2901,11 @@ export class GameEngine {
     // --- Enemy Behavior & AI ---
     // (a stage that names a cast: those animals are the creature kit's, stepped here with his stillness and his noise)
     if (this.cast) this.stepCast(dt);
+    // (a runtime piece that hurts him: through the one damagePlayer, its safe time and its knock away from the piece)
+    if (this.pieces.length) {
+      const hurt = piecesHurt(this.pieces, this.pieceHost);
+      if (hurt) this.damagePlayer(hurt.amount, hurt.fromX);
+    }
     for (const e of this.enemies) {
       if (e.defeated) {
         this.updateKo(e, dt);
@@ -4551,6 +4573,11 @@ export class GameEngine {
     this.addFloatingText(label, e.x, e.y - 24, res.armored ? '#cbd5e1' : '#fef08a');
   }
 
+  /** the stage's runtime pieces from its own data (pieces/index.ts): every registered kind is asked; a kind it lays none of starts none */
+  private startPieces() {
+    this.pieces = startPieces(this.currentStage, this.pieceHost);
+  }
+
   /** the stage's cast from its own data, at every stage start: the kit takes the animals the brief names (castPlay.ts); none named, none taken */
   private startCast() {
     const world = this.currentStage.config.worldIndex;
@@ -5859,6 +5886,8 @@ export class GameEngine {
     // Dot's flight: she comes back at the last flower she drank at
     if (this.dotRun) this.dotRun.fl.respawn();
     if (this.slideRun?.sliding) this.slideRun.respawn();
+    // (the stage's runtime pieces put back what his run changed: pieces/index.ts)
+    if (this.pieces.length) respawnPieces(this.pieces, this.pieceHost);
   }
 
   /**
@@ -7102,6 +7131,8 @@ export class GameEngine {
 
     // the stage's drop traps (castArt.ts): behind the animals they hang over
     if (this.cast?.traps.length) drawTraps(ctx, this.cast.traps, this.gameTime, (x, y) => this.onScreen(x, y, 500), this.platforms, (c, pl) => drawBranchArt(c, pl, 'creak', 0));
+    // (the stage's runtime pieces that draw behind him: pieces/index.ts, layer 'world')
+    if (this.pieces.length) drawPieces(this.pieces, ctx, 'world', this.pieceHost);
 
     // Render Enemies
     this.enemies.forEach((enemy) => {
@@ -7242,6 +7273,8 @@ export class GameEngine {
     // (inside a hollow log, walking through it low: the log over him, half see-through, so he reads as in it: w1NewArt.ts)
     if (this.paintKit) for (const pl of this.platforms) if (pl.hollow && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width) && insideHollow(pl, this.player)) drawHollowLog(ctx, pl, 0.6);
     if (this.proto?.bushes) this.drawBushes(ctx);
+    // (and over him, with the bushes: layer 'front')
+    if (this.pieces.length) drawPieces(this.pieces, ctx, 'front', this.pieceHost);
     // (World 8's bat roosts hang in front of the roost tree's hollows: after the hides)
     if (this.proto?.watch && this.currentStage.config.worldIndex === 8) this.drawRoosts(ctx);
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
@@ -7310,6 +7343,8 @@ export class GameEngine {
     if (this.tide?.on) this.drawTideFront(ctx);
     profMark(ctx, 'front');
     ctx.restore(); // end world transform
+    // (the stage's runtime pieces in screen px, with the chase and watch edges: layer 'screen')
+    if (this.pieces.length) drawPieces(this.pieces, ctx, 'screen', this.pieceHost);
     if (this.chase) this.drawChaseEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
     if (this.proto?.watch) this.drawWatchEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
 
