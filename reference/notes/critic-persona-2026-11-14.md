@@ -85,3 +85,37 @@ Paths below are short: D = reference/roles/LEAD-PERSONA-DRAFT-2026-11-14.md, L =
    tightened gate-scope line, "at least three games", the corrected context formula, CLAUDE.md's full start list, the deploy-fix
    exception decision, the dropped 11-13 directions (scoreboard, 1+1 / 2-hour target, nodes, pass/fail stills, box length, cost report).
 3. Repoint L:16 or keep the full engine quote in D.
+
+---
+# Delta re-audit (4:09 PM ET 11-14) of origin/ccr-ea739a2f-dfcee4@2d17f2b6, against my list only
+Verdict: **REJECT, two lines left** (both in PM.md, both two-minute text edits). Everything else is fixed and checked against the files.
+
+## Fixed (checked)
+- (1) RIGHT NOW (lead.md:84-98 at 2d17f2b6) now opens with Live, links, release, Waiting on Matt, Next 3 with who/tier/packet. "Live 0.9.8"
+  is TRUE: 73e7bed0 (PR #71, 11-13 11:18 PM ET) is on origin/main and package.json reads 0.9.8 (my first pass said 0.9.7 from the old
+  L:140: that line is now stale, but RIGHT NOW wins). Members table: ENG-B4 gone, ENG-16F and INT-9 listed. D70 review is in Next 3 #2.
+- (2) Draft: xhigh/high with an explicit supersede line (D:71-73); models.json 'ideas' is [high, xhigh] (confirmed); lead.md:28, :43,
+  :45-46 rewritten; gate scope exact (D:40-44); "at least three games, different series and eras" (D:87); context formula
+  corrected (D:48-49); scoreboard, 1+1 / 2-hour target, Critic sparingly (D:44-46); pass/fail stills (D:90); box lengths (D:40);
+  difficulty number, nature check, feel rooms (D:92-93); cost report (D:81-82). L:16 repointed.
+- (3) Start list carries the full CLAUDE.md reads + handoff doc (D:109-111); deploy-fix exception kept (D:98-99); Never bullet split (D:102-103).
+- (4) Every rewrite applied: Waiting-on-Matt pointer (D:62), keeper outside the cap (D:71), tail -60, keeper id (D:112), backup line (D:107),
+  the accepted-miss rule (D:85-86), five answers into lead-review (D:115).
+
+## Still contradicting the draft (blocking: the lead reads PM.md at step 2 and gets the opposite order)
+1. **PM.md:89 §4 item 4** still says "**Every result goes to the Critic** (a separate fresh agent)". The draft (D:44) and PM.md's own §9
+   table (:223) now say sparingly. Rewrite: "4. **The Critic sparingly (Matt 11-13, R-165.183):** a fresh Critic for releases, shared
+   engine code, an integration head before a test link, plans and contested calls; the lead judges ordinary results on the real screens.
+   PASS: merge into the release candidate branch (never main), update STATE.md. REJECT: the 3-strike breaker (TEAM.md rule 4)."
+2. **PM.md:175 "## Model and effort (standing rule)"** still says "high or medium ... Max only with Matt's yes". It is the section titled
+   as the standing rule, so a cold lead will trust it over the draft's supersede line. Rewrite its first sentence after the 11-09 quote:
+   "SUPERSEDED 11-14 1:51 PM ET (Matt: 'we only are going up to extra high... builders at least high'): every member on Opus 5.5 at high;
+   xhigh for engine, integration, merges and the hardest fixes; no max, no medium, never low (tools/team/models.json)."
+
+## Not blocking (fix with the next lead.md refresh)
+- lead.md INT-9 row still says "the new 1-6 when ENG-16E is GREEN": ENG-16E is retired; ENG-16F.
+- The old "Queue ... in order as slots free" paragraph below the table repeats and partly disagrees with Next 3 (e.g. Next 3 #3 waits
+  "after R-165.246's lift pass", which has no owner, tier or packet). Delete the old paragraph or fold it into Next 3 with an owner for the lift pass.
+
+A PASS needs only the two PM.md edits; `grep -n "Every result goes to the Critic\|high or medium" reference/roles/PM.md` returning nothing
+(outside quoted history) proves them.
