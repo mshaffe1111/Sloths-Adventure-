@@ -335,6 +335,8 @@ export class RealPlay {
     // must have them made again from its own size, by the same mode, or a sim's pieces past them are out of reach: INT-3, the flight
     // sim on 1-4 read every jump as 39 px)
     e.walls = e.mode.bounds({ levelWidth: 100000, exit: { x: 0, y: st.exitTotemY }, spawn: { x: st.spawnX, y: st.spawnY } });
+    // (and the stage's runtime pieces are started again from the bare world's platforms, as the stage's start does: pieces/index.ts)
+    e.startPieces();
   }
 
   /** stand still for this many seconds */
