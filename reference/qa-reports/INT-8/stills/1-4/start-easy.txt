@@ -1,0 +1,2 @@
+BUILT upright {"stage":"1-4","seed":1,"rerolls":0,"built":"easy","stored":"easy"}
+wrote reference/qa-reports/INT-8/stills/1-4/start-1-4-L0-easy-x140-upright.jpg
