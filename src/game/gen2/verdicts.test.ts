@@ -66,10 +66,16 @@ test('arc.single-gap-over: Easy 140 px is past a flick from 70 px (132); Normal 
 test('arc.single-rise-over: a 120 px single rise is over the flick climb (117, thin)', (t) => {
   planted('arc.single-rise-over', 'normal', { asks: [ask('single-rise', 120)] }, t);
 });
-test('block.lesser-passes: a 200 px "double" gap one jump crosses (246); a 120 px "double" rise one jump climbs (123); a 212 px bounce lip a bounce alone climbs (223)', (t) => {
+test('block.lesser-passes: a 200 px "double" gap one jump crosses (246); a 120 px "double" rise one jump climbs (123); a 212 px bounce + air test a bounce alone climbs (223); a 120 px bounce teach one jump climbs (123)', (t) => {
   planted('block.lesser-passes', 'normal', { asks: [ask('double-test-gap', 200)] }, t);
   planted('block.lesser-passes', 'easy', { asks: [ask('double-teach-rise', 120)] }, t);
-  planted('block.lesser-passes', 'normal', { asks: [ask('bounce-teach', 212)] }, t);
+  planted('block.lesser-passes', 'normal', { asks: [ask('bounce-air-test', 212)] }, t);
+  planted('block.lesser-passes', 'easy', { asks: [ask('bounce-teach', 120)] }, t);
+});
+test('the bounce teach is a plain bounce (POLISH-7, bands.md §4 "the other way"): 174-180 px over the floor passes on both settings, a double climbing it too; 168 is under the band, 186 over', (t) => {
+  for (const s of ['normal', 'easy'] as const) for (const px of [174, 177, 180]) assert.deepEqual(names(roll(s, { asks: [ask('single-gap', 100), ask('double-teach-rise', s === 'easy' ? 130 : 138), ask('bounce-teach', px)] })), [], `${s} ${px}`);
+  planted('band.out', 'normal', { asks: [ask('bounce-teach', 168)] }, t);
+  planted('band.out', 'easy', { asks: [ask('bounce-teach', 186)] }, t);
 });
 test('block.spare-thin: a 126 px double rise, 3 px over one jump\'s 123, under the 5 px spare', (t) => {
   planted('block.spare-thin', 'easy', { asks: [ask('double-teach-rise', 126)] }, t);

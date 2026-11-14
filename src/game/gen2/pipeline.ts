@@ -1210,7 +1210,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     const ref = (k: string) => by.get(k)!;
     // (the highest a bounce block's lip may stand, local y: its mushroom's cap less the bounce's reach from it)
     const bounceCap = (q: SectionPiece): number | undefined => {
-      const m = q.block === 'bounce' && q.from ? by.get(q.from) : undefined;
+      // (a bounce TEACH's lip names its mushroom with no block (World 1's TEACH_LIP, POLISH-7): reached the same way, judged as a teach)
+      const m = q.from && q.block !== 'double' ? by.get(q.from) : undefined;
       return m ? m.y - (judgedOnArcs(budget.id) ? bounceLipOverCap(budget.difficulty) : 0.95 * BOUNCE_REACH) : undefined;
     };
     if (pl.kind === 'start') {
