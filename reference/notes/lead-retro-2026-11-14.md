@@ -31,3 +31,8 @@ like we get into a loop of that's the only games that we really focus from."
   Donkey Kong Jr., Donkey Kong Country, Super Mario Bros., Metal Gear (stealth rules for 1-7). Ask Matt for his own list at the rewrite.
 - Rule for the persona: every design or idea round names at least three games from different series/eras for the mechanic, and why each
   fits a phone; no round leans on one series (the tribute rule, IDEAS-1-6.md, already requires research per game).
+- CORRECTION (2:04 PM ET, Matt): the inspiration list is the games behind Matt's 84 ideas in the world map (WORLD-MAP.html's idea table), now
+  extracted to reference/plans/INSPIRED-BY.md (84 rows: Pitfall!, Frogger, Donkey Kong/Jr., Bubble Bobble, Balloon Fight, Ice Climber,
+  Elevator Action, Montezuma's Revenge, Bionic Commando, Q*bert, Sokoban, Lode Runner, Qix, Adventure Island, Super Mario Bros./World/
+  Galaxy, Yoshi's Island, Wario Land 4, Sonic, Zelda, Metal Gear Solid 3, Thief, Celeste, Ori, Downwell, Contrast, DKC Returns, Pikmin,
+  Angry Birds, Hades/Loop Hero and more). The persona points to that file; the wider research shelf above is secondary.
