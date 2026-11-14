@@ -71,7 +71,7 @@ for (const [w, h] of PHONES) {
       p.x = sv.x - 30; p.y = sv.topY + 120; p.vx = 200; p.vy = 0; p.grounded = false; p.facing = 1;
       let diff = '?';
       try { diff = localStorage.getItem('sloth_difficulty') || '(unset: Normal)'; } catch {}
-      return { stage: st.config?.id ?? '', seed: g?.seed ?? '?', diff, easy: !!e.easyMode, levelH: st.config?.levelHeight, snake: sv.snake ? `${sv.snake.route}${sv.snake.clock ? ' on ' + sv.snake.clock : ''}` : 'none', still: sv.swingAmp === 0,
+      return { stage: st.config?.id ?? '', seed: g?.seed ?? '?', diff, easy: !!(e.easy ?? e.easyMode), levelH: st.config?.levelHeight, snake: sv.snake ? `${sv.snake.route}${sv.snake.clock ? ' on ' + sv.snake.clock : ''}` : 'none', still: sv.swingAmp === 0,
         sv: { x: Math.round(sv.x), top: Math.round(sv.topY), len: Math.round(sv.bottomY - sv.topY) }, perch: { x: Math.round(perch.x), y: Math.round(perch.y), w: Math.round(perch.width), creak: !!perch.creak } };
     }, B);
     if (set.err) { console.log(tag, beat, set.err); await ctx.close(); continue; }
@@ -90,7 +90,7 @@ for (const [w, h] of PHONES) {
         size: Math.round((100 * e.zoom) / usual), vw: Math.round(c.viewportWidth), lives: e.lives ?? e.player.lives ?? '?', hearts: e.player.health ?? e.health ?? '?',
         whole: far.x >= c.x && far.x + far.width <= c.x + 0.98 * c.viewportWidth, onPerch: !!p.grounded && Math.abs(p.y - far.y) < 4 && p.x > far.x - 4 && p.x < far.x + far.width + 4 };
     }, usual);
-    const label = (what, v) => `${what} | ${tag} | ${set.stage} seed ${set.seed} (${set.diff}${set.easy ? ', easyMode on' : ', easyMode off'}) | t-build-16@${sha} (BUILD-16b) | beat ${beat}: liana ${set.sv.len} px ${set.still ? '(STILL: false liana)' : ''} snake ${set.snake} | perch ${set.perch.w} wide${set.perch.creak ? ' CREAKY' : ''} | view ${v.vw} px, Pokey ${v.size}% | perch whole: ${v.whole ? 'YES' : 'NO'} | lives ${v.lives}`;
+    const label = (what, v) => `${what} | ${tag} | ${set.stage} seed ${set.seed} (${set.diff}${set.easy ? ', engine easy on' : ', engine easy off'}) | t-build-16@${sha} (BUILD-16b) | beat ${beat}: liana ${set.sv.len} px ${set.still ? '(STILL: false liana)' : ''} snake ${set.snake} | perch ${set.perch.w} wide${set.perch.creak ? ' CREAKY' : ''} | view ${v.vw} px, Pokey ${v.size}% | perch whole: ${v.whole ? 'YES' : 'NO'} | lives ${v.lives}`;
     const stamp = async (t) => page.evaluate((t) => { let d = document.getElementById('__lab'); if (!d) { d = document.createElement('div'); d.id = '__lab'; Object.assign(d.style, { position: 'fixed', left: '0', right: '0', bottom: '0', background: 'rgba(0,0,0,0.72)', color: '#fff', font: '11px sans-serif', padding: '4px 6px', zIndex: 99999, pointerEvents: 'none' }); document.body.appendChild(d); } d.textContent = t; }, t);
     const name = (k) => path.join(out, `${setting}-${beat}-${tag}-${k}.jpg`);
     // (waiting at the top: the snake's tell and its trip, as a player sees them)

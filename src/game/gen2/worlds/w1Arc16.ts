@@ -41,6 +41,10 @@ export const BRIEF_16: GraphBrief = {
   //  snake on your vine and the gorge, crumble the creaky landing: 2, 2, 2 and 1 of the seven (S is never content)
   ends: 'finale', trend: 'level', branching: 'none', teaches: ['swing'], deal: { climb: 29, hazard: 29, rope: 28, crumble: 14 }, dealExact: true,
   tags: true,
+  // (no petal arcs over the gaps (pipeline.ts's jump arcs): over a LIANA gap they hang on a jump's curve, not the swing's, so a swing
+  //  that is played right passes them; the bots missed 21-35 petals a run there and met the sealed door on every seed (BUILD-16b, 11-14).
+  //  Every petal is the stage's own socket, on a bank or perch he lands on: a reward on the path, never a lure off it)
+  petals: 'low',
 };
 
 /** the story keeper's lines for 1-6, verbatim (reference/story/lines-1-6.md on t-keeper-16@387aeb2b8, approved; forwarded by the lead
@@ -114,8 +118,11 @@ function lianaRun(k: string, from: string, steps: Step[], walk = 0): { pieces: S
     // (`walk` root hops between two lianas: up onto a root and down off it, so the swings of a beat are spaced by ground, not packed
     //  into the meter's busiest 30 s (score.ts PEAK_WINDOW; the lead's ruling 11-14: length from walked ground, never more lianas))
     if (i > 0) for (let j = 1; j <= walk; j++) {
-      pieces.push(bank(`${k}m${i}u${j}`, at, 240, UP), bank(`${k}m${i}w${j}`, `${k}m${i}u${j}`, 260, DOWN));
-      at = `${k}m${i}w${j}`;
+      // (keys joined, not templated: a template with two letters between its holes reads as a wildcard to tools/art/artuse.mjs's
+      //  dynamic-name rule, `.*m.*u.*`, and marked unused boss art "drawn" (artUse.test.ts went red, BUILD-16b 11-14))
+      const up = [k, 'r', i, '-', j].join(''), down = [k, 's', i, '-', j].join('');
+      pieces.push(bank(up, at, 240, UP), bank(down, up, 260, DOWN));
+      at = down;
     }
     const l = `${k}l${i + 1}`, b = `${k}b${i + 1}`;
     pieces.push(liana(l, at, st.gap));
