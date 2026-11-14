@@ -10,9 +10,10 @@
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { PieceHost, PieceHurt, PieceKind, PieceLayer, StagePiece } from '../stagePiece.types.ts';
 import { RIDE_PIECE } from './ridePiece.ts';
+import { VINE_SNAKE_PIECE } from './vineSnakePiece.ts';
 
 /** every kind of runtime piece, in the order they step and draw */
-export const PIECE_KINDS: PieceKind[] = [RIDE_PIECE];
+export const PIECE_KINDS: PieceKind[] = [RIDE_PIECE, VINE_SNAKE_PIECE];
 
 /** the stage's pieces: each kind its data lays, in the registry's order */
 export function startPieces(stage: GeneratedStage, host: PieceHost): StagePiece[] {

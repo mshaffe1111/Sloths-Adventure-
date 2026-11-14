@@ -57,6 +57,8 @@ export function builtStageKeys(st: BuiltStage): string[] {
   if (x.props2 || x.vine) out.add('props2');
   if (x.vine) out.add('vine');
   if (x.rope) out.add('rope');
+  // (a vine snake on a liana: its hanging and hissing poses, vineSnakeArt.ts)
+  if ((st.vines ?? []).some((v) => !!(v as { snake?: unknown }).snake)) out.add('vine-snake');
   // (the art director's cut World 1 pieces, gen2 1-1's stones, stumps and planks: w1CutArt.ts)
   if (st.platforms.some((p) => (p as { cut?: string }).cut)) out.add('w1-cut');
   const w = st.config.worldIndex;

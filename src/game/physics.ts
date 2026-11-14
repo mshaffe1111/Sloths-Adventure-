@@ -433,6 +433,14 @@ export const reachJumpHeld = (dy: number, dbl: boolean, share = EASY_HOLD) => re
 
 // ---- Swinging lianas -------------------------------------------------------
 
+/**
+ * Let go of a liana because something made him (PieceHost.letGo: a vine snake reached his hands, 1-6.md): a startled hop, never a leap.
+ * `hop` his speed up (px/s; a hop clears the hands' height, a jump is JUMP_RISE), `keep` the share of the swing's sideways speed he keeps
+ * (a little: he drops near the liana, onto what is under it, not across the gap), `cooldown` before that liana could be caught again (s;
+ * he cannot catch it again in the air anyway: the engine's swungOff holds it until he is down).
+ */
+export const LET_GO = { hop: -220, keep: 0.3, cooldown: 0.5 } as const;
+
 export const SWING = {
   g: 1600,
   steer: 4.8,

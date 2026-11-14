@@ -35,6 +35,11 @@ export interface PieceHost {
   readonly platforms: readonly Platform[];
   /** the stage's one clock: every piece on a beat reads it (beat.ts, clock.ts) */
   readonly clock: Pick<StageClock, 'read'>;
+  /**
+   * he lets go of the liana he swings on, now (a vine snake reached his hands, 1-6.md): a startle hop up and off, never a bite and never a
+   * heart; that liana is not caught again until he is down (or on another hold). Returns false, doing nothing, when he swings on none.
+   */
+  letGo(): boolean;
   /** the view: its left and top in world px and its size in screen px, and the zoom (a 'screen' piece maps world to screen by it) */
   readonly view: { readonly x: number; readonly y: number; readonly w: number; readonly h: number; readonly zoom: number };
 }

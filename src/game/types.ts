@@ -434,6 +434,8 @@ export interface Vine {
   /** a liana's grip dial (gen2 LianaSwing.grip, levelCheck gripsOf): the level check flies him climbing to that hold before he lets go,
    *  with the double jump where the stage allows it; absent, only where a running jump catches it (every liana laid before the dial) */
   grip?: 'low' | 'high';
+  /** a vine snake that rides this liana's grip line on the stage's clock (vineSnake.ts; pieces/vineSnakePiece.ts runs it): 1-6.md NEW 2 */
+  snake?: import('./vineSnake.ts').VineSnake;
   /** a climbing vine hanging down a cliff (4-8's knotted vines), not a tree's trunk: its stage draws it (w4Play.ts), not the kapok art */
   rope?: boolean;
   /** a silk line in World 5 (w5Kit.ts silkLine): it swings like a liana and is drawn as shining silk (terrain.ts) */

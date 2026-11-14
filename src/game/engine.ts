@@ -60,7 +60,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, WALL_H, type SwingState } from './physics.ts';
+import { ASSIST, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, LET_GO, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, WALL_H, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, HANG_PICK, ROPE_FROM, ROPE_GRAB, ROPE_SLIDE, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
@@ -651,6 +651,7 @@ export class GameEngine {
     get standingOnId() { return e.standingOnId; },
     get platforms() { return e.platforms; },
     get clock() { return e.clock; },
+    letGo: () => e.letGoOfLiana(),
     view: {
       get x() { return e.camera.x; },
       get y() { return e.camera.y; },
@@ -5236,6 +5237,29 @@ export class GameEngine {
     }
     const r = p.hanging ? this.ropes.find((q) => q.id === ld.id) : undefined;
     p.hangDip = r ? ropeDip(r, p.x, p.x, ld.amt) : 0;
+  }
+
+  /**
+   * A piece makes him let go of the liana he swings on (PieceHost.letGo: a vine snake reached his hands, 1-6.md): a startled hop up and
+   * off, keeping a little of the swing's way, never a bite and never a heart. Like a deliberate drop (swing exit 1) his jumps are his
+   * again, and that liana is not caught again until he is down or holds something else (swungOff), so he cannot fall back onto it.
+   */
+  private letGoOfLiana(): boolean {
+    const p = this.player;
+    if (!p.isVineSwinging) return false;
+    const id = p.swingVineId ?? -1;
+    p.isVineSwinging = false;
+    this.vineCooldownTimer = LET_GO.cooldown;
+    this.lastReleasedVineId = id;
+    this.swungOff = id;
+    this.swingLeapWait = 0;
+    this.sweetSnap = null;
+    p.vx *= LET_GO.keep;
+    p.vy = LET_GO.hop;
+    p.jumpsLeft = 2;
+    p.isDoubleJumping = false;
+    p.somersaultAngle = 0;
+    return true;
   }
 
   /** let go of a rope (hurt, respawn, or a deliberate drop); `cooldown` is how long before it can be grabbed again */
