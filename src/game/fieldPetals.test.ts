@@ -12,6 +12,8 @@ import { FIELD_FEEL, type Hands } from './vineField.ts';
 import type { Collectible, Vine } from './types.ts';
 
 type E = { hands: Hands | null; field: { pods: unknown[] } | null };
+/** how far over the foot a petal is still taken by him standing there (px): his pickup reach 38 from his middle, half his body 24 up */
+const STAND = 60;
 
 /** the field petals of a roll: each with the pair of field vines (in reach of each other, both spanning it) it hangs between, the pair
  *  whose middle is nearest it */
@@ -20,7 +22,10 @@ function paired(r: RealPlay): Array<{ c: Collectible; a: Vine; b: Vine }> {
   const out: Array<{ c: Collectible; a: Vine; b: Vine }> = [];
   for (const c of r.collectibles) {
     if (c.type !== 'flower') continue;
-    const span = fv.filter((v) => c.y >= v.topY + 10 && c.y <= v.bottomY - 10 && Math.abs(v.x - c.x) <= FIELD_FEEL.reach);
+    // (a petal on a STRETCH: out of reach of him standing on the foot. A ground petal (the trail's, 34 px over the wood) in front of a
+    //  field's first vines is taken standing, by design; with the 80 px field margin (R-165.206) one fell inside a pair's span and was
+    //  counted as a climb petal, taken by one hand before the push: FIX-14c, seed 1 Easy, 259,8552 by the vine at 237)
+    const span = fv.filter((v) => c.y >= v.topY + 10 && c.y <= v.bottomY - STAND && Math.abs(v.x - c.x) <= FIELD_FEEL.reach);
     let best: { a: Vine; b: Vine } | null = null;
     for (const a of span)
       for (const b of span)

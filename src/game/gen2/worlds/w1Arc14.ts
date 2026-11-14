@@ -24,6 +24,7 @@ import { FIELD_FEEL, gateFaults, type ClusterGate, type VineCluster } from '../.
 import { podBeat, podFaults, type PodColumn } from '../../podfall.ts';
 import type { KitDecor } from '../../puzzleArt.ts';
 import { nestDoorAt } from '../../artDress.ts';
+import { TOP_ROOM } from '../../vineTop.ts';
 
 /** the stage these rows are for: the tag its sections carry (stagePool) and the key of its brief */
 export const STAGE_14 = '1-4';
@@ -262,8 +263,11 @@ const HOLLOW = field('w1-14-hollow', 'the hollow: a gate of three, the quicker b
  *  steady beat; up and out. Its type is the stair's (crumble); its pods make it the stage's climax */
 const STEP = 100, RISE = 60, CROWN_N = 3, CROWN_H = 440;
 const CROWN: SectionTemplate = (() => {
-  const W = 3 * (STEP + 20) + 2 * MARGIN + (CROWN_N - 1) * GAP + 40;
-  const midX = 3 * (STEP + 20) + 40, midW = 2 * MARGIN + (CROWN_N - 1) * GAP;
+  // (the mid runs SURE_RUN on past the field, where the sure vine tops out: GAP from the last field vine, out of his climbing reach (a vine
+  //  in reach at the field's foot is taken first, and its top vaults him out), and TOP_ROOM from the mid's end; R-165.206)
+  const SURE_RUN = GAP;
+  const W = 3 * (STEP + 20) + 2 * MARGIN + (CROWN_N - 1) * GAP + SURE_RUN + 40;
+  const midX = 3 * (STEP + 20) + 40, fieldW = 2 * MARGIN + (CROWN_N - 1) * GAP, midW = fieldW + SURE_RUN;
   const pieces: SectionPiece[] = [branch('foot', { kind: 'start' }, W, { landing: false })];
   for (let i = 0; i < 3; i++) pieces.push(branch(`r${i + 1}`, { kind: 'over', on: 'foot', at: [(20 + i * (STEP + 20)) / W, (20 + i * (STEP + 20)) / W], dy: [-RISE * (i + 1), -RISE * (i + 1)] }, STEP, { creak: true }));
   pieces.push(branch('mid', { kind: 'over', on: 'foot', at: [midX / W, midX / W], dy: [-RISE * 4, -RISE * 4] }, midW, { landing: false }));
@@ -271,13 +275,12 @@ const CROWN: SectionTemplate = (() => {
   //  no set-back (engine.ts crumbledWhole runs on a set-back only), so with the stair alone a climber who stood too long on two steps was
   //  stranded under the mid until the steps grew back off screen (POLISH-1 11-13: kid Normal seed 16; level.md rule 5). The stair stays the
   //  quick way, the vine the steady one: the stage's own "one vine sure")
-  //  It stands on the line of the field's middle vine (no pods on it), TOP_ROOM (80) or more from the mid's open ends (at midX + 20 it
-  //  stood 20 px from the end over the stair: a vault the short way went off; R-165.206), and GAP from the field's other vines: between
-  //  two of them its top was in his climbing reach at the field's foot, and a side push there vaulted him out instead of taking the
-  //  second hand (fieldPetals.test.ts, 11-14)
-  pieces.push(climbOn('sure', 'foot', W, midX + MARGIN + GAP, RISE * 4));
+  //  It tops out on the mid's run past the field (SURE_RUN), TOP_ROOM from its end and GAP from the last field vine. At midX + 20 it stood
+  //  20 px from the mid's end over the stair (a vault the short way went off); between or on the field's vines its top was the vine he
+  //  took at the field's foot, and its top vaulted him out (fieldPetals.test.ts, FIX-14c's first two relists)
+  pieces.push(climbOn('sure', 'foot', W, midX + fieldW + SURE_RUN - TOP_ROOM, RISE * 4));
   for (let i = 0; i < CROWN_N; i++) pieces.push(climbOn(`f${i + 1}`, 'mid', midW, MARGIN + i * GAP, CROWN_H));
-  pieces.push(branch('top', { kind: 'over', on: 'mid', at: [0, 0], dy: [-CROWN_H, -CROWN_H] }, midW));
+  pieces.push(branch('top', { kind: 'over', on: 'mid', at: [0, 0], dy: [-CROWN_H, -CROWN_H] }, fieldW));
   FIELD_ROWS['w1-14-crown'] = { n: CROWN_N, H: CROWN_H, figs: [], pods: [{ vine: 1, shift: 0 }, { vine: 3, shift: BEATS.grown / 2 }], beat: 'grown', gate: false, foot: 'mid' };
   return {
     id: 'w1-14-crown', name: 'the crown: a rotten stair to three long vines under pods', feel: [STAGE_14], own: true, archetypes: 'any',
