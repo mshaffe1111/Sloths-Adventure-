@@ -18,6 +18,22 @@ Packet: origin/ccr-ea739a2f-dfcee4:reference/packets/2026-11-14/FIX-14.md. Rows 
 | 1-5 vines (Matt likes) | plain climbs, 220 px/s up AND down, no field, no hands (w1Arc15.ts:75) | |
 | Air steer off a vine | the same PHYS on both stages (airAcc 1700, airDec 520, airStop 1300; physics.ts) | the gap to 1-5 is the field climb (slide x2, stop-to-step), not the air |
 Repro: `PW=/opt/node-tools/node_modules/playwright/index.mjs node reference/qa-reports/FIX-14/figrepro.mjs 5199 <out> normal <gate#>` (logs head vs bough each 0.2 s; Playwright video renders the page in a corner here, so the clip for Matt is built from per-frame screenshots).
-## Step 2 (SHOW FIRST, not built): two upright mock clips to the lead
-(a) one vine vs two past a telegraphed pod: the bough/vine it hangs from shakes and turns a warm warning colour, dust trickles, 1.5 s+ before a slower drop; two hands visibly beat one up. (b) the fig lock: thatch tied down over the gap, ties strain as the fig rises, SNAP at full push; Pokey's head stops at the bough's underside. Code-drawn stand-ins for the mock only; art pieces named for the lead's HF batch.
+## Step 1b: Matt's "over the top", reproduced (11-14 ~12:40 AM ET, real page at 73e7bed0, seed 1 Normal, upright)
+- Climb a PLAIN field vine under a SHUT gate (gate 0, vine x 866): his feet stop 4 px under the bough's TOP (7018 vs 7022), so his whole
+  box is 76 px above the underside and he stands drawn ON the shut bough in the bramble (`mock/before-over-the-top-0.9.8.mp4`, sheet
+  `mock/before-over-the-top-sheet.jpg`). Cause: the climb's top stop (`topY - 4`, engine.ts:2136/2151) and GATE.lid (fieldPlay.ts:95)
+  are both on his FEET at the bough's top; the drawn Pokey is 89 px tall (box 48), so even his box-safe stops show his head through the wood
+  (Matt's frame clipB-01: arms and head over the bough).
+- Petals two-handed: pickup reach 38 px from (x, y-20) (engine.ts ~3215); hung between two vines 80 apart he is 40 px off a vine's line.
+- A 1.5 s tell from the foot is beaten on ONE vine: a pod hangs 250 px up a 360 px field; one hand passes it in 1.14 s. Slower,
+  telegraphed pods alone do not make two vines worth it; the reward has to be speed plus what only two hands reach.
+## Step 2 SHOW FIRST: the two mocks (t-fix-14-mock, code-drawn stand-ins, never to merge; `mock/mock.patch`)
+| Clip | What it shows | Measured in the clip (the game's own numbers) |
+|---|---|---|
+| `mock/mockA-two-vines-and-pod-tell.mp4` (9 s) | one vine vs two up the pods field past a pod whose vine glows amber to red, shivers, dust sifting, 1.5 s, then a 300 px/s drop; a petal pair hung between two vines | one vine: top in 1.30 s, petals 0/2; two vines: 0.90 s, petals 2/2 |
+| `mock/mockB-fig-lock.mp4` (8.6 s) | gate of two: each fig tied to a leaf thatch; the tie strains (bulges, pales, frays, shivers), SNAPS with a crack at full push; hold up: head stops under the bough; jump: still under; last fig: thatch thrown off, way open | box top never above the underside while shut (fig case 45 px under, plain vine 69 px under); fig still frees; gate of one opens as before |
+Mock numbers: pods 300 px/s (was 620), tell 1.5 s (was 1.0), beats 4.6/4.2/3.6 s (was 3.6/3.0/2.3, so fewer drops); feet stop at
+the drawn bough's underside + 89 (his drawn height) under a shut gate, on the climb AND the jump; a fig frees when its top passes the
+DRAWN (sagged) bough top. Art for the real build (HF, the lead's call): a woven-leaf thatch strip (tileable, 1-4 palette), a vine tie
+(whole, strained, two snapped ends), the glowing-vine tell (or a tint on the vine art), a bigger, lighter pod that reads on the leaves.
 ## Step 3+ waits for Matt's pick (packet steps 3-5).
