@@ -1,0 +1,5 @@
+npx tsx tools/inspect/tierBots.ts --stage 1-1 --tiers child --seeds 1-40 --setting easy --calibrate > reference/qa-reports/ENG-16F/cal/cal-child-easy.out 2> reference/qa-reports/ENG-16F/cal/cal-child-easy.err
+npx tsx tools/inspect/tierBots.ts --stage 1-1 --tiers child --seeds 1-40 --setting normal --calibrate > reference/qa-reports/ENG-16F/cal/cal-child-normal.out 2> reference/qa-reports/ENG-16F/cal/cal-child-normal.err
+npx tsx tools/inspect/tierBots.ts --stage 1-1 --tiers middle --seeds 1-40 --setting easy --calibrate > reference/qa-reports/ENG-16F/cal/cal-middle-easy.out 2> reference/qa-reports/ENG-16F/cal/cal-middle-easy.err
+npx tsx tools/inspect/tierBots.ts --stage 1-1 --tiers middle --seeds 1-40 --setting normal --calibrate > reference/qa-reports/ENG-16F/cal/cal-middle-normal.out 2> reference/qa-reports/ENG-16F/cal/cal-middle-normal.err
+npx tsx tools/inspect/tierBots.ts --stage 1-1 --tiers expert --seeds 1-40 --setting normal --calibrate > reference/qa-reports/ENG-16F/cal/cal-expert-normal.out 2> reference/qa-reports/ENG-16F/cal/cal-expert-normal.err
