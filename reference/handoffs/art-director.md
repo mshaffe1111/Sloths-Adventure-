@@ -1,7 +1,21 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-14 12:47 AM ET (ART-678b: the ART-678 pieces re-cut, catalogued; nothing placed)
+# Hand-off: the art director role (Content), rewritten 2026-11-14 2:03 AM ET (ART-MATT: Matt's 11-14 sheets cut, catalogued; nothing placed)
 
-Last task: ART-678b (§0e). Before it: R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
+Last task: ART-MATT (§0f). Before it: ART-678b (§0e), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0f. ART-MATT (t-art-matt): Matt's 11-14 sheets (R-165.230), 19 pieces in src/assets/w1-matt/, catalogued, NOT placed
+- Matt's sheets are 1024 px on WHITE: upscale the WHOLE sheet 4x first (tools/art/upscale/up.py, anime6b, CPU ~60 s a sheet; opaque,
+  so no edge smear), then cut: `python3 -I tools/art/hfmatt/cut.py <up dir> <out>` (cut.json; recut.py's flood on a white key).
+  torch comes from PyPI (`pip install --break-system-packages scipy spandrel`; download.pytorch.org is blocked); the model from GitHub.
+- Ties: the sawn log is cleared by bark hue (`mode: wood`); the 3 states share ONE canvas, anchor (78, 277) = knot centre on the bough
+  centre line, sized for a 22 u bough (sizes.json). Leaf lid: log stubs cleared; stretch 0.8-1.25x. Lips: the outer edge is the sheet
+  edge (straight): the bank must cover it; the engine must fill earth under a lip (pit-assembly.jpg).
+- Pods: Matt's pods failed (no line, garlic): HF img2img s68 seed 11 from podstarts.py (his pod + a 9 px dark ring on magenta); $0.18.
+- Sandbox files come back by `hf_sandbox_fs cat` of a base64 file: a result over the token cap is SAVED to tool-results/ (not shown),
+  so a 100 KB part costs no context; decode it with json+base64. The sandbox's port URL is blocked by the proxy.
+- Real frames: tools/art/hfmatt/frame.mjs (labels what the game BUILT: config.id, localStorage difficulty, zoom; D62).
+- Open: the lead judges the 4 sheets in reference/qa-reports/ART-MATT/; an Engine packet wires pits (R-165.226), the tie/lid
+  (R-165.212) and pods + telegraph (R-165.227). Ant walk frames (sheet 4) not sent yet.
 
 ## 0e. ART-678 / ART-678b (t-art-678b): 26 pieces in src/assets/w1-678/, catalogued, NOT placed
 - Cut from the kept raws (reference/art/hf678/raw/, q95) by `python3 tools/art/hf678/recut.py tools/art/hf678/recut.json reference/art/hf678/raw <out>`

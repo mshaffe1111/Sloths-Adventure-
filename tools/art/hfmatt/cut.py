@@ -3,7 +3,9 @@
     python3 -I tools/art/hfmatt/cut.py <up dir> <out dir>
 
 <up dir> holds sheet1.png, sheet2.png, sheet3.png: each WHOLE sheet upscaled 4x by Real-ESRGAN anime6b on this machine
-(tools/art/upscale/up.py: the sheet is opaque, so no transparent-edge smear; $0), so every piece is cut from 1000-1900 px of paint.
+(tools/art/upscale/up.py: the sheet is opaque, so no transparent-edge smear; $0), so every piece is cut from 1000-1900 px of paint;
+and the Hugging Face pod takes (reference/art/hfmatt/raw/<take>.webp) upscaled the same way as <up dir>/<take>.png (the 600 px floor:
+the takes alone gave 512-595 px pods). A take missing from <up dir> is read from raw/ as is.
 Modes per piece (cut.json):
   flood  hf678/recut.py's cut: background = white flooded in from the border, stopped by the line; 1 px in, 0.8 px blur, despill.
   wood   flood, then every bark-brown pixel (the sawn log under a tie, the stubs under the leaf lid) is cleared and so is the log's
@@ -95,7 +97,7 @@ def main(up, od):
     cfg = json.loads((Path(__file__).parent / 'cut.json').read_text()); od = Path(od); sizes = {}
     for sheet, pieces in cfg.items():
         f = Path(up) / f'{sheet}.png'
-        if not f.exists():  # a Hugging Face take (the pods): reference/art/hfmatt/raw/<sheet>.webp, already big enough
+        if not f.exists():  # a Hugging Face take not upscaled: reference/art/hfmatt/raw/<sheet>.webp as is
             f = G / 'reference/art/hfmatt/raw' / f'{sheet}.webp'
         A = np.asarray(Image.open(f).convert('RGB')).astype(np.float32)
         group = []

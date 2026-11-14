@@ -40,7 +40,7 @@ META = {
                       'its RIGHT edge is the sheet edge (straight): it joins the bank, so the bank must cover it', 'sheet3-pits'),
     'w1m-tie-taut': ('vine tie, at rest: a twisted green vine loop knotted round a bough', 'decor near', TIE, 'none (on a bough)',
                      'on a bough (its knot wraps it)', f'{W1} | COULD {COULD_VINE}', TIE_NOTE, 'sheet1-vine-tie-leaf-lid'),
-    'w1m-tie-strain': ('vine tie, straining: the same loop stretched thin and pale, fibres fraying', 'decor near', TIE, 'none (on a bough)',
+    'w1m-tie-strain': ('vine tie, straining: the same loop pulled thin and pale, fibres fraying', 'decor near', TIE, 'none (on a bough)',
                        'on a bough (its knot wraps it)', f'{W1} | COULD {COULD_VINE}', TIE_NOTE, 'sheet1-vine-tie-leaf-lid'),
     'w1m-tie-snap': ('vine tie, snapped: two frayed ends curling apart, loose fibres', 'decor near', TIE, 'none (on a bough)',
                      'on a bough (its knot wraps it)', f'{W1} | COULD {COULD_VINE}', TIE_NOTE, 'sheet1-vine-tie-leaf-lid'),
@@ -76,7 +76,7 @@ def main():
         kb = round(f.stat().st_size / 1024, 1)
         r = {c: '' for c in COLS}
         stretch = ' (stretch along the bough)' if 'stretch' in kind else ''
-        src = SRC.format(sheet) if sheet.startswith('sheet') else f'ART-MATT Hugging Face img2img 2026-11-14 (take {sheet}), cut by tools/art/hfmatt/cut.py'
+        src = SRC.format(sheet) if sheet.startswith('sheet') else f'ART-MATT Hugging Face img2img 2026-11-14 (take {sheet}), upscaled 4x (anime6b, CPU), cut by tools/art/hfmatt/cut.py'
         r.update(id=f'hfmatt/{name}', source=src, file=f'src/assets/w1-matt/{name}.webp', kind=kind, w=w, h=h, layer=layer,
                  engine_slot=slot, footing=foot, float_class=fl, world_best=1, worlds=worlds, no_fit=NOFIT_WOOD, made_thing='n',
                  on_screen_px=f'{w / PX:.0f}x{h / PX:.0f} (units){stretch}', ship_px=f'{w}x{h}', file_kb=kb, file_kb_ship=kb,

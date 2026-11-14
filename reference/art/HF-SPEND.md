@@ -64,3 +64,9 @@ ART 11-13 running total: ~100 GPU-min, **~$4.59** of its $15 cap. Balance ~$58.3
 |---|---|---|---|---|
 | 11:33 PM-12:14 AM | sandbox 6af7e49d29dd05ff03665cdd (rtx-pro-6000), 41 min creation to terminate: ~8 min model downloads (a parallel stills start OOMed but overlapped the Qwen-Image download), 12 harpy Qwen-Edits + 4 perch-feet edits (~70 s each), 24 sheet stills (~50 s each), CPU cuts, ~4 min copying back (cuts 46 parts, raws 115 parts) | lead (ART-678 packet) | ~$1.88 | 25 shipped pieces (src/assets/w1-678/) from 6 sheets + 8 harpy frames: **~$0.075 a shipped piece**; plus 40 raw takes kept (reference/art/hf678/raw/, q95) so a re-pick costs nothing |
 ART-678 total: ~41 GPU-min, **~$1.88** of its $8 cap (minutes x $2.75/60). Balance ~$56.4 (from ~$58.3).
+
+## 2026-11-14 (ART-MATT, t-art-matt; the lead's packet cap $1.00 for the pods)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 1:41-1:44 AM | sandbox 6af8029229dd05ff036689d0 (rtx-pro-6000), ~4 min creation to terminate (rounded up): Qwen-Image img2img + style LoRA 1.0, 8 takes 768x1024 (pod hang/fall x s55/s68 x seeds 11/23, ~11 s each) from Matt's pods with a bold outline added (tools/art/hfmatt/podstarts.py, spec-pods.json) | lead (ART-MATT packet) | ~$0.18 | w1m-pod-hang + w1m-pod-fall (s68 seed 11: ridged husk, stripes, bold line); s68-23 kept as the alt in the contact sheet |
+ART-MATT total: ~4 GPU-min, **~$0.18** of its $1.00 cap (minutes x $2.75/60). Balance ~$56.2 (from ~$56.4).
