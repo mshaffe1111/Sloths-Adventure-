@@ -1,5 +1,5 @@
 # BUILD-16: build 1-6 "First Lianas" (R-165.203) for Matt's link today. Opus 5.5 high (content; a level builder). Written 8:32 AM ET 11-14.
-Branch t-build-16 from origin/t-eng-s4 (its GREEN head when ENG-S4 reports; until then read, don't build). READ FIRST, IN ORDER:
+Branch t-build-16 from origin/t-eng-s4@4bafe110 (ENG-S4 REPORT: every gate green but buildcheck, which fails on its base too in that container: re-run it ALONE on your head). NOT YET in the engine: liana-to-liana CHAINS (1-6 beat 4): build every other beat first; chains come from ENG-S5 in parallel, then you add beat 4. LONG has no dial (1-6.md's revised lines; lead accepted ENG-S4's pushback). READ FIRST, IN ORDER:
 reference/methods/level.md (its ranked Building rules come first), reference/design/LEVEL-BAR.md, STAGE-RULES.md (2-minute floor, flags/hearts
 by Matt's rules, first appearance taught, Dot explains any locked exit), DIFFICULTY.md, and the design: reference/design/1-6.md on
 origin/t-16-design@c99917f1 (FAR revised to Matt's swing cap: ~405-430 Normal, Easy as LONG; LONG 340-364; SHORT 101-183). How the last
