@@ -259,7 +259,7 @@ export class RollingPiece implements StagePiece {
 
   /** a touch: his box (shrunk by ROLL.forgive) against its round */
   private touching(h: Rolling, p: PieceHost['player']): boolean {
-    const r = rollRadius(h.spec.kind);
+    const r = rollRadius(h.spec.kind) * (h.spec.kind === 'low' ? ROLL.lowHit : 1);
     const f = ROLL.forgive;
     // (against the fruit, his DRAWN height (89.1, D41): a fruit through his hair reads as a hit, so it is one, and one that clears it is not)
     const feet = p.y;

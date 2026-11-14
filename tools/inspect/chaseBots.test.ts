@@ -3,7 +3,7 @@
 // cut into the lay's branch sections, a living fork, the far side. No tier bot, Normal or Easy, is ever caught by the front; the middle
 // and expert tiers reach the fork on every seed (the child's crossing is OPEN, a todo below, with its numbers). PLANTED: a player who stops at every edge for longer than the stop budget is caught with the
 // skill removed (noChaseStride), and the same player with it is not, so the skill is what passes the chase. Not yet here (named): the
-// rolling nut and bouncing fruit (no such hazard in src/game until 1-8.md NEW 2 is built; their bot reading lands with it).
+// rolling nut and bouncing fruit are read below (ENG-B5): a hop for the nut, stay down under the fruit; PLANTED with the reading removed.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { FirstTimerRun, FT_CHILD, FT_EXPERT, FT_MIDDLE, FT_MIDDLE_EASY, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
@@ -11,6 +11,8 @@ import { setDifficulty } from '../../src/game/difficulty.ts';
 import { CHASE_ROWS, type ChaseLay } from '../../src/game/chase.ts';
 import type { GeneratedStage } from '../../src/game/stageGenerator.ts';
 import type { Platform } from '../../src/game/types.ts';
+import type { RollSpec } from '../../src/game/rolling.ts';
+import type { Rolling } from '../../src/game/pieces/rollingPiece.ts';
 
 const Y = 500;
 /** the branch: ground [x0, x1) in the lay's ~222 px sections, chase or not; the gaps are 1-1's singles (120 px) */
@@ -31,7 +33,7 @@ function branch(): { plats: Platform[]; lay: ChaseLay; forkEnd: number } {
   return { plats, lay: { stretches: [{ start: 1100, end: 3700 }] }, forkEnd: 4300 };
 }
 
-function onBranch(who: FirstTimer, seed: number) {
+function onBranch(who: FirstTimer, seed: number, rolling?: RollSpec[]) {
   freshPhone(who.setting);
   setDifficulty(who.setting);
   Math.random = rng(seed);
@@ -40,18 +42,28 @@ function onBranch(who: FirstTimer, seed: number) {
   const run = new FirstTimerRun('1-2', seed, who, { route, cap: 60 });
   const sim = run.sim as unknown as { bare(p: Platform[]): void; stand(x: number, y: number): void; e: { currentStage: GeneratedStage; player: { hp: number; maxHp: number; x: number }; proto: unknown; checkpoint: { x: number; y: number } } };
   sim.e.currentStage.chase = b.lay;
+  (sim.e.currentStage as GeneratedStage).rolling = rolling;
   sim.bare(b.plats);
   sim.e.checkpoint = { x: 300, y: Y };
   sim.stand(300, Y);
   sim.e.player.hp = sim.e.player.maxHp;
   // (every heart lost on this branch is the chase's, nothing else here can hurt him: CAUGHT by the front with his feet on the branch,
   // or a FALL off it (a missed gap: the bots miss as the testers did, 1-1's calibration). Only a catch is the chase beating a runner)
-  let caught = 0, falls = 0, far = 0;
+  let caught = 0, falls = 0, far = 0, touched = 0;
+  const dropped = new Set<number>();
   const e = sim.e as typeof sim.e & { player: { y: number; height: number } };
   const frame = (run as unknown as { sim: { frame: (pad: unknown) => void } }).sim.frame.bind(run.sim);
   (run.sim as unknown as { frame: (pad: unknown) => void }).frame = (pad: unknown) => {
     const hp = e.player.hp, feet = e.player.y + e.player.height, py0 = e.player.y, px0 = e.player.x, vx0 = (e.player as unknown as { vx: number }).vx;
+    const rl = (sim.e as unknown as { pieces: Array<{ kind: string; list?: Rolling[] }> }).pieces.find((q) => q.kind === 'rolling')?.list ?? [];
+    const sp = rl.map((h) => h.spent);
     frame(pad);
+    // (counted as it happens: a respawn sets every hazard ahead of his flag waiting again)
+    rl.forEach((h, i) => {
+      if (h.phase !== 'wait') dropped.add(i);
+      if (h.spent && !sp[i]) touched++;
+    });
+    if (process.env.CHASE_BOTS_DEBUG) rl.forEach((h, i) => { if (h.spent && !sp[i]) console.log('  TOUCH', h.spec.kind, h.spec.dropX, 'at', Math.round(h.x), Math.round(h.y), 'him', Math.round(px0), Math.round(py0), '->', Math.round(e.player.x), Math.round(e.player.y), 'vx', Math.round(vx0), 'pad', JSON.stringify(pad)); });
     if (e.player.hp < hp) {
       py0 > Y + 60 ? falls++ : caught++;
       if (process.env.CHASE_BOTS_DEBUG) console.log('  hurt', who.name, Math.round(px0), Math.round(feet), 'vx', Math.round(vx0));
@@ -61,7 +73,7 @@ function onBranch(who: FirstTimer, seed: number) {
   run.play();
   if (process.env.CHASE_BOTS_DEBUG) console.log(who.name, seed, (run as unknown as { end: string }).end, run.harms.map((h) => `${h.kind}@${Math.round(h.x)},${Math.round(h.y)} t${h.t.toFixed(1)} ${h.cause}`).join(' '), 'far', Math.round(far), 'caught', caught, 'falls', falls, 't', (run as unknown as { t: number }).t.toFixed(1));
   setDifficulty('normal');
-  return { caught, falls, far, forkStart: b.lay.stretches[0].end };
+  return { caught, falls, far, forkStart: b.lay.stretches[0].end, touched, dropped: dropped.size };
 }
 
 const TIERS: FirstTimer[] = [FT_CHILD, FT_MIDDLE, FT_EXPERT, FT_MIDDLE_EASY];
@@ -94,4 +106,33 @@ test('chase bots, PLANTED (rule 21): a player who stops at every edge past the s
   const withIt = onBranch(stopper, 1);
   assert.equal(withIt.caught, 0, 'with it the same player keeps moving and is never caught');
   assert.ok(withIt.far >= withIt.forkStart + 100);
+});
+
+// (ENG-B5, 1-8.md NEW 2 + 9: the nut and the fruit on the same branch. A teach nut and a teach fruit before the crack (beats 1-2), then on
+// the stretch a nut, a fruit and a nut, each between two gaps and a second and more apart (one threat at a time). Placed by the branch's
+// own gaps: no x of the hazard's is the bot's or the engine's)
+const HAZARDS: RollSpec[] = [
+  { kind: 'low', dropX: 700, speed: 110, bounce: 8 },
+  { kind: 'high', dropX: 1050, speed: 130, bounce: 160 },
+  { kind: 'low', dropX: 2250, speed: 140, bounce: 8 },
+  { kind: 'high', dropX: 3000, speed: 140, bounce: 165 },
+];
+
+for (const who of [FT_MIDDLE, FT_EXPERT, FT_MIDDLE_EASY]) {
+  test(`chase bots read the nut and the fruit: the ${who.name} bot on ${who.setting}, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork`, () => {
+    for (const seed of [1, 2, 3]) {
+      const r = onBranch(who, seed, HAZARDS);
+      assert.equal(r.dropped, HAZARDS.length, `seed ${seed}: ${r.dropped} of ${HAZARDS.length} dropped in`);
+      assert.equal(r.touched, 0, `seed ${seed}: ${r.touched} touched him`);
+      assert.equal(r.caught, 0, `seed ${seed}: caught ${r.caught}`);
+      assert.ok(r.far >= r.forkStart + 100, `seed ${seed}: reached x ${Math.round(r.far)}`);
+    }
+  });
+}
+
+test('chase bots, PLANTED (rule 21): with the nut and fruit reading removed the same player is touched; with it he is not', () => {
+  const without = [1, 2, 3].map((seed) => onBranch({ ...FT_MIDDLE, noRollRead: true }, seed, HAZARDS));
+  assert.ok(without.every((r) => r.touched >= 1), `without the reading: touched ${without.map((r) => r.touched).join(', ')}`);
+  const withIt = [1, 2, 3].map((seed) => onBranch(FT_MIDDLE, seed, HAZARDS));
+  assert.ok(withIt.every((r) => r.touched === 0), `with it: touched ${withIt.map((r) => r.touched).join(', ')}`);
 });

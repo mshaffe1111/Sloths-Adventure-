@@ -64,6 +64,9 @@ export const ROLL = {
   bumpVy: 300,
   /** gone once it is this far behind him (px), or under the stage's pit line */
   behindGone: 1400,
+  /** the nut is touched inside this share of its drawn round: a tap (one frame's flick, 30 px up at its top: engine.ts cutV) timed as
+   *  it closes clears it, a held hop clears it easily (rolling.test.ts measures the tap's window) */
+  lowHit: 0.75,
   /** his box's half width (px: engine.ts, 44 across) */
   halfW: 22,
   /** a touch: his box shrunk this much each side (px), so a graze through his fur is no touch */

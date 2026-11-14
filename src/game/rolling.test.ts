@@ -178,3 +178,24 @@ test('rolling: the fruit phases each arc to meet him mid-arc, inside its band', 
   assert.ok(Math.abs(meet - (k + 0.5) * T) < 0.01, `met ${meet.toFixed(3)} s in, arcs of ${T.toFixed(3)} s`);
   assert.ok(Math.abs(u) >= 140 * ROLL.phaseLo - 1e-9 && Math.abs(u) <= 140 * ROLL.phaseHi + 1e-9);
 });
+
+test('rolling: the shortest tap (one frame), pressed in time, clears a nut at a full run; a held hop has a wide window', () => {
+  const windowOf = (holdF: number) => {
+    let ok = 0;
+    for (let at = 10; at <= 140; at += 5) {
+      const { r, piece } = world([NUT]);
+      let pressed = false, n = 0;
+      const o = run(r, piece, 8, (h) => {
+        const p = r.e.player;
+        const gap = h.x - (p.x + p.width / 2);
+        if (!pressed && h.phase === 'down' && gap < at) { pressed = true; return { right: true, press: true }; }
+        return { right: true, jump: pressed && ++n < holdF };
+      });
+      if (pressed && Number.isNaN(o.touchT)) ok++;
+    }
+    return ok;
+  };
+  const tap = windowOf(1), held = windowOf(3);
+  assert.ok(tap >= 2, `a one-frame tap clears it from ${tap} of the press points 5 px apart`);
+  assert.ok(held >= 4 && held > tap, `a three-frame hop: ${held}`);
+});

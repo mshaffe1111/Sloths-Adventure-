@@ -30,6 +30,8 @@
 import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
 import { GameEngine } from '../../src/game/engine.ts';
 import { frontBehind, type ChaseRun } from '../../src/game/chase.ts';
+import { rollRadius } from '../../src/game/rolling.ts';
+import type { Rolling } from '../../src/game/pieces/rollingPiece.ts';
 import { MODES, along, reached } from '../../src/game/stageModes.ts';
 import type { StageMode } from '../../src/game/stageKit.types.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
@@ -155,6 +157,10 @@ export interface FirstTimer {
    *  an edge and lets go of the thumb as anywhere else. Every bot has the skill: with the branch breaking behind him (the crack, the
    *  creak, the ember at the edge) he keeps his thumb down and takes each edge in stride (1-8.md: every chase beat passable IN STRIDE) */
   noChaseStride?: boolean;
+  /** the rolling nut and bouncing fruit's reading REMOVED (level.md rule 21's planted toy test only, chaseBots.test.ts): he runs on as
+   *  if neither were there. Every bot has it: a small nut rolling at him, a hop as it closes; a big fruit bouncing at him, he stays down
+   *  and runs on under it (1-8.md: "small and rolling = hop; big and bouncing = stay down") */
+  noRollRead?: boolean;
   /** at a gap or a face he must clear, his hold is drawn from this quantile of holdQ up (he reads the jump): a tuning field */
   readHold?: number;
   /** and a double up a step gets its second press from dbl2Q's quantiles up to this one (early enough to climb): a tuning field */
@@ -217,6 +223,10 @@ export const FT_CHILD_EASY: FirstTimer = {
   steerQ: ms([64, 132, 231, 444, 931]), gapQ: ms([50, 83, 297, 717, 1708]),
 };
 
+/** a rolling nut this near in front of him (px, its near side to his), closing: he hops (a full run closes about 405 px/s: 0.15 s) */
+const HOP_AT = 60;
+/** a bouncing fruit within twice this ahead (px), dropping in or bouncing: he keeps his thumb down and runs on under it, no stop */
+const UNDER_AT = 240;
 /** a chased player's stand at an edge leaves this much of the front's stop budget (s): his jump and the step after it still to come */
 const CHASE_MARGIN = 0.8;
 
@@ -1413,6 +1423,10 @@ export class FirstTimerRun {
       if (p.grounded || p.climbing || p.isVineSwinging || p.hanging || t - (this.airFrom?.t ?? t) < 0.4) return this.startJump(q.dir, q.kind, q.off);
     }
 
+    // the rolling nut and the bouncing fruit, read at a glance as they come at him
+    const rolled = this.rollPlan(dir, side);
+    if (rolled) return rolled;
+
     // the watching eagle: once told how to hide, he heads for the nearest bush a second after its cry, and stays down until it has gone
     const w = e.proto?.watch ? e.watch : null;
     if (w) {
@@ -1904,6 +1918,55 @@ export class FirstTimerRun {
     return out;
   }
 
+  /**
+   * the rolling nut and the bouncing fruit (pieces/rollingPiece.ts; 1-8.md NEW 9): what is in view coming at him on the ground. A NUT
+   * (small, rolling): a hop when its near side is HOP_AT px or less in front of his and it is closing; a FRUIT (big, bouncing): within
+   * UNDER_AT px he stays down, thumb on, no jump started, while the ground goes on ahead (one threat at a time: never at a gap, 1-8.md)
+   */
+  /** the ground goes on under his way for the next UNDER_AT px (no gap whose edge his own edge plan must take first) */
+  private groundOn(p: { x: number; y: number }, way: -1 | 1): boolean {
+    for (let d = 40; d <= UNDER_AT; d += 40) if (!this.floorAt(p.x + way * d, p.y, 40)) return false;
+    return true;
+  }
+
+  /** this frame his thumb is held for a fruit (rollPlan): no thumb gap (rhythm), as on a chase */
+  private rollHeld = false;
+  private rollPlan(dir: -1 | 0 | 1, side: (d: -1 | 0 | 1) => Pad): Pad | null {
+    if (this.who.noRollRead) return null;
+    const e = this.sim.e as unknown as { pieces?: Array<{ kind: string; list?: Rolling[] }> };
+    const list = e.pieces?.find((q) => q.kind === 'rolling')?.list;
+    if (!list?.length) return null;
+    const p = this.sim.p;
+    if (!p.grounded || p.climbing) return null;
+    // (his way on: the route's, or the way he faces; a step back the route asks for is not his way on)
+    const way: -1 | 1 = dir === 0 ? (p.facing >= 0 ? 1 : -1) : dir;
+    for (const h of list) {
+      if (h.phase === 'wait' || h.phase === 'gone' || h.spent) continue;
+      const ahead = (h.x - p.x) * way;
+      if (h.spec.kind === 'high') {
+        // (a fruit dropping in or bouncing on his way: he keeps his thumb down toward it and runs on under it, no stop to look and no
+        // thumb lifted, as on a chase: its shadow says where it lands; one stops and starts again under it as it comes down)
+        if (ahead > -40 && ahead < UNDER_AT * 2 && this.groundOn(p, way)) {
+          this.rollHeld = true;
+          return side(way);
+        }
+        continue;
+      }
+      if (h.phase === 'drop') continue;
+      if (h.spec.kind === 'low') {
+        const closing = (p.vx - h.vx) * way;
+        const near = ahead - rollRadius('low') - p.width / 2;
+        if (near > -6 && near <= HOP_AT && closing > 0 && this.groundOn(p, way)) {
+          // (a hop he means: held two frames at least, 47 px up, never the shortest tap's 30)
+          const out = this.startJump(way, 'single', false);
+          if (this.jump) this.jump.hold = Math.max(this.jump.hold, 2 * DT + 0.001);
+          return out;
+        }
+      }
+    }
+    return null;
+  }
+
   /** a chase runs behind him (the engine's guide view: the hand-built 1-8, or a laid stretch) and he has the skill to keep moving */
   private chased(): boolean {
     return this.view.chase && !this.who.noChaseStride;
@@ -2018,7 +2081,9 @@ export class FirstTimerRun {
 
   private pad(): Pad {
     this.figTap = false;
-    const want = this.rhythm(this.intend());
+    this.rollHeld = false;
+    const intended = this.intend();
+    const want = this.rollHeld ? intended : this.rhythm(intended);
     const out = this.figTap ? this.tapped(want) : this.thumbify(want);
     this.wasOnTrunk = !!this.sim.p.climbing;
     if (out.press) this.lastPress = this.t;
