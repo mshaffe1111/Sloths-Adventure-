@@ -1,0 +1,13 @@
+{
+ "from": "src/assets/w6to10/props-made/w6balt.webp#seesaw-b",
+ "frame": {
+  "x": 851,
+  "y": 0,
+  "w": 442,
+  "h": 217,
+  "ax": 258.0,
+  "ay": 217
+ },
+ "take": "w6balt-s50-5",
+ "why": "No draw site since the old hand-built 1-6 left (artuse had counted it only through that stage's seesaw-${n} name; there is no W6 seesaw room in the code). Parked for a W6 seesaw piece: put it back in a sheet the piece's draw code loads."
+}
