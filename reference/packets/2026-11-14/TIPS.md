@@ -7,5 +7,6 @@ Branch t-tips from origin/t-int-7 (link #1's head). Evidence: INT-7b's stills/1-
    checked (D21), tipwalk.mjs promoted to a gate tool with its own test.
 3. Before/after clip of 1-4's start + the first creak bough + the first fig gate, upright + sideways, Normal + Easy (D63).
 4. R-165.238 (added 10:36 AM ET): delete the old proto 1-6 whole (protoStage.ts seesaw plan, its dotLinesData lines, dotTips.ts references; HAND_STAGES has no '1-6'). Start AFTER t-build-16 lands in t-int-7 so the new 1-6 lines are not touched; grep proves nothing else reads them.
+4b. R-165.241: the sealed exit's 'N more' tag draws above and clear of Pokey; Dot's sealed line jumps the queue at the door (mark line and 70% reminder wait). Stills both ways on 1-6 and one harvest stage.
 5. Full CLAUDE.md Checks. GREEN or exactly what is red. BOX: 90 minutes or 40% context (400k of 1M). D57, D59, D61-D67.
 Lead: session_01FhBbYNzGRJBDMzn6XbtQK2.
