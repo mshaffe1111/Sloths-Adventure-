@@ -9,6 +9,7 @@ import { w1World } from './worlds/w1.ts';
 import { kitLib12 } from './worlds/w1Arc12.ts';
 import { kitLib15 } from './worlds/w1Arc15.ts';
 import { finish14, kitLib14 } from './worlds/w1Arc14.ts';
+import { finish17, kitLib17 } from './worlds/w1Arc17.ts';
 import type { Difficulty } from '../difficulty.ts';
 import { JUDGED } from './reach.ts';
 import type { WorldKit } from './types.ts';
@@ -28,9 +29,9 @@ export interface ListedStage {
 }
 
 /** the world kits a row names (worlds/stageTable.ts `kit`); 'w1-12' is World 1's with 1-2's manifest-wide rows over it (w1Arc12.ts) */
-const KITS: Record<string, () => WorldKit> = { w1: w1World, 'w1-12': () => kitLib12(), 'w1-14': kitLib14, 'w1-15': kitLib15 };
+const KITS: Record<string, () => WorldKit> = { w1: w1World, 'w1-12': () => kitLib12(), 'w1-14': kitLib14, 'w1-15': kitLib15, 'w1-17': kitLib17 };
 /** the kits' own finishes, run after World 1's (by kit name) */
-const FINISH: Record<string, ListedStage['finish']> = { 'w1-14': finish14 as ListedStage['finish'] };
+const FINISH: Record<string, ListedStage['finish']> = { 'w1-14': finish14 as ListedStage['finish'], 'w1-17': finish17 as ListedStage['finish'] };
 
 /** the rows, from the ONE stage table (worlds/stageTable.ts, world data): each stage's kit and its own flags */
 export const LISTED: Record<string, ListedStage> = Object.fromEntries(Object.entries(STAGE_TABLE).map(([id, r]) => [id, {
