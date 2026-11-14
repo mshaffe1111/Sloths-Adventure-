@@ -193,3 +193,25 @@ test('on a liana the steer is the way on past it: a route point on its swing beh
     }
   }
 });
+
+/**
+ * ENG-16F (R-165.246): out of a pit under a liana, he climbs to the stair step the liana is caught from most often, not the first step
+ * that catches it at some moment. 1-6 Normal adult seed 1, the gorge (its numbers here, moved 44561 px left): the creaky limb gone, the
+ * pit's stair 1021 / 961 / 901 under gl2; the 961 step caught it at 14 of 48 moments, the top step at 29; he hopped from 961 three times
+ * and was rescued. RED with the nearest catching step.
+ */
+test('out of a pit under a liana, the climb ends on the stair step the liana is caught from most often (the top), not the nearest', () => {
+  const blk = (id: number, x: number, y: number, w: number): Platform => ({ id, x, y, width: w, height: 1300 - y, type: 'solid' }) as Platform;
+  const plats = [blk(1, 0, 841, 283), blk(2, 1000, 1081, 549), blk(3, 1000, 1021, 300), blk(4, 1000, 961, 200), blk(5, 1000, 901, 100), blk(6, 1549, 841, 580)];
+  const gl2 = { id: 1, x: 1174, topY: 429, bottomY: 849, swaySpeed: 0, swayPhase: 0, vineType: 'swing_liana', swingAmp: 0.45, swingPeriod: 2.85, swingPhase: 0.82 } as unknown as Vine;
+  const route = Array.from({ length: 90 }, (_, i) => ({ x: 40 + i * 24, y: 841 }));
+  for (const who of [FT_ADULT, FT_KID]) {
+    const run = new FirstTimerRun('1-1', 1, { ...who, setting: 'normal' }, { route, cap: 2, rescueAfter: 100 });
+    run.sim.bare(plats, [gl2]);
+    run.sim.stand(1400, 1081);
+    const bot = run as unknown as { pitWayUp(from: Platform): Platform[] | null };
+    const path = bot.pitWayUp(run.sim.platforms.find((q) => q.id === 2)!);
+    assert.ok(path, `${who.name}: no way up`);
+    assert.equal(path[path.length - 1].y, 901, `${who.name}: climbs to the ${path[path.length - 1].y} step, not the top (901)`);
+  }
+});

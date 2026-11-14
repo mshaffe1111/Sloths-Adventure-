@@ -1442,13 +1442,17 @@ export class FirstTimerRun {
     const lianas = this.sim.vines.filter((v) => (v.vineType === 'swing_liana' || v.isSwingingVine) && !v.off)
       .filter((v) => pts.some((r) => Math.abs(r.x - v.x) < 60 && r.y >= v.topY && r.y <= v.bottomY + 60));
     const walked = (q: Platform) => q.y < from.y - 60 && pts.some((r) => r.x >= q.x && r.x <= q.x + q.width && Math.abs(r.y - q.y) < 12);
-    const catchFrom = (q: Platform) => q.y < from.y - 60 && lianas.some((v) => {
+    // (how many of 24 moments of a liana's swing his hop off the lip catches: he climbs to the ledge it is caught from most often, as a
+    // person climbs to the top of a stair under a liana, not the first step that catches it at some moment. 1-6 Normal adult seed 1, the
+    // gorge: the second step caught gl2 at 14 of 48 moments, the top one at 29; he hopped from the second three times and was rescued, ENG-16F)
+    const catches = (q: Platform) => q.y < from.y - 60 ? Math.max(0, ...lianas.map((v) => {
       const d: -1 | 1 = v.x >= q.x + q.width / 2 ? 1 : -1;
       const lip = d > 0 ? q.x + q.width - 12 : q.x + 12;
       const per = vinePeriod(v);
-      for (let i = 0; i < 24; i++) if (hopCatches(v, lip, q.y, d, this.who.hold[0], (per * i) / 24, 0)) return true;
-      return false;
-    });
+      let n = 0;
+      for (let i = 0; i < 24; i++) if (hopCatches(v, lip, q.y, d, this.who.hold[0], (per * i) / 24, 0)) n++;
+      return n;
+    })) : 0;
     const prev = new Map<Platform, Platform>();
     const seen = new Set<Platform>([from]);
     const reached: Platform[] = [];
@@ -1469,7 +1473,14 @@ export class FirstTimerRun {
       }
       line = next;
     }
-    const goal = reached.find(walked) ?? reached.find(catchFrom);
+    let goal = reached.find(walked);
+    if (!goal) {
+      let most = 0;
+      for (const q of reached) {
+        const n = catches(q);
+        if (n > most) { most = n; goal = q; }
+      }
+    }
     if (!goal) return null;
     const path = [goal];
     for (let q = prev.get(goal)!; q !== from; q = prev.get(q)!) path.unshift(q);
