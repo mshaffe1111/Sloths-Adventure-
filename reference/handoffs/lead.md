@@ -70,7 +70,7 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   The plan doc: reference/plans/ENGINE-NEEDS.md (Architect session_01FhBbYLVSn59vpCSU4ruo6P, t-engine-needs).
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
-## RIGHT NOW (11-14, refreshed 12:38 PM ET; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
+## RIGHT NOW (11-14, refreshed 1:17 PM ET; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
 **Turnover tonight (Matt, 11-14 12:11 PM ET):** after 1-6 and 1-7 are on his test link (~8 PM ET) a new lead takes over (PM.md §8);
 1-8 (the chase: ENG-B4 engine, then BUILD-18) is the new lead's FIRST job. This lead becomes the backup.
 **Matt's decisions today (11-14):** easier 1-1 (fewer doubles, easier jumps; props off ledges R-165.226/.228); 1-4 rocks/pods slower +
@@ -86,7 +86,7 @@ real presses, 11:39 AM); FIX-15 fixing. The lead had passed link #1's gate on a 
 |---|---|---|---|
 | TIPS | session_01FhBbYNTkstbTo3vFw5aZDs | t-tips (from t-int-8) | tips by height (R-165.236), sealed-door line + tag (R-165.241), old 1-6 cleanup (R-165.238) after 1-6 lands |
 | FIX-15 | session_01FhBbYJqsY6YUeLPzgTGyjj | t-fix-15 (from t-int-8-clip) | fig gate solid from every approach |
-| BUILD-16c | session_01FhBbYLZizL1K5FoFzbaBoX | t-build-16 | finish 1-6: bot liana skill + climb-back, relist, bots, stills, gates |
+| BUILD-16d | session_01FhBbYMcvWkkKQLxq5Q2GUJ | t-build-16 | finish 1-6 from BUILD-16c's EXACT NEXT STEP: FAR, stair catches, petals, beat 4 chain, relist/bots/gates |
 | BUILD-17 | session_01FhBbYN2KRV27iqnvYFXNcL | t-build-17 (from t-eng-e2) | build 1-7 with KEEPER-17's lines (t-keeper-17@a8dd2409); step 0 = ENG-E2's 2 redos |
 **Done today and waiting for the next integrator:** t-eng-s5@a2743943 (chains, GREEN), t-int-8-clip@315548d1 (clip tool; full run UNRUN), t-keeper-17@a8dd2409 (1-7 lines).
 **Queue (packets in reference/packets/2026-11-14/), in order as slots free:** FIX-15b (fig gate lay rule + 1-4 relist) -> an
