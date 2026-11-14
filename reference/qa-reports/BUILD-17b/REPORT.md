@@ -43,7 +43,7 @@ stills 4f82c7c5. Fault 4 (requiredMove, old 1-6) is RED by the lead's ruling (a)
 | castBots 1-7 seeds 1-12 both settings | 82aa6dc3 | 107/108 (bots12.jsonl): every bot 12/12 both settings but kid Normal 11/12 (seed 3, accepted 2:36 PM); kid Normal lives lost 4 -> 0 |
 | build (BASE_PATH) / chunkcheck / artcheck / knowncheck / generality | 892880aa | 0 / PASS / 0 / 0 / PASS (27 known) |
 | roadmapcheck | 892880aa (unshallowed) | PASS |
-| drawcheck (with 1-7) | 2a2e8adc1 | GATES_DRAW |
+| drawcheck (with 1-7) | 2a2e8adc1 | PASS (601 s), 12 scenarios both ways, 1-7 port and land clean |
 | engine tools tests (CI list + library13, castBots, routeHumps, libstage, registrycheck, pitClimb) | 2a2e8adc1 | 81/82: the one red is registrycheck.test "the shipped table passes the gate": 1-7 not flown (BUILD-17 step 2, not this packet). On c318fb0a the same file had 2 reds; its planted "creature sheets taken out of its preload list" is green now (the listed-stage preload) |
 | registrycheck --stage 1-7 | 2a2e8adc1 | 1 missing: flown (not this packet) |
 Not run (scoped, the integrator's full set): clipcheck, kbdcheck, buildcheck, tierBots, seedlist 1-1 (the lock shows whether 1-1 moved).
