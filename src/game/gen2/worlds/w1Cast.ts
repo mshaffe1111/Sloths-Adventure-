@@ -17,6 +17,8 @@ import { TRAP } from '../../dropTrap.ts';
 import type { Enemy } from '../../types.ts';
 import type { LimbPlatform } from '../creak.ts';
 import type { CreatureDef, PropDef, PropEmitter, PropPair, StageSink } from '../types.ts';
+import { castWatches, clipWatches, stillEmitters, stillProps, type StillRow, type WatchRow } from '../stillLay.ts';
+import type { WatchZone } from '../../watcher.ts';
 
 /** how high over its ground a load hangs (px): over his head as he walks under it (he is 89 px), over a rearing snake, and low enough
  *  that a sideways phone shows it under the HUD from the handle (at 210 it sat behind the goal sign) */
@@ -131,4 +133,57 @@ export function armedTraps(kinds: readonly string[] = ['snake']): { emit: Record
     //  vine. One awake paces the whole patch)
     if (e.asleep) e.x = Math.round(t0.x < mid ? e.patrolMinX : e.patrolMaxX);
   } };
+}
+
+// ───────────────────────────── the Harpy Eagle: 1-7's watcher, on the kit (ENG-E1, 1-7.md NEW 1, 4, 5, 7) ─────────────────────────────
+
+/** how high over its stretch's ground the laid eagle's body sits (px): only where it is laid; the kit flies it over its eye, and the
+ *  engine draws it in the sky from its eye (sweepPose.ts), never here */
+export const EAGLE_SKY = 220;
+
+/** the Harpy Eagle as a laid creature: a flier over a stretch (terrain 'air'), the kit's sweeper (predators/world1.ts EAGLE). Not laid by
+ *  a creature socket: World 1's still table lays one over each watched stretch (W1_STILL's watch row, castWatches, eagleOver) */
+export const W1_EAGLE: CreatureDef = { id: 'eagle', enemy: 'eagle', threat: 2, terrain: 'air', minGround: 0, w: 58, h: 42, hp: 1, footY: EAGLE_SKY, tags: ['cast', 'sweeper'] };
+
+/**
+ * One eagle over one watched stretch (stillLay.ts castWatches' `lay`): its eye crosses exactly [x0, x1]; its own cool is the middle of
+ * the stretch's rolled calm (1-7 NEW 7); its first pass is free where the zone was taught (freeFirst, NEW 4; Easy: every stretch, core.ts
+ * sparedPass). It starts facing in: its first pass runs the way he walks.
+ */
+export function eagleOver(z: WatchZone, groundY: number, id: number): Enemy {
+  const c = W1_EAGLE;
+  return {
+    id, type: c.enemy, x: z.x0, y: Math.round(groundY - EAGLE_SKY), vx: 0, vy: 0, width: c.w, height: c.h, hp: c.hp, maxHp: c.hp, facing: 1,
+    patrolMinX: z.x0, patrolMaxX: z.x1, attackCooldown: 1.2, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0,
+    defeated: false, koTimer: 0, behaviorTimer: 0,
+    kitCool: Math.round(((z.calm[0] + z.calm[1]) / 2) * 10) / 10, ...(z.freeFirst ? { kitFree: true } : {}),
+  } as Enemy;
+}
+
+/**
+ * World 1's still table (gen2/stillLay.ts): the hides 1-7 is laid with and its watcher, the eagle on the kit. The hides are proto.bushes
+ * (the covers castPlay.ts hides a STILL sloth in: no crouch, 1-7.md's hide rule); the watch row lays a stretch, cut to its hides, as one
+ * eagle over it. Calms (its cool between passes) from 1-7.md: 6-6.5 s where taught, 5-6 s after; Easy waits x1.5 (EAGLE.easy.cool).
+ * (The moss carpet, moss patches and hanging Spanish moss join as rows here when their art is in the inventory: NEW 5, the REPORT.)
+ */
+export const W1_STILL: Readonly<Record<string, StillRow>> = {
+  'w1-hide-bush': { role: 'hide', bush: 'tall', w: 110, minApart: 220 },
+  'w1-hide-bush-wide': { role: 'hide', bush: 'wide', w: 160, minApart: 260 },
+  'w1-eagle': { role: 'watch', cast: 'eagle', free: 'lesson', calm: { teach: [6, 6.5], early: [5.5, 6], late: [5, 5.5] }, max: 1400 },
+};
+
+/**
+ * World 1's still kit at a stage: the prop rows, the emitters, and the finish (after the hides are laid) that turns stretches into eagles.
+ * `lesson`: the stage's watch sockets where the eagle is taught (the long calm, the free first pass): the stage's own, by socket id
+ */
+export function w1Still(stage: number, lesson: readonly string[] = []): { props: PropDef[]; emit: Record<string, PropEmitter>; finish: (out: StageSink) => void } {
+  const rows: Record<string, StillRow> = { ...W1_STILL, 'w1-eagle': { ...(W1_STILL['w1-eagle'] as WatchRow), lesson } };
+  return {
+    props: stillProps(rows),
+    emit: stillEmitters(rows, stage),
+    finish: (out) => {
+      clipWatches(out);
+      castWatches(out, (z, gy) => eagleOver(z, gy, out.nextEnemyId()));
+    },
+  };
 }

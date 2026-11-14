@@ -1,0 +1,8 @@
+not ok 1 - a free eagle: its first pass over him dives and pulls up short (no box hurts); the next one is real
+not ok 2 - an eagle laid plain: its first pass is real on Normal, free on Easy (every stretch, 1-7.md Easy)
+not ok 3 - an eagle's own cool per stretch beats the kind's, and Easy still waits longer
+not ok 4 - the moss comes over him only in cover: none still in the open, all the way in after the calm-in, gone the step he moves
+# SyntaxError: The requested module './worlds/w1Cast.ts' does not provide an export named 'EAGLE_SKY'
+not ok 2 - src/game/gen2/eagleLay.test.ts
+# pass 0
+# fail 5
