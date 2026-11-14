@@ -1,5 +1,5 @@
 # ENG-S5 REPORT (t-eng-s5 from origin/t-eng-s4@4bafe110; packet reference/packets/2026-11-14/ENG-S5.md on the lead's branch)
-Start 10:29 AM ET (pasted from date). Code head **f1b72ec7e**. Context at the report: GATES_CONTEXT. Stop: STOP_TIME.
+Start 10:29 AM ET (pasted from date). Code head **a71b5c484**. Context at the report: GATES_CONTEXT. Stop: STOP_TIME.
 
 ## Done-items
 1. **levelCheck lays liana -> liana -> liana** (no perch between). ONE measure, the engine's press: physics.ts `chainWindow` = pressWindow on
@@ -9,7 +9,11 @@ Start 10:29 AM ET (pasted from date). Code head **f1b72ec7e**. Context at the re
    reach) within SWING_SEEN 414 of him. Easy wider on every link (test). The swing camera leads with that whole swing upright
    (cameraFollow.ts `lianaBox`), so the rule is what he sees; and on a swing a perch ACROSS the gap now beats the floor of the drop under
    him (`under`): over the thorn hollow that floor out-scored the chain's last perch and the view never led to it as he pressed (seen in
-   my upright still at the press on l3; fixed in landingAhead, swing only, planted). Measured: chainband.out.txt (spacing x window).
+   my upright still at the press on l3; fixed in landingAhead, swing only, planted). The lead's 11:38 REDO (the hollow under the chain
+   did not read as danger): while he swings over a hurt floor the view keeps its thorn bed in its lower part, him whole first
+   (cameraFollow.ts `hurtFocus` through engine.ts camFocus, ENG-S3's focusY; a piece's own focus wins); before/after at the middle
+   liana, both ways: before-after/before-sheet.jpg, after-sheet.jpg (before also had MY shooter's bug: a floorArt look on the floor,
+   which the painter bakes no thorns for). Measured: chainband.out.txt (spacing x window).
 2. **W1 chain rows** (w1Swing.ts): `W1_CHAIN_SECTIONS` = chain2 (SHORT, LONG) and chain3 (SHORT, SHORT, LONG), `w1ChainSection`, `w1Chain`.
    Ends are moss-stone BANKS (the thorn hollow paints only between banks that reach its floor: off a 24 px bough w1Pits found no lips and
    the thorn bed was never painted; pits probe, then the planted test). Normal: one thorn hollow under the whole chain (hurt, no steps out);
@@ -21,7 +25,7 @@ Start 10:29 AM ET (pasted from date). Code head **f1b72ec7e**. Context at the re
    ms; the top hold drops short (0 ms) on 3 of 4 rolls (top.ts probe in the REPORT's pushback f). Tests: w1Chain.test.ts (6), planted
    (planted.out.txt): PLANTED_LINE.
 3. **Clips (D63), real page, the engine's own catch/let-go/camera**: CLIPS_LINE
-   Gates (full CLAUDE.md Checks on f1b72ec7e, own worktree; buildcheck last and ALONE): GATES_LINE
+   Gates (full CLAUDE.md Checks on a71b5c484, own worktree; buildcheck last and ALONE): GATES_LINE
    lockall: 102/102 unchanged vs 4bafe110 (lock-check2.out.txt, on dde790f32; LOCK_FINAL).
 
 ## How BUILD-16 lays beat 4 with the row (exact)
@@ -42,8 +46,8 @@ old walk (14 hang lianas within a chain's reach; their pickups and flags moved i
 levelCheck swingLandingsIn's cache key lacks TIMED, so a dialled liana's Normal answer can be reused on Easy. (f) On 1 roll in 4 (both
 settings) the last perch lands where the TOP hold still flies it (shareFor's tempo scales `share` down): not a true "slide down" LONG
 there. Fix: a `topShort` rule on land (the band's near end where gripsOf('high') gives 0 ms). (g) My clips set the row into 1-2 at
-runtime: the pit painter recomputes the hollow (findW1Pits) but the baked drop is the stage's, so the thorn BED is not drawn in them;
-the unit test proves the painter's own reading finds the hollow lip to lip; BUILD-16's first still at beat 4 must show the thorns.
+runtime (the floor under it as the pipeline lays it); 1-2's own Dot line pops its tap box mid-chain (the stage's, not the row's; TIPS
+owns line timing). Easy's floor in them is a moss STAND-IN with no root stair; BUILD-16's Easy still shows the real soft pit.
 
 ## Polish check
 POLISH_LINE

@@ -33,6 +33,10 @@ proven plan; Play is never blocked).
   foot's far side), so chainRelease's view rule is what he sees. Climb carries `swingAmp` (optional). And on a swing a landing ACROSS the
   gap beats the floor of the drop under him (`under`), however near that floor scores: over a hurt hollow the floor (160 px down, from
   his anchor on) out-scored the chain's last perch and the view never led to it as he pressed (ENG-S5's upright still). Ground: as before.
+- A swing over a hollow that hurts (pit 'hurt'): engine.ts sets camFocus = cameraFollow.ts `hurtFocus` (his head down to the floor +
+  HURT_SHOW) when no piece asked for one, so focusY keeps the thorn bed in the view's lower part, him whole first (sideways the swing
+  view's foot sat at the lip: the lead's 11:38 check). The hurt floors are listed once per platform array (hurtOf).
+- A floor that carries `floorArt` is a special look to w1Pits (no thorn bed baked): only hurtLooks rows set it; never set it by hand.
 - Shoot: reference/qa-reports/ENG-S5/shoot.mjs (lays the row with gen2 on the page and sets it into 1-6's start; the engine's start-time
   lists drawnVines / plainVines / swingVines / drawPlats must be refreshed after any runtime edit, or the new lianas are not drawn;
   input goes through key events: a write to input.state.jumpPressed is cleared by the press buffer).
