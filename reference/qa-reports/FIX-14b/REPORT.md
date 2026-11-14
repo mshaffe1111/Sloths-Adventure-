@@ -11,7 +11,11 @@
 2. Then ONE relist (`npx tsx tools/engine/addlevel.ts 1-4 --relist`; the one run here was BEFORE the two-vine/petal/tell commits, so the
    fork's relist is the one that counts), sideways clips (clip.mjs `side` threw: the engine was null sideways; wait on __engine longer),
    the two-vine clip (clip.mjs has no `vines` mode yet), and the full Checks on that head.
-3. The lead's calls: (a) drop the white-gold pop at a fig's tear now that the tie snaps (two signals at once)? (b) the old pod
+3. Two-vine rough spot (vines-normal-up.mp4, seed 1 Normal): a column of 3 petals between vines 594/674; one vine 1.33 s 0/3, two
+   vines 0.87 s 2/3: the TOP petal, just under the bough, is missed because he vaults onto the bough first. Fix: pairPetals keeps a
+   petal at least one reach (38 px + 20) under the pair's lower top, or the test climbs the whole column (today it starts 150 px under each
+   petal, so it did not catch this). Plant that case first.
+4. The lead's calls: (a) drop the white-gold pop at a fig's tear now that the tie snaps (two signals at once)? (b) the old pod
    (w14-kapokpod) and 1-2's bramble no longer draw on 1-4: their catalog rows' used_in may need the inventory owner's update.
 ## Done (evidence in reference/qa-reports/FIX-14b/)
 - Step 1, fig gate (R-165.212 + R-165.223's probe): his DRAWN head stops at the shut bough's DRAWN underside on the one-hand, two-hand
@@ -50,6 +54,7 @@
   (49 x 108 px as ART-MATT sized them) and the strain shiver is subtle at 1x: the lead should judge the clip at phone size; (2) the old
   white-gold "pop" still flashes at the tear beside the new snap (two signals at once: drop the pop if the lead agrees); (3) the camera
   sits Pokey low on screen while he pushes (not this job's, but it hides the push); (4) NO sideways clip yet (clip.mjs failed sideways).
+- vines-normal-up-strip.jpg: one vine passes the petals by, two hands take them, 1.5x quicker to the top; rough: 2/3 (step 3 above).
 - pods-normal-up-strip.jpg: the pod's own vine is visibly brighter than its neighbour through the tell, dust at its top, the new pod reads
   on the leaves. Rough: the shake is small at 1x, and the lit vine reads yellow-green, not a colour change Matt named: the lead judges.
 ## Lessons applied: D40 (built on t-len-14 for the fork; nothing patched that a planned job replaces), D59 (no gate left running),

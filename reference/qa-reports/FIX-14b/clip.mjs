@@ -95,5 +95,33 @@ if (MODE === 'pods') {
   await cap('…then it drops, slow (300 px/s).'); await hold(40);
   await cap('A long quiet before the next.'); await hold(30);
 }
+if (MODE === 'vines') {
+  const pair = await p.evaluate((E) => {
+    const e = eval(E); e.field.pods = [];
+    const fv = e.vines.filter((v) => v.field);
+    for (const c of e.collectibles) {
+      if (c.type !== 'flower' || c.collected) continue;
+      const a = fv.find((v) => v.x < c.x && c.x - v.x > 30 && c.x - v.x < 50 && c.y > v.topY + 60 && c.y < v.bottomY - 120);
+      const b2 = a && fv.find((v) => v !== a && v.x > c.x && Math.abs((a.x + v.x) / 2 - c.x) < 2 && c.y > v.topY + 60 && c.y < v.bottomY - 120);
+      if (a && b2) { const run = e.collectibles.filter((q) => q.type === 'flower' && Math.abs(q.x - c.x) < 2 && q.y > a.topY && q.y < a.bottomY); window.__m = { a, b: b2, run, keep: run.map((q) => ({ ...q })) }; return { a: a.x, b: b2.x, petals: run.length, x: c.x }; }
+    }
+    return null;
+  }, E);
+  console.log('PAIR', JSON.stringify(pair));
+  for (const two of [false, true]) {
+    await p.evaluate(([E, two]) => { const e = eval(E); const { a, run } = window.__m; for (const q of run) q.collected = false; e.hands = null; Object.assign(e.player, { x: a.x, y: a.bottomY - 4, vx: 0, vy: 0, climbing: false, grounded: false, facing: 1 }); }, [E, two]);
+    await step({ up: true }, 2, { noShot: true }); await hold(30, { noShot: true });
+    let t = 0;
+    for (let i = 0; i < 70; i++) {
+      const side = two && i >= 3;
+      const r = await step({ up: true, right: side }, 1); t += 1 / 30;
+      const got = await p.evaluate(() => window.__m.run.filter((q) => q.collected).length);
+      await cap(`${two ? '<b>TWO VINES</b>: push across while climbing (1.6× up)' : '<b>ONE VINE</b>'}<br>${t.toFixed(1)} s · petals ${got}/${await p.evaluate(() => window.__m.run.length)}`);
+      if (!r.climbing) break;
+    }
+    console.log(two ? 'TWO' : 'ONE', t.toFixed(2), 's petals', await p.evaluate(() => window.__m.run.filter((q) => q.collected).length));
+    await hold(15);
+  }
+}
 await ctx.close(); await b.close();
 console.log('FRAMES', frame);
