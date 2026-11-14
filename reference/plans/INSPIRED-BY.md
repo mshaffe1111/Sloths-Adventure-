@@ -3,6 +3,16 @@ Matt, 11-14 2:03 PM ET: "The inspired by is the list of 80-something games that 
 the world map, and it was used for the tribute." This is the shelf every lead, designer and idea round draws from (not one series), and the
 source for the About screen's "Inspired by" page (R-165.158). Inspirations only: we build our own rainforest versions, never a recreation.
 
+## Matt's own favourites (Matt, 11-14 2:05 PM ET: "games that I used to love to play"; not in the idea table yet)
+- **Frogger** (1981): lanes of traffic to time (already World 2's river lanes).
+- **Mario Bros.** on the Atari 7800 (Matt played it a lot): single-screen platforms, bump enemies from below, the POW block.
+- **Tower Toppler** (Atari 7800; Nebulus, 1987): "you just go around on circles, go into doors, but you had to jump and do platforms while
+  you were doing it": a climb around a rotating tower, doors that pass through it. Worth a designer's look for our tall climbs (1-4's
+  kapok, World 4) as a tribute, researched first (STAGE-RULES tribute rule).
+- **Smurf: Rescue in Gargamel's Castle** (ColecoVision, 1982): a gentle walk-right adventure, jumps timed over fences, grass and swooping
+  creatures, a calm forest mood: close in spirit to World 1.
+
+## Matt's 84 ideas and their games
 | # | Idea | Inspired by | Verdict | Where |
 |---|---|---|---|---|
 | 1 | Canopy Highway: lanes of traffic | Frogger (1981) | IN | World 2's river lanes; a taste in 1-8 |
