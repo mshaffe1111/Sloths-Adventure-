@@ -71,7 +71,10 @@ passed over and fell through. A respawn there puts him on the shut top, where he
   underside on the vine; the walk-in stops with his shoulder at the sagged end of the thatch (reads as bumping the low end); the
   landings show him standing ON the leaf thatch, which is exactly what Matt called "above the platform": RED, named in step 1.
 - The drop clip's last frame shows "CHECKPOINT!" over him on the shut bough: the flag-on-gate finding (step 1).
-- Upright and Easy: same STOP lines (clips/*.txt).
+- sheets/gateover-normal-up.jpg (upright 412x915): his head meets the thatch's underside on the vine (head -1/0 px); on the walk-in
+  he stands at the sagged end with his shoulder at the leaves, never under them; after the far-ledge flicks he stands ON the thatch
+  (FIX-15b's); the drop's frames show "CHECKPOINT!" and the flag rising on the gate's own bough. Easy (side + up): layout 0 Easy lays
+  no far-end ledge; head stops, THROUGH never; ON ITS TOP only the planted drop.
 
 ## 3. Pushback
 - **Item 2 as written is the wrong fix for what is left.** With the wall, his head can no longer enter the thatch on ANY roll (planted
