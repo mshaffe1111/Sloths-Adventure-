@@ -1,5 +1,5 @@
 # ENG-S5 REPORT (t-eng-s5 from origin/t-eng-s4@4bafe110; packet reference/packets/2026-11-14/ENG-S5.md on the lead's branch)
-Start 10:29 AM ET (pasted from date). Code head **4f77f7473**. Context at the report: GATES_CONTEXT. Stop: STOP_TIME.
+Start 10:29 AM ET (pasted from date). Code head **a8915e91e**. Context at the report: GATES_CONTEXT. Stop: STOP_TIME.
 
 ## Done-items
 1. **levelCheck lays liana -> liana -> liana** (no perch between). ONE measure, the engine's press: physics.ts `chainWindow` = pressWindow on
@@ -11,12 +11,16 @@ Start 10:29 AM ET (pasted from date). Code head **4f77f7473**. Context at the re
 2. **W1 chain rows** (w1Swing.ts): `W1_CHAIN_SECTIONS` = chain2 (SHORT, LONG) and chain3 (SHORT, SHORT, LONG), `w1ChainSection`, `w1Chain`.
    Ends are moss-stone BANKS (the thorn hollow paints only between banks that reach its floor: off a 24 px bough w1Pits found no lips and
    the thorn bed was never painted; pits probe, then the planted test). Normal: one thorn hollow under the whole chain (hurt, no steps out);
-   Easy: the soft moss pit with its stair back (1-6.md "moss under every chain"). Laid (lay.out.txt, 1-6 + 6-3 kits, 4 rolls each):
-   dx 244-260 px, both lianas 0.24-0.26 rad, chain windows Normal 2.37-2.87 s, Easy 3.07-3.30 s; LONG perch 387-434 px past l3, Normal
-   533-767 ms, Easy 800-1200 ms. Tests: w1Chain.test.ts (6), planted (planted.out.txt): PLANTED_LINE.
+   Easy: the soft moss pit with its stair back (1-6.md "moss under every chain"). The chain's LAST leap is laid whole in view as he
+   presses (lianaRelease `held`: the press link has no ~370 px cap, and my first upright still had the perch off screen at the press),
+   so its perch is narrow (120-140 px, FAR's; Easy's pad makes 173-187). Laid (lay.out.txt, 1-6 + 6-3 kits, 4 rolls, both rows): dx
+   244-260 px, both lianas 0.24-0.26 rad, chain windows Normal 2.37-2.87 s, Easy 3.07-3.30 s (Easy wider every link); last perch
+   277-336 px past the last liana (Easy 232-297); chain3's last-leap window, whole-perch presses only: Normal 433-833 ms, Easy 767-1000
+   ms; the top hold drops short (0 ms) on 3 of 4 rolls (top.ts probe in the REPORT's pushback f). Tests: w1Chain.test.ts (6), planted
+   (planted.out.txt): PLANTED_LINE.
 3. **Clips (D63), real page, the engine's own catch/let-go/camera**: CLIPS_LINE
-   Gates (full CLAUDE.md Checks on 4f77f7473, own worktree; buildcheck last and ALONE): GATES_LINE
-   lockall: 102/102 unchanged vs 4bafe110 (on dde790f32; the head since changes only the unlaid row's piece shapes and a test).
+   Gates (full CLAUDE.md Checks on a8915e91e, own worktree; buildcheck last and ALONE): GATES_LINE
+   lockall: 102/102 unchanged vs 4bafe110 (lock-check2.out.txt, on dde790f32; LOCK_FINAL).
 
 ## How BUILD-16 lays beat 4 with the row (exact)
 - Kit: `withSwing(w1World())` with `manifest.hurtFloor: THORN_ROW` (w1Arc12.ts, as 1-2/1-5 do) and `W1_CHAIN_SECTIONS` in its sections
@@ -33,7 +37,11 @@ more (a Designer's number). The beat's timing test is the LONG leap (533-767 ms 
 rad): MY floor so "the next always coming" is a swing he times; the Designer should confirm it. (c) Easy's moss is under the whole chain,
 not only "the middle" (beat 4's row): a split floor is one more pipeline feature if the lead wants it. (d) Old-generator stages keep the
 old walk (14 hang lianas within a chain's reach; their pickups and flags moved in the first lock run). (e) Pre-existing, not changed:
-levelCheck swingLandingsIn's cache key lacks TIMED, so a dialled liana's Normal answer can be reused on Easy.
+levelCheck swingLandingsIn's cache key lacks TIMED, so a dialled liana's Normal answer can be reused on Easy. (f) On 1 roll in 4 (both
+settings) the last perch lands where the TOP hold still flies it (shareFor's tempo scales `share` down): not a true "slide down" LONG
+there. Fix: a `topShort` rule on land (the band's near end where gripsOf('high') gives 0 ms). (g) My clips set the row into 1-2 at
+runtime: the pit painter recomputes the hollow (findW1Pits) but the baked drop is the stage's, so the thorn BED is not drawn in them;
+the unit test proves the painter's own reading finds the hollow lip to lip; BUILD-16's first still at beat 4 must show the thorns.
 
 ## Polish check
 POLISH_LINE

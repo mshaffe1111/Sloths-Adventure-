@@ -156,6 +156,10 @@ test('upright on a swing, the view leads with the next liana\'s WHOLE swing (to 
   const box = landingAhead(0, 1, hang, [], [next], true)!;
   assert.deepEqual(box, lianaBox(260, 420 * Math.sin(0.3), box.y1 - 4, 1));
   assert.ok(box.x1 >= 260 + 420 * Math.sin(0.3) - 0.01, `the view stops at ${box.x1}, short of the foot's far swing`);
+  // on the LAST liana, over the hollow: the floor under him (160 px down, from his anchor on) never out-scores the perch across the gap
+  const floor = { x: -500, y: 560, width: 1000 }, perch = { x: 335, y: 400, width: 130 };
+  const toPerch = landingAhead(0, 1, hang, [floor, perch], [], true)!;
+  assert.ok(toPerch.x1 >= 335 + 120, `on a swing the view leads to the floor under him (${JSON.stringify(toPerch)}), not the perch across`);
   // a still climb (no swing) and sideways (not `whole`) keep the old lip
   assert.ok(landingAhead(0, 1, hang, [], [{ ...next, swingAmp: undefined }], true)!.x1 <= 300);
   assert.ok(landingAhead(0, 1, hang, [], [next], false)!.x1 <= 300);

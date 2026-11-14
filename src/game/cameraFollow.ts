@@ -399,7 +399,12 @@ export function landingAhead(px: number, facing: number, ledge: Ledge, plats: re
     if (gap < 24 && Math.abs(dy) < 40) return null;
     const score = gap + Math.abs(dy) * 0.4;
     // (`under`: the floor of the drop itself, starting right at his edge, well below: 1-6's soft moss under its first liana)
-    if (!best || score < best.score) best = { x: a + f * 10, y: q.y, score, under: gap < 24 && dy >= 40, end: b };
+    const under = gap < 24 && dy >= 40;
+    // (on a swing, `whole`: the perch across the gap is where he is going, before the floor of the drop under him, however near that
+    // floor scores: ENG-S5's upright still, the thorn hollow's floor under a chain's last liana out-scored its perch and the view never
+    // led to it as he pressed)
+    const better = !best || (whole ? (under ? best.under && score < best.score : best.under || score < best.score) : score < best.score);
+    if (better) best = { x: a + f * 10, y: q.y, score, under, end: b };
   }
   for (const v of vines) {
     const gap = (v.x - edge) * f;

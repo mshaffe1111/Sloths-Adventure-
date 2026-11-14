@@ -37,3 +37,7 @@ s=s.replace(\"const bank = (pc: SectionPiece): SectionPiece => ({ ...pc, shape: 
 run heldseen "
 p='src/game/gen2/pipeline.ts'; s=open(p).read()
 s=s.replace('const seen = swing.grip || held ? (px: number)', 'const seen = swing.grip ? (px: number)',1); open(p,'w').write(s)"
+# 8. the swing camera's floor-under rule back as it was (the floor under him out-scores the perch across)
+run under "
+p='src/game/cameraFollow.ts'; s=open(p).read()
+s=s.replace('const better = !best || (whole ? (under ? best.under && score < best.score : best.under || score < best.score) : score < best.score);', 'const better = !best || score < best.score;',1); open(p,'w').write(s)"

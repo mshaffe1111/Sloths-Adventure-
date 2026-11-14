@@ -20,10 +20,15 @@ proven plan; Play is never blocked).
 - gen2: a `swing` whose `after` is a liana is a chain liana: `top` over the chain's FIRST ledge, its anchor at `share` of the band of
   spacings (160..CHAIN.dx, 20 px steps, first contiguous run) where chainRelease >= LIANA.window and chainLines >= 6; both lianas keep
   `chainAmp` (half the clear space each, swingSetup's rule; the earlier liana's amp is NARROWED in place and the link before it re-flown)
-  and at least VINE.amp / 2 each. A `land` after a chain liana lays from the chain's first ledge and links by heldLandings; `hurt` on
-  the land gives Normal the hurt hollow (no steps out) and Easy the soft pit with its stair back.
+  and at least VINE.amp / 2 each. A `land` after a chain liana lays from the chain's first ledge, links by heldLandings, and its window
+  counts only presses that see the WHOLE perch (lianaRelease `held`, as a dialled liana's: the press link has no ~370 px cap, so without
+  it the perch lay past the view). `hurt` on the land: Normal the hurt hollow (no steps out), Easy the soft pit with its stair back.
 - Rows: w1Swing.ts `w1Chain`, `w1ChainSection(id, gaps, difficulty, perchW)`, `W1_CHAIN_SECTIONS` (chain2: SHORT, LONG; chain3: SHORT,
-  SHORT, LONG). The kit lists them with withSwing and World 1's hurt floor row (THORN_ROW). Laid: dx 244-260 px, amps 0.24-0.26.
+  SHORT, LONG). Ends are moss-stone BANKS (w1Pits paints a thorn hollow only between banks that reach its floor; off 24 px boughs it
+  found no lips). The perch is narrow (120-140, FAR's) so it keeps LONG's distance in view. The kit lists them with withSwing and World
+  1's hurt floor row (THORN_ROW). Laid (lay.out.txt): dx 244-260 px, amps 0.24-0.26, perch 288-336 px past the last liana (Easy 255-284).
+- OPEN: on 1 roll in 4 the LONG perch lands where the top hold still flies it (shareFor's tempo scaling); a `topShort` rule on land (the
+  band's near end where gripsOf('high') gives 0) would make every roll a true "slide down" LONG.
 - The swing camera (cameraFollow.ts landingAhead, upright `whole`): a liana ahead that swings is led with `lianaBox` (its anchor to its
   foot's far side), so chainRelease's view rule is what he sees. Climb carries `swingAmp` (optional).
 - Shoot: reference/qa-reports/ENG-S5/shoot.mjs (lays the row with gen2 on the page and sets it into 1-6's start; the engine's start-time
