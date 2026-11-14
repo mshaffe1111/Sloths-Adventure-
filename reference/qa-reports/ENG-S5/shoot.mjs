@@ -1,9 +1,9 @@
 /**
  * ENG-S5: 1-6 beat 4 "The chain" flown on the REAL game (dev page: the engine's own swing, catch, let-go, swing camera and its lead).
  * The row is laid by gen2 itself (pipeline layLocal of w1Swing.ts W1_CHAIN_SECTIONS[1]: bough, three lianas liana to liana, perch;
- * SHORT, SHORT, LONG) on 1-6's World 1 kit for the setting the GAME built, and set into the running stage at his spawn (the stage's
- * own ground there trimmed away for the gap). The floor under the gap is a STAND-IN (Normal: a thorn-marked hurt block; Easy: a plain
- * moss block): BUILD-16's stage lays the painted thorn bed and moss (w1Pits). The phases are the engine's (physics swingSetup).
+ * SHORT, SHORT, LONG) on 1-6's World 1 kit for the setting the GAME built, and set into the running stage (STAGE, default 1-2: a gen2
+ * World 1 stage whose pit painter is live) at his spawn, the stage's own ground there trimmed away for the gap. Normal: the row's banks
+ * and ONE hurt-marked floor, as the pipeline lays them (w1Pits paints the thorn bed); Easy: a moss floor STAND-IN (no root stair). The phases are the engine's (physics swingSetup).
  * The player: put on l1 (as ENG-S4's shooter does: the catch off a bough is the single liana's, proven); on each liana a bot presses to let go only when the
  * engine's own flight from that moment (physics timedLaunch + airStep) catches the next liana (or lands on the perch), after riding at
  * least RIDE s; on the last liana he slides down first (the LONG leap). Every label prints what the GAME built (D62).
@@ -26,6 +26,7 @@ fs.mkdirSync(out, { recursive: true });
 const clip = !!process.env.CLIP;
 const RIDE = Number(process.env.RIDE || 1.2);
 const ROLL = Number(process.env.ROLL || 1);
+const STAGE = process.env.STAGE || '1-2';
 
 const vite = spawn('npx', ['vite', '--port', String(port), '--strictPort', '--host', '127.0.0.1'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
 let vout = '';
@@ -36,7 +37,7 @@ const browser = await chromium.launch();
 const PHONES = (process.env.PHONES || '412x915,915x412').split(',').map((s) => s.split('x').map(Number));
 const DIFFS = (process.env.DIFFS || 'normal,easy').split(',');
 for (const diff of DIFFS) for (const [w, h] of PHONES) {
-  const tag = `chain3-${diff}-${w > h ? 'sideways' : 'upright'}-${w}x${h}`;
+  const tag = `chain3-${STAGE}-${diff}-${w > h ? 'sideways' : 'upright'}-${w}x${h}`;
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
   await ctx.route(/script\.google\.com/, (r) => r.abort());
   await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, diff);
@@ -45,7 +46,7 @@ for (const diff of DIFFS) for (const [w, h] of PHONES) {
   await page.goto(`http://127.0.0.1:${port}/?layout=1&lessons=off`, { timeout: 300000 });
   for (let t = Date.now(); Date.now() - t < 300000; ) { if (await page.evaluate(() => typeof window.__play === 'function')) break; await sleep(1000); }
   await sleep(1500);
-  await page.evaluate(() => window.__play('1-6'));
+  await page.evaluate((id) => window.__play(id), STAGE);
   await sleep(5000);
   await page.addScriptTag({ content: "window.__eng = () => (typeof window.__engine === 'function' ? window.__engine() : window.__engine);" });
   for (let t = Date.now(); Date.now() - t < 60000; ) { if (await page.evaluate(() => !!window.__eng()?.player)) break; await sleep(500); }
@@ -75,11 +76,15 @@ for (const diff of DIFFS) for (const [w, h] of PHONES) {
       if (q.x + q.width > X1) keep.push({ ...q, id: q.id + 50000, x: X1, width: q.x + q.width - X1 });
     }
     let id = 90000;
-    const mk = (pc) => ({ id: id++, x: ox + pc.x, y: oy + pc.y, width: pc.w, height: 60, type: 'solid', style: 'branch' });
-    keep.push(mk(a), mk(b));
+    // (the row's ends as the pipeline lays them on a hurt hollow: moss-stone banks reaching down past its floor (pipeline: floor + bankH),
+    // the floor ONE hurt-marked piece at THORN_ROW's depth wall to wall (w1Pits paints the thorn bed off it); Easy: the soft pit's moss
+    // floor at World 1's pit depth, with no root stair (a STAND-IN: the pipeline's pitUnder lays the stair))
     const g = L.gaps.find((x) => x.pit);
-    const floorY = oy + (g.hurt ? 160 : 110);
-    const floor = { id: id++, x: ox + g.x0, y: floorY, width: g.x1 - g.x0, height: 200, type: 'solid', ...(g.hurt ? { pit: 'hurt', floorArt: 'w1-thorn' } : {}) };
+    const floorY = oy + Math.max(a.y, b.y) + (g.hurt ? 160 : 110);
+    const bankH = 90;
+    const mk = (pc) => ({ id: id++, x: ox + pc.x, y: oy + pc.y, width: pc.w, height: floorY + bankH - (oy + pc.y), type: 'solid', style: 'moss_stone' });
+    keep.push(mk(a), mk(b));
+    const floor = { id: id++, x: ox + g.x0, y: floorY, width: g.x1 - g.x0, height: bankH, type: 'block', style: 'moss_stone', ...(g.hurt ? { pit: 'hurt', floorArt: 'w1-thorn' } : {}) };
     keep.push(floor);
     e.platforms = keep;
     if (st.platforms) st.platforms = keep;
@@ -103,7 +108,7 @@ for (const diff of DIFFS) for (const [w, h] of PHONES) {
     p.x = ox + a.x + 40; p.vx = 0; p.facing = 1;
     return { stage: st.config?.id ?? '', diff: ls0, easy: !!e.easy, period: P.TIMED.period, grabX: P.TIMED.grabX,
       lianas: ls.map((v) => ({ x: v.x, len: v.bottomY - v.topY, amp: +v.swingAmp.toFixed(2), phase: +(v.swingPhase ?? 0).toFixed(3), grip: v.grip ?? '' })),
-      dx: ls.slice(1).map((v, i) => Math.round(v.x - ls[i].x)), perchPast: Math.round(ox + b.x - ls[2].x), perchW: Math.round(b.w), gap: g.hurt ? 'thorn hollow (stand-in)' : 'moss pit (stand-in)' };
+      dx: ls.slice(1).map((v, i) => Math.round(v.x - ls[i].x)), perchPast: Math.round(ox + b.x - ls[2].x), perchW: Math.round(b.w), gap: g.hurt ? 'thorn hollow (hurt-marked, painted by w1Pits)' : 'moss floor (stand-in: no root stair)' };
   }, [ROLL]);
   console.log(tag, 'set', JSON.stringify(set));
   // the bot, in the page (every 10 ms, so the press lands on the frame it was judged on)
@@ -183,7 +188,7 @@ for (const diff of DIFFS) for (const [w, h] of PHONES) {
     return { reach: (C.reach || []).slice(0, 40).join(' '), k, hold: Math.round(p.swingLength ?? 0), nx: next ? Math.round(next.x) : null, far: far === null ? null : Math.round(far), swinging: !!p.isVineSwinging, grounded: !!p.grounded, x: Math.round(p.x), zoom: +e.zoom.toFixed(2), view: [Math.round(c.x), Math.round(c.x + c.viewportWidth)],
       nextWhole: far === null ? null : next.x - 20 >= c.x && far <= c.x + c.viewportWidth, lost: (window.__lives0 ?? e.lives) - e.lives, log: C.log.slice() };
   });
-  const stamp = async (t) => page.evaluate((t) => { let d = document.getElementById('__lab'); if (!d) { d = document.createElement('div'); d.id = '__lab'; Object.assign(d.style, { position: 'fixed', left: '0', right: '0', bottom: '0', background: 'rgba(0,0,0,0.72)', color: '#fff', font: '11px/1.3 monospace', padding: '4px 6px', zIndex: 99999, pointerEvents: 'none', whiteSpace: 'pre-wrap' }); document.body.appendChild(d); } d.textContent = t; }, t);
+  const stamp = async (t) => page.evaluate((t) => { let d = document.getElementById('__lab'); if (!d) { d = document.createElement('div'); d.id = '__lab'; Object.assign(d.style, { position: 'fixed', left: '0', right: '0', top: '96px', background: 'rgba(0,0,0,0.55)', color: '#fff', font: '9px/1.25 monospace', padding: '4px 6px', zIndex: 99999, pointerEvents: 'none', whiteSpace: 'pre-wrap' }); document.body.appendChild(d); } d.textContent = t; }, t);
   const head = `${tag} | ${set.stage} built ${set.easy ? 'EASY' : 'NORMAL'} (localStorage ${set.diff}; swing ${set.period} s) | t-eng-s5@${sha} | chain3 roll ${ROLL}: dx ${set.dx.join(', ')} px, amps ${set.lianas.map((l) => l.amp).join('/')}, perch ${set.perchPast} px past l3 | floor: ${set.gap}`;
   const frames = [];
   let sampling = clip;

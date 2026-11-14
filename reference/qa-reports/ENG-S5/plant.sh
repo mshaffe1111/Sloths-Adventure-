@@ -33,3 +33,7 @@ s=s.replace(\"const hurt = !!pl.hurt && !pl.water && budget.difficulty !== 'easy
 run banks "
 p='src/game/gen2/worlds/w1Swing.ts'; s=open(p).read()
 s=s.replace(\"const bank = (pc: SectionPiece): SectionPiece => ({ ...pc, shape: 'bank', style: 'moss_stone' });\", 'const bank = (pc: SectionPiece): SectionPiece => pc;',1); open(p,'w').write(s)"
+# 7. the chain's last leap without the view rule (its perch laid past what he sees as he presses)
+run heldseen "
+p='src/game/gen2/pipeline.ts'; s=open(p).read()
+s=s.replace('const seen = swing.grip || held ? (px: number)', 'const seen = swing.grip ? (px: number)',1); open(p,'w').write(s)"

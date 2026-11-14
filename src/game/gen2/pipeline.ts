@@ -243,7 +243,7 @@ export const VINE = {
  * press as engine.ts plays it, RELEASE's forgiveness, timedLaunch's leap, LETGO_FLIGHTS) on this difficulty's swing (setTimedSwing, put
  * back as it was after).
  */
-export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, far: { x: number; y: number; w: number }, difficulty: Difficulty): number {
+export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, far: { x: number; y: number; w: number }, difficulty: Difficulty, held = false): number {
   const was = { ...TIMED };
   setTimedSwing(difficulty === 'easy');
   try {
@@ -253,7 +253,9 @@ export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: Lia
     // as he presses, at the swing camera's full ease on the narrowest gate phone (cameraFollow.ts SWING_SEEN; R-165.225, Matt 11-14:
     // "shorter swings" that fit upright). Dial-free lianas (Worlds 6-8's) are as they were)
     // (of a long landing, the part the camera shows whole: cameraFollow.ts perchBox)
-    const seen = swing.grip ? (px: number) => far.x + Math.min(far.w, SWING_CAM.perch) <= px + SWING_SEEN : undefined;
+    // (and so is the last liana of a chain, `held`: linked by the engine's press (levelCheck heldLandings), not the plain check's ~370 px,
+    // its band runs past the view: ENG-S5's upright still showed its LONG perch off screen as he pressed)
+    const seen = swing.grip || held ? (px: number) => far.x + Math.min(far.w, SWING_CAM.perch) <= px + SWING_SEEN : undefined;
     return pressWindow(A, hits, LETGO_FLIGHTS, gripsOf(swing.grip, v.bottomY - v.topY), seen) / 1000;
   } finally {
     Object.assign(TIMED, was);
@@ -311,9 +313,9 @@ const RELEASE_CACHE = new Map<string, number>();
  */
 export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, dy: number, w: number, need: number, min = -Infinity, difficulty: Difficulty = 'normal', dbl = false, held = false): [number, number] | null {
   const window = (x: number) => {
-    const key = [R(v.x - from.x - from.w), R(v.topY - from.y), R(v.bottomY - from.y), R(x - from.x - from.w), R(dy), R(w), swing.amp.toFixed(3), swing.period.toFixed(3), swing.grip ?? '', difficulty].join(',');
+    const key = [R(v.x - from.x - from.w), R(v.topY - from.y), R(v.bottomY - from.y), R(x - from.x - from.w), R(dy), R(w), swing.amp.toFixed(3), swing.period.toFixed(3), swing.grip ?? '', difficulty, held ? 'held' : ''].join(',');
     let r = RELEASE_CACHE.get(key);
-    if (r === undefined) RELEASE_CACHE.set(key, (r = lianaRelease(v, swing, { x, y: from.y + dy, w }, difficulty)));
+    if (r === undefined) RELEASE_CACHE.set(key, (r = lianaRelease(v, swing, { x, y: from.y + dy, w }, difficulty, held)));
     return r;
   };
   const near: Platform = { id: -1, x: from.x, y: from.y, width: from.w, height: 90, type: 'solid' };
@@ -1387,7 +1389,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const need = Math.max(LIANA.window[budget.difficulty], pl.window?.[budget.difficulty] ?? 0);
       // (Easy's landing pad widens the perch once it is placed (below): a dialled liana's perch is flown at the width it will have, for
       // its far end must be in view as he presses (SWING_SEEN). A dial-free liana's window never looks at the width)
-      const padW = lv.hang.swing!.grip ? budget.landingPad : 0;
+      const padW = lv.hang.swing!.grip || held ? budget.landingPad : 0;
       // (past every jump: from the swing's ledge, and from every step of the soft pit under it, whose climb goes back to that ledge)
       const minFor = (dy: number) => {
         const perchY = a.y + dy;
@@ -1422,8 +1424,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       x = band[0] + share * (band[1] - band[0]);
       y = a.y + dy;
       // (a dialled perch's window is its far end's (SWING_SEEN): recorded at the whole px the piece is laid at)
-      const at = lv.hang.swing!.grip ? { x: R(x), y: R(y), w: R(w + padW) } : { x, y, w };
-      lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, at, budget.difficulty);
+      const at = lv.hang.swing!.grip || held ? { x: R(x), y: R(y), w: R(w + padW) } : { x, y, w };
+      lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, at, budget.difficulty, held);
       lv.hang.gap = [a.x + a.w, x];
       // (`hurt`, ENG-S5: Normal's gap is a hollow with the world's hurt floor, no steps out; Easy keeps the soft pit and its stair back)
       const hurt = !!pl.hurt && !pl.water && budget.difficulty !== 'easy';

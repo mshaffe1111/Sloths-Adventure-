@@ -59,7 +59,8 @@ const chain: SectionTemplate = {
     { key: 'l1', shape: 'liana', w: 0, place: { kind: 'swing', after: 'near', top: [400, 420], grip: 'high' } },
     { key: 'l2', shape: 'liana', w: 0, place: { kind: 'swing', after: 'l1', top: [400, 420], grip: 'high', share: [0, 0.35] } },
     { key: 'l3', shape: 'liana', w: 0, place: { kind: 'swing', after: 'l2', top: [400, 420], share: [0, 0.35] } },
-    { key: 'far', shape: 'bank', w: [300, 400], place: { kind: 'land', after: 'l3', dy: [0, 0], share: [0.75, 1] } },
+    // (narrow, as the W1 rows': the chain's last perch is laid whole in view as he presses, so a wide bank would come in near)
+    { key: 'far', shape: 'bank', w: [120, 140], place: { kind: 'land', after: 'l3', dy: [0, 0], share: [0.75, 1] } },
   ],
   entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
 };
@@ -127,7 +128,9 @@ test('World 1\'s chain rows (1-6 beat 4: SHORT, SHORT, LONG over thorns) lay on 
           // the last liana's LONG leap onto the perch, level with the bough the chain left; the gap under the whole chain is the perch's
           const C = ls[ls.length - 1];
           assert.equal(C.hang!.swing!.grip, undefined, `${what}: the last gap is LONG (no dial)`);
-          assert.ok(lianaRelease({ x: C.x, topY: C.y, bottomY: C.y + C.h }, C.hang!.swing!, { x: b.x, y: b.y, w: b.w }, d) >= LIANA.window[d], `${what}: the perch`);
+          // (counting only presses that see the whole perch, as a dialled liana's: the chain's last liana is linked by the engine's press, so
+          // its band runs past the view; ENG-S5's upright still had the perch off screen as he pressed)
+          assert.ok(lianaRelease({ x: C.x, topY: C.y, bottomY: C.y + C.h }, C.hang!.swing!, { x: b.x, y: b.y, w: b.w }, d, true) >= LIANA.window[d], `${what}: the perch is not whole in view for a window as he presses`);
           assert.equal(b.y, a.y, what);
           const g = L.gaps.filter((x) => x.pit);
           assert.equal(g.length, 1, `${what}: one gap under the whole chain`);

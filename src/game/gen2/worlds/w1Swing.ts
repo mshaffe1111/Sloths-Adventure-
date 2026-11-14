@@ -89,8 +89,12 @@ export function w1ChainSection(id: string, gaps: LianaGap[], difficulty: number,
     sockets: [petals('pa', 'a', 0.4), petals('pb', 'b', 0.5, 2)], mirrorable: false,
   };
 }
-/** beat 4's two rows: two lianas (SHORT, then the LONG leap off), then three (SHORT, SHORT, LONG) */
+/**
+ * beat 4's two rows: two lianas (SHORT, then the LONG leap off), then three (SHORT, SHORT, LONG). The perch is NARROW (120-140 px, FAR's,
+ * R-165.225): the chain's last liana is linked by the engine's press, so its perch is laid where he sees it whole as he presses
+ * (lianaRelease `held`), and only a narrow one sits at LONG's distance (a 240 px one comes in to ~210 px, a SHORT gap)
+ */
 export const W1_CHAIN_SECTIONS: SectionTemplate[] = [
-  w1ChainSection('w1-liana-chain2', ['short', 'long'], 6, [220, 260]),
-  w1ChainSection('w1-liana-chain3', ['short', 'short', 'long'], 7, [220, 260]),
+  w1ChainSection('w1-liana-chain2', ['short', 'long'], 6, [120, 140]),
+  w1ChainSection('w1-liana-chain3', ['short', 'short', 'long'], 7, [120, 140]),
 ];
