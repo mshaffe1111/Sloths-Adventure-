@@ -1,4 +1,5 @@
-LEAD SESSION (blockers route here): session_01FhBbYNzGRJBDMzn6XbtQK2 (took over 2026-11-13 9:54 AM ET)
+LEAD SESSION (blockers route here): session_01FhBbYN2CVHnFXg7XzqKXpM (took over 2026-11-14 6:03 PM ET)
+Backup lead: session_01FhBbYNzGRJBDMzn6XbtQK2 (lead 11-13 9:54 AM to 11-14 6:03 PM ET; questions of fact only)
 # Turnover note: the lead (PM). Last handover: 2026-11-12 late evening by session_01FhBbYP63h7cCX8DyW69stq (rotation; Matt)
 
 Read this, then reference/STATE.md (newest at the bottom: every decision tonight is dated there), reference/plans/ENGINE-PLAN.md
