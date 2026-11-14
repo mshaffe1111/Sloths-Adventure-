@@ -60,6 +60,25 @@ ba2b1a215 (R-165.251) and 35cb88ce5 (R-165.252). Times from `TZ=America/New_York
   10-7 2. Their Easy lock changes are intended (lockall --intended these 21 against an old lock); no phone gets a different stage:
   the engine path is unchanged by construction (it set the dials already) and the lock proves it.
 
+### R-165.258 (the lead's ruling 11-14): 8-5's Easy lost its tayra on Easy's swing; fixed where it lives, for every stage
+- **Found by this packet's own fix**: the suite went red at src/game/easyMode.test.ts:61 "8-5: keeps a tayra". Proven on the untouched
+  base ae74a9cfb: 8-5's designed layout built on Easy's swing (as the engine builds it) has no animal; on Normal's swing (as the tests and
+  tools built it) it has its one tayra. So phones' 8-5 Easy had already lost it; the test passed only because it built the wrong stage.
+- **Root cause** (src/game/gen2/pipeline.ts buildRolled): an Easy gen2 build that is not a replay builds Normal's plan first
+  (`buildRolled({ ...req, difficulty: 'normal' })`, its repairs, swaps and length loop) and lays Easy from that plan with Normal's kept
+  animals. That inner Normal build, its verdicts (applyVerdicts) and the caller's rule ran on the CALLER's dials: a phone's are Easy's.
+  On Easy's swing Normal's search swapped a swing section to a later slot (8-5: w8s-swing-climb after the rests), and the animal Normal
+  keeps there did not survive into Easy's lay. The pair: Normal's own search checks "Easy lays this plan cleanly" (RT-ENGINE #4), and that
+  check ran on Normal's swing.
+- **Fix**: every lay and check runs on its own setting's dials (withSetting): buildRolled on its request's setting, applyVerdicts on its
+  request's setting, Normal's rule inside an Easy build on Normal's, and inside Normal's loop the Easy lay check and Easy's rule on Easy's.
+  8-5 now: Normal tayra, Easy tayra, Easy's plan = Normal's.
+- **Planted** (src/game/settingDials.test.ts): `8-5 lays its tayra on Easy as on Normal, built as a phone builds each` and `8-5 Easy
+  lays Normal's plan and only Normal's kinds of animal, whatever the caller's dials (layouts 1-2)`: RED on the pipeline before (the
+  R-165.251 commit's), GREEN now; the same test on 6-1, 7-5 and 8-3: green before and after (guards: their Easy moved, their plan did
+  not). easyMode.test.ts:61 untouched: GREEN on the head (suite line).
+- **Lock list** (every stage whose build now changes, against the base): LOCK258
+
 ### R-165.252: the test link refuses an over-full build before publish and maps against the last PUBLISHED build
 - tools/testlink/build.py: prints `test link: N files (limit 480)` and exits 1 with `FAIL: N files, over the 480 limit` above
   MAX_FILES 480, BEFORE any map: the old filesmap.json is deleted at the start, no new map or work-index.html is written.
