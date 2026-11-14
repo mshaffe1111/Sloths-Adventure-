@@ -4630,8 +4630,8 @@ export class GameEngine {
     }
     for (const e of r.told) {
       sound.playPredator(castCall(e.type), 0);
-      const at = this.sweepDrawn.get(e.id)?.pose ?? e;
-      this.addFloatingText('!', at.x, at.y - 34, '#f97316');
+      // (a sweeper's tell is its dive, drawn: no '!' over it, 1-7.md's tributes)
+      if (!(e.kit && this.isSweeper(e))) this.addFloatingText('!', e.x, e.y - 34, '#f97316');
     }
     // a sweeper's free pass dove and pulled up short: Dot's line, once ever (the stage's own words, castPlay.types.ts said.spared)
     for (const e of r.spared) {
@@ -4733,6 +4733,8 @@ export class GameEngine {
       e.facing = p.facing;
       e.swoopPhase = p.phase;
       e.isAttacking = p.attacking;
+      // (never the sprite's flare: its ring and '!' are code-drawn, and the dive is the tell)
+      e.telegraphTimer = 0;
       ctx.save();
       ctx.globalAlpha = p.alpha;
       ctx.translate(e.x, e.y);

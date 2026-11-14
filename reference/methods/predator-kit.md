@@ -67,6 +67,13 @@ JS bytes against the base. When an animal is wired into a stage, the whole gate 
   goes 800 px and more before its thing, nothing that hurts in between, and the kit lists it in `teachTips`.
 - 11-12: never `git add -A` in a side worktree that links `node_modules`: the link was committed and replaced the real folder on
   checkout. Commit by path there.
+- A sweeper (World 1's eagle) has no body on the ground: the kit moves its EYE. It is drawn from its kit state by sweepPose.ts (far off
+  between passes, in at the edge for the screech, over its eye with its shadow for the pass, the dive in its tell), never by the enemy
+  loop; a flying sweeper `rides` its eye so the box that hurts arrives with the drawn dive (ENG-E1, 11-14: without it the act flew 700 px/s
+  from the far end of the stretch while the bird was already drawn on him).
+- A tell drawn ON Pokey (the moss) is judged BEHIND every cover it shows in: green Pokey behind a 0.62 see-through green bush was a ghost
+  nobody could find (ENG-E1's still, shots/moss-in-bush-before-fix.png); the bush now thins as the moss comes in (protoArt drawBushArt).
+
 ## Tried and didn't work
 - 11-12: a step-up ledge under the first vine, so the first-timer bots would land and stop at it: they overshot it the same way
   (they decide to stop AT the handle and walk on about 220 px). The level was not the cause; the trace went to the bots' owner.

@@ -4,9 +4,27 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0v. 1-7's eagle and cover on the creature kit (ENG-E1, t-eng-e1, 11-14): what the next engineer must know
+- 1-7 is designed on the KIT's hide rule only (stillness.ts: still 0.5 s in cover; no crouch). watcher.ts still runs the OLD 1-7 (protoStage)
+  and Worlds 3/4/6/8; it goes from World 1 when w1Arc07 replaces protoStage's 1-7 (1-7.md NEW 12).
+- Laying it: World 1's still table (w1Cast.ts W1_STILL, w1Still(stage, lessonSockets)) lays hides as proto.bushes and a watched stretch;
+  its finish (clipWatches, then stillLay.ts castWatches) turns each stretch into ONE kit eagle over it (eagleOver: patrol = the stretch,
+  kitCool = the stretch's calm, kitFree where taught). A built stage carries no proto.watch zone for it. stillFaults reads it via sweptZones.
+- The kit: Post.cool / Enemy.kitCool is an animal's own cool (coolOf's third arg); Post.free / kitFree and Easy make a sweeper's FIRST pass
+  over him free (core.ts sparedPass: the dive comes, no box hurts, CastStep.spared; passes counts ended passes with him in its stretch).
+  EAGLE now `rides` its eye and a rider starts on its eye (newPredator).
+- Drawn: engine.ts drawCastSky from sweepPose.ts (pure, tested) with the painted eagle and the old watcher's shadow sprite; the screech on
+  the pass's call (CastStep.noticed); Dot's free-pass line is stage data (CastData.said.spared, the keeper's). Sweepers are skipped by the
+  enemy loop. The moss: CastPlay.calmNow (in cover only) -> hurtFlash.ts withWash on Pokey (MOSS_TINT) + the wind chime once when it is
+  all the way in; a bush he is in thins as it comes (drawBushArt `moss`).
+- A mossy liana (Vine.mossy) is cover while held (stillness.ts Cover.rope; startCast adds one per mossy vine); on a swing, his vy for
+  stillness is the rope length's change (climbing), never the swing.
+- NOT built (the REPORT's next steps): moss carpet/patch/hanging-moss rows and their art (t-art-678b w17-moss-*), the perch (rides off per
+  animal + perched art + head-turn), bots that hold still in cover, 1-7's own lay.
 
 ## 0u. The swing camera and THE FAR CAP (ENG-S1, R-165.225, t-eng-s1, 11-14): what the next engineer must know
 - Upright, a swing widens the view (cameraFollow.ts SWING_CAM: up to 1.3x, out 4.5/s, back in 3/s once he is down or holds on; engine.ts

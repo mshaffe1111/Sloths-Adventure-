@@ -34,7 +34,8 @@ test('the warn: its eye waits off screen, so it shows in at the edge it comes fr
   assert.equal(s.phase, 'hunt');
   s.t = 1;
   const w = sweepPose(EAGLE, s, { hero, view, easy: false, spared: false, time: 1 })!;
-  assert.equal(w.phase, 'telegraph');
+  assert.equal(w.phase, 'patrol', "no flare: the sprite's telegraph is a code-drawn ring and a '!'");
+  assert.ok(w.scale < 1, 'it grows nearer through the warn');
   assert.ok(Math.abs(w.x - (view.x + Math.min(SKY.inX, view.w * SKY.inShare))) < 1, `in at the left edge: ${w.x}`);
   assert.equal(w.shadow, null, 'its eye is off screen: no shadow on the ground there');
   // the pass: run it until its eye is in view

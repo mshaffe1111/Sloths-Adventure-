@@ -99,11 +99,13 @@ export function sweepPose(def: PredatorDef, s: PredatorState, sc: SweepScene): S
       const waiting = s.facing > 0 ? s.eyeX < edge : s.eyeX > edge;
       const onView = s.eyeX >= view.x - 60 && s.eyeX <= view.x + view.w + 60;
       if (s.eyeX === from && s.t < warn) {
-        // the warn: in from the edge (or over its eye, when the stretch starts on screen), flaring; its shadow shows if its eye is in view
+        // the warn: in from the edge (or over its eye, when the stretch starts on screen), growing nearer; its shadow shows if its eye is
+        // in view. Never the sprite's 'telegraph' flare: that is a code-drawn orange ring and a red '!' (eagleSprite.ts), and 1-7's tell
+        // is the screech and the shadow, no '!' (1-7.md tributes, "not copied")
         const u = s.t / Math.max(0.01, warn);
         const x = waiting ? edge : s.eyeX;
         return pose({
-          x, y: sky, phase: 'telegraph', scale: 0.6 + 0.4 * u, alpha: Math.min(1, s.t / 0.25), snap: true,
+          x, y: sky, phase: 'patrol', scale: 0.6 + 0.4 * u, alpha: Math.min(1, s.t / 0.25), snap: true,
           shadow: onView ? { x: s.eyeX, a: 0.18 + 0.3 * u } : null,
         });
       }
