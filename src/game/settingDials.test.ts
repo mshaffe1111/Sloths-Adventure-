@@ -141,3 +141,40 @@ for (const d of process.argv[2].split(',')) {
   };
   assert.equal(run('normal,easy'), run('easy'));
 });
+
+// R-165.258 (TOOLS-2 11-14, the lead's ruling): an Easy gen2 build first builds Normal's plan, then lays Easy from it ("Easy is Normal's
+// stage under Easy's rules", pipeline buildRolled). That Normal build ran on the CALLER's dials (a phone's are Easy's, the engine sets
+// them first), so Easy's swing re-planned Normal: on 8-5 a swing section moved and Easy lost its only tayra (easyMode.test.ts "keeps a
+// tayra" passed only while the tests built Easy on Normal's swing). And Normal's own search checked Easy's lay on Normal's swing. Every
+// lay and check now runs on its own setting's dials. Planted: on the code before, both 8-5 tests were red; 6-1, 7-5 and 8-3 (whose
+// Easy also moved, but not its plan) are guards, green before and after.
+const plan = (st: unknown) => (st as { gen2: { plan: Array<{ template: string }> } }).gen2.plan.map((p) => p.template);
+const kinds = (st: { enemies: Array<{ type: string }> }) => [...new Set(st.enemies.map((e) => e.type))].sort();
+test("R-165.258: 8-5 lays its tayra on Easy as on Normal, built as a phone builds each (the engine's dials set first)", () => {
+  const c = cfgOf('8-5');
+  applySetting('easy');
+  const e = generateStage(c, 'easy');
+  applySetting('normal');
+  const n = generateStage(c, 'normal');
+  assert.deepEqual(kinds(n), ['tayra']);
+  assert.deepEqual(kinds(e), kinds(n), '8-5 Easy keeps every kind Normal lays');
+  assert.deepEqual(plan(e), plan(n), "and lays Normal's plan");
+});
+for (const id of ['8-5', '6-1', '7-5', '8-3']) {
+  test(`R-165.258: ${id} Easy lays Normal's plan and only Normal's kinds of animal, whatever the caller's dials (layouts 1-2)`, () => {
+    const c = cfgOf(id);
+    for (const v of [1, 2]) for (const dials of ['easy', 'normal'] as const) {
+      applySetting(dials);
+      setLayoutVariant(v);
+      try {
+        const n = generateStage(c, 'normal');
+        const e = generateStage(c, 'easy');
+        assert.deepEqual(plan(e), plan(n), `${id} layout ${v} (dials at ${dials}): Easy's plan is Normal's`);
+        for (const t of kinds(e)) assert.ok(kinds(n).includes(t), `${id} layout ${v}: Easy's ${t} is one of Normal's`);
+      } finally {
+        setLayoutVariant(null);
+        applySetting('normal');
+      }
+    }
+  });
+}

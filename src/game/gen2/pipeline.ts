@@ -4122,7 +4122,11 @@ function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2S
 
 /** the verdicts judged on a built rolled stage by the gates' own definitions (V19b's window, a rolled stage's flags), set on its gen2 and
  *  folded by rollErrors; Easy's Normal build gets them too, so a seed is clean on both settings or on neither (proven.test) */
+/** applyVerdicts on the request's own setting's dials (R-165.258: an Easy build judged Normal's verdicts on Easy's swing) */
 export function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
+  withSetting(req.difficulty, () => applyVerdictsOn(st, req));
+}
+function applyVerdictsOn(st: Gen2Stage, req: BuildRequest): void {
   // (R-165.61: every fall as a Drop record, and the roll's verdicts on this setting: judged on 1-1, every name notJudged elsewhere)
   st.gen2.drops = dropsOf(st, req.kit.manifest);
   st.gen2.verdicts = { ...st.gen2.verdicts, [req.difficulty]: judgedOnArcs(req.config.id) ? judgeRoll(judged11(st, req.difficulty), PROMISES_11) : NOT_JUDGED_ALL(req.difficulty) };
@@ -4271,7 +4275,15 @@ export function provenGen2Stage(req: BuildRequest, walk: number = PROVEN.walk): 
   throw new Error(`gen2 ${req.config.id} (${req.difficulty}): no seed of ${walk} from ${req.seed} builds cleanly (the first: ${first?.join('; ')})`);
 }
 
+/**
+ * buildRolled on its own setting's dials (settingDials.ts, R-165.258): an Easy build's Normal plan is built on Normal's swing, so it is
+ * Normal's plan (on a phone the engine had set Easy's before the build, so 8-5's Normal plan was re-planned on Easy's swing and Easy lost
+ * its only tayra); the caller's dials are put back after
+ */
 function buildRolled(req: BuildRequest): Gen2Stage {
+  return withSetting(req.difficulty, () => buildRolledOn(req));
+}
+function buildRolledOn(req: BuildRequest): Gen2Stage {
   const M = req.kit.manifest;
   if (M.handBuilt.includes(req.config.id)) throw new Error(`gen2: ${req.config.id} is hand-built`);
   const budget = planBudget(req.config, M, req.difficulty);
@@ -4293,7 +4305,7 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     // (Normal's verdicts too, folded: Easy carries every error Normal has, the flags' and the window's with the rest)
     if (n) {
       applyVerdicts(n, { ...req, difficulty: 'normal' });
-      n.gen2.errors = [...rollErrors(n.gen2), ...(req.also?.(n, 'normal') ?? []).map((u) => u.line)];
+      n.gen2.errors = [...rollErrors(n.gen2), ...withSetting('normal', () => req.also?.(n, 'normal') ?? []).map((u) => u.line)];
     }
     const repairs: Repair[] = [...(n?.gen2.repairs ?? [])];
     // (and only the animals Normal kept: Easy's are a subset of Normal's)
@@ -4382,8 +4394,11 @@ function buildRolled(req: BuildRequest): Gen2Stage {
         // (its kinder pads widening a take-off into a block's reach, seed 124) bans that section at that slot for both settings)
         let eb: Built | undefined;
         if (v.ok) {
-          eb = assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st));
-          const ev = checkAndRepair(eb, easyBudget, [], new Set(), landings);
+          // (on Easy's dials, R-165.258: Normal's build had checked Easy's lay on Normal's swing)
+          const ev = withSetting('easy', () => {
+            eb = assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st));
+            return checkAndRepair(eb, easyBudget, [], new Set(), landings);
+          });
           if (!ev.ok) v = { ...ev, why: `on Easy: ${ev.why ?? 'its check fails'}` };
         }
         st.gen2.rerolls = roll;
@@ -4492,7 +4507,7 @@ function buildRolled(req: BuildRequest): Gen2Stage {
           let unmet = [...rollUnmet(st, req).map((u) => ({ ...u, of: b })), ...rollUnmet(eb.stage, easyReq).map((u) => ({ ...u, of: eb! }))];
           // (the caller's own rules, asked last: of a roll nothing of the pipeline's refuses)
           const pipes = unmet.length > 0;
-          if (!pipes && req.also) unmet = [...req.also(st, 'normal').map((u) => ({ ...u, of: b })), ...req.also(eb.stage, 'easy').map((u) => ({ ...u, of: eb! }))];
+          if (!pipes && req.also) unmet = [...req.also(st, 'normal').map((u) => ({ ...u, of: b })), ...withSetting('easy', () => req.also!(eb!.stage, 'easy')).map((u) => ({ ...u, of: eb! }))];
           if (unmet.length) {
             if (refused) refused.gen2.repairs.push({ kind: 'reroll', note: `roll ${roll}, try ${it + 1}: ${unmet[0].line}` });
             refused ??= st;
