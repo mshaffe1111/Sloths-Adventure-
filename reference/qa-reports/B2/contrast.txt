@@ -1,15 +1,24 @@
-B2 contrast (contrast.mjs, the game canvas, front 142 px behind = full warning, Normal). dE = CIE76 mean vs the unwarned frame.
-Band A = 0-9% of the width (the edge), B = 20-31% (B2 rim). Bar set BEFORE measuring: dE >= 20 in A or B on every backdrop; B >= 15 on the darkest.
-stage  orient    backdropY | B1 dE A / B   | B2 dE A / B   | B2 lum ratio A | bar
-1-2    sideways  0.176     |  21.8 / 5.6   |  30.2 / 16.7  | 3.05           | PASS
-1-2    upright   0.164     |  15.9 / 4.1   |  23.4 / 12    | 2.6            | PASS
-2-1    sideways  0.121     |  16.6 / 4.7   |  25.7 / 12.3  | 2.37           | PASS
-2-1    upright   0.099     |  11.8 / 3     |  18.2 / 10.2  | 2.02           | FAIL
-3-1    sideways  0.025     |  14.3 / 3.1   |  13.4 / 16.7  | 1.3            | FAIL
-3-1    upright   0.013     |  10.9 / 2.1   |   8.5 / 12    | 1.13           | FAIL
-3-2    sideways  0.04      |  17.2 / 4.4   |  22.9 / 18.2  | 1.46           | PASS
-3-2    upright   0.023     |  15.2 / 3.3   |  18.2 / 14.4  | 1.24           | FAIL
-3-4    sideways  0.034     |  15.9 / 3.6   |  16.3 / 17.3  | 1.47           | FAIL
-3-4    upright   0.043     |  14.5 / 2.9   |  16.7 / 12.7  | 1.5            | FAIL
-3-9    sideways  0.027     |  13.6 / 3.1   |  11.4 / 16.7  | 1.25           | FAIL
-3-9    upright   0.012     |  11.6 / 2.2   |   9.3 / 12.4  | 1.15           | FAIL
+B2 contrast (reference/qa-reports/B2/contrast.mjs; the game canvas, front 142 px behind = full warning, Normal, branch sheet loaded first).
+dE = CIE76 mean vs the same frame with no warning. Band A = 0-9% of the width (the edge), B = 20-31%. Full height; "win" = +-30% of the
+height about his feet. Bar set BEFORE measuring: dE >= 20 in A or B on every backdrop (B >= 15 on the darkest). Not loosened.
+B1 = rgba(70,18,8) to 0.55. B2 = edgeTint on t-b2-chase (dark core + ember rim, 0.75). C1 = B2 core + brighter rim (0.34). C3 = lighter core +
+rim + bark specks. C4 = narrow dark edge + ember glow anchored at the branch where it breaks + falling bark chips / rising embers (stills: tint/).
+
+stage orient    Y0    | B1 A/B      | B2 A/B      | C1 A/B      | C3 A/B      | C4 A/B      | win B2 A/B  | win C4 A/B  | B2 bar | C1 bar | C4 bar
+1-2   upright   0.166 |  15.9/4.2   |  23.4/12.5  |  23.4/19.7  |    17/16.8  |  17.4/4     |  23.8/11.6  |  19.7/6.7   | PASS   | PASS   | FAIL
+1-2   sideways  0.185 |  21.7/5.6   |  30.4/16.6  |  30.4/26.4  |  23.4/22.6  |  32.5/17.9  |  35.5/16.6  |  35.9/18.7  | PASS   | PASS   | PASS
+2-1   upright   0.102 |  11.8/3.1   |    18/10.4  |    18/17.4  |  12.6/15.1  |  14.8/3.7   |  19.7/9.1   |  18.3/6.2   | FAIL   | FAIL   | FAIL
+2-1   sideways  0.121 |    17/4.7   |  26.3/12.4  |  26.3/20    |  19.7/17.4  |    25/14.1  |  29.4/13    |  28.4/15.4  | PASS   | PASS   | PASS
+3-1   upright   0.016 |    12/2.2   |  10.4/12.4  |  10.4/23.1  |   8.9/19.5  |  13.5/4.3   |  11.9/11.9  |    19/7.1   | FAIL   | PASS   | FAIL
+3-1   sideways  0.024 |  13.9/3     |  11.7/16.9  |  11.7/30.8  |   9.8/26.2  |  39.1/20.3  |  13.1/16.8  |  42.3/21.8  | FAIL   | PASS   | PASS
+3-9   upright   0.018 |  12.5/2.5   |    10/13.4  |    10/23.9  |   8.7/20.4  |  13.5/4.7   |  12.1/12.7  |  19.5/7.7   | FAIL   | PASS   | FAIL
+3-9   sideways  0.027 |  14.1/3.3   |  11.8/16.9  |  11.8/30.4  |  10.1/26    |  38.1/20.4  |  13.4/17    |  41.7/21.9  | FAIL   | PASS   | PASS
+
+Earlier run, branch sheet NOT waited for (frames may mix flat bars and the painted log), B2 only:
+3-2   upright   0.023 | B1  15.2/3.3   | B2  18.2/14.4  | FAIL
+3-2   sideways  0.04  | B1  17.2/4.4   | B2  22.9/18.2  | PASS
+3-4   upright   0.043 | B1  14.5/2.9   | B2  16.7/12.7  | FAIL
+3-4   sideways  0.034 | B1  15.9/3.6   | B2  16.3/17.3  | FAIL
+
+Read: B2 fails on 2-1 upright and every World 3 backdrop. C1 passes all but 2-1 upright (17.4). C4 is the look the lead asked for and
+passes every sideways backdrop by a wide margin (A 25-39) but fails upright (A 13.5-17.4): its glow radius follows the screen width.
