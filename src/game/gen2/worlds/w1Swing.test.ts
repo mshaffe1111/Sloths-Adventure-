@@ -5,7 +5,8 @@ import assert from 'node:assert/strict';
 import { buildGen2Stage, jumpLinkGap, layLocal, lianaBand, lianaRelease, planBudget, rngFor, VINE } from '../pipeline.ts';
 import { cfg as toyCfg, kit as toyKit, manifest as toyManifest } from '../toyWorld.ts';
 import { gripsOf, swingLandings, validateStage } from '../../levelCheck.ts';
-import { pressWindow, type AirBody } from '../../physics.ts';
+import { forwardEndLands, pressWindow, setTimedSwing, TIMED, type AirBody } from '../../physics.ts';
+import { LAND_IN } from '../landings.ts';
 import { LIANA, type LianaSwing, type SectionTemplate, type WorldKit } from '../types.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import { w1World } from './w1.ts';
@@ -45,19 +46,40 @@ test('the grip dial: a liana\'s reach is checked at the holds its row names (pre
   assert.deepEqual(gripsOf('low', 420), [0.95]);
 });
 
-test('a perch band is flown at its liana\'s own grip: a cached window of another grip is never reused', () => {
-  // the same liana and ledge, its band asked at the top first (cached), then at the foot: the foot's band reaches a FAR perch, the
-  // top's never past a SHORT one (1-6.md: top 0 ms at 480 px). A cache that forgot the grip handed the foot the top's windows
+// FAR (the lead's ruling (b), 11-14 3:55 PM ET, on Matt's shorter swings R-165.225): FAR is the farthest swing a real player makes,
+// measured by the testers' let-go from the liana's foot: the press as the swing out passes FORWARD_END (0.75) of its reach (physics
+// forwardEndLands, as gen2 lays it, pipeline lianaBand). `feLands` asks it of a perch, his middle half his body inside (LAND_IN).
+const feLands = (v: { x: number; topY: number; bottomY: number }, swing: { amp: number; period: number }, perch: { x: number; y: number; w: number }, d: 'normal' | 'easy') => {
+  const was = { ...TIMED };
+  setTimedSwing(d === 'easy');
+  try {
+    const A = { x: v.x, topY: v.topY, bottomY: v.bottomY, swingAmp: swing.amp, swingPeriod: swing.period, swingPhase: 0 };
+    const lands = (c: AirBody, _t: number, prevY: number) => c.vy >= 0 && prevY <= perch.y + 14 && c.y >= perch.y && c.x >= perch.x + LAND_IN.px && c.x <= perch.x + perch.w - LAND_IN.px;
+    return forwardEndLands(A, lands, gripsOf('low', v.bottomY - v.topY)!);
+  } finally {
+    Object.assign(TIMED, was);
+  }
+};
+
+test('a perch band is flown at its liana\'s own grip: a cached window of another grip is never reused, and the foot\'s band ends where the testers\' let-go lands (FAR)', () => {
+  // the same liana and ledge, its band asked at the top first (cached), then at the foot: the foot's band reaches past the top's (1-6.md:
+  // top 0 ms at 480 px). A cache that forgot the grip handed the foot the top's windows
   const from = { x: -480, y: 400, w: 300 };
-  // (a FAR perch, 120 px: since R-165.225 a dialled band is flown at the perch's width, SWING_SEEN)
-  const band = (grip?: LianaSwing['grip']) => lianaBand(from, LIANA_16, { amp: VINE.amp, period: VINE.period.normal, ...(grip ? { grip } : {}) }, 0, 120, LIANA.window.normal, -Infinity, 'normal', true);
-  const high = band('high')!;
-  const low = band('low')!;
-  const plain = band()!;
-  assert.ok(high[1] < 460, `the top's band reaches ${high[1]} px`);
-  assert.ok(low[1] >= 440, `the foot's band reaches only ${low[1]} px: the top's cached windows were reused`);
-  // and the plain band (no dial) is the level check's of every liana before it: unchanged
-  assert.ok(plain[1] < low[1]);
+  for (const d of ['normal', 'easy'] as const) {
+    const swing = { amp: VINE.amp, period: VINE.period[d] };
+    // (a FAR perch, 120 px: since R-165.225 a dialled band is flown at the perch's width, SWING_SEEN)
+    const band = (grip?: LianaSwing['grip']) => lianaBand(from, LIANA_16, { ...swing, ...(grip ? { grip } : {}) }, 0, 120, LIANA.window[d], -Infinity, d, true);
+    const high = band('high')!;
+    const low = band('low')!;
+    const plain = band()!;
+    assert.ok(low[1] >= high[1] + 60, `${d}: the foot's band reaches ${low[1]} px, the top's ${high[1]}: the top's cached windows were reused`);
+    // FAR: the testers' let-go from the foot lands him on the band's last perch, and one lay step (20 px) past it does not: the band
+    // ends at the farthest swing a real player makes, never at the farthest press the swing allows
+    assert.ok(feLands(LIANA_16, swing, { x: low[1], y: 400, w: 120 }, d), `${d}: the testers' let-go from the foot misses the band's last perch at ${low[1]} px`);
+    assert.ok(!feLands(LIANA_16, swing, { x: low[1] + 20, y: 400, w: 120 }, d), `${d}: the testers' let-go still lands ${low[1] + 20} px out: the foot's band stops short of FAR`);
+    // and the plain band (no dial) is the level check's of every liana before it: the let-go guard is the dial's, it never cuts it
+    assert.ok(plain[1] >= low[1], `${d}: the plain band ends at ${plain[1]} px, inside the foot's ${low[1]}`);
+  }
 });
 
 const all = generateAllLevels();
@@ -120,7 +142,7 @@ test('the level check flies a liana with a grip dial as the engine plays it (opt
   assert.equal(swingLandings(back, v, -1, [back, farL], 1e9, true).get(-2) ?? 0, lines(540, 'low'));
 });
 
-test('built: a liana row with the grip dial reaches the stage\'s Vine, and the stage\'s own level check links its FAR perch (toy world, both settings)', () => {
+test('built: a liana row with the grip dial reaches the stage\'s Vine, the stage\'s own level check links its FAR perch, and the testers\' let-go from the foot lands on it (toy world, both settings)', () => {
   // the toy world's banks over a void, with one more section: a FAR liana (grip 'low'), its perch at the far end of the foot's band
   const far: SectionTemplate = {
     id: 'toy-far-liana', name: 'a FAR liana', archetypes: 'any', phases: ['sho', 'ten', 'ketsu'], difficulty: 5, weight: 8,
@@ -140,13 +162,19 @@ test('built: a liana row with the grip dial reaches the stage\'s Vine, and the s
       const what = `${d} seed ${seed}`;
       assert.deepEqual(validateStage(st).errors, [], what);
       for (const s of st.gen2.sections.filter((x) => x.template === far.id)) {
-        const v = st.vines.find((x) => x.vineType === 'swing_liana' && x.grip === 'low');
-        assert.ok(v, `${what}: the built liana lost its grip`);
-        // its perch lies past the ~380 px the plain check links from any hold (A1-SWING sl.out.txt: 380 the last it links, 400 none): only
-        // the dial's flight reaches it (since R-165.225 the cap keeps a FAR perch within ~440, so the line is the plain check's own 380)
+        // (this section's own liana: the one hung inside its span)
+        const v = st.vines.find((x) => x.vineType === 'swing_liana' && x.x >= Math.min(s.x0, s.x1) && x.x <= Math.max(s.x0, s.x1));
+        assert.ok(v && v.grip === 'low', `${what}: the built liana lost its grip (${s.uid})`);
         const perch = st.platforms.filter((p) => p.x > v.x + 40 && Math.abs(p.y - (v.bottomY - 10)) < 120).sort((a, b) => a.x - b.x)[0];
-        // (Easy lays FAR as LONG, 1-6.md: under the cap its FAR is LONG's distance, 364-371 px on 1-6's kit; so on Easy a LONG gap at least)
-        assert.ok(perch && perch.x - v.x > (d === 'normal' ? 380 : 340), `${what}: the FAR perch is ${perch && perch.x - v.x} px past the anchor (${s.uid})`);
+        assert.ok(perch, `${what}: no FAR perch past the liana (${s.uid})`);
+        const swing = { amp: v.swingAmp ?? VINE.amp, period: v.swingPeriod ?? VINE.period[d] };
+        const at = (dx: number) => feLands(v, swing, { x: perch.x + dx, y: perch.y, w: perch.width }, d);
+        // FAR (the lead's ruling (b)): the farthest swing a real player makes, so the testers' let-go from the foot lands him on it, and
+        // it lies at the far end of that let-go's reach: 60 px further (the band's 10% share, 34 px at most, and one 20 px lay step) it
+        // no longer does. A lay that laid FAR past the testers' let-go (the best press of the swing, BUILD-16c) fails the first; one
+        // that laid it anywhere nearer (a LONG or SHORT perch) the second
+        assert.ok(at(0), `${what}: the testers' let-go from the foot misses the FAR perch ${perch.x - v.x} px past the anchor (${s.uid})`);
+        assert.ok(!at(60), `${what}: the FAR perch ${perch.x - v.x} px past the anchor is short of the testers' reach: 60 px further still lands (${s.uid})`);
         built++;
       }
     }
