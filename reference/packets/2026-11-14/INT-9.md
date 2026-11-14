@@ -11,6 +11,8 @@ Merge in this order, resolving every conflict by reading BOTH sides' intent (nev
    ENGINE LINES flagged in BUILD-17's REPORT (sweepPose.ts SNAG_PERCH, w17Art.ts, engine.ts hanging cover, stillness.ts, castPlay.ts):
    review each line at xhigh and say PASS/FAIL per line.
 NOT in this build: 1-6 (t-build-16, BUILD-16d still working: INT-10 takes it), FIX-15b, R-165.238 (old proto 1-6 cleanup goes with 1-6).
+Also (small, tools): tools/team/modelgate.mjs --self-test now FAILS 3 cases because models.json follows Matt's 11-14 1:51 PM rule
+(xhigh ceiling, high floor: max and medium refused): update those 3 expectations and the stale 'max allowed' line/message; self-test PASS.
 Then: every seed list --check (relist --merge --in-order only if a list no longer replays; say which); tierBots 7/7 (any 1-1 calibration
 move: re-run + recommit, BOTS.md); castBots 1-4 and 1-7 both settings; full CLAUDE.md Checks on the merged head (buildcheck ALONE; a
 flake is proven by A/B against the parents at matched load, as INT-8 did).
