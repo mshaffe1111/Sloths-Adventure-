@@ -73,7 +73,9 @@ def main(pp, takes, od):
             px, py = fx * W, fy * H  # the blob holding this point, else the one whose centre is nearest
             inside = [b for b in boxes if b[0] <= px <= b[2] and b[1] <= py <= b[3]]
             x0, y0, x1, y1 = min(inside or boxes, key=lambda b: ((b[0] + b[2]) / 2 - px) ** 2 + ((b[1] + b[3]) / 2 - py) ** 2)
-            pad = 24
+            if piece.get('box'):  # a hand box (fractions of the take) where two pieces touch
+                bx = piece['box']; x0, y0, x1, y1 = round(bx[0] * W), round(bx[1] * H), round(bx[2] * W), round(bx[3] * H)
+            pad = 24 if not piece.get('box') else 0
             c = im.crop((max(0, x0 - pad), max(0, y0 - pad), min(W, x1 + pad), min(H, y1 + pad)))
             cut = key_top(c) if piece.get('opaque') else key_own(c)
             bb = cut.getchannel('A').point(lambda v: 255 if v > 8 else 0).getbbox()
