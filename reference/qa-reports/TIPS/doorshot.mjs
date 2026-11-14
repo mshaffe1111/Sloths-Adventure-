@@ -28,7 +28,7 @@ const built = await p.evaluate(([E, ori]) => {
   const pl = e.platforms.filter((q) => q.x <= x && q.x + q.width >= x).sort((a, z) => Math.abs(a.y - dy) - Math.abs(z.y - dy))[0];
   for (const h of st.proto?.hints ?? []) h.shown = true;
   Object.assign(e.player, { x, y: pl.y - e.player.height, vx: 0, vy: 0, climbing: false, facing: 1 });
-  setInterval(() => { e.player.invincibleTimer = 9; }, 100);
+  // (never held invincible: he blinks see-through, and Dot holds her lines while he is hurt-invincible; TIPS Method update)
   return { stage: st.config.id, objective: st.config.objectiveType, need: st.config.targetCount, built: st.gen2?.budget?.difficulty ?? 'hand', seed: st.gen2?.seed, ori, door: [dx, dy] };
 }, [E, ori]);
 console.log('BUILT', JSON.stringify(built));
