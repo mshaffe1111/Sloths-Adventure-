@@ -9,14 +9,22 @@ import { buildGen2Stage } from './pipeline.ts';
 import { provenSeedFor, provenSeeds, seedListBreaches, SEED_LIST_MIN } from './seedList.ts';
 import { w1World } from './worlds/w1.ts';
 import { generateAllLevels } from '../worldsData.ts';
+import { quietJudge } from '../../../tools/engine/listRules.ts';
 
 const c = generateAllLevels().find((l) => l.id === '1-1')!;
+/** 1-1's kit as it rolled before the A/D-only ruling (sprint-B and -C allowed): its rolls are exactly the old ones, so the first seeds
+ *  whose build fails are planted on it (POLISH-9b, R-165.228: on today's 1-1 nearly every raw roll builds clean, the deal's own fix) */
+const kitWithBC = () => {
+  const k = w1World();
+  const { refuseGraphs: _, ...brief } = k.manifest.graphs!.briefs['1-1'];
+  return { ...k, manifest: { ...k.manifest, graphs: { ...k.manifest.graphs!, briefs: { ...k.manifest.graphs!.briefs, '1-1': brief } } } };
+};
 
 test('the checker names a short list, a repeat, and a seed that fails its build', () => {
   let bad = -1;
-  for (let s = 1; s <= 400 && bad < 0; s += 2) if (buildGen2Stage({ config: c, kit: w1World(), seed: s, difficulty: 'normal' }).gen2.errors?.length) bad = s;
+  for (let s = 1; s <= 400 && bad < 0; s += 2) if (buildGen2Stage({ config: c, kit: kitWithBC(), seed: s, difficulty: 'normal' }).gen2.errors?.length) bad = s;
   assert.ok(bad > 0, 'no failing seed in 200: the planted case is gone');
-  const b = seedListBreaches(c, w1World, [bad, bad], 3);
+  const b = seedListBreaches(c, kitWithBC, [bad, bad], 3);
   assert.ok(b.some((x) => /under 3/.test(x)), b.join(' | '));
   assert.ok(b.some((x) => /listed twice/.test(x)), b.join(' | '));
   assert.ok(b.some((x) => x.startsWith(`1-1 seed ${bad} normal:`)), b.join(' | '));
@@ -41,17 +49,20 @@ test("a listed seed's replay is its full search's stage; a tampered plan is name
   const { buildPlayStage, packPlan, provenList, provenPlan, stageParts, unpackPlan } = await import('./seedList.ts');
   const L = provenList('1-1')!;
   const picks = [0, Math.floor(L.seeds.length / 2), L.seeds.length - 1];
-  assert.deepEqual(seedListBreaches(c, w1World, picks.map((i) => L.seeds[i]), 0, { dict: L.dict, plans: picks.map((i) => L.plans[i]) }), []);
+  // (the search the list was built with, the quiet line its own rule (tools/engine/seedlist.ts `also`, listRules.ts quietJudge; libstage.ts
+  // builds the same): POLISH-7's pool steers more rolls by it, and a search without it is not the search that listed the seed (D19))
+  const also = quietJudge(c);
+  assert.deepEqual(seedListBreaches(c, w1World, picks.map((i) => L.seeds[i]), 0, { dict: L.dict, plans: picks.map((i) => L.plans[i]) }, also), []);
   const r = provenPlan('1-1', L.seeds[0])!;
   const dict = [...L.dict];
   const k = r.plan.findIndex((p) => !p.mirrored && p.template !== 'w1-seed-perch');
   const bad = packPlan({ ...r, plan: r.plan.map((p, i) => (i === k ? { ...p, mirrored: true } : p)) }, dict);
-  const b = seedListBreaches(c, w1World, [L.seeds[0]], 0, { dict, plans: [bad] });
+  const b = seedListBreaches(c, w1World, [L.seeds[0]], 0, { dict, plans: [bad] }, also);
   assert.ok(b.some((x) => /its replay differs from its search/.test(x)), b.join(' | '));
   assert.deepEqual(unpackPlan(L.plans[0], L.dict).plan.map((p) => p.template), r.plan.map((p) => p.template));
   for (const difficulty of ['normal', 'easy'] as const) {
     const play = buildPlayStage(c, w1World(), L.seeds[0], difficulty);
     assert.deepEqual(play.gen2.errors ?? [], []);
-    assert.deepEqual(stageParts(play), stageParts(buildGen2Stage({ config: c, kit: w1World(), seed: L.seeds[0], difficulty })), difficulty);
+    assert.deepEqual(stageParts(play), stageParts(buildGen2Stage({ config: c, kit: w1World(), seed: L.seeds[0], difficulty, also })), difficulty);
   }
 });

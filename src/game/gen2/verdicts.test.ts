@@ -66,10 +66,24 @@ test('arc.single-gap-over: Easy 140 px is past a flick from 70 px (132); Normal 
 test('arc.single-rise-over: a 120 px single rise is over the flick climb (117, thin)', (t) => {
   planted('arc.single-rise-over', 'normal', { asks: [ask('single-rise', 120)] }, t);
 });
-test('block.lesser-passes: a 200 px "double" gap one jump crosses (246); a 120 px "double" rise one jump climbs (123); a 212 px bounce lip a bounce alone climbs (223)', (t) => {
+test('block.lesser-passes: a 200 px "double" gap one jump crosses (246); a 120 px "double" rise one jump climbs (123); a 212 px bounce + air test a bounce alone climbs (223); a 120 px bounce teach one jump climbs (123)', (t) => {
   planted('block.lesser-passes', 'normal', { asks: [ask('double-test-gap', 200)] }, t);
   planted('block.lesser-passes', 'easy', { asks: [ask('double-teach-rise', 120)] }, t);
-  planted('block.lesser-passes', 'normal', { asks: [ask('bounce-teach', 212)] }, t);
+  planted('block.lesser-passes', 'normal', { asks: [ask('bounce-air-test', 212)] }, t);
+  planted('block.lesser-passes', 'easy', { asks: [ask('bounce-teach', 120)] }, t);
+});
+test('the bounce teach is a plain bounce (POLISH-7, bands.md §4 "the other way"): 174-180 px over the floor passes on both settings, a double climbing it too; 168 is under the band, 186 over', (t) => {
+  for (const s of ['normal', 'easy'] as const) for (const px of [174, 177, 180]) assert.deepEqual(names(roll(s, { asks: [ask('single-gap', 100), ask('double-teach-rise', s === 'easy' ? 130 : 138), ask('bounce-teach', px)] })), [], `${s} ${px}`);
+  planted('band.out', 'normal', { asks: [ask('bounce-teach', 168)] }, t);
+  planted('band.out', 'easy', { asks: [ask('bounce-teach', 186)] }, t);
+});
+test('the double teach\'s first rise is comfortably doable (POLISH-8, R-165.228, the lead\'s ruling 11-14): 128-132 px passes on both settings (one jump climbs 123, the 5 px spare holds); Normal\'s old 136 is over the band, 127 under it, 126 spare-thin', (t) => {
+  for (const s of ['normal', 'easy'] as const) for (const px of [128, 130, 132]) assert.deepEqual(names(roll(s, { asks: [ask('single-gap', 100), ask('double-teach-first', px)] })), [], `${s} ${px}`);
+  planted('band.out', 'normal', { asks: [ask('double-teach-first', 136)] }, t);
+  planted('band.out', 'normal', { asks: [ask('double-teach-first', 127)] }, t);
+  planted('block.spare-thin', 'normal', { asks: [ask('double-teach-first', 126)] }, t);
+  // (a later D face in the same teach keeps the block band: 136-140 on Normal)
+  assert.deepEqual(names(roll('normal', { asks: [ask('single-gap', 100), ask('double-teach-first', 130), ask('double-teach-rise', 138)] })), []);
 });
 test('block.spare-thin: a 126 px double rise, 3 px over one jump\'s 123, under the 5 px spare', (t) => {
   planted('block.spare-thin', 'easy', { asks: [ask('double-teach-rise', 126)] }, t);

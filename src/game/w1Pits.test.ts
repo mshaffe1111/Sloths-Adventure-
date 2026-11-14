@@ -280,7 +280,7 @@ test("a hollow's banks' sides over it are closed (EN-W Roughs 2, 3)", async () =
 // ---- The per-gap ruler (RULER, the lead's rulings 11-13 3:21, 3:27 and 8:50 PM ET; R-165.197/.200). Each gap is judged by its OWN
 // lips, never by one ground line read off the whole stage: ground is earth only (a piece 90 px deep or more: a bank, a stump, a pillar);
 // a log or a bough is a platform over a gap, never its lip; a hole between two banks is judged at any width from 24 px.
-test('per-gap ruler: ground laid 5,000 px away does not move a gap here (nodeMix World 1 string 57, seed 58: its log chain)', async () => {
+test('per-gap ruler: ground laid 5,000 px away does not move a gap here (nodeMix World 1 string 57: its log chain)', async () => {
   const { buildGen2Stage } = await import('./gen2/pipeline.ts');
   const { w1World } = await import('./gen2/worlds/w1.ts');
   const { generateAllLevels } = await import('./worldsData.ts');
@@ -288,8 +288,16 @@ test('per-gap ruler: ground laid 5,000 px away does not move a gap here (nodeMix
   const cfg = generateAllLevels().find((l) => l.id === '1-1')!;
   const code = 'A P1< M> R X1_> R W>:8 R S E';
   const kit = { ...W1, manifest: { ...W1.manifest, graphs: { ...W1.manifest.graphs!, list: [{ id: 'mix', archetype: 'sprint' as const, code }] } } };
-  const st = buildGen2Stage({ config: cfg, kit, seed: 58, difficulty: 'normal' });
-  const chain = st.gen2.sections.find((q) => q.template === 'w1-log-chain')!;
+  // (the first seed of the string that lays its log chain with a fall in it, cleanly. Re-pinned by POLISH-9b (R-165.228): seed 58 laid
+  // it until POLISH-7 changed 1-1's pool (CUT_11_DOUBLES), and then held no log chain (a crash, not a failure); found, never copied, so
+  // the next pool change moves the case with it)
+  let st: ReturnType<typeof buildGen2Stage> | undefined, chain: { x0: number; x1: number } | undefined;
+  for (let seed = 1; seed <= 60 && !chain; seed++) {
+    const b = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+    const c = b.gen2.sections.find((q) => q.template === 'w1-log-chain');
+    if (!b.gen2.errors?.length && c && findW1Pits(b.platforms).some((g) => g.kind === 'fall' && g.x1 > c.x0 && g.x0 < c.x1)) [st, chain] = [b, c];
+  }
+  assert.ok(st && chain, 'no seed of the string in 60 lays its log chain with a fall cleanly');
   const inside = (x0: number, x1: number) => x1 > chain.x0 && x0 < chain.x1;
   // (a bank of earth wider than all of the stage's banks together, at another height, 5,000 px past the shrine)
   const banks = st.platforms.filter((p) => p.type === 'solid' && p.height >= 90);

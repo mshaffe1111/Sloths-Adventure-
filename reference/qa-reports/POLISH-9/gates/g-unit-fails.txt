@@ -1,0 +1,16 @@
+not ok 1195 - fresh 1-1 rolls: no roll the search returns clean has a dead-zone petal or an idle mushroom, and the repair is what cleared them
+not ok 1294 - a seed whose build fails is never played: the game's road plays a clean seed, the same stage on both settings
+not ok 1315 - the checker names a short list, a repeat, and a seed that fails its build
+not ok 1762 - 1-1 Easy, seed 982, w1-log-chain-rise: the line at 3, the full pad jump at 5, the steps at 8, then the whole piece on plain jumps
+not ok 1763 - 1-1 Normal, seed 982: the line at 3, the offer at 12 (the stage held), a no grows nothing, the re-ask at 20, a second no is final
+not ok 1764 - 1-1 Normal, seed 982: a yes at 12 grows the steps, the piece is then passed on plain jumps; each step drawn, and gone after a restart
+not ok 1765 - 1-1 on Quiet (Dot's help setting): no line from her, but Easy's steps still grow at 8 and Normal's offer still shows at 12
+not ok 1766 - the offer opens over a clear bubble: a ladder line still up is taken down the moment it opens
+not ok 1767 - 1-1 normal, seed 982, w1-log-chain-rise: he holds right and walks off again and again; Dot's move line at 3 is up in her bubble at least 2 s before the engine takes it down
+not ok 1768 - 1-1 easy, seed 982, w1-log-chain-rise: he holds right and walks off again and again; Dot's move line at 3 is up in her bubble at least 2 s before the engine takes it down
+not ok 1769 - the harness is honest: standing still 2 s after each set-back, the same line does come up (so the red above is the pace, not the test)
+not ok 1770 - 1-1 easy, seed 982, w1-log-chain-rise: at the same pace the step line at 8 is up in her bubble at least 2 s
+not ok 1916 - a log wholly under a continuous road is out of reach; a log under a road with an open edge close by is not (gen2 1-1 seed 118786)
+not ok 2563 - 1-1 easy seed 982: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall
+not ok 2565 - planted: without the brief's word (origin/main's 1-1) the same sweep on Normal loses lives in the pits, through the real loseLife
+not ok 2566 - 1-1 Normal seed 982, w1-log-chain-rise: walked off a rising gap he is set back on the ledge he left, softFall recorded, no life lost

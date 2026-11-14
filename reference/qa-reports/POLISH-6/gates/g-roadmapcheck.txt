@@ -1,0 +1,18 @@
+3 M4 L0 = 20.5 helper hours
+  R-145 Sound and music: S3 M2 L0 = 11 helper hours
+  R-146 Controls and feel (audit Build 4): S4 M2 L0 = 13 helper hours
+  R-147 Play Store: S2 M2 L0 = 9.5 helper hours
+  R-148 Tools and process: S13 M0 L0 = 14.5 helper hours
+  R-150 Stages feel repetitive: all stages and the generators (Matt, 2026-11-02; Day 1): S4 M2 L3 = 78 helper hours
+  R-151 The quality supervisor (Matt, 2026-11-02; Day 1): S1 M0 L0 = 0.5 helper hours
+  R-152 Hazards that matter, mechanics that build (Matt, 2026-11-02; Day 1): S4 M1 L2 = 39.5 helper hours
+  R-153 Stage types: reshape 2-3 stages per world (Matt decided 2026-11-02; Day 1): S0 M0 L1 = 65 helper hours
+  R-154 to R-157 Fun from what we have (Matt, 2026-11-02 evening; STAGE-RULES §0b; GAMEPLAN §7): S1 M1 L2 = 48.5 helper hours
+  R-158 Eagles that bite: the World 1 slice (Matt approved PLAN-TO-80, 2026-11-04): S1 M1 L0 = 5 helper hours
+  R-159 Enemies with jobs: the combat triangle (PLAN-TO-80, 2026-11-04): S0 M0 L2 = 29.5 helper hours
+  R-160 Hanging under branches: Pokey's own move (PLAN-TO-80, 2026-11-04): S0 M1 L1 = 15 helper hours
+  R-161 Bosses: three ways to win (PLAN-TO-80, 2026-11-04): S0 M1 L1 = 34 helper hours
+  R-162 Later (PLAN-TO-80's "Later" list: good ideas, not for launch): S130 M67 L18 = 598.35 helper hours
+  by tier (helper hours, measured, R-12): Day 1 896.75, Important 322.5, Parking lot 147.5, Matt's call 4.1
+  all: 1370.85 helper hours (Matt's own items and the decisions left out: 23)
+PASS

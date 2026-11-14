@@ -1,0 +1,5 @@
+listed plan == lock plan: true foes same: true
+normal bare hash 559079555b43b4db settled hash 1e39b9a17069c64f errors [] parts differing platforms | stones moved  | platforms changed beyond x/cut 0 count 146 146
+easy bare hash 4e3f2017a0c062fb settled hash ef91482138b95fb5 errors [] parts differing platforms | stones moved  | platforms changed beyond x/cut 0 count 146 146
+normal swapped pieces: 2 64 w1-rock-block-big->w1-rock-root-block; 70 w1-rock-block-big->w1-rock-root-block
+easy swapped pieces: 3 64 w1-boulder-grey-moss-b->w1-rock-root-block; 70 w1-rock-slabs-low->w1-rock-root-block; 123 w1-rock-slabs-stacked-big->w1-rock-block-big

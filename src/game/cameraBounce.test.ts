@@ -1,4 +1,4 @@
-// The sideways view in a bounce (INT-1-1 item 7 and the Critic's delta 2): on 1-1 seed 9800 the mushroom by the seed-perch log throws
+// The sideways view in a bounce (INT-1-1 item 7 and the Critic's delta 2): on 1-1's first run (seed 9800 then, 9652 now) the mushroom by the seed-perch log throws
 // Pokey up past the HUD band. The view must keep his head under the HUD (the HUD_BAND rule) and never move more than CAM_RISE_STEP
 // (11 px of world) in one frame: the first fix held his head at once and moved the view 44-72 px in a frame (a snap). Flown in the real
 // engine at 30 fps with the camera on (RealPlay turns it off as cosmetic), on a 915 x 412 sideways view.
@@ -10,6 +10,21 @@ import { GameEngine } from './engine.ts';
 import { setDifficulty } from './difficulty.ts';
 import { withPlaySeed } from './testlink1_1.ts';
 import { HUD_BAND, HERO_HEAD } from './cameraFollow.ts';
+import { FIRST_RUN_11 } from './gen2/firstRun11.ts';
+
+/**
+ * the layout flown: 1-1's first run (firstRun11.ts), which holds the seed-perch log. Retargeted by POLISH-9b (R-165.228): seed 9800 was
+ * the first run until POLISH-7's relist; it now rerolls to another layout with no mushroom where this looked (the pin threw, not failed).
+ * The mushroom is found by the seed-perch piece the stage reports (meta.pieces), never by an x, so the next relist moves it with the run.
+ */
+const SEED = FIRST_RUN_11.seed;
+function perchMushroom(r: RealPlay) {
+  const piece = (r.stage as unknown as { meta?: { pieces?: Array<{ k: string; x0: number; x1: number }> } }).meta?.pieces?.find((p) => p.k === 'w1-seed-perch');
+  assert.ok(piece, `the first run (seed ${SEED}) holds the seed-perch log`);
+  const m = r.platforms.find((p) => p.type === 'bouncy' && p.x >= piece.x0 && p.x < piece.x1);
+  assert.ok(m, `a mushroom in the seed-perch piece (${piece.x0}-${piece.x1})`);
+  return m;
+}
 
 type Cam = { camera: { x: number; y: number; targetX: number; targetY: number; viewportHeight: number }; updateCamera(dt: number): void; resizeCanvas(): void; zoom: number };
 
@@ -19,12 +34,12 @@ function bounce(): { steps: number[]; headRoom: number[] } {
   w.innerWidth = 915;
   w.innerHeight = 412;
   setDifficulty('normal');
-  const r = withPlaySeed(9800, () => new RealPlay('1-1', 1));
+  const r = withPlaySeed(SEED, () => new RealPlay('1-1', 1));
   const e = r.e as unknown as Cam & { stop(): void };
   try {
     e.updateCamera = (GameEngine.prototype as unknown as Cam).updateCamera;
     e.resizeCanvas();
-    const m = r.platforms.find((p) => p.type === 'bouncy' && p.x > 27200 && p.x < 27400)!;
+    const m = perchMushroom(r);
     r.stand(m.x - 40, m.y + m.height);
     for (let i = 0; i < 90; i++) r.frame({});
     const steps: number[] = [], headRoom: number[] = [];
@@ -46,7 +61,7 @@ function bounce(): { steps: number[]; headRoom: number[] } {
   }
 }
 
-test('1-1 seed 9800 sideways, the bounce by the seed-perch log: no frame moves the view more than 11 px, and the view follows him up', () => {
+test('1-1 first run sideways, the bounce by the seed-perch log: no frame moves the view more than 11 px, and the view follows him up', () => {
   const b = bounce();
   const most = Math.max(...b.steps);
   assert.ok(most <= 11 + 1e-6, `the view moved ${most.toFixed(1)} px in one frame`);
@@ -61,19 +76,19 @@ test('1-1 seed 9800 sideways, the bounce by the seed-perch log: no frame moves t
 // game time, so the cap is a speed, 330 px a second of play, on every phone. Held to 11 px per DRAWN frame it would climb at half that
 // on a 15 fps phone and his head would go deeper under the HUD on every bounce (above: 31 px into the band at full rate). So the rule is
 // pinned as a rate: played through the engine's own loop with 67 ms frames, the view is the 30 fps view, drawn every other step.
-test('1-1 seed 9800 sideways, the same bounce at 15 fps (67 ms frames, the real loop): 11 px per 1/30 s step, his head no deeper under the HUD', () => {
+test('1-1 first run sideways, the same bounce at 15 fps (67 ms frames, the real loop): 11 px per 1/30 s step, his head no deeper under the HUD', () => {
   const at30 = bounce();
   const w = globalThis as unknown as { innerWidth: number; innerHeight: number };
   const was = [w.innerWidth, w.innerHeight];
   w.innerWidth = 915;
   w.innerHeight = 412;
   setDifficulty('normal');
-  const r = withPlaySeed(9800, () => new RealPlay('1-1', 1));
+  const r = withPlaySeed(SEED, () => new RealPlay('1-1', 1));
   const e = r.e as unknown as Cam & { stop(): void; loop(now: number): void; render(): void; isRunning: boolean; isPaused: boolean; lastRenderTime: number; acc: number };
   try {
     e.updateCamera = (GameEngine.prototype as unknown as Cam).updateCamera;
     e.resizeCanvas();
-    const m = r.platforms.find((p) => p.type === 'bouncy' && p.x > 27200 && p.x < 27400)!;
+    const m = perchMushroom(r);
     r.stand(m.x - 40, m.y + m.height);
     for (let i = 0; i < 90; i++) r.frame({});
     const band = HUD_BAND.land / e.zoom;

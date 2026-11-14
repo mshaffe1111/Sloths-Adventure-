@@ -1,0 +1,5 @@
+POLISH-9b relist 1-1 (--merge list order --in-order, the help-room rule in the judge): 167 -> 163
+dropped (0-based list index, seed): [(57, 33825), (90, 55341), (99, 61613), (117, 28931)]
+kept in the same order: True
+kept seeds whose plan changed: []
+first 57 entries identical (layout variants 1-57: castBots L1-10, calibration 1-40, first run variant 10): True variant 10 = 9652

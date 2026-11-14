@@ -1,0 +1,92 @@
+diff --git a/src/game/gen2/pipeline.ts b/src/game/gen2/pipeline.ts
+index f605138..8849b97 100644
+--- a/src/game/gen2/pipeline.ts
++++ b/src/game/gen2/pipeline.ts
+@@ -1247,7 +1247,9 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
+       // (a LEVEL block gap, its far lip no higher than the take-off (W1's 'd'), has no stair at all, the lead's ruling A 11-06: any stair
+       // back up to a level take-off tops out within a hop of the far lip too, and on a ~200 px gap stood a single's reach from the landing;
+       // a fall there puts him back on the take-off ledge instead, soft, no life lost (a soft heart-fall zone), on both settings)
+-      const putBack = !!pc.block && !pl.water && dy >= -20;
++      // (a `climbBack` gap (a first stage's taught test, POLISH-8, the lead's (A) 11-14) is the exception: a soft pit stepping back up to
++      // the take-off, a short drop and a retry, never a set-back; its stair keeps PIT.tread at the take-off wall, out of a single's reach)
++      const putBack = !!pc.block && !pl.water && dy >= -20 && !(pl.kind === 'pit' && pl.climbBack);
+       const back = (glide || pc.block) && !pl.water && !putBack ? { back: { lips: [a.y, y] as [number, number] } } : {};
+       gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back, ...(putBack ? { putBack } : {}), ...(pl.hurt ? { hurt: true } : {}), ...('floor' in pl && pl.floor ? { floor: pl.floor } : {}) });
+       // (the reach this jump asks: verdicts.ts classifies and judges it on 1-1, ADR-001; a glide is no flown move)
+diff --git a/src/game/gen2/types.ts b/src/game/gen2/types.ts
+index ffa52cc..7659ded 100644
+--- a/src/game/gen2/types.ts
++++ b/src/game/gen2/types.ts
+@@ -277,7 +277,8 @@ export type PlaceRule =
+    *  `share`, never scaled by the roll's tempo or the jump's reach; a band past the reach fails the section by name */
+   /** `hurt` (a jump, double or pit place): the gap is a HOLLOW with the world's hurt floor under it (WorldManifest.hurtFloor), no steps out */
+   | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean; hurt?: boolean; floor?: string }
+-  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean; hurt?: boolean }
++  // (climbBack: a level block gap whose miss is a soft pit with a step back up to the take-off, never a set-back (POLISH-8, the lead's (A))
++  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean; hurt?: boolean; climbBack?: boolean }
+   | { kind: 'on'; on: string; at: Range; h: Range }
+   | { kind: 'over'; on: string; at: Range; dy: Range }
+   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
+diff --git a/src/game/gen2/worlds/w1.ts b/src/game/gen2/worlds/w1.ts
+index e7ac1d1..79fce25 100644
+--- a/src/game/gen2/worlds/w1.ts
++++ b/src/game/gen2/worlds/w1.ts
+@@ -156,7 +156,7 @@ const HOP_UP: [number, number] = [-78, -70];
+ /** the `at` that stands a mushroom (70 wide) with its edge 25-45 px from the far end of a floor `w` wide: the bounce teach's 20-60 from
+  *  the face (bands.md §4); Easy's widened landings add 5-20 px, so the top of the band is kept for them */
+ const faceAt = (w: [number, number]): [number, number] => [Math.round((1 - 45 / (w[1] - 70)) * 1000) / 1000, Math.round((1 - 25 / (w[0] - 70)) * 1000) / 1000];
+-const softGap = (key: string, after: string, w: SectionPiece['w'], share: [number, number], jump: 'jump' | 'double' = 'jump', gapPx?: [number, number]): W1Piece => ({ key, shape: 'bank', w, place: { kind: 'pit', after, jump, share, soft: true, ...(jump === 'double' ? { gapPx: gapPx ?? DOUBLE_TEST } : {}) }, style: 'moss_stone', main: true, landing: true, ...(jump === 'double' ? { block: 'double' as const } : {}) });
++const softGap = (key: string, after: string, w: SectionPiece['w'], share: [number, number], jump: 'jump' | 'double' = 'jump', gapPx?: [number, number], climbBack = false): W1Piece => ({ key, shape: 'bank', w, place: { kind: 'pit', after, jump, share, soft: true, ...(jump === 'double' ? { gapPx: gapPx ?? DOUBLE_TEST } : {}), ...(climbBack ? { climbBack } : {}) }, style: 'moss_stone', main: true, landing: true, ...(jump === 'double' ? { block: 'double' as const } : {}) });
+ /** the PRACTICE double gap (C1): the test's 252-262 px, over a soft pit with a floor and a step out to the far bank, so a miss is a short
+  *  fall and a climb on, never a set-back; it comes before every test gap (w1.test 'teach first') */
+ const practiceGap = (key: string, after: string, w: SectionPiece['w']): W1Piece => ({ key, shape: 'bank', w, place: { kind: 'pit', after, jump: 'double', gapPx: DOUBLE_TEST, soft: true }, style: 'moss_stone', main: true, landing: true });
+@@ -261,10 +261,10 @@ const gShelf = (): G => (k, after) => {
+   return { pieces: [f, sh, r], sockets: [tip(f.key, 0.1), petals(`${k}psh`, sh.key, [0.25, 0.75], 2, 80), petals(`${k}pr`, r.key, 0.5, 1)], last: f.key };
+ };
+ /** gapRun(widths) of the second jump (twist 'gaps': reachTwo x 0.62 / 0.72 / 0.82, a run of 220-300 after each) */
+-const gDoubleGaps = (shares: Array<[number, number]>, px: [number, number] = DOUBLE_TEST): G => (k, after) => {
++const gDoubleGaps = (shares: Array<[number, number]>, px: [number, number] = DOUBLE_TEST, climbBack = false): G => (k, after) => {
+   const pieces: W1Piece[] = []; const sockets: Socket[] = [];
+   let prev = after!;
+-  shares.forEach((sh, j) => { const p = softGap(`${k}g${j}`, prev, [220, 300], sh, 'double', px); pieces.push(p); sockets.push({ id: `${k}arc${j}`, role: 'arc', on: p.key, t: 0 }); prev = p.key; });
++  shares.forEach((sh, j) => { const p = softGap(`${k}g${j}`, prev, [220, 300], sh, 'double', px, climbBack); pieces.push(p); sockets.push({ id: `${k}arc${j}`, role: 'arc', on: p.key, t: 0 }); prev = p.key; });
+   return { pieces, sockets, last: prev };
+ };
+ /** the practice double gap as a group (C1): see practiceGap */
+@@ -662,7 +662,7 @@ const doubleTeach = section({
+   versions: [1, 2].map((n) => {
+     const head: G[] = [(k, after) => { const g = gRest([260, 300])(k, after); g.sockets.push(dot(`${k}nice`, g.last, 0.2, 'coach.nice')); return g; }, (k, after) => riseFace(k, after, false, [280, 320], false, TEACH_RISE)];
+     const tail: G = (k: string, after: string | null) => { const g = gRest([200, 240])(k, after); g.sockets.push(dot(`${k}dbl`, g.last, 0.3, 'hint.1-1.double')); return g; };
+-    return { id: n === 1 ? 'rise' : 'rise-two', groups: [...head, ...Array.from({ length: n }, () => gPractice()), gDoubleGaps([[0.85, 0.89]]), gLogHop(), gDip(), tail], easy: [...head, ...Array.from({ length: n + 1 }, () => gLevelHop()), gLogHop(), gDip(), tail] };
++    return { id: n === 1 ? 'rise' : 'rise-two', groups: [...head, ...Array.from({ length: n }, () => gPractice()), gDoubleGaps([[0.85, 0.89]], DOUBLE_TEST, true), gLogHop(), gDip(), tail], easy: [...head, ...Array.from({ length: n + 1 }, () => gLevelHop()), gLogHop(), gDip(), tail] };
+   }),
+   feel: ['1-1'], not: NOT_11, rating: 3,
+   source: 'W1-NEW-SECTIONS #8, re-laid C1 (bands.md §3: the double gap is no lesson); before: one gap just past a single jump over a safe dip (soft pit: a floor under it, stair steps back, pipeline pitUnder/pitSteps), then two more (R2, the 3:11 ruling)',
+@@ -999,6 +999,9 @@ const BEATS: Record<string, G> = {
+   j: gDip(),
+   /** a double TEST gap, Normal only (252-262, a level block: a miss is set back on the take-off); every version with one names its Easy twin */
+   d: gDoubleGaps([[0.85, 0.89]]),
++  /** the double TEACH's test (POLISH-8, R-165.228, the lead's (A) 11-14): the 'd' gap, but a miss is a short drop into a soft pit and a
++   *  step back up to the take-off to try again at once, never a set-back (a first-timer can fail it without being stuck); Normal only */
++  u: gDoubleGaps([[0.85, 0.89]], DOUBLE_TEST, true),
+   /** the PRACTICE double gap before a test (C1): 252-262 over a soft pit with a floor and a step out, a miss is a fall and a climb on */
+   t: (k, after) => { const p = practiceGap(`${k}t`, after!, [220, 260]); return { pieces: [p], sockets: [{ id: `${k}arc`, role: 'arc', on: p.key, t: 0 }], last: p.key }; },
+   /** a climb step: a bank one hop up (62-78 px), the route stays up */
+@@ -1085,7 +1088,7 @@ const logTeach = rhythmic({
+ const dipDoubleTeach = rhythmic({
+   id: 'w1-dip-double-teach', floor: 'hop', name: 'the wide dip', phases: ['ki'], difficulty: 3, needs: ['double'], teaches: 'double', exitDy: -130,
+   // (C1: the rise teaches (T), then the practice gap (t) and the test (d) on Normal; Easy's twin hops the same places (a))
+-  versions: { a: ['w T t d w j w', 'D t d j', 'w T a a w j w'], b: ['w T t d j j w', 'D t d j j', 'w T a a j j w'] },
++  versions: { a: ['w T t u w j w', 'D t d j', 'w T a a w j w'], b: ['w T t u j j w', 'D t d j j', 'w T a a j j w'] },
+   feel: ['1-1'], not: NOT_11, rating: 3,
+   source: 'Round 4 #33: R2 (3:11); NODES §8.7 (a gap at share 0.85+, back-only pit: the planner\'s block rule)',
+ });
+@@ -1093,7 +1096,7 @@ const dipDoubleTeach = rhythmic({
+ const bankDoubleTeach = rhythmic({
+   id: 'w1-bank-double-teach', floor: 'hop', name: 'the tall bank', phases: ['ki'], difficulty: 3, needs: ['double'], teaches: 'double', exitDy: -268,
+   // (C1: the teach rise first (T), the practice gap and the test on Normal (Easy's twin hops), then a second rise (D))
+-  versions: { a: ['w T t d w h D w', 'D t d h D', 'w T a a w h D w'], b: ['w T t d h h D h', 'D t d h h D', 'w T a a h h D h'] },
++  versions: { a: ['w T t u w h D w', 'D t d h D', 'w T a a w h D w'], b: ['w T t u h h D h', 'D t d h h D', 'w T a a h h D h'] },
+   feel: ['1-1'], not: NOT_11, rating: 3,
+   source: 'Round 4 #34: NODES §8.7 B2a (a rise block 136-140 px onto a bank, the floor ending at its face)',
+ });

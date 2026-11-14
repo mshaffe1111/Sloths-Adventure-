@@ -46,10 +46,6 @@
       "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
     },
     {
-      "file": "tools/inspect/firsttimer.test.ts",
-      "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
-    },
-    {
       "file": "tools/inspect/lookalike.test.ts",
       "why": "outside CI before the t-int-engine merge (debt: bring it in once it passes; 8 of these files' tests fail on main too, PROOF-1 logs/outofglob-main.log)"
     },

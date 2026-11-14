@@ -1,0 +1,19 @@
+489
+  type: 'test'
+  ...
+# Subtest: a jump made in the thick of a cloud still reaches every platform the generator calls safe
+ok 1167 - a jump made in the thick of a cloud still reaches every platform the generator calls safe
+  ---
+  duration_ms: 0.075757
+  type: 'test'
+  ...
+1..1167
+# tests 1167
+# suites 0
+# pass 1167
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2314134.51305
+exit 0

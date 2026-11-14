@@ -1,0 +1,10 @@
+POLISH-7 first-run lock (1-1), 4:14 AM ET 11-14
+old: seed 9800 (plan held w1-bank-stair-test, cut from 1-1: CUT_11_DOUBLES); list relisted in order 169/257
+rule (firstRun11.ts header, P11): child+middle, both settings, calibration variants 1-40: put-backs+lives in pieces entered in the first 120 s = 0, then whole run 0 with no rescue
+0 in first 120 s: variants 1, 6, 10, 19, 20, 22, 25, 28, 29, 31, 34, 36
+and 0 whole run, no rescue: 1 (769, 2 rerolls), 6 (5542, 1 reroll), 10 (9652, 0), 20 (16133, 0)
+-> variant 10 = seed 9652: the first whose listed plan is its seed's own first roll (packs as the list packs it; seedListLoad.test's stand-in).
+   (A first attempt took 5542 and locked a replay under the list seed, not its reroll seed 5599797: the stand-in test caught it.)
+new plan: w1-meadow,w1-learn,w1-dip-double-teach,w1-mushroom-lift,w1-bank-stair-fork,w1-cache-stones,w1-floor-dash,w1-fern-bank,w1-stone-stair-test,w1-log-walk,w1-seed-perch,w1-log-chain,w1-last-step-up
+lock: normal b5b63ed05a7a4ffc, easy be691a05e81a5b46 (both settings: 0 errors, verdicts accepted)
+QA rolls (testlink1_1.json, by hand from the list, no-reroll seeds): A 9652 (the first run), B 2328 (stones teach, dip double, bounce bank), C 5033 (double teach, mushroom-lift)

@@ -34,7 +34,7 @@ export interface FlownArc {
 export type Band = { lo: number; hi: number } | 'none';
 /** `chain-hop` (chain.md §3): one mushroom cap to the next, its figure S, cap centre to cap centre; its band goes by the step between the
  *  two caps (reach.ts CHAIN_BANDS), the same on both settings */
-export type SectionKind = 'single-gap' | 'single-rise' | 'double-teach-rise' | 'double-teach-rise-thin' | 'double-test-gap' | 'bounce-teach' | 'bounce-air-test' | 'chain-hop';
+export type SectionKind = 'single-gap' | 'single-rise' | 'double-teach-rise' | 'double-teach-rise-thin' | 'double-teach-first' | 'double-test-gap' | 'bounce-teach' | 'bounce-air-test' | 'chain-hop';
 export type BandTable = Readonly<Record<SectionKind, Readonly<Record<Difficulty, Band>>>>;
 
 // ───────────────────────── drops: what every fall ends in, and how it looks ─────────────────────────

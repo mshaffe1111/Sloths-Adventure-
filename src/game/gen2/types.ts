@@ -667,6 +667,11 @@ export interface GraphBrief {
    *  socket whose `allow` starts with one (another stage's Dot line, its prop) stays empty, so a shape never brings another stage's
    *  words with it. What a section needs, uses and teaches is judged at each node, as everywhere */
   pick?: { refuse?: readonly string[] };
+  /** graphs of the world's list this stage never rolls (their ids): a seed that draws one draws again among the rest, on a stream of
+   *  its own, so a seed that drew an allowed graph keeps it and its whole roll. POLISH-9b (R-165.228, the lead's ruling 9:31 AM
+   *  11-14): 1-1 refuses sprint-B and sprint-C, whose combine node 1-1's pool has no section for since CUT_11_DOUBLES; bringing
+   *  them back with non-double pieces is R-165.235 */
+  refuseGraphs?: readonly string[];
   /** a DESIGNED graph (one section a job, in a set order: a level's arc): the deal is the brief's shares to the node, with no node
    *  moved from one type to another by the roll (the jitter a rolled stage gets on half its seeds, for variety between rolls), and
    *  a node whose job one type of section alone serves in the stage's pool is dealt that type. A designed level's variety is its
@@ -782,6 +787,10 @@ export interface WorldKit {
   /** called for every creature the stage lays (a socket's or a purge's top-up): where the world registers its own (World 5: a
    *  sleeping spider into proto.w5.spiders with `doze`, from a creature tagged 'sleeper') */
   spawn?: (e: Enemy, c: CreatureDef, out: StageSink) => void;
+  /** where the world moves its laid pieces so each is drawn on its own ground (World 1: a stone or stump kept back from its ground's lip by
+   *  its painted piece's margin, w1CutArt.ts settleCut, R-165.226), run on the laid stage before any check reads it: each piece it moves
+   *  and by how much (`dx`); `dx` NaN for a piece no move settles (its section is swapped, pipeline checkAndRepair) */
+  settle?: (platforms: Platform[]) => Array<{ p: Platform; dx: number }>;
 }
 
 /** a local repair the validation pass made (D3) */

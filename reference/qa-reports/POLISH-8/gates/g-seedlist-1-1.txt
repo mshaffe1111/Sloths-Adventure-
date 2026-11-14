@@ -1,0 +1,4 @@
+seedlist 1-1: the verdicts refuse 0 of 167 listed seeds
+seedlist 1-1: FAIL
+  1-1 first-run.drift: the first run (seed 9652) builds 598f2cf9d031bb9f on normal, recorded b5b63ed05a7a4ffc
+  1-1 first-run.drift: the first run (seed 9652) builds faba40c194f515f7 on easy, recorded be691a05e81a5b46

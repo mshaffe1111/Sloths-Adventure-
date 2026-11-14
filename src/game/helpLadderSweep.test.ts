@@ -6,7 +6,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import './headlessDom.ts';
-import { provenSeeds } from './gen2/seedList.ts';
+import { provenSeeds, SEED_LIST_MIN } from './gen2/seedList.ts';
 import { plainThrough, sweepSeed } from './helpSweep.ts';
 
 const seeds = provenSeeds('1-1');
@@ -22,7 +22,8 @@ for (const setting of ['easy', 'normal'] as const) {
       for (const b of s.breaches) bad.push(`seed ${sd} ${b}`);
     }
     t.diagnostic(`${setting}: ${rocks} rocks over ${seeds.length} seeds; a step may be promised at ${grow} piece-seeds, never at ${none}`);
-    assert.ok(seeds.length >= 200 && rocks > 0 && grow > 0, 'the sweep covered the list and grew rocks');
+    // (the list's own floor, not a count it once had: POLISH-7/8's relists, the double sections out of 1-1, left 167 of 257; POLISH-9b)
+    assert.ok(seeds.length >= SEED_LIST_MIN && rocks > 0 && grow > 0, `the sweep covered the list (${seeds.length} seeds) and grew rocks`);
     const kinds = ['floats', 'px face', 'px up', 'overlap', 'sunk'].map((k) => `${k}: ${bad.filter((v) => v.includes(k)).length}`).join(', ');
     assert.deepEqual(bad.slice(0, 8), [], `${bad.length} breaches over ${seeds.length} seeds (${rocks} rocks): ${kinds}`);
   });

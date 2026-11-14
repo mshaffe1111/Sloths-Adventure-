@@ -494,7 +494,12 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
   const list = G.list.filter((g) => g.archetype === budget.archetype);
   if (!list.length) return null;
   const r = rngFor(seed, 67);
-  const g = list[Math.floor(r() * list.length)];
+  let g = list[Math.floor(r() * list.length)];
+  // (a graph the brief refuses, GraphBrief.refuseGraphs: drawn again among the rest on a stream of its own, so every seed that drew an
+  // allowed graph keeps that graph and every number after it; POLISH-9b, 1-1 without sprint-B and -C)
+  const allowed = brief.refuseGraphs?.length ? list.filter((q) => !brief.refuseGraphs!.includes(q.id)) : list;
+  if (!allowed.length) throw new Error(`gen2 ${budget.id}: the brief refuses every ${budget.archetype} graph of the world`);
+  if (!allowed.includes(g)) g = allowed[Math.floor(rngFor(seed, 68)() * allowed.length)];
   // (the graph's code, read and checked: a graph that breaks a rule is the world's data at fault, named with its rule and token)
   // (its leg marks, legs.ts: taken out before the nodes are read; each node's travel then rides with its job through the brief's
   // rules below, and a node they add takes the leg of the node before it. A code with no mark: `tv` stays empty and nothing moves)
@@ -1210,7 +1215,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     const ref = (k: string) => by.get(k)!;
     // (the highest a bounce block's lip may stand, local y: its mushroom's cap less the bounce's reach from it)
     const bounceCap = (q: SectionPiece): number | undefined => {
-      const m = q.block === 'bounce' && q.from ? by.get(q.from) : undefined;
+      // (a bounce TEACH's lip names its mushroom with no block (World 1's TEACH_LIP, POLISH-7): reached the same way, judged as a teach)
+      const m = q.from && q.block !== 'double' ? by.get(q.from) : undefined;
       return m ? m.y - (judgedOnArcs(budget.id) ? bounceLipOverCap(budget.difficulty) : 0.95 * BOUNCE_REACH) : undefined;
     };
     if (pl.kind === 'start') {
@@ -1399,6 +1405,8 @@ export interface Laid {
   missing?: string[];
   /** a rolled graph's sections whose laid exit left the corridor (a version that ends far from its declared exitDy): swapped */
   strays?: Array<{ uid: string; y: number }>;
+  /** pieces the world's settle could not keep on their ground (WorldKit.settle): the section each lies in, and where: swapped */
+  unsettled?: Array<{ uid: string; x: number }>;
   /** V19's late rise as laid: each mustRise node, the height it had to end above (minus 20 px) and where it ended */
   rise?: Array<{ node: string; to: number; exitY: number }>;
   /** a rolled graph's blocks (NODES.md §8.7): each teach or test section's block pieces, as laid */
@@ -2631,9 +2639,30 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       shiftedDown = down;
     }
   }
+  // (R-165.226: each piece drawn on its own ground, the world's settle (World 1: a stone kept back from its lip by its painted margin).
+  // A moved piece takes what stands on it and the jumps that start or end at its edges with it; the checks below and the verdicts read
+  // the moved stage. One it cannot settle names its section, which the check swaps)
+  const unsettled: NonNullable<Laid['unsettled']> = [];
+  for (const { p, dx } of kit.settle?.(platforms) ?? []) {
+    const mid = p.x + p.width / 2;
+    if (Number.isNaN(dx)) {
+      const sec = sections.find((q) => mid >= q.x0 && mid <= q.x1) ?? sections.find((q) => q.x0 > mid);
+      if (sec) unsettled.push({ uid: sec.uid, x: R(mid) });
+      continue;
+    }
+    if (!dx) continue;
+    const e0 = p.x, e1 = p.x + p.width;
+    for (const k of asks) {
+      if (Math.abs(k.yTake - p.y) <= 1 && (Math.abs(k.x0 - e0) <= 1 || Math.abs(k.x0 - e1) <= 1)) k.x0 += dx;
+      if (Math.abs(k.yLand - p.y) <= 1 && (Math.abs(k.x1 - e0) <= 1 || Math.abs(k.x1 - e1) <= 1)) k.x1 += dx;
+    }
+    for (const q of sections) for (const k of q.sockets) if (k.piece === p) k.x += dx;
+    p.x += dx;
+  }
   return {
     sections,
     ...(missing.length ? { missing } : {}),
+    ...(unsettled.length ? { unsettled } : {}),
     ...(blocks.length ? { blocks } : {}),
     ...(strays.length ? { strays } : {}),
     ...(plan.some((p) => p.loose) ? { loosened: plan.flatMap((p, k) => (p.loose ? [`slot ${k + 1} (${p.loose})`] : [])) } : {}),
@@ -3677,6 +3706,9 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
   // (and one whose laid exit left the corridor: the way on is lost past it, whichever section comes next)
   const stray = b.laid.strays?.[0];
   if (stray) return { ok: false, swap: Number(stray.uid.slice(1)) - 1, why: `its exit at y ${stray.y} is outside the corridor` };
+  // (R-165.226: a stone no piece and no move keeps on its ground: its section is swapped)
+  const loose = b.laid.unsettled?.[0];
+  if (loose) return { ok: false, swap: Number(loose.uid.slice(1)) - 1, why: `a stone at x ${loose.x} is drawn past its ground's lip` };
   const walked = blockBreaches(b.laid, st.platforms, judgedOnArcs(budget.id) ? { setting: budget.difficulty, stageId: budget.id } : undefined);
   if (walked.length) return { ok: false, swap: Number(walked[0].uid.slice(1)) - 1, why: `the block is walked round: ${walked[0].why}` };
   // (Y2, R-165.120: a judged stage's idle mushrooms are taken up and its dead-zone petals moved to a piece a clean flight reaches, inside
@@ -3856,9 +3888,17 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
  *  (a bounce lip in a teach node is the bounce teach) with its clear height, and the gaps the built stage shows (World 1's pits) */
 function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2Stage } {
   const nodes = st.gen2.nodes ?? [];
-  const asks: JudgedStage['asks'][number][] = (ASKS.get(st) ?? []).map((a) => {
+  // (POLISH-8, R-165.228: a teach node's FIRST double rise block is the teach's own rise, judged on its own band, 'double-teach-first';
+  //  the rises after it in the node (a second D) keep the block band)
+  const read = (ASKS.get(st) ?? []).map((a) => {
     const node = nodes.find((n) => a.x0 >= n.x0 - 1 && a.x0 <= n.x1 + 1);
-    const { kind, figure } = classify(a, !!node && JOB_OF[node.token[0]] === 'teach', setting);
+    const teach = !!node && JOB_OF[node.token[0]] === 'teach';
+    return { a, node, teach, ...classify(a, teach, setting) };
+  });
+  const first = new Map<unknown, number>();
+  for (const r of read) if (r.teach && r.kind === 'double-teach-rise' && r.a.x0 < (first.get(r.node) ?? Infinity)) first.set(r.node, r.a.x0);
+  const asks: JudgedStage['asks'][number][] = read.map(({ a, node, teach, kind: k, figure }) => {
+    const kind: typeof k = teach && k === 'double-teach-rise' && first.get(node) === a.x0 ? 'double-teach-first' : k;
     return { section: a.section, kind, x0: a.x0, x1: a.x1, figure, move: TAUGHT[kind], headroom: headroomOf(a, st.platforms) };
   });
   return {
@@ -4169,10 +4209,11 @@ function buildRolled(req: BuildRequest): Gen2Stage {
             repairs.push({ kind: 'reroll', note: `${b.laid.plan[v.swap].template} is required here and failed: rolled again` });
             break;
           }
+          // (so is one with a stone no piece keeps on its ground, R-165.226: the version laid the stone at the lip, not the section)
           // (a section whose laid exit left the corridor is first re-laid at its slot with its other versions, one by one: the version
           // took it out, not the section (1-1 seed 5 under Round 10: the level 'short' of quiet-arrival fit where its 'step' did not, and
           // banning the template threw "no section fits the goal"). Only with every version tried is it swapped out as before)
-          if (v.swap !== undefined && b.laid.plan[v.swap] && /outside the corridor/.test(v.why ?? '')) {
+          if (v.swap !== undefined && b.laid.plan[v.swap] && /outside the corridor|drawn past its ground's lip/.test(v.why ?? '')) {
             const slot = b.laid.plan[v.swap];
             const t = byId.get(slot.template);
             const key = `${v.swap}:${slot.template}`;
