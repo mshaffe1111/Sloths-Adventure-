@@ -184,11 +184,17 @@ export function bushHeight(b: { w: number; kind: 'tall' | 'wide' | 'fern' }): nu
 // Matt's long-branch sheet (2026-10-24): 1-8's chase
 let img3: HTMLImageElement | null = null;
 let ready3 = false;
+/** the long-branch sheet (a chase's sections, cracked and broken: drawChaseSection) */
+export const PROTO3_URL = new URL('../assets/proto/props3-atlas.webp', import.meta.url).href;
 function load3() {
   if (img3 || typeof Image === 'undefined') return;
   const im = new Image();
   img3 = im;
-  trackAtlas(im, new URL('../assets/proto/props3-atlas.webp', import.meta.url).href, () => { ready3 = true; }, () => { img3 = null; }, () => { img3 = null; ready3 = false; });
+  trackAtlas(im, PROTO3_URL, () => { ready3 = true; }, () => { img3 = null; }, () => { img3 = null; ready3 = false; });
+}
+/** start loading the long-branch sheet (a stage that lays a chase: stageManifest.ts builtStageKeys 'props3', got in behind the card) */
+export function warmProto3() {
+  load3();
 }
 
 /**
@@ -848,6 +854,8 @@ function thinKit(p: Platform): boolean {
 export function paintedPlatforms(platforms: Platform[]): Set<number> {
   const out = new Set<number>();
   for (const p of platforms) {
+    // (a chase section is drawn only by its chase drawer, never painted as ground too: pieces/chasePiece.ts)
+    if (p.chase) continue;
     if (p.push) out.add(p.id);
     else if (p.height < 50 && (p.style === 'branch' || (ownKit() && thinKit(p)))) out.add(p.id);
     else if ((p.height === 50 && p.style === 'moss_stone') || p.art === 'rock') out.add(p.id);

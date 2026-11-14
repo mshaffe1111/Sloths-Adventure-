@@ -46,7 +46,7 @@ export const JOB_LETTERS = {
   E: { job: "exit", key: "now" },
   L: { job: "finale", key: "later" },
   H: { job: "reward", key: "later" },
-  K: { job: "pressure", key: "later", later: true },
+  K: { job: "pressure", key: "now" },
   Z: { job: "puzzle", key: "later", later: true },
   B: { job: "arena", key: "later", later: true },
   Y: { job: "story", key: "later", later: true },

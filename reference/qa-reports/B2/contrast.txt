@@ -1,0 +1,47 @@
+B2 contrast (reference/qa-reports/B2/contrast.mjs; the game canvas, front 142 px behind = full warning, Normal, branch sheet loaded first).
+dE = CIE76 mean vs the same frame with no warning. Band A = 0-9% of the width (the edge), B = 20-31%. Full height; "win" = +-30% of the
+height about his feet. Bar set BEFORE measuring: dE >= 20 in A or B on every backdrop (B >= 15 on the darkest). Not loosened.
+B1 = rgba(70,18,8) to 0.55. B2 = edgeTint on t-b2-chase (dark core + ember rim, 0.75). C1 = B2 core + brighter rim (0.34). C3 = lighter core +
+rim + bark specks. C4 = narrow dark edge + ember glow anchored at the branch where it breaks + falling bark chips / rising embers (stills: tint/).
+
+stage orient    Y0    | B1 A/B      | B2 A/B      | C1 A/B      | C3 A/B      | C4 A/B      | win B2 A/B  | win C4 A/B  | B2 bar | C1 bar | C4 bar
+1-2   upright   0.166 |  15.9/4.2   |  23.4/12.5  |  23.4/19.7  |    17/16.8  |  17.4/4     |  23.8/11.6  |  19.7/6.7   | PASS   | PASS   | FAIL
+1-2   sideways  0.185 |  21.7/5.6   |  30.4/16.6  |  30.4/26.4  |  23.4/22.6  |  32.5/17.9  |  35.5/16.6  |  35.9/18.7  | PASS   | PASS   | PASS
+2-1   upright   0.102 |  11.8/3.1   |    18/10.4  |    18/17.4  |  12.6/15.1  |  14.8/3.7   |  19.7/9.1   |  18.3/6.2   | FAIL   | FAIL   | FAIL
+2-1   sideways  0.121 |    17/4.7   |  26.3/12.4  |  26.3/20    |  19.7/17.4  |    25/14.1  |  29.4/13    |  28.4/15.4  | PASS   | PASS   | PASS
+3-1   upright   0.016 |    12/2.2   |  10.4/12.4  |  10.4/23.1  |   8.9/19.5  |  13.5/4.3   |  11.9/11.9  |    19/7.1   | FAIL   | PASS   | FAIL
+3-1   sideways  0.024 |  13.9/3     |  11.7/16.9  |  11.7/30.8  |   9.8/26.2  |  39.1/20.3  |  13.1/16.8  |  42.3/21.8  | FAIL   | PASS   | PASS
+3-9   upright   0.018 |  12.5/2.5   |    10/13.4  |    10/23.9  |   8.7/20.4  |  13.5/4.7   |  12.1/12.7  |  19.5/7.7   | FAIL   | PASS   | FAIL
+3-9   sideways  0.027 |  14.1/3.3   |  11.8/16.9  |  11.8/30.4  |  10.1/26    |  38.1/20.4  |  13.4/17    |  41.7/21.9  | FAIL   | PASS   | PASS
+
+Earlier run, branch sheet NOT waited for (frames may mix flat bars and the painted log), B2 only:
+3-2   upright   0.023 | B1  15.2/3.3   | B2  18.2/14.4  | FAIL
+3-2   sideways  0.04  | B1  17.2/4.4   | B2  22.9/18.2  | PASS
+3-4   upright   0.043 | B1  14.5/2.9   | B2  16.7/12.7  | FAIL
+3-4   sideways  0.034 | B1  15.9/3.6   | B2  16.3/17.3  | FAIL
+
+Read: B2 fails on 2-1 upright and every World 3 backdrop. C1 passes all but 2-1 upright (17.4). C4 is the look the lead asked for and
+passes every sideways backdrop by a wide margin (A 25-39) but fails upright (A 13.5-17.4): its glow radius follows the screen width.
+
+Built attempts (the lead approved C4 at 1:47 AM; each measured on the real piece code, the "B2" column of contrast.mjs):
+build 1 (9d0e9bf5: one radial glow at the edge at his feet, dark ember core, r = max(w, 0.55h) x 0.58, bark chips):
+  1-2   upright   full A/B  11.5/9.7   win A/B  17.1/15.1  FAIL
+  1-2   sideways  full A/B  26.3/26.1  win A/B  29.4/25.7  PASS
+  2-1   upright   full A/B   9.9/8.3   win A/B  14.4/12.8  FAIL
+  2-1   sideways  full A/B  20.2/19.9  win A/B  23.3/20.7  PASS
+  3-1   upright   full A/B  13.8/12.3  win A/B  20.7/19.3  FAIL
+  3-1   sideways  full A/B  20.6/29.5  win A/B  20.1/28.8  PASS
+  3-9   upright   full A/B  13.4/11.8  win A/B  20.1/18.5  FAIL
+build 2 (ember core centred on the front, clamped; r x 0.44):
+  1-2   upright   full A/B   8.2/3.8   win A/B  13.7/6.2   FAIL
+  1-2   sideways  full A/B  24.1/34.3  win A/B    27/36.9  PASS
+  2-1   upright   full A/B   8.2/3.2   win A/B  13.7/5.2   FAIL
+  2-1   sideways  full A/B  20.6/26.9  win A/B  24.1/30    PASS
+  3-1   upright   full A/B  10.1/3.9   win A/B  16.8/6.6   FAIL
+  3-1   sideways  full A/B  29.8/41.2  win A/B  33.3/44.3  PASS
+  3-9   upright   full A/B  10.2/4.1   win A/B  17.1/6.9   FAIL
+  3-9   sideways  full A/B  30.5/40.9  win A/B  33.5/44.3  PASS
+Both fail upright (build 2 is BELOW B1 upright: the front is off-screen behind him upright, so its glow sat outside the frame). The head
+is back on B2 (linear, the table above) as the best measured; the look is not final. C4 needs its two layers (edge band + glow): that is
+2 gradients a frame, over drawcheck's limit (limits.json gradients max 2, stages already at 2): bake the glow once per size into a cached
+canvas (one drawImage a frame, globalAlpha = k; re-bake on canvas restore, D6) and keep the chips.

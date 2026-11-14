@@ -42,6 +42,7 @@ import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../t
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
 import { creakLimb, needless } from './creak.ts';
+import { layChase } from './chaseLay.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import { checkCode, formatToken, JOB_OF, LETTER_OF, MARK_OF, parseCode, type CodeToken } from './nodeCode.ts';
 import { askMisses, asksOf, hazardMiss, TYPE_OF_LETTER, type NodeAsks } from './nodeAsks.ts';
@@ -770,7 +771,7 @@ function poolFits(V: PoolView): (t: SectionTemplate, n: MissionNode, i: number) 
       if (t.teaches && teachAt.has(t.teaches) && !taught(t.teaches)) return false;
       if (n.content && t.content && t.content !== n.content) return false;
       if (n.job === 'fork' || n.job === 'reward') { if (!t.jobs?.includes(n.job)) return false; }
-      else if (!(n.job && t.jobs ? t.jobs.includes(n.job) : t.phases.includes(n.phase))) return false;
+      else if (!(n.job && t.jobs ? servesJob(t.jobs, n.job) : t.phases.includes(n.phase))) return false;
     }
     if (n.mustRise && !required.has(t.id) && V.exitDy(t) >= 0) return false;
     if (!(t.archetypes === 'any' || t.archetypes.includes(budget.archetype))) return false;
@@ -780,6 +781,15 @@ function poolFits(V: PoolView): (t: SectionTemplate, n: MissionNode, i: number) 
     return true;
   };
 }
+
+/**
+ * The jobs a section's own `jobs` list may name to serve a node of a job: its own job, and for a chase stretch (K, 'pressure') the
+ * ground a practise or a flow lays as well (1-8.md: a stretch is the world's practice run at pace, R folded in; no section is a chase
+ * on its own: chaseLay.ts makes its ground fall). Every fit reads this one rule (poolFits, the lay's jobFits, the deal's and the asks'
+ * views), so the estimate and the lay never disagree.
+ */
+const SERVED_BY: Partial<Record<NodeJob, readonly NodeJob[]>> = { pressure: ['pressure', 'practise', 'flow'] };
+export const servesJob = (jobs: readonly string[] | undefined, job: NodeJob): boolean => !!jobs && (SERVED_BY[job] ?? [job]).some((j) => jobs.includes(j));
 
 /** the jobs a content node holds (NODES.md §7.1: structural nodes, and the signature, sit outside the mix) */
 const CONTENT_JOBS: ReadonlySet<NodeJob> = new Set(['teach', 'practise', 'fork', 'flow', 'combine', 'climb', 'descent', 'twist', 'test']);
@@ -822,7 +832,7 @@ function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, 
   // The roll has nothing to choose there, and a type dealt at random would be one the node's only section cannot fill)
   if (brief.dealExact) for (const { n, i } of slots) {
     if (fixed.has(i)) continue;
-    const served = new Set(M.sections.filter((t) => t.jobs?.includes(n.job!) && t.content && t.content !== 'structural').map((t) => t.content as ContentType));
+    const served = new Set(M.sections.filter((t) => servesJob(t.jobs, n.job!) && t.content && t.content !== 'structural').map((t) => t.content as ContentType));
     if (served.size === 1) fixed.set(i, [...served][0]);
   }
   const types = [...new Set([...(Object.keys(shares) as ContentType[]).filter((t) => (shares[t] ?? 0) > 0), ...fixed.values()])];
@@ -1009,7 +1019,7 @@ function askServes(n: MissionNode, t: ContentType, sections: readonly SectionTem
   const a = n.asked;
   const shape = a?.shape === '^' ? -1 : a?.shape === '_' ? 1 : 0;
   if (!shape && !a?.move) return true;
-  return sections.some((q) => q.content === t && !!n.job && !!q.jobs?.includes(n.job)
+  return sections.some((q) => q.content === t && !!n.job && servesJob(q.jobs, n.job)
     && (!shape || Math.sign(q.exitDy ?? 0) === shape)
     && (!a!.move || (a!.move === '2') === (q.teaches === 'double' || (q.uses ?? []).includes('double') || (q.needs ?? []).includes('double'))));
 }
@@ -1984,7 +1994,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     if (n.job === 'fork' && loose < 2) return !!t.jobs?.includes('fork');
     // (and the H node is the stage's find: only a section that names the job)
     if (n.job === 'reward' && loose < 2) return !!t.jobs?.includes('reward');
-    return loose < 2 && t.jobs ? t.jobs.includes(n.job) : t.phases.includes(n.phase);
+    return loose < 2 && t.jobs ? servesJob(t.jobs, n.job) : t.phases.includes(n.phase);
   };
   // (a rolled graph's corridor reads where a section really ends, never only what it declares: its exit laid on three streams, the
   // median, once per build; a declared exitDy that disagrees would walk the route out of the corridor, where the way on is lost)
@@ -3725,6 +3735,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     gen2: meta,
   };
   ASKS.set(stage, laid.asks ?? []);
+  // (each section's own pieces (never its seam: a pit's floor and walls), for a chase's lay on the built stage, chaseLay.ts)
+  if (graph.nodes.some((n) => n.job === 'pressure')) PIECES_OF.set(stage, new Map(laid.sections.map((s) => [s.uid, s.pieces.map((q) => ({ platform: q.platform, main: q.main }))])));
   // (a graph with a designer's asks: each node's sections as laid, for the check in applyVerdicts, nodeAsks.ts)
   if (graph.nodes.some((n) => n.asked)) {
     const byId = new Map(req.kit.manifest.sections.map((t) => [t.id, t]));
@@ -3736,6 +3748,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   }
   return { stage, laid };
 }
+/** a graph with chase nodes: each section's own pieces and which are the route's (PlacedPiece.main), read by layChase in buildGen2Stage */
+const PIECES_OF = new WeakMap<Gen2Stage, Map<string, Array<{ platform: Platform; main: boolean }>>>();
 /** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
 const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number }>>>();
 
@@ -4130,6 +4144,12 @@ function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2S
 /** the verdicts judged on a built rolled stage by the gates' own definitions (V19b's window, a rolled stage's flags), set on its gen2 and
  *  folded by rollErrors; Easy's Normal build gets them too, so a seed is clean on both settings or on neither (proven.test) */
 export function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
+  // (judged afresh every call: a miss from an earlier judgement of this stage never stands. The search judges a stage (rollUnmet) before
+  // buildGen2Stage's last changes, a chase lay moving its flags: ENG-B4 found 2 of 30 chase rolls refused by a flag miss their own
+  // flags no longer had)
+  st.gen2.windowMiss = undefined;
+  st.gen2.flagMiss = undefined;
+  st.gen2.towerMiss = undefined;
   // (R-165.61: every fall as a Drop record, and the roll's verdicts on this setting: judged on 1-1, every name notJudged elsewhere)
   st.gen2.drops = dropsOf(st, req.kit.manifest);
   st.gen2.verdicts = { ...st.gen2.verdicts, [req.difficulty]: judgedOnArcs(req.config.id) ? judgeRoll(judged11(st, req.difficulty), PROMISES_11) : NOT_JUDGED_ALL(req.difficulty) };
@@ -4239,8 +4259,12 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   const pool = stagePool(M0, req.config.id);
   if (pool.length !== M0.sections.length) req = { ...req, kit: { ...req.kit, manifest: { ...M0, sections: pool } } };
   const st = buildRolled(req);
+  // (a graph with chase nodes, job K: its stretches laid on the built ground and its flags moved onto the forks BEFORE the verdicts, so
+  // the flags are judged by the same rule as every rolled stage's; a lay that cannot run is refused by name, chaseLay.ts)
+  const chase = layChase(st, (uid) => PIECES_OF.get(st)?.get(uid) ?? []);
   applyVerdicts(st, req);
   st.gen2.errors = rollErrors(st.gen2);
+  st.gen2.errors.push(...chase.problems);
   // (a stage that names a cast: every drop trap is in plain view and worth using, or the roll is refused by name, dropTrap.ts)
   const traps = st.proto.cast?.traps;
   if (traps?.length) st.gen2.errors.push(...trapFaults(traps, st.collectibles.filter((c) => c.type === 'flower' || c.type === 'fruit'), st.enemies));
@@ -4295,8 +4319,11 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     const n = R ? undefined : buildRolled({ ...req, difficulty: 'normal' });
     // (Normal's verdicts too, folded: Easy carries every error Normal has, the flags' and the window's with the rest)
     if (n) {
+      // (judged as Normal plays it: its chase laid first, as buildGen2Stage lays it, so its flags are the ones it plays (ENG-B4: Easy
+      // refused 2 of 30 chase rolls on Normal's flags from before its lay))
+      const nChase = layChase(n, (uid) => PIECES_OF.get(n)?.get(uid) ?? []);
       applyVerdicts(n, { ...req, difficulty: 'normal' });
-      n.gen2.errors = [...rollErrors(n.gen2), ...(req.also?.(n, 'normal') ?? []).map((u) => u.line)];
+      n.gen2.errors = [...rollErrors(n.gen2), ...nChase.problems, ...(req.also?.(n, 'normal') ?? []).map((u) => u.line)];
     }
     const repairs: Repair[] = [...(n?.gen2.repairs ?? [])];
     // (and only the animals Normal kept: Easy's are a subset of Normal's)

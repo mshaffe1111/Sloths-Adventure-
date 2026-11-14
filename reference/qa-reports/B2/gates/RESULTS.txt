@@ -1,0 +1,16 @@
+head 62ff9080d start 1:56 AM
+tsc 0 1:56 AM
+build 0 1:57 AM
+chunkcheck 0 1:57 AM
+artcheck 0 1:57 AM
+knowncheck 0 1:57 AM
+generality 0 1:57 AM
+roadmap 0 1:57 AM
+kbdcheck 0 2:00 AM
+clipcheck 0 2:16 AM (started early, outside run.sh)
+drawcheck 0 2:17 AM (started early, outside run.sh)
+lockall 0 2:17 AM (started early, outside run.sh)
+CUT 2:18 AM by B2 at the lead's 2:25 AM deadline (D59: nothing left running):
+unit PARTIAL (killed): shard1 727 ok / 0 not ok; shard2 359 ok / 0 not ok; shard3 346 ok / 0 not ok;
+seedlists PARTIAL (killed): 0 list(s) PASS before the cut (== 1-1 )
+registry UNRUN; tooltests UNRUN; tierBots UNRUN; buildcheck UNRUN

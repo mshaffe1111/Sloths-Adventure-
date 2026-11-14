@@ -6,6 +6,7 @@ import { groundToFloor } from './groundFloor.ts';
 import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { buildFeelPairStage, FEEL_PAIR_ID } from './feelPairStage.ts';
+import { buildChaseFixtureStage, CHASE_FIXTURE_ID, chaseFixtureConfig } from './chaseFixtureStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { flagsInOrder } from './gen2/tower.ts';
@@ -108,6 +109,11 @@ export interface GeneratedStage {
   /** `y` (a hollow with a hurt floor, gen2 WorldManifest.hurtFloor): the floor's top, the hurt line; his feet reaching it inside the zone is
    *  the fall (a heart; on a `soft` zone, Easy's, the set-back with the hurt sound and blink and no heart) */
   heartFalls?: Array<{ x0: number; x1: number; soft?: boolean; y?: number }>;
+  /** a laid chase (any world; chase.ts ChaseLay, run by pieces/chasePiece.ts): its stretches, each ending at a living fork. The sections
+   *  that fall are the platforms marked `chase`. (The hand-built 1-8's collapse is proto.chase, stepped by engine.ts until 1-8's build.) */
+  chase?: import('./chase.ts').ChaseLay;
+  /** rolling nuts and bouncing fruit (any world; rolling.ts RollSpec, run by pieces/rollingPiece.ts), each set off by his x */
+  rolling?: import('./rolling.ts').RollSpec[];
   /** the two-lane forks of the stage (see LaneFork): each lane is checked on its own by the validator and timed on its own by stageTime.ts */
   lanes?: LaneFork[];
   /**
@@ -2874,6 +2880,8 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   if (config.id === KIT_STAGE_ID) return buildKitStage(config);
   // the vine pair's feel test (a QA build only: feelPairStage.ts, R-165.170)
   if (config.id === FEEL_PAIR_ID && qaBuild()) return buildFeelPairStage(config);
+  // a real laid chase with its nuts and fruit, before 1-8 exists (a dev build only: chaseFixtureStage.ts, ENG-B5)
+  if (config.id === CHASE_FIXTURE_ID && chaseFixtureConfig()) return buildChaseFixtureStage(config, layoutVariant ?? 1, difficulty);
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
   // Dot's netting flight, the extra stage after 4-5 (dotFlightStage.ts); it is only in the stage list with the New stages switch on
   if (config.id === DOT_STAGE_ID) return dotGeneratedStage(config, layoutVariant ?? 1);

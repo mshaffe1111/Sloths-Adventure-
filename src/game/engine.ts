@@ -11,7 +11,7 @@ import { goalLine, sealedLine } from './stagePlan.ts';
 import { bindSent, FIRST_OF_STAGE, forgetSent, markTipHeard, tipHeard } from './tipMemory.ts';
 import { FERN_HMM, ZONE_LINE } from './dotTips.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
-import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
+import { caught, newChase, restartAt, sectionState, stepChase, stretchAt, type ChaseState } from './chase.ts';
 import { newTide, onHeld, restartTide, stepTide, surging, TIDE, type TideSetting, type TideState } from './risingTide.ts';
 import { drawBadWater } from './badWaterArt.ts';
 import { drawStiltDecor, drawStiltLedges } from './w6StiltArt.ts';
@@ -140,7 +140,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, hurtFocus, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, swingHeroBox, AHEAD, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, focusY, focusHero, WORLD_VIEW_H, PORTRAIT_VIEW_W, usualZoom, type Box } from './cameraFollow.ts';
+import { camAnchor, hurtFocus, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, swingHeroBox, AHEAD, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, focusY, focusHero, WORLD_VIEW_H, PORTRAIT_VIEW_W, usualZoom, chaseBack, chaseSpan, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -1090,7 +1090,8 @@ export class GameEngine {
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
     this.slideRun = null;
-    this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
+    // (a chase section is drawn only by its chase drawer: the hand-built 1-8's drawChase, a laid chase's piece, pieces/chasePiece.ts)
+    this.drawPlats = this.pushLogs.length || this.platforms.some((pl) => pl.chase || pl.art)
       ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown && !pl.art)
       : this.platforms;
     // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
@@ -2958,7 +2959,8 @@ export class GameEngine {
     // (a runtime piece that hurts him: through the one damagePlayer, its safe time and its knock away from the piece)
     if (this.pieces.length) {
       const hurt = piecesHurt(this.pieces, this.pieceHost);
-      if (hurt) this.damagePlayer(hurt.amount, hurt.fromX);
+      // (`toFlag`: a heart and back to the flag, as the hand-built chase's catch is: chaseCaught's body is the general one)
+      if (hurt) hurt.toFlag ? this.chaseCaught() : this.damagePlayer(hurt.amount, hurt.fromX);
     }
     for (const e of this.enemies) {
       if (e.defeated) {
@@ -5982,7 +5984,7 @@ export class GameEngine {
     this.addFloatingText('Back at your flag', p.x, p.y - 74, '#fde68a', 1.6);
   }
 
-  private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt', respawnTake = true) {
+  private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt', respawnTake = true, lifeNote = true) {
     const p = this.player;
     // the rising rivers go back down: he comes back to water at its starting level
     this.floodAt.clear();
@@ -6068,7 +6070,8 @@ export class GameEngine {
     // enough to read; any older words still rising there go first
     this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
     // one small note in place of "TRY AGAIN!" / "OH NO!" and "N LIVES LEFT" (AN-1, AN-3; a Game Over pick-up has them all back)
-    this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'life' : 'lives'} left`, p.x, p.y - 74, '#fde68a', 1.6);
+    // (only when a life went: a chase's catch puts him back a HEART down, and "3 lives left" over him read as a life lost, ENG-B4's clip)
+    if (lifeNote) this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'life' : 'lives'} left`, p.x, p.y - 74, '#fde68a', 1.6);
     // Dot's flight: she comes back at the last flower she drank at
     if (this.dotRun) this.dotRun.fl.respawn();
     if (this.slideRun?.sliding) this.slideRun.respawn();
@@ -6362,6 +6365,19 @@ export class GameEngine {
     this.applyZoom();
   }
 
+  /** the stage's chase span (cameraFollow.ts chaseSpan), worked out once for its chase and hazards (again if either is laid anew on the
+   *  same stage: a harness swapping a stage's chase kept the stale span, B5's contrast run) */
+  private chaseSpanFor: [GeneratedStage | null, unknown, unknown] = [null, undefined, undefined];
+  private chaseSpanV: ReturnType<typeof chaseSpan> = null;
+  private chaseSpanOf(st: GeneratedStage): ReturnType<typeof chaseSpan> {
+    const k = this.chaseSpanFor;
+    if (k[0] !== st || k[1] !== st.chase || k[2] !== st.rolling) {
+      this.chaseSpanFor = [st, st.chase, st.rolling];
+      this.chaseSpanV = chaseSpan(st);
+    }
+    return this.chaseSpanV;
+  }
+
   private updateCamera(dt: number) {
     const p = this.player;
     // the swing camera first (it sets the view's size for this frame)
@@ -6391,7 +6407,13 @@ export class GameEngine {
     const roomUp = vh * feetAt - HERO_HEAD - (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom;
     const eased = repick(this.camRepick, p.x, this.camAnchorY, prevAnchor, camSub, vw, vh, dt, this.camera.x, this.camera.y, roomUp);
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
-    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : eased.x - vw * FRAME.across + this.camLookX + runX;
+    // (a laid chase, or a stage's rolling nuts: over its span the view leads so a hazard's drop and roll are seen a second and more
+    // before they reach him at a full run, cameraFollow.ts chaseSpan; the span is the stage's own data, so it holds over every fork)
+    const span = this.chaseSpanOf(this.currentStage);
+    const mid = p.x + p.width / 2;
+    this.camera.targetX = this.chase?.active
+      ? p.x - vw * 0.3
+      : span && mid >= span.x0 && mid <= span.x1 ? mid - chaseBack(vw, span.ahead) : eased.x - vw * FRAME.across + this.camLookX + runX;
     this.camera.targetY = eased.y - vh * feetAt;
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
     const look = this.w4?.look(p.x, p.y);
@@ -6779,7 +6801,8 @@ export class GameEngine {
     out.lostTo = this.lostTo;
     out.kickNear = this.input.kickNear;
     out.boss = !!this.boss || !!this.currentStage.arena;
-    out.chase = !!this.chase;
+    // (a chase: the hand-built 1-8's collapse, or he is on a laid chase's stretch (chase.ts ChaseLay: its front runs behind him there))
+    out.chase = !!this.chase || (!!this.currentStage.chase && stretchAt(this.currentStage.chase, p.x) >= 0);
     out.reveal = !!this.kit?.panning || !!this.entrance || this.gameTime < this.revealUntil;
     out.levelH = cfg.levelHeight;
     out.enemies = this.enemies;
@@ -8513,7 +8536,8 @@ export class GameEngine {
     sound.playPlayerHurt();
     if (hp <= 0) this.loseLife('pit');
     else {
-      this.respawnAtCheckpoint('pit');
+      // (a heart, not a life: no "lives left" note)
+      this.respawnAtCheckpoint('pit', true, false);
       p.hp = hp;
     }
   }

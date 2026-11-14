@@ -6,6 +6,7 @@ on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engi
 A2 (ADR-001). Sections 0a-0b below are still true.
 Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fixed for every stage). Rewritten for BUILD-17 (11-14, t-build-17): section 0x (1-7 built; hanging cover; the perch at 56). Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for B5 (11-14, t-eng-b5): section 0w (the rolling nut and fruit, the chase camera lead, the ?fixture=chase route) and 0v's not-built line. Rewritten for B4 (11-14, t-eng-b4): section 0v (the chase laid by gen2, finished for 1-8's builder: what a builder can lay now, what is open). Rewritten for B3 (11-14, t-eng-b3): section 0v's first form. Rewritten for B1 (11-13, t-b1-chase): section 0u (the chase piece). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 Rewritten for INT-9 (11-14, t-int-9): section 0z (pit banks reach past the floor). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
@@ -202,6 +203,99 @@ proven plan; Play is never blocked).
   the pure aim: the pure test passed while the engine lost the perch.
 - A dialled perch's width now matters to its window (its far end must be seen): Easy's landing pad is flown with it (padW) and the
   recorded window is the laid px. Shoot a swing on the real page: reference/qa-reports/ENG-S1/shoot.mjs (stills, CLIP=1 for a clip).
+
+## 0w. The rolling nut and fruit, the chase camera lead, the dev chase fixture (B5, ENGINE-678, t-eng-b5 from t-eng-b4@956e33e0, 11-14)
+- **The hazard is data:** `GeneratedStage.rolling?: RollSpec[]` (rolling.ts) `{kind: 'low'|'high', dropX, speed, bounce, teach?}`, run by
+  pieces/rollingPiece.ts (PIECE_KINDS after CHASE). Set off by HIS x (`rollAhead`: drop + roll take ROLL.seen 1.0 s at a full run, Easy
+  1.1); the drop is the tell (ROLL.tell 0.8 s, from up to 480 px, never over the HUD band), a thunk (playLand), then at least ROLL.after
+  0.15 s of roll. Nut: rolls at him, a rattle, spins; its hit round is 0.75 of its drawn round (ROLL.lowHit) so a one-frame tap timed
+  clears it. Fruit: tall arcs PHASED to him (`phasedPace`, re-asked every step in the air, eased by phaseAcc): it meets him mid-arc,
+  closing at least `fruitClose` px/s so it never lands beside him low; touched against his DRAWN height (89.1). Teach = a bump (the
+  piece moves him, no heart, no safe time); after the stage's first crack a heart via damagePlayer (`rollTeaches`). Spent after a touch.
+  Respawn: ahead of his flag waits again, behind is gone. Checks by name: `rollProblems` (pace under his run, a nut's rattle a hop,
+  a fruit's arc over his head) refuses at start; `rollGroundProblems`/`runIn` (no gap, no hop rock in the run-in) is the LAY's check.
+- **Art (no new picture):** nut = the round shell of dressnew-w1 w1NutPod, fruit = M-10-d's lowest-left cannonball fruit, each cut round
+  ONCE into a canvas (CUT, BAKE_K 3; re-baked on canvasLost, D6), one drawImage a frame each + one baked shadow ellipse. Painted palm nut
+  and cannonball fruit pieces (1-8.md NEW 3) are the lead's Hugging Face call.
+- **The chase camera** (cameraFollow.ts `chaseSpan`/`chaseBack`, engine.ts updateCamera via `chaseSpanOf`): over a stage's chase span
+  (first crack - 400, or the first hazard's set-off - 400, to the last fork or hazard) his middle sits `vw - ahead` from the edge behind,
+  clamped to 10-30% of the view: upright 390-412 px phones show the nut 1.00-1.07 s before it reaches him, sideways 1.03-1.13 s; 360x800
+  1.00 s; 320x782 0.90 s (named). The span is cached per stage AND its chase/rolling arrays (a harness swapping st.chase kept a stale
+  span). The old hand-built 1-8 keeps its own `p.x - vw * 0.3` (this.chase?.active wins).
+- **Bots** (firsttimer.ts `rollPlan`): a nut closing within HOP_AT 60 px gets a hop held 2+ frames; a fruit dropping or bouncing within
+  480 px ahead holds the thumb down (no rhythm gap, no stop); both yield when a gap is within 240 px (one threat at a time).
+  `noRollRead` removes the skill (the planted test). chaseBots.test.ts's hazard runs use their own branch (`branch(true)`, longer runs).
+- **`?fixture=chase` / `__play('1-98')`, dev builds only** (chaseFixtureStage.ts; stageGenerator, App, stageSheets): chaseLay.test's
+  fixture (now ONE definition both use) built by buildGen2Stage + w1Finish, its config the BUILT one (1-1's laid over it put the pit line
+  above his ground: a planted check), hazards laid by `layFixtureRolling` on unbroken runs; 1-1's ground has a hop rock every 300-500 px,
+  so the FIXTURE clears bare rocks inside a run-in (never one with dressing or a creature on it; petals stay). run.mjs already accepts
+  '1-98' as a scenario: `node tools/perf/run.mjs port . <port> <dir> 1-98 port` then `DRAWCHECK_RESULTS=<dir> node tools/perf/drawcheck.mjs`.
+- **Traps:** a bare `input.state.jumpPressed` is cleared before use: clip tools press with `input.triggerTouchUp(0, ms)` and
+  `releaseTouchUp()` (D69). His x is his MIDDLE and his y his FEET (engine.ts landing). A test needs `r.e.player.invincibleTimer = 0`
+  after `r.safe = false` (RealPlay's frames set it to 1e9 while safe).
+
+## 0v. The chase LAID by gen2 (B3 laid it, B4 finished it for 1-8's builder; ENGINE-678 W2, t-eng-b4 from t-eng-b3@71da15cd, 11-14)
+- **Job K is a chase node** (nodeLetters.ts; V13 refuses it in a world's first stage). A K node is filled from the sections a practise or
+  flow node takes (pipeline.ts `servesJob`, ONE rule read by every fit site; no pool lists 'pressure'). **L (finale) after the last K is
+  the LAST stretch** (`last: true`: its front runs the row's final burst, chase.ts planOf; none without an L).
+- **The lay** (gen2/chaseLay.ts `layChase`, buildGen2Stage after buildRolled, BEFORE applyVerdicts). Stretches and flags are walked
+  TOGETHER, left to right (B4): a stretch runs on while the flag before its crack, standing where it really stands (the realised
+  run-up), reaches a flag on the ground after it within ROLLED_FLAGS.max, and the cap `chaseCap()` (max - pad, 3,840) holds; past that
+  it is split at a plain route piece forkMin+ wide that flag reaches (a living fork, never cut, a flag on it). Every stretch is at least
+  `chaseFloor()` = ceil(behind x maxRun / base) = 645 px (Normal row: shorter, nothing falls under him); a split never leaves a
+  shorter rest (it joins the fork); a K node under it is refused by name. The first crack may set off at the end of one of the node's
+  own route pieces when no spot within `flagBefore` (600, now honoured exactly) of its first section is reachable (a rolled flag ~1,000
+  px before it). The fork after the last stretch: its flag is the first spot whose flags break no rule of rolledFlagBreaches (D19: the
+  verdict's own code), or a rolled flag already in reach; after it the rolled pass's own span fill runs again to the exit.
+- **Cut and checks:** the stretch's own route pieces (plain solid, `breakable`) cut into ~222 px sections marked `chase` (the first IS
+  the piece). A section's seam (a pit's floor and steps) is never cut: it stays as the pit's ground under the fall (the ruling's option
+  2). `chaseStanders`: a dressing piece (proto.dress, decor, w3decor, kitDecor) whose foot is on a chase section's top, or a creature
+  whose patch runs over one with its feet on it, refuses the lay by name (D16; 0 seen on World 1).
+- **Two roots fixed in pipeline.ts (B4):** applyVerdicts clears windowMiss/flagMiss/towerMiss before judging (the search's rollUnmet
+  judged the stage before the lay; its stale miss refused 2 of 30 chase rolls whose own flags passed); Easy's Normal build lays its
+  chase before it is judged (Easy carried Normal's PRE-lay flag misses). Lock 102/102 unchanged.
+- **Yield** (`npx tsx tools/engine/chaseYield.ts [code] [n] [ends]`, World 1's kit, 1-1's brief, stage 8): `A T P F R K R K R S E`
+  **30/30 Normal, 30/30 Easy** (B3: 15/23, 16/19 at my first measure), stretches 822-3,780 px, 2.3 a stage. With an L (`... R L S E`,
+  ends finale): 30/30 both, but World 1's pool has NO finale section (pool short): 1-8's arc must bring them (Content).
+- **The edge (C4, B4):** pieces/chasePiece.ts `edgeCanvas(w, h)`: an ember disc (radius GLOW.radius 0.46 of the screen's SHORT side: by
+  the long side it filled a sideways screen) centred ON the break (the fallen side darkens into it: drawn from the break rightward it cut
+  a hard seam), a squat dark core on the branch line (a tall one read as a smoky pillar); baked ONCE per screen size, stamped with ONE
+  drawImage at globalAlpha EDGE.max (0.8) x k (k by the front's gap: 0 at 650 px, 1 at 150), at the break when on screen, else centred
+  on the trailing edge, at his feet. Re-baked on a size change or canvasLost (D6). No gradient a frame. NOT measured with contrast.mjs.
+- **A catch is a heart:** chaseCaught -> respawnAtCheckpoint('pit', true, lifeNote false): no "N lives left" note (it read as a life).
+- **Bots** (tools/inspect/chaseBots.test.ts, CI): engine.ts guideView.chase is on while he is on a laid stretch; the tier bots then keep
+  the thumb down and stand at an edge only if the stand fits the front's stop budget (firsttimer.ts chaseRoom, CHASE_MARGIN 0.8 s).
+  Planted: a 2.8 s stopper is caught without the skill (noChaseStride), never with it. No tier bot is ever caught. **OPEN (todo):** the
+  child tier reaches the fork on 1 of 3 seeds: every miss a FALL at a 120 px gap (a heart and the flag), never a catch.
+- **Not built (named), after B5 (0w):** the liana phased to a runner (NEW 4); the still fork's eagle (NEW 7); the tip's whole-branch fall (NEW 8); a gen2 lay of the `h` letter (the builder lays `rolling` by data today).
+- **Traps:** never edit src/ while a Vite shoot or the unit suite runs in the same tree; a lay test that asserts refusals exist asserts a
+  defect (B3's "some rolls are refused" went when the yield reached 30/30); judge flags with rolledFlagBreaches, never a copy of it.
+
+## 0u. The chase as a piece (B1 CHASE-CORE, ENGINE-678 W1, t-b1-chase from t-hooks@994ea4e7, 11-13): what the next engineer must know
+- **Data:** `GeneratedStage.chase?: ChaseLay` (chase.ts) = stretches `{start, end, last?}` left to right; between one's `end` and the next's
+  `start` is a LIVING FORK (no section there falls, he is never caught there). Sections that fall = platforms marked `chase`. A lay is
+  checked by `chaseLayProblems(lay)` (B5's lay must call it and refuse by name; CHASE_PIECE.start only logs and starts nothing).
+- **Rows:** `CHASE_ROWS.normal` = CHASE (old 1-8 numbers, unchanged; the old engine path reads the same via default args). Easy: base 170,
+  max 200, cap min(200, PHYS.maxRun), final 0, behind 600, hold 2.2 (stop budget 3.4 s vs Normal 2.2 s). Easy numbers are B1's; DESIGNER may tune.
+- **The piece** (pieces/chasePiece.ts, registered after RIDE): one front per stretch (`ChaseRun`); a section's owner = the stretch whose
+  ground holds its middle (`sectionStretch`; the first also owns the base behind its crack); broken = its front passed it. Respawn sets
+  every section from its front (`restartRunAt`: a stretch behind the flag stays fallen to its fork, the one ahead waits, a flag inside
+  one holds its front). Draws sections + debris on 'world', the trailing-edge tint on 'screen'.
+- **Hook extension (lead OK 11:25 PM):** `PieceHurt.toFlag` = a heart and back to the flag (engine.ts calls `chaseCaught()`, whose body is
+  general; it ignores his safe time, as the old catch did). Off the branch = 300 px under the nearest section, capped 90 px above the
+  stage's pit line (levelHeight + 120), so the chase's heart always comes before the pit's life.
+- **Draw rule (lead OK (d) 11:33 PM):** a `chase` section is drawn only by its chase drawer: engine.ts drawPlats leaves chase sections
+  out whenever a stage has one; protoArt.ts paintedPlatforms never claims one. The engine line is pinned by text (no stage lays a chase
+  at its start until B5); B5's lay test must add the in-play check (drawPlats has none of its sections).
+- **Not in B1 (named for B5/B6):** Dot's "It is breaking behind us!" line, the camera shake and the music's danger (engine-side for the old
+  1-8 only: engine.ts updateChase / :3712), the chase camera, liana phase and tip slow motion, per-world collapse look (World 1's art for all).
+- **Traps:** the front sets off from `start - behind`, not from where he stands (stepChase keeps the further-back front): a test's
+  budget counts from there. The stills scene (reference/qa-reports/B1/stills.mjs) swaps a test branch into a real stage: tap Dot's held line.
+- **B2 (t-b2-chase, 11-14):** the trailing edge is `edgeTint(gap)` (chasePiece.ts EDGE: dark core + ember rim, 0 at 650 px, 0.75 alpha at
+  150 px and closer, wider as it closes; chasePiece.test.ts pins it). A stage with `chase` asks for the long-branch sheet behind the card
+  (stageManifest.ts builtStageKeys 'props3' -> stagePreload.ts start -> protoArt.ts warmProto3): it used to load on the first section drawn.
+  Clips: reference/qa-reports/B2/shoot.mjs (a RealPlay.bare-equivalent world in the real page, world.mjs; frame-by-frame capture, never
+  Playwright's recorder; never edit src/ while it runs: Vite reloads the page; an old save that has seen the stage's story aside).
 
 ## 0t. The piece hook and the one letter grammar (HOOKS, ENGINE-678 W0, t-hooks, 11-13): what the next engineer must know
 - **A runtime piece never touches engine.ts again.** Write a `PieceKind` (stagePiece.types.ts) in its own file under src/game/pieces/ and
