@@ -2,7 +2,7 @@
 Matt (1:58 AM): "will we be ready for 3 new levels tomorrow?" The lead's honest answer: NOT three finished levels. 1-6 can be built and
 on his test link tomorrow evening if its engine pieces land in the morning; 1-7 and 1-8 need about a day more of engine each, in parallel.
 ## Waiting on Matt (ask one at a time)
-1. FAR swing camera upright (R-165.225; mock abc sent 12:30 AM): shorter swings that fit (lead's pick) / edge marker / zoom 1.6-2.0x.
+1. DECIDED 2:02 AM: shorter swings that fit upright (R-165.225): cap FAR so the whole perch shows at ~1.3x + lead; revise 1-6.md FAR.
 2. 1-4 mocks (FIX-14 mockA/mockB): build as shown with painted art (lead's pick) / drop the pods / changes.
 3. Deep-earth underlayer (1-1/1-4/1-5) + living pole (1-4) mock-ups: go to wire (engine packet) or changes.
 ## Lanes, in order (cap 4 members)
