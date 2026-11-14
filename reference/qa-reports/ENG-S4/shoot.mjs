@@ -59,7 +59,9 @@ for (const [w, h] of PHONES) {
     sv.topY += LOWER;
     sv.bottomY += LOWER;
     // (1-6's moss under the liana: a ledge 140 px under its foot, so the let-go lands on something)
-    const moss = { id: 99998, x: sv.x - 260, y: sv.bottomY + 140, width: 520, height: 200, type: 'solid' };
+    // (ENG-S4: never under the stage's water: a liana hung lower put the old moss (foot + 140) under 6-3's swamp and he drowned)
+    const moss = { id: 99998, x: sv.x - 260, y: Math.min(sv.bottomY + 140, (st.waterY ?? 1e9) - 30), width: 520, height: 200, type: 'solid' };
+    window.__lives0 = e.lives;
     e.platforms = e.platforms.filter((p) => !(p.x < moss.x + moss.width && p.x + p.width > moss.x && p.y > sv.topY && p.y < moss.y + 40));
     if (st.platforms) st.platforms = e.platforms;
     e.platforms.push(moss);
@@ -99,7 +101,7 @@ for (const [w, h] of PHONES) {
     const inView = (q) => q.x >= c.x && q.x <= c.x + c.viewportWidth && q.y >= c.y + band - 0.5 && q.y <= c.y + c.viewportHeight * 0.9 + 0.5;
     const hands = Math.max(0, (p.swingLength ?? 0) - 102);
     return { phase: read.phase, u: +read.u.toFixed(2), head: Math.round(n.head ?? 0), hands: Math.round(hands), swinging: !!p.isVineSwinging, grounded: !!p.grounded,
-      tellInView: inView(pt(0)) && inView({ x: pt(0).x, y: pt(0).y - 60 }), headInView: inView(pt(Math.max(0, n.head ?? 0))), focus: !!e.camFocus, hold: Math.round(p.swingLength ?? 0), letGos: sn?.letGos ?? 0, vy: Math.round(p.vy), camY: Math.round(c.y), band: Math.round(band), clearTop: Math.round(c.y + band), clearFoot: Math.round(c.y + c.viewportHeight * 0.9), widen: +(e.swingWide ?? 1).toFixed(2), tellTop: Math.round(pt(0).y - 60) };
+      tellInView: inView(pt(0)) && inView({ x: pt(0).x, y: pt(0).y - 60 }), headInView: inView(pt(Math.max(0, n.head ?? 0))), focus: !!e.camFocus, hold: Math.round(p.swingLength ?? 0), letGos: sn?.letGos ?? 0, vy: Math.round(p.vy), lost: (window.__lives0 ?? e.lives) - e.lives, hp: p.health ?? null, camY: Math.round(c.y), band: Math.round(band), clearTop: Math.round(c.y + band), clearFoot: Math.round(c.y + c.viewportHeight * 0.9), widen: +(e.swingWide ?? 1).toFixed(2), tellTop: Math.round(pt(0).y - 60) };
   });
   const stamp = async (t) => page.evaluate((t) => { let d = document.getElementById('__lab'); if (!d) { d = document.createElement('div'); d.id = '__lab'; Object.assign(d.style, { position: 'fixed', left: '0', right: '0', bottom: '0', background: 'rgba(0,0,0,0.72)', color: '#fff', font: '11px sans-serif', padding: '4px 6px', zIndex: 99999, pointerEvents: 'none' }); document.body.appendChild(d); } d.textContent = t; }, t);
   const label = (what, v) => `${what} | ${tag} | ${set.stage} (${set.diff}${set.easy ? ', easy on' : ''}) | t-eng-s4@${sha} | liana ${set.sv.len} px, held ${v.hold} | snake ${v.phase} u ${v.u}, head ${v.head} px down, his hands ${v.hands} | tell whole in the CLEAR view: ${v.tellInView ? 'YES' : 'NO'} | focus ${v.focus ? 'on' : 'off'} | anchor ${set.sv.top} px under the top of a ${set.levelH} level; tell top ${v.tellTop}; view top ${v.camY}, HUD band ${v.band}, clear ${v.clearTop}..${v.clearFoot}; widen ${v.widen}x | gen2 verdict here: ${set.verdict}`;
@@ -116,7 +118,7 @@ for (const [w, h] of PHONES) {
     if (!shots.tell && v.phase === 'warn' && v.u >= 0.3) { shots.tell = true; await stamp(label('THE TELL (reared on the bough, mouth open)', v)); if (!clip) await page.screenshot({ path: path.join(out, `${tag}-1-tell.png`) }); }
     if (!shots.above && v.phase === 'on' && v.swinging && v.head > v.hands - 70) { shots.above = true; await stamp(label('COMING DOWN HIS LIANA, a body above his hands', v)); if (!clip) await page.screenshot({ path: path.join(out, `${tag}-2-above.png`) }); }
     if (!shots.gone && v.letGos > 0) { shots.gone = true; await stamp(label(`IT REACHED HIS HANDS: HE LETS GO (a hop, vy ${v.vy})`, v)); if (!clip) await page.screenshot({ path: path.join(out, `${tag}-3-letgo.png`) }); }
-    if (shots.gone && v.grounded) { await sleep(900); const f = await look(); await stamp(label('DOWN ON THE MOSS (no heart lost)', f)); if (!clip) await page.screenshot({ path: path.join(out, `${tag}-4-down.png`) }); break; }
+    if (shots.gone && v.grounded) { await sleep(900); const f = await look(); await stamp(label(f.lost ? `HE FELL AND LOST A LIFE (${f.lost}): NOT down on the moss` : 'DOWN ON THE MOSS (no life lost)', f)); if (!clip) await page.screenshot({ path: path.join(out, `${tag}-4-down.png`) }); break; }
     await sleep(clip ? 20 : 30);
   }
   console.log(tag, 'tell frames', tellFrames, 'tell in view', tellSeen, 'shots', JSON.stringify(shots), 'last', JSON.stringify(last));
