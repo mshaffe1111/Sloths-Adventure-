@@ -3121,7 +3121,9 @@ export class GameEngine {
       // talked over his first-swim lines; it waits until he is out, still before the pit)
       // (several passed in one frame, as when a run starts from a later flag: only the last is said, and only it counts as heard, so a
       // line nobody saw is not lost for good)
-      const due = p.swim ? [] : this.proto.hints.filter((h) => !(h.shown || p.x < h.x || (h.belowY !== undefined && (p.y < h.belowY || !p.grounded)) || (h.aboveY !== undefined && p.y > h.aboveY) || (h.beforeX !== undefined && p.x > h.beforeX)));
+      // (a rolled stage's tip waits for his feet inside its section's height band, in the air or not: StageHint.band, R-165.236)
+      const feet = p.y + p.height;
+      const due = p.swim ? [] : this.proto.hints.filter((h) => !(h.shown || p.x < h.x || (h.belowY !== undefined && (p.y < h.belowY || !p.grounded)) || (h.aboveY !== undefined && p.y > h.aboveY) || (h.beforeX !== undefined && p.x > h.beforeX) || (h.band !== undefined && (feet < h.band[0] || feet > h.band[1]))));
       for (const h of due) {
         h.shown = true;
         if (h !== due[due.length - 1]) continue;

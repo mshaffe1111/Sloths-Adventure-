@@ -3034,7 +3034,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           // the move watch). An id the kit has no words for is never shown: the roll fails by name, the red team 11-05, RT-PLAYER F1,
           // where "hint.1-1.double" itself was on screen)
           const text = tipWords(M.tips, m);
-          if (text) hints.push({ x: k.x, text, pad: text, keys: text, ...(M.teachTips?.includes(m) ? { teach: true as const } : {}) });
+          // (and only inside its section's height band, R-165.236: on a climbing stage x alone said 1-4's teach lines on the start floor)
+          if (text) hints.push({ x: k.x, text, pad: text, keys: text, band: tipBand(sec), ...(M.teachTips?.includes(m) ? { teach: true as const } : {}) });
           fills.push({ section: sec.uid, socket: s.id, role: 'tip', what: m, x: k.x, y: k.y, ...(text ? {} : { unsaid: true }) });
         }
       } else if (s.role === 'receptor') {
@@ -3790,6 +3791,21 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
  * Build one stage: passes 1-6, the repair loop and the length loop. Easy first lays Normal's plan (the section sequence), so the
  * two difficulties are the same stage under different rules. Deterministic: the same request gives the same stage.
  */
+/**
+ * A rolled stage's tip fires only while his feet are inside its section's height band (R-165.236; StageHint.band, engine.ts): from
+ * `TIP_BAND.over` above the section's highest surface to `TIP_BAND.under` below its lowest. The surfaces are everything the section
+ * laid that he can stand or hang on: its pieces, the stitcher's seams before it (a pit's floor), its entry and exit, its vines' tops and
+ * bottoms. The reach numbers (planner.md §2): `over` BOUNCE_REACH 258 px, the highest his own moves lift his feet over a surface (a bounce
+ * and the double); `under` DOUBLE_RISE 185 px, the lowest he can be and still reach the section's lowest piece with a jump and the
+ * double. On a flat stage that holds every place he can be while over the section, so its tips fire at the frame x alone fired; on a
+ * climbing stage the storeys stand apart, and a tip waits for his height (src/game/tipBand.test.ts).
+ */
+export const TIP_BAND = { over: BOUNCE_REACH, under: DOUBLE_RISE } as const;
+export function tipBand(sec: Pick<PlacedSection, 'entry' | 'exit' | 'pieces' | 'seam' | 'vines'>): [number, number] {
+  const ys = [sec.entry.y, sec.exit.y, ...sec.pieces.map((p) => p.platform.y), ...sec.seam.map((q) => q.y), ...sec.vines.flatMap((v) => [v.vine.topY, v.vine.bottomY])];
+  return [R(Math.min(...ys) - TIP_BAND.over), R(Math.max(...ys) + TIP_BAND.under)];
+}
+
 /** a Dot line's id to the words a tip says: the kit's own (manifest.tips, World 1's W1_TIPS built from dotLinesData), one source;
  *  undefined when the kit has none, and the roll fails by name (the lead, 11-06: a kit that forgets a tip fails loudly) */
 export function tipWords(tips: Readonly<Record<string, string>> | undefined, id: string): string | undefined {
