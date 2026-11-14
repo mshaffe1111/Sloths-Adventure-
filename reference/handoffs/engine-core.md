@@ -16,7 +16,7 @@ Rewritten again at the stop of VARIETY (2:33 PM ET, 2026-11-13): branch `t-nodes
 
 Rewritten again at the stop of VARIETY-2 (2026-11-13, branch `t-nodes`): a '_' V19 overrules is refused at graph time; why floor.unmarked kills mix strings (section 0m). Sections below are still true.
 
-Rewritten again at the stop of RULER (2026-11-13, branch `t-ruler`): the per-gap pit ruler, built and blocked on realFalls (section 0n). Sections below are still true.
+Rewritten again at the stop of RULER (2026-11-13, branch `t-ruler`): the per-gap pit ruler, built and HELD on 1-1's openings, R-165.221 (section 0n). Sections below are still true.
 
 ## 0m. The asks against V19, and what kills World 1's mix (VARIETY-2, R-165.197/.198/.200, t-nodes, 11-13)
 - **askRefusal** (pipeline.ts, called in rolledGraph after V19 marks `mustRise`): a '_' asked of the node after a late descent on an up
@@ -38,7 +38,7 @@ Rewritten again at the stop of RULER (2026-11-13, branch `t-ruler`): the per-gap
 - **Traps.** (1) `S=...; (cmd) & (cmd2)` sets S in the background only: the second command wrote to `/` (engine-core 0j trap 6, again).
   (2) A heredoc with regex and template strings can trip the shell's safety parse: write the file with the Write tool instead.
 
-## 0n. The per-gap pit ruler (RULER, R-165.197/.200, branch t-ruler from t-nodes@1829470f, 11-13): built, BLOCKED on realFalls
+## 0n. The per-gap pit ruler (RULER, R-165.197/.200, branch t-ruler from t-nodes@1829470f, 11-13): built, HELD on 1-1
 - **findOpenPits (w1Pits.ts) judges each gap by its own lips.** Ground is earth only (`EARTH_DEEP` 90: a bank, a stump, a pillar); a log
   or bough is a platform over a gap, never its lip or floor (the lead, 8:50 PM). `earthLine` is the earth's top along x: a HOLE (no earth
   at any depth) between two banks is a gap at any width from 24 px (no 1,600 cap); a DIP (earth dropping more than SOFT_BELOW and coming
@@ -47,10 +47,12 @@ Rewritten again at the stop of RULER (2026-11-13, branch `t-ruler`): the per-gap
   read from that line. A drop inside a judged dip is its floor (`dipEnd`). The second "marked drop at any height" pass is gone (holes cover it).
 - **Planted:** w1Pits.test.ts "per-gap ruler" x4 (far ground, a raised hole, a log chain one gap, a 2,000 px hole), red on 1829470f.
   The x22604 slot test now reads the block (earth 68 px down) as a sunk step, as realFalls always did.
-- **BLOCKED (ruler/PUSHBACK.md):** 1-1 cannot build: its final climb lies over holes of 946-2,870 px the old ruler never saw (G
-  far below, the cap), and realFalls (promises11.ts:44) misreads a wide hole twice: its floor clause takes ANY lower piece in the slot
-  (not one under the piece), and its lip clause lets him "walk under" route logs 500-2,600 px from the lip. x-overlap alone clears 1-2's
-  8 new refusals, not 1-1's. Nothing of t-ruler ships until realFalls reads holes; then seedlist 1-1, lockall, mixlist, full Checks.
+- **HELD (the lead's C, 9:35 PM): 1-1's openings are R-165.221 (the 1-1/1-4 polish lane).** 1-1 cannot build on t-ruler: its final
+  climb lies over earth holes (946-2,870 px) the old ruler never saw, and from its catch branches and lower logs he walks under the
+  route log and steps off into nothing (seed 769: off 115 at 869, 25947..26218 under 116). realFalls (promises11.ts:44) is NOT the
+  cause: with both its clauses corrected the runs stay (ruler/PUSHBACK.md). 1-1 must lay a soft zone spanning each hole, or catches
+  he cannot walk off into nothing; then seedlist 1-1, lockall, mixlist, full Checks on t-ruler. verdicts.test.ts:322's seed 323 copy
+  needs its real right bank (its slot ends at a log: no gap under earth-only lips). The full EXACT NEXT STEP: ruler/REPORT.md.
 - **Scan tool:** ruler/scan.ts reads the SAME builds (d8d6a97's tree) with both rulers: painted changes 0 (World 1 only is painted,
   protoArt.ts:1310; only 1-1/1-2/1-3 are judged, stageTable.ts:34-38). ruler/shootAt.mjs: sideways stills pinned at a chosen x, any tree.
 
