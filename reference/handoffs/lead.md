@@ -99,8 +99,12 @@ mock-up reference/qa-reports/lead/figgate-optionA-mock-side.jpg; FIX-15b REPORT'
 smoke); (3) "push" for a release (0.9.9 = links #3 + #4 once 1-6 is in).
 **Next 3 (who, tier, packet):** 1. ENG-16G (running, xhigh) finishes 1-6: height-aware swingClearance, seesaw-b out of the shipped set,
 sealed-door petals, relist, bots, stills, clips (packets/2026-11-14/ENG-16G.md). 2. INT-9b phase B (xhigh): merge ENG-16G's GREEN 1-6
-onto t-int-9, every gate once, the lead judges stills/clips -> EnK5 link #4 (INT-9b.md). 3. BUILD-18 (1-8, the chase) once ENG-B5 is
-GREEN: packet to write from ENG-B4 + ENG-B5 REPORTs and the design on origin/t-1718-design; check the Ready-to-build gate first (persona).
+onto t-int-9, every gate once, the lead judges stills/clips -> EnK5 link #4 (INT-9b.md). 3. 1-8 (the chase) is NOT ready to build (ENG-B5 final 5:54 PM,
+t-eng-b5@c0599609, REPORT reference/qa-reports/B5/REPORT.md): rolling nut/fruit by data, chase camera lead (1.00-1.13 s; 0.90 s on a 320 px
+phone) and ?fixture=chase are done; NOT ready: phased liana, still-fork eagle, tip, painted nut/fruit (Hugging Face), the chase edge under the
+new lead (fails B2's contrast bar on all 4 backdrops). Ready-to-build gate (persona): those go to an engine member (xhigh) and an art job
+FIRST, with the designer answering B4's (d) (child bot reaches the fork on 1 of 3 seeds) and "is an after-crack nut a heart?"; then BUILD-18
+with a fresh builder. ENG-B5's last suite re-run on de1e22fb was still running at 5:54; retire it after that result (48%, D68).
 **Queue after that (as slots free):** fig gate option A grow-in (engine, xhigh); R-165.246 lift pass (one-level patches into the engine;
 ENGINE-WORTHY lists in BUILD-16d/17/17b REPORTs); R-165.250 strand rule; POLISH-11 strip joins + flag ring (packet written); WIRE-ART
 (underlayer + pole), ART-PRED (Matt's predator sheets, branch art-raw-2026-11-14); R-165.235 (1-1 sprint-B/C back); R-165.243/.237 polish.
@@ -109,7 +113,7 @@ ENGINE-WORTHY lists in BUILD-16d/17/17b REPORTs); R-165.250 strand rule; POLISH-
 |---|---|---|---|
 | INT-9b | session_01FhBbYM3Z4oAdZ4pK6nJewd | t-int-9@b288b3fa (xhigh) | phase A: every gate on link #3's head; one red ruled 5:33 (8-3 lock re-pinned to the bank rule, banks 42/43 13.5 px deeper only); report by 6:00 PM ET; phase B: 1-6 from ENG-16G -> link #4 |
 | ENG-16G | session_01FhBbYN7qZpCPnWqXycWnXZ | t-build-16 from 68e4bce1 (xhigh, started 5:29 PM) | finish 1-6 (ENG-16G.md); report by 7:30 PM ET |
-| ENG-B5 | session_01FhBbYKFVM2yeFxm9MNtsjb | t-eng-b5 (from t-eng-b4, xhigh) | 1-8 rolling hazard, chase camera lead, QA fixture, edge contrast (ENG-B5.md); 48% real at 5:32 (over box): REPORT + EXACT NEXT STEP for BUILD-18 only; report by 6:00 PM ET; its 8 clips (nut hop, fruit pass) to judge by frame |
+| ENG-B5 | session_01FhBbYKFVM2yeFxm9MNtsjb | t-eng-b5 (from t-eng-b4, xhigh) | FINAL REPORT 5:54 PM (c0599609): 4 of 4 done, suite re-run on de1e22fb running; retire after it (48%); its 8 clips (hop f37, fruit f46) to judge by frame |
 | TOOLS-1 | session_01FhBbYLQTt1zZAbKfuX1h89 | t-tools-1 (from t-int-9, xhigh) | meter double-count, castBots leak, clipcheck flake (TOOLS-1.md); 37% at 5:32; report by 6:15 PM ET |
 Story keeper (standing): session_01FhBbYMCa3JXWmyQicbmxuu. Retired today, costs in LEVEL-LOG.md: BUILD-16..16d, BUILD-17/17b, INT-8, INT-9,
 ENG-S5, ENG-E2, ENG-16E, ENG-16F ($41.43, ran to 54%: over the box), FIX-15/15b, TIPS, POLISH-9b/10, ENG-B4, KEEPER-17/17b, CRITIC-PERSONA.
