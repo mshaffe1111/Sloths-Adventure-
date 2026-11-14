@@ -11,6 +11,10 @@ chase, a cover's tint, a vine snake). It plugs into the one hook; engine.ts is n
    'front' over him, 'screen' in screen px); `respawn(host)` puts back what his run changed (a required piece is whole again);
    `hurts(host)` returns `{ amount, fromX }` or null (the engine's one damagePlayer deals it). Read the engine only through `host`.
    No stage id, world number, seed or x in the piece (generalitycheck).
+   `host.letGo()` (lead ruling 11-14, ENG-S2): the one way a piece takes his hold: he lets go of the liana he swings on with a startle
+   hop (never a bite, never a heart) and cannot catch that liana again until he is down; false when he holds none (vineSnakePiece.ts).
+   A piece that takes a liana away for a while sets `Vine.off` (the engine does not catch it; the painted scene, protoArt.ts, does not
+   draw it) and clears it in respawn().
 4. **Planted test first** (src/game/<piece>Piece.test.ts, a glob CI runs): red without the piece, green with it, through RealPlay on
    2+ worlds' stages (pieceHook.test.ts is the template: `bare()` the stage, set `e.clock`, call `e.startPieces()`).
 5. **Look at it:** a still upright and sideways of each layer it draws (the headless canvas cannot paint; shoot in the browser).

@@ -4,9 +4,35 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0v. The vine snake, the false liana and the host's let-go (ENG-S2, 1-6.md NEW 2+3, t-eng-s2, 11-14): what the next engineer must know
+- DATA: a liana carries one snake on `Vine.snake` (types.ts, lead ruling 11-14, the Platform.ride precedent): `{ route, clock?, shift?,
+  reach? }` (vineSnake.ts). Routes: 'down-off', 'down-back' (turns at `reach`), 'up' (from the foot to `reach` and back off the foot):
+  each keeps a beat on the stage's ONE clock (stage.clocks; beat.ts beatDef: off, warn = THE TELL, on = the trip); snakeBeatFaults
+  refuses a tell under 0.5 s (SNAKE.tell, PREDATORS §2) or none. 'still' = a FALSE liana: the snake IS the vine (swingAmp 0), no clock.
+- RUNS: pieces/vineSnakePiece.ts on the piece hook (PIECE_KINDS after RIDE). It reads the liana from stage.vines (the engine's own
+  objects; engine.ts writes swingAngle before pieces step). Touch = any of its body within SNAKE.touch (10 px) of his HANDS (swingLength
+  - VINE_HANG, handsAlong) while it TRAVELS; the tell never touches (its body is off the vine by construction). It never hurts: no hurts().
+- LET-GO: PieceHost.letGo() (lead ruling 11-14, stagePiece.types.ts; engine letGoOfLiana; physics LET_GO hop -220, keep 0.3 of vx,
+  cooldown 0.5): off the liana with a hop, jumps 2, swungOff = that liana (not caught again until he is down). Returns false off a liana.
+- FALSE LIANA: caught by the engine like any liana; next step it startles: letGo, `v.off = true`, it falls (FALSE_LIANA.fall) onto the
+  highest platform under it, slithers off AWAY from where he is when it lands, fades; respawn() hangs it again (off = false). The engine
+  now honours Vine.off on a LIANA catch (it already left an off liana undrawn in protoArt.ts while it stayed catchable: a latent bug), and
+  leaves false lianas out of its own liana drawing (drawnVines, plainVines, swingVines). That filter is NOT exercised by any test or shot
+  yet (my shots add the vine after the stage starts): the 1-6 builder's first still must show no liana drawn under a false liana.
+- ART: vineSnakeArt.ts. The travelling snake is ART-678b's GREEN cut (lead ruling GREEN 11-14: the game's liana frame is tan-olive and
+  the brown hid on it); the false liana is the BROWN recolour (tools/art/snakebrown.py: green band only, to bark brown). Sizes: hang
+  115 px (SNAKE.body), hiss 60; a false liana is drawn its vine's length, its slither at the same scale (recommend 115-170 px).
+  Catalog rows: the green hang/hiss come with t-art-678b (rows 9425/9428): integrate t-art-678b first and flip those two to in game;
+  the two brown files have NO rows yet (Content). Preload key 'vine-snake' (stageManifest/stagePreload).
+- OPEN (lead ruling (B), the NEXT packet's first item): sideways the anchor is above the clear view, so the tell (and a false liana) is
+  not seen (0/6 frames, shots/sideways-*). The fix is the camera: a PieceHost focus request (lead-approved, one method like letGo) that
+  keeps the threat box (anchor+60 .. his feet) under HUD_BAND while a snake on HIS liana is in its tell or above his hands; where it
+  can't fit, a gen2 verdict refuses a lay giving the snake < 1 s in view. No stopgap (D40).
+- Shoot it: reference/qa-reports/ENG-S2/shoot.mjs (the snake; CLIP=1 for clips) and shootfalse.mjs (the false liana), both on 6-3.
 
 ## 0u. The swing camera and THE FAR CAP (ENG-S1, R-165.225, t-eng-s1, 11-14): what the next engineer must know
 - Upright, a swing widens the view (cameraFollow.ts SWING_CAM: up to 1.3x, out 4.5/s, back in 3/s once he is down or holds on; engine.ts
