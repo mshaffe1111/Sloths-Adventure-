@@ -7,7 +7,7 @@ import { buildGen2Stage, chainRelease, layLocal, lianaRelease, planBudget, rngFo
 import { cfg as toyCfg, kit as toyKit, manifest as toyManifest } from '../toyWorld.ts';
 import { chainLines, validateStage } from '../../levelCheck.ts';
 import { chainPhase, chainWindow, isChain, setTimedSwing, swingClearance, swingReach, TIMED, type SwingVine } from '../../physics.ts';
-import { HURT_SHOW, hurtFocus, landingAhead, lianaBox, SWING_SEEN } from '../../cameraFollow.ts';
+import { HURT_SHOW, hurtFocus, landingAhead, lianaBox, SWING_CAM, SWING_SEEN } from '../../cameraFollow.ts';
 import { LIANA, type SectionTemplate, type WorldKit } from '../types.ts';
 import type { Vine } from '../../types.ts';
 import { generateAllLevels } from '../../worldsData.ts';
@@ -131,6 +131,9 @@ test('World 1\'s chain rows (1-6 beat 4: SHORT, SHORT, LONG over thorns) lay on 
           // (counting only presses that see the whole perch, as a dialled liana's: the chain's last liana is linked by the engine's press, so
           // its band runs past the view; ENG-S5's upright still had the perch off screen as he pressed)
           assert.ok(lianaRelease({ x: C.x, topY: C.y, bottomY: C.y + C.h }, C.hang!.swing!, { x: b.x, y: b.y, w: b.w }, d, true) >= LIANA.window[d], `${what}: the perch is not whole in view for a window as he presses`);
+          // (and by the camera's own cap, not the lay's measure: its far end, as much of it as the camera shows whole, within SWING_SEEN of
+          // the furthest his swing takes him ahead)
+          assert.ok(b.x + Math.min(b.w, SWING_CAM.perch) <= C.x + C.h * Math.sin(C.hang!.swing!.amp) + SWING_SEEN, `${what}: the perch is past what he ever sees whole as he presses`);
           assert.equal(b.y, a.y, what);
           const g = L.gaps.filter((x) => x.pit);
           assert.equal(g.length, 1, `${what}: one gap under the whole chain`);
