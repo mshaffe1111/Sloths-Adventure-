@@ -1,10 +1,22 @@
 # BUILD-16 REPORT: 1-6 First Lianas (R-165.203). IN PROGRESS (this file is rewritten at the stop)
 t-build-16 from origin/t-eng-s4@4bafe110; packet reference/packets/2026-11-14/BUILD-16.md (lead's branch). Started 10:02 AM ET.
 
-## EXACT NEXT STEP (for a second builder, if I stop here)
-1. `npx tsx tools/engine/addlevel.ts 1-6 --par 2` (seed list, --check, castBots 1-40 both settings, registry); commit
-   src/game/gen2/proven/seeds-1-6.ts + provenIndex.ts. 2. Stills + clips: `node reference/qa-reports/BUILD-16/shoot.mjs <sha> normal`
-   and `... easy` (CLIP=1 for clips), judge both ways. 3. Full CLAUDE.md Checks on the head (buildcheck alone). 4. plant.sh on a side worktree.
+## STOPPED for a lead decision (10:38 AM ET, context ~38% of 1M by my estimate): 1-6 is far too hard, Easy worst
+`npx tsx tools/difficulty/score.ts --stages 1-1,1-5,1-6 --seeds 1-4` (score.out.txt, head 2c857c18; SCALE from 1-1 = 4): **1-6 Normal 9.6
+(8.8-9.9) vs DIFFICULTY.md:61's 6.5; Easy 8.8 (8.6-8.8) vs 1-6.md's ~3 (at most 0.6 x Normal)**. The meter is driven by the swing count
+(32-33 swings a run on both settings: Easy's softer windows and missing risers barely move it). Root cause: I lengthened the stage to its
+fast floor (143 s) by adding lianas to every beat (my own call at 10:1x, to clear "the pool is spent"), not by ground between them.
+Not listed, no bots, no stills: a seed list of a stage this far off its number would be rebuilt anyway (D40).
+
+## EXACT NEXT STEP (me or a second builder, after the lead rules)
+1. Cut swings to the number: Normal ~21 a run (6.5/9.6 x 32), Easy ~12 or fewer (0.6 x 6.5 = 3.9 needs about 1/3 of Normal's points):
+   Easy twins lay ONE liana where Normal lays two or three (snakes-met, risers, creaky, hang-low), the length made up by walked ground
+   with root hops (the quiet line) and the rests, never by more lianas. Re-score after each change (score.ts, 1-1 in the list for SCALE).
+2. Re-run w1Arc16.test.ts (Easy-vs-Normal test: add the meter's number, planted), libstage 24 seeds both settings.
+3. `npx tsx tools/engine/addlevel.ts 1-6 --par 2` (list, --check, bots 1-40 both settings, registry); commit seeds-1-6.ts + provenIndex.
+4. Stills/clips: `node reference/qa-reports/BUILD-16/shoot.mjs <sha> normal` / `easy` (CLIP=1). 5. Full Checks; plant.sh on a side worktree.
+6. Remove dblPractice.test.ts's LV-3 real-engine test (it plays the OLD 1-6's practice ledges through RealPlay('1-6'), now the new stage;
+   its only failure in the partial suite run on 7e0a2a74, shards killed at the stop: UNRUN beyond that).
 
 ## Done-items (heads named per number)
 1. **w1Arc16.ts** (World 1 data; no engine line): graph `A T P R M X R C R W R S R L E` (1-6.md's arc less beat 4's chain: the graph keeps
