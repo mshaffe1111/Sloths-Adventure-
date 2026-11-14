@@ -28,9 +28,32 @@ const DEBRIS_LIFE = 1.8;
 /** a creak now and then while a front runs within this of him (px), every `CREAK_EVERY` s */
 const CREAK_NEAR = 700;
 const CREAK_EVERY = 1.2;
-/** the edge warning: none with the front this far back, full at `EDGE_FULL` px less (the old 1-8's) */
-const EDGE_FROM = 650;
-const EDGE_SPAN = 500;
+/**
+ * The warning at the trailing edge of the screen, by how far the front is behind him: none with it `from` px back, full at `from - span`
+ * and closer. A dark core at the edge (it reads on a light, misty backdrop) with a warm rim on its inner side (it reads on a dark one,
+ * where a dark tint alone vanished: B1's stills, 11-13), up to `max` alpha; it reaches further in (`wide` + `grow` of the view's width)
+ * as the front closes. B2 measured it on 1-2, 2-1 and World 3's darkest backdrop (reference/qa-reports/B2/contrast.mjs).
+ */
+export const EDGE = { from: 650, span: 500, max: 0.75, wide: 0.3, grow: 0.12 } as const;
+
+/** the edge's strength (0 to 1) with the front `gap` px behind him, its width (a share of the view) and its gradient stops, left to right */
+export function edgeTint(gap: number): { k: number; width: number; stops: Array<[number, string]> } {
+  const k = Math.max(0, Math.min(1, (EDGE.from - gap) / EDGE.span));
+  const a = (f: number) => +(EDGE.max * f * k).toFixed(3);
+  return {
+    k,
+    width: EDGE.wide + EDGE.grow * k,
+    stops: [
+      // (the dark core at the edge, near black and warm, easing through an ember glow to nothing: one long ramp, no stripe; a short
+      // fade after the glow drew a hard orange band, B2's first stills)
+      [0, `rgba(14, 4, 2, ${a(1)})`],
+      [0.25, `rgba(30, 7, 3, ${a(0.8)})`],
+      [0.5, `rgba(110, 32, 10, ${a(0.5)})`],
+      [0.72, `rgba(204, 82, 26, ${a(0.26)})`],
+      [1, 'rgba(220, 100, 34, 0)'],
+    ],
+  };
+}
 
 interface Section {
   pl: Platform;
@@ -159,12 +182,11 @@ class ChasePiece implements StagePiece {
   private drawEdge(ctx: CanvasRenderingContext2D, host: PieceHost) {
     const behind = frontBehind(this.run, host.player.x);
     if (behind === null) return;
-    const k = Math.max(0, Math.min(1, (EDGE_FROM - (host.player.x - behind)) / EDGE_SPAN));
-    if (k <= 0.02) return;
-    const w = host.view.w * 0.32;
+    const t = edgeTint(host.player.x - behind);
+    if (t.k <= 0.02) return;
+    const w = host.view.w * t.width;
     const g = ctx.createLinearGradient(0, 0, w, 0);
-    g.addColorStop(0, `rgba(70, 18, 8, ${0.55 * k})`);
-    g.addColorStop(1, 'rgba(70, 18, 8, 0)');
+    for (const [at, c] of t.stops) g.addColorStop(at, c);
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, host.view.h);
   }

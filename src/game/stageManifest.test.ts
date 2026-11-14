@@ -74,3 +74,22 @@ test('whoever asked for a sheet, a stage about to start sees it waiting, then re
   warmSheets(unwarmedSheets(), ctx);
   assert.ok(!unwarmedSheets().includes('asked-by-a-draw.webp'));
 });
+
+test('a laid chase gets its long-branch sheet in behind the card; a stage without one never loads it (B2: flat bars on its first frames)', async () => {
+  const { start } = await import('./stagePreload.ts');
+  const { PROTO3_URL } = await import('./protoArt.ts');
+  const g = globalThis as { location?: unknown };
+  const had = 'location' in g;
+  g.location ??= { search: '' };
+  try {
+    setLayoutVariant(1);
+    const st = generateStage(levels.find((l) => l.id === '1-2')!, 'normal');
+    assert.ok(!builtStageKeys(st).includes('props3'), 'a stage with no chase does not load the long-branch sheet');
+    const laid = { ...st, chase: { stretches: [{ start: 1000, end: 3000, last: true }] } };
+    assert.ok(builtStageKeys(laid).includes('props3'), 'a stage that lays a chase asks for the long-branch sheet');
+    assert.ok(start(['props3']).includes(PROTO3_URL), 'and the key starts that sheet');
+  } finally {
+    setLayoutVariant(null);
+    if (!had) delete g.location;
+  }
+});

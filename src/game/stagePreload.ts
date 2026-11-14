@@ -25,7 +25,7 @@ import { enterWorld, releaseSheets, warmSheets, whenSheetsReady } from './atlasL
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { BACK_URL, DOT_BRIDGES_URL, DOT_PROPS_URL, dotPropsReady, warmDotSheets } from './dotFlightArt.ts';
 import { DOT_ATLAS_URL } from './dotSprite.ts';
-import { kitUrl, paintedKitEnabled, PROTO2_URL, warmKit, warmProto2 } from './protoArt.ts';
+import { kitUrl, paintedKitEnabled, PROTO2_URL, PROTO3_URL, warmKit, warmProto2, warmProto3 } from './protoArt.ts';
 import { protoStageEnabled } from './protoStage.ts';
 import { W2_PROPS_URL, riverArtReady } from './riverArt.ts';
 import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
@@ -175,6 +175,9 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'props2') {
       warmProto2();
       urls.push(PROTO2_URL);
+    } else if (k === 'props3') {
+      warmProto3();
+      urls.push(PROTO3_URL);
     } else if (k === 'perch') {
       perchArtReady();
       urls.push(DOT_PERCH_URL);

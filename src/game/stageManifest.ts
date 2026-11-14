@@ -44,6 +44,8 @@ export interface BuiltStage extends StageDraws {
   kit?: unknown;
   rivers?: readonly unknown[];
   waterY?: number;
+  /** a laid chase (stageGenerator.ts GeneratedStage.chase): its sections draw off the long-branch sheet */
+  chase?: unknown;
 }
 
 /** the strips this stage reveals at its top, if any (got in by stageReady.ts with the stage's own backdrop) */
@@ -77,5 +79,8 @@ export function builtStageKeys(st: BuiltStage): string[] {
   if (w >= 6 && (st.waterY !== undefined || !!st.rivers?.length)) out.add('bad-water');
   if (st.platforms.some((p) => p.type === 'bouncy')) out.add('bounce');
   if (st.platforms.some((p) => p.crumbleAfter !== undefined)) out.add('crumble-tile');
+  // (a laid chase draws its sections off the long-branch sheet, which loaded on the first section drawn: flat brown bars for the first
+  // frames a chase came on screen, B2 11-14)
+  if (st.chase) out.add('props3');
   return [...out];
 }
