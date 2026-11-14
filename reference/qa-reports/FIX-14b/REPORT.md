@@ -1,4 +1,4 @@
-# FIX-14b REPORT. t-fix-14b (from t-fix-14@f35253ba + t-len-14@d56cd915). Stopped at the box, ~3:4x AM ET 11-14
+# FIX-14b REPORT. t-fix-14b (from t-fix-14@f35253ba + t-len-14@d56cd915), head d7ee9114. 11-14, 3:0x AM ET (box to ~3:37)
 ## EXACT NEXT STEP (in order; the next member starts here)
 1. Fork (R-165.206, NOT STARTED: cut at the box, measured first). The 80 px rule is bigger than the fork: fork/ledge-margins.txt
    (fork/ledge.ts, 1-4 seeds 1-12): 25 of 37 non-field climb vines top out with under 80 px of ledge on one side. (a) the CROWN's own
@@ -11,12 +11,11 @@
 2. Then ONE relist (`npx tsx tools/engine/addlevel.ts 1-4 --relist`; the one run here was BEFORE the two-vine/petal/tell commits, so the
    fork's relist is the one that counts), sideways clips (clip.mjs `side` threw: the engine was null sideways; wait on __engine longer),
    the two-vine clip (clip.mjs has no `vines` mode yet), and the full Checks on that head.
-3. Two-vine rough spot (vines-normal-up.mp4, seed 1 Normal): a column of 3 petals between vines 594/674; one vine 1.33 s 0/3, two
-   vines 0.87 s 2/3: the TOP petal, just under the bough, is missed because he vaults onto the bough first. Fix: pairPetals keeps a
-   petal at least one reach (38 px + 20) under the pair's lower top, or the test climbs the whole column (today it starts 150 px under each
-   petal, so it did not catch this). Plant that case first.
-4. The lead's calls: (a) drop the white-gold pop at a fig's tear now that the tie snaps (two signals at once)? (b) the old pod
-   (w14-kapokpod) and 1-2's bramble no longer draw on 1-4: their catalog rows' used_in may need the inventory owner's update.
+3. Two-vine clip (vines-normal-up.mp4) showed 2/3 petals two-handed; NOT reproduced headless: the whole paired column climbed from the
+   foot takes every petal on 1-4 rolls 0-24 (fieldPetals.test.ts planted case, passes). The clip's counter stops on the vault frame, where
+   a +250 pops: re-shoot with the count read after the vault before calling it a defect.
+4. The checkpoint aura is removed GAME-WIDE (the lead was told first; no reply before I acted): look at an unlit flag on a bright
+   backdrop in each world (flag/flag-1-1-after.jpg reads, but it is quieter than before); flag/flag-1-4-after.jpg did not frame the flag.
 ## Done (evidence in reference/qa-reports/FIX-14b/)
 - Step 1, fig gate (R-165.212 + R-165.223's probe): his DRAWN head stops at the shut bough's DRAWN underside on the one-hand, two-hand
   and plain climb and the jump (FieldPlay.shutBoughAt/capY/lid; GATE.head 89 = heroSprite 66 x 1.35, tested; GATE.depth = the painted
@@ -43,11 +42,19 @@
   head stop it never pushed (castBots 1-4 went 0/40, its test freed 0): it now reads the stop (capY). feelPairRoom's gate test now
   checks the head rule (it asserted the old feet rule).
 - The lead's ruling 2:08 AM applied: the tie draws at 0.55 Pokey (short loop, knot on the bough).
-## castBots 1-4 x40 (at e69dcb5c; the later commit is draw-only), PASS by tier, Normal / Easy: kid 24 / 34, adult 40 / 40 (Easy median
+- The lead's review 2:56 AM: (1) the dark ring = engine.ts's readable 'take' aura (readable.ts drawAura: a code-made radial pool +
+  gold rim) behind every UNREACHED checkpoint flag, all worlds (10-21 readability pass): removed (painted-art rule). (2) the gold pops at
+  a fig's tear and at the open removed: one signal, the tie's painted snap + Matt's bark chips + the sound. (3) the 15 catalog rows
+  (Matt's 14 'in game (FIX-14b)', w14-kapokpod replaced) with used_in, inventory re-emitted.
+## castBots 1-4 x40 (at e69dcb5c; every later commit is draw, catalog or test only), PASS by tier, Normal / Easy: kid 24 / 34, adult 40 / 40 (Easy median
    110.7 s, fastest 106.1 s: over the 100 s climb floor), child 10 / 13, middle 22 / 23, expert 25 / (its Easy line did not print).
    231 of 320 printed vs FIX-14's 209 of 360 on the fork head; NOT like for like (one tier line missing): judge the 40-seed totals again
    after the fork. Before the figPush fix the same run was 0/40 on every tier (the relist's run, relist.log).
-## Gates on the final head 72d1ca6d (frozen worktree): PENDING, filled in below when they finish
+## Gates on head d7ee9114 (frozen worktree /home/user/w14c): RUNNING at 3:01 AM, results below
+(On 72d1ca6d, one commit back, these all PASSED: tsc, build, chunkcheck, artcheck, buildcheck, knowncheck, generality, roadmapcheck,
+kbdcheck, seedlist 1-1 (257) and 1-4 (100) --check, tool tests 41/41, tierBots 7/7. Its full suite was at 1055 ok / 0 not ok when I
+stopped it for the new head; drawcheck and clipcheck did not finish there. The first suite run, on the pods commit, timed out at 25 min
+under load with 2 failures, both fixed: feelPairRoom gate test, figPush.)
 ## Polish check (judged on the real page, stepped-frame clips; seed 1, built setting printed by clip.mjs)
 - gate-normal-up-sheet.jpg: the ties read in three states at phone size (green loop; pale frayed loop; two whipping ends), the thatch
   reads as leaves over the bough; his head stays under the wood on hold and jump. Rough spots, named plainly: (1) the loops are small
