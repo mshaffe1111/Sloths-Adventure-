@@ -1,0 +1,350 @@
+{
+ "snake-37": [
+  {
+   "name": "w16-vinesnake-hang",
+   "units": 115,
+   "side": "h",
+   "at": [
+    0.11,
+    0.35
+   ],
+   "dest": "w1-678"
+  },
+  {
+   "name": "w16-vinesnake-slide",
+   "units": 130,
+   "side": "w",
+   "at": [
+    0.6,
+    0.2
+   ],
+   "dest": "w1-678",
+   "drop": [
+    [
+     0.2,
+     0.1,
+     0.36,
+     0.42
+    ]
+   ],
+   "round": [
+    [
+     "l",
+     40
+    ]
+   ]
+  },
+  {
+   "name": "w16-vinesnake-liana",
+   "units": 130,
+   "side": "w",
+   "at": [
+    0.25,
+    0.75
+   ],
+   "dest": "w1-678"
+  },
+  {
+   "name": "w16-vinesnake-hiss",
+   "units": 60,
+   "side": "h",
+   "at": [
+    0.82,
+    0.72
+   ],
+   "dest": "w1-678"
+  }
+ ],
+ "moss-37": [
+  {
+   "name": "w17-moss-carpet",
+   "units": 36,
+   "side": "h",
+   "at": [
+    0.5,
+    0.17
+   ],
+   "dest": "w1-678"
+  },
+  {
+   "name": "w17-moss-patch",
+   "units": 180,
+   "side": "w",
+   "at": [
+    0.12,
+    0.42
+   ],
+   "dest": "w1-678"
+  },
+  {
+   "name": "w17-moss-liana",
+   "units": 120,
+   "side": "h",
+   "at": [
+    0.12,
+    0.78
+   ],
+   "dest": "w1-678"
+  },
+  {
+   "name": "w17-moss-fork",
+   "units": 70,
+   "side": "h",
+   "dest": "w1-678",
+   "box": [
+    0.6,
+    0.585,
+    0.95,
+    0.96
+   ]
+  },
+  {
+   "name": "w17-moss-drape",
+   "units": 140,
+   "side": "h",
+   "box": [
+    0.36,
+    0.36,
+    0.96,
+    0.965
+   ],
+   "drop": [
+    [
+     0.6,
+     0.585,
+     0.96,
+     0.965
+    ]
+   ],
+   "dest": "w1-678"
+  }
+ ],
+ "snag-23": [
+  {
+   "name": "w17-snag-a",
+   "units": 300,
+   "side": "h",
+   "at": [
+    0.3,
+    0.45
+   ],
+   "dest": "w1-678"
+  },
+  {
+   "name": "w17-snag-b",
+   "units": 300,
+   "side": "h",
+   "at": [
+    0.72,
+    0.45
+   ],
+   "dest": "w1-678"
+  }
+ ],
+ "nuts-53": [
+  {
+   "name": "w18-palmnut",
+   "units": 26,
+   "side": "w",
+   "at": [
+    0.13,
+    0.22
+   ],
+   "dest": "w1-678"
+  },
+  {
+   "name": "w18-cannonball",
+   "units": 40,
+   "side": "w",
+   "at": [
+    0.5,
+    0.22
+   ],
+   "dest": "w1-678"
+  },
+  {
+   "name": "w18-cannonball-split",
+   "units": 48,
+   "side": "w",
+   "at": [
+    0.85,
+    0.22
+   ],
+   "dest": "w1-678"
+  },
+  {
+   "name": "w18-nut-cracked",
+   "units": 26,
+   "side": "w",
+   "at": [
+    0.12,
+    0.57
+   ],
+   "dest": "w1-678"
+  },
+  {
+   "name": "w18-squirreltracks",
+   "units": 120,
+   "side": "w",
+   "at": [
+    0.5,
+    0.82
+   ],
+   "dest": "w1-678"
+  }
+ ],
+ "post-53": [
+  {
+   "name": "w1-livepost-short",
+   "units": 80,
+   "side": "h",
+   "at": [
+    0.17,
+    0.65
+   ],
+   "dest": "w1-678"
+  },
+  {
+   "name": "w1-livepost-mid",
+   "units": 110,
+   "side": "h",
+   "at": [
+    0.5,
+    0.6
+   ],
+   "dest": "w1-678"
+  },
+  {
+   "name": "w1-livepost-tall",
+   "units": 110,
+   "side": "h",
+   "at": [
+    0.83,
+    0.6
+   ],
+   "dest": "w1-678"
+  }
+ ],
+ "harpy-ahead-perch-s1": [
+  {
+   "name": "w17-harpy-perchfeet-ahead",
+   "units": 130,
+   "side": "h",
+   "at": [
+    0.5,
+    0.5
+   ],
+   "dest": "w1-678",
+   "protect": [
+    [
+     0.66,
+     0.26,
+     0.8,
+     0.4
+    ]
+   ]
+  }
+ ],
+ "harpy-blink-perch-s1": [
+  {
+   "name": "w17-harpy-perchfeet-blink",
+   "units": 130,
+   "side": "h",
+   "at": [
+    0.5,
+    0.5
+   ],
+   "dest": "w1-678",
+   "protect": [
+    [
+     0.66,
+     0.26,
+     0.8,
+     0.4
+    ]
+   ]
+  }
+ ],
+ "harpy-down-perch-s1": [
+  {
+   "name": "w17-harpy-perchfeet-down",
+   "units": 130,
+   "side": "h",
+   "at": [
+    0.5,
+    0.5
+   ],
+   "dest": "w1-678",
+   "protect": [
+    [
+     0.66,
+     0.26,
+     0.8,
+     0.4
+    ]
+   ]
+  }
+ ],
+ "harpy-turn-perch-s1": [
+  {
+   "name": "w17-harpy-perchfeet-turn",
+   "units": 130,
+   "side": "h",
+   "at": [
+    0.5,
+    0.5
+   ],
+   "dest": "w1-678",
+   "protect": [
+    [
+     0.66,
+     0.26,
+     0.8,
+     0.4
+    ]
+   ]
+  }
+ ],
+ "moss-11": [
+  {
+   "name": "w17-moss-drape-b",
+   "units": 140,
+   "side": "h",
+   "box": [
+    0.385,
+    0.255,
+    0.655,
+    0.955
+   ],
+   "round": [
+    [
+     "l",
+     24
+    ],
+    [
+     "r",
+     24
+    ]
+   ],
+   "dest": "w1-678"
+  }
+ ],
+ "under-11": [
+  {
+   "name": "w1-underlayer-a",
+   "units": 600,
+   "side": "w",
+   "opaque": true,
+   "dest": "w1-678"
+  }
+ ],
+ "under-53": [
+  {
+   "name": "w1-underlayer-b",
+   "units": 600,
+   "side": "w",
+   "opaque": true,
+   "dest": "w1-678"
+  }
+ ]
+}
