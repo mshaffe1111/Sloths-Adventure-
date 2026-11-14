@@ -30,7 +30,9 @@ proven plan; Play is never blocked).
 - OPEN: on 1 roll in 4 the LONG perch lands where the top hold still flies it (shareFor's tempo scaling); a `topShort` rule on land (the
   band's near end where gripsOf('high') gives 0) would make every roll a true "slide down" LONG.
 - The swing camera (cameraFollow.ts landingAhead, upright `whole`): a liana ahead that swings is led with `lianaBox` (its anchor to its
-  foot's far side), so chainRelease's view rule is what he sees. Climb carries `swingAmp` (optional).
+  foot's far side), so chainRelease's view rule is what he sees. Climb carries `swingAmp` (optional). And on a swing a landing ACROSS the
+  gap beats the floor of the drop under him (`under`), however near that floor scores: over a hurt hollow the floor (160 px down, from
+  his anchor on) out-scored the chain's last perch and the view never led to it as he pressed (ENG-S5's upright still). Ground: as before.
 - Shoot: reference/qa-reports/ENG-S5/shoot.mjs (lays the row with gen2 on the page and sets it into 1-6's start; the engine's start-time
   lists drawnVines / plainVines / swingVines / drawPlats must be refreshed after any runtime edit, or the new lianas are not drawn;
   input goes through key events: a write to input.state.jumpPressed is cleared by the press buffer).

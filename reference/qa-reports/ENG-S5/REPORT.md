@@ -1,5 +1,5 @@
 # ENG-S5 REPORT (t-eng-s5 from origin/t-eng-s4@4bafe110; packet reference/packets/2026-11-14/ENG-S5.md on the lead's branch)
-Start 10:29 AM ET (pasted from date). Code head **a8915e91e**. Context at the report: GATES_CONTEXT. Stop: STOP_TIME.
+Start 10:29 AM ET (pasted from date). Code head **f1b72ec7e**. Context at the report: GATES_CONTEXT. Stop: STOP_TIME.
 
 ## Done-items
 1. **levelCheck lays liana -> liana -> liana** (no perch between). ONE measure, the engine's press: physics.ts `chainWindow` = pressWindow on
@@ -7,7 +7,9 @@ Start 10:29 AM ET (pasted from date). Code head **a8915e91e**. Context at the re
    ledge -> A (lianaCaught), A -> B (`chainLines` >= 6, the stage's double rule), B -> platform (`heldLandings`, pressWindow from his holds).
    gen2 `chainRelease` sizes the lay: this setting's swing, A's grip-dial holds, a press counts only with B's WHOLE swing (anchor + foot's
    reach) within SWING_SEEN 414 of him. Easy wider on every link (test). The swing camera leads with that whole swing upright
-   (cameraFollow.ts `lianaBox`), so the rule is what he sees. Measured: chainband.out.txt (spacing x window, both settings, both holds).
+   (cameraFollow.ts `lianaBox`), so the rule is what he sees; and on a swing a perch ACROSS the gap now beats the floor of the drop under
+   him (`under`): over the thorn hollow that floor out-scored the chain's last perch and the view never led to it as he pressed (seen in
+   my upright still at the press on l3; fixed in landingAhead, swing only, planted). Measured: chainband.out.txt (spacing x window).
 2. **W1 chain rows** (w1Swing.ts): `W1_CHAIN_SECTIONS` = chain2 (SHORT, LONG) and chain3 (SHORT, SHORT, LONG), `w1ChainSection`, `w1Chain`.
    Ends are moss-stone BANKS (the thorn hollow paints only between banks that reach its floor: off a 24 px bough w1Pits found no lips and
    the thorn bed was never painted; pits probe, then the planted test). Normal: one thorn hollow under the whole chain (hurt, no steps out);
@@ -19,7 +21,7 @@ Start 10:29 AM ET (pasted from date). Code head **a8915e91e**. Context at the re
    ms; the top hold drops short (0 ms) on 3 of 4 rolls (top.ts probe in the REPORT's pushback f). Tests: w1Chain.test.ts (6), planted
    (planted.out.txt): PLANTED_LINE.
 3. **Clips (D63), real page, the engine's own catch/let-go/camera**: CLIPS_LINE
-   Gates (full CLAUDE.md Checks on a8915e91e, own worktree; buildcheck last and ALONE): GATES_LINE
+   Gates (full CLAUDE.md Checks on f1b72ec7e, own worktree; buildcheck last and ALONE): GATES_LINE
    lockall: 102/102 unchanged vs 4bafe110 (lock-check2.out.txt, on dde790f32; LOCK_FINAL).
 
 ## How BUILD-16 lays beat 4 with the row (exact)
@@ -33,7 +35,7 @@ Start 10:29 AM ET (pasted from date). Code head **a8915e91e**. Context at the re
 ## Pushback / rough spots (named)
 (a) The chain gaps are EASY by measure: at the laid 244-260 px a press catches the next liana for 2.4-2.9 s of a 2.85 s swing (the catch is
 the whole liana's line, +-60 px). The band runs to ~300-320 px before B's whole swing leaves the view; `share` toward its far end asks
-more (a Designer's number). The beat's timing test is the LONG leap (533-767 ms Normal). (b) Both lianas keep >= VINE.amp / 2 (0.225
+more (a Designer's number). The beat's timing test is the last LONG leap (433-833 ms Normal, whole perch in view). (b) Both lianas keep >= VINE.amp / 2 (0.225
 rad): MY floor so "the next always coming" is a swing he times; the Designer should confirm it. (c) Easy's moss is under the whole chain,
 not only "the middle" (beat 4's row): a split floor is one more pipeline feature if the lead wants it. (d) Old-generator stages keep the
 old walk (14 hang lianas within a chain's reach; their pickups and flags moved in the first lock run). (e) Pre-existing, not changed:
@@ -55,7 +57,8 @@ refresh the engine's start-time lists (drawnVines, plainVines, swingVines, drawP
 input with key events (a write to input.state.jumpPressed is cleared by the press buffer); shoot on a stage whose painter is live (a
 hand-painted stage like 1-6 draws no injected ground)". **Learned:** 1) A check that changes reach changes every OLD stage's pickups:
 run lockall before trusting "no stage lays it". 2) A row's look depends on the painter's reading of it (banks vs boughs): probe the
-painter (findW1Pits) on the laid row, not just the physics. 3) A LONG liana leap relies on the second jump: a bot without it never lands.
+painter (findW1Pits) on the laid row, not just the physics. 3) A LONG liana leap relies on the second jump: a bot without it never lands. 4) The press frame, upright, is the still that matters: two
+defects (the perch laid past the view; the camera leading to the floor) showed only there, after every unit test was green.
 
 ## EXACT NEXT STEP
 1. Lead: merge t-eng-s5 with BUILD-16 (no shared file but w1Swing.ts if BUILD-16 edits it). 2. Designer: rule (a) the chain share,
