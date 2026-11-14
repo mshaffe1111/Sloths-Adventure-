@@ -1,0 +1,22 @@
+POLISH-7 gates on t-polish-7 (src as of b5cdafe; later commits are reports only), 4:54 AM ET 11-14
+PASS: tsc; BASE_PATH build; chunkcheck; artcheck; knowncheck; generality; roadmapcheck; kbdcheck; tool tests 33/33; seedlist --check 1-1 (169) 1-2 1-3 1-4 (100) 1-5 (150); tierBots.test 7/7; roll-pinned 31/31; w1BounceTeach.test; verdicts.test 32/32; drawcheck (656 s); clipcheck (83 known, 462 s); buildcheck ALONE (Normal p95 127, Easy 127)
+RED: full unit suite: 17 failures in the first 2622 results, then STOPPED at the box (5:04 AM): the rest UNRUN
+RED (on the base too, not in CLAUDE.md's list): funcheck 24 worse/new (base 25)
+
+Unit failures (test | file | first error):
+not ok 215 - ctest survey: every World 1 section has plain words (or is marked walking-only), and the table na | src/components/ctestSurvey.test.ts:12:1 | name these in ctestStretches.ts before they ship
+not ok 218 - ctest survey: real gen2 1-1 runs (proven seeds, both settings) list at least four of their own st | src/components/ctestSurvey.test.ts:41:1 | error: 'w1-stone-stair-test:ketsu has no words'
+not ok 496 - 1-1 seed 9800 sideways, the bounce by the seed-perch log: no frame moves the view more than 11 px | src/game/cameraBounce.test.ts:49:1 | error: "Cannot read properties of undefined (reading 'x')"
+not ok 497 - 1-1 seed 9800 sideways, the same bounce at 15 fps (67 ms frames, the real loop): 11 px per 1/30 s | src/game/cameraBounce.test.ts:64:1 | error: "Cannot read properties of undefined (reading 'x')"
+not ok 1295 - a clean seed is played as asked | src/game/gen2/proven.test.ts:29:1 | the walk moved off a clean seed
+not ok 1331 - 1-1 normal: on the first 16 listed seeds a fall into any gap that is not water is a soft set-bac | src/game/gen2/softFalls11.test.ts:47:3 | seed 769 is laid as listed
+not ok 1332 - 1-1 easy: on the first 16 listed seeds a fall into any gap that is not water is a soft set-back, | src/game/gen2/softFalls11.test.ts:47:3 | seed 769 is laid as listed
+not ok 1334 - the word lays no ground: 1-1's ground is the same with and without it, and its zones, gaps and f | src/game/gen2/softFalls11.test.ts:72:1 | roll 5 normal: the ground
+not ok 1552 - 1-1 (b) room for help, 169 listed seeds, both settings: every rise a single climbs, a mushroom g | src/game/gen2/worlds/w1.relay.test.ts:409:1 | code: 'ERR_ASSERTION'
+not ok 1554 - every W1 section: references resolve in each version, keys unique, the exit in every version, Wo | src/game/gen2/worlds/w1.test.ts:7:1 | error: 'w1-second-jump: tags'
+not ok 1624 - the deal: a node is not dealt a type no section of its job has (was 38 fresh graphs in 200: a co | src/game/gen2/yield.test.ts:39:1 | error: '52 of 200 graphs: seed 50003: n8 combine dealt ground; seed 50006: n8 combine dealt bounce; seed 50010: n8 combine dealt bounce; seed 50011: n8 combine dealt bounce; seed 50024: n8 combine dealt bounce'
+not ok 1778 - seed 769 easy, w1-mushroom-bank-teach: plain jumps fail it as laid; after the steps grow, they p | src/game/helpLadderPieces.test.ts:15:3 | error: 'the piece needs the help (else this pins nothing)'
+not ok 1779 - seed 9800 normal, w1-dip-double-teach: plain jumps fail it as laid; after the steps grow, they p | src/game/helpLadderPieces.test.ts:15:3 | error: 'no w1-dip-double-teach'
+not ok 1780 - seed 23893 normal, w1-two-answers: plain jumps fail it as laid; after the steps grow, they pass  | src/game/helpLadderPieces.test.ts:15:3 | error: 'no w1-two-answers'
+not ok 1781 - every listed 1-1 seed on easy: every grown rock stands, no face over 60 px, none sunk; Dot promi | src/game/helpLadderSweep.test.ts:14:3 | error: 'the sweep covered the list and grew rocks'
+not ok 1783 - every listed 1-1 seed on normal: every grown rock stands, no face over 60 px, none sunk; Dot pro | src/game/helpLadderSweep.test.ts:14:3 | error: 'the sweep covered the list and grew rocks'

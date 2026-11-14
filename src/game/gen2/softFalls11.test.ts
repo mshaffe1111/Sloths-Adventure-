@@ -9,7 +9,7 @@ import '../headlessDom.ts';
 import { buildGen2Stage, earthHoles, keptFoes, softFallStage } from './pipeline.ts';
 import { buildPlayStage } from './seedList.ts';
 import { floorlessGaps } from './promises11.ts';
-import { provenSeeds } from './seedList.ts';
+import { provenPlan, provenSeeds } from './seedList.ts';
 import { w1Finish, w1World } from './worlds/w1.ts';
 import { generateStage, setLayoutVariant } from '../stageGenerator.ts';
 import { generateAllLevels } from '../worldsData.ts';
@@ -47,7 +47,9 @@ for (const setting of ['normal', 'easy'] as const) {
   test(`1-1 ${setting}: on the first 16 listed seeds a fall into any gap that is not water is a soft set-back, and water stays water`, () => {
     for (const seed of WINDOW) {
       const st = w1Finish(buildPlayStage(cfg('1-1'), w1World(), seed, setting));
-      assert.equal(st.gen2.seed, seed, `seed ${seed} is laid as listed`);
+      // (as listed: the list's own replay, whose seed is the reroll's when the list rerolled it; POLISH-9b: 769, first since POLISH-7's
+      // relist, is listed with 2 rerolls, so its build's seed was never 769. Not the walk's fallback, which would build another seed)
+      assert.equal(st.gen2.seed, provenPlan('1-1', seed)!.seed, `seed ${seed} is laid as listed`);
       assert.ok((st.gen2.falls ?? []).length >= 10, `seed ${seed} lays gaps`);
       assert.deepEqual(hardFalls(st), [], `seed ${seed}: gaps that still cost a life`);
       // (the word turns no water gap soft: the engine's water checks come before the fall check, and no zone is added for it)
@@ -86,7 +88,11 @@ test('the word lays no ground: 1-1\'s ground is the same with and without it, an
     for (const seed of [1, 2, 3, 4, 5, 6]) {
       const b = buildGen2Stage({ config: cfg('1-1'), kit: kitWithout(), seed, difficulty: setting });
       const replay = { seed: b.gen2.seed, rerolls: b.gen2.rerolls, plan: b.gen2.plan, foes: [...keptFoes(b)] };
-      same(buildGen2Stage({ config: cfg('1-1'), kit: w1World(), seed, difficulty: setting, replay }), b, `roll ${seed} ${setting}`);
+      // (and both sides replayed: a roll the search refused comes back built as its first phase built it, the landing repair off
+      // (pipeline.ts, Y2's two phases), while every replay runs the repair on. POLISH-9b: raw roll 5 Normal is refused since POLISH-7's
+      // bounce cap and keeps an idle mushroom (x 21928) the replay takes up, so comparing the search's build to a replay read the repair as
+      // the word. Replaying the same plan without the word compares the word alone)
+      same(buildGen2Stage({ config: cfg('1-1'), kit: w1World(), seed, difficulty: setting, replay }), buildGen2Stage({ config: cfg('1-1'), kit: kitWithout(), seed, difficulty: setting, replay }), `roll ${seed} ${setting}`);
     }
   }
 });

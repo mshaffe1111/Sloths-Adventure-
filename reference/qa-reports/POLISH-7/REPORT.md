@@ -1,7 +1,19 @@
 # POLISH-7 REPORT (t-polish-7 from t-polish-6@5605b11; lead session_01FhBbYNzGRJBDMzn6XbtQK2). Opus 5.5 high. 3:34-~5:0x AM ET 11-14.
 Context at report: about 30-35% of 1M (my own estimate from the work done; I cannot read the session figure, D64).
 
+**NOT GREEN. The full unit suite is RED: 17 failures in its first ~2620 results, then stopped at the box, the rest UNRUN**
+(gates/gates-summary.txt lists each with its file and first error). Everything else in CLAUDE.md's Checks PASSES, buildcheck alone included.
 **EXACT NEXT STEP (for the next member):**
+0. **Fix the unit failures, then run the WHOLE suite to the end.** They are pins the cut and the relist moved, by kind:
+   - the ctest survey needs plain words for w1-stone-stair-test(-back) (src/components/ctestStretches.ts; ctestSurvey.test.ts:12, :41);
+   - w1.test.ts:7 "tags": w1-second-jump (and likely each cut section) lost '1-1' from `feel` while its tags still say 1-1; cut11 must keep
+     the section's tags true (or the cut must go where the tags are read);
+   - yield.test.ts:39: 52/200 graphs deal a combine node a type no section has: the deal must know 1-1 has no combine now (R-165.235);
+   - seeds pinned by number that the relist dropped or changed: cameraBounce.test.ts:49/:64 (9800's bounce by the seed-perch log),
+     softFalls11.test.ts:47/:72 (769 "laid as listed", roll 5's ground), proven.test.ts:29, helpLadderPieces.test.ts:15 (769's teach no
+     longer needs the help: correct by design, re-pin to a piece that does; 9800 has no dip-double-teach; 23893's w1-two-answers is cut),
+     helpLadderSweep.test.ts:14 (no rock grows now on either setting: re-read what it pins), w1.relay.test.ts:409 ((b) room for help).
+   Re-pin each to the new list with its reason (D29), never loosened.
 1. **1-1 is not yet World 1's gentlest row on Normal** (item 3's bar). Every remaining first-timer rescue on Normal is at the ONE kept double
    teach's rise, ~950 px into w1-double-teach / -dip-double-teach / -bank-double-teach (castBots layouts 3, 4, 6, 10; kid 6 also in
    w1-mushroom-fork-dip's 50 px dip at 1083 px). Easy (its teach rise 128-132) is 10/10 for both first-timers. Proposed lever (needs the
@@ -64,7 +76,7 @@ head: Easy "pacing" 12 -> 10 layouts (better); Normal "nothing bites" 97% -> 89%
 Normal "pacing" 13 -> 13. No 1-1 line is new or over a count it was under before. 1-2's "looks like the stage before (1-1)" 49% unchanged.
 Variety in the plain sense: sprint-B and -C no longer roll on 1-1 (R-165.235, the lead 4:04 AM).
 
-## Gates (CLAUDE.md order; logs gates/): see gates-summary.txt (written last, on the pushed head).
+## Gates (CLAUDE.md order; logs gates/): gates-summary.txt. PASS: tsc, build, chunk, art, known, generality, roadmap, kbd, tool tests, seedlist --check 1-1..1-5, tierBots 7/7, roll-pinned 31/31, drawcheck, clipcheck (83 known), buildcheck ALONE (Normal p95 127). RED: unit suite (17 failures, rest UNRUN at the box).
 
 ## Polish check: stills/teach-{before,after}-1-1-L2-{normal,easy}-x*-{upright,sideways}.jpg, 2x, the built setting printed by the game
 (BUILT lines: after seed 2328, before seed 982 on 5605b11's list; both settings). After: the bank face about two Pokey-heights over the
