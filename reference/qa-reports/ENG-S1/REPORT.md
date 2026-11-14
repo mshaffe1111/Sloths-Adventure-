@@ -18,6 +18,9 @@ Code head c3a753e8 (gates below ran on it, in its own worktree); later commits a
    - LONG Normal 340-364, under FAR.
    - SHORT 101-183 Normal, 81-153 Easy (the top hold must see its perch whole too).
    FAR is no longer foot-only (the middle hold flies it too). What makes it FAR is that the TOP never does (0 ms).
+   **For the 1-6 builder (lead, 3:13 AM):** LONG (340-364) and FAR (407-426) sit only ~50 px apart. FAR must read different by HOLD (the
+   foot; the top never makes it) and by the narrow perch (120-140 px), not by distance alone. The lead kept 0.3 s / 1.3x: Pokey whole and
+   a fair window beat 30 more px.
    Two defects the cap exposed, fixed:
    - Easy's landing pad widened a perch AFTER its band, so its far end left the view (Easy FAR windows fell to 0).
    - The window was recorded on unrounded px (2 frames off).
@@ -53,6 +56,10 @@ Code head c3a753e8 (gates below ran on it, in its own worktree); later commits a
 - shots/*-2-after.png: the press on that frame lands ON THE PERCH on both phones; the view back at 100%.
 - shots/*-clip.mp4: the whole action at ~22 fps on 412x915, 390x844 and 915x412: catch, slide to the foot, the ease out, two sweeps,
   the press, the flight, the landing, the ease back in. Sideways: no zoom, perch in view.
+- No lurch (lurch.ts / lurch.out.txt: the real engine, a real release):
+  - swing: the camera's largest step is 21 px a frame (cameraTurn's pumping bound is 30);
+  - flight, landing and ease-in: 31-32 px x (the turn bound is 40; the glitch watch calls 120 a jump);
+  - 27 px y while it zooms in about him: in world units; on screen he holds his place.
 - The head-cut still (shot on 488a5aac, 412x915, his head at the back edge) is in history: `git show c3a753e8:reference/qa-reports/ENG-S1/shots/upright-412x915-1-decision.png`.
 - Named, not mine:
   - 6-3's level-bottom water band shows as a hard horizontal edge low in the view. It shows at the usual zoom too, so it is pre-existing (A1 named the same on 1-8).
