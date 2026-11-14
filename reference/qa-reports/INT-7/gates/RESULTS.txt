@@ -15,3 +15,6 @@ unit3 0 8:37 AM
 tooltests 0 8:38 AM
 tierBots 0 8:39 AM
 drawcheck 0 8:46 AM
+clipcheck 0 8:51 AM
+buildcheck 0 8:51 AM
+done 8:51 AM
