@@ -48,7 +48,11 @@ export const W1_KIT = {
   graphs: {
     /** the sprint graphs A-D (gen2/graphs.ts SPRINT_GRAPHS, the planner's; NODES §8.4's code strings: A `A T P F R X R S E`, B `A T M F R C U X R S R L E`, C `A P F X R W R D_ S E`, D `A T P R U F X R S E`) */
     list: [...SPRINT_GRAPHS],
-    briefs: { '1-1': { ends: 'quiet' as const, trend: 'up' as const, endHigh: true, softFalls: true, branching: 'some' as const, teaches: ['jump', 'double', 'bounce'], deal: { ground: 40, floating: 25, climb: 20, bounce: 15 } } },
+    briefs: { '1-1': { ends: 'quiet' as const, trend: 'up' as const, endHigh: true, softFalls: true, branching: 'some' as const, teaches: ['jump', 'double', 'bounce'], deal: { ground: 40, floating: 25, climb: 20, bounce: 15 },
+      // (POLISH-9b, the lead's ruling 9:31 AM 11-14: B and C each deal a combine node, and 1-1's pool has no combine without a double since
+      // CUT_11_DOUBLES, so every B or C roll was refused and the deal broke its rule (yield.test); 1-1 rolls A and D. Back with non-double
+      // combine pieces: R-165.235)
+      refuseGraphs: ['sprint-B', 'sprint-C'] } },
     /** floating pieces only in the last third (NODES V12; the designer's bough window) */
     windows: { floating: [0.67, 1] as const },
     /** a bounce node only once the bounce is taught (V3): the move's name as the sections' `teaches` */

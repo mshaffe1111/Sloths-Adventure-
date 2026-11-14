@@ -494,7 +494,12 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
   const list = G.list.filter((g) => g.archetype === budget.archetype);
   if (!list.length) return null;
   const r = rngFor(seed, 67);
-  const g = list[Math.floor(r() * list.length)];
+  let g = list[Math.floor(r() * list.length)];
+  // (a graph the brief refuses, GraphBrief.refuseGraphs: drawn again among the rest on a stream of its own, so every seed that drew an
+  // allowed graph keeps that graph and every number after it; POLISH-9b, 1-1 without sprint-B and -C)
+  const allowed = brief.refuseGraphs?.length ? list.filter((q) => !brief.refuseGraphs!.includes(q.id)) : list;
+  if (!allowed.length) throw new Error(`gen2 ${budget.id}: the brief refuses every ${budget.archetype} graph of the world`);
+  if (!allowed.includes(g)) g = allowed[Math.floor(rngFor(seed, 68)() * allowed.length)];
   // (the graph's code, read and checked: a graph that breaks a rule is the world's data at fault, named with its rule and token)
   // (its leg marks, legs.ts: taken out before the nodes are read; each node's travel then rides with its job through the brief's
   // rules below, and a node they add takes the leg of the node before it. A code with no mark: `tv` stays empty and nothing moves)
