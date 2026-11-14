@@ -2,6 +2,9 @@
 Facts are from origin/t-int-9 (file:line). Sources: search-result pages only. These hosts were blocked from this session and could not be opened:
 medium.com, gamesradar.com, gamedeveloper.com, sourcegaming.info. Every "loved" line quotes or closely follows a search snippet, and a claim with
 no source says so. Matt's 6:23 PM ask, kept on every page: what made the game GREAT (the feel players loved), not just "it had a vine".
+**The shelf rule (the lead, 6:30 PM) per level:** 1-9: Mega Man 2 (1988, the classic), Abe's Oddysee and Limbo (lesser-known), none of the
+famous few. 2-1: Jungle Hunt (1983, the classic, lesser-known), Bit.Trip Runner (lesser-known), Sonic (the one famous). 2-2: Frogger (1981, the
+classic), Wonder Boy (1986, lesser-known), Super Mario Bros. 3 (the one famous). No Pitfall!, Donkey Kong, Crash or DK Jr. as a lead tribute.
 
 ---------------------------------------------------------------------------------------------------------------------------------------
 ## 1-9 The Boa's Branches: "You are the bait"
@@ -64,6 +67,9 @@ copying the snake rows (w1Cast.ts:30-40). **NEW 2 (S-M):** lure in World 1: lure
 needs its own look (one Hugging Face piece, sized to his 89.1 px). The level data takes under 2 h once both are in.
 **(g) Not a repeat:** 1-6 swing, 1-7 hide from a watcher in cover, 1-8 run from a collapse. 1-9 *moves* a hunter and *uses* one. 1-7's eagle comes
 back as the tool, not the threat. Its "never still on a creak" turn stays 1-7's (w1Arc17.ts:4): 1-9's turn is stillness that needs no cover.
+**The outline (GAME-MAP.md:158 on t-design-game-map), kept and changed:** kept the gauntlet, the boa and "lure it off". Changed: "the boa copies
+your path" goes. The boa never walks (world1.ts:53, hunt speed 0), and a copying pursuer is C1, 4-12 h of new engine for 1-9 alone (GAME-MAP.md:668,
+which already says the boa uses drop traps and the lure instead). So the boa stays put and HE makes it leave: the bait idea comes from that.
 **Nature check (for the story keeper):** boas ambush and strike at movement (PREDATORS.md:74); harpy eagles hunt in the canopy; a boa fleeing into
 water is real (boas swim). Every ending is chased off or flees, never eaten (MAP-REVISIONS.md:181).
 
@@ -116,6 +122,10 @@ w2Stages.ts (1,204 lines), which the kit replaces. **NEW 1 (M):** the river as a
 reading river.ts recipes (new `src/game/gen2/riverLay.ts`; the `w` letter already names "drifting logs on a drawn river", nodeLetters.ts:133).
 That is 2-1's only NEW block.
 **(g) Not a repeat:** nothing hunts him and nothing chases; the new verb is RIDE. 1-8's speed was fear behind him; 2-1's speed is a gift under him.
+**The outline (GAME-MAP.md:182), kept and changed:** kept the sprint to the village and the drifting logs. Changed: "step off before they go
+under the reeds" is not a danger in play (the bank takes him, engine.ts:1847-1852), so the danger is the water between logs. Added the climb down
+(the title) and the twin rivers. Not used: B3 lanes (GAME-MAP.md:641, 8-12 h) and B4 moving platforms (:642). The twin rivers give a taste of
+"both ways" from river.ts as it stands, so 2-1 waits only on the kit and the river lay.
 
 ---------------------------------------------------------------------------------------------------------------------------------------
 ## 2-2 Petals for the Crown: "The pond breathes"
@@ -138,11 +148,13 @@ the stage clock sinks on a beat by itself (beatBrick.ts:11). Not wired: nothing 
   part 1: https://gamedev.net/articles/game-design/game-design-and-theory/super-mario-bros-3-level-design-lessons-part-1-r4682/). b. Show, play,
   then break (part 1: slopes in its second level). c. Ours: beats 1-3 set the pattern (weight sinks a pad); the twist breaks it (the pond's own beat
   sinks them). d. Not copied: donuts, Mario, power-ups, the look.
-- **Celeste (Maddy Makes Games, 2018; Matt #89).** a. Its strawberries are loved because they are optional and hard: the game says they're
-  unnecessary, "impress your friends", and they sit behind optional platforming
-  (https://ipfs.ssi.eecc.de/ipns/en.wikipedia-on-ipfs.org/wiki/Celeste_(video_game); https://kotaku.com/the-designer-of-towerfall-watched-us-play-his-excellent-1822166597).
-  b. A note at the start tells you they are optional (same page). c. Ours: the goal petals sit on the clean path; a few extra crown petals sit on
-  risky pads off it, for the player of 12 and up, never needed. d. Not copied: the mountain, the dash, Madeline, the look.
+- **Wonder Boy (Escape / Sega, arcade 1986; Matt #8, the lesser-known pick).** a. Loved for "a health-draining countdown that kept players moving
+  forward" (Matt's list). Its vitality "constantly runs down at a steady pace and can only be refilled by collecting fruit", and one review calls
+  that meter "perhaps the most unique feature of the game" (https://www.strategywiki.org/wiki/Wonder_Boy; https://segadoes.com/2014/10/16/wonder-boy/;
+  https://gaminghistory101.com/2018/12/08/wonder-boy-retrospective-pt-1/). b. Fruit sits along the path from the start, so the meter teaches itself
+  as you run (StrategyWiki; no source on its first level beyond that). c. Ours: each pad IS a little Wonder Boy meter. It drains while he stands,
+  he can see it (the shiver), and the petals sit ON the pads, so the pickup is right where he must not linger. A few extra crown petals sit on
+  risky pads off the path, for the player of 12 and up, never needed. d. Not copied: the meter bar, the skateboard, the hatchet, eggs, the look.
 **(c) The beats** (graph `A T P X R W R M R S L E`)
 | # | Beat | s | What is there | He does | He feels |
 |---|---|---|---|---|---|
@@ -166,6 +178,10 @@ on the clock. **NEW 2 (S):** the crown lily, a broad lily platform that holds, w
 Hugging Face piece if it doesn't scale).
 **(g) Not a repeat:** 1-8 was "never stop" because something chased; 2-2 is stop and go because the floor breathes, and the best move is often to
 WAIT. Nobody hunts in it.
+**The outline (GAME-MAP.md:183 on t-design-game-map), kept and changed:** kept the harvest, the petals and the sinking pads (B5 "things on a beat", GAME-MAP.md:643).
+Changed: pads also RISE again (ride.ts:22-23 already does this), so the level is about waiting as well as moving. Added the
+pond's-beat twist and the crown lily. Left out: the ferry sluice room (built). One idea per level (rule 1); it can come back as a puzzle room (`Z`)
+if the bots read under 2:00.
 **Nature check:** the giant Amazon water lily's leaf can reach about 2-3 m and hold the weight of a small child; its flower opens white on the first
 evening and pink on the second (https://en.wikipedia.org/wiki/Victoria_amazonica; https://www.smithsonianmag.com/smart-news/how-much-can-a-giant-waterlily-hold-see-one-carry-183-pounds-before-sinking-winning-a-social-media-contest-180987268/).
 
