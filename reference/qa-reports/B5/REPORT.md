@@ -1,4 +1,4 @@
-# B5 REPORT (ENG-B5, t-eng-b5 from t-eng-b4@956e33e0). Written 5:20 PM ET 11-14, gates 5:33 PM ET. Code head a957fe4b (src unchanged after it).
+# B5 REPORT (ENG-B5, t-eng-b5 from t-eng-b4@956e33e0). Written 5:20 PM ET 11-14, gates 5:52 PM ET. Code head de1e22fb.
 **a. ROLLING HAZARD, done.** rolling.ts (pure rules) + pieces/rollingPiece.ts (PIECE_KINDS after CHASE); data `GeneratedStage.rolling:
 RollSpec[] {kind low|high, dropX, speed, bounce, teach?}`. Set off by HIS x (`rollAhead`, ~350-370 px at a full run); drop-in tell 0.8 s
 (TELL_MIN 0.5; from up to 480 px, clamped under the HUD band), a thunk (playLand), 0.15 s+ of roll after it; seen 1.0 s+ (Easy 1.1) from
@@ -20,12 +20,10 @@ chase laid anew on the same stage kept a stale span (test red on the old engine)
 chaseLay.test's fixture (one shared definition now) + w1Finish + hazards laid on unbroken runs. Found + fixed: 1-1's config laid over
 the build put the pit line above his ground (he fell at spawn; planted check). The fixture clears bare hop rocks inside a hazard's
 run-in (never one carrying dressing or a creature). **drawcheck on the fixture: PASS upright and sideways** (run.mjs '1-98' + drawcheck's
-own judge, DRAWCHECK_RESULTS). Its 4 spots pin him on platforms: the hazards are mostly waiting there (say so: the chase sections are
-what it counted).
+own judge, DRAWCHECK_RESULTS). Its 4 spots pin him on platforms: the hazards mostly wait there; it counted the chase sections.
 **Clips (D63/D69), 8, both ways, both settings, on the real page** (reference/qa-reports/B5/shots/, sheet-upright.jpg, sheet-sideways.jpg,
 per-frame state in *.json): nut: set off f10 (f8 Easy), thunk f35, HOP f37 (f38 Easy, the real touch flick), past f46: no touch.
-Fruit: thunk f35, OVER his head f46 (59 px Normal, 78 px Easy), past f52: no touch, chase running. Camera: him 12-13% across upright
-(385 px ahead seen), 31% sideways (828 px).
+Fruit: thunk f35, OVER his head f46 (59 px Normal, 78 Easy), past f52: no touch, chase running. Him 12-13% across upright, 31% sideways.
 **e. CONTRAST (numbers for the next lead; B2's bar, not loosened): the baked C4 edge FAILS on all 4 backdrops both ways at full warning**
 (reference/qa-reports/B5/contrast.txt): upright A dE 5-7, B 2; sideways A 11-13, B 5-6; inside the glow G 8-14. It reads warm, not
 grey: in G da +5..+9, db +4..+10, dC +1..+9; the "smoke" is 1-2 upright: dL -2.1 with dC +0.9 (darker, little colour). Cause: with
@@ -40,15 +38,17 @@ built as data (`teach`, else by the first crack); after the crack a nut is a hea
 YES (lay each on a plain run: `rollGroundProblems` must be empty; one threat at a time, 1.5 s+ = 430 px+ at a run); 11 L with both
 heights YES; camera lead YES (automatic from data). Still NO: the phased liana (NEW 4), the still fork's eagle (NEW 7), the tip (NEW 8),
 a gen2 `h` letter lay (rolling is laid by data by the builder).
-**Suggestions (ready packets):** (s1) CONTENT/LEAD: painted palm nut + cannonball fruit (HF, sized 0.34/0.47 of 89.1), swap CUT.
+**Suggestions (ready packets):** (s1) LEAD/CONTENT: painted palm nut + cannonball fruit (HF, 0.34/0.47 of 89.1), swap CUT.
 (s2) ENGINE: the C4 edge under the chase lead: centre the disc on screen at the edge (or size by the gap), re-run B5/contrast.mjs to the
 bar. (s3) CRITIC: add '1-98' to limits.json scenarios (run.mjs already accepts it) so CI's drawcheck plays a laid chase with hazards.
 (s4) DESIGNER: confirm after-crack nut = a heart, ROLL_EASY, and 320 px phones at 0.90 s.
-**Method update (stage-piece.md):** clip tools press jump with input.triggerTouchUp/releaseTouchUp (D69); his x is his MIDDLE, y his FEET;
-a hazard's lay check takes the platforms (rocks). **Learned:** a camera change moves every screen-anchored draw (the edge): re-measure.
-**Gates on a957fe4b (src) / ced9ea4e (head), LAWS 5 scoped (src changed):** tsc PASS; FULL SUITE (the CLAUDE.md glob, one run in
-this tree on ced9ea4e): SUITE_RESULT; chaseBots 9 pass + 1 todo (B4's child), tierBots 7/7, engine tools 33/33, rolling 13/13,
-chaseCamera 4/4, chaseFixtureStage 2/2, chaseLay + fixture 12/12; drawcheck PASS (22/22, 663 s) + the 1-98 fixture PASS both ways; lock
+**Method:** clip tools press jump with input.triggerTouchUp/releaseTouchUp (D69); his x = MIDDLE, y = FEET; a hazard lay check takes
+the platforms. **Learned:** a camera change moves every screen-anchored draw (re-measure); dev routes never touch the stage listing.
+**Gates (LAWS 5, src changed):** tsc PASS on de1e22fb; FULL SUITE (CLAUDE.md glob) on ced9ea4e: 3,430 pass, **1 FAIL** (listed.test
+'nothing in the game calls withTestStage': my dev fixture did), 2 todo; fixed at root in de1e22fb (listed + fixture + chaseLay 15/15); the
+full re-run on de1e22fb STARTED 5:52 PM ET, UNRUN at this writing. On ced9ea4e: chaseBots 9 pass + 1 todo (B4's child), tierBots 7/7, engine tools 33/33, rolling 13/13,
+chaseCamera 4/4, chaseFixtureStage 2/2, chaseLay + fixture 12/12; drawcheck PASS (22/22, 663 s) + the 1-98 fixture PASS both ways (fixture build before de1e22fb: the page now rolls it under 1-1's row,
+its clips and fixture drawcheck are of the old roll); lock
 102/102 stages unchanged vs 956e33e0 (lockall --layouts 16); build PASS, chunkcheck PASS, artcheck PASS, generality PASS, knowncheck
 PASS, roadmapcheck PASS (after unshallow). Not run: clipcheck, kbdcheck, buildcheck, seedlist --check (no menu, keyboard or seed change).
 **EXACT NEXT STEP for BUILD-18 (1-8's builder):** READY: lay `rolling` specs on 1-8's stage data (teach nut + teach fruit on beats 1-2,
