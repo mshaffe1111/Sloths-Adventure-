@@ -29,7 +29,8 @@ import { venomRig } from './venomRig.ts';
 import { newBrain } from './bossAI.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { FONT_UI } from './fonts.ts';
-import { withHurtFlash } from './hurtFlash.ts';
+import { withHurtFlash, withWash } from './hurtFlash.ts';
+import { MOSS_TINT } from './sweepPose.ts';
 import { gateArtReady, stageArtReady } from './stageArt.ts';
 
 /**
@@ -511,10 +512,14 @@ export function drawScene(ctx: CanvasRenderingContext2D, id: DemoId, t: number, 
     }
     case 'hide': {
       ground(ctx);
-      const bush = { x: 120, w: 110, y: FLOOR, kind: 'wide' as const };
+      const bush = { x: 120, w: 110, y: FLOOR, kind: 'tall' as const }; // (1-7's tall leafy bush: he stands still inside it)
       const inside = t > 1.1 && t < 3.6;
       const x = t < 1.1 ? lerp(10, 175, t / 1.1) : t < 3.6 ? 175 : lerp(175, 330, (t - 3.6) / 0.6);
-      pokey(ctx, now, x, FLOOR, inside ? { ducking: true, facing: 1 } : run(t));
+      // (1-7's rule, KEEPER-17b: he keeps still in the green, never ducks; the moss comes over him as the calm comes in, the game's own
+      // wash and colour: engine.ts mossWash, sweepPose.ts MOSS_TINT)
+      const calm = inside ? clamp01((t - 1.4) / 0.6) : 0;
+      const wash = calm > 0 ? `rgba(${MOSS_TINT.rgb}, ${(MOSS_TINT.alpha * calm).toFixed(3)})` : null;
+      withWash(ctx, wash, x - 64, FLOOR - 120, 128, 132, (c) => pokey(c, now, x, FLOOR, inside ? { facing: 1 } : run(t)));
       ctx.save();
       if (inside) ctx.globalAlpha = 0.62;
       if (!drawBushArt(ctx, bush, inside, 0, now)) {
