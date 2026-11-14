@@ -65,3 +65,5 @@ the first: count levels that reach his test link at the bar, against the usage %
 | ENG-INT5 (Opus xhigh) | engine base t-eng-base: feel-cam + castBots climb floor + t-pieces + t-nodes on 0.9.8; every gate green; lock unchanged | $6.92 | ~57 min |
 | RULER (Opus max) | per-gap pit ruler + 5 planted tests; found 1-1 earthless holes (R-165.221) and its own 1-2 log bug; held until 1-1 lays | $17.52 | ~70 min |
 | HOOKS (Opus xhigh) | StagePiece + one engine loop (RIDE moved on), one letter table for nodeCode/nodeAsks/NODE-KEY; every gate green | $11.51 | ~85 min |
+| REL-098 (Opus xhigh) | 0.9.8 release: full gates, #ctest -> 1-5, PR #71 (merged 73e7bed0; APK v0.9.8-40, pages 199 green) | $10.11 | ~150 min incl. waiting on Matt |
+| POLISH-3 (Opus high) | 1-1 holes + 1-4 length/rough spots; stopped NOT GREEN at t-polish-3@a9d6b1bc (unit2 w1.relay: holes under the route need a typed Drop) | $11.99 | ~100 min |
