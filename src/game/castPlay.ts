@@ -34,6 +34,8 @@ export interface CastHero {
   grounded: boolean;
   /** holding a vine or a rope */
   holding: boolean;
+  /** hanging from a rope (holding it): his creep along it is moving (stillness.ts moving) */
+  hanging?: boolean;
   /** the vine he holds, by id (a mossy liana is cover: stillness.ts Cover.rope) */
   rope?: number;
 }

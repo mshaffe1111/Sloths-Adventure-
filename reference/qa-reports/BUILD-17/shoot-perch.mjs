@@ -1,6 +1,6 @@
 /**
  * BUILD-17 Step 0 redo 1: the perched eagle clear of the HUD by >= 24 px both ways; every caption prints the eagle's top on screen
- * ((homeY - 338/3 - camera.y) x zoom) against the HUD's bottom over it (the progress sign's DOM rect, and every [data-hud-keepout] over its x).
+ * ((homeY - 338/3 - camera.y) x zoom) against the HUD's bottom over it (the progress sign's DOM rect (.vh-cplate, VineHud.tsx), and every [data-hud-keepout] over its x).
  * ENG-E2 (from ENG-E1's shooter): the moss cover and the PERCHED eagle on the REAL game (dev page, the engine's own draw: no mock). 1-1's opening bank with its own animals taken off,
  * and ONE eagle laid the way World 1's still table lays it (w1Cast.ts eagleOver, imported from the dev server) over a 1100 px stretch
  * with two bushes (proto.bushes, the covers castPlay hides a still sloth in). The whole action, D63:
@@ -76,18 +76,18 @@ for (const [w, h] of PHONES) {
     const e = window.__engine(), m = e.cast.members[0], s = m.s, p = e.player;
     const z = e.zoom, cx = e.camera.x, cy = e.camera.y;
     const top = (s.homeY - 338 / 3 - cy) * z, ex0 = (s.x - 70 - cx) * z, ex1 = (s.x + 60 - cx) * z;
-    const sign = document.querySelector('.vh-card');
+    const sign = document.querySelector('.vh-cplate');
     const signB = sign ? sign.getBoundingClientRect().bottom : -1;
     let hud = 0;
     for (const el of document.querySelectorAll('[data-hud-keepout]')) { const r = el.getBoundingClientRect(); if (r.width && r.right > ex0 && r.left < ex1 && r.top < innerHeight / 2) hud = Math.max(hud, r.bottom); }
-    return { phase: s.phase, t: +s.t.toFixed(2), eye: Math.round(s.eyeX), passes: s.passes, bx: Math.round(s.x), x: Math.round(p.x), hearts: p.hp, moss: +e.cast.calmNow(e.easy).toFixed(2), perched: s.x === s.homeX && s.y === s.homeY, eagleTop: Math.round(top), signBottom: Math.round(signB), hudOver: Math.round(hud), clear: Math.round(top - Math.max(signB, hud)) };
+    return { phase: s.phase, t: +s.t.toFixed(2), eye: Math.round(s.eyeX), passes: s.passes, bx: Math.round(s.x), x: Math.round(p.x), hearts: p.hp, moss: +e.cast.calmNow(e.easy).toFixed(2), perched: s.x === s.homeX && s.y === s.homeY, eagleTop: Math.round(top), signBottom: Math.round(signB), hudOver: Math.round(hud), clear: Math.round(top - Math.max(signB, hud)), zoom: +z.toFixed(3) };
   });
   const stamp = (text) => page.evaluate((text) => {
     let d = document.getElementById('__lab');
     if (!d) { d = document.createElement('div'); d.id = '__lab'; Object.assign(d.style, { position: 'fixed', left: '4px', bottom: '4px', right: '4px', zIndex: 99999, font: '11px/1.3 monospace', color: '#fff', background: 'rgba(0,0,0,.6)', padding: '3px 5px', pointerEvents: 'none' }); document.body.appendChild(d); }
     d.textContent = text;
   }, text);
-  const label = (what, v) => `${what} | ${tag} | built ${set.stage} (${set.diff}${set.easy ? ', easy on' : ''}) + laid moss + one PERCHED eagle | t-build-17@${sha} | kit ${v.phase} eye ${v.eye} body ${v.bx} pass ${v.passes} | Pokey x ${v.x}, moss ${v.moss}, hearts ${v.hearts} | perched ${v.perched}: eagle top ${v.eagleTop}px, sign bottom ${v.signBottom}px, HUD over it ${v.hudOver}px, CLEAR ${v.clear}px ${v.clear >= 24 ? 'PASS' : 'FAIL'}`;
+  const label = (what, v) => `${what} | ${tag} | built ${set.stage} (${set.diff}${set.easy ? ', easy on' : ''}) + laid moss + one PERCHED eagle | t-build-17@${sha} | kit ${v.phase} eye ${v.eye} body ${v.bx} pass ${v.passes} | Pokey x ${v.x}, moss ${v.moss}, hearts ${v.hearts} | perched ${v.perched}: eagle top ${v.eagleTop}px, sign bottom ${v.signBottom}px, HUD over it ${v.hudOver}px, zoom ${v.zoom}, CLEAR ${v.clear}px ${v.clear >= 24 ? 'PASS' : 'FAIL'}`;
   const frames = [];
   let sampling = clip;
   const sampler = (async () => {

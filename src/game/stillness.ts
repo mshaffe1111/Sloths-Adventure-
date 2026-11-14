@@ -29,6 +29,8 @@ export interface StillBody {
   grounded: boolean;
   /** holding a vine or a rope (a liana's swing may carry him: that is the vine moving, not him) */
   holding: boolean;
+  /** hanging from a rope by his hands (a kind of holding): his creep along it is him moving (BUILD-17: hanging moss hides a still hang) */
+  hanging?: boolean;
 }
 
 export interface StillState {
@@ -38,9 +40,9 @@ export interface StillState {
 
 export const newStill = (): StillState => ({ held: 0 });
 
-/** is he moving on this frame? In the air, always; on a vine, when he climbs; on the ground, at a walk or more */
+/** is he moving on this frame? In the air, always; on a vine, when he climbs; on a rope, when he creeps along it; on the ground, at a walk or more */
 export const moving = (p: StillBody, set: StillSetting): boolean =>
-  p.holding ? Math.abs(p.vy) > set.speed : !p.grounded || Math.abs(p.vx) > set.speed;
+  p.holding ? Math.abs(p.vy) > set.speed || (!!p.hanging && Math.abs(p.vx) > set.speed) : !p.grounded || Math.abs(p.vx) > set.speed;
 
 /** one fixed step: the hold grows while he is still and is gone the frame he moves */
 export function stepStill(s: StillState, p: StillBody, dt: number, set: StillSetting): StillState {

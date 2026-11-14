@@ -56,7 +56,17 @@ for (const [w, h] of [[412, 915], [915, 412]]) {
     return { stage: e.currentStage.config?.id, diff, lianas: vs.length, v: { x: v.x, top: v.topY, bottom: v.bottomY } };
   });
   console.log(tag, 'liana', JSON.stringify(lia));
-  for (let i = 0; i < 80 && !(await page.evaluate(() => !!window.__engine().player.isVineSwinging)); i++) await sleep(25);
+  // (the game's own catch: canGrabSwing(x, y, v, clock), physics.ts; each try he is put where the swinging liana's hands are now, up held)
+  for (let i = 0; i < 120 && !(await page.evaluate(() => !!window.__engine().player.isVineSwinging)); i++) {
+    await page.evaluate(async () => {
+      const e = window.__engine(), p = e.player, ph = await import('/src/game/physics.ts');
+      const v = e.vines.filter((q) => q.vineType !== 'tree_climb' && q.mossy).sort((a, b) => a.x - b.x)[0];
+      for (let y = v.bottomY - 10; y > v.topY + 60; y -= 6) for (let dx = -200; dx <= 200; dx += 4) {
+        if (ph.canGrabSwing(v.x + dx, y, v, e.vineClock)) { p.x = v.x + dx; p.y = y; p.vx = 30; p.vy = 0; p.grounded = false; e.input.state.up = true; return; }
+      }
+    });
+    await sleep(20);
+  }
   await page.evaluate(() => { window.__engine().input.state.up = false; });
   await sleep(1400);
   const s1 = await page.evaluate(() => { const e = window.__engine(), p = e.player; return { swinging: !!p.isVineSwinging, x: Math.round(p.x), moss: e.cast ? +e.cast.calmNow(e.easy).toFixed(2) : -1 }; });
@@ -76,6 +86,8 @@ for (const [w, h] of [[412, 915], [915, 412]]) {
     e.proto.bushes = [...(e.proto.bushes ?? []), { x: mid - 86, w: 173, y: ry + 4, kind: 'mossHang', hanging: true }, { x: mid + 150, w: 78, y: ry + 4, kind: 'mossHang', hanging: true }];
     e.proto.cast ??= { kinds: [], traps: [] };
     e.startCast?.();
+    // (a rope is hung on only with the shimmy skill learned, engine.ts updateRope: 1-3 teaches it, so a fresh save has it from 1-3 on)
+    e.skills.add('shimmy');
     const p = e.player;
     // (the game's own catch, engine.ts ~:5390: his hands, p.y - HAND_REACH 70, within ry-12..ry+30 while rising or with Up held)
     const at = r.y;
@@ -84,7 +96,11 @@ for (const [w, h] of [[412, 915], [915, 412]]) {
     return { r: JSON.stringify(r).slice(0, 160), mid, ry };
   });
   for (let i = 0; i < 80 && !(await page.evaluate(() => !!window.__engine().player.hanging)); i++) {
-    await page.evaluate(({ mid, ry }) => { const p = window.__engine().player; if (!p.hanging) { p.x = mid; p.y = ry + 76; p.vy = 0; p.grounded = false; } }, rope);
+    await page.evaluate(async ({ mid }) => {
+      const e = window.__engine(), p = e.player, rm = await import('/src/game/rope.ts');
+      const r = e.ropes[0];
+      if (!p.hanging) { p.x = mid; p.y = rm.ropeYAt(r, mid) + rm.HAND_REACH + 4; p.vy = 0; p.vx = 0; p.grounded = false; e.input.state.up = true; }
+    }, rope);
     await sleep(20);
   }
   console.log(tag, 'rope', JSON.stringify(rope));

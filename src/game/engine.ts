@@ -4620,7 +4620,10 @@ export class GameEngine {
     this.swingLenWas = len;
     h.facing = p.facing;
     h.grounded = p.grounded;
-    h.holding = !!(p.climbing || p.isVineSwinging);
+    // (hanging on a rope is holding too: hanging moss hides him only while he hangs in it, stillness.ts inCover; without it the drape never
+    //  hid him in the game, BUILD-17's hanging-moss still: hanging true, calmNow 0. hangCover.test.ts)
+    h.holding = !!(p.climbing || p.isVineSwinging || p.hanging);
+    h.hanging = !!p.hanging;
     h.rope = p.isVineSwinging ? p.swingVineId : p.climbing ? p.climbingVineId : undefined;
     const r = c.step(h, dt, this.gameTime, this.easy);
     // (the cues the old animals give: a '?' when it notices him, a '!' and its call when its tell begins. A sweeper's notice is its pass
