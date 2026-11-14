@@ -1,0 +1,22 @@
+at's New: player words only, short lines
+ok 960 - What's New: player words only, short lines
+  ---
+  duration_ms: 0.696389
+  type: 'test'
+  ...
+# Subtest: What's New: dates read in words
+ok 961 - What's New: dates read in words
+  ---
+  duration_ms: 0.145004
+  type: 'test'
+  ...
+1..961
+# tests 961
+# suites 0
+# pass 960
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 1
+# duration_ms 2806836.436615
+exit 0

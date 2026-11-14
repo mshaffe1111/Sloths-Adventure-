@@ -3,6 +3,14 @@
 Last task: R-165.85 (cut only), Matt's 15 sheets of 11-09, by the Content member on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
 
+## 0e. 11-14 POLISH-6 (t-polish-6): stones stay on their ground (R-165.226)
+- The lay settles every World 1 stone/stump (WorldKit.settle -> w1CutArt.settleCut): piece with the least move, then a whole-px move back
+  from the lip; a rising bank is no lip; none fits -> the section is re-laid. Platform.cut is now set IN THE LAY; w1Finish keeps it (cutOf).
+- Gate: src/game/w1Overhang.test.ts (every World 1 listed layout, both settings, OVERHANG_MAX 6 px). A new World 1 stage joins it by
+  being in PROVEN_INDEX; a new cut piece is measured by its frame box (cutBox), which IS its opaque extent (measured 11-14).
+- Art faults still open: w1-rock-roots' footing line ~52 px low (a wall behind him); settleCut never picks it as a stand-in.
+- 1-1 layout n plays list index n-1 (layout 17 = seed 9652, Matt's frame; 18 = 9800, the first-run layout).
+
 ## 0d. 11-13 ART (t-art-1113): handed over mid-task, see reference/qa-reports/ART/HANDOVER.md
 - Packed: Pokey's two-hand climb (hero-climb2), 1-5's set + dusk set (w1dusk), 1-4's pieces, 9 fruit + golden guarana; 29 catalog rows.
 - Left: the creek hurt floor, the oropendola flyer, the leafcutter ant (takes in reference/art/hf1113/left/).
