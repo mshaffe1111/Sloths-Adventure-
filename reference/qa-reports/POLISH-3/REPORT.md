@@ -1,9 +1,12 @@
 # POLISH-3 REPORT (t-polish-3 from t-eng-base@204e3dec; lead session_01FhBbYNzGRJBDMzn6XbtQK2). Opus 5.5 high. Box 9:51-11:21 PM ET 11-13.
-**EXACT NEXT STEP:** (lead 10:50 PM: the 1-1 fix PASSES as play; the fog/painted floor is R-165.224; seed-323 goes to the engine lane) 0. NOT GREEN: unit2's relay
-rule (Gates below) first, then the full suite once. 1. The 1-4 rotten-fork redesign (item 2, below). 2. When t-ruler merges: on the merged head run `seedlist 1-1 --merge <the list's
-257 seeds in order, JSON> --in-order --count 257` (88 s; 49477, 55341, 65753 replay differently under the ruler), then --check. 3. verdicts.test.ts
-seed-323 copy: NOT fixable by a bank (below); promises11 realFalls' floor clause is the fix (the engine lane, lead 10:50 PM). 4. Items 2-5 of the
-packet not started: 1-4's rotten fork (w1Arc14.ts on t-len-14@d56cd91, t-int-6 REPORT step 2), the 1-4 gate under the HUD, GOLDEN SEED, petals.
+**EXACT NEXT STEP:** (lead 10:50 PM: the 1-1 fix PASSES as play; the fog/painted floor is R-165.224; seed-323 goes to the engine lane) 0. NOT GREEN. 1. (lead 11:18 PM, option 1) a typed Drop
+kind for "a hole under the route" (verdicts.types.ts token; pipeline.ts softHoles sets it on its records) that w1.relay.test gapsOf skips;
+no verdict loosened. Failing case (unit2.log): w1.relay.test.ts:379 "1-1 (a) teach first": 145 lines, e.g. 'normal seed 982: test gap at
+x 30039: 2702 px, outside 252-262', 'easy seed 982: Easy lays a double gap at x 31857: 2795 px (Easy has none)'. Then the full suite once.
+2. R-165.206, 1-4's rotten fork (w1Arc14.ts ROTTEN_FORK on t-len-14@d56cd91, not in base; t-int-6 REPORT step 2): make the creak the way UP or hide the exit till he is down; castBots before/after on one head; ONE relist. 3. When t-ruler merges: on the merged head run `seedlist 1-1 --merge <the list's
+257 seeds in order, JSON> --in-order --count 257` (88 s; 49477, 55341, 65753 replay differently under the ruler), then --check. 4. verdicts.test.ts
+seed-323 copy: NOT fixable by a bank (below); promises11 realFalls' floor clause is the fix (the engine lane, lead 10:50 PM). 5. Packet items 3-5 not
+started: R-165.209 (1-4 gate under the HUD sideways, square posts), R-165.109 (GOLDEN SEED, engine.ts: HOOKS), R-165.135 (petal shape).
 ## Done (evidence)
 - **R-165.221 (pipeline.ts `earthHoles`, `softHoles`):** a stage whose brief says no fall costs a life (`softFalls`: 1-1) gets ONE soft zone
   and ONE put-back fall record over every hole in its earth (no piece 90 px deep at any depth, lip to lip). Play unchanged: 1-1 already sets
