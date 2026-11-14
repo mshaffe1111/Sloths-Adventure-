@@ -1,0 +1,5 @@
+INT-9b: the shipped build (BASE_PATH=/Sloths-Adventure-/ vite build) of fb409960 (INT-9's judged head) vs b288b3fa (the gated head;
+09f44c30 adds only a test file + reference/). 1049 files each; after normalizing vite's 8-char file hashes and git stamps, 4 differ, all
+by the build timestamp only: version.json {"build":"2026-11-14T21:14:29+00:00"} vs 21:43:15; assets/index.js and assets/stagekit.js
+(the same stamp embedded); sw.js (the precache revision of index.html, which carries the stamp). Every other byte of the game is the
+same: the 1-1 / 1-4 / 1-7 stills and clips INT-9 shot and the lead judged stand unchanged.
