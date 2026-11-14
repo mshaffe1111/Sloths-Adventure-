@@ -54,7 +54,34 @@ DRAFT: numbers marked (PENDING) are filled from the runs on the final head.
   Seeds 1-6 had hidden this: on them the expert failed 4 and the kid none. The two petals ruled on are on the path now; the expert still
   misses 4-6 a run across the stage. That is stage-wide petal placement (Suggestion 2), not two spots.
 
-## Polish check (PENDING)
+### 5. The kid's 6 Normal rescues, traced (the lead's ruling 6:23 PM ET, item 3; `rescues/kidrescue.ts`, `rescues/where.ts`, outputs beside them)
+One line each: seed, x, frame (30 fps, from his run clock), the beat and the liana over the pit, what put him in, whether it repeats.
+- s14, x 39223, f~5747: false-liana beat, the pit under the REAL liana sl1. He let go on the BACKSWING twice (f5710 vx -234, f5882 vx -277)
+  into the pit; then he fell back into it 3 times climbing out (its far wall 248 px up) -> rescue. RELEASE. Only seed there.
+- s20, x 24025, f~3808: snake-on-vine, the pit under l1 (down-off snake). Let go on the backswing three times (f3603 vx -294, f3772 vx -210,
+  f3944 vx -252); fell into the pit 3 times (far wall 258 px up). RELEASE (the snake never touched him: no -157 hop). Repeats: s21.
+- s21, x 23717, f~3707: snake-on-vine, the same pit under l1. The snake's startle hop the frame after he caught (f3436 caught, f3437 let go vy
+  -157), then a backswing let-go (f3601 vx -210) and another hop (f3841); pit 3 times (far wall 259 px up). SNAKE + RELEASE. Repeats s20.
+- s23, x 34525, f~4681: risers, the pit under l2 (a riser). The riser's hop the frame after he caught (f4507 -> f4508 vy -157), again after
+  he climbed high (f4793); stuck in a dip 49 px deep, the way on 145 px up. SNAKE. Repeats the riser pattern of s25, s36.
+- s25, x 44000, f~7348: gorge, the pit under l2 (a riser). The riser's hop (f6874 vy -157); back on l1, then l2 from high (y 526), a short leap
+  (f7416 vx 340); pit 3 times (far wall 202 px up). SNAKE. Same spot as s36.
+- s36, x 44311, f~7391: gorge, the same pit under l2. The riser's hop the frame after he caught (f7349 -> f7350 vy -157); pit 3 times (far
+  wall 196 px up). SNAKE. Same spot as s25.
+- (adult s38, x 43262: gorge, the pit under l1 (down-off); pit 3 times, far wall 253 px up. kid Easy s18, x 18610: a dip 54 px deep under a
+  241 px wall, the way on 153 px up.)
+**Read together:** two ways IN (a let-go on the backswing: s14, s20, s21; a snake already at his hands as he catches: s21, s23, s25, s36),
+and one way it becomes a RESCUE: he cannot climb out of a liana's pit (five of six "fell into this pit 3 times", far wall 196-259 px up; s23
+a dip). hitBy is empty on all six: nothing took a heart; these are falls into the soft pits. A miss into a soft pit is the stage's designed
+cost (1-6.md: "a miss drops to the moss with the stair back"), so the shared fault is the climb out (BOT, firsttimer.ts pitWayUp /
+pitWayBack, as ENG-16F's B3/B4) unless the stair back is missing under these lianas (STAGE). First check for the next engineer: on s20
+and s36, is there a stair back to the take-off bank under that liana (w1Pits.ts / pipeline backPit), and does the kid take it?
+
+## Polish check
+- No stills or clips were shot: the lead's ruling 6:23 PM ET (the walked-span petal lay will move 1-6; no polish on what is being
+  replaced). The shoot scripts are ready for the next engineer: `node reference/qa-reports/ENG-16G/shoot.mjs <sha> normal|easy` (CLIP=1
+  for clips; beats first, chain, hanglow, met, snake, creak, risers, false, falsereal, gorge; the clip prints and saves its CLEARANCE
+  FRAME, swinging on the real liana nearest the false one) and `exit.mjs` (CLIP=1 records the sealed and open door).
 
 ## Pushback
 - (PENDING)
