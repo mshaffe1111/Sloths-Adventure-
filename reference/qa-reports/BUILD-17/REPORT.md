@@ -10,6 +10,18 @@ Lessons applied: D36 (frozen worktrees for gates, shots, plants), D40 (Step 0 fi
    packet: listed stages take their STAGE_DRAWS row (registrycheck --stage 1-7 then clean).
 3. `addlevel 1-7 --relist` after 2, with the bots (1-40).
 
+## ENGINE-WORTHY (level.md rule 22: workarounds in 1-7's data the next level would also need; NOT moved, for the integrator)
+1. w1Arc17.ts:274 the still finish (clipWatches + castWatches) runs in finish17: World 1 has no decorate pass, so every W1 stealth stage repeats it; it belongs in w1World's kit.
+2. w1Arc17.ts:288 W17_JOIN: a watched stretch ends at a gap (stillLay watchedRun), so a beat whose question crosses a gap needs a socket/row option "watch across gaps".
+3. w1Arc17.ts:286 lianas marked mossy by section tag in the finish: no SectionPiece field carries `mossy` to Vine; a `mossy` place option on 'swing'.
+4. w1Arc17.ts:305 the perched eagle swapped in by the finish, its snag put on open bark: castWatches/WatchRow has no `perch` option.
+5. w1Arc17.ts:310 Easy's free first pass on every stretch: WatchRow.free has only 'lesson'; an 'easy-all' value.
+6. w1Arc17.ts:322 each still prop tagged with its own id so a socket asks for one cover kind: stillProps tags only hide/cover.
+7. w1Arc17.ts:107 lineId (`w17.<key>`): a kit tip whose id equals a move lesson ('creak', 'swing') is silently never said (pipeline tips vs lessons).
+8. w1Arc17.ts:95 rock(): the quiet line (tools/inspect deadTime) counts hops, never hiding, so stealth stretches need hop props to pass it.
+9. w1Arc17.ts:85 liana(): 1-6's SHORT perch + drop is re-written here; w1Swing.ts should export lianaRun.
+10. stageSheets.ts:192: listed stages never read STAGE_DRAWS (1-7's props2 not preloaded); registrycheck names it.
+
 ## Done-items
 | Item | Evidence |
 |---|---|
