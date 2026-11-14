@@ -61,3 +61,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | FEEL-CAM (Opus xhigh) | camera re-pick eases on vine grab/leap/exit (jerk 17.5->2.6 etc.), cuts stay cuts, planted tests, real-page measurer | $7.16 | ~60 min |
 | INT-6 (Opus xhigh) | merged perf-build + polish-2 + feel-vine; full gates GREEN f9671e3b; castBots climb floor reads STAGE-RULES:77; 1-4 length tried (fork strands bots: held) | $13.02 | ~70 min |
 | KEEPER-098 (Opus high) | approved 0.9.8 lines: 4 approved, 3 replaced; flagged petals-on-limbs (R-165.218) | $0.74 | ~5 min |
+| TRIAGE-MATT (Opus medium) | 43 open Matt-reported rows checked vs code: 27 still true, 8 fixed, 4 moot, 4 need a run; ranked 1-1/1-4 list | $3.84 | ~12 min |
