@@ -22,3 +22,26 @@ Earlier run, branch sheet NOT waited for (frames may mix flat bars and the paint
 
 Read: B2 fails on 2-1 upright and every World 3 backdrop. C1 passes all but 2-1 upright (17.4). C4 is the look the lead asked for and
 passes every sideways backdrop by a wide margin (A 25-39) but fails upright (A 13.5-17.4): its glow radius follows the screen width.
+
+Built attempts (the lead approved C4 at 1:47 AM; each measured on the real piece code, the "B2" column of contrast.mjs):
+build 1 (9d0e9bf5: one radial glow at the edge at his feet, dark ember core, r = max(w, 0.55h) x 0.58, bark chips):
+  1-2   upright   full A/B  11.5/9.7   win A/B  17.1/15.1  FAIL
+  1-2   sideways  full A/B  26.3/26.1  win A/B  29.4/25.7  PASS
+  2-1   upright   full A/B   9.9/8.3   win A/B  14.4/12.8  FAIL
+  2-1   sideways  full A/B  20.2/19.9  win A/B  23.3/20.7  PASS
+  3-1   upright   full A/B  13.8/12.3  win A/B  20.7/19.3  FAIL
+  3-1   sideways  full A/B  20.6/29.5  win A/B  20.1/28.8  PASS
+  3-9   upright   full A/B  13.4/11.8  win A/B  20.1/18.5  FAIL
+build 2 (ember core centred on the front, clamped; r x 0.44):
+  1-2   upright   full A/B   8.2/3.8   win A/B  13.7/6.2   FAIL
+  1-2   sideways  full A/B  24.1/34.3  win A/B    27/36.9  PASS
+  2-1   upright   full A/B   8.2/3.2   win A/B  13.7/5.2   FAIL
+  2-1   sideways  full A/B  20.6/26.9  win A/B  24.1/30    PASS
+  3-1   upright   full A/B  10.1/3.9   win A/B  16.8/6.6   FAIL
+  3-1   sideways  full A/B  29.8/41.2  win A/B  33.3/44.3  PASS
+  3-9   upright   full A/B  10.2/4.1   win A/B  17.1/6.9   FAIL
+  3-9   sideways  full A/B  30.5/40.9  win A/B  33.5/44.3  PASS
+Both fail upright (build 2 is BELOW B1 upright: the front is off-screen behind him upright, so its glow sat outside the frame). The head
+is back on B2 (linear, the table above) as the best measured; the look is not final. C4 needs its two layers (edge band + glow): that is
+2 gradients a frame, over drawcheck's limit (limits.json gradients max 2, stages already at 2): bake the glow once per size into a cached
+canvas (one drawImage a frame, globalAlpha = k; re-bake on canvas restore, D6) and keep the chips.

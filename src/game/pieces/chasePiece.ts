@@ -13,7 +13,6 @@
 import { sound } from '../audio.ts';
 import { caughtInRun, chaseLayProblems, frontBehind, newChaseRun, restartRunAt, sectionInRun, sectionStretch, stepChaseRun, type ChaseRun } from '../chase.ts';
 import { drawChaseBroken, drawChaseSection } from '../protoArt.ts';
-import { drawGritBit } from '../w4Grit.ts';
 import type { PieceHost, PieceHurt, PieceKind, PieceLayer, StagePiece } from '../stagePiece.types.ts';
 import type { Platform } from '../types.ts';
 
@@ -31,69 +30,28 @@ const CREAK_NEAR = 700;
 const CREAK_EVERY = 1.2;
 /**
  * The warning at the trailing edge of the screen, by how far the front is behind him: none with it `from` px back, full at `from - span`
- * and closer. Where the branch breaks, not a column over the scene (the lead, 11-14: "the air behind him is falling apart", not a dirty
- * filter): one ember glow anchored at the trailing edge at his feet' height (a dark ember core that reads on a light, misty backdrop and a
- * warm rim that reads on a dark one, where B1's dark tint vanished), an ellipse `tall` times as high as wide, sized by the screen's larger
- * side so upright gets the glow sideways gets; and bark chips falling from the branch line through it, a few lit by it rising. One
- * gradient and at most `bits` painted chips a frame (drawcheck's gradient limit is 2 a frame). Measured: reference/qa-reports/B2/contrast.mjs.
+ * and closer. A dark core at the edge (it reads on a light, misty backdrop) with a warm rim on its inner side (it reads on a dark one,
+ * where a dark tint alone vanished: B1's stills, 11-13), up to `max` alpha; it reaches further in (`wide` + `grow` of the view's width)
+ * as the front closes. B2 measured it on 1-2, 2-1 and World 3's darkest backdrop (reference/qa-reports/B2/contrast.mjs).
  */
-export const EDGE = { from: 650, span: 500, core: 0.62, reach: 0.4, grow: 0.18, upright: 0.55, tall: 1.3, bits: 22 } as const;
+export const EDGE = { from: 650, span: 500, max: 0.75, wide: 0.3, grow: 0.12 } as const;
 
-export interface EdgeBit {
-  /** the chip's pick on the grit sheet (w4Grit.ts drawGritBit `c`), its middle in screen px, size, turn, alpha and tint */
-  c: number;
-  x: number;
-  y: number;
-  size: number;
-  rot: number;
-  alpha: number;
-  tint: string;
-  ember: boolean;
-}
-
-/**
- * The edge's look with the front `gap` px behind him, on a screen `w` x `h`, his feet at screen y `feetY`, at time `t` (s): its strength
- * (0 to 1), the glow (centre, radius across, height over width, stops from the centre out) and the chips.
- */
-export function edgeLook(gap: number, w: number, h: number, feetY: number, t: number): {
-  k: number;
-  glow: { x: number; y: number; r: number; tall: number; stops: Array<[number, string]> };
-  bits: EdgeBit[];
-} {
+/** the edge's strength (0 to 1) with the front `gap` px behind him, its width (a share of the view) and its gradient stops, left to right */
+export function edgeTint(gap: number): { k: number; width: number; stops: Array<[number, string]> } {
   const k = Math.max(0, Math.min(1, (EDGE.from - gap) / EDGE.span));
-  const a = (f: number) => +(EDGE.core * f * k).toFixed(3);
-  const r = Math.max(w, EDGE.upright * h) * (EDGE.reach + EDGE.grow * k);
-  const bits: EdgeBit[] = [];
-  const n = Math.round(EDGE.bits * k);
-  const span = h * 0.5;
-  for (let i = 0; i < n; i++) {
-    // (each chip from its own number: the same run looks the same)
-    const p = (i * 0.618034) % 1;
-    const q = (i * 0.371 + 0.13) % 1;
-    const ember = i % 3 === 0;
-    const x = r * (0.04 + 0.7 * q) + Math.sin(t * 1.7 + i) * 8;
-    // (bark falls from the branch line; the lit bits rise from it)
-    const u = (p + t * (ember ? 0.12 : 0.3 + 0.2 * p)) % 1;
-    const y = ember ? feetY - u * span * 0.8 : feetY - 10 + u * span;
-    bits.push({
-      c: p + i * 0.001, x, y, size: ember ? 6 + 5 * p : 11 + 9 * p, rot: t * (1 + 2 * q) * (i % 2 ? 1 : -1),
-      alpha: +(k * (1 - u) * 0.9 * (1 - (0.5 * x) / r)).toFixed(3), tint: ember ? '#ffb060' : '#5a3620', ember,
-    });
-  }
+  const a = (f: number) => +(EDGE.max * f * k).toFixed(3);
   return {
     k,
-    glow: {
-      x: 0, y: feetY, r, tall: EDGE.tall,
-      stops: [
-        // (a dark ember core at the break, its warm rim, then nothing)
-        [0, `rgba(44, 11, 3, ${a(1)})`],
-        [0.32, `rgba(120, 34, 9, ${a(0.8)})`],
-        [0.58, `rgba(222, 92, 28, ${a(0.55)})`],
-        [0.8, `rgba(244, 128, 44, ${a(0.22)})`],
-        [1, 'rgba(244, 128, 44, 0)'],
-      ],
-    },
-    bits,
+    width: EDGE.wide + EDGE.grow * k,
+    stops: [
+      // (the dark core at the edge, near black and warm, easing through an ember glow to nothing: one long ramp, no stripe; a short
+      // fade after the glow drew a hard orange band, B2's first stills)
+      [0, `rgba(14, 4, 2, ${a(1)})`],
+      [0.25, `rgba(30, 7, 3, ${a(0.8)})`],
+      [0.5, `rgba(110, 32, 10, ${a(0.5)})`],
+      [0.72, `rgba(204, 82, 26, ${a(0.26)})`],
+      [1, 'rgba(220, 100, 34, 0)'],
+    ],
   };
 }
 
@@ -224,19 +182,13 @@ class ChasePiece implements StagePiece {
   private drawEdge(ctx: CanvasRenderingContext2D, host: PieceHost) {
     const behind = frontBehind(this.run, host.player.x);
     if (behind === null) return;
-    const v = host.view;
-    const look = edgeLook(host.player.x - behind, v.w, v.h, (host.player.y - v.y) * v.zoom, host.t);
-    if (look.k <= 0.02) return;
-    const gl = look.glow;
-    ctx.save();
-    ctx.translate(gl.x, gl.y);
-    ctx.scale(1, gl.tall);
-    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, gl.r);
-    for (const [at, c] of gl.stops) g.addColorStop(at, c);
+    const t = edgeTint(host.player.x - behind);
+    if (t.k <= 0.02) return;
+    const w = host.view.w * t.width;
+    const g = ctx.createLinearGradient(0, 0, w, 0);
+    for (const [at, c] of t.stops) g.addColorStop(at, c);
     ctx.fillStyle = g;
-    ctx.fillRect(0, -gl.r, gl.r, gl.r * 2);
-    ctx.restore();
-    for (const b of look.bits) drawGritBit(ctx, b.c, b.x, b.y, b.size, b.rot, b.alpha, b.tint);
+    ctx.fillRect(0, 0, w, host.view.h);
   }
 }
 
