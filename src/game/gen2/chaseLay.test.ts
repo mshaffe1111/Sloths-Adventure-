@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../headlessDom.ts';
 import { applyVerdicts, buildGen2Stage } from './pipeline.ts';
-import { CHASE_LAY, chaseCap, chaseFloor, cutSections, layChase } from './chaseLay.ts';
+import { CHASE_LAY, chaseCap, chaseFloor, chaseStanders, cutSections, layChase } from './chaseLay.ts';
 import { checkCode, parseCode } from './nodeCode.ts';
 import { mixKit } from './toyLegs.ts';
 import { towerCfg } from './toyTower.ts';
@@ -192,6 +192,22 @@ test('ENG-B4: a stretch ends where the flag before it really stands reaches a fl
   const noFin = handStage([['arrive', 0, 1600], ['pressure', 1600, 3800], ['rest', 3800, 4800], ['exit', 4800, 6000]]);
   layChase(noFin.st, noFin.main);
   assert.ok(!noFin.st.chase!.stretches.some((t) => t.last), 'no finale: no last burst');
+});
+
+test('ENG-B4: nothing is left standing on air when a section falls: dressing or a creature\'s patch on a stretch refuses the lay by name (D16)', () => {
+  const nodes: Array<[string, number, number]> = [['arrive', 0, 1600], ['pressure', 1600, 3800], ['rest', 3800, 4800], ['exit', 4800, 6000]];
+  const dressed = handStage(nodes);
+  (dressed.st as unknown as { proto: unknown }).proto = { dress: [{ n: 'w1NutPod', x: 2500, b: 600 }, { n: 'w1NutPod', x: 4200, b: 600 }] };
+  const r = layChase(dressed.st, dressed.main);
+  assert.ok(r.problems.some((p) => /dress w1NutPod at x 2500 stands on a section that falls/.test(p)), `${r.problems}`);
+  assert.ok(!r.problems.some((p) => /x 4200/.test(p)), 'one on the fork stands on ground that never falls');
+  assert.equal(dressed.st.chase, undefined);
+  const walked = handStage(nodes);
+  (walked.st as unknown as { enemies: unknown }).enemies = [{ type: 'beetle', x: 2900, y: 570, width: 30, height: 30, patrolMinX: 2700, patrolMaxX: 3100 }, { type: 'bird', x: 2900, y: 300, width: 30, height: 30, patrolMinX: 2700, patrolMaxX: 3100 }];
+  const w = layChase(walked.st, walked.main);
+  assert.deepEqual(w.problems.filter((p) => /walks a patch/.test(p)).length, 1, `the walker only, never the flier: ${w.problems}`);
+  // (and on World 1's real kit none is laid: the yield above holds every one of its rolls clean of it)
+  for (const { s, st } of laid) assert.deepEqual(chaseStanders(st), [], `${s}`);
 });
 
 test('ENG-B4: the verdicts are judged afresh: a flag miss left by an earlier judgement never refuses a roll whose own flags pass', () => {

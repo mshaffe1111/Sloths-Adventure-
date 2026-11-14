@@ -229,6 +229,7 @@ export function layChase(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray
   }
   const lay: ChaseLay = { stretches: out.map(({ start, end, last }) => (last ? { start, end, last } : { start, end })) };
   problems.push(...chaseLayProblems(lay).map((w) => `chase: ${w}`));
+  problems.push(...chaseStanders(st).map((w) => `chase: ${w}`));
   if (problems.length) return { problems, stretches: out };
   // (every planned flag still stands on ground that never falls, after the cut)
   for (const q of placed) {
@@ -260,6 +261,32 @@ export function layChase(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray
   st.checkpoints = flags;
   st.chase = lay;
   return { lay, problems, stretches: out };
+}
+
+/**
+ * What would be left standing on air when a section falls (D16: every prop stands on something): a dressing piece whose foot is on a
+ * chase section's top (any world's dressing list: the bank and clutter sets, World 2's decor, World 3's, the puzzle sheets' pictures)
+ * or a creature whose patch runs over one, its feet on its top. The lay refuses a roll with one, by name (B3 measured none in 30 World 1
+ * rolls; this holds it for every kit). A flier (feet off every top) and a hanging piece (its `b` is its top) are never on one.
+ */
+export function chaseStanders(st: Pick<Gen2Stage, 'platforms' | 'enemies' | 'proto'>): string[] {
+  const secs = st.platforms.filter((p) => p.chase);
+  if (!secs.length) return [];
+  const TOL = 12;
+  const on = (x0: number, x1: number, y: number) => secs.find((p) => x1 > p.x && x0 < p.x + p.width && Math.abs(y - p.y) <= TOL);
+  const out: string[] = [];
+  const pr = st.proto as { dress?: Array<{ x: number; b: number; n?: unknown }>; decor?: Array<{ x: number; b: number; n?: unknown }>; w3decor?: Array<{ x: number; b: number; n?: unknown }>; kitDecor?: Array<{ x: number; b: number; n?: unknown }> } | undefined;
+  for (const [list, d] of [['dress', pr?.dress], ['decor', pr?.decor], ['w3decor', pr?.w3decor], ['kitDecor', pr?.kitDecor]] as const) {
+    for (const q of d ?? []) {
+      const p = on(q.x, q.x + 1, q.b);
+      if (p) out.push(`${list} ${String(q.n ?? '')} at x ${Math.round(q.x)} stands on a section that falls (x ${Math.round(p.x)})`);
+    }
+  }
+  for (const e of st.enemies ?? []) {
+    const p = on(Math.min(e.x, e.patrolMinX), Math.max(e.x, e.patrolMaxX) + e.width, e.y + e.height);
+    if (p) out.push(`a ${e.type} at x ${Math.round(e.x)} walks a patch over a section that falls (x ${Math.round(p.x)})`);
+  }
+  return out;
 }
 
 /** the latest spot at or before x `upTo` (null: none) */
