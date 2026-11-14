@@ -5,6 +5,7 @@ import { groundToFloor } from './groundFloor.ts';
 import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { buildFeelPairStage, FEEL_PAIR_ID } from './feelPairStage.ts';
+import { buildChaseFixtureStage, CHASE_FIXTURE_ID, chaseFixtureConfig } from './chaseFixtureStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { flagsInOrder } from './gen2/tower.ts';
@@ -2878,6 +2879,8 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   if (config.id === KIT_STAGE_ID) return buildKitStage(config);
   // the vine pair's feel test (a QA build only: feelPairStage.ts, R-165.170)
   if (config.id === FEEL_PAIR_ID && qaBuild()) return buildFeelPairStage(config);
+  // a real laid chase with its nuts and fruit, before 1-8 exists (a dev build only: chaseFixtureStage.ts, ENG-B5)
+  if (config.id === CHASE_FIXTURE_ID && chaseFixtureConfig()) return buildChaseFixtureStage(config, layoutVariant ?? 1, difficulty);
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
   // Dot's netting flight, the extra stage after 4-5 (dotFlightStage.ts); it is only in the stage list with the New stages switch on
   if (config.id === DOT_STAGE_ID) return dotGeneratedStage(config, layoutVariant ?? 1);

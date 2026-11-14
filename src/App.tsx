@@ -53,6 +53,7 @@ import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
 import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
 import { KIT_STAGE_ID, kitStageConfig, setKitStart } from './game/kitStage.ts';
 import { FEEL_PAIR_ID, feelPairConfig } from './game/feelPairStage.ts';
+import { CHASE_FIXTURE_ID, chaseFixtureConfig } from './game/chaseFixtureStage.ts';
 import { FeelPairClock } from './components/FeelPairClock.tsx';
 import { CTEST_LEVEL_ID, ctestEnabled, recorder } from './game/playRecorder.ts';
 import { guardBack } from './game/backGuard.ts';
@@ -540,6 +541,13 @@ export default function App() {
   // Check URL parameters (?autostart=1); the same keys after # work too, since a shared Claude link passes on only the # part
   useEffect(() => {
     const params = new URLSearchParams(`${window.location.search.slice(1)}&${window.location.hash.slice(1)}`);
+    // (dev only: ?fixture=chase opens a real laid chase with its nuts and fruit, before 1-8 exists: chaseFixtureStage.ts)
+    const fixture = params.get('fixture') === 'chase' ? chaseFixtureConfig() : null;
+    if (fixture) {
+      setActiveLevel(fixture);
+      launchEngine(fixture);
+      return;
+    }
     if (params.get('autostart') === '1') {
       // ?level=5-10 jumps straight to that stage (handy for checking a boss)
       const wanted = params.get('level');
@@ -697,7 +705,7 @@ export default function App() {
     // (and the test link's 1-1 pick, for a still of a picked roll: stage.ts --roll, tools/engine/runs/stills-at.mjs; TEST-LINK ONLY)
     (window as unknown as { __setPick11?: typeof setPick11 }).__setPick11 = setPick11;
     (window as unknown as { __play?: (id: string, layout?: number) => void }).__play = (id: string, layout?: number) => {
-      const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : id === FEEL_PAIR_ID ? feelPairConfig() : allLevels.find((l) => l.id === id);
+      const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : id === FEEL_PAIR_ID ? feelPairConfig() : id === CHASE_FIXTURE_ID ? chaseFixtureConfig() : allLevels.find((l) => l.id === id);
       if (lvl) {
         if (layout !== undefined) setLayoutVariant(layout);
         setActiveLevel(lvl);

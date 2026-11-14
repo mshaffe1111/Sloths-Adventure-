@@ -8,12 +8,9 @@ import { CHASE_LAY, chaseCap, chaseFloor, chaseStanders, cutSections, layChase }
 import { checkCode, parseCode } from './nodeCode.ts';
 import { mixKit } from './toyLegs.ts';
 import { towerCfg } from './toyTower.ts';
-import { w1World } from './worlds/w1.ts';
+import { CHASE_FIXTURE_CODE, CHASE_FIXTURE_ID, chaseFixtureKit, chaseFixtureLevel, inChaseFixture } from '../chaseFixtureStage.ts';
 import { BRANCH_TILE } from '../protoStage.ts';
 import { chaseLayProblems, sectionStretch } from '../chase.ts';
-import { generateAllLevels } from '../worldsData.ts';
-import { withTestStage } from './listed.ts';
-import { JUDGED } from './reach.ts';
 import { keptFoes } from './pipeline.ts';
 import { packPlan, plantSeedList } from './seedList.ts';
 import { RealPlay, withFixtureConfig } from '../realPlay.ts';
@@ -21,23 +18,13 @@ import { difficulty as getDifficulty, setDifficulty } from '../difficulty.ts';
 import type { Gen2Stage, WorldKit } from './types.ts';
 import type { LevelConfig, Platform } from '../types.ts';
 
-const W1 = w1World();
-/** a fixture stage, no stage of the game: World 1's real kit and 1-1's brief, late in the world (V13: never a world's first stage) */
-const ID = '1-98';
-const CFG: LevelConfig = { ...generateAllLevels().find((l) => l.id === '1-1')!, id: ID, miniIndex: 8 };
-const CODE = 'A T P F R K R K R S E';
-/** 1-1's brief for a chase stage: its lessons, trend and reach, with no fork added and no deal (the mix rules are 1-1's pool's, not the
- *  chase's: a fixture graph that 1-1's pool was never cut for fails them on most rolls) */
-const BRIEF = { ...W1.manifest.graphs!.briefs['1-1'], branching: 'none' as const, deal: undefined };
-const kitK = (code: string): WorldKit => {
-  const G = W1.manifest.graphs!;
-  // (1-1's own pool: the sections it feels and owns are the fixture's too)
-  const sections = W1.manifest.sections.map((t) => (t.feel?.includes('1-1') ? { ...t, feel: [...t.feel, ID] } : t));
-  const owns = W1.manifest.owns?.['1-1'] ? { owns: { ...W1.manifest.owns, [ID]: W1.manifest.owns['1-1'] } } : {};
-  return { ...W1, manifest: { ...W1.manifest, sections, ...owns, graphs: { ...G, list: [{ id: 'k', archetype: 'sprint', code }], briefs: { ...G.briefs, [ID]: BRIEF } } } };
-};
-/** the fixture listed for the call, judged on 1-1's reach scope (reach.ts JUDGED), as 1-1's own rolls are */
-const inFixture = <T,>(fn: () => T): T => withTestStage({ [ID]: { kit: () => kitK(CODE), seeds: [], scope: JUDGED['1-1'] } }, fn);
+// (the fixture is the game's dev fixture, one definition for the test and the page: chaseFixtureStage.ts; World 1's real kit and 1-1's
+// brief, listed as 1-98, late in the world (V13: never a world's first stage), judged on 1-1's reach scope as 1-1's own rolls are)
+const ID = CHASE_FIXTURE_ID;
+const CFG: LevelConfig = chaseFixtureLevel();
+const CODE = CHASE_FIXTURE_CODE;
+const kitK = (code: string): WorldKit => chaseFixtureKit(code);
+const inFixture = <T,>(fn: () => T): T => inChaseFixture(fn);
 const SEEDS = Array.from({ length: 30 }, (_, i) => i + 1);
 const build = (seed: number, difficulty: 'normal' | 'easy' = 'normal', code = CODE) => inFixture(() => buildGen2Stage({ config: CFG, kit: kitK(code), seed, difficulty }));
 const chaseErr = (st: Gen2Stage) => st.gen2.errors.filter((e) => /^chase:|^flags:/.test(e));
