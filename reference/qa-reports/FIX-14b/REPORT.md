@@ -72,6 +72,10 @@ under load with 2 failures, both fixed: feelPairRoom gate test, figPush.)
    D61 (no code-drawn primitive in the lock: all painted), D62 (clips print the built setting), D63 (judged on clips + a cheat probe),
    D64 (context from the token count).
 ## Learned (for the next builder)
+- My miss (D57 again): I told the lead "my call unless you rule in a few minutes", then acted 3 minutes later WITHOUT reading my queue:
+  the ruling (keep the rim, drop the pool) had arrived at 2:57. Read the queue right before acting on any "unless you rule" call.
+- An interaction change (the head stop) broke the BOTS silently: castBots 1-4 went 0/40 because figPush waited for the old stop. Run
+  castBots on the stage right after any climb/gate rule change, not only at the relist.
 - A "lid" line that slopes (a sagging bough) cannot be tested "from below the line": test against the wood's drawn top. Planted tests
   of a leap ALONG the slope found it.
 - A gate probe must hold the figs on (or every case after the first fig opens the gate and probes nothing) and must prove it met the
