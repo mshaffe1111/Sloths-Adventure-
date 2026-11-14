@@ -7,7 +7,9 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { RealPlay } from './realPlay.ts';
+import { paintedPlatforms } from './protoArt.ts';
 import { setDifficulty } from './difficulty.ts';
 import { PIECE_KINDS } from './pieces/index.ts';
 import { CHASE_PIECE } from './pieces/chasePiece.ts';
@@ -200,3 +202,24 @@ for (const id of ['1-2', '3-3']) {
     assert.equal(p.respawns, respawns + 1, 'the piece was put back by its respawn');
   });
 }
+
+// --- a chase section is drawn only by its chase drawer (the lead's (d), 11-13): never by the plain drawer, never painted as ground
+
+test('a chase section is never painted as ground: paintedPlatforms leaves it to its chase drawer, even laid thin with a branch style', () => {
+  // (a thin branch-style platform IS painted by the kit; the same with `chase` is not: red without protoArt.ts's chase line)
+  const thin: Platform = { id: 7, x: 0, y: 600, width: 200, height: 40, type: 'solid', style: 'branch' };
+  assert.ok(paintedPlatforms([thin]).has(7), 'the kit paints a thin branch');
+  assert.ok(!paintedPlatforms([{ ...thin, chase: true }]).has(7), 'but never a chase section');
+});
+
+test('a chase section is never in the plain draw list (the list drawn before the painted art is ready), on any stage that has one', () => {
+  // (the list is made at the stage's start, engine.ts constructor: until a stage lays a chase at its start, B5, the rule is pinned in
+  // the line's own text, as pieceHook.test.ts pins render()'s order; red without engine.ts's line. The old 1-8 proves it in play.)
+  const src = readFileSync(new URL('./engine.ts', import.meta.url), 'utf8');
+  const line = src.split('\n').find((l) => l.includes('this.drawPlats = this.pushLogs.length'));
+  assert.ok(line && /platforms\.some\(\(pl\) => pl\.chase\b/.test(line), `the draw list leaves chase sections out whenever a stage has one: ${line?.trim()}`);
+  const old = new RealPlay('1-8', 1);
+  const e = old.e as unknown as { drawPlats: Platform[]; platforms: Platform[] };
+  assert.ok(e.platforms.some((pl) => pl.chase), '1-8 has chase sections');
+  assert.ok(!e.drawPlats.some((pl) => pl.chase), 'none in its plain draw list');
+});

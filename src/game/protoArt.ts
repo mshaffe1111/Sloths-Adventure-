@@ -847,6 +847,8 @@ function thinKit(p: Platform): boolean {
 export function paintedPlatforms(platforms: Platform[]): Set<number> {
   const out = new Set<number>();
   for (const p of platforms) {
+    // (a chase section is drawn only by its chase drawer, never painted as ground too: pieces/chasePiece.ts)
+    if (p.chase) continue;
     if (p.push) out.add(p.id);
     else if (p.height < 50 && (p.style === 'branch' || (ownKit() && thinKit(p)))) out.add(p.id);
     else if ((p.height === 50 && p.style === 'moss_stone') || p.art === 'rock') out.add(p.id);

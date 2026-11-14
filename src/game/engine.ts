@@ -1057,7 +1057,8 @@ export class GameEngine {
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
     this.slideRun = null;
-    this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
+    // (a chase section is drawn only by its chase drawer: the hand-built 1-8's drawChase, a laid chase's piece, pieces/chasePiece.ts)
+    this.drawPlats = this.pushLogs.length || this.platforms.some((pl) => pl.chase || pl.art)
       ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown && !pl.art)
       : this.platforms;
     // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
