@@ -1,0 +1,49 @@
+# ENG-S3 planted failures on 0d504e21 (each mutation applied alone, snakeCam.test.ts run, tree restored)
+## M1 host.focus is a no-op (engine.ts pieceHost.focus)
+not ok 1 - sideways, held HIGH (the box fits): the snake's tell on the bough is whole in the clear view on >= 90% of its frames (it was 0/6), the view never steps more than CAM_RISE_STEP, he never leaves it
+not ok 2 - sideways, held LOW (the box cannot fit): he stays whole at the foot of the clear view and the snake is in it >= SNAKE.seen s before it reaches his hands; no snap
+not ok 3 - the verdict and the real engine agree: on the squattest phone a 4 s trip is too quick at a middle hold (the tell cut by the HUD, 118 px of trip seen); a 6 s trip is not
+# pass 4
+# fail 3
+## M2 the snake never asks (vineSnakePiece.ts)
+not ok 1 - sideways, held HIGH (the box fits): the snake's tell on the bough is whole in the clear view on >= 90% of its frames (it was 0/6), the view never steps more than CAM_RISE_STEP, he never leaves it
+not ok 2 - sideways, held LOW (the box cannot fit): he stays whole at the foot of the clear view and the snake is in it >= SNAKE.seen s before it reaches his hands; no snap
+not ok 3 - the verdict and the real engine agree: on the squattest phone a 4 s trip is too quick at a middle hold (the tell cut by the HUD, 118 px of trip seen); a 6 s trip is not
+# pass 4
+# fail 3
+2
+## M3 no lead: asks only from the tell's first frame (vineSnake.ts snakeComing)
+not ok 1 - sideways, held HIGH (the box fits): the snake's tell on the bough is whole in the clear view on >= 90% of its frames (it was 0/6), the view never steps more than CAM_RISE_STEP, he never leaves it
+# pass 6
+# fail 1
+## M4 no step cap while focused (engine.ts)
+not ok 1 - sideways, held HIGH (the box fits): the snake's tell on the bough is whole in the clear view on >= 90% of its frames (it was 0/6), the view never steps more than CAM_RISE_STEP, he never leaves it
+not ok 2 - sideways, held LOW (the box cannot fit): he stays whole at the foot of the clear view and the snake is in it >= SNAKE.seen s before it reaches his hands; no snap
+# pass 5
+# fail 2
+## M5 too tall: keeps his head under the band instead of showing the threat's side (cameraFollow.ts focusY)
+not ok 1 - sideways, held HIGH (the box fits): the snake's tell on the bough is whole in the clear view on >= 90% of its frames (it was 0/6), the view never steps more than CAM_RISE_STEP, he never leaves it
+not ok 2 - sideways, held LOW (the box cannot fit): he stays whole at the foot of the clear view and the snake is in it >= SNAKE.seen s before it reaches his hands; no snap
+not ok 3 - the verdict and the real engine agree: on the squattest phone a 4 s trip is too quick at a middle hold (the tell cut by the HUD, 118 px of trip seen); a 6 s trip is not
+not ok 6 - focusY: the box between the HUD band and the foot, moved as little as does it; too tall, him whole on the side the box reaches further
+not ok 7 - gen2's view verdict: a snake too quick to be seen 1 s on the squattest phone sideways is refused; 1-6.md's beat-7 pace passes
+# pass 2
+# fail 5
+## M6 the verdict never refuses (vineSnake.ts snakeViewFaults)
+not ok 3 - the verdict and the real engine agree: on the squattest phone a 4 s trip is too quick at a middle hold (the tell cut by the HUD, 118 px of trip seen); a 6 s trip is not
+not ok 7 - gen2's view verdict: a snake too quick to be seen 1 s on the squattest phone sideways is refused; 1-6.md's beat-7 pace passes
+# pass 5
+# fail 2
+# (on 08834ce5, vineSnake.test.ts)
+## M7 slitherClear never moves it (vineSnake.ts)
+not ok 11 - 6-3, the real engine: a startled false liana lands CLEAR of him and slithers off without ever touching his body (the lead, 11-14: it landed overlapping Pokey and read as an attack), taken from either side, at the size it hangs
+not ok 12 - 2-4, the real engine: a startled false liana lands CLEAR of him and slithers off without ever touching his body (the lead, 11-14: it landed overlapping Pokey and read as an attack), taken from either side, at the size it hangs
+not ok 13 - slitherClear: a slither that would lie over him starts FALSE_LIANA.clear past his far side; one already clear is left where it lands
+# pass 10
+# fail 3
+## M8 the old landing: no fling, no clear (ENG-S2's still)
+not ok 11 - 6-3, the real engine: a startled false liana lands CLEAR of him and slithers off without ever touching his body (the lead, 11-14: it landed overlapping Pokey and read as an attack), taken from either side, at the size it hangs
+not ok 12 - 2-4, the real engine: a startled false liana lands CLEAR of him and slithers off without ever touching his body (the lead, 11-14: it landed overlapping Pokey and read as an attack), taken from either side, at the size it hangs
+not ok 13 - slitherClear: a slither that would lie over him starts FALSE_LIANA.clear past his far side; one already clear is left where it lands
+# pass 10
+# fail 3
