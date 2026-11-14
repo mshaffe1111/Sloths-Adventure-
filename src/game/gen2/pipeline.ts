@@ -28,6 +28,7 @@ import { CLIMB_CLEAR } from '../vineTop.ts';
 import { repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
+import { SWING_SEEN } from '../cameraFollow.ts';
 import { DOUBLE_RISE, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, SWING, TAKEOFF_SLACK, TIMED, WALL_H, type AirBody } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
 import { SHRINE_STOP } from '../rules.ts';
@@ -237,7 +238,8 @@ export const VINE = {
 
 /**
  * The release window of a liana (s): of ONE swing, how long a press to let go toward the perch gets him onto it (its top `far.y`, from
- * `far.x` for `far.w` px), the worse of the holds its grip dial names (levelCheck gripsOf). The ONE place gen2 sizes a swing by: the engine's own physics.ts pressWindow (the
+ * `far.x` for `far.w` px), the worse of the holds its grip dial names (levelCheck gripsOf), and with a dial only the presses that see the
+ * whole perch (SWING_SEEN). The ONE place gen2 sizes a swing by: the engine's own physics.ts pressWindow (the
  * press as engine.ts plays it, RELEASE's forgiveness, timedLaunch's leap, LETGO_FLIGHTS) on this difficulty's swing (setTimedSwing, put
  * back as it was after).
  */
@@ -247,7 +249,11 @@ export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: Lia
   try {
     const A = { x: v.x, topY: v.topY, bottomY: v.bottomY, swingAmp: swing.amp, swingPeriod: swing.period, swingPhase: 0 };
     const hits = (c: AirBody, _t: number, prevY: number) => c.vy >= 0 && prevY <= far.y + 14 && c.y >= far.y && c.x > far.x + 10 && c.x < far.x + far.w;
-    return pressWindow(A, hits, LETGO_FLIGHTS, gripsOf(swing.grip, v.bottomY - v.topY)) / 1000;
+    // (a liana laid by its grip dial (World 1's rows) is laid by what he SEES: a press counts only if the perch's far end is in the view
+    // as he presses, at the swing camera's full ease on the narrowest gate phone (cameraFollow.ts SWING_SEEN; R-165.225, Matt 11-14:
+    // "shorter swings" that fit upright). Dial-free lianas (Worlds 6-8's) are as they were)
+    const seen = swing.grip ? (px: number) => far.x + far.w <= px + SWING_SEEN : undefined;
+    return pressWindow(A, hits, LETGO_FLIGHTS, gripsOf(swing.grip, v.bottomY - v.topY), seen) / 1000;
   } finally {
     Object.assign(TIMED, was);
   }

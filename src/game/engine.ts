@@ -137,7 +137,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -1245,7 +1245,7 @@ export class GameEngine {
     // (a puzzle room pulls back from that, past the level's height if it must: upright a room never fit across a view the level's height
     // tall; the extra is the sky over the level, updateCamera. Its floor is roomFloor, puzzleCamera.ts)
     this.roomUsual = Math.max(base * dolly * this.bossZoom, bossFight ? 0.4 : h / levelH);
-    this.zoom = bossFight ? Math.max(base * dolly * this.bossZoom * this.roomZoom, 0.4) : this.roomUsual * this.roomZoom * this.revealZoom * this.swimZoom;
+    this.zoom = bossFight ? Math.max(base * dolly * this.bossZoom * this.roomZoom, 0.4) : this.roomUsual * this.roomZoom * this.revealZoom * this.swimZoom / this.swingWide;
     this.camera.viewportWidth = w / this.zoom;
     this.camera.viewportHeight = h / this.zoom;
   }
@@ -5694,6 +5694,7 @@ export class GameEngine {
     this.irisOpen = IRIS_OPEN_SECS;
     this.inputGrace = 0.35;
     this.graceMoves = this.input.moves;
+    this.swingWideCut();
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
     this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * FRAME.across);
     this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode)));
@@ -5869,6 +5870,7 @@ export class GameEngine {
     this.kickChain = 0;
     this.coyoteTimer = 0;
     this.launched = false;
+    this.swingWideCut();
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
     this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * FRAME.across);
     this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * travelFeet(fr.feetAt, towerLead(this.currentStage, this.mode)));
@@ -6143,8 +6145,42 @@ export class GameEngine {
     return k * k * (3 - 2 * k);
   }
 
+  /** the swing camera's widening now and where it is easing to (cameraFollow.ts SWING_CAM; the zoom is divided by it, applyZoom) */
+  private swingWide = 1;
+  private swingWideWant = 1;
+  /**
+   * The swing camera (R-165.225): upright, on a swing the view eases out to show him and the whole perch it throws him onto
+   * (swingWideTarget, from the landing the view showed last frame), held through the flight off it until he is down or holds on to
+   * something, then back in. It widens about him: his place on the screen holds while it eases.
+   */
+  private swingWideStep(dt: number) {
+    const p = this.player;
+    const upright = this.viewCssH > this.viewCssW;
+    const sv = p.isVineSwinging ? this.nearSwingVine : null;
+    if (sv) this.swingWideWant = swingWideTarget(upright, true, sv.x, this.camLand, this.camera.viewportWidth / this.swingWide);
+    else if (!upright || p.grounded || p.climbing || p.hanging || p.swim) this.swingWideWant = 1;
+    const was = this.swingWide;
+    this.swingWide = swingWideEase(was, this.swingWideWant, dt);
+    if (this.swingWide === was) return;
+    const sx = p.x - this.camera.x;
+    const sy = p.y - this.camera.y;
+    this.applyZoom();
+    const r = this.swingWide / was;
+    this.camera.x = p.x - sx * r;
+    this.camera.y = p.y - sy * r;
+  }
+  /** a cut (a respawn, a stage's start): the usual view at once */
+  private swingWideCut() {
+    this.swingWideWant = 1;
+    if (this.swingWide === 1) return;
+    this.swingWide = 1;
+    this.applyZoom();
+  }
+
   private updateCamera(dt: number) {
     const p = this.player;
+    // the swing camera first (it sets the view's size for this frame)
+    this.swingWideStep(dt);
     const { viewportWidth: vw, viewportHeight: vh } = this.camera;
 
     // the framing for this screen's shape: less look-ahead on a narrow upright phone, his feet lower on a squat sideways one (cameraFollow.ts)
@@ -6231,6 +6267,9 @@ export class GameEngine {
     this.camLandY += (landY - this.camLandY) * lk;
     this.camera.targetX += this.camLandX;
     this.camera.targetY += this.camLandY;
+    // (on a widened swing the view leads him by what its easing trails a moving aim (RUN.follow, below): upright the eased view trailed
+    // his forward sweep by ~60 px, and the far end of the perch SWING_SEEN promises fell out of it. It grows with the ease: no snap)
+    if (sv && this.swingWide > 1) this.camera.targetX += (p.vx / RUN.follow) * Math.min(1, (this.swingWide - 1) / (SWING_CAM.out - 1));
     const bs = this.boss;
     if (bs && !bs.defeated && this.currentStage.arena) {
       // frame both fighters, but never let Pokey slip off the edge
@@ -6308,7 +6347,8 @@ export class GameEngine {
     const maxY = this.currentStage.config.levelHeight - vh;
     // a normal stage never shows past its top; a boss arena in a tall window may (the sky simply continues), and so may a puzzle room
     // pulled back further than the level is tall (upright): its foot stays the level's foot, the extra is sky over the top
-    const overTop = this.currentStage.arena || this.mc || this.roomZoom < 1 || this.revealZoom < 1;
+    // (and so may a swing's eased-out view upright, cameraFollow.ts SWING_CAM: on a level shorter than the wider view, the extra is sky)
+    const overTop = this.currentStage.arena || this.mc || this.roomZoom < 1 || this.revealZoom < 1 || this.swingWide > 1;
     this.camera.y = Math.max(overTop ? Math.min(0, maxY) - (this.mc ? 600 : 0) : 0, Math.min(maxY, this.camera.y));
     markCam(this.camRepick, this.camera.x, this.camera.y);
   }
@@ -6334,7 +6374,8 @@ export class GameEngine {
     const sv = p.isVineSwinging ? this.nearSwingVine : null;
     if (sv) {
       const hang = { x: sv.x, width: 0, y: sv.topY + (p.swingLength ?? 100) + 30 };
-      this.camLand = landingAhead(sv.x, this.camFacing, hang, this.platforms, this.vines.filter((v) => v !== sv));
+      // (upright, the WHOLE perch, so the swing camera widens and leads to show where it ends: cameraFollow.ts SWING_CAM)
+      this.camLand = landingAhead(sv.x, this.camFacing, hang, this.platforms, this.vines.filter((v) => v !== sv), this.viewCssH > this.viewCssW);
       this.camLandKeep = 1.2;
       return this.camLand;
     }

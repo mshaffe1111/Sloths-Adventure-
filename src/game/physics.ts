@@ -776,12 +776,15 @@ export const LETGO_FLIGHTS: ReadonlyArray<{ held: number; dbl: number }> = [
  * ms of ONE swing on A in which a press to let go toward +x gets him there (`hits`, asked every frame of the flight with the vines'
  * clock), as the engine plays a press (engine.ts and RELEASE): in the sweet spot he leaps; a beat early the press waits for it; a beat
  * late it is the sweet spot's leap; anywhere else a hop off the vine. Caught near the bottom of the vine and higher up: the worse counts.
+ * `seen` (where he is as he presses, his middle and feet): a press counts only if it says yes, asked only of a press that gets him there
+ * (pipeline lianaRelease: the whole perch in view as he presses, cameraFollow.ts SWING_SEEN). Without it every such press counts.
  */
 export function pressWindow(
   A: SwingVine,
   hits: (c: AirBody, t: number, prevY: number) => boolean,
   flights: ReadonlyArray<{ held: number; dbl: number }> = LETGO_FLIGHTS,
   grips: readonly number[] = [0.7, 0.95],
+  seen?: (x: number, y: number) => boolean,
 ): number {
   const DT = 1 / 30;
   const len = A.bottomY - A.topY;
@@ -828,7 +831,7 @@ export function pressWindow(
         }
         if (made) break;
       }
-      if (made) ok++;
+      if (made && (!seen || seen(st[k].r.x, st[k].r.y))) ok++;
     }
     worst = Math.min(worst, ok * DT * 1000);
   }

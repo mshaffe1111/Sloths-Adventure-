@@ -377,12 +377,12 @@ export const heroBox = (px: number, py: number): Box => ({ x0: px - 28, x1: px +
  * The next landing past the end of the ledge he stands on, the way he faces: the nearest ledge or vine across the gap. null when he is
  * not near the end, or the ledge carries straight on (no gap).
  */
-export function landingAhead(px: number, facing: number, ledge: Ledge, plats: readonly Ledge[], vines: readonly Climb[] = []): Box | null {
+export function landingAhead(px: number, facing: number, ledge: Ledge, plats: readonly Ledge[], vines: readonly Climb[] = [], whole = false): Box | null {
   const f = facing < 0 ? -1 : 1;
   const edge = f > 0 ? ledge.x + ledge.width : ledge.x;
   const toEdge = (edge - px) * f;
   if (toEdge > AHEAD.near || toEdge < -40) return null;
-  let best: { x: number; y: number; score: number; under?: boolean } | null = null;
+  let best: { x: number; y: number; score: number; under?: boolean; end?: number } | null = null;
   for (const q of plats) {
     if (q === ledge || q.broken || q.width <= 0) continue;
     const dy = q.y - ledge.y;
@@ -397,7 +397,7 @@ export function landingAhead(px: number, facing: number, ledge: Ledge, plats: re
     if (gap < 24 && Math.abs(dy) < 40) return null;
     const score = gap + Math.abs(dy) * 0.4;
     // (`under`: the floor of the drop itself, starting right at his edge, well below: 1-6's soft moss under its first liana)
-    if (!best || score < best.score) best = { x: a + f * 10, y: q.y, score, under: gap < 24 && dy >= 40 };
+    if (!best || score < best.score) best = { x: a + f * 10, y: q.y, score, under: gap < 24 && dy >= 40, end: b };
   }
   for (const v of vines) {
     const gap = (v.x - edge) * f;
@@ -409,7 +409,55 @@ export function landingAhead(px: number, facing: number, ledge: Ledge, plats: re
     // the moss below the gap and left the liana he was jumping for off screen, QA 2026-10-26)
     if (!best || best.under || score < best.score) best = { x: v.x, y: y + 60, score };
   }
-  return best ? landingBox(best.x, best.y, f) : null;
+  if (!best) return null;
+  // (a swing's landing, `whole`: the perch end to end, so he sees where it stops before he lets go: SWING_CAM)
+  return whole && best.end !== undefined && !best.under ? perchBox(best.x - f * 10, best.end, best.y, f) : landingBox(best.x, best.y, f);
+}
+
+/**
+ * The swing camera (R-165.225; Matt, 2026-11-14 2:02 AM ET, "shorter swings": every liana's landing fits upright). Upright a phone shows
+ * only ~405-440 px of world, and a liana throws him 400 px and more past its anchor (1-6.md), so while he swings the view eases OUT, no
+ * more than `out` (Pokey stays 1 / 1.3 = 77% of his usual size or more), and leads with the WHOLE perch the swing throws him onto
+ * (perchBox, not landingBox's 60 px lip); it eases back in once he is down. Sideways (1168 px of world) it never widens.
+ */
+export const SWING_CAM = {
+  /** the most the view widens while he swings, times the usual view (Matt: ~1.3x; Pokey at 77% of his size) */
+  out: 1.3,
+  /** per second: out from the catch (95% in ~0.67 s, before the first forward sweet spot, as LAND_EASE.rate) and back in once he is
+   *  down (95% in ~1 s) */
+  rateOut: 4.5,
+  rateIn: 3,
+  /** the most of a landing shown whole (px): a perch end to end; of a long bough or the ground, its first this much */
+  perch: 300,
+  /**
+   * the narrowest usual upright view of the phones the gates use (px of world): 412 x 915 and 400 x 880 on a 900 px level (engine.ts
+   * applyZoom: the level's height x 0.45). SWING_SEEN is figured on it, so a perch it passes is whole in view on every one of them
+   */
+  refVw: 405,
+} as const;
+
+/** a swing's landing: the perch from its near end (`near`) to its far end (`far`), at most SWING_CAM.perch of it, and the space over it */
+export function perchBox(near: number, far: number, y: number, facing: number): Box {
+  const end = facing >= 0 ? Math.min(far, near + SWING_CAM.perch) : Math.max(far, near - SWING_CAM.perch);
+  return facing >= 0 ? { x0: near - 10, x1: end, y0: y - 80, y1: y + 4 } : { x0: end, x1: near + 10, y0: y - 80, y1: y + 4 };
+}
+
+
+/**
+ * How far the view should widen now (1 = the usual view; the engine divides its zoom by it): upright, on a swing or flying off one, as
+ * much as fits him (at the swing's anchor `anchorX`) and the whole of `land` across the clear part of a view `usualVw` wide, up to
+ * SWING_CAM.out. Sideways, on the ground, or with no landing ahead: 1.
+ */
+export function swingWideTarget(upright: boolean, swinging: boolean, anchorX: number, land: Box | null, usualVw: number): number {
+  if (!upright || !swinging || !land || usualVw <= 0) return 1;
+  const reach = Math.max(Math.abs(land.x1 - anchorX), Math.abs(land.x0 - anchorX)) + 28;
+  return Math.max(1, Math.min(SWING_CAM.out, reach / ((AHEAD.pad.r - AHEAD.heroPad.l) * usualVw)));
+}
+
+/** one step of the swing ease from `k` toward `target` (dt s): out at SWING_CAM.rateOut, back in at rateIn; it settles exactly on it */
+export function swingWideEase(k: number, target: number, dt: number): number {
+  const n = k + (target - k) * Math.min(1, dt * (target > k ? SWING_CAM.rateOut : SWING_CAM.rateIn));
+  return Math.abs(target - n) < 0.002 ? target : n;
 }
 
 /**
@@ -441,3 +489,12 @@ export function keepHeroX(camX: number, px: number, vw: number): number {
   const keep = Math.min(HERO_KEEP, vw / 2);
   return Math.max(px + keep - vw, Math.min(px - keep, camX));
 }
+
+/**
+ * THE FAR CAP, in one place (R-165.225): how far ahead of his middle, at the moment he presses to let go, the far end of a perch may lie
+ * and still be whole in the view at the swing's full ease on the narrowest gate phone: him led to the back edge (the engine keeps his
+ * middle HERO_KEEP in, or his half body plus AHEAD.heroPad, whichever is more), the perch inside AHEAD.pad's clear part ahead. gen2 counts
+ * a release press only if its perch's far end is within this of him (pipeline lianaRelease), so no liana it lays throws him at a perch
+ * he cannot see whole. 472 px.
+ */
+export const SWING_SEEN = Math.floor(AHEAD.pad.r * SWING_CAM.out * SWING_CAM.refVw - Math.max(HERO_KEEP, 28 + AHEAD.heroPad.l * SWING_CAM.out * SWING_CAM.refVw));
