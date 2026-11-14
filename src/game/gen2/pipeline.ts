@@ -3846,6 +3846,12 @@ function judged11(st: Gen2Stage, setting: Difficulty): Judged11 & { built: Gen2S
 /** the verdicts judged on a built rolled stage by the gates' own definitions (V19b's window, a rolled stage's flags), set on its gen2 and
  *  folded by rollErrors; Easy's Normal build gets them too, so a seed is clean on both settings or on neither (proven.test) */
 export function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
+  // (judged afresh every call: a miss from an earlier judgement of this stage never stands. The search judges a stage (rollUnmet) before
+  // buildGen2Stage's last changes, a chase lay moving its flags: ENG-B4 found 2 of 30 chase rolls refused by a flag miss their own
+  // flags no longer had)
+  st.gen2.windowMiss = undefined;
+  st.gen2.flagMiss = undefined;
+  st.gen2.towerMiss = undefined;
   // (R-165.61: every fall as a Drop record, and the roll's verdicts on this setting: judged on 1-1, every name notJudged elsewhere)
   st.gen2.drops = dropsOf(st, req.kit.manifest);
   st.gen2.verdicts = { ...st.gen2.verdicts, [req.difficulty]: judgedOnArcs(req.config.id) ? judgeRoll(judged11(st, req.difficulty), PROMISES_11) : NOT_JUDGED_ALL(req.difficulty) };
@@ -4012,8 +4018,11 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     const n = R ? undefined : buildRolled({ ...req, difficulty: 'normal' });
     // (Normal's verdicts too, folded: Easy carries every error Normal has, the flags' and the window's with the rest)
     if (n) {
+      // (judged as Normal plays it: its chase laid first, as buildGen2Stage lays it, so its flags are the ones it plays (ENG-B4: Easy
+      // refused 2 of 30 chase rolls on Normal's flags from before its lay))
+      const nChase = layChase(n, (uid) => PIECES_OF.get(n)?.get(uid) ?? []);
       applyVerdicts(n, { ...req, difficulty: 'normal' });
-      n.gen2.errors = [...rollErrors(n.gen2), ...(req.also?.(n, 'normal') ?? []).map((u) => u.line)];
+      n.gen2.errors = [...rollErrors(n.gen2), ...nChase.problems, ...(req.also?.(n, 'normal') ?? []).map((u) => u.line)];
     }
     const repairs: Repair[] = [...(n?.gen2.repairs ?? [])];
     // (and only the animals Normal kept: Easy's are a subset of Normal's)

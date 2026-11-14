@@ -16,10 +16,12 @@
  * (a K node over the cap with nowhere to stop, two K nodes with no fork between them, a fork too short to stand on, a stretch with no
  * ground to break). Each problem is a roll error, so the seed fails and the proven walk moves on.
  */
-import { chaseLayProblems, type ChaseLay, type ChaseStretch } from '../chase.ts';
+import { CHASE_ROWS, chaseLayProblems, type ChaseLay, type ChaseStretch } from '../chase.ts';
+import { PHYS } from '../physics.ts';
 import type { Platform } from '../types.ts';
 import type { Gen2Stage } from './types.ts';
-import { FLAG_SPAN, flagRuns, ROLLED_FLAGS } from './pipeline.ts';
+import { FLAG_SPAN, flagRuns, HARD_JOBS, lethalSpans, rolledFlagBreaches, ROLLED_FLAGS } from './pipeline.ts';
+import { JOB_OF } from './nodeCode.ts';
 
 export const CHASE_LAY = {
   /** a fork must give him at least this much ground to stop on (px): about a body and a half each side of a stop */
@@ -40,8 +42,22 @@ export const CHASE_LAY = {
  */
 export const chaseCap = (): number => ROLLED_FLAGS.max - FLAG_SPAN.pad;
 
-/** the job letter's job that lays a chase (nodeLetters.ts K) */
+/** the job letter's job that lays a chase (nodeLetters.ts K), and the finale (L) that is its last stretch after the last K */
 const PRESSURE = 'pressure';
+const FINALE = 'finale';
+
+/**
+ * The shortest a stretch may run (px), DERIVED from the Normal row (chase.ts): the front sets off `behind` px back as he passes the
+ * stretch's start and runs at `base` while he runs at his top speed, so its first section falls under him only once he is
+ * behind x maxRun / base px in (520 x 285 / 230 = 644). A shorter stretch is over before anything falls (B3: a 150 px one on Easy):
+ * no stretch at all. A K node shorter than this is refused by name; a split never leaves one (the short rest joins its fork).
+ */
+export const chaseFloor = (): number => Math.ceil((CHASE_ROWS.normal.behind * PHYS.maxRun) / CHASE_ROWS.normal.base);
+
+type Spot = { x: number; y: number };
+
+/** the hard nodes a rolled stage's flags are judged before (pipeline.ts applyVerdicts reads them the same way) */
+const hardAt = (st: Gen2Stage) => (st.gen2.nodes ?? []).filter((q) => HARD_JOBS.has(JOB_OF[q.token[0] as keyof typeof JOB_OF] ?? '')).map((q, i) => ({ id: `${q.token} #${i + 1}`, x0: q.x0 }));
 
 /**
  * A piece the chase may break: plain solid ground, nothing with its own rule or its own painted object (a lift, a ride, a crumble, a
@@ -96,29 +112,106 @@ export function layChase(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray
   };
   const out: ChaseLaid['stretches'] = [];
   const cap = chaseCap();
-  ks.forEach(({ n, i }, k) => {
+  const floor = chaseFloor();
+  const { min, max, first: fromSpawn } = ROLLED_FLAGS;
+  // (flags by Matt's rules (STAGE-RULES:105-109, D49; ROLLED_FLAGS): none inside a stretch; each on route ground outside every stretch,
+  // ROLLED_FLAGS.min to .max from the one before. They are walked WITH the stretches, left to right, so each stretch ends where the flag
+  // before its crack, standing where it really stands (the realised run-up, B3's refusals: 245 px+ seen), reaches a flag on the ground
+  // after it. Before the first crack the latest spot within `flagBefore`; on a fork the latest spot before the next crack, with one
+  // more where the span needs it; one where he reaches the fork after the last stretch. The rolled flags between go; the rest stand;
+  // the verdict judges them all, after the lay)
+  const route = new Set(st.gen2.sections.flatMap((q) => piecesOf(q.uid)).filter((q) => q.main).map((q) => q.platform));
+  const spotsIn = (a: number, b: number) => flagSpots(st.platforms, a, b, route).filter((q) => !out.some((s) => q.x > s.start && q.x < s.end));
+  const reach = (f: Spot, ss: Spot[]) => ss.filter((q) => q.x >= f.x + min && q.x <= f.x + max);
+  const rolled = [...(st.checkpoints ?? [])].sort((a, b) => a.x - b.x);
+  const placed: Spot[] = [];
+  let keepTo = -Infinity;
+  /** the stage's flags with the chase's `ps`: the rolled ones outside every stretch up to the first crack's and from the min past the last
+   *  chase flag on, and the chase's own */
+  const flagsWith = (ps: readonly Spot[]) => {
+    const lastChase = ps.at(-1)?.x ?? Infinity;
+    const keep = rolled.filter((c) => !out.some((t) => c.x > t.start && c.x < t.end) && (c.x <= keepTo || c.x >= lastChase + min));
+    return [...keep, ...ps.map((p) => ({ x: p.x, y: p.y, reached: false }))].sort((a, b) => a.x - b.x);
+  };
+  // (CHASE-FINISH: the finale after the last K is the chase's last stretch, its front at its row's final burst)
+  const lastK = ks[ks.length - 1].i;
+  const fin = nodes.findIndex((q, i) => i > lastK && q.job === FINALE);
+  const chased = fin < 0 ? ks : [...ks, { n: nodes[fin], i: fin }];
+  plan: for (const [k, { n, i }] of chased.entries()) {
     const span = spanOf(n.id);
-    if (!span) return void problems.push(`chase: ${n.id} (K) laid no section`);
-    // (more, shorter stretches: a K node longer than the cap is split where a plain piece wide enough to stop on lies; that piece is a
-    // living fork (nothing on it falls, a flag stands on it), and the next stretch cracks behind him as he leaves it)
-    // (a stop is on the route: only a main piece)
+    if (!span) { problems.push(`chase: ${n.id} (${n.job === FINALE ? 'L' : 'K'}) laid no section`); break; }
+    const tag = `${n.id} (${n.job === FINALE ? 'L' : 'K'})`;
+    if (span[1] - span[0] < floor) { problems.push(`chase: ${tag} is ${Math.round(span[1] - span[0])} px, under the ${floor} px a stretch needs before its first section falls under him`); break; }
+    // (its fork: every node after it up to the next chased node, or to the stage's end)
+    const next = chased[k + 1];
+    const after = nodes.slice(i + 1, next ? next.i : nodes.length);
+    if (!after.length) { problems.push(`chase: ${tag} runs straight into ${next!.n.id} (K) with no living fork between`); break; }
+    const forkEnd = next ? spanOf(next.n.id)?.[0] ?? span[1] : st.config.levelWidth;
+    if (forkEnd - span[1] < CHASE_LAY.forkMin) { problems.push(`chase: the fork after ${tag} is ${Math.round(forkEnd - span[1])} px (at least ${CHASE_LAY.forkMin})`); break; }
     const ground = [...new Set(secsOf(n.id).flatMap((q) => piecesOf(q.uid)).filter((q) => q.main).map((q) => q.platform).filter(breakable))].sort((a, b) => a.x - b.x);
     let s0 = span[0];
-    while (span[1] - s0 > cap) {
-      const fork = ground.filter((p) => p.x > s0 && p.x - s0 <= cap && p.width >= CHASE_LAY.forkMin && p.x + p.width < span[1]).at(-1);
-      if (!fork) return void problems.push(`chase: ${n.id} (K) runs ${Math.round(span[1] - s0)} px from x ${Math.round(s0)} with no piece ${CHASE_LAY.forkMin} px wide to stop on within the ${cap} px cap (Matt's flag span)`);
-      out.push({ start: s0, end: fork.x, node: n.id, fork: [fork.x, fork.x + fork.width] });
-      s0 = fork.x + fork.width;
+    if (!k) {
+      // (the first crack: the latest rolled flag (or the spawn) a spot within flagBefore of the crack can follow within the span. A
+      // rolled flag just short of the min before the node (B3's last refusals: one about 1,000 px before it) leaves no such spot; then
+      // the crack sets off at the end of one of the node's own route pieces instead, its flag on that piece: the ground before the
+      // crack stays whole, the rest of the node is the stretch, at least the floor long)
+      const before = [...rolled.filter((c) => c.x < span[0]).map((c) => ({ x: c.x, gap: min })), { x: st.spawnX, gap: fromSpawn }].sort((a, b) => b.x - a.x);
+      const cracks = [span[0], ...ground.map((p) => p.x + p.width).filter((x) => x > span[0] && span[1] - x >= floor)];
+      crack: for (const at of cracks) {
+        for (const c of before) {
+          const spot = latest(spotsIn(at - CHASE_LAY.flagBefore - FLAG_SPAN.pad / 2, at).filter((q) => q.x >= at - CHASE_LAY.flagBefore && q.x >= c.x + c.gap), Math.min(at, c.x + max));
+          if (spot) { keepTo = c.x; placed.push(spot); s0 = at; break crack; }
+        }
+      }
+      if (!placed.length) { problems.push(`chase: no spot for a flag within ${CHASE_LAY.flagBefore} px before stretch 1 (${n.id}) at x ${Math.round(span[0])} that the flags before it reach within ${max} px`); break; }
     }
-    // (the node's last stretch, and its fork: every node after it up to the next K, or to the stage's end)
-    const next = ks[k + 1];
-    const after = nodes.slice(i + 1, next ? next.i : nodes.length);
-    if (!after.length) problems.push(`chase: ${n.id} (K) runs straight into ${next!.n.id} (K) with no living fork between`);
-    const forkEnd = next ? spanOf(next.n.id)?.[0] ?? span[1] : st.config.levelWidth;
-    if (after.length && forkEnd - span[1] < CHASE_LAY.forkMin) problems.push(`chase: the fork after ${n.id} (K) is ${Math.round(forkEnd - span[1])} px (at least ${CHASE_LAY.forkMin})`);
-    out.push({ start: s0, end: span[1], node: n.id, fork: [span[1], forkEnd] });
-  });
+    let f = placed[placed.length - 1];
+    // (more, shorter stretches: the node's ground runs on as one stretch while the flag before it reaches a flag on the ground after
+    // it and the cap holds; past that it is split at a plain route piece forkMin+ wide, a living fork that flag reaches (nothing on it
+    // falls, a flag stands on it, the next stretch cracks behind him as he leaves it), each stretch at least the floor long)
+    for (;;) {
+      if (span[1] - s0 <= cap && reach(f, spotsIn(span[1], forkEnd)).length) {
+        out.push({ start: s0, end: span[1], node: n.id, fork: [span[1], forkEnd], flag: f.x });
+        break;
+      }
+      const stops = ground.filter((p) => p.width >= CHASE_LAY.forkMin && p.x - s0 >= floor && p.x - s0 <= cap && p.x + p.width < span[1] && reach(f, spotsIn(p.x, p.x + p.width)).length);
+      // (one that leaves the rest of the node a stretch of its own, else the furthest: the short rest is no stretch and joins its fork)
+      const stop = stops.filter((p) => span[1] - (p.x + p.width) >= floor).at(-1) ?? stops.at(-1);
+      if (!stop) { problems.push(`chase: ${tag} runs ${Math.round(span[1] - s0)} px from x ${Math.round(s0)} with no piece ${CHASE_LAY.forkMin} px wide to stop on that the flag at x ${f.x} reaches within ${max} px (Matt's flag span; a stretch ${floor}-${cap} px)`); break plan; }
+      const rest = span[1] - (stop.x + stop.width) < floor;
+      out.push({ start: s0, end: stop.x, node: n.id, fork: [stop.x, rest ? forkEnd : stop.x + stop.width], flag: f.x });
+      f = latest(reach(f, spotsIn(stop.x, stop.x + stop.width)), Infinity)!;
+      placed.push(f);
+      if (rest) break;
+      s0 = stop.x + stop.width;
+    }
+    if (!next) {
+      // (the fork after the last stretch: where he reaches it, within the span, chosen by the verdict that judges every rolled stage's
+      // flags (pipeline.ts rolledFlagBreaches, D19): the first spot (or a rolled flag already in reach, none added) whose flags, with the
+      // rolled ones after it that keep the min, break no rule; else the first spot. B3's last refusals were the rolled flags a first
+      // spot knocked out: the exit's and a signature's)
+      const tails: Array<Spot | null> = reach(f, spotsIn(out[out.length - 1].end, forkEnd)).sort((a, b) => a.x - b.x);
+      if (!tails.length) { problems.push(`chase: no spot for a flag on the fork after the last stretch (${n.id}) within ${max} px of the flag at x ${f.x}`); break; }
+      const r1 = rolled.find((c) => c.x >= f.x + min && !out.some((t) => c.x > t.start && c.x < t.end));
+      if (r1 && r1.x <= f.x + max) tails.unshift(null);
+      const breaks = (q: Spot | null) => rolledFlagBreaches({ ...st, checkpoints: flagsWith(q ? [...placed, q] : placed) }, hardAt(st), lethalSpans(st, st.gen2.falls ?? [])).length;
+      const tail = tails.find((q) => !breaks(q)) ?? tails.find((q) => q !== null) ?? null;
+      if (tail) placed.push(tail);
+      break;
+    }
+    // (the fork before the next crack: its latest spot, with a flag between while the span needs one)
+    const spots = spotsIn(out[out.length - 1].end, forkEnd);
+    const best = latest(spots, forkEnd);
+    for (;;) {
+      const spot = latest(reach(f, spots), Infinity);
+      if (!spot) { problems.push(`chase: no spot for a flag on the fork before stretch ${out.length + 1} (${next.n.id}) at x ${Math.round(forkEnd)} within ${max} px of the flag at x ${f.x}`); break plan; }
+      placed.push(spot);
+      if (spot.x === best?.x || !spots.some((q) => q.x >= spot.x + min && q.x <= forkEnd)) break;
+      f = spot;
+    }
+  }
   if (problems.length) return { problems, stretches: out };
+  if (fin >= 0) out[out.length - 1].last = true;
   // (the ground each stretch breaks: its sections' own pieces, plain solid, cut into branch sections; a log beside the route falls with
   // it too. Never a section's seam (a pit's floor and steps, laid under the branch): that stays as the pit's ground, under the fall)
   let id = Math.max(0, ...st.platforms.map((p) => p.id));
@@ -134,53 +227,35 @@ export function layChase(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray
       st.platforms.splice(at, 1, ...cutSections(p, nextId));
     }
   }
-  const lay: ChaseLay = { stretches: out.map(({ start, end }) => ({ start, end })) };
+  const lay: ChaseLay = { stretches: out.map(({ start, end, last }) => (last ? { start, end, last } : { start, end })) };
   problems.push(...chaseLayProblems(lay).map((w) => `chase: ${w}`));
   if (problems.length) return { problems, stretches: out };
-  // (flags by Matt's rules (STAGE-RULES:105-109, D49; ROLLED_FLAGS): none inside a stretch. Walking right, each flag stands on route
-  // ground outside every stretch, ROLLED_FLAGS.min to .max from the one before: before each crack the latest such spot (the respawn as
-  // close to the crack as the span allows; the first crack's within `flagBefore`), on a fork too long for one flag one more where the
-  // span needs it, and one where he reaches the fork after the last stretch. The rolled flags from the first chase flag to that one
-  // go; the rest stand; the verdict judges them all)
-  const inside = (x: number) => out.some((s) => x > s.start && x < s.end);
-  const route = new Set(st.gen2.sections.flatMap((q) => piecesOf(q.uid)).filter((q) => q.main).map((q) => q.platform));
-  const spotsIn = (a: number, b: number) => flagSpots(st.platforms, a, b, route).filter((q) => !inside(q.x));
-  const { min, max, first: fromSpawn } = ROLLED_FLAGS;
-  const rolled = (st.checkpoints ?? []).filter((c) => !inside(c.x)).sort((a, b) => a.x - b.x);
-  const placed: Array<{ x: number; y: number }> = [];
-  // (the first crack: the latest rolled flag (or the spawn) a spot within flagBefore of the crack can follow within the span)
-  const s1 = out[0];
-  const before = [...rolled.filter((c) => c.x < s1.start).map((c) => ({ x: c.x, gap: min })), { x: st.spawnX, gap: fromSpawn }].sort((a, b) => b.x - a.x);
-  let keepTo = -Infinity;
-  for (const c of before) {
-    const spot = latest(spotsIn(s1.start - CHASE_LAY.flagBefore - FLAG_SPAN.pad, s1.start).filter((q) => q.x >= c.x + c.gap), Math.min(s1.start, c.x + max));
-    if (spot) { keepTo = c.x; placed.push(spot); s1.flag = spot.x; break; }
+  // (every planned flag still stands on ground that never falls, after the cut)
+  for (const q of placed) {
+    if (!st.platforms.some((p) => !p.chase && p.y === q.y && p.x <= q.x && q.x <= p.x + p.width)) problems.push(`chase: the flag at x ${q.x} stands on a section that falls`);
   }
-  if (!placed.length) problems.push(`chase: no spot for a flag within ${CHASE_LAY.flagBefore} px before stretch 1 (${s1.node}) at x ${Math.round(s1.start)} that the flags before it reach within ${max} px`);
-  // (each later crack, on the fork before it; an extra flag on the fork while the span needs one)
-  for (const [k, s] of out.entries()) {
-    if (!k || problems.length) continue;
-    const spots = spotsIn(out[k - 1].end, s.start);
-    const best = latest(spots, s.start);
-    for (let f = placed.at(-1)!; ; ) {
-      const spot = latest(spots.filter((q) => q.x >= f.x + min), Math.min(s.start, f.x + max));
-      if (!spot) { problems.push(`chase: no spot for a flag on the fork before stretch ${k + 1} (${s.node}) at x ${Math.round(s.start)} within ${max} px of the flag at x ${f.x}`); break; }
-      placed.push(spot);
-      // (the crack's flag: the latest spot, or the one the span allowed when no further flag fits between it and the crack)
-      if (spot.x === best?.x || !spots.some((q) => q.x >= spot.x + min && q.x <= s.start)) { s.flag = spot.x; break; }
-      f = spot;
-    }
-  }
-  // (the fork after the last stretch: where he reaches it, within the span)
-  const last = out[out.length - 1];
-  const f = placed.at(-1);
-  const tail = f && spotsIn(last.fork[0], last.fork[1]).filter((q) => q.x >= f.x + min && q.x <= f.x + max).sort((a, b) => a.x - b.x)[0];
-  if (f && !problems.length && !tail) problems.push(`chase: no spot for a flag on the fork after the last stretch (${last.node}) within ${max} px of the flag at x ${f.x}`);
-  if (tail) placed.push(tail);
-  const lastChase = placed.at(-1)?.x ?? Infinity;
-  const flags = rolled.filter((c) => c.x <= keepTo || c.x >= lastChase + min);
-  flags.push(...placed.map((p) => ({ x: p.x, y: p.y, reached: false })));
   if (problems.length) return { problems, stretches: out };
+  const flags = flagsWith(placed);
+  // (after the chase, the rolled pass's own span rule again (pipeline.ts, its fill: every span past its cap, `last` before the exit, gets
+  // a flag at the furthest spot in reach that keeps the min from both neighbours): what the rolled pass laid there for flags the chase
+  // moved is made up, never left short (B3's last refusals: the last flag 5,218 px from the exit))
+  const from = placed.at(-1)?.x ?? Infinity;
+  const lethal = lethalSpans(st, st.gen2.falls ?? []);
+  const capOf = (a: number, b: number) => (lethal.some(([l0, l1]) => l1 > a && l0 < b) ? ROLLED_FLAGS.lethal : max);
+  // (its spots as the rolled pass's: any route piece's top, an exit log's too, never a section that falls)
+  const fill = flagSpots(st.platforms, from, st.exitTotemX, route, true).filter((q) => !out.some((t) => q.x > t.start && q.x < t.end));
+  for (let guard = 0; guard < 20; guard++) {
+    const xs = [...flags.map((c) => c.x).filter((x) => x >= from), st.exitTotemX];
+    let k = -1;
+    for (let i = 1; i < xs.length; i++) if (xs[i] - xs[i - 1] > (i === xs.length - 1 ? Math.min(ROLLED_FLAGS.last, capOf(xs[i - 1], xs[i])) : capOf(xs[i - 1], xs[i]))) { k = i; break; }
+    if (k < 0) break;
+    const a = xs[k - 1], b = xs[k], end = k === xs.length - 1;
+    const hi = Math.min(a + (end ? Math.min(ROLLED_FLAGS.last, capOf(a, b)) : capOf(a, b)) - 20, end ? b : b - min);
+    const spot = latest(fill.filter((q) => q.x >= a + min), hi);
+    if (!spot) break;
+    flags.push({ x: spot.x, y: spot.y, reached: false });
+    flags.sort((p, q) => p.x - q.x);
+  }
   flags.sort((a, b) => a.x - b.x);
   st.checkpoints = flags;
   st.chase = lay;
@@ -191,14 +266,14 @@ export function layChase(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray
 const latest = (spots: Array<{ x: number; y: number }>, upTo: number) => spots.filter((q) => q.x <= upTo).reduce<{ x: number; y: number } | null>((m, q) => (!m || q.x > m.x ? q : m), null);
 
 /**
- * Every spot a flag may stand on the ground over [f0, f1]: its plain ground (never a chase section; only `grounds` when given: the
- * route's own pieces, never a pit's floor), clear of anything standing on it (pipeline.ts flagRuns), a half pad from each edge, every 20 px.
+ * Every spot a flag may stand on the ground over [f0, f1]: its plain ground (any ground with `anyGround`; never a chase section; only
+ * `grounds` when given: the route's own pieces, never a pit's floor), clear of anything standing on it (pipeline.ts flagRuns), a half pad from each edge, every 20 px.
  */
-export function flagSpots(platforms: readonly Platform[], f0: number, f1: number, grounds?: ReadonlySet<Platform>): Array<{ x: number; y: number }> {
+export function flagSpots(platforms: readonly Platform[], f0: number, f1: number, grounds?: ReadonlySet<Platform>, anyGround = false): Array<{ x: number; y: number }> {
   const pad = FLAG_SPAN.pad / 2;
   const spots: Array<{ x: number; y: number }> = [];
   for (const g of platforms) {
-    if (g.chase || !breakable(g) || (grounds && !grounds.has(g)) || g.x + g.width <= f0 || g.x >= f1) continue;
+    if (g.chase || (!anyGround && !breakable(g)) || (grounds && !grounds.has(g)) || g.x + g.width <= f0 || g.x >= f1) continue;
     for (const [a, b] of flagRuns(platforms, g, Math.max(g.x, f0) + pad, Math.min(g.x + g.width, f1) - pad)) {
       for (let x = Math.ceil(a); x <= b; x += 20) spots.push({ x, y: g.y });
       if (b >= a) spots.push({ x: Math.floor(b), y: g.y });
