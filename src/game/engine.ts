@@ -11,7 +11,7 @@ import { goalLine, sealedLine } from './stagePlan.ts';
 import { bindSent, FIRST_OF_STAGE, forgetSent, markTipHeard, tipHeard } from './tipMemory.ts';
 import { FERN_HMM, ZONE_LINE } from './dotTips.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
-import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
+import { caught, newChase, restartAt, sectionState, stepChase, stretchAt, type ChaseState } from './chase.ts';
 import { newTide, onHeld, restartTide, stepTide, surging, TIDE, type TideSetting, type TideState } from './risingTide.ts';
 import { drawBadWater } from './badWaterArt.ts';
 import { drawStiltDecor, drawStiltLedges } from './w6StiltArt.ts';
@@ -6535,7 +6535,8 @@ export class GameEngine {
     out.lostTo = this.lostTo;
     out.kickNear = this.input.kickNear;
     out.boss = !!this.boss || !!this.currentStage.arena;
-    out.chase = !!this.chase;
+    // (a chase: the hand-built 1-8's collapse, or he is on a laid chase's stretch (chase.ts ChaseLay: its front runs behind him there))
+    out.chase = !!this.chase || (!!this.currentStage.chase && stretchAt(this.currentStage.chase, p.x) >= 0);
     out.reveal = !!this.kit?.panning || !!this.entrance || this.gameTime < this.revealUntil;
     out.levelH = cfg.levelHeight;
     out.enemies = this.enemies;

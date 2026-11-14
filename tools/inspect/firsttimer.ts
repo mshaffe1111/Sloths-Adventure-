@@ -29,6 +29,7 @@
  */
 import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
 import { GameEngine } from '../../src/game/engine.ts';
+import { frontBehind, type ChaseRun } from '../../src/game/chase.ts';
 import { MODES, along, reached } from '../../src/game/stageModes.ts';
 import type { StageMode } from '../../src/game/stageKit.types.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
@@ -150,6 +151,10 @@ export interface FirstTimer {
   retryHold?: number;
   /** he knows the double jump from the start (doubleUsedShare 1.0: every tester run used it): a gap one jump does not cross gets one */
   knowsDouble?: boolean;
+  /** the chase skill REMOVED (level.md rule 21's planted toy test only, tools/inspect/chaseBots.test.ts): on a running chase he stands at
+   *  an edge and lets go of the thumb as anywhere else. Every bot has the skill: with the branch breaking behind him (the crack, the
+   *  creak, the ember at the edge) he keeps his thumb down and takes each edge in stride (1-8.md: every chase beat passable IN STRIDE) */
+  noChaseStride?: boolean;
   /** at a gap or a face he must clear, his hold is drawn from this quantile of holdQ up (he reads the jump): a tuning field */
   readHold?: number;
   /** and a double up a step gets its second press from dbl2Q's quantiles up to this one (early enough to climb): a tuning field */
@@ -211,6 +216,9 @@ export const FT_CHILD_EASY: FirstTimer = {
   standShare: 0.663, standQ: ms([132, 263, 631, 1187, 2371]), dblShare: 0.3, dbl2Q: ms([361, 413, 543, 724, 1251]),
   steerQ: ms([64, 132, 231, 444, 931]), gapQ: ms([50, 83, 297, 717, 1708]),
 };
+
+/** a chased player's stand at an edge leaves this much of the front's stop budget (s): his jump and the step after it still to come */
+const CHASE_MARGIN = 0.8;
 
 /** seeded random numbers (mulberry32): the same seed plays the same run */
 export function rng(seed: number): () => number {
@@ -1896,6 +1904,22 @@ export class FirstTimerRun {
     return out;
   }
 
+  /** a chase runs behind him (the engine's guide view: the hand-built 1-8, or a laid stretch) and he has the skill to keep moving */
+  private chased(): boolean {
+    return this.view.chase && !this.who.noChaseStride;
+  }
+
+  /** the seconds he could stand before a laid chase's front reaches him (what the screen tells him: the crack, the creak, the ember
+   *  at the edge growing as it closes), at its own row's speed; Infinity with no laid chase running behind him */
+  private chaseRoom(): number {
+    const e = this.sim.e as unknown as { pieces?: Array<{ kind: string; run?: ChaseRun }> };
+    const run = e.pieces?.find((q) => q.kind === 'chase')?.run;
+    const x = this.sim.p.x;
+    const f = run ? frontBehind(run, x) : null;
+    if (!run || f === null) return Infinity;
+    return (x - f - run.row.catchAt) / run.row.base;
+  }
+
   /** a tier bot's next edge: drawn once, kept until he jumps or is put back */
   private edgePlan(): NonNullable<FirstTimerRun['edge']> {
     if (!this.edge) {
@@ -1904,13 +1928,16 @@ export class FirstTimerRun {
       const how = u < (w.lateShare ?? 0) ? 'late' : r() < (w.standShare ?? 0) ? 'stand' : 'run';
       this.edge = { aim: drawQ(r, w.aimQ!, 0), how, stand: w.standQ ? drawQ(r, w.standQ, DT) : 0.2, late: w.lateQ ? drawQ(r, w.lateQ, 0) : 0.05 };
     }
+    // (on a running chase he stands at an edge only as long as the front leaves him: the stand he drew must fit the stop budget it
+    // leaves now, with a margin; else he takes the edge in stride)
+    if (this.chased() && this.edge.how === 'stand' && !this.standing && this.edge.stand > this.chaseRoom() - CHASE_MARGIN) this.edge.how = 'run';
     return this.edge;
   }
 
   /** a tier bot's steering rhythm on open ground: a direction held its time, then let go its time (the profiles' moveHoldMs, moveGapMs) */
   private rhythm(want: Pad): Pad {
     const w = this.who, p = this.sim.p, t = this.t;
-    if (!w.steerQ || !w.gapQ) return want;
+    if (!w.steerQ || !w.gapQ || this.chased()) return want;
     if (!p.grounded || this.jump || this.pending || this.standing || this.lateArmed || want.press || !(want.left || want.right)) return want;
     if (t < this.gapUntil) {
       const out = { ...want };
