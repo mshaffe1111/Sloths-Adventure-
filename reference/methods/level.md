@@ -23,6 +23,7 @@ A level is DESIGNED by a person, then built as data, then PLAYED by the bots and
 18. **Name every rough spot plainly in the report.** Stand-in art, a bot that cannot do something, a number you did not measure.
 19. **When a test refuses a listed layout, its rule moves into the list's judge** (`tools/engine/listRules.ts`) with a planted case, so no relist can list such a layout again (POLISH-9b 11-14: 1-1's room-for-help). Check: the plant goes red with the judge off.
 20. **Never re-pin from a partial suite run;** re-pin once, against the final list, after the whole suite. Check: the REPORT names the full-suite head the pins were taken on.
+21. **Prove the bots can do a new mechanic before the stage is listed:** a planted toy test (the bot does it; with the skill removed it fails), run by CI, BEFORE laying the level that needs it (1-6, 11-14: three builders lost boxes to a bot that couldn't climb out of a pit or catch a swaying liana). Check: the toy test exists and its plant is RED.
 
 ## The steps (in the order I would do them now)
 1. **Design doc** `reference/design/<stage>.md` (60 lines or fewer): the sentence, the beat table (what is there, what he does, what he feels), the rules as checks. Score it on LEVEL-BAR.md before building.
@@ -49,10 +50,12 @@ A level is DESIGNED by a person, then built as data, then PLAYED by the bots and
 - An upright phone shows about 425 px of stage, 270 px past where he stands at a handle; sideways about 150 px over his head is behind the goal sign.
 - No made things in World 1 (no posts, no rope): a rope is a vine between living trunks (the lead, 11-12).
 - The snake: shy, 0.5 s rear, strikes where he WAS; every ending is the glide. Drop traps: `predator-kit.md`.
+- Petals on a landing go where the landing sets him (0.88 of the way); no stretch over 1,050 px without a socket petal, or the shared fill (petals.ts fillGaps) lays them on pit floors; a creaky limb can't hold a petal (flowerReach.ts:140) (BUILD-16c, 11-14).
 
 ## Learned, level by level
 | Level | Builder | Better or worse than the last level | Rule changed |
 |---|---|---|---|
 | 1-3 | W1C (Fable), 11-12 | First level designed before it was built; first with a cast and traps by data | Rules 1-18 written |
+| 1-6 | BUILD-16/16b/16c (Opus), 11-14 | Worse on time: four builders, bot skills built mid-level | Rule 21 (bots proven on a toy first); World 1 petal note (lead, 11-14) |
 
 Rule changes are proposed by builders in their REPORT's Learned section and approved by the lead after each level's retro.
