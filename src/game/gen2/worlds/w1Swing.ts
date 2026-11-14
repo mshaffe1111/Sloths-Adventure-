@@ -44,9 +44,17 @@ const bough = (key: string, place: SectionPiece['place'], w: Range, o: Partial<S
  *  length where a row sets one (else LIANA.len) */
 export const w1Liana = (key: string, after: string, gap: LianaGap, len?: Range): SectionPiece =>
   ({ key, shape: 'liana', w: [0, 0], place: { kind: 'swing', after, top: [400, 420], ...(W1_LIANA_GAP[gap].grip ? { grip: W1_LIANA_GAP[gap].grip } : {}), ...(len ? { len } : {}) } });
-/** the bough a liana throws him onto, level with the one he left, at the gap's share of its band */
-export const w1Perch = (key: string, liana: string, gap: LianaGap, w: Range): SectionPiece =>
-  bough(key, { kind: 'land', after: liana, dy: [0, 0], share: W1_LIANA_GAP[gap].share, ...(W1_LIANA_GAP[gap].window ? { window: W1_LIANA_GAP[gap].window } : {}) }, w);
+/**
+ * a liana caught off the liana `after` in the air (a chain, ENG-S5; 1-6 beat 4 "The chain"): its anchor 400-420 px over the chain's first
+ * bough, at the `prev` gap's share of the band of anchors a press on `after` catches it from (pipeline chainRelease, from the holds
+ * `after`'s dial names: SHORT, the top still catches it, near; LONG, the low holds, far), its own dial by the gap AFTER it
+ */
+export const w1Chain = (key: string, after: string, prev: LianaGap, gap: LianaGap): SectionPiece =>
+  ({ key, shape: 'liana', w: [0, 0], place: { kind: 'swing', after, top: [400, 420], share: W1_LIANA_GAP[prev].share, ...(W1_LIANA_GAP[gap].grip ? { grip: W1_LIANA_GAP[gap].grip } : {}) } });
+/** the bough a liana throws him onto, level with the one he left, at the gap's share of its band (`hurt`: the gap is a thorn hollow on
+ *  Normal, the soft moss pit on Easy: the kit lays World 1's hurt floor row) */
+export const w1Perch = (key: string, liana: string, gap: LianaGap, w: Range, o: { hurt?: boolean } = {}): SectionPiece =>
+  bough(key, { kind: 'land', after: liana, dy: [0, 0], share: W1_LIANA_GAP[gap].share, ...(W1_LIANA_GAP[gap].window ? { window: W1_LIANA_GAP[gap].window } : {}), ...(o.hurt ? { hurt: true } : {}) }, w);
 const petals = (id: string, on: string, t: Range | number, n = 1, span = 80): Socket => ({ id, role: 'pickup', on, t, dn: 34, count: n, span });
 
 /** one liana over one gap: a bough, the liana, the perch, a bough on (a section a World 1 liana stage builds its beats from) */
@@ -59,3 +67,27 @@ const one = (gap: LianaGap, difficulty: number, perchW: Range): SectionTemplate 
 
 /** World 1's liana sections: one of each gap (the stage's own kit lists them, with withSwing) */
 export const W1_SWING_SECTIONS: SectionTemplate[] = [one('short', 3, [240, 280]), one('long', 5, [220, 260]), one('far', 7, [120, 140])];
+
+/**
+ * 1-6 beat 4 "The chain" (ENG-S5; 1-6.md: "Two lianas, then three, liana to liana ... over 1-2's thorns: SHORT, SHORT, LONG. Easy: moss
+ * under the middle"): a bough, lianas caught liana to liana with no perch between, the last one's LONG leap onto the perch ("slides down
+ * for the LONG one"). `gaps`: the gap after each liana, the last one the perch's. The gap under the whole chain is the perch's (`hurt`):
+ * the thorn hollow on Normal (the kit's hurtFloor row: THORN_ROW), the soft moss pit with its stair back on Easy. The kit that lists it
+ * adds withSwing and World 1's hurt floor row.
+ */
+export function w1ChainSection(id: string, gaps: LianaGap[], difficulty: number, perchW: Range): SectionTemplate {
+  const keys = gaps.map((_, i) => `l${i + 1}`);
+  const lianas = keys.map((k, i) => (i === 0 ? w1Liana(k, 'a', gaps[0]) : w1Chain(k, keys[i - 1], gaps[i - 1], gaps[i])));
+  const last = keys[keys.length - 1];
+  return {
+    id, name: `${gaps.length} lianas, liana to liana: ${gaps.map((g) => g.toUpperCase()).join(', ')} over thorns`, archetypes: ['vine_runner'], phases: ['sho', 'ten', 'ketsu'], difficulty,
+    pieces: [bough('a', { kind: 'start' }, [260, 300]), ...lianas, w1Perch('b', last, gaps[gaps.length - 1], perchW, { hurt: true })],
+    entry: { piece: 'a', kind: 'ledge' }, exit: { piece: 'b', kind: 'ledge' }, exitDy: 0,
+    sockets: [petals('pa', 'a', 0.4), petals('pb', 'b', 0.5, 2)], mirrorable: false,
+  };
+}
+/** beat 4's two rows: two lianas (SHORT, then the LONG leap off), then three (SHORT, SHORT, LONG) */
+export const W1_CHAIN_SECTIONS: SectionTemplate[] = [
+  w1ChainSection('w1-liana-chain2', ['short', 'long'], 6, [220, 260]),
+  w1ChainSection('w1-liana-chain3', ['short', 'short', 'long'], 7, [220, 260]),
+];
