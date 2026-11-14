@@ -112,7 +112,7 @@ ENGINE-WORTHY lists in BUILD-16d/17/17b REPORTs); R-165.250 strand rule; POLISH-
 **Members running** (refreshed 6:15 PM ET by the new lead; report to the session on this file's top line):
 | Member | Session | Branch | Job | Report by (ET) |
 |---|---|---|---|---|
-| DESIGN-19 | session_01FhBbYN6ZRbKZkpY5QMp8Ke | t-design-19 from t-1718-design (high) | 1-9 design (at most 2 NEW S/M engine blocks), 2-1/2-2 concepts + ranked engine list, W1 tribute pass R-165.253 (packets/2026-11-14/DESIGN-19.md) | 8:15 PM |
+| PITCH-A (was DESIGN-19) | session_01FhBbYN6ZRbKZkpY5QMp8Ke | t-pitch-a from t-1718-design (high) | pitch 1-9, 2-1, 2-2 + W1 tribute pass (packets/2026-11-14/PITCH-19-22.md); PITCH-B (xhigh, blind) starts in TOOLS-2's slot ~7:50, report 9:20; lead picks ~9:30 | 8:15 PM |
 | ENG-16G | session_01FhBbYN7qZpCPnWqXycWnXZ | t-build-16@498f8d61 (xhigh) | 1-6 NOT green (6:21): expert sealed 22/40 (petals off the walked span, stage-wide), kid 6 rescues Normal. Ruled 6:23: no stills/clips; suite + lock, ranked petal-miss list, 6 kid rescues traced, EXACT NEXT STEP for a global walked-span petal lay (fresh engine member at 7:30). Easy proof pending R-165.251 | 7:30 PM |
 | TOOLS-2 | session_01FhBbYNF5NqMztUscqbZ5Ln | t-tools-2 from t-tools-1@71859cf9 + t-int-9 (xhigh) | R-165.251 one per-setting helper in every tool + Easy relists/locks re-checked; R-165.252 build.py file gate + published diff (packets/2026-11-14/TOOLS-2.md) | 7:50 PM |
 | ENG-B6 | session_01FhBbYLDmwbYR1ovA8KMgZf | t-eng-b6 from t-int-9@1c7f6b95 (xhigh) | merge the chase line t-eng-b5@de1e22fb (6 files conflict) by 7:00 PM, then 1-8's still fork, phased liana, tip (packets/2026-11-14/ENG-B6.md) | step 1 7:00 PM; final 8:45 PM |
