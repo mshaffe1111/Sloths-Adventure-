@@ -1,0 +1,49 @@
+{
+ "tag": "perch678",
+ "edits": [
+  {
+   "name": "harpy-ahead-perch",
+   "src": "b:hfpokey/edits/harpy-ahead-s2.png",
+   "w": 1024,
+   "h": 1024,
+   "prompt": "Change only its legs and feet: both feet are now side by side gripping a horizontal branch, talons curled around it, standing still, the same bird and the same pose above the legs. Keep everything else exactly as in the picture: the same cartoon harpy eagle, the same dark navy feathers, the same pale grey and white head and crest, the same big round orange-brown eyes, the same grey hooked beak, the same orange feet, the same thin dark outline, the same soft painted storybook cartoon style, the same size, and the same flat plain grey background. A short plain brown branch under its feet is the only new thing.",
+   "neg": "two birds, extra wings, extra legs, extra head, ground, text, watermark, blurry, photo, 3d render, flying",
+   "seeds": [
+    1
+   ]
+  },
+  {
+   "name": "harpy-blink-perch",
+   "src": "b:hfpokey/edits/harpy-blink-s2.png",
+   "w": 1024,
+   "h": 1024,
+   "prompt": "Change only its legs and feet: both feet are now side by side gripping a horizontal branch, talons curled around it, standing still, the same bird and the same pose above the legs. Keep everything else exactly as in the picture: the same cartoon harpy eagle, the same dark navy feathers, the same pale grey and white head and crest, the same big round orange-brown eyes, the same grey hooked beak, the same orange feet, the same thin dark outline, the same soft painted storybook cartoon style, the same size, and the same flat plain grey background. A short plain brown branch under its feet is the only new thing.",
+   "neg": "two birds, extra wings, extra legs, extra head, ground, text, watermark, blurry, photo, 3d render, flying",
+   "seeds": [
+    1
+   ]
+  },
+  {
+   "name": "harpy-down-perch",
+   "src": "b:hfpokey/edits/harpy-down-s2.png",
+   "w": 1024,
+   "h": 1024,
+   "prompt": "Change only its legs and feet: both feet are now side by side gripping a horizontal branch, talons curled around it, standing still, the same bird and the same pose above the legs. Keep everything else exactly as in the picture: the same cartoon harpy eagle, the same dark navy feathers, the same pale grey and white head and crest, the same big round orange-brown eyes, the same grey hooked beak, the same orange feet, the same thin dark outline, the same soft painted storybook cartoon style, the same size, and the same flat plain grey background. A short plain brown branch under its feet is the only new thing.",
+   "neg": "two birds, extra wings, extra legs, extra head, ground, text, watermark, blurry, photo, 3d render, flying",
+   "seeds": [
+    1
+   ]
+  },
+  {
+   "name": "harpy-turn-perch",
+   "src": "b:hfpokey/edits/harpy-turn-s2.png",
+   "w": 1024,
+   "h": 1024,
+   "prompt": "Change only its legs and feet: both feet are now side by side gripping a horizontal branch, talons curled around it, standing still, the same bird and the same pose above the legs. Keep everything else exactly as in the picture: the same cartoon harpy eagle, the same dark navy feathers, the same pale grey and white head and crest, the same big round orange-brown eyes, the same grey hooked beak, the same orange feet, the same thin dark outline, the same soft painted storybook cartoon style, the same size, and the same flat plain grey background. A short plain brown branch under its feet is the only new thing.",
+   "neg": "two birds, extra wings, extra legs, extra head, ground, text, watermark, blurry, photo, 3d render, flying",
+   "seeds": [
+    1
+   ]
+  }
+ ]
+}
