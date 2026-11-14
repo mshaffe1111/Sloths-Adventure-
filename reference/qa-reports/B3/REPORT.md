@@ -1,4 +1,4 @@
-# B3 REPORT (ENG-B3, t-eng-b3 from t-b2-chase@42d2d7a6, session_01FhBbYLJGooLkTTXETjnrJb). Written __TIME__ ET. Context: about 20-25% of the 1M window (my estimate; I cannot read the session figure, D64).
+# B3 REPORT (ENG-B3, t-eng-b3 from t-b2-chase@42d2d7a6, session_01FhBbYLJGooLkTTXETjnrJb). Written 10:15 AM ET (box ran past 90 min, lead OK 9:10). Context: about 40% of the 1M window (my estimate; I cannot read the session figure, D64).
 **Done 1, the owed gates on t-b2-chase@42d2d7a6** (side worktree, nothing edited under it): unit suite 3 shards 3,405 pass / 0 fail / 2 todo
 (both pre-existing TODOs, e.g. 4-3's boulder wall); tooltests 74/0; seed lists 5 of 5 (`registrycheck --lists`) all `--check` pass; registrycheck
 PASS (5 stages); tierBots 7/0; buildcheck p95 109 ms Normal / 73 ms Easy (<= 150). B2's head is GREEN on everything its report left UNRUN.
@@ -22,16 +22,19 @@ PASS (5 stages); tierBots 7/0; buildcheck p95 109 ms Normal / 73 ms Easy (<= 150
   (poolFits, the lay's jobFits, the deal's and the asks' views). Only K nodes read it; no shipped graph has one (lock below).
 - **Found + fixed at the root (2), outside the study's file list (named):** Easy's own flag pass (easyMode.ts easyStage) stood flags INSIDE a
   laid stretch (the in-play test caught it on the real engine start). It now skips a candidate inside a stretch (+2 lines). Lead: accept or move.
-- Tests (gen2/chaseLay.test.ts, 7/7, red without the change: K was refused by V13 and nothing laid `chase`): the cut keeps the ground; K on
-  World 1's real kit (fixture 1-98 = W1 kit + 1-1's brief, no fork/no deal, stage 8, 1-1's reach scope) over 30 rolls: one stretch per K,
-  sections only on stretches, every fork whole, no flag inside, a flag before every crack, spans <= 4,000, Easy one stretch per K; refusals
-  by name (too long, no fork, short fork, no ground) lay nothing; a second kit (the legs fixture 5-95) lays or names why; **in play**: the
-  engine's own stage start on a seed clean on BOTH settings (planted as a proven list): drawPlats holds none of the chase sections, the
-  chase piece starts, Normal's flags exactly the lay's, Easy's include them and none inside a stretch. nodeLetters/nodeCode pins updated
-  (K is now 'now'; V13's LATER case moved to Z).
-**Step 3 tint: NOT DONE (cut for the box, D40 order).** B2's EXACT NEXT STEP 1 stands unchanged (bake C4 once per screen size, one drawImage,
-bark chips <= 22, re-bake on restore, contrast.mjs 1-2 2-1 3-1 3-9 upright too, drawcheck). Est. 60-90 min on its own.
-**Gates on 47a9f954** (worktree, nothing edited during; logs in my scratchpad, results pasted): __GATES__
+- Tests (gen2/chaseLay.test.ts 7/7, red without: K was refused by V13, nothing laid `chase`): the cut keeps the ground; 30 rolls on World
+  1's real kit (fixture 1-98: W1 kit, 1-1's brief without fork/deal, stage 8, 1-1's reach scope): stretches within the cap, sections only on
+  stretches, forks whole, no flag inside, a flag before every crack, spans <= 4,000, Easy too; named refusals lay nothing; a long K split;
+  the legs fixture lays or names why; **in play** (real engine start, a seed clean on both settings planted as a proven list): drawPlats
+  holds no chase section, the piece starts, flags as laid (Easy's extra ones never inside). nodeLetters/nodeCode pins: K now 'now'.
+**Step 3 tint: NOT DONE (cut for the box, D40; lead 9:00: the next member's).** B2's EXACT NEXT STEP 1 stands unchanged.
+**Gates on 6974e26d** (src identical to this head; a side worktree, nothing edited during): unit 3 shards 3,412 pass / 0 fail / 2 todo
+(the same pre-existing TODOs); tsc 0; build (BASE_PATH) 0; chunkcheck PASS; artcheck PASS; knowncheck PASS; generality PASS; kbdcheck PASS;
+clipcheck PASS (83 known); drawcheck PASS 491 s; seed lists 5/5 --check pass; registrycheck PASS; tooltests 74/0; tierBots 7/0; lockall vs
+B2's head (42d2d7a6) **102/102 unchanged**; roadmapcheck PASS (first run refused: the clone was shallow; unshallowed, re-run PASS).
+**buildcheck: RED by run, on BOTH heads (R-165.207, open):** in the gate run Normal p95 175 ms (budget 150); re-runs alone 114 PASS, 159 FAIL;
+interleaved B2 head / mine: 176/155, 133/136, 97/130 (medians 133 vs 136 ms: no cost of mine I can measure; K-less builds skip the lay).
+It does not ship until R-165.207 (BUILDTIME) lands.
 **Polish check:** no screen changed for any shipped stage (no shipped graph has K). Clips of a laid chase both ways: NOT SHOT: no real page
 stage lays K (1-8's arc w1Arc08 is the first); the fixture runs only in the headless engine. Measured headless, 30 rolls: 0 creatures
 and 0 dressing pieces on a stretch; route-height pieces beside the route (logs) now fall with it; **rough, named:** about 2-3 pit floors
@@ -53,6 +56,5 @@ pass), D51, D57, D59 (gates waited), D63 (no clip = named), D64, law 22.
 **Method update (stage-piece.md, proposed):** step 1b "A LAY runs on the built stage before the verdicts (buildGen2Stage), never after: the
 verdict that judges every rolled stage then judges what it changed; and an in-play test starts the REAL engine on a planted proven seed
 clean on BOTH settings (towerFly.ts withTowerSim's way + withTestStage scope) — Easy's own post-passes are only seen there."
-**Learned:** a new node letter needs a pool that serves it (grep `jobs:` for the job first); a rule's number (K <= 4,000) can collide with a
-Matt rule (flag span) only visible when both are laid: lay one real roll before believing a design number.
-**Turnover note:** reference/handoffs/engine-core.md §0v rewritten (commit __HANDOFF__).
+**Learned:** a new letter needs a pool that serves it (grep `jobs:` first); a design number can collide with a Matt rule only when both are
+laid: lay one real roll first; a timing gate at its budget is measured interleaved against the base. **Turnover:** engine-core.md §0v (313db7ee5).
