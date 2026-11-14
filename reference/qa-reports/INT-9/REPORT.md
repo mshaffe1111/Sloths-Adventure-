@@ -1,4 +1,4 @@
-# INT-9 REPORT (t-int-9 from t-int-8@0a9be28c; link #3). Integrator, Opus 5.5 xhigh. 3:03 PM to 4:17 PM ET 11-14. Lead session_01FhBbYNzGRJBDMzn6XbtQK2.
+# INT-9 REPORT (t-int-9 from t-int-8@0a9be28c; link #3). Integrator, Opus 5.5 xhigh. 3:03 PM to 4:14 PM ET 11-14. Lead session_01FhBbYNzGRJBDMzn6XbtQK2.
 ## STATUS: NOT GREEN YET, by design: stopped at the lead's word (4:13 PM) before item 6. Head 0c1d3cab: items 1-5, 7, POLISH-10, the journal.
 ## EXACT NEXT STEP (a fresh integrator, from origin/t-int-9@0c1d3cab; read handoffs/integrator.md first)
 1. When the lead says ENG-16F is GREEN: merge origin/t-build-16 (the new 1-6). Keep both firsttimer.ts behaviours (BUILD-16's and 1-7's,
@@ -39,5 +39,5 @@ fix-15b 2ed6a692 (7df7b8e3), polish-10 e4d5abe3 (c38db32b; its root REPORT.md mo
    strip-seamless.py, a real-screen still at the join, then a gate (stripjoin measure, shrink-only known list with an R-id).
 2. Integrator role card (roles/INTEGRATOR.md) from handoffs/integrator.md.
 ## Unresolved: item 6 and its steps; the full gate run on the final head; requiredMove.test RED (old 1-6). Lessons: D19, D29, D30
-   (REPEAT: I typed 3:19 PM at 3:17, owned), D36, D40, D57, D59 (no run left running), D61, D62, D67, D69, LAWS 22.
+   (REPEAT x2: I typed 3:19 PM at 3:17, and 4:17 PM at 4:14 in this REPORT's first push; both corrected from date), D36, D40, D57, D59 (no run left running), D61, D62, D67, D69, LAWS 22.
 ## Method update: gates.md/integrator.md: roll every listed stage right after the merges, before the long gates. Turnover: handoffs/integrator.md (new), engine-core.md 0z.

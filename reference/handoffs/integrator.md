@@ -3,7 +3,7 @@
 No role card yet (INT-7's and INT-8's suggestion: reference/roles/INTEGRATOR.md). Until then: the packet, gates.md, release.md (test
 link part), this note, and the last INT-n REPORT (reference/qa-reports/INT-n/REPORT.md).
 
-## Open now (INT-9 stopped 4:17 PM ET 11-14 at the lead's word, before item 6)
+## Open now (INT-9 stopped 4:14 PM ET 11-14 at the lead's word, before item 6)
 - origin/t-int-9@0c1d3cab holds link #3 minus the new 1-6. The next integrator starts at INT-9's REPORT "EXACT NEXT STEP":
   merge t-build-16 when ENG-16F is GREEN, delete the old 1-6 (R-165.238; requiredMove.test is RED until then), the D70 line review,
   roll every listed stage, the full gate run once on the final head, 1-6 stills and clips, then the lead builds EnK5.
