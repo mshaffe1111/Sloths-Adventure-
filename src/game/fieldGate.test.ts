@@ -361,3 +361,53 @@ for (const setting of ['normal', 'easy'] as const)
         setDifficulty('normal');
       }
     });
+
+test("a flag on a shut gate's own bough waits for the gate: never claimed from on or over the shut wood; claimed on the open bough (FIX-15b, the lead 11-14 1:01 PM, R-165.212)", () => {
+  for (const setting of ['normal', 'easy'] as const) {
+    setDifficulty(setting);
+    try {
+      // (the first layout whose gate bough carries a flag, read from the roll: no x, no layout named)
+      let tried = 0;
+      for (let layout = 0; layout < 16 && !tried; layout++) {
+        const r = new RealPlay('1-4', layout);
+        const e = r.e as unknown as { field: Field & { pods: unknown[] }; clusters: { id: number; falling?: boolean }[]; clusterTorn(c: unknown): void };
+        e.field.pods = [];
+        const cps = r.stage.checkpoints ?? [];
+        for (const g of r.stage.gates ?? []) {
+          const b = r.platforms.find((q) => q.id === g.platform)!;
+          const cp = cps.find((c) => c.x >= b.x && c.x <= b.x + b.width && Math.abs(c.y - b.y) <= 1);
+          if (!cp) continue;
+          tried++;
+          // (shut: stood on its drawn top where it is highest within the flag's reach across (the bough sags toward its far end), then put
+          // 60, 100 and 140 px over the flag, a second each: inside the claim's reach every time)
+          const topAt = (x: number) => fieldOf(r).shutBoughAt(x, cp.y + GATE.sag + 1)!.top;
+          const xs = [-60, -40, -20, 0, 20, 40, 60].map((d) => cp.x + d).filter((x) => x >= b.x + 4 && x <= b.x + b.width - 4);
+          const sx = xs.sort((a, c) => topAt(a) - topAt(c))[0];
+          r.stand(sx, topAt(sx));
+          for (let i = 0; i < 30; i++) r.frame({});
+          assert.ok(r.p.grounded && Math.abs(r.p.y - topAt(r.p.x)) < 2, `${setting} layout ${layout} gate ${g.id}: he stands on the shut bough's drawn top`);
+          assert.ok(!cp.reached, `${setting} layout ${layout} gate ${g.id}: the flag on the shut bough was claimed from its top`);
+          for (const dy of [60, 100, 140]) {
+            r.fly(cp.x, cp.y - dy);
+            for (let i = 0; i < 30; i++) r.frame({});
+            assert.ok(!cp.reached, `${setting} layout ${layout} gate ${g.id}: the flag on the shut bough was claimed from ${dy} px over it`);
+          }
+          assert.ok(gateShut(g, (r.e as unknown as { clusters: VineCluster[] }).clusters), 'the gate stayed shut');
+          // (open: every fig of this gate pushed free, the engine's own tear; on the bough now, the flag is his)
+          for (const c of e.clusters)
+            if (g.clusters.includes(c.id)) {
+              c.falling = true;
+              e.clusterTorn(c);
+            }
+          r.stand(cp.x, b.y);
+          r.frame({});
+          assert.ok(cp.reached, `${setting} layout ${layout} gate ${g.id}: open, standing on the bough at the flag, it is claimed`);
+          break;
+        }
+      }
+      assert.ok(tried > 0, `${setting}: no layout of 16 lays a flag on a gate's bough (the case is not tested)`);
+    } finally {
+      setDifficulty('normal');
+    }
+  }
+});

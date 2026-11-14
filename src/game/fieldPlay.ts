@@ -142,6 +142,23 @@ export class FieldPlay {
     return false;
   }
 
+  /** does a flag standing at (x, y) wait for its gate? Yes while it stands on a SHUT gate's bough or a bough held with it (on its line,
+   *  over its span): it is claimed only from where he stands once the gate is open, never from on or over the shut bough (FIX-15b, the
+   *  lead 11-14 1:01 PM, R-165.212: Matt "it let me go above the platform"; 49 of 96 gates on 1-4's layouts 0-7 carry one) */
+  flagWaits(x: number, y: number): boolean {
+    for (const g of this.gates) {
+      if (!gateShut(g, this.clusters)) continue;
+      if (this.standsOn(g.platform, x, y)) return true;
+      for (const id of g.with ?? []) if (this.standsOn(id, x, y)) return true;
+    }
+    return false;
+  }
+
+  private standsOn(id: number, x: number, y: number): boolean {
+    const b = this.platforms.find((q) => q.id === id);
+    return !!b && x >= b.x && x <= b.x + b.width && Math.abs(y - b.y) <= 1;
+  }
+
   /** kept floors for footings() (no allocation a frame) */
   private readonly floors: Platform[] = [];
   private readonly floorOf = new Map<number, Platform>();
