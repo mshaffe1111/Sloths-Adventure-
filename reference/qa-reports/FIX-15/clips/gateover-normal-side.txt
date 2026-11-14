@@ -1,0 +1,33 @@
+BUILT {"difficulty":"normal","builtDifficulty":"normal","stage":"1-4","seed":1,"orientation":"side","view":[915,412]}
+GATE {"gate":6,"figs":3,"bough":{"x":414,"r":934,"y":1923},"vines":[474,634,874],"ledge":{"x":876,"r":1056,"y":2022}}
+TIES held from here: the cheat tries all run on a SHUT gate
+PRESS {"at":[474,2082],"vyAfter":-600,"dy":0,"spent":0,"offVine":true,"grabbed":false,"lifted":true}
+PRESS {"at":[634,2094],"vyAfter":-600,"dy":0,"spent":0,"offVine":true,"grabbed":false,"lifted":true}
+PRESS {"at":[983,2003],"vyAfter":-577,"dy":-19,"spent":1,"offVine":false,"grabbed":false,"lifted":true}
+PRESS {"at":[983,2003],"vyAfter":-577,"dy":-19,"spent":1,"offVine":false,"grabbed":false,"lifted":true}
+PRESS {"at":[1027,2003],"vyAfter":-577,"dy":-19,"spent":1,"offVine":false,"grabbed":false,"lifted":true}
+PRESS {"at":[1027,2003],"vyAfter":-577,"dy":-19,"spent":1,"offVine":false,"grabbed":false,"lifted":true}
+PRESS {"at":[933,1908],"vyAfter":-533,"dy":-18,"spent":1,"offVine":false,"grabbed":false,"lifted":true}
+TRY {"name":"climb up under it","head":0,"top":2082,"over":false,"stops":[],"end":{"head":0,"over":false,"shut":true,"x":474,"y":2082,"vy":0,"g":false,"c":true,"side":"under","onTop":false}}
+TRY {"name":"leap off the vine top","head":0,"top":2082,"over":false,"stops":["step 84: HEAD STOP (head 0 px vs underside)"],"end":{"head":-1,"over":false,"shut":true,"x":554,"y":2089,"vy":0,"g":false,"c":true,"side":"under","onTop":false}}
+TRY {"name":"leap + second flick","head":0,"top":2094,"over":false,"stops":["step 98: HEAD STOP (head 0 px vs underside)"],"end":{"head":-1,"over":false,"shut":true,"x":714,"y":2100,"vy":0,"g":false,"c":true,"side":"under","onTop":false},"second":"not pressed: he had caught a vine or landed before the top"}
+TRY {"name":"ledge x 1016: walk in under its sagging end","head":-1000000000,"top":2022,"over":false,"stops":["step 119: WALL at its end (x 956)"],"end":{"head":null,"over":false,"shut":true,"x":956,"y":2022,"vy":0,"g":true,"c":false,"side":null,"onTop":false}}
+TRY {"name":"ledge x 986: just past its end, flick up-left","head":-1000000000,"top":1924,"over":true,"stops":["step 155: LANDED ON the shut bough's top (x 862)"],"end":{"head":null,"over":false,"shut":true,"x":862,"y":1955,"vy":0,"g":true,"c":false,"side":"over","onTop":true},"onTop":"step 155"}
+TRY {"name":"ledge x 986: just past its end, flick straight up, left held","head":-1000000000,"top":1924,"over":true,"stops":["step 170: LANDED ON the shut bough's top (x 862)"],"end":{"head":null,"over":false,"shut":true,"x":862,"y":1955,"vy":0,"g":true,"c":false,"side":"over","onTop":true},"onTop":"step 170"}
+TRY {"name":"ledge x 1030: further along, flick straight up, left held","head":-1000000000,"top":1924,"over":true,"stops":["step 186: LANDED ON the shut bough's top (x 913)"],"end":{"head":null,"over":false,"shut":true,"x":913,"y":1959,"vy":0,"g":true,"c":false,"side":"over","onTop":true},"onTop":"step 186"}
+TRY {"name":"ledge x 1030: further along, straight up + second flick","head":-1000000000,"top":1841,"over":true,"stops":["step 215: LANDED ON the shut bough's top (x 777)"],"end":{"head":null,"over":false,"shut":true,"x":777,"y":1949,"vy":0,"g":true,"c":false,"side":"over","onTop":true},"second":"pressed in the air","onTop":"step 215"}
+TRY {"name":"dropped onto it from over its middle","head":-1000000000,"top":1824,"over":true,"stops":["step 224: LANDED ON the shut bough's top (x 674)"],"end":{"head":null,"over":false,"shut":true,"x":674,"y":1942,"vy":0,"g":true,"c":false,"side":"over","onTop":true},"onTop":"step 224"}
+STOP leap off the vine top | step 84: HEAD STOP (head 0 px vs underside)
+STOP leap + second flick | step 98: HEAD STOP (head 0 px vs underside)
+STOP ledge x 1016: walk in under its sagging end | step 119: WALL at its end (x 956)
+STOP ledge x 986: just past its end, flick up-left | step 155: LANDED ON the shut bough's top (x 862)
+STOP ledge x 986: just past its end, flick straight up, left held | step 170: LANDED ON the shut bough's top (x 862)
+STOP ledge x 1030: further along, flick straight up, left held | step 186: LANDED ON the shut bough's top (x 913)
+STOP ledge x 1030: further along, straight up + second flick | step 215: LANDED ON the shut bough's top (x 777)
+STOP dropped onto it from over its middle | step 224: LANDED ON the shut bough's top (x 674)
+THROUGH while shut: never
+ON ITS TOP while shut: ledge x 986: just past its end, flick up-left; ledge x 986: just past its end, flick straight up, left held; ledge x 1030: further along, flick straight up, left held; ledge x 1030: further along, straight up + second flick; dropped onto it from over its middle
+OVER while shut: YES (he got over a shut bough)
+HEAD most over the shut underside (px, <= 0 is under): 0
+FRAMES 210
+EXIT 0

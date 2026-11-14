@@ -1,0 +1,94 @@
+normal L0 gate 3 594-1034 y 4909 LOW 476-656 dy 99 ONTO from 476-656 dy 99
+normal L0 gate 5 614-974 y 2965 LOW 916-1096 dy 99 ONTO from 376-556 dy 39
+normal L0 gate 6 414-934 y 1923 LOW 876-1056 dy 99 ONTO from 876-1056 dy 99
+normal L1 gate 2 310-750 y 7214 LOW 212-392 dy 99 ONTO from 212-392 dy 99
+normal L1 gate 5 670-1030 y 3342  ONTO from 198-378 dy 39
+normal L1 gate 6 196-716 y 2300  ONTO from 942-1122 dy 39
+normal L2 gate 3 646-1086 y 5270  ONTO from 198-378 dy 39
+normal L2 gate 4 196-716 y 4248  ONTO from 942-1122 dy 39
+normal L2 gate 5 724-1084 y 3286  ONTO from 230-410 dy 35
+normal L2 gate 6 248-768 y 2300 LOW 710-890 dy 99 ONTO from 710-890 dy 99
+normal L3 gate 2 654-1094 y 6797 LOW 536-716 dy 99 ONTO from 536-716 dy 99
+normal L3 gate 6 310-830 y 1923 LOW 188-368 dy 99 ONTO from 188-368 dy 99
+normal L4 gate 5 290-650 y 3342  ONTO from 902-1082 dy 39
+normal L4 gate 6 564-1084 y 2300 LOW 442-622 dy 99 ONTO from 442-622 dy 99
+normal L5 gate 1 674-1114 y 8176 LOW 576-756 dy 99 ONTO from 576-756 dy 99
+normal L5 gate 5 650-1010 y 3342  ONTO from 198-378 dy 39
+normal L5 gate 6 196-716 y 2300  ONTO from 942-1122 dy 39
+normal L6 gate 2 150-590 y 7270 LOW 568-748 dy 99 ONTO from 568-748 dy 99
+normal L6 gate 3 246-686 y 5246 LOW 604-784 dy 99 ONTO from 604-784 dy 99
+normal L6 gate 5 246-606 y 3302 LOW 624-804 dy 39 ONTO from 624-804 dy 39
+normal L7 gate 3 646-1086 y 4893  ONTO from 178-358 dy 39
+normal L7 gate 4 196-716 y 3871  ONTO from 942-1122 dy 39
+normal L7 gate 5 724-1084 y 2909  ONTO from 250-430 dy 35
+normal L7 gate 6 308-828 y 1923 LOW 770-950 dy 99 ONTO from 770-950 dy 99
+normal L8 gate 1 646-1086 y 7839  ONTO from 172-352 dy 35
+normal L8 gate 3 670-1110 y 5286 LOW 572-752 dy 99 ONTO from 572-752 dy 99
+normal L8 gate 6 194-714 y 2300  ONTO from 902-1082 dy 39
+normal L9 gate 1 646-1086 y 7181  ONTO from 172-352 dy 35
+normal L9 gate 3 670-1110 y 4628 LOW 552-732 dy 99 ONTO from 552-732 dy 99
+normal L9 gate 5 166-526 y 2965 LOW 524-704 dy 99 ONTO from 524-704 dy 99
+normal L10 gate 3 674-1114 y 4949 LOW 516-696 dy 99 ONTO from 516-696 dy 99
+normal L10 gate 5 614-974 y 2965 LOW 416-596 dy 39 ONTO from 416-596 dy 39
+normal L10 gate 6 414-934 y 1923 LOW 876-1056 dy 99 ONTO from 876-1056 dy 99
+normal L11 gate 1 646-1086 y 7727  ONTO from 198-378 dy 39
+normal L11 gate 3 646-1086 y 4797  ONTO from 152-332 dy 35
+normal L11 gate 6 346-866 y 1923 LOW 224-404 dy 99 ONTO from 224-404 dy 99
+normal L12 gate 3 646-1086 y 4893  ONTO from 158-338 dy 39
+normal L12 gate 4 196-716 y 3871  ONTO from 902-1082 dy 39
+normal L12 gate 5 724-1084 y 2909  ONTO from 250-430 dy 35
+normal L12 gate 6 308-828 y 1923 LOW 770-950 dy 99 ONTO from 770-950 dy 99
+normal L13 gate 1 646-1086 y 7895  ONTO from 198-378 dy 39
+normal L13 gate 3 166-606 y 5005 LOW 584-764 dy 99 ONTO from 584-764 dy 99
+normal L13 gate 5 770-1130 y 3342 LOW 592-772 dy 99 ONTO from 592-772 dy 99
+normal L14 gate 5 554-914 y 2965 LOW 856-1036 dy 99 ONTO from 316-496 dy 39
+normal L14 gate 6 354-874 y 1923 LOW 816-996 dy 99 ONTO from 816-996 dy 99
+normal L15 gate 2 594-1034 y 6741 LOW 436-616 dy 99 ONTO from 436-616 dy 99
+normal L15 gate 6 394-914 y 1923 LOW 856-1036 dy 99 ONTO from 856-1036 dy 99
+easy L0 gate 3 212-652 y 4909 LOW 590-770 dy 99 ONTO from 590-770 dy 99
+easy L0 gate 5 320-680 y 2965  ONTO from 738-918 dy 39
+easy L0 gate 6 408-928 y 1923 LOW 286-466 dy 99 ONTO from 286-466 dy 99
+easy L1 gate 2 646-1086 y 7214  ONTO from 166-346 dy 39
+easy L1 gate 5 670-1030 y 3342  ONTO from 246-426 dy 39
+easy L1 gate 6 196-716 y 2300  ONTO from 894-1074 dy 39
+easy L2 gate 3 194-634 y 5270  ONTO from 854-1034 dy 39
+easy L2 gate 4 564-1084 y 4248  ONTO from 206-386 dy 39
+easy L2 gate 5 196-556 y 3286  ONTO from 870-1050 dy 35
+easy L2 gate 6 560-1080 y 2300 LOW 438-618 dy 99 ONTO from 438-618 dy 99
+easy L3 gate 2 194-634 y 7118  ONTO from 854-1034 dy 39
+easy L3 gate 6 518-1038 y 2300  ONTO from 206-386 dy 39
+easy L4 gate 5 290-650 y 3342  ONTO from 854-1034 dy 39
+easy L4 gate 6 564-1084 y 2300 LOW 442-622 dy 99 ONTO from 442-622 dy 99
+easy L5 gate 1 157-597 y 8176 LOW 515-695 dy 99 ONTO from 515-695 dy 99
+easy L5 gate 5 270-630 y 3342  ONTO from 854-1034 dy 39
+easy L5 gate 6 564-1084 y 2300  ONTO from 206-386 dy 39
+easy L6 gate 2 681-1121 y 7270 LOW 523-703 dy 99 ONTO from 523-703 dy 99
+easy L6 gate 3 628-1068 y 5246 LOW 530-710 dy 99 ONTO from 530-710 dy 99
+easy L6 gate 5 660-1020 y 3302 LOW 462-642 dy 39 ONTO from 462-642 dy 39
+easy L7 gate 3 194-634 y 5270  ONTO from 874-1054 dy 39
+easy L7 gate 4 564-1084 y 4248  ONTO from 206-386 dy 39
+easy L7 gate 5 196-556 y 3286  ONTO from 850-1030 dy 35
+easy L7 gate 6 500-1020 y 2300 LOW 378-558 dy 99 ONTO from 378-558 dy 99
+easy L8 gate 1 197-637 y 7574 LOW 75-255 dy 99 ONTO from 75-255 dy 99
+easy L8 gate 3 668-1108 y 4909 LOW 570-750 dy 99 ONTO from 570-750 dy 99
+easy L9 gate 1 177-617 y 7574 LOW 55-235 dy 99 ONTO from 55-235 dy 99
+easy L9 gate 3 668-1108 y 4909 LOW 550-730 dy 99 ONTO from 550-730 dy 99
+easy L9 gate 5 680-1040 y 2965 LOW 502-682 dy 99 ONTO from 502-682 dy 99
+easy L10 gate 3 194-634 y 5326  ONTO from 894-1074 dy 39
+easy L10 gate 5 712-1072 y 3342  ONTO from 246-426 dy 39
+easy L10 gate 6 196-716 y 2300  ONTO from 874-1054 dy 39
+easy L11 gate 1 197-637 y 7895 LOW 575-755 dy 99 ONTO from 575-755 dy 99
+easy L11 gate 3 212-652 y 4909 LOW 570-750 dy 99 ONTO from 570-750 dy 99
+easy L12 gate 3 194-634 y 5270  ONTO from 894-1074 dy 39
+easy L12 gate 4 564-1084 y 4248  ONTO from 246-426 dy 39
+easy L12 gate 5 196-556 y 3286  ONTO from 850-1030 dy 35
+easy L12 gate 6 500-1020 y 2300 LOW 378-558 dy 99 ONTO from 378-558 dy 99
+easy L13 gate 1 197-637 y 8176 LOW 575-755 dy 99 ONTO from 575-755 dy 99
+easy L13 gate 3 646-1086 y 5230  ONTO from 206-386 dy 39
+easy L13 gate 5 672-1032 y 3342  ONTO from 226-406 dy 39
+easy L13 gate 6 196-716 y 2300 LOW 658-838 dy 99 ONTO from 658-838 dy 99
+easy L14 gate 4 566-1086 y 4304  ONTO from 246-426 dy 39
+easy L14 gate 5 196-556 y 3342  ONTO from 894-1074 dy 39
+easy L14 gate 6 564-1084 y 2300 LOW 442-622 dy 99 ONTO from 442-622 dy 99
+easy L15 gate 2 673-1113 y 6741 LOW 515-695 dy 99 ONTO from 515-695 dy 99
+gates 192 with a low piece under (head room) 48 with a side jump onto the shut top (generous) 93
