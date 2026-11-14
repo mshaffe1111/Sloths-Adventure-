@@ -91,3 +91,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | ENG-S4 (Opus xhigh) | snake verdict counts level top+foot (6-3 refused as laid, passes hung 300 down on 5 phones, clips both ways); SNAKE-LAY + letter n; liana len per row; LONG dial pushback accepted; chains not started | $14.16 | ~95 min |
 | ENG-B3 (Opus xhigh) | B2 owed gates green; B5 CHASE-LAY (chaseCap from Matt's flag span, forks, greedy flags); refusals N 15/30 E 7/30; tint not done | $16.87 | ~85 min |
 | KEEPER-16 (Opus high) | 1-6's 7 lines + 6b sealed + mission, nature check, 2 flags (no petal count; old lines to delete), a STORY-KEEPER method update | $2.28 | ~10 min |
+| ENG-E1 (Opus xhigh) | 1-7 on the existing hiding: eagle cast row, sweeper drawn (far circle, screech, shadow, dive/pull-up), moss tint + calm, free first pass, mossy liana cover, cool per stretch; 10 planted; all gates green; moss content/perch/bots cut to E2 | $11.84 | ~80 min |
