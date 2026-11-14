@@ -55,8 +55,9 @@ test('1-6: the snakes ride the lianas the design names (W1_SNAKES_16), each fair
     const st = built(seed, d);
     for (const s of st.gen2.sections) for (const row of W1_SNAKES_16.sections[s.template] ?? []) {
       const v = st.vines.find((x) => x.tag === `${s.uid}:${row.liana}`);
+      // (Easy lays one liana where Normal lays two (the lead's ruling 11-14): a row Easy does not lay may have no liana there at all)
+      if (d === 'easy' && row.easy === 'none') { assert.equal(v?.snake, undefined, `${d} seed ${seed}: ${s.template} ${row.liana}: a snake Easy does not lay`); continue; }
       assert.ok(v, `${d} seed ${seed}: ${s.template} laid no ${row.liana}`);
-      if (d === 'easy' && row.easy === 'none') { assert.equal(v!.snake, undefined, `${d} seed ${seed}: a riser on Easy`); continue; }
       assert.equal(v!.snake?.route, row.route, `${d} seed ${seed}: ${s.template} ${row.liana}`);
       if (row.route === 'down-off' || row.route === 'down-back') assert.ok(v!.topY >= 270, `${d} seed ${seed}: ${s.template} ${row.liana} hangs ${v!.topY} px under the top`);
     }
@@ -67,12 +68,14 @@ test('1-6: Easy is never harder than Normal: no riser, no creaky limb, no FAR pe
   for (const seed of SEEDS) {
     const n = built(seed, 'normal'), e = built(seed, 'easy');
     const creaks = (st: Built) => st.platforms.filter((p) => (p as { creak?: unknown }).creak).length;
-    assert.ok(creaks(n) >= 3, `seed ${seed}: Normal lays ${creaks(n)} creaky limbs`);
+    // (Normal: the creaky landing's limb and the gorge's, 1-6.md beats 9 and 15, cut to one liana onto each by the lead's ruling 11-14)
+    assert.equal(creaks(n), 2, `seed ${seed}: Normal lays ${creaks(n)} creaky limbs`);
     assert.equal(creaks(e), 0, `seed ${seed}: Easy lays a creaky limb`);
     const risers = (st: Built) => st.vines.filter((v) => v.snake?.route === 'up').length;
-    assert.ok(risers(n) >= 3 && risers(e) === 0, `seed ${seed}: risers ${risers(n)} Normal, ${risers(e)} Easy`);
+    assert.ok(risers(n) === 3 && risers(e) === 0, `seed ${seed}: risers ${risers(n)} Normal, ${risers(e)} Easy`);
     const narrow = (st: Built) => st.platforms.filter((p) => p.width >= 120 && p.width <= 140 && (p as { tag?: string }).tag && /:(?:g?b\d)$/.test((p as { tag?: string }).tag!)).length;
-    assert.ok(narrow(n) >= 3, `seed ${seed}: Normal lays ${narrow(n)} FAR perches`);
+    // (Normal: a snake on your vine's FAR and the gorge's)
+    assert.equal(narrow(n), 2, `seed ${seed}: Normal lays ${narrow(n)} FAR perches`);
     assert.equal(narrow(e), 0, `seed ${seed}: Easy lays a FAR perch`);
     for (const [id, b] of Object.entries(W1_SNAKES_16.beats)) assert.ok((b.easyStretch ?? 1) >= 1, `${id} is quicker on Easy`);
   }

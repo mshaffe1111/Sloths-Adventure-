@@ -13,6 +13,11 @@
  * under the level's top (ENG-S4 depth-table.md, the snake view verdict on all four phones). The lay hangs 1-6's highest anchor 360 px under
  * its top on every roll (measured 11-14, seeds 1-24 both settings: the stage is laid down from its highest piece), so no floor is moved
  * for it; the snake lay (finish16, which throws on an unfair snake) and w1Arc16.test.ts keep every roll honest.
+ *
+ * HOW MANY LIANAS (the lead's ruling 11-14 10:36 AM ET, BUILD-16b): with 25 lianas a roll 1-6 read 9.6 Normal / 8.8 Easy on the meter
+ * (tools/difficulty/score.ts; DIFFICULTY.md:61 asks 6.5). It lays 14 on Normal and ONE a beat on Easy (8); its length comes from walked
+ * ground: a walk-in where a beat follows a beat, root hops between a beat's lianas and after them, one more hop on every rest. Measured
+ * 11-14 (seeds 1-4): 6.3 Normal (6.1-6.6), 4.3 Easy (4.2-4.3).
  */
 import type { GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
 import type { Difficulty } from '../types.ts';
@@ -101,11 +106,17 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
 type Step = { gap: LianaGap; perch?: 'bank' | 'far' | 'creak' | 'sound'; w?: number };
 const SHORT_RISE = 80;
 const DROP: R2 = [SHORT_RISE, SHORT_RISE];
-function lianaRun(k: string, from: string, steps: Step[]): { pieces: SectionPiece[]; last: string; perches: string[] } {
+function lianaRun(k: string, from: string, steps: Step[], walk = 0): { pieces: SectionPiece[]; last: string; perches: string[] } {
   const pieces: SectionPiece[] = [];
   const perches: string[] = [];
   let at = from;
   steps.forEach((st, i) => {
+    // (`walk` root hops between two lianas: up onto a root and down off it, so the swings of a beat are spaced by ground, not packed
+    //  into the meter's busiest 30 s (score.ts PEAK_WINDOW; the lead's ruling 11-14: length from walked ground, never more lianas))
+    if (i > 0) for (let j = 1; j <= walk; j++) {
+      pieces.push(bank(`${k}m${i}u${j}`, at, 240, UP), bank(`${k}m${i}w${j}`, `${k}m${i}u${j}`, 260, DOWN));
+      at = `${k}m${i}w${j}`;
+    }
     const l = `${k}l${i + 1}`, b = `${k}b${i + 1}`;
     pieces.push(liana(l, at, st.gap));
     const kind = st.perch ?? (st.gap === 'far' ? 'far' : 'bank');
@@ -130,86 +141,126 @@ function lianaRun(k: string, from: string, steps: Step[]): { pieces: SectionPiec
 /** a false liana hanging past `from`'s end (a still snake from the canopy, FALSE_LEN long: he passes under it), `reach` px out */
 const stillOne = (key: string, from: string, reach: R2): SectionPiece =>
   ({ key, shape: 'liana', w: [0, 0], place: { kind: 'swing', after: from, top: [400, 420], reach, len: FALSE_LEN } });
+/**
+ * Walked ground after a beat's lianas: `n` root hops (up onto a root, down off it) from `from`. The stage's length comes from here and
+ * from the rests, never from more lianas (lead's ruling 11-14 10:36 AM ET: 1-6 read 9.6 Normal / 8.8 Easy on the meter, its swings the
+ * load; DIFFICULTY.md:61's 6.5 and Easy at ~3 come from fewer swings a minute, not a shorter stage).
+ */
+function hops(k: string, from: string, n: number): { pieces: SectionPiece[]; last: string } {
+  // (it ends UP on a root, and the beat's far bank `z` steps DOWN off it: the last hop stays within the quiet line's reach of the next
+  //  beat's take-off, listRules.ts quietJudge; a flat run of two banks there read 4.2-4.5 s with nothing to do, seeds 1-2, 11-14)
+  const pieces: SectionPiece[] = [];
+  let at = from;
+  for (let i = 1; i <= n; i++) {
+    if (i > 1) { pieces.push(bank(`${k}w${i - 1}`, at, 300, DOWN)); at = `${k}w${i - 1}`; }
+    pieces.push(bank(`${k}u${i}`, at, 240, UP));
+    at = `${k}u${i}`;
+  }
+  return { pieces, last: at };
+}
+
+/** a walk-in at a beat's start: bank `a`, `n` root hops, then down to the take-off bank `${k}e` (a beat that follows another beat with no rest
+ *  between, T then P and M then X, is spaced from it by ground: score.ts's busiest 30 s held both beats' swings) */
+function walkIn(k: string, n: number): { pieces: SectionPiece[]; last: string } {
+  const h = hops(k, 'a', n);
+  return { pieces: [...h.pieces, bank(`${k}e`, h.last, 260, DOWN)], last: `${k}e` };
+}
 
 /** [T] beat 1, the first liana (Pitfall's moment): a wide bank, ONE liana over a SHORT gap (the top flies it, so every hold does), moss
- *  under it with the root stair back up (the soft pit); then a second, the same, to say it again */
+ *  under it with the root stair back up (the soft pit); then the far bank's roots to walk (both settings: one liana is already Easy's) */
 function firstLiana(): Lay {
-  const r = lianaRun('', 'a2', [{ gap: 'short', w: 280 }, { gap: 'short', w: 260 }]);
+  const r = lianaRun('', 'a2', [{ gap: 'short', w: 280 }]);
+  // (the bank under the SHORT perch steps down past the take-off's root too, so the far bank's last step lands level with the arrival)
+  r.pieces = r.pieces.map((p) => (p.key === 'd1' && p.place.kind === 'walk' ? { ...p, place: { ...p.place, dy: [SHORT_RISE + 50, SHORT_RISE + 56] as R2 } } : p));
+  const h = hops('h', r.last, 2);
   // (a root hop up onto the take-off: the arrival's last bank and a flat 660 px walk here were 4.4-4.6 s with nothing to do, over the
   //  quiet line's 4 s, seeds 2 and 5; and down again at the end, so the exit is level)
-  return { pieces: [bank('a', null, 300), bank('a2', 'a', 260, UP), ...r.pieces, bank('z', r.last, 300, DOWN)], sockets: [petals('pa', 'a', 0.6, 1), petals('p1', r.perches[0], 0.5, 1), petals('p2', r.perches[1], 0.5, 2, 120), tip('t-low', 'd2', 0.3, 'low')] };
+  return { pieces: [bank('a', null, 300), bank('a2', 'a', 260, UP), ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [petals('pa', 'a', 0.6, 1), petals('p1', r.perches[0], 0.5, 2, 120), petals('ph', 'hu2', 0.5, 1), tip('t-low', 'z', 0.3, 'low')] };
 }
-/** [P] beat 2, hang low: LONG gaps (a low hold flies them; from the top he drops short onto moss, top 0 ms), three in a row.
+/** [P] beat 2, hang low: LONG gaps (a low hold flies them; from the top he drops short onto moss, top 0 ms), two in a row (Easy one).
  *  (OPEN: 1-6.md's petal at the liana's FOOT is not laid: a socket stands on a platform, never on a vine, pipeline pieceOf) */
-function hangLow(): Lay {
-  const r = lianaRun('', 'a', [{ gap: 'long', w: 300 }, { gap: 'long', w: 280 }, { gap: 'long', w: 280 }]);
-  return { pieces: [bank('a', null, 300), ...r.pieces, bank('z', r.last, 260)], sockets: [petals('p1', r.perches[0], 0.5, 1), petals('p2', r.perches[1], 0.5, 1), petals('p3', r.perches[2], 0.5, 2, 120), tip('t-snakes', 'z', 0.4, 'snakes')] };
+function hangLow(easy: boolean): Lay {
+  const w = walkIn('q', easy ? 2 : 1);
+  const r = lianaRun('', w.last, easy ? [{ gap: 'long', w: 300 }] : [{ gap: 'long', w: 300 }, { gap: 'long', w: 280 }], 2);
+  const h = hops('h', r.last, easy ? 4 : 2);
+  const last = r.perches[r.perches.length - 1];
+  return { pieces: [bank('a', null, 300), ...w.pieces, ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [...(easy ? [] : [petals('p1', r.perches[0], 0.5, 1)]), petals('p2', last, 0.5, 2, 120), petals('ph', 'hu1', 0.5, 1), tip('t-snakes', 'z', 0.4, 'snakes')] };
 }
 /** [M] beat 6, vine snakes met safely (DK Jr.'s passers): a snake glides DOWN the next liana and off into the ferns while he stands on a
- *  safe bank; then one starts down HIS liana and turns back a body above his hands (reach 0.6). SHORT gaps: any hold flies them */
-function snakesMet(): Lay {
-  const r = lianaRun('', 'a', [{ gap: 'short', w: 300 }, { gap: 'short', w: 280 }]);
-  return { pieces: [bank('a', null, 420), ...r.pieces, bank('z', r.last, 260)], sockets: [petals('pa', 'a', 0.3, 1), petals('p1', r.perches[0], 0.5, 1), petals('p2', r.perches[1], 0.5, 2, 120)] };
+ *  safe bank; then one starts down HIS liana and turns back a body above his hands (reach 0.6). SHORT gaps: any hold flies them.
+ *  Easy: one liana, the one that turns back (W1_SNAKES_16: the passer down the next liana is not laid) */
+function snakesMet(easy: boolean): Lay {
+  const w = walkIn('q', easy ? 2 : 1);
+  const r = lianaRun('', w.last, easy ? [{ gap: 'short', w: 300 }] : [{ gap: 'short', w: 300 }, { gap: 'short', w: 280 }], 2);
+  const h = hops('h', r.last, easy ? 4 : 2);
+  return { pieces: [bank('a', null, 420), ...w.pieces, ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [petals('pa', 'a', 0.3, 1), petals('p1', r.perches[r.perches.length - 1], 0.5, 2, 120), petals('ph', 'hu1', 0.5, 1)] };
 }
-/** [X] beat 7, a snake on your vine (required): FAR gaps onto narrow perches; a snake comes down his liana from the anchor (the top never
- *  makes FAR, so it pushes him down to where he must be anyway); its hands let go onto moss with the stair back. Easy: LONG */
-function snakeOnYourVine(gap: 'far' | 'long'): Lay {
-  const r = lianaRun('', 'a', [{ gap, w: 260 }, { gap: 'long', w: 260 }, { gap, w: 260 }]);
-  return { pieces: [bank('a', null, 320), ...r.pieces, bank('z', r.last, 300)], sockets: [flag('a', 0.3), petals('p2', r.perches[1], 0.5, 1), petals('pz', 'z', 0.5, 2, 120)] };
+/** [X] beat 7, a snake on your vine (required): ONE FAR gap onto a narrow perch; a snake comes down his liana from the anchor (the top never
+ *  makes FAR, so it pushes him down to where he must be anyway); its hands let go onto moss with the stair back. Easy: a LONG */
+function snakeOnYourVine(easy: boolean): Lay {
+  const w = walkIn('q', easy ? 3 : 1);
+  const r = lianaRun('', w.last, [{ gap: easy ? 'long' : 'far', w: 260 }]);
+  const h = hops('h', r.last, easy ? 4 : 2);
+  return { pieces: [bank('a', null, 320), ...w.pieces, ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [flag('a', 0.3), petals('ph', 'hu1', 0.5, 1), petals('pz', 'z', 0.5, 2, 120)] };
 }
 /** [C] beat 9, the creaky landing (1-5's limb with the swing): a liana onto a creaky limb, the only foothold, the next liana's catch
- *  inside its hold, twice. Easy: sound boughs */
+ *  inside its hold. Easy: one liana onto a sound bough, walked off */
 function creakyLanding(easy: boolean): Lay {
-  const c = easy ? 'sound' as const : 'creak' as const;
-  const r = lianaRun('', 'a', [{ gap: 'long', perch: c }, { gap: 'long', w: 280 }, { gap: 'long', perch: c }, { gap: 'long', w: 280 }]);
-  return { pieces: [bank('a', null, 320), ...r.pieces, bank('z', r.last, 260)], // (the risers' line only where they rise: Easy's twin says nothing of them, 1-6.md 'Easy: none rise'; a tip socket's own easy
+  const r = lianaRun('', 'a', easy ? [{ gap: 'long', perch: 'sound' }] : [{ gap: 'long', perch: 'creak' }, { gap: 'long', w: 280 }]);
+  const h = hops('h', r.last, easy ? 4 : 2);
+  return { pieces: [bank('a', null, 320), ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], // (the risers' line only where they rise: Easy's twin says nothing of them, 1-6.md 'Easy: none rise'; a tip socket's own easy
   //  'drop' is not read for tips, pipeline fillSockets)
-  sockets: [flag('a', 0.3), petals('p2', r.perches[1], 0.5, 1), petals('p4', r.perches[3], 0.5, 2, 120), ...(easy ? [] : [tip('t-rise', 'z', 0.4, 'rise')])] };
+  sockets: [flag('a', 0.3), petals('ph', 'hu1', 0.5, 1), petals('pz', 'z', 0.5, 2, 120), ...(easy ? [] : [tip('t-rise', 'z', 0.4, 'rise')])] };
 }
 /** [W] beat 11, the twist: snakes come UP from the ferns up the lianas' feet: low is taken, so he climbs high ahead of them; the gaps are
- *  SHORT, so the top still flies (top + double 1233 ms). Easy: none rise (snakeLay's Easy row) */
-function risers(): Lay {
-  const r = lianaRun('', 'a', [{ gap: 'short', w: 280 }, { gap: 'short', w: 280 }, { gap: 'short', w: 260 }]);
-  return { pieces: [bank('a', null, 320), ...r.pieces, bank('z', r.last, 260)], sockets: [flag('a', 0.3), petals('p1', r.perches[0], 0.5, 1), petals('p3', r.perches[2], 0.5, 2, 120), tip('t-still', 'z', 0.4, 'still')] };
+ *  SHORT, so the top still flies (top + double 1233 ms). Easy: none rise (snakeLay's Easy row), one liana */
+function risers(easy: boolean): Lay {
+  const r = lianaRun('', 'a', easy ? [{ gap: 'short', w: 280 }] : [{ gap: 'short', w: 280 }, { gap: 'short', w: 280 }], 2);
+  const h = hops('h', r.last, easy ? 4 : 2);
+  return { pieces: [bank('a', null, 320), ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [flag('a', 0.3), petals('p1', r.perches[0], 0.5, 1), petals('ph', 'hu1', 0.5, 2, 120), tip('t-still', 'z', 0.4, 'still')] };
 }
 /** [S] beat 13, the false liana (the signature): a "vine" that does NOT swing hangs from the canopy just past the bank, nearer than the real
  *  liana: a vine snake hanging stiff (its tell: it never sweeps an arc, its head at its foot). The real one is the LONG leap past it.
- *  (1-6.md lays it among swinging lianas, liana to liana: laid with perches until the engine has chains) */
-function falseLiana(): Lay {
-  const r1 = lianaRun('', 'a', [{ gap: 'long', w: 300 }]);
-  const r2 = lianaRun('s', r1.last, [{ gap: 'long', w: 300 }, { gap: 'long', w: 280 }]);
+ *  (1-6.md lays it among swinging lianas, liana to liana: laid with perches until the engine has chains.) Both settings: the false one
+ *  hangs past the first bank, the real one past it (one real liana: the lead's ruling 11-14, length from ground, not lianas) */
+function falseLiana(easy: boolean): Lay {
+  const r2 = lianaRun('s', 'a', [{ gap: 'long', w: 300 }]);
+  const h = hops('h', r2.last, easy ? 4 : 2);
   return {
-    pieces: [bank('a', null, 320), ...r1.pieces, stillOne('f', r1.last, [90, 110]), ...r2.pieces, bank('z', r2.last, 260)],
-    sockets: [flag('a', 0.3), petals('p1', r1.perches[0], 0.5, 1), petals('p3', r2.perches[1], 0.5, 2, 120)],
+    pieces: [bank('a', null, 320), stillOne('f', 'a', [90, 110]), ...r2.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)],
+    sockets: [flag('a', 0.3), petals('p3', r2.perches[0], 0.5, 2, 120), petals('ph', 'hu1', 0.5, 1)],
   };
 }
 /** [L] beat 15, the gorge (the finale): a snake coming down (FAR), a riser (SHORT, high), the false liana, a creaky landing, a last LONG;
- *  no flag inside; a miss drops to the moss with the stair back. Easy: FAR as LONG, no riser (the snake lay), a sound bough */
+ *  no flag inside; a miss drops to the moss with the stair back. Easy: ONE real liana past the false one, onto a sound bough, a wide rest
+ *  bank after (1-6.md beat 15); no snake comes down and none rises (W1_SNAKES_16's Easy rows) */
 function gorge(easy: boolean): Lay {
-  const r1 = lianaRun('', 'a', [{ gap: easy ? 'long' : 'far' }, { gap: 'short', w: 240 }]);
-  // (Easy: four lianas, a rest ledge mid-way (1-6.md beat 15): the bank after the sound bough's liana is wide, and the last LONG is not laid)
-  const r2 = lianaRun('g', r1.last, easy ? [{ gap: 'long', perch: 'sound' }, { gap: 'long', w: 420 }] : [{ gap: 'long', perch: 'creak' }, { gap: 'long', w: 260 }, { gap: 'long', w: 280 }]);
+  const r1 = easy ? { pieces: [] as SectionPiece[], last: 'a', perches: ['a'] } : lianaRun('', 'a', [{ gap: 'far' }, { gap: 'short', w: 240 }], 1);
+  const r2 = lianaRun('g', r1.last, easy ? [{ gap: 'long', perch: 'sound' }] : [{ gap: 'long', perch: 'creak' }, { gap: 'long', w: 280 }]);
   return {
-    pieces: [bank('a', null, 300), ...r1.pieces, stillOne('f', r1.last, [90, 110]), ...r2.pieces, bank('z', r2.last, 300)],
-    sockets: [flag('a', 0.3), petals('p2', r1.perches[1], 0.5, 1), petals('p5', r2.perches[r2.perches.length - 1], 0.5, 2, 120)],
+    pieces: [bank('a', null, 300), ...r1.pieces, stillOne('f', r1.last, [90, 110]), ...r2.pieces, bank('z', r2.last, easy ? 420 : 300)],
+    sockets: [flag('a', 0.3), petals('p1', r1.perches[0], 0.5, 1), petals('p5', 'z', 0.4, 2, 120)],
   };
 }
 
 /** THE ARC'S BRICKS (1-6.md), one job each: the graph's letter in brackets */
 export const BEATS_16: SectionTemplate[] = [
   brick({ id: 'w1-16-first-liana', name: 'the first liana: it carries you', jobs: ['teach'], content: 'climb', teaches: 'swing', difficulty: 2, maxPerStage: 1, versions: [{ id: 'short', lay: firstLiana() }] }),
-  brick({ id: 'w1-16-hang-low', name: 'hang low: lower goes further', jobs: ['practise'], content: 'climb', difficulty: 3, maxPerStage: 1, versions: [{ id: 'long-long', lay: hangLow() }] }),
-  brick({ id: 'w1-16-snakes-met', name: 'vine snakes met safely: they only pass', jobs: ['flow'], content: 'hazard', difficulty: 3, maxPerStage: 1, versions: [{ id: 'pass-and-back', lay: snakesMet() }] }),
-  brick({ id: 'w1-16-snake-on-vine', name: 'a snake on your vine: slide down ahead of it', jobs: ['test'], content: 'rope', difficulty: 6, maxPerStage: 1, versions: [{ id: 'far', lay: snakeOnYourVine('far'), easy: snakeOnYourVine('long') }] }),
+  brick({ id: 'w1-16-hang-low', name: 'hang low: lower goes further', jobs: ['practise'], content: 'climb', difficulty: 3, maxPerStage: 1, versions: [{ id: 'long-long', lay: hangLow(false), easy: hangLow(true) }] }),
+  brick({ id: 'w1-16-snakes-met', name: 'vine snakes met safely: they only pass', jobs: ['flow'], content: 'hazard', difficulty: 3, maxPerStage: 1, versions: [{ id: 'pass-and-back', lay: snakesMet(false), easy: snakesMet(true) }] }),
+  brick({ id: 'w1-16-snake-on-vine', name: 'a snake on your vine: slide down ahead of it', jobs: ['test'], content: 'rope', difficulty: 6, maxPerStage: 1, versions: [{ id: 'far', lay: snakeOnYourVine(false), easy: snakeOnYourVine(true) }] }),
   brick({ id: 'w1-16-creaky-landing', name: 'the creaky landing: don\'t stop', jobs: ['combine'], content: 'crumble', difficulty: 5, maxPerStage: 1, uses: ['swing', 'creak'], versions: [{ id: 'limb', lay: creakyLanding(false), easy: creakyLanding(true) }] }),
-  brick({ id: 'w1-16-risers', name: 'snakes come up: climb high ahead of them', jobs: ['twist'], content: 'hazard', difficulty: 5, maxPerStage: 1, versions: [{ id: 'two-risers', lay: risers() }] }),
-  brick({ id: 'w1-16-false-liana', name: 'the false liana: that vine has a face', jobs: ['signature'], content: 'climb', difficulty: 6, maxPerStage: 1, versions: [{ id: 'still-one', lay: falseLiana() }] }),
-  brick({ id: 'w1-16-gorge', name: 'the gorge: every grip in turn', jobs: ['finale'], content: 'rope', difficulty: 8, maxPerStage: 1, uses: ['swing', 'creak'], versions: [{ id: 'five-lianas', lay: gorge(false), easy: gorge(true) }] }),
+  brick({ id: 'w1-16-risers', name: 'snakes come up: climb high ahead of them', jobs: ['twist'], content: 'hazard', difficulty: 5, maxPerStage: 1, versions: [{ id: 'two-risers', lay: risers(false), easy: risers(true) }] }),
+  brick({ id: 'w1-16-false-liana', name: 'the false liana: that vine has a face', jobs: ['signature'], content: 'climb', difficulty: 6, maxPerStage: 1, versions: [{ id: 'still-one', lay: falseLiana(false), easy: falseLiana(true) }] }),
+  brick({ id: 'w1-16-gorge', name: 'the gorge: every grip in turn', jobs: ['finale'], content: 'rope', difficulty: 8, maxPerStage: 1, uses: ['swing', 'creak'], versions: [{ id: 'four-lianas', lay: gorge(false), easy: gorge(true) }] }),
 ];
 
 // ───────────────────────────── 1-6's own quiet: its arrival, its rests and its exit ─────────────────────────────
+/** a rest one root hop longer at its far end (the stage's length from walked ground between the beats, not from lianas: the lead's ruling
+ *  11-14; it also spaces the beats' swings apart, so no 30 s holds two beats' lianas, score.ts PEAK_WINDOW) */
+const longer = (l: Lay): Lay => { const z = l.pieces[l.pieces.length - 1].key; return { ...l, pieces: [...l.pieces, bank('x1', z, 240, UP), bank('x2', 'x1', 280, DOWN)] }; };
 const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V[] }): SectionTemplate => ({
-  ...brick({ id: o.id, name: o.name, jobs: [o.job], difficulty: 1, content: 'ground', versions: o.versions, uses: [] }),
+  ...brick({ id: o.id, name: o.name, jobs: [o.job], difficulty: 1, content: 'ground', versions: o.job === 'rest' ? o.versions.map((v) => ({ ...v, lay: longer(v.lay) })) : o.versions, uses: [] }),
   phases: [o.job === 'arrive' ? 'start' : 'rest'], content: 'structural', uses: [], terrain: 'floor-stones', ...(o.job === 'arrive' ? { maxPerStage: 1 } : {}),
 } as SectionTemplate);
 export const QUIET_16: SectionTemplate[] = [
@@ -255,11 +306,13 @@ export const W1_SNAKES_16: SnakeTable = {
   },
   sections: {
     // (beat 6: one glides down the NEXT liana and off; one starts down his own and turns back a body above his hands)
-    'w1-16-snakes-met': [{ liana: 'l2', route: 'down-off', beat: 'w16-snake-down' }, { liana: 'l1', route: 'down-back', beat: 'w16-snake-back', reach: 0.6 }],
-    'w1-16-snake-on-vine': [{ liana: 'l1', route: 'down-off', beat: 'w16-snake-down' }, { liana: 'l3', route: 'down-off', beat: 'w16-snake-down', shift: 3.5 }],
-    'w1-16-risers': [{ liana: 'l1', route: 'up', beat: 'w16-snake-up', reach: 0.7, easy: 'none' }, { liana: 'l3', route: 'up', beat: 'w16-snake-up', shift: 4.5, reach: 0.7, easy: 'none' }],
+    // (Easy lays one liana where Normal lays two: the passer down the NEXT liana is Normal's alone)
+    'w1-16-snakes-met': [{ liana: 'l2', route: 'down-off', beat: 'w16-snake-down', easy: 'none' }, { liana: 'l1', route: 'down-back', beat: 'w16-snake-back', reach: 0.6 }],
+    'w1-16-snake-on-vine': [{ liana: 'l1', route: 'down-off', beat: 'w16-snake-down' }],
+    'w1-16-risers': [{ liana: 'l1', route: 'up', beat: 'w16-snake-up', reach: 0.7, easy: 'none' }, { liana: 'l2', route: 'up', beat: 'w16-snake-up', shift: 4.5, reach: 0.7, easy: 'none' }],
     'w1-16-false-liana': [{ liana: 'f', route: 'still' }],
-    'w1-16-gorge': [{ liana: 'l1', route: 'down-off', beat: 'w16-snake-down' }, { liana: 'l2', route: 'up', beat: 'w16-snake-up', reach: 0.7, easy: 'none' }, { liana: 'f', route: 'still' }],
+    // (Easy's gorge lays one real liana, past the false one: neither travelling snake is laid there)
+    'w1-16-gorge': [{ liana: 'l1', route: 'down-off', beat: 'w16-snake-down', easy: 'none' }, { liana: 'l2', route: 'up', beat: 'w16-snake-up', reach: 0.7, easy: 'none' }, { liana: 'f', route: 'still' }],
   },
 };
 
