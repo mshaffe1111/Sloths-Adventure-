@@ -1,11 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { STAGE_DRAWS, W4_FALL_STAGES, everyStage, genFoes, stageSheets } from './stageSheets.ts';
+import { STAGE_DRAWS, W1_ROOMS, W4_FALL_STAGES, everyStage, genFoes, stageSheets } from './stageSheets.ts';
 import { buildProtoStage, HAND_STAGES, type ProtoExtras } from './protoStage.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID, dotStageConfig } from './extraStages.ts';
-import { generateStage, setLayoutVariant } from './stageGenerator.ts';
+import { generateStage, listedRoll, setLayoutVariant } from './stageGenerator.ts';
 import { stageAnims, stageExtras } from './sheetWarm.ts';
 import { SPRITES } from './spriteSheets.ts';
 import { THORNBARK_LEVEL } from './secret.ts';
@@ -69,6 +69,8 @@ test('every sheet a built stage draws is in its preload list, for every stage an
   // what each hand-built stage draws over its three rolls (STAGE_DRAWS should be just that: no sheet loaded for nothing)
   const drawn = new Map<string, Set<string>>();
   const withFalls = new Set<string>();
+  // (World 1's stages that build puzzle rooms: W1_ROOMS, which asks for the kit's pieces, is held to exactly these)
+  const w1Rooms = new Set<string>();
   try {
     for (const l of [...levels, THORNBARK_LEVEL]) {
       const list = new Set(stageSheets(l, on));
@@ -76,8 +78,10 @@ test('every sheet a built stage draws is in its preload list, for every stage an
       if (l.id !== DOT_STAGE_ID && l.id !== MEECA_STAGE_ID && !list.has('perch')) misses.push(`${l.id}: Dot's perch`);
       for (const v of [1, 2, 3]) {
         setLayoutVariant(v);
-        for (const d of isGen2Stage(l) ? (['normal', 'easy'] as const) : (['normal'] as const)) {
+        // (a listed stage, rolled from its world's kit (stageGenerator.ts listedRoll), is built on both settings as a gen2 stage is)
+        for (const d of isGen2Stage(l) || listedRoll(l) ? (['normal', 'easy'] as const) : (['normal'] as const)) {
           const st = generateStage(l, d);
+          if (l.worldIndex === 1 && !l.secret && st.kit?.rooms.length) w1Rooms.add(l.id);
           const keys = [...stageAnims(st).map((n) => `foe:${n}`), ...(stageExtras(st).props2 ? ['props2'] : [])];
           for (const k of keys) if (!list.has(k)) misses.push(`${l.id} roll ${v} ${d}: ${k}`);
           // the painted hazards (zoneArt.ts, w4Play.ts): spore mushrooms on World 3's sheet, web bridges on World 5's and web patches on Dot's, 4-3's pool log on the kit, World 4's falls on its sheet
@@ -95,7 +99,9 @@ test('every sheet a built stage draws is in its preload list, for every stage an
           }
           for (const k of hazards) if (!list.has(k)) misses.push(`${l.id} roll ${v} ${d}: ${k} (a painted hazard)`);
           // (World 6 on gen2 on asks for its world's whole set, stageSheets.ts: its animals change from roll to roll)
-          if (!l.secret && (HAND_STAGES[l.id] || W2_STAGES[l.id] || (isGen2Stage(l) && l.worldIndex < 6))) {
+          // (and a listed stage: its row is its preload, stageSheets.ts `built`; 1-7's props2 was never asked for while listed stages
+          // took the old generator's whole set, and 1-4's row named sheets its rolls never draw, BUILD-17b)
+          if (!l.secret && (HAND_STAGES[l.id] || W2_STAGES[l.id] || (isGen2Stage(l) && l.worldIndex < 6) || listedRoll(l))) {
             const set = drawn.get(l.id) ?? new Set<string>();
             for (const k of keys) set.add(k);
             drawn.set(l.id, set);
@@ -108,6 +114,7 @@ test('every sheet a built stage draws is in its preload list, for every stage an
     if (!had) delete g.location;
   }
   assert.deepEqual(misses, []);
+  assert.deepEqual([...W1_ROOMS].sort(), [...w1Rooms].sort(), "W1_ROOMS: World 1's stages that build puzzle rooms");
   // (and the waterfall set is asked for by no stage without falls)
   assert.deepEqual([...W4_FALL_STAGES].sort(), [...withFalls].sort(), 'W4_FALL_STAGES: the stages with falls');
   for (const [id, set] of drawn) assert.deepEqual([...(STAGE_DRAWS[id] ?? [])].sort(), [...set].sort(), `${id}: STAGE_DRAWS lists more than it draws`);
