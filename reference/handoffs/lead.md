@@ -10,6 +10,12 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **THE ENGINE IS GLOBAL; BUILDERS DO DATA ONLY** (Matt, 11-14 1:42 + 1:46 PM ET; R-165.246): "we're not adding pieces to the engine like
+  we should"; "even if it changes previous levels, if it's a fix that is affecting everything, we put it in. We shouldn't have builders doing
+  engine work... done correctly by better builders." A fix any level would need goes into the engine/shared code by an ENGINE member (xhigh,
+  planted test, every stage), and every earlier stage it moves is re-checked (relist, bots) and shipped with it. Builders (content, high)
+  change only their level's data and tag ENGINE-WORTHY findings (level.md rule 22). The 11-14 lead let builders write engine lines
+  (goals.ts seal, hanging cover, bot skills, perch constant): that stops; those lines get an xhigh line-by-line review at merge.
 - **EVERY TRIBUTE IS RESEARCHED AND EXPLAINED** (Matt, 11-13 3:32 PM ET; R-165.203): every idea round and level design that borrows from
   a classic game says, with cited research, what made it great, how the original taught it, and how we introduce it so it FEELS that good
   on a phone (packet template: IDEAS-1-6.md "THE TRIBUTE RULE"). Matt should never have to explain the feel (R-165.177, 1-4's vines vs
