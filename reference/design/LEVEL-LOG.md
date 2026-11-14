@@ -114,3 +114,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | ENG-B4 (Opus xhigh) | 1-8 chase engine: split by realised run-up (yield 30/30 both), 2 pipeline roots, baked edge, chase bots in CI, caught-run fix; 3 ready packets | $23.41 | ~2 h |
 | KEEPER-17b (Opus high) | journal hide page rewritten to keep-still in the green; crouch text grepped out of the journal | $1.25 | ~6 min |
 | CRITIC-PERSONA (Opus high) | cold review of the persona draft + handover: REJECT x2 with exact rewrites, all applied; criterion met | $1.99 | ~10 min |
+| INT-9 (Opus xhigh) | link #3 merges (clip tool, FIX-15/15b, TIPS, chains, 1-7, POLISH-10, journal), pit-bank fix global, haze root + stripjoin tool, BUILD-17 engine-line review PASS; stopped before 1-6 | $37.76 | ~75 min |
