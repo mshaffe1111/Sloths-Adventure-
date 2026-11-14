@@ -137,7 +137,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, chaseBack, chaseSpan, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -6146,6 +6146,17 @@ export class GameEngine {
     return k * k * (3 - 2 * k);
   }
 
+  /** the stage's chase span (cameraFollow.ts chaseSpan), worked out once a stage */
+  private chaseSpanFor: GeneratedStage | null = null;
+  private chaseSpanV: ReturnType<typeof chaseSpan> = null;
+  private chaseSpanOf(st: GeneratedStage): ReturnType<typeof chaseSpan> {
+    if (this.chaseSpanFor !== st) {
+      this.chaseSpanFor = st;
+      this.chaseSpanV = chaseSpan(st);
+    }
+    return this.chaseSpanV;
+  }
+
   private updateCamera(dt: number) {
     const p = this.player;
     const { viewportWidth: vw, viewportHeight: vh } = this.camera;
@@ -6173,7 +6184,13 @@ export class GameEngine {
     const roomUp = vh * feetAt - HERO_HEAD - (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom;
     const eased = repick(this.camRepick, p.x, this.camAnchorY, prevAnchor, camSub, vw, vh, dt, this.camera.x, this.camera.y, roomUp);
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
-    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : eased.x - vw * FRAME.across + this.camLookX + runX;
+    // (a laid chase, or a stage's rolling nuts: over its span the view leads so a hazard's drop and roll are seen a second and more
+    // before they reach him at a full run, cameraFollow.ts chaseSpan; the span is the stage's own data, so it holds over every fork)
+    const span = this.chaseSpanOf(this.currentStage);
+    const mid = p.x + p.width / 2;
+    this.camera.targetX = this.chase?.active
+      ? p.x - vw * 0.3
+      : span && mid >= span.x0 && mid <= span.x1 ? mid - chaseBack(vw, span.ahead) : eased.x - vw * FRAME.across + this.camLookX + runX;
     this.camera.targetY = eased.y - vh * feetAt;
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
     const look = this.w4?.look(p.x, p.y);
