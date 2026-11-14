@@ -21,7 +21,8 @@ import { VINE_HANG } from '../heroVine.ts';
 import type { PieceHost, PieceKind, StagePiece } from '../stagePiece.types.ts';
 import type { Vine } from '../types.ts';
 import type { Platform } from '../types.ts';
-import { FALSE_LIANA, isFalseLiana, onVine, SNAKE, snakeNow, snakeTouches, type SnakeNow } from '../vineSnake.ts';
+import { FOCUS_CAM } from '../cameraFollow.ts';
+import { FALSE_LIANA, isFalseLiana, onVine, SNAKE, snakeComing, snakeFocusBox, snakeNow, snakeTouches, type SnakeNow } from '../vineSnake.ts';
 import { VINE_SNAKE_ART, vineSnakeImg } from '../vineSnakeArt.ts';
 
 /** how far down the liana (px from its anchor) his hands are while he swings on it: grip to toes is VINE_HANG (heroVine.ts) */
@@ -80,7 +81,16 @@ class VineSnakePiece implements StagePiece {
       }
       const n = v.snake.clock ? snakeNow(v.snake, len, host.clock.read(v.snake.clock, v.snake.shift ?? 0)) : this.now[i];
       this.now[i] = n;
-      if (p.isVineSwinging && p.swingVineId === v.id && snakeTouches(n, len, handsAlong(p.swingLength ?? 0, len)) && host.letGo()) this.letGos++;
+      if (!(p.isVineSwinging && p.swingVineId === v.id)) continue;
+      const hands = handsAlong(p.swingLength ?? 0, len);
+      if (snakeTouches(n, len, hands) && host.letGo()) {
+        this.letGos++;
+        continue;
+      }
+      // (coming at him, or due to within the view's lead: the view keeps him and where it shows its tell in (PieceHost.focus). The clock
+      // read FOCUS_CAM.lead ahead: on Easy the stretched clock looks a little further, never less)
+      const ahead = v.snake.clock ? host.clock.read(v.snake.clock, (v.snake.shift ?? 0) + FOCUS_CAM.lead) : { phase: 'off' as const };
+      if (snakeComing(v.snake, n, ahead, len, hands)) host.focus(snakeFocusBox(v.snake, len, v.x, v.topY, v.swingAngle ?? 0, p.x, p.y));
     }
   }
 

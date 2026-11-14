@@ -11,3 +11,7 @@ export const VINE_FRAMES = {
 } as const;
 /** the hanging body's height in the still frame, grip to toes, in atlas pixels (sized against the standing hero) */
 export const VINE_BODY_PX = 423.3;
+
+/** grip to toes while hanging, in world units: the standing hero's height and a bit (his arms are up over his head). Here (pure data,
+ *  no canvas) so gen2's checks can read it; heroVine.ts re-exports it */
+export const VINE_HANG = 102;

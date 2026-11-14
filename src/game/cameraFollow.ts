@@ -455,6 +455,55 @@ export function perchBox(near: number, far: number, y: number, facing: number): 
   return facing >= 0 ? { x0: near - 10, x1: end, y0: y - 80, y1: y + 4 } : { x0: end, x1: near + 10, y0: y - 80, y1: y + 4 };
 }
 
+// ───── a piece's focus: a threat coming at him kept in view (ENG-S3, CAM-THREAT; 1-6.md "in view 1 s+ before it reaches his grip") ─────
+//
+// Sideways the view keeps his head just under the HUD band, so a vine snake's tell on the bough over his liana (the anchor is 300-400 px
+// over his hands) was above the clear view: 0 of 6 tell frames seen (ENG-S2's shots). A piece now asks the view to keep a box in
+// (PieceHost.focus: him, and the threat from where its tell shows down to his hands), every step it wants it. The view keeps the box
+// between the HUD band and the view's foot, moved from its aim as little as does it; where the box is taller than that, HE stays whole and
+// the side it reaches further from him shows as much as fits (his feet at the foot of the clear view, the rest over him). The view eases
+// there like any aim, never more than the engine's CAM_RISE_STEP a frame, and back the same way. A piece asks FOCUS_CAM.lead s before its
+// tell, so the tell is in view from its first frame. gen2's verdict (vineSnake.ts snakeViewFaults) refuses a lay whose snake is not in
+// the clear view 1 s+ before it reaches his lowest hold on the shortest view the game frames.
+
+export const FOCUS_CAM = {
+  /** how long before a threat's tell a piece asks for the focus (s): the view moves up to ~200 px at CAM_RISE_STEP (11) a frame, then eases */
+  lead: 1.2,
+  /** how far inside the clear view's edges the focus aims the box (px of world): the eased view is there a few frames before its tail */
+  pad: 8,
+  /** the squattest sideways phone the framing names (css px tall: 782 x 288, FRAME.shortMaxH's case): gen2's view verdicts judge on it */
+  shortest: 288,
+} as const;
+
+/** how tall the world is on a sideways screen (px): every phone sideways shows this much (engine.ts applyZoom, h / WORLD_VIEW_H) */
+export const WORLD_VIEW_H = 540;
+/** the zoom's bounds (screen px per world px) before the intro's dolly and a room's pull-back (engine.ts applyZoom) */
+export const ZOOM_RANGE = { min: 0.5, max: 1.8 } as const;
+
+/** his body as the focus keeps it whole, feet at (px, py) */
+export const focusHero = (px: number, py: number): Box => ({ x0: px - 30, x1: px + 30, y0: py - HERO_HEAD, y1: py + 12 });
+
+/** the clear view sideways on a screen `cssH` px tall: its top (the HUD band) and its foot (where his feet are kept above), px of world */
+export function sideClear(cssH: number): { top: number; foot: number } {
+  const zoom = Math.max(ZOOM_RANGE.min, Math.min(ZOOM_RANGE.max, cssH / WORLD_VIEW_H));
+  const vh = cssH / zoom;
+  return { top: HUD_BAND.land / zoom, foot: vh * AHEAD.heroPad.b };
+}
+
+/**
+ * Where the view's top sits (its y, world px) to keep a piece's focus `box` in the clear view of a view `vh` tall: under the HUD band
+ * (`band`, world px) and over the foot his body is kept above (AHEAD.heroPad.b), moved from `ty` (the view's aim) as little as does it.
+ * Where the box is taller than that, `hero` stays whole and the box shows as much as fits on the side it reaches further from him.
+ */
+export function focusY(ty: number, box: Box, hero: Box, vh: number, band: number): number {
+  const foot = vh * AHEAD.heroPad.b;
+  // (the highest top that still shows the box's foot, and the lowest that still shows its top under the HUD, FOCUS_CAM.pad inside)
+  const lo = box.y1 + FOCUS_CAM.pad - foot;
+  const hi = box.y0 - FOCUS_CAM.pad - band;
+  if (lo <= hi) return Math.max(lo, Math.min(hi, ty));
+  return hero.y0 - box.y0 >= box.y1 - hero.y1 ? hero.y1 - foot : hero.y0 - band;
+}
+
 
 /**
  * How far the view should widen now (1 = the usual view; the engine divides its zoom by it): upright, on a swing or flying off one, as

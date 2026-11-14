@@ -34,8 +34,8 @@ function load() {
   );
 }
 
-/** grip to toes while hanging, in world units: the standing hero's height and a bit (his arms are up over his head) */
-export const VINE_HANG = 102;
+import { VINE_HANG } from './heroVineData.ts';
+export { VINE_HANG };
 const K = VINE_HANG / VINE_BODY_PX;
 
 /** which picture for this moment of the swing */

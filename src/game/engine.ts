@@ -138,7 +138,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, swingHeroBox, AHEAD, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, swingHeroBox, AHEAD, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, focusY, focusHero, WORLD_VIEW_H, ZOOM_RANGE, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -240,7 +240,6 @@ const HELD_RECENT = 0.35;
 /** how fast Pokey pushes a hollow log (px/s): slower than a walk, so it reads as effort */
 const PUSH_SPEED = 120;
 
-const WORLD_VIEW_H = 540;
 /** world units across a portrait screen */
 /**
  * In the air against a wall too tall to catch the lip of, he slides down it: his drawing stands this far off the face, so his reaching paw
@@ -620,6 +619,10 @@ export class GameEngine {
   private camRepick = newRepick();
   /** the view was lifted for a bounce (updateCamera's `lift`): its way back down is held to CAM_RISE_STEP a frame too */
   private camLifted = false;
+  /** a piece's focus this step (PieceHost.focus: a threat coming at him kept in view; cleared before the pieces step, so it holds only
+   *  while a piece asks), and whether the view is still easing back from one (its way back is held to CAM_RISE_STEP a frame too) */
+  private camFocus: Box | null = null;
+  private camFocused = false;
   private camLookX: number = CAM.lookAhead;
   /** the way the view looks (his facing, held through a swing), and the facing he caught the swinging vine with */
   private camFacing = 1;
@@ -655,6 +658,9 @@ export class GameEngine {
     get platforms() { return e.platforms; },
     get clock() { return e.clock; },
     letGo: () => e.letGoOfLiana(),
+    focus: (b) => {
+      e.camFocus = { x0: b.x0, x1: b.x1, y0: b.y0, y1: b.y1 };
+    },
     view: {
       get x() { return e.camera.x; },
       get y() { return e.camera.y; },
@@ -1241,7 +1247,7 @@ export class GameEngine {
     // (a stage may show more of the world than usual: 4-7, where the next ledge is far across and far below)
     const wide = this.proto?.view ?? this.proto?.w4?.view;
     let base = portrait ? Math.max(w / (wide?.port ?? PORTRAIT_VIEW_W), h / levelH) : h / (wide?.land ?? WORLD_VIEW_H);
-    base = Math.max(0.5, Math.min(1.8, base));
+    base = Math.max(ZOOM_RANGE.min, Math.min(ZOOM_RANGE.max, base));
     const t = Math.min(1, this.introT / INTRO_ZOOM_SECS);
     const ease = 1 - Math.pow(1 - t, 3);
     const dolly = INTRO_ZOOM_FROM + (1 - INTRO_ZOOM_FROM) * ease;
@@ -1785,6 +1791,7 @@ export class GameEngine {
 
     // --- Moving platforms: slide on a sine path and carry whoever stands on them ---
     // (the stage's runtime pieces step first: a ride on a stage beat is one, pieces/ridePiece.ts, so this loop leaves its platform be)
+    this.camFocus = null;
     if (this.pieces.length) stepPieces(this.pieces, dt, this.pieceHost);
     for (const plat of this.platforms) {
       if (plat.type !== 'moving' || plat.broken || plat.ride) continue;
@@ -6349,6 +6356,10 @@ export class GameEngine {
     const lift = !p.grounded && Number.isFinite(this.camAnchorY) && topY + JUMP_RISE < this.camAnchorY;
     const refY = p.grounded || !Number.isFinite(this.camAnchorY) ? p.y : Math.min(this.camAnchorY, Math.max(topY, 3 * topY + 3 * JUMP_RISE - 2 * this.camAnchorY));
     this.camera.targetY = Math.min(this.camera.targetY, underHud(refY, band));
+    // a piece's focus (PieceHost.focus: a vine snake on his liana, its tell and its trip down to his hands): the box between the HUD band
+    // and the view's foot where it fits, him whole and as much of the threat's side as fits where not (cameraFollow.ts focusY)
+    const fb = this.camFocus;
+    if (fb) this.camera.targetY = focusY(this.camera.targetY, fb, focusHero(p.x, p.y), vh, band);
 
     // Smooth damp camera
     const smoothFactor = Math.min(1, dt * RUN.follow);
@@ -6378,6 +6389,15 @@ export class GameEngine {
     else if (this.camLifted) {
       if (this.camera.y > y0 + CAM_RISE_STEP) this.camera.y = y0 + CAM_RISE_STEP;
       if (Math.abs(this.camera.y - this.camera.targetY) < 1 || this.camera.y <= y0) this.camLifted = false;
+    }
+    // (a focus moves the view up to ~200 px: there and back never more than CAM_RISE_STEP a frame (the eased step alone was 40 px), but
+    // never at his cost: all of him stays in the clear view, so a let-go's fall is followed at once)
+    if (fb) this.camFocused = true;
+    if (this.camFocused) {
+      const held = Math.max(y0 - CAM_RISE_STEP, Math.min(y0 + CAM_RISE_STEP, this.camera.y));
+      const me = focusHero(p.x, p.y);
+      this.camera.y = Math.max(me.y1 - vh * AHEAD.heroPad.b, Math.min(me.y0 - band, held));
+      if (!fb && Math.abs(this.camera.y - this.camera.targetY) < 1) this.camFocused = false;
     }
 
     // Clamp camera within stage bounds

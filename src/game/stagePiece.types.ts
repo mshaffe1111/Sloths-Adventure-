@@ -40,8 +40,23 @@ export interface PieceHost {
    * heart; that liana is not caught again until he is down (or on another hold). Returns false, doing nothing, when he swings on none.
    */
   letGo(): boolean;
+  /**
+   * keep this box in the clear view (between the HUD band and the view's foot) for this step: him and a threat coming at him (a vine
+   * snake on his liana, its tell and its trip down to his hands, 1-6.md "in view 1 s+ before it reaches his grip"). Asked again every
+   * step it is wanted; the view eases to it and back (cameraFollow.ts focusY, FOCUS_CAM). Where the box is taller than the clear view
+   * HE stays whole and the side it reaches further from him shows as much as fits. World px; it should hold his body.
+   */
+  focus(box: FocusBox): void;
   /** the view: its left and top in world px and its size in screen px, and the zoom (a 'screen' piece maps world to screen by it) */
   readonly view: { readonly x: number; readonly y: number; readonly w: number; readonly h: number; readonly zoom: number };
+}
+
+/** a box a piece asks the view to keep in (PieceHost.focus), world px: left, top, right, bottom */
+export interface FocusBox {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
 }
 
 /** a hurt a piece deals him this step: through the engine's one damagePlayer (its safe time, its knock away from `fromX`) */
