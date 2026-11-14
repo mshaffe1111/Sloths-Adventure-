@@ -1,6 +1,6 @@
 # ENG-S2 REPORT (t-eng-s2 from origin/t-eng-s1@a1739b43; packet reference/packets/2026-11-14/ENG-S2.md on the lead's branch)
 Code head **1901d33f** (every gate below ran on it, in its own worktree); later commits are reference/ only (this folder, engine-core.md,
-stage-piece.md). Box: 3:55 AM ET start. Context at the end: GATES_CONTEXT.
+stage-piece.md). Box: 3:55 AM ET start. Box end 5:25 AM. Context at the end: ~31% of 1M.
 
 ## Done: packet items 1 (the vine snake) and 2 (the false liana) + the lead's letGo ruling. Item 3 (chains) NOT started: EXACT NEXT STEP.
 1. **host.letGo()** (lead ruling 3:55 AM): one method on PieceHost (stagePiece.types.ts:38-42), engine.ts letGoOfLiana, physics.ts LET_GO
@@ -36,10 +36,29 @@ stage-piece.md). Box: 3:55 AM ET start. Context at the end: GATES_CONTEXT.
    **Planted** (planted.out.txt): 10 mutations, **9 RED**, 1 an equivalent mutant (M3: the tell's body is off the vine by construction,
    so the `live` guard changes nothing; named, not hidden). M1-M7 ran on ef92a2b2, M8-M10 on the false liana before its polish commit
    (the mutated lines are unchanged in 1901d33f).
-5. **Lock**: lockall --layouts 16 on the base (a1739b43, 3264 builds of 102 stages) and --check on 1901d33f: LOCK_RESULT.
+5. **Lock**: lockall --layouts 16 on the base (a1739b43, 3264 builds of 102 stages) and --check on 1901d33f: **102/102 stages unchanged** (no stage lays a snake yet; the Vine.off catch change touches no stage's layout).
 
-## Gates (gates.sh: the full CLAUDE.md Checks + CI's lists, 5 parallel lanes on 1901d33f in its own worktree, CI=1 FORCE_COLOR=1; gates.log)
-GATES_TABLE
+## Gates (gates.sh: the full CLAUDE.md Checks + CI's lists, 5 parallel lanes on 1901d33f in its own worktree, CI=1 FORCE_COLOR=1; gates.out.txt)
+**ALL GREEN.** 4:24-5:09 AM ET. Nothing is running (D59). roadmapcheck ran after `git fetch --unshallow` (ENG-S1's method note e).
+| gate | result |
+|---|---|
+| tsc | exit 0 |
+| unit (the CLAUDE.md glob, 517 files in 3 shards, every file once) | exit 0 each: **3401 tests, 3399 pass, 0 fail, 2 TODO** (the pre-existing 4-3 boulder TODOs); ENG-S1's 3391 + my 10 |
+| build (BASE_PATH=/Sloths-Adventure-/) | exit 0 |
+| chunkcheck | PASS |
+| artcheck | exit 0 (the 4 snake webps: 110x345, 187x180, 390x188) |
+| knowncheck | exit 0 |
+| generalitycheck | exit 0 (no stage literal) |
+| roadmapcheck | PASS |
+| registrycheck | exit 0 |
+| seed lists (every list registrycheck names, --check) | exit 0 |
+| engine tools' tests (gates.yml's list) | exit 0 |
+| tierBots | exit 0 |
+| kbdcheck | PASS |
+| drawcheck | PASS (620 s) |
+| clipcheck | PASS (83 known, unchanged) |
+| buildcheck (alone, after the lanes) | PASS: normal p95 123 ms, easy 59 ms (budget 150) |
+| lockall --layouts 16 --check (vs a1739b43's 3264 builds) | **102/102 stages unchanged** (its "gained verdicts" line lists every stage that carries gen2 verdicts at all, lockall.ts:29: not a diff) |
 
 ## Polish check (real page, the engine's own loop, clock, catch and let-go; 6-3: no World 1 stage lays a liana until 1-6; Normal read from the game)
 - **The recolour, first** (beside-liana-green-vs-brown.png, the game's own liana frame props-atlas#liana at 420 px): the liana is TAN-OLIVE;
