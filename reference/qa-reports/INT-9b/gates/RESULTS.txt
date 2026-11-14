@@ -21,3 +21,9 @@ kbdcheck 0 5:34 PM
 buildcheck 0 5:34 PM
 done 5:34 PM
 buildcheck-alone 0 5:35 PM
+post-repin (test-only change on b288b3fa's gated head) 5:40 PM:
+softFalls11.test.ts whole file 7/7 (all 3 layouts of the 8-3 pin reached)
+post-repin tsc 0
+post-repin knowncheck 0
+post-repin roadmap 0
+post-repin generality 0

@@ -104,9 +104,14 @@ test('floorlessGaps does not read the word: an unmarked floorless gap is still a
   assert.equal(floorlessGaps(st).length, 1);
 });
 
-// origin/main at 181d2846 (sha256 of the stage's platforms, heartFalls and gen2.falls, first 16 hex)
+// origin/main at 181d2846 (sha256 of the stage's platforms, heartFalls and gen2.falls, first 16 hex). Layouts 2 and 3 re-pinned on
+// t-int-9 b288b3fa (INT-9b, the lead's 5:33 and 5:38 PM ET 11-14 rulings: a lay change from a global rule is wanted): the any-slot bank
+// rule (3ad51f04, 0c1d3cab: a bank beside a pit reaches past its floor) takes two log banks' bottoms deeper on each, nothing else:
+// L2 x 8848 and x 9513 (221 -> 234.53, 301 -> 314.53, bottom 750 -> 763.53), L3 x 9455 and x 10144 (225 -> 234.53, 305 -> 314.53,
+// bottom 750 -> 759.53); x, top, width, every other platform, heartFalls and falls byte-identical (qa-reports/INT-9b/softfalls83/
+// diff-7df7b8e3-vs-b288b3fa.txt (L2), diff-L3-*.txt; L1 diff empty; stills on the game, upright + sideways: sheet-*.png).
 const MAIN: Record<string, string[]> = {
-  '8-3': ['d7097751a77b9452', 'daacff5017ec0ef8', 'fcfa0af041aee16c'],
+  '8-3': ['d7097751a77b9452', '7ffc517f0fbb583c', '3b968285f17a5ddf'],
 };
 // (1-2's pin was the hand-built 1-2's, deleted 11-12 (P12S: the game rolls 1-2 on gen2, its change named by the lock); what the pin
 // guarded still holds: 1-2 is not a soft-fall stage)

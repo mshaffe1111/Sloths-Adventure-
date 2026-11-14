@@ -9,7 +9,8 @@ import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 const { chromium } = createRequire('/home/user/Sloths-Adventure-/package.json')('playwright');
 const here = path.dirname(fileURLToPath(import.meta.url));
-const [root, label, portArg] = process.argv.slice(2);
+const [root, label, portArg, varArg] = process.argv.slice(2);
+const V = Number(varArg || 2);
 const port = Number(portArg || 5261);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const vite = spawn('npx', ['vite', '--port', String(port), '--strictPort', '--host', '127.0.0.1'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
@@ -17,7 +18,7 @@ let vout = '';
 vite.stdout.on('data', (d) => (vout += d));
 for (let i = 0; i < 120 && !/Local:|ready in/.test(vout); i++) await sleep(500);
 const browser = await chromium.launch();
-const BANKS = [{ id: 'bank42', x: 8848, w: 220 }, { id: 'bank43', x: 9513, w: 247 }];
+const BANKS = V === 3 ? [{ id: 'L3-bank37', x: 9455, w: 228 }, { id: 'L3-bank38', x: 10144, w: 246 }] : [{ id: 'bank42', x: 8848, w: 220 }, { id: 'bank43', x: 9513, w: 247 }];
 try {
   for (const [W, H] of [[412, 915], [915, 412]]) {
     const ctx = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1, hasTouch: true, isMobile: true });
@@ -29,7 +30,7 @@ try {
     await page.reload();
     for (let t = Date.now(); Date.now() - t < 300000; ) { if (await page.evaluate(() => typeof window.__play === 'function')) break; await sleep(1000); }
     await sleep(1500);
-    await page.evaluate(() => window.__play('8-3', 2));
+    await page.evaluate((v) => window.__play('8-3', v), V);
     for (let t = Date.now(); Date.now() - t < 90000; ) { if (await page.evaluate(() => typeof window.__engine === 'function' && window.__engine()?.currentStage?.config?.id === '8-3')) break; await sleep(500); }
     await sleep(2500);
     for (const b of BANKS) {
@@ -41,7 +42,7 @@ try {
         return `bank x ${q.x} y ${q.y} w ${q.width} h ${q.height} (bottom ${q.y + q.height}) style ${q.style}`;
       }, b);
       await sleep(1500);
-      const where = await page.evaluate(() => { const e = window.__engine(), p = e.player; return `stage ${e.currentStage.config.id} variant 2 (__play(8-3, 2): setLayoutVariant(2), the test's variant) Normal; Pokey x ${Math.round(p.x)} y ${Math.round(p.y)} grounded ${!!p.isGrounded}`; });
+      const where = await page.evaluate((V) => { const e = window.__engine(), p = e.player; return `stage ${e.currentStage.config.id} variant ${V} (__play(8-3, ${V}): setLayoutVariant(${V}), the test's variant) Normal; Pokey x ${Math.round(p.x)} y ${Math.round(p.y)} grounded ${!!p.isGrounded}`; }, V);
       console.log(label, b.id, `${W}x${H}`, info, '|', where);
       await page.screenshot({ path: path.join(here, `${label}-${b.id}-${W}x${H}.png`) });
     }
