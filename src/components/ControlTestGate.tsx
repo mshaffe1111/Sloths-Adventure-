@@ -110,7 +110,7 @@ const JUMP: CtestMove = { frame: 'rise', name: 'Jump', how: 'A quick flick up an
 const CLIMB: CtestMove = { frame: 'climb_2', name: 'Climb', how: 'Slide your thumb up to climb. Slide down to whoosh back down.' };
 export const CTEST_PAGES: Readonly<Record<string, CtestPage>> = {
   '1-5': {
-    alt: 'Pokey on a row of creaky limbs over the roots, a petal on each',
+    alt: 'Pokey crossing a row of creaky limbs above the roots',
     moves: [
       RUN,
       JUMP,

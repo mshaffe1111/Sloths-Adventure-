@@ -26,8 +26,8 @@ export const WHATS_NEW: Release[] = [
     items: [
       'New stage, Up the Kapok: I climb a whole field of vines to the top of the giant tree.',
       'Fig bunches block my way up. I push them free from below, and the bough lifts.',
-      'New stage, Where She Walked: high road or low road, her marks show me where she went.',
-      'Creaky limbs drop me, but only down to the roots.',
+      'New stage, Where She Walked: over or under, Meeca’s marks show me which way she went.',
+      'Creaky limbs give way under me, but they never drop me far.',
       'My paws catch vines more smoothly now, and every stage starts faster.',
     ],
   },
