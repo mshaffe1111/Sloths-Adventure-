@@ -187,10 +187,11 @@ function falseLiana(): Lay {
  *  no flag inside; a miss drops to the moss with the stair back. Easy: FAR as LONG, no riser (the snake lay), a sound bough */
 function gorge(easy: boolean): Lay {
   const r1 = lianaRun('', 'a', [{ gap: easy ? 'long' : 'far' }, { gap: 'short', w: 240 }]);
-  const r2 = lianaRun('g', r1.last, [{ gap: 'long', perch: easy ? 'sound' : 'creak' }, { gap: 'long', w: 260 }, { gap: 'long', w: 280 }]);
+  // (Easy: four lianas, a rest ledge mid-way (1-6.md beat 15): the bank after the sound bough's liana is wide, and the last LONG is not laid)
+  const r2 = lianaRun('g', r1.last, easy ? [{ gap: 'long', perch: 'sound' }, { gap: 'long', w: 420 }] : [{ gap: 'long', perch: 'creak' }, { gap: 'long', w: 260 }, { gap: 'long', w: 280 }]);
   return {
     pieces: [bank('a', null, 300), ...r1.pieces, stillOne('f', r1.last, [90, 110]), ...r2.pieces, bank('z', r2.last, 300)],
-    sockets: [flag('a', 0.3), petals('p2', r1.perches[1], 0.5, 1), petals('p5', r2.perches[2], 0.5, 2, 120)],
+    sockets: [flag('a', 0.3), petals('p2', r1.perches[1], 0.5, 1), petals('p5', r2.perches[r2.perches.length - 1], 0.5, 2, 120)],
   };
 }
 
