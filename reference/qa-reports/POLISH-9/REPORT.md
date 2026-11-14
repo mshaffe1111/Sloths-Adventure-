@@ -127,10 +127,11 @@ Each keeps its test's intent, with the reason written in the test. Seeds are fou
   rollA-{normal,easy}-1-1-L10-*-x{11560,12090}-{upright,sideways}.jpg (the bounce teach) and -x{22300,23300}-* (the stone stair).
 
 ## Gates
-- **On 660df344 (the graph ruling and relist B):**
+- **On dab5f6ea (final): GREEN.** Full suite 3,385 / 3,387 pass, 0 fail, 2 todo; buildcheck ALONE PASS (Normal p95 120 ms, Easy 65 ms).
+- **On 660df344 (the graph ruling and relist B, before the retargets):**
   - full suite 3,369 / 3,387, 16 fail (above);
   - yield.test 9/9; seedlist 1-1 --check PASS (162); CI tool tests 84/84; tsc, generality, knowncheck PASS;
-  - buildcheck ALONE UNRUN.
+  - buildcheck: not run there (it ran on dab5f6ea).
 - **On b7df7a52, before the graph ruling** (as first reported):
 - **PASS:**
   - tsc
@@ -185,9 +186,9 @@ level.md (rules 5, 12, 14, 18), BOTS.md, bands.md; FT_TRACE / FT_FRAMES; git wor
 
 ## UNRUN (D59)
 - **buildcheck ALONE:** PASS on dab5f6ea (it ran after the final suite).
-- **Not re-run on 660df344:** drawcheck, clipcheck, build/chunk/art and seedlist 1-2 to 1-5. They passed on b7df7a52. 660df344 changes
+- **Not re-run after b7df7a52:** drawcheck, clipcheck, build/chunk/art and seedlist 1-2 to 1-5. They passed on b7df7a52. 660df344 changes
   only 1-1's graph pick (a brief field) and its list, and nothing that draws.
-- **Box:** ran over to 10:20 AM ET to finish the lead's added ruling; stopped there for the lead's call on the 16.
+- **Box:** ran over, to 10:58 AM ET, to finish the lead's two added rulings (the graph change, then the 16 retargets), on the lead's word.
 - **Nothing left running:** the dev server was stopped, all gate runs finished, and the scratch worktrees were removed.
 
 ## Turnover note
