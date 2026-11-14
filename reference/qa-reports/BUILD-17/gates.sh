@@ -15,7 +15,7 @@ run generality npx tsx tools/engine/generalitycheck.ts
 run roadmap node tools/roadmapcheck.mjs
 run seedlists bash -c 'for s in $(npx tsx tools/engine/registrycheck.ts --lists); do echo "== $s"; npx tsx tools/engine/seedlist.ts "$s" --check || exit 1; done'
 run registry npx tsx tools/engine/registrycheck.ts
-run enginetools npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts tools/inspect/routeHumps.test.ts tools/engine/libstage.test.ts tools/engine/registrycheck.test.ts
+run enginetools npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts tools/inspect/routeHumps.test.ts tools/engine/libstage.test.ts tools/engine/registrycheck.test.ts tools/inspect/pitClimb.test.ts
 run tierbots npx tsx --test tools/inspect/tierBots.test.ts
 run kbdcheck node tools/perf/kbdcheck.mjs
 run buildcheck node tools/perf/buildcheck.mjs
