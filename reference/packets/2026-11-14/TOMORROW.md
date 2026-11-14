@@ -19,3 +19,13 @@ on his test link tomorrow evening if its engine pieces land in the morning; 1-7 
   PREDATORS.md says it lacks; the ant fills ant_hazard (no spawner today).
 ## Release
 Nothing ready to merge tonight. Next test link when 1-1/1-4 polish + underlayer/pole are green on one integration head.
+
+## PAUSED by Matt 5:31 AM ET ("Lets wrap up here for a bit"). Resume order when he restarts:
+1. INT-7 (t-int-7 from main: t-polish-5 GREEN ruler head + t-fix-14b GREEN 1-4 fixes): finish gates + stills -> lead judges -> EnK5 link #1.
+2. POLISH-9 (t-polish-9 from t-polish-8): bot-vs-tester evidence at the 255 px double, 17 re-pins, lock once, full suite -> INT-8 -> link #2.
+   1-1 Normal keeps its one double test (rules hold); option (G) goes to Matt with numbers after he plays.
+3. FIX-14d (t-fix-14d from t-fix-14c, which is HELD: castBots worse): fork take two, like-for-like bots.
+4. ENG-S3 (t-eng-s3 from t-eng-s2): snake camera focus, false-liana landing clear of him, snake lay, chains. Then the 1-6 builder.
+5. Then: B5 CHASE-LAY + baked chase tint (t-b2-chase), 1-7 engine, ART-PRED (Matt's 78 predator sheets on art-raw-2026-11-14),
+   R-165.235 (1-1 non-double pieces), R-165.234 (6-3 water edge), underlayer/pole wiring once Matt says go.
+Matt's open answers: the 1-4 mock pick (built as shown; pods as data), underlayer + pole go/no-go.
