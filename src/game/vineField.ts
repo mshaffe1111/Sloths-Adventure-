@@ -143,7 +143,7 @@ export function clusterAbove(h: Hands, y: number, clusters: readonly VineCluster
  * pushed up to them; one that reaches its vine's top tears free (returned, it falls from here). His feet never pass under a cluster's
  * bottom by more than HANDS_UP: the engine climbs at handsSpeed(.., pushing) while one is above.
  */
-export function pushClusters(h: Hands, y: number, clusters: VineCluster[]): VineCluster[] {
+export function pushClusters(h: Hands, y: number, clusters: VineCluster[], topOf: (v: Vine, h: number, y: number) => number = (v) => v.topY): VineCluster[] {
   const torn: VineCluster[] = [];
   const hands = y - HANDS_UP;
   for (const c of clusters) {
@@ -152,7 +152,7 @@ export function pushClusters(h: Hands, y: number, clusters: VineCluster[]): Vine
     // (only one his hands have come up to: its bottom between his hands and his feet; one wholly below him is not his)
     if (!v || c.y <= hands || c.y - c.h >= y) continue;
     c.y = hands;
-    if (c.y - c.h <= v.topY) {
+    if (c.y - c.h <= topOf(v, c.h, c.y)) {
       c.falling = true;
       c.vy = 0;
       torn.push(c);
@@ -242,8 +242,15 @@ export const GATE = {
   spring: 0.45,
   /** a vine's top this near a shut gate's bough (px, up or down) is under it: the climb stops short of the vault */
   under: 30,
-  /** a shut gate is a lid from below: rising under it, his feet stop this far under its top (px; the climb's own stop, topY - 4) */
-  lid: 4,
+  /** a shut gate is a lid from below, met by his DRAWN head (Matt, 11-14: "on Pokey's head as a collision thing with the platform... his
+   *  shoulders... just enough to get the fruit up"): rising under it, on a climb or a jump, his feet stop `head` px under the bough's DRAWN
+   *  underside. `head` is his drawn height (heroSprite.ts HERO_UNITS 66 x HERO_SPRITE_SCALE 1.35 = 89.1, LESSONS D41); `depth` is the
+   *  painted bough's underside under its walk line, a share of its walk span (w14-roughbough.webp: the median opaque underside, row 115,
+   *  is 73 px under its walk line 42 on a 576 px walk span), so his head meets the wood the player sees, sagged as drawn */
+  head: 89,
+  depth: 73 / 576,
+  /** a fig under a shut bough tears free this near its full push (px): the slope between his two hands' lines under a sagging bough */
+  slack: 8,
   /** and this far past either end of its bough (px: his body's half width, so a leap from an end vine cannot round it) */
   lidSide: 22,
   /** seconds a gate's thorn tangle shudders as a fig locks in, and takes to pull back off the bough after the last */

@@ -1,5 +1,5 @@
-import { RealPlay } from '/home/user/fix14/src/game/realPlay.ts';
-import { setDifficulty } from '/home/user/fix14/src/game/difficulty.ts';
+import { RealPlay } from '../../../../src/game/realPlay.ts';
+import { setDifficulty } from '../../../../src/game/difficulty.ts';
 const seed = +(process.argv[2] ?? 4), easy = process.argv[3] === 'easy';
 setDifficulty(easy ? 'easy' : 'normal');
 const rp = new RealPlay('1-4', seed);

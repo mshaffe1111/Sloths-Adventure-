@@ -15,7 +15,7 @@
 import type { Platform, PlayerState, Vine } from './types.ts';
 import { POD, podAt, podHits, type PodColumn, type PodCost } from './podfall.ts';
 import type { ClockRead } from './clock.ts';
-import { GATE, clusterLand, fallCluster, gateLeft, gateOver, gateSag, gateShut, type ClusterGate, type Hands, type VineCluster } from './vineField.ts';
+import { GATE, HANDS_UP, clusterLand, fallCluster, gateLeft, gateOver, gateSag, gateShut, type ClusterGate, type Hands, type VineCluster } from './vineField.ts';
 import { drawGate, drawGateThorns, drawPod, type ThornState } from './vineFieldArt.ts';
 
 /** what the field asks of its host (the engine) */
@@ -78,27 +78,60 @@ export class FieldPlay {
     return !!this.gates.length && !!gateOver(v, this.gates, this.clusters, this.platforms);
   }
 
-  /**
-   * A shut gate is a lid from below (Matt, R-165.212: "it let me go above the platform"): rising inside its bough's span (and the boughs
-   * held with it), his feet stop at the line a climb stops at (the bough's top less GATE.lid), as a head meets wood. Only from below: feet
-   * already over the line are left alone (never pushed up, never trapped), and the frame its last fig locks it is gone (torn() opens it).
-   * The engine calls it once a frame, just after it moves him through the air (engine.ts, after `p.y += p.vy * dt`).
-   */
-  lid(p: PlayerState, dt: number): boolean {
-    if (p.climbing || p.vy >= 0) return false;
-    const was = p.y - p.vy * dt;
+  /** the DRAWN top and underside of the shut gate bough over (x, y): the nearest one whose drawn top is above y (sagged as it is drawn
+   *  at x), or null when no shut gate is over him there (its bough and the boughs held with it, and GATE.lidSide past either end: his
+   *  body's half width, so a leap from an end vine cannot round it) */
+  shutBoughAt(x: number, y: number): { top: number; under: number } | null {
+    let best: { top: number; under: number } | null = null;
     for (const g of this.gates) {
       if (!gateShut(g, this.clusters)) continue;
+      const sag = gateSag(g, this.clusters);
       for (const id of [g.platform, ...(g.with ?? [])]) {
         const b = this.platforms.find((q) => q.id === id);
-        if (!b || p.x < b.x - GATE.lidSide || p.x > b.x + b.width + GATE.lidSide) continue;
-        const line = b.y - GATE.lid;
-        if (was >= line - 0.5 && p.y < line) {
-          p.y = line;
-          p.vy = 0;
-          return true;
-        }
+        if (!b || x < b.x - GATE.lidSide || x > b.x + b.width + GATE.lidSide) continue;
+        // (the near end stays put, the far end sags: drawGate's tilt; a bough held with it is level)
+        const f = id !== g.platform ? 0 : Math.max(0, Math.min(1, g.far > 0 ? (x - b.x) / b.width : (b.x + b.width - x) / b.width));
+        const top = b.y + sag * f;
+        if (top < y && (!best || top > best.top)) best = { top, under: top + GATE.depth * b.width };
       }
+    }
+    return best;
+  }
+
+  /** the highest his FEET may rise at x from y (least y): under a shut gate, his drawn head at its drawn underside (GATE.head); else
+   *  -Infinity */
+  capY(x: number, y: number): number {
+    const s = this.shutBoughAt(x, y);
+    return s ? s.under + GATE.head : -Infinity;
+  }
+
+  /** where a fig (`h` px tall, its bottom at `y`) pushed up this vine tears free: under a shut bough, as high as his hands push it with
+   *  his head held at the wood (Matt: "just enough to get the fruit up"; the bough's drawn top if he could push it past that), less
+   *  GATE.slack for the tilt between his two hands' lines; else the vine's own top */
+  readonly topOf = (v: Vine, h: number, y: number): number => {
+    const s = this.shutBoughAt(v.x, y);
+    return s ? Math.max(s.top, s.under + GATE.head - HANDS_UP - h + GATE.slack) : v.topY;
+  };
+
+  /**
+   * A shut gate is a lid from below (Matt, R-165.212: "it let me go above the platform"; 11-14: "it cannot go above the platform above
+   * it... like on Pokey's head"): rising through the air under its bough (and the boughs held with it), his DRAWN head stops at the drawn
+   * underside (capY), as a head meets wood; the climb stops there too (engine.ts, the field climb). Only from below: feet already over
+   * the bough's drawn top are left alone (never pushed up, never trapped), and the frame its last fig locks it is gone (torn() opens it). The engine
+   * calls it once a frame, just after it moves him through the air (engine.ts, after `p.y += p.vy * dt`).
+   */
+  lid(p: PlayerState, dt: number): boolean {
+    if (p.climbing || p.vy >= 0 || !this.gates.length) return false;
+    const was = p.y - p.vy * dt;
+    const s = this.shutBoughAt(p.x, was);
+    if (!s) return false;
+    // (under the wood is read against the bough's drawn TOP, not the line: the line falls toward the sagging end, so a leap along the
+    // bough toward it starts over the line there and would slip past a from-the-line test: 0.9.8's feet rule had the same hole)
+    const line = s.under + GATE.head;
+    if (was > s.top && p.y < line) {
+      p.y = line;
+      p.vy = 0;
+      return true;
     }
     return false;
   }
@@ -214,7 +247,7 @@ export class FieldPlay {
       const v = c && !c.falling && !c.gone ? this.vines.find((q) => q.id === c.vine) : undefined;
       const y0 = c ? this.laid.get(c.id) : undefined;
       if (!c || !v || y0 === undefined) continue;
-      const way = y0 - (v.topY + c.h);
+      const way = y0 - (this.topOf(v, c.h, c.y) + c.h);
       if (way > 1) s.strain = Math.max(s.strain, Math.min(1, (y0 - c.y) / way));
     }
     return s;
