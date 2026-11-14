@@ -112,11 +112,11 @@ ENGINE-WORTHY lists in BUILD-16d/17/17b REPORTs); R-165.250 strand rule; POLISH-
 **Members running** (refreshed 6:15 PM ET by the new lead; report to the session on this file's top line):
 | Member | Session | Branch | Job | Report by (ET) |
 |---|---|---|---|---|
-| INT-9b | session_01FhBbYM3Z4oAdZ4pK6nJewd | t-int-9@1c7f6b95 (xhigh) | phase A GREEN (link #3); idle until ENG-16G's GREEN, then phase B: 1-6 onto t-int-9, every gate once -> link #4 | 9:00 PM |
-| ENG-16G | session_01FhBbYN7qZpCPnWqXycWnXZ | t-build-16@ebbb3eb2 (xhigh) | finish 1-6; Easy proof flagged "pending R-165.251" (tools build Easy with Normal's swing; it confirmed 6:09) | 7:30 PM |
+| DESIGN-19 | session_01FhBbYN6ZRbKZkpY5QMp8Ke | t-design-19 from t-1718-design (high) | 1-9 design (at most 2 NEW S/M engine blocks), 2-1/2-2 concepts + ranked engine list, W1 tribute pass R-165.253 (packets/2026-11-14/DESIGN-19.md) | 8:15 PM |
+| ENG-16G | session_01FhBbYN7qZpCPnWqXycWnXZ | t-build-16@498f8d61 (xhigh) | 1-6 NOT green (6:21): expert sealed 22/40 (petals off the walked span, stage-wide), kid 6 rescues Normal. Ruled 6:23: no stills/clips; suite + lock, ranked petal-miss list, 6 kid rescues traced, EXACT NEXT STEP for a global walked-span petal lay (fresh engine member at 7:30). Easy proof pending R-165.251 | 7:30 PM |
 | TOOLS-2 | session_01FhBbYNF5NqMztUscqbZ5Ln | t-tools-2 from t-tools-1@71859cf9 + t-int-9 (xhigh) | R-165.251 one per-setting helper in every tool + Easy relists/locks re-checked; R-165.252 build.py file gate + published diff (packets/2026-11-14/TOOLS-2.md) | 7:50 PM |
 | ENG-B6 | session_01FhBbYLDmwbYR1ovA8KMgZf | t-eng-b6 from t-int-9@1c7f6b95 (xhigh) | merge the chase line t-eng-b5@de1e22fb (6 files conflict) by 7:00 PM, then 1-8's still fork, phased liana, tip (packets/2026-11-14/ENG-B6.md) | step 1 7:00 PM; final 8:45 PM |
-Retired 6:15 PM: TOOLS-1 (39.9%, $18.51), ENG-B5 (50.3%, $27.08), rows in LEVEL-LOG.md.
+Retired 6:22 PM: INT-9b (31.4%, $11.41; phase A = link #3 done; phase B goes to a fresh integrator when 1-6 is green). Retired 6:15 PM: TOOLS-1 (39.9%, $18.51), ENG-B5 (50.3%, $27.08), rows in LEVEL-LOG.md.
 **The new lead's scope (Matt, 6:13 PM, R-165.254):** three levels, 1-9, 2-1, 2-2, each built in under 2 hours; 1-8 finishes; special stages only if fast.
 Story keeper (standing): session_01FhBbYMCa3JXWmyQicbmxuu. Retired today, costs in LEVEL-LOG.md: BUILD-16..16d, BUILD-17/17b, INT-8, INT-9,
 ENG-S5, ENG-E2, ENG-16E, ENG-16F ($41.43, ran to 54%: over the box), FIX-15/15b, TIPS, POLISH-9b/10, ENG-B4, KEEPER-17/17b, CRITIC-PERSONA.
