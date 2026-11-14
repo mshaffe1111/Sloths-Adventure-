@@ -1,4 +1,4 @@
-# BUILD-17b REPORT: 1-7's shared faults fixed globally, the old-1-7 tests on the new 1-7 (R-165.204). Opus 5.5, engine tier. 1:58 PM ET to (see end) 11-14
+# BUILD-17b REPORT: 1-7's shared faults fixed globally, the old-1-7 tests on the new 1-7 (R-165.204). Opus 5.5, engine tier. 1:58 PM ET to 3:02 PM 11-14
 Branch t-build-17 from c318fb0a. Code heads: 7c77f501 (fault 1), b943d52e (fault 2), 82aa6dc3 (fault 3), 892880aa (the five tests),
 2a2e8adc1 (drawcheck plays 1-7). Method: reference/methods/stage-fix.md + gates.md; level.md rules 21-22; LEAD-PERSONA "The engine drives development".
 Lessons applied: D19 (every new check calls the game's own build: generateStage/listedRoll, never a source grep), D36 (frozen worktrees for
@@ -7,10 +7,11 @@ drawcheck), D57 (queue read at every push), D67 (no wait loops), LAWS 22 (no rul
 tested engine fact, planted).
 
 ## EXACT NEXT STEP
-DONE (heads): fault 1 7c77f501, fault 2 b943d52e, fault 3 82aa6dc3, the 5 old-1-7 tests 892880aa, 1-7 in drawcheck 2a2e8adc1, turnover/bots/
+DONE (heads): fault 1 7c77f501, fault 2 b943d52e, fault 3 82aa6dc3 + b40cef1d9e (shallow catch), the 5 old-1-7 tests 892880aa, 1-7 in drawcheck 2a2e8adc1, turnover/bots/
 stills 4f82c7c5. Fault 4 (requiredMove, old 1-6) is RED by the lead's ruling (a). Next, in order:
-1. Read the Gates table below: any gate still "running" when this was written is re-run on 4f82c7c5 or later (scratchpad logs were
-   /tmp/claude-0/s/{unit,lock-head,draw,etools}.log in this session's container).
+1. **b40cef1d9e moved 1-7 again** (the joined pit is now shallow, no step): re-run on it, 1-7 only: the full unit suite, castBots 1-7
+   seeds 1-12 both settings, lock `--intended 1-7`, drawcheck. Everything else in the Gates table is on 892880aa / 82aa6dc3 / 2a2e8adc1
+   as named. Not re-run here: this member stopped at the lead's 40% context line.
 2. Fly 1-7 (registrycheck's one MISSING): `FLIGHT_STAGE=1-7 npx tsx reference/specs/sims/flight.ts normal all`, rows in flownArcs.ts.
 3. R-165.249 (lead): the journal 'hide' page for the keeper; dotLinesData `hint.1-7.hide` goes with it.
 
@@ -35,7 +36,7 @@ stills 4f82c7c5. Fault 4 (requiredMove, old 1-6) is RED by the lead's ruling (a)
 | Gate | Head | Result |
 |---|---|---|
 | tsc | each commit | 0 |
-| unit (full CLAUDE.md list) | 892880aa | GATES_UNIT |
+| unit (full CLAUDE.md list) | 892880aa | 3418/3422 pass, 2 fail, 2 todo: requiredMove (ruled (a)) and plainWalk.test "one-jump steps" (1-7 seed 2: the joined pit had a 75 px step out UNDER the limb, its own ceiling; MY fault, fixed at b40cef1d9e: the joined pit is a shallow catch; plainWalk 3/3, creak 8/8, w1Pits 16/16, seedlist 1-7 PASS on b40cef1d9e) |
 | the 14 reds, file by file | working tree = 892880aa | pickups 4/4, levels 13/13, glideStages 4/4, skills 7/7, stageSheets 8/8, sheetWarm 4/4, w1Pits 16/16, eagleFair 3/3, dotBox 1-7 1/1, movesJournal 5/5, artDress 7/7, puzzleCamera 4/4; requiredMove RED (ruled) |
 | new planted tests | 7c77f501-892880aa | eagleKit 6/6, creak.test 8/8; each plant RED (see faults table) |
 | lock `--layouts 16 --intended 1-7` vs c318fb0a | 82aa6dc3 | PASS: 101/102 stages unchanged (3264 builds, 16 layouts); 1-7 (intended) moved: platforms, collectibles, gen2, proto.dress |
