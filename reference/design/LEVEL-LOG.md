@@ -82,3 +82,7 @@ the first: count levels that reach his test link at the bar, against the usage %
 | POLISH-7 (Opus high) | settle perf fix (buildcheck 127); bounce teach a plain bounce; 14 doubles cut; stone-stair X test; relist 169/257; castBots Easy 10/10 both; unit suite red on 17 moved pins (handed to POLISH-8) | $15.29 | ~85 min |
 | ENG-S2 (Opus xhigh) | PieceHost letGo; vine snake (3 routes, 0.5 s tell floor, green by evidence D65); false liana (brown); engine.ts:2056 off-liana catch fix; found the sideways tell out of view; all gates green | $13.49 | ~75 min |
 | FIX-14c (Opus high) | 80 px vine-top rule + lay test; towerJoin foot-vine root fix; 1-4 data; 3 relists; suite 3303/0; castBots WORSE on Easy child/middle: HELD | $13.75 | ~100 min |
+| POLISH-8 (Opus high) | Normal teach rise 129-131 (own row, planted); relist 167/169; showed options (A) and (B) each break a rule; calibration recommitted | $7.05 | ~45 min |
+| FIX-14d (Opus high) | turn run-on + rotting-dip hidden edge: kid 1-4 N 19->39, E 35->40; like-for-like mostly better; tower tests red (11): paused | $7.99 | ~25 min |
+| ENG-S3 (Opus xhigh) | PieceHost.focus + focusY, gen2 snakeViewFaults, false-liana landing clear of him (unit-proven); real page still 0/6 (level-top root cause): paused | $8.33 | ~25 min |
+| POLISH-9 (Opus high) | found the 1-1 Normal 'rescue' was a BOT artifact (inputGrace 0.35 s vs stopReact 0.30 s): firsttimer.ts fix, adult 4/10 -> 10/10: paused | $2.86 | ~10 min |
