@@ -16,7 +16,7 @@ publish carries its source and a tolerance, and when the ruler and the game disa
 ideas into it... I think sometimes we keep our scope so small, which is why it starts feeling repetitive." Every level design draws from
 several games in reference/plans/INSPIRED-BY.md (Matt's own favourites first: Frogger, Mario Bros. on the Atari 7800, Tower Toppler,
 Smurf: Rescue in Gargamel's Castle; then the 84 ideas' games), across series and eras, mixed with our own ideas. Not Mario and Donkey Kong
-Country by default. Each borrowed piece researched (STAGE-RULES tribute rule) and taught on first appearance.
+Country by default. Matt's 100 side-scrollers and the lead's pick list (what fits a sloth on a phone): reference/plans/PLATFORMER-100.md. Each borrowed piece researched (STAGE-RULES tribute rule) and taught on first appearance.
 
 ## You own (WRITE)
 - reference/specs/: one file per topic (reach.md, bands.md, help.md, touch.md, petals.md, easy.md), each number with its source: a

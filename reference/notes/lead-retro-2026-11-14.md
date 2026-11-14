@@ -37,3 +37,4 @@ like we get into a loop of that's the only games that we really focus from."
   Galaxy, Yoshi's Island, Wario Land 4, Sonic, Zelda, Metal Gear Solid 3, Thief, Celeste, Ori, Downwell, Contrast, DKC Returns, Pikmin,
   Angry Birds, Hades/Loop Hero and more). The persona points to that file; the wider research shelf above is secondary.
 - Designers too (Matt, 2:08 PM ET): mix and match across the whole shelf plus our own ideas in every level; one game's toolbox per level is the tunnel vision that makes it repetitive (STAGE-RULES tribute rule + DESIGNER.md updated). The persona says the lead enforces it in every idea round and design review.
+- Matt's 100 side-scrollers (2:23 PM ET): reference/plans/PLATFORMER-100-MATT.md (verbatim) + PLATFORMER-100.md (the lead's pick list of what fits a sloth on a phone, by world and engine piece). The persona names all three files as the shelf.
