@@ -817,7 +817,7 @@ export interface Gen2Meta {
   /** a stage laid as a tower (MissionGraph.flow up or down, R-165.170): its width and floor, the plain boughs the lay ran on to a
    *  wall (a design wants none), and its ROUTE (tower.ts Route: each section's leg, the px of way before and through it, the px he
    *  walks): what "how far along" means where x runs both ways, read by the flags, the opening, the clock and the time model */
-  tower?: { flow: 'up' | 'down'; width: number; floorY: number; runouts: number; /** each storey join that climbs or comes down: its vine's x and the heights it joins */ turns: Array<{ x: number; from: number; to: number }>; /** its sealed pieces' platform ids (SectionPiece.sealed), when it has any */ sealed?: number[]; route: import('./tower.ts').Route };
+  tower?: { flow: 'up' | 'down'; width: number; floorY: number; runouts: number; /** each storey join that climbs or comes down: its vine's x and the heights it joins, and the way he walked to its vine (vineTop.ts topRoomShort's `walk`) */ turns: Array<{ x: number; from: number; to: number; walk?: 1 | -1 }>; /** its sealed pieces' platform ids (SectionPiece.sealed), when it has any */ sealed?: number[]; route: import('./tower.ts').Route };
   /** a stage that lays a hurt floor (WorldManifest.hurtFloor): its row's lesson and clearStart, and `shown`, the END x of the lesson's
    *  showing piece (the piece keyed `show` in the laid section whose `teaches` is the lesson) when one is laid: `hazard.untaught` reads it */
   hurt?: { lesson: string; clearStart: number; shown?: number };

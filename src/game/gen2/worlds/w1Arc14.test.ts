@@ -11,7 +11,7 @@ import { buildGen2Stage, stagePool } from '../pipeline.ts';
 import { listedStage } from '../listed.ts';
 import { provenSeeds } from '../seedList.ts';
 import { levelConfig } from '../../realPlay.ts';
-import { footRoom, topRoom, topRoomShort } from '../../vineTop.ts';
+import { CLIMB_CLEAR, footRoom, topRoom, topRoomShort } from '../../vineTop.ts';
 import { stageLine } from '../../wayside.ts';
 import { STAGE_LINES } from '../../pokeyJournal.ts';
 import { ARC_14, BRIEF_14, FIELD_ROWS, GAP, PODS_14, HALFWAY_14, JOURNAL_14, LINES_14, SECTIONS_14, STAGE_14, beats14, finish14, kitLib14 } from './w1Arc14.ts';
@@ -189,7 +189,7 @@ test('the pods are PODS_14\'s: speed, tell and beats from the one block; on: fal
 // keeps TOP_ROOM of ledge between its top (and its foot, the ledge he walks along to it) and any OPEN end (vineTop.ts topRoomShort: touching pieces are one ledge, the stage's edge and a
 // step beside are no end). Before: the crown's sure vine 20 px from the mid's end over the stair on every roll; every field's end vines
 // 60 px (MARGIN) from their top bough's ends; drop-one's vines squeezed 55 px apart, its first 17 px from the end.
-test('every climbable vine on every shipped 1-4 roll, Normal and Easy, tops out and stands TOP_ROOM (80 px) or more from any open end of its ledge (planted: the crown\'s sure vine back at 20 px; a link vine\'s foot back at 18)', () => {
+test('every climbable vine on every shipped 1-4 roll, Normal and Easy, tops out and stands TOP_ROOM (80 px) or more from any open end of its ledge (planted: the crown\'s sure vine back at 20 px; a link vine\'s foot back at 18; a turn back up with nothing past its vine the way he walked, t-fix-14c\'s kid x 1036)', () => {
   const seeds = provenSeeds('1-4');
   assert.ok(seeds.length >= 100, `1-4's proven list (${seeds.length})`);
   const row = listedStage('1-4')!;
@@ -198,6 +198,8 @@ test('every climbable vine on every shipped 1-4 roll, Normal and Easy, tops out 
   let n = 0;
   let planted = false;
   let plantedFoot = false;
+  let plantedTurn = false;
+  let turns = 0;
   for (const seed of seeds) {
     for (const difficulty of ['normal', 'easy'] as const) {
       const st = buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty });
@@ -205,8 +207,23 @@ test('every climbable vine on every shipped 1-4 roll, Normal and Easy, tops out 
       for (const v of st.vines) {
         if (v.vineType !== 'tree_climb') continue;
         n++;
-        const m = topRoomShort(v, st.platforms, W) ?? topRoomShort(v, st.platforms, W, 'foot');
+        // (a tower turn's vine: the way he walked to it, which its top must run on past too: FIX-14d)
+        const turn = st.gen2.tower!.turns.find((u) => u.x === v.x && Math.min(u.from, u.to) === v.topY);
+        if (turn) turns++;
+        const m = topRoomShort(v, st.platforms, W, 'top', turn?.walk) ?? topRoomShort(v, st.platforms, W, 'foot');
         if (m) bad.push(`seed ${seed} ${difficulty} ${(v as { tag?: string }).tag ?? ''}: ${m}`);
+        // planted (once): a turn back up as t-fix-14c laid it (the kid's x 1036 case, castBots 1-4 kid Normal 20 of 40): the storey over
+        // starting at the vine's back, nothing past it the way he walked. Take away the run-on over the vine: caught
+        const walk = turn?.walk;
+        if (!plantedTurn && walk) {
+          const t = topRoom(v, st.platforms, W);
+          if (t?.on && (walk > 0 ? t.x0 < v.x - 100 : t.x1 > v.x + 100)) {
+            const cut = st.platforms.filter((q) => !(Math.abs(q.y - v.topY) <= 2 && (walk > 0 ? q.x + q.width > v.x - CLIMB_CLEAR : q.x < v.x + CLIMB_CLEAR)));
+            assert.match(topRoomShort(v, cut, W, 'top', walk) ?? '', /no ledge past it on the (right|left), the way he walked to it/, 'planted: the 14c turn is caught');
+            assert.equal(topRoomShort(v, cut, W), null, 'and the old exemption alone passed it (why the kid fell)');
+            plantedTurn = true;
+          }
+        }
         // planted (once): the crown's sure vine where it stood until 11-14, 20 px in from the mid's end over the stair
         if (!planted && (v as { tag?: string }).tag?.endsWith(':sure')) {
           const t = topRoom(v, st.platforms, W)!;
@@ -228,6 +245,8 @@ test('every climbable vine on every shipped 1-4 roll, Normal and Easy, tops out 
   }
   assert.ok(planted, 'the crown\'s sure vine was found on a roll');
   assert.ok(plantedFoot, 'a link vine was planted');
+  assert.ok(plantedTurn, 'a turn back up was planted');
+  assert.ok(turns > 1000, `tower turns checked with the way he walked (${turns})`);
   assert.ok(n > 1000, `vines checked (${n})`);
   assert.deepEqual(bad, []);
 });

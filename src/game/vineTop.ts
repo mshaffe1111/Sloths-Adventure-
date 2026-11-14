@@ -123,13 +123,24 @@ function ledgeRoom(v: Vine, platforms: readonly Platform[], width: number, y: nu
 /**
  * What is short at the top of `v` (or its foot, `end`) (null when it keeps TOP_ROOM to every open end he can reach): over the ledge, both
  * ends; in front of a bough's face (CLIMB_CLEAR), its far end (the near end is the face he climbed beside, the vine still in his hands).
+ * `walk`, where the lay knows it (a tower's turn: gen2.tower.turns[].walk), is the way he walked along the ledge to the vine: at its top
+ * the ledge must run TOP_ROOM on past the vine that way too, face or no face (FIX-14's meaning, R-165.206: a turn back up stood the
+ * storey over behind him with nothing the way he still pushed, and the kid vaulted on into the gap: castBots 1-4 kid Normal at x 1036 on
+ * 20 of 40 seeds, FIX-14d). The stage's edge within TOP_ROOM that way is a wall, no walk-off.
  */
-export function topRoomShort(v: Vine, platforms: readonly Platform[], width: number, end: 'top' | 'foot' = 'top'): string | null {
+export function topRoomShort(v: Vine, platforms: readonly Platform[], width: number, end: 'top' | 'foot' = 'top', walk?: 1 | -1): string | null {
   const t = end === 'top' ? topRoom(v, platforms, width) : footRoom(v, platforms, width);
   if (!t) return null;
   const short: string[] = [];
   const far = (d: 1 | -1) => (t.on ? true : d > 0 ? t.x0 > v.x : t.x1 < v.x);
   if (t.openLeft && far(-1) && t.left < TOP_ROOM) short.push(`${Math.round(t.left)} px to the open left end ${Math.round(t.x0)}`);
   if (t.openRight && far(1) && t.right < TOP_ROOM) short.push(`${Math.round(t.right)} px to the open right end ${Math.round(t.x1)}`);
+  if (walk && end === 'top') {
+    const room = walk > 0 ? t.x1 - v.x : v.x - t.x0, open = walk > 0 ? t.openRight : t.openLeft;
+    const wall = walk > 0 ? v.x + TOP_ROOM >= width - 2 : v.x - TOP_ROOM <= 2;
+    if (room < TOP_ROOM && open && !wall && !short.some((m) => m.includes(walk > 0 ? 'right' : 'left'))) {
+      short.push(room < 0 ? `no ledge past it on the ${walk > 0 ? 'right' : 'left'}, the way he walked to it (the ledge's face ${Math.round(walk > 0 ? t.x1 : t.x0)} is behind the vine)` : `${Math.round(room)} px past it on the ${walk > 0 ? 'right' : 'left'}, the way he walked to it`);
+    }
+  }
   return short.length ? `the vine at ${Math.round(v.x)} ${end === 'top' ? `tops out at ${v.topY}` : `stands at ${v.bottomY}`} on ${Math.round(t.x0)}..${Math.round(t.x1)}: ${short.join(', ')}` : null;
 }

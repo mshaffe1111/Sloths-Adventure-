@@ -1327,9 +1327,9 @@ export interface Laid {
   /** the sections the roll's theme favoured (undefined: it favoured them all) */
   theme?: string[];
   /** a tower (graph.flow up or down, R-165.170): its width, its floor (an ascent's ground; a way down's last floor, the shrine's), each
-   *  storey join that climbs or comes down (the vine's x, the heights it joins, whether the storey turned back), and how many plain
+   *  storey join that climbs or comes down (the vine's x, the heights it joins, whether the storey turned back, the way he walked to its vine), and how many plain
    *  boughs the lay ran on to a wall for a section too wide to turn where he stood (a design wants none) */
-  tower?: { flow: 'up' | 'down'; width: number; floorY: number; turns: Array<{ x: number; from: number; to: number; turned: boolean }>; runouts: number; sealed?: number[] };
+  tower?: { flow: 'up' | 'down'; width: number; floorY: number; turns: Array<{ x: number; from: number; to: number; turned: boolean; walk: 1 | -1 }>; runouts: number; sealed?: number[] };
 }
 
 export interface LayOptions {
@@ -1584,7 +1584,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   // ended: a walk on while it fits before the wall and clears what lies under (over) it; otherwise a storey over (under), a climbing
   // vine between the two, turned back the other way when the wall is too near. tower.ts has the numbers)
   let dir: 1 | -1 = 1;
-  const turns: Array<{ x: number; from: number; to: number; turned: boolean; vine: Vine }> = [];
+  const turns: Array<{ x: number; from: number; to: number; turned: boolean; walk: 1 | -1; vine: Vine }> = [];
   let runouts = 0;
   const towerJoin = (ext: { x0: number; x1: number; low: number; high: number; hang?: number }, opts: { keepFloor?: boolean; toFloor?: boolean; seam: Platform[]; what: string }): { ox: number; oy: number; way: 1 | -1; climbed: number } => {
     const usable = TW - 2 * TOWER.wall;
@@ -1651,9 +1651,22 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const run = roomIn(dir, cur.x) >= need ? need : edge;
       if (run > 1) opts.seam.push(mk(dir > 0 ? cur.x : cur.x - run, cur.y, run, 'branch', 0));
     }
-    const v: Vine = { id: vines.length + 1, x: R(flow === 'up' ? ox : cur.x), topY: Math.min(oy, R(cur.y)), bottomY: Math.max(oy, R(cur.y)), swaySpeed: 1.1, swayPhase: (ox * 0.013) % 6.28, vineType: 'tree_climb' };
+    // (and the storey over runs on past that vine, the way he walked to it, until it keeps TOP_ROOM there too (or meets the tower's side):
+    //  with the storey starting at the vine's back (CLIMB_CLEAR in front of its face), a first-timer who tops out still pushing the way
+    //  he came vaults on into the gap and drops a storey, castBots 1-4 kid Normal "fell back down" at x 1036 on 20 of 40 seeds (FIX-14d,
+    //  R-165.206). From a sealed piece too (a gate's top: its vine stands TOP_ROOM in from the piece's end, the storey over turned back
+    //  behind it). The vine stands where clearClimbs would have moved it, now under the storey's run-on, so clearClimbs leaves it)
+    const turnBackUp = flow === 'up' && way !== dir;
+    const vx = turnBackUp ? R(ox + dir * CLIMB_CLEAR) : R(flow === 'up' ? ox : cur.x);
+    if (turnBackUp) {
+      const end = vx + dir * TOP_ROOM, inside = dir > 0 ? end <= TW - TOWER.wall : end >= TOWER.wall;
+      const far = inside ? end : dir > 0 ? TW : 0;
+      const run = Math.abs(far - ox);
+      if (run > 1) opts.seam.push(mk(Math.min(ox, far), oy, run, 'branch', 0));
+    }
+    const v: Vine = { id: vines.length + 1, x: vx, topY: Math.min(oy, R(cur.y)), bottomY: Math.max(oy, R(cur.y)), swaySpeed: 1.1, swayPhase: (ox * 0.013) % 6.28, vineType: 'tree_climb' };
     vines.push(v);
-    turns.push({ x: v.x, from: R(cur.y), to: oy, turned: way !== dir, vine: v });
+    turns.push({ x: v.x, from: R(cur.y), to: oy, turned: way !== dir, walk: dir, vine: v });
     storeyNow = turns.length;
     return { ox, oy, way, climbed: Math.abs(oy - cur.y) };
   };
@@ -2339,7 +2352,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     ...(rise.length ? { rise } : {}),
     width: tower ? TW : R(shrine.x + shrine.width + 40),
     bottom: flow === 'down' ? floorY + M.ground.bankH : baseline + shiftedDown,
-    ...(tower ? { tower: { flow, width: TW, floorY, turns: turns.map(({ x, from, to, turned }) => ({ x, from, to, turned })), runouts, ...(sealedIds.size ? { sealed: [...sealedIds] } : {}) } } : {}),
+    ...(tower ? { tower: { flow, width: TW, floorY, turns: turns.map(({ x, from, to, turned, walk }) => ({ x, from, to, turned, walk })), runouts, ...(sealedIds.size ? { sealed: [...sealedIds] } : {}) } } : {}),
     nextId: pid,
     ...(themeShare < 1 ? { theme: M.sections.filter((t) => near.get(t.id)! < themeShare).map((t) => t.id) } : {}),
   };
@@ -3157,7 +3170,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     // (the stage's own brief, never the world's: 1-1 alone, R-165.86)
     ...(req.kit.manifest.graphs?.briefs?.[budget.id]?.softFalls ? { softFalls: true as const } : {}),
     ...hurtMeta(laid, req.kit.manifest),
-    ...(laid.tower ? { tower: { flow: laid.tower.flow, width: laid.tower.width, floorY: laid.tower.floorY, runouts: laid.tower.runouts, turns: laid.tower.turns.map(({ x, from, to }) => ({ x, from, to })), ...(laid.tower.sealed ? { sealed: laid.tower.sealed } : {}), route: routeOf(laid.tower.flow, laid.sections, laid.spawn, laid.exit) } } : {}),
+    ...(laid.tower ? { tower: { flow: laid.tower.flow, width: laid.tower.width, floorY: laid.tower.floorY, runouts: laid.tower.runouts, turns: laid.tower.turns.map(({ x, from, to, walk }) => ({ x, from, to, walk })), ...(laid.tower.sealed ? { sealed: laid.tower.sealed } : {}), route: routeOf(laid.tower.flow, laid.sections, laid.spawn, laid.exit) } } : {}),
     sections: laid.sections.map(({ uid, template, node, phase, tension, mirrored, x0, x1, seconds }) => ({ uid, template, node, phase, tension, mirrored, x0, x1, seconds })),
     fills: filled.fills,
     ...(laid.theme ? { theme: laid.theme } : {}),
