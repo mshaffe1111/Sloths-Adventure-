@@ -22,6 +22,13 @@ const cfg = (id: string) => ({ ...generateAllLevels().find((l) => l.id === id)!,
  */
 const WINDOW = provenSeeds('1-1').slice(0, 16);
 
+/** a listed seed's roll built without the word: the word's own build's plan replayed, so it is the same roll (never searched: without the
+ *  word the per-gap ruler refuses 1-1's earth holes, so a search finds no clean seed; R-165.221) */
+function listedWithout(seed: number, setting: 'normal' | 'easy'): Gen2Stage {
+  const a = buildPlayStage(cfg('1-1'), w1World(), seed, setting);
+  return buildGen2Stage({ config: cfg('1-1'), kit: kitWithout(), seed, difficulty: setting, replay: { seed: a.gen2.seed, rerolls: a.gen2.rerolls, plan: a.gen2.plan, foes: [...keptFoes(a)] } });
+}
+
 /** World 1's kit as it was before the 1-1 brief said `softFalls` (origin/main's) */
 function kitWithout(): WorldKit {
   const k = w1World();
@@ -53,7 +60,7 @@ for (const setting of ['normal', 'easy'] as const) {
 test('planted: without the brief\'s word (origin/main\'s 1-1) the same check finds gaps that cost a life, on Normal and on Easy', () => {
   for (const setting of ['normal', 'easy'] as const) {
     for (const seed of WINDOW.slice(0, 4)) {
-      const st = w1Finish(buildPlayStage(cfg('1-1'), kitWithout(), seed, setting));
+      const st = w1Finish(listedWithout(seed, setting));
       assert.equal(softFallStage(st), false);
       assert.ok(hardFalls(st).length >= 3, `${setting} seed ${seed}: ${hardFalls(st).length} gaps outside a soft zone`);
     }
@@ -73,7 +80,7 @@ test('the word lays no ground: 1-1\'s ground is the same with and without it, an
     assert.deepEqual(floorlessGaps(a), floorlessGaps(b).filter((g) => !inHole(g)), `${what}: floorlessGaps, less the holes'`);
   };
   for (const setting of ['normal', 'easy'] as const) {
-    for (const seed of WINDOW.slice(0, 4)) same(buildPlayStage(cfg('1-1'), w1World(), seed, setting), buildPlayStage(cfg('1-1'), kitWithout(), seed, setting), `listed ${seed} ${setting}`);
+    for (const seed of WINDOW.slice(0, 4)) same(buildPlayStage(cfg('1-1'), w1World(), seed, setting), listedWithout(seed, setting), `listed ${seed} ${setting}`);
     // (raw rolls, as tools/engine/seedlist.ts tries them before its filter: listed or not)
     // (the same roll: the word's marks change which roll a search accepts, R-165.221, so the one without it is replayed with it)
     for (const seed of [1, 2, 3, 4, 5, 6]) {
