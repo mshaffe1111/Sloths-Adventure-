@@ -23,6 +23,9 @@ test('chase fixture: a real laid chase, both settings, three seeds: its nuts and
       const st = buildChaseFixtureStage(chaseFixtureLevel(), seed, difficulty);
       const at = `${difficulty} seed ${seed}`;
       assert.equal(st.config.id, CHASE_FIXTURE_ID);
+      // (its own size: every platform he stands on is above the pit line, levelHeight + 120, engine.ts)
+      assert.ok(st.platforms.every((q) => q.y < st.config.levelHeight + 120), `${at}: ground under the pit line (levelHeight ${st.config.levelHeight})`);
+      assert.ok(st.platforms.some((q) => st.spawnX >= q.x && st.spawnX <= q.x + q.width), `${at}: no ground at the spawn`);
       assert.ok(st.chase?.stretches.length, `${at}: no chase laid`);
       const rl = st.rolling ?? [];
       assert.deepEqual(rollProblems(rl), [], at);

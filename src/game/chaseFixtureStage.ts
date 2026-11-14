@@ -110,12 +110,13 @@ export function layFixtureRolling(st: Pick<GeneratedStage, 'chase' | 'platforms'
 type RollKind = RollSpec['kind'];
 const spec = (kind: RollKind, dropX: number, teach: boolean): RollSpec => ({ kind, dropX: Math.round(dropX), ...(kind === 'low' ? NUT : FRUIT), teach });
 
-/** the fixture built: the game's own gen2 build of 1-98 at this seed and setting, its hazards laid; its config is the one asked for */
+/** the fixture built: the game's own gen2 build of 1-98 at this seed and setting, its hazards laid; the built config, under the id asked for */
 export function buildChaseFixtureStage(config: LevelConfig, seed: number, difficulty: 'normal' | 'easy'): GeneratedStage {
   // (World 1's own finish, as the game's gen2 build gives every World 1 stage: gen2/game.ts buildGen2ForGame)
   const st = w1Finish(inChaseFixture(() => buildGen2Stage({ config: chaseFixtureLevel(), kit: chaseFixtureKit(), seed, difficulty }))) as unknown as GeneratedStage;
   st.rolling = layFixtureRolling(st);
-  st.config = { ...st.config, ...config, id: CHASE_FIXTURE_ID };
+  // (the built stage's own config, its size and pit line its own: 1-1's config laid over it put the pit line above his ground)
+  st.config = { ...st.config, id: config.id };
   return st;
 }
 
