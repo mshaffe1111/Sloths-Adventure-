@@ -14,3 +14,4 @@ tierBots 0
 unit1 1
 unit3 0
 unit2 0
+drawcheck 0
