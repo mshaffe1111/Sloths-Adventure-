@@ -9,6 +9,7 @@ import { setDifficulty } from './difficulty.ts';
 import { withPlaySeed } from './testlink1_1.ts';
 import { recorder } from './playRecorder.ts';
 import type { Platform } from './types.ts';
+import { earthHoles } from './gen2/pipeline.ts';
 
 type Eng = { lives: number; softOn: boolean; softAt: { x: number; y: number } | null; isGameOver: boolean; loseLife?: unknown; currentStage: { gen2?: { softFalls?: boolean }; meta: { pieces: Array<{ k: string; x0: number; x1: number }> } } };
 
@@ -20,7 +21,13 @@ function real(seed: number, setting: 'normal' | 'easy', brief = true) {
   delete e.loseLife;
   assert.equal(typeof (e as unknown as { loseLife: unknown }).loseLife, 'function', 'the engine\'s own loseLife runs');
   // (planted: the stage as it is without the brief's word, origin/main's 1-1: the engine reads the stage's data as it loads)
-  if (!brief) e.softOn = setting === 'easy';
+  if (!brief) {
+    e.softOn = setting === 'easy';
+    // (and without the soft zones the word lays over its earth's holes, R-165.221 pipeline.ts softHoles: lip to lip, one per hole)
+    const st = e.currentStage as unknown as { platforms: Platform[]; heartFalls?: Array<{ x0: number; x1: number; soft?: boolean }> };
+    const holes = earthHoles(st.platforms);
+    st.heartFalls = (st.heartFalls ?? []).filter((z) => !(z.soft && holes.some((h) => h.x0 === z.x0 && h.x1 === z.x1)));
+  }
   const events: string[] = [];
   const was = recorder.event;
   recorder.event = function (this: typeof recorder, what: string, detail?: string | number) {

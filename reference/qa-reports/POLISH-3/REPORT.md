@@ -1,5 +1,6 @@
 # POLISH-3 REPORT (t-polish-3 from t-eng-base@204e3dec; lead session_01FhBbYNzGRJBDMzn6XbtQK2). Opus 5.5 high. Box 9:51-11:21 PM ET 11-13.
-**EXACT NEXT STEP:** (lead 10:50 PM: the 1-1 fix PASSES as play; the fog/painted floor is R-165.224; seed-323 goes to the engine lane) 1. The 1-4 rotten-fork redesign (item 2, below). 2. When t-ruler merges: on the merged head run `seedlist 1-1 --merge <the list's
+**EXACT NEXT STEP:** (lead 10:50 PM: the 1-1 fix PASSES as play; the fog/painted floor is R-165.224; seed-323 goes to the engine lane) 0. NOT GREEN: unit2's relay
+rule (Gates below) first, then the full suite once. 1. The 1-4 rotten-fork redesign (item 2, below). 2. When t-ruler merges: on the merged head run `seedlist 1-1 --merge <the list's
 257 seeds in order, JSON> --in-order --count 257` (88 s; 49477, 55341, 65753 replay differently under the ruler), then --check. 3. verdicts.test.ts
 seed-323 copy: NOT fixable by a bank (below); promises11 realFalls' floor clause is the fix (the engine lane, lead 10:50 PM). 4. Items 2-5 of the
 packet not started: 1-4's rotten fork (w1Arc14.ts on t-len-14@d56cd91, t-int-6 REPORT step 2), the 1-4 gate under the HUD, GOLDEN SEED, petals.
@@ -20,7 +21,13 @@ packet not started: 1-4's rotten fork (w1Arc14.ts on t-len-14@d56cd91, t-int-6 R
 - stills/1-1-L1-normal-sideways-walkoff-log115-putback.webm: off log 115 at x25947, falls, iris, back on 115 at 25851; lives/hearts kept.
 - ROUGH, NOT FIXED (unchanged by this work, named): he falls THROUGH the backdrop's painted forest floor (it reads as ground under the logs),
   and upright ~40% of the screen under the climb is empty fog. Logged by the lead as R-165.224 (a general underlayer, show-first to Matt).
-## Gates: see gates/RESULTS.txt (every CLAUDE.md Check + CI step once on the head).
+## Gates (gates/RESULTS.txt, head d977079a): tsc, build, chunk, art, known, generality, kbd, seedlists (1-1 PASS), registry, unit1, tooltests 0;
+  roadmap 0 on rerun (the 8 were commits a partial clone could not see). **RED unit2: w1.relay.test.ts:379** (1-1 teach first): its gapsOf
+  reads EVERY Drop as a route gap, so the hole records (2,700+ px) read as double test gaps: root fix = a Drop field "hole under the route"
+  (verdicts.types.ts) gapsOf skips, or drop the record and teach drop.untyped that a soft zone covers a hole (verdicts.ts): lead's call, not
+  patched. **unit3: softFall11.test.ts:97** (planted, without the word) went red because it only switched softOn off; fixed after the run
+  (it now also strips the word's hole zones, earthHoles), 8/8 alone; the full suite was NOT re-run on that edit. tierBots, drawcheck,
+  clipcheck, buildcheck: see RESULTS.txt.
 ## Pushback
 - seed-323 copy: with E0a's REAL next bank (block 131 @28042, d2748131) the hole 27200..28042 is a fall with or without branch 128, and with
   a planted bank at log 127's end it is still a fall: realFalls (promises11.ts:44) counts log 127, BESIDE the slot, as "a floor inside the

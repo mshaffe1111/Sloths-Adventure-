@@ -13,3 +13,5 @@ seedlists 0 11:14 PM
 registry 0 11:15 PM
 unit2 1 11:15 PM
 unit3 1 11:16 PM
+tooltests 0 11:16 PM
+tierBots 0 11:17 PM
