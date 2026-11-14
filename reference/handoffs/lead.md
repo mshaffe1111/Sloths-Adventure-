@@ -77,19 +77,19 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 telegraphed (R-165.227), fig gate: a lock you can see + a head stop so only the fruit passes (R-165.212); two-vine reward (R-165.229);
 shorter swings (R-165.225); delegated to the lead and DECIDED GO: deep-earth underlayer (R-165.224) and living pole (R-165.209);
 Hugging Face is the lead's call (~$56 left, ~$10 reserve). Predator art from his sheets (R-165.231, raws on branch art-raw-2026-11-14).
-**Links:** EnK5 (https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb) = link #1 (t-int-7@007f4421: 1-4 fixes + ruler head). Link #2
-(easier 1-1) pre-built from t-int-8@595ada5d in the lead's link worktree, publish on INT-8 GREEN. Never send testers to EnK5.
+**Links:** EnK5 (https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb) v257 = link #2 (t-int-8@595ada5d: link #1's 1-4 fixes + ruler
+head + the easier 1-1; Matt said ship with the two pre-existing rough spots of R-165.243). Never send testers to EnK5.
 **Known red carried on the links:** 1-4 fig gate: from the far-end ledge Pokey flicks over a shut bough and drops through it (INT-8,
 real presses, 11:39 AM); FIX-15 fixing. The lead had passed link #1's gate on a clip whose jumps never fired (D69, R-165.240).
 **Members running** (all report to session_01FhBbYNzGRJBDMzn6XbtQK2 until the seam):
 | Member | Session | Branch | Job |
 |---|---|---|---|
-| INT-8 | session_01FhBbYMkD48FX51te6RcgxT | t-int-8 (+ t-int-8-clip) | link #2: easier 1-1 on link #1; clip tool fixed on the side branch |
 | ENG-S5 | session_01FhBbYL57JXyQkc4NUQGb9d | t-eng-s5 | liana-to-liana chains (1-6 beat 4); thorn hollow in view; gates |
 | FIX-15 | session_01FhBbYJqsY6YUeLPzgTGyjj | t-fix-15 (from t-int-8-clip) | fig gate solid from every approach |
-| BUILD-16c | session_01FhBbYLZizL1K5FoFzbaBoX | t-build-16 | finish 1-6: bot climb-back fix, relist, bots, stills, gates |
+| BUILD-16c | session_01FhBbYLZizL1K5FoFzbaBoX | t-build-16 | finish 1-6: bot liana skill + climb-back, relist, bots, stills, gates |
+| BUILD-17 | session_01FhBbYN2KRV27iqnvYFXNcL | t-build-17 (from t-eng-e2) | build 1-7 with KEEPER-17's lines (t-keeper-17@a8dd2409); step 0 = ENG-E2's 2 redos |
 **Queue (packets in reference/packets/2026-11-14/), in order as slots free:** TIPS (tips by height + R-165.238 old 1-6 cleanup + R-165.241
-sealed-door line; blocks 1-6 on a link) -> KEEPER-17 (1-7 lines, 25 min) -> BUILD-17 (1-7; step 0 = ENG-E2's two redos) -> an
+sealed-door line; blocks 1-6 on a link) -> FIX-15b (fig gate lay rule + 1-4 relist) -> an
 integrator for link #3 (1-6 + chains + FIX-15 + TIPS + clip tool) -> link #4 (1-7). Then for the new lead: ENG-B4 (write: chase tint,
 rolling nut, chase camera, split by run-up; base t-eng-b3@71da15cd) -> BUILD-18; R-165.239 meter fix; WIRE-ART; ART-PRED; FIX-14d's 11
 red tower tests (t-fix-14d@bd21d906); R-165.234/.235/.237.
