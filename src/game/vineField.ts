@@ -326,3 +326,27 @@ export function gateFaults(gates: readonly ClusterGate[], clusters: readonly Vin
   }
   return out;
 }
+
+/**
+ * Petals on a paired stretch hang BETWEEN the pair (R-165.229, Matt 11-14: "you can't collect petals doing two arms"; "maybe we put two
+ * fruits... side by side, so it shows there's a benefit"): a petal on a field vine's line moves to the middle of that vine and its
+ * nearest field vine in reach (FIELD_FEEL.reach) over the same height, a vine no pod falls down first. A two-hand hang there takes it;
+ * one hand passes 40 px by. Run last, after every pickup is placed (stageGenerator.ts finishStage).
+ */
+export function pairPetals(items: Array<{ type: string; x: number; y: number }>, vines: readonly Vine[], podded: ReadonlySet<number>): number {
+  const field = vines.filter((v) => v.field);
+  let moved = 0;
+  if (!field.length) return 0;
+  for (const c of items) {
+    if (c.type !== 'flower') continue;
+    // (on its line: within 12 px of it, as a trail laid along a climb leaves it; his pickup reach is 38 px, his hands 40 px off a line)
+    const on = field.find((v) => Math.abs(v.x - c.x) <= 12 && c.y >= v.topY && c.y <= v.bottomY);
+    if (!on) continue;
+    const mates = field.filter((v) => v !== on && Math.abs(v.x - on.x) <= FIELD_FEEL.reach && c.y >= v.topY + 10 && c.y <= v.bottomY - 10);
+    if (!mates.length) continue;
+    mates.sort((a, b) => Number(podded.has(a.id)) - Number(podded.has(b.id)) || Math.abs(a.x - on.x) - Math.abs(b.x - on.x) || b.x - a.x);
+    c.x = (on.x + mates[0].x) / 2;
+    moved++;
+  }
+  return moved;
+}

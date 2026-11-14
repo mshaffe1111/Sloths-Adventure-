@@ -302,10 +302,11 @@ export function drawGate(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 
   ctx.restore();
 }
 
-/** the vine tie's canvas (146 x 324 at 3 px a unit: 49 x 108 px drawn), its knot at (78, 277) on the bough's centre line (the
- *  inventory's hfmatt/w1m-tie-*: the three states share it); the leaf thatch (720 x 177: 240 x 59 px drawn, its pole along the top,
+/** the vine tie's canvas (146 x 324), its knot at (78, 277) on the bough's centre line (the inventory's hfmatt/w1m-tie-*: the three
+ *  states share it), drawn `tall` of his height: the lead's ruling 11-14 2:08 AM, 0.55 Pokey, not the catalog's 1.21 ("a loop taller than
+ *  Pokey standing on the bough reads as a hoop, not a tie... the knot sits on the lid/bough, and the loop is short"); the leaf thatch (720 x 177: 240 x 59 px drawn, its pole along the top,
  *  stretched 0.8-1.25x along a bough or laid two side by side) */
-const TIE = { w: 146, h: 324, kx: 78, ky: 277, unit: 3 } as const;
+const TIE = { w: 146, h: 324, kx: 78, ky: 277, tall: 0.55 } as const;
 const THATCH = { w: 720, h: 177, unit: 3, poleY: 10 } as const;
 /** the bark chips a snapping tie throws (dx, dy px/s, spin), the same every snap */
 const CHIP_FLY = [[-160, -260, 7], [130, -300, -9], [-60, -340, 5], [210, -180, 11], [-230, -150, -6], [60, -230, 8], [-110, -120, -10]] as const;
@@ -360,7 +361,7 @@ export function drawGateLock(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x
     }
     ctx.restore();
   }
-  const tw = TIE.w / TIE.unit, th = TIE.h / TIE.unit, kx = TIE.kx / TIE.unit, ky = TIE.ky / TIE.unit;
+  const th = TIE.tall * POKEY_H, k = th / TIE.h, tw = TIE.w * k, kx = TIE.kx * k, ky = TIE.ky * k;
   for (const tie of ties) {
     const knotY = topAt(tie.x) + depth / 2;
     if (tie.age < 0) {
@@ -368,8 +369,8 @@ export function drawGateLock(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x
       const im = pic(tie.strain < 0.45 ? PIECES.tieTaut : PIECES.tieStrain);
       if (!im) continue;
       // (straining: it shivers harder, and stretches a little up, the further the fig is pushed)
-      const k = Math.max(0, (tie.strain - 0.45) / 0.55);
-      const jx = k * 2.2 * Math.sin(t * 53 + tie.x), stretch = 1 + 0.12 * k;
+      const q = Math.max(0, (tie.strain - 0.45) / 0.55);
+      const jx = q * 2.2 * Math.sin(t * 53 + tie.x), stretch = 1 + 0.12 * q;
       ctx.drawImage(im, tie.x - kx + jx, knotY - ky * stretch, tw, th * stretch);
       continue;
     }

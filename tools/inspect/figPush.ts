@@ -19,7 +19,7 @@ export interface FieldView {
   hands: Hands | null;
   clusters: VineCluster[];
   vines: Vine[];
-  field: { gates: readonly ClusterGate[]; pods: readonly PodColumn[]; blocksTop(v: Vine): boolean } | null;
+  field: { gates: readonly ClusterGate[]; pods: readonly PodColumn[]; blocksTop(v: Vine): boolean; capY(x: number, y: number): number } | null;
   clock: { read(id: string, shift?: number): ClockRead };
   /** seconds a pod's knock still keeps the climbs out of his hands (engine.ts knocked): > 0 just after a knock */
   knocked?: number;
@@ -104,7 +104,9 @@ export class FigPush {
     if (!this.target || this.target.falling || this.target.gone) {
       this.target = null;
       const top = h.b && h.b.topY > h.a.topY ? h.b : h.a;
-      const stuck = p.y <= top.topY + 16 && v.field.blocksTop(top);
+      // (stuck at the climb's stop: the vine's top, or, under a shut gate, where his drawn head meets the bough: fieldPlay.ts capY)
+      const stop = Math.max(top.topY, v.field.capY(p.x, p.y));
+      const stuck = p.y <= stop + 16 && v.field.blocksTop(top);
       if (!stuck) return null;
       let best: VineCluster | null = null, bd = Infinity;
       for (const c of this.held(v)) {

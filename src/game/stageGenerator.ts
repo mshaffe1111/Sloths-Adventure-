@@ -1,3 +1,4 @@
+import { pairPetals } from './vineField.ts';
 import { specFor } from './mixer/stages.ts';
 import { petalPass } from './petalPass.ts';
 import { w4Normal } from './w4Normal.ts';
@@ -2984,7 +2985,10 @@ function finishStage<T extends GeneratedStage>(stage: T, reachableIds: number[])
     stage.collectibles,
   );
   // and the petal trail: one pickup, no clutter, all of it reachable (petalPass.ts)
-  return petalPass(stage);
+  const out = petalPass(stage);
+  // (then a vine field's paired stretches: the petals on them hang between the pair, for two hands: vineField.ts pairPetals)
+  pairPetals(out.collectibles, out.vines, new Set((out.pods ?? []).flatMap((q) => (q.vine === undefined ? [] : [q.vine]))));
+  return out;
 }
 
 /**

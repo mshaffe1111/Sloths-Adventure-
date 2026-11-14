@@ -2099,7 +2099,9 @@ export class GameEngine {
         else if (this.sideLatch === dir) this.climbSideTimer = 0;
         // (the grab's little carry and its grace are not his thumb: a push just after taking hold steps; it waited them out and was lost)
         // (a push held through the grab itself, steering a leap onto the vine, is latched there: it never steps on the catch)
-        else if (!this.input.state.up && !this.input.state.down && dir) {
+        // (and it steps WHILE he climbs: Matt 11-14, the two-vine climb was "wonky" because a side push only took the other hand once he
+        // stopped climbing; held, it steps once (latched) and never hops him off a field vine while up or down is held)
+        else if (dir) {
           const next = stepHands(this.hands, dir, p.y, this.vines);
           if (next) {
             this.hands = next;
