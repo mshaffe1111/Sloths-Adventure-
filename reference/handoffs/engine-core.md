@@ -13,22 +13,29 @@ proven plan; Play is never blocked).
   the sections a practise or flow node takes (pipeline.ts `servesJob`: ONE rule read by poolFits, the lay's jobFits, the deal's and the
   asks' views; no pool lists 'pressure', so before this every K slot was "pool short" and the roll failed).
 - **The lay** (gen2/chaseLay.ts `layChase`, called in buildGen2Stage after buildRolled and BEFORE applyVerdicts): each K node's
-  sections = one stretch [x0, x1]; the nodes after it up to the next K = its living fork. Its route ground (PlacedPiece.main, kept per
-  stage in pipeline.ts MAIN_OF; plain solid only, `breakable`) is cut into ~222 px branch sections (`cutSections`: same top, depth and
-  edges, the first IS the piece, so the solids' union the verdicts judged is unchanged), marked `chase`; `st.chase` = the stretches.
-- **Flags** (Matt's span wins): none inside a stretch; the first crack's within 600 px before it; each later one on the fork before its
-  crack, as close as ROLLED_FLAGS.max (4,000 px) from the flag before allows; one where he reaches the last fork; rolled flags within
-  900 px of these go. Then rolledFlagBreaches judges them like every rolled stage. So **a stretch plus its fork must fit 4,000 px**
-  (World 1's practise/flow sections made K 2,200-6,100 px in the probe rolls: many are refused by name; the K `len` dial must be ~2,800 or less).
-- **Refusals by name** (each a gen2.errors line, the seed fails): `chase: stretch N (nK) is P px long`, `runs straight into stretch`,
-  `the fork after stretch N is P px`, `has no plain ground to break`, `no spot for a flag before stretch N`, plus chaseLayProblems.
+  sections make one stretch, or more: a stretch is at most `chaseCap()` = ROLLED_FLAGS.max - FLAG_SPAN.pad (3,840 px; DERIVED from Matt's
+  flag span, the lead's ruling 11-14 9:00 AM: never a number of its own), so a longer K is split at a route piece 300 px+ wide, which
+  stays whole as a living fork. The nodes after a K up to the next K are its fork. Its sections' own pieces (PlacedPiece, main or
+  not; kept per stage in pipeline.ts PIECES_OF; plain solid only, `breakable`) are cut into ~222 px branch sections (`cutSections`: same
+  top, depth and edges, the first IS the piece, so the solids' union the verdicts judged is unchanged), marked `chase`. A section's
+  SEAM (a pit's floor and steps, under the branch) is never cut: it stays as the pit's ground (the lead's option: not on a chase section).
+- **Flags** (Matt's rules win): none inside a stretch. Walking right on ROUTE ground (main pieces) outside every stretch, each flag
+  ROLLED_FLAGS.min-max (900-4,000 px) from the one before: before crack 1 the latest spot within 600 px that the rolled flags (or the
+  spawn) reach; before each later crack the latest spot on its fork, with an extra flag on a fork the span needs it; one where he
+  reaches the last fork. Rolled flags between go. Then rolledFlagBreaches judges them as on every rolled stage.
+- **Yield** (30 W1 rolls of `A T P F R K R K R S E` at stage 8, 1-1's brief): Normal 15 laid / 15 refused, Easy 23 / 7; every refusal is a
+  named flag spot (`no spot for a flag on the fork before stretch N`), none a verdict breach. Next gain: end a stretch where the flag
+  walk needs a stop (split by the realised run-up, not the cap alone).
+- **Refusals by name** (each a gen2.errors line, the seed fails): `nK (K) runs P px ... with no piece 300 px wide to stop on within the
+  3840 px cap`, `runs straight into`, `the fork after nK (K) is P px`, `has no plain ground to break`, `no spot for a flag ...`, plus
+  chaseLayProblems.
 - **Easy** (easyMode.ts easyStage) adds its own flags between Normal's: it now never stands one inside a laid stretch.
 - **Tests** (gen2/chaseLay.test.ts): a fixture `1-98` = World 1's real kit, 1-1's brief (no fork, no deal) at stage 8, listed with 1-1's
   reach scope (listed.ts withTestStage + reach.ts JUDGED); the in-play test plants a seed clean on BOTH settings as a proven list and starts
   the real engine (drawPlats holds no chase section; the piece starts). Easy re-lays Normal's plan with its own gaps: its x differ.
 - **Not done (B3):** the C4 tint bake; clips of a laid chase (no real stage lays K until 1-8's arc w1Arc08); `last` on a stretch (the
-  finale as the last stretch: B6); props standing on a section that falls, creatures whose patrol spans cut sections (unverified);
-  drawcheck on a chase stage (add it the day 1-8 lays one, D51).
+  finale as the last stretch: B6); drawcheck on a chase stage (add it the day 1-8 lays one, D51). Measured: 0 creatures and 0
+  dressing pieces stood on a stretch in 30 rolls; a split can leave a short stretch (Easy: one of 150 px seen).
 
 ## 0u. The chase as a piece (B1 CHASE-CORE, ENGINE-678 W1, t-b1-chase from t-hooks@994ea4e7, 11-13): what the next engineer must know
 - **Data:** `GeneratedStage.chase?: ChaseLay` (chase.ts) = stretches `{start, end, last?}` left to right; between one's `end` and the next's
