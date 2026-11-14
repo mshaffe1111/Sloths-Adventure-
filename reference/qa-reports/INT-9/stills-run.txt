@@ -10,3 +10,8 @@
 1-4 gateover easy side 0 3:35 PM
 1-1 double normal up 0 3:36 PM
 1-1 double normal side 0 3:37 PM
+1-1 double easy up 2 3:37 PM
+[image2 @ 0x55973f932f80] Could find no file with path 'reference/qa-reports/INT-9/stills/1-1/double-easy-up/f%04d.jpg' and index in the range 0-4
+[in#0 @ 0x55973f932e80] Error opening input: No such file or directory
+Error opening input file reference/qa-reports/INT-9/stills/1-1/double-easy-up/f%04d.jpg.
+Error opening input files: No such file or directory
