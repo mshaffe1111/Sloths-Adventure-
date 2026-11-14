@@ -9,24 +9,20 @@
  * NOT YET LAID (named, never faked): beat 4, the chain (liana to liana: ENG-S5 builds it in the engine); the false liana and the gorge are
  * laid with a perch between every two lianas until then.
  *
- * THE GORGE'S DEPTH: a snake that comes down from the anchor is seen 1 s before it reaches his hands only when its liana hangs 270 px or more
- * under the level's top (ENG-S4 depth-table.md, the snake view verdict on all four phones). World 1's ground line (580) hangs a 400-420 px
- * liana 160-180 px under the top, so 1-6's kit lays its whole floor GORGE px lower (the canopy's floor over a creek gorge, 1-6.md "Look"):
- * every anchor then hangs 300+ px under the top, and the snake lay (which throws on an unfair snake) keeps every roll honest.
+ * THE LIANAS' DEPTH: a snake that comes down from the anchor is seen 1 s before it reaches his hands only when its liana hangs 270 px or more
+ * under the level's top (ENG-S4 depth-table.md, the snake view verdict on all four phones). The lay hangs 1-6's highest anchor 360 px under
+ * its top on every roll (measured 11-14, seeds 1-24 both settings: the stage is laid down from its highest piece), so no floor is moved
+ * for it; the snake lay (finish16, which throws on an unfair snake) and w1Arc16.test.ts keep every roll honest.
  */
 import type { GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
 import type { Difficulty } from '../types.ts';
 import { w1World } from './w1.ts';
-import { THORN_ROW, ROOM_12 } from './w1Arc12.ts';
 import { W1_LIANA_GAP, w1Liana, withSwing, type LianaGap } from './w1Swing.ts';
 import { laySnakes, type SnakeStage, type SnakeTable } from '../snakeLay.ts';
 
 /** the stage these rows are for: the tag its sections carry and the key of its brief */
 export const STAGE_16 = '1-6';
 type R2 = [number, number];
-
-/** how much lower than World 1's ground line 1-6's floor is laid (px): the anchors 300+ px under the level's top (see the head) */
-export const GORGE = 150;
 
 /** 1-6's ONE graph (1-6.md "The arc", less beat 4's chain until chains are in the engine): A arrive, T the first liana, P hang low (the
  *  graph keeps one teach a move: 1-6.md's second T is the swing's first practise), R, M vine snakes met safely (a flow node: one brick
@@ -42,6 +38,27 @@ export const BRIEF_16: GraphBrief = {
   tags: true,
 };
 
+/** the story keeper's lines for 1-6, verbatim (reference/story/lines-1-6.md on t-keeper-16@387aeb2b8, approved; forwarded by the lead
+ *  11-14). The only player words this file holds. Each a TEACH line said 800 px or more before what it teaches (level.md rule 6) */
+export const LINES_16 = {
+  /** before beat 1, the first liana */
+  liana: 'Lianas! Grab one from the edge, and let go when you glow.',
+  /** before beat 2, hang low (1-6.md teaches it by a petal at the foot; a socket stands on no vine, so the keeper's line says it) */
+  low: 'Hang low, fly far!',
+  /** before beat 6, the snakes met safely (it covers beat 7's snake on your vine too) */
+  snakes: 'Vine snakes only pass by. If one heads down your liana, climb down ahead of it.',
+  /** before beat 11, the risers (not on Easy: none rise there) */
+  rise: 'Snakes coming UP the lianas now! Climb high, ahead of them.',
+  /** before beat 13, the false liana */
+  still: "Watch for a vine that doesn't swing. It has a face!",
+  /** Dot at her mark, the far bank */
+  mark: 'Her mark, right where she used to wait for you!',
+} as const;
+/** Dot at a LOCKED exit (stagePlan.ts SEALED_LINES '1:vine_runner'): the keeper's 6b, verbatim */
+export const SEALED_16 = 'Some of her petals are still on the lianas. Back we go!';
+/** the stage's MISSION line (the keeper's 7): stagePlan's, held equal by w1Arc16.test.ts */
+export const MISSION_16 = 'They took her over the gorge. Swing after her, and gather her petals.';
+
 // ───────────────────────────── the pieces ─────────────────────────────
 const UP: R2 = [-56, -50], DOWN: R2 = [50, 56];
 /** a moss bank he walks on, `w` exact */
@@ -54,6 +71,7 @@ const FALSE_LEN: R2 = [150, 170];
 
 const petals = (id: string, on: string, t: R2 | number, n = 1, span = 80): Socket => ({ id, role: 'pickup', on, t, dn: 34, count: n, span });
 const flag = (on: string, t = 0.5): Socket => ({ id: 'flag', role: 'flag', on, t });
+const tip = (id: string, on: string, t: number, line: keyof typeof LINES_16): Socket => ({ id, role: 'tip', on, t, allow: [line] });
 
 // ───────────────────────────── a brick ─────────────────────────────
 type Lay = { pieces: SectionPiece[]; sockets: Socket[] };
@@ -119,13 +137,13 @@ function firstLiana(): Lay {
   const r = lianaRun('', 'a2', [{ gap: 'short', w: 280 }, { gap: 'short', w: 260 }]);
   // (a root hop up onto the take-off: the arrival's last bank and a flat 660 px walk here were 4.4-4.6 s with nothing to do, over the
   //  quiet line's 4 s, seeds 2 and 5; and down again at the end, so the exit is level)
-  return { pieces: [bank('a', null, 300), bank('a2', 'a', 260, UP), ...r.pieces, bank('z', r.last, 300, DOWN)], sockets: [petals('pa', 'a', 0.6, 1), petals('p1', r.perches[0], 0.5, 1), petals('p2', r.perches[1], 0.5, 2, 120)] };
+  return { pieces: [bank('a', null, 300), bank('a2', 'a', 260, UP), ...r.pieces, bank('z', r.last, 300, DOWN)], sockets: [petals('pa', 'a', 0.6, 1), petals('p1', r.perches[0], 0.5, 1), petals('p2', r.perches[1], 0.5, 2, 120), tip('t-low', 'd2', 0.3, 'low')] };
 }
 /** [P] beat 2, hang low: LONG gaps (a low hold flies them; from the top he drops short onto moss, top 0 ms), three in a row.
  *  (OPEN: 1-6.md's petal at the liana's FOOT is not laid: a socket stands on a platform, never on a vine, pipeline pieceOf) */
 function hangLow(): Lay {
   const r = lianaRun('', 'a', [{ gap: 'long', w: 300 }, { gap: 'long', w: 280 }, { gap: 'long', w: 280 }]);
-  return { pieces: [bank('a', null, 300), ...r.pieces, bank('z', r.last, 260)], sockets: [petals('p1', r.perches[0], 0.5, 1), petals('p2', r.perches[1], 0.5, 1), petals('p3', r.perches[2], 0.5, 2, 120)] };
+  return { pieces: [bank('a', null, 300), ...r.pieces, bank('z', r.last, 260)], sockets: [petals('p1', r.perches[0], 0.5, 1), petals('p2', r.perches[1], 0.5, 1), petals('p3', r.perches[2], 0.5, 2, 120), tip('t-snakes', 'z', 0.4, 'snakes')] };
 }
 /** [M] beat 6, vine snakes met safely (DK Jr.'s passers): a snake glides DOWN the next liana and off into the ferns while he stands on a
  *  safe bank; then one starts down HIS liana and turns back a body above his hands (reach 0.6). SHORT gaps: any hold flies them */
@@ -144,13 +162,15 @@ function snakeOnYourVine(gap: 'far' | 'long'): Lay {
 function creakyLanding(easy: boolean): Lay {
   const c = easy ? 'sound' as const : 'creak' as const;
   const r = lianaRun('', 'a', [{ gap: 'long', perch: c }, { gap: 'long', w: 280 }, { gap: 'long', perch: c }, { gap: 'long', w: 280 }]);
-  return { pieces: [bank('a', null, 320), ...r.pieces, bank('z', r.last, 260)], sockets: [flag('a', 0.3), petals('p2', r.perches[1], 0.5, 1), petals('p4', r.perches[3], 0.5, 2, 120)] };
+  return { pieces: [bank('a', null, 320), ...r.pieces, bank('z', r.last, 260)], // (the risers' line only where they rise: Easy's twin says nothing of them, 1-6.md 'Easy: none rise'; a tip socket's own easy
+  //  'drop' is not read for tips, pipeline fillSockets)
+  sockets: [flag('a', 0.3), petals('p2', r.perches[1], 0.5, 1), petals('p4', r.perches[3], 0.5, 2, 120), ...(easy ? [] : [tip('t-rise', 'z', 0.4, 'rise')])] };
 }
 /** [W] beat 11, the twist: snakes come UP from the ferns up the lianas' feet: low is taken, so he climbs high ahead of them; the gaps are
  *  SHORT, so the top still flies (top + double 1233 ms). Easy: none rise (snakeLay's Easy row) */
 function risers(): Lay {
   const r = lianaRun('', 'a', [{ gap: 'short', w: 280 }, { gap: 'short', w: 280 }, { gap: 'short', w: 260 }]);
-  return { pieces: [bank('a', null, 320), ...r.pieces, bank('z', r.last, 260)], sockets: [flag('a', 0.3), petals('p1', r.perches[0], 0.5, 1), petals('p3', r.perches[2], 0.5, 2, 120)] };
+  return { pieces: [bank('a', null, 320), ...r.pieces, bank('z', r.last, 260)], sockets: [flag('a', 0.3), petals('p1', r.perches[0], 0.5, 1), petals('p3', r.perches[2], 0.5, 2, 120), tip('t-still', 'z', 0.4, 'still')] };
 }
 /** [S] beat 13, the false liana (the signature): a "vine" that does NOT swing hangs from the canopy just past the bank, nearer than the real
  *  liana: a vine snake hanging stiff (its tell: it never sweeps an arc, its head at its foot). The real one is the LONG leap past it.
@@ -194,7 +214,7 @@ const link = (o: { id: string; name: string; job: 'arrive' | 'rest'; versions: V
 export const QUIET_16: SectionTemplate[] = [
   // [A] the canopy ends at the gorge: across it the lianas sway, each on its own clock; nothing hurts in 1,300 px
   link({ id: 'w1-16-arrival', name: 'the canopy ends at the gorge', job: 'arrive', versions: [
-    { id: 'roots', lay: { pieces: [bank('a', null, 360), bank('b', 'a', 300, UP), bank('c', 'b', 420, DOWN), bank('d', 'c', 240, UP), bank('z', 'd', 280, DOWN)], sockets: [petals('pb', 'b', 0.5, 1), petals('pd', 'd', 0.5, 1), petals('pz', 'z', 0.5, 1)] } },
+    { id: 'roots', lay: { pieces: [bank('a', null, 360), bank('b', 'a', 300, UP), bank('c', 'b', 420, DOWN), bank('d', 'c', 240, UP), bank('z', 'd', 280, DOWN)], sockets: [petals('pb', 'b', 0.5, 1), tip('t-liana', 'd', 0.5, 'liana'), petals('pz', 'z', 0.5, 1)] } },
   ] }),
   // [R] the rests: a flag on a bank, a root to hop (the quiet line: a hop within 450 px of each end, none 950 apart)
   link({ id: 'w1-16-rest-roots', name: 'a rest: over the roots', job: 'rest', versions: [[300, 360], [340, 420]].map((w, j) => ({
@@ -214,7 +234,7 @@ export const EXIT_16: SectionTemplate = {
   id: 'w1-16-far-bank', name: 'the far bank of the gorge', feel: [STAGE_16], own: true, archetypes: 'any', phases: ['goal'], difficulty: 1, needs: ['walk'], jobs: ['exit'], content: 'structural', terrain: 'floor-stones',
   pieces: [{ key: 'in', shape: 'bank', w: [300, 340], place: { kind: 'start' }, style: 'moss_stone', main: true, landing: true }],
   subBlocks: [{ id: 'body', versions: [{ id: 'bank', pieces: [{ key: 'out', shape: 'bank' as const, w: [560, 600] as R2, place: { kind: 'walk' as const, after: 'in', dy: [0, 0] as R2 }, style: 'moss_stone' as const, main: true, landing: true }], sockets: [petals('pout', 'out', 0.3, 2, 120), { id: 'exit-totem', role: 'objective' as const, on: 'out', t: 0.85, allow: ['exit_totem'] }] }] }],
-  entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
+  entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [tip('t-mark', 'in', 0.5, 'mark')], mirrorable: false,
 } as SectionTemplate;
 
 /** every section that is 1-6's own */
@@ -249,18 +269,17 @@ export function finish16<T extends SnakeStage>(st: T, difficulty: Difficulty): T
 
 /**
  * World 1's kit with 1-6's rows over it (stageTable.ts kit 'w1-16', listed.ts KITS): its pool is its own sections alone; it swings
- * (withSwing); its floor laid GORGE px lower; its graph and brief. The creaky limb is World 1's own row (1-5 taught it).
+ * (withSwing); its graph and brief. The creaky limb is World 1's own row (1-5 taught it).
  */
 export function kitLib16(): WorldKit {
   const k = withSwing(w1World()), M = k.manifest, G = M.graphs!;
-  const y = M.ground.y + GORGE;
   return { ...k, manifest: { ...M,
-    ground: { ...M.ground, y },
     sections: SECTIONS_16,
-    hurtFloor: THORN_ROW,
-    corridor: { ...M.corridor, top: M.corridor.top + GORGE, bottom: y + ROOM_12 },
     lessons: { jump: '1-1', double: '1-1', bounce: '1-1', climb: '1-4', creak: '1-5' },
     required: {},
+    tips: { ...M.tips, ...LINES_16 },
+    // (every line of the keeper's here is a TEACH line: Dot says it on Normal's default Tips as on Help, D50)
+    teachTips: [...(M.teachTips ?? []), ...(Object.keys(LINES_16) as Array<keyof typeof LINES_16>)],
     // (one brick a node, as 1-6.md designs it: the chunk count never asks a node for a second section (pipeline's chunks = the nodes when
     //  the stage's seconds / chunkSeconds is under their number); the bots measure the 2-minute floor)
     graphs: { ...G, chunkSeconds: 60, list: [...G.list.filter((g) => g.archetype !== 'vine_runner'), ...Object.entries(ARC_16).map(([id, code]) => ({ id, archetype: 'vine_runner' as const, code }))], briefs: { ...G.briefs, [STAGE_16]: BRIEF_16 } },

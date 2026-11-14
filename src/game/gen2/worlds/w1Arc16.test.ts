@@ -9,7 +9,8 @@ import assert from 'node:assert/strict';
 import '../../headlessDom.ts';
 import { buildGen2Stage } from '../pipeline.ts';
 import { generateAllLevels } from '../../worldsData.ts';
-import { finish16, kitLib16, W1_SNAKES_16 } from './w1Arc16.ts';
+import { finish16, kitLib16, LINES_16, MISSION_16, SEALED_16, W1_SNAKES_16 } from './w1Arc16.ts';
+import { SEALED_LINES, STAGE_PLAN } from '../../stagePlan.ts';
 import { isFalseLiana } from '../../vineSnake.ts';
 import type { Vine } from '../../types.ts';
 
@@ -77,9 +78,42 @@ test('1-6: Easy is never harder than Normal: no riser, no creaky limb, no FAR pe
   }
 });
 
-test('1-6: the floor is the gorge\'s (GORGE px under World 1\'s line) and the stage is long enough: 2 minutes on the fast clock\'s model, both settings', () => {
+test('1-6: the stage is long enough: 2 minutes on the fast clock\'s model, both settings', () => {
   for (const d of ['normal', 'easy'] as const) for (const seed of SEEDS) {
     const st = built(seed, d) as Built & { gen2: { modelled?: { fast: number } } };
     assert.ok((st.gen2.modelled?.fast ?? 0) >= 120, `${d} seed ${seed}: ${st.gen2.modelled?.fast} s on the fast model`);
+  }
+});
+
+test("the keeper's lines verbatim (t-keeper-16@387aeb2b8, approved), the mission held equal to the stage plan, the sealed line World 1's vine runner's", () => {
+  assert.deepEqual({ ...LINES_16 }, {
+    liana: 'Lianas! Grab one from the edge, and let go when you glow.',
+    low: 'Hang low, fly far!',
+    snakes: 'Vine snakes only pass by. If one heads down your liana, climb down ahead of it.',
+    rise: 'Snakes coming UP the lianas now! Climb high, ahead of them.',
+    still: "Watch for a vine that doesn't swing. It has a face!",
+    mark: 'Her mark, right where she used to wait for you!',
+  });
+  assert.equal(MISSION_16, 'They took her over the gorge. Swing after her, and gather her petals.');
+  assert.equal(STAGE_PLAN[1][5].desc, MISSION_16);
+  assert.equal(STAGE_PLAN[1][5].type, 'vine_runner');
+  assert.equal(SEALED_16, 'Some of her petals are still on the lianas. Back we go!');
+  assert.equal(SEALED_LINES['1:vine_runner'], SEALED_16);
+});
+
+test("Dot teaches BEFORE each thing (level.md rule 6): every line a TEACH line, said 800 px or more before the first liana of the beat it teaches; the risers' line not on Easy", () => {
+  const before: Array<[keyof typeof LINES_16, string]> = [['liana', 'first-liana'], ['low', 'hang-low'], ['snakes', 'snakes-met'], ['rise', 'risers'], ['still', 'false-liana']];
+  type Hint = { x: number; text: string; teach?: boolean };
+  for (const d of ['normal', 'easy'] as const) for (const seed of SEEDS) {
+    const st = built(seed, d) as Built & { proto: { hints: Hint[] } };
+    for (const [k, tpl] of before) {
+      const h = st.proto.hints.filter((x) => x.text === LINES_16[k]);
+      if (k === 'rise' && d === 'easy') { assert.equal(h.length, 0, `seed ${seed} easy: the risers' line on Easy`); continue; }
+      assert.equal(h.length, 1, `${d} seed ${seed}: "${LINES_16[k]}" said ${h.length} times`);
+      assert.ok(h[0].teach, `${d} seed ${seed}: ${k} is not a teach line`);
+      const first = Math.min(...ofSection(st, tpl).map((v) => v.x));
+      assert.ok(first - h[0].x >= 800, `${d} seed ${seed}: ${k} is ${Math.round(first - h[0].x)} px before ${tpl}'s first liana`);
+    }
+    assert.equal(st.proto.hints.filter((x) => x.text === LINES_16.mark).length, 1, `${d} seed ${seed}: her mark's line`);
   }
 });

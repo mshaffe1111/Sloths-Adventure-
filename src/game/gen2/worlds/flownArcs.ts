@@ -27,6 +27,11 @@ const n15 = (move: ReachMove, climb: [number, number], n: [number, number, numbe
   { move, scope: 'normal-1-5', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
 ];
 
+/** a Normal row of 1-6's own scope (BUILD-16, 11-14) */
+const n16 = (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
+  { move, scope: 'normal-1-6', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
+];
+
 /** a Normal row of 1-4's own scope (INT-3, 11-13: flown on the tower once RealPlay.bare opened its walls) */
 const n14 = (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
   { move, scope: 'normal-1-4', climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
@@ -81,6 +86,17 @@ export const FLOWN_ROWS: readonly FlownArc[] = [
   ...n15('double-tap-tap', [149, 142], [190, 275, 299], 'chain.md §1 "1-5: double-tap-tap 149 / 142, gap 190 / 275 / 299"'),
   ...n15('bounce', [223, 216], [178, 178, 178], 'chain.md §1 "1-5: bounce 223 / 216, gap 178"'),
   ...n15('bounce-air', [313, 304], [335, 335, 335], 'chain.md §1 "1-5: bounce-air 313 / 304, gap 335"'),
+  // 1-6 on Normal (BUILD-16, 11-14): flown on stage 1-6, `FLIGHT_STAGE=1-6 npx tsx reference/specs/sims/flight.ts normal all`
+  // (reference/qa-reports/BUILD-16/fly/normal-all.txt: [rise] best spot, [dist] / [ddist] block column >=70 / last ground / ANY, [bdist]
+  // d 0). Each gap the block column's figure, as 1-2's to 1-5's are. Easy on 1-6 flies as easy-any (fly/easy-all.txt)
+  ...n16('single-hold', [123, 116], [136, 222, 244], 'BUILD-16 fly/normal-all.txt: single hold rise 123 / 116, gap 136 / 222 / 244'),
+  ...n16('single-flick', [123, 115], [127, 212, 238], 'BUILD-16 fly/normal-all.txt: single flick rise 123 / 115, gap 127 / 212 / 238'),
+  ...n16('single-tap', [87, 80], [77, 162, 183], 'BUILD-16 fly/normal-all.txt: single tap rise 87 / 80, gap 77 / 162 / 183'),
+  ...n16('double-hold', [210, 203], [291, 376, 409], 'BUILD-16 fly/normal-all.txt: double hold rise 210 / 203, gap 291 / 376 / 409'),
+  ...n16('double-flick', [209, 202], [278, 363, 391], 'BUILD-16 fly/normal-all.txt: double flick rise 209 / 202, gap 278 / 363 / 391'),
+  ...n16('double-tap-tap', [149, 142], [190, 275, 299], 'BUILD-16 fly/normal-all.txt: double tap rise 149 / 142, gap 190 / 275 / 299'),
+  ...n16('bounce', [223, 216], [178, 178, 178], 'BUILD-16 fly/normal-all.txt: bounce alone rise 223 / 216, gap 178'),
+  ...n16('bounce-air', [312, 303], [335, 335, 335], 'BUILD-16 fly/normal-all.txt: bounce+double rise 312 / 303, gap 335'),
   // 1-4 on Normal (INT-3, 11-13): flown on stage 1-4, `FLIGHT_STAGE=1-4 npx tsx reference/specs/sims/flight.ts normal all`
   // (reference/qa-reports/INT-3/fly14/; chain.md §1 "Rows ... scope Normal 1-4"). Each gap the block column's figure, as 1-2's, 1-3's and
   // 1-5's are; the single hold's any is the flown 244. Easy on 1-4 flies as easy-any (fly14/easy-all.txt)

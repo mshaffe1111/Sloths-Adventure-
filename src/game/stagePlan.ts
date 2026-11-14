@@ -47,7 +47,9 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     // (her petals FOLDED, "She's making them last", and the golden find a guarana bunch: ART's pieces for 1-5, the inventory's
     //  hf1113/petal-folded and hf1113/guarana-golden)
     { ...S('relic_hunt', 'Where She Walked', 'She marked the way they took her. Follow her marks.', 8), looks: { find: 'guarana-golden', petal: 'petal-folded' } },
-    S('vine_runner', 'First Lianas', 'Swing on the hanging lianas across the gaps in the canopy.'),
+    // (the story keeper's line, t-keeper-16@387aeb2b8 reference/story/lines-1-6.md: gen2/worlds/w1Arc16.ts MISSION_16, held equal by
+    //  w1Arc16.test.ts)
+    S('vine_runner', 'First Lianas', 'They took her over the gorge. Swing after her, and gather her petals.'),
     S('stealth', 'A Very Good Bush', 'Eagles are watching. Duck under the leaves the way Dot hid from the soldiers.'),
     S('sprint', 'The Long Branch', 'Race the long branch to the shrine.'),
     S('gauntlet', "The Boa's Branches", "Fight through the boa's guards and reach the shrine."),
@@ -195,7 +197,7 @@ export function goalLine(kind: 'start' | 'late' | 'sealed', world: number, type:
 /** Dot's words at a locked exit, by world and goal, where the story keeper wrote them (1-5's marks: STORY-LINES.md 11-12, approved by Matt
  *  10:20 PM ET; held equal to w1Arc15.ts LINES_15.sealed by limbTrap.test.ts). The engine says it in place of goalLine's 'sealed' (the
  *  count is on the HUD beside it); every other goal keeps goalLine's own words */
-export const SEALED_LINES: Readonly<Record<string, string>> = { '1:relic_hunt': "We missed some of her marks. They're back there!" };
+export const SEALED_LINES: Readonly<Record<string, string>> = { '1:relic_hunt': "We missed some of her marks. They're back there!", '1:vine_runner': 'Some of her petals are still on the lianas. Back we go!' };
 export const sealedLine = (world: number, type: string): string | null => SEALED_LINES[`${world}:${type}`] ?? null;
 function GOAL_WORDS(world: number, type: string): { verb: string; one: string; many: string } | null {
   if (type === 'harvest') {
