@@ -62,7 +62,7 @@ for (const [w, h] of PHONES) {
     await sleep(5000);
     await page.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
     const set = await page.evaluate((B) => {
-      const e = typeof window.__engine === 'function' ? window.__engine() : window.__engine;
+      const e = typeof window.__engine === 'function' ? (typeof window.__engine === "function" ? window.__engine() : window.__engine) : window.__engine;
       const st = e.currentStage, g = st.gen2 ?? st.proto?.gen2;
       const sec = (g?.sections ?? []).find((s) => s.template === B.tpl);
       if (!sec) return { err: `no section ${B.tpl}` };
@@ -80,15 +80,15 @@ for (const [w, h] of PHONES) {
     if (set.err) { console.log(tag, beat, set.err); await ctx.close(); continue; }
     for (let k = 0; k < 8; k++) {
       await sleep(300);
-      if (await page.evaluate(() => !!window.__engine().player.isVineSwinging || !!window.__engine().player.hanging)) break;
-      await page.evaluate(() => { const e = window.__engine(), sv = window.__sv, p = e.player; p.x = sv.x - 30; p.y = sv.topY + 120; p.vx = 200; p.vy = 0; p.grounded = false; p.facing = 1; });
+      if (await page.evaluate(() => !!(typeof window.__engine === "function" ? window.__engine() : window.__engine).player.isVineSwinging || !!(typeof window.__engine === "function" ? window.__engine() : window.__engine).player.hanging)) break;
+      await page.evaluate(() => { const e = (typeof window.__engine === "function" ? window.__engine() : window.__engine), sv = window.__sv, p = e.player; p.x = sv.x - 30; p.y = sv.topY + 120; p.vx = 200; p.vy = 0; p.grounded = false; p.facing = 1; });
     }
     const frames = [];
     let sampling = clip;
     const sampler = (async () => { const t0 = Date.now(); while (sampling) { const buf = await page.screenshot({ type: 'jpeg', quality: 80 }); frames.push({ t: Date.now() - t0, buf }); } })();
-    const usual = await page.evaluate(() => window.__engine().roomUsual);
+    const usual = await page.evaluate(() => (typeof window.__engine === "function" ? window.__engine() : window.__engine).roomUsual);
     const view = async () => page.evaluate((usual) => {
-      const e = window.__engine(), c = e.camera, p = e.player, far = window.__perch, sv = window.__sv;
+      const e = (typeof window.__engine === "function" ? window.__engine() : window.__engine), c = e.camera, p = e.player, far = window.__perch, sv = window.__sv;
       return { a: +((sv.swingAngle ?? 0) / (sv.swingAmp || 0.45)).toFixed(2), om: Math.sign(p.swingAngularVelocity ?? 0), swinging: !!p.isVineSwinging, grounded: !!p.grounded, x: Math.round(p.x), y: Math.round(p.y),
         size: Math.round((100 * e.zoom) / usual), vw: Math.round(c.viewportWidth), lives: e.lives ?? e.player.lives ?? '?', hearts: e.player.health ?? e.health ?? '?',
         whole: far.x >= c.x && far.x + far.width <= c.x + 0.98 * c.viewportWidth, onPerch: !!p.grounded && Math.abs(p.y - far.y) < 4 && p.x > far.x - 4 && p.x < far.x + far.width + 4 };
@@ -106,11 +106,11 @@ for (const [w, h] of PHONES) {
     }
     const v0 = await view();
     if (B.hold === 'foot' && v0.swinging) {
-      await page.evaluate(() => { window.__engine().input.state.down = true; });
+      await page.evaluate(() => { (typeof window.__engine === "function" ? window.__engine() : window.__engine).input.state.down = true; });
       await sleep(1800);
-      await page.evaluate(() => { window.__engine().input.state.down = false; });
+      await page.evaluate(() => { (typeof window.__engine === "function" ? window.__engine() : window.__engine).input.state.down = false; });
     }
-    await page.evaluate(() => { window.__engine().input.state.right = true; });
+    await page.evaluate(() => { (typeof window.__engine === "function" ? window.__engine() : window.__engine).input.state.right = true; });
     let sweeps = 0, prevOm = 0, got = null;
     for (let i = 0; i < 600 && !got; i++) {
       const v = await view();
@@ -123,7 +123,7 @@ for (const [w, h] of PHONES) {
     if (got && got.swinging) {
       await stamp(label(`THE DECISION (${B.hold === 'foot' ? 'held at the foot' : 'held high'}, forward sweep)`, got));
       if (!clip) await page.screenshot({ path: name('1-decision'), type: 'jpeg', quality: 85 });
-      await page.evaluate(() => { window.__engine().input.state.right = false; });
+      await page.evaluate(() => { (typeof window.__engine === "function" ? window.__engine() : window.__engine).input.state.right = false; });
       await page.keyboard.down('ArrowRight'); await page.keyboard.down('Space'); await sleep(160); await page.keyboard.up('Space'); await sleep(500); await page.keyboard.up('ArrowRight');
     }
     await sleep(2400);
