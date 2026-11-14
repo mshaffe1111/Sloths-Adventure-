@@ -3,3 +3,11 @@ upright-412x915-normal b1-bush {"phase":"rest","eye":3358,"perched":false,"x":31
 upright-412x915-normal b1-bush clip 76 frames at 16.5 fps; the look on him at frame 37 (2.1 s): {"phase":"hunt","eye":3107,"perched":false,"x":3183,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
 upright-412x915-normal b2-shake {"phase":"rest","eye":5164,"perched":false,"x":4964,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
 upright-412x915-normal b2-shake clip 69 frames at 18.8 fps; the look on him at frame 23 (1.2 s): {"phase":"hunt","eye":4877,"perched":false,"x":4964,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b3-road {"phase":"hunt","eye":6838,"perched":false,"x":6312,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b3-road clip 64 frames at 16.9 fps; the look on him at frame 24 (1.2 s): {"phase":"hunt","eye":6230,"perched":false,"x":6312,"hidden":1,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b5-bark {"phase":"rest","eye":11909,"perched":false,"x":11488,"hidden":0,"hearts":4,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b5-bark clip 98 frames at 18.3 fps; the look on him at frame 55 (2.8 s): {"phase":"hunt","eye":11400,"perched":false,"x":11475,"hidden":0,"hearts":5,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b7-moss {"phase":"hunt","eye":16699,"perched":false,"x":15983,"hidden":1,"hearts":4,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b7-moss clip 71 frames at 19.2 fps; the look on him at frame 22 (1.3 s): {"phase":"hunt","eye":15899,"perched":false,"x":15983,"hidden":1,"hearts":4,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b8-creak {"phase":"rest","eye":19131,"perched":false,"x":18601,"hidden":0,"hearts":3,"swinging":false,"hanging":false,"onCreak":false,"grounded":true}
+upright-412x915-normal b8-creak clip 46 frames at 18.0 fps; the look on him at frame 0 (0.0 s): {"phase":"tell","eye":18527,"perched":false,"x":18588,"hidden":0,"hearts":4,"swinging":false,"hanging":false,"onCreak":true,"grounded":true}
