@@ -39,7 +39,11 @@
   head stop it never pushed (castBots 1-4 went 0/40, its test freed 0): it now reads the stop (capY). feelPairRoom's gate test now
   checks the head rule (it asserted the old feet rule).
 - The lead's ruling 2:08 AM applied: the tie draws at 0.55 Pokey (short loop, knot on the bough).
-## Gates on the final head (frozen worktree): PENDING, filled in below when they finish
+## castBots 1-4 x40 (at e69dcb5c; the later commit is draw-only), PASS by tier, Normal / Easy: kid 24 / 34, adult 40 / 40 (Easy median
+   110.7 s, fastest 106.1 s: over the 100 s climb floor), child 10 / 13, middle 22 / 23, expert 25 / (its Easy line did not print).
+   231 of 320 printed vs FIX-14's 209 of 360 on the fork head; NOT like for like (one tier line missing): judge the 40-seed totals again
+   after the fork. Before the figPush fix the same run was 0/40 on every tier (the relist's run, relist.log).
+## Gates on the final head 72d1ca6d (frozen worktree): PENDING, filled in below when they finish
 ## Polish check (judged on the real page, stepped-frame clips; seed 1, built setting printed by clip.mjs)
 - gate-normal-up-sheet.jpg: the ties read in three states at phone size (green loop; pale frayed loop; two whipping ends), the thatch
   reads as leaves over the bough; his head stays under the wood on hold and jump. Rough spots, named plainly: (1) the loops are small
