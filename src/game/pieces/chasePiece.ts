@@ -26,6 +26,11 @@ const PIT_MARGIN = 90;
 const NEAR = 800;
 /** a broken section's halves tumble for this long (s) */
 const DEBRIS_LIFE = 1.8;
+/**
+ * The tip (1-8 NEW 8, ChaseStretch.tip): as he leaves it, this much real time plays in slow motion (the old 1-8's last liana, engine.ts
+ * chaseSlowDone: 0.55 s), and he has left it once his middle is this far past its far end (px) off the ground
+ */
+export const TIP = { slow: 0.55, past: 4 } as const;
 /** a creak now and then while a front runs within this of him (px), every `CREAK_EVERY` s */
 const CREAK_NEAR = 700;
 const CREAK_EVERY = 1.2;
@@ -115,6 +120,8 @@ interface Debris {
   vr: number;
   t: number;
   right: boolean;
+  /** the branch's tip tumbling whole (drawn as the tip, not as a broken half) */
+  tip?: boolean;
 }
 
 class ChasePiece implements StagePiece {
@@ -124,6 +131,9 @@ class ChasePiece implements StagePiece {
   private readonly sections: Section[];
   private debris: Debris[] = [];
   private creakAt = 0;
+  /** each stretch's tip section (its last, ChaseStretch.tip), or null; and whether that branch end has fallen (he left the tip) */
+  private readonly tips: Array<Section | null>;
+  private tipFell: boolean[];
 
   constructor(
     private readonly lay: NonNullable<import('../stageGenerator.ts').GeneratedStage['chase']>,
@@ -136,6 +146,15 @@ class ChasePiece implements StagePiece {
       .filter((pl) => pl.chase)
       .sort((a, b) => a.x - b.x)
       .map((pl, i) => ({ pl, owner: sectionStretch(lay, pl.x, pl.x + pl.width), mirror: i % 2 === 1 }));
+    // (a stretch that ends at the branch's tip: its last section is the tip, drawn from the sheet's branch end)
+    this.tips = lay.stretches.map((st, i) => {
+      if (!st.tip) return null;
+      const own = this.sections.filter((q) => q.owner === i);
+      const t = own[own.length - 1] ?? null;
+      if (t) t.pl.chaseTip = true;
+      return t;
+    });
+    this.tipFell = lay.stretches.map(() => false);
   }
 
   step(dt: number, host: PieceHost) {
@@ -158,6 +177,24 @@ class ChasePiece implements StagePiece {
       }
       if (s.pl.x + s.pl.width > v.x - 200 && s.pl.x < v.x + v.w / v.zoom + 200) sound.playHitImpact(false);
     }
+    // (the tip: he has left it off its end, in the air or on a liana: the whole of its stretch still standing breaks off at once, the tip
+    // tumbling whole, in a moment of slow motion)
+    this.tips.forEach((tip, i) => {
+      if (!tip || this.tipFell[i] || p.grounded || p.x <= tip.pl.x + tip.pl.width + TIP.past) return;
+      this.tipFell[i] = true;
+      for (const q of this.sections) {
+        if (q.owner !== i || q.pl.broken) continue;
+        q.pl.broken = true;
+        // (only what is within a view's width of him tumbles, the tip always: the rest of the branch end is gone off screen)
+        if (q !== tip && Math.abs(q.pl.x + q.pl.width / 2 - p.x) > v.w / v.zoom + 200) continue;
+        const k = ((q.pl.x * 0.618) % 1 + 1) % 1;
+        const h = (q.pl.width * 100) / 370;
+        if (q === tip) this.debris.push({ x: q.pl.x, y: q.pl.y - 8, w: q.pl.width, h: (q.pl.width * 173) / 375, vx: 30, vy: -20, rot: 0, vr: 0.9, t: 0, right: true, tip: true });
+        else for (const right of [false, true]) this.debris.push({ x: q.pl.x + (right ? q.pl.width / 2 : 0), y: q.pl.y - 8, w: q.pl.width / 2, h, vx: (right ? 30 : -20) + 20 * k, vy: -30 - 40 * k, rot: 0, vr: (right ? 1 : -1) * (0.6 + k), t: 0, right });
+      }
+      sound.playHitImpact(true);
+      host.slowMo(TIP.slow);
+    });
     for (const d of this.debris) {
       d.t += dt;
       d.vy += 1500 * dt;
@@ -187,6 +224,8 @@ class ChasePiece implements StagePiece {
     // (back at his flag: each front waits behind it, and every section is as its front says: whole from there on)
     restartRunAt(this.run, host.player.x);
     for (const s of this.sections) s.pl.broken = sectionInRun(this.run, s.owner, s.pl.x, s.pl.x + s.pl.width) === 'fallen';
+    // (a tip whose stretch is ahead of his flag is whole again; one he respawns past stays fallen, as its front does)
+    this.tipFell = this.lay.stretches.map((st) => !!st.tip && host.player.x >= st.end);
     this.debris = [];
   }
 
@@ -211,7 +250,7 @@ class ChasePiece implements StagePiece {
       ctx.globalAlpha = Math.max(0, 1 - d.t / DEBRIS_LIFE);
       ctx.translate(d.x + d.w / 2, d.y + d.h / 2);
       ctx.rotate(d.rot);
-      if (!drawChaseBroken(ctx, d.right, -d.w / 2, -d.h / 2, d.w, d.h)) {
+      if (d.tip ? !drawChaseSection(ctx, { x: -d.w / 2, y: -d.h / 2, width: d.w, chaseTip: true }, false, false) : !drawChaseBroken(ctx, d.right, -d.w / 2, -d.h / 2, d.w, d.h)) {
         ctx.fillStyle = '#7a5532';
         ctx.fillRect(-d.w / 2, -d.h / 4, d.w, d.h / 2);
       }

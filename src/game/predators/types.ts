@@ -122,6 +122,9 @@ export interface Post {
   /** a sweeper perched at (x, y) (1-7 beat 12, the eagle lands on a snag): its body stays there, never riding its eye, while its gaze
    *  sweeps the stretch; it acts (the dive) from its perch and flies back to it */
   perched?: boolean;
+  /** a sweeper that calls only this many passes, then rests on its post for good (1-8 NEW 7, the still fork: ONE pass as he arrives, so
+   *  no second look follows him off the fork onto the next stretch). Unset: it calls a pass whenever it is cool and he is in its stretch */
+  passes?: number;
 }
 
 export type Phase = 'rest' | 'hunt' | 'tell' | 'act' | 'recover' | 'stunned' | 'flee' | 'gone';
@@ -162,6 +165,8 @@ export interface PredatorState extends Listener {
   free: boolean;
   /** Post.perched: a sweeper whose body stays at its post (it does not ride its eye, whatever its kind) */
   perched?: boolean;
+  /** Post.passes: the passes it may still call (every pass it ends counts, with him in its stretch or not); at 0 it never calls again */
+  passesLeft?: number;
   /** game time its flight home ends */
   awayUntil: number;
   /** it saw him at some point in this act (a sweeper's pass) */

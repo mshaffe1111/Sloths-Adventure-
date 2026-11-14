@@ -823,6 +823,9 @@ export interface RunOptions {
   /** Dot says only what the phone's default setting lets through (Tips on Normal, Help on Easy: DotSay.allows), as the game does.
    *  Off by default: the tier bots are calibrated to the testers without it (tierBots.test) */
   dotSetting?: boolean;
+  /** moves an earlier stage of the world taught him, known from the start (a player plays a world in order: 1-8's still fork asks the
+   *  hide 1-7 taught, and Dot need not say it again). The learned words' own ids ('hide', 'still', 'double', ...) */
+  knows?: readonly string[];
 }
 
 /** a fresh phone: no lessons, tips or settings from the last run (a first-timer's own lessons carry over within one pass) */
@@ -1025,6 +1028,7 @@ export class FirstTimerRun {
     this.start = { x: this.sim.p.x };
     this.mode = MODES[this.sim.stage.config.travel ?? 'right'];
     this.sim.safe = false;
+    for (const k of opts.knows ?? []) this.learned.add(k);
     const e = (this.e = this.sim.e as Eng);
     // the engine's own lessons, stuck help and camera (the harness turns them off)
     for (const m of ['lessonTick', 'watchForStuck', 'updateCamera']) delete e[m];

@@ -139,6 +139,12 @@ export interface ChaseStretch {
   end: number;
   /** the last stretch: the front runs its row's final burst over all of it (Normal: faster than his run; Easy: none) */
   last?: boolean;
+  /**
+   * it ends at the branch's TIP (1-8 NEW 8): its last section is drawn as the tip (Matt's long-branch sheet, props3 chaseTip), and as he
+   * leaves the tip off its end (onto a liana, or a jump), the whole of the stretch still standing breaks off and falls at once, the tip
+   * tumbling whole, in a moment of slow motion (pieces/chasePiece.ts). Only the last stretch has a tip
+   */
+  tip?: boolean;
 }
 
 /**
@@ -166,6 +172,7 @@ export function chaseLayProblems(lay: ChaseLay): string[] {
     const prev = lay.stretches[i - 1];
     if (prev && st.start < prev.end) out.push(`stretch ${i}: starts at ${st.start}, before stretch ${i - 1}'s fork at ${prev.end}`);
     if (st.last && i !== lay.stretches.length - 1) out.push(`stretch ${i}: marked last but is not`);
+    if (st.tip && i !== lay.stretches.length - 1) out.push(`stretch ${i}: a tip on a stretch that is not the last (the branch ends once)`);
   });
   return out;
 }

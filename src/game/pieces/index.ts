@@ -13,9 +13,10 @@ import { CHASE_PIECE } from './chasePiece.ts';
 import { RIDE_PIECE } from './ridePiece.ts';
 import { VINE_SNAKE_PIECE } from './vineSnakePiece.ts';
 import { ROLLING_PIECE } from './rollingPiece.ts';
+import { RUNNER_LIANA_PIECE } from './runnerLianaPiece.ts';
 
 /** every kind of runtime piece, in the order they step and draw */
-export const PIECE_KINDS: PieceKind[] = [RIDE_PIECE, VINE_SNAKE_PIECE, CHASE_PIECE, ROLLING_PIECE];
+export const PIECE_KINDS: PieceKind[] = [RIDE_PIECE, VINE_SNAKE_PIECE, RUNNER_LIANA_PIECE, CHASE_PIECE, ROLLING_PIECE];
 
 /** the stage's pieces: each kind its data lays, in the registry's order */
 export function startPieces(stage: GeneratedStage, host: PieceHost): StagePiece[] {

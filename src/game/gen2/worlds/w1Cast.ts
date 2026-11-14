@@ -17,7 +17,8 @@ import { TRAP } from '../../dropTrap.ts';
 import type { Enemy } from '../../types.ts';
 import type { LimbPlatform } from '../creak.ts';
 import type { CreatureDef, PropDef, PropEmitter, PropPair, StageSink } from '../types.ts';
-import { castWatches, clipWatches, stillEmitters, stillProps, type StillRow, type WatchRow } from '../stillLay.ts';
+import { castWatches, clipWatches, stillEmitters, stillProps, type HideRow, type StillRow, type WatchRow } from '../stillLay.ts';
+import type { StillForkLook } from '../stillFork.ts';
 import type { WatchZone } from '../../watcher.ts';
 
 /** how high over its ground a load hangs (px): over his head as he walks under it (he is 89 px), over a rearing snake, and low enough
@@ -178,6 +179,18 @@ export const W1_STILL: Readonly<Record<string, StillRow>> = {
   'w1-hide-moss-hang': { role: 'hide', bush: 'mossHang', w: 173, minApart: 240, hanging: true },
   'w1-hide-moss-curtain': { role: 'hide', bush: 'mossHang', w: 78, minApart: 160, hanging: true },
   'w1-eagle': { role: 'watch', cast: 'eagle', free: 'lesson', calm: { teach: [6, 6.5], early: [5.5, 6], late: [5, 5.5] }, max: 1400 },
+};
+
+/**
+ * World 1's still fork (1-8 NEW 7, gen2/stillFork.ts): the moss carpet on the fork (W1_STILL's carpet, 346 px: beat 9 "a great living fork
+ * carpeted in moss") and the harpy eagle perched on its snag past it, its one pass called as he arrives (2.0 s warn: EAGLE.warn; 1-7's
+ * late calm as its laid cool). The eagle is 1-8's one post (1-8.md "Cast").
+ */
+export const W1_STILL_FORK: StillForkLook = {
+  cover: { kind: 'moss', w: (W1_STILL['w1-hide-moss'] as HideRow).w },
+  kind: 'eagle',
+  calm: (W1_STILL['w1-eagle'] as WatchRow).calm.late,
+  watcher: (z, groundY, id, postX) => eagleOver(z, groundY, id, { x: postX }),
 };
 
 /**

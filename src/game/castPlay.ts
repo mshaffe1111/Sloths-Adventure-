@@ -104,7 +104,7 @@ export class CastPlay {
       const ground = groundUnder(platforms, e);
       // (a perched sweeper sits on its snag's branch, SNAG_PERCH over the ground under it: its body's post; 1-7 beat 12)
       const perched = !!e.kitPerch && def.habit === 'sweep';
-      const s = newPredator(def, { x: e.x, y: perched ? ground - SNAG_PERCH : ground, minX: e.patrolMinX, maxX: e.patrolMaxX, facing: e.facing, asleep: !!e.asleep, cool: e.kitCool, free: e.kitFree, ...(perched ? { perched } : {}) });
+      const s = newPredator(def, { x: e.x, y: perched ? ground - SNAG_PERCH : ground, minX: e.patrolMinX, maxX: e.patrolMaxX, facing: e.facing, asleep: !!e.asleep, cool: e.kitCool, free: e.kitFree, ...(perched ? { perched } : {}), ...(e.kitPasses !== undefined ? { passes: e.kitPasses } : {}) });
       e.kit = s;
       const m: CastMember = { e, def, s, foot: ground - e.y, cleared: false };
       this.members.push(m);

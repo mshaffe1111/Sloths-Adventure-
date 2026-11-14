@@ -1,0 +1,20 @@
+== PLANT 1: the base kit (core.ts at 3261dd4b, no Post.passes): 6:33 PM
+not ok 1 - the kit: a sweeper with one pass (Post.passes 1) calls it, then never another, however long he stays in its stretch
+ok 2 - the lay: on fork 0 the moss carpet lies on the fork just past where the collapse stops, one perched eagle past it, its one pass toward him
+ok 3 - the lay refuses by name, laying nothing: a short fork, ground that breaks, a rock in the cover, the last stretch, a stretch already watched
+ok 4 - real engine, Normal: he arrives at a full run and the screech comes at once; the warn shows 2 s before the eye starts across
+ok 5 - real engine, Normal: running on through the still fork, the eagle dives on him (a heart); stopping in the moss and holding still, never
+ok 6 - real engine, PLANTED: with its eye crossing his way (facing 1) a runner who never stops gets through untouched; toward him he does not
+ok 7 - real engine, Easy: the still fork's one pass is harmless even to a runner (Easy's first pass is free, core.ts sparedPass)
+# pass 6
+# fail 1
+
+== PLANT 3: the base chase piece (pieces/chasePiece.ts at 3261dd4b, no tip; TIP's two numbers appended so the test file loads): 6:48 PM
+not ok 1 - the tip: the stretch's last section is drawn as the tip; as he leaves it on the liana the whole stretch falls at once, in slow motion
+  error: |-
+ok 2 - the tip, PLANTED: with no tip on the stretch, the same run leaves the branch ahead of the front standing, and no slow motion
+not ok 3 - the tip holds while he stands on it; a respawn before it makes the whole branch end again
+  error: |-
+ok 4 - the lay refuses a tip on a stretch that is not the last
+# pass 2
+# fail 2

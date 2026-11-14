@@ -678,6 +678,10 @@ export class GameEngine {
     get standingOnId() { return e.standingOnId; },
     get platforms() { return e.platforms; },
     get clock() { return e.clock; },
+    get vineClock() { return e.vineClock; },
+    slowMo: (seconds) => {
+      e.slowMoLeft = Math.max(e.slowMoLeft, seconds);
+    },
     letGo: () => e.letGoOfLiana(),
     focus: (b) => {
       e.camFocus = { x0: b.x0, x1: b.x1, y0: b.y0, y1: b.y1 };
