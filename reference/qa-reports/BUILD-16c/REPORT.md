@@ -14,15 +14,25 @@ recipe if it fits, else first in EXACT NEXT STEP). Heads: c8f67aa7 (bot part 1),
    liana's catch. The bot now only climbs to a catch ledge its own hop catches from (pitWayUp); count again with
    `npx tsx reference/qa-reports/BUILD-16c/first.ts` (pit falls by beat). If the gorge stays the top cluster, it is the lead's call
    whether the stair's top step sits nearer the next liana (stage data), as ruling C does for the first liana.
-3. **Beat 4's chain**: merge origin/t-eng-s5 (a2743943, GREEN) into t-build-16 and lay beat 4 by "the BUILD-16 recipe" in ENG-S5's
+3. **Normal sealed doors** (6 of the 11 Normal fails: child s1 79/81, s4 83/91; middle s4 89/91; expert s2 86/89, s4 85/91, s5
+   84/88): per-seed list of the missed petals, moved onto the path. `BOTS=child,middle,expert npx tsx
+   reference/qa-reports/BUILD-16c/petals.ts` prints each run's missed petals with the piece under each; run it in a fresh process
+   (the leak, R-165.244). 8002b130 already moved perch and root-top petals (LANDED 0.88) and filled the empty stretches; seed 4 keeps
+   the most pit-floor fill petals (creaky landing, gorge: a creaky limb cannot hold one, flowerReach.ts:140). The share stays (LAWS 22).
+4. **Beat 4's chain**: merge origin/t-eng-s5 (a2743943, GREEN) into t-build-16 and lay beat 4 by "the BUILD-16 recipe" in ENG-S5's
    REPORT (note its topShort pushback). The bot's catch model (lianaWait) is for a catch off a LIP; a liana-to-liana catch is the let-go
    (LET_GO_AT) and the engine's catch in the air: count chain misses the same way (hops.ts) before trusting the bots on it.
-4. castBots 1-6 seeds 1-6 both settings from a FRESH process per bot (see the leak below): all must pass with 0 rescues before any
-   relist. Then `npx tsx tools/engine/addlevel.ts 1-6 --par 4 --relist` (about 14 min; background limit 2 h), bots 1-40 both settings,
-   commit `src/game/gen2/proven/seeds-1-6.ts` + `provenIndex.ts` from that run only.
-5. The whole suite on the final head (3 shards, CLAUDE.md glob), `bash reference/qa-reports/BUILD-16b/plant.sh <side worktree>` (M1-M8
-   RED), stills + clips (`node reference/qa-reports/BUILD-16b/shoot.mjs <sha> normal|easy`, CLIP=1; `exit.mjs` for the door) from a side
-   worktree, then the CLAUDE.md Checks in order (buildcheck ALONE). The sealed line at the door (R-165.241) is the TIPS member's.
+5. castBots 1-6 seeds 1-6 both settings, each bot in a FRESH process (R-165.244): all must pass with 0 rescues before any relist. Then
+   `npx tsx tools/engine/addlevel.ts 1-6 --par 4 --relist` (about 14 min; background limit 2 h), bots 1-40 both settings, commit
+   `src/game/gen2/proven/seeds-1-6.ts` + `provenIndex.ts` from that run only. Then the whole suite on the final head (3 shards, CLAUDE.md
+   glob), `bash reference/qa-reports/BUILD-16b/plant.sh <side worktree>` (M1-M8 RED), stills + clips (`node
+   reference/qa-reports/BUILD-16b/shoot.mjs <sha> normal|easy`, CLIP=1; `exit.mjs` for the door) from a side worktree, then the CLAUDE.md
+   Checks in order (buildcheck ALONE). The sealed line at the door (R-165.241) is the TIPS member's.
+
+**The state leak (R-165.244, a tools member's):** tools/inspect/castBots.ts:67-71 plays every bot, setting and seed in ONE process
+(castRun -> firstTimer); the per-run reset at tools/inspect/firsttimer.ts:2585-2586 (freshPhone / setDifficulty) does not cover what
+carries over, so a seed's built stage depends on what ran before it: seed 1 Easy goal "need" 73 in a both-settings run, 78 with
+`--setting easy` alone; Normal seed 1 96 in one run, 81 in another (the child row above). Which state leaks is not yet found.
 
 ## Done-items (each with its head and evidence)
 1. **The climb back out of a pit** (c8f67aa7, refined 5b0b1121). tools/inspect/firsttimer.ts `pitWayBack`/`pitWayUp`: in a pit whose far
