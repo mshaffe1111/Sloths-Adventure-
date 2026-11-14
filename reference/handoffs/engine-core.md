@@ -20,8 +20,9 @@ proven plan; Play is never blocked).
 - **The perch is 56 px** (sweepPose.ts SNAG_PERCH, w17Art.ts snagB.perch 712): at 90 it cleared the progress sign by 4 px sideways (zoom
   0.763); BUILD-17's shoot-perch.mjs prints eagle top vs `.vh-cplate` bottom in every caption.
 - **Kit tip ids that equal a move lesson ('creak', 'swing') are never said**: a stage's own lines need their own ids (lineId: `w17.<key>`).
-- **The swing bot cannot climb back out of a moss pit** after a missed swing (BUILD-16b's open item): 1-7's last rescues are all there.
-  firsttimer.ts now holds a MOSSY liana through the eagle's look (it let go toward ground cover mid-swing before).
+- **The bots on 1-7** carry BUILD-16c's climb-back (c8f67aa7, 5b0b1121) plus two of BUILD-17's: a MOSSY liana is held through the
+  eagle's look (it let go toward ground cover mid-swing), and the climb-back fires when the FACE ahead is over a double even if the route
+  is not (1-7's SHORT liana pit: route 179 px, wall 259; pitClimb.test "shallow pit").
 
 ## 0w. 1-7's moss cover, the perched eagle, bots that hold still (ENG-E2, t-eng-e2, 11-14): what the next engineer must know
 - **Moss is cover like a bush** (watcher.ts Bush kinds `moss` carpet, `mossPatch` mound, `mossHang` hanging): laid by W1_STILL's rows
