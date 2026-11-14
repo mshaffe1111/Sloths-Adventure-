@@ -16,5 +16,5 @@ WHOLE suite on your head (name it), then stills of every beat upright + sideways
 your vine, the false liana, the gorge, sealed + open exit; name the frame where each action shows, D69). Easy proof: say "pending
 R-165.251" unless TOOLS-2 (t-tools-2) has landed its helper; if it has, merge it and prove Easy for real.
 REPORT reference/qa-reports/ENG-16H/REPORT.md with "Learned", ENGINE-WORTHY findings and EXACT NEXT STEP. Send GREEN to the lead.
-BOX: report by 9:45 PM ET, or at 40% real context (400k). Progress message at 8:30 PM ET with what is planted and pushed. No shell
+BOX: report by 9:30 PM ET, or at 40% real context (400k). Progress message at 8:30 PM ET with what is planted and pushed. No shell
 wait loops (D67); read your queue at every push. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM (reference/handoffs/lead.md line 1).
