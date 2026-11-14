@@ -2,20 +2,29 @@
 POLISH-9 (5:28-5:32 AM ET) stopped on the lead's pause; POLISH-9b (7:58 AM ET on) resumed at 182bb680. Opus 5.5 high.
 Context at report: about 22% of 1M (my estimate; D64).
 
-## VERDICT: **NOT GREEN: one red, a design call** (the yield deal, below). Everything else this packet asked is done. Every gate I ran passes except that one. buildcheck ALONE is UNRUN (box).
+## VERDICT: __VERDICT2__
 
 ## EXACT NEXT STEP (the next 1-1 member or the lead, one step)
-The lead or Designer rules on the yield deal (item 1 below). Then the ruled change, with ONE more relist only if it moves 1-1's plans. Then buildcheck ALONE and the full suite on that head.
+1-1 is ready for the integration head. Merge t-polish-9 into it, then run the full CLAUDE.md checks there before link #2.
+R-165.235 (bring sprint-B and -C back to 1-1 with non-double combine pieces) is the next 1-1 content job.
 
-## What is still red, exactly
-1. **yield.test "the deal" (52 of 200 fresh 1-1 graphs).** This is a design call, not a pin. Since POLISH-7's CUT_11_DOUBLES, 1-1's pool has
-   **no section for the `combine` job**. Its twists, tests and signatures remain. But the graphs sprint-B and sprint-C each deal a combine
-   node (n8). So every B/C roll is refused ("pool short at slot 8 (n8 combine...)"), and the deal rule ("a node is never dealt a type no
-   section of its job has") fails. The yield floor still passes: 12+ of 30 fresh seeds lay clean on A and D.
-   Options for the lead or Designer, one of:
-   - take sprint-B and sprint-C out of 1-1's graph list (1-1 rolls A and D only);
-   - add a combine section with no double (a bounce + single-jump combine) to 1-1's pool.
-   Never loosen the 2-in-200 line (law 22).
+## The last red, closed (the lead's ruling, 9:31 AM; 660df344)
+- **The red: yield.test "the deal", 52 of 200 graphs.** Since CUT_11_DOUBLES, 1-1's pool has no section for the combine job, and
+  sprint-B and sprint-C each deal one (n8).
+- **The fix: 1-1 rolls sprint-A and sprint-D only.**
+  - New brief field GraphBrief.refuseGraphs (types.ts); w1.ts gives 1-1's brief ['sprint-B', 'sprint-C'] with its reason. Comeback: R-165.235.
+  - pipeline.ts rolledGraph: a seed that draws a refused graph re-draws among the rest on its own stream (rngFor 68), so every seed that
+    drew A or D keeps its graph and every number after it.
+  - yield.test 9/9: the deal is green, and its 2-in-200 line is untouched.
+- **Three listed seeds moved, so I relisted again (relist B).** Each had reached its listed A/D layout only after 9-12 re-rolls past a
+  B/C draw. Play replays the listed plans and was unaffected, but `seedlist --check` holds every listed seed to its own search, and it
+  threw on 31931.
+  - ONE more relist, `--merge <list order> --in-order`: 163 -> 162 (gates/relist-1-1-b-diff.txt).
+  - Dropped: #117 31931 (its search now throws: the pool is spent at n12).
+  - Moved: #63 36697 (was 37122301 after 12 rerolls) and #115 29807 (was 30146534 after 9) now take their seeds' own first rolls.
+  - Layouts 1-62 are identical: castBots L1-10, calibration variants 1-40, and the first run (variant 10 = 9652).
+  - seedlist 1-1 --check PASS (162).
+- **The list over the day:** 167 -> 163 (relist A, room for help) -> 162 (relist B, A/D only).
 
 ## Done (heads named)
 - **Toy planted test for POLISH-9's bot fix** (ae03ef34): tools/inspect/firsttimer.test.ts.
