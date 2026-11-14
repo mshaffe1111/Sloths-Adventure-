@@ -1,4 +1,4 @@
-# DRAFT (in progress: gates and clips running) TIPS (R-165.236, R-165.241; R-165.238 not started): REPORT, branch t-tips from t-int-8@0a9be28c
+# TIPS REPORT: GREEN. R-165.236 + R-165.241 done; R-165.238 not started (t-build-16 not integrated). Branch t-tips from t-int-8@0a9be28c
 Method used: methods/stage-fix.md (planted failure first), gates.md; the engine card's day one (lock saved on the base first).
 Lessons applied: D19 (gate and bot call the engine's code; the bot passes `lock`), D21 (the gate finds every vertical stage), D43 (no
 stage id in engine code), D50/D63 (default setting, Dot's real bubble), D59, D62 (BUILT; built/asked mismatch fails), D64, D67, D69.
@@ -31,7 +31,10 @@ stage id in engine code), D50/D63 (default setting, Dot's real bubble), D59, D62
    Normal default, walked into the shut door): before, 1-5's line never showed in 4 s (a find line "She squashed this one extra flat."
    held the bubble) and the plate sat behind Pokey reading "more"; after, the sealed line is up at 1.5 s on 1-2 and 1-5, both ways (the
    other line waits, +1), and "13 more" / "66 more" hang clear over his head. door/*.jpg, door/*.log.
-5. **Full checks (GATES).**
+5. **Checks (GREEN, gates/RESULTS.txt).** On 5215985df: tsc, build, chunkcheck, artcheck, knowncheck, generality, roadmap, unit 1-3, registry,
+   tool tests, tipwalk, tierBots, drawcheck, clipcheck all 0. seedlists 1: 1-1's first-run lock (hash of the built stage) moved with the
+   bands only; re-recorded with proof (firstrun-lock.txt: bands off = the old lock, both settings; only proto.hints moves). After: every
+   list PASS, the 7 files that load the first run 37/37, TIPS tests 13/13, tsc 0. Not run (the lead's rule): kbdcheck, buildcheck.
 
 ## 2. Polish check
 - clips/after-*-2-creak.jpg, -3-figs.jpg: Dot's card beside him on the bough/foot, readable both ways; nothing covers him. Fixed on
@@ -46,16 +49,13 @@ stage id in engine code), D50/D63 (default setting, Dot's real bubble), D59, D62
 - Bands leave out the stitcher's seams (in a tower they are the storey under).
 
 ## 4. Suggestions (ready packets)
-- CLAUDE.md Checks: add `npx tsx tools/engine/tipwalk.ts --layouts 4` and tools/engine/tipwalk.test.ts to the tool-test line (the lead's
-  file; gates.yml already runs both).
-- methods/gates.md (the Critic's): a tipwalk row (catches a tip said a storey early; read a MISS by its tip, band and feet).
+- CLAUDE.md Checks + gates.md: add `npx tsx tools/engine/tipwalk.ts --layouts 4` and tipwalk.test.ts (gates.yml runs both already).
 
 ## 5. Unresolved
-- R-165.238 not started (above); then re-run tipwalk (1-6's tower joins by itself) and shoot 1-6's door. (GATES)
+- R-165.238 not started (above); then re-run tipwalk (1-6's tower joins by itself) and shoot 1-6's door sideways (the lead's ask).
 
 ## 6. Method update
-- Clips of Dot: real time (paused frame-stepping freezes her queue), never hold `invincibleTimer` (she holds lines while he is hurt-
-  invincible; 3 reshoots). Headless tools set the setting with setDifficulty, never localStorage (RealPlay built Normal for Easy).
+- Dot clips: real time (paused stepping freezes her queue); never hold invincibleTimer (she holds lines; 3 reshoots); setDifficulty.
 
 ## 7. Turnover note
 engine-core.md section 0t and planner.md's verdict table (tip reach) rewritten: commit 3155bd5d. Context at report: ~25% of 1M.
