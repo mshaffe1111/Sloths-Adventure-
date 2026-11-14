@@ -1,0 +1,13 @@
+BUILT {"difficulty":"normal","builtDifficulty":"normal","stage":"1-1","seed":9652,"rerolls":0,"orientation":"side","view":[915,412]}
+SECTION {"template":"w1-dip-double-teach","x0":6665,"x1":9325,"lip":{"x":7506,"r":7732,"y":1358},"far":{"x":7986,"r":8279,"y":1358},"live":[[6693,"Flick up again in the air to jump twice"],[28749,"No soft moss up here!"]]}
+WALKED {"x":6924,"y":1488,"vy":0,"g":true,"left":2,"wall":true,"rise":130}
+BANK {"x":6943,"y":1358} rise 130
+BANK-ONE {"second":null,"top":1390,"end":{"x":6924,"y":1488,"vy":0,"g":true,"left":2,"guide":null}}
+BANK-TWO {"second":1390,"top":1304,"end":{"x":7044,"y":1358,"vy":0,"g":true,"left":2,"guide":null}}
+WALKED2 {"x":7552.177777777778,"y":1331.6000000000001,"vy":81.20000000000003,"g":false,"left":1}
+TRACE [[7704,true],[7713,false,-577],[7722,false,-513],[7732,false,-450],[7741,false,-387],[7750,false,-323],[7759,false,-260],[7769,false,-197],[7778,false,-133],[7787,false,-70]]
+ONE {"takeoff":7713,"second":null,"top":1260,"end":{"x":7621,"y":1358,"vy":0,"g":true,"left":2,"guide":null}}
+AFTER-ONE {"x":7621,"y":1358,"vy":0,"g":true,"left":2,"guide":null}
+TRACE [[7706,true],[7715,false,-577],[7725,false,-513],[7734,false,-450],[7743,false,-387],[7752,false,-323],[7761,false,-260],[7770,false,-197],[7780,false,-133],[7789,false,-70]]
+TWO {"takeoff":7715,"second":7798,"top":1174,"end":{"x":7991,"y":1358,"vy":0,"g":true,"left":2,"guide":null}}
+FRAMES 248
