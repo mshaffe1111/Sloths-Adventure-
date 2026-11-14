@@ -151,7 +151,11 @@ Play. Stages are generated (gen2) from proven seed lists and judged by bots cali
    handoff doc https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa with the Docs connector.
 3. First message to the story keeper, session_01FhBbYMCa3JXWmyQicbmxuu (or the successor lead.md names): who you are and what story
    work is open.
-4. Take stock of running members (list_sessions children): read each one's real context; adopt or retire them per PM.md §9.
+4. Take stock of running members (list_sessions children of the backup lead's session, and lead.md's members table). The team is yours
+   to keep or change; the default: a member mid-packet finishes that packet (a swap mid-job throws away its context and work), and you
+   judge it by its evidence, not its word. Retire it at its next result if it is over 40% real context, past its report-by time without
+   a cause, or its work fails your check; every NEW job goes to a fresh session with a fresh packet (a fresh member is cheaper and sharper
+   than a long-running one). Give every member you keep a report-by time and tell it you are its lead now.
 5. Answer from the documents alone, as the first lines of reference/notes/lead-review-<date>.md: what's live, the next three tasks and
    who does each, what needs Matt, how a release goes, the links. Fix the notes where they fall short.
 6. Write your cold review of the plan to reference/notes/lead-review-<date>.md (what you'd change, the last lead's bias), cited
@@ -165,3 +169,6 @@ Play. Stages are generated (gen2) from proven seed lists and judged by bots cali
 - Your backup lead (questions of fact only): session_01FhBbYNzGRJBDMzn6XbtQK2. The story keeper: session_01FhBbYMCa3JXWmyQicbmxuu.
 - Start with reference/handoffs/lead.md's RIGHT NOW block: link #3 is live on Matt's test link; 1-6 is finishing (ENG-16G), 1-8's engine
   (ENG-B5) and the tool fixes (TOOLS-1) are running and will report to the session on lead.md's top line, which you take at step 1.
+- The outgoing lead's call on tonight's team (yours to overrule): keep INT-9b (22% at 5:30) for phase B, link #4; keep ENG-16G (fresh,
+  report by 7:30 PM) to finish 1-6; retire ENG-B5 after its report (48%, over the box) and give BUILD-18 a fresh builder with a fresh
+  engine member on call; retire TOOLS-1 after its GREEN (near 40%), with R-165.251 to a fresh tools member. The story keeper stays.
