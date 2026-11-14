@@ -4,9 +4,30 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for BUILD-17 (11-14, t-build-17): section 0x (1-7 built; hanging cover; the perch at 56). Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for BUILD-17b (11-14, t-build-17): section 0y (1-7's shared faults fixed for every stage). Rewritten for BUILD-17 (11-14, t-build-17): section 0x (1-7 built; hanging cover; the perch at 56). Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0y. 1-7's shared faults, fixed where they live (BUILD-17b, t-build-17, 11-14): what the next engineer must know
+- **A kit sweeper is judged by its STRETCH** (levelCheck.ts safe spots; gen2/stillLay.ts `isKitSweeper`, `SWEEPER_KINDS`): its laid x is
+  only the stretch's start; its eye crosses [patrolMinX, patrolMaxX]. Against the spawn and the shrine it keeps SAFE_APPROACH as a walker's
+  patch does; a FLAG inside or beside a stretch is fair because every respawn stands the cast down (castPlay.ts `calm`: rest, a whole
+  calm, then the 2 s warn) and stillFaults puts a hide within one calm's walk of every spot. eagleKit.test "back at a flag inside its
+  stretch" holds the stand-down (planted: calm() not resetting the cool). If you ever change calm() or respawnAtCheckpoint, that test and
+  this exemption stand or fall together. pickups.test mirrors the rule (it re-implements the check on purpose).
+- **A listed stage is a built stage in the sheet preload** (stageSheets.ts `listed`, the same test as stageGenerator.ts listedRoll): it
+  takes its STAGE_DRAWS row, never the old generator's whole set. stageSheets.test now holds every listed row to what rolls 1-3 draw on
+  both settings, and W1_ROOMS to the World 1 stages that build rooms (only 1-6 today). A new listed stage needs its row the day it is listed.
+- **A creaky limb laid ACROSS a pit has the pit under it** (pipeline.ts layLocal, after the piece loop): a creak piece with a plain pit
+  gap ending at its near end and/or starting at its far end joins them into ONE pit lip to lip (same water/soft only; back/putBack/hurt
+  gaps are never joined). Before, each jump had its own pit and the limb's span had none: when it gave way he fell into nothing. Only
+  1-7 lays a limb by 'jump' (1-4 and 1-5 lay theirs 'over' a bank); its seed list still `--check`s 100/100. creak.test plants both.
+- **requiredMove.test is RED on purpose until 1-6 is replaced**: its fixture is the OLD hand-built 1-6, whose full first-timer was at
+  346.7 s of 360 before BUILD-16c's hopCatches (700a279e) and times out after it (bisected). The lead ruled (a), D40: no work on old 1-6;
+  link #3 carries the new 1-6, and the test re-points with it.
+- **The journal's 'hide' page teaches the OLD slide-down hide** (movesJournal.ts): it now opens only when 1-7 is cleared (its 1-7 tip
+  was a deleted line). Its words and demo need the keeper and the designer: 1-7 teaches keeping still in the green. The movesJournal
+  test reads every listed stage's built tips, so a page can never wait on a line the game no longer says.
 
 ## 0x. 1-7 built on the kit (BUILD-17, t-build-17, 11-14): what the next engineer must know
 - **1-7 is World 1 data**: gen2/worlds/w1Arc17.ts (kitLib17, finish17), stage-table row 'w1-17', listed.ts KITS/FINISH. The hand-built 1-7
