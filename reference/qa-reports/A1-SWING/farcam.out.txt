@@ -1,0 +1,24 @@
+SHORT 430 upright dist from back-of-swing foot 604 
+  g0.2 -0.45:out(-72) -0.2:out(-52) 0:out(-36) 0.2:out(-19) 0.405:out(-3)
+  g0.5 -0.45:out(-127) -0.2:out(-77) 0:out(-36) 0.2:out(6) 0.405:out(47)
+  g0.95 -0.45:out(-209) -0.2:out(-115) 0:out(-36) 0.2:out(44) 0.405:IN(50)
+SHORT 430 sideways dist from back-of-swing foot 604 
+  g0.2 -0.45:IN(243) -0.2:IN(262) 0:IN(279) 0.2:IN(296) 0.405:IN(312)
+  g0.5 -0.45:IN(188) -0.2:IN(237) 0:IN(279) 0.2:IN(321) 0.405:IN(362)
+  g0.95 -0.45:IN(105) -0.2:IN(200) 0:IN(279) 0.2:IN(358) 0.405:IN(436)
+LONG 500 upright dist from back-of-swing foot 674 
+  g0.2 -0.45:out(-142) -0.2:out(-122) 0:out(-106) 0.2:out(-89) 0.405:out(-73)
+  g0.5 -0.45:out(-197) -0.2:out(-147) 0:out(-106) 0.2:out(-64) 0.405:out(-23)
+  g0.95 -0.45:out(-279) -0.2:out(-185) 0:out(-106) 0.2:out(-26) 0.405:IN(50)
+LONG 500 sideways dist from back-of-swing foot 674 
+  g0.2 -0.45:IN(173) -0.2:IN(192) 0:IN(209) 0.2:IN(226) 0.405:IN(242)
+  g0.5 -0.45:IN(118) -0.2:IN(167) 0:IN(209) 0.2:IN(251) 0.405:IN(292)
+  g0.95 -0.45:IN(50) -0.2:IN(130) 0:IN(209) 0.2:IN(288) 0.405:IN(366)
+FAR 560 upright dist from back-of-swing foot 734 
+  g0.2 -0.45:out(-202) -0.2:out(-182) 0:out(-166) 0.2:out(-149) 0.405:out(-133)
+  g0.5 -0.45:out(-257) -0.2:out(-207) 0:out(-166) 0.2:out(-124) 0.405:out(-83)
+  g0.95 -0.45:out(-339) -0.2:out(-245) 0:out(-166) 0.2:out(-86) 0.405:out(-8)
+FAR 560 sideways dist from back-of-swing foot 734 
+  g0.2 -0.45:IN(113) -0.2:IN(132) 0:IN(149) 0.2:IN(166) 0.405:IN(182)
+  g0.5 -0.45:IN(58) -0.2:IN(107) 0:IN(149) 0.2:IN(191) 0.405:IN(232)
+  g0.95 -0.45:IN(50) -0.2:IN(70) 0:IN(149) 0.2:IN(228) 0.405:IN(306)
