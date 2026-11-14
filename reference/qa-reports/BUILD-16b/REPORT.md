@@ -4,13 +4,17 @@ t-build-16 from 9b167cf2; packet reference/packets/2026-11-14/BUILD-16b.md (lead
 (../BUILD-16/REPORT.md) holds the design and the first build.
 
 ## EXACT NEXT STEP (in order; a fresh builder can start here)
-1. Read `addlevel4.txt` if this session's run finished; otherwise re-run `npx tsx tools/engine/addlevel.ts 1-6 --par 4 --relist` on
+1. (This session's relist on 54a41eff wrote 100 of 100 seeds at 11:45 AM ET but was stopped before its `--check` and bots, by the
+   lead's 11:43 ruling: the list is NOT committed and was discarded.) Re-run `npx tsx tools/engine/addlevel.ts 1-6 --par 4 --relist` on
    54a41eff (about 14 min: rolls, list, `--check`, bots 1-40 both settings, registry). Give it a 2-hour background limit; 10 min killed
    mine once. Expect the bots to FAIL on "rescued xN" only: the pass rule needs 0 rescues (castBots.ts:48), and the swing bot falls into
    the moss pits and will not climb the root stair back LEFT (seed 4, x 6148: the stair 5611-5911 rises to y 910 under the 854 take-off;
    the bot reads "a 225 px wall ahead"). With the arcs gone the adult met the goal on seeds 4/22/33 (95/89, 88/87, 88/85) at the shrine.
-   That is a BOT limit (level.md rule 18): ask the lead whether a bot fix (firsttimer.ts: turn back up a stair out of a pit) comes first
-   or 1-6 lists with it named. Report got/need per seed from the bots' summary.
+   That is a BOT limit (level.md rule 18). **Lead's ruling 11:43 AM ET: the bot fix FIRST** (castBots' pass stays 0 rescues;
+   tools/inspect/firsttimer.ts learns the climb back up a pit's stair, proven by a planted toy test); never list around it. Then
+   re-run the bots and report got/need per seed.
+1b. **Lead's ruling 11:43 AM ET: the sealed line not showing within 34 s at the door is a 1-6 BLOCKER for Matt's link.** The TIPS member
+   owns it (R-165.241) and it lands before 1-6 goes on any link.
 2. Commit `src/game/gen2/proven/seeds-1-6.ts` + `provenIndex.ts` from that run (never the 16:06 list: it predates 54a41eff).
 3. Full suite on the exact head (3 shards, CLAUDE.md glob). On 56ba2bb0+list it was 1144 ok, 1 red: artUse.test.ts. Root cause: my
    template keys `${k}m${i}u${j}` read as `.*m.*u.*` to tools/art/artuse.mjs:61-64 and marked boss/golem/w4 art "drawn". Fixed in
