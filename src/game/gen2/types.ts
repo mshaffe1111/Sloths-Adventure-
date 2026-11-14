@@ -782,6 +782,10 @@ export interface WorldKit {
   /** called for every creature the stage lays (a socket's or a purge's top-up): where the world registers its own (World 5: a
    *  sleeping spider into proto.w5.spiders with `doze`, from a creature tagged 'sleeper') */
   spawn?: (e: Enemy, c: CreatureDef, out: StageSink) => void;
+  /** where the world moves its laid pieces so each is drawn on its own ground (World 1: a stone or stump kept back from its ground's lip by
+   *  its painted piece's margin, w1CutArt.ts settleCut, R-165.226), run on the laid stage before any check reads it: each piece it moves
+   *  and by how much (`dx`); `dx` NaN for a piece no move settles (its section is swapped, pipeline checkAndRepair) */
+  settle?: (platforms: Platform[]) => Array<{ p: Platform; dx: number }>;
 }
 
 /** a local repair the validation pass made (D3) */

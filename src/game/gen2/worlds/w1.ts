@@ -18,7 +18,7 @@ import { DOT_LINES } from '../../dotLinesData.ts';
 import type { CreakRow, Move, NodeJob, Phase, PortKind, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { DOUBLE_RISE, reachJump } from '../../physics.ts';
 import { hollowLogSize, w1DressFacing, w1DressWidth } from '../../w1NewArt.ts';
-import { pickCut, W1_CUT } from '../../w1CutArt.ts';
+import { cutOf, settleCut, W1_CUT } from '../../w1CutArt.ts';
 import type { Platform } from '../../types.ts';
 import { SPRINT_GRAPHS } from '../graphs.ts';
 import { BRIEF_13, LESSON_CARD_13, LINES_13, PURGE_13, SECTIONS_13, STAGE_13 } from './w1Arc13.ts';
@@ -1535,7 +1535,7 @@ export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean; cut?:
   // (a stone or stump stands on the ground: only where a solid piece meets its foot, so a pit's step drawn as a rock never ends in the air,
   //  Roll 5's upright still; a plank may float)
   const onGround = (p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>) => st.platforms.some((q) => q !== p && q.type === 'solid' && Math.abs(q.y - (p.y + p.height)) <= 6 && q.x <= p.x + p.width / 2 && q.x + q.width >= p.x + p.width / 2);
-  for (const p of st.platforms) if (p.type === 'solid') { const c = pickCut(p); if (c && (W1_CUT[c].kind === 'log' || onGround(p))) p.cut = c; }
+  for (const p of st.platforms) if (p.type === 'solid') { const c = cutOf(p); if (c && (W1_CUT[c].kind === 'log' || onGround(p))) p.cut = c; }
   // (a built roll only: a toy stage of bare platforms, w1CutArt.test's, has no spawn or sections to dress)
   // (the squirrels who came to watch him leave are a stage's own dressing: its stage-table row says so, stageTable.ts `squirrels`)
   if (squirrels && (st as { gen2?: unknown }).gen2) w1Squirrels(st as never);
@@ -1637,6 +1637,14 @@ export function w1World(): WorldKit {
     teachTips: ['traps', 'bare'],
   };
   // (the traps are armed by the animal that stays under them: the kit's own emitters and spawn hook, w1Cast.ts armedTraps)
-  return { manifest, ...armedTraps() };
+  // (R-165.226: each stone or stump drawn on its ground, its piece and its place settled in the lay, w1CutArt.ts settleCut)
+  const settle = (platforms: Platform[]) => platforms.flatMap((p) => {
+    if (p.type !== 'solid') return [];
+    const s = settleCut(p, platforms);
+    if (!s) return [];
+    p.cut = s.cut;
+    return [{ p, dx: s.dx }];
+  });
+  return { manifest, ...armedTraps(), settle };
 }
 
