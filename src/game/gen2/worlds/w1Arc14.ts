@@ -165,8 +165,11 @@ const GOING_UP: SectionTemplate = {
 } as SectionTemplate;
 
 /** [T] rotting boughs: one rotting bough a short drop over sound wood (it gives at the creak's hold); then two in a row he crosses at a
- *  walk. The sound wood runs under all three (a drop costs nothing) */
-const ROT = 110, SOUND_W = 640;
+ *  walk. The sound wood runs under all three (a drop costs nothing) and on, at its own height, into the way out: no edge to walk off.
+ *  (Until 11-14 the way out sat at the boughs' height, overhanging the sound wood's end by 120 px: a kid dropped by a creak walked on
+ *  under it and off that hidden end a storey down, castBots 1-4 kid Normal "fell back down" at the turn's vine on 18 of 40 seeds
+ *  after FIX-14d's turn fix, FIX-14d. From the last bough he steps down onto it, one branch down.) */
+const ROT = 110, SOUND_W = 560;
 const ROTTING: SectionTemplate = {
   id: 'w1-14-rotting', name: 'rotting boughs over sound wood', feel: [STAGE_14], own: true, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], jobs: ['teach'],
   difficulty: 3, content: 'crumble', teaches: 'creak', uses: [], needs: ['jump'],
@@ -176,9 +179,9 @@ const ROTTING: SectionTemplate = {
     branch('r1', { kind: 'over', on: 's', at: [30 / SOUND_W, 30 / SOUND_W], dy: [-80, -80] }, ROT, { creak: true }),
     branch('r2', { kind: 'over', on: 's', at: [300 / SOUND_W, 300 / SOUND_W], dy: [-80, -80] }, ROT, { creak: true }),
     branch('r3', { kind: 'over', on: 's', at: [410 / SOUND_W, 410 / SOUND_W], dy: [-80, -80] }, ROT, { creak: true }),
-    branch('z', { kind: 'walk', after: 'r3', dy: [0, 0] }, 200),
+    branch('z', { kind: 'walk', after: 's', dy: [0, 0] }, 200),
   ],
-  entry: { piece: 'a', kind: 'ledge' }, exit: { piece: 'z', kind: 'ledge' }, exitDy: 0,
+  entry: { piece: 'a', kind: 'ledge' }, exit: { piece: 'z', kind: 'ledge' }, exitDy: 80,
   sockets: [tip('tip', 'a', 0.3, 'creak')], mirrorable: false,
 } as SectionTemplate;
 
