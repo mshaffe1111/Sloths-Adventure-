@@ -236,9 +236,15 @@ function heldLandingsIn(v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number,
   }
   return out;
 }
+/**
+ * The setting's swing numbers (physics setTimedSwing: Easy's slower swing, wider sweet spot and longer grab), which every flight off a
+ * liana reads: each cache of a flight's answer is keyed by them, so a Normal build's answers are never handed to an Easy build in the
+ * same process, or back (R-165.244: the flights cache below was not, and a seed's stage changed with which setting was built before it)
+ */
+export const swingSettingKey = (): string => `${TIMED.period},${TIMED.grabX},${TIMED.sweetFrom},${TIMED.sweetTo}`;
 /** heldLandingsIn, kept by everything a flight reads (the vine, the way, the water, the pack, the setting's swing), as swingLandingsIn */
 function heldCached(v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number, dbl: boolean): Map<number, number> {
-  const key = `held|${JSON.stringify(v)}|${dir}|${waterY}|${dbl ? 1 : 0}|${TIMED.period},${TIMED.grabX},${TIMED.sweetFrom},${TIMED.sweetTo}|${pack.n}|${pack.y.join(',')}|${pack.lx.join(',')}|${pack.rx.join(',')}|${pack.id.join(',')}`;
+  const key = `held|${JSON.stringify(v)}|${dir}|${waterY}|${dbl ? 1 : 0}|${swingSettingKey()}|${pack.n}|${pack.y.join(',')}|${pack.lx.join(',')}|${pack.rx.join(',')}|${pack.id.join(',')}`;
   const hit = FLIGHTS.get(key);
   if (hit) return new Map(hit);
   const out = heldLandingsIn(v, dir, pack, waterY, dbl);
@@ -258,7 +264,7 @@ export function heldLandings(v: Vine, dir: 1 | -1, platforms: Platform[], waterY
 export function chainLines(A: Vine, B: Vine, dbl = false): number {
   // (pure: by everything the flight reads, the vines' swings and the setting's swing numbers, as physics chainPhase caches)
   const sw = (v: Vine) => `${v.x},${v.topY},${v.bottomY},${v.swingAmp},${v.swingPeriod},${v.swingPhase},${v.grip ?? ''}`;
-  const key = `${sw(A)}|${sw(B)}|${dbl ? 1 : 0}|${TIMED.period},${TIMED.grabX},${TIMED.sweetFrom},${TIMED.sweetTo}`;
+  const key = `${sw(A)}|${sw(B)}|${dbl ? 1 : 0}|${swingSettingKey()}`;
   const hit = CHAINS.get(key);
   if (hit !== undefined) return hit;
   const lines = Math.round(chainWindow(A, B, gripFlights(dbl), gripsOf(A.grip, A.bottomY - A.topY)) / (SIM_DTS[0] * 1000));
@@ -318,14 +324,15 @@ const NO_LANDING = -2147483647;
 const hitBuf = new Int32Array(100);
 
 /**
- * swingLandingsIn's answers, by everything a flight reads (the ledge's edge and height, the vine, the way, the water, the pack): the
- * physics keeps no state, so the same flight always lands the same, and lianaBand and the petal pass ask the same flights again and
- * again (8-5: one flight asked about five times over, 2026-10-31, the lead's idea). Bounded; each answer handed out as a copy
+ * swingLandingsIn's answers, by everything a flight reads (the ledge's edge and height, the vine, the way, the water, the pack, and the
+ * setting's swing: swingSettingKey): the physics keeps no other state, so the same flight always lands the same, and lianaBand and the
+ * petal pass ask the same flights again and again (8-5: one flight asked about five times over, 2026-10-31, the lead's idea). Bounded;
+ * each answer handed out as a copy
  */
 const FLIGHTS = new Map<string, Map<number, number>>();
 const FLIGHTS_MAX = 4000;
 function swingLandingsIn(a: Platform, v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number, dbl = false): Map<number, number> {
-  const key = `${a.x},${a.y},${a.width}|${JSON.stringify(v)}|${dir}|${waterY}|${v.grip && dbl ? 'dbl|' : ''}${pack.n},${pack.maxTop}|${pack.y.join(',')}|${pack.lx.join(',')}|${pack.rx.join(',')}|${pack.order.join(',')}|${pack.id.join(',')}`;
+  const key = `${a.x},${a.y},${a.width}|${JSON.stringify(v)}|${dir}|${waterY}|${v.grip && dbl ? 'dbl|' : ''}${swingSettingKey()}|${pack.n},${pack.maxTop}|${pack.y.join(',')}|${pack.lx.join(',')}|${pack.rx.join(',')}|${pack.order.join(',')}|${pack.id.join(',')}`;
   const hit = FLIGHTS.get(key);
   if (hit) return new Map(hit);
   const out = flightLandings(a, v, dir, pack, waterY, dbl);
