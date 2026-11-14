@@ -8,7 +8,20 @@ Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewr
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
-Rewritten again at the stop of RULER (2026-11-13, branch `t-ruler`): the per-gap pit ruler, built and HELD on 1-1's openings, R-165.221 (section 0o). Sections below are still true.
+Rewritten for POLISH-10 (11-14, t-polish-10): section 0t (sheet pieces, strip joins). Rewritten again at the stop of RULER (2026-11-13, branch `t-ruler`): the per-gap pit ruler, built and HELD on 1-1's openings, R-165.221 (section 0o). Sections below are still true.
+
+## 0t. Packed sheet pieces and strip joins (POLISH-10, R-165.243 / R-165.237, t-polish-10 from t-int-8, 11-14): what the next engineer must know
+- **A piece drawn from a packed sheet to its frame's edge pulls in its neighbour's edge row** (Chrome's drawImage filter reads past the
+  source rect). The ground sheets pack lips 0/1 right under the soil fills, whose bottom row is opaque in all ten worlds: every lip laid a
+  one-row soil line at alpha ~95 straight across the backdrop, 30-40 units above the bank (the lead's "dark line across World 1"). Now
+  lipSrc() samples LIP_INSET (4) rows in from a lip's top and bottom, drawn where those rows sat (groundSeams.test.ts, R-165.243 test).
+  Same family as FILL_INSET (0g). Ends (endFrame) have a faint neighbour on their LEFT (alpha 11-38): not yet shown to make a line.
+- **Finding which draw makes a line:** wrap CanvasRenderingContext2D draws, read one pixel before and after each (getImageData) on the
+  main canvas, then on the 397x397 ground squares: names the drawer in one run (POLISH-10 REPORT "Method update").
+- **Strip wraps:** scripts/strip-seamless.py's join can be undone by a later re-grade. 1-4's canopy middle (w1c-mid) was re-joined
+  (4.7 -> 0.3). Still rough at the wrap (join / column step): w2mist-mid 22.8, w1kapok-mid 19.5, w1sunrise-mid 15.2, w8sunset-mid 15.0,
+  w6dawn-mid 12.9, w1rain-mid 10.5, w3sinkhole-mid 10.1, w6moon-mid 7.9, w1dusk-mid 7.5, w1-mid 6.4. A forced re-join of w1-mid left
+  floating branch bits (its two ends differ too much): those need a look per strip, not a batch run.
 
 ## 0o. The per-gap pit ruler (RULER, R-165.197/.200, branch t-ruler from t-nodes@1829470f, 11-13): built, HELD on 1-1
 - **findOpenPits (w1Pits.ts) judges each gap by its own lips.** Ground is earth only (`EARTH_DEEP` 90: a bank, a stump, a pillar); a log
