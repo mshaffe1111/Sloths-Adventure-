@@ -44,20 +44,20 @@ export function edgeTint(gap: number): { k: number } {
  * Its look (C4, the lead's pick 11-14 over B2's full-height tint, which read as a "laser" column and vanished on dark backdrops): an
  * ember glow at the BREAK, at his feet (where the branch is going), or at the screen's trailing edge while the break is off it (upright,
  * the usual case: B2's stills), with a narrow dark band at that edge (it reads on a light, misty backdrop where the ember alone fades).
- * The glow's radius is `radius` of the screen's larger side (upright 0.55 of the height), the band `band` of the radius.
+ * The glow's radius is `radius` of the screen's larger side (upright 0.55 of the height); the dark core `band` of the radius wide, `tall` high.
  *
  * Baked ONCE per screen size into a cached canvas and stamped each frame with ONE drawImage at globalAlpha (EDGE.max x k): no gradient a
  * frame (PERFORMANCE-RULES §1; tools/perf/limits.json allows 2 on the whole frame). Baked again when the screen size changes, and when
  * the phone takes the canvas back (D6: canvasLost).
  */
-export const GLOW = { radius: 0.42, band: 0.18 } as const;
+export const GLOW = { radius: 0.42, band: 0.32, tall: 0.22 } as const;
 
 let edgeBaked: { w: number; h: number; cv: HTMLCanvasElement } | null = null;
 let edgeBakeCount = 0;
 /** how many times the edge has been baked (the tests: once per screen size, again after a loss) */
 export const edgeBakes = (): number => edgeBakeCount;
 
-/** the baked edge for a screen `w` x `h` (screen px): the glow's middle at its left edge, half way down (x 0, y h); null with no canvas */
+/** the baked edge for a screen `w` x `h` (screen px): a square, the glow's middle at its middle; null with no canvas */
 export function edgeCanvas(w: number, h: number): HTMLCanvasElement | null {
   w = Math.max(1, Math.round(w));
   h = Math.max(1, Math.round(h));
@@ -65,25 +65,31 @@ export function edgeCanvas(w: number, h: number): HTMLCanvasElement | null {
   if (typeof document === 'undefined') return null;
   const r = Math.max(24, Math.round(GLOW.radius * Math.max(w, 0.55 * h)));
   const cv = document.createElement('canvas');
-  cv.width = r;
-  cv.height = 2 * h;
+  cv.width = 2 * r;
+  cv.height = 2 * r;
   const g = cv.getContext('2d');
   if (!g) return null;
-  // (the ember: hot at the break, cooling to nothing; one long ramp, no stripe: a short fade drew a hard orange band, B2's first stills)
-  const glow = g.createRadialGradient(0, h, 0, 0, h, r);
+  // (the ember: a disc centred ON the break, hot there and cooling to nothing both ways, so the fallen side darkens into it too and no
+  // edge of the picture shows on screen: B4's first clip, drawn from the break rightward only, cut a hard full-height seam at the break)
+  const glow = g.createRadialGradient(r, r, 0, r, r, r);
   glow.addColorStop(0, 'rgba(255, 168, 70, 0.95)');
   glow.addColorStop(0.2, 'rgba(236, 104, 34, 0.78)');
   glow.addColorStop(0.55, 'rgba(150, 42, 12, 0.36)');
   glow.addColorStop(1, 'rgba(60, 12, 4, 0)');
   g.fillStyle = glow;
-  g.fillRect(0, 0, r, 2 * h);
-  // (the band: near black and warm at the edge, gone within `band` of the radius)
+  g.fillRect(0, 0, 2 * r, 2 * r);
+  // (the dark core: a squat ellipse at the break on the branch line, near black and warm, `band` of the radius wide and `tall` of it high: on a light,
+  // misty backdrop the ember alone fades; never a full-height column, which read as a "laser", B2)
   const bw = Math.max(6, Math.round(GLOW.band * r));
-  const band = g.createLinearGradient(0, 0, bw, 0);
-  band.addColorStop(0, 'rgba(14, 4, 2, 0.85)');
-  band.addColorStop(1, 'rgba(14, 4, 2, 0)');
-  g.fillStyle = band;
-  g.fillRect(0, 0, bw, 2 * h);
+  g.save();
+  g.translate(r, r);
+  g.scale(1, (GLOW.tall * r) / bw);
+  const core = g.createRadialGradient(0, 0, 0, 0, 0, bw);
+  core.addColorStop(0, 'rgba(14, 4, 2, 0.8)');
+  core.addColorStop(1, 'rgba(14, 4, 2, 0)');
+  g.fillStyle = core;
+  g.fillRect(-bw, -bw, 2 * bw, 2 * bw);
+  g.restore();
   edgeBaked = { w, h, cv };
   edgeBakeCount++;
   return cv;
@@ -224,7 +230,7 @@ class ChasePiece implements StagePiece {
     if (!cv) return;
     const was = ctx.globalAlpha;
     ctx.globalAlpha = EDGE.max * k;
-    ctx.drawImage(cv, Math.max(0, (behind - v.x) * v.zoom), (p.y + p.height - v.y) * v.zoom - cv.height / 2);
+    ctx.drawImage(cv, Math.max(0, (behind - v.x) * v.zoom) - cv.width / 2, (p.y + p.height - v.y) * v.zoom - cv.height / 2);
     ctx.globalAlpha = was;
   }
 }

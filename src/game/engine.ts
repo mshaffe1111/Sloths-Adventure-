@@ -5799,7 +5799,7 @@ export class GameEngine {
     this.addFloatingText('Back at your flag', p.x, p.y - 74, '#fde68a', 1.6);
   }
 
-  private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt', respawnTake = true) {
+  private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt', respawnTake = true, lifeNote = true) {
     const p = this.player;
     // the rising rivers go back down: he comes back to water at its starting level
     this.floodAt.clear();
@@ -5884,7 +5884,8 @@ export class GameEngine {
     // enough to read; any older words still rising there go first
     this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
     // one small note in place of "TRY AGAIN!" / "OH NO!" and "N LIVES LEFT" (AN-1, AN-3; a Game Over pick-up has them all back)
-    this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'life' : 'lives'} left`, p.x, p.y - 74, '#fde68a', 1.6);
+    // (only when a life went: a chase's catch puts him back a HEART down, and "3 lives left" over him read as a life lost, ENG-B4's clip)
+    if (lifeNote) this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'life' : 'lives'} left`, p.x, p.y - 74, '#fde68a', 1.6);
     // Dot's flight: she comes back at the last flower she drank at
     if (this.dotRun) this.dotRun.fl.respawn();
     if (this.slideRun?.sliding) this.slideRun.respawn();
@@ -8254,7 +8255,8 @@ export class GameEngine {
     sound.playPlayerHurt();
     if (hp <= 0) this.loseLife('pit');
     else {
-      this.respawnAtCheckpoint('pit');
+      // (a heart, not a life: no "lives left" note)
+      this.respawnAtCheckpoint('pit', true, false);
       p.hp = hp;
     }
   }

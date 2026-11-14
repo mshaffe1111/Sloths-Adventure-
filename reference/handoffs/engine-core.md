@@ -4,38 +4,45 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for B3 (11-14, t-eng-b3): section 0v (the chase laid by gen2). Rewritten for B1 (11-13, t-b1-chase): section 0u (the chase piece). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for B4 (11-14, t-eng-b4): section 0v (the chase laid by gen2, finished for 1-8's builder: what a builder can lay now, what is open). Rewritten for B3 (11-14, t-eng-b3): section 0v's first form. Rewritten for B1 (11-13, t-b1-chase): section 0u (the chase piece). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
-## 0v. The chase LAID by gen2 (B3 = B5 CHASE-LAY, ENGINE-678 W2, t-eng-b3 from t-b2-chase@42d2d7a6, 11-14): what the next engineer must know
-- **Job K is a chase node now** (nodeLetters.ts: out of LATER; V13 still refuses it in a world's first stage). A K node is filled from
-  the sections a practise or flow node takes (pipeline.ts `servesJob`: ONE rule read by poolFits, the lay's jobFits, the deal's and the
-  asks' views; no pool lists 'pressure', so before this every K slot was "pool short" and the roll failed).
-- **The lay** (gen2/chaseLay.ts `layChase`, called in buildGen2Stage after buildRolled and BEFORE applyVerdicts): each K node's
-  sections make one stretch, or more: a stretch is at most `chaseCap()` = ROLLED_FLAGS.max - FLAG_SPAN.pad (3,840 px; DERIVED from Matt's
-  flag span, the lead's ruling 11-14 9:00 AM: never a number of its own), so a longer K is split at a route piece 300 px+ wide, which
-  stays whole as a living fork. The nodes after a K up to the next K are its fork. Its sections' own pieces (PlacedPiece, main or
-  not; kept per stage in pipeline.ts PIECES_OF; plain solid only, `breakable`) are cut into ~222 px branch sections (`cutSections`: same
-  top, depth and edges, the first IS the piece, so the solids' union the verdicts judged is unchanged), marked `chase`. A section's
-  SEAM (a pit's floor and steps, under the branch) is never cut: it stays as the pit's ground (the lead's option: not on a chase section).
-- **Flags** (Matt's rules win): none inside a stretch. Walking right on ROUTE ground (main pieces) outside every stretch, each flag
-  ROLLED_FLAGS.min-max (900-4,000 px) from the one before: before crack 1 the latest spot within 600 px that the rolled flags (or the
-  spawn) reach; before each later crack the latest spot on its fork, with an extra flag on a fork the span needs it; one where he
-  reaches the last fork. Rolled flags between go. Then rolledFlagBreaches judges them as on every rolled stage.
-- **Yield** (30 W1 rolls of `A T P F R K R K R S E` at stage 8, 1-1's brief): Normal 15 laid / 15 refused, Easy 23 / 7; every refusal is a
-  named flag spot (`no spot for a flag on the fork before stretch N`), none a verdict breach. Next gain: end a stretch where the flag
-  walk needs a stop (split by the realised run-up, not the cap alone).
-- **Refusals by name** (each a gen2.errors line, the seed fails): `nK (K) runs P px ... with no piece 300 px wide to stop on within the
-  3840 px cap`, `runs straight into`, `the fork after nK (K) is P px`, `has no plain ground to break`, `no spot for a flag ...`, plus
-  chaseLayProblems.
-- **Easy** (easyMode.ts easyStage) adds its own flags between Normal's: it now never stands one inside a laid stretch.
-- **Tests** (gen2/chaseLay.test.ts): a fixture `1-98` = World 1's real kit, 1-1's brief (no fork, no deal) at stage 8, listed with 1-1's
-  reach scope (listed.ts withTestStage + reach.ts JUDGED); the in-play test plants a seed clean on BOTH settings as a proven list and starts
-  the real engine (drawPlats holds no chase section; the piece starts). Easy re-lays Normal's plan with its own gaps: its x differ.
-- **Not done (B3):** the C4 tint bake; clips of a laid chase (no real stage lays K until 1-8's arc w1Arc08); `last` on a stretch (the
-  finale as the last stretch: B6); drawcheck on a chase stage (add it the day 1-8 lays one, D51). Measured: 0 creatures and 0
-  dressing pieces stood on a stretch in 30 rolls; a split can leave a short stretch (Easy: one of 150 px seen).
+## 0v. The chase LAID by gen2 (B3 laid it, B4 finished it for 1-8's builder; ENGINE-678 W2, t-eng-b4 from t-eng-b3@71da15cd, 11-14)
+- **Job K is a chase node** (nodeLetters.ts; V13 refuses it in a world's first stage). A K node is filled from the sections a practise or
+  flow node takes (pipeline.ts `servesJob`, ONE rule read by every fit site; no pool lists 'pressure'). **L (finale) after the last K is
+  the LAST stretch** (`last: true`: its front runs the row's final burst, chase.ts planOf; none without an L).
+- **The lay** (gen2/chaseLay.ts `layChase`, buildGen2Stage after buildRolled, BEFORE applyVerdicts). Stretches and flags are walked
+  TOGETHER, left to right (B4): a stretch runs on while the flag before its crack, standing where it really stands (the realised
+  run-up), reaches a flag on the ground after it within ROLLED_FLAGS.max, and the cap `chaseCap()` (max - pad, 3,840) holds; past that
+  it is split at a plain route piece forkMin+ wide that flag reaches (a living fork, never cut, a flag on it). Every stretch is at least
+  `chaseFloor()` = ceil(behind x maxRun / base) = 645 px (Normal row: shorter, nothing falls under him); a split never leaves a
+  shorter rest (it joins the fork); a K node under it is refused by name. The first crack may set off at the end of one of the node's
+  own route pieces when no spot within `flagBefore` (600, now honoured exactly) of its first section is reachable (a rolled flag ~1,000
+  px before it). The fork after the last stretch: its flag is the first spot whose flags break no rule of rolledFlagBreaches (D19: the
+  verdict's own code), or a rolled flag already in reach; after it the rolled pass's own span fill runs again to the exit.
+- **Cut and checks:** the stretch's own route pieces (plain solid, `breakable`) cut into ~222 px sections marked `chase` (the first IS
+  the piece). A section's seam (a pit's floor and steps) is never cut: it stays as the pit's ground under the fall (the ruling's option
+  2). `chaseStanders`: a dressing piece (proto.dress, decor, w3decor, kitDecor) whose foot is on a chase section's top, or a creature
+  whose patch runs over one with its feet on it, refuses the lay by name (D16; 0 seen on World 1).
+- **Two roots fixed in pipeline.ts (B4):** applyVerdicts clears windowMiss/flagMiss/towerMiss before judging (the search's rollUnmet
+  judged the stage before the lay; its stale miss refused 2 of 30 chase rolls whose own flags passed); Easy's Normal build lays its
+  chase before it is judged (Easy carried Normal's PRE-lay flag misses). Lock 102/102 unchanged.
+- **Yield** (`npx tsx tools/engine/chaseYield.ts [code] [n] [ends]`, World 1's kit, 1-1's brief, stage 8): `A T P F R K R K R S E`
+  **30/30 Normal, 30/30 Easy** (B3: 15/23, 16/19 at my first measure), stretches 822-3,780 px, 2.3 a stage. With an L (`... R L S E`,
+  ends finale): 30/30 both, but World 1's pool has NO finale section (pool short): 1-8's arc must bring them (Content).
+- **The edge (C4, B4):** pieces/chasePiece.ts `edgeCanvas(w, h)`: an ember radial glow + a narrow dark band, baked ONCE per screen size,
+  stamped with ONE drawImage at globalAlpha EDGE.max x k (k by the front's gap: 0 at 650 px, full at 150), anchored at the break when it
+  is on screen, else at the trailing edge, at his feet. Re-baked on a size change or canvasLost (D6). No gradient a frame.
+- **Bots** (tools/inspect/chaseBots.test.ts, CI): engine.ts guideView.chase is on while he is on a laid stretch; the tier bots then keep
+  the thumb down and stand at an edge only if the stand fits the front's stop budget (firsttimer.ts chaseRoom, CHASE_MARGIN 0.8 s).
+  Planted: a 2.8 s stopper is caught without the skill (noChaseStride), never with it. No tier bot is ever caught. **OPEN (todo):** the
+  child tier reaches the fork on 1 of 3 seeds: every miss a FALL at a 120 px gap (a heart and the flag), never a catch.
+- **Not built (named):** the rolling nut and bouncing fruit (no rolling hazard anywhere in src/game: 1-8.md NEW 2, M, + HF art NEW 3);
+  the chase camera lead for a LAID chase (only the old 1-8's `p.x - vw * 0.3`, engine.ts:6175; NEW 5); the liana phased to a runner;
+  the still fork's eagle; the tip; drawcheck on a chase stage (needs a stage the page can load: w1Arc08, or a QA fixture route).
+- **Traps:** never edit src/ while a Vite shoot or the unit suite runs in the same tree; a lay test that asserts refusals exist asserts a
+  defect (B3's "some rolls are refused" went when the yield reached 30/30); judge flags with rolledFlagBreaches, never a copy of it.
 
 ## 0u. The chase as a piece (B1 CHASE-CORE, ENGINE-678 W1, t-b1-chase from t-hooks@994ea4e7, 11-13): what the next engineer must know
 - **Data:** `GeneratedStage.chase?: ChaseLay` (chase.ts) = stretches `{start, end, last?}` left to right; between one's `end` and the next's

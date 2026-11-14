@@ -96,6 +96,8 @@ for (const id of ['1-2', '2-1']) {
     test(`chase piece ${id} ${set}: he stops on a stretch: caught within the stop budget, a heart (not a life), back at his flag, the branch whole`, () => {
       const { r, e, b, piece } = onBranch(id, easy);
       r.stand(b.lay.stretches[0].start + 10, Y);
+      const notes: string[] = [];
+      (e as unknown as { addFloatingText: (text: string) => void }).addFloatingText = (text: string) => void notes.push(text);
       const hp = r.p.hp;
       let t = 0;
       while (r.p.hp === hp && t < 10) (r.frame(), (t += DT));
@@ -105,7 +107,11 @@ for (const id of ['1-2', '2-1']) {
       assert.ok(Math.abs(t - budget) < 2 * DT, `caught after ${t.toFixed(2)} s; the ${set} budget is ${budget.toFixed(2)} s`);
       assert.equal(r.p.hp, hp - 1, 'a heart');
       assert.equal(r.died, false, 'not a life');
+      // (and nothing says one was: a heart's put-back floats no "N lives left" (ENG-B4's caught clip, 1-2 Normal f90: "3 lives left" over
+      // him with every life still his))
       assert.ok(Math.abs(r.p.x - e.checkpoint.x) < 40, `back at his flag (x ${r.p.x.toFixed(0)})`);
+      for (let k = 0; k < 45; k++) r.frame();
+      assert.ok(!notes.some((n) => /lives? left/.test(n)), `no lives note after a heart: ${notes}`);
       assert.ok(b.plats.every((pl) => !pl.broken), 'the branch whole again from his flag');
       assert.equal(piece.run.fronts[0].active, false, 'the collapse waits for him to pass its crack again (his flag is before it)');
     });
@@ -236,6 +242,10 @@ test('the trailing edge (C4): baked once per screen size, ONE drawImage a frame 
       createLinearGradient: () => (bakedGrads.push('linear'), { addColorStop: () => {} }),
       fillRect: () => {},
       fillStyle: '',
+      save: () => {},
+      restore: () => {},
+      translate: () => {},
+      scale: () => {},
       isContextLost: () => lostNow,
     };
     return { width: 0, height: 0, getContext: () => g, addEventListener: () => {} };
@@ -248,13 +258,13 @@ test('the trailing edge (C4): baked once per screen size, ONE drawImage a frame 
     assert.ok(piece);
     const drawn = (gap: number) => {
       Object.assign(piece.run.fronts[0], { front: 2000 - gap, active: true, hold: 0 });
-      const calls: Array<{ alpha: number; x: number; y: number; h: number }> = [];
+      const calls: Array<{ alpha: number; x: number; y: number; w: number; h: number }> = [];
       let grads = 0;
       const rec = {
         globalAlpha: 1,
         createLinearGradient: () => (grads++, { addColorStop: () => {} }),
         createRadialGradient: () => (grads++, { addColorStop: () => {} }),
-        drawImage: (cv: { height: number }, x: number, y: number) => void calls.push({ alpha: rec.globalAlpha, x, y, h: cv.height }),
+        drawImage: (cv: { width: number; height: number }, x: number, y: number) => void calls.push({ alpha: rec.globalAlpha, x, y, w: cv.width, h: cv.height }),
         fillRect: () => {},
       };
       const ctx = rec as unknown as CanvasRenderingContext2D;
@@ -276,13 +286,14 @@ test('the trailing edge (C4): baked once per screen size, ONE drawImage a frame 
       last = a;
     }
     assert.equal(edgeBakes() - b0, 1, 'baked once for the screen size, however many frames');
-    assert.deepEqual(bakedGrads, ['radial', 'linear'], 'the bake holds the glow and the band');
+    assert.deepEqual(bakedGrads, ['radial', 'radial'], 'the bake holds the glow and the dark core');
     // (anchored at his feet; at the break when it is on screen, else at the trailing edge)
     const off = drawn(400);
-    assert.equal(off.x, 0, 'the break 400 px back is off this screen: at its edge');
+    assert.equal(off.x + off.w / 2, 0, 'the break 400 px back is off this screen: centred on its edge');
     assert.equal(off.y + off.h / 2, Y + 60 - view.y, 'the glow\'s middle at his feet');
     Object.assign(view, { x: 1500 });
-    assert.equal(drawn(400).x, 100, 'the break on screen: the glow sits on it');
+    const on = drawn(400);
+    assert.equal(on.x + on.w / 2, 100, 'the break on screen: the glow is centred on it');
     // (a new screen size, a turn: baked again; a lost canvas: baked again)
     Object.assign(view, { w: 915, h: 412 });
     drawn(150);
