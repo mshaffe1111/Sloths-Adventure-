@@ -6,8 +6,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import './headlessDom.ts';
-import { buildChaseFixtureStage, chaseFixtureConfig, chaseFixtureLevel, CHASE_FIXTURE_ID, layFixtureRolling } from './chaseFixtureStage.ts';
-import { rollProblems, rollTeaches } from './rolling.ts';
+import { buildChaseFixtureStage, chaseFixtureConfig, chaseFixtureLevel, CHASE_FIXTURE_ID } from './chaseFixtureStage.ts';
+import { rollGroundProblems, rollProblems, rollTeaches } from './rolling.ts';
 import { stretchAt } from './chase.ts';
 import { generateStage } from './stageGenerator.ts';
 
@@ -29,6 +29,7 @@ test('chase fixture: a real laid chase, both settings, three seeds: its nuts and
       assert.ok(st.chase?.stretches.length, `${at}: no chase laid`);
       const rl = st.rolling ?? [];
       assert.deepEqual(rollProblems(rl), [], at);
+      assert.deepEqual(rollGroundProblems(rl, st.platforms), [], `${at}: every run-in plain ground (no rock, no gap)`);
       assert.ok(rl.length >= 3, `${at}: ${rl.length} hazards`);
       assert.ok(rl.some((h) => !h.teach), `${at}: none on a stretch`);
       assert.ok(rl.some((h) => h.kind === 'low') && rl.some((h) => h.kind === 'high'), `${at}: both heights`);
@@ -41,7 +42,6 @@ test('chase fixture: a real laid chase, both settings, three seeds: its nuts and
           assert.ok(st.platforms.some((p) => p.type === 'solid' && x >= p.x && x <= p.x + p.width), `${at}: ${h.kind} at ${h.dropX}: no ground at ${x}`);
         }
       }
-      assert.deepEqual(layFixtureRolling(st), rl, `${at}: the lay is the stage's own data (the same again)`);
     }
   }
 });

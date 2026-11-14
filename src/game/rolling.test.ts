@@ -11,7 +11,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay, type Pad } from './realPlay.ts';
 import { setDifficulty } from './difficulty.ts';
-import { arcTime, phasedPace, rollAhead, rollProblems, rollTeaches, rollTell, ROLL, type RollSpec } from './rolling.ts';
+import { arcTime, phasedPace, rollAhead, rollGroundProblems, rollProblems, rollTeaches, rollTell, ROLL, type RollSpec } from './rolling.ts';
 import { ROLLING_PIECE, type Rolling, type RollingPiece } from './pieces/rollingPiece.ts';
 import { PHYS } from './physics.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
@@ -198,4 +198,13 @@ test('rolling: the shortest tap (one frame), pressed in time, clears a nut at a 
   const tap = windowOf(1), held = windowOf(3);
   assert.ok(tap >= 2, `a one-frame tap clears it from ${tap} of the press points 5 px apart`);
   assert.ok(held >= 4 && held > tap, `a three-frame hop: ${held}`);
+});
+
+test('rolling: a hazard whose run-in holds a rock he must hop, or a gap, is refused by name', () => {
+  const floor = { x: 0, y: 500, width: 4000, height: 400, type: 'solid' as const };
+  assert.deepEqual(rollGroundProblems([NUT], [floor]), []);
+  const rock = { x: 1300, y: 440, width: 60, height: 60, type: 'solid' as const };
+  assert.ok(/a wall at x 1300/.test(rollGroundProblems([NUT], [floor, rock]).join()), 'a rock in the run-in');
+  const gap = [{ ...floor, width: 1200 }, { ...floor, x: 1320, width: 2000 }];
+  assert.ok(/a gap at x 12/.test(rollGroundProblems([NUT], gap).join()), 'a gap in the run-in');
 });

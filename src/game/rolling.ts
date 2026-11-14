@@ -20,6 +20,7 @@
  */
 import { PHYS } from './physics.ts';
 import type { ChaseLay } from './chase.ts';
+import type { Platform } from './types.ts';
 
 export type RollKind = 'low' | 'high';
 
@@ -186,6 +187,40 @@ export function rollProblems(specs: readonly RollSpec[]): string[] {
     if (!(s.speed > 0) || s.speed >= PHYS.maxRun) out.push(`${at}: pace ${s.speed} px/s is not under his run (${PHYS.maxRun})`);
     if (s.kind === 'low' && (s.bounce < 0 || s.bounce > ROLL.lowBounceMax)) out.push(`${at}: a nut's rattle of ${s.bounce} px is not a hop (0-${ROLL.lowBounceMax})`);
     if (s.kind === 'high' && s.bounce < clearMin) out.push(`${at}: an arc of ${s.bounce} px passes through his head (it must clear ${clearMin.toFixed(1)})`);
+  }
+  return out;
+}
+
+/** what stands in a hazard's run-in, from its farthest set-off (Normal or Easy) to where it lands: every wall on it, the first gap */
+export function runIn<P extends Pick<Platform, 'x' | 'y' | 'width' | 'height' | 'type'>>(s: RollSpec, plats: readonly P[]): { land: number | null; walls: P[]; gapAt: number | null } {
+  const solid = plats.filter((p) => p.type === 'solid');
+  const from = s.dropX - Math.max(rollAhead(s, false), rollAhead(s, true));
+  const at = solid.filter((p) => s.dropX >= p.x && s.dropX <= p.x + p.width);
+  if (!at.length) return { land: null, walls: [], gapAt: null };
+  // (where it lands: the ground's top there, the lowest top under it when a rock stands on the ground)
+  const land = at.reduce((m, p) => Math.max(m, p.y), -Infinity);
+  const walls: P[] = [];
+  for (let x = from; x <= s.dropX; x += 10) {
+    const here = solid.filter((p) => x >= p.x && x <= p.x + p.width);
+    if (!here.length) return { land, walls, gapAt: x };
+    for (const p of here) if (p.y < land - 12 && p.y + p.height >= land - 4 && !walls.includes(p)) walls.push(p);
+  }
+  return { land, walls, gapAt: null };
+}
+
+/**
+ * a hazard laid where its run-in is not plain ground, by name: from where it is set off (its farthest, Normal or Easy) to where it lands
+ * there must be ground under every step, and no wall standing on it (a rock or a step he must hop: a nut would roll through it, and his
+ * hop for the rock is a second threat on the same beat, 1-8.md "one threat at a time")
+ */
+export function rollGroundProblems(specs: readonly RollSpec[], plats: readonly Pick<Platform, 'x' | 'y' | 'width' | 'height' | 'type'>[]): string[] {
+  const out: string[] = [];
+  for (const s of specs) {
+    const r = runIn(s, plats);
+    const at = `${s.kind} at x ${Math.round(s.dropX)}`;
+    if (r.land === null) out.push(`${at}: no ground where it lands`);
+    else if (r.gapAt !== null) out.push(`${at}: a gap at x ${Math.round(r.gapAt)} in its run-in`);
+    else if (r.walls.length) out.push(`${at}: a wall at x ${Math.round(r.walls[0].x)} in its run-in`);
   }
   return out;
 }

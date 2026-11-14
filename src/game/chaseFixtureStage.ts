@@ -12,7 +12,7 @@
 import type { LevelConfig } from './types.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { RollSpec } from './rolling.ts';
-import { ROLL, rollAhead } from './rolling.ts';
+import { ROLL, rollAhead, rollGroundProblems, runIn } from './rolling.ts';
 import { buildGen2Stage } from './gen2/pipeline.ts';
 import { withTestStage } from './gen2/listed.ts';
 import { JUDGED } from './gen2/reach.ts';
@@ -72,7 +72,7 @@ const STEP = 560;
  * nuts and fruit on a laid chase, by its own ground: the teach pair on the ground before the first crack, then one hazard to each run
  * of unbroken ground on a stretch at least RUN_NEED + AFTER px long, landing RUN_NEED into it, nut and fruit in turn
  */
-export function layFixtureRolling(st: Pick<GeneratedStage, 'chase' | 'platforms'>): RollSpec[] {
+export function layFixtureRolling(st: Pick<GeneratedStage, 'chase' | 'platforms'> & { proto?: unknown; enemies?: unknown }): RollSpec[] {
   const lay = st.chase;
   if (!lay?.stretches.length) return [];
   const out: RollSpec[] = [];
@@ -104,10 +104,29 @@ export function layFixtureRolling(st: Pick<GeneratedStage, 'chase' | 'platforms'
     }
   }
   out.sort((a, b) => a.dropX - b.dropX);
+  // (a spot whose run-in has a gap is not laid; 1-1's ground carries a hop rock every 300-500 px, so the fixture CLEARS the rocks in a
+  // run-in when nothing stands on them (no dressing, no creature: D16), or lays nothing there. The lay's own check, rolling.ts)
+  const plain = out.filter((h) => {
+    const r = runIn(h, st.platforms);
+    if (r.land === null || r.gapAt !== null || r.walls.some((w) => carries(st, w))) return false;
+    st.platforms = st.platforms.filter((p) => !r.walls.includes(p));
+    return !rollGroundProblems([h], st.platforms).length;
+  });
+  out.length = 0;
+  out.push(...plain);
   return out.filter((h, i) => i === 0 || h.dropX - out[i - 1].dropX >= rollAhead(h, true) + ROLL.lowR);
 }
 
 type RollKind = RollSpec['kind'];
+
+/** something stands on this rock: dressing whose foot is on its top, or a creature on it (D16). The petal over a hop rock (1-1's
+ *  reward for the hop) stays where it is: a pickup in the air is an ordinary pickup */
+function carries(st: Pick<GeneratedStage, 'platforms'> & { proto?: unknown; enemies?: unknown }, w: { x: number; y: number; width: number }): boolean {
+  const on = (x: number, y: number, tol = 12) => x >= w.x - 4 && x <= w.x + w.width + 4 && Math.abs(y - w.y) <= tol;
+  const pr = st.proto as Record<string, Array<{ x: number; b: number }> | undefined> | undefined;
+  for (const k of ['dress', 'decor', 'w3decor', 'kitDecor']) if ((pr?.[k] ?? []).some((q) => on(q.x, q.b))) return true;
+  return ((st.enemies as Array<{ x: number; y: number; height: number; width: number }>) ?? []).some((e) => on(e.x + e.width / 2, e.y + e.height));
+}
 const spec = (kind: RollKind, dropX: number, teach: boolean): RollSpec => ({ kind, dropX: Math.round(dropX), ...(kind === 'low' ? NUT : FRUIT), teach });
 
 /** the fixture built: the game's own gen2 build of 1-98 at this seed and setting, its hazards laid; the built config, under the id asked for */
