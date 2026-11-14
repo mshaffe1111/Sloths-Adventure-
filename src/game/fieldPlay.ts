@@ -276,7 +276,7 @@ export class FieldPlay {
     }
     for (const pod of this.pods) {
       if (pod.x < x0 - 60 || pod.x > x1 + 60) continue;
-      drawPod(ctx, pod, podAt(pod, beat(pod.clock, pod.shift)), t);
+      drawPod(ctx, pod, podAt(pod, beat(pod.clock, pod.shift)), t, this.vines.find((v) => v.id === pod.vine));
     }
   }
 

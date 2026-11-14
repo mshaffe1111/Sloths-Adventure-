@@ -77,5 +77,23 @@ if (MODE === 'gate') {
   await cap('The way up is open.'); await step({ up: true }, 40, { safe: true });
   console.log('HEAD most over the shut underside (px, <= 0 is under):', worst);
 }
+if (MODE === 'pods') {
+  const pod = await p.evaluate((E) => {
+    const e = eval(E); const pods = [...e.field.pods].sort((a, z) => z.land - a.land); const pod = pods[0];
+    window.__m = { pod }; const x = pod.x + 70;
+    const under = e.platforms.filter((q) => !q.broken && x >= q.x && x <= q.x + q.width && q.y >= pod.land - 30).sort((a, z) => a.y - z.y)[0];
+    e.hands = null; Object.assign(e.player, { x, y: under ? under.y : pod.land, vx: 0, vy: 0, climbing: false, grounded: true, facing: -1 });
+    return { x: pod.x, top: pod.top, land: pod.land, speed: pod.speed, clock: pod.clock };
+  }, E);
+  console.log('POD', JSON.stringify(pod));
+  const phase = () => p.evaluate((E) => { const e = eval(E); const P = window.__m.pod; return e.fieldHost.beat(P.clock, P.shift).phase; }, E);
+  await hold(30, { noShot: true });
+  for (let i = 0; i < 300; i++) { if ((await phase()) === 'off' || (await phase()) === 'rest') break; await hold(1, { noShot: true }); }
+  for (let i = 0; i < 300; i++) { if ((await phase()) === 'warn') break; await hold(1, { noShot: true }); }
+  await hold(6, { noShot: true });
+  await cap('The pod\'s <b>vine lights up and shakes</b>, dust sifts down: 1.5 s…'); await hold(40);
+  await cap('…then it drops, slow (300 px/s).'); await hold(40);
+  await cap('A long quiet before the next.'); await hold(30);
+}
 await ctx.close(); await b.close();
 console.log('FRAMES', frame);
