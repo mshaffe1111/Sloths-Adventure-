@@ -11,6 +11,7 @@ ahead: "We're not reacting, but we are ready for everything that happens." Engin
 code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps this.
 
 ## STANDING DIRECTION FROM MATT (11-13; every lead keeps these; written 10:16 AM ET)
+- **PITCH ROUNDS CHOOSE EVERY LEVEL (Matt, 11-14 6:23-6:28 PM ET):** two blind pitchers (high + xhigh) pitch the next three levels; research what players LOVED, drawn from his whole list (classics and lesser-known, at most one famous game per level); the lead picks or sends both back. Method: reference/methods/pitch.md.
 - **THE ENGINE DRIVES DEVELOPMENT (Matt, 11-14 1:55 PM ET):** "Game engine drives development... the pieces in the engine that are going to
   be repeated. One-offs can be done by the developers... we are always trying to shave time for each level... Not cut quality, but improve
   every level. It needs to be strategic, it needs to be lean, it needs to be aggressive." Plan engine pieces + bot skills three levels
