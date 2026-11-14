@@ -105,13 +105,18 @@ for (const [w, h] of [[412, 915], [915, 412]]) {
   }
   console.log(tag, 'rope', JSON.stringify(rope));
   await page.evaluate(() => { window.__engine().input.state.up = false; });
-  // (Dot's box: tap it away, the way a player does, so the still shows him)
-  await page.evaluate(() => { for (const el of document.querySelectorAll('[class*="dot"],[class*="Dot"],[class*="guide"]')) { const r = el.getBoundingClientRect(); if (r.width > 60 && r.height > 30) el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })), el.click?.(); } });
   await sleep(1500);
+  // (Dot's box: tapped away the way a player does, on the card itself (DotGuide.tsx .dg-bub onClick), until none shows)
+  const dotShown = () => page.evaluate(() => [...document.querySelectorAll('.dg-bub')].some((b) => { const r = b.getBoundingClientRect(); return r.width > 20 && r.height > 20 && getComputedStyle(b).opacity !== '0' && getComputedStyle(b).visibility !== 'hidden'; }));
+  for (let i = 0; i < 8 && (await dotShown()); i++) {
+    try { await page.locator('.dg-bub').first().click({ timeout: 1500, force: true }); } catch {}
+    await sleep(900);
+  }
+  const dotBox = (await dotShown()) ? 'SHOWN' : 'dismissed';
   const s2 = await page.evaluate(() => { const e = window.__engine(), p = e.player; return { hanging: !!p.hanging, x: Math.round(p.x), y: Math.round(p.y), moss: e.cast ? +e.cast.calmNow(e.easy).toFixed(2) : -1 }; });
-  await stamp(`HANGING MOSS tied on 1-3's rope (the drape and the curtain), Pokey hanging in it | ${tag} | t-build-17@${sha} | hanging ${s2.hanging}, calmNow ${s2.moss}, x ${s2.x}`);
+  await stamp(`HANGING MOSS tied on 1-3's rope (the drape and the curtain), Pokey hanging in it | ${tag} | t-build-17@${sha} | hanging ${s2.hanging}, calmNow ${s2.moss}, Dot's box ${dotBox}, x ${s2.x}`);
   await page.screenshot({ path: path.join(out, `${tag}-h2-hanging-moss.png`) });
-  console.log(tag, 'h2', JSON.stringify(s2));
+  console.log(tag, 'h2', JSON.stringify({ ...s2, dotBox }));
   await ctx.close();
 }
 await browser.close();
