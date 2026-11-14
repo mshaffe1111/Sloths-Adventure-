@@ -1,0 +1,6 @@
+1-4 start normal 0 3:25 PM
+1-4 start easy 0 3:26 PM
+1-4 gate normal up 0 3:27 PM
+1-4 gateover normal up 0 3:28 PM
+1-4 gate normal side 0 3:29 PM
+1-4 gateover normal side 0 3:30 PM
