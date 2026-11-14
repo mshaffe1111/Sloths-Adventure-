@@ -20,7 +20,7 @@ Lessons applied: D36 (frozen worktrees for gates, shots, plants), D40 (Step 0 fi
 | Teach 800+ px, nothing between | w1Arc17.test: 7 teach lines each >= 800 px before its beat's eye, no eagle between, seeds 1-4 both settings |
 | Rolls / list | libstage 24/24 clean both settings, 1 beat order, 196-203 s Normal; seed list 100/100, `--check` PASS, quiet line worst 3.8 s |
 | Meter | Normal 5.4 (5.1-5.7), Easy 2.3 (2.2-2.4), seeds 1-4 (on 6213af67, before SHORT lianas; lianas counted as swings, R-165.239) |
-| Bots | BUILD-16c's c8f67aa7 + 5b0b1121 cherry-picked; mine: hold a MOSSY liana through the look; climb back out of a shallow pit whose far wall is over a double (pitClimb.test "shallow pit", RED without). Seeds 1-12 both settings on c01dbf6f: 106/108; Normal 6 kid ACCEPTED by the lead (moved under the look, knocked off 3x: beat 10's test); Easy 11 fixed: see bots12b |
+| Bots | BUILD-16c's c8f67aa7 + 5b0b1121 cherry-picked; mine: hold a MOSSY liana through the look; climb back out of a shallow pit whose far wall is over a double (pitClimb.test "shallow pit", RED without). Seeds 1-12 both settings on c01dbf6f: 106/108; Normal 6 kid ACCEPTED by the lead (moved under the look, knocked off 3x: beat 10's test); Easy 11 FIXED: on aa377280 (bots12b.jsonl) 107/108, kid Easy 12/12, the only rescue the accepted kid Normal 6; every other bot 12/12 both settings |
 | Planted faults | planted-faults.py: 14/14 CAUGHT (planted.out.txt + the snag fault) |
 | Stills / clips | stills/: 9 beats x upright/sideways x Normal/Easy, each caption the game's state; clips/: bush, bare bark, creaky limb, mossy liana, perch, both ways (clips.log names the frame of each look) |
 
