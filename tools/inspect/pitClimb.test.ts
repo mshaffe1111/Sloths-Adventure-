@@ -133,3 +133,85 @@ test("in a shallow pit whose route is inside a double but whose far wall is over
     assert.ok(p.x > 1600 && Math.abs(p.y - PERCH) < 4, `${who.name}: on the far perch at the end (x ${Math.round(p.x)}, y ${Math.round(p.y)})`);
   }
 });
+
+/**
+ * ENG-16F (R-165.246): on a liana 7 s, he lets go as it next carries him out in front, never at the back of the swing. 1-6 Normal kid
+ * seed 4: caught the risers' liana, climbed high ahead of a rising snake, back down to the foot he had learned, and the 7 s let-go came as
+ * the swing went BACK over the pit: dropped in, climbed the stair, caught it again, round and round to a rescue (FT_FRAMES 187-208).
+ * A toy: the liana over the pit, he hangs at its foot 7 s already, the swing carrying him back. RED with the let-go at any moment.
+ */
+test('on a liana 7 s, the let-go comes as it carries him out in front, never at the back of the swing: he lands on the far bank', () => {
+  for (const who of [FT_KID, FT_ADULT]) {
+    const run = new FirstTimerRun('1-1', 1, { ...who, setting: 'normal' }, { route: ROUTE, cap: 8, rescueAfter: 100 });
+    const vine = { id: 1, x: 1300, topY: BANK - 400, bottomY: BANK + 10, swaySpeed: 0, swayPhase: 0, vineType: 'swing_liana', swingAmp: 0.45, swingPeriod: 2.85, swingPhase: 0 } as unknown as Vine;
+    run.sim.bare([block(1, 0, BANK, 1000), block(2, 1000, PIT, 600), block(7, 1600, BANK, 2400)], [vine]);
+    // (at the foot, out at the back and swinging further back)
+    run.sim.swing(vine, { angle: -0.3, omega: -0.25, len: 395 });
+    run.prog.relocate(run.sim.p);
+    const bot = run as unknown as { swingT: number; after: () => void };
+    bot.swingT = 7.2;
+    let fell = false;
+    const after = bot.after.bind(run);
+    bot.after = () => {
+      after();
+      if (run.sim.p.y > BANK + 100) fell = true;
+    };
+    run.play();
+    assert.ok(!fell, `${who.name}: let go at the back of the swing and fell into the pit`);
+    assert.ok(run.sim.p.x > 1600 && run.sim.p.y <= BANK + 2, `${who.name}: not on the far bank (${Math.round(run.sim.p.x)}, ${Math.round(run.sim.p.y)})`);
+  }
+});
+
+/**
+ * ENG-16F (R-165.246): on a liana he steers by the way on past it, never by a route point on its own swing. 1-6 Normal kid seed 6: the
+ * route's point at the gorge's first liana was a cut liana's foot 85 px behind the anchor and 250 px up; swung forward past it, the steer
+ * turned him back at the forward end and the let-go went out facing back with no leap, into the pit short of the creaky limb (FT_FRAMES
+ * 247.5-248.4). A toy: the near bank, the liana over the pit, the far bank; the route has that point. RED with the plain route target.
+ */
+test('on a liana the steer is the way on past it: a route point on its swing behind him never turns him back, and he lands on the far bank', () => {
+  const X = 1300, TOP = BANK - 420;
+  const route = [...Array.from({ length: 38 }, (_, i) => ({ x: 100 + i * 24, y: BANK })), { x: X - 85, y: TOP + 160 }, ...Array.from({ length: 60 }, (_, i) => ({ x: 1630 + i * 24, y: BANK }))];
+  for (const who of [FT_KID, FT_ADULT]) {
+    for (const angle of [-0.35, -0.2, 0]) {
+      const run = new FirstTimerRun('1-1', 1, { ...who, setting: 'normal' }, { route, cap: 6, rescueAfter: 100 });
+      const vine = { id: 1, x: X, topY: TOP, bottomY: BANK + 10, swaySpeed: 0, swayPhase: 0, vineType: 'swing_liana', swingAmp: 0.45, swingPeriod: 2.85, swingPhase: 0 } as unknown as Vine;
+      run.sim.bare([block(1, 0, BANK, 1000), block(2, 1000, PIT, 600), block(7, 1600, BANK, 2400)], [vine]);
+      // (at the foot, swinging forward from behind the anchor)
+      run.sim.swing(vine, { angle, omega: 0.5, len: 420 });
+      run.prog.relocate(run.sim.p);
+      const bot = run as unknown as { swingT: number; prog: { cur: number }; after: () => void };
+      bot.swingT = 1.2;
+      bot.prog.cur = 38;
+      let fell = false;
+      const after = bot.after.bind(run);
+      bot.after = () => {
+        after();
+        if (run.sim.p.y > BANK + 100) fell = true;
+      };
+      run.play();
+      assert.ok(!fell && run.sim.p.x > 1600 && run.sim.p.y <= BANK + 2, `${who.name} from ${angle}: ${fell ? 'fell into the pit' : `not on the far bank (${Math.round(run.sim.p.x)}, ${Math.round(run.sim.p.y)})`}`);
+    }
+  }
+});
+
+/**
+ * ENG-16F (R-165.246): out of a pit under a liana, he climbs to the stair step the liana is caught from most often, not the first step
+ * that catches it at some moment. 1-6 Normal adult seed 1, the gorge (its numbers here, moved 44561 px left): the creaky limb gone, the
+ * pit's stair 1021 / 961 / 901 under gl2; the 961 step caught it at 14 of 48 moments, the top step at 29; he hopped from 961 three times
+ * and was rescued. RED with the nearest catching step.
+ */
+test('out of a pit under a liana, the climb ends on the stair step the liana is caught from most often (the top), not the nearest', () => {
+  const blk = (id: number, x: number, y: number, w: number): Platform => ({ id, x, y, width: w, height: 1300 - y, type: 'solid' }) as Platform;
+  const plats = [blk(1, 0, 841, 283), blk(2, 1000, 1081, 549), blk(3, 1000, 1021, 300), blk(4, 1000, 961, 200), blk(5, 1000, 901, 100), blk(6, 1549, 841, 580)];
+  const gl2 = { id: 1, x: 1174, topY: 429, bottomY: 849, swaySpeed: 0, swayPhase: 0, vineType: 'swing_liana', swingAmp: 0.45, swingPeriod: 2.85, swingPhase: 0.82 } as unknown as Vine;
+  const route = Array.from({ length: 90 }, (_, i) => ({ x: 40 + i * 24, y: 841 }));
+  for (const who of [FT_ADULT, FT_KID]) {
+    const run = new FirstTimerRun('1-1', 1, { ...who, setting: 'normal' }, { route, cap: 2, rescueAfter: 100 });
+    run.sim.bare(plats, [gl2]);
+    run.sim.stand(1400, 1081);
+    const bot = run as unknown as { pitWayUp(from: Platform): Platform[] | null };
+    const path = bot.pitWayUp(run.sim.platforms.find((q) => q.id === 2)!);
+    assert.ok(path, `${who.name}: no way up`);
+    assert.equal(path[path.length - 1].y, 901, `${who.name}: climbs to the ${path[path.length - 1].y} step, not the top (901)`);
+  }
+});

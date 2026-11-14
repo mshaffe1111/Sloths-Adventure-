@@ -1,0 +1,9 @@
+BOTS=kid SET=normal SEEDS=1-6 npx tsx reference/qa-reports/BUILD-16d/where.ts > reference/qa-reports/ENG-16F/where/w2-kid-normal.out.txt 2>&1
+BOTS=kid SET=easy SEEDS=1-6 npx tsx reference/qa-reports/BUILD-16d/where.ts > reference/qa-reports/ENG-16F/where/w2-kid-easy.out.txt 2>&1
+BOTS=adult SET=normal SEEDS=1-6 npx tsx reference/qa-reports/BUILD-16d/where.ts > reference/qa-reports/ENG-16F/where/w2-adult-normal.out.txt 2>&1
+BOTS=adult SET=easy SEEDS=1-6 npx tsx reference/qa-reports/BUILD-16d/where.ts > reference/qa-reports/ENG-16F/where/w2-adult-easy.out.txt 2>&1
+BOTS=child SET=normal SEEDS=1-6 npx tsx reference/qa-reports/BUILD-16d/where.ts > reference/qa-reports/ENG-16F/where/w2-child-normal.out.txt 2>&1
+BOTS=child SET=easy SEEDS=1-6 npx tsx reference/qa-reports/BUILD-16d/where.ts > reference/qa-reports/ENG-16F/where/w2-child-easy.out.txt 2>&1
+BOTS=middle SET=normal SEEDS=1-6 npx tsx reference/qa-reports/BUILD-16d/where.ts > reference/qa-reports/ENG-16F/where/w2-middle-normal.out.txt 2>&1
+BOTS=middle SET=easy SEEDS=1-6 npx tsx reference/qa-reports/BUILD-16d/where.ts > reference/qa-reports/ENG-16F/where/w2-middle-easy.out.txt 2>&1
+BOTS=expert SET=normal SEEDS=1-6 npx tsx reference/qa-reports/BUILD-16d/where.ts > reference/qa-reports/ENG-16F/where/w2-expert-normal.out.txt 2>&1
