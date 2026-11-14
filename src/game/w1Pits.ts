@@ -152,10 +152,14 @@ function findOpenPits(platforms: readonly Platform[]): PitGap[] {
   if (!earth.length) return [];
   const line = earthLine(earth);
   const out: PitGap[] = [];
-  const judge = (x0: number, x1: number, yl: number, yr: number, inside: readonly EarthRun[]) => {
+  const judge = (x0: number, x1: number, yl: number, yr: number, inside: readonly EarthRun[]): boolean => {
     const g = gapLine(yl, yr);
     // (a dip's inside lies deeper than SOFT_BELOW under its line, all of it: else it is a step in the ground, not a gap)
-    if (inside.some((s) => s.y <= g + SOFT_BELOW)) return;
+    if (inside.some((s) => s.y <= g + SOFT_BELOW)) return false;
+    judged(x0, x1, yl, yr, g);
+    return true;
+  };
+  const judged = (x0: number, x1: number, yl: number, yr: number, g: number) => {
     const top = Math.max(yl, yr);
     const marked = earth.some((q) => q.pit === 'drop' && (Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3));
     const fall = () => {
@@ -183,6 +187,8 @@ function findOpenPits(platforms: readonly Platform[]): PitGap[] {
     const steps = platforms.filter((q) => !q.broken && q.type !== 'fragile' && q.x < x1 && q.x + q.width > x0 && q.y > top + 4 && q.y < floor - 4).map((q) => [q.x, q.y, q.width, q.height, !!q.soil] as [number, number, number, number, boolean]);
     out.push({ x0, x1, top, kind: 'soft', floor, lipL: true, lipR: true, steps });
   };
+  // (the far wall of the last dip judged: a drop inside a dip is part of its floor, not a gap of its own)
+  let dipEnd = -Infinity;
   for (let i = 0; i + 1 < line.length; i++) {
     const a = line[i], b = line[i + 1];
     // (a hole: no earth at all between two banks, at any width from 24 px)
@@ -192,12 +198,12 @@ function findOpenPits(platforms: readonly Platform[]): PitGap[] {
     }
     // (a dip: the earth drops more than SOFT_BELOW; its far wall is the first top back within SOFT_BELOW of a's, or one that rises more
     // than SOFT_BELOW out of it; a hole on the way is its own gap)
-    if (b.y <= a.y + SOFT_BELOW) continue;
+    if (b.y <= a.y + SOFT_BELOW || a.x1 < dipEnd) continue;
     for (let j = i + 2; j < line.length; j++) {
       const c = line[j], p = line[j - 1];
       if (c.x0 > p.x1) break;
       if (c.y <= a.y + SOFT_BELOW || c.y < p.y - SOFT_BELOW) {
-        if (c.x0 - a.x1 >= 24) judge(a.x1, c.x0, a.y, c.y, line.slice(i + 1, j));
+        if (c.x0 - a.x1 >= 24 && judge(a.x1, c.x0, a.y, c.y, line.slice(i + 1, j))) dipEnd = c.x0;
         break;
       }
     }

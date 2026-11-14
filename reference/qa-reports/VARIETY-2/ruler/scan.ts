@@ -24,7 +24,8 @@ const add = (t: string, n = 1) => (tally[t] = (tally[t] ?? 0) + n);
 for (const c of generateAllLevels().filter((l: { secret?: boolean; id: string }) => !l.secret && (!only || only.includes(l.id)))) {
   for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) {
     setLayoutVariant(v);
-    let st: { platforms: G[]; heartFalls?: unknown };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let st: any;
     try { st = setting === 'easy' ? easyStage(withGoals(generateStage({ ...c, unlocked: true }, 'easy'))) : withGoals(generateStage({ ...c, unlocked: true }, 'normal')); }
     catch (e) { console.log(`${c.id} ${setting} ${v}: OLD BUILD ERROR ${String((e as Error).message).slice(0, 100)}`); setLayoutVariant(null); continue; }
     setLayoutVariant(null);
@@ -32,7 +33,7 @@ for (const c of generateAllLevels().filter((l: { secret?: boolean; id: string })
     const raw = diff(oldR.findW1Pits(st.platforms).map(k), newR.findW1Pits(st.platforms).map(k));
     const painted = (gs: G[]) => gs.filter((g) => (g.kind === 'fall' && g.drop && g.walls) || g.kind === 'hurt').map(k);
     const pnt = diff(painted(oldR.findW1Pits(st.platforms)), painted(newR.findW1Pits(st.platforms)));
-    const fl = (f: (s: unknown) => Array<[number, number]>) => f(st).map(([a, b]) => `${Math.round(a)}..${Math.round(b)}`);
+    const fl = (f: (s: typeof st) => Array<[number, number]>) => f(st).map(([a, b]) => `${Math.round(a)}..${Math.round(b)}`);
     const ver = diff(fl(oldV.floorlessGaps), fl(newV.floorlessGaps));
     if (raw[0].length || raw[1].length) add('builds with a raw change');
     if (pnt[0].length || pnt[1].length) add('builds with a PAINTED change');
