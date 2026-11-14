@@ -22,8 +22,15 @@ const cfg11 = generateAllLevels().find((l) => l.id === '1-1')!;
 // (the case's plan as 1-1's list held it when Matt saw it, t-polish-5@471bd00: provenPlan('1-1', 9652), the stage RealPlay('1-1', 17)
 //  plays (list index 16; POLISH-5 named it "list seed 9800", which is RealPlay 18), kept here so a relist never moves the planted case)
 const replay = CASE_9652 as unknown as NonNullable<Parameters<typeof buildGen2Stage>[0]['replay']>;
+/** World 1's kit with every section of the case's plan back in 1-1's pool, as it was when Matt saw it (POLISH-9b: POLISH-7 took
+ *  w1-bank-stair-test out of 1-1 with the other double sections, CUT_11_DOUBLES, so the plan no longer replayed on today's pool: a crash,
+ *  not a failure; the case is Matt's own, so it is replayed on the pool it was laid from, never re-picked) */
+const kitAsSeen = () => {
+  const k = w1World(), names = new Set(replay.plan.map((p) => p.template));
+  return { ...k, manifest: { ...k.manifest, sections: k.manifest.sections.map((t) => (names.has(t.id) && !t.feel?.includes('1-1') ? { ...t, feel: [...(t.feel ?? []), '1-1'] } : t)) } };
+};
 test("Matt's case planted: 1-1 seed 9652 (layout 17) Easy laid WITHOUT the settle draws the boulder by x 20938 past its lip; with it, nothing", () => {
-  const bare = w1World();
+  const bare = kitAsSeen();
   delete bare.settle;
   const before = overhangs(w1Finish(buildGen2Stage({ config: cfg11, kit: bare, seed: 9652, difficulty: 'easy', replay })).platforms);
   const matt = before.find((o) => Math.abs(o.x - 20938) <= 40);
@@ -31,7 +38,7 @@ test("Matt's case planted: 1-1 seed 9652 (layout 17) Easy laid WITHOUT the settl
   assert.ok(matt.over > 60, `Matt's boulder reads only ${matt.over} px past its lip`);
   // (with the settle that plan cannot keep the boulder on its bank (its run is too short for any piece): the replay names it, and the
   //  search the list is built from re-lays that section, so the seed's listed stage draws every stone on its ground)
-  const kept = buildGen2Stage({ config: cfg11, kit: w1World(), seed: 9652, difficulty: 'easy', replay });
+  const kept = buildGen2Stage({ config: cfg11, kit: kitAsSeen(), seed: 9652, difficulty: 'easy', replay });
   assert.ok(kept.gen2.errors?.some((e) => /drawn past its ground's lip/.test(e)), `the old plan is not refused: ${JSON.stringify(kept.gen2.errors)}`);
   const searched = buildGen2Stage({ config: cfg11, kit: w1World(), seed: 9652, difficulty: 'easy' });
   assert.deepEqual(searched.gen2.errors ?? [], []);
