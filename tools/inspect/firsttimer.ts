@@ -1338,7 +1338,12 @@ export class FirstTimerRun {
       return cb.dir;
     }
     if (!tgt || !p.grounded || p.climbing || p.hanging || p.isVineSwinging || this.e.nearTreeVine) return 0;
-    if (tgt.y > p.y - (DOUBLE_RISE + 10) || this.prog.off(p) < 120) return 0;
+    // (a way on within a double's rise is jumped for, unless it is a swinging liana's foot: that is no ledge, it is there for a moment of
+    // its swing, and from a pit floor he jumped at it untimed. 1-6 Normal kid seed 5 under the first liana, its foot 179 px up: seven
+    // jumps in 9 s to a rescue, the pit's stair beside him back to the bank he catches it from (ENG-16F, FT_TRACE 10.8-19.6))
+    const onLiana = this.sim.vines.some((v) => (v.vineType === 'swing_liana' || v.isSwingingVine) && !v.off && vineAmp(v) > 0.05
+      && Math.abs(tgt.x - v.x) <= (v.bottomY - v.topY) * Math.sin(vineAmp(v)) + 40 && tgt.y >= v.topY - 40 && tgt.y <= v.bottomY + 60);
+    if ((!onLiana && tgt.y > p.y - (DOUBLE_RISE + 10)) || this.prog.off(p) < 120) return 0;
     const from = this.floorAt(p.x, p.y, 6);
     const path = from ? this.pitWayUp(from) : null;
     if (!path) return 0;

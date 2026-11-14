@@ -237,3 +237,27 @@ test('out of a pit under a liana, the climb ends on the stair step the liana is 
     assert.equal(path[path.length - 1].y, 901, `${who.name}: climbs to the ${path[path.length - 1].y} step, not the top (901)`);
   }
 });
+
+/**
+ * ENG-16F (R-165.246): in a pit under a swinging liana whose foot hangs within a double's rise, he climbs back out by the stair to the bank
+ * he catches it from, never jumps at the foot from the floor: it is there for a moment of its swing. 1-6 Normal kid seed 5, under the
+ * first liana (its numbers here): the foot 179 px over the pit floor, seven untimed jumps in 9 s, a rescue. RED with the foot taken for a
+ * ledge (pitWayBack returned 0: the way on "within a double").
+ */
+test('in a pit under a swinging liana, its foot within a double\'s rise is no ledge: he climbs back out by the stair', () => {
+  const blk = (id: number, x: number, y: number, w: number): Platform => ({ id, x, y, width: w, height: 1300 - y, type: 'solid' }) as Platform;
+  const plats = [blk(1, 2000, 798, 800), blk(2, 2800, 1002, 280), blk(3, 2800, 934, 200), blk(4, 2800, 866, 100), blk(5, 3080, 718, 280), blk(6, 3360, 853, 600)];
+  const liana = { id: 1, x: 2988, topY: 384, bottomY: 804, swaySpeed: 0, swayPhase: 0, vineType: 'swing_liana', swingAmp: 0.45, swingPeriod: 2.85, swingPhase: 0.62 } as unknown as Vine;
+  const route = [...Array.from({ length: 34 }, (_, i) => ({ x: 2000 + i * 24, y: 798 })), { x: 2988, y: 823 }, ...Array.from({ length: 12 }, (_, i) => ({ x: 3100 + i * 24, y: 718 }))];
+  for (const who of [FT_KID, FT_ADULT]) {
+    const run = new FirstTimerRun('1-1', 1, { ...who, setting: 'normal' }, { route, cap: 2, rescueAfter: 100 });
+    run.sim.bare(plats, [liana]);
+    run.sim.stand(3061, 1002);
+    run.prog.relocate(run.sim.p);
+    const bot = run as unknown as { pitWayBack(t: { x: number; y: number } | null): -1 | 0 | 1; climbBack: unknown; prog: { target(p: unknown): { x: number; y: number } | null } };
+    const tgt = bot.prog.target(run.sim.p);
+    assert.ok(tgt && Math.abs(tgt.x - 2988) < 60, `${who.name}: the way on is not the liana's foot (${JSON.stringify(tgt)})`);
+    assert.equal(bot.pitWayBack(tgt), -1, `${who.name}: he does not climb back out by the stair`);
+    assert.ok(bot.climbBack, `${who.name}: no climb back started`);
+  }
+});
