@@ -98,7 +98,7 @@ The lead or Designer rules on the yield deal (item 1 below). Then the ruled chan
   - seedlist --check: 1-1 (163, first-run lock holds, the new room-for-help rule) and 1-2 to 1-5 (before the relist, after the `parked` change)
   - tierBots.test 7/7; CI tool-test line 84/84 (firsttimer.test and the new plant included); bot-pin suites 62/62
 - **Full unit suite:** the discovery run (gates/g-unit-discovery.txt, mixed heads) had 3,387 tests and 9 failures. Each is fixed above,
-  or is the relist's (b), or is the deal. The final run on b7df7a52 is in gates/g-unit.txt: __UNIT__
+  or is the relist's (b), or is the deal. The final run on b7df7a52 is in gates/g-unit.txt: **3,387 tests, 3,384 pass, 1 fail (the deal), 2 todo.** Every pin is green on the final head.
 - **RED:** yield.test "the deal" (a design call, item 1).
 
 ## Polish check (judged as Matt will see them on a phone, both orientations)
@@ -142,7 +142,10 @@ level.md (rules 5, 12, 14, 18), BOTS.md, bands.md; FT_TRACE / FT_FRAMES; git wor
 - D64: context against 1M.
 
 ## UNRUN (D59)
-__UNRUN__
+- **buildcheck ALONE: UNRUN.** It needs nothing else running; the final suite ended at 9:30 AM, past the 9:28 box.
+- The box ran over by about 3 minutes, to let the full suite finish rather than leave it 90% run (my call; named).
+- castBots and tierBots were not re-run after the relist: it left layouts 1-57 identical (relist-1-1-diff.txt), so their layouts did not move.
+- Nothing is left running: the vite dev server was stopped after the stills, both gate runs finished, and the scratch worktrees were removed.
 
 ## Turnover note
 Not rewritten. This REPORT's EXACT NEXT STEP is the resume point.
