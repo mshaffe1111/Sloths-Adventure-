@@ -70,6 +70,34 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   The plan doc: reference/plans/ENGINE-NEEDS.md (Architect session_01FhBbYLVSn59vpCSU4ruo6P, t-engine-needs).
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
+## RIGHT NOW (11-14, refreshed 12:12 PM ET; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
+**Turnover tonight (Matt, 11-14 12:11 PM ET):** after 1-6 and 1-7 are on his test link (~8 PM ET) a new lead takes over (PM.md §8);
+1-8 (the chase: ENG-B4 engine, then BUILD-18) is the new lead's FIRST job. This lead becomes the backup.
+**Matt's decisions today (11-14):** easier 1-1 (fewer doubles, easier jumps; props off ledges R-165.226/.228); 1-4 rocks/pods slower +
+telegraphed (R-165.227), fig gate: a lock you can see + a head stop so only the fruit passes (R-165.212); two-vine reward (R-165.229);
+shorter swings (R-165.225); delegated to the lead and DECIDED GO: deep-earth underlayer (R-165.224) and living pole (R-165.209);
+Hugging Face is the lead's call (~\$56 left, ~\$10 reserve). Predator art from his sheets (R-165.231, raws on branch art-raw-2026-11-14).
+**Links:** EnK5 (https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb) = link #1 (t-int-7@007f4421: 1-4 fixes + ruler head). Link #2
+(easier 1-1) pre-built from t-int-8@595ada5d in the lead's link worktree, publish on INT-8 GREEN. Never send testers to EnK5.
+**Known red carried on the links:** 1-4 fig gate: from the far-end ledge Pokey flicks over a shut bough and drops through it (INT-8,
+real presses, 11:39 AM); FIX-15 fixing. The lead had passed link #1's gate on a clip whose jumps never fired (D69, R-165.240).
+**Members running** (all report to session_01FhBbYNzGRJBDMzn6XbtQK2 until the seam):
+| Member | Session | Branch | Job |
+|---|---|---|---|
+| INT-8 | session_01FhBbYMkD48FX51te6RcgxT | t-int-8 (+ t-int-8-clip) | link #2: easier 1-1 on link #1; clip tool fixed on the side branch |
+| ENG-S5 | session_01FhBbYL57JXyQkc4NUQGb9d | t-eng-s5 | liana-to-liana chains (1-6 beat 4); thorn hollow in view; gates |
+| FIX-15 | session_01FhBbYJqsY6YUeLPzgTGyjj | t-fix-15 (from t-int-8-clip) | fig gate solid from every approach |
+| BUILD-16c | session_01FhBbYLZizL1K5FoFzbaBoX | t-build-16 | finish 1-6: bot climb-back fix, relist, bots, stills, gates |
+**Queue (packets in reference/packets/2026-11-14/), in order as slots free:** TIPS (tips by height + R-165.238 old 1-6 cleanup + R-165.241
+sealed-door line; blocks 1-6 on a link) -> KEEPER-17 (1-7 lines, 25 min) -> BUILD-17 (1-7; step 0 = ENG-E2's two redos) -> an
+integrator for link #3 (1-6 + chains + FIX-15 + TIPS + clip tool) -> link #4 (1-7). Then for the new lead: ENG-B4 (write: chase tint,
+rolling nut, chase camera, split by run-up; base t-eng-b3@71da15cd) -> BUILD-18; R-165.239 meter fix; WIRE-ART; ART-PRED; FIX-14d's 11
+red tower tests (t-fix-14d@bd21d906); R-165.234/.235/.237.
+**Where the work lives:** 1-7/1-8 design on origin/t-1718-design; 1-6 design on origin/t-16-design; 1-6 lines on t-keeper-16
+(reference/story/lines-1-6.md); 1-7 engine on t-eng-e2@1f66e7a9 (GREEN); chase lay on t-eng-b3@71da15cd; art on t-art-678b.
+**Lessons paid for today:** D63-D69 (LESSONS.md); PM.md §7 "Retiring a member" (D68); every clip judged by the frame where the action
+happens (D69); a member's context % read from its last turn's cache_read_input_tokens, not its own estimate (D64).
+
 ## TODAY 11-13 (started 10:16 AM ET; packets reference/packets/2026-11-13/TODAY.md + one per member; stop line 9:30 PM or 40% context)
 | Member | Session | Model/effort | Branch | Job |
 |---|---|---|---|---|
