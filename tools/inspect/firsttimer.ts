@@ -795,6 +795,15 @@ export function freshPhone(setting: FirstTimer['setting']) {
   setDifficulty(setting);
 }
 
+/** the nearest ground cover at his level within 600 px (a bush, a moss carpet or patch: not hanging, not the dressing in front of a
+ *  hollow), the one a player heads for when the eagle screams (1-7) */
+export function stillCoverNear(bushes: ReadonlyArray<{ x: number; w: number; y: number; hanging?: boolean; secret?: boolean }>, x: number, y: number): { x: number; w: number; y: number } | null {
+  let best: { x: number; w: number; y: number } | null = null;
+  const d = (b: { x: number; w: number }) => (x >= b.x + 16 && x <= b.x + b.w - 16 ? 0 : Math.min(Math.abs(b.x + 16 - x), Math.abs(b.x + b.w - 16 - x)));
+  for (const b of bushes) if (!b.secret && !b.hanging && Math.abs(b.y - y) < 14 && (!best || d(b) < d(best))) best = b;
+  return best && d(best) < 600 ? best : null;
+}
+
 export class FirstTimerRun {
   readonly sim: RealPlay;
   readonly e: Eng;
@@ -871,6 +880,8 @@ export class FirstTimerRun {
   private stillT = 0;
   private hideFrom = -1;
   private warnSeenAt = -1;
+  /** when the kit eagle's look over his stretch began (its screech), or -1 */
+  private castWarnAt = -1;
   private swingT = 0;
   private ropeStill = 0;
   private climbStill = 0;
@@ -1299,7 +1310,8 @@ export class FirstTimerRun {
       if (upFor < this.who.heed) continue;
       const t = s.text.toLowerCase();
       if (s.move) this.learned.add(s.move);
-      if (/\b(hide|bush|fern)\b/.test(t) && /\b(down|slide|hold|duck|into|inside|behind)\b/.test(t)) this.learned.add('hide');
+      // (1-7's words for the kit's eagle are moss and green, held still: 'get into the green and hold still')
+      if (/\b(hide|bush|fern|moss|green)\b/.test(t) && /\b(down|slide|hold|duck|into|inside|behind|still)\b/.test(t)) this.learned.add('hide');
       if (/\b(punch|tap)\b/.test(t)) this.learned.add('punch');
       if (/\bkick\b/.test(t)) this.learned.add('kick');
       // (a drop trap, castPlay.ts: told to shake its vine or cut its tendril, or to punch or hit one)
@@ -1420,6 +1432,21 @@ export class FirstTimerRun {
           if (p.x > best.x + 16 && p.x < best.x + best.w - 16 && p.grounded) return { down: true };
           return side(cx > p.x ? 1 : -1);
         }
+      }
+    }
+
+    // the kit's eagle (1-7, castPlay's sweepers: no proto.watch): once told how to hide, a second after its screech (a look starting over
+    // the stretch he is in) he heads for the nearest cover at his level (a bush, a moss carpet or patch) and, inside it, takes his thumb
+    // off: the kit hides a STILL sloth in cover, no crouch (stillness.ts). He holds still until its look, or its dive, is over
+    const looking = ((e.cast?.sweepers ?? []) as any[]).some((m) => p.x >= m.s.minX - 40 && p.x <= m.s.maxX + 40 && (m.s.phase === 'hunt' || m.s.phase === 'tell' || m.s.phase === 'act'));
+    if (!looking) this.castWarnAt = -1;
+    else if (this.castWarnAt < 0) this.castWarnAt = t;
+    if (looking && this.learned.has('hide') && t >= this.castWarnAt + who.heed && !this.jump) {
+      const cover = stillCoverNear(e.proto?.bushes ?? [], p.x, p.y);
+      if (cover) {
+        this.hiding = true;
+        if (p.x > cover.x + 16 && p.x < cover.x + cover.w - 16 && p.grounded) return {};
+        return side(cover.x + cover.w / 2 > p.x ? 1 : -1);
       }
     }
 

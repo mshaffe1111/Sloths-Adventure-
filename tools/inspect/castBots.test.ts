@@ -6,7 +6,8 @@
 // direction rule too; the rule is kept for a handle and an animal both in reach).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { FirstTimerRun, FT_MIDDLE, freshPhone, rng } from './firsttimer.ts';
+import { FirstTimerRun, FT_MIDDLE, freshPhone, rng, stillCoverNear } from './firsttimer.ts';
+import { eagleOver } from '../../src/game/gen2/worlds/w1Cast.ts';
 import { floorSeconds, runHolds, stageFloor } from './castBots.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
 import type { Enemy, Platform } from '../../src/game/types.ts';
@@ -121,4 +122,66 @@ test('the length floor is the stage rule\'s: a climb at 105 s holds, a run stage
   // (the real stages, read as the rules read them: 1-4 climbs the kapok, 1-5 runs her road)
   assert.equal(stageFloor('1-4'), 100);
   assert.equal(stageFloor('1-5'), 120);
+});
+
+// (ENG-E2, 1-7 NEW 10: bots that hold still in cover) The kit's eagle over a stretch (w1Cast.ts eagleOver, no proto.watch): told how to
+// hide, the bot goes still in the nearest cover on its screech (a moss carpet here) and is never taken; never told, he walks on in the
+// open and is. Planted: the base bot (t-eng-e1@f573675b) hid only from the old watcher, so told or not it was taken on the kit's eagle.
+/** one frame as FirstTimerRun.play runs it (its pad, the frame, its bookkeeping after: a jump ends there) */
+const step = (run: FirstTimerRun): void => {
+  const r = run as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  r.sim.frame(r.pad());
+  r.frames++;
+  r.after();
+};
+function eagleArena(told: boolean, seed: number): { run: FirstTimerRun; e: any; hp0: number } { // eslint-disable-line @typescript-eslint/no-explicit-any
+  freshPhone('normal');
+  setDifficulty('normal');
+  Math.random = rng(seed);
+  const pts = Array.from({ length: 41 }, (_, i) => ({ x: 250 + i * 40, y: Y }));
+  const run = new FirstTimerRun('2-2', 1, FT_MIDDLE, { route: pts, cap: 22 });
+  const e = (run as any).e; // eslint-disable-line @typescript-eslint/no-explicit-any
+  e.platforms.length = 0;
+  e.platforms.push(plat(9001, 0, 2600));
+  e.enemies.length = 0;
+  e.vines.length = 0;
+  e.collectibles.length = 0;
+  e.hazards.length = 0;
+  e.proto.bushes = [{ x: 700, w: 346, y: Y, kind: 'moss' }, { x: 1250, w: 169, y: Y, kind: 'mossPatch' }];
+  // (it looks from the far end toward him, so its gaze meets a walker: one going its way outruns it)
+  e.enemies.push({ ...eagleOver({ x0: 300, x1: 1500, calm: [6, 6] }, Y, 9600), facing: -1 });
+  e.proto.cast = { kinds: ['eagle'], traps: [] };
+  e.proto.hints = [];
+  e.startCast();
+  (run as any).sim.stand(250, Y); // eslint-disable-line @typescript-eslint/no-explicit-any
+  e.player.hp = e.player.maxHp;
+  if (told) (run as any).learned.add('hide'); // eslint-disable-line @typescript-eslint/no-explicit-any
+  return { run, e, hp0: e.player.hp };
+}
+
+test('told how to hide, on the kit eagle\'s screech the bot goes still in the nearest cover (a moss carpet) and is never taken', () => {
+  for (const seed of [1, 2, 3]) {
+    const { run, e, hp0 } = eagleArena(true, seed);
+    let stillInMoss = 0;
+    for (let i = 0; i < 18 * 30; i++) {
+      step(run);
+      if (e.cast.calmNow(false) >= 1 && e.cast.sweepers[0].s.phase === 'hunt') stillInMoss++;
+    }
+    assert.equal(e.player.hp, hp0, `seed ${seed}: never taken (hp ${e.player.hp} of ${hp0})`);
+    assert.ok(stillInMoss > 15, `seed ${seed}: he was still in cover while it looked (${stillInMoss} frames)`);
+  }
+});
+
+test('never told how to hide, the bot walks on in the open under the kit eagle and is taken (the stage must teach it)', () => {
+  const { run, e, hp0 } = eagleArena(false, 1);
+  for (let i = 0; i < 18 * 30; i++) step(run);
+  assert.ok(e.player.hp < hp0, `taken (hp ${e.player.hp} of ${hp0})`);
+});
+
+test('the cover a bot heads for: the nearest ground cover at his level, never hanging moss or a hollow\'s dressing', () => {
+  const covers = [{ x: 100, w: 110, y: Y }, { x: 700, w: 346, y: Y }, { x: 300, w: 173, y: Y - 200, hanging: true }, { x: 260, w: 110, y: Y, secret: true }];
+  assert.equal(stillCoverNear(covers, 320, Y)?.x, 100);
+  assert.equal(stillCoverNear(covers, 600, Y)?.x, 700);
+  assert.equal(stillCoverNear(covers, 800, Y)?.x, 700, 'inside it');
+  assert.equal(stillCoverNear(covers, 2000, Y), null, 'none within 600 px');
 });

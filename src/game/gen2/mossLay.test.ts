@@ -10,7 +10,7 @@ import { CastPlay } from '../castPlay.ts';
 import { inCover } from '../stillness.ts';
 import { builtStageKeys, type BuiltStage } from '../stageManifest.ts';
 import type { Platform } from '../types.ts';
-import { MOSS_KINDS, mossHeight } from '../w17Art.ts';
+import { MOSS_KINDS, mossAlpha, mossHeight } from '../w17Art.ts';
 import { askMisses, LATER_CONTENT, type LaidNode } from './nodeAsks.ts';
 import { parseCode } from './nodeCode.ts';
 import { asksOf } from './nodeAsks.ts';
@@ -114,4 +114,11 @@ test("a built stage with moss, a mossy liana or a perched eagle loads World 1's 
   assert.ok(builtStageKeys({ ...base, proto: { bushes: [{ kind: 'mossHang' }] } } as BuiltStage).includes('w17'));
   assert.ok(builtStageKeys({ ...base, vines: [{ vineType: 'swing_liana', mossy: true }] } as unknown as BuiltStage).includes('w17'));
   assert.ok(builtStageKeys({ ...base, enemies: [{ type: 'eagle', kitPerch: true }] } as unknown as BuiltStage).includes('w17'));
+});
+
+test('the carpet never thins while he is in it (it would vanish exactly when he hides); a mound and hanging moss thin as the moss comes', () => {
+  assert.equal(mossAlpha('moss', true, 1), 1);
+  assert.equal(mossAlpha('mossPatch', false, 0), 1);
+  assert.ok(mossAlpha('mossPatch', true, 1) < 0.5);
+  assert.ok(mossAlpha('mossHang', true, 0) < 0.7);
 });

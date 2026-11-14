@@ -79,6 +79,15 @@ export function mossHeight(b: { w: number; kind: MossKind }): number {
 }
 
 /**
+ * How solid a moss hide is drawn: a mound or hanging moss over his body thins as the moss comes over him (as a bush does, protoArt.ts
+ * drawBushArt), so the tint and the sloth both read; a carpet only covers his feet, so it never thins: thinned, the cover vanished
+ * exactly when he was hidden in it (ENG-E2's still shots/carpet-pair.jpg).
+ */
+export function mossAlpha(kind: MossKind, inside: boolean, moss: number): number {
+  return inside && kind !== 'moss' ? 0.62 - 0.2 * Math.max(0, Math.min(1, moss)) : 1;
+}
+
+/**
  * A moss hide, in front of him. `inside`: he is in it (drawn see-through, thinning as the moss tint comes over him, `moss` 0..1); `rustle`
  * leans it when he moves in it. False until its piece has loaded.
  *   - a carpet ('moss'): the strip tiled along its width at its own height (36 px), its moss line on the ground, each tile its own width
@@ -91,9 +100,7 @@ export function drawMossCover(ctx: CanvasRenderingContext2D, b: { x: number; w: 
   const im = get(piece);
   if (!im) return false;
   ctx.save();
-  // (a mound or hanging moss over his body thins as the moss comes over him, as a bush does; a carpet only covers his feet, so it
-  // never thins: thinned, the cover vanished exactly when he was hidden in it, ENG-E2's still shots/carpet-pair.jpg)
-  if (inside && b.kind !== 'moss') ctx.globalAlpha = 0.62 - 0.2 * Math.max(0, Math.min(1, moss));
+  ctx.globalAlpha = mossAlpha(b.kind, inside, moss);
   const lean = Math.sin(t * 22) * 0.05 * rustle;
   if (b.kind === 'moss') {
     const c = W17.carpet;
