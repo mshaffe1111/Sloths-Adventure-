@@ -9,7 +9,9 @@ flight, untouched (sl.out.txt: no dial caps at 380 px; low+double links to 580, 
 w1.ts keeps ['double']), W1_LIANA_GAP short/long/far, w1Liana/w1Perch, 3 sections; laid on W1 (1-6) + W6 (6-3) kits both settings (lay.out.txt): SHORT 216-341, LONG
 340-368, FAR 471-528 px. 5. Planted (w1Swing.test.ts, 6 tests): each of 6 pieces removed goes red (window grips, lay carry, cache key, band vine, level check, built Vine).
 6. lockall 102/102 unchanged vs f9671e3b (16 layouts x both settings). generalitycheck 27/27 known (no new literal).
-**Gates on the head:** see GATES below (pasted from the run's SUMMARY; anything not listed there is UNRUN).
+**Gates (full CLAUDE.md Checks on d9294c63, its own worktree; later commits are reference/ only):** tsc 0; unit 3 shards all exit 0; build 0; chunkcheck,
+artcheck, knowncheck, generality, roadmap, seedlist 1-1 --check, engine tools, tierBots, drawcheck (500 s), clipcheck (83 known), kbdcheck: PASS. buildcheck: FAIL
+once (normal p95 157 vs 150), then PASS alone twice (132, 121); base t-hooks@994ea4e7 alone 116, 126 (max 157): the known edge R-165.207, not this change.
 **Polish check:** mock/upright-abc.png (same frame): (a) today: no landing in view; (b) 1.5x: the perch's first ~40 px at the edge, Pokey 67% size, Dot's bird on
 him; (c) 1.3x led forward, all of Pokey in view (77% size): only the perch's LIP (26 px) shows. So (c) cannot show the whole perch. With Pokey whole at the left edge
 the view needs: lip + 90 px (one Pokey) 1.48x; lip + 150 px 1.63x (Pokey 61%); the whole 300 px perch 2.0x of 1-8's 416 px (Pokey 50%). Rough, named: the lives pill
