@@ -1794,7 +1794,7 @@ export class GameEngine {
     // (the stage's runtime pieces step first: a ride on a stage beat is one, pieces/ridePiece.ts, so this loop leaves its platform be)
     this.camFocus = null;
     if (this.pieces.length) stepPieces(this.pieces, dt, this.pieceHost);
-    // (a swing over a hollow that hurts: the view keeps its thorn bed in, him whole first, unless a piece asked for its own focus:
+    // (a swing over a hollow that hurts: the view keeps its floor in, him whole first, unless a piece asked for its own focus:
     // cameraFollow.ts hurtFocus; the stage's hurt floors listed once per platform list)
     if (!this.camFocus && this.player.isVineSwinging) {
       if (this.hurtOf !== this.platforms) { this.hurtOf = this.platforms; this.hurtFloors = this.platforms.filter((pl) => pl.pit === 'hurt'); }
