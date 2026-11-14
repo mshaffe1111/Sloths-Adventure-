@@ -85,7 +85,7 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 ## RIGHT NOW (11-14, refreshed 5:30 PM ET for the turnover; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
 
 **Live:** 0.9.8 on main (merge 73e7bed0, PR #71, 11-13): https://mshaffe1111.github.io/Sloths-Adventure-/ (testers: add ?fresh=1#ctest).
-**Matt's test link (EnK5):** https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb v259 = link #3 from t-int-9@0df7f3f9 (published 5:52 PM
+**Matt's test link (EnK5):** https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb v259 = link #3 from t-int-9@0df7f3f9 (+ 1c7f6b95: the 48 KB test-link inline limit, committed 5:51) (published 5:52 PM
 ET; inline limit 48 KB, 488 files, R-165.252): the new 1-7, TIPS, FIX-15/15b fig gate, chains, clip tool, POLISH-10, journal, haze fix, pit-bank fix (global), 1-1
 recalibrated. 1-6 is NOT on it yet (ENG-16G). Never send testers to EnK5. Build: `python3 tools/testlink/build.py "<note>"` in a worktree
 of the head, then the Artifact tool with the EnK5 url, root tools/testlink, files from filesmap.json (HANDOFF §6).
