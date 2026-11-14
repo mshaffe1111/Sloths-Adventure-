@@ -1,5 +1,22 @@
 # INT-8 REPORT (t-int-8 from origin/t-int-7@007f4421; lead session_01FhBbYNzGRJBDMzn6XbtQK2; R-165.228). 11:01 AM ET on, Opus 5.5 xhigh.
-## STATUS: (filled at the end)
+## STATUS: GREEN on 595ada5d (code head; every later commit is reference/ docs, stills and tools only). Link #2 can be built from it.
+- **Every CLAUDE.md Check and CI step on 595ada5d: 0** (gates/RESULTS.txt).
+- **buildcheck: GREEN by the lead's rule (12:17 PM)** ("within noise of both parents = R-165.207's known flake; slower on every run =
+  red"). This container's 1-1 Normal p95 swings about 60 ms run to run (gates/buildcheck-compare.txt; load at each start):
+  | Head | Normal p95 runs, ms (load at start) | Over 150 |
+  |---|---|---|
+  | link #1 007f4421 | 185 (1.18), 175 (1.84), 132 (2.38) | 2 of 3 |
+  | POLISH-9 2840b63c | 140 (1.15), 122 (1.55) | 0 of 2 |
+  | the merge 595ada5d | 146 (in the runner), 174 (1.98), 135 (1.13), 168 (1.71), 181 (1.58) | 3 of 5 |
+  - The merge is not slower on every run. At matched load it equals POLISH-9 (135 at 1.13 vs 140 at 1.15).
+  - Link #1, gated GREEN by INT-7 (113), fails here 2 of 3.
+  - Link #1's one change in the 1-1 build path (finishStage pairPetals) returns at once on a stage with no vine field
+    (vineField.ts:339), so no merge cost is found. Named plainly: on this container the budget has no margin; the flake is R-165.207's.
+- **Known red carried from link #1, not a hold (the lead, 11:41 AM):** R-165.212 reopened: 1-4's fig gate can be got over from the
+  far-end ledge (below).
+- **R-165.240:** tools/inspect/clip.mjs + its planted test on t-int-8-clip (315548d1). Its full run is UNRUN (ruling A).
+- **EXACT NEXT STEP (the lead):** judge the stills and clips listed under Done, step 4. Build link #2's test link from t-int-8 (src
+  identical to 595ada5d). Start FIX-15 from t-int-8-clip with the TRY lines below. Give t-int-8-clip its own full gate run.
 
 ## Done (evidence)
 - **Step 1, the merge (595ada5d):** origin/t-polish-9@2840b63c onto link #1. One merge base (471bd000, t-polish-5's head, which both sides

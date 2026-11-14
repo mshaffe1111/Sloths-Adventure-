@@ -20,3 +20,4 @@ kbdcheck 0 12:15 PM
 buildcheck 0 12:15 PM
 done 12:15 PM
 buildcheck-alone2 1 12:15 PM (re-run alone, idle machine: the first run's Normal p95 146 ms sat 4 ms under the budget)
+report tree (fast gates, D53) 12:18 PM: tsc 0, roadmapcheck PASS, knowncheck PASS, generality PASS; git diff 595ada5d..HEAD over src/ tools/ .github package.json: empty
