@@ -135,8 +135,9 @@ const GEN2_ROOMS: ReadonlySet<string> = new Set<string>([...W5_ROOM_STAGES, ...W
 /** World 4's stages with waterfalls (w4Play.ts: the painted waterfall set, w4FallsArt.ts) */
 export const W4_FALL_STAGES: ReadonlySet<string> = new Set(['4-3', '4-5', '4-8', '4-9']);
 
-/** World 1's stages with puzzle rooms (protoStage.ts: the squirrels' lift, the seesaw, the acorn meadow) */
-const W1_ROOMS: ReadonlySet<string> = new Set(['1-4', '1-6', '1-7']);
+/** World 1's stages with puzzle rooms or kit decor: 1-4's nest door (gen2 w1Arc14.ts), 1-7's acorn meadow (1-6's seesaw rooms went
+ *  with its proto plan, R-165.238: the gen2 1-6 has no room and no kit decor) */
+const W1_ROOMS: ReadonlySet<string> = new Set(['1-4', '1-7']);
 
 export interface SheetSwitches {
   /** the hand-built stages are on (protoStage.ts protoStageEnabled: everyone) */
@@ -195,7 +196,7 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // (a web patch is strung with Dot's silk, from her prop sheet alone)
   if (!built && (w === 3 || w === 5) && !cfg.secret && cfg.objectiveType !== 'boss_lair' && cfg.objectiveType !== 'ascent') out.push(`w${w}-props`, ...(w === 5 ? ['dot-props'] : []));
   // (World 2's puzzle rooms: the reed cages on their pulleys, the ferry's sluice, the court's bell)
-  // (World 1's rooms: 1-4's lift, 1-6's seesaw, 1-7's acorns; every World 3 and 4 stage: their puzzle rooms, and Matt's puzzle sheets set
+  // (World 1's rooms: 1-4's nest door, 1-7's acorns; every World 3 and 4 stage: their puzzle rooms, and Matt's puzzle sheets set
   // in as their dressing, artDress.ts)
   if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || GEN2_ROOMS.has(cfg.id) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair'))) out.push('kit-pieces');
   // (and every other stage of Worlds 1-3 and 5, whose floors run over water: its first water has the sign, waterTeach.ts, LV-8)

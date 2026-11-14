@@ -20,8 +20,8 @@
  */
 import { CooldownQueue, ShuffleBag, type Rng } from './gen2/variety.ts';
 
-/** World 1's stages with section versions (1-6 is the 'proto' plan; 1-10, the boss lair, has one designed layout) */
-export type W1Stage = '1-1' | '1-6' | '1-7' | '1-8' | '1-9';
+/** World 1's stages with section versions (1-2 to 1-6 roll on gen2; 1-10, the boss lair, has one designed layout) */
+export type W1Stage = '1-1' | '1-7' | '1-8' | '1-9';
 export type Slot = 'start' | 'develop' | 'twist' | 'finish';
 const SLOTS: readonly Slot[] = ['start', 'develop', 'twist', 'finish'];
 
@@ -93,14 +93,6 @@ export interface W1Kit {
   fernTree: () => void;
   glideLookout: () => void;
   creakRun: () => void;
-  // ----- swings and the canopy (1-6 on)
-  chain: (n: number, soft: boolean, rocks?: boolean) => void;
-  kapok: () => void;
-  canopy: (glideSeed: boolean) => void;
-  highRun: () => void;
-  logPuzzle: (busyTop?: boolean) => void;
-  seesawRoom: (demo: boolean) => void;
-  seesawTwist: () => void;
   // ----- the eagle (1-7)
   bushRow: (n: number, gap: [number, number], kinds: Bush[], calm: [number, number], rocks?: boolean) => void;
   secretBush: (calm: [number, number]) => void;
@@ -332,55 +324,8 @@ const SECTIONS: Record<W1Stage, Table> = {
     ],
   },
   // (1-4 Up the Kapok rolls on gen2 from 11-13, the vine field: w1Arc14.ts. Its hand-built rhythm rows went with the hand-built 1-4)
-  // 1-6 (the 'proto' plan) Swinging Vines: the swing, the fallen log and its seesaws, the canopy road. Four flavours carried through
-  // the stage, each leaning on a different heavy beat between the lessons: the gorge's vines, climbs up the kapoks and walls, snakes on
-  // the ground and on ledges, or bounces up to high branches. The swing lessons, the puzzle rooms and the canopy road with its glide
-  // seed are in every roll.
-  '1-6': {
-    rhythms: ['swing', 'climb', 'fight', 'bounce'],
-    develop: [
-      { id: 'gorge', beat: 'swing', build: (k) => { k.chain(k.R.i(2, 3), false); k.busy(1); k.flag(); k.kapok(); k.chain(3, false); } },
-      { id: 'kapoks', beat: 'climb', build: (k) => { k.kapok(); k.climbWall(); k.flag(); k.climbWall(); k.kapok(); } },
-      { id: 'snakes', beat: 'fight', build: (k) => { k.kapok(); k.snakeWalk(2); k.flag(); k.snakeLedge(); k.snakeWalk(1); } },
-      { id: 'bounces', beat: 'bounce', build: (k) => { k.kapok(); k.highLeaps(4, false, true); k.flag(); k.bounceWall(true, false); k.highLeaps(3, true); } },
-    ],
-    twist: [
-      { id: 'roadVines', beat: 'swing', build: (k) => { k.canopy(true); k.flag(); k.highRun(); } },
-      { id: 'roadKapok', beat: 'climb', build: (k) => { k.canopy(true); k.flag(); k.kapok(); k.climbWall(); } },
-      { id: 'roadSnakes', beat: 'fight', build: (k) => { k.canopy(true); k.flag(); k.snakeWalk(2); k.snakeLedge(); } },
-      { id: 'roadHigh', beat: 'bounce', build: (k) => { k.canopy(true); k.flag(); k.highLeaps(5, true, true); } },
-    ],
-    finish: [
-      {
-        id: 'vines', beat: 'swing', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => { k.chain(k.R.i(3, 4), false); k.busy(1, ['log', 'dip'], k.R.r(150, 190)); },
-          (k) => { k.highRun(); k.busy(1, ['log', 'dip'], k.R.r(150, 190)); },
-          (k) => { k.chain(3, false); k.highRun(); },
-        ], 2, 16),
-      },
-      {
-        id: 'climbs', beat: 'climb', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => { k.kapok(); k.climbWall(); },
-          (k) => k.climbWall(),
-          (k) => { k.climbWall(); k.kapok(); },
-        ], 2, 16),
-      },
-      {
-        id: 'snakes', beat: 'fight', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => { k.snakeWalk(2); k.busy(1, ['dip'], k.R.r(150, 190)); },
-          (k) => { k.snakeLedge(); k.snakeWalk(1); },
-          (k) => { k.snakeBranches(3, k.G - 130); k.snakeLedge(); },
-        ], 2, 16),
-      },
-      {
-        id: 'bounces', beat: 'bounce', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => k.highLeaps(5, false, true),
-          (k) => { k.bounceWall(true, false); k.highLeaps(4, true, true); },
-          (k) => k.highLeaps(4, true, true),
-        ], 2, 16),
-      },
-    ],
-  },
+  // (1-6 Swinging Vines rolls on gen2 from 11-14, w1Arc16.ts. Its hand-built rows (swing, climb, fight, bounce) went with its 'proto'
+  //  plan, R-165.238)
   // 1-7 A Very Good Bush: hide from the eagle. The roll's rhythm: bush rows on the ground, the rope line with bushes on it, or open
   // stretches out of the eagle's sight (bounces and hops) between the watched ones. The secret bush and the acorn meadow are in every
   // roll; the finish runs a minute past the meadow.
