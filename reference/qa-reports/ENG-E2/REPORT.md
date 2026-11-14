@@ -78,6 +78,21 @@ base (t-eng-e1@f573675b) at import: none of eagleOver's perch, Post.perched, the
 - tier-bot calibration on 1-1: firsttimer's change only adds words to the hide rule and a block that runs only under a kit sweeper (1-1 has
   none); tierBots.test.ts is in the gate run (see Gates).
 
+## REDO from the lead's 11:35 AM ET quality check (NOT done in this box: EXACT NEXT STEP)
+Both need work after the gate run on b4a697c9 ends (changing the perch mid-run would test code that is not the head, D59), and my context
+is at the 400k hand-over line.
+1. **The perched eagle must clear the HUD by at least 24 px, both ways** (sideways-915x412-4-carpet-still: its beak touches the progress
+   sign's lower edge). Lower the perch: change `SNAG_PERCH` (src/game/sweepPose.ts) and `W17.snagB.perch` (src/game/w17Art.ts, the row in
+   file px: perch = 880 - 3 x SNAG_PERCH) TOGETHER (eaglePerch.test.ts holds them equal). Try 90 (its feet about Pokey's height). In
+   reference/qa-reports/ENG-E2/shoot.mjs print, in every caption: the eagle's top on screen = (s.homeY - 338/3 - camera.y) x the canvas's
+   zoom, and the HUD's bottom = the progress sign's DOM rect bottom (find its element in the HUD component); pass = top >= bottom + 24.
+   Re-shoot both orientations, check every still where it is perched, then full gates on the new head.
+2. **Re-shoot hanging moss with him actually hanging in it** (sideways-915x412-h2-hanging-moss says "hanging" but prints hanging false and
+   shows him on the floor, Dot's box over the lower left). In shoot-hang.mjs: dismiss Dot's box first (the guide's own dismiss, or start
+   from a point after the tip), then put him on the rope the way the game catches one (engine.ts rope catch ~:5380: hands within
+   ry-12..ry+30 while rising or with Up held), wait until `player.hanging` is true, then still, and print hanging + calmNow in the caption.
+   Same for the mossy liana (print isVineSwinging true). Both orientations. A still proves only what you can see in it (D69).
+
 ## Gates
 (filled from gates.log when the run ends)
 
