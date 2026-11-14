@@ -26,7 +26,9 @@ proven plan; Play is never blocked).
   --emit`. Never an allow-list entry.
 - **Petals on a landing perch:** check where the bots STAND (ENG-16G/petals/onperch.ts: per bot the t he lands at and leaves) before
   placing; the pickup reach is 46 px from his hips (engine.ts:3219, distance2D(p.x, p.y - 20, ...)). A leap often clears a short
-  perch entirely (1-6 first-liana b1: no bot stood on it on seeds 1 and 3).
+  perch entirely (1-6 first-liana b1: no bot stood on it on seeds 1 and 3). **Trap:** a socket's `t` is clamped 20 px inside its BUILT
+  piece (pipeline.ts:3212); 1-6's first-liana b1 is built ~83-118 px wide, not its 280 in the data, so b1@0.99 landed back at 0.76-0.83.
+  Check a moved petal in the built stage (ENG-16G/petals/pet.ts), never from the socket's t. Run 40 seeds, not 6, before calling a door fixed.
 
 ## 0za. The bots' harness, the liana let-go, the old 1-6 gone (ENG-16F, t-build-16, 11-14, R-165.246 / R-165.238): what the next engineer must know
 - **realPlay.ts FakeInput counts fresh inputs** (`moves`, as inputEngine.ts fresh(): a press, a punch/kick, a new direction, down/up

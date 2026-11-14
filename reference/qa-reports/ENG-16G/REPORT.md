@@ -1,6 +1,43 @@
 # ENG-16G REPORT: 1-6 finished from ENG-16F's EXACT NEXT STEP: the height-aware swing clearance and its lay rule, seesaw-b parked, the sealed doors' petals on the path (R-165.246)
 t-build-16 from 68e4bce1; packet reference/packets/2026-11-14/ENG-16G.md (lead's branch ccr-ea739a2f-dfcee4). Start 5:30 PM ET (`date`).
-DRAFT: numbers marked (PENDING) are filled from the runs on the final head.
+**1-6 is NOT GREEN.** Bots 1-40 on Normal: sealed doors (expert 18/40, middle 30/40, child 36/40) and rescues (kid 34/40, adult 39/40).
+Easy: kid 39/40, the rest 40/40; **Easy proof pending R-165.251**. The lead's ruling 6:23 PM ET: no stills or clips (the walked-span petal
+lay, a fresh engine member's from 7:30, will move 1-6); this box is the gates, the ranked misses, the kid's rescues, and the next step.
+
+## EXACT NEXT STEP (in order; engine tier, xhigh)
+1. **The walked-span petal lay (an engine piece for every stage; rule 22).** The rule, in one sentence: *a petal goes inside its piece's
+   walked span, after the farthest point the leap onto that piece can set him down and before the earliest point the jump off it
+   leaves, and on a piece the leap clears, onto the next piece he walks.* Where petals are laid for gen2: `src/game/gen2/pipeline.ts:2551`
+   (each socket's x from its `t` along its piece: `placed.sockets.push({ socket: s, x: R(p.x + t * p.width), ... })`) and
+   `pipeline.ts:3199-3214` (a 'pickup' socket's flowers laid at that x, span around it, clamped 20 px inside the piece); the stage's own
+   fill pass is `src/game/petals.ts:378` fillGaps (FILL_GAP 1050, :213). The landings are already known to the lay: `lianaBand`
+   (pipeline.ts, the release window's band of perch near ends) and the release flights in `lianaRelease`; the take-off is where the
+   next piece's ask starts (the section's `asks`, x0). The pickup reach is 46 px from his hips (`engine.ts:3219`, distance2D(p.x, p.y - 20, c.x, c.y) < 46).
+   The evidence to plant from (`petals/expert-spans-40.txt`, `petals/miss-expert-40.out.txt`; expert Normal seeds 1-40, misses of 40):
+
+| petal (section:piece@t; socket) | missed | where he lands on the piece / leaves it (t) | the walked span says |
+|---|---|---|---|
+| gorge:in@0.70 (pa) | 26 | enters walking at 0; leaves median 0.56, 10% before 0.05 (respawns) | a take-off bank: at or before ~0.4 |
+| creaky-landing:in@0.70 (pa) | 24 | leaves median 0.57, 10% before 0.51 | at or before ~0.4 |
+| false-liana:in@0.70 (pa) | 21 | leaves median 0.58 | at or before ~0.4 |
+| risers:hu1@0.75 (ph) | 19 | stood on in 30/40; lands median 0.42, 90% by 1.00; leaves 0.97-1.00 | flown over in 10: the next walked piece |
+| snakes-met:b2@0.77 (the near one of a LANDED pair) | 19 | stood on in 23/40; lands median 0.85, 90% by 0.93; leaves 0.97-1.00 | past ~0.93, or the next piece |
+| rest-dip:c@0.50 | 13 | stood on in 18/40; lands 0.34-0.50; leaves 0.87-1.00 | flown over in 22: past 0.5 |
+| rest-log:d@0.50 | 12 | stood on in 21/40; lands median 0.46; leaves 0.96-1.00 | flown over in 19: past 0.5 |
+| snake-on-vine:b1@0.85 | 12 | stood on in 34/40; lands median 0.33; leaves median 0.55, 10% before 0.42 | 0.33-0.42 |
+| chain:cb@0.60 | 12 | stood on in 28/40; lands median 0.28, 90% by 0.38; leaves median 0.51, 10% before 0.43 | 0.38-0.43 |
+| rest-dip:b@0.86 | 11 | stood on in 21/40; lands median 0.42; leaves 0.96-1.00 | flown over in 19 |
+| risers:b1@0.88 | 10 | stood on in 24/40; lands median 0.86, 90% by 0.92; leaves 0.97-1.00 | past ~0.92, or the next piece |
+| snakes-met:b1@0.10 | 10 | stood on in 22/40; lands median 0.89 | 0.10 is behind every landing: past ~0.9 |
+
+   Plant it on a toy stage both ways (a petal before the leap's far landing RED, inside the span GREEN), lay every stage of every world
+   by it, run the lock (it will move every stage with LANDED-style petals: list them), relist what moves, bots 1-40 both settings.
+2. **The kid's rescues (one fix, BOT unless the stair is missing):** item 5 below. First check s20 and s36: is there a stair back to the
+   take-off bank under that liana (w1Pits.ts / pipeline backPit), and does the kid take it (firsttimer.ts pitWayUp / pitWayBack)?
+3. Then 1-6 to GREEN: relist, bots 1-40 both settings (0 rescues, 0 sealed), the whole suite, the lock; stills of every beat upright
+   and sideways on Normal and Easy, the clips with `shoot.mjs` (CLIP=1: it names the clearance frame) and `exit.mjs` (CLIP=1); the
+   Easy proof once R-165.251 lands.
+
 
 ## Done-items (each with its evidence)
 ### 1. The height-aware swingClearance and its lay rule (the lead's ruling (b), 4:42 PM ET)
@@ -31,9 +68,11 @@ DRAFT: numbers marked (PENDING) are filled from the runs on the final head.
   flown OVER (seeds 1 and 3: no bot stood on it; the expert stood on it only at 0.96-0.99); every bot lands on d1 at 0.28-0.52 (the
   expert s1 at 0.80) and leaves at 0.53-0.92. The gorge's FAR bough: bots land at 0.19-0.57 and leave at 0.44-0.86 (the expert and
   middle hop on early: 0.44-0.58), so 0.84 was behind them.
-- first-liana: the pair on b1 (0.77 + 0.99) -> one at b1@0.99 (its far end; the fly-overs' arc takes it: ENG-16F's misses never named
-  it) + one on d1@0.6. gorge (Normal): b1@0.88 -> 0.45 (FAR_WALKED). Easy's gorge unchanged. Count and the 87.5% share unchanged. The
-  pickup reach is 46 px from his hips (engine.ts:3219), so each spot is inside every observed stand span. (f80c535a)
+- first-liana: the pair on b1 (0.77 + 0.99) -> one at b1@0.99 + one on d1@0.6. gorge (Normal): b1@0.88 -> 0.45 (FAR_WALKED). Easy's
+  gorge unchanged. Count and the 87.5% share unchanged. (f80c535a)
+- **Checked afterwards on 40 seeds: the b1 one did NOT move** (Pushback 1: the lay's 20 px clamp on a b1 that is built ~83-118 px wide puts
+  it back at 0.76-0.83; 11/40 expert misses). d1@0.6: 1/40. gorge b1@0.45: 7/40. Not patched again: the lead's ruling, 6:23 PM ET, gives
+  every petal to the walked-span lay (EXACT NEXT STEP 1), which must read the BUILT piece's width, not the data's.
 
 ### 4. 1-6 relisted; bots 1-40 both settings NOT green
 - `npx tsx tools/engine/addlevel.ts 1-6 --par 4 --relist` on f80c535a (5:51-6:20 PM ET, 1735 s; `relist-bots.txt`): rolls 24/24 Normal,
@@ -84,7 +123,14 @@ and s36, is there a stair back to the take-off bank under that liana (w1Pits.ts 
   FRAME, swinging on the real liana nearest the false one) and `exit.mjs` (CLIP=1 records the sealed and open door).
 
 ## Pushback
-- (PENDING)
+- **My first-liana move did not take (my miss, found by checking the built stage, `pet.ts` in the REPORT's evidence):** the socket now
+  says b1@0.99, but pipeline.ts:3212 clamps a petal 20 px inside its piece, and b1 as built is ~83-118 px wide (not its 280 in the data),
+  so the petal still sits at b1@0.76-0.83, the same spot: 11 of 40 expert runs still miss it. The d1@0.6 petal is missed once in 40. The
+  gorge's FAR bough petal at 0.45 is missed in 7 of 40. Beyond those, the 40-seed run shows the doors are stage-wide: 12 spots each missed
+  in 10-26 of 40 expert runs. Two spots were the wrong scope; the walked-span lay is the
+  root (EXACT NEXT STEP 1). Seeds 1-6 alone hid it (expert 4 of 6 sealed there, 22 of 40 over forty).
+- The w6to10 packing record (manifest.json `files` sizes, artCutin.test.ts) was not in the ruling's list for parking a frame; park.py
+  now keeps it (8e6a4ea9). The ruling's list should name it.
 
 ## Suggestions (each a ready packet)
 1. **CONTENT or ENGINE: are raft-b, sluice-wheel-b, stone-b, lily-pads-b drawn?** grep finds no draw site by name for any of them
@@ -97,14 +143,18 @@ and s36, is there a stair back to the take-off bank under that liana (w1Pits.ts 
    the walk's start).
 
 ## Unresolved (named plainly)
-- (PENDING)
+- 1-6 is NOT GREEN (above). No stills or clips (the lead's ruling). Easy proof pending R-165.251 (seedlist.ts and lockall.ts build Easy
+  with Normal's swing). The kid's rescues are traced, not fixed. The walked-span lay is not started.
+- The relist (ebbb3eb2) will be redone after the petal lay moves 1-6.
 
 ## Method update (the lead decides)
 - Before moving a petal, measure where the bots STAND (onperch.ts), not only what they miss: the miss list said "b1@0.77" and read like
   "he lands past it"; the stand data showed most runs never touch b1 at all.
 
 ## Learned (proposed rule changes)
-- (PENDING)
+- Proposed level.md rule: **prove a stage's goal on 40 seeds before ruling on spots.** Seeds 1-6 showed 4 expert doors and 0 kid rescues;
+  1-40 showed 22 and 6. A spot fix from six seeds treats a symptom.
+- Proposed level.md rule (with EXACT NEXT STEP 1's check): **a petal is laid in its piece's walked span**, measured, never a fixed share.
 
 ## Method used / Lessons applied
 - Method: reference/methods/level.md (rules 12, 13, 14, 20, 21, 22), stage-fix.md; the role card's day one (lock saved first on the
@@ -114,4 +164,4 @@ and s36, is there a stair back to the take-off bank under that liana (w1Pits.ts 
   (context % in every message), D57 (queue read at every push).
 
 ## Turnover note
-- reference/handoffs/engine-core.md §0zb (PENDING commit).
+- reference/handoffs/engine-core.md §0zb (db000670).
