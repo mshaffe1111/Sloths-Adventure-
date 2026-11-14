@@ -1322,14 +1322,19 @@ export class FirstTimerRun {
       return cb.dir;
     }
     if (!tgt || !p.grounded || p.climbing || p.hanging || p.isVineSwinging || this.e.nearTreeVine) return 0;
-    if (tgt.y > p.y - (DOUBLE_RISE + 10) || this.prog.off(p) < 120) return 0;
+    if (this.prog.off(p) < 120) return 0;
+    // (the way the route travels from his place on it, not where its nearest point is: under the far wall that point is straight over him)
+    const pts = this.prog.pts, i = this.prog.cur, run = pts[Math.min(i + 10, pts.length - 1)].x - pts[Math.max(i - 10, 0)].x;
+    const ahead = run >= 0 ? 1 : -1;
+    // (out of reach forward: the way on over a double's rise, OR the face in front of him over one. 1-7's SHORT liana pit is 179 px under
+    //  the bank, so the route over it is inside a double, but its far wall is the perch 80 px over the bank: 259 px, and he stood facing
+    //  it until the rescue (BUILD-17, 1-7 Easy seed 11; pitClimb.test.ts "shallow pit"))
+    const face = this.faceAhead(ahead, 60);
+    if (tgt.y > p.y - (DOUBLE_RISE + 10) && !(face !== null && face > DOUBLE_RISE + 10)) return 0;
     const from = this.floorAt(p.x, p.y, 6);
     const path = from ? this.pitWayUp(from) : null;
     if (!path) return 0;
     const dir = toward(path[1]);
-    // (the way the route travels from his place on it, not where its nearest point is: under the far wall that point is straight over him)
-    const pts = this.prog.pts, i = this.prog.cur, run = pts[Math.min(i + 10, pts.length - 1)].x - pts[Math.max(i - 10, 0)].x;
-    const ahead = run >= 0 ? 1 : -1;
     if (dir === 0 || dir === ahead) return 0;
     // (the same pit `tries3` times, no further on: a loop, as the same fall three times is (fallBacks); he is put past it)
     const n = (this.pitFalls.get(from!) ?? 0) + 1;

@@ -104,3 +104,32 @@ test('the hop model: a hop off the lip as the liana swings toward him is caught;
   const at = Array.from({ length: 24 }, (_, i) => hopCatches(v, 988, BANK, 1, FT_KID.hold[0], (2.85 * i) / 24, 0));
   assert.ok(at.some(Boolean) && !at.every(Boolean), `some moments catch, not all: ${at.map((b) => (b ? 'x' : '.')).join('')}`);
 });
+
+// BUILD-17 (the lead's 1:24 PM ET ruling 11-14): 1-7's moss pit under a SHORT liana. The pit is shallower (179 px under the bank), so the
+// route over it is inside a double's rise, but the way on past it is the liana's perch, 80 px OVER the bank: the face in front of him is
+// 259 px, over any jump. The climb-back read only the route's height ("the way on is 179 px up"), never the wall, and the kid stood
+// facing that wall until the 20 s rescue (castBots 1-7 Easy seed 11, x 33575). Planted: with the climb-back reading the route's height
+// alone, this test is red.
+test("in a shallow pit whose route is inside a double but whose far wall is over one (1-7's SHORT liana pit), he climbs back: no rescue", () => {
+  const PIT2 = BANK + 179, PERCH = BANK - 80;
+  const plats: Platform[] = [
+    block(1, 0, BANK, 1000, PIT2 + 120),
+    block(2, 1000, PIT2, 556, PIT2 + 120),
+    block(3, 1000, PIT2 - 60, 300, PIT2 + 120),
+    block(4, 1000, PIT2 - 120, 200, PIT2 + 120),
+    { id: 6, x: 1130, y: BANK, width: 296, height: 24, type: 'solid' } as Platform,
+    block(7, 1556, PERCH, 2400, PIT2 + 120),
+  ];
+  const route = Array.from({ length: 150 }, (_, i) => ({ x: 100 + i * 24, y: 100 + i * 24 < 1556 ? BANK : PERCH }));
+  for (const who of [FT_KID, FT_ADULT]) {
+    const run = new FirstTimerRun('1-1', 1, who, { route, cap: 24, rescueAfter: 12 });
+    run.sim.bare(plats);
+    run.sim.stand(1530, PIT2);
+    run.prog.relocate(run.sim.p);
+    run.play();
+    const p = run.sim.p;
+    assert.equal(run.rescues, 0, `${who.name}: rescued (stuck: ${JSON.stringify(run.stuck)})`);
+    assert.ok(run.climbBacks >= 1, `${who.name}: turned back for the stair`);
+    assert.ok(p.x > 1600 && Math.abs(p.y - PERCH) < 4, `${who.name}: on the far perch at the end (x ${Math.round(p.x)}, y ${Math.round(p.y)})`);
+  }
+});
