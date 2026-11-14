@@ -120,3 +120,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | ENG-B5 (Opus xhigh) | 1-8 rolling nut/fruit by data, chase camera lead, ?fixture=chase, contrast numbers; retired at 50.3% real context, final suite re-run cut at 1,542/~3,500 with 0 fails (ENG-B6's merge suite replaces it) | $27.08 | ~2 h |
 | INT-9b (Opus xhigh) | link #3 phase A: every gate on t-int-9 (8-3 lock re-pinned to the bank rule), 48 KB test-link inline limit (1c7f6b95); retired idle at 31.4% before phase B (1-6 not green) | $11.41 | ~1 h 50 m |
 | PITCH-A (Opus high) | pitches 1-9 ('you are the bait'), 2-1 ('the river does the running'), 2-2 ('the pond breathes'), ranked World 2 engine list, W1 tribute pass; one redo (research as [Q] lines, proposed W2 numbers) | $7.05 | ~25 min |
+| CRITIC-LR (Opus high) | cold review of the new lead's review: 2 PASS, 4 REJECT with fixes (engine queue order, driftcheck, LSW line, tribute rule pass/fail), all adopted | $0.98 | ~14 min |
