@@ -18,3 +18,8 @@ drawcheck 0 8:12 PM
 clipcheck 0 8:17 PM
 buildcheck 0 8:17 PM
 done 8:17 PM
+--- fast gates on 68d015dda (docs only since 16f2e24c: methods/README.md row, INT-6 report/stills) 8:17 PM
+tsc 0 8:17 PM
+roadmap 0 8:17 PM
+knowncheck 0 8:17 PM
+generality 0 8:17 PM
