@@ -22,7 +22,7 @@ the real stage's next bank (its slot ends at log 127 with no bank to its right: 
   (the higher lip unless the lower lies more than SOFT_BELOW under it), `onFloor` (a rim lying on its floor is no wall), nested dips merged.
 - **(a)** scan.ts, same builds read by both rulers (3,264): scan-3.txt: PAINTED 0; judged World 1 floor.unmarked changes: 1-1 32/32 only.
 - **(b)** no painted change, so no before/after pair; the climb (3 spots) and the catch ends (2), before: stills/. 1-1 "after": refused.
-- **(c)** seedlist 1-1 --check: SEEDLIST. lockall --layouts 16 vs d8d6a97 on the 101 other stages: 101/101 unchanged (1-2, 1-3 roll as on main); 1-1 refused on every build.
+- **(c)** seedlist 1-1 --check: UNFINISHED, killed by my 25 min timeout (exit 124, no output; every 1-1 seed is refused, as in w1Pits.test's "no seed of 24 from 769"); not re-run (held). lockall --layouts 16 vs d8d6a97 on the 101 other stages: 101/101 unchanged (1-2, 1-3 roll as on main); 1-1 refused on every build.
 - **(d)** mixlist: 60 strings, clean 0 (was 1), fair 8, fair clean 0 (was 1), floor.unmarked 60 (was 36).
 ## Gates: tsc, generality, roadmapcheck (full clone), knowncheck PASS on dbde77d0. NOT RUN: the full suite, build, perf gates: 1-1
 cannot build on this head (w1Pits.test "World 1, layout 1", stumps.test, softFalls11 x4 fail on it), so nothing here can ship yet.
