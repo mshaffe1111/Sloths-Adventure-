@@ -1,5 +1,5 @@
 # ENG-S4 REPORT (t-eng-s4 from origin/t-eng-s3@dd252669; packet reference/packets/2026-11-14/ENG-S4.md on the lead's branch)
-Start 8:00 AM ET. Code head **99b7fb56**. Context at the report: about 30% of the 1M window (my estimate; the lead has the real figure). Stopped 9:40 AM ET (10 min over the
+Start 8:00 AM ET. Code head **99b7fb56**. Context at the report: about 30% of the 1M window (my estimate; the lead has the real figure). Stopped 9:34 AM ET (pasted from date; just over the
 90 minute box, waiting out the gates rather than leaving them running, D59).
 Nothing left running at the stop (D59).
 
