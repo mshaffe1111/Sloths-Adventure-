@@ -90,8 +90,8 @@ jobs:
       - run: npm install --no-audit --no-fund --legacy-peer-deps
       # (the engine tools' own tests, outside the suite glob: the section library, the seed-list writer, the seed yield, the travel
       # bots, 1-3's designed arc (library13), the cast bots (castBots, F13 11-12), the one roll tool and the registry gate (libstage,
-      # registrycheck, ADD-LEVEL R-165.187: about 50 s); PROOF-1 violation 5, about 5 s. src/game/ciTests.test.ts fails on a test file no workflow runs)
-      - run: npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts tools/inspect/routeHumps.test.ts tools/engine/libstage.test.ts tools/engine/registrycheck.test.ts
+      # registrycheck, ADD-LEVEL R-165.187: about 50 s; the bot out of a pit, pitClimb, BUILD-16c); PROOF-1 violation 5, about 5 s. src/game/ciTests.test.ts fails on a test file no workflow runs)
+      - run: npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts tools/inspect/routeHumps.test.ts tools/inspect/pitClimb.test.ts tools/engine/libstage.test.ts tools/engine/registrycheck.test.ts
       # (an engine or kit change that stales a rolled stage's seed list fails here until the list is rebuilt: tools/engine/seedlist.ts <id>;
       # EVERY proven list, each by name, from the index: registrycheck.ts --lists. ADD-LEVEL R-165.187: CI checked only 1-1's)
       - run: for s in $(npx tsx tools/engine/registrycheck.ts --lists); do echo "== $s"; npx tsx tools/engine/seedlist.ts "$s" --check || exit 1; done

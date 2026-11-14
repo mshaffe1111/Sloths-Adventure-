@@ -43,7 +43,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
-import { reachJump, reachJumpHeld, TIMED, vineAmp } from '../../src/game/physics.ts';
+import { DOUBLE_RISE, JUMP_RISE, reachJump, reachJumpHeld, TIMED, vineAmp, vineAngle, vinePeriod } from '../../src/game/physics.ts';
 import type { Platform } from '../../src/game/types.ts';
 import { scares } from '../../src/game/dropTrap.ts';
 import type { TrapPost } from '../../src/game/castPlay.types.ts';
@@ -716,6 +716,8 @@ const PHONE = { w: 844, h: 390 };
 /** FT_TRACE=1: every jump and how it went, on stderr */
 const TRACE = typeof process !== 'undefined' && !!process.env.FT_TRACE;
 /** FT_FRAMES=a,b: every frame between a and b s of play, on stderr */
+/** the share of a liana's swing out in front at which he decides to let go (his thumb's lag on top): the forward end (intend, on a liana) */
+export const LET_GO_AT = 0.75;
 /** px: the highest ledge over him he hops for on a tower's stair (a single jump rises 108 px, stageMetrics JUMP_RISE; a stair step is 60) */
 const STAIR_HOP = 100;
 const TRACE_FRAMES = typeof process !== 'undefined' && process.env.FT_FRAMES ? process.env.FT_FRAMES.split(",").map(Number) : null;
@@ -909,6 +911,16 @@ export class FirstTimerRun {
   private stillSpot: { until: number } | null = null;
   rescues = 0;
   readonly rescueXs: number[] = [];
+  /** times he turned round to climb back out of a pit the way on could not be reached from (pitWayBack; pitClimb.test.ts) */
+  climbBacks = 0;
+  /** climbing back out of such a pit: the ledges from the pit's floor up to the route, in order, and the way he heads now */
+  private climbBack: { path: Platform[]; dir: -1 | 1; t: number } | null = null;
+  /** how often he has climbed back out of each pit (its floor): the same pit `tries3` times is a loop, and he is put past it */
+  private pitFalls = new Map<Platform, number>();
+  /** when he last let go of a liana (s of play): a pit he falls into soon after was a let-go that fell short, and he learns to hang low */
+  private letGoAt = -Infinity;
+  /** seconds he has stood at an edge waiting for a liana to swing to him (lianaWait) */
+  private lianaWaitT = 0;
   gameOvers = 0;
   frames = 0;
   private lastCause = 'other';
@@ -1249,6 +1261,138 @@ export class FirstTimerRun {
     return { what: parts.join(', '), step: step === null ? null : Math.round(step), dip, puzzle: !!puzzle };
   }
 
+  /**
+   * Fallen into a pit whose far wall is over any jump (1-6's moss pits under a liana: the far bank 225 px up, the pit's stair of 56 px
+   * steps back up to the bank he swung from), he turns round and climbs back to the ledge the route left from, as a person does, and
+   * tries the way on again (BUILD-16c, the lead's 11:43 AM ET ruling 11-14: he walked into the far wall until the 20 s rescue, so every
+   * run read "rescued"). Only when he stands off the route, under it, with the way on over a double's rise (DOUBLE_RISE), and the way up
+   * he can walk and hop (pitWayUp) starts back the other way: a dip he can hop out of forward is left forward, by the steer as before.
+   * Returns the way to head (0: not climbing back).
+   */
+  private pitWayBack(tgt: Pt | null): -1 | 0 | 1 {
+    const p = this.sim.p;
+    const toward = (q: Platform): -1 | 0 | 1 => {
+      const x = Math.min(Math.max(p.x, q.x + 24), q.x + q.width - 24);
+      return x > p.x + 4 ? 1 : x < p.x - 4 ? -1 : 0;
+    };
+    const cb = this.climbBack;
+    if (cb) {
+      if (p.grounded) {
+        const on = this.floorAt(p.x, p.y, 6);
+        const k = on ? cb.path.indexOf(on) : -1;
+        // (up on the route's ledge, or 20 s gone: the route steers again)
+        if (k === cb.path.length - 1 || this.t - cb.t > 20) {
+          this.climbBack = null;
+          return 0;
+        }
+        if (k >= 0) cb.dir = toward(cb.path[k + 1]) || cb.dir;
+      }
+      return cb.dir;
+    }
+    if (!tgt || !p.grounded || p.climbing || p.hanging || p.isVineSwinging || this.e.nearTreeVine) return 0;
+    if (tgt.y > p.y - (DOUBLE_RISE + 10) || this.prog.off(p) < 120) return 0;
+    const from = this.floorAt(p.x, p.y, 6);
+    const path = from ? this.pitWayUp(from) : null;
+    if (!path) return 0;
+    const dir = toward(path[1]);
+    // (the way the route travels from his place on it, not where its nearest point is: under the far wall that point is straight over him)
+    const pts = this.prog.pts, i = this.prog.cur, run = pts[Math.min(i + 10, pts.length - 1)].x - pts[Math.max(i - 10, 0)].x;
+    const ahead = run >= 0 ? 1 : -1;
+    if (dir === 0 || dir === ahead) return 0;
+    // (the same pit `tries3` times, no further on: a loop, as the same fall three times is (fallBacks); he is put past it)
+    const n = (this.pitFalls.get(from!) ?? 0) + 1;
+    this.pitFalls.set(from!, n);
+    if (n >= this.tries3) {
+      this.pitFalls.delete(from!);
+      this.stuck.push({ x: Math.round(p.x), y: Math.round(p.y), t: +this.t.toFixed(1), dur: 0, what: `fell into this pit ${n} times (its far wall ${Math.round(p.y - tgt.y)} px up)`, step: null, dip: null, puzzle: false, rescued: true });
+      if (!this.rescue()) this.end = 'stranded';
+      return 0;
+    }
+    this.climbBacks++;
+    this.climbBack = { path, dir, t: this.t };
+    // (fallen short off a liana, a few seconds ago: next time he hangs low, as a person tries the grip Dot showed)
+    if (this.t - this.letGoAt < 5) this.learned.add('low');
+    return dir;
+  }
+
+  /**
+   * At the end of his ledge with a liana on the way ahead to catch: true while he should stand and wait for it. A liana swings itself
+   * (physics.ts, the self-swing), its foot 180 px either way, so a jump at it as it swings away falls short into the pit under it (the
+   * kid's short flick, 1-6 Easy seed 1: three misses, no grab, BUILD-16c). He goes when, a jump's flight from now (0.45 s), the liana at
+   * his hands' height will be as near as it ever comes to where a hop puts his hands (60 px past the edge), within 30 px of that best;
+   * 4 s at most, then he goes anyway.
+   */
+  private lianaWait(dir: -1 | 1): boolean {
+    const p = this.sim.p;
+    const here = p.grounded ? this.floorAt(p.x, p.y, 6) : null;
+    const edgeX = here ? (dir > 0 ? here.x + here.width : here.x) : NaN;
+    const near = here && dir * (edgeX - p.x) < 70 && !this.floorAt(edgeX + dir * 24, p.y, 40);
+    const pts = this.prog.pts;
+    const v = near
+      ? this.sim.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && dir * (q.x - edgeX) > -40 && dir * (q.x - edgeX) < 360
+        && q.bottomY >= p.y - 140 && q.topY < p.y - 100 && pts.some((r) => Math.abs(r.x - q.x) < 60 && r.y >= q.topY && r.y <= q.bottomY + 60))
+      : undefined;
+    if (!v || this.lianaWaitT > 4) {
+      if (!near) this.lianaWaitT = 0;
+      return false;
+    }
+    const clock = (this.e as unknown as { vineClock: number }).vineClock;
+    const hands = Math.min(v.bottomY, p.y - 80) - v.topY;
+    // (how far the liana at his hands' height will be from where a hop off the edge puts his hands, 60 px out: near or far, in front
+    // or behind; a signed gap picked the moment it swung furthest back, behind him over his own step, BUILD-16c)
+    const gap = (c: number) => Math.abs(v.x + Math.sin(vineAngle(v, c)) * hands - (edgeX + dir * 60));
+    let best = Infinity;
+    const per = vinePeriod(v);
+    for (let i = 0; i < 30; i++) best = Math.min(best, gap(clock + (per * i) / 30));
+    if (gap(clock + 0.45) <= best + 30) {
+      this.lianaWaitT = 0;
+      return false;
+    }
+    this.lianaWaitT += DT;
+    return true;
+  }
+
+  /**
+   * The way up out of a pit over the stage's ledges, with plain hops only (a step up to JUMP_RISE - 8 px, a step down, a gap of 90 px or
+   * less), from the ledge he stands on to the nearest ledge higher than it that the route walks on or that a liana on the route can be
+   * caught from: the ledges in order, or null.
+   */
+  private pitWayUp(from: Platform): Platform[] | null {
+    const pts = this.prog.pts;
+    const P = this.sim.platforms.filter((q) => !q.broken && q.width >= 40 && q.type !== 'bouncy' && q.type !== 'moving' && q.type !== 'drift' && !q.push && Math.abs(q.x - from.x) < 2400);
+    // (back on the way: a ledge the route walks on, or one a liana on the route can be caught from, its foot a hop up and close across:
+    // where a creaky limb has crumbled (1-6's creaky landing), the pit's stair tops out under the next liana's catch, with no bank left)
+    const lianas = this.sim.vines.filter((v) => v.vineType === 'swing_liana' || v.isSwingingVine || (v as { silk?: unknown }).silk)
+      .filter((v) => pts.some((r) => Math.abs(r.x - v.x) < 60 && r.y >= v.topY && r.y <= v.bottomY + 60));
+    const catchFrom = (q: Platform) => lianas.some((v) => v.bottomY >= q.y - JUMP_RISE && v.bottomY <= q.y + 20 && Math.max(0, q.x - v.x, v.x - (q.x + q.width)) <= 140);
+    const onRoute = (q: Platform) => q.y < from.y - 60 && (pts.some((r) => r.x >= q.x && r.x <= q.x + q.width && Math.abs(r.y - q.y) < 12) || catchFrom(q));
+    const prev = new Map<Platform, Platform>();
+    const seen = new Set<Platform>([from]);
+    let line: Platform[] = [from];
+    while (line.length) {
+      const next: Platform[] = [];
+      for (const a of line) {
+        for (const b of P) {
+          if (seen.has(b)) continue;
+          const rise = a.y - b.y;
+          const gap = Math.max(0, b.x - (a.x + a.width), a.x - (b.x + b.width));
+          if (rise > JUMP_RISE - 8 || rise < -300 || gap > 90) continue;
+          seen.add(b);
+          prev.set(b, a);
+          if (onRoute(b)) {
+            const path = [b];
+            for (let q = a; q !== from; q = prev.get(q)!) path.unshift(q);
+            path.unshift(from);
+            return path;
+          }
+          next.push(b);
+        }
+      }
+      line = next;
+    }
+    return null;
+  }
+
   /** a puzzle room or a piece Dot teaches near x */
   nearPuzzle(x: number, within: number): string | null {
     const e = this.e;
@@ -1307,6 +1451,8 @@ export class FirstTimerRun {
       if (/\b(glide|leaf)\b/.test(t)) this.learned.add('glide');
       // (World 8's glide line, "Jump twice, then hold to glide": the second jump first, then the glide, at a gap one jump does not cross)
       if (/\bjump twice\b/.test(t)) this.learned.add('double');
+      // (1-6's "Hang low, fly far!": a lower grip on a liana throws him further, so he climbs down it before he lets go, swingLow)
+      if (/\b(hang|hold on|grip|climb down)\b/.test(t) && /\blow(er)?\b/.test(t)) this.learned.add('low');
       if (/\b(stand still|stay still|keep still|wait (here|for|under|on)|stand (on|under|here))\b/.test(t)) this.learned.add('still');
     }
   }
@@ -1355,6 +1501,9 @@ export class FirstTimerRun {
         if (who.holdQ && this.dropOff) dir = this.dropOff.dir;
       }
     }
+    // (fallen into a pit the way on cannot be reached from: back up its stair the way he came, pitWayBack)
+    const back = this.pitWayBack(tgt);
+    if (back !== 0) dir = back;
     // (turned back for an animal he passed: its way, not the route's)
     const prey = this.hunt ? (e.enemies as Array<{ id: number; x: number }>).find((m) => m.id === this.hunt!.id) : undefined;
     if (prey) dir = prey.x > p.x + 16 ? 1 : prey.x < p.x - 16 ? -1 : prey.x >= p.x ? 1 : -1;
@@ -1516,10 +1665,19 @@ export class FirstTimerRun {
     if (p.isVineSwinging) {
       this.swingT += DT;
       const own = this.sim.vines.find((q) => q.id === p.swingVineId);
+      // (hanging low, once he knows to (Dot's line, or a let-go that dropped him short into a pit, pitWayBack): down to the liana's foot
+      // first, the thumb on down alone (down with the press is the engine's drop, not the leap; down with a steer can step him off), then
+      // the let-go as below. BUILD-16c: 1-6's LONG gaps fly only from a low grip, by design, and the bot never climbed down)
+      if (own && this.learned.has('low') && !this.pending && (p.swingLength ?? 0) < own.bottomY - own.topY - 4) return { down: true };
       // (how far forward, as a share of the vine's own swing: physics.ts swingSetup sizes each one)
       const a = (p.swingAngle ?? 0) / Math.max(0.05, own ? vineAmp(own) : TIMED.amp), om = p.swingAngularVelocity ?? 0;
-      if (!this.pending && ((this.swingT > 1 && a * fdir > 0.4 && om * fdir > 0) || this.swingT > 7)) {
+      // (the let-go at the swing's forward end, as the testers let go (physics.ts RELEASE: "the natural moment, just past the sweet
+      // spot", which the engine gives the sweet spot's leap): decided at 3/4 of the way out, the thumb's lag on top. Decided at 0.4 it
+      // came at about half way, a lower, shorter leap: 1-6's LONG gaps (laid at the far end of the low holds' band, W1_LIANA_GAP) fell
+      // short every time, Easy too (BUILD-16c: castBots 1-6 seeds 1-6, adult Easy 0/6 at 0.4, 6/6 at 0.75))
+      if (!this.pending && ((this.swingT > 1 && a * fdir > LET_GO_AT && om * fdir > 0) || this.swingT > 7)) {
         this.swingT = 0;
+        this.letGoAt = t;
         return this.decide(fdir, 'single', true, side(fdir));
       }
       return side(fdir);
@@ -1552,6 +1710,8 @@ export class FirstTimerRun {
     // on the ground
     // (the first moments of a stage: he holds the way on and takes nothing in yet)
     if (t < who.look) return side(dir || 1);
+    // (a liana to catch off this edge: he stands at the edge until it swings to him, as a person watches a swing come, lianaWait)
+    if (dir !== 0 && !this.jump && !this.pending && !this.standing && this.lianaWait(dir)) return {};
     // (a tier bot stopped at an edge: he lets go, comes to a stand, stands his time, then jumps from there)
     if (this.standing) {
       const s = this.standing;
@@ -2172,7 +2332,8 @@ export class FirstTimerRun {
     } else this.offRoute = 0;
     // stuck: no progress for 8 s (not while standing at a puzzle)
     // (and not while he works a vine field's gate or steps off a pod's column: figPush.ts busy, the figs are the way on)
-    if (more || this.huntMore || this.puzzleWait || this.stillSpot || this.figs?.busy(t)) {
+    // (and not while he climbs back out of a pit, pitWayBack: the way back up is a person's retry, and three of them are a loop there)
+    if (more || this.huntMore || this.puzzleWait || this.stillSpot || this.figs?.busy(t) || this.climbBack) {
       if (this.stuckOpen && this.noProg >= 8) this.stuckOpen.dur = +this.noProg.toFixed(1);
       this.stuckOpen = null;
       this.noProg = 0;
