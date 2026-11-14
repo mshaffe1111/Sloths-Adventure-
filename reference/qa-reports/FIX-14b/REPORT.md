@@ -54,11 +54,10 @@
    110.7 s, fastest 106.1 s: over the 100 s climb floor), child 10 / 13, middle 22 / 23, expert 25 / (its Easy line did not print).
    231 of 320 printed vs FIX-14's 209 of 360 on the fork head; NOT like for like (one tier line missing): judge the 40-seed totals again
    after the fork. Before the figPush fix the same run was 0/40 on every tier (the relist's run, relist.log).
-## Gates on head adae2f3d (frozen worktree /home/user/w14c): RUNNING from 3:12 AM, results below
-(On 72d1ca6d, one commit back, these all PASSED: tsc, build, chunkcheck, artcheck, buildcheck, knowncheck, generality, roadmapcheck,
-kbdcheck, seedlist 1-1 (257) and 1-4 (100) --check, tool tests 41/41, tierBots 7/7. Its full suite was at 1055 ok / 0 not ok when I
-stopped it for the new head; drawcheck and clipcheck did not finish there. The first suite run, on the pods commit, timed out at 25 min
-under load with 2 failures, both fixed: feelPairRoom gate test, figPush.)
+## Gates on head adae2f3d (frozen worktree /home/user/w14c; later commits are stills/docs only)
+PASS: tsc; vite build (BASE_PATH); chunkcheck; artcheck; knowncheck; generalitycheck; roadmapcheck; seedlist 1-1 --check (257) and
+1-4 --check (100); tool tests 41/41 (library, seedlist, yield, travelBots, castBots); tierBots 7/7; buildcheck; kbdcheck; drawcheck
+(612 s). clipcheck and the full suite: see the last lines below (filled when they finished).
 ## Polish check (judged on the real page, stepped-frame clips; seed 1, built setting printed by clip.mjs)
 - gate-normal-up-sheet.jpg: the ties read in three states at phone size (green loop; pale frayed loop; two whipping ends), the thatch
   reads as leaves over the bough; his head stays under the wood on hold and jump. Rough spots, named plainly: (1) the loops are small
