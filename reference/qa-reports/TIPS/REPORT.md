@@ -41,7 +41,6 @@ stage id in engine code), D50/D63 (default setting, Dot's real bubble), D59, D62
   the way: the clip harness froze Dot (paused frame-stepping) and then hid her (held invincibility): reshot real time.
 - door/after-*.jpg: the plate reads in full over the gate, Pokey solid in front of the door, the card at the top. Fixed: the plate drew
   every frame off screen once moved to the words pass: culled like the door.
-- Seen, unchanged by this work: Easy's find hint ("One of these plants isn't like the others") is up on 1-4's start floor.
 
 ## 3. Pushback
 - The packet's "belowY/aboveY" would have changed flat stages: belowY also waits for him to be grounded (4-7's mist rule), so a tip

@@ -17,3 +17,6 @@ unit3 0 1:51 PM
 drawcheck 0 1:58 PM
 clipcheck 0 2:03 PM
 stopped by TIPS at 2:03 PM: kbdcheck and buildcheck not run (the lead's message queued 1:54 PM ET: member branches run what the change can affect; the integrator runs the full set)
+seedlists (after the lock re-record) 0 2:17 PM
+first-run tests 0 2:17 PM
+tips tests 0 2:18 PM
