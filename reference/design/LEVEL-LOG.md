@@ -70,3 +70,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | ART-678 (Opus high) | HF batch for 1-6..1-8 + W1 underlayer + living posts: 24 stills + 12 harpy edits + 4 perch-feet; 25 cuts; HF \$1.88 (~\$0.075/piece); 5 cut FAILS handed over | $9.19 + HF $1.88 | ~50 min |
 | ENG-B1 (Opus xhigh) | chase piece (ChasePiece, forks, Easy row, toFlag) on 1-2/2-1 test beds, 16/16 tests, chase drawn only by its drawer; all gates green 17dc0fbe; stills FAILED (front off frame, hand-mixed scene), redo handed over | $11.47 | ~70 min |
 | POLISH-4 (Opus high) | typed hole Drop (no roll moved, proved), t-ruler merged, 1-1 relisted (257 kept); found the ruler moves 13 seeds on 1-2/1-3/1-5 and seed-323 red | $3.68 | ~50 min |
+| ENG-A1 (Opus xhigh) | W1 liana rows (short/medium/far 471-528 px) on W1+W6 kits, Vine.grip opt-in level check (6 planted), FAR camera measured: upright needs 2.0x for the whole perch; gates green | $14.61 | ~75 min |
