@@ -1,7 +1,10 @@
 # PITCH A: 1-9, 2-1 and 2-2 (Pitcher A, DESIGN-19, packet PITCH-19-22; 2026-11-14). DESIGN ONLY: the lead picks, then the tribute check (D58)
-Facts are from origin/t-int-9 (file:line). Sources: search-result pages only. These hosts were blocked from this session and could not be opened:
-medium.com, gamesradar.com, gamedeveloper.com, sourcegaming.info. Every "loved" line quotes or closely follows a search snippet, and a claim with
-no source says so. Matt's 6:23 PM ask, kept on every page: what made the game GREAT (the feel players loved), not just "it had a vine".
+Facts are from origin/t-int-9 (file:line). **Sources, said plainly (redo for the lead, 6:42 PM):** this session cannot open ANY web page. WebFetch
+fails on en.wikipedia.org, strategywiki.org, tcrf.net, pcgamer.com, web.archive.org, gamesradar.com, gamedeveloper.com and medium.com, and a
+curl through the proxy was refused. So every quote is marked: **[Q]** = a verbatim line the extended search tool quoted FROM that page (the
+page named; I did not open it myself); **[S]** = a shorter search snippet, used only for a mechanic fact or a "how it taught" line. A claim with
+neither was dropped, and the drop is named. Before the tribute check (D58), a session that can open the pages should confirm the [Q] lines.
+Matt's 6:23 PM ask, kept on every page: what made the game GREAT (the feel players loved), not just "it had a vine".
 **The shelf rule (the lead, 6:30 PM) per level:** 1-9: Mega Man 2 (1988, the classic), Abe's Oddysee and Limbo (lesser-known), none of the
 famous few. 2-1: Jungle Hunt (1983, the classic, lesser-known), Bit.Trip Runner (lesser-known), Sonic (the one famous). 2-2: Frogger (1981, the
 classic), Wonder Boy (1986, lesser-known), Super Mario Bros. 3 (the one famous). No Pitfall!, Donkey Kong, Crash or DK Jr. as a lead tribute.
@@ -20,25 +23,28 @@ only while the animal is AFTER him (predators/lure.ts:1-9; stepLures at castPlay
 On the phone: 280 px of sight plus 128 px of strike fits an upright screen (about 425 px of stage, level.md World 1 notes). The boa, the tool and
 Pokey are on one screen at every beat (rule 8).
 **(b) Tributes** (3 series, 3 eras, one after 2005):
-- **Mega Man 2 (Capcom, 1988; Matt #16).** a. The loved part is *working it out*: "each boss had a weakness ... half of the experience was figuring
-  out who was weak against what" (https://gamesradar.com/the-ultimate-mega-man-retrospective). One writer says discovering the order "solidified my
-  fandom" (https://gameinformer.com/b/features/archive/2013/01/10/moments-discovering-mega-man-2-s-boss-order). b. The obvious pairs are easy to
-  spot; the full cycle shows itself late, in Wily's boss rush (same Game Informer piece). c. Ours: three tools, each taught alone, then beat 7 shows
-  three boas in a row and the answer is read from what hangs near each one (a load = drop it, a roost = bait it, nothing = the stare). d. Not
-  copied: weapons, robots, bosses, the stage select, the look.
-- **Oddworld: Abe's Oddysee (Oddworld Inhabitants, 1997; Matt #52).** a. Loved because Abe has no gun. His toolkit is "movement and misdirection
-  rather than combat", and reviewers kept coming back "because of how the game approaches level and puzzle design" (https://games.gg/oddworld-abes-oddysee/;
-  https://nintendoworldreport.com/review/55340; https://inverse.com/gaming/oddworld-abes-oddysee-25th-anniversary). Its creatures act on each
-  other: two Scrabs that meet ignore Abe and fight (https://oddworld.fandom.com/wiki/Oddworld:_Abe%27s_Oddysee). b. No source found on how its first
-  level teaches this; none claimed. c. Ours: the finale sets one hunter on another. He lets the eagle see him beside the Old Boa, then hides in the
-  moss. The eagle's pass finds a boa instead of a sloth, and the boa pours off its bough. d. Not copied: possession, chanting, Mudokons, the factory,
-  any fight to the death. Nobody is hurt or eaten.
-- **Limbo (Playdead, 2010; Matt #78).** a. The spider works because it is NOT a boss fight: "any other game developer would have instinctively
-  turned the spider into a boss battle"; it is a trap-and-escape, beaten with the world, not a weapon (https://www.gamesradar.com/why-making-limbos-terrifying-giant-spider-was-nightmare;
-  https://www.pcgamer.com/uk/great-moments-in-pc-gaming-defeating-the-spider-in-limbo). b. Its designer moved a bear trap out of the spider's
-  first scene "because this caused players to focus on the trap, not the spider" (https://www.gamedeveloper.com/pc/gdc-europe-i-limbo-i-s-carlsen-on-making-players-your-worst-enemy-and-your-best-friend).
-  c. Ours: one hunter met again and again, a little closer each time, always beaten by the forest. Beat 1 shows the boa first and the load second
-  (the load creaks only once the boa is in view). d. Not copied: the dark look, death, the boy, the spider. Nothing is hurt.
+- **Mega Man 2 (Capcom, 1988; Matt #16).** a. Loved for the reading puzzle: "Each Robot Master is weak to the weapons of certain other Robot Masters;
+  therefore, choosing the order in which the levels are played is a vital component of the gameplay" [Q] (https://en.wikipedia.org/wiki/Mega_Man_2).
+  Nintendo Power ranked it the 6th-best game on a Nintendo platform in its final issue [Q] (https://megaman.fandom.com/wiki/Mega_Man_2). b. How it
+  teaches: the obvious matchups are easy to spot, and the full cycle shows itself late, in Wily's boss rush; one writer says working it out "solidified
+  my fandom" [S] (https://gameinformer.com/b/features/archive/2013/01/10/moments-discovering-mega-man-2-s-boss-order). c. Ours: three tools, each
+  taught alone, then beat 8 shows three boas in a row, and the answer is read from what hangs near each one (a load = drop it, a roost = bait it,
+  nothing = the stare). d. Not copied: weapons, robots, bosses, the stage select, the look.
+- **Oddworld: Abe's Oddysee (Oddworld Inhabitants, 1997; Matt #52).** a. Loved as a thinking platformer. GameSpot's 1997 review (Joe Fielder, 8.4):
+  "the puzzles require lots of thinking, and are well constructed and challenging, instead of cheap and frustrating", "the ideal platformer, balancing
+  its action and puzzle elements perfectly", and its AI "goes a long way towards making you feel as if you're interacting with an actual world and its
+  inhabitants" [Q] (https://www.gamespot.com/reviews/oddworld-abes-oddysee-review/1900-2546477/). DROPPED: my first draft said Abe's creatures
+  fight each other and he gets by on "misdirection". No reachable source backs either, so this tribute rests on the thinking-not-fighting design
+  alone. b. Frequent checkpoints and unlimited lives keep the hard puzzles from frustrating, per reviewers [Q] (https://en.wikipedia.org/wiki/Oddworld:_Abe%27s_Oddysee).
+  No source on its first level; none claimed. c. Ours: every boa is a small puzzle, not a fight, with a flag before each one (1-8.md's flag rule).
+  The finale's eagle-on-boa is the puzzle's last step. d. Not copied: possession, chanting, Mudokons, the factory. Nobody is hurt or eaten.
+- **Limbo (Playdead, 2010; Matt #78).** a. PC Gamer (Jody Macgregor, 2020) calls the spider "Limbo's one moment of perfection": "There are plenty
+  of spiders in games. This was the best." You beat it with the world: a bear trap's teeth cut its legs, and after three it flees [Q]
+  (https://www.pcgamer.com/great-moments-in-pc-gaming-defeating-the-spider-in-limbo/). b. It is met again later, closer, in a new way (the cocoon)
+  [Q] (same page). Its designer moved a bear trap out of the spider's first scene "because this caused players to focus on the trap, not the spider"
+  [S] (https://www.gamedeveloper.com/pc/gdc-europe-i-limbo-i-s-carlsen-on-making-players-your-worst-enemy-and-your-best-friend). c. Ours: one
+  hunter met again and again, a little closer each time, always beaten by the forest. Beat 1 shows the boa first and the load second (the load
+  creaks only once the boa is in view). d. Not copied: the dark look, death, cutting legs, the boy, the spider. Nothing is hurt.
 **(c) The beats** (graph `A T P T X R W R M R L E`; Normal seconds; flags and hearts by STAGE-RULES:105-109 as in 1-8.md)
 | # | Beat | s | What is there | He does | He feels |
 |---|---|---|---|---|---|
@@ -83,21 +89,29 @@ a new kind of feel after World 1's walking: a gift of speed. Upright the next lo
 bank hands him up onto it (engine.ts:1847-1852), so the reeds never hurt: the danger is the water between logs. The teaching river costs no life:
 a splash puts him back on the bank (river.ts:40). Rivers flow with or against him (river.ts:20-22, gapFor :120).
 **(b) Tributes:**
-- **Jungle Hunt (Taito, 1983; Matt #2).** a. Loved for changing what you do mid-game: other coin-ops had one scene, Jungle Hunt "is split into
-  multiple scenes": vines, then the river dive, then the boulders (https://en.wikipedia.org/wiki/Jungle_Hunt; https://www.arcadeclub.co.uk/games/jungle-hunt/).
-  Matt's list: "mixed distinct gameplay styles into one side-scrolling framework". b. The river comes straight after the last vine, so you meet it
-  already fluent (same pages). c. Ours: 2-1 opens in the canopy and climbs DOWN to the river (straight down a vine always climbs). The stage changes
-  mode the way its title says. d. Not copied: the explorer, the knife, the crocodile fights, the rescue, the look.
-- **Sonic the Hedgehog (Sega, 1991; Matt #28).** a. Built to be "fast and exhilarating", its levels designed like roller coasters, momentum more
-  than top speed (https://www.gamesradar.com/the-making-of-sonic-the-hedgehog). In playtests "every player went full speed right off the bat"
-  (https://nintendowire.com/news/2018/05/15/sonic-designer-yuji-naka-provides-insight-early-days-sonic-hedgehog/). b. No source found on Green
-  Hill's teaching; none claimed. c. Ours: a slow sloth gets the rush of speed he could never run, by riding. The finale strings logs so he flies
-  down the river without stopping. d. Not copied: loops, rings, spin, the hedgehog, any Sonic look.
-- **Bit.Trip Runner (Gaijin Games, 2010; Matt #75).** a. Loved because "all of the obstacles are placed exactly as the rhythm of the song dictates",
-  and each action has a sound that moves the music along (https://www.engadget.com/2010/05/25/review-bit-trip-runner/; https://vooks.net/bit-trip-runner).
-  Its known flaw is that it "tolerates absolutely no mistakes" (Engadget). b. Its first levels are short and slow (no source; none claimed). c. Ours:
-  beat 7's logs slide out on the stage clock (river.ts logClock), so the hops fall into a rhythm, but a miss in a shallow river costs nothing.
-  d. Not copied: the auto-run, the music, the look, the one-mistake restart.
+- **Jungle Hunt (Taito, 1982-83; Matt #2).** a. Remembered as "four unique adventure experiences", vines, the crocodile river, the boulder run
+  and the rescue, which repeat harder once all four are survived [Q] (https://strategywiki.org/wiki/Jungle_Hunt; https://archive.org/details/arcade_jungleh).
+  Matt's list: "mixed distinct gameplay styles into one side-scrolling framework". A retro blog scores the arcade game 25/30 and likes the swim
+  [Q] (http://frgcb.blogspot.com/2020/04/jungle-hunt-taito-1982.html). Honest warning: one retrospective calls it "essentially an endless parade of
+  death traps" [Q] (https://retrovolve.com/jungle-hunt-was-a-terrible-waste-of-quarters/). We take the change of scene, not the deaths. No
+  period review found that praises the river; none claimed. b. The river comes straight after the last vine, so you meet it fluent [Q] (StrategyWiki
+  above). c. Ours: 2-1 opens in the canopy and climbs DOWN to the river (straight down a vine always climbs). The stage changes mode the way its
+  title says, and a splash in the first river costs nothing. d. Not copied: the explorer, the knife, crocodile fights, the rescue, the look.
+- **Sonic the Hedgehog (Sega, 1991; Matt #28; this pitch's one famous pick).** a. Loved for speed. Computer and Video Games (Dec 1991, 94%) praised
+  its speed and detail, and Paul Rand called it faster and brighter than Super Mario World while crediting Mario with more "depth of play". Mean
+  Machines (92%) called it "the best platform game on the Megadrive!" [Q, via the fandom wiki's summary of the magazine reviews; scans not opened]
+  (https://sonic.fandom.com/wiki/Sonic_the_Hedgehog_(1991)). In playtests "every player went full speed right off the bat" [S]
+  (https://nintendowire.com/news/2018/05/15/sonic-designer-yuji-naka-provides-insight-early-days-sonic-hedgehog/). b. No source on its first act's
+  teaching; none claimed. c. Ours: a slow sloth gets the rush of speed he could never run, by riding. The finale strings logs so he flies down the
+  river without stopping. Rand's "depth" point is why each river asks a different question. d. Not copied: loops, rings, spin, the hedgehog, the look.
+- **Bit.Trip Runner (Gaijin Games, 2010; Matt #75).** a. Loved for the music: "All of the obstacles are placed exactly as the rhythm of the song
+  dictates it" (Nintendo World Report), and "With the avoidance of each significant obstacle, the music becomes more layered and enthralling"
+  (GamesRadar) [Q] (http://www.nintendoworldreport.com/review/23135/bittrip-runner-wii; https://www.gamesradar.com/bittrip-runner-review/). Its flaw:
+  it "tolerates absolutely no mistakes from the player, demanding memorization of each level" [Q] (https://www.engadget.com/2010-05-25-review-bit-trip-runner.html),
+  with no checkpoints (NWR, GamesRadar). b. No source on its first level; none claimed. c. Ours: beat 8's logs slide out on the stage clock
+  (river.ts logClock), so the hops fall into a rhythm, with a flag before the stretch and a free miss in shallow water. Our music has stems
+  (src/assets/music *.beat/.bed/.drive/.shine/.top); layering them on clean hops is an idea for later, NOT claimed as wired. d. Not copied: the
+  auto-run, the music, the look, the one-mistake restart.
 **(c) The beats** (graph `A D T P X R W R M S L E`)
 | # | Beat | s | What is there | He does | He feels |
 |---|---|---|---|---|---|
@@ -113,8 +127,13 @@ a splash puts him back on the bank (river.ts:40). Rivers flow with or against hi
 | 11 | Exit (E) | 8 | The village (round doors, PLEASE BE PATIENT, the mailman: w2Stages.ts:10-11) | Walks in | "Home of the waiters" |
 **(d) Node string sketch:** `A Dr Tw< Pw> Xw R Ww~ R Mwp R Sw Lw E` (w = water, nodeLetters.ts:113; p = beat pieces :117; ~ = flows back).
 The twin rivers are World 2's first taste of "river lanes going both ways" (WORLD-MAP.html:197) without the lanes engine.
-**(e) Difficulty:** Normal **target 9.5** (DIFFICULTY.md:57-58, pasted: "target(w, s) = 10(w - 1) + T[s], T = [-0.5, 3, 4.5, ...]": 10 - 0.5;
-"a first stage just under the last world's end"). **Easy ~5.5** (at most 5.7): slower logs (river.ts speed rows), more teaching rivers.
+**(e) Difficulty: PROPOSED Normal 9.0** (not a per-stage target: DIFFICULTY.md gives those for World 1 only, at line 61). The source and my reason:
+the slot formula, DIFFICULTY.md:57, pasted: "**Slots:** target(w, s) = 10(w - 1) + T[s], T = [-0.5, 3, 4.5, 3.5, 6, 5, 8, 7, 10]", gives
+2-1 = 10 - 0.5 = **9.5**, with the reason on line 58: "a first stage just under the last world's end". But World 1's own line (:61) already set
+1-9 to 9.5, not the formula's 10, so 9.5 here would TIE 1-9, not sit under it. A new world with a new verb (ride) should open gentler than the
+last world's exam. So I propose **9.0**, the bottom of World 2's band (DIFFICULTY.md:56, pasted: "**World band** [10w - 11, 10w + 1]", w = 2:
+9 to 21). That is just under 1-9 and still in band. The lead rules. **Easy ~5.4** (at most 0.6 x 9.0 = 5.4): slower logs (river.ts speed rows),
+more teaching rivers.
 **(f) Engine:** WIRED: drifting logs in play (engine.ts:1838-1855), the river rules and recipes (river.ts), river art and the log tell (riverArt.ts,
 engine.ts:106), the teaching-river splash (river.ts:40), vines and descents (World 1). MISSING (the foundation, once for all of World 2): **a gen2
 World 2 kit**, `src/game/gen2/worlds/w2.ts` + a stageTable.ts row (World 5-8 kits run 271-351 lines). Today 2-1 to 2-3 are hand-built in
@@ -138,22 +157,24 @@ knowing when a pad you sank is back. That is World 2's own theme, patience ("a v
 the stage clock sinks on a beat by itself (beatBrick.ts:11). Not wired: nothing calls newPad/stepPad outside ride.ts.
 **(b) Tributes:**
 - **Frogger (Konami, 1981; Matt's own favourite, INSPIRED-BY.md:7; idea row "Sinking pads | Frogger's diving turtles", :84).** a. Its river is the
-  heart of it: a later 3D remake's best part was "basically the arcade screen" (https://en.wikipedia.com/wiki/Frogger_(1997_video_game)). Its turtles
-  test patience: "sitting on a diving turtle for too long, you lose a life" (https://mobygames.com/game/1540/frogger/reviews/). b. No source found on
-  its first-screen teaching; none claimed. c. Ours: the pad's shiver is the tell, it comes BACK up like a turtle, and the twist sinks a row together
-  on the pond's beat, as a turtle group dives. d. Not copied: the frog, traffic, the five homes, the timer bar, the look.
-- **Super Mario Bros. 3 (Nintendo, 1988; Matt #15, "peerless level variety").** a. Its donut lifts "shake when Mario stands on them and fall soon
-  afterwards" (https://www.mariowiki.com/Donut_Lift): a floor that tells you to keep moving. Its levels introduce a thing, let you play with it, then
-  "enforce a pattern and then simply break it" (https://gamedev.net/articles/game-design/game-design-and-theory/super-mario-bros-3-level-design-lessons-part-3-r4716/;
-  part 1: https://gamedev.net/articles/game-design/game-design-and-theory/super-mario-bros-3-level-design-lessons-part-1-r4682/). b. Show, play,
-  then break (part 1: slopes in its second level). c. Ours: beats 1-3 set the pattern (weight sinks a pad); the twist breaks it (the pond's own beat
-  sinks them). d. Not copied: donuts, Mario, power-ups, the look.
-- **Wonder Boy (Escape / Sega, arcade 1986; Matt #8, the lesser-known pick).** a. Loved for "a health-draining countdown that kept players moving
-  forward" (Matt's list). Its vitality "constantly runs down at a steady pace and can only be refilled by collecting fruit", and one review calls
-  that meter "perhaps the most unique feature of the game" (https://www.strategywiki.org/wiki/Wonder_Boy; https://segadoes.com/2014/10/16/wonder-boy/;
-  https://gaminghistory101.com/2018/12/08/wonder-boy-retrospective-pt-1/). b. Fruit sits along the path from the start, so the meter teaches itself
-  as you run (StrategyWiki; no source on its first level beyond that). c. Ours: each pad IS a little Wonder Boy meter. It drains while he stands,
-  he can see it (the shiver), and the petals sit ON the pads, so the pickup is right where he must not linger. A few extra crown petals sit on
+  heart: "Turtles are also safe - as long as they're afloat" [Q] (https://www.lemon64.com/review/frogger/356), and "The turtles only float above water
+  for a few seconds and then sink so it is good to study the timing for using them" [Q] (https://gamefaqs.gamespot.com/intellivision/576831-frogger/reviews/173019).
+  A MobyGames critic: "definitely one of the better arcade games of the time" [Q] (https://www.mobygames.com/game/1540/frogger/reviews/). Studying
+  the timing is the love. b. No source on its first-screen teaching; none claimed. c. Ours: the pad's shiver is the tell, it comes BACK up like a
+  turtle, and the twist sinks a row together on the pond's beat, as a turtle group dives. d. Not copied: the frog, traffic, the homes, the timer, the look.
+- **Super Mario Bros. 3 (Nintendo, 1988; Matt #15; this pitch's one famous pick).** a. Loved for variety: "A particularly engrossing game, packed with
+  power-ups, a few mini-games, and some truly devious levels", its level design "unique and varied" [Q] (https://www.nintendolife.com/reviews/nes/super_mario_bros_3).
+  Its donut lifts shake when stood on and fall soon after [S] (https://www.mariowiki.com/Donut_Lift). b. Its levels show a thing, then break the
+  pattern; in its second level the player "is introduced to slopes and gets to experiment" [S]
+  (https://gamedev.net/articles/game-design/game-design-and-theory/super-mario-bros-3-level-design-lessons-part-1-r4682/). c. Ours: beats 1-3 set
+  the pattern (weight sinks a pad); the twist breaks it (the pond's own beat sinks them). d. Not copied: donuts, Mario, power-ups, the look.
+- **Wonder Boy (Escape / Sega, arcade 1986; Matt #8, the lesser-known pick).** a. Its vitality meter "constantly runs down at a steady pace and can only
+  be refilled by collecting fruit throughout the level" [Q] (https://www.retrogames.cz/play_175-SegaMS.php). Sega Does calls it "perhaps the most
+  unique feature of the game" [Q] (https://segadoes.com/2014/10/16/wonder-boy/), and another review says it made the game "more tactical and
+  interesting" [Q] (https://www.simbasible.com/wonder-boy-game-review/). Honest warning: Infinity Retro says it "adds a sense of urgency" but
+  "hinders the game more than it helps it" [Q] (https://infinityretro.com/wonder-boy-review/). So ours drains ONE pad, never the whole level. b. The
+  fruit sits along the path from the start, so the meter teaches itself as you run (retrogames.cz above). c. Ours: each pad is a little meter: it
+  drains while he stands, he can see it (the shiver), and the petals sit ON the pads, right where he must not linger. Extra crown petals sit on
   risky pads off the path, for the player of 12 and up, never needed. d. Not copied: the meter bar, the skateboard, the hatchet, eggs, the look.
 **(c) The beats** (graph `A T P X R W R M R S L E`)
 | # | Beat | s | What is there | He does | He feels |
@@ -168,9 +189,11 @@ the stage clock sinks on a beat by itself (beatBrick.ts:11). Not wired: nothing 
 | 10 | **Across the deep** (L) | 16 | Deep water (a heart), both kinds, to the far bank | All of it | "Almost..." |
 | 11 | Exit (E) | 8 | The village bank, petals for the crown | Walks out | Proud |
 **(d) Node string sketch:** `A Tp< Pp> Xp R Wp R Mpw R Sw Lp E` (p = beat pieces, nodeLetters.ts:117; w = water). `p` here is the sinking pad.
-**(e) Difficulty:** Normal **target 13** (DIFFICULTY.md:57, pasted: "target(w, s) = 10(w - 1) + T[s], T = [-0.5, 3, ...]": 10 + 3). **Easy ~7**
-(at most 0.6 x 13 = 7.8): the pad's count stretched (beatBrick: "Easy stretches every brick on a clock together", beatBrick.ts:4), the twist's
-row slower, the deep water only at the finale.
+**(e) Difficulty: PROPOSED Normal 12.5** (not a per-stage target: World 2 has none in DIFFICULTY.md). The source: the same slot formula
+(DIFFICULTY.md:57, pasted above) gives 2-2 = 10 + T[1] = 10 + 3 = **13**. I keep the formula's step up from 2-1 (+3.5 from 9.5) and apply it to
+my proposed 9.0, for **12.5**: a real climb after the opener, in band (9 to 21, :56). The lead rules. **Easy ~7.5** (at most 0.6 x 12.5 = 7.5):
+the pad's count stretched (beatBrick: "Easy stretches every brick on a clock together", beatBrick.ts:4), the twist's row slower, the deep water
+only at the finale.
 **(f) Engine:** WIRED: lily art (riverArt.ts drawLily), drifting logs, deep water. EXISTS, NOT WIRED: the sinking pad (ride.ts:100-110), the beat
 brick 'gone' (beatBrick.ts:11), gen2/rideLay.ts (tested). Needs the World 2 kit (2-1's foundation). **NEW 1 (M):** sinking pads in play: stepPad
 run by the engine (engine.ts beside the drift-log loop, ridePlay.ts), plus a pad row in rideLay (gen2/rideLay.ts); the beat pad is the same brick
@@ -205,3 +228,5 @@ plainly. After it, each is its blocks plus under 2 h of level data.
   ruled out the twist I first drafted for 1-9.
 - Proposed level.md rule (for the lead): "A pitch names, for every verb it asks for, the file:line that makes it true in play (not only the def)":
   the boa's lure works only while it is after him (lure.ts), and that one line decided the whole of 1-9's idea.
+- Say what the network allows before the research, not after: this session opens no web page, so the honest form is [Q]/[S] marks, with drops
+  named, and a hand-off to a session that can open the pages. The lead found this at review; it should have been in the first report.
