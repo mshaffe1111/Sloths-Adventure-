@@ -12,6 +12,10 @@ Not listed, no bots, no stills: a seed list of a stage this far off its number w
 1. Cut swings to the number: Normal ~21 a run (6.5/9.6 x 32), Easy ~12 or fewer (0.6 x 6.5 = 3.9 needs about 1/3 of Normal's points):
    Easy twins lay ONE liana where Normal lays two or three (snakes-met, risers, creaky, hang-low), the length made up by walked ground
    with root hops (the quiet line) and the rests, never by more lianas. Re-score after each change (score.ts, 1-1 in the list for SCALE).
+1b. Lead ruling 10:36 AM ET (a): edit goals.ts so goalHave reads the petal count from the stage/goal DATA (no world number, stage id
+   or 'vine_runner' literal beyond the existing goal-type switch); a unit test planting a stage with petals and one without (null stays
+   null for goal types with no count); generalitycheck + the full gates; then a SIDEWAYS still of the locked exit with SEALED_16 and of the
+   open exit after the last petal. (b) the old proto 1-6 cleanup is R-165.238 (TIPS packet): leave protoStage.ts / dotTips.ts alone.
 2. Re-run w1Arc16.test.ts (Easy-vs-Normal test: add the meter's number, planted), libstage 24 seeds both settings.
 3. `npx tsx tools/engine/addlevel.ts 1-6 --par 2` (list, --check, bots 1-40 both settings, registry); commit seeds-1-6.ts + provenIndex.
 4. Stills/clips: `node reference/qa-reports/BUILD-16/shoot.mjs <sha> normal` / `easy` (CLIP=1). 5. Full Checks; plant.sh on a side worktree.
