@@ -101,10 +101,11 @@ real presses, 11:39 AM); FIX-15 fixing. The lead had passed link #1's gate on a 
 | ENG-16E | session_01FhBbYMhMQfgYnJSjNTNNQa | t-build-16 (xhigh) | 1-6's engine faults fixed for every stage (chain last leap, petal fill, W1 FAR), then finishes 1-6 |
 | BUILD-17b | session_01FhBbYLWTHuXT1nJ3tMEcCX | t-build-17 (xhigh) | 1-7's shared faults fixed globally (eagle stretch check, creak soft pit, listed-stage sheet preload), 1-7 to GREEN |
 **Done today and waiting for the next integrator:** t-eng-s5@a2743943 (chains, GREEN), t-int-8-clip@315548d1 (clip tool; full run UNRUN), t-keeper-17@a8dd2409 (1-7 lines).
-**Queue (packets in reference/packets/2026-11-14/), in order as slots free:** FIX-15b (fig gate lay rule + 1-4 relist) -> an
-integrator for link #3 (1-6 + chains + FIX-15 + TIPS + clip tool) -> link #4 (1-7). Then for the new lead: ENG-B4 (write: chase tint,
-rolling nut, chase camera, split by run-up; base t-eng-b3@71da15cd) -> BUILD-18; R-165.239 meter fix; WIRE-ART; ART-PRED; FIX-14d's 11
-red tower tests (t-fix-14d@bd21d906); R-165.234/.235/.237.
+**Queue (packets in reference/packets/2026-11-14/), in order as slots free:** ENG-B4 (1-8 chase engine, bots first; packet written)
+-> INT-9 (link #3: the new 1-6 + 1-7 + TIPS + FIX-15/15b + chains + clip tool + R-165.238; packet written). For the new lead after
+the turnover: BUILD-18 (1-8 on ENG-B4's engine); R-165.246 lift pass (one-level patches into the engine); fig gate option A (Matt's look
+at FIX-15b's mock-up first); R-165.239 meter, .244 castBots leak, .245 clipcheck flake (one tools member); R-165.243/.237 polish;
+WIRE-ART (underlayer + pole), ART-PRED (Matt's predator sheets); R-165.235 (1-1 sprint-B/C back).
 **Where the work lives:** 1-7/1-8 design on origin/t-1718-design; 1-6 design on origin/t-16-design; 1-6 lines on t-keeper-16
 (reference/story/lines-1-6.md); 1-7 engine on t-eng-e2@1f66e7a9 (GREEN); chase lay on t-eng-b3@71da15cd; art on t-art-678b.
 **Lessons paid for today:** D63-D69 (LESSONS.md); PM.md §7 "Retiring a member" (D68); every clip judged by the frame where the action
