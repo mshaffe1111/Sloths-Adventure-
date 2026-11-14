@@ -357,6 +357,8 @@ export interface Climb {
   x: number;
   topY: number;
   bottomY: number;
+  /** a liana's own swing (radians either side; physics.ts swingSetup sets it at stage start): a climb hangs still (none) */
+  swingAmp?: number;
 }
 /** a box in the world the view should show */
 export interface Box {
@@ -382,7 +384,7 @@ export function landingAhead(px: number, facing: number, ledge: Ledge, plats: re
   const edge = f > 0 ? ledge.x + ledge.width : ledge.x;
   const toEdge = (edge - px) * f;
   if (toEdge > AHEAD.near || toEdge < -40) return null;
-  let best: { x: number; y: number; score: number; under?: boolean; end?: number } | null = null;
+  let best: { x: number; y: number; score: number; under?: boolean; end?: number; sweep?: number } | null = null;
   for (const q of plats) {
     if (q === ledge || q.broken || q.width <= 0) continue;
     const dy = q.y - ledge.y;
@@ -407,10 +409,13 @@ export function landingAhead(px: number, facing: number, ledge: Ledge, plats: re
     const score = gap + Math.abs(y - ledge.y) * 0.4;
     // a vine across the gap is the way over it, before the floor of the drop under it (which scored nearer: upright, the view showed
     // the moss below the gap and left the liana he was jumping for off screen, QA 2026-10-26)
-    if (!best || best.under || score < best.score) best = { x: v.x, y: y + 60, score };
+    // (a liana that swings: how far its foot swings out, for `whole`)
+    if (!best || best.under || score < best.score) best = { x: v.x, y: y + 60, score, ...(v.swingAmp ? { sweep: (v.bottomY - v.topY) * Math.sin(v.swingAmp) } : {}) };
   }
   if (!best) return null;
-  // (a swing's landing, `whole`: the perch end to end, so he sees where it stops before he lets go: SWING_CAM)
+  // (a swing's landing, `whole`: the perch end to end, so he sees where it stops before he lets go: SWING_CAM; the next liana of a chain,
+  // its whole swing out to its foot's far side, so he sees all of it coming as he presses: ENG-S5, gen2 chainRelease's SWING_SEEN)
+  if (whole && best.sweep) return lianaBox(best.x, best.sweep, best.y, f);
   return whole && best.end !== undefined && !best.under ? perchBox(best.x - f * 10, best.end, best.y, f) : landingBox(best.x, best.y, f);
 }
 
@@ -447,6 +452,12 @@ export const SWING_CAM = {
 export function swingHeroBox(px: number, py: number, facing: number): Box {
   const B = SWING_CAM.body;
   return facing >= 0 ? { x0: px - B.back, x1: px + B.ahead, y0: py - 104, y1: py + 12 } : { x0: px - B.ahead, x1: px + B.back, y0: py - 104, y1: py + 12 };
+}
+
+/** the next liana of a chain (anchor at x, its foot swinging `sweep` px out either side; `y` about his height on it): its anchor's line and
+ *  its swing's far side, the way he faces, and the space over where he catches it (ENG-S5) */
+export function lianaBox(x: number, sweep: number, y: number, facing: number): Box {
+  return facing >= 0 ? { x0: x - 20, x1: x + sweep, y0: y - 80, y1: y + 4 } : { x0: x - sweep, x1: x + 20, y0: y - 80, y1: y + 4 };
 }
 
 /** a swing's landing: the perch from its near end (`near`) to its far end (`far`), at most SWING_CAM.perch of it, and the space over it */
