@@ -1,4 +1,4 @@
-# B1 CHASE-CORE REPORT (ENGINE-678 W1), t-b1-chase from t-hooks@994ea4e7, ENG-B1 session_01FhBbYJmReosZL5eiBmSTK3. Written 11:49 PM ET (WIP: gates running).
+# B1 CHASE-CORE REPORT (ENGINE-678 W1), t-b1-chase from t-hooks@994ea4e7, ENG-B1 session_01FhBbYJmReosZL5eiBmSTK3. Written 12:25 AM ET.
 **Done 1, the piece:** chase.ts `ChaseLay` (stretches `{start,end,last?}`, a LIVING FORK between one's end and the next's start) + `ChaseRun` (one front
 per stretch: waits, cracks behind him, stops at its fork) + `CHASE_ROWS` (Normal = CHASE unchanged; Easy 170/200, cap min(200, PHYS.maxRun), no burst,
 600 back, hold 2.2: stop budget 3.4 s vs 2.2 s). pieces/chasePiece.ts: breaks `chase` sections its front passes (debris), draws sections ('world') and
@@ -9,7 +9,7 @@ drawn only by its chase drawer (engine.ts:1061 draw list, protoArt.ts paintedPla
 starts no piece. chase.test.ts 14/14 (rows, Easy cap at every gap, forks stop and never catch, stop budget to one step, restarts, lay problems named);
 chasePiece.test.ts 18/18 via RealPlay (stride never caught both settings; Easy front <= 200 px/s in play; stop = caught at budget +/- 2 steps, hp-1,
 not a life, at the flag, branch whole; 20 s on a fork safe; fall off = heart + flag; bad lay refused). Planted red: no piece 13/16, no toFlag 2/2, each draw line 2/2.
-**Done 3, gates** (gates/RESULTS.txt, own worktree on 17dc0fbe): tsc, build, chunkcheck, artcheck, knowncheck, generality, roadmap, kbdcheck 0; unit x3, seedlists, registry, tooltests, tierBots, lockall vs f9671e3b, drawcheck, clipcheck, buildcheck RUNNING at 11:48 PM (line rewritten at the end).
+**Done 3, gates** (gates/RESULTS.txt, run.sh in its own worktree on 17dc0fbe, 11:41 PM-12:25 AM): ALL 0: tsc, build, chunkcheck, artcheck, knowncheck, generality, roadmap, kbdcheck, unit 1177+1215+1011 / 0 fail, seedlists, registry, tooltests, tierBots, lockall 102/102 unchanged vs f9671e3b, drawcheck PASS 465 s, clipcheck PASS (83 known) 277 s, buildcheck p95 112 ms.
 **Polish check: FAIL (lead 11:46 PM, D61).** stills/: (1) the front is OFF frame in every still (150-547 px behind): no crack opening, no section
 mid-collapse, no fork both ways, no clip. (2) 2-1-normal-fork-upright's water box, cut bank and grass strip are MY scene, not the chase (the piece draws
 only chasePiece.ts:140-152 and :169): stills.mjs:46 kept 2-1's river under swapped platforms; no 2-1 defect. (3) The edge tint (old 1-8's rgba(70,18,8)
