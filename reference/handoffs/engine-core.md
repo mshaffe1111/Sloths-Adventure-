@@ -8,6 +8,26 @@ Rewritten for ENG-16E (11-14, t-build-16): section 0z (the late press's swing, t
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
+## 0za. The bots' harness, the liana let-go, the old 1-6 gone (ENG-16F, t-build-16, 11-14, R-165.246 / R-165.238): what the next engineer must know
+- **realPlay.ts FakeInput counts fresh inputs** (`moves`, as inputEngine.ts fresh(): a press, a punch/kick, a new direction, down/up
+  changing, a hold or still finger put down). The engine ends its 0.35 s steer pause after a put-back or respawn at the first one
+  (engine.ts inputGrace/graceMoves). Before, the harness had no `moves`, so the pause always ran in full and a bot's hop inside it went
+  straight up (1-6 kid s1 at the chain). Planted: `src/game/graceFresh.test.ts`. It moves 1-1's tier replays, so
+  `reference/qa-reports/R-165.59/calibration-main.jsonl` was re-run and recommitted (every check keeps its pass/fail; ENG-16F/cal/). **Any
+  harness change: run tierBots.test.ts; if test 7 is red, recalibrate (BOTS.md) in the same change.**
+- **firsttimer.ts on a liana:** the 7 s let-go waits until the swing carries him out in front (a still liana 7 s as before, nothing past
+  14 s); the steer is `pastLiana` (the first route point past where the route crosses THIS liana, never a point on its own swing: the
+  cut liana's foot turned him back at gl1); `pitWayUp` climbs to the stair step that catches the liana most often (not the nearest); `pitWayBack` takes no swinging liana's foot for a ledge. A tier bot's lifting thumb holds his stopped-at-a-face count on every stage (it was cast stages only: P13).
+  Planted: pitClimb.test.ts tests 7-11 (toy stages; 9 and 10 use 1-6 seeds' real pit numbers). The face count moved 1-1: recalibrated again (cal2/).
+- **The old hand-built 1-6 is deleted** (protoStage 'proto' plan, its pieces, w1Sections '1-6', 8 hint.1-6 lines, W1_ROOMS '1-6').
+  buildProtoStage now needs its plan; a plan HAND_STAGES does not hold still falls through to the general builder silently (F3 in
+  ENG-16F/retire-old-16.md: make it throw, test first). Liana-control tests (vineFollowUps, vineFlickMirror) now run on the NEW 1-6's
+  first liana.
+- **Trace a bot's rescue by frame before calling it a stage fault.** where.ts (BUILD-16d) caps runs at 360 s, castBots at 1200: a slow
+  tier reads "time" in where.ts but passes in castBots. Use castBots for pass/fail, where.ts and FT_FRAMES only to locate.
+- Open (ENG-16F REPORT, EXACT NEXT STEP): the height-aware swingClearance + lay rule (lead ruling (b), 4:42 PM); the sealed doors
+  (child s1/s2, middle s1, expert s1/s2/s3/s5; no rescues left); artUse's W6 seesaw-b.
+
 ## 0z. The late press, the testers' let-go, the fill's path (ENG-16E, t-build-16, 11-14, R-165.246): what the next engineer must know
 - engine.ts keeps the sweet spot's last moment (`sweetSnap`) WITH the vine's `amp`: a press a beat late leaps from it (RELEASE.late,
   timedLaunch reads `s.amp`). Without it a late press off any liana narrowed by a neighbour (a chain's, swingSetup's) leapt as off the
