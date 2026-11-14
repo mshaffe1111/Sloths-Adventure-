@@ -150,8 +150,10 @@ export const W1_EAGLE: CreatureDef = { id: 'eagle', enemy: 'eagle', threat: 2, t
  * the stretch's rolled calm (1-7 NEW 7); its first pass is free where the zone was taught (freeFirst, NEW 4; Easy: every stretch, core.ts
  * sparedPass). It starts facing in: its first pass runs the way he walks.
  */
-export function eagleOver(z: WatchZone, groundY: number, id: number): Enemy {
+export function eagleOver(z: WatchZone, groundY: number, id: number, perch?: { x: number }): Enemy {
   const c = W1_EAGLE;
+  // (perched, 1-7 beat 12: its body sits on a snag at `perch.x` over the stretch, the kit sweeps its gaze: Enemy.kitPerch, Post.perched)
+  if (perch) return { ...eagleOver(z, groundY, id), x: perch.x, kitPerch: true } as Enemy;
   return {
     id, type: c.enemy, x: z.x0, y: Math.round(groundY - EAGLE_SKY), vx: 0, vy: 0, width: c.w, height: c.h, hp: c.hp, maxHp: c.hp, facing: 1,
     patrolMinX: z.x0, patrolMaxX: z.x1, attackCooldown: 1.2, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0,
@@ -164,11 +166,17 @@ export function eagleOver(z: WatchZone, groundY: number, id: number): Enemy {
  * World 1's still table (gen2/stillLay.ts): the hides 1-7 is laid with and its watcher, the eagle on the kit. The hides are proto.bushes
  * (the covers castPlay.ts hides a STILL sloth in: no crouch, 1-7.md's hide rule); the watch row lays a stretch, cut to its hides, as one
  * eagle over it. Calms (its cool between passes) from 1-7.md: 6-6.5 s where taught, 5-6 s after; Easy waits x1.5 (EAGLE.easy.cool).
- * (The moss carpet, moss patches and hanging Spanish moss join as rows here when their art is in the inventory: NEW 5, the REPORT.)
+ * Moss (1-7 NEW 5, ART-678b's pieces at Pokey's scale, w17Art.ts): a carpet two strips long (346 px; beat 7 "every mossy spot is cover"),
+ * a patch (one mound, 169 px: 0.82 of him tall), and hanging moss (the drape, 173 px, or the curtain, 78 px), tied where its socket
+ * stands and hiding him while he hangs in it (`hanging`).
  */
 export const W1_STILL: Readonly<Record<string, StillRow>> = {
   'w1-hide-bush': { role: 'hide', bush: 'tall', w: 110, minApart: 220 },
   'w1-hide-bush-wide': { role: 'hide', bush: 'wide', w: 160, minApart: 260 },
+  'w1-hide-moss': { role: 'hide', bush: 'moss', w: 346, minApart: 400 },
+  'w1-hide-moss-patch': { role: 'hide', bush: 'mossPatch', w: 169, minApart: 240 },
+  'w1-hide-moss-hang': { role: 'hide', bush: 'mossHang', w: 173, minApart: 240, hanging: true },
+  'w1-hide-moss-curtain': { role: 'hide', bush: 'mossHang', w: 78, minApart: 160, hanging: true },
   'w1-eagle': { role: 'watch', cast: 'eagle', free: 'lesson', calm: { teach: [6, 6.5], early: [5.5, 6], late: [5, 5.5] }, max: 1400 },
 };
 

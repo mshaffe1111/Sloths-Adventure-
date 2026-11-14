@@ -34,6 +34,9 @@ export interface HideRow {
   role: 'hide';
   bush: Bush['kind'];
   w: number;
+  /** it hangs from where its socket stands (a rope's line, a bough's underside: its top there), and hides him while he hangs in it
+   *  (stillness.ts inCover's hanging rule; World 1's hanging moss) */
+  hanging?: boolean;
   minApart?: number;
   looks?: string[];
 }
@@ -159,7 +162,7 @@ export function stillEmitters(rows: Readonly<Record<string, StillRow>>, stage: n
   for (const [id, row] of Object.entries(rows)) {
     if (row.role === 'hide') {
       emit[id] = (f, p, out) => {
-        const b: Bush = { x: R(f.x - row.w / 2), w: row.w, y: f.y, kind: row.bush };
+        const b: Bush = { x: R(f.x - row.w / 2), w: row.w, y: f.y, kind: row.bush, ...(row.hanging ? { hanging: true } : {}) };
         (out.proto.bushes ??= []).push(b);
         note.hide?.(out, { x: b.x, w: row.w, y: f.y, look: lookAt(p, f.x, 1) });
       };

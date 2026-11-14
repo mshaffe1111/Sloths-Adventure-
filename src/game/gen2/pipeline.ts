@@ -3556,6 +3556,7 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
   const sleeper = new Set(M.creatures.filter((c) => c.tags?.includes('sleeper')).map((c) => c.id));
   const byId = new Map(M.sections.map((t) => [t.id, t]));
   const tplOf = new Map(st.gen2.sections.map((q) => [q.uid, byId.get(q.template)]));
+  const propTags = new Map(M.props.map((p) => [p.id, p.tags]));
   const falls = (st.gen2.drops ?? []).map((d) => ({ x0: d.x0, x1: d.x1, kind: d.ends.kind === 'putback' ? 'soft' : d.ends.kind === 'life' ? (d.ends as { cause: string }).cause : 'hurt' }));
   const out: string[] = [];
   nodes.forEach((n, k) => {
@@ -3569,6 +3570,7 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
       enemies: fills.filter((f) => f.role === 'enemy' && f.what && at.has(R(f.x))).map((f) => ({ kind: f.what!, asleep: sleeper.has(f.what!) })),
       finds: fills.filter((f) => f.role === 'find' && f.what).map((f) => f.what!),
       pickups: fills.filter((f) => f.role === 'pickup' && f.what).reduce((s, f) => s + (f.count ?? tplOf.get(f.section)?.sockets.find((q) => q.id === f.socket)?.count ?? 1), 0),
+      props: fills.filter((f) => f.role === 'prop' && f.what).map((f) => propTags.get(f.what!) ?? []),
     };
     if (!laidNodes && (n.asked.shape || n.asked.content || n.asked.move)) out.push(`node ${n.id} "${token}": its sections' heights were not kept for the check`);
     out.push(...askMisses(n.asked, laidNode, M.creatures, easy));

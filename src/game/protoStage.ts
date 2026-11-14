@@ -1811,7 +1811,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
 
   /** the bush sizes (px wide); each painting keeps its own shape */
   const BUSH_W = { tall: 124, wide: 176, fern: 150, grotto: 170 } as const;
-  const bush = (bx: number, kind: Bush['kind'], extra: Partial<Bush> = {}) => {
+  const bush = (bx: number, kind: keyof typeof BUSH_W, extra: Partial<Bush> = {}) => {
     const b: Bush = { x: Math.round(bx), w: BUSH_W[kind], y: G, kind, ...extra };
     BUSHES.push(b);
     return b;
@@ -1820,7 +1820,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   const watched = (len: number, calm: number) => (len / RUN) * ((calm + 4) / calm);
 
   /** bushes along the ground, `gap` apart, petals between them (a run, a bush, a run...) */
-  function bushRow(n: number, gap: [number, number], kinds: Array<Bush['kind']>, calm: [number, number], rocks = false) {
+  function bushRow(n: number, gap: [number, number], kinds: Array<keyof typeof BUSH_W>, calm: [number, number], rocks = false) {
     const x0 = x;
     for (let k = 0; k < n; k++) {
       const g = R.r(gap[0], gap[1]);
@@ -4056,7 +4056,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     const FRUIT_Y = G - 85;
     /** a curtain of water centred on cx, from far above the view down onto the path */
     const veil = (cx: number) => FALLS4.push({ id: FALLS4.length + 1, x: Math.round(cx - VEIL_W / 2), width: VEIL_W, top: G - 1100, bottom: G, veil: true });
-    type Cover = Bush['kind'] | 'fall';
+    type Cover = 'tall' | 'wide' | 'fern' | 'grotto' | 'fall';
     /** a place to hide, centred on the cursor */
     const cover = (kind: Cover) => (kind === 'fall' ? veil(x) : bush(x - BUSH_W[kind] / 2, kind));
     /** the opening stretches under her eye, where her first strike comes: cover close all along (hopRun, LV-13) */

@@ -69,7 +69,7 @@ export const CONTENT_LETTERS = {
   p: { name: "beat", key: "later", unlaid: "beat pieces on a clock (pods, snap stones): B14's emitter on t-b14, not merged" },
   t: { name: "gate", key: "later", unlaid: "the gate a find opens (the fig gate): B14's emitter on t-b14, not merged" },
   x: { name: "trap", key: "later", unlaid: "the trap (a limb load over an animal): B15's emitter on t-b15, not merged" },
-  m: { name: "cover", key: "later", unlaid: "cover (a bush, a moss carpet, a patch, hanging moss): its lay is ENGINE-678 B3 COVER, not built", dials: { kind: "bush|carpet|patch|hanging", apart: "px between covers" }, dialsBy: "ENGINE-678 B3 COVER" },
+  m: { name: "cover", key: "now", dials: { kind: "bush|carpet|patch|hanging", apart: "px between covers" }, dialsBy: "ENGINE-678 B3 COVER" },
 } as const satisfies Readonly<Record<string, ContentLetter>>;
 
 export type JobLetterId = keyof typeof JOB_LETTERS;

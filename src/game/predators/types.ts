@@ -119,6 +119,9 @@ export interface Post {
   /** a sweeper whose first pass over him cannot hurt: it dives and pulls up short (watcher.ts freeFirst's rule, in the kit: 1-7 NEW 4).
    *  On Easy every sweeper's first pass is free */
   free?: boolean;
+  /** a sweeper perched at (x, y) (1-7 beat 12, the eagle lands on a snag): its body stays there, never riding its eye, while its gaze
+   *  sweeps the stretch; it acts (the dive) from its perch and flies back to it */
+  perched?: boolean;
 }
 
 export type Phase = 'rest' | 'hunt' | 'tell' | 'act' | 'recover' | 'stunned' | 'flee' | 'gone';
@@ -157,6 +160,8 @@ export interface PredatorState extends Listener {
   passes: number;
   /** Post.free */
   free: boolean;
+  /** Post.perched: a sweeper whose body stays at its post (it does not ride its eye, whatever its kind) */
+  perched?: boolean;
   /** game time its flight home ends */
   awayUntil: number;
   /** it saw him at some point in this act (a sweeper's pass) */

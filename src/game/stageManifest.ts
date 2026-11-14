@@ -59,6 +59,10 @@ export function builtStageKeys(st: BuiltStage): string[] {
   if (x.rope) out.add('rope');
   // (the art director's cut World 1 pieces, gen2 1-1's stones, stumps and planks: w1CutArt.ts)
   if (st.platforms.some((p) => (p as { cut?: string }).cut)) out.add('w1-cut');
+  // (World 1's moss cover, the Spanish moss on a mossy liana and the perched eagle on its snag: w17Art.ts, 1-7)
+  const MOSS = ['moss', 'mossPatch', 'mossHang'];
+  if (st.proto?.bushes?.some((b) => MOSS.includes((b as { kind?: string }).kind ?? '')) || st.vines?.some((v) => (v as { mossy?: boolean }).mossy) ||
+    st.enemies?.some((e) => (e as { kitPerch?: boolean }).kitPerch)) out.add('w17');
   const w = st.config.worldIndex;
   if (st.boss) {
     out.add(`boss:${w}`);

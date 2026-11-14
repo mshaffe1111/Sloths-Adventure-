@@ -9,6 +9,7 @@
  * Memory (atlasLoader.ts): preloading a stage in another world counts as entering that world, so the last world's sheets are let go
  * first and two worlds' sheets are never held at once; only the one stage's sheets are asked for.
  */
+import { W17_URLS, w17Ready } from './w17Art.ts';
 import { CRUMBLE_ART_URL, crumbleArtReady } from './crumbleArt.ts';
 import { W7_FACE_URLS, w7FaceReady } from './w7FaceArt.ts';
 import { w810FaceReady } from './w810FaceArt.ts';
@@ -204,6 +205,9 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'w1-cut') {
       w1CutReady();
       urls.push(W1_CUT_URL);
+    } else if (k === 'w17') {
+      w17Ready();
+      urls.push(...W17_URLS);
     } else if (k === 'w1-new') {
       w1NewReady();
       w1ClueReady();

@@ -17,6 +17,7 @@ import { stepLures, type LurePost } from './predators/lure.ts';
 import { TAUGHT } from './predators/roster.ts';
 import type { Box, PredatorDef, PredatorState, Prey, Scene, Way } from './predators/types.ts';
 import { STILLNESS, calm, inCover, isStill, newStill, stepStill, type Cover } from './stillness.ts';
+import { SNAG_PERCH } from './sweepPose.ts';
 import type { Enemy, Platform } from './types.ts';
 
 /** how a chased-off animal is shown leaving, on top of the kit's own run: it lifts a little, then glides out and down to a lower tree */
@@ -99,7 +100,9 @@ export class CastPlay {
       const def = data.kinds.includes(e.type) ? castDef(e.type, world) : undefined;
       if (!def || e.defeated) continue;
       const ground = groundUnder(platforms, e);
-      const s = newPredator(def, { x: e.x, y: ground, minX: e.patrolMinX, maxX: e.patrolMaxX, facing: e.facing, asleep: !!e.asleep, cool: e.kitCool, free: e.kitFree });
+      // (a perched sweeper sits on its snag's branch, SNAG_PERCH over the ground under it: its body's post; 1-7 beat 12)
+      const perched = !!e.kitPerch && def.habit === 'sweep';
+      const s = newPredator(def, { x: e.x, y: perched ? ground - SNAG_PERCH : ground, minX: e.patrolMinX, maxX: e.patrolMaxX, facing: e.facing, asleep: !!e.asleep, cool: e.kitCool, free: e.kitFree, ...(perched ? { perched } : {}) });
       e.kit = s;
       const m: CastMember = { e, def, s, foot: ground - e.y, cleared: false };
       this.members.push(m);

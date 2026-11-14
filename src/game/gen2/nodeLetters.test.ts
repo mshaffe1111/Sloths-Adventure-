@@ -7,7 +7,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { CONTENT_LETTERS, CONTENT_WORDS, JOB_LETTERS, PIECE_WORDS, keyBlocks } from './nodeLetters.ts';
 import { CONTENT_OF, JOB_OF, checkCode, parseCode } from './nodeCode.ts';
-import { LATER_CONTENT, TYPE_OF_LETTER } from './nodeAsks.ts';
+import { FILL_LETTER, LATER_CONTENT, TYPE_OF_LETTER } from './nodeAsks.ts';
 
 const KEY = new URL('../../../reference/engine/NODE-KEY.html', import.meta.url);
 
@@ -45,11 +45,13 @@ test('one letter grammar: a job the code refuses (V13 LATER) is never shown as n
 
 test('one letter grammar: a letter the deal does not lay is later in the key and names why (nodeAsks LATER_CONTENT)', () => {
   for (const l of Object.keys(CONTENT_LETTERS)) {
-    const laid = !!TYPE_OF_LETTER[l];
-    assert.equal(laid, !LATER_CONTENT[l], `${l}: laid by the deal XOR named as later`);
+    // (laid by the deal's section type, or by what a node's sections fill: m, cover, by its hides, nodeAsks FILL_LETTER)
+    const laid = !!TYPE_OF_LETTER[l] || !!FILL_LETTER[l];
+    assert.equal(laid, !LATER_CONTENT[l], `${l}: laid by the deal or its fills XOR named as later`);
     if (!laid) assert.equal(CONTENT_LETTERS[l as keyof typeof CONTENT_LETTERS].key, 'later', `${l} has no lay but the key says now`);
   }
-  assert.deepEqual(Object.keys(LATER_CONTENT), ['s', 'v', 'p', 't', 'x', 'm']);
+  assert.deepEqual(Object.keys(LATER_CONTENT), ['s', 'v', 'p', 't', 'x']);
+  assert.equal(CONTENT_LETTERS.m.key, 'now', 'm (cover) is laid by World 1\'s hides (1-7 NEW 5)');
   // (a letter with a piece rule has all three columns' words where the designer wrote them; one with none shows no Pieces, never an empty Never)
   for (const [l, w] of Object.entries(PIECE_WORDS)) assert.ok(w![0] && w![2], `${l}: a pieces row with an empty Must or Never`);
   assert.deepEqual(['v', 'p', 't', 'x', 'm'].filter((l) => l in PIECE_WORDS), []);

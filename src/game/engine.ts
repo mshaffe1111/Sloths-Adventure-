@@ -202,7 +202,8 @@ import type { GuideView } from './dotGuideView.ts';
 import { aheadZone, type AheadProbe } from './dotGuidePerch.ts';
 import { FONT_UI } from './fonts.ts';
 import { withHurtFlash, withWash } from './hurtFlash.ts';
-import { MOSS_TINT, sweepPose, type SweepPose } from './sweepPose.ts';
+import { MOSS_TINT, SNAG_PERCH, sweepPose, type SweepPose } from './sweepPose.ts';
+import { drawLianaMoss, drawMossCover, drawPerchedEagle, drawSnag, mossHeight } from './w17Art.ts';
 import { shakeOffset } from './screenShake.ts';
 import { POWER_UP_SECS } from './powerUps.ts';
 import { climbReach, climbSpeedOf, rustleGap } from './vinePair.ts';
@@ -4701,8 +4702,11 @@ export class GameEngine {
     const view = { x: cam.x, y: cam.y, w: cam.viewportWidth };
     const k = 1 - Math.exp(-14 * dt);
     if (!this.proto?.watch) this.watchShadowAt = null;
+    const hidden = c.calmNow(this.easy) >= 1;
     for (const m of c.sweepers) {
-      const want = sweepPose(m.def, m.s, { hero: this.player, view, easy: this.easy, spared: c.spares(m, this.easy), time: this.gameTime });
+      // (a perched one's snag stands behind him wherever it is, its perch branch under the eagle's feet: 1-7 beat 12)
+      if (m.s.perched && this.onScreen(m.s.homeX, m.s.homeY + SNAG_PERCH / 2, 260)) drawSnag(ctx, m.s.homeX, m.s.homeY + SNAG_PERCH, m.s.facing < 0);
+      const want = sweepPose(m.def, m.s, { hero: this.player, view, easy: this.easy, spared: c.spares(m, this.easy), time: this.gameTime, hidden });
       let d = this.sweepDrawn.get(m.e.id);
       if (!want) {
         if (d) d.pose.alpha = 0;
@@ -4725,8 +4729,11 @@ export class GameEngine {
       p.phase = want.phase;
       p.attacking = want.attacking;
       p.shadow = want.shadow;
+      p.perch = want.perch;
       if (want.shadow && (!this.watchShadowAt || want.shadow.a > this.watchShadowAt.a)) this.watchShadowAt = { x: want.shadow.x, a: want.shadow.a };
       if (p.alpha < 0.02 || !this.onScreen(p.x, p.y, 200)) continue;
+      // perched on its snag: the painted perched frames (looking ahead, the head turn, looking down, the blink), its feet on the branch
+      if (p.perch && drawPerchedEagle(ctx, p.x, p.y, p.perch, p.facing)) continue;
       const e = d.body;
       e.x = p.x;
       e.y = p.y;
@@ -7098,6 +7105,11 @@ export class GameEngine {
       this.camera,
       this.gameTime
     );
+    // the Spanish moss on a mossy liana (holding one is cover, 1-7 NEW 6), hanging from the rope where its swing puts it (w17Art.ts)
+    for (const v of this.vines) {
+      if (!v.mossy || v.vineType === 'tree_climb' || !this.onScreen(v.x, (v.topY + v.bottomY) / 2, (v.bottomY - v.topY) / 2 + 200)) continue;
+      drawLianaMoss(ctx, { x: v.x, top: v.topY, len: v.bottomY - v.topY, angle: v.swingAngle ?? 0 }, this.gameTime);
+    }
 
     // World 2's painted drifting logs (the drawn ones were left out above), under the water's sheet so they sit in the river
     if (this.riverLogsPainted(world.id)) {
@@ -9156,13 +9168,17 @@ export class GameEngine {
       if (!this.onScreen(b.x + b.w / 2, b.y, 400)) continue;
       const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
       // (World 4 has its own painted cover: w4Art.ts)
-      if (this.w4 && !b.hanging && drawW4Bush(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
+      if (this.w4 && !b.hanging && b.kind !== 'moss' && b.kind !== 'mossPatch' && b.kind !== 'mossHang' && drawW4Bush(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // (World 8's roost hides: the tree hollow and the leaf curtain, batArt.ts)
       const w8look = w8Hides?.find((h) => h.x === b.x && h.y === b.y)?.look;
       if (w8look && drawW8Hide(ctx, b, w8look, inside)) continue;
-      if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime, inside && this.cast ? this.cast.calmNow(this.easy) : 0)) continue;
+      const moss = inside && this.cast ? this.cast.calmNow(this.easy) : 0;
+      // (World 1's moss cover, 1-7: the carpet, the mound, hanging moss; w17Art.ts)
+      if (b.kind === 'moss' || b.kind === 'mossPatch' || b.kind === 'mossHang') {
+        if (drawMossCover(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime, moss)) continue;
+      } else if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime, moss)) continue;
       // before the sheet loads: a plain green mound
-      const h = b.kind === 'grotto' ? w3FernHeight(b.w) : bushHeight({ ...b, kind: b.kind });
+      const h = b.kind === 'grotto' ? w3FernHeight(b.w) : b.kind === 'moss' || b.kind === 'mossPatch' || b.kind === 'mossHang' ? mossHeight({ ...b, kind: b.kind }) : bushHeight({ ...b, kind: b.kind });
       ctx.save();
       ctx.globalAlpha = inside ? 0.8 : 1;
       ctx.fillStyle = '#2f6b2a';

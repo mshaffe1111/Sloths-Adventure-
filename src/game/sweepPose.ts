@@ -36,6 +36,13 @@ export const SKY = {
  */
 export const MOSS_TINT = { rgb: '86, 138, 52', alpha: 0.45 } as const;
 
+/** how high over its ground a perched sweeper's feet grip its snag (game px): the snag's perch branch (w17Art.ts SNAG_PERCH_DRAWN, the
+ *  piece it is measured on: 1-7 beat 12) */
+export const SNAG_PERCH = 208;
+
+/** a perched sweeper's look (the four painted frames, w17Art.ts): away ahead at rest, its head turning for the warn, down the gaze, a blink */
+export type PerchLook = 'ahead' | 'turn' | 'down' | 'blink';
+
 export interface SweepView {
   x: number;
   y: number;
@@ -56,6 +63,8 @@ export interface SweepPose {
   shadow: { x: number; a: number } | null;
   /** this pose starts faded out: the engine may move it there at once */
   snap: boolean;
+  /** perched on its snag in this look (drawn with the perched frames at (x, y), its feet there), not flying */
+  perch?: PerchLook;
 }
 
 export interface SweepScene {
@@ -66,12 +75,77 @@ export interface SweepScene {
   spared: boolean;
   /** game time (s), for the far circling */
   time: number;
+  /** he is hidden now (still, in cover, the moss all the way in: castPlay.ts calmNow): a perched eagle looking right at him blinks */
+  hidden?: boolean;
+}
+
+/** a perched sweeper's numbers: its body over its feet when it flies (px), how high it lifts off for the dive, its idle blink (s) */
+export const PERCH = { body: 45, lift: 26, blinkEvery: 4.3, blink: 0.16 } as const;
+
+/**
+ * A perched sweeper (Post.perched, 1-7 beat 12): it sits on its snag and its gaze does the sweeping. At rest it looks away ahead (and
+ * blinks now and then); for the warn its head turns (the screech; the shadow of its gaze at the stretch's end); through the pass it
+ * looks down, its gaze's shadow sliding over the moss, and it blinks when its gaze is on him and he is hidden; it dives from its snag in
+ * its tell, the body the kit moves through the act and back, and when stillness beats it, it flies off. Its body is where the kit has it.
+ */
+function perchedPose(def: PredatorDef, s: PredatorState, sc: SweepScene): SweepPose | null {
+  const { hero, view } = sc;
+  const pose = (o: Partial<SweepPose> & Pick<SweepPose, 'x' | 'y'>): SweepPose =>
+    ({ scale: 1, alpha: 1, facing: s.facing, phase: 'patrol', attacking: false, shadow: null, snap: false, ...o });
+  const home = Math.abs(s.x - s.homeX) <= 4 && Math.abs(s.y - s.homeY) <= 4;
+  const short = sc.spared ? SKY.short : 0;
+  const toEye: 1 | -1 = s.eyeX >= s.homeX ? 1 : -1;
+  const onView = s.eyeX >= view.x - 60 && s.eyeX <= view.x + view.w + 60;
+  switch (s.phase) {
+    case 'rest':
+    case 'hunt': {
+      // flying home after a dive: the bird where the kit has its body, back to the branch
+      if (!home) return pose({ x: s.x, y: s.y - PERCH.body, phase: 'swoop', facing: s.homeX >= s.x ? 1 : -1 });
+      if (s.phase === 'rest') {
+        const blink = sc.time % PERCH.blinkEvery < PERCH.blink;
+        return pose({ x: s.homeX, y: s.homeY, perch: blink ? 'blink' : 'ahead', facing: toEye });
+      }
+      const from = s.facing > 0 ? s.minX : s.maxX;
+      const warn = (def.warn ?? 0) * Math.max(1, sc.easy ? def.easy.tell : 1);
+      if (s.eyeX === from && s.t < warn) {
+        // the warn: its head turns to the stretch, the gaze's shadow coming in where it will start
+        const u = s.t / Math.max(0.01, warn);
+        return pose({ x: s.homeX, y: s.homeY, perch: 'turn', facing: toEye, shadow: onView ? { x: s.eyeX, a: 0.18 + 0.3 * u } : null });
+      }
+      const onHim = Math.abs(hero.x - s.eyeX) <= def.sight.ahead;
+      return pose({ x: s.homeX, y: s.homeY, perch: onHim && sc.hidden ? 'blink' : 'down', facing: toEye, shadow: onView ? { x: s.eyeX, a: 0.5 } : null });
+    }
+    case 'tell': {
+      // it leaves the branch: wings up, lifting off toward him (the body is still on its post until the act)
+      const u = clamp(s.t / Math.max(0.01, tellOf(def, sc.easy)), 0, 1);
+      return pose({
+        x: s.homeX + (hero.x - s.homeX) * 0.12 * u, y: s.homeY - PERCH.body - PERCH.lift * u, phase: 'swoop',
+        facing: hero.x >= s.homeX ? 1 : -1, shadow: { x: s.eyeX, a: 0.5 * (1 - u) },
+      });
+    }
+    case 'act':
+      return pose({ x: s.x, y: s.y - SKY.over - short, phase: 'swoop', attacking: !sc.spared, facing: hero.x >= s.x ? 1 : -1 });
+    case 'recover': {
+      const u = clamp(s.t / Math.max(0.01, def.recover), 0, 1);
+      return pose({ x: s.x, y: s.y - SKY.over - short - PERCH.lift * u, phase: 'swoop', facing: s.homeX >= s.x ? 1 : -1 });
+    }
+    case 'flee':
+    case 'stunned': {
+      // stillness beat it: it gives up and flies off its snag, out of the view
+      const u = clamp(s.t / 1.2, 0, 1);
+      return pose({ x: s.homeX + s.facing * SKY.away.x * u, y: s.homeY - PERCH.body - SKY.away.y * u, phase: 'swoop', alpha: 1 - u });
+    }
+    case 'gone':
+      return null;
+  }
+  return null;
 }
 
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 
 /** the pose a sweeper is drawn in now, or null when nothing of it shows (he is not in its stretch and it is not after him) */
 export function sweepPose(def: PredatorDef, s: PredatorState, sc: SweepScene): SweepPose | null {
+  if (s.perched) return perchedPose(def, s, sc);
   const { hero, view } = sc;
   const sky = view.y + SKY.fly;
   const inX = Math.min(SKY.inX, view.w * SKY.inShare);
