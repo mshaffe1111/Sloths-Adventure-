@@ -194,8 +194,8 @@ export class FieldPlay {
     this.snapAt.set(c.id, h.t);
     const v = this.vines.find((q) => q.id === c.vine);
     if (v) c.land = clusterLand(v, c.y, this.platforms, this.gateIds);
-    // (it locks in: a gold pop where it tore free, under the bough it was holding down)
-    if (v) h.spark(v.x, c.y - c.h, '#fde68a');
+    // (it locks in: ONE signal, its tie snapping (drawGateLock: the painted snap and Matt's bark chips) and its sound; the old gold pop
+    // here and at the open made two at once: gone, the lead 11-14)
     for (const g of this.gates) {
       if (!g.clusters.includes(c.id)) continue;
       const left = gateLeft(g, this.clusters);
@@ -218,7 +218,6 @@ export class FieldPlay {
           }
         }
         h.sfx('open');
-        if (b) h.spark(b.x + b.width / 2, b.y - 20, '#fde68a');
       } else h.sfx('lift');
     }
   }

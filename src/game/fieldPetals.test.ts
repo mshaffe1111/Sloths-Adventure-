@@ -94,3 +94,35 @@ test('two hands climb up 1.6x one hand, one hand slides down 2x (DK Jr.\'s rule,
   const one = rise(false), two = rise(true);
   assert.ok(Math.abs(two / one - FIELD_FEEL.twoUp) < 0.1, `two hands ${two.toFixed(0)} px vs one ${one.toFixed(0)} px in 0.5 s (${(two / one).toFixed(2)}x)`);
 });
+
+// The lead 11-14 (vines-normal-up.mp4, seed 1 Normal: 2 of 3): the WHOLE column climbed from the vine's foot, stepping across while
+// climbing, takes every petal of it, the top one too (he vaults onto the bough at the top: a petal too near it was passed first).
+for (const setting of ['normal', 'easy'] as const)
+  test(`1-4 ${setting}: a two-hand climb up the whole paired column takes every petal in it, the top one too`, () => {
+    setDifficulty(setting);
+    try {
+      let cols = 0;
+      for (const seed of [1, 2, 3, 4, 5, 6]) {
+        const r = new RealPlay('1-4', seed);
+        const e = r.e as unknown as E;
+        e.field!.pods = [];
+        const seen = new Set<string>();
+        for (const { a, b } of paired(r)) {
+          const key = `${a.id}:${b.id}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          const col = paired(r).filter((q) => q.a === a && q.b === b).map((q) => q.c);
+          for (const c of col) c.collected = false;
+          e.hands = null;
+          r.climb(a, a.bottomY - 4);
+          for (let i = 0; i < 150 && r.p.climbing; i++) r.frame({ up: true, right: i >= 3 && b.x > a.x, left: i >= 3 && b.x < a.x });
+          const missed = col.filter((c) => !c.collected).map((c) => `${c.x},${c.y} (top ${Math.min(a.topY, b.topY)})`);
+          assert.equal(missed.length, 0, `seed ${seed} pair ${a.x}/${b.x}: missed ${missed.join(' ')}`);
+          cols++;
+        }
+      }
+      assert.ok(cols >= 3, `columns climbed: ${cols}`);
+    } finally {
+      setDifficulty('normal');
+    }
+  });
