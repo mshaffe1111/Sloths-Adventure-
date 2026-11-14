@@ -11,15 +11,29 @@ import './headlessDom.ts';
 import { RealPlay } from './realPlay.ts';
 import { setDifficulty } from './difficulty.ts';
 import { withPlaySeed } from './testlink1_1.ts';
+import { FIRST_RUN_11 } from './gen2/firstRun11.ts';
 import { recorder } from './playRecorder.ts';
 import { InputEngine } from './inputEngine.ts';
 import { PadInput } from './padControl.ts';
 import { MOVE_LINES, STEP_LINE, STEP_CUT, LINE_UP_S, padFullJump } from './helpLadder.ts';
+import { skyline } from './helpLadder.ts';
 import { dotHelp, setDotHelp } from './dotGuideHelp.ts';
 import type { Platform } from './types.ts';
 
-const SEED = 982;
-const PIECE = 'w1-log-chain-rise';
+// (re-pinned by POLISH-9b, R-165.228: 982 left 1-1's list at POLISH-7's relist, and since then this flew a raw search's stage, which
+// the A/D-only graph ruling changed. No listed layout now has a log over a gap that both sets him back and grows steps on both settings
+// (swept: the first 60 listed layouts). The ladder's flight bed is now the first run's w1-last-step-up, whose 60 px hole sets him back on
+// both settings and grows: its take-off and landing read from the ladder's own walking surface (helpLadder.ts skyline), never copied)
+const PIECE = 'w1-last-step-up';
+const SEED = FIRST_RUN_11.seed;
+/** the piece's first hole on its walking surface: the take-off top before it and the landing top after it (as platforms) */
+function hole(e: unknown, piece: Piece): [Platform, Platform] {
+  const segs = skyline(piece, (e as { roadBoxes(): Parameters<typeof skyline>[1] }).roadBoxes());
+  const i = segs.findIndex((a, j) => j + 1 < segs.length && a.x1 >= piece.x0 && a.x1 <= piece.x1 && segs[j + 1].x0 > a.x1 + 1 && a.x1 - a.x0 >= 120);
+  assert.ok(i >= 0, `${PIECE} has a hole in its walking surface`);
+  const plat = (g: (typeof segs)[number]) => ({ id: -1, x: g.x0, y: g.y, width: g.x1 - g.x0, height: g.bottom - g.y, type: 'solid' }) as Platform;
+  return [plat(segs[i]), plat(segs[i + 1])];
+}
 type Piece = { k: string; x0: number; x1: number };
 type Eng = {
   currentStage: { meta: { pieces: Piece[] } };
@@ -49,8 +63,9 @@ function fly(setting: 'easy' | 'normal', seed = SEED) {
   e.helpAsk = (o, answer) => asked.push({ ...o, answer });
   const piece = e.currentStage.meta.pieces.find((q) => q.k === PIECE)!;
   assert.ok(piece, `seed ${seed} lays ${PIECE}`);
-  // (the take-off log: the piece's first log; walking off its right end drops him into the first rising gap)
-  const logs = r.platforms.filter((p) => p.type === 'solid' && p.style === 'log' && p.width >= 300 && p.x >= piece.x0 - 2 && p.x + p.width <= piece.x1 + 2).sort((a, b) => a.x - b.x);
+  // (the take-off: before the piece's first hole)
+  // (the take-off and the landing either side of the piece's first hole: walking off the take-off's right end drops him into it)
+  const logs = hole(e, piece);
   return { r, e, events, asked, piece, logs, done: () => {
     recorder.event = was; setDifficulty('normal');
     const lives = (r.e as unknown as { lives: number }).lives;
@@ -68,7 +83,10 @@ function putBack(f: Flight): void {
   const pf = logs[0];
   // (once steps have grown the log's end is a step he climbs: then he drops from under the second log instead, a fall in the same gap)
   const grown = f.e.helpState().grown.length > 0;
-  if (grown) r.fly(logs[1].x + 90, logs[1].y + 40);
+  // (once grown, a step that catches him over the hole leaves no put-back at the piece, so nothing more can fire there; POLISH-9b:
+  // w1-last-step-up's 60 px hole is caught by its grown step, where the old chain's gap was wider than its stair)
+  const mid = (logs[0].x + logs[0].width + logs[1].x) / 2;
+  if (grown) r.fly(mid, logs[0].y - 20);
   else r.stand(pf.x + pf.width - 40, pf.y);
   for (let i = 0; i < 6 && !grown; i++) r.frame({});
   for (let i = 0; i < 30 * 8; i++) {
@@ -76,6 +94,7 @@ function putBack(f: Flight): void {
     if (events.filter((v) => v.startsWith('softFall')).length > n) break;
     if (f.e.helpState().asking) break;
   }
+  if (grown && events.filter((v) => v.startsWith('softFall')).length === n && r.p.grounded) return;
   assert.equal(events.filter((v) => v.startsWith('softFall')).length, n + 1, 'a real put-back');
   // (settle: the iris opens and he stands; Normal's offer comes then)
   for (let i = 0; i < 45 && !f.e.helpState().asking; i++) r.frame({});
@@ -141,10 +160,12 @@ function plainRun(f: Flight): { ok: boolean; why: string; jumps: number } {
 
 const helps = (f: Flight) => f.events.filter((v) => v.startsWith('help ') || v.startsWith('helpOffer'));
 const flickUp = (f: Flight) => f.r.said.filter((s) => /flick up and forward to jump|slide up and across to jump/i.test(s.text)).length;
-// (the re-laid chain rises inside a single jump's band, C1: the move Dot names there is the single)
-const moveSaid = (f: Flight) => f.r.said.filter((s) => s.text === MOVE_LINES.single.touch || s.text === MOVE_LINES.single.pad).length;
-
-test(`1-1 Easy, seed ${SEED}, w1-log-chain-rise: the line at 3, the full pad jump at 5, the steps at 8, then the whole piece on plain jumps`, (t) => {
+// (the move Dot names is the one the engine reads for the piece as laid (engine.ts pieceMove, helpLadder.ts pieceMoveLaid): she says it
+// once. POLISH-9b: on w1-log-chain-rise that was the single; on w1-log-chain the engine reads a join a single can't make, the double)
+const ladderMove = (f: Flight) => (f.e as unknown as { pieceMove(p: Piece): keyof typeof MOVE_LINES }).pieceMove(f.piece);
+const moveSaid = (f: Flight) => { const m = MOVE_LINES[ladderMove(f)]; return f.r.said.filter((s) => s.text === m.touch || s.text === m.pad).length; };
+const anyMoveSaid = (f: Flight) => f.r.said.filter((s) => Object.values(MOVE_LINES).some((m) => s.text === m.touch || s.text === m.pad)).length;
+test(`1-1 Easy, seed ${SEED}, ${PIECE}: the line at 3, the full pad jump at 5, the steps at 8, then the whole piece on plain jumps`, (t) => {
   const f = fly('easy');
   const { e, piece } = f;
   assert.equal(e.helpState().on, true, 'the ladder is on in 1-1');
@@ -153,7 +174,8 @@ test(`1-1 Easy, seed ${SEED}, w1-log-chain-rise: the line at 3, the full pad jum
   assert.deepEqual(helps(f), [], 'nothing at 1 and 2');
   putBack(f);
   assert.deepEqual(helps(f), [`help move ${PIECE} 3 E`]);
-  assert.equal(moveSaid(f), 1, 'Dot says the move (the single: a run and a held jump) once');
+  assert.equal(moveSaid(f), 1, `Dot says the piece's move (${ladderMove(f)}) once`);
+  assert.equal(anyMoveSaid(f), 1, 'and no other move line');
   putBack(f);
   assert.equal(padFullJump(), false, 'the tap is still a hop at 4');
   putBack(f);
@@ -168,10 +190,10 @@ test(`1-1 Easy, seed ${SEED}, w1-log-chain-rise: the line at 3, the full pad jum
   assert.deepEqual(helps(f).slice(2), [`help step ${PIECE} 8 E`]);
   assert.equal(f.r.said.filter((s) => s.text === STEP_LINE).length, 1, 'Dot: the step line');
   const grown = e.helpState().grown;
-  assert.ok(grown.length >= 3, `steps grown: ${grown.length}`);
+  assert.ok(grown.length >= 1, `steps grown: ${grown.length}`); // (w1-last-step-up's rise takes 1-2 steps; the old piece's took 3+: POLISH-9b)
   assert.ok(grown.filter((g) => g.style === 'moss_stone').every((g) => g.cut === STEP_CUT), 'every step is the one mossy rock (the YES picture)');
   // the move line came down after its time (her own clock holds while he blinks after each set-back)
-  const ml = f.r.said.find((x) => x.text === MOVE_LINES.single.touch || x.text === MOVE_LINES.single.pad)!;
+  const ml = f.r.said.find((x) => x.text === MOVE_LINES[ladderMove(f)].touch || x.text === MOVE_LINES[ladderMove(f)].pad)!;
   const mlDown = f.r.passed.find((x) => x.text === ml.text);
   assert.ok(mlDown && Math.abs(mlDown.t - ml.t - LINE_UP_S) < 0.1, `the move line down ${LINE_UP_S} s after it was said (${ml.t.toFixed(1)} -> ${mlDown?.t.toFixed(1)})`);
   for (const g of grown) {
@@ -198,13 +220,14 @@ test(`1-1 Normal, seed ${SEED}: the line at 3, the offer at 12 (the stage held),
   for (let n = 1; n <= 11; n++) putBack(f);
   assert.deepEqual(helps(f), [`help move ${PIECE} 3 N`], 'only the move line before 12');
   assert.equal(moveSaid(f), 1);
+  assert.equal(anyMoveSaid(f), 1);
   assert.equal(padFullJump(), false, 'no quiet full jump on Normal');
   putBack(f);
   assert.equal(asked.length, 1, 'the offer at 12');
   assert.equal(asked[0].reask, false);
   assert.equal(asked[0].cut, STEP_CUT, 'the offer shows the stone that would grow');
   // her bubble: the move line was taken down when the offer opened (or before, at its time), and nothing is said from here on
-  const move = f.r.said.find((x) => x.text === MOVE_LINES.single.touch || x.text === MOVE_LINES.single.pad)!;
+  const move = f.r.said.find((x) => x.text === MOVE_LINES[ladderMove(f)].touch || x.text === MOVE_LINES[ladderMove(f)].pad)!;
   const down = f.r.passed.find((x) => x.text === move.text);
   assert.ok(down && down.t <= r.t + 1e-6 && down.t - move.t <= LINE_UP_S + 0.05, `the move line taken down by the offer (said ${move.t.toFixed(1)}, down ${down?.t.toFixed(1)}, offer ${r.t.toFixed(1)})`);
   const saidAtOffer = f.r.said.length;
@@ -245,7 +268,7 @@ test(`1-1 Normal, seed ${SEED}: a yes at 12 grows the steps, the piece is then p
   asked[0].answer(true);
   assert.ok(f.events.includes(`helpOffer yes ${PIECE} 12`) && f.events.includes(`help step ${PIECE} 12 N`), f.events.filter((v) => v.startsWith('help')).join(' | '));
   const grown = e.helpState().grown;
-  assert.ok(grown.length >= 3, `steps grown: ${grown.length}`);
+  assert.ok(grown.length >= 1, `steps grown: ${grown.length}`); // (w1-last-step-up's rise takes 1-2 steps; the old piece's took 3+: POLISH-9b)
   // the draw-list spy: a frame's draw reads each grown step (a cut piece from the platforms protoArt paints; any other from the lists)
   for (const g of grown) assert.ok(e.platforms.includes(g) && (g.cut ? true : e.paintedPlats.includes(g) || e.drawPlats.includes(g)), `step ${g.id} in the draw list`);
   const after = plainRun(f);
@@ -270,7 +293,7 @@ test('1-1 on Quiet (Dot\'s help setting): no line from her, but Easy\'s steps st
     assert.equal(dotHelp(), 'quiet');
     const ez = fly('easy');
     for (let n = 1; n <= 8; n++) putBack(ez);
-    assert.ok(ez.e.helpState().grown.length >= 3, 'Easy: the steps grew');
+    assert.ok(ez.e.helpState().grown.length >= 1, 'Easy: the steps grew');
     ez.done();
     const nm = fly('normal');
     for (let n = 1; n <= 12; n++) putBack(nm);

@@ -10,6 +10,9 @@ import { withPlaySeed } from './testlink1_1.ts';
 import { recorder } from './playRecorder.ts';
 import type { Platform } from './types.ts';
 import { earthHoles } from './gen2/pipeline.ts';
+import { FIRST_RUN_11 } from './gen2/firstRun11.ts';
+import { provenSeeds } from './gen2/seedList.ts';
+import { skyline } from './helpLadder.ts';
 
 type Eng = { lives: number; softOn: boolean; softAt: { x: number; y: number } | null; isGameOver: boolean; loseLife?: unknown; currentStage: { gen2?: { softFalls?: boolean }; meta: { pieces: Array<{ k: string; x0: number; x1: number }> } } };
 
@@ -87,9 +90,10 @@ function sweep(seed: number, setting: 'normal' | 'easy', brief = true) {
   return { lost, wrong, backs, solids: solids.length };
 }
 
-// (listed seeds of the re-laid 1-1, re-pinned by P11 on its rebuilt list: the first run's 9800, and 982 and 24432, which lay w1-log-chain-rise; the 11-10 window's
-// seeds 3747, 15458 and 19582 are no longer on the list and no longer build)
-const SWEEP = [9800, 982, 24432];
+// (listed seeds of 1-1: the first run and the list's first two others, read from the list. Re-pinned by POLISH-9b (R-165.228): 982 and
+// 24432 left the list at POLISH-7's relist and this swept raw searches' stages, which the A/D-only graph ruling changed; 9800 is no longer
+// the first run. Earlier: P11's 9800/982/24432; the 11-10 window's 3747, 15458, 19582)
+const SWEEP = [FIRST_RUN_11.seed, ...provenSeeds('1-1').filter((s) => s !== FIRST_RUN_11.seed).slice(0, 2)];
 for (const setting of ['normal', 'easy'] as const) {
   for (const seed of SWEEP) {
     test(`1-1 ${setting} seed ${seed}: off the right edge of every solid piece, no life is lost and every set-back stands on a ledge behind the fall`, () => {
@@ -102,20 +106,25 @@ for (const setting of ['normal', 'easy'] as const) {
 }
 
 test('planted: without the brief\'s word (origin/main\'s 1-1) the same sweep on Normal loses lives in the pits, through the real loseLife', () => {
-  const s = sweep(982, 'normal', false);
+  // (the first run without the word; POLISH-9b: it was raw 982, whose w1-log-chain-rise no longer lays)
+  const s = sweep(FIRST_RUN_11.seed, 'normal', false);
   assert.ok(s.lost.length >= 3, `lives lost: ${s.lost.join(', ') || 'none'}`);
-  assert.ok(s.lost.some((w) => w.startsWith('w1-log-chain-rise')), s.lost.join(', '));
 });
 
-test('1-1 Normal seed 982, w1-log-chain-rise: walked off a rising gap he is set back on the ledge he left, softFall recorded, no life lost', () => {
-  const f = real(982, 'normal');
+// (POLISH-9b, R-165.228: retargeted from raw 982's w1-log-chain-rise, which no listed layout lays now, to the first run's w1-last-step-up:
+// the piece's first hole on its walking surface (helpLadder.ts skyline), a rise from the ledge he leaves to the top past the hole)
+test('1-1 Normal, the first run, w1-last-step-up: walked off a rising gap he is set back on the ledge he left, softFall recorded, no life lost', () => {
+  const f = real(FIRST_RUN_11.seed, 'normal');
   const { r, e, events } = f;
   assert.equal(e.softOn, true, 'the whole-stage soft fall is on from the stage\'s brief');
-  const piece = e.currentStage.meta.pieces.find((q) => q.k === 'w1-log-chain-rise');
-  assert.ok(piece, 'seed 982 lays w1-log-chain-rise');
-  // the piece's first rise: its take-off log, the next log on standing 60 px or more higher (the gaps that cost the window's lives)
-  const logs = r.platforms.filter((p) => p.type === 'solid' && p.style === 'log' && p.width >= 300 && p.x >= piece!.x0 - 2 && p.x + p.width <= piece!.x1 + 2).sort((a, b) => a.x - b.x);
-  assert.ok(logs.length >= 2 && logs[1].y <= logs[0].y - 60, 'the piece rises from its first log to its second');
+  const piece = e.currentStage.meta.pieces.find((q) => q.k === 'w1-last-step-up');
+  assert.ok(piece, 'the first run lays w1-last-step-up');
+  const segs = skyline(piece!, (r.e as unknown as { roadBoxes(): Parameters<typeof skyline>[1] }).roadBoxes());
+  const i = segs.findIndex((a, j) => j + 1 < segs.length && a.x1 >= piece!.x0 && a.x1 <= piece!.x1 && segs[j + 1].x0 > a.x1 + 1 && a.x1 - a.x0 >= 120);
+  assert.ok(i >= 0, 'the piece has a hole');
+  const take = r.platforms.filter((p) => p.type === 'solid' && Math.abs(p.y - segs[i].y) < 1 && p.x < segs[i].x1 && p.x + p.width >= segs[i].x1 - 1)[0];
+  const logs = [take, { x: segs[i + 1].x0, y: segs[i + 1].y } as Platform];
+  assert.ok(take && logs[1].y < take.y, `the walking surface rises past the hole (${take?.y} -> ${logs[1].y})`);
   const lives = e.lives, hp = r.p.hp;
   const { back, fellAt, left } = walkOff(f, logs[0]);
   const ledge = r.platforms.find((q) => q.id === left)!;
