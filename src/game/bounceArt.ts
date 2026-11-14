@@ -130,13 +130,4 @@ export function drawBounce(ctx: CanvasRenderingContext2D, p: Platform, world: nu
     ctx.drawImage(img!, cf.x, cf.y, cf.w, cf.h, x0, topY, cw, ch);
     ctx.restore();
   }
-  if (part !== 'cap') return;
-  // up-arrow hint
-  ctx.fillStyle = `rgba(255,255,255,${0.55 + 0.35 * Math.sin(time * 4)})`;
-  ctx.beginPath();
-  ctx.moveTo(cxp, topY - 24);
-  ctx.lineTo(cxp - 7, topY - 14);
-  ctx.lineTo(cxp + 7, topY - 14);
-  ctx.closePath();
-  ctx.fill();
 }
