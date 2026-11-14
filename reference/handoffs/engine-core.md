@@ -4,9 +4,39 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for B4 (11-14, t-eng-b4): section 0v (the chase laid by gen2, finished for 1-8's builder: what a builder can lay now, what is open). Rewritten for B3 (11-14, t-eng-b3): section 0v's first form. Rewritten for B1 (11-13, t-b1-chase): section 0u (the chase piece). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for B5 (11-14, t-eng-b5): section 0w (the rolling nut and fruit, the chase camera lead, the ?fixture=chase route) and 0v's not-built line. Rewritten for B4 (11-14, t-eng-b4): section 0v (the chase laid by gen2, finished for 1-8's builder: what a builder can lay now, what is open). Rewritten for B3 (11-14, t-eng-b3): section 0v's first form. Rewritten for B1 (11-13, t-b1-chase): section 0u (the chase piece). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0w. The rolling nut and fruit, the chase camera lead, the dev chase fixture (B5, ENGINE-678, t-eng-b5 from t-eng-b4@956e33e0, 11-14)
+- **The hazard is data:** `GeneratedStage.rolling?: RollSpec[]` (rolling.ts) `{kind: 'low'|'high', dropX, speed, bounce, teach?}`, run by
+  pieces/rollingPiece.ts (PIECE_KINDS after CHASE). Set off by HIS x (`rollAhead`: drop + roll take ROLL.seen 1.0 s at a full run, Easy
+  1.1); the drop is the tell (ROLL.tell 0.8 s, from up to 480 px, never over the HUD band), a thunk (playLand), then at least ROLL.after
+  0.15 s of roll. Nut: rolls at him, a rattle, spins; its hit round is 0.75 of its drawn round (ROLL.lowHit) so a one-frame tap timed
+  clears it. Fruit: tall arcs PHASED to him (`phasedPace`, re-asked every step in the air, eased by phaseAcc): it meets him mid-arc,
+  closing at least `fruitClose` px/s so it never lands beside him low; touched against his DRAWN height (89.1). Teach = a bump (the
+  piece moves him, no heart, no safe time); after the stage's first crack a heart via damagePlayer (`rollTeaches`). Spent after a touch.
+  Respawn: ahead of his flag waits again, behind is gone. Checks by name: `rollProblems` (pace under his run, a nut's rattle a hop,
+  a fruit's arc over his head) refuses at start; `rollGroundProblems`/`runIn` (no gap, no hop rock in the run-in) is the LAY's check.
+- **Art (no new picture):** nut = the round shell of dressnew-w1 w1NutPod, fruit = M-10-d's lowest-left cannonball fruit, each cut round
+  ONCE into a canvas (CUT, BAKE_K 3; re-baked on canvasLost, D6), one drawImage a frame each + one baked shadow ellipse. Painted palm nut
+  and cannonball fruit pieces (1-8.md NEW 3) are the lead's Hugging Face call.
+- **The chase camera** (cameraFollow.ts `chaseSpan`/`chaseBack`, engine.ts updateCamera via `chaseSpanOf`): over a stage's chase span
+  (first crack - 400, or the first hazard's set-off - 400, to the last fork or hazard) his middle sits `vw - ahead` from the edge behind,
+  clamped to 10-30% of the view: upright 390-412 px phones show the nut 1.00-1.07 s before it reaches him, sideways 1.03-1.13 s; 360x800
+  1.00 s; 320x782 0.90 s (named). The span is cached per stage AND its chase/rolling arrays (a harness swapping st.chase kept a stale
+  span). The old hand-built 1-8 keeps its own `p.x - vw * 0.3` (this.chase?.active wins).
+- **Bots** (firsttimer.ts `rollPlan`): a nut closing within HOP_AT 60 px gets a hop held 2+ frames; a fruit dropping or bouncing within
+  480 px ahead holds the thumb down (no rhythm gap, no stop); both yield when a gap is within 240 px (one threat at a time).
+  `noRollRead` removes the skill (the planted test). chaseBots.test.ts's hazard runs use their own branch (`branch(true)`, longer runs).
+- **`?fixture=chase` / `__play('1-98')`, dev builds only** (chaseFixtureStage.ts; stageGenerator, App, stageSheets): chaseLay.test's
+  fixture (now ONE definition both use) built by buildGen2Stage + w1Finish, its config the BUILT one (1-1's laid over it put the pit line
+  above his ground: a planted check), hazards laid by `layFixtureRolling` on unbroken runs; 1-1's ground has a hop rock every 300-500 px,
+  so the FIXTURE clears bare rocks inside a run-in (never one with dressing or a creature on it; petals stay). run.mjs already accepts
+  '1-98' as a scenario: `node tools/perf/run.mjs port . <port> <dir> 1-98 port` then `DRAWCHECK_RESULTS=<dir> node tools/perf/drawcheck.mjs`.
+- **Traps:** a bare `input.state.jumpPressed` is cleared before use: clip tools press with `input.triggerTouchUp(0, ms)` and
+  `releaseTouchUp()` (D69). His x is his MIDDLE and his y his FEET (engine.ts landing). A test needs `r.e.player.invincibleTimer = 0`
+  after `r.safe = false` (RealPlay's frames set it to 1e9 while safe).
 
 ## 0v. The chase LAID by gen2 (B3 laid it, B4 finished it for 1-8's builder; ENGINE-678 W2, t-eng-b4 from t-eng-b3@71da15cd, 11-14)
 - **Job K is a chase node** (nodeLetters.ts; V13 refuses it in a world's first stage). A K node is filled from the sections a practise or
@@ -41,9 +71,7 @@ proven plan; Play is never blocked).
   the thumb down and stand at an edge only if the stand fits the front's stop budget (firsttimer.ts chaseRoom, CHASE_MARGIN 0.8 s).
   Planted: a 2.8 s stopper is caught without the skill (noChaseStride), never with it. No tier bot is ever caught. **OPEN (todo):** the
   child tier reaches the fork on 1 of 3 seeds: every miss a FALL at a 120 px gap (a heart and the flag), never a catch.
-- **Not built (named):** the rolling nut and bouncing fruit (no rolling hazard anywhere in src/game: 1-8.md NEW 2, M, + HF art NEW 3);
-  the chase camera lead for a LAID chase (only the old 1-8's `p.x - vw * 0.3`, engine.ts:6175; NEW 5); the liana phased to a runner;
-  the still fork's eagle; the tip; drawcheck on a chase stage (needs a stage the page can load: w1Arc08, or a QA fixture route).
+- **Not built (named), after B5 (0w):** the liana phased to a runner (NEW 4); the still fork's eagle (NEW 7); the tip's whole-branch fall (NEW 8); a gen2 lay of the `h` letter (the builder lays `rolling` by data today).
 - **Traps:** never edit src/ while a Vite shoot or the unit suite runs in the same tree; a lay test that asserts refusals exist asserts a
   defect (B3's "some rolls are refused" went when the yield reached 30/30); judge flags with rolledFlagBreaches, never a copy of it.
 
