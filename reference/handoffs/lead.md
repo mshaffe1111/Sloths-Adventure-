@@ -82,7 +82,7 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   The plan doc: reference/plans/ENGINE-NEEDS.md (Architect session_01FhBbYLVSn59vpCSU4ruo6P, t-engine-needs).
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
-## RIGHT NOW (11-14, refreshed 2:20 PM ET; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
+## RIGHT NOW (11-14, refreshed 3:03 PM ET; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
 **Turnover tonight (Matt, 11-14 12:11 PM ET):** after 1-6 and 1-7 are on his test link (~8 PM ET) a new lead takes over (PM.md §8);
 1-8 (the chase: ENG-B4 engine, then BUILD-18) is the new lead's FIRST job. This lead becomes the backup.
 **Matt's decisions today (11-14):** easier 1-1 (fewer doubles, easier jumps; props off ledges R-165.226/.228); 1-4 rocks/pods slower +
@@ -97,9 +97,9 @@ real presses, 11:39 AM); FIX-15 fixing. The lead had passed link #1's gate on a 
 | Member | Session | Branch | Job |
 |---|---|---|---|
 | ENG-B4 | session_01FhBbYMtNC2e3rUp1iijkHV | t-eng-b4 (from t-eng-b3, xhigh) | 1-8 chase engine: split by run-up, tint, nut/fruit/camera if missing, bots proven on a toy first, fixture clips |
-| FIX-15b | session_01FhBbYLvfpuHQv2JT2zsTR8 | t-fix-15b (from t-fix-15@8afe53a9, GREEN item 1) | fig gate: lay keeps wood out of a shut top's jump reach, verdict, 1-4 relist, gate flag claim |
 | ENG-16E | session_01FhBbYMhMQfgYnJSjNTNNQa | t-build-16 (xhigh) | 1-6's engine faults fixed for every stage (chain last leap, petal fill, W1 FAR), then finishes 1-6 |
-| BUILD-17b | session_01FhBbYLWTHuXT1nJ3tMEcCX | t-build-17 (xhigh) | 1-7's shared faults fixed globally (eagle stretch check, creak soft pit, listed-stage sheet preload), 1-7 to GREEN |
+| INT-9 | session_01FhBbYKSqV5AeZmMEkQ1msT | t-int-9 (from t-int-8, xhigh) | link #3: clip tool + FIX-15/15b + TIPS + chains + 1-7 now; the new 1-6 when ENG-16E is GREEN; R-165.238 |
+| POLISH-10 | session_01FhBbYNzfEg99dX1iewLrNd | t-polish-10 (from t-int-8, xhigh) | W1 background line (drawGroundChunks), bounce arrow, 1-4 seam + flag rim |
 **Done today and waiting for the next integrator:** t-eng-s5@a2743943 (chains, GREEN), t-int-8-clip@315548d1 (clip tool; full run UNRUN), t-keeper-17@a8dd2409 (1-7 lines).
 **Done, waiting for INT-9:** t-tips@a054e8e7 (GREEN). **Queue (packets in reference/packets/2026-11-14/), in order as slots free:**
 INT-9 (link #3: the new 1-6 + 1-7 + TIPS + FIX-15/15b + chains + clip tool + R-165.238; packet written). For the new lead after
