@@ -2,43 +2,43 @@ TAP version 13
 # Subtest: child easy: every mapped number is its profile field
 ok 1 - child easy: every mapped number is its profile field
   ---
-  duration_ms: 6.732281
+  duration_ms: 2.666473
   type: 'test'
   ...
 # Subtest: child normal: every mapped number is its profile field
 ok 2 - child normal: every mapped number is its profile field
   ---
-  duration_ms: 0.598058
+  duration_ms: 4.742531
   type: 'test'
   ...
 # Subtest: middle easy: every mapped number is its profile field
 ok 3 - middle easy: every mapped number is its profile field
   ---
-  duration_ms: 0.853837
+  duration_ms: 0.985252
   type: 'test'
   ...
 # Subtest: middle normal: every mapped number is its profile field
 ok 4 - middle normal: every mapped number is its profile field
   ---
-  duration_ms: 0.546263
+  duration_ms: 0.539616
   type: 'test'
   ...
 # Subtest: expert normal: every mapped number is its profile field
 ok 5 - expert normal: every mapped number is its profile field
   ---
-  duration_ms: 0.632433
+  duration_ms: 0.505852
   type: 'test'
   ...
 # Subtest: the committed calibration runs, judged again, give the committed table
 ok 6 - the committed calibration runs, judged again, give the committed table
   ---
-  duration_ms: 16.130287
+  duration_ms: 14.367204
   type: 'test'
   ...
 # Subtest: three variants a tier and setting replay exactly as committed
 ok 7 - three variants a tier and setting replay exactly as committed
   ---
-  duration_ms: 25016.746835
+  duration_ms: 20742.141223
   type: 'test'
   ...
 1..7
@@ -49,4 +49,5 @@ ok 7 - three variants a tier and setting replay exactly as committed
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 26891.67614
+# duration_ms 22031.339182
+EXIT 0
