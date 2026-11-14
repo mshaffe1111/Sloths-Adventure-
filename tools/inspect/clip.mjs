@@ -113,12 +113,43 @@ if (MODE === 'gateover') {
     // (THIS gate's bough only: the shut bough found from just under it, its top within its own sag of its line)
     const ours = (x, y) => { const q = e.field.shutBoughAt(x, y); return q && q.top >= B.y - 1 && q.top <= B.y + 120 ? q : null; };
     const near = ours(P.x, P.y + 250);
-    return { head: s ? Math.round(s.under - (P.y - 89)) : null, over: !!near && P.y < near.top - 0.5, shut: !!ours(B.x + B.width / 2, B.y + 200), x: Math.round(P.x), y: Math.round(P.y), g: !!P.grounded, c: !!P.climbing };
+    // (FIX-15: which side of the shut bough's DRAWN wood his body is on, his middle over its span: over (feet at or over the drawn
+    // top), under (drawn head at or under the drawn underside), or IN it; and whether he stands on its top)
+    const shutNow = !!ours(B.x + B.width / 2, B.y + 200);
+    const w = shutNow && P.x >= B.x && P.x <= B.x + B.width ? ours(P.x, P.y + 400) : null;
+    const side = w ? (P.y <= w.top + 1 ? 'over' : P.y - 89 >= w.under - 1 ? 'under' : 'in') : null;
+    return { head: s ? Math.round(s.under - (P.y - 89)) : null, over: !!near && P.y < near.top - 0.5, shut: shutNow, x: Math.round(P.x), y: Math.round(P.y), vy: Math.round(P.vy), g: !!P.grounded, c: !!P.climbing, side, onTop: shutNow && !!P.grounded && e.standingOnId === B.id };
   }, E);
   const tries = [];
   let cur = null;
-  const watch = async (inp, n) => { let r; for (let i = 0; i < n; i++) { r = await step(inp, 1, { safe: true }); const L = await look(); if (cur) { if (L.head !== null) cur.head = Math.max(cur.head, L.head); cur.top = Math.min(cur.top, L.y); if (L.over && L.shut) cur.over = true; cur.end = L; } } return r; };
-  const begin = (name) => { cur = { name, head: -1e9, top: 1e9, over: false }; tries.push(cur); };
+  // (FIX-15, the packet's item 4: every frame's caption prints the try, the frame, his vy (the press frame's marked) and his head vs the
+  // shut bough's drawn underside; the frame where he is STOPPED is named: a head stop (rising, then vy 0 under the wood), the wall at
+  // its end (moving toward it, held at its end), or landing ON it; THROUGH: over then under (or in) on consecutive frames)
+  let label = '', k = 0, prevSide = null, prevL = null;
+  const watch = async (inp, count) => {
+    let r;
+    for (let i = 0; i < count; i++) {
+      r = await step(inp, 1, { safe: true, noShot: true }); k++;
+      const L = await look();
+      if (cur) {
+        if (L.head !== null) cur.head = Math.max(cur.head, L.head);
+        cur.top = Math.min(cur.top, L.y);
+        if (L.over && L.shut) cur.over = true;
+        if (L.side === 'in' || (prevSide && L.side && prevSide !== L.side)) cur.through = cur.through ?? `step ${k}: ${L.side === 'in' ? 'IN the wood' : `${prevSide} then ${L.side}`}`;
+        if (L.onTop && !cur.onTop) { cur.onTop = `step ${k}`; cur.stops.push(`step ${k}: LANDED ON the shut bough's top (x ${L.x})`); }
+        if (prevL && prevL.vy < 0 && L.vy === 0 && !L.g && !L.c && L.head !== null && L.head >= -2) cur.stops.push(`step ${k}: HEAD STOP (head ${L.head} px vs underside)`);
+        if (prevL && (inp.left || inp.right) && L.x === prevL.x && !L.c && L.shut && Math.abs(L.x - (inp.left ? g.bough.r + 22 : g.bough.x - 22)) < 2 && !cur.stops.some((q) => q.includes('WALL'))) cur.stops.push(`step ${k}: WALL at its end (x ${L.x})`);
+        cur.end = L;
+      }
+      prevSide = L.side; prevL = L;
+      const press = inp.jump ? ' <b>PRESS</b>' : '';
+      await cap(`${label}<br>step ${k}${press} · vy ${L.vy} · head ${L.head === null ? 'clear of it' : `${L.head} px vs the underside (≤0 under)`}${L.onTop ? ' · <b>ON its top</b>' : ''}${cur?.stops.length ? `<br><b>${cur.stops[cur.stops.length - 1].replace(/^step \d+: /, '')}</b>` : ''}`);
+      // (a frame kept every 2nd step, as step() keeps them: 15 fps of a 30 fps game)
+      if (n++ % 2 === 0) { await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0)))); await p.screenshot({ path: `${out}/f${String(frame++).padStart(4, '0')}.jpg`, type: 'jpeg', quality: 82 }); }
+    }
+    return r;
+  };
+  const begin = (name) => { cur = { name, head: -1e9, top: 1e9, over: false, stops: [] }; tries.push(cur); prevSide = null; prevL = null; label = name; };
   /** after a press: ride it out; with `second`, flick again once past the top of the first */
   const ride = async (second, lean = 0, dirKey = null) => {
     const mv = dirKey ? { [dirKey]: true } : {};
@@ -135,6 +166,10 @@ if (MODE === 'gateover') {
   await cap(`A gate of ${g.figs} figs: the bough is <b>shut</b> while any tie holds.`); await hold(24, { safe: true });
   await cap('Push the first fig up: its tie <b>strains</b>…'); await watch({ up: true }, 40);
   await cap('…and <b>SNAPS</b>. Two ties still hold.'); await watch({ up: true }, 20);
+  // (FIX-15: the ties left are HELD for the cheat tries, as fieldGate.test.ts holds them (topOf): a cheat try that grabs a fig's vine
+  // with up held would push its fig free and open the gate mid-clip, and every try after it would run on an OPEN gate, proving nothing)
+  await p.evaluate((E) => { eval(E).field.topOf = () => -Infinity; }, E);
+  console.log('TIES held from here: the cheat tries all run on a SHUT gate');
   await cap('Hold up: his head stops <b>under</b> the bough.'); begin('climb up under it'); await watch({ up: true }, 22);
   await cap('Cheat 1: <b>leap</b> off the vine top (a real flick up).'); begin('leap off the vine top');
   await watch({ up: true, jump: true, lean: 0 }, 1); await ride(false);
@@ -148,7 +183,9 @@ if (MODE === 'gateover') {
   if (g.ledge) {
     // (each: where on the far-end ledge, the flick's lean (-1: up-left; 0: straight up, left held), and a second flick if still in the air)
     const tryList = [
-      ['under its sagging end', Math.min(g.ledge.r - 20, g.bough.r - 10), -1, false],
+      // (FIX-15: the old first try stood him INSIDE the wood under the sagged end (a teleport); the wall now stops anyone walking in, so
+      // that try walks in from past the end instead: 'walk')
+      ['walk in under its sagging end', Math.min(g.ledge.r - 20, g.bough.r + 22 + 60), -1, 'walk'],
       ['just past its end, flick up-left', Math.min(g.ledge.r - 20, g.bough.r + 22 + 30), -1, false],
       ['just past its end, flick straight up, left held', Math.min(g.ledge.r - 20, g.bough.r + 22 + 30), 0, false],
       ['further along, flick straight up, left held', g.ledge.r - 26, 0, false],
@@ -159,11 +196,23 @@ if (MODE === 'gateover') {
       await hold(12, { safe: true, noShot: true });
       await cap(`Cheat: from the far-end ledge, ${where}.`); begin(`ledge x ${x}: ${where}`);
       await hold(6, { safe: true });
-      await watch({ left: true, jump: true, lean }, 1); await ride(second, lean, 'left');
+      if (second === 'walk') await watch({ left: true }, 30);
+      else { await watch({ left: true, jump: true, lean }, 1); await ride(second, lean, 'left'); }
       await hold(14, { safe: true });
     }
   }
+  // (FIX-15: the fall onto it: dropped from 120 px over its middle, it must land him on its drawn top, never through it)
+  const dropAt = await p.evaluate(([E]) => { const e = eval(E); const B = window.__m.bough; const x = B.x + B.width / 2; const s = e.field.shutBoughAt(x, B.y + 400); if (!s) return null; e.hands = null; Object.assign(e.player, { x, y: s.top - 120, vx: 0, vy: 0, climbing: false, grounded: false }); return Math.round(s.top); }, [E]);
+  if (dropAt === null) console.log('DROP not tried: the gate is open (no shut bough over its middle)');
+  else {
+    await cap('Cheat: dropped onto the shut bough from over it.'); begin('dropped onto it from over its middle');
+    await watch({}, 30);
+    await hold(10, { safe: true });
+  }
   for (const t of tries) console.log('TRY', JSON.stringify(t));
+  for (const t of tries) for (const s of t.stops) console.log('STOP', t.name, '|', s);
+  console.log('THROUGH while shut:', tries.filter((t) => t.through).map((t) => `${t.name} (${t.through})`).join('; ') || 'never');
+  console.log('ON ITS TOP while shut:', tries.filter((t) => t.onTop).map((t) => t.name).join('; ') || 'never');
   console.log('OVER while shut:', tries.some((t) => t.over) ? 'YES (he got over a shut bough)' : 'never');
   console.log('HEAD most over the shut underside (px, <= 0 is under):', Math.max(...tries.map((t) => t.head)));
 }

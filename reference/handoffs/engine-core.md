@@ -8,6 +8,7 @@ Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewr
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
+Rewritten for FIX-15 (2026-11-14, branch `t-fix-15`): section 0k's gate bullets (a shut gate is wood from every approach; the lay gap).
 Rewritten again at the stop of RULER (2026-11-13, branch `t-ruler`): the per-gap pit ruler, built and HELD on 1-1's openings, R-165.221 (section 0o). Sections below are still true.
 
 ## 0o. The per-gap pit ruler (RULER, R-165.197/.200, branch t-ruler from t-nodes@1829470f, 11-13): built, HELD on 1-1
@@ -218,9 +219,18 @@ Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 
   `clock.read(clock, shift)`; `beat.ts beatFaults` is every builder's fairness check (a warn before every on, tells apart). Pods first.
 - **fieldPlay.ts runs a field each frame** (pods' tells/hits, torn bunches falling to the wood under them, gates); engine.ts hosts it
   through `fieldHost` (knock = `podKnock`: off the vine, no climb taken while `knocked`, a heart only on cost 'heart').
-- **A shut gate is `broken`** (no footing; protoArt/terrain already skip broken) with `art: 'hidden'` so fieldPlay draws its bough
-  always (one picture, sagging or level); its `ways` (climbs up from it) are `off` and not drawn, its `with` (lay boughs at its height)
-  are broken with it. Exit A does not vault under a shut gate (`field.blocksTop`).
+- **A shut gate is `broken`** (no footing for the platform list; protoArt/terrain already skip broken) with `art: 'hidden'` so fieldPlay
+  draws its bough always (one picture, sagging or level); its `ways` (climbs up from it) are `off` and not drawn, its `with` (lay boughs
+  at its height) are broken with it. Exit A does not vault under a shut gate (`field.blocksTop`).
+- **FIX-15 (11-14): a shut gate is wood from every approach, read against its DRAWN sagged wood** (fieldPlay.ts): `lid(p, dt, x0)` is
+  called by engine.ts after every move with his x before it: BESIDE, a move across into the wood stops at its end (span + GATE.lidSide);
+  FROM BELOW, the head stop (feet must start more than GATE.stand 4 px under the drawn top: a jump off its own sloped top is not "from
+  under"); FROM ABOVE, `footings(x)` hands the engine's floors the gate's own bough at its drawn top (the `with` boughs are not drawn, so
+  never footing). `overShut(v, x, y)`: a field vine under a shut bough is not taken from on or over it. Tests: fieldGate.test.ts "wood
+  from every approach" (INT-8's TRY lines at both ends of every gate, today's lid planted red). TRAP: what is still open is the LAY:
+  wood beside a gate within jump reach of its top (93 of 192 gates) now lets him STAND on the shut gate, and 49 of 96 gates carry a
+  checkpoint flag on their own bough (qa-reports/FIX-15/REPORT.md step 1-2; lay-rules-NOT-APPLIED.patch). The clip tool's `gateover`
+  holds the ties after the first snap and prints THROUGH / ON ITS TOP / OVER; both must read `never` before 1-4 ships.
 - **1-4's finish (w1Arc14.ts finish14) finds pieces by tag** (`uid:key`, FA's `GraphBrief.tags`). Traps: Easy widens `landing`
   pieces (field feet are not landings); the bots need tools/inspect/figPush.ts to read fig work as progress.
 - **B14b (11-13):** the two-hand climb is painted (heroClips.ts `climb2Pick`, hero-climb2.json; drawn with its own scale `clip.k`, so

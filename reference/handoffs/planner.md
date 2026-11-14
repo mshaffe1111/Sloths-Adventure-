@@ -92,6 +92,15 @@ gap or a rise (gapPx guards, riseLimit, the designer's bands 195-205 / 205-228, 
   (pipeline.ts); the SECTION pass (flagSpot, span split) and easyMode capFlagSpans do not yet, and the footprint clears the stand box,
   not W1's drawn rock bulge (cutBox). Moving section-pass flags re-lays 15 curated W6-8 seeds: re-curate with them.
 
+- **A shut fig gate's neighbourhood** (FIX-15 -> FIX-15b, R-165.212, 11-14; reference/qa-reports/FIX-15/REPORT.md). The engine now
+  makes a shut gate wood from every approach (wall, head stop, footing from above), so wood within a jump of its top from BESIDE it
+  lets him STAND on the shut gate (93 of 192 gates, 1-4 layouts 0-15 both settings, by tower.ts `leaps`). Root: `towerCatches`'
+  `byGate` and `towerGates` guard only wood LEVEL with a sealed piece (`GATE_LEVEL` 30 px), and `cramped` reads the collider (`HEAD`
+  84) and the flat line, not the gate's drawn sag + underside + his drawn height (a ledge 99 px under a sag-56 gate). The verdict half
+  is written (`lay-rules-NOT-APPLIED.patch`); alone it refuses every seed of layout 0, so the LAY goes first (keep such wood out),
+  then the verdict, then 1-4's proven list (100 seeds) is rebuilt with every seed-pinning test on the full suite.
+  Rewritten for FIX-15 (11-14, t-fix-15): this bullet only; the rest of the note is the 11-07 planner's.
+
 ## 4. Traps (each one cost time on 11-06)
 
 1. **Never edit files while a check runs on them.** The suite, lock and seed list read the tree; a mid-run edit spoils the result. Use a

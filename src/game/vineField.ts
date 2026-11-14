@@ -253,6 +253,9 @@ export const GATE = {
   slack: 8,
   /** and this far past either end of its bough (px: his body's half width, so a leap from an end vine cannot round it) */
   lidSide: 22,
+  /** feet this near its drawn top (px) stand ON it, not under it: the most a frame's walk climbs along its slope (GATE.sag over the
+   *  narrowest gate, 360 px, is 0.16 px a px; a run's frame is 12 px or less: 2 px) with a margin (fieldPlay.ts lid, FIX-15) */
+  stand: 4,
   /** seconds a gate's thorn tangle shudders as a fig locks in, and takes to pull back off the bough after the last */
   settle: 0.4,
   pull: 0.7,

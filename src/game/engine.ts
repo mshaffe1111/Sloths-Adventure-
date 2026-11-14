@@ -2018,6 +2018,8 @@ export class GameEngine {
 
       if (v.vineType === 'tree_climb') {
         if (v.off || this.knocked > 0) continue;
+        // (a field vine under a shut gate is not taken from on or over the gate's bough: the wood is between, fieldPlay.ts overShut)
+        if (v.field && !p.climbing && this.field?.overShut(v, p.x, p.y)) continue;
       // (a draped pair reaches from beside either strand: vinePair.ts climbReach)
       // (a field vine hangs from under a bough: it is not taken by its very top from above, unless climbing down onto it. With up held
       // after the vault onto the bough, he took the next vine's top and vaulted again, hopping along the bough vine to vine)
@@ -2563,9 +2565,11 @@ export class GameEngine {
         if (this.glide.on) this.statGlideSec += dt;
         if (p.grounded) this.glideOpen = 0;
 
+        const x0 = p.x;
         p.x += (p.vx + this.windV + this.bossShove + this.bossGust) * dt;
         p.y += p.vy * dt;
-        this.field?.lid(p, dt);
+        // (a shut fig gate is wood from every side: its end a wall, its underside a head stop; fieldPlay.ts lid)
+        this.field?.lid(p, dt, x0);
       }
     }
 
@@ -2676,7 +2680,7 @@ export class GameEngine {
       const playerPrevFeet = p.y - p.vy * dt;
 
       // every floor his feet meet this frame (in stage order)
-      const floors = (p.hanging ? [] : this.platforms).filter((plat) => {
+      const onFloor = (plat: Platform) => {
         if (plat.broken) return false;
         // (climbing down a trunk goes down past the branch at its top and any ledge it passes: a floor met on the way used to catch his
         // feet each frame, so he could never climb down from the top. The trunk's foot is its own way off: Natural Exit B)
@@ -2704,7 +2708,10 @@ export class GameEngine {
         // Meeca's stage: a thin log (no face to hoist up, LIP_CATCH) caught at the top of a jump with her feet just under its top and her
         // middle over it. QA 2026-10-31, the blind tester sideways: "level with the top of the log, then dropped through it", twice
         return !!this.mc && plat.height < WALL_H && plat.type === 'solid' && !p.climbing && p.vy >= -LIP_CATCH.v && playerFeet > plat.y && playerFeet <= plat.y + LIP_CATCH.px && p.x > plat.x + LIP_CATCH.inside && p.x < plat.x + plat.width - LIP_CATCH.inside;
-      });
+      };
+      const floors = (p.hanging ? [] : this.platforms).filter(onFloor);
+      // (a shut fig gate's bough, met from over it: he lands on its drawn top, never through it; fieldPlay.ts footings)
+      if (this.field && !p.hanging) for (const f of this.field.footings(p.x)) if (onFloor(f)) floors.push(f);
       // two at the same height (a basket flush on the path at its bottom stop): the one under his middle, a moving one first (lift.ts),
       // so a lift never rises without him
       const plat = pickFloor(floors, p.x);
