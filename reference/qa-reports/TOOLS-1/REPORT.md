@@ -53,7 +53,20 @@ Branch `t-tools-1` from `origin/t-int-9@fb409960`. Commits: f3312155c (item 2), 
    - Harness switches for a step's own proof: `CLIPCHECK_STEPS`, `CLIPCHECK_CPU`, `CLIPCHECK_SHOTS` (header of clipcheck.mjs).
 
 ## Gates (LAWS 5, as scoped by the packet; head named per line)
-GATES_PENDING
+Code head for every run: 56d074c46 (the later commits are docs and evidence only). Run here, 11-14 ET.
+- `npx tsc --noEmit -p .`: exit 0 (f3312155c; no src/ change after it). tools/ is outside tsconfig: its changes are proven by their tests.
+- Whole suite (CLAUDE.md glob, 3 shards `--test-shard=i/3` side by side): SUITE_RESULT
+- CI tool-test line (gates.yml, with tools/difficulty/score.test.ts added): `# pass 102`, `# fail 0`.
+- `npx tsx --test tools/inspect/tierBots.test.ts`: `# pass 7`, `# fail 0`.
+- `CI=1 FORCE_COLOR=1 node tools/perf/clipcheck.mjs` (all 6 walks, its own builds): `PASS (83 known) (481 s)`; Dot's first tip at
+  game frame 1637 (up) and 1663 (side), 1 card tapped each.
+- `npx tsx tools/engine/seedlist.ts 1-1 --check`: `PASS (162 seeds, each clean on both settings)`.
+- `npx tsx tools/engine/lockall.ts --layouts 16 --check <base lock>` (base recorded at fb409960 in a side worktree): `102/102 stages unchanged`.
+- `node tools/roadmapcheck.mjs`: PASS (after `git fetch --unshallow`; it failed first only because the clone was shallow).
+  `node tools/perf/knowncheck.mjs`: PASS. `npx tsx tools/engine/generalitycheck.ts`: PASS (26 literals, 26 known).
+- `npx tsx tools/difficulty/score.ts --check`: not run separately (its 14 planted cases are unchanged code). The meter's new test is above.
+- Not run (packet scoped them out: LAWS 5 scoping by the lead): the build, chunkcheck, artcheck, drawcheck, kbdcheck, buildcheck. They
+  run on the integration head before any link or PR.
 
 ## Polish check
 - `clip-proof/branch-seen-fresh-up.png` and `branch-seen-fresh-side.png`: Dot's first tip as the gate judges it. The card is
@@ -70,7 +83,7 @@ GATES_PENDING
   measured on t-build-16's 1-6, not here. It needs the same re-score once t-build-16 merges this.
 
 ## Suggestions (ready packets)
-- **ENGINE/TOOLS: the tools build Easy stages with Normal's swing** (a D19 instance). Evidence: seedlist.ts, lockall.ts and every
+- **ENGINE/TOOLS: the tools build Easy stages with Normal's swing** (a D19 instance; the lead logged it as R-165.251). Evidence: seedlist.ts, lockall.ts and every
   direct generateStage/buildGen2Stage caller never call `setTimedSwing`; only the engine does (engine.ts, just before generateStage). On
   t-build-16's 1-6, the same tool-style Easy build (easyStage(withGoals(generateStage))) hashes differently with Easy's swing set,
   3 of 3 seeds. So a seed list may prove an Easy stage a phone does not build. Objective: one build entry that sets the setting's swing
@@ -85,7 +98,12 @@ GATES_PENDING
   its weight decided by the Designer.
 
 ## Unresolved
-UNRESOLVED_PENDING
+- The meter's new 1-6 and 1-7 numbers: **the designs' Normal targets need re-reading** against reference/design/DIFFICULTY.md (1-6 N 6.4,
+  E 5.5; 1-7 N 2.4, E 1.5; base's stages). The next lead checks them (lead, 5:37 PM ET).
+- t-build-16's 1-6 must be re-scored (and its castBots re-run) once it takes this branch: its numbers came from the leaking, double-
+  counting tools.
+- The tools' Easy swing (R-165.251, the lead's number for the next lead): not fixed here, not in scope.
+- The 4x-CPU stress set was stopped after base 3 / branch 1 runs to free the machine for the suite.
 
 ## Method used
 reference/methods/difficulty.md (the meter), gates.md (clipcheck), the ENGINE card's day one (lock on base, planted failure first,
