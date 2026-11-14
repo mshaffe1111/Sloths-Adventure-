@@ -1503,6 +1503,39 @@ export function flagRuns(platforms: readonly Platform[], ground: Platform, x0: n
   return runs;
 }
 
+/** a piece of earth, for `earthHoles`: EARTH.px deep or more (a bank, a stump, a pillar); a log or a bough is a platform over a hole, never
+ *  its lip (the per-gap ruler's definition, t-ruler w1Pits.ts EARTH_DEEP, R-165.197/.200) */
+export const EARTH = { px: 90, source: 'the per-gap ruler (t-ruler w1Pits.ts EARTH_DEEP), R-165.221' } as const;
+
+/**
+ * The holes in a stage's earth (R-165.221): each x span between two banks with no earth under it at any depth, lip to lip. Pieces standing
+ * over a hole (logs, catch boughs) do not fill it: he can walk off their ends into it.
+ */
+export function earthHoles(platforms: readonly Platform[]): Array<{ x0: number; x1: number }> {
+  const earth = platforms.filter((q) => q.type === 'solid' && !q.broken && !q.lift && q.height >= EARTH.px).map((q) => [q.x, q.x + q.width] as const).sort((a, b) => a[0] - b[0]);
+  const out: Array<{ x0: number; x1: number }> = [];
+  let end = earth.length ? earth[0][1] : 0;
+  for (const [a, b] of earth.slice(1)) {
+    if (a > end + 2) out.push({ x0: R(end), x1: R(a) });
+    end = Math.max(end, b);
+  }
+  return out;
+}
+
+/**
+ * A stage whose brief says no fall costs a life (`softFalls`, 1-1): every hole in its earth (a goal ledge's too, where no laid gap is) is
+ * ONE soft zone lip to lip, and ONE soft fall record spans it (R-165.221; t-ruler's REPORT, seed 769: under 1-1's last climb, off a catch bough's
+ * end or a lower log's, he dropped into a hole no zone or Drop named, though the engine already set him back there, engine.ts softOn).
+ * Play is unchanged: on such a stage every fall already sets him back (softFallStage), and a soft zone does the same (engine heartFall).
+ * The record's y is the lowest top over the hole, so nothing under it reads as a floor (dropsOf): it ends in the set-back, not a log.
+ */
+function softHoles(platforms: readonly Platform[]): Array<{ x0: number; x1: number; y: number }> {
+  return earthHoles(platforms).map((h) => {
+    const over = platforms.filter((q) => q.type === 'solid' && q.x < h.x1 && q.x + q.width > h.x0);
+    return { ...h, y: R(Math.max(...over.map((q) => q.y), ...platforms.filter((q) => q.type === 'solid' && (Math.abs(q.x + q.width - h.x0) < 3 || Math.abs(q.x - h.x1) < 3)).map((q) => q.y))) };
+  });
+}
+
 type FlagStage = { spawnX: number; exitTotemX: number; checkpoints?: Array<{ x: number; y?: number }>; heartFalls?: Array<{ x0: number; x1: number; soft?: boolean }>; platforms?: readonly Platform[] };
 /** where a fall costs a life on a stage: its water and void falls (gen2.falls) and its heart falls that are not soft */
 export function lethalSpans(st: FlagStage, falls: ReadonlyArray<{ x0: number; x1: number; kind: string }> = []): Array<[number, number]> {
@@ -3451,6 +3484,10 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   const rooms = laid.sections.flatMap((s) => (s.room ? [s.room] : []));
   const platforms = laid.platforms;
   if (rooms.length) addKitPlatforms(platforms, { rooms });
+  // (a no-lethal stage's holes: one soft zone and one soft fall over each, lip to lip, R-165.221: softHoles)
+  // (a copy: the search lays and judges `laid` again after a repair, so nothing is added to it here)
+  const holes = req.kit.manifest.graphs?.briefs?.[budget.id]?.softFalls ? softHoles(platforms) : [];
+  const heartFalls = [...laid.heartFalls, ...holes.filter((h) => !laid.heartFalls.some((z) => z.soft && z.x0 <= h.x0 + 4 && z.x1 >= h.x1 - 4)).map((h) => ({ x0: h.x0, x1: h.x1, soft: true }))];
   sink.collectibles.push({ id: sink.nextCollectibleId(), type: 'exit_totem', x: laid.exit.x, y: laid.exit.y - 30, collected: false, bobPhase: 0 });
   // (a floor at or under the death line (the water's 40 px under bobFoot, or the fall line 240 px under it) pulls the line down under it,
   // only for a floor it would kill on, so the shipped stages' water and views stay as curated: World 9's fix, gen2Pits.test.ts)
@@ -3488,7 +3525,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     modelled: { typical: 0, fast: 0 },
     errors: [],
     barren: filled.barren,
-    falls: laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: (g.water ? 'water' : g.soft ? 'soft' : budget.pit) as PitKind })),
+    falls: [...laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: (g.water ? 'water' : g.soft ? 'soft' : budget.pit) as PitKind })), ...holes.map((h) => ({ ...h, kind: 'soft' as PitKind }))],
   };
   const stage: Gen2Stage = {
     config,
@@ -3508,7 +3545,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     ...(watery ? { waterY: Math.max(laid.bottom, bobFoot) + 40 } : {}),
     ...(sink.zones.length ? { zones: sink.zones } : {}),
     ...(sink.clocks?.length ? { clocks: sink.clocks } : {}),
-    ...(laid.heartFalls.length ? { heartFalls: laid.heartFalls } : {}),
+    ...(heartFalls.length ? { heartFalls } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
     // (a brief that names a cast: the kinds the kit runs, with whatever drop traps the stage's props laid, castPlay.types.ts)
     proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}, castOf(req.kit.manifest.graphs?.briefs?.[budget.id]?.cast, proto)),
