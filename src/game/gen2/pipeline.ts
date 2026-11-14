@@ -29,7 +29,7 @@ import { LAND_IN, repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
 import { SWING_CAM, SWING_SEEN } from '../cameraFollow.ts';
-import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, forwardEndLands, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, SWING, SWING_CLEAR, swingReach, TAKEOFF_SLACK, TIMED, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
+import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, forwardEndLands, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, SWING, SWING_CLEAR, swingClearance, swingReach, TAKEOFF_SLACK, vineAmp, TIMED, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
 import { SHRINE_STOP } from '../rules.ts';
 import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
@@ -1231,6 +1231,45 @@ const refOf = (pc: SectionPiece): string | null => {
  * section's pieces, then each sub-block's version). Mirrored, it is flipped left to right (its exit piece becomes its entry) and
  * the sockets read 1 - t.
  */
+/** a laid hanging piece as the engine will swing it (a climbing vine hangs still; a liana with no swing of its own takes the engine's) */
+const hungVine = (p: LocalPiece): SwingVine => ({ x: p.x, topY: p.y, bottomY: p.y + p.h, ...(p.hang?.kind === 'vine' ? { swingAmp: 0 } : p.hang?.swing ? { swingAmp: p.hang.swing.amp } : {}) });
+/**
+ * The swing-clearance lay rule (the lead's ruling (b), 11-14 4:42 PM ET, R-165.246; any world, any section): a vine is never laid where
+ * a swinging neighbour's sweep meets Pokey hanging on either (physics.ts swingClearance, height by height). When `p`, just laid, and a
+ * vine laid before it in the section are too close and either swings, the stiller of the two (the less its foot sweeps; on a tie `p`)
+ * moves straight away from the other until they are clear. It moves only when nothing else rests on it: a liana hung past a ledge
+ * (place 'swing', not caught off another liana) that no other piece or socket is laid from, and never back over that ledge. Otherwise
+ * the section throws, so a roll that cannot be laid clear is never listed. (Before: nothing in the lay held it, and 1-6's false liana
+ * hung 78-85 px in front of its real one, its rope across his body as he swung: vineSelfSwing.test.ts.)
+ */
+function clearSwings(tpl: SectionTemplate, all: readonly SectionPiece[], sockets: readonly Socket[], out: LocalPiece[], p: LocalPiece) {
+  // (a move can bring the mover near a third vine: pass again until nothing moves)
+  for (let pass = 0; pass < 4; pass++) {
+    let moved = false;
+    for (const q of out) {
+      if (q === p || !q.hang) continue;
+      const P = hungVine(p), Q = hungVine(q);
+      if (vineAmp(P) === 0 && vineAmp(Q) === 0) continue;
+      const c = swingClearance(P, Q);
+      if (c >= 0) continue;
+      const mover = swingReach(P) <= swingReach(Q) ? p : q;
+      const other = mover === p ? q : p;
+      const src = all.find((s) => s.key === mover.key)!;
+      const from = src.place.kind === 'swing' ? out.find((o) => o.key === (src.place as { after: string }).after) : undefined;
+      const leansOn = all.some((s) => s.key !== mover.key && (refOf(s) === mover.key || s.from === mover.key)) || sockets.some((s) => s.on === mover.key);
+      const dir = mover.x >= other.x ? 1 : -1;
+      const x = mover.x + dir * Math.ceil(-c + 1);
+      if (!from || from.hang || leansOn || (dir < 0 && x <= from.x + from.w)) {
+        throw new Error(`gen2 section ${tpl.id}: ${mover.key} hangs where ${other.key}'s swing meets him (${Math.round(c)} px), and it cannot move clear`);
+      }
+      mover.x = x;
+      moved = true;
+    }
+    if (!moved) return;
+  }
+  throw new Error(`gen2 section ${tpl.id}: ${p.key}'s neighbours cannot be laid clear of each other's swings`);
+}
+
 export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mirrored = false, lo: LayLocalOptions = {}): LocalLayout {
   const by = new Map<string, LocalPiece>();
   const out: LocalPiece[] = [];
@@ -1495,6 +1534,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     };
     by.set(pc.key, p);
     out.push(p);
+    if (hang) clearSwings(tpl, all, sockets, out, p);
   }
   let entry = { ...tpl.entry };
   let exitP = { ...tpl.exit };
