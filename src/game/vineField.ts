@@ -143,7 +143,7 @@ export function clusterAbove(h: Hands, y: number, clusters: readonly VineCluster
  * pushed up to them; one that reaches its vine's top tears free (returned, it falls from here). His feet never pass under a cluster's
  * bottom by more than HANDS_UP: the engine climbs at handsSpeed(.., pushing) while one is above.
  */
-export function pushClusters(h: Hands, y: number, clusters: VineCluster[]): VineCluster[] {
+export function pushClusters(h: Hands, y: number, clusters: VineCluster[], topOf: (v: Vine) => number = (v) => v.topY): VineCluster[] {
   const torn: VineCluster[] = [];
   const hands = y - HANDS_UP;
   for (const c of clusters) {
@@ -152,7 +152,7 @@ export function pushClusters(h: Hands, y: number, clusters: VineCluster[]): Vine
     // (only one his hands have come up to: its bottom between his hands and his feet; one wholly below him is not his)
     if (!v || c.y <= hands || c.y - c.h >= y) continue;
     c.y = hands;
-    if (c.y - c.h <= v.topY) {
+    if (c.y - c.h <= topOf(v)) {
       c.falling = true;
       c.vy = 0;
       torn.push(c);
@@ -319,3 +319,6 @@ export function gateFaults(gates: readonly ClusterGate[], clusters: readonly Vin
   }
   return out;
 }
+
+/** MOCK FIX-14: his drawn height (heroSprite.ts 89.1, LESSONS D41): under a shut gate his drawn head stops at the bough's underside */
+export const HEAD_DRAWN = 89;

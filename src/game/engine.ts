@@ -2134,8 +2134,10 @@ export class GameEngine {
       if (hands && (this.input.state.up || this.climbAssist > 0)) {
         const span = handsSpan(hands);
         const top = Math.min(hands.a.topY, hands.b?.topY ?? hands.a.topY, span.top);
-        p.y = Math.max(top - 4, p.y - handsSpeed(hands, true, pushing) * dt);
-        for (const c of pushClusters(hands, p.y, this.clusters)) this.clusterTorn(c);
+        // MOCK FIX-14: under a shut gate his drawn head stops at the bough's underside (every line he hangs from, and between)
+        const cap = this.field ? Math.max(this.field.capY(hands.a.x), this.field.capY(handsX(hands)), hands.b ? this.field.capY(hands.b.x) : -Infinity) : -Infinity;
+        p.y = Math.max(top - 4, cap, p.y - handsSpeed(hands, true, pushing) * dt);
+        for (const c of pushClusters(hands, p.y, this.clusters, this.field?.topOf)) this.clusterTorn(c);
         if (this.treeClimbAudioTimer <= 0) {
           sound.playTreeClimb();
           this.treeClimbAudioTimer = rustleGap({ climbSpeed: handsSpeed(hands, true, pushing) }, Math.random());
@@ -2148,7 +2150,7 @@ export class GameEngine {
           this.treeClimbAudioTimer = rustleGap({ climbSpeed: handsSpeed(hands, false, pushing) }, Math.random());
         }
       } else if (this.input.state.up || this.climbAssist > 0) {
-        p.y = Math.max(nearTreeVine.topY - 4, p.y - climbV * dt);
+        p.y = Math.max(nearTreeVine.topY - 4, this.field ? this.field.capY(nearTreeVine.x) : -Infinity, p.y - climbV * dt); // MOCK FIX-14
         // one soft grip per hand, a little uneven like real hands (every 0.18 s sounded like the audio skipping on an iPhone); a quicker
         // climb rustles quicker in step (rustleGap)
         if (this.treeClimbAudioTimer <= 0) {

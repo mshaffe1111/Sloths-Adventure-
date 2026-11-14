@@ -35,7 +35,7 @@ export interface PodColumn extends OnBeat {
 
 export const POD = {
   /** how fast it falls (px/s): the rockfall's steady drop (rockfall.ts ROCK.speed), a fall you can read */
-  speed: ROCK.speed,
+  speed: 300, // MOCK FIX-14: half rockfall's 620
   /** how long the burst shows on the wood (s) */
   burst: 0.5,
   /** its body, for hitting him (px): a kapok pod about a quarter of his drawn height long (89.1, heroSprite.ts; LESSONS D41) */

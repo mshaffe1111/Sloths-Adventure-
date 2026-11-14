@@ -221,6 +221,34 @@ export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState
     return;
   }
   if (s.phase === 'warn') {
+    // MOCK FIX-14 (code-drawn stand-in): the vine the pod hangs on glows amber to red and shivers for the whole tell, dust sifting down it
+    {
+      const u = s.u;
+      const pulse = 0.5 + 0.5 * Math.sin(t * (8 + 10 * u));
+      const top = p.top - 110;
+      ctx.save();
+      ctx.lineCap = 'round';
+      const wob = Math.sin(t * 34) * (1.5 + 3 * u);
+      ctx.globalAlpha = 0.28 + 0.35 * pulse;
+      ctx.strokeStyle = u < 0.5 ? '#ffb02e' : '#ff5a1f';
+      ctx.lineWidth = 16;
+      ctx.beginPath();
+      ctx.moveTo(p.x, top);
+      ctx.quadraticCurveTo(p.x + wob * 2, (top + p.land) / 2, p.x, p.land);
+      ctx.stroke();
+      ctx.globalAlpha = 0.55 + 0.3 * pulse;
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = '#fff0b0';
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#6b4a2b';
+      for (let i = 0; i < 9; i++) {
+        const f = (t * (0.6 + (i % 3) * 0.17) + i * 0.13) % 1;
+        ctx.globalAlpha = 0.8 * (1 - f);
+        ctx.fillRect(p.x - 10 + ((i * 37) % 20) + Math.sin(t * 5 + i) * 4, top + 8 + f * (p.land - top) * Math.min(1, 0.3 + u), 3, 3);
+      }
+      ctx.restore();
+    }
     // the trickle: a stream of tufts drifting down the column from the pod, reaching further each moment of the tell (at its start a
     // third of the way, by its end the whole column), so on a phone he sees fluff falling past him on his own column before the drop
     // (a few loose tufts, never a column: each its own size, pace, turn and drift, fading in under the pod and out as it falls)
@@ -347,6 +375,135 @@ export function drawGateThorns(ctx: CanvasRenderingContext2D, b: Pick<Platform, 
     ctx.scale(flip, 1);
     ctx.drawImage(im, -pw / 2, -tall * THORNS.foot, pw, tall);
     ctx.restore();
+  }
+  ctx.restore();
+}
+
+/** MOCK FIX-14: one fig's tie on a gate's thatch: where it is, how hard its fig is pushing (0..1), and how long since it snapped (-1 not) */
+export interface TieState { x: number; strain: number; age: number }
+
+/**
+ * MOCK FIX-14 (code-drawn stand-in; the real pieces are painted, named for the HF batch): a thatch of woven leaves lashed over the shut
+ * bough, one vine tie per fig at that fig's vine. As he pushes a fig the tie strains (stretches up, pales, shivers, frays); at full it
+ * SNAPS (its ends whip apart, a burst of fibres, a white crack), that end of the thatch kicks up; the last snap throws the thatch off.
+ */
+export function drawGateThatch(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 'y' | 'width'>, far: -1 | 1, sag: number, ties: readonly TieState[], pull: number, t: number) {
+  if (pull >= 1) return;
+  const pivotX = far > 0 ? b.x : b.x + b.width;
+  const ang = Math.atan2(sag, b.width) * far;
+  const ease = pull * pull * (3 - 2 * pull);
+  ctx.save();
+  ctx.translate(pivotX, b.y);
+  ctx.rotate(ang);
+  const x0 = far > 0 ? 0 : -b.width;
+  const toLocal = (wx: number) => wx - pivotX;
+  // the thatch: thrown up and away on the last snap
+  ctx.save();
+  ctx.translate(0, -ease * 140);
+  ctx.rotate(ease * 0.5 * far);
+  ctx.globalAlpha = 1 - ease;
+  const H = 20;
+  // overlapping leaves in two rows, each its own turn and shade, a dark midrib: a thatch laid over the bough, not a tube
+  const shades = ['#56702a', '#6f8a2e', '#88a03c', '#4a6324'];
+  for (let row = 0; row < 2; row++) {
+    for (let x = x0 + 10 + row * 7, i = 0; x < x0 + b.width - 8; x += 13, i++) {
+      const turn = ((i * 7 + row * 3) % 5 - 2) * 0.18 + (row ? 0.35 : -0.35);
+      ctx.save();
+      ctx.translate(x, -H * (row ? 0.35 : 0.7));
+      ctx.rotate(turn);
+      ctx.fillStyle = shades[(i + row * 2) % shades.length];
+      ctx.strokeStyle = '#26330e';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 15, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(28,40,10,0.7)';
+      ctx.beginPath();
+      ctx.moveTo(-13, 0);
+      ctx.lineTo(13, 0);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+  ctx.restore();
+  // the ties
+  for (const tie of ties) {
+    const lx = toLocal(tie.x);
+    if (tie.age < 0) {
+      const s = tie.strain;
+      const shiver = s > 0.5 ? Math.sin(t * 60) * 2.5 * (s - 0.5) * 2 : 0;
+      const lift = s * 14;
+      const r = Math.round(96 + 150 * s), g = Math.round(58 + 70 * s), bl = Math.round(24 + 50 * s);
+      ctx.strokeStyle = `rgb(${r},${g},${bl})`;
+      ctx.lineCap = 'round';
+      // (a pale edge first so the tie reads on the dark bough and the green thatch)
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255,240,200,0.85)';
+      ctx.lineWidth = 13 - 4 * s;
+      ctx.beginPath();
+      ctx.moveTo(lx - 12 + shiver, 28);
+      ctx.quadraticCurveTo(lx - 16 + shiver, -H - 10 - lift, lx + shiver, -H - 6 - lift);
+      ctx.quadraticCurveTo(lx + 16 + shiver, -H - 10 - lift, lx + 12 + shiver, 28);
+      ctx.stroke();
+      ctx.restore();
+      ctx.lineWidth = 9 - 4 * s;
+      // a loop over the thatch and under the bough, bulging up as the fig pushes
+      ctx.beginPath();
+      ctx.moveTo(lx - 12 + shiver, 28);
+      ctx.quadraticCurveTo(lx - 16 + shiver, -H - 10 - lift, lx + shiver, -H - 6 - lift);
+      ctx.quadraticCurveTo(lx + 16 + shiver, -H - 10 - lift, lx + 12 + shiver, 28);
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(30,40,10,0.6)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = s > 0.6 ? '#f0c060' : '#4a2c12';
+      ctx.beginPath();
+      ctx.arc(lx + shiver, -H - 6 - lift, 6, 0, Math.PI * 2);
+      ctx.fill();
+      // fraying fibres near the break
+      if (s > 0.6) {
+        ctx.strokeStyle = '#f2e6b8';
+        ctx.lineWidth = 1.5;
+        for (let i = 0; i < 5; i++) {
+          const a = (i / 5) * Math.PI + Math.sin(t * 20 + i) * 0.3;
+          const L = 4 + 8 * (s - 0.6) / 0.4;
+          ctx.beginPath();
+          ctx.moveTo(lx + shiver, -H - 6 - lift);
+          ctx.lineTo(lx + shiver + Math.cos(a) * L, -H - 6 - lift - Math.sin(a) * L);
+          ctx.stroke();
+        }
+      }
+      continue;
+    }
+    // snapped: the two ends whip apart and fall, a crack of light, fibres
+    const a = tie.age;
+    if (a > 1.2) continue;
+    const k = Math.min(1, a / 0.35);
+    ctx.globalAlpha = 1 - Math.max(0, (a - 0.6) / 0.6);
+    ctx.strokeStyle = '#d9c88e';
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    for (const sd of [-1, 1]) {
+      ctx.beginPath();
+      ctx.moveTo(lx + sd * 12, 28);
+      ctx.quadraticCurveTo(lx + sd * (16 + 30 * k), -H - 10 - 30 * k, lx + sd * (8 + 46 * k), -H + 10 + 60 * k * k);
+      ctx.stroke();
+    }
+    if (a < 0.3) {
+      const R = 10 + 70 * (a / 0.3);
+      ctx.globalAlpha = 1 - a / 0.3;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 4;
+      for (let i = 0; i < 10; i++) {
+        const an = (i / 10) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(lx + Math.cos(an) * R * 0.45, -H - 6 + Math.sin(an) * R * 0.45);
+        ctx.lineTo(lx + Math.cos(an) * R, -H - 6 + Math.sin(an) * R);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
   }
   ctx.restore();
 }

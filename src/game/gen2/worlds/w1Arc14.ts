@@ -72,7 +72,7 @@ const POD_HANG = 110;
 /** a fig bunch's height (px) */
 const FIG_H = 56;
 /** the pods' tell (s, Normal; Easy times the beat's stretch: 1.5 s) and Easy's stretch (1-4.md "Easy ... tells 1.5 s, beats 1.4x") */
-const TELL = 1.0, EASY_STRETCH = 1.5;
+const TELL = 1.5, EASY_STRETCH = 1.5; // MOCK FIX-14
 /** the beats (1-4.md "Steady, then grown": ONE steady beat through beats 4-5, it quickens only from beat 7): the steady teach beat, the
  *  grown beat of beats 7-9 and the crown (the fields' 1.2-2.0 s safe of 3.0-3.6 s) and the quick one of the hollow (0.8-0.9 s safe).
  *  Each beat's 'on' is its own longest column's fall and burst (podOn). No field stands over POD.catchBelow (450 px: a knock from any
@@ -81,7 +81,7 @@ const TELL = 1.0, EASY_STRETCH = 1.5;
  *  two rules leave, 1.1 s of a 2.3 s beat (the design's 0.8-0.9 s of 2.4 s needs a shorter tell or a taller field: neither is loosened,
  *  the lead's call 11-13). The crown keeps two columns, so it stays on the grown beat: two tells in one 2.3 s beat cannot both be 1.5 s
  *  apart (POD.apart) */
-const BEATS = { steady: 3.6, grown: 3.0, quick: 2.3 } as const;
+const BEATS = { steady: 4.6, grown: 4.2, quick: 3.6 } as const; // MOCK FIX-14: fewer drops
 
 /** a bough: on the way up (`main`: the lay may stand a flag on one 160 px or more wide, FA's rule), a landing unless told */
 const branch = (key: string, place: SectionPiece['place'], w: number, o: Partial<SectionPiece> = {}): SectionPiece =>
