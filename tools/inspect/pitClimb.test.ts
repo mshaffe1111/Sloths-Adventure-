@@ -9,8 +9,8 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { FirstTimerRun, FT_ADULT, FT_KID } from './firsttimer.ts';
-import type { Platform } from '../../src/game/types.ts';
+import { FirstTimerRun, FT_ADULT, FT_KID, FT_MIDDLE, hopCatches } from './firsttimer.ts';
+import type { Platform, Vine } from '../../src/game/types.ts';
 
 const BANK = 580, PIT = BANK + 225;
 const block = (id: number, x: number, y: number, width: number, bottom = PIT + 120): Platform =>
@@ -62,4 +62,45 @@ test('he climbs back only out of a pit: on the route he goes on as before, and a
   dip.prog.relocate(dip.sim.p);
   dip.play();
   assert.ok(dip.sim.p.x > 1400 && dip.rescues === 0 && dip.climbBacks === 0, `out of the dip forward (x ${Math.round(dip.sim.p.x)}, turned back ${dip.climbBacks})`);
+});
+
+/**
+ * The catch off a lip (BUILD-16c, the lead's ruling B 11-14): a liana swings itself, its foot 180 px either way, and the bot's old jump
+ * at the lip, whatever the swing was doing, missed it as it swung away and fell into the pit under it (most of 1-6's Normal misses). He
+ * now flies the hop he can make as the engine flies it and presses when the engine's own catch takes him (hopCatches, canGrabSwing).
+ * A toy: the bank, a liana 170 px past its lip (420 px long, the self-swing), the pit, the far bank; the liana at every phase of its swing.
+ */
+const lianaToy = (who: typeof FT_MIDDLE, phase: number) => {
+  const run = new FirstTimerRun('1-1', 1, who, { route: ROUTE, cap: 9, rescueAfter: 100 });
+  const vine = { id: 1, x: 1170, topY: BANK - 420, bottomY: BANK, swaySpeed: 0, swayPhase: 0, vineType: 'swing_liana', swingAmp: 0.45, swingPeriod: 2.85, swingPhase: phase } as unknown as Vine;
+  run.sim.bare([block(1, 0, BANK, 1000), block(2, 1000, PIT, 600), block(7, 1600, BANK, 2400)], [vine]);
+  run.sim.stand(300, BANK);
+  run.prog.relocate(run.sim.p);
+  // (watched every frame: caught before he ever drops into the pit)
+  let caught = false, fell = false;
+  const hook = run as unknown as { after: () => void };
+  const after = hook.after.bind(run);
+  hook.after = () => {
+    after();
+    if (fell) return;
+    if (run.sim.p.isVineSwinging) caught = true;
+    else if (!caught && run.sim.p.y > BANK + 100) fell = true;
+  };
+  run.play();
+  return caught && !fell;
+};
+
+// (a tier bot, who can stand at a lip and watch: KID and ADULT never let go of a held steer, thumbify R-165.59, so they choose only the
+// moment of the press on the run, and some phases of a swing they meet at the lip are past catching)
+test('off a lip he stands, watches and catches a swinging liana at every phase of its swing (the engine\'s own catch)', () => {
+  for (const who of [{ ...FT_MIDDLE, setting: 'normal' as const }]) {
+    const missed = Array.from({ length: 10 }, (_, i) => i / 10).filter((ph) => !lianaToy(who, ph));
+    assert.deepEqual(missed, [], `${who.name}: missed the liana at phases ${missed.join(', ')}`);
+  }
+});
+
+test('the hop model: a hop off the lip as the liana swings toward him is caught; as it swings away, not', () => {
+  const v = { id: 1, x: 1170, topY: BANK - 420, bottomY: BANK, swingAmp: 0.45, swingPeriod: 2.85, swingPhase: 0, vineType: 'swing_liana' } as unknown as Vine;
+  const at = Array.from({ length: 24 }, (_, i) => hopCatches(v, 988, BANK, 1, FT_KID.hold[0], (2.85 * i) / 24, 0));
+  assert.ok(at.some(Boolean) && !at.every(Boolean), `some moments catch, not all: ${at.map((b) => (b ? 'x' : '.')).join('')}`);
 });
