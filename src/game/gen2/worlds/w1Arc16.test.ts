@@ -120,3 +120,24 @@ test("Dot teaches BEFORE each thing (level.md rule 6): every line a TEACH line, 
     assert.equal(st.proto.hints.filter((x) => x.text === LINES_16.mark).length, 1, `${d} seed ${seed}: her mark's line`);
   }
 });
+
+test("1-6 on the difficulty meter (score.ts, 1-1 = 4 as its SCALE, seeds 1-4): Normal in DIFFICULTY.md:61's band (6.5), Easy well under Normal", async () => {
+  // (the lead's ruling 11-14 10:36 AM ET: 14 lianas Normal, one a beat on Easy, length from walked ground; measured 6.3 / 4.3. Easy's ~3
+  //  waits on the meter's own fixes, R-165.239: a liana scored twice (tools/inspect/route.ts:402 and :413) and a swing over soft moss
+  //  costed as a life (tools/difficulty/score.ts:247); then 1-6 is re-scored and this test's Easy bound tightens to it)
+  const { scoreStage, ANCHOR } = await import('../../../../tools/difficulty/score.ts');
+  const { setDifficulty } = await import('../../difficulty.ts');
+  const med = (xs: number[]) => { const s = [...xs].sort((a, b) => a - b); return (s[(s.length - 1) >> 1] + s[s.length >> 1]) / 2; };
+  const raw: Record<string, number[]> = { anchor: [], normal: [], easy: [] };
+  for (const setting of ['normal', 'easy'] as const) for (const seed of [1, 2, 3, 4]) {
+    const seen = new Map<string, number>();
+    const a = scoreStage(ANCHOR.id, setting, seed, seen);
+    if (setting === ANCHOR.setting) raw.anchor.push(a.raw);
+    raw[setting].push(scoreStage('1-6', setting, seed, seen).raw);
+  }
+  setDifficulty('normal');
+  const scale = ANCHOR.score / med(raw.anchor);
+  const n = med(raw.normal) * scale, e = med(raw.easy) * scale;
+  assert.ok(n >= 5.5 && n <= 7.5, `Normal reads ${n.toFixed(1)} (DIFFICULTY.md:61: 6.5)`);
+  assert.ok(e <= 4.5 && e <= n * 0.7, `Easy reads ${e.toFixed(1)} against Normal's ${n.toFixed(1)}`);
+});
