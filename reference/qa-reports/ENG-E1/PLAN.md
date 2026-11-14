@@ -3,7 +3,7 @@ Branch t-eng-e1 from origin/t-eng-s1@a1739b43. Started 8:57 AM ET 11-14. Box: 90
 Opus 5.5 xhigh (engine tier). Lessons in force: D40, D57 (queue read at every push), D59 (no gate left running), D61-D67 (D63: CLIPS of
 the whole action, D66: reuse what exists, D67: no until/sleep loops).
 
-## What EXISTS (read in the code, 11-14 9:05-9:20 AM ET), reused, not rebuilt
+## What EXISTS (read in the code, 11-14 from 8:57 AM ET), reused, not rebuilt
 - The kit eagle: predators/world1.ts:74-96 (sweep habit, warn 2 s, eye 320 px/s seeing 70 px, tell 0.75 s, act aim 'him', cool 5,
   giveUp 2, seesStill, callsOff on hiding); core.ts rest/hunt/tell/act/recover for a sweeper (:330-381, :430-445) and endPass's give-up (:265-277).
 - Stillness and cover: stillness.ts (calm(), isStill, inCover incl. hanging cover); castPlay.ts steps both for every cast member (:112-121).
