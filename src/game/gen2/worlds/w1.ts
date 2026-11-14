@@ -1638,13 +1638,28 @@ export function w1World(): WorldKit {
   };
   // (the traps are armed by the animal that stays under them: the kit's own emitters and spawn hook, w1Cast.ts armedTraps)
   // (R-165.226: each stone or stump drawn on its ground, its piece and its place settled in the lay, w1CutArt.ts settleCut)
-  const settle = (platforms: Platform[]) => platforms.flatMap((p) => {
+  // (each stone reads only the solids within SETTLE_NEAR of it, from one x-sorted pass: its run, its walls and its move all lie inside
+  //  that reach (a piece's drawn box is under 300 px), so the answer is the full scan's; POLISH-7, the build-time gate)
+  const SETTLE_NEAR = 700;
+  const settle = (platforms: Platform[]) => {
+    const solids = platforms.filter((q) => q.type === 'solid' && !q.broken).sort((a, b) => a.x - b.x);
+    const widest = solids.reduce((m, q) => Math.max(m, q.width), 0);
+    const near = (p: Platform) => {
+      const lo = p.x - SETTLE_NEAR, hi = p.x + p.width + SETTLE_NEAR;
+      let i = 0, j = solids.length;
+      while (i < j) { const m = (i + j) >> 1; if (solids[m].x < lo - widest) i = m + 1; else j = m; }
+      const out: Platform[] = [];
+      for (; i < solids.length && solids[i].x <= hi; i++) if (solids[i].x + solids[i].width >= lo) out.push(solids[i]);
+      return out;
+    };
+    return platforms.flatMap((p) => {
     if (p.type !== 'solid') return [];
-    const s = settleCut(p, platforms);
+    const s = settleCut(p, near(p));
     if (!s) return [];
     p.cut = s.cut;
     return [{ p, dx: s.dx }];
-  });
+    });
+  };
   return { manifest, ...armedTraps(), settle };
 }
 

@@ -179,8 +179,15 @@ export function settleCut(p: Pick<Platform, 'id' | 'x' | 'y' | 'width' | 'height
   const kinds = (c: Cut) => c.kind === W1_CUT[picked].kind || (c.kind === 'stump' && W1_CUT[picked].kind === 'stone' && p.height > 70);
   const all = Object.entries(W1_CUT).filter(([n, c]) => n in LAID && n !== 'w1-rock-roots' && kinds(c)).map(([n, c]) => ({ n, miss: stoneMiss(p, c) })).sort((a, b) => a.miss - b.miss || (a.n < b.n ? -1 : 1));
   const band = all.filter((f) => f.miss <= Math.min(stoneMiss(p, W1_CUT[picked]), all[0]?.miss ?? Infinity) + 0.2);
+  // (the least move in pool order; the first that needs none ends the look: no later piece beats it)
   for (const pool of [[{ n: picked }, ...band], all]) {
-    const best = pool.map((f) => ({ n: f.n, dx: move(f.n) })).filter((f) => !Number.isNaN(f.dx)).sort((a, b) => Math.abs(a.dx) - Math.abs(b.dx))[0];
+    let best: { n: string; dx: number } | undefined;
+    for (const f of pool) {
+      const dx = move(f.n);
+      if (Number.isNaN(dx) || (best && Math.abs(dx) >= Math.abs(best.dx))) continue;
+      best = { n: f.n, dx };
+      if (!dx) break;
+    }
     if (best) return { cut: best.n, dx: best.dx };
   }
   return { cut: picked, dx: NaN };
