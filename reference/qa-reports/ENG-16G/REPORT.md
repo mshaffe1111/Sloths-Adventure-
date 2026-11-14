@@ -5,6 +5,7 @@ Easy: kid 39/40, the rest 40/40; **Easy proof pending R-165.251**. The lead's ru
 lay, a fresh engine member's from 7:30, will move 1-6); this box is the gates, the ranked misses, the kid's rescues, and the next step.
 
 ## EXACT NEXT STEP (in order; engine tier, xhigh)
+The next engine packet carries three global items (the lead, 6:29 PM ET), then 1-6 to GREEN.
 1. **The walked-span petal lay (an engine piece for every stage; rule 22).** The rule, in one sentence: *a petal goes inside its piece's
    walked span, after the farthest point the leap onto that piece can set him down and before the earliest point the jump off it
    leaves, and on a piece the leap clears, onto the next piece he walks.* Where petals are laid for gen2: `src/game/gen2/pipeline.ts:2551`
@@ -32,9 +33,17 @@ lay, a fresh engine member's from 7:30, will move 1-6); this box is the gates, t
 
    Plant it on a toy stage both ways (a petal before the leap's far landing RED, inside the span GREEN), lay every stage of every world
    by it, run the lock (it will move every stage with LANDED-style petals: list them), relist what moves, bots 1-40 both settings.
-2. **The kid's rescues (one fix, BOT unless the stair is missing):** item 5 below. First check s20 and s36: is there a stair back to the
-   take-off bank under that liana (w1Pits.ts / pipeline backPit), and does the kid take it (firsttimer.ts pitWayUp / pitWayBack)?
-3. Then 1-6 to GREEN: relist, bots 1-40 both settings (0 rescues, 0 sealed), the whole suite, the lock; stills of every beat upright
+2. **The way back out of a liana's soft pit** (the lead, 6:29 PM ET; item 5 below: 5 of 6 kid rescues "fell into this pit 3 times").
+   First check s20 and s36: is there a stair to the take-off bank under that liana, and does the kid take it? Stair missing = a lay rule;
+   stair there = a bot fix. The stair is laid by `src/game/gen2/pipeline.ts:2857` backPit (floor + steps), applied to a soft pit at
+   `pipeline.ts:1857` (and read for a perch's least distance at `pipeline.ts:1461`); W1's pit art finds pits at `src/game/w1Pits.ts:117`
+   findW1Pits. The bot's climb: tools/inspect/firsttimer.ts pitWayUp / pitWayBack (ENG-16F B3, B4).
+3. **Vine creatures never start a hop inside TELL_MIN of his catch, planted** (the lead, 6:29 PM ET: a hop the frame after he catches,
+   s21, s23, s25, s36, is a fairness fault, no player reacts in 33 ms). The hop is triggered at `src/game/pieces/vineSnakePiece.ts:95`
+   (`if (snakeTouches(n, len, hands) && host.letGo())`, checked every step while he swings on that liana, with no time since his catch)
+   and, for a false liana, `vineSnakePiece.ts:111`; the snake's beat and tell are in `src/game/vineSnake.ts` (tell 0.5 at :48). Plant:
+   a catch onto a liana whose travelling snake is within its reach of his hands: RED with today's line, GREEN with the rule.
+4. Then 1-6 to GREEN: relist, bots 1-40 both settings (0 rescues, 0 sealed), the whole suite, the lock; stills of every beat upright
    and sideways on Normal and Easy, the clips with `shoot.mjs` (CLIP=1: it names the clearance frame) and `exit.mjs` (CLIP=1); the
    Easy proof once R-165.251 lands.
 
@@ -111,8 +120,9 @@ One line each: seed, x, frame (30 fps, from his run clock), the beat and the lia
   241 px wall, the way on 153 px up.)
 **Read together:** two ways IN (a let-go on the backswing: s14, s20, s21; a snake already at his hands as he catches: s21, s23, s25, s36),
 and one way it becomes a RESCUE: he cannot climb out of a liana's pit (five of six "fell into this pit 3 times", far wall 196-259 px up; s23
-a dip). hitBy is empty on all six: nothing took a heart; these are falls into the soft pits. A miss into a soft pit is the stage's designed
-cost (1-6.md: "a miss drops to the moss with the stair back"), so the shared fault is the climb out (BOT, firsttimer.ts pitWayUp /
+a dip). hitBy is empty on all six: nothing took a heart; these are falls into the soft pits. The lead's correction (6:29 PM ET): a snake
+hop the frame after he catches (s21, s23, s25, s36) is not an honest mistake but a fairness fault in the vine-creature rule (EXACT NEXT
+STEP 3). A miss into a soft pit is the stage's designed cost (1-6.md: "a miss drops to the moss with the stair back"), so the shared fault is the climb out (BOT, firsttimer.ts pitWayUp /
 pitWayBack, as ENG-16F's B3/B4) unless the stair back is missing under these lianas (STAGE). First check for the next engineer: on s20
 and s36, is there a stair back to the take-off bank under that liana (w1Pits.ts / pipeline backPit), and does the kid take it?
 
