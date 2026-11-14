@@ -24,6 +24,10 @@ for (const setting of ['normal', 'easy']) {
     const card = await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).then(() => 'gone', () => 'STILL UP');
     console.log('stage card', card);
     await p.waitForTimeout(3000);
+    // (a held line of Dot's is tapped away, as he would)
+    const tapped = await p.getByText(/Tap here when you/).first().click({ timeout: 3000 }).then(() => 'tapped', () => 'none');
+    console.log('Dot line', tapped);
+    await p.waitForTimeout(800);
     // (the branch: a run-up, a stretch of 200 px sections, a living fork, the next stretch; at the player's own ground height)
     const built = await p.evaluate((E) => {
       const e = eval(E);
@@ -47,7 +51,8 @@ for (const setting of ['normal', 'easy']) {
     const shots = [
       // [name, where he stands (from x0), seconds the chase runs before the still, the first front set here (from x0) as a scene setup]
       ['crack', 910, 0.35, null],
-      ['close', 910, 1.6, null],
+      // (close: the front about 160 px behind him on either row: Normal sets off 520 back at 230 px/s, Easy 600 back at 170)
+      ['close', 910, setting === 'easy' ? 2.6 : 1.6, null],
       ['fork', 3150, 2.0, 2700],
     ];
     // (the camera: the game's own, centred on him, except 'close', which is framed from the front so the falling sections are in
@@ -75,7 +80,7 @@ for (const setting of ['normal', 'easy']) {
           e.player.invincibleTimer = 0;
           const pc = e.pieces.find((q) => q.kind === 'chase');
           const f = pc?.run.fronts.find((q) => q.active);
-          if (back && f) e.camera.x = e.camera.targetX = f.front - e.camera.viewportWidth * 0.12;
+          if (back && f) e.camera.x = e.camera.targetX = Math.max(f.front - e.camera.viewportWidth * 0.4, e.player.x - e.camera.viewportWidth * 0.8);
           e.render();
         }, [E, lookBack(name)]);
         await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));

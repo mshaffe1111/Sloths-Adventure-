@@ -4,9 +4,30 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for B1 (11-13, t-b1-chase): section 0u (the chase piece). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0u. The chase as a piece (B1 CHASE-CORE, ENGINE-678 W1, t-b1-chase from t-hooks@994ea4e7, 11-13): what the next engineer must know
+- **Data:** `GeneratedStage.chase?: ChaseLay` (chase.ts) = stretches `{start, end, last?}` left to right; between one's `end` and the next's
+  `start` is a LIVING FORK (no section there falls, he is never caught there). Sections that fall = platforms marked `chase`. A lay is
+  checked by `chaseLayProblems(lay)` (B5's lay must call it and refuse by name; CHASE_PIECE.start only logs and starts nothing).
+- **Rows:** `CHASE_ROWS.normal` = CHASE (old 1-8 numbers, unchanged; the old engine path reads the same via default args). Easy: base 170,
+  max 200, cap min(200, PHYS.maxRun), final 0, behind 600, hold 2.2 (stop budget 3.4 s vs Normal 2.2 s). Easy numbers are B1's; DESIGNER may tune.
+- **The piece** (pieces/chasePiece.ts, registered after RIDE): one front per stretch (`ChaseRun`); a section's owner = the stretch whose
+  ground holds its middle (`sectionStretch`; the first also owns the base behind its crack); broken = its front passed it. Respawn sets
+  every section from its front (`restartRunAt`: a stretch behind the flag stays fallen to its fork, the one ahead waits, a flag inside
+  one holds its front). Draws sections + debris on 'world', the trailing-edge tint on 'screen'.
+- **Hook extension (lead OK 11:25 PM):** `PieceHurt.toFlag` = a heart and back to the flag (engine.ts calls `chaseCaught()`, whose body is
+  general; it ignores his safe time, as the old catch did). Off the branch = 300 px under the nearest section, capped 90 px above the
+  stage's pit line (levelHeight + 120), so the chase's heart always comes before the pit's life.
+- **Draw rule (lead OK (d) 11:33 PM):** a `chase` section is drawn only by its chase drawer: engine.ts drawPlats leaves chase sections
+  out whenever a stage has one; protoArt.ts paintedPlatforms never claims one. The engine line is pinned by text (no stage lays a chase
+  at its start until B5); B5's lay test must add the in-play check (drawPlats has none of its sections).
+- **Not in B1 (named for B5/B6):** Dot's "It is breaking behind us!" line, the camera shake and the music's danger (engine-side for the old
+  1-8 only: engine.ts updateChase / :3712), the chase camera, liana phase and tip slow motion, per-world collapse look (World 1's art for all).
+- **Traps:** the front sets off from `start - behind`, not from where he stands (stepChase keeps the further-back front): a test's
+  budget counts from there. The stills scene (reference/qa-reports/B1/stills.mjs) swaps a test branch into a real stage: tap Dot's held line.
 
 ## 0t. The piece hook and the one letter grammar (HOOKS, ENGINE-678 W0, t-hooks, 11-13): what the next engineer must know
 - **A runtime piece never touches engine.ts again.** Write a `PieceKind` (stagePiece.types.ts) in its own file under src/game/pieces/ and
