@@ -107,6 +107,9 @@ export interface GeneratedStage {
   /** `y` (a hollow with a hurt floor, gen2 WorldManifest.hurtFloor): the floor's top, the hurt line; his feet reaching it inside the zone is
    *  the fall (a heart; on a `soft` zone, Easy's, the set-back with the hurt sound and blink and no heart) */
   heartFalls?: Array<{ x0: number; x1: number; soft?: boolean; y?: number }>;
+  /** a laid chase (any world; chase.ts ChaseLay, run by pieces/chasePiece.ts): its stretches, each ending at a living fork. The sections
+   *  that fall are the platforms marked `chase`. (The hand-built 1-8's collapse is proto.chase, stepped by engine.ts until 1-8's build.) */
+  chase?: import('./chase.ts').ChaseLay;
   /** the two-lane forks of the stage (see LaneFork): each lane is checked on its own by the validator and timed on its own by stageTime.ts */
   lanes?: LaneFork[];
   /**

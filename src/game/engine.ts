@@ -2904,7 +2904,8 @@ export class GameEngine {
     // (a runtime piece that hurts him: through the one damagePlayer, its safe time and its knock away from the piece)
     if (this.pieces.length) {
       const hurt = piecesHurt(this.pieces, this.pieceHost);
-      if (hurt) this.damagePlayer(hurt.amount, hurt.fromX);
+      // (`toFlag`: a heart and back to the flag, as the hand-built chase's catch is: chaseCaught's body is the general one)
+      if (hurt) hurt.toFlag ? this.chaseCaught() : this.damagePlayer(hurt.amount, hurt.fromX);
     }
     for (const e of this.enemies) {
       if (e.defeated) {

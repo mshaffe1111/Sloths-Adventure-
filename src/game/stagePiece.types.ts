@@ -39,10 +39,15 @@ export interface PieceHost {
   readonly view: { readonly x: number; readonly y: number; readonly w: number; readonly h: number; readonly zoom: number };
 }
 
-/** a hurt a piece deals him this step: through the engine's one damagePlayer (its safe time, its knock away from `fromX`) */
+/**
+ * a hurt a piece deals him this step: through the engine's one damagePlayer (its safe time, its knock away from `fromX`); or, with
+ * `toFlag`, a heart and back to his last flag (no safe time asked: a chase's catch or a fall off its branch, chase.ts, Matt 2026-10-24),
+ * every piece then put back by its respawn
+ */
 export interface PieceHurt {
   amount: number;
   fromX: number;
+  toFlag?: boolean;
 }
 
 /** one piece running on this stage */
