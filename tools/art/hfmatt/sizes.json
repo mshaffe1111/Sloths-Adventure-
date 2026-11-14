@@ -1,0 +1,300 @@
+{
+ "w1m-pit-floor": {
+  "sheet": "sheet3",
+  "box": [
+   49,
+   778,
+   2015,
+   1249
+  ],
+  "w": 900,
+  "h": 163,
+  "units": 300,
+  "side": "w",
+  "src_px": 1884,
+  "scale": 0.4777,
+  "crisp": true
+ },
+ "w1m-pit-boulder": {
+  "sheet": "sheet3",
+  "box": [
+   2478,
+   532,
+   3686,
+   1372
+  ],
+  "w": 285,
+  "h": 192,
+  "units": 64,
+  "side": "h",
+  "src_px": 1115,
+  "scale": 0.2557,
+  "crisp": true
+ },
+ "w1m-pit-lip-l": {
+  "sheet": "sheet3",
+  "box": [
+   0,
+   2560,
+   1106,
+   3850
+  ],
+  "w": 377,
+  "h": 420,
+  "units": 140,
+  "side": "h",
+  "src_px": 1187,
+  "scale": 0.3538,
+  "crisp": true
+ },
+ "w1m-pit-lip-r": {
+  "sheet": "sheet3",
+  "box": [
+   3011,
+   2560,
+   4096,
+   3850
+  ],
+  "w": 378,
+  "h": 420,
+  "units": 140,
+  "side": "h",
+  "src_px": 1187,
+  "scale": 0.3538,
+  "crisp": true
+ },
+ "w1m-leaf-lid": {
+  "sheet": "sheet1",
+  "box": [
+   2068,
+   2785,
+   4076,
+   3359
+  ],
+  "w": 720,
+  "h": 177,
+  "units": 240,
+  "side": "w",
+  "src_px": 1976,
+  "scale": 0.3644,
+  "crisp": true
+ },
+ "w1m-tie-taut": {
+  "sheet": "sheet1",
+  "box": [
+   328,
+   61,
+   1761,
+   2007
+  ],
+  "w": 146,
+  "h": 324,
+  "units": 108.0,
+  "side": "h",
+  "src_px": 1810,
+  "scale": 0.176,
+  "crisp": true,
+  "anchor": [
+   78,
+   277
+  ],
+  "anchor_is": "knot centre x, bough centre line y (px in the file): put it on the bough centre",
+  "bough_units": 22
+ },
+ "w1m-tie-strain": {
+  "sheet": "sheet1",
+  "box": [
+   2355,
+   61,
+   3809,
+   2007
+  ],
+  "w": 146,
+  "h": 324,
+  "units": 108.0,
+  "side": "h",
+  "src_px": 1883,
+  "scale": 0.1638,
+  "crisp": true,
+  "anchor": [
+   78,
+   277
+  ],
+  "anchor_is": "knot centre x, bough centre line y (px in the file): put it on the bough centre",
+  "bough_units": 22
+ },
+ "w1m-tie-snap": {
+  "sheet": "sheet1",
+  "box": [
+   328,
+   2335,
+   1761,
+   3768
+  ],
+  "w": 146,
+  "h": 324,
+  "units": 108.0,
+  "side": "h",
+  "src_px": 1345,
+  "scale": 0.1746,
+  "crisp": true,
+  "anchor": [
+   78,
+   277
+  ],
+  "anchor_is": "knot centre x, bough centre line y (px in the file): put it on the bough centre",
+  "bough_units": 22
+ },
+ "w1m-dust-puff": {
+  "sheet": "sheet2",
+  "box": [
+   410,
+   2294,
+   1679,
+   3850
+  ],
+  "w": 114,
+  "h": 150,
+  "units": 50,
+  "side": "h",
+  "src_px": 1481,
+  "scale": 0.1013,
+  "crisp": true
+ },
+ "w1m-bark-chips": {
+  "sheet": "sheet2",
+  "box": [
+   2540,
+   2253,
+   3645,
+   3768
+  ],
+  "w": 102,
+  "h": 150,
+  "units": 50,
+  "side": "h",
+  "src_px": 1448,
+  "scale": 0.1036,
+  "crisp": true
+ },
+ "w1m-bark-chips-1": {
+  "sheet": "sheet2",
+  "part_of": "w1m-bark-chips",
+  "w": 21,
+  "h": 21,
+  "units": 7.0,
+  "side": "h"
+ },
+ "w1m-bark-chips-2": {
+  "sheet": "sheet2",
+  "part_of": "w1m-bark-chips",
+  "w": 19,
+  "h": 22,
+  "units": 7.3,
+  "side": "h"
+ },
+ "w1m-bark-chips-3": {
+  "sheet": "sheet2",
+  "part_of": "w1m-bark-chips",
+  "w": 28,
+  "h": 40,
+  "units": 13.3,
+  "side": "h"
+ },
+ "w1m-bark-chips-4": {
+  "sheet": "sheet2",
+  "part_of": "w1m-bark-chips",
+  "w": 27,
+  "h": 33,
+  "units": 11.0,
+  "side": "h"
+ },
+ "w1m-bark-chips-5": {
+  "sheet": "sheet2",
+  "part_of": "w1m-bark-chips",
+  "w": 16,
+  "h": 17,
+  "units": 5.7,
+  "side": "h"
+ },
+ "w1m-bark-chips-6": {
+  "sheet": "sheet2",
+  "part_of": "w1m-bark-chips",
+  "w": 25,
+  "h": 31,
+  "units": 10.3,
+  "side": "h"
+ },
+ "w1m-bark-chips-7": {
+  "sheet": "sheet2",
+  "part_of": "w1m-bark-chips",
+  "w": 32,
+  "h": 31,
+  "units": 10.3,
+  "side": "h"
+ },
+ "w1m-pod-hang": {
+  "sheet": "pod-hang-s68-11",
+  "box": [
+   0,
+   0,
+   768,
+   1024
+  ],
+  "w": 89,
+  "h": 132,
+  "units": 44,
+  "side": "h",
+  "src_px": 595,
+  "scale": 0.2218,
+  "crisp": true
+ },
+ "w1m-pod-fall": {
+  "sheet": "pod-fall-s68-11",
+  "box": [
+   0,
+   0,
+   768,
+   1024
+  ],
+  "w": 104,
+  "h": 120,
+  "units": 40,
+  "side": "h",
+  "src_px": 512,
+  "scale": 0.2344,
+  "crisp": true
+ },
+ "alt-pod-hang-b": {
+  "sheet": "pod-hang-s68-23",
+  "box": [
+   0,
+   0,
+   768,
+   1024
+  ],
+  "w": 85,
+  "h": 132,
+  "units": 44,
+  "side": "h",
+  "src_px": 616,
+  "scale": 0.2143,
+  "crisp": true
+ },
+ "alt-pod-fall-b": {
+  "sheet": "pod-fall-s68-23",
+  "box": [
+   0,
+   0,
+   768,
+   1024
+  ],
+  "w": 99,
+  "h": 120,
+  "units": 40,
+  "side": "h",
+  "src_px": 519,
+  "scale": 0.2312,
+  "crisp": true
+ }
+}

@@ -1,0 +1,193 @@
+{
+ "sheet3": [
+  {
+   "name": "w1m-pit-floor",
+   "box": [
+    0.012,
+    0.19,
+    0.492,
+    0.305
+   ],
+   "units": 300,
+   "side": "w",
+   "dest": "w1-matt"
+  },
+  {
+   "name": "w1m-pit-boulder",
+   "box": [
+    0.605,
+    0.13,
+    0.9,
+    0.335
+   ],
+   "units": 64,
+   "side": "h",
+   "dest": "w1-matt"
+  },
+  {
+   "name": "w1m-pit-lip-l",
+   "box": [
+    0.0,
+    0.625,
+    0.27,
+    0.94
+   ],
+   "units": 140,
+   "side": "h",
+   "dest": "w1-matt"
+  },
+  {
+   "name": "w1m-pit-lip-r",
+   "box": [
+    0.735,
+    0.625,
+    1.0,
+    0.94
+   ],
+   "units": 140,
+   "side": "h",
+   "dest": "w1-matt"
+  }
+ ],
+ "sheet1": [
+  {
+   "name": "w1m-tie-taut",
+   "box": [
+    0.08,
+    0.015,
+    0.43,
+    0.49
+   ],
+   "mode": "wood",
+   "align": true,
+   "bough": 22,
+   "dest": "w1-matt"
+  },
+  {
+   "name": "w1m-tie-strain",
+   "box": [
+    0.575,
+    0.015,
+    0.93,
+    0.49
+   ],
+   "mode": "wood",
+   "align": true,
+   "bough": 22,
+   "keep_all": true,
+   "dest": "w1-matt"
+  },
+  {
+   "name": "w1m-tie-snap",
+   "box": [
+    0.08,
+    0.57,
+    0.43,
+    0.92
+   ],
+   "mode": "wood",
+   "align": true,
+   "bough": 22,
+   "keep_all": true,
+   "dest": "w1-matt"
+  },
+  {
+   "name": "w1m-leaf-lid",
+   "box": [
+    0.505,
+    0.68,
+    0.995,
+    0.82
+   ],
+   "mode": "wood",
+   "units": 240,
+   "side": "w",
+   "dest": "w1-matt"
+  }
+ ],
+ "sheet2": [
+  {
+   "name": "w1m-dust-puff",
+   "box": [
+    0.1,
+    0.56,
+    0.41,
+    0.94
+   ],
+   "mode": "soft",
+   "units": 50,
+   "side": "h",
+   "dest": "w1-matt"
+  },
+  {
+   "name": "w1m-bark-chips",
+   "box": [
+    0.62,
+    0.55,
+    0.89,
+    0.92
+   ],
+   "keep_all": true,
+   "parts": true,
+   "units": 50,
+   "side": "h",
+   "dest": "w1-matt"
+  }
+ ],
+ "pod-hang-s68-11": [
+  {
+   "name": "w1m-pod-hang",
+   "box": [
+    0,
+    0,
+    1,
+    1
+   ],
+   "units": 44,
+   "side": "h",
+   "dest": "w1-matt"
+  }
+ ],
+ "pod-fall-s68-11": [
+  {
+   "name": "w1m-pod-fall",
+   "box": [
+    0,
+    0,
+    1,
+    1
+   ],
+   "units": 40,
+   "side": "h",
+   "dest": "w1-matt"
+  }
+ ],
+ "pod-hang-s68-23": [
+  {
+   "name": "alt-pod-hang-b",
+   "box": [
+    0,
+    0,
+    1,
+    1
+   ],
+   "units": 44,
+   "side": "h",
+   "dest": "alt"
+  }
+ ],
+ "pod-fall-s68-23": [
+  {
+   "name": "alt-pod-fall-b",
+   "box": [
+    0,
+    0,
+    1,
+    1
+   ],
+   "units": 40,
+   "side": "h",
+   "dest": "alt"
+  }
+ ]
+}
