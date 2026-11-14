@@ -2,7 +2,12 @@
 POLISH-9 (5:28-5:32 AM ET) stopped on the lead's pause; POLISH-9b (7:58 AM ET on) resumed at 182bb680. Opus 5.5 high.
 Context at report: about 22% of 1M (my estimate; D64).
 
-## VERDICT: __FINAL__
+## VERDICT: **GREEN** on dab5f6ea.
+- Full unit suite: 3,387 tests, 3,385 pass, 0 fail, 2 todo.
+- buildcheck ALONE: PASS. Normal p95 120 ms, Easy 65 ms (budget 150).
+- seedlist 1-1 --check: PASS (162). yield deal 9/9. CI tool tests 84/84.
+- drawcheck, clipcheck and the build gates passed on b7df7a52. The later commits change only 1-1's graph pick, its list, tests and
+  tools, nothing that draws.
 
 ## EXACT NEXT STEP (the lead)
 Merge t-polish-9 into the integration head, then run the full CLAUDE.md checks there before link #2.
@@ -179,7 +184,7 @@ level.md (rules 5, 12, 14, 18), BOTS.md, bands.md; FT_TRACE / FT_FRAMES; git wor
 - D64: context against 1M.
 
 ## UNRUN (D59)
-- **buildcheck ALONE:** UNRUN.
+- **buildcheck ALONE:** PASS on dab5f6ea (it ran after the final suite).
 - **Not re-run on 660df344:** drawcheck, clipcheck, build/chunk/art and seedlist 1-2 to 1-5. They passed on b7df7a52. 660df344 changes
   only 1-1's graph pick (a brief field) and its list, and nothing that draws.
 - **Box:** ran over to 10:20 AM ET to finish the lead's added ruling; stopped there for the lead's call on the 16.
