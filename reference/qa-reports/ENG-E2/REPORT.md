@@ -93,8 +93,11 @@ is at the 400k hand-over line.
    ry-12..ry+30 while rising or with Up held), wait until `player.hanging` is true, then still, and print hanging + calmNow in the caption.
    Same for the mossy liana (print isVineSwinging true). Both orientations. A still proves only what you can see in it (D69).
 
-## Gates
-(filled from gates.log when the run ends)
+## Gates: ALL GREEN on code head b4a697c9 (`gates.sh`, the full CLAUDE.md Checks + CI's lists, 11:00-11:50 AM ET; `gates.log`, each gate's output `gates.log.<gate>.txt`)
+tsc; unit 3414 pass 0 fail (2 existing TODOs, the 4-3 boulder TODO among them; 1642 s); build; chunkcheck; artcheck; knowncheck; generality;
+roadmapcheck (clone unshallowed first, as ENG-E1 found); every seed list --check (396 s, 1-1 257 seeds); registrycheck; the engine tools'
+tests 77/77 (castBots.test.ts with the 3 new); tierBots.test.ts 7/7 (the 1-1 calibration holds: the bot's change runs only under a kit
+sweeper); kbdcheck; buildcheck; drawcheck PASS (474 s); clipcheck PASS (83 known, unchanged). Commits after b4a697c9 are reference/ only.
 
 ## Method update
 - predator-kit.md "Pitfalls": **a perched sweeper is a per-animal `perched` on its Post** (rides off for that one only); its pose comes from
