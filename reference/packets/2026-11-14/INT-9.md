@@ -10,7 +10,10 @@ Merge in this order, resolving every conflict by reading BOTH sides' intent (nev
    cherry-picked + its own firsttimer edits: firsttimer.ts will meet t-build-16's later; keep both behaviours, tierBots 1-1 unmoved).
    ENGINE LINES flagged in BUILD-17's REPORT (sweepPose.ts SNAG_PERCH, w17Art.ts, engine.ts hanging cover, stillness.ts, castPlay.ts):
    review each line at xhigh and say PASS/FAIL per line.
-NOT in this build: 1-6 (t-build-16, BUILD-16d still working: INT-10 takes it), FIX-15b, R-165.238 (old proto 1-6 cleanup goes with 1-6).
+6. origin/t-build-16 (the NEW 1-6, finished by ENG-16E: chains, petal fill, W1 FAR; its ENGINE LINES reviewed line by line), then
+   R-165.238: delete the old proto 1-6 whole (protoStage.ts plan, its dotLinesData lines, dotTips.ts references; requiredMove's old-1-6 pin
+   goes with it, re-pointed to the new 1-6 where its intent applies). 7. origin/t-fix-15b (gate flag claim) if GREEN.
+(Lead 2:17 PM: link #3 carries the new 1-6 AND 1-7 together; old 1-6 is not worked on, D40.)
 Also (small, tools): tools/team/modelgate.mjs --self-test now FAILS 3 cases because models.json follows Matt's 11-14 1:51 PM rule
 (xhigh ceiling, high floor: max and medium refused): update those 3 expectations and the stale 'max allowed' line/message; self-test PASS.
 Then: every seed list --check (relist --merge --in-order only if a list no longer replays; say which); tierBots 7/7 (any 1-1 calibration
