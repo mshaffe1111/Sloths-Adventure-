@@ -1,0 +1,6 @@
+castBots 1-4, seeds 1-40; the floor 100 s (STAGE-RULES.md:77: a climb, 20 s short)
+kid    normal PASS 19/40; under the floor 0; time median 134.9 s (min 125.5); hits 54 lives 0 (other 54); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 20: shrine rescued x1  (seeds 2,10,38,9,13,21,29,33,37,4,20,24,32,40,7,15,19,27,35,39)
+        fail 1: shrine rescued x2  (seeds 22)
+kid    easy   PASS 35/40; under the floor 0; time median 125 s (min 121.6); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 5: shrine rescued x1  (seeds 2,21,24,40,39)

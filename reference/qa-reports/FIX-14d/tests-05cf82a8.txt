@@ -1,0 +1,773 @@
+TAP version 13
+# Subtest: 1-4 seed 1 normal: no way up through a shut fig gate (Matt's case)
+ok 1 - 1-4 seed 1 normal: no way up through a shut fig gate (Matt's case)
+  ---
+  duration_ms: 1928.033788
+  type: 'test'
+  ...
+# Subtest: 1-4 seed 2 normal: no way up through a shut fig gate (Matt's case)
+ok 2 - 1-4 seed 2 normal: no way up through a shut fig gate (Matt's case)
+  ---
+  duration_ms: 1317.90951
+  type: 'test'
+  ...
+# Subtest: 1-4 seed 1 easy: no way up through a shut fig gate (Matt's case)
+ok 3 - 1-4 seed 1 easy: no way up through a shut fig gate (Matt's case)
+  ---
+  duration_ms: 1642.472522
+  type: 'test'
+  ...
+# Subtest: 1-4 seed 2 easy: no way up through a shut fig gate (Matt's case)
+ok 4 - 1-4 seed 2 easy: no way up through a shut fig gate (Matt's case)
+  ---
+  duration_ms: 1353.138543
+  type: 'test'
+  ...
+# Subtest: the lid is from below only, and gone the frame the last fig is pushed free
+ok 5 - the lid is from below only, and gone the frame the last fig is pushed free
+  ---
+  duration_ms: 910.481074
+  type: 'test'
+  ...
+# Subtest: a fig locks in on the frame it tears free: its own sound, its tie strains then SNAPS, the thatch shudders; the last throws the thatch and springs the gate (Matt: "something that is tying down the thatch, and it shows that it's breaking")
+ok 6 - a fig locks in on the frame it tears free: its own sound, its tie strains then SNAPS, the thatch shudders; the last throws the thatch and springs the gate (Matt: "something that is tying down the thatch, and it shows that it's breaking")
+  ---
+  duration_ms: 523.993468
+  type: 'test'
+  ...
+# Subtest: 1-4 seed 1 normal: Matt's case: push full, hold up, jump, climb the rest: his head stays under the shut bough
+ok 7 - 1-4 seed 1 normal: Matt's case: push full, hold up, jump, climb the rest: his head stays under the shut bough
+  ---
+  duration_ms: 557.481474
+  type: 'test'
+  ...
+# Subtest: 1-4 seed 2 normal: Matt's case: push full, hold up, jump, climb the rest: his head stays under the shut bough
+ok 8 - 1-4 seed 2 normal: Matt's case: push full, hold up, jump, climb the rest: his head stays under the shut bough
+  ---
+  duration_ms: 1132.305481
+  type: 'test'
+  ...
+# Subtest: 1-4 seed 1 easy: Matt's case: push full, hold up, jump, climb the rest: his head stays under the shut bough
+ok 9 - 1-4 seed 1 easy: Matt's case: push full, hold up, jump, climb the rest: his head stays under the shut bough
+  ---
+  duration_ms: 845.020044
+  type: 'test'
+  ...
+# Subtest: 1-4 seed 2 easy: Matt's case: push full, hold up, jump, climb the rest: his head stays under the shut bough
+ok 10 - 1-4 seed 2 easy: Matt's case: push full, hold up, jump, climb the rest: his head stays under the shut bough
+  ---
+  duration_ms: 843.718362
+  type: 'test'
+  ...
+# Subtest: planted: the head stop taken out (the feet rule of 0.9.8), Matt's case puts his head through the shut bough
+ok 11 - planted: the head stop taken out (the feet rule of 0.9.8), Matt's case puts his head through the shut bough
+  ---
+  duration_ms: 719.350444
+  type: 'test'
+  ...
+# Subtest: his head stop is his drawn height (heroSprite.ts), not a guess
+ok 12 - his head stop is his drawn height (heroSprite.ts), not a guess
+  ---
+  duration_ms: 0.657278
+  type: 'test'
+  ...
+# Subtest: 1-4 normal: every petal on a paired stretch hangs between the pair and a two-hand climb takes it
+ok 13 - 1-4 normal: every petal on a paired stretch hangs between the pair and a two-hand climb takes it
+  ---
+  duration_ms: 6249.614653
+  type: 'test'
+  ...
+# Subtest: 1-4 easy: every petal on a paired stretch hangs between the pair and a two-hand climb takes it
+ok 14 - 1-4 easy: every petal on a paired stretch hangs between the pair and a two-hand climb takes it
+  ---
+  duration_ms: 5690.75825
+  type: 'test'
+  ...
+# Subtest: planted: a petal left on a vine's line (as 0.9.8 laid it) is missed by the two-hand climb
+ok 15 - planted: a petal left on a vine's line (as 0.9.8 laid it) is missed by the two-hand climb
+  ---
+  duration_ms: 640.413162
+  type: 'test'
+  ...
+# Subtest: two hands climb up 1.6x one hand, one hand slides down 2x (DK Jr.'s rule, measured on the engine)
+ok 16 - two hands climb up 1.6x one hand, one hand slides down 2x (DK Jr.'s rule, measured on the engine)
+  ---
+  duration_ms: 716.091965
+  type: 'test'
+  ...
+# Subtest: 1-4 normal: a two-hand climb up the whole paired column takes every petal in it, the top one too
+ok 17 - 1-4 normal: a two-hand climb up the whole paired column takes every petal in it, the top one too
+  ---
+  duration_ms: 5503.333815
+  type: 'test'
+  ...
+# Subtest: 1-4 easy: a two-hand climb up the whole paired column takes every petal in it, the top one too
+ok 18 - 1-4 easy: a two-hand climb up the whole paired column takes every petal in it, the top one too
+  ---
+  duration_ms: 5113.06891
+  type: 'test'
+  ...
+# Subtest: an ascent has a graph and it is laid up; a run names no flow and is laid right, with nothing of a tower on it
+ok 19 - an ascent has a graph and it is laid up; a run names no flow and is laid right, with nothing of a tower on it
+  ---
+  duration_ms: 302.18414
+  type: 'test'
+  ...
+# Subtest: the fixture tower rolls clean going up on 12 seeds, both settings: its own verdicts and levelCheck
+not ok 20 - the fixture tower rolls clean going up on 12 seeds, both settings: its own verdicts and levelCheck
+  ---
+  duration_ms: 4026.936364
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/tower.test.ts:52:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    up normal 2
+    + actual - expected
+    
+    + [
+    +   'tower: a fall off the piece at x 726-832, y 5235 drops 628 px (sound wood within 450)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'tower: a fall off the piece at x 726-832, y 5235 drops 628 px (sound wood within 450)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/tower.test.ts:55:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: a tower is a tower: it climbs many storeys inside its width, under the camera top, and its shrine stands at the top
+ok 21 - a tower is a tower: it climbs many storeys inside its width, under the camera top, and its shrine stands at the top
+  ---
+  duration_ms: 12413.808029
+  type: 'test'
+  ...
+# Subtest: a storey is a climb: every turn rises more than any jump, on a vine that joins the two storeys
+ok 22 - a storey is a climb: every turn rises more than any jump, on a vine that joins the two storeys
+  ---
+  duration_ms: 5.773195
+  type: 'test'
+  ...
+# Subtest: the same seed is the same tower; another seed is another; and its packed plan lays it again (the seed list replay)
+ok 23 - the same seed is the same tower; another seed is another; and its packed plan lays it again (the seed list replay)
+  ---
+  duration_ms: 2017.691981
+  type: 'test'
+  ...
+# Subtest: Easy is Normal's tower: the same sections in the same order, no more animals, its flags kept
+ok 24 - Easy is Normal's tower: the same sections in the same order, no more animals, its flags kept
+  ---
+  duration_ms: 0.37859
+  type: 'test'
+  ...
+# Subtest: reflectLocal: a storey that runs left is the section mirrored about its entry, every height kept
+ok 25 - reflectLocal: a storey that runs left is the section mirrored about its entry, every height kept
+  ---
+  duration_ms: 0.483444
+  type: 'test'
+  ...
+# Subtest: storeyLimit: a storey keeps a double jump, his body and a margin clear of what it is laid over (or under)
+ok 26 - storeyLimit: a storey keeps a double jump, his body and a margin clear of what it is laid over (or under)
+  ---
+  duration_ms: 0.154734
+  type: 'test'
+  ...
+# Subtest: in a built tower no storey is skipped: with any one turn's vine gone, the summit is out of reach
+ok 27 - in a built tower no storey is skipped: with any one turn's vine gone, the summit is out of reach
+  ---
+  duration_ms: 1534.0792
+  type: 'test'
+  ...
+# Subtest: towerFalls: going up, a step off any end is caught by sound wood within a trunk section; a planted hole is named
+not ok 28 - towerFalls: going up, a step off any end is caught by sound wood within a trunk section; a planted hole is named
+  ---
+  duration_ms: 1.568412
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/tower.test.ts:190:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    up normal 2
+    + actual - expected
+    
+    + [
+    +   'tower: a fall off the piece at x 726-832, y 5235 drops 628 px (sound wood within 450)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'tower: a fall off the piece at x 726-832, y 5235 drops 628 px (sound wood within 450)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/tower.test.ts:194:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: towerCatches: every open end of a planted tower is given a catch, and no catch lets a jump climb a storey
+ok 29 - towerCatches: every open end of a planted tower is given a catch, and no catch lets a jump climb a storey
+  ---
+  duration_ms: 0.709744
+  type: 'test'
+  ...
+# Subtest: leaps: the tower's jump model says yes to everything the engine flies, and no to a turn
+ok 30 - leaps: the tower's jump model says yes to everything the engine flies, and no to a turn
+  ---
+  duration_ms: 0.345815
+  type: 'test'
+  ...
+# Subtest: towerSkips: a planted ladder (a catch bough in reach of a hop's catch) is named; without it the vine is the only way
+ok 31 - towerSkips: a planted ladder (a catch bough in reach of a hop's catch) is named; without it the vine is the only way
+  ---
+  duration_ms: 0.320291
+  type: 'test'
+  ...
+# Subtest: a section's gap catches are its own wood: its extent reaches down to them, so a storey clears what it is laid over by them too
+ok 32 - a section's gap catches are its own wood: its extent reaches down to them, so a storey clears what it is laid over by them too
+  ---
+  duration_ms: 50.611825
+  type: 'test'
+  ...
+# Subtest: a built tower with a catch gone, or a ladder added, is refused by name: the verdicts are judged and fail the roll
+ok 33 - a built tower with a catch gone, or a ladder added, is refused by name: the verdicts are judged and fail the roll
+  ---
+  duration_ms: 26.675104
+  type: 'test'
+  ...
+# Subtest: every piece of a storey, its hops' catch boughs included, lies a turn or more over the ledge its vine stands on
+not ok 34 - every piece of a storey, its hops' catch boughs included, lies a turn or more over the ledge its vine stands on
+  ---
+  duration_ms: 7.471578
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/tower.test.ts:304:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    up 2
+    + actual - expected
+    
+    + [
+    +   'tower: a fall off the piece at x 726-832, y 5235 drops 628 px (sound wood within 450)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'tower: a fall off the piece at x 726-832, y 5235 drops 628 px (sound wood within 450)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/tower.test.ts:310:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: levelCheck: a tower's flags are in order when each is further ALONG THE ROUTE, though x runs both ways and a storey may hold two
+not ok 35 - levelCheck: a tower's flags are in order when each is further ALONG THE ROUTE, though x runs both ways and a storey may hold two
+  ---
+  duration_ms: 1176.620799
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/tower.test.ts:325:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'tower: a fall off the piece at x 726-832, y 5235 drops 628 px (sound wood within 450)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'tower: a fall off the piece at x 726-832, y 5235 drops 628 px (sound wood within 450)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/tower.test.ts:327:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: flagFurther: two flags on one storey both count, in the order he meets them (height calls neither further)
+ok 36 - flagFurther: two flags on one storey both count, in the order he meets them (height calls neither further)
+  ---
+  duration_ms: 0.319668
+  type: 'test'
+  ...
+# Subtest: towerFlags: Matt's flag rule measured along the climb: a flag before each hard node, none close, no span over the cap, the last near the exit
+ok 37 - towerFlags: Matt's flag rule measured along the climb: a flag before each hard node, none close, no span over the cap, the last near the exit
+  ---
+  duration_ms: 9.730482
+  type: 'test'
+  ...
+# Subtest: towerFlagBreaches, both ways (planted): none, too early, too far apart, a hard node with none before it, too far from the exit
+ok 38 - towerFlagBreaches, both ways (planted): none, too early, too far apart, a hard node with none before it, too far from the exit
+  ---
+  duration_ms: 0.369703
+  type: 'test'
+  ...
+# Subtest: the time model walks a tower's route, not its width, and every roll is two minutes or more for a quick player
+ok 39 - the time model walks a tower's route, not its width, and every roll is two minutes or more for a quick player
+  ---
+  duration_ms: 4.435949
+  type: 'test'
+  ...
+# Subtest: the route measure: a run is its x; a tower adds what he walks and climbs, storey by storey, never back
+ok 40 - the route measure: a run is its x; a tower adds what he walks and climbs, storey by storey, never back
+  ---
+  duration_ms: 0.190577
+  type: 'test'
+  ...
+# Subtest: a tower with a rolled graph (a designed arc) rolls clean: the same beats in the graph's order on every roll, a flag before every hard node along the climb
+not ok 41 - a tower with a rolled graph (a designed arc) rolls clean: the same beats in the graph's order on every roll, a flag before every hard node along the climb
+  ---
+  duration_ms: 10825.712082
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/tower.test.ts:461:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    arc normal 1
+    + actual - expected
+    
+    + [
+    +   'tower: a fall off the piece at x 650-710, y 5658 drops 534 px (sound wood within 450)',
+    +   'tower: a fall off the piece at x 323-383, y 4230 drops 540 px (sound wood within 450)',
+    +   'tower: a fall off the piece at x 680-740, y 3741 drops 480 px (sound wood within 450)',
+    +   'tower: a fall off the piece at x 706-769, y 2787 drops 540 px (sound wood within 450)',
+    +   'tower: a fall off the piece at x 400-460, y 2310 drops 536 px (sound wood within 450)',
+    +   'tower: a fall off the piece at x 710-770, y 1835 drops 541 px (sound wood within 450)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'tower: a fall off the piece at x 650-710, y 5658 drops 534 px (sound wood within 450)'
+    1: 'tower: a fall off the piece at x 323-383, y 4230 drops 540 px (sound wood within 450)'
+    2: 'tower: a fall off the piece at x 680-740, y 3741 drops 480 px (sound wood within 450)'
+    3: 'tower: a fall off the piece at x 706-769, y 2787 drops 540 px (sound wood within 450)'
+    4: 'tower: a fall off the piece at x 400-460, y 2310 drops 536 px (sound wood within 450)'
+    5: 'tower: a fall off the piece at x 710-770, y 1835 drops 541 px (sound wood within 450)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/tower.test.ts:467:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: along the climb: no animal in the opening seconds of the way, and the quiet stretches are px of way
+ok 42 - along the climb: no animal in the opening seconds of the way, and the quiet stretches are px of way
+  ---
+  duration_ms: 0.697853
+  type: 'test'
+  ...
+# Subtest: a stage whose brief asks (GraphBrief.tags) has every laid piece tagged with its section and key; any other stage carries no tag
+ok 43 - a stage whose brief asks (GraphBrief.tags) has every laid piece tagged with its section and key; any other stage carries no tag
+  ---
+  duration_ms: 19031.948818
+  type: 'test'
+  ...
+# Subtest: towerGates (planted, B14's case): a bough the lay ran on beside a shut gate is one hop from a field vine's top; without it the gate holds
+ok 44 - towerGates (planted, B14's case): a bough the lay ran on beside a shut gate is one hop from a field vine's top; without it the gate holds
+  ---
+  duration_ms: 0.885224
+  type: 'test'
+  ...
+# Subtest: towerCatches leaves a gate alone: a sealed piece is never run on, and no catch of another piece is laid level with it or a hop from it
+ok 45 - towerCatches leaves a gate alone: a sealed piece is never run on, and no catch of another piece is laid level with it or a hop from it
+  ---
+  duration_ms: 0.542901
+  type: 'test'
+  ...
+# Subtest: a sealed piece (a gate bough) in a built tower: nothing of the lay lies beside it, and the way on is a vine standing on it
+not ok 46 - a sealed piece (a gate bough) in a built tower: nothing of the lay lies beside it, and the way on is a vine standing on it
+  ---
+  duration_ms: 1791.629961
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/tower.test.ts:569:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    gates normal 2
+    + actual - expected
+    
+    + [
+    +   'tower: a fall off the piece at x 413-519, y 6416 drops 628 px (sound wood within 450)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'tower: a fall off the piece at x 413-519, y 6416 drops 628 px (sound wood within 450)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/tower.test.ts:573:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the flag rule's numbers are Matt's on a tower too (ROLLED_FLAGS, the one definition)
+ok 47 - the flag rule's numbers are Matt's on a tower too (ROLLED_FLAGS, the one definition)
+  ---
+  duration_ms: 0.163434
+  type: 'test'
+  ...
+# Subtest: the fixture tower is flown to its shrine in the real engine by plain inputs: every storey in order, no fall, both settings
+not ok 48 - the fixture tower is flown to its shrine in the real engine by plain inputs: every storey in order, no fall, both settings
+  ---
+  duration_ms: 4244.301519
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/towerBots.test.ts:22:1'
+  failureType: 'testCodeFailure'
+  error: 'withTowerSim: seed 2 does not build cleanly: tower: a fall off the piece at x 726-832, y 5235 drops 628 px (sound wood within 450)'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    withTowerSim (/home/user/Sloths-Adventure-/tools/engine/towerFly.ts:21:37)
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/towerBots.test.ts:24:15)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: planted: with one turn's vine cut in the engine, the flyer is stranded at that storey (it has no other way up)
+not ok 49 - planted: with one turn's vine cut in the engine, the flyer is stranded at that storey (it has no other way up)
+  ---
+  duration_ms: 405.082734
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/towerBots.test.ts:39:1'
+  failureType: 'testCodeFailure'
+  error: 'withTowerSim: seed 2 does not build cleanly: tower: a fall off the piece at x 726-832, y 5235 drops 628 px (sound wood within 450)'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    withTowerSim (/home/user/Sloths-Adventure-/tools/engine/towerFly.ts:21:37)
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/towerBots.test.ts:40:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: the tower with a rolled graph (a designed arc: one brick a beat) is flown to its shrine too, both settings
+not ok 50 - the tower with a rolled graph (a designed arc: one brick a beat) is flown to its shrine too, both settings
+  ---
+  duration_ms: 7931.426325
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/towerBots.test.ts:52:1'
+  failureType: 'testCodeFailure'
+  error: 'withTowerSim: seed 1 does not build cleanly: tower: a fall off the piece at x 650-710, y 5658 drops 534 px (sound wood within 450)'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    withTowerSim (/home/user/Sloths-Adventure-/tools/engine/towerFly.ts:21:37)
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/towerBots.test.ts:55:15)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: a tower with sealed pieces (gate boughs) is still flown to its shrine: the vine that stands on each gate is the way on
+not ok 51 - a tower with sealed pieces (gate boughs) is still flown to its shrine: the vine that stands on each gate is the way on
+  ---
+  duration_ms: 2572.154053
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/towerBots.test.ts:62:1'
+  failureType: 'testCodeFailure'
+  error: 'withTowerSim: seed 2 does not build cleanly: tower: a fall off the piece at x 413-519, y 6416 drops 628 px (sound wood within 450)'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    withTowerSim (/home/user/Sloths-Adventure-/tools/engine/towerFly.ts:21:37)
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/towerBots.test.ts:64:15)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the engine takes a tower's flags along the ROUTE: two on one storey both count, in the order he meets them, and never back
+ok 52 - the engine takes a tower's flags along the ROUTE: two on one storey both count, in the order he meets them, and never back
+  ---
+  duration_ms: 1025.943868
+  type: 'test'
+  ...
+# Subtest: on a tower with an animal the hearts stand by every second flag ALONG THE ROUTE (Normal), by every flag on Easy
+not ok 53 - on a tower with an animal the hearts stand by every second flag ALONG THE ROUTE (Normal), by every flag on Easy
+  ---
+  duration_ms: 3103.256712
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/towerBots.test.ts:98:1'
+  failureType: 'testCodeFailure'
+  error: 'withTowerSim: seed 2 does not build cleanly: tower: a fall off the piece at x 726-832, y 5235 drops 628 px (sound wood within 450)'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    withTowerSim (/home/user/Sloths-Adventure-/tools/engine/towerFly.ts:21:37)
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/towerBots.test.ts:101:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the climb camera in the engine: on a tower his feet rest low in the view standing and climbing, and a set-back cuts straight to it
+ok 54 - the climb camera in the engine: on a tower his feet rest low in the view standing and climbing, and a set-back cuts straight to it
+  ---
+  duration_ms: 765.55897
+  type: 'test'
+  ...
+# Subtest: the climb framing is a tower's alone: a shipped climb of the old generator and the way down keep the framing they had
+ok 55 - the climb framing is a tower's alone: a shipped climb of the old generator and the way down keep the framing they had
+  ---
+  duration_ms: 2518.716871
+  type: 'test'
+  ...
+# Subtest: a fixture config is found by id only while its test runs, and never stands in for a stage of the game
+ok 56 - a fixture config is found by id only while its test runs, and never stands in for a stage of the game
+  ---
+  duration_ms: 0.578082
+  type: 'test'
+  ...
+# Subtest: realPlay bare: on 1-4 he runs on past where the stage's own walls stood (a sim's world is the sim's)
+ok 57 - realPlay bare: on 1-4 he runs on past where the stage's own walls stood (a sim's world is the sim's)
+  ---
+  duration_ms: 1483.350326
+  type: 'test'
+  ...
+# Subtest: realPlay bare: on 1-5 he runs on past where the stage's own walls stood (a sim's world is the sim's)
+ok 58 - realPlay bare: on 1-5 he runs on past where the stage's own walls stood (a sim's world is the sim's)
+  ---
+  duration_ms: 536.54291
+  type: 'test'
+  ...
+# Subtest: realPlay bare: on 1-1 he runs on past where the stage's own walls stood (a sim's world is the sim's)
+ok 59 - realPlay bare: on 1-1 he runs on past where the stage's own walls stood (a sim's world is the sim's)
+  ---
+  duration_ms: 277.502624
+  type: 'test'
+  ...
+# Subtest: a 40 px snap from rest settles in a quarter second with no frame over 12 px (a run is 9.5), no overshoot, and is gone
+ok 60 - a 40 px snap from rest settles in a quarter second with no frame over 12 px (a run is 9.5), no overshoot, and is gone
+  ---
+  duration_ms: 0.904271
+  type: 'test'
+  ...
+# Subtest: a catch carries his speed: the frame after it moves on at least at the speed he had (no dead stop), never lurches, never turns back
+ok 61 - a catch carries his speed: the frame after it moves on at least at the speed he had (no dead stop), never lurches, never turns back
+  ---
+  duration_ms: 0.137813
+  type: 'test'
+  ...
+# Subtest: a respawn, a flag or a placement is never blurred: a body jump past SETTLE_MAX clears the settle, and nothing outside the climb is carried once he has let go
+ok 62 - a respawn, a flag or a placement is never blurred: a body jump past SETTLE_MAX clears the settle, and nothing outside the climb is carried once he has let go
+  ---
+  duration_ms: 1.39005
+  type: 'test'
+  ...
+# Subtest: a push from outside the climb (a bough he climbed into) is drawn from where the climb left him, the same frame
+ok 63 - a push from outside the climb (a bough he climbed into) is drawn from where the climb left him, the same frame
+  ---
+  duration_ms: 0.121002
+  type: 'test'
+  ...
+# Subtest: 1-4: every vine move draws with no snap (worst jerk 12 px, was 17-50) while the body snaps exactly as before
+ok 64 - 1-4: every vine move draws with no snap (worst jerk 12 px, was 17-50) while the body snaps exactly as before
+  ---
+  duration_ms: 13369.015034
+  type: 'test'
+  ...
+# Subtest: 1-5: every vine move draws with no snap (worst jerk 12 px, was 17-50) while the body snaps exactly as before
+ok 65 - 1-5: every vine move draws with no snap (worst jerk 12 px, was 17-50) while the body snaps exactly as before
+  ---
+  duration_ms: 1899.321708
+  type: 'test'
+  ...
+# Subtest: 6-1: every vine move draws with no snap (worst jerk 12 px, was 17-50) while the body snaps exactly as before
+ok 66 - 6-1: every vine move draws with no snap (worst jerk 12 px, was 17-50) while the body snaps exactly as before
+  ---
+  duration_ms: 2422.616996
+  type: 'test'
+  ...
+# Subtest: the vault finder sees the bough a cleared vine stands CLIMB_CLEAR px off, so straight up at 1-4's turn goes onto the storey above whichever way he faces (planted: the old finder sent him the way he faced)
+ok 67 - the vault finder sees the bough a cleared vine stands CLIMB_CLEAR px off, so straight up at 1-4's turn goes onto the storey above whichever way he faces (planted: the old finder sent him the way he faced)
+  ---
+  duration_ms: 0.809044
+  type: 'test'
+  ...
+# Subtest: wherever wood begins within 10 px of the vine (a trunk under a shelf, 4-3), the finder reads exactly what the old one read
+ok 68 - wherever wood begins within 10 px of the vine (a trunk under a shelf, 4-3), the finder reads exactly what the old one read
+  ---
+  duration_ms: 0.390092
+  type: 'test'
+  ...
+# Subtest: wood that begins past VAULT_GAP is not a place the vault lands, and a far ledge never outweighs the near one
+ok 69 - wood that begins past VAULT_GAP is not a place the vault lands, and a far ledge never outweighs the near one
+  ---
+  duration_ms: 0.10674
+  type: 'test'
+  ...
+# Subtest: the real engine: at 1-4's turn, straight up lands him on the storey above facing either way (planted: facing right, as he walks in, he vaulted off and caught the vine again)
+ok 70 - the real engine: at 1-4's turn, straight up lands him on the storey above facing either way (planted: facing right, as he walks in, he vaulted off and caught the vine again)
+  ---
+  duration_ms: 696.73692
+  type: 'test'
+  ...
+# Subtest: the real engine: VAULT_GAP promises no more than the vault gives, with margin (a bough beginning 12 px past it is still landed)
+ok 71 - the real engine: VAULT_GAP promises no more than the vault gives, with margin (a bough beginning 12 px past it is still landed)
+  ---
+  duration_ms: 110.28189
+  type: 'test'
+  ...
+# Subtest: the real engine: a vine TOP_ROOM from a ledge's open end keeps him on it when the vault goes the short way; 20 px (1-4's crown, its sure vine) put him off
+ok 72 - the real engine: a vine TOP_ROOM from a ledge's open end keeps him on it when the vault goes the short way; 20 px (1-4's crown, its sure vine) put him off
+  ---
+  duration_ms: 155.810413
+  type: 'test'
+  ...
+# Subtest: topRoom: touching pieces at one height are one ledge, the stage's edge and a step beside are no open end; topRoomShort flags only an open end inside TOP_ROOM (planted: FIX-14b's 26-34 px were piece seams and walls)
+ok 73 - topRoom: touching pieces at one height are one ledge, the stage's edge and a step beside are no open end; topRoomShort flags only an open end inside TOP_ROOM (planted: FIX-14b's 26-34 px were piece seams and walls)
+  ---
+  duration_ms: 1.107797
+  type: 'test'
+  ...
+# Subtest: footRoom: the ledge he walks along to a vine keeps TOP_ROOM to its open tip (planted: 1-4's link vine after the rotting boughs, 18 px from it, where every kid Normal fail walked off)
+ok 74 - footRoom: the ledge he walks along to a vine keeps TOP_ROOM to its open tip (planted: 1-4's link vine after the rotting boughs, 18 px from it, where every kid Normal fail walked off)
+  ---
+  duration_ms: 0.170773
+  type: 'test'
+  ...
+# Subtest: a soft pit (a floor 130 down) is found with its steps; a 75 px sunk step is not a pit; a floorless gap is a fall
+ok 75 - a soft pit (a floor 130 down) is found with its steps; a 75 px sunk step is not a pit; a floorless gap is a fall
+  ---
+  duration_ms: 2.707511
+  type: 'test'
+  ...
+# Subtest: a tall stump standing on the ground is ground, not a gap; a breaking branch over a gap is not a floor
+ok 76 - a tall stump standing on the ground is ground, not a gap; a breaking branch over a gap is not a floor
+  ---
+  duration_ms: 0.460282
+  type: 'test'
+  ...
+# Subtest: the way out of a soft pit: a step in it, or a floor within a sunk step of its lower lip; deeper with no step is a trap
+ok 77 - the way out of a soft pit: a step in it, or a floor within a sunk step of its lower lip; deeper with no step is a trap
+  ---
+  duration_ms: 0.634781
+  type: 'test'
+  ...
+# Subtest: 1-8's long branch: the holes between the chase's sections are falls
+ok 78 - 1-8's long branch: the holes between the chase's sections are falls
+  ---
+  duration_ms: 0.489888
+  type: 'test'
+  ...
+# Subtest: World 1, layout 1: the vault pits are soft pits with steps, 1-3 has none; the only unmarked floorless gaps outside 1-8 are 1-6's water
+ok 79 - World 1, layout 1: the vault pits are soft pits with steps, 1-3 has none; the only unmarked floorless gaps outside 1-8 are 1-6's water
+  ---
+  duration_ms: 3423.60788
+  type: 'test'
+  ...
+# Subtest: 1-1 (layout 1, seed 769, x22604): a 119 px slot between two banks with a block in it is no fall by realFalls, though findW1Pits alone reads one
+ok 80 - 1-1 (layout 1, seed 769, x22604): a 119 px slot between two banks with a block in it is no fall by realFalls, though findW1Pits alone reads one
+  ---
+  duration_ms: 0.313397
+  type: 'test'
+  ...
+# Subtest: a floorless gap is water unless a builder marks a bank `pit: 'drop'`: then it is a painted drop
+ok 81 - a floorless gap is water unless a builder marks a bank `pit: 'drop'`: then it is a painted drop
+  ---
+  duration_ms: 0.292202
+  type: 'test'
+  ...
+# Subtest: a marked drop is painted only between two banks of earth with nothing standing in it; beside a slab, a branch or with ground in it, it is open air (R-164.6, R-164.8, Matt's stills 03-08)
+ok 82 - a marked drop is painted only between two banks of earth with nothing standing in it; beside a slab, a branch or with ground in it, it is open air (R-164.6, R-164.8, Matt's stills 03-08)
+  ---
+  duration_ms: 16.118897
+  type: 'test'
+  ...
+# Subtest: a drop's dark follows its banks' own painted faces all the way down, and is closed where they meet (R-164.8)
+ok 83 - a drop's dark follows its banks' own painted faces all the way down, and is closed where they meet (R-164.8)
+  ---
+  duration_ms: 15.57542
+  type: 'test'
+  ...
+# Subtest: PLANTED: a hollow's own hurt floor is its bottom, not ground in it; a block standing in that hollow is still caught
+ok 84 - PLANTED: a hollow's own hurt floor is its bottom, not ground in it; a block standing in that hollow is still caught
+  ---
+  duration_ms: 300.601777
+  type: 'test'
+  ...
+# Subtest: World 1, 16 layouts: every painted drop has a bank of earth at both sides and nothing standing in it; only the mixer's stages mark drops (engine-core)
+ok 85 - World 1, 16 layouts: every painted drop has a bank of earth at both sides and nothing standing in it; only the mixer's stages mark drops (engine-core)
+  ---
+  duration_ms: 7814.817661
+  type: 'test'
+  ...
+# Subtest: a marked drop between two banks at any height is judged against its own two banks, not the stage's one ground line (the mixer's 1-5)
+ok 86 - a marked drop between two banks at any height is judged against its own two banks, not the stage's one ground line (the mixer's 1-5)
+  ---
+  duration_ms: 0.457954
+  type: 'test'
+  ...
+# Subtest: a floorless gap inside a soft heartFalls zone is a soft pit, not water; one outside it still counts (planted)
+ok 87 - a floorless gap inside a soft heartFalls zone is a soft pit, not water; one outside it still counts (planted)
+  ---
+  duration_ms: 0.155404
+  type: 'test'
+  ...
+# Subtest: a hollow's torn lips each hang into at most a quarter of it, so over a narrow hollow they never meet as a column of roots (EN-W Rough 1)
+ok 88 - a hollow's torn lips each hang into at most a quarter of it, so over a narrow hollow they never meet as a column of roots (EN-W Rough 1)
+  ---
+  duration_ms: 687.78549
+  type: 'test'
+  ...
+# Subtest: a hollow has two painted walls, World 1's own bank end face (not one mirrored picture), standing at most HOLLOW_JUT into it and rounded into its floor, never a box; its dark and its thorns stay between its walls, so close hollows share a clean bank (the lead 11-12)
+ok 89 - a hollow has two painted walls, World 1's own bank end face (not one mirrored picture), standing at most HOLLOW_JUT into it and rounded into its floor, never a box; its dark and its thorns stay between its walls, so close hollows share a clean bank (the lead 11-12)
+  ---
+  duration_ms: 751.475943
+  type: 'test'
+  ...
+# Subtest: a hollow's banks' sides over it are closed (EN-W Roughs 2, 3)
+ok 90 - a hollow's banks' sides over it are closed (EN-W Roughs 2, 3)
+  ---
+  duration_ms: 520.833293
+  type: 'test'
+  ...
+1..90
+# tests 90
+# suites 0
+# pass 79
+# fail 11
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 53682.35829
