@@ -57,6 +57,91 @@ proven plan; Play is never blocked).
   scenario, 1-2's seed list, 1-3's list in CI), so every miss fails.
 - Trap: tools/ is outside tsconfig; typecheck a new tool with a temporary config at the repo root (types node + vite/client).
 
+Rewritten again at the stop of NODES-TRAVEL (1:04 PM ET, 2026-11-13): branch `t-nodes`: a stage laid as LEGS (section 0p). Milestone 1 of 4 only. Sections below are still true.
+
+Rewritten again at the stop of VARIETY (2:33 PM ET, 2026-11-13): branch `t-nodes`: one vault finder for the engine and the tower verdict; a node's shape or move ask is a rule where the slot can keep it (section 0r). Sections below are still true.
+
+Rewritten again at the stop of VARIETY-2 (2026-11-13, branch `t-nodes`): a '_' V19 overrules is refused at graph time; why floor.unmarked kills mix strings (section 0s). Sections below are still true.
+
+## 0s (0m on t-nodes). The asks against V19, and what kills World 1's mix (VARIETY-2, R-165.197/.198/.200, t-nodes, 11-13)
+- **askRefusal** (pipeline.ts, called in rolledGraph after V19 marks `mustRise`): a '_' asked of the node after a late descent on an up
+  stage throws by V19's name before anything is laid (planted: gen2/askRefusal.test.ts, red before). ONLY that: a refusal by "no section of
+  the node's job falls / keeps the move" was built, measured and taken out: 12 of its 35 refusals were asks the lay KEPT (a node's net
+  fall also comes from its joins and the corridor; nodeMix string 59's combine '_' laid with no falling combine section). Refuse at graph
+  time only what fails on every seed; everything else is laid or named after the lay.
+- **floor.unmarked is the painter's ruler, not the late sections** (reference/qa-reports/VARIETY-2/PUSHBACK.md): findW1Pits reads one ground
+  line G (the widest bank top over the whole stage); a 24 px log within 20 px of G is "ground", so a log chain or rung row laid at that
+  stage's G reads as falls (water), the same chain on a stage whose G is elsewhere is not judged (string 57 seed 58: asked G 813, bare
+  G 1269, same log chain); holes between two tall banks are judged only at 24-1600 px. 11 bare frames fail the same way. Fixing it moves
+  the painter and the verdict on shipped stages: a lead ruling (planner.md §3 "Floors").
+- **Pool short in mix rolls** (repairs.ts): climb twists and signature sections banned for leaving the corridor out the TOP (route already
+  high), and every reroll short of a bounce test (W1 has two). A spared ban only renames that failure: bans are per roll.
+- **Tools** (reference/qa-reports/VARIETY-2/tools/): mixlist.ts (nodeMix's 60 W1 strings asked + bare, raw ask misses, JSON), floorkind.ts
+  (each floorless gap's lips), secprobe.ts (G and one section's pieces and pits), repairs.ts (the swap record), fallmiss.ts ('_' asks).
+  World 1's falling sections by job: practise twin-bounce; test stair-test-back, bank-stair-test-back (+4); no flow, combine, twist,
+  teach or signature section falls (declared exitDy).
+- **Traps.** (1) `S=...; (cmd) & (cmd2)` sets S in the background only: the second command wrote to `/` (engine-core 0p trap 6, again).
+  (2) A heredoc with regex and template strings can trip the shell's safety parse: write the file with the Write tool instead.
+
+## 0r (0l on t-nodes). The vault and the asks (VARIETY, R-165.197/.198/.200, t-nodes, 11-13): what the next engineer must know
+- **Straight up at a vine's top** vaults him toward the side with more ledge (engine.ts vaultSide -> src/game/vineTop.ts vaultSide /
+  ledgeOut, the ONE finder; the tower verdict towerVaults reads it too, D19). Every climbing vine the lay makes stands CLIMB_CLEAR (26,
+  now in vineTop.ts, re-exported by pipeline.ts) off its bough's end; the finder steps over a gap up to VAULT_GAP (40; the real vault
+  lands on wood 56 out, vineTop.test.ts). Until 11-13 it sampled from 10 px and stopped at the first miss: it never saw a cleared bough,
+  so the vault went the way he faced (1-4's turn-backs: off the storey above). `npx tsx tools/engine/vaultscan.ts 16`: every stage's vine
+  tops old vs new (3,906 fixed, 0 regressed, 0 moved; 2,132 cases on 13 stages land on no wood either way, before and after: the x-10
+  arenas, 4-3, 4-9, 5-M: not looked at). w8Lantern.ts keeps its own CLIMB_CLEAR copy (26).
+- **Asks as a rule** (pipeline.ts): dealContent fixes a node whose shape/move ask only ONE type of its job lays (askServes) to that type,
+  like dealExact; the pick's `keeps`: where any candidate lays every ask (askParts) and is not clamped out, only those are drawn (the bag
+  gave every candidate a ticket and a rated node's draws are sorted by difficulty, so the x20 weight lost); with none, a shape ask never
+  draws a section against it while a level one fits. Shipped graphs ask nothing: no lock moves.
+- **Traps.** (1) RealPlay('1-4', seed) draws from the PROVEN list: its seed n is not library14's seed n. (2) A probe that holds up for 90
+  frames walks onto the next vine (a field's foot vine): judge the vault on the frame he lands. (3) `off` vines (a shut gate's) never take
+  him: a 'miss' there is the gate. (4) pool short on W1 mix rolls is usually the REPAIR loop's bans (FITS_DEBUG-style log in the report),
+  not the deal: fix what drives the repairs first.
+
+## 0q (0k on t-nodes). Node asks (NODES-2, R-165.198, t-nodes, 11-13): what the next engineer on the node code must know
+- gen2/nodeAsks.ts holds the designer's asks (`MissionNode.asked`: a token's marks and dials the job does not imply) and the check
+  `askMisses` / `hazardMiss`. pipeline.ts: rolledGraph carries `tk` beside `jobs` (as `tv` carries travel; a dropped asked node throws
+  by name), applies shape/tempo/rating/dials AFTER the rolled draws (the seed's stream is unchanged), dealContent fixes an asked
+  content letter, the section pick weighs sections that can lay an ask x20 (x0.05 the rest), fillSockets' enemy branch takes only the
+  node's threat kinds up to their counts (`threatAsks`), and applyVerdicts writes `gen2.dialMiss` (folded by rollErrors as `ask: ...`).
+- ELEMENTS (nodeAsks.ts) is the ONE status table: change a status there, run `npx tsx tools/engine/nodekey.ts`, commit NODE-KEY.html.
+- The graph check passes `graph: true` (V11/V12/V14 read the realised roll only) and `known` (earlier lessons + the brief's teaches).
+- Not built: Later elements (s v p t x, beat, points, named clocks, ^^ @ * as run shapes), the pick, marks inside fork roads.
+
+## 0p (0j on t-nodes). Legs (NODES-TRAVEL, R-165.196 / .197 / .198, t-nodes, 11-13): what the next engineer on mixed travel must know
+- **State.** M1 is built and proven on fixtures: right, up and down legs in one stage. NOT built: left legs in a fixture (the mirror
+  is written and unit-tested, never laid in a stage), the descent's own turns, forks across legs (M3), the card road (M4), the
+  lay honouring the long-form dials (item 10), the tier bots on a stage of legs, NODE-KEY.html cards, the blockcheck gate.
+  Plan and report: reference/qa-reports/NODES-TRAVEL/PLAN.md, REPORT.md. Not merged; engine.ts is untouched (engine-hook.patch there).
+- **One lay, per-leg state.** `layStage` (pipeline.ts): `legsOf(graph.nodes, graph.flow)` (legs.ts); `routed = mixed(legs)`. A run
+  and a tower of one leg have `routed` false and read nothing new. On a stage of legs `flow`, `tower`, `frame`, `floorAt` and the
+  run lay's datum (`gy`, `ctop`, `cbot`, `baseline`) are LETS, set by `beginLeg` and closed by `endLeg` at each leg change in the
+  node loop. Every `M.corridor` / `M.ground.y` read inside layStage goes through the datum: never add a raw one.
+- **A column mid-stage** (`columnFrame`, `columnWalls`, `closeColumn`, `layCatches`): begins where he stands; walls are plain
+  `block` pieces just OUTSIDE the frame (`wallIds`: a pit's `deepen` must never stretch one); going up its floor is laid at
+  `beginLeg`, going down at `endLeg` (FA's toFloor). The way out is `towerJoin(..., { way })` plus a ledge over the wall.
+  tower.ts still reads a tower from x 0: a column's pieces are handed to towerCatches / towerFalls / towerSkips moved by `-frame.x0`.
+- **Left** = `reflectLeg` (legs.ts): the leg is laid rightwards `ASIDE` px off to the side, then mirrored about `leftSum / 2`.
+  It refuses lianas and puzzle rooms by name. After all legs, a stage that ran left of x 0 is moved right whole.
+- **Meta.** `gen2.tower.flow` is 'legs' and `gen2.tower.legs` (LaidLeg: travel, i0-i1, box, `ground` of a run leg, `frame`,
+  `floorY`, `turns` of a column). Flags, hearts, quiet time and the clock read `gen2.tower.route` as on a tower. `config.travel`
+  is the LAST leg's (unset when it is right). Strays are judged per run leg against its own corridor (`corridorOf`).
+- **Engine side** (not applied: B14's token): `towerLead(stage, mode, p)` frames by the column he is in, `routeRatio` is the
+  progress bar on a stage of legs. reference/qa-reports/NODES-TRAVEL/engine-hook.patch, 5 lines, `git apply --check` clean on 64bece0f.
+- **Proof tools.** `tools/engine/legsmap.ts` (to-scale map, --png); `tools/engine/towerFly.ts` flyTower now flies a stage of legs
+  (turns found where he stands; a run leg's landing is the next piece of road, never a pit's floor). Fixtures: gen2/toyLegs.ts
+  (UP_CODE, DOWN_CODE, MIXED_CODE; `legsKit(id, code)`); tests gen2/legs.test.ts, legsLay.test.ts, nodeDials.test.ts.
+- **Traps.** (1) A fixture stage id must not be a stage of the game (5-95 here; withFixtureConfig throws on 5-3). (2) One brick a
+  job means the lay cannot steer the route back: a run brick must END LEVEL or its node strays out of the corridor and the repair
+  runs the pool dry ("pool short at slot N"). (3) Size nodes with `chunkSeconds` near one section's seconds (10), or the length
+  repair pads one node with 20 copies. (4) A graph code is jobs and shapes: a content letter on two neighbours breaks V11.
+  (5) The DOWN column lays and passes the verdicts but does not fly: towerCatches' down branch lays a bough across a turn's vine
+  (he stands on it, the vine runs through it), and a vine that leads down is taken in the air past the ledge's tip, never from
+  the ground. Rebuild that branch, add the verdict "no wood across a turn's vine", set TOWER.see to 280 (FA's note), then fly.
+  (6) In a `( ... ) &` shell line a variable set before `&&` is set in the background only.
+
 Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 lays a stage UP as a tower (section 0j). Sections below are still true.
 
 ## 0j. The tower lay (FA, R-165.170, t-fa, 11-13): what the next engineer on a stage that travels up or down must know

@@ -24,14 +24,49 @@ export interface CodeToken {
   creatures?: boolean;
   /** '<' patience, '>' hurry */
   tempo?: '<' | '>';
-  /** a fork's roads, high then low */
+  /** '&&': the creatures come as a formation */
+  formation?: boolean;
+  /** a fork's roads, high then low; a pick's two stretches (`?[a|b]`, job '?') */
   roads?: [CodeToken[], CodeToken[]];
+  /** the long form's dials (§8.9): what the designer fixes on this node, each `:` and one sign after the token */
+  dials?: CodeDials;
 }
+
+/**
+ * A node's long-form dials (NODES.md §8.9, R-165.198: the node is the designer's unit). Each is optional; a node that names none
+ * rolls it, as ever. Written after the token, each `:` and one sign, in any order:
+ *   `:7`           rating, 1-10 (the cadence)
+ *   `:p5.5`        the node's difficulty target, in meter points (tools/difficulty/score.ts)
+ *   `:t0.9`        the beat, seconds (the tempo mark's own number)
+ *   `:&snake*2!`   threat: a cast kind (the world's creature id), how many (`*n`; unset 1), `!` awake, or `z` asleep after the count
+ *                  (`snake*1z`); several with a comma
+ *   `:#hurt`       hazard: what lies under or along the node (soft, water, hurt, void, or a world's own hazard id), `@clock` when it
+ *                  keeps a named clock's beat (`:#pods@beat`)
+ *   `:+seed`       reward: what the find is (the `+` mark says there is one)
+ *   `:$8`          reward: how many pickups the node lays
+ */
+export interface CodeDials {
+  rating?: number;
+  points?: number;
+  beat?: number;
+  threat?: Array<{ kind: string; count: number; state?: 'awake' | 'asleep' }>;
+  hazard?: { kind: string; clock?: string };
+  reward?: { find?: string; pickups?: number };
+}
+
+/** the content letters (§8.0): the first eight are the mix's types; the rest are the building blocks any world's node can name
+ *  (R-165.198): s swing vine, v vine field (two hands), p beat pieces on a clock, t gate, x trap */
+export const CONTENT_OF: Readonly<Record<string, string>> = {
+  g: 'ground', f: 'floating', c: 'climb', b: 'bounce', r: 'rope', k: 'crumble', w: 'water', h: 'hazard',
+  s: 'swing', v: 'field', p: 'beat', t: 'gate', x: 'trap',
+};
 
 /** the job letters (§8.0's key) */
 export const JOB_OF: Readonly<Record<string, NodeJob>> = {
   A: 'arrive', T: 'teach', P: 'practise', X: 'test', C: 'combine', W: 'twist', R: 'rest', S: 'signature', F: 'fork', U: 'climb', D: 'descent',
   M: 'flow', E: 'exit', L: 'finale', H: 'reward', K: 'pressure', Z: 'puzzle', B: 'arena', Y: 'story', V: 'preview', G: 'change',
+  // (the pick, `?[a|b]`: a walked choice lays ONE of two stretches, the card road)
+  '?': 'pick',
 };
 export const LETTER_OF: Readonly<Partial<Record<NodeJob, string>>> = Object.fromEntries(Object.entries(JOB_OF).map(([k, v]) => [v, k]));
 /** the structural jobs: no content letter, flat, outside the mix (§7.1, V1) */
@@ -41,7 +76,54 @@ const LATER = new Set(['K', 'Z', 'B', 'Y', 'V', 'G']);
 export const SHAPE_OF: Readonly<Record<CodeToken['shape'], NodeShape | 'shaft' | 'loop-back' | 'hub'>> = { '': 'flat', '^': 'rising', '_': 'falling', '^^': 'shaft', '@': 'loop-back', '*': 'hub' };
 export const MARK_OF: Readonly<Record<NodeShape, CodeToken['shape']>> = { flat: '', rising: '^', falling: '_', 'two-road': '' };
 
-const ONE = /^([A-Z])([a-z])?([12])?(\^\^|\^|_|@|\*)?(\+)?(&)?([<>])?$/;
+const ONE = /^([A-Z])([a-z])?([12])?(\^\^|\^|_|@|\*)?(\+)?(&&|&)?([<>])?$/;
+
+/** a token's long-form dials, from the text after its head (`:7:p5.5:&snake*2!`); a sign that is none of them fails by name */
+function dialsOf(tail: string, t: string, at: number): CodeDials | undefined {
+  if (!tail) return undefined;
+  const bad = (why: string): never => { throw new Error(`node code: token ${at} "${t}": ${why}`); };
+  if (tail[0] !== ':') bad(`"${tail}" after the token is not a dial (":7", ":p5.5", ":t0.9", ":&kind*n!", ":#hazard", ":+find", ":$n")`);
+  const d: CodeDials = {};
+  const num = (x: string, what: string) => { const v = Number(x); if (!x || !Number.isFinite(v)) bad(`${what} needs a number, not "${x}"`); return v; };
+  for (const part of tail.slice(1).split(':')) {
+    const sign = part[0], rest = part.slice(1);
+    if (/^\d+$/.test(part)) d.rating = Number(part);
+    else if (sign === 'p') d.points = num(rest, 'the points dial (":p5.5")');
+    else if (sign === 't') d.beat = num(rest, 'the beat dial (":t0.9")');
+    else if (sign === '&') {
+      d.threat = rest.split(',').map((one) => {
+        // (asleep is written after the count, "snake*1z": a bare trailing z would be a letter of the kind's own name)
+        const m = /^([a-z][a-z0-9_-]*)(?:\*(\d+)([!z])?|(!))?$/.exec(one);
+        if (!m) return bad(`"${one}" is not a threat ("kind", "kind*2", "kind!" or "kind*2!" awake, "kind*2z" asleep)`);
+        const mark = m[3] ?? m[4];
+        return { kind: m[1], count: m[2] ? Number(m[2]) : 1, ...(mark ? { state: mark === '!' ? ('awake' as const) : ('asleep' as const) } : {}) };
+      });
+    } else if (sign === '#') {
+      const m = /^([a-z][a-z0-9_-]*)(?:@([a-z][a-z0-9_-]*))?$/.exec(rest);
+      if (!m) return bad(`"${part}" is not a hazard (":#hurt", ":#pods@beat")`);
+      d.hazard = { kind: m[1], ...(m[2] ? { clock: m[2] } : {}) };
+    } else if (sign === '+') {
+      if (!/^[a-z][a-z0-9_-]*$/.test(rest)) bad(`"${part}" is not a find (":+seed")`);
+      d.reward = { ...d.reward, find: rest };
+    } else if (sign === '$') d.reward = { ...d.reward, pickups: num(rest, 'the pickups dial (":$8")') };
+    else bad(`":${part}" is not a dial (":7", ":p5.5", ":t0.9", ":&kind*n!", ":#hazard", ":+find", ":$n")`);
+  }
+  return d;
+}
+
+/** a token's dials written back (the parser's inverse) */
+function formatDials(d: CodeDials | undefined): string {
+  if (!d) return '';
+  const out: string[] = [];
+  if (d.rating !== undefined) out.push(`${d.rating}`);
+  if (d.points !== undefined) out.push(`p${d.points}`);
+  if (d.beat !== undefined) out.push(`t${d.beat}`);
+  if (d.threat) out.push(`&${d.threat.map((k) => `${k.kind}${k.count !== 1 || k.state === 'asleep' ? `*${k.count}` : ''}${k.state === 'awake' ? '!' : k.state === 'asleep' ? 'z' : ''}`).join(',')}`);
+  if (d.hazard) out.push(`#${d.hazard.kind}${d.hazard.clock ? `@${d.hazard.clock}` : ''}`);
+  if (d.reward?.find) out.push(`+${d.reward.find}`);
+  if (d.reward?.pickups !== undefined) out.push(`$${d.reward.pickups}`);
+  return out.map((x) => `:${x}`).join('');
+}
 
 /** splits a run of tokens on its top-level spaces (a fork's brackets hold spaces of their own) */
 function split(s: string): string[] {
@@ -60,7 +142,7 @@ function split(s: string): string[] {
 
 /** one token, or a fork `F[high|low]` with its marks after the bracket */
 function token(t: string, at: number): CodeToken {
-  if (t.startsWith('F[')) {
+  if (t.startsWith('F[') || t.startsWith('?[')) {
     const close = t.lastIndexOf(']');
     const inner = t.slice(2, close);
     let depth = 0, bar = -1;
@@ -69,13 +151,19 @@ function token(t: string, at: number): CodeToken {
       else if (inner[i] === ']') depth--;
       else if (inner[i] === '|' && depth === 0) { bar = i; break; }
     }
-    if (bar < 0) throw new Error(`node code: token ${at} "${t}": a fork needs two roads, "F[high|low]"`);
+    const pick = t[0] === '?';
+    if (bar < 0) throw new Error(`node code: token ${at} "${t}": ${pick ? 'a pick needs two stretches, "?[a|b]"' : 'a fork needs two roads, "F[high|low]"'}`);
     const tail = t.slice(close + 1);
-    if (!/^[<>]?$/.test(tail)) throw new Error(`node code: token ${at} "${t}": after a fork's bracket only its tempo mark`);
+    const tm = /^([<>]?)((?::.*)?)$/.exec(tail);
+    if (!tm) throw new Error(`node code: token ${at} "${t}": after a ${pick ? "pick's" : "fork's"} bracket only its tempo mark${pick ? '' : ' (and its dials)'}`);
     const high = parseCode(inner.slice(0, bar)), low = parseCode(inner.slice(bar + 1));
-    return { job: 'F', shape: '', roads: [high, low], ...(tail ? { tempo: tail as '<' | '>' } : {}) };
+    const dials = dialsOf(tm[2], t, at);
+    return { job: pick ? '?' : 'F', shape: '', roads: [high, low], ...(tm[1] ? { tempo: tm[1] as '<' | '>' } : {}), ...(dials ? { dials } : {}) };
   }
-  const m = ONE.exec(t);
+  const colon = t.indexOf(':');
+  const head = colon < 0 ? t : t.slice(0, colon);
+  const dials = dialsOf(colon < 0 ? '' : t.slice(colon), t, at);
+  const m = ONE.exec(head);
   if (!m || !JOB_OF[m[1]]) throw new Error(`node code: token ${at} "${t}" is not a token (JOB content move shape find creatures tempo)`);
   return {
     job: m[1],
@@ -84,7 +172,9 @@ function token(t: string, at: number): CodeToken {
     ...(m[3] ? { move: m[3] as '1' | '2' } : {}),
     ...(m[5] ? { find: true } : {}),
     ...(m[6] ? { creatures: true } : {}),
+    ...(m[6] === '&&' ? { formation: true } : {}),
     ...(m[7] ? { tempo: m[7] as '<' | '>' } : {}),
+    ...(dials ? { dials } : {}),
   };
 }
 
@@ -95,12 +185,16 @@ export function parseCode(s: string): CodeToken[] {
 
 /** a token written back (the inverse of the parser) */
 export function formatToken(t: CodeToken): string {
-  if (t.roads) return `F[${t.roads[0].map(formatToken).join(' ')}|${t.roads[1].map(formatToken).join(' ')}]${t.tempo ?? ''}`;
-  return `${t.job}${t.content ?? ''}${t.move ?? ''}${t.shape}${t.find ? '+' : ''}${t.creatures ? '&' : ''}${t.tempo ?? ''}`;
+  if (t.roads) return `${t.job === '?' ? '?' : 'F'}[${t.roads[0].map(formatToken).join(' ')}|${t.roads[1].map(formatToken).join(' ')}]${t.tempo ?? ''}${formatDials(t.dials)}`;
+  return `${t.job}${t.content ?? ''}${t.move ?? ''}${t.shape}${t.find ? '+' : ''}${t.creatures ? (t.formation ? '&&' : '&') : ''}${t.tempo ?? ''}${formatDials(t.dials)}`;
 }
 
 /** what a check of a string needs to know about its stage */
 export interface CodeRules {
+  /** a GRAPH (§8.4), not a realised roll: a designer names the content of some nodes and the deal fills the rest, so the mix rules
+   *  (V11's cap and neighbours, V12's windows, V14's deal) read the whole stage on its realised code (pipeline realisedCode), never a
+   *  graph's few named letters. Every other rule reads the graph as written */
+  graph?: boolean;
   /** the brief's teach count: one T per move (V2) */
   teaches?: number;
   /** the stage's lessons of shapes it owns: '^^' (1-4's shaft), '@', '*' (V8, V10) */
@@ -164,9 +258,37 @@ export function checkCode(tokens: readonly CodeToken[], rules: CodeRules = {}): 
     if (t.job === 'V' && rules.mini !== undefined && rules.mini !== 9) at(i, 'V13', 'a boss preview only at X-9');
     if (t.job === 'G' && rules.mini !== undefined && rules.mini !== 6) at(i, 'V13', 'a change of pace only at X-6');
     if (t.creatures && !rules.creatures) at(i, 'V16', 'creatures before the stage that teaches them');
+    // (V22, §8.9: a content letter is one of the key's; a dial holds what it can mean; a threat or a find's name goes with its mark)
+    if (t.content && !CONTENT_OF[t.content]) at(i, 'V22', `"${t.content}" is no content letter (${Object.keys(CONTENT_OF).join(' ')})`);
+    const d = t.dials;
+    if (d) {
+      if (d.rating !== undefined && (d.rating < 1 || d.rating > 10)) at(i, 'V22', `a rating is 1-10, not ${d.rating}`);
+      if (d.points !== undefined && (d.points <= 0 || d.points > 10)) at(i, 'V22', `a difficulty target is over 0 and at most 10 meter points, not ${d.points}`);
+      if (d.beat !== undefined && (d.beat < 0.3 || d.beat > 4)) at(i, 'V22', `a beat is 0.3-4 s, not ${d.beat}`);
+      if (d.threat) {
+        if (!t.creatures) at(i, 'V22', `${formatToken(t)} names a threat with no creatures mark ("&")`);
+        if (!rules.creatures) at(i, 'V16', 'creatures before the stage that teaches them');
+        for (const k of d.threat) if (k.count < 1 || k.count > 6) at(i, 'V22', `${k.count} of ${k.kind} (1-6 on a node)`);
+      }
+      if (d.reward?.find && !t.find && !t.roads) at(i, 'V22', `${formatToken(t)} names a find with no find mark ("+")`);
+      if (d.reward?.pickups !== undefined && (d.reward.pickups < 0 || d.reward.pickups > 40)) at(i, 'V22', `${d.reward.pickups} pickups (0-40 on a node)`);
+      if (STRUCTURAL.has(t.job) && (d.threat || d.hazard)) at(i, 'V1', `${t.job} is structural: no threat and no hazard`);
+    }
   };
   let sawX = false, forks = 0;
+  // (V23, §8.9: one pick a stage, two stretches that both hold nodes, no teach inside, and a rest before it: the pick is held from
+  // the flag before its signs)
+  const picks = tokens.map((t, i) => (t.job === '?' ? i : -1)).filter((i) => i >= 0);
+  if (picks.length > 1) at(picks[1], 'V23', `${picks.length} picks (one a stage)`);
+  for (const i of picks) {
+    const [a, b] = tokens[i].roads!;
+    if (!a.length || !b.length) at(i, 'V23', 'a pick needs two stretches');
+    if ([...a, ...b].some((r) => r.job === 'T')) at(i, 'V23', 'a teach inside a pick');
+    if ([...a, ...b].some((r) => r.roads)) at(i, 'V23', 'a fork or a pick inside a pick');
+    if (tokens[i - 1]?.job !== 'R') at(i, 'V23', 'a pick follows a rest (its flag holds the pick through a set-back)');
+  }
   tokens.forEach((t, i) => {
+    if (t.job === '?') { for (const r of [...t.roads![0], ...t.roads![1]]) uses(r, i, true); return; }
     if (t.roads) {
       forks++;
       // (V7: two roads that both finish; the high road holds the find; no teach inside)
@@ -206,7 +328,7 @@ export function checkCode(tokens: readonly CodeToken[], rules: CodeRules = {}): 
   // content: NODES.md §7.3) and the structural ones never)
   const content = tokens.map((t, i) => ({ i, t, c: t.roads ? t.roads[1].find((r) => r.content)?.content : t.job === 'S' || t.job === 'H' ? undefined : t.content }))
     .filter((x) => x.c && !STRUCTURAL.has(x.t.job));
-  if (content.length) {
+  if (content.length && !rules.graph) {
     const count = new Map<string, number>();
     for (const x of content) count.set(x.c!, (count.get(x.c!) ?? 0) + 1);
     const cap = Math.round(0.4 * content.length);

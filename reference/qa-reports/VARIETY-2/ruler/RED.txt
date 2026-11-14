@@ -1,0 +1,6 @@
+$ npx tsx reference/qa-reports/VARIETY-2/ruler/perGapGround.repro.ts   (on t-nodes, code head 6d7819de, 3:26 PM ET 11-13)
+string 57 seed 58, log chain x 37064..39534; far ground: x 46166, y 1269, 12000 px wide
+MOVED painter pits in the log chain: as laid ["fall 37548..38002"] | with the far ground []
+MOVED floor.unmarked in the log chain: as laid ["37548..38002"] | with the far ground []
+RED: a gap here is judged by ground 5,000 px away (the single ground line)
+exit 1
