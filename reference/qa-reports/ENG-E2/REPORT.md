@@ -1,7 +1,8 @@
 # ENG-E2 REPORT: finish 1-7's engine (moss cover content, the perch, bots that hold still)
 Branch `t-eng-e2` from origin/t-eng-e1@f573675b, origin/t-art-678b@a93e335 merged first (clean). Code head **b4a697c9**; gates on that head:
 `gates.log` (this folder). Opus 5.5, xhigh. Started 10:33 AM ET 11-14 (session clock); this draft 11:02 AM ET. Context: I can't see the
-session's own figure (D64); my estimate is roughly 250k of 1M (25%).
+session's own figure (D64); my estimate was ~250k, and the lead's 11:01 AM check-in read the real figure: 341k of 1M (34%). Images were the cost
+(next time: judge stills at 1x and crop, as the lead says).
 Lessons applied: D40 (the moss the perch sits over first, then the perch, then the bots that fly both), D57 (queue read at each push: empty
 each time), D59 (no gate left running: the gates run in the foreground of this session to the end; see Gates), D61 (two rough spots found in
 my own stills and fixed before report: the carpet vanished when he hid in it; the perched eagle's head off the top sideways), D62 (every
