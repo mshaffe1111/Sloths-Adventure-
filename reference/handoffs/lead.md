@@ -82,7 +82,7 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   The plan doc: reference/plans/ENGINE-NEEDS.md (Architect session_01FhBbYLVSn59vpCSU4ruo6P, t-engine-needs).
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
-## RIGHT NOW (11-14, refreshed 4:07 PM ET; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
+## RIGHT NOW (11-14, refreshed 4:15 PM ET; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
 
 **Live:** 0.9.8 on main (merge 73e7bed0, PR #71, 11-13): https://mshaffe1111.github.io/Sloths-Adventure-/ (testers: add ?fresh=1#ctest).
 **Matt's test link (EnK5):** https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb v257 = link #2. Never send testers there.
@@ -111,8 +111,10 @@ real presses, 11:39 AM); FIX-15 fixing. The lead had passed link #1's gate on a 
 **Members running** (all report to session_01FhBbYNzGRJBDMzn6XbtQK2 until the seam):
 | Member | Session | Branch | Job |
 |---|---|---|---|
+| ENG-B5 | session_01FhBbYKFVM2yeFxm9MNtsjb | t-eng-b5 (from t-eng-b4, xhigh) | 1-8 rolling hazard, chase camera lead, QA fixture, edge contrast (packets/2026-11-14/ENG-B5.md) |
+| TOOLS-1 | session_01FhBbYLQTt1zZAbKfuX1h89 | t-tools-1 (from t-int-9, xhigh) | meter double-count, castBots leak, clipcheck flake (TOOLS-1.md) |
 | ENG-16F | session_01FhBbYNHM3zg2cqxN8NoKn4 | t-build-16 (xhigh) | 1-6: FAR rule rewrite, 26 old reds (old-1-6 tests retire with R-165.238), kid Normal rescues frame by frame, relist, stills, clips |
-| INT-9 | session_01FhBbYKSqV5AeZmMEkQ1msT | t-int-9 (from t-int-8, xhigh) | link #3: clip tool + FIX-15/15b + TIPS + chains + 1-7 + POLISH-10 + journal lines now; the new 1-6 when ENG-16F is GREEN; R-165.238 |
+| INT-9 (stopped; INT-9b next) | session_01FhBbYKSqV5AeZmMEkQ1msT | t-int-9@fb409960 (xhigh) | link #3: clip tool + FIX-15/15b + TIPS + chains + 1-7 + POLISH-10 + journal lines now; the new 1-6 when ENG-16F is GREEN; R-165.238 |
 **Done today and waiting for the next integrator:** t-eng-s5@a2743943 (chains, GREEN), t-int-8-clip@315548d1 (clip tool; full run UNRUN), t-keeper-17@a8dd2409 (1-7 lines).
 **Done, waiting for INT-9:** t-tips@a054e8e7 (GREEN). **Queue (packets in reference/packets/2026-11-14/), in order as slots free:**
 INT-9 (link #3: the new 1-6 + 1-7 + TIPS + FIX-15/15b + chains + clip tool + R-165.238; packet written). For the new lead after
