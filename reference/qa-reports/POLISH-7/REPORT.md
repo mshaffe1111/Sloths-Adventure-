@@ -56,6 +56,14 @@ Context at report: about 30-35% of 1M (my own estimate from the work done; I can
 | 1-2 / 1-3 | 10/10 / 10/10 | 10/10 / 10/10 | 362 / 239, 455 / 309 | 165 / 162, 231 / 209 | 143, 196 |
 **Read:** Easy is fixed for first-timers; Normal is much better but still behind 1-2 and 1-3 (next step 1). Logs: gates/castbots-1-1-kid-adult.txt.
 
+## Variety / fun (the lead's ask 4:04 AM, read 4:35: D57 missed, my queue was not read at the 4:0x and 4:17 pushes)
+funcheck (World 1's fun gate, layouts 1-16, both settings; gates/g-funcheck.txt vs g-funcheck-before-5605b11.txt): **FAIL on both, base
+25 worse/new, this head 24** (46 entries to lower on both; not in CLAUDE.md's list, and red before this branch). 1-1's own lines, base ->
+head: Easy "pacing" 12 -> 10 layouts (better); Normal "nothing bites" 97% -> 89% of beats free after 30 s (better); Normal "repeat"
+15 -> 16 layouts (lost the one-layout gain; equal to its known 16, not over it); dead walk 16 -> 16 (4.0-4.2 s -> 3.0-3.4 s examples);
+Normal "pacing" 13 -> 13. No 1-1 line is new or over a count it was under before. 1-2's "looks like the stage before (1-1)" 49% unchanged.
+Variety in the plain sense: sprint-B and -C no longer roll on 1-1 (R-165.235, the lead 4:04 AM).
+
 ## Gates (CLAUDE.md order; logs gates/): see gates-summary.txt (written last, on the pushed head).
 
 ## Polish check: stills/teach-{before,after}-1-1-L2-{normal,easy}-x*-{upright,sideways}.jpg, 2x, the built setting printed by the game
