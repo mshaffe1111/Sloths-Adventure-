@@ -1,5 +1,5 @@
 # ENG-16G: finish 1-6 from ENG-16F's EXACT NEXT STEP (R-165.203). Opus 5.5 xhigh (engine: shared measure + lay rule first). Written 5:23 PM ET 11-14.
-Branch: continue t-build-16 from 179b0d37. READ ONLY: reference/qa-reports/ENG-16F/REPORT.md "EXACT NEXT STEP" (items 1-3 and what follows)
+Branch: continue t-build-16 from 68e4bce1 (ENG-16F's last push). READ ONLY: reference/qa-reports/ENG-16F/REPORT.md "EXACT NEXT STEP" (items 1-3 and what follows)
 and its castBots table; level.md rules 21-22 (two paragraphs). Rulings already made (lead): vineSelfSwing = option (b): a height-aware
 swingClearance (sweep at every depth Pokey can hang + body + margin; the rule's own words), planted both ways (the 78 px false-liana pair
 RED, a correct pair GREEN, swinging-swinging pairs unchanged), the lay rule from it for every stage; artUse = seesaw-b leaves the SHIPPED

@@ -82,50 +82,47 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   The plan doc: reference/plans/ENGINE-NEEDS.md (Architect session_01FhBbYLVSn59vpCSU4ruo6P, t-engine-needs).
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
-## RIGHT NOW (11-14, refreshed 4:15 PM ET; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
+## RIGHT NOW (11-14, refreshed 5:30 PM ET for the turnover; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
 
 **Live:** 0.9.8 on main (merge 73e7bed0, PR #71, 11-13): https://mshaffe1111.github.io/Sloths-Adventure-/ (testers: add ?fresh=1#ctest).
-**Matt's test link (EnK5):** https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb v257 = link #2. Never send testers there.
+**Matt's test link (EnK5):** https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb = link #3 from t-int-9@b288b3fa (published at the
+turnover, ~6 PM): the new 1-7, TIPS, FIX-15/15b fig gate, chains, clip tool, POLISH-10, journal, haze fix, pit-bank fix (global), 1-1
+recalibrated. 1-6 is NOT on it yet (ENG-16G). Never send testers to EnK5. Build: `python3 tools/testlink/build.py "<note>"` in a worktree
+of the head, then the Artifact tool with the EnK5 url, root tools/testlink, files from filesmap.json (HANDOFF §6).
 **Other links:** world map https://claude.ai/artifact/KRT1HT17cy8c7wd1pN87za; Matt's handoff doc https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa
 (Docs connector); inspiration shelf reference/plans/INSPIRED-BY.md + PLATFORMER-100.md + PLATFORMER-100-MATT.md.
 **How a release goes:** only on Matt's "push": PM.md §5 + reference/methods/release.md step by step; full gates on the exact head; PR
 with the GitHub MCP create_pull_request, NOT a draft; Matt merges; then check the deploy runs and the APK on the Releases page.
 **Matt decided (5:20 PM ET):** fig gate option A, the branch beside a shut gate is held away and GROWS/SWINGS in when the gate opens (R-165.212;
-mock-up reference/qa-reports/lead/figgate-optionA-mock-side.jpg; FIX-15b REPORT's EXACT NEXT STEP + the grow-in animation): a new-lead
-engine job (xhigh). **Waiting on Matt:** (2) his look at 1-6 + 1-7 on link #3; (3) the 1-8 chase edge glow on the real 1-8 (reads a little
-like smoke); (4) "push" for a release.
-**Next 3 (who, tier, packet):** 1. ENG-16F (running, xhigh) finishes 1-6 (packets/2026-11-14/ENG-16F.md). 2. INT-9 (running, xhigh)
-merges 1-6 into link #3, every gate once, stills/clips -> the lead judges -> EnK5 (INT-9.md); it also reviews line by line, at xhigh,
-the engine lines high-tier builders wrote 11-14 (BUILD-16b goals.ts seal, BUILD-16c/16d bot code; BUILD-17's 5 groups already PASS)
-(D70, R-165.246). 3. New lead: BUILD-18 (1-8) on ENG-B4's engine (t-eng-b4@956e33e0; B4 REPORT's ready packets a nut/fruit, b chase
-camera lead, c drawcheck fixture; the child-at-the-fork designer question), after R-165.246's lift pass (an engine member at xhigh; packet to write from level.md rule 22 and the ENGINE-WORTHY lists in BUILD-16d/17/17b REPORTs).
-**Turnover tonight (Matt, 11-14 12:11 PM ET):** after 1-6 and 1-7 are on his test link (~8 PM ET) a new lead takes over (PM.md §8);
-1-8 (the chase: ENG-B4 engine, then BUILD-18) is the new lead's FIRST job. This lead becomes the backup.
-**Matt's decisions today (11-14):** easier 1-1 (fewer doubles, easier jumps; props off ledges R-165.226/.228); 1-4 rocks/pods slower +
-telegraphed (R-165.227), fig gate: a lock you can see + a head stop so only the fruit passes (R-165.212); two-vine reward (R-165.229);
-shorter swings (R-165.225); delegated to the lead and DECIDED GO: deep-earth underlayer (R-165.224) and living pole (R-165.209);
-Hugging Face is the lead's call (~$56 left, ~$10 reserve). Predator art from his sheets (R-165.231, raws on branch art-raw-2026-11-14).
-**Links:** EnK5 (https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb) v257 = link #2 (t-int-8@595ada5d: link #1's 1-4 fixes + ruler
-head + the easier 1-1; Matt said ship with the two pre-existing rough spots of R-165.243). Never send testers to EnK5.
-**Known red carried on the links:** 1-4 fig gate: from the far-end ledge Pokey flicks over a shut bough and drops through it (INT-8,
-real presses, 11:39 AM); FIX-15 fixing. The lead had passed link #1's gate on a clip whose jumps never fired (D69, R-165.240).
-**Members running** (all report to session_01FhBbYNzGRJBDMzn6XbtQK2 until the seam):
-| Member | Session | Branch | Job |
+mock-up reference/qa-reports/lead/figgate-optionA-mock-side.jpg; FIX-15b REPORT's EXACT NEXT STEP): an engine job at xhigh.
+**Waiting on Matt:** (1) his look at 1-7 and the fig gate on link #3; (2) the 1-8 chase edge glow on the real 1-8 (reads a little like
+smoke); (3) "push" for a release (0.9.9 = links #3 + #4 once 1-6 is in).
+**Next 3 (who, tier, packet):** 1. ENG-16G (running, xhigh) finishes 1-6: height-aware swingClearance, seesaw-b out of the shipped set,
+sealed-door petals, relist, bots, stills, clips (packets/2026-11-14/ENG-16G.md). 2. INT-9b phase B (xhigh): merge ENG-16G's GREEN 1-6
+onto t-int-9, every gate once, the lead judges stills/clips -> EnK5 link #4 (INT-9b.md). 3. BUILD-18 (1-8, the chase) once ENG-B5 is
+GREEN: packet to write from ENG-B4 + ENG-B5 REPORTs and the design on origin/t-1718-design; check the Ready-to-build gate first (persona).
+**Queue after that (as slots free):** fig gate option A grow-in (engine, xhigh); R-165.246 lift pass (one-level patches into the engine;
+ENGINE-WORTHY lists in BUILD-16d/17/17b REPORTs); R-165.250 strand rule; POLISH-11 strip joins + flag ring (packet written); WIRE-ART
+(underlayer + pole), ART-PRED (Matt's predator sheets, branch art-raw-2026-11-14); R-165.235 (1-1 sprint-B/C back); R-165.243/.237 polish.
+**Members running** (report to the session on this file's top line):
+| Member | Session | Branch | Job (report-by time: the new lead sets one for each at step 4 if the packet has none) |
 |---|---|---|---|
-| ENG-B5 | session_01FhBbYKFVM2yeFxm9MNtsjb | t-eng-b5 (from t-eng-b4, xhigh) | 1-8 rolling hazard, chase camera lead, QA fixture, edge contrast (packets/2026-11-14/ENG-B5.md) |
+| INT-9b | session_01FhBbYM3Z4oAdZ4pK6nJewd | t-int-9@b288b3fa (xhigh) | phase A: every gate on link #3's head (GREEN gates link #3); phase B: 1-6 from ENG-16G -> link #4 |
+| ENG-16G | session_01FhBbYN7qZpCPnWqXycWnXZ | t-build-16 from 68e4bce1 (xhigh, started 5:29 PM) | finish 1-6 (ENG-16G.md); report by 7:30 PM ET |
+| ENG-B5 | session_01FhBbYKFVM2yeFxm9MNtsjb | t-eng-b5 (from t-eng-b4, xhigh) | 1-8 rolling hazard, chase camera lead, QA fixture, edge contrast (ENG-B5.md) |
 | TOOLS-1 | session_01FhBbYLQTt1zZAbKfuX1h89 | t-tools-1 (from t-int-9, xhigh) | meter double-count, castBots leak, clipcheck flake (TOOLS-1.md) |
-| ENG-16F | session_01FhBbYNHM3zg2cqxN8NoKn4 | t-build-16 (xhigh) | 1-6: FAR rule rewrite, 26 old reds (old-1-6 tests retire with R-165.238), kid Normal rescues frame by frame, relist, stills, clips |
-| INT-9 (stopped; INT-9b next) | session_01FhBbYKSqV5AeZmMEkQ1msT | t-int-9@fb409960 (xhigh) | link #3: clip tool + FIX-15/15b + TIPS + chains + 1-7 + POLISH-10 + journal lines now; the new 1-6 when ENG-16F is GREEN; R-165.238 |
-**Done today and waiting for the next integrator:** t-eng-s5@a2743943 (chains, GREEN), t-int-8-clip@315548d1 (clip tool; full run UNRUN), t-keeper-17@a8dd2409 (1-7 lines).
-**Done, waiting for INT-9:** t-tips@a054e8e7 (GREEN). **Queue (packets in reference/packets/2026-11-14/), in order as slots free:**
-INT-9 (link #3: the new 1-6 + 1-7 + TIPS + FIX-15/15b + chains + clip tool + R-165.238; packet written). For the new lead after
-the turnover: BUILD-18 (1-8 on ENG-B4's engine); R-165.246 lift pass (one-level patches into the engine); fig gate option A (Matt's look
-at FIX-15b's mock-up first); R-165.239 meter, .244 castBots leak, .245 clipcheck flake (one tools member); R-165.243/.237 polish;
-WIRE-ART (underlayer + pole), ART-PRED (Matt's predator sheets); R-165.235 (1-1 sprint-B/C back).
-**Where the work lives:** 1-7/1-8 design on origin/t-1718-design; 1-6 design on origin/t-16-design; 1-6 lines on t-keeper-16
-(reference/story/lines-1-6.md); 1-7 engine on t-eng-e2@1f66e7a9 (GREEN); chase lay on t-eng-b3@71da15cd; art on t-art-678b.
-**Lessons paid for today:** D63-D69 (LESSONS.md); PM.md §7 "Retiring a member" (D68); every clip judged by the frame where the action
-happens (D69); a member's context % read from its last turn's cache_read_input_tokens, not its own estimate (D64).
+Story keeper (standing): session_01FhBbYMCa3JXWmyQicbmxuu. Retired today, costs in LEVEL-LOG.md: BUILD-16..16d, BUILD-17/17b, INT-8, INT-9,
+ENG-S5, ENG-E2, ENG-16E, ENG-16F ($41.43, ran to 54%: over the box), FIX-15/15b, TIPS, POLISH-9b/10, ENG-B4, KEEPER-17/17b, CRITIC-PERSONA.
+**Turnover (Matt, 5:25 PM ET):** with link #3 (~6 PM) the outgoing lead sends Matt the persona (reference/roles/LEAD-PERSONA.md; paste
+copy LEAD-PERSONA-PASTE-2026-11-14.md) and tells every member; Matt starts the new lead. The new lead's first jobs: take line 1 here,
+judge ENG-16G and INT-9b as they report, then 1-8.
+**Matt's decisions today (11-14):** easier 1-1 (fewer doubles, easier jumps; props off ledges R-165.226/.228); 1-4 rocks/pods slower +
+telegraphed (R-165.227); fig gate a lock you can see + head stop (R-165.212) then option A grow-in; two-vine reward (R-165.229); shorter
+swings (R-165.225); deep-earth underlayer (R-165.224) and living pole (R-165.209) GO; Hugging Face is the lead's call (~$56 left, ~$10
+reserve); xhigh ceiling / high floor; engine drives development, never patch for one level (level.md 21-22); members run gates scoped to
+their change, every gate once on the integration head; designers mix the whole shelf.
+**Lessons paid for today:** D63-D70 (LESSONS.md); PM.md §7 "Retiring a member" (D68); clips judged by the named frame (D69); builders
+below engine tier don't write engine code (D70); real context = last result's input + cache_creation + cache_read tokens (D64).
 
 ## TODAY 11-13 (started 10:16 AM ET; packets reference/packets/2026-11-13/TODAY.md + one per member; stop line 9:30 PM or 40% context)
 | Member | Session | Model/effort | Branch | Job |

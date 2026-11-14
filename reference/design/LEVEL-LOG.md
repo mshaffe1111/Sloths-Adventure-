@@ -115,3 +115,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | KEEPER-17b (Opus high) | journal hide page rewritten to keep-still in the green; crouch text grepped out of the journal | $1.25 | ~6 min |
 | CRITIC-PERSONA (Opus high) | cold review of the persona draft + handover: REJECT x2 with exact rewrites, all applied; criterion met | $1.99 | ~10 min |
 | INT-9 (Opus xhigh) | link #3 merges (clip tool, FIX-15/15b, TIPS, chains, 1-7, POLISH-10, journal), pit-bank fix global, haze root + stripjoin tool, BUILD-17 engine-line review PASS; stopped before 1-6 | $37.76 | ~75 min |
+| ENG-16F (Opus xhigh) | 1-6 bot reds frame by frame (tier-bot let-go/stair/face-count fixes, FAR rule), old hand-built 1-6 retired whole, suite 3431/3435 (2 ruled reds -> ENG-16G); ran to 54% real context (over the 40% box: a lead miss, not stopped at the 5 PM check-in) | $41.43 | ~93 min |
