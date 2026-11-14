@@ -37,10 +37,11 @@ test('one letter grammar: the parser reads exactly the table letters, liana is s
   assert.deepEqual(checkCode(parseCode('A Pm R S E'), { graph: false }).filter((e) => /V22/.test(e)), [], 'V22 reads m as a letter');
 });
 
-test('one letter grammar: a job the code refuses (V13 LATER) is never shown as now; K is 1-8 by story', () => {
+test('one letter grammar: a job the code refuses (V13 LATER) is never shown as now; K (a chase now) is 1-8 by story', () => {
   for (const [l, j] of Object.entries(JOB_LETTERS)) if ('later' in j && j.later) assert.equal(j.key, 'later', `${l} is LATER in the code but 'now' in the key`);
-  assert.deepEqual(Object.entries(JOB_LETTERS).filter(([, j]) => 'later' in j && j.later).map(([l]) => l), ['K', 'Z', 'B', 'Y', 'V', 'G']);
-  assert.match(keyBlocks().JOBS, /\nK:\["Chase","later","[^"]*World 1's chase is 1-8's/);
+  // (K left LATER with B5 CHASE-LAY: a K node lays a chase, gen2/chaseLay.ts; the key says now)
+  assert.deepEqual(Object.entries(JOB_LETTERS).filter(([, j]) => 'later' in j && j.later).map(([l]) => l), ['Z', 'B', 'Y', 'V', 'G']);
+  assert.match(keyBlocks().JOBS, /\nK:\["Chase","now","[^"]*World 1's chase is 1-8's/);
 });
 
 test('one letter grammar: a letter the deal does not lay is later in the key and names why (nodeAsks LATER_CONTENT)', () => {

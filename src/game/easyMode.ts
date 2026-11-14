@@ -528,6 +528,8 @@ export function easyStage(stage: Stage): Stage {
         if (!flagLedge(stage, p, reach)) continue;
         const cx = p.x + p.width / 2;
         if (cx < x0 + 400 || cx > x1 - 400) continue;
+        // (never inside a laid chase's stretch: its flags are its restarts, on the forks only, gen2/chaseLay.ts)
+        if (stage.chase?.stretches.some((t) => cx > t.start && cx < t.end)) continue;
         if (!best || Math.abs(cx - want) < Math.abs(best.x + best.width / 2 - want)) best = p;
       }
       if (best) cps.push({ x: Math.round(best.x + best.width / 2), y: best.y, reached: false });
