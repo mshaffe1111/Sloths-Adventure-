@@ -188,8 +188,9 @@ interface Moment {
 const MOMENTS: readonly Moment[] = [
   // (8-2's first deadly drop: on w8-rope2 the first rope crosses it; the lip is the take-off either way)
   { stage: '8-2', layout: 1, hint: "Careful! It's a long way down.", at: 'lip' },
-  // (World 1's eagle: the bush to hide in is the spot he acts on)
-  { stage: '1-7', layout: 0, hint: 'An eagle is watching', at: 40 },
+  // (World 1's eagle: the bush to hide in is the spot he acts on; 1-7's own teach for it since the hand-built 1-7 was deleted, BUILD-17:
+  // w1Arc17.ts LINES_17.bush)
+  { stage: '1-7', layout: 0, hint: 'When the eagle screams, get in the green', at: 40 },
   // (World 5: the wide gap he must double-jump)
   { stage: '5-1', layout: 0, hint: 'A wide gap', at: 'lip' },
   // (the glide moment, World 4: the leaf's first glide, off the branch; its way ahead is the cone down and forward)

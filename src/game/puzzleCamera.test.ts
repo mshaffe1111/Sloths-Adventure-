@@ -14,7 +14,8 @@ import { boxFits, fitZoom, ROOM_CAM, roomCentre, roomFloor, type CamBox } from '
 import { KIT } from './puzzleKit.ts';
 
 // (1-4's squirrel-lift rooms went with the hand-built 1-4: the gen2 1-4 replaced it, B14 11-13; its fig gates are field pieces, no room)
-const STAGES = ['1-6', '1-7', '2-2', '2-3', '2-8', '2-9', 'kit'];
+// (and 1-7's acorn meadow with the hand-built 1-7: the rolled 1-7 has no room, BUILD-17; stageSheets.test holds World 1's rooms to 1-6)
+const STAGES = ['1-6', '2-2', '2-3', '2-8', '2-9', 'kit'];
 const PHONES: Array<[number, number]> = [[390, 844], [360, 740], [844, 390]];
 
 type Room = {
