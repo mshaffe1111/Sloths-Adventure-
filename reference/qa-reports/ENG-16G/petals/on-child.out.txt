@@ -1,0 +1,6 @@
+child 1 sealed door {"got":93,"need":95} {"first-liana:d1":{"on":[0.35],"off":[0.92]}}
+child 2 sealed door {"got":90,"need":94} {"first-liana:b1":{"on":[0.53],"off":[1]},"first-liana:d1":{"on":[0.42],"off":[0.78]},"gorge:b1":{"on":[0.49],"off":[0.55]}}
+child 3 shrine {"got":106,"need":102} {"first-liana:d1":{"on":[0.41],"off":[0.53]},"gorge:b1":{"on":[0.53],"off":[0.85]}}
+child 4 shrine {"got":101,"need":97} {"first-liana:b1":{"on":[0.56],"off":[1]},"first-liana:d1":{"on":[0.41],"off":[0.92]},"gorge:b1":{"on":[0.57],"off":[0.81]}}
+child 5 shrine {"got":90,"need":90} {"first-liana:d1":{"on":[0.33],"off":[0.83]},"gorge:b1":{"on":[0.54],"off":[0.82]}}
+child 6 shrine {"got":98,"need":95} {"first-liana:d1":{"on":[0.52],"off":[0.67]}}

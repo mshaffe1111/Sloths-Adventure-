@@ -88,6 +88,11 @@ const petals = (id: string, on: string, t: R2 | number, n = 1, span = 80): Socke
  *  FILL_GAP 1050 px) and its pick there was the moss floor of a pit, 2-6 petals a Normal seed that only a fall reaches. A creaky limb
  *  gets one where he lands (not counted: goals.ts onCrumbling), so the stretch over its two pits is never empty */
 const LANDED = 0.88;
+/** where a petal goes on FAR's narrow bough (120-140 px), the gorge's first perch: the middle of the stretch every bot stands on. They
+ *  land at 0.19-0.56 of it and leave at 0.44-0.86 (the expert and the middle hop on to the root early); LANDED's far end was behind the
+ *  ones who left first: the expert's, middle's and child's sealed doors (ENG-16F petalmiss; ENG-16G/petals/on-*.out.txt; the lead's
+ *  ruling 11-14: the petals the bots miss go on the path) */
+const FAR_WALKED = 0.45;
 const flag = (on: string, t = 0.5): Socket => ({ id: 'flag', role: 'flag', on, t });
 const tip = (id: string, on: string, t: number, line: keyof typeof LINES_16): Socket => ({ id, role: 'tip', on, t, allow: [line] });
 
@@ -193,7 +198,11 @@ function firstLiana(): Lay {
   const h = hops('h', r.last, 2);
   // (a root hop up onto the take-off: the arrival's last bank and a flat 660 px walk here were 4.4-4.6 s with nothing to do, over the
   //  quiet line's 4 s, seeds 2 and 5; and down again at the end, so the exit is level)
-  return { pieces: [bank('a', null, 300), bank('a2', 'a', 260, UP), ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [petals('pa', 'a', 0.6, 1), petals('p1', r.perches[0], LANDED, 2, 60), petals('ph', 'hu2', LANDED, 1, 60), tip('t-low', 'z', 0.3, 'low')] };
+  // (the perch's pair: one at its far end, one on the bank under it. The leap off the first liana mostly carries him OVER the 280 px
+  //  perch onto d1 (seeds 1 and 3: no bot stood on it; ENG-16G/petals/on-*.out.txt), and its arc takes the far end's petal; the near
+  //  one, at 0.77, only a short leap took: the child's and expert's sealed doors (ENG-16F petalmiss). On d1 every bot lands at 0.35-0.45
+  //  and walks on past 0.6 (the lead's ruling 11-14: the petals the bots miss go on the path; the share stays))
+  return { pieces: [bank('a', null, 300), bank('a2', 'a', 260, UP), ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [petals('pa', 'a', 0.6, 1), petals('p1', r.perches[0], 0.99, 1), petals('pd', 'd1', 0.6, 1), petals('ph', 'hu2', LANDED, 1, 60), tip('t-low', 'z', 0.3, 'low')] };
 }
 /** [P] beat 2, hang low: LONG gaps (a low hold flies them; from the top he drops short onto moss, top 0 ms), two in a row (Easy one).
  *  (OPEN: 1-6.md's petal at the liana's FOOT is not laid: a socket stands on a platform, never on a vine, pipeline pieceOf) */
@@ -257,7 +266,7 @@ function gorge(easy: boolean): Lay {
   const r2 = lianaRun('g', r1.last, easy ? [{ gap: 'long', perch: 'sound' }] : [{ gap: 'long', perch: 'creak' }, { gap: 'long', w: 280 }]);
   return {
     pieces: [bank('a', null, 300), ...r1.pieces, stillOne('f', r1.last, [90, 110]), ...r2.pieces, bank('z', r2.last, easy ? 420 : 300)],
-    sockets: [flag('a', 0.3), petals('pa', 'a', 0.7, 1), petals('p1', r1.perches[0], LANDED, 1, 60), ...(easy ? [] : [petals('pc', r2.perches[0], 0.5, 1)]), petals('pg', r2.perches[r2.perches.length - 1], LANDED, 1), petals('p5', 'z', 0.4, 2, 120)],
+    sockets: [flag('a', 0.3), petals('pa', 'a', 0.7, 1), petals('p1', r1.perches[0], easy ? LANDED : FAR_WALKED, 1, 60), ...(easy ? [] : [petals('pc', r2.perches[0], 0.5, 1)]), petals('pg', r2.perches[r2.perches.length - 1], LANDED, 1), petals('p5', 'z', 0.4, 2, 120)],
   };
 }
 
