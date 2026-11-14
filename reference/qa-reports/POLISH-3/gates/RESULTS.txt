@@ -7,3 +7,4 @@ knowncheck 0 10:45 PM
 generality 0 10:45 PM
 roadmap 1 10:46 PM
 roadmap(rerun after fetching every branch: the 8 were commits a partial clone could not see) 0 10:48 PM
+kbdcheck 0 10:48 PM
