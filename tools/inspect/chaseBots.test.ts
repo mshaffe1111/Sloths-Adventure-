@@ -16,13 +16,23 @@ import type { Rolling } from '../../src/game/pieces/rollingPiece.ts';
 
 const Y = 500;
 /** the branch: ground [x0, x1) in the lay's ~222 px sections, chase or not; the gaps are 1-1's singles (120 px) */
-function branch(): { plats: Platform[]; lay: ChaseLay; forkEnd: number } {
+function branch(hazards = false): { plats: Platform[]; lay: ChaseLay; forkEnd: number } {
   const plats: Platform[] = [];
   let id = 9000;
   const ground = (x0: number, x1: number, chase: boolean) => {
     for (let x = x0; x < x1; x += 222) plats.push({ id: id++, x, y: Y, width: Math.min(222, x1 - x), height: 400, type: 'solid', ...(chase ? { chase: true } : {}) } as Platform);
   };
   ground(0, 1100, false);
+  if (hazards) {
+    // (the hazards' branch: the same run-up and gaps, laid one threat at a time (1-8.md: 1.5 s+ apart), so each hazard has a run of
+    // ground to itself between two gaps: a stretch from 1100 to its fork at 4300)
+    ground(1100, 1700, true);
+    ground(1820, 2900, true);
+    ground(3020, 4300, true);
+    ground(4300, 4900, false);
+    ground(4900, 6000, false);
+    return { plats, lay: { stretches: [{ start: 1100, end: 4300 }] }, forkEnd: 4900 };
+  }
   // (the stretch: from the crack at 1100 to its fork at 3700, with three single gaps)
   ground(1100, 1700, true);
   ground(1820, 2500, true);
@@ -37,8 +47,8 @@ function onBranch(who: FirstTimer, seed: number, rolling?: RollSpec[]) {
   freshPhone(who.setting);
   setDifficulty(who.setting);
   Math.random = rng(seed);
-  const b = branch();
-  const route = Array.from({ length: 120 }, (_, i) => ({ x: 300 + i * 40, y: Y }));
+  const b = branch(!!rolling);
+  const route = Array.from({ length: rolling ? 150 : 120 }, (_, i) => ({ x: 300 + i * 40, y: Y }));
   const run = new FirstTimerRun('1-2', seed, who, { route, cap: 60 });
   const sim = run.sim as unknown as { bare(p: Platform[]): void; stand(x: number, y: number): void; e: { currentStage: GeneratedStage; player: { hp: number; maxHp: number; x: number }; proto: unknown; checkpoint: { x: number; y: number } } };
   sim.e.currentStage.chase = b.lay;
@@ -108,14 +118,14 @@ test('chase bots, PLANTED (rule 21): a player who stops at every edge past the s
   assert.ok(withIt.far >= withIt.forkStart + 100);
 });
 
-// (ENG-B5, 1-8.md NEW 2 + 9: the nut and the fruit on the same branch. A teach nut and a teach fruit before the crack (beats 1-2), then on
-// the stretch a nut, a fruit and a nut, each between two gaps and a second and more apart (one threat at a time). Placed by the branch's
-// own gaps: no x of the hazard's is the bot's or the engine's)
+// (ENG-B5, 1-8.md NEW 2 + 9: the nut and the fruit on the hazards' branch. A teach nut and a teach fruit before the crack (beats 1-2),
+// then on the stretch a nut and a fruit, each on its own run of ground between two gaps (one threat at a time, 1.5 s+ apart). Placed by
+// the branch's own gaps: no x of the hazard's is the bot's or the engine's)
 const HAZARDS: RollSpec[] = [
   { kind: 'low', dropX: 700, speed: 110, bounce: 8 },
   { kind: 'high', dropX: 1050, speed: 130, bounce: 160 },
-  { kind: 'low', dropX: 2250, speed: 140, bounce: 8 },
-  { kind: 'high', dropX: 3000, speed: 140, bounce: 165 },
+  { kind: 'low', dropX: 2600, speed: 140, bounce: 8 },
+  { kind: 'high', dropX: 3900, speed: 140, bounce: 165 },
 ];
 
 for (const who of [FT_MIDDLE, FT_EXPERT, FT_MIDDLE_EASY]) {

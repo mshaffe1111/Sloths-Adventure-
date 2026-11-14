@@ -37,12 +37,16 @@ export interface RollSpec {
 }
 
 export const ROLL = {
-  /** the drop-in, from above to the thunk (s): the tell. TELL_MIN 0.5 (1-8.md) */
-  tell: 0.6,
+  /** the drop-in, from above to the thunk (s): the tell. TELL_MIN 0.5 (1-8.md). 0.8: the drop is most of the second he needs, so it is
+   *  set off nearer (350-360 px ahead at a full run, not 378 at 0.6), which an upright 390 px phone's chase view shows (chaseCamera.test) */
+  tell: 0.8,
   /** drop to reaching him at his full run, at least this (s): what the camera's lead must show ahead (1-8.md, B4 packet b) */
   seen: 1.0,
-  /** where the drop starts: this far over the ground at most (px of world); never over the HUD band (the piece clamps to the view) */
-  dropH: 300,
+  /** after the thunk it rolls at least this long (s) before it reaches him at a full run: the thunk is heard before the hop is due */
+  after: 0.15,
+  /** where the drop starts: this far over the ground at most (px of world: 480 in 0.8 s falls as a thing falls, 1,500 px/s/s); never
+   *  over the HUD band (the piece clamps to the view, so sideways it starts lower and falls slower over the same tell) */
+  dropH: 480,
   /** its radius (px of world): the nut 30 across (a third of his drawn 89.1: small), the fruit 42 (half of him: big) */
   lowR: 15,
   highR: 21,
@@ -73,9 +77,11 @@ export const ROLL = {
   forgive: 4,
 } as const;
 
-/** Easy (1-8.md: "nuts 2.5 s+ apart, the fruit's arc higher and slower"): its pace this share, the tell this much longer, the arc this
- *  much higher. B5's numbers: the Designer may tune them (as CHASE_ROWS.easy). The spacing is the lay's (the builder's) */
-export const ROLL_EASY = { speed: 0.8, tell: 1.4, bounce: 1.15 } as const;
+/** Easy (1-8.md: "nuts 2.5 s+ apart, the fruit's arc higher and slower"): its pace this share, the drop this much longer, the arc this
+ *  much higher, seen this long before it reaches him at a full run. B5's numbers: the Designer may tune them (as CHASE_ROWS.easy). An
+ *  upright 390 px phone's chase view shows about 1.1 s at a full run (chaseCamera.test.ts): Easy's extra is in the slower pace and the
+ *  lay's spacing, not a longer sight line. The spacing is the lay's (the builder's) */
+export const ROLL_EASY = { speed: 0.8, tell: 1.15, bounce: 1.15, seen: 1.1 } as const;
 
 export const rollRadius = (kind: RollKind): number => (kind === 'low' ? ROLL.lowR : ROLL.highR);
 
@@ -95,7 +101,8 @@ export function rollRow(spec: RollSpec, easy: boolean): { speed: number; bounce:
 export function rollAhead(spec: RollSpec, easy = false): number {
   const tell = rollTell(easy);
   const { speed } = rollRow(spec, easy);
-  const seen = Math.max(ROLL.seen, tell);
+  // (and never so near that it lands at his feet: after the thunk it still rolls ROLL.after s before it reaches him)
+  const seen = Math.max(easy ? ROLL_EASY.seen : ROLL.seen, tell + ROLL.after);
   return Math.ceil(PHYS.maxRun * tell + (PHYS.maxRun + speed) * (seen - tell) + rollRadius(spec.kind) + 22);
 }
 
