@@ -36,8 +36,8 @@ const BODY_H = 48;
  *             tip); the ledge runs on past the tip until the vine keeps TOP_ROOM (80, vineTop.ts) to its open end (pipeline.ts towerJoin;
  *             at 18 px a first-timer walked past it and off: castBots 1-4, every kid Normal fail, R-165.206). Not simply a bigger inset:
  *             the turned storey would lose the room the long beats need (every roll failed)
- *   sealedIn  the same for a vine on a sealed piece (a gate's top: nothing may run on beside it, so it keeps the old inset; its foot
- *             room is the 80 px rule's open debt, named by the lay test if a roll lays one)
+ *   sealedIn  how far in from the back end of a sealed piece (a gate's top: nothing may run on beside it) the vine that leaves it may
+ *             stand, before clearClimbs moves it CLIMB_CLEAR back: TOP_ROOM + CLIMB_CLEAR (at 44 it stood 18 px from that open end)
  */
 export const TOWER = {
   width: 1280,
@@ -47,7 +47,7 @@ export const TOWER = {
   fall: 450,
   see: 300,
   vineIn: 44,
-  sealedIn: 44,
+  sealedIn: 106,
   /** a catch bough (STAGE-RULES §2 "Falls in climbs": a catch branch under the gap): under a storey's own gap it lies `hop` px under
    *  the lower lip, lip to lip (a fall in is one plain hop out, the tower's soft pit); under a storey's open end, where nothing
    *  else would catch within `fall` (or, going down, `see`), it is `catchW` wide, one storey's clearance down */

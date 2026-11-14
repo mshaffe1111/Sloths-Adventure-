@@ -271,9 +271,11 @@ const CROWN: SectionTemplate = (() => {
   //  no set-back (engine.ts crumbledWhole runs on a set-back only), so with the stair alone a climber who stood too long on two steps was
   //  stranded under the mid until the steps grew back off screen (POLISH-1 11-13: kid Normal seed 16; level.md rule 5). The stair stays the
   //  quick way, the vine the steady one: the stage's own "one vine sure")
-  //  It tops out between the field's first two vines, TOP_ROOM (80) or more from the mid's open end over the stair (at midX + 20 it stood
-  //  20 px from it: a vault the short way went off; R-165.206), never under a field vine's column (a pod's)
-  pieces.push(climbOn('sure', 'foot', W, midX + MARGIN + GAP / 2, RISE * 4));
+  //  It stands on the line of the field's middle vine (no pods on it), TOP_ROOM (80) or more from the mid's open ends (at midX + 20 it
+  //  stood 20 px from the end over the stair: a vault the short way went off; R-165.206), and GAP from the field's other vines: between
+  //  two of them its top was in his climbing reach at the field's foot, and a side push there vaulted him out instead of taking the
+  //  second hand (fieldPetals.test.ts, 11-14)
+  pieces.push(climbOn('sure', 'foot', W, midX + MARGIN + GAP, RISE * 4));
   for (let i = 0; i < CROWN_N; i++) pieces.push(climbOn(`f${i + 1}`, 'mid', midW, MARGIN + i * GAP, CROWN_H));
   pieces.push(branch('top', { kind: 'over', on: 'mid', at: [0, 0], dy: [-CROWN_H, -CROWN_H] }, midW));
   FIELD_ROWS['w1-14-crown'] = { n: CROWN_N, H: CROWN_H, figs: [], pods: [{ vine: 1, shift: 0 }, { vine: 3, shift: BEATS.grown / 2 }], beat: 'grown', gate: false, foot: 'mid' };
