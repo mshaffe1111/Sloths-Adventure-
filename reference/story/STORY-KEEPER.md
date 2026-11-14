@@ -485,3 +485,4 @@ different." (9): "about 3 minutes" is untrue for 1-4 (214 s designed on Normal, 
 **11-14 about 5:50 PM ET: the lead rotates tonight.** Matt starts a new lead; its session id goes on line 1 of reference/handoffs/lead.md
 on ccr-ea739a2f-dfcee4. session_01FhBbYNzGRJBDMzn6XbtQK2 becomes the backup. The keeper stays; line approvals go to the new lead.
 Brief the new lead from this file when it messages.
+**NEW LEAD (11-14 6:03 PM ET): session_01FhBbYN2CVHnFXg7XzqKXpM** (lead.md line 1 not yet updated at 6:06 PM; flagged to it). Sent it the open list.
