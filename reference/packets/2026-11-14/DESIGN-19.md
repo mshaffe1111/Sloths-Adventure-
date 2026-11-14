@@ -8,7 +8,7 @@ Facts (lead, checked on origin/t-int-9): the boa exists (src/game/predators/worl
 'trap'); drop traps wired (dropTrap.ts, engine.ts:119); foodChain wired (castPlay.ts:14,176); gen2/lureLay.ts exists but is NOT wired;
 1-9 is still hand-built (protoStage.ts:70); stagePlan.ts:55 calls it a gauntlet. 2-1 and 2-2 are hand-built (w2Stages.ts:1-11): 2-1 drifting
 logs (river.ts), 2-2 lily pads that should sink (ride.ts newPad/stepPad exist, unwired), beatBrick 'bites' = snap-jaw stones, unwired.
-Deliver on branch t-design-19 from origin/t-1718-design, by 9:15 PM ET:
+Deliver on branch t-design-19 from origin/t-1718-design, by 8:15 PM ET:
  (1) reference/design/1-9.md in 1-8.md's format: Normal target from DIFFICULTY.md:61 (pasted, never typed), Easy, the beat table, the
      NODE STRING, every NEW block with size (S/M/L) and the exact engine file it needs, one clear idea, first appearances taught, Dot's line
      asks for the story keeper (don't write final lines), the nature check (hunters are chased off or flee, never eat: MAP-REVISIONS:181).
@@ -19,5 +19,5 @@ Deliver on branch t-design-19 from origin/t-1718-design, by 9:15 PM ET:
  (3) reference/design/W1-TRIBUTE-PASS.md (Matt R-165.253): for each of 1-1..1-8, ONE change using pieces we already have that gives it its
      own feel, tied to one game on Matt's shelf, with the reason in one line. Under 40 lines.
 Gates: roadmapcheck + knowncheck (docs only). End your report with "Learned" and any proposed level.md rule changes.
-BOX: report by 9:15 PM ET, or at 40% real context (400k). No shell wait loops (D67). Report to the lead session on reference/handoffs/lead.md
+BOX: report by 8:15 PM ET, or at 40% real context (400k). No shell wait loops (D67). Report to the lead session on reference/handoffs/lead.md
 line 1 (session_01FhBbYN2CVHnFXg7XzqKXpM); every message carries your context %.
