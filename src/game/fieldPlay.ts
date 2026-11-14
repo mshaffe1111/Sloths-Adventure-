@@ -16,7 +16,7 @@ import type { Platform, PlayerState, Vine } from './types.ts';
 import { POD, podAt, podHits, type PodColumn, type PodCost } from './podfall.ts';
 import type { ClockRead } from './clock.ts';
 import { GATE, HANDS_UP, clusterLand, fallCluster, gateLeft, gateOver, gateSag, gateShut, type ClusterGate, type Hands, type VineCluster } from './vineField.ts';
-import { drawGate, drawGateThorns, drawPod, type ThornState } from './vineFieldArt.ts';
+import { drawGate, drawGateLock, drawPod, type LockState, type TieState } from './vineFieldArt.ts';
 
 /** what the field asks of its host (the engine) */
 export interface FieldHost {
@@ -45,8 +45,11 @@ export class FieldPlay {
   private readonly gateIds: Set<number>;
   /** where each cluster was laid (its y), to read how far up its vine he has pushed it */
   private readonly laid = new Map<number, number>();
-  /** a kept thorn state (no allocation a frame) */
-  private readonly thorn: ThornState = { hold: 1, strain: 0, settle: 0, pull: 0 };
+  /** a kept lock state and its ties (no allocation a frame) */
+  private readonly lock: LockState = { strain: 0, settle: 0, pull: 0 };
+  private readonly ties: TieState[] = [];
+  /** when each fig tore free (game time), for its tie's snap */
+  private readonly snapAt = new Map<number, number>();
 
   constructor(
     readonly pods: readonly PodColumn[],
@@ -188,6 +191,7 @@ export class FieldPlay {
    * under its column, and every gate it held lifts a notch, or springs open on its last.
    */
   torn(c: VineCluster, h: FieldHost): void {
+    this.snapAt.set(c.id, h.t);
     const v = this.vines.find((q) => q.id === c.vine);
     if (v) c.land = clusterLand(v, c.y, this.platforms, this.gateIds);
     // (it locks in: a gold pop where it tore free, under the bough it was holding down)
@@ -230,25 +234,30 @@ export class FieldPlay {
     return l.from + (l.to - l.from) * e;
   }
 
-  /** how a gate's thorn tangle stands at `t` (vineFieldArt.ts drawGateThorns): a notch less for each fig in, straining while one is
-   *  pushed, a shudder as one locks in, pulled back after the last */
-  thornsOf(g: ClusterGate, t: number): ThornState {
-    const s = this.thorn;
-    const n = g.clusters.length;
+  /** how a gate's lock stands at `t` (vineFieldArt.ts drawGateLock): straining while a fig is pushed, a shudder as one locks in, the
+   *  thatch thrown after the last; and each fig's tie (its strain to where it tears free, and how long since it snapped) */
+  lockOf(g: ClusterGate, t: number): LockState {
+    const s = this.lock;
     const left = gateLeft(g, this.clusters);
     const l = this.lift.get(g.id);
     const since = l ? t - l.t0 : Infinity;
-    s.hold = n ? (left || 1) / n : 0;
     s.pull = left === 0 ? (l ? Math.min(1, since / GATE.pull) : 1) : 0;
     s.settle = left > 0 && since < GATE.settle ? Math.sin((since / GATE.settle) * Math.PI) * (1 - since / GATE.settle) : 0;
     s.strain = 0;
+    this.ties.length = 0;
     for (const id of g.clusters) {
       const c = this.clusters.find((q) => q.id === id);
-      const v = c && !c.falling && !c.gone ? this.vines.find((q) => q.id === c.vine) : undefined;
+      const v = c ? this.vines.find((q) => q.id === c.vine) : undefined;
       const y0 = c ? this.laid.get(c.id) : undefined;
       if (!c || !v || y0 === undefined) continue;
-      const way = y0 - (this.topOf(v, c.h, c.y) + c.h);
-      if (way > 1) s.strain = Math.max(s.strain, Math.min(1, (y0 - c.y) / way));
+      const at = this.snapAt.get(c.id);
+      let strain = 1;
+      if (!c.falling && !c.gone) {
+        const way = y0 - (this.topOf(v, c.h, c.y) + c.h);
+        strain = way > 1 ? Math.max(0, Math.min(1, (y0 - c.y) / way)) : 0;
+        s.strain = Math.max(s.strain, strain);
+      }
+      this.ties.push({ x: v.x, strain, age: at === undefined ? (c.falling || c.gone ? 9 : -1) : t - at });
     }
     return s;
   }
@@ -263,7 +272,7 @@ export class FieldPlay {
       const sag = this.sagOf(g, t);
       if (!b.broken && sag < 0.5 && b.art !== 'hidden') continue;
       drawGate(ctx, b, g.far, sag);
-      if (g.clusters.length) drawGateThorns(ctx, b, g.far, sag, this.thornsOf(g, t), t);
+      if (g.clusters.length) drawGateLock(ctx, b, g.far, sag, GATE.depth * b.width, this.lockOf(g, t), this.ties, t);
     }
     for (const pod of this.pods) {
       if (pod.x < x0 - 60 || pod.x > x1 + 60) continue;

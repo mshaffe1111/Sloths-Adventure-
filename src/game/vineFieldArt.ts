@@ -25,8 +25,13 @@ const PIECES = {
   bough: piece(new URL('../assets/w1-1113/w14-roughbough.webp', import.meta.url).href),
   // (a silk tuft cut from the burst's own plume, its husk side faded out: POLISH-1 11-13, the inventory's hf1113/w14-fluff)
   fluff: piece(new URL('../assets/w1-1113/w14-fluff.webp', import.meta.url).href),
-  // (a shut gate's thorn tangle: 1-2's own painted bramble, the inventory's w1-thorn-bramble-long, the art World 1's hurt floor ships)
-  thorns: piece(new URL('../assets/props/pits/w1-thorn-long.webp', import.meta.url).href),
+  // (a shut gate's lock, Matt's sheet 1 of 11-14 cut by ART-MATT, the inventory's hfmatt/w1m-*: a leaf thatch over the bough, tied down
+  // at each fig by a vine tie in three states on one canvas; the snap throws bark chips from his sheet 2)
+  lid: piece(new URL('../assets/w1-matt/w1m-leaf-lid.webp', import.meta.url).href),
+  tieTaut: piece(new URL('../assets/w1-matt/w1m-tie-taut.webp', import.meta.url).href),
+  tieStrain: piece(new URL('../assets/w1-matt/w1m-tie-strain.webp', import.meta.url).href),
+  tieSnap: piece(new URL('../assets/w1-matt/w1m-tie-snap.webp', import.meta.url).href),
+  chips: [1, 2, 3, 4, 5, 6, 7].map((i) => piece(new URL(`../assets/w1-matt/w1m-bark-chips-${i}.webp`, import.meta.url).href)),
 };
 /** a piece's picture once loaded (starts the load; the phone taking it back reloads it: atlasLoader.ts) */
 function pic(p: Piece): HTMLImageElement | null {
@@ -297,56 +302,102 @@ export function drawGate(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 
   ctx.restore();
 }
 
-/** the bramble's picture (522 x 203, its stems' foot about 92% down) and how tall it stands on a shut bough (a share of his height) */
-const THORNS = { w: 522, h: 203, foot: 0.92, tall: 1.25 } as const;
+/** the vine tie's canvas (146 x 324 at 3 px a unit: 49 x 108 px drawn), its knot at (78, 277) on the bough's centre line (the
+ *  inventory's hfmatt/w1m-tie-*: the three states share it); the leaf thatch (720 x 177: 240 x 59 px drawn, its pole along the top,
+ *  stretched 0.8-1.25x along a bough or laid two side by side) */
+const TIE = { w: 146, h: 324, kx: 78, ky: 277, unit: 3 } as const;
+const THATCH = { w: 720, h: 177, unit: 3, poleY: 10 } as const;
+/** the bark chips a snapping tie throws (dx, dy px/s, spin), the same every snap */
+const CHIP_FLY = [[-160, -260, 7], [130, -300, -9], [-60, -340, 5], [210, -180, 11], [-230, -150, -6], [60, -230, 8], [-110, -120, -10]] as const;
 
-/** how a shut gate's thorn tangle stands now (fieldPlay.ts thornsOf) */
-export interface ThornState {
-  /** how much of it is still there (1 every fig on; less a notch for each fig freed; the pull-back runs 0 to 1 after the last) */
-  hold: number;
-  /** 0..1 the most-pushed fig's way up its vine: the tangle strains up as he pushes */
+/** how a shut gate's lock stands now (fieldPlay.ts lockOf) */
+export interface LockState {
+  /** 0..1 the most-pushed fig's way up its vine (to where it tears free): the thatch strains as he pushes */
   strain: number;
   /** 0..1 the settle after a fig locks in (a quick shudder down) */
   settle: number;
-  /** 0..1 the pull-back once the last fig is in: the tangle draws back off the bough to its two ends and is gone */
+  /** 0..1 the throw once the last fig is in: the thatch is flung up off the bough and is gone */
   pull: number;
+}
+/** one fig's tie on the bough: at its vine's x, how far its fig has been pushed (0..1), and seconds since it snapped (-1: not yet) */
+export interface TieState {
+  x: number;
+  strain: number;
+  age: number;
 }
 
 /**
- * A shut gate's thorn tangle (Matt, R-165.212: "put something over the platform... that shows it is locked"; World 1 has no made things):
- * 1-2's painted bramble lying along the shut bough, over the way up, tilted with its sag. It strains as a fig is pushed, shudders down a
- * notch as each fig locks in, and on the last it pulls back off the bough to its ends. Only its motion is code (STAGE-RULES §4).
+ * A shut gate's lock (Matt, 11-14 12:06 AM: "something that is tying down the thatch, and it shows that it's breaking... or have a
+ * lock... right now it's only a guess"): his own painted leaf thatch lies along the shut bough, tied down at each fig's vine by a vine
+ * tie. As he pushes a fig the tie goes from taut to straining (frayed, pale, shivering harder the further the fig is up); at full push
+ * it SNAPS (its two ends whip apart, bark chips fly) and the thatch shudders; on the last the thatch is flung up off the bough and the
+ * way is open. Only the motion is code (STAGE-RULES §4).
  */
-export function drawGateThorns(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 'y' | 'width'>, far: -1 | 1, sag: number, s: ThornState, t: number) {
-  if (s.pull >= 1 || s.hold <= 0) return;
-  const im = pic(PIECES.thorns);
-  if (!im) return;
-  const pivotX = far > 0 ? b.x : b.x + b.width;
-  const ang = Math.atan2(sag, b.width) * far;
-  const h0 = THORNS.tall * POKEY_H;
-  const pw = (h0 * THORNS.w) / THORNS.h;
-  const span = b.width * 0.94;
-  const n = Math.max(1, Math.ceil(span / (pw * 0.8)));
-  const step = n > 1 ? (span - pw) / (n - 1) : 0;
-  const ease = s.pull * s.pull * (3 - 2 * s.pull);
-  const tall = h0 * (0.55 + 0.45 * s.hold) * (1 - 0.85 * ease) * (1 - 0.12 * s.settle) * (1 + 0.1 * s.strain);
-  const shake = s.strain * 1.6 * Math.sin(t * 47) + s.settle * 2.5 * Math.sin(t * 61);
-  ctx.save();
-  ctx.translate(pivotX, b.y);
-  ctx.rotate(ang);
-  const x0 = (far > 0 ? 0 : -b.width) + (b.width - span) / 2;
-  const mid = x0 + span / 2;
-  ctx.globalAlpha = 1 - ease;
-  for (let i = 0; i < n; i++) {
-    const cx = n > 1 ? x0 + pw / 2 + step * i : mid;
-    // (the pull-back: each clump draws away from the middle, to its own end of the bough)
-    const out = (cx < mid ? -1 : 1) * ease * span * 0.35;
-    const flip = i % 2 ? -1 : 1;
+export function drawGateLock(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 'y' | 'width'>, far: -1 | 1, sag: number, depth: number, s: LockState, ties: readonly TieState[], t: number) {
+  const lid = pic(PIECES.lid);
+  // (the bough's drawn top at x, sagged as drawGate tilts it)
+  const topAt = (x: number) => b.y + sag * Math.max(0, Math.min(1, far > 0 ? (x - b.x) / b.width : (b.x + b.width - x) / b.width));
+  if (lid && s.pull < 1) {
+    const pivotX = far > 0 ? b.x : b.x + b.width;
+    const ang = Math.atan2(sag, b.width) * far;
+    const n = Math.max(1, Math.round(b.width / (THATCH.w / THATCH.unit)));
+    const pw = b.width / n, ph = THATCH.h / THATCH.unit;
+    const shake = s.strain * 1.4 * Math.sin(t * 43) + s.settle * 3 * Math.sin(t * 59);
+    const e = s.pull * s.pull;
     ctx.save();
-    ctx.translate(cx + out + (i % 2 ? shake : -shake), 0);
-    ctx.scale(flip, 1);
-    ctx.drawImage(im, -pw / 2, -tall * THORNS.foot, pw, tall);
+    ctx.translate(pivotX, b.y);
+    ctx.rotate(ang);
+    ctx.globalAlpha = 1 - e;
+    const x0 = far > 0 ? 0 : -b.width;
+    for (let i = 0; i < n; i++) {
+      ctx.save();
+      // (the throw: each half flung up and out to its own side, turning as it goes)
+      const side = n > 1 ? (i < n / 2 ? -1 : 1) : far;
+      ctx.translate(x0 + pw * (i + 0.5) + side * e * 60, -(THATCH.poleY / THATCH.unit) - e * 140 + s.settle * 3 + shake * (i % 2 ? 1 : -1));
+      ctx.rotate(side * e * 0.9);
+      ctx.drawImage(lid, -pw / 2, 0, pw, ph);
+      ctx.restore();
+    }
     ctx.restore();
   }
-  ctx.restore();
+  const tw = TIE.w / TIE.unit, th = TIE.h / TIE.unit, kx = TIE.kx / TIE.unit, ky = TIE.ky / TIE.unit;
+  for (const tie of ties) {
+    const knotY = topAt(tie.x) + depth / 2;
+    if (tie.age < 0) {
+      if (s.pull >= 1) continue;
+      const im = pic(tie.strain < 0.45 ? PIECES.tieTaut : PIECES.tieStrain);
+      if (!im) continue;
+      // (straining: it shivers harder, and stretches a little up, the further the fig is pushed)
+      const k = Math.max(0, (tie.strain - 0.45) / 0.55);
+      const jx = k * 2.2 * Math.sin(t * 53 + tie.x), stretch = 1 + 0.12 * k;
+      ctx.drawImage(im, tie.x - kx + jx, knotY - ky * stretch, tw, th * stretch);
+      continue;
+    }
+    // snapped: the two ends whip apart (the painted snap) and fade; bark chips fly from the knot and fall
+    if (tie.age > 1.1) continue;
+    const im = pic(PIECES.tieSnap);
+    if (im) {
+      ctx.save();
+      ctx.globalAlpha = tie.age < 0.6 ? 1 : 1 - (tie.age - 0.6) / 0.5;
+      const pop = 1 + 0.15 * Math.max(0, 1 - tie.age / 0.15);
+      ctx.drawImage(im, tie.x - kx * pop, knotY - ky * pop, tw * pop, th * pop);
+      ctx.restore();
+    }
+    if (tie.age < 0.9) {
+      ctx.save();
+      ctx.globalAlpha = 1 - tie.age / 0.9;
+      for (let i = 0; i < CHIP_FLY.length; i++) {
+        const c = pic(PIECES.chips[i]);
+        if (!c) continue;
+        const [vx, vy, spin] = CHIP_FLY[i];
+        const a = tie.age;
+        ctx.save();
+        ctx.translate(tie.x + vx * a, knotY - 6 + vy * a + 450 * a * a);
+        ctx.rotate(spin * a);
+        ctx.drawImage(c, -c.width / 6, -c.height / 6, c.width / 3, c.height / 3);
+        ctx.restore();
+      }
+      ctx.restore();
+    }
+  }
 }
