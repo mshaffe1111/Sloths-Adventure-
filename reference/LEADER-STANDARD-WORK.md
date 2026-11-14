@@ -39,6 +39,7 @@ Sources: Google Project Oxygen (O'Reilly, Leading Effective Engineering ch. 4; P
 ## The lead's day
 **Start (every session):** laws, lessons, PARTNER, STATUS, this file; the supervisor's last digest; the Day 1 burn-down; set the day's
 three priorities from the plan, not from whatever arrived last.
+**Every check-in (CRITIC-LR 11-14):** three levels in flight: for each of the next three levels, the design, engine and build owner by name and branch, or the gap is logged as a defect.
 **Each supervisor digest:** act only on yellow and red; audit one green in three myself (gemba: open the real thing).
 **Once a day:** walk the newest build myself on a phone-size screen, upright and sideways, fresh/old/finished saves.
 **Each decision for Matt:** one at a time, multiple choice, with my recommendation and the cost.

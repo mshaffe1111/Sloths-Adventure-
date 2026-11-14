@@ -15,3 +15,15 @@
 4. **Bias of the last lead: relaying and serial work.** Report-by times were missing until 5:30 PM (D71); ENG-16F ran to 54% (LEVEL-LOG ENG-16F row); levels were built one at a time with engine done inside the level (1-6: four builders). The pipeline in the persona (three levels in flight) was not running: nothing was in flight for 1-9 or World 2.
 5. **Tributes lean old.** 1-8's three (Pitfall! 1982, Donkey Kong 1981, Crash 1996; design/1-8.md "Tributes" on t-1718-design) are all pre-2000; R-165.248 (Matt 2:07 PM) asked for the whole shelf. Change: the 1-8 plan review adds one modern source only if it fits a sloth on a phone.
 6. **Two shared reds were "owned elsewhere" by word only** (requiredMove 1-6, softFalls11 8-3: backup lead's facts 6:08 PM). Change: INT-9b's phase B must show both green on the combined head, by name.
+
+## 3. CRITIC-LR verdict (6:58 PM ET) and what the lead changed (6:49 PM ET)
+PASS: #3 (re-score: only on a head with TOOLS-1's meter; 1-6 from ENG-16G's head; 1-8 on t-eng-b6's gen2 chase; 1-7 2.4 vs 5.5 is the open
+cause before 1-8's 7.5 is final), #6 (phase B shows requiredMove green BECAUSE the old 1-6 is deleted, R-165.238, and softFalls11 holding
+09f44c30). REJECT, fixes adopted: #1 the drift check becomes a script with a planted red (R-165.255): running engine branches must contain the
+integration head, GREEN ones must be merged with the full gate; "2 days" corrected to about 19 h; D74. #2 engine queue order: 7:30 ENG-16H
+(petal lay, 1-6) -> ENG-B6 (running) -> fig gate option A (Matt 5:20 PM, R-165.212) -> the 1-9 engine for the PICKED pitch's non-Now nodes
+(R-165.257) -> ENG-W2 (R-165.256) builds the World 2 kit only (pitch-independent), its river/pad sections wait for the pick. #4 countermeasure:
+LEADER-STANDARD-WORK check-in line "three levels in flight, owner by name and branch, or a logged defect". #5 the tribute rule is pass/fail
+(STAGE-RULES, R-165.248): sources across series AND eras, post-2000 included, our own idea, what players loved; 1-8 has FOUR tributes (Jungle
+Hunt too). Missing items: link #4 risk (told Matt 6:24 PM: ~11:30 PM); the handoff doc: the lead ticks it at the 0.9.9 release. Cites in §1
+are 1-2 lines early (lead.md grew after they were checked: D52 again); corrected values: Live :89, EnK5 :90, links :94, Waiting :100, table :114-119.
