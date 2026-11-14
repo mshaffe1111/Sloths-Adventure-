@@ -4,9 +4,27 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for ENG-16E (11-14, t-build-16): section 0z (the late press's swing, the testers' let-go in the lay, the petal fill's path). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0z. The late press, the testers' let-go, the fill's path (ENG-16E, t-build-16, 11-14, R-165.246): what the next engineer must know
+- engine.ts keeps the sweet spot's last moment (`sweetSnap`) WITH the vine's `amp`: a press a beat late leaps from it (RELEASE.late,
+  timedLaunch reads `s.amp`). Without it a late press off any liana narrowed by a neighbour (a chain's, swingSetup's) leapt as off the
+  full 0.45 swing, a third short (vx 426 vs 520): 1-6's chain deaths (BUILD-16d E1). `src/game/swingLate.test.ts` drives the REAL engine
+  (RealPlay.bare) and compares the leap with timedLaunch on the snapshot: a gate must call the same code the screen calls (D19).
+- physics.ts `FORWARD_END` (0.75, the testers' moment, = the first-timer's LET_GO_AT, a test holds them equal) and `forwardEndLands(A,
+  hits, grips)`: the engine's press at that share of the swing out, every hold, the jump held. pipeline `lianaBand` lays a perch laid by
+  what he SEES (a grip dial, or a chain's last liana `held`) only where it lands his middle LAND_IN (16 px) inside; dial-free lianas
+  (Worlds 6-8, World 1's LONG) are laid as before. The amp floor for a chain's last liana is NOT possible under ENG-S5's view rule
+  (2 x 183 + 50 > SWING_SEEN 414): don't try it again.
+- petals.ts fillGaps never picks a trail off the walked path: `fallSpans` (gen2 `falls` + `heartFalls`, each with its LOWER lip) and
+  `offPath` (hurt floor, catch, fragile, a floor or step inside a fall below its lower lip); a jump trail resting on one, a climb whose
+  foot is in a pit, a spot inside a fall below its lip. Judged at PICK time (RESTS WeakMap), so the layout's random draws are unchanged
+  and a stage whose fill never picked one lays exactly as before (lockall: only 1-1, 1-3, 1-6, 7-9, 8-1, 8-3, 8-5, 8-6 moved).
+  Hand-built stages (no gen2) carry no falls: only the pieces' own marks guard them. `src/game/petalFill.test.ts` (toy stages).
+- OPEN (1-6 lay, not the engine): a creaky take-off over a soft pit whose stair leads back up to it strands him for ~30 s (regrow.ts:
+  off screen, 30-35 s); the gorge's gb1 -> gl2 (castBots d2 loops). A lay check could refuse it in every world (the lead's call).
 
 ## 0y. Liana to liana: chains (ENG-S5, 1-6 beat 4 "The chain", t-eng-s5, 11-14): what the next engineer must know
 - ONE measure, the engine's press: physics.ts `chainWindow(A, B, flights, grips, seen)` = pressWindow on A hitting canGrabSwing on B at

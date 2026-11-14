@@ -132,3 +132,26 @@ test('a vine snake on his liana: up from the foot -> he climbs high; down from t
   // (another liana's snake is not his)
   assert.equal(at({ shown: true, tell: false, live: true, head: 300, tail: 415, dir: -1 }).snakeAhead(3, LEN, hands), null, 'the snake on liana 7 is not on his liana 3');
 });
+
+/**
+ * The climb back ends on a liana (ENG-16E, R-165.246; 1-6's gorge, castBots adult Normal seed 4 x6 and kid seed 3 x6 rescues): in the pit
+ * past the creaky limb (its floor split from the pit before by the open gap under the limb) his way back runs up the stair and on through
+ * the pit before; a liana's foot swinging back over the stair took him, and he kept the climb-back's way (back) on it: held back and
+ * leapt back over the gone limb into the pit before (FT_FRAMES 236.8-240.4). A person on a liana that leads on swings and lets go toward
+ * the way on: on a liana the climb back is over and the route steers. RED with the climb back kept on a liana.
+ */
+test('caught by a liana while he climbs back out of a pit, the climb back is over: the route steers him on, never back', () => {
+  const run = new FirstTimerRun('1-1', 1, FT_ADULT, { route: ROUTE, cap: 5, rescueAfter: 100 });
+  const vine = { id: 1, x: 1250, topY: BANK - 420, bottomY: BANK, swaySpeed: 0, swayPhase: 0, vineType: 'swing_liana', swingAmp: 0.45, swingPeriod: 2.85 } as unknown as Vine;
+  run.sim.bare(PLATS(), [vine]);
+  run.sim.swing(vine, { angle: -0.2, omega: -0.3, len: 400 });
+  run.prog.relocate(run.sim.p);
+  const bot = run as unknown as { climbBack: { path: Platform[]; dir: -1 | 1; t: number } | null; pitWayBack(t: null): -1 | 0 | 1; t: number };
+  bot.climbBack = { path: PLATS().slice(1, 5), dir: -1, t: bot.t };
+  assert.equal(bot.pitWayBack(null), 0, 'on the liana he still steers back the way he was climbing');
+  assert.equal(bot.climbBack, null, 'the climb back is not over once a liana holds him');
+  // (and on the ground, climbing back, it still steers back: the climb back itself is unchanged)
+  run.sim.stand(1450, PIT);
+  bot.climbBack = { path: PLATS().slice(1, 5), dir: -1, t: bot.t };
+  assert.equal(bot.pitWayBack(null), -1, 'on the pit floor, climbing back, he no longer steers back');
+});

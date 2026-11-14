@@ -1318,6 +1318,13 @@ export class FirstTimerRun {
     };
     const cb = this.climbBack;
     if (cb) {
+      // (a liana took him on the way back (its foot swinging back over the stair): the climb back is over and the route steers him on.
+      // Kept, he held back on it and leapt back over the gone limb into the pit before, round and round: 1-6's gorge, castBots adult
+      // Normal seed 4 and kid seed 3, six rescues each; ENG-16E, R-165.246)
+      if (p.isVineSwinging) {
+        this.climbBack = null;
+        return 0;
+      }
       if (p.grounded) {
         const on = this.floorAt(p.x, p.y, 6);
         const k = on ? cb.path.indexOf(on) : -1;
