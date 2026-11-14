@@ -156,7 +156,7 @@ export class RealPlay {
     // (World 5's spiders crouch only in full view on the screen, w5Kit SPIDER5.edge: there the camera is play, not paint, and runs)
     for (const m of COSMETIC) if (!(m === 'updateCamera' && (e.w5 || e.mc))) e[m] = noop;
     const guide = e.guide.bind(e);
-    e.guide = (text: string, seconds: number, o?: { teach?: true }) => {
+    e.guide = (text: string, seconds: number, o?: { teach?: true; lock?: true }) => {
       this.said.push({ text, x: e.player.x, y: e.player.y, t: e.gameTime });
       // (and what the line is, as the stage says: its own teach line, StageHint.teach)
       guide(text, seconds, o);

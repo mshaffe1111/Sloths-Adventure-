@@ -101,6 +101,13 @@ export interface StageHint {
   /** only while Pokey is left of this x (a line about something he has already gone by is not said late, from further on) */
   beforeX?: number;
   /**
+   * [top, bottom]: only while his feet (y + height) are inside this height band, in the air or not (R-165.236). A rolled stage's tip
+   * carries its section's band (gen2 pipeline `tipBand`): on a climbing stage x alone fired 1-4's four teach tips on the start floor in
+   * the first 3 s, 1,200-3,500 px under what they teach. On a flat stage the band holds every place he can be over the section, so the
+   * tip fires at the frame x alone fired (src/game/tipBand.test.ts)
+   */
+  band?: readonly [number, number];
+  /**
    * a move tip about one spot (a wide gap, a tall stump): once he stands on the ground past this x the moment has passed, and the line
    * goes, done or not (engine.ts; QA 5-1, 2026-10-26: "Wide gap!" stayed up from the gap on to the next stumps)
    */

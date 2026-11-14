@@ -78,7 +78,9 @@ export interface GuideFeed {
   passed?: boolean;
   /** the stage's own teach line (engine.ts onGuide `teach`) */
   teach?: true;
-  recent?: ReadonlyArray<{ text: string; ms: number; n: number; passed?: boolean; teach?: true }>;
+  /** the locked exit's line (engine.ts GuideOpts `lock`): said at once, whatever its words, R-165.241 */
+  lock?: true;
+  recent?: ReadonlyArray<{ text: string; ms: number; n: number; passed?: boolean; teach?: true; lock?: true }>;
 }
 /** a first-time lesson from the engine (App.tsx onLesson), numbered so each is said once, as the engine's lines are */
 export interface LessonFeed {
@@ -309,7 +311,7 @@ class GuideRun {
    * A line from the engine, in its old words: what it is comes from those words (a warning, the locked exit, a tip and the move that
    * closes it), and what is said is Matt's approved line for it (dotLines.ts). A cut line is not said.
    */
-  engineLine(text: string, ms: number, teach?: boolean): void {
+  engineLine(text: string, ms: number, teach?: boolean, lock?: boolean): void {
     // (1-1's help ladder, helpLadder.ts: its lines go straight in as struggle help, on Help and Tips, never on Quiet. Her tip rules
     // dropped them as a move already taught, R-165.62)
     const help = helpGuideLine(text, this.help, ms);
@@ -318,7 +320,7 @@ class GuideRun {
       return;
     }
     const v = this.view;
-    const l = engineGuideLine(text, this.stageId, { boss: v.boss, flight: v.flight, dot: this.dot, ms, teach });
+    const l = engineGuideLine(text, this.stageId, { boss: v.boss, flight: v.flight, dot: this.dot, ms, teach, lock });
     if (!l) return;
     // (a replay of a stage already cleared, its goal met in full: no "Still N to collect!", DOT-17)
     if (l.counted && this.replay) return;
@@ -546,7 +548,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       if (g.passed) run.passedLine(g.text);
       // (in a boss fight every line of hers belongs to an attack: its end takes it down)
       else if (!g.text) run.queue.clear((l) => l.source === 'engine' && (l.kind === 'danger' || run.view.boss), run.clock);
-      else run.engineLine(g.text, g.ms, g.teach);
+      else run.engineLine(g.text, g.ms, g.teach, g.lock);
     }
     run.lastGuide = guide.n;
   }, [guide?.n]); // eslint-disable-line react-hooks/exhaustive-deps
