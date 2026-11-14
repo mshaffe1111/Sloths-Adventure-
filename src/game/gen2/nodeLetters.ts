@@ -119,8 +119,9 @@ export const CONTENT_WORDS: Readonly<Record<ContentLetterId, readonly [string, s
   m: ["Cover", "Cover he keeps still in while a watcher looks: a bush, a moss carpet, a patch, or moss hanging from a liana (stillness.ts Cover).", "You duck into a bush or under hanging moss and keep still while it looks."],
 };
 
-/** the designer's MUST / MAY / NEVER for each content letter (NODES.md §8.0, rule V18) */
-export const PIECE_WORDS: Readonly<Record<ContentLetterId, readonly [string, string, string]>> = {
+/** the designer's MUST / MAY / NEVER for each content letter that has a piece rule (NODES.md §8.0, rule V18); a letter not laid yet has
+ *  none, and its key card shows no Pieces */
+export const PIECE_WORDS: Readonly<Partial<Record<ContentLetterId, readonly [string, string, string]>>> = {
   g: ["The moss floor road under it, plus at least one of: a mossy stone, a log on a stump, a stump, a mound or a bank.", "A low log; dressing off to the side; petals low on the ground.", "A rock, stone, mound or bank in the air; water pieces; a rope or vine as the way across."],
   f: ["At least one floating platform: a solid log, a branch, or plank-bridge planks.", "Catch branches under each gap; a trunk in the art.", "A floating rock or stone; a trunk used as something to land on; a moving lift in World 1."],
   c: ["Landings that each sit higher than the last: a log, a branch, or a mossy stone on a bank or its own base.", "A stump as a step.", "A trunk used as something to land on; climbing a vine up a trunk, except in the stage that owns it (World 1: 1-4)."],
@@ -130,11 +131,6 @@ export const PIECE_WORDS: Readonly<Record<ContentLetterId, readonly [string, str
   w: ["Drawn water, with lily pads on its surface, stones sitting on its bed, or drifting logs on a drawn river.", "", "Lily pads, reeds or drifting logs anywhere off water; a stone floating on the water."],
   h: ["The world's own taught hazard (for example World 3's thorn vines hanging or swinging from trunks).", "", "A hazard before its world teaches it; another world's hazard art."],
   s: ["A liana hung from a bough or the canopy, with a landing past its swing.", "", "A liana hanging from open sky."],
-  v: ["Not laid yet: no piece rule.", "", ""],
-  p: ["Not laid yet: no piece rule.", "", ""],
-  t: ["Not laid yet: no piece rule.", "", ""],
-  x: ["Not laid yet: no piece rule.", "", ""],
-  m: ["Not laid yet: no piece rule.", "", ""],
 };
 
 /**
@@ -153,6 +149,6 @@ export function keyBlocks(): { JOBS: string; CONTENT: string; PIECES: string } {
     const c: ContentLetter = CONTENT_LETTERS[l as ContentLetterId];
     return row(l, [w[0], c.key, w[1] + dials(c), w[2]]);
   });
-  const pieces = Object.entries(PIECE_WORDS).map(([l, w]) => row(l, w));
+  const pieces = Object.entries(PIECE_WORDS).map(([l, w]) => row(l, w!));
   return { JOBS: block('JOBS', jobs), CONTENT: block('CONTENT', content), PIECES: block('PIECES', pieces) };
 }

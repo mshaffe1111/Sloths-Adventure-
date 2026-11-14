@@ -31,7 +31,7 @@ test('one letter grammar: the parser reads exactly the table letters, liana is s
   assert.equal(CONTENT_OF.s, 'swing');
   assert.equal(CONTENT_OF.r, 'rope');
   assert.match(CONTENT_WORDS.s[1], /liana/);
-  assert.doesNotMatch(PIECE_WORDS.r[0], /liana|past its swing/, "r's MUST is the rope and the climbing vine, not the liana");
+  assert.doesNotMatch(PIECE_WORDS.r![0], /liana|past its swing/, "r's MUST is the rope and the climbing vine, not the liana");
   assert.match(CONTENT_WORDS.r[1], /The swinging liana is s\./);
   assert.deepEqual(parseCode('A Pm R S E')[1].content, 'm');
   assert.deepEqual(checkCode(parseCode('A Pm R S E'), { graph: false }).filter((e) => /V22/.test(e)), [], 'V22 reads m as a letter');
@@ -50,6 +50,9 @@ test('one letter grammar: a letter the deal does not lay is later in the key and
     if (!laid) assert.equal(CONTENT_LETTERS[l as keyof typeof CONTENT_LETTERS].key, 'later', `${l} has no lay but the key says now`);
   }
   assert.deepEqual(Object.keys(LATER_CONTENT), ['s', 'v', 'p', 't', 'x', 'm']);
+  // (a letter with a piece rule has all three columns' words where the designer wrote them; one with none shows no Pieces, never an empty Never)
+  for (const [l, w] of Object.entries(PIECE_WORDS)) assert.ok(w![0] && w![2], `${l}: a pieces row with an empty Must or Never`);
+  assert.deepEqual(['v', 'p', 't', 'x', 'm'].filter((l) => l in PIECE_WORDS), []);
 });
 
 test('one letter grammar: m (cover) and h (rolling hazard) name their dials and the packet that lays them', () => {
