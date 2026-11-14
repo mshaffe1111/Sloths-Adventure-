@@ -6,7 +6,9 @@ creaking way down. Fix at the root in w1Arc14.ts ROTTEN_FORK, not the bots: make
 sound wood, crumble, job still D_ only if V9 allows a rising D; else ask the lead for a free job letter), or hide the exit until he is
 down. Then libstage 24, ONE more --relist, castBots 40 (no tier below the base: kid 20/27, adult 35/33, child 22/19, middle 27/29,
 expert 30; floor 0 under), then the full gates on t-len-14. Its castBots floor fix (2467b5e5, planted CAUGHT) stands on its own.
-3. feel-cam (t-feel-cam@9df1bdf4, no REPORT by 7:35 PM) merges clean onto t-int-6: next integration, after its REPORT.
+3. ROUND 2 (lead 7:49 PM, read only at 8:25: my miss, D57, the queue was not read at the 8:18 push): a fresh INT on t-int-6@d63a34bf merges
+t-feel-cam@90b3e73 (passed the lead's look) + origin/t-len-14 AT 2467b5e5 only (the castBots floor; the fork waits for step 2), then ONE
+full run of gates/run.sh, results kept apart from round 1 (gates/RESULTS.txt is round 1). Not started here: 40% context line.
 ## Done (evidence)
 - Merges, no conflicts, tsc 0 after each: t-perf-build 6fd6e00a; t-polish-2 c16fdad (src = 76dd013, lead 7:20 PM); t-feel-vine 7b77ff96.
 - Full gates ONCE on 16f2e24c (gates/run.sh = CLAUDE.md Checks + every CI step), all 0: tsc, unit 3/3 (unit1 1324/1324), build, chunk,
