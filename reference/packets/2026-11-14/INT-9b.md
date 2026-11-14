@@ -1,7 +1,10 @@
 # INT-9b: finish link #3 for Matt: merge the new 1-6 into t-int-9, every gate once, the lead judges. Opus 5.5 xhigh (integration). Written 4:11 PM ET 11-14.
 Branch: continue t-int-9 from its head (INT-9's last push). READ ONLY: reference/qa-reports/INT-9/REPORT.md "EXACT NEXT STEP" and its
-status table; ENG-16F's REPORT "GREEN" section on t-build-16 (when it lands). Start ONLY when the lead messages you that ENG-16F is GREEN;
-until then do nothing (no gate runs: they'd be redone).
+status table; ENG-16F's REPORT "GREEN" section on t-build-16 (when it lands). PHASE A NOW (link #3 = 1-7 + everything on t-int-9, without the new 1-6): cherry-pick ENG-16F's TOOLS-ONLY commits from origin/t-build-16
+(realPlay.ts FakeInput fresh-input harness fix, firsttimer.ts bot fixes, pitClimb/graceFresh tests, calibration-main.jsonl recommit;
+never w1Arc16/1-6 data), then check requiredMove on the OLD 1-6 (its only red). If it passes: every gate once on that head, stills/clips
+of 1-1/1-4/1-7 unchanged from INT-9's judged set, report GREEN: the lead publishes link #3 with 1-7. If requiredMove still fails, say
+why in one line and wait for phase B. PHASE B (when the lead says ENG-16F's successor is GREEN): items 1-4 below for link #4.
 1. Merge origin/t-build-16 (the new 1-6), reading both sides of every conflict (firsttimer.ts is edited on both build branches: keep
    both behaviours; tierBots 1-1 unmoved). Then R-165.238: delete the old proto 1-6 whole (protoStage.ts plan, its dotLinesData lines,
    dotTips.ts references); grep proves nothing else reads it; requiredMove's old-1-6 pin goes with it (re-pointed where its intent
