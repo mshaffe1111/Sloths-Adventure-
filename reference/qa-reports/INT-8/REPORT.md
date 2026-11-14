@@ -62,3 +62,93 @@
     - Its full gate run is UNRUN (a CI config change runs everything). FIX-15 branches from it.
     - **Old copies the next shooter must NOT use:** reference/qa-reports/INT-7/tools/clip.mjs, INT-8/tools/clip.mjs, FIX-14b's
       clip.mjs, and any reference/qa-reports/*/tools/clip.mjs. The first presses bare; the second is superseded by tools/inspect/.
+
+## Known red carried from link #1 (the lead's ruling, 11:41 AM: NOT a link #2 hold; R-165.212 reopened)
+- **1-4's fig gate can be got OVER while a tie still holds**, shown with real touch presses (stills/1-4/gateover-normal-side.mp4 +
+  .txt TRY lines; sheets/gateover-normal-side-ledge.jpg; stills/1-4/gateover-normal-side-OVER-*.jpg, -THROUGH-*.jpg). Normal, 1-4
+  seed 1, gate 6: 3 figs, bough x 414-934 at y 1923, the far end sagging to a drawn top of about 1977.
+  - **Held (head at or under the underside, 0 at worst):**
+    - climbing up under the bough;
+    - a leap off the vine top (vy -600);
+    - a leap and a second flick (he re-catches a vine before the top);
+    - an up-left flick from the far-end ledge at x 924 or 986 (he catches fig vine 874 under the bough).
+  - **OVER:** the far-end ledge (x 876-1056, y 2022) sits only about 45 px under the sagged end's drawn top.
+    - From x 1030, a straight-up flick with left held puts his feet at 1924, above the shut bough. His head reaches 150 px past the
+      underside.
+    - With a second flick in the air he reaches 1841, passes over the thatch, drops THROUGH it (a shut bough is no footing) and lands
+      on the floor at 2363.
+  - **Why (read in the code):** fieldPlay.ts `lid()` stops a rise only when it starts under the bough's drawn top and inside its span
+    (plus `GATE.lidSide` 22). From that ledge he rises outside x 956 and enters the span already above the top, so "feet already over
+    the bough's drawn top are left alone".
+  - **The same ledge, under the end (x 869-956):** standing there, his head is drawn about 72 px into the thatch. A press there is
+    taken by the fig-vine grab, and the lid puts him at about 2127, 105 px below the ledge he stood on.
+  - Not in this merge: POLISH-9 changes no 1-4 or field file. A fix member starts from the TRY lines (the lead).
+
+## Polish check (every still and clip judged at full size or on its contact sheet; sheets/)
+- 1-1 first run, Normal and Easy, upright and sideways: start, the dip's bank, the gap's lip and its flag, the bounce mushroom before
+  the tall bank, and the stone stair all read. Easy's gap is filled to a shallow dip and reads as ground.
+- **For the lead's pass/fail (D61), not from this merge:**
+  - The bounce cue is a code-drawn white ▲ over the mushroom (bounceArt.ts header: "the cue is unchanged: the up-arrow above them").
+    It is in every 1-1 bounce still, POLISH-9's passed stills included.
+  - The unlit flag's gold rim reads as a cream oval around the post (the lead's 2:56 AM ruling kept it). At the screen's edge it
+    shows as a lone arc: 1-1 Easy x7350 sideways, left edge.
+- The double clip reads start to finish:
+  - Dot's line is on screen as he walks in.
+  - Both one-jump tries visibly fail; the put-back is a clean iris wipe with no heart lost.
+  - Both doubles land.
+- 1-4 fig gate, all four: push, strain, SNAP, the head stop, the real leap dropping back under, the last fig throwing the thatch off,
+  and the way up opening.
+- Tool limits, not the game:
+  - Pokey's line "Meeca climbs this every Sunday..." stays up through the gate clips, because the tool never taps it.
+  - The caption bar covers the lowest ~45 px sideways.
+
+## Pushback
+- The packet's "two branches split 44 / 37 commits apart" didn't match this clone: 1681 / 37 against the one merge base 471bd000,
+  because link #1 holds main's history. Only 2 files overlapped textually, so there was no conflict to resolve. I read the meaning
+  across the files instead (Done, step 1).
+- "Stills of the first double" on 1-1's first run: the section's first double is the dip's 130 px bank (x 6943), before the 254 px
+  gap. The clip shows both.
+
+## Suggestions
+- **R-165.212's fix packet (the lead's):**
+  - The lid judges the whole rise against the bough's drawn shape, not just a rise that starts under it: any frame in which his feet
+    cross the drawn top inside span ± lidSide from below, or from the side while below the top, is stopped. Or move the far-end ledge
+    so it sits at least a full double's height under the sagged end.
+  - Plant it red on gateover's TRY ledge x 1030, with tools/inspect/clip.mjs `gateover` as the clip.
+  - Sweep every gate on every 1-4 layout, not just seed 1 (D21).
+- **A headless try-over gate:** clipPress.pressFrame on RealPlay-like engines with the real InputEngine, every gate, every ledge
+  within 250 px. That turns R-165.212 into a unit test instead of a clip.
+- **An integration role card** (INT-7's suggestion, still open): reference/roles/INTEGRATOR.md + handoffs/integrator.md. It would
+  cover the runner, the frozen worktree, BUILT checks, tools/inspect/clip.mjs only, and "unshallow before roadmapcheck".
+
+## Unresolved
+- t-int-8-clip's full gate run is UNRUN (a CI config change runs everything; ruling A).
+- R-165.212 is reopened and carried as a known red, not mine to fix.
+- The Easy double clip was not shot (the packet asked Normal sideways).
+
+## Method update (proposed: gates.md / release.md)
+- **Clips use tools/inspect/clip.mjs only.** Never a copy under reference/qa-reports. Every press goes through the touch pad's calls
+  and is lift-checked (clip.test.ts plants the bare press).
+- **Before the runner, `git rev-parse --is-shallow-repository` must be false** (else `git fetch --unshallow`): roadmapcheck refuses a
+  shallow clone.
+- **kbdcheck runs after drawcheck/clipcheck, never beside the unit shards** (INT-7's load-21 red). INT-8's runner order does this.
+- **A clip's cheat tries are taken from the geometry** (the ledges and vines within reach of a gate), each logged as a TRY line with
+  OVER/HEAD read from the game. Never only from where the earlier clip stood.
+
+**Lessons applied:**
+- D29: every roll-pinning test in the full suite on the head.
+- D36: a frozen worktree for the shoots.
+- D50: teach lines live on the default Tips.
+- D53: fast gates on the report tree.
+- D57: the queue read at every push.
+- D59: nothing left running; UNRUN named.
+- D61: rough spots named for the lead's pass/fail.
+- D62: BUILT on every file.
+- D63: clips of the whole action with cheat tries; that is what found R-165.212.
+- D64: context against 1M.
+- D67: no until/sleep loops; waited on completion notices.
+- D19: one press function for the clip and its test.
+
+**Method used:** gates.md, INT-7's runner and shoot layout.
+
+**Turnover note:** none exists for integration (Suggestion 3).
