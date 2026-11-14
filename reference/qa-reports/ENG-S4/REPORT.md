@@ -1,6 +1,7 @@
 # ENG-S4 REPORT (t-eng-s4 from origin/t-eng-s3@dd252669; packet reference/packets/2026-11-14/ENG-S4.md on the lead's branch)
-Start 8:00 AM ET. Code head **99b7fb56**. Context at the report: about 25% of the 1M window (my estimate; the lead has the real figure).
-Nothing left running at the stop (D59): GATES below.
+Start 8:00 AM ET. Code head **99b7fb56**. Context at the report: about 30% of the 1M window (my estimate; the lead has the real figure). Stopped 9:40 AM ET (10 min over the
+90 minute box, waiting out the gates rather than leaving them running, D59).
+Nothing left running at the stop (D59).
 
 ## Done-items
 1. **The snake view verdict counts the level's top (and foot), both ways** (vineSnake.ts snakeViewFaults; cameraFollow.ts usualZoom,
@@ -52,8 +53,18 @@ Nothing left running at the stop (D59): GATES below.
    not reused.)
 5. **Lock**: base recorded on dd252669 (3264 builds of 102 stages). --check on 99b7fb56: see GATES.
 
-## GATES on 99b7fb56 (its own worktree; gates.out.txt)
-(filled from the run: see the GATES section at the end)
+## GATES on 99b7fb56 (its own worktree, 8:27-9:32 AM ET; gates.out.txt). NOT ALL GREEN: buildcheck is red (below)
+- GREEN: tsc; unit 3419 tests, 3417 pass, 0 fail, 2 TODO (4-3's boulder, already marked TODO); BASE_PATH build; chunkcheck; artcheck;
+  knowncheck; generalitycheck (27/27 known); clipcheck (83 known, none new); kbdcheck; drawcheck; every proven list's seedlist --check
+  (1-1..1-5, each clean both settings); the engine tools' tests (CI's list); registrycheck; tierBots; roadmapcheck (the script's first run
+  failed only on the container's shallow clone, "proofs cannot be checked"; after `git fetch --unshallow`, exit 0, PASS).
+- **lockall --check vs the base recorded on dd252669: 102/102 stages unchanged** (lock-check.out.txt; its "gained verdicts" line lists
+  every gen2 stage that carries verdicts at all, lockall.ts:29, not a change).
+- **RED: buildcheck (1-1, p95 <= 150 ms at CPU x4), Normal p95 151 ms** in the run. A/B on this container (buildcheck-ab.txt), the same
+  machine, alternating: this head 171 / 171 / 118 ms (plus the run's 151), the base dd252669 (ENG-S3's head, none of this work) 195 /
+  132 / 127 ms; p50 57-71 vs 62-83. The base fails it too and the medians match: 1-1's build sits on the budget here, and nothing in
+  this branch is on 1-1's build path (the only pipeline line is `len`, read only when a row sets it). NOT a pass: the lead routes it
+  (main's head is not measured here). The budget is not touched (law 22).
 
 ## Polish check (real page, 6-3, Normal from localStorage (unset); shots/, shot.log; every label prints what the game built, the level's
 top, the view's top, the HUD band, the clear view, the widening and the verdict on that phone)
@@ -138,4 +149,5 @@ reference/handoffs/engine-core.md §0x (this commit).
    vine nodes: ledge -> A (today's catch), A -> B (a chain catch: canGrabSwing over A's release flights, >= 6 lines as swing edges),
    B -> ledge (today's swingLandingsIn from B's hold); a test from 1-6.md beat 4 (SHORT, SHORT, LONG) on W1 and W6 kits, both settings,
    planted; lockall unchanged (no shipped stage lays a chain).
-2. Integrate: t-art-678b first, then the rows file (step above). 3. The 1-6 builder: the builder note.
+2. buildcheck: the lead routes 1-1's build p95 (red on this head AND on dd252669 here; buildcheck-ab.txt); measure main's head the same
+   way first. 3. Integrate: t-art-678b first, then the rows file (step above). 4. The 1-6 builder: the builder note.
