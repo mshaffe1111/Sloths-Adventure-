@@ -20,7 +20,7 @@
    picture, tile joins blend: pole-tiles.jpg (x1/x2/x3, LIGHT + DARK, no ghosting). 27 catalog rows -> CATALOG-MASTER.csv -> --emit.
    Snake: a -28 deg hue shift reads vine-brown (beside-2), but the game's climb vines are yellow-green: olive matches them; lead's pick.
    w1NutPod (an open pod, 49 u) vs the palm nut (whole, 28 u): different things, same painted style (beside-4).
-**Gates:** artcheck PASS, knowncheck PASS, generality PASS, tsc 0, art tests 10/10, BASE_PATH build 0, chunkcheck PASS; full suite: SUITE.
+**Gates:** artcheck PASS, knowncheck PASS, generality PASS, tsc 0, art tests 10/10, BASE_PATH build 0, chunkcheck PASS; full suite on fcdaf19 (3 shards): 3,377 pass, 0 fail, exit 0 each (one existing TODO 4-3 test).
 roadmapcheck: "shallow clone, proofs cannot be checked": FAIL (no ROADMAP line changed). drawcheck/clipcheck not run (nothing wired).
 **Pushback:** the frame is POLISH-3's shot (its labels from the shooter's file name), not reshot by me; Pokey's px in each frame measured
 by eye (148 / 117 px). The inventory test fails any 1-piece new slot not on CATALOG-MASTER.md's gap line, and only --merge rewrites the .md.
