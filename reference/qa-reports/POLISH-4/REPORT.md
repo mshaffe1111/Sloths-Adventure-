@@ -1,9 +1,13 @@
 # POLISH-4 REPORT (t-polish-4 from t-polish-3@a9d6b1bc; lead session_01FhBbYNzGRJBDMzn6XbtQK2). Opus 5.5 high. Box 11:36 PM ET 11-13, stopped at the 40% context line.
 **EXACT NEXT STEP (for POLISH-5, 1-1; the lead 12:08 AM: 1-4's rotten fork R-165.206 moved to FIX-14 with Matt's rocks/fig-gate notes):**
-0. Read RESULTS at the foot: the full suite on e215878 and the 1-2/1-3/1-5 `--check` reds (replay differs from search; verdicts refuse
-   0) with their before/after on 9b45e20 (step 1 only). If the reds come from the t-ruler merge, the root is that the ruler's search re-judges
-   World 1's openings and keeps another roll: relist each in its own order (`--merge <provenSeeds order> --in-order --count <n>`), then
-   --check, tierBots, every seed test (D29), ONLY on the lead's word (a relist moves rolls Matt has played).
+0. **1-2/1-3/1-5 replays moved by the t-ruler merge (500eb9b, w1Pits.ts findOpenPits), NOT by step 1** (proof below). Seeds whose replay
+   differs from its search on the merged head (both settings unless named): 1-2: 20 23 54 63 65 75 99; 1-3: 44; 1-5: 14 44 45 86 139.
+   Every one still builds clean under the ruler ("the verdicts refuse 0" on each list): the search now keeps a different roll for them, so
+   a relist `--merge <provenSeeds order> --in-order --count <n>` (1-2 100, 1-3 100, 1-5 150) keeps every seed and its place, moving only
+   those plans; then --check, tierBots, every seed test (D29). ONLY on the lead's word (a relist moves rolls Matt has played). RULER's report
+   expected nothing to move outside 1-1: "lockall --layouts 16 vs d8d6a97 on the 101 other stages: 101/101 unchanged (1-2, 1-3 roll as on
+   main)". That compares layouts 1-16 replayed, never a list's search, so it could not see this; its seedlist checks ran on 1-1 only (and
+   timed out). 1-4 PASSES on the merged head.
 1. Rest of CLAUDE.md Checks on the head: build + chunkcheck, artcheck, drawcheck, clipcheck, kbdcheck, buildcheck (alone), tool tests,
    RULER's asks (lockall incl. 1-1, mixlist, ruler/scan.ts).
 2. 1-1 (R-165.228: harder than every stage but 1-4; fewer doubles, easier jumps; R-165.226: props over ledges/pits). What I saw in the
@@ -42,3 +46,7 @@ verdicts read), D29 (relist -> --check, tierBots, full suite), D40, D46, D55, D5
 Method update: `seedlist --merge` wants the list's own order dumped from provenSeeds() (a one-line tsx -e), then a JSON compare after.
 **Learned:** when one reader misreads a record, type the record (what it IS) rather than teaching the reader a width or place rule; then
 grep every reader and sort them into "counts the route" vs "judges the fall": the split was clean and no verdict had to change.
+## RESULTS (gates/ holds the logs)
+- seedlist --check, 9b45e20 (step 1 only) vs e215878 (+ t-ruler + 1-1 relist): 1-1 PASS / PASS; 1-2 PASS / 14 lines (7 seeds); 1-3 PASS /
+  2 lines (seed 44); 1-4 not run / PASS; 1-5 PASS / 10 lines (5 seeds). So the step 1 skip (gapsOf, nodeAsks hazard) moves no roll on 1-1..1-5.
+- Full unit suite on e215878: FULL_SUITE_RESULT
