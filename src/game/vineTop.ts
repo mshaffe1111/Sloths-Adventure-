@@ -144,3 +144,42 @@ export function topRoomShort(v: Vine, platforms: readonly Platform[], width: num
   }
   return short.length ? `the vine at ${Math.round(v.x)} ${end === 'top' ? `tops out at ${v.topY}` : `stands at ${v.bottomY}`} on ${Math.round(t.x0)}..${Math.round(t.x1)}: ${short.join(', ')}` : null;
 }
+
+/** how far over a ledge's open end wood may lie and still hide that end from him as a step he must take (px): his height and a hop */
+const HIDES = 150;
+
+/**
+ * The hidden walk-offs under creaking boughs (FIX-14d, R-165.206): where a creak drops him ("just one branch down", the sound wood under
+ * it), every OPEN end of the ledge he lands on must be in the open, not under other wood within HIDES over it. An end under the way on
+ * reads as the way on: he walks on under it and off, a storey down (1-4's rotting boughs until 11-14: the way out sat 80 px over the
+ * sound wood's end, 120 px past it; castBots 1-4 kid Normal, 18 of 40). Returns one line per such end.
+ */
+export function hiddenEdges(platforms: readonly Platform[], width: number): string[] {
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const c of platforms) {
+    if (!c.creak || c.broken) continue;
+    const cx = c.x + c.width / 2;
+    // (the sound wood under it: the highest lasting piece under its middle within HIDES)
+    const under = platforms.filter((q) => lasting(q) && q.y > c.y + 2 && q.y <= c.y + HIDES && cx >= q.x && cx <= q.x + q.width).sort((p, q) => p.y - q.y)[0];
+    if (!under) continue;
+    const at = platforms.filter((q) => lasting(q) && Math.abs(q.y - under.y) <= 2);
+    let x0 = under.x, x1 = under.x + under.width;
+    for (let grew = true; grew; ) {
+      grew = false;
+      for (const q of at) {
+        if (q.x < x0 && q.x + q.width >= x0 - 2) { x0 = q.x; grew = true; }
+        if (q.x + q.width > x1 && q.x <= x1 + 2) { x1 = q.x + q.width; grew = true; }
+      }
+    }
+    for (const [e, d] of [[x0, -1], [x1, 1]] as const) {
+      const key = `${Math.round(e)},${under.y}`;
+      if (seen.has(key) || (d < 0 ? e <= 2 : e >= width - 2)) continue;
+      const x = e + d * 4;
+      if (platforms.some((q) => lasting(q) && x >= q.x && x <= q.x + q.width && q.y >= under.y - STEP_UP && q.y <= under.y + STEP_DOWN)) continue;
+      const lid = platforms.find((q) => q !== c && !q.broken && q.y < under.y - 2 && q.y >= under.y - HIDES && q.x < e - 2 && q.x + q.width > e + 2);
+      if (lid) { seen.add(key); out.push(`the sound wood ${Math.round(x0)}..${Math.round(x1)} at ${under.y} under the creak at ${Math.round(c.x)} ends open at ${Math.round(e)} under wood ${Math.round(lid.x)}..${Math.round(lid.x + lid.width)} at ${lid.y}`); }
+    }
+  }
+  return out;
+}

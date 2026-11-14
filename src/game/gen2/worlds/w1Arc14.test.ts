@@ -11,7 +11,7 @@ import { buildGen2Stage, stagePool } from '../pipeline.ts';
 import { listedStage } from '../listed.ts';
 import { provenSeeds } from '../seedList.ts';
 import { levelConfig } from '../../realPlay.ts';
-import { CLIMB_CLEAR, footRoom, topRoom, topRoomShort } from '../../vineTop.ts';
+import { CLIMB_CLEAR, footRoom, hiddenEdges, topRoom, topRoomShort } from '../../vineTop.ts';
 import { stageLine } from '../../wayside.ts';
 import { STAGE_LINES } from '../../pokeyJournal.ts';
 import { ARC_14, BRIEF_14, FIELD_ROWS, GAP, PODS_14, HALFWAY_14, JOURNAL_14, LINES_14, SECTIONS_14, STAGE_14, beats14, finish14, kitLib14 } from './w1Arc14.ts';
@@ -248,5 +248,35 @@ test('every climbable vine on every shipped 1-4 roll, Normal and Easy, tops out 
   assert.ok(plantedTurn, 'a turn back up was planted');
   assert.ok(turns > 1000, `tower turns checked with the way he walked (${turns})`);
   assert.ok(n > 1000, `vines checked (${n})`);
+  assert.deepEqual(bad, []);
+});
+
+// ── no hidden walk-off under a creak (FIX-14d, R-165.206): the ledge a creaking bough drops him onto has no open end lying under other
+// wood (vineTop.ts hiddenEdges). Until 11-14 the rotting boughs' way out sat 80 px over the sound wood's end and 120 px past it: a kid
+// dropped by a creak walked on under it and off, a storey down (castBots 1-4 kid Normal, 18 of 40 after the turn fix; 39 of 40 after)
+test('no creak on any shipped 1-4 roll, Normal and Easy, drops him onto wood with an open end hidden under the way on (planted: the rotting boughs\' way out back over the sound wood\'s end)', () => {
+  const seeds = provenSeeds('1-4');
+  const row = listedStage('1-4')!;
+  const cfg = levelConfig('1-4');
+  const bad: string[] = [];
+  let planted = false;
+  for (const seed of seeds) {
+    for (const difficulty of ['normal', 'easy'] as const) {
+      const st = buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty });
+      const W = st.gen2.tower!.width;
+      for (const m of hiddenEdges(st.platforms, W)) bad.push(`seed ${seed} ${difficulty}: ${m}`);
+      if (!planted) {
+        // (the old shape: the way out at the boughs' height, starting over the sound wood 120 px before its end)
+        const rot = st.gen2.sections.find((s) => s.template === 'w1-14-rotting')!;
+        const tagOf = (p: Platform) => (p as { tag?: string }).tag ?? '';
+        const s = st.platforms.find((p) => tagOf(p) === `${rot.uid}:s`)!, z = st.platforms.find((p) => tagOf(p) === `${rot.uid}:z`)!;
+        assert.ok(s && z && z.y === s.y && Math.abs(z.x - (s.x + s.width)) <= 2, 'the way out runs on from the sound wood at its height');
+        const old = st.platforms.map((p) => (p === z ? { ...z, x: s.x + s.width - 120, y: s.y - 80 } : p));
+        assert.match(hiddenEdges(old, W).join('\n'), /ends open at .* under wood/, 'planted: the old way out hides the sound wood\'s end');
+        planted = true;
+      }
+    }
+  }
+  assert.ok(planted);
   assert.deepEqual(bad, []);
 });
