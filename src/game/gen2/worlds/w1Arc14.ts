@@ -65,8 +65,10 @@ export const JOURNAL_14 = 'Climbed the kapok between falling pods. From the top 
 // ───────────────────────────── the numbers (1-4.md "The vine field", "On a phone") ─────────────────────────────
 /** vines in a field stand this far apart (px): in reach for two hands (FIELD_FEEL.reach 90), 70-90 by the design */
 export const GAP = 80;
-/** a field's foot runs this far past its first and last vine (px): room to stand at each end */
-const MARGIN = 60;
+/** a field's foot and top run this far past its first and last vine (px): room to stand at each end, and the 80 px vine-top rule
+ *  (vineTop.ts TOP_ROOM, R-165.206): at 60 the end vines topped out 60 px from the open end of their top bough, a vault the short way
+ *  off it, and a gate's top drops him a whole storey to its foot */
+const MARGIN = 80;
 /** how far a gate field's foot runs out past its sealed bough at each end (px): one vine spacing, so a step off either end of the gate
  *  lands on the field's own foot one storey down (tower.ts towerFalls; FA's sealed piece gets no catch from the lay) */
 export const GATE_RUN = GAP;
@@ -243,9 +245,10 @@ const DROP_ONE = (() => {
     jobs: ['twist'], job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 6,
     row: { n: 4, H: 360, figs: [{ vine: 4, over: 160 }], pods: [{ vine: 2, shift: 0 }], beat: 'grown', gate: true },
   });
-  // (the foot runs on past the last vine to the snake's spot, within TRAP.scare (170) of where the bunch comes down)
-  const W = 2 * MARGIN + 3 * GAP + 160;
-  t.pieces = t.pieces.map((p) => (p.key === 'foot' ? { ...p, w: [W, W] } : p.shape === 'vine' && p.place.kind === 'climb' ? { ...p, place: { ...p.place, at: [((p.place.at as R2)[0] * (W - 160)) / W, ((p.place.at as R2)[0] * (W - 160)) / W] } } : p.key === 'top' ? { ...p, w: [W - 160, W - 160] } : p));
+  // (the snake's spot on the foot's run past the last vine (the gate's GATE_RUN), within TRAP.scare (170) of where the bunch comes down.
+  //  Before the gate this section widened its foot by hand and scaled its vines' places to keep their px; with the gate's run the foot
+  //  is already that wide, and the scaling squeezed the vines to 55 px apart and the first 17 px from its top's end: R-165.206)
+  const W = (t.pieces.find((p) => p.key === 'foot')!.w as R2)[0];
   t.sockets = [{ id: 'e1', role: 'enemy', on: 'foot', t: (W - 70) / W, dn: 0, allow: ['snake-asleep'], easy: 'keep' }];
   return t;
 })();
@@ -267,7 +270,9 @@ const CROWN: SectionTemplate = (() => {
   //  no set-back (engine.ts crumbledWhole runs on a set-back only), so with the stair alone a climber who stood too long on two steps was
   //  stranded under the mid until the steps grew back off screen (POLISH-1 11-13: kid Normal seed 16; level.md rule 5). The stair stays the
   //  quick way, the vine the steady one: the stage's own "one vine sure")
-  pieces.push(climbOn('sure', 'foot', W, midX + 20, RISE * 4));
+  //  It tops out between the field's first two vines, TOP_ROOM (80) or more from the mid's open end over the stair (at midX + 20 it stood
+  //  20 px from it: a vault the short way went off; R-165.206), never under a field vine's column (a pod's)
+  pieces.push(climbOn('sure', 'foot', W, midX + MARGIN + GAP / 2, RISE * 4));
   for (let i = 0; i < CROWN_N; i++) pieces.push(climbOn(`f${i + 1}`, 'mid', midW, MARGIN + i * GAP, CROWN_H));
   pieces.push(branch('top', { kind: 'over', on: 'mid', at: [0, 0], dy: [-CROWN_H, -CROWN_H] }, midW));
   FIELD_ROWS['w1-14-crown'] = { n: CROWN_N, H: CROWN_H, figs: [], pods: [{ vine: 1, shift: 0 }, { vine: 3, shift: BEATS.grown / 2 }], beat: 'grown', gate: false, foot: 'mid' };

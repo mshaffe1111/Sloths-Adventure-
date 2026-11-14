@@ -7,7 +7,11 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { Platform, Vine } from '../../types.ts';
 import { checkCode, parseCode } from '../nodeCode.ts';
-import { stagePool } from '../pipeline.ts';
+import { buildGen2Stage, stagePool } from '../pipeline.ts';
+import { listedStage } from '../listed.ts';
+import { provenSeeds } from '../seedList.ts';
+import { levelConfig } from '../../realPlay.ts';
+import { topRoom, topRoomShort } from '../../vineTop.ts';
 import { stageLine } from '../../wayside.ts';
 import { STAGE_LINES } from '../../pokeyJournal.ts';
 import { ARC_14, BRIEF_14, FIELD_ROWS, GAP, PODS_14, HALFWAY_14, JOURNAL_14, LINES_14, SECTIONS_14, STAGE_14, beats14, finish14, kitLib14 } from './w1Arc14.ts';
@@ -179,4 +183,40 @@ test('the pods are PODS_14\'s: speed, tell and beats from the one block; on: fal
   } finally {
     (PODS_14 as { on: boolean }).on = was;
   }
+});
+
+// ── the 80 px vine-top rule (R-165.206, FIX-14c; level.md rule proposed): every climbable vine on every shipped roll, Normal and Easy,
+// keeps TOP_ROOM of ledge between its top and any OPEN end (vineTop.ts topRoomShort: touching pieces are one ledge, the stage's edge and a
+// step beside are no end). Before: the crown's sure vine 20 px from the mid's end over the stair on every roll; every field's end vines
+// 60 px (MARGIN) from their top bough's ends; drop-one's vines squeezed 55 px apart, its first 17 px from the end.
+test('every climbable vine on every shipped 1-4 roll, Normal and Easy, tops out TOP_ROOM (80 px) or more from any open end of its ledge (planted: the crown\'s sure vine back at 20 px)', () => {
+  const seeds = provenSeeds('1-4');
+  assert.ok(seeds.length >= 100, `1-4's proven list (${seeds.length})`);
+  const row = listedStage('1-4')!;
+  const cfg = levelConfig('1-4');
+  const bad: string[] = [];
+  let n = 0;
+  let planted = false;
+  for (const seed of seeds) {
+    for (const difficulty of ['normal', 'easy'] as const) {
+      const st = buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty });
+      const W = st.gen2.tower!.width;
+      for (const v of st.vines) {
+        if (v.vineType !== 'tree_climb') continue;
+        n++;
+        const m = topRoomShort(v, st.platforms, W);
+        if (m) bad.push(`seed ${seed} ${difficulty} ${(v as { tag?: string }).tag ?? ''}: ${m}`);
+        // planted (once): the crown's sure vine where it stood until 11-14, 20 px in from the mid's end over the stair
+        if (!planted && (v as { tag?: string }).tag?.endsWith(':sure')) {
+          const t = topRoom(v, st.platforms, W)!;
+          const end = t.openLeft ? t.x0 + 20 : t.x1 - 20;
+          assert.match(topRoomShort({ ...v, x: end }, st.platforms, W) ?? '', /20 px to the open/, 'planted: the sure vine at 20 px is caught');
+          planted = true;
+        }
+      }
+    }
+  }
+  assert.ok(planted, 'the crown\'s sure vine was found on a roll');
+  assert.ok(n > 1000, `vines checked (${n})`);
+  assert.deepEqual(bad, []);
 });
