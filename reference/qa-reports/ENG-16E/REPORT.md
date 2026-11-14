@@ -1,6 +1,6 @@
 # ENG-16E REPORT: 1-6's engine findings fixed for every stage (A the chain's last leap, B the shared petal fill, C World 1's FAR) (R-165.246)
 t-build-16 from 67027823 (BUILD-16d's revert head); packet reference/packets/2026-11-14/ENG-16E.md (lead's branch ccr-ea739a2f-dfcee4).
-Start 2:18 PM ET (`date`). DRAFT: being filled as the runs finish.
+Start 2:18 PM ET, stop at the context line (both from `date`). Heads: 6fdfe160 (A guard + B), 9d002c76 (the late press), d3a3cbe1 (the bot's climb back), then this REPORT.
 
 ## Done-items (each with its evidence)
 
@@ -50,14 +50,19 @@ Start 2:18 PM ET (`date`). DRAFT: being filled as the runs finish.
   `handsAlong`, `head`/`tail` px from the anchor, `dir` +1 down (vineSnake.ts:90-146); with no snake piece it returns null, so 1-1's
   path is unchanged by construction; tierBots re-run (below).
 
-## Where 1-6 stands (castBots 1-6 seeds 1-6, each bot+setting its own process, `cast-*.out.txt`; ran 2:47-2:50 PM on 9d002c76)
-| bot | Normal 9d002c76 | Normal 6fdfe160 (A guard + B) | Normal BUILD-16d 0c277648 | Easy 9d002c76 | Easy BUILD-16d |
-|---|---|---|---|---|---|
-| kid | 2/6 (rescued s1, s5 x1; s3 x6; s6 x2) | 2/6 | 2/6 | 5/6 (s4 x1) | 5/6 |
-| adult | 5/6 (s4 x6) | 4/6 | 4/6 | 6/6 | 5/6 |
-| child | 4/6 (s2 x1, s6 x2) | 3/6 | 2/6 | 6/6 | 6/6 |
-| middle | 5/6 (sealed 93/95 s1) | 5/6 | 4/6 | 6/6 | 6/6 |
-| expert | 3/6 (sealed s1 93/95, s3 96/102, s5 86/90) | 2/6 | 1/6 | (Normal only) | |
+## Where 1-6 stands (castBots 1-6 seeds 1-6, each bot+setting its own process)
+Final head d3a3cbe1 (`cast-*.out.txt`, ran 3:05-3:08 PM ET, the bot fix in); earlier heads filed in `at-9d002c76/`, `at-6fdfe160/`.
+| bot | Normal d3a3cbe1 | Normal 9d002c76 (+ snapshot) | Normal 6fdfe160 (A guard + B) | Normal BUILD-16d | Easy d3a3cbe1 | Easy BUILD-16d |
+|---|---|---|---|---|---|---|
+| kid | 1/6 (rescued s1, s2, s3 x1; s4 x4; s5 x2) | 2/6 (s3 x6, s6 x2, s1 s5 x1) | 2/6 | 2/6 | **6/6** | 5/6 |
+| adult | 5/6 (s4 x1) | 5/6 (s4 x6) | 4/6 | 4/6 | **6/6** | 5/6 |
+| child | 5/6 (s2 x1) | 4/6 | 3/6 | 2/6 | **6/6** | 6/6 |
+| middle | 5/6 (sealed 93/95 s1) | 5/6 | 5/6 | 4/6 | **6/6** | 6/6 |
+| expert | 3/6 (sealed s1 93/95, s3 95/102, s5 86/90) | 3/6 | 2/6 | 1/6 | (Normal only) | |
+Counted from the two tables: Normal runs passing 13/30 at BUILD-16d (2+4+2+4+1) -> 19/30 here (1+5+5+5+3); Easy 22/24 -> 24/24. Normal
+runs ending rescued 8 -> 7 (kid 4 -> 5, adult 2 -> 1, child 2 -> 1); rescues in them here 11 (kid 9, adult 1, child 1). The kid Normal is
+the one bot not better. Kid Normal where (`where/where-kid-normal-botfix.out.txt`): s1 chain:m; s2 risers:b2 (+3 pit lives there); s3 gorge:d2; s4 risers:b2,
+gorge:gb1, gorge:d2 x2; s5 first-liana:b1, gorge:b2; s6 none.
 - **The chain** at 9d002c76 (where.ts, every bot and setting, `where/`): one rescue, kid Normal seed 1 at chain:m; no life. At 6fdfe160
   (before the snapshot fix) the kid had RESCUE@chain:show x2 and LIFE@chain:m x1.
 - **The pit petals: 0** (where-petals); the sealed doors left are BUILD-16d's (b): petals the expert hops over on perches and banks.
@@ -68,8 +73,18 @@ Start 2:18 PM ET (`date`). DRAFT: being filled as the runs finish.
   5). The snapshot fix did not cause it: only lianas under the full swing leap differently (the chain's, and the false liana's at 0,
   where omega is 0); the bots' draws upstream changed, which put these two seeds into a loop that was there.
 
-## Polish check
-(filled below)
+## Polish check (stills in `stills/`, 2x, upright 412x915 and sideways 915x412, the real game via tools/engine/runs/stills-at.mjs;
+## before = a worktree at 67027823, after = this branch; Pokey is placed IN the pit on purpose so its floor is in view)
+- `before-1-6-L1-...x28400-sideways.jpg` (the creaky landing's pit, Normal layout 1): two fill petals glow on the soft pit's floor beside
+  him, reachable only by dropping in. `after-...x28400-sideways.jpg` and `-upright`: the pit floor is bare; the trail sits on the far
+  bank's top where the leap lands him (top right sideways). Upright the far wall and the bare floor read plainly.
+- `before-...x46000-sideways.jpg` (the gorge's pit past the creaky gb1): two fill petals on the floor, one at his feet. `after-...`: bare
+  floor, three petals on the far bank's top by the flag.
+- `before/after-1-5-L1-...x6140-*.jpg` (1-5's creaky limbs between trunks): identical, as the lock says (1-5 did not move); its petals sit
+  over the trunk tops, none over a limb.
+- Rough spots seen and NOT mine to fix (named): on 1-6 the keeper's line "Meeca crossed these twice before I'd finished one. She always
+  waited." is open in every shot near these beats (upright it sits mid-sky, clear of the action; sideways it sits over the far bank's
+  wall on the gorge shot, clear of the petals). Not shot: the chain's clips, every beat's stills, the exits (Unresolved).
 
 ## Pushback
 - The packet's A named the amp floor first; it cannot keep ENG-S5's view rule (numbers above). And the amp was not the root: the engine
@@ -98,20 +113,31 @@ Start 2:18 PM ET (`date`). DRAFT: being filled as the runs finish.
    fall finder (findOpenPits-style, world-free) would cover them; they are to be rebuilt on gen2 (D40), so only if one ships first.
 
 ## Unresolved (named plainly)
-- **1-6 is NOT green**: Normal kid 2/6, adult 5/6, child 4/6, middle 5/6, expert 3/6 (table above). Not done for D: the relist, bots 1-40
-  both settings, stills and clips of every beat, the sealed/open exit shots. Reason: the gorge's strand (Suggestion 1) changes the stage
-  again, so a relist and the 40-seed bots now would be redone (D40). The EXACT NEXT STEP below is in order.
+- **1-6 is NOT green** (table above): Normal kid 1/6, adult 5/6, child 5/6, middle 5/6, expert 3/6; Easy 6/6 x4. Stopped at the context
+  line (the lead's 400k). Not done for D: the relist, bots 1-40 both settings, stills and clips of every beat, the sealed/open exit shots
+  (a relist and 40-seed bots before the rescues are fixed would be redone, D40). The EXACT NEXT STEP below is in order.
+- The packet's B.5 stills are done (1-6 creaky landing and gorge pits before/after, 1-5 creaky limbs, upright + sideways: `stills/`).
+  No clips were shot in this box.
 - 1-1 kid and adult are rescued on every seed 1-6 on both settings, identical on main (73e7bed0), the start head and this head
   (`w1/at-main-*`, `w1/at-67027823-*`): pre-existing, not from this work, not looked into.
 - The hand-built stages' fill (Suggestion 3).
 - My misses: (1) the 9d002c76 commit's Claude-Session line names the lead's session, not mine; not rewritten (a shared branch).
-  (2) I wrote "the chain: 0 rescues on every bot" into this draft before where.ts had run on every bot; caught and run before reporting.
+  (2) I wrote "the chain: 0 rescues on every bot" into this draft before where.ts had run on every bot; where.ts then showed one
+  (kid s1 chain:m); corrected before reporting. (3) My 2:58 PM gorge diagnosis (a strand) was wrong; frames corrected it at 3:06 PM, before
+  any work was built on it, but the lead had ruled on it at 2:54. Countermeasure: a frame trace before any diagnosis goes to the lead.
+  (4) The 3:05 PM castBots re-run wrote over the uncommitted 9d002c76 outputs; the three lost files were regenerated exactly from a
+  worktree at 9d002c76 (`at-9d002c76/`).
 
-## EXACT NEXT STEP (1-6, in order)
-1. The gorge's strand: the lead rules Suggestion 1 (engine check) or a 1-6 data fix (gb1 not a creaky limb, or the pit's stair to the far
-   side); then castBots 1-6 seeds 1-6 both settings (`xargs -P 3 < reference/qa-reports/ENG-16E/cast.jobs`, ~3 min) and where.ts.
-2. The other single rescues at 9d002c76 (where/where-*.out.txt), each with `FT_TRACE=1 BOT=<bot> SEED=<n> npx tsx
-   reference/qa-reports/BUILD-16d/stuck.ts` (fresh process).
+## EXACT NEXT STEP (1-6, in order; xhigh engine tier)
+1. Kid Normal's rescues on d3a3cbe1 (list above), each traced by FRAME before any change: `FT_FRAMES=a,b BOT=kid SEED=<n> npx tsx
+   reference/qa-reports/BUILD-16d/stuck.ts` (fresh process; the times from `FT_TRACE=1` first). Start with gorge:d2 (s3, s4: is it still
+   the climb back? the fix covers a liana taking him; a jump at gl1 from d2 is another path) and risers:b2 (s2, s4: three pit lives on
+   s2). Decide each: bot (the kid's model) or stage; a stage fault is fixed in the engine if any other level could hit it (rule 22).
+2. adult s4, child s2: where.ts for adult and child on d3a3cbe1 (`BOTS=adult SET=normal SEEDS=4-4 npx tsx .../where.ts`), same method.
+3. Sealed doors (expert s1 s3 s5, middle s1): BUILD-16d's (b), the hopped-over perch petals; whether the tier bot's pickup on a hop is
+   right (it is the bot, if a person's hop over a petal 34 px up takes it).
+4. castBots after each change: `xargs -P 3 -I{} sh -c "{}" < reference/qa-reports/ENG-16E/cast.jobs` (~3 min, NEVER while editing the
+   tree: copy the old outputs aside first, my miss), then where.ts per bot.
 3. Sealed doors (expert, middle): BUILD-16d's (b), the hopped-over perch petals; whether the tier bot's pickup on a hop is right.
 4. Then: `npx tsx tools/engine/addlevel.ts 1-6 --par 4 --relist` (writes seeds-1-6, bots 1-40), the WHOLE suite,
    `bash reference/qa-reports/BUILD-16b/plant.sh <side worktree>`, stills + clips of every beat with
