@@ -22,6 +22,10 @@ export const GOAL_SHARE = {
   /** the middle of 70-80% */
   defeat: 0.75,
   rescue: 1,
+  /** her MARKS (a search that follows Meeca's marks, 1-5; gen2 lays every mark a section holds, pipeline): four in five, so Normal misses
+   *  her road at no more than a few splits (1-5's her-road marks are a quarter of them). Measured: at 0.875 the middle and expert bots,
+   *  which never climb to a bough's mark, met the sealed door on 2 of 3 rolls (B15, 11-13) */
+  marks: 0.8,
 } as const;
 
 /** Easy asks this share of Normal's goal (rounded): Matt, 2026-10-29, "softer, 65% of Normal" (LV-6) */
@@ -61,6 +65,9 @@ export function goalCounts(st: Stage): { petals: number; animals: number; rescua
   };
 }
 
+/** her marks the stage holds (relics drawn as Meeca's mark): a search that follows them takes a share of them as its goal */
+export const marksHeld = (st: Pick<GeneratedStage, 'collectibles'>): number => st.collectibles.filter((c) => c.type === 'relic' && c.mark === 'meeca').length;
+
 /** how many of what its goal counts the stage holds; null for a stage whose goal is not a share (a sprint, a search, a boss) */
 export function goalHave(st: Stage): number | null {
   const type = st.config.objectiveType;
@@ -68,6 +75,8 @@ export function goalHave(st: Stage): number | null {
   if (type === 'harvest') return n.petals;
   if (type === 'rescue') return n.rescuable;
   if (type === 'purge' || type === 'gauntlet') return n.animals;
+  // (a search for her marks is a share of them; any other search keeps its own count)
+  if (type === 'relic_hunt' && marksHeld(st)) return marksHeld(st);
   return null;
 }
 
@@ -76,7 +85,7 @@ export function normalGoal(st: Stage): number | null {
   const type = st.config.objectiveType;
   const have = goalHave(st);
   if (!have) return null;
-  const k = type === 'harvest' ? GOAL_SHARE.collect : type === 'rescue' ? GOAL_SHARE.rescue : GOAL_SHARE.defeat;
+  const k = type === 'harvest' ? GOAL_SHARE.collect : type === 'rescue' ? GOAL_SHARE.rescue : type === 'relic_hunt' ? GOAL_SHARE.marks : GOAL_SHARE.defeat;
   return Math.max(1, Math.min(have, Math.round(have * k)));
 }
 

@@ -1,0 +1,32 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index f6c393e0..b3e2f92d 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -48,6 +48,7 @@ import type { Platform } from '../../src/game/types.ts';
+ import { scares } from '../../src/game/dropTrap.ts';
+ import type { TrapPost } from '../../src/game/castPlay.types.ts';
+ import { findRoute } from './route.ts';
++import { markUp } from './markClimb.ts';
+ import { buildRoll } from './eraRoll.ts';
+ import { STAGE_SECONDS } from '../../src/game/protoStage.ts';
+ import { sampleRoute } from './beats.ts';
+@@ -1466,7 +1467,8 @@ export class FirstTimerRun {
+       // once, before he flicks off, round 5 2026-10-29)
+       if (this.climbVine !== e.nearTreeVine || !this.wasOnTrunk) {
+         this.climbVine = e.nearTreeVine;
+-        this.climbDown = !!(tgt && tgt.y > p.y + 40 && Math.abs(tgt.x - p.x) < 60);
++        // (never down a trunk whose top is where her mark stands: he caught it to go up for it, markClimb.ts)
++        this.climbDown = !!(tgt && tgt.y > p.y + 40 && Math.abs(tgt.x - p.x) < 60) && !(e.nearTreeVine && markUp(e.nearTreeVine, p, this.sim.collectibles as never, dir));
+         this.climbTurned = false;
+       }
+       if (this.climbStill < 0.4) return this.climbDown ? { down: true } : { up: true };
+@@ -1633,7 +1635,8 @@ export class FirstTimerRun {
+     // open ground, a hop up to the ledge above, round 5 2026-10-29)
+     this.trunkUpT = e.nearTreeVine && !p.climbing && p.grounded && Math.abs(this.moveY) < 0.5 ? this.trunkUpT + DT : 0;
+     if (this.trunkUpT > 0.6) this.trunkIgnoreUntil = t + 2;
+-    if (e.nearTreeVine && t >= this.trunkIgnoreUntil && (up || this.blockedT > who.stopReact)) return { up: true };
++    // (and where one of her marks stands up on the high road this climb leads to: he goes up for it, markClimb.ts)
++    if (e.nearTreeVine && t >= this.trunkIgnoreUntil && (up || this.blockedT > who.stopReact || markUp(e.nearTreeVine, p, this.sim.collectibles as never, dir))) return { up: true };
+     // stopped dead against something: a plain jump
+     // (bot-fix, 2026-11-01: measured against lastX, which after() has already moved to where he is, this read 0 every frame, as the
+     // trunk's lastY did in round 5: every 0.3 s of walking was a "stop", so he hopped along flat ground and took off ~110 px before a

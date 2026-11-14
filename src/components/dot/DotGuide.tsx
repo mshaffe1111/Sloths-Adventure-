@@ -8,10 +8,11 @@ import { lessonDotLine, lessonOfLine, lessonSaidBy, lessonStale, type LessonId }
 import { DotSay } from '../../game/dotSay.ts';
 import { PUZZLE_STEPS } from '../../game/dotTips.ts';
 import { dotLine, dotText, engineGuideLine, swapLine } from '../../game/dotLines.ts';
-import { countedText, GuideQueue, isUrgent, noteSaid, roomMaySay, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
+import { countedText, FADE_K, GuideQueue, isUrgent, noteSaid, roomMaySay, readMs, wordCount, type GuideLine, type MoveId, type Showing, type TickEnv, type TopicId } from '../../game/dotGuide.ts';
 import { MoveWatch, StruggleWatch, inDanger, type DeathCause, type StruggleHelp } from '../../game/dotGuideWatch.ts';
-import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markMoveDone, markSkillSeen, markSkipOffered, movesDone, offersSkip, seenSkills, skipTapCounts, skipTips, type DotHelp } from '../../game/dotGuideHelp.ts';
+import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markMoveDone, markSkillSeen, markSkipOffered, markTapLearned, movesDone, offersSkip, seenSkills, skipTapCounts, skipTips, tapLearned, type DotHelp } from '../../game/dotGuideHelp.ts';
 import { recorder } from '../../game/playRecorder.ts';
+import { cardTrail } from '../../game/dotCardHit.ts';
 import { HELP_LINES, helpGuideLine, helpLadderOn, helpLineOnScreen, pushHelpLine } from '../../game/helpLadder.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuidePlatform, type GuideView } from '../../game/dotGuideView.ts';
 import {
@@ -59,7 +60,9 @@ warmDot();
  * it; her parchment bubble sits beside her, on screen and clear of the HUD, the thumbs, the animals and Pokey. For the controls, or
  * with no perch in view, she hovers beside Pokey on the empty side behind him.
  *
- * It takes no touches (a tap is a punch): lines leave by themselves. It reads the stage each frame through engine.guideView (no
+ * Her card takes one touch: a tap on it clears it, at the player's own pace (R-165.175), and that touch is never also a punch or a jump
+ * (the card is above the touch layer and eats it). Left unread, a card fades after about 3x its reading time (dotGuide.ts FADE_K); the
+ * cards waiting show as +N on it. Nothing else of hers takes a touch. It reads the stage each frame through engine.guideView (no
  * allocations), moves Dot and her bubble by writing their transforms directly, and only re-renders when
  * the line changes.
  */
@@ -124,6 +127,8 @@ const LEAVE_AFTER_MS = 1600;
 const LINGER_MS = 4000;
 /** a bubble fades out over this long when its line ends */
 const BUBBLE_FADE_MS = 300;
+/** a card left unread fades slowly, over its last this-long (R-165.175: "tap to clear + slow fade") */
+const SLOW_FADE_MS = 1200;
 const SPARKS = 7;
 
 /** perch: on the scenery by the thing; hover: beside Pokey; pokey: his own thought (no Dot); corner: a boss fight, out of the arena's middle */
@@ -245,6 +250,9 @@ class GuideRun {
   goalDone = false;
   /** the line (its n) that carries the Skip tips button, and where the bubble last sat (the "tips off" note goes there) */
   skipN = -1;
+  /** the queue's last surroundings (the +N badge counts with them) and the count on the badge now */
+  lastEnv: TickEnv | undefined = undefined;
+  moreShown = -1;
   /** the move counter, for the queue (made once: no new function each frame) */
   countMove = (m: MoveId): number => this.moves.count(m);
   /** a move tip's thing is nowhere in view (made once) */
@@ -257,6 +265,8 @@ class GuideRun {
   /** when she last landed (ms of play): she says her line from then */
   landedAt = 0;
   lastBx = 16;
+  /** the card the touch layer's trail holds (dotCardHit.ts): a trail tap is for this one, not one that has just replaced it */
+  trailN = -1;
   lastBy = 80;
 
   constructor(level: LevelConfig, guideN: number) {
@@ -272,6 +282,10 @@ class GuideRun {
     this.lastGuide = guideN;
     // (calm in every world: World 5 had no calm rules, DOT-8; not Dot's own flight)
     this.queue = new GuideQueue(!/-D$/.test(level.id));
+    // (R-165.175: a card stays till tapped, or about 3x its reading time; the tap is taught on her first card till he has tapped one)
+    this.queue.fadeK = FADE_K;
+    this.queue.readDone = true;
+    this.queue.tapHint = !tapLearned();
     this.dotSay = new DotSay(this.queue, this.help, this.seen, this.movesBefore, this.storyOn);
   }
 
@@ -440,6 +454,43 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
   // first SKIP_ARM_MS it is faded and lets touches through to the game, and only a touch that went down on it counts (QA: a
   // first-timer on Quiet from his first second). Pressing it is logged for the QA team.
   const swallow = (e: React.SyntheticEvent) => e.stopPropagation();
+  // R-165.175: a tap on her card clears it (the card is above the touch layer, so the touch never reaches the game: not a punch, not
+  // a jump). Only a touch that went down on the card counts; the queue ignores one in the card's first moments (dotGuide.ts TAP_MIN_MS).
+  const moreRef = useRef<HTMLSpanElement>(null);
+  const cardDown = useRef(false);
+  const onCardDown = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
+    cardDown.current = true;
+  };
+  const onCard = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const down = cardDown.current || e.detail === 0;
+    cardDown.current = false;
+    const c = run.queue.cur;
+    // (the card he touched, not one that has just replaced it)
+    if (!down || !c || c.n !== show?.n) return;
+    const upMs = run.clock - c.startedAt;
+    if (!run.queue.tap(run.clock)) return;
+    markTapLearned();
+    recorder.event('dotTap', `${(upMs / 1000).toFixed(1)}s ${c.line.key}`);
+  };
+  // a finger that landed where the card just was (it slid from under it: the touch layer gave it to the card, dotCardHit.ts R-165.201)
+  useEffect(() => {
+    cardTrail.setTap((n) => {
+      const c = run.queue.cur;
+      // (a card that has gone, or been replaced since the finger went down on it: the finger was its, and it does nothing)
+      if (!c || c.n !== n) return;
+      const upMs = run.clock - c.startedAt;
+      if (!run.queue.tap(run.clock)) return;
+      markTapLearned();
+      recorder.event('dotTap', `${(upMs / 1000).toFixed(1)}s ${c.line.key} trail`);
+    });
+    return () => {
+      cardTrail.setTap(null);
+      cardTrail.clear();
+    };
+  }, [run]);
   const skipAt = useRef(0);
   const skipDown = useRef(false);
   const [skipArmed, setSkipArmed] = useState(false);
@@ -575,6 +626,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
     let dotOn = false;
     let bubIn = false;
     let bubOut = false;
+    let bubSlow = false;
     let styles: Record<string, FrameStyle> | null = null;
     let stylesFor = 0;
     let off = true;
@@ -857,6 +909,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       if (!live) {
         if (!off && rootRef.current) rootRef.current.dataset.off = '1';
         off = true;
+        cardTrail.clear();
         if (e) run.lastT = v.t;
         return;
       }
@@ -912,7 +965,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         run.queue.push(l, run.clock);
       }
       run.wasReveal = v.reveal;
-      run.queue.tick(run.clock, { danger, hold: cardUp, moveCount: run.countMove, swinging: run.view.swinging, gone: run.gone, stale: run.stale, hush: v.reveal ? run.hushReveal : inRoom ? run.hushRoom : undefined });
+      run.lastEnv = { danger, hold: cardUp, moveCount: run.countMove, swinging: run.view.swinging, gone: run.gone, stale: run.stale, hush: v.reveal ? run.hushReveal : inRoom ? run.hushRoom : undefined };
+      run.queue.tick(run.clock, run.lastEnv);
       // (a line up its minimum time is heard: its tip, its lesson and its thing are kept, DOT-1)
       run.dotSay.keep(run.clock);
       // (the moves he has done, kept for later stages)
@@ -926,21 +980,23 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         if (ev.type === 'start') {
           noteSaid(ev.show.line);
           // her very first tip on this phone carries the Skip tips button (once per device)
-          if (!v.flight && offersSkip(ev.show.line, run.help, run.stageId)) {
+          if (!v.flight && !ev.show.hint && offersSkip(ev.show.line, run.help, run.stageId)) {
             markSkipOffered();
             run.skipN = ev.show.n;
           }
           run.storyMarked = false;
+          run.moreShown = -1;
           startLine(ev.show);
           setShow(ev.show);
         } else {
           const l = ev.show.line;
-          if (l.skill && (ev.why === 'done' || (ev.why === 'read' && !l.move))) {
+          const read = ev.why === 'read' || ev.why === 'tapped';
+          if (l.skill && (ev.why === 'done' || (read && !l.move))) {
             markSkillSeen(l.skill);
             run.seen.add(l.skill);
           }
           // what follows it: the next step of a lesson once this one is done, a second half once read
-          if (l.next && (ev.why === 'done' || ev.why === 'read')) run.say(l.next);
+          if (l.next && (ev.why === 'done' || read)) run.say(l.next);
           if (run.show === ev.show) {
             run.show = null;
             run.endedAt = run.clock;
@@ -1035,7 +1091,9 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
               if (!covered && p.ko !== undefined && koCover(bx, by) > p.ko + 400) covered = true;
             }
             // hovering for want of a perch: one may have come into view since (the camera moves on with him)
-            const perch = p.mode === 'hover' && !p.noPerch && p.target && p.topic !== 'controls' && run.clock - run.lastReplan > 1000 ? choosePerch(v, p.target, safeNow()) : null;
+            // (not once her card is up: flying to the perch took the card down mid-read and put it up again, R-165.175's measure on 1-2
+            // and 1-3; she stays hovering for this card)
+            const perch = p.mode === 'hover' && !p.noPerch && p.target && p.topic !== 'controls' && run.clock - run.lastReplan > 1000 && !cur.onScreen ? choosePerch(v, p.target, safeNow()) : null;
             // an animal has walked up to her perch: she moves off it
             let crowded = false;
             if (p.mode === 'perch') for (const en of v.enemies) if (!en.defeated && Math.abs(en.x - p.wx) < 100 && Math.abs(en.y - p.wy) < 100) crowded = true;
@@ -1188,6 +1246,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         bub.style.transform = `translate3d(${bx.toFixed(1)}px, ${by.toFixed(1)}px, 0)`;
         run.lastBx = bx;
         run.lastBy = by;
+        run.trailN = cur.n;
+        cardTrail.note(bx, by, run.bw, run.bh, now, cur.n);
         bubIn = toggle(bub, 'in', true, bubIn);
         // (its reading time counts from now, not from when it left the queue: DOT-7)
         run.queue.onScreen(run.clock);
@@ -1198,9 +1258,17 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           run.chirpN = cur.n;
           sound.dotChirp();
         }
-        // an info line stays fully readable until its last 0.3 s
-        const left = cur.line.move ? Infinity : showFor(cur.line) - (run.clock - cur.startedAt);
-        bubOut = toggle(bub, 'out', left < 300, bubOut);
+        // a card left unread stays fully readable until its last SLOW_FADE_MS, then fades slowly (a tapped one goes at once)
+        const left = cur.line.move ? Infinity : run.queue.holdFor(cur) - (run.clock - cur.startedAt);
+        bubOut = toggle(bub, 'out', left < SLOW_FADE_MS, bubOut);
+        bubSlow = toggle(bub, 'slow', left < SLOW_FADE_MS, bubSlow);
+        // (+N: the cards waiting behind this one, written straight to the badge: no re-render)
+        const more = run.queue.pending(run.clock, run.lastEnv);
+        if (more !== run.moreShown && moreRef.current) {
+          run.moreShown = more;
+          moreRef.current.textContent = more > 0 ? `+${more}` : '';
+          moreRef.current.hidden = more <= 0;
+        }
         const pt = tailRef.current;
         if (pt && tailFor !== cur.n) {
           tailFor = cur.n;
@@ -1249,9 +1317,13 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         }
       } else if (bub && bubIn && !cur && now < run.fadeUntil) {
         bubOut = toggle(bub, 'out', true, bubOut);
+        // (still on screen while it fades where it last stood: a finger aimed at it is its, not a punch; dotCardHit.ts)
+        cardTrail.note(run.lastBx, run.lastBy, run.bw, run.bh, now, run.trailN);
       } else {
         bubIn = toggle(bub, 'in', false, bubIn);
         bubOut = toggle(bub, 'out', false, bubOut);
+        bubSlow = toggle(bub, 'slow', false, bubSlow);
+        // (its last boxes age out of the trail on their own, TRAIL_MS after it was last on screen)
       }
 
       // nothing drawn on the thing: no ring, no arrow, no sparkle (Matt, 2026-10-29: "that horrible blue pointer, the helper, I want that
@@ -1406,12 +1478,20 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           role="status"
           aria-live="polite"
           style={{ maxWidth: bubbleMaxW(vw, vh) }}
+          onClick={onCard}
+          onPointerDown={onCardDown}
+          onPointerUp={swallow}
+          onTouchStart={swallow}
+          onTouchEnd={swallow}
+          onMouseDown={swallow}
         >
           {art && <canvas ref={bubArt} className="dg-bub-art" aria-hidden="true" />}
           {art ? <span ref={tailRef} className="dg-ptail" aria-hidden="true" style={pieceStyle('tail', TAIL_W)} /> : <span className="dg-tail b" />}
           {tag && <span className={`dg-tag ${tag === 'Pokey' ? 'pokey' : tag === 'Flicker' ? 'flicker' : ''}`}>{tag}</span>}
+          <span ref={moreRef} className="dg-more" hidden aria-label="More from Dot after this" />
           <div className="dg-bub-body">
             <p>{l.counted && props.count ? countedText(l.text, props.count.target - props.count.cur) : l.text}</p>
+            {show!.hint && <p className="dg-hint">{show!.hint}</p>}
             {run.skipN === show!.n && (
               <button
                 type="button"

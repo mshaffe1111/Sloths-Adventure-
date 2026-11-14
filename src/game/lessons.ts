@@ -483,7 +483,7 @@ export const LESSON_DOT: Record<LessonId, { ids: string[]; topic: TopicId; pad?:
   nostomp: { ids: ['lesson.nostomp'], topic: 'foe', pad: 'Punch this one. Don\'t stomp it.', keys: 'Press J. Don\'t stomp this one.' },
   eagle: { ids: ['lesson.eagle.duck'], topic: 'foe', pad: 'Pad down to duck its dive.', keys: 'Press S to duck its dive.' },
   tough: { ids: ['lesson.tough'], topic: 'foe' },
-  gap: { ids: ['lesson.gap.jump'], topic: 'gap', pad: 'Push the pad, then Jump.', keys: 'Run, then Space to jump the gap.' },
+  gap: { ids: ['lesson.gap.jump'], topic: 'gap', pad: 'Press Jump to hop up or over.', keys: 'Press Space to hop up or over.' },
   climb: { ids: ['lesson.climb.grab', 'lesson.climb.up'], topic: 'trunk', pad: 'Jump at the trunk, hold Pad up.', keys: 'Jump at the trunk, hold W.' },
   swing: {
     ids: ['lesson.swing.grab', 'lesson.swing.leap'], topic: 'vine', pad: 'Jump into the vine to grab it.', keys: 'Jump into the vine to grab it.',

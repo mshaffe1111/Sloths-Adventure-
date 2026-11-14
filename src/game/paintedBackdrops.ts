@@ -30,6 +30,7 @@ try {
 }
 
 import { FAR_ONLY, stageBackdropStem } from './stageBackdrops.ts';
+import { measureInk } from './stripInk.ts';
 
 export interface PaintedSet {
   far: HTMLImageElement;
@@ -140,6 +141,7 @@ function loadSet(stem: string) {
   });
   Promise.all(imgs.map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
     .then(() => {
+      imgs.forEach(measureInk);
       const at = (p: Part) => imgs[parts.indexOf(p)] ?? null;
       ready.set(stem, { far: at('far')!, mid: at('mid')!, near: at('near'), sky: at('sky'), at: now() });
       listeners.forEach((fn) => fn(world));
@@ -280,7 +282,11 @@ function loadCanopy(world: number, stem = stemFor(world)): Promise<void> {
   mid.src = mu;
   near.src = nu;
   const p = Promise.all([mid, near].map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
-    .then(() => { if ([...ready.keys()].some((q) => worldOf(q) === world && ownMid(q))) canopyReady.set(world, { mid, near, at: now() }); })
+    .then(() => {
+      measureInk(mid);
+      measureInk(near);
+      if ([...ready.keys()].some((q) => worldOf(q) === world && ownMid(q))) canopyReady.set(world, { mid, near, at: now() });
+    })
     .catch(() => { canopyFailed.add(world); /* the ground strips stay */ })
     .finally(() => canopyLoading.delete(world));
   canopyLoading.set(world, p);
@@ -313,7 +319,10 @@ export function revealSet(parts: { far: string; mid: string; near: string }): Pa
     return im;
   });
   Promise.all(imgs.map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
-    .then(() => reveals.set(key, { far: imgs[0], mid: imgs[1], near: imgs[2], sky: imgs[3] ?? null, at: typeof performance !== 'undefined' ? performance.now() : 0 }))
+    .then(() => {
+      imgs.forEach(measureInk);
+      reveals.set(key, { far: imgs[0], mid: imgs[1], near: imgs[2], sky: imgs[3] ?? null, at: typeof performance !== 'undefined' ? performance.now() : 0 });
+    })
     .catch(() => { /* no reveal: the world's own strips stay */ })
     .finally(() => revealLoading.delete(key));
   return null;

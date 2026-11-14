@@ -1,0 +1,85 @@
+1-1 normal score     4 (2.9-4.1 over 4 layouts)  3.385 min  points 23.6  mean 7.1/min  peak 17.700000000000003/min  {"single":58,"double":5} route presumed
+1-2 normal score     2 (1.6-2.2 over 4 layouts)  3.54 min  points 8.45  mean 2.4/min  peak 10.85/min  {"single":63,"bounce":9,"double":1} route check
+1-3 normal score   1.1 (0.8-1.4 over 4 layouts)  4.029999999999999 min  points 6.550000000000001  mean 1.6/min  peak 5.55/min  {"single":57,"creature-choice":15,"creature":2} route check
+1-1 easy   score   2.4 (1.3-3.1 over 4 layouts)  3.5999999999999996 min  points 13.45  mean 3.9/min  peak 11.399999999999999/min  {"single":59,"double":4,"bounce":1} route check
+1-2 easy   score   0.9 (0.2-1.9 over 4 layouts)  3.5149999999999997 min  points 3.4  mean 0.95/min  peak 4.949999999999999/min  {"single":37,"bounce":29} route check
+1-3 easy   score   0.6 (0.5-0.6 over 4 layouts)  3.935 min  points 3.15  mean 0.8/min  peak 3/min  {"single":54,"creature-choice":14,"creature":1} route check
+SCALE 0.30654 (1 meter point = 3.3 raw points a minute)
+-- 1-1 normal seed 1: the 12 heaviest challenges
+   t   23s x   5411 double           bits 2.86 x stakes 1.00 (retry) x overlap 1.0 x new 1.50 = 2.79  gap 0 rise 139 land 291 share 0.66
+   t   89s x  20051 double           bits 2.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.35 = 2.55  gap 0 rise 140 land 337 share 0.66
+   t   92s x  20671 double           bits 2.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.29 = 2.42  gap 0 rise 140 land 320 share 0.66
+   t  111s x  25043 double           bits 2.81 x stakes 1.00 (retry) x overlap 1.0 x new 1.25 = 2.27  gap 255 rise -72 land 488 share 0.64
+   t  114s x  25786 double           bits 1.97 x stakes 1.00 (retry) x overlap 1.0 x new 1.22 = 1.19  gap 60 rise 77 land 402 share 0.36
+   t   87s x  19470 single           bits 1.93 x stakes 1.00 (retry) x overlap 1.0 x new 1.08 = 1.01  gap 0 rise 76 land 290 share 0.74
+   t  118s x  26760 single           bits 1.93 x stakes 1.00 (retry) x overlap 1.0 x new 1.07 = 1.00  gap 63 rise 76 land 438 share 0.74
+   t   25s x   5958 single           bits 1.64 x stakes 1.00 (retry) x overlap 1.0 x new 1.15 = 0.74  gap 0 rise 70 land 223 share 0.68
+   t   11s x   2796 single           bits 1.48 x stakes 1.00 (soft) x overlap 1.0 x new 1.20 = 0.58  gap 132 rise -54 land 484 share 0.64
+   t  107s x  24139 single           bits 1.52 x stakes 1.00 (retry) x overlap 1.0 x new 1.07 = 0.55  gap 159 rise -2 land 165 share 0.65 (down into the dip and out: the route jumped over it)
+   t   85s x  19035 single           bits 1.27 x stakes 1.00 (retry) x overlap 1.0 x new 1.08 = 0.29  gap 156 rise 21 land 279 share 0.59 (down into the dip and out: the route jumped over it)
+   t  132s x  29936 single           bits 1.22 x stakes 1.00 (retry) x overlap 1.0 x new 1.07 = 0.24  gap 107 rise -3 land 414 share 0.57
+-- 1-2 normal seed 1: the 12 heaviest challenges
+   t   72s x  15894 double           bits 2.62 x stakes 1.00 (soft) x overlap 1.0 x new 1.20 = 1.95  gap 235 rise -220 land 903 share 0.59
+   t  101s x  21888 single           bits 1.33 x stakes 1.25 (heart) x overlap 1.0 x new 1.05 = 0.44  gap 110 rise 0 land 110 share 0.60
+   t   58s x  12764 single           bits 1.31 x stakes 1.25 (heart) x overlap 1.0 x new 1.05 = 0.41  gap 109 rise 0 land 110 share 0.60
+   t   60s x  13185 single           bits 1.31 x stakes 1.25 (heart) x overlap 1.0 x new 1.05 = 0.41  gap 109 rise 0 land 110 share 0.60
+   t   94s x  20313 single           bits 1.31 x stakes 1.25 (heart) x overlap 1.0 x new 1.05 = 0.41  gap 109 rise 0 land 110 share 0.60
+   t  100s x  21669 single           bits 1.31 x stakes 1.25 (heart) x overlap 1.0 x new 1.05 = 0.41  gap 109 rise 0 land 110 share 0.60
+   t   91s x  19879 single           bits 1.27 x stakes 1.25 (heart) x overlap 1.0 x new 1.05 = 0.36  gap 107 rise 0 land 110 share 0.59
+   t   92s x  20096 single           bits 1.27 x stakes 1.25 (heart) x overlap 1.0 x new 1.05 = 0.36  gap 107 rise 0 land 110 share 0.59
+   t   99s x  21452 single           bits 1.27 x stakes 1.25 (heart) x overlap 1.0 x new 1.05 = 0.36  gap 107 rise 0 land 110 share 0.59
+   t  117s x  25158 single           bits 1.27 x stakes 1.25 (heart) x overlap 1.0 x new 1.05 = 0.36  gap 107 rise 0 land 110 share 0.59
+   t  118s x  25375 single           bits 1.26 x stakes 1.25 (heart) x overlap 1.0 x new 1.05 = 0.33  gap 106 rise 0 land 110 share 0.58
+   t   82s x  17908 single           bits 1.23 x stakes 1.00 (retry) x overlap 1.0 x new 1.05 = 0.24  gap 0 rise 59 land 1040 share 0.57
+-- 1-3 normal seed 1: the 12 heaviest challenges
+   t   73s x  14302 creature         bits 1.58 x stakes 1.25 (heart) x overlap 1.0 x new 1.19 = 0.87  snake tell 0.50s
+   t  164s x  31065 creature         bits 1.58 x stakes 1.25 (heart) x overlap 1.0 x new 1.12 = 0.82  snake tell 0.50s
+   t   49s x  11587 single           bits 1.56 x stakes 1.00 (retry) x overlap 1.0 x new 1.04 = 0.58  gap 0 rise 68 land 260 share 0.66
+   t  100s x  23500 single           bits 1.56 x stakes 1.00 (retry) x overlap 1.0 x new 1.04 = 0.58  gap 0 rise 68 land 233 share 0.66
+   t   81s x  19227 single           bits 1.33 x stakes 1.00 (retry) x overlap 1.0 x new 1.04 = 0.34  gap 0 rise 62 land 239 share 0.60
+   t  145s x  34313 single           bits 1.26 x stakes 1.00 (retry) x overlap 1.0 x new 1.04 = 0.27  gap 0 rise 60 land 629 share 0.58
+   t  118s x  27801 single           bits 1.13 x stakes 1.00 (retry) x overlap 1.0 x new 1.04 = 0.14  gap 0 rise 56 land 222 share 0.54
+   t  137s x  32301 single           bits 1.13 x stakes 1.00 (retry) x overlap 1.0 x new 1.04 = 0.14  gap 0 rise 56 land 233 share 0.54
+   t  131s x  30834 single           bits 1.13 x stakes 1.00 (retry) x overlap 1.0 x new 1.04 = 0.13  gap 99 rise 0 land 154 share 0.54
+   t    3s x   1000 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.05 = 0.11  gap 0 rise 55 land 349 share 0.53
+   t   10s x   2515 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.04 = 0.11  gap 0 rise 55 land 237 share 0.53
+   t   31s x   7635 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.04 = 0.11  gap 0 rise 55 land 237 share 0.53
+-- 1-1 easy seed 1: the 12 heaviest challenges
+   t   23s x   5830 double           bits 2.73 x stakes 1.00 (retry) x overlap 1.0 x new 1.50 = 2.59  gap 0 rise 132 land 339 share 0.62
+   t   94s x  21724 double           bits 2.73 x stakes 1.00 (retry) x overlap 1.0 x new 1.35 = 2.34  gap 0 rise 132 land 385 share 0.62
+   t   97s x  22440 double           bits 2.73 x stakes 1.00 (retry) x overlap 1.0 x new 1.29 = 2.23  gap 0 rise 132 land 368 share 0.62
+   t  117s x  27070 double           bits 2.27 x stakes 1.00 (retry) x overlap 1.0 x new 1.25 = 1.59  gap 193 rise -77 land 488 share 0.48
+   t   91s x  21047 single           bits 1.37 x stakes 1.00 (retry) x overlap 1.0 x new 1.08 = 0.39  gap 0 rise 63 land 338 share 0.61
+   t  120s x  27751 single           bits 1.37 x stakes 1.00 (retry) x overlap 1.0 x new 1.07 = 0.39  gap 60 rise 63 land 450 share 0.61
+   t  124s x  28802 single           bits 1.37 x stakes 1.00 (retry) x overlap 1.0 x new 1.07 = 0.39  gap 60 rise 63 land 486 share 0.61
+   t   10s x   2634 single           bits 1.16 x stakes 1.00 (retry) x overlap 1.0 x new 1.25 = 0.20  gap 0 rise 57 land 195 share 0.55
+   t   77s x  17753 single           bits 1.15 x stakes 1.00 (soft) x overlap 1.0 x new 1.09 = 0.16  gap 113 rise -55 land 520 share 0.55
+   t   48s x  11523 single           bits 1.13 x stakes 1.00 (retry) x overlap 1.0 x new 1.12 = 0.15  gap 0 rise 56 land 268 share 0.54
+   t   83s x  19315 single           bits 1.13 x stakes 1.00 (retry) x overlap 1.0 x new 1.08 = 0.14  gap 0 rise 56 land 212 share 0.54
+   t   60s x  14166 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.10 = 0.11  gap 0 rise 55 land 239 share 0.53
+-- 1-2 easy seed 1: the 12 heaviest challenges
+   t    4s x   1137 single           bits 1.13 x stakes 1.00 (retry) x overlap 1.0 x new 1.06 = 0.14  gap 0 rise 56 land 179 share 0.54
+   t   11s x   2701 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.06 = 0.11  gap 0 rise 55 land 196 share 0.53
+   t   28s x   6623 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.06 = 0.11  gap 0 rise 55 land 285 share 0.53
+   t   34s x   8059 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.06 = 0.11  gap 0 rise 55 land 285 share 0.53
+   t   49s x  11333 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.06 = 0.11  gap 0 rise 55 land 192 share 0.53
+   t   51s x  11775 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.06 = 0.11  gap 0 rise 55 land 196 share 0.53
+   t   71s x  16338 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.06 = 0.11  gap 0 rise 55 land 182 share 0.53
+   t    5s x   1469 single           bits 1.07 x stakes 1.00 (retry) x overlap 1.0 x new 1.06 = 0.08  gap 0 rise 54 land 203 share 0.52
+   t    7s x   1810 single           bits 1.07 x stakes 1.00 (retry) x overlap 1.0 x new 1.06 = 0.08  gap 0 rise 54 land 214 share 0.52
+   t   46s x  10693 single           bits 1.07 x stakes 1.00 (retry) x overlap 1.0 x new 1.06 = 0.08  gap 0 rise 54 land 281 share 0.52
+   t   65s x  14866 single           bits 1.07 x stakes 1.00 (retry) x overlap 1.0 x new 1.06 = 0.08  gap 0 rise 54 land 202 share 0.52
+   t   75s x  17191 single           bits 1.07 x stakes 1.00 (retry) x overlap 1.0 x new 1.05 = 0.08  gap 0 rise 54 land 173 share 0.52
+-- 1-3 easy seed 1: the 12 heaviest challenges
+   t   73s x  14326 creature         bits 1.58 x stakes 1.25 (heart) x overlap 1.0 x new 1.19 = 0.87  snake tell 0.50s
+   t  118s x  27899 single           bits 1.13 x stakes 1.00 (retry) x overlap 1.0 x new 1.04 = 0.14  gap 0 rise 56 land 222 share 0.54
+   t  134s x  31887 single           bits 1.13 x stakes 1.00 (retry) x overlap 1.0 x new 1.04 = 0.14  gap 0 rise 56 land 237 share 0.54
+   t    3s x   1000 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.05 = 0.11  gap 0 rise 55 land 349 share 0.53
+   t   10s x   2515 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.05 = 0.11  gap 0 rise 55 land 237 share 0.53
+   t   31s x   7635 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.05 = 0.11  gap 0 rise 55 land 237 share 0.53
+   t   44s x  10513 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.05 = 0.11  gap 0 rise 55 land 234 share 0.53
+   t   79s x  18886 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.04 = 0.11  gap 0 rise 55 land 232 share 0.53
+   t  125s x  29526 single           bits 1.10 x stakes 1.00 (retry) x overlap 1.0 x new 1.04 = 0.11  gap 0 rise 55 land 237 share 0.53
+   t    7s x   1814 single           bits 1.07 x stakes 1.00 (retry) x overlap 1.0 x new 1.05 = 0.08  gap 0 rise 54 land 239 share 0.52
+   t   18s x   4609 single           bits 1.07 x stakes 1.00 (retry) x overlap 1.0 x new 1.05 = 0.08  gap 0 rise 54 land 237 share 0.52
+   t   34s x   8340 single           bits 1.07 x stakes 1.00 (retry) x overlap 1.0 x new 1.05 = 0.08  gap 0 rise 54 land 237 share 0.52

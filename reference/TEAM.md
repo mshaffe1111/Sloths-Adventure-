@@ -51,7 +51,7 @@ artifact on a branch.
   Matt, 11-07, to the story keeper (relayed by it the same evening): "I'm creating a new lead and will be continually replacing as
   memory fills up. The only written role is you are always on the team and can't be replaced, in charge of story direction." So the story keeper is in charge of story direction: story, characters, Dot's voice and story calls are decided by it, with Matt
   having the final say; the lead brings it every such call and does not overrule it.
-  - It is session_019iachLiuwNTAZUBSJWUmR3 (the old lead), in charge of story direction. Its bible: reference/story/STORY-KEEPER.md.
+  - It is session_01FhBbYMCa3JXWmyQicbmxuu (successor 11-13; old session_019iachLiuwNTAZUBSJWUmR3 retired) (the old lead), in charge of story direction. Its bible: reference/story/STORY-KEEPER.md.
   - Canon versus delivery: the story keeper owns what the story is (canon, plot, characters, voice). How it's delivered in the game
     is bounded by the frame budget, the rules for players who can't read yet, and the Critic's gates. A story beat that can't pass
     those after 2 revisions with the story keeper goes to Matt as one multiple-choice question.
@@ -61,16 +61,38 @@ artifact on a branch.
     - Every packet that touches story, characters, Dot, player-facing words, a stage's theme or a cutscene names the story keeper's
       review as a done-item, and the PM gets that review before the Critic's PASS counts.
     - Every release's player text is reviewed by it before the PR.
+    - **Nature check before each level (Matt, 11-12 6:36 PM ET: "let the story designer do the research before each level just to make
+      sure"; R-165.164).** Before a level's design is judged, the story keeper researches every plant, fruit and animal the level (its
+      design doc, idea lists, cast, dressing and words) puts in front of the player and confirms each is real to where that world is set
+      (World 1: Central/South American lowland rainforest). Anything wrong (a pear, a flying squirrel) is named with a true swap. The
+      level's design doc carries the result as a short "Nature check" section; the lead does not judge a design without it.
+      The bar (Matt, 11-12 6:44 PM ET: "It's not going to be used for science... It's good enough. It's a video game."): the KIND of
+      plant or animal and its look must really exist there (a real yellow rainforest snake, yes; a pear, no); how it behaves may be a
+      storybook touch (the snake still glides). Flag a wrong species or fruit; don't flag a playful behaviour.
+      Matt, 11-12 6:46 PM ET: "we have talking squirrels... sloths that run, jump, punch, kick. So I think we're okay with improvising at
+      times. But... keep it where it makes sense. A banana and other things make more sense to me." So the test is "does it make sense
+      there to a player": bananas, mangoes and other fruit people picture in a rainforest are fine (they grow there today); a pear isn't.
     - It gets the release notes and the STATE.md decisions after each release, so its knowledge stays current.
   - **The role is never replaced. Only if its session itself ends** does the lead start a successor at once. Its first job: read STORY-KEEPER.md and the
     story folder, then rewrite the bible as its turnover note. The lead tells Matt. The role never lapses.
-- **Story keeper (the old lead, session_019iachLiuwNTAZUBSJWUmR3): the ONLY long-lived session kept** (Matt, 11-07: "Too much story
+- **Story keeper (the old lead, session_01FhBbYMCa3JXWmyQicbmxuu (successor 11-13; old session_019iachLiuwNTAZUBSJWUmR3 retired)): the ONLY long-lived session kept** (Matt, 11-07: "Too much story
   knowledge"). It owns the story, characters, Dot's voice and the lessons of past releases. The PM asks it before any story, dialogue
   or taste call, and it reviews player text. It's not a builder and not a node in the graph.
   Its bible: reference/story/STORY-KEEPER.md (on branch `studio` since 11-07; on main once studio merges). It listed 10 open story threads on 11-07; where each stands: ROADMAP R-165.55.
   Never build from ccr-0d59a91c-oy3imz (it carries the rejected 11-04 src/).
 
 ## Cost rules (Matt, 11-11 6:06 PM ET: "we need to bring the cost down... It's your team. You run the team the way you think is best")
+**Stay lean after a reset (Matt, 11-12 10:00 PM ET: "I was pretty loose with the tokens, knowing that I had this reset. Going forward,
+I want you to make sure that we're doing only what we're supposed to be doing and we stay lean. I want to get as much out of this 100% as
+possible."):** (1) only packets on the plan Matt agreed; no speculative helpers; (2) effort high by default, xhigh only for core-engine
+fixes and merges, max only with a written reason; (3) gates scoped by what changed (LAWS 5); (4) helpers stop at their line and are
+retired the minute they report; (5) the lead's check-ins read branch heads, commit messages and stills, not whole session logs, and
+answer Matt in short messages; (6) idea lists 20 minutes, design docs 60 lines; (7) usage reported in the daily report.
+**Workers lean too (Matt, 11-12 10:03 PM ET: "make sure that the workers are staying lean, that they don't over explain things that
+don't need to be explained... keep a really tight ship... I want to see how many levels we can get out of this next 100%"):** every
+brief says it: messages to the lead 5 lines or fewer; REPORT.md 30 lines or fewer (facts, gates, what's left, Learned); one-line commit
+subjects with a short body; no narration, no restating the packet, no explaining what the lead already knows. The measure: LEVELS per
+100% of Matt's weekly usage (LEVEL-LOG.md).
 Where today's money went (session records, 11-11): the two 1-2 packets cost about $98 across 8 rounds (Designer $62, Critic $36) for one
 level's paperwork; sessions ran to 360k-635k tokens of context, and every turn re-reads the whole context, so a long session costs more
 per step the longer it lives. These rules replace any older rule they contradict.

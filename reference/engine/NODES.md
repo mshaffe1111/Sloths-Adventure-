@@ -244,6 +244,7 @@ The ledger is world data the generator reads, saved as stages are built (R1 §4.
 ## 8. The node code (designer, 11-05 5:17 PM, with the key added at 5:20 PM; Matt, via the lead: "our own compact notation", and "a key of what the different nodes would be, how the engine would define them, and a brief description of how they would play. That way, there's no ambiguity in what we're building")
 
 ### 8.0 THE KEY
+**Visual key:** reference/engine/NODE-KEY.html (Matt shared it 11-13 12:12 PM ET as the mock-up of how nodes are meant to be used: tap a code, read the key). It renders this section; when this section changes, that page changes with it.
 
 Each row gives:
 - **Code:** the symbol.

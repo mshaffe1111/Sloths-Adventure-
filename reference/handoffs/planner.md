@@ -4,6 +4,16 @@ This covers the planner's own work on `engine-chunks`: the pipeline's verdicts, 
 Last code commit 25d2d115 (the Dot teach fix); 00bd44e8 is notes only. Live status: `reference/notes/planner-status.md`. Work saved but
 not live: `reference/notes/planner-wip/`.
 
+**Added by FA (11:36 AM ET, 2026-11-13, t-fa, R-165.170): a stage laid as a tower has three verdicts of its own**, folded by `rollErrors()` as
+`gen2.towerMiss` and `gen2.flagMiss`, each with a planted test in `src/game/gen2/tower.test.ts` and a planted fault in
+`reference/qa-reports/FA/planted-faults.py`:
+- `tower: a fall off the piece at ...` / `tower: the piece at ... gives way over ...` (tower.ts towerFalls): sound wood within 450 px
+  under every open end and every piece that gives way, going up; going down, every drop's landing within TOWER.see.
+- `tower: the storey at y .. is reached from y .. by jumps alone ...` (towerSkips): no jump, catch or step climbs a turn; the reach is
+  LEAP (the flown 214 px climb plus a margin; across, the closed form plus 100 px), deliberately more than the engine can do.
+- `flags: ...` measured in px of WAY (towerFlagBreaches): ROLLED_FLAGS' own numbers, on every tower, rolled graph or not; a run's
+  flags are judged by rolledFlagBreaches as before. The yield of a tower is `npx tsx tools/engine/towerroll.ts --seeds 24`.
+
 ## 1. The verdicts (what makes a roll fail by name)
 
 A roll with any error never reaches the proven list or a player. `provenGen2Stage` walks `seed + k x 7919` for 24 tries, catching throws;

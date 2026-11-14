@@ -12,8 +12,10 @@
  * enter and exit on 'ground' ports on the manifest's ground line; stones, stumps, logs and boughs are ordinary pieces over it. The
  * pipeline does not read this file until the planner's step 1 wires World 1 in.
  */
+import { dressMarks } from './w1Marks.ts';
+import { signsClearOfFlags } from '../../dressArt.ts';
 import { DOT_LINES } from '../../dotLinesData.ts';
-import type { Move, NodeJob, Phase, PortKind, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
+import type { CreakRow, Move, NodeJob, Phase, PortKind, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { DOUBLE_RISE, reachJump } from '../../physics.ts';
 import { hollowLogSize, w1DressFacing, w1DressWidth } from '../../w1NewArt.ts';
 import { pickCut, W1_CUT } from '../../w1CutArt.ts';
@@ -1537,6 +1539,9 @@ export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean; cut?:
   // (a built roll only: a toy stage of bare platforms, w1CutArt.test's, has no spawn or sections to dress)
   // (the squirrels who came to watch him leave are a stage's own dressing: its stage-table row says so, stageTable.ts `squirrels`)
   if (squirrels && (st as { gen2?: unknown }).gen2) w1Squirrels(st as never);
+  // (Meeca's marks are cut in living trunks: a kapok behind each and ART's bark patch at marching height, w1Marks.ts)
+  dressMarks(st as never);
+  signsClearOfFlags(st as never);
   return st;
 }
 
@@ -1596,6 +1601,9 @@ export function w1Squirrels(st: DressStage): void {
   if (ground) for (let t = 0; k < SQUIRREL_MIN && t < 3; t++) put(ground, ground.x, ground.x + ground.width, true);
   if (k < SQUIRREL_MIN) throw new Error(`w1Squirrels: only ${k} of ${SQUIRREL_MIN} squirrels found a clear spot on a bank (seed ${st.gen2?.seed})`);
 }
+/** World 1's creaky limb (gen2/creak.ts; 1-5.md:55, 1-4.md:30): its branch drawn notched (branchCreak, the creak before he steps on it), 1.1 s
+ *  on Normal (the engine's own creak, 1-5.md beat 2) and longer on Easy; its lesson is the section that teaches 'creak' (1-5's beat 2) */
+export const W1_CREAK: CreakRow = { style: 'branch', hold: { easy: 1.4, normal: 1.1 }, lesson: 'creak' };
 /** every Dot line by id, its words (the old text, which the new look swaps where it is said; a cut line's new text if it has no old) */
 export const W1_TIPS: Record<string, string> = Object.fromEntries(DOT_LINES.map((r) => [r[0], r[4] ?? r[5]] as const).filter((e): e is [string, string] => !!e[1]));
 /**
@@ -1611,6 +1619,8 @@ export function w1World(): WorldKit {
     // only the graphs of its own archetype and reads only its own brief)
     graphs: { ...W1_KIT.graphs, list: [...W1_KIT.graphs.list, ...Object.entries(PURGE_13).map(([id, code]) => ({ id, archetype: 'purge' as const, code }))], briefs: { ...W1_KIT.graphs.briefs, [STAGE_13]: BRIEF_13 } },
     corridor: W1_KIT.corridor, themeShare: W1_KIT.themeShare, required: W1_KIT.required,
+    // (World 1's creaky limb, laid only where a section marks a piece `creak`: 1-5's and 1-4's boughs)
+    creak: W1_CREAK,
     // (World 1's cast rows and drop-trap pairs, w1Cast.ts: laid only where a section holds a socket for one, so by 1-3's bricks alone)
     creatures: W1_CAST_CREATURES, props: W1_TRAP_PROPS, pairs: W1_TRAP_PAIRS, decor: [], flowers: ['orchid', 'hibiscus'],
     // (1-3's pool is its own, LEVEL-BAR A3: its beats, its arrival, its rests and its exit, each tagged for it alone; no World 1

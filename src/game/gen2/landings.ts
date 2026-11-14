@@ -311,12 +311,35 @@ function windowsOf(all: readonly Ev[], a: number, b: number): Map<LandPiece, num
   // (only the events whose span meets (a, b), in their order: every midpoint below is inside (a, b), so no other event can be the first
   // there, and the others' ends inside [a, b] are a or b again; R-165.163)
   const evs = all.filter((e) => e.hi > a && e.lo < b);
-  const cuts = [a, b, ...evs.flatMap((e) => [e.lo, e.hi])].filter((v) => v >= a && v <= b).sort((p, q) => p - q);
+  // (the cuts: a, b and every event end inside [a, b], in a typed array sorted by value: R-165.207)
+  const ends = new Float64Array(2 + 2 * evs.length);
+  let c = 0;
+  ends[c++] = a;
+  ends[c++] = b;
+  for (const e of evs) {
+    if (e.lo >= a && e.lo <= b) ends[c++] = e.lo;
+    if (e.hi >= a && e.hi <= b) ends[c++] = e.hi;
+  }
+  const cuts = ends.subarray(0, c).sort();
+  // (R-165.207: the first event at each run's midpoint, first(evs, midpoint), found by sweeping the events in their order once instead of
+  // scanning them for every midpoint. Every event end inside [a, b] is a cut and the others lie outside it, so an event holds a run's
+  // midpoint exactly when it spans the whole run (lo <= u and hi >= v); each run takes the first event in order that spans it)
+  const n = cuts.length - 1, owner = new Array<Ev | null>(Math.max(0, n)).fill(null), next = new Int32Array(n + 1);
+  for (let i = 0; i <= n; i++) next[i] = i;
+  const free = (i: number): number => { while (next[i] !== i) i = next[i] = next[next[i]]; return i; };
+  for (const e of evs) {
+    // (the runs it spans: from the first cut at or past lo, to the last run whose far end is at or before hi)
+    let s = 0, t = n + 1;
+    for (let lo = 0, hi = n + 1; lo < hi;) { const m = (lo + hi) >> 1; if (cuts[m] < e.lo) lo = s = m + 1; else hi = m; }
+    for (let lo = 0, hi = n + 1; lo < hi;) { const m = (lo + hi) >> 1; if (cuts[m] <= e.hi) lo = m + 1; else hi = t = m; }
+    // (s: the first cut >= lo; runs s .. (first cut > hi) - 2)
+    for (let i = free(s); i < n && i + 1 < t; i = free(i + 1)) { owner[i] = e; next[i] = i + 1; }
+  }
   let cur: LandPiece | null = null, run = 0;
   for (let i = 0; i + 1 < cuts.length; i++) {
     const [u, v] = [cuts[i], cuts[i + 1]];
     if (v - u < 1e-6) continue;
-    const P = first(evs, (u + v) / 2)?.piece ?? null;
+    const P = owner[i]?.piece ?? null;
     run = P && P === cur ? run + (v - u) : v - u;
     cur = P;
     if (P && run > (out.get(P) ?? 0)) out.set(P, run);

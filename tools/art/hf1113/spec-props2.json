@@ -1,0 +1,83 @@
+{
+ "tag": "props2",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, words, writing, watermark, frame, border, photo, 3d render, blurry, gradient background, floor, cast shadow, sky, scenery behind, animals, people, sloth, stump, sawn, cut log, tree rings, top of a log",
+ "items": [
+  {
+   "name": "leafsign-right2-11",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, one big bold horizontal arrow pointing to the right painted clearly across the middle of the leaf in dark purple berry juice, a clean simple arrow shape with a triangle head, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 11,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafsign-right2-23",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, one big bold horizontal arrow pointing to the right painted clearly across the middle of the leaf in dark purple berry juice, a clean simple arrow shape with a triangle head, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 23,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafsign-right2-37",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, one big bold horizontal arrow pointing to the right painted clearly across the middle of the leaf in dark purple berry juice, a clean simple arrow shape with a triangle head, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 37,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "leafsign-right2-53",
+   "prompt": "a single huge broad tropical leaf growing straight up from a short green stalk out of a small tuft of moss, its wide blade held up flat facing us like a little sign, one big bold horizontal arrow pointing to the right painted clearly across the middle of the leaf in dark purple berry juice, a clean simple arrow shape with a triangle head, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, isolated on a flat solid magenta background",
+   "seed": 53,
+   "w": 1328,
+   "h": 1328
+  },
+  {
+   "name": "markbark-right-11",
+   "prompt": "rough brown living rainforest tree bark texture filling the whole picture edge to edge, deep vertical cracks with a little green moss, flat front view, a big capital letter M freshly carved deep into the bark in the middle and a carved arrow pointing to the right beside it, the fresh cuts pale cream wood against the dark bark, crisp carving, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, no background, the bark fills the frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "markbark-right-23",
+   "prompt": "rough brown living rainforest tree bark texture filling the whole picture edge to edge, deep vertical cracks with a little green moss, flat front view, a big capital letter M freshly carved deep into the bark in the middle and a carved arrow pointing to the right beside it, the fresh cuts pale cream wood against the dark bark, crisp carving, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, no background, the bark fills the frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "markbark-right-37",
+   "prompt": "rough brown living rainforest tree bark texture filling the whole picture edge to edge, deep vertical cracks with a little green moss, flat front view, a big capital letter M freshly carved deep into the bark in the middle and a carved arrow pointing to the right beside it, the fresh cuts pale cream wood against the dark bark, crisp carving, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, no background, the bark fills the frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "markbark-up-11",
+   "prompt": "rough brown living rainforest tree bark texture filling the whole picture edge to edge, deep vertical cracks with a little green moss, flat front view, a big capital letter M freshly carved deep into the bark in the middle and a carved arrow pointing straight up above it, the fresh cuts pale cream wood against the dark bark, crisp carving, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, no background, the bark fills the frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "markbark-up-23",
+   "prompt": "rough brown living rainforest tree bark texture filling the whole picture edge to edge, deep vertical cracks with a little green moss, flat front view, a big capital letter M freshly carved deep into the bark in the middle and a carved arrow pointing straight up above it, the fresh cuts pale cream wood against the dark bark, crisp carving, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, no background, the bark fills the frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "markbark-up-37",
+   "prompt": "rough brown living rainforest tree bark texture filling the whole picture edge to edge, deep vertical cracks with a little green moss, flat front view, a big capital letter M freshly carved deep into the bark in the middle and a carved arrow pointing straight up above it, the fresh cuts pale cream wood against the dark bark, crisp carving, hand-painted 2D storybook platformer game asset, seen exactly from the side, flat orthographic view, rich saturated colour, clean dark outline, painterly detail, no background, the bark fills the frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}

@@ -15,6 +15,7 @@ import { HANG_DROP, ROPE_OVERLAP, ropeYAt } from './rope.ts';
 import { maxRise } from './protoCheck.ts';
 import type { Waterfall } from './waterfalls.ts';
 import { PAST_SHRINE } from './rules.ts';
+import { flagFurther } from './gen2/tower.ts';
 import { checkRooms, kitSolved, type KitWall } from './puzzleCheck.ts';
 import { hopLimit } from './river.ts';
 import { skillGuaranteedAt, skillHeldAt } from './skills.ts';
@@ -776,11 +777,16 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
 
   // checkpoints
   let lastX = -1;
+  // (a stage with a route, a gen2 tower: its flags run both ways in x, storey by storey, so the order that matters is the engine's
+  // own, each flag further ALONG THE ROUTE than the one before, gen2/tower.ts flagFurther. Every other stage: as ever)
+  const routed = !!(stage as { gen2?: { tower?: { route?: unknown } } }).gen2?.tower?.route;
+  let lastCp: { x: number; y: number } | undefined;
   for (const cp of stage.checkpoints ?? []) {
     const p = plats.find((q2) => cp.x >= ext(q2)[0] && cp.x <= ext(q2)[1] && Math.abs(q2.y - cp.y) < 6);
     if (!p || !reach(p)) errors.push(`checkpoint at x=${Math.round(cp.x)} is not on a reachable platform`);
-    if (cfg.objectiveType !== 'ascent' && cp.x <= lastX) errors.push('checkpoints are out of order');
+    if (routed ? lastCp && !flagFurther(stage, { further: () => false }, cp, lastCp) : cfg.objectiveType !== 'ascent' && cp.x <= lastX) errors.push('checkpoints are out of order');
     lastX = cp.x;
+    lastCp = cp;
   }
 
   // items must be near something reachable

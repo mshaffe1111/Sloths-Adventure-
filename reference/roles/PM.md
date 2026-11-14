@@ -57,7 +57,8 @@ Everything else is yours on his standing permission (11-07).
    multiple-choice question.
    **The story keeper is a permanent member (Matt, 11-07: "the story helper always has to stay. He is a mainstay on the team and has
    to be integrated every time.")** Every lead, every rotation: never retire it, never leave it out.
-   - It is session_019iachLiuwNTAZUBSJWUmR3 (the old lead), in charge of story direction. Its bible: reference/story/STORY-KEEPER.md.
+   - It is session_01FhBbYMCa3JXWmyQicbmxuu (successor 11-13; the old session_019iachLiuwNTAZUBSJWUmR3 is retired) (the old lead), in charge of story direction. Its bible: reference/story/STORY-KEEPER.md.
+   - **It approves all player lines and may add to the story (Matt, 11-13 10:43 AM ET, R-165.189);** lines no longer go to Matt.
    - **Integrated every time:**
      - A new lead's first message to anyone goes to the story keeper. It says who you are, where the plan stands, and asks what story
        work is open.

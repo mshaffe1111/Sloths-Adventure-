@@ -121,16 +121,17 @@ test("put past a puzzle room he goes on from there, not back into it: 6-3's sees
   }
 });
 
-test("a room starts again only when he has fallen back down into it, never while he stands on its top (1-4's lift)", () => {
-  // (1-4's lift puts him on its own top, inside its box, and the way on crosses back over it: standing there 12 s later started the
-  // room again, every 12 s until the cap)
+test("a room starts again only when he has fallen back down into it, never while he stands on its top (4-1's knot pulley lift)", () => {
+  // (a lift room puts him on its own top, inside its box, and the way on crosses back over it: standing there 12 s later started the
+  // room again, every 12 s until the cap. Found on 1-4's squirrel lift; that stage is the vine field now (B14, 11-13), and the same lift
+  // room (protoStage.ts liftRoom) is 4-1's knot pulley, so the case is held there)
   type Room = { box: { x0: number; x1: number; y0: number; y1: number }; beyond?: { x: number; y: number } };
   for (const who of [FT_KID, FT_ADULT]) {
     for (const seed of [1, 2, 3]) {
       freshPhone(who.setting);
-      const r = new FirstTimerRun('1-4', seed, who, { cap: 200 });
+      const r = new FirstTimerRun('4-1', seed, who, { cap: 200 });
       const rooms = ((r.e as unknown as { kit?: { rooms: Room[] } }).kit?.rooms ?? []).filter((q) => q.beyond);
-      assert.ok(rooms.length > 0, '1-4 has its lift rooms');
+      assert.ok(rooms.length > 0, '4-1 has its lift room');
       const bad: string[] = [];
       const seen = new Set<number>();
       let starts = 0;

@@ -1,5 +1,6 @@
 /* Dot's guide, the new look (DotGuide.tsx): Dot perched or hovering beside the thing she teaches, and her painted parchment bubble (no
-   ring and no arrow: Matt, 2026-10-29). Nothing here takes a touch: the whole layer is pointer-events: none (a tap is a punch). */
+   ring and no arrow: Matt, 2026-10-29). The layer is pointer-events: none (a tap is a punch); only her card while it is up takes a
+   touch: a tap clears it (R-165.175), and the touch never reaches the game. */
 .dg-root { position: fixed; inset: 0; z-index: 34; pointer-events: none; overflow: hidden; contain: strict; }
 .dg-root[data-off='1'] { display: none; }
 @keyframes dg-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.09); } }
@@ -83,3 +84,12 @@
   .dg-bub.painted { padding: 17px 16px 11px 15px; }
   .dg-skip span { font-size: 13px; }
 }
+/* R-165.175: her card takes a tap while it is up (it clears it); one left unread fades slowly over its last 1.2 s (DotGuide.tsx
+   SLOW_FADE_MS); +N for the cards waiting; 1-1's lesson for the tap under her words */
+.dg-bub.in { pointer-events: auto; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; min-height: 44px; }
+.dg-bub.out.slow { animation-duration: 1.2s; animation-timing-function: linear; }
+.dg-hint { font-size: 14px !important; font-weight: 600; font-style: italic; color: #6b4421; opacity: .92; }
+.dg-more { position: absolute; top: -12px; right: 8px; min-width: 26px; padding: 1px 7px 2px; border-radius: 11px; font: 700 13px/1.3 var(--font-ui);
+  color: #fff3d6; text-align: center; background: linear-gradient(180deg, #8a5a2c, #5e3a18); border: 2px solid #3a2414;
+  box-shadow: inset 0 1px 0 rgba(255, 230, 190, .35), 0 2px 0 #2a1608; pointer-events: none; white-space: nowrap; }
+.dg-more[hidden] { display: none; }

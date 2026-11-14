@@ -149,7 +149,10 @@ export function laneSeconds(stage: GeneratedStage, fork: LaneFork, r: LaneRoute,
 }
 
 export function modelStage(stage: GeneratedStage, P: ModelParams = MODEL_TYPICAL): TimeBreakdown {
-  if (stage.config.objectiveType === 'ascent') return modelAscent(stage, P);
+  // (a gen2 tower, gen2/tower.ts, a stage laid up or down storey by storey: its route's walked px stand where a run's x span does,
+  // and its vines, animals and items cost what they cost anywhere, below. The old generator's ascents keep their own chain model)
+  const towerWalk = (stage as { gen2?: { tower?: { route?: { walk?: number } } } }).gen2?.tower?.route?.walk;
+  if (stage.config.objectiveType === 'ascent' && towerWalk === undefined) return modelAscent(stage, P);
   const v = walkSpeed(P);
   const forks = stage.lanes ?? [];
   const inLane = { vines: new Set<number>(), plats: new Set<number>(), ropes: new Set<number>(), foes: new Set<number>() };
@@ -171,7 +174,7 @@ export function modelStage(stage: GeneratedStage, P: ModelParams = MODEL_TYPICAL
     laneTotal += P.lanes === 'safe' ? safe : quick;
     laneSpan += f.x1 - f.x0;
   }
-  const route = stage.exitTotemX - stage.spawnX;
+  const route = towerWalk ?? stage.exitTotemX - stage.spawnX;
   const walk = Math.max(0, route - laneSpan) / v + laneTotal;
 
   let special = 0;
