@@ -100,7 +100,8 @@ gap or a rise (gapPx guards, riseLimit, the designer's bands 195-205 / 205-228, 
   laid just above a gate hangs open ends 28-32 px past the gate's ends, and every catch the 450 px fall limit allows under them is inside
   a double jump (LEAP.up 221 + GATE.sag 56) of the shut top. The LOW half alone rolls 20/40 Normal, 18/40 Easy. The full rule (tower.ts
   `sealedNear`/`sealedRoom`, the lay's byGate, the verdict, planted tests) is lay-rule-NOT-APPLIED.patch, waiting on the lead's ruling
-  (options A-C: A holds catches beside a gate with it, ClusterGate.with). Any change here moves 1-4's rolls: relist 1-4 (100) after it.
+  (options A-C: A holds catches beside a gate with it, ClusterGate.with; mock stills qa-reports/FIX-15b/mockA-*.jpg). TRAP: a `with` bough
+  is `broken` (no footing) but the ground painter still draws it; A must hide it while shut. Any change here moves 1-4's rolls: relist 1-4.
   Rewritten for FIX-15b (11-14, t-fix-15b): this bullet only; the rest of the note is the 11-07 planner's.
 
 ## 4. Traps (each one cost time on 11-06)
