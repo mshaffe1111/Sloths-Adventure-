@@ -11,6 +11,7 @@
  * own until 1-8's build replaces it; it lays no `chase` field, so this piece never starts there.
  */
 import { sound } from '../audio.ts';
+import { canvasLost } from '../canvasLost.ts';
 import { caughtInRun, chaseLayProblems, frontBehind, newChaseRun, restartRunAt, sectionInRun, sectionStretch, stepChaseRun, type ChaseRun } from '../chase.ts';
 import { drawChaseBroken, drawChaseSection } from '../protoArt.ts';
 import type { PieceHost, PieceHurt, PieceKind, PieceLayer, StagePiece } from '../stagePiece.types.ts';
@@ -29,30 +30,63 @@ const DEBRIS_LIFE = 1.8;
 const CREAK_NEAR = 700;
 const CREAK_EVERY = 1.2;
 /**
- * The warning at the trailing edge of the screen, by how far the front is behind him: none with it `from` px back, full at `from - span`
- * and closer. A dark core at the edge (it reads on a light, misty backdrop) with a warm rim on its inner side (it reads on a dark one,
- * where a dark tint alone vanished: B1's stills, 11-13), up to `max` alpha; it reaches further in (`wide` + `grow` of the view's width)
- * as the front closes. B2 measured it on 1-2, 2-1 and World 3's darkest backdrop (reference/qa-reports/B2/contrast.mjs).
+ * The warning at the trailing edge, by how far the front is behind him: none with it `from` px back, full at `from - span` and closer
+ * (`k`, 0 to 1; drawn at `max` alpha at full).
  */
-export const EDGE = { from: 650, span: 500, max: 0.75, wide: 0.3, grow: 0.12 } as const;
+export const EDGE = { from: 650, span: 500, max: 0.8 } as const;
 
-/** the edge's strength (0 to 1) with the front `gap` px behind him, its width (a share of the view) and its gradient stops, left to right */
-export function edgeTint(gap: number): { k: number; width: number; stops: Array<[number, string]> } {
-  const k = Math.max(0, Math.min(1, (EDGE.from - gap) / EDGE.span));
-  const a = (f: number) => +(EDGE.max * f * k).toFixed(3);
-  return {
-    k,
-    width: EDGE.wide + EDGE.grow * k,
-    stops: [
-      // (the dark core at the edge, near black and warm, easing through an ember glow to nothing: one long ramp, no stripe; a short
-      // fade after the glow drew a hard orange band, B2's first stills)
-      [0, `rgba(14, 4, 2, ${a(1)})`],
-      [0.25, `rgba(30, 7, 3, ${a(0.8)})`],
-      [0.5, `rgba(110, 32, 10, ${a(0.5)})`],
-      [0.72, `rgba(204, 82, 26, ${a(0.26)})`],
-      [1, 'rgba(220, 100, 34, 0)'],
-    ],
-  };
+/** the edge's strength (0 to 1) with the front `gap` px behind him */
+export function edgeTint(gap: number): { k: number } {
+  return { k: Math.max(0, Math.min(1, (EDGE.from - gap) / EDGE.span)) };
+}
+
+/**
+ * Its look (C4, the lead's pick 11-14 over B2's full-height tint, which read as a "laser" column and vanished on dark backdrops): an
+ * ember glow at the BREAK, at his feet (where the branch is going), or at the screen's trailing edge while the break is off it (upright,
+ * the usual case: B2's stills), with a narrow dark band at that edge (it reads on a light, misty backdrop where the ember alone fades).
+ * The glow's radius is `radius` of the screen's larger side (upright 0.55 of the height), the band `band` of the radius.
+ *
+ * Baked ONCE per screen size into a cached canvas and stamped each frame with ONE drawImage at globalAlpha (EDGE.max x k): no gradient a
+ * frame (PERFORMANCE-RULES §1; tools/perf/limits.json allows 2 on the whole frame). Baked again when the screen size changes, and when
+ * the phone takes the canvas back (D6: canvasLost).
+ */
+export const GLOW = { radius: 0.42, band: 0.18 } as const;
+
+let edgeBaked: { w: number; h: number; cv: HTMLCanvasElement } | null = null;
+let edgeBakeCount = 0;
+/** how many times the edge has been baked (the tests: once per screen size, again after a loss) */
+export const edgeBakes = (): number => edgeBakeCount;
+
+/** the baked edge for a screen `w` x `h` (screen px): the glow's middle at its left edge, half way down (x 0, y h); null with no canvas */
+export function edgeCanvas(w: number, h: number): HTMLCanvasElement | null {
+  w = Math.max(1, Math.round(w));
+  h = Math.max(1, Math.round(h));
+  if (edgeBaked && edgeBaked.w === w && edgeBaked.h === h && !canvasLost(edgeBaked.cv, 'chase edge')) return edgeBaked.cv;
+  if (typeof document === 'undefined') return null;
+  const r = Math.max(24, Math.round(GLOW.radius * Math.max(w, 0.55 * h)));
+  const cv = document.createElement('canvas');
+  cv.width = r;
+  cv.height = 2 * h;
+  const g = cv.getContext('2d');
+  if (!g) return null;
+  // (the ember: hot at the break, cooling to nothing; one long ramp, no stripe: a short fade drew a hard orange band, B2's first stills)
+  const glow = g.createRadialGradient(0, h, 0, 0, h, r);
+  glow.addColorStop(0, 'rgba(255, 168, 70, 0.95)');
+  glow.addColorStop(0.2, 'rgba(236, 104, 34, 0.78)');
+  glow.addColorStop(0.55, 'rgba(150, 42, 12, 0.36)');
+  glow.addColorStop(1, 'rgba(60, 12, 4, 0)');
+  g.fillStyle = glow;
+  g.fillRect(0, 0, r, 2 * h);
+  // (the band: near black and warm at the edge, gone within `band` of the radius)
+  const bw = Math.max(6, Math.round(GLOW.band * r));
+  const band = g.createLinearGradient(0, 0, bw, 0);
+  band.addColorStop(0, 'rgba(14, 4, 2, 0.85)');
+  band.addColorStop(1, 'rgba(14, 4, 2, 0)');
+  g.fillStyle = band;
+  g.fillRect(0, 0, bw, 2 * h);
+  edgeBaked = { w, h, cv };
+  edgeBakeCount++;
+  return cv;
 }
 
 interface Section {
@@ -178,17 +212,20 @@ class ChasePiece implements StagePiece {
     }
   }
 
-  /** the danger at the trailing edge of the screen: darker the closer the front behind him (screen px) */
+  /** the danger at the trailing edge: the baked ember at the break (or the edge) at his feet, stronger the closer the front (screen px) */
   private drawEdge(ctx: CanvasRenderingContext2D, host: PieceHost) {
-    const behind = frontBehind(this.run, host.player.x);
+    const p = host.player;
+    const behind = frontBehind(this.run, p.x);
     if (behind === null) return;
-    const t = edgeTint(host.player.x - behind);
-    if (t.k <= 0.02) return;
-    const w = host.view.w * t.width;
-    const g = ctx.createLinearGradient(0, 0, w, 0);
-    for (const [at, c] of t.stops) g.addColorStop(at, c);
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, w, host.view.h);
+    const { k } = edgeTint(p.x - behind);
+    if (k <= 0.02) return;
+    const v = host.view;
+    const cv = edgeCanvas(v.w, v.h);
+    if (!cv) return;
+    const was = ctx.globalAlpha;
+    ctx.globalAlpha = EDGE.max * k;
+    ctx.drawImage(cv, Math.max(0, (behind - v.x) * v.zoom), (p.y + p.height - v.y) * v.zoom - cv.height / 2);
+    ctx.globalAlpha = was;
   }
 }
 

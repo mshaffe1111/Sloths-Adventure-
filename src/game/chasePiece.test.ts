@@ -12,7 +12,7 @@ import { RealPlay } from './realPlay.ts';
 import { paintedPlatforms } from './protoArt.ts';
 import { setDifficulty } from './difficulty.ts';
 import { PIECE_KINDS } from './pieces/index.ts';
-import { CHASE_PIECE } from './pieces/chasePiece.ts';
+import { CHASE_PIECE, EDGE, edgeBakes } from './pieces/chasePiece.ts';
 import { CHASE_ROWS, type ChaseLay, type ChaseRun } from './chase.ts';
 import type { PieceHost, PieceKind, PieceLayer, StagePiece } from './stagePiece.types.ts';
 import type { Platform } from './types.ts';
@@ -224,40 +224,74 @@ test('a chase section is never in the plain draw list (the list drawn before the
   assert.ok(!e.drawPlats.some((pl) => pl.chase), 'none in its plain draw list');
 });
 
-test('the trailing edge warns by gap: none 650 px back, a dark core with a warm rim up to 0.75 alpha at 150 px and closer (B2: faint on dark backdrops)', () => {
-  // (drawn by the piece itself on its 'screen' layer, into a ctx that records the gradient it fills with)
-  const lay: ChaseLay = { stretches: [{ start: 1000, end: 4000, last: true }] };
-  const host = { platforms: [] as Platform[], easy: false, t: 0, player: { x: 2000, y: Y }, view: { x: 1800, y: 0, w: 412, h: 915, zoom: 1 } } as unknown as PieceHost;
-  const piece = CHASE_PIECE.start({ chase: lay, config: { levelHeight: 1200 } } as never, host) as StagePiece & { run: ChaseRun };
-  assert.ok(piece);
-  const drawn = (gap: number) => {
-    Object.assign(piece.run.fronts[0], { front: 2000 - gap, active: true, hold: 0 });
-    const stops: Array<[number, string]> = [];
-    let width = 0;
-    const ctx = {
-      createLinearGradient: (_x0: number, _y0: number, x1: number) => {
-        width = x1;
-        return { addColorStop: (at: number, c: string) => stops.push([at, c]) };
-      },
+test('the trailing edge (C4): baked once per screen size, ONE drawImage a frame and no gradient, at the break (or the edge) at his feet, alpha by gap; baked again on a new size or a lost canvas (D6)', () => {
+  // (a canvas that records what is baked into it, and a frame ctx that records what the piece draws on its 'screen' layer)
+  const D = globalThis.document as unknown as { createElement: (t: string) => unknown };
+  const make = D.createElement;
+  let lostNow = false;
+  const bakedGrads: string[] = [];
+  D.createElement = () => {
+    const g = {
+      createRadialGradient: () => (bakedGrads.push('radial'), { addColorStop: () => {} }),
+      createLinearGradient: () => (bakedGrads.push('linear'), { addColorStop: () => {} }),
       fillRect: () => {},
       fillStyle: '',
-    } as unknown as CanvasRenderingContext2D;
-    piece.draw!(ctx, 'screen' as PieceLayer, host);
-    const rgba = stops.map(([, c]) => c.match(/[\d.]+/g)!.map(Number));
-    return { width, rgba, alpha: Math.max(0, ...rgba.map((q) => q[3])) };
+      isContextLost: () => lostNow,
+    };
+    return { width: 0, height: 0, getContext: () => g, addEventListener: () => {} };
   };
-  assert.equal(drawn(700).rgba.length, 0, 'no warning with the front 700 px back');
-  const near = drawn(150);
-  assert.equal(near.alpha, 0.75, 'full warning at 150 px: 0.75 alpha');
-  assert.equal(drawn(60).alpha, 0.75, 'and no more closer in');
-  const [core] = near.rgba;
-  assert.ok(core[0] + core[1] + core[2] < 40 && core[3] === 0.75, 'a dark core at the very edge');
-  assert.ok(near.rgba.some((q) => q[0] >= 200 && q[0] > q[1] && q[1] > q[2] && q[3] > 0), 'a warm rim on its inner side');
-  let last = 0;
-  for (let gap = 640; gap >= 150; gap -= 10) {
-    const d = drawn(gap);
-    assert.ok(d.alpha >= last, `stronger as it closes (${gap} px: ${d.alpha} < ${last})`);
-    last = d.alpha;
+  try {
+    const lay: ChaseLay = { stretches: [{ start: 1000, end: 4000, last: true }] };
+    const view = { x: 1800, y: 0, w: 412, h: 915, zoom: 1 };
+    const host = { platforms: [] as Platform[], easy: false, t: 0, player: { x: 2000, y: Y, height: 60 }, view } as unknown as PieceHost;
+    const piece = CHASE_PIECE.start({ chase: lay, config: { levelHeight: 1200 } } as never, host) as StagePiece & { run: ChaseRun };
+    assert.ok(piece);
+    const drawn = (gap: number) => {
+      Object.assign(piece.run.fronts[0], { front: 2000 - gap, active: true, hold: 0 });
+      const calls: Array<{ alpha: number; x: number; y: number; h: number }> = [];
+      let grads = 0;
+      const rec = {
+        globalAlpha: 1,
+        createLinearGradient: () => (grads++, { addColorStop: () => {} }),
+        createRadialGradient: () => (grads++, { addColorStop: () => {} }),
+        drawImage: (cv: { height: number }, x: number, y: number) => void calls.push({ alpha: rec.globalAlpha, x, y, h: cv.height }),
+        fillRect: () => {},
+      };
+      const ctx = rec as unknown as CanvasRenderingContext2D;
+      piece.draw!(ctx, 'screen' as PieceLayer, host);
+      assert.equal(grads, 0, `no gradient a frame (gap ${gap})`);
+      assert.ok(calls.length <= 1, 'one drawImage at most');
+      assert.equal(ctx.globalAlpha, 1, 'the alpha is put back');
+      return calls[0];
+    };
+    const b0 = edgeBakes();
+    assert.equal(drawn(700), undefined, 'no warning with the front 700 px back');
+    const near = drawn(150);
+    assert.ok(near && Math.abs(near.alpha - EDGE.max) < 1e-9, `full warning at 150 px: ${near?.alpha}`);
+    assert.equal(drawn(60).alpha, near.alpha, 'and no more closer in');
+    let last = 0;
+    for (let gap = 640; gap >= 150; gap -= 10) {
+      const a = drawn(gap)?.alpha ?? 0;
+      assert.ok(a >= last, `stronger as it closes (${gap} px: ${a} < ${last})`);
+      last = a;
+    }
+    assert.equal(edgeBakes() - b0, 1, 'baked once for the screen size, however many frames');
+    assert.deepEqual(bakedGrads, ['radial', 'linear'], 'the bake holds the glow and the band');
+    // (anchored at his feet; at the break when it is on screen, else at the trailing edge)
+    const off = drawn(400);
+    assert.equal(off.x, 0, 'the break 400 px back is off this screen: at its edge');
+    assert.equal(off.y + off.h / 2, Y + 60 - view.y, 'the glow\'s middle at his feet');
+    Object.assign(view, { x: 1500 });
+    assert.equal(drawn(400).x, 100, 'the break on screen: the glow sits on it');
+    // (a new screen size, a turn: baked again; a lost canvas: baked again)
+    Object.assign(view, { w: 915, h: 412 });
+    drawn(150);
+    assert.equal(edgeBakes() - b0, 2, 'baked again for the turned screen');
+    lostNow = true;
+    drawn(150);
+    lostNow = false;
+    assert.equal(edgeBakes() - b0, 3, 'baked again when the phone took the canvas back');
+  } finally {
+    D.createElement = make;
   }
-  assert.ok(drawn(150).width > drawn(500).width, 'and it reaches further in as the front closes');
 });
