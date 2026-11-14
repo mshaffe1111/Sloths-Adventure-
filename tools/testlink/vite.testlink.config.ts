@@ -29,12 +29,12 @@ export default defineConfig({
   // (a QA build: the control test, #ctest, opens here and not in the shipped game: src/game/playRecorder.ts qaBuild, UI-15)
   define: { __GIT_COMMIT__: JSON.stringify(gitCommit()), __BUILD_TIME__: JSON.stringify(t), 'import.meta.env.VITE_QA_BUILD': JSON.stringify('1') },
   plugins: [react(), tailwindcss()],
-  // (small pictures, under 24 KB, packed into the bundle: an artifact version holds at most 511 files, and the recorded music
+  // (small pictures, under 48 KB since 11-14 link #3 (523 files > the 512 cap; was 32 KB), packed into the bundle: an artifact version holds at most 511 files, and the recorded music
   // took the build to 527, 2026-10-30. The test link only; the GitHub Pages build keeps them as files.)
   build: {
     outDir: 'tools/testlink/dist',
     emptyOutDir: true,
     // (fonts stay files: index.html preloads them by path, and an inlined one left its preload pointing at nothing)
-    assetsInlineLimit: (file: string, content: Buffer) => !/\.woff2?$/.test(file) && content.length < 32 * 1024,
+    assetsInlineLimit: (file: string, content: Buffer) => !/\.woff2?$/.test(file) && content.length < 48 * 1024,
   },
 });
