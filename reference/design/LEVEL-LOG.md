@@ -113,3 +113,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | POLISH-10 (Opus xhigh) | W1 background line (drawLip soil row, all worlds), bounce arrow dropped, 1-4 canopy seam + floating shard; 2 ready packets | $10.59 | ~80 min |
 | ENG-B4 (Opus xhigh) | 1-8 chase engine: split by realised run-up (yield 30/30 both), 2 pipeline roots, baked edge, chase bots in CI, caught-run fix; 3 ready packets | $23.41 | ~2 h |
 | KEEPER-17b (Opus high) | journal hide page rewritten to keep-still in the green; crouch text grepped out of the journal | $1.25 | ~6 min |
+| CRITIC-PERSONA (Opus high) | cold review of the persona draft + handover: REJECT x2 with exact rewrites, all applied; criterion met | $1.99 | ~10 min |
