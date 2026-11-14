@@ -19,7 +19,21 @@ both settings); with the carry switched off 7/7 fail (after the carry check was 
 - step-up-sheet: BEFORE f4/f11 jump 40 px; AFTER slides across in ~4 frames, two-hand pose kept.
 - vault-up-sheet: busy (Dot sits on him at the top); the half-speed mp4 shows it better: the lift off the top no longer jumps.
 - Rough spot named: at the first frame of a catch the climb pose is drawn up to ~25 px short of the vine (a reach) for 1-2 frames.
-## Gates (in flight at 6:26 PM, final list in the next commit): tsc, build, chunkcheck, artcheck, knowncheck, generality, roadmapcheck (after unshallow) PASS; kbdcheck PASS; unit tests, buildcheck, seedlist, engine tools, tierBots, lock vs base running; drawcheck, clipcheck next
+## Gates on fee59ec5 (code unchanged since; final at 7:16 PM)
+PASS: tsc; build (BASE_PATH); chunkcheck; artcheck; knowncheck; generality; roadmapcheck (after `git fetch --unshallow`: a shallow
+clone fails it); kbdcheck; seedlist 1-1 --check; engine tools 33/33; tierBots 7/7; **lock 102/102 unchanged** vs a base lock recorded on
+e8afc05 (lockall --layouts 16); src/game/vineFeel.test.ts 7/7. buildcheck FAIL under load (1-1 Normal p95 171 ms vs 150, Easy 91) while
+tests + 2 lock runs shared the CPU; the base lacks PERF-BUILD's stage-start fix (lead 6:48 PM: integration carries it).
+**UNRUN (the container restarted at ~7:10 PM and killed the chain; plainly not run to the end):** the full unit suite (1,039+ passed,
+0 failed when it stopped), drawcheck, clipcheck, buildcheck alone.
+## EXACT NEXT STEP
+1. Gates on b3b0eafd+ in the FOREGROUND, unit suite in shards (src/game/*.test.ts split in 3), then drawcheck (the hero draw gained a
+   save/translate/restore only while settling), clipcheck, buildcheck alone once; restore reference/qa/tester-page-1106/ after kbdcheck.
+2. CAMERA (lead 6:26 PM, uncounted by me): the view jumps ~150-180 px in one frame at the grab (grab-up-sheet 11->12, BEFORE and AFTER
+   alike) and ~15-20 px at the leap catch. Headless showed <=17 px/frame, so measure on the page: log e.camera.x/y per frame in
+   tools/inspect/vineFeelClip.mjs for all 4 moves, both orientations. First suspect: cameraFollow.ts:40 camAnchor returns p.y the
+   moment climbing starts (grounded/climbing keep level with his feet), so the anchor re-picks at the grab. Ease it at the root for
+   every stage (cameraFollow.ts: ask the lead first; keep the camera tests whole), plant a per-frame camera-move test, re-shoot sheets.
 ## Pushback / left
 - The leap between two field vines 80 px apart uses the trunk leap (330 px/s, -600): he rockets up and is caught 4 frames later. The
   catch is now smooth, but the leap itself is big for an 80 px gap: a Designer number, named not changed (proposal: a field-vine hop).
