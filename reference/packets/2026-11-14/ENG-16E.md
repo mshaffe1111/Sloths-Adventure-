@@ -1,8 +1,12 @@
 # ENG-16E: 1-6's engine findings, fixed for EVERY stage (R-165.246; Matt 11-14: "the engine is global... builders don't do engine work"): A. the chain's last leap, B. the shared petal fill, C. World 1's FAR row. Opus 5.5 xhigh (engine). Written 1:47 PM ET 11-14 by the lead.
 Branch: work ON t-build-16 (its head when you start: BUILD-16d's STOPPED head; 1-6 is where the faults showed). You fix the engine
-items for every stage, then FINISH 1-6 yourself (no further builder hand-off). READ FIRST: reference/methods/level.md
+items for every stage, then FINISH 1-6 yourself (no further builder hand-off). READ FIRST: reference/qa-reports/BUILD-16d/REPORT.md (head 0fd37596: castBots table, ENGINE-WORTHY E1-E3, EXACT NEXT STEP), reference/methods/level.md
 rule 22, reference/qa-reports/BUILD-16c/REPORT.md (the petal findings: fillGaps drops petals on pit floors on stretches over 1,050 px with
 no socket petal; a creaky limb can't hold one, flowerReach.ts:140), src/game/petals.ts + petalPass.ts, LESSONS D29, D40, D63, D69.
+NOTE: BUILD-16d moved the chain's last perch to 0.35-0.55 of its band and FAR to 0.65-0.8 in data (before it read the lead's stop).
+   After your engine fix (A), restore the perch to where the design wants it unless the design itself calls for it there; a data
+   workaround of a shared fault does not stay (rule 22). Its snake rule in firsttimer.ts (E2) was written at high: review it line by
+   line and re-run tierBots (1-1 unmoved) before keeping it.
 A. THE CHAIN'S LAST LEAP (BUILD-16d 11-14, reference/qa-reports/BUILD-16d/: Normal bots 1-2/6, kid thorn deaths off the chain's LAST
    liana): chained lianas swing at amp 0.24-0.26 rad (ENG-S5's 0.225 floor) vs 0.45 for every other 1-6 liana, so a forward-end let-go
    (LET_GO_AT 0.75, the testers' moment, physics.ts RELEASE note) from the last chain liana falls short of a perch 337-357 px on. Fix in the
