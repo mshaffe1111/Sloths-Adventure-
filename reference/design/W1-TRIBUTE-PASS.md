@@ -1,0 +1,22 @@
+# W1 tribute pass (R-165.253; Pitcher A, packet PITCH-19-22, 2026-11-14): one change per World 1 level, from pieces we HAVE
+Matt, 6:23 PM ET: bring out "what's special about the game... What made Pitfall great? What did people love about it?" Each row gives the level one
+feel of its own, tied to ONE game on Matt's list (PLATFORMER-100-MATT.md #, whose "why people loved it" is quoted) and nothing new to build.
+A row is a proposal for the lead; it changes a level only after that level's own tests and bots pass (rule 13), and never patches a level the
+sprint replaces (D40). Each "Pieces" cell names what exists, checked on origin/t-int-9.
+
+| Level | The change | Game (Matt #) and what players loved | Why it gives the level its own feel (one line) | Pieces (exist) |
+|---|---|---|---|---|
+| 1-1 basics | The first mushroom sits where a first-timer's first natural jump lands, so the first bounce is found by accident and throws him into a petal arc | Super Mario Bros. (#5): "perfect physics... a joyful quest": its first screen teaches by letting you touch things | The game's first surprise is a gift the player finds, not a lesson Dot reads | bounce (`b`, nodeLetters.ts:110), petals |
+| 1-2 Petal Trail | One optional high alcove over the thorn floor, reached only by chaining three bounces higher than the trail needs | DuckTales (#21): "Scrooge's cane pogo to bounce on enemies and find treasure" | The bounce chain becomes a way to FIND things, not only to cross | bounce chain, hidden alcove (`H`, nodeLetters.ts:95) |
+| 1-3 Branch Snakes | One load hangs over two snakes stacked on lower boughs, and one drop chases both off | Donkey Kong Jr. (INSPIRED-BY.md:59, the shelf): its fruit drops "nuke any baddies they cross", and later hits score more | The first double-drop says "aim the forest", the feel 1-9 builds on | drop trap beats all within `scare` (dropTrap.ts:6-8) |
+| 1-4 Up the Kapok | The climb is cut into three "floors", each ending on a broad bough with a flag, and each floor has ONE hazard of its own (pods, a rotting bough, the vine field) | Kung-Fu Master (#4): "relentless... floor-by-floor enemies": each floor its own fight | He sees his height grow floor by floor, and each floor reads as its own room | podfall.ts, creak.ts, vineField, flags |
+| 1-5 Where She Walked | The two roads differ in KIND: over is quick and exposed (creaky limbs, a bounce), under is slow and sheltered (a shimmy rope), and Meeca's marks show the under road | Castlevania III (#22): "branching paths", each way a different challenge (PLATFORMER-100.md row) | The fork becomes a choice of style (rush or follow her), not of height | over/under routing (B20), creak.ts, rope, w1Marks.ts |
+| 1-6 First Lianas | One stretch with no ground at all: three lianas in a row over the mist, the only way across | Bionic Commando (#11): "swinging across bottomless pits... instead of a jump button" | The swing stops being a trick and becomes the only road: the level's peak | liana chains (ENG-S5, PLATFORMER-100.md), w1Swing.ts |
+| 1-7 A Very Good Bush | Before each watched stretch the eagle's shadow sweeps once with no catch, so the edge of the danger is seen before he enters it | Metroid Dread (#95): "E.M.M.I. stealth pursuits... survival-horror tension": the zone is announced before you step in | Tension comes from knowing where the hunter rules, not from a surprise catch | the watch shadow (engine.ts:4747), 1-7's free first pass (w1Arc17.ts) |
+| 1-8 The Long Branch | The chase music holds back until the first crack, so the whole first minute is calm and the crack lands like an alarm | Wario Land 4 (#64): "frantic escape timers back to the start": the alarm flips the level from explore to run | The level gets a before and an after, and "GO!" is felt in the ears | chase score and crack (1-8.md:38-40: score_chase, chaseCrack) |
+
+Checks before any row is built: the row's level plan test still passes (level.md rule 2), the bots end `shrine` (rule 5), and stills of the changed beat,
+upright 412x915 and sideways 915x412 (rule 8). 1-1's row also re-runs the proven seed list (`npx tsx tools/engine/seedlist.ts 1-1 --check`) and the tier
+bots' calibration (CLAUDE.md checks).
+Not claimed: the sources behind each "loved" line are Matt's own list text (PLATFORMER-100-MATT.md); the pitches in reference/design/pitches/ carry the
+researched citations for the games they use.
