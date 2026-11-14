@@ -23,6 +23,10 @@ const PIECES = {
   burst: piece(new URL('../assets/w1-1113/w14-kapokpod-burst.webp', import.meta.url).href),
   figs: piece(new URL('../assets/w1-1113/w14-figcluster.webp', import.meta.url).href),
   bough: piece(new URL('../assets/w1-1113/w14-roughbough.webp', import.meta.url).href),
+  // (a silk tuft cut from the burst's own plume, its husk side faded out: POLISH-1 11-13, the inventory's hf1113/w14-fluff)
+  fluff: piece(new URL('../assets/w1-1113/w14-fluff.webp', import.meta.url).href),
+  // (a shut gate's thorn tangle: 1-2's own painted bramble, the inventory's w1-thorn-bramble-long, the art World 1's hurt floor ships)
+  thorns: piece(new URL('../assets/props/pits/w1-thorn-long.webp', import.meta.url).href),
 };
 /** a piece's picture once loaded (starts the load; the phone taking it back reloads it: atlasLoader.ts) */
 function pic(p: Piece): HTMLImageElement | null {
@@ -158,10 +162,25 @@ function podShape(ctx: CanvasRenderingContext2D, x: number, y: number, r: number
   ctx.restore();
 }
 
-/** a fluff tuft (stand-in): a soft white puff with a faint grey rim, so it reads on sky and on leaves */
-function fluff(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, a: number) {
+/** a fluff tuft: the painted silk tuft (w14-fluff), `r` its half-height-ish size; a white puff stand-in only while it loads */
+function fluff(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, a: number, turn = 0, flip = false) {
   // (no colour string built per tuft: fixed fills and the alpha, PERFORMANCE-RULES §3.1)
   ctx.globalAlpha = Math.max(0, Math.min(1, a));
+  // (painted: a silk tuft cut from ART's pod-burst plume (w14-fluff), never a code-drawn circle: Matt 11-13, R-165.213, "a column of
+  //  white bubbles" down the fig vine. The circles below draw only while the picture loads)
+  const im = pic(PIECES.fluff);
+  if (im) {
+    const h = r * 3, w = (h * im.width) / im.height;
+    // (each tuft its own turn and side, so no two read as one stamp: the lead's still review 11-13 6:31 PM)
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(turn);
+    if (flip) ctx.scale(-1, 1);
+    ctx.drawImage(im, -w / 2, -h / 2, w, h);
+    ctx.restore();
+    ctx.globalAlpha = 1;
+    return;
+  }
   ctx.fillStyle = '#8f8b7e';
   ctx.beginPath();
   ctx.arc(x, y + 1, r + 1.5, 0, Math.PI * 2);
@@ -172,6 +191,14 @@ function fluff(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, a
   ctx.fill();
   ctx.globalAlpha = 1;
 }
+
+/** the tell's loose tufts: [phase, size, pace (falls a second), spin (rad/s), sway (rad/s)], each its own (four, never a column) */
+const TUFTS: ReadonlyArray<readonly [number, number, number, number, number]> = [
+  [0.0, 1.2, 0.42, 0.7, 1.9],
+  [0.29, 0.75, 0.55, -1.3, 2.6],
+  [0.53, 1.0, 0.37, 1.8, 1.4],
+  [0.8, 0.85, 0.5, -0.5, 2.2],
+];
 
 /** the drawn pod's size (px across its widest, half): 1.5x the hit radius (podfall.ts POD.radius 14) */
 const POD_DRAW = 21;
@@ -196,11 +223,15 @@ export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState
   if (s.phase === 'warn') {
     // the trickle: a stream of tufts drifting down the column from the pod, reaching further each moment of the tell (at its start a
     // third of the way, by its end the whole column), so on a phone he sees fluff falling past him on his own column before the drop
+    // (a few loose tufts, never a column: each its own size, pace, turn and drift, fading in under the pod and out as it falls)
     const reach = (p.land - p.top) * Math.min(1, 0.35 + s.u * 0.9);
-    for (let i = 0; i < 16; i++) {
-      const f = (t * 0.55 + i / 16) % 1;
+    for (let i = 0; i < TUFTS.length; i++) {
+      const [phase, size, pace, spin, sway] = TUFTS[i];
+      const f = (t * pace + phase) % 1;
       const y = p.top + 6 + f * reach;
-      fluff(ctx, p.x + Math.sin(t * 2.4 + i * 1.7) * 10, y, 6 + (i % 3) * 1.6, 1 - f * 0.35);
+      const x = p.x + Math.sin(t * sway + i * 2.3) * (6 + 16 * f);
+      const a = Math.min(1, f * 6) * (1 - f * f);
+      fluff(ctx, x, y, 9 * size, a, spin * (t + i * 1.9), i % 2 === 1);
     }
     podShape(ctx, p.x, hangY, r, Math.sin(t * 38) * 0.14 * (0.4 + s.u));
     return;
@@ -208,7 +239,10 @@ export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState
   if (s.phase === 'gone') return;
   if (s.phase === 'fall') {
     const y = s.y - r * 1.9;
-    for (let i = 0; i < 4; i++) fluff(ctx, p.x + (i - 1.5) * 7, y - r * 1.9 - 8 - i * 12, 5 - i * 0.6, 0.85 - i * 0.18);
+    for (let i = 0; i < 3; i++) {
+      const [, size, , spin] = TUFTS[i];
+      fluff(ctx, p.x + (i - 1) * 9 + Math.sin(t * 5 + i) * 3, y - r * 1.9 - 8 - i * 16, 5 * size, 0.85 - i * 0.25, spin * t, i === 1);
+    }
     podShape(ctx, p.x, y, r, 0);
     return;
   }
@@ -223,7 +257,7 @@ export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState
   for (let i = 0; i < 10; i++) {
     const a = (i / 10) * Math.PI * 2;
     const d = 8 + s.u * 30;
-    fluff(ctx, p.x + Math.cos(a) * d, p.land - 10 + Math.sin(a) * d * 0.5 - s.u * 12, 6 + (i % 2) * 2, 0.95 * (1 - s.u));
+    fluff(ctx, p.x + Math.cos(a) * d, p.land - 10 + Math.sin(a) * d * 0.5 - s.u * 12, 5 + ((i * 7) % 5) * 0.8, 0.95 * (1 - s.u), a + s.u * (i % 2 ? 1.5 : -1.5), i % 2 === 0);
   }
 }
 
@@ -259,6 +293,60 @@ export function drawGate(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 
     ctx.beginPath();
     ctx.ellipse(fx, thick + 2, 12, 5, 0, 0, Math.PI);
     ctx.fill();
+  }
+  ctx.restore();
+}
+
+/** the bramble's picture (522 x 203, its stems' foot about 92% down) and how tall it stands on a shut bough (a share of his height) */
+const THORNS = { w: 522, h: 203, foot: 0.92, tall: 1.25 } as const;
+
+/** how a shut gate's thorn tangle stands now (fieldPlay.ts thornsOf) */
+export interface ThornState {
+  /** how much of it is still there (1 every fig on; less a notch for each fig freed; the pull-back runs 0 to 1 after the last) */
+  hold: number;
+  /** 0..1 the most-pushed fig's way up its vine: the tangle strains up as he pushes */
+  strain: number;
+  /** 0..1 the settle after a fig locks in (a quick shudder down) */
+  settle: number;
+  /** 0..1 the pull-back once the last fig is in: the tangle draws back off the bough to its two ends and is gone */
+  pull: number;
+}
+
+/**
+ * A shut gate's thorn tangle (Matt, R-165.212: "put something over the platform... that shows it is locked"; World 1 has no made things):
+ * 1-2's painted bramble lying along the shut bough, over the way up, tilted with its sag. It strains as a fig is pushed, shudders down a
+ * notch as each fig locks in, and on the last it pulls back off the bough to its ends. Only its motion is code (STAGE-RULES §4).
+ */
+export function drawGateThorns(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 'y' | 'width'>, far: -1 | 1, sag: number, s: ThornState, t: number) {
+  if (s.pull >= 1 || s.hold <= 0) return;
+  const im = pic(PIECES.thorns);
+  if (!im) return;
+  const pivotX = far > 0 ? b.x : b.x + b.width;
+  const ang = Math.atan2(sag, b.width) * far;
+  const h0 = THORNS.tall * POKEY_H;
+  const pw = (h0 * THORNS.w) / THORNS.h;
+  const span = b.width * 0.94;
+  const n = Math.max(1, Math.ceil(span / (pw * 0.8)));
+  const step = n > 1 ? (span - pw) / (n - 1) : 0;
+  const ease = s.pull * s.pull * (3 - 2 * s.pull);
+  const tall = h0 * (0.55 + 0.45 * s.hold) * (1 - 0.85 * ease) * (1 - 0.12 * s.settle) * (1 + 0.1 * s.strain);
+  const shake = s.strain * 1.6 * Math.sin(t * 47) + s.settle * 2.5 * Math.sin(t * 61);
+  ctx.save();
+  ctx.translate(pivotX, b.y);
+  ctx.rotate(ang);
+  const x0 = (far > 0 ? 0 : -b.width) + (b.width - span) / 2;
+  const mid = x0 + span / 2;
+  ctx.globalAlpha = 1 - ease;
+  for (let i = 0; i < n; i++) {
+    const cx = n > 1 ? x0 + pw / 2 + step * i : mid;
+    // (the pull-back: each clump draws away from the middle, to its own end of the bough)
+    const out = (cx < mid ? -1 : 1) * ease * span * 0.35;
+    const flip = i % 2 ? -1 : 1;
+    ctx.save();
+    ctx.translate(cx + out + (i % 2 ? shake : -shake), 0);
+    ctx.scale(flip, 1);
+    ctx.drawImage(im, -pw / 2, -tall * THORNS.foot, pw, tall);
+    ctx.restore();
   }
   ctx.restore();
 }
