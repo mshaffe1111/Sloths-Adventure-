@@ -1129,3 +1129,4 @@ lines); Matt sees them in the release.
 - 2026-11-14 4:55 AM ET: check-in (4:55). POLISH-7 archived ($15.29). ENG-S2 idle with lockall/buildcheck running. FIX-14c relisting + clips. POLISH-8 on soft-miss + re-pins.
 - 2026-11-14 5:08 AM ET: FIX-14c: gates green but castBots WORSE (kid 24/34 -> 19/35; Easy child/middle fell); cause = the top's near side at a turn-back. Lead: t-fix-14c HELD off Matt's link; INT-7 takes t-fix-14b (green, adult 40/40) + t-polish-8; FIX-14d packet (like-for-like bots) written.
 - 2026-11-14 5:10 AM ET: ENG-S2 FINAL GREEN (t-eng-s2@9809f11c; lockall 102/102). Lead judged upright stills: tell, let-go, startle PASS; FAIL: the false liana lands overlapping Pokey (reads as an attack). ENG-S3 packet: CAM-THREAT, false-liana landing clear of him, SNAKE-LAY, chains.
+- 2026-11-14 5:10 AM ET: ENG-S2 archived ($13.49). ENG-S3 started (session_01FhBbYJreRRKm88QBqN2WRN).
