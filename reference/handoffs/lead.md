@@ -76,7 +76,7 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 **Matt's decisions today (11-14):** easier 1-1 (fewer doubles, easier jumps; props off ledges R-165.226/.228); 1-4 rocks/pods slower +
 telegraphed (R-165.227), fig gate: a lock you can see + a head stop so only the fruit passes (R-165.212); two-vine reward (R-165.229);
 shorter swings (R-165.225); delegated to the lead and DECIDED GO: deep-earth underlayer (R-165.224) and living pole (R-165.209);
-Hugging Face is the lead's call (~\$56 left, ~\$10 reserve). Predator art from his sheets (R-165.231, raws on branch art-raw-2026-11-14).
+Hugging Face is the lead's call (~$56 left, ~\$10 reserve). Predator art from his sheets (R-165.231, raws on branch art-raw-2026-11-14).
 **Links:** EnK5 (https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb) = link #1 (t-int-7@007f4421: 1-4 fixes + ruler head). Link #2
 (easier 1-1) pre-built from t-int-8@595ada5d in the lead's link worktree, publish on INT-8 GREEN. Never send testers to EnK5.
 **Known red carried on the links:** 1-4 fig gate: from the far-end ledge Pokey flicks over a shut bough and drops through it (INT-8,
