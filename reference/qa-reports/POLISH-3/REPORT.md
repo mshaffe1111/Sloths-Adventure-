@@ -29,8 +29,8 @@ started: R-165.209 (1-4 gate under the HUD sideways, square posts), R-165.109 (G
   reads EVERY Drop as a route gap, so the hole records (2,700+ px) read as double test gaps: root fix = a Drop field "hole under the route"
   (verdicts.types.ts) gapsOf skips, or drop the record and teach drop.untyped that a soft zone covers a hole (verdicts.ts): lead's call, not
   patched. **unit3: softFall11.test.ts:97** (planted, without the word) went red because it only switched softOn off; fixed after the run
-  (it now also strips the word's hole zones, earthHoles), 8/8 alone; the full suite was NOT re-run on that edit. tierBots, drawcheck,
-  clipcheck, buildcheck: see RESULTS.txt.
+  (it now also strips the word's hole zones, earthHoles), 8/8 alone; the full suite was NOT re-run on that edit. tierBots 0,
+  drawcheck, clipcheck, buildcheck 0 (done 11:30 PM).
 ## Pushback
 - seed-323 copy: with E0a's REAL next bank (block 131 @28042, d2748131) the hole 27200..28042 is a fall with or without branch 128, and with
   a planted bank at log 127's end it is still a fall: realFalls (promises11.ts:44) counts log 127, BESIDE the slot, as "a floor inside the
