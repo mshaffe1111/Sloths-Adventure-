@@ -67,19 +67,14 @@ export function dressStage(d: DressInput): KitDecor[] {
 }
 
 /**
- * World 1's rooms (1-4's squirrels' lift, 1-6's seesaws, 1-7's acorn meadow), from Matt's World 1 sheet:
- *   1-4  the squirrels' home on their tree, a hollow log with a round door on the ledge the lift goes up to: it opens as the lift tops out
- *   1-6  a branch gate at the top of the bank the seesaw is the way up to: shut, it rises out of the way as the seesaw tips
+ * World 1's rooms (1-7's acorn meadow), from Matt's World 1 sheet:
  *   all  a petal bundle, the room's reward: it rises out of the spot past the way on as he gets there (a picture: it is not a pickup and
  *        counts for nothing, so no goal or count changes)
- * (1-6's first seesaw shows itself and needs nothing doing: no gate and no reward there)
+ * (1-4's squirrel-lift nest door went with the hand-built 1-4: the door is 1-4's crown dressing now, nestDoorAt below. 1-6's seesaw
+ *  rooms, their branch gates and the first seesaw that showed itself, went with the hand-built 1-6's proto plan, R-165.238)
  */
 function world1(d: DressInput, out: KitDecor[]) {
   for (const r of d.rooms) {
-    if (r.id.startsWith('seesaw-show')) continue;
-    const top = d.platforms.find((p) => p.id === r.right.on);
-    // (1-4's squirrel-lift nest door went with the hand-built 1-4: the door is 1-4's crown dressing now, nestDoorAt below)
-    if (r.id.startsWith('seesaw-') && top) out.push({ n: 'branchGate', room: r.id, rise: true, x: top.x + 75, b: top.y + 6, w: 150 });
     const b = anchorAt(r.beyond, d.platforms);
     if (b) out.push({ n: 'petalBundle', room: r.id, pop: true, x: b.x, b: b.y - 20, scale: 1.3 });
   }

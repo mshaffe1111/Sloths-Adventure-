@@ -82,17 +82,15 @@ test('World 3 floor sets and World 4 bridges: never the same set in two stages i
 
 // (1-4's squirrel lifts went with the hand-built 1-4, B14 11-13: 1-4 is the vine field; their nest door is 1-4's crown dressing now,
 //  w1Arc14.ts finish14, held in w1Arc14.test.ts)
-test("World 1's rooms: the branch gate up 1-6's seesaw banks, and a petal bundle for every room", () => {
+// (1-6's seesaw rooms and their branch gates went with the hand-built 1-6's proto plan, R-165.238: HAND_STAGES['1-6'] had no plan since
+//  1-6 rolls on gen2, so `by('1-6')` built the old default plan; the gen2 1-6 has no room)
+test("World 1's rooms: a petal bundle for every room", () => {
   for (const seed of [1, 2, 3]) {
-    const by = (id: string) => buildProtoStage(cfg(id), seed, HAND_STAGES[id]);
-    const s16 = by('1-6');
-    const gated = (s16.kit?.rooms ?? []).filter((r) => r.id.startsWith('seesaw-') && !r.id.startsWith('seesaw-show'));
-    assert.ok(gated.length >= 1);
-    for (const r of gated) assert.ok((s16.proto.kitDecor ?? []).some((d) => d.n === 'branchGate' && d.rise && d.room === r.id), `seed ${seed} ${r.id}`);
-    const s17 = by('1-7');
+    const s17 = buildProtoStage(cfg('1-7'), seed, HAND_STAGES['1-7']);
+    assert.ok((s17.kit?.rooms ?? []).length >= 1, `seed ${seed}: 1-7 has rooms`);
     for (const r of s17.kit?.rooms ?? []) assert.ok((s17.proto.kitDecor ?? []).some((d) => d.n === 'petalBundle' && d.room === r.id), `seed ${seed} ${r.id}`);
     // (a picture, not a pickup: the stage's pickups are the same as without the dressing)
-    for (const st of [s16, s17]) assert.ok(!st.collectibles.some((c) => (c as { findId?: string }).findId === 'petalBundle'));
+    assert.ok(!s17.collectibles.some((c) => (c as { findId?: string }).findId === 'petalBundle'));
   }
 });
 
@@ -105,7 +103,9 @@ test('the dressing sheets: every piece is in a set, every set piece is on the sh
 });
 
 test('Worlds 1 and 5: their stages wear dressing sets, two stages in a row never the same bank set, and only pictures are added', () => {
-  for (const ids of [['1-2', '1-3'], ['5-1', '5-2']]) {
+  // (World 1's pair is 1-7 and 1-8, two hand-built stages in a row: 1-2 and 1-3 roll on gen2, so HAND_STAGES had no plan for them and
+  //  this built the old hand-built 1-6's default proto plan twice under their configs until it went, R-165.238)
+  for (const ids of [['1-7', '1-8'], ['5-1', '5-2']]) {
     const looks = ids.map((id) => {
       const st = buildProtoStage(cfg(id), 1, HAND_STAGES[id]);
       const ds = st.proto.dress ?? [];
