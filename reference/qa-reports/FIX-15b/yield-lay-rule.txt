@@ -1,0 +1,13 @@
+yield 1-4: seeds 1001..1040, 35 s
+NORMAL: clean 0 of 40 (0%)
+  stopped | first | alone | rule
+       40 |    31 |    29 | tower: a fall off the piece at x #-#, y # drops # px (sound wood withi
+        9 |     9 |     0 | flags: none before the hard node n#, # px along the way (within # px)
+        3 |     0 |     0 | verdict landing.dead-zone
+EASY (carries Normal's errors): clean 0 of 40 (0%)
+  stopped | first | alone | rule
+       40 |    31 |    29 | tower: a fall off the piece at x #-#, y # drops # px (sound wood withi
+        9 |     9 |     0 | flags: none before the hard node n#, # px along the way (within # px)
+        3 |     0 |     0 | verdict landing.dead-zone
+EASY ONLY (rules a seed's Easy roll breaks and its Normal roll does not): 0 rolls
+

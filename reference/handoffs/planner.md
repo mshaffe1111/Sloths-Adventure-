@@ -93,14 +93,17 @@ gap or a rise (gapPx guards, riseLimit, the designer's bands 195-205 / 205-228, 
   (pipeline.ts); the SECTION pass (flagSpot, span split) and easyMode capFlagSpans do not yet, and the footprint clears the stand box,
   not W1's drawn rock bulge (cutBox). Moving section-pass flags re-lays 15 curated W6-8 seeds: re-curate with them.
 
-- **A shut fig gate's neighbourhood** (FIX-15 -> FIX-15b, R-165.212, 11-14; reference/qa-reports/FIX-15/REPORT.md). The engine now
-  makes a shut gate wood from every approach (wall, head stop, footing from above), so wood within a jump of its top from BESIDE it
-  lets him STAND on the shut gate (93 of 192 gates, 1-4 layouts 0-15 both settings, by tower.ts `leaps`). Root: `towerCatches`'
-  `byGate` and `towerGates` guard only wood LEVEL with a sealed piece (`GATE_LEVEL` 30 px), and `cramped` reads the collider (`HEAD`
-  84) and the flat line, not the gate's drawn sag + underside + his drawn height (a ledge 99 px under a sag-56 gate). The verdict half
-  is written (`lay-rules-NOT-APPLIED.patch`); alone it refuses every seed of layout 0, so the LAY goes first (keep such wood out),
-  then the verdict, then 1-4's proven list (100 seeds) is rebuilt with every seed-pinning test on the full suite.
-  Rewritten for FIX-15 (11-14, t-fix-15): this bullet only; the rest of the note is the 11-07 planner's.
+- **A shut fig gate's neighbourhood** (FIX-15 -> FIX-15b, R-165.212, 11-14; reference/qa-reports/FIX-15b/PUSHBACK.md). The engine
+  makes a shut gate wood from every approach, so wood within a jump of its top from BESIDE it lets him STAND on the shut gate (ONTO: 93
+  of 192 gates, 1-4 layouts 0-15 both settings), and wood under its sagged span with less room than his drawn height puts his head in
+  the thatch (LOW: 48). Measure: `npx tsx tools/engine/gatereach.ts 1-4 --layouts 16 --margin 0` (self-contained: runs on any base).
+  **Keeping ONTO wood out of the LAY is impossible as the lay stands** (FIX-15b, 0/40 fresh seeds both settings vs 40/40): the storey
+  laid just above a gate hangs open ends 28-32 px past the gate's ends, and every catch the 450 px fall limit allows under them is inside
+  a double jump (LEAP.up 221 + GATE.sag 56) of the shut top. The LOW half alone rolls 20/40 Normal, 18/40 Easy. The full rule (tower.ts
+  `sealedNear`/`sealedRoom`, the lay's byGate, the verdict, planted tests) is lay-rule-NOT-APPLIED.patch, waiting on the lead's ruling
+  (options A-C: A holds catches beside a gate with it, ClusterGate.with; mock stills qa-reports/FIX-15b/mockA-*.jpg). TRAP: a `with` bough
+  is `broken` (no footing) but the ground painter still draws it; A must hide it while shut. Any change here moves 1-4's rolls: relist 1-4.
+  Rewritten for FIX-15b (11-14, t-fix-15b): this bullet only; the rest of the note is the 11-07 planner's.
 
 ## 4. Traps (each one cost time on 11-06)
 

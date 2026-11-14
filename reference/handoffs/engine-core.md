@@ -211,6 +211,7 @@ proven plan; Play is never blocked).
 - **Never edit the tree while the gate script runs** (it reads files as each step starts): run gates in a separate worktree, or wait.
 
 Rewritten for FIX-15 (2026-11-14, branch `t-fix-15`): section 0k's gate bullets (a shut gate is wood from every approach; the lay gap).
+Rewritten for FIX-15b (2026-11-14, branch `t-fix-15b`): section 0k's FIX-15 bullet (the gate's own flag waits; the lay gap is blocked, PUSHBACK).
 Rewritten again at the stop of RULER (2026-11-13, branch `t-ruler`): the per-gap pit ruler, built and HELD on 1-1's openings, R-165.221 (section 0o). Sections below are still true.
 Rewritten for TIPS (2026-11-14, branch `t-tips`): tip bands, the tip verdict and gate, the locked exit's line and plate (section 0t).
 
@@ -457,10 +458,12 @@ Rewritten again at the end of FA (11:36 AM ET, 2026-11-13): branch `t-fa`: gen2 
   FROM BELOW, the head stop (feet must start more than GATE.stand 4 px under the drawn top: a jump off its own sloped top is not "from
   under"); FROM ABOVE, `footings(x)` hands the engine's floors the gate's own bough at its drawn top (the `with` boughs are not drawn, so
   never footing). `overShut(v, x, y)`: a field vine under a shut bough is not taken from on or over it. Tests: fieldGate.test.ts "wood
-  from every approach" (INT-8's TRY lines at both ends of every gate, today's lid planted red). TRAP: what is still open is the LAY:
-  wood beside a gate within jump reach of its top (93 of 192 gates) now lets him STAND on the shut gate, and 49 of 96 gates carry a
-  checkpoint flag on their own bough (qa-reports/FIX-15/REPORT.md step 1-2; lay-rules-NOT-APPLIED.patch). The clip tool's `gateover`
-  holds the ties after the first snap and prints THROUGH / ON ITS TOP / OVER; both must read `never` before 1-4 ships.
+  from every approach" (INT-8's TRY lines at both ends of every gate, today's lid planted red). A flag standing on a shut gate's bough
+  (or a bough held with it) WAITS for the gate (`FieldPlay.flagWaits`, asked by the engine's claim loop; FIX-15b, the lead 11-14): never
+  claimed from on or over the shut wood, claimed on the open bough (fieldGate.test.ts "a flag on a shut gate's own bough", planted red on
+  the old claim). TRAP still open: the LAY lets him stand on the shut top from wood beside it (ONTO, 93 of 192 gates); keeping it out
+  of the lay leaves 1-4 unrollable (planner.md, qa-reports/FIX-15b/PUSHBACK.md). The clip tool's `gateover` holds the ties after the
+  first snap and prints THROUGH / ON ITS TOP / OVER; both must read `never` before 1-4 ships.
 - **1-4's finish (w1Arc14.ts finish14) finds pieces by tag** (`uid:key`, FA's `GraphBrief.tags`). Traps: Easy widens `landing`
   pieces (field feet are not landings); the bots need tools/inspect/figPush.ts to read fig work as progress.
 - **B14b (11-13):** the two-hand climb is painted (heroClips.ts `climb2Pick`, hero-climb2.json; drawn with its own scale `clip.k`, so

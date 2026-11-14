@@ -2904,7 +2904,8 @@ export class GameEngine {
 
       // Checkpoints
       for (const cp of this.currentStage.checkpoints ?? []) {
-        if (!cp.reached && Math.abs(p.x - cp.x) < 70 && p.y > cp.y - 150 && p.y < cp.y + 40) {
+        // (a flag on a shut fig gate's bough waits for the gate to open: never claimed from on or over the shut wood, fieldPlay.ts)
+        if (!cp.reached && Math.abs(p.x - cp.x) < 70 && p.y > cp.y - 150 && p.y < cp.y + 40 && !this.field?.flagWaits(cp.x, cp.y)) {
           cp.reached = true;
           recorder.event('checkpoint', Math.round(cp.x));
           // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right, a descent goes down)
