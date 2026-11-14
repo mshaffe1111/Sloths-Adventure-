@@ -5,7 +5,7 @@ Donkey Kong Jr., where you're walking up the 2 vines." Also (6:05-6:08): a fun, 
 Role card: reference/roles/DESIGNER.md. Read FIRST reference/methods/level.md (Building rules), then ONLY: packets/2026-11-13/IDEAS-1-6.md
 "THE TRIBUTE RULE"; reference/plans/PLATFORMER-100-MATT.md (Matt's list, WHOLE: "why people loved it" is the seed of every pitch),
 PLATFORMER-100.md and INSPIRED-BY.md (skim); reference/design/1-8.md on origin/t-1718-design lines 1-35 (the level before 1-9, and the format);
-DIFFICULTY.md:55-70; PREDATORS.md lines 39 and 74 (the boa); MAP-REVISIONS.md lines 30-50 and 55-60; WORLD-MAP.html lines 195-205 (2-1, 2-2).
+the game outline reference/plans/GAME-MAP.md on origin/t-design-game-map lines 137-200 (World 1 and 2 rows) and 597-670 (§10 sprint list: B3 lanes, B4 moving platforms, B5 things on a beat, C1 pursuer): its game callouts and stage ideas are a STARTING POINT, not set in stone (Matt 6:24 PM: "you have full permission to implement and switch things around as needed"); DIFFICULTY.md:55-70; PREDATORS.md lines 39 and 74 (the boa); MAP-REVISIONS.md lines 30-50 and 55-60; WORLD-MAP.html lines 195-205 (2-1, 2-2).
 Facts (lead, origin/t-int-9): the boa exists (predators/world1.ts:49-70: beaten by trap, lure, still or punch); drop traps, foodChain, swim,
 rising tide, drifting logs (river.ts), deadly water gaps, pods on a beat (podfall.ts), rolling nuts/fruit (1-8, t-eng-b5) are WIRED.
 Exist but NOT wired: gen2/lureLay.ts, gen2/rideLay.ts, sinking pads (ride.ts newPad/stepPad), snap-jaw stones (beatBrick 'bites').
