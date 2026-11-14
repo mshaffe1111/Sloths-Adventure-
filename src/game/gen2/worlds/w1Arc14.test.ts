@@ -43,7 +43,7 @@ test("1-4's graph passes the node code's rules with its own brief (V2 one teach 
   const W1 = w1World().manifest;
   assert.deepEqual(checkCode(parseCode(code), { teaches: BRIEF_14.teaches!.length, windows: W1.graphs?.windows }), []);
   // every content job of the arc is served by exactly one of 1-4's own sections (one brick a beat: a roll cannot reorder the level)
-  for (const job of ['teach', 'practise', 'climb', 'test', 'flow', 'twist', 'signature', 'combine'] as const) {
+  for (const job of ['teach', 'practise', 'descent', 'climb', 'test', 'flow', 'twist', 'signature', 'combine'] as const) {
     const n = SECTIONS_14.filter((t) => t.jobs?.includes(job)).length;
     assert.equal(n, job === 'teach' ? 4 : 1, `${job}: ${n} sections`);
   }
