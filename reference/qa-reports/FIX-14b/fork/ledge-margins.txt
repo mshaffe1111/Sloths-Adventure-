@@ -1,0 +1,21 @@
+vines 37 under 80: 25
+seed 1 vine 744 top 1458 on 484..764 margin 20 tag s21:sure ptag s21:mid w1-14-crown
+seed 2 vine 648 top 1458 on 628..908 margin 20 tag s21:sure ptag s21:mid w1-14-crown
+seed 3 vine 1036 top 9762 on 1002..1110 margin 34 tag - ptag - 
+seed 3 vine 88 top 5995 on 0..114 margin 26 tag - ptag - 
+seed 3 vine 508 top 2644 on 434..1280 margin 74 tag - ptag - 
+seed 3 vine 530 top 1081 on 270..550 margin 20 tag s21:sure ptag s21:mid w1-14-crown
+seed 4 vine 1036 top 10083 on 1002..1110 margin 34 tag - ptag - 
+seed 4 vine 684 top 1458 on 424..704 margin 20 tag s21:sure ptag s21:mid w1-14-crown
+seed 5 vine 88 top 6412 on 0..114 margin 26 tag - ptag - 
+seed 5 vine 744 top 1458 on 484..764 margin 20 tag s21:sure ptag s21:mid w1-14-crown
+seed 6 vine 1192 top 6468 on 1166..1280 margin 26 tag - ptag - 
+seed 6 vine 792 top 5626 on 0..866 margin 74 tag - ptag - 
+seed 6 vine 264 top 3943 on 190..1280 margin 74 tag - ptag - 
+seed 6 vine 304 top 1979 on 230..324 margin 20 tag - ptag - 
+seed 6 vine 746 top 1458 on 486..766 margin 20 tag s21:sure ptag s21:mid w1-14-crown
+seed 7 vine 1192 top 6075 on 1166..1280 margin 26 tag - ptag - 
+seed 7 vine 708 top 1081 on 688..968 margin 20 tag s21:sure ptag s21:mid w1-14-crown
+seed 8 vine 744 top 1458 on 484..764 margin 20 tag s21:sure ptag s21:mid w1-14-crown
+seed 9 vine 386 top 1081 on 126..406 margin 20 tag s21:sure ptag s21:mid w1-14-crown
+seed 10 vine 792 top 6612 on 0..866 margin 74 tag - ptag - 

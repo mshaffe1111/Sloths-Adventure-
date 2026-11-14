@@ -1,8 +1,13 @@
 # FIX-14b REPORT. t-fix-14b (from t-fix-14@f35253ba + t-len-14@d56cd915). Stopped at the box, ~3:4x AM ET 11-14
 ## EXACT NEXT STEP (in order; the next member starts here)
-1. Fork (R-165.206, NOT STARTED: the box ran out): w1Arc14.ts ROTTEN_FORK (merged in here from t-len-14): >= 80 px of ledge past the
-   link vine; FIX-14's proposed level.md rule + a lay test over every roll's vine feet; the creak dip ("in a dip 50 px deep, the way on
-   is 150 px up", middle N s4); castBots 40 before/after (before = this head's numbers below); adult Easy >= 100 s.
+1. Fork (R-165.206, NOT STARTED: cut at the box, measured first). The 80 px rule is bigger than the fork: fork/ledge-margins.txt
+   (fork/ledge.ts, 1-4 seeds 1-12): 25 of 37 non-field climb vines top out with under 80 px of ledge on one side. (a) the CROWN's own
+   `sure` vine (w1Arc14.ts CROWN, tag s21:sure on s21:mid) 20 px from its ledge's end on every seed: 1-4 data, move it in; (b) untagged
+   vines (World 1's links/rests, laid by the kit, not 1-4's sections) at 26-34 px; (c) some ends are the stage WALL (0..114, ..1280):
+   no walk-off there, so the rule's check must count only an open end (a drop). The fork's own vine has 80/140 px (seeds 1-4: fine).
+   Rule + check: "a climbable vine's top has >= 80 px of ledge to any open end" as a lay test over every roll; fix (a) in data and (b)
+   at the link builder (its root), never by loosening; then the creak dip ("in a dip 50 px deep, the way on is 150 px up", middle N s4);
+   castBots 40 before/after (BEFORE = this head, below); adult Easy >= 100 s (106.1 s now).
 2. Then ONE relist (`npx tsx tools/engine/addlevel.ts 1-4 --relist`; the one run here was BEFORE the two-vine/petal/tell commits, so the
    fork's relist is the one that counts), sideways clips (clip.mjs `side` threw: the engine was null sideways; wait on __engine longer),
    the two-vine clip (clip.mjs has no `vines` mode yet), and the full Checks on that head.
