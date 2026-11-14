@@ -1,0 +1,4 @@
+not ok 5 - a vine snake on his liana: up from the foot -> he climbs high; down from the anchor -> he slides low; past him or none -> neither
+# pass 4
+# fail 1
+planted: snakeAhead blind (returns null always)

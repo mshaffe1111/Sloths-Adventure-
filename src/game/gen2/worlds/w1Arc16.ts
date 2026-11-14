@@ -88,6 +88,10 @@ const petals = (id: string, on: string, t: R2 | number, n = 1, span = 80): Socke
  *  FILL_GAP 1050 px) and its pick there was the moss floor of a pit, 2-6 petals a Normal seed that only a fall reaches. A creaky limb
  *  gets one where he lands (not counted: goals.ts onCrumbling), so the stretch over its two pits is never empty */
 const LANDED = 0.88;
+/** a SHORT perch's petal (the top flies it: he touches down at its far end, 0.86-1.0 for the middle and expert bots, seeds 1-6; BUILD-16d
+ *  landat.ts) and a chain perch's (0.54-0.75): ONE petal past where he sets down, so his walk on gathers it. And a take-off bank's petal
+ *  BEFORE where he hops for the liana (the bots leave it at 0.46-0.69 of its width, landat.ts LEFT FROM: the liana swings near) */
+const FAR_END = 0.97, CHAIN_PERCH = 0.85, BEFORE_HOP = 0.4;
 const flag = (on: string, t = 0.5): Socket => ({ id: 'flag', role: 'flag', on, t });
 const tip = (id: string, on: string, t: number, line: keyof typeof LINES_16): Socket => ({ id, role: 'tip', on, t, allow: [line] });
 
@@ -191,7 +195,7 @@ function firstLiana(): Lay {
   const h = hops('h', r.last, 2);
   // (a root hop up onto the take-off: the arrival's last bank and a flat 660 px walk here were 4.4-4.6 s with nothing to do, over the
   //  quiet line's 4 s, seeds 2 and 5; and down again at the end, so the exit is level)
-  return { pieces: [bank('a', null, 300), bank('a2', 'a', 260, UP), ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [petals('pa', 'a', 0.6, 1), petals('p1', r.perches[0], LANDED, 2, 60), petals('ph', 'hu2', LANDED, 1, 60), tip('t-low', 'z', 0.3, 'low')] };
+  return { pieces: [bank('a', null, 300), bank('a2', 'a', 260, UP), ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [petals('pa', 'a', 0.6, 1), petals('p1', r.perches[0], FAR_END, 1), petals('ph', 'hu2', LANDED, 1, 60), tip('t-low', 'z', 0.3, 'low')] };
 }
 /** [P] beat 2, hang low: LONG gaps (a low hold flies them; from the top he drops short onto moss, top 0 ms), two in a row (Easy one).
  *  (OPEN: 1-6.md's petal at the liana's FOOT is not laid: a socket stands on a platform, never on a vine, pipeline pieceOf) */
@@ -209,7 +213,7 @@ function snakesMet(easy: boolean): Lay {
   const w = walkIn('q', easy ? 2 : 1);
   const r = lianaRun('', w.last, easy ? [{ gap: 'short', w: 300 }] : [{ gap: 'short', w: 300 }, { gap: 'short', w: 280 }], 2);
   const h = hops('h', r.last, easy ? 4 : 2);
-  return { pieces: [bank('a', null, 420), ...w.pieces, ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [petals('pa', 'a', 0.3, 1), petals('p1', r.perches[r.perches.length - 1], LANDED, 2, 60), petals('ph', 'hu1', LANDED, 1, 60)] };
+  return { pieces: [bank('a', null, 420), ...w.pieces, ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [petals('pa', 'a', 0.3, 1), ...(r.perches.length > 1 ? [petals('p0', r.perches[0], FAR_END, 1)] : []), petals('p1', r.perches[r.perches.length - 1], FAR_END, 1), petals('ph', 'hu1', LANDED, 1, 60)] };
 }
 /** [X] beat 7, a snake on your vine (required): ONE FAR gap onto a narrow perch; a snake comes down his liana from the anchor (the top never
  *  makes FAR, so it pushes him down to where he must be anyway); its hands let go onto moss with the stair back. Easy: a LONG */
@@ -226,14 +230,14 @@ function creakyLanding(easy: boolean): Lay {
   const h = hops('h', r.last, easy ? 4 : 2);
   return { pieces: [bank('a', null, 320), ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], // (the risers' line only where they rise: Easy's twin says nothing of them, 1-6.md 'Easy: none rise'; a tip socket's own easy
   //  'drop' is not read for tips, pipeline fillSockets)
-  sockets: [flag('a', 0.3), petals('pa', 'a', 0.7, 1), ...(easy ? [] : [petals('pc', r.perches[0], 0.5, 1)]), petals('p2', r.perches[r.perches.length - 1], LANDED, 2, 60), petals('ph', 'hu1', LANDED, 1, 60), petals('pz', 'z', 0.5, 2, 120), ...(easy ? [] : [tip('t-rise', 'z', 0.4, 'rise')])] };
+  sockets: [flag('a', 0.3), petals('pa', 'a', BEFORE_HOP, 1), ...(easy ? [] : [petals('pc', r.perches[0], 0.5, 1)]), petals('p2', r.perches[r.perches.length - 1], LANDED, 2, 60), petals('ph', 'hu1', LANDED, 1, 60), petals('pz', 'z', 0.5, 2, 120), ...(easy ? [] : [tip('t-rise', 'z', 0.4, 'rise')])] };
 }
 /** [W] beat 11, the twist: snakes come UP from the ferns up the lianas' feet: low is taken, so he climbs high ahead of them; the gaps are
  *  SHORT, so the top still flies (top + double 1233 ms). Easy: none rise (snakeLay's Easy row), one liana */
 function risers(easy: boolean): Lay {
   const r = lianaRun('', 'a', easy ? [{ gap: 'short', w: 280 }] : [{ gap: 'short', w: 280 }, { gap: 'short', w: 280 }], 2);
   const h = hops('h', r.last, easy ? 4 : 2);
-  return { pieces: [bank('a', null, 320), ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [flag('a', 0.3), petals('p1', r.perches[0], LANDED, 1, 60), petals('ph', 'hu1', LANDED, 2, 60), tip('t-still', 'z', 0.4, 'still')] };
+  return { pieces: [bank('a', null, 320), ...r.pieces, ...h.pieces, bank('z', h.last, 240, DOWN)], sockets: [flag('a', 0.3), petals('p1', r.perches[0], FAR_END, 1), ...(r.perches.length > 1 ? [petals('p2', r.perches[1], FAR_END, 1)] : []), petals('ph', 'hu1', LANDED, 2, 60), tip('t-still', 'z', 0.4, 'still')] };
 }
 /** [S] beat 13, the false liana (the signature): a "vine" that does NOT swing hangs from the canopy just past the bank, nearer than the real
  *  liana: a vine snake hanging stiff (its tell: it never sweeps an arc, its head at its foot). The real one is the LONG leap past it.
@@ -255,7 +259,7 @@ function gorge(easy: boolean): Lay {
   const r2 = lianaRun('g', r1.last, easy ? [{ gap: 'long', perch: 'sound' }] : [{ gap: 'long', perch: 'creak' }, { gap: 'long', w: 280 }]);
   return {
     pieces: [bank('a', null, 300), ...r1.pieces, stillOne('f', r1.last, [90, 110]), ...r2.pieces, bank('z', r2.last, easy ? 420 : 300)],
-    sockets: [flag('a', 0.3), petals('pa', 'a', 0.7, 1), petals('p1', r1.perches[0], LANDED, 1, 60), ...(easy ? [] : [petals('pc', r2.perches[0], 0.5, 1)]), petals('pg', r2.perches[r2.perches.length - 1], LANDED, 1), petals('p5', 'z', 0.4, 2, 120)],
+    sockets: [flag('a', 0.3), petals('pa', 'a', BEFORE_HOP, 1), petals('p1', r1.perches[0], LANDED, 1, 60), ...(r1.perches.length > 1 ? [petals('pb', r1.perches[1], FAR_END, 1)] : []), ...(easy ? [] : [petals('pc', r2.perches[0], 0.5, 1)]), petals('pg', r2.perches[r2.perches.length - 1], LANDED, 1), petals('p5', 'z', 0.4, 2, 120)],
   };
 }
 
@@ -299,7 +303,7 @@ function chain(easy: boolean): Lay {
   }
   pieces.push(bank('z', last, 240, DOWN));
   // (a narrow perch holds ONE petal, where the leap sets him down; the take-off banks and the root tops hold the rest)
-  return { pieces, sockets: [petals('pa', 'show', 0.5, 1), ...perches.map((b, i) => petals(`pb${i}`, b, 0.6, 1)), petals('ph', 'hu1', LANDED, 1, 60), ...(easy ? [] : [petals('pm', 'm', 0.5, 1), petals('pk', 'ku1', LANDED, 1, 60)]), petals('pz', 'z', 0.5, 2, 120)] };
+  return { pieces, sockets: [petals('pa', 'show', 0.5, 1), ...perches.map((b, i) => petals(`pb${i}`, b, CHAIN_PERCH, 1)), petals('ph', 'hu1', LANDED, 1, 60), ...(easy ? [] : [petals('pm', 'm', 0.5, 1), petals('pk', 'ku1', LANDED, 1, 60)]), petals('pz', 'z', 0.5, 2, 120)] };
 }
 
 /** THE ARC'S BRICKS (1-6.md), one job each: the graph's letter in brackets */

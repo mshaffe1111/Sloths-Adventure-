@@ -1,0 +1,4 @@
+castBots 1-6, seeds 1-6; the floor 120 s (STAGE-RULES.md:77)
+middle normal PASS 4/6; under the floor 0; time median 335.8 s (min 289.7); hits 0 lives 3 (pit 3); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+        fail 1: sealed door goal 96/98  (seeds 3)
+        fail 1: sealed door goal 96/100  (seeds 5)

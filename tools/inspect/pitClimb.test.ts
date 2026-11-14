@@ -104,3 +104,31 @@ test('the hop model: a hop off the lip as the liana swings toward him is caught;
   const at = Array.from({ length: 24 }, (_, i) => hopCatches(v, 988, BANK, 1, FT_KID.hold[0], (2.85 * i) / 24, 0));
   assert.ok(at.some(Boolean) && !at.every(Boolean), `some moments catch, not all: ${at.map((b) => (b ? 'x' : '.')).join('')}`);
 });
+
+/**
+ * BUILD-16d: a vine snake on HIS liana, as the screen shows it (the snake piece's place this step): coming UP from the foot under his
+ * hands he climbs high ahead of it; coming DOWN from the anchor over them he slides low; past him, or none showing, neither. 1-6 Normal
+ * seed 3 (castBots): knowing nothing of snakes, the kid slid to the foot he had learned to hang from, met a riser, was let go into the
+ * pit and looped on its stair to a rescue. Planted: a bot blind to the snake piece reads null on every case (RED).
+ */
+test('a vine snake on his liana: up from the foot -> he climbs high; down from the anchor -> he slides low; past him or none -> neither', () => {
+  const LEN = 420;
+  const at = (now: object | null) => {
+    const run = Object.create(FirstTimerRun.prototype) as { e: unknown; snakeAhead(id: number, len: number, swing: number): string | null };
+    (run as { e: unknown }).e = { pieces: now ? [{ kind: 'vine-snake', vines: [{ id: 3 }, { id: 7 }], now: [{ shown: false, tell: false, live: false, head: 0, tail: 0, dir: 1 }, now] }] : [] };
+    return run;
+  };
+  // (his hands 200 px down the liana: swingLength 200 + VINE_HANG)
+  const hands = 200 + 30;
+  const cases: Array<[string, object | null, string | null]> = [
+    ['a riser in its tell at the foot', { shown: true, tell: true, live: false, head: LEN, tail: LEN + 115, dir: -1 }, 'up'],
+    ['a riser half way up, under his hands', { shown: true, tell: false, live: true, head: 300, tail: 415, dir: -1 }, 'up'],
+    ['a snake coming down from the anchor, over his hands', { shown: true, tell: false, live: true, head: 120, tail: 5, dir: 1 }, 'down'],
+    ['a snake gone down past him', { shown: true, tell: false, live: true, head: 400, tail: 285, dir: 1 }, null],
+    ['no snake showing', { shown: false, tell: false, live: false, head: 0, tail: 0, dir: 1 }, null],
+    ['no snake piece on the stage', null, null],
+  ];
+  for (const [what, now, want] of cases) assert.equal(at(now).snakeAhead(7, LEN, hands), want, what);
+  // (another liana's snake is not his)
+  assert.equal(at({ shown: true, tell: false, live: true, head: 300, tail: 415, dir: -1 }).snakeAhead(3, LEN, hands), null, 'the snake on liana 7 is not on his liana 3');
+});

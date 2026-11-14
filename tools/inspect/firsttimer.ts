@@ -43,7 +43,9 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
-import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, reachJump, reachJumpHeld, TIMED, vineAmp, vinePeriod } from '../../src/game/physics.ts';
+import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, vineAmp, vinePeriod } from '../../src/game/physics.ts';
+import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
+import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
 import type { Platform } from '../../src/game/types.ts';
 import { scares } from '../../src/game/dropTrap.ts';
 import type { TrapPost } from '../../src/game/castPlay.types.ts';
@@ -718,6 +720,8 @@ const TRACE = typeof process !== 'undefined' && !!process.env.FT_TRACE;
 /** FT_FRAMES=a,b: every frame between a and b s of play, on stderr */
 /** the share of a liana's swing out in front at which he decides to let go (his thumb's lag on top): the forward end (intend, on a liana) */
 export const LET_GO_AT = 0.75;
+/** the highest a hold on a liana goes (physics.ts SWING.minLen: px under the anchor) */
+const SWING_TOP = SWING.minLen;
 const side1 = (d: -1 | 1): Pad => (d > 0 ? { right: true } : { left: true });
 /**
  * Does a hop off (x, y) toward `dir` (at `vx0`, a run by default), the jump held `hold` s (then the engine's cut, PHYS.cutV), taking off at the vines' clock
@@ -1290,6 +1294,22 @@ export class FirstTimerRun {
    * he can walk and hop (pitWayUp) starts back the other way: a dip he can hop out of forward is left forward, by the steer as before.
    * Returns the way to head (0: not climbing back).
    */
+  /** the vine snake on liana `id` (`len` px) as the screen shows it now, if it is coming at his hands (`swingLength` px down): 'up' when
+   *  it comes up from the foot under them (he climbs high), 'down' when it comes down from the anchor over them (he slides low); null
+   *  when none shows or it is past him. Read from the snake piece's own place this step (vineSnakePiece.ts now[i]): what he can see */
+  private snakeAhead(id: number, len: number, swingLength: number): 'up' | 'down' | null {
+    const piece = ((this.e as unknown as { pieces?: Array<{ kind: string; vines?: Array<{ id: number }>; now?: SnakeNow[] }> }).pieces ?? []).find((q) => q.kind === 'vine-snake');
+    const i = piece?.vines?.findIndex((v) => v.id === id) ?? -1;
+    const n = i >= 0 ? piece!.now?.[i] : undefined;
+    if (!n || !n.shown) return null;
+    const hands = handsAlong(swingLength, len);
+    // (its tell: reared at the end it starts from, head onto the vine; its trip: the part of it on the vine, the way its head leads)
+    const on = onVine(n, len) ?? { from: n.head, to: n.head };
+    if (n.dir < 0 && on.to > hands) return 'up';
+    if (n.dir > 0 && on.from < hands) return 'down';
+    return null;
+  }
+
   private pitWayBack(tgt: Pt | null): -1 | 0 | 1 {
     const p = this.sim.p;
     const toward = (q: Platform): -1 | 0 | 1 => {
@@ -1717,7 +1737,16 @@ export class FirstTimerRun {
       // the let-go as below. BUILD-16c: 1-6's LONG gaps fly only from a low grip, by design, and the bot never climbed down)
       // (and only once clear of the ledge he caught it from: half a second on it, no ledge just under his feet. Down at a lip, his feet at
       // its top, the engine set him down or dropped him (engine.ts swing exits): 1-6 Normal seed 2 x 14029, a catch lost at once)
-      if (own && this.learned.has('low') && !this.pending && this.swingT > 0.5 && !this.floorAt(p.x, p.y, 80) && (p.swingLength ?? 0) < own.bottomY - own.topY - 4) return { down: true };
+      // (a vine snake on HIS liana, as the screen shows it (the snake piece's own place this step: its tell or its trip): he climbs ahead
+      // of it, away from the end it comes from, as Dot's lines say (1-6: "If one heads down your liana, climb down ahead of it"; "Snakes
+      // coming UP the lianas now! Climb high, ahead of them"). BUILD-16d: knowing nothing of snakes, the kid slid to the foot he had
+      // learned to hang from, met a riser there, was let go into the pit and looped on its stair to a rescue (1-6 Normal seed 3, x 32439).
+      // Up: never down to the foot while it shows; down: to the foot, the same clear-of-the-ledge rule as hanging low)
+      const len = own ? own.bottomY - own.topY : 0;
+      const ahead = own && !this.pending ? this.snakeAhead(own.id, len, p.swingLength ?? 0) : null;
+      if (ahead === 'up' && (p.swingLength ?? 0) > SWING_TOP + 4) return { up: true };
+      if (ahead === 'down' && this.swingT > 0.5 && !this.floorAt(p.x, p.y, 80) && (p.swingLength ?? 0) < len - 4) return { down: true };
+      if (own && ahead !== 'up' && this.learned.has('low') && !this.pending && this.swingT > 0.5 && !this.floorAt(p.x, p.y, 80) && (p.swingLength ?? 0) < own.bottomY - own.topY - 4) return { down: true };
       // (how far forward, as a share of the vine's own swing: physics.ts swingSetup sizes each one)
       const a = (p.swingAngle ?? 0) / Math.max(0.05, own ? vineAmp(own) : TIMED.amp), om = p.swingAngularVelocity ?? 0;
       // (the let-go at the swing's forward end, as the testers let go (physics.ts RELEASE: "the natural moment, just past the sweet
