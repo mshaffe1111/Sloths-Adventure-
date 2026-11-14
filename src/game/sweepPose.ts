@@ -36,9 +36,10 @@ export const SKY = {
  */
 export const MOSS_TINT = { rgb: '86, 138, 52', alpha: 0.45 } as const;
 
-/** how high over its ground a perched sweeper's feet grip its snag (game px): the snag's perch branch (w17Art.ts SNAG_PERCH_DRAWN, the
- *  piece it is measured on: 1-7 beat 12) */
-export const SNAG_PERCH = 208;
+/** how high over its ground a perched sweeper's feet grip its snag (game px): a low branch of the snag (w17Art.ts SNAG_PERCH_DRAWN, the
+ *  piece it is measured on: 1-7 beat 12), low enough that all of it shows under the HUD on a sideways phone (412 px tall: at 208 px its
+ *  head was off the top, ENG-E2's sideways stills) and its look down at him reads */
+export const SNAG_PERCH = 120;
 
 /** a perched sweeper's look (the four painted frames, w17Art.ts): away ahead at rest, its head turning for the warn, down the gaze, a blink */
 export type PerchLook = 'ahead' | 'turn' | 'down' | 'blink';

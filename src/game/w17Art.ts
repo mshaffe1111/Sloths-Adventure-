@@ -43,7 +43,7 @@ export const W17 = {
   drape: { w: 520, h: 420, top: 34 },
   drapeB: { w: 235, h: 420, top: 34, moss: { x: 35, y: 52, w: 118, h: 368 } },
   snagA: { w: 316, h: 900, foot: 880, trunk: 120 },
-  snagB: { w: 294, h: 900, foot: 880, trunk: 132, perch: 255 },
+  snagB: { w: 294, h: 900, foot: 880, trunk: 132, perch: 520 },
   perch: { w: 351, h: 390, grip: { x: 190, y: 338 } },
 } as const;
 /** game px per file px: the catalog's units (Pokey 89.1 drawn at 267 file px) */
@@ -91,7 +91,9 @@ export function drawMossCover(ctx: CanvasRenderingContext2D, b: { x: number; w: 
   const im = get(piece);
   if (!im) return false;
   ctx.save();
-  if (inside) ctx.globalAlpha = 0.62 - 0.2 * Math.max(0, Math.min(1, moss));
+  // (a mound or hanging moss over his body thins as the moss comes over him, as a bush does; a carpet only covers his feet, so it
+  // never thins: thinned, the cover vanished exactly when he was hidden in it, ENG-E2's still shots/carpet-pair.jpg)
+  if (inside && b.kind !== 'moss') ctx.globalAlpha = 0.62 - 0.2 * Math.max(0, Math.min(1, moss));
   const lean = Math.sin(t * 22) * 0.05 * rustle;
   if (b.kind === 'moss') {
     const c = W17.carpet;
