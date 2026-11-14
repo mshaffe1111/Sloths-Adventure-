@@ -9149,7 +9149,7 @@ export class GameEngine {
       // (World 8's roost hides: the tree hollow and the leaf curtain, batArt.ts)
       const w8look = w8Hides?.find((h) => h.x === b.x && h.y === b.y)?.look;
       if (w8look && drawW8Hide(ctx, b, w8look, inside)) continue;
-      if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
+      if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime, inside && this.cast ? this.cast.calmNow(this.easy) : 0)) continue;
       // before the sheet loads: a plain green mound
       const h = b.kind === 'grotto' ? w3FernHeight(b.w) : bushHeight({ ...b, kind: b.kind });
       ctx.save();
