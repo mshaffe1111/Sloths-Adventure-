@@ -1,0 +1,171 @@
+clip check: every menu screen at 412x915 and 915x412, on a fresh, an old and a finished save
+
+  known cut .nv-card.nv-confirm > .kit-plaque.nv-plaque > span  "Start a new game?"  (right cut by its own box (overflow hidden))
+      settings: New Game question @ up/old; settings: New Game question (scrolled to the end) @ up/old; settings: New Game question @ up/done; settings: New Game question (scrolled to the end) @ up/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-desc  "Face Crocus Rex. Watch for the warning before each attack, then hit ba"  (bottom cut by its own box (overflow hidden))
+      world map: World 2 of 10 @ up/old; world map: World 2 of 10 @ side/old; world map: World 2 of 10 @ up/done; world map: World 2 of 10 @ side/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-desc  "Face General Iron-Claw. Watch for the warning before each attack, then"  (bottom cut by its own box (overflow hidden))
+      world map: World 10 of 10 @ up/done; world map: Worlds pop-up @ up/done; world map: Worlds pop-up (scrolled to the end) @ up/done; world map: World 10 of 10 @ side/done; +2 more
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-desc  "Face Magma Drake. Watch for the warning before each attack, then hit b"  (bottom cut by its own box (overflow hidden))
+      world map: World 9 of 10 @ up/done; world map: World 9 of 10 @ side/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-desc  "Face Marsh Reaver. Watch for the warning before each attack, then hit "  (bottom cut by its own box (overflow hidden))
+      world map: World 6 of 10 @ up/done; world map: World 6 of 10 @ side/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-desc  "Face Night-Wing Monarch. Watch for the warning before each attack, the"  (bottom cut by its own box (overflow hidden))
+      world map: World 8 of 10 @ up/done; world map: World 8 of 10 @ side/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-desc  "Face Shadow Prowler. Watch for the warning before each attack, then hi"  (bottom cut by its own box (overflow hidden))
+      world map: World 3 of 10 @ up/old; world map: World 3 of 10 @ side/old; world map: World 3 of 10 @ up/done; world map: World 3 of 10 @ side/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-desc  "Face Stone Idol Golem. Watch for the warning before each attack, then "  (bottom cut by its own box (overflow hidden))
+      world map: World 7 of 10 @ up/done; world map: World 7 of 10 @ side/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-desc  "Face Venom Fang. Watch for the warning before each attack, then hit ba"  (bottom cut by its own box (overflow hidden))
+      world map: World 1 of 10 @ up/old; world map: World 1 of 10 @ side/old; world map: World 1 of 10 @ up/done; world map: World 1 of 10 @ side/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-desc  "Fly Meeca's note through the General's iron netting, to the one gap as"  (bottom cut by its own box (overflow hidden))
+      world map: World 4 of 10 @ up/done; world map: World 4 of 10 @ side/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-desc  "Run the high branches of the kapok trees and reach the shrine."  (bottom cut by its own box (overflow hidden))
+      world map: World 1 of 10 @ up/fresh; world map: Worlds pop-up @ up/fresh; world map: Worlds pop-up (scrolled to the end) @ up/fresh; world map: World 1 of 10 @ side/fresh; +2 more
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-desc  "The night Meeca got away. Learn each rule the hard way, and carve it o"  (bottom cut by its own box (overflow hidden))
+      world map: World 5 of 10 @ up/done; world map: World 5 of 10 @ side/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-name  "Crocus Rex's Lair"  (right cut by its own box (overflow hidden))
+      world map: World 2 of 10 @ up/old; world map: World 2 of 10 @ up/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-name  "General Iron-Claw's Lair"  (right cut by its own box (overflow hidden))
+      world map: World 10 of 10 @ up/done; world map: Worlds pop-up @ up/done; world map: Worlds pop-up (scrolled to the end) @ up/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-name  "Magma Drake's Lair"  (right cut by its own box (overflow hidden))
+      world map: World 9 of 10 @ up/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-name  "Marsh Reaver's Lair"  (right cut by its own box (overflow hidden))
+      world map: World 6 of 10 @ up/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-name  "Night-Wing Monarch's Lair"  (right cut by its own box (overflow hidden))
+      world map: World 8 of 10 @ up/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-name  "Shadow Prowler's Lair"  (right cut by its own box (overflow hidden))
+      world map: World 3 of 10 @ up/old; world map: World 3 of 10 @ up/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-name  "Stone Idol Golem's Lair"  (right cut by its own box (overflow hidden))
+      world map: World 7 of 10 @ up/done
+  known cut .wm-card > .min-w-0.flex-1 > .wm-card-name  "Venom Fang's Lair"  (right cut by its own box (overflow hidden))
+      world map: World 1 of 10 @ up/old; world map: World 1 of 10 @ up/done
+  known cut .wm-name > .kit-plaque.wm-plaque > span  "Orchid Sanctuary"  (right cut by its own box (overflow hidden))
+      world map: World 5 of 10 @ up/done
+  known cut .wm-name > .kit-plaque.wm-plaque > span  "Stormy Highlands Fortress"  (right cut by its own box (overflow hidden))
+      world map: World 10 of 10 @ up/done; world map: Worlds pop-up @ up/done; world map: Worlds pop-up (scrolled to the end) @ up/done
+  known cut .wm-name > .kit-plaque.wm-plaque > span  "Twilight Treetops"  (right cut by its own box (overflow hidden))
+      world map: World 8 of 10 @ up/done
+  known overflow .st-row > .st-row-t > small  "Created and made by Matt"  (10px taller than its box)
+      settings: About @ up/fresh; settings: About (scrolled to the end) @ up/fresh; about: What’s New @ up/fresh; about: What’s New (scrolled to the end) @ up/fresh; +11 more
+  known overflow .st-rows > .st-row > .st-row-t  "Sloths Rainforest Adventures"  (10px taller than its box)
+      settings: About @ up/fresh; settings: About (scrolled to the end) @ up/fresh; about: What’s New @ up/fresh; about: What’s New (scrolled to the end) @ up/fresh; +11 more
+  known overflow .st-rows > .st-row > .st-row-t  "This version"  (10px taller than its box)
+      settings: About @ up/fresh; settings: About (scrolled to the end) @ up/fresh; about: What’s New @ up/fresh; about: What’s New (scrolled to the end) @ up/fresh; +17 more
+  known small .fr-card.fr-note > .fr-foot > .fr-btn.fr-close  "Close"  (71x33 px tap area)
+      satchel: find reader @ up/old; satchel: find reader (scrolled to the end) @ up/old; satchel: find reader @ side/old; satchel: find reader (scrolled to the end) @ side/old; +4 more
+  known small .jr-split > .jr-chapters > .jr-ch.jr-ch-extra  "Stars, lives & saving"  (192x30 px tap area)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known small .jr-split > .jr-chapters > .jr-ch  "Climb & swing 0/4"  (192x32 px tap area)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known small .jr-split > .jr-chapters > .jr-ch  "Dangers 0/5"  (192x32 px tap area)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known small .jr-split > .jr-chapters > .jr-ch  "Fighting 1/8"  (192x32 px tap area)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known small .jr-split > .jr-chapters > .jr-ch  "Finding things 0/8"  (192x32 px tap area)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known small .jr-split > .jr-chapters > .jr-ch  "Moving 3/6"  (192x32 px tap area)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known small .jr-split > .jr-chapters > .jr-ch  "Sneaking 0/2"  (192x32 px tap area)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known small .pm-sound > .pm-row > .pm-vol  ""  (356x34 px tap area)
+      settings: Sound @ side/fresh; pause @ side/fresh; pause (scrolled to the end) @ side/fresh; settings: Sound @ side/old; +5 more
+  known small .pm-sound > .pm-sound-h > .pm-mute.pm-polish  "Off"  (57x36 px tap area)
+      settings: Game @ up/fresh; settings: Game (scrolled to the end) @ up/fresh; settings: Game @ side/fresh; settings: Game (scrolled to the end) @ side/fresh; +8 more
+  known small .pm-sound > .pm-sound-h > .pm-mute.pm-polish  "On"  (50x36 px tap area)
+      settings: Game (scrolled to the end) @ up/fresh; settings: Game (scrolled to the end) @ side/fresh; settings: Game (scrolled to the end) @ up/old; settings: Game (scrolled to the end) @ side/old; +2 more
+  known small .pm-sound > .pm-sound-h > .pm-mute  "Mute all"  (84x36 px tap area)
+      settings: Sound @ up/fresh; pause @ up/fresh; pause (scrolled to the end) @ up/fresh; settings: Sound @ side/fresh; +14 more
+  known small .pm-sound-h > .flex.items-center > input  "Touch sensitivity"  (120x16 px tap area)
+      settings: Game @ up/fresh; settings: Game (scrolled to the end) @ up/fresh; settings: Game @ up/old; settings: Game (scrolled to the end) @ up/old; +2 more
+  known small .pm-sound-h > .pm-seg > button  "100%"  (63x33 px tap area)
+      settings: Game @ up/fresh; settings: Game (scrolled to the end) @ up/fresh; settings: Game (scrolled to the end) @ side/fresh; settings: Game @ up/old; +5 more
+  known small .pm-sound-h > .pm-seg > button  "+2"  (43x33 px tap area)
+      settings: Game @ up/fresh; settings: Game (scrolled to the end) @ up/fresh; settings: Game (scrolled to the end) @ side/fresh; settings: Game @ up/old; +5 more
+  known small .pm-sound-h > .pm-seg > button  "Auto"  (58x33 px tap area)
+      settings: Game @ up/fresh; settings: Game (scrolled to the end) @ up/fresh; settings: Game @ up/old; settings: Game (scrolled to the end) @ up/old; +2 more
+  known small .pm-sound-h > .pm-seg > button  "Easy"  (55x33 px tap area)
+      settings: Game @ up/fresh; settings: Game @ side/fresh; settings: Game @ up/old; settings: Game @ side/old; +2 more
+  known small .pm-sound-h > .pm-seg > button  "Full"  (50x33 px tap area)
+      settings: Game @ up/fresh; settings: Game (scrolled to the end) @ up/fresh; settings: Game @ up/old; settings: Game (scrolled to the end) @ up/old; +2 more
+  known small .pm-sound-h > .pm-seg > button  "Gentle"  (68x33 px tap area)
+      settings: Game @ up/fresh; settings: Game (scrolled to the end) @ up/fresh; settings: Game @ up/old; settings: Game (scrolled to the end) @ up/old; +2 more
+  known small .pm-sound-h > .pm-seg > button  "Left"  (56x33 px tap area)
+      settings: Game @ up/fresh; settings: Game (scrolled to the end) @ up/fresh; settings: Game @ side/fresh; settings: Game @ up/old; +5 more
+  known small .pm-sound-h > .pm-seg > button  "None"  (57x33 px tap area)
+      settings: Game @ up/fresh; settings: Game (scrolled to the end) @ up/fresh; settings: Game (scrolled to the end) @ side/fresh; settings: Game @ up/old; +5 more
+  known small .pm-sound-h > .pm-seg > button  "Normal"  (71x33 px tap area)
+      settings: Game @ up/fresh; settings: Game @ side/fresh; settings: Game @ up/old; settings: Game @ side/old; +2 more
+  known small .pm-sound-h > .pm-seg > button  "Off"  (51x33 px tap area)
+      settings: Game @ up/fresh; settings: Game (scrolled to the end) @ up/fresh; settings: Game @ side/fresh; settings: Game @ up/old; +5 more
+  known small .pm-sound-h > .pm-seg > button  "On"  (44x33 px tap area)
+      settings: Game @ up/fresh; settings: Game (scrolled to the end) @ up/fresh; settings: Game @ side/fresh; settings: Game @ up/old; +5 more
+  known small .pm-sound-h > .pm-seg > button  "On + forward"  (112x33 px tap area)
+      settings: Game @ up/fresh; settings: Game (scrolled to the end) @ up/fresh; settings: Game @ side/fresh; settings: Game @ up/old; +5 more
+  known small .pm-sound-h > .pm-seg > button  "Pad"  (50x33 px tap area)
+      settings: Game @ up/fresh; settings: Game @ side/fresh; settings: Game @ up/old; settings: Game @ side/old; +2 more
+  known small .pm-sound-h > .pm-seg > button  "Right"  (61x33 px tap area)
+      settings: Game @ up/fresh; settings: Game (scrolled to the end) @ up/fresh; settings: Game @ side/fresh; settings: Game @ up/old; +5 more
+  known small .pm-sound-h > .pm-seg > button  "Screen"  (68x33 px tap area)
+      settings: Game @ up/fresh; settings: Game @ side/fresh; settings: Game @ up/old; settings: Game @ side/old; +2 more
+  known small .sc-page > .sc-words > .sc-read  "What it looks like"  (140x26 px tap area)
+      satchel: keepsake story @ up/old; satchel: keepsake story @ side/old; satchel: keepsake story @ up/done; satchel: keepsake story @ side/done
+  known small .st-row-t > small > .title-credit-btn  "Check for updates"  (133x38 px tap area)
+      settings: About @ up/fresh; settings: About (scrolled to the end) @ up/fresh; about: What’s New @ up/fresh; about: What’s New (scrolled to the end) @ up/fresh; +17 more
+  known small .st-row-t > small > .title-credit-btn  "Shaffer"  (63x38 px tap area)
+      settings: About @ up/fresh; settings: About (scrolled to the end) @ up/fresh; about: What’s New @ up/fresh; about: What’s New (scrolled to the end) @ up/fresh; +11 more
+  known small .ui-panel.ui-saveload > .ui-tabs > button  "Load"  (156x39 px tap area)
+      settings: Save / Load @ up/fresh; settings: Save / Load @ side/fresh; settings: Save / Load @ up/old; settings: Save / Load @ side/old; +2 more
+  known small .ui-panel.ui-saveload > .ui-tabs > button  "Save"  (156x39 px tap area)
+      settings: Save / Load @ up/fresh; settings: Save / Load @ side/fresh; settings: Save / Load @ up/old; settings: Save / Load @ side/old; +2 more
+  known inset .jr-main > .jr-grid > .jr-tile  "Duck"  (inside the right inset)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known inset .jr-split > .jr-chapters > .jr-ch.jr-ch-extra  "Stars, lives & saving"  (inside the left inset)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known inset .jr-split > .jr-chapters > .jr-ch  "Climb & swing 0/4"  (inside the left inset)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known inset .jr-split > .jr-chapters > .jr-ch  "Dangers 0/5"  (inside the left inset)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known inset .jr-split > .jr-chapters > .jr-ch  "Fighting 1/8"  (inside the left inset)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known inset .jr-split > .jr-chapters > .jr-ch  "Finding things 0/8"  (inside the left inset)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known inset .jr-split > .jr-chapters > .jr-ch  "Moving 3/6"  (inside the left inset)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known inset .jr-split > .jr-chapters > .jr-ch  "Sneaking 0/2"  (inside the left inset)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known inset .ui-panel.jr > .jr-head > .nv-x.nv-inline  "Close"  (inside the right inset)
+      how to play @ side/fresh; how to play @ side/old; how to play @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "1"  (inside the left inset)
+      world map: World 1 of 10 @ side/old; world map: World 2 of 10 @ side/old; world map: World 3 of 10 @ side/old; world map: World 1 of 10 @ side/done; +10 more
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 2-10: Crocus Rex's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 2 of 10 @ side/old; world map: World 2 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 10-10: General Iron-Claw's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 10 of 10 @ side/done; world map: Worlds pop-up @ side/done; world map: Worlds pop-up (scrolled to the end) @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 9-10: Magma Drake's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 9 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 6-10: Marsh Reaver's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 6 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 8-10: Night-Wing Monarch's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 8 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 3-10: Shadow Prowler's Lair, Boss, 1 stars"  (inside the right inset)
+      world map: World 3 of 10 @ side/old; world map: World 3 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 4-10: Sky Sovereign's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 4 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 7-10: Stone Idol Golem's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 7 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 5-10: Tarantula Queen's Lair, Boss, 3 stars"  (inside the right inset)
+      world map: World 5 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.done  "Stage 1-10: Venom Fang's Lair, Boss, 2 stars"  (inside the right inset)
+      world map: World 1 of 10 @ side/old; world map: World 1 of 10 @ side/done
+  known inset .wm.fixed > .relative.z-10 > .map-node.locked  "Stage 4-10: Sky Sovereign's Lair, Boss, locked"  (inside the right inset)
+      world map: World 4 of 10 @ side/old; world map: Worlds pop-up @ side/old; world map: Worlds pop-up (scrolled to the end) @ side/old
+  known inset .wm.fixed > .relative.z-10 > .map-node.locked  "Stage 1-10: Venom Fang's Lair, Boss, locked"  (inside the right inset)
+      world map: World 1 of 10 @ side/fresh; world map: Worlds pop-up @ side/fresh; world map: Worlds pop-up (scrolled to the end) @ side/fresh
+  known inset .wm.fixed > .relative.z-10 > .map-node.ready  "1"  (inside the left inset)
+      world map: World 1 of 10 @ side/fresh; world map: Worlds pop-up @ side/fresh; world map: Worlds pop-up (scrolled to the end) @ side/fresh; world map: World 4 of 10 @ side/old; +2 more
+  known inset .wm.fixed > .relative.z-10 > .map-node.ready  "Stage 5-M: On the March North, Stealth"  (inside the left inset)
+      world map: World 5 of 10 @ side/done
+
+PASS (83 known) (462 s; contact sheet and breaches.json in /tmp/clipcheck-6AdB9Z)
+clipcheck exit 0
