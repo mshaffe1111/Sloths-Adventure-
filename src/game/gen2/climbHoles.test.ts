@@ -11,6 +11,8 @@ import { easyStage } from '../easyMode.ts';
 import { withGoals } from '../goals.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import type { Platform } from '../types.ts';
+import { dropVerdicts, untypedVerdicts } from './verdicts.ts';
+import type { Drop } from './verdicts.types.ts';
 
 const cfg = (id: string) => ({ ...generateAllLevels().find((l) => l.id === id)!, unlocked: true });
 const built = (id: string, setting: 'normal' | 'easy', v: number) => {
@@ -35,6 +37,8 @@ for (const setting of ['normal', 'easy'] as const) {
       for (const h of holes) {
         assert.ok((st.heartFalls ?? []).some((z) => z.soft && z.x0 <= h.x0 + 4 && z.x1 >= h.x1 - 4), `layout ${v}: hole ${h.x0}..${h.x1} has no soft zone over it`);
         assert.ok((st.gen2?.drops ?? []).some((d) => d.x0 <= h.x0 + 4 && d.x1 >= h.x1 - 4 && d.ends.kind === 'putback'), `layout ${v}: hole ${h.x0}..${h.x1} has no put-back Drop spanning it`);
+        // (POLISH-4: the hole's own record is typed a hole under the route, so a reader of the route's jumps can skip it by its type)
+        assert.ok((st.gen2?.drops ?? []).some((d) => d.x0 === h.x0 && d.x1 === h.x1 && d.ends.kind === 'putback' && (d as { site?: string }).site === 'hole-under-route'), `layout ${v}: hole ${h.x0}..${h.x1}'s Drop is not typed hole-under-route`);
       }
     }
   });
@@ -45,4 +49,16 @@ test('1-2 Normal (no softFalls in its brief) lays no soft zone over a hole: its 
     const st = built('1-2', 'normal', v) as Built;
     for (const h of earthHoles(st.platforms)) assert.ok(!(st.heartFalls ?? []).some((z) => z.soft && z.x0 <= h.x0 + 4 && z.x1 >= h.x1 - 4 && z.x1 - z.x0 > 1200), `layout ${v}: hole ${h.x0}..${h.x1} got a soft zone`);
   }
+});
+
+// (POLISH-4: a hole's Drop is still judged as a drop: the type only tells a route reader it asks no jump. The drop verdicts and the
+// untyped verdict read it exactly as any other Drop; planted: a hole drawn as water on a no-lethal stage is refused, an unrecorded gap
+// over a hole's span is typed by the hole's record)
+test('a hole under the route is still a drop to the drop verdicts (look-lies, lethal, untyped)', () => {
+  const hole = { x0: 1000, x1: 3700, lipY: 600, ends: { kind: 'putback', to: 'last-still-ground' }, look: 'water-art', site: 'hole-under-route' } as unknown as Drop;
+  assert.ok(dropVerdicts({ setting: 'normal', policy: 'no-lethal', drops: [hole] }).some((v) => v.name === 'drop.look-lies'), 'a hole drawn as water is a lie');
+  const lethal = { ...hole, ends: { kind: 'life', cause: 'void' }, look: 'void-dark' } as unknown as Drop;
+  assert.ok(dropVerdicts({ setting: 'normal', policy: 'no-lethal', drops: [lethal] }).some((v) => v.name === 'drop.lethal-in-no-lethal'), 'a lethal hole on 1-1 is refused');
+  assert.deepEqual(untypedVerdicts({ setting: 'normal', drops: [hole] }, [[1200, 1500]]), [], "a gap inside the hole is typed by the hole's record");
+  assert.equal(untypedVerdicts({ setting: 'normal', drops: [] }, [[1200, 1500]]).length, 1);
 });

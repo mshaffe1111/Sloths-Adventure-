@@ -75,7 +75,7 @@ test('the word lays no ground: 1-1\'s ground is the same with and without it, an
     const holes = earthHoles(a.platforms), was = b.heartFalls ?? [];
     const fresh = holes.filter((h) => !was.some((z) => z.soft && z.x0 <= h.x0 + 4 && z.x1 >= h.x1 - 4));
     assert.deepEqual(a.heartFalls ?? [], [...was, ...fresh.map((h) => ({ x0: h.x0, x1: h.x1, soft: true }))], `${what}: the soft zones, plus one per hole`);
-    assert.deepEqual(a.gen2.falls, [...(b.gen2.falls ?? []), ...holes.map((h) => ({ x0: h.x0, x1: h.x1, y: a.gen2.falls!.find((f) => f.x0 === h.x0 && f.x1 === h.x1 && f.kind === 'soft')?.y, kind: 'soft' }))], `${what}: the gaps, plus one soft fall per hole`);
+    assert.deepEqual(a.gen2.falls, [...(b.gen2.falls ?? []), ...holes.map((h) => ({ x0: h.x0, x1: h.x1, y: a.gen2.falls!.find((f) => f.x0 === h.x0 && f.x1 === h.x1 && f.site === 'hole-under-route')?.y, kind: 'soft', site: 'hole-under-route' }))], `${what}: the gaps, plus one soft fall per hole, typed a hole under the route`);
     const inHole = ([x0, x1]: [number, number]) => holes.some((h) => x0 >= h.x0 - 4 && x1 <= h.x1 + 4);
     assert.deepEqual(floorlessGaps(a), floorlessGaps(b).filter((g) => !inHole(g)), `${what}: floorlessGaps, less the holes'`);
   };

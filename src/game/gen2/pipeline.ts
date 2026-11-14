@@ -3525,7 +3525,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     modelled: { typical: 0, fast: 0 },
     errors: [],
     barren: filled.barren,
-    falls: [...laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: (g.water ? 'water' : g.soft ? 'soft' : budget.pit) as PitKind })), ...holes.map((h) => ({ ...h, kind: 'soft' as PitKind }))],
+    falls: [...laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: (g.water ? 'water' : g.soft ? 'soft' : budget.pit) as PitKind })), ...holes.map((h) => ({ ...h, kind: 'soft' as PitKind, site: 'hole-under-route' as const }))],
   };
   const stage: Gen2Stage = {
     config,
@@ -3578,7 +3578,8 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
   const sleeper = new Set(M.creatures.filter((c) => c.tags?.includes('sleeper')).map((c) => c.id));
   const byId = new Map(M.sections.map((t) => [t.id, t]));
   const tplOf = new Map(st.gen2.sections.map((q) => [q.uid, byId.get(q.template)]));
-  const falls = (st.gen2.drops ?? []).map((d) => ({ x0: d.x0, x1: d.x1, kind: d.ends.kind === 'putback' ? 'soft' : d.ends.kind === 'life' ? (d.ends as { cause: string }).cause : 'hurt' }));
+  // (a node's hazard ask is a fall the node lays on its route: a hole under the route is the earth's, never the node's hazard, DropSite)
+  const falls = (st.gen2.drops ?? []).filter((d) => !d.site).map((d) => ({ x0: d.x0, x1: d.x1, kind: d.ends.kind === 'putback' ? 'soft' : d.ends.kind === 'life' ? (d.ends as { cause: string }).cause : 'hurt' }));
   const out: string[] = [];
   nodes.forEach((n, k) => {
     if (!n.asked) return;
@@ -3830,7 +3831,7 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
     const mid = (f.x0 + f.x1) / 2;
     const ground = st.platforms.find((p) => p.type !== 'bouncy' && p.x <= mid && p.x + p.width >= mid && p.y > f.y && p.y < death);
     const zone = zones.find((z) => z.soft && mid >= z.x0 && mid <= z.x1);
-    const at = { x0: f.x0, x1: f.x1, lipY: f.y };
+    const at = { x0: f.x0, x1: f.x1, lipY: f.y, ...(f.site ? { site: f.site } : {}) };
     // (a hollow's hurt floor: a heart fall, on both settings (Easy waives the heart, never the look). Its look is the hurt look only where
     // the world's painter draws it; until then it is what is drawn there today, and drop.look-lies refuses it by name)
     if (ground?.pit === 'hurt') {

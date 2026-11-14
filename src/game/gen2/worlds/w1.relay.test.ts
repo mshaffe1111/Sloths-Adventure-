@@ -35,6 +35,7 @@ import { dotLine } from '../../dotLines.ts';
 import { RealPlay } from '../../realPlay.ts';
 import { swingSetup } from '../../physics.ts';
 import type { Gen2Stage } from '../types.ts';
+import type { DropSite } from '../verdicts.types.ts';
 
 type Setting = 'normal' | 'easy';
 const SETTINGS: readonly Setting[] = ['normal', 'easy'];
@@ -57,7 +58,7 @@ export const stairRoom = (rise: number): number => STAIR.tread * (stairRocks(ris
 
 // ───────────────────────── the judges (pure: they read a built stage's geometry) ─────────────────────────
 type Plat = { x: number; y: number; width: number; height: number; type: string; broken?: boolean };
-type Drop = { x0: number; x1: number; lipY: number; ends: { kind: string } };
+type Drop = { x0: number; x1: number; lipY: number; ends: { kind: string }; site?: DropSite };
 type Sec = { template: string; x0: number; x1: number };
 /** the parts of a built stage these judges read */
 export interface Laid { platforms: readonly Plat[]; gen2: { drops?: readonly Drop[]; sections: readonly Sec[] } }
@@ -112,11 +113,12 @@ export function risesOf(st: Laid): Rise[] {
 export const riseFits = (r: Rise): 'single' | 'mushroom' | 'room' | 'no' =>
   r.rise <= r.climb ? 'single' : r.mushroom?.given ? 'mushroom' : r.room >= r.need ? 'room' : 'no';
 
-/** the route's gaps, lip to lip, deduped; level when the far top is within 50 px of the lip (verdicts.ts classify's gap kind) */
+/** the route's gaps, lip to lip, deduped; level when the far top is within 50 px of the lip (verdicts.ts classify's gap kind). A hole
+ *  under the route (Drop.site, R-165.221: the put-back record over 1-1's earth's holes) is not a gap he is asked to jump: skipped */
 export interface Gap { x0: number; x1: number; width: number; floored: boolean; level: boolean }
 export function gapsOf(st: Laid): Gap[] {
   const seen = new Set<number>(), S = solidOf(st), out: Gap[] = [];
-  for (const d of [...(st.gen2.drops ?? [])].sort((a, b) => a.x0 - b.x0 || b.x1 - a.x1)) {
+  for (const d of [...(st.gen2.drops ?? [])].filter((q) => q.site !== 'hole-under-route').sort((a, b) => a.x0 - b.x0 || b.x1 - a.x1)) {
     if (seen.has(R(d.x0))) continue;
     seen.add(R(d.x0));
     const far = S.filter((q) => Math.abs(q.x - d.x1) <= 3).sort((a, b) => a.y - b.y)[0];
@@ -287,6 +289,17 @@ function plantedNormal(good: boolean): Laid {
     },
   };
 }
+
+test('planted (R-165.221): a hole under the route (Drop.site) is no test gap; the same span as a route gap is still read', () => {
+  // (1-1's earth holes: a 2,700 px hole under a climb of logs read as a "double test gap" before Drop.site; red without the skip)
+  const good = plantedNormal(true);
+  const holed: Laid = { ...good, gen2: { ...good.gen2, drops: [...good.gen2.drops!, { x0: 1400, x1: 4100, lipY: 860, ends: { kind: 'putback' }, site: 'hole-under-route' }] } };
+  assert.deepEqual(gapsOf(holed), gapsOf(good), 'the hole is skipped');
+  assert.deepEqual(teachFirst(holed, 'normal'), [], 'the teach still passes with the hole beside it');
+  // (an untyped record over the same span IS a route gap: the skip is by the type, never by width or place)
+  const route: Laid = { ...good, gen2: { ...good.gen2, drops: [...good.gen2.drops!, { x0: 1400, x1: 4100, lipY: 860, ends: { kind: 'putback' } }] } };
+  assert.ok(gapsOf(route).some((g) => g.x0 === 1400 && g.width === 2700), 'a route gap of the same span is read');
+});
 
 test('planted (a): a test gap after a floored practice gap and the teach passes; without the practice, it fails by name', () => {
   assert.deepEqual(teachFirst(plantedNormal(true), 'normal'), []);

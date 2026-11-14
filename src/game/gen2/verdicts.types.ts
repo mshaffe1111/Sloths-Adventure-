@@ -61,11 +61,19 @@ export type HurtLook = 'hurt-art';
 /** a lethal drop carries its warning: Dot's line before it and the sign at its lip (WATER_WARN); neither may be absent */
 export interface Warning { dotLine: string; leadPx: number; sign: true }
 
+/** where a drop lies against the route (R-165.221, POLISH-4). Absent: a gap ON the route, one he is asked to cross (a jump, a double, a
+ *  pit). `hole-under-route`: a hole in the earth UNDER the route (a no-lethal stage's put-back record over its earth's holes, pipeline.ts
+ *  softHoles): the route crosses it on logs and boughs, so it asks no jump and is no test gap; a fall into it is still a drop, so its end,
+ *  its look and its record (drop.lethal-in-no-lethal, drop.look-lies, drop.untyped) are judged like any other. A reader that counts the
+ *  route's jumps skips it (w1.relay.test gapsOf; nodeAsks' hazard, a node's own fall); a reader of what a fall ends in never does */
+export type DropSite = 'hole-under-route';
+
 /** one drop on the route, per setting (the same gap may be soft on Easy and lethal on Normal elsewhere; never in 1-1) */
-export type Drop =
+export type Drop = (
   | { x0: number; x1: number; lipY: number; ends: SoftEnd; look: SoftLook }
   | { x0: number; x1: number; lipY: number; ends: LethalEnd; look: LethalLook; warn: Warning }
-  | { x0: number; x1: number; lipY: number; ends: HeartEnd; look: HurtLook };
+  | { x0: number; x1: number; lipY: number; ends: HeartEnd; look: HurtLook }
+) & { site?: DropSite };
 export type SoftDrop = Extract<Drop, { ends: SoftEnd }>;
 export type LethalDrop = Extract<Drop, { ends: LethalEnd }>;
 export type HeartDrop = Extract<Drop, { ends: HeartEnd }>;
