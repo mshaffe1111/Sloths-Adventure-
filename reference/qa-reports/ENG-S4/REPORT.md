@@ -92,7 +92,11 @@ top, the view's top, the HUD band, the clear view, the widening and the verdict 
 - The false liana is drawn its liana's length (ENG-S2): a 410 px one draws the snake 4.6x Pokey's height. ENG-S2 recommends 115-170 px
   (1.29-1.91x). OPEN for the lead / Designer: a false liana short enough to read as a snake, or long enough to pass for a liana.
 - NOT layable yet: liana-to-liana chains (beat 4, the gorge): gen2 lays a perch between every two lianas.
-- 1-6 must join drawcheck and every stage-walking gate the day it is built (D51).
+- 1-6 must join drawcheck and every stage-walking gate the day it is built (D51). **Cost to watch:** laySnakes runs the view verdict
+  at every stage build (as finish14 runs its checks): about 2.5 ms per snake warm on this container (measured with the gates loading
+  the CPU), so ~20 ms for 8 snakes and ~80 ms at buildcheck's 4x CPU throttle, against its 150 ms p95 stage-start budget (1-1 today:
+  105 / 136 ms). If 1-6's buildcheck breaches, memoize snakeViewFaults by its inputs (route, reach, len, beat, site) or judge at listing
+  only (the proven list was judged when made); measure first.
 
 ## Pushback
 - (c) above: no LONG dial (the design's own revised text).
@@ -130,7 +134,7 @@ reference/handoffs/engine-core.md §0x (this commit).
 1. **Chains (1-6 beat 4, the gorge):** gen2 types: a swing place whose `after` is a liana (`{ kind: 'swing', after: '<liana key>' }`);
    pipeline swing branch: the next anchor past the previous liana at a spacing where pressWindow(A, canGrabSwing on B, LETGO_FLIGHTS)
    (physics.ts chainPhase's own measure, :855) gives LIANA.window or more on the setting, B's phase chainPhase(A, B) (swingSetup does
-   it at stage start, :601-623); no perch or pit between unless the row asks (the soft pit under the whole chain, backPit). levelCheck:
+   it at stage start, :598-624); no perch or pit between unless the row asks (the soft pit under the whole chain, backPit). levelCheck:
    vine nodes: ledge -> A (today's catch), A -> B (a chain catch: canGrabSwing over A's release flights, >= 6 lines as swing edges),
    B -> ledge (today's swingLandingsIn from B's hold); a test from 1-6.md beat 4 (SHORT, SHORT, LONG) on W1 and W6 kits, both settings,
    planted; lockall unchanged (no shipped stage lays a chain).
