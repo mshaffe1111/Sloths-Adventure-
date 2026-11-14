@@ -98,3 +98,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | ENG-E2 (Opus xhigh) | 1-7 moss cover (carpet/patch/hanging, letter m), perched eagle, bots still in cover; all gates green; 2 redos (perch vs HUD, hanging still) to BUILD-17 | $14.23 | ~80 min |
 | INT-8 (Opus xhigh) | link #2: easier 1-1 merged on link #1 clean; every gate; found the clip tool never jumped (R-165.240) and proved the fig gate still fails with real presses; clip tool fixed on t-int-8-clip | $13.34 | ~80 min |
 | KEEPER-17 (Opus high) | 1-7 lines approved (10 + sealed + mission); journal + way.1-7 conflicts rewritten | $1.63 | ~9 min |
+| ENG-S5 (Opus xhigh) | liana->liana chains on gen2 (chainRelease, whole next swing in view), W1 chain rows over a painted thorn hollow, hurtFocus camera; clips 0 lives; gates green | $24.62 | ~3 h 10 min |
