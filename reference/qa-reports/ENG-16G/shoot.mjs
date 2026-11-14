@@ -70,6 +70,8 @@ for (const [w, h] of PHONES) {
       const perch = e.platforms.find((p) => p.tag === `${sec.uid}:${B.b}`);
       if (!sv || !perch) return { err: `no liana ${B.l} or perch ${B.b} in ${sec.uid}` };
       window.__sv = sv; window.__perch = perch;
+      // (ENG-16G: the section's false liana, if it has one: the clip names the frame where he swings nearest it)
+      window.__fv = e.vines.find((v) => v.tag === `${sec.uid}:f`) ?? null;
       const p = e.player;
       p.x = sv.x - 30; p.y = sv.topY + 120; p.vx = 200; p.vy = 0; p.grounded = false; p.facing = 1;
       let diff = '?';
@@ -85,7 +87,7 @@ for (const [w, h] of PHONES) {
     }
     const frames = [];
     let sampling = clip;
-    const sampler = (async () => { const t0 = Date.now(); while (sampling) { const buf = await page.screenshot({ type: 'jpeg', quality: 80 }); frames.push({ t: Date.now() - t0, buf }); } })();
+    const sampler = (async () => { const t0 = Date.now(); while (sampling) { const buf = await page.screenshot({ type: 'jpeg', quality: 80 }); const at = await page.evaluate(() => { const e = window.__engine(), p = e.player, f = window.__fv; return f ? { gap: Math.round(Math.abs(p.x - f.x)), px: Math.round(p.x), fx: Math.round(f.x), hold: Math.round(p.swingLength ?? 0), sw: !!p.isVineSwinging, onF: !!p.isVineSwinging && Math.abs((f.swingAngle ?? 0) - (p.swingAngle ?? 0)) < 1e-6 && Math.abs(p.x - f.x) < 2 } : null; }); frames.push({ t: Date.now() - t0, buf, at }); } })();
     const usual = await page.evaluate(() => window.__engine().roomUsual);
     const view = async () => page.evaluate((usual) => {
       const e = window.__engine(), c = e.camera, p = e.player, far = window.__perch, sv = window.__sv;
@@ -156,6 +158,12 @@ for (const [w, h] of PHONES) {
       fs.mkdirSync(dir, { recursive: true });
       frames.forEach((f, i) => fs.writeFileSync(path.join(dir, `f${String(i).padStart(4, '0')}.jpg`), f.buf));
       const fps = ((frames.length - 1) * 1000) / (frames[frames.length - 1].t - frames[0].t);
+      // (the clearance frame: swinging on the REAL liana, his hold point nearest the false one)
+      const near = frames.map((f, i) => ({ i, ...f })).filter((f) => f.at && f.at.sw && !f.at.onF).sort((a, b) => a.at.gap - b.at.gap)[0];
+      if (near) {
+        fs.writeFileSync(path.join(out, `${setting}-${beat}-${tag}-clearance.jpg`), near.buf);
+        console.log(tag, beat, `CLEARANCE FRAME f${String(near.i).padStart(4, '0')} at ${(near.t / 1000).toFixed(2)} s of the clip: his hold ${near.at.gap} px from the false liana (him x ${near.at.px}, it x ${near.at.fx}, hold ${near.at.hold} px down)`);
+      }
       await new Promise((res) => spawn('ffmpeg', ['-v', 'error', '-y', '-framerate', fps.toFixed(2), '-i', path.join(dir, 'f%04d.jpg'), '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '26', '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2', path.join(out, `${setting}-${beat}-${tag}-clip.mp4`)], { stdio: 'ignore' }).on('exit', res));
       fs.rmSync(dir, { recursive: true, force: true });
       console.log(tag, beat, 'clip', frames.length, 'frames at', fps.toFixed(1), 'fps');
