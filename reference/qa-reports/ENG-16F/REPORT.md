@@ -12,10 +12,15 @@ e4322053 (the face count, 1-1 recalibrated again), then this REPORT.
    against the other vine at that depth. Plant it both ways: the 78 px pair RED, a correct pair GREEN, a swinging-swinging pair unchanged.
    Then the lay rule from it, in pipeline.ts, global (any still or swinging vine beside a swinging one), then relist 1-6. The
    integrator reviews the measure line by line.
-2. **artUse.test.ts is RED** (the helper's F1, retire-old-16.md): W6's `w6balt.json#seesaw-b` has no draw site. The scanner had only
-   counted it through the deleted old-1-6 string `` `seesaw-${ROOMS.length}` ``; there is no W6 seesaw room in the code (grep: only
-   kitStage.ts's test room and the deleted 1-6). It was never drawn; the gate was fooled. The allow-list only shrinks, so it was NOT
-   added. It needs the art owner's ruling: draw it where W6 wants a seesaw, or take the piece out of the inventory.
+2. **artUse.test.ts is RED: unship W6's seesaw-b (the lead's ruling (b), 5:08 PM ET; Content's tools).** `w6balt.json#seesaw-b` has no
+   draw site. The scanner had only counted it through the deleted old-1-6 string `` `seesaw-${ROOMS.length}` ``, and there is no W6
+   seesaw room in the code (grep: only kitStage.ts's test room and the deleted 1-6). It was never drawn; the gate was fooled. No
+   allow-list entry (the list only shrinks). The ruling: take it out of the SHIPPED set and mark it "parked: no draw site since the old
+   1-6 left; for a W6 seesaw piece" in the master catalog, so the art is not lost. It is more than a few lines, so it is written here, not
+   done: (a) its status in reference/art/CATALOG-MASTER.csv, then regenerate src/game/art/inventory/*.json with
+   `python3 tools/art/catalog_master.py --emit` (the inventory says "never hand-edit"); (b) its `takes` and `frames` entries out of
+   src/assets/w6to10/props-made/w6balt.json; its pixels sit inside the shared w6balt.webp atlas (2048x608), so to stop shipping them the
+   atlas is repacked with Content's packer; (c) artUse, artcheck and the inventory tests (src/game/art/*.test.ts) green.
 3. **No bot is rescued on 1-6 any more** (castBots seeds 1-6, e4322053). What is left is sealed doors only, petals 2-7 short: child
    Normal s1 (93/95) and s2 (90/94), middle Normal s1 (90/95), expert Normal s1 (92/95), s2 (91/94), s3 (95/102) and s5 (86/90). This is
    BUILD-16d's (b), petals hopped over on perches and banks, not traced in this box. Trace first with petalmiss.ts / where-petals:
@@ -81,25 +86,31 @@ misses petals the bots already missed elsewhere.
   Normal's rescues across 40 runs drop 13 -> 0; its put-backs per run go 1.93 -> 2.9 and now MATCH the testers' 3.4 (that check fail ->
   pass); finish p50 476.9 -> 420.3 (testers 444, inside 12% both times). **Every other check keeps its pass/fail; the child, middle and
   expert tiers still match the testers, one check better.** tierBots 7/7.
+- INT-9b (5:05 PM ET): link #3 (t-int-9) carries POLISH-6/7/8's relisted 1-1, so neither side's calibration replays there. INT-9b
+  re-ran BOTS.md's command on t-int-9 (0 flips, tierBots 7/7) and recalibrates on the merged head at the phase B merge.
 
-## The gates (LAWS 5; game code changed (the deletion), so everything the box allowed)
+## The gates (LAWS 5; game code changed (the deletion), so every gate in CLAUDE.md's Checks ran)
 - tsc clean on every head. generalitycheck PASS, knowncheck PASS, roadmapcheck PASS (`gates/`; the clone was unshallowed first, since
   it could not run shallow, the helper's F2).
 - seedlist --check 1-1..1-5: PASS (257/100/100/100/150; `gates/seedlist-check.out.txt`).
 - Engine-tool and bot tests (library, seedlist, yield, travelBots, pitClimb, firsttimer, castBots): 57/57. tierBots 7/7.
 - Plants: P1-P3 (FAR), graceFresh, pitClimb 7-11: each RED without its fix (run in a side worktree, never the measured tree).
-- **The whole suite on b89dee5d:** SUITE_LINE
+- **The whole suite on b89dee5d** (4:38-5:13 PM ET, `gates/suite.out.txt`; every src change is in it, and the later commits touch only
+  tools/inspect and the calibration, checked above): **3435 tests, 3431 pass, 2 fail, 2 todo** (ENG-16E: 29 fail of 3447). The two
+  reds are artUse (EXACT NEXT STEP 2, ruled) and vineSelfSwing (EXACT NEXT STEP 1, ruled). w4RealReach's TODO stays a TODO.
 - castBots 1-1..1-5, both settings, seeds 1-6 (`w1/` on e4322053): 1-2, 1-3 and 1-5 every combo 6/6; 1-4 child E 2/6, kid E 5/6, middle E
   5/6, middle N 5/6; 1-1 kid and adult 0/6 on both settings. Each of these is identical on the start head 7904cb65 (pass count and failing
   seeds, `w1/at-7904cb65/`): pre-existing (1-1 kid/adult: ENG-16E found them on main too). Two got better with B5: 1-1 child N 5/6 -> 6/6,
   1-2 child N 4/6 -> 6/6. Nothing got worse (`w1/at-b89dee5d/`, `w1/at-8f429a6a/`).
-- NOT run in this box: the vite build, chunkcheck, artcheck, drawcheck, clipcheck, kbdcheck, buildcheck. The deletion removed code and
-  one preload entry (W1_ROOMS '1-6'), and drew nothing new. INT-9 runs the full set on the integration head before any link.
+- The build and perf gates, on e536c4ec (its src is b89dee5d's), `gates/`: `BASE_PATH=/Sloths-Adventure-/ vite build` exit 0;
+  chunkcheck PASS; artcheck PASS; drawcheck PASS (555 s, 1-6 in it); clipcheck PASS (83 known, the list not grown); kbdcheck PASS (its
+  stills rewritten in reference/qa/tester-page-1106/keyboard/ were put back, not committed); buildcheck, run alone, PASS (1-1 p95
+  109 ms Normal, 57 ms Easy; budget 150).
 
 ## Polish check
 - No stills or clips were shot in this box: nothing I changed draws, and the deletion removed only paths the game no longer reached (the
   helper probed the new 1-6 on seeds 1-8: no rooms, no kit decor). The preload change (W1_ROOMS '1-6') is covered by the suite's sheet
-  tests. The packet's stills and clips of every beat are EXACT NEXT STEP 4, after the relist; shooting them before it would be redone
+  tests (stageSheets.test.ts, sheetWarm.test.ts: green on b89dee5d). The packet's stills and clips of every beat are EXACT NEXT STEP 4, after the relist; shooting them before it would be redone
   (D40).
 
 ## Pushback
@@ -116,9 +127,8 @@ misses petals the bots already missed elsewhere.
 4. **P-02's signpost log reset** has no live test now (F5): the kit test room's seesaw push log (kitStage.ts:344) can host it.
 
 ## Unresolved (named plainly)
-- 1-6 is NOT green: vineSelfSwing and artUse are RED, and the rescues and sealed doors above remain. No relist, no 40-seed bots, no
-  stills, no clips in this box.
-- Not run: the build and perf gates (above).
+- 1-6 is NOT green: vineSelfSwing and artUse are RED (both ruled, EXACT NEXT STEP 1-2), and the sealed doors remain (no rescues). No
+  relist, no 40-seed bots, no stills, no clips in this box.
 - The helper's F4: a running jump at the first liana's lip catches it on seeds 2 and 4 but not 1 and 3, so the moved control tests wait
   on the ledge for a catching jump (`catchWait`). It matches kid s5's first miss: a running hop off that lip misses on some rolls (honest for a kid who can't wait at the lip); the pit after it was the bot's fault and is fixed (B4).
 
@@ -130,7 +140,9 @@ misses petals the bots already missed elsewhere.
 3. The times in my messages to the lead (4:28, 4:46 PM) and to INT-9b (4:39 PM) were typed by hand, not pasted from `date` (D30): the
    4:46 one ran ahead of the clock (date read 4:37-4:43 around it). Countermeasure: every message's time comes from a `date` run in the
    same step, as the REPORT's times do.
-4. where.ts's 360 s cap made the child read "time" on every seed. I spent one run chasing it before checking castBots' cap (1200);
+4. I waited for drawcheck/clipcheck/kbdcheck with an `until` loop (on inotifywait, 60 s timeouts), which the packet forbids (D67).
+   Countermeasure: wait on a background job's own notification or a single blocking command (`tail -f | grep -m1`), never a loop.
+5. where.ts's 360 s cap made the child read "time" on every seed. I spent one run chasing it before checking castBots' cap (1200);
    no change was made on it. Countermeasure in the turnover note: castBots decides pass/fail.
 
 ## Method update (the lead decides)
