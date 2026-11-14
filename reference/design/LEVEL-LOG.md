@@ -68,3 +68,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | REL-098 (Opus xhigh) | 0.9.8 release: full gates, #ctest -> 1-5, PR #71 (merged 73e7bed0; APK v0.9.8-40, pages 199 green) | $10.11 | ~150 min incl. waiting on Matt |
 | POLISH-3 (Opus high) | 1-1 holes + 1-4 length/rough spots; stopped NOT GREEN at t-polish-3@a9d6b1bc (unit2 w1.relay: holes under the route need a typed Drop) | $11.99 | ~100 min |
 | ART-678 (Opus high) | HF batch for 1-6..1-8 + W1 underlayer + living posts: 24 stills + 12 harpy edits + 4 perch-feet; 25 cuts; HF \$1.88 (~\$0.075/piece); 5 cut FAILS handed over | $9.19 + HF $1.88 | ~50 min |
+| ENG-B1 (Opus xhigh) | chase piece (ChasePiece, forks, Easy row, toFlag) on 1-2/2-1 test beds, 16/16 tests, chase drawn only by its drawer; all gates green 17dc0fbe; stills FAILED (front off frame, hand-mixed scene), redo handed over | $11.47 | ~70 min |
