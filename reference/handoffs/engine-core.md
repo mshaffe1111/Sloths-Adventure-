@@ -4,9 +4,29 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for ENG-16E (11-14, t-build-16): section 0z (the late press's swing, the testers' let-go in the lay, the petal fill's path). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for ENG-16G (11-14, t-build-16): section 0zb (the height-aware swing clearance and its lay rule, a parked frame, petals on the walked path). Rewritten for ENG-16E (11-14, t-build-16): section 0z (the late press's swing, the testers' let-go in the lay, the petal fill's path). Rewritten for ENG-S5 (11-14, t-eng-s5): section 0y (liana to liana). Rewritten for ENG-S4 (11-14, t-eng-s4): section 0x. Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0zb. The height-aware swing clearance, its lay rule, a parked frame, petals on the walked path (ENG-16G, t-build-16, 11-14, R-165.246): what the next engineer must know
+- **physics.ts swingClearance is height by height now** (the lead's ruling (b), 4:42 PM ET): for each vine as the one he hangs on, the
+  deepest hold (SWING.minLen to its foot) whose body (SWING_CLEAR.body above and below the hold) still meets the other's rope; its sweep
+  there plus the other rope's sweep where his body is, plus body + margin, against how far apart they hang. Infinity when no depth meets.
+  It reads EXACTLY as the old foot-to-foot measure for two vines of one top and one length, and is never stricter (a pair the old one
+  passed still passes). swingSetup's sizing ((dx - body - margin) / 2) is unchanged on purpose: swinging pairs keep their swings.
+- **pipeline.ts clearSwings (layLocal, every world)**: after each hanging piece is laid, any pair (one swinging) under 0 moves the
+  stiller vine (less foot sweep; on a tie the new one) straight away from the other by the deficit; it moves only a liana hung past a
+  ledge (place 'swing', not caught off another liana) that nothing else is laid from, never back over that ledge; else the section
+  THROWS (the roll is never listed). Climbing vines count as still. 1-6's false liana is laid still (stillOne amp 0: a number, so no
+  roll is taken and every other roll is the same) so the lay measures it as it hangs; it moved 43-63 px toward its bank on rolls 1-3.
+  Planted: src/game/swingClearance.test.ts; reference/qa-reports/ENG-16G/planted-faults.py (3/3 CAUGHT).
+- **Parking a frame:** tools/art/w6to10/park.py takes a props-made frame out of the shipped sheet (repacked with geminicut.pack, saved
+  as propcut.py saves), keeps it losslessly in src/game/art/parked/ (under src/ for the inventory test, never imported so it never
+  ships; outside src/assets, which artuse.mjs counts), and its catalog row says "parked". Then `python3 tools/art/catalog_master.py
+  --emit`. Never an allow-list entry.
+- **Petals on a landing perch:** check where the bots STAND (ENG-16G/petals/onperch.ts: per bot the t he lands at and leaves) before
+  placing; the pickup reach is 46 px from his hips (engine.ts:3219, distance2D(p.x, p.y - 20, ...)). A leap often clears a short
+  perch entirely (1-6 first-liana b1: no bot stood on it on seeds 1 and 3).
 
 ## 0za. The bots' harness, the liana let-go, the old 1-6 gone (ENG-16F, t-build-16, 11-14, R-165.246 / R-165.238): what the next engineer must know
 - **realPlay.ts FakeInput counts fresh inputs** (`moves`, as inputEngine.ts fresh(): a press, a punch/kick, a new direction, down/up
