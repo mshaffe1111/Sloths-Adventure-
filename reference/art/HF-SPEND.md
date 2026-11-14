@@ -58,3 +58,9 @@ billed from creation to terminate; probes were cpu-basic jobs of seconds.
 ART 11-13 total: ~92 GPU-min, **~$4.22** of its $15 cap (minutes x $2.75/60, creation to terminate). Balance ~$58.7 (from ~$62.9 at the packet).
 | 12:10-12:18 PM | sandbox 6af7448629dd05ff03653f5e (rtx-pro-6000), 8 min, attempt 3: creek8 6 img2img (the creek's join band repainted, creek-53 s45/s55, creek-11 s50); ant2 6 Qwen-Edit leg edits (leafcutter-11) | ART (packet) | ~$0.37 | w15-creek (band s45-9); the ant walk's two strides (antA-s1, antB-s2) |
 ART 11-13 running total: ~100 GPU-min, **~$4.59** of its $15 cap. Balance ~$58.3.
+
+## 2026-11-14 (ART-678, t-art-678; the lead's packet cap $8, ~$10+ reserve kept)
+| When (ET) | Job | Decided by | Cost | What it bought |
+|---|---|---|---|---|
+| 11:33 PM-12:14 AM | sandbox 6af7e49d29dd05ff03665cdd (rtx-pro-6000), 41 min creation to terminate: ~8 min model downloads (a parallel stills start OOMed but overlapped the Qwen-Image download), 12 harpy Qwen-Edits + 4 perch-feet edits (~70 s each), 24 sheet stills (~50 s each), CPU cuts, ~4 min copying back (cuts 46 parts, raws 115 parts) | lead (ART-678 packet) | ~$1.88 | 25 shipped pieces (src/assets/w1-678/) from 6 sheets + 8 harpy frames: **~$0.075 a shipped piece**; plus 40 raw takes kept (reference/art/hf678/raw/, q95) so a re-pick costs nothing |
+ART-678 total: ~41 GPU-min, **~$1.88** of its $8 cap (minutes x $2.75/60). Balance ~$56.4 (from ~$58.3).
