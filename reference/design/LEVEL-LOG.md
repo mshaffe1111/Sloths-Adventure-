@@ -92,3 +92,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | ENG-B3 (Opus xhigh) | B2 owed gates green; B5 CHASE-LAY (chaseCap from Matt's flag span, forks, greedy flags); refusals N 15/30 E 7/30; tint not done | $16.87 | ~85 min |
 | KEEPER-16 (Opus high) | 1-6's 7 lines + 6b sealed + mission, nature check, 2 flags (no petal count; old lines to delete), a STORY-KEEPER method update | $2.28 | ~10 min |
 | ENG-E1 (Opus xhigh) | 1-7 on the existing hiding: eagle cast row, sweeper drawn (far circle, screech, shadow, dive/pull-up), moss tint + calm, free first pass, mossy liana cover, cool per stretch; 10 planted; all gates green; moss content/perch/bots cut to E2 | $11.84 | ~80 min |
+| BUILD-16 (Opus high) | 1-6 built on gen2 (w1Arc16): every beat but the chain, rolls 24/24 both settings, snakes laid fair, keeper lines in; self-caught difficulty 9.6/8.8 vs 6.5/~3 (a liana on every beat) before stills; handed over at 38.5% | $15.49 | ~38 min |
