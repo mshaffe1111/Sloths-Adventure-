@@ -265,12 +265,6 @@ function gorge(easy: boolean): Lay {
  *  hollow on Normal (the kit's hurtFloor, THORN_ROW, as 1-2's) and the soft moss pit with its stair back on Easy (the perch's `hurt`).
  *  Normal: two lianas, root hops, then three (1-6.md "Two lianas, then three": SHORT, LONG; SHORT, SHORT, LONG). Easy: the two (one
  *  chain a beat, the lead's ruling 11-14: Easy lays the fewest lianas a beat can be; a chain is two) */
-/** where the chain's last perch goes along its band: nearer than a lone LONG's (W1_LIANA_GAP.long 0.75-1). A chained liana swings at
- *  amp 0.24-0.26 rad (ENG-S5's floor, half a lone liana's 0.45), so its leap is weaker: let go at the forward end from the foot, as the
- *  testers let go (physics.ts RELEASE), the kid fell short of the band's far end over the thorns every time (BUILD-16d where.ts, seed 2:
- *  three deaths, a rescue). At 0.35-0.55 the perch is 180-245 px past the last liana, a single links it (heldLandings 24-38 lines, 6 asked)
- *  and kid + adult Normal seeds 1-6 lose no life and need no rescue in the chain (BUILD-16d) */
-const LAST_SHARE: R2 = [0.35, 0.55];
 function chain(easy: boolean): Lay {
   // (`show`: the take-off bank the thorns are first seen from, the lesson's showing piece (pipeline hurtMeta): no hollow starts before its
   //  end, promises11 hazard.untaught; 1-2 taught the thorns, this re-shows them as 1-5's brick does)
@@ -280,8 +274,7 @@ function chain(easy: boolean): Lay {
     keys.forEach((key, i) => pieces.push(i === 0 ? w1Liana(key, from, gaps[0]) : w1Chain(key, keys[i - 1], gaps[i - 1], gaps[i])));
     // (its perch a moss-stone bank, as ENG-S5's row: the thorn bed is painted lip to lip only between banks, w1Pits.ts findW1Pits)
     const b = `${k}b`;
-    const perch = w1Perch(b, keys[keys.length - 1], gaps[gaps.length - 1], [120, 140], { hurt: true });
-    pieces.push({ ...perch, shape: 'bank', style: 'moss_stone', place: { ...perch.place, share: LAST_SHARE } as SectionPiece['place'] });
+    pieces.push({ ...w1Perch(b, keys[keys.length - 1], gaps[gaps.length - 1], [120, 140], { hurt: true }), shape: 'bank', style: 'moss_stone' });
     return b;
   };
   const b1 = run('c', 'show', ['short', 'long']);

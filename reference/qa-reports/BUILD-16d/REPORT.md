@@ -1,7 +1,12 @@
 # BUILD-16d REPORT: 1-6 First Lianas, beat 4 laid, FAR moved, the chain fixed. STOPPED on the lead's order (2:19 PM ET), NOT GREEN
 t-build-16 from df04e965 (BUILD-16c's head); packet reference/packets/2026-11-14/BUILD-16d.md (lead's branch ccr-ea739a2f-dfcee4).
 Start 1:18 PM ET, stop 2:15 PM ET (both from `date`). Heads: 10ce312d (beat 4), b4e53c1d (chain perch + FAR), 2fb222bf (snake bot +
-petal moves), 0c277648 (petal moves reverted), and this REPORT's commit. Lead's stop: no more bot or engine work here (engine tier only).
+petal moves), 0c277648 (petal moves reverted), then **the chain perch trial (A) reverted** per the lead's 1:52 PM ruling C (read late,
+below), so w1Arc16.ts on the final head equals 10ce312d's. Lead's stop: no more bot or engine work here (engine tier only).
+**Final head state:** beat 4 laid (perch at W1_LIANA_GAP.long, the band's far end: the kid's chain deaths of E1 are BACK until the engine
+fix), FAR 0.65-0.8 in World 1's row data (w1Swing.ts), the snake rule in firsttimer.ts (bot/tools code: the engine member keeps or
+removes it), BUILD-16c's socket petals unchanged. The castBots table below is from 0c277648 (WITH trial A): on the final head expect the
+chain's Normal deaths of at-10ce312d/ until E1 is fixed.
 
 ## EXACT NEXT STEP (for the xhigh engine member taking 1-6; in order)
 1. **The kid's lip catch at FAR** (Normal seed 2, the snake on your vine, x 23167 lip, liana 189 px out): three misses off the lip into
@@ -33,7 +38,8 @@ petal moves), 0c277648 (petal moves reverted), and this REPORT's commit. Lead's 
   0.75-1 of its band (337-357 px past the last liana), the kid let go at the forward end from the foot, as the testers do (physics.ts
   RELEASE), and fell short into the thorns every time: three deaths, a rescue, seed 2 (FT_TRACE `single from 12319,853 ... PUT BACK`
   x3). levelCheck heldLandings still counted 14-17 single lines (6 asked), so the check passes a leap the testers' let-go does not make.
-  Laid now at 0.35-0.55 (w1Arc16.ts LAST_SHARE, 180-245 px): 0 chain lives, 0 chain rescues, kid + adult Normal seeds 1-6. The cost: ENG-S5
+  TRIED at 0.35-0.55 (180-245 px, b4e53c1d..0c277648): 0 chain lives, 0 chain rescues, kid + adult Normal seeds 1-6. REVERTED on the final
+  head (the lead's ruling C: the amp floor is engine work, fixed once for every stage with a chain, not a nearer perch in 1-6's data). The cost: ENG-S5
   pushback f, the top hold may fly it on some rolls, so it is less of a true "slide down" LONG. Engine question: raise the chain floor amp,
   or have heldLandings count only the testers' let-go moment (forward end).
 - **E2. The snake rule in the bot** (tools/inspect/firsttimer.ts `snakeAhead`, used in intend on a liana): the bot knew nothing of vine
@@ -54,7 +60,7 @@ petal moves), 0c277648 (petal moves reverted), and this REPORT's commit. Lead's 
    thorns re-shown from a `show` bank (pipeline hurtMeta, promises11 hazard.untaught); a sixth rest `w1-16-rest-steps` (the arc gains an R);
    arc `A T Pc R Pr R M X R C R W R S R L E`, deal climb 25 / hazard 25 / rope 37 / crumble 13. libstage 24/24 CLEAN both settings
    (libstage.out.txt); w1Arc16.test 8/8 (meter in band), w1Chain + w1Swing 14/14.
-2. **The chain's last perch** at 0.35-0.55 (b4e53c1d), E1 above.
+2. **The chain's last perch** at 0.35-0.55 (b4e53c1d): the evidence for E1; reverted on the final head (ruling C).
 3. **FAR 0.85-1 -> 0.65-0.8** (b4e53c1d; the lead's ruling (a)). Kid + adult Normal seeds 1-6 rescues: 12 at 0.85-1, 8 at 0.65-0.8, 19 at
    0.55-0.7 (noisy: each change reshuffles the seeds). The band is narrow: seed 1's X perch 436 -> 432 px past its liana, the gorge's
    first perch 431 -> 400 px. Only 1-6 lays FAR (grep). w1Swing.test 22/22 with the chain and 1-6 tests.
@@ -92,7 +98,9 @@ Was (BUILD-16c, 5b0b1121, no chain): Normal kid 4/6, adult 4/6, child 3/6, middl
 ## Unresolved (named plainly)
 - NOT GREEN: the castBots table above. Not done: relist, bots 1-40, the whole suite, plant.sh, the stills/clips of every beat, the
   CLAUDE.md Checks (not run on this head: tsc and the touched tests only), tierBots after the bot change.
-- My misses: (1) I planted the snakebot fault in the shared tree while castBots ran from it, so that batch is discarded
+- My misses: (0) **D57: I did not read the message queue at each push**; the lead's 1:47, 1:49, 1:52 and 1:58 PM messages reached me at
+  2:17. So I committed trial A against ruling C (now reverted), and did engine/bot work (the snake rule) after Matt's rule that builders
+  don't. Countermeasure: ReadNotifications after every push, before the next tool call. (1) I planted the snakebot fault in the shared tree while castBots ran from it, so that batch is discarded
   (at-petals-contaminated/); plant in a side worktree. (2) My 2:10 PM message to the lead gave a time by eye; the real time was ~1:50
   (D30). (3) The petal move (2fb222bf) was a wrong guess, measured and reverted.
 
