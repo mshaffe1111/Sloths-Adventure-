@@ -1,4 +1,4 @@
-# POLISH-2 REPORT (t-polish-2; merged t-polish-1@b90598af (docs only); gates on src of head 0b929f18 from 6:37 PM ET; results: gates/RESULTS.txt). Box 6:12-~7:05 PM ET, context ~40% at stop.
+# POLISH-2 REPORT (t-polish-2; merged t-polish-1@b90598af (docs only); gates on src of head 0b929f18 from 6:37 PM ET; results: gates/RESULTS.txt). Box 6:12-7:21 PM ET, context ~46% at stop (gates waited for, D59).
 **Lead verdicts 6:31/6:35 PM:** fig lock PASS, tufts v2 PASS, crown route PASS. 12 (sideways lock frames) re-shot on the head f5da20a6.
 **EXACT NEXT STEP:** 1. Lead pass/fail on stills 18-19 (log end). 2. Matt R-165.212 left: film a 3-fig gate (1-4 gate 6, `tools/lockclip.mjs ... <gate index 5>`)
 and an Easy lock clip; the lock's sound by ear on a phone (no audio in the container: UNHEARD). 3. ONE art-pass item (lead 6:35 PM, not hunted now): square-cut
@@ -16,8 +16,8 @@ or richer gates), re-roll the 1-4 seed list ONCE only if the plan changes, then 
   only, gone the frame the last fig locks), called by ONE engine line after `p.y += p.vy * dt` (engine.ts:2537, lead OK 6:17 PM). Thorn
   tangle: 1-2's shipped bramble (w1-thorn-long, catalog w1-thorn-bramble-long; no HF) lies on the shut log, strains up as he pushes a fig,
   shudders down a notch per fig, pulls back off the log to its ends on the last (vineFieldArt.ts drawGateThorns; fieldPlay.ts thornsOf).
-  Lock moment: gold pop where the fig tears, the puzzle kit's snap on that frame, gate + thorns sound on the last (engine.ts fieldSfx, lead
-  OK 6:26 PM). Tests src/game/fieldGate.test.ts (6): Matt's case on 1-4 seeds 1-2 Normal+Easy (5 ways off every vine under every gate),
+  Lock moment: gold pop where the fig tears, the puzzle kit's snap on that frame, the gate sound on the last (engine.ts fieldSfx, lead
+  OK 6:26 PM; the thorn rustle dropped in 76dd013, see Gates). Tests src/game/fieldGate.test.ts (6): Matt's case on 1-4 seeds 1-2 Normal+Easy (5 ways off every vine under every gate),
   from-below-only, open vaults; lock sound on the exact tear frame, strain, notch, pull-back. Planted: lid out -> "passes up through";
   'lift' sound out -> "its sound on the very frame it locked ([])": both CAUGHT.
 - **Tufts v2** (lead FAIL fixed): four loose tufts, each its own size, pace, turn, side and drift, fading in and out; fall trail 3, burst varied.
@@ -27,7 +27,10 @@ or richer gates), re-roll the 1-4 seed list ONCE only if the plan changes, then 
 10/11 lock clips sideways/upright, 12/13 frame sheets: bramble reads as closed, pop + draw-back read; 14-17 tufts v2 both ways Normal/Easy:
 no column; 18/19 log end before/after: square cut gone. Named rough: post (step 3), Pokey card (step 5), thorns sit partly under the HUD bar
 sideways at the field's top (camera), upright the gate is half off-screen left at the lock (camera frames the vine, not the gate).
-## Gates: see gates/RESULTS.txt (all CLAUDE.md Checks; each line "name exit"). Anything not 0 is named there by the stop.
+## Gates (gates/RESULTS.txt, head 0b929f18, 6:37-7:21 PM ET): every CLAUDE.md Check 0 except unit1 = 1: hurtFloor.test.ts:332 "general by
+data" (engine.ts said 'thorn' 26 times vs its base 23: my 3 lines). Fixed at my side in 76dd013 (comments say bramble; the gate opens to its
+gate sound only, the bramble's rustle dropped): that test 1/1 + fieldGate 6/6 green on it. 76dd013 = final src head; NOT re-gated (lead 7:20 PM:
+INT-6 gates the merged head once).
 ## Pushback
 - Upright, the camera holds Pokey and leaves the gate he is opening half off-screen: the lock is best seen sideways. A camera look-ahead
   to the gate over him is NODES-TRAVEL's file; worth a ticket (Matt's "could not tell" is partly this).
