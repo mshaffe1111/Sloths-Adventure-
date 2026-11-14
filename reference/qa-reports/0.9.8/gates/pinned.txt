@@ -1,0 +1,196 @@
+TAP version 13
+# Subtest: the next play draws the seed built ahead and gets that very stage, once; a play on another setting builds afresh (planted)
+ok 1 - the next play draws the seed built ahead and gets that very stage, once; a play on another setting builds afresh (planted)
+  ---
+  duration_ms: 587.070049
+  type: 'test'
+  ...
+# Subtest: 1-1's Play: no proven entry repeats until the whole list has been played on this device, and the order survives a restart of the game
+ok 2 - 1-1's Play: no proven entry repeats until the whole list has been played on this device, and the order survives a restart of the game
+  ---
+  duration_ms: 8.075066
+  type: 'test'
+  ...
+# Subtest: the table: a row per listed stage, its kit and what is that stage's alone as fields
+ok 3 - the table: a row per listed stage, its kit and what is that stage's alone as fields
+  ---
+  duration_ms: 1.699659
+  type: 'test'
+  ...
+# Subtest: withTestStage: the fixture is a row and a list while fn runs, and gone after (after a throw too)
+ok 4 - withTestStage: the fixture is a row and a list while fn runs, and gone after (after a throw too)
+  ---
+  duration_ms: 17.387244
+  type: 'test'
+  ...
+# Subtest: nothing in the game calls withTestStage: tests only
+ok 5 - nothing in the game calls withTestStage: tests only
+  ---
+  duration_ms: 38.870563
+  type: 'test'
+  ...
+# Subtest: the checker names a short list, a repeat, and a seed that fails its build
+ok 6 - the checker names a short list, a repeat, and a seed that fails its build
+  ---
+  duration_ms: 8262.558061
+  type: 'test'
+  ...
+# Subtest: 1-1's list: at least SEED_LIST_MIN distinct seeds; 12 of them, spread through it, build cleanly on both settings
+ok 7 - 1-1's list: at least SEED_LIST_MIN distinct seeds; 12 of them, spread through it, build cleanly on both settings
+  ---
+  duration_ms: 1117.99293
+  type: 'test'
+  ...
+# Subtest: a play's draw always lands on the list, any number
+ok 8 - a play's draw always lands on the list, any number
+  ---
+  duration_ms: 0.193913
+  type: 'test'
+  ...
+# Subtest: a listed seed's replay is its full search's stage; a tampered plan is named stale; Play's build is clean
+ok 9 - a listed seed's replay is its full search's stage; a tampered plan is named stale; Play's build is clean
+  ---
+  duration_ms: 466.327505
+  type: 'test'
+  ...
+# Subtest: a list nobody asked for: Node reads the file on the spot (tests and tools); a page asks for it and answers "not here" (the stand-in), never throws
+ok 10 - a list nobody asked for: Node reads the file on the spot (tests and tools); a page asks for it and answers "not here" (the stand-in), never throws
+  ---
+  duration_ms: 340.293342
+  type: 'test'
+  ...
+# Subtest: the real file loads through the index's own loader, once for callers at the same moment, and is the list the index names
+ok 11 - the real file loads through the index's own loader, once for callers at the same moment, and is the list the index names
+  ---
+  duration_ms: 2.291337
+  type: 'test'
+  ...
+# Subtest: 1-1's stand-in is the fixed first run, and it is the list's own entry: the same seed, the same packed plan
+ok 12 - 1-1's stand-in is the fixed first run, and it is the list's own entry: the same seed, the same packed plan
+  ---
+  duration_ms: 0.59964
+  type: 'test'
+  ...
+# Subtest: a failed load: nothing throws, the shuffled order is left alone, Play builds the stand-in (the listed stage itself) and keeps it for that play; the next load tries again
+ok 13 - a failed load: nothing throws, the shuffled order is left alone, Play builds the stand-in (the listed stage itself) and keeps it for that play; the next load tries again
+  ---
+  duration_ms: 401.576619
+  type: 'test'
+  ...
+# Subtest: a cut-off or mismatched file is refused by name, never played from (planted: fewer seeds than the index says; plans short of seeds; no list)
+ok 14 - a cut-off or mismatched file is refused by name, never played from (planted: fewer seeds than the index says; plans short of seeds; no list)
+  ---
+  duration_ms: 1.331886
+  type: 'test'
+  ...
+# Subtest: the app's wait before a build (seedListSettled): at once when the list is in memory; a stalled load is waited for once, capped, never twice; the list still arrives behind it
+ok 15 - the app's wait before a build (seedListSettled): at once when the list is in memory; a stalled load is waited for once, capped, never twice; the list still arrives behind it
+  ---
+  duration_ms: 65.482412
+  type: 'test'
+  ...
+# Subtest: Play pressed before the list is in memory: the draw is owed to the build, and is made from the shuffled order once the list is there
+ok 16 - Play pressed before the list is in memory: the draw is owed to the build, and is made from the shuffled order once the list is there
+  ---
+  duration_ms: 86.931258
+  type: 'test'
+  ...
+# Subtest: build-ahead loads the list first: a failed load builds nothing ahead (and throws nothing); a loaded list builds the next play
+ok 17 - build-ahead loads the list first: a failed load builds nothing ahead (and throws nothing); a loaded list builds the next play
+  ---
+  duration_ms: 813.460903
+  type: 'test'
+  ...
+# Subtest: gen2 1-1: nothing can cost a life: under every x from the start to the exit there is a piece to land on above the death line
+ok 18 - gen2 1-1: nothing can cost a life: under every x from the start to the exit there is a piece to land on above the death line
+  ---
+  duration_ms: 537.823674
+  type: 'test'
+  ...
+# Subtest: gen2 1-1 in the real engine: running into the first mushroom bounces him up and on along the path
+ok 19 - gen2 1-1 in the real engine: running into the first mushroom bounces him up and on along the path
+  ---
+  duration_ms: 265.82086
+  type: 'test'
+  ...
+# Subtest: gen2 1-1: right after the double is taught, a gap only the second jump crosses (a miss lands him on safe ground under it)
+ok 20 - gen2 1-1: right after the double is taught, a gap only the second jump crosses (a miss lands him on safe ground under it)
+  ---
+  duration_ms: 146.862005
+  type: 'test'
+  ...
+# Subtest: gen2 1-1: every dip is left with single flicks (no double or perfect jump needed)
+ok 21 - gen2 1-1: every dip is left with single flicks (no double or perfect jump needed)
+  ---
+  duration_ms: 375.500861
+  type: 'test'
+  ...
+# Subtest: gen2 1-1, a fresh save: walking in from the left, the bounce lesson comes before he reaches the first mushroom (lesson.bounce; planted: no lesson pick FAILS)
+ok 22 - gen2 1-1, a fresh save: walking in from the left, the bounce lesson comes before he reaches the first mushroom (lesson.bounce; planted: no lesson pick FAILS)
+  ---
+  duration_ms: 443.59097
+  type: 'test'
+  ...
+# Subtest: the double-gap safety reading: a soft zone over the gap is safe; a bare gap with nothing under it and no zone is not (planted)
+ok 23 - the double-gap safety reading: a soft zone over the gap is safe; a bare gap with nothing under it and no zone is not (planted)
+  ---
+  duration_ms: 0.391198
+  type: 'test'
+  ...
+# Subtest: gen2 1-1 Roll B's dip pockets are found, each narrow and closed in by higher banks
+ok 24 - gen2 1-1 Roll B's dip pockets are found, each narrow and closed in by higher banks
+  ---
+  duration_ms: 227.509193
+  type: 'test'
+  ...
+# Subtest: no stage the old generator builds (Worlds 1 to 4) has a pocket: their ground draws exactly as before
+ok 25 - no stage the old generator builds (Worlds 1 to 4) has a pocket: their ground draws exactly as before
+  ---
+  duration_ms: 5029.351037
+  type: 'test'
+  ...
+# Subtest: the dump child builds the picked roll and reports its seed; without the pick (planted) it reports no roll and another seed, a FAIL for stage.ts
+ok 26 - the dump child builds the picked roll and reports its seed; without the pick (planted) it reports no roll and another seed, a FAIL for stage.ts
+  ---
+  duration_ms: 2807.817314
+  type: 'test'
+  ...
+# Subtest: an unknown roll is refused, never a silent fallback to the mixer
+ok 27 - an unknown roll is refused, never a silent fallback to the mixer
+  ---
+  duration_ms: 0.773381
+  type: 'test'
+  ...
+# Subtest: a cut stone stands its whole width on the platform (stand span = width), its footing on top, sunk to 3 px into the ground; a plank spans its platform
+ok 28 - a cut stone stands its whole width on the platform (stand span = width), its footing on top, sunk to 3 px into the ground; a plank spans its platform
+  ---
+  duration_ms: 0.990954
+  type: 'test'
+  ...
+# Subtest: every gen2 1-1 roll lays at least 6 kinds of cut piece, and the round and grey boulders are laid
+ok 29 - every gen2 1-1 roll lays at least 6 kinds of cut piece, and the round and grey boulders are laid
+  ---
+  duration_ms: 562.60889
+  type: 'test'
+  ...
+# Subtest: a long plank (the end log, 686 px) is laid as plank pieces end to end, none longer than PLANK_MAX, and it has its piece
+ok 30 - a long plank (the end log, 686 px) is laid as plank pieces end to end, none longer than PLANK_MAX, and it has its piece
+  ---
+  duration_ms: 0.312836
+  type: 'test'
+  ...
+# Subtest: gen2 1-1 draws several cut kinds; a stone over air keeps no cut piece (planted)
+ok 31 - gen2 1-1 draws several cut kinds; a stone over air keeps no cut piece (planted)
+  ---
+  duration_ms: 70.987412
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10138.672822
