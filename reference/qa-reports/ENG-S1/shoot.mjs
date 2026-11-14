@@ -21,7 +21,7 @@ const NEAR = 420, W = 130;
 const out = path.join(here, 'shots');
 fs.mkdirSync(out, { recursive: true });
 
-const vite = spawn('npx', ['vite', '--port', String(port), '--strictPort', '--host', '127.0.0.1'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
+const vite = spawn('npx', ['vite', '--port', String(port), '--strictPort', '--host', '127.0.0.1'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
 let vout = '';
 vite.stdout.on('data', (d) => (vout += d));
 for (let i = 0; i < 120 && !/Local:|ready in/.test(vout); i++) await sleep(500);
@@ -30,7 +30,12 @@ const browser = await chromium.launch();
 const PHONES = (process.env.PHONES || '412x915,390x844,915x412').split(',').map((s) => s.split('x').map(Number));
 for (const [w, h] of PHONES) {
   const tag = `${w > h ? 'sideways' : 'upright'}-${w}x${h}`;
-  const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, recordVideo: { dir: out, size: { width: w, height: h } } });
+  // (CLIP=1: the clip pass, at deviceScaleFactor 1: headless Chromium's screencast (recordVideo) drew the page at half size in a corner of
+  // the video, cropped to its top third (ENG-S1's first clips, at 1 and 2, with and without isMobile). The stills pass: at 2, no clip)
+  const clip = !!process.env.CLIP;
+  // (and recordVideo's screencast still drew it that way without isMobile: so the clip is the page's own frames, sampled as fast as the
+  // phone-sized page shoots (~10-15 a second), stamped with their times and joined at that rate)
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: clip ? 1 : 2, isMobile: true, hasTouch: true });
   await ctx.route(/script\.google\.com/, (r) => r.abort());
   const page = await ctx.newPage();
   page.on('pageerror', (e) => console.log('pageerror', e.message.slice(0, 160)));
@@ -64,6 +69,15 @@ for (const [w, h] of PHONES) {
     if (await page.evaluate(() => !!window.__engine().player.isVineSwinging)) break;
     await page.evaluate(() => { const e = window.__engine(), sv = window.__sv, p = e.player; p.x = sv.x - 30; p.y = sv.topY + 260; p.vx = 260; p.vy = 0; p.grounded = false; p.facing = 1; });
   }
+  const frames = [];
+  let sampling = clip;
+  const sampler = (async () => {
+    const t0 = Date.now();
+    while (sampling) {
+      const buf = await page.screenshot({ type: 'jpeg', quality: 80 });
+      frames.push({ t: Date.now() - t0, buf });
+    }
+  })();
   const usual = await page.evaluate(() => window.__engine().roomUsual);
   console.log(tag, 'set', JSON.stringify(set), 'swinging', await page.evaluate(() => !!window.__engine().player.isVineSwinging));
   // down to the foot (straight down on a vine always climbs)
@@ -83,15 +97,27 @@ for (const [w, h] of PHONES) {
     const v = await view();
     if (v.om > 0 && prevOm <= 0) sweeps++;
     prevOm = v.om;
-    // (the first frame of the sweep from which gen2 counts a press as seeing the perch: cameraFollow.ts SWING_SEEN, 471 px ahead of him)
-    if (sweeps >= 2 && v.om > 0 && v.a <= 0.9 && v.x + 471 >= set.far.x + W) got = v;
+    // (the first frame of the sweep from which gen2 counts a press as seeing the perch: cameraFollow.ts SWING_SEEN, 414 px ahead of him)
+    if (sweeps >= 2 && v.om > 0 && v.a <= 0.9 && v.x + 414 >= set.far.x + W) got = v;
     else await sleep(16);
   }
   const label = (what, v) => `${what} | ${tag} | ${set.stage} (${set.diff}${set.easy ? ', easy on' : ''}) | t-eng-s1@${sha} | liana ${set.sv.len} px, held at the foot | FAR perch ${NEAR} px past the anchor, ${W} wide (THE CAP) | view ${v.vw} px of world, Pokey ${v.size}% size, perch whole in view: ${v.whole ? 'YES' : 'NO'}`;
   const stamp = async (t) => page.evaluate((t) => { let d = document.getElementById('__lab'); if (!d) { d = document.createElement('div'); d.id = '__lab'; Object.assign(d.style, { position: 'fixed', left: '0', right: '0', bottom: '0', background: 'rgba(0,0,0,0.72)', color: '#fff', font: '11px sans-serif', padding: '4px 6px', zIndex: 99999, pointerEvents: 'none' }); document.body.appendChild(d); } d.textContent = t; }, t);
   if (got) {
     await stamp(label('THE DECISION (forward sweep, the glow)', got));
-    await page.screenshot({ path: path.join(out, `${tag}-1-decision.png`) });
+    if (!clip) await page.screenshot({ path: path.join(out, `${tag}-1-decision.png`) });
+    // (a still takes ~0.3 s while the game runs on: the press waits for the next forward sweep's first seeing frame, so it is a player's
+    // press at the moment the cap is figured on, not one late after the shutter)
+    if (!clip) {
+      let o = 1, s2 = 0;
+      for (let i = 0; i < 400; i++) {
+        const v = await view();
+        if (v.om > 0 && o <= 0) s2++;
+        o = v.om;
+        if (s2 >= 1 && v.om > 0 && v.a <= 0.9 && v.x + 414 >= set.far.x + W) break;
+        await sleep(8);
+      }
+    }
     // the press on the glow, as a player's: the jump key (inputEngine's own press; the right arrow held, the way he leaps)
     await page.evaluate(() => { window.__engine().input.state.right = false; });
     await page.keyboard.down('ArrowRight');
@@ -103,13 +129,27 @@ for (const [w, h] of PHONES) {
     await sleep(2200);
     const after = await view();
     await stamp(label(`AFTER THE LEAP: ${after.onPerch ? 'ON THE PERCH' : 'MISSED'}`, after));
-    await page.screenshot({ path: path.join(out, `${tag}-2-after.png`) });
+    if (!clip) await page.screenshot({ path: path.join(out, `${tag}-2-after.png`) });
     console.log(tag, JSON.stringify(set), 'decision', JSON.stringify(got), 'after', JSON.stringify(after));
   } else console.log(tag, 'never reached the decision sweep', JSON.stringify(await view()));
   await sleep(600);
-  const vid = page.video();
+  sampling = false;
+  await sampler;
+  if (clip && frames.length > 10) {
+    const dir = path.join(out, `${tag}-frames`);
+    fs.mkdirSync(dir, { recursive: true });
+    frames.forEach((f, i) => fs.writeFileSync(path.join(dir, `f${String(i).padStart(4, '0')}.jpg`), f.buf));
+    const fps = ((frames.length - 1) * 1000) / (frames[frames.length - 1].t - frames[0].t);
+    await new Promise((res) => spawn('ffmpeg', ['-v', 'error', '-y', '-framerate', fps.toFixed(2), '-i', path.join(dir, 'f%04d.jpg'), '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '24', '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2', path.join(out, `${tag}-clip.mp4`)], { stdio: 'ignore' }).on('exit', res));
+    fs.rmSync(dir, { recursive: true, force: true });
+    console.log(tag, 'clip', frames.length, 'frames at', fps.toFixed(1), 'fps');
+  }
+  const vid = null;
   await ctx.close();
-  if (vid) fs.renameSync(await vid.path(), path.join(out, `${tag}-clip.webm`));
+  void vid;
 }
 await browser.close();
-vite.kill();
+// (npx's vite child holds the pipe open: the whole group goes, and the script ends; it hung after its last shot before)
+try { process.kill(-vite.pid, 'SIGTERM'); } catch {}
+await sleep(1500);
+process.exit(0);

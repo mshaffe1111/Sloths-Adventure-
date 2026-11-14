@@ -8,6 +8,20 @@ Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter tab
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
 
+## 0u. The swing camera and THE FAR CAP (ENG-S1, R-165.225, t-eng-s1, 11-14): what the next engineer must know
+- Upright, a swing widens the view (cameraFollow.ts SWING_CAM: up to 1.3x, out 4.5/s, back in 3/s once he is down or holds on; engine.ts
+  swingWideStep divides the zoom AFTER applyZoom's level-height floor, overTop lets it show sky). Sideways never. A cut snaps it back.
+- THE FAR CAP is SWING_SEEN (414 px) in cameraFollow.ts: a release press counts toward a DIALLED liana's window only if the perch's far end
+  (of a long landing, its first SWING_CAM.perch) is within 414 px ahead of his swing point as he presses (pressWindow's `seen`, pipeline
+  lianaRelease). Dial-free lianas (Worlds 6-8) are untouched (lockall 102/102). Changing SWING_CAM.out/refVw/body or AHEAD's pads moves it.
+- His DRAWN swing pose trails up to 91 px behind his swing point (heroVine drawVineHang): SWING_CAM.body, pinned by a test to the poses'
+  own frames. Any new swing pose art: re-run swingCam.test.ts; the cap follows the body. His collider (heroBox) is NOT his swing picture.
+- The eased camera trails a moving aim by v / RUN.follow (~60 px on a swing): while widened the aim leads by it, and the camera is clamped
+  to keep his pose in. A camera promise needs a REAL-engine test (swingCam.test.ts uses RealPlay with updateCamera put back), not only
+  the pure aim: the pure test passed while the engine lost the perch.
+- A dialled perch's width now matters to its window (its far end must be seen): Easy's landing pad is flown with it (padW) and the
+  recorded window is the laid px. Shoot a swing on the real page: reference/qa-reports/ENG-S1/shoot.mjs (stills, CLIP=1 for a clip).
+
 ## 0t. The piece hook and the one letter grammar (HOOKS, ENGINE-678 W0, t-hooks, 11-13): what the next engineer must know
 - **A runtime piece never touches engine.ts again.** Write a `PieceKind` (stagePiece.types.ts) in its own file under src/game/pieces/ and
   add it to `PIECE_KINDS` (pieces/index.ts). The engine asks every kind to `start(stage, host)` once per stage (after its platforms and

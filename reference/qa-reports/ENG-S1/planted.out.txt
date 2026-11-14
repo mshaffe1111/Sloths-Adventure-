@@ -4,5 +4,6 @@ engine lead: RED ['not ok 6 - the real engine, upright: swinging toward a FAR p'
 engine whole perch: RED ['not ok 6 - the real engine, upright: swinging toward a FAR p']
 pipeline seen: RED ["not ok 2 - gen2 lays a dialled liana's perch only where its "]
 landingAhead whole: RED ["not ok 3 - a swing's landing is the WHOLE perch, end to end ", 'not ok 6 - the real engine, upright: swinging toward a FAR p']
-engine body keep: GREEN (not planted!) []
+engine body keep: RED ['not ok 6 - the real engine, upright: swinging toward a FAR p']
 pressWindow seen: RED ["not ok 1 - THE FAR CAP is the camera's own: every press that", "not ok 2 - gen2 lays a dialled liana's perch only where its "]
+PLANT-DONE
