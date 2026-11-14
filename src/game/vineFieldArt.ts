@@ -19,14 +19,23 @@ const POKEY_H = 89.1;
 type Piece = { url: string; img: HTMLImageElement | null; ready: boolean };
 const piece = (url: string): Piece => ({ url, img: null, ready: false });
 const PIECES = {
-  pod: piece(new URL('../assets/w1-1113/w14-kapokpod.webp', import.meta.url).href),
+  // (the pod: Matt's own pod restyled, ART-MATT's HF take, judged PASS by the lead 11-14: hanging, and falling)
+  pod: piece(new URL('../assets/w1-matt/w1m-pod-hang.webp', import.meta.url).href),
+  podFall: piece(new URL('../assets/w1-matt/w1m-pod-fall.webp', import.meta.url).href),
+  // (the tell's dust, Matt's sheet 2: it sifts down the vine a pod is about to leave)
+  dust: piece(new URL('../assets/w1-matt/w1m-dust-puff.webp', import.meta.url).href),
   burst: piece(new URL('../assets/w1-1113/w14-kapokpod-burst.webp', import.meta.url).href),
   figs: piece(new URL('../assets/w1-1113/w14-figcluster.webp', import.meta.url).href),
   bough: piece(new URL('../assets/w1-1113/w14-roughbough.webp', import.meta.url).href),
   // (a silk tuft cut from the burst's own plume, its husk side faded out: POLISH-1 11-13, the inventory's hf1113/w14-fluff)
   fluff: piece(new URL('../assets/w1-1113/w14-fluff.webp', import.meta.url).href),
-  // (a shut gate's thorn tangle: 1-2's own painted bramble, the inventory's w1-thorn-bramble-long, the art World 1's hurt floor ships)
-  thorns: piece(new URL('../assets/props/pits/w1-thorn-long.webp', import.meta.url).href),
+  // (a shut gate's lock, Matt's sheet 1 of 11-14 cut by ART-MATT, the inventory's hfmatt/w1m-*: a leaf thatch over the bough, tied down
+  // at each fig by a vine tie in three states on one canvas; the snap throws bark chips from his sheet 2)
+  lid: piece(new URL('../assets/w1-matt/w1m-leaf-lid.webp', import.meta.url).href),
+  tieTaut: piece(new URL('../assets/w1-matt/w1m-tie-taut.webp', import.meta.url).href),
+  tieStrain: piece(new URL('../assets/w1-matt/w1m-tie-strain.webp', import.meta.url).href),
+  tieSnap: piece(new URL('../assets/w1-matt/w1m-tie-snap.webp', import.meta.url).href),
+  chips: [1, 2, 3, 4, 5, 6, 7].map((i) => piece(new URL(`../assets/w1-matt/w1m-bark-chips-${i}.webp`, import.meta.url).href)),
 };
 /** a piece's picture once loaded (starts the load; the phone taking it back reloads it: atlasLoader.ts) */
 function pic(p: Piece): HTMLImageElement | null {
@@ -38,7 +47,7 @@ function pic(p: Piece): HTMLImageElement | null {
   return p.ready ? p.img : null;
 }
 /** drawn heights (px), the inventory's pokey_scale x his drawn height */
-const POD_H = 0.45 * POKEY_H, BURST_H = 0.34 * POKEY_H, FIGS_H = 0.45 * POKEY_H;
+const POD_H = 0.49 * POKEY_H, POD_FALL_H = 0.45 * POKEY_H, BURST_H = 0.34 * POKEY_H, FIGS_H = 0.45 * POKEY_H;
 /** the rough bough's picture: 707 x 180, his feet at 42 px down, walkable from 90 to 666 px across (the inventory row) */
 const BOUGH = { w: 707, h: 180, walkY: 42, x0: 90, x1: 666 } as const;
 import { vineTile } from './castArt.ts';
@@ -49,6 +58,8 @@ import type { VineCluster } from './vineField.ts';
 export const FIELD_THICK = 11;
 
 const pts: Array<[number, number]> = [[0, 0], [0, 0], [0, 0], [0, 0]];
+/** the telling vine's points (drawPod, kept: no allocation a frame) */
+const lit: Array<[number, number]> = [[0, 0], [0, 0], [0, 0], [0, 0]];
 
 /** a field vine, top to its free end */
 export function drawFieldVine(ctx: CanvasRenderingContext2D, x: number, top: number, bottom: number) {
@@ -121,14 +132,14 @@ export function drawClusters(ctx: CanvasRenderingContext2D, clusters: readonly V
 
 /** a kapok pod (stand-in): an upright spindle `r` px across at its widest (drawn 1.5x its hit radius: a pod must read on a phone, and
  *  a drawing a little bigger than its hit is the forgiving side), a dark outline against the foliage, its seam, a stalk; `shake` rad */
-function podShape(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, shake: number) {
+function podShape(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, shake: number, falling = false) {
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(shake);
-  const im = pic(PIECES.pod);
+  const im = pic(falling ? PIECES.podFall : PIECES.pod);
   if (im) {
-    // (the painted pod on its twig, its middle at (x, y), its height the inventory's scaled with r against the stand-in's)
-    const h = POD_H * (r / POD_DRAW), w = (h * im.width) / im.height;
+    // (the painted pod on its stem, its middle at (x, y), its height the inventory's scaled with r against the stand-in's)
+    const h = (falling ? POD_FALL_H : POD_H) * (r / POD_DRAW), w = (h * im.width) / im.height;
     ctx.drawImage(im, -w / 2, -h / 2, w, h);
     ctx.restore();
     return;
@@ -208,7 +219,7 @@ const POD_DRAW = 21;
  * tell: a stream of tufts that reaches further down the longer it runs, so on a short sideways view he sees fluff falling past him on
  * his own column), falling with fluff streaming off it, then a white burst on the wood (stand-in, code-drawn).
  */
-export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState, t: number) {
+export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState, t: number, vine?: Pick<Vine, 'topY' | 'bottomY'>) {
   const r = POD_DRAW;
   // (its bottom hangs at the column's top, where the fall starts: podfall.ts rockAt's y is the pod's bottom)
   const hangY = p.top - r * 1.9;
@@ -221,17 +232,45 @@ export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState
     return;
   }
   if (s.phase === 'warn') {
-    // the trickle: a stream of tufts drifting down the column from the pod, reaching further each moment of the tell (at its start a
-    // third of the way, by its end the whole column), so on a phone he sees fluff falling past him on his own column before the drop
-    // (a few loose tufts, never a column: each its own size, pace, turn and drift, fading in under the pod and out as it falls)
+    // the tell is the VINE itself (Matt 11-14, R-165.227: "maybe we have the vines change colors to let us know that there's about to
+    // have something drop"): its own painted vine, laid again over it lit ('lighter', warming up through the tell) and shaking along its
+    // length harder as the drop nears, his sheet-2 dust sifting down it and bark chips trickling, the pod rocking on its stem. No bar,
+    // no glow shape: the vine's own art, brighter (STAGE-RULES §4: only the motion and the light are code)
+    const vt = vineTile();
+    if (vine && vt) {
+      const shake = (1.5 + 4 * s.u) * Math.sin(t * (26 + 14 * s.u));
+      const top = vine.topY, bot = vine.bottomY;
+      lit[0][0] = p.x; lit[0][1] = top - 6;
+      lit[1][0] = p.x + shake; lit[1][1] = top + (bot - top) * 0.35;
+      lit[2][0] = p.x - shake * 0.8; lit[2][1] = top + (bot - top) * 0.7;
+      lit[3][0] = p.x + shake * 0.5; lit[3][1] = bot - 6;
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = 0.35 + 0.45 * s.u * (0.75 + 0.25 * Math.sin(t * 18));
+      layRope(ctx, vt.src, lit, FIELD_THICK + 2, vt.tile);
+      ctx.restore();
+    }
+    const dim = pic(PIECES.dust);
     const reach = (p.land - p.top) * Math.min(1, 0.35 + s.u * 0.9);
-    for (let i = 0; i < TUFTS.length; i++) {
-      const [phase, size, pace, spin, sway] = TUFTS[i];
-      const f = (t * pace + phase) % 1;
-      const y = p.top + 6 + f * reach;
-      const x = p.x + Math.sin(t * sway + i * 2.3) * (6 + 16 * f);
-      const a = Math.min(1, f * 6) * (1 - f * f);
-      fluff(ctx, x, y, 9 * size, a, spin * (t + i * 1.9), i % 2 === 1);
+    if (dim) {
+      const dh = 0.42 * POKEY_H, dw = (dh * dim.width) / dim.height;
+      for (let i = 0; i < 3; i++) {
+        const f = (t * 0.55 + i / 3) % 1;
+        ctx.globalAlpha = Math.min(1, f * 5) * (1 - f) * (0.55 + 0.45 * s.u);
+        ctx.drawImage(dim, p.x - dw / 2 + Math.sin(t * 2 + i * 2.1) * 6, p.top - dh * 0.6 + f * reach * 0.6, dw, dh);
+      }
+      ctx.globalAlpha = 1;
+    }
+    for (let i = 0; i < 4; i++) {
+      const c = pic(PIECES.chips[(i * 3) % PIECES.chips.length]);
+      if (!c) continue;
+      const f = (t * (0.7 + i * 0.13) + i * 0.27) % 1;
+      ctx.save();
+      ctx.globalAlpha = Math.min(1, f * 6) * (1 - f * f);
+      ctx.translate(p.x + Math.sin(t * 3 + i * 1.7) * (5 + 10 * f), p.top + 4 + f * reach);
+      ctx.rotate(t * (i % 2 ? 4 : -5) + i);
+      ctx.drawImage(c, -c.width / 6, -c.height / 6, c.width / 3, c.height / 3);
+      ctx.restore();
     }
     podShape(ctx, p.x, hangY, r, Math.sin(t * 38) * 0.14 * (0.4 + s.u));
     return;
@@ -243,7 +282,7 @@ export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState
       const [, size, , spin] = TUFTS[i];
       fluff(ctx, p.x + (i - 1) * 9 + Math.sin(t * 5 + i) * 3, y - r * 1.9 - 8 - i * 16, 5 * size, 0.85 - i * 0.25, spin * t, i === 1);
     }
-    podShape(ctx, p.x, y, r, 0);
+    podShape(ctx, p.x, y, r, 0, true);
     return;
   }
   // the burst: the painted pod burst open on the wood, silk spilling, fading; and a puff of fluff thinning out
@@ -297,56 +336,103 @@ export function drawGate(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 
   ctx.restore();
 }
 
-/** the bramble's picture (522 x 203, its stems' foot about 92% down) and how tall it stands on a shut bough (a share of his height) */
-const THORNS = { w: 522, h: 203, foot: 0.92, tall: 1.25 } as const;
+/** the vine tie's canvas (146 x 324), its knot at (78, 277) on the bough's centre line (the inventory's hfmatt/w1m-tie-*: the three
+ *  states share it), drawn `tall` of his height: the lead's ruling 11-14 2:08 AM, 0.55 Pokey, not the catalog's 1.21 ("a loop taller than
+ *  Pokey standing on the bough reads as a hoop, not a tie... the knot sits on the lid/bough, and the loop is short"); the leaf thatch (720 x 177: 240 x 59 px drawn, its pole along the top,
+ *  stretched 0.8-1.25x along a bough or laid two side by side) */
+const TIE = { w: 146, h: 324, kx: 78, ky: 277, tall: 0.55 } as const;
+const THATCH = { w: 720, h: 177, unit: 3, poleY: 10 } as const;
+/** the bark chips a snapping tie throws (dx, dy px/s, spin), the same every snap */
+const CHIP_FLY = [[-160, -260, 7], [130, -300, -9], [-60, -340, 5], [210, -180, 11], [-230, -150, -6], [60, -230, 8], [-110, -120, -10]] as const;
 
-/** how a shut gate's thorn tangle stands now (fieldPlay.ts thornsOf) */
-export interface ThornState {
-  /** how much of it is still there (1 every fig on; less a notch for each fig freed; the pull-back runs 0 to 1 after the last) */
-  hold: number;
-  /** 0..1 the most-pushed fig's way up its vine: the tangle strains up as he pushes */
+/** how a shut gate's lock stands now (fieldPlay.ts lockOf) */
+export interface LockState {
+  /** 0..1 the most-pushed fig's way up its vine (to where it tears free): the thatch strains as he pushes */
   strain: number;
   /** 0..1 the settle after a fig locks in (a quick shudder down) */
   settle: number;
-  /** 0..1 the pull-back once the last fig is in: the tangle draws back off the bough to its two ends and is gone */
+  /** 0..1 the throw once the last fig is in: the thatch is flung up off the bough and is gone */
   pull: number;
+}
+/** one fig's tie on the bough: at its vine's x, how far its fig has been pushed (0..1), and seconds since it snapped (-1: not yet) */
+export interface TieState {
+  x: number;
+  strain: number;
+  age: number;
 }
 
 /**
- * A shut gate's thorn tangle (Matt, R-165.212: "put something over the platform... that shows it is locked"; World 1 has no made things):
- * 1-2's painted bramble lying along the shut bough, over the way up, tilted with its sag. It strains as a fig is pushed, shudders down a
- * notch as each fig locks in, and on the last it pulls back off the bough to its ends. Only its motion is code (STAGE-RULES §4).
+ * A shut gate's lock (Matt, 11-14 12:06 AM: "something that is tying down the thatch, and it shows that it's breaking... or have a
+ * lock... right now it's only a guess"): his own painted leaf thatch lies along the shut bough, tied down at each fig's vine by a vine
+ * tie. As he pushes a fig the tie goes from taut to straining (frayed, pale, shivering harder the further the fig is up); at full push
+ * it SNAPS (its two ends whip apart, bark chips fly) and the thatch shudders; on the last the thatch is flung up off the bough and the
+ * way is open. Only the motion is code (STAGE-RULES §4).
  */
-export function drawGateThorns(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 'y' | 'width'>, far: -1 | 1, sag: number, s: ThornState, t: number) {
-  if (s.pull >= 1 || s.hold <= 0) return;
-  const im = pic(PIECES.thorns);
-  if (!im) return;
-  const pivotX = far > 0 ? b.x : b.x + b.width;
-  const ang = Math.atan2(sag, b.width) * far;
-  const h0 = THORNS.tall * POKEY_H;
-  const pw = (h0 * THORNS.w) / THORNS.h;
-  const span = b.width * 0.94;
-  const n = Math.max(1, Math.ceil(span / (pw * 0.8)));
-  const step = n > 1 ? (span - pw) / (n - 1) : 0;
-  const ease = s.pull * s.pull * (3 - 2 * s.pull);
-  const tall = h0 * (0.55 + 0.45 * s.hold) * (1 - 0.85 * ease) * (1 - 0.12 * s.settle) * (1 + 0.1 * s.strain);
-  const shake = s.strain * 1.6 * Math.sin(t * 47) + s.settle * 2.5 * Math.sin(t * 61);
-  ctx.save();
-  ctx.translate(pivotX, b.y);
-  ctx.rotate(ang);
-  const x0 = (far > 0 ? 0 : -b.width) + (b.width - span) / 2;
-  const mid = x0 + span / 2;
-  ctx.globalAlpha = 1 - ease;
-  for (let i = 0; i < n; i++) {
-    const cx = n > 1 ? x0 + pw / 2 + step * i : mid;
-    // (the pull-back: each clump draws away from the middle, to its own end of the bough)
-    const out = (cx < mid ? -1 : 1) * ease * span * 0.35;
-    const flip = i % 2 ? -1 : 1;
+export function drawGateLock(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 'y' | 'width'>, far: -1 | 1, sag: number, depth: number, s: LockState, ties: readonly TieState[], t: number) {
+  const lid = pic(PIECES.lid);
+  // (the bough's drawn top at x, sagged as drawGate tilts it)
+  const topAt = (x: number) => b.y + sag * Math.max(0, Math.min(1, far > 0 ? (x - b.x) / b.width : (b.x + b.width - x) / b.width));
+  if (lid && s.pull < 1) {
+    const pivotX = far > 0 ? b.x : b.x + b.width;
+    const ang = Math.atan2(sag, b.width) * far;
+    const n = Math.max(1, Math.round(b.width / (THATCH.w / THATCH.unit)));
+    const pw = b.width / n, ph = THATCH.h / THATCH.unit;
+    const shake = s.strain * 1.4 * Math.sin(t * 43) + s.settle * 3 * Math.sin(t * 59);
+    const e = s.pull * s.pull;
     ctx.save();
-    ctx.translate(cx + out + (i % 2 ? shake : -shake), 0);
-    ctx.scale(flip, 1);
-    ctx.drawImage(im, -pw / 2, -tall * THORNS.foot, pw, tall);
+    ctx.translate(pivotX, b.y);
+    ctx.rotate(ang);
+    ctx.globalAlpha = 1 - e;
+    const x0 = far > 0 ? 0 : -b.width;
+    for (let i = 0; i < n; i++) {
+      ctx.save();
+      // (the throw: each half flung up and out to its own side, turning as it goes)
+      const side = n > 1 ? (i < n / 2 ? -1 : 1) : far;
+      ctx.translate(x0 + pw * (i + 0.5) + side * e * 60, -(THATCH.poleY / THATCH.unit) - e * 140 + s.settle * 3 + shake * (i % 2 ? 1 : -1));
+      ctx.rotate(side * e * 0.9);
+      ctx.drawImage(lid, -pw / 2, 0, pw, ph);
+      ctx.restore();
+    }
     ctx.restore();
   }
-  ctx.restore();
+  const th = TIE.tall * POKEY_H, k = th / TIE.h, tw = TIE.w * k, kx = TIE.kx * k, ky = TIE.ky * k;
+  for (const tie of ties) {
+    const knotY = topAt(tie.x) + depth / 2;
+    if (tie.age < 0) {
+      if (s.pull >= 1) continue;
+      const im = pic(tie.strain < 0.45 ? PIECES.tieTaut : PIECES.tieStrain);
+      if (!im) continue;
+      // (straining: it shivers harder, and stretches a little up, the further the fig is pushed)
+      const q = Math.max(0, (tie.strain - 0.45) / 0.55);
+      const jx = q * 2.2 * Math.sin(t * 53 + tie.x), stretch = 1 + 0.12 * q;
+      ctx.drawImage(im, tie.x - kx + jx, knotY - ky * stretch, tw, th * stretch);
+      continue;
+    }
+    // snapped: the two ends whip apart (the painted snap) and fade; bark chips fly from the knot and fall
+    if (tie.age > 1.1) continue;
+    const im = pic(PIECES.tieSnap);
+    if (im) {
+      ctx.save();
+      ctx.globalAlpha = tie.age < 0.6 ? 1 : 1 - (tie.age - 0.6) / 0.5;
+      const pop = 1 + 0.15 * Math.max(0, 1 - tie.age / 0.15);
+      ctx.drawImage(im, tie.x - kx * pop, knotY - ky * pop, tw * pop, th * pop);
+      ctx.restore();
+    }
+    if (tie.age < 0.9) {
+      ctx.save();
+      ctx.globalAlpha = 1 - tie.age / 0.9;
+      for (let i = 0; i < CHIP_FLY.length; i++) {
+        const c = pic(PIECES.chips[i]);
+        if (!c) continue;
+        const [vx, vy, spin] = CHIP_FLY[i];
+        const a = tie.age;
+        ctx.save();
+        ctx.translate(tie.x + vx * a, knotY - 6 + vy * a + 450 * a * a);
+        ctx.rotate(spin * a);
+        ctx.drawImage(c, -c.width / 6, -c.height / 6, c.width / 3, c.height / 3);
+        ctx.restore();
+      }
+      ctx.restore();
+    }
+  }
 }

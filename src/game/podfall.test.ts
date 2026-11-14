@@ -19,8 +19,9 @@ const plat = (id: number, x: number, y: number, width: number): Platform =>
 /** five vines 80 apart from a bough at 0 to sound wood at 470 (the room's lane) */
 const field = () => [vine(1, 600), vine(2, 680), vine(3, 760), vine(4, 840), vine(5, 920)];
 const floor = () => [plat(1, 500, 470, 600), plat(2, 560, 0, 400)];
-/** 1-4's pods' beat: one every 3.6 s, a 1.0 s tell, Easy 1.5x (tells 1.5 s) */
-const BEAT = podBeat('pods', 3.6, 1.0, 470, 1.5);
+/** a pods' beat: one every 3.6 s, a 1.5 s tell (POD.tellMin, Matt 11-14), Easy 1.5x (tells 2.25 s) */
+const T = 1.5;
+const BEAT = podBeat('pods', 3.6, T, 470, 1.5);
 const pod = (id: number, v: Vine, shift = 0, over: Partial<PodColumn> = {}): PodColumn =>
   ({ id, vine: v.id, x: v.x, top: 0, land: 470, clock: 'pods', shift, cost: 'heart', ...over });
 /** a pod's state at game time t on a setting */
@@ -70,14 +71,14 @@ test('a pod tells for its whole tell before it lets go, then falls down its colu
   assert.ok(s0 > 0, 'quiet first');
   assert.equal(at(p, s0 - 0.01).phase, 'idle');
   assert.equal(at(p, s0 + 0.01).phase, 'warn', 'the tell starts');
-  assert.equal(at(p, s0 + 0.99).phase, 'warn', 'and runs its whole length');
-  assert.equal(at(p, s0 + 1.01).phase, 'fall', 'then it lets go');
-  assert.ok(at(p, s0 + 1.3).y > p.top, 'and falls');
-  assert.equal(at(p, s0 + 1 + 470 / POD.speed + 0.1).phase, 'burst', 'and bursts on the wood');
-  // Easy: the same pod tells for 1.5 s (the beat's stretch)
+  assert.equal(at(p, s0 + T - 0.01).phase, 'warn', 'and runs its whole length');
+  assert.equal(at(p, s0 + T + 0.01).phase, 'fall', 'then it lets go');
+  assert.ok(at(p, s0 + T + 0.3).y > p.top, 'and falls');
+  assert.equal(at(p, s0 + T + 470 / POD.speed + 0.1).phase, 'burst', 'and bursts on the wood');
+  // Easy: the same pod tells 1.5x as long (the beat's stretch)
   const e0 = tellOf(p, true);
-  assert.equal(at(p, e0 + 1.45, true).phase, 'warn');
-  assert.equal(at(p, e0 + 1.55, true).phase, 'fall');
+  assert.equal(at(p, e0 + T * 1.5 - 0.05, true).phase, 'warn');
+  assert.equal(at(p, e0 + T * 1.5 + 0.05, true).phase, 'fall');
   assert.ok(podOn(470) >= 470 / POD.speed + POD.burst, "the beat's on fits the fall and the burst");
 });
 
@@ -85,7 +86,7 @@ test('a pod finds him on a vine down its own column only: one hand beside it is 
   const V = field();
   const p = pod(1, V[2]);
   // the moment it passes his chest on the vine (feet at 300, body 64)
-  let t = tellOf(p) + 1.0;
+  let t = tellOf(p) + T;
   while (at(p, t).y < 270) t += 1 / 60;
   const s = at(p, t);
   assert.ok(podHits(p, s, [V[2].x], 300, 64, true), 'one hand on its vine: hit');

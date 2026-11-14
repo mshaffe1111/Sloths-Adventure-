@@ -2108,7 +2108,9 @@ export class GameEngine {
         else if (this.sideLatch === dir) this.climbSideTimer = 0;
         // (the grab's little carry and its grace are not his thumb: a push just after taking hold steps; it waited them out and was lost)
         // (a push held through the grab itself, steering a leap onto the vine, is latched there: it never steps on the catch)
-        else if (!this.input.state.up && !this.input.state.down && dir) {
+        // (and it steps WHILE he climbs: Matt 11-14, the two-vine climb was "wonky" because a side push only took the other hand once he
+        // stopped climbing; held, it steps once (latched) and never hops him off a field vine while up or down is held)
+        else if (dir) {
           const next = stepHands(this.hands, dir, p.y, this.vines);
           if (next) {
             this.hands = next;
@@ -2143,8 +2145,11 @@ export class GameEngine {
       if (hands && (this.input.state.up || this.climbAssist > 0)) {
         const span = handsSpan(hands);
         const top = Math.min(hands.a.topY, hands.b?.topY ?? hands.a.topY, span.top);
-        p.y = Math.max(top - 4, p.y - handsSpeed(hands, true, pushing) * dt);
-        for (const c of pushClusters(hands, p.y, this.clusters)) this.clusterTorn(c);
+        // (under a shut gate his drawn head stops at the bough's underside, on every line he hangs from and between: fieldPlay.ts capY)
+        const f = this.field;
+        const cap = f ? Math.max(f.capY(hands.a.x, p.y), f.capY(handsX(hands), p.y), hands.b ? f.capY(hands.b.x, p.y) : -Infinity) : -Infinity;
+        p.y = Math.max(top - 4, cap, p.y - handsSpeed(hands, true, pushing) * dt);
+        for (const c of pushClusters(hands, p.y, this.clusters, f?.topOf)) this.clusterTorn(c);
         if (this.treeClimbAudioTimer <= 0) {
           sound.playTreeClimb();
           this.treeClimbAudioTimer = rustleGap({ climbSpeed: handsSpeed(hands, true, pushing) }, Math.random());
@@ -2157,7 +2162,7 @@ export class GameEngine {
           this.treeClimbAudioTimer = rustleGap({ climbSpeed: handsSpeed(hands, false, pushing) }, Math.random());
         }
       } else if (this.input.state.up || this.climbAssist > 0) {
-        p.y = Math.max(nearTreeVine.topY - 4, p.y - climbV * dt);
+        p.y = Math.max(nearTreeVine.topY - 4, this.field ? this.field.capY(nearTreeVine.x, p.y) : -Infinity, p.y - climbV * dt);
         // one soft grip per hand, a little uneven like real hands (every 0.18 s sounded like the audio skipping on an iPhone); a quicker
         // climb rustles quicker in step (rustleGap)
         if (this.treeClimbAudioTimer <= 0) {
@@ -5989,11 +5994,12 @@ export class GameEngine {
       if (cp.x < x0 - 80 || cp.x > x1 + 80) continue;
       // World 5: the painted lace pennant
       if (this.w5?.drawFlag(ctx, cp, t, world.id)) continue;
-      // the painted leaf-pennant post (stageArt.ts): unlit, then lit and fluttering once reached
+      // the painted leaf-pennant post (stageArt.ts): unlit, then lit and fluttering once reached; the unlit one keeps its gold rim
+      // ("yours to use", readable.ts) but no dark pool under it (it read as a black hole on a bright sky: the lead 11-14, on 1-4)
       if (!cp.reached) {
         ctx.save();
         ctx.translate(cp.x + 20, cp.y - 52);
-        drawAura(ctx, 'take', world.id, 30, 40, t, cp.x * 0.01);
+        drawAura(ctx, 'take', world.id, 30, 40, t, cp.x * 0.01, 1, false);
         ctx.restore();
       }
       drawCheckpointArt(ctx, cp.x, cp.y, cp.reached, t);

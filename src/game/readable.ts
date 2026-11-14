@@ -75,14 +75,17 @@ export function drawAura(
   ry: number,
   time: number,
   phase = 0,
-  strength = 1
+  strength = 1,
+  /** false: the gold rim alone, no dark pool under it (a checkpoint flag: the pool read as a black hole on a bright sky, the lead 11-14) */
+  pool = true
 ) {
   const pulse = 0.5 + 0.5 * Math.sin(time * (kind === 'take' ? 3.1 : 2.2) + phase);
   const prev = ctx.globalAlpha;
-  const pool = poolPic(kind);
   const ring = ringPic(kind);
-  ctx.globalAlpha = prev * Math.min(1, poolDepth(world) * strength * (kind === 'take' ? 1.35 : 1));
-  ctx.drawImage(pool, -rx * 1.65, -ry * 1.65, rx * 3.3, ry * 3.3);
+  if (pool) {
+    ctx.globalAlpha = prev * Math.min(1, poolDepth(world) * strength * (kind === 'take' ? 1.35 : 1));
+    ctx.drawImage(poolPic(kind), -rx * 1.65, -ry * 1.65, rx * 3.3, ry * 3.3);
+  }
   ctx.globalAlpha = prev * Math.min(1, (kind === 'take' ? 1 : 0.62) * strength * (0.82 + 0.18 * pulse));
   ctx.drawImage(ring, -rx * 1.5, -ry * 1.5, rx * 3, ry * 3);
   ctx.globalAlpha = prev;

@@ -15,8 +15,8 @@
 import type { Platform, PlayerState, Vine } from './types.ts';
 import { POD, podAt, podHits, type PodColumn, type PodCost } from './podfall.ts';
 import type { ClockRead } from './clock.ts';
-import { GATE, clusterLand, fallCluster, gateLeft, gateOver, gateSag, gateShut, type ClusterGate, type Hands, type VineCluster } from './vineField.ts';
-import { drawGate, drawGateThorns, drawPod, type ThornState } from './vineFieldArt.ts';
+import { GATE, HANDS_UP, clusterLand, fallCluster, gateLeft, gateOver, gateSag, gateShut, type ClusterGate, type Hands, type VineCluster } from './vineField.ts';
+import { drawGate, drawGateLock, drawPod, type LockState, type TieState } from './vineFieldArt.ts';
 
 /** what the field asks of its host (the engine) */
 export interface FieldHost {
@@ -45,8 +45,11 @@ export class FieldPlay {
   private readonly gateIds: Set<number>;
   /** where each cluster was laid (its y), to read how far up its vine he has pushed it */
   private readonly laid = new Map<number, number>();
-  /** a kept thorn state (no allocation a frame) */
-  private readonly thorn: ThornState = { hold: 1, strain: 0, settle: 0, pull: 0 };
+  /** a kept lock state and its ties (no allocation a frame) */
+  private readonly lock: LockState = { strain: 0, settle: 0, pull: 0 };
+  private readonly ties: TieState[] = [];
+  /** when each fig tore free (game time), for its tie's snap */
+  private readonly snapAt = new Map<number, number>();
 
   constructor(
     readonly pods: readonly PodColumn[],
@@ -78,27 +81,60 @@ export class FieldPlay {
     return !!this.gates.length && !!gateOver(v, this.gates, this.clusters, this.platforms);
   }
 
-  /**
-   * A shut gate is a lid from below (Matt, R-165.212: "it let me go above the platform"): rising inside its bough's span (and the boughs
-   * held with it), his feet stop at the line a climb stops at (the bough's top less GATE.lid), as a head meets wood. Only from below: feet
-   * already over the line are left alone (never pushed up, never trapped), and the frame its last fig locks it is gone (torn() opens it).
-   * The engine calls it once a frame, just after it moves him through the air (engine.ts, after `p.y += p.vy * dt`).
-   */
-  lid(p: PlayerState, dt: number): boolean {
-    if (p.climbing || p.vy >= 0) return false;
-    const was = p.y - p.vy * dt;
+  /** the DRAWN top and underside of the shut gate bough over (x, y): the nearest one whose drawn top is above y (sagged as it is drawn
+   *  at x), or null when no shut gate is over him there (its bough and the boughs held with it, and GATE.lidSide past either end: his
+   *  body's half width, so a leap from an end vine cannot round it) */
+  shutBoughAt(x: number, y: number): { top: number; under: number } | null {
+    let best: { top: number; under: number } | null = null;
     for (const g of this.gates) {
       if (!gateShut(g, this.clusters)) continue;
+      const sag = gateSag(g, this.clusters);
       for (const id of [g.platform, ...(g.with ?? [])]) {
         const b = this.platforms.find((q) => q.id === id);
-        if (!b || p.x < b.x - GATE.lidSide || p.x > b.x + b.width + GATE.lidSide) continue;
-        const line = b.y - GATE.lid;
-        if (was >= line - 0.5 && p.y < line) {
-          p.y = line;
-          p.vy = 0;
-          return true;
-        }
+        if (!b || x < b.x - GATE.lidSide || x > b.x + b.width + GATE.lidSide) continue;
+        // (the near end stays put, the far end sags: drawGate's tilt; a bough held with it is level)
+        const f = id !== g.platform ? 0 : Math.max(0, Math.min(1, g.far > 0 ? (x - b.x) / b.width : (b.x + b.width - x) / b.width));
+        const top = b.y + sag * f;
+        if (top < y && (!best || top > best.top)) best = { top, under: top + GATE.depth * b.width };
       }
+    }
+    return best;
+  }
+
+  /** the highest his FEET may rise at x from y (least y): under a shut gate, his drawn head at its drawn underside (GATE.head); else
+   *  -Infinity */
+  capY(x: number, y: number): number {
+    const s = this.shutBoughAt(x, y);
+    return s ? s.under + GATE.head : -Infinity;
+  }
+
+  /** where a fig (`h` px tall, its bottom at `y`) pushed up this vine tears free: under a shut bough, as high as his hands push it with
+   *  his head held at the wood (Matt: "just enough to get the fruit up"; the bough's drawn top if he could push it past that), less
+   *  GATE.slack for the tilt between his two hands' lines; else the vine's own top */
+  readonly topOf = (v: Vine, h: number, y: number): number => {
+    const s = this.shutBoughAt(v.x, y);
+    return s ? Math.max(s.top, s.under + GATE.head - HANDS_UP - h + GATE.slack) : v.topY;
+  };
+
+  /**
+   * A shut gate is a lid from below (Matt, R-165.212: "it let me go above the platform"; 11-14: "it cannot go above the platform above
+   * it... like on Pokey's head"): rising through the air under its bough (and the boughs held with it), his DRAWN head stops at the drawn
+   * underside (capY), as a head meets wood; the climb stops there too (engine.ts, the field climb). Only from below: feet already over
+   * the bough's drawn top are left alone (never pushed up, never trapped), and the frame its last fig locks it is gone (torn() opens it). The engine
+   * calls it once a frame, just after it moves him through the air (engine.ts, after `p.y += p.vy * dt`).
+   */
+  lid(p: PlayerState, dt: number): boolean {
+    if (p.climbing || p.vy >= 0 || !this.gates.length) return false;
+    const was = p.y - p.vy * dt;
+    const s = this.shutBoughAt(p.x, was);
+    if (!s) return false;
+    // (under the wood is read against the bough's drawn TOP, not the line: the line falls toward the sagging end, so a leap along the
+    // bough toward it starts over the line there and would slip past a from-the-line test: 0.9.8's feet rule had the same hole)
+    const line = s.under + GATE.head;
+    if (was > s.top && p.y < line) {
+      p.y = line;
+      p.vy = 0;
+      return true;
     }
     return false;
   }
@@ -155,10 +191,11 @@ export class FieldPlay {
    * under its column, and every gate it held lifts a notch, or springs open on its last.
    */
   torn(c: VineCluster, h: FieldHost): void {
+    this.snapAt.set(c.id, h.t);
     const v = this.vines.find((q) => q.id === c.vine);
     if (v) c.land = clusterLand(v, c.y, this.platforms, this.gateIds);
-    // (it locks in: a gold pop where it tore free, under the bough it was holding down)
-    if (v) h.spark(v.x, c.y - c.h, '#fde68a');
+    // (it locks in: ONE signal, its tie snapping (drawGateLock: the painted snap and Matt's bark chips) and its sound; the old gold pop
+    // here and at the open made two at once: gone, the lead 11-14)
     for (const g of this.gates) {
       if (!g.clusters.includes(c.id)) continue;
       const left = gateLeft(g, this.clusters);
@@ -181,7 +218,6 @@ export class FieldPlay {
           }
         }
         h.sfx('open');
-        if (b) h.spark(b.x + b.width / 2, b.y - 20, '#fde68a');
       } else h.sfx('lift');
     }
   }
@@ -197,25 +233,30 @@ export class FieldPlay {
     return l.from + (l.to - l.from) * e;
   }
 
-  /** how a gate's thorn tangle stands at `t` (vineFieldArt.ts drawGateThorns): a notch less for each fig in, straining while one is
-   *  pushed, a shudder as one locks in, pulled back after the last */
-  thornsOf(g: ClusterGate, t: number): ThornState {
-    const s = this.thorn;
-    const n = g.clusters.length;
+  /** how a gate's lock stands at `t` (vineFieldArt.ts drawGateLock): straining while a fig is pushed, a shudder as one locks in, the
+   *  thatch thrown after the last; and each fig's tie (its strain to where it tears free, and how long since it snapped) */
+  lockOf(g: ClusterGate, t: number): LockState {
+    const s = this.lock;
     const left = gateLeft(g, this.clusters);
     const l = this.lift.get(g.id);
     const since = l ? t - l.t0 : Infinity;
-    s.hold = n ? (left || 1) / n : 0;
     s.pull = left === 0 ? (l ? Math.min(1, since / GATE.pull) : 1) : 0;
     s.settle = left > 0 && since < GATE.settle ? Math.sin((since / GATE.settle) * Math.PI) * (1 - since / GATE.settle) : 0;
     s.strain = 0;
+    this.ties.length = 0;
     for (const id of g.clusters) {
       const c = this.clusters.find((q) => q.id === id);
-      const v = c && !c.falling && !c.gone ? this.vines.find((q) => q.id === c.vine) : undefined;
+      const v = c ? this.vines.find((q) => q.id === c.vine) : undefined;
       const y0 = c ? this.laid.get(c.id) : undefined;
       if (!c || !v || y0 === undefined) continue;
-      const way = y0 - (v.topY + c.h);
-      if (way > 1) s.strain = Math.max(s.strain, Math.min(1, (y0 - c.y) / way));
+      const at = this.snapAt.get(c.id);
+      let strain = 1;
+      if (!c.falling && !c.gone) {
+        const way = y0 - (this.topOf(v, c.h, c.y) + c.h);
+        strain = way > 1 ? Math.max(0, Math.min(1, (y0 - c.y) / way)) : 0;
+        s.strain = Math.max(s.strain, strain);
+      }
+      this.ties.push({ x: v.x, strain, age: at === undefined ? (c.falling || c.gone ? 9 : -1) : t - at });
     }
     return s;
   }
@@ -230,11 +271,11 @@ export class FieldPlay {
       const sag = this.sagOf(g, t);
       if (!b.broken && sag < 0.5 && b.art !== 'hidden') continue;
       drawGate(ctx, b, g.far, sag);
-      if (g.clusters.length) drawGateThorns(ctx, b, g.far, sag, this.thornsOf(g, t), t);
+      if (g.clusters.length) drawGateLock(ctx, b, g.far, sag, GATE.depth * b.width, this.lockOf(g, t), this.ties, t);
     }
     for (const pod of this.pods) {
       if (pod.x < x0 - 60 || pod.x > x1 + 60) continue;
-      drawPod(ctx, pod, podAt(pod, beat(pod.clock, pod.shift)), t);
+      drawPod(ctx, pod, podAt(pod, beat(pod.clock, pod.shift)), t, this.vines.find((v) => v.id === pod.vine));
     }
   }
 

@@ -1,0 +1,358 @@
+diff --git a/src/game/engine.ts b/src/game/engine.ts
+index b86c3d064..2503b8f8c 100644
+--- a/src/game/engine.ts
++++ b/src/game/engine.ts
+@@ -2134,8 +2134,10 @@ export class GameEngine {
+       if (hands && (this.input.state.up || this.climbAssist > 0)) {
+         const span = handsSpan(hands);
+         const top = Math.min(hands.a.topY, hands.b?.topY ?? hands.a.topY, span.top);
+-        p.y = Math.max(top - 4, p.y - handsSpeed(hands, true, pushing) * dt);
+-        for (const c of pushClusters(hands, p.y, this.clusters)) this.clusterTorn(c);
++        // MOCK FIX-14: under a shut gate his drawn head stops at the bough's underside (every line he hangs from, and between)
++        const cap = this.field ? Math.max(this.field.capY(hands.a.x), this.field.capY(handsX(hands)), hands.b ? this.field.capY(hands.b.x) : -Infinity) : -Infinity;
++        p.y = Math.max(top - 4, cap, p.y - handsSpeed(hands, true, pushing) * dt);
++        for (const c of pushClusters(hands, p.y, this.clusters, this.field?.topOf)) this.clusterTorn(c);
+         if (this.treeClimbAudioTimer <= 0) {
+           sound.playTreeClimb();
+           this.treeClimbAudioTimer = rustleGap({ climbSpeed: handsSpeed(hands, true, pushing) }, Math.random());
+@@ -2148,7 +2150,7 @@ export class GameEngine {
+           this.treeClimbAudioTimer = rustleGap({ climbSpeed: handsSpeed(hands, false, pushing) }, Math.random());
+         }
+       } else if (this.input.state.up || this.climbAssist > 0) {
+-        p.y = Math.max(nearTreeVine.topY - 4, p.y - climbV * dt);
++        p.y = Math.max(nearTreeVine.topY - 4, this.field ? this.field.capY(nearTreeVine.x) : -Infinity, p.y - climbV * dt); // MOCK FIX-14
+         // one soft grip per hand, a little uneven like real hands (every 0.18 s sounded like the audio skipping on an iPhone); a quicker
+         // climb rustles quicker in step (rustleGap)
+         if (this.treeClimbAudioTimer <= 0) {
+diff --git a/src/game/fieldPlay.ts b/src/game/fieldPlay.ts
+index a783f3d7a..582d6f4b0 100644
+--- a/src/game/fieldPlay.ts
++++ b/src/game/fieldPlay.ts
+@@ -15,8 +15,8 @@
+ import type { Platform, PlayerState, Vine } from './types.ts';
+ import { POD, podAt, podHits, type PodColumn, type PodCost } from './podfall.ts';
+ import type { ClockRead } from './clock.ts';
+-import { GATE, clusterLand, fallCluster, gateLeft, gateOver, gateSag, gateShut, type ClusterGate, type Hands, type VineCluster } from './vineField.ts';
+-import { drawGate, drawGateThorns, drawPod, type ThornState } from './vineFieldArt.ts';
++import { GATE, HEAD_DRAWN, clusterLand, fallCluster, gateLeft, gateOver, gateSag, gateShut, type ClusterGate, type Hands, type VineCluster } from './vineField.ts';
++import { drawGate, drawGateThatch, drawPod, type ThornState, type TieState } from './vineFieldArt.ts';
+ 
+ /** what the field asks of its host (the engine) */
+ export interface FieldHost {
+@@ -73,6 +73,33 @@ export class FieldPlay {
+     }
+   }
+ 
++  /** MOCK FIX-14: when each fig snapped free (game time) */
++  readonly snapAt = new Map<number, number>();
++  /** MOCK FIX-14: each pod's phase as last drawn (for the mock's recorder) */
++  readonly lastPhase = new Map<PodColumn, string>();
++  private readonly tieKeep: TieState[] = [];
++  /** MOCK FIX-14: the drawn top and underside of a shut gate's bough over x (its sag at x), or null when no shut gate is over x */
++  shutBoughAt(x: number): { top: number; under: number } | null {
++    for (const g of this.gates) {
++      if (!gateShut(g, this.clusters)) continue;
++      for (const id of [g.platform, ...(g.with ?? [])]) {
++        const b = this.platforms.find((q) => q.id === id);
++        if (!b || x < b.x - GATE.lidSide || x > b.x + b.width + GATE.lidSide) continue;
++        const f = Math.max(0, Math.min(1, g.far > 0 ? (x - b.x) / b.width : (b.x + b.width - x) / b.width));
++        const top = b.y + gateSag(g, this.clusters) * f;
++        return { top, under: top + b.height };
++      }
++    }
++    return null;
++  }
++  /** MOCK FIX-14: the highest his FEET may rise at x (a shut gate over him: his drawn head at its underside), or -Infinity */
++  capY(x: number): number {
++    const s = this.shutBoughAt(x);
++    return s ? s.under + HEAD_DRAWN : -Infinity;
++  }
++  /** MOCK FIX-14: a fig is free when its top passes the DRAWN bough's top over its vine */
++  topOf = (v: Vine): number => this.shutBoughAt(v.x)?.top ?? v.topY;
++
+   /** a shut gate's bough is over this vine's top: the climb stops short of the vault (there is nothing to vault onto) */
+   blocksTop(v: Vine): boolean {
+     return !!this.gates.length && !!gateOver(v, this.gates, this.clusters, this.platforms);
+@@ -92,7 +119,7 @@ export class FieldPlay {
+       for (const id of [g.platform, ...(g.with ?? [])]) {
+         const b = this.platforms.find((q) => q.id === id);
+         if (!b || p.x < b.x - GATE.lidSide || p.x > b.x + b.width + GATE.lidSide) continue;
+-        const line = b.y - GATE.lid;
++        const line = Math.max(b.y - GATE.lid, this.capY(p.x)); // MOCK FIX-14: his drawn head, not his feet
+         if (was >= line - 0.5 && p.y < line) {
+           p.y = line;
+           p.vy = 0;
+@@ -155,6 +182,7 @@ export class FieldPlay {
+    * under its column, and every gate it held lifts a notch, or springs open on its last.
+    */
+   torn(c: VineCluster, h: FieldHost): void {
++    this.snapAt.set(c.id, h.t);
+     const v = this.vines.find((q) => q.id === c.vine);
+     if (v) c.land = clusterLand(v, c.y, this.platforms, this.gateIds);
+     // (it locks in: a gold pop where it tore free, under the bough it was holding down)
+@@ -230,11 +258,27 @@ export class FieldPlay {
+       const sag = this.sagOf(g, t);
+       if (!b.broken && sag < 0.5 && b.art !== 'hidden') continue;
+       drawGate(ctx, b, g.far, sag);
+-      if (g.clusters.length) drawGateThorns(ctx, b, g.far, sag, this.thornsOf(g, t), t);
++      if (g.clusters.length) {
++        const th = this.thornsOf(g, t);
++        this.tieKeep.length = 0;
++        for (const id of g.clusters) {
++          const c = this.clusters.find((q) => q.id === id);
++          const v = c ? this.vines.find((q) => q.id === c.vine) : undefined;
++          const y0 = c ? this.laid.get(c.id) : undefined;
++          if (!c || !v || y0 === undefined) continue;
++          const way = y0 - (v.topY + c.h);
++          const strain = c.falling || c.gone ? 1 : way > 1 ? Math.max(0, Math.min(1, (y0 - c.y) / way)) : 0;
++          const at = this.snapAt.get(c.id);
++          this.tieKeep.push({ x: v.x, strain, age: at === undefined ? -1 : t - at });
++        }
++        drawGateThatch(ctx, b, g.far, sag, this.tieKeep, th.pull, t);
++      }
+     }
+     for (const pod of this.pods) {
+       if (pod.x < x0 - 60 || pod.x > x1 + 60) continue;
+-      drawPod(ctx, pod, podAt(pod, beat(pod.clock, pod.shift)), t);
++      const st = podAt(pod, beat(pod.clock, pod.shift));
++      this.lastPhase.set(pod, st.phase);
++      drawPod(ctx, pod, st, t);
+     }
+   }
+ 
+diff --git a/src/game/gen2/worlds/w1Arc14.ts b/src/game/gen2/worlds/w1Arc14.ts
+index 0e3db0358..d11155bf4 100644
+--- a/src/game/gen2/worlds/w1Arc14.ts
++++ b/src/game/gen2/worlds/w1Arc14.ts
+@@ -72,7 +72,7 @@ const POD_HANG = 110;
+ /** a fig bunch's height (px) */
+ const FIG_H = 56;
+ /** the pods' tell (s, Normal; Easy times the beat's stretch: 1.5 s) and Easy's stretch (1-4.md "Easy ... tells 1.5 s, beats 1.4x") */
+-const TELL = 1.0, EASY_STRETCH = 1.5;
++const TELL = 1.5, EASY_STRETCH = 1.5; // MOCK FIX-14
+ /** the beats (1-4.md "Steady, then grown": ONE steady beat through beats 4-5, it quickens only from beat 7): the steady teach beat, the
+  *  grown beat of beats 7-9 and the crown (the fields' 1.2-2.0 s safe of 3.0-3.6 s) and the quick one of the hollow (0.8-0.9 s safe).
+  *  Each beat's 'on' is its own longest column's fall and burst (podOn). No field stands over POD.catchBelow (450 px: a knock from any
+@@ -81,7 +81,7 @@ const TELL = 1.0, EASY_STRETCH = 1.5;
+  *  two rules leave, 1.1 s of a 2.3 s beat (the design's 0.8-0.9 s of 2.4 s needs a shorter tell or a taller field: neither is loosened,
+  *  the lead's call 11-13). The crown keeps two columns, so it stays on the grown beat: two tells in one 2.3 s beat cannot both be 1.5 s
+  *  apart (POD.apart) */
+-const BEATS = { steady: 3.6, grown: 3.0, quick: 2.3 } as const;
++const BEATS = { steady: 4.6, grown: 4.2, quick: 3.6 } as const; // MOCK FIX-14: fewer drops
+ 
+ /** a bough: on the way up (`main`: the lay may stand a flag on one 160 px or more wide, FA's rule), a landing unless told */
+ const branch = (key: string, place: SectionPiece['place'], w: number, o: Partial<SectionPiece> = {}): SectionPiece =>
+diff --git a/src/game/podfall.ts b/src/game/podfall.ts
+index ad285e67d..080c692d6 100644
+--- a/src/game/podfall.ts
++++ b/src/game/podfall.ts
+@@ -35,7 +35,7 @@ export interface PodColumn extends OnBeat {
+ 
+ export const POD = {
+   /** how fast it falls (px/s): the rockfall's steady drop (rockfall.ts ROCK.speed), a fall you can read */
+-  speed: ROCK.speed,
++  speed: 300, // MOCK FIX-14: half rockfall's 620
+   /** how long the burst shows on the wood (s) */
+   burst: 0.5,
+   /** its body, for hitting him (px): a kapok pod about a quarter of his drawn height long (89.1, heroSprite.ts; LESSONS D41) */
+diff --git a/src/game/vineField.ts b/src/game/vineField.ts
+index fd6c6babc..941275f66 100644
+--- a/src/game/vineField.ts
++++ b/src/game/vineField.ts
+@@ -143,7 +143,7 @@ export function clusterAbove(h: Hands, y: number, clusters: readonly VineCluster
+  * pushed up to them; one that reaches its vine's top tears free (returned, it falls from here). His feet never pass under a cluster's
+  * bottom by more than HANDS_UP: the engine climbs at handsSpeed(.., pushing) while one is above.
+  */
+-export function pushClusters(h: Hands, y: number, clusters: VineCluster[]): VineCluster[] {
++export function pushClusters(h: Hands, y: number, clusters: VineCluster[], topOf: (v: Vine) => number = (v) => v.topY): VineCluster[] {
+   const torn: VineCluster[] = [];
+   const hands = y - HANDS_UP;
+   for (const c of clusters) {
+@@ -152,7 +152,7 @@ export function pushClusters(h: Hands, y: number, clusters: VineCluster[]): Vine
+     // (only one his hands have come up to: its bottom between his hands and his feet; one wholly below him is not his)
+     if (!v || c.y <= hands || c.y - c.h >= y) continue;
+     c.y = hands;
+-    if (c.y - c.h <= v.topY) {
++    if (c.y - c.h <= topOf(v)) {
+       c.falling = true;
+       c.vy = 0;
+       torn.push(c);
+@@ -319,3 +319,6 @@ export function gateFaults(gates: readonly ClusterGate[], clusters: readonly Vin
+   }
+   return out;
+ }
++
++/** MOCK FIX-14: his drawn height (heroSprite.ts 89.1, LESSONS D41): under a shut gate his drawn head stops at the bough's underside */
++export const HEAD_DRAWN = 89;
+diff --git a/src/game/vineFieldArt.ts b/src/game/vineFieldArt.ts
+index b4abdaea8..bec11d7a3 100644
+--- a/src/game/vineFieldArt.ts
++++ b/src/game/vineFieldArt.ts
+@@ -221,6 +221,34 @@ export function drawPod(ctx: CanvasRenderingContext2D, p: PodColumn, s: PodState
+     return;
+   }
+   if (s.phase === 'warn') {
++    // MOCK FIX-14 (code-drawn stand-in): the vine the pod hangs on glows amber to red and shivers for the whole tell, dust sifting down it
++    {
++      const u = s.u;
++      const pulse = 0.5 + 0.5 * Math.sin(t * (8 + 10 * u));
++      const top = p.top - 110;
++      ctx.save();
++      ctx.lineCap = 'round';
++      const wob = Math.sin(t * 34) * (1.5 + 3 * u);
++      ctx.globalAlpha = 0.28 + 0.35 * pulse;
++      ctx.strokeStyle = u < 0.5 ? '#ffb02e' : '#ff5a1f';
++      ctx.lineWidth = 16;
++      ctx.beginPath();
++      ctx.moveTo(p.x, top);
++      ctx.quadraticCurveTo(p.x + wob * 2, (top + p.land) / 2, p.x, p.land);
++      ctx.stroke();
++      ctx.globalAlpha = 0.55 + 0.3 * pulse;
++      ctx.lineWidth = 5;
++      ctx.strokeStyle = '#fff0b0';
++      ctx.stroke();
++      ctx.globalAlpha = 1;
++      ctx.fillStyle = '#6b4a2b';
++      for (let i = 0; i < 9; i++) {
++        const f = (t * (0.6 + (i % 3) * 0.17) + i * 0.13) % 1;
++        ctx.globalAlpha = 0.8 * (1 - f);
++        ctx.fillRect(p.x - 10 + ((i * 37) % 20) + Math.sin(t * 5 + i) * 4, top + 8 + f * (p.land - top) * Math.min(1, 0.3 + u), 3, 3);
++      }
++      ctx.restore();
++    }
+     // the trickle: a stream of tufts drifting down the column from the pod, reaching further each moment of the tell (at its start a
+     // third of the way, by its end the whole column), so on a phone he sees fluff falling past him on his own column before the drop
+     // (a few loose tufts, never a column: each its own size, pace, turn and drift, fading in under the pod and out as it falls)
+@@ -350,3 +378,132 @@ export function drawGateThorns(ctx: CanvasRenderingContext2D, b: Pick<Platform,
+   }
+   ctx.restore();
+ }
++
++/** MOCK FIX-14: one fig's tie on a gate's thatch: where it is, how hard its fig is pushing (0..1), and how long since it snapped (-1 not) */
++export interface TieState { x: number; strain: number; age: number }
++
++/**
++ * MOCK FIX-14 (code-drawn stand-in; the real pieces are painted, named for the HF batch): a thatch of woven leaves lashed over the shut
++ * bough, one vine tie per fig at that fig's vine. As he pushes a fig the tie strains (stretches up, pales, shivers, frays); at full it
++ * SNAPS (its ends whip apart, a burst of fibres, a white crack), that end of the thatch kicks up; the last snap throws the thatch off.
++ */
++export function drawGateThatch(ctx: CanvasRenderingContext2D, b: Pick<Platform, 'x' | 'y' | 'width'>, far: -1 | 1, sag: number, ties: readonly TieState[], pull: number, t: number) {
++  if (pull >= 1) return;
++  const pivotX = far > 0 ? b.x : b.x + b.width;
++  const ang = Math.atan2(sag, b.width) * far;
++  const ease = pull * pull * (3 - 2 * pull);
++  ctx.save();
++  ctx.translate(pivotX, b.y);
++  ctx.rotate(ang);
++  const x0 = far > 0 ? 0 : -b.width;
++  const toLocal = (wx: number) => wx - pivotX;
++  // the thatch: thrown up and away on the last snap
++  ctx.save();
++  ctx.translate(0, -ease * 140);
++  ctx.rotate(ease * 0.5 * far);
++  ctx.globalAlpha = 1 - ease;
++  const H = 20;
++  // overlapping leaves in two rows, each its own turn and shade, a dark midrib: a thatch laid over the bough, not a tube
++  const shades = ['#56702a', '#6f8a2e', '#88a03c', '#4a6324'];
++  for (let row = 0; row < 2; row++) {
++    for (let x = x0 + 10 + row * 7, i = 0; x < x0 + b.width - 8; x += 13, i++) {
++      const turn = ((i * 7 + row * 3) % 5 - 2) * 0.18 + (row ? 0.35 : -0.35);
++      ctx.save();
++      ctx.translate(x, -H * (row ? 0.35 : 0.7));
++      ctx.rotate(turn);
++      ctx.fillStyle = shades[(i + row * 2) % shades.length];
++      ctx.strokeStyle = '#26330e';
++      ctx.lineWidth = 1.5;
++      ctx.beginPath();
++      ctx.ellipse(0, 0, 15, 7, 0, 0, Math.PI * 2);
++      ctx.fill();
++      ctx.stroke();
++      ctx.strokeStyle = 'rgba(28,40,10,0.7)';
++      ctx.beginPath();
++      ctx.moveTo(-13, 0);
++      ctx.lineTo(13, 0);
++      ctx.stroke();
++      ctx.restore();
++    }
++  }
++  ctx.restore();
++  // the ties
++  for (const tie of ties) {
++    const lx = toLocal(tie.x);
++    if (tie.age < 0) {
++      const s = tie.strain;
++      const shiver = s > 0.5 ? Math.sin(t * 60) * 2.5 * (s - 0.5) * 2 : 0;
++      const lift = s * 14;
++      const r = Math.round(96 + 150 * s), g = Math.round(58 + 70 * s), bl = Math.round(24 + 50 * s);
++      ctx.strokeStyle = `rgb(${r},${g},${bl})`;
++      ctx.lineCap = 'round';
++      // (a pale edge first so the tie reads on the dark bough and the green thatch)
++      ctx.save();
++      ctx.strokeStyle = 'rgba(255,240,200,0.85)';
++      ctx.lineWidth = 13 - 4 * s;
++      ctx.beginPath();
++      ctx.moveTo(lx - 12 + shiver, 28);
++      ctx.quadraticCurveTo(lx - 16 + shiver, -H - 10 - lift, lx + shiver, -H - 6 - lift);
++      ctx.quadraticCurveTo(lx + 16 + shiver, -H - 10 - lift, lx + 12 + shiver, 28);
++      ctx.stroke();
++      ctx.restore();
++      ctx.lineWidth = 9 - 4 * s;
++      // a loop over the thatch and under the bough, bulging up as the fig pushes
++      ctx.beginPath();
++      ctx.moveTo(lx - 12 + shiver, 28);
++      ctx.quadraticCurveTo(lx - 16 + shiver, -H - 10 - lift, lx + shiver, -H - 6 - lift);
++      ctx.quadraticCurveTo(lx + 16 + shiver, -H - 10 - lift, lx + 12 + shiver, 28);
++      ctx.stroke();
++      ctx.strokeStyle = 'rgba(30,40,10,0.6)';
++      ctx.lineWidth = 2;
++      ctx.stroke();
++      ctx.fillStyle = s > 0.6 ? '#f0c060' : '#4a2c12';
++      ctx.beginPath();
++      ctx.arc(lx + shiver, -H - 6 - lift, 6, 0, Math.PI * 2);
++      ctx.fill();
++      // fraying fibres near the break
++      if (s > 0.6) {
++        ctx.strokeStyle = '#f2e6b8';
++        ctx.lineWidth = 1.5;
++        for (let i = 0; i < 5; i++) {
++          const a = (i / 5) * Math.PI + Math.sin(t * 20 + i) * 0.3;
++          const L = 4 + 8 * (s - 0.6) / 0.4;
++          ctx.beginPath();
++          ctx.moveTo(lx + shiver, -H - 6 - lift);
++          ctx.lineTo(lx + shiver + Math.cos(a) * L, -H - 6 - lift - Math.sin(a) * L);
++          ctx.stroke();
++        }
++      }
++      continue;
++    }
++    // snapped: the two ends whip apart and fall, a crack of light, fibres
++    const a = tie.age;
++    if (a > 1.2) continue;
++    const k = Math.min(1, a / 0.35);
++    ctx.globalAlpha = 1 - Math.max(0, (a - 0.6) / 0.6);
++    ctx.strokeStyle = '#d9c88e';
++    ctx.lineWidth = 5;
++    ctx.lineCap = 'round';
++    for (const sd of [-1, 1]) {
++      ctx.beginPath();
++      ctx.moveTo(lx + sd * 12, 28);
++      ctx.quadraticCurveTo(lx + sd * (16 + 30 * k), -H - 10 - 30 * k, lx + sd * (8 + 46 * k), -H + 10 + 60 * k * k);
++      ctx.stroke();
++    }
++    if (a < 0.3) {
++      const R = 10 + 70 * (a / 0.3);
++      ctx.globalAlpha = 1 - a / 0.3;
++      ctx.strokeStyle = '#ffffff';
++      ctx.lineWidth = 4;
++      for (let i = 0; i < 10; i++) {
++        const an = (i / 10) * Math.PI * 2;
++        ctx.beginPath();
++        ctx.moveTo(lx + Math.cos(an) * R * 0.45, -H - 6 + Math.sin(an) * R * 0.45);
++        ctx.lineTo(lx + Math.cos(an) * R, -H - 6 + Math.sin(an) * R);
++        ctx.stroke();
++      }
++    }
++    ctx.globalAlpha = 1;
++  }
++  ctx.restore();
++}

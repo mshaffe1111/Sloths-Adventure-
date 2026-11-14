@@ -110,6 +110,28 @@ test('(behaviour check, not a planted test: the stall needs the real roll, A/B i
   assert.equal(rescued, 0, 'no rescue at the face, over 12 thumbs');
 });
 
+// The way on through a tower leg that goes DOWN before it goes up (FIX-14, R-165.206; 1-4's rotten fork: off the entry ledge onto a
+// floor 200 px under it, then up a vine that stands on that floor). The bots' route went along the ENTRY's height to the vine and up it,
+// floating 200 px over the floor; from the floor the way on never read as up and he paced round the vine's foot (castBots 4/32 on the
+// fork). A toy leg, no stage's: the route must go down to the vine's foot before it goes up, and never hang in the air at the entry's
+// height over the vine. A vine whose foot is at the entry's height (an ordinary climb) still goes straight up.
+test('the tower route goes down to a sunk vine\'s foot before it climbs (a down-then-up leg)', async () => {
+  const { towerCorners } = await import('./towerRoute.ts');
+  const leg = (vineFoot: number) => ({
+    gen2: { plan: [{}], tower: { route: { legs: [{ entry: { x: 0, y: 1000 }, exit: { x: 420, y: 760 } }], spawn: { x: 0, y: 1000 } }, turns: [] } },
+    vines: [{ x: 300, topY: 760, bottomY: vineFoot, vineType: 'tree_climb' }],
+  });
+  const sunk = towerCorners(leg(1200) as never, { x: 0, y: 1000 })!;
+  const at = (c: { x: number; y: number }[], x: number, y: number) => c.findIndex((p) => Math.abs(p.x - x) < 1 && Math.abs(p.y - y) < 1);
+  const foot = at(sunk, 300, 1200), top = at(sunk, 300, 760);
+  assert.ok(foot >= 0, `no corner at the sunk vine's foot (300, 1200): ${JSON.stringify(sunk)}`);
+  assert.ok(top > foot, `the climb does not follow the foot: ${JSON.stringify(sunk)}`);
+  // (and the climb is up from the foot, never from the air at the entry's height)
+  assert.ok(sunk[top - 1].y > 1000 + 60, `the climb starts in the air at y ${sunk[top - 1].y}: ${JSON.stringify(sunk)}`);
+  const plain = towerCorners(leg(1000) as never, { x: 0, y: 1000 })!;
+  assert.ok(at(plain, 300, 1000) >= 0 && at(plain, 300, 760) === at(plain, 300, 1000) + 1, `an ordinary climb is no longer straight up: ${JSON.stringify(plain)}`);
+});
+
 // (STAGE-RULES.md:77: "at least 2 minutes for a quick player, on every roll ... Climbs count 20 s short". castBots held every stage to a
 //  flat 120 s, so 1-4 (a climb) failed the rule's own 100 s: the floor is read from eraRoll.ts RULES and isClimb, R-165.206, D19)
 test('the length floor is the stage rule\'s: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)', () => {

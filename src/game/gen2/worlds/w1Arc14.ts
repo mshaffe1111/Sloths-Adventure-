@@ -34,14 +34,17 @@ type R2 = [number, number];
 // (R-165.206, POLISH-1 11-13: a quick player ran it in 81-101 s; two beats more, each with its own job (a practise gate of two, a test
 //  across two columns), each after its own rest, each its own job so no roll can reorder the level (U a climb and M a flow after the
 //  test, one section a job: level.md rule 2), climb and hazard taking turns as before (the node code: no type on two neighbours)
-export const ARC_14: Record<string, string> = { 'ascent-14-arc': 'A T T R T T P R X R U R M R W R S R C E' };
+// (R-165.206, INT-6 11-13 7:42 PM lead ruling A: the climb's floor is STAGE-RULES.md:77's 100 s ("climbs count 20 s short") on every roll;
+//  the adult on Easy still ran 99-101 s, ~3 s a rest and 5-10 s a beat. One beat more, a crumble with its own job (D_, a descent by V9: the creak practised
+//  once between its teach and the crown's stair, the only crumble in the middle of the level) after the test's rest, and its own rest)
+export const ARC_14: Record<string, string> = { 'ascent-14-arc': 'A T T R T T P R X R D_ R U R M R W R S R C E' };
 /** 1-4's brief, all of it data: an ascent of fields, its cast 1-3's snake */
 export const BRIEF_14: GraphBrief = {
   ends: 'quiet', trend: 'up', branching: 'none', teaches: ['slide', 'creak', 'field', 'pods'],
   // (the deal is the arc's own, one type a beat, no type over V11's 40% and no two teaches of one type (V2): ground the going-up (a
   // walk along wide low boughs with two short climbs, sound wood under every one); crumble the rotting boughs and the crown's rotten stair; climb the field, both pushes and the drop;
-  // hazard the pods, under fire, the columns and the hollow: 1, 2, 4 and 4 of the eleven content nodes)
-  deal: { ground: 9, crumble: 18, climb: 36, hazard: 37 }, dealExact: true,
+  // hazard the pods, under fire, the columns and the hollow; crumble the rotten fork too: 1, 3, 4 and 4 of the twelve content nodes)
+  deal: { ground: 8, crumble: 25, climb: 33, hazard: 34 }, dealExact: true,
   cast: ['snake'],
   // (every laid piece carries its section's uid and key, so finish14 finds the fields, figs and gates by key: FA's option, GraphBrief.tags)
   tags: true,
@@ -71,17 +74,17 @@ export const GATE_RUN = GAP;
 const POD_HANG = 110;
 /** a fig bunch's height (px) */
 const FIG_H = 56;
-/** the pods' tell (s, Normal; Easy times the beat's stretch: 1.5 s) and Easy's stretch (1-4.md "Easy ... tells 1.5 s, beats 1.4x") */
-const TELL = 1.0, EASY_STRETCH = 1.5;
-/** the beats (1-4.md "Steady, then grown": ONE steady beat through beats 4-5, it quickens only from beat 7): the steady teach beat, the
- *  grown beat of beats 7-9 and the crown (the fields' 1.2-2.0 s safe of 3.0-3.6 s) and the quick one of the hollow (0.8-0.9 s safe).
- *  Each beat's 'on' is its own longest column's fall and burst (podOn). No field stands over POD.catchBelow (450 px: a knock from any
- *  point lands him on sound wood, 1-4.md "Pods fair"), so a column (H less POD_HANG) is at most 340 px and its 'on' 1.2 s; and a beat is
- *  its quiet, its 1.0 s tell (tellMin) and its 'on', so its safe window is never under the tell. The hollow's window is the least those
- *  two rules leave, 1.1 s of a 2.3 s beat (the design's 0.8-0.9 s of 2.4 s needs a shorter tell or a taller field: neither is loosened,
- *  the lead's call 11-13). The crown keeps two columns, so it stays on the grown beat: two tells in one 2.3 s beat cannot both be 1.5 s
- *  apart (POD.apart) */
-const BEATS = { steady: 3.6, grown: 3.0, quick: 2.3 } as const;
+/**
+ * 1-4's pods, ALL their numbers in this one place (Matt 11-14 12:06 AM, R-165.227: "they just drop too quickly... super hard... maybe we
+ * have the vines change colors to let us know that there's about to have something drop"; "maybe we drop the rocks even completely, or we
+ * make it so the rocks are real slow"). Built as the mocks he saw (FIX-14 mockA): `on: false` lays no pods at all (his other choice, one
+ * line); `speed` the fall (px/s, was rockfall's 620); `tell` the vine's warning before a drop (s, Normal; Easy times `easyStretch`);
+ * `beats` how often each beat drops (s: rarer, was 3.6 / 3.0 / 2.3). The steady beat teaches (beats 4-5), the grown one runs beats 7-9
+ * and the crown, the quick one the hollow. Each beat's 'on' is its own longest column's fall and burst (podOn); no field stands over
+ * POD.catchBelow (450 px: a knock from any point lands him on sound wood, 1-4.md "Pods fair"); podFaults refuses a roll that breaks them.
+ */
+export const PODS_14 = { on: true, speed: 300, tell: 1.5, easyStretch: 1.5, beats: { steady: 4.6, grown: 4.2, quick: 3.6 } } as const;
+const BEATS = PODS_14.beats;
 
 /** a bough: on the way up (`main`: the lay may stand a flag on one 160 px or more wide, FA's rule), a landing unless told */
 const branch = (key: string, place: SectionPiece['place'], w: number, o: Partial<SectionPiece> = {}): SectionPiece =>
@@ -200,6 +203,26 @@ const UNDER_FIRE = field('w1-14-under-fire', 'a gate of two, pods down the push 
   jobs: ['test'], job: ['sho', 'ten', 'ketsu'], uses: ['field', 'pods'], difficulty: 6, content: 'hazard',
   row: { n: 5, H: 400, figs: [{ vine: 1, over: 150 }, { vine: 4, over: 250 }], pods: [{ vine: 1, shift: 0 }, { vine: 4, shift: BEATS.grown / 2 }], beat: 'grown', gate: true, easyFigs: [{ vine: 4, over: 250 }] },
 });
+/** [D] the rotten fork, down (R-165.206): off the rest, three creaking boughs step down into the kapok's fork, each a short drop over the
+ *  sound fork (each gives at the creak's hold: "just one branch down", LINES_14.creak), petals on the middle one; then the long sound vine
+ *  up out of the fork to its bough. Sound wood under every step: a drop costs nothing. The creak's one practise between its teach (rotting)
+ *  and the crown's stair (combine); its type is the steps' (crumble) */
+const FORK_W = 700, FORK_DROP = 200, FORK_VINE = 440, FORK_TOP = 220;
+const ROTTEN_FORK: SectionTemplate = {
+  id: 'w1-14-rotten-fork', name: 'the rotten fork: down three creaking boughs, up the sure vine', feel: [STAGE_14], own: true, archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu'], jobs: ['descent'], difficulty: 4, content: 'crumble', uses: ['creak'], needs: ['jump'],
+  pieces: [
+    branch('a', { kind: 'start' }, 220),
+    branch('s', { kind: 'walk', after: 'a', dy: [FORK_DROP, FORK_DROP] }, FORK_W),
+    branch('r1', { kind: 'over', on: 's', at: [20 / FORK_W, 20 / FORK_W], dy: [-150, -150] }, ROT, { creak: true }),
+    branch('r2', { kind: 'over', on: 's', at: [150 / FORK_W, 150 / FORK_W], dy: [-100, -100] }, ROT, { creak: true }),
+    branch('r3', { kind: 'over', on: 's', at: [280 / FORK_W, 280 / FORK_W], dy: [-50, -50] }, ROT, { creak: true }),
+    climbOn('v', 's', FORK_W, FORK_W - 120, FORK_VINE),
+    branch('top', { kind: 'over', on: 's', at: [(FORK_W - 200) / FORK_W, (FORK_W - 200) / FORK_W], dy: [-FORK_VINE, -FORK_VINE] }, FORK_TOP),
+  ],
+  entry: { piece: 'a', kind: 'ledge' }, exit: { piece: 'top', kind: 'ledge' }, exitDy: FORK_DROP - FORK_VINE,
+  sockets: [petals('p', 'r2', 0.5)], mirrorable: false,
+} as SectionTemplate;
 /** [U] push the figs up, twice (a climb): a gate of two bunches on two vines apart, pods on the steady beat down the free column between them,
  *  so the second push is a step across a column he times (R-165.206: the push practised before it is tested under fire). Easy: one bunch */
 const PUSH_TWO = field('w1-14-push-two', 'push the figs up: a gate of two, a column between', {
@@ -265,7 +288,7 @@ const rest = (id: string, w: number, step?: number): SectionTemplate => ({
 // (wide enough that a flag spot (FLAG_SPAN.pad in from each end) lies 1500-2400 px of way before the next hard beat and 900 or more past
 //  the one before, Matt's flag rule along the climb (ROLLED_FLAGS): at 260-320 the spot fell a few px too late before the pods)
 const RESTS = [rest('w1-14-rest-a', 400), rest('w1-14-rest-b', 420), rest('w1-14-rest-c', 360, 180), rest('w1-14-rest-d', 440), rest('w1-14-rest-e', 380, 220), rest('w1-14-rest-f', 380, 160),
-  rest('w1-14-rest-g', 460), rest('w1-14-rest-h', 400, 240)];
+  rest('w1-14-rest-g', 460), rest('w1-14-rest-h', 400, 240), rest('w1-14-rest-i', 440, 200)];
 /** [E] the view north: out into open sky on the crown's plain bough */
 const VIEW: SectionTemplate = {
   id: 'w1-14-view-north', name: 'the view north', feel: [STAGE_14], own: true, archetypes: 'any', phases: ['goal'], jobs: ['exit'], difficulty: 1,
@@ -275,7 +298,7 @@ const VIEW: SectionTemplate = {
 
 /** every section that is 1-4's own */
 export const SECTIONS_14: SectionTemplate[] = [
-  ARRIVE, GOING_UP, ROTTING, FIELD_TEACH, PODS, PUSH, PUSH_TWO, UNDER_FIRE, COLUMNS, DROP_ONE, HOLLOW, CROWN,
+  ARRIVE, GOING_UP, ROTTING, FIELD_TEACH, PODS, PUSH, ROTTEN_FORK, PUSH_TWO, UNDER_FIRE, COLUMNS, DROP_ONE, HOLLOW, CROWN,
   ...RESTS, VIEW,
 ];
 
@@ -298,7 +321,7 @@ type FinishStage = { platforms: Platform[]; vines: Vine[]; clusters?: VineCluste
 /** the beats 1-4 runs (beat.ts): each pod names one */
 export function beats14(maxLen: number | Partial<Record<keyof typeof BEATS, number>>): ClockDef[] {
   const len = (b: keyof typeof BEATS) => Math.max(1, typeof maxLen === 'number' ? maxLen : (maxLen[b] ?? 1));
-  return (Object.keys(BEATS) as Array<keyof typeof BEATS>).map((b) => podBeat(`pods-${b}`, BEATS[b], TELL, len(b), EASY_STRETCH));
+  return (Object.keys(BEATS) as Array<keyof typeof BEATS>).map((b) => podBeat(`pods-${b}`, BEATS[b], PODS_14.tell, len(b), PODS_14.easyStretch, 0, PODS_14.speed));
 }
 
 /**
@@ -353,12 +376,12 @@ export function finish14<T extends FinishStage>(st: T, difficulty: Difficulty): 
       // (its bough is the field's rough bough picture, shut or open, never the ground painter's branch: fieldPlay.ts draws it)
       top.art = 'hidden';
     }
-    for (const pd of row.pods) {
+    for (const pd of PODS_14.on ? row.pods : []) {
       const v = vine(pd.vine)!;
       const podTop = top.y + POD_HANG;
       const b = row.beat ?? 'steady';
       maxLen[b] = Math.max(maxLen[b] ?? 0, foot.y - podTop);
-      pods.push({ id: pods.length + 1, vine: v.id, x: v.x, top: podTop, land: foot.y, clock: `pods-${b}`, shift: pd.shift, cost: easy ? 'knock' : 'heart' });
+      pods.push({ id: pods.length + 1, vine: v.id, x: v.x, top: podTop, land: foot.y, clock: `pods-${b}`, shift: pd.shift, cost: easy ? 'knock' : 'heart', speed: PODS_14.speed });
     }
   }
   // (the view north: the squirrels' nest door in the crown bough, shut as he climbs up to it, open as he arrives (KitDecor `near`):
