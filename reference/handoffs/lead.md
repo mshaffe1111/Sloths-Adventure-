@@ -13,7 +13,7 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 - **THE ENGINE DRIVES DEVELOPMENT (Matt, 11-14 1:55 PM ET):** "Game engine drives development... the pieces in the engine that are going to
   be repeated. One-offs can be done by the developers... we are always trying to shave time for each level... Not cut quality, but improve
   every level. It needs to be strategic, it needs to be lean, it needs to be aggressive." Plan engine pieces + bot skills three levels
-  ahead; every level faster than the last (LEVEL-LOG.md), same bar. Full text: the persona's section "The engine drives development" (LEAD-PERSONA.md; the 11-14 rewrite in LEAD-PERSONA-DRAFT-2026-11-14.md).
+  ahead; every level faster than the last (LEVEL-LOG.md), same bar. Full text: the persona's section "The engine drives development" (reference/roles/LEAD-PERSONA.md, rewritten 11-14).
 - **NEVER PATCH FOR ONE LEVEL: FIX GLOBALLY, KEEP THE ENGINE FLEXIBLE** (Matt, 11-14 1:42, 1:46, 1:48 PM ET; R-165.246): "we're not
   adding pieces to the engine like we should"; "even if it changes previous levels, if it's a fix that is affecting everything, we put it in";
   "if we find something that's reoccurring when we're in world 8 and it affects world 1, we still fix it, and we let it all fix everything.
