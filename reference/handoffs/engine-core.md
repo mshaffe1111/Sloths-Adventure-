@@ -9,6 +9,34 @@ its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-
 proven plan; Play is never blocked).
 
 Rewritten again at the stop of RULER (2026-11-13, branch `t-ruler`): the per-gap pit ruler, built and HELD on 1-1's openings, R-165.221 (section 0o). Sections below are still true.
+Rewritten for TIPS (2026-11-14, branch `t-tips`): tip bands, the tip verdict and gate, the locked exit's line and plate (section 0t).
+
+## 0t. Tips fire where their mechanic is; the locked exit says why at once (TIPS, R-165.236 / .241, t-tips from t-int-8, 11-14)
+- **A rolled tip carries `band`** (StageHint.band [top, bottom], his FEET, in the air or not): `tipBand(sec)` in pipeline.ts = the
+  section's pieces, entry, exit and vines (top and bottom), widened `TIP_BAND.over` BOUNCE_REACH 258 above and `.under` DOUBLE_RISE 185
+  below. Seams are left OUT (in a tower they are the storey under: the turn's ledge and the catches; with them 1-4's creak tip could be
+  said 1,134 px of climb early, without 860 at worst). engine.ts's hint filter refuses a banded hint while his feet are outside.
+  Before: x alone, so 1-4's four teach lines went up in the first 3 s on the start floor.
+- **Flat stages did not move**: src/game/tipBand.test.ts plays the first-timer's whole run on 1-1, 1-2, 1-5 (Normal + Easy) twice,
+  with bands and with them stripped, and requires every tip on the same frame. Planted: TIP_BAND {0, 0} moves 1-1 and 1-5
+  (reference/qa-reports/TIPS/planted-band-zero.txt). The lock: only `proto.hints` moved, on the 22 rolled stages with tips.
+- **The verdict** (`tipReach` / `tipMisses`, towers only -> `towerMiss`, fails the roll by name): no tip said more than `TIP_NEAR`
+  1,026 px of route before its socket (PHYS.maxRun x `TIP_SAY_S` 3.6 s, the time engine.ts says a stage tip; said further back the
+  line is gone before he gets there), and a teach tip sits in the first section on the route whose template teaches or uses its
+  mechanic. On a run the first can't happen (its route is x); the test still runs the second on every rolled stage.
+- **The gate**: `npx tsx tools/engine/tipwalk.ts --layouts 4` (gates.yml; own test tools/engine/tipwalk.test.ts): every vertical
+  rolled stage (found from the builds: today only 1-4), the verdict plus a real-engine 20 s walk from the spawn where every tip said
+  must have his feet in its band. `--strip` is the x-alone run (64 misses on 1-4). Set the setting with `setDifficulty`, never
+  localStorage (a RealPlay built Normal when asked Easy; the tool prints BUILT and fails a mismatch, D62).
+- **The locked exit (R-165.241)**: engine.ts says the sealed door's line with `GuideOpts.lock` (onGuide -> App.tsx -> DotGuide
+  engineLine -> engineGuideLine `lock`): kind 'must' whatever its words, so it cuts in over any card. The keeper's own door lines
+  (stagePlan SEALED_LINES: 1-5's marks; 1-6's petals on t-build-16) classify as info by their words and waited behind her mark card.
+  It is said at once over a line still up (`stageHint?.text !== said`; was `!stageHint`). The first-timer passes `lock` too (D19).
+  The door's "N more" plate is drawn in drawPopups (words in play: over Pokey, under the HUD) at `PLATE_TOP` (sanctuaryDoor.ts), its
+  bottom 70 px over his drawn head as the door holds him; drawSanctuaryDoor no longer draws it. Tests: src/game/sealedLine.test.ts.
+- **Open**: R-165.238 (delete proto 1-6) waits on t-build-16 landing in an integration branch (it had not at 1:20 PM ET 11-14).
+  1-6's tower (t-build-16) joins tipwalk by itself once merged (verticalStages reads the builds). The bands overlap between storeys
+  (258 over + 185 under): a tip skipped by a teleport fires at the next storey's foot (seen in the clip harness, not in play order).
 
 ## 0o. The per-gap pit ruler (RULER, R-165.197/.200, branch t-ruler from t-nodes@1829470f, 11-13): built, HELD on 1-1
 - **findOpenPits (w1Pits.ts) judges each gap by its own lips.** Ground is earth only (`EARTH_DEEP` 90: a bank, a stump, a pillar); a log
