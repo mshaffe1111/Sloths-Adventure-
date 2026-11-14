@@ -1,0 +1,84 @@
+/**
+ * R-165.226 (reported by Matt, 11-14 12:06 AM ET, 1-1 screenshot: "props hang over ledges and pits"): a stone or stump's cut art is drawn
+ * on the ground run it stands on, never out over the drop at that ground's edge (w1CutArt.ts pickCut's `run`, w1.ts w1Finish). Matt's
+ * frame is the first-run layout (list seed 9800, layout 17) on Easy: the mossy boulder on piece 97 (x 20938..21180) stood 19 px short of
+ * its bank's edge and its art reached ~100 px past it, over the dip's floor slab. The art changes, never a platform, so no roll moves.
+ */
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import './headlessDom.ts';
+import { RealPlay } from './realPlay.ts';
+import { setDifficulty } from './difficulty.ts';
+import { loadSeedList, provenSeedFor } from './gen2/seedList.ts';
+import { groundRun, overRun, pickCut, OVER_EDGE, W1_CUT, LAID } from './w1CutArt.ts';
+import { listedStage } from './gen2/listed.ts';
+import type { Platform } from './types.ts';
+
+type P = Platform & { cut?: string };
+/** every stone or stump drawn past its ground's edge, and whether a piece of its kind would have stayed on it */
+function overhangs(platforms: readonly P[]): Array<{ id: number; cut: string; over: number; fits: boolean }> {
+  const out: Array<{ id: number; cut: string; over: number; fits: boolean }> = [];
+  for (const p of platforms) {
+    const c = p.cut ? W1_CUT[p.cut] : undefined;
+    if (!c || c.kind === 'log') continue;
+    const run = groundRun(p, platforms);
+    if (!run) continue;
+    const over = overRun(p, c, run);
+    if (over <= OVER_EDGE.px) continue;
+    const fits = Object.keys(LAID).some((k) => W1_CUT[k] && W1_CUT[k].kind === c.kind && overRun(p, W1_CUT[k], run) <= OVER_EDGE.px);
+    out.push({ id: p.id, cut: p.cut!, over: Math.round(over), fits });
+  }
+  return out;
+}
+
+test('R-165.226 planted (Matt\'s frame): the first run on Easy, the mossy boulder at x 20938 stays on its bank', async () => {
+  await loadSeedList('1-1');
+  setDifficulty('easy');
+  assert.equal(provenSeedFor('1-1', 17), 9800, 'layout 17 is the first-run seed 9800 (seedList.ts provenSeedFor is 0-based)');
+  const st = new RealPlay('1-1', 17).stage as unknown as { platforms: P[] };
+  const rock = st.platforms.find((p) => Math.round(p.x) === 20938 && p.cut);
+  assert.ok(rock, 'the boulder of Matt\'s frame is laid (piece at x 20938 with a cut)');
+  const run = groundRun(rock!, st.platforms)!;
+  assert.equal(Math.round(run[1]), 21199, 'its ground ends at bank 93\'s edge, 21199, then the dip');
+  assert.ok(overRun(rock!, W1_CUT[rock!.cut!], run) <= OVER_EDGE.px, `drawn ${Math.round(overRun(rock!, W1_CUT[rock!.cut!], run))} px past its bank's edge`);
+  // (red without the run: the same piece, chosen as before, hangs over the dip)
+  const old = pickCut(rock!)!;
+  assert.ok(overRun(rock!, W1_CUT[old], run) > 40, `without the run its piece (${old}) is drawn ${Math.round(overRun(rock!, W1_CUT[old], run))} px over the dip`);
+  setDifficulty('normal');
+});
+
+test('R-165.226 planted: a stone at its ground\'s edge takes a piece that stays on the ground; given no run, it may not', () => {
+  // (a 230 px stone ending 70 px short of its bank's lip: the widest-drawn boulders reach out over the drop, the slabs do not)
+  const bank = { id: 1, x: 0, y: 1000, width: 1000, height: 500, type: 'solid', style: 'moss_stone' } as P;
+  let saw = 0;
+  for (let id = 2; id < 60; id++) {
+    const stone = { id, x: 700, y: 950, width: 230, height: 50, type: 'solid', style: 'moss_stone' } as P;
+    const run = groundRun(stone, [bank, stone])!;
+    assert.deepEqual(run, [0, 1000]);
+    const c = pickCut(stone, run)!;
+    assert.ok(overRun(stone, W1_CUT[c], run) <= OVER_EDGE.px, `id ${id}: ${c} drawn ${Math.round(overRun(stone, W1_CUT[c], run))} px past the lip`);
+    if (overRun(stone, W1_CUT[pickCut(stone)!], run) > OVER_EDGE.px) saw++;
+  }
+  assert.ok(saw > 0, 'planted: without the run some ids pick a piece drawn past the lip (the test can fail)');
+});
+
+test('R-165.226 gate: every World 1 listed stage, layouts 0-24, both settings: no stone or stump drawn past its ground\'s edge when a piece of its kind stays on it', async () => {
+  const left: string[] = [];
+  for (const id of ['1-1', '1-2', '1-3', '1-4', '1-5']) {
+    if (!listedStage(id)) continue;
+    await loadSeedList(id);
+    for (const d of ['normal', 'easy'] as const) {
+      setDifficulty(d);
+      for (let v = 0; v < 25; v++) {
+        const st = new RealPlay(id, v).stage as unknown as { platforms: P[] };
+        for (const o of overhangs(st.platforms)) {
+          assert.ok(!o.fits, `${id} layout ${v} ${d}: piece ${o.id} (${o.cut}) drawn ${o.over} px past its ground's edge, and a piece of its kind would stay on it`);
+          left.push(`${id} L${v} ${d} ${o.cut} ${o.over}px`);
+        }
+      }
+    }
+  }
+  setDifficulty('normal');
+  // (what no piece of its kind fits: printed, named in POLISH-5's REPORT as open (R-165.226), never passed silently)
+  console.log(`R-165.226: ${left.length} stones/stumps no piece of their kind keeps on their ground: ${[...new Set(left.map((l) => l.split(' ').slice(3, 5).join(' ')))].join(', ')}`);
+});

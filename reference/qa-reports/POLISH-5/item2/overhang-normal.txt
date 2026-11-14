@@ -1,0 +1,13 @@
+v0 normal 38 w1-rock-boulder-moss x7224..7364 foot run 7108..7364 drawn past it 71 px; cuts that fit: none
+v1 normal 31 w1-rock-roots x5818..5958 foot run 5702..5958 drawn past it 83 px; cuts that fit: none
+v1 normal 48 w1-rock-boulder-moss x10818..11038 foot run 10216..11102 drawn past it 47 px; cuts that fit: w1-rock-block-big,w1-rock-root-block,w1-rock-roots
+v1 normal 55 w1-rock-boulder-moss-big x12270..12473 foot run 12188..12887 drawn past it 65 px; cuts that fit: w1-rock-root-block
+v1 normal 57 w1-rock-slabs-stacked-big x12600..12808 foot run 12188..12888 drawn past it 25 px; cuts that fit: w1-rock-block-big,w1-rock-root-block,w1-rock-roots
+v1 normal 64 w1-boulder-grey-moss-b x14017..14200 foot run 13909..14282 drawn past it 34 px; cuts that fit: w1-rock-block-big,w1-rock-root-block
+v2 normal 32 w1-boulder-grey-moss x6016..6156 foot run 5902..6156 drawn past it 97 px; cuts that fit: none
+v2 normal 113 w1-rock-slabs-stacked-big x20683..20823 foot run 20569..20823 drawn past it 71 px; cuts that fit: none
+v2 normal 115 w1-boulder-grey-moss-b x21179..21319 foot run 21065..21319 drawn past it 84 px; cuts that fit: none
+v3 normal 38 w1-rock-boulder-moss x7328..7468 foot run 7212..7468 drawn past it 71 px; cuts that fit: none
+v4 normal 32 w1-boulder-grey-moss x6027..6167 foot run 5911..6167 drawn past it 97 px; cuts that fit: none
+v4 normal 150 w1-boulder-grey-moss-b x31430..31614 foot run 31324..32808 drawn past it 37 px; cuts that fit: w1-rock-slabs-stacked,w1-rock-block-big,w1-rock-root-block
+1-1 normal layouts 0-256: 9598 stones/stumps, 914 drawn past their ground's edge (>6 px), 611 of them have a cut of the same kind that fits; by cut {"w1-rock-boulder-moss":80,"w1-rock-roots":131,"w1-rock-boulder-moss-big":94,"w1-rock-slabs-stacked-big":123,"w1-boulder-grey-moss-b":93,"w1-boulder-grey-moss":158,"w1-rock-slabs-low":107,"w1-rock-slabs-stacked":38,"w1-rock-block-big":62,"w1-rock-root-block":27,"w1-stump-wide":1}
