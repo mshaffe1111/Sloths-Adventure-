@@ -156,6 +156,9 @@ function findOpenPits(platforms: readonly Platform[]): PitGap[] {
     const g = gapLine(yl, yr);
     // (a dip's inside lies deeper than SOFT_BELOW under its line, all of it: else it is a step in the ground, not a gap)
     if (inside.some((s) => s.y <= g + SOFT_BELOW)) return false;
+    // (and its walls stand at its edges: a piece lying on the ground that runs on under all of it (a fat log, a stump) is a thing on the
+    // floor, not a wall, and the ground beside it no pit (1-2 layout 3, x14684: a 124 px log on the 602 bank read as a pit's wall))
+    if (inside.length && (onFloor(x0, yl, true) || onFloor(x1, yr, false))) return false;
     judged(x0, x1, yl, yr, g);
     return true;
   };
@@ -186,6 +189,12 @@ function findOpenPits(platforms: readonly Platform[]): PitGap[] {
     // (the steps out, and anything else standing in it: x, y, w, h)
     const steps = platforms.filter((q) => !q.broken && q.type !== 'fragile' && q.x < x1 && q.x + q.width > x0 && q.y > top + 4 && q.y < floor - 4).map((q) => [q.x, q.y, q.width, q.height, !!q.soil] as [number, number, number, number, boolean]);
     out.push({ x0, x1, top, kind: 'soft', floor, lipL: true, lipR: true, steps });
+  };
+  // (the earth piece whose top is the gap's lip at x (its left lip ends there, its right lip starts there), lying on earth that runs on under
+  // all of it, its top SOFT_BELOW or more under the piece's top and no deeper than its foot)
+  const onFloor = (x: number, y: number, left: boolean) => {
+    const rim = earth.filter((q) => Math.abs(q.y - y) < 0.5 && (left ? q.x < x && q.x + q.width >= x - 0.5 : q.x <= x + 0.5 && q.x + q.width > x));
+    return rim.length > 0 && rim.every((r) => earth.some((f) => f !== r && f.y >= r.y + SOFT_BELOW && f.y <= r.y + r.height + 10 && f.x <= r.x + 2 && f.x + f.width >= r.x + r.width - 2));
   };
   // (the far wall of the last dip judged: a drop inside a dip is part of its floor, not a gap of its own)
   let dipEnd = -Infinity;

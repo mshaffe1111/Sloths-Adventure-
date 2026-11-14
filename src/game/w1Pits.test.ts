@@ -322,3 +322,14 @@ test('per-gap ruler: a log chain over a hole is one gap between the banks, judge
 test('per-gap ruler: a hole wider than 1,600 px between two banks is judged (no cap)', () => {
   assert.deepEqual(findW1Pits([P(1, 0, G, 1000, 90), P(2, 3000, G, 1000, 90)]).map((q) => [q.x0, q.x1, q.kind]), [[1000, 3000, 'fall']]);
 });
+
+test('per-gap ruler: a piece lying on the ground is no pit wall (1-2 layout 3, seed 3, x14136..14684: a 124 px log on a falling stair)', () => {
+  // (the pieces as laid: earth stepping down 517 -> 569 -> 602, and a fat log (124 deep) lying on the 602 bank. The log is not a wall:
+  // the bank it lies on runs on under all of it, so the stair is no dip and no fall)
+  const stair = [P(80, 13904, 517, 232, 510), P(81, 14136, 569, 232, 458), P(87, 14368, 602, 1065, 425), P(88, 14448, 547, 160, 55), P(89, 14684, 478, 300, 124, { style: 'log' })];
+  assert.deepEqual(findW1Pits(stair).map((q) => [q.x0, q.x1, q.kind]), []);
+  assert.deepEqual(floorlessGaps({ platforms: stair }), []);
+  // (planted: the same walls with the bank under the log cut at the log, a real step down on the far side: a pit between real walls)
+  const pit = [P(80, 13904, 517, 232, 510), P(81, 14136, 669, 548, 458), P(89, 14684, 478, 300, 524)];
+  assert.deepEqual(findW1Pits(pit).map((q) => [q.x0, q.x1, q.kind]), [[14136, 14684, 'soft']]);
+});
