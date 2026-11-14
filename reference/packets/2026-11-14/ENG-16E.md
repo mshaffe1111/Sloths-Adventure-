@@ -1,5 +1,6 @@
 # ENG-16E: 1-6's engine findings, fixed for EVERY stage (R-165.246; Matt 11-14: "the engine is global... builders don't do engine work"): A. the chain's last leap, B. the shared petal fill, C. World 1's FAR row. Opus 5.5 xhigh (engine). Written 1:47 PM ET 11-14 by the lead.
-Branch t-eng-16e from origin/t-build-16 (its head when you start: 1-6 is where the fault showed). READ FIRST: reference/methods/level.md
+Branch: work ON t-build-16 (its head when you start: BUILD-16d's STOPPED head; 1-6 is where the faults showed). You fix the engine
+items for every stage, then FINISH 1-6 yourself (no further builder hand-off). READ FIRST: reference/methods/level.md
 rule 22, reference/qa-reports/BUILD-16c/REPORT.md (the petal findings: fillGaps drops petals on pit floors on stretches over 1,050 px with
 no socket petal; a creaky limb can't hold one, flowerReach.ts:140), src/game/petals.ts + petalPass.ts, LESSONS D29, D40, D63, D69.
 A. THE CHAIN'S LAST LEAP (BUILD-16d 11-14, reference/qa-reports/BUILD-16d/: Normal bots 1-2/6, kid thorn deaths off the chain's LAST
@@ -18,5 +19,10 @@ GLOBAL (A, B, C): every stage the change moves is re-checked and shipped with it
    reason to lower it), tierBots 1-1 unmoved (or recalibrated per BOTS.md), the whole suite.
 4. 1-6: say whether BUILD-16c's per-beat socket petals are still needed; if not, list them for removal by 1-6's builder (data).
 5. Stills: a pit stretch and a creaky limb on 1-5 and 1-6, before/after, upright + sideways. Full CLAUDE.md Checks (buildcheck ALONE).
-No until/sleep wait loops (D67); read the queue at every push (D57). BOX: 90 minutes or 40% context (400k of 1M by the real figure).
+D. THEN FINISH 1-6 from reference/qa-reports/BUILD-16d/REPORT.md's EXACT NEXT STEP: relist + bots 1-40 both settings (0 rescues; a kid
+   Normal rescue only if located and honest, like 1-1 L10), the WHOLE suite, plant.sh, stills upright + sideways Normal + Easy of every
+   beat, CLIPS (first liana, the chain, snake on your vine, the false liana, the gorge, sealed + open exit; name the frame, D69), full
+   CLAUDE.md Checks (buildcheck ALONE), REPORT with a Polish check. Gates: run what your change can affect while you work; the full set once
+   on your final head.
+No until/sleep wait loops (D67); read the queue at every push (D57). BOX: 2 hours or 40% context (400k of 1M by the real figure).
 Lead: session_01FhBbYNzGRJBDMzn6XbtQK2.
