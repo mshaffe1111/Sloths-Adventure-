@@ -51,13 +51,16 @@ const standAt = (what) => p.evaluate(([E, what]) => {
   Object.assign(e.player, { x: f.x - 70, y: pl.y - e.player.height, vx: 0, vy: 0, climbing: false, facing: 1 });
   return { x: f.x, y: f.y };
 }, [E, what]);
+// (a reader: he taps Dot's card once he has read it, 2 s after it shows, as BUILD-16b's 'reader'; an unread card stays up to 3x its
+// reading time and the next line waits behind it, '+1')
+const read = async () => { const b = p.locator('.dg-bub.in').first(); if (await b.count()) { await b.tap({ timeout: 3000 }).catch(() => {}); await p.waitForTimeout(400); } };
 const walk = async (ms) => { await p.keyboard.down('ArrowRight'); await p.waitForTimeout(ms); await p.keyboard.up('ArrowRight'); };
 await beat('1-4 start: walking the floor'); await walk(4000); await p.waitForTimeout(2500);
-await p.screenshot({ path: `${out}/1-floor.jpg`, type: 'jpeg', quality: 80 });
+await p.screenshot({ path: `${out}/1-floor.jpg`, type: 'jpeg', quality: 80 }); await read(); await p.waitForTimeout(2500); await read(); await p.waitForTimeout(2500); await read();
 await beat('the first creaking bough'); const c = await standAt('creak'); await p.waitForTimeout(600); await walk(700); await p.waitForTimeout(3400);
-await p.screenshot({ path: `${out}/2-creak.jpg`, type: 'jpeg', quality: 80 }); console.log('DOT@creak', await p.evaluate(() => [...document.querySelectorAll('.dg-bub, .dg-root')].map((d) => d.className + ':' + d.textContent.slice(0, 50)).join(' | '))); await p.waitForTimeout(1500);
+await p.screenshot({ path: `${out}/2-creak.jpg`, type: 'jpeg', quality: 80 }); console.log('DOT@creak', await p.evaluate(() => [...document.querySelectorAll('.dg-bub.in')].map((d) => d.textContent.slice(0, 60)).join(' | '))); await read();
 await beat('the first fig gate'); const g = await standAt('figs'); await p.waitForTimeout(600); await walk(700); await p.waitForTimeout(3400);
-await p.screenshot({ path: `${out}/3-figs.jpg`, type: 'jpeg', quality: 80 }); await p.waitForTimeout(1500);
+await p.screenshot({ path: `${out}/3-figs.jpg`, type: 'jpeg', quality: 80 }); console.log('DOT@figs', await p.evaluate(() => [...document.querySelectorAll('.dg-bub.in')].map((d) => d.textContent.slice(0, 60)).join(' | '))); await p.waitForTimeout(1500);
 const fired = await p.evaluate(() => window.__fired);
 console.log('SOCKETS', JSON.stringify({ creak: c, figs: g }));
 console.log('FIRED', JSON.stringify(fired));

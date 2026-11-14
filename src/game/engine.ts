@@ -7808,8 +7808,8 @@ export class GameEngine {
    */
   private drawPopups(ctx: CanvasRenderingContext2D) {
     // (the shut door's "N more" plate: words in play, over Pokey as the door holds him at it, R-165.241; sanctuaryDoor.ts)
-    const door = this.exitItemRef;
-    if (door && door.isLocked && door.missing && !door.collected) drawDoorPlate(ctx, door.x, door.y, door.missing);
+    const door = this.exitItemRef, vc = this.camera;
+    if (door && door.isLocked && door.missing && !door.collected && door.x > vc.x - 120 && door.x < vc.x + vc.viewportWidth + 120 && door.y > vc.y - 80 && door.y < vc.y + vc.viewportHeight + 220) drawDoorPlate(ctx, door.x, door.y, door.missing);
     ctx.save();
     ctx.textAlign = 'center';
     // (a boss fight is zoomed out to show both fighters: the words grow back to a readable size on the phone, QA gate)
