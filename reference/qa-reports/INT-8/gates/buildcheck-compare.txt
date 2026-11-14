@@ -21,3 +21,11 @@ buildcheck (1-1, budget p95 <= 150 ms at CPU x4): FAIL
   easy: p50 52 ms, p95 90 ms, max 103 ms (30 builds, CPU x4)
 -- round 3 (the lead 12:17 PM: each head at least twice, alternating)
 == 2840b63c load 1.55 12:17:09 PM
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): PASS
+  normal: p50 65 ms, p95 122 ms, max 125 ms (30 builds, CPU x4)
+  easy: p50 55 ms, p95 87 ms, max 89 ms (30 builds, CPU x4)
+== 595ada5d load 1.58 12:17:17 PM
+buildcheck (1-1, budget p95 <= 150 ms at CPU x4): FAIL
+  normal: p50 74 ms, p95 181 ms, max 185 ms (30 builds, CPU x4)  OVER 150 ms
+  easy: p50 50 ms, p95 88 ms, max 105 ms (30 builds, CPU x4)
+== 007f4421 load 2.38 12:17:25 PM
