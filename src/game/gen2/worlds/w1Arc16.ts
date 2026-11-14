@@ -154,9 +154,11 @@ function lianaRun(k: string, from: string, steps: Step[], walk = 0): { pieces: S
   });
   return { pieces, last: at, perches };
 }
-/** a false liana hanging past `from`'s end (a still snake from the canopy, FALSE_LEN long: he passes under it), `reach` px out */
+/** a false liana hanging past `from`'s end (a still snake from the canopy, FALSE_LEN long: he passes under it), `reach` px out. It is
+ *  laid still (amp 0, no roll taken: the same rolls as before), as the snake lay leaves it (snakeLay.ts 'still'), so the lay's swing
+ *  clearance (pipeline.ts clearSwings) measures it as it hangs (ENG-16G, R-165.246) */
 const stillOne = (key: string, from: string, reach: R2): SectionPiece =>
-  ({ key, shape: 'liana', w: [0, 0], place: { kind: 'swing', after: from, top: [400, 420], reach, len: FALSE_LEN } });
+  ({ key, shape: 'liana', w: [0, 0], place: { kind: 'swing', after: from, top: [400, 420], reach, len: FALSE_LEN, amp: 0 } });
 /**
  * Walked ground after a beat's lianas: `n` root hops (up onto a root, down off it) from `from`. The stage's length comes from here and
  * from the rests, never from more lianas (lead's ruling 11-14 10:36 AM ET: 1-6 read 9.6 Normal / 8.8 Easy on the meter, its swings the
