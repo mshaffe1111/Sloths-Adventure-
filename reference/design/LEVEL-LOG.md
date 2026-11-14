@@ -110,3 +110,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | FIX-15b (Opus xhigh) | proved the lay rule leaves 1-4 unrollable (0/40), shipped the gate-flag rule (planted, no roll moved), mock-up of option A for Matt | $11.48 | ~65 min |
 | BUILD-17b (Opus xhigh) | 1-7 shared faults fixed globally (sweeper judged by its stretch, listed stages preload their sheets, creak-over-pit join, stale rows), 5 old-1-7 tests retargeted, plainWalk fix; re-runs owed to INT-9 | $20.80 | ~65 min |
 | ENG-16E (Opus xhigh) | swing sweet-spot snapshot keeps the vine amp (root of the weak chain leap, planted), testers-reach perch lay, shared petal fill skips pits/creaks (global), bot climb-back direction; found 26 old reds never run on t-build-16 | $27.02 | ~90 min (55% context) |
+| POLISH-10 (Opus xhigh) | W1 background line (drawLip soil row, all worlds), bounce arrow dropped, 1-4 canopy seam + floating shard; 2 ready packets | $10.59 | ~80 min |
