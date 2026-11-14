@@ -4,9 +4,24 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for BUILD-17 (11-14, t-build-17): section 0x (1-7 built; hanging cover; the perch at 56). Rewritten for ENG-E2 (11-14, t-eng-e2): section 0w (1-7's moss cover, the perch, bots that hold still). Rewritten for ENG-E1 (11-14, t-eng-e1): section 0v (1-7's eagle and cover on the kit). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0x. 1-7 built on the kit (BUILD-17, t-build-17, 11-14): what the next engineer must know
+- **1-7 is World 1 data**: gen2/worlds/w1Arc17.ts (kitLib17, finish17), stage-table row 'w1-17', listed.ts KITS/FINISH. The hand-built 1-7
+  is deleted (protoStage's 1-7 plan, secretBush/ropeBushes/acornMeadow, w1Sections' rows, stage17.test.ts and the old 1-7 tests).
+- **World 1 has no decorate pass**, so World 1's still finish (clipWatches + castWatches) runs as finish17's first step: libstage and the
+  pipeline's own checks see the stage BEFORE it (no eagles, "cast (no cast)"); the game and w1Arc17.test.ts see it after.
+- **A stretch ends at a gap** (stillLay watchedRun): a beat whose question is across a gap (the creaky limb, the lianas) gets one eye over
+  the whole beat in finish17 (W17_JOIN: to 120 px past the beat's last hide).
+- **Hanging is holding** (engine.ts:4625-4626, stepCast): the cast's hero had climbing/swinging as holding, never hanging, so hanging moss
+  never hid him in the game; and a creep along the rope is moving (stillness.ts moving, CastHero.hanging). hangCover.test.ts, planted.
+- **The perch is 56 px** (sweepPose.ts SNAG_PERCH, w17Art.ts snagB.perch 712): at 90 it cleared the progress sign by 4 px sideways (zoom
+  0.763); BUILD-17's shoot-perch.mjs prints eagle top vs `.vh-cplate` bottom in every caption.
+- **Kit tip ids that equal a move lesson ('creak', 'swing') are never said**: a stage's own lines need their own ids (lineId: `w17.<key>`).
+- **The swing bot cannot climb back out of a moss pit** after a missed swing (BUILD-16b's open item): 1-7's last rescues are all there.
+  firsttimer.ts now holds a MOSSY liana through the eagle's look (it let go toward ground cover mid-swing before).
 
 ## 0w. 1-7's moss cover, the perched eagle, bots that hold still (ENG-E2, t-eng-e2, 11-14): what the next engineer must know
 - **Moss is cover like a bush** (watcher.ts Bush kinds `moss` carpet, `mossPatch` mound, `mossHang` hanging): laid by W1_STILL's rows
