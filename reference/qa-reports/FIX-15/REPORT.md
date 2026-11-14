@@ -1,5 +1,5 @@
 # FIX-15 REPORT: 1-4 fig gate, no way over or through a shut bough (R-165.212). Branch t-fix-15 from origin/t-int-8-clip (315548d1).
-Engine member, Opus 5.5. Started 11:49 AM ET 11-14. Status: **item 1 (engine) GREEN** (the lead's ruling 12:24 PM ET: push GREEN for
+Engine member, Opus 5.5. Started 11:49 AM ET 11-14, gates finished 1:4x PM ET (the lead approved running them past the box). Status: **item 1 (engine) GREEN** (the lead's ruling 12:24 PM ET: push GREEN for
 item 1 only); **"over" stays RED until FIX-15b's lay rule** (93 of 192 gates have wood from which a side jump lands him ON the shut top).
 
 ## The lead's question: from the shut top, can he carry on past the gate without locking it? **No.**
@@ -94,6 +94,10 @@ passed over and fell through. A respawn there puts him on the shut top, where he
 - PLANNER (tower.ts, pipeline.ts verdicts, seedlist 1-4): step 2 above. Done: towerGates refuses (a) wood under a sealed piece's
   drawn wood with less room than GATE.head + margin, (b) wood not wholly under its lid from which `leaps` reaches its sagged top; the
   lay never lays either; 1-4's list rebuilt; the clip prints `never` twice; castBots 1-4 unchanged.
+- CRITIC (tools/perf/clipcheck.mjs, "Dot's first tip"): the step fails about 2 runs in 3 on this branch and passed 2 of 2 on base, on a
+  stage (1-3) this change cannot touch. Done: the walk to her first tip is deterministic (the engine stepped, not wall-clock hops), or
+  the step waits for the first tip by its text and dismisses any earlier hold card first; planted: a hold card shown first must not
+  make the step miss.
 - DESIGNER: should a checkpoint flag stand on a gate's own bough at all? 49 of 96 gates have one. A flag a storey past the gate's ways
   would be claimed only after the gate opens, whatever the lay does.
 
@@ -138,4 +142,16 @@ reference/handoffs/engine-core.md: header line + section 0k's gate bullet rewrit
 - `node tools/perf/drawcheck.mjs` (CI=1): every scenario ✓ (1-4 both orientations, its gate lock's draw at 0.25/frame) EXCEPT
   `ctest-mix14 port/land: could not be played (window.__play is not a function)`, its FIRST scenario, started while the unit suite,
   a lock run and drawcheck's own two dev servers shared 4 cores ("Cannot read properties of null (reading 'quality')" then the
-  missing dev hook: the page was not up). Re-run on a quiet machine: see below.
+  missing dev hook: the page was not up). **Re-run on a quiet machine: `PASS (446 s)`, every scenario played.**
+- `node tools/perf/kbdcheck.mjs`: `PASS (127 s)` (its stills, rewritten in reference/qa/tester-page-1106/keyboard/, restored: gate output).
+- Seed lists, every listed stage (gates.yml line 97): 1-1 PASS (162), 1-2 PASS (100), 1-3 PASS (100), 1-4 PASS (100), 1-5 PASS (150),
+  "the verdicts refuse 0" on each. `registrycheck: PASS (5 stages)`.
+- `npx tsx --test tools/inspect/tierBots.test.ts`: `# pass 7`, `# fail 0`.
+- `node tools/perf/clipcheck.mjs`: **`PASS (83 known)` on this head** (run 3). Runs 1 and 2 on this branch FAILED one step, `fresh up:
+  Dot's first tip` (1-3: it walks him right with real-time key hops 300 ms apart and waits 5 s for the Skip-tips button; the miss shot
+  shows the snake/hive teach card, which has no Skip). Base origin/t-int-8-clip passed it twice. 1-3 lays no vine field
+  (`field` is null on layouts 0-2), and every new path in this change runs only behind `this.field`, so the step is timing-sensitive,
+  not this change: a flaky-gate finding for the Critic (suggestion below), not a known-list entry.
+- `node tools/perf/buildcheck.mjs`, run ALONE: `PASS` (1-1 at CPU x4: Normal p50 48 / p95 127 / max 136 ms; Easy p50 42 / p95 61 /
+  max 67 ms; budget p95 <= 150).
+**Item 1: GREEN on every gate on code head 1d50e45a.**
