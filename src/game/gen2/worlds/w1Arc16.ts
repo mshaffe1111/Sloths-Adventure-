@@ -18,7 +18,7 @@ import type { GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldK
 import type { Difficulty } from '../types.ts';
 import { w1World } from './w1.ts';
 import { THORN_ROW, ROOM_12 } from './w1Arc12.ts';
-import { w1Liana, withSwing, type LianaGap } from './w1Swing.ts';
+import { W1_LIANA_GAP, w1Liana, withSwing, type LianaGap } from './w1Swing.ts';
 import { laySnakes, type SnakeStage, type SnakeTable } from '../snakeLay.ts';
 
 /** the stage these rows are for: the tag its sections carry and the key of its brief */
@@ -46,23 +46,9 @@ export const BRIEF_16: GraphBrief = {
 const UP: R2 = [-56, -50], DOWN: R2 = [50, 56];
 /** a moss bank he walks on, `w` exact */
 const bank = (key: string, after: string | null, w: number, dy: R2 = [0, 0]): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: after ? { kind: 'walk', after, dy } : { kind: 'start' }, style: 'moss_stone', main: true });
-/** a moss bank a liana throws him onto, level with the bank he left, at the gap's share of its band (SHORT and LONG: a bank) */
-const SHARE: Record<LianaGap, R2> = { short: [0, 0.35], long: [0.75, 1], far: [0.85, 1] };
-const WINDOW: Partial<Record<LianaGap, { normal: number; easy: number }>> = { far: { normal: 0.3, easy: 0.55 } };
-const landBank = (key: string, liana: string, gap: LianaGap, w: number): SectionPiece =>
-  ({ key, shape: 'bank', w: [w, w], place: { kind: 'land', after: liana, dy: [0, 0], share: SHARE[gap], ...(WINDOW[gap] ? { window: WINDOW[gap] } : {}) }, style: 'moss_stone', main: true, landing: true });
-/** FAR's narrow perch: a bough 120-140 px (1.35-1.6 Pokey), 1-6.md REVISED 11-14 */
-const farPerch = (key: string, liana: string): SectionPiece =>
-  ({ key, shape: 'branch', w: [120, 140], place: { kind: 'land', after: liana, dy: [0, 0], share: SHARE.far, window: WINDOW.far }, style: 'branch', landing: true, main: true });
-/** a creaky limb a liana throws him onto (1-5's limb, World 1's W1_CREAK: 1.1 s Normal, 1.4 s Easy, whole again on every set-back) */
-const creakPerch = (key: string, liana: string, gap: LianaGap): SectionPiece =>
-  ({ key, shape: 'branch', w: [150, 170], place: { kind: 'land', after: liana, dy: [0, 0], share: SHARE[gap], ...(WINDOW[gap] ? { window: WINDOW[gap] } : {}) }, style: 'branch', creak: true });
-/** a sound bough where Normal has the creaky limb (Easy, 1-6.md beat 9) */
-const soundPerch = (key: string, liana: string, gap: LianaGap): SectionPiece =>
-  ({ key, shape: 'branch', w: [190, 210], place: { kind: 'land', after: liana, dy: [0, 0], share: SHARE[gap], ...(WINDOW[gap] ? { window: WINDOW[gap] } : {}) }, style: 'branch', landing: true, main: true });
 /** 1-6.md's measured liana, 420 px long, its anchor 400-420 px over the bank it leaves */
 const LEN: R2 = [420, 420];
-const liana = (key: string, after: string, gap: LianaGap, len: R2 = LEN): SectionPiece => w1Liana(key, after, gap, len);
+const liana = (key: string, after: string, gap: LianaGap): SectionPiece => w1Liana(key, after, gap, LEN);
 /** the false liana's length: short enough to read as a snake hanging from the canopy, not a liana 4.6x his height (ENG-S2: 115-170 px) */
 const FALSE_LEN: R2 = [150, 170];
 
@@ -106,7 +92,9 @@ function lianaRun(k: string, from: string, steps: Step[]): { pieces: SectionPiec
     pieces.push(liana(l, at, st.gap));
     const kind = st.perch ?? (st.gap === 'far' ? 'far' : 'bank');
     const dy: R2 = st.gap === 'short' ? [-SHORT_RISE, -SHORT_RISE] : [0, 0];
-    const place = { kind: 'land' as const, after: l, dy, share: SHARE[st.gap], ...(WINDOW[st.gap] ? { window: WINDOW[st.gap] } : {}) };
+    // (the gap's share of its perch band and its window: World 1's own rows, w1Swing.ts W1_LIANA_GAP)
+    const G = W1_LIANA_GAP[st.gap];
+    const place = { kind: 'land' as const, after: l, dy, share: G.share, ...(G.window ? { window: G.window } : {}) };
     if (kind === 'bank') pieces.push({ key: b, shape: 'bank', w: [st.w ?? 260, st.w ?? 260], place, style: 'moss_stone', main: true, landing: true });
     else if (kind === 'far') pieces.push({ key: b, shape: 'branch', w: [120, 140], place, style: 'branch', landing: true, main: true });
     else if (kind === 'creak') pieces.push({ key: b, shape: 'branch', w: [150, 170], place, style: 'branch', creak: true });
@@ -129,7 +117,9 @@ const stillOne = (key: string, from: string, reach: R2): SectionPiece =>
  *  under it with the root stair back up (the soft pit); then a second, the same, to say it again */
 function firstLiana(): Lay {
   const r = lianaRun('', 'a2', [{ gap: 'short', w: 280 }, { gap: 'short', w: 260 }]);
-  return { pieces: [bank('a', null, 360), bank('a2', 'a', 300), ...r.pieces, bank('z', r.last, 300)], sockets: [petals('pa', 'a', 0.6, 1), petals('p1', r.perches[0], 0.5, 1), petals('p2', r.perches[1], 0.5, 2, 120)] };
+  // (a root hop up onto the take-off: the arrival's last bank and a flat 660 px walk here were 4.4-4.6 s with nothing to do, over the
+  //  quiet line's 4 s, seeds 2 and 5; and down again at the end, so the exit is level)
+  return { pieces: [bank('a', null, 300), bank('a2', 'a', 260, UP), ...r.pieces, bank('z', r.last, 300, DOWN)], sockets: [petals('pa', 'a', 0.6, 1), petals('p1', r.perches[0], 0.5, 1), petals('p2', r.perches[1], 0.5, 2, 120)] };
 }
 /** [P] beat 2, hang low: LONG gaps (a low hold flies them; from the top he drops short onto moss, top 0 ms), three in a row.
  *  (OPEN: 1-6.md's petal at the liana's FOOT is not laid: a socket stands on a platform, never on a vine, pipeline pieceOf) */
