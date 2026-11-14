@@ -4,3 +4,4 @@
 1-4 gateover normal up 0 3:28 PM
 1-4 gate normal side 0 3:29 PM
 1-4 gateover normal side 0 3:30 PM
+1-4 gate easy up 0 3:31 PM

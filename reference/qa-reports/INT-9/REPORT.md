@@ -27,6 +27,15 @@ Integrator, Opus 5.5 xhigh. Started 3:03 PM ET 11-14. Lead session_01FhBbYNzGRJB
 - Ripple (lockall 4 layouts, all 102 stages, vs the merged head): 83 unchanged; 1-3 and 5-7 5-9 6-1 6-5 6-6 6-7 7-3 7-5 7-6 7-7 7-9 8-1
   8-2 8-3 8-5 8-6 8-9 change platforms ONLY (bank heights); 1-7 builds where it threw.
 
+## Lists, flight, bots (on the fix, 3ad51f04 and later)
+- seedlist --check, every list: 1-1 PASS 162, 1-2 PASS 100, 1-3 PASS 100, 1-4 PASS 100, 1-5 PASS 150 (no relist, none moved); 1-7 PASS 100
+  judged on its own rows (no relist). On the merged head before the fix: 1-1..1-5 PASS, 1-7 threw.
+- 1-7 flown (BUILD-17 step 2): `FLIGHT_STAGE=1-7 flight.ts normal all` -> flownArcs.ts n17 rows (fly/fly-1-7-normal-all.txt); stageTable
+  1-7 judged 'normal-1-7'; judgedTable.test 6/6. Easy flown too (fly-1-7-easy-all.txt): rise 123/117, 214/208 = easy-any's rows.
+- castBots 1-4, seeds 1-12, both settings (castbots-1-4.txt): every pass count equals FIX-15b's branch run: kid 9/12 N 10/12 E, adult
+  12/12 both, child 2/12 N 4/12 E, middle 6/12 N 7/12 E, expert 7/12 N. Only failing runs moved: child Normal median 343.5 -> 237 s
+  (hits 21 -> 18), middle Normal hits 22 -> 26.
+
 ## BUILD-17's ENGINE LINES, reviewed line by line (xhigh)
 - sweepPose.ts:45 SNAG_PERCH 56: PASS. Equals w17Art.ts SNAG_PERCH_DRAWN = (snagB.foot 880 - perch 712) x 1/3 = 56; eaglePerch.test pins it.
 - w17Art.ts:46 snagB.perch 712: PASS (the same measure, the drawn low branch).

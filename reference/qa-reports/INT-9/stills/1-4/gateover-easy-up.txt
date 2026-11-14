@@ -1,0 +1,5 @@
+BUILT {"difficulty":"easy","builtDifficulty":"easy","stage":"1-4","seed":1,"orientation":"up","view":[412,915]}
+GATE {"gate":6,"figs":2,"bough":{"x":408,"r":928,"y":1923},"vines":[868,468],"ledge":null}
+TIES held from here: the cheat tries all run on a SHUT gate
+PRESS {"at":[868,2103],"vyAfter":-600,"dy":0,"spent":0,"offVine":true,"grabbed":false,"lifted":true}
+PRESS {"at":[468,2081],"vyAfter":-600,"dy":0,"spent":0,"offVine":true,"grabbed":false,"lifted":true}
