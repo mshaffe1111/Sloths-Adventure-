@@ -15,3 +15,6 @@ unit1 1
 unit3 0
 unit2 0
 drawcheck 0
+clipcheck 0
+buildcheck 0
+done 7:21 PM
