@@ -479,6 +479,41 @@ export const FOCUS_CAM = {
 export const WORLD_VIEW_H = 540;
 /** the zoom's bounds (screen px per world px) before the intro's dolly and a room's pull-back (engine.ts applyZoom) */
 export const ZOOM_RANGE = { min: 0.5, max: 1.8 } as const;
+/** how wide the world is on an upright screen (px), unless the level's height asks for more zoom (engine.ts applyZoom) */
+export const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the hero in portrait
+
+/**
+ * The zoom a screen `w` x `h` css px plays a level `levelH` tall at, before the intro's dolly, a boss's or a room's pull-back and the
+ * swing's widening (engine.ts applyZoom calls this; the view verdicts call it too, so they judge the view the screen shows). Sideways
+ * the world is WORLD_VIEW_H tall; upright PORTRAIT_VIEW_W wide; a stage may ask to show more (`wide`); never taller than the level.
+ */
+export function usualZoom(w: number, h: number, levelH: number, wide?: { port?: number; land?: number }): number {
+  const base = h > w ? Math.max(w / (wide?.port ?? PORTRAIT_VIEW_W), h / levelH) : h / (wide?.land ?? WORLD_VIEW_H);
+  return Math.max(ZOOM_RANGE.min, Math.min(ZOOM_RANGE.max, base));
+}
+
+/**
+ * The phones the framing names (css px, w x h), for the view verdicts to judge on. Sideways the squattest is the worst on every level
+ * (the world is WORLD_VIEW_H tall on all of them, so the shorter the screen the taller the HUD band in world px). Upright the band is
+ * tallest on the narrowest (320 x 782) and the clear view shortest on 390 x 844, so all three are judged.
+ */
+export const VIEW_PHONES = {
+  side: [[782, 288]],
+  up: [[320, 782], [390, 844], [412, 915]],
+} as const satisfies { side: ReadonlyArray<readonly [number, number]>; up: ReadonlyArray<readonly [number, number]> };
+
+/**
+ * A settled view on a level `levelH` tall (engine.ts applyZoom + updateCamera's clamp, for the view verdicts): its height `vh` and HUD
+ * band `band` (world px), and the least (`lo`) and most (`hi`) its top may be. A normal stage never shows past its top; upright, a
+ * swing's eased-out view (`widen` > 1, SWING_CAM) may show sky over a level shorter than the view, its foot kept at the level's foot.
+ */
+export function settledView(w: number, h: number, levelH: number, widen = 1): { vh: number; band: number; lo: number; hi: number } {
+  const zoom = Math.max(usualZoom(w, h, levelH), h / levelH) / widen;
+  const vh = h / zoom;
+  const maxY = levelH - vh;
+  const lo = widen > 1 ? Math.min(0, maxY) : 0;
+  return { vh, band: (h > w ? HUD_BAND.port : HUD_BAND.land) / zoom, lo, hi: Math.max(lo, maxY) };
+}
 
 /** his body as the focus keeps it whole, feet at (px, py) */
 export const focusHero = (px: number, py: number): Box => ({ x0: px - 30, x1: px + 30, y0: py - HERO_HEAD, y1: py + 12 });

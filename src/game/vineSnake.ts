@@ -19,7 +19,7 @@
  */
 import type { ClockRead, PhaseName } from './clock.ts';
 import type { ClockId } from './stageKit.types.ts';
-import { focusHero, focusY, sideClear, FOCUS_CAM, type Box } from './cameraFollow.ts';
+import { AHEAD, focusHero, focusY, settledView, SWING_CAM, VIEW_PHONES, FOCUS_CAM, type Box } from './cameraFollow.ts';
 import { VINE_HANG } from './heroVineData.ts';
 
 /** a snake that travels a liana's grip line, or 'still': a FALSE liana, the snake itself hanging stiff from a bough (1-6.md beat 13) */
@@ -187,17 +187,36 @@ export function snakeComing(sn: VineSnake, n: SnakeNow, ahead: Pick<ClockRead, '
   return sn.route === 'up' ? on.to > hands : on.from < hands;
 }
 
+/** where a snake's liana hangs: its anchor's height (world px down from the level's top) and the level's height (px) */
+export type SnakeSite = { anchorY: number; levelH: number };
+/** a liana with room all round it (no level top or foot near): the view verdict's bare world */
+export const ROOMY_SITE: SnakeSite = { anchorY: 1500, levelH: 4000 };
+
+/** a phone's settled views (cameraFollow.ts settledView) for the view verdict: sideways one; upright, the swing's widening from 1 to
+ *  SWING_CAM.out, and where on the way the view first shows sky over the level (the band is tallest in world px there) */
+function snakeViewsOn(w: number, h: number, levelH: number): Array<{ name: string; vh: number; band: number; lo: number; hi: number }> {
+  if (h >= w) {
+    const ks = [1, SWING_CAM.out];
+    const k1 = settledView(w, h, levelH, 1);
+    const kSky = levelH / k1.vh;
+    if (kSky > 1 && kSky < SWING_CAM.out) ks.push(kSky);
+    return ks.map((k) => ({ name: `${w}x${h} upright${k > 1 ? ` widened ${k.toFixed(2)}x` : ''}`, ...settledView(w, h, levelH, k) }));
+  }
+  return [{ name: `${w}x${h} sideways`, ...settledView(w, h, levelH, 1) }];
+}
+
 /**
- * A snake lay's view faults (gen2's verdict; ENG-S3 CAM-THREAT): him on the liana at every hold from its foot up, straight down (the
- * tallest box), on the shortest sideways view (FOCUS_CAM.shortest), the view where its focus puts it (focusY on snakeFocusBox): the snake
- * must be in the clear view (under the HUD band, over his feet's foot) for SNAKE.seen s before it reaches his hands, or for all the time it
- * gives him if that is less (a high hold under a snake from the anchor is the hold it takes: its whole tell and trip in view is the
- * camera's part). At the lowest hold, his way out from under it, it must give SNAKE.seen in full. Walks one beat at 30 steps a second.
+ * A snake lay's view faults (gen2's verdict; ENG-S3 CAM-THREAT, ENG-S4 the level's top): him on the liana at every hold from its foot
+ * up, straight down (the tallest box), on the phones the framing names (`phones`, default cameraFollow.ts VIEW_PHONES: the squattest
+ * sideways one and three upright, each widened as a swing widens it), the view where its focus puts it (focusY on snakeFocusBox) and then
+ * where the level lets it be (settledView: a normal stage never shows past its top, so a liana hung within the HUD band of the level's
+ * top hides its tell whatever the camera does; 6-3's hangs 124 px down). The snake must be in the clear view (under the HUD band, over
+ * his feet's foot) for SNAKE.seen s before it reaches his hands, or for all the time it gives him if that is less (a high hold under a
+ * snake from the anchor is the hold it takes: its whole tell and trip in view is the camera's part). At the lowest hold, his way out
+ * from under it, it must give SNAKE.seen in full. Walks one beat at 30 steps a second.
  */
-export function snakeViewFaults(sn: VineSnake, len: number, phases: ReadonlyArray<{ name: string; seconds: number }>, cssH: number = FOCUS_CAM.shortest): string[] {
+export function snakeViewFaults(sn: VineSnake, len: number, phases: ReadonlyArray<{ name: string; seconds: number }>, site: SnakeSite = ROOMY_SITE, phones: ReadonlyArray<readonly [number, number]> = [...VIEW_PHONES.side, ...VIEW_PHONES.up]): string[] {
   if (sn.route === 'still' || !sn.clock) return [];
-  const clear = sideClear(cssH);
-  const vh = clear.foot / 0.9;
   const dt = 1 / 30;
   const period = phases.reduce((a, p) => a + p.seconds, 0);
   if (!(period > 0)) return [];
@@ -213,31 +232,54 @@ export function snakeViewFaults(sn: VineSnake, len: number, phases: ReadonlyArra
     }
     return { phase: phases[phases.length - 1].name as PhaseName, u: 1 };
   };
+  const ay = site.anchorY;
+  const views = phones.flatMap(([w, h]) => snakeViewsOn(w, h, site.levelH));
   const bad: string[] = [];
   for (let hold = len; hold >= VINE_HANG + SNAKE.touch + 20; hold -= 10) {
     const hands = Math.max(0, Math.min(len, hold - VINE_HANG));
-    const box = snakeFocusBox(sn, len, 0, 0, 0, 0, hold);
-    const top = focusY(focusHero(0, hold).y0 - clear.top, box, focusHero(0, hold), vh, clear.top);
-    const y0 = top + clear.top, y1 = top + clear.foot;
-    let seen = 0;
-    let gave = 0;
+    // (the snake as it comes, step by step, until it reaches his hands: the tell seen whole, its pose reared SNAKE.tellH over its start
+    // end; on the trip, any of it on the vine; world y)
+    const spans: Array<{ tell: boolean; from: number; to: number } | null> = [];
     let touched = false;
-    for (let t = 0; t < period && !touched; t += dt) {
+    for (let t = 0; t < period; t += dt) {
       const n = snakeNow(sn, len, readAt(t));
       if (!n.shown) continue;
       if (snakeTouches(n, len, hands)) {
         touched = true;
         break;
       }
-      gave += dt;
-      // (the tell is seen whole: its pose reared SNAKE.tellH over its start end; on the trip, any of it on the vine)
       const s = n.tell ? { from: n.head - SNAKE.tellH, to: n.head } : onVine(n, len);
-      if (!s) continue;
-      if (n.tell ? s.from >= y0 && s.to <= y1 : s.to >= y0 && s.from <= y1) seen += dt;
+      spans.push(s ? { tell: n.tell, from: ay + s.from, to: ay + s.to } : null);
     }
     if (!touched) continue;
+    const gave = spans.length * dt;
     const want = hold === len ? SNAKE.seen : Math.min(SNAKE.seen, gave);
-    if (seen + 1e-6 < want - dt) bad.push(`snake on ${sn.clock} (${sn.route}): held at ${hold} px down a ${len} px liana it is in the clear view ${seen.toFixed(2)} s of the ${gave.toFixed(2)} s before it reaches his hands, under ${want.toFixed(2)} s (1-6.md: in view 1 s+, on a ${cssH} px tall phone sideways)`);
+    const box = snakeFocusBox(sn, len, 0, ay, 0, 0, ay + hold);
+    const me = focusHero(0, ay + hold);
+    for (const v of views) {
+      const aim = focusY(me.y0 - v.band, box, me, v.vh, v.band);
+      const top = Math.max(v.lo, Math.min(v.hi, aim));
+      const y0 = top + v.band, y1 = top + v.vh * AHEAD.heroPad.b;
+      let seen = 0, tells = 0, tellsSeen = 0;
+      for (const s of spans) {
+        if (!s) continue;
+        const inView = s.tell ? s.from >= y0 && s.to <= y1 : s.to >= y0 && s.from <= y1;
+        if (inView) seen += dt;
+        if (s.tell) (tells++, inView && tellsSeen++);
+      }
+      const where = `held at ${hold} px down a ${len} px liana hung ${Math.round(ay)} px under the level's top, ${v.name}`;
+      if (seen + 1e-6 < want - dt) {
+        bad.push(`snake on ${sn.clock} (${sn.route}): ${where}: it is in the clear view ${seen.toFixed(2)} s of the ${gave.toFixed(2)} s before it reaches his hands, under ${want.toFixed(2)} s (1-6.md: in view 1 s+)`);
+        break;
+      }
+      // (where the focus box fits the clear view's height, the camera's promise is the whole tell: a tell no view can show is no tell,
+      // PREDATORS.md §2; it is the level's top, or its foot, that hides it there)
+      const fits = box.y1 - box.y0 + 2 * FOCUS_CAM.pad <= v.vh * AHEAD.heroPad.b - v.band;
+      if (fits && tellsSeen + 1 < tells) {
+        bad.push(`snake on ${sn.clock} (${sn.route}): ${where}: its tell is whole in the clear view ${tellsSeen} of its ${tells} frames, though the view fits it and him (the level's top or foot keeps the view off it)`);
+        break;
+      }
+    }
   }
   return bad;
 }
@@ -248,7 +290,7 @@ export function snakeViewFaults(sn: VineSnake, len: number, phases: ReadonlyArra
  * (snakeBeatFaults), and shows the snake in the clear view SNAKE.seen s before it reaches his hands on the shortest sideways view
  * (snakeViewFaults); a false liana hangs still (no swing) from a liana.
  */
-export function snakeFaults(st: { vines: ReadonlyArray<{ id: number; topY: number; bottomY: number; vineType?: string; swingAmp?: number; snake?: VineSnake }>; clocks?: ReadonlyArray<{ id: ClockId; phases: ReadonlyArray<{ name: string; seconds: number }> }> }): string[] {
+export function snakeFaults(st: { config: { levelHeight: number }; vines: ReadonlyArray<{ id: number; topY: number; bottomY: number; vineType?: string; swingAmp?: number; snake?: VineSnake }>; clocks?: ReadonlyArray<{ id: ClockId; phases: ReadonlyArray<{ name: string; seconds: number }> }> }): string[] {
   const out: string[] = [];
   for (const v of st.vines) {
     const sn = v.snake;
@@ -268,7 +310,7 @@ export function snakeFaults(st: { vines: ReadonlyArray<{ id: number; topY: numbe
       continue;
     }
     const len = v.bottomY - v.topY;
-    for (const f of [...snakeBeatFaults(sn, def.phases), ...snakeViewFaults(sn, len, def.phases)]) out.push(`${name}: ${f}`);
+    for (const f of [...snakeBeatFaults(sn, def.phases), ...snakeViewFaults(sn, len, def.phases, { anchorY: v.topY, levelH: st.config.levelHeight })]) out.push(`${name}: ${f}`);
   }
   return out;
 }

@@ -138,7 +138,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, swingHeroBox, AHEAD, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, focusY, focusHero, WORLD_VIEW_H, ZOOM_RANGE, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, swingWideTarget, swingWideEase, SWING_CAM, swingHeroBox, AHEAD, underHud, keepHeroX, travelFeet, newRepick, repick, markCam, HERO_HEAD, focusY, focusHero, WORLD_VIEW_H, PORTRAIT_VIEW_W, usualZoom, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -247,7 +247,6 @@ const PUSH_SPEED = 120;
  * by their sides). Only the picture moves; the lip catch, his body and every reach stay as they were.
  */
 const WALL_OFF = 9;
-const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the hero in portrait
 /** the play-start dolly-in: begins at this fraction of the final zoom and settles over this long */
 /** how fast the shift that shows a landing across a gap eases in and out (per second), and for a landing still out of the view */
 const LAND_EASE = { rate: 4.5, fast: 10 } as const;
@@ -1246,8 +1245,7 @@ export class GameEngine {
     const portrait = h > w;
     // (a stage may show more of the world than usual: 4-7, where the next ledge is far across and far below)
     const wide = this.proto?.view ?? this.proto?.w4?.view;
-    let base = portrait ? Math.max(w / (wide?.port ?? PORTRAIT_VIEW_W), h / levelH) : h / (wide?.land ?? WORLD_VIEW_H);
-    base = Math.max(ZOOM_RANGE.min, Math.min(ZOOM_RANGE.max, base));
+    const base = usualZoom(w, h, levelH, wide);
     const t = Math.min(1, this.introT / INTRO_ZOOM_SECS);
     const ease = 1 - Math.pow(1 - t, 3);
     const dolly = INTRO_ZOOM_FROM + (1 - INTRO_ZOOM_FROM) * ease;
