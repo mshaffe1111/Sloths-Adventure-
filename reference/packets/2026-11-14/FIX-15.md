@@ -1,5 +1,5 @@
 # FIX-15: 1-4 fig gate: Pokey must not get over or through a shut bough from ANY approach (R-165.212, Matt's ask, failed on video twice). Opus 5.5 xhigh (engine). Written 11:39 AM ET 11-14 by the lead.
-Branch t-fix-15 from origin/t-int-8 (its head when you start; it holds link #1's gate + the fixed clip tool). READ FIRST: INT-8's evidence
+Branch t-fix-15 from origin/t-int-8-clip (INT-8s side branch: link #2 head + tools/inspect/clip.mjs and its CI test; its own full gate run). READ FIRST: INT-8's evidence
 on t-int-8: stills/1-4/gateover-normal-side.mp4 + .txt (the TRY lines), sheets/gateover-normal-side-ledge.jpg, the OVER/THROUGH stills;
 reference/qa-reports/FIX-14b/REPORT.md (what the lid does); Matt's words in R-165.212 (ROADMAP); LESSONS D63, D69.
 ## What is wrong (INT-8, 11:39 AM ET, real touch presses with lift logged)
