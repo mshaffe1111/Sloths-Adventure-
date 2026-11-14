@@ -3,12 +3,26 @@ Branch t-build-17 from t-eng-e2@1f66e7a9. Code head of the gates: 8995a732 (+ aa
 Lessons applied: D36 (frozen worktrees for gates, shots, plants), D40 (Step 0 first), D49, D57, D59, D61/D65/D69 (every caption prints its state), D67.
 
 ## EXACT NEXT STEP
+0. **The 14 unit reds below** (1-7 now gen2): fix the real ones, rewrite the old-1-7 ones. Nothing goes to main until they are green.
 1. Merge 1-6's StageSpec.gathers (t-build-16) and give 1-7 `gathers: 'petals'` in stagePlan: then its exit seals and SEALED_17 ('1:stealth') speaks.
 2. Registration left (addlevel/registrycheck): **flown** (`FLIGHT_STAGE=1-7 npx tsx reference/specs/sims/flight.ts normal all`, rows in
    flownArcs.ts, `judged: 'normal-1-7'`); **drawcheck** (add "1-7" to tools/perf/limits.json scenarios, the Critic's file); **sheets**: a listed
    stage never reads STAGE_DRAWS (stageSheets.ts:192 is in the `built` branch only), so 1-7's props2 (its bushes) is not preloaded: an Engine
    packet: listed stages take their STAGE_DRAWS row (registrycheck --stage 1-7 then clean).
 3. `addlevel 1-7 --relist` after 2, with the bots (1-40).
+
+## Gates on 8995a732 (gates.sh; LAWS 5 as narrowed 2:06 PM: tsc, unit, what 1-7 touches; drawcheck; no clip/kbd)
+tsc 0; build 0; chunkcheck 0; artcheck 0; knowncheck 0; generality 0; roadmap FAIL (shallow clone: "proofs cannot be checked", as ENG-E1
+found: unshallow first). **unit RED: 3402 pass, 14 fail, every one from 1-7 leaving the hand-built generator** (ENG-E2's run had 0):
+- old 1-7 assertions now false (rewrite or retire): eagleFair.test "hide said before the first pass" (watcher.ts zones: 1-7 has none),
+  dotBox.test 'Dot's tip "An eagle is watching"', movesJournal.test "every tip a page waits for" (hint.1-7.hide is never said: the
+  movesJournal page must open on 1-7's own line), artDress.test + puzzleCamera.test (World 1's rooms: the acorn meadow is gone).
+- real 1-7 faults to fix: pickups.test + levels.test x2 "enemy too close to a safe spot" (the kit eagle's Enemy sits at its zone start, by
+  a flag: a sky sweeper must be exempt or laid off the flag), stageSheets.test + sheetWarm.test (props2 not preloaded: ENGINE-WORTHY 10),
+  w1Pits.test "1-7: 1 floorless gap" (one hop/limb gap without its soft pit), requiredMove/skills/glideStages "leaf/rope/limited bot"
+  (the old route checks judge 1-7's liana gaps; check each against the gen2 judge).
+Each file: `npx tsx --test src/game/<file>`; logs: scratchpad gates2.log.unit.txt (committed as gates2.unit.fails.txt).
+seedlists / registry / engine tools / tierBots / buildcheck / drawcheck: running at the box's end (see gates2.log).
 
 ## ENGINE-WORTHY (level.md rule 22: workarounds in 1-7's data the next level would also need; NOT moved, for the integrator)
 1. w1Arc17.ts:274 the still finish (clipWatches + castWatches) runs in finish17: World 1 has no decorate pass, so every W1 stealth stage repeats it; it belongs in w1World's kit.
