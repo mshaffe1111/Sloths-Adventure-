@@ -90,8 +90,9 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 (Docs connector); inspiration shelf reference/plans/INSPIRED-BY.md + PLATFORMER-100.md + PLATFORMER-100-MATT.md.
 **How a release goes:** only on Matt's "push": PM.md §5 + reference/methods/release.md step by step; full gates on the exact head; PR
 with the GitHub MCP create_pull_request, NOT a draft; Matt merges; then check the deploy runs and the APK on the Releases page.
-**Waiting on Matt:** (1) fig gate option A (R-165.212; mock-up reference/qa-reports/lead/figgate-optionA-mock-side.jpg; lead's pick: the
-branch grows in when the gate opens); (2) his look at 1-6 + 1-7 on link #3; (3) the 1-8 chase edge glow on the real 1-8 (reads a little
+**Matt decided (5:20 PM ET):** fig gate option A, the branch beside a shut gate is held away and GROWS/SWINGS in when the gate opens (R-165.212;
+mock-up reference/qa-reports/lead/figgate-optionA-mock-side.jpg; FIX-15b REPORT's EXACT NEXT STEP + the grow-in animation): a new-lead
+engine job (xhigh). **Waiting on Matt:** (2) his look at 1-6 + 1-7 on link #3; (3) the 1-8 chase edge glow on the real 1-8 (reads a little
 like smoke); (4) "push" for a release.
 **Next 3 (who, tier, packet):** 1. ENG-16F (running, xhigh) finishes 1-6 (packets/2026-11-14/ENG-16F.md). 2. INT-9 (running, xhigh)
 merges 1-6 into link #3, every gate once, stills/clips -> the lead judges -> EnK5 (INT-9.md); it also reviews line by line, at xhigh,
