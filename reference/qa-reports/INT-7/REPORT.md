@@ -1,46 +1,61 @@
-# INT-7 REPORT (t-int-7 from origin/main@73e7bed0; lead session_01FhBbYNzGRJBDMzn6XbtQK2). Opus 5.5 xhigh. 5:24 AM ET to 5:32 AM ET 11-14: PAUSED by the lead (Matt paused the team) at 5:32 AM. Context ~12% of 1M.
-## EXACT NEXT STEP (a fresh INT-7 resumes here, on t-int-7; code head 4fc09159, later commits are this report and its tools)
-1. `bash reference/qa-reports/INT-7/gates/run.sh` on the head (INT-6's runner, every CLAUDE.md Check + every CI step, buildcheck LAST and ALONE;
-   ~25-30 min, results line by line in gates/RESULTS.txt). Wait for it to finish (D59). GREEN, or name what is red and stop.
-2. Then `bash reference/qa-reports/INT-7/tools/stills.sh <gated sha> reference/qa-reports/INT-7/stills` (frozen worktree, port 3217):
-   1-1 first-run layout (list index 17 = seed 9800) + layout 1's hole, Normal + Easy, both orientations (stills-at-setting.mjs prints BUILT);
-   1-4 clips gate|vines|pods|fork x Normal/Easy x up/side (tools/clip.mjs, prints BUILT; mp4 made per clip). Judge every frame, then REPORT.
-   tools/clip.mjs is UNPROVEN: the fork mode's finder was fixed (three creak boughs 130 px apart stepping down 50 px: on 1-4 layout 0 they
-   are x 354/484/614, y 6181/6231/6281) but never run after the fix; the sideways engine wait is also unrun. Run one clip first.
+# INT-7 REPORT (t-int-7 from origin/main@73e7bed0; lead session_01FhBbYNzGRJBDMzn6XbtQK2). INT-7 5:24-5:32 AM ET (paused); INT-7b 7:58 AM ET to (running; this commit 8:41 AM), Opus 5.5 xhigh, context ~27% of 1M.
+## STATUS: GATES RUNNING (drawcheck, clipcheck, buildcheck, then kbdcheck alone); every finished gate 0 but kbdcheck (below).
+Code head 4fc09159 (both merges); gated head cc015e7f (+ docs/tools only); this report's commit adds docs, stills and tools only.
 ## Done (evidence)
-- **Merge 1, origin/t-polish-5@471bd000** (4be13fac). Precondition: its REPORT GREEN on e1bb16b. t-polish-5 does NOT contain main: two merge
-  bases (f9671e3b INT-6 and d8d6a973 0.9.7), and the default merge read a virtual base and conflicted in 10 files where only ONE side had
-  changed (pipeline.ts 19 hunks, engine.ts, types.ts, provenIndex.ts, castPlay.ts, playRecorder.ts, App.tsx, ctestSurvey.test.ts, 2 handoffs).
-  Checked: main = f9671e3b + 8 files (package.json 0.9.8, #ctest 1-5 in playRecorder/App/ControlTestGate, ctest tests, whatsNew, ctest-1-5.webp)
-  and t-polish-5 changed none of those 8. So the true 3-way result is t-polish-5's tree + main's own delta since f9671e3b, built that way
-  (read-tree + apply, all 8 applied clean; `git diff --cached origin/t-polish-5` = exactly those 8 + PLAN.md). Nothing taken wholesale blind.
-- **tsc RED on t-polish-5's own head (found, fixed in f9f670e8, docs only):** reference/qa-reports/POLISH-5/item2/mainscan.mts imports a
-  scratchpad worktree that no longer exists; tsc reads reference/ and failed 6 errors. POLISH-5's gates ran on e1bb16b, BEFORE its report
-  commit added the file (D53 again). Renamed to mainscan.mts.txt (POLISH-5 kept its other evidence script the same way, w1Overhang.test.ts.txt).
-  tsc 0 after.
-- **Merge 2, origin/t-fix-14b@d3501970** (4fc09159). Precondition: its REPORT GREEN on adae2f3d. One conflict, provenIndex.ts: POLISH-5 relisted
-  1-1/1-2/1-3/1-5, FIX-14b relisted 1-4; each side's own version line kept (1-1 6518cfac, 1-2 07470274, 1-3 d1375548, 1-4 6b772e6e,
-  1-5 957ac56d). engine.ts auto-merged: FIX-14b's lines (side push while climbing ~2102, head stop under a shut gate ~2136/2153, the unlit
-  flag's aura ~5987) sit apart from t-eng-base/feel-cam's hunks (read both diffs). castBots.ts/castBots.test.ts identical on both (LEN-14).
-  tsc 0.
-- **Step 2, every seed list --check on 4fc09159: all PASS, no relist needed** (gates/check-1-*.log, gates/checks.txt): 1-1 257/257 (its
-  --check also rebuilds the first-run lock FIRST_RUN_11 on both settings and fails first-run.drift by name: so the lock is consistent),
-  1-2 100, 1-3 100, 1-4 100, 1-5 150; "the verdicts refuse 0" on each.
-## UNRUN (named plainly, D59): nothing is left running.
-- The full Checks: unit suite, build (BASE_PATH), chunkcheck, artcheck, knowncheck*, generality*, roadmap*, kbdcheck, registrycheck, the
-  9 engine-tool tests, tierBots, drawcheck, clipcheck, buildcheck. (*the seconds-long fast gates ran on the report commit only, below.)
-- Every still and clip (step 4 of the packet). The lead has nothing to judge yet: NO test link from this head.
-## Fast gates on the report commit (docs + tools only since 4fc09159): tsc 0, roadmapcheck PASS (after \`git fetch --unshallow\`: it fails a shallow clone by design), knowncheck 0, generality PASS (27 literals, 27 known); logs gates/fast-*.log, 5:35 AM ET
-## Polish check: none possible yet (no stills shot).
+- **Merges (INT-7, unchanged):** origin/t-polish-5@471bd000 (4be13fac: two merge bases, built as member tree + main's own 8-file delta, proved
+  by `git diff --cached`), its tsc-red evidence script renamed .txt (f9f670e8); origin/t-fix-14b@d3501970 (4fc09159, one conflict provenIndex.ts,
+  each side's own version line kept). Full detail: git log of those commits.
+- **Step 1, every gate on cc015e7f** (gates/run.sh, results line by line in gates/RESULTS.txt; logs are gitignored, failures quoted below):
+  tsc, build (BASE_PATH), chunkcheck, artcheck, knowncheck, generality, roadmap 0; unit shards 1/2/3 0 (one TODO: main's 4-3 boulder);
+  every seed list PASS (1-1 257, 1-2 100, 1-3 100, 1-4 100, 1-5 150); registry, 9 tool tests, tierBots 0. kbdcheck 1: ONLY its planted case,
+  under load 21 (re-run alone pending). drawcheck, clipcheck, buildcheck: PENDING at this commit.
+- **Step 2, stills + clips** from a frozen worktree of cc015e7f on :3217 (tools/stills.sh setup, tools/shoot.sh runs, tools/clip.mjs), 2x,
+  upright 412x915 + sideways 915x412, Normal + Easy, every file's BUILT line printed by the game (D62) in the .txt beside it:
+  - 1-4 seed 1, layout 0: stills/1-4/{gate,vines,pods,fork}-{normal,easy}-{up,side}.mp4 (15 fps) + stills/sheets/<same>.jpg (contact sheets).
+    gate: Normal 3 figs / Easy 2; push, strain, SNAP, hold up (head stops under: worst 0 px over the shut underside on all 4), jump (still
+    under), last fig throws the thatch off, way up open. vines: one vine 1.33 s 0/3 petals; two vines 0.87 s 2/3 (1.6x up, petals taken).
+    pods: vine lights + shakes, dust, slow drop (300 px/s), long quiet. fork: three creaking boughs step down (Normal x 354/484/614,
+    Easy 588/708/828 w148), each gives one branch down, sound wood below.
+  - gate-teach-{normal,easy}-up: TEACH=fig (only the fig line live): it shows on both defaults (Normal: Dot, "I'll wait!";
+    Easy: "Skip tips"), but only because the clip drops him past its x: in real play it fires at the spawn (TIPWALK, Polish check).
+  - 1-1: first run (seed 9800, layout 18) x 600/9000/21050 and the hole (seed 769, layout 1) x 25600/26600/27600/27900, both settings,
+    both orientations: stills/1-1/*.jpg. Unchanged gameplay (ruler only), reads as before; Easy fills the hole with earth at x 26600.
+## Polish check (every clip judged on contact sheets + full-size frames; stills/sheets/)
+- PRE-EXISTING TEACH DEFECT (no diff since main in w1Arc14.ts tips / pipeline.ts:3008 hints.push): 1-4's four teach tips fire by x alone
+  (engine.ts:3124), and 1-4 climbs, so walking right from the spawn (x 140, y 11321) says all four in 3 s on the start floor: creak 0.5 s,
+  two vines 1.7 s, figs 1.7 s, "Hear it creak?" 2.7 s; first creak bough y 10139, first fig gate y 7855. Easy the same.
+  stills/1-4/TIPWALK-1-4-L0.txt (tools/tipwalk.mjs). Breaks "the first appearance of a mechanic is taught". Sent to the lead 8:40 AM.
+- PRE-EXISTING, NOT in this diff (no backdrop/draw file changed since main): a hard VERTICAL SEAM in 1-4's backdrop canopy, sideways
+  (stills/1-4/SEAM-gate-normal-side-f0050-crop.jpg): lighter hazy left half, darker right, a straight edge through the trees. Shipped in 0.9.8.
+- The unlit flag's rim (the lead's 2:56 AM ruling: keep the gold rim, drop the pool) reads as a soft cream halo oval around the post on
+  1-4's green (stills/1-4/RIM-flag-side-up-crop.jpg): for the lead's pass/fail (D61), not mine to rule.
+- 1-1 hole upright: the lower third under the log bridge is a featureless dark murk (the hole's depth); sideways reads lush. Lead's call.
+- Petals carry the readable 'take' rim (all worlds since 10-21); they are not R-165.213's bubbles (those became painted tufts).
+- Tool limits, not game: Easy's Dot find-hint ("One of these plants isn't like the others... I'll wait!") stays up through every Easy clip
+  because the tool never taps it; the caption bar sits at the bottom and hides the lowest ~45 px sideways (in fork-*-side the next bough).
+## Fixed in the tools (mine)
+- stills.sh shot the "first run" at layout 17 = seed 9652: __play layout N builds list index N-1 (testlink1_1.ts:98-102 play11Seed);
+  9800 is index 17, so layout 18 (BUILT now prints 9800). The L17 stills were deleted.
+- clip.mjs: captions covered the game's own Pokey line (moved to the bottom); the gate caption said "two figs" on a 3-fig gate (now the
+  real count); TEACH=<words> keeps only that beat's teach line live (D50/D63). shoot.sh: a guard so no shot runs beside buildcheck.
 ## Pushback
-- The packet's "Resolve every conflict by reading BOTH sides' intent" was right and needed more: 9 of the 10 conflicts were not real (only one
-  side changed); the cause is t-polish-5 branching from t-int-6 while main took t-int-6 through a release merge. Next integration packet:
-  base the work branches on main after each release, or tell the integrator to diff main against the shared base first.
-## Method update (proposed, gates.md / release.md)
-- Before an integration merge: `git merge-base --all`; with two bases, diff main against the member's base and merge as member tree +
-  main's own delta when the sets are disjoint (proved by `git diff --cached <member>` listing only main's files).
-- A member's GREEN is for the commit it names: tsc reads reference/, so a report commit that adds a .ts/.mts evidence script must re-run tsc
-  (POLISH-5's mainscan.mts); evidence scripts that import scratch paths are saved as .txt.
-**Lessons applied:** D29 (every seed list checked before any link), D36 (frozen worktree for stills), D53 (fast gates before the docs push),
-D57 (queue read at start; the pause read when it came), D59 (no gate left running; UNRUN named), D62 (shooters print BUILT), D64 (context
-against 1M), LAWS 3, 5, 22. **Method used:** gates.md, INT-6's runner and stills layout.
+- The packet's "1-1 first-run layout" came with INT-7's "list index 17" note, which was wrong by one (above): BUILT caught it (D62 works).
+## Suggestions
+- PACKET (Engine/Content, reuse: every climbing stage): a tip on a stage that climbs carries its socket's height band (belowY/aboveY from
+  the piece) in pipeline.ts; a gen2 verdict that each teach fires within N px of its mechanic's first instance, planted red on 1-4 L0
+  (TIPWALK numbers); sweep every vertical stage (D21). Done: tipwalk shows each line at its mechanic, Normal + Easy.
+- An integration role card + turnover note (none exists: roles/README.md rule 10 has nothing to rewrite for INT-n). Objective: card with
+  the merge-base check, the runner, the frozen-worktree shoot, BUILT checks; files reference/roles/INTEGRATOR.md, handoffs/integrator.md.
+- 1-4 backdrop seam: an art/draw packet (find which layer ends at that x; fix at the root, then a still pair).
+- kbdcheck: print the planted run's own results, and fail by name when the planted run "could not run" (it now reads as STAYS GREEN).
+## Unresolved
+- PENDING at this commit: drawcheck, clipcheck, buildcheck, the kbdcheck re-run alone. The 1-4 teach defect (not mine to fix).
+## Method update (proposed: gates.md / release.md)
+- A shooter that picks a 1-1 layout states the formula (layout N = list index N-1) and asserts the seed it wanted (STAGE_SEED-style).
+- Heavy shoots may run beside the unit/seed-list phase, never beside buildcheck (or kbdcheck: its 7 s waits time out under load 21).
+- Never wait on a background job with an until/sleep loop (not auto-approvable: a 14-min stall here); read the output files and wait for
+  the completion notice.
+**Lessons applied:** D29, D36 (frozen worktree), D50/D63 (teach clip on defaults, whole action + cheat try), D53 (fast gates on the report
+commit), D57 (queue read at each push), D59 (no gate left running; UNRUN named), D61 (rough spots named for the lead's pass/fail), D62 (BUILT
+on every file: caught the wrong seed), D64 (context vs 1M). **Method used:** gates.md, INT-6/INT-7's runner and shoot layout.
+**Turnover note:** none exists for integration (Suggestion 1).
