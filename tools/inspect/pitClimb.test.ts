@@ -9,7 +9,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { FirstTimerRun, FT_ADULT, FT_KID, FT_MIDDLE, hopCatches } from './firsttimer.ts';
+import { FirstTimerRun, FT_ADULT, FT_CHILD, FT_KID, FT_MIDDLE, hopCatches } from './firsttimer.ts';
 import type { Platform, Vine } from '../../src/game/types.ts';
 
 const BANK = 580, PIT = BANK + 225;
@@ -259,5 +259,25 @@ test('in a pit under a swinging liana, its foot within a double\'s rise is no le
     assert.ok(tgt && Math.abs(tgt.x - 2988) < 60, `${who.name}: the way on is not the liana's foot (${JSON.stringify(tgt)})`);
     assert.equal(bot.pitWayBack(tgt), -1, `${who.name}: he does not climb back out by the stair`);
     assert.ok(bot.climbBack, `${who.name}: no climb back started`);
+  }
+});
+
+/**
+ * ENG-16F (R-165.246): a tier bot's thumb lifting for a moment holds his count at a face, on every stage. P13 held it only on a stage with
+ * a cast, so on 1-6 (snakes as pieces, no cast) the child stood 20 s at a 53 px stump's face to a rescue, his count started over at every
+ * lift (Normal seed 2, frames 370.4-372.6). A toy with no cast: the floor, a 53 px stump on it (1-6's), the way on over it. RED with the
+ * count held on cast stages only.
+ */
+test('a tier bot at a plain step\'s face jumps it though his thumb lifts now and then (no cast on the stage)', () => {
+  const plats = [{ id: 1, x: 0, y: 808, width: 3000, height: 456, type: 'solid' } as Platform, { id: 2, x: 1095, y: 755, width: 130, height: 53, type: 'solid' } as Platform];
+  const route = [...Array.from({ length: 44 }, (_, i) => ({ x: 40 + i * 24, y: 808 })), ...Array.from({ length: 6 }, (_, i) => ({ x: 1100 + i * 24, y: 755 })), ...Array.from({ length: 60 }, (_, i) => ({ x: 1260 + i * 24, y: 808 }))];
+  for (const v of [1, 2, 3, 4]) {
+    const run = new FirstTimerRun('1-1', v, { ...FT_CHILD, setting: 'normal' }, { route, cap: 14, rescueAfter: 100 });
+    run.sim.bare(plats);
+    (run.e as unknown as { cast: unknown }).cast = null;
+    run.sim.stand(1000, 808);
+    run.prog.relocate(run.sim.p);
+    run.play();
+    assert.ok(run.sim.p.x > 1300, `variant ${v}: still at the stump's face (x ${Math.round(run.sim.p.x)}) after 14 s`);
   }
 });

@@ -1,2 +1,2 @@
 castBots 1-1, seeds 1-6; the floor 120 s (STAGE-RULES.md:77)
-child  easy   PASS 6/6; under the floor 0; time median 361.7 s (min 300.9); hits 0 lives 0 (none); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
+child  easy   PASS 6/6; under the floor 0; time median 341.4 s (min 298.5); hits 0 lives 0 (none); cleared none; told of traps 0/6; first trap sprung 0/6; traps sprung 0/0; turned back 0; left 0
