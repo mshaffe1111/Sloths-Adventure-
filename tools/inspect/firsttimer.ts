@@ -43,7 +43,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
-import { DOUBLE_RISE, JUMP_RISE, reachJump, reachJumpHeld, TIMED, vineAmp, vineAngle, vinePeriod } from '../../src/game/physics.ts';
+import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, reachJump, reachJumpHeld, TIMED, vineAmp, vinePeriod } from '../../src/game/physics.ts';
 import type { Platform } from '../../src/game/types.ts';
 import { scares } from '../../src/game/dropTrap.ts';
 import type { TrapPost } from '../../src/game/castPlay.types.ts';
@@ -718,6 +718,23 @@ const TRACE = typeof process !== 'undefined' && !!process.env.FT_TRACE;
 /** FT_FRAMES=a,b: every frame between a and b s of play, on stderr */
 /** the share of a liana's swing out in front at which he decides to let go (his thumb's lag on top): the forward end (intend, on a liana) */
 export const LET_GO_AT = 0.75;
+const side1 = (d: -1 | 1): Pad => (d > 0 ? { right: true } : { left: true });
+/**
+ * Does a hop off (x, y) toward `dir` (at `vx0`, a run by default), the jump held `hold` s (then the engine's cut, PHYS.cutV), taking off at the vines' clock
+ * `t0`, meet liana `v` where the engine catches (physics.ts canGrabSwing)? Flown frame by frame with the engine's air tick (airStep)
+ * until he is 200 px under the take-off. (FirstTimerRun.lianaWait; pitClimb.test.ts)
+ */
+export function hopCatches(v: Parameters<typeof canGrabSwing>[2], x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = dir * PHYS.maxRun): boolean {
+  const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
+  for (let i = 1; i < 60; i++) {
+    const held = i * DT < hold;
+    if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV;
+    airStep(b, DT, dir, held);
+    if (canGrabSwing(b.x, b.y, v, t0 + i * DT)) return true;
+    if (b.y > y + 200) return false;
+  }
+  return false;
+}
 /** px: the highest ledge over him he hops for on a tower's stair (a single jump rises 108 px, stageMetrics JUMP_RISE; a stair step is 60) */
 const STAIR_HOP = 100;
 const TRACE_FRAMES = typeof process !== 'undefined' && process.env.FT_FRAMES ? process.env.FT_FRAMES.split(",").map(Number) : null;
@@ -741,6 +758,8 @@ interface Jump {
   backX?: number;
   /** thrown up by the mushroom: the second press that follows is not a double's delay */
   bounced?: boolean;
+  /** a hop off a lip for a liana (lianaWait): held toward it all the way, never steered back onto a small landing below */
+  liana?: boolean;
   /** a jump he read (a gap or a face): the second press is held as the first */
   needs?: boolean;
   /** a jump up for a way on over his head: he steers to this x, then lets go */
@@ -932,6 +951,8 @@ export class FirstTimerRun {
   private letGoAt = -Infinity;
   /** seconds he has stood at an edge waiting for a liana to swing to him (lianaWait) */
   private lianaWaitT = 0;
+  /** the press decided on is a hop for a liana (lianaWait; startJump marks the jump) */
+  private lianaHop = false;
   gameOvers = 0;
   frames = 0;
   private lastCause = 'other';
@@ -1327,40 +1348,56 @@ export class FirstTimerRun {
   }
 
   /**
-   * At the end of his ledge with a liana on the way ahead to catch: true while he should stand and wait for it. A liana swings itself
-   * (physics.ts, the self-swing), its foot 180 px either way, so a jump at it as it swings away falls short into the pit under it (the
-   * kid's short flick, 1-6 Easy seed 1: three misses, no grab, BUILD-16c). He goes when, a jump's flight from now (0.45 s), the liana at
-   * his hands' height will be as near as it ever comes to where a hop puts his hands (60 px past the edge), within 30 px of that best;
-   * 4 s at most, then he goes anyway.
+   * Near the end of his ledge with a liana on the way ahead to catch, the catch is his own act (null: not here, the steer as before; {}:
+   * stand and watch it swing; a press). A liana swings itself (physics.ts, the self-swing), its foot 180 px either way, so a jump at it
+   * as it swings away falls short into the pit under it (the kid's short flick, 1-6 Easy seed 1: three misses, no grab, BUILD-16c). He
+   * flies the hop he can make from where he stands, as the engine flies it (hopCatches: airStep, his own flick's hold, the engine's cut),
+   * after his thumb's lag, and presses when the engine's own catch (canGrabSwing on the vines' clock) takes him on the way; the hop is
+   * held toward the liana (Jump.liana: never steered back onto a small landing below). A liana no moment of whose swing his hop from
+   * here catches: on to the lip, then the steer's own jump. 4 s is the most he waits. Measured on 1-6 seeds 1-6: these hops catch 99%
+   * (adult) and 85-89% (kid) of the time.
    */
-  private lianaWait(dir: -1 | 1): boolean {
+  private lianaWait(dir: -1 | 1): Pad | null {
     const p = this.sim.p;
     const here = p.grounded ? this.floorAt(p.x, p.y, 6) : null;
     const edgeX = here ? (dir > 0 ? here.x + here.width : here.x) : NaN;
-    const near = here && dir * (edgeX - p.x) < 70 && !this.floorAt(edgeX + dir * 24, p.y, 40);
+    // (160 px out: from a run he slides about 75 px once the steer is let go, and from 70 px he slid off the lip, BUILD-16c's toy)
+    const dist = here ? dir * (edgeX - p.x) : Infinity;
+    const near = here && dist < 160 && !this.floorAt(edgeX + dir * 24, p.y, 40);
     const pts = this.prog.pts;
     const v = near
-      ? this.sim.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && dir * (q.x - edgeX) > -40 && dir * (q.x - edgeX) < 360
+      ? this.sim.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off && dir * (q.x - edgeX) > -40 && dir * (q.x - edgeX) < 360
         && q.bottomY >= p.y - 140 && q.topY < p.y - 100 && pts.some((r) => Math.abs(r.x - q.x) < 60 && r.y >= q.topY && r.y <= q.bottomY + 60))
       : undefined;
     if (!v || this.lianaWaitT > 4) {
       if (!near) this.lianaWaitT = 0;
-      return false;
+      return null;
     }
     const clock = (this.e as unknown as { vineClock: number }).vineClock;
-    const hands = Math.min(v.bottomY, p.y - 80) - v.topY;
-    // (how far the liana at his hands' height will be from where a hop off the edge puts his hands, 60 px out: near or far, in front
-    // or behind; a signed gap picked the moment it swung furthest back, behind him over his own step, BUILD-16c)
-    const gap = (c: number) => Math.abs(v.x + Math.sin(vineAngle(v, c)) * hands - (edgeX + dir * 60));
-    let best = Infinity;
-    const per = vinePeriod(v);
-    for (let i = 0; i < 30; i++) best = Math.min(best, gap(clock + (per * i) / 30));
-    if (gap(clock + 0.45) <= best + 30) {
+    const lag = this.who.thumb[0];
+    const hold = this.who.hold[0];
+    // (the hop he can make from where the press lands, after his thumb's lag: does the engine's catch take him on the way? KID and
+    // ADULT never let go of a held steer (thumbify, R-165.59), so they cannot stand and wait: on the run, the press is the only choice,
+    // and they keep running to the lip unless it is now)
+    const from = (x: number, t0: number) => hopCatches(v, x, p.y, dir, hold, t0, p.vx);
+    const takeoff = p.x + p.vx * lag;
+    if (dir * (edgeX - takeoff) >= 0 && from(takeoff, clock + lag)) {
       this.lianaWaitT = 0;
-      return false;
+      this.lianaHop = true;
+      return this.decide(dir, 'single', true, {});
+    }
+    if (!this.who.holdQ) return dist > 20 ? side1(dir) : null;
+    const per = vinePeriod(v);
+    let any = false;
+    for (let i = 0; i < 24 && !any; i++) any = from(p.x, clock + (per * i) / 24);
+    if (!any) {
+      // (no moment of its swing is caught from here: on toward the lip, a step at a time from a stand (braking between), and from the
+      // lip the steer's own jump)
+      if (dist <= 30) return null;
+      return Math.abs(p.vx) < 60 ? side1(dir) : {};
     }
     this.lianaWaitT += DT;
-    return true;
+    return {};
   }
 
   /**
@@ -1371,14 +1408,23 @@ export class FirstTimerRun {
   private pitWayUp(from: Platform): Platform[] | null {
     const pts = this.prog.pts;
     const P = this.sim.platforms.filter((q) => !q.broken && q.width >= 40 && q.type !== 'bouncy' && q.type !== 'moving' && q.type !== 'drift' && !q.push && Math.abs(q.x - from.x) < 2400);
-    // (back on the way: a ledge the route walks on, or one a liana on the route can be caught from, its foot a hop up and close across:
-    // where a creaky limb has crumbled (1-6's creaky landing), the pit's stair tops out under the next liana's catch, with no bank left)
-    const lianas = this.sim.vines.filter((v) => v.vineType === 'swing_liana' || v.isSwingingVine || (v as { silk?: unknown }).silk)
+    // (back on the way: a ledge the route walks on; failing that (a creaky limb crumbled, 1-6's creaky landing: the pit's stair tops out
+    // under the next liana with no bank left), a ledge a liana on the route can be caught from by the hop he makes (hopCatches, at some
+    // moment of its swing). The nearest catch ledge first was a low stair step he could not reach the liana from: he jumped, missed and
+    // fell back in, three times, rescued (BUILD-16c: most of the Normal kid's pit falls))
+    const lianas = this.sim.vines.filter((v) => (v.vineType === 'swing_liana' || v.isSwingingVine) && !v.off)
       .filter((v) => pts.some((r) => Math.abs(r.x - v.x) < 60 && r.y >= v.topY && r.y <= v.bottomY + 60));
-    const catchFrom = (q: Platform) => lianas.some((v) => v.bottomY >= q.y - JUMP_RISE && v.bottomY <= q.y + 20 && Math.max(0, q.x - v.x, v.x - (q.x + q.width)) <= 140);
-    const onRoute = (q: Platform) => q.y < from.y - 60 && (pts.some((r) => r.x >= q.x && r.x <= q.x + q.width && Math.abs(r.y - q.y) < 12) || catchFrom(q));
+    const walked = (q: Platform) => q.y < from.y - 60 && pts.some((r) => r.x >= q.x && r.x <= q.x + q.width && Math.abs(r.y - q.y) < 12);
+    const catchFrom = (q: Platform) => q.y < from.y - 60 && lianas.some((v) => {
+      const d: -1 | 1 = v.x >= q.x + q.width / 2 ? 1 : -1;
+      const lip = d > 0 ? q.x + q.width - 12 : q.x + 12;
+      const per = vinePeriod(v);
+      for (let i = 0; i < 24; i++) if (hopCatches(v, lip, q.y, d, this.who.hold[0], (per * i) / 24, 0)) return true;
+      return false;
+    });
     const prev = new Map<Platform, Platform>();
     const seen = new Set<Platform>([from]);
+    const reached: Platform[] = [];
     let line: Platform[] = [from];
     while (line.length) {
       const next: Platform[] = [];
@@ -1390,19 +1436,20 @@ export class FirstTimerRun {
           if (rise > JUMP_RISE - 8 || rise < -300 || gap > 90) continue;
           seen.add(b);
           prev.set(b, a);
-          if (onRoute(b)) {
-            const path = [b];
-            for (let q = a; q !== from; q = prev.get(q)!) path.unshift(q);
-            path.unshift(from);
-            return path;
-          }
+          reached.push(b);
           next.push(b);
         }
       }
       line = next;
     }
-    return null;
+    const goal = reached.find(walked) ?? reached.find(catchFrom);
+    if (!goal) return null;
+    const path = [goal];
+    for (let q = prev.get(goal)!; q !== from; q = prev.get(q)!) path.unshift(q);
+    path.unshift(from);
+    return path;
   }
+
 
   /** a puzzle room or a piece Dot teaches near x */
   nearPuzzle(x: number, within: number): string | null {
@@ -1649,7 +1696,7 @@ export class FirstTimerRun {
       }
       // (past the middle of a small landing, a log or a pad, the thumb steers back onto it: round 2 of LV-2, 2-1's drownings were the bot
       // landing on a log's far end at a run and running off it)
-      const small = age < j.upOnly ? 0 : this.overSmall(j.dir);
+      const small = age < j.upOnly || j.liana ? 0 : this.overSmall(j.dir);
       const out: Pad = age < j.upOnly || small === 1 ? {} : small === 2 ? side(j.dir === 1 ? -1 : 1) : side(j.dir);
       if (age < j.hold) out.jump = true;
       if (j.kind === 'double' && !j.pressed2 && (j.d2 >= 0 ? age >= j.d2 - 1e-6 : age > j.hold + DT && p.vy > j.dblAt) && !p.grounded && p.jumpsLeft > 0) {
@@ -1704,7 +1751,9 @@ export class FirstTimerRun {
       // (hanging low, once he knows to (Dot's line, or a let-go that dropped him short into a pit, pitWayBack): down to the liana's foot
       // first, the thumb on down alone (down with the press is the engine's drop, not the leap; down with a steer can step him off), then
       // the let-go as below. BUILD-16c: 1-6's LONG gaps fly only from a low grip, by design, and the bot never climbed down)
-      if (own && this.learned.has('low') && !this.pending && (p.swingLength ?? 0) < own.bottomY - own.topY - 4) return { down: true };
+      // (and only once clear of the ledge he caught it from: half a second on it, no ledge just under his feet. Down at a lip, his feet at
+      // its top, the engine set him down or dropped him (engine.ts swing exits): 1-6 Normal seed 2 x 14029, a catch lost at once)
+      if (own && this.learned.has('low') && !this.pending && this.swingT > 0.5 && !this.floorAt(p.x, p.y, 80) && (p.swingLength ?? 0) < own.bottomY - own.topY - 4) return { down: true };
       // (how far forward, as a share of the vine's own swing: physics.ts swingSetup sizes each one)
       const a = (p.swingAngle ?? 0) / Math.max(0.05, own ? vineAmp(own) : TIMED.amp), om = p.swingAngularVelocity ?? 0;
       // (the let-go at the swing's forward end, as the testers let go (physics.ts RELEASE: "the natural moment, just past the sweet
@@ -1747,7 +1796,10 @@ export class FirstTimerRun {
     // (the first moments of a stage: he holds the way on and takes nothing in yet)
     if (t < who.look) return side(dir || 1);
     // (a liana to catch off this edge: he stands at the edge until it swings to him, as a person watches a swing come, lianaWait)
-    if (dir !== 0 && !this.jump && !this.pending && !this.standing && this.lianaWait(dir)) return {};
+    if (dir !== 0 && !this.jump && !this.pending && !this.standing) {
+      const lw = this.lianaWait(dir);
+      if (lw) return lw;
+    }
     // (a tier bot stopped at an edge: he lets go, comes to a stand, stands his time, then jumps from there)
     if (this.standing) {
       const s = this.standing;
@@ -2220,6 +2272,10 @@ export class FirstTimerRun {
     this.pending = null;
     this.jump = { t0: this.t, x: p.x, y: p.y, cur: this.prog.cur, kind, hold, upOnly, dir, pressed2: false, dblAt: between(this.r, who.dblAt), d2, needs: needs || undefined, toX: overhead && toX !== null ? toX : undefined, left: false, stop: this.nextStop ?? undefined, harms: this.harms.length, running: p.grounded && Math.abs(p.vx) > 150 };
     this.nextStop = null;
+    if (this.lianaHop) {
+      this.jump.liana = true;
+      this.lianaHop = false;
+    }
     const out: Pad = upOnly > 0 ? {} : dir > 0 ? { right: true } : dir < 0 ? { left: true } : {};
     out.press = true;
     out.jump = true;
