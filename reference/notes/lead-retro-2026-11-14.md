@@ -40,3 +40,7 @@ like we get into a loop of that's the only games that we really focus from."
 - Matt's 100 side-scrollers (2:23 PM ET): reference/plans/PLATFORMER-100-MATT.md (verbatim) + PLATFORMER-100.md (the lead's pick list of what fits a sloth on a phone, by world and engine piece). The persona names all three files as the shelf.
 - Packets that point a member at whole REPORTs make it burn context reading (BUILD-17b: 38% in 32 minutes). A packet names the exact
   files and line ranges to read and the 3-5 facts it needs; the full REPORT is for reference only.
+- Members' own context estimates ran 15-20 points low all day (BUILD-17 55%, ENG-16E 55%, both "about 40%"). Put the exact way to read
+  the real figure in every packet's BOX line, and read it yourself at every check-in.
+- Builders reported "green" without running the whole suite after taking over a stage (26 old reds sat on t-build-16 through four
+  builders). level.md rule 13 exists; the integrator's merge must refuse a branch whose REPORT doesn't name a whole-suite run on its head.
