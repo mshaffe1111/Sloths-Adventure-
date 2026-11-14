@@ -7,10 +7,22 @@ import { generateAllLevels } from './worldsData.ts';
 import { validateStage } from './levelCheck.ts';
 import { buildGen2Stage } from './gen2/pipeline.ts';
 import { w1World } from './gen2/worlds/w1.ts';
+import { provenPlan, provenSeeds } from './gen2/seedList.ts';
 
-test('a log wholly under a continuous road is out of reach; a log under a road with an open edge close by is not (gen2 1-1 seed 118786)', () => {
+test('a log wholly under a continuous road is out of reach; a log under a road with an open edge close by is not (gen2 1-1, a listed layout)', () => {
   const config = generateAllLevels().find((l) => l.id === '1-1')!;
-  const st: any = buildGen2Stage({ config, kit: w1World(), seed: 118786, difficulty: 'normal' });
+  // (the first listed layout whose end road runs on unbroken 250 px and more west of the end bank's face: found from the list, never copied.
+  // Re-pinned by POLISH-9b (R-165.228): raw 118786 drew sprint-B or -C, and with 1-1 on A and D its end lays another road)
+  const roadOver = (st: any) => {
+    const bank = st.platforms.find((p: any) => p.x <= st.exitTotemX && p.x + p.width >= st.exitTotemX && Math.abs(p.y - st.exitTotemY) < 6);
+    return bank && st.platforms.some((p: any) => p !== bank && Math.abs(p.y - bank.y) < 3 && p.x <= bank.x - 250 && p.x + p.width >= bank.x - 4);
+  };
+  let st: any;
+  for (const seed of provenSeeds('1-1')) {
+    const b = buildGen2Stage({ config, kit: w1World(), seed, difficulty: 'normal', replay: provenPlan('1-1', seed) });
+    if (roadOver(b)) { st = b; break; }
+  }
+  assert.ok(st, 'a listed layout whose end road runs on over the spot');
   // (the end: log 153 and branch 152 run on into the end bank, so the low log under them has no open edge within 700 px; the log under
   // 140 is reached off 140's open end and back, 109 px, as the real engine's bot lands it)
   // (planted where quiet-arrival's low log lay on the test link: 142 px under the end road, 300-490 px west of the end bank's face, the

@@ -12,12 +12,19 @@ import { generateAllLevels } from '../worldsData.ts';
 import { quietJudge } from '../../../tools/engine/listRules.ts';
 
 const c = generateAllLevels().find((l) => l.id === '1-1')!;
+/** 1-1's kit as it rolled before the A/D-only ruling (sprint-B and -C allowed): its rolls are exactly the old ones, so the first seeds
+ *  whose build fails are planted on it (POLISH-9b, R-165.228: on today's 1-1 nearly every raw roll builds clean, the deal's own fix) */
+const kitWithBC = () => {
+  const k = w1World();
+  const { refuseGraphs: _, ...brief } = k.manifest.graphs!.briefs['1-1'];
+  return { ...k, manifest: { ...k.manifest, graphs: { ...k.manifest.graphs!, briefs: { ...k.manifest.graphs!.briefs, '1-1': brief } } } };
+};
 
 test('the checker names a short list, a repeat, and a seed that fails its build', () => {
   let bad = -1;
-  for (let s = 1; s <= 400 && bad < 0; s += 2) if (buildGen2Stage({ config: c, kit: w1World(), seed: s, difficulty: 'normal' }).gen2.errors?.length) bad = s;
+  for (let s = 1; s <= 400 && bad < 0; s += 2) if (buildGen2Stage({ config: c, kit: kitWithBC(), seed: s, difficulty: 'normal' }).gen2.errors?.length) bad = s;
   assert.ok(bad > 0, 'no failing seed in 200: the planted case is gone');
-  const b = seedListBreaches(c, w1World, [bad, bad], 3);
+  const b = seedListBreaches(c, kitWithBC, [bad, bad], 3);
   assert.ok(b.some((x) => /under 3/.test(x)), b.join(' | '));
   assert.ok(b.some((x) => /listed twice/.test(x)), b.join(' | '));
   assert.ok(b.some((x) => x.startsWith(`1-1 seed ${bad} normal:`)), b.join(' | '));
