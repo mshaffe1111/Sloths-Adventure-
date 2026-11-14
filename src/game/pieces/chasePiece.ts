@@ -44,13 +44,14 @@ export function edgeTint(gap: number): { k: number } {
  * Its look (C4, the lead's pick 11-14 over B2's full-height tint, which read as a "laser" column and vanished on dark backdrops): an
  * ember glow at the BREAK, at his feet (where the branch is going), or at the screen's trailing edge while the break is off it (upright,
  * the usual case: B2's stills), with a narrow dark band at that edge (it reads on a light, misty backdrop where the ember alone fades).
- * The glow's radius is `radius` of the screen's larger side (upright 0.55 of the height); the dark core `band` of the radius wide, `tall` high.
+ * The glow's radius is `radius` of the screen's SHORT side, so it is the same size against him both ways (sized by the long side it
+ * filled a sideways screen's whole height and turned its sky orange, B4's first sideways clip); the dark core `band` of it wide, `tall` high.
  *
  * Baked ONCE per screen size into a cached canvas and stamped each frame with ONE drawImage at globalAlpha (EDGE.max x k): no gradient a
  * frame (PERFORMANCE-RULES §1; tools/perf/limits.json allows 2 on the whole frame). Baked again when the screen size changes, and when
  * the phone takes the canvas back (D6: canvasLost).
  */
-export const GLOW = { radius: 0.42, band: 0.32, tall: 0.22 } as const;
+export const GLOW = { radius: 0.46, band: 0.32, tall: 0.22 } as const;
 
 let edgeBaked: { w: number; h: number; cv: HTMLCanvasElement } | null = null;
 let edgeBakeCount = 0;
@@ -63,7 +64,7 @@ export function edgeCanvas(w: number, h: number): HTMLCanvasElement | null {
   h = Math.max(1, Math.round(h));
   if (edgeBaked && edgeBaked.w === w && edgeBaked.h === h && !canvasLost(edgeBaked.cv, 'chase edge')) return edgeBaked.cv;
   if (typeof document === 'undefined') return null;
-  const r = Math.max(24, Math.round(GLOW.radius * Math.max(w, 0.55 * h)));
+  const r = Math.max(24, Math.round(GLOW.radius * Math.min(w, h)));
   const cv = document.createElement('canvas');
   cv.width = 2 * r;
   cv.height = 2 * r;
