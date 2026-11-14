@@ -13,7 +13,7 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 - **THE ENGINE DRIVES DEVELOPMENT (Matt, 11-14 1:55 PM ET):** "Game engine drives development... the pieces in the engine that are going to
   be repeated. One-offs can be done by the developers... we are always trying to shave time for each level... Not cut quality, but improve
   every level. It needs to be strategic, it needs to be lean, it needs to be aggressive." Plan engine pieces + bot skills three levels
-  ahead; every level faster than the last (LEVEL-LOG.md), same bar. Full text: LEAD-PERSONA.md "The engine drives development".
+  ahead; every level faster than the last (LEVEL-LOG.md), same bar. Full text: the persona's section "The engine drives development" (LEAD-PERSONA.md; the 11-14 rewrite in LEAD-PERSONA-DRAFT-2026-11-14.md).
 - **NEVER PATCH FOR ONE LEVEL: FIX GLOBALLY, KEEP THE ENGINE FLEXIBLE** (Matt, 11-14 1:42, 1:46, 1:48 PM ET; R-165.246): "we're not
   adding pieces to the engine like we should"; "even if it changes previous levels, if it's a fix that is affecting everything, we put it in";
   "if we find something that's reoccurring when we're in world 8 and it affects world 1, we still fix it, and we let it all fix everything.
@@ -25,7 +25,7 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 - **EVERY TRIBUTE IS RESEARCHED AND EXPLAINED** (Matt, 11-13 3:32 PM ET; R-165.203): every idea round and level design that borrows from
   a classic game says, with cited research, what made it great, how the original taught it, and how we introduce it so it FEELS that good
   on a phone (packet template: IDEAS-1-6.md "THE TRIBUTE RULE"). Matt should never have to explain the feel (R-165.177, 1-4's vines vs
-  Donkey Kong Jr.). Idea rounds: three Opus members at medium, high, xhigh (models.json 'ideas'), then one designer.
+  Donkey Kong Jr.). Idea rounds: Opus members at high and xhigh (models.json 'ideas'; medium is gone since 11-14 1:51 PM), then one designer.
 - **STILL REVIEW IS PASS/FAIL (D61, 11-13; Matt 5:43 PM: "I expect more from you when reviewing"):** any code-drawn primitive or rough
   spot in play view holds the test link until fixed, unless Matt is asked one question and says ship it. Naming it is not passing it.
 - **THE RHYTHM: 3 LEVELS AHEAD + 1 POLISH MEMBER** (Matt, 11-13 3:28 PM ET; R-165.202): "I'll play it, give you feedback... we're going to
@@ -40,10 +40,10 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   token wins over stretching the week: keep lanes full with work that ships; waste (re-runs, exploring, idle sessions, over-long boxes) is the enemy.
 - **STAY AHEAD OF THE BURN (Matt, 11-13 12:43 PM ET):** the lead decides when to switch members out (fresh session at 40% context, members
   self-report it, D55); no testing of what can't affect the game (LAWS 5: docs/tools = fast gates); no re-running a gate already green
-  on the same code; fewer members at once; medium effort for low-risk work. Where tokens really go: long sessions re-reading their
+  on the same code; fewer members at once. (Medium effort: SUPERSEDED 11-14 1:51 PM: high is the floor.) Where tokens really go: long sessions re-reading their
   context each turn, many sessions at once, and Fable, more than the gates themselves.
-- **MODELS (Matt, 11-13 12:42 PM ET): no Fable (too expensive). Engine work on Opus xhigh; everything else Opus high, or medium for low-risk
-  work (docs, mechanical steps, small known fixes). tools/team/models.json logs it.**
+- **MODELS (Matt, 11-13 12:42 PM ET): no Fable (too expensive). Engine work on Opus xhigh; everything else Opus high. SUPERSEDED in part 11-14 1:51 PM ET:
+  xhigh is the ceiling and high the floor (no max, no medium, never low). tools/team/models.json logs it.**
 - **THE LEVEL TARGET: ONE DESIGNER + ONE DEVELOPER, A 2-HOUR STAGE** (Matt, 11-13 12:41 PM ET): "we shouldn't have to use 20 people to create a
   level." A level job starts only when every node/piece its design names already exists in the engine (NODE-KEY status "Now"); the
   designer writes the node string (+ the story keeper's nature check and lines), ONE builder lays and proves it with ADD-LEVEL's one step.
@@ -82,7 +82,22 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   The plan doc: reference/plans/ENGINE-NEEDS.md (Architect session_01FhBbYLVSn59vpCSU4ruo6P, t-engine-needs).
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
-## RIGHT NOW (11-14, refreshed 3:03 PM ET; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
+## RIGHT NOW (11-14, refreshed 4:07 PM ET; this block wins over everything below; the lead refreshes it at every check-in, R-165.242)
+
+**Live:** 0.9.8 on main (merge 73e7bed0, PR #71, 11-13): https://mshaffe1111.github.io/Sloths-Adventure-/ (testers: add ?fresh=1#ctest).
+**Matt's test link (EnK5):** https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb v257 = link #2. Never send testers there.
+**Other links:** world map https://claude.ai/artifact/KRT1HT17cy8c7wd1pN87za; Matt's handoff doc https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa
+(Docs connector); inspiration shelf reference/plans/INSPIRED-BY.md + PLATFORMER-100.md + PLATFORMER-100-MATT.md.
+**How a release goes:** only on Matt's "push": PM.md §5 + reference/methods/release.md step by step; full gates on the exact head; PR
+with the GitHub MCP create_pull_request, NOT a draft; Matt merges; then check the deploy runs and the APK on the Releases page.
+**Waiting on Matt:** (1) fig gate option A (R-165.212; mock-up reference/qa-reports/lead/figgate-optionA-mock-side.jpg; lead's pick: the
+branch grows in when the gate opens); (2) his look at 1-6 + 1-7 on link #3; (3) the 1-8 chase edge glow on the real 1-8 (reads a little
+like smoke); (4) "push" for a release.
+**Next 3 (who, tier, packet):** 1. ENG-16F (running, xhigh) finishes 1-6 (packets/2026-11-14/ENG-16F.md). 2. INT-9 (running, xhigh)
+merges 1-6 into link #3, every gate once, stills/clips -> the lead judges -> EnK5 (INT-9.md); it also reviews line by line, at xhigh,
+the engine lines high-tier builders wrote 11-14 (BUILD-16b goals.ts seal, BUILD-16c/16d bot code; BUILD-17's 5 groups already PASS)
+(D70, R-165.246). 3. New lead: BUILD-18 (1-8) on ENG-B4's engine (t-eng-b4@956e33e0; B4 REPORT's ready packets a nut/fruit, b chase
+camera lead, c drawcheck fixture; the child-at-the-fork designer question), after R-165.246's lift pass.
 **Turnover tonight (Matt, 11-14 12:11 PM ET):** after 1-6 and 1-7 are on his test link (~8 PM ET) a new lead takes over (PM.md §8);
 1-8 (the chase: ENG-B4 engine, then BUILD-18) is the new lead's FIRST job. This lead becomes the backup.
 **Matt's decisions today (11-14):** easier 1-1 (fewer doubles, easier jumps; props off ledges R-165.226/.228); 1-4 rocks/pods slower +
@@ -96,10 +111,8 @@ real presses, 11:39 AM); FIX-15 fixing. The lead had passed link #1's gate on a 
 **Members running** (all report to session_01FhBbYNzGRJBDMzn6XbtQK2 until the seam):
 | Member | Session | Branch | Job |
 |---|---|---|---|
-| ENG-B4 | session_01FhBbYMtNC2e3rUp1iijkHV | t-eng-b4 (from t-eng-b3, xhigh) | 1-8 chase engine: split by run-up, tint, nut/fruit/camera if missing, bots proven on a toy first, fixture clips |
-| ENG-16E | session_01FhBbYMhMQfgYnJSjNTNNQa | t-build-16 (xhigh) | 1-6's engine faults fixed for every stage (chain last leap, petal fill, W1 FAR), then finishes 1-6 |
+| ENG-16F | session_01FhBbYNHM3zg2cqxN8NoKn4 | t-build-16 (xhigh) | 1-6: FAR rule rewrite, 26 old reds (old-1-6 tests retire with R-165.238), kid Normal rescues frame by frame, relist, stills, clips |
 | INT-9 | session_01FhBbYKSqV5AeZmMEkQ1msT | t-int-9 (from t-int-8, xhigh) | link #3: clip tool + FIX-15/15b + TIPS + chains + 1-7 now; the new 1-6 when ENG-16E is GREEN; R-165.238 |
-| POLISH-10 | session_01FhBbYNzfEg99dX1iewLrNd | t-polish-10 (from t-int-8, xhigh) | W1 background line (drawGroundChunks), bounce arrow, 1-4 seam + flag rim |
 **Done today and waiting for the next integrator:** t-eng-s5@a2743943 (chains, GREEN), t-int-8-clip@315548d1 (clip tool; full run UNRUN), t-keeper-17@a8dd2409 (1-7 lines).
 **Done, waiting for INT-9:** t-tips@a054e8e7 (GREEN). **Queue (packets in reference/packets/2026-11-14/), in order as slots free:**
 INT-9 (link #3: the new 1-6 + 1-7 + TIPS + FIX-15/15b + chains + clip tool + R-165.238; packet written). For the new lead after

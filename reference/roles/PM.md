@@ -93,8 +93,8 @@ Everything else is yours on his standing permission (11-07).
 6. **A new or changed role card, method or brief goes to a Critic cold before anyone uses it** (a fresh one for a new document;
    its re-audits may continue that Critic as deltas). Every command in it is proven
    against the tool's arg parsing or a dry run, and every fact names its source (D32).
-7. **Spend Matt's tokens on purpose.** Effort: low for following written steps; medium for measuring, small fixes and delta
-   re-audits; high for building and first audits; max only when needed (the consultant, a release gate). A delta re-audit continues
+7. **Spend Matt's tokens on purpose.** Effort (Matt, 11-14 1:51 PM ET, supersedes the old low/medium/max line): high for every
+   member, xhigh for engine, integration, merges and the hardest fixes; no max, no medium, never low. A delta re-audit continues
    the same Critic (SendMessage; TEAM.md rule 2's exception) unless independence matters (a release, a new role card). Point at paths; never paste files into a packet. Lean output (roles/README.md).
 8. **While a member is actively working, a check-in is armed** (a one-off send_later 30 minutes out, re-armed only while someone still
    works; never a repeating schedule; off whenever no member is working, during a quiet period, and while you wait on Matt; two
@@ -104,8 +104,7 @@ Everything else is yours on his standing permission (11-07).
    get_session (status_bucket reads "failed" when a turn died, for example on a usage limit; a clean finish sends no event).
 8b. **Machine load (Matt, 10-29: helpers get their own machine; 6 in one container meant 30+ min tests and a full disk).** Every
    member is its own session, so it has its own machine: heavy work (the full suite, clipcheck, drawcheck, a seed-list build) runs
-   there, never in yours. A max-effort release gate is a session whose packet says `effort: max` (create_session has no effort
-   setting). The Agent tool is only for the lead's own lookups, never for a member (R-165.74). At most one heavy job in
+   there, never in yours. A release gate runs at xhigh (create_session's effort field; no max since 11-14). The Agent tool is only for the lead's own lookups, never for a member (R-165.74). At most one heavy job in
    your container at a time; a timing test that goes red under load is re-run alone before it counts.
 8c. **Ask well (D27):** batch your asks to a member; ask only for facts you will use; prefer a mechanism (a gate, a script) over a
    reminder; never feed a member a stream of small asks.
@@ -221,8 +220,8 @@ control tests", Sessions tab; changes only after a merge). **Matt's test link:**
 |---|---|---|
 | Permanent | The story keeper (in charge of story direction; can't be replaced) | One long-lived session; its bible: reference/story/STORY-KEEPER.md |
 | Standing | The backup lead (the previous lead) | Until the next rotation; questions only |
-| Per task | Designer, Architect, Engine, Content; the Critic for every result | Fresh members, each its own session (create_session), persona plus packet; retired when the task ends |
-| Per play window | The data analyst; then the consultant, with a packer that builds its input package | Fresh each window; the consultant at max |
+| Per task | Designer, Architect, Engine, Content; the Critic sparingly (Matt 11-13: releases, plans and contested calls; the lead judges ordinary results) | Fresh members, each its own session (create_session), persona plus packet; retired when the task ends |
+| Per play window | The data analyst; then the consultant, with a packer that builds its input package | Fresh each window; the consultant at xhigh (no max since 11-14) |
 A lead that finds a standing session nobody listed here asks why it exists, and stops it if nothing needs it.
 
 **Health check: does a member need replacing or remaking?** Check long-lived members (the story keeper, any separate session) at
