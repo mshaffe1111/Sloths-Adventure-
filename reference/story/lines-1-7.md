@@ -95,3 +95,68 @@ gap is a real canopy opening. The one storybook claim, "it only sees what moves"
 - The lines live in one object (LINES_17, MISSION_17) in 1-7's world file with a verbatim test, as w1Arc15.test.ts holds 1-5's.
 - The journal and wayside rewrites (conflicts 1 and 2) ship with 1-7; until then the shipped 1-7 still crouches, so they wait with it
   (no patching what is being replaced).
+
+## Journal (KEEPER-17b): the "hide" page for the new 1-7 (R-165.249)
+
+The page (movesJournal.ts:235-249) and the Duck page's intro (:115) still teach the retired crouch hide. Same short format as the rest of
+movesJournal.ts; new replaces old, so these ship with 1-7, not before (no patching what is being replaced).
+
+**The hide page (id 'hide'), verbatim:**
+
+```ts
+title: 'Hide in the green',
+open: { tip: [tip('1-7', "When the eagle screams, get in the green and keep still. Then it can't see you!")], cleared: ['1-7'] },
+intro: 'When the eagle screams, get into a bush, onto moss or onto a mossy liana, and keep still till its shadow has gone by. On bare bark it can see you, still or not.',
+lines: {
+  screen: [
+    { how: 'Lift your thumb in the green', what: 'Hide', sub: 'a bush, moss or a mossy liana' },
+    { glyph: 'up', how: 'Grab a mossy liana and hang on', what: 'Hide while you swing' },
+  ],
+  pad: [{ how: 'Let go of the pad in the green', what: 'Hide' }, { how: 'Hang on to a mossy liana', what: 'Hide while you swing' }],
+  keys: [{ how: 'Let go of the keys in the green', what: 'Hide' }, { how: 'Hang on to a mossy liana', what: 'Hide while you swing' }],
+},
+```
+
+Kept as is: `where: 'Learned in World 1'`, `riddle: 'Dot knows a good trick for hiding from soldiers.'` (true: Dot's hour in the bush,
+storyWorlds.ts:67).
+
+**The Duck page (id 'duck'), intro only:** `intro: 'Get low. A low duck slips under a diving bird.',`
+Its lines (:117-119, "Slide down" / "Duck", "keep your thumb there to stay low") STAY: ducking is still a real move, the eagle's dive
+lesson teaches it (lessons.ts:81-85, dotLinesData.ts:22) and the low hurt box makes it real (fight.ts:258, engine.ts:2913). Only the
+"and it is how you hide in a bush" half goes.
+
+**Why each one**
+- **The tip is Dot's own teach, word for word.** `tip()` keys the unlock on the exact text Dot says (movesJournal.ts:75 `tip:${text}`),
+  so the page must name 1-7's `bush` line (line 2 above) verbatim or it never opens from the tip. The old text ("Slide down inside a bush
+  to hide") is never said in the new 1-7.
+- **Title "Hide in the green":** cover is a bush, moss or a mossy liana (lines 2, 5, 7); "in a bush" alone would be a third of it.
+- **Intro:** the whole rule in two sentences: where (the three covers), how (keep still), until when (its shadow has gone by), and the
+  hole (bare bark, beat 5, `seesStill`). "Keep still", never "hold still" (line 2 note). No "keep low" (the crouch).
+- **"Lift your thumb" / "Let go of the pad / keys":** stillness is the absence of input (stillness.ts:62-68, under 25 px/s for 0.5 s;
+  1-7.md beat 1 "lifts his thumb"). It is the game's own phrase for stopping (movesJournal.ts:83 "Lift your thumb to stop";
+  dotLinesData.ts:80, :210). The screen line has NO glyph on purpose: GlyphKind (GestureGlyph.tsx:7) has no lift, and 'hold' or 'down'
+  would teach the opposite.
+- **The liana line** replaces "Hang inside a bush on a rope / Hide up high too" (the retired rope-bush, hint.1-7.ropeBush). It teaches
+  beat 10's twist (swinging is still; climbing is not, stillness.ts:41-43). glyph 'up' and "grab" match the rope page's own grab
+  (movesJournal.ts:225 "Flick up into the rope / Grab on"); "hang on" is 1-6's word (line 7 note).
+- Checks: no banned words, no numbers, no tap/press/hold/duck/crouch/slide down in the hide page; grepped src/ for "Hide in the green",
+  "Hide while you swing", "still or not", "keep still in the green", "Let go of the pad", "Let go of the keys": no hit.
+
+**The rest of the journal, grepped** (`grep -n -i -E "crouch|slide down|duck|keep low|hide|hiding|bush|low "` over movesJournal.ts,
+plus journal.ts and creatureLore.ts for the eagle):
+- movesJournal.ts:115 Duck intro: rewritten above. :117-119 Duck lines: kept (real move).
+- :135 "Lift your thumb or slide down / Drop normally" (leaf glide), :184 bird page pose 'duck', :227 "Slide down, then flick up / Let go"
+  (rope): not hiding, kept.
+- :331-336 Hush Fern "Crouch beside it" / "Slide down beside the fern and hold": a real, separate search move (finds.ts:4,
+  w5Stages.ts:1193), not hiding; kept.
+- journal.ts:29 (the creature journal, eagle): "Circles, then dives. Slide down to duck, or hide in a bush." Not the crouch hide (the duck
+  is the real dive dodge); kept. creatureLore.ts:11 "Hide in a bush and wait." true under the new rule; kept.
+
+**For the builder (code, not words; the keeper does not edit code)**
+- `['1-7', 'watch:hide']` (movesJournal.ts:237) is set by the old watcher path (engine.ts:8312-8313). If the new 1-7 never runs it, drop
+  that entry or set it from the kit's first hide; the page still opens on the tip and on `cleared: ['1-7']`.
+- `pose: 'duck'` and `demo: 'hide'` show a crouch on the page's tile and scene. The pose should be a still Pokey ('stand' or 'hang'), and
+  the 'hide' demo (JournalDemo.tsx) must show him going still in the green with the moss tint, not ducking. A demo that ducks while the
+  words say keep still teaches both.
+- World 6 and 8 still hide by crouching (w6.ts:55-58 rootHide/reedHide, watcher.ts). This page teaches 1-7's rule only. If the one-hide-rule
+  engine study (1-8.md) keeps the crouch for W6/W8, those worlds need their own teach there; this page must not be widened to cover both.
