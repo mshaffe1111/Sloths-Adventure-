@@ -97,7 +97,10 @@ for (const id of ids) {
       };
       // C4: the glow anchored where the branch breaks (an ember ellipse at the branch's height at the trailing edge), a narrow dark edge,
       // bark chips falling from the branch line and a few ember-lit bits rising
-      const c4 = (c, host) => {
+      // C5: C4 with the glow sized by the screen's larger side (upright got a small glow: C4 failed upright, 11-14)
+      const c4 = (c, host) => c45(c, host, false);
+      const c5 = (c, host) => c45(c, host, true);
+      const c45 = (c, host, big) => {
         const gap = host.player.x - pc.run.fronts[0].front;
         const k = Math.max(0, Math.min(1, (650 - gap) / 500));
         const W = host.view.w, H = host.view.h;
@@ -107,7 +110,7 @@ for (const id of ids) {
         d.addColorStop(1, 'rgba(20, 6, 2, 0)');
         c.fillStyle = d;
         c.fillRect(0, 0, W * 0.2, H);
-        const rx = W * (0.36 + 0.16 * k);
+        const rx = (big ? Math.max(W, 0.6 * H) : W) * (0.36 + 0.16 * k);
         c.save();
         c.translate(0, by);
         c.scale(1, 1.25);
@@ -138,12 +141,14 @@ for (const id of ids) {
       const c2 = grab(cand(0.22, true));
       const c3d = grab(c3);
       const c4d = grab(c4);
+      const c5d = grab(c5);
       // (and the bands only around the branch, where he looks: +-30% of the height about his feet)
       const by = Math.round(((e.player.y - e.camera.y) * (e.zoom || 1)) / (e.camera.viewportHeight) * cv.height);
       pc.drawEdge = own;
       pc.__own = own;
       pc.__c3 = c3;
       pc.__c4 = c4;
+      pc.__c5 = c5;
       const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
       const lab = (r, g, b) => {
         const R = lin(r), G = lin(g), B = lin(b);
@@ -166,11 +171,11 @@ for (const id of ids) {
         }
         return { dE: +(out.dE / out.n).toFixed(1), ratio: +(((out.Y0 / out.n) + 0.05) / ((out.Y / out.n) + 0.05)).toFixed(2), Y0: +(out.Y0 / out.n).toFixed(3) };
       };
-      return { gap: Math.round(e.player.x - pc.run.fronts[0].front), canvas: [cv.width, cv.height], b1: { A: band(b1, 0, 0.09), B: band(b1, 0.2, 0.31) }, b2: { A: band(b2, 0, 0.09), B: band(b2, 0.2, 0.31) }, c1: { A: band(c1, 0, 0.09), B: band(c1, 0.2, 0.31) }, c2: { A: band(c2, 0, 0.09), B: band(c2, 0.2, 0.31) }, c3: { A: band(c3d, 0, 0.09), B: band(c3d, 0.2, 0.31) }, c4: { A: band(c4d, 0, 0.09), B: band(c4d, 0.2, 0.31) }, win: { b2: { A: band(b2, 0, 0.09, by), B: band(b2, 0.2, 0.31, by) }, c4: { A: band(c4d, 0, 0.09, by), B: band(c4d, 0.2, 0.31, by) } } };
+      return { gap: Math.round(e.player.x - pc.run.fronts[0].front), canvas: [cv.width, cv.height], b1: { A: band(b1, 0, 0.09), B: band(b1, 0.2, 0.31) }, b2: { A: band(b2, 0, 0.09), B: band(b2, 0.2, 0.31) }, c1: { A: band(c1, 0, 0.09), B: band(c1, 0.2, 0.31) }, c2: { A: band(c2, 0, 0.09), B: band(c2, 0.2, 0.31) }, c3: { A: band(c3d, 0, 0.09), B: band(c3d, 0.2, 0.31) }, c4: { A: band(c4d, 0, 0.09), B: band(c4d, 0.2, 0.31) }, c5: { A: band(c5d, 0, 0.09), B: band(c5d, 0.2, 0.31) }, win: { b2: { A: band(b2, 0, 0.09, by), B: band(b2, 0.2, 0.31, by) }, c4: { A: band(c4d, 0, 0.09, by), B: band(c4d, 0.2, 0.31, by) }, c5: { A: band(c5d, 0, 0.09, by), B: band(c5d, 0.2, 0.31, by) } } };
     }, [E, built]);
     if (process.env.SHOTS) {
-      for (const [nm, which] of [['b2', 'own'], ['c3', 'c3'], ['c4', 'c4']]) {
-        await p.evaluate(([E, which]) => { const e = eval(E); const pc = e.pieces.find((q) => q.kind === 'chase'); pc.drawEdge = which === 'own' ? pc.__own : which === 'c3' ? pc.__c3 : pc.__c4; e.render(); }, [E, which]);
+      for (const [nm, which] of [['b2', 'own'], ['c3', 'c3'], ['c4', 'c4'], ['c5', 'c5']]) {
+        await p.evaluate(([E, which]) => { const e = eval(E); const pc = e.pieces.find((q) => q.kind === 'chase'); pc.drawEdge = which === 'own' ? pc.__own : which === 'c3' ? pc.__c3 : which === 'c4' ? pc.__c4 : pc.__c5; e.render(); }, [E, which]);
         await p.screenshot({ path: `${process.env.SHOTS}/tint-${nm}-${id}-${tag}.jpg`, type: 'jpeg', quality: 82 });
       }
     }

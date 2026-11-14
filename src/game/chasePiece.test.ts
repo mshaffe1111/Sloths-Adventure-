@@ -12,7 +12,7 @@ import { RealPlay } from './realPlay.ts';
 import { paintedPlatforms } from './protoArt.ts';
 import { setDifficulty } from './difficulty.ts';
 import { PIECE_KINDS } from './pieces/index.ts';
-import { CHASE_PIECE } from './pieces/chasePiece.ts';
+import { CHASE_PIECE, EDGE, edgeLook } from './pieces/chasePiece.ts';
 import { CHASE_ROWS, type ChaseLay, type ChaseRun } from './chase.ts';
 import type { PieceHost, PieceKind, PieceLayer, StagePiece } from './stagePiece.types.ts';
 import type { Platform } from './types.ts';
@@ -224,40 +224,54 @@ test('a chase section is never in the plain draw list (the list drawn before the
   assert.ok(!e.drawPlats.some((pl) => pl.chase), 'none in its plain draw list');
 });
 
-test('the trailing edge warns by gap: none 650 px back, a dark core with a warm rim up to 0.75 alpha at 150 px and closer (B2: faint on dark backdrops)', () => {
-  // (drawn by the piece itself on its 'screen' layer, into a ctx that records the gradient it fills with)
+test('the trailing edge warns where the branch breaks: an ember glow at his feet, one gradient, at most 22 bark chips; none 650 px back (B2)', () => {
+  // (drawn by the piece itself on its 'screen' layer, into a ctx that records what it is asked to draw)
   const lay: ChaseLay = { stretches: [{ start: 1000, end: 4000, last: true }] };
-  const host = { platforms: [] as Platform[], easy: false, t: 0, player: { x: 2000, y: Y }, view: { x: 1800, y: 0, w: 412, h: 915, zoom: 1 } } as unknown as PieceHost;
-  const piece = CHASE_PIECE.start({ chase: lay, config: { levelHeight: 1200 } } as never, host) as StagePiece & { run: ChaseRun };
-  assert.ok(piece);
-  const drawn = (gap: number) => {
+  const run = (gap: number, w: number, h: number) => {
+    const host = { platforms: [] as Platform[], easy: false, t: 1.3, player: { x: 2000, y: 700 }, view: { x: 1800, y: 100, w, h, zoom: 1 } } as unknown as PieceHost;
+    const piece = CHASE_PIECE.start({ chase: lay, config: { levelHeight: 1200 } } as never, host) as StagePiece & { run: ChaseRun };
     Object.assign(piece.run.fronts[0], { front: 2000 - gap, active: true, hold: 0 });
-    const stops: Array<[number, string]> = [];
-    let width = 0;
+    const got = { radial: 0, linear: 0, at: [] as number[][], r: 0, stops: [] as number[][], fills: 0 };
     const ctx = {
-      createLinearGradient: (_x0: number, _y0: number, x1: number) => {
-        width = x1;
-        return { addColorStop: (at: number, c: string) => stops.push([at, c]) };
+      save() {}, restore() {}, scale() {},
+      translate: (x: number, y: number) => got.at.push([x, y]),
+      createRadialGradient: (_x0: number, _y0: number, _r0: number, _x1: number, _y1: number, r: number) => {
+        got.radial++;
+        got.r = r;
+        return { addColorStop: (_at: number, c: string) => got.stops.push(c.match(/[\d.]+/g)!.map(Number)) };
       },
-      fillRect: () => {},
+      createLinearGradient: () => {
+        got.linear++;
+        return { addColorStop() {} };
+      },
+      fillRect: () => got.fills++,
       fillStyle: '',
     } as unknown as CanvasRenderingContext2D;
     piece.draw!(ctx, 'screen' as PieceLayer, host);
-    const rgba = stops.map(([, c]) => c.match(/[\d.]+/g)!.map(Number));
-    return { width, rgba, alpha: Math.max(0, ...rgba.map((q) => q[3])) };
+    return got;
   };
-  assert.equal(drawn(700).rgba.length, 0, 'no warning with the front 700 px back');
-  const near = drawn(150);
-  assert.equal(near.alpha, 0.75, 'full warning at 150 px: 0.75 alpha');
-  assert.equal(drawn(60).alpha, 0.75, 'and no more closer in');
-  const [core] = near.rgba;
-  assert.ok(core[0] + core[1] + core[2] < 40 && core[3] === 0.75, 'a dark core at the very edge');
-  assert.ok(near.rgba.some((q) => q[0] >= 200 && q[0] > q[1] && q[1] > q[2] && q[3] > 0), 'a warm rim on its inner side');
+  const far = run(700, 412, 915);
+  assert.equal(far.radial + far.linear + far.fills, 0, 'no warning with the front 700 px back');
+  assert.equal(edgeLook(700, 412, 915, 600, 1).bits.length, 0, 'and no chips');
+  for (const [w, h] of [[412, 915], [915, 412]]) {
+    const near = run(150, w, h);
+    assert.equal(near.radial, 1, `one glow (${w}x${h})`);
+    assert.equal(near.linear, 0, 'and no column over the scene');
+    assert.deepEqual(near.at[0], [0, 600], 'anchored at the trailing edge at his feet (screen y)');
+    assert.ok(near.r >= 0.55 * Math.max(w, 0.55 * h), `as big upright as sideways (${near.r.toFixed(0)} px at ${w}x${h})`);
+    const [core] = near.stops;
+    assert.ok(core[0] + core[1] + core[2] < 70 && core[3] >= 0.6, 'a dark ember core');
+    assert.ok(near.stops.some((q) => q[0] >= 200 && q[0] > q[1] && q[1] > q[2] && q[3] > 0.2), 'a warm rim');
+    const look = edgeLook(150, w, h, 600, 1.3);
+    assert.ok(look.bits.length > 0 && look.bits.length <= EDGE.bits, `bark chips, at most ${EDGE.bits}`);
+    assert.ok(look.bits.every((b) => b.alpha >= 0 && b.alpha <= 1 && b.x >= -10 && b.x <= look.glow.r), 'each inside the glow');
+    assert.ok(look.bits.some((b) => b.ember) && look.bits.some((b) => !b.ember), 'falling bark and rising lit bits');
+  }
   let last = 0;
   for (let gap = 640; gap >= 150; gap -= 10) {
-    const d = drawn(gap);
-    assert.ok(d.alpha >= last, `stronger as it closes (${gap} px: ${d.alpha} < ${last})`);
-    last = d.alpha;
+    const k = edgeLook(gap, 412, 915, 600, 1).k;
+    assert.ok(k >= last, `stronger as it closes (${gap} px)`);
+    last = k;
   }
-  assert.ok(drawn(150).width > drawn(500).width, 'and it reaches further in as the front closes');
+  assert.equal(edgeLook(60, 412, 915, 600, 1).k, 1, 'full at 150 px and closer');
 });

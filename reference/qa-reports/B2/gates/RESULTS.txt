@@ -7,3 +7,4 @@ knowncheck 0 1:27 AM
 generality 0 1:27 AM
 roadmap 2 1:27 AM
 kbdcheck 0 1:31 AM
+STOPPED 1:48 AM by B2: the lead approved building the C4 tint into src; this run (head d6c98b39) is void, rerun on the new head
