@@ -47,3 +47,7 @@ not ok 12 - 2-4, the real engine: a startled false liana lands CLEAR of him and 
 not ok 13 - slitherClear: a slither that would lie over him starts FALSE_LIANA.clear past his far side; one already clear is left where it lands
 # pass 10
 # fail 3
+# (on 83f0da6d, snakeCam.test.ts)
+## M9 the level check counts a false liana as a way on (levelCheck.ts)
+# pass 8
+# fail 0

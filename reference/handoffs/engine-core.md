@@ -4,9 +4,19 @@ Rewritten at the end of INT-1-1 (11-11), on its final head: branch `t-int-1-1` =
 on E0a d2748131 and A1 41c2e248) + t-content-c1-tests + the vendor split (t-engine-chunks@e67809c3) + the help ladder
 (t-engine-help@98186930) fitted to the new layout, with the Critic's two deltas fixed. Not merged: the one PR that ships E0 + C1 + A1 +
 A2 (ADR-001). Sections 0a-0b below are still true.
-Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
+Rewritten for ENG-S3 (11-14, t-eng-s3): section 0w. Rewritten for ENG-S2 (11-14, t-eng-s2): section 0v (the vine snake, the false liana, letGo). Rewritten for HOOKS (11-13, t-hooks): section 0t (the piece hook, the letter table). Rewritten for FIX-INT (11-13, t-int-5): section 0n (tonight's 3 unit reds). Rewritten for FIX-A (11-13, t-fixa): section 0l (Dot's card). Rewritten for INT-3 (11-13, t-int-3, the 0.9.8 integration): section 0m. Rewritten again at the end of R-165.112 (11-11): branch `t-engine-seedchunks`, rebased onto the passed t-int-1-1@874f11f6: each stage's proven list is
 its own lazy chunk (section 0d). The lead's ruling, 11-11 5:18 PM ET: the stand-in is ACCEPTED (a failed list load plays 4106 by its
 proven plan; Play is never blocked).
+
+## 0w. The camera's focus and the false liana's landing (ENG-S3, CAM-THREAT, t-eng-s3, 11-14; STOPPED by the lead, gates UNRUN)
+- PieceHost.focus(box): one step's request (engine clears camFocus before stepPieces); updateCamera applies cameraFollow.ts focusY after
+  the HUD hold; steps capped at CAM_RISE_STEP while focused, never losing him. The vine snake asks FOCUS_CAM.lead (1.2 s) before its tell
+  (clock read ahead), box = vineSnake.ts snakeFocusBox. gen2 verdict snakeViewFaults / snakeFaults share focusY + the box.
+- OPEN, real page: on 6-3 the liana hangs 124 px under the level's top; sideways the view stops at the level's top, so the tell can never
+  be under the HUD (0/6). The verdict must take the level's top into account (REPORT EXACT NEXT STEP 1). Unit tests used a roomy bare world.
+- False liana: flung away (FALSE_LIANA.fling), slither starts clear of him (slitherClear), at its hanging scale (slitherSize); near it the
+  view keeps its foot in. levelCheck skips false lianas (filter unproven by a test: M9 stayed green).
+- WORLD_VIEW_H and ZOOM_RANGE now live in cameraFollow.ts; VINE_HANG in heroVineData.ts (heroVine re-exports).
 
 ## 0v. The vine snake, the false liana and the host's let-go (ENG-S2, 1-6.md NEW 2+3, t-eng-s2, 11-14): what the next engineer must know
 - DATA: a liana carries one snake on `Vine.snake` (types.ts, lead ruling 11-14, the Platform.ride precedent): `{ route, clock?, shift?,
