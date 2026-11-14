@@ -227,9 +227,17 @@ export function castWatches(out: Pick<StageSink, 'proto' | 'platforms' | 'enemie
   if (!out.proto.watch.length) delete out.proto.watch;
 }
 
+/** the kinds castWatches lays as a kit sweeper (World 1's eagle) */
+export const SWEEPER_KINDS: readonly string[] = ['eagle'];
+/**
+ * is this animal a kit sweeper laid over a watched stretch (castWatches: its own calm, Enemy.kitCool)? Its eye crosses exactly
+ * [patrolMinX, patrolMaxX]; its laid x is only that stretch's start (levelCheck judges it by the stretch, not by where it was laid)
+ */
+export const isKitSweeper = (e: Pick<Enemy, 'type' | 'kitCool'>, kinds: readonly string[] = SWEEPER_KINDS): boolean => kinds.includes(e.type) && e.kitCool !== undefined;
+
 /** the stretches a stage's kit sweepers watch, as zones, so stillFaults holds them to the same rules (their cool is their calm) */
-export const sweptZones = (enemies: readonly Enemy[], kinds: readonly string[] = ['eagle']): WatchZone[] =>
-  enemies.filter((e) => kinds.includes(e.type) && e.kitCool !== undefined).map((e) => ({ x0: e.patrolMinX, x1: e.patrolMaxX, calm: [e.kitCool!, e.kitCool!] }));
+export const sweptZones = (enemies: readonly Enemy[], kinds: readonly string[] = SWEEPER_KINDS): WatchZone[] =>
+  enemies.filter((e) => isKitSweeper(e, kinds)).map((e) => ({ x0: e.patrolMinX, x1: e.patrolMaxX, calm: [e.kitCool!, e.kitCool!] }));
 
 /** what a laid stretch must give him (the numbers the check holds a stage to) */
 export interface StillRule {

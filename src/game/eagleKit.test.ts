@@ -47,6 +47,42 @@ test('an eagle laid plain: its first pass is real on Normal, free on Easy (every
   assert.equal(acts(eagle(), true, 14)[0], 'spared');
 });
 
+test('back at a flag inside its stretch: the eagle stands down for its whole calm, and its eye warns before it starts across', () => {
+  // (levelCheck lets a flag stand in a kit sweeper's stretch on this alone: the respawn, engine.ts respawnAtCheckpoint -> CastPlay.calm)
+  const OWN = 5.4;
+  const firsts = (respawn: boolean, easy = false): { notice: number; tell: number; hurt: number } => {
+    const c = new CastPlay({ kinds: ['eagle'], traps: [] }, [eagle({ kitCool: OWN })], ground, 1, []);
+    // he walks in the open, back and forth inside the stretch, never still
+    const h = { ...hero(400), vx: 120 };
+    const walk = () => { h.x += h.vx / 30; if (h.x > 600 || h.x < 200) h.vx = -h.vx; };
+    let i = 0;
+    for (; i < 40 * 30; i++, walk()) if (c.step(h, 1 / 30, i / 30, easy).told.length) break;
+    assert.ok(i < 40 * 30, 'it found him in the open');
+    // a set-back: back at the flag (x 400, inside the stretch); the engine calls calm() as he respawns
+    if (respawn) c.calm(easy);
+    h.x = 400;
+    const t0 = i;
+    const out = { notice: Infinity, tell: Infinity, hurt: Infinity };
+    for (i += 1; i < t0 + 40 * 30 && out.tell === Infinity; i++, walk()) {
+      const r = c.step(h, 1 / 30, i / 30, easy);
+      if (r.noticed.length && out.notice === Infinity) out.notice = (i - t0) / 30;
+      if (r.hurts.length && out.hurt === Infinity) out.hurt = (i - t0) / 30;
+      if (r.told.length) out.tell = (i - t0) / 30;
+    }
+    return out;
+  };
+  for (const easy of [false, true]) {
+    const got = firsts(true, easy);
+    const calmS = coolOf(EAGLE, easy, OWN);
+    assert.ok(got.notice >= calmS - 1 / 30, `${easy ? 'Easy' : 'Normal'}: its next pass is called ${got.notice.toFixed(2)} s after the respawn, not before its ${calmS} s calm`);
+    assert.ok(got.tell >= calmS + EAGLE.warn! - 1 / 30, `${easy ? 'Easy' : 'Normal'}: its dive starts ${got.tell.toFixed(2)} s after, not before the calm and the ${EAGLE.warn} s warn`);
+    assert.ok(got.hurt > got.tell, `${easy ? 'Easy' : 'Normal'}: nothing hurts him at the flag before that dive`);
+  }
+  // planted: without the stand-down (no calm() at the flag) the dive it had begun follows him to the flag and hurts him inside one calm
+  const raw = firsts(false);
+  assert.ok(raw.hurt < OWN, `without calm(): hurt ${raw.hurt.toFixed(2)} s after the set-back`);
+});
+
 test("an eagle's own cool per stretch beats the kind's, and Easy still waits longer", () => {
   assert.equal(coolOf(EAGLE, false, 6.5), 6.5);
   assert.ok(coolOf(EAGLE, true, 6.5) > 6.5);

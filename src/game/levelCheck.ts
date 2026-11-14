@@ -16,6 +16,7 @@ import { maxRise } from './protoCheck.ts';
 import type { Waterfall } from './waterfalls.ts';
 import { PAST_SHRINE } from './rules.ts';
 import { flagFurther } from './gen2/tower.ts';
+import { isKitSweeper } from './gen2/stillLay.ts';
 import { checkRooms, kitSolved, type KitWall } from './puzzleCheck.ts';
 import { hopLimit } from './river.ts';
 import { skillGuaranteedAt, skillHeldAt } from './skills.ts';
@@ -928,13 +929,19 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
   // fairness: nothing hostile right on top of the player when they spawn or respawn
   // (each flag is compared at its own height: in a climb the flags are far above the spawn, so judging every enemy against
   // the spawn's height let an eagle sit right over a flag)
-  const safeSpots = [{ x: stage.spawnX, y: stage.spawnY }, ...(stage.checkpoints ?? []), { x: stage.exitTotemX, y: stage.exitTotemY }];
+  const safeSpots = [{ x: stage.spawnX, y: stage.spawnY, flag: false }, ...(stage.checkpoints ?? []).map((c) => ({ x: c.x, y: c.y, flag: true })), { x: stage.exitTotemX, y: stage.exitTotemY, flag: false }];
   for (const e of stage.enemies) {
+    // (a kit sweeper, gen2/stillLay castWatches (World 1's eagle): its laid x is only its stretch's start, and its eye crosses the whole
+    // stretch, so it is judged by the STRETCH, as a walker by its patch, against the start and the shrine. A flag inside or beside it is
+    // fair: every respawn stands the cast down for the stretch's whole calm and its eye then warns before it starts across (castPlay.ts
+    // calm; eagleKit.test "back at a flag inside its stretch"), and stillFaults holds a hide within one calm's walk of every spot of it)
+    const swept = isKitSweeper(e);
     for (const s of safeSpots) {
+      if (swept && s.flag) continue;
       if (Math.abs(e.y - s.y) >= 400) continue;
       // (a flier is judged by where it hangs, a walker by how close its patch of ground comes)
-      const d = e.type === 'eagle' ? Math.abs(e.x - s.x) : Math.min(Math.abs(e.x - s.x), dxTo(e.patrolMinX, e.patrolMaxX, s.x));
-      if (d < (e.type === 'eagle' ? 300 : SAFE_APPROACH)) errors.push(`enemy #${e.id} stands too close to a safe spot at x=${Math.round(s.x)}`);
+      const d = swept ? dxTo(e.patrolMinX, e.patrolMaxX, s.x) : e.type === 'eagle' ? Math.abs(e.x - s.x) : Math.min(Math.abs(e.x - s.x), dxTo(e.patrolMinX, e.patrolMaxX, s.x));
+      if (d < (e.type === 'eagle' && !swept ? 300 : SAFE_APPROACH)) errors.push(`enemy #${e.id} stands too close to a safe spot at x=${Math.round(s.x)}`);
     }
   }
 
