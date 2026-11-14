@@ -1855,7 +1855,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // against that bank read as drawn past its ground's lip (w1CutArt.ts groundRun's wall wants the bank 3+ px past the floor), so the
       // settle (R-165.226) swapped the section away: 1-7's liana pits, the pool spent on 5 of 8 rolls. A thin perch or branch beside the
       // pit is never stretched into a column)
-      for (const q of platforms) if (!wallIds.has(q.id) && (Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
+      // (a hollow log is a painted piece at its art's own height, never a bank: floorRoll.test, INT-9's first full run)
+      for (const q of platforms) if (!wallIds.has(q.id) && !q.hollow && (Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
     };
     if (back) {
       const out = backPit(x0, x1, lipY, farY, depthNow, hop);
