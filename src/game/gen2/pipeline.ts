@@ -1385,13 +1385,15 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (!gl && !gr) continue;
     if (gl && gr && (!!gl.water !== !!gr.water || !!gl.soft !== !!gr.soft)) continue;
     const g = (gl ?? gr)!;
+    // (a shallow catch, wade-deep, no steps: a step out laid under the limb stood under its own ceiling, 1-7 seed 2's 75 px step at
+    // x 18791 that a flick leaning away could not climb, plainWalk.test)
+    g.shallow = true;
     g.x0 = Math.min(g.x0, p.x);
     g.x1 = Math.max(g.x1, p.x + p.w);
     if (gl && gr) {
       g.x1 = gr.x1;
       g.y = Math.min(gl.y, gr.y);
       g.lo = Math.max(gl.lo, gr.lo);
-      if (!gr.shallow) delete g.shallow;
       gaps.splice(gaps.indexOf(gr), 1);
     }
   }

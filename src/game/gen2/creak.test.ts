@@ -98,7 +98,7 @@ test('a creaky limb laid ACROSS a pit (a jump on, a jump off) has the pit under 
     const k = L.pieces.find((p) => p.key === 'k')!;
     const pits = L.gaps.filter((g) => g.pit);
     assert.equal(pits.length, 1, `mirrored ${mirrored}: one pit, not one a jump: ${JSON.stringify(L.gaps)}`);
-    assert.ok(pits[0].x0 < k.x && pits[0].x1 > k.x + k.w && pits[0].soft, `mirrored ${mirrored}: the soft pit runs under the limb ${k.x}-${k.x + k.w}: ${JSON.stringify(pits[0])}`);
+    assert.ok(pits[0].x0 < k.x && pits[0].x1 > k.x + k.w && pits[0].soft && pits[0].shallow, `mirrored ${mirrored}: a shallow soft pit runs under the limb ${k.x}-${k.x + k.w}: ${JSON.stringify(pits[0])}`);
   }
   // planted: the same section with a SOUND bough (it never gives way): two jumps, two pits, nothing under the bough, as before
   const S = layLocal(tpl(false), budget, rngFor(31, 0), false, { pitDepth: M.pitDepth });
