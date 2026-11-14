@@ -1548,7 +1548,13 @@ export function offPathFilled(q: W1Section): W1Section {
   return { ...q, subBlocks: [{ ...sub, versions }] };
 }
 /** a section of CUT_11_DOUBLES, out of 1-1's pool (its other stages keep it) */
-const cut11 = <T extends { id: string; feel: readonly unknown[] }>(q: T): T => (CUT_11_DOUBLES.includes(q.id) ? { ...q, feel: q.feel.filter((f) => f !== '1-1') } : q);
+// (one the cut leaves on no stage is parked with its reason, as every section out of 1-1 is: POLISH-9b, w1.test's tags rule found
+// w1-second-jump and five more on no stage and unmarked)
+const cut11 = <T extends { id: string; feel: readonly unknown[]; parked?: string }>(q: T): T => {
+  if (!CUT_11_DOUBLES.includes(q.id)) return q;
+  const feel = q.feel.filter((f) => f !== '1-1');
+  return { ...q, feel, ...(!feel.length && !q.parked ? { parked: 'POLISH-7: out of 1-1 with the other double sections (CUT_11_DOUBLES: 1-1 tests no double, R-165.228)' } : {}) };
+};
 export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map(teachLines).map(offPathFilled).map(cut11).map((q) => ({ ...q, jobs: JOBS[q.id] ?? JOBS[R6_BASE[q.id]], content: CONTENT[q.id] ?? CONTENT[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[0], terrain: TERRAIN[q.id] ?? TERRAIN[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[1], ...(ANSWERS[q.id] ? { answers: ANSWERS[q.id] } : {}), ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
 
 /** the phases a stage's slots fill */
