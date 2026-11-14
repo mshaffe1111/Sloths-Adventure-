@@ -255,7 +255,7 @@ export const SECTIONS_17: SectionTemplate[] = [...BEATS_17, ...QUIET_17, EXIT_17
  *  eagle LANDS (its body on a snag at `perch` along its stretch, its gaze swept) */
 export const W17_JOIN = ['w1-17-creak', 'w1-17-mossy-lianas', 'w1-17-light-gap'] as const;
 export const W17_MOSSY = ['w1-17-mossy-lianas', 'w1-17-light-gap'] as const;
-export const W17_PERCH = { section: 'w1-17-eagle-lands', at: 0.55 } as const;
+export const W17_PERCH = { section: 'w1-17-eagle-lands', at: 0.55 } as const; // (`at`: only where the beat has fewer than two hides)
 
 type FinishStage = { platforms: Platform[]; vines: Vine[]; enemies: Enemy[]; gen2?: { sections: Array<{ uid: string; template: string }> } };
 /** a section's laid pieces (Platform.tag / Vine.tag `<uid>:<key>`, BRIEF_17.tags) */
@@ -297,7 +297,12 @@ export function finish17<T extends FinishStage>(st: T, difficulty: Difficulty): 
       const e = inside[0];
       const z: WatchZone = { x0: e.patrolMinX, x1: e.patrolMaxX, calm: [e.kitCool ?? 5, e.kitCool ?? 5], ...(e.kitFree ? { freeFirst: true } : {}) };
       const ground = plats.filter((p) => p.type !== 'fragile').sort((a, b) => a.y - b.y)[0].y;
-      const perched = eagleOver(z, ground, e.id, { x: Math.round(z.x0 + (z.x1 - z.x0) * W17_PERCH.at) });
+      // (its snag stands on open bark, never on a hide: in the middle of the widest stretch between the beat's covers (BUILD-17's sideways
+      //  still: at a fixed share of the stretch it stood behind a moss patch and the eagle sat on his cover))
+      const hs = bushes.filter((b) => b.x + b.w > z.x0 && b.x < z.x1).sort((a, b) => a.x - b.x);
+      let at = Math.round(z.x0 + (z.x1 - z.x0) * W17_PERCH.at), best = -1;
+      for (let i = 1; i < hs.length; i++) { const a = hs[i - 1].x + hs[i - 1].w, b = hs[i].x; if (b - a > best) { best = b - a; at = Math.round((a + b) / 2); } }
+      const perched = eagleOver(z, ground, e.id, { x: at });
       perched.kitCool = e.kitCool;
       st.enemies = st.enemies.map((q) => (q === e ? perched : q));
     }

@@ -78,6 +78,8 @@ test('the eagle: one a watched stretch (9), the kit kind; taught free on Normal,
     const lands = sec(st, 'w1-17-eagle-lands');
     const ps = piecesOf(st.platforms, lands.uid);
     assert.ok(perched[0].x > Math.min(...ps.map((p) => p.x)) && perched[0].x < Math.max(...ps.map((p) => p.x + p.width)), 'on its own beat');
+    // (its snag on open bark, never behind a hide: 40 px clear of every cover, the snag's trunk is ~44 px wide)
+    for (const h of st.proto.bushes ?? []) assert.ok(perched[0].x < h.x - 40 || perched[0].x > h.x + h.w + 40, `${d} ${s}: the snag at ${perched[0].x} stands in a cover ${h.x}-${h.x + h.w}`);
     const free = es.filter((e) => e.kitFree).length;
     assert.equal(free, d === 'easy' ? 9 : 2, `${d}: first passes free`);
     assert.ok(es.every((e) => (e.kitCool ?? 0) >= 5), 'every calm 5 s or more (STILL_RULE)');
