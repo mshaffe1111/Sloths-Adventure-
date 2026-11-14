@@ -2352,7 +2352,7 @@ export class GameEngine {
           const sweet = inSweetSpot(sw, p.facing);
           // (with the vine's own swing, `amp`: a press a beat late leaps from this, and timedLaunch reads the swing it was on. Without it
           // the leap off a liana narrowed by its neighbour (a chain's, swingSetup's) was thrown as off the engine's full swing, a third
-          // short: 1-6's chain, the kid's late press off its last liana landed in the thorns, vx 426 where the release checks fly 520,
+          // short: 1-6's chain, the kid's late press off its last liana fell short into the hollow, vx 426 where the release checks fly 520,
           // ENG-16E R-165.246)
           if (sweet) this.sweetSnap = { angle: sw.angle, omega: sw.omega, len: sw.len, amp: sw.amp, dir: p.facing, at: this.gameTime };
           // a press a beat early waits for the sweet spot, then lets go (physics.ts RELEASE)

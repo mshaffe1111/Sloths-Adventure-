@@ -73,6 +73,23 @@ gorge:gb1, gorge:d2 x2; s5 first-liana:b1, gorge:b2; s6 none.
   5). The snapshot fix did not cause it: only lianas under the full swing leap differently (the chain's, and the false liana's at 0,
   where omega is 0); the bots' draws upstream changed, which put these two seeds into a loop that was there.
 
+## The gates (LAWS 5; scoped as the packet says: tsc, the whole unit suite, every list/bot/lock moved, buildcheck alone; no drawing or build changed, so no perf gates; the integrator runs the full set)
+- tsc: clean. generalitycheck: PASS. seedlist --check 1-1..1-5: PASS (257/100/100/100/150). tierBots 1-1: 7/7 (twice: after the engine
+  fixes and after the bot fix). Plants: 8/8 RED (plant.sh A1-A3, B1-B4; pitClimb test 6). lockall vs the start head: 94/102 unchanged
+  (moved: 1-6; petals on 1-1, 1-3, 7-9, 8-1, 8-3, 8-5, 8-6). castBots 1-1..1-5 both settings (`w1/`). buildcheck alone: PASS (1-1 p95
+  109 ms Normal, 70 ms Easy, budget 150; `gates/buildcheck.out.txt`).
+- **The whole suite on d3a3cbe1** (3:09-3:41 PM ET, `gates/suite.out.txt`): 3447 tests, **29 fail**. The 13 files holding them run on the
+  start head 67027823 and on d3a3cbe1 side by side (`gates/red-files-at-*.out.txt`): **26 were already red on the start head** (BUILD-16..16d
+  never ran the whole suite: the old hand-built 1-6's tests (stage16, roomLogReset, vineFollowUps, vineFlickMirror, puzzleCamera), the
+  judged-table and listed tests (judgedTable, listed, verdicts: the new 1-6 row), vineSelfSwing, writtenKeys, w4RealReach's TODO).
+  **3 are mine**: (1) hurtFloor.test.ts:332, my engine.ts comment said "thorns" (a World 1 word in engine code): reworded, PASS, in the
+  final commit. (2)+(3) **w1Swing.test.ts:48 and :123: a RULE CONFLICT, left RED for the lead's ruling** (LAWS 22: not loosened by me).
+  They hold FAR's design: its perch lies past the ~380 px the plain check links from any hold ("only the dial's flight reaches it").
+  The A guard ends every dialled band where the testers' forward-end let-go lands, ~366-387 px, so FAR now sits where LONG does (the
+  finding I sent at 2:43 PM). Either FAR keeps "past 380" (then the guard applies to `held` only, FAR goes back to +412..437 and its
+  forward-end let-go falls 2-27 px short, BUILD-16c's FAR falls) or FAR's rule becomes "landed by the foot's forward-end let-go" and the
+  two tests are re-written to it by the Designer's rule. The lead/Designer decides; 1-6's numbers above are with the guard on FAR.
+
 ## Polish check (stills in `stills/`, 2x, upright 412x915 and sideways 915x412, the real game via tools/engine/runs/stills-at.mjs;
 ## before = a worktree at 67027823, after = this branch; Pokey is placed IN the pit on purpose so its floor is in view)
 - `before-1-6-L1-...x28400-sideways.jpg` (the creaky landing's pit, Normal layout 1): two fill petals glow on the soft pit's floor beside
@@ -118,6 +135,7 @@ gorge:gb1, gorge:d2 x2; s5 first-liana:b1, gorge:b2; s6 none.
   (a relist and 40-seed bots before the rescues are fixed would be redone, D40). The EXACT NEXT STEP below is in order.
 - The packet's B.5 stills are done (1-6 creaky landing and gorge pits before/after, 1-5 creaky limbs, upright + sideways: `stills/`).
   No clips were shot in this box.
+- The whole suite is RED: 29 of 3447 on d3a3cbe1 (26 pre-existing on the start head, 2 the FAR conflict, 1 fixed): The gates, above.
 - 1-1 kid and adult are rescued on every seed 1-6 on both settings, identical on main (73e7bed0), the start head and this head
   (`w1/at-main-*`, `w1/at-67027823-*`): pre-existing, not from this work, not looked into.
 - The hand-built stages' fill (Suggestion 3).
@@ -129,6 +147,10 @@ gorge:gb1, gorge:d2 x2; s5 first-liana:b1, gorge:b2; s6 none.
   worktree at 9d002c76 (`at-9d002c76/`).
 
 ## EXACT NEXT STEP (1-6, in order; xhigh engine tier)
+0. **The FAR ruling first** (it changes 1-6's lay): w1Swing.test.ts:48 and :123 are RED by design conflict (The gates, above). Then
+   **the 26 tests already red on the start head** (`gates/red-files-at-67027823.out.txt`): most hold the OLD hand-built 1-6 (BUILD-16
+   replaced it: new replaces old, so those tests go or move to the new 1-6) and the judged/listed tables (the new 1-6 row); each needs an
+   owner before INT-9 can call the branch green.
 1. Kid Normal's rescues on d3a3cbe1 (list above), each traced by FRAME before any change: `FT_FRAMES=a,b BOT=kid SEED=<n> npx tsx
    reference/qa-reports/BUILD-16d/stuck.ts` (fresh process; the times from `FT_TRACE=1` first). Start with gorge:d2 (s3, s4: is it still
    the climb back? the fix covers a liana taking him; a jump at gl1 from d2 is another path) and risers:b2 (s2, s4: three pit lives on
