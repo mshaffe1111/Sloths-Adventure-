@@ -2031,3 +2031,897 @@ ok 338 - World 6's pieces cut from Matt's Gemini sheets: inside their sheets, an
   duration_ms: 0.471925
   type: 'test'
   ...
+# Subtest: every piece of the puzzle kit atlas is drawn somewhere in the game
+ok 339 - every piece of the puzzle kit atlas is drawn somewhere in the game
+  ---
+  duration_ms: 216.297358
+  type: 'test'
+  ...
+# Subtest: the dressing adds pictures only: platforms, pickups, enemies and rooms are the same as without it
+ok 340 - the dressing adds pictures only: platforms, pickups, enemies and rooms are the same as without it
+  ---
+  duration_ms: 8834.493994
+  type: 'test'
+  ...
+# Subtest: 3-7's hollows: the three ferns of each are one kind (only Dot's stones tell them apart), and the rolls use all of Matt's
+ok 341 - 3-7's hollows: the three ferns of each are one kind (only Dot's stones tell them apart), and the rolls use all of Matt's
+  ---
+  duration_ms: 2437.035275
+  type: 'test'
+  ...
+# Subtest: World 3 floor sets and World 4 bridges: never the same set in two stages in a row
+ok 342 - World 3 floor sets and World 4 bridges: never the same set in two stages in a row
+  ---
+  duration_ms: 2308.358908
+  type: 'test'
+  ...
+# Subtest: World 1's rooms: the branch gate up 1-6's seesaw banks, and a petal bundle for every room
+ok 343 - World 1's rooms: the branch gate up 1-6's seesaw banks, and a petal bundle for every room
+  ---
+  duration_ms: 597.392446
+  type: 'test'
+  ...
+# Subtest: the dressing sheets: every piece is in a set, every set piece is on the sheet
+ok 344 - the dressing sheets: every piece is in a set, every set piece is on the sheet
+  ---
+  duration_ms: 0.561426
+  type: 'test'
+  ...
+# Subtest: Worlds 1 and 5: their stages wear dressing sets, two stages in a row never the same bank set, and only pictures are added
+ok 345 - Worlds 1 and 5: their stages wear dressing sets, two stages in a row never the same bank set, and only pictures are added
+  ---
+  duration_ms: 404.686237
+  type: 'test'
+  ...
+# Subtest: a look never repeats in two stages in a row, whatever each one rolled
+ok 346 - a look never repeats in two stages in a row, whatever each one rolled
+  ---
+  duration_ms: 84.721161
+  type: 'test'
+  ...
+# Subtest: a retry keeps the look, and with three looks or more a fresh roll can change it
+ok 347 - a retry keeps the look, and with three looks or more a fresh roll can change it
+  ---
+  duration_ms: 1.103666
+  type: 'test'
+  ...
+# Subtest: every packed piece and art file is drawn, or on the reasoned allow-list (which only shrinks)
+ok 348 - every packed piece and art file is drawn, or on the reasoned allow-list (which only shrinks)
+  ---
+  duration_ms: 9972.695311
+  type: 'test'
+  ...
+# Subtest: every ascent layout the generator builds keeps all of it inside the strip the hero can walk
+ok 349 - every ascent layout the generator builds keeps all of it inside the strip the hero can walk
+  ---
+  duration_ms: 5503.55709
+  type: 'test'
+  ...
+# Subtest: the ascent a player is given (a random layout, checked) can be climbed
+ok 350 - the ascent a player is given (a random layout, checked) can be climbed
+  ---
+  duration_ms: 10409.541251
+  type: 'test'
+  ...
+# Subtest: the layouts that used to have no way up are fixed (same seeds as the audit: 7-4/787875, 8-4/633784, 9-4/206527, 10-4/652245, 10-4/737943)
+ok 351 - the layouts that used to have no way up are fixed (same seeds as the audit: 7-4/787875, 8-4/633784, 9-4/206527, 10-4/652245, 10-4/737943)
+  ---
+  duration_ms: 325.616395
+  type: 'test'
+  ...
+# Subtest: the validator knows the clamp: a platform beyond the world edge does not count, and a vine out there cannot be grabbed
+ok 352 - the validator knows the clamp: a platform beyond the world edge does not count, and a vine out there cannot be grabbed
+  ---
+  duration_ms: 37.136314
+  type: 'test'
+  ...
+# Subtest: defaults give the usual three lives at normal speed
+ok 353 - defaults give the usual three lives at normal speed
+  ---
+  duration_ms: 0.989933
+  type: 'test'
+  ...
+# Subtest: extra lives add to the starting lives and the speed is kept
+ok 354 - extra lives add to the starting lives and the speed is kept
+  ---
+  duration_ms: 0.270842
+  type: 'test'
+  ...
+# Subtest: help is offered only after enough Game Overs, and only while it is off
+ok 355 - help is offered only after enough Game Overs, and only while it is off
+  ---
+  duration_ms: 0.16344
+  type: 'test'
+  ...
+# Subtest: a world sheet is let go when a stage starts in another world, and kept within the same world
+ok 356 - a world sheet is let go when a stage starts in another world, and kept within the same world
+  ---
+  duration_ms: 1.901112
+  type: 'test'
+  ...
+# Subtest: a sheet let go while it was still loading does not mark its module ready
+ok 357 - a sheet let go while it was still loading does not mark its module ready
+  ---
+  duration_ms: 0.327051
+  type: 'test'
+  ...
+# Subtest: every method on the sound's front door (game/audio.ts) is called by the game or its tools
+ok 358 - every method on the sound's front door (game/audio.ts) is called by the game or its tools
+  ---
+  duration_ms: 165.748991
+  type: 'test'
+  ...
+# Subtest: no no-op left standing in for a feature: the conductor has no setTempo
+ok 359 - no no-op left standing in for a feature: the conductor has no setTempo
+  ---
+  duration_ms: 0.225555
+  type: 'test'
+  ...
+# Subtest: muting lets go of the audio focus, and unmuting asks for it again
+ok 360 - muting lets go of the audio focus, and unmuting asks for it again
+  ---
+  duration_ms: 1.967686
+  type: 'test'
+  ...
+# Subtest: after the focus is lost for good, the next tap on the game asks for it again (a key press too); muted, it does not
+ok 361 - after the focus is lost for good, the next tap on the game asks for it again (a key press too); muted, it does not
+  ---
+  duration_ms: 0.304963
+  type: 'test'
+  ...
+# Subtest: the native side asks for the focus on resume only when the page wants sound, and says "lost" when a request is refused
+ok 362 - the native side asks for the focus on resume only when the page wants sound, and says "lost" when a request is refused
+  ---
+  duration_ms: 0.481945
+  type: 'test'
+  ...
+# Subtest: the Game Over card does not release the defeat sting's duck (the sting is 12 s long; the card comes 0.75 s in)
+ok 363 - the Game Over card does not release the defeat sting's duck (the sting is 12 s long; the card comes 0.75 s in)
+  ---
+  duration_ms: 27.542322
+  type: 'test'
+  ...
+# Subtest: a stage paused under the satchel (opened from the pause menu) stays paused for the sound: no low-health heartbeat
+ok 364 - a stage paused under the satchel (opened from the pause menu) stays paused for the sound: no low-health heartbeat
+  ---
+  duration_ms: 17.173768
+  type: 'test'
+  ...
+# Subtest: back from the satchel, the pause menu still plays the stage's own tune (SN-6), not the satchel's loop
+ok 365 - back from the satchel, the pause menu still plays the stage's own tune (SN-6), not the satchel's loop
+  ---
+  duration_ms: 16.665346
+  type: 'test'
+  ...
+# Subtest: a story whose first picture asks for silence keeps it: the screen change that mounted the story does not undo it
+ok 366 - a story whose first picture asks for silence keeps it: the screen change that mounted the story does not undo it
+  ---
+  duration_ms: 19.773344
+  type: 'test'
+  ...
+# Subtest: and once the story is over, the next screen puts the music back to full
+ok 367 - and once the story is over, the next screen puts the music back to full
+  ---
+  duration_ms: 16.84512
+  type: 'test'
+  ...
+# Subtest: the storm pictures of the story have the storm around them (the thunderstorm ambience)
+ok 368 - the storm pictures of the story have the storm around them (the thunderstorm ambience)
+  ---
+  duration_ms: 3.718986
+  type: 'test'
+  ...
+# Subtest: CT-6: a back swipe during a stage pauses it and stays in the game, the second one too
+ok 369 - CT-6: a back swipe during a stage pauses it and stays in the game, the second one too
+  ---
+  duration_ms: 0.956506
+  type: 'test'
+  ...
+# Subtest: CT-6: off a stage the guard is gone: a back swipe takes our entry off quietly, the next one leaves as usual
+ok 370 - CT-6: off a stage the guard is gone: a back swipe takes our entry off quietly, the next one leaves as usual
+  ---
+  duration_ms: 0.274608
+  type: 'test'
+  ...
+# Subtest: about a hundred medals, ids unique, every tier there and one platinum
+ok 371 - about a hundred medals, ids unique, every tier there and one platinum
+  ---
+  duration_ms: 0.923018
+  type: 'test'
+  ...
+# Subtest: the medals add up to exactly 5,000 points, platinum is 500, and each tier has fixed points
+ok 372 - the medals add up to exactly 5,000 points, platinum is 500, and each tier has fixed points
+  ---
+  duration_ms: 0.253061
+  type: 'test'
+  ...
+# Subtest: nothing is about finishing a stage quickly
+ok 373 - nothing is about finishing a stage quickly
+  ---
+  duration_ms: 2.772896
+  type: 'test'
+  ...
+# Subtest: the World Masters and the separate guardian medals are gone
+ok 374 - the World Masters and the separate guardian medals are gone
+  ---
+  duration_ms: 0.197631
+  type: 'test'
+  ...
+# Subtest: a fresh game has no medals
+ok 375 - a fresh game has no medals
+  ---
+  duration_ms: 0.44481
+  type: 'test'
+  ...
+# Subtest: no silver or gold comes from playing one ordinary stage
+ok 376 - no silver or gold comes from playing one ordinary stage
+  ---
+  duration_ms: 0.613795
+  type: 'test'
+  ...
+# Subtest: "without taking a hit" means no heart and no life lost, on every medal that says it (audit C things-12a)
+ok 377 - "without taking a hit" means no heart and no life lost, on every medal that says it (audit C things-12a)
+  ---
+  duration_ms: 1.22799
+  type: 'test'
+  ...
+# Subtest: single-stage medals need a win and the right stats
+ok 378 - single-stage medals need a win and the right stats
+  ---
+  duration_ms: 1.435659
+  type: 'test'
+  ...
+# Subtest: green thumb needs every flower, and enough of them to mean something
+ok 379 - green thumb needs every flower, and enough of them to mean something
+  ---
+  duration_ms: 0.829439
+  type: 'test'
+  ...
+# Subtest: hard single-stage feats need the right stage and a win
+ok 380 - hard single-stage feats need the right stage and a win
+  ---
+  duration_ms: 3.582232
+  type: 'test'
+  ...
+# Subtest: the story moments: Dot's flight without a scratch, Meeca's warnings without a hint, the Queen's cake
+ok 381 - the story moments: Dot's flight without a scratch, Meeca's warnings without a hint, the Queen's cake
+  ---
+  duration_ms: 4.477193
+  type: 'test'
+  ...
+# Subtest: counters add up across stages and tiers unlock
+ok 382 - counters add up across stages and tiers unlock
+  ---
+  duration_ms: 0.840763
+  type: 'test'
+  ...
+# Subtest: the new counters (from 2026-10-26) add up: play time, swings, punches, kicks, friends freed, World 5
+ok 383 - the new counters (from 2026-10-26) add up: play time, swings, punches, kicks, friends freed, World 5
+  ---
+  duration_ms: 0.81963
+  type: 'test'
+  ...
+# Subtest: Ghost Walk: ten clears without a hit, over any number of stages
+ok 384 - Ghost Walk: ten clears without a hit, over any number of stages
+  ---
+  duration_ms: 0.576685
+  type: 'test'
+  ...
+# Subtest: naturalist needs all 18 journal creatures: the 11 predators and the 7 met on the road
+ok 385 - naturalist needs all 18 journal creatures: the 11 predators and the 7 met on the road
+  ---
+  duration_ms: 1.585329
+  type: 'test'
+  ...
+# Subtest: a perfect save earns every record-based medal; world medals follow their world
+ok 386 - a perfect save earns every record-based medal; world medals follow their world
+  ---
+  duration_ms: 2.200729
+  type: 'test'
+  ...
+# Subtest: the extra stages (4-D, 5-M) are part of "every stage", the secret Hollow is not
+ok 387 - the extra stages (4-D, 5-M) are part of "every stage", the secret Hollow is not
+  ---
+  duration_ms: 1.641576
+  type: 'test'
+  ...
+# Subtest: finishing the game: Easy is a silver, Normal a gold (and gives the silver too)
+ok 388 - finishing the game: Easy is a silver, Normal a gold (and gives the silver too)
+  ---
+  duration_ms: 2.969554
+  type: 'test'
+  ...
+# Subtest: Quiet Wings: a whole world cleared with Dot on Quiet
+ok 389 - Quiet Wings: a whole world cleared with Dot on Quiet
+  ---
+  duration_ms: 1.046281
+  type: 'test'
+  ...
+# Subtest: platinum needs all three: Normal finished, 3 stars everywhere, every find
+ok 390 - platinum needs all three: Normal finished, 3 stars everywhere, every find
+  ---
+  duration_ms: 2.20505
+  type: 'test'
+  ...
+# Subtest: earned medals stay earned
+ok 391 - earned medals stay earned
+  ---
+  duration_ms: 0.624036
+  type: 'test'
+  ...
+# Subtest: coats unlock by points: 250, 750, 1,500 and 2,500
+ok 392 - coats unlock by points: 250, 750, 1,500 and 2,500
+  ---
+  duration_ms: 0.175626
+  type: 'test'
+  ...
+# Subtest: progress is reported for count-based medals
+ok 393 - progress is reported for count-based medals
+  ---
+  duration_ms: 0.162136
+  type: 'test'
+  ...
+# Subtest: the stored record is validated
+ok 394 - the stored record is validated
+  ---
+  duration_ms: 0.645304
+  type: 'test'
+  ...
+# Subtest: an older saved record (no new counters) loads with zeros and keeps what it had
+ok 395 - an older saved record (no new counters) loads with zeros and keeps what it had
+  ---
+  duration_ms: 0.488642
+  type: 'test'
+  ...
+# Subtest: the world names match the game
+ok 396 - the world names match the game
+  ---
+  duration_ms: 0.093817
+  type: 'test'
+  ...
+# Subtest: every medal has its painted emblem and tier medallion in the medal sheet
+ok 397 - every medal has its painted emblem and tier medallion in the medal sheet
+  ---
+  duration_ms: 0.245994
+  type: 'test'
+  ...
+# Subtest: a strip laid along a long bank keeps only the repeats on screen, each where the full strip has it
+ok 398 - a strip laid along a long bank keeps only the repeats on screen, each where the full strip has it
+  ---
+  duration_ms: 1.660533
+  type: 'test'
+  ...
+# Subtest: a long ground bank (1-7's) draws a handful of pieces a frame at a narrow phone's view, wherever the view is
+ok 399 - a long ground bank (1-7's) draws a handful of pieces a frame at a narrow phone's view, wherever the view is
+  ---
+  duration_ms: 180.805333
+  type: 'test'
+  ...
+# Subtest: a snap-jaw stone is safe on beats 1 to 3 and bites on beat 4, every bar, and always holds him up
+ok 400 - a snap-jaw stone is safe on beats 1 to 3 and bites on beat 4, every bar, and always holds him up
+  ---
+  duration_ms: 2.546795
+  type: 'test'
+  ...
+# Subtest: it never bites unwarned: the jaw opens for the whole warning first, a little wider each frame
+ok 401 - it never bites unwarned: the jaw opens for the whole warning first, a little wider each frame
+  ---
+  duration_ms: 3.733878
+  type: 'test'
+  ...
+# Subtest: Easy gives him longer on the stone and a longer warning, never a faster bite
+ok 402 - Easy gives him longer on the stone and a longer warning, never a faster bite
+  ---
+  duration_ms: 9.311958
+  type: 'test'
+  ...
+# Subtest: stones on one clock, a beat apart, snap in a row and never two neighbours at once: there is always a way across
+ok 403 - stones on one clock, a beat apart, snap in a row and never two neighbours at once: there is always a way across
+  ---
+  duration_ms: 1.234347
+  type: 'test'
+  ...
+# Subtest: a sinking pad on the same base: it holds through the warning, is gone while on, and never hurts
+ok 404 - a sinking pad on the same base: it holds through the warning, is gone while on, and never hurts
+  ---
+  duration_ms: 1.193327
+  type: 'test'
+  ...
+# Subtest: the builder's check refuses a brick that is not fair, with the reason
+ok 405 - the builder's check refuses a brick that is not fair, with the reason
+  ---
+  duration_ms: 0.569663
+  type: 'test'
+  ...
+# Subtest: every bird species has all four wing frames in the atlas
+ok 406 - every bird species has all four wing frames in the atlas
+  ---
+  duration_ms: 0.780971
+  type: 'test'
+  ...
+# Subtest: every flock only names species that exist
+ok 407 - every flock only names species that exist
+  ---
+  duration_ms: 0.245568
+  type: 'test'
+  ...
+# Subtest: the flap loop visits all four poses and wraps
+ok 408 - the flap loop visits all four poses and wraps
+  ---
+  duration_ms: 1.407248
+  type: 'test'
+  ...
+# Subtest: over a few stages every species in a pool takes its turn, and all twelve species fly somewhere
+ok 409 - over a few stages every species in a pool takes its turn, and all twelve species fly somewhere
+  ---
+  duration_ms: 0.72226
+  type: 'test'
+  ...
+# Subtest: worlds 5 and 6 have a painted flock, and no flock flies in the hero lane
+ok 410 - worlds 5 and 6 have a painted flock, and no flock flies in the hero lane
+  ---
+  duration_ms: 0.169502
+  type: 'test'
+  ...
+# Subtest: there is a boss definition for every world, each with moves that make sense
+ok 411 - there is a boss definition for every world, each with moves that make sense
+  ---
+  duration_ms: 1.220935
+  type: 'test'
+  ...
+# Subtest: boss hit points grow with the world and phases fall at 70% and 35%
+ok 412 - boss hit points grow with the world and phases fall at 70% and 35%
+  ---
+  duration_ms: 0.201139
+  type: 'test'
+  ...
+# Subtest: a boss roars, walks, winds up, attacks, then gives you an opening
+ok 413 - a boss roars, walks, winds up, attacks, then gives you an opening
+  ---
+  duration_ms: 10.297431
+  type: 'test'
+  ...
+# Subtest: light hits bounce off an attacking boss; heavy ones break the attack; openings are open
+ok 414 - light hits bounce off an attacking boss; heavy ones break the attack; openings are open
+  ---
+  duration_ms: 0.289051
+  type: 'test'
+  ...
+# Subtest: the golem cannot be interrupted out of its fist slam
+ok 415 - the golem cannot be interrupted out of its fist slam
+  ---
+  duration_ms: 0.165008
+  type: 'test'
+  ...
+# Subtest: dropping hp across a threshold makes the boss roar and enter the next phase
+ok 416 - dropping hp across a threshold makes the boss roar and enter the next phase
+  ---
+  duration_ms: 0.412951
+  type: 'test'
+  ...
+# Subtest: the croc crashes into the wall at the end of its death roll and is left stunned
+ok 417 - the croc crashes into the wall at the end of its death roll and is left stunned
+  ---
+  duration_ms: 0.56613
+  type: 'test'
+  ...
+# Subtest: warnings come first: a column or a drop cannot hurt until its warning is over
+ok 418 - warnings come first: a column or a drop cannot hurt until its warning is over
+  ---
+  duration_ms: 0.29305
+  type: 'test'
+  ...
+# Subtest: spit lands as a puddle that slows but does not hurt
+ok 419 - spit lands as a puddle that slows but does not hurt
+  ---
+  duration_ms: 0.514982
+  type: 'test'
+  ...
+# Subtest: an hour of fighting every boss never breaks anything
+ok 420 - an hour of fighting every boss never breaks anything
+  ---
+  duration_ms: 141.742212
+  type: 'test'
+  ...
+# Subtest: hazards that leave the arena or run out are removed
+ok 421 - hazards that leave the arena or run out are removed
+  ---
+  duration_ms: 0.28862
+  type: 'test'
+  ...
+# Subtest: Thornbark has his own tougher move set, and the secret level picks him
+ok 422 - Thornbark has his own tougher move set, and the secret level picks him
+  ---
+  duration_ms: 2.140579
+  type: 'test'
+  ...
+# Subtest: the secret level builds an arena fight with Thornbark and no Daisy
+ok 423 - the secret level builds an arena fight with Thornbark and no Daisy
+  ---
+  duration_ms: 37.867466
+  type: 'test'
+  ...
+# Subtest: stage 7-7 hides a reachable Thorn Gate, and no other stage does
+ok 424 - stage 7-7 hides a reachable Thorn Gate, and no other stage does
+  ---
+  duration_ms: 717.620387
+  type: 'test'
+  ...
+# Subtest: hearts: five to start, six with the Thorn Heart
+ok 425 - hearts: five to start, six with the Thorn Heart
+  ---
+  duration_ms: 0.245303
+  type: 'test'
+  ...
+# Subtest: 1-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 426 - 1-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 48.456985
+  type: 'test'
+  ...
+# Subtest: 2-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 427 - 2-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 19.460878
+  type: 'test'
+  ...
+# Subtest: 3-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 428 - 3-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 14.760749
+  type: 'test'
+  ...
+# Subtest: 4-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 429 - 4-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 33.743195
+  type: 'test'
+  ...
+# Subtest: 5-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 430 - 5-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 1.666455
+  type: 'test'
+  ...
+# Subtest: 6-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 431 - 6-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 4.194063
+  type: 'test'
+  ...
+# Subtest: 7-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 432 - 7-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 0.992489
+  type: 'test'
+  ...
+# Subtest: 8-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 433 - 8-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 1.264296
+  type: 'test'
+  ...
+# Subtest: 9-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 434 - 9-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 2.110582
+  type: 'test'
+  ...
+# Subtest: 10-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+ok 435 - 10-10 Easy: the bar starts at the number of hits the fight takes, and each full hit takes one segment
+  ---
+  duration_ms: 5.663
+  type: 'test'
+  ...
+# Subtest: 1-10 sideways: a late-reacting player wins on Normal and on Easy, and every opening is long enough to reach
+ok 436 - 1-10 sideways: a late-reacting player wins on Normal and on Easy, and every opening is long enough to reach
+  ---
+  duration_ms: 177.508825
+  type: 'test'
+  ...
+# Subtest: 1-10 upright: a late-reacting player wins on Normal and on Easy, and every opening is long enough to reach
+ok 437 - 1-10 upright: a late-reacting player wins on Normal and on Easy, and every opening is long enough to reach
+  ---
+  duration_ms: 107.55186
+  type: 'test'
+  ...
+# Subtest: 2-10 sideways: a late-reacting player wins on Normal and on Easy, and every opening is long enough to reach
+ok 438 - 2-10 sideways: a late-reacting player wins on Normal and on Easy, and every opening is long enough to reach
+  ---
+  duration_ms: 186.051978
+  type: 'test'
+  ...
+# Subtest: 2-10 upright: a late-reacting player wins on Normal and on Easy, and every opening is long enough to reach
+ok 439 - 2-10 upright: a late-reacting player wins on Normal and on Easy, and every opening is long enough to reach
+  ---
+  duration_ms: 119.004224
+  type: 'test'
+  ...
+# Subtest: 3-10 sideways: a late-reacting player wins on Normal and on Easy, and every opening is long enough to reach
+ok 440 - 3-10 sideways: a late-reacting player wins on Normal and on Easy, and every opening is long enough to reach
+  ---
+  duration_ms: 88.549631
+  type: 'test'
+  ...
+# Subtest: 3-10 upright: a late-reacting player wins on Normal and on Easy, and every opening is long enough to reach
+ok 441 - 3-10 upright: a late-reacting player wins on Normal and on Easy, and every opening is long enough to reach
+  ---
+  duration_ms: 93.736381
+  type: 'test'
+  ...
+# Subtest: a New Game forgets that the General's intro was seen: the first meeting plays the whole argument
+ok 442 - a New Game forgets that the General's intro was seen: the first meeting plays the whole argument
+  ---
+  duration_ms: 2.772743
+  type: 'test'
+  ...
+# Subtest: the intro-seen flag is part of the saved game (it travels in a save file)
+ok 443 - the intro-seen flag is part of the saved game (it travels in a save file)
+  ---
+  duration_ms: 0.800057
+  type: 'test'
+  ...
+# Subtest: an idle boss breathes about 1: never more than 3% off
+ok 444 - an idle boss breathes about 1: never more than 3% off
+  ---
+  duration_ms: 1.26028
+  type: 'test'
+  ...
+# Subtest: a wind-up crouches more the longer it runs, and trembles at the end
+ok 445 - a wind-up crouches more the longer it runs, and trembles at the end
+  ---
+  duration_ms: 0.391066
+  type: 'test'
+  ...
+# Subtest: an attack starts stretched along its facing and settles back
+ok 446 - an attack starts stretched along its facing and settles back
+  ---
+  duration_ms: 0.316654
+  type: 'test'
+  ...
+# Subtest: a hit shoves the boss back for a moment only
+ok 447 - a hit shoves the boss back for a moment only
+  ---
+  duration_ms: 0.633077
+  type: 'test'
+  ...
+# Subtest: a stunned boss wobbles, a dead one is still
+ok 448 - a stunned boss wobbles, a dead one is still
+  ---
+  duration_ms: 0.290504
+  type: 'test'
+  ...
+# Subtest: phase 2 breathes faster than phase 1
+ok 449 - phase 2 breathes faster than phase 1
+  ---
+  duration_ms: 0.585485
+  type: 'test'
+  ...
+# Subtest: 2-10: the phase-3 arena hazard is still there after a lost life
+ok 450 - 2-10: the phase-3 arena hazard is still there after a lost life
+  ---
+  duration_ms: 108.244008
+  type: 'test'
+  ...
+# Subtest: 4-10: the phase-3 arena hazard is still there after a lost life
+ok 451 - 4-10: the phase-3 arena hazard is still there after a lost life
+  ---
+  duration_ms: 56.2256
+  type: 'test'
+  ...
+# Subtest: 9-10: the phase-3 arena hazard is still there after a lost life
+ok 452 - 9-10: the phase-3 arena hazard is still there after a lost life
+  ---
+  duration_ms: 6.744851
+  type: 'test'
+  ...
+# Subtest: 10-10: the phase-3 arena hazard is still there after a lost life
+ok 453 - 10-10: the phase-3 arena hazard is still there after a lost life
+  ---
+  duration_ms: 8.058698
+  type: 'test'
+  ...
+# Subtest: 1-10 sideways: the dazed head comes down where the hero dodged, so it is in reach from every refuge
+ok 454 - 1-10 sideways: the dazed head comes down where the hero dodged, so it is in reach from every refuge
+  ---
+  duration_ms: 221.091778
+  type: 'test'
+  ...
+# Subtest: 3-10 sideways: after the dash he turns his tail to the hero, even one who jumped it and stands at his head
+ok 455 - 3-10 sideways: after the dash he turns his tail to the hero, even one who jumped it and stands at his head
+  ---
+  duration_ms: 102.306392
+  type: 'test'
+  ...
+# Subtest: 1-10 upright: the dazed head comes down where the hero dodged, so it is in reach from every refuge
+ok 456 - 1-10 upright: the dazed head comes down where the hero dodged, so it is in reach from every refuge
+  ---
+  duration_ms: 160.214261
+  type: 'test'
+  ...
+# Subtest: 3-10 upright: after the dash he turns his tail to the hero, even one who jumped it and stands at his head
+ok 457 - 3-10 upright: after the dash he turns his tail to the hero, even one who jumped it and stands at his head
+  ---
+  duration_ms: 51.744156
+  type: 'test'
+  ...
+# Subtest: 1-10: the lunge stops just past the hero, and goes the full length only for a hero by the far fence
+ok 458 - 1-10: the lunge stops just past the hero, and goes the full length only for a hero by the far fence
+  ---
+  duration_ms: 2.354123
+  type: 'test'
+  ...
+# Subtest: 3-10: the pounce lands on the ring marked as he crouches: standing still is hit, running out after a 0.8 s reaction is not
+ok 459 - 3-10: the pounce lands on the ring marked as he crouches: standing still is hit, running out after a 0.8 s reaction is not
+  ---
+  duration_ms: 16.44971
+  type: 'test'
+  ...
+# Subtest: 1-10: no hiding place the head cannot reach, a short way down the tree, and a cradle at its top
+ok 460 - 1-10: no hiding place the head cannot reach, a short way down the tree, and a cradle at its top
+  ---
+  duration_ms: 2.241095
+  type: 'test'
+  ...
+# Subtest: every window covers the slowest first hit measured by touch, plus 0.6 s to hit
+ok 461 - every window covers the slowest first hit measured by touch, plus 0.6 s to hit
+  ---
+  duration_ms: 5.474823
+  type: 'test'
+  ...
+# Subtest: 1-10: his coils are a wall (no getting behind them, nor up the fence tree there), and holding up at the treetop is a safe perch
+ok 462 - 1-10: his coils are a wall (no getting behind them, nor up the fence tree there), and holding up at the treetop is a safe perch
+  ---
+  duration_ms: 38.000435
+  type: 'test'
+  ...
+# Subtest: 3-10: a ring never comes down where a hero at the fence cannot get out of it, and he lands with his back to a hero who dodged either way
+ok 463 - 3-10: a ring never comes down where a hero at the fence cannot get out of it, and he lands with his back to a hero who dodged either way
+  ---
+  duration_ms: 14.73265
+  type: 'test'
+  ...
+# Subtest: 3-10: the dash is taught, its path glows, and a double jump as he comes clears it (standing still does not)
+ok 464 - 3-10: the dash is taught, its path glows, and a double jump as he comes clears it (standing still does not)
+  ---
+  duration_ms: 41.455813
+  type: 'test'
+  ...
+# Subtest: 1-10: Dot's tip comes before the first lunge, which rears back for at least 0.6 s with a hiss
+ok 465 - 1-10: Dot's tip comes before the first lunge, which rears back for at least 0.6 s with a hiss
+  ---
+  duration_ms: 134.325686
+  type: 'test'
+  ...
+# Subtest: 3-10: in the dark the Prowler is drawn back over it, faintly while he prowls and lit as he winds up and strikes
+ok 466 - 3-10: in the dark the Prowler is drawn back over it, faintly while he prowls and lit as he winds up and strikes
+  ---
+  duration_ms: 25.179849
+  type: 'test'
+  ...
+# Subtest: the hit pop says what came off the bar: half a hit, one, or two
+ok 467 - the hit pop says what came off the bar: half a hit, one, or two
+  ---
+  duration_ms: 0.401028
+  type: 'test'
+  ...
+# Subtest: 3-10: his body never hurts by touch, before a move or during one: only his strikes do
+ok 468 - 3-10: his body never hurts by touch, before a move or during one: only his strikes do
+  ---
+  duration_ms: 8.008251
+  type: 'test'
+  ...
+# Subtest: 3-10: everything that hurts when the pounce lands is inside the ring, and nothing hurts before he comes down onto it
+ok 469 - 3-10: everything that hurts when the pounce lands is inside the ring, and nothing hurts before he comes down onto it
+  ---
+  duration_ms: 46.530339
+  type: 'test'
+  ...
+# Subtest: 3-10 on a fresh phone: Dot's first-time tips are said (the opening, and each move the first time), and the new look keeps them
+ok 470 - 3-10 on a fresh phone: Dot's first-time tips are said (the opening, and each move the first time), and the new look keeps them
+  ---
+  duration_ms: 221.110676
+  type: 'test'
+  ...
+# Subtest: 1-10 upright: the tree, the stump and the vine stay in view through every lunge
+ok 471 - 1-10 upright: the tree, the stump and the vine stay in view through every lunge
+  ---
+  duration_ms: 74.898156
+  type: 'test'
+  ...
+# Subtest: 3-10: a hero near him who dodges LEFT out of the ring to the wall still meets his back when he lands (QA repro), both ways up
+ok 472 - 3-10: a hero near him who dodges LEFT out of the ring to the wall still meets his back when he lands (QA repro), both ways up
+  ---
+  duration_ms: 56.740127
+  type: 'test'
+  ...
+# Subtest: 1-10: his coils never hurt by touch, and Dot's cracking-stump line waits until Pokey stands on the cracking stump
+ok 473 - 1-10: his coils never hurt by touch, and Dot's cracking-stump line waits until Pokey stands on the cracking stump
+  ---
+  duration_ms: 7.836107
+  type: 'test'
+  ...
+# Subtest: 3-10: a move's first wind-up, when Dot names it, runs long enough to read her line before it strikes
+ok 474 - 3-10: a move's first wind-up, when Dot names it, runs long enough to read her line before it strikes
+  ---
+  duration_ms: 11.733119
+  type: 'test'
+  ...
+# Subtest: 2-10, 4-10 and 5-10: the body never hurts by touch while the boss winds up (QA, Matt's 2up4: 4 of 8 hearts in 2-10 were touching a winding-up caiman)
+ok 475 - 2-10, 4-10 and 5-10: the body never hurts by touch while the boss winds up (QA, Matt's 2up4: 4 of 8 hearts in 2-10 were touching a winding-up caiman)
+  ---
+  duration_ms: 59.549186
+  type: 'test'
+  ...
+# Subtest: 2-10: Pokey standing against the caiman through his wind-ups is never hurt before a move begins
+ok 476 - 2-10: Pokey standing against the caiman through his wind-ups is never hurt before a move begins
+  ---
+  duration_ms: 71.964871
+  type: 'test'
+  ...
+# Subtest: the rim is the painted cap: centred on it, inside it, every world and width (red on the old ring: centre 2 px under the top, half-height 30)
+ok 477 - the rim is the painted cap: centred on it, inside it, every world and width (red on the old ring: centre 2 px under the top, half-height 30)
+  ---
+  duration_ms: 2.764321
+  type: 'test'
+  ...
+# Subtest: no rim while the cap is not drawn: before the sheet is in, bounceAuraBox gives nothing (an empty ring is what we are removing)
+ok 478 - no rim while the cap is not drawn: before the sheet is in, bounceAuraBox gives nothing (an empty ring is what we are removing)
+  ---
+  duration_ms: 0.239014
+  type: 'test'
+  ...
+# Subtest: the engine draws the mushrooms' rim from bounceAuraBox, never the old fixed ring
+ok 479 - the engine draws the mushrooms' rim from bounceAuraBox, never the old fixed ring
+  ---
+  duration_ms: 2.176951
+  type: 'test'
+  ...
+# Subtest: A-04 a jump pressed just before landing in a web is the same jump as one pressed standing in it
+ok 480 - A-04 a jump pressed just before landing in a web is the same jump as one pressed standing in it
+  ---
+  duration_ms: 331.728342
+  type: 'test'
+  ...
+# Subtest: A-04b a crumbling platform landed on with a buffered jump still starts to crumble
+ok 481 - A-04b a crumbling platform landed on with a buffered jump still starts to crumble
+  ---
+  duration_ms: 114.494549
+  type: 'test'
+  ...
+# Subtest: A-04c a jump buffered into a spore cloud is judged drowsy at its take-off, like one pressed standing in it
+ok 482 - A-04c a jump buffered into a spore cloud is judged drowsy at its take-off, like one pressed standing in it
+  ---
+  duration_ms: 302.034433
+  type: 'test'
+  ...
+# Subtest: the next play draws the seed built ahead and gets that very stage, once; a play on another setting builds afresh (planted)
+ok 483 - the next play draws the seed built ahead and gets that very stage, once; a play on another setting builds afresh (planted)
+  ---
+  duration_ms: 650.265972
+  type: 'test'
+  ...
+# Subtest: 1-1's Play: no proven entry repeats until the whole list has been played on this device, and the order survives a restart of the game
+ok 484 - 1-1's Play: no proven entry repeats until the whole list has been played on this device, and the order survives a restart of the game
+  ---
+  duration_ms: 15.085664
+  type: 'test'
+  ...
+# Subtest: every species has all five wing frames in the atlas
+ok 485 - every species has all five wing frames in the atlas
+  ---
+  duration_ms: 0.873777
+  type: 'test'
+  ...
+# Subtest: each world picks species that exist, and neighbours differ
+ok 486 - each world picks species that exist, and neighbours differ
+  ---
+  duration_ms: 0.383216
+  type: 'test'
+  ...
+# Subtest: cadence: a ramp that cools passes; a flat 6-7 run from slot 3 on, a peak that never cools, and a front-loaded stage fail
+ok 487 - cadence: a ramp that cools passes; a flat 6-7 run from slot 3 on, a peak that never cools, and a front-loaded stage fail
+  ---
+  duration_ms: 1.498959
+  type: 'test'
+  ...
