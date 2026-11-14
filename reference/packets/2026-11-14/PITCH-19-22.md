@@ -20,6 +20,6 @@ with the first appearance taught and the "he feels" line; (d) a node string sket
 Write to reference/design/pitches/PITCH-<A|B>.md on branch t-pitch-<a|b> from origin/t-1718-design. Do NOT read the other pitcher's branch.
 Pitcher A also writes reference/design/W1-TRIBUTE-PASS.md (R-165.253): for 1-1..1-8, ONE change from pieces we have that gives each its own
 feel, tied to one game on Matt's list and what players loved about it. Under 40 lines.
-NETWORK (found 6:43 PM): this environment cannot open web pages (WebFetch ENOTFOUND on wikipedia, tcrf, archive.org...). Say so first; use web SEARCH and quote only lines the result attributes to a named page, marked [Q] (named, not opened) or [S] (snippet, mechanic facts only); drop any claim nothing backs.
+NETWORK: research members run on Matt's "Gaming" environment (7:00 PM ET), which can open en.wikipedia.org, web.archive.org, tcrf.net, www.mobygames.com, www.hardcoregaming101.net, www.gamedeveloper.com, www.pcgamer.com, www.gamesradar.com. OPEN the page (WebFetch or curl) and quote the line with its URL; for other sites use web.archive.org/web/2020/<url>. Mark anything you could not open [S] and use it only for mechanic facts.
 Gates: roadmapcheck + knowncheck. End with "Learned". BOX: A by 8:15 PM ET, B by 8:35 PM ET, or 40% real context (400k). No shell
 wait loops. Report to session_01FhBbYN2CVHnFXg7XzqKXpM; every message carries your context %.
