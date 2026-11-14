@@ -1,0 +1,242 @@
+{
+ "snake-37": {
+  "pieces": [
+   {
+    "name": "w16-vinesnake-hang",
+    "units": 115,
+    "at": [
+     0.11,
+     0.35
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   },
+   {
+    "name": "w16-vinesnake-slide",
+    "units": 130,
+    "at": [
+     0.6,
+     0.2
+    ],
+    "side": "w",
+    "dest": "w1-678"
+   },
+   {
+    "name": "w16-vinesnake-liana",
+    "units": 130,
+    "at": [
+     0.25,
+     0.75
+    ],
+    "side": "w",
+    "dest": "w1-678"
+   },
+   {
+    "name": "w16-vinesnake-hiss",
+    "units": 60,
+    "at": [
+     0.82,
+     0.72
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   }
+  ]
+ },
+ "moss-37": {
+  "pieces": [
+   {
+    "name": "w17-moss-carpet",
+    "units": 36,
+    "at": [
+     0.5,
+     0.17
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   },
+   {
+    "name": "w17-moss-patch",
+    "units": 180,
+    "at": [
+     0.12,
+     0.42
+    ],
+    "side": "w",
+    "dest": "w1-678"
+   },
+   {
+    "name": "w17-moss-liana",
+    "units": 120,
+    "at": [
+     0.12,
+     0.78
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   },
+   {
+    "name": "w17-moss-drape",
+    "units": 140,
+    "at": [
+     0.45,
+     0.62
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   },
+   {
+    "name": "w17-moss-fork",
+    "units": 70,
+    "at": [
+     0.8,
+     0.7
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   }
+  ]
+ },
+ "snag-23": {
+  "pieces": [
+   {
+    "name": "w17-snag-a",
+    "units": 300,
+    "at": [
+     0.3,
+     0.45
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   },
+   {
+    "name": "w17-snag-b",
+    "units": 300,
+    "at": [
+     0.72,
+     0.45
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   }
+  ]
+ },
+ "nuts-53": {
+  "pieces": [
+   {
+    "name": "w18-palmnut",
+    "units": 26,
+    "at": [
+     0.13,
+     0.22
+    ],
+    "side": "w",
+    "dest": "w1-678"
+   },
+   {
+    "name": "w18-cannonball",
+    "units": 40,
+    "at": [
+     0.5,
+     0.22
+    ],
+    "side": "w",
+    "dest": "w1-678"
+   },
+   {
+    "name": "w18-cannonball-split",
+    "units": 48,
+    "at": [
+     0.85,
+     0.22
+    ],
+    "side": "w",
+    "dest": "w1-678"
+   },
+   {
+    "name": "w18-nut-cracked",
+    "units": 26,
+    "at": [
+     0.12,
+     0.57
+    ],
+    "side": "w",
+    "dest": "w1-678"
+   },
+   {
+    "name": "w18-squirreltracks",
+    "units": 120,
+    "at": [
+     0.5,
+     0.82
+    ],
+    "side": "w",
+    "dest": "w1-678"
+   }
+  ]
+ },
+ "under-11": {
+  "pieces": [
+   {
+    "name": "w1-underlayer-a",
+    "units": 600,
+    "at": [
+     0.5,
+     0.6
+    ],
+    "side": "w",
+    "dest": "w1-678",
+    "opaque": true
+   }
+  ]
+ },
+ "under-53": {
+  "pieces": [
+   {
+    "name": "w1-underlayer-b",
+    "units": 600,
+    "at": [
+     0.5,
+     0.6
+    ],
+    "side": "w",
+    "dest": "w1-678",
+    "opaque": true
+   }
+  ]
+ },
+ "post-53": {
+  "pieces": [
+   {
+    "name": "w1-livepost-short",
+    "units": 80,
+    "at": [
+     0.17,
+     0.65
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   },
+   {
+    "name": "w1-livepost-mid",
+    "units": 110,
+    "at": [
+     0.5,
+     0.6
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   },
+   {
+    "name": "w1-livepost-tall",
+    "units": 110,
+    "at": [
+     0.83,
+     0.6
+    ],
+    "side": "h",
+    "dest": "w1-678"
+   }
+  ]
+ }
+}

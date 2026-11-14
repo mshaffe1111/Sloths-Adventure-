@@ -2,8 +2,8 @@
 
     python cutsheet.py <picks.json> <takes dir> <out dir>
 
-picks.json: {"<take stem>": {"bg": "mag"|"grey", "pieces": [{"name", "units", "dest", "opaque"?: true}, ...] in reading order
-(top-to-bottom bands, then left-to-right)}. Pieces are found as the take's separate blobs (distance from the border colour, specks
+picks.json: {"<take stem>": {"bg": "mag"|"grey", "pieces": [{"name", "units", "dest", "at": [fx, fy] a point on the piece
+as fractions of the take, "side"?: "w" (units are its width, else its height), "opaque"?: true}, ...]}. Pieces are found as the take's separate blobs (distance from the border colour, specks
 under 0.4% of the take dropped); each blob's padded box is keyed on its own by key_own (biggest piece kept), then sized to 3 px per game
 unit of its height (never above the take). "opaque": the underlayer band (only the magenta above its top is keyed: cut by key_own on
 the whole take). Colour under clear pixels zeroed. Writes <out>/<dest>/<name>.webp (lossless), <out>/sizes.json, <out>.tar.
@@ -54,15 +54,18 @@ def main(pp, takes, od):
         W, H = im.size
         boxes = [(0, 0, W, H)] if p['pieces'][0].get('opaque') else blobs(im)
         print(stem, 'blobs', len(boxes), boxes, flush=True)
-        for piece, (x0, y0, x1, y1) in zip(p['pieces'], boxes):
-            if piece.get('skip'):
-                continue
+        for piece in p['pieces']:
+            fx, fy = piece.get('at', (0.5, 0.5))
+            px, py = fx * W, fy * H  # the blob holding this point, else the one whose centre is nearest
+            inside = [b for b in boxes if b[0] <= px <= b[2] and b[1] <= py <= b[3]]
+            x0, y0, x1, y1 = min(inside or boxes, key=lambda b: ((b[0] + b[2]) / 2 - px) ** 2 + ((b[1] + b[3]) / 2 - py) ** 2)
             pad = 24
             c = im.crop((max(0, x0 - pad), max(0, y0 - pad), min(W, x1 + pad), min(H, y1 + pad)))
             cut = key_own(c)
             bb = cut.getchannel('A').point(lambda v: 255 if v > 8 else 0).getbbox()
             cut = cut.crop(bb)
-            k = min(1.0, piece['units'] * PX / cut.height)
+            side = cut.width if piece.get('side') == 'w' else cut.height
+            k = min(1.0, piece['units'] * PX / side)
             if k < 1:
                 cut = cut.resize((round(cut.width * k), round(cut.height * k)), Image.LANCZOS)
             a = np.asarray(cut).copy(); a[a[..., 3] == 0, :3] = 0
@@ -70,7 +73,7 @@ def main(pp, takes, od):
             f = od / piece['dest'] / f"{piece['name']}.webp"
             f.parent.mkdir(parents=True, exist_ok=True)
             cut.save(f, 'WEBP', lossless=True, method=6)
-            sizes[piece['name']] = {'take': stem, 'box': [x0, y0, x1, y1], 'w': cut.width, 'h': cut.height, 'units': piece['units'],
+            sizes[piece['name']] = {'take': stem, 'box': [x0, y0, x1, y1], 'w': cut.width, 'h': cut.height, 'units': piece['units'], 'side': piece.get('side', 'h'),
                                     'dest': piece['dest']}
     (od / 'sizes.json').write_text(json.dumps(sizes, indent=1))
     with tarfile.open(f'{od}.tar', 'w') as t:
