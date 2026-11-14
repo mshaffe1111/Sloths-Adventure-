@@ -46,6 +46,20 @@ def blobs(im):
     return [b for band in bands for b in sorted(band, key=lambda b: b[0])]
 
 
+def key_top(im):
+    """an opaque band: only the magenta joined to the top edge goes clear (the earth below stays solid), soft 1.5 px rim"""
+    a = np.asarray(im.convert('RGB')).astype(np.int16)
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    mag = (r > g + 60) & (b > g + 40)
+    lab, n = ndi.label(mag)
+    top = set(np.unique(lab[0])) - {0}
+    clear = np.isin(lab, list(top))
+    al = np.where(clear, 0, 255).astype(np.uint8)
+    al = np.asarray(Image.fromarray(al).filter(__import__('PIL.ImageFilter', fromlist=['x']).GaussianBlur(1.5)))
+    al = np.where(clear & (al < 200), 0, al).astype(np.uint8)
+    return Image.fromarray(np.dstack([a.astype(np.uint8), al]), 'RGBA')
+
+
 def main(pp, takes, od):
     picks = json.loads(Path(pp).read_text())
     od = Path(od); sizes = {}
@@ -61,7 +75,7 @@ def main(pp, takes, od):
             x0, y0, x1, y1 = min(inside or boxes, key=lambda b: ((b[0] + b[2]) / 2 - px) ** 2 + ((b[1] + b[3]) / 2 - py) ** 2)
             pad = 24
             c = im.crop((max(0, x0 - pad), max(0, y0 - pad), min(W, x1 + pad), min(H, y1 + pad)))
-            cut = key_own(c)
+            cut = key_top(c) if piece.get('opaque') else key_own(c)
             bb = cut.getchannel('A').point(lambda v: 255 if v > 8 else 0).getbbox()
             cut = cut.crop(bb)
             side = cut.width if piece.get('side') == 'w' else cut.height
