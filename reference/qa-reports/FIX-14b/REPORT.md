@@ -1,4 +1,4 @@
-# FIX-14b REPORT. t-fix-14b (from t-fix-14@f35253ba + t-len-14@d56cd915), head adae2f3d. 11-14, 3:1x AM ET (box to ~3:37)
+# FIX-14b REPORT. t-fix-14b (from t-fix-14@f35253ba + t-len-14@d56cd915), code head adae2f3d (later commits: stills and this report). 11-14, stopped 3:4x AM ET
 ## EXACT NEXT STEP (in order; the next member starts here)
 1. Fork (R-165.206, NOT STARTED: cut at the box, measured first). The 80 px rule is bigger than the fork: fork/ledge-margins.txt
    (fork/ledge.ts, 1-4 seeds 1-12): 25 of 37 non-field climb vines top out with under 80 px of ledge on one side. (a) the CROWN's own
@@ -57,7 +57,8 @@
 ## Gates on head adae2f3d (frozen worktree /home/user/w14c; later commits are stills/docs only)
 PASS: tsc; vite build (BASE_PATH); chunkcheck; artcheck; knowncheck; generalitycheck; roadmapcheck; seedlist 1-1 --check (257) and
 1-4 --check (100); tool tests 41/41 (library, seedlist, yield, travelBots, castBots); tierBots 7/7; buildcheck; kbdcheck; drawcheck
-(612 s). clipcheck and the full suite: see the last lines below (filled when they finished).
+(612 s); clipcheck PASS (83 known, 489 s); the full suite 3299 pass / 0 fail (one `# TODO` test, 4-3's boulder, already marked
+before this branch). GREEN. Stopped at 3:4x AM ET, a few minutes past the box, waiting for these to finish (D59).
 ## Polish check (judged on the real page, stepped-frame clips; seed 1, built setting printed by clip.mjs)
 - gate-normal-up-sheet.jpg: the ties read in three states at phone size (green loop; pale frayed loop; two whipping ends), the thatch
   reads as leaves over the bough; his head stays under the wood on hold and jump. Rough spots, named plainly: (1) the loops are small
