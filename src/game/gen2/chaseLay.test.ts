@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../headlessDom.ts';
 import { buildGen2Stage } from './pipeline.ts';
-import { CHASE_LAY, cutSections, layChase } from './chaseLay.ts';
+import { CHASE_LAY, chaseCap, cutSections, layChase } from './chaseLay.ts';
 import { checkCode, parseCode } from './nodeCode.ts';
 import { mixKit } from './toyLegs.ts';
 import { towerCfg } from './toyTower.ts';
@@ -67,13 +67,14 @@ test('the cut keeps his ground: contiguous branch sections, the same top and dep
   assert.equal(cutSections({ id: 1, x: 0, y: 0, width: 150, height: 40, type: 'solid' }, () => ++id).length, 1);
 });
 
-test('K lays a chase on World 1\'s kit: each K one stretch, only its route ground falls, a flag before every crack and none inside', () => {
+test('K lays a chase on World 1\'s kit: each K one stretch or more (each within the flag-span cap), only its route ground falls, a flag before every crack and none inside', () => {
   assert.ok(laid.length >= 2, `a chase is laid cleanly on ${laid.length} of ${SEEDS.length} rolls`);
   for (const { s, st } of laid) {
     const lay = st.chase!;
     const ks = st.gen2.graph.nodes.filter((n) => n.job === 'pressure');
-    assert.equal(lay.stretches.length, ks.length, `${s}: one stretch per K`);
+    assert.ok(lay.stretches.length >= ks.length, `${s}: at least one stretch per K (a long K is split at a living fork)`);
     assert.deepEqual(chaseLayProblems(lay), [], `${s}`);
+    for (const t of lay.stretches) assert.ok(t.end - t.start <= chaseCap(), `${s}: a stretch of ${t.end - t.start} px (cap ${chaseCap()}, from the flag span)`);
     const chased = st.platforms.filter((p) => p.chase);
     assert.ok(chased.length >= lay.stretches.length * 3, `${s}: ${chased.length} branch sections`);
     for (const p of chased) {
@@ -97,7 +98,7 @@ test('K lays a chase on World 1\'s kit: each K one stretch, only its route groun
     sorted.slice(1).forEach((x, k) => assert.ok(x - sorted[k] <= 4000, `${s}: flags ${sorted[k]} -> ${x} within Matt's 4,000 px`));
     // (Easy is Normal's plan laid under Easy's rules (its own gaps, so its own x): the same K nodes, each a stretch, or refused by name)
     const easy = build(s, 'easy');
-    if (easy.chase) assert.equal(easy.chase.stretches.length, lay.stretches.length, `${s}: Easy lays one stretch per K`);
+    if (easy.chase) assert.ok(easy.chase.stretches.length >= ks.length, `${s}: Easy lays at least one stretch per K`);
     else assert.ok(easy.gen2.errors.some((e) => /^chase: |^flags: /.test(e)), `${s}: Easy names why it lays none`);
   }
 });
@@ -119,24 +120,29 @@ function handStage(nodes: Array<[string, number, number]>, ground: Array<[number
   const platforms: Platform[] = ground.map(([a, b], i) => ({ id: i + 1, x: a, y: 600, width: b - a, height: 40, type: 'solid' }));
   const st = {
     config: { levelWidth: nodes.at(-1)![2] },
+    spawnX: 140,
     platforms,
     checkpoints: [],
     gen2: { graph: { nodes: nodes.map(([job], i) => ({ id: `n${i + 1}`, job })) }, sections: nodes.map(([, x0, x1], i) => ({ uid: `s${i + 1}`, node: `n${i + 1}`, x0, x1 })) },
   } as unknown as Gen2Stage;
-  const main = (uid: string) => platforms.filter((p) => p.id === +uid.slice(1));
+  // (a section's pieces: the ground whose middle lies in its node's span)
+  const main = (uid: string) => {
+    const [, x0, x1] = nodes[+uid.slice(1) - 1];
+    return platforms.filter((p) => p.x + p.width / 2 >= x0 && p.x + p.width / 2 <= x1).map((platform) => ({ platform, main: true }));
+  };
   return { st, main, before: JSON.stringify(platforms) };
 }
 
-test('a lay that cannot run is refused by name and lays nothing: too long, no fork, a fork too short, no ground to break', () => {
+test('a lay that cannot run is refused by name and lays nothing (too long with nowhere to stop, no fork, a short fork, no ground); a long K is split', () => {
   const cases: Array<[string, Array<[string, number, number]>, RegExp, Array<[number, number]>?]> = [
-    ['too long', [['arrive', 0, 1000], ['pressure', 1000, 5200], ['rest', 5200, 6400], ['exit', 6400, 7000]], /stretch 1 \(n2\) is 4200 px long \(at most 4000\)/],
-    ['no fork', [['arrive', 0, 1000], ['pressure', 1000, 3000], ['pressure', 3000, 5000], ['rest', 5000, 6000], ['exit', 6000, 7000]], /runs straight into stretch 2 with no living fork/],
-    ['short fork', [['arrive', 0, 1000], ['pressure', 1000, 3000], ['rest', 3000, 3200], ['pressure', 3200, 5000], ['exit', 5000, 7000]], /the fork after stretch 1 \(n2\) is 200 px \(at least 300\)/],
+    ['too long', [['arrive', 0, 1000], ['pressure', 1000, 5200], ['rest', 5200, 6400], ['exit', 6400, 7000]], /n2 \(K\) runs 4200 px from x 1000 with no piece 300 px wide to stop on within the 3840 px cap/],
+    ['no fork', [['arrive', 0, 1000], ['pressure', 1000, 3000], ['pressure', 3000, 5000], ['rest', 5000, 6000], ['exit', 6000, 7000]], /n2 \(K\) runs straight into n3 \(K\) with no living fork/],
+    ['short fork', [['arrive', 0, 1000], ['pressure', 1000, 3000], ['rest', 3000, 3200], ['pressure', 3200, 5000], ['exit', 5000, 7000]], /the fork after n2 \(K\) is 200 px \(at least 300\)/],
     ['no ground', [['arrive', 0, 1000], ['pressure', 1000, 3000], ['rest', 3000, 4000], ['exit', 4000, 5000]], /stretch 1 \(n2\) has no plain ground to break/, [[0, 1000], [3000, 4000], [4000, 5000]]],
   ];
   for (const [name, nodes, want, ground] of cases) {
     const { st, main, before } = handStage(nodes, ground);
-    const r = layChase(st, ground ? (uid) => main(uid).filter((p) => p.x !== 1000) : main);
+    const r = layChase(st, ground ? (uid) => main(uid).filter((q) => q.platform.x !== 1000) : main);
     assert.ok(r.problems.some((p) => want.test(p)), `${name}: ${r.problems}`);
     assert.equal(st.chase, undefined, `${name}: nothing laid`);
     if (name !== 'no ground') assert.equal(JSON.stringify(st.platforms), before, `${name}: the ground untouched`);
@@ -147,6 +153,13 @@ test('a lay that cannot run is refused by name and lays nothing: too long, no fo
   assert.deepEqual(r.problems, []);
   assert.deepEqual(st.chase, { stretches: [{ start: 1600, end: 3800 }, { start: 4800, end: 7000 }] });
   assert.deepEqual(r.stretches.map((t) => t.flag! <= t.start && t.flag! >= t.start - CHASE_LAY.flagBefore), [true, true]);
+  // (more, shorter stretches: a K node over the cap is split at a piece wide enough to stop on, which stays whole with a flag on it)
+  const long = handStage([['arrive', 0, 1600], ['pressure', 1600, 7400], ['rest', 7400, 8400], ['exit', 8400, 9000]], [[0, 1600], [1600, 4000], [4000, 4400], [4400, 7400], [7400, 8400], [8400, 9000]]);
+  const r2 = layChase(long.st, long.main);
+  assert.deepEqual(r2.problems, []);
+  assert.deepEqual(long.st.chase, { stretches: [{ start: 1600, end: 4000 }, { start: 4400, end: 7400 }] });
+  assert.ok(!long.st.platforms.some((p) => p.chase && p.x >= 4000 && p.x < 4400), 'the stop piece never falls');
+  assert.ok((long.st.checkpoints ?? []).some((c) => c.x >= 4000 && c.x <= 4400), 'and carries the flag before the next crack');
 });
 
 test('a second kit lays K by the same brick (the legs fixture): laid or refused by name, never a crash', () => {

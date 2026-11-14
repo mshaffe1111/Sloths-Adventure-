@@ -3526,8 +3526,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     gen2: meta,
   };
   ASKS.set(stage, laid.asks ?? []);
-  // (each section's route pieces, for a chase's lay on the built stage: chaseLay.ts breaks only the route's own ground)
-  if (graph.nodes.some((n) => n.job === 'pressure')) MAIN_OF.set(stage, new Map(laid.sections.map((s) => [s.uid, s.pieces.filter((q) => q.main).map((q) => q.platform)])));
+  // (each section's own pieces (never its seam: a pit's floor and walls), for a chase's lay on the built stage, chaseLay.ts)
+  if (graph.nodes.some((n) => n.job === 'pressure')) PIECES_OF.set(stage, new Map(laid.sections.map((s) => [s.uid, s.pieces.map((q) => ({ platform: q.platform, main: q.main }))])));
   // (a graph with a designer's asks: each node's sections as laid, for the check in applyVerdicts, nodeAsks.ts)
   if (graph.nodes.some((n) => n.asked)) {
     const byId = new Map(req.kit.manifest.sections.map((t) => [t.id, t]));
@@ -3539,8 +3539,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   }
   return { stage, laid };
 }
-/** a graph with chase nodes: each section's route pieces (PlacedPiece.main), read by layChase in buildGen2Stage */
-const MAIN_OF = new WeakMap<Gen2Stage, Map<string, Platform[]>>();
+/** a graph with chase nodes: each section's own pieces and which are the route's (PlacedPiece.main), read by layChase in buildGen2Stage */
+const PIECES_OF = new WeakMap<Gen2Stage, Map<string, Array<{ platform: Platform; main: boolean }>>>();
 /** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
 const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number }>>>();
 
@@ -3954,7 +3954,7 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   const st = buildRolled(req);
   // (a graph with chase nodes, job K: its stretches laid on the built ground and its flags moved onto the forks BEFORE the verdicts, so
   // the flags are judged by the same rule as every rolled stage's; a lay that cannot run is refused by name, chaseLay.ts)
-  const chase = layChase(st, (uid) => MAIN_OF.get(st)?.get(uid) ?? []);
+  const chase = layChase(st, (uid) => PIECES_OF.get(st)?.get(uid) ?? []);
   applyVerdicts(st, req);
   st.gen2.errors = rollErrors(st.gen2);
   st.gen2.errors.push(...chase.problems);
