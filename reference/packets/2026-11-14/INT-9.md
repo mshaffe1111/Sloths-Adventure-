@@ -1,12 +1,15 @@
 # INT-9: link #3 for Matt: 1-7 "A Very Good Bush" + tips by height + the solid fig gate + liana chains + the clip tool. Opus 5.5 xhigh (integration). Written 1:31 PM ET 11-14 by the lead.
 Branch t-int-9 from origin/t-int-8@0a9be28c (link #2, gated 595ada5d). Read first: gates.md, release.md (test link part), LESSONS D29, D59,
 D61-D69, and the REPORTs of every branch below (each must say GREEN on its own head before you merge it; if one isn't, skip it and say so).
+START NOW with items 1-5 and 7; merge item 6 (t-build-16, the new 1-6) when ENG-16E reports GREEN (the lead messages you).
 Merge in this order, resolving every conflict by reading BOTH sides' intent (never one side wholesale):
 1. origin/t-int-8-clip (tools/inspect/clip.mjs + its CI test; its own full run was UNRUN: your full run covers it).
 2. origin/t-fix-15 (fig gate: shut bough is wood from every approach; item 1 GREEN; "over" stays red until FIX-15b: name it).
 3. origin/t-tips (tips by height band, TIP_NEAR verdict + tipwalk gate, sealed line cuts in + 'N more' plate over Pokey).
 4. origin/t-eng-s5@a2743943 (liana->liana chains on gen2 stages; hurtFocus camera).
-5. origin/t-build-17 (1-7, built on t-eng-e2 + t-art-678b + KEEPER-17's lines; carries BUILD-16c's bot commits c8f67aa7/5b0b1121
+5. origin/t-build-17 (1-7, head e6e6414 or later: BUILD-17b's shared fixes, REPORT reference/qa-reports/BUILD-17b/REPORT.md; OWED on b40cef1d:
+   castBots 1-7 seeds 1-12 both settings, lock --intended 1-7, and FLY 1-7 so registrycheck's shipped table passes (BUILD-17 step 2);
+   its named rough spots go to the lead with stills: a hard-edged haze rectangle in the backdrop, the eagle over the lives counter; built on t-eng-e2 + t-art-678b + KEEPER-17's lines; carries BUILD-16c's bot commits c8f67aa7/5b0b1121
    cherry-picked + its own firsttimer edits: firsttimer.ts will meet t-build-16's later; keep both behaviours, tierBots 1-1 unmoved).
    ENGINE LINES flagged in BUILD-17's REPORT (sweepPose.ts SNAG_PERCH, w17Art.ts, engine.ts hanging cover, stillness.ts, castPlay.ts):
    review each line at xhigh and say PASS/FAIL per line.
