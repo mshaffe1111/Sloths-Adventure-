@@ -778,8 +778,10 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
     // 3a. liana to liana (ENG-S5, 1-6 beat 4 "The chain"; physics.ts isChain, chainPhase): a liana caught off the one before it, no
     // perch between. Each liana of a chain is a node of its own: a ledge -> A where a running jump catches A (the plain catch), A -> B
     // where a press on A catches B (chainLines, 6 lines or more), and B -> a platform where a press from B's holds lands him (heldLandings).
-    // Only lianas that chain are nodes; every other liana keeps step 3's ledge -> ledge flight alone
-    const lianas = sized.filter((v) => v.vineType === 'swing_liana');
+    // Only lianas that chain are nodes; every other liana keeps step 3's ledge -> ledge flight alone. Only on a stage gen2 built (as
+    // roofedDrop): a stage the old generator built keeps the walk it is locked with (lockall: 1-6, 2-1, 2-3, 2-4, 2-7, 3-1..3-3, 3-5..3-9
+    // and 4-4 hang lianas within a chain's reach, and their pickups and flags, laid on the walk's reach, would move)
+    const lianas = gen2Built ? sized.filter((v) => v.vineType === 'swing_liana') : [];
     const chained = new Set<Vine>();
     for (const A of lianas) for (const B of lianas) {
       if (A === B || !isChain(A, B) || chainLines(A, B, allowDouble) < 6) continue;

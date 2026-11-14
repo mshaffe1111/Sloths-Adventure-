@@ -19,6 +19,22 @@ import { W1_CHAIN_SECTIONS, withSwing } from './w1Swing.ts';
 const liana = (id: number, x: number, o: Partial<Vine> = {}): Vine =>
   ({ id, x, topY: 0, bottomY: 420, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, swingAmp: 0.3, swingPeriod: 2.85, ...o });
 
+test('the chain window counts a press only with the next liana\'s WHOLE swing in view (SWING_SEEN, gen2 chainRelease), both settings, Easy wider', () => {
+  const at = (dx: number, d: 'normal' | 'easy') => chainRelease({ x: 0, topY: 0, bottomY: 420 }, { amp: 0.45, period: VINE.period[d] }, { x: dx, topY: 0, bottomY: 420 }, { amp: 0.45, period: VINE.period[d] }, d);
+  for (const d of ['normal', 'easy'] as const) {
+    setTimedSwing(d === 'easy');
+    // 420 px on, both swinging fully: the leap catches it (the engine's press, chainWindow), but its foot swings out to ~600 px, past what
+    // he sees as he presses (SWING_SEEN 414 ahead of him): so it is never laid
+    const A = { x: 0, topY: 0, bottomY: 420, swingAmp: 0.45, swingPeriod: TIMED.period, swingPhase: 0 };
+    const B0 = { x: 420, topY: 0, bottomY: 420, swingAmp: 0.45, swingPeriod: TIMED.period };
+    assert.ok(chainWindow(A, { ...B0, swingPhase: chainPhase(A, B0) }) > 0, `${d}: the leap no longer catches it at all: the test proves nothing`);
+    assert.equal(at(420, d), 0, `${d}: a liana whose swing he cannot see whole is laid`);
+  }
+  setTimedSwing(false);
+  // nearer, it is whole in view: a window, and Easy's slower swing and wider sweet spot leave the wider one
+  assert.ok(at(300, 'normal') >= LIANA.window.normal && at(300, 'easy') >= at(300, 'normal'), `300 px: Normal ${at(300, 'normal')} s, Easy ${at(300, 'easy')} s`);
+});
+
 test('the chain catch is the engine\'s own press onto the next liana as it swings (physics chainWindow), at the phase the stage gives it', () => {
   setTimedSwing(false);
   const A = liana(1, 0, { swingPhase: 0 });
