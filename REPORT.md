@@ -12,7 +12,9 @@
    Line detector (rows darker than both neighbours over >8% width): before y342, after none.
 3a. **R-165.237 canopy seam: GREEN for 1-4's canopy strip.** w1c-mid.webp's wrap was a straight cut through the canopy's underside and a
    vine, its end hazier than its start (INT-7b's "hazier left"). Re-joined with scripts/strip-seamless.py --force: join 4.7 -> 0.3
-   (column step 0.7). Still: canopy-w1c-mid-join-before-after.jpg (two copies tiled as drawStrip tiles them, join mid-view). Commit b3d27f6e.
+   (column step 0.7). The lead's 3:52 check: a lone rock shard at the strip's bottom (cols 143-222, rows 1194-1276, in the old file too)
+   floated at every repeat: removed from the original, then re-joined once (one lossy encode). Still: canopy-w1c-mid-join-before-after.jpg
+   (two copies tiled as drawStrip tiles them, join mid-view; after: no shard, crown continuous).
    Width 2113 -> 1815 (pitch follows the file; journalScenes' blurred crop of it shifts ~1%).
 
 2. **Bounce arrow: GREEN, dropped.** Stills both ways (bounce-arrow-with-vs-without-side.jpg, bounce-no-arrow-up.jpg): the flat white
@@ -38,8 +40,15 @@
 
 ## Pushback: none on the packet. One note: "line across World 1's background art" was ground-lip code, all worlds.
 ## Suggestions (ready packets)
-- STRIP-JOINS: re-join each strip above with strip-seamless.py --force, one at a time, stills of each join tiled; repaint (HF) any whose
-  ends differ too much (w1-mid). Add a gate: join/column-step <= 3 for every w*-mid/near/far strip (a python check in tools/art).
+- **FLAG-RING (R-165.237b), engine tier, ~1 h.** Objective: the unlit flag's gold rim stops reading as a hollow halo ring. Files: READ
+  engine.ts drawWaterAndFlags (the drawAura(ctx, 'take', ...) call), readable.ts drawAura; WRITE readable.ts (a filled 'take' variant or
+  a flag-only option) and its test. Done: stills ring vs soft filled glow, upright + sideways, at a flag on 1-1/1-4/3-1 (RIM crop on
+  t-int-7 is the before); the lead picks; the pick replaces the ring outright; drawcheck within limits; the 'take' aura elsewhere unchanged.
+- **STRIP-JOINS (R-165.237c), Content + engine stills, ~2-3 h.** Objective: every strip repeats with no seam. Files: WRITE the ten strips
+  (w2mist-mid 22.8, w1kapok-mid 19.5, w1sunrise-mid 15.2, w8sunset-mid 15.0, w6dawn-mid 12.9, w1rain-mid 10.5, w3sinkhole-mid 10.1,
+  w6moon-mid 7.9, w1dusk-mid 7.5, w1-mid 6.4: join / column step), tools/art/ a join check. Done: each re-joined with
+  scripts/strip-seamless.py --force ONE AT A TIME, two copies tiled at play size before/after, no floating bits (w1-mid's forced join
+  left some: repaint on HF if the ends differ that much); a gate fails any w*-far/mid/near strip whose join is over 3x its column step.
 - SHEET-GUTTER (Content): repack the ground sheets with a 4 px clear gutter between pieces, then LIP_INSET/FILL_INSET can drop.
 ## Method update (render-fix.md): to find a hairline, trace draws by one pixel's before/after (tools: /tmp scratch trace2/trace4 pattern,
    worth adding as tools/inspect/pixeltrace.mjs) instead of guessing layers; then measure the sheet rows around the piece's frame.
