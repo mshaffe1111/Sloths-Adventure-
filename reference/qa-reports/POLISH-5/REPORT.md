@@ -29,7 +29,11 @@
   --in-order. Same seeds, same order; plans moved ONLY on 1-2: 20 23 54 63 65 75 99; 1-3: 44; 1-5: 14 44 45 86 139 (JSON compare). Why 1-5's
   moved: the old pit code refused roll 0 for "an unmarked floorless gap at x 1980..~3010", which is continuous earth (37-51 px steps); the
   search now keeps roll 0. All five --check PASS. Layout numbers are 0-BASED (seedList.ts:220): list seed S of 1-5 is layout S-1.
-## Gates (head e1bb16b unless named): see RESULTS below (filled from the logs at the end).
+## Gates, GREEN on e1bb16b (the last code commit; later commits are this report and logs). Logs: gates/.
+  Full unit suite 3376 tests, 0 fail, 2 known TODO (also on 1f88d2e: 0 fail; verdicts.test.ts:323 passes). tsc 0; knowncheck, generality,
+  roadmapcheck PASS; tool tests 33/33; tierBots 7/7; seedlist --check 1-1..1-5 PASS; the 155 tests naming 1-5 pass; build (BASE_PATH),
+  chunkcheck, artcheck, kbdcheck, drawcheck, clipcheck (83 known, unchanged) PASS; buildcheck PASS ALONE (p95 111/82 ms). It FAILED
+  once (210 ms) while the suite ran beside it: a timing gate, run it alone. tierBots calibration NOT re-run: 1-1 did not change.
 ## Polish check: 1-5 sheets (stills/1-5-moved-*.jpg, 40 stills, built setting printed by the game: stills/*-built.txt): same ground at x 2150;
   at x 2800 the flag sits on the step / an animal on layout 85; nothing floating, no pit, HUD clear (the lead judged the same). Item 2's
   attempt failed my own polish check and was reverted.

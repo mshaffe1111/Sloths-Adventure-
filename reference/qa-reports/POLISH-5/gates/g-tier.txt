@@ -1,0 +1,30 @@
+  duration_ms: 1.497234
+  type: 'test'
+  ...
+# Subtest: expert normal: every mapped number is its profile field
+ok 5 - expert normal: every mapped number is its profile field
+  ---
+  duration_ms: 0.813879
+  type: 'test'
+  ...
+# Subtest: the committed calibration runs, judged again, give the committed table
+ok 6 - the committed calibration runs, judged again, give the committed table
+  ---
+  duration_ms: 9.450339
+  type: 'test'
+  ...
+# Subtest: three variants a tier and setting replay exactly as committed
+ok 7 - three variants a tier and setting replay exactly as committed
+  ---
+  duration_ms: 17705.204739
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18892.549724
