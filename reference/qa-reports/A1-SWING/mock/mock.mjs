@@ -26,8 +26,10 @@ for (let i = 0; i < 120 && !/Local:|ready in/.test(vout); i++) await sleep(500);
 const browser = await chromium.launch();
 const ORIENTS = [{ id: 'upright', viewport: { width: 390, height: 844 } }, { id: 'sideways', viewport: { width: 844, height: 390 } }];
 for (const o of ORIENTS) {
-  for (const wide of [false, true]) {
-    if (process.env.ONLY && process.env.ONLY !== `${o.id}-${wide ? 'b' : 'a'}`) continue;
+  // (a) today; (b) eased out 1.5x, the aim as today's rule; (c) eased out 1.3x and led forward: Pokey at the left edge (the lead, 12:00 AM)
+  for (const V of [{ tag: 'a', wide: 0, lead: false }, { tag: 'b', wide: 1.5, lead: false }, { tag: 'c', wide: 1.3, lead: true }]) {
+    const wide = V.wide > 0;
+    if (process.env.ONLY ? process.env.ONLY !== `${o.id}-${V.tag}` : V.tag === 'c' && o.id !== 'upright') continue;
     const ctx = await browser.newContext({ viewport: o.viewport, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
     await ctx.route(/script\.google\.com/, (r) => r.abort());
     const page = await ctx.newPage();
@@ -51,7 +53,6 @@ for (const o of ORIENTS) {
       e.platforms.push(far);
       window.__far = far;
       window.__cut = before - e.platforms.length + 1;
-      e.lives = 9;
       const p = e.player;
       p.x = sv.x - 30; p.y = sv.topY + 260; p.vx = 260; p.vy = 0; p.grounded = false; p.facing = 1;
       window.__sv = sv;
@@ -65,7 +66,7 @@ for (const o of ORIENTS) {
       await page.evaluate(() => { const e = window.__engine(), sv = window.__sv, p = e.player; p.x = sv.x - 30; p.y = sv.topY + 260; p.vx = 260; p.vy = 0; p.grounded = false; p.facing = 1; });
     }
     // down to the foot (straight down on a vine always climbs), then wait for the forward swing at the let-go
-    await page.evaluate((w) => { const e = window.__engine(); e.input.state.down = true; window.__wide = w ? 1.5 : 0; }, wide);
+    await page.evaluate((V) => { const e = window.__engine(); e.input.state.down = true; window.__wide = V.wide; window.__lead = V.lead; }, V);
     await sleep(1800);
     await page.evaluate(() => { const e = window.__engine(); e.input.state.down = false; e.player.facing = 1; });
     const got = await page.evaluate(async () => {
@@ -94,20 +95,24 @@ for (const o of ORIENTS) {
             e.revealZoom = 1 / window.__wide;
             e.applyZoom();
             const vw = c.viewportWidth, vh = c.viewportHeight;
-            c.x = Math.min(p.x - 28 - 0.02 * vw, Math.max(c.x, far.x + 40 - 0.98 * vw));
+            // (led forward: his hanging body (drawn up to ~95 px behind his hands at this point of the swing) just inside the left edge, so
+            //  the most of the perch shows with all of him in view)
+            c.x = window.__lead ? p.x - 110 : Math.min(p.x - 28 - 0.02 * vw, Math.max(c.x, far.x + 40 - 0.98 * vw));
+            window.__seen = Math.round(c.x + 0.98 * vw - far.x);
             c.y = p.y + (p.height || 40) - feet * vh;
             if ('targetX' in c) { c.targetX = c.x; c.targetY = c.y; }
             window.__vw = [Math.round(vw0), Math.round(vw)];
-          } else window.__vw = [Math.round(e.camera.viewportWidth)];
-          return { a: +a.toFixed(3), len: Math.round(e.player.swingLength ?? 0), px: Math.round(e.player.x), swinging: true, vw: window.__vw, cut: window.__cut };
+          } else { window.__vw = [Math.round(e.camera.viewportWidth)]; window.__seen = Math.round(e.camera.x + 0.98 * e.camera.viewportWidth - window.__far.x); }
+          return { a: +a.toFixed(3), len: Math.round(e.player.swingLength ?? 0), px: Math.round(e.player.x), swinging: true, vw: window.__vw, cut: window.__cut, seen: window.__seen };
         }
       }
       return { swinging: !!e.player.isVineSwinging, len: Math.round(e.player.swingLength ?? 0) };
     });
     await sleep(500);
-    const label = `${wide ? '(b) EASED OUT 1.5x' : '(a) TODAY'} ${o.id} ${o.viewport.width}x${o.viewport.height}, view ${(got.vw || []).join(' -> ')} px of world | Normal | t-a1-swing@${sha} | ${stageArg}'s liana, hold ${got.len} px down (the foot), ${got.a} rad forward | FAR perch ${FAR} px past the anchor, level with his bough (mock: pushed in, ${(got.cut ?? 1) - 1} nearer ledge(s) taken out)`;
+    const name = V.tag === 'a' ? '(a) TODAY' : V.tag === 'b' ? '(b) EASED OUT 1.5x' : `(c) EASED OUT ${V.wide}x + LED FORWARD (Pokey ${Math.round(100 / V.wide)}% size)`;
+    const label = `${name} ${o.id} ${o.viewport.width}x${o.viewport.height}, view ${(got.vw || []).join(' -> ')} px of world | Normal | t-a1-swing@${sha} | ${stageArg}'s liana, hold ${got.len} px down (the foot), ${got.a} rad forward | FAR perch ${FAR} px past the anchor, level with his bough (mock: pushed in, ${(got.cut ?? 1) - 1} nearer ledge(s) taken out) | ${got.seen} px of the perch's top in view`;
     await page.evaluate((t) => { const d = document.createElement('div'); d.textContent = t; Object.assign(d.style, { position: 'fixed', left: '0', right: '0', bottom: '0', background: 'rgba(0,0,0,0.72)', color: '#fff', font: '11px sans-serif', padding: '4px 6px', zIndex: 99999 }); document.body.appendChild(d); }, label);
-    const f = path.join(here, `${o.id}-${wide ? 'b-wide' : 'a-today'}.png`);
+    const f = path.join(here, `${o.id}-${V.tag === 'a' ? 'a-today' : V.tag === 'b' ? 'b-wide' : 'c-lead'}.png`);
     await page.screenshot({ path: f });
     console.log('shot', f, JSON.stringify(set), JSON.stringify(got));
     await ctx.close();

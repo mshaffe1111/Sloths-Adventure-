@@ -10,8 +10,11 @@ w1.ts keeps ['double']), W1_LIANA_GAP short/long/far, w1Liana/w1Perch, 3 section
 340-368, FAR 471-528 px. 5. Planted (w1Swing.test.ts, 6 tests): each of 6 pieces removed goes red (window grips, lay carry, cache key, band vine, level check, built Vine).
 6. lockall 102/102 unchanged vs f9671e3b (16 layouts x both settings). generalitycheck 27/27 known (no new literal).
 **Gates on the head:** see GATES below (pasted from the run's SUMMARY; anything not listed there is UNRUN).
-**Polish check:** mock/upright-pair.png: (a) no landing in view (the problem); (b) 1.5x: only the perch's first ~40 px at the right edge, Pokey ~2/3 size. Rough: the
-lives pill reads x9 in (a), x3 in (b) (the mock set lives for (a) only); 1-8's dark level-bottom band shows in both (pre-existing). sideways-pair: FAR perch in view today.
+**Polish check:** mock/upright-abc.png (same frame): (a) today: no landing in view; (b) 1.5x: the perch's first ~40 px at the edge, Pokey 67% size, Dot's bird on
+him; (c) 1.3x led forward, all of Pokey in view (77% size): only the perch's LIP (26 px) shows. So (c) cannot show the whole perch. With Pokey whole at the left edge
+the view needs: lip + 90 px (one Pokey) 1.48x; lip + 150 px 1.63x (Pokey 61%); the whole 300 px perch 2.0x of 1-8's 416 px (Pokey 50%). Rough, named: the lives pill
+reads x9 in (a) (an older mock line); Dot's bird hovers at his hands in (b)/(c) (the mock can't move it); 1-8's dark level-bottom band in all three (pre-existing).
+sideways-pair: the FAR perch is in view today: no sideways zoom.
 **Camera packet numbers (for the lead):** width to hold him (foot, 400 px) + the landing box, upright: at the swing's bottom SHORT 430 -> 529 px (1.20x), LONG 500 ->
 602 (1.37x), FAR 560 -> 665 (1.51x); from the back of the swing (where he decides) FAR 846 (1.92x). Propose: ease out from the catch at LAND_EASE.rate 4.5/s (95% in
 ~0.67 s, before the first forward sweet spot), back in over ~1.0 s after landing, cap 1.5x, upright only. Lift the level-height cap (engine.ts:1247 roomUsual: 1-8 is
@@ -29,5 +32,7 @@ D57 (queue read at every push). **Method update:** stage-piece.md step 6: "never
 **Learned:** 1) A reach dial must reach EVERY judge of reach: the window (lianaRelease) and the link (levelCheck) disagreed by 200 px and the plan named only one.
 2) Give a check the engine's own function, not a twin (pressWindow), and opt it in by data so locks stay byte-identical. 3) Upright framing is capped by the level's
 height before any lead or widen applies. 4) Measure the camera with the pure aim first (seconds), then one real still to prove it.
-**EXACT NEXT STEP:** 1. Lead: show Matt mock/upright-pair.png; on his word, the camera packet (numbers above). 2. Lead rules (b)/(c): `len` on the swing rule, LONG
+**EXACT NEXT STEP:** 1. Lead: decide the upright answer from upright-abc.png (no zoom with Pokey >= 75% shows a FAR perch at release: zoom 1.6x+, or a
+landing marker at the edge, or FAR only where the view allows); then the camera packet: upright only, lift engine.ts:1247's level-height cap (roomUsual =
+max(base, h / levelH): 1-8 shows 416 px today, so no widen can apply on a short level), the numbers above. 2. Lead rules (b)/(c): `len` on the swing rule, LONG
 rows with a dial. 3. 1-6 builder: kit = withSwing(w1World()) + its sections from W1_SWING_SECTIONS / w1Liana / w1Perch; read this REPORT's pushback first.
