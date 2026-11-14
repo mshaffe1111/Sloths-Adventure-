@@ -70,6 +70,7 @@ export const CONTENT_LETTERS = {
   t: { name: "gate", key: "later", unlaid: "the gate a find opens (the fig gate): B14's emitter on t-b14, not merged" },
   x: { name: "trap", key: "later", unlaid: "the trap (a limb load over an animal): B15's emitter on t-b15, not merged" },
   m: { name: "cover", key: "later", unlaid: "cover (a bush, a moss carpet, a patch, hanging moss): its lay is ENGINE-678 B3 COVER, not built", dials: { kind: "bush|carpet|patch|hanging", apart: "px between covers" }, dialsBy: "ENGINE-678 B3 COVER" },
+  n: { name: "snake", key: "later", unlaid: "the vine snake and the false liana ride a section's laid liana by its piece key: gen2/snakeLay.ts laySnakes, run by a stage's finish (1-4's pattern, listed.ts FINISH); no emitter is keyed by the letter", dials: { route: "down-off|down-back|up|still (still: a false liana)", reach: "the share of the liana it comes", beat: "s off|tell|trip on the stage clock" }, dialsBy: "ENG-S4 SNAKE-LAY" },
 } as const satisfies Readonly<Record<string, ContentLetter>>;
 
 export type JobLetterId = keyof typeof JOB_LETTERS;
@@ -117,6 +118,7 @@ export const CONTENT_WORDS: Readonly<Record<ContentLetterId, readonly [string, s
   t: ["Gate", "A gate a find opens (the fig gate).", "A gate blocks the way until you find what opens it."],
   x: ["Trap", "A trap: a limb's load dropped over an animal.", "You drop something on a creature from above to get past it."],
   m: ["Cover", "Cover he keeps still in while a watcher looks: a bush, a moss carpet, a patch, or moss hanging from a liana (stillness.ts Cover).", "You duck into a bush or under hanging moss and keep still while it looks."],
+  n: ["Vine snake", "A vine snake on a liana's grip line, on the stage beat: down from the bough or up from the foot after a tell of 0.5 s or more; touching his hands makes him let go, never a bite. Its tell is seen on every phone, so a snake from the bough needs its liana hung well under the level's top. A false liana is a snake hanging still in a liana's place: grabbed, it drops with him. Taught 1-6.", "A snake slides along a hanging vine: move or let go before it reaches your hands. One vine doesn't swing: it's a snake."],
 };
 
 /** the designer's MUST / MAY / NEVER for each content letter that has a piece rule (NODES.md §8.0, rule V18); a letter not laid yet has
@@ -131,6 +133,7 @@ export const PIECE_WORDS: Readonly<Partial<Record<ContentLetterId, readonly [str
   w: ["Drawn water, with lily pads on its surface, stones sitting on its bed, or drifting logs on a drawn river.", "", "Lily pads, reeds or drifting logs anywhere off water; a stone floating on the water."],
   h: ["The world's own taught hazard (for example World 3's thorn vines hanging or swinging from trunks).", "", "A hazard before its world teaches it; another world's hazard art."],
   s: ["A liana hung from a bough or the canopy, with a landing past its swing.", "", "A liana hanging from open sky."],
+  n: ["A swinging liana (s) carrying one vine snake; or a false liana hanging still from a bough among real ones.", "", "A snake on a climbing vine or a rope; a false liana that swings; a snake from the bough on a liana hung so near the level's top that its tell hides under the HUD."],
 };
 
 /**

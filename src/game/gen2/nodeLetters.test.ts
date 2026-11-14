@@ -49,7 +49,10 @@ test('one letter grammar: a letter the deal does not lay is later in the key and
     assert.equal(laid, !LATER_CONTENT[l], `${l}: laid by the deal XOR named as later`);
     if (!laid) assert.equal(CONTENT_LETTERS[l as keyof typeof CONTENT_LETTERS].key, 'later', `${l} has no lay but the key says now`);
   }
-  assert.deepEqual(Object.keys(LATER_CONTENT), ['s', 'v', 'p', 't', 'x', 'm']);
+  assert.deepEqual(Object.keys(LATER_CONTENT), ['s', 'v', 'p', 't', 'x', 'm', 'n']);
+  // (ENG-S4: n, the vine snake, names its lay (a stage finish by piece key, gen2/snakeLay.ts) and the false liana as its 'still' route)
+  assert.match(CONTENT_LETTERS.n.unlaid, /snakeLay\.ts laySnakes/);
+  assert.equal(CONTENT_LETTERS.n.dials.route, 'down-off|down-back|up|still (still: a false liana)');
   // (a letter with a piece rule has all three columns' words where the designer wrote them; one with none shows no Pieces, never an empty Never)
   for (const [l, w] of Object.entries(PIECE_WORDS)) assert.ok(w![0] && w![2], `${l}: a pieces row with an empty Must or Never`);
   assert.deepEqual(['v', 'p', 't', 'x', 'm'].filter((l) => l in PIECE_WORDS), []);
