@@ -1,0 +1,85 @@
+{
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/34b3bf29189c39f8d6c2ca53f42722c50ff8fe84/reference/art/hfmatt/starts/",
+ "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, garlic, onion, shadow, ground, pink pod, magenta pod",
+ "items": [
+  {
+   "name": "pod-hang-s55-11",
+   "start": "pod-hang.png",
+   "prompt": "a large ridged tan-brown jungle seed pod hanging from a short green stem, a dry papery husk, darker brown stripes along its ridges, plump, bold dark outline, hand-painted 2D platformer game sprite, strict side view, flat solid magenta background",
+   "strength": 0.55,
+   "seed": 11,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "pod-hang-s55-23",
+   "start": "pod-hang.png",
+   "prompt": "a large ridged tan-brown jungle seed pod hanging from a short green stem, a dry papery husk, darker brown stripes along its ridges, plump, bold dark outline, hand-painted 2D platformer game sprite, strict side view, flat solid magenta background",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "pod-hang-s68-11",
+   "start": "pod-hang.png",
+   "prompt": "a large ridged tan-brown jungle seed pod hanging from a short green stem, a dry papery husk, darker brown stripes along its ridges, plump, bold dark outline, hand-painted 2D platformer game sprite, strict side view, flat solid magenta background",
+   "strength": 0.68,
+   "seed": 11,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "pod-hang-s68-23",
+   "start": "pod-hang.png",
+   "prompt": "a large ridged tan-brown jungle seed pod hanging from a short green stem, a dry papery husk, darker brown stripes along its ridges, plump, bold dark outline, hand-painted 2D platformer game sprite, strict side view, flat solid magenta background",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "pod-fall-s55-11",
+   "start": "pod-fall.png",
+   "prompt": "the same large ridged tan-brown jungle seed pod falling, tilted slightly, its stem snapped off short, a dry papery husk, darker brown stripes along its ridges, bold dark outline, hand-painted 2D platformer game sprite, strict side view, flat solid magenta background",
+   "strength": 0.55,
+   "seed": 11,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "pod-fall-s55-23",
+   "start": "pod-fall.png",
+   "prompt": "the same large ridged tan-brown jungle seed pod falling, tilted slightly, its stem snapped off short, a dry papery husk, darker brown stripes along its ridges, bold dark outline, hand-painted 2D platformer game sprite, strict side view, flat solid magenta background",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "pod-fall-s68-11",
+   "start": "pod-fall.png",
+   "prompt": "the same large ridged tan-brown jungle seed pod falling, tilted slightly, its stem snapped off short, a dry papery husk, darker brown stripes along its ridges, bold dark outline, hand-painted 2D platformer game sprite, strict side view, flat solid magenta background",
+   "strength": 0.68,
+   "seed": 11,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "pod-fall-s68-23",
+   "start": "pod-fall.png",
+   "prompt": "the same large ridged tan-brown jungle seed pod falling, tilted slightly, its stem snapped off short, a dry papery husk, darker brown stripes along its ridges, bold dark outline, hand-painted 2D platformer game sprite, strict side view, flat solid magenta background",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 768,
+   "h": 1024
+  }
+ ]
+}
