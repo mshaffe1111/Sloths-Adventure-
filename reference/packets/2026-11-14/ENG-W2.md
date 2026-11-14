@@ -9,7 +9,7 @@ Branch: t-eng-w2 from origin/t-int-9@1c7f6b95.
      piece at its scale against Pokey's 89.1 px, R-165.107), its look by world data, water as deadly gaps (gen2 waterWarnings, already wired),
      STAGE_TABLE rows '2-1' and '2-2' on the kit with placeholder arcs that roll; the hand-built 2-1/2-2 path in w2Stages.ts/stageGenerator.ts
      :2895-2900 deleted for those two only once the gen2 rows roll (new replaces old). Planted: a w2 kit test; generalitycheck clean.
- (2) THEN: the river as a gen2 section: drift logs between banks from data (river.ts's logs; riverLay.ts new), recipes for a log you ride,
+ (2) ONLY AFTER the lead names the picked 2-1/2-2 pitch (about 8:45 PM; CRITIC-LR #2): the river as a gen2 section: drift logs between banks from data (river.ts's logs; riverLay.ts new), recipes for a log you ride,
      a log on a clock, a river flowing back; a bot skill that rides a log and steps off (planted toy, the middle and child bots). Proven on
      World 2's kit and one other world's (rule 21).
 Proof in reference/qa-reports/ENG-W2/REPORT.md: stills of a rolled 2-1 upright + sideways (Normal), the bot ride clip with the frame named,
