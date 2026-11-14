@@ -2,10 +2,11 @@
 // carrying `grip`, lianaBand's cache key) or without withSwing; proven on World 1's kit (1-6) and World 6's (6-3), both settings.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { jumpLinkGap, layLocal, lianaBand, lianaRelease, planBudget, rngFor, VINE } from '../pipeline.ts';
-import { gripsOf, swingLandings } from '../../levelCheck.ts';
+import { buildGen2Stage, jumpLinkGap, layLocal, lianaBand, lianaRelease, planBudget, rngFor, VINE } from '../pipeline.ts';
+import { cfg as toyCfg, kit as toyKit, manifest as toyManifest } from '../toyWorld.ts';
+import { gripsOf, swingLandings, validateStage } from '../../levelCheck.ts';
 import { pressWindow, type AirBody } from '../../physics.ts';
-import { LIANA, type LianaSwing, type WorldKit } from '../types.ts';
+import { LIANA, type LianaSwing, type SectionTemplate, type WorldKit } from '../types.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import { w1World } from './w1.ts';
 import { w6Kit } from './w6.ts';
@@ -111,4 +112,35 @@ test('the level check flies a liana with a grip dial as the engine plays it (opt
   const back = { id: -1, x: 180, y: 400, width: 300, height: 90, type: 'solid' as const };
   const farL = { id: -2, x: -540 - 300, y: 400, width: 300, height: 90, type: 'solid' as const };
   assert.equal(swingLandings(back, v, -1, [back, farL], 1e9, true).get(-2) ?? 0, lines(540, 'low'));
+});
+
+test('built: a liana row with the grip dial reaches the stage\'s Vine, and the stage\'s own level check links its FAR perch (toy world, both settings)', () => {
+  // the toy world's banks over a void, with one more section: a FAR liana (grip 'low'), its perch at the far end of the foot's band
+  const far: SectionTemplate = {
+    id: 'toy-far-liana', name: 'a FAR liana', archetypes: 'any', phases: ['sho', 'ten', 'ketsu'], difficulty: 5, weight: 8,
+    pieces: [
+      { key: 'near', shape: 'bank', w: [300, 400], place: { kind: 'start' } },
+      { key: 'rope', shape: 'liana', w: 0, place: { kind: 'swing', after: 'near', top: [400, 420], grip: 'low' } },
+      { key: 'far', shape: 'bank', w: [400, 500], place: { kind: 'land', after: 'rope', dy: [0, 0], share: [0.9, 1] } },
+    ],
+    entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
+  };
+  const world: WorldKit = withSwing({ ...toyKit, manifest: { ...toyManifest, pit: 'void', sections: [...toyManifest.sections, far] } });
+  let built = 0;
+  for (const d of ['normal', 'easy'] as const) {
+    for (let seed = 1; seed <= 6; seed++) {
+      const st = buildGen2Stage({ config: toyCfg('5-7', 'stealth'), kit: world, seed, difficulty: d });
+      const what = `${d} seed ${seed}`;
+      assert.deepEqual(validateStage(st).errors, [], what);
+      for (const s of st.gen2.sections.filter((x) => x.template === far.id)) {
+        const v = st.vines.find((x) => x.vineType === 'swing_liana' && x.grip === 'low');
+        assert.ok(v, `${what}: the built liana lost its grip`);
+        // its perch lies past the ~380 px the plain check links from any hold (sl.out.txt): only the dial's flight reaches it
+        const perch = st.platforms.filter((p) => p.x > v.x + 40 && Math.abs(p.y - (v.bottomY - 10)) < 120).sort((a, b) => a.x - b.x)[0];
+        assert.ok(perch && perch.x - v.x > 400, `${what}: the FAR perch is ${perch && perch.x - v.x} px past the anchor (${s.uid})`);
+        built++;
+      }
+    }
+  }
+  assert.ok(built > 0, 'no seed laid the FAR liana: the test proves nothing');
 });
