@@ -28,7 +28,14 @@ passed over and fell through. A respawn there puts him on the shut top, where he
    tools/engine/seedlist.ts 1-4`, 100 seeds, version 6b772e6e today) and every test that pins a roll or seed (release.md item 6),
    on the FULL suite. Where the lay cannot keep a piece out, it is not laid and the open end is caught lower (towerCatches step 4);
    a roll that cannot is refused, and the yield is measured (seeds tried per accepted roll, before and after) in the report.
-3. Re-shoot `node tools/inspect/clip.mjs <port> <out> gateover <normal|easy> <side|up> 0` on the new lay: `ON ITS TOP while shut` and
+3. **The checkpoint flag on a gate's own bough** (the lead, 1:01 PM ET): it must not be claimable from the shut top or from over it;
+   it is claimed only from where he stands after the gate is open. Today engine.ts:2847 claims any flag within 70 px across and from
+   150 px over it down to 40 px under, so a side jump onto (or over) a shut gate claims it (49 of 96 gates carry one: layouts 0-7, both
+   settings). Planted test: a shut gate whose bough carries a flag; stand him on the shut top and fly him 60-140 px over it: the flag
+   stays unclaimed (red today); open the gate, climb onto the bough: claimed. Generic (no stage id): a flag standing on a shut gate's
+   bough (or the boughs held with it) waits for the gate to open (fieldPlay.ts can answer "is this x,y on a shut gate"; the claim loop
+   asks it). Matt's ask stands even though the shut top leads nowhere: he must not get above the platform at all.
+4. Re-shoot `node tools/inspect/clip.mjs <port> <out> gateover <normal|easy> <side|up> 0` on the new lay: `ON ITS TOP while shut` and
    `THROUGH while shut` must both print `never`.
 
 ## 1. Done-items
