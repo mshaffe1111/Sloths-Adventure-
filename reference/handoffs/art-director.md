@@ -1,7 +1,20 @@
-# Hand-off: the art director role (Content), rewritten 2026-11-11 (R-165.85: the 11-09 batch passed; the 11-11 batch cut)
+# Hand-off: the art director role (Content), rewritten 2026-11-14 12:47 AM ET (ART-678b: the ART-678 pieces re-cut, catalogued; nothing placed)
 
-Last task: R-165.85 (cut only), Matt's 15 sheets of 11-09, by the Content member on branch t-c2-art-cut. The earlier note (from the
+Last task: ART-678b (§0e). Before it: R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0e. ART-678 / ART-678b (t-art-678b): 26 pieces in src/assets/w1-678/, catalogued, NOT placed
+- Cut from the kept raws (reference/art/hf678/raw/, q95) by `python3 tools/art/hf678/recut.py tools/art/hf678/recut.json reference/art/hf678/raw <out>`
+  (no HF). Its key: background = what floods from the border through key-like px (the key map, its haze to white and shadow to
+  black on a magenta take, the key's hue only on px brighter than a line); edge 1 px in, 0.8 px blur, rim px take the nearest solid
+  colour (despill). Hand boxes, `drop` (paint a neighbour as key), `round` (soften a square twig end), `protect` (a grey beak on grey).
+- Underlayer bands a/b (R-165.224): key_top, wrap closed with hflist1/wrapfix.py (2.8 / 2.5); the mock-up tool is hf678/undermock.py.
+- Catalog: tools/art/hf678/rows.py -> catalog-rows-hf678.csv -> CATALOG-MASTER.csv -> `catalog_master.py --emit`. One slot a family
+  (snake, harpy, live post, rolling nut): a 1-piece slot is a World 1 "gap" that inventory.test.ts fails unless CATALOG-MASTER.md lists it,
+  and only --merge (needs the B parts) rewrites the .md.
+- Open: livepost-mid/-tall are 1.23 Pokeys (platform cap 1.0, R-165.107 flags them); snake olive vs brown (lead's pick, beside-2);
+  band a has light rain streaks in the soil (b is the pick). Sheets: reference/qa-reports/ART-678b/.
+- Trap: the model's outline is dark MAROON (30,5,18) on pink takes: a key by hue ate it, leaving line dashes outside the piece (the "halo").
 
 ## 0d. 11-13 ART (t-art-1113): handed over mid-task, see reference/qa-reports/ART/HANDOVER.md
 - Packed: Pokey's two-hand climb (hero-climb2), 1-5's set + dusk set (w1dusk), 1-4's pieces, 9 fruit + golden guarana; 29 catalog rows.
