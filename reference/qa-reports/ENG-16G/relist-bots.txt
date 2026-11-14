@@ -1,0 +1,82 @@
+
+== 1. the row (at 0 s)
+
+== 2. the rolls: 24 seeds x both settings (libstage.ts) (at 0 s)
+1-6: 24 seeds x both settings, built from its stage-table row as the seed-list search builds it
+== normal: CLEAN 24 of 24 (100%), thrown 0; 23 distinct beat orders; graphs lianas-16-arc 24
+   cast (no cast) 24; creatures per clean roll none; seconds 259.1-264.3; width 47295-48466 px
+== easy: CLEAN 24 of 24 (100%), thrown 0; 23 distinct beat orders; graphs lianas-16-arc 24
+   cast (no cast) 24; creatures per clean roll none; seconds 257.8-263.7; width 46354-47479 px
+clean on BOTH settings: 24 of 24 seeds (first: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+pool sections never laid: none
+
+== 3. the seed list (tools/engine/seedlist.ts) (at 41 s)
+  the list file src/game/gen2/proven/seeds-1-6.ts: 17295 bytes, its own chunk (the main script holds only its line in provenIndex.ts)
+seedlist 1-6: 100 proven of 100 tried (100%), 343 s; the quiet line bound at 4 s: 0 clean seeds over it left out
+  quiet line (REPORTED, outro excluded; binds at FR9): longest 4 s, median 3.6 s, under 4 s on 100 of 100
+  outro (goal section): 864-937 px
+  yield, graph lianas-16-arc: 100 kept of 100 fresh seeds tried (100%)
+
+seedlist 1-6: the verdicts refuse 0 of 100 listed seeds
+seedlist 1-6: PASS (100 seeds, each clean on both settings)
+
+
+== 4. the bots (tools/inspect/castBots.ts --seeds 1-40, both settings) (at 1277 s)
+        fail 6: shrine rescued x1  (seeds 23,20,36,14,21,25)
+kid    easy   PASS 39/40; under the floor 0; time median 199 s (min 189.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 18)
+adult  normal PASS 39/40; under the floor 0; time median 227.6 s (min 215.9); hits 0 lives 3 (pit 3); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 38)
+adult  easy   PASS 40/40; under the floor 0; time median 192.3 s (min 182.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 36/40; under the floor 0; time median 474.7 s (min 414.8); hits 0 lives 31 (pit 31); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 2: sealed door goal 90/92  (seeds 31,34)
+        fail 1: sealed door goal 84/86  (seeds 16)
+        fail 1: sealed door goal 91/93  (seeds 36)
+child  easy   PASS 40/40; under the floor 0; time median 350.4 s (min 317.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 30/40; under the floor 0; time median 282.1 s (min 261.2); hits 0 lives 12 (pit 12); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 2: sealed door goal 89/92  (seeds 31,24)
+        fail 2: sealed door goal 94/95  (seeds 39,22)
+        fail 1: sealed door goal 87/90  (seeds 7)
+        fail 1: sealed door goal 84/89  (seeds 19)
+        fail 1: sealed door goal 88/89  (seeds 32)
+        fail 1: sealed door goal 100/101  (seeds 2)
+        fail 1: sealed door goal 91/92 rescued x1  (seeds 34)
+        fail 1: sealed door goal 89/90  (seeds 29)
+middle easy   PASS 40/40; under the floor 0; time median 241 s (min 227.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 18/40; under the floor 0; time median 250.9 s (min 233.8); hits 0 lives 14 (pit 14); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 2: sealed door goal 85/89  (seeds 19,9)
+        fail 2: sealed door goal 93/95  (seeds 23,39)
+        fail 2: sealed door goal 85/91  (seeds 4,17)
+        fail 2: sealed door goal 85/88  (seeds 14,18)
+        fail 2: sealed door goal 89/92  (seeds 38,33)
+        fail 1: sealed door goal 85/90  (seeds 7)
+        fail 1: sealed door goal 94/98  (seeds 15)
+        fail 1: sealed door goal 91/95  (seeds 27)
+        fail 1: sealed door goal 96/98  (seeds 35)
+        fail 1: sealed door goal 89/90  (seeds 28)
+        fail 1: sealed door goal 83/87  (seeds 40)
+        fail 1: sealed door goal 98/101  (seeds 2)
+        fail 1: sealed door goal 90/95  (seeds 22)
+        fail 1: sealed door goal 86/92  (seeds 34)
+        fail 1: sealed door goal 93/97  (seeds 13)
+        fail 1: sealed door goal 92/94  (seeds 21)
+        fail 1: sealed door goal 86/90  (seeds 29)
+
+
+== 5. the flown rows (at 1724 s)
+  judged on "normal-1-6", every move Easy flies has its row
+
+== 6. every other registration (tools/engine/registrycheck.ts --stage) (at 1724 s)
+registrycheck 1-6: registered everywhere (row, kit, config, routed, attempts, sheets, drawcheck, seeds, flown)
+
+
+== addlevel 1-6: 1735 s
+  DONE     row, kit and config resolve
+  DONE     rolls: 24/24 Normal, 24/24 Easy clean; 24/24 on both
+  DONE     seed list written: 100 proven of 100 tried (100%), 343 s; the quiet line bound at 4 s: 0 clean seeds over it left out
+  DONE     seed list: --check PASS
+  DONE     flown: judged on normal-1-6
+  DONE     registered everywhere registrycheck looks
+  MISSING  bots: castBots did not run to its summary (output above)
+addlevel 1-6: NOT READY (1 missing above)
+exit 1

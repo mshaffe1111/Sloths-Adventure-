@@ -35,7 +35,24 @@ DRAFT: numbers marked (PENDING) are filled from the runs on the final head.
   it) + one on d1@0.6. gorge (Normal): b1@0.88 -> 0.45 (FAR_WALKED). Easy's gorge unchanged. Count and the 87.5% share unchanged. The
   pickup reach is 46 px from his hips (engine.ts:3219), so each spot is inside every observed stand span. (f80c535a)
 
-### 4. 1-6 relisted, bots 1-40 both settings, the whole suite (PENDING)
+### 4. 1-6 relisted; bots 1-40 both settings NOT green
+- `npx tsx tools/engine/addlevel.ts 1-6 --par 4 --relist` on f80c535a (5:51-6:20 PM ET, 1735 s; `relist-bots.txt`): rolls 24/24 Normal,
+  24/24 Easy clean; seed list 100 proven of 100 tried, version c23bd231, `--check` PASS, the verdicts refuse 0 of 100; flown: judged on
+  normal-1-6; registered everywhere. Committed ebbb3eb2 (src/game/gen2/proven/seeds-1-6.ts + provenIndex.ts) from this run only.
+  **Easy proof pending R-165.251**: seedlist.ts and lockall.ts never call setTimedSwing (grep), so their Easy builds use Normal's swing
+  outside pipeline.ts's own local switches (248, 274, 337). The bots play the real engine, which sets it (engine.ts:966).
+- castBots 1-6 seeds 1-40 (addlevel step 4):
+
+| bot | Normal | Easy |
+|---|---|---|
+| kid | 34/40 (6 rescued shrines: s14, 20, 21, 23, 25, 36) | 39/40 (1 rescued shrine: s18) |
+| adult | 39/40 (1 rescued shrine: s38) | 40/40 |
+| child | 36/40 (4 sealed doors, 1-2 petals short) | 40/40 |
+| middle | 30/40 (10 sealed doors, 1-5 short; s34 also rescued) | 40/40 |
+| expert | 18/40 (22 sealed doors, 1-6 short) | (Normal only) |
+
+  Seeds 1-6 had hidden this: on them the expert failed 4 and the kid none. The two petals ruled on are on the path now; the expert still
+  misses 4-6 a run across the stage. That is stage-wide petal placement (Suggestion 2), not two spots.
 
 ## Polish check (PENDING)
 
