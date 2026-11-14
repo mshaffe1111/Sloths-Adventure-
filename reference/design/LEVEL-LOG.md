@@ -81,3 +81,4 @@ the first: count levels that reach his test link at the bar, against the usage %
 | ENG-S1 (Opus xhigh) | Matt's swing cap: SWING_SEEN 414 px per press (drawn pose kept in view), camera ease + lead with a real-engine 3-phone test, FAR 407-426 / Easy as LONG, 1-6.md revised; all gates green | $20.00 | ~95 min |
 | POLISH-7 (Opus high) | settle perf fix (buildcheck 127); bounce teach a plain bounce; 14 doubles cut; stone-stair X test; relist 169/257; castBots Easy 10/10 both; unit suite red on 17 moved pins (handed to POLISH-8) | $15.29 | ~85 min |
 | ENG-S2 (Opus xhigh) | PieceHost letGo; vine snake (3 routes, 0.5 s tell floor, green by evidence D65); false liana (brown); engine.ts:2056 off-liana catch fix; found the sideways tell out of view; all gates green | $13.49 | ~75 min |
+| FIX-14c (Opus high) | 80 px vine-top rule + lay test; towerJoin foot-vine root fix; 1-4 data; 3 relists; suite 3303/0; castBots WORSE on Easy child/middle: HELD | $13.75 | ~100 min |
