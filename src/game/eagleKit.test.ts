@@ -85,3 +85,19 @@ test('the moss comes over him only in cover: none still in the open, all the way
   c.step(h, 1 / 30, 2, false);
   assert.equal(c.calmNow(false), 0, 'a step breaks it at once');
 });
+
+test('a mossy liana is cover while he holds it, wherever it swings; another vine is not; climbing it is moving', () => {
+  const ropes: Cover[] = [{ x: 0, w: 0, y: 0, rope: 42 }];
+  const c = new CastPlay({ kinds: [], traps: [] }, [], ground, 1, ropes);
+  // (swung far from where any bush stands: the rope's cover goes with it)
+  const h: CastHero = { x: 1300, y: 260, vx: 180, vy: 0, facing: 1, grounded: false, holding: true, rope: 42 };
+  for (let i = 0; i < 16; i++) c.step(h, 1 / 30, i / 30, false);
+  assert.equal(c.calmNow(false), 1, 'held still on the mossy liana as it swings: the moss is all the way in');
+  h.rope = 7;
+  c.step(h, 1 / 30, 1, false);
+  assert.equal(c.calmNow(false), 0, 'a plain vine is no cover');
+  h.rope = 42;
+  h.vy = -60;
+  c.step(h, 1 / 30, 1.1, false);
+  assert.equal(c.calmNow(false), 0, 'climbing it is moving');
+});

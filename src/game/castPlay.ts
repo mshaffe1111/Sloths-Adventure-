@@ -33,6 +33,8 @@ export interface CastHero {
   grounded: boolean;
   /** holding a vine or a rope */
   holding: boolean;
+  /** the vine he holds, by id (a mossy liana is cover: stillness.ts Cover.rope) */
+  rope?: number;
 }
 
 export interface CastMember {

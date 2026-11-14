@@ -75,12 +75,19 @@ export interface Cover {
   hanging?: boolean;
   /** dressing only: not a hiding place */
   secret?: boolean;
+  /** a mossy liana (1-7 NEW 6): holding THIS vine (its id) is cover wherever it swings; x, w and y are not read */
+  rope?: number;
 }
 
 /** is he inside cover? (the same place the bush hide uses, watcher.ts `hidden`; whether he is still is the state's business) */
-export function inCover(covers: readonly Cover[], p: { x: number; y: number; grounded: boolean; holding: boolean }): boolean {
+export function inCover(covers: readonly Cover[], p: { x: number; y: number; grounded: boolean; holding: boolean; rope?: number }): boolean {
   for (const c of covers) {
-    if (c.secret || p.x < c.x + 10 || p.x > c.x + c.w - 10) continue;
+    if (c.secret) continue;
+    if (c.rope !== undefined) {
+      if (p.holding && p.rope === c.rope) return true;
+      continue;
+    }
+    if (p.x < c.x + 10 || p.x > c.x + c.w - 10) continue;
     if (c.hanging ? p.holding && p.y > c.y && p.y < c.y + 150 : p.grounded && Math.abs(p.y - c.y) < 10) return true;
   }
   return false;

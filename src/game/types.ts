@@ -418,6 +418,8 @@ export interface TreeStructure {
 }
 
 export interface Vine {
+  /** thick with Spanish moss (1-7 NEW 6): holding it is cover from a cast watcher wherever it swings (castPlay.ts, stillness.ts Cover.rope) */
+  mossy?: boolean;
   /** the laid section's uid and the piece's key it came from (`s4:f2`; gen2 pipeline): what a stage's own finish finds it by */
   tag?: string;
   id: number;

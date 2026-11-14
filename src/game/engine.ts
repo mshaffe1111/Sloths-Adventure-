@@ -647,6 +647,8 @@ export class GameEngine {
   private readonly sweepDrawn = new Map<number, { pose: SweepPose; body: Enemy }>();
   /** the moss over him last step (castPlay.ts calmNow), for the calm sound the step it comes all the way in */
   private mossWas = 0;
+  /** his swing's rope length on the last cast step (NaN off a swing): climbing a swinging liana is moving, the swing is not */
+  private swingLenWas = NaN;
   /** the game time the sweepers were last drawn at (their easing's step) */
   private sweepT = 0;
   /** the stage's runtime pieces on the one hook (pieces/index.ts): every registered kind its data lays, started at the stage's start */
@@ -4589,7 +4591,10 @@ export class GameEngine {
   /** the stage's cast from its own data, at every stage start: the kit takes the animals the brief names (castPlay.ts); none named, none taken */
   private startCast() {
     const world = this.currentStage.config.worldIndex;
-    this.cast = this.proto?.cast ? new CastPlay(this.proto.cast, this.enemies, this.platforms, world, this.proto.bushes ?? []) : null;
+    // (the covers: the stage's hides, and every mossy liana as cover while he holds it, 1-7 NEW 6)
+    const ropes = this.vines.filter((v) => v.mossy).map((v) => ({ x: 0, w: 0, y: 0, rope: v.id }));
+    this.cast = this.proto?.cast ? new CastPlay(this.proto.cast, this.enemies, this.platforms, world, [...(this.proto.bushes ?? []), ...ropes]) : null;
+    this.swingLenWas = NaN;
     this.sweepDrawn.clear();
     this.mossWas = 0;
     // (its painted trap pieces load with the stage, so the first frame has them: castArt.ts)
@@ -4608,10 +4613,14 @@ export class GameEngine {
     h.x = p.x;
     h.y = p.y;
     h.vx = p.vx;
-    h.vy = p.vy;
+    // (on a swinging liana the swing carries him: that is the vine moving, not him; climbing it is the rope's length changing)
+    const len = p.isVineSwinging ? p.swingLength ?? 0 : NaN;
+    h.vy = p.isVineSwinging ? (Number.isFinite(this.swingLenWas) ? (len - this.swingLenWas) / Math.max(dt, 1e-3) : 0) : p.vy;
+    this.swingLenWas = len;
     h.facing = p.facing;
     h.grounded = p.grounded;
     h.holding = !!(p.climbing || p.isVineSwinging);
+    h.rope = p.isVineSwinging ? p.swingVineId : p.climbing ? p.climbingVineId : undefined;
     const r = c.step(h, dt, this.gameTime, this.easy);
     // (the cues the old animals give: a '?' when it notices him, a '!' and its call when its tell begins. A sweeper's notice is its pass
     //  being called: the screech, its warn (1-7: sound comes first); its tell is the dive, its '!' where it is drawn)
