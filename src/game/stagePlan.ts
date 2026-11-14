@@ -28,6 +28,10 @@ export interface StageSpec {
   /** the stage's own pictures for what it gathers (pickupSprites.ts names, src/assets/pickups): `find` its golden find, `petal` Meeca's
    *  petals; unset, the world's usual. Data, read by the draw through stageLooks: no draw line names a stage */
   looks?: { find?: string; petal?: string };
+  /** a stage whose goal is ALSO a share of what it holds, though its mission is another (1-6's vine run: "Swing after her, and gather her
+   *  petals"): 'petals' counts Meeca's petals as a harvest does (goals.ts goalCountsPetals: the share, the sealed exit, the counter).
+   *  Unset, the mission's own goal. Data: no engine line names a stage */
+  gathers?: 'petals';
 }
 
 const S = (type: StageSpec['type'], name: string, desc?: string, goal?: number): StageSpec => ({ type, name, desc, goal });
@@ -49,7 +53,7 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     { ...S('relic_hunt', 'Where She Walked', 'She marked the way they took her. Follow her marks.', 8), looks: { find: 'guarana-golden', petal: 'petal-folded' } },
     // (the story keeper's line, t-keeper-16@387aeb2b8 reference/story/lines-1-6.md: gen2/worlds/w1Arc16.ts MISSION_16, held equal by
     //  w1Arc16.test.ts)
-    S('vine_runner', 'First Lianas', 'They took her over the gorge. Swing after her, and gather her petals.'),
+    { ...S('vine_runner', 'First Lianas', 'They took her over the gorge. Swing after her, and gather her petals.'), gathers: 'petals' },
     S('stealth', 'A Very Good Bush', 'Eagles are watching. Duck under the leaves the way Dot hid from the soldiers.'),
     S('sprint', 'The Long Branch', 'Race the long branch to the shrine.'),
     S('gauntlet', "The Boa's Branches", "Fight through the boa's guards and reach the shrine."),

@@ -5,6 +5,7 @@
 import { relicArt } from '../../game/stagePlan.ts';
 import { stageFlowers } from '../../game/flowerSprites.ts';
 import { MEECA_STAGE_ID } from '../../game/extraStages.ts';
+import { countedGoal } from '../../game/goals.ts';
 
 /** the picture for the goal: a painted pickup (src/assets/pickups), a flower from the flower sheet, or a drawn stand-in */
 export type GoalIcon =
@@ -90,7 +91,8 @@ export function creatureNoun(id: string, n: number): string {
  * stage: send 13 snakes on their way" / "to open the shrine." ("send 1 boa on its way"). Before the stage has said which, "animals"
  */
 export function goalInfo(cfg: Cfg, dotStage = false, creature?: string): GoalInfo {
-  const type = cfg.objectiveType;
+  // (a stage that gathers petals counts them as a harvest does, whatever its mission: goals.ts countedGoal, 1-6's vine run)
+  const type = countedGoal(cfg);
   const w = cfg.worldIndex;
   if (cfg.id === MEECA_STAGE_ID) {
     // Meeca's stage counts her warnings: a scrap of bark with "M." scratched on it, "1/5" (the approved mock-ups)

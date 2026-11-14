@@ -35,7 +35,7 @@ import { pickCut } from './w1CutArt.ts';
 import { easeInShare, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
-import { withGoals } from './goals.ts';
+import { countedGoal, withGoals } from './goals.ts';
 
 import type {
   LevelConfig,
@@ -3375,8 +3375,10 @@ export class GameEngine {
     // --- Check Objective Completion ---
     let currentProgress = 0;
     const objType = this.currentStage.config.objectiveType;
+    // (what the goal counts: a harvest's petals also on a stage whose plan gathers them, goals.ts countedGoal; the sealed line keeps objType)
+    const goalType = countedGoal(this.currentStage.config);
 
-    switch (objType) {
+    switch (goalType) {
       case 'harvest':
         currentProgress = p.fruitsCollected;
         break;
@@ -3399,11 +3401,11 @@ export class GameEngine {
     if (this.mc) currentProgress = this.mc.count;
 
     const isQuotaType =
-      objType === 'harvest' ||
-      objType === 'purge' ||
-      objType === 'relic_hunt' ||
-      objType === 'rescue' ||
-      objType === 'gauntlet';
+      goalType === 'harvest' ||
+      goalType === 'purge' ||
+      goalType === 'relic_hunt' ||
+      goalType === 'rescue' ||
+      goalType === 'gauntlet';
 
     const quotaMet = currentProgress >= this.currentStage.config.targetCount;
     const isExitUnlocked = !isQuotaType || quotaMet;
@@ -3432,7 +3434,7 @@ export class GameEngine {
         }
       } else if (this.goalSaid.start && !this.goalSaid.late && along > 0.7 && need > this.currentStage.config.targetCount * 0.25 && !this.stageHint) {
         this.goalSaid.late = true;
-        const line = goalLine('late', this.currentStage.config.worldIndex, objType, need);
+        const line = goalLine('late', this.currentStage.config.worldIndex, goalType, need);
         if (line) this.guide(line, 4);
       }
     }
@@ -3469,7 +3471,7 @@ export class GameEngine {
           const remaining = this.currentStage.config.targetCount - currentProgress;
           // the same word the counter at the top uses, so the two always agree
           // (the story keeper's own words where a goal has them, stagePlan.ts sealedLine: 1-5's marks)
-          const line = sealedLine(this.currentStage.config.worldIndex, objType) ?? goalLine('sealed', this.currentStage.config.worldIndex, objType, remaining);
+          const line = sealedLine(this.currentStage.config.worldIndex, objType) ?? goalLine('sealed', this.currentStage.config.worldIndex, goalType, remaining);
           // in the banner the stage hints use (the small red floating text was hard to read on the bright doorway)
           if (!this.stageHint) this.guide(line || 'Finish the goal to open the sanctuary', 3);
           }
@@ -4906,7 +4908,7 @@ export class GameEngine {
       heartsLost: this.statHeartsLost,
       floraTotal,
       floraCollected,
-      ...(this.currentStage.config.objectiveType === 'harvest' ? { floraGoal: { cur: this.player.fruitsCollected, target: this.currentStage.config.targetCount } } : {}),
+      ...(countedGoal(this.currentStage.config) === 'harvest' ? { floraGoal: { cur: this.player.fruitsCollected, target: this.currentStage.config.targetCount } } : {}),
       timeSec: this.gameTime,
       timeLimit: this.currentStage.config.timeLimit,
       maxStompChain: this.statMaxStompChain,
