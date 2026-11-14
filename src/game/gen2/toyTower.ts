@@ -156,7 +156,9 @@ export const gated: SectionTemplate = {
   pieces: [
     { key: 'foot', shape: 'branch', w: [520, 560], place: { kind: 'start' } },
     { key: 'vine', shape: 'vine', w: 0, place: { kind: 'climb', on: 'foot', at: [0.45, 0.5], h: [300, 300] } },
-    { key: 'top', shape: 'branch', w: [200, 220], place: { kind: 'over', on: 'vine', at: 0, dy: 0 }, landing: true, main: true, sealed: true },
+    // (300-320: the vine that leaves a gate keeps TOP_ROOM (80) to both its open ends wherever the next section fits along it; at
+    //  200-220 a section that fit only partway along stood its vine 44 px from the end, and the lay now refuses that: R-165.206)
+    { key: 'top', shape: 'branch', w: [300, 320], place: { kind: 'over', on: 'vine', at: 0, dy: 0 }, landing: true, main: true, sealed: true },
   ],
   entry: { piece: 'foot', kind: 'ledge' },
   exit: { piece: 'top', kind: 'ledge' },
