@@ -11,6 +11,7 @@ rising tide, drifting logs (river.ts), deadly water gaps, pods on a beat (podfal
 Exist but NOT wired: gen2/lureLay.ts, gen2/rideLay.ts, sinking pads (ride.ts newPad/stepPad), snap-jaw stones (beatBrick 'bites').
 MISSING: lanes, followers (follow.ts), a gen2 World 2 kit (2-1/2-2 are hand-built today, w2Stages.ts). Each level must build in UNDER 2 HOURS:
 favour what is wired; name every NEW piece with its size (S ~1 h, M 2-4 h) and file; at most 2 NEW per level.
+**THE SHELF RULE (Matt, 6:27 PM ET: "the only games ever being referenced is Donkey Kong Country, Mario, Ori, the really well-defined ones. I want to have some classics and some unknown ones in there too... a lot of the classic laid the way for and is best fitted for what we do today"):** draw from ALL FOUR blocks of PLATFORMER-100-MATT.md (his ~130 games, each with why people loved it). Per level: at least one pre-1990 classic, at least one lesser-known title (not a household name), and at most ONE of the famous few (Mario, DKC, Sonic, Ori, Celeste, Hollow Knight, Rayman). Don't reuse a game already leading 1-6, 1-7 or 1-8 (Pitfall!, Donkey Kong, Crash, DK Jr.) unless the reason is new.
 For EACH of 1-9, 2-1, 2-2, one page: (a) the ONE idea in a sentence and why it is fun for a sloth on a phone (thumbs, upright + sideways);
 (b) 3+ games from different series and eras (one post-2005), each: what players LOVED about it (cited: a review, an interview, a
 retrospective; not a feature list), how the original taught it, how we make that FEEL on a phone, what we do not copy; (c) 6-10 beats
