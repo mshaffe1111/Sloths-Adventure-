@@ -62,7 +62,9 @@ t-build-16 from 9b167cf2; packet reference/packets/2026-11-14/BUILD-16b.md (lead
    sealed line waits behind it ("+1"). The door's "N more" tag sits behind Pokey (reads "0 more" at 100 more). Still:
    shots/doorwait-normal-still.jpg. Both are R-165.241 (TIPS member), not changed here.
 
-## Polish check (stills on the side worktree /home/user/wt16s, shots/; re-shoot on the final head)
+## Polish check (shot on 56ba2bb0; six kept in reference/qa-reports/BUILD-16b/shots/; re-shoot on the final head)
+- THE DOOR, sideways, Pokey at it (the lead's ask): shots/doorwait-normal-still.jpg (her mark line holds the bubble, "+1" queued, the
+  tag behind him reads "0 more") and shots/exit-normal-sideways-915x412-2-sealed.jpg.
 - Counter reads as PETALS, upright and sideways, both settings: exit-*-1-counter.jpg (petal icon, "0/104", Easy "0/80"; Easy's card
   "1-6 · FIRST LIANAS · Easy · This stage: collect 80 petals").
 - Sealed door: exit-*-2-sealed.jpg. Dot's line is on screen only after the earlier bubbles are tapped (above). Rough: the tag behind him.
